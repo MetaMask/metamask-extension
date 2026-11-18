@@ -4,17 +4,14 @@ import {
   FeatureId,
   formatChainIdToCaip,
   GenericQuoteRequest,
-  getNativeAssetForChainId,
   UnifiedSwapBridgeEventName,
+  MetaMetricsSwapsEventSource,
 } from '@metamask/bridge-controller';
-import { parseCaipChainId } from '@metamask/utils';
-import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
+import { MetaMetricsSwapsEventSource as ExtendedMetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
-import { trace, TraceName } from '../../../shared/lib/trace';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import {
-  getBip44DefaultPairsConfig,
   getFromChain,
   getFromChains,
   getLastSelectedChainId,
@@ -25,7 +22,10 @@ import {
   trackUnifiedSwapBridgeEvent,
 } from '../../ducks/bridge/actions';
 import { validateMinimalAssetObject } from '../../pages/bridge/utils/tokens';
-import { isSupportedBridgeChain } from '../../ducks/bridge/utils';
+import {
+  getDefaultFromToken,
+  isSupportedBridgeChain,
+} from '../../ducks/bridge/utils';
 import { useDispatch } from '../../store/hooks';
 
 import {
@@ -45,7 +45,6 @@ const useBridging = () => {
   const lastSelectedChainId = useSelector(getLastSelectedChainId);
   const fromChain = useSelector(getFromChain);
   const fromChains = useSelector(getFromChains);
-  const bip44DefaultPairsConfig = useSelector(getBip44DefaultPairsConfig);
 
   const isChainIdEnabledForBridging = useCallback(
     (chainId: string | number) =>
@@ -66,7 +65,9 @@ const useBridging = () => {
    */
   const openBridgeExperience = useCallback(
     (
-      location: MetaMetricsSwapsEventSource,
+      location:
+        | MetaMetricsSwapsEventSource
+        | ExtendedMetaMetricsSwapsEventSource,
       sourceToken?: {
         symbol: string;
         address: string;
@@ -77,11 +78,8 @@ const useBridging = () => {
       destTokenAssetId?: string,
     ) => {
       !bridgeState && dispatch(resetInputFields());
-      trace({
-        name: TraceName.SwapViewLoaded,
-        startTime: Date.now(),
-      });
-      dispatch(setBridgeLocation(location));
+      // TODO: pick the correct location type
+      dispatch(setBridgeLocation(location as MetaMetricsSwapsEventSource));
       dispatch(
         trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.ButtonClicked, {
           location: location as never,
@@ -133,17 +131,14 @@ const useBridging = () => {
           search.set(BridgeQueryParams.From, assetId);
         }
       } else if (lastSelectedChainId !== fromChain.chainId) {
-        // If an unsupported network is selected in the network filter, use bridge page's default fromChain
+        // The network filter is the source chain. bip44DefaultPairs has one
+        // pair per namespace (Ethereum Mainnet for EVM), so use the default
+        // token for the selected chain instead.
         const fallbackChainId = lastSelectedChainId ?? fromChain.chainId;
-        const { namespace } = parseCaipChainId(fallbackChainId);
-        // Use the bip44 default asset for the fallback chain if it is defined
-        const bip44AssetId = Object.keys(
-          bip44DefaultPairsConfig?.[namespace]?.standard ?? {},
-        )[0];
-        // Otherwise, use the native assetId
-        const defaultAssetId =
-          bip44AssetId ?? getNativeAssetForChainId(fallbackChainId)?.assetId;
-        search.set(BridgeQueryParams.From, defaultAssetId);
+        search.set(
+          BridgeQueryParams.From,
+          getDefaultFromToken(formatChainIdToCaip(fallbackChainId)).assetId,
+        );
       }
 
       if (destTokenAssetId) {
@@ -158,6 +153,7 @@ const useBridging = () => {
         token: tokenToUse,
         search,
         isEntrypoint: true,
+        entryPoint: location,
       });
     },
     [
@@ -165,7 +161,6 @@ const useBridging = () => {
       lastSelectedChainId,
       fromChain?.chainId,
       isChainIdEnabledForBridging,
-      bip44DefaultPairsConfig,
       bridgeState,
       dispatch,
     ],

@@ -1,18 +1,18 @@
 import { strict as assert } from 'assert';
+import { quoteXPathText } from '../../../../helpers/quoteXPathText';
 import HomePage from './homepage';
 
 /**
- * Home activity list and per-transaction details opened from it.
+ * Activity list and per-transaction details opened from it.
  *
- * Screen: `#/` Activity tab (`account-overview__activity-tab`), or `#/activity`
- * when bottom nav is enabled; reached via `HomePage.goToActivityList()`.
+ * Screen: `#/activity`, reached via `HomePage.goToActivityList()`.
  * Owns: activity rows (status counts, amounts, swap/bridge labels), cancel /
  * speed-up actions, and opening a row to assert details, fees, and explorer
  * links.
  * Boundaries: homepage chrome, balance, and tab switching stay on `HomePage`.
  * Post-submit toast UI belongs to `TxToastNotification`.
  * Related: `HomePage` (`goToActivityList`), `TxToastNotification`,
- * `flows/send-transaction.flow.ts` / `flows/bridge.flow.ts` for journeys that
+ * `flows/transaction.flow.ts` / `flows/bridge.flow.ts` for journeys that
  * land here after a tx.
  *
  * @see ui/pages/activity/activity-list.tsx
@@ -21,12 +21,12 @@ class ActivityTab extends HomePage {
   private readonly activityListAction =
     '[data-testid="activity-list-item-action"]';
 
+  private readonly activityPage = {
+    testId: 'parent-selector-activity-tab',
+  };
+
   private readonly backButton =
     '[data-testid="transaction-details-back-button"]';
-
-  private readonly baseFeeLabel = {
-    xpath: "//div[contains(text(), 'Base fee')]",
-  };
 
   private readonly bridgeTransactionCompleted = '[data-tx-status="confirmed"]';
 
@@ -44,11 +44,6 @@ class ActivityTab extends HomePage {
 
   private readonly failedTransactions = '[data-tx-status="failed"]';
 
-  private readonly feeValues = '.currency-display-component__text';
-
-  private readonly gasPrice =
-    '[data-testid="transaction-breakdown__gas-price"]';
-
   private readonly pendingTransactionItems =
     '[data-tx-status="submitted"], [data-tx-status="approved"], [data-tx-status="unapproved"], [data-tx-status="pending"]';
 
@@ -56,13 +51,21 @@ class ActivityTab extends HomePage {
 
   private readonly speedupInlineButton = '[data-testid="speed-up-button"]';
 
-  private readonly tooltip = '.tippy-tooltip-content';
-
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
 
+  private readonly transactionBaseFeeRowValue = {
+    xpath:
+      '//*[@data-testid="transaction-base-fee"]//*[@data-testid="transaction-breakdown-row-value" and normalize-space(.) != ""]',
+  };
+
   private readonly transactionBreakdownAmount =
     '[data-testid="transaction-breakdown-value-amount"]';
+
+  private readonly transactionBreakdownAmountRowValue = {
+    xpath:
+      '//*[@data-testid="transaction-breakdown-value-amount"]//*[@data-testid="transaction-breakdown-row-value" and normalize-space(.) != ""]',
+  };
 
   private readonly transactionBreakdownRowValue = (rowIndex: number) => ({
     css: `[data-testid="transaction-breakdown-row"]:nth-child(${
@@ -74,9 +77,21 @@ class ActivityTab extends HomePage {
     testId: `transaction-details-status-${status}`,
   });
 
-  private readonly viewTransactionOnExplorerButton = {
-    testId: 'transaction-details-block-explorer',
-  };
+  private readonly transactionWithStatus = (status: string) =>
+    `[data-testid="activity-list-item"][data-tx-status="${status}"]`;
+
+  private readonly transactionWithStatusAndAmount = (
+    status: string,
+    amount: string,
+  ) => ({
+    xpath:
+      `//*[@data-testid="activity-list-item" and @data-tx-status=${quoteXPathText(
+        status,
+      )}]` +
+      `//*[@data-testid="transaction-list-item-primary-currency" and normalize-space(.)=${quoteXPathText(
+        amount,
+      )}]`,
+  });
 
   /**
    * This function checks a swap or bridge transaction's details
@@ -100,10 +115,10 @@ class ActivityTab extends HomePage {
     expectedDestToken?: string,
   ): Promise<void> {
     console.log(`Open bridge transaction details`);
-    const [completedTx] = await this.driver.findElements({
+    await this.driver.clickElement({
       text: action,
+      css: this.activityListAction,
     });
-    await completedTx.click();
     await this.driver.waitForSelector({ text: action });
 
     console.log('Checking scanner links');
@@ -117,7 +132,13 @@ class ActivityTab extends HomePage {
       this.transactionStatusLabel(expectedStatus),
     );
 
-    if (!isBridge) {
+    if (isBridge) {
+      console.log('Checking bridge fee and total amount rows are populated');
+      await this.driver.waitForSelector(this.transactionBaseFeeRowValue);
+      await this.driver.waitForSelector(
+        this.transactionBreakdownAmountRowValue,
+      );
+    } else {
       console.log('Checking displayed amounts');
       if (expectedSrcAmount) {
         await this.driver.waitForSelector({
@@ -157,24 +178,10 @@ class ActivityTab extends HomePage {
       } catch {
         return false;
       }
-    }, 60000);
+    }, 10000);
     console.log(
       `${expectedNumber} Bridge transactions found in activity list on homepage`,
     );
-  }
-
-  async checkCompletedTransactionItems(
-    expectedNumber: number = 1,
-  ): Promise<void> {
-    console.log(
-      `Check ${expectedNumber} completed transaction items are displayed in activity list`,
-    );
-    await this.driver.wait(async () => {
-      const confirmedTxes = await this.driver.findElements(
-        this.completedTransactions,
-      );
-      return confirmedTxes.length === expectedNumber;
-    }, 10000);
   }
 
   /**
@@ -238,7 +245,7 @@ class ActivityTab extends HomePage {
       } catch {
         return false;
       }
-    }, 60000);
+    }, 10000);
     console.log(
       `${expectedNumber} confirmed transactions found in activity list on homepage`,
     );
@@ -266,67 +273,25 @@ class ActivityTab extends HomePage {
       } catch {
         return false;
       }
-    }, 60000);
+    }, 10000);
     console.log(
       `${expectedNumber} failed transactions found in activity list on homepage`,
     );
   }
 
-  /**
-   * Checks that fee values are displayed in the tx details.
-   */
-  async checkFeeValuesAreDisplayed(): Promise<void> {
-    console.log('Checking that fee values are displayed');
-    await this.driver.waitForSelector(this.baseFeeLabel);
-    await this.driver.waitForSelector(this.feeValues);
-    console.log('Fee values are displayed');
-  }
-
-  /**
-   * Checks that the gas price displayed in transaction details matches the expected value.
-   *
-   * @param expectedGasPrice - The expected gas price value.
-   */
-  async checkGasPrice(expectedGasPrice: string): Promise<void> {
-    console.log(`Checking gas price is ${expectedGasPrice}`);
-    await this.driver.waitForSelector({
-      css: this.gasPrice,
-      text: expectedGasPrice,
-    });
-    console.log(`Gas price ${expectedGasPrice} verified`);
-  }
-
   async checkNoFailedTransactions(): Promise<void> {
-    try {
-      await this.driver.findElement(this.failedTransactions, 1);
-    } catch (error) {
-      return;
-    }
-
-    const failedTxs = await this.driver.findElements(this.failedTransactions);
-
-    if (!failedTxs.length) {
-      return;
-    }
-
-    const errorMessages = [];
-
-    for (const failedTx of failedTxs) {
-      await this.driver.hoverElement(failedTx);
-
-      const tooltip = await this.driver.findElement(this.tooltip);
-      const errorMessage = await tooltip.getText();
-
-      errorMessages.push(errorMessage);
-    }
-
-    throw new Error(
-      `Failed transactions found in activity list: ${errorMessages.join('\n')}`,
-    );
+    await this.driver.assertElementNotPresent(this.failedTransactions, {
+      waitAtLeastGuard: 1000,
+    });
   }
 
   async checkNoTxInActivity(): Promise<void> {
     await this.driver.assertElementNotPresent(this.completedTransactions);
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    await this.driver.waitForSelector(this.activityPage);
+    console.log('Activity tab is loaded');
   }
 
   /**
@@ -351,7 +316,7 @@ class ActivityTab extends HomePage {
       } catch {
         return false;
       }
-    }, 60000);
+    }, 10000);
     console.log(
       `${expectedNumber} Bridge pending transactions found in activity list on homepage`,
     );
@@ -361,7 +326,7 @@ class ActivityTab extends HomePage {
    * This function checks the specified number of pending transactions are displayed in the activity list on the homepage.
    * It waits up to 10 seconds for the expected number of pending transactions to be visible.
    *
-   * @param expectedNumber - The number of pending transactions expected to be displayed in the activity list. Defaults to 1.
+   * @param expectedNumber - The number of pending transactions expected to be displayed in activity list. Defaults to 1.
    * @returns A promise that resolves if the expected number of pending transactions is displayed within the timeout period.
    */
   async checkPendingTxNumberDisplayedInActivity(
@@ -429,6 +394,13 @@ class ActivityTab extends HomePage {
     });
   }
 
+  /**
+   * Checks that no transaction activity item matching the provided text is
+   * displayed in the activity list.
+   *
+   * @param txnText - The text to search for within the transaction activity list.
+   * @returns A promise that resolves when no activity item with the text is present.
+   */
   async checkTransactionActivityNotPresentByText(
     txnText: string,
   ): Promise<void> {
@@ -444,14 +416,6 @@ class ActivityTab extends HomePage {
     await this.driver.waitForSelector({
       css: this.transactionAmountsInActivity,
       text: transactionAmount,
-    });
-  }
-
-  async checkTransactionAmountNotPresent(amount: string): Promise<void> {
-    console.log(`Check transaction amount is absent: ${amount}`);
-    await this.driver.assertElementNotPresent({
-      css: this.transactionAmountsInActivity,
-      text: amount,
     });
   }
 
@@ -514,7 +478,7 @@ class ActivityTab extends HomePage {
       } catch {
         return false;
       }
-    }, 60000);
+    }, 10000);
     console.log(`Action for transaction ${txIndex} is displayed as ${action}`);
   }
 
@@ -560,26 +524,35 @@ class ActivityTab extends HomePage {
   async checkWaitForTransactionStatus(
     status: 'confirmed' | 'cancelled' | 'pending',
   ) {
-    await this.driver.waitForSelector(`[data-tx-status="${status}"]`, {
-      timeout: 5000,
-    });
+    await this.driver.waitForSelector(this.transactionWithStatus(status));
   }
 
   /**
-   * Verifies that a specific warning message is displayed on the activity list.
+   * Waits for the activity row with the exact amount to reach the given status.
    *
-   * @param warningText - The expected warning text to validate against.
-   * @returns A promise that resolves if the warning message matches the expected text.
-   * @throws Assertion error if the warning message does not match the expected text.
+   * @param expectedAmount - Exact primary-currency amount identifying the row.
+   * @param status - The expected transaction status.
+   * @param options - Optional wait configuration.
+   * @param options.timeout - Maximum time to wait in milliseconds.
    */
-  async checkWarningMessage(warningText: string): Promise<void> {
-    console.log(
-      `Check warning message "${warningText}" is displayed on activity list`,
+  async checkWaitForTransactionStatusByAmount(
+    expectedAmount: string,
+    status: 'confirmed' | 'cancelled' | 'pending',
+    { timeout = 5000 }: { timeout?: number } = {},
+  ): Promise<void> {
+    await this.driver.waitForSelector(
+      this.transactionWithStatusAndAmount(status, expectedAmount),
+      { timeout },
     );
-    await this.driver.waitForSelector({
-      tag: 'div',
-      text: warningText,
-    });
+  }
+
+  /**
+   * Clicks the activity row whose visible text contains the provided text.
+   *
+   * @param text - The text shown on the activity row (e.g. 'Sent TRX').
+   */
+  async clickActivityByText(text: string): Promise<void> {
+    await this.driver.clickElement({ css: this.activityListAction, text });
   }
 
   async clickCancelTransaction() {
@@ -616,36 +589,6 @@ class ActivityTab extends HomePage {
 
   async clickSpeedUpTransaction() {
     await this.driver.clickElement(this.speedupInlineButton);
-  }
-
-  async clickTransactionListItem() {
-    await this.driver.clickElement(this.completedTransactions);
-  }
-
-  async getAllTransactionAmounts(): Promise<string[]> {
-    console.log('Getting all transaction amounts');
-    const transactionAmounts = await this.driver.findElements(
-      this.transactionAmountsInActivity,
-    );
-    const amounts = await Promise.all(
-      transactionAmounts.map(async (amount) => await amount.getText()),
-    );
-
-    console.log('Transaction amounts found', amounts);
-    return amounts;
-  }
-
-  /**
-   * This function clicks on the "View on block explorer" button for the specified transaction.
-   *
-   * @param expectedNumber - The 1-based index of the transaction to be clicked.
-   */
-  async viewTransactionOnExplorer(expectedNumber: number): Promise<void> {
-    console.log(
-      `Viewing transaction on explorer for transaction ${expectedNumber}`,
-    );
-    await this.clickOnActivity(expectedNumber);
-    await this.driver.clickElement(this.viewTransactionOnExplorerButton);
   }
 
   /**

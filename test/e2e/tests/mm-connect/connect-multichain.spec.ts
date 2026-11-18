@@ -1,16 +1,15 @@
 import { Suite } from 'mocha';
 
 import {
-  DAPP_HOST_ADDRESS,
   DAPP_PATH,
   MM_CONNECT_EVM_CHAINS,
   SOLANA_MAINNET_SCOPE,
   WINDOW_TITLES,
 } from '../../constants';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
-import { getPermissionsPageForHost } from '../../page-objects/flows/permissions.flow';
 import { Driver } from '../../webdriver/driver';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
@@ -154,7 +153,10 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
           // Handle the signing dialog in the extension.
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const signingConfirmation = new Confirmation(driver);
-          await signingConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+          await signingConfirmation.clickFooterButton({
+            button: 'confirm',
+            waitUntil: 'windowClose',
+          });
 
           // Back in test dapp: validate result is a hex signature string
           await testDapp.switchTo();
@@ -202,9 +204,9 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
 
         // eth_chainId must return the hex chain ID specific to each scope
         const expectedChainIds: [string, string][] = [
-          [MM_CONNECT_EVM_CHAINS.LOCALHOST, '0x539'],
-          [MM_CONNECT_EVM_CHAINS.POLYGON, '0x89'],
-          [MM_CONNECT_EVM_CHAINS.LINEA, '0xe708'],
+          [MM_CONNECT_EVM_CHAINS.LOCALHOST, CHAIN_IDS.LOCALHOST],
+          [MM_CONNECT_EVM_CHAINS.POLYGON, CHAIN_IDS.POLYGON],
+          [MM_CONNECT_EVM_CHAINS.LINEA, CHAIN_IDS.LINEA_MAINNET],
         ];
 
         for (const [chainId, expectedHex] of expectedChainIds) {
@@ -215,55 +217,6 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
             `"${expectedHex}"`,
           );
         }
-      },
-    );
-  });
-
-  it('reflects removed chain permission in the connected app', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-        dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await login(driver);
-
-        const testDapp = new TestDapp(driver);
-        await testDapp.openPage();
-
-        await testDapp.selectNetworks(Object.values(MM_CONNECT_EVM_CHAINS));
-        await testDapp.clickConnect();
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const confirmation = new ConnectAccountConfirmation(driver);
-        await confirmation.checkPageIsLoaded();
-        await confirmation.confirmConnect();
-
-        // All 3 chains connected — verify
-        await testDapp.switchTo();
-        await testDapp.checkScopeCardVisible(MM_CONNECT_EVM_CHAINS.LOCALHOST);
-        await testDapp.checkScopeCardVisible(MM_CONNECT_EVM_CHAINS.POLYGON);
-        await testDapp.checkScopeCardVisible(MM_CONNECT_EVM_CHAINS.LINEA);
-
-        // Remove Polygon from permitted networks via the extension
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-        const sitePermissionPage = await getPermissionsPageForHost(
-          driver,
-          DAPP_HOST_ADDRESS,
-        );
-        // editPermissionsForNetwork toggles the named network off then confirms.
-        await sitePermissionPage.editPermissionsForNetwork(['Polygon']);
-
-        // Back in test dapp: Polygon ScopeCard should no longer be visible
-        await testDapp.switchTo();
-        await testDapp.checkScopeCardNotVisible(MM_CONNECT_EVM_CHAINS.POLYGON);
-
-        // Ethereum and Linea ScopeCards should still be present
-        await testDapp.checkScopeCardVisible(MM_CONNECT_EVM_CHAINS.LOCALHOST);
-        await testDapp.checkScopeCardVisible(MM_CONNECT_EVM_CHAINS.LINEA);
       },
     );
   });

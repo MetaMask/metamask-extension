@@ -8,6 +8,7 @@ const { difference } = require('lodash');
 // eslint-disable-next-line no-redeclare
 const WebSocket = require('ws');
 const createStaticServer = require('../../development/create-static-server');
+const { isManifestV3 } = require('../../shared/lib/mv3.utils');
 const { setupMocking } = require('./mock-e2e');
 const { setupMockingPassThrough } = require('./mock-e2e-pass-through');
 const FixtureServer = require('./fixtures/fixture-server');
@@ -206,6 +207,12 @@ function shouldSeedHardwareWalletMainnetBalance(fixtures) {
 }
 
 /**
+ * options.testTimeout — Mocha timeout for this test in ms. Auto-detected from
+ * MOCHA_TIMEOUT (set by run-e2e-test.js and updated per-test by the global
+ * beforeEach hook in manifest-flag-mocha-hooks.ts). If a test sets
+ * this.timeout() inside the it() body (rather than on a describe block), the
+ * hook cannot detect it — pass testTimeout explicitly: testTimeout: this.timeout().
+ *
  * @param {object} options
  * @param {({driver: Driver, mockedEndpoint: MockedEndpoint}: TestSuiteArguments) => Promise<void>} testSuite
  */
@@ -230,8 +237,6 @@ async function withFixtures(options, testSuite) {
     useMockingPassThrough,
     useBundler,
     usePaymaster,
-    ethConversionInUsd,
-    monConversionInUsd,
     manifestFlags,
     solanaWebSocketSpecificMocks = [],
     accountActivityWebSocketSpecificMocks = [],
@@ -239,8 +244,10 @@ async function withFixtures(options, testSuite) {
     extendedTimeoutMultiplier = 1,
     unifiedEvmAccountsApiBalances,
     virtualAuthenticator,
-    isBenchmark = false,
+    testTimeout = parseInt(process.env.MOCHA_TIMEOUT, 10) || 0,
   } = options;
+
+  const fixtureStartTime = Date.now();
 
   // Normalize localNodeOptions
   const localNodeOptsNormalized = normalizeLocalNodeOptions(localNodeOptions);
@@ -500,8 +507,6 @@ async function withFixtures(options, testSuite) {
       clearNetworkReport,
     } = await mockingSetupFunction(mockServer, testSpecificMock, {
       chainId: localNodeOptsNormalized[0]?.options.chainId || 1337,
-      ethConversionInUsd,
-      monConversionInUsd,
       unifiedEvmAccountsApiBalances: effectiveUnifiedEvmAccountsApiBalances,
     });
 
@@ -570,7 +575,6 @@ async function withFixtures(options, testSuite) {
       const wd = await buildWebDriver({
         ...driverOptions,
         disableServerMochaToBackground,
-        isBenchmark,
       });
 
       driver = wd.driver;
@@ -616,7 +620,9 @@ async function withFixtures(options, testSuite) {
 
     console.log(`\nExecuting testcase: '${title}'\n`);
 
-    await testSuite({
+    // This lets our catch (screenshots) and finally (server cleanup) run before Mocha moves on to the next test.
+    const ARTIFACT_DEADLINE_BUFFER_MS = 5_000;
+    const testPromise = testSuite({
       bundlerServer,
       contractRegistry,
       driver: effectiveDriver,
@@ -633,6 +639,36 @@ async function withFixtures(options, testSuite) {
         },
       }),
     });
+
+    // Silence the orphaned test promise if the deadline wins the race and the
+    // test callback rejects afterwards (prevents unhandled-rejection noise).
+    // eslint-disable-next-line no-empty-function
+    testPromise.catch(() => {});
+
+    const elapsed = Date.now() - fixtureStartTime;
+    const deadlineMs = testTimeout - ARTIFACT_DEADLINE_BUFFER_MS - elapsed;
+    if (deadlineMs > 0 && testTimeout > 0) {
+      let deadlineTimer;
+      const deadlinePromise = new Promise((_, reject) => {
+        deadlineTimer = setTimeout(() => {
+          reject(
+            new Error(
+              `withFixtures internal deadline exceeded after ${deadlineMs}ms ` +
+                `(Mocha timeout: ${testTimeout}ms). Capturing artifacts before Mocha moves on.`,
+            ),
+          );
+        }, deadlineMs);
+      });
+
+      try {
+        await Promise.race([testPromise, deadlinePromise]);
+      } finally {
+        clearTimeout(deadlineTimer);
+      }
+    } else {
+      // --leave-running or very short timeout: no deadline, wait indefinitely
+      await testPromise;
+    }
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
     if (errorsAndExceptions) {
@@ -689,7 +725,10 @@ async function withFixtures(options, testSuite) {
       } catch (verboseReportError) {
         console.error(verboseReportError);
       }
+      // MV3 has no background page (it is a service worker), so there is
+      // nothing to navigate to and the controller-loaded wait would time out.
       if (
+        !isManifestV3 &&
         process.env.E2E_LEAVE_RUNNING !== 'true' &&
         (driver.errors.length > 0 || driver.exceptions.length > 0)
       ) {
@@ -698,7 +737,14 @@ async function withFixtures(options, testSuite) {
          * forcing background exceptions to be captured
          * proving more helpful context
          */
-        await driver.navigate(PAGES.BACKGROUND);
+        try {
+          await driver.navigate(PAGES.BACKGROUND);
+        } catch (navigateError) {
+          console.error(
+            'Failed to navigate to the background page',
+            navigateError,
+          );
+        }
       }
     }
 

@@ -1,4 +1,4 @@
-import React, { useContext, useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -82,7 +82,7 @@ const BaseQrReader = ({
   setCameraPermissionErrorCode,
 }: BaseQrReaderProps) => {
   const t = useI18nContext();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useAnalytics();
 
   const {
     state: {

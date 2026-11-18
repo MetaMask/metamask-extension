@@ -1,7 +1,10 @@
 import { useMemo } from 'react';
 import type { ActivityListItem } from '../../../../../shared/lib/activity/types';
 import { useRampsOrders } from '../../../../hooks/ramps/useRampsOrders';
-import { mapRampsOrderSafely } from '../../../../hooks/ramps/utils/mapRampsOrderSafely';
+import {
+  mapRampsOrderSafely,
+  withEvmHashPrefix,
+} from '../../../../hooks/ramps/utils/mapRampsOrderSafely';
 
 export type RampOrderActivityItem = Extract<
   ActivityListItem,
@@ -27,11 +30,20 @@ export function useRampsDetailsItem(
     }
 
     const rampsOrderById = getOrderById(txIdentifier);
+    // The details-route identifier is the mapped item's hash: `0x`-prefixed
+    // for EVM orders with bare provider hashes (e.g. Coinbase), bare for
+    // non-EVM orders whose hashes pass through untouched. Compare both forms
+    // of the raw order's txHash so either case resolves.
+    const normalizedIdentifier = txIdentifier.toLowerCase();
     const rampsOrder =
       rampsOrderById ??
-      orders.find(
-        (order) => order.txHash?.toLowerCase() === txIdentifier.toLowerCase(),
-      );
+      orders.find((order) => {
+        const rawHash = order.txHash?.toLowerCase();
+        return (
+          rawHash === normalizedIdentifier ||
+          withEvmHashPrefix(rawHash)?.toLowerCase() === normalizedIdentifier
+        );
+      });
 
     if (!rampsOrder) {
       return undefined;

@@ -1,11 +1,11 @@
 export const CONSTANT_TIME_PER_TESTCASE = 3000; // 3 seconds to setup/tear down each test case
 
-export interface TestRun {
+export type TestRun = {
   name: string;
   testFiles: TestFile[];
-}
+};
 
-export interface TestFile {
+export type TestFile = {
   path: string;
   tests: number;
   passed: number;
@@ -14,9 +14,9 @@ export interface TestFile {
   time: number;
   timePlusSetup?: number;
   testSuites: TestSuite[];
-}
+};
 
-export interface TestSuite {
+export type TestSuite = {
   name: string;
   job: {
     name: string;
@@ -32,7 +32,7 @@ export interface TestSuite {
   time: number;
   attempts: TestSuite[];
   testCases: TestCase[];
-}
+};
 
 export type TestCase =
   | {
@@ -47,9 +47,28 @@ export type TestCase =
       error: string;
     };
 
-export interface TestChunk {
+export type TestChunk = {
   time: number;
   paths: string[];
+};
+
+/**
+ * Returns a test suite's duration, never less than the sum of its test cases.
+ *
+ * mocha-junit-reporter only records the time of the most recently started
+ * suite when a suite ends. Mocha runs a suite's own tests before its nested
+ * suites, so a suite with both is reported as taking 0ms.
+ *
+ * @param suiteTime - The suite time reported in the JUnit XML, in ms.
+ * @param testCases - The suite's test cases.
+ * @returns The suite duration in ms.
+ */
+export function getTestSuiteTime(
+  suiteTime: number,
+  testCases: TestCase[],
+): number {
+  const testCasesTime = testCases.reduce((total, { time }) => total + time, 0);
+  return Math.max(suiteTime, testCasesTime);
 }
 
 export function getTestFilesSortedByTime(testRun: TestRun) {

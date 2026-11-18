@@ -208,10 +208,6 @@
   "fast": {
     "message": "Høy"
   },
-  "fileImportFail": {
-    "message": "Virker ikke filimporteringen? Trykk her!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "Glem denne enheten"
   },
@@ -220,9 +216,6 @@
   },
   "gasLimit": {
     "message": "Datakraftsgrense "
-  },
-  "gasLimitTooLow": {
-    "message": "Datakraftsgrense må være minst 21000"
   },
   "gasUsed": {
     "message": "Brukt datakraft "
@@ -386,10 +379,6 @@
   "passwordsDontMatch": {
     "message": "Passordene er ikke like"
   },
-  "pastePrivateKey": {
-    "message": "Lim inn din private nøkkelstreng her:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "i påvente "
   },
@@ -405,9 +394,6 @@
   "privateKey": {
     "message": "Privat nøkkel",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Advarsel: aldri gjør kjent denne nøkkelen. Alle som har tilgang til dine private nøkler kan stjele midlene dine som er på konto."
   },
   "privateNetwork": {
     "message": "Privat nettverk "
@@ -574,9 +560,6 @@
   },
   "urlErrorMsg": {
     "message": "URI-er krever det aktuelle HTTP/HTTPS-prefikset."
-  },
-  "usedByClients": {
-    "message": "Brukt av en rekke forskjellige klienter"
   },
   "visitWebSite": {
     "message": "Besøk nettsiden vår "

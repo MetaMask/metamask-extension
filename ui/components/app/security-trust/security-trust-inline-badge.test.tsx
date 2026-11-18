@@ -1,17 +1,15 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
+import { IconSize } from '@metamask/design-system-react';
+import type { TokenTrustConfig } from '#shared/lib/token-search/types';
 import {
   getSecurityTrustBadgeConfig,
   SecurityTrustInlineBadge,
-  SecurityTrustVerifiedBadge,
-  type SecurityTrustInlineBadgeConfig,
 } from './security-trust-inline-badge';
 
 const t = (key: string) => key;
 
-const getTestBadgeConfig = (
-  resultType: string,
-): SecurityTrustInlineBadgeConfig => {
+const getTestBadgeConfig = (resultType: string): TokenTrustConfig => {
   const badge = getSecurityTrustBadgeConfig(resultType, t);
   expect(badge).toBeDefined();
   if (!badge) {
@@ -32,6 +30,31 @@ describe('SecurityTrustInlineBadge', () => {
 
     expect(getByTestId('security-badge-verified')).toBeInTheDocument();
     expect(getByLabelText('securityTrustVerified')).toBeInTheDocument();
+  });
+
+  it('renders the verified icon at 16px by default', () => {
+    const badge = getTestBadgeConfig('Verified');
+    const { getByLabelText } = render(
+      <SecurityTrustInlineBadge
+        badge={badge}
+        testId="security-badge-verified"
+      />,
+    );
+
+    expect(getByLabelText('securityTrustVerified')).toHaveClass('w-4', 'h-4');
+  });
+
+  it('renders the verified icon at 20px when iconSize is Md', () => {
+    const badge = getTestBadgeConfig('Verified');
+    const { getByLabelText } = render(
+      <SecurityTrustInlineBadge
+        badge={badge}
+        testId="security-badge-verified"
+        iconSize={IconSize.Md}
+      />,
+    );
+
+    expect(getByLabelText('securityTrustVerified')).toHaveClass('w-5', 'h-5');
   });
 
   it('wraps verified icon in a button when onClick is provided', () => {
@@ -91,28 +114,6 @@ describe('SecurityTrustInlineBadge', () => {
     );
 
     fireEvent.click(getByTestId('security-badge-warning'));
-    expect(onClick).toHaveBeenCalledTimes(1);
-  });
-});
-
-describe('SecurityTrustVerifiedBadge', () => {
-  it('renders verified badge wrapper without onClick', () => {
-    const badge = getTestBadgeConfig('Verified');
-    const { getAllByTestId } = render(
-      <SecurityTrustVerifiedBadge badge={badge} />,
-    );
-
-    expect(getAllByTestId('security-badge-verified').length).toBeGreaterThan(0);
-  });
-
-  it('delegates onClick to inline badge', () => {
-    const badge = getTestBadgeConfig('Verified');
-    const onClick = jest.fn();
-    const { getByTestId } = render(
-      <SecurityTrustVerifiedBadge badge={badge} onClick={onClick} />,
-    );
-
-    fireEvent.click(getByTestId('security-badge-verified'));
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 });

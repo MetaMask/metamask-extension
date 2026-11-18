@@ -6,8 +6,8 @@ import { regularDelayMs } from '../../../helpers';
  *
  * Screen: modal layered over the home UI when an update announcement is shown
  * (`data-testid="update-modal"`).
- * Owns: presence/absence checks, close, and submit (which may briefly disrupt
- * the webdriver window handle count).
+ * Owns: presence/absence checks, close, and submit. Submit reloads the
+ * extension, which closes this window; the caller waits for the updating tab.
  * Boundaries: stops at the update modal. App reload / post-update home state
  * belongs to home page objects.
  * Related: `tests/update-modal/update-modal.spec.ts`, `HomePage`.
@@ -58,9 +58,6 @@ class UpdateModal {
   async confirm() {
     console.log('Click to confirm the update modal');
     await this.driver.clickElement(this.submitButton);
-    // delay needed to mitigate a race condition where the tab is closed and re-opened after confirming, causing a brief disconnect with webdriver
-    await this.driver.delay(3000);
-    await this.driver.waitUntilXWindowHandles(1);
   }
 }
 

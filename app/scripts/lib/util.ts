@@ -33,7 +33,6 @@ import {
   type Os,
   type Platform,
 } from '../../../shared/constants/app';
-import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 import { getMethodDataAsync } from '../../../shared/lib/four-byte';
 import {
   getSafeChainsListFromCacheOnly,
@@ -339,43 +338,7 @@ export const getOs = (): Os => {
   return OS.UNKNOWN;
 };
 
-function getChainType(chainId: string) {
-  if (chainId === CHAIN_IDS.MAINNET) {
-    return 'mainnet';
-  } else if ((TEST_CHAINS as string[]).includes(chainId)) {
-    return 'testnet';
-  }
-  return 'custom';
-}
-
-/**
- * Checks if the alarmname exists in the list
- *
- * @param alarmList
- * @param alarmName
- * @returns
- */
-function checkAlarmExists(alarmList: { name: string }[], alarmName: string) {
-  return alarmList.some((alarm) => alarm.name === alarmName);
-}
-
-export { checkAlarmExists, getChainType, getPlatform };
-
-// Taken from https://stackoverflow.com/a/1349426/3696652
-const characters =
-  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-export const generateRandomId = () => {
-  let result = '';
-  const charactersLength = characters.length;
-  for (let i = 0; i < 20; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
-};
-
-export const isValidDate = (d: Date | number) => {
-  return d instanceof Date;
-};
+export { getPlatform };
 
 /**
  * Returns a function with arity 1 that caches the argument that the function
@@ -546,9 +509,7 @@ export const getMethodDataName = async (
  * getBooleanFlag('false'); // false
  * getBooleanFlag(false); // false
  */
-export function getBooleanFlag(value: string | boolean | undefined): boolean {
-  return value === true || value === 'true';
-}
+export { getBooleanFlag } from '../../../shared/lib/environment';
 
 // Cache for known domains
 let knownDomainsSet: Set<string> | null = null;

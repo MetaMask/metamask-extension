@@ -1,8 +1,14 @@
 import { useCallback, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
+import { getReferralCode } from '#shared/lib/deep-links/referral';
+import { setPendingReferralCode } from '#ui/ducks/rewards-money';
+import {
+  getOnboardingRedirect,
+  setOnboardingRedirect,
+} from '#ui/ducks/app/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -31,6 +37,10 @@ import {
   getAccountTypeForOnboardingMetrics,
 } from '../../../selectors';
 import {
+  getExternalServicesOwnedPreferences,
+  getIsBasicFunctionalityForcedOnDuringOnboarding,
+} from '../../../selectors/multichain/basic-functionality';
+import {
   getCompletedOnboarding,
   getHasSeenOnboardingCompletionPage,
 } from '../../../ducks/metamask/metamask';
@@ -46,7 +56,6 @@ import {
   setIsBackupAndSyncFeatureEnabled,
   setHasSeenOnboardingCompletionPage,
 } from '../../../store/actions';
-import type { MetaMaskReduxDispatch } from '../../../store/store';
 import { useDispatch } from '../../../store/hooks';
 
 /**
@@ -75,8 +84,19 @@ export function useOnboardingCompletion() {
   const isOptedIn = useSelector(getOptedIn);
   const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const deferredDeepLink = useSelector(getDeferredDeepLink);
+  const onboardingRedirect = useSelector(getOnboardingRedirect);
+  const isBasicFunctionalityForcedOn = useSelector(
+    getIsBasicFunctionalityForcedOnDuringOnboarding,
+  );
   const isBasicFunctionalityToggleEnabled =
     getIsBasicFunctionalityConsolidationEnabledInBuild();
+
+  // Captured so the legacy `toggleExternalServices` write can apply these in
+  // the same background call instead of overwriting them and restoring later.
+  const externalServicesOwnedPreferences = useSelector(
+    getExternalServicesOwnedPreferences,
+    shallowEqual,
+  );
 
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
   const isFinishingOnboardingRef = useRef(false);
@@ -91,16 +111,25 @@ export function useOnboardingCompletion() {
         dispatch(removeDeferredDeepLink());
       }
 
+      // Retain install attribution even when a later direct link supplies the action.
       if (deferredDeepLinkResult && deferredDeepLinkToUse?.referringLink) {
+        const url = new URL(deferredDeepLinkToUse.referringLink);
+        if (
+          deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Navigate
+        ) {
+          dispatch(setPendingReferralCode(getReferralCode(url.searchParams)));
+        }
         await trackEvent(
           createEvent({
             signature: deferredDeepLinkResult.signature,
-            url: new URL(deferredDeepLinkToUse.referringLink),
+            url,
           }),
         );
       }
 
-      if (deferredDeepLinkResult) {
+      if (onboardingRedirect) {
+        navigate(onboardingRedirect, { replace: true });
+      } else if (deferredDeepLinkResult) {
         if (
           deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Redirect
         ) {
@@ -128,8 +157,11 @@ export function useOnboardingCompletion() {
       } else if (!completedWithSidePanelFlow) {
         navigate(DEFAULT_ROUTE);
       }
+      if (onboardingRedirect) {
+        dispatch(setOnboardingRedirect(null));
+      }
     },
-    [dispatch, navigate, trackEvent],
+    [dispatch, navigate, onboardingRedirect, trackEvent],
   );
 
   const completeOnboardingWithSidePanel = useCallback(
@@ -162,8 +194,8 @@ export function useOnboardingCompletion() {
         }
 
         // `browser.sidePanel.open()` requires a user gesture. Auto-complete
-        // runs from `useEffect`, so skip the call there. Navigate/Interstitial
-        // deferred deep links also skip opening so the popup can route first.
+        // runs from `useEffect`, so skip the call there. Internal destinations
+        // and interstitials also keep navigation in this UI.
         if (shouldOpenSidePanel && !autoCompleteWithoutUserGesture) {
           await browserWithSidePanel.sidePanel.open({
             windowId,
@@ -229,6 +261,7 @@ export function useOnboardingCompletion() {
         const deferredDeepLinkResult =
           await getDeferredDeepLinkRoute(deferredDeepLink);
         const shouldOpenSidePanel =
+          !onboardingRedirect &&
           deferredDeepLinkResult?.type !== DeferredDeepLinkRouteType.Navigate &&
           deferredDeepLinkResult?.type !==
             DeferredDeepLinkRouteType.Interstitial;
@@ -264,10 +297,21 @@ export function useOnboardingCompletion() {
           );
         }
 
+        // Social-login wallets must keep Basic Functionality enabled once the
+        // consolidated experience is on. Remote flags are not reliable during
+        // onboarding, so this uses the build-time consolidation gate.
+        const basicFunctionalityEnabled =
+          isBasicFunctionalityForcedOn || externalServicesOnboardingToggleState;
+
         await dispatch(
           isBasicFunctionalityToggleEnabled
-            ? toggleBasicFunctionality(externalServicesOnboardingToggleState)
-            : toggleExternalServices(externalServicesOnboardingToggleState),
+            ? toggleBasicFunctionality(basicFunctionalityEnabled)
+            : toggleExternalServices(
+                basicFunctionalityEnabled,
+                basicFunctionalityEnabled
+                  ? externalServicesOwnedPreferences
+                  : undefined,
+              ),
         );
 
         if (!backupAndSyncOnboardingToggleState) {
@@ -324,12 +368,15 @@ export function useOnboardingCompletion() {
       deferredDeepLink,
       dispatch,
       externalServicesOnboardingToggleState,
+      externalServicesOwnedPreferences,
       firstTimeFlowType,
+      isBasicFunctionalityForcedOn,
       isBasicFunctionalityToggleEnabled,
       isOnboardingCompleted,
       isOptedIn,
       isSidePanelEnabled,
       isUnlocked,
+      onboardingRedirect,
       trackEvent,
     ],
   );

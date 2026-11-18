@@ -201,14 +201,16 @@ export function MultipleAlertModal({
     previousAlertKeyRef.current = alertKey;
 
     if (alertKeyExists && alertKey) {
-      if (alertKey !== currentAlertKey) {
-        setCurrentAlertKey(alertKey);
-      }
+      queueMicrotask(() => {
+        setCurrentAlertKey((current) =>
+          alertKey === current ? current : alertKey,
+        );
+      });
       pendingAlertKeyRef.current = undefined;
     } else {
       pendingAlertKeyRef.current = alertKey ?? undefined;
     }
-  }, [alertKey, alertsToDisplay, currentAlertKey]);
+  }, [alertKey, alertsToDisplay]);
 
   useEffect(() => {
     const pendingAlertKey = pendingAlertKeyRef.current;
@@ -225,11 +227,13 @@ export function MultipleAlertModal({
       return;
     }
 
-    if (pendingAlertKey !== currentAlertKey) {
-      setCurrentAlertKey(pendingAlertKey);
-    }
+    queueMicrotask(() => {
+      setCurrentAlertKey((current) =>
+        pendingAlertKey === current ? current : pendingAlertKey,
+      );
+    });
     pendingAlertKeyRef.current = undefined;
-  }, [alertsToDisplay, currentAlertKey]);
+  }, [alertsToDisplay]);
 
   useEffect(() => {
     const currentAlertStillExists = currentAlertKey
@@ -253,9 +257,11 @@ export function MultipleAlertModal({
       navigableAlertsToDisplay[0]?.key ??
       alertsToDisplay[0]?.key;
 
-    if (fallbackKey !== currentAlertKey) {
-      setCurrentAlertKey(fallbackKey);
-    }
+    queueMicrotask(() => {
+      setCurrentAlertKey((current) =>
+        fallbackKey === current ? current : fallbackKey,
+      );
+    });
 
     if (pendingAlertExists && fallbackKey === pendingAlertKey) {
       pendingAlertKeyRef.current = undefined;

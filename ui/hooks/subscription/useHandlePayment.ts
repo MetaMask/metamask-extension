@@ -10,13 +10,19 @@ import {
   SubscriptionCryptoPaymentMethod,
   TokenPaymentInfo,
 } from '@metamask/subscription-controller';
-import { getIsShieldSubscriptionPaused } from '../../../shared/lib/shield';
+import {
+  getIsShieldSubscriptionEndingSoon,
+  getIsShieldSubscriptionPaused,
+  getSubscriptionPaymentData,
+} from '../../../shared/lib/shield';
 import { useSubscriptionMetrics } from '../shield/metrics/useSubscriptionMetrics';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   ShieldMetricsSourceEnum,
   ShieldErrorStateActionClickedEnum,
   ShieldErrorStateLocationEnum,
   ShieldErrorStateViewEnum,
+  ShieldErrorStateClickedTypeEnum,
 } from '../../../shared/constants/subscriptions';
 import { SHIELD_PLAN_ROUTE } from '../../helpers/constants/routes';
 import { isCryptoPaymentMethod } from '../../pages/shield/transaction-shield/types';
@@ -65,7 +71,10 @@ export const useHandlePayment = ({
   subscriptionPricing?: PricingResponse;
 }) => {
   const navigate = useNavigate();
-  const { captureShieldErrorStateClickedEvent } = useSubscriptionMetrics();
+  const {
+    captureCommonExistingShieldSubscriptionEvents,
+    captureShieldErrorStateClickedEvent,
+  } = useSubscriptionMetrics();
 
   const cryptoPaymentMethod = useSubscriptionPaymentMethods(
     PAYMENT_TYPES.byCrypto,
@@ -197,6 +206,10 @@ export const useHandlePayment = ({
     return getIsShieldSubscriptionPaused(subscriptions ?? []);
   }, [subscriptions]);
 
+  const isSubscriptionEndingSoon = useMemo(() => {
+    return getIsShieldSubscriptionEndingSoon(subscriptions ?? []);
+  }, [subscriptions]);
+
   const isUnexpectedErrorCryptoPayment = useMemo(() => {
     if (!currentShieldSubscription) {
       return false;
@@ -238,6 +251,44 @@ export const useHandlePayment = ({
     );
   }, [currentShieldSubscription]);
 
+  const errorStateClickedType = useMemo(() => {
+    if (isCancelled || (!isPaused && isSubscriptionEndingSoon)) {
+      return ShieldErrorStateClickedTypeEnum.Renew;
+    }
+    if (isInsufficientFundsCrypto) {
+      return ShieldErrorStateClickedTypeEnum.AddFunds;
+    }
+    return ShieldErrorStateClickedTypeEnum.UpdateCard;
+  }, [
+    isCancelled,
+    isPaused,
+    isSubscriptionEndingSoon,
+    isInsufficientFundsCrypto,
+  ]);
+
+  const capturePaymentMethodRetriedEvent = useCallback(() => {
+    if (!currentShieldSubscription) {
+      return;
+    }
+
+    const { cryptoPaymentChain, cryptoPaymentCurrency } =
+      getSubscriptionPaymentData(currentShieldSubscription);
+
+    captureCommonExistingShieldSubscriptionEvents(
+      {
+        subscriptionStatus: currentShieldSubscription.status,
+        paymentType: currentShieldSubscription.paymentMethod.type,
+        billingInterval: currentShieldSubscription.interval,
+        cryptoPaymentChain,
+        cryptoPaymentCurrency,
+      },
+      MetaMetricsEventName.ShieldPaymentMethodRetried,
+    );
+  }, [
+    captureCommonExistingShieldSubscriptionEvents,
+    currentShieldSubscription,
+  ]);
+
   const handlePaymentError = useCallback(async () => {
     if (currentShieldSubscription) {
       // capture error state clicked event
@@ -249,6 +300,7 @@ export const useHandlePayment = ({
         actionClicked: ShieldErrorStateActionClickedEnum.Cta,
         location: ShieldErrorStateLocationEnum.Settings,
         view: ShieldErrorStateViewEnum.Banner,
+        type: errorStateClickedType,
       });
     }
 
@@ -274,22 +326,26 @@ export const useHandlePayment = ({
         //   rawTransaction: undefined // no raw transaction to trigger server to check for new funded balance
         // }))
       } else if (isAllowanceNeededCrypto) {
+        capturePaymentMethodRetriedEvent();
         await executeSubscriptionCryptoApprovalTransaction();
       } else {
         throw new Error('Unknown crypto error action');
       }
     } else {
+      capturePaymentMethodRetriedEvent();
       await executeUpdateSubscriptionCardPaymentMethod();
     }
   }, [
     currentShieldSubscription,
     isCancelled,
+    errorStateClickedType,
     isUnexpectedErrorCryptoPayment,
     isInsufficientFundsCrypto,
     isAllowanceNeededCrypto,
     onOpenAddFundsModal,
     executeSubscriptionCryptoApprovalTransaction,
     executeUpdateSubscriptionCardPaymentMethod,
+    capturePaymentMethodRetriedEvent,
     handleClickContactSupport,
     navigate,
     captureShieldErrorStateClickedEvent,

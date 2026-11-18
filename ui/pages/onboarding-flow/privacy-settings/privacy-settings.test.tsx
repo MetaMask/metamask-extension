@@ -11,6 +11,16 @@ import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import PrivacySettings from './privacy-settings';
 
+const mockGetIsBasicFunctionalityConsolidationEnabledInBuild = jest.fn(
+  () => false,
+);
+
+jest.mock('../../../../shared/lib/environment', () => ({
+  ...jest.requireActual('../../../../shared/lib/environment'),
+  getIsBasicFunctionalityConsolidationEnabledInBuild: () =>
+    mockGetIsBasicFunctionalityConsolidationEnabledInBuild(),
+}));
+
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
     '../../../../shared/lib/analytics/create-event-builder',
@@ -92,20 +102,49 @@ describe('Privacy Settings Onboarding View', () => {
   const setUseTransactionSimulationsStub = jest.fn();
   const setPreferenceStub = jest.fn();
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValue(
+      false,
+    );
+  });
+
+  const messengerCallMock = jest.fn(
+    (actionType: string, args: unknown[] = []) => {
+      switch (actionType) {
+        case 'PreferencesController:setFeatureFlag':
+          return setFeatureFlagStub(...args);
+        case 'PreferencesController:setUse4ByteResolution':
+          return setUse4ByteResolutionStub(...args);
+        case 'PreferencesController:setUseTokenDetection':
+          return setUseTokenDetectionStub(...args);
+        case 'PreferencesController:setUseCurrencyRateCheck':
+          return setUseCurrencyRateCheckStub(...args);
+        case 'PreferencesController:setIpfsGateway':
+          return setIpfsGatewayStub(...args);
+        case 'OnboardingController:completeOnboarding':
+          return completeOnboardingStub(...args);
+        case 'PreferencesController:setUseMultiAccountBalanceChecker':
+          return setUseMultiAccountBalanceCheckerStub(...args);
+        case 'PreferencesController:setUseAddressBarEnsResolution':
+          return setUseAddressBarEnsResolutionStub(...args);
+        case 'LegacyBackgroundApiService:toggleExternalServices':
+          return toggleExternalServicesStub(...args);
+        case 'PreferencesController:setUseTransactionSimulations':
+          return setUseTransactionSimulationsStub(...args);
+        case 'PreferencesController:setPreference':
+          return setPreferenceStub(...args);
+        default:
+          return Promise.resolve(undefined);
+      }
+    },
+  );
+
   setBackgroundConnection({
-    setFeatureFlag: setFeatureFlagStub,
-    setUse4ByteResolution: setUse4ByteResolutionStub,
-    setUseTokenDetection: setUseTokenDetectionStub,
-    setUseCurrencyRateCheck: setUseCurrencyRateCheckStub,
-    setIpfsGateway: setIpfsGatewayStub,
-    completeOnboarding: completeOnboardingStub,
-    setUseMultiAccountBalanceChecker: setUseMultiAccountBalanceCheckerStub,
-    setUseAddressBarEnsResolution: setUseAddressBarEnsResolutionStub,
-    toggleExternalServices: toggleExternalServicesStub,
+    getStatePatches: jest.fn().mockResolvedValue([]),
+    messengerCall: messengerCallMock,
     onboardingToggleBasicFunctionalityOn:
       onboardingToggleBasicFunctionalityOnStub,
-    setUseTransactionSimulations: setUseTransactionSimulationsStub,
-    setPreference: setPreferenceStub,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any);
 
@@ -124,37 +163,22 @@ describe('Privacy Settings Onboarding View', () => {
     expect(setUseTransactionSimulationsStub).toHaveBeenCalledTimes(0);
     expect(setPreferenceStub).toHaveBeenCalledTimes(0);
 
-    // Default Settings - General category
-    const itemCategoryGeneral = queryByTestId('category-item-General');
-    expect(itemCategoryGeneral).toBeInTheDocument();
-    fireEvent.click(itemCategoryGeneral as HTMLElement);
+    // Default Settings - Privacy category
+    const itemCategoryPrivacy = queryByTestId('category-item-Privacy');
+    expect(itemCategoryPrivacy).toBeInTheDocument();
+    fireEvent.click(itemCategoryPrivacy as HTMLElement);
 
-    let toggles = container.querySelectorAll('input[type=checkbox]');
+    const toggles = container.querySelectorAll('input[type=checkbox]');
     const backButton = queryByTestId('privacy-settings-back-button');
 
     fireEvent.click(toggles[0]); // toggleExternalServicesStub
-
-    // Default Settings - Assets category
-    const itemCategoryAssets = queryByTestId('category-item-Assets');
-    fireEvent.click(itemCategoryAssets as HTMLElement);
-
-    toggles = container.querySelectorAll('input[type=checkbox]');
-
-    fireEvent.click(toggles[0]); // setUseTokenDetectionStub
-    fireEvent.click(toggles[1]); // setUseTransactionSimulationsStub
-
-    fireEvent.click(toggles[2]); // setUseCurrencyRateCheckStub
-    fireEvent.click(toggles[3]); // setUseAddressBarEnsResolutionStub
-    fireEvent.click(toggles[4]); // setUseMultiAccountBalanceCheckerStub
-
-    // Default Settings - Security category
-    const itemCategorySecurity = queryByTestId('category-item-Security');
-    fireEvent.click(itemCategorySecurity as HTMLElement);
-
-    toggles = container.querySelectorAll('input[type=checkbox]');
-
-    fireEvent.click(toggles[0]); // setUse4ByteResolutionStub
-    fireEvent.click(toggles[1]); // setPreferenceStub
+    fireEvent.click(toggles[1]); // setUseTokenDetectionStub
+    fireEvent.click(toggles[2]); // setUseTransactionSimulationsStub
+    fireEvent.click(toggles[3]); // setUseCurrencyRateCheckStub
+    fireEvent.click(toggles[4]); // setUseAddressBarEnsResolutionStub
+    fireEvent.click(toggles[5]); // setUseMultiAccountBalanceCheckerStub
+    fireEvent.click(toggles[6]); // setUse4ByteResolutionStub
+    fireEvent.click(toggles[7]); // setPreferenceStub
 
     fireEvent.click(backButton as HTMLElement);
 
@@ -180,6 +204,177 @@ describe('Privacy Settings Onboarding View', () => {
     expect(setUse4ByteResolutionStub.mock.calls[0][0]).toStrictEqual(false);
   });
 
+  describe('when Basic Functionality consolidation is enabled', () => {
+    beforeEach(() => {
+      mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValue(
+        true,
+      );
+    });
+
+    it('hides BFT child toggles and does not persist them on submit', () => {
+      const { container, queryByTestId, queryByText } = renderWithProvider(
+        <PrivacySettings />,
+        store,
+      );
+
+      expect(queryByTestId('category-item-Privacy')).toBeInTheDocument();
+      expect(
+        queryByTestId('category-item-Backup and sync'),
+      ).toBeInTheDocument();
+      expect(queryByTestId('category-item-Networks')).toBeInTheDocument();
+      expect(queryByTestId('category-item-General')).not.toBeInTheDocument();
+      expect(queryByTestId('category-item-Assets')).not.toBeInTheDocument();
+      expect(queryByTestId('category-item-Security')).not.toBeInTheDocument();
+
+      fireEvent.click(queryByTestId('category-item-Privacy') as HTMLElement);
+
+      expect(queryByText(messages.turnOnTokenDetection.message)).toBeNull();
+      expect(
+        queryByText(messages.simulationsSettingSubHeader.message),
+      ).toBeNull();
+      expect(queryByText(messages.currencyRateCheckToggle.message)).toBeNull();
+      expect(queryByText(messages.ensDomainsSettingTitle.message)).toBeNull();
+      expect(
+        queryByText(messages.useMultiAccountBalanceChecker.message),
+      ).toBeNull();
+      expect(queryByTestId('ipfs-input')).toBeInTheDocument();
+      expect(container.querySelectorAll('input[type=checkbox]')).toHaveLength(
+        1,
+      );
+
+      fireEvent.click(
+        queryByTestId('privacy-settings-back-button') as HTMLElement,
+      );
+
+      expect(setUseTokenDetectionStub).not.toHaveBeenCalled();
+      expect(setUseTransactionSimulationsStub).not.toHaveBeenCalled();
+      expect(setUseCurrencyRateCheckStub).not.toHaveBeenCalled();
+      expect(setUseAddressBarEnsResolutionStub).not.toHaveBeenCalled();
+      expect(setUseMultiAccountBalanceCheckerStub).not.toHaveBeenCalled();
+      expect(setUse4ByteResolutionStub).not.toHaveBeenCalled();
+    });
+
+    it('locks the Basic Functionality toggle on for social login', () => {
+      const socialLoginStore = configureMockStore([thunk])({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
+      const { getByTestId } = renderWithProvider(
+        <PrivacySettings />,
+        socialLoginStore,
+      );
+
+      fireEvent.click(getByTestId('category-item-Privacy'));
+      const setting = getByTestId('basic-functionality-toggle');
+      const toggle = setting.querySelector('input[type=checkbox]');
+
+      expect(toggle).toHaveAttribute('value', 'true');
+      expect(setting.querySelector('.toggle-button--disabled')).not.toBeNull();
+
+      fireEvent.click(toggle as HTMLElement);
+
+      expect(mockOpenBasicFunctionalityModal).not.toHaveBeenCalled();
+    });
+
+    it('lets secret recovery phrase users change the Basic Functionality toggle', () => {
+      const { getByTestId } = renderWithProvider(<PrivacySettings />, store);
+
+      fireEvent.click(getByTestId('category-item-Privacy'));
+      const setting = getByTestId('basic-functionality-toggle');
+
+      expect(setting.querySelector('.toggle-button--disabled')).toBeNull();
+    });
+
+    it('shows social-login MetaMetrics settings in the Privacy category', () => {
+      const updatedMockStore = configureMockStore([thunk])({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
+      const { queryByTestId, queryByText } = renderWithProvider(
+        <PrivacySettings />,
+        updatedMockStore,
+      );
+
+      fireEvent.click(queryByTestId('category-item-Privacy') as HTMLElement);
+
+      expect(
+        queryByText(messages.participateInMetaMetrics.message),
+      ).toBeInTheDocument();
+      expect(
+        queryByTestId('delete-metametrics-data-button'),
+      ).not.toBeInTheDocument();
+      expect(queryByTestId('category-item-Security')).not.toBeInTheDocument();
+    });
+  });
+
+  it('renders network rows as keyboard-operable buttons named for each network', () => {
+    const { getByRole, queryByRole } = renderWithProvider(
+      <PrivacySettings />,
+      store,
+    );
+
+    fireEvent.click(getByRole('button', { name: messages.networks.message }));
+
+    expect(
+      getByRole('button', { name: messages.networkNameEthereum.message }),
+    ).toHaveAttribute('type', 'button');
+    expect(
+      getByRole('button', { name: messages.lineaMainnet.message }),
+    ).toHaveAttribute('type', 'button');
+    expect(
+      queryByRole('button', { name: messages.next.message }),
+    ).not.toBeInTheDocument();
+    expect(queryByRole('button', { name: 'Sepolia' })).not.toBeInTheDocument();
+  });
+
+  it('renders category rows as keyboard-operable buttons', () => {
+    const { getByRole } = renderWithProvider(<PrivacySettings />, store);
+
+    expect(
+      getByRole('button', { name: messages.privacy.message }),
+    ).toBeInTheDocument();
+    expect(
+      getByRole('button', { name: messages.backupAndSync.message }),
+    ).toBeInTheDocument();
+    expect(
+      getByRole('button', { name: messages.networks.message }),
+    ).toBeInTheDocument();
+  });
+
+  it('groups settings into Privacy, Backup and sync, and Networks', () => {
+    mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValue(
+      true,
+    );
+    const { getByTestId, getByText } = renderWithProvider(
+      <PrivacySettings />,
+      store,
+    );
+
+    fireEvent.click(getByTestId('category-item-Privacy'));
+    expect(
+      getByText(messages.basicConfigurationLabel.message),
+    ).toBeInTheDocument();
+    expect(
+      getByText(messages.onboardingAdvancedPrivacyIPFSTitle.message),
+    ).toBeInTheDocument();
+
+    fireEvent.click(getByTestId('category-back-button'));
+    fireEvent.click(getByTestId('category-item-Backup and sync'));
+    expect(getByText(messages.backupAndSyncEnable.message)).toBeInTheDocument();
+
+    fireEvent.click(getByTestId('category-back-button'));
+    fireEvent.click(getByTestId('category-item-Networks'));
+    expect(
+      getByText(messages.onboardingAdvancedPrivacyNetworkTitle.message),
+    ).toBeInTheDocument();
+  });
+
   describe('Social Login Flow', () => {
     it('should update the default settings for social login', async () => {
       const updatedMockStore = configureMockStore([thunk])({
@@ -194,23 +389,19 @@ describe('Privacy Settings Onboarding View', () => {
         updatedMockStore,
       );
 
-      // Default Settings - Security & privacy category (social login copy)
-      const itemCategorySecurityPrivacy = getByText(
-        messages.securityDefaultSettingsSocialLogin.message,
-      );
-      expect(itemCategorySecurityPrivacy).toBeInTheDocument();
+      expect(getByText(messages.privacy.message)).toBeInTheDocument();
     });
   });
 
   describe('IPFS', () => {
-    it('should handle proper IPFS input', () => {
+    it('accepts a valid IPFS input without showing a validation message', () => {
       const { queryByTestId, queryByText } = renderWithProvider(
         <PrivacySettings />,
         store,
       );
 
-      const itemCategoryAssets = queryByTestId('category-item-Assets');
-      fireEvent.click(itemCategoryAssets as HTMLElement);
+      const itemCategoryPrivacy = queryByTestId('category-item-Privacy');
+      fireEvent.click(itemCategoryPrivacy as HTMLElement);
 
       const ipfsInput = queryByTestId('ipfs-input');
       const ipfsEvent = {
@@ -221,10 +412,9 @@ describe('Privacy Settings Onboarding View', () => {
 
       fireEvent.change(ipfsInput as HTMLElement, ipfsEvent);
 
-      const validIpfsUrl = queryByText(
-        messages.onboardingAdvancedPrivacyIPFSValid.message,
-      );
-      expect(validIpfsUrl).toBeInTheDocument();
+      expect(
+        queryByText(messages.onboardingAdvancedPrivacyIPFSInvalid.message),
+      ).not.toBeInTheDocument();
 
       const backButton = queryByTestId('privacy-settings-back-button');
       fireEvent.click(backButton as HTMLElement);
@@ -238,8 +428,8 @@ describe('Privacy Settings Onboarding View', () => {
         store,
       );
 
-      const itemCategoryAssets = queryByTestId('category-item-Assets');
-      fireEvent.click(itemCategoryAssets as HTMLElement);
+      const itemCategoryPrivacy = queryByTestId('category-item-Privacy');
+      fireEvent.click(itemCategoryPrivacy as HTMLElement);
 
       const ipfsInput = queryByTestId('ipfs-input');
       const ipfsEvent = {
@@ -255,6 +445,15 @@ describe('Privacy Settings Onboarding View', () => {
       );
 
       expect(invalidErrorMsg).toBeInTheDocument();
+      expect(invalidErrorMsg).toHaveAttribute(
+        'id',
+        'onboarding-ipfs-gateway-error',
+      );
+      expect(ipfsInput).toHaveAttribute('aria-invalid', 'true');
+      expect(ipfsInput).toHaveAttribute(
+        'aria-describedby',
+        'onboarding-ipfs-gateway-error',
+      );
     });
 
     it('should error with ipfs.infura.io IPFS input', () => {
@@ -263,8 +462,8 @@ describe('Privacy Settings Onboarding View', () => {
         store,
       );
 
-      const itemCategoryAssets = queryByTestId('category-item-Assets');
-      fireEvent.click(itemCategoryAssets as HTMLElement);
+      const itemCategoryPrivacy = queryByTestId('category-item-Privacy');
+      fireEvent.click(itemCategoryPrivacy as HTMLElement);
 
       const ipfsInput = queryByTestId('ipfs-input');
       const ipfsEvent = {
@@ -288,8 +487,8 @@ describe('Privacy Settings Onboarding View', () => {
         store,
       );
 
-      const itemCategoryAssets = queryByTestId('category-item-Assets');
-      fireEvent.click(itemCategoryAssets as HTMLElement);
+      const itemCategoryPrivacy = queryByTestId('category-item-Privacy');
+      fireEvent.click(itemCategoryPrivacy as HTMLElement);
 
       const ipfsInput = queryByTestId('ipfs-input');
       const ipfsEvent = {

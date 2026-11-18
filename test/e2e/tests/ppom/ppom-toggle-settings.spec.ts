@@ -5,8 +5,8 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
+import PrivacySettings from '../../page-objects/pages/settings/privacy/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 

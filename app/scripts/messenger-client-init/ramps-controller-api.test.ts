@@ -8,6 +8,7 @@ describe('getRampsControllerApi', () => {
       setSelectedToken: jest.fn(),
       setSelectedProvider: jest.fn(),
       setSelectedPaymentMethod: jest.fn(),
+      getCountries: jest.fn(),
       getTokens: jest.fn(),
       getProviders: jest.fn(),
       getPaymentMethods: jest.fn(),
@@ -18,6 +19,7 @@ describe('getRampsControllerApi', () => {
       removeOrder: jest.fn(),
       getOrder: jest.fn(),
       getOrderFromCallback: jest.fn(),
+      syncOrdersWithUserStorage: jest.fn(),
     };
 
     const api = getRampsControllerApi(
@@ -26,8 +28,7 @@ describe('getRampsControllerApi', () => {
     );
 
     expect(Object.keys(api).sort()).toMatchSnapshot();
-    expect(typeof api.setRampsUserRegion).toBe('function');
-    expect(typeof api.getRampsQuotes).toBe('function');
     expect(typeof api.watchRampsCheckoutTab).toBe('function');
+    expect(typeof api.watchRampsProviderOrderTab).toBe('function');
   });
 });

@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from 'react';
 import classnames from 'clsx';
-import { usePureBlack } from '@metamask/design-system-react';
 
 import {
   BackgroundColor,
@@ -43,8 +42,6 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
     }: ModalContentProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
-    // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
-    const isPureBlack = usePureBlack();
     const {
       onClose,
       isClosedOnEscapeKey,
@@ -116,14 +113,9 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
             as="section"
             role="dialog"
             aria-modal="true"
-            backgroundColor={
-              isPureBlack
-                ? BackgroundColor.backgroundAlternative
-                : BackgroundColor.backgroundDefault
-            }
-            borderColor={isPureBlack ? BorderColor.borderMuted : undefined}
-            borderWidth={isPureBlack ? 1 : undefined}
-            borderRadius={BorderRadius.LG}
+            backgroundColor={BackgroundColor.backgroundElevated1}
+            borderColor={BorderColor.borderAlternative}
+            borderWidth={1}
             width={BlockSize.Full}
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
@@ -132,6 +124,7 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
             ref={modalDialogRef}
             {...modalDialogProps}
             className={classnames(
+              'rounded-[32px]',
               'mm-modal-content__dialog',
               `mm-modal-content__dialog--size-${size}`,
               modalDialogProps?.className,

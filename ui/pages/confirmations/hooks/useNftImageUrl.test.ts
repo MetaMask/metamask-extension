@@ -52,12 +52,12 @@ describe('useNftImageUrl', () => {
     );
   });
 
-  it('returns processed imageUrl when imageUrl is empty', () => {
+  it('returns empty string when imageUrl is empty', () => {
     const emptyImageUrl = '';
 
     const { result } = renderHook(() => useNftImageUrl(emptyImageUrl));
 
-    expect(result.current).toBe(mockProcessedImageUrl);
+    expect(result.current).toBe('');
     expect(mockUseSelector).toHaveBeenCalledTimes(1);
     expect(mockUseGetAssetImageUrl).toHaveBeenCalledWith(
       emptyImageUrl,
@@ -76,6 +76,14 @@ describe('useNftImageUrl', () => {
       undefined,
       mockIpfsGateway,
     );
+  });
+
+  it('returns processed imageUrl when imageUrl is not a string', () => {
+    const { result } = renderHook(() =>
+      useNftImageUrl(['ipfs://QmTest123/image.png'] as unknown as string),
+    );
+
+    expect(result.current).toBe(mockProcessedImageUrl);
   });
 
   it('calls useGetAssetImageUrl with correct parameters', () => {

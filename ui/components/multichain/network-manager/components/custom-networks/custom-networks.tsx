@@ -2,6 +2,7 @@ import { type MultichainNetworkConfiguration } from '@metamask/multichain-networ
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
+import { AvatarNetworkSize } from '@metamask/design-system-react';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import {
   convertCaipToHexChainId,
@@ -17,7 +18,6 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
-  AvatarNetworkSize,
   Box,
   Button,
   ButtonSize,
@@ -35,7 +35,7 @@ import {
   getEnabledNetworksByNamespace,
   getMultichainNetworkConfigurationsByChainId,
   getOrderedNetworksList,
-  getShowTestNetworks,
+  getShouldShowTestNetworks,
 } from '../../../../../selectors';
 import { hideModal } from '../../../../../store/actions';
 import { useDispatch } from '../../../../../store/hooks';
@@ -48,7 +48,7 @@ export const CustomNetworks = React.memo(() => {
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
-  const showTestnets = useSelector(getShowTestNetworks);
+  const showTestnets = useSelector(getShouldShowTestNetworks);
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
 
   const { nonTestNetworks, testNetworks } = useNetworkManagerState();

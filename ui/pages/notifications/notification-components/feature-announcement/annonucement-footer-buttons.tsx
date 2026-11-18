@@ -58,7 +58,7 @@ const useAnalyticEventCallback = (props: {
 
   const analyticsEvent = useCallback(() => {
     trackEvent(
-      createEventBuilder(MetaMetricsEventName.NotificationDetailClicked)
+      createEventBuilder(MetaMetricsEventName.NotificationDetailItemClicked)
         .addCategory(MetaMetricsEventCategory.NotificationInteraction)
         .addProperties({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -175,24 +175,18 @@ export const ExternalLinkButton = (props: {
 
   useEffect(() => {
     if (!externalLinkUrl) {
-      resolvedHrefRef.current = undefined;
-      pendingResolvedHrefRef.current = undefined;
-      setResolvedHref(undefined);
-      return;
+      return undefined;
     }
 
     let isMounted = true;
     const sourceUrl = externalLinkUrl;
 
+    if (pendingResolvedHrefRef.current?.sourceUrl !== sourceUrl) {
+      pendingResolvedHrefRef.current = undefined;
+    }
     if (resolvedHrefRef.current?.sourceUrl !== sourceUrl) {
       resolvedHrefRef.current = undefined;
     }
-
-    setResolvedHref((currentResolvedHref) =>
-      currentResolvedHref?.sourceUrl === sourceUrl
-        ? currentResolvedHref
-        : undefined,
-    );
 
     const pendingResolvedHref = resolveHref();
     pendingResolvedHref

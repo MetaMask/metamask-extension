@@ -15,7 +15,7 @@ import {
   HardwareWalletError,
   Severity,
 } from '@metamask/hw-wallet-sdk';
-import { add0x } from '@metamask/utils';
+import { add0x, bytesToHex } from '@metamask/utils';
 
 import {
   LedgerAction,
@@ -70,7 +70,7 @@ function getSelectorWithLegacyFallback(tx: string): string | undefined {
  * Legacy Ledger handler using `@ledgerhq/hw-app-eth` + `TransportWebHID`.
  *
  * This is the original Ledger implementation, kept as a fallback for the
- * newer `LedgerDmkBridgeHandler` (in `./ledger-dmk.ts`). Selection between
+ * newer `LedgerDmkBridgeHandler` (in `./ledger-dmk-handler.ts`). Selection between
  * the two is driven by the `ledgerDmkBridge` remote feature flag.
  *
  * Handles Ledger communication in the offscreen document.
@@ -401,19 +401,23 @@ export class LedgerLegacyHandler {
       message as Parameters<typeof TypedDataUtils.sanitizeData>[0],
     );
 
-    const domainSeparatorHex = TypedDataUtils.hashStruct(
-      'EIP712Domain',
-      sanitizedMessage.domain,
-      sanitizedMessage.types,
-      SignTypedDataVersion.V4,
-    ).toString('hex');
+    const domainSeparatorHex = bytesToHex(
+      TypedDataUtils.hashStruct(
+        'EIP712Domain',
+        sanitizedMessage.domain,
+        sanitizedMessage.types,
+        SignTypedDataVersion.V4,
+      ),
+    );
 
-    const hashStructMessageHex = TypedDataUtils.hashStruct(
-      sanitizedMessage.primaryType as string,
-      sanitizedMessage.message,
-      sanitizedMessage.types,
-      SignTypedDataVersion.V4,
-    ).toString('hex');
+    const hashStructMessageHex = bytesToHex(
+      TypedDataUtils.hashStruct(
+        sanitizedMessage.primaryType as string,
+        sanitizedMessage.message,
+        sanitizedMessage.types,
+        SignTypedDataVersion.V4,
+      ),
+    );
 
     return { domainSeparatorHex, hashStructMessageHex };
   }
@@ -576,6 +580,11 @@ export class LedgerLegacyHandler {
           hdPath: params.hdPath,
           message: params.message,
         } as LedgerSignTypedDataParams);
+
+      case LedgerAction.signDelegationAuthorization:
+        throw new Error(
+          'Ledger delegation authorization signing is not supported',
+        );
 
       default:
         throw new Error(`Unknown Ledger action: ${action as string}`);

@@ -1,6 +1,7 @@
-import HeaderNavbar from '../pages/header-navbar';
+import HeaderNavbar from '../pages/home/header-navbar';
 import HomePage from '../pages/home/homepage';
-import PrivacySettings from '../pages/settings/privacy-settings';
+import RevealSrpPage from '../pages/reveal-srp-page';
+import SecurityAndPasswordSettings from '../pages/settings/security-and-password/security-and-password-settings';
 import SettingsPage from '../pages/settings/settings-page';
 import { Driver } from '../../webdriver/driver';
 import {
@@ -11,6 +12,8 @@ import {
   completeCreateNewWalletOnboardingFlow,
   completeImportSRPOnboardingFlow,
 } from './onboarding.flow';
+import { waitUntilAccountTreeSyncIdle } from './add-account.flow';
+import { openRevealSrp } from './settings.flow';
 
 export const completeOnboardFlowIdentity = async (
   driver: Driver,
@@ -29,6 +32,7 @@ export const completeOnboardFlowIdentity = async (
   const header = new HeaderNavbar(driver);
   await header.checkPageIsLoaded();
   await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
+  await waitUntilAccountTreeSyncIdle(driver);
   return { homePage, header };
 };
 
@@ -55,11 +59,12 @@ export const getSRP = async (driver: Driver) => {
   await settingsPage.checkPageIsLoaded();
   await settingsPage.goToSecurityAndPasswordSettings();
 
-  const privacySettings = new PrivacySettings(driver);
-  await privacySettings.checkSecurityAndPasswordPageIsLoaded();
-  await privacySettings.openRevealSrpQuiz();
-  await privacySettings.completeRevealSrpQuiz();
-  await privacySettings.fillPasswordToRevealSrp(IDENTITY_TEAM_PASSWORD);
-  const srp = await privacySettings.getSrpInRevealSrpDialog();
+  await new SecurityAndPasswordSettings(driver).checkPageIsLoaded();
+  await openRevealSrp(driver);
+
+  const revealSrpPage = new RevealSrpPage(driver);
+  await revealSrpPage.completeRevealSrpQuiz();
+  await revealSrpPage.fillPasswordToRevealSrp(IDENTITY_TEAM_PASSWORD);
+  const srp = await revealSrpPage.getSrpText();
   return srp;
 };

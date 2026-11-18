@@ -11,16 +11,6 @@ const mockOnActionComplete = jest.fn();
 
 describe('Json', () => {
   const mockStore = configureMockStore()(mockState);
-  it('should match snapshot', () => {
-    const { asFragment } = renderWithProvider(
-      <Json
-        importAccountFunc={mockImportFunc}
-        onActionComplete={mockOnActionComplete}
-      />,
-      mockStore,
-    );
-    expect(asFragment()).toMatchSnapshot();
-  });
 
   it('should render', () => {
     const { getByText } = renderWithProvider(
@@ -31,12 +21,17 @@ describe('Json', () => {
       mockStore,
     );
 
-    const fileImportLink = getByText(messages.fileImportFail.message);
-    expect(fileImportLink).toBeInTheDocument();
+    expect(
+      getByText(messages.fileImportNotWorking.message),
+    ).toBeInTheDocument();
+    expect(
+      getByText(messages.clickHere.message).closest('a'),
+    ).toBeInTheDocument();
+    expect(getByText(messages.chooseJsonFile.message)).toBeInTheDocument();
   });
 
   it('should import file without password', async () => {
-    const { getByText, getByTestId } = renderWithProvider(
+    const { getByRole, getByTestId } = renderWithProvider(
       <Json
         importAccountFunc={mockImportFunc}
         onActionComplete={mockOnActionComplete}
@@ -44,7 +39,9 @@ describe('Json', () => {
       mockStore,
     );
 
-    const importButton = getByText(messages.import.message);
+    const importButton = getByRole('button', {
+      name: messages.import.message,
+    });
     const fileInput = getByTestId('file-input');
 
     const mockFile = new File(['0'], 'test.json');
@@ -68,7 +65,7 @@ describe('Json', () => {
   });
 
   it('should import file with password', async () => {
-    const { getByText, getByTestId, getByPlaceholderText } = renderWithProvider(
+    const { getByRole, getByTestId, getByPlaceholderText } = renderWithProvider(
       <Json
         importAccountFunc={mockImportFunc}
         onActionComplete={mockOnActionComplete}
@@ -76,7 +73,9 @@ describe('Json', () => {
       mockStore,
     );
 
-    const importButton = getByText(messages.import.message);
+    const importButton = getByRole('button', {
+      name: messages.import.message,
+    });
     const fileInput = getByTestId('file-input');
 
     const mockFile = new File(['0'], 'test.json');
@@ -104,5 +103,55 @@ describe('Json', () => {
     await waitFor(() => {
       expect(mockImportFunc).toHaveBeenCalledWith('json', ['0', 'password']);
     });
+  });
+
+  it('shows a missing or incorrect password under the password field', () => {
+    const { getByLabelText, getByTestId, getByText } = renderWithProvider(
+      <Json
+        importAccountFunc={mockImportFunc}
+        onActionComplete={mockOnActionComplete}
+        importErrorMessage={messages.jsonImportPasswordRequired.message}
+      />,
+      mockStore,
+    );
+
+    expect(
+      getByText(messages.jsonImportPasswordRequired.message),
+    ).toHaveAttribute('id', 'json-password-error');
+    expect(
+      getByText(messages.jsonImportPasswordRequired.message),
+    ).toHaveAttribute('role', 'alert');
+    expect(
+      getByLabelText(messages.enterOptionalPassword.message),
+    ).toHaveAttribute('aria-describedby', 'json-password-error');
+    expect(
+      getByLabelText(messages.enterOptionalPassword.message),
+    ).toHaveAttribute('aria-invalid', 'true');
+    expect(getByTestId('file-input')).not.toHaveAttribute(
+      'aria-invalid',
+      'true',
+    );
+  });
+
+  it('keeps a file error on the JSON file input', () => {
+    const { getByTestId, getByText } = renderWithProvider(
+      <Json
+        importAccountFunc={mockImportFunc}
+        onActionComplete={mockOnActionComplete}
+        importErrorMessage="Not a V3 wallet"
+      />,
+      mockStore,
+    );
+
+    expect(getByText('Not a V3 wallet')).toHaveAttribute(
+      'id',
+      'json-file-error',
+    );
+    expect(getByText('Not a V3 wallet')).toHaveAttribute('role', 'alert');
+    expect(getByTestId('file-input')).toHaveAttribute(
+      'aria-describedby',
+      'json-file-error',
+    );
+    expect(getByTestId('file-input')).toHaveAttribute('aria-invalid', 'true');
   });
 });

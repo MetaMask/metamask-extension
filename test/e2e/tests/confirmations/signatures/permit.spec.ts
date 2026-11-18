@@ -26,7 +26,8 @@ import {
 } from './signature-helpers';
 
 const TOKEN_PERMIT_INFO: PermitInfoValues = {
-  contractPetName: '0xCcCCc...ccccC',
+  // End of the contract address. The start is shortened to fit the row.
+  contractPetName: 'cCcccccccC',
   deadline: '09 June 3554, 16:53',
   nonce: '0',
   origin: DAPP_HOST_ADDRESS,
@@ -60,7 +61,7 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
         const accountDetailsModal = new AccountDetailsModal(driver);
         const testDapp = new TestDapp(driver);
 
-        await login(driver);
+        await login(driver, { waitForSignIn: true });
         await testDapp.openTestDappAndTriggerSignature(SignatureType.Permit);
 
         await confirmation.clickHeaderAccountDetailsButton();
@@ -110,12 +111,15 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
       }: TestSuiteArguments) => {
         const testDapp = new TestDapp(driver);
         const confirmation = new Confirmation(driver);
-        await login(driver);
+        await login(driver, { waitForSignIn: true });
         await testDapp.openTestDappPage();
         await testDapp.clickPermit();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'cancel',
+          waitUntil: 'windowClose',
+        });
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 

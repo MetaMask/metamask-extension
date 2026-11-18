@@ -16,9 +16,16 @@ import React, {
   useState,
 } from 'react';
 import {
+  calculatePriceForRoE,
+  calculateSignedRoEForPrice,
+  formatRoePercent,
+  isStopLossSafeFromLiquidation,
+  isValidStopLossPrice,
+  isValidTakeProfitPrice,
+} from '@metamask/perps-controller';
+import {
   formatPerpsFiat,
   PRICE_RANGES_MINIMAL_VIEW,
-  PRICE_RANGES_UNIVERSAL,
 } from '../../../../../../../shared/lib/perps-formatters';
 
 import {
@@ -27,14 +34,12 @@ import {
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { usePerpsOrderFees } from '../../../../../../hooks/perps/usePerpsOrderFees';
+import { getPerpsNotionalUsd } from '../../../../../../hooks/perps/perps-fee-utils';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import ToggleButton from '../../../../../ui/toggle-button';
 import type { AutoCloseSectionProps } from '../../order-entry.types';
 import { isUnsignedDecimalInput } from '../../utils';
 import {
-  isValidTakeProfitPrice,
-  isValidStopLossPrice,
-  isStopLossSafeFromLiquidation,
   getTakeProfitErrorDirection,
   getStopLossErrorDirection,
   getStopLossLiquidationErrorDirection,
@@ -42,11 +47,9 @@ import {
 import {
   applyDefaultStopLossSign,
   isSignedDecimalInput,
+  toTriggerPriceInput,
 } from '../../../utils/tpslInput';
-import { formatRoePercent, getPnlDisplayColor } from '../../../utils';
-
-const LOW_VALUE_TRIGGER_PRICE_THRESHOLD = 0.01;
-const LOW_VALUE_TRIGGER_PRICE_DECIMALS = 6;
+import { getPnlDisplayColor } from '../../../utils';
 
 /**
  * AutoCloseSection - Collapsible section for Take Profit and Stop Loss configuration
@@ -73,6 +76,7 @@ const LOW_VALUE_TRIGGER_PRICE_DECIMALS = 6;
  * @param props.limitPrice - Limit price string used as reference price for limit-order TP/SL validation
  * @param props.liquidationPrice - Estimated liquidation price for stop-loss safety validation
  * @param props.leverage - Leverage multiplier for RoE% calculation
+ * @param props.feeNotionalUsd - Shared fee-resolution notional used by the submit path
  * @param props.asset - Asset symbol for fetching dynamic closing fee rates
  */
 export const AutoCloseSection = ({
@@ -86,6 +90,7 @@ export const AutoCloseSection = ({
   currentPrice,
   entryPrice: entryPriceProp,
   estimatedSize,
+  feeNotionalUsd,
   orderType,
   limitPrice,
   liquidationPrice,
@@ -93,10 +98,6 @@ export const AutoCloseSection = ({
   asset,
 }: AutoCloseSectionProps) => {
   const t = useI18nContext();
-  const { feeRate: closingFeeRate } = usePerpsOrderFees({
-    symbol: asset,
-    orderType: 'market',
-  });
 
   // Priority: explicit entry price (modify mode) > limit price (limit orders) > current price.
   // This ensures % ↔ price conversions are anchored to the price the user will actually fill at.
@@ -121,73 +122,37 @@ export const AutoCloseSection = ({
   const [isSlPercentFocused, setIsSlPercentFocused] = useState(false);
 
   /**
-   * Convert a target price to a signed RoE% for display.
-   * Positive = profitable (above entry for long / below entry for short).
-   * Negative = at a loss.
-   * RoE% = ((targetPrice - entryPrice) / entryPrice) * leverage * 100
+   * Convert a target price to a signed RoE% for display, with Core's TP/SL
+   * calculation: positive at a gain, negative at a loss, scaled by leverage.
    */
   const priceToPercent = useCallback(
-    (price: string): string => {
-      if (!price || !entryPrice) {
-        return '';
-      }
-      const priceNum = Number.parseFloat(price);
-      if (!Number.isFinite(priceNum) || priceNum <= 0) {
-        return '';
-      }
-
-      const diff = priceNum - entryPrice;
-      const percentChange = (diff / entryPrice) * leverage * 100;
-
-      // For long: positive when price > entry (profit). For short: negate (profit when price < entry).
-      return formatRoePercent(
-        direction === 'long' ? percentChange : -percentChange,
-      );
-    },
+    (price: string): string =>
+      formatRoePercent(
+        calculateSignedRoEForPrice(price, {
+          currentPrice: entryPrice,
+          direction,
+          leverage,
+        }),
+      ),
     [entryPrice, leverage, direction],
   );
 
   /**
-   * Convert a signed RoE% to a target price.
-   * Positive percent = profitable direction (above entry for long / below entry for short).
-   * Negative percent = loss direction.
-   * targetPrice = entryPrice * (1 + signedRoe / (leverage * 100))  [long]
-   * targetPrice = entryPrice * (1 - signedRoe / (leverage * 100))  [short]
+   * Convert a signed RoE% to a trigger price with Core's TP/SL calculation,
+   * which caps a stop loss's loss at 99% per 1x of leverage. A cleared RoE
+   * clears the price.
    */
   const percentToPrice = useCallback(
-    (percent: number): string => {
-      if (!entryPrice || percent === 0) {
+    (percent: number, isProfit: boolean): string => {
+      if (percent === 0) {
         return '';
       }
-
-      const priceChangeRatio = percent / (leverage * 100);
-      const multiplier =
-        direction === 'long' ? 1 + priceChangeRatio : 1 - priceChangeRatio;
-      const price = entryPrice * multiplier;
-
-      if (!Number.isFinite(price) || price <= 0) {
-        return '';
-      }
-
-      const preserveLowValueDecimals =
-        Math.abs(price) < LOW_VALUE_TRIGGER_PRICE_THRESHOLD;
-
-      const formattedPrice = formatPerpsFiat(price, {
-        ranges: PRICE_RANGES_UNIVERSAL,
-        ...(preserveLowValueDecimals
-          ? {
-              minimumDecimals: LOW_VALUE_TRIGGER_PRICE_DECIMALS,
-              maximumDecimals: LOW_VALUE_TRIGGER_PRICE_DECIMALS,
-              stripTrailingZeros: false,
-            }
-          : {}),
+      const price = calculatePriceForRoE(percent, isProfit, {
+        currentPrice: entryPrice,
+        direction,
+        leverage,
       });
-
-      if (formattedPrice.startsWith('<')) {
-        return '';
-      }
-
-      return formattedPrice.replace(/[$,]/gu, '');
+      return toTriggerPriceInput(price);
     },
     [entryPrice, leverage, direction],
   );
@@ -216,7 +181,7 @@ export const AutoCloseSection = ({
       return;
     }
 
-    const parsed = Number.parseFloat(takeProfitPrice);
+    const parsed = Number.parseFloat(takeProfitPrice.replaceAll(',', ''));
     if (Number.isFinite(parsed) && parsed > 0) {
       onTakeProfitPriceChange(parsed.toString());
       return;
@@ -235,7 +200,7 @@ export const AutoCloseSection = ({
         if (value === '' || value === '-' || value === '+') {
           onTakeProfitPriceChange('');
         } else if (!isNaN(numValue)) {
-          const newPrice = percentToPrice(numValue);
+          const newPrice = percentToPrice(numValue, true);
           onTakeProfitPriceChange(newPrice);
         }
       }
@@ -273,7 +238,7 @@ export const AutoCloseSection = ({
       return;
     }
 
-    const parsed = Number.parseFloat(stopLossPrice);
+    const parsed = Number.parseFloat(stopLossPrice.replaceAll(',', ''));
     if (Number.isFinite(parsed) && parsed > 0) {
       onStopLossPriceChange(parsed.toString());
       return;
@@ -292,7 +257,7 @@ export const AutoCloseSection = ({
         if (value === '' || value === '-' || value === '+') {
           onStopLossPriceChange('');
         } else if (!isNaN(numValue)) {
-          const newPrice = percentToPrice(numValue);
+          const newPrice = percentToPrice(numValue, false);
           onStopLossPriceChange(newPrice);
         }
       }
@@ -335,6 +300,20 @@ export const AutoCloseSection = ({
     ? validationReferencePrice
     : entryPrice;
 
+  // TP/SL submission shares one builder rate across the pair. Standalone
+  // position edits resolve that rate from the largest included trigger.
+  const { feeRate: closingFeeRate } = usePerpsOrderFees({
+    symbol: asset,
+    orderType: 'market',
+    amount: String(
+      feeNotionalUsd ??
+        getPerpsNotionalUsd({
+          size: estimatedSize ?? 0,
+          price: [takeProfitPrice, stopLossPrice],
+        }),
+    ),
+  });
+
   const estimatedPnlAtTp = useMemo(() => {
     if (
       !estimatedSize ||
@@ -344,7 +323,7 @@ export const AutoCloseSection = ({
     ) {
       return null;
     }
-    const exitPrice = Number.parseFloat(takeProfitPrice);
+    const exitPrice = Number.parseFloat(takeProfitPrice.replaceAll(',', ''));
     if (!Number.isFinite(exitPrice) || exitPrice <= 0) {
       return null;
     }
@@ -362,7 +341,7 @@ export const AutoCloseSection = ({
     ) {
       return null;
     }
-    const exitPrice = Number.parseFloat(stopLossPrice);
+    const exitPrice = Number.parseFloat(stopLossPrice.replaceAll(',', ''));
     if (!Number.isFinite(exitPrice) || exitPrice <= 0) {
       return null;
     }
@@ -403,10 +382,11 @@ export const AutoCloseSection = ({
     () =>
       Boolean(
         stopLossPrice.trim() &&
-        !isStopLossSafeFromLiquidation(stopLossPrice, {
-          liquidationPrice,
+        !isStopLossSafeFromLiquidation(
+          stopLossPrice,
+          liquidationPrice?.toString(),
           direction,
-        }),
+        ),
       ),
     [stopLossPrice, liquidationPrice, direction],
   );

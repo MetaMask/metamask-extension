@@ -19,6 +19,10 @@ class AboutPage {
 
   private readonly metaMaskVersionNumber = '.info-tab__version-number';
 
+  private readonly settingsPage = {
+    testId: 'parent-selector-settings-page',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -41,6 +45,7 @@ class AboutPage {
       await this.driver.waitForMultipleSelectors([
         this.metaMaskLogo,
         this.metaMaskVersionNumber,
+        this.settingsPage,
       ]);
     } catch (e) {
       console.log('Timeout while waiting for About page to be loaded', e);

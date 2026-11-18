@@ -42,7 +42,7 @@ function useValueAtRisk(): number | undefined {
   }, [balanceChanges]);
 }
 
-export function useScamQuestionnaireMetrics() {
+export function useScamQuestionnaireMetrics(trigger: string) {
   const { trackEvent, createEventBuilder } = useAnalytics();
   const valueAtRisk = useValueAtRisk();
 
@@ -57,6 +57,7 @@ export function useScamQuestionnaireMetrics() {
           .addProperties({
             ...properties,
             questionnaire_version: QUESTIONNAIRE_VERSION,
+            questionnaire_trigger: trigger,
           })
           .build(),
       );
@@ -93,5 +94,5 @@ export function useScamQuestionnaireMetrics() {
           simulation_sending_assets_total_value: valueAtRisk,
         }),
     };
-  }, [createEventBuilder, trackEvent, valueAtRisk]);
+  }, [createEventBuilder, trigger, trackEvent, valueAtRisk]);
 }

@@ -13,13 +13,10 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { SettingsSelectItem } from '../settings/shared';
-import { getNotificationsSettingsSectionRoute } from './notifications-settings-routes';
-
-export type NotificationsSettingsSectionType =
-  | 'walletActivity'
-  | 'perps'
-  | 'marketing'
-  | 'agenticCli';
+import {
+  NOTIFICATIONS_SETTINGS_SECTION_ROUTES,
+  type NotificationsSettingsSectionType,
+} from '../../../shared/lib/notifications-settings';
 
 export type NotificationsSettingsSectionConfig = {
   type: NotificationsSettingsSectionType;
@@ -71,19 +68,20 @@ export const getNotificationsSettingsSectionConfigs = (
   }
 
   nextSections.push({
-    type: 'marketing',
-    title: t('notificationsSettingsMarketingTitle'),
-    description: t('notificationsSettingsMarketingDescription'),
-    iconName: IconName.Campaign,
-  });
-
-  nextSections.push({
     type: 'agenticCli',
     title: t('notificationsSettingsAgenticCliTitle'),
     description: t('notificationsSettingsAgenticCliDescription'),
     iconName: IconName.Code,
   });
 
+  nextSections.push({
+    type: 'marketing',
+    title: t('notificationsSettingsMarketingTitle'),
+    description: t('notificationsSettingsMarketingDescription'),
+    iconName: IconName.Campaign,
+  });
+  // WARNING: This marketing section must ALWAYS remain the very last item in the array.
+  // New sections must be added ABOVE this entry (never below).
   return nextSections;
 };
 
@@ -108,8 +106,12 @@ export function NotificationsSettingsTypes({
         <SettingsSelectItem
           key={section.type}
           label={section.title}
-          value={getStatusText(t, preferences?.[section.type])}
-          to={getNotificationsSettingsSectionRoute(section.type)}
+          value={
+            section.type === 'walletActivity'
+              ? ''
+              : getStatusText(t, preferences?.[section.type])
+          }
+          to={NOTIFICATIONS_SETTINGS_SECTION_ROUTES[section.type]}
           dataTestId={`notifications-settings-section-${section.type}`}
           startAccessory={
             <Icon

@@ -1,12 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import {
+  Box,
   Button,
   ButtonSize,
   ButtonVariant,
 } from '@metamask/design-system-react';
-import { Box, ButtonPrimary, ButtonPrimarySize } from '../../component-library';
-import { Display } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export default function BottomButtons({
@@ -17,18 +16,8 @@ export default function BottomButtons({
   const t = useI18nContext();
 
   return (
-    <Box display={Display.Flex} gap={4}>
+    <Box className="mt-auto" paddingTop={4}>
       <Button
-        onClick={() => {
-          onActionComplete();
-        }}
-        size={ButtonSize.Lg}
-        variant={ButtonVariant.Secondary}
-        isFullWidth
-      >
-        {t('cancel')}
-      </Button>
-      <ButtonPrimary
         onClick={async () => {
           try {
             const result = await importAccountFunc();
@@ -39,13 +28,14 @@ export default function BottomButtons({
             // Take no action
           }
         }}
-        disabled={isPrimaryDisabled}
-        size={ButtonPrimarySize.Lg}
+        isDisabled={isPrimaryDisabled}
+        size={ButtonSize.Lg}
+        variant={ButtonVariant.Primary}
         data-testid="import-account-confirm-button"
-        block
+        isFullWidth
       >
         {t('import')}
-      </ButtonPrimary>
+      </Button>
     </Box>
   );
 }

@@ -5,14 +5,11 @@ import {
   BoxAlignItems,
   BoxBackgroundColor,
   BoxFlexDirection,
+  Checkbox,
 } from '@metamask/design-system-react';
-import {
-  BlockaidReason,
-  SecurityProvider,
-} from '../../../../../shared/constants/security-provider';
+import { SecurityProvider } from '../../../../../shared/constants/security-provider';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import {
-  AlignItems,
   BlockSize,
   Display,
   IconColor,
@@ -24,10 +21,11 @@ import {
 import useAlerts from '../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../pages/confirmations/context/confirm';
+import { useSendingAssetsFiatTotal } from '../../../../pages/confirmations/hooks/alerts/useSendingAssetsFiatTotal';
+import { REASON_TO_REQUEST_TYPE_TKEY } from '../../../../pages/confirmations/hooks/alerts/constants';
 import {
   Button,
   ButtonSize,
-  Checkbox,
   Icon,
   IconName,
   IconSize,
@@ -160,33 +158,20 @@ function BlockaidAlertDetails() {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
   const { securityAlertResponse } = currentConfirmation;
-  let copy;
-  switch (securityAlertResponse?.reason) {
-    case BlockaidReason.approvalFarming:
-    case BlockaidReason.setApprovalForAll:
-    case BlockaidReason.permitFarming:
-      copy = t('blockaidAlertDescriptionWithdraw');
-      break;
-    case BlockaidReason.transferFarming:
-    case BlockaidReason.transferFromFarming:
-    case BlockaidReason.rawNativeTokenTransfer:
-      copy = t('blockaidAlertDescriptionTokenTransfer');
-      break;
-    case BlockaidReason.seaportFarming:
-      copy = t('blockaidAlertDescriptionOpenSea');
-      break;
-    case BlockaidReason.blurFarming:
-      copy = t('blockaidAlertDescriptionBlur');
-      break;
-    case BlockaidReason.maliciousDomain:
-      copy = t('blockaidAlertDescriptionMalicious');
-      break;
-    case BlockaidReason.rawSignatureFarming:
-    case BlockaidReason.tradeOrderFarming:
-    case BlockaidReason.other:
-    default:
-      copy = t('blockaidAlertDescriptionOthers');
-  }
+  const sendingFiatTotal = useSendingAssetsFiatTotal();
+
+  const requestTypeNoun = t(
+    REASON_TO_REQUEST_TYPE_TKEY[
+      securityAlertResponse?.reason as keyof typeof REASON_TO_REQUEST_TYPE_TKEY
+    ] || 'blockaidRequestTypeRequest',
+  );
+
+  const copy = sendingFiatTotal
+    ? t('blockaidAlertModalMessageWithAmount', [
+        requestTypeNoun,
+        sendingFiatTotal,
+      ])
+    : t('blockaidAlertModalMessage', [requestTypeNoun]);
 
   return (
     <Text textAlign={TextAlign.Center} variant={TextVariant.bodyMd}>
@@ -281,12 +266,12 @@ export function AcknowledgeCheckboxBase({
       marginTop={4}
     >
       <Checkbox
+        id="alert-modal-acknowledge-checkbox"
         label={label ?? t('alertModalAcknowledge')}
         data-testid="alert-modal-acknowledge-checkbox"
-        isChecked={isConfirmed}
+        isSelected={isConfirmed}
         onChange={onCheckboxClick}
-        alignItems={AlignItems.flexStart}
-        className="alert-modal__acknowledge-checkbox"
+        className="alert-modal__acknowledge-checkbox items-start"
       />
     </Box>
   );

@@ -13,7 +13,7 @@ import {
   getLastViewedUserSurvey,
   getUseExternalServices,
   getAnalyticsId,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getOptedIn,
 } from '../../../selectors';
 import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
@@ -39,13 +39,11 @@ export function SurveyToast() {
   const { trackEvent, createEventBuilder } = useAnalytics();
   const lastViewedUserSurvey = useSelector(getLastViewedUserSurvey);
   const isOptedIn = useSelector(getOptedIn);
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const basicFunctionality = useSelector(getUseExternalServices);
   const isUnlocked = useSelector(getIsUnlocked);
   const analyticsId = useSelector(getAnalyticsId);
-  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
+  const isMetaMetricsEnabled = consentDecisionMade && isOptedIn;
 
   const surveyUrl = `${ACCOUNTS_API_BASE_URL}/v1/users/${analyticsId}/surveys`;
 

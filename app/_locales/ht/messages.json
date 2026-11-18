@@ -132,10 +132,6 @@
   "failed": {
     "message": "Tonbe"
   },
-  "fileImportFail": {
-    "message": "Enpòte dosye ki pa travay? Klike la a!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "Bliye aparèy sa a"
   },
@@ -144,9 +140,6 @@
   },
   "gasLimit": {
     "message": "Limit gaz"
-  },
-  "gasLimitTooLow": {
-    "message": "Limit gaz dwe omwen 21000"
   },
   "gasUsed": {
     "message": "Gaz yo Itilize"
@@ -277,10 +270,6 @@
   "passwordsDontMatch": {
     "message": "Modpas pa matche"
   },
-  "pastePrivateKey": {
-    "message": "Kole fraz prive ou a la:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "l ap mache"
   },
@@ -296,9 +285,6 @@
   "privateKey": {
     "message": "Prive kle",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Atansyon: pa janm divilge kle sa. Nenpòt moun kapab avèk kle prive ou a vòlè sa ou gen ou sou kont ou a."
   },
   "privateNetwork": {
     "message": "Rezo Prive"
@@ -435,9 +421,6 @@
   },
   "urlErrorMsg": {
     "message": "URIs mande pou apwopriye prefiks HTTP / HTTPS a."
-  },
-  "usedByClients": {
-    "message": "Itilize pa yon varyete de kliyan diferan"
   },
   "visitWebSite": {
     "message": "Vizite sit entènèt nou an"

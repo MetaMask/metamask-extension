@@ -56,7 +56,7 @@ exports[`build-quote utils resolveDisplayedQuoteError matches snapshot for displ
 {
   "fetchError": "Failed to fetch quote.",
   "noError": null,
-  "providerError": "Minimum purchase is $5 USD",
+  "providerError": "Something opaque",
 }
 `;
 

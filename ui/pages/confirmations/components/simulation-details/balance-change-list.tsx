@@ -70,7 +70,7 @@ export const BalanceChangeList = ({
       >
         {sortedBalanceChanges.map((balanceChange, index) => (
           <BalanceChangeRow
-            key={index}
+            key={`${balanceChange.asset.address}-${balanceChange.asset.tokenId}`}
             label={index === 0 ? heading : undefined}
             isFirstRow={index === 0}
             hasIncomingTokens={hasIncomingTokens}

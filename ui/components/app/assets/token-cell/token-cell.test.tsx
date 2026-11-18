@@ -23,6 +23,7 @@ import {
   getMultichainIsEvm,
 } from '../../../../selectors/multichain';
 import { getProviderConfig } from '../../../../../shared/lib/selectors/networks';
+import { selectAssetsHaveLoadedForSelectedAccountGroup } from '../../../../selectors/assets';
 
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { TokenWithFiatAmount } from '../types';
@@ -63,18 +64,12 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-const mockUseMerklRewards = jest.fn().mockReturnValue({
-  isEligible: false,
-  hasClaimableReward: false,
-  hasClaimedBefore: false,
-  claimableRewardDisplay: null,
-  refetch: jest.fn(),
-});
 jest.mock('../../musd', () => ({
-  ClaimBonusBadge: () => <div data-testid="claim-bonus-badge-mock" />,
   MusdConvertLink: () => <div data-testid="musd-convert-link-mock" />,
-  isEligibleForMerklRewards: jest.fn().mockReturnValue(false),
-  useMerklRewards: (...args: unknown[]) => mockUseMerklRewards(...args),
+}));
+
+jest.mock('../../money/money-token-list-cta', () => ({
+  MoneyTokenListCta: () => <div data-testid="money-token-list-cta-mock" />,
 }));
 
 describe('Token Cell', () => {
@@ -155,9 +150,6 @@ describe('Token Cell', () => {
     token: {
       ...propToken,
     },
-    musd: {
-      merklClaimBonus: TOKEN_LIST_CELL_MUSD_OPTIONS.merklClaimBonus,
-    },
     onClick: jest.fn(),
   };
   const propAnotherToken: Partial<TokenWithFiatAmount> & {
@@ -179,9 +171,6 @@ describe('Token Cell', () => {
     token: {
       ...propAnotherToken,
     },
-    musd: {
-      merklClaimBonus: TOKEN_LIST_CELL_MUSD_OPTIONS.merklClaimBonus,
-    },
     onClick: jest.fn(),
   };
   const mockProviderConfig = jest.fn().mockReturnValue({
@@ -190,6 +179,7 @@ describe('Token Cell', () => {
     rpcPrefs: { blockExplorerUrl: 'https://etherscan.io' },
   });
   let mockAnyEnabledNetworksAreAvailable = true;
+  let mockAssetsHaveLoaded = true;
   const useSelectorMock = useSelector;
   (useSelectorMock as jest.Mock).mockImplementation((selector) => {
     if (selector === getPreferences) {
@@ -225,6 +215,9 @@ describe('Token Cell', () => {
     if (selector === selectAnyEnabledNetworksAreAvailable) {
       return mockAnyEnabledNetworksAreAvailable;
     }
+    if (selector === selectAssetsHaveLoadedForSelectedAccountGroup) {
+      return mockAssetsHaveLoaded;
+    }
     if (selector === getEnabledNetworksByNamespace) {
       return {
         '0x1': true,
@@ -256,15 +249,7 @@ describe('Token Cell', () => {
 
   beforeEach(() => {
     mockAnyEnabledNetworksAreAvailable = true;
-  });
-
-  it('should match snapshot', () => {
-    const { container } = renderWithProvider(
-      <TokenCell {...(props as TokenCellProps)} />,
-      mockStore,
-    );
-
-    expect(container).toMatchSnapshot();
+    mockAssetsHaveLoaded = true;
   });
 
   it('calls onClick when clicked', () => {
@@ -305,12 +290,42 @@ describe('Token Cell', () => {
     expect(amountElement.textContent).toBe('5.00M TEST');
   });
 
-  it('shows a skeleton for native token percentage while fiat is loading', () => {
-    mockAnyEnabledNetworksAreAvailable = false;
+  // TokenCell formats Number(token.balance). TokenList copies
+  // assetsBalance.amount, which is already the human decimal
+  // ('11.811649'), so a raw-units string like '11811649' cannot
+  // reach this path.
+  it('formats a 6-decimal human balance without grouping or compact millions', () => {
+    const propsFrxUsd = {
+      token: {
+        ...propToken,
+        address: '0xcacd6fd266af91b8aed52accc382b4e165586e29' as Hex,
+        symbol: 'frxUSD',
+        string: '11.811649',
+        balance: '11.811649',
+        tokenFiatAmount: 11.811649,
+        decimals: 6,
+      },
+      onClick: jest.fn(),
+    };
 
-    const nativeTokenWithoutFiatAmount = {
+    const { getByTestId } = renderWithProvider(
+      <TokenCell {...(propsFrxUsd as TokenCellProps)} />,
+      mockStore,
+    );
+
+    const amountElement = getByTestId('multichain-token-list-item-value');
+
+    expect(amountElement).toBeInTheDocument();
+    expect(amountElement.textContent).toBe('11.812 frxUSD');
+    expect(amountElement.textContent).not.toContain('11.81M');
+    expect(amountElement.textContent).not.toContain('11,811,649');
+  });
+
+  it('shows skeletons for unresolved fiat values while assets are loading', () => {
+    mockAssetsHaveLoaded = false;
+
+    const tokenWithoutFiatAmount = {
       ...propToken,
-      isNative: true,
       tokenFiatAmount: undefined,
     };
 
@@ -318,7 +333,7 @@ describe('Token Cell', () => {
       <TokenCell
         {...({
           ...props,
-          token: nativeTokenWithoutFiatAmount,
+          token: tokenWithoutFiatAmount,
         } as TokenCellProps)}
       />,
       mockStore,
@@ -326,6 +341,9 @@ describe('Token Cell', () => {
 
     expect(
       getByTestId('multichain-token-list-item-percentage-skeleton'),
+    ).toBeInTheDocument();
+    expect(
+      getByTestId('multichain-token-list-item-secondary-value-skeleton'),
     ).toBeInTheDocument();
   });
 
@@ -370,66 +388,93 @@ describe('Token Cell', () => {
     });
   });
 
-  describe('ClaimBonusBadge visibility', () => {
-    afterEach(() => {
-      mockUseMerklRewards.mockReturnValue({
-        isEligible: false,
-        hasClaimableReward: false,
-        hasClaimedBefore: false,
-        claimableRewardDisplay: null,
-        refetch: jest.fn(),
-      });
+  describe('moneyCta', () => {
+    const createMoneyCta = (shouldShow: boolean) => ({
+      label: 'Get 6% APY',
+      isLoading: false,
+      shouldShow: jest.fn().mockReturnValue(shouldShow),
+      onClick: jest.fn(),
     });
 
-    it('shows ClaimBonusBadge when isEligible and hasClaimableReward are both true', () => {
-      mockUseMerklRewards.mockReturnValue({
-        isEligible: true,
-        hasClaimableReward: true,
-        hasClaimedBefore: false,
-        claimableRewardDisplay: '10.50',
-        refetch: jest.fn(),
-      });
+    it('shows the Money CTA instead of the percent change when the token is eligible', () => {
+      const moneyCta = createMoneyCta(true);
 
       const { queryByTestId } = renderWithProvider(
-        <TokenCell {...(props as TokenCellProps)} />,
+        <TokenCell {...(props as TokenCellProps)} moneyCta={moneyCta} />,
         mockStore,
       );
 
-      expect(queryByTestId('claim-bonus-badge-mock')).toBeInTheDocument();
+      expect(moneyCta.shouldShow).toHaveBeenCalledWith(props.token);
+      expect(queryByTestId('money-token-list-cta-mock')).toBeInTheDocument();
+      expect(
+        queryByTestId(/^token-increase-decrease-percentage/u),
+      ).not.toBeInTheDocument();
     });
 
-    it('does not show ClaimBonusBadge when isEligible is false', () => {
-      mockUseMerklRewards.mockReturnValue({
-        isEligible: false,
-        hasClaimableReward: true,
-        hasClaimedBefore: false,
-        claimableRewardDisplay: null,
-        refetch: jest.fn(),
-      });
-
+    it('does not show the Money CTA when the token is not eligible', () => {
       const { queryByTestId } = renderWithProvider(
-        <TokenCell {...(props as TokenCellProps)} />,
+        <TokenCell
+          {...(props as TokenCellProps)}
+          moneyCta={createMoneyCta(false)}
+        />,
         mockStore,
       );
 
-      expect(queryByTestId('claim-bonus-badge-mock')).not.toBeInTheDocument();
+      expect(
+        queryByTestId('money-token-list-cta-mock'),
+      ).not.toBeInTheDocument();
     });
 
-    it('does not show ClaimBonusBadge when hasClaimableReward is false', () => {
-      mockUseMerklRewards.mockReturnValue({
-        isEligible: true,
-        hasClaimableReward: false,
-        hasClaimedBefore: false,
-        claimableRewardDisplay: null,
-        refetch: jest.fn(),
-      });
+    it('shows the Money CTA over the mUSD convert CTA when both are eligible', () => {
+      mockShouldShowTokenListItemCta.mockReturnValue(true);
 
       const { queryByTestId } = renderWithProvider(
-        <TokenCell {...(props as TokenCellProps)} />,
+        <TokenCell
+          {...(props as TokenCellProps)}
+          musd={TOKEN_LIST_CELL_MUSD_OPTIONS}
+          moneyCta={createMoneyCta(true)}
+        />,
         mockStore,
       );
 
-      expect(queryByTestId('claim-bonus-badge-mock')).not.toBeInTheDocument();
+      expect(queryByTestId('money-token-list-cta-mock')).toBeInTheDocument();
+      expect(queryByTestId('musd-convert-link-mock')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('priceChangeOverride', () => {
+    it('replaces the percent change', () => {
+      const { queryByTestId } = renderWithProvider(
+        <TokenCell
+          {...(props as TokenCellProps)}
+          priceChangeOverride={<div data-testid="price-change-override" />}
+        />,
+        mockStore,
+      );
+
+      expect(queryByTestId('price-change-override')).toBeInTheDocument();
+      expect(
+        queryByTestId(/^token-increase-decrease-percentage/u),
+      ).not.toBeInTheDocument();
+    });
+
+    it('yields to an eligible Money CTA', () => {
+      const { queryByTestId } = renderWithProvider(
+        <TokenCell
+          {...(props as TokenCellProps)}
+          moneyCta={{
+            label: 'Get 6% APY',
+            isLoading: false,
+            shouldShow: jest.fn().mockReturnValue(true),
+            onClick: jest.fn(),
+          }}
+          priceChangeOverride={<div data-testid="price-change-override" />}
+        />,
+        mockStore,
+      );
+
+      expect(queryByTestId('money-token-list-cta-mock')).toBeInTheDocument();
+      expect(queryByTestId('price-change-override')).not.toBeInTheDocument();
     });
   });
 

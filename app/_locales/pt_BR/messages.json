@@ -349,9 +349,6 @@
   "currencySymbolDefinition": {
     "message": "O símbolo do ticker exibido para a moeda dessa rede."
   },
-  "currentAccountNotConnected": {
-    "message": "Sua conta atual não está conectada"
-  },
   "currentExtension": {
     "message": "Página atual da extensão"
   },
@@ -562,10 +559,6 @@
   "fast": {
     "message": "Rápido"
   },
-  "fileImportFail": {
-    "message": "A importação de arquivo não está funcionando? Clique aqui!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "flaskWelcomeUninstall": {
     "message": "você deve desinstalar essa extensão",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -600,9 +593,6 @@
   },
   "gasLimit": {
     "message": "Limite de gás"
-  },
-  "gasLimitTooLow": {
-    "message": "O limite de gás deve ser de pelo menos 21000"
   },
   "gasPriceExcessive": {
     "message": "Sua taxa de gás está desnecessariamente alta. Considere reduzir o valor."
@@ -1021,10 +1011,6 @@
   "passwordsDontMatch": {
     "message": "As senhas são diferentes"
   },
-  "pastePrivateKey": {
-    "message": "Cole a string da sua chave privada aqui:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "Pendente"
   },
@@ -1053,9 +1039,6 @@
   "privateKey": {
     "message": "Chave privada",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Advertência: jamais revele essa chave. Qualquer pessoa com suas chaves privadas poderá roubar os ativos mantidos na sua conta."
   },
   "privateNetwork": {
     "message": "Rede privada"
@@ -1317,7 +1300,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Falhas na transação acontecem, e estamos aqui para ajudar. Se esse problema persistir, você pode entrar em contato com nosso atendimento ao cliente em $1 para receber assistência adicional.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "Falha na troca"
@@ -1576,9 +1559,6 @@
   },
   "usePhishingDetectionDescription": {
     "message": "Exibir uma advertência para os domínios de phishing destinados a usuários do Ethereum"
-  },
-  "usedByClients": {
-    "message": "Usado por diversos clientes diferentes"
   },
   "viewOnBlockExplorer": {
     "message": "Ver no explorador de blocos"

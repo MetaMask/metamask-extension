@@ -1,23 +1,20 @@
 import { renderHook } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
-import { useSearchParams } from 'react-router-dom';
 import { merge } from 'lodash';
 
 import { updateEditableParams } from '../../../../../../store/actions';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
-import {
-  getCrossChainMetaMaskCachedBalances,
-  selectMaxValueModeForTransaction,
-} from '../../../../../../selectors';
+import { getCrossChainMetaMaskCachedBalances } from '../../../../../../selectors';
+import { selectMaxValueModeForTransaction } from '../../../../../../ducks/send-max-value/send-max-value';
 import { useIsGaslessSupported } from '../../../../hooks/gas/useIsGaslessSupported';
+import { useGasSponsorshipPreference } from '../../../../hooks/gas/useGasSponsorshipPreference';
 import { useMaxValueRefresher } from './useMaxValueRefresher';
 import { useSupportsEIP1559 } from './useSupportsEIP1559';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useLocation: () => ({ pathname: '/send/asset' }),
-  useSearchParams: jest.fn().mockReturnValue([{ get: () => null }]),
 }));
 
 const mockDispatch = jest.fn();
@@ -34,6 +31,9 @@ jest.mock('../../../../../../store/actions', () => ({
 
 jest.mock('../../../../../../selectors', () => ({
   getCrossChainMetaMaskCachedBalances: jest.fn(),
+}));
+
+jest.mock('../../../../../../ducks/send-max-value/send-max-value', () => ({
   selectMaxValueModeForTransaction: jest.fn(),
 }));
 
@@ -43,6 +43,7 @@ jest.mock('../../../../context/confirm', () => ({
 
 jest.mock('../../../../hooks/useTransactionEventFragment');
 jest.mock('../../../../hooks/gas/useIsGaslessSupported');
+jest.mock('../../../../hooks/gas/useGasSponsorshipPreference');
 
 jest.mock('./useSupportsEIP1559', () => ({
   useSupportsEIP1559: jest.fn(),
@@ -62,8 +63,10 @@ describe('useMaxValueRefresher', () => {
     selectMaxValueModeForTransaction,
   );
   const updateEditableParamsMock = jest.mocked(updateEditableParams);
-  const mockUseSearchParams = jest.mocked(useSearchParams);
   const mockUseIsGaslessSupported = jest.mocked(useIsGaslessSupported);
+  const mockUseGasSponsorshipPreference = jest.mocked(
+    useGasSponsorshipPreference,
+  );
 
   const baseTransactionMeta = {
     id: 'test-transaction-id',
@@ -105,6 +108,11 @@ describe('useMaxValueRefresher', () => {
       isSupported: false,
       isSmartTransaction: false,
       pending: false,
+    });
+
+    mockUseGasSponsorshipPreference.mockReturnValue({
+      isSponsorshipOptedOut: false,
+      setSponsorshipOptedOut: jest.fn(),
     });
   });
 
@@ -228,24 +236,14 @@ describe('useMaxValueRefresher', () => {
     expect(updateEditableParamsMock).not.toHaveBeenCalled();
   });
 
-  it('updates transaction event fragment with max amount mode status from url params', () => {
-    selectMaxValueModeForTransactionMock.mockReturnValue(false);
-    mockUseSearchParams.mockReturnValue([
-      { get: () => 'true' },
-    ] as unknown as ReturnType<typeof useSearchParams>);
+  it('does not update transaction value when max amount mode is enabled for another transaction', () => {
+    selectMaxValueModeForTransactionMock.mockImplementation(
+      (_state, transactionId) => transactionId === 'another-transaction-id',
+    );
 
     renderHook(() => useMaxValueRefresher());
 
-    expect(updateTransactionEventFragmentMock).toHaveBeenCalledWith(
-      {
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_send_max: true,
-        },
-      },
-      baseTransactionMeta.id,
-    );
+    expect(updateEditableParamsMock).not.toHaveBeenCalled();
   });
 
   describe('Transaction Value Updates - Edge Cases', () => {
@@ -337,6 +335,7 @@ describe('useMaxValueRefresher', () => {
         expect(updateEditableParamsMock).toHaveBeenCalledWith(
           transactionMeta.id,
           {
+            updateType: false,
             value: '0x1631f457a756000',
           },
         );
@@ -365,7 +364,44 @@ describe('useMaxValueRefresher', () => {
         expect(updateEditableParamsMock).toHaveBeenCalledWith(
           transactionMeta.id,
           {
+            updateType: false,
             value: defaultBalance,
+          },
+        );
+      });
+
+      it('calculates value using maxFeePerGas if gas is sponsored but user opted out of sponsorship', () => {
+        mockUseIsGaslessSupported.mockReturnValue({
+          isSmartTransaction: false,
+          isSupported: true,
+          pending: false,
+        });
+        mockUseGasSponsorshipPreference.mockReturnValue({
+          isSponsorshipOptedOut: true,
+          setSponsorshipOptedOut: jest.fn(),
+        });
+        const transactionMeta = merge({}, baseTransactionMeta, {
+          txParams: {
+            gas: '0x5208', // 21000
+            maxFeePerGas: '0x77359400', // 2 gwei
+          },
+          isGasFeeSponsored: true,
+        });
+
+        useConfirmContextMock.mockReturnValue({
+          currentConfirmation: transactionMeta,
+        } as unknown as ReturnType<typeof useConfirmContext>);
+
+        renderHook(() => useMaxValueRefresher());
+
+        expect(mockUseGasSponsorshipPreference).toHaveBeenCalledWith(
+          transactionMeta.chainId,
+        );
+        expect(updateEditableParamsMock).toHaveBeenCalledWith(
+          transactionMeta.id,
+          {
+            updateType: false,
+            value: '0x1631f457a756000',
           },
         );
       });
@@ -394,6 +430,7 @@ describe('useMaxValueRefresher', () => {
         expect(updateEditableParamsMock).toHaveBeenCalledWith(
           transactionMeta.id,
           {
+            updateType: false,
             value: '0x1631f457a756000',
           },
         );
@@ -418,6 +455,7 @@ describe('useMaxValueRefresher', () => {
         expect(updateEditableParamsMock).toHaveBeenCalledWith(
           transactionMeta.id,
           {
+            updateType: false,
             value: defaultBalance, // Full balance since gas fee is 0
           },
         );
@@ -447,6 +485,7 @@ describe('useMaxValueRefresher', () => {
         expect(updateEditableParamsMock).toHaveBeenCalledWith(
           transactionMeta.id,
           {
+            updateType: false,
             value: '0x1631f457a756000',
           },
         );
@@ -471,6 +510,7 @@ describe('useMaxValueRefresher', () => {
         expect(updateEditableParamsMock).toHaveBeenCalledWith(
           transactionMeta.id,
           {
+            updateType: false,
             value: defaultBalance,
           },
         );
@@ -498,6 +538,7 @@ describe('useMaxValueRefresher', () => {
         expect(updateEditableParamsMock).toHaveBeenCalledWith(
           transactionMeta.id,
           {
+            updateType: false,
             value: '0x163325c97f3cc00',
           },
         );
@@ -522,6 +563,7 @@ describe('useMaxValueRefresher', () => {
         expect(updateEditableParamsMock).toHaveBeenCalledWith(
           transactionMeta.id,
           {
+            updateType: false,
             value: '0x163325eebffb000',
           },
         );
@@ -546,6 +588,7 @@ describe('useMaxValueRefresher', () => {
       expect(updateEditableParamsMock).toHaveBeenCalledWith(
         transactionMeta.id,
         {
+          updateType: false,
           value: defaultBalance,
         },
       );
@@ -569,6 +612,7 @@ describe('useMaxValueRefresher', () => {
     expect(updateEditableParamsMock).toHaveBeenLastCalledWith(
       baseTransactionMeta.id,
       {
+        updateType: false,
         value: '0x2373d8fe36b000',
       },
     );

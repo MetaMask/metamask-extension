@@ -1,11 +1,15 @@
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../pages/home/homepage';
 import SettingsPage from '../pages/settings/settings-page';
-import PreferencesAndDisplaySettings from '../pages/settings/preferences-and-display-settings';
+import AssetsSettings from '../pages/settings/assets-settings';
+import LanguageSettings from '../pages/settings/preferences-and-display/language-settings';
+import ManageWalletRecoverySettings from '../pages/settings/security-and-password/manage-wallet-recovery-settings';
+import PreferencesAndDisplaySettings from '../pages/settings/preferences-and-display/preferences-and-display-settings';
 import NetworksPage from '../pages/networks/networks-page';
-import HeaderNavbar from '../pages/header-navbar';
-import PrivacySettings from '../pages/settings/privacy-settings';
-import ChangePasswordPage from '../pages/settings/change-password-page';
+import HeaderNavbar from '../pages/home/header-navbar';
+import RevealSrpPage from '../pages/reveal-srp-page';
+import SecurityAndPasswordSettings from '../pages/settings/security-and-password/security-and-password-settings';
+import ChangePasswordPage from '../pages/settings/security-and-password/change-password-page';
 import { lockAndWaitForLoginPage } from './login.flow';
 
 /**
@@ -57,12 +61,29 @@ export const enableNativeTokenAsMainBalance = async (
   await settingsPage.checkPageIsLoaded();
   await settingsPage.goToAssetsSettings();
 
-  const assetsSettings = new PreferencesAndDisplaySettings(driver);
-  await assetsSettings.checkAssetsPageIsLoaded();
+  const assetsSettings = new AssetsSettings(driver);
+  await assetsSettings.checkPageIsLoaded();
   await assetsSettings.toggleShowNativeTokenAsMainBalance();
 
   await closeSettings(driver);
 };
+
+/**
+ * Change the language from Settings → Preferences and display → Language.
+ * Expects Settings to be open.
+ *
+ * @param driver - The WebDriver instance
+ * @param language - The language name as shown in the list, e.g. 'Dansk'
+ */
+export async function changeLanguage(
+  driver: Driver,
+  language: string,
+): Promise<void> {
+  await new PreferencesAndDisplaySettings(driver).openLanguageSettings();
+  const languageSettings = new LanguageSettings(driver);
+  await languageSettings.checkPageIsLoaded();
+  await languageSettings.selectLanguage(language);
+}
 
 export async function navigateToSecurityAndPassword(
   driver: Driver,
@@ -72,8 +93,26 @@ export async function navigateToSecurityAndPassword(
   const settingsPage = new SettingsPage(driver);
   await settingsPage.checkPageIsLoaded();
   await settingsPage.goToSecurityAndPasswordSettings();
-  const privacySettings = new PrivacySettings(driver);
-  await privacySettings.checkSecurityAndPasswordPageIsLoaded();
+  const securityAndPasswordSettings = new SecurityAndPasswordSettings(driver);
+  await securityAndPasswordSettings.checkPageIsLoaded();
+}
+
+/**
+ * Open the reveal page for a Secret Recovery Phrase, from Settings → Security
+ * and password through the SRP list. Expects Security and password to be open.
+ *
+ * @param driver - The WebDriver instance
+ * @param srpIndex - The 1-based index of the Secret Recovery Phrase
+ */
+export async function openRevealSrp(
+  driver: Driver,
+  srpIndex: number = 1,
+): Promise<void> {
+  await new SecurityAndPasswordSettings(driver).openManageWalletRecovery();
+  const manageWalletRecoverySettings = new ManageWalletRecoverySettings(driver);
+  await manageWalletRecoverySettings.checkPageIsLoaded();
+  await manageWalletRecoverySettings.selectSrp(srpIndex);
+  await new RevealSrpPage(driver).checkPageIsLoaded();
 }
 
 /**
@@ -94,8 +133,7 @@ export async function changePasswordAndLockWallet(
 ): Promise<void> {
   await navigateToSecurityAndPassword(driver);
 
-  const privacySettings = new PrivacySettings(driver);
-  await privacySettings.openChangePassword();
+  await new SecurityAndPasswordSettings(driver).openChangePassword();
 
   const changePasswordPage = new ChangePasswordPage(driver);
   await changePasswordPage.checkPageIsLoaded();

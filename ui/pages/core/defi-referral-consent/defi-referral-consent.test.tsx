@@ -97,7 +97,8 @@ describe('DefiReferralConsent', () => {
         expect(image).toBeInTheDocument();
         expect(image).toHaveAttribute(
           'src',
-          `./images/${partnerId}-referral.png`,
+          DEFI_REFERRAL_PARTNERS[partnerId as DefiReferralPartner]
+            .referralImageUrl,
         );
       });
 

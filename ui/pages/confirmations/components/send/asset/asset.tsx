@@ -14,6 +14,7 @@ import { AssetList } from '../asset-list';
 import { AssetFilterInput } from '../asset-filter-input';
 import { NetworkFilter } from '../network-filter';
 import { type Asset as AssetType } from '../../../types/send';
+import { type TokenTagRenderer } from '../../UI/asset';
 
 const noop = () => undefined;
 
@@ -38,6 +39,16 @@ export type AssetProps = {
   emptyStateMessage?: string;
   onSearchQueryChange?: (searchQuery: string) => void;
   onSelectedChainIdChange?: (selectedChainId: string | null) => void;
+  /**
+   * Optional tag renderers shown next to token names (e.g. "No fee").
+   */
+  tagRenderers?: TokenTagRenderer[];
+  /**
+   * Optional row-end accessory renderers (e.g. ramps' unavailable-token info
+   * button), vertically centered against the full row like the balance
+   * column.
+   */
+  endRenderers?: TokenTagRenderer[];
 };
 
 type AssetPickerViewProps = Omit<
@@ -60,6 +71,8 @@ const AssetPickerView = ({
   emptyStateMessage,
   onSearchQueryChange,
   onSelectedChainIdChange,
+  tagRenderers,
+  endRenderers,
 }: AssetPickerViewProps) => {
   const [selectedChainId, setSelectedChainId] = useState<string | null>(null);
   const {
@@ -161,6 +174,8 @@ const AssetPickerView = ({
         onAssetSelect={onAssetSelect}
         emptyStateMessage={emptyStateMessage}
         disableMetrics={disableMetrics}
+        tagRenderers={tagRenderers}
+        endRenderers={endRenderers}
       />
     </Box>
   );

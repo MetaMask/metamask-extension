@@ -7,7 +7,6 @@ import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
 import { PreinstalledSnap } from '@metamask/snaps-controllers';
 import { Browser } from 'webextension-polyfill';
-import { Mutex } from 'async-mutex';
 import type { TransactionMetricsRequest } from '../../../shared/types';
 import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
 import ExtensionPlatform from '../platforms/extension';
@@ -139,6 +138,21 @@ export type MessengerClientInitRequest<
   infuraProjectId: string;
 
   /**
+   * The extension build type.
+   */
+  appBuildType: string;
+
+  /**
+   * The extension environment.
+   */
+  appEnvironment: string;
+
+  /**
+   * The extension version.
+   */
+  appVersion: string;
+
+  /**
    * A promise that resolves when the offscreen document is ready.
    */
   offscreenPromise: Promise<void>;
@@ -149,13 +163,6 @@ export type MessengerClientInitRequest<
    * e.g. `{ TransactionController: { transactions: [] } }`.
    */
   persistedState: MessengerClientPersistedState;
-
-  // TODO: Remove this once changePasswordWithPasskeyVerification is migrated to
-  // LegacyBackgroundApiService (the only remaining MetamaskController user of this mutex).
-  /**
-   * The mutex used to ensure that only one seedless onboarding operation can occur at a time.
-   */
-  seedlessOperationMutex: Mutex;
 
   /**
    * Create a multiplexed stream for connecting to an untrusted context like a
@@ -249,6 +256,11 @@ export type MessengerClientInitRequest<
    * @param url - The URL to navigate the tab to.
    */
   updateTabUrl: (tabId: number, url: string) => Promise<void>;
+
+  /**
+   * Closes the notification popup window if one is open.
+   */
+  closeNotificationPopup: () => Promise<void>;
 
   /**
    * Marks the notification popup as having been automatically closed.

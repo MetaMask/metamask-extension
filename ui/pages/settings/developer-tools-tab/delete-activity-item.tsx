@@ -28,7 +28,7 @@ export const DeleteActivityItem = () => {
       <Button
         data-testid="developer-options-delete-activity-and-nonce-data"
         onClick={handleDeleteActivity}
-        className="text-bg !bg-transparent px-4 py-0 text-left"
+        className="text-error-default !bg-transparent px-4 py-0 text-left"
       >
         {t(DEVELOPER_TOOLS_ITEMS['delete-activity-and-nonce-data'])}
       </Button>

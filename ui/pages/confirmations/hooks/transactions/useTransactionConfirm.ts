@@ -3,10 +3,15 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { cloneDeep } from 'lodash';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
+import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
 import { getCustomNonceValue } from '../../../../selectors';
+import {
+  isMoneyKeyringAddress,
+  type MoneyAccountState,
+} from '../../../../selectors/money-account';
 import { useConfirmContext } from '../../context/confirm';
 import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useGasFeeToken';
 import { updateAndApproveTx } from '../../../../store/actions';
@@ -20,16 +25,30 @@ import {
 } from '../../../../contexts/hardware-wallets';
 import { useSendBundleHwNavigation } from '../../../../hooks/hardware-wallets/useSendBundleHwNavigation';
 import { useDispatch } from '../../../../store/hooks';
+import { useIsHardwareWalletAccount } from '../../../../hooks/useIsHardwareWalletAccount';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useShieldConfirm } from './useShieldConfirm';
 import { useDappSwapActions } from './dapp-swap-comparison/useDappSwapActions';
+import { useMoneyAccountWithdrawConfirm } from './useMoneyAccountWithdrawConfirm';
+import { useTransactionPayingAccount } from './useTransactionPayingAccount';
 
 export function useTransactionConfirm() {
   const dispatch = useDispatch();
+  const t = useI18nContext();
   const { showErrorModal } = useHardwareWalletError();
   const customNonceValue = useSelector(getCustomNonceValue);
   const selectedGasFeeToken = useSelectedGasFeeToken();
-  const { currentConfirmation: transactionMeta } =
+  const { currentConfirmation: transactionMeta, isAmountPending } =
     useConfirmContext<TransactionMeta>();
+  const isMoneyAccountWithdraw = hasTransactionType(transactionMeta, [
+    TransactionType.moneyAccountWithdraw,
+  ]);
+  const { prepareWithdrawTransaction } = useMoneyAccountWithdrawConfirm();
+  const isFromMoneyKeyring = useSelector((state: MoneyAccountState) =>
+    isMoneyKeyringAddress(state, transactionMeta?.txParams?.from),
+  );
+  const payingAccount = useTransactionPayingAccount();
+  const isPayingWithHardwareWallet = useIsHardwareWalletAccount(payingAccount);
 
   const { isSupported: isGaslessSupportedSTX } =
     useGaslessSupportedSmartTransactions();
@@ -42,33 +61,31 @@ export function useTransactionConfirm() {
   const { shouldRedirectToHwSigningPage, redirectToHwSigningPage } =
     useSendBundleHwNavigation({ transactionMeta });
 
-  const newTransactionMeta = useMemo(
-    () => cloneDeep(transactionMeta),
-    [transactionMeta],
+  const handleSmartTransaction = useCallback(
+    (tx: TransactionMeta) => {
+      if (!selectedGasFeeToken) {
+        return;
+      }
+
+      tx.batchTransactions = [
+        {
+          ...selectedGasFeeToken.transferTransaction,
+          type: TransactionType.gasPayment,
+        },
+      ];
+
+      tx.txParams.gas = selectedGasFeeToken.gas;
+      tx.txParams.maxFeePerGas = selectedGasFeeToken.maxFeePerGas;
+
+      tx.txParams.maxPriorityFeePerGas =
+        selectedGasFeeToken.maxPriorityFeePerGas;
+    },
+    [selectedGasFeeToken],
   );
 
-  const handleSmartTransaction = useCallback(() => {
-    if (!selectedGasFeeToken) {
-      return;
-    }
-
-    newTransactionMeta.batchTransactions = [
-      {
-        ...selectedGasFeeToken.transferTransaction,
-        type: TransactionType.gasPayment,
-      },
-    ];
-
-    newTransactionMeta.txParams.gas = selectedGasFeeToken.gas;
-    newTransactionMeta.txParams.maxFeePerGas = selectedGasFeeToken.maxFeePerGas;
-
-    newTransactionMeta.txParams.maxPriorityFeePerGas =
-      selectedGasFeeToken.maxPriorityFeePerGas;
-  }, [newTransactionMeta, selectedGasFeeToken]);
-
-  const handleGasless7702 = useCallback(() => {
-    newTransactionMeta.isExternalSign = true;
-  }, [newTransactionMeta]);
+  const handleGasless7702 = useCallback((tx: TransactionMeta) => {
+    tx.isExternalSign = true;
+  }, []);
 
   const {
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
@@ -76,9 +93,26 @@ export function useTransactionConfirm() {
   } = useShieldConfirm();
 
   const onTransactionConfirm = useCallback(async (): Promise<boolean> => {
-    newTransactionMeta.customNonceValue = customNonceValue;
+    // The field can already show the new amount while publish would still
+    // execute the previous quote. The footer blocks the click; this covers
+    // any other confirm path.
+    if (isAmountPending) {
+      return false;
+    }
 
-    updateSwapWithQuoteDetailsIfRequired(newTransactionMeta);
+    let txToApprove = cloneDeep(transactionMeta);
+
+    if (isMoneyAccountWithdraw) {
+      const committed = await prepareWithdrawTransaction(transactionMeta);
+      if (!committed) {
+        return false;
+      }
+      txToApprove = committed;
+    }
+
+    txToApprove.customNonceValue = customNonceValue;
+
+    updateSwapWithQuoteDetailsIfRequired(txToApprove);
 
     // If the gasless flow is not supported (e.g. stx is disabled by the user,
     // or 7702 is not supported in the chain), or the user has opted out of
@@ -88,10 +122,26 @@ export function useTransactionConfirm() {
     // limitation on the activity list will be that pre-populated transactions
     // on fresh installs will not show as sponsored even if they were because
     // this is not easily observable onchain for all cases.
-    newTransactionMeta.isGasFeeSponsored =
-      isGaslessSupported &&
-      transactionMeta.isGasFeeSponsored &&
-      !isSponsorshipOptedOut;
+    //
+    // Money Account transactions (withdrawals and deposits, sent `from` a
+    // Money keyring account) are sponsored on Monad by design: the money
+    // account has no native MON and its keyring cannot `signTransaction`.
+    // They ignore both `useIsGaslessSupported` (which can disagree with the
+    // 7702 publish hook) and the per-chain sponsorship opt-out (which the user
+    // sets on unrelated confirmations and cannot see here). Clearing the flag
+    // would fall back to local signing and fail in KeyringController.
+    const isSponsoredMoneyKeyringTransaction =
+      isFromMoneyKeyring && Boolean(transactionMeta.isGasFeeSponsored);
+
+    // Money Account withdrawals not yet identified by keyring (e.g. keyring
+    // state not loaded) keep the previous carve-out from `isGaslessSupported`.
+    txToApprove.isGasFeeSponsored =
+      isSponsoredMoneyKeyringTransaction ||
+      (isMoneyAccountWithdraw
+        ? Boolean(transactionMeta.isGasFeeSponsored) && !isSponsorshipOptedOut
+        : isGaslessSupported &&
+          transactionMeta.isGasFeeSponsored &&
+          !isSponsorshipOptedOut);
 
     // Revert the controller's `isExternalSign` flag when this account cannot
     // use an external relay — i.e. gasless is unsupported for the account/chain
@@ -104,37 +154,53 @@ export function useTransactionConfirm() {
     // set, the sign step is skipped (no keyring/device call) and, when no relay
     // catches the publish, an unsigned/empty payload reaches
     // `eth_sendRawTransaction` and is rejected by the node.
+    //
+    // Money keyring transactions skip local signing and must stay externally
+    // signed so the 7702 relay publishes them, even when
+    // `useIsGaslessSupported` is false or the user opted out of sponsorship
+    // (same reason we keep `isGasFeeSponsored` above).
+    const shouldKeepSponsoredMoneyAccountWithdraw =
+      isMoneyAccountWithdraw &&
+      Boolean(transactionMeta.isGasFeeSponsored) &&
+      !isSponsorshipOptedOut;
     const shouldClearExternalSign =
       transactionMeta.isExternalSign &&
+      !isFromMoneyKeyring &&
+      !shouldKeepSponsoredMoneyAccountWithdraw &&
       (!isGaslessSupported ||
         isSponsorshipOptedOut ||
         shouldRedirectToHwSigningPage);
     if (shouldClearExternalSign) {
-      newTransactionMeta.isExternalSign = false;
+      txToApprove.isExternalSign = false;
     }
 
     if (isGaslessSupportedSTX) {
-      handleSmartTransaction();
+      handleSmartTransaction(txToApprove);
     } else if (selectedGasFeeToken) {
-      handleGasless7702();
+      handleGasless7702(txToApprove);
     }
 
     if (shouldRedirectToHwSigningPage) {
-      redirectToHwSigningPage(newTransactionMeta);
+      redirectToHwSigningPage(txToApprove);
       return false;
     }
 
     // transaction confirmation screen is a full screen modal that appear over the app and will be dismissed after transaction approved
     // navigate to shield settings page first before approving transaction to wait for subscription creation there
-    handleShieldSubscriptionApprovalTransactionAfterConfirm(newTransactionMeta);
+    handleShieldSubscriptionApprovalTransactionAfterConfirm(txToApprove);
     try {
-      await dispatch(updateAndApproveTx(newTransactionMeta, true, ''));
+      await dispatch(
+        updateAndApproveTx(
+          txToApprove,
+          !isPayingWithHardwareWallet,
+          isPayingWithHardwareWallet ? t('swapConfirmWithHwWallet') : '',
+          payingAccount,
+        ),
+      );
       onDappSwapCompleted();
       return true;
     } catch (error) {
-      handleShieldSubscriptionApprovalTransactionAfterConfirmErr(
-        newTransactionMeta,
-      );
+      handleShieldSubscriptionApprovalTransactionAfterConfirmErr(txToApprove);
 
       if (!isHardwareWalletError(error)) {
         // Non-hardware wallet errors - just rethrow
@@ -148,22 +214,28 @@ export function useTransactionConfirm() {
       return false;
     }
   }, [
-    newTransactionMeta,
-    customNonceValue,
-    isGaslessSupported,
-    isGaslessSupportedSTX,
-    isSponsorshipOptedOut,
-    dispatch,
-    showErrorModal,
-    handleSmartTransaction,
     handleGasless7702,
-    selectedGasFeeToken,
-    transactionMeta,
-    shouldRedirectToHwSigningPage,
-    redirectToHwSigningPage,
+    handleSmartTransaction,
+    customNonceValue,
+    dispatch,
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
     handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
+    isAmountPending,
+    isFromMoneyKeyring,
+    isGaslessSupported,
+    isGaslessSupportedSTX,
+    isMoneyAccountWithdraw,
+    isPayingWithHardwareWallet,
+    isSponsorshipOptedOut,
     onDappSwapCompleted,
+    payingAccount,
+    prepareWithdrawTransaction,
+    redirectToHwSigningPage,
+    selectedGasFeeToken,
+    shouldRedirectToHwSigningPage,
+    showErrorModal,
+    transactionMeta,
+    t,
     updateSwapWithQuoteDetailsIfRequired,
   ]);
 

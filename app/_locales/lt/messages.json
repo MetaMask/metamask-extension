@@ -211,10 +211,6 @@
   "fast": {
     "message": "Greitas"
   },
-  "fileImportFail": {
-    "message": "Failo importavimas neveikia? Spustelėkite čia!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "Pamiršti šį įrenginį"
   },
@@ -223,9 +219,6 @@
   },
   "gasLimit": {
     "message": "Dujų apribojimas"
-  },
-  "gasLimitTooLow": {
-    "message": "Dujų apribojimas turi būti bent 21000"
   },
   "gasUsed": {
     "message": "Sunaudotos dujos"
@@ -395,10 +388,6 @@
   "passwordsDontMatch": {
     "message": "Slaptažodžiai nesutampa"
   },
-  "pastePrivateKey": {
-    "message": "Čia įklijuokite asmeninio rakto eilutę:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "laukiama patvirtinimo"
   },
@@ -414,9 +403,6 @@
   "privateKey": {
     "message": "Asmeninis raktas",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Dėmesio. Niekada neatskleiskite šio rakto kitiems. Bet kuris jūsų asmeninius raktus turintis asmuo gali pavogti bet kokį jūsų paskyroje laikomą turtą."
   },
   "privateNetwork": {
     "message": "Privatus tinklas"
@@ -589,9 +575,6 @@
   },
   "urlErrorMsg": {
     "message": "URI reikia atitinkamo HTTP/HTTPS priešdėlio."
-  },
-  "usedByClients": {
-    "message": "Naudojama daugelio skirtingų klientų"
   },
   "visitWebSite": {
     "message": "Apsilankykite mūsų svetainėje"

@@ -3,6 +3,11 @@ import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import type { Transaction } from '@metamask/keyring-api';
 import { TransactionStatus, TransactionType } from '@metamask/keyring-api';
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
+import {
+  TransactionStatus as EvmTransactionStatus,
+  TransactionType as EvmTransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import type { MetaMaskReduxState } from '../store/store';
 import { generateTokenCacheKey } from '../helpers/utils/token-scan';
@@ -10,6 +15,7 @@ import mockState from '../../test/data/mock-state.json';
 import { MOCK_ACCOUNT_SOLANA_MAINNET } from '../../test/data/mock-accounts';
 import type { MultichainAccountsState } from './multichain-accounts/account-tree.types';
 import {
+  selectLocalTransactions,
   selectNonEvmActivityItems,
   selectNonEvmTransactionsForActivity,
   selectEvmAddress,
@@ -296,5 +302,306 @@ describe('selectEvmAddress', () => {
     ];
 
     expect(selectEvmAddress(state)).toBeUndefined();
+  });
+});
+
+describe('selectLocalTransactions', () => {
+  const MONEY_ACCOUNT_ADDRESS = '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2';
+  const PRIMARY_HD_KEYRING_ID = '01JKAF3DSGM3AB87EM9N0K41AJ';
+
+  function buildMoneyAccountTransaction(
+    overrides: Partial<TransactionMeta> = {},
+  ): TransactionMeta {
+    return {
+      id: 'money-account-tx',
+      chainId: '0x1',
+      networkClientId: 'mainnet',
+      status: EvmTransactionStatus.confirmed,
+      time: 1,
+      type: EvmTransactionType.batch,
+      txParams: {
+        from: MONEY_ACCOUNT_ADDRESS,
+        to: MONEY_ACCOUNT_ADDRESS,
+        nonce: '0x77',
+        value: '0x0',
+      },
+      nestedTransactions: [
+        { type: EvmTransactionType.tokenMethodApprove },
+        { type: EvmTransactionType.moneyAccountDeposit },
+      ],
+      ...overrides,
+    } as TransactionMeta;
+  }
+
+  function buildStateWithMoneyAccount(transaction: TransactionMeta) {
+    const state = structuredClone(typedMockState) as MultichainAccountsState & {
+      metamask: {
+        transactions?: TransactionMeta[];
+        moneyAccounts?: Record<
+          string,
+          {
+            address: string;
+            options: { entropy: { type: 'mnemonic'; id: string } };
+          }
+        >;
+      };
+    };
+
+    state.metamask.transactions = [transaction];
+    state.metamask.moneyAccounts = {
+      'money-account-1': {
+        address: MONEY_ACCOUNT_ADDRESS,
+        options: {
+          entropy: { type: 'mnemonic', id: PRIMARY_HD_KEYRING_ID },
+        },
+      },
+    };
+
+    return state as Parameters<typeof selectLocalTransactions>[0];
+  }
+
+  it('includes money-account transactions sent from the money account', () => {
+    const state = buildStateWithMoneyAccount(buildMoneyAccountTransaction());
+
+    const groups = selectLocalTransactions(state);
+
+    expect(
+      groups.some(
+        (group) => group.initialTransaction.id === 'money-account-tx',
+      ),
+    ).toBe(true);
+  });
+
+  it('excludes non-money transactions sent from the money account', () => {
+    const state = buildStateWithMoneyAccount(
+      buildMoneyAccountTransaction({
+        type: EvmTransactionType.simpleSend,
+        nestedTransactions: undefined,
+      }),
+    );
+
+    const groups = selectLocalTransactions(state);
+
+    expect(
+      groups.some(
+        (group) => group.initialTransaction.id === 'money-account-tx',
+      ),
+    ).toBe(false);
+  });
+
+  it('does not group money-account transactions with selected-account transactions that share a nonce', () => {
+    const selectedAddress =
+      typedMockState.metamask.internalAccounts.accounts[
+        typedMockState.metamask.internalAccounts.selectedAccount
+      ].address;
+
+    const moneyAccountTx = buildMoneyAccountTransaction({
+      id: 'money-account-tx',
+      time: 2,
+      txParams: {
+        from: MONEY_ACCOUNT_ADDRESS,
+        to: MONEY_ACCOUNT_ADDRESS,
+        nonce: '0x77',
+        value: '0x0',
+      },
+    });
+
+    const selectedAccountTx = {
+      id: 'selected-account-tx',
+      chainId: '0x1',
+      networkClientId: 'mainnet',
+      status: EvmTransactionStatus.confirmed,
+      time: 1,
+      type: EvmTransactionType.simpleSend,
+      txParams: {
+        from: selectedAddress,
+        to: selectedAddress,
+        nonce: '0x77',
+        value: '0x1',
+      },
+    } as TransactionMeta;
+
+    const state = buildStateWithMoneyAccount(moneyAccountTx);
+    state.metamask.transactions = [moneyAccountTx, selectedAccountTx];
+
+    const groups = selectLocalTransactions(state);
+
+    expect(groups).toHaveLength(2);
+    expect(
+      groups.map((group) => group.initialTransaction.id).sort(),
+    ).toStrictEqual(['money-account-tx', 'selected-account-tx']);
+    expect(groups.every((group) => group.transactions.length === 1)).toBe(true);
+  });
+
+  it('excludes money-account transactions when another SRP account group is selected', () => {
+    const state = buildStateWithMoneyAccount(buildMoneyAccountTransaction());
+    const otherEntropyWalletId = 'entropy:01JKAF3PJ247KAM6C03G5Q0NP8';
+    const otherEntropyGroupId = `${otherEntropyWalletId}/0`;
+    const otherAccountId = MOCK_ACCOUNT_SOLANA_MAINNET.id;
+
+    // Point selection at a different entropy wallet's group with an EVM account
+    // so selectEvmAddress still resolves, but money-account ownership does not.
+    const otherEvmAccount = {
+      ...typedMockState.metamask.internalAccounts.accounts[
+        typedMockState.metamask.internalAccounts.selectedAccount
+      ],
+      id: 'other-srp-evm-account',
+      address: '0x1111111111111111111111111111111111111111',
+      options: {
+        ...typedMockState.metamask.internalAccounts.accounts[
+          typedMockState.metamask.internalAccounts.selectedAccount
+        ].options,
+        entropySource: '01JKAF3PJ247KAM6C03G5Q0NP8',
+      },
+    };
+
+    state.metamask.selectedAccountGroup = otherEntropyGroupId as never;
+    state.metamask.internalAccounts.selectedAccount = otherEvmAccount.id;
+    state.metamask.internalAccounts.accounts = {
+      ...state.metamask.internalAccounts.accounts,
+      [otherEvmAccount.id]: otherEvmAccount,
+      [otherAccountId]: MOCK_ACCOUNT_SOLANA_MAINNET,
+    } as typeof state.metamask.internalAccounts.accounts;
+
+    state.metamask.accountTree.wallets[otherEntropyWalletId as never] = {
+      id: otherEntropyWalletId,
+      type: 'entropy',
+      groups: {
+        [otherEntropyGroupId]: {
+          id: otherEntropyGroupId,
+          type: 'multichain-account',
+          accounts: [otherEvmAccount.id],
+          metadata: {
+            name: 'Other SRP Account',
+            entropy: { groupIndex: 0 },
+            pinned: false,
+            hidden: false,
+          },
+        },
+      },
+      metadata: {
+        name: 'Other Wallet',
+        entropy: { id: '01JKAF3PJ247KAM6C03G5Q0NP8' },
+      },
+    } as never;
+
+    const groups = selectLocalTransactions(state);
+
+    expect(
+      groups.some(
+        (group) => group.initialTransaction.id === 'money-account-tx',
+      ),
+    ).toBe(false);
+  });
+
+  describe('when a funding account is known', () => {
+    const LEDGER_ACCOUNT_ID = '15e69915-2a1a-4019-93b3-916e11fd432f';
+    const LEDGER_ADDRESS = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
+    const LEDGER_GROUP_ID = `keyring:Ledger Hardware/${LEDGER_ADDRESS}`;
+
+    function buildFundedDepositState(
+      payer = '0xC42EDFCC21ED14DDA456AA0756C153F7985D8813',
+      overrides: Partial<TransactionMeta> = {},
+    ) {
+      const fundingTx = {
+        id: 'funding-tx',
+        chainId: '0x1',
+        networkClientId: 'mainnet',
+        status: EvmTransactionStatus.confirmed,
+        time: 1,
+        type: EvmTransactionType.simpleSend,
+        txParams: { from: payer, nonce: '0x5', value: '0x0' },
+      } as TransactionMeta;
+      const depositTx = buildMoneyAccountTransaction({
+        time: 2,
+        requiredTransactionIds: [fundingTx.id],
+        ...overrides,
+      });
+      const state = buildStateWithMoneyAccount(depositTx);
+      state.metamask.transactions = [fundingTx, depositTx];
+      return state;
+    }
+
+    function selectLedger(state: ReturnType<typeof buildFundedDepositState>) {
+      state.metamask.selectedAccountGroup = LEDGER_GROUP_ID as never;
+      state.metamask.internalAccounts.selectedAccount = LEDGER_ACCOUNT_ID;
+    }
+
+    function getGroupIds(state: ReturnType<typeof buildFundedDepositState>) {
+      return selectLocalTransactions(state).map(
+        (group) => group.initialTransaction.id,
+      );
+    }
+
+    it('shows the deposit in the hardware account activity', () => {
+      const state = buildFundedDepositState();
+      selectLedger(state);
+
+      expect(getGroupIds(state)).toStrictEqual(['money-account-tx']);
+    });
+
+    it('hides the deposit from the money account SRP account activity', () => {
+      const state = buildFundedDepositState();
+
+      expect(getGroupIds(state)).toStrictEqual([]);
+    });
+
+    it('uses the Pay account override before funding transactions exist', () => {
+      const state = buildStateWithMoneyAccount(
+        buildMoneyAccountTransaction({
+          status: EvmTransactionStatus.approved,
+        }),
+      );
+      (
+        state.metamask as unknown as {
+          transactionData: Record<string, { accountOverride: string }>;
+        }
+      ).transactionData = {
+        'money-account-tx': { accountOverride: LEDGER_ADDRESS },
+      };
+
+      const ledgerState = structuredClone(state);
+      selectLedger(ledgerState);
+
+      expect(getGroupIds(state)).toStrictEqual([]);
+      expect(getGroupIds(ledgerState)).toStrictEqual(['money-account-tx']);
+    });
+
+    it('keeps the SRP rule when the payer is in the money account SRP', () => {
+      const secondSrpAccountAddress =
+        '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
+      const state = buildFundedDepositState(secondSrpAccountAddress);
+      const ledgerState = structuredClone(state);
+      selectLedger(ledgerState);
+
+      expect(getGroupIds(state)).toStrictEqual(['money-account-tx']);
+      expect(getGroupIds(ledgerState)).toStrictEqual([]);
+    });
+
+    it('keeps the SRP rule when the payer is no longer in the wallet', () => {
+      const state = buildFundedDepositState(
+        '0x2222222222222222222222222222222222222222',
+      );
+
+      expect(getGroupIds(state)).toStrictEqual(['money-account-tx']);
+    });
+
+    it('keeps withdrawals in the money account SRP account activity', () => {
+      const state = buildFundedDepositState(MONEY_ACCOUNT_ADDRESS, {
+        nestedTransactions: [{ type: EvmTransactionType.moneyAccountWithdraw }],
+      });
+      (
+        state.metamask as unknown as {
+          transactionData: Record<string, { accountOverride: string }>;
+        }
+      ).transactionData = {
+        'money-account-tx': { accountOverride: LEDGER_ADDRESS },
+      };
+      const ledgerState = structuredClone(state);
+      selectLedger(ledgerState);
+
+      expect(getGroupIds(state)).toStrictEqual(['money-account-tx']);
+      expect(getGroupIds(ledgerState)).toStrictEqual([]);
+    });
   });
 });

@@ -6,7 +6,6 @@ import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import { PREFERENCES_AND_DISPLAY_ROUTE } from '../../../helpers/constants/routes';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import {
   MetaMetricsEventCategory,
@@ -88,6 +87,6 @@ describe('ThemeSubPage', () => {
         environmentType: expect.any(String),
       }),
     );
-    expect(mockNavigate).toHaveBeenCalledWith(PREFERENCES_AND_DISPLAY_ROUTE);
+    expect(mockNavigate).toHaveBeenCalledWith(-1);
   });
 });

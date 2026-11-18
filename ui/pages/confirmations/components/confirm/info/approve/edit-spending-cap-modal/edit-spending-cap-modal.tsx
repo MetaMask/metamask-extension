@@ -1,5 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Hex } from '@metamask/utils';
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { hexToDecimal } from '../../../../../../../../shared/lib/conversion.utils';
@@ -31,7 +31,7 @@ import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import { useApproveTokenSimulation } from '../hooks/use-approve-token-simulation';
 import { ConfirmLoader } from '../../shared/confirm-loader/confirm-loader';
-import { parseApprovalTransactionData } from '../../../../../../../../shared/lib/transaction.utils';
+import { resolveApprovalTokenContractAddress } from '../../../../../../../../shared/lib/transaction.utils';
 import { updateApprovalAmount } from '../../../../../../../../shared/lib/transactions/approvals';
 import { useDispatch } from '../../../../../../../store/hooks';
 
@@ -66,11 +66,12 @@ export const EditSpendingCapModal = ({
   const transactionTo = to ?? currentTo;
   const transactionData = data ?? currentData;
 
-  const { tokenAddress } =
-    parseApprovalTransactionData(transactionData ?? '0x') ?? {};
+  const tokenAddress = resolveApprovalTokenContractAddress({
+    txParams: { from: currentFrom, to: transactionTo, data: transactionData },
+  });
 
   const { userBalance, tokenSymbol, decimals } = useAssetDetails(
-    tokenAddress ?? transactionTo,
+    tokenAddress,
     currentFrom,
     transactionData,
     transactionMeta.chainId,
@@ -99,12 +100,14 @@ export const EditSpendingCapModal = ({
 
   const [customSpendingCapInputValue, setCustomSpendingCapInputValue] =
     useState(spendingCap);
+  const [prevSpendingCap, setPrevSpendingCap] = useState(spendingCap);
 
-  useEffect(() => {
+  if (spendingCap !== prevSpendingCap) {
+    setPrevSpendingCap(spendingCap);
     if (spendingCap) {
       setCustomSpendingCapInputValue(spendingCap);
     }
-  }, [spendingCap]);
+  }
 
   const handleCancel = useCallback(() => {
     setIsOpenEditSpendingCapModal(false);

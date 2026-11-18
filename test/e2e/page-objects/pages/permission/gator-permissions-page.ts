@@ -1,13 +1,13 @@
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * Gator permissions hub: Sites and Token transfer categories.
+ * Gator permissions hub: Connections and Token transfer categories.
  *
  * Screen: `#/gator-permissions` when the Gator permissions feature is enabled.
- * Owns: page-loaded / displayed checks, navigating into Sites or Token
+ * Owns: page-loaded / displayed checks, navigating into Connections (Dapps) or Token
  * transfer (Assets), and back toward home.
  * Boundaries: the category hub only. Site list and per-site management are
- * `PermissionListPage` / `SitePermissionPage`.
+ * `PermissionListPage` / `EditConnectedAccountsPage`.
  * Related: `PermissionListPage`, `flows/permissions.flow.ts`.
  *
  * @see ui/components/multichain/pages/gator-permissions/gator-permissions-page.tsx
@@ -17,14 +17,16 @@ class GatorPermissionsPage {
   private readonly assetsButton = { text: 'Token transfer', tag: 'p' };
 
   private readonly backButton =
-    '[data-testid="gator-permissions-page"] button[aria-label="Back"]';
+    '[data-testid="parent-selector-gator-permissions"] button[aria-label="Back"]';
 
-  private driver: Driver;
+  private readonly connectionsButton = { text: 'Connections', tag: 'p' };
 
-  private readonly gatorPermissionsPage =
-    '[data-testid="gator-permissions-page"]';
+  private readonly driver: Driver;
 
-  private readonly sitesButton = { text: 'Sites', tag: 'p' };
+  private readonly loadingIndicator =
+    '[data-testid="gator-permissions-loading"]';
+
+  private readonly page = '[data-testid="parent-selector-gator-permissions"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -35,7 +37,7 @@ class GatorPermissionsPage {
    */
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.gatorPermissionsPage);
+      await this.driver.waitForSelector(this.page);
     } catch (e) {
       console.log(
         'Timeout while waiting for Gator Permissions page to be loaded',
@@ -47,7 +49,7 @@ class GatorPermissionsPage {
   }
 
   /**
-   * Click on Assets/Token transfer to navigate to Token Transfer page
+   * Click on Assets/Token transfer to navigate to Token Transfer Permissions page
    */
   async clickAssets(): Promise<void> {
     console.log('Click Assets on Gator Permissions page');
@@ -63,11 +65,26 @@ class GatorPermissionsPage {
   }
 
   /**
-   * Click on Sites to navigate to Sites Permissions page
+   * Click on Connections to navigate to Dapp Permissions page
    */
-  async clickSites(): Promise<void> {
-    console.log('Click Sites on Gator Permissions page');
-    await this.driver.clickElement(this.sitesButton);
+  async clickConnections(): Promise<void> {
+    console.log('Click Connections on Gator Permissions page');
+    await this.driver.clickElement(this.connectionsButton);
+  }
+
+  /**
+   * Check if the Connections (Dapps) button is present on the page.
+   * The button may not be present if there are no site connections.
+   *
+   * @param timeout - Timeout in ms. Use a short timeout (1-2s) after
+   * waitForLoadingComplete() to avoid burning the full driver timeout
+   * when the button doesn't exist (auto-redirect case).
+   */
+  async isConnectionsButtonPresent(timeout = 2000): Promise<boolean> {
+    return await this.driver.isElementPresentAndVisible(
+      this.connectionsButton,
+      timeout,
+    );
   }
 
   /**
@@ -75,9 +92,19 @@ class GatorPermissionsPage {
    * Useful for flow logic to detect whether we landed on this intermediate page.
    */
   async isPageDisplayed(): Promise<boolean> {
-    return await this.driver.isElementPresentAndVisible(
-      this.gatorPermissionsPage,
-    );
+    return await this.driver.isElementPresentAndVisible(this.page);
+  }
+
+  /**
+   * Wait for the loading spinner to disappear.
+   * Call this before checking for buttons to avoid race conditions.
+   */
+  async waitForLoadingComplete(): Promise<void> {
+    console.log('Waiting for Gator Permissions page to finish loading');
+    await this.driver.assertElementNotPresent(this.loadingIndicator, {
+      timeout: 10000,
+    });
+    console.log('Gator Permissions page finished loading');
   }
 }
 

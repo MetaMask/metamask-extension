@@ -88,6 +88,24 @@ describe('PerpsGeoBlockModal', () => {
     );
   });
 
+  it('includes source on the screen view when provided', () => {
+    renderWithProvider(
+      <PerpsGeoBlockModal {...defaultProps} source="asset_detail_screen" />,
+      mockStore,
+    );
+
+    const screenViews = mockAnalyticsTrackEvent.mock.calls.filter(
+      ([arg]) => arg?.name === MetaMetricsEventName.PerpsScreenViewed,
+    );
+    expect(screenViews).toHaveLength(1);
+    expect(screenViews[0][0].properties).toEqual(
+      expect.objectContaining({
+        screen_type: 'geo_block_notif',
+        source: 'asset_detail_screen',
+      }),
+    );
+  });
+
   it('does not emit while closed, and re-arms for the next open', () => {
     const { rerender } = renderWithProvider(
       <PerpsGeoBlockModal isOpen={false} onClose={defaultProps.onClose} />,

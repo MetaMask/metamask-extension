@@ -7,6 +7,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../../shared/constants/security-provider';
+import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import { ResultType } from '../../../../../shared/lib/trust-signals';
 
 type EventPayload = {
@@ -199,6 +200,24 @@ function getSignatureEventProperty(
   return signatureEventProperty;
 }
 
+/**
+ * Returns the address_alert_response expected once a signature confirmation
+ * has been actioned. eth_signTypedData_v3/v4 requests are scanned by the
+ * trust-signals middleware: the Signature Requested event fires while the
+ * scan is still pending (Loading), but by the time the signature is approved
+ * or rejected the scan has settled — the local test chain is unsupported by
+ * the Security Alerts API, so the PhishingController resolves it to an Error
+ * verdict. Other signature types are never scanned and stay Loading.
+ *
+ * @param signatureType
+ */
+function getSettledAddressAlertResponse(signatureType: string): string {
+  return signatureType === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3 ||
+    signatureType === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4
+    ? ResultType.ErrorResult
+    : ResultType.Loading;
+}
+
 function assertSignatureRequestedMetrics(
   events: EventPayload[],
   signatureEventProperty: SignatureEventProperty,
@@ -254,12 +273,18 @@ export async function assertSignatureConfirmedMetrics({
 
   assertEventPropertiesMatch(events, 'Signature Approved', {
     ...signatureEventProperty,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    address_alert_response: getSettledAddressAlertResponse(signatureType),
     ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
   });
 
   if (withAnonEvents) {
     assertEventPropertiesMatch(events, 'Signature Approved Anon', {
       ...signatureEventProperty,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      address_alert_response: getSettledAddressAlertResponse(signatureType),
       ...signatureAnonProperties,
     });
   }
@@ -323,6 +348,9 @@ export async function assertSignatureRejectedMetrics({
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     hd_entropy_index: 0,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    address_alert_response: getSettledAddressAlertResponse(signatureType),
     ...expectedProps,
     ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
   });
@@ -330,6 +358,9 @@ export async function assertSignatureRejectedMetrics({
   if (withAnonEvents) {
     assertEventPropertiesMatch(events, 'Signature Rejected Anon', {
       ...signatureEventProperty,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      address_alert_response: getSettledAddressAlertResponse(signatureType),
       ...signatureAnonProperties,
     });
   }

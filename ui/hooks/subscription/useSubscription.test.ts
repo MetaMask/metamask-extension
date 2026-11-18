@@ -1,6 +1,10 @@
 import { act, waitFor } from '@testing-library/react';
 import { cloneDeep } from 'lodash';
-import { PAYMENT_TYPES } from '@metamask/subscription-controller';
+import {
+  CANCEL_TYPES,
+  PAYMENT_TYPES,
+  type Subscription,
+} from '@metamask/subscription-controller';
 import type { Hex } from '@metamask/utils';
 import { addHexPrefix } from 'ethereumjs-util';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
@@ -17,6 +21,8 @@ import {
   useSubscriptionCryptoApprovalTransaction,
   useShieldRewards,
   useHandleSubscriptionSupportAction,
+  useCancelSubscription,
+  useUnCancelSubscription,
 } from './useSubscription';
 import * as subscriptionPricingHooks from './useSubscriptionPricing';
 import type { TokenWithApprovalAmount } from './useSubscriptionPricing';
@@ -31,14 +37,33 @@ jest.mock('../../store/actions', () => ({
   estimateGas: jest.fn().mockResolvedValue('0x5208'),
   addTransaction: jest.fn().mockResolvedValue({}),
   getCustomerServiceToken: jest.fn(),
+  cancelSubscription: jest.fn(() => async () => undefined),
+  unCancelSubscription: jest.fn(() => async () => undefined),
   getSubscriptionPricing: jest.fn().mockResolvedValue({}),
   getRewardsSeasonMetadata: jest.fn(() => async () => null),
   estimateRewardsPoints: jest.fn(() => async () => null),
   getRewardsHasAccountOptedIn: jest.fn(() => async () => false),
 }));
 
+const mockCaptureShieldMembershipCancelledEvent = jest.fn();
+
+const mockCaptureShieldSubscriptionRestartRequestEvent = jest.fn();
+
+jest.mock('../shield/metrics/useSubscriptionMetrics', () => ({
+  useSubscriptionMetrics: () => ({
+    captureShieldSubscriptionRestartRequestEvent:
+      mockCaptureShieldSubscriptionRestartRequestEvent,
+    captureShieldMembershipCancelledEvent:
+      mockCaptureShieldMembershipCancelledEvent,
+    captureCommonExistingShieldSubscriptionEvents: jest.fn(),
+    captureShieldSubscriptionRequestEvent: jest.fn(),
+    setShieldSubscriptionMetricsPropsToBackground: jest.fn(),
+  }),
+}));
+
 const mockUseGasFeeEstimates = jest.mocked(useGasFeeEstimates);
 const mockAddTransaction = jest.mocked(actions.addTransaction);
+const mockUnCancelSubscription = jest.mocked(actions.unCancelSubscription);
 const mockGetCustomerServiceToken = jest.mocked(
   actions.getCustomerServiceToken,
 );
@@ -299,6 +324,50 @@ describe('useSubscriptionCryptoApprovalTransaction', () => {
   });
 });
 
+describe('useUnCancelSubscription', () => {
+  const subscription = {
+    id: 'shield-subscription-id',
+    status: 'active',
+    paymentMethod: {
+      type: PAYMENT_TYPES.byCard,
+    },
+    interval: 'month',
+  } as unknown as Subscription;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockUnCancelSubscription.mockImplementation(() => async () => undefined);
+  });
+
+  it('tracks a succeeded restart request after uncancelling a subscription', async () => {
+    const { result } = renderHookWithProvider(
+      () => useUnCancelSubscription(subscription),
+      mockState,
+    );
+
+    const [execute] = result.current;
+
+    await act(async () => {
+      await execute();
+    });
+
+    expect(mockUnCancelSubscription).toHaveBeenCalledWith({
+      subscriptionId: subscription.id,
+    });
+    expect(
+      mockCaptureShieldSubscriptionRestartRequestEvent,
+    ).toHaveBeenCalledWith({
+      subscriptionStatus: subscription.status,
+      paymentType: PAYMENT_TYPES.byCard,
+      billingInterval: subscription.interval,
+      cryptoPaymentChain: undefined,
+      cryptoPaymentCurrency: undefined,
+      status: 'succeeded',
+      error: undefined,
+    });
+  });
+});
+
 describe('useHandleSubscriptionSupportAction', () => {
   let state: MetaMaskReduxState;
 
@@ -448,5 +517,103 @@ describe('useShieldRewards', () => {
     expect(result.current.pointsMonthly).toBeNull();
     expect(result.current.pointsYearly).toBeNull();
     expect(result.current.pending).toBe(false);
+  });
+});
+
+describe('useCancelSubscription', () => {
+  const buildSubscription = (
+    // `cancelType` is required in the v8 types the UI compiles against, but
+    // optional at runtime since subscription-controller@10; accept undefined
+    // to test that case.
+    cancelType: Subscription['cancelType'] | undefined,
+  ): Subscription =>
+    ({
+      id: 'shield-subscription-id',
+      status: 'active',
+      paymentMethod: {
+        type: PAYMENT_TYPES.byCard,
+      },
+      interval: 'month',
+      cancelType,
+    }) as unknown as Subscription;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('cancels at period end for an undefined cancelType', async () => {
+    const subscription = buildSubscription(undefined);
+    const { result } = renderHookWithProvider(
+      () => useCancelSubscription(subscription),
+      mockState,
+    );
+
+    const [execute] = result.current;
+
+    await act(async () => {
+      await execute();
+    });
+
+    expect(actions.cancelSubscription).toHaveBeenCalledWith({
+      subscriptionId: subscription.id,
+      cancelAtPeriodEnd: true,
+    });
+    expect(mockCaptureShieldMembershipCancelledEvent).toHaveBeenCalledWith(
+      expect.objectContaining({ cancellationStatus: 'succeeded' }),
+    );
+  });
+
+  it('cancels immediately for the allowed-immediate cancel type', async () => {
+    const subscription = buildSubscription(CANCEL_TYPES.ALLOWED_IMMEDIATE);
+    const { result } = renderHookWithProvider(
+      () => useCancelSubscription(subscription),
+      mockState,
+    );
+
+    const [execute] = result.current;
+
+    await act(async () => {
+      await execute();
+    });
+
+    expect(actions.cancelSubscription).toHaveBeenCalledWith({
+      subscriptionId: subscription.id,
+      cancelAtPeriodEnd: false,
+    });
+  });
+
+  it('cancels at period end for the allowed-at-period-end cancel type', async () => {
+    const subscription = buildSubscription(CANCEL_TYPES.ALLOWED_AT_PERIOD_END);
+    const { result } = renderHookWithProvider(
+      () => useCancelSubscription(subscription),
+      mockState,
+    );
+
+    const [execute] = result.current;
+
+    await act(async () => {
+      await execute();
+    });
+
+    expect(actions.cancelSubscription).toHaveBeenCalledWith({
+      subscriptionId: subscription.id,
+      cancelAtPeriodEnd: true,
+    });
+  });
+
+  it('does nothing for the not-allowed cancel type', async () => {
+    const subscription = buildSubscription(CANCEL_TYPES.NOT_ALLOWED);
+    const { result } = renderHookWithProvider(
+      () => useCancelSubscription(subscription),
+      mockState,
+    );
+
+    const [execute] = result.current;
+
+    await act(async () => {
+      await execute();
+    });
+
+    expect(actions.cancelSubscription).not.toHaveBeenCalled();
   });
 });

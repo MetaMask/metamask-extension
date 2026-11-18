@@ -62,15 +62,13 @@ const fetchAssetMetadata = async (
 /**
  * This sets the bridge fromChain, fromToken, fromTokenInputValue,
  * toChainId, and toToken from the URL search params.
- * It also clears the search params after setting the values.
  */
 export const usePrefillFromSearchQuery = () => {
   const dispatch = useDispatch();
   const fromToken = useSelector(getFromToken);
+  const appliedSearch = useRef<string | null>(null);
 
-  const abortController = useRef<AbortController>(new AbortController());
-
-  const { resetSearchParams, search } = useBridgeNavigation();
+  const { search } = useBridgeNavigation();
 
   // Parse CAIP asset data
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
@@ -82,20 +80,15 @@ export const usePrefillFromSearchQuery = () => {
 
   const [parsedAmount, setParsedAmount] = useState<string | null>(null);
 
-  // Cleanup abort controller on unmount
-  useEffect(() => {
-    return () => {
-      abortController.current.abort();
-    };
-  }, []);
-
   const [assetMetadataByAssetId, setAssetMetadataByAssetId] = useState<Awaited<
     ReturnType<typeof fetchAssetMetadataForAssetIds>
   > | null>(null);
 
-  // Only update parsed values and fetch metadata if the search params
-  // are set (once) to prevent infinite re-renders
   useEffect(() => {
+    if (appliedSearch.current === search) {
+      return;
+    }
+
     const searchParamsFrom = parseAsset(
       searchParams.get(BridgeQueryParams.From),
     );
@@ -103,31 +96,44 @@ export const usePrefillFromSearchQuery = () => {
     const searchParamsAmount = searchParams.get(BridgeQueryParams.Amount);
 
     if (searchParamsFrom || searchParamsTo || searchParamsAmount) {
-      setParsedToAssetId(searchParamsTo);
-      setParsedFromAssetId(searchParamsFrom);
-      if (searchParamsAmount) {
-        setParsedAmount(searchParamsAmount);
-      }
-      resetSearchParams([
-        BridgeQueryParams.From,
-        BridgeQueryParams.To,
-        BridgeQueryParams.Amount,
-      ]);
+      appliedSearch.current = search;
+      // Defer state updates so they are not synchronous effect setStates
+      // (react-hooks/set-state-in-effect).
+      queueMicrotask(() => {
+        setParsedToAssetId(searchParamsTo);
+        setParsedFromAssetId(searchParamsFrom);
+        if (searchParamsAmount) {
+          setParsedAmount(searchParamsAmount);
+        }
+      });
 
       // Fetch asset metadata for both tokens in 1 call
       if (searchParamsTo?.assetId || searchParamsFrom?.assetId) {
-        abortController.current.abort();
-        abortController.current = new AbortController();
+        const controller = new AbortController();
+        let isFetchComplete = false;
         fetchAssetMetadata(
-          abortController.current.signal,
+          controller.signal,
           searchParamsFrom?.assetId,
           searchParamsTo?.assetId,
         ).then((result) => {
-          setAssetMetadataByAssetId(result);
+          if (!controller.signal.aborted) {
+            isFetchComplete = true;
+            setAssetMetadataByAssetId(result);
+          }
         });
+
+        return () => {
+          // Cleanup abort controller on unmount
+          controller.abort();
+          // Re-apply only if the fetch was interrupted
+          if (!isFetchComplete) {
+            appliedSearch.current = null;
+          }
+        };
       }
     }
-  }, [searchParams]);
+    return undefined;
+  }, [search, searchParams]);
 
   const setToChainAndToken = useCallback(
     async (toTokenMetadata: AssetMetadata) => {
@@ -135,7 +141,7 @@ export const usePrefillFromSearchQuery = () => {
       // Clear parsed to asset ID after successful processing
       setParsedToAssetId(null);
     },
-    [],
+    [dispatch],
   );
 
   // Main effect to orchestrate the parameter processing
@@ -158,7 +164,7 @@ export const usePrefillFromSearchQuery = () => {
     // setFromToken auto-enables the network via addNetwork when needed, then
     // falls through to complete the full token-setting flow in one thunk invocation.
     dispatch(setFromToken(fromTokenMetadata));
-  }, [assetMetadataByAssetId, parsedFromAssetId]);
+  }, [assetMetadataByAssetId, parsedFromAssetId, dispatch]);
 
   // Set toChainId and toToken
   useEffect(() => {
@@ -177,9 +183,12 @@ export const usePrefillFromSearchQuery = () => {
         parsedToAssetId.assetId.toLowerCase() as unknown as CaipAssetType
       ];
     if (toTokenMetadata) {
-      setToChainAndToken(toTokenMetadata);
+      // Defer clear so setState is not synchronous in the effect body.
+      queueMicrotask(() => {
+        setToChainAndToken(toTokenMetadata);
+      });
     }
-  }, [parsedToAssetId, assetMetadataByAssetId]);
+  }, [parsedToAssetId, assetMetadataByAssetId, setToChainAndToken]);
 
   // Process amount after fromToken is set
   useEffect(() => {
@@ -190,18 +199,27 @@ export const usePrefillFromSearchQuery = () => {
       fromToken.assetId?.toLowerCase() ===
         parsedFromAssetId.assetId.toLowerCase()
     ) {
-      // Clear parsed from asset ID after successful processing
-      setParsedFromAssetId(null);
-      if (parsedAmount) {
-        dispatch(
-          setFromTokenInputValue(
-            calcTokenAmount(parsedAmount, fromToken.decimals).toFixed(
-              fromToken.decimals,
+      const amount = parsedAmount;
+      // Defer clears/dispatches so setState is not synchronous in the effect body.
+      queueMicrotask(() => {
+        setParsedFromAssetId(null);
+        if (amount) {
+          dispatch(
+            setFromTokenInputValue(
+              calcTokenAmount(amount, fromToken.decimals).toFixed(
+                fromToken.decimals,
+              ),
             ),
-          ),
-        );
-        setParsedAmount(null);
-      }
+          );
+          setParsedAmount(null);
+        }
+      });
     }
-  }, [parsedAmount, parsedFromAssetId, assetMetadataByAssetId, fromToken]);
+  }, [
+    parsedAmount,
+    parsedFromAssetId,
+    assetMetadataByAssetId,
+    fromToken,
+    dispatch,
+  ]);
 };

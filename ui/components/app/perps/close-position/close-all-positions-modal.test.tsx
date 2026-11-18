@@ -1,34 +1,21 @@
+import { it } from '@jest/globals';
 import React from 'react';
-import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockPositions } from '../mocks';
 import { CloseAllPositionsModal } from './close-all-positions-modal';
 
+const mockFeeDiscountBips = jest.fn();
+jest.mock('../../../../hooks/perps/usePerpsMetamaskFeeDiscountBips', () => ({
+  usePerpsMetamaskFeeDiscountBips: () => mockFeeDiscountBips(),
+}));
+
 const mockSubmitRequestToBackground = jest.fn();
 jest.mock('../../../../store/background-connection', () => ({
   submitRequestToBackground: (...args: unknown[]) =>
     mockSubmitRequestToBackground(...args),
-}));
-
-jest.mock('../../../../../shared/lib/perps-formatters', () => ({
-  PRICE_RANGES_UNIVERSAL: [],
-  formatPerpsFiat: (
-    value: number | string,
-    options?: { minimumDecimals?: number; maximumDecimals?: number },
-  ) => {
-    const amount = Number(value);
-    const minDec = options?.minimumDecimals ?? 0;
-    const maxDec = options?.maximumDecimals ?? 6;
-    return `$${amount
-      .toLocaleString('en-US', {
-        minimumFractionDigits: minDec,
-        maximumFractionDigits: maxDec,
-      })
-      .replace(/(\.\d*?[1-9])0+$/u, '$1')
-      .replace(/\.0+$/u, '')}`;
-  },
 }));
 
 const mockStore = configureStore({
@@ -58,7 +45,7 @@ const defaultFeeResult = {
 
 function setDefaultBackgroundResponses() {
   mockSubmitRequestToBackground.mockImplementation((method: string) => {
-    if (method === 'rewardsGetPerpsDiscountForAccount') {
+    if (method === 'RewardsController:getPerpsDiscountForAccount') {
       return Promise.resolve(null);
     }
     return Promise.resolve(defaultFeeResult);
@@ -68,6 +55,7 @@ function setDefaultBackgroundResponses() {
 describe('CloseAllPositionsModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockFeeDiscountBips.mockReturnValue(undefined);
     setDefaultBackgroundResponses();
   });
 
@@ -173,6 +161,54 @@ describe('CloseAllPositionsModal', () => {
     expect(defaultProps.onClose).toHaveBeenCalledTimes(1);
   });
 
+  it('blocks Close all with the insufficient margin message when the batch would receive less than zero', async () => {
+    // A 2.5 ETH long entered at 2,850 and marked at 400 loses more than its
+    // 2,375 margin.
+    renderWithProvider(
+      <CloseAllPositionsModal
+        {...defaultProps}
+        positions={[{ ...twoPositions[0], positionValue: '1000' }]}
+      />,
+      mockStore,
+    );
+
+    // The live region is mounted before the quote lands so a screen reader
+    // announces the banner when it appears.
+    const liveRegion = screen.getByTestId('perps-close-all-error-live-region');
+    expect(liveRegion).toHaveAttribute('aria-live', 'polite');
+    expect(liveRegion).toBeEmptyDOMElement();
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('perps-close-all-receive-value'),
+      ).toHaveTextContent(/^-\$/u);
+    });
+
+    expect(liveRegion).toHaveTextContent(
+      'Insufficient margin to place this order.',
+    );
+    expect(screen.getByTestId('perps-close-all-error')).toHaveTextContent(
+      'Insufficient margin to place this order.',
+    );
+    expect(
+      screen.getByTestId('perps-close-all-positions-modal-submit'),
+    ).toBeDisabled();
+  });
+
+  it('shows no insufficient margin message when the batch returns funds', async () => {
+    renderWithProvider(<CloseAllPositionsModal {...defaultProps} />, mockStore);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('perps-close-all-positions-modal-submit'),
+      ).not.toBeDisabled();
+    });
+
+    expect(
+      screen.queryByTestId('perps-close-all-error'),
+    ).not.toBeInTheDocument();
+  });
+
   it('disables submit button when isSubmitting is true', async () => {
     renderWithProvider(
       <CloseAllPositionsModal {...defaultProps} isSubmitting />,
@@ -212,6 +248,174 @@ describe('CloseAllPositionsModal', () => {
     ).not.toBeInTheDocument();
   });
 
+  it.each(['', '   ', 'invalid', '7125 USD', 'Infinity'])(
+    'withholds estimates and submission for malformed position value %p',
+    (positionValue) => {
+      renderWithProvider(
+        <CloseAllPositionsModal
+          {...defaultProps}
+          positions={[{ ...twoPositions[0], positionValue }]}
+        />,
+        mockStore,
+      );
+      expect(
+        screen.getByTestId('perps-close-all-fees-value'),
+      ).toHaveTextContent('--');
+      expect(
+        screen.getByTestId('perps-close-all-receive-value'),
+      ).toHaveTextContent('--');
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+      const submitButton = screen.getByTestId(
+        'perps-close-all-positions-modal-submit',
+      );
+      expect(submitButton).toBeDisabled();
+      fireEvent.click(submitButton);
+      expect(defaultProps.onConfirm).not.toHaveBeenCalled();
+    },
+  );
+
+  it('clears invalid estimates when the position collection becomes empty', () => {
+    const { rerender } = renderWithProvider(
+      <CloseAllPositionsModal
+        {...defaultProps}
+        positions={[{ ...twoPositions[0], positionValue: '' }]}
+      />,
+      mockStore,
+    );
+    rerender(<CloseAllPositionsModal {...defaultProps} positions={[]} />);
+    expect(screen.getByTestId('perps-close-all-fees-value')).toHaveTextContent(
+      '-$0',
+    );
+    expect(
+      screen.getByTestId('perps-close-all-receive-value'),
+    ).toHaveTextContent('$0');
+    expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    expect(
+      screen.getByTestId('perps-close-all-positions-modal-submit'),
+    ).toBeDisabled();
+  });
+
+  it('recovers fee estimates when the live position value becomes valid', async () => {
+    const { rerender } = renderWithProvider(
+      <CloseAllPositionsModal
+        {...defaultProps}
+        positions={[{ ...twoPositions[0], positionValue: '' }]}
+      />,
+      mockStore,
+    );
+    rerender(
+      <CloseAllPositionsModal
+        {...defaultProps}
+        // Marked at entry, so the close returns its margin less fees.
+        positions={[
+          { ...twoPositions[0], positionValue: '1000', entryPrice: '400' },
+        ]}
+      />,
+    );
+    await waitFor(() =>
+      expect(
+        screen.getByTestId('perps-close-all-fees-value'),
+      ).toHaveTextContent('-$1.45'),
+    );
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'perpsCalculateFees',
+      [expect.objectContaining({ amount: '1000' })],
+    );
+    expect(
+      screen.getByTestId('perps-close-all-positions-modal-submit'),
+    ).not.toBeDisabled();
+  });
+
+  it('ignores an in-flight quote after a live position value becomes invalid', async () => {
+    let resolveFees: (value: typeof defaultFeeResult) => void = () => undefined;
+    mockSubmitRequestToBackground.mockReturnValue(
+      new Promise<typeof defaultFeeResult>((resolve) => {
+        resolveFees = resolve;
+      }),
+    );
+    const { rerender } = renderWithProvider(
+      <CloseAllPositionsModal
+        {...defaultProps}
+        positions={[twoPositions[0]]}
+      />,
+      mockStore,
+    );
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+    rerender(
+      <CloseAllPositionsModal
+        {...defaultProps}
+        positions={[{ ...twoPositions[0], positionValue: '' }]}
+      />,
+    );
+    await act(async () => resolveFees(defaultFeeResult));
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+    expect(screen.getByTestId('perps-close-all-fees-value')).toHaveTextContent(
+      '--',
+    );
+    expect(
+      screen.getByTestId('perps-close-all-receive-value'),
+    ).toHaveTextContent('--');
+    expect(
+      screen.getByTestId('perps-close-all-positions-modal-submit'),
+    ).toBeDisabled();
+  });
+
+  it('keeps Close all disabled until the fee quote resolves', async () => {
+    let resolveFees: (value: typeof defaultFeeResult) => void = () => undefined;
+    mockSubmitRequestToBackground.mockReturnValue(
+      new Promise<typeof defaultFeeResult>((resolve) => {
+        resolveFees = resolve;
+      }),
+    );
+
+    renderWithProvider(
+      <CloseAllPositionsModal
+        {...defaultProps}
+        positions={[twoPositions[0]]}
+      />,
+      mockStore,
+    );
+    const submitButton = screen.getByTestId(
+      'perps-close-all-positions-modal-submit',
+    );
+
+    expect(screen.getByTestId('perps-close-all-fees-value')).toHaveTextContent(
+      '--',
+    );
+    expect(submitButton).toBeDisabled();
+
+    await act(async () => resolveFees(defaultFeeResult));
+
+    expect(submitButton).not.toBeDisabled();
+  });
+
+  it('disables Close all again while a changed position set is re-quoted', async () => {
+    const { rerender } = renderWithProvider(
+      <CloseAllPositionsModal
+        {...defaultProps}
+        positions={[twoPositions[0]]}
+      />,
+      mockStore,
+    );
+
+    await waitFor(() =>
+      expect(
+        screen.getByTestId('perps-close-all-positions-modal-submit'),
+      ).not.toBeDisabled(),
+    );
+
+    mockSubmitRequestToBackground.mockReturnValue(new Promise(() => undefined));
+
+    rerender(<CloseAllPositionsModal {...defaultProps} />);
+
+    expect(screen.getByTestId('perps-close-all-fees-value')).toHaveTextContent(
+      '--',
+    );
+    expect(
+      screen.getByTestId('perps-close-all-positions-modal-submit'),
+    ).toBeDisabled();
+  });
+
   it('fetches fees per unique symbol rather than using a single rate', async () => {
     const feesBySymbol: Record<
       string,
@@ -222,7 +426,7 @@ describe('CloseAllPositionsModal', () => {
     };
     mockSubmitRequestToBackground.mockImplementation(
       (method: string, args: unknown[]) => {
-        if (method === 'rewardsGetPerpsDiscountForAccount') {
+        if (method === 'RewardsController:getPerpsDiscountForAccount') {
           return Promise.resolve(null);
         }
         const { symbol } = (args as [{ symbol: string }])[0];
@@ -246,11 +450,11 @@ describe('CloseAllPositionsModal', () => {
     await waitFor(() => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsCalculateFees',
-        [expect.objectContaining({ symbol: 'ETH' })],
+        [expect.objectContaining({ symbol: 'ETH', amount: '29625' })],
       );
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsCalculateFees',
-        [expect.objectContaining({ symbol: 'BTC' })],
+        [expect.objectContaining({ symbol: 'BTC', amount: '29625' })],
       );
     });
 
@@ -264,7 +468,103 @@ describe('CloseAllPositionsModal', () => {
     });
   });
 
-  it('uses fallback fee rate when background call fails', async () => {
+  it('quotes a capped subscription against the whole batch and refetches its total', async () => {
+    mockSubmitRequestToBackground.mockImplementation(
+      (method: string, args: unknown[]) => {
+        if (method !== 'perpsCalculateFees') {
+          return Promise.resolve(null);
+        }
+        const { amount } = (args as [{ amount: string }])[0];
+        const notional = Number(amount);
+        const metamaskFeeRate =
+          (0.001 * Math.max(0, notional - 1000)) / notional;
+        return Promise.resolve({
+          feeRate: metamaskFeeRate,
+          protocolFeeRate: 0,
+          metamaskFeeRate,
+          feeSource: 'subscription',
+          metamaskFeeDiscountBips: 10000 * (1 - metamaskFeeRate / 0.001),
+          undiscountedMetamaskFeeRate: 0.001,
+        });
+      },
+    );
+    const positions = defaultProps.positions.map((position) => ({
+      ...position,
+      positionValue: '800',
+    }));
+    const { rerender } = renderWithProvider(
+      <CloseAllPositionsModal {...defaultProps} positions={positions} />,
+      mockStore,
+    );
+    await waitFor(() =>
+      expect(
+        screen.getByTestId('perps-close-all-fees-value'),
+      ).toHaveTextContent('-$0.6'),
+    );
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'perpsCalculateFees',
+      [expect.objectContaining({ amount: '1600' })],
+    );
+    rerender(
+      <CloseAllPositionsModal
+        {...defaultProps}
+        positions={[positions[0], { ...positions[1], positionValue: '1200' }]}
+      />,
+    );
+    await waitFor(() =>
+      expect(
+        screen.getByTestId('perps-close-all-fees-value'),
+      ).toHaveTextContent('-$1'),
+    );
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'perpsCalculateFees',
+      [expect.objectContaining({ amount: '2000' })],
+    );
+  });
+
+  // Each position's fee is rounded to cents as Core rounds it into that
+  // position's receive (ETH 6.76875 -> 6.77, BTC 21.375 -> 21.38), so the
+  // total is 28.15.
+  it('uses resolved v19 rates without applying rewards twice', async () => {
+    mockFeeDiscountBips.mockReturnValue(5000);
+    mockSubmitRequestToBackground.mockResolvedValue({
+      ...defaultFeeResult,
+      feeRate: 0.00095,
+      metamaskFeeRate: 0.0005,
+    });
+
+    renderWithProvider(<CloseAllPositionsModal {...defaultProps} />, mockStore);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('perps-close-all-fees-value'),
+      ).toHaveTextContent('-$28.15');
+    });
+    expect(
+      screen.getByTestId('perps-close-all-receive-value'),
+    ).toHaveTextContent('$3,471.85');
+  });
+
+  it('discounts only the fallback portion when one symbol quote fails', async () => {
+    mockFeeDiscountBips.mockReturnValue(5000);
+    mockSubmitRequestToBackground.mockImplementation(
+      (_method: string, [{ symbol }]: [{ symbol: string }]) =>
+        symbol === 'BTC'
+          ? Promise.reject(new Error('Background unreachable'))
+          : Promise.resolve({ ...defaultFeeResult, metamaskFeeRate: 0.0005 }),
+    );
+
+    renderWithProvider(<CloseAllPositionsModal {...defaultProps} />, mockStore);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('perps-close-all-fees-value'),
+      ).toHaveTextContent('-$28.15');
+    });
+  });
+
+  it('discounts local fallback rates once when background calls fail', async () => {
+    mockFeeDiscountBips.mockReturnValue(5000);
     mockSubmitRequestToBackground.mockRejectedValue(
       new Error('Background unreachable'),
     );
@@ -274,7 +574,57 @@ describe('CloseAllPositionsModal', () => {
     await waitFor(() => {
       expect(
         screen.getByTestId('perps-close-all-fees-value'),
-      ).toBeInTheDocument();
+      ).toHaveTextContent('-$28.15');
     });
+  });
+
+  // Core's estimateCloseReceive per position at its mark price
+  // (positionValue / size): a 1 BTC cross long entered at 100, marked at 80.
+  it('adds a cross position PnL to its margin and keeps a negative receive signed', async () => {
+    const crossLoss = {
+      ...mockPositions[1],
+      size: '1',
+      entryPrice: '100',
+      positionValue: '80',
+      marginUsed: '10',
+      unrealizedPnl: '-20',
+    };
+
+    renderWithProvider(
+      <CloseAllPositionsModal {...defaultProps} positions={[crossLoss]} />,
+      mockStore,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('perps-close-all-fees-value'),
+      ).toHaveTextContent('-$0.12');
+    });
+    expect(
+      screen.getByTestId('perps-close-all-total-margin-value'),
+    ).toHaveTextContent('-$10');
+    expect(screen.getByTestId('perps-close-all-pnl-value')).toHaveTextContent(
+      '-$20',
+    );
+    expect(
+      screen.getByTestId('perps-close-all-receive-value'),
+    ).toHaveTextContent('-$10.12');
+  });
+
+  it('shows margin with PnL, fees and receive that add up across positions', async () => {
+    renderWithProvider(<CloseAllPositionsModal {...defaultProps} />, mockStore);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('perps-close-all-fees-value'),
+      ).toHaveTextContent('-$42.96');
+    });
+    // ETH isolated: 2,375 less its 375 unrealized PnL; BTC cross: 1,500.
+    expect(
+      screen.getByTestId('perps-close-all-total-margin-value'),
+    ).toHaveTextContent('$3,500');
+    expect(
+      screen.getByTestId('perps-close-all-receive-value'),
+    ).toHaveTextContent('$3,457.04');
   });
 });

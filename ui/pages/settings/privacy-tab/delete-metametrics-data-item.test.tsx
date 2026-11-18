@@ -3,11 +3,13 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { CONSENSYS_PRIVACY_LINK } from '../../../../shared/lib/ui-utils';
 import { DeleteRegulationStatus } from '../../../../shared/constants/metametrics';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import {
   getMetaMetricsDataDeletionStatus,
   getAnalyticsId,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getOptedIn,
 } from '../../../selectors';
 import { createMetaMetricsDataDeletionTask } from '../../../store/actions';
@@ -20,6 +22,7 @@ jest.mock('../../../hooks/useAnalytics', () => {
   return {
     useAnalytics: () => ({
       trackEvent: jest.fn(),
+      trackErrorAsAnalytics: jest.fn(),
       createEventBuilder,
     }),
   };
@@ -39,7 +42,7 @@ describe('DeleteMetametricsDataItem', () => {
 
   const mockSelectorsDefault = () => {
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getCompletedMetaMetricsOnboarding) {
+      if (selector === getConsentDecisionMade) {
         return true;
       }
       if (selector === getOptedIn) {
@@ -74,7 +77,7 @@ describe('DeleteMetametricsDataItem', () => {
 
   it('button is disabled when metametrics is not enabled', () => {
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getCompletedMetaMetricsOnboarding) {
+      if (selector === getConsentDecisionMade) {
         return true;
       }
       if (selector === getOptedIn) {
@@ -94,7 +97,7 @@ describe('DeleteMetametricsDataItem', () => {
 
   it('button is disabled when analyticsId is null', () => {
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getCompletedMetaMetricsOnboarding) {
+      if (selector === getConsentDecisionMade) {
         return true;
       }
       if (selector === getOptedIn) {
@@ -130,11 +133,20 @@ describe('DeleteMetametricsDataItem', () => {
         screen.getByTestId('delete-metametrics-modal'),
       ).toBeInTheDocument();
     });
+
+    expect(screen.getByTestId('delete-metametrics-modal')).toHaveTextContent(
+      'Your wallet and accounts will remain exactly as they are now',
+    );
+    expect(
+      screen.getByRole('link', {
+        name: messages.deleteMetaMetricsDataPrivacyNotice.message,
+      }),
+    ).toHaveAttribute('href', CONSENSYS_PRIVACY_LINK);
   });
 
   it('opens deletion in progress modal when deletion was requested this session', async () => {
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getCompletedMetaMetricsOnboarding) {
+      if (selector === getConsentDecisionMade) {
         return true;
       }
       if (selector === getOptedIn) {
@@ -177,7 +189,7 @@ describe('DeleteMetametricsDataItem', () => {
 
   it('opens delete modal when revisiting after a previous deletion request', async () => {
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getCompletedMetaMetricsOnboarding) {
+      if (selector === getConsentDecisionMade) {
         return true;
       }
       if (selector === getOptedIn) {

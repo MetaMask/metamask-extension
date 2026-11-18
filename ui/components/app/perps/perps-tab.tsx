@@ -23,6 +23,7 @@ import { AccessRestrictedProvider } from '../compliance';
 import { PerpsView } from './perps-view';
 import { PerpsViewStreamBoundary } from './perps-view-stream-boundary';
 import { PerpsToastProvider } from './perps-toast';
+import { PerpsServiceInterruptionBanner } from './perps-service-interruption-banner';
 
 /**
  * Perps tab content for the account overview.
@@ -85,6 +86,9 @@ export function PerpsTab() {
     <PerpsAttributionProvider locationSearch={search}>
       <AccessRestrictedProvider>
         <PerpsToastProvider>
+          {/* Outside the error boundary so an outage message stays up when
+              home content fails to load. */}
+          <PerpsServiceInterruptionBanner />
           <ErrorBoundary key="perps">
             <PerpsViewStreamBoundary>
               <PerpsView />

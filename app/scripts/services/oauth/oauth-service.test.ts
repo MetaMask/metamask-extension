@@ -13,8 +13,10 @@ import browser from 'webextension-polyfill';
 import { OAuthErrorMessages } from '../../../../shared/lib/error';
 import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { AuthConnection } from '../../../../shared/constants/onboarding';
+import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import ExtensionPlatform from '../../platforms/extension';
 import { OAuthServiceMessenger, WebAuthenticator } from './types';
+import { getOAuthTraceTags } from './utils';
 import { OAuthService } from './oauth-service';
 import { createLoginHandler } from './create-login-handler';
 import { loadOAuthConfig } from './config';
@@ -50,6 +52,8 @@ const MOCK_STATE = JSON.stringify({
 jest.mock('../../platforms/extension');
 
 const mockCaptureException = jest.fn();
+const mockBufferedTrace = jest.fn();
+const mockBufferedEndTrace = jest.fn();
 const mockGetGeolocation = jest.fn().mockResolvedValue(undefined);
 const mockGetOnboardingControllerState = jest.fn().mockReturnValue({
   firstTimeFlowType: undefined,
@@ -74,6 +78,14 @@ function getMessenger(): OAuthServiceTestMessenger {
     'SeedlessOnboardingController:getAccessToken',
     mockGetAccessToken,
   );
+  rootMessenger.registerActionHandler(
+    'SentryTracingService:bufferedTrace',
+    mockBufferedTrace,
+  );
+  rootMessenger.registerActionHandler(
+    'SentryTracingService:bufferedEndTrace',
+    mockBufferedEndTrace,
+  );
 
   const messenger = new Messenger({
     namespace: 'OAuthService',
@@ -86,6 +98,8 @@ function getMessenger(): OAuthServiceTestMessenger {
       'GeolocationController:getGeolocation',
       'OnboardingController:getState',
       'SeedlessOnboardingController:getAccessToken',
+      'SentryTracingService:bufferedTrace',
+      'SentryTracingService:bufferedEndTrace',
     ],
   });
 
@@ -111,8 +125,6 @@ const mockWebAuthenticator: WebAuthenticator = {
   generateNonce: generateNonceSpy,
 };
 
-const mockBufferedTrace = jest.fn();
-const mockBufferedEndTrace = jest.fn();
 const mockTrackEvent = jest.fn();
 const mockPlatform = new ExtensionPlatform();
 let messenger: OAuthServiceTestMessenger;
@@ -158,8 +170,6 @@ describe('OAuthService - startOAuthLogin', () => {
       messenger,
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
     });
 
@@ -179,6 +189,42 @@ describe('OAuthService - startOAuthLogin', () => {
       expect.any(Function),
     );
     expect(mockGetGeolocation).toHaveBeenCalled();
+    expect(mockBufferedTrace).toHaveBeenNthCalledWith(1, {
+      name: TraceName.OnboardingOAuthProviderLogin,
+      op: TraceOperation.OnboardingSecurityOp,
+      tags: getOAuthTraceTags(AuthConnection.Google, false),
+    });
+    expect(mockBufferedTrace).toHaveBeenNthCalledWith(2, {
+      name: TraceName.OnboardingOAuthProviderLaunch,
+      op: TraceOperation.OnboardingSecurityOp,
+      tags: getOAuthTraceTags(AuthConnection.Google, false),
+    });
+    expect(mockBufferedTrace).toHaveBeenNthCalledWith(3, {
+      name: TraceName.OnboardingOAuthProviderInteraction,
+      op: TraceOperation.OnboardingSecurityOp,
+      tags: getOAuthTraceTags(AuthConnection.Google, false),
+    });
+    expect(mockBufferedTrace).toHaveBeenNthCalledWith(4, {
+      name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
+      op: TraceOperation.OnboardingSecurityOp,
+      tags: getOAuthTraceTags(AuthConnection.Google, false),
+    });
+    expect(mockBufferedEndTrace).toHaveBeenNthCalledWith(1, {
+      name: TraceName.OnboardingOAuthProviderInteraction,
+      data: { success: true },
+    });
+    expect(mockBufferedEndTrace).toHaveBeenNthCalledWith(2, {
+      name: TraceName.OnboardingOAuthProviderLaunch,
+      data: { success: true },
+    });
+    expect(mockBufferedEndTrace).toHaveBeenNthCalledWith(3, {
+      name: TraceName.OnboardingOAuthProviderLogin,
+      data: { success: true },
+    });
+    expect(mockBufferedEndTrace).toHaveBeenNthCalledWith(4, {
+      name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
+      data: { success: true },
+    });
   });
 
   it('should start the OAuth login process with `Apple`', async () => {
@@ -186,8 +232,6 @@ describe('OAuthService - startOAuthLogin', () => {
       messenger,
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
     });
 
@@ -205,6 +249,148 @@ describe('OAuthService - startOAuthLogin', () => {
         url: await appleLoginHandler.getAuthUrl(),
       },
       expect.any(Function),
+    );
+    expect(mockBufferedTrace).toHaveBeenCalledWith({
+      name: TraceName.OnboardingOAuthProviderLaunch,
+      op: TraceOperation.OnboardingSecurityOp,
+      tags: getOAuthTraceTags(AuthConnection.Apple, false),
+    });
+    expect(mockBufferedTrace).toHaveBeenCalledWith({
+      name: TraceName.OnboardingOAuthProviderInteraction,
+      op: TraceOperation.OnboardingSecurityOp,
+      tags: getOAuthTraceTags(AuthConnection.Apple, false),
+    });
+    expect(mockBufferedEndTrace).toHaveBeenCalledWith({
+      name: TraceName.OnboardingOAuthProviderLaunch,
+      data: { success: true },
+    });
+    expect(mockBufferedEndTrace).toHaveBeenCalledWith({
+      name: TraceName.OnboardingOAuthProviderInteraction,
+      data: { success: true },
+    });
+  });
+
+  it('ends the launch span before the provider callback completes', async () => {
+    let resolveLaunchDispatched!: () => void;
+    const launchDispatched = new Promise<void>((resolve) => {
+      resolveLaunchDispatched = resolve;
+    });
+    let responseCallback: ((responseUrl?: string) => void) | undefined;
+
+    const oauthService = new OAuthService({
+      messenger,
+      webAuthenticator: {
+        ...mockWebAuthenticator,
+        launchWebAuthFlow: jest
+          .fn()
+          .mockImplementation((_options, callback) => {
+            responseCallback = callback;
+            resolveLaunchDispatched();
+            return Promise.resolve();
+          }),
+      },
+      platform: mockPlatform,
+      trackEvent: mockTrackEvent,
+    });
+
+    const loginPromise = oauthService.startOAuthLogin(AuthConnection.Google);
+    await launchDispatched;
+
+    expect(mockBufferedEndTrace).toHaveBeenCalledWith({
+      name: TraceName.OnboardingOAuthProviderLaunch,
+      data: { success: true },
+    });
+    expect(mockBufferedEndTrace).not.toHaveBeenCalledWith({
+      name: TraceName.OnboardingOAuthProviderInteraction,
+      data: { success: true },
+    });
+
+    expect(responseCallback).toBeDefined();
+    responseCallback?.(
+      `${MOCK_REDIRECT_URI}?code=mocked-code&state=${MOCK_STATE}`,
+    );
+    await expect(loginPromise).resolves.toMatchObject({
+      authConnection: AuthConnection.Google,
+    });
+
+    const launchEndCall = mockBufferedEndTrace.mock.calls.findIndex(
+      ([request]) => request.name === TraceName.OnboardingOAuthProviderLaunch,
+    );
+    const interactionEndCall = mockBufferedEndTrace.mock.calls.findIndex(
+      ([request]) =>
+        request.name === TraceName.OnboardingOAuthProviderInteraction,
+    );
+    expect(launchEndCall).toBeLessThan(interactionEndCall);
+  });
+
+  it('ends launch and interaction spans when launch dispatch fails', async () => {
+    const launchError = new Error('launch failed');
+    const oauthService = new OAuthService({
+      messenger,
+      webAuthenticator: {
+        ...mockWebAuthenticator,
+        launchWebAuthFlow: jest.fn().mockImplementation(() => {
+          throw launchError;
+        }),
+      },
+      platform: mockPlatform,
+      trackEvent: mockTrackEvent,
+    });
+
+    await expect(
+      oauthService.startOAuthLogin(AuthConnection.Google),
+    ).rejects.toThrow(launchError);
+
+    expect(mockBufferedEndTrace).toHaveBeenCalledWith({
+      name: TraceName.OnboardingOAuthProviderLaunch,
+      data: { success: false },
+    });
+    expect(mockBufferedEndTrace).toHaveBeenCalledWith({
+      name: TraceName.OnboardingOAuthProviderInteraction,
+      data: { success: false },
+    });
+  });
+
+  it('parents OAuth traces under the supplied social login trace', async () => {
+    const oauthService = new OAuthService({
+      messenger,
+      webAuthenticator: mockWebAuthenticator,
+      platform: mockPlatform,
+      trackEvent: mockTrackEvent,
+    });
+    const parentTraceContext = {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      _name: TraceName.OnboardingSocialLoginAttempt,
+    };
+
+    await oauthService.startOAuthLogin(
+      AuthConnection.Google,
+      parentTraceContext,
+    );
+
+    expect(mockBufferedTrace).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: TraceName.OnboardingOAuthProviderLogin,
+        parentContext: parentTraceContext,
+      }),
+    );
+    expect(mockBufferedTrace).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: TraceName.OnboardingOAuthProviderLaunch,
+        parentContext: parentTraceContext,
+      }),
+    );
+    expect(mockBufferedTrace).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: TraceName.OnboardingOAuthProviderInteraction,
+        parentContext: parentTraceContext,
+      }),
+    );
+    expect(mockBufferedTrace).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
+        parentContext: parentTraceContext,
+      }),
     );
   });
 
@@ -258,7 +444,9 @@ describe('OAuthService - startOAuthLogin', () => {
       .spyOn(mockPlatform, 'addTabUpdatedListener')
       .mockImplementation(async (fn) => {
         await Promise.resolve();
-        await fn(1, { url: redirectUrl }, { url: redirectUrl });
+        await fn(1, { url: redirectUrl }, {
+          url: redirectUrl,
+        } as browser.Tabs.Tab);
       });
     jest
       .spyOn(mockPlatform, 'addTabRemovedListener')
@@ -268,8 +456,6 @@ describe('OAuthService - startOAuthLogin', () => {
       messenger,
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
     });
 
@@ -288,6 +474,24 @@ describe('OAuthService - startOAuthLogin', () => {
       ),
     });
     expect(mockPlatform.closeTab).toHaveBeenCalledWith(1);
+    expect(mockBufferedTrace).toHaveBeenNthCalledWith(2, {
+      name: TraceName.OnboardingOAuthProviderLaunch,
+      op: TraceOperation.OnboardingSecurityOp,
+      tags: getOAuthTraceTags(AuthConnection.Telegram, false),
+    });
+    expect(mockBufferedTrace).toHaveBeenNthCalledWith(3, {
+      name: TraceName.OnboardingOAuthProviderInteraction,
+      op: TraceOperation.OnboardingSecurityOp,
+      tags: getOAuthTraceTags(AuthConnection.Telegram, false),
+    });
+    expect(mockBufferedEndTrace).toHaveBeenNthCalledWith(1, {
+      name: TraceName.OnboardingOAuthProviderLaunch,
+      data: { success: true },
+    });
+    expect(mockBufferedEndTrace).toHaveBeenNthCalledWith(2, {
+      name: TraceName.OnboardingOAuthProviderInteraction,
+      data: { success: true },
+    });
   });
 
   it('uses an empty auth code when the Telegram redirect URL has no code parameter', async () => {
@@ -351,7 +555,9 @@ describe('OAuthService - startOAuthLogin', () => {
       .spyOn(mockPlatform, 'addTabUpdatedListener')
       .mockImplementation(async (fn) => {
         await Promise.resolve();
-        await fn(1, { url: redirectUrl }, { url: redirectUrl });
+        await fn(1, { url: redirectUrl }, {
+          url: redirectUrl,
+        } as browser.Tabs.Tab);
       });
     jest
       .spyOn(mockPlatform, 'addTabRemovedListener')
@@ -361,8 +567,6 @@ describe('OAuthService - startOAuthLogin', () => {
       messenger,
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
     });
 
@@ -388,15 +592,13 @@ describe('OAuthService - startOAuthLogin', () => {
       .spyOn(mockPlatform, 'addTabRemovedListener')
       .mockImplementation(async (fn) => {
         await Promise.resolve();
-        await fn(1);
+        await fn(1, { windowId: 0, isWindowClosing: false });
       });
 
     const oauthService = new OAuthService({
       messenger,
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
     });
 
@@ -406,6 +608,14 @@ describe('OAuthService - startOAuthLogin', () => {
 
     expect(captureException).not.toHaveBeenCalled();
     expect(mockPlatform.closeTab).not.toHaveBeenCalled();
+    expect(mockBufferedEndTrace).toHaveBeenCalledWith({
+      name: TraceName.OnboardingOAuthProviderLaunch,
+      data: { success: true },
+    });
+    expect(mockBufferedEndTrace).toHaveBeenCalledWith({
+      name: TraceName.OnboardingOAuthProviderInteraction,
+      data: { success: false },
+    });
   });
 
   it('should throw an error if the state validation fails - google', async () => {
@@ -419,8 +629,6 @@ describe('OAuthService - startOAuthLogin', () => {
         generateNonce: jest.fn().mockReturnValue(Math.random().toString()),
       },
       platform: mockPlatform,
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
     });
 
@@ -438,6 +646,14 @@ describe('OAuthService - startOAuthLogin', () => {
     expect(sentryError.cause?.message).toBe(
       OAuthErrorMessages.INVALID_OAUTH_STATE_ERROR,
     );
+    expect(mockBufferedEndTrace).toHaveBeenCalledWith({
+      name: TraceName.OnboardingOAuthProviderLaunch,
+      data: { success: true },
+    });
+    expect(mockBufferedEndTrace).toHaveBeenCalledWith({
+      name: TraceName.OnboardingOAuthProviderInteraction,
+      data: { success: false },
+    });
   });
 
   it('preserves the browser auth flow error for sentry when no redirect URL is returned', async () => {
@@ -461,8 +677,6 @@ describe('OAuthService - startOAuthLogin', () => {
           cb(undefined);
         }),
       },
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
       platform: mockPlatform,
     });
@@ -500,8 +714,6 @@ describe('OAuthService - startOAuthLogin', () => {
           cb(undefined);
         }),
       },
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
       platform: mockPlatform,
     });
@@ -537,8 +749,6 @@ describe('OAuthService - startOAuthLogin', () => {
           cb(undefined);
         }),
       },
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
       platform: mockPlatform,
     });
@@ -566,8 +776,6 @@ describe('OAuthService - startOAuthLogin', () => {
         messenger,
         webAuthenticator: mockWebAuthenticator,
         platform: mockPlatform,
-        bufferedTrace: mockBufferedTrace,
-        bufferedEndTrace: mockBufferedEndTrace,
         trackEvent: mockTrackEvent,
       });
 
@@ -621,8 +829,6 @@ describe('OAuthService - getNewRefreshToken', () => {
       messenger,
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
     });
 
@@ -681,8 +887,6 @@ describe('OAuthService - getNewRefreshToken', () => {
       messenger,
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
     });
 
@@ -719,8 +923,6 @@ describe('OAuthService - getNewRefreshToken', () => {
         messenger,
         webAuthenticator: mockWebAuthenticator,
         platform: mockPlatform,
-        bufferedTrace: mockBufferedTrace,
-        bufferedEndTrace: mockBufferedEndTrace,
         trackEvent: mockTrackEvent,
       });
 
@@ -762,8 +964,6 @@ describe('OAuthService - renewRefreshToken', () => {
       messenger,
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
     });
     const oauthConfig = loadOAuthConfig();
@@ -814,8 +1014,6 @@ describe('OAuthService - renewRefreshToken', () => {
       messenger,
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
     });
 
@@ -848,8 +1046,6 @@ describe('OAuthService - revokeRefreshToken', () => {
       messenger,
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
     });
     const oauthConfig = loadOAuthConfig();
@@ -895,8 +1091,6 @@ describe('OAuthService - revokeRefreshToken', () => {
       messenger,
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
     });
 
@@ -933,8 +1127,6 @@ describe('OAuthService - revokeRefreshToken', () => {
         messenger,
         webAuthenticator: mockWebAuthenticator,
         platform: mockPlatform,
-        bufferedTrace: mockBufferedTrace,
-        bufferedEndTrace: mockBufferedEndTrace,
         trackEvent: mockTrackEvent,
       });
 

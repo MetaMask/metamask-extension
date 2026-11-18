@@ -1,5 +1,5 @@
 import React from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-webpack5';
 
 import { BannerAlert } from './banner-alert';
 import { BannerAlertSeverity } from './banner-alert.types';

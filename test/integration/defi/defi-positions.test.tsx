@@ -61,7 +61,8 @@ const withMetamaskConnectedToMainnet = {
   analyticsId: 'test-metametrics-id',
   consentDecisionMade: true,
   optedIn: true,
-  dataCollectionForMarketing: false,
+  optedInToMarketing: false,
+  marketingConsentDecisionMade: true,
   selectedNetworkClientId: 'testNetworkConfigurationId',
   preferences: {
     ...mockMetaMaskState.preferences,

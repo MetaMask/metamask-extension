@@ -254,7 +254,7 @@ async function main(): Promise<void> {
       const qualityGateArg = isTestChangedOrNew
         ? ['--stop-after-one-failure']
         : [];
-      await runInShell('node', [...args, ...qualityGateArg, testFile]);
+      await runInShell('yarn', ['tsx', ...args, ...qualityGateArg, testFile]);
     }
   }
 }

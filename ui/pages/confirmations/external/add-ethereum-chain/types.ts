@@ -8,7 +8,6 @@ export type AddEthereumChainContext = {
   requestData: AddEthereumChainParameter & {
     ticker: string;
     rpcUrl: string;
-    failoverRpcUrls?: string[];
     rpcPrefs: {
       blockExplorerUrl?: string;
     };

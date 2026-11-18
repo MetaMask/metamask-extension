@@ -72,7 +72,9 @@ describe('PerpsActivityPage', () => {
   it('renders with correct data-testid', () => {
     renderWithProvider(<PerpsActivityPage />, createMockStore());
 
-    expect(screen.getByTestId('perps-activity-page')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('parent-selector-perps-activity'),
+    ).toBeInTheDocument();
   });
 
   it('displays all four filter options', () => {

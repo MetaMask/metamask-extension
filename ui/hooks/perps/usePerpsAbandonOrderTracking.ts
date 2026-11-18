@@ -1,4 +1,9 @@
-import { useEffect, useRef, type MutableRefObject } from 'react';
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  type MutableRefObject,
+} from 'react';
 import { Json } from '@metamask/utils';
 import { PERPS_EVENT_PROPERTY } from '../../../shared/constants/perps-events';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
@@ -48,9 +53,12 @@ export function usePerpsAbandonOrderTracking({
   // Stable refs so the effect below runs on activation changes only: re-running
   // it would restart the timer and emit on every render that changes `track`.
   const trackRef = useRef(track);
-  trackRef.current = track;
   const getAbandonPropertiesRef = useRef(getAbandonProperties);
-  getAbandonPropertiesRef.current = getAbandonProperties;
+
+  useLayoutEffect(() => {
+    trackRef.current = track;
+    getAbandonPropertiesRef.current = getAbandonProperties;
+  }, [track, getAbandonProperties]);
 
   useEffect(() => {
     if (!active) {

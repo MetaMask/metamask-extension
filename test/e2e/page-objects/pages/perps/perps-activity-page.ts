@@ -6,9 +6,11 @@ import { Driver } from '../../../webdriver/driver';
  * Screen: `#/perps/activity`, reached from `PerpsTab.clickRecentActivitySeeAll`.
  * Owns: the activity page shell, filter button and type options, transaction
  * cards, waiting for trade-title fragments, and the header back control.
- * Boundaries: the activity list only. Opening a card may leave this screen;
- * asserting Perps home or market detail after back belongs to those objects.
- * Related: `PerpsTab` (how tests get here),
+ * Boundaries: the activity list only. Opening a card leaves this screen;
+ * asserting transaction details, or Perps home or market detail after back,
+ * belongs to those objects.
+ * Related: `PerpsTab` (how tests get here), `PerpsTransactionDetailsPage`
+ * (opened from a card),
  * `flows/perps-activity-close-fill.flow.ts` for close-fill assertions that
  * span market detail and activity.
  *
@@ -27,16 +29,18 @@ export class PerpsActivityPage {
     };
   };
 
-  private readonly activityPage = { testId: 'perps-activity-page' };
-
   private readonly anyTransactionCard = {
     xpath:
-      "//*[@data-testid='perps-activity-page']//*[starts-with(@data-testid,'transaction-card-')]",
+      "//*[@data-testid='parent-selector-perps-activity']//*[starts-with(@data-testid,'transaction-card-')]",
   };
 
   private readonly driver: Driver;
 
   private readonly filterButton = { testId: 'perps-activity-filter-button' };
+
+  private readonly parentSelector = {
+    testId: 'parent-selector-perps-activity',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -46,7 +50,7 @@ export class PerpsActivityPage {
    * Waits for the Perps Activity page to be loaded.
    */
   async checkPageIsLoaded(): Promise<void> {
-    await this.driver.waitForSelector(this.activityPage);
+    await this.driver.waitForSelector(this.parentSelector);
   }
 
   /**
@@ -90,7 +94,7 @@ export class PerpsActivityPage {
    */
   async waitForActivityTradeTitleContaining(fragment: string): Promise<void> {
     await this.driver.waitForSelector({
-      xpath: `//*[@data-testid='perps-activity-page']//*[contains(normalize-space(.), "${fragment}")]`,
+      xpath: `//*[@data-testid='parent-selector-perps-activity']//*[contains(normalize-space(.), "${fragment}")]`,
     });
   }
 

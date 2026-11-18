@@ -1,53 +1,59 @@
 import React from 'react';
 import {
-  BackgroundColor,
-  BorderColor,
-  BorderRadius,
-} from '../../../../helpers/constants/design-system';
-import {
-  SelectButton,
-  SelectButtonSize,
   AvatarNetwork,
   AvatarNetworkSize,
-} from '../../../component-library';
+  ButtonBase,
+  IconColor,
+  IconName,
+  Text,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { getImageForChainId } from '../../../../selectors/multichain';
 
 export const NetworkSelectorCustomImport = ({
   title,
+  ariaLabel,
   buttonDataTestId,
   chainId,
   onSelectNetwork,
 }: {
   title: string;
+  ariaLabel: string;
   buttonDataTestId: string;
   chainId: string;
   onSelectNetwork: () => void;
 }) => {
-  const networkImageUrl = getImageForChainId(chainId);
+  const networkImageUrl = chainId ? getImageForChainId(chainId) : undefined;
 
   return (
-    <SelectButton
-      size={SelectButtonSize.Lg}
-      isBlock
-      backgroundColor={BackgroundColor.backgroundMuted}
-      borderColor={BorderColor.borderDefault}
-      borderRadius={BorderRadius.XL}
+    <ButtonBase
+      type="button"
+      aria-label={ariaLabel}
+      className="h-12 w-full justify-between gap-x-2 rounded-xl border border-muted bg-muted px-4 font-normal text-left hover:bg-muted active:scale-100"
+      onClick={onSelectNetwork}
+      data-testid={buttonDataTestId}
       startAccessory={
-        networkImageUrl ? (
+        chainId ? (
           <AvatarNetwork
-            key={networkImageUrl}
-            name={networkImageUrl ?? ''}
-            src={networkImageUrl ?? undefined}
+            key={networkImageUrl ?? chainId}
+            name={title}
+            src={networkImageUrl}
             size={AvatarNetworkSize.Xs}
-            className="rounded-md"
+            className="flex shrink-0 rounded-md"
           />
         ) : undefined
       }
-      onClick={onSelectNetwork}
-      data-testid={buttonDataTestId}
+      endIconName={IconName.ArrowDown}
+      endIconProps={{ color: IconColor.IconDefault }}
     >
-      {title}
-    </SelectButton>
+      <Text
+        variant={TextVariant.BodyMd}
+        ellipsis
+        className="min-w-0 flex-1 text-left"
+      >
+        {title}
+      </Text>
+    </ButtonBase>
   );
 };
 

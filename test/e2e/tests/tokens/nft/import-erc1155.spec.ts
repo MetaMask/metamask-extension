@@ -2,6 +2,7 @@ import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import Homepage from '../../../page-objects/pages/home/homepage';
+import ImportNftPage from '../../../page-objects/pages/asset/import-nft-page';
 import NftsTab from '../../../page-objects/pages/home/nfts-tab';
 import { login } from '../../../page-objects/flows/login.flow';
 
@@ -27,7 +28,10 @@ describe('Import ERC1155 NFT', function () {
         const homepage = new Homepage(driver);
         await homepage.goToNftTab();
         const nftsTab = new NftsTab(driver);
-        await nftsTab.importNft(contractAddress, '1');
+        await nftsTab.openImportNft();
+        const importNftPage = new ImportNftPage(driver);
+        await importNftPage.checkPageIsLoaded();
+        await importNftPage.importNft(contractAddress, '1');
 
         // Check the ERC1155 token is successfully imported and its image is displayed
         await nftsTab.checkSuccessImportNftMessageIsDisplayed();
@@ -53,7 +57,11 @@ describe('Import ERC1155 NFT', function () {
 
         // Import a valid ERC1155 token address and a token id that does not belong to user and check error message appears
         await new Homepage(driver).goToNftTab();
-        await new NftsTab(driver).importNft(
+        const nftsTab = new NftsTab(driver);
+        await nftsTab.openImportNft();
+        const importNftPage = new ImportNftPage(driver);
+        await importNftPage.checkPageIsLoaded();
+        await importNftPage.importNft(
           contractAddress,
           '4',
           'NFT can’t be added as the ownership details do not match. Make sure you have entered correct information.',

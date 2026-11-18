@@ -96,3 +96,9 @@ export enum ShieldUnexpectedErrorEventLocationEnum {
  * We need to provide this value to start/stop the polling for subscriptions.
  */
 export const SUBSCRIPTIONS_POLLING_INPUT = 'subscriptionsPollingInput';
+
+export enum ShieldErrorStateClickedTypeEnum {
+  UpdateCard = 'update_card',
+  AddFunds = 'add_funds',
+  Renew = 'renew',
+}

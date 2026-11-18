@@ -23,7 +23,7 @@ jest.mock('../../../../../hooks/useTheme', () => ({
 
 jest.mock('../../../../../selectors', () => ({
   getAnalyticsId: jest.fn(),
-  getCompletedMetaMetricsOnboarding: jest.fn(),
+  getConsentDecisionMade: jest.fn(),
   getOptedIn: jest.fn(),
   getDataCollectionForMarketing: jest.fn(),
 }));
@@ -41,7 +41,7 @@ const mockGetPortfolioUrl = jest.mocked(getPortfolioUrl);
 
 // Seed the useSelector calls in component order:
 // 1. getAnalyticsId
-// 2. getCompletedMetaMetricsOnboarding
+// 2. getConsentDecisionMade
 // 3. getOptedIn
 // 4. getDataCollectionForMarketing
 function seedSelectors({

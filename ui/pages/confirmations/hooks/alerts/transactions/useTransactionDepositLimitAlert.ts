@@ -19,7 +19,7 @@ function formatUsdAmount(value: number): string {
 
 /**
  * Blocking alert when the entered fiat amount exceeds the per-transaction-type
- * USD deposit limit from `confirmations_pay.depositLimit`.
+ * USD deposit limit from `confirmations_pay_extended.depositLimit`.
  * Matches mobile `useTransactionDepositLimitAlert`.
  * @param options0
  * @param options0.pendingAmount

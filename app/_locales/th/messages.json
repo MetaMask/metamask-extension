@@ -111,18 +111,11 @@
   "fast": {
     "message": "เร็ว"
   },
-  "fileImportFail": {
-    "message": "นำเข้าไฟล์ไม่สำเหร็จ กดที่นี่!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "from": {
     "message": "จาก"
   },
   "gasLimit": {
     "message": "วงเงินแก็ส"
-  },
-  "gasLimitTooLow": {
-    "message": "วงเงินแก็สต้องอย่างน้อย 21000"
   },
   "general": {
     "message": "ทั่วไป"
@@ -214,10 +207,6 @@
   "participateInMetaMetricsDescription": {
     "message": "เข้าร่วมใน MetaMetrics เพื่อช่วยเราในการพัฒนา MetaMask"
   },
-  "pastePrivateKey": {
-    "message": "วางคีย์ส่วนตัวของคุณที่นี่:",
-    "description": "For importing an account from a private key"
-  },
   "personalAddressDetected": {
     "message": "ตรวจพบแอดแดรสส่วนตัวแล้ว ใส่แอดแดรสสัญญาโทเค็น"
   },
@@ -227,9 +216,6 @@
   "privateKey": {
     "message": "คีย์ส่วนตัว",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "คำเตือน: ห้ามเปิดเผยคีย์นี้ ทุกคนที่มีคีย์ส่วนตัวสามารถขโมยข้อมูลใด ๆ ที่เก็บไว้ในบัญชีของคุณได้"
   },
   "privateNetwork": {
     "message": "เครือข่ายส่วนตัว"
@@ -315,9 +301,6 @@
   },
   "urlErrorMsg": {
     "message": "URI ต้องมีคำนำหน้าเป็น HTTP หรือ HTTPS"
-  },
-  "usedByClients": {
-    "message": "ถูกใช้งานโดยหลายไคลเอนท์"
   },
   "visitWebSite": {
     "message": "เยี่ยมชมเว็บไซต์ของเรา"

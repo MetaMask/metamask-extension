@@ -1,6 +1,5 @@
-import { Numeric } from '../../../../shared/lib/Numeric';
-
-const MIN_GAS_LIMIT_DEC = new Numeric('21000', 10);
+// Lowest intrinsic transaction cost defined by EIP-2780 (a self-transfer).
+const MIN_GAS_LIMIT_DEC = '12000';
 const MAX_GAS_LIMIT_DEC = '30000000';
 
 const HIGH_FEE_WARNING_MULTIPLIER = 1.5;

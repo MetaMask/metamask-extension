@@ -15,6 +15,7 @@ import {
   FontWeight,
   Text,
   TextColor,
+  TextFieldSearch,
   TextVariant as DSTextVariant,
 } from '@metamask/design-system-react';
 import { useBoolean } from '../../../../hooks/useBoolean';
@@ -30,6 +31,7 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { MultichainAccountList } from '../../multichain-account-list';
+import { useAccountListSearch } from '../../hooks/useAccountListSearch';
 import { getAccountTree } from '../../../../selectors/multichain-accounts/account-tree';
 import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { Footer, Header, Page } from '../../../multichain/pages/page';
@@ -111,6 +113,15 @@ export const MultichainEditAccountsPage = ({
 
     return Object.fromEntries(walletMap);
   }, [accountTree.wallets, supportedAccountGroups]);
+
+  const {
+    searchPattern,
+    onSearchBarChange,
+    clearSearch,
+    filteredWallets,
+    hasFilteredWallets,
+    isInSearchMode,
+  } = useAccountListSearch(walletsWithSupportedAccountGroups);
 
   const handleAccountClick = useCallback(
     (accountGroupId: AccountGroupId) => {
@@ -211,10 +222,21 @@ export const MultichainEditAccountsPage = ({
           {title ?? t('editAccounts')}
         </Header>
       )}
+      <search className="px-4 pt-1 pb-2">
+        <TextFieldSearch
+          className="w-full"
+          clearButtonOnClick={clearSearch}
+          data-testid="multichain-edit-account-list-search"
+          inputAriaLabel={t('searchYourAccounts')}
+          onChange={onSearchBarChange}
+          placeholder={t('searchYourAccounts')}
+          value={searchPattern}
+        />
+      </search>
       <ScrollContainer className="flex-1 overflow-y-auto">
         {siteMetadata && (
           <BannerBase
-            className="mx-4 mb-3 bg-muted"
+            className="mx-4 my-2 bg-muted"
             data-testid="connected-site-info-banner"
             startAccessory={
               siteMetadata.iconUrl ? (
@@ -245,12 +267,24 @@ export const MultichainEditAccountsPage = ({
             </Text>
           </BannerBase>
         )}
-        <MultichainAccountList
-          wallets={walletsWithSupportedAccountGroups}
-          selectedAccountGroups={selectedAccountGroups}
-          handleAccountClick={handleAccountClick}
-          showAccountCheckbox={true}
-        />
+        {hasFilteredWallets ? (
+          <MultichainAccountList
+            wallets={filteredWallets}
+            selectedAccountGroups={selectedAccountGroups}
+            handleAccountClick={handleAccountClick}
+            isInSearchMode={isInSearchMode}
+            showAccountCheckbox={true}
+          />
+        ) : (
+          <Text
+            className="p-4 text-center"
+            color={TextColor.TextAlternative}
+            variant={DSTextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
+          >
+            {t('noAccountsFound')}
+          </Text>
+        )}
       </ScrollContainer>
       <Footer>
         <Button

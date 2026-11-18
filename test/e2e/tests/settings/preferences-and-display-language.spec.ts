@@ -3,12 +3,15 @@ import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import PreferencesAndDisplaySettings from '../../page-objects/pages/settings/preferences-and-display-settings';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import PreferencesAndDisplaySettings from '../../page-objects/pages/settings/preferences-and-display/preferences-and-display-settings';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
-import { closeSettings } from '../../page-objects/flows/settings.flow';
+import {
+  changeLanguage,
+  closeSettings,
+} from '../../page-objects/flows/settings.flow';
 import ar from '../../../../app/_locales/ar/messages.json';
 import da from '../../../../app/_locales/da/messages.json';
 import de from '../../../../app/_locales/de/messages.json';
@@ -34,7 +37,7 @@ const selectors = {
     testId: 'auto-lockout-button',
     text: da.save.message,
   },
-  discoverTextवर्तमान: { text: hi.discover.message, tag: 'a' },
+  sendTextवर्तमान: { text: hi.send.message, tag: 'span' },
   headerTextAr: { text: ar.settings.message, tag: 'p' },
 };
 
@@ -53,9 +56,7 @@ describe('Settings - Preferences and display', function (this: Suite) {
         );
         await preferencesAndDisplaySettings.checkPageIsLoaded();
 
-        await preferencesAndDisplaySettings.changeLanguage(
-          'Español (Latinoamérica)',
-        );
+        await changeLanguage(driver, 'Español (Latinoamérica)');
         const isLanguageLabelChanged = await driver.isElementPresent(
           selectors.currentLanguageSpanish,
         );
@@ -69,7 +70,7 @@ describe('Settings - Preferences and display', function (this: Suite) {
           'Language did not change after refresh',
         );
 
-        await preferencesAndDisplaySettings.changeLanguage('English');
+        await changeLanguage(driver, 'English');
         const isLabelTextChanged = await driver.isElementPresent(
           selectors.currentLanguageEnglish,
         );
@@ -92,7 +93,7 @@ describe('Settings - Preferences and display', function (this: Suite) {
         );
         await preferencesAndDisplaySettings.checkPageIsLoaded();
 
-        await preferencesAndDisplaySettings.changeLanguage('Dansk');
+        await changeLanguage(driver, 'Dansk');
         const isLanguageLabelChanged = await driver.isElementPresent(
           selectors.currentLanguageDansk,
         );
@@ -139,7 +140,7 @@ describe('Settings - Preferences and display', function (this: Suite) {
         );
         await preferencesAndDisplaySettings.checkPageIsLoaded();
 
-        await preferencesAndDisplaySettings.changeLanguage('Deutsch');
+        await changeLanguage(driver, 'Deutsch');
         const isLanguageLabelChanged = await driver.isElementPresent(
           selectors.currentLanguageDeutsch,
         );
@@ -179,7 +180,7 @@ describe('Settings - Preferences and display', function (this: Suite) {
         );
         await preferencesAndDisplaySettings.checkPageIsLoaded();
 
-        await preferencesAndDisplaySettings.changeLanguage('मानक हिन्दी');
+        await changeLanguage(driver, 'मानक हिन्दी');
 
         const isLabelTextChanged = await driver.isElementPresent(
           selectors.currentLanguageवर्तमान,
@@ -193,11 +194,11 @@ describe('Settings - Preferences and display', function (this: Suite) {
         await driver.refresh();
         await homepage.checkPageIsLoaded();
         await homepage.checkExpectedBalanceIsDisplayed();
-        const isDiscoverButtonTextChanged = await driver.isElementPresent(
-          selectors.discoverTextवर्तमान,
+        const isSendButtonTextChanged = await driver.isElementPresent(
+          selectors.sendTextवर्तमान,
         );
         assert.equal(
-          isDiscoverButtonTextChanged,
+          isSendButtonTextChanged,
           true,
           'Language change is not reflected in headers',
         );
@@ -219,7 +220,7 @@ describe('Settings - Preferences and display', function (this: Suite) {
         );
         await preferencesAndDisplaySettings.checkPageIsLoaded();
 
-        await preferencesAndDisplaySettings.changeLanguage('العربية');
+        await changeLanguage(driver, 'العربية');
 
         const settingsPage = new SettingsPage(driver);
         await closeSettings(driver);

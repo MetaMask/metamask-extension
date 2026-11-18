@@ -102,6 +102,25 @@ test/integration/config/assets
 
 # webpack
 development/.webpack
+# Emitted by `tsc -p development/build/tsconfig.build.json` (see webpack:tsc)
+development/build/constants.js
+development/build/constants.d.ts
+development/build/set-environment-variables.js
+development/build/set-environment-variables.d.ts
+# Emitted by `tsc -p development/lib/tsconfig.lib.json` (see webpack:tsc)
+development/lib/build-type.js
+development/lib/build-type.d.ts
+development/lib/get-manifest-flag.js
+development/lib/get-manifest-flag.d.ts
+development/lib/get-version.js
+development/lib/get-version.d.ts
+development/lib/retry.js
+development/lib/retry.d.ts
+development/lib/variables.js
+development/lib/variables.d.ts
+# Emitted when `development/lib` tsc pulls in `shared/lib/manifestFlags.ts`
+shared/lib/manifestFlags.js
+shared/lib/manifestFlags.d.ts
 
 # llm workflow playwright temp files
 temp-llm-workflow-*
@@ -137,3 +156,6 @@ temp-llm-workflow-*
 .cursor/commands/
 # Carve-outs: IDE/bugbot config that must stay tracked
 !.cursor/BUGBOT.md
+
+# Platform API docs
+.platform-api-docs/

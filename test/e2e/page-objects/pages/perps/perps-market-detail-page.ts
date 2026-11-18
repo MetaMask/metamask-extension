@@ -108,8 +108,6 @@ export class PerpsMarketDetailPage {
     testId: 'perps-market-detail-back-button',
   };
 
-  private readonly marketDetailPage = { testId: 'perps-market-detail-page' };
-
   private readonly modifyCtaButton = { testId: 'perps-modify-cta-button' };
 
   private readonly modifyMenu = { testId: 'perps-modify-menu' };
@@ -127,6 +125,10 @@ export class PerpsMarketDetailPage {
   };
 
   private readonly orderEntry = { testId: 'order-entry' };
+
+  private readonly parentSelector = {
+    testId: 'parent-selector-perps-market-detail',
+  };
 
   private static readonly perpsClosePositionModalTestId =
     'perps-close-position-modal';
@@ -248,7 +250,7 @@ export class PerpsMarketDetailPage {
   async checkPageIsLoaded(): Promise<void> {
     await this.driver.waitForMultipleSelectors([
       this.marketDetailBackButton,
-      this.marketDetailPage,
+      this.parentSelector,
     ]);
   }
 

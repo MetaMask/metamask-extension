@@ -169,7 +169,7 @@ export const MOCK_BRIDGE_QUOTE_BTC_TO_USDC = [
 
 // Feature flags for BTC bridge
 export const BTC_BRIDGE_FEATURE_FLAGS = {
-  refreshRate: 30000,
+  refreshRate: 5000,
   minimumVersion: '0.0.0',
   maxRefreshCount: 5,
   support: true,
@@ -194,6 +194,13 @@ export const MOCK_BTC_TOKENS = [BTC_NATIVE_ASSET];
 
 export const MOCK_ETH_TOKENS_FOR_BRIDGE = [ETH_NATIVE_ASSET, USDC_ASSET];
 
+export type BridgeMockOptions = {
+  /** Whether computing the native BTC network fee should fail. */
+  networkFeeUnavailable?: boolean;
+  /** Whether to return quotes or an empty array. */
+  returnQuotes?: boolean;
+};
+
 // Mock bridge API endpoints
 export async function mockBridgeFeatureFlags(mockServer: Mockttp) {
   return await mockServer
@@ -216,11 +223,16 @@ export async function mockBridgeFeatureFlags(mockServer: Mockttp) {
  * Uses .always() to respond to multiple requests (debounce, refresh, etc.)
  *
  * @param mockServer - The mock server instance
- * @param returnQuotes - Whether to return quotes or empty array (default: true)
+ * @param options - Configuration options for the quote response
+ * @param options.networkFeeUnavailable
+ * @param options.returnQuotes
  */
 export async function mockBridgeGetQuote(
   mockServer: Mockttp,
-  returnQuotes: boolean = true,
+  {
+    networkFeeUnavailable = false,
+    returnQuotes = true,
+  }: BridgeMockOptions = {},
 ) {
   return await mockServer
     .forGet(/getQuote/u)
@@ -239,6 +251,15 @@ export async function mockBridgeGetQuote(
         const quote = isUsdcDestination
           ? MOCK_BRIDGE_QUOTE_BTC_TO_USDC
           : MOCK_BRIDGE_QUOTE_BTC_TO_ETH;
+        const quoteWithNetworkFee = quote.map((quoteResponse) => ({
+          ...quoteResponse,
+          ...(networkFeeUnavailable && {
+            trade: {
+              ...quoteResponse.trade,
+              unsignedPsbtBase64: 'invalid',
+            },
+          }),
+        }));
         console.log(
           `[BTC Bridge Mock] getQuote called for BTC, dest: ${
             isUsdcDestination ? 'USDC' : 'ETH'
@@ -246,7 +267,7 @@ export async function mockBridgeGetQuote(
         );
         return {
           statusCode: 200,
-          json: returnQuotes ? quote : [],
+          json: returnQuotes ? quoteWithNetworkFee : [],
         };
       }
 
@@ -355,7 +376,7 @@ export async function mockBridgeTxStatus(mockServer: Mockttp) {
           isExpectedToken: true,
           bridge: 'rango',
           srcChain: {
-            chainId: srcChainId,
+            chainId: Number(srcChainId),
             txHash,
           },
           destChain: {
@@ -385,11 +406,6 @@ export async function mockTopAssetsBtc(mockServer: Mockttp) {
     });
 }
 
-export type BridgeMockOptions = {
-  /** Whether to return quotes or empty array (default: true) */
-  returnQuotes?: boolean;
-};
-
 /**
  * Combined mock setup for all bridge endpoints.
  *
@@ -400,11 +416,9 @@ export async function mockAllBridgeEndpoints(
   mockServer: Mockttp,
   options: BridgeMockOptions = {},
 ) {
-  const { returnQuotes = true } = options;
-
   return [
     await mockBridgeFeatureFlags(mockServer),
-    await mockBridgeGetQuote(mockServer, returnQuotes),
+    await mockBridgeGetQuote(mockServer, options),
     await mockBridgeGetTokensBtc(mockServer),
     await mockBridgeGetTokensEth(mockServer),
     await mockBridgePopularTokens(mockServer),

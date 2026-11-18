@@ -1,32 +1,63 @@
 import type { Page } from '@playwright/test';
+import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
+import StartOnboardingPage from '../../../page-objects/pages/onboarding/start-onboarding-page';
+import { ROUTE_PAGE_OBJECT_REGISTRY } from '../../../route-registry';
+import type { Driver } from '../../../webdriver/driver';
+import { getE2EDriver } from '../e2e-driver';
 import {
-  CONFIRM_TRANSACTION_ROUTE,
-  CROSS_CHAIN_SWAP_ROUTE,
-  ONBOARDING_METAMETRICS,
-  PREPARE_SWAP_ROUTE,
-  SETTINGS_ROUTE,
-  SIGNATURE_REQUEST_PATH,
-  UNLOCK_ROUTE,
-} from '../../../../../ui/helpers/constants/routes';
-import { HomePage } from '../page-objects/home-page';
-import {
+  LAUNCH_SCREEN_CHECKS,
+  SCREEN_CHECKS,
   detectCurrentScreen,
   detectScreenFromUrl,
   detectUnlockState,
   getBaseExtensionState,
+  getScreenName,
+  waitForAnyScreen,
 } from './state-inspector';
 
-const mockGetBalance = jest.fn();
+const mockDriver = { timeout: 30_000 } as unknown as Driver;
 
-jest.mock('../page-objects/home-page', () => {
+jest.mock('../e2e-driver', () => ({
+  getE2EDriver: jest.fn(),
+  withTimeout: (driver: object, timeout: number) => ({ ...driver, timeout }),
+}));
+
+const mockLoginLoaded = jest.fn();
+const mockWelcomeLoaded = jest.fn();
+const mockHomeLoaded = jest.fn();
+const mockGetBalance = jest.fn();
+const mockHeaderLoaded = jest.fn();
+const mockCompleteLoaded = jest.fn();
+
+function mockPageObject(methods: () => Record<string, jest.Mock>) {
   return {
-    HomePage: jest.fn().mockImplementation(() => {
-      return {
-        getBalance: mockGetBalance,
-      };
-    }),
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: jest.fn().mockImplementation(() => methods()),
   };
-});
+}
+
+jest.mock('../../../page-objects/pages/onboarding/login-page', () =>
+  mockPageObject(() => ({ checkPageIsLoaded: mockLoginLoaded })),
+);
+jest.mock('../../../page-objects/pages/onboarding/start-onboarding-page', () =>
+  mockPageObject(() => ({ checkLoginPageIsLoaded: mockWelcomeLoaded })),
+);
+jest.mock('../../../page-objects/pages/home/homepage', () =>
+  mockPageObject(() => ({
+    checkPageIsLoaded: mockHomeLoaded,
+    getBalance: mockGetBalance,
+  })),
+);
+jest.mock('../../../page-objects/pages/home/header-navbar', () =>
+  mockPageObject(() => ({ checkPageIsLoaded: mockHeaderLoaded })),
+);
+jest.mock(
+  '../../../page-objects/pages/onboarding/onboarding-complete-page',
+  () => mockPageObject(() => ({ checkPageIsLoaded: mockCompleteLoaded })),
+);
+
+const notShown = () => Promise.reject(new Error('not shown'));
 
 const DEFAULT_METAMASK_STATE = {
   internalAccounts: {
@@ -47,11 +78,8 @@ const DEFAULT_METAMASK_STATE = {
 
 function buildPage(
   currentUrl = 'chrome-extension://id/home.html',
-  visibleBySelector: Record<string, boolean> = {},
-  rejectSelectors: string[] = [],
   cdpMetamaskState: unknown = null,
 ): Page {
-  const rejectSet = new Set(rejectSelectors);
   const mockCdpSend = jest.fn().mockImplementation(() => {
     if (cdpMetamaskState === null) {
       return Promise.resolve({ result: {} });
@@ -68,156 +96,125 @@ function buildPage(
         detach: jest.fn().mockResolvedValue(undefined),
       }),
     }),
-    locator: jest.fn().mockImplementation((selector: string) => {
-      return {
-        isVisible: jest.fn().mockImplementation(() => {
-          if (rejectSet.has(selector)) {
-            return Promise.reject(new Error('Locator failed'));
-          }
-          return Promise.resolve(Boolean(visibleBySelector[selector]));
-        }),
-      };
-    }),
   } as unknown as Page;
 }
 
 describe('state-inspector', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.mocked(getE2EDriver).mockReturnValue(mockDriver);
+    for (const check of [
+      mockLoginLoaded,
+      mockWelcomeLoaded,
+      mockHomeLoaded,
+      mockHeaderLoaded,
+      mockCompleteLoaded,
+    ]) {
+      check.mockImplementation(notShown);
+    }
     mockGetBalance.mockResolvedValue('25 ETH');
   });
 
+  describe('waitForAnyScreen', () => {
+    it('resolves with the screen whose page object loads', async () => {
+      mockWelcomeLoaded.mockResolvedValue(undefined);
+
+      const reached = await waitForAnyScreen(mockDriver, LAUNCH_SCREEN_CHECKS);
+
+      expect(reached.screen).toBe('onboarding-welcome');
+      expect(StartOnboardingPage).toHaveBeenCalledWith(mockDriver);
+    });
+
+    it('rejects when no page object loads', async () => {
+      await expect(
+        waitForAnyScreen(mockDriver, LAUNCH_SCREEN_CHECKS),
+      ).rejects.toBeInstanceOf(AggregateError);
+    });
+  });
+
+  describe('getScreenName', () => {
+    it('names a screen after its route path without dynamic segments', () => {
+      expect(getScreenName('/')).toBe('home');
+      expect(getScreenName('')).toBe('home');
+      expect(getScreenName('/activity')).toBe('activity');
+      expect(getScreenName('/send/:page?')).toBe('send');
+      expect(getScreenName('/settings/privacy')).toBe('settings-privacy');
+      expect(getScreenName('/confirm-transaction/:id/signature-request')).toBe(
+        'confirm-transaction-signature-request',
+      );
+    });
+  });
+
   describe('detectScreenFromUrl', () => {
-    it('detects send, swap, settings and unlock from hash routes', () => {
-      expect(detectScreenFromUrl('chrome-extension://id/home.html#/send')).toBe(
-        'send',
-      );
-      expect(
-        detectScreenFromUrl(
-          `chrome-extension://id/home.html#${CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}`,
-        ),
-      ).toBe('swap');
-      expect(
-        detectScreenFromUrl(
-          `chrome-extension://id/home.html#${SETTINGS_ROUTE}`,
-        ),
-      ).toBe('settings');
-      expect(
-        detectScreenFromUrl(`chrome-extension://id/home.html#${UNLOCK_ROUTE}`),
-      ).toBe('unlock');
+    const atHash = (hash: string) =>
+      detectScreenFromUrl(`chrome-extension://id/home.html#${hash}`);
+
+    it('detects main routes from the route registry', () => {
+      expect(atHash('/activity')).toBe('activity');
+      expect(atHash('/account-list')).toBe('account-list');
+      expect(atHash('/send')).toBe('send');
+      expect(atHash('/settings')).toBe('settings');
+      expect(atHash('/unlock')).toBe('unlock');
     });
 
-    it('detects confirm and signature requests from canonical routes', () => {
-      expect(
-        detectScreenFromUrl(
-          `chrome-extension://id/home.html#${CONFIRM_TRANSACTION_ROUTE}/123`,
-        ),
-      ).toBe('confirm-transaction');
-      expect(
-        detectScreenFromUrl(
-          `chrome-extension://id/home.html#${CONFIRM_TRANSACTION_ROUTE}/123${SIGNATURE_REQUEST_PATH}`,
-        ),
-      ).toBe('confirm-signature');
-    });
-
-    it('detects notification and unknown routes', () => {
-      expect(
-        detectScreenFromUrl('chrome-extension://id/notification.html'),
-      ).toBe('notification');
-      expect(
-        detectScreenFromUrl('chrome-extension://id/home.html#/random'),
-      ).toBe('unknown');
-    });
-
-    it('detects all onboarding sub-routes', () => {
-      expect(
-        detectScreenFromUrl(
-          'chrome-extension://id/home.html#/onboarding/welcome',
-        ),
-      ).toBe('onboarding-welcome');
-      expect(
-        detectScreenFromUrl(
-          'chrome-extension://id/home.html#/onboarding/create-password',
-        ),
-      ).toBe('onboarding-password');
-      expect(
-        detectScreenFromUrl(
-          'chrome-extension://id/home.html#/onboarding/import-with-recovery-phrase',
-        ),
-      ).toBe('onboarding-import');
-      expect(
-        detectScreenFromUrl(
-          'chrome-extension://id/home.html#/onboarding/reveal-recovery-phrase',
-        ),
-      ).toBe('onboarding-srp');
-      expect(
-        detectScreenFromUrl(
-          'chrome-extension://id/home.html#/onboarding/review-recovery-phrase',
-        ),
-      ).toBe('onboarding-srp');
-      expect(
-        detectScreenFromUrl(
-          'chrome-extension://id/home.html#/onboarding/confirm-recovery-phrase',
-        ),
-      ).toBe('onboarding-srp');
-      expect(
-        detectScreenFromUrl(
-          'chrome-extension://id/home.html#/onboarding/completion',
-        ),
-      ).toBe('onboarding-complete');
-      expect(
-        detectScreenFromUrl(
-          'chrome-extension://id/home.html#/onboarding/help-us-improve',
-        ),
-      ).toBe('onboarding-metametrics');
-      expect(
-        detectScreenFromUrl(
-          `chrome-extension://id/home.html#${ONBOARDING_METAMETRICS}`,
-        ),
-      ).toBe('onboarding-metametrics');
-      expect(
-        detectScreenFromUrl(
-          'chrome-extension://id/home.html#/onboarding/privacy-settings',
-        ),
-      ).toBe('onboarding-privacy');
-    });
-
-    it('detects onboarding base route as onboarding-welcome', () => {
-      expect(
-        detectScreenFromUrl('chrome-extension://id/home.html#/onboarding'),
-      ).toBe('onboarding-welcome');
-    });
-
-    it('detects home route from hash /', () => {
-      expect(detectScreenFromUrl('chrome-extension://id/home.html#/')).toBe(
-        'home',
+    it('detects routes with dynamic segments', () => {
+      expect(atHash('/send/amount')).toBe('send');
+      expect(atHash('/tx/eip155:1/0xabc')).toBe('tx');
+      expect(atHash('/confirm-transaction/123')).toBe('confirm-transaction');
+      expect(atHash('/confirm-transaction/123/signature-request')).toBe(
+        'confirm-transaction-signature-request',
       );
     });
 
-    it('detects home route from empty hash', () => {
+    it('ignores the query string', () => {
+      expect(atHash('/activity?tab=nfts')).toBe('activity');
+    });
+
+    it('detects sub-routes missing from ROUTES as their closest parent route', () => {
+      expect(atHash('/settings/not-a-route')).toBe('settings');
+      expect(atHash('/confirm-transaction/123/not-a-route')).toBe(
+        'confirm-transaction',
+      );
+    });
+
+    it('detects onboarding routes', () => {
+      expect(atHash('/onboarding')).toBe('onboarding');
+      expect(atHash('/onboarding/welcome')).toBe('onboarding-welcome');
+      expect(atHash('/onboarding/create-password')).toBe(
+        'onboarding-create-password',
+      );
+      expect(atHash('/onboarding/completion')).toBe('onboarding-completion');
+      expect(atHash('/onboarding/unlock')).toBe('onboarding-unlock');
+    });
+
+    it('detects home from "#/" and from an empty hash', () => {
+      expect(atHash('/')).toBe('home');
       expect(detectScreenFromUrl('chrome-extension://id/home.html')).toBe(
         'home',
       );
     });
 
-    it('does not false-positive home for /send, /settings, /onboarding', () => {
-      expect(detectScreenFromUrl('chrome-extension://id/home.html#/send')).toBe(
-        'send',
-      );
+    it('detects the notification window when it shows no route', () => {
       expect(
-        detectScreenFromUrl('chrome-extension://id/home.html#/settings'),
-      ).toBe('settings');
-      expect(
-        detectScreenFromUrl('chrome-extension://id/home.html#/onboarding'),
-      ).toBe('onboarding-welcome');
-    });
-
-    it('detects onboarding/unlock as unlock not onboarding', () => {
+        detectScreenFromUrl('chrome-extension://id/notification.html'),
+      ).toBe('notification');
       expect(
         detectScreenFromUrl(
-          'chrome-extension://id/home.html#/onboarding/unlock',
+          'chrome-extension://id/notification.html#/confirm-transaction/1',
         ),
-      ).toBe('unlock');
+      ).toBe('confirm-transaction');
+    });
+
+    it('returns unknown for paths that are not routes', () => {
+      expect(atHash('/random')).toBe('unknown');
+      expect(atHash('/random/nested')).toBe('unknown');
+    });
+
+    it('names each DOM screen check as its registry route', () => {
+      for (const { route, screen } of SCREEN_CHECKS) {
+        expect(Object.hasOwn(ROUTE_PAGE_OBJECT_REGISTRY, route)).toBe(true);
+        expect(atHash(route)).toBe(screen);
+      }
     });
   });
 
@@ -229,24 +226,55 @@ describe('state-inspector', () => {
     it('prefers URL detection when route is known', async () => {
       const page = buildPage('chrome-extension://id/home.html#/send');
       await expect(detectCurrentScreen(page)).resolves.toBe('send');
+      expect(getE2EDriver).not.toHaveBeenCalled();
     });
 
-    it('falls back to selector detection when route is unknown', async () => {
-      const page = buildPage('chrome-extension://id/home.html#/random', {
-        '[data-testid="onboarding-create-wallet"]': true,
-      });
+    it('detects activity and account list without probing page objects', async () => {
+      await expect(
+        detectCurrentScreen(
+          buildPage('chrome-extension://id/home.html#/activity'),
+        ),
+      ).resolves.toBe('activity');
+      await expect(
+        detectCurrentScreen(
+          buildPage('chrome-extension://id/home.html#/account-list'),
+        ),
+      ).resolves.toBe('account-list');
+      expect(getE2EDriver).not.toHaveBeenCalled();
+    });
+
+    it('falls back to the e2e page objects with a short timeout when route is unknown', async () => {
+      const page = buildPage('chrome-extension://id/home.html#/random');
+      mockWelcomeLoaded.mockResolvedValue(undefined);
 
       await expect(detectCurrentScreen(page)).resolves.toBe(
-        'onboarding-create',
+        'onboarding-welcome',
+      );
+      expect(getE2EDriver).toHaveBeenCalledWith(page);
+      expect(jest.mocked(StartOnboardingPage).mock.calls[0][0].timeout).toBe(
+        2_000,
       );
     });
 
-    it('handles selector lookup failures and returns unknown', async () => {
-      const page = buildPage('chrome-extension://id/home.html#/random', {}, [
-        '[data-testid="unlock-password"]',
-      ]);
+    it('returns unknown when no page object matches', async () => {
+      const page = buildPage('chrome-extension://id/home.html#/random');
 
       await expect(detectCurrentScreen(page)).resolves.toBe('unknown');
+    });
+
+    it('returns unknown when a page object waits past the probe limit', async () => {
+      jest.useFakeTimers();
+      try {
+        const page = buildPage('chrome-extension://id/home.html#/random');
+        mockWelcomeLoaded.mockReturnValue(new Promise(() => undefined));
+
+        const detected = detectCurrentScreen(page);
+        await jest.advanceTimersByTimeAsync(2_000);
+
+        await expect(detected).resolves.toBe('unknown');
+      } finally {
+        jest.useRealTimers();
+      }
     });
   });
 
@@ -254,47 +282,54 @@ describe('state-inspector', () => {
     it('returns true for unlocked screens without DOM check', async () => {
       const page = buildPage('chrome-extension://id/home.html#/');
 
-      await expect(detectUnlockState(page, 'home')).resolves.toBe(true);
-      await expect(detectUnlockState(page, 'send')).resolves.toBe(true);
-      await expect(detectUnlockState(page, 'settings')).resolves.toBe(true);
-      await expect(detectUnlockState(page, 'swap')).resolves.toBe(true);
-      await expect(
-        detectUnlockState(page, 'confirm-transaction'),
-      ).resolves.toBe(true);
-      expect(page.locator).not.toHaveBeenCalled();
+      for (const screen of [
+        'home',
+        'activity',
+        'account-list',
+        'send',
+        'settings-privacy',
+        'confirm-transaction',
+        'notification',
+      ]) {
+        await expect(detectUnlockState(page, screen)).resolves.toBe(true);
+      }
+      expect(HeaderNavbar).not.toHaveBeenCalled();
     });
 
     it('returns false for locked/onboarding screens without DOM check', async () => {
       const page = buildPage('chrome-extension://id/home.html');
 
-      await expect(detectUnlockState(page, 'unlock')).resolves.toBe(false);
-      await expect(detectUnlockState(page, 'onboarding-welcome')).resolves.toBe(
-        false,
-      );
-      await expect(
-        detectUnlockState(page, 'onboarding-password'),
-      ).resolves.toBe(false);
-      await expect(detectUnlockState(page, 'onboarding-privacy')).resolves.toBe(
-        false,
-      );
-      expect(page.locator).not.toHaveBeenCalled();
+      for (const screen of [
+        'unlock',
+        'lock',
+        'restore-vault',
+        'onboarding-welcome',
+        'onboarding-create-password',
+        'onboarding-unlock',
+      ]) {
+        await expect(detectUnlockState(page, screen)).resolves.toBe(false);
+      }
+      expect(HeaderNavbar).not.toHaveBeenCalled();
     });
 
-    it('falls back to DOM check for unknown screen', async () => {
-      const page = buildPage('chrome-extension://id/home.html', {
-        '[data-testid="account-menu-icon"]': true,
-      });
+    it('falls back to the e2e header navbar for unknown screen', async () => {
+      const page = buildPage('chrome-extension://id/home.html');
+      mockHeaderLoaded.mockResolvedValue(undefined);
 
       await expect(detectUnlockState(page, 'unknown')).resolves.toBe(true);
-      expect(page.locator).toHaveBeenCalledWith(
-        '[data-testid="account-menu-icon"]',
-      );
+      expect(jest.mocked(HeaderNavbar).mock.calls[0][0].timeout).toBe(2_000);
     });
 
-    it('returns false when DOM check fails', async () => {
-      const page = buildPage('chrome-extension://id/home.html', {}, [
-        '[data-testid="account-menu-icon"]',
-      ]);
+    it('falls back to the e2e header navbar for routes shown while locked or unlocked', async () => {
+      const page = buildPage('chrome-extension://id/home.html#/link');
+      mockHeaderLoaded.mockResolvedValue(undefined);
+
+      await expect(detectUnlockState(page, 'link')).resolves.toBe(true);
+      expect(HeaderNavbar).toHaveBeenCalledTimes(1);
+    });
+
+    it('returns false when the header navbar is not shown', async () => {
+      const page = buildPage('chrome-extension://id/home.html');
 
       await expect(detectUnlockState(page, 'unknown')).resolves.toBe(false);
     });
@@ -313,8 +348,6 @@ describe('state-inspector', () => {
     it('returns identity fields on unlocked non-home screens via stateHooks', async () => {
       const page = buildPage(
         'chrome-extension://id/home.html#/send',
-        {},
-        [],
         DEFAULT_METAMASK_STATE,
       );
 
@@ -331,14 +364,12 @@ describe('state-inspector', () => {
       expect(state.networkName).toBe('Localhost 8545');
       expect(state.chainId).toBe(1337);
       expect(state.balance).toBeNull();
-      expect(HomePage).not.toHaveBeenCalled();
+      expect(mockGetBalance).not.toHaveBeenCalled();
     });
 
     it('returns identity and balance when unlocked on home', async () => {
       const page = buildPage(
         'chrome-extension://id/home.html#/',
-        {},
-        [],
         DEFAULT_METAMASK_STATE,
       );
 
@@ -353,7 +384,18 @@ describe('state-inspector', () => {
       expect(state.networkName).toBe('Localhost 8545');
       expect(state.chainId).toBe(1337);
       expect(state.balance).toBe('25 ETH');
-      expect(HomePage).toHaveBeenCalledWith(page);
+      expect(mockGetBalance).toHaveBeenCalledWith(2_000);
+    });
+
+    it('returns a null balance when the home balance is empty or missing', async () => {
+      const page = buildPage('chrome-extension://id/home.html#/');
+      const options = { extensionId: 'j'.repeat(32), chainId: 1 };
+
+      mockGetBalance.mockResolvedValueOnce('');
+      expect((await getBaseExtensionState(page, options)).balance).toBeNull();
+
+      mockGetBalance.mockRejectedValueOnce(new Error('not shown'));
+      expect((await getBaseExtensionState(page, options)).balance).toBeNull();
     });
 
     it('returns null identity when CDP session fails', async () => {
@@ -374,7 +416,7 @@ describe('state-inspector', () => {
     });
 
     it('returns null identity when evaluate returns null', async () => {
-      const page = buildPage('chrome-extension://id/home.html#/', {}, [], null);
+      const page = buildPage('chrome-extension://id/home.html#/', null);
 
       const state = await getBaseExtensionState(page, {
         extensionId: 'f'.repeat(32),
@@ -387,7 +429,7 @@ describe('state-inspector', () => {
     });
 
     it('parses hex chainId from Redux state to number', async () => {
-      const page = buildPage('chrome-extension://id/home.html#/', {}, [], {
+      const page = buildPage('chrome-extension://id/home.html#/', {
         ...DEFAULT_METAMASK_STATE,
         networkConfigurationsByChainId: {
           '0x1': {
@@ -407,7 +449,7 @@ describe('state-inspector', () => {
     });
 
     it('falls back to options.chainId when Redux chainId is null', async () => {
-      const page = buildPage('chrome-extension://id/home.html#/', {}, [], {
+      const page = buildPage('chrome-extension://id/home.html#/', {
         ...DEFAULT_METAMASK_STATE,
         networkConfigurationsByChainId: {
           '0x539': {
@@ -426,10 +468,8 @@ describe('state-inspector', () => {
       expect(state.chainId).toBe(42);
     });
 
-    it('returns isUnlocked: true when URL is home even if account-menu-icon not visible', async () => {
-      const page = buildPage('chrome-extension://id/home.html#/', {
-        '[data-testid="account-menu-icon"]': false,
-      });
+    it('returns isUnlocked: true when URL is home even if the header navbar is not visible', async () => {
+      const page = buildPage('chrome-extension://id/home.html#/');
 
       const state = await getBaseExtensionState(page, {
         extensionId: 'c'.repeat(32),
@@ -440,12 +480,10 @@ describe('state-inspector', () => {
       expect(state.isUnlocked).toBe(true);
     });
 
-    it('returns isUnlocked: false during onboarding even if account-menu-icon visible', async () => {
+    it('returns isUnlocked: false during onboarding even if the header navbar is visible', async () => {
+      mockHeaderLoaded.mockResolvedValue(undefined);
       const page = buildPage(
         'chrome-extension://id/home.html#/onboarding/welcome',
-        {
-          '[data-testid="account-menu-icon"]': true,
-        },
       );
 
       const state = await getBaseExtensionState(page, {
@@ -460,8 +498,6 @@ describe('state-inspector', () => {
     it('extracts identity even when locked but skips balance', async () => {
       const page = buildPage(
         'chrome-extension://id/home.html#/unlock',
-        {},
-        [],
         DEFAULT_METAMASK_STATE,
       );
 
@@ -475,7 +511,7 @@ describe('state-inspector', () => {
       expect(state.networkName).toBe('Localhost 8545');
       expect(state.chainId).toBe(1337);
       expect(state.balance).toBeNull();
-      expect(HomePage).not.toHaveBeenCalled();
+      expect(mockGetBalance).not.toHaveBeenCalled();
     });
   });
 });

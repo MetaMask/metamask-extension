@@ -36,6 +36,10 @@ class DecryptMessageConfirmation {
 
   driver: Driver;
 
+  private readonly parentSelector = {
+    testId: 'parent-selector-decrypt-message-confirmation',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -72,6 +76,7 @@ class DecryptMessageConfirmation {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
         this.decryptMessageConfirmationTitle,
         this.decryptMessageButton,
       ]);

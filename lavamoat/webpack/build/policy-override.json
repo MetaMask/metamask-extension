@@ -112,7 +112,7 @@
         "thread-loader": true
       }
     },
-    "webpack>loader-runner": {
+    "thread-loader>loader-runner": {
       "packages": {
         "$root$": true,
         "html-bundler-webpack-plugin": true,
@@ -140,7 +140,7 @@
       "packages": {
         "thread-loader>neo-async": true,
         "webpack": true,
-        "webpack>loader-runner": true,
+        "thread-loader>loader-runner": true,
         "thread-loader>json-parse-better-errors": true,
         "thread-loader>schema-utils": true
       }

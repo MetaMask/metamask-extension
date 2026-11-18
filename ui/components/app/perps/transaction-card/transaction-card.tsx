@@ -72,6 +72,12 @@ export const TransactionCard = ({
   // Determine the amount to display based on transaction type
   const getAmountDisplay = (): { text: string; color: TextColor } => {
     if (transaction.fill) {
+      if (transaction.fill.amountNumber === undefined) {
+        return {
+          text: transaction.fill.amount,
+          color: TextColor.TextAlternative,
+        };
+      }
       return {
         text: transaction.fill.amount,
         color: transaction.fill.isPositive

@@ -8,10 +8,11 @@ import {
   importWalletWithSocialLoginOnboardingFlow,
   handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
+import DownloadAppPage from '../../page-objects/pages/onboarding/download-app-page';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
-import AddressListModal from '../../page-objects/pages/multichain/address-list-modal';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import AccountListPage from '../../page-objects/pages/account-list-page';
+import AccountAddressListPage from '../../page-objects/pages/accounts/address-list-page';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
+import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import {
   HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
@@ -41,10 +42,17 @@ async function mockSeedlessOnboardingBalanceApis(
     .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
     .always()
     .thenJson(200, {
-      fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 534352],
-      partialSupport: {
-        balances: [42220, 43114],
-      },
+      fullSupport: [
+        'eip155:1',
+        'eip155:137',
+        'eip155:56',
+        'eip155:59144',
+        'eip155:8453',
+        'eip155:10',
+        'eip155:42161',
+        'eip155:534352',
+      ],
+      partialSupport: ['eip155:42220', 'eip155:43114'],
     });
 
   await mockServer
@@ -145,8 +153,11 @@ describe('Metamask onboarding (with social login)', function () {
           driver,
         });
 
+        const downloadAppPage = new DownloadAppPage(driver);
+        await downloadAppPage.checkPageIsLoaded();
+        await downloadAppPage.clickContinue();
+
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.displayDownloadAppPageAndContinue();
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
         await onboardingCompletePage.completeOnboarding();
@@ -178,8 +189,11 @@ describe('Metamask onboarding (with social login)', function () {
           authConnection: AuthConnection.Telegram,
         });
 
+        const downloadAppPage = new DownloadAppPage(driver);
+        await downloadAppPage.checkPageIsLoaded();
+        await downloadAppPage.clickContinue();
+
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.displayDownloadAppPageAndContinue();
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
         await onboardingCompletePage.completeOnboarding();
@@ -230,8 +244,8 @@ describe('Metamask onboarding (with social login)', function () {
           accountLabel: 'Account 1',
         });
         await accountListPage.clickMultichainAccountMenuItem('Addresses');
-        const addressListModal = new AddressListModal(driver);
-        await addressListModal.checkNetworkAddressIsDisplayed(
+        const accountAddressListPage = new AccountAddressListPage(driver);
+        await accountAddressListPage.checkNetworkAddressIsDisplayed(
           shortenAddress(
             normalizeSafeAddress(MOCK_GOOGLE_ACCOUNT_WALLET_ADDRESS),
           ),
@@ -277,8 +291,8 @@ describe('Metamask onboarding (with social login)', function () {
           accountLabel: 'Account 1',
         });
         await accountListPage.clickMultichainAccountMenuItem('Addresses');
-        const addressListModal = new AddressListModal(driver);
-        await addressListModal.checkNetworkAddressIsDisplayed(
+        const accountAddressListPage = new AccountAddressListPage(driver);
+        await accountAddressListPage.checkNetworkAddressIsDisplayed(
           shortenAddress(
             normalizeSafeAddress(MOCK_TELEGRAM_ACCOUNT_WALLET_ADDRESS),
           ),

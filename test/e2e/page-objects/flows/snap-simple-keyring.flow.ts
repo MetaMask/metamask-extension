@@ -1,5 +1,5 @@
 import { Driver } from '../../webdriver/driver';
-import SnapSimpleKeyringPage from '../pages/snap-simple-keyring-page';
+import SnapSimpleKeyringPage from '../pages/snaps/simple-keyring-page';
 import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../../constants';
 
 /**

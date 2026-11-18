@@ -30,6 +30,8 @@ class OnboardingSrpPage {
     text: 'Enter your Secret Recovery Phrase',
   };
 
+  private readonly page = '[data-testid="parent-selector-onboarding-srp"]';
+
   private readonly srpConfirmButton = '[data-testid="import-srp-confirm"]';
 
   private readonly srpError =
@@ -59,6 +61,7 @@ class OnboardingSrpPage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.page,
         this.srpMessage,
         this.srpWord0,
         this.importDescription,
@@ -84,10 +87,6 @@ class OnboardingSrpPage {
 
   async clickConfirmButton(): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(this.srpConfirmButton);
-  }
-
-  async clickConfirmButtonWithSrpError(): Promise<void> {
-    await this.driver.clickElement(this.srpConfirmButton);
   }
 
   /**

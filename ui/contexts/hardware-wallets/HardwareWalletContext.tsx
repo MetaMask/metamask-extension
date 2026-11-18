@@ -4,9 +4,9 @@ import React, {
   useContext,
   useEffect,
   useMemo,
-  useRef,
   type ReactNode,
 } from 'react';
+import type { HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import { resetHardwareWalletRecoveryInlineCtaViewCount } from '../../../shared/lib/hardware-wallet-recovery-metrics';
 import { ConnectionState } from './connectionState';
 import { useHardwareWalletStateManager } from './HardwareWalletStateManager';
@@ -37,7 +37,7 @@ export type HardwareWalletStateContextType = {
 };
 
 export type HardwareWalletActionsContextType = {
-  connect: () => Promise<void>;
+  connect: () => Promise<HardwareWalletError | null>;
   disconnect: () => Promise<void>;
   clearError: () => void;
   setConnectionReady: () => void;
@@ -48,6 +48,10 @@ export type HardwareWalletActionsContextType = {
     walletType: HardwareWalletType,
   ) => Promise<boolean>;
   ensureDeviceReady: (options?: EnsureDeviceReadyOptions) => Promise<boolean>;
+  /** Resolves `null` when ready, otherwise the error explaining why not. */
+  ensureDeviceReadyOrError: (
+    options?: EnsureDeviceReadyOptions,
+  ) => Promise<HardwareWalletError | null>;
   /**
    * WORKAROUND: Trezor-specific flag to suppress WebUSB disconnect teardown
    * during signing. See `isSigningInProgressRef` in `HardwareWalletStateManager`
@@ -70,7 +74,8 @@ export type HardwareWalletContextType = {
   isWebUsbAvailable: boolean;
 
   // Actions (stable, won't cause rerenders)
-  connect: () => Promise<void>;
+  /** Resolves `null` on success, otherwise the error explaining the failure. */
+  connect: () => Promise<HardwareWalletError | null>;
   disconnect: () => Promise<void>;
   clearError: () => void;
   setConnectionReady: () => void;
@@ -81,6 +86,10 @@ export type HardwareWalletContextType = {
     walletType: HardwareWalletType,
   ) => Promise<boolean>;
   ensureDeviceReady: (options?: EnsureDeviceReadyOptions) => Promise<boolean>;
+  /** Resolves `null` when ready, otherwise the error explaining why not. */
+  ensureDeviceReadyOrError: (
+    options?: EnsureDeviceReadyOptions,
+  ) => Promise<HardwareWalletError | null>;
 };
 
 const HardwareWalletContext = createContext<HardwareWalletContextType | null>(
@@ -199,48 +208,33 @@ export const HardwareWalletProvider = ({
     setHardwareConnectionPermissionState,
   });
 
-  const { connect, disconnect, clearError, ensureDeviceReady } =
-    useHardwareWalletConnection({
-      refs,
-      setters: {
-        setConnectionState,
-      },
-      updateConnectionState,
-      handleDeviceEvent,
-      handleDisconnect,
-    });
+  const {
+    connect,
+    disconnect,
+    clearError,
+    ensureDeviceReady,
+    ensureDeviceReadyOrError,
+  } = useHardwareWalletConnection({
+    refs,
+    setters: {
+      setConnectionState,
+    },
+    updateConnectionState,
+    handleDeviceEvent,
+    handleDisconnect,
+  });
 
   const setConnectionReady = useCallback(() => {
     resetHardwareWalletRecoveryInlineCtaViewCount();
     updateConnectionState(ConnectionState.ready());
   }, [updateConnectionState]);
 
-  const setSigningInProgress = useCallback((value: boolean) => {
-    refs.isSigningInProgressRef.current = value;
-  }, []);
-
-  const stableActionsRef = useRef({
-    connect,
-    disconnect,
-    clearError,
-    setConnectionReady,
-    checkHardwareWalletPermission: checkHardwareWalletPermissionAction,
-    requestHardwareWalletPermission: requestHardwareWalletPermissionAction,
-    ensureDeviceReady,
-    setSigningInProgress,
-  });
-
-  // Update the ref when dependencies change
-  stableActionsRef.current = {
-    connect,
-    disconnect,
-    clearError,
-    setConnectionReady,
-    checkHardwareWalletPermission: checkHardwareWalletPermissionAction,
-    requestHardwareWalletPermission: requestHardwareWalletPermissionAction,
-    ensureDeviceReady,
-    setSigningInProgress,
-  };
+  const setSigningInProgress = useCallback(
+    (value: boolean) => {
+      refs.isSigningInProgressRef.current = value;
+    },
+    [refs],
+  );
 
   useHardwareWalletAutoConnect({
     state,
@@ -321,17 +315,15 @@ export const HardwareWalletProvider = ({
       hardwareConnectionPermissionState,
       isWebHidAvailable: isWebHidAvailableState,
       isWebUsbAvailable: isWebUsbAvailableState,
-
       // Actions (stable)
-      connect: stableActionsRef.current.connect,
-      disconnect: stableActionsRef.current.disconnect,
-      clearError: stableActionsRef.current.clearError,
-      setConnectionReady: stableActionsRef.current.setConnectionReady,
-      checkHardwareWalletPermission:
-        stableActionsRef.current.checkHardwareWalletPermission,
-      requestHardwareWalletPermission:
-        stableActionsRef.current.requestHardwareWalletPermission,
-      ensureDeviceReady: stableActionsRef.current.ensureDeviceReady,
+      connect,
+      disconnect,
+      clearError,
+      setConnectionReady,
+      checkHardwareWalletPermission: checkHardwareWalletPermissionAction,
+      requestHardwareWalletPermission: requestHardwareWalletPermissionAction,
+      ensureDeviceReady,
+      ensureDeviceReadyOrError,
     }),
     [
       isHardwareWalletAccount,
@@ -341,7 +333,14 @@ export const HardwareWalletProvider = ({
       hardwareConnectionPermissionState,
       isWebHidAvailableState,
       isWebUsbAvailableState,
-      stableActionsRef,
+      connect,
+      disconnect,
+      clearError,
+      setConnectionReady,
+      checkHardwareWalletPermissionAction,
+      requestHardwareWalletPermissionAction,
+      ensureDeviceReady,
+      ensureDeviceReadyOrError,
     ],
   );
 
@@ -374,19 +373,27 @@ export const HardwareWalletProvider = ({
 
   const actionsValue = useMemo<HardwareWalletActionsContextType>(
     () => ({
-      connect: stableActionsRef.current.connect,
-      disconnect: stableActionsRef.current.disconnect,
-      clearError: stableActionsRef.current.clearError,
-      setConnectionReady: stableActionsRef.current.setConnectionReady,
-      checkHardwareWalletPermission:
-        stableActionsRef.current.checkHardwareWalletPermission,
-      requestHardwareWalletPermission:
-        stableActionsRef.current.requestHardwareWalletPermission,
-      ensureDeviceReady: stableActionsRef.current.ensureDeviceReady,
-      setSigningInProgress: stableActionsRef.current.setSigningInProgress,
+      connect,
+      disconnect,
+      clearError,
+      setConnectionReady,
+      checkHardwareWalletPermission: checkHardwareWalletPermissionAction,
+      requestHardwareWalletPermission: requestHardwareWalletPermissionAction,
+      ensureDeviceReady,
+      ensureDeviceReadyOrError,
+      setSigningInProgress,
     }),
-    // Actions are stable, so this memo only runs once
-    [],
+    [
+      connect,
+      disconnect,
+      clearError,
+      setConnectionReady,
+      checkHardwareWalletPermissionAction,
+      requestHardwareWalletPermissionAction,
+      ensureDeviceReady,
+      ensureDeviceReadyOrError,
+      setSigningInProgress,
+    ],
   );
 
   return (

@@ -5,6 +5,7 @@ import {
 import { renderHook } from '@testing-library/react';
 import { useConfirmContext } from '../../context/confirm';
 import { setPostQuote } from '../../../../store/controller-actions/transaction-pay-controller';
+import { useTransactionPayWithdraw } from './useTransactionPayWithdraw';
 import { useTransactionPayPostQuote } from './useTransactionPayPostQuote';
 
 jest.mock('../../context/confirm', () => ({
@@ -13,8 +14,13 @@ jest.mock('../../context/confirm', () => ({
 
 jest.mock('../../../../store/controller-actions/transaction-pay-controller');
 
+jest.mock('./useTransactionPayWithdraw', () => ({
+  useTransactionPayWithdraw: jest.fn(),
+}));
+
 const useConfirmContextMock = jest.mocked(useConfirmContext);
 const setPostQuoteMock = jest.mocked(setPostQuote);
+const useTransactionPayWithdrawMock = jest.mocked(useTransactionPayWithdraw);
 
 function mockConfirmation(transactionMeta: Partial<TransactionMeta> | null) {
   useConfirmContextMock.mockReturnValue({
@@ -26,6 +32,10 @@ describe('useTransactionPayPostQuote', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     setPostQuoteMock.mockResolvedValue(undefined);
+    useTransactionPayWithdrawMock.mockReturnValue({
+      isWithdraw: true,
+      canSelectWithdrawToken: true,
+    });
   });
 
   it('calls setPostQuote with isHyperliquidSource for a perpsWithdraw transaction', () => {
@@ -42,7 +52,38 @@ describe('useTransactionPayPostQuote', () => {
     });
   });
 
-  it('does not call setPostQuote for non-perpsWithdraw transactions', () => {
+  it('calls setPostQuote without isHyperliquidSource for moneyAccountWithdraw', () => {
+    mockConfirmation({
+      id: 'tx-ma-1',
+      type: TransactionType.moneyAccountWithdraw,
+    });
+
+    renderHook(() => useTransactionPayPostQuote());
+
+    expect(setPostQuoteMock).toHaveBeenCalledTimes(1);
+    expect(setPostQuoteMock).toHaveBeenCalledWith('tx-ma-1', {});
+  });
+
+  it('does not call setPostQuote when withdraw token selection is disabled', () => {
+    useTransactionPayWithdrawMock.mockReturnValue({
+      isWithdraw: true,
+      canSelectWithdrawToken: false,
+    });
+    mockConfirmation({
+      id: 'tx-disabled',
+      type: TransactionType.moneyAccountWithdraw,
+    });
+
+    renderHook(() => useTransactionPayPostQuote());
+
+    expect(setPostQuoteMock).not.toHaveBeenCalled();
+  });
+
+  it('does not call setPostQuote for non-withdraw transactions', () => {
+    useTransactionPayWithdrawMock.mockReturnValue({
+      isWithdraw: false,
+      canSelectWithdrawToken: false,
+    });
     mockConfirmation({
       id: 'tx-2',
       type: TransactionType.perpsDeposit,

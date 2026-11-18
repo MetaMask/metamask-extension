@@ -2,10 +2,11 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { CaipAssetType, Hex } from '@metamask/utils';
-import { Box, TextButton, TextButtonSize } from '@metamask/design-system-react';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useRampsController } from '../../../hooks/ramps/useRampsController';
+import { useRampsAnalytics } from '../../../hooks/ramps/useRampsAnalytics';
+import { useRampsScreenViewed } from '../../../hooks/ramps/useRampsScreenViewed';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
 import { ScrollContainer } from '../../../contexts/scroll-container';
@@ -15,10 +16,18 @@ import {
   RampsSelectionCenteredSpinner,
   RampsSelectionPage,
 } from '../components/ramps-selection-page';
+import { RampsTokenUnavailableInfo } from './components/ramps-token-unavailable-info';
+import { ScrollNearBottom } from './components/scroll-near-bottom';
 import {
   filterRampsTokensByEnabledNetworks,
   mapRampsTokensToSendAssets,
 } from './utils/mapRampsTokensToSendAssets';
+
+// Number of additional catalog tokens revealed each time the user scrolls to
+// the bottom of the list. Keep it large enough that one page (~70px per row)
+// pushes the scroll position well past the 200px near-bottom threshold in
+// `ScrollNearBottom`, so one scroll gesture reveals at most one page.
+const TOKENS_PER_PAGE = 50;
 
 function useRampsTokenSelectionData() {
   const {
@@ -66,21 +75,44 @@ export function RampsTokenSelectionScreen() {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { goToBuy } = useRampsNavigation();
+  const { trackTokenSelected } = useRampsAnalytics();
   const { topTokens, allTokens, isLoading, error } =
     useRampsTokenSelectionData();
 
+  useRampsScreenViewed('Token Selection');
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedChainId, setSelectedChainId] = useState<string | null>(null);
-  const [showAllTokens, setShowAllTokens] = useState(false);
+  const [revealedTokenCount, setRevealedTokenCount] = useState(0);
 
   const isSearching = Boolean(searchQuery.trim());
   const isNetworkFilterActive = selectedChainId !== null;
+
+  // Tokens listed beyond the top tokens. Deduplicated against `topTokens`
+  // so scrolling never renders a token twice regardless of catalog order.
+  const extraTokens = useMemo(() => {
+    const topTokenIds = new Set(topTokens.map((token) => token.assetId));
+    return allTokens.filter((token) => !topTokenIds.has(token.assetId));
+  }, [allTokens, topTokens]);
+
   const sourceTokens = useMemo(() => {
-    if (isSearching || showAllTokens || isNetworkFilterActive) {
+    if (isSearching || isNetworkFilterActive) {
       return allTokens;
     }
-    return topTokens;
-  }, [allTokens, isNetworkFilterActive, isSearching, showAllTokens, topTokens]);
+
+    if (revealedTokenCount === 0) {
+      return topTokens;
+    }
+
+    return [...topTokens, ...extraTokens.slice(0, revealedTokenCount)];
+  }, [
+    allTokens,
+    extraTokens,
+    isNetworkFilterActive,
+    isSearching,
+    revealedTokenCount,
+    topTokens,
+  ]);
 
   const emptyStateMessage = useMemo(() => {
     if (isSearching) {
@@ -94,15 +126,31 @@ export function RampsTokenSelectionScreen() {
     return t('rampsNoTokensAvailable');
   }, [isNetworkFilterActive, isSearching, t]);
 
-  const canExpandTokenList =
+  const canLoadMore =
     !isSearching &&
     !isNetworkFilterActive &&
-    !showAllTokens &&
-    allTokens.length > topTokens.length;
+    revealedTokenCount < extraTokens.length;
 
   const handleBack = useCallback(() => {
     navigate(PREVIOUS_ROUTE);
   }, [navigate]);
+
+  // Tokens flagged `disabled` by the catalog (tokenSupported === false) cannot
+  // be bought in the user's region / via any available provider. Surface an
+  // info button that explains why, instead of only greying the row out
+  // (Figma "Token unavailable" dialog, TRAM-3710/TRAM-3961).
+  const renderUnavailableInfo = useCallback((asset: AssetType) => {
+    if (!asset.disabled) {
+      return null;
+    }
+
+    return <RampsTokenUnavailableInfo />;
+  }, []);
+
+  const endRenderers = useMemo(
+    () => [renderUnavailableInfo],
+    [renderUnavailableInfo],
+  );
 
   const handleAssetSelect = useCallback(
     (asset: AssetType) => {
@@ -110,17 +158,29 @@ export function RampsTokenSelectionScreen() {
         return;
       }
 
+      // currencyDestination is the full CAIP-19 assetId (matching mobile's
+      // `ramps-token-selected` emission — same value as tokenCaip19).
+      trackTokenSelected({
+        tokenCaip19: asset.assetId,
+        tokenSymbol: asset.symbol,
+        currencyDestination: asset.assetId,
+        currencyDestinationSymbol: asset.symbol,
+        currencyDestinationNetwork: asset.networkName,
+      });
+
       goToBuy({
         assetId: asset.assetId as CaipAssetType,
         chainId: asset.chainId as Hex | undefined,
       }).catch(() => undefined);
     },
-    [goToBuy],
+    [goToBuy, trackTokenSelected],
   );
 
-  const handleExpandTokens = useCallback(() => {
-    setShowAllTokens(true);
-  }, []);
+  const handleRevealMoreTokens = useCallback(() => {
+    setRevealedTokenCount((count) =>
+      Math.min(count + TOKENS_PER_PAGE, extraTokens.length),
+    );
+  }, [extraTokens.length]);
 
   const title = t('swapSelectToken');
 
@@ -137,34 +197,29 @@ export function RampsTokenSelectionScreen() {
     );
   } else {
     body = (
-      <>
-        <ScrollContainer className="flex-1 overflow-y-auto">
-          <Asset
-            tokens={sourceTokens}
-            nfts={[]}
-            hideNfts
-            hideBalances
-            disableMetrics
-            searchPlaceholder={t('enterTokenNameOrAddress')}
-            emptyStateMessage={emptyStateMessage}
-            onAssetSelect={handleAssetSelect}
-            onSearchQueryChange={setSearchQuery}
-            onSelectedChainIdChange={setSelectedChainId}
-          />
-        </ScrollContainer>
-
-        {canExpandTokenList && (
-          <Box className="border-t border-border-muted px-4 py-3">
-            <TextButton
-              size={TextButtonSize.BodyMd}
-              onClick={handleExpandTokens}
-              data-testid="ramps-show-all-tokens"
-            >
-              {t('rampsShowAllTokens')}
-            </TextButton>
-          </Box>
-        )}
-      </>
+      <ScrollContainer
+        className="flex-1 overflow-y-auto"
+        data-testid="ramps-token-selection-scroll-container"
+      >
+        <Asset
+          tokens={sourceTokens}
+          nfts={[]}
+          hideNfts
+          hideBalances
+          disableMetrics
+          searchPlaceholder={t('enterTokenNameOrAddress')}
+          emptyStateMessage={emptyStateMessage}
+          onAssetSelect={handleAssetSelect}
+          onSearchQueryChange={setSearchQuery}
+          onSelectedChainIdChange={setSelectedChainId}
+          endRenderers={endRenderers}
+        />
+        <ScrollNearBottom
+          onNearBottom={handleRevealMoreTokens}
+          enabled={canLoadMore}
+          observedLength={sourceTokens.length}
+        />
+      </ScrollContainer>
     );
   }
 

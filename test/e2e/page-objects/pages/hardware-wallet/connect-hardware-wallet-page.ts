@@ -15,6 +15,10 @@ import { Driver } from '../../../webdriver/driver';
 class ConnectHardwareWalletPage {
   private readonly closeButton = '[data-testid="hardware-connect-close-btn"]';
 
+  private readonly connectHardwareWalletPage = {
+    testId: 'parent-selector-connect-hardware-wallet-page',
+  };
+
   private readonly connectHardwareWalletPageTitle = {
     text: 'Connect a hardware wallet',
     tag: 'h4',
@@ -48,6 +52,7 @@ class ConnectHardwareWalletPage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.connectHardwareWalletPage,
         this.connectHardwareWalletPageTitle,
         this.connectLatticeButton,
       ]);

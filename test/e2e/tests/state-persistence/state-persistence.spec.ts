@@ -4,8 +4,10 @@ import { withFixtures } from '../../helpers';
 import { assertAccountVisible } from '../../page-objects/flows/account-list.flow';
 import { reloadAndUnlock } from '../../page-objects/flows/login.flow';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import {
+  addAccounts,
+  waitUntilAccountTreeSyncIdle,
+} from '../../page-objects/flows/add-account.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import {
@@ -48,6 +50,7 @@ async function mockFeatureFlagsWithoutNonEvmAccounts(mockServer: Mockttp) {
         distribution: 'main',
         environment: 'dev',
       })
+      .always()
       .thenCallback(() => ({
         statusCode: 200,
         json: [...prodFlags, ...NON_EVM_ACCOUNT_FLAG_OVERRIDES],
@@ -105,9 +108,6 @@ describe('State Persistence', function () {
       await withFixtures(
         getFixtureOptions(this, { storageKind: 'data' }),
         async ({ driver }) => {
-          const headerNavbar = new HeaderNavbar(driver);
-          const accountListPage = new AccountListPage(driver);
-
           await driver.delay(5000); // wait for any background migrations to finish
           await completeCreateNewWalletOnboardingFlow({
             driver,
@@ -120,17 +120,13 @@ describe('State Persistence', function () {
           console.log('expectDataStateStorage');
           await expectDataStateStorage(driver);
 
-          console.log('headerNavbar.checkPageIsLoaded');
-          await headerNavbar.checkPageIsLoaded();
-          console.log('headerNavbar.openAccountMenu');
-          await headerNavbar.openAccountMenu();
-          console.log('accountListPage.checkPageIsLoaded');
-          await accountListPage.checkPageIsLoaded();
-          console.log('accountListPage.addMultichainAccount');
-          await accountListPage.addMultichainAccount();
-          console.log('accountListPage.renameAccount');
-          await accountListPage.closeMultichainAccountsPage();
-          console.log('accountListPage.renameAccount');
+          await addAccounts({
+            driver,
+            count: 1,
+            onBeforeAdd: () => waitUntilAccountTreeSyncIdle(driver),
+          });
+
+          console.log('assertAccountVisible');
           await assertAccountVisible(driver, accountName);
 
           // No fixed delay needed: expectDataStateStorage polls storage until

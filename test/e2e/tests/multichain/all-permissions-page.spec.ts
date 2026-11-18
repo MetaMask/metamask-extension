@@ -6,7 +6,7 @@ import {
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import ExperimentalSettings from '../../page-objects/pages/settings/experimental-settings';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
 import { openPermissionsPageFlow } from '../../page-objects/flows/permissions.flow';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';

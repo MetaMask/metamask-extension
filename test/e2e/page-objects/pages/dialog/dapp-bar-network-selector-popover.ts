@@ -10,10 +10,8 @@ import { Driver } from '../../../webdriver/driver';
  * selecting a network (popover auto-closes on selection).
  * Boundaries: stops at the popover. Opening it belongs to the dapp connection
  * control bar / confirmation chrome. Broader network management belongs to
- * `pages/networks/*`. Site network permission editing belongs to
- * `NetworkPermissionSelectModal`.
- * Related: `NetworkPermissionSelectModal`, `pages/networks/*`,
- * `DappConnectionControlBar` UI.
+ * `pages/networks/*`.
+ * Related: `pages/networks/*`, `DappConnectionControlBar` UI.
  *
  * @see ui/components/multichain/dapp-connection-control-bar/dapp-bar-network-selector-popover.tsx
  */

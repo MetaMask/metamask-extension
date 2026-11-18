@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   ButtonIcon,
@@ -17,6 +18,7 @@ import {
   Header,
   Page,
 } from '../../../components/multichain/pages/page';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BRIDGE_ONLY_CHAINS } from '../../../../shared/constants/bridge';
 import {
@@ -41,15 +43,13 @@ import {
 } from './content';
 
 /**
- * Full-screen version of the bridge asset picker. It is shown instead of the
- * `BridgeAssetPicker` modal when the network management feature flag is
- * enabled. The token selection logic is identical to the modal — both share
- * `BridgeAssetPickerContent`. Whether the source or destination token is being
- * picked is derived from the URL search params.
+ * Full-screen bridge asset picker. Whether the source or destination token is
+ * being picked is derived from the URL search params.
  */
 const BridgeAssetPickerPage = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
@@ -59,8 +59,7 @@ const BridgeAssetPickerPage = () => {
   const toChain = useSelector(getToChain);
   const selectedAccount = useSelector(getFromAccount);
 
-  const { navigateToBridgePage, isDestinationAssetPickerPage: isDestination } =
-    useBridgeNavigation();
+  const { isDestinationAssetPickerPage: isDestination } = useBridgeNavigation();
 
   const ensureNetworkEnabled = useEnsureNetworkEnabled();
 
@@ -78,7 +77,7 @@ const BridgeAssetPickerPage = () => {
   const contentRef = useRef<BridgeAssetPickerContentHandle>(null);
 
   const handleClose = () => {
-    navigateToBridgePage();
+    navigate(PREVIOUS_ROUTE);
   };
 
   const selectedAsset = isDestination ? toToken : fromToken;

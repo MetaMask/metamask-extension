@@ -1,6 +1,7 @@
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { JsonRpcError } from '@metamask/rpc-errors';
 
+import { PasskeyPRFRequiredError } from './passkey-capabilities';
 import { PasskeyCeremonyTimeoutError } from './passkey-ceremony';
 import {
   getPasskeyErrorCode,
@@ -66,6 +67,12 @@ describe('translatePasskeyError', () => {
         label,
       ),
     ).toBe('t:passkeyErrorAlreadyEnrolled(Biometrics)');
+  });
+
+  it('maps PasskeyPRFRequiredError to passkey not supported', () => {
+    expect(translatePasskeyError(new PasskeyPRFRequiredError(), t, label)).toBe(
+      't:passkeyErrorNotSupported(Biometrics)',
+    );
   });
 
   it('returns null when no passkey-specific translation exists', () => {
@@ -191,6 +198,12 @@ describe('getPasskeyErrorCode', () => {
   it('returns timeout for PasskeyCeremonyTimeoutError', () => {
     expect(getPasskeyErrorCode(new PasskeyCeremonyTimeoutError())).toBe(
       'timeout',
+    );
+  });
+
+  it('returns prf_required for PasskeyPRFRequiredError', () => {
+    expect(getPasskeyErrorCode(new PasskeyPRFRequiredError())).toBe(
+      'prf_required',
     );
   });
 

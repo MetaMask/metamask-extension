@@ -11,6 +11,7 @@ export type SwapOptions = {
 };
 
 export type SwapReviewOptions = {
+  exchangeRate?: string;
   swapFrom: string;
   swapTo: string;
   swapToAmount: string;
@@ -59,12 +60,14 @@ class SwapPage {
   private readonly awaitingSwapDescription =
     '[data-testid="awaiting-swap-main-description"]';
 
-  private readonly bannerBase = '.mm-banner-base';
-
   private readonly bridgeAsset = '[data-testid^="bridge-asset--"]';
 
   private readonly bridgeDestinationButton =
     '[data-testid="bridge-destination-button"]';
+
+  private readonly bridgeQuotePage = {
+    testId: 'parent-selector-bridge-quote',
+  };
 
   private readonly bridgeSourceButton = '[data-testid="bridge-source-button"]';
 
@@ -77,10 +80,7 @@ class SwapPage {
 
   private readonly driver: Driver;
 
-  private readonly gasIncludedLabel = {
-    text: 'Included',
-    tag: 'p',
-  };
+  private readonly gasIncludedLabel = '[data-testid="network-fees-included"]';
 
   private readonly importTokensButton =
     '[data-testid="import-tokens-import-button"]';
@@ -106,10 +106,10 @@ class SwapPage {
     tag: 'p',
   };
 
-  private readonly quotesModal = '.quotes-modal';
+  private readonly quotesModal = '[data-testid="quotes-modal"]';
 
   private readonly quotesModalRow =
-    '.quotes-modal [style*="position: relative"]';
+    '[data-testid="quotes-modal"] [data-testid="bridge-quote-option"]';
 
   private readonly rateMessage = {
     text: `Includes 0.875% MetaMask fee`,
@@ -144,11 +144,6 @@ class SwapPage {
   private readonly transactionStatusHeader =
     '[data-testid="swap-smart-transaction-status-header"]';
 
-  private readonly viewActivityButton = {
-    tag: 'button',
-    text: 'View activity',
-  };
-
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -176,10 +171,10 @@ class SwapPage {
       css: this.swapsBannerTitle,
       text: title,
     });
-    await this.driver.waitForSelector({
-      css: this.bannerBase,
-      text,
-    });
+    // Banners built on `@metamask/design-system-react`'s `BannerAlert` no
+    // longer render the legacy `.mm-banner-base` class, so match the
+    // description text directly instead of scoping to that class.
+    await this.driver.waitForSelector({ text });
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -187,6 +182,7 @@ class SwapPage {
       await this.driver.waitForMultipleSelectors([
         this.reviewFromAmount,
         this.bridgeDestinationButton,
+        this.bridgeQuotePage,
       ]);
     } catch (e) {
       console.log('Timeout while waiting for Swap page to be loaded', e);
@@ -241,6 +237,18 @@ class SwapPage {
     });
   }
 
+  /**
+   * Waits for the from/to amount fields to be populated. Throws if the
+   * amounts are still empty once the wait times out.
+   */
+  async checkSwapAmountsArePopulated(): Promise<void> {
+    await this.driver.wait(async () => {
+      const fromAmount = await this.getFromAmountValue();
+      const toAmount = await this.getToAmountValue();
+      return fromAmount !== '' && toAmount !== '';
+    }, this.driver.timeout);
+  }
+
   async checkSwapButtonIsEnabled(): Promise<void> {
     await this.driver.waitForSelector(this.swapButton, {
       state: 'enabled',
@@ -249,10 +257,6 @@ class SwapPage {
 
   async clickOnMoreQuotes(): Promise<void> {
     await this.driver.clickElement(this.moreQuotesButton);
-  }
-
-  async clickViewActivity(): Promise<void> {
-    await this.driver.clickElementSafe(this.viewActivityButton);
   }
 
   async closeQuotes(): Promise<void> {
@@ -321,8 +325,8 @@ class SwapPage {
 
   async enterSwapAmount(amount: string): Promise<void> {
     console.log('Entering swap amount');
-    const stxToggle = await this.driver.findElement(this.reviewFromAmount);
-    stxToggle.sendKeys(amount);
+    await this.driver.waitForSelector(this.reviewFromAmount);
+    await this.driver.fill(this.reviewFromAmount, amount);
   }
 
   async fillSwapAmount(amount: string): Promise<void> {
@@ -340,6 +344,10 @@ class SwapPage {
     return element.getAttribute('value');
   }
 
+  async goBackAfterSubmit(): Promise<void> {
+    await new BridgeQuotePage(this.driver).goBackAfterSubmit();
+  }
+
   async reviewQuote(options: SwapReviewOptions) {
     await this.driver.waitForSelector(this.submitSwapButton);
     const fromAmount = await this.driver.findElement(this.reviewFromAmount);
@@ -349,7 +357,9 @@ class SwapPage {
     const toAmountText = await toAmount.getAttribute('value');
     assert.equal(toAmountText, options.swapToAmount);
     await this.driver.waitForSelector({
-      text: `1 ${options.swapFrom} = ${options.swapToAmount} ${options.swapTo}`,
+      text: `1 ${options.swapFrom} = ${
+        options.exchangeRate ?? options.swapToAmount
+      } ${options.swapTo}`,
       tag: 'p',
     });
     await this.driver.waitForSelector(this.rateMessage);
@@ -437,8 +447,7 @@ class SwapPage {
 
   async submitSwap(): Promise<void> {
     console.log('Submit Swap');
-    await this.driver.clickElement(this.swapButton);
-    await this.driver.delay(1500);
+    await this.driver.clickElementAndWaitToDisappear(this.swapButton);
   }
 
   async swapProcessingMessageCheck(message: string): Promise<void> {
@@ -448,13 +457,37 @@ class SwapPage {
     });
   }
 
+  async verifyQuote(options: {
+    swapFrom: string;
+    swapTo: string;
+    amount: number;
+  }): Promise<void> {
+    await this.checkQuoteIsDisplayed();
+    await this.checkSourceToken(options.swapFrom);
+    await this.checkDestinationToken(options.swapTo);
+
+    const swapFromAmount = await this.getFromAmountValue();
+    assert.equal(swapFromAmount, options.amount.toString());
+
+    const swapToAmount = await this.getToAmountValue();
+    const normalizedSwapToAmount = Number(swapToAmount.replace(/,/gu, ''));
+    assert.equal(
+      normalizedSwapToAmount > 0,
+      true,
+      `Expected destination amount to be > 0 but got ${swapToAmount}`,
+    );
+  }
+
   async waitForMaxButtonToBeDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.maxButton);
   }
 
   async waitForQuote(): Promise<void> {
     console.log('Wait for quote to be displayed');
-    await this.driver.waitForSelector(this.swapButton, { timeout: 30000 });
+    await this.driver.waitUntil(
+      async () => this.driver.isElementPresentAndVisible(this.swapButton, 500),
+      { timeout: 10000, interval: 200, stableFor: 500 },
+    );
   }
 
   async waitForSmartTransactionToComplete(): Promise<void> {

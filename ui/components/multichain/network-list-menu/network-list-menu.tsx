@@ -21,10 +21,16 @@ import {
 import { type CaipChainId, type Hex } from '@metamask/utils';
 import { ChainId } from '@metamask/controller-utils';
 import {
+  AvatarNetworkSize,
   Button,
   ButtonSize,
   ButtonVariant,
+  BoxFlexDirection,
   IconName,
+  Modal,
+  ModalOverlay,
+  ModalHeader,
+  ModalContent,
 } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -33,7 +39,7 @@ import { NetworkListItem } from '../network-list-item';
 import {
   removeNetwork,
   setActiveNetwork,
-  setShowTestNetworks,
+  setShowTestNetworksPreference,
   showModal,
   toggleNetworkMenu,
   updateNetworksList,
@@ -45,7 +51,10 @@ import {
   setTokenNetworkFilter,
   detectNfts,
 } from '../../../store/actions';
-import { isDisableableDefaultNetwork } from '../../../helpers/utils/network-sections';
+import {
+  getNetworkSectionKey,
+  isDisableableDefaultNetwork,
+} from '../../../helpers/utils/network-sections';
 import type { NetworkItemCallbacks } from '../network-manager/hooks/useNetworkItemCallbacks';
 import {
   CHAIN_IDS,
@@ -53,11 +62,10 @@ import {
   TEST_CHAINS,
   CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP,
   BUILT_IN_NETWORKS,
-  CAIP_FORMATTED_TEST_CHAINS,
 } from '../../../../shared/constants/network';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
-  getShowTestNetworks,
+  getShouldShowTestNetworks,
   getOriginOfCurrentTab,
   getEditedNetwork,
   getOrderedNetworksList,
@@ -68,6 +76,7 @@ import {
   getPermittedEVMChainsForSelectedTab,
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
+  getIsTestnetInUse,
   getNetworkDiscoverButtonEnabled,
   getAllChainsToPoll,
 } from '../../../selectors';
@@ -83,19 +92,22 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  Box,
-  Modal,
-  ModalOverlay,
-  Text,
-  ModalContent,
-  ModalHeader,
-  AvatarNetworkSize,
-} from '../../component-library';
+import { Box, Text } from '../../component-library';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  NetworkManagementEntryPoint,
+  NetworkManagementInteractionType,
+  NetworkManagementSource,
+  NetworkRemovalType,
 } from '../../../../shared/constants/metametrics';
+import {
+  trackNetworkManagementInteracted,
+  trackNetworkRemoved,
+  trackRpcAdded,
+  useTrackNetworkManagementStep,
+  type NetworkManagementStep,
+} from '../../../helpers/utils/network-management-metrics';
 import {
   convertCaipToHexChainId,
   sortNetworks,
@@ -144,6 +156,14 @@ type NetworkListMenuProps = {
   onClose: () => void;
 };
 
+const PICKER_STEPS: Partial<Record<ACTION_MODE, NetworkManagementStep>> = {
+  [ACTION_MODE.ADD_RPC]: 'rpc-form-add',
+  [ACTION_MODE.SELECT_RPC]: 'rpc-selector',
+};
+
+const getOptionalNetworkSectionKey = (chainId?: string) =>
+  chainId ? getNetworkSectionKey(chainId) : undefined;
+
 const isCustomNetworkConfiguration = (
   network: MultichainNetworkConfiguration,
 ): boolean => {
@@ -172,7 +192,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const { hasAnyAccountsInNetwork } = useAccountNetworkAvailability();
 
   const { tokenNetworkFilter } = useSelector(getPreferences);
-  const showTestnets = useSelector(getShowTestNetworks);
+  const showTestnets = useSelector(getShouldShowTestNetworks);
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const isUnlocked = useSelector(getIsUnlocked);
   const domains = useSelector(getAllDomains);
@@ -228,10 +248,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     endTrace({ name: TraceName.NetworkList });
   }, []);
 
-  const currentlyOnTestnet = useMemo(
-    () => CAIP_FORMATTED_TEST_CHAINS.includes(currentChainId),
-    [currentChainId],
-  );
+  const currentlyOnTestnet = useSelector(getIsTestnetInUse);
 
   const [nonTestNetworks, testNetworks] = useMemo(
     () =>
@@ -283,16 +300,32 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const networkFormState = useNetworkFormState(editedNetwork);
   const { rpcUrls, setRpcUrls, blockExplorers, setBlockExplorers } =
     networkFormState;
+  const pickerStep = PICKER_STEPS[actionMode] ?? null;
+
+  useTrackNetworkManagementStep({
+    step: pickerStep,
+    entryPoint: NetworkManagementEntryPoint.NetworkPicker,
+    chainId: editedNetwork?.chainId,
+    rpcCount: rpcUrls.rpcEndpoints.length,
+    networkType: getOptionalNetworkSectionKey(editedNetwork?.chainId),
+  });
 
   const [orderedNetworks, setOrderedNetworks] = useState(
     sortNetworks(nonTestNetworks, orderedNetworksList),
   );
+  const [prevNonTestNetworks, setPrevNonTestNetworks] =
+    useState(nonTestNetworks);
+  const [prevOrderedNetworksList, setPrevOrderedNetworksList] =
+    useState(orderedNetworksList);
 
-  useEffect(
-    () =>
-      setOrderedNetworks(sortNetworks(nonTestNetworks, orderedNetworksList)),
-    [nonTestNetworks, orderedNetworksList],
-  );
+  if (
+    nonTestNetworks !== prevNonTestNetworks ||
+    orderedNetworksList !== prevOrderedNetworksList
+  ) {
+    setPrevNonTestNetworks(nonTestNetworks);
+    setPrevOrderedNetworksList(orderedNetworksList);
+    setOrderedNetworks(sortNetworks(nonTestNetworks, orderedNetworksList));
+  }
 
   const featuredNetworksNotYetEnabled = useMemo(() => {
     // Filter out networks that are already enabled
@@ -600,13 +633,37 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         ? () => {
             dispatch(toggleNetworkMenu());
             if (isDisableableDefault) {
-              dispatch(removeNetwork(chainId as CaipChainId));
+              const removalChainId = hexChainId ?? chainId;
+              trackNetworkManagementInteracted(
+                { trackEvent, createEventBuilder },
+                {
+                  interactionType:
+                    NetworkManagementInteractionType.NetworkRemovalRequested,
+                  entryPoint: NetworkManagementEntryPoint.NetworkPicker,
+                  chainId: removalChainId,
+                  networkType: getNetworkSectionKey(removalChainId),
+                },
+              );
+              // Track only once the removal has actually completed.
+              Promise.resolve(dispatch(removeNetwork(chainId as CaipChainId)))
+                .then(() =>
+                  trackNetworkRemoved(
+                    { trackEvent, createEventBuilder },
+                    {
+                      chainId: removalChainId,
+                      entryPoint: NetworkManagementEntryPoint.NetworkPicker,
+                      removalType: NetworkRemovalType.Disabled,
+                    },
+                  ),
+                )
+                .catch(() => undefined);
               return;
             }
             dispatch(
               showModal({
                 name: 'CONFIRM_DELETE_NETWORK',
                 target: hexChainId,
+                metricsEntryPoint: NetworkManagementEntryPoint.NetworkPicker,
                 onConfirm: () => undefined,
               }),
             );
@@ -662,6 +719,8 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       hasMultiRpcOptions,
       isUnlocked,
       isDiscoverBtnEnabled,
+      trackEvent,
+      createEventBuilder,
     ],
   );
 
@@ -815,11 +874,11 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
                   </Text>
                   <ToggleButton
                     dataTestId="network-menu-show-test-networks"
-                    value={showTestnets || currentlyOnTestnet}
+                    value={showTestnets}
                     disabled={currentlyOnTestnet}
                     onToggle={(value: boolean) => {
                       const newVal = !value;
-                      dispatch(setShowTestNetworks(newVal));
+                      dispatch(setShowTestNetworksPreference(newVal));
                       trackEvent(
                         createEventBuilder(
                           MetaMetricsEventName.TestNetworksDisplayed,
@@ -835,7 +894,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
                 </Box>
               ) : null}
 
-              {showTestnets || currentlyOnTestnet ? (
+              {showTestnets ? (
                 <Box className="multichain-network-list-menu">
                   {sortedTestNetworks.map((network) =>
                     generateMultichainNetworkListItem(network),
@@ -893,6 +952,15 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
                 ],
                 defaultRpcEndpointIndex: rpcUrls.rpcEndpoints.length,
               });
+              trackRpcAdded(
+                { trackEvent, createEventBuilder },
+                {
+                  chainId: editedNetwork?.chainId,
+                  rpcCount: rpcUrls.rpcEndpoints.length + 1,
+                  source: NetworkManagementSource.Manual,
+                  entryPoint: NetworkManagementEntryPoint.NetworkPicker,
+                },
+              );
             }
             setActionMode(ACTION_MODE.ADD_EDIT);
           }}
@@ -917,6 +985,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       return (
         <SelectRpcUrlModal
           networkConfiguration={evmNetworks[editedNetwork.chainId]}
+          entryPoint={NetworkManagementEntryPoint.NetworkPicker}
           onNetworkChange={handleEvmNetworkChange}
         />
       );
@@ -961,22 +1030,22 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     <Modal isOpen onClose={onClose}>
       <ModalOverlay />
       <ModalContent
-        padding={0}
-        className="multichain-network-list-menu-content-wrapper"
+        className="multichain-network-list-menu-content-wrapper p-0"
         modalDialogProps={{
           className: 'multichain-network-list-menu-content-wrapper__dialog',
-          display: Display.Flex,
-          flexDirection: FlexDirection.Column,
+          flexDirection: BoxFlexDirection.Column,
           paddingTop: 0,
           paddingBottom: 0,
         }}
       >
         <ModalHeader
-          paddingTop={4}
-          paddingRight={4}
-          paddingBottom={actionMode === ACTION_MODE.SELECT_RPC ? 0 : 4}
+          className={`pt-4 pr-4 ${
+            actionMode === ACTION_MODE.SELECT_RPC ? 'pb-0' : 'pb-4'
+          }`}
           onClose={onClose}
-          onBack={onBack}
+          closeButtonProps={{ ariaLabel: t('close') }}
+          onBack={onBack as () => void}
+          backButtonProps={{ ariaLabel: t('back') }}
         >
           <Text
             ellipsis

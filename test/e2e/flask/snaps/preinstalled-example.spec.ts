@@ -11,7 +11,7 @@ import PreinstalledExampleSettings from '../../page-objects/pages/settings/prein
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
 import { mockTestSnapsSite } from '../../mock-response-data/snaps/snap-local-sites/test-snaps-site-mocks';
 import { TEST_SNAPS_WEBSITE_URL } from '../../snaps/enums';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 
 async function mockSentryTestError(mockServer: Mockttp) {
   return await mockServer
@@ -133,7 +133,7 @@ describe('Preinstalled example Snap', function () {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,
             optedIn: true,
@@ -186,7 +186,7 @@ describe('Preinstalled example Snap', function () {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,
             optedIn: true,
@@ -235,7 +235,7 @@ describe('Preinstalled example Snap', function () {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,
             optedIn: true,

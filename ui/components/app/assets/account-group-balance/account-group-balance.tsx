@@ -8,17 +8,16 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
   BoxFlexWrap,
+  FontFamily,
+  SensitiveText,
   Skeleton,
+  TextVariant,
 } from '@metamask/design-system-react';
 import {
   getMultichainNativeTokenBalance,
-  selectBalanceBySelectedAccountGroup,
   selectUnifiedBalanceBySelectedAccountGroup,
 } from '../../../../selectors/assets';
-import { getIsAssetsUnifyStateEnabled } from '../../../../selectors/assets-unify-state';
 
-import { TextVariant } from '../../../../helpers/constants/design-system';
-import { SensitiveText } from '../../../component-library';
 import {
   getEnabledNetworksByNamespace,
   getMultichainNetwork,
@@ -34,6 +33,7 @@ import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { hexWEIToDecETH } from '../../../../../shared/lib/conversion.utils';
 import { TEST_CHAINS } from '../../../../../shared/constants/network';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
+import { useAssetsHaveLoaded } from '../hooks/useAssetsHaveLoaded';
 
 export type AccountGroupBalanceProps = {
   classPrefix: string;
@@ -55,20 +55,14 @@ export const AccountGroupBalance = ({
   const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
   const { formatCurrency, formatTokenQuantity } = useFormatters();
 
-  const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
-  const legacySelectedGroupBalance = useSelector(
-    selectBalanceBySelectedAccountGroup,
-  );
-  const unifiedSelectedGroupBalance = useSelector(
+  const selectedGroupBalance = useSelector(
     selectUnifiedBalanceBySelectedAccountGroup,
   );
-  const selectedGroupBalance = isAssetsUnifyStateEnabled
-    ? unifiedSelectedGroupBalance
-    : legacySelectedGroupBalance;
   const fallbackCurrency = useSelector(getCurrentCurrency);
   const anyEnabledNetworksAreAvailable = useSelector(
     selectAnyEnabledNetworksAreAvailable,
   );
+  const assetsHaveLoaded = useAssetsHaveLoaded();
 
   const caipChainId = useMemo(
     () => (isCaipChainId(chainId) ? chainId : formatChainIdToCaip(chainId)),
@@ -172,12 +166,13 @@ export const AccountGroupBalance = ({
     showConversionForTestnets,
   ]);
 
+  const totalIsUnresolved = isZeroAmount(total) || currency === undefined;
+
   return (
     <Skeleton
       hideChildren={
-        isEvm &&
-        !anyEnabledNetworksAreAvailable &&
-        (isZeroAmount(total) || currency === undefined)
+        totalIsUnresolved &&
+        ((isEvm && !anyEnabledNetworksAreAvailable) || !assetsHaveLoaded)
       }
       className="mb-1"
       data-testid="account-group-balance-skeleton"
@@ -194,13 +189,14 @@ export const AccountGroupBalance = ({
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
         flexWrap={BoxFlexWrap.Wrap}
+        onClick={handleSensitiveToggle}
       >
         <SensitiveText
           ellipsis
-          variant={TextVariant.inherit}
+          variant={TextVariant.AmountDisplayLg}
+          fontFamily={FontFamily.Hero}
           isHidden={privacyMode}
           data-testid="account-value-and-suffix"
-          onClick={handleSensitiveToggle}
           className="cursor-pointer transition-colors duration-200 hover:text-text-alternative"
         >
           {/* We should always show something but the check is just to appease TypeScript */}

@@ -9,12 +9,11 @@ import { Driver } from '../../../webdriver/driver';
  * Boundaries: the send form through Continue. Confirmation / review screens
  * (including Bitcoin snap review) belong to confirmation or
  * `BitcoinReviewTxPage`.
- * Related: `BitcoinReviewTxPage`, `flows/send-transaction.flow.ts`,
- * `flows/bitcoin-send.flow.ts`.
+ * Related: `BitcoinReviewTxPage`, `flows/transaction.flow.ts`.
  *
  * @see ui/pages/confirmations/send/send.tsx
  * @see ui/pages/confirmations/send/send-inner.tsx
- * @see test/e2e/page-objects/flows/send-transaction.flow.ts
+ * @see test/e2e/page-objects/flows/transaction.flow.ts
  */
 class SendPage {
   private readonly amountBalance = { testId: 'send-amount-balance' };
@@ -66,6 +65,10 @@ class SendPage {
     text: 'Invalid address',
   };
 
+  private readonly invalidValueError = {
+    text: 'Invalid value',
+  };
+
   private readonly maxButton = {
     text: 'Max',
     tag: 'button',
@@ -81,7 +84,9 @@ class SendPage {
     testId: 'send-network-filter-toggle',
   };
 
-  private readonly recipientClassRendered = '.break-all';
+  private readonly recipientFormatted = {
+    testId: 'clear-recipient-btn',
+  };
 
   private readonly recipientModalButton = {
     testId: 'open-recipient-modal-btn',
@@ -94,6 +99,10 @@ class SendPage {
 
   private readonly sendAlertAcknowledgeButton =
     '[data-testid="send-alert-modal-acknowledge-button"]';
+
+  private readonly sendPage = {
+    testId: 'parent-selector-send-page',
+  };
 
   private readonly solanaNetwork = {
     text: 'Solana',
@@ -239,6 +248,11 @@ class SendPage {
     await this.driver.waitForSelector(this.invalidAddressError);
   }
 
+  async checkInvalidValueError(): Promise<void> {
+    console.log('Checking for invalid value error');
+    await this.driver.waitForSelector(this.invalidValueError);
+  }
+
   async checkNetworkFilterToggleIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.networkPicker);
   }
@@ -249,6 +263,7 @@ class SendPage {
       await this.driver.waitForMultipleSelectors([
         this.header,
         this.networkPicker,
+        this.sendPage,
       ]);
     } catch (e) {
       console.log('Timeout while waiting for send page to be loaded', e);
@@ -392,8 +407,41 @@ class SendPage {
     // We wait for that to happen before proceeding with the next step to prevent flakiness.
     // When the address is invalid the formatted element never renders, so we skip the wait.
     if (validAddress) {
-      await this.driver.waitForSelector(this.recipientClassRendered);
+      await this.driver.waitForSelector(this.recipientFormatted);
     }
+  }
+
+  /**
+   * Waits until the amount input holds a stable non-empty value, then returns it.
+   * Use this after Max, which fills the input asynchronously.
+   *
+   * @returns The amount input value.
+   */
+  async getAmountInputValue(): Promise<string> {
+    console.log('Reading send amount input value');
+    let stableValue = '';
+    let stableReads = 0;
+    await this.driver.waitUntil(
+      async () => {
+        const inputElement = await this.driver.findElement(this.amountInput);
+        const value = await inputElement.getAttribute('value');
+        if (!value) {
+          stableValue = '';
+          stableReads = 0;
+          return false;
+        }
+        if (value === stableValue) {
+          stableReads += 1;
+        } else {
+          stableValue = value;
+          stableReads = 1;
+        }
+        return stableReads >= 2;
+      },
+      { interval: 200, timeout: 10000 },
+    );
+    console.log(`Send amount input value is ${stableValue}`);
+    return stableValue;
   }
 
   /**

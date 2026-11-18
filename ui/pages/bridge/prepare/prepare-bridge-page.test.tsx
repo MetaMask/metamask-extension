@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Provider } from '@metamask/network-controller';
-import { act, render, fireEvent } from '@testing-library/react';
+import { act, render, fireEvent, waitFor } from '@testing-library/react';
 import {
   ChainId,
   formatChainIdToCaip,
@@ -27,7 +27,17 @@ import {
   HardwareConnectionPermissionState,
   HardwareWalletProvider,
 } from '../../../contexts/hardware-wallets';
+import * as tokenSecurityUtils from '../utils/token-security';
 import PrepareBridgePage from './prepare-bridge-page';
+
+const mockQuoteTraceStart = jest.fn();
+
+jest.mock('../utils/swap-quote-fetch-trace', () => ({
+  swapQuoteFetchTrace: {
+    start: (...args: unknown[]) => mockQuoteTraceStart(...args),
+    finish: jest.fn(),
+  },
+}));
 
 // Mock the bridge hooks
 jest.mock('../hooks/useGasIncludedSupport', () => ({
@@ -48,12 +58,26 @@ jest.mock('../../../contexts/hardware-wallets', () => ({
   useHardwareWalletState: () => mockUseHardwareWalletState(),
 }));
 
+const mockShowErrorModal = jest.fn();
+
+jest.mock(
+  '../../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+  () => ({
+    ...jest.requireActual(
+      '../../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+    ),
+    useHardwareWalletError: () => ({
+      showErrorModal: mockShowErrorModal,
+      dismissErrorModal: jest.fn(),
+      isErrorModalVisible: false,
+      setErrorModalSuppressed: jest.fn(),
+    }),
+  }),
+);
+
 setBackgroundConnection({
-  resetState: async () => jest.fn(),
   getStatePatches: async () => jest.fn(),
-  updateBridgeQuoteRequestParams: async () => jest.fn(),
-  setInputPrimaryDenomination: async () => undefined,
-  trackUnifiedSwapBridgeEvent: async () => undefined,
+  messengerCall: jest.fn(),
 } as never);
 
 describe('PrepareBridgePage', () => {
@@ -77,7 +101,7 @@ describe('PrepareBridgePage', () => {
       isWebUsbAvailable: false,
     });
     mockUseHardwareWalletActions.mockReturnValue({
-      ensureDeviceReady: jest.fn().mockResolvedValue(true),
+      ensureDeviceReadyOrError: jest.fn().mockResolvedValue(null),
     });
     mockUseHardwareWalletState.mockReturnValue({
       connectionState: { status: ConnectionStatus.Disconnected },
@@ -130,6 +154,8 @@ describe('PrepareBridgePage', () => {
 
     expect(getByTestId('to-amount')).toBeInTheDocument();
     expect(getByTestId('to-amount').closest('input')).toBeDisabled();
+    expect(getByTestId('to-amount')).toHaveValue('0');
+    expect(getByTestId('to-amount-row')).toHaveClass('opacity-50');
 
     expect(getByTestId('switch-tokens').closest('button')).toBeDisabled();
   });
@@ -159,6 +185,7 @@ describe('PrepareBridgePage', () => {
 
     expect(getByTestId('from-amount')).toHaveDisplayValue('2524.21');
     expect(getByTestId('to-amount')).toHaveValue('0');
+    expect(getByTestId('to-amount-row')).toHaveClass('opacity-50');
   });
 
   it('should render the component, with inputs set', async () => {
@@ -472,14 +499,10 @@ describe('PrepareBridgePage', () => {
       .spyOn(reactRouterUtils, 'useSearchParams')
       .mockReturnValue([{ get: () => null }] as never);
 
-    const updateBridgeQuoteRequestParams = jest
-      .fn()
-      .mockResolvedValue(undefined);
+    const messengerCall = jest.fn().mockResolvedValue(undefined);
     setBackgroundConnection({
-      resetState: jest.fn().mockResolvedValue(undefined),
       getStatePatches: jest.fn().mockResolvedValue([]),
-      updateBridgeQuoteRequestParams,
-      trackUnifiedSwapBridgeEvent: jest.fn().mockResolvedValue(undefined),
+      messengerCall,
     } as never);
 
     const btcAsset = getNativeAssetForChainId(ChainId.BTC);
@@ -572,18 +595,146 @@ describe('PrepareBridgePage', () => {
       await Promise.resolve();
     });
 
-    expect(updateBridgeQuoteRequestParams).toHaveBeenCalledWith(
-      expect.objectContaining({
-        insufficientBal: false,
-        srcChainId: btcToken.chainId,
-        srcTokenAmount: '99997000',
-      }),
-      expect.any(Object),
-      0,
-      1,
+    expect(messengerCall).toHaveBeenCalledWith(
+      'BridgeController:updateBridgeQuoteRequestParams',
+      [
+        expect.objectContaining({
+          insufficientBal: false,
+          srcChainId: btcToken.chainId,
+          srcTokenAmount: '99997000',
+        }),
+        expect.any(Object),
+        0,
+        1,
+      ],
     );
 
     jest.useRealTimers();
+  });
+
+  describe('quote fetch trace', () => {
+    const TOKEN_ADDRESS = '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984';
+
+    const makeQuoteRequestStore = (
+      bridgeSliceOverrides: Record<string, unknown> = {},
+    ) =>
+      createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chains: {
+              [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: true },
+              [CHAIN_IDS.LINEA_MAINNET]: {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+            },
+          },
+        },
+        bridgeSliceOverrides: {
+          fromTokenInputValue: '1',
+          fromToken: {
+            address: TOKEN_ADDRESS,
+            decimals: 6,
+            symbol: 'USDC',
+            chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
+            assetId: toAssetId(
+              TOKEN_ADDRESS,
+              formatChainIdToCaip(CHAIN_IDS.MAINNET),
+            ),
+          },
+          toToken: {
+            address: TOKEN_ADDRESS,
+            decimals: 6,
+            symbol: 'UNI',
+            chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+            assetId: toAssetId(
+              TOKEN_ADDRESS,
+              formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+            ),
+          },
+          ...bridgeSliceOverrides,
+        },
+      });
+
+    beforeEach(() => {
+      jest.useFakeTimers();
+      jest
+        .spyOn(reactRouterUtils, 'useSearchParams')
+        .mockReturnValue([{ get: () => null }] as never);
+      setBackgroundConnection({
+        getStatePatches: jest.fn().mockResolvedValue([]),
+        messengerCall: jest.fn(),
+      } as never);
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('starts a trace when a valid quote request is dispatched', async () => {
+      renderWithProvider(
+        <HardwareWalletProvider>
+          <PrepareBridgePage onOpenSettings={jest.fn()} />
+        </HardwareWalletProvider>,
+        configureStore(makeQuoteRequestStore()),
+      );
+
+      expect(mockQuoteTraceStart).not.toHaveBeenCalled();
+
+      await act(async () => {
+        jest.advanceTimersByTime(300);
+        await Promise.resolve();
+      });
+
+      expect(mockQuoteTraceStart).toHaveBeenCalledWith({
+        srcChainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
+        destChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+        isRefresh: false,
+      });
+    });
+
+    it('starts a trace when quotes are manually refreshed', async () => {
+      const { getByTestId } = renderWithProvider(
+        <HardwareWalletProvider>
+          <PrepareBridgePage onOpenSettings={jest.fn()} />
+        </HardwareWalletProvider>,
+        configureStore(makeQuoteRequestStore({ wasTxDeclined: true })),
+      );
+
+      await act(async () => {
+        jest.advanceTimersByTime(300);
+        await Promise.resolve();
+      });
+      mockQuoteTraceStart.mockClear();
+
+      fireEvent.click(getByTestId('bridge-cta-button'));
+      await act(async () => {
+        jest.advanceTimersByTime(300);
+        await Promise.resolve();
+      });
+
+      expect(mockQuoteTraceStart).toHaveBeenCalledWith({
+        srcChainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
+        destChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+        isRefresh: true,
+      });
+    });
+
+    it('does not start a trace for an incomplete quote request', async () => {
+      renderWithProvider(
+        <HardwareWalletProvider>
+          <PrepareBridgePage onOpenSettings={jest.fn()} />
+        </HardwareWalletProvider>,
+        configureStore(makeQuoteRequestStore({ fromTokenInputValue: null })),
+      );
+
+      await act(async () => {
+        jest.advanceTimersByTime(300);
+        await Promise.resolve();
+      });
+
+      expect(mockQuoteTraceStart).not.toHaveBeenCalled();
+    });
   });
 
   describe('token_security_type_destination coverage', () => {
@@ -651,12 +802,8 @@ describe('PrepareBridgePage', () => {
       });
 
     const backgroundWithAllMethods = {
-      resetState: jest.fn(),
       getStatePatches: jest.fn(),
-      updateBridgeQuoteRequestParams: jest.fn(),
-      trackUnifiedSwapBridgeEvent: jest.fn(),
-      setEnabledAllPopularNetworks: jest.fn(),
-      setActiveNetwork: jest.fn(),
+      messengerCall: jest.fn(),
     } as never;
 
     beforeEach(() => {
@@ -748,6 +895,43 @@ describe('PrepareBridgePage', () => {
       await act(async () => {
         fireEvent.click(ctaButton);
       });
+    });
+
+    it('backfills fetched security data onto a toToken that has none', async () => {
+      setBackgroundConnection(backgroundWithAllMethods);
+      const mockState = makeStoreWithSecurityData(undefined);
+      mockState.metamask.useExternalServices = true;
+      const toTokenAssetId = toAssetId(
+        TOKEN_ADDRESS,
+        formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+      );
+      const fetchSpy = jest
+        .spyOn(tokenSecurityUtils, 'fetchCachedTokenAssets')
+        .mockResolvedValue([
+          {
+            assetId: toTokenAssetId,
+            securityData: { resultType: 'Malicious', features: [] },
+          },
+        ] as never);
+      const store = configureStore(mockState);
+
+      renderWithProvider(
+        <HardwareWalletProvider>
+          <PrepareBridgePage onOpenSettings={jest.fn()} />
+        </HardwareWalletProvider>,
+        store,
+      );
+
+      await waitFor(() =>
+        expect(store.getState().bridge.toToken?.securityData).toStrictEqual({
+          type: 'Malicious',
+          metadata: { features: [] },
+        }),
+      );
+      expect(fetchSpy).toHaveBeenCalledWith(
+        expect.arrayContaining([toTokenAssetId]),
+      );
+      fetchSpy.mockRestore();
     });
   });
 });

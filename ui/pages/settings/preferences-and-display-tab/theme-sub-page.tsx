@@ -15,7 +15,6 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { setTheme } from '../../../store/actions';
-import { PREFERENCES_AND_DISPLAY_ROUTE } from '../../../helpers/constants/routes';
 import { getTheme } from '../../../selectors';
 import {
   MetaMetricsEventName,
@@ -46,7 +45,7 @@ const ThemeSubPage = () => {
         .build(),
     );
     dispatch(setTheme(value));
-    transitionBack(() => navigate(PREFERENCES_AND_DISPLAY_ROUTE));
+    transitionBack(() => navigate(-1));
   };
 
   return (

@@ -10,7 +10,6 @@ import * as assetUtils from '../../../shared/lib/asset-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 
-import { getFromToken } from '../../ducks/bridge/selectors';
 import { usePrefillFromSearchQuery } from './usePrefillFromSearchQuery';
 
 // Helper hook that combines useBridgeQueryParams with useLocation
@@ -99,7 +98,9 @@ describe('usePrefillFromSearchQuery', () => {
     const { store, result } = renderResult;
 
     await waitFor(() => {
-      expect(result.current.location.search).toBe('?swaps=true');
+      expect(result.current.location.search).toBe(
+        `?${searchParams.toString()}`,
+      );
       expect(result.current.location.pathname).toBe('/');
       expect(store?.getState().bridge?.fromToken).toBeDefined();
       expect(store?.getState().bridge?.toToken).toBeDefined();
@@ -161,7 +162,9 @@ describe('usePrefillFromSearchQuery', () => {
     );
 
     await waitFor(() => {
-      expect(result.current.location.search).toBe('?swaps=true');
+      expect(result.current.location.search).toBe(
+        `?${searchParams.toString()}`,
+      );
       expect(store?.getState().bridge?.fromToken).toBeDefined();
       expect(store?.getState().bridge?.toToken).toBeDefined();
     });
@@ -217,7 +220,9 @@ describe('usePrefillFromSearchQuery', () => {
     );
 
     await waitFor(() => {
-      expect(result.current.location.search).toBe('?swaps=true');
+      expect(result.current.location.search).toBe(
+        `?${searchParams.toString()}`,
+      );
       expect(store).toBeDefined();
     });
     const { fromToken, toToken, fromTokenInputValue } =
@@ -261,14 +266,13 @@ describe('usePrefillFromSearchQuery', () => {
       from: 'eip155:59144/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580D',
     });
 
-    const { result, store } = renderUseBridgeQueryParams(
+    const { store } = renderUseBridgeQueryParams(
       mockStoreState,
       // eslint-disable-next-line prefer-template
       '/?' + searchParams.toString(),
     );
 
     await waitFor(() => {
-      expect(result.current.location.search).toBe('');
       expect(store?.getState().bridge?.fromToken).toBeDefined();
     });
     const { fromToken, toToken, fromTokenInputValue } =
@@ -311,30 +315,14 @@ describe('usePrefillFromSearchQuery', () => {
       from: 'eip155:59144/slip44:60',
     });
 
-    const { result, store } = renderUseBridgeQueryParams(
+    const { store } = renderUseBridgeQueryParams(
       mockStoreState,
       // eslint-disable-next-line prefer-template
       '/?' + searchParams.toString(),
     );
 
     await waitFor(() => {
-      expect(result.current.location.search).toBe('');
-      expect(getFromToken(store?.getState() as never)).toMatchInlineSnapshot(`
-        {
-          "accountType": undefined,
-          "assetId": "eip155:59144/slip44:60",
-          "balance": "0",
-          "chainId": "eip155:59144",
-          "decimals": 18,
-          "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/slip44/60.png",
-          "isVerified": undefined,
-          "name": "Ether",
-          "rwaData": undefined,
-          "securityData": undefined,
-          "symbol": "ETH",
-          "tokenFiatAmount": undefined,
-        }
-      `);
+      expect(store?.getState().bridge?.fromToken).toBeDefined();
     });
     const { fromToken, toToken, fromTokenInputValue } =
       store?.getState().bridge ?? {};
@@ -407,14 +395,13 @@ describe('usePrefillFromSearchQuery', () => {
       to: 'eip155:59144/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580D',
     });
 
-    const { result, store } = renderUseBridgeQueryParams(
+    const { store } = renderUseBridgeQueryParams(
       mockStoreState,
       // eslint-disable-next-line prefer-template
       '/?' + searchParams.toString(),
     );
 
     await waitFor(() => {
-      expect(result.current.location.search).toBe('');
       expect(store?.getState().bridge?.toToken).toBeDefined();
     });
     const { fromToken, toToken, fromTokenInputValue } =
@@ -460,14 +447,13 @@ describe('usePrefillFromSearchQuery', () => {
       from: 'eip155:59144/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580D',
     });
 
-    const { result, store } = renderUseBridgeQueryParams(
+    const { store } = renderUseBridgeQueryParams(
       mockStoreState,
       // eslint-disable-next-line prefer-template
       '/?' + searchParams.toString(),
     );
 
     await waitFor(() => {
-      expect(result.current.location.search).toBe('');
       expect(store?.getState().bridge?.fromToken).toBeDefined();
       expect(store?.getState().bridge?.fromTokenInputValue).toBeDefined();
     });
@@ -627,12 +613,11 @@ describe('usePrefillFromSearchQuery', () => {
       amount: '100',
     });
 
-    const { result, store } = renderUseBridgeQueryParams(
+    const { store } = renderUseBridgeQueryParams(
       mockStoreState,
       // eslint-disable-next-line prefer-template
       '/?' + searchParams.toString(),
     );
-    expect(result.current.location.search).toBe('');
     expect(store).toBeDefined();
     const { fromToken, toToken, fromTokenInputValue } =
       store?.getState().bridge ?? {};

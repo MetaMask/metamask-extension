@@ -3,12 +3,10 @@ export type EditContactFormProps = {
   initialName: string;
   initialMemo: string;
   contactChainId: string;
-  onCancel: () => void;
   onSuccess: () => void;
 };
 
 export type AddContactFormProps = {
-  onCancel: () => void;
   onSuccess: () => void;
 };
 

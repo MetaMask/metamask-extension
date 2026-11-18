@@ -211,18 +211,11 @@
   "fast": {
     "message": "Hiter"
   },
-  "fileImportFail": {
-    "message": "Uvoz z datoteko ne deluje? Kliknite tukaj!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "Pozabi to napravo"
   },
   "from": {
     "message": "Od"
-  },
-  "gasLimitTooLow": {
-    "message": "Gas limit mora biti vsaj 21000"
   },
   "gasUsed": {
     "message": "Uporabljen gas"
@@ -383,10 +376,6 @@
   "passwordsDontMatch": {
     "message": "Gesli se ne ujemata"
   },
-  "pastePrivateKey": {
-    "message": "Tukaj prilepite vaš zasebni ključ:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "v obdelavi"
   },
@@ -402,9 +391,6 @@
   "privateKey": {
     "message": "Zasebni lljuč",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Opozorilo: Nikoli ne razkrijte tega ključa. Kdorkoli lahko z njim ukrade vse vaše premoženje v računu."
   },
   "privateNetwork": {
     "message": "Zasebno omrežje"
@@ -577,9 +563,6 @@
   },
   "urlErrorMsg": {
     "message": "URI zahtevajo ustrezno HTTP/HTTPS predpono."
-  },
-  "usedByClients": {
-    "message": "Uporabljen s strani večih različnih odjemalcev"
   },
   "visitWebSite": {
     "message": "Obiščite našo spletno stran"

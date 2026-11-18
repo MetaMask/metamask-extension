@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import {
   AlignItems,
   Display,
@@ -89,6 +89,7 @@ export const DefaultStory: StoryFn<typeof Icon> = (args) => {
             onChange={handleSearch}
             clearButtonOnClick={handleOnClear}
             value={search}
+            inputAriaLabel="Search icon name"
             placeholder="Search icon name"
           />
         </Box>

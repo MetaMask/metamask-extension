@@ -4,8 +4,6 @@ export {
   DEFAULT_PASSWORD,
 } from './extension-launcher';
 
-export { HomePage } from './page-objects/home-page';
-
 export {
   createFixtureBuilder,
   createFixturePresets,

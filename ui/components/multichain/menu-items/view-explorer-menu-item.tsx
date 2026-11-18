@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { parseCaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { IconName } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   getMultichainAccountUrl,
@@ -17,7 +18,7 @@ import {
   MetaMetricsEventLinkType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { IconName, Text } from '../../component-library';
+import { Text } from '../../component-library';
 import {
   getBlockExplorerLinkText,
   getIsCustomNetwork,
@@ -174,7 +175,7 @@ export const ViewExplorerMenuItem = ({
         closeMenu?.();
       }}
       subtitle={blockExplorerUrlSubTitle || null}
-      iconNameLegacy={IconName.Export}
+      iconName={IconName.Export}
       data-testid="account-list-menu-open-explorer"
     >
       {textProps ? <Text {...textProps}>{LABEL}</Text> : LABEL}

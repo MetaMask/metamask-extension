@@ -23,7 +23,6 @@ import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { isEvmAccountType, KeyringAccountType } from '@metamask/keyring-api';
 import {
   Caip25EndowmentPermissionName,
-  getAllNamespacesFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
   getCaipAccountIdsFromCaip25CaveatValue,
   getEthAccounts,
@@ -31,7 +30,6 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import {
   CaipChainId,
-  CaipNamespace,
   KnownCaipNamespace,
   parseCaipAccountId,
   parseCaipChainId,
@@ -72,15 +70,10 @@ import {
   rejectPendingApproval as rejectPendingApprovalAction,
   setSnapsInstallPrivacyWarningShownStatus as setSnapsInstallPrivacyWarningShownStatusAction,
 } from '../../store/actions';
-import { getAccountGroupWithInternalAccounts } from '../../selectors/multichain-accounts/account-tree';
 import PermissionPageContainer from '../../components/app/permission-page-container';
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header/snap-authorship-header';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { MultichainAccountsConnectPage } from '../multichain-accounts/multichain-accounts-connect-page/multichain-accounts-connect-page';
-import { supportsChainIds } from '../../hooks/useAccountGroupsForPermissions';
-import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../shared/lib/multichain/scope-utils';
-import { MultichainEditAccountsPageWrapper } from '../../components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-account-wrapper';
-import { SnapsPermissionsRequestType } from '../../components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-accounts-page';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   getCaip25CaveatValueFromPermissions,
@@ -93,6 +86,7 @@ import SnapsConnect from './snaps/snaps-connect';
 import SnapInstall from './snaps/snap-install';
 import SnapUpdate from './snaps/snap-update';
 import SnapResult from './snaps/snap-result';
+import { SnapChooseAccount } from './snaps/snap-choose-account';
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
 
@@ -273,7 +267,6 @@ function PermissionsConnect() {
       isEvmAccountType(account.type as KeyringAccountType),
   );
 
-  const accountGroups = useSelector(getAccountGroupWithInternalAccounts);
   const lastConnectedInfoRaw = useSelector(getLastConnectedInfo);
 
   const lastConnectedInfo = useMemo(
@@ -509,81 +502,26 @@ function PermissionsConnect() {
     [dispatch],
   );
 
-  const renderSnapChooseAccount = useCallback(() => {
-    const requestedCaip25CaveatValue = getCaip25CaveatValueFromPermissions(
-      permissions as PermissionsRequest | undefined,
-    );
-
-    // Get all requested scopes (chain IDs), excluding wallet namespace
-    const requestedCaipChainIds = getAllScopesFromCaip25CaveatValue(
-      requestedCaip25CaveatValue,
-    ).filter((chainId) => {
-      try {
-        const { namespace } = parseCaipChainId(chainId);
-        return namespace !== KnownCaipNamespace.Wallet;
-      } catch {
-        return false;
-      }
-    }) as CaipChainId[];
-
-    // Get all requested namespaces, excluding wallet namespace
-    const requestedNamespaces = getAllNamespacesFromCaip25CaveatValue(
-      requestedCaip25CaveatValue,
-    ).filter(
-      (namespace) => namespace !== KnownCaipNamespace.Wallet,
-    ) as CaipNamespace[];
-
-    // Build scopes to use: include all requested chain IDs
-    const caipChainIdsToUse: CaipChainId[] = [...requestedCaipChainIds];
-
-    // Only add wildcard scope for EIP-155 (EVM) namespace because
-    // getCaip25AccountIdsFromAccountGroupAndScope only handles wildcard matching for EVM.
-    // Non-EVM chains require exact scope matching.
-    if (requestedNamespaces.includes(KnownCaipNamespace.Eip155)) {
-      const evmWildcard = `${KnownCaipNamespace.Eip155}:0` as CaipChainId;
-      if (!caipChainIdsToUse.includes(evmWildcard)) {
-        caipChainIdsToUse.push(evmWildcard);
-      }
-    }
-
-    return (
-      <MultichainEditAccountsPageWrapper
-        title={t('connectWithMetaMask')}
-        permissions={permissions as PermissionsRequest}
-        onSubmit={(accountGroupIds: string[]) => {
-          const filteredAccountGroups = accountGroups.filter(
-            (group) =>
-              accountGroupIds.includes(group.id) &&
-              supportsChainIds(group, caipChainIdsToUse),
-          );
-          const caipAccountIds = getCaip25AccountIdsFromAccountGroupAndScope(
-            filteredAccountGroups,
-            caipChainIdsToUse,
-          );
-
+  const renderSnapChooseAccount = useCallback(
+    () => (
+      <SnapChooseAccount
+        request={permissionsRequest || {}}
+        onSubmit={({ caipAccountIds, caipChainIds, addresses }) => {
           // Store CAIP account IDs and chain IDs for chain-agnostic permission approval
           setSelectedCaipAccountIds(caipAccountIds);
-          // Store all requested CAIP chain IDs - the chain-agnostic system can handle mixed EVM/non-EVM chains
-          setSelectedCaipChainIds(requestedCaipChainIds);
-
-          // Extract addresses from CAIP account IDs
-          const addresses = caipAccountIds.map(
-            (caip25AccountId) => parseCaipAccountId(caip25AccountId).address,
-          );
+          setSelectedCaipChainIds(caipChainIds);
           selectAccounts(new Set(addresses));
         }}
         onClose={() => cancelPermissionsRequest(permissionsRequestId || '')}
-        snapsPermissionsRequestType={SnapsPermissionsRequestType.Initial}
       />
-    );
-  }, [
-    permissions,
-    accountGroups,
-    t,
-    selectAccounts,
-    cancelPermissionsRequest,
-    permissionsRequestId,
-  ]);
+    ),
+    [
+      permissionsRequest,
+      selectAccounts,
+      cancelPermissionsRequest,
+      permissionsRequestId,
+    ],
+  );
 
   const renderConnectPage = useCallback(() => {
     const connectPageProps = {

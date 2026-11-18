@@ -1,11 +1,7 @@
 import { renderHook } from '@testing-library/react';
 import { NameType } from '@metamask/name-controller';
 import { getAddressSecurityAlertResponse } from '../selectors';
-import {
-  ResultType,
-  SupportedEVMChain,
-  mapChainIdToSupportedEVMChain,
-} from '../../shared/lib/trust-signals';
+import { ResultType } from '../../shared/lib/trust-signals';
 import {
   useTrustSignal,
   useTrustSignals,
@@ -28,14 +24,6 @@ jest.mock('./useI18nContext', () => ({
     key === 'nameModalTitleMalicious' ? 'Malicious Address' : key,
 }));
 
-jest.mock('../../shared/lib/trust-signals', () => {
-  const actual = jest.requireActual('../../shared/lib/trust-signals');
-  return {
-    ...actual,
-    mapChainIdToSupportedEVMChain: jest.fn(),
-  };
-});
-
 const VALUE_MOCK = '0x1234567890123456789012345678901234567890';
 const VALUE_MOCK_2 = '0x9876543210987654321098765432109876543210';
 const TRUST_LABEL_MOCK = 'Malicious Address';
@@ -46,15 +34,9 @@ describe('useTrustSignals', () => {
   const getAddressSecurityAlertResponseMock = jest.mocked(
     getAddressSecurityAlertResponse,
   );
-  const mapChainIdToSupportedEVMChainMock = jest.mocked(
-    mapChainIdToSupportedEVMChain,
-  );
 
   beforeEach(() => {
     jest.resetAllMocks();
-    mapChainIdToSupportedEVMChainMock.mockReturnValue(
-      SupportedEVMChain.Ethereum,
-    );
   });
 
   describe('useTrustSignal', () => {
@@ -110,7 +92,7 @@ describe('useTrustSignals', () => {
 
           expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
             undefined,
-            `ethereum:${VALUE_MOCK.toLowerCase()}`,
+            `0x1:${VALUE_MOCK.toLowerCase()}`,
           );
         });
       });
@@ -127,7 +109,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
-            chainId: '',
+            chainId: undefined,
           },
         ];
 
@@ -420,12 +402,12 @@ describe('useTrustSignals', () => {
           expect(getAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
             1,
             undefined,
-            `ethereum:${VALUE_MOCK.toLowerCase()}`,
+            `0x1:${VALUE_MOCK.toLowerCase()}`,
           );
           expect(getAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
             2,
             undefined,
-            `ethereum:${VALUE_MOCK_2.toLowerCase()}`,
+            `0x1:${VALUE_MOCK_2.toLowerCase()}`,
           );
         });
       });
@@ -474,6 +456,40 @@ describe('useTrustSignals', () => {
             state: TrustSignalDisplayState.Malicious,
             label: TRUST_LABEL_MOCK,
           });
+        });
+      });
+
+      it('returns the cached result for a chain ID absent from the legacy mapping', () => {
+        const UNMAPPED_CHAIN_ID_MOCK = '0x123456789';
+
+        getAddressSecurityAlertResponseMock.mockReturnValue({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: ResultType.Malicious,
+          label: TRUST_LABEL_MOCK,
+        });
+
+        const requests: UseTrustSignalRequest[] = [
+          {
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            chainId: UNMAPPED_CHAIN_ID_MOCK,
+          },
+        ];
+
+        renderHook(() => {
+          const results = useTrustSignals(requests);
+
+          expect(results).toHaveLength(1);
+          expect(results[0]).toStrictEqual({
+            state: TrustSignalDisplayState.Malicious,
+            label: TRUST_LABEL_MOCK,
+          });
+
+          expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
+            undefined,
+            `${UNMAPPED_CHAIN_ID_MOCK.toLowerCase()}:${VALUE_MOCK.toLowerCase()}`,
+          );
         });
       });
     });

@@ -1,4 +1,4 @@
-import { useEffect, useRef, type RefObject } from 'react';
+import { useEffect, useLayoutEffect, useRef, type RefObject } from 'react';
 
 type EventTargetOrRef = EventTarget | RefObject<EventTarget | null>;
 
@@ -22,7 +22,10 @@ export function useEventListener<EventType extends Event = Event>(
   element?: EventTargetOrRef,
 ): void {
   const savedHandler = useRef(handler);
-  savedHandler.current = handler;
+
+  useLayoutEffect(() => {
+    savedHandler.current = handler;
+  }, [handler]);
 
   useEffect(() => {
     const target = resolveTarget(element);

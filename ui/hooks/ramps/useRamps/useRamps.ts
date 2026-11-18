@@ -7,7 +7,7 @@ import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import {
   getDataCollectionForMarketing,
   getAnalyticsId,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getOptedIn,
 } from '../../../selectors';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
@@ -15,7 +15,7 @@ import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 const DEFAULT_PORTFOLIO_URL = 'https://app.metamask.io';
 
 type IUseRamps = {
-  openBuyCryptoInPdapp: (chainId?: ChainId | CaipChainId) => void;
+  openBuyCryptoInPdapp: (chainId?: ChainId | CaipChainId) => Promise<void>;
   getBuyURI: (chainId: ChainId | CaipChainId) => string;
 };
 
@@ -32,11 +32,9 @@ const useRamps = (
 ): IUseRamps => {
   const chainId = useSelector(getCurrentChainId);
   const analyticsId = useSelector(getAnalyticsId);
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
-  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
+  const isMetaMetricsEnabled = consentDecisionMade && isOptedIn;
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const getBuyURI = useCallback(
@@ -74,9 +72,9 @@ const useRamps = (
   );
 
   const openBuyCryptoInPdapp = useCallback(
-    (_chainId?: ChainId | CaipChainId) => {
+    async (_chainId?: ChainId | CaipChainId) => {
       const buyUrl = getBuyURI(_chainId || chainId);
-      global.platform.openTab({
+      await global.platform.openTab({
         url: buyUrl,
       });
     },

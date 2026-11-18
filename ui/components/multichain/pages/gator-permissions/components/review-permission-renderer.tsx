@@ -43,7 +43,10 @@ import {
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import { PreferredAvatar } from '../../../../app/preferred-avatar';
 import { CopyIcon } from '../../../../app/confirm/info/row/copy-icon';
-import { useGetDisplayName } from '../../../../../hooks/useGetDisplayName';
+import {
+  shortenDisplayAddress,
+  useGetDisplayName,
+} from '../../../../../hooks/useGetDisplayName';
 import { toChecksumHexAddress } from '../../../../../../shared/lib/hexstring-utils';
 import NicknamePopovers from '../../../../app/modals/nickname-popovers';
 import {
@@ -123,7 +126,7 @@ const ReviewAddressDisplay = ({
           color={TextColor.TextAlternative}
           data-testid={testId}
         >
-          {getDisplayName(address)}
+          {getDisplayName(address) || shortenDisplayAddress(address)}
         </Text>
         <CopyIcon
           copyText={address}

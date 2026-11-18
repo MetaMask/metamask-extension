@@ -30,12 +30,12 @@ const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
 function getState({
   gasFeeTokens,
   chainId,
-  currencyRates,
+  ethConversionRate,
   excludeNativeTokenForFee,
 }: {
   gasFeeTokens?: GasFeeToken[];
   chainId?: Hex;
-  currencyRates?: Record<string, { conversionRate: number }>;
+  ethConversionRate?: number;
   excludeNativeTokenForFee?: boolean;
 } = {}) {
   const networkConfigurations: Record<string, unknown> = {};
@@ -80,7 +80,23 @@ function getState({
         preferences: {
           showFiatInTestnets: true,
         },
-        ...(currencyRates && { currencyRates }),
+        ...(ethConversionRate !== undefined && {
+          assetsInfo: {
+            'eip155:1/slip44:60': {
+              type: 'native',
+              decimals: 18,
+              symbol: 'ETH',
+            },
+          },
+          assetsPrice: {
+            'eip155:1/slip44:60': {
+              assetPriceType: 'fungible',
+              price: ethConversionRate,
+              usdPrice: ethConversionRate,
+              lastUpdated: 1,
+            },
+          },
+        }),
         ...(Object.keys(networkConfigurations).length > 0 && {
           networkConfigurationsByChainId: networkConfigurations,
         }),
@@ -262,7 +278,7 @@ describe('useGasFeeToken', () => {
 
     const state = getState({
       gasFeeTokens: [smallAmountToken],
-      currencyRates: { ETH: { conversionRate: 1 } },
+      ethConversionRate: 1,
     });
 
     const { result } = renderHookWithConfirmContextProvider(
@@ -276,7 +292,7 @@ describe('useGasFeeToken', () => {
   it('does not throw when conversionRate has more than 15 significant digits', () => {
     const state = getState({
       gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
-      currencyRates: { ETH: { conversionRate: 0.07086574003221964 } },
+      ethConversionRate: 0.07086574003221964,
     });
 
     const { result } = renderHookWithConfirmContextProvider(

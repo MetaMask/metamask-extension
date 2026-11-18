@@ -13,9 +13,7 @@ import type { Hex } from '@metamask/utils';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { Box, Skeleton } from '@metamask/design-system-react';
-import { ButtonLink, IconName } from '../../component-library';
-import { TextVariant } from '../../../helpers/constants/design-system';
-import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+import { useCoordinatedTrace } from '#ui/hooks/useTraceCoordinator';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import {
@@ -28,16 +26,12 @@ import { getMultichainAccountAddressListReceivePagePath } from '../../../pages/m
 import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import { trace, TraceName } from '../../../../shared/lib/trace';
+import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import {
   getShouldHideZeroBalanceTokens,
   getIsTestnet,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getChainIdsToPoll,
-  getDataCollectionForMarketing,
-  getAnalyticsId,
-  getCompletedMetaMetricsOnboarding,
-  getOptedIn,
   getEnabledNetworksByNamespace,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../selectors';
@@ -67,6 +61,8 @@ import {
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import { useAccountGroupBalanceDisplay } from '../assets/account-group-balance-change/useAccountGroupBalanceDisplay';
 import { useDispatch } from '../../../store/hooks';
+import { useAppLayout } from '../../../contexts/app-layout';
+import { useAssetsHaveLoaded } from '../assets/hooks/useAssetsHaveLoaded';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 
@@ -86,12 +82,16 @@ const ZERO_FIAT_BALANCE_DELAY_MS = 1500;
 
 const BalanceOverviewSkeleton = () => (
   <Box
-    className="wallet-overview__balance-skeleton flex w-full max-w-[400px] items-center gap-[10px] px-2 pb-4 pt-6 [.wallet-overview-fullscreen_&]:px-4"
+    className="wallet-overview__balance-skeleton flex w-full max-w-[400px] items-center self-start min-[491px]:self-center wide-layout:self-start"
     data-testid="coin-overview-balance-skeleton"
   >
-    <Box className="wallet-overview__balance-skeleton-lines flex w-full max-w-[368px] flex-col items-start justify-center gap-[2px]">
-      <Skeleton className="h-[50px] w-full rounded-lg" />
-      <Skeleton className="h-6 w-[180px] rounded-lg" />
+    <Box className="wallet-overview__balance-skeleton-lines flex w-full flex-col items-start min-[491px]:items-center wide-layout:items-start">
+      <Box className="flex h-14 items-center md:h-[75px]">
+        <Skeleton className="h-14 w-[7rem] rounded-lg md:h-[75px]" />
+      </Box>
+      <Box className="flex h-6 items-center">
+        <Skeleton className="h-4 w-52" />
+      </Box>
     </Box>
   </Box>
 );
@@ -207,19 +207,9 @@ export const CoinOverview = ({
   isSigningEnabled,
 }: CoinOverviewProps) => {
   const t: ReturnType<typeof useI18nContext> = useContext(I18nContext);
+  const { isWideLayout } = useAppLayout();
 
   const { trackEvent, createEventBuilder } = useAnalytics();
-
-  const analyticsId = useSelector(getAnalyticsId);
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
-  const isOptedIn = useSelector(getOptedIn);
-  const isMetaMetricsEnabled = useMemo(
-    () => completedMetaMetricsOnboarding && isOptedIn,
-    [completedMetaMetricsOnboarding, isOptedIn],
-  );
-  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -242,6 +232,7 @@ export const CoinOverview = ({
   const balanceIsLoaded = useSelector(
     selectAccountGroupBalanceIsLoadedForEmptyState,
   );
+  const assetsHaveLoaded = useAssetsHaveLoaded();
   const selectedGroupBalance = useSelector(selectBalanceBySelectedAccountGroup);
   const isTestnet = useSelector(getMultichainIsTestnet);
   const isEvm = isEvmChainId(chainId);
@@ -287,14 +278,28 @@ export const CoinOverview = ({
 
   const [hasZeroFiatBalanceDelayElapsed, setHasZeroFiatBalanceDelayElapsed] =
     useState(false);
+  const [prevDelayKey, setPrevDelayKey] = useState(enabledNetworksDelayKey);
+  const [prevShouldDelayZeroFiatBalance, setPrevShouldDelayZeroFiatBalance] =
+    useState(shouldDelayZeroFiatBalance);
+
+  if (
+    enabledNetworksDelayKey !== prevDelayKey ||
+    shouldDelayZeroFiatBalance !== prevShouldDelayZeroFiatBalance
+  ) {
+    setPrevDelayKey(enabledNetworksDelayKey);
+    setPrevShouldDelayZeroFiatBalance(shouldDelayZeroFiatBalance);
+    setHasZeroFiatBalanceDelayElapsed(false);
+  }
+
+  const isZeroFiatBalanceDelayStateCurrent =
+    enabledNetworksDelayKey === prevDelayKey &&
+    shouldDelayZeroFiatBalance === prevShouldDelayZeroFiatBalance;
 
   useEffect(() => {
     if (!shouldDelayZeroFiatBalance) {
-      setHasZeroFiatBalanceDelayElapsed(false);
       return undefined;
     }
 
-    setHasZeroFiatBalanceDelayElapsed(false);
     const timeoutId = setTimeout(() => {
       setHasZeroFiatBalanceDelayElapsed(true);
     }, ZERO_FIAT_BALANCE_DELAY_MS);
@@ -305,18 +310,22 @@ export const CoinOverview = ({
   const shouldShowBalanceLoadingState = useMemo(
     () =>
       isEvm &&
-      ((shouldDelayZeroFiatBalance && !hasZeroFiatBalanceDelayElapsed) ||
+      ((shouldDelayZeroFiatBalance &&
+        (!isZeroFiatBalanceDelayStateCurrent ||
+          !hasZeroFiatBalanceDelayElapsed)) ||
         (shouldCheckBalanceState &&
           !hasBalance &&
-          (balanceIsLoading || !balanceIsLoaded))),
+          (balanceIsLoading || !balanceIsLoaded || !assetsHaveLoaded))),
     [
       isEvm,
       shouldDelayZeroFiatBalance,
+      isZeroFiatBalanceDelayStateCurrent,
       hasZeroFiatBalanceDelayElapsed,
       shouldCheckBalanceState,
       hasBalance,
       balanceIsLoading,
       balanceIsLoaded,
+      assetsHaveLoaded,
     ],
   );
 
@@ -328,36 +337,23 @@ export const CoinOverview = ({
       !shouldShowBalanceLoadingState,
     [isEvm, shouldCheckBalanceState, hasBalance, shouldShowBalanceLoadingState],
   );
+  const balanceReady = !shouldShowBalanceLoadingState;
+
+  useCoordinatedTrace({
+    name: TraceName.HomepageSectionTimeToContent,
+    op: TraceOperation.HomepageSectionPerformance,
+    generationKey: `${selectedAccountGroup ?? 'none'}:${enabledNetworksDelayKey}`,
+    ready: balanceReady,
+    sectionId: 'balance',
+    data: {
+      success: true,
+      contentState: shouldShowBalanceEmptyState ? 'empty' : 'filled',
+    },
+  });
 
   const handleSensitiveToggle = useCallback(() => {
     dispatch(setPrivacyMode(!privacyMode));
   }, [dispatch, privacyMode]);
-
-  const handlePortfolioOnClick = useCallback(() => {
-    const url = getPortfolioUrl(
-      'explore/tokens',
-      'ext_portfolio_button',
-      analyticsId,
-      isMetaMetricsEnabled === true,
-      isMarketingEnabled === true,
-    );
-    global.platform.openTab({ url });
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.PortfolioLinkClicked)
-        .addCategory(MetaMetricsEventCategory.Navigation)
-        .addProperties({
-          location: 'Home',
-          text: 'Portfolio',
-        })
-        .build(),
-    );
-  }, [
-    isMarketingEnabled,
-    isMetaMetricsEnabled,
-    analyticsId,
-    trackEvent,
-    createEventBuilder,
-  ]);
 
   const handleReceiveOnClick = useCallback(() => {
     trace({ name: TraceName.ReceiveModal });
@@ -382,30 +378,9 @@ export const CoinOverview = ({
     }
   }, [selectedAccountGroup, navigate, trackEvent, chainId, createEventBuilder]);
 
-  const renderPercentageAndAmountChange = () => {
-    const renderPercentageAndAmountChangeTrail = () => {
-      return (
-        <ButtonLink
-          endIconName={IconName.Export}
-          onClick={handlePortfolioOnClick}
-          as="a"
-          data-testid="portfolio-link"
-          textProps={{ variant: TextVariant.bodyMdMedium }}
-        >
-          {t('discover')}
-        </ButtonLink>
-      );
-    };
-
-    return (
-      <Box className="wallet-overview__currency-wrapper">
-        <AccountGroupBalanceChange
-          period={period}
-          trailingChild={renderPercentageAndAmountChangeTrail}
-        />
-      </Box>
-    );
-  };
+  const renderPercentageAndAmountChange = () => (
+    <AccountGroupBalanceChange period={period} />
+  );
 
   const balanceSection: React.ReactNode = (
     <AccountGroupBalance
@@ -423,7 +398,12 @@ export const CoinOverview = ({
       title={t('balanceOutdated')}
       disabled={!balanceIsCached}
     >
-      <div className={`${classPrefix}-overview__balance`}>
+      <div
+        className={classnames(
+          `${classPrefix}-overview__balance max-[490px]:items-start`,
+          isWideLayout ? 'items-start' : 'items-center',
+        )}
+      >
         <div className={`${classPrefix}-overview__primary-container`}>
           {balanceSection}
           {balanceIsCached && !shouldShowBalanceEmptyState && (
@@ -440,7 +420,10 @@ export const CoinOverview = ({
   } else if (shouldShowBalanceEmptyState) {
     balanceContent = (
       <BalanceEmptyState
-        className="w-full max-w-[460px] self-center"
+        className={classnames('w-full max-w-[460px]', {
+          'self-center': !isWideLayout,
+          'self-start max-w-none': isWideLayout,
+        })}
         data-testid="coin-overview-balance-empty-state"
         onClickReceive={handleReceiveOnClick}
       />
@@ -449,9 +432,7 @@ export const CoinOverview = ({
 
   return (
     <WalletOverview
-      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       balance={balanceContent}
-      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       buttons={
         <CoinButtons
           {...{
@@ -463,6 +444,7 @@ export const CoinOverview = ({
             isBridgeChain,
             classPrefix,
           }}
+          showAsPills={isWideLayout}
         />
       }
       className={className}

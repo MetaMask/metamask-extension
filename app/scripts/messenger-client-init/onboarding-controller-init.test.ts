@@ -37,6 +37,7 @@ describe('OnboardingControllerInit', () => {
     expect(controllerMock).toHaveBeenCalledWith({
       messenger: expect.any(Object),
       state: undefined,
+      platform: expect.any(Object),
     });
   });
 });

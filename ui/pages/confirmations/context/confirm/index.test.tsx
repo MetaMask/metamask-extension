@@ -3,13 +3,17 @@ import { renderHook } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../../../helpers/constants/routes';
 import mockState from '../../../../../test/data/mock-state.json';
 import { ConfirmContextProvider, useConfirmContext } from '.';
 
 const mockNavigate = jest.fn();
 
 let mockWindowSearch = '';
+let mockLocationKey = 'test';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -21,7 +25,7 @@ jest.mock('react-router-dom', () => ({
     search: mockWindowSearch,
     hash: '',
     state: null,
-    key: 'test',
+    key: mockLocationKey,
   }),
 }));
 
@@ -73,6 +77,7 @@ describe('ConfirmContextProvider', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockWindowSearch = '';
+    mockLocationKey = 'test';
     window.history.replaceState({}, '', '/');
     mockCurrentConfirmation = { id: 'test-id', type: 'transaction' };
   });
@@ -85,6 +90,53 @@ describe('ConfirmContextProvider', () => {
     rerender();
 
     expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, { replace: true });
+  });
+
+  it('does not navigate when confirmation disappears after suppressAutoExit is called', () => {
+    const store = createStore();
+    const { result, rerender } = renderContextProvider(store);
+
+    result.current.suppressAutoExit();
+    mockCurrentConfirmation = undefined;
+    rerender();
+
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('pops in-app history when a pushed confirmation disappears', () => {
+    mockWindowSearch = '?goBackTo=/money-home/earn&goBackAction=pop';
+    mockLocationKey = 'earn-page';
+    window.history.replaceState(
+      {},
+      '',
+      '/?goBackTo=/money-home/earn&goBackAction=pop',
+    );
+    const store = createStore();
+    const { rerender } = renderContextProvider(store);
+
+    mockCurrentConfirmation = undefined;
+    rerender();
+
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+  });
+
+  it('replaces when a pushed confirmation is the first history entry', () => {
+    mockWindowSearch = '?goBackTo=/money-home/earn&goBackAction=pop';
+    mockLocationKey = 'default';
+    window.history.replaceState(
+      {},
+      '',
+      '/?goBackTo=/money-home/earn&goBackAction=pop',
+    );
+    const store = createStore();
+    const { rerender } = renderContextProvider(store);
+
+    mockCurrentConfirmation = undefined;
+    rerender();
+
+    expect(mockNavigate).toHaveBeenCalledWith('/money-home/earn', {
+      replace: true,
+    });
   });
 
   it('navigates to goBackTo when confirmation disappears and goBackTo is present', () => {

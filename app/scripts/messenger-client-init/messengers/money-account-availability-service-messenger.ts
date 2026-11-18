@@ -28,7 +28,10 @@ export function getMoneyAccountAvailabilityServiceMessenger(
     messenger: serviceMessenger,
     actions: [
       'KeyringController:withKeyringUnsafe',
+      'LegacyBackgroundApiService:addNetwork',
+      'NetworkController:getState',
       'RemoteFeatureFlagController:getState',
+      'GeolocationController:getGeolocation',
     ],
     events: ['KeyringController:unlock', 'KeyringController:lock'],
   });

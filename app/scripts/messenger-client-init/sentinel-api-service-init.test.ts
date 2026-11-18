@@ -3,12 +3,14 @@ import {
   type SentinelApiServiceMessenger,
 } from '@metamask/sentinel-api-service';
 import { getRootMessenger } from '../lib/messenger';
+import { setSentinelApiMessenger } from '../lib/transaction/sentinel-api';
 import type { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import { getSentinelApiServiceMessenger } from './messengers';
 import { SentinelApiServiceInit } from './sentinel-api-service-init';
 
 jest.mock('@metamask/sentinel-api-service');
+jest.mock('../lib/transaction/sentinel-api');
 
 function getInitRequestMock(): jest.Mocked<
   MessengerClientInitRequest<SentinelApiServiceMessenger>
@@ -42,6 +44,16 @@ describe('SentinelApiServiceInit', () => {
       clientId: 'extension',
       clientVersion: process.env.METAMASK_VERSION,
     });
+  });
+
+  it('sets messenger for legacy Sentinel utils', () => {
+    const request = getInitRequestMock();
+
+    SentinelApiServiceInit(request);
+
+    expect(setSentinelApiMessenger).toHaveBeenCalledWith(
+      request.controllerMessenger,
+    );
   });
 
   it('returns null for persistedStateKey', () => {

@@ -96,10 +96,9 @@ type AppState = {
   newTokensImported: string;
   newTokensImportedError: string;
   onboardedInThisUISession: boolean;
+  onboardingRedirect: string | null;
   customTokenAmount: string;
   txId: string | null;
-  showDeleteMetaMetricsDataModal: boolean;
-  showDataDeletionErrorModal: boolean;
   isAddingNewNetwork: boolean;
   isMultiRpcOnboarding: boolean;
   isAccessedFromDappConnectedSitePopover: boolean;
@@ -191,10 +190,9 @@ const initialState: AppState = {
   newTokensImported: '',
   newTokensImportedError: '',
   onboardedInThisUISession: false,
+  onboardingRedirect: null,
   customTokenAmount: '',
   txId: null,
-  showDeleteMetaMetricsDataModal: false,
-  showDataDeletionErrorModal: false,
   isAddingNewNetwork: false,
   isMultiRpcOnboarding: false,
   isAccessedFromDappConnectedSitePopover: false,
@@ -295,9 +293,15 @@ export default function reduceApp(
         externalServicesOnboardingToggleState: true,
       };
     case actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_OFF:
+      // Backup and sync requires basic functionality. Apply the cascade here
+      // rather than in BackupAndSyncToggle: that toggle mounts only on the
+      // Backup and sync category, so opting out from Privacy would leave the
+      // intent flag on and completion would keep account, contact, and ramps
+      // sync enabled.
       return {
         ...appState,
         externalServicesOnboardingToggleState: false,
+        backupAndSyncOnboardingToggleState: false,
       };
 
     case actionConstants.ONBOARDING_TOGGLE_BACKUP_AND_SYNC_ON:
@@ -561,6 +565,11 @@ export default function reduceApp(
         ...appState,
         onboardedInThisUISession: action.payload,
       };
+    case actionConstants.SET_ONBOARDING_REDIRECT:
+      if (state && state.onboardingRedirect === action.payload) {
+        return state;
+      }
+      return { ...appState, onboardingRedirect: action.payload };
     case actionConstants.SET_CUSTOM_TOKEN_AMOUNT:
       return {
         ...appState,
@@ -580,26 +589,6 @@ export default function reduceApp(
       return {
         ...appState,
         isNetworkMenuOpen: false,
-      };
-    case actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN:
-      return {
-        ...appState,
-        showDeleteMetaMetricsDataModal: true,
-      };
-    case actionConstants.DELETE_METAMETRICS_DATA_MODAL_CLOSE:
-      return {
-        ...appState,
-        showDeleteMetaMetricsDataModal: false,
-      };
-    case actionConstants.DATA_DELETION_ERROR_MODAL_OPEN:
-      return {
-        ...appState,
-        showDataDeletionErrorModal: true,
-      };
-    case actionConstants.DATA_DELETION_ERROR_MODAL_CLOSE:
-      return {
-        ...appState,
-        showDataDeletionErrorModal: false,
       };
     case actionConstants.SHOW_SETTINGS_PAGE_ERROR:
       return {
@@ -735,6 +724,18 @@ export function setCustomTokenAmount(payload: string): PayloadAction<string> {
 }
 
 /**
+ * Retains an internal destination across onboarding steps in this UI session.
+ *
+ * @param payload - The route to resume, or null to clear it.
+ * @returns The action recording the intended destination.
+ */
+export function setOnboardingRedirect(
+  payload: string | null,
+): PayloadAction<string | null> {
+  return { type: actionConstants.SET_ONBOARDING_REDIRECT, payload };
+}
+
+/**
  * An action creator for display a error to the user in various places in the
  * UI. It will not be cleared until a new error replaces it or `hideErrorInSettings`
  * is called.
@@ -756,6 +757,16 @@ export function hideErrorInSettings() {
 }
 
 // Selectors
+/**
+ * Reads the internal destination retained for onboarding completion.
+ *
+ * @param state - The UI state.
+ * @returns The pending route, or null when onboarding started normally.
+ */
+export function getOnboardingRedirect(state: AppSliceState): string | null {
+  return state.appState?.onboardingRedirect ?? null;
+}
+
 export function getQrCodeData(state: AppSliceState): {
   type?: string | null;
   values?: { address?: string | null };
@@ -779,30 +790,6 @@ export function getLedgerTransportStatus(state: AppSliceState): string | null {
 
 export function getShowSupportDataConsentModal(state: AppSliceState): boolean {
   return state.appState.showSupportDataConsentModal;
-}
-
-export function openDeleteMetaMetricsDataModal(): Action {
-  return {
-    type: actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN,
-  };
-}
-
-export function hideDeleteMetaMetricsDataModal(): Action {
-  return {
-    type: actionConstants.DELETE_METAMETRICS_DATA_MODAL_CLOSE,
-  };
-}
-
-export function openDataDeletionErrorModal(): Action {
-  return {
-    type: actionConstants.DATA_DELETION_ERROR_MODAL_OPEN,
-  };
-}
-
-export function hideDataDeletionErrorModal(): Action {
-  return {
-    type: actionConstants.DATA_DELETION_ERROR_MODAL_CLOSE,
-  };
 }
 
 export function setHomeDeepLinkQrCode(payload: {

@@ -2,22 +2,13 @@ import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import type { DeFiProtocolPositionGroup } from '@metamask/assets-controllers';
 import type { CaipChainId } from '@metamask/utils';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
+import type { DeFiProtocolListItem } from '../components/defi-protocol-cell-v2';
+import type { DeFiListItemsV2 } from '../hooks/useDeFiListItemsV2';
 import DefiListV2 from './defi-list-v2';
-
-jest.mock('../../../hooks/useFormatters', () => ({
-  useFormatters: () => ({
-    formatCurrencyWithMinThreshold: (value: number) =>
-      new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-      }).format(value),
-  }),
-}));
 
 jest.mock('../../../components/ui/virtualized-list/virtualized-list', () => ({
   VirtualizedList: ({
@@ -56,67 +47,41 @@ jest.mock('../../../hooks/useAnalytics', () => ({
   }),
 }));
 
-const lidoPosition: DeFiProtocolPositionGroup = {
+const lidoItem: DeFiProtocolListItem = {
   protocolId: 'lido',
-  productName: 'Lido',
-  protocolIconUrl: 'lido.png',
   chainId: 'eip155:1' as CaipChainId,
-  marketValue: 20000,
+  tokenImage: 'lido.png',
+  marketValue: '$20,000.00',
+  tokenFiatAmount: 20000,
   iconGroup: [{ symbol: 'stETH', avatarValue: 'steth.png' }],
-  sections: [],
+  underlyingSymbols: ['stETH'],
 };
 
-const aavePosition: DeFiProtocolPositionGroup = {
-  protocolId: 'aave',
-  productName: 'Aave',
-  protocolIconUrl: 'aave.png',
-  chainId: 'eip155:137' as CaipChainId,
-  marketValue: 500,
-  iconGroup: [{ symbol: 'USDC', avatarValue: 'usdc.png' }],
-  sections: [],
-};
-
-const render = ({
-  positions = [lidoPosition],
-  isLoading = false,
-  isError = false,
-  onClick = jest.fn(),
-  enabledNetworks = { eip155: { '0x1': true } },
-}: {
-  positions?: DeFiProtocolPositionGroup[];
-  isLoading?: boolean;
-  isError?: boolean;
-  onClick?: (chainId: string, protocolId: string) => void;
-  enabledNetworks?: Record<string, Record<string, boolean>>;
-} = {}) => {
-  const store = configureMockStore([thunk])({
-    ...mockState,
-    metamask: {
-      ...mockState.metamask,
-      enabledNetworkMap: enabledNetworks,
-    },
-  });
+const render = (
+  options: {
+    items?: DeFiListItemsV2;
+    onClick?: (chainId: string, protocolId: string) => void;
+  } = {},
+) => {
+  const items = 'items' in options ? options.items : [lidoItem];
+  const onClick = options.onClick ?? jest.fn();
+  const store = configureMockStore([thunk])(mockState);
 
   return renderWithProvider(
-    <DefiListV2
-      onClick={onClick}
-      positions={positions}
-      isLoading={isLoading}
-      isError={isError}
-    />,
+    <DefiListV2 items={items} onClick={onClick} />,
     store,
   );
 };
 
 describe('DefiListV2', () => {
   it('renders loading spinner while positions are loading', () => {
-    render({ isLoading: true });
+    render({ items: undefined });
 
     expect(screen.getByTestId('pulse-loader')).toBeInTheDocument();
   });
 
-  it('renders error message when positions fail to load and none are cached', () => {
-    render({ isError: true, positions: [] });
+  it('renders error message when positions fail to load', () => {
+    render({ items: null });
 
     expect(screen.getByTestId('defi-tab-error-message')).toHaveTextContent(
       messages.defiTabErrorTitle.message,
@@ -126,17 +91,8 @@ describe('DefiListV2', () => {
     );
   });
 
-  it('keeps rendering cached rows when a background refresh fails', () => {
-    render({ isError: true, positions: [lidoPosition] });
-
-    expect(screen.getByText('lido')).toBeInTheDocument();
-    expect(
-      screen.queryByTestId('defi-tab-error-message'),
-    ).not.toBeInTheDocument();
-  });
-
   it('renders empty state when there are no positions', () => {
-    render({ positions: [] });
+    render({ items: [] });
 
     expect(screen.getByTestId('defi-tab-empty-state')).toBeInTheDocument();
     expect(
@@ -144,17 +100,13 @@ describe('DefiListV2', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders protocol rows for enabled networks', () => {
-    render({
-      positions: [lidoPosition, aavePosition],
-      enabledNetworks: { eip155: { '0x1': true } },
-    });
+  it('renders protocol rows', () => {
+    render();
 
     expect(screen.getByText('lido')).toBeInTheDocument();
     expect(screen.getByTestId('defi-list-market-value')).toHaveTextContent(
       '$20,000.00',
     );
-    expect(screen.queryByText('aave')).not.toBeInTheDocument();
   });
 
   it('calls onClick with chain and protocol ids when a row is clicked', () => {

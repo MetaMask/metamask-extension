@@ -3,7 +3,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { getCleanAppState, withFixtures } from '../../helpers';
 import { MOCK_ANALYTICS_ID } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';
-import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import PrivacySettings from '../../page-objects/pages/settings/privacy/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
 
@@ -12,7 +12,7 @@ describe('MetaMetrics ID persistence', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,
             optedIn: true,

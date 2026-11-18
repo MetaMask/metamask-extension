@@ -29,6 +29,10 @@ class GetEncryptionKeyConfirmation {
     css: '.request-encryption-public-key__header__text',
   };
 
+  private readonly parentSelector = {
+    testId: 'parent-selector-get-encryption-key-confirmation',
+  };
+
   private readonly provideEncryptionKeyButton = {
     text: 'Provide',
     tag: 'button',
@@ -57,6 +61,7 @@ class GetEncryptionKeyConfirmation {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
         this.getEncryptionKeyConfirmationTitle,
         this.provideEncryptionKeyButton,
       ]);

@@ -211,10 +211,6 @@
   "fast": {
     "message": "Бързо"
   },
-  "fileImportFail": {
-    "message": "Импортирането на файл не работи? Натиснете тук!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "Забравяне на това устройство"
   },
@@ -223,9 +219,6 @@
   },
   "gasLimit": {
     "message": "Ограничение на газ"
-  },
-  "gasLimitTooLow": {
-    "message": "Ограничението за газ трябва да бъде поне 21000"
   },
   "gasUsed": {
     "message": "Използван газ"
@@ -395,10 +388,6 @@
   "passwordsDontMatch": {
     "message": "Паролите не съвпадат"
   },
-  "pastePrivateKey": {
-    "message": "Поставете низ от личния си ключ тук:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "в изчакване"
   },
@@ -414,9 +403,6 @@
   "privateKey": {
     "message": "Частен ключ",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Предупреждение: Никога не разкривайте този ключ. Всеки с достъп до вашите лични ключове може да открадне всички активи, съхранявани във вашия акаунт."
   },
   "privateNetwork": {
     "message": "Частна мрежа"
@@ -589,9 +575,6 @@
   },
   "urlErrorMsg": {
     "message": "URI изискват съответния HTTP / HTTPS префикс."
-  },
-  "usedByClients": {
-    "message": "Използва се от различни клиенти"
   },
   "visitWebSite": {
     "message": "Посетете нашият уеб сайт"

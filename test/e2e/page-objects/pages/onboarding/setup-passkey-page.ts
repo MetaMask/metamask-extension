@@ -16,15 +16,26 @@ import { Driver } from '../../../webdriver/driver';
 class SetupPasskeyPage {
   private driver: Driver;
 
+  private readonly enrollmentError = '[data-testid="passkey-enrollment-error"]';
+
   private readonly enrollmentSteps = '[data-testid="passkey-setup-steps"]';
 
   private readonly maybeLaterButton =
     '[data-testid="passkey-maybe-later-button"]';
 
+  private readonly page = '[data-testid="parent-selector-setup-passkey"]';
+
+  private readonly prfRejectionTitle = {
+    text: "That passkey won't work",
+  };
+
   private readonly setUpPasskeyButton = '[data-testid="passkey-set-up-button"]';
 
   private readonly stepIndicatorSuccess =
     '[data-testid="passkey-step-indicator-success"]';
+
+  private readonly supportedProvidersLink =
+    '[data-testid="passkey-migration-supported-providers-link"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -33,7 +44,7 @@ class SetupPasskeyPage {
   async checkPageIsLoaded(timeout?: number): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors(
-        [this.maybeLaterButton, this.setUpPasskeyButton],
+        [this.page, this.maybeLaterButton, this.setUpPasskeyButton],
         { timeout },
       );
     } catch (e) {
@@ -44,6 +55,18 @@ class SetupPasskeyPage {
       throw e;
     }
     console.log('Setup passkey page is loaded');
+  }
+
+  async checkPrfRejectionIsDisplayed(): Promise<void> {
+    console.log('Check non-PRF passkey rejection is displayed');
+    await this.driver.waitForSelector(this.prfRejectionTitle);
+    await this.driver.waitForSelector(this.supportedProvidersLink);
+    await this.driver.assertElementNotPresent(this.enrollmentError);
+  }
+
+  async clickKeepCurrentPasskey(): Promise<void> {
+    console.log('Keep the current passkey');
+    await this.driver.clickElementAndWaitToDisappear(this.maybeLaterButton);
   }
 
   async clickSetUpPasskey(): Promise<void> {

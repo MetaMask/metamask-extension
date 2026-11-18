@@ -1,7 +1,7 @@
 import { ReadableStream as ReadableStreamWeb } from 'stream/web';
 import { Readable } from 'stream';
 import { MockttpServer } from 'mockttp';
-import { mockEthDaiTrade, mockEthUsdcGasIncludedTrade } from '../swaps/shared';
+import { SWAP_TEST_ETH_DAI_TRADES_MOCK } from '../../../data/mock-data';
 import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
 import { SSE_RESPONSE_HEADER } from '../bridge/constants';
@@ -516,17 +516,37 @@ const GET_BLOCK_BY_HASH_RESPONSE = {
   },
 };
 
+async function mockEthDaiTrade(mockServer: MockttpServer) {
+  return [
+    await mockServer
+      .forGet('https://bridge.api.cx.metamask.io/networks/1/trades')
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: SWAP_TEST_ETH_DAI_TRADES_MOCK,
+        };
+      }),
+  ];
+}
+
+async function mockEthUsdcGasIncludedTrade(mockServer: MockttpServer) {
+  return [
+    await mockServer
+      .forGet('https://bridge.api.cx.metamask.io/networks/1/trades')
+      .withQuery({ enableGasIncludedQuotes: 'true' })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: SWAP_TEST_GAS_INCLUDED_TRADES_MOCK,
+        };
+      }),
+  ];
+}
+
 export async function mockSmartTransactionRequests(mockServer: MockttpServer) {
   await mockSmartTransactionRequestsBase(mockServer);
 
   await mockEthDaiTrade(mockServer);
-
-  await mockServer
-    .forPost(
-      'https://transaction.api.cx.metamask.io/networks/1/submitTransactions',
-    )
-    .once()
-    .thenJson(200, { uuid: STX_UUID, txHashes: [TRANSACTION_HASH] });
 
   await mockServer
     .forPost(`${TX_SENTINEL_URL}/v1/networks/1/submitTransactions`)
@@ -566,13 +586,6 @@ export async function mockChooseGasFeeTokenRequests(mockServer: MockttpServer) {
   await mockServer
     .forPost('https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io')
     .thenJson(200, TRANSACTION_SIMULATION_RESPONSE);
-
-  await mockServer
-    .forPost(
-      'https://transaction.api.cx.metamask.io/networks/1/submitTransactions',
-    )
-    .once()
-    .thenJson(200, { uuid: STX_UUID });
 
   await mockServer
     .forPost(`${TX_SENTINEL_URL}/v1/networks/1/submitTransactions`)
@@ -716,13 +729,6 @@ export async function mockGasIncludedTransactionRequests(
     }));
 
   await mockServer
-    .forPost(
-      'https://transaction.api.cx.metamask.io/networks/1/submitTransactions',
-    )
-    .once()
-    .thenJson(200, { uuid: STX_UUID, txHashes: [TRANSACTION_HASH] });
-
-  await mockServer
     .forPost(`${TX_SENTINEL_URL}/v1/networks/1/submitTransactions`)
     .once()
     .thenCallback(() => {
@@ -750,13 +756,6 @@ export async function mockSmartTransactionBatchRequests(
   const submitResponse = error
     ? {}
     : { uuid: STX_UUID, txHashes: transactionHashes };
-
-  await mockServer
-    .forPost(
-      'https://transaction.api.cx.metamask.io/networks/1/submitTransactions',
-    )
-    .once()
-    .thenJson(submitStatusCode, submitResponse);
 
   await mockServer
     .forPost(`${TX_SENTINEL_URL}/v1/networks/1/submitTransactions`)
@@ -794,20 +793,10 @@ export async function mockSmartTransactionRequestsBase(
   ]);
 
   await mockServer
-    .forPost('https://transaction.api.cx.metamask.io/networks/1/getFees')
-    .thenJson(200, GET_FEES_RESPONSE);
-
-  await mockServer
     .forPost(`${TX_SENTINEL_URL}/v1/networks/1/getFees`)
     .thenCallback(() => {
       return { statusCode: 200, json: GET_FEES_RESPONSE };
     });
-
-  await mockServer
-    .forGet('https://transaction.api.cx.metamask.io/networks/1/batchStatus')
-    .withQuery({ uuids: STX_UUID })
-    .once()
-    .thenJson(200, GET_BATCH_STATUS_RESPONSE_PENDING);
 
   await mockServer
     .forGet(`${TX_SENTINEL_URL}/v1/networks/1/batchStatus`)
@@ -816,12 +805,6 @@ export async function mockSmartTransactionRequestsBase(
     .thenCallback(() => {
       return { statusCode: 200, json: GET_BATCH_STATUS_RESPONSE_PENDING };
     });
-
-  await mockServer
-    .forGet('https://transaction.api.cx.metamask.io/networks/1/batchStatus')
-    .withQuery({ uuids: STX_UUID })
-    .once()
-    .thenJson(200, GET_BATCH_STATUS_RESPONSE_SUCCESS);
 
   await mockServer
     .forGet(`${TX_SENTINEL_URL}/v1/networks/1/batchStatus`)
@@ -879,6 +862,15 @@ export async function mockSmartTransactionRequestsBase(
 }
 
 export async function mockSentinelNetworks(mockServer: MockttpServer) {
+  const network = {
+    network: 'ethereum-mainnet',
+    confirmations: true,
+    relayTransactions: true,
+    cubistSigners: ['0x1111111111111111111111111111111111111111'],
+    sendBundle: true,
+    smartTransactions: true,
+  };
+
   await mockServer
     .forGet(`${TX_SENTINEL_URL}/networks`)
     .always()
@@ -886,14 +878,18 @@ export async function mockSentinelNetworks(mockServer: MockttpServer) {
       return {
         ok: true,
         statusCode: 200,
-        json: {
-          '1': {
-            network: 'ethereum-mainnet',
-            confirmations: true,
-            relayTransactions: true,
-            sendBundle: true,
-          },
-        },
+        json: { '1': network },
+      };
+    });
+
+  await mockServer
+    .forGet(`${TX_SENTINEL_URL}/network`)
+    .always()
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: network,
       };
     });
 }
@@ -1096,64 +1092,64 @@ export async function mockSwapTokensMockApis(mockServer: MockttpServer) {
 const SWAP_ACCOUNT_ADDRESS = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 
 /**
- * One completed "Swap ETH to DAI" transaction in accounts API v4 format.
+ * One completed "Swap ETH to DAI" transaction for accounts API v5.
  * Activity list uses this API; default mock returns empty data, so we override
  * to show the swap as completed.
  */
 const MOCK_ACCOUNTS_API_SWAP_TX = {
-  hash: TRANSACTION_HASH,
-  timestamp: new Date().toISOString(),
-  chainId: 1,
   accountId: `eip155:1:${SWAP_ACCOUNT_ADDRESS}`,
-  blockNumber: 24384555,
-  blockHash: BLOCK_HASH,
-  gas: 2530032,
-  gasUsed: 774866,
-  gasPrice: '2657647800',
-  effectiveGasPrice: '2657647800',
-  nonce: 0,
-  cumulativeGasUsed: 19094274,
-  methodId: null,
-  value: '0',
-  to: '0x881D40237659C251811CEC9c364ef91dC08D300C',
-  from: SWAP_ACCOUNT_ADDRESS,
-  isError: false,
+  tx: {
+    id: TRANSACTION_HASH,
+    chainId: 'eip155:1',
+    status: 'confirmed',
+    timestamp: Date.now(),
+    date: new Date().toISOString(),
+    from: SWAP_ACCOUNT_ADDRESS,
+    to: '0x881D40237659C251811CEC9c364ef91dC08D300C',
+    blockNumber: '24384555',
+    blockHash: BLOCK_HASH,
+    value: '0',
+    methodId: null,
+    transactionType: 'SWAP',
+    transactionCategory: 'SWAP',
+    readable: 'Swap ETH to DAI',
+  },
   valueTransfers: [
     {
+      assetClass: 'ft',
       from: SWAP_ACCOUNT_ADDRESS,
       to: '0x6b175474e89094c44da98b954eedeac495271d0f',
+      assetId: 'eip155:1/slip44:60',
       amount: '2000000000000000000',
       decimal: 18,
       symbol: 'ETH',
       name: 'Ether',
-      transferType: 'normal',
     },
     {
+      assetClass: 'ft',
       from: '0x6b175474e89094c44da98b954eedeac495271d0f',
       to: SWAP_ACCOUNT_ADDRESS,
+      assetId: 'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f',
       amount: '4625979906416670820458',
       decimal: 18,
       symbol: 'DAI',
       name: 'Dai Stablecoin',
-      transferType: 'normal',
     },
   ],
-  logs: [],
-  transactionType: 'SWAP',
-  transactionCategory: 'SWAP',
-  readable: 'Swap ETH to DAI',
+  fee: null,
 };
 
 export async function mockAccountsApiSwapTransaction(
   mockServer: MockttpServer,
 ): Promise<void> {
   await mockServer
-    .forGet('https://accounts.api.cx.metamask.io/v4/multiaccount/transactions')
+    .forGet('https://accounts.api.cx.metamask.io/v5/multiaccount/transactions')
     .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
         data: [MOCK_ACCOUNTS_API_SWAP_TX],
+        unprocessedAccounts: [],
         pageInfo: { hasNextPage: false, count: 1 },
       },
     }));

@@ -103,7 +103,7 @@ describe('ConnectionListItem', () => {
     expect(
       getByTestId('connection-list-item__avatar-favicon'),
     ).toBeInTheDocument();
-    expect(getByText(/2.*accounts.*2.*networks/u)).toBeInTheDocument();
+    expect(getByText(/2.*accounts/u)).toBeInTheDocument();
   });
 
   it('handles multiple account groups', () => {
@@ -156,7 +156,7 @@ describe('ConnectionListItem', () => {
     );
 
     // Should show 2 account groups
-    expect(getByText(/2.*accounts.*2.*networks/u)).toBeInTheDocument();
+    expect(getByText(/2.*accounts/u)).toBeInTheDocument();
   });
 
   it('handles addresses not matching any account groups', () => {
@@ -199,7 +199,7 @@ describe('ConnectionListItem', () => {
     );
 
     // Should show 0 account groups since none match
-    expect(getByText(/0.*accounts.*2.*networks/u)).toBeInTheDocument();
+    expect(getByText(/0.*accounts/u)).toBeInTheDocument();
   });
 
   it('calls onClick when clicked', () => {

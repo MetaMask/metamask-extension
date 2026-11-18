@@ -97,7 +97,7 @@ describe('PerpsAttributionContext', () => {
     });
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-      'perpsSetAttributionContext',
+      'PerpsController:setAttributionContext',
       [
         {
           utmSource: 'twitter',
@@ -130,7 +130,7 @@ describe('PerpsAttributionContext', () => {
     // not just the latest partial ({ utmSource: 'C' }) — to stay in sync with
     // the client-side accumulation.
     expect(mockSubmitRequestToBackground).toHaveBeenLastCalledWith(
-      'perpsSetAttributionContext',
+      'PerpsController:setAttributionContext',
       [{ utmSource: 'C', utmMedium: 'B' }],
     );
   });
@@ -196,6 +196,17 @@ describe('PerpsAttributionContext', () => {
     });
   });
 
+  it('includes non-deeplink source in screenViewedAttribution', () => {
+    const { result } = renderHook(() => usePerpsAttributionContext(), {
+      wrapper: createWrapper('?source=hyperliquid_deposit_prompt'),
+    });
+
+    // Non-deeplink sources pass through as-is to override default screen source.
+    expect(result.current.screenViewedAttribution).toStrictEqual({
+      source: 'hyperliquid_deposit_prompt',
+    });
+  });
+
   it('keeps source=deeplink on screen views after flow-attribution churn from navigation', () => {
     const { result } = renderHook(() => usePerpsAttributionContext(), {
       wrapper: createWrapper('?source=deeplink&utm_source=ads'),
@@ -238,7 +249,7 @@ describe('PerpsAttributionContext', () => {
     // campaign off the background singleton.
     const utmWrites = mockSubmitRequestToBackground.mock.calls.filter(
       ([method, args]) =>
-        method === 'perpsSetAttributionContext' &&
+        method === 'PerpsController:setAttributionContext' &&
         Object.keys((args as [Record<string, unknown>])[0] ?? {}).length > 0,
     );
     expect(utmWrites).toHaveLength(0);
@@ -257,7 +268,7 @@ describe('PerpsAttributionContext', () => {
     });
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-      'perpsSetAttributionContext',
+      'PerpsController:setAttributionContext',
       [{ utmSource: 'ads' }],
     );
   });
@@ -276,7 +287,7 @@ describe('PerpsAttributionContext', () => {
     });
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-      'perpsSetAttributionContext',
+      'PerpsController:setAttributionContext',
       [{}],
     );
   });
@@ -302,7 +313,7 @@ describe('PerpsAttributionContext', () => {
     });
 
     expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
-      'perpsSetAttributionContext',
+      'PerpsController:setAttributionContext',
       [{}],
     );
   });

@@ -105,6 +105,17 @@ describe('useIsHardwareWalletAccount', () => {
     expect(result.current).toBe(false);
   });
 
+  it('returns false when the address has no internal account, even if a hardware wallet is selected', () => {
+    const { result } = renderWithMock({
+      address: '0x9999999999999999999999999999999999999999',
+      accountByAddress: undefined,
+      evmAccountFromSelectedGroup: ledgerAccount,
+      isHardwareWalletSelected: true,
+    });
+
+    expect(result.current).toBe(false);
+  });
+
   it('returns true from selected group EVM account when address is omitted', () => {
     const { result } = renderWithMock({
       evmAccountFromSelectedGroup: ledgerAccount,

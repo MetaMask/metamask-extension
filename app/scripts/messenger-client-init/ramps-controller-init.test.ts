@@ -1,9 +1,13 @@
 import {
   RampsController,
+  RampsEnvironment,
   getDefaultRampsControllerState,
   type RampsControllerMessenger,
 } from '@metamask/ramps-controller';
+import { getRampsEnvironment } from '../../../shared/lib/ramps/environment';
 import { getRootMessenger } from '../lib/messenger';
+import { captureException } from '../../../shared/lib/sentry';
+import { trackEvent } from '../controllers/analytics';
 import type { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -13,9 +17,8 @@ import {
 } from './messengers';
 import { RampsControllerInit } from './ramps-controller-init';
 
-import { RAMPS_NETWORK_ACCESS_DENIED_MESSAGE } from './ramps-network-gate';
-
 const mockRampsController = {
+  state: { orders: [] as { status: string }[] },
   init: jest.fn().mockResolvedValue(undefined),
   getCountries: jest.fn(),
   startOrderPolling: jest.fn(),
@@ -34,16 +37,23 @@ const mockRampsController = {
   removeOrder: jest.fn(),
   getOrder: jest.fn(),
   getOrderFromCallback: jest.fn(),
+  syncOrdersWithUserStorage: jest.fn(),
 };
 
 let mockInit: jest.Mock;
 let mockStartOrderPolling: jest.Mock;
 let mockStopOrderPolling: jest.Mock;
 
-const mockGetQuotesParams = {
-  amount: 0,
-  walletAddress: '0x0',
-};
+/**
+ * Reads the `isNetworkAccessAllowed` check the controller was constructed with.
+ *
+ * @returns The network access check passed to the `RampsController` constructor.
+ */
+function getNetworkAccessAllowedCheck(): () => boolean {
+  const [options] = jest.mocked(RampsController).mock.lastCall ?? [];
+  return (options as unknown as { isNetworkAccessAllowed: () => boolean })
+    .isNetworkAccessAllowed;
+}
 
 jest.mock('@metamask/ramps-controller', () => {
   const actual = jest.requireActual('@metamask/ramps-controller');
@@ -52,6 +62,19 @@ jest.mock('@metamask/ramps-controller', () => {
     RampsController: jest.fn().mockImplementation(() => mockRampsController),
   };
 });
+
+jest.mock('../../../shared/lib/sentry', () => ({
+  ...jest.requireActual('../../../shared/lib/sentry'),
+  captureException: jest.fn(),
+}));
+
+jest.mock('../controllers/analytics', () => ({
+  trackEvent: jest.fn(),
+}));
+
+jest.mock('../../../shared/lib/ramps/environment', () => ({
+  getRampsEnvironment: jest.fn(),
+}));
 
 type InitRequestMock = jest.Mocked<
   MessengerClientInitRequest<
@@ -117,6 +140,7 @@ function getInitRequestMock(
 }
 
 function resetMockRampsController(): void {
+  mockRampsController.state = { orders: [] };
   mockInit = jest.fn().mockResolvedValue(undefined);
   mockStartOrderPolling = jest.fn();
   mockStopOrderPolling = jest.fn();
@@ -143,6 +167,7 @@ function resetMockRampsController(): void {
 describe('RampsControllerInit', () => {
   beforeEach(() => {
     resetMockRampsController();
+    jest.mocked(getRampsEnvironment).mockReturnValue(RampsEnvironment.Staging);
   });
 
   it('initializes the controller with default state', () => {
@@ -151,7 +176,40 @@ describe('RampsControllerInit', () => {
     expect(RampsController).toHaveBeenCalledWith({
       messenger: expect.any(Object),
       state: getDefaultRampsControllerState(),
+      requestCacheTTL: 60_000,
+      isNetworkAccessAllowed: expect.any(Function),
+      trace: expect.any(Function),
+      onOrderSyncErroneousSituation: expect.any(Function),
     });
+  });
+
+  it('keeps the controller default cache TTL in production', () => {
+    jest
+      .mocked(getRampsEnvironment)
+      .mockReturnValue(RampsEnvironment.Production);
+
+    RampsControllerInit(getInitRequestMock());
+
+    expect(RampsController).toHaveBeenCalledWith(
+      expect.objectContaining({ requestCacheTTL: undefined }),
+    );
+  });
+
+  it('reports order sync erroneous situations to sentry and analytics', () => {
+    RampsControllerInit(getInitRequestMock());
+
+    const { onOrderSyncErroneousSituation } = jest.mocked(RampsController).mock
+      .calls[0][0] as unknown as {
+      onOrderSyncErroneousSituation: (
+        situationMessage: string,
+        sentryContext: Record<string, unknown>,
+      ) => void;
+    };
+
+    onOrderSyncErroneousSituation('missing remote order', { orderId: '1' });
+
+    expect(jest.mocked(captureException).mock.calls).toMatchSnapshot();
+    expect(jest.mocked(trackEvent).mock.calls).toMatchSnapshot();
   });
 
   it('exposes ramps background API methods', () => {
@@ -241,17 +299,47 @@ describe('RampsControllerInit', () => {
     expect(api?.stopRampsLifecycle).toEqual(expect.any(Function));
   });
 
-  it('blocks network methods before onboarding completes', () => {
-    const { messengerClient } = RampsControllerInit(
+  it('passes a network access check to the controller', () => {
+    RampsControllerInit(
       getInitRequestMock({
         completedOnboarding: false,
         useExternalServices: true,
       }),
     );
 
-    expect(() => messengerClient.getQuotes(mockGetQuotesParams)).toThrow(
-      RAMPS_NETWORK_ACCESS_DENIED_MESSAGE,
-    );
+    expect(getNetworkAccessAllowedCheck()()).toBe(false);
+  });
+
+  it('allows network access once onboarding is complete and basic functionality is on', () => {
+    RampsControllerInit(getInitRequestMock());
+
+    expect(getNetworkAccessAllowedCheck()()).toBe(true);
+  });
+
+  it('re-reads onboarding and basic functionality state on every check', () => {
+    const baseMessenger = getRootMessenger<never, never>();
+    const { initMessenger, setCompletedOnboarding, setUseExternalServices } =
+      createInitMessenger({
+        completedOnboarding: false,
+        useExternalServices: true,
+      });
+
+    RampsControllerInit({
+      ...buildControllerInitRequestMock(),
+      controllerMessenger: getRampsControllerMessenger(baseMessenger),
+      initMessenger,
+      persistedState: {},
+    });
+
+    const isNetworkAccessAllowed = getNetworkAccessAllowedCheck();
+
+    expect(isNetworkAccessAllowed()).toBe(false);
+
+    setCompletedOnboarding(true);
+    expect(isNetworkAccessAllowed()).toBe(true);
+
+    setUseExternalServices(false);
+    expect(isNetworkAccessAllowed()).toBe(false);
   });
 
   it('stopRampsLifecycle stops polling when network access is allowed', async () => {
@@ -260,6 +348,92 @@ describe('RampsControllerInit', () => {
     await Promise.resolve();
     expect(mockStartOrderPolling).toHaveBeenCalled();
 
+    api?.stopRampsLifecycle?.();
+
+    expect(mockStopOrderPolling).toHaveBeenCalled();
+  });
+
+  it('keeps polling on UI close while an order is still pending', async () => {
+    mockRampsController.state = { orders: [{ status: 'PENDING' }] };
+    const { api } = RampsControllerInit(getInitRequestMock());
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(mockStartOrderPolling).toHaveBeenCalled();
+
+    api?.stopRampsLifecycle?.();
+
+    expect(mockStopOrderPolling).not.toHaveBeenCalled();
+  });
+
+  // A stub in one of these statuses may never resolve, so it must not hold the
+  // lifecycle open — see IN_FLIGHT_ORDER_STATUSES.
+  async function expectUiCloseStopsPollingFor(status: string): Promise<void> {
+    mockRampsController.state = { orders: [{ status }] };
+    const { api } = RampsControllerInit(getInitRequestMock());
+    await Promise.resolve();
+    await Promise.resolve();
+
+    api?.stopRampsLifecycle?.();
+
+    expect(mockStopOrderPolling).toHaveBeenCalled();
+  }
+
+  it('stops polling on UI close for a PRECREATED stub', async () => {
+    await expectUiCloseStopsPollingFor('PRECREATED');
+  });
+
+  it('stops polling on UI close for an UNKNOWN stub', async () => {
+    await expectUiCloseStopsPollingFor('UNKNOWN');
+  });
+
+  it('runs stale-stub cleanup again after a UI close/open cycle', async () => {
+    mockRampsController.state = { orders: [{ status: 'PRECREATED' }] };
+    const { api } = RampsControllerInit(getInitRequestMock());
+    await Promise.resolve();
+    await Promise.resolve();
+    const startCallsAfterBoot = mockStartOrderPolling.mock.calls.length;
+
+    // Close: the stub must not hold the lifecycle open, otherwise
+    // `lifecycleStarted` never clears and cleanup can never run again.
+    api?.stopRampsLifecycle?.();
+    expect(mockStopOrderPolling).toHaveBeenCalled();
+
+    // Reopen: lifecycle restarts, so cleanup gets another chance.
+    api?.startRampsLifecycle?.();
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(mockStartOrderPolling.mock.calls.length).toBeGreaterThan(
+      startCallsAfterBoot,
+    );
+  });
+
+  it('stops polling on UI close once every order is terminal', async () => {
+    mockRampsController.state = {
+      orders: [{ status: 'COMPLETED' }, { status: 'CANCELLED' }],
+    };
+    const { api } = RampsControllerInit(getInitRequestMock());
+    await Promise.resolve();
+    await Promise.resolve();
+
+    api?.stopRampsLifecycle?.();
+
+    expect(mockStopOrderPolling).toHaveBeenCalled();
+  });
+
+  it('stops polling on UI close with a pending order when network access is revoked', async () => {
+    mockRampsController.state = { orders: [{ status: 'PENDING' }] };
+    const { initMessenger, setUseExternalServices } = createInitMessenger();
+    const baseMessenger = getRootMessenger<never, never>();
+    const { api } = RampsControllerInit({
+      ...buildControllerInitRequestMock(),
+      controllerMessenger: getRampsControllerMessenger(baseMessenger),
+      initMessenger,
+      persistedState: {},
+    });
+    await Promise.resolve();
+    await Promise.resolve();
+
+    setUseExternalServices(false);
     api?.stopRampsLifecycle?.();
 
     expect(mockStopOrderPolling).toHaveBeenCalled();

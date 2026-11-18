@@ -2,7 +2,11 @@ import {
   SnapController,
   SnapControllerMessenger,
 } from '@metamask/snaps-controllers';
-import { createDeferredPromise, Json } from '@metamask/utils';
+import {
+  createDeferredPromise,
+  Duration,
+  inMilliseconds,
+} from '@metamask/utils';
 import { MessengerClientInitFunction } from '../types';
 import {
   EndowmentPermissions,
@@ -104,6 +108,7 @@ export const SnapControllerInit: MessengerClientInitFunction<
     state: persistedState.SnapController,
 
     messenger: controllerMessenger,
+    maxIdleTime: inMilliseconds(2, Duration.Minute),
     featureFlags: {
       allowLocalSnaps,
       requireAllowlist,
@@ -143,6 +148,44 @@ export const SnapControllerInit: MessengerClientInitFunction<
   initMessenger.subscribe('KeyringController:unlock', () => {
     initMessenger.call('SnapController:setClientActive', true);
   });
+
+  // The platform gate only rejects new requests, so running Snaps and their
+  // WebSockets must be torn down to stop in-flight network activity.
+  initMessenger.subscribe(
+    'PreferencesController:stateChange',
+    (useExternalServices) => {
+      if (useExternalServices) {
+        return;
+      }
+      // Sockets are closed only once every Snap is terminated, otherwise a
+      // still-running Snap could open a new one that is never closed.
+      messengerClient
+        .stopAllSnaps()
+        .then(() => {
+          // Basic functionality may have been re-enabled while Snaps were
+          // stopping, in which case sockets are kept and their next message
+          // restarts the Snap.
+          if (
+            initMessenger.call('PreferencesController:getState')
+              .useExternalServices
+          ) {
+            return;
+          }
+          for (const { id: snapId } of Object.values(
+            messengerClient.state.snaps,
+          )) {
+            for (const { id } of initMessenger.call(
+              'WebSocketService:getAll',
+              snapId,
+            )) {
+              initMessenger.call('WebSocketService:close', snapId, id);
+            }
+          }
+        })
+        .catch(console.error);
+    },
+    (state) => state.useExternalServices,
+  );
 
   return {
     messengerClient,

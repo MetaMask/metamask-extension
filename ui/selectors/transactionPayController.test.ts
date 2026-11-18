@@ -9,7 +9,9 @@ import {
   selectTransactionPaymentTokenByTransactionId,
   selectTransactionPaySourceAmountsByTransactionId,
   selectTransactionPayIsMaxAmountByTransactionId,
+  selectTransactionPayIsPostQuoteByTransactionId,
   selectTransactionPayAccountOverrideByTransactionId,
+  selectTransactionPayFiatPaymentByTransactionId,
   selectPaymentOverrideByTransactionId,
   TransactionPayState,
 } from './transactionPayController';
@@ -261,6 +263,30 @@ describe('transactionPayController selectors', () => {
     });
   });
 
+  describe('selectTransactionPayIsPostQuoteByTransactionId', () => {
+    it('returns true when isPostQuote is true', () => {
+      const state = createMockState({ isPostQuote: true });
+
+      const result = selectTransactionPayIsPostQuoteByTransactionId(
+        state,
+        TRANSACTION_ID,
+      );
+
+      expect(result).toBe(true);
+    });
+
+    it('returns false when isPostQuote is absent', () => {
+      const state = createMockState();
+
+      const result = selectTransactionPayIsPostQuoteByTransactionId(
+        state,
+        TRANSACTION_ID,
+      );
+
+      expect(result).toBe(false);
+    });
+  });
+
   describe('selectTransactionPayAccountOverrideByTransactionId', () => {
     const ACCOUNT_OVERRIDE =
       '0xabcdef1234567890abcdef1234567890abcdef12' as const;
@@ -317,6 +343,31 @@ describe('transactionPayController selectors', () => {
       const state = createMockState({ isLoading: false });
 
       const result = selectPaymentOverrideByTransactionId(
+        state,
+        TRANSACTION_ID,
+      );
+
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe('selectTransactionPayFiatPaymentByTransactionId', () => {
+    it('returns the selected fiat payment method', () => {
+      const fiatPayment = { selectedPaymentMethodId: 'apple-pay' };
+      const state = createMockState({ fiatPayment });
+
+      const result = selectTransactionPayFiatPaymentByTransactionId(
+        state,
+        TRANSACTION_ID,
+      );
+
+      expect(result).toStrictEqual(fiatPayment);
+    });
+
+    it('returns undefined when no fiat payment is selected', () => {
+      const state = createMockState({ isLoading: false });
+
+      const result = selectTransactionPayFiatPaymentByTransactionId(
         state,
         TRANSACTION_ID,
       );

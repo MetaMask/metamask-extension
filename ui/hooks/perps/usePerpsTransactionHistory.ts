@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import type { CaipAccountId } from '@metamask/utils';
 import type { Funding } from '@metamask/perps-controller';
 import {
@@ -170,85 +177,119 @@ export function usePerpsTransactionHistory({
     userHistoryRef.current = userHistory;
   }, [userHistory]);
 
-  const fetchAllTransactions = useCallback(async () => {
-    fetchGenerationRef.current += 1;
-    const generation = fetchGenerationRef.current;
-    try {
-      const [fillsResult, ordersResult, funding] = await Promise.all([
-        coalesceBackgroundRequest<OrderFill[]>(coalesceKeys.fills, () =>
-          submitRequestToBackground<OrderFill[]>('perpsGetOrderFills', [
-            { accountId, aggregateByTime: false },
-          ]),
-        ),
-        coalesceBackgroundRequest<Order[]>(coalesceKeys.orders, () =>
-          submitRequestToBackground<Order[]>('perpsGetOrders', [{ accountId }]),
-        ),
-        coalesceBackgroundRequest<Funding[]>(coalesceKeys.funding, () =>
-          submitRequestToBackground<Funding[]>('perpsGetFunding', [
-            { accountId, startTime, endTime },
-          ]),
-        ),
-      ]);
+  const fetchAllTransactions = useCallback(
+    async (forceRefresh = false) => {
+      fetchGenerationRef.current += 1;
+      const generation = fetchGenerationRef.current;
+      // The controller coalesces these REST reads for 60s on its own, so an
+      // explicit refresh must opt out of that cache too. Otherwise a read made
+      // before a fill (e.g. by the perps home preview) hides it from Activity.
+      // replaceInFlight covers the same window while that preview's read is
+      // still in flight: joining it would drop forceRefresh.
+      const controllerOptions = forceRefresh ? [{ forceRefresh: true }] : [];
+      const coalesceOptions = forceRefresh
+        ? { replaceInFlight: true }
+        : undefined;
+      try {
+        const [fillsResult, ordersResult, funding] = await Promise.all([
+          coalesceBackgroundRequest<OrderFill[]>(
+            coalesceKeys.fills,
+            () =>
+              submitRequestToBackground<OrderFill[]>('perpsGetOrderFills', [
+                { accountId, aggregateByTime: false },
+                ...controllerOptions,
+              ]),
+            undefined,
+            coalesceOptions,
+          ),
+          coalesceBackgroundRequest<Order[]>(
+            coalesceKeys.orders,
+            () =>
+              submitRequestToBackground<Order[]>('perpsGetOrders', [
+                { accountId },
+                ...controllerOptions,
+              ]),
+            undefined,
+            coalesceOptions,
+          ),
+          coalesceBackgroundRequest<Funding[]>(
+            coalesceKeys.funding,
+            () =>
+              submitRequestToBackground<Funding[]>('perpsGetFunding', [
+                { accountId, startTime, endTime },
+                ...controllerOptions,
+              ]),
+            undefined,
+            coalesceOptions,
+          ),
+        ]);
 
-      if (fetchGenerationRef.current !== generation) {
-        return;
-      }
-
-      const fills: OrderFill[] = Array.isArray(fillsResult) ? fillsResult : [];
-      const orders: Order[] = Array.isArray(ordersResult) ? ordersResult : [];
-      const orderMap = new Map(orders.map((order) => [order.orderId, order]));
-
-      // Attaching detailedOrderType allows us to display the TP/SL pill in the trades history list.
-      const enrichedFills = fills.map((fill) => ({
-        ...fill,
-        detailedOrderType: orderMap.get(fill.orderId)?.detailedOrderType,
-      }));
-
-      // Transform each data type to PerpsTransaction format
-      const fillTransactions = transformFillsToTransactions(enrichedFills);
-      const orderTransactions = transformOrdersToTransactions(orders);
-      const fundingTransactions = transformFundingToTransactions(funding);
-      const userHistoryTransactions = transformUserHistoryToTransactions(
-        userHistoryRef.current,
-      );
-
-      // Combine all transactions (no Arbitrum withdrawals - using user history as single source of truth)
-      const allTransactions = [
-        ...fillTransactions,
-        ...orderTransactions,
-        ...fundingTransactions,
-        ...userHistoryTransactions,
-      ];
-
-      // Sort by timestamp descending (newest first)
-      allTransactions.sort((a, b) => b.timestamp - a.timestamp);
-
-      // Remove duplicates based on ID
-      const uniqueTransactions = allTransactions.reduce((acc, transaction) => {
-        const existingIndex = acc.findIndex((t) => t.id === transaction.id);
-        if (existingIndex === -1) {
-          acc.push(transaction);
+        if (fetchGenerationRef.current !== generation) {
+          return;
         }
-        return acc;
-      }, [] as PerpsTransaction[]);
 
-      setTransactions(uniqueTransactions);
-    } catch (err) {
-      if (fetchGenerationRef.current !== generation) {
-        return;
+        const fills: OrderFill[] = Array.isArray(fillsResult)
+          ? fillsResult
+          : [];
+        const orders: Order[] = Array.isArray(ordersResult) ? ordersResult : [];
+        const orderMap = new Map(orders.map((order) => [order.orderId, order]));
+
+        // Attaching detailedOrderType allows us to display the TP/SL pill in the trades history list.
+        const enrichedFills = fills.map((fill) => ({
+          ...fill,
+          detailedOrderType: orderMap.get(fill.orderId)?.detailedOrderType,
+        }));
+
+        // Transform each data type to PerpsTransaction format
+        const fillTransactions = transformFillsToTransactions(enrichedFills);
+        const orderTransactions = transformOrdersToTransactions(orders);
+        const fundingTransactions = transformFundingToTransactions(funding);
+        const userHistoryTransactions = transformUserHistoryToTransactions(
+          userHistoryRef.current,
+        );
+
+        // Combine all transactions (no Arbitrum withdrawals - using user history as single source of truth)
+        const allTransactions = [
+          ...fillTransactions,
+          ...orderTransactions,
+          ...fundingTransactions,
+          ...userHistoryTransactions,
+        ];
+
+        // Sort by timestamp descending (newest first)
+        allTransactions.sort((a, b) => b.timestamp - a.timestamp);
+
+        // Remove duplicates based on ID
+        const uniqueTransactions = allTransactions.reduce(
+          (acc, transaction) => {
+            const existingIndex = acc.findIndex((t) => t.id === transaction.id);
+            if (existingIndex === -1) {
+              acc.push(transaction);
+            }
+            return acc;
+          },
+          [] as PerpsTransaction[],
+        );
+
+        setTransactions(uniqueTransactions);
+      } catch (err) {
+        if (fetchGenerationRef.current !== generation) {
+          return;
+        }
+        const errorMessage =
+          err instanceof Error
+            ? err.message
+            : 'Failed to fetch transaction history';
+        setError(errorMessage);
+        setTransactions([]);
+      } finally {
+        if (fetchGenerationRef.current === generation) {
+          setIsLoading(false);
+        }
       }
-      const errorMessage =
-        err instanceof Error
-          ? err.message
-          : 'Failed to fetch transaction history';
-      setError(errorMessage);
-      setTransactions([]);
-    } finally {
-      if (fetchGenerationRef.current === generation) {
-        setIsLoading(false);
-      }
-    }
-  }, [startTime, endTime, accountId, coalesceKeys]);
+    },
+    [startTime, endTime, accountId, coalesceKeys],
+  );
 
   const initialFetch = useCallback(async () => {
     // Cache-respecting path — lets rapid re-mounts within the 10s TTL hit the
@@ -269,25 +310,12 @@ export function usePerpsTransactionHistory({
     invalidateCoalescedRequest(coalesceKeys.funding);
     const freshUserHistory = await refetchUserHistory();
     userHistoryRef.current = freshUserHistory;
-    await fetchAllTransactions();
+    await fetchAllTransactions(true);
   }, [fetchAllTransactions, refetchUserHistory, coalesceKeys]);
 
   const scopeFingerprint = `${perpsScopeKey}:${accountId ?? ''}:${startTime ?? ''}:${endTime ?? ''}:${forceFreshOnMount ? '1' : '0'}`;
-  const [prevScopeFingerprint, setPrevScopeFingerprint] = useState<
-    string | undefined
-  >(undefined);
 
-  if (
-    !skipInitialFetch &&
-    scopeFingerprint !== prevScopeFingerprint &&
-    lastFetchedScopeRef.current !== scopeFingerprint
-  ) {
-    setPrevScopeFingerprint(scopeFingerprint);
-    setIsLoading(true);
-    setError(null);
-  }
-
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (skipInitialFetch) {
       return;
     }
@@ -300,6 +328,10 @@ export function usePerpsTransactionHistory({
       return;
     }
     lastFetchedScopeRef.current = scopeFingerprint;
+    fetchGenerationRef.current += 1;
+    setIsLoading(true);
+    setError(null);
+    setTransactions([]);
     // Activity surfaces that open on user intent (e.g. PerpsActivityPage)
     // must force a fresh fetch so they never surface a stale snapshot held
     // by a sibling consumer inside the TTL window. Passive previews (e.g.
