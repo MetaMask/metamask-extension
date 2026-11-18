@@ -5,7 +5,7 @@ import type {
   Span,
   StartSpanOptions,
   TraceparentData,
-} from '@sentry/types';
+} from '@sentry/core';
 import { createModuleLogger, hasProperty, isObject } from '@metamask/utils';
 import type {
   TraceCallback as ControllerTraceCallback,

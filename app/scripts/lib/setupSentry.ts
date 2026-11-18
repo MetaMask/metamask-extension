@@ -5,7 +5,7 @@ import type {
   ErrorEvent as SentryErrorEvent,
   Event as SentryEvent,
   TransactionEvent,
-} from '@sentry/types';
+} from '@sentry/core';
 import { debug as sentrySdkLogger } from '@sentry/core';
 import { cloneDeep, escapeRegExp } from 'lodash';
 import browser from 'webextension-polyfill';
@@ -37,6 +37,24 @@ type BeforeBreadcrumbHandler = NonNullable<
   SentryClientOptions['beforeBreadcrumb']
 >;
 type RewriteErrorMessage = (errorMessage: string) => string;
+
+export const sentryDataCollection: SentryClientOptions['dataCollection'] = {
+  cookies: false,
+  databaseQueryData: false,
+  frameContextLines: 7,
+  genAI: { inputs: false, outputs: false },
+  graphQL: { document: false, variables: false },
+  httpBodies: [],
+  mcp: { inputs: false, outputs: false },
+  httpHeaders: {
+    request: { deny: ['forwarded', '-ip', 'remote-', 'via', '-user'] },
+    response: { deny: ['forwarded', '-ip', 'remote-', 'via', '-user'] },
+  },
+  queues: false,
+  stackFrameVariables: true,
+  urlQueryParams: { deny: ['forwarded', '-ip', 'remote-', 'via', '-user'] },
+  userInfo: false,
+};
 
 type SentrySpanLike = {
   op?: string;
@@ -192,12 +210,15 @@ function getClientOptions(): SentryClientOptions {
       dropLowValueMarkSpans(transaction);
       return transaction as TransactionEvent;
     },
+    dataCollection: sentryDataCollection,
     debug: Boolean(METAMASK_DEBUG),
     dist: isManifestV3 ? 'mv3' : 'mv2',
     dsn: sentryTarget,
     environment,
     integrations: [
       Sentry.dedupeIntegration(),
+      // Keep v10's session cadence across in-document navigation.
+      Sentry.browserSessionIntegration({ lifecycle: 'route' }),
       Sentry.extraErrorDataIntegration(),
       Sentry.browserTracingIntegration({
         // Creates ui.long-animation-frame spans (falls back to ui.long-task).
@@ -205,6 +226,8 @@ function getClientOptions(): SentryClientOptions {
         enableLongAnimationFrame: true,
         shouldCreateSpanForRequest,
       }),
+      // v11 separates performance.mark/measure spans from browser tracing.
+      Sentry.userTimingIntegration(),
       metaMetricsIntegration({
         getAnalyticsState,
         log,
@@ -241,6 +264,7 @@ function getClientOptions(): SentryClientOptions {
     tracesSampler: createTracesSampler({
       defaultSampleRate: tracesSampleRate,
     }),
+    traceLifecycle: 'static',
     // If we are reporting to SENTRY_DSN_PERFORMANCE, we want to ignore all errors.
     ignoreErrors:
       sentryTarget === SENTRY_DSN_PERFORMANCE

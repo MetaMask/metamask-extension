@@ -23,7 +23,7 @@ function minimalFetchResponse(): Response {
 }
 
 describe('sentry session lifecycle (organic init trigger)', () => {
-  it('sends the session created by browserSessionIntegration at init when opted in', async () => {
+  it('sends initial and navigation sessions when opted in', async () => {
     globalThis.history ??= {} as unknown as History;
     globalThis.stateHooks = {
       ...globalThis.stateHooks,
@@ -47,6 +47,7 @@ describe('sentry session lifecycle (organic init trigger)', () => {
       dsn: 'https://public@fake.ingest.sentry.io/1',
       release: 'setup-sentry-unit-test',
       transport: makeTransport,
+      integrations: [Sentry.browserSessionIntegration({ lifecycle: 'route' })],
       tracesSampleRate: 0,
       // jsdom mocks `chrome.runtime.id`, so the SDK's embedded-extension
       // detection would otherwise disable init in unit tests.
@@ -73,7 +74,17 @@ describe('sentry session lifecycle (organic init trigger)', () => {
         }
       });
     expect(sessionSent).toBe(true);
+    const initialSessionId = Sentry.getIsolationScope().getSession()?.sid;
+    expect(initialSessionId).toBeDefined();
 
+    globalThis.history.pushState({}, '', '#sentry-session-navigation');
+    await flushMicrotasks();
+    await tick();
+
+    const navigationSessionId = Sentry.getIsolationScope().getSession()?.sid;
+    expect(navigationSessionId).toBeDefined();
+    expect(navigationSessionId).not.toBe(initialSessionId);
+    await Sentry.close(2000);
     fetchSpy.mockRestore();
   });
 });
