@@ -37,8 +37,9 @@ jest.mock('../../../../hooks/useSegmentContext', () => ({
 const renderOpenSupport = (
   shouldShowSupportConsent: boolean,
   supportDataSharingPreference: boolean | null,
+  options?: { trackLinkClick?: boolean },
 ) =>
-  renderHookWithProvider(() => useOpenSupport(mockShowConsentModal), {
+  renderHookWithProvider(() => useOpenSupport(mockShowConsentModal, options), {
     ...mockState,
     metamask: {
       ...mockState.metamask,
@@ -96,6 +97,26 @@ describe('useOpenSupport', () => {
     expect(getCustomerServiceToken).not.toHaveBeenCalled();
     expect(mockOpenTab).not.toHaveBeenCalled();
     expect(openWindow).toHaveBeenCalledWith(SUPPORT_LINK);
+  });
+
+  it('opens support with the token without tracking the link when the caller tracks it', async () => {
+    const result = renderOpenSupport(false, true, { trackLinkClick: false });
+
+    await act(() => result.current());
+
+    expect(mockOpenTab).toHaveBeenCalledWith({
+      url: expect.stringContaining('customer_service_token=test-token'),
+    });
+    expect(mockTrackEvent).not.toHaveBeenCalled();
+  });
+
+  it('opens support without user data without tracking the link when the caller tracks it', async () => {
+    const result = renderOpenSupport(false, false, { trackLinkClick: false });
+
+    await act(() => result.current());
+
+    expect(openWindow).toHaveBeenCalledWith(SUPPORT_LINK);
+    expect(mockTrackEvent).not.toHaveBeenCalled();
   });
 
   it('opens support without personal data when retrieving the token fails', async () => {

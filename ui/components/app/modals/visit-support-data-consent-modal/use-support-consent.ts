@@ -69,6 +69,7 @@ const openUrlInNewTab = async (url: string) => {
  */
 export const useSupportLinks = (
   supportLink: string = SUPPORT_LINK as string,
+  { trackLinkClick = true }: { trackLinkClick?: boolean } = {},
 ) => {
   const version = process.env.METAMASK_VERSION as string;
   const { trackEvent, createEventBuilder } = useAnalytics();
@@ -77,6 +78,9 @@ export const useSupportLinks = (
 
   const trackSupportLinkClicked = useCallback(
     (url: string) => {
+      if (!trackLinkClick) {
+        return;
+      }
       trackEvent(
         createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
           .addCategory(MetaMetricsEventCategory.Settings)
@@ -87,7 +91,12 @@ export const useSupportLinks = (
           .build(),
       ).catch(() => undefined);
     },
-    [trackEvent, createEventBuilder, segmentContext.page?.title],
+    [
+      trackEvent,
+      createEventBuilder,
+      segmentContext.page?.title,
+      trackLinkClick,
+    ],
   );
 
   const openSupportLink = useCallback(
@@ -128,15 +137,21 @@ export const useSupportLinks = (
  * repeated clicks while it is pending are ignored to avoid opening the tab twice.
  *
  * @param showConsentModal - Opens the entry point's consent modal.
+ * @param options - Tracking options.
+ * @param options.trackLinkClick - `false` when the entry point already tracks
+ * its own SupportLinkClicked event for the click.
  * @returns The click handler.
  */
-export const useOpenSupport = (showConsentModal: () => void) => {
+export const useOpenSupport = (
+  showConsentModal: () => void,
+  { trackLinkClick = true }: { trackLinkClick?: boolean } = {},
+) => {
   const savedPreference = useSelector(getSavedSupportDataSharingPreference);
   const {
     getCustomerServiceTokenForSupport,
     openSupportLink,
     openSupportLinkWithoutUserData,
-  } = useSupportLinks();
+  } = useSupportLinks(SUPPORT_LINK as string, { trackLinkClick });
   const isOpeningRef = useRef(false);
 
   return useCallback(async () => {

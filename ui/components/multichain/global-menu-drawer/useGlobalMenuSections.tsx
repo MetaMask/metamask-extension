@@ -169,7 +169,10 @@ export function useGlobalMenuSections(
   const showSupportDataConsentModal = useCallback(() => {
     dispatch(setShowSupportDataConsentModal(true));
   }, [dispatch]);
-  const openSupport = useOpenSupport(showSupportDataConsentModal);
+  // Non-priority clicks are tracked by handleSupportMenuClick, so the hook must not track them again.
+  const openSupport = useOpenSupport(showSupportDataConsentModal, {
+    trackLinkClick: showPriorityTag,
+  });
 
   const handleSupportMenuClick = useCallback(() => {
     openSupport();
