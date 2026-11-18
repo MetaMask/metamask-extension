@@ -299,7 +299,12 @@ export async function openRoute({
   const opened = action.openPopup();
 
   globalThis.setTimeout(() => {
-    setActionPopup(POPUP_INIT_FILE).catch(() => undefined);
+    // The hash popup is only for this open. Putting popup-init.html back
+    // while the side panel is preferred makes later toolbar clicks open the
+    // popup, because Chrome prefers a popup over setPanelBehavior.
+    setActionPopup(preferSidePanel ? '' : POPUP_INIT_FILE).catch(
+      () => undefined,
+    );
   }, popupRouteResetDelayMs);
 
   try {

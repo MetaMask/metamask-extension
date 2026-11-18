@@ -7,6 +7,7 @@ import {
   applyEarlySidePanelToolbarBehavior,
   applyToolbarSidePanelBehavior,
   createSidepanelOpener,
+  openRoute,
   setupSidePanelToolbarBehavior,
   shouldUseSidepanel,
   type SidePanelApiWithBehavior,
@@ -279,7 +280,7 @@ describe('applyToolbarSidePanelBehavior', () => {
     globalThis.chrome = {
       ...(globalThis.chrome ?? ({} as typeof chrome)),
       action: { setPopup },
-    } as typeof chrome;
+    } as unknown as typeof chrome;
   });
 
   afterEach(() => {
@@ -520,5 +521,58 @@ describe('setupSidePanelToolbarBehavior', () => {
       ),
     ).resolves.toBeUndefined();
     expect(getController).not.toHaveBeenCalled();
+  });
+});
+
+describe('openRoute', () => {
+  const setPopup = jest.fn().mockResolvedValue(undefined);
+  const openPopup = jest.fn().mockResolvedValue(undefined);
+  let originalChrome: typeof chrome;
+
+  beforeEach(() => {
+    jest.useFakeTimers();
+    setPopup.mockClear();
+    openPopup.mockClear();
+    originalChrome = globalThis.chrome;
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+    globalThis.chrome = originalChrome;
+  });
+
+  it('clears the toolbar popup after a side-panel fallback', async () => {
+    globalThis.chrome = {
+      sidePanel: {
+        open: jest.fn().mockRejectedValue(new Error('side panel unavailable')),
+      },
+      action: { setPopup, openPopup },
+    } as unknown as typeof chrome;
+
+    await openRoute({
+      controller: createToolbarController(true),
+      windowId: 1,
+      path: '/swap',
+    });
+
+    await jest.advanceTimersByTimeAsync(1000);
+
+    expect(setPopup).toHaveBeenLastCalledWith({ popup: '' });
+  });
+
+  it('restores popup-init.html when the popup is preferred', async () => {
+    globalThis.chrome = {
+      action: { setPopup, openPopup },
+    } as unknown as typeof chrome;
+
+    await openRoute({
+      controller: createToolbarController(false),
+      windowId: 1,
+      path: '/swap',
+    });
+
+    await jest.advanceTimersByTimeAsync(1000);
+
+    expect(setPopup).toHaveBeenLastCalledWith({ popup: 'popup-init.html' });
   });
 });
