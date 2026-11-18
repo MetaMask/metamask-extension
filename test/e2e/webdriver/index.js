@@ -1,4 +1,8 @@
 const { Browser } = require('selenium-webdriver');
+const {
+  readBrowserSession,
+  recordBrowserSession,
+} = require('../benchmarks/utils/host-provenance');
 const { Driver } = require('./driver');
 const ChromeDriver = require('./chrome');
 const FirefoxDriver = require('./firefox');
@@ -27,6 +31,16 @@ async function buildWebDriver({
     proxyPort,
     isBenchmark,
   });
+  if (isBenchmark) {
+    try {
+      recordBrowserSession(
+        readBrowserSession(await seleniumDriver.getCapabilities()),
+      );
+    } catch {
+      // Versions stay null in the results; provenance must not fail a run.
+    }
+  }
+
   const driver = new Driver({
     driver: seleniumDriver,
     browser,
