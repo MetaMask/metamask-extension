@@ -501,5 +501,44 @@ describe('BridgeFeeRow', () => {
       expect(tooltip.textContent).toContain(`${messages.bridgeFee.message}:`);
       expect(tooltip.textContent).toContain(`${messages.metamaskFee.message}:`);
     });
+
+    it('formats fee and tooltip breakdown with "$" and en-US separators even in a non-US locale', async () => {
+      useTransactionPayTotalsMock.mockReturnValue({
+        fees: {
+          provider: { usd: '1000.50' },
+          metaMask: { usd: '234.00' },
+          sourceNetwork: { estimate: { usd: '0.20' } },
+          targetNetwork: { usd: '0.03' },
+        },
+      } as TransactionPayTotals);
+
+      const state = getMockPersonalSignConfirmState({
+        metamask: {},
+        localeMessages: { currentLocale: 'en_GB' },
+      });
+
+      const { getByTestId, findByText } = render(
+        {
+          variant: ConfirmInfoRowSize.Small,
+          useDottedValueTooltip: true,
+        },
+        state,
+      );
+
+      const trigger = getByTestId('bridge-fee-tooltip-popover-trigger');
+      expect(trigger).toHaveTextContent('$1,234.73');
+      expect(trigger).not.toHaveTextContent('US$');
+
+      await act(async () => {
+        fireEvent.mouseEnter(trigger);
+      });
+
+      const tooltip = await findByText((content) =>
+        content.includes(`${messages.networkFee.message}:`),
+      );
+      expect(tooltip.textContent).toContain('$1,000.50');
+      expect(tooltip.textContent).toContain('$234.00');
+      expect(tooltip.textContent).not.toContain('US$');
+    });
   });
 });

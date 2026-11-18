@@ -9,7 +9,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { MoneyInfoDialog } from './money-info-dialog';
 
 export const MONEY_USD_DIALOG_TEST_ID = 'money-usd-dialog';

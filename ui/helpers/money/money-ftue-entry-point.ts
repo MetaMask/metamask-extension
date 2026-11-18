@@ -6,6 +6,5 @@ export enum MoneyFtueEntryPoint {
   MoneyPotentialEarnings = 'money_potential_earnings',
   MoneyActivityDetails = 'money_activity_details',
   MoneyDepositDeeplink = 'money_deposit_deeplink',
-  MoneyDepositConfirmation = 'money_deposit_confirmation',
   Unknown = 'unknown',
 }

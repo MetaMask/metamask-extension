@@ -66,15 +66,27 @@ describe('BridgeTimeRow', () => {
     });
   });
 
-  it('renders Less than 1 min for durations under 30 seconds', () => {
+  it('renders less than 1 min for durations under 30 seconds', () => {
     useTransactionPayTotalsMock.mockReturnValue({
       estimatedDuration: 29,
     } as TransactionPayTotals);
 
     const { getByTestId, getByText } = render();
     expect(getByText(messages.estimatedTime.message)).toBeInTheDocument();
+    expect(getByTestId('bridge-time-value')).toHaveTextContent('< 1 min');
+  });
+
+  it('renders Est. time and Less than 1 min when useMoneyDepositCopy is true', () => {
+    useTransactionPayTotalsMock.mockReturnValue({
+      estimatedDuration: 29,
+    } as TransactionPayTotals);
+
+    const { getByTestId, getByText } = render({ useMoneyDepositCopy: true });
+    expect(
+      getByText(messages.moneyAccountDepositEstTime.message),
+    ).toBeInTheDocument();
     expect(getByTestId('bridge-time-value')).toHaveTextContent(
-      'Less than 1 min',
+      messages.moneyAccountDepositLessThanOneMinute.message,
     );
   });
 

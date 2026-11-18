@@ -1,6 +1,6 @@
 import React, { useId } from 'react';
 import { Text, TextColor, TextVariant } from '@metamask/design-system-react';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { MoneyInfoDialog } from './money-info-dialog';
 
 export const MONEY_APY_DIALOG_TEST_ID = 'money-apy-dialog';
@@ -12,7 +12,7 @@ export type MoneyApyDialogProps = {
 };
 
 /**
- * APY info dialog opened from the deposit confirmation's APY triggers.
+ * APY info dialog opened from the deposit confirmation's APY trigger.
  */
 export function MoneyApyDialog({
   isOpen,

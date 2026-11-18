@@ -19,6 +19,7 @@ import {
 import { useConfirmContext } from '../../context/confirm';
 import { PayWithModal } from '../../components/modals/pay-with-modal';
 import { useMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useMoneyAccountWithdrawableFiat';
+import { formatConfirmationUsd } from '../../utils/format-confirmation-usd';
 import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
 import { usePayTokenAccountBalance } from './usePayTokenAccountBalance';
 import { useTransactionPayToken } from './useTransactionPayToken';
@@ -81,6 +82,10 @@ export function usePayWithToken(): PayWithToken {
     isMoneyAccountSelected,
   );
 
+  const isMoneyAccountDeposit = hasTransactionType(currentConfirmation, [
+    TransactionType.moneyAccountDeposit,
+  ]);
+
   const isPostQuoteWithdraw =
     isPostQuoteWithdrawTransaction(currentConfirmation);
   const isConvertDeposit = hasTransactionType(
@@ -92,11 +97,7 @@ export function usePayWithToken(): PayWithToken {
   // Also wait when Money Account is the flag default so deposits do not flash
   // the required destination token before the override lands.
   const shouldWaitForPayToken =
-    isPostQuoteWithdraw ||
-    isDefaultMoneyAccount ||
-    hasTransactionType(currentConfirmation, [
-      TransactionType.moneyAccountDeposit,
-    ]);
+    isPostQuoteWithdraw || isDefaultMoneyAccount || isMoneyAccountDeposit;
 
   const openModal = useCallback(() => {
     setIsModalOpen(true);
@@ -126,10 +127,14 @@ export function usePayWithToken(): PayWithToken {
     if (isMoneyAccountSelected) {
       return withdrawableFiatFormatted ?? '';
     }
-    return fiatFormatter(new BigNumber(cryptoBalanceUsd).toNumber());
+    const balanceNumber = new BigNumber(cryptoBalanceUsd).toNumber();
+    return isMoneyAccountDeposit
+      ? formatConfirmationUsd(balanceNumber)
+      : fiatFormatter(balanceNumber);
   }, [
     cryptoBalanceUsd,
     fiatFormatter,
+    isMoneyAccountDeposit,
     isMoneyAccountSelected,
     withdrawableFiatFormatted,
   ]);

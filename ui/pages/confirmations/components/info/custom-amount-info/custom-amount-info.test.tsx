@@ -82,7 +82,7 @@ jest.mock('../../rows/from-account-row', () => ({
 jest.mock('../../rows/perps-account-picker-row', () => ({
   PerpsAccountPickerRow: () => <div data-testid="perps-account-picker-row" />,
 }));
-jest.mock('../../../../../components/app/money/money-account-to-row', () => ({
+jest.mock('../../rows/money-account-to-row', () => ({
   MoneyAccountToRow: () => <div data-testid="money-account-to-row" />,
 }));
 jest.mock('../../rows/bridge-fee-row/bridge-fee-row', () => ({
@@ -101,7 +101,16 @@ jest.mock('../../../../../hooks/money/useMoneyVaultApy', () => ({
   useMoneyVaultApy: () => ({ apyPercentFormatted: '6.2%' }),
 }));
 jest.mock('../../rows/bridge-time-row/bridge-time-row', () => ({
-  BridgeTimeRow: () => <div data-testid="bridge-time-row" />,
+  BridgeTimeRow: ({
+    useMoneyDepositCopy,
+  }: {
+    useMoneyDepositCopy?: boolean;
+  }) => (
+    <div
+      data-testid="bridge-time-row"
+      data-money-deposit-copy={String(Boolean(useMoneyDepositCopy))}
+    />
+  ),
 }));
 jest.mock('../../rows/total-row/total-row', () => ({
   TotalRow: () => <div data-testid="total-row" />,
@@ -1024,6 +1033,7 @@ describe('CustomAmountInfo', () => {
       const receiveValue = getByTestId('receive-value');
 
       expect(toRow).toBeInTheDocument();
+      expect(timeRow).toHaveAttribute('data-money-deposit-copy', 'true');
       expect(feeRow).toHaveAttribute('data-dotted-tooltip', 'true');
       expect(receiveValue.tagName).toBe('BUTTON');
       expect(toRow.compareDocumentPosition(timeRow)).toBe(

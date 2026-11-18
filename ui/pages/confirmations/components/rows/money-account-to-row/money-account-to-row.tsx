@@ -7,29 +7,43 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { RouteMessengerProvider } from '../../../../contexts/route-messenger';
-import { openMoneyFtue } from '../../../../ducks/money-ftue';
-import { MoneyFtueEntryPoint } from '../../../../helpers/money/money-ftue-entry-point';
-import { useMoneyAnalytics } from '../../../../hooks/money/useMoneyAnalytics';
-import { useMoneyVaultApy } from '../../../../hooks/money/useMoneyVaultApy';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+import {
+  ConfirmInfoRow,
+  ConfirmInfoRowSize,
+} from '../../../../../components/app/confirm/info/row/row';
+import { openMoneyFtue } from '../../../../../ducks/money-ftue';
+import { MoneyFtueEntryPoint } from '../../../../../helpers/money/money-ftue-entry-point';
+import { useMoneyAnalytics } from '../../../../../hooks/money/useMoneyAnalytics';
+import { useMoneyVaultApy } from '../../../../../hooks/money/useMoneyVaultApy';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+
+/* eslint-disable import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog */
 import {
   MoneyScreenName,
   MoneyTooltipName,
   MoneyTooltipType,
-} from '../../../../pages/money/constants/money-events';
-import { useDispatch } from '../../../../store/hooks';
-import { ConfirmInfoRow, ConfirmInfoRowSize } from '../../confirm/info/row/row';
-import { MONEY_ACCOUNT_BALANCE_ALLOWED_CAPABILITIES } from '../messenger';
-import { DottedTrigger, MoneyApyDialog } from '../money-deposit-dialogs';
+} from '../../../../money/constants/money-events';
+/* eslint-enable import-x/no-restricted-paths */
+import { useDispatch } from '../../../../../store/hooks';
+import {
+  DottedTrigger,
+  MoneyApyDialog,
+} from '../../modals/money-deposit-dialogs';
 
 export type MoneyAccountToRowProps = {
   variant?: ConfirmInfoRowSize;
 };
 
-const MoneyAccountToRowContent = ({
+/**
+ * Destination row shown on Money Account deposits:
+ * `To: [Money icon] MetaMask Money • 6.2% APY`.
+ *
+ * Activating `MetaMask Money` opens the existing Money intro splash, and
+ * activating the APY opens the APY info dialog.
+ */
+export function MoneyAccountToRow({
   variant = ConfirmInfoRowSize.Small,
-}: MoneyAccountToRowProps) => {
+}: MoneyAccountToRowProps = {}) {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { apyPercentFormatted } = useMoneyVaultApy({ enabled: true });
@@ -41,9 +55,9 @@ const MoneyAccountToRowContent = ({
   const handleOpenMoneyIntro = useCallback(() => {
     dispatch(
       openMoneyFtue({
-        source: 'depositInfo',
+        source: 'deposit',
         origin: {
-          entryPoint: MoneyFtueEntryPoint.MoneyDepositConfirmation,
+          entryPoint: MoneyFtueEntryPoint.Unknown,
         },
       }),
     );
@@ -116,16 +130,5 @@ const MoneyAccountToRowContent = ({
         />
       ) : null}
     </>
-  );
-};
-
-export function MoneyAccountToRow(props: MoneyAccountToRowProps = {}) {
-  return (
-    <RouteMessengerProvider
-      path="money-account-to-row"
-      capabilities={MONEY_ACCOUNT_BALANCE_ALLOWED_CAPABILITIES}
-    >
-      <MoneyAccountToRowContent {...props} />
-    </RouteMessengerProvider>
   );
 }

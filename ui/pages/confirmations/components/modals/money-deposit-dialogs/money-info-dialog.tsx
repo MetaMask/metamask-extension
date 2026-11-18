@@ -9,7 +9,7 @@ import {
   ModalContentSize,
   ModalOverlay,
 } from '@metamask/design-system-react';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 export type MoneyInfoDialogProps = {
   isOpen: boolean;

@@ -4183,7 +4183,7 @@
     "message": "Est. points"
   },
   "estimatedTime": {
-    "message": "Est. time"
+    "message": "Estimated time"
   },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
@@ -5369,9 +5369,6 @@
     "message": "The Ledger device was not connected. If you wish to connect your Ledger, click 'Continue' again and approve HID connection",
     "description": "An error message shown to the user during the hardware connect flow."
   },
-  "lessThanOneMinute": {
-    "message": "Less than 1 min"
-  },
   "lightTheme": {
     "message": "Light"
   },
@@ -5953,6 +5950,9 @@
     "message": "Earn $1",
     "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
   },
+  "moneyAccountApyTooltip": {
+    "message": "The rate shown is an estimated Annual Percentage Yield (APY) based on current market conditions. APY is variable and is not guaranteed."
+  },
   "moneyAccountAvailableBalance": {
     "message": "Available balance: $1",
     "description": "$1 is the formatted Money Account vault withdrawable balance"
@@ -5982,31 +5982,15 @@
     "message": "Convert $1",
     "description": "Confirm button on a MetaMask Money deposit. $1 is the pay token symbol, for example USDC."
   },
-  "moneyAccountDepositEstBalanceDialogCompoundBody": {
-    "message": "Earnings are added to your balance in real time, so they start earning too."
-  },
-  "moneyAccountDepositEstBalanceDialogCompoundTitle": {
-    "message": "Earnings compound automatically"
-  },
-  "moneyAccountDepositEstBalanceDialogDisclaimer": {
-    "message": "This estimate assumes $1 APY for a full year. APY is variable and isn't guaranteed.",
-    "description": "$1 is the APY percentage including the percent sign, e.g. \"6.2%\""
-  },
-  "moneyAccountDepositEstBalanceDialogSubtitle": {
-    "message": "Estimated balance after one year in MetaMask Money at $1",
-    "description": "$1 is the styled APY run ending in a period, e.g. \"6.2% APY.\""
-  },
-  "moneyAccountDepositEstBalanceDialogSubtitleApy": {
-    "message": "$1 APY.",
-    "description": "$1 is the APY percentage including the percent sign, e.g. \"6.2%\""
-  },
-  "moneyAccountDepositEstBalanceDialogTitle": {
-    "message": "Your $1 could grow to $2",
-    "description": "$1 is the formatted deposit amount, e.g. \"$100\". $2 is the formatted projected balance, e.g. \"$106.20\"."
+  "moneyAccountDepositEstTime": {
+    "message": "Est. time"
   },
   "moneyAccountDepositHeader": {
     "message": "Add to MetaMask Money",
     "description": "Header on the MetaMask Money deposit confirmation"
+  },
+  "moneyAccountDepositLessThanOneMinute": {
+    "message": "Less than 1 min"
   },
   "moneyAccountDepositNoLockupsBody": {
     "message": "There are no notice periods or penalties to swap or send your funds."
@@ -6041,7 +6025,7 @@
     "description": "$1 is the formatted receive amount, e.g. \"$100\"."
   },
   "moneyAccountProjectedBalance": {
-    "message": "Est. 1-year balance:"
+    "message": "Projected 1-year balance:"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "Projection assumes $1% Annual Percentage Yield (APY) remains unchanged for one year. APY is variable and is not guaranteed.",
@@ -6282,15 +6266,11 @@
     "message": "No lockups, notice periods, or penalties. Your money is always yours to take out."
   },
   "moneyFtueBenefitWithdrawTitle": {
-    "message": "No lockups"
+    "message": "Withdraw anytime"
   },
   "moneyFtueDescription": {
     "message": "MetaMask Money is a stablecoin account that earns up to $1 APY - with trading, sending, and spending built in.",
     "description": "$1 is the current mUSD APY, including the percent sign."
-  },
-  "moneyFtueDescriptionDeposit": {
-    "message": "MetaMask Money is a stablecoin account that earns up to $1—with trading, sending, and spending built in.",
-    "description": "$1 is the styled APY run, e.g. \"6.2% APY\"."
   },
   "moneyFtueHeadline": {
     "message": "Earn, trade, and spend from one balance"

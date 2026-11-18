@@ -59,24 +59,6 @@ describe('moneyFtue slice', () => {
     });
   });
 
-  it('opens for deposit confirmation info without a pending deposit', () => {
-    const confirmationOrigin: MoneyFtueOrigin = {
-      entryPoint: MoneyFtueEntryPoint.MoneyDepositConfirmation,
-    };
-    const state = reducer(
-      initialState,
-      openMoneyFtue({ source: 'depositInfo', origin: confirmationOrigin }),
-    );
-
-    expect(state).toStrictEqual({
-      isOpen: true,
-      source: 'depositInfo',
-      origin: confirmationOrigin,
-      pendingDeposit: null,
-      acknowledged: false,
-    });
-  });
-
   it('opens for a deposit and stores the token intent', () => {
     const state = reducer(
       initialState,

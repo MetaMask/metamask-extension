@@ -1,31 +1,29 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
-import configureStore from '../../../../store/store';
-import mockState from '../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
-import { MoneyFtueEntryPoint } from '../../../../helpers/money/money-ftue-entry-point';
-import { useMoneyVaultApy } from '../../../../hooks/money/useMoneyVaultApy';
-import { useMoneyAnalytics } from '../../../../hooks/money/useMoneyAnalytics';
-import { createMoneyAnalyticsMock } from '../../../../hooks/money/useMoneyAnalytics.mock';
+import configureStore from '../../../../../store/store';
+import mockState from '../../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { MoneyFtueEntryPoint } from '../../../../../helpers/money/money-ftue-entry-point';
+import { useMoneyVaultApy } from '../../../../../hooks/money/useMoneyVaultApy';
+import { useMoneyAnalytics } from '../../../../../hooks/money/useMoneyAnalytics';
+import { createMoneyAnalyticsMock } from '../../../../../hooks/money/useMoneyAnalytics.mock';
+
+/* eslint-disable import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog */
 import {
   MoneyScreenName,
   MoneyTooltipName,
   MoneyTooltipType,
-} from '../../../../pages/money/constants/money-events';
-import { MONEY_APY_DIALOG_TEST_ID } from '../money-deposit-dialogs';
+} from '../../../../money/constants/money-events';
+/* eslint-enable import-x/no-restricted-paths */
+import { MONEY_APY_DIALOG_TEST_ID } from '../../modals/money-deposit-dialogs';
 import { MoneyAccountToRow } from './money-account-to-row';
 
-jest.mock('../../../../contexts/route-messenger', () => ({
-  RouteMessengerProvider: ({ children }: { children: React.ReactNode }) =>
-    children,
-}));
-
-jest.mock('../../../../hooks/money/useMoneyVaultApy', () => ({
+jest.mock('../../../../../hooks/money/useMoneyVaultApy', () => ({
   useMoneyVaultApy: jest.fn(),
 }));
 
 const mockMoneyAnalytics = createMoneyAnalyticsMock();
-jest.mock('../../../../hooks/money/useMoneyAnalytics', () => ({
+jest.mock('../../../../../hooks/money/useMoneyAnalytics', () => ({
   useMoneyAnalytics: jest.fn(),
 }));
 
@@ -79,18 +77,18 @@ describe('MoneyAccountToRow', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('opens the Money FTUE splash in depositInfo mode when MetaMask Money is clicked', () => {
+  it('opens the existing Money FTUE splash when MetaMask Money is clicked', () => {
     const { store } = renderToRow();
 
     fireEvent.click(screen.getByTestId('money-account-to-splash-trigger'));
 
     expect(store.getState().moneyFtue).toMatchObject({
       isOpen: true,
-      source: 'depositInfo',
+      source: 'deposit',
       origin: {
-        entryPoint: MoneyFtueEntryPoint.MoneyDepositConfirmation,
+        entryPoint: MoneyFtueEntryPoint.Unknown,
       },
-      pendingDeposit: null,
+      pendingDeposit: {},
     });
   });
 

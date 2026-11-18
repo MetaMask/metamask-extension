@@ -5734,6 +5734,9 @@
     "message": "Sinh lời $1",
     "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
   },
+  "moneyAccountApyTooltip": {
+    "message": "Tỷ suất hiển thị là Lợi suất phần trăm hằng năm (APY) ước tính dựa trên điều kiện thị trường hiện tại. APY có thể thay đổi và không được đảm bảo."
+  },
   "moneyAccountAvailableBalance": {
     "message": "Số dư khả dụng: $1",
     "description": "$1 is the formatted Money Account vault withdrawable balance"

@@ -174,4 +174,23 @@ describe('TotalRow', () => {
     // 100.37 - 0.20 - 0.03 = 100.14
     expect(getByTestId('total-value')).toHaveTextContent('$100.14');
   });
+
+  it('formats total with "$" and en-US separators in non-US locales when useEnUsUsd is true', () => {
+    useTransactionPayTotalsMock.mockReturnValue({
+      total: { usd: '1234.5' },
+    } as TransactionPayTotals);
+
+    const state = getMockPersonalSignConfirmState({
+      metamask: {},
+      localeMessages: { currentLocale: 'en_GB' },
+    });
+
+    const { getByTestId } = renderWithConfirmContextProvider(
+      <TotalRow variant={ConfirmInfoRowSize.Small} useEnUsUsd />,
+      mockStore(state),
+    );
+
+    expect(getByTestId('total-value')).toHaveTextContent('$1,234.50');
+    expect(getByTestId('total-value')).not.toHaveTextContent('US$');
+  });
 });

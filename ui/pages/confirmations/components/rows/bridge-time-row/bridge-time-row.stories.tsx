@@ -63,14 +63,12 @@ const createMockState = (
     localeMessages: {
       currentLocale: 'en',
       current: {
-        estimatedTime: { message: 'Est. time' },
-        lessThanOneMinute: { message: 'Less than 1 min' },
+        estimatedTime: { message: 'Estimated time' },
         minute: { message: 'min' },
         second: { message: 'sec' },
       },
       en: {
-        estimatedTime: { message: 'Est. time' },
-        lessThanOneMinute: { message: 'Less than 1 min' },
+        estimatedTime: { message: 'Estimated time' },
         minute: { message: 'min' },
         second: { message: 'sec' },
       },

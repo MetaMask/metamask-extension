@@ -36,6 +36,7 @@ import {
   useSponsoredNetworkFeeFlags,
   type SponsoredNetworkFeeFlags,
 } from '../../../hooks/pay/useIsPaidByMetaMask';
+import { formatConfirmationUsd } from '../../../utils/format-confirmation-usd';
 import { TooltipText } from '../../../../../components/app/money/tooltip-text';
 import { InfoPopoverTooltip } from '../../info-popover-tooltip';
 
@@ -59,7 +60,10 @@ export function BridgeFeeRow({
   useDottedValueTooltip = false,
 }: BridgeFeeRowProps) {
   const t = useI18nContext();
-  const formatFiat = useFiatFormatter({ overrideCurrency: 'usd' });
+  const formatLocaleFiat = useFiatFormatter({ overrideCurrency: 'usd' });
+  const formatFiat = useDottedValueTooltip
+    ? formatConfirmationUsd
+    : formatLocaleFiat;
   const isLoading = useIsTransactionPayQuotePending();
   const quotes = useTransactionPayQuotes();
   const totals = useTransactionPayTotals();

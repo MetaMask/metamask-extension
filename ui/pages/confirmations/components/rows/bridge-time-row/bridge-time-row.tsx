@@ -29,10 +29,16 @@ const HIDE_TYPES: TransactionType[] = [];
 
 export type BridgeTimeRowProps = {
   rowVariant?: ConfirmInfoRowSize;
+  /**
+   * When true, uses Money-deposit-specific copy (`Est. time` and
+   * `Less than 1 min`). Other flows keep `Estimated time` and `< 1 min`.
+   */
+  useMoneyDepositCopy?: boolean;
 };
 
 export function BridgeTimeRow({
   rowVariant = ConfirmInfoRowSize.Default,
+  useMoneyDepositCopy = false,
 }: BridgeTimeRowProps) {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -48,6 +54,9 @@ export function BridgeTimeRow({
 
   const isSmall = rowVariant === ConfirmInfoRowSize.Small;
   const textVariant = isSmall ? TextVariant.bodyMd : TextVariant.bodyMdMedium;
+  const timeLabel = useMoneyDepositCopy
+    ? t('moneyAccountDepositEstTime')
+    : t('estimatedTime');
 
   if (!showEstimate) {
     return null;
@@ -57,7 +66,7 @@ export function BridgeTimeRow({
     return (
       <ConfirmInfoRowSkeleton
         data-testid="bridge-time-row-skeleton"
-        label={t('estimatedTime')}
+        label={timeLabel}
         rowVariant={rowVariant}
       />
     );
@@ -68,12 +77,13 @@ export function BridgeTimeRow({
     t,
     estimatedDuration ?? 0,
     isSameChain,
+    useMoneyDepositCopy,
   );
 
   return (
     <ConfirmInfoRow
       data-testid="bridge-time-row"
-      label={t('estimatedTime')}
+      label={timeLabel}
       rowVariant={rowVariant}
     >
       <Text
@@ -91,13 +101,16 @@ function formatSeconds(
   t: ReturnType<typeof useI18nContext>,
   seconds: number,
   isSameChainPayment: boolean,
+  useMoneyDepositCopy: boolean,
 ): string {
   if (isSameChainPayment) {
     return `${SAME_CHAIN_DURATION_SECONDS} ${t('second')}`;
   }
 
   if (seconds <= 30) {
-    return t('lessThanOneMinute');
+    return useMoneyDepositCopy
+      ? t('moneyAccountDepositLessThanOneMinute')
+      : `< 1 ${t('minute')}`;
   }
 
   if (seconds <= 60) {

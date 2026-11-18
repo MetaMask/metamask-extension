@@ -41,12 +41,9 @@ type UseFiatFormatterOptions = {
 export const useFiatFormatter = (
   hookOptions?: UseFiatFormatterOptions,
 ): FiatFormatter => {
-  const intlLocale = useSelector(getIntlLocale);
+  const locale = useSelector(getIntlLocale);
   const reduxCurrency = useSelector(getCurrentCurrency);
-  const overrideCurrency = hookOptions?.overrideCurrency;
-  const isUsdOverride = overrideCurrency?.toLowerCase() === 'usd';
-  const locale = isUsdOverride ? 'en-US' : intlLocale;
-  const fiatCurrency = overrideCurrency ?? reduxCurrency;
+  const fiatCurrency = hookOptions?.overrideCurrency ?? reduxCurrency;
 
   return (fiatAmount: number, options: FiatFormatterOptions = {}) => {
     const { shorten, truncatedCharLimit, truncatedStartChars } = options;
@@ -55,7 +52,6 @@ export const useFiatFormatter = (
       const formatter = new Intl.NumberFormat(locale, {
         style: 'currency',
         currency: fiatCurrency,
-        ...(isUsdOverride ? { currencyDisplay: 'narrowSymbol' } : {}),
       });
 
       if (!shorten) {

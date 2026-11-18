@@ -336,4 +336,25 @@ describe('usePayWithToken', () => {
 
     expect(result.current.hasAvailableTokens).toBe(false);
   });
+
+  it('formats crypto balance with "$" and en-US separators for moneyAccountDeposit', () => {
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: {
+        id: 'tx-1',
+        type: TransactionType.moneyAccountDeposit,
+        txParams: { from: FROM_ADDRESS },
+      } as TransactionMeta,
+    } as ReturnType<typeof useConfirmContext>);
+    usePayTokenAccountBalanceMock.mockReturnValue({
+      balanceUsd: '25327.86',
+      balanceRaw: '25327860000',
+      isLiveBalance: true,
+      isBalanceUsdKnown: true,
+    });
+
+    const { result } = renderHook(() => usePayWithToken());
+
+    expect(result.current.balanceUsdFormatted).toBe('$25,327.86');
+    expect(result.current.label).toBe('Convert');
+  });
 });

@@ -5689,6 +5689,9 @@
     "message": "$1を獲得",
     "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
   },
+  "moneyAccountApyTooltip": {
+    "message": "表示されている利率は、現在の市況に基づく予想年換算利率 (APY) です。APYは変動制で、保証されるものではありません。"
+  },
   "moneyAccountAvailableBalance": {
     "message": "利用可能残高：$1",
     "description": "$1 is the formatted Money Account vault withdrawable balance"

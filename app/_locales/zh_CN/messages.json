@@ -5730,6 +5730,9 @@
     "message": "赚取 $1",
     "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
   },
+  "moneyAccountApyTooltip": {
+    "message": "显示的利率是根据当前市场行情估算的年化收益率 (APY) 。 APY 会随市场波动，并非固定保证。"
+  },
   "moneyAccountAvailableBalance": {
     "message": "可用余额：$1",
     "description": "$1 is the formatted Money Account vault withdrawable balance"

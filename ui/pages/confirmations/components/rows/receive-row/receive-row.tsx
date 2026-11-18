@@ -17,9 +17,12 @@ import {
 import { ConfirmInfoRowText } from '../../../../../components/app/confirm/info/row/text';
 import {
   DottedTrigger,
-  formatCompactUsd,
   MoneyUsdDialog,
-} from '../../../../../components/app/money/money-deposit-dialogs';
+} from '../../modals/money-deposit-dialogs';
+import {
+  formatCompactConfirmationUsd,
+  formatConfirmationUsd,
+} from '../../../utils/format-confirmation-usd';
 import {
   useIsTransactionPayQuotePending,
   useTransactionPayQuotes,
@@ -66,7 +69,10 @@ export function ReceiveRow({
   // path used by Perps Withdraw. Force USD formatting so the displayed
   // currency symbol matches the numerical value even if the user has set a
   // non-USD primary currency.
-  const formatFiat = useFiatFormatter({ overrideCurrency: 'usd' });
+  const formatLocaleFiat = useFiatFormatter({ overrideCurrency: 'usd' });
+  const formatFiat = enableMoneyUsdDialog
+    ? formatConfirmationUsd
+    : formatLocaleFiat;
   const isLoading = useIsTransactionPayQuotePending();
   const totals = useTransactionPayTotals();
   const quotes = useTransactionPayQuotes();
@@ -174,7 +180,7 @@ export function ReceiveRow({
   }
 
   const dialogReceiveFormatted = receiveNumeric
-    ? formatCompactUsd(receiveNumeric)
+    ? formatCompactConfirmationUsd(receiveNumeric)
     : receiveUsd;
 
   return (

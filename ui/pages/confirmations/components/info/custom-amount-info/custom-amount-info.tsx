@@ -28,7 +28,7 @@ import { BridgeTimeRow } from '../../rows/bridge-time-row/bridge-time-row';
 import { TotalRow } from '../../rows/total-row/total-row';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { ReceiveRow } from '../../rows/receive-row/receive-row';
-import { MoneyAccountToRow } from '../../../../../components/app/money/money-account-to-row';
+import { MoneyAccountToRow } from '../../rows/money-account-to-row';
 import { PerpsAccountPickerRow } from '../../rows/perps-account-picker-row';
 import {
   PercentageButtons,
@@ -445,7 +445,10 @@ function BottomContainer({
             <>
               {isMoneyAccountDeposit ? (
                 <>
-                  <BridgeTimeRow rowVariant={ConfirmInfoRowSize.Small} />
+                  <BridgeTimeRow
+                    rowVariant={ConfirmInfoRowSize.Small}
+                    useMoneyDepositCopy
+                  />
                   <BridgeFeeRow
                     variant={ConfirmInfoRowSize.Small}
                     useDottedValueTooltip
@@ -471,7 +474,10 @@ function BottomContainer({
               enableMoneyUsdDialog={isMoneyAccountDeposit}
             />
           ) : (
-            <TotalRow variant={ConfirmInfoRowSize.Small} />
+            <TotalRow
+              variant={ConfirmInfoRowSize.Small}
+              useEnUsUsd={isMoneyAccountDeposit}
+            />
           )}
         </>
       )}

@@ -110,22 +110,6 @@ describe('useFiatFormatter', () => {
     expect(formatFiat(0)).toBe('$0.00');
   });
 
-  it('uses "$" and en-US separators when overrideCurrency is usd regardless of user locale', () => {
-    mockGetCurrentCurrency.mockReturnValue('EUR');
-
-    for (const locale of ['en-GB', 'de-DE', 'fr-FR', 'pt-BR']) {
-      mockGetIntlLocale.mockReturnValue(locale);
-
-      const { result } = renderHook(() =>
-        useFiatFormatter({ overrideCurrency: 'usd' }),
-      );
-      const formatFiat = result.current;
-
-      expect(formatFiat(1234.5)).toBe('$1,234.50');
-      expect(formatFiat(100)).toBe('$100.00');
-    }
-  });
-
   it('should gracefully handle unknown currencies by returning amount followed by currency code', () => {
     mockGetCurrentCurrency.mockReturnValue('storj');
     mockGetIntlLocale.mockReturnValue('en-US');

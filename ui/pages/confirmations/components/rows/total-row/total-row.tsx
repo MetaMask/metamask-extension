@@ -27,16 +27,20 @@ import {
 } from '../../../hooks/pay/useIsPaidByMetaMask';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
+import { formatConfirmationUsd } from '../../../utils/format-confirmation-usd';
 
 export type TotalRowProps = {
   variant?: ConfirmInfoRowSize;
+  useEnUsUsd?: boolean;
 };
 
 export function TotalRow({
   variant = ConfirmInfoRowSize.Default,
+  useEnUsUsd = false,
 }: TotalRowProps) {
   const t = useI18nContext();
-  const formatFiat = useFiatFormatter({ overrideCurrency: 'usd' });
+  const formatLocaleFiat = useFiatFormatter({ overrideCurrency: 'usd' });
+  const formatFiat = useEnUsUsd ? formatConfirmationUsd : formatLocaleFiat;
   const isPayLoading = useIsTransactionPayLoading();
   const { isAmountPending } = useConfirmContext();
   // Totals come from the executable quote. While a typed amount is still
