@@ -2849,6 +2849,29 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  coreCEUX1492AbtestWideScreenRedesign: {
+    inProd: true,
+    name: 'coreCEUX1492AbtestWideScreenRedesign',
+    productionDefault: [
+      {
+        name: 'control',
+        scope: {
+          type: 'threshold',
+          value: 1,
+        },
+      },
+      {
+        name: 'treatment',
+        scope: {
+          type: 'threshold',
+          value: 0,
+        },
+      },
+    ],
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   coreExtensionUxCeux1024AbtestReferralUi: {
     inProd: true,
     name: 'coreExtensionUxCeux1024AbtestReferralUi',
@@ -3406,6 +3429,9 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  // The client no longer reads this flag. Wide layout assignment comes from
+  // `coreCEUX1492AbtestWideScreenRedesign`. Kept until the remote flag is
+  // retired.
   extensionUxFullscreenRedesign: {
     inProd: true,
     name: 'extensionUxFullscreenRedesign',
