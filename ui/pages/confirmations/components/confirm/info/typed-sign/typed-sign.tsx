@@ -4,6 +4,7 @@ import { isValidAddress } from 'ethereumjs-util';
 import { isSnapId } from '@metamask/snaps-utils';
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { parseTypedDataMessage } from '../../../../../../../shared/lib/transaction.utils';
+import { PRIMARY_TYPES_TRANSFER_AUTHORIZATION } from '../../../../../../../shared/constants/signatures';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import {
   ConfirmInfoRow,
@@ -37,13 +38,19 @@ const useTokenContract = () => {
   const {
     domain: { verifyingContract },
     message: { spender },
+    primaryType,
   } = parseSanitizeTypedDataMessage(
     currentConfirmation.msgParams.data as string,
   );
 
   const isPermit = isPermitSignatureRequest(currentConfirmation);
   const isOrder = isOrderSignatureRequest(currentConfirmation);
-  const tokenContract = isPermit || isOrder ? verifyingContract : undefined;
+  const isTransferAuthorization =
+    PRIMARY_TYPES_TRANSFER_AUTHORIZATION.includes(primaryType);
+  const tokenContract =
+    isPermit || isOrder || isTransferAuthorization
+      ? verifyingContract
+      : undefined;
   const chainId = currentConfirmation.chainId as string;
 
   return { tokenContract, verifyingContract, spender, isPermit, chainId };

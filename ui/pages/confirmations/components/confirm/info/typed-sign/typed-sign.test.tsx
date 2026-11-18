@@ -1,4 +1,5 @@
 import React from 'react';
+import { waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import {
   TransactionStatus,
@@ -14,6 +15,7 @@ import {
 import {
   permitSignatureMsg,
   permitSignatureMsgWithNoDeadline,
+  transferWithAuthorizationSignatureMsg,
   unapprovedTypedSignMsgV3,
   unapprovedTypedSignMsgV4,
 } from '../../../../../../../test/data/confirmations/typed_sign';
@@ -21,6 +23,7 @@ import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/
 import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../../helpers/constants/design-system';
+import { getTokenStandardAndDetailsByChain } from '../../../../../../store/actions';
 import TypedSignInfo from './typed-sign';
 
 jest.mock(
@@ -35,6 +38,7 @@ jest.mock(
 jest.mock('../../../../../../store/actions', () => {
   return {
     getTokenStandardAndDetails: jest.fn().mockResolvedValue({ decimals: 2 }),
+    getTokenStandardAndDetailsByChain: jest.fn(),
     updateEventFragment: jest.fn(),
   };
 });
@@ -144,6 +148,26 @@ describe('TypedSignInfo', () => {
       mockStore,
     );
     expect(container).toMatchSnapshot();
+  });
+
+  it('shows the value of a TransferWithAuthorization in the token decimals', async () => {
+    jest
+      .mocked(getTokenStandardAndDetailsByChain)
+      .mockResolvedValueOnce({ decimals: '2', standard: 'ERC20' });
+    const state = getMockTypedSignConfirmStateForRequest(
+      transferWithAuthorizationSignatureMsg,
+    );
+    const mockStore = configureMockStore([])(state);
+    const { getByTestId } = renderWithConfirmContextProvider(
+      <TypedSignInfo />,
+      mockStore,
+    );
+
+    await waitFor(() => {
+      expect(getByTestId('confirmation_data-value-index-2')).toHaveTextContent(
+        /^Value:1,234\.56$/u,
+      );
+    });
   });
 
   it('displays "requestFromInfoSnap" tooltip when origin is a snap', async () => {

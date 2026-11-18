@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import { waitFor } from '@testing-library/react';
 import React from 'react';
 
@@ -124,6 +125,42 @@ describe('DataTree', () => {
       ).toHaveTextContent('Expiration:Never expires');
     });
   });
+
+  it.each([
+    PrimaryType.TransferWithAuthorization,
+    PrimaryType.ReceiveWithAuthorization,
+  ])(
+    'shows the value in token units and the validity window as dates for %s',
+    async (primaryType) => {
+      const data = {
+        value: { type: 'uint256', value: '1000000000' },
+        validAfter: { type: 'uint256', value: '0' },
+        validBefore: { type: 'uint256', value: '1800000000' },
+      };
+
+      const { getByTestId } = renderWithProvider(
+        <DataTree
+          data={data}
+          primaryType={primaryType}
+          tokenDecimals={6}
+          chainId={CHAIN_ID_MOCK}
+        />,
+        store,
+      );
+
+      await waitFor(() => {
+        expect(
+          getByTestId('confirmation_data-value-index-0'),
+        ).toHaveTextContent(/^Value:1,000$/u);
+      });
+      expect(
+        getByTestId('confirmation_data-validAfter-index-1'),
+      ).toHaveTextContent(/^ValidAfter:0$/u);
+      expect(
+        getByTestId('confirmation_data-validBefore-index-2'),
+      ).toHaveTextContent('ValidBefore:15 January 2027, 08:00');
+    },
+  );
 
   it('should match snapshot for order signature type', () => {
     const { container } = renderWithProvider(
