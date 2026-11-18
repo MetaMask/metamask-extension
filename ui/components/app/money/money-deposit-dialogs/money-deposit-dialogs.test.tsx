@@ -171,7 +171,11 @@ describe('MoneyApyDialog', () => {
         messages.moneyAccountDepositApyDialogHowItWorksBody.message,
       ),
     ).toBeInTheDocument();
-    expect(screen.getByText('Why it changes')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        messages.moneyAccountDepositApyDialogWhyChangesTitle.message,
+      ),
+    ).toBeInTheDocument();
     expect(
       screen.getByText(
         messages.moneyAccountDepositApyDialogWhyChangesBody.message,

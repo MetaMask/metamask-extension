@@ -72,7 +72,7 @@ describe('BridgeTimeRow', () => {
     } as TransactionPayTotals);
 
     const { getByTestId, getByText } = render();
-    expect(getByText('Est. time')).toBeInTheDocument();
+    expect(getByText(messages.estimatedTime.message)).toBeInTheDocument();
     expect(getByTestId('bridge-time-value')).toHaveTextContent(
       'Less than 1 min',
     );

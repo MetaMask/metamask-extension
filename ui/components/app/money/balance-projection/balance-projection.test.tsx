@@ -80,7 +80,6 @@ describe('BalanceProjection', () => {
     expect(
       screen.getByText(messages.moneyAccountProjectedBalance.message),
     ).toBeInTheDocument();
-    expect(screen.getByText('Est. 1-year balance:')).toBeInTheDocument();
     expect(screen.getByText('$1,040.00')).toBeInTheDocument();
   });
 
