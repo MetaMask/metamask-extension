@@ -7,10 +7,14 @@ on:
         required: true
         type: string
         description: The name of the build
-      build-command:
+      build-script:
         type: string
         required: true
-        description: The build command to run
+        description: The build script in package.json
+      build-args:
+        type: string
+        default: '[]'
+        description: A JSON array of arguments for the build script
       builds-from-run:
         required: true
         type: string
@@ -91,7 +95,11 @@ jobs:
         run: yarn webpack:tsc
 
       - name: Run build
-        run: ${{ inputs.build-command }}${{ inputs.bundle-analyzer && ' --bundleAnalyzer' || '' }}
+        env:
+          WORKFLOW_SCRIPT: ${{ inputs.build-script }}
+          WORKFLOW_ARGS_JSON: ${{ inputs.build-args }}
+          WORKFLOW_BUNDLE_ANALYZER: ${{ inputs.bundle-analyzer }}
+        run: node .github/scripts/run-workflow-script.mts build
 
       - name: Validate source maps
         run: yarn validate-source-maps

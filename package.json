@@ -51,6 +51,7 @@
     "dist": "yarn webpack:lavamoat:build --zip",
     "dist:mv2": "yarn webpack:lavamoat:build:mv2 --zip",
     "build": "yarn webpack:lavamoat:build",
+    "build:mv2": "yarn webpack:lavamoat:build:mv2",
     "build:dev": "yarn webpack",
     "circular-deps:check": "tsx development/circular-deps.ts check",
     "circular-deps:update": "tsx development/circular-deps.ts update",

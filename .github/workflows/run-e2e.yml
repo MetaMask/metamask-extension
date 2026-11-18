@@ -11,14 +11,22 @@ on:
         type: string
         default: ''
         description: The build artifact to download
-      build-command:
+      build-script:
         type: string
         default: ''
-        description: The build command to run
-      test-command:
+        description: The build script in package.json
+      build-args:
+        type: string
+        default: '[]'
+        description: A JSON array of arguments for the build script
+      test-script:
         required: true
         type: string
-        description: The test command to run
+        description: The E2E test script in package.json
+      e2e-debug:
+        type: boolean
+        default: false
+        description: Whether to enable E2E debug output
       playwright-browsers:
         required: false
         type: string
@@ -108,9 +116,13 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
           run-id: ${{ inputs.builds-from-run }} # Download from the run that produced the builds.
 
-      # if there is a build-command and there is no build artifact, or the specified artifact does not exist, we run the build command
-      - run: ${{ inputs.build-command }}
-        if: ${{ inputs.build-command != '' && (inputs.build-artifact == '' || steps.download-build-artifact.outcome == 'failure') }}
+      # Build locally when a script is configured and no artifact is available.
+      - name: Build extension for E2E tests
+        if: ${{ inputs.build-script != '' && (inputs.build-artifact == '' || steps.download-build-artifact.outcome == 'failure') }}
+        env:
+          WORKFLOW_SCRIPT: ${{ inputs.build-script }}
+          WORKFLOW_ARGS_JSON: ${{ inputs.build-args }}
+        run: node .github/scripts/run-workflow-script.mts build
 
       - name: Download changed-files artifact
         if: ${{ env.BRANCH != 'main' }}
@@ -149,13 +161,15 @@ jobs:
           browsers: ${{ inputs.playwright-browsers }}
 
       - name: Pin geckodriver 0.36.0 (Firefox Selenium only)
-        if: ${{ contains(inputs.test-command, 'firefox') && inputs.playwright-browsers == '' }}
+        if: ${{ contains(inputs.test-script, 'firefox') && inputs.playwright-browsers == '' }}
         run: .github/scripts/pin-geckodriver.sh
 
       - name: Run E2E tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
-        run: ${{ inputs.test-command }} --retries 1
+        run: node .github/scripts/run-workflow-script.mts test
         env:
+          WORKFLOW_SCRIPT: ${{ inputs.test-script }}
+          WORKFLOW_E2E_DEBUG: ${{ inputs.e2e-debug }}
           # The properties are picked up by mocha-junit-reporter and added to the XML test results
           PROPERTIES: 'JOB_NAME:${{ env.JOB_NAME }},JOB_ID:${{ job.check_run_id }},RUN_ID:${{ env.RUN_ID }},PR_NUMBER:${{ env.PR_NUMBER }}'
           # On re-run, pass the path to previous results to run only failed tests
