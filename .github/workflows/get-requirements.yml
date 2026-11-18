@@ -12,6 +12,9 @@ on:
       skip-builds:
         description: Whether builds were skipped without hash verification (blocks merge)
         value: ${{ jobs.detect-changes.outputs.skip-builds }}
+      build-hash:
+        description: Build-source hash of the builds in builds-from-run; empty when it was not computed or skip-builds reused builds without checking it
+        value: ${{ jobs.detect-changes.outputs.build-hash }}
       needs-locales:
         description: Whether locales-only checks are needed
         value: ${{ jobs.detect-changes.outputs.needs-locales }}
@@ -70,6 +73,7 @@ jobs:
       builds-from-run: ${{ steps.find-reusable-builds.outputs.builds-from-run || env.RUN_ID }}
       builds-from-sha: ${{ steps.find-reusable-builds.outputs.builds-from-sha || env.HEAD_COMMIT_HASH }}
       skip-builds: ${{ steps.build-overrides.outputs.skip == 'true' && steps.find-reusable-builds.outputs.builds-from-run != '' && 'true' || 'false' }}
+      build-hash: ${{ !(steps.build-overrides.outputs.skip == 'true' && steps.find-reusable-builds.outputs.builds-from-run != '') && steps.compute-build-hash.outputs.build-hash || '' }}
       needs-locales: ${{ steps.set-needs-locales.outputs.needs-locales || 'false' }}
       just-repository-health-checks: ${{ steps.set-just-repository-health-checks.outputs.just-repository-health-checks || 'false' }}
       skip-everything: ${{ steps.set-skip-everything.outputs.skip-everything || 'false' }}

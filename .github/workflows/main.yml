@@ -280,6 +280,7 @@ jobs:
       - build-test-mv2-webpack
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      build-hash: ${{ needs.get-requirements.outputs.build-hash }}
     secrets: inherit
 
   run-tests:

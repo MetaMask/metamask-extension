@@ -7,6 +7,11 @@ on:
         required: true
         type: string
         description: The run ID to get builds from
+      build-hash:
+        required: false
+        type: string
+        default: ''
+        description: Build-source hash of those builds; empty when unknown
 
 permissions:
   contents: read
@@ -46,6 +51,7 @@ jobs:
       # unset: GitHub-hosted runners do not expose the Azure region in the
       # environment, and guessing it is worse than leaving the field undefined.
       BENCHMARK_RUNNER_LABEL: ubuntu-latest
+      BUILD_SOURCE_HASH: ${{ inputs.build-hash }}
       SELENIUM_BROWSER: ${{ matrix.browser }}
       SELENIUM_HEADLESS: true
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
@@ -151,6 +157,7 @@ jobs:
       # unset: GitHub-hosted runners do not expose the Azure region in the
       # environment, and guessing it is worse than leaving the field undefined.
       BENCHMARK_RUNNER_LABEL: ubuntu-latest
+      BUILD_SOURCE_HASH: ${{ inputs.build-hash }}
       OWNER: ${{ github.repository_owner }}
       REPOSITORY: ${{ github.event.repository.name }}
       PR_NUMBER: ${{ github.event.pull_request.number || 'none' }}
