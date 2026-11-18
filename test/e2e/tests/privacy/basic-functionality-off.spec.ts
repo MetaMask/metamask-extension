@@ -39,12 +39,6 @@ const ACCOUNT_SNAP_IDS = [
   TRON_WALLET_SNAP_ID,
 ];
 
-// CI force-enables Sentry unless a spec opts out. That sends a sentry.io
-// envelope even with basic functionality off, which these assertions forbid.
-const manifestFlags = {
-  sentry: { forceEnable: false },
-};
-
 describe('Onboarded wallet with basic functionality off', function () {
   it('only makes RPC requests after unlocking', async function () {
     let getNonRpcRequests: () => Promise<NonRpcRequests> = async () =>
@@ -55,7 +49,6 @@ describe('Onboarded wallet with basic functionality off', function () {
           .withUseBasicFunctionalityDisabled()
           .build(),
         title: this.test?.fullTitle(),
-        manifestFlags,
         testSpecificMock: async (server: Mockttp) => {
           getNonRpcRequests = recordNonRpcRequests(server);
           return [];
@@ -85,7 +78,6 @@ describe('Onboarded wallet with basic functionality off', function () {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        manifestFlags,
         testSpecificMock: async (server: Mockttp) => [
           await server.forGet(MONEY_POSITIONS_URL).thenReply(200),
         ],
