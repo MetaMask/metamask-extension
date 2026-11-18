@@ -39,7 +39,6 @@ import {
 import {
   getAssetsBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
-  selectEnabledNetworksHaveAssetsForSelectedAccountGroup,
 } from '../../../../selectors/assets';
 import {
   MetaMetricsEventCategory,
@@ -50,8 +49,10 @@ import {
   sortTokenAssets,
   type TokenTableSort,
 } from '../util/sortAssetsWithPriority';
+import { isMusdToken } from '../../musd/constants';
 import { useBoolean } from '../../../../hooks/useBoolean';
 import { useRWAToken } from '../../../../pages/bridge/hooks/useRWAToken';
+import { isZeroAmount } from '../../../../helpers/utils/number-utils';
 import { useAssetsHaveLoaded } from './useAssetsHaveLoaded';
 
 export type TokenListDisplayItem =
@@ -131,9 +132,6 @@ export function useTokenListData({
   );
   const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
   const assetsHaveLoaded = useAssetsHaveLoaded();
-  const enabledNetworksHaveAssets = useSelector(
-    selectEnabledNetworksHaveAssetsForSelectedAccountGroup,
-  );
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { value: isLowValueAssetsExpanded, toggle: toggleLowValueAssets } =
     useBoolean(lowValueAssetsExpandedSessionValue);
@@ -216,10 +214,17 @@ export function useTokenListData({
     });
   }, [filteredAssets, sortOverride, tokenSortConfig]);
 
-  // Keep the initial list and aggregate balance coordinated until every
-  // enabled network has produced an asset, without waiting for unrelated
-  // background metadata.
-  const showLoadingSkeleton = !assetsHaveLoaded && !enabledNetworksHaveAssets;
+  // The fast pipeline can populate zero-value gas tokens and mUSD before the
+  // background pipeline finishes the remaining tokens. Hide those placeholders,
+  // but keep real balances visible during subsequent refreshes.
+  const showLoadingSkeleton =
+    !assetsHaveLoaded &&
+    sortedFilteredTokens.every(
+      (token) =>
+        (token.isNative || isMusdToken(token.address)) &&
+        isZeroAmount(token.balance) &&
+        isZeroAmount(token.tokenFiatAmount),
+    );
 
   useCoordinatedTrace({
     name: TraceName.HomepageSectionTimeToContent,
