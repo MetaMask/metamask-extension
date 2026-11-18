@@ -758,11 +758,6 @@
       "count": 1
     }
   },
-  "ui/pages/confirmations/hooks/send/useSnapAmountOnInput.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
   "ui/pages/confirmations/hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo.ts": {
     "react-hooks/preserve-manual-memoization": {
       "count": 3

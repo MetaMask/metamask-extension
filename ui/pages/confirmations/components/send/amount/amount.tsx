@@ -115,8 +115,8 @@ export const Amount = ({
     value,
   ]);
 
-  const updateToMax = useCallback(() => {
-    const maxValue = getMaxAmount() ?? '0';
+  const updateToMax = useCallback(async () => {
+    const maxValue = (await getMaxAmount()) ?? '0';
     setAmount(fiatMode ? getFiatValue(maxValue) : maxValue);
     updateValue(maxValue, true);
     setAmountInputMethodPressedMax();

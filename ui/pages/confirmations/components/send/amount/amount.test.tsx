@@ -227,28 +227,28 @@ describe('Amount', () => {
     expect(getByTestId('send-amount-fiat-value')).toBeInTheDocument();
   });
 
-  it('update value with maxValue when max button is clicked', () => {
+  it('update value with maxValue when max button is clicked', async () => {
     const mockUpdateValue = jest.fn();
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       updateValue: mockUpdateValue,
     } as unknown as SendContext.SendContextType);
     jest.spyOn(MaxAmount, 'useMaxAmount').mockReturnValue({
-      getMaxAmount: () => '5',
+      getMaxAmount: async () => '5',
     });
 
     const { getByRole, getByText } = render();
 
     fireEvent.click(getByText(messages.max.message));
-    expect(getByRole('textbox')).toHaveValue('5');
+    await waitFor(() => expect(getByRole('textbox')).toHaveValue('5'));
     expect(mockUpdateValue).toHaveBeenCalledWith('5', true);
   });
 
-  it('capture metrics when max button is clicked', () => {
+  it('capture metrics when max button is clicked', async () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       updateValue: jest.fn(),
     } as unknown as SendContext.SendContextType);
     jest.spyOn(MaxAmount, 'useMaxAmount').mockReturnValue({
-      getMaxAmount: () => '5',
+      getMaxAmount: async () => '5',
     });
     const mockSetAmountInputMethodPressedMax = jest.fn();
     jest
@@ -261,7 +261,9 @@ describe('Amount', () => {
 
     const { getByText } = render();
     fireEvent.click(getByText(messages.max.message));
-    expect(mockSetAmountInputMethodPressedMax).toHaveBeenCalled();
+    await waitFor(() =>
+      expect(mockSetAmountInputMethodPressedMax).toHaveBeenCalled(),
+    );
   });
 
   it('return null for ERC721 asset', () => {
