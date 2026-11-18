@@ -157,7 +157,7 @@ jobs:
         shell: bash
         run: |
           if ! version=$(
-            curl -fsS "https://raw.githubusercontent.com/${REPO}/${HEAD_SHA}/package.json" |
+            curl -fsS --max-time 20 "https://raw.githubusercontent.com/${REPO}/${HEAD_SHA}/package.json" |
               jq -ers '
                 select(length == 1)
                 | .[0].version
