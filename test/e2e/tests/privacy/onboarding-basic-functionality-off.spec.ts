@@ -46,6 +46,9 @@ const manifestFlags = {
       minimumVersion: '13.36.0',
     },
   },
+  // CI force-enables Sentry unless a spec opts out. That sends a sentry.io
+  // envelope even with basic functionality off, which these assertions forbid.
+  sentry: { forceEnable: false },
 };
 
 async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {

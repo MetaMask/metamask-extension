@@ -46,7 +46,7 @@ export async function setManifestFlags(flags: ManifestFlags = {}) {
       flags.sentry = {};
     }
     if (flags.sentry.forceEnable === undefined) {
-      flags.sentry.forceEnable = true;
+      flags.sentry.forceEnable = Boolean(process.env.SENTRY_DSN_PERFORMANCE);
     }
   }
 

@@ -2,6 +2,7 @@ import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { isObject } from '@metamask/utils';
+import { POPUP_FILE, POPUP_INIT_FILE } from '../../../shared/constants/app';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
@@ -16,6 +17,15 @@ type PendingOpen = {
   resolve: (opened: boolean) => void;
   timer: ReturnType<typeof setTimeout>;
 };
+
+type PendingRoute = {
+  path: string;
+  search?: `?${string}`;
+};
+
+const pendingRoutes = new Map<number, PendingRoute>();
+const popupRouteResetDelayMs = 1000;
+let pendingRouteListenersRegistered = false;
 
 export type SidePanelToolbarBehaviorController = {
   preferencesController?: {
@@ -177,8 +187,7 @@ function getUseSidePanelAsDefault(
 
 /**
  * Prefer opening the side panel on toolbar click as soon as the service worker starts.
- * Without this, the first click after a cold start can use manifest `default_popup` until
- * {@link setupSidePanelToolbarBehavior} runs after initialization.
+ * The MV3 manifest has no `default_popup`, so the icon does nothing until this runs.
  *
  * @param sidePanelApi - Side panel API with `setPanelBehavior` (validated by caller).
  */
@@ -190,14 +199,176 @@ export function applyEarlySidePanelToolbarBehavior(
   });
 }
 
+/**
+ * Points the toolbar icon at the side panel or the popup.
+ *
+ * Chrome opens `action.default_popup` instead of the side panel when a popup is set.
+ * The MV3 manifest leaves that empty. Side panel preference keeps it empty. Popup
+ * preference sets `popup-init.html`.
+ *
+ * @param useSidePanelAsDefault - Whether the toolbar click should open the side panel.
+ * @param sidePanelApi - Side panel API with `setPanelBehavior`.
+ */
+async function applyToolbarSidePanelPreference(
+  useSidePanelAsDefault: boolean,
+  sidePanelApi: SidePanelApiWithBehavior,
+) {
+  if (useSidePanelAsDefault) {
+    await sidePanelApi.setPanelBehavior({ openPanelOnActionClick: true });
+    await setActionPopup('');
+    return;
+  }
+
+  await setActionPopup(POPUP_INIT_FILE);
+  await sidePanelApi.setPanelBehavior({ openPanelOnActionClick: false });
+}
+
+async function setActionPopup(popup: string) {
+  const setPopup = globalThis.chrome?.action?.setPopup;
+  if (typeof setPopup !== 'function') {
+    return;
+  }
+
+  try {
+    await setPopup({ popup });
+  } catch (error) {
+    log.warn('Failed to set toolbar popup', error);
+  }
+}
+
 export async function applyToolbarSidePanelBehavior(
   getController: SidePanelToolbarBehaviorDeps['getController'],
   sidePanelApi: SidePanelApiWithBehavior,
 ): Promise<void> {
-  const useSidePanelAsDefault = getUseSidePanelAsDefault(getController());
-  await sidePanelApi.setPanelBehavior({
-    openPanelOnActionClick: useSidePanelAsDefault,
+  await applyToolbarSidePanelPreference(
+    getUseSidePanelAsDefault(getController()),
+    sidePanelApi,
+  );
+}
+
+export async function openRoute({
+  controller,
+  windowId,
+  path,
+  search,
+}: {
+  controller:
+    | Pick<SidePanelToolbarBehaviorController, 'preferencesController'>
+    | null
+    | undefined;
+  windowId?: number;
+  path: string;
+  search?: `?${string}`;
+}) {
+  registerPendingRouteListeners();
+
+  const preferSidePanel =
+    controller?.preferencesController?.state?.preferences
+      ?.useSidePanelAsDefault ?? true;
+  const hash = `#${path}${search ?? ''}`;
+
+  if (
+    preferSidePanel &&
+    chrome.sidePanel?.open &&
+    typeof windowId === 'number'
+  ) {
+    const pendingRoute = { path, search };
+    pendingRoutes.set(windowId, pendingRoute);
+    try {
+      await chrome.sidePanel.open({ windowId });
+      await browser.runtime
+        .sendMessage({
+          type: EXTENSION_MESSAGES.OPEN_ROUTE,
+          body: { windowId },
+        })
+        .catch(() => undefined);
+      return;
+    } catch {
+      if (pendingRoutes.get(windowId) === pendingRoute) {
+        pendingRoutes.delete(windowId);
+      }
+    }
+  }
+
+  const { action } = chrome;
+  if (!action?.setPopup || typeof action.openPopup !== 'function') {
+    await openRouteInTab(hash);
+    return;
+  }
+
+  const popupSet = action.setPopup({ popup: `${POPUP_FILE}${hash}` });
+  const opened = action.openPopup();
+
+  globalThis.setTimeout(() => {
+    // The hash popup is only for this open. Putting popup-init.html back
+    // while the side panel is preferred makes later toolbar clicks open the
+    // popup, because Chrome prefers a popup over setPanelBehavior.
+    setActionPopup(preferSidePanel ? '' : POPUP_INIT_FILE).catch(
+      () => undefined,
+    );
+  }, popupRouteResetDelayMs);
+
+  try {
+    await Promise.all([popupSet, opened]);
+  } catch {
+    await openRouteInTab(hash);
+  }
+}
+
+function openRouteInTab(hash: string) {
+  return browser.tabs.create({
+    url: browser.runtime.getURL(`home.html${hash}`),
   });
+}
+
+async function handleConsumePendingRoute(message: {
+  body?: Record<string, unknown>;
+}) {
+  const windowId = message.body?.windowId;
+  const entry =
+    typeof windowId === 'number' ? pendingRoutes.get(windowId) : undefined;
+
+  if (typeof windowId === 'number') {
+    pendingRoutes.delete(windowId);
+  }
+
+  return {
+    type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+    body: entry
+      ? { path: entry.path, search: entry.search ?? null }
+      : { path: null, search: null },
+  };
+}
+
+function registerPendingRouteListeners() {
+  if (pendingRouteListenersRegistered) {
+    return;
+  }
+
+  browser.runtime.onMessage.addListener(
+    (message: unknown, sender: browser.Runtime.MessageSender) => {
+      if (
+        !isObject(message) ||
+        message.type !== EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE ||
+        sender.id !== chrome.runtime.id ||
+        sender.tab ||
+        !sender.url?.startsWith(chrome.runtime.getURL(''))
+      ) {
+        return undefined;
+      }
+
+      return handleConsumePendingRoute(message);
+    },
+  );
+
+  const onWindowRemoved = chrome.windows?.onRemoved;
+  if (typeof onWindowRemoved?.addListener === 'function') {
+    onWindowRemoved.addListener((windowId: number) => {
+      pendingRoutes.delete(windowId);
+    });
+  }
+
+  pendingRouteListenersRegistered = true;
 }
 
 /**
@@ -232,13 +403,12 @@ export async function setupSidePanelToolbarBehavior(
       'PreferencesController:stateChange',
       (useSidePanelAsDefault) => {
         deps.onPreferSidePanelChange?.(useSidePanelAsDefault);
-        sidePanelApi
-          .setPanelBehavior({
-            openPanelOnActionClick: useSidePanelAsDefault,
-          })
-          .catch((error) =>
-            console.error('Error updating panel behavior:', error),
-          );
+        applyToolbarSidePanelPreference(
+          useSidePanelAsDefault,
+          sidePanelApi,
+        ).catch((error) =>
+          console.error('Error updating panel behavior:', error),
+        );
       },
       (preferencesControllerState: PreferencesControllerState) =>
         preferencesControllerState.preferences?.useSidePanelAsDefault ?? true,
