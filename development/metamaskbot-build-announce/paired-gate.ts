@@ -66,16 +66,17 @@ function splitSeries(series: string): { flow: string; metricId: string } {
   return { flow, metricId: rest.join('.') };
 }
 
-/** The build of each measured run by position, `undefined` unless it is four runs, two of each build. */
+/**
+ * The build of each measured run by position, or why the runs cannot be paired:
+ * not four runs, two of each build, or positions (0, 1) and (2, 3) not each
+ * holding a base and a head run.
+ */
 function buildsByPosition(
   pairing: unknown,
-): Record<number, string> | undefined {
+): { builds: Record<number, string> } | { problem: string } {
   const runs = isPlainObject(pairing) ? pairing.runs : undefined;
-  if (!Array.isArray(runs)) {
-    return undefined;
-  }
   const builds: Record<number, string> = {};
-  for (const run of runs) {
+  for (const run of Array.isArray(runs) ? runs : []) {
     if (
       isPlainObject(run) &&
       typeof run.position === 'number' &&
@@ -91,11 +92,52 @@ function buildsByPosition(
   const sorted = Object.values(builds)
     .sort((a, b) => a.localeCompare(b))
     .join();
-  return runs.length === 4 &&
-    positions === '0,1,2,3' &&
-    sorted === 'base,base,head,head'
-    ? builds
-    : undefined;
+  if (
+    !Array.isArray(runs) ||
+    runs.length !== 4 ||
+    positions !== '0,1,2,3' ||
+    sorted !== 'base,base,head,head'
+  ) {
+    return { problem: 'pairing.runs is not four runs, two of each build' };
+  }
+  if (PAIRS.some(([first, second]) => builds[first] === builds[second])) {
+    return {
+      problem: `runs do not alternate: positions 0-1 and 2-3 must each hold a base and a head run, not ${[0, 1, 2, 3].map((position) => builds[position]).join(', ')}`,
+    };
+  }
+  return { builds };
+}
+
+// The page loads each run reports with no value for one series. A run's mean skips
+// them, so a head run whose slowest loads gave none would look faster than base:
+// any run with one fails the series. A run that reports no count has nothing to check.
+function missingLoadProblems(pairing: unknown, metricId: string): string[] {
+  const runs = isPlainObject(pairing) ? pairing.runs : undefined;
+  const problems: string[] = [];
+  for (const run of Array.isArray(runs) ? runs : []) {
+    if (!isPlainObject(run) || !isPlainObject(run.missingCount)) {
+      continue;
+    }
+    if (!(metricId in run.missingCount)) {
+      continue;
+    }
+    const missing = run.missingCount[metricId];
+    const label = `run ${String(run.position)} (${String(run.build)})`;
+    if (
+      typeof missing !== 'number' ||
+      !Number.isInteger(missing) ||
+      missing < 0
+    ) {
+      problems.push(
+        `${label}: the missing count for "${metricId}" is ${String(missing)}`,
+      );
+    } else if (missing > 0) {
+      problems.push(
+        `${label}: ${missing} page ${missing === 1 ? 'load' : 'loads'} gave no "${metricId}" value`,
+      );
+    }
+  }
+  return problems;
 }
 
 // The mean of each run's retained values for one series, by position, from
@@ -159,6 +201,7 @@ function pairDifferences(
   if (!Array.isArray(baseValues) || baseValues.length === 0) {
     problems.push(`no base values for "${metricId}"`);
   }
+  problems.push(...missingLoadProblems(results.pairing, metricId));
   if (problems.length > 0) {
     return [];
   }
@@ -227,20 +270,21 @@ export function evaluatePairedGate(
         continue;
       }
 
-      const builds = buildsByPosition(results.pairing);
+      const pairing = buildsByPosition(results.pairing);
       for (const entry of admitted) {
         const group = groupFor(source, entry);
         const problems: string[] = [];
-        const differences = builds
-          ? pairDifferences(
-              results,
-              splitSeries(entry.series).metricId,
-              builds,
-              problems,
-            )
-          : [];
-        if (!builds) {
-          problems.push('pairing.runs is not four runs, two of each build');
+        const differences =
+          'builds' in pairing
+            ? pairDifferences(
+                results,
+                splitSeries(entry.series).metricId,
+                pairing.builds,
+                problems,
+              )
+            : [];
+        if ('problem' in pairing) {
+          problems.push(pairing.problem);
         }
         group.problems.push(
           ...problems.map((problem) => `${name}: ${problem}`),

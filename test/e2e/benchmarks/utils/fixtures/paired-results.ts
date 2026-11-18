@@ -6,11 +6,14 @@ import type { PairedBuild, PairedOrder } from '../paired';
 export function makePairedFlowResults({
   order,
   runMeans,
+  missingByRun,
   error,
 }: {
   order: PairedOrder;
   /** Each series' mean per run, by position. */
   runMeans: Record<string, readonly [number, number, number, number]>;
+  /** Page loads with no value per series and run, by position: a startup flow's `missingCount`. */
+  missingByRun?: Record<string, readonly [number, number, number, number]>;
   /** Set on a job that did not complete. */
   error?: string;
 }): Record<string, unknown> {
@@ -49,7 +52,18 @@ export function makePairedFlowResults({
       warmup: builds
         .slice(0, 2)
         .map((build, position) => ({ build, position })),
-      runs: builds.map((build, position) => ({ build, position })),
+      runs: builds.map((build, position) => ({
+        build,
+        position,
+        ...(missingByRun && {
+          missingCount: Object.fromEntries(
+            Object.entries(missingByRun).map(([series, counts]) => [
+              series,
+              counts[position],
+            ]),
+          ),
+        }),
+      })),
     },
     ...(error && { error }),
   };
