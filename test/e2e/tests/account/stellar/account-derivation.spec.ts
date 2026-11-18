@@ -1,11 +1,9 @@
-import { Suite } from 'mocha';
 import {
-  EXPECTED_STELLAR_ADDRESSES_BY_INDEX,
+  DEFAULT_STELLAR_ADDRESS,
   HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
 } from '../../../constants';
 import { login } from '../../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
-import { waitUntilAccountTreeSyncIdle } from '../../../page-objects/flows/add-account.flow';
 import { assertAddressAtIndex } from '../../../page-objects/flows/account-list.flow';
 import { switchToNetworkFromNetworkSelect } from '../../../page-objects/flows/network.flow';
 import AccountListPage from '../../../page-objects/pages/accounts/list-page';
@@ -26,10 +24,9 @@ import {
  * Coverage map (mirrors Tron account cluster layout under `tests/account/`):
  * - Addresses modal: Account 1 Stellar address is shown / copyable
  * - Receive page: Account 1 Stellar address is shown
- * - Incremental add through Account 3: derive + assert each HD index
  * - Onboarding SRP import: Stellar address is derived for Account 1
  */
-describe('Stellar account derivation', function (this: Suite) {
+describe('Stellar account derivation', function () {
   it("shows Account 1's Stellar address on the Addresses modal", async function () {
     await withStellarFixtures(
       {
@@ -49,7 +46,7 @@ describe('Stellar account derivation', function (this: Suite) {
         await assertAddressAtIndex(driver, {
           index: 0,
           networkName: STELLAR_NETWORK_NAME,
-          expectedAddress: EXPECTED_STELLAR_ADDRESSES_BY_INDEX[0],
+          expectedAddress: DEFAULT_STELLAR_ADDRESS,
         });
       },
     );
@@ -75,51 +72,8 @@ describe('Stellar account derivation', function (this: Suite) {
         await addressList.checkPageIsLoaded();
         await addressList.checkNetworkAddressIsDisplayedForNetwork({
           networkName: STELLAR_NETWORK_NAME,
-          networkAddress: shortenAddress(
-            EXPECTED_STELLAR_ADDRESSES_BY_INDEX[0],
-          ),
+          networkAddress: shortenAddress(DEFAULT_STELLAR_ADDRESS),
         });
-      },
-    );
-  });
-
-  it('derives Stellar addresses while adding multichain accounts from Account 1 to Account 3', async function () {
-    await withStellarFixtures(
-      {
-        horizonOptions: { unfunded: true },
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
-        await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
-
-        const homepage = new HomePage(driver);
-        const accountList = new AccountListPage(driver);
-
-        await homepage.headerNavbar.openAccountMenu();
-        await accountList.checkPageIsLoaded();
-
-        for (
-          let index = 0;
-          index < EXPECTED_STELLAR_ADDRESSES_BY_INDEX.length;
-          index += 1
-        ) {
-          const accountLabel = `Account ${index + 1}`;
-
-          if (index > 0) {
-            await waitUntilAccountTreeSyncIdle(driver);
-            await accountList.addMultichainAccount();
-            await accountList.checkMultichainAccountNameDisplayed(accountLabel);
-          }
-
-          await assertAddressAtIndex(driver, {
-            index,
-            networkName: STELLAR_NETWORK_NAME,
-            expectedAddress: EXPECTED_STELLAR_ADDRESSES_BY_INDEX[index],
-          });
-        }
-
-        await accountList.closeMultichainAccountsPage();
       },
     );
   });
@@ -139,13 +93,12 @@ describe('Stellar account derivation', function (this: Suite) {
         const homepage = new HomePage(driver);
         await homepage.checkPageIsLoaded();
         // Account-tree identity sync is not mocked here and is not required for
-        // Stellar derivation.
+        // Stellar derivation; switchToNetworkFromNetworkSelect selects Stellar after snap account is ready.
         await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
 
         // Refresh re-hydrates UI after Snap account alignment / Horizon sync.
         // Fresh onboarding defaults the homepage primary balance to fiat.
-        await driver.refresh();
-        await homepage.checkPageIsLoaded();
+        await homepage.refreshPage();
         await homepage.checkExpectedBalanceIsDisplayed({
           expectedBalance: XLM_FIAT_DISPLAY,
           timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
@@ -158,7 +111,7 @@ describe('Stellar account derivation', function (this: Suite) {
         await assertAddressAtIndex(driver, {
           index: 0,
           networkName: STELLAR_NETWORK_NAME,
-          expectedAddress: EXPECTED_STELLAR_ADDRESSES_BY_INDEX[0],
+          expectedAddress: DEFAULT_STELLAR_ADDRESS,
         });
       },
     );

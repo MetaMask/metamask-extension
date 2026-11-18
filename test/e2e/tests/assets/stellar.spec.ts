@@ -1,4 +1,3 @@
-import { Suite } from 'mocha';
 import { HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
@@ -6,7 +5,6 @@ import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/netwo
 import AssetDetailsPage from '../../page-objects/pages/asset/asset-details';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
-import { buildAssetRoutePath } from '../../../../shared/lib/asset-route';
 import { withStellarFixtures } from '../stellar/fixtures/with-stellar-fixtures';
 import {
   STELLAR_NETWORK_NAME,
@@ -24,7 +22,7 @@ const ACTIVE_USDC_TRUSTLINE = {
   limit: '922337203685.4775807',
 } as const;
 
-describe('Stellar - Assets', function (this: Suite) {
+describe('Stellar - Assets', function () {
   describe('Assets list', function () {
     it('XLM is the only asset and shows a 0 balance for an empty account', async function () {
       await withStellarFixtures(
@@ -38,9 +36,8 @@ describe('Stellar - Assets', function (this: Suite) {
           // Refresh re-hydrates the UI from background state so
           // asynchronously-fetched Snap balances appear reliably in the token
           // list.
-          await driver.refresh();
           const homePage = new HomePage(driver);
-          await homePage.checkPageIsLoaded();
+          await homePage.refreshPage();
 
           const tokensTab = new TokensTab(driver);
           await tokensTab.checkTokenExistsInList('Stellar', '0 XLM', {
@@ -60,9 +57,8 @@ describe('Stellar - Assets', function (this: Suite) {
         async ({ driver }: { driver: Driver }) => {
           await login(driver, { validateBalance: false });
           await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
-          await driver.refresh();
           const homePage = new HomePage(driver);
-          await homePage.checkPageIsLoaded();
+          await homePage.refreshPage();
 
           const tokensTab = new TokensTab(driver);
           await tokensTab.checkTokenExistsInList(
@@ -91,7 +87,7 @@ describe('Stellar - Assets', function (this: Suite) {
           await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
           // Refresh re-hydrates the UI from background state so the
           // asynchronously-fetched Snap balance is shown reliably.
-          await driver.refresh();
+          await homePage.refreshPage();
           await homePage.checkExpectedBalanceIsDisplayed({
             expectedBalance: '0 XLM',
             timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
@@ -113,7 +109,7 @@ describe('Stellar - Assets', function (this: Suite) {
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
           await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
-          await driver.refresh();
+          await homePage.refreshPage();
           await homePage.checkExpectedBalanceIsDisplayed({
             expectedBalance: XLM_FIAT_DISPLAY,
             timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
@@ -132,7 +128,7 @@ describe('Stellar - Assets', function (this: Suite) {
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
           await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
-          await driver.refresh();
+          await homePage.refreshPage();
           await homePage.checkExpectedBalanceIsDisplayed({
             expectedBalance: XLM_BALANCE_DISPLAY,
             timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
@@ -152,9 +148,8 @@ describe('Stellar - Assets', function (this: Suite) {
         async ({ driver }: { driver: Driver }) => {
           await login(driver, { validateBalance: false });
           await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
-          await driver.refresh();
           const homePage = new HomePage(driver);
-          await homePage.checkPageIsLoaded();
+          await homePage.refreshPage();
 
           const tokensTab = new TokensTab(driver);
           await tokensTab.checkTokenExistsInList('USD Coin', '25 USDC', {
@@ -179,21 +174,14 @@ describe('Stellar - Assets', function (this: Suite) {
         async ({ driver }: { driver: Driver }) => {
           await login(driver, { validateBalance: false });
           await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
-          await driver.refresh();
           const homePage = new HomePage(driver);
-          await homePage.checkPageIsLoaded();
+          await homePage.refreshPage();
 
           // Snap keyring balances omit classic trustlines with limit 0, so an
           // inactive USDC row never appears from Horizon alone. Deep-link the
-          // USDC asset route (full navigation so createHashRouter mounts on it);
-          // missing trustline metadata requires activation.
-          await driver.openNewURL(
-            `${driver.extensionUrl}/home.html#${buildAssetRoutePath(STELLAR_USDC_ASSET_ID)}`,
-          );
-          await driver.waitForControllersLoaded();
-
+          // USDC asset route; missing trustline metadata requires activation.
           const details = new AssetDetailsPage(driver);
-          await details.checkPageIsLoaded();
+          await details.navigateToAsset(STELLAR_USDC_ASSET_ID);
           await details.checkInactiveBadgeIsDisplayed();
           await details.checkActivateCardIsDisplayed();
         },
