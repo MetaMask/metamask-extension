@@ -40,8 +40,8 @@ describe('Tron Send', function (this: Suite) {
           recipientAddress: TRON_RECIPIENT_ADDRESS,
         });
         await sendPage.fillAmount('1');
-        // With 1 sun TRX, Continue builds the TRC20 tx then fails fee cover.
-        await sendPage.pressContinueButton();
+        // With 1 sun TRX, the Snap quotes the TRC20 fee on amount input and
+        // blocks Continue before the transaction is built.
         await sendPage.checkInsufficientBalanceToCoverFeesError();
         await sendPage.checkContinueButtonIsDisabled();
       },
