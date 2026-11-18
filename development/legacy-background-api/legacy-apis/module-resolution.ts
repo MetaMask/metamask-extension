@@ -10,7 +10,7 @@ import ts from 'typescript';
  * errors are expected and mean "try the next candidate". Any other error, such
  * as a permission error, means something is genuinely wrong.
  */
-const MISSING_FILE_ERROR_CODES = ['ENOENT', 'ENOTDIR', 'EISDIR'];
+const MISSING_FILE_ERROR_CODES = new Set(['ENOENT', 'ENOTDIR', 'EISDIR']);
 
 /**
  * A cache of parsed source files.
@@ -161,6 +161,6 @@ function isMissingFileError(error: unknown): boolean {
     isObject(error) &&
     hasProperty(error, 'code') &&
     typeof error.code === 'string' &&
-    MISSING_FILE_ERROR_CODES.includes(error.code)
+    MISSING_FILE_ERROR_CODES.has(error.code)
   );
 }
