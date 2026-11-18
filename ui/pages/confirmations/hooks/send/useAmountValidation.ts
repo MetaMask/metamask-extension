@@ -23,7 +23,7 @@ const AMOUNT_VALIDATION_DEBOUNCE_MS = 300;
 export const useAmountValidation = () => {
   const t = useI18nContext();
   const { isNonEvmSendType } = useSendType();
-  const { asset, value } = useSendContext();
+  const { asset, toResolved, value } = useSendContext();
   const { validateAmountWithSnap } = useSnapAmountOnInput();
   const { rawBalanceNumeric } = useBalance();
   const [asyncAmountErrorState, setAsyncAmountErrorState] = useState<{
@@ -50,7 +50,7 @@ export const useAmountValidation = () => {
     );
   }, [asset, rawBalanceNumeric, t, value]);
 
-  const validationKey = `${value ?? ''}|${isNonEvmSendType}|${syncAmountError ?? ''}|${rawBalanceNumeric.toString()}`;
+  const validationKey = `${value ?? ''}|${isNonEvmSendType}|${syncAmountError ?? ''}|${rawBalanceNumeric.toString()}|${toResolved ?? ''}`;
 
   const asyncAmountError =
     asyncAmountErrorState.key === validationKey
