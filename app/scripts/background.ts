@@ -127,6 +127,9 @@ import { repairStateCorruptionInPlace } from './lib/critical-error/repair-state-
 import { requestRepair } from './lib/repair';
 import {
   createSidepanelOpener,
+  dropStaleSidePanelCount,
+  isSidePanelCountStale,
+  noteSidePanelDisconnected,
   setupSidePanelToolbarBehavior,
   shouldUseSidepanel,
 } from './sidepanel/background';
@@ -212,6 +215,8 @@ let openPopupCount = 0;
 let notificationIsOpen = false;
 let uiIsTriggering = false;
 let openSidePanelCount = 0;
+// Disconnects already accounted for by clearing a stale side-panel count.
+let ignoredSidePanelDisconnects = 0;
 const openMetamaskTabsIDs: Record<number, true> = {};
 const requestAccountTabIds: Record<string, number> = {};
 let controller: MetaMaskControllerInstance | undefined;
@@ -916,7 +921,12 @@ export function setupController(
           }
         });
         onStreamFinished(portStream, () => {
-          openSidePanelCount = Math.max(openSidePanelCount - 1, 0);
+          const nextSidePanelCount = noteSidePanelDisconnected(
+            openSidePanelCount,
+            ignoredSidePanelDisconnects,
+          );
+          openSidePanelCount = nextSidePanelCount.openCount;
+          ignoredSidePanelDisconnects = nextSidePanelCount.ignoredDisconnects;
           const isClientOpen = isClientOpenStatus();
           metamaskController.isClientOpen = isClientOpen;
           if (!isClientOpen) {
@@ -1106,6 +1116,29 @@ async function triggerUi() {
     tabs.length > 0 &&
     firstTab?.extData &&
     firstTab.extData.indexOf('vivaldi_tab') > -1;
+
+  // The port count stays above zero when the side panel closes without
+  // disconnecting, including after the default view is switched to popup.
+  // A live Chrome context means the panel is really open. No context means
+  // the count is stale and the notification popup should still open.
+  if (openSidePanelCount > 0) {
+    const observedSidePanelCount = openSidePanelCount;
+    const sidePanelCountIsStale = await isSidePanelCountStale({
+      openSidePanelCount: observedSidePanelCount,
+      preferSidePanel: shouldUseSidepanel(requireController()),
+    });
+    if (
+      sidePanelCountIsStale &&
+      openSidePanelCount === observedSidePanelCount
+    ) {
+      const clearedSidePanelCount = dropStaleSidePanelCount(
+        openSidePanelCount,
+        ignoredSidePanelDisconnects,
+      );
+      openSidePanelCount = clearedSidePanelCount.openCount;
+      ignoredSidePanelDisconnects = clearedSidePanelCount.ignoredDisconnects;
+    }
+  }
 
   if (openSidePanelCount > 0) {
     return;
