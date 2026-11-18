@@ -271,18 +271,34 @@ class HeaderNavbar {
   }
 
   async openAccountMenu(): Promise<void> {
-    // Wide layout: the side nav hides its account actions (including this
-    // button) until the section is hovered, so hover it first. The side nav
-    // doesn't exist in the narrow layout, where the button is always visible.
-    const hasSideNavAccounts = await this.driver.executeScript(
-      'return Boolean(document.querySelector(arguments[0]))',
-      this.sideNavAccounts,
+    // Narrow layout: the button is visible straight away. Wide layout: the
+    // button only exists once the side nav has rendered, and the side nav hides
+    // its account actions until the section is hovered, so keep hovering it
+    // until the button shows up.
+    await this.driver.waitUntil(
+      async () => {
+        if (
+          await this.driver.isElementPresentAndVisible(
+            this.accountMenuButton,
+            200,
+          )
+        ) {
+          return true;
+        }
+        if (
+          await this.driver.isElementPresentAndVisible(
+            this.sideNavAccounts,
+            200,
+          )
+        ) {
+          await this.driver.hoverElement(
+            await this.driver.findElement(this.sideNavAccounts),
+          );
+        }
+        return false;
+      },
+      { timeout: this.driver.timeout, interval: 200 },
     );
-    if (hasSideNavAccounts) {
-      await this.driver.hoverElement(
-        await this.driver.findElement(this.sideNavAccounts),
-      );
-    }
     await this.driver.clickElement(this.accountMenuButton);
     await this.driver.waitForSelector(this.accountListPage);
   }
