@@ -881,16 +881,6 @@
         "nanoid": true
       }
     },
-    "@metamask/snaps-controllers>@metamask/approval-controller": {
-      "globals": {
-        "console.info": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/rpc-errors": true,
-        "nanoid": true
-      }
-    },
     "@metamask/assets-controller": {
       "globals": {
         "clearInterval": true,
@@ -1394,7 +1384,10 @@
         "crypto.subtle.deriveBits": true,
         "crypto.subtle.digest": true,
         "crypto.subtle.encrypt": true,
-        "crypto.subtle.importKey": true
+        "crypto.subtle.exportKey": true,
+        "crypto.subtle.importKey": true,
+        "crypto.subtle.sign": true,
+        "crypto.subtle.verify": true
       }
     },
     "@metamask/delegation-controller": {
@@ -1544,7 +1537,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/utils>@metamask/byte-utils": true,
         "@metamask/eth-sig-util": true,
-        "@metamask/eth-hd-keyring>@metamask/key-tree": true,
+        "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-sdk": true,
         "@metamask/scure-bip39": true,
@@ -1997,24 +1990,20 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/snaps-controllers>@metamask/json-rpc-engine": {
+    "@metamask/json-rpc-middleware-stream": {
+      "globals": {
+        "console.warn": true,
+        "setTimeout": true
+      },
       "meta": {
         "webpack-optimization": [
           "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import."
         ]
       },
       "packages": {
-        "@metamask/messenger": true,
-        "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/utils>@metamask/type-utils": true,
         "@metamask/utils": true,
-        "deep-freeze-strict": true,
-        "@metamask/json-rpc-engine>klona": true
-      }
-    },
-    "@metamask/json-rpc-middleware-stream": {
-      "packages": {
         "@metamask/json-rpc-middleware-stream>readable-stream": true
       }
     },
@@ -2035,32 +2024,7 @@
         "@metamask/providers>readable-stream": true
       }
     },
-    "@metamask/snaps-controllers>@metamask/json-rpc-middleware-stream": {
-      "globals": {
-        "console.warn": true,
-        "setTimeout": true
-      },
-      "meta": {
-        "webpack-optimization": [
-          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import."
-        ]
-      },
-      "packages": {
-        "@metamask/safe-event-emitter": true,
-        "@metamask/utils>@metamask/type-utils": true,
-        "@metamask/utils": true,
-        "@metamask/snaps-controllers>readable-stream": true
-      }
-    },
-    "@metamask/eth-hd-keyring>@metamask/key-tree": {
-      "packages": {
-        "@metamask/utils>@metamask/byte-utils": true,
-        "@metamask/snaps-utils>@metamask/cryptography": true,
-        "@metamask/scure-bip39": true,
-        "@metamask/utils>@metamask/type-utils": true
-      }
-    },
-    "@metamask/snaps-sdk>@metamask/key-tree": {
+    "@metamask/profile-sync-controller>@metamask/key-tree": {
       "globals": {
         "crypto.subtle": true,
         "ed25519": true,
@@ -2078,6 +2042,17 @@
         "@metamask/scure-bip39": true,
         "@metamask/utils>@metamask/type-utils": true,
         "@metamask/utils": true,
+        "@noble/curves": true,
+        "@noble/hashes": true,
+        "@scure/base": true
+      }
+    },
+    "@metamask/snaps-sdk>@metamask/key-tree": {
+      "packages": {
+        "@metamask/utils>@metamask/byte-utils": true,
+        "@metamask/snaps-utils>@metamask/cryptography": true,
+        "@metamask/scure-bip39": true,
+        "@metamask/utils>@metamask/type-utils": true,
         "@noble/curves": true,
         "@noble/hashes": true,
         "@scure/base": true
@@ -2815,7 +2790,7 @@
         "@metamask/utils>@metamask/byte-utils": true,
         "@metamask/snaps-utils>@metamask/cryptography": true,
         "@metamask/utils>@metamask/error-utils": true,
-        "@metamask/snaps-sdk>@metamask/key-tree": true,
+        "@metamask/profile-sync-controller>@metamask/key-tree": true,
         "@metamask/keyring-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils>@metamask/type-utils": true,
@@ -3094,11 +3069,11 @@
         ]
       },
       "packages": {
-        "@metamask/snaps-controllers>@metamask/approval-controller": true,
+        "@metamask/approval-controller": true,
         "@metamask/base-controller": true,
         "@metamask/utils>@metamask/byte-utils": true,
-        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
-        "@metamask/snaps-controllers>@metamask/json-rpc-middleware-stream": true,
+        "@metamask/json-rpc-engine": true,
+        "@metamask/json-rpc-middleware-stream": true,
         "@metamask/object-multiplex": true,
         "@metamask/permission-controller": true,
         "@metamask/post-message-stream": true,
@@ -3670,14 +3645,6 @@
         "@noble/hashes": true
       }
     },
-    "@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32>@noble/curves": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32>@noble/hashes": true
-      }
-    },
     "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/curves": {
       "globals": {
         "TextEncoder": true
@@ -3700,6 +3667,14 @@
       },
       "packages": {
         "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "@metamask/eth-hd-keyring>ethereum-cryptography>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>@metamask/eth-sig-util>ethereum-cryptography>@noble/curves": {
@@ -3751,12 +3726,6 @@
         "crypto": true
       }
     },
-    "@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
     "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true
@@ -3782,7 +3751,8 @@
     },
     "@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": {
       "globals": {
-        "TextEncoder": true
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": {
@@ -3973,8 +3943,8 @@
     },
     "@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32": {
       "packages": {
-        "@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32>@noble/curves": true,
-        "@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32>@noble/hashes": true,
+        "@metamask/eth-hd-keyring>ethereum-cryptography>@noble/curves": true,
+        "@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": true,
         "@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32>@scure/base": true
       }
     },
