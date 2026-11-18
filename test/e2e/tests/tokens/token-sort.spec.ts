@@ -81,7 +81,9 @@ describe('Token List Sorting', function () {
           manifestFlags: {
             remoteFeatureFlags: {
               extensionUxTokenManagementFilter: true,
-              extensionUxFullscreenRedesign: isWideLayout,
+              coreCEUX1492AbtestWideScreenRedesign: {
+                name: isWideLayout ? 'treatment' : 'control',
+              },
             },
           },
           testSpecificMock: mockCustomTokenImport,
