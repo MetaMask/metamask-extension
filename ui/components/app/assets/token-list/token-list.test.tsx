@@ -33,6 +33,7 @@ import {
   getAssetsBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
   selectAssetsHaveLoadedForSelectedAccountGroup,
+  selectEnabledNetworksHaveAssetsForSelectedAccountGroup,
 } from '../../../../selectors/assets';
 import { MUSD_TOKEN_ADDRESS } from '../../musd/constants';
 import { useMoneyTokenListCta } from '../../../../hooks/money/useMoneyTokenListCta';
@@ -138,6 +139,7 @@ jest.mock('../../../../selectors/assets', () => ({
   getAssetsBySelectedAccountGroup: jest.fn(),
   selectAccountGroupBalanceForEmptyState: jest.fn(),
   selectAssetsHaveLoadedForSelectedAccountGroup: jest.fn(),
+  selectEnabledNetworksHaveAssetsForSelectedAccountGroup: jest.fn(),
 }));
 
 jest.mock('#ui/hooks/token-asset/useTokenAssetSecurityResults', () => ({
@@ -261,11 +263,17 @@ describe('TokenList', () => {
     jest
       .mocked(selectAssetsHaveLoadedForSelectedAccountGroup)
       .mockReturnValue(true);
+    jest
+      .mocked(selectEnabledNetworksHaveAssetsForSelectedAccountGroup)
+      .mockReturnValue(true);
   });
 
   it('shows five token row skeletons while assets are loading', () => {
     jest
       .mocked(selectAssetsHaveLoadedForSelectedAccountGroup)
+      .mockReturnValue(false);
+    jest
+      .mocked(selectEnabledNetworksHaveAssetsForSelectedAccountGroup)
       .mockReturnValue(false);
     jest.mocked(getAssetsBySelectedAccountGroup).mockReturnValue(
       createAccountGroupAssets([
@@ -305,6 +313,9 @@ describe('TokenList', () => {
     jest
       .mocked(selectAssetsHaveLoadedForSelectedAccountGroup)
       .mockReturnValue(false);
+    jest
+      .mocked(selectEnabledNetworksHaveAssetsForSelectedAccountGroup)
+      .mockReturnValue(false);
     jest.mocked(getAssetsBySelectedAccountGroup).mockReturnValue(
       createAccountGroupAssets([
         createAsset({
@@ -322,9 +333,12 @@ describe('TokenList', () => {
     expect(screen.queryByTestId('token-cell-ETH')).not.toBeInTheDocument();
   });
 
-  it('shows a non-zero native token before background loading settles', () => {
+  it('keeps showing skeletons when only some enabled networks have assets', () => {
     jest
       .mocked(selectAssetsHaveLoadedForSelectedAccountGroup)
+      .mockReturnValue(false);
+    jest
+      .mocked(selectEnabledNetworksHaveAssetsForSelectedAccountGroup)
       .mockReturnValue(false);
     jest.mocked(getAssetsBySelectedAccountGroup).mockReturnValue(
       createAccountGroupAssets([
@@ -339,10 +353,10 @@ describe('TokenList', () => {
 
     render();
 
-    expect(useHomeReady).toHaveBeenLastCalledWith(true);
-    expect(screen.getByTestId('token-cell-POL')).toBeInTheDocument();
-    expect(screen.getByTestId('token-cell-SOL')).toBeInTheDocument();
-    expect(screen.queryByTestId('token-list-loading')).not.toBeInTheDocument();
+    expect(useHomeReady).toHaveBeenLastCalledWith(false);
+    expect(screen.getByTestId('token-list-loading')).toBeInTheDocument();
+    expect(screen.queryByTestId('token-cell-POL')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('token-cell-SOL')).not.toBeInTheDocument();
   });
 
   it('keeps a populated token list visible during background refreshes', () => {
