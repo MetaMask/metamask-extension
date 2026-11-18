@@ -137,11 +137,15 @@ export function updateExtensionUninstallUrl({
  * Only profile IDs are retained, not access tokens or other session fields.
  *
  * @param srpSessionData - Current SRP session data from MetaMask state.
+ * @param primaryEntropySourceId - ID of the primary HD keyring, if available.
  */
 export function updateProfileSessionData(
   srpSessionData: AuthenticationController.AuthenticationControllerState['srpSessionData'],
+  primaryEntropySourceId: string | undefined,
 ): void {
-  const profile = Object.entries(srpSessionData ?? {})?.[0]?.[1]?.profile;
+  const profile = primaryEntropySourceId
+    ? srpSessionData?.[primaryEntropySourceId]?.profile
+    : undefined;
 
   if (!profile) {
     cachedProfileIdentity = undefined;

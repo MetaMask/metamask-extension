@@ -1276,11 +1276,23 @@ describe('UserTraitsService', function () {
 
         service.handleMetaMaskStateUpdate({
           srpSessionData,
+          keyrings: [
+            { type: KeyringType.imported, metadata: { id: 'imported' } },
+            {
+              type: KeyringType.hdKeyTree,
+              metadata: { id: 'entropySourceId1' },
+            },
+            {
+              type: KeyringType.hdKeyTree,
+              metadata: { id: 'entropySourceId2' },
+            },
+          ],
         } as unknown as MetaMaskState);
 
         expect(updateProfileSessionDataSpy).toHaveBeenCalledTimes(1);
         expect(updateProfileSessionDataSpy).toHaveBeenCalledWith(
           srpSessionData,
+          'entropySourceId1',
         );
       });
     });

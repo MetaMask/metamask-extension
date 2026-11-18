@@ -379,6 +379,11 @@ export function createPlatformAdapter(
       }
 
       const enrichedContext = enrichEventContext(context, enrichmentContext);
+      const canonicalProfileId =
+        enrichmentContext.getProfileIdentityProperties().canonical_profile_id;
+      if (canonicalProfileId) {
+        enrichedContext.canonical_profile_id = canonicalProfileId;
+      }
       const payload = {
         ...buildBasePayload({ userId }, enrichedContext, options),
         ...(traits ? { traits } : {}),

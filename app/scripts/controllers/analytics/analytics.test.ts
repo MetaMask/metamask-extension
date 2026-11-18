@@ -277,7 +277,7 @@ const PROFILE_IDENTITY_EVENT_PROPERTIES = {
 
 describe('analytics', () => {
   beforeEach(() => {
-    updateProfileSessionData(undefined);
+    updateProfileSessionData(undefined, undefined);
   });
 
   it('normalizes lightweight built events before delivery', () => {
@@ -360,13 +360,26 @@ describe('analytics', () => {
   });
 
   it('caches profile identity for downstream enrichment', () => {
-    updateProfileSessionData(undefined);
-    expect(getProfileIdentityProperties()).toEqual({});
+    const [primarySessionId] = Object.keys(SAMPLE_SRP_SESSION_DATA);
+    const [session] = Object.values(SAMPLE_SRP_SESSION_DATA);
+    const sessions = {
+      secondary: {
+        ...session,
+        profile: { ...session.profile, canonicalProfileId: 'secondary' },
+      },
+      ...SAMPLE_SRP_SESSION_DATA,
+    };
 
-    updateProfileSessionData(SAMPLE_SRP_SESSION_DATA);
+    updateProfileSessionData(sessions, primarySessionId);
     expect(getProfileIdentityProperties()).toEqual(
       PROFILE_IDENTITY_EVENT_PROPERTIES,
     );
+
+    updateProfileSessionData(
+      { secondary: sessions.secondary },
+      primarySessionId,
+    );
+    expect(getProfileIdentityProperties()).toEqual({});
   });
 
   describe('setParticipateInMetaMetrics', () => {

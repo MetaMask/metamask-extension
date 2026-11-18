@@ -351,6 +351,36 @@ describe('createPlatformAdapter', () => {
     });
   });
 
+  describe('identify profile context', () => {
+    it('adds the canonical profile ID without changing the Segment user ID', () => {
+      const canonicalProfileIdKey = 'canonical_profile_id';
+      const profileIdKey = 'profile_id';
+      const { adapter, segment } = buildAdapter(
+        createMockEnrichmentContext({
+          getProfileIdentityProperties: () => ({
+            [canonicalProfileIdKey]: 'canonical-profile',
+            [profileIdKey]: 'non-canonical-profile',
+          }),
+        }),
+      );
+
+      adapter.identify('user-1');
+
+      expect(segment.identify).toHaveBeenCalledWith(
+        expect.objectContaining({
+          userId: 'user-1',
+          context: expect.objectContaining({
+            [canonicalProfileIdKey]: 'canonical-profile',
+          }),
+        }),
+        undefined,
+      );
+      expect(segment.identify.mock.calls[0][0].context).not.toHaveProperty(
+        'profile_id',
+      );
+    });
+  });
+
   describe('view', () => {
     it('forwards as a Segment page() call with the analyticsId', () => {
       const { adapter, segment } = buildAdapter();
