@@ -223,18 +223,18 @@ export async function setupSidePanelToolbarBehavior(
     await applyToolbarSidePanelBehavior(deps.getController, sidePanelApi);
 
     const controller = deps.getController();
-    const useSidePanelAsDefault = getUseSidePanelAsDefault(controller);
-    if (!useSidePanelAsDefault) {
+    const preferSidePanel = getUseSidePanelAsDefault(controller);
+    if (!preferSidePanel) {
       deps.onUseSidePanelAsDefaultChange?.(false);
     }
 
     controller?.controllerMessenger?.subscribe(
       'PreferencesController:stateChange',
-      (preferSidePanel) => {
-        deps.onUseSidePanelAsDefaultChange?.(preferSidePanel);
+      (useSidePanelAsDefault) => {
+        deps.onUseSidePanelAsDefaultChange?.(useSidePanelAsDefault);
         sidePanelApi
           .setPanelBehavior({
-            openPanelOnActionClick: preferSidePanel,
+            openPanelOnActionClick: useSidePanelAsDefault,
           })
           .catch((error) =>
             console.error('Error updating panel behavior:', error),
