@@ -212,6 +212,44 @@ describe('AssetsControllerInit', () => {
     expect(tokenDetectionEnabledGetter()).toBe(false);
   });
 
+  it('reads tokenDetectionEnabled live when useTokenDetection changes', () => {
+    const preferences: { useTokenDetection?: boolean } = {
+      useTokenDetection: false,
+    };
+    const requestMock = getInitRequestMock();
+    requestMock.initMessenger.call = jest.fn().mockImplementation((action) => {
+      if (action === 'OnboardingController:getState') {
+        return { completedOnboarding: true };
+      }
+      if (action === 'PreferencesController:getState') {
+        return preferences;
+      }
+      if (action === 'AuthenticationController:getBearerToken') {
+        return Promise.resolve('mock-bearer-token');
+      }
+      if (action === 'RemoteFeatureFlagController:getState') {
+        return { remoteFeatureFlags: {} };
+      }
+      throw new Error(`Unexpected action: ${action}`);
+    });
+
+    AssetsControllerInit(requestMock);
+
+    const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
+    const config = constructorCall.rpcDataSourceConfig;
+    if (!config?.tokenDetectionEnabled) {
+      throw new Error('Expected rpcDataSourceConfig.tokenDetectionEnabled');
+    }
+
+    expect(config.tokenDetectionEnabled()).toBe(false);
+
+    preferences.useTokenDetection = true;
+    expect(config.tokenDetectionEnabled()).toBe(true);
+
+    preferences.useTokenDetection = false;
+    expect(config.tokenDetectionEnabled()).toBe(false);
+  });
+
   it('defaults tokenDetectionEnabled to true when useTokenDetection is absent from preferences state', () => {
     const requestMock = getInitRequestMock();
     requestMock.initMessenger.call = jest.fn().mockImplementation((action) => {
@@ -843,6 +881,81 @@ describe('AssetsControllerInit', () => {
       listeners['OnboardingController:stateChange'](false);
 
       expect(onChange).not.toHaveBeenCalled();
+    });
+
+    it('refreshes subscriptions when useTokenDetection changes and ignores unrelated preference changes', () => {
+      const { requestMock } = buildSubscribeTestSetup({
+        completedOnboarding: true,
+        useExternalServices: true,
+      });
+
+      const subscriptions: {
+        event: string;
+        listener: (selectedValue: unknown) => void;
+        selector?: (state: {
+          useExternalServices?: boolean;
+          useTokenDetection?: boolean;
+          theme?: string;
+        }) => unknown;
+      }[] = [];
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (requestMock.controllerMessenger as any).subscribe = jest
+        .fn()
+        .mockImplementation(
+          (
+            event: string,
+            listener: (selectedValue: unknown) => void,
+            selector?: (state: {
+              useExternalServices?: boolean;
+              useTokenDetection?: boolean;
+              theme?: string;
+            }) => unknown,
+          ) => {
+            subscriptions.push({ event, listener, selector });
+          },
+        );
+
+      AssetsControllerInit(requestMock);
+
+      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
+      const subscribeToBasicFunctionalityChange =
+        constructorCall.subscribeToBasicFunctionalityChange as (
+          onChange: (value: boolean) => void,
+        ) => void;
+
+      const onChange = jest.fn();
+      subscribeToBasicFunctionalityChange(onChange);
+
+      const preferencesSubscription = subscriptions.find(
+        (subscription) =>
+          subscription.event === 'PreferencesController:stateChange',
+      );
+      if (!preferencesSubscription?.selector) {
+        throw new Error(
+          'Expected a PreferencesController:stateChange selector',
+        );
+      }
+
+      const enabled = preferencesSubscription.selector({
+        useExternalServices: true,
+        useTokenDetection: true,
+      });
+      const detectionDisabled = preferencesSubscription.selector({
+        useExternalServices: true,
+        useTokenDetection: false,
+      });
+      const unrelatedPreference = preferencesSubscription.selector({
+        useExternalServices: true,
+        useTokenDetection: true,
+        theme: 'dark',
+      });
+
+      expect(detectionDisabled).not.toBe(enabled);
+      expect(unrelatedPreference).toBe(enabled);
+
+      preferencesSubscription.listener(detectionDisabled);
+      expect(onChange).toHaveBeenCalledWith(true);
     });
   });
 });
