@@ -219,13 +219,10 @@ describe('createSidepanelOpener', () => {
 function createSidePanelMock(): {
   sidePanelApi: SidePanelApiWithBehavior;
   setPanelBehavior: jest.Mock;
-  setPopup: jest.Mock;
 } {
   const setPanelBehavior = jest.fn().mockResolvedValue(undefined);
-  const setPopup = jest.fn().mockResolvedValue(undefined);
   const sidePanelApi = { setPanelBehavior } satisfies SidePanelApiWithBehavior;
-  Object.assign(globalThis.chrome, { action: { setPopup } });
-  return { sidePanelApi, setPanelBehavior, setPopup };
+  return { sidePanelApi, setPanelBehavior };
 }
 
 function createSidePanelWithoutBehaviorMock(): {
@@ -287,11 +284,10 @@ describe('applyToolbarSidePanelBehavior', () => {
   });
 
   it('defaults to true when preference is missing', async () => {
-    const { sidePanelApi, setPanelBehavior, setPopup } = createSidePanelMock();
+    const { sidePanelApi, setPanelBehavior } = createSidePanelMock();
 
     await applyToolbarSidePanelBehavior(() => ({}), sidePanelApi);
 
-    expect(setPopup).not.toHaveBeenCalled();
     expect(setPanelBehavior).toHaveBeenCalledWith({
       openPanelOnActionClick: true,
     });
@@ -397,8 +393,6 @@ describe('setupSidePanelToolbarBehavior', () => {
     preferenceChangeHandler?.(false);
 
     await Promise.resolve();
-    await Promise.resolve();
-    await Promise.resolve();
     expect(setPanelBehavior).toHaveBeenCalledWith({
       openPanelOnActionClick: false,
     });
@@ -483,9 +477,7 @@ describe('setupSidePanelToolbarBehavior', () => {
 
     setPanelBehavior.mockRejectedValueOnce(new Error('update failed'));
     preferenceChangeHandler?.(false);
-    await new Promise((resolve) => {
-      setImmediate(resolve);
-    });
+    await Promise.resolve();
 
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       'Error updating panel behavior:',
