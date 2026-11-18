@@ -6,7 +6,7 @@ import {
   trace,
   TraceName,
 } from '../../../shared/lib/trace';
-import { getClientOptions } from './setupSentry';
+import { getClientOptions, setCITags } from './setupSentry';
 
 // Sentry span-payload keys, not ours.
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -21,6 +21,12 @@ type TransactionPayload = {
   transaction?: string;
   spans?: { description?: string }[];
 };
+jest.mock('../../../shared/lib/manifestFlags', () => ({
+  getManifestFlags: () => ({
+    ci: { enabled: true, branch: 'ci-branch', commitHash: 'abc123' },
+  }),
+}));
+
 type SentEnvelope = [unknown, [{ type: string }, unknown][]];
 
 // Uses the options `setupSentry` ships and the real SDK, so a change back to
@@ -152,5 +158,18 @@ describe('span streaming (integration with the shipped Sentry options)', () => {
 
     const segment = sentSpans().find((span) => span.is_segment);
     expect(segment?.attributes.otelTraceId.value).toMatch(/^[0-9a-f]{32}$/u);
+  });
+
+  it('puts the CI tags on every span through the isolation scope', async () => {
+    setCITags();
+    trace({ name: TraceName.Transaction }, () => undefined);
+    await Sentry.flush();
+
+    const segment = sentSpans().find((span) => span.is_segment);
+    expect(segment?.attributes).toMatchObject({
+      'ci.enabled': { value: true, type: 'boolean' },
+      'ci.branch': { value: 'ci-branch', type: 'string' },
+      'ci.commitHash': { value: 'abc123', type: 'string' },
+    });
   });
 });

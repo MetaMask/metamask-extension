@@ -3,6 +3,7 @@ import { SPAN_STATUS_ERROR, SPAN_STATUS_OK } from '@sentry/core';
 import type {
   MeasurementUnit,
   Span,
+  SpanAttributeValue,
   StartSpanOptions,
   TraceparentData,
 } from '@sentry/types';
@@ -1250,7 +1251,11 @@ export function setMeasurement(
   value: number,
   unit: MeasurementUnit,
 ) {
-  getActiveRootSpan()?.setAttribute(key, { value, unit });
+  // The SDK serializes a `{ value, unit }` attribute; its types do not list it.
+  getActiveRootSpan()?.setAttribute(key, {
+    value,
+    unit,
+  } as unknown as SpanAttributeValue);
 }
 
 /**

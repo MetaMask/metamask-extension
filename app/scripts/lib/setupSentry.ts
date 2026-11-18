@@ -310,7 +310,7 @@ function getTracesSampleRate(sentryTarget: string | undefined): number {
  * and give them to the Sentry client: as tags for error events and as scope
  * attributes, which every streamed span carries.
  */
-function setCITags(): void {
+export function setCITags(): void {
   const { ci } = getManifestFlags();
 
   if (!ci?.enabled) {
@@ -328,7 +328,7 @@ function setCITags(): void {
     ...(ci.testTitle ? { 'ci.testTitle': ci.testTitle } : {}),
   };
   Sentry.setTags(tags);
-  Sentry.setAttributes(tags);
+  Sentry.getIsolationScope().setAttributes(tags);
 }
 
 function getSentryEnvironment(): string | undefined {
