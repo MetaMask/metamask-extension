@@ -276,7 +276,7 @@ describe('tempo-tx-utils', () => {
         }),
       ).toEqual({
         excludeNativeTokenForFee: true,
-        gasFeeToken: '0x20c0000000000000000000000000000000000000',
+        gasFeeToken: '0x20c0000000000000000000006a37da5c996874be',
       });
       expect(mockAccountSupports7702).toHaveBeenCalledTimes(1);
     });

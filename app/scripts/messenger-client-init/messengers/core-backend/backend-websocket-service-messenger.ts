@@ -6,6 +6,14 @@ import {
 } from '@metamask/messenger';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
+import {
+  OnboardingControllerGetStateAction,
+  OnboardingControllerStateChangeEvent,
+} from '../../../controllers/onboarding';
+import {
+  PreferencesControllerGetStateAction,
+  PreferencesControllerStateChangeEvent,
+} from '../../../controllers/preferences-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
 export type BackendWebSocketServiceMessenger =
@@ -44,19 +52,28 @@ export function getBackendWebSocketServiceMessenger(
 
 type AllowedInitializationActions =
   | RemoteFeatureFlagControllerGetStateAction
-  | AuthenticationControllerGetBearerTokenAction;
+  | AuthenticationControllerGetBearerTokenAction
+  | PreferencesControllerGetStateAction
+  | OnboardingControllerGetStateAction;
+
+type AllowedInitializationEvents =
+  | PreferencesControllerStateChangeEvent
+  | OnboardingControllerStateChangeEvent;
 
 export type BackendWebSocketServiceInitMessenger = ReturnType<
   typeof getBackendWebSocketServiceInitMessenger
 >;
 
 export function getBackendWebSocketServiceInitMessenger(
-  messenger: RootMessenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<
+    AllowedInitializationActions,
+    AllowedInitializationEvents
+  >,
 ) {
   const controllerInitMessenger = new Messenger<
     'BackendWebSocketServiceInit',
     AllowedInitializationActions,
-    never,
+    AllowedInitializationEvents,
     typeof messenger
   >({
     namespace: 'BackendWebSocketServiceInit',
@@ -67,6 +84,12 @@ export function getBackendWebSocketServiceInitMessenger(
     actions: [
       'RemoteFeatureFlagController:getState',
       'AuthenticationController:getBearerToken',
+      'PreferencesController:getState',
+      'OnboardingController:getState',
+    ],
+    events: [
+      'PreferencesController:stateChange',
+      'OnboardingController:stateChange',
     ],
   });
   return controllerInitMessenger;

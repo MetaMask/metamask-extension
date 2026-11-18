@@ -317,7 +317,9 @@ function UniswapPath({
       justifyContent={JustifyContent.flexEnd}
     >
       {pathPools.map((pool, index) => (
-        <>
+        <React.Fragment
+          key={`${pool.firstAddress}-${pool.tickSpacing}-${pool.secondAddress}`}
+        >
           {index === 0 && (
             <ConfirmInfoRowAddress
               address={pool.firstAddress}
@@ -329,7 +331,7 @@ function UniswapPath({
             address={pool.secondAddress}
             chainId={chainId}
           />
-        </>
+        </React.Fragment>
       ))}
     </Box>
   );

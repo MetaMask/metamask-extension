@@ -425,6 +425,15 @@ export class PlaywrightDriver {
     if (typeof script === 'function' && source.includes('__name')) {
       source = `function() { var __name = (fn) => fn; return (${source}).apply(null, arguments); }`;
     }
+
+    // On Chrome extension pages, use CDP to bypass LavaMoat scuttling.
+    // Playwright's page.evaluate() internally uses Float32Array for serialization,
+    // which triggers scuttling errors. CDP Runtime.evaluate avoids this.
+    if (this.shouldUseCDPBypass()) {
+      return this.executeScriptViaCDPMainWorld<TResult>(source, args);
+    }
+
+    // Standard path for non-extension pages or Firefox
     return (await this.page.evaluate<
       TResult,
       { source: string; passedArgs: unknown[] }
@@ -436,6 +445,46 @@ export class PlaywrightDriver {
       },
       { source, passedArgs: args },
     )) as TResult;
+  }
+
+  /**
+   * Executes a script via CDP in the MAIN world to:
+   * 1. Bypass LavaMoat scuttling (Playwright's serialization uses Float32Array)
+   * 2. Access main world variables like window.stateHooks
+   * @param source
+   * @param args
+   */
+  private async executeScriptViaCDPMainWorld<TResult>(
+    source: string,
+    args: unknown[],
+  ): Promise<TResult> {
+    const cdp = await this.page.context().newCDPSession(this.page);
+    try {
+      // Build expression that evaluates the function with args
+      const expression = `
+        (function() {
+          const fn = new Function('args', 'return (' + ${JSON.stringify(source)} + ').apply(null, args);');
+          return fn(${JSON.stringify(args)});
+        })()
+      `;
+
+      // Evaluate in the main world (no contextId = default execution context)
+      const { result, exceptionDetails } = await cdp.send('Runtime.evaluate', {
+        expression,
+        returnByValue: true,
+        awaitPromise: true,
+      });
+
+      if (exceptionDetails) {
+        throw new Error(
+          `CDP executeScript failed: ${exceptionDetails.exception?.description ?? exceptionDetails.text}`,
+        );
+      }
+
+      return result.value as TResult;
+    } finally {
+      await cdp.detach();
+    }
   }
 
   // Selenium's executeAsyncScript resolves when the script invokes its trailing
@@ -833,7 +882,146 @@ export class PlaywrightDriver {
   ): Promise<void> {
     const locator = this.buildLocator(rawLocator).first();
     await locator.click();
-    await this.page.keyboard.insertText(contentToPaste);
+
+    if (this.shouldUseCDPBypass()) {
+      const pasteHandled = await this.pasteIntoFieldViaCDP(
+        locator,
+        contentToPaste,
+      );
+      if (!pasteHandled) {
+        await this.page.keyboard.insertText(contentToPaste);
+      }
+      return;
+    }
+
+    // Standard path for non-extension pages or Firefox (where CDP isn't available)
+    // Mirrors a real paste: fields such as the SRP import read the text from
+    // the `paste` event, and only an unhandled paste inserts it.
+    const pasteHandled = await locator.evaluate((element, text) => {
+      const clipboardData = new DataTransfer();
+      clipboardData.setData('text/plain', text);
+      return !element.dispatchEvent(
+        new ClipboardEvent('paste', {
+          clipboardData,
+          bubbles: true,
+          cancelable: true,
+        }),
+      );
+    }, contentToPaste);
+    if (!pasteHandled) {
+      await this.page.keyboard.insertText(contentToPaste);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // CDP Helpers — bypass LavaMoat scuttling on Chrome extension pages
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Checks if the current page is an extension page where LavaMoat scuttling
+   * may block Playwright from accessing globals.
+   */
+  private isExtensionPage(): boolean {
+    const currentUrl = this.page.url();
+    return (
+      currentUrl.startsWith('chrome-extension://') ||
+      currentUrl.startsWith('moz-extension://')
+    );
+  }
+
+  /**
+   * Returns true if we should use CDP to bypass LavaMoat scuttling.
+   */
+  private shouldUseCDPBypass(): boolean {
+    return this.browser === 'chrome' && this.isExtensionPage();
+  }
+
+  /**
+   * Evaluates a JavaScript expression via CDP in an isolated world to bypass LavaMoat scuttling.
+   * @param expression - JavaScript expression to evaluate (should be an IIFE)
+   * @param options - Configuration options
+   * @param options.awaitPromise - Whether to await the result if it's a Promise.
+   * @returns The result value, or undefined if evaluation failed.
+   */
+  private async evaluateViaCDP<TResult = unknown>(
+    expression: string,
+    options: { awaitPromise?: boolean } = {},
+  ): Promise<TResult | undefined> {
+    const { awaitPromise = false } = options;
+    const cdp = await this.page.context().newCDPSession(this.page);
+    try {
+      // Get the frame ID for the current page
+      const { frameTree } = await cdp.send('Page.getFrameTree');
+      const frameId = frameTree.frame.id;
+
+      // Create an isolated world - this gives us a fresh JS context with
+      // pristine globals that LavaMoat scuttling hasn't modified
+      const { executionContextId } = await cdp.send(
+        'Page.createIsolatedWorld',
+        {
+          frameId,
+          worldName: 'playwright-cdp-bypass',
+          // grantUniveralAccess allows the isolated world to access the DOM
+          grantUniveralAccess: true,
+        },
+      );
+
+      // Evaluate in the isolated world using the execution context ID
+      const { result, exceptionDetails } = await cdp.send('Runtime.evaluate', {
+        expression,
+        contextId: executionContextId,
+        returnByValue: true,
+        awaitPromise,
+      });
+
+      if (exceptionDetails) {
+        console.warn(
+          `[driver-playwright] CDP evaluation failed: ${exceptionDetails.exception?.description ?? exceptionDetails.text}`,
+        );
+        return undefined;
+      }
+
+      return result.value as TResult;
+    } finally {
+      await cdp.detach();
+    }
+  }
+
+  /**
+   * Executes paste via CDP to bypass LavaMoat scuttling on Chrome extension pages.
+   * @param locator
+   * @param contentToPaste
+   */
+  private async pasteIntoFieldViaCDP(
+    locator: Locator,
+    contentToPaste: string,
+  ): Promise<boolean> {
+    // Verify element exists before attempting paste
+    const boundingBox = await locator.boundingBox();
+    if (!boundingBox) {
+      throw new Error('Cannot find element bounding box for paste operation');
+    }
+
+    const expression = `
+      (function() {
+        const activeElement = document.activeElement;
+        if (!activeElement) {
+          return false;
+        }
+        const clipboardData = new DataTransfer();
+        clipboardData.setData('text/plain', ${JSON.stringify(contentToPaste)});
+        const pasteEvent = new ClipboardEvent('paste', {
+          clipboardData: clipboardData,
+          bubbles: true,
+          cancelable: true,
+        });
+        // dispatchEvent returns false if event was cancelled (i.e., handled)
+        return !activeElement.dispatchEvent(pasteEvent);
+      })()
+    `;
+
+    const result = await this.evaluateViaCDP<boolean>(expression);
+    return result ?? false;
   }
 
   async holdMouseDownOnElement(

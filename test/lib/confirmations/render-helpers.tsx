@@ -26,6 +26,7 @@ export function renderWithConfirmContextProvider(
   pathname = DEFAULT_ROUTE,
   confirmationId?: string,
   getMockTrackEvent?: () => jest.Mock,
+  initialIsAmountPending = false,
 ) {
   const ConfirmContextContainer = ({
     children,
@@ -33,7 +34,10 @@ export function renderWithConfirmContextProvider(
     children: React.ReactNode;
   }) => (
     <HardwareWalletErrorProvider>
-      <ConfirmContextProvider confirmationId={confirmationId}>
+      <ConfirmContextProvider
+        confirmationId={confirmationId}
+        initialIsAmountPending={initialIsAmountPending}
+      >
         <DappSwapContextProvider>
           <GasFeeModalContextProvider>{children}</GasFeeModalContextProvider>
         </DappSwapContextProvider>
@@ -104,6 +108,8 @@ export function renderWithConfirmContext(
     setIsScrollToBottomCompleted: () => undefined,
     goBackTo: undefined,
     suppressAutoExit: () => undefined,
+    isAmountPending: false,
+    setIsAmountPending: () => undefined,
   });
 }
 

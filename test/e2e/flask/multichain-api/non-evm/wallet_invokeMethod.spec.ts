@@ -111,7 +111,7 @@ describe('Multichain API - Non EVM', function () {
 
             assert.strictEqual(
               parsedTransactionResult.signature,
-              'TE42WbnNvycJGiEVxVV7gjZ3wnCHvZAWFcA2b8rnvp2SZQoQQwirTbTfNBiZWHnzzkg38AayUob29w7eFD3SVGj',
+              'qyEFmpyDqeqiRHcEJXrb3Z1brwMadm4hLDzxDkCFF7ktPcPF7khxf8chzWHSdKzd95TPcY5BDHdX8z6GMutzpdm',
               'transaction result signature should be defined',
             );
           },

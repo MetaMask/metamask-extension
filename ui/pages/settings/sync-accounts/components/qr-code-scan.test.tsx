@@ -6,6 +6,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 // eslint-disable-next-line import-x/no-restricted-paths
 import messages from '../../../../../app/_locales/en/messages.json';
+import { ENVIRONMENT } from '../../../../../shared/constants/build';
 import { QR_SYNC_TIMEOUT_MS } from '../../../../../shared/constants/qr-sync';
 import { selectQrSyncQrPayload } from '../../../../selectors/qr-sync/qr-sync';
 import QrCodeScan from './qr-code-scan';
@@ -62,6 +63,39 @@ describe('QrCodeScan', () => {
       screen.getByText(messages.scan_qr_code_desc.message),
     ).toBeInTheDocument();
     expect(screen.getByTestId('qr-code-image')).toBeInTheDocument();
+  });
+
+  it('renders the QR payload below the image in development', () => {
+    const originalMetaMaskEnvironment = process.env.METAMASK_ENVIRONMENT;
+    process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.DEVELOPMENT;
+
+    try {
+      renderQrCodeScan();
+
+      const payload = screen.getByTestId('qr-sync-qr-payload');
+      expect(payload).toHaveTextContent('metamask://connect/mwp?p=test');
+      expect(payload).toHaveStyle({
+        maxWidth: '340px',
+        overflowWrap: 'anywhere',
+      });
+    } finally {
+      process.env.METAMASK_ENVIRONMENT = originalMetaMaskEnvironment;
+    }
+  });
+
+  it('does not render the QR payload outside development', () => {
+    const originalMetaMaskEnvironment = process.env.METAMASK_ENVIRONMENT;
+    process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.PRODUCTION;
+
+    try {
+      renderQrCodeScan();
+
+      expect(
+        screen.queryByTestId('qr-sync-qr-payload'),
+      ).not.toBeInTheDocument();
+    } finally {
+      process.env.METAMASK_ENVIRONMENT = originalMetaMaskEnvironment;
+    }
   });
 
   it('shows the countdown while the QR code is valid', () => {

@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { ThemeType } from '../../../../../../shared/constants/preferences';
 import { TabEmptyState } from '../../../../ui/tab-empty-state';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -12,8 +13,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
-import { showImportNftsModal } from '../../../../../store/actions';
-import { useDispatch } from '../../../../../store/hooks';
+import { IMPORT_NFTS_ROUTE } from '../../../../../helpers/constants/routes';
 
 const EMPTY_STATE_CLASSNAME = 'mx-auto mt-5 mb-6 max-w-64';
 
@@ -45,10 +45,10 @@ export const NftUnsupportedEmptyState = () => {
 const NftDefaultEmptyState = () => {
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleImportNfts = useCallback(() => {
-    dispatch(showImportNftsModal({}));
+    navigate(IMPORT_NFTS_ROUTE);
     trackEvent(
       createEventBuilder(MetaMetricsEventName.EmptyNFTTabButtonClicked)
         .addCategory(MetaMetricsEventCategory.Navigation)
@@ -57,7 +57,7 @@ const NftDefaultEmptyState = () => {
         })
         .build(),
     );
-  }, [createEventBuilder, dispatch, trackEvent]);
+  }, [createEventBuilder, navigate, trackEvent]);
 
   return (
     <TabEmptyState

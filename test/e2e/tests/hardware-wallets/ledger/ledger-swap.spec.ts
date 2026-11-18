@@ -25,7 +25,6 @@ describe('Ledger Swap', function (this: Suite) {
 
         await login(driver, {
           expectedBalance: LEDGER_SWAP_EXPECTED_FIAT_BALANCE,
-          waitForNonEvmAccounts: false,
         });
 
         const homePage = new HomePage(driver);
@@ -51,6 +50,7 @@ describe('Ledger Swap', function (this: Suite) {
         await hardwareWalletSignaturesPage.checkPageIsLoaded();
         await hardwareWalletSignaturesPage.waitForPageToClose();
 
+        await bridgePage.goBackAfterSubmit();
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
 

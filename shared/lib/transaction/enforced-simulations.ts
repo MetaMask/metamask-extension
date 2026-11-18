@@ -47,6 +47,11 @@ export type EnforcedSimulationsState = {
   internalAddresses: string[];
 };
 
+type TransactionTrustState = Pick<
+  EnforcedSimulationsState,
+  'addressSecurityAlertResponses' | 'internalAddresses'
+>;
+
 type RemoteFlagsWithEnforcedSimulations = {
   /* eslint-disable-next-line @typescript-eslint/naming-convention */
   confirmations_enforced_simulations?: EnforcedSimulationsFeatureFlag;
@@ -258,6 +263,48 @@ function isTrusted(
   return getRelevantTrustSignalResults(transactionMeta, state)
     .filter((resultType) => resultType !== ResultType.Loading)
     .every((resultType) => resultType === ResultType.Trusted);
+}
+
+/**
+ * Determines whether every contract target has an explicit trusted signal.
+ *
+ * @param transactionMeta - The transaction metadata.
+ * @param state - Trust signal state.
+ * @returns Whether every contract target is trusted.
+ */
+export function isTransactionTrusted(
+  transactionMeta: TransactionMeta,
+  state: TransactionTrustState,
+): boolean {
+  const { chainId, type, txParams, txParamsOriginal, nestedTransactions } =
+    transactionMeta;
+
+  if (!chainId) {
+    return false;
+  }
+
+  const calls = [
+    {
+      to: txParamsOriginal?.to ?? txParams?.to,
+      type,
+    },
+    ...(nestedTransactions ?? []),
+  ];
+
+  return calls.every(({ to, type: callType }) => {
+    if (
+      !to ||
+      isInternalAddress(to, state.internalAddresses) ||
+      callType === TransactionType.simpleSend
+    ) {
+      return true;
+    }
+
+    return (
+      state.addressSecurityAlertResponses[createCacheKey(chainId, to)]
+        ?.result_type === ResultType.Trusted
+    );
+  });
 }
 
 function getRelevantTrustSignalResults(

@@ -19,7 +19,7 @@ export const RampsServiceInit: MessengerClientInitFunction<
   const messengerClient = new RampsService({
     messenger: controllerMessenger,
     environment: getRampsEnvironment(),
-    context: 'browser',
+    context: 'extension',
     fetch: globalThis.fetch.bind(globalThis),
     // Sent as clientProduct/clientVersion query params so the on-ramp API
     // can version-gate features per client. Headers are not used for gating.

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { isNonEvmChainId } from '@metamask/bridge-controller';
 import {
   ButtonIcon,
@@ -9,9 +9,10 @@ import {
 } from '@metamask/design-system-react';
 import { I18nContext } from '../../contexts/i18n';
 import {
-  PREPARE_SWAP_ROUTE,
-  PREPARE_SWAP_ASSETS_ROUTE,
   AWAITING_SIGNATURES_ROUTE,
+  PREPARE_SWAP_ASSETS_ROUTE,
+  PREPARE_SWAP_ROUTE,
+  PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 import { toRelativeRoutePath } from '../routes/utils';
 import { getSelectedNetworkClientId } from '../../../shared/lib/selectors/networks';
@@ -29,6 +30,7 @@ import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRate
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
+import { resetBridgeController } from '../../ducks/bridge/actions';
 import { getFromChain } from '../../ducks/bridge/selectors';
 import {
   startSwapViewLoadTrace,
@@ -39,6 +41,7 @@ import { usePrefillFromBridgeState } from '../../hooks/bridge/usePrefillFromBrid
 import { useSmartSlippage } from '../../hooks/bridge/useSmartSlippage';
 import { transitionBack } from '../../components/ui/transition';
 import { useInitialBridgeTokens } from '../../hooks/bridge/useInitialBridgeTokens';
+import { useDispatch } from '../../store/hooks';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import BridgeAssetPickerPage from './asset-picker';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
@@ -53,12 +56,18 @@ const CrossChainSwap = () => {
 
   useBridging();
 
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { key: locationKey, state: locationState } = useLocation();
   const {
     navigateToDefaultRoute,
     search,
     swapViewTraceId,
     swapViewPrefilledAmount,
   } = useBridgeNavigation();
+  const hasNoInAppHistory =
+    locationKey === 'default' ||
+    (locationState as { fromFreshTab?: boolean } | null)?.fromFreshTab === true;
   const [swapViewTrace] = useState(() => {
     if (swapViewTraceId) {
       return {
@@ -139,7 +148,17 @@ const CrossChainSwap = () => {
     };
   }, [fetchTokens]);
   const handleBack = () => {
-    transitionBack(() => navigateToDefaultRoute());
+    transitionBack(() => {
+      // Direct open or deep link: leave Swap for Home, or Transaction Shield.
+      if (hasNoInAppHistory) {
+        navigateToDefaultRoute();
+        return;
+      }
+
+      // Opened from another page: reset Swap and return to that page.
+      dispatch(resetBridgeController()).catch(() => undefined);
+      navigate(PREVIOUS_ROUTE);
+    });
   };
 
   const prepareBody = (

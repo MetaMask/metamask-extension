@@ -73,12 +73,7 @@ export function useGetDisplayName() {
   const tokenList = useSelector(getTokenList) as TokenListMap;
 
   return useCallback(
-    (address?: string) => {
-      if (!address) {
-        return '';
-      }
-
-      // Non-EVM addresses must not go through hex helpers
+    (address: string) => {
       const key = address.toLowerCase();
       const petName = petNames.get(address) || petNames.get(key);
 
@@ -87,11 +82,16 @@ export function useGetDisplayName() {
         contactNames.get(key) ||
         tokenList[key]?.name ||
         petName ||
-        shortenAddress(
-          isValidHexAddress(address) ? toChecksumHexAddress(address) : address,
-        )
+        ''
       );
     },
     [accountNames, contactNames, tokenList, petNames],
+  );
+}
+
+export function shortenDisplayAddress(address: string) {
+  // Non-EVM addresses must not go through hex helpers
+  return shortenAddress(
+    isValidHexAddress(address) ? toChecksumHexAddress(address) : address,
   );
 }

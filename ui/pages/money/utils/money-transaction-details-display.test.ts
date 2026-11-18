@@ -12,6 +12,7 @@ import {
   getMoneyActivityErrorMessage,
   getMoneyActivityExplorerUrl,
   getMoneyActivityPaidWith,
+  getMoneyActivityTransactionHash,
   getMoneyTransactionDetailsHeroAmount,
   shortenMoneyActivityHex,
 } from './money-transaction-details-display';
@@ -178,6 +179,61 @@ describe('getMoneyActivityExplorerUrl', () => {
     expect(getMoneyActivityExplorerUrl('0x8f', validHash)).toBe(
       `https://monadscan.com/tx/${validHash}`,
     );
+  });
+});
+
+describe('getMoneyActivityTransactionHash', () => {
+  const parentHash =
+    '0x1111111111111111111111111111111111111111111111111111111111111111';
+  const childHash =
+    '0x2222222222222222222222222222222222222222222222222222222222222222';
+  const sourceHash =
+    '0x3333333333333333333333333333333333333333333333333333333333333333';
+
+  function buildDeposit(overrides: Partial<TransactionMeta> = {}) {
+    return {
+      ...findMock('money-tx-deposited'),
+      chainId: '0x8f',
+      ...overrides,
+    } as TransactionMeta;
+  }
+
+  it('returns the transaction hash when it is valid', () => {
+    expect(
+      getMoneyActivityTransactionHash(buildDeposit({ hash: parentHash }), {
+        hash: childHash,
+        chainId: '0x8f',
+      } as unknown as TransactionMeta),
+    ).toStrictEqual({ hash: parentHash, chainId: '0x8f' });
+  });
+
+  it('falls back to the required transaction hash for the 0x0 Pay placeholder', () => {
+    expect(
+      getMoneyActivityTransactionHash(buildDeposit({ hash: '0x0' }), {
+        hash: childHash,
+        chainId: MAINNET_CHAIN_ID,
+      } as TransactionMeta),
+    ).toStrictEqual({ hash: childHash, chainId: MAINNET_CHAIN_ID });
+  });
+
+  it('falls back to the Pay source hash on the payment chain', () => {
+    expect(
+      getMoneyActivityTransactionHash(
+        buildDeposit({
+          hash: '0x0',
+          metamaskPay: { chainId: MAINNET_CHAIN_ID, sourceHash },
+        }),
+      ),
+    ).toStrictEqual({ hash: sourceHash, chainId: MAINNET_CHAIN_ID });
+  });
+
+  it('returns undefined when no valid hash is known', () => {
+    expect(
+      getMoneyActivityTransactionHash(buildDeposit({ hash: '0x0' }), {
+        hash: '0x0',
+        chainId: '0x8f',
+      } as unknown as TransactionMeta),
+    ).toBeUndefined();
   });
 });
 

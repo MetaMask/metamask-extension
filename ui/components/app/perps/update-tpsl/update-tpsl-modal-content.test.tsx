@@ -62,15 +62,20 @@ jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
 }));
 
+const mockUsePerpsOrderFees = jest.fn();
 jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
-  usePerpsOrderFees: () => ({
-    feeRate: 0.00145,
-    isLoading: false,
-    hasError: false,
-  }),
+  usePerpsOrderFees: (options: Record<string, unknown>) => {
+    mockUsePerpsOrderFees(options);
+    return {
+      feeRate: 0.00145,
+      isLoading: false,
+      hasError: false,
+    };
+  },
 }));
 
 jest.mock('../perps-toast', () => ({
+  ...jest.requireActual('../perps-toast'),
   usePerpsToast: () => ({
     replacePerpsToastByKey: mockReplacePerpsToastByKey,
   }),
@@ -173,6 +178,21 @@ describe('UpdateTPSLModalContent', () => {
   });
 
   describe('rendering', () => {
+    it('quotes both triggers using the largest batch notional', () => {
+      renderWithProvider(
+        <UpdateTPSLModalContent {...defaultProps} />,
+        mockStore,
+      );
+      expect(mockUsePerpsOrderFees).toHaveBeenCalledWith({
+        symbol: 'ETH',
+        orderType: 'market',
+        amount: '8000',
+      });
+      expect(mockUsePerpsOrderFees).not.toHaveBeenCalledWith(
+        expect.objectContaining({ amount: '6500' }),
+      );
+    });
+
     it('renders Take Profit and Stop Loss sections', () => {
       renderTpslModalContent();
 
@@ -720,6 +740,42 @@ describe('UpdateTPSLModalContent', () => {
       expect(numValue).toBeCloseTo(96.425, 0);
     });
 
+    it("caps a stop-loss RoE beyond the venue's limit with Core's 99% per 1x", () => {
+      // SOL long entered at 95 at 10x: -5000% is past -990%, so the stop
+      // sits at the cap, 95 * (1 - 0.99) = 0.95.
+      renderTpslModalContent({ position: positionWithoutTPSL });
+
+      const slPercentInput = screen.getByTestId(
+        'perps-update-tpsl-sl-percent-input',
+      ) as HTMLInputElement;
+
+      fireEvent.focus(slPercentInput);
+      fireEvent.change(slPercentInput, { target: { value: '-5000' } });
+
+      const slPriceInput = screen.getAllByPlaceholderText(
+        '0.00',
+      )[1] as HTMLInputElement;
+
+      expect(slPriceInput.value).toBe('0.95');
+    });
+
+    it('shows no RoE instead of assuming 1x when the leverage is unknown', () => {
+      renderTpslModalContent({
+        position: {
+          ...positionWithTPSL,
+          leverage: { ...positionWithTPSL.leverage, value: Number.NaN },
+        },
+      });
+
+      expect(
+        (
+          screen.getByTestId(
+            'perps-update-tpsl-tp-percent-input',
+          ) as HTMLInputElement
+        ).value,
+      ).toBe('');
+    });
+
     it('preserves the positive sign after blurring an explicit positive SL RoE%', () => {
       renderTpslModalContent({ position: positionWithoutTPSL });
 
@@ -956,6 +1012,48 @@ describe('UpdateTPSLModalContent', () => {
       });
     });
 
+    it('keeps the exact trigger price through blur and save', async () => {
+      renderTpslModalContent({ position: positionWithoutTPSL });
+      const tpInput = screen.getAllByPlaceholderText(
+        '0.00',
+      )[0] as HTMLInputElement;
+
+      fireEvent.change(tpInput, { target: { value: '28624.98' } });
+      fireEvent.blur(tpInput);
+
+      expect(tpInput.value).toBe('28624.98');
+
+      fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsUpdatePositionTPSL',
+          [expect.objectContaining({ takeProfitPrice: '28624.98' })],
+        );
+      });
+    });
+
+    it('keeps a Core-derived trigger price unchanged when its price field blurs', () => {
+      renderTpslModalContent({ position: positionWithoutTPSL });
+      const tpPercentInput = screen.getByTestId(
+        'perps-update-tpsl-tp-percent-input',
+      );
+      const tpPriceInput = screen.getAllByPlaceholderText(
+        '0.00',
+      )[0] as HTMLInputElement;
+
+      fireEvent.focus(tpPercentInput);
+      fireEvent.change(tpPercentInput, { target: { value: '12.345' } });
+      fireEvent.blur(tpPercentInput);
+
+      const corePrice = tpPriceInput.value;
+
+      fireEvent.focus(tpPriceInput);
+      fireEvent.blur(tpPriceInput);
+
+      expect(tpPriceInput.value).toBe(corePrice);
+    });
+
     it('sends undefined for empty TP/SL prices (clearing them)', async () => {
       renderTpslModalContent({ position: positionWithoutTPSL });
 
@@ -1104,6 +1202,31 @@ describe('UpdateTPSLModalContent', () => {
   });
 
   describe('error handling', () => {
+    it('reports an already-closed position and refreshes positions', async () => {
+      const refreshPositions = jest.fn().mockResolvedValue(undefined);
+      mockGetPerpsStreamManager.mockReturnValue({ refreshPositions });
+      mockSubmitRequestToBackground.mockResolvedValue({
+        success: false,
+        error: 'POSITION_NOT_FOUND',
+      });
+      const onClose = jest.fn();
+
+      renderTpslModalContent({ onClose });
+
+      fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastPositionAlreadyClosed',
+        });
+      });
+      expect(refreshPositions).toHaveBeenCalledTimes(1);
+      expect(onClose).toHaveBeenCalledTimes(1);
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({ key: 'perpsToastUpdateFailed' }),
+      );
+    });
+
     it('shows toast error when perpsUpdatePositionTPSL fails', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsUpdatePositionTPSL') {

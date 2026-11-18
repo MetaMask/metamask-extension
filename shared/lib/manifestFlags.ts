@@ -1,5 +1,5 @@
 import { Json } from '@metamask/utils';
-import browser from 'webextension-polyfill';
+import type { Manifest } from 'webextension-polyfill';
 
 /**
  * Flags that we use to control runtime behavior of the extension. Typically
@@ -144,6 +144,12 @@ export type ManifestFlags = {
      */
     fixtureServerPort?: number;
     /**
+     * Suppress the submitted, confirmed, and failed transaction toasts.
+     * E2E runs enable this by default so toasts don't cover elements specs
+     * interact with; specs that cover the toasts set it to `false`.
+     */
+    disableTransactionToasts?: boolean;
+    /**
      * Whether test builds inject a PRF result the virtual authenticator
      * cannot produce. Defaults to enabled. Set false to exercise a passkey
      * authenticator that does not return PRF.
@@ -153,9 +159,28 @@ export type ManifestFlags = {
 };
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions -- you can't extend a type, we want this to be an interface
-interface WebExtensionManifestWithFlags
-  extends browser.Manifest.WebExtensionManifest {
+interface WebExtensionManifestWithFlags extends Manifest.WebExtensionManifest {
   _flags?: ManifestFlags;
+}
+
+type ExtensionRuntime = {
+  getManifest?: () => Manifest.WebExtensionManifest;
+};
+
+/**
+ * `runtime.getManifest`, bound, off whichever extension global exists.
+ * Never value-import `webextension-polyfill` here: it throws at module scope
+ * outside an extension, and six e2e benchmark flows load this module in Node.
+ */
+function getManifest(): ExtensionRuntime['getManifest'] {
+  const globals = globalThis as unknown as {
+    browser?: { runtime?: ExtensionRuntime };
+    chrome?: { runtime?: ExtensionRuntime };
+  };
+
+  const runtime = globals.browser?.runtime ?? globals.chrome?.runtime;
+
+  return runtime?.getManifest?.bind(runtime);
 }
 
 /**
@@ -165,15 +190,14 @@ interface WebExtensionManifestWithFlags
  */
 export function getManifestFlags(): ManifestFlags {
   // If this is running in a unit test, there's no manifest, so just return an empty object
-  if (
-    process.env.JEST_WORKER_ID === undefined ||
-    !browser.runtime.getManifest
-  ) {
+  if (process.env.JEST_WORKER_ID === undefined) {
     return {};
   }
 
-  return (
-    (browser.runtime.getManifest() as WebExtensionManifestWithFlags)._flags ||
-    {}
-  );
+  const readManifest = getManifest();
+  if (!readManifest) {
+    return {};
+  }
+
+  return (readManifest() as WebExtensionManifestWithFlags)._flags || {};
 }

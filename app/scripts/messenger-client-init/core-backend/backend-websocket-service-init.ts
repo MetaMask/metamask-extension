@@ -5,8 +5,39 @@ import {
   BackendWebSocketServiceMessenger,
   BackendWebSocketServiceInitMessenger,
 } from '../messengers/core-backend';
-import { trace } from '../../../../shared/lib/trace';
+import type { OnboardingControllerState } from '../../controllers/onboarding';
+import type { PreferencesControllerState } from '../../controllers/preferences-controller';
+import { trace, TraceRequest } from '../../../../shared/lib/trace';
 import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
+
+/**
+ * Returns a getter for basic functionality (use external services).
+ * When true, the backend WebSocket may connect. Also returns false during
+ * onboarding, matching AssetsController.
+ *
+ * @param initMessenger - The initialization messenger.
+ * @returns Getter that returns whether basic functionality is enabled.
+ */
+function getIsBasicFunctionality(
+  initMessenger: BackendWebSocketServiceInitMessenger,
+): () => boolean {
+  return (): boolean => {
+    try {
+      const { completedOnboarding } = initMessenger.call(
+        'OnboardingController:getState',
+      );
+      if (!completedOnboarding) {
+        return false;
+      }
+      const preferencesState = initMessenger.call(
+        'PreferencesController:getState',
+      ) as { useExternalServices?: boolean } | undefined;
+      return preferencesState?.useExternalServices ?? true;
+    } catch {
+      return true;
+    }
+  };
+}
 
 /**
  * Resolve a raw feature flag value to a boolean. The value is a boolean when
@@ -46,6 +77,27 @@ export const BackendWebSocketServiceInit: MessengerClientInitFunction<
   BackendWebSocketServiceMessenger,
   BackendWebSocketServiceInitMessenger
 > = ({ controllerMessenger, initMessenger }) => {
+  const isBasicFunctionality = getIsBasicFunctionality(initMessenger);
+  const subscribeToBasicFunctionalityChange = (
+    onChange: (isBasic: boolean) => void,
+  ) => {
+    initMessenger.subscribe(
+      'PreferencesController:stateChange',
+      () => {
+        onChange(isBasicFunctionality());
+      },
+      (state: PreferencesControllerState) => state.useExternalServices,
+    );
+    initMessenger.subscribe(
+      'OnboardingController:stateChange',
+      (completedOnboarding: boolean) => {
+        if (completedOnboarding) {
+          onChange(isBasicFunctionality());
+        }
+      },
+      (state: OnboardingControllerState) => state.completedOnboarding,
+    );
+  };
   const messengerClient = new BackendWebSocketService({
     messenger: controllerMessenger,
     url:
@@ -53,7 +105,10 @@ export const BackendWebSocketServiceInit: MessengerClientInitFunction<
       'wss://gateway.api.cx.metamask.io/v1',
     // Inject the Sentry-backed trace function from extension platform
     // @ts-expect-error: Types of `TraceRequest` are not the same.
-    traceFn: trace,
+    traceFn: (request, fn) => {
+      const rootRequest = { ...request, root: true } as TraceRequest;
+      return fn ? trace(rootRequest, fn) : trace(rootRequest);
+    },
     // Feature flag AND app lifecycle integration
     // Service will check this callback before connecting/reconnecting
     isEnabled: () => {
@@ -67,7 +122,8 @@ export const BackendWebSocketServiceInit: MessengerClientInitFunction<
           'RemoteFeatureFlagController:getState',
         )?.remoteFeatureFlags?.backendWebSocketConnection;
 
-        return resolveFlag(manifestFlag ?? remoteFlag);
+        const isEnabled = resolveFlag(manifestFlag ?? remoteFlag);
+        return isEnabled;
       } catch (error) {
         // If feature flag check fails, default to NOT connecting for safer startup
         console.warn(
@@ -77,6 +133,8 @@ export const BackendWebSocketServiceInit: MessengerClientInitFunction<
         return false;
       }
     },
+    isBasicFunctionality,
+    subscribeToBasicFunctionalityChange,
   });
 
   // Authentication and lock/unlock handling is now managed by the core WebSocket service

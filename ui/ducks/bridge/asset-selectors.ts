@@ -16,10 +16,7 @@ import {
   isStrictHexString,
   parseCaipAssetType,
 } from '@metamask/utils';
-import {
-  ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS,
-  BRIDGE_ASSET_PICKER_HIDDEN_ASSETS,
-} from '../../../shared/constants/bridge';
+import { ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { isTronSpecialAsset, toAssetId } from '../../../shared/lib/asset-utils';
 import {
   getAccountTrackerControllerAccountsByChainId,
@@ -35,7 +32,7 @@ import {
   getAssetsRates,
 } from '../../selectors/assets';
 import { getInternalAccountByGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
-import { EMPTY_ARRAY } from '../../selectors/shared';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from '../../selectors/shared';
 import { type BridgeAppState, getFromChains } from './selectors';
 import { type BridgeToken } from './types';
 import { getMaybeHexChainId } from './utils';
@@ -77,7 +74,9 @@ const getERC20AssetsWithBalance = createSelector(
     getEvmAccountAddress,
     getAllowedHexChainIds,
     getTokenBalancesControllerTokenBalances,
-    ({ metamask: { tokensChainsCache } }) => tokensChainsCache,
+    // `TokenListController` is no longer initialized, so `tokensChainsCache`
+    // is absent from state.
+    ({ metamask: { tokensChainsCache } }) => tokensChainsCache ?? EMPTY_OBJECT,
     getTokensControllerAllTokens,
   ],
   (
@@ -391,9 +390,7 @@ const getBridgeAssetsForAccountGroupId = createSelector(
           .toNumber(),
       }));
 
-    return nonEvmAssetsWithFiatBalances
-      .concat(evmAssetsWithFiatBalances)
-      .filter((item) => !BRIDGE_ASSET_PICKER_HIDDEN_ASSETS.has(item.assetId));
+    return nonEvmAssetsWithFiatBalances.concat(evmAssetsWithFiatBalances);
   },
 );
 

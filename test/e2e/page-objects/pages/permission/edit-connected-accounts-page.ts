@@ -74,9 +74,14 @@ class EditConnectedAccountsPage {
     );
     const initialCheckboxCount = initialCheckboxes.length;
 
-    await this.driver.waitForSelector(this.addNewAccountButtonReadyState, {
-      timeout: 10000,
-    });
+    await this.driver.waitUntil(
+      async () =>
+        await this.driver.isElementPresentAndVisible(
+          this.addNewAccountButtonReadyState,
+          500,
+        ),
+      { timeout: 20000, interval: 500, stableFor: 1000 },
+    );
     await this.driver.clickElement(this.addNewAccountButton);
     await this.driver.waitUntil(
       async () => {
@@ -147,6 +152,7 @@ class EditConnectedAccountsPage {
     try {
       await this.driver.waitForSelector(this.editAccountsPageHeader);
       await this.driver.waitForSelector(this.connectAccountsButton);
+      await this.driver.waitForSelector(this.anyAccountName);
       if (site) {
         await this.driver.waitForSelector({ text: site, tag: 'span' });
       }

@@ -160,7 +160,7 @@ describe('BatchSimulationDetails', () => {
       }),
     );
     expect(getByText(messages.youApprove.message)).toBeInTheDocument();
-    expect(getByText('123.6')).toBeInTheDocument();
+    expect(getByText('123.56')).toBeInTheDocument();
     expect(getByText(ADDRESS_SHORT_MOCK)).toBeInTheDocument();
     expect(getByTestId('simulation-details-layout').parentElement).toHaveClass(
       'mm-box--margin-bottom-2',
@@ -253,7 +253,7 @@ describe('BatchSimulationDetails', () => {
 
     const { getByText } = render();
     expect(getByText(messages.youApprove.message)).toBeInTheDocument();
-    expect(getByText('123.6')).toBeInTheDocument();
+    expect(getByText('123.56')).toBeInTheDocument();
     expect(getByText('#321')).toBeInTheDocument();
   });
 

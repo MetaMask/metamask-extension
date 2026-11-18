@@ -2,14 +2,10 @@ import { test as pwTest } from '@playwright/test';
 import { E2E_DRIVER } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import PreferencesAndDisplaySettings from '../../page-objects/pages/settings/preferences-and-display-settings';
+import PreferencesAndDisplaySettings from '../../page-objects/pages/settings/preferences-and-display/preferences-and-display-settings';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { login } from '../../page-objects/flows/login.flow';
 import { closeSettings } from '../../page-objects/flows/settings.flow';
-
-const SHOW_DEFAULT_ADDRESS_FLAG = {
-  remoteFeatureFlags: { extensionUxDefaultAddressVersioned: true },
-};
 
 pwTest.describe('Show default address', () => {
   pwTest(
@@ -24,7 +20,6 @@ pwTest.describe('Show default address', () => {
           fixtures: new FixtureBuilderV2().build(),
           driverType: E2E_DRIVER.PLAYWRIGHT,
           title: testInfo.titlePath.join(' '),
-          manifestFlags: SHOW_DEFAULT_ADDRESS_FLAG,
         },
         async ({ driver }) => {
           await login(driver);
@@ -53,7 +48,6 @@ pwTest.describe('Show default address', () => {
           fixtures: new FixtureBuilderV2().build(),
           driverType: E2E_DRIVER.PLAYWRIGHT,
           title: testInfo.titlePath.join(' '),
-          manifestFlags: SHOW_DEFAULT_ADDRESS_FLAG,
         },
         async ({ driver }) => {
           await login(driver);
@@ -79,7 +73,6 @@ pwTest.describe('Show default address', () => {
           fixtures: new FixtureBuilderV2().build(),
           driverType: E2E_DRIVER.PLAYWRIGHT,
           title: testInfo.titlePath.join(' '),
-          manifestFlags: SHOW_DEFAULT_ADDRESS_FLAG,
         },
         async ({ driver }) => {
           await login(driver);

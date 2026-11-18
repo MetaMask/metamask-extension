@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import type { Hex } from '@metamask/utils';
+import { KeyringTypes } from '@metamask/keyring-controller';
+import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
@@ -8,33 +9,42 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AlertsName } from '../constants';
 import { getInternalAccountByAddress } from '../../../../../selectors/accounts';
 import { isHardwareAccount } from '../../../../../components/app/rewards/utils/isHardwareAccount';
+import { PAY_QR_HARDWARE_BLOCKED_TRANSACTION_TYPES } from '../../../constants/pay';
 import { useIsPayHardwareBlocked } from '../../pay/useIsPayHardwareBlocked';
 import { useTransactionMetadataRequestOptional } from '../../transactions/useTransactionMetadataRequest';
+import { useTransactionPayingAccount } from '../../transactions/useTransactionPayingAccount';
 
 /**
- * Blocking alert for a hardware account that is already funding a Pay flow
+ * Blocking alert for a hardware account already funding a Pay flow
  * that forbids hardware wallets.
  *
- * The account picker hides hardware accounts for these flows, so this is a
- * backstop for the addresses the picker never vetted: `txParams.from` seeded
- * at initiation from the globally selected account, deep links, and any other
- * entry point that sets the funding account directly.
+ * Account-picker filtering and this backstop share
+ * `useIsPayHardwareBlocked`, while the account lookup follows the effective
+ * payer (`accountOverride ?? txParams.from`).
  *
  * @returns The blocking alert, or an empty array.
  */
 export function usePayHardwareAccountAlert(): Alert[] {
   const t = useI18nContext();
   const transactionMeta = useTransactionMetadataRequestOptional();
-
   const isHardwareBlocked = useIsPayHardwareBlocked();
-  const fromAddress = transactionMeta?.txParams?.from as Hex | undefined;
+  const payingAccount = useTransactionPayingAccount();
 
   const account = useSelector((state) =>
-    fromAddress ? getInternalAccountByAddress(state, fromAddress) : undefined,
+    payingAccount
+      ? getInternalAccountByAddress(state, payingAccount)
+      : undefined,
   );
 
   const isHardwareWallet = account ? isHardwareAccount(account) : false;
-  const shouldAlert = isHardwareWallet && isHardwareBlocked;
+  const isQrWallet = account?.metadata?.keyring?.type === KeyringTypes.qr;
+  const isQrHardwareBlocked = hasTransactionType(
+    transactionMeta,
+    PAY_QR_HARDWARE_BLOCKED_TRANSACTION_TYPES,
+  );
+  const shouldAlert =
+    isHardwareWallet &&
+    (isHardwareBlocked || (isQrWallet && isQrHardwareBlocked));
 
   return useMemo(() => {
     if (!shouldAlert) {

@@ -13,7 +13,7 @@ This README covers architecture, quick start, and available commands for the LLM
 
 The system uses a **decoupled, daemon-based architecture**:
 
-- **Generic Core**: `@metamask/client-mcp-core` package provides the HTTP daemon infrastructure, CLI interface, and knowledge store.
+- **Generic Core**: `@metamask/client-mcp-core` package provides the HTTP daemon infrastructure and CLI interface.
 - **MetaMask Implementation**: This directory implements MetaMask-specific capabilities (fixtures, chain, seeding) that plug into the core daemon.
 
 ```
@@ -32,7 +32,6 @@ The system uses a **decoupled, daemon-based architecture**:
 │  │  @metamask/client-mcp-core (generic core)                │   │
 │  │  - HTTP server & CLI infrastructure                             │   │
 │  │  - Tool logic (click, type, screenshot, etc.)                   │   │
-│  │  - Knowledge store                                              │   │
 │  └─────────────────────────────────────────────────────────────────┘   │
 │                                  │                                      │
 │  ┌─────────────────────────────────────────────────────────────────┐   │
@@ -123,12 +122,6 @@ mm cleanup
 - `mm navigate-home`: Navigates to the extension home.
 - `mm navigate-settings`: Navigates to the extension settings.
 
-### Knowledge Store
-
-- `mm knowledge-search <query>`: Search steps across sessions.
-- `mm knowledge-last`: Get last N step records from this session.
-- `mm knowledge-sessions`: List recent sessions with metadata.
-
 ---
 
 ## Launch Modes
@@ -148,6 +141,23 @@ Start with a brand new wallet that requires onboarding.
 
 ```bash
 mm launch --state onboarding
+```
+
+### Self-onboarding
+
+Import a secret recovery phrase and finish onboarding inside `launch()`. The
+launcher walks the onboarding UI with the e2e onboarding flow
+(`importSRPOnboardingFlow` and `OnboardingCompletePage`), so it breaks only when
+the e2e suite does.
+The phrase is read from stdin. A local setup writes a generated phrase; a
+pooled setup writes the leased one. An optional second line sets the vault
+password (at least 8 characters); without it the launcher uses the e2e default
+password. The wallet must start on onboarding: the prod context always does,
+and the e2e context needs `--state onboarding`.
+
+```bash
+mm launch --context prod --self-onboarding < phrase.txt
+mm launch --state onboarding --self-onboarding < phrase.txt
 ```
 
 ### Custom Fixture

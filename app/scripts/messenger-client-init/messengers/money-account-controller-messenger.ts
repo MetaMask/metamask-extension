@@ -19,9 +19,9 @@ import type { RootMessenger } from '../../lib/messenger';
  * events it is allowed to use.
  *
  * All three delegated actions are `KeyringController` ones: the controller reads
- * the keyring list to find the primary entropy source, creates the Money
- * keyring through `addNewKeyring`, and derives the account through
- * `withKeyring`.
+ * the keyring list to find the primary entropy source, creates the Money and
+ * MPC Money keyrings through `withController`, and derives the accounts
+ * through `withKeyringV2`.
  *
  * @param messenger - The root messenger.
  * @returns The MoneyAccountController messenger.
@@ -41,8 +41,8 @@ export function getMoneyAccountControllerMessenger(
     messenger: controllerMessenger,
     actions: [
       'KeyringController:getState',
-      'KeyringController:addNewKeyring',
-      'KeyringController:withKeyring',
+      'KeyringController:withController',
+      'KeyringController:withKeyringV2',
     ],
     events: [],
   });

@@ -1,4 +1,5 @@
 import { Hex } from '@metamask/utils';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import {
   TransactionMeta,
   TransactionType,
@@ -77,14 +78,16 @@ function runHook(
   {
     paymentOverride,
     confirmationOverrides,
+    chainId = CHAIN_IDS.MAINNET,
   }: {
     paymentOverride?: PaymentOverride;
     confirmationOverrides?: Partial<TransactionMeta>;
+    chainId?: Hex;
   } = {},
 ) {
   const contractInteraction = {
     ...genUnapprovedContractInteractionConfirmation({
-      chainId: CHAIN_IDS.MAINNET,
+      chainId,
     }),
     ...confirmationOverrides,
   } as TransactionMeta;
@@ -101,6 +104,55 @@ function runHook(
 
   return renderHookWithConfirmContextProvider(
     () => useInsufficientPayTokenBalanceAlert(props),
+    state,
+  );
+}
+
+const PAYER_ACCOUNT_ID = 'payer-account-id';
+const PAYER_ADDRESS = '0x1111111111111111111111111111111111111111' as Hex;
+
+function runHookForMoneyDeposit({
+  payerKeyringType,
+}: {
+  payerKeyringType: string;
+}) {
+  const transaction = {
+    ...genUnapprovedContractInteractionConfirmation({
+      chainId: CHAIN_IDS.MONAD as Hex,
+    }),
+    type: TransactionType.batch,
+    nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+  } as TransactionMeta;
+
+  const state = getMockConfirmStateForTransaction(transaction, {
+    metamask: {
+      internalAccounts: {
+        accounts: {
+          [PAYER_ACCOUNT_ID]: {
+            address: PAYER_ADDRESS,
+            id: PAYER_ACCOUNT_ID,
+            metadata: {
+              importTime: 0,
+              name: 'Payer',
+              keyring: { type: payerKeyringType },
+              lastSelected: 0,
+            },
+            options: {},
+            methods: ['eth_signTransaction'],
+            scopes: ['eip155:0'],
+            type: 'eip155:eoa',
+          },
+        },
+      },
+      accountIdByAddress: { [PAYER_ADDRESS]: PAYER_ACCOUNT_ID },
+      transactionData: {
+        [transaction.id]: { accountOverride: PAYER_ADDRESS },
+      },
+    },
+  });
+
+  return renderHookWithConfirmContextProvider(
+    () => useInsufficientPayTokenBalanceAlert(),
     state,
   );
 }
@@ -165,6 +217,7 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
     useSendTokensMock.mockReturnValue([]);
     useIsFundingAccountBalanceSettlingMock.mockReturnValue(false);
     useMoneyAccountWithdrawableFiatMock.mockReturnValue({
+      isLoading: false,
       withdrawableFiatFormatted: '$10.00',
       withdrawableFiatRaw: '10',
     });
@@ -630,9 +683,13 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
         tokenFiatAmount: 0,
       });
 
+      // The deposit batch is created on the vault chain, so the parent
+      // transaction and the pay token are both on Monad: the same-chain leg
+      // that executes from the money account.
       const { result } = runHook(
         {},
         {
+          chainId: CHAIN_IDS.MONAD as Hex,
           confirmationOverrides: {
             isGasFeeSponsored: true,
             nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
@@ -676,6 +733,7 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
         const { result } = runHook(
           {},
           {
+            chainId: CHAIN_IDS.MONAD as Hex,
             confirmationOverrides: {
               nestedTransactions: [{ type }],
             },
@@ -685,6 +743,135 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
         expect(result.current).toStrictEqual([]);
       },
     );
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      ['deposit', TransactionType.moneyAccountDeposit],
+      ['withdraw', TransactionType.moneyAccountWithdraw],
+    ])(
+      'returns the alert for a cross-chain money-account %s when the funding chain has no native gas',
+      (_name: string, type: TransactionType) => {
+        // A cross-chain money-account transaction funds the vault from the
+        // user's own EOA on another chain. That source leg is an ordinary
+        // transaction billed to the paying account in the source chain's
+        // native token, and sponsorship cannot apply because the pay
+        // controller only zeroes source gas when source == target == parent.
+        // Suppressing here let the deposit reach `eth_sendRawTransaction`
+        // with zero native balance and fail on-chain.
+        useTransactionPayTokenMock.mockReturnValue({
+          payToken: {
+            ...PAY_TOKEN_MOCK,
+            chainId: CHAIN_IDS.MAINNET as Hex,
+          },
+          isNative: false,
+          setPayToken: jest.fn(),
+        });
+
+        useTokenWithBalanceMock.mockReturnValue({
+          address: NATIVE_TOKEN_MOCK.address,
+          chainId: CHAIN_IDS.MAINNET,
+          symbol: 'ETH',
+          decimals: 18,
+          balance: '0',
+          balanceRaw: '0',
+          balanceFiat: '$0.00',
+          tokenFiatAmount: 0,
+        });
+
+        const { result } = runHook(
+          {},
+          {
+            chainId: CHAIN_IDS.MONAD as Hex,
+            confirmationOverrides: {
+              isGasFeeSponsored: true,
+              nestedTransactions: [{ type }],
+            },
+          },
+        );
+
+        expect(result.current).toStrictEqual([
+          expect.objectContaining({
+            key: AlertsName.InsufficientPayTokenNative,
+            isBlocking: true,
+          }),
+        ]);
+      },
+    );
+
+    describe('hardware payer on a money-account deposit', () => {
+      const MONAD_PAY_TOKEN = {
+        ...PAY_TOKEN_MOCK,
+        chainId: CHAIN_IDS.MONAD as Hex,
+      };
+
+      function mockNativeBalance(balanceRaw: string) {
+        useTokenWithBalanceMock.mockReturnValue({
+          address: NATIVE_TOKEN_MOCK.address,
+          chainId: CHAIN_IDS.MONAD,
+          symbol: 'MON',
+          decimals: 18,
+          balance: balanceRaw,
+          balanceRaw,
+          balanceFiat: '$0.00',
+          tokenFiatAmount: 0,
+        });
+      }
+
+      beforeEach(() => {
+        useTransactionPayTokenMock.mockReturnValue({
+          payToken: MONAD_PAY_TOKEN,
+          isNative: false,
+          setPayToken: jest.fn(),
+        });
+      });
+
+      it('returns the source-network alert when the hardware payer has no native gas', () => {
+        mockNativeBalance('0');
+
+        const { result } = runHookForMoneyDeposit({
+          payerKeyringType: KeyringTypes.ledger,
+        });
+
+        expect(result.current).toStrictEqual([
+          expect.objectContaining({
+            key: AlertsName.InsufficientPayTokenNative,
+            isBlocking: true,
+          }),
+        ]);
+      });
+
+      it('returns no alert when the hardware payer has enough native gas', () => {
+        mockNativeBalance('5000000000000000000');
+
+        const { result } = runHookForMoneyDeposit({
+          payerKeyringType: KeyringTypes.ledger,
+        });
+
+        expect(result.current).toStrictEqual([]);
+      });
+
+      it('keeps the sponsored skip for a software payer', () => {
+        mockNativeBalance('0');
+
+        const { result } = runHookForMoneyDeposit({
+          payerKeyringType: 'HD Key Tree',
+        });
+
+        expect(result.current).toStrictEqual([]);
+      });
+
+      it('reads the native balance of the paying account', () => {
+        mockNativeBalance('0');
+
+        runHookForMoneyDeposit({ payerKeyringType: KeyringTypes.ledger });
+
+        expect(useTokenWithBalanceMock).toHaveBeenCalledWith(
+          NATIVE_TOKEN_MOCK.address,
+          CHAIN_IDS.MONAD,
+          PAYER_ADDRESS,
+        );
+      });
+    });
 
     it('returns no alert for a money-account withdraw when post-quote is disabled', () => {
       useTransactionPayTokenMock.mockReturnValue({
@@ -713,6 +900,7 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
       const { result } = runHook(
         {},
         {
+          chainId: CHAIN_IDS.MONAD as Hex,
           confirmationOverrides: {
             isGasFeeSponsored: true,
             nestedTransactions: [
@@ -876,6 +1064,7 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
       setPayToken: jest.fn(),
     });
     useMoneyAccountWithdrawableFiatMock.mockReturnValue({
+      isLoading: false,
       withdrawableFiatRaw: '10',
       withdrawableFiatFormatted: '$10.00',
     });
@@ -983,6 +1172,12 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
           severity: Severity.Danger,
         },
       ]);
+      // Post-quote gas runs on the tx chain for the selected account.
+      expect(useTokenWithBalanceMock).toHaveBeenCalledWith(
+        NATIVE_TOKEN_MOCK.address,
+        CHAIN_IDS.ARBITRUM,
+        undefined,
+      );
     });
 
     it('runs the source-network alert even when no payToken has been selected yet', () => {

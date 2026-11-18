@@ -44,6 +44,7 @@ import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 import { useDispatch } from '../../../store/hooks';
+import { useOnboardingTrace } from '../../../contexts/onboarding-trace';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
 type RecoveryPhraseProps = {
@@ -59,6 +60,7 @@ export default function RecoveryPhrase({
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const hasSeedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const { endJourney } = useOnboardingTrace();
   const { bufferedEndTrace } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const [phraseRevealed, setPhraseRevealed] = useState(false);
@@ -146,7 +148,7 @@ export default function RecoveryPhrase({
         .build(),
     );
     bufferedEndTrace?.({ name: TraceName.OnboardingNewSrpCreateWallet });
-    bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
+    endJourney({ success: true });
 
     if (isFirefox || firstTimeFlowType === FirstTimeFlowType.restore) {
       navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
@@ -156,6 +158,7 @@ export default function RecoveryPhrase({
   }, [
     bufferedEndTrace,
     dispatch,
+    endJourney,
     firstTimeFlowType,
     hdEntropyIndex,
     isFirefox,

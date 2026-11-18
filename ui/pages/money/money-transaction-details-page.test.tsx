@@ -541,6 +541,65 @@ describe('MoneyTransactionDetailsPage', () => {
     ).toBeInTheDocument();
   });
 
+  it('shows the required source transaction hash when Pay published the 0x0 placeholder', () => {
+    const placeholder = onchainItem({
+      ...deposited.tx,
+      hash: '0x0',
+      requiredTransactionIds: ['source-tx'],
+    } as TransactionMeta);
+    mockUseParams.mockReturnValue({ transactionId: placeholder.id });
+    mockUseMoneyActivityItems.mockReturnValue({
+      items: [placeholder],
+      isSettling: false,
+      hasMore: false,
+      isLoadingMore: false,
+      loadMore: jest.fn(),
+    });
+    mockSelectTransactionById.mockImplementation((_state, id) =>
+      id === 'source-tx'
+        ? ({
+            id: 'source-tx',
+            hash: VALID_TX_HASH,
+            chainId: placeholder.tx.chainId,
+          } as TransactionMeta)
+        : undefined,
+    );
+    global.platform.openTab = jest.fn();
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(
+      screen.getByTestId('money-transaction-details-hash'),
+    ).not.toHaveTextContent('0x0');
+    fireEvent.click(screen.getByTestId('money-transaction-details-copy-hash'));
+    expect(mockCopyToClipboard).toHaveBeenCalledWith(VALID_TX_HASH);
+    fireEvent.click(screen.getByTestId('money-transaction-details-explorer'));
+    expect(global.platform.openTab).toHaveBeenCalledWith({
+      url: EXPLORER_TX_URL,
+    });
+  });
+
+  it('hides the transaction id when only the 0x0 placeholder is known', () => {
+    const placeholder = onchainItem({
+      ...deposited.tx,
+      hash: '0x0',
+    } as TransactionMeta);
+    mockUseParams.mockReturnValue({ transactionId: placeholder.id });
+    mockUseMoneyActivityItems.mockReturnValue({
+      items: [placeholder],
+      isSettling: false,
+      hasMore: false,
+      isLoadingMore: false,
+      loadMore: jest.fn(),
+    });
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(
+      screen.queryByTestId('money-transaction-details-hash'),
+    ).not.toBeInTheDocument();
+  });
+
   it('opens the block explorer when the explorer button is pressed', () => {
     const hashed = onchainItem({
       ...deposited.tx,

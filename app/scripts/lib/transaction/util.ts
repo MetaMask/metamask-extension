@@ -187,7 +187,7 @@ async function addTransactionOnTempo(
       return addTransactionWithController(request);
     }
 
-    // We make it a EIP-7702 tx, seting pathUSD as default gasToken
+    // We make it a EIP-7702 tx, setting OUSD as default gasToken
     // and add excludeNativeTokenForFee to signal to ignore native.
     return addTransactionWithController(
       getTempoEvmTransactionArgs({ request, chainId }),

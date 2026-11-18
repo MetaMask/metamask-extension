@@ -20,11 +20,7 @@ import {
   WITH_STATE_POWER_USER,
   POWER_USER_NUM_BROWSER_LOADS,
 } from '../../utils/constants';
-import {
-  runPageLoadBenchmark,
-  collectWebVitals,
-  collectGarbageBetweenIterations,
-} from '../../utils';
+import { runPageLoadBenchmark, collectWebVitals } from '../../utils';
 import type {
   Metrics,
   PageLoadBenchmarkOptions,
@@ -42,13 +38,17 @@ async function measurePagePowerUser(
   await withFixtures(
     {
       title,
-      isBenchmark: true,
       fixtures: (
         await generateWalletState(WITH_STATE_POWER_USER, true)
       ).build(),
       manifestFlags: {
         testing: {
           infuraProjectId: process.env.INFURA_PROJECT_ID,
+        },
+        // Live flags are fetched from the dev environment, which turns on the
+        // wide layout; its header has no `account-menu-icon`. Pin prod's value.
+        remoteFeatureFlags: {
+          extensionUxFullscreenRedesign: false,
         },
       },
       useMockingPassThrough: true,
@@ -89,10 +89,6 @@ async function measurePagePowerUser(
           webVitalsRuns.push(await collectWebVitals(driver));
         } catch (error) {
           console.error(`Error collecting web vitals for ${pageName}:`, error);
-        }
-
-        if (i < pageLoads - 1) {
-          await collectGarbageBetweenIterations(driver);
         }
       }
     },

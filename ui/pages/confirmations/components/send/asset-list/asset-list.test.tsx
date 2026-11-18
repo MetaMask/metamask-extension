@@ -3,6 +3,7 @@ import { render, fireEvent } from '@testing-library/react';
 
 import { useNavigateSendPage } from '../../../hooks/send/useNavigateSendPage';
 import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
+import { useTokenAssetSecurityResults } from '../../../../../hooks/token-asset/useTokenAssetSecurityResults';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { AssetList } from './asset-list';
 
@@ -38,21 +39,30 @@ jest.mock('../../UI/asset', () => ({
   Asset: ({
     asset,
     onClick,
+    safetyResult,
   }: {
     asset: { address?: string; chainId?: string; tokenId?: string };
     onClick: () => void;
+    safetyResult?: string;
   }) => (
     <button
       data-testid="asset-component"
       data-address={asset.address}
       data-chain-id={asset.chainId}
       data-token-id={asset.tokenId}
+      data-safety-result={safetyResult}
       onClick={onClick}
     >
       Asset
     </button>
   ),
 }));
+jest.mock(
+  '../../../../../hooks/token-asset/useTokenAssetSecurityResults',
+  () => ({
+    useTokenAssetSecurityResults: jest.fn(() => ({})),
+  }),
+);
 jest.mock('../../../hooks/send/useNavigateSendPage');
 jest.mock('../../../context/send', () => {
   const ReactActual = jest.requireActual('react');
@@ -414,6 +424,70 @@ describe('AssetList', () => {
       expect(mockUpdateAsset).toHaveBeenCalledWith(mockTokens[0]);
       expect(mockGoToAmountRecipientPage).toHaveBeenCalled();
       expect(mockCaptureAssetSelected).toHaveBeenCalledWith(mockTokens[0]);
+    });
+  });
+
+  describe('security trust signals', () => {
+    const mockUseTokenAssetSecurityResults = jest.mocked(
+      useTokenAssetSecurityResults,
+    );
+    const usdcAddress = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+    const usdcAssetId =
+      'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+    const tokens = [{ address: usdcAddress, chainId: '0x1', name: 'USDC' }];
+
+    beforeEach(() => {
+      mockUseTokenAssetSecurityResults.mockReturnValue({});
+    });
+
+    it('looks up security results using normalised caip asset ids', () => {
+      render(
+        <AssetList tokens={tokens} nfts={[]} allTokens={tokens} allNfts={[]} />,
+      );
+
+      expect(mockUseTokenAssetSecurityResults).toHaveBeenCalledWith({
+        assetIds: [usdcAssetId],
+      });
+    });
+
+    it('passes the matching security result to the token row', () => {
+      mockUseTokenAssetSecurityResults.mockReturnValue({
+        [usdcAssetId]: 'Malicious',
+      });
+
+      const { getByTestId } = render(
+        <AssetList tokens={tokens} nfts={[]} allTokens={tokens} allNfts={[]} />,
+      );
+
+      expect(getByTestId('asset-component')).toHaveAttribute(
+        'data-safety-result',
+        'Malicious',
+      );
+    });
+
+    it('leaves the security result unset for tokens without a result', () => {
+      const { getByTestId } = render(
+        <AssetList tokens={tokens} nfts={[]} allTokens={tokens} allNfts={[]} />,
+      );
+
+      expect(getByTestId('asset-component')).not.toHaveAttribute(
+        'data-safety-result',
+      );
+    });
+
+    it('skips tokens whose chain id is not a hex or caip chain id', () => {
+      render(
+        <AssetList
+          tokens={mockTokens}
+          nfts={[]}
+          allTokens={mockTokens}
+          allNfts={[]}
+        />,
+      );
+
+      expect(mockUseTokenAssetSecurityResults).toHaveBeenCalledWith({
+        assetIds: [],
+      });
     });
   });
 });

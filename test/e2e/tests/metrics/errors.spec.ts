@@ -8,8 +8,8 @@ import { isObject, Json, JsonRpcResponse } from '@metamask/utils';
 import { Mockttp, MockttpServer } from 'mockttp';
 import { SENTRY_UI_STATE } from '../../../../app/scripts/constants/sentry-state';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { withFixtures, sentryRegEx } from '../../helpers';
-import { PAGES } from '../../webdriver/driver';
+import { withFixtures, sentryRegEx, getCleanAppState } from '../../helpers';
+import { Driver, PAGES } from '../../webdriver/driver';
 import { MOCK_ANALYTICS_ID } from '../../constants';
 import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import { login } from '../../page-objects/flows/login.flow';
@@ -51,6 +51,23 @@ async function mockRemoteFeatureFlags(server: MockttpServer): Promise<void> {
       statusCode: 200,
       json: FEATURE_FLAGS_RESPONSE,
     }));
+}
+
+/**
+ * Wait for the RewardsController to restore the active account. It is reset
+ * to null on unlock and only set again once silent auth has run for every
+ * account in the selected account group.
+ *
+ * @param driver - The WebDriver instance.
+ */
+async function waitForRewardsActiveAccount(driver: Driver): Promise<void> {
+  await driver.waitUntil(
+    async () => {
+      const uiState = await getCleanAppState(driver);
+      return Boolean(uiState?.metamask?.rewardsActiveAccount);
+    },
+    { interval: 500, timeout: 10000 },
+  );
 }
 
 /**
@@ -297,7 +314,7 @@ describe('Sentry errors', function () {
         {
           fixtures: {
             ...new FixtureBuilderV2()
-              .withMetaMetricsController({
+              .withAnalyticsController({
                 analyticsId: null,
                 consentDecisionMade: true,
                 optedIn: false,
@@ -370,7 +387,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: null,
               consentDecisionMade: true,
               optedIn: false,
@@ -447,7 +464,7 @@ describe('Sentry errors', function () {
         {
           fixtures: {
             ...new FixtureBuilderV2()
-              .withMetaMetricsController({
+              .withAnalyticsController({
                 analyticsId: MOCK_ANALYTICS_ID,
                 consentDecisionMade: true,
                 optedIn: true,
@@ -532,7 +549,7 @@ describe('Sentry errors', function () {
         {
           fixtures: {
             ...new FixtureBuilderV2()
-              .withMetaMetricsController({
+              .withAnalyticsController({
                 analyticsId: MOCK_ANALYTICS_ID,
                 consentDecisionMade: true,
                 optedIn: true,
@@ -634,7 +651,7 @@ describe('Sentry errors', function () {
         {
           fixtures: {
             ...new FixtureBuilderV2()
-              .withMetaMetricsController({
+              .withAnalyticsController({
                 analyticsId: MOCK_ANALYTICS_ID,
                 consentDecisionMade: true,
                 optedIn: true,
@@ -724,7 +741,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: MOCK_ANALYTICS_ID,
               consentDecisionMade: true,
               optedIn: true,
@@ -808,7 +825,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: MOCK_ANALYTICS_ID,
               consentDecisionMade: true,
               optedIn: true,
@@ -915,7 +932,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: null,
               consentDecisionMade: true,
               optedIn: false,
@@ -989,7 +1006,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: null,
               consentDecisionMade: true,
               optedIn: false,
@@ -1063,7 +1080,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: MOCK_ANALYTICS_ID,
               consentDecisionMade: true,
               optedIn: true,
@@ -1152,7 +1169,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: MOCK_ANALYTICS_ID,
               consentDecisionMade: true,
               optedIn: true,
@@ -1204,6 +1221,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await login(driver);
+          await waitForRewardsActiveAccount(driver);
 
           // Wait for state to settle
           await driver.delay(5_000);
@@ -1254,7 +1272,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: MOCK_ANALYTICS_ID,
               consentDecisionMade: true,
               optedIn: true,
@@ -1338,7 +1356,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: MOCK_ANALYTICS_ID,
               consentDecisionMade: true,
               optedIn: true,
@@ -1391,6 +1409,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await login(driver);
+          await waitForRewardsActiveAccount(driver);
 
           // Wait for state to settle
           await driver.delay(5_000);
@@ -1467,6 +1486,7 @@ describe('Sentry errors', function () {
       accountsAssets: false,
       assetsMetadata: false,
       allIgnoredAssets: false,
+      tokenBalances: false,
       assetsRates: false,
       smartTransactionsState: {
         fees: {

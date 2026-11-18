@@ -13,13 +13,13 @@ describe('resolveTrustedDeepLinkHref', () => {
     },
   );
 
-  it('resolves a supported deep link from a configured subdomain', async () => {
-    await expect(
-      resolveTrustedDeepLinkHref(
-        'https://links.link.metamask.com/home?openNetworkSelector=true',
-      ),
-    ).resolves.toBe('/?openNetworkSelector=true');
-  });
+  jestIt.each(['invalid.link.metamask.io', 'invalid.link.metamask.com'])(
+    'leaves a supported deep link from subdomain %s unchanged',
+    async (host) => {
+      const href = `https://${host}/home?openNetworkSelector=true`;
+      await expect(resolveTrustedDeepLinkHref(href)).resolves.toBe(href);
+    },
+  );
 
   it('leaves a lookalike hostname unchanged', async () => {
     const href =

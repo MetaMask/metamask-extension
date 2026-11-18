@@ -6,6 +6,7 @@ import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/sel
 import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { selectStablecoins } from '../../selectors/feature-flags';
+import { isListedStablecoin } from '../../utils/stablecoins';
 import { useDeepMemo } from '../useDeepMemo';
 
 export type TokenFiatRateRequest = {
@@ -36,9 +37,7 @@ export function useTokenFiatRates(
         // by that rate to size amounts — the drift makes Max quote for more than
         // the balance covers. Only applies to USD; other display currencies
         // still need a real conversion.
-        const isStablecoin = stablecoins[chainId]?.includes(
-          address.toLowerCase() as Hex,
-        );
+        const isStablecoin = isListedStablecoin(stablecoins, chainId, address);
 
         if (isUsd && isStablecoin) {
           return 1;

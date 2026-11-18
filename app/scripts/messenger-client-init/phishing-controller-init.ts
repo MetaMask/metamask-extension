@@ -1,6 +1,7 @@
 import {
   PhishingController,
   PhishingControllerMessenger,
+  RequestSourcePlatform,
 } from '@metamask/phishing-controller';
 import { Duration, inMilliseconds } from '@metamask/utils';
 import { MessengerClientInitFunction } from './types';
@@ -20,6 +21,7 @@ export const PhishingControllerInit: MessengerClientInitFunction<
 > = ({ controllerMessenger, persistedState }) => {
   const messengerClient = new PhishingController({
     messenger: controllerMessenger,
+    platform: RequestSourcePlatform.Extension,
     state: persistedState.PhishingController,
     hotlistRefreshInterval: process.env.IN_TEST
       ? inMilliseconds(5, Duration.Second)

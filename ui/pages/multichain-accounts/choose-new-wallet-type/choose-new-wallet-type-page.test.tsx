@@ -7,6 +7,7 @@ import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   CONNECT_HARDWARE_ROUTE,
+  DEFAULT_ROUTE,
   IMPORT_SRP_ROUTE,
   ADD_WALLET_PAGE_ROUTE,
   PREVIOUS_ROUTE,
@@ -78,7 +79,7 @@ describe('ChooseNewWalletTypePage', () => {
     it('renders the page with header title', () => {
       renderComponent();
 
-      expect(screen.getByText(messages.addAWallet.message)).toBeInTheDocument();
+      expect(screen.getByText(messages.addWallet.message)).toBeInTheDocument();
     });
 
     it('renders the back button', () => {
@@ -232,6 +233,7 @@ describe('ChooseNewWalletTypePage', () => {
         false,
       );
       expect(mockUseNavigate).not.toHaveBeenCalledWith(CONNECT_HARDWARE_ROUTE);
+      expect(mockUseNavigate).not.toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
 
     it('opens extension in browser with keep-open for hardware wallet in sidepanel mode', () => {
@@ -245,6 +247,15 @@ describe('ChooseNewWalletTypePage', () => {
         null,
         true,
       );
+    });
+
+    it('navigates sidepanel to home screen after handing off hardware wallet flow', () => {
+      mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+      renderComponent();
+
+      fireEvent.click(screen.getByTestId('choose-wallet-type-hardware-wallet'));
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
   });
 

@@ -61,6 +61,20 @@ export const selectNeedsSocialPairing = createSelector(
   (metamask) => metamask.needsSocialPairing ?? true,
 );
 
+const NO_CREDENTIALS: AuthenticationController.AuthenticationControllerState['enrolledCredentials'] =
+  [];
+
+/**
+ * The profile's MFA credentials, as last fetched from the server.
+ *
+ * @param state - The current state of the Redux store.
+ * @returns The enrolled credentials, or an empty list before the first fetch.
+ */
+export const selectEnrolledCredentials = createSelector(
+  [getMetamask],
+  (metamask) => metamask.enrolledCredentials ?? NO_CREDENTIALS,
+);
+
 /**
  * Selector to retrieve the primary SRP session data.
  *

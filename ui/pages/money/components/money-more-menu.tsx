@@ -143,6 +143,7 @@ export function MoneyMoreMenu() {
     <div ref={setAnchorElement}>
       <ButtonIcon
         iconName={IconName.MoreVertical}
+        iconProps={{ stroke: 'currentColor', strokeWidth: 0.75 }}
         ariaLabel={t('moneyMoreOptions')}
         onClick={handleToggleMenu}
         data-testid="money-more-menu-button"

@@ -1,6 +1,5 @@
 import type { CaipAssetType } from '@metamask/utils';
 import React, { useCallback } from 'react';
-import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -9,11 +8,21 @@ import {
 import { trace, TraceName } from '../../../../../shared/lib/trace';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { useScreenViewedEvent } from '../../../../hooks/useScreenViewedEvent';
-import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import { type SafeChain } from '../../../multichain/networks-form/use-safe-chains';
 import { usePrimaryCurrencyProperties } from '../hooks';
 import TokenList from '../token-list';
-import AssetListControlBar from './asset-list-control-bar';
+import { NetworkPillSelector } from '../../../multichain/network-pill-selector/network-pill-selector';
+import { TokenTable } from '../token-table/token-table';
+import { TabControls } from '../../../ui/tabs';
+import {
+  AssetControls,
+  AssetControlsActions,
+} from './asset-list-control-bar/asset-controls';
+import { NetworkFilter } from './asset-list-control-bar/network-filter';
+import { SortByButton } from './asset-list-control-bar/sort-by-button';
+import { TokenOptionsMenu } from './asset-list-control-bar/token-options-menu';
+
+export type AssetListVariant = 'list' | 'table';
 
 export type AssetListProps = {
   onClickAsset: (
@@ -21,16 +30,19 @@ export type AssetListProps = {
     address: string,
     assetId?: CaipAssetType,
   ) => void;
-  showTokensLinks?: boolean;
   safeChains?: SafeChain[];
   entryPoint?: ScreenViewedEntryPoint;
+  variant?: AssetListVariant;
 };
 
 const TokenListContainer = React.memo(
   ({
     onClickAsset,
     safeChains,
-  }: Pick<AssetListProps, 'onClickAsset' | 'safeChains'>) => {
+    variant,
+  }: Pick<AssetListProps, 'onClickAsset' | 'safeChains'> & {
+    variant: AssetListVariant;
+  }) => {
     const { trackEvent, createEventBuilder } = useAnalytics();
     const { primaryCurrencyProperties } = usePrimaryCurrencyProperties();
 
@@ -58,30 +70,44 @@ const TokenListContainer = React.memo(
       ],
     );
 
+    if (variant === 'table') {
+      return (
+        <>
+          <NetworkPillSelector />
+          <div className="my-1 border-b border-1 border-border-muted" />
+          <TokenTable onTokenClick={onTokenClick} safeChains={safeChains} />
+        </>
+      );
+    }
+
     return <TokenList onTokenClick={onTokenClick} safeChains={safeChains} />;
   },
 );
 
 const AssetList = ({
   onClickAsset,
-  showTokensLinks,
   safeChains,
   entryPoint,
+  variant = 'list',
 }: AssetListProps) => {
-  const isEvm = useSelector(getMultichainIsEvm);
-  // NOTE: Since we can parametrize it now, we keep the original behavior
-  // for EVM assets
-  const shouldShowTokensLinks = showTokensLinks ?? isEvm;
-
   useScreenViewedEvent(MetaMetricsEventName.TokenScreenViewed, entryPoint);
 
   return (
     <>
-      <AssetListControlBar
-        showTokensLinks={shouldShowTokensLinks}
-        data-testid="parent-selector-tokens-tab"
+      <TabControls>
+        <AssetControls data-testid="parent-selector-tokens-tab">
+          <NetworkFilter />
+          <AssetControlsActions>
+            {variant === 'table' ? null : <SortByButton />}
+            <TokenOptionsMenu />
+          </AssetControlsActions>
+        </AssetControls>
+      </TabControls>
+      <TokenListContainer
+        onClickAsset={onClickAsset}
+        safeChains={safeChains}
+        variant={variant}
       />
-      <TokenListContainer onClickAsset={onClickAsset} safeChains={safeChains} />
     </>
   );
 };

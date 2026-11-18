@@ -6,6 +6,7 @@ import React, {
   useMemo,
   type ReactNode,
 } from 'react';
+import type { HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import { resetHardwareWalletRecoveryInlineCtaViewCount } from '../../../shared/lib/hardware-wallet-recovery-metrics';
 import { ConnectionState } from './connectionState';
 import { useHardwareWalletStateManager } from './HardwareWalletStateManager';
@@ -36,7 +37,7 @@ export type HardwareWalletStateContextType = {
 };
 
 export type HardwareWalletActionsContextType = {
-  connect: () => Promise<void>;
+  connect: () => Promise<HardwareWalletError | null>;
   disconnect: () => Promise<void>;
   clearError: () => void;
   setConnectionReady: () => void;
@@ -47,6 +48,10 @@ export type HardwareWalletActionsContextType = {
     walletType: HardwareWalletType,
   ) => Promise<boolean>;
   ensureDeviceReady: (options?: EnsureDeviceReadyOptions) => Promise<boolean>;
+  /** Resolves `null` when ready, otherwise the error explaining why not. */
+  ensureDeviceReadyOrError: (
+    options?: EnsureDeviceReadyOptions,
+  ) => Promise<HardwareWalletError | null>;
   /**
    * WORKAROUND: Trezor-specific flag to suppress WebUSB disconnect teardown
    * during signing. See `isSigningInProgressRef` in `HardwareWalletStateManager`
@@ -69,7 +74,8 @@ export type HardwareWalletContextType = {
   isWebUsbAvailable: boolean;
 
   // Actions (stable, won't cause rerenders)
-  connect: () => Promise<void>;
+  /** Resolves `null` on success, otherwise the error explaining the failure. */
+  connect: () => Promise<HardwareWalletError | null>;
   disconnect: () => Promise<void>;
   clearError: () => void;
   setConnectionReady: () => void;
@@ -80,6 +86,10 @@ export type HardwareWalletContextType = {
     walletType: HardwareWalletType,
   ) => Promise<boolean>;
   ensureDeviceReady: (options?: EnsureDeviceReadyOptions) => Promise<boolean>;
+  /** Resolves `null` when ready, otherwise the error explaining why not. */
+  ensureDeviceReadyOrError: (
+    options?: EnsureDeviceReadyOptions,
+  ) => Promise<HardwareWalletError | null>;
 };
 
 const HardwareWalletContext = createContext<HardwareWalletContextType | null>(
@@ -198,16 +208,21 @@ export const HardwareWalletProvider = ({
     setHardwareConnectionPermissionState,
   });
 
-  const { connect, disconnect, clearError, ensureDeviceReady } =
-    useHardwareWalletConnection({
-      refs,
-      setters: {
-        setConnectionState,
-      },
-      updateConnectionState,
-      handleDeviceEvent,
-      handleDisconnect,
-    });
+  const {
+    connect,
+    disconnect,
+    clearError,
+    ensureDeviceReady,
+    ensureDeviceReadyOrError,
+  } = useHardwareWalletConnection({
+    refs,
+    setters: {
+      setConnectionState,
+    },
+    updateConnectionState,
+    handleDeviceEvent,
+    handleDisconnect,
+  });
 
   const setConnectionReady = useCallback(() => {
     resetHardwareWalletRecoveryInlineCtaViewCount();
@@ -308,6 +323,7 @@ export const HardwareWalletProvider = ({
       checkHardwareWalletPermission: checkHardwareWalletPermissionAction,
       requestHardwareWalletPermission: requestHardwareWalletPermissionAction,
       ensureDeviceReady,
+      ensureDeviceReadyOrError,
     }),
     [
       isHardwareWalletAccount,
@@ -324,6 +340,7 @@ export const HardwareWalletProvider = ({
       checkHardwareWalletPermissionAction,
       requestHardwareWalletPermissionAction,
       ensureDeviceReady,
+      ensureDeviceReadyOrError,
     ],
   );
 
@@ -363,6 +380,7 @@ export const HardwareWalletProvider = ({
       checkHardwareWalletPermission: checkHardwareWalletPermissionAction,
       requestHardwareWalletPermission: requestHardwareWalletPermissionAction,
       ensureDeviceReady,
+      ensureDeviceReadyOrError,
       setSigningInProgress,
     }),
     [
@@ -373,6 +391,7 @@ export const HardwareWalletProvider = ({
       checkHardwareWalletPermissionAction,
       requestHardwareWalletPermissionAction,
       ensureDeviceReady,
+      ensureDeviceReadyOrError,
       setSigningInProgress,
     ],
   );

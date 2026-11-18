@@ -179,7 +179,7 @@ const mockSendWithUSDCVisible = async (
   await mockPriceApiExchangeRates(mockServer),
   await mockGetMultipleAccounts(mockServer),
   await mockSendSolanaTransaction(mockServer),
-  await mockGetTokenAccountBalance(mockServer),
+  await mockGetSuccessSignaturesForAddress(mockServer),
   await mockGetSuccessSplTokenTransaction(mockServer),
   await mockGetMintAccountInfo(mockServer),
   await mockSolanaTokenApiAssets(mockServer),
@@ -241,7 +241,6 @@ describe('Send flow - SPL Token', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
 
         const selectNetworkModal = new SelectNetworkModal(driver);
         const networkFilter = new NetworkFilter(driver);
@@ -316,7 +315,6 @@ describe('Send flow - SPL Token', function (this: Suite) {
         await login(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
 
         const selectNetworkModal = new SelectNetworkModal(driver);
         const networkFilter = new NetworkFilter(driver);

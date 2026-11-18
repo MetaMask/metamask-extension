@@ -8,9 +8,10 @@ import {
 const getWrapperPath = () => require.resolve('./reactCompilerLoaderWrapper');
 
 /**
- * React Compiler result status stored in module.buildMeta.
+ * React Compiler result status stored in module.buildInfo (not buildMeta,
+ * which webpack hashes into the module hash).
  * This allows statistics to be collected from all modules after compilation.
- * NOTE: buildMeta tracking only works without thread-loader (this._module is
+ * NOTE: buildInfo tracking only works without thread-loader (this._module is
  * null in worker contexts), so it is only active in verbose mode.
  */
 export type ReactCompilerStatus =
@@ -22,7 +23,7 @@ export type ReactCompilerStatus =
 export const REACT_COMPILER_STATUS_KEY = '__reactCompilerStatus__';
 
 /**
- * Per-file or per-compilation component counts. Stored in buildMeta when
+ * Per-file or per-compilation component counts. Stored in buildInfo when
  * using the wrapper loader; aggregated by ReactCompilerPlugin.
  */
 export type ReactCompilerStatusCounts = Record<ReactCompilerStatus, number>;
@@ -47,7 +48,7 @@ export type ReactCompilerFileDetail = {
 };
 
 /**
- * Statistics collected from module buildMeta after compilation.
+ * Statistics collected from module buildInfo after compilation.
  * File-level counts use worst-status-wins; component-level counts are raw.
  */
 export type ReactCompilerStats = {
@@ -75,7 +76,7 @@ export type ReactCompilerLoaderConfig = {
   /**
    * When true, uses the wrapper loader so the same source works in
    * thread-loader workers and the emitted CJS build. Verbose mode also uses
-   * the wrapper for logging and buildMeta tracking.
+   * the wrapper for logging and buildInfo tracking.
    */
   threadLoaderEnabled: boolean;
 };
@@ -86,7 +87,7 @@ export type ReactCompilerLoaderConfig = {
  * Uses the wrapper loader when thread-loader is active or when verbose logging
  * is requested. Falls back to the direct `react-compiler-webpack` loader
  * otherwise (e.g. LavaMoat policy generation where the wrapper isn't
- * resolvable). While worker builds still cannot record buildMeta stats, using
+ * resolvable). While worker builds still cannot record buildInfo stats, using
  * the wrapper there keeps the loader path consistent across the direct `tsx`
  * and emitted `.webpack` CJS execution paths.
  *

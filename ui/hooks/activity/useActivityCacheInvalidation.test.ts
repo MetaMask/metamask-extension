@@ -73,7 +73,7 @@ describe('useActivityCacheInvalidation', () => {
     );
 
     expect(mockInvalidateQueries).toHaveBeenCalledWith({
-      queryKey: ['accounts', 'transactions', 'v4MultiAccount'],
+      queryKey: ['accounts', 'transactions', 'v5MultiAccount'],
     });
   });
 

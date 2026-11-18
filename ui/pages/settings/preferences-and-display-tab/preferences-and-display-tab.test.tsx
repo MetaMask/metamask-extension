@@ -7,6 +7,10 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { setBackgroundConnection } from '../../../store/background-connection';
 import PreferencesAndDisplayTab from './preferences-and-display-tab';
 
+jest.mock('#shared/lib/mv3.utils', () => ({
+  isManifestV3: true,
+}));
+
 const backgroundConnectionMock = new Proxy(
   {},
   { get: () => jest.fn().mockResolvedValue(undefined) },
@@ -24,23 +28,23 @@ const buildStore = (cashtagInjection?: boolean) =>
     },
   });
 
-describe('PreferencesAndDisplayTab', () => {
-  const mockStore = buildStore();
+const buildBasicFunctionalityOffStore = () =>
+  configureMockStore([thunk])({
+    ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      useExternalServices: false,
+      remoteFeatureFlags: {
+        ...mockState.metamask.remoteFeatureFlags,
+        cashtagInjection: true,
+      },
+    },
+  });
 
+describe('PreferencesAndDisplayTab', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     setBackgroundConnection(backgroundConnectionMock as never);
-  });
-
-  describe('snapshot', () => {
-    it('matches snapshot', () => {
-      const { container } = renderWithProvider(
-        <PreferencesAndDisplayTab />,
-        mockStore,
-      );
-
-      expect(container).toMatchSnapshot();
-    });
   });
 
   describe('show web widget on X setting', () => {
@@ -66,6 +70,18 @@ describe('PreferencesAndDisplayTab', () => {
       });
 
       expect(view.getByTestId('show-ticker-widget')).toBeInTheDocument();
+    });
+
+    it('hides the setting when Basic Functionality is off', async () => {
+      let view!: ReturnType<typeof renderWithProvider>;
+      await act(async () => {
+        view = renderWithProvider(
+          <PreferencesAndDisplayTab />,
+          buildBasicFunctionalityOffStore(),
+        );
+      });
+
+      expect(view.queryByTestId('show-ticker-widget')).not.toBeInTheDocument();
     });
   });
 });

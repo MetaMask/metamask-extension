@@ -17,6 +17,7 @@ import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { OAuthErrorMessages } from '../../../../shared/lib/error';
+import { TraceName } from '../../../../shared/lib/trace';
 import Welcome from './welcome';
 
 const mockTrackEvent = jest.fn();
@@ -227,6 +228,10 @@ describe('Welcome Page', () => {
 
     await waitFor(() => {
       expect(startOAuthLoginSpy).toHaveBeenCalled();
+      expect(startOAuthLoginSpy.mock.calls[0][4]).toEqual({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        _name: TraceName.OnboardingSocialLoginAttempt,
+      });
 
       expect(mockTrackEvent).toHaveBeenCalledTimes(2);
 

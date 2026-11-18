@@ -3,6 +3,7 @@ import { MONEY_LANDING_URL, MUSD_PRICE_URL } from './urls';
 
 export enum MoneyScreenName {
   WalletHome = 'wallet_home',
+  AssetDetail = 'asset_detail',
   MoneyHome = 'money_home',
   MoneyDeposit = 'money_deposit',
   MoneyTransfer = 'money_transfer',
@@ -10,6 +11,7 @@ export enum MoneyScreenName {
   MoneyActivityDetails = 'money_activity_details',
   MoneyPotentialEarnings = 'money_potential_earnings',
   MoneyHowItWorks = 'money_how_it_works',
+  MoneyFtue = 'money_ftue',
 }
 
 export enum MoneyBottomSheetName {
@@ -48,7 +50,13 @@ export enum MoneyComponentName {
   HomeTab = 'money_home_tab',
   ActionButtonRow = 'money_action_button_row',
   More = 'money_more',
+  TokenListItemCta = 'money_token_list_item_cta',
+  EarnBanner = 'money_earn_banner',
+  AssetOverviewBalanceCta = 'money_asset_overview_balance_cta',
+  FtueSplash = 'money_ftue_splash',
 }
+
+export { MoneyFtueEntryPoint } from '../../../helpers/money/money-ftue-entry-point';
 
 export enum MoneyButtonIntent {
   AddMoney = 'add_money',
@@ -58,6 +66,7 @@ export enum MoneyButtonIntent {
   OpenMoreMenu = 'open_more_menu',
   ViewAll = 'view_all',
   Filter = 'filter',
+  Dismiss = 'dismiss',
 }
 
 export enum MoneyButtonType {
@@ -96,7 +105,7 @@ export enum MoneyRedirectTargetType {
 export const MONEY_URLS = {
   MONEY_LANDING: MONEY_LANDING_URL,
   MUSD_PRICE: MUSD_PRICE_URL,
-  METAMASK_SUPPORT: SUPPORT_LINK ?? 'https://support.metamask.io',
+  METAMASK_SUPPORT: SUPPORT_LINK ?? 'https://support.metamask.com',
 } as const;
 
 export type MoneyUrl = (typeof MONEY_URLS)[keyof typeof MONEY_URLS];

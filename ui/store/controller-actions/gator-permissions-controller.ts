@@ -2,7 +2,9 @@ import { Hex } from '@metamask/utils';
 import { submitRequestToBackground } from '../background-connection';
 
 export const fetchAndUpdateGatorPermissions = async (): Promise<void> => {
-  return await submitRequestToBackground('fetchAndUpdateGatorPermissions');
+  return await submitRequestToBackground(
+    'GatorPermissionsController:fetchAndUpdateGatorPermissions',
+  );
 };
 
 /**
@@ -21,12 +23,15 @@ export const addPendingRevocation = async ({
   txId: string;
   permissionContext: Hex;
 }): Promise<void> => {
-  await submitRequestToBackground('addPendingRevocation', [
-    {
-      txId,
-      permissionContext,
-    },
-  ]);
+  await submitRequestToBackground(
+    'GatorPermissionsController:addPendingRevocation',
+    [
+      {
+        txId,
+        permissionContext,
+      },
+    ],
+  );
 };
 
 /**
@@ -42,11 +47,15 @@ export const submitDirectRevocation = async ({
 }: {
   permissionContext: Hex;
 }): Promise<void> => {
-  await submitRequestToBackground('submitDirectRevocation', [
-    {
-      permissionContext,
-    },
-  ]);
+  await submitRequestToBackground(
+    'GatorPermissionsController:submitDirectRevocation',
+    [
+      {
+        permissionContext,
+        txHash: undefined,
+      },
+    ],
+  );
 };
 
 /**
@@ -63,9 +72,8 @@ export const checkDelegationDisabled = async (
   delegationHash: Hex,
   networkClientId: string,
 ): Promise<boolean> => {
-  return await submitRequestToBackground<boolean>('checkDelegationDisabled', [
-    delegationManagerAddress,
-    delegationHash,
-    networkClientId,
-  ]);
+  return await submitRequestToBackground(
+    'LegacyBackgroundApiService:checkDelegationDisabled',
+    [delegationManagerAddress, delegationHash, networkClientId],
+  );
 };

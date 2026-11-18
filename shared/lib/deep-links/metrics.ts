@@ -1,3 +1,4 @@
+import { getReferralCode } from '#shared/lib/deep-links/referral';
 import { createEventBuilder } from '../analytics/create-event-builder';
 import type { AnalyticsEvent } from '../analytics/create-event-builder';
 import {
@@ -14,6 +15,9 @@ export type Properties = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   attribution_id?: string;
+  referral?: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+  referral_code?: string;
 } & { [key in UTMParameter]?: string };
 
 export type EventDetails = {
@@ -40,8 +44,7 @@ export function shouldTrackDeepLinkNavigation({
 /**
  * Creates a trackable analytics event representing deep link usage.
  *
- * If the route has query params, and the query params have duplicate keys,
- * only the last value will be used in the properties.
+ * Repeated parameters use the last value, except `ref`, which must be unique.
  *
  * @param route - The parameters for the tracking event.
  * @param route.url - The original full URL of the deep link.
@@ -52,18 +55,23 @@ export function createEvent({ signature, url }: EventDetails): AnalyticsEvent {
   const properties: Properties = {
     route: url.pathname,
     signature,
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+    referral_code: getReferralCode(url.searchParams) ?? undefined,
   };
   const sensitiveProperties: Record<string, string> = {};
 
   for (const [key, value] of url.searchParams.entries()) {
-    if (key === 'sig') {
-      // don't need to include the signature itself in the properties, utm
-      // params are much more useful, so `sig` would be redundant.
+    if (key === 'sig' || key === 'ref') {
+      // Signatures are redundant; referral metadata is handled above.
       continue;
     }
 
     if (key === 'attributionId') {
       properties.attribution_id = value;
+    } else if (key === 'referral') {
+      // Referral codes are public (partners share them openly), so they are
+      // tracked as a standard attribution property, not a sensitive one.
+      properties.referral = value;
     } else if (UTM_PARAMETERS.has(key)) {
       properties[key] = value;
     } else {

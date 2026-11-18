@@ -90,7 +90,6 @@ jobs:
           PUBLISHER_EMAIL_FLASK: ${{ vars.PUBLISHER_EMAIL_FLASK }}
         run: |
           set -euo pipefail
-          GITHUB_REF="${{ github.ref }}"
           if [[ "${TARGET}" == "dev" ]]; then
             if [[ "${GITHUB_REF}" != "refs/heads/main" ]]; then
               echo "::error::Dev (cws-dev) uploads must run from refs/heads/main (current: ${GITHUB_REF})"
@@ -197,16 +196,22 @@ jobs:
 
       - name: Dry-run complete
         if: inputs.dry-run
+        env:
+          CRX_VERSION: ${{ env.CRX_VERSION }}
+          SENDER_ID: ${{ github.event.sender.id }}
+          SENDER_LOGIN: ${{ github.event.sender.login }}
+          TARGET: ${{ inputs.target }}
+          VERSION: ${{ inputs.version }}
         run: |
           {
             echo "## Dry-run complete"
             echo ""
             echo "| Field | Value |"
             echo "|-------|-------|"
-            echo "| Target | \`${{ inputs.target }}\` |"
-            echo "| Version input | \`${{ inputs.version }}\` |"
-            echo "| crxVersion | \`${{ env.CRX_VERSION }}\` |"
-            echo "| Sender | \`${{ github.event.sender.login }}\` (id=\`${{ github.event.sender.id }}\`) |"
+            echo "| Target | \`${TARGET}\` |"
+            echo "| Version input | \`${VERSION}\` |"
+            echo "| crxVersion | \`${CRX_VERSION}\` |"
+            echo "| Sender | \`${SENDER_LOGIN}\` (id=\`${SENDER_ID}\`) |"
             echo "| Dry-run | \`true\` |"
             echo "| Result | Validation and sender verification passed. No download or upload performed. |"
           } >> "${GITHUB_STEP_SUMMARY}"
@@ -371,9 +376,10 @@ jobs:
         id: cws-upload
         env:
           ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+          TARGET: ${{ inputs.target }}
         run: |
           set -euo pipefail
-          echo "Target: ${{ inputs.target }}"
+          echo "Target: ${TARGET}"
           echo "Publisher ID: ${PUBLISHER_ID}"
           echo "Extension ID: ${EXTENSION_ID}"
           echo "Publisher email (dashboard): ${PUBLISHER_EMAIL}"

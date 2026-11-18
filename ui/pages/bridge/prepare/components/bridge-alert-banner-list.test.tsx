@@ -45,11 +45,30 @@ jest.mock('../../../../contexts/hardware-wallets', () => ({
   useHardwareWalletState: () => mockUseHardwareWalletState(),
 }));
 
+const mockShowErrorModal = jest.fn();
+
+jest.mock(
+  '../../../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+  () => ({
+    ...jest.requireActual(
+      '../../../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+    ),
+    useHardwareWalletError: () => ({
+      showErrorModal: mockShowErrorModal,
+      dismissErrorModal: jest.fn(),
+      isErrorModalVisible: false,
+      setErrorModalSuppressed: jest.fn(),
+    }),
+  }),
+);
+
 setBackgroundConnection({
-  resetState: async () => jest.fn(),
+  messengerCall: jest.fn().mockResolvedValue(undefined),
   getStatePatches: async () => jest.fn(),
-  updateBridgeQuoteRequestParams: async () => jest.fn(),
 } as never);
+
+const withoutLeadingPlease = (value: string) =>
+  value.replace(/Please (\p{L})/gu, (_, letter) => letter.toUpperCase());
 
 describe('BridgeAlertBannerList', () => {
   beforeAll(() => {
@@ -72,7 +91,7 @@ describe('BridgeAlertBannerList', () => {
       isWebUsbAvailable: false,
     });
     mockUseHardwareWalletActions.mockReturnValue({
-      ensureDeviceReady: jest.fn().mockResolvedValue(true),
+      ensureDeviceReadyOrError: jest.fn().mockResolvedValue(null),
     });
     mockUseHardwareWalletState.mockReturnValue({
       connectionState: { status: ConnectionStatus.Disconnected },
@@ -247,9 +266,13 @@ describe('BridgeAlertBannerList', () => {
       );
 
       expect(
-        getAllByTestId(`bridge-${id}`).map((alert) => alert.textContent),
+        getAllByTestId(`bridge-${id}`).map((alert) =>
+          withoutLeadingPlease(alert.textContent ?? ''),
+        ),
       ).toMatchSnapshot();
-      expect(getByTestId('bridge-banner-alerts')).toMatchSnapshot();
+      const alertList = getByTestId('bridge-banner-alerts');
+      alertList.innerHTML = withoutLeadingPlease(alertList.innerHTML);
+      expect(alertList).toMatchSnapshot();
     },
   );
 

@@ -67,7 +67,7 @@ jobs:
           SENDER_LOGIN: ${{ github.event.sender.login }}
         run: |
           set -euo pipefail
-          echo "sender.type=${SENDER_TYPE} actor=${{ github.actor }} sender=${SENDER_LOGIN}"
+          echo "sender.type=${SENDER_TYPE} actor=${GITHUB_ACTOR} sender=${SENDER_LOGIN}"
           if [[ "${SENDER_TYPE}" == "Bot" ]]; then
             echo "::error::CWS rollout is human-initiated with GitHub Environment reviewer approval (cws-rollout-*). Bot dispatch is not permitted — use upload-extension-to-cws.yml for automated store upload."
             exit 1
@@ -97,7 +97,6 @@ jobs:
           PUBLISHER_ID_FLASK: ${{ vars.PUBLISHER_ID_FLASK }}
         run: |
           set -euo pipefail
-          GITHUB_REF="${{ github.ref }}"
           if [[ "${GITHUB_REF}" != "refs/heads/main" ]]; then
             echo "::error::CWS rollout must run from refs/heads/main (current: ${GITHUB_REF})"
             exit 1
@@ -202,6 +201,9 @@ jobs:
           CURRENT_PCT: ${{ steps.current.outputs.current_percentage }}
           APPLIED: ${{ steps.apply.outputs.applied }}
           HTTP_CODE: ${{ steps.apply.outputs.http_code }}
+          GITHUB_EVENT_SENDER_LOGIN: ${{ github.event.sender.login }}
+          GITHUB_EVENT_SENDER_TYPE: ${{ github.event.sender.type }}
+          INPUTS_VERSION: ${{ inputs.version }}
         run: |
           {
             echo "### CWS rollout adjustment audit (INFRA-3651)"
@@ -209,11 +211,11 @@ jobs:
             echo "| Field | Value |"
             echo "| --- | --- |"
             echo "| GitHub Environment | \`${{ env.ROLLOUT_ENV }}\` (required reviewers — configure in repo Settings) |"
-            echo "| Triggered by | \`${{ github.actor }}\` (sender: \`${{ github.event.sender.login }}\`, type=\`${{ github.event.sender.type }}\`) |"
+            echo "| Triggered by | \`${GITHUB_ACTOR}\` (sender: \`${GITHUB_EVENT_SENDER_LOGIN}\`, type=\`${GITHUB_EVENT_SENDER_TYPE}\`) |"
             echo "| Target | \`${{ inputs.target }}\` |"
-            echo "| Version input | \`${{ inputs.version }}\` |"
+            echo "| Version input | \`${INPUTS_VERSION}\` |"
             echo "| crxVersion | \`${{ env.CRX_VERSION }}\` |"
-            echo "| Branch | \`${{ github.ref }}\` |"
+            echo "| Branch | \`${GITHUB_REF}\` |"
             echo "| Previous percentage | \`${CURRENT_PCT:-n/a}\` |"
             echo "| Requested percentage | \`${{ inputs.desired_percentage }}\` |"
             echo "| Config step | \`${CONFIG_OK:-skipped}\` |"

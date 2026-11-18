@@ -1,16 +1,26 @@
 import React from 'react';
+import RiveWasmProvider from '../../../contexts/rive-wasm';
 import CreationSuccessful from './creation-successful';
 
 export default {
   title: 'Pages/OnboardingFlow/CreationSuccessful',
 };
 
-export const DefaultStory = () => {
+const CreationSuccessfulStory = () => {
   return (
-    <div style={{ maxHeight: '2000px' }}>
+    <RiveWasmProvider>
       <CreationSuccessful />
-    </div>
+    </RiveWasmProvider>
   );
 };
 
-DefaultStory.storyName = 'Default';
+export const DefaultStory = () => <CreationSuccessfulStory />;
+
+DefaultStory.storyName = 'Wallet ready';
+
+export const SrpBackupReminderStory = () => <CreationSuccessfulStory />;
+
+SrpBackupReminderStory.storyName = 'SRP backup reminder';
+SrpBackupReminderStory.parameters = {
+  initialEntries: ['/?isFromReminder=true'],
+};

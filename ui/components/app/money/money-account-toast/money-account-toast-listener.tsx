@@ -25,7 +25,18 @@ import {
 } from '../../../../helpers/money/money-batch-registry';
 import type { RouteMessengerFromCapabilities } from '../../../../messengers/route-messenger';
 import type { MetaMaskReduxState } from '../../../../store/store';
-import { selectTransactions } from '../../../../selectors/transactionController';
+import { getTransactionPayingAccount } from '../../../../../shared/lib/transactions.utils';
+import { haveRequiredTransactionsBeenSigned } from '../../../../store/hardware-wallet-signing';
+import { getInternalAccountByAddress } from '../../../../selectors/accounts';
+import {
+  selectBatchTransactionCounts,
+  selectTransactions,
+} from '../../../../selectors/transactionController';
+import {
+  selectTransactionDataByTransactionId,
+  type TransactionPayState,
+} from '../../../../selectors/transactionPayController';
+import { isHardwareAccount } from '../../rewards/utils/isHardwareAccount';
 import { toast, ToastContent } from '../../../ui/toast/toast';
 import type { ToastStatus } from '../../toast-listener/shared';
 import {
@@ -72,7 +83,78 @@ const failedStatuses = new Set<string>([
   'cancelled',
 ]);
 
+const signedStatuses = new Set<string>([
+  TransactionStatus.signed,
+  TransactionStatus.submitted,
+  TransactionStatus.confirmed,
+]);
+
 const generateToastId = (id: string) => `money-tx-${id}`;
+
+// Redux state trails messenger events by up to a second.
+function withLatestTransaction(
+  transactions: TransactionMeta[],
+  transactionMeta: TransactionMeta,
+) {
+  return [
+    ...transactions.filter(({ id }) => id !== transactionMeta.id),
+    transactionMeta,
+  ];
+}
+
+/**
+ * Whether an approved transaction still waits for its hardware wallet payer
+ * to sign the funding transactions.
+ *
+ * @param transactionMeta - Money Account transaction.
+ * @param state - Redux state.
+ * @param latestTransaction - Transaction from the current event.
+ */
+function isAwaitingHardwareSignatures(
+  transactionMeta: TransactionMeta,
+  state: MetaMaskReduxState,
+  latestTransaction: TransactionMeta,
+) {
+  if (transactionMeta.status !== TransactionStatus.approved) {
+    return false;
+  }
+
+  const transactionData = selectTransactionDataByTransactionId(
+    state as unknown as TransactionPayState,
+    transactionMeta.id,
+  );
+
+  if (
+    transactionMeta.metamaskPay?.fiat ||
+    transactionData?.fiatPayment?.selectedPaymentMethodId
+  ) {
+    return false;
+  }
+
+  const payingAccount = getTransactionPayingAccount(
+    transactionMeta,
+    transactionData?.accountOverride,
+  );
+  const payer = payingAccount
+    ? getInternalAccountByAddress(state, payingAccount)
+    : undefined;
+
+  if (!payer || !isHardwareAccount(payer)) {
+    return false;
+  }
+
+  return !haveRequiredTransactionsBeenSigned(
+    transactionMeta.id,
+    {
+      transactions: withLatestTransaction(
+        selectTransactions(state),
+        latestTransaction,
+      ),
+      batchTransactionCounts: selectBatchTransactionCounts(state),
+    },
+    Math.max(transactionData?.quotes?.length ?? 0, 1),
+  );
+}
 
 function isSpeedUpReplacement(
   replacedById: string,
@@ -160,6 +242,78 @@ function showMoneyAccountToast(
 }
 
 /**
+ * Shows the pending toast for a Money Account transaction once a hardware
+ * wallet has signed its funding transactions.
+ *
+ * @param fundingTransaction - Non-Money transaction that reached a signed status.
+ * @param state - Redux state.
+ */
+function handleFundingTransactionSigned(
+  fundingTransaction: TransactionMeta,
+  state: MetaMaskReduxState,
+) {
+  const parentTransaction = selectTransactions(state).find(
+    (tx) =>
+      tx.requiredTransactionIds?.includes(fundingTransaction.id) &&
+      isMoneyAccountTx(tx),
+  );
+
+  if (
+    !parentTransaction ||
+    !pendingStatuses.has(parentTransaction.status) ||
+    isAwaitingHardwareSignatures(
+      parentTransaction,
+      state,
+      fundingTransaction,
+    ) ||
+    !shouldShowPendingToast(parentTransaction.id)
+  ) {
+    return;
+  }
+
+  showMoneyAccountToast('pending', parentTransaction);
+}
+
+/**
+ * Shows the pending, success, or failed toast for a Money Account transaction.
+ *
+ * @param transactionMeta - Money Account transaction from the status event.
+ * @param state - Redux state.
+ */
+function handleMoneyTransactionStatus(
+  transactionMeta: TransactionMeta,
+  state: MetaMaskReduxState,
+) {
+  const { id, status, replacedById } = transactionMeta;
+
+  if (pendingStatuses.has(status)) {
+    registerMoneyBatchTransaction(transactionMeta);
+    if (
+      !isAwaitingHardwareSignatures(transactionMeta, state, transactionMeta) &&
+      shouldShowPendingToast(id)
+    ) {
+      showMoneyAccountToast('pending', transactionMeta);
+    }
+  } else if (status === TransactionStatus.confirmed) {
+    clearMoneyBatchTransaction(transactionMeta);
+    if (shouldShowTerminalToast(id)) {
+      showMoneyAccountToast('success', transactionMeta);
+    }
+  } else if (failedStatuses.has(status)) {
+    clearMoneyBatchTransaction(transactionMeta);
+    if (
+      replacedById &&
+      isSpeedUpReplacement(replacedById, selectTransactions(state))
+    ) {
+      toast.dismiss(generateToastId(id));
+      clearToastPhase(id);
+    } else if (shouldShowTerminalToast(id)) {
+      showMoneyAccountToast('failed', transactionMeta);
+    }
+  }
+}
+
+/**
  * Trigger money account toasts from transaction lifecycle events.
  * The batches we watch are excluded from the generic transaction toasts
  */
@@ -177,36 +331,11 @@ export function useMoneyAccountToasts(): void {
       if (!transactionMeta?.id || !transactionMeta.status) {
         return;
       }
-      if (!isMoneyAccountTx(transactionMeta)) {
-        return;
-      }
 
-      const { id, status, replacedById } = transactionMeta;
-
-      if (pendingStatuses.has(status)) {
-        registerMoneyBatchTransaction(transactionMeta);
-        if (shouldShowPendingToast(id)) {
-          showMoneyAccountToast('pending', transactionMeta);
-        }
-      } else if (status === TransactionStatus.confirmed) {
-        clearMoneyBatchTransaction(transactionMeta);
-        if (shouldShowTerminalToast(id)) {
-          showMoneyAccountToast('success', transactionMeta);
-        }
-      } else if (failedStatuses.has(status)) {
-        clearMoneyBatchTransaction(transactionMeta);
-        if (
-          replacedById &&
-          isSpeedUpReplacement(
-            replacedById,
-            selectTransactions(store.getState()),
-          )
-        ) {
-          toast.dismiss(generateToastId(id));
-          clearToastPhase(id);
-        } else if (shouldShowTerminalToast(id)) {
-          showMoneyAccountToast('failed', transactionMeta);
-        }
+      if (isMoneyAccountTx(transactionMeta)) {
+        handleMoneyTransactionStatus(transactionMeta, store.getState());
+      } else if (signedStatuses.has(transactionMeta.status)) {
+        handleFundingTransactionSigned(transactionMeta, store.getState());
       }
     };
 

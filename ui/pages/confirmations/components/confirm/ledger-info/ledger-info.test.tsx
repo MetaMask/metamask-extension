@@ -15,7 +15,7 @@ import {
 import * as actionConstants from '../../../../../store/actionConstants';
 import { HardwareWalletType } from '../../../../../contexts/hardware-wallets/types';
 import * as environmentType from '../../../../../../shared/lib/environment-type';
-import { isInE2eTest } from '../../../../../contexts/hardware-wallets/is-in-e2e-test';
+import { isInE2eTest } from '../../../../../../shared/lib/environment';
 import { requestWebHidDevices } from '../../../../../contexts/hardware-wallets/webConnectionUtils';
 import {
   getMockPersonalSignConfirmState,
@@ -28,7 +28,7 @@ import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import LedgerInfo from './ledger-info';
 
 jest.mock('../../../../../contexts/hardware-wallets/webConnectionUtils');
-jest.mock('../../../../../contexts/hardware-wallets/is-in-e2e-test', () => ({
+jest.mock('../../../../../../shared/lib/environment', () => ({
   isInE2eTest: jest.fn(),
 }));
 

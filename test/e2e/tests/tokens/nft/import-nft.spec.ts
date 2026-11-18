@@ -4,6 +4,7 @@ import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import AccountListPage from '../../../page-objects/pages/accounts/list-page';
 import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import Homepage from '../../../page-objects/pages/home/homepage';
+import ImportNftPage from '../../../page-objects/pages/asset/import-nft-page';
 import NftsTab from '../../../page-objects/pages/home/nfts-tab';
 import { login } from '../../../page-objects/flows/login.flow';
 
@@ -30,7 +31,10 @@ describe('Import NFT', function () {
         const homepage = new Homepage(driver);
         await homepage.goToNftTab();
         const nftsTab = new NftsTab(driver);
-        await nftsTab.importNft(contractAddress, '1');
+        await nftsTab.openImportNft();
+        const importNftPage = new ImportNftPage(driver);
+        await importNftPage.checkPageIsLoaded();
+        await importNftPage.importNft(contractAddress, '1');
         await nftsTab.checkSuccessImportNftMessageIsDisplayed();
         await nftsTab.checkNftImageIsDisplayed();
       },
@@ -58,7 +62,10 @@ describe('Import NFT', function () {
         const homepage = new Homepage(driver);
         await homepage.goToNftTab();
         const nftsTab = new NftsTab(driver);
-        await nftsTab.importNft(contractAddress, '1');
+        await nftsTab.openImportNft();
+        const importNftPage = new ImportNftPage(driver);
+        await importNftPage.checkPageIsLoaded();
+        await importNftPage.importNft(contractAddress, '1');
         await nftsTab.checkSuccessImportNftMessageIsDisplayed();
         await nftsTab.checkNftImageIsDisplayed();
 
@@ -103,7 +110,11 @@ describe('Import NFT', function () {
         });
 
         await new Homepage(driver).goToNftTab();
-        await new NftsTab(driver).importNft(
+        const nftsTab = new NftsTab(driver);
+        await nftsTab.openImportNft();
+        const importNftPage = new ImportNftPage(driver);
+        await importNftPage.checkPageIsLoaded();
+        await importNftPage.importNft(
           contractAddress,
           '2',
           'NFT can’t be added as the ownership details do not match. Make sure you have entered correct information.',

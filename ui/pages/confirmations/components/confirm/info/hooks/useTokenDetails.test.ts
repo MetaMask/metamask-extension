@@ -1,5 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { genUnapprovedTokenTransferConfirmation } from '../../../../../../../test/data/confirmations/token-transfer';
+import { MOCK_CONFIRMATIONS_ACCOUNT_ID } from '../../../../../../../test/data/confirmations/helper';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import { useTokenDetails } from './useTokenDetails';
@@ -8,27 +9,35 @@ const ICON_SYMBOL = 'FROG';
 const ICON_URL =
   'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x0a2c375553e6965b42c135bb8b15a8914b08de0c.png';
 
+function tokenAssetId(chainId: string, tokenAddress: string) {
+  return `eip155:${Number.parseInt(chainId, 16)}/erc20:${tokenAddress.toLowerCase()}`;
+}
+
 describe('useTokenDetails', () => {
   it('returns token details from allTokens if the token is imported', () => {
     const transactionMeta = genUnapprovedTokenTransferConfirmation(
       {},
     ) as TransactionMeta;
+    const assetId = tokenAssetId(
+      transactionMeta.chainId,
+      transactionMeta.txParams.to as string,
+    );
 
     const stateWithToken = {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        allTokens: {
-          [transactionMeta.chainId]: {
-            [transactionMeta.txParams.from as string]: [
-              {
-                address: transactionMeta.txParams.to,
-                symbol: ICON_SYMBOL,
-                image: ICON_URL,
-                decimals: 9,
-              },
-            ],
+        assetsInfo: {
+          ...mockState.metamask.assetsInfo,
+          [assetId]: {
+            type: 'erc20',
+            symbol: ICON_SYMBOL,
+            image: ICON_URL,
+            decimals: 9,
           },
+        },
+        customAssets: {
+          [MOCK_CONFIRMATIONS_ACCOUNT_ID]: [assetId],
         },
       },
     };
@@ -54,22 +63,26 @@ describe('useTokenDetails', () => {
       ...transactionMeta.txParams,
       to: '0x1111111111111111111111111111111111111111',
     };
+    const assetId = tokenAssetId(
+      transactionMeta.chainId,
+      originalTxParams.to as string,
+    );
 
     const stateWithToken = {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        allTokens: {
-          [transactionMeta.chainId]: {
-            [originalTxParams.from as string]: [
-              {
-                address: originalTxParams.to,
-                symbol: ICON_SYMBOL,
-                image: ICON_URL,
-                decimals: 9,
-              },
-            ],
+        assetsInfo: {
+          ...mockState.metamask.assetsInfo,
+          [assetId]: {
+            type: 'erc20',
+            symbol: ICON_SYMBOL,
+            image: ICON_URL,
+            decimals: 9,
           },
+        },
+        customAssets: {
+          [MOCK_CONFIRMATIONS_ACCOUNT_ID]: [assetId],
         },
       },
     };
@@ -94,7 +107,7 @@ describe('useTokenDetails', () => {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        allTokens: {},
+        customAssets: {},
       },
     };
 
@@ -113,17 +126,25 @@ describe('useTokenDetails', () => {
     const transactionMeta = genUnapprovedTokenTransferConfirmation(
       {},
     ) as TransactionMeta;
+    const wrongChainAssetId = tokenAssetId(
+      '0x999',
+      transactionMeta.txParams.to as string,
+    );
 
     const stateWithWrongChain = {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        allTokens: {
-          '0x999': {
-            [transactionMeta.txParams.from as string]: [
-              { address: transactionMeta.txParams.to, symbol: ICON_SYMBOL },
-            ],
+        assetsInfo: {
+          ...mockState.metamask.assetsInfo,
+          [wrongChainAssetId]: {
+            type: 'erc20',
+            symbol: ICON_SYMBOL,
+            decimals: 9,
           },
+        },
+        customAssets: {
+          [MOCK_CONFIRMATIONS_ACCOUNT_ID]: [wrongChainAssetId],
         },
       },
     };
@@ -143,21 +164,26 @@ describe('useTokenDetails', () => {
     const transactionMeta = genUnapprovedTokenTransferConfirmation(
       {},
     ) as TransactionMeta;
+    const differentAssetId = tokenAssetId(
+      transactionMeta.chainId,
+      '0x0000000000000000000000000000000000000def',
+    );
 
     const stateWithDifferentToken = {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        allTokens: {
-          [transactionMeta.chainId]: {
-            [transactionMeta.txParams.from as string]: [
-              {
-                address: '0xdifferentaddress',
-                symbol: ICON_SYMBOL,
-                image: ICON_URL,
-              },
-            ],
+        assetsInfo: {
+          ...mockState.metamask.assetsInfo,
+          [differentAssetId]: {
+            type: 'erc20',
+            symbol: ICON_SYMBOL,
+            image: ICON_URL,
+            decimals: 9,
           },
+        },
+        customAssets: {
+          [MOCK_CONFIRMATIONS_ACCOUNT_ID]: [differentAssetId],
         },
       },
     };

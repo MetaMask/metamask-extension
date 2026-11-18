@@ -2,6 +2,20 @@ import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 
 /**
+ * The mUSD value to display for a card or cashback row. Historical and
+ * approximate values carry a raw minimal-unit amount; the other variants mean
+ * the value is not available yet or cannot be computed.
+ */
+export type AccountsApiDisplayAmount =
+  | {
+      type: 'historical' | 'approximate';
+      /** Raw, minimal-unit mUSD amount. */
+      value: string;
+      decimals: number;
+    }
+  | { type: 'pending' | 'unavailable' };
+
+/**
  * Card spends, cashback, and refunds from the Accounts API. These are not
  * created in this client, so they never reach TransactionController.
  */
@@ -11,6 +25,8 @@ type AccountsApiSettlement = {
   /** Settlement time, epoch ms (parsed from the API's ISO timestamp). */
   time: number;
   chainId: Hex;
+  /** Block the settlement landed in, when the API returns one. */
+  blockNumber?: number;
   token: {
     address: Hex;
     symbol: string;
@@ -18,6 +34,8 @@ type AccountsApiSettlement = {
   };
   /** Raw, minimal-unit amount of the settlement transfer. */
   amount: string;
+  /** mUSD value to display instead of `amount` when it is a vault share. */
+  displayAmount?: AccountsApiDisplayAmount;
 };
 
 export type AccountsApiActivity =

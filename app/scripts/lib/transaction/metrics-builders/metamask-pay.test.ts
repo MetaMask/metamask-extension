@@ -334,15 +334,16 @@ describe('getMetaMaskPayProperties', () => {
       expect(result.properties.mm_pay_amount_input_type).toBeUndefined();
     });
 
-    it('does not tag pay types without prefill support even when the flag default is enabled', async () => {
+    it('copies prefill metrics for perps deposits', async () => {
       const base = createPayRequest();
       const request = createBuilderRequest({
         transactionMeta: base.transactionMeta,
         transactionMetricsRequest: {
           ...base.transactionMetricsRequest,
-          getFeatureFlags: jest.fn().mockReturnValue({
-            confirmations_pay_extended: {
-              prefilledAmount: { default: { enabled: true } },
+          getTransactionUIMetricsFragment: jest.fn().mockReturnValue({
+            properties: {
+              mm_pay_amount_input_type: 'prefilled_50',
+              mm_pay_prefilled_amount: 250,
             },
           }),
         },
@@ -351,7 +352,8 @@ describe('getMetaMaskPayProperties', () => {
       const result = await getMetaMaskPayProperties(request);
 
       expect(result.properties.mm_pay_use_case).toBe('perps_deposit');
-      expect(result.properties.mm_pay_amount_input_type).toBeUndefined();
+      expect(result.properties.mm_pay_amount_input_type).toBe('prefilled_50');
+      expect(result.properties.mm_pay_prefilled_amount).toBe(250);
     });
 
     it('prefers the input type recorded on the UI metrics fragment', async () => {

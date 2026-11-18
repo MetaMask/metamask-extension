@@ -4,8 +4,6 @@ import { TokenFiatDisplayInfo } from '../../types';
 import { StakeableLink } from '../../../../multichain/token-list-item/stakeable-link';
 import { AssetCellTitle } from '../../asset-list/cells/asset-title';
 import { AssetInactiveBadge } from '../../asset-inactive-badge/asset-inactive-badge';
-import { Tag } from '../../../../component-library';
-import { ACCOUNT_TYPE_LABELS } from '../../constants';
 import { useRWAToken } from '../../../../../pages/bridge/hooks/useRWAToken';
 import { StockBadge } from '../../stock-badge/stock-badge';
 import { SecurityBadge } from '../../../security-trust/security-trust-inline-badge';
@@ -16,9 +14,6 @@ type TokenCellTitleProps = {
 
 export const TokenCellTitle = React.memo(
   ({ token }: TokenCellTitleProps) => {
-    const label = token.accountType
-      ? ACCOUNT_TYPE_LABELS[token.accountType]
-      : undefined;
     const { isStockToken, isTokenTradingOpen } = useRWAToken();
     const tokenIsStock = isStockToken(token);
 
@@ -26,7 +21,6 @@ export const TokenCellTitle = React.memo(
       <Box className="flex items-center gap-1 min-w-0">
         <AssetCellTitle title={token.title} />
         <SecurityBadge value={token.safetyResult} />
-        {label && <Tag label={label} />}
         {token.tokenRequireActivate && <AssetInactiveBadge />}
         {tokenIsStock && (
           <StockBadge isMarketClosed={!isTokenTradingOpen(token)} />

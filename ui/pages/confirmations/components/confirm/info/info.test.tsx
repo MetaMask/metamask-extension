@@ -21,7 +21,12 @@ import { useEnabledAdvancedPermissions } from '../../../../../hooks/gator-permis
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import { ConfirmationLoader } from '../../../hooks/useConfirmationNavigation';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
+import { useInitialTransactionConfirmationReady } from '../../../confirmation-performance';
 import Info from './info';
+
+jest.mock('../../../confirmation-performance', () => ({
+  useInitialTransactionConfirmationReady: jest.fn(),
+}));
 
 jest.mock('../../simulation-details/useBalanceChanges', () => ({
   useBalanceChanges: jest.fn(() => ({ pending: false, value: [] })),
@@ -183,6 +188,9 @@ describe('Info', () => {
     const state = getMockPersonalSignConfirmState();
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
+    expect(useInitialTransactionConfirmationReady).toHaveBeenLastCalledWith(
+      expect.objectContaining({ msgParams: expect.any(Object) }),
+    );
     expect(container).toMatchSnapshot();
   });
 
@@ -230,6 +238,9 @@ describe('Info', () => {
     const state = getMockContractInteractionConfirmState();
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
+    expect(useInitialTransactionConfirmationReady).toHaveBeenLastCalledWith(
+      expect.objectContaining({ txParams: expect.any(Object) }),
+    );
     expect(container).toMatchSnapshot();
   });
 
@@ -291,6 +302,8 @@ describe('Info', () => {
         setIsScrollToBottomCompleted: jest.fn(),
         goBackTo: undefined,
         suppressAutoExit: jest.fn(),
+        isAmountPending: false,
+        setIsAmountPending: jest.fn(),
       };
     });
 
@@ -305,6 +318,9 @@ describe('Info', () => {
       const mockStore = configureMockStore([])(state);
       renderWithConfirmContextProvider(<Info />, mockStore);
 
+      expect(useInitialTransactionConfirmationReady).toHaveBeenLastCalledWith(
+        undefined,
+      );
       expect(
         screen.getByTestId('confirmation__info_skeleton'),
       ).toBeInTheDocument();

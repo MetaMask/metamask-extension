@@ -22,8 +22,6 @@ export const PERPS_EVENT_PROPERTY = {
   ...CONTROLLER_PERPS_EVENT_PROPERTY,
   /** @deprecated Prefer ORDER_SIZE or POSITION_SIZE from the controller contract. */
   SIZE: 'size',
-  /** Extension UI interaction property (button identity). */
-  BUTTON_TYPE: 'button_type',
   /** Extension market-list filter property. */
   MARKET_CATEGORY_FILTER: 'market_category_filter',
   /** Extension close-all summary property. */
@@ -40,6 +38,13 @@ export const PERPS_EVENT_PROPERTY = {
   QUERY_LENGTH: 'query_length',
   HAS_RESULTS: 'has_results',
   ACTIVE_CHIPS: 'active_chips',
+  /**
+   * Mobile already emits these; not yet in the controller contract. Prefer
+   * the package constants once upstream adds them.
+   */
+  MARKET_SYMBOL: 'market_symbol',
+  MARKET_TYPE: 'market_type',
+  DESCRIPTION_LENGTH: 'description_length',
   /** Extension unfunded-deposit funnel: what the Add funds click actually opened. */
   DEPOSIT_CLICK_OUTCOME: 'deposit_click_outcome',
 } as const;
@@ -125,6 +130,12 @@ export const PERPS_EVENT_VALUE = {
     DEPOSIT_FLOW_OPENED: 'deposit_flow_opened',
     DEPOSIT_CONFIRMED: 'deposit_confirmed',
     TRADE_SUBMITTED_AFTER_DEPOSIT: 'trade_submitted_after_deposit',
+    /**
+     * Mobile already emits these; not yet in the controller contract. Prefer
+     * the package constants once upstream adds them.
+     */
+    MARKET_ABOUT_SECTION_DISPLAYED: 'market_about_section_displayed',
+    MARKET_ABOUT_SECTION_VIEWED: 'market_about_section_viewed',
   },
   /** What an Add funds click opened — geo-blocked clicks are a funnel drop-off. */
   DEPOSIT_CLICK_OUTCOME: {

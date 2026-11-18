@@ -1570,15 +1570,24 @@ class Driver {
 
     while (timeElapsed <= this.timeout) {
       for (const handle of windowHandles) {
-        // Wait 25 x 200ms = 5 seconds for the title to match the target title
+        // Wait 25 x 200ms = 5 seconds for the title to match the target title.
+        // A window that reload already closed will never recover, so skip it
+        // and keep polling the remaining handles.
         const handleTitle = await retry(
           {
             retries: 25,
             delay: 200,
           },
           async () => {
-            await this.driver.switchTo().window(handle);
-            return await this.driver.getTitle();
+            try {
+              await this.driver.switchTo().window(handle);
+              return await this.driver.getTitle();
+            } catch (error) {
+              if (error?.name === 'NoSuchWindowError') {
+                return undefined;
+              }
+              throw error;
+            }
           },
         );
 
@@ -2009,6 +2018,12 @@ class Driver {
       // performSignIn, getBearerToken, ...) can re-check #isUnlocked after
       // a lock fires mid-flight. No user impact; tracked in #37459.
       'unable to proceed, wallet is locked',
+      // PerpsStreamManager account fallback: the E2E perps WebSocket mock
+      // terminates around teardown, so perpsGetAccountState rejects and the
+      // channel logs. Unrelated suites that merely unlock the wallet inherit
+      // it, which made Tron account derivation, Edit Account Permissions and
+      // dapp interactions look flaky in turn; tracked in #46623.
+      '[PerpsStreamManager] Failed to fetch account',
     ]);
 
     const cdpConnection = await this.driver.createCDPConnection('page');
@@ -2135,7 +2150,10 @@ function collectMetrics() {
     });
 
   const longTaskData = window.stateHooks?.getLongTaskMetricsWithTBT?.();
-  if (longTaskData) {
+  // Gate on `observed`, not on the object: where `longtask` is unsupported
+  // (Firefox) the hook still returns an object, whose zeroed counters would
+  // read as a quiet main thread. Leave the metrics absent instead.
+  if (longTaskData?.observed) {
     results.longTaskCount = longTaskData.count;
     results.longTaskTotalDuration = longTaskData.totalDuration;
     results.longTaskMaxDuration = longTaskData.maxDuration;

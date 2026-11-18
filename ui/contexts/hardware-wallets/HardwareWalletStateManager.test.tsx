@@ -172,10 +172,11 @@ describe('HardwareWalletStateManager', () => {
           wrapper: createWrapper(store),
         });
 
-        result.current.refs.connectingPromiseRef.current = Promise.resolve();
+        result.current.refs.connectingPromiseRef.current =
+          Promise.resolve(null);
         result.current.refs.ensureDeviceReadyPromiseRef.current.set(
           'key',
-          Promise.resolve(true),
+          Promise.resolve(null),
         );
         result.current.refs.currentConnectionIdRef.current = 1;
         result.current.refs.isConnectingRef.current = true;

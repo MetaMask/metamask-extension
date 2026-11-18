@@ -236,8 +236,6 @@ async function withFixtures(options, testSuite) {
     useMockingPassThrough,
     useBundler,
     usePaymaster,
-    ethConversionInUsd,
-    monConversionInUsd,
     manifestFlags,
     solanaWebSocketSpecificMocks = [],
     accountActivityWebSocketSpecificMocks = [],
@@ -245,7 +243,6 @@ async function withFixtures(options, testSuite) {
     extendedTimeoutMultiplier = 1,
     unifiedEvmAccountsApiBalances,
     virtualAuthenticator,
-    isBenchmark = false,
     testTimeout = parseInt(process.env.MOCHA_TIMEOUT, 10) || 0,
   } = options;
 
@@ -509,8 +506,6 @@ async function withFixtures(options, testSuite) {
       clearNetworkReport,
     } = await mockingSetupFunction(mockServer, testSpecificMock, {
       chainId: localNodeOptsNormalized[0]?.options.chainId || 1337,
-      ethConversionInUsd,
-      monConversionInUsd,
       unifiedEvmAccountsApiBalances: effectiveUnifiedEvmAccountsApiBalances,
     });
 
@@ -579,7 +574,6 @@ async function withFixtures(options, testSuite) {
       const wd = await buildWebDriver({
         ...driverOptions,
         disableServerMochaToBackground,
-        isBenchmark,
       });
 
       driver = wd.driver;

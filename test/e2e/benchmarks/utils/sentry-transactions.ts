@@ -26,14 +26,9 @@ type TransactionPayload = {
 };
 
 /**
- * Parse the transaction items out of one Sentry envelope body.
- *
- * An envelope is newline-delimited JSON: an envelope header, then an item
- * header and a payload for each item. Items other than transactions are
- * skipped.
- *
- * @param body - The envelope body as the SDK sent it.
- * @returns The transactions in the envelope, in item order.
+ * Parse the transactions out of one Sentry envelope, in item order. The body
+ * is newline-delimited JSON: an envelope header, then a header and a payload
+ * per item.
  */
 export function parseEnvelopeTransactions(body: string): SentryTransaction[] {
   const lines = body.split('\n');
@@ -78,12 +73,8 @@ export function parseEnvelopeTransactions(body: string): SentryTransaction[] {
 }
 
 /**
- * Read every transaction the Sentry SDK has sent to the mocked Sentry
- * endpoint so far. The benchmark mocks intercept these requests, so nothing
- * reaches a real Sentry project.
- *
- * @param endpoints - The mocked endpoints for this benchmark run.
- * @returns The transactions, ordered by when each ended.
+ * Read every transaction the SDK has sent to the mocked Sentry endpoint so
+ * far, ordered by when each ended.
  */
 export async function readSentryTransactions(
   endpoints: MockedEndpoint[],
@@ -102,15 +93,8 @@ export async function readSentryTransactions(
 }
 
 /**
- * Wait until a transaction for every named trace has been sent, or until the
- * timeout passes. The SDK sends a transaction when its span ends, so this
- * covers the delivery delay rather than the measured work.
- *
- * @param driver - The WebDriver instance, used to wait between reads.
- * @param endpoints - The mocked endpoints for this benchmark run.
- * @param names - The traces that must have been sent.
- * @param timeoutMs - How long to wait before returning what has arrived.
- * @returns The transactions read on the last attempt.
+ * Wait until each named trace has sent a transaction or `timeoutMs` passes.
+ * Returns the last read either way.
  */
 export async function waitForSentryTransactions(
   driver: Driver,
@@ -132,15 +116,9 @@ export async function waitForSentryTransactions(
 }
 
 /**
- * Turn the last sent transaction of a trace into a benchmark timer.
- *
- * An absent or failed measurement throws, so the iteration fails with the
- * trace named instead of the value dropping out of the sample.
- *
- * @param transactions - Transactions read by {@link readSentryTransactions}.
- * @param name - The trace to read.
- * @param id - The benchmark metric id to report it under.
- * @returns The timer result for the last transaction.
+ * Turn a trace's last transaction from {@link readSentryTransactions} into a
+ * timer under `id`. Throws when it is absent or failed, so the iteration fails
+ * rather than the sample silently losing a value.
  */
 export function sentryTimerResult(
   transactions: SentryTransaction[],
@@ -170,14 +148,8 @@ export function sentryTimerResult(
 }
 
 /**
- * Report how many times a trace was sent. A trace restarted by user input
- * completes more than once, and a change in that count changes what the last
- * duration covers.
- *
- * @param transactions - Transactions read by {@link readSentryTransactions}.
- * @param name - The trace to count.
- * @param id - The benchmark metric id to report it under.
- * @returns The count as a timer result.
+ * Report how many times a trace was sent, under `id`. A change in this count
+ * changes what the trace's last duration covers.
  */
 export function sentryCountResult(
   transactions: SentryTransaction[],

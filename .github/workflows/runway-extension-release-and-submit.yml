@@ -142,14 +142,15 @@ jobs:
         env:
           RUNWAY_ACTOR_LOGIN: 'runway-github[bot]'
           RUNWAY_ACTOR_ID: '73448015'
+          GITHUB_EVENT_SENDER_TYPE: ${{ github.event.sender.type }}
         run: |
           set -euo pipefail
-          if [[ "${{ github.event.sender.type }}" != "Bot" ]]; then
-            echo "::error::Release-branch orchestrator dispatch must come from a GitHub App bot (got: ${{ github.event.sender.type }})"
+          if [[ "${GITHUB_EVENT_SENDER_TYPE}" != "Bot" ]]; then
+            echo "::error::Release-branch orchestrator dispatch must come from a GitHub App bot (got: ${GITHUB_EVENT_SENDER_TYPE})"
             exit 1
           fi
-          if [[ "${{ github.actor }}" != "${RUNWAY_ACTOR_LOGIN}" ]]; then
-            echo "::error::Expected actor ${RUNWAY_ACTOR_LOGIN}, got ${{ github.actor }}"
+          if [[ "${GITHUB_ACTOR}" != "${RUNWAY_ACTOR_LOGIN}" ]]; then
+            echo "::error::Expected actor ${RUNWAY_ACTOR_LOGIN}, got ${GITHUB_ACTOR}"
             exit 1
           fi
           if [[ "${{ github.event.sender.id }}" != "${RUNWAY_ACTOR_ID}" ]]; then
@@ -178,7 +179,7 @@ jobs:
             echo "| --- | --- |"
             echo "| Version | \`${VERSION}\` |"
             echo "| Release SHA | \`${RELEASE_SHA}\` |"
-            echo "| Ref | \`${{ github.ref }}\` |"
+            echo "| Ref | \`${GITHUB_REF}\` |"
             echo "| execute_store_phases | \`${EXECUTE_STORE}\` |"
             echo "| release_exists (auto-skip Phase 1) | \`${RELEASE_EXISTS}\` |"
           } >> "${GITHUB_STEP_SUMMARY}"

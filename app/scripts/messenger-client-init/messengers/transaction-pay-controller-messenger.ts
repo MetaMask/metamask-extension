@@ -20,6 +20,7 @@ import type {
   TransactionControllerIsAtomicBatchSupportedAction,
   TransactionControllerUnapprovedTransactionAddedEvent,
   TransactionControllerUpdateTransactionAction,
+  TransactionControllerUpdateTransactionMetadataAction,
 } from '@metamask/transaction-controller';
 import type { RootMessenger } from '../../lib/messenger';
 
@@ -37,17 +38,13 @@ export function getTransactionPayControllerMessenger(
   messenger.delegate({
     messenger: controllerMessenger,
     actions: [
-      'AccountTrackerController:getState',
-      'AssetsController:getStateForTransactionPay',
-      'CurrencyRateController:getState',
+      'AccountsController:getState',
+      'AssetsController:getState',
       'GasFeeController:getState',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
       'NetworkController:getNetworkConfigurationByChainId',
       'RemoteFeatureFlagController:getState',
-      'TokenBalancesController:getState',
-      'TokenRatesController:getState',
-      'TokensController:getState',
       'TransactionController:estimateGas',
       'TransactionController:estimateGasBatch',
       'TransactionController:getGasFeeTokens',
@@ -56,14 +53,11 @@ export function getTransactionPayControllerMessenger(
       'KeyringController:getState',
       'KeyringController:signTypedMessage',
       'RampsController:getOrder',
-      'RampsController:getQuotes',
+      'RampsController:getQuoteWithFees',
       'SentinelApiService:simulateTransactions',
     ],
     events: [
       'AssetsController:stateChange',
-      'CurrencyRateController:stateChange',
-      'TokenRatesController:stateChange',
-      'TokensController:stateChange',
       'TransactionController:stateChange',
       'TransactionController:unapprovedTransactionAdded',
     ],
@@ -80,6 +74,7 @@ type InitMessengerActions =
   | TransactionControllerGetStateAction
   | TransactionControllerIsAtomicBatchSupportedAction
   | TransactionControllerUpdateTransactionAction
+  | TransactionControllerUpdateTransactionMetadataAction
   | MoneyAccountControllerGetMoneyAccountAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetNetworkClientByIdAction
@@ -120,6 +115,7 @@ export function getTransactionPayControllerInitMessenger(
       'TransactionController:getState',
       'TransactionController:isAtomicBatchSupported',
       'TransactionController:updateTransaction',
+      'TransactionController:updateTransactionMetadata',
     ],
     events: ['TransactionController:unapprovedTransactionAdded'],
   });
