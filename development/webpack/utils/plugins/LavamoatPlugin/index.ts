@@ -100,6 +100,9 @@ const getScuttleGlobalThisExceptions = (args: Args) => [
   // v10 Sentry web-vitals (whenIdleOrHidden) feature-detects this;
   // under scuttling the detection itself throws unless excepted.
   'requestIdleCallback',
+  // Sentry creates its layout-shift (CLS) observer only after first paint,
+  // once scuttling is in place, and drops CLS silently when this throws.
+  'PerformanceObserver',
   // globals used by e2e
   ...(args.test ? ['ret_nodes', 'browser', 'chrome', 'indexedDB'] : []),
 ];

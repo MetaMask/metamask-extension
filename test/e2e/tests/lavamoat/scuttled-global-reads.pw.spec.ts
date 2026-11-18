@@ -12,8 +12,6 @@ import { login } from '../../page-objects/flows/login.flow';
 // warning and fails, and the callers we know of swallow the failure, so a new
 // entry here means something stopped working without an error.
 const KNOWN_SCUTTLED_READS = [
-  // Sentry's layout-shift (CLS) observer.
-  'PerformanceObserver',
   // Sentry request matching and URL parsing.
   'URL',
   // Sentry's scope-to-span references; falls back to strong references.
