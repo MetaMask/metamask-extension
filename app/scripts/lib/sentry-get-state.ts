@@ -30,14 +30,6 @@ export async function getAnalyticsState(): Promise<AnalyticsParticipation> {
   const flags = getManifestFlags();
 
   if (flags.ci && flags.sentry?.forceEnable) {
-    if (await isBasicFunctionalityOff()) {
-      return {
-        analyticsId: undefined,
-        optedIn: false,
-        consentDecisionMade: true,
-      };
-    }
-
     return {
       analyticsId: undefined,
       optedIn: true,
@@ -154,57 +146,4 @@ function getControllerState<TControllerState>(
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === 'object';
-}
-
-/**
- * Basic functionality off is `PreferencesController.useExternalServices === false`.
- * CI `sentry.forceEnable` must not send when that preference is off.
- *
- * @param value - A Sentry snapshot, persisted vault, or controller state bag.
- * @returns True when the preference is present and false.
- */
-function isBasicFunctionalityOffIn(value: unknown): boolean {
-  if (!isRecord(value)) {
-    return false;
-  }
-
-  if (value.useExternalServices === false) {
-    return true;
-  }
-
-  const preferences = value.PreferencesController;
-  if (isRecord(preferences) && preferences.useExternalServices === false) {
-    return true;
-  }
-
-  const {data} = value;
-  if (isRecord(data) && isBasicFunctionalityOffIn(data)) {
-    return true;
-  }
-
-  const {metamask} = value;
-  if (isRecord(metamask) && metamask.useExternalServices === false) {
-    return true;
-  }
-
-  return false;
-}
-
-async function isBasicFunctionalityOff(): Promise<boolean> {
-  if (isBasicFunctionalityOffIn(getState())) {
-    return true;
-  }
-
-  const getPersistedState = globalThis.stateHooks?.getPersistedState;
-  if (!getPersistedState) {
-    return false;
-  }
-
-  try {
-    return isBasicFunctionalityOffIn(
-      await getPersistedState({ reportErrors: false }),
-    );
-  } catch {
-    return false;
-  }
 }

@@ -1,13 +1,8 @@
-import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import {
   getAnalyticsState,
   getAnalyticsStateFromAppState,
   getState,
 } from './sentry-get-state';
-
-jest.mock('../../../shared/lib/manifestFlags', () => ({
-  getManifestFlags: jest.fn(() => ({})),
-}));
 
 /** Matches `StateHooks.getSentryState` so tests satisfy `types/global.d.ts`. */
 function emptySentrySnapshot(): ReturnType<
@@ -99,29 +94,6 @@ describe('sentry-get-state', () => {
       });
       expect(getPersistedState).toHaveBeenCalledWith({
         reportErrors: false,
-      });
-    });
-
-    it('stays opted out when CI force-enables Sentry and basic functionality is off', async () => {
-      jest.mocked(getManifestFlags).mockReturnValueOnce({
-        ci: { enabled: true },
-        sentry: { forceEnable: true },
-      });
-      globalThis.stateHooks = {
-        ...globalThis.stateHooks,
-        getSentryState: () => emptySentrySnapshot(),
-        getPersistedState: async () => ({
-          data: {
-            PreferencesController: { useExternalServices: false },
-          },
-        }),
-        getBackupState: async () => ({}),
-      };
-
-      await expect(getAnalyticsState()).resolves.toStrictEqual({
-        consentDecisionMade: true,
-        optedIn: false,
-        analyticsId: undefined,
       });
     });
 
