@@ -175,7 +175,7 @@ function getSidePanelApi(
   return sidePanel as SidePanelApiWithBehavior;
 }
 
-function getUseSidePanelAsDefault(
+function getSidePanelPreference(
   controller: SidePanelToolbarBehaviorController | null | undefined,
 ): boolean {
   return (
@@ -215,9 +215,9 @@ export async function applyToolbarSidePanelBehavior(
   getController: SidePanelToolbarBehaviorDeps['getController'],
   sidePanelApi: SidePanelApiWithBehavior,
 ): Promise<void> {
-  const useSidePanelAsDefault = getUseSidePanelAsDefault(getController());
+  const preferSidePanel = getSidePanelPreference(getController());
   await sidePanelApi.setPanelBehavior({
-    openPanelOnActionClick: useSidePanelAsDefault,
+    openPanelOnActionClick: preferSidePanel,
   });
 }
 
@@ -237,13 +237,13 @@ export async function openRoute({
 }) {
   registerPendingRouteListeners();
 
-  const useSidePanelAsDefault =
+  const preferSidePanel =
     controller?.preferencesController?.state?.preferences
       ?.useSidePanelAsDefault ?? true;
   const hash = `#${path}${search ?? ''}`;
 
   if (
-    useSidePanelAsDefault &&
+    preferSidePanel &&
     chrome.sidePanel?.open &&
     typeof windowId === 'number'
   ) {
@@ -366,10 +366,10 @@ export async function setupSidePanelToolbarBehavior(
     const controller = deps.getController();
     controller?.controllerMessenger?.subscribe(
       'PreferencesController:stateChange',
-      (useSidePanelAsDefault) => {
+      (preferSidePanel) => {
         sidePanelApi
           .setPanelBehavior({
-            openPanelOnActionClick: useSidePanelAsDefault,
+            openPanelOnActionClick: preferSidePanel,
           })
           .catch((error) =>
             console.error('Error updating panel behavior:', error),
