@@ -170,7 +170,15 @@ export function EnforcedSimulationsRow() {
     [transactionId, updateTransactionEventFragment],
   );
 
-  if (isUnavailable || !hasInitialized) {
+  // Eligibility can be lost after initialization, for example when a
+  // re-simulation fails after opting out, so stop offering protection that
+  // cannot be enforced. Keep the row while protection is applied so the user
+  // can still opt out.
+  if (
+    isUnavailable ||
+    !hasInitialized ||
+    (!isEligible && !hasEnforcedSimulations)
+  ) {
     return null;
   }
 

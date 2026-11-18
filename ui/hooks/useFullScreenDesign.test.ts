@@ -1,9 +1,7 @@
 import { act } from '@testing-library/react';
 import { renderHookWithProviderTyped } from '../../test/lib/render-helpers-navigate';
-import {
-  FULL_SCREEN_DESIGN_MIN_WIDTH,
-  useFullScreenDesign,
-} from './useFullScreenDesign';
+import { WIDE_SCREEN_DESIGN_MIN_WIDTH } from '../../shared/constants/layout';
+import { useFullScreenDesign } from './useFullScreenDesign';
 
 /**
  * Mocks `window.matchMedia` with a controllable `min-width` media query.
@@ -56,13 +54,13 @@ describe('useFullScreenDesign', () => {
   });
 
   it('returns true when the flag is enabled and the viewport is at the minimum width', () => {
-    mockViewportWidth(FULL_SCREEN_DESIGN_MIN_WIDTH);
+    mockViewportWidth(WIDE_SCREEN_DESIGN_MIN_WIDTH);
     const { result } = renderUseFullScreenDesign();
     expect(result.current).toBe(true);
   });
 
   it('returns false when the flag is enabled but the viewport is narrower than the minimum width', () => {
-    mockViewportWidth(FULL_SCREEN_DESIGN_MIN_WIDTH - 1);
+    mockViewportWidth(WIDE_SCREEN_DESIGN_MIN_WIDTH - 1);
     const { result } = renderUseFullScreenDesign();
     expect(result.current).toBe(false);
   });
@@ -97,10 +95,10 @@ describe('useFullScreenDesign', () => {
     const { result } = renderUseFullScreenDesign();
     expect(result.current).toBe(true);
 
-    act(() => viewport.resize(FULL_SCREEN_DESIGN_MIN_WIDTH - 1));
+    act(() => viewport.resize(WIDE_SCREEN_DESIGN_MIN_WIDTH - 1));
     expect(result.current).toBe(false);
 
-    act(() => viewport.resize(FULL_SCREEN_DESIGN_MIN_WIDTH));
+    act(() => viewport.resize(WIDE_SCREEN_DESIGN_MIN_WIDTH));
     expect(result.current).toBe(true);
   });
 

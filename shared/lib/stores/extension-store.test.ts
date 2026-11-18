@@ -202,6 +202,98 @@ describe('ExtensionStore', () => {
     });
   });
 
+  describe('getSplitStateReadDiagnostics', () => {
+    it('reports unsupported storage as a failed manifest read', async () => {
+      const localStore = setup({ localMock: false });
+
+      await expect(
+        localStore.getSplitStateReadDiagnostics(),
+      ).resolves.toStrictEqual({
+        manifestStatus: 'failed',
+        manifestErrorName: 'UnsupportedStorage',
+        readableKeys: [],
+        missingKeys: [],
+        failedKeys: [],
+      });
+    });
+
+    it('reports a missing manifest for legacy data storage', async () => {
+      const get = jest.fn().mockResolvedValue({
+        data: { KeyringController: { vault: 'secret-vault' } },
+        meta: { version: 1 },
+      });
+      const localStore = setup({ localMock: { get } });
+
+      await expect(
+        localStore.getSplitStateReadDiagnostics(),
+      ).resolves.toStrictEqual({
+        manifestStatus: 'missing',
+        readableKeys: [],
+        missingKeys: [],
+        failedKeys: [],
+      });
+      expect(JSON.stringify(get.mock.results)).not.toContain('secret-vault');
+    });
+
+    it('reports a failed manifest read and does not read controller keys', async () => {
+      const manifestError = new Error('manifest unavailable');
+      manifestError.name = 'QuotaExceededError';
+      const get = jest.fn().mockRejectedValue(manifestError);
+      const localStore = setup({ localMock: { get } });
+
+      await expect(
+        localStore.getSplitStateReadDiagnostics(),
+      ).resolves.toStrictEqual({
+        manifestStatus: 'failed',
+        manifestErrorName: 'QuotaExceededError',
+        readableKeys: [],
+        missingKeys: [],
+        failedKeys: [],
+      });
+      expect(get).toHaveBeenCalledTimes(1);
+      expect(get).toHaveBeenCalledWith(['manifest']);
+    });
+
+    it('classifies readable, missing, and failed keys without keeping values', async () => {
+      const keyError = new Error('key unavailable');
+      keyError.name = 'QuotaExceededError';
+      const get = jest.fn(async (keys: string[]) => {
+        if (keys.length === 1 && keys[0] === 'manifest') {
+          return {
+            manifest: [
+              'AccountsController',
+              'KeyringController',
+              'FooController',
+              1,
+            ],
+          };
+        }
+        if (keys[0] === 'AccountsController') {
+          return { AccountsController: { address: '0xsecret' } };
+        }
+        if (keys[0] === 'KeyringController') {
+          return {};
+        }
+        throw keyError;
+      });
+      const localStore = setup({ localMock: { get } });
+
+      const diagnostics = await localStore.getSplitStateReadDiagnostics();
+
+      expect(diagnostics).toStrictEqual({
+        manifestStatus: 'readable',
+        manifestKeyCount: 3,
+        readableKeys: ['AccountsController'],
+        missingKeys: ['KeyringController'],
+        failedKeys: [{ key: 'FooController', errorName: 'QuotaExceededError' }],
+      });
+      expect(JSON.stringify(diagnostics)).not.toContain('0xsecret');
+      expect(get).toHaveBeenCalledWith(['AccountsController']);
+      expect(get).toHaveBeenCalledWith(['KeyringController']);
+      expect(get).toHaveBeenCalledWith(['FooController']);
+    });
+  });
+
   describe('reset', () => {
     it('throws an error if called in a browser that does not support local storage', async () => {
       const localStore = setup({ localMock: false });

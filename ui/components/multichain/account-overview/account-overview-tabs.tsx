@@ -17,6 +17,7 @@ import {
   getDefaultHomeActiveTabName,
   getEnabledChainIds,
   getIsDefiPositionsEnabled,
+  getUseExternalServices,
 } from '../../../selectors';
 import {
   detectNfts,
@@ -63,6 +64,7 @@ export const AccountOverviewTabs = ({
   const dispatch = useDispatch();
   const selectedChainIds = useSelector(getEnabledChainIds);
   const defiPositionsEnabled = useSelector(getIsDefiPositionsEnabled);
+  const useExternalServices = useSelector(getUseExternalServices);
   const { isWideLayout } = useAppLayout();
 
   useEffect(() => {
@@ -145,7 +147,7 @@ export const AccountOverviewTabs = ({
           </Tab>
         )}
 
-        {showDefi && defiPositionsEnabled && (
+        {showDefi && defiPositionsEnabled && useExternalServices && (
           <Tab
             name={t('defi')}
             tabKey={AccountOverviewTabKey.DeFi}
