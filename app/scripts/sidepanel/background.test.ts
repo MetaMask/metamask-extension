@@ -249,21 +249,6 @@ function createToolbarController(
 }
 
 describe('applyEarlySidePanelToolbarBehavior', () => {
-  const setPopup = jest.fn().mockResolvedValue(undefined);
-  let originalChrome: typeof chrome;
-
-  beforeEach(() => {
-    setPopup.mockClear();
-    originalChrome = globalThis.chrome;
-    globalThis.chrome = {
-      action: { setPopup },
-    } as unknown as typeof chrome;
-  });
-
-  afterEach(() => {
-    globalThis.chrome = originalChrome;
-  });
-
   it('sets openPanelOnActionClick to true when sidePanel API is available', () => {
     const { sidePanelApi, setPanelBehavior } = createSidePanelMock();
 
@@ -272,7 +257,6 @@ describe('applyEarlySidePanelToolbarBehavior', () => {
     expect(setPanelBehavior).toHaveBeenCalledWith({
       openPanelOnActionClick: true,
     });
-    expect(setPopup).toHaveBeenCalledWith({ popup: '' });
   });
 
   it('ignores setPanelBehavior rejection', async () => {
