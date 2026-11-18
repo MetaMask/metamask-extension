@@ -235,6 +235,41 @@ describe('runPageLoadBenchmark heroPainted', () => {
     expect(results.max.heroPainted).toBe(840);
   });
 
+  it('counts the page loads with no mark in missingCount, and none when every load has one', async () => {
+    const missing = await runPageLoadBenchmark(
+      measurePageFn([
+        [100, 100, 100],
+        [null, null, 840],
+      ]),
+      { browserLoads: 2, pageLoads: 3 },
+    );
+    const complete = await runPageLoadBenchmark(
+      measurePageFn([
+        [100, 100, 100],
+        [800, 820, 840],
+      ]),
+      { browserLoads: 2, pageLoads: 3 },
+    );
+
+    expect(missing.missingCount?.heroPainted).toBe(2);
+    expect(missing.missingCount?.uiStartup).toBe(0);
+    expect(complete.missingCount?.heroPainted).toBe(0);
+  });
+
+  it('counts a load with no mark as missing when it is the only one that lacks it', async () => {
+    const results = await runPageLoadBenchmark(
+      measurePageFn([
+        [100, 100, 100],
+        [null, 820, 840],
+      ]),
+      { browserLoads: 2, pageLoads: 3 },
+    );
+
+    // The mean covers the two loads that painted: the count is what shows a third did not.
+    expect(results.mean.heroPainted).toBe(830);
+    expect(results.missingCount?.heroPainted).toBe(1);
+  });
+
   it('keeps a metric other than heroPainted that failed to read as NaN', async () => {
     const unreadable = {
       ...pageLoadMetrics(1000),
@@ -250,6 +285,7 @@ describe('runPageLoadBenchmark heroPainted', () => {
     );
 
     expect(results.mean.loadScripts).toBeNaN();
+    expect(results.missingCount?.loadScripts).toBe(1);
   });
 });
 

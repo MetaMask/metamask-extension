@@ -507,12 +507,16 @@ export async function runPageLoadBenchmark(
 
   const result: Record<string, number[]> = {};
   const trimmedCounts: StatisticalResult = {};
+  const missingCounts: StatisticalResult = {};
   const values: MetricSamples = {};
   for (const [key, tracePath] of Object.entries(ALL_METRICS)) {
     const rawSamples = measuredResults.map((m) => get(m, tracePath) as number);
+    missingCounts[key] = rawSamples.filter(
+      (value) => !Number.isFinite(value),
+    ).length;
     // A page load that set no hero mark has no `heroPainted` value: it stays in
-    // `values` and is left out of the statistics. Any other metric that failed to
-    // read stays in them as NaN.
+    // `values` and in `missingCount`, and is left out of the statistics. Any other
+    // metric that failed to read stays in them as NaN.
     const { filtered, outlierCount } = detectOutliersIQR(
       key === 'heroPainted'
         ? rawSamples.filter((value) => Number.isFinite(value))
@@ -569,6 +573,7 @@ export async function runPageLoadBenchmark(
     p95,
     trimmedCount: trimmedCounts,
     outliers: { ...trimmedCounts },
+    missingCount: missingCounts,
     values,
     ...(webVitals && { webVitals }),
   };
