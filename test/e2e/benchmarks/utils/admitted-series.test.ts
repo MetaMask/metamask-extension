@@ -10,8 +10,8 @@ describe('ADMITTED_SERIES', () => {
     }
   });
 
-  it('holds the eleven series with a GATE verdict', () => {
-    expect(ADMITTED_SERIES).toHaveLength(11);
+  it('holds the twelve series with a GATE verdict', () => {
+    expect(ADMITTED_SERIES).toHaveLength(12);
   });
 
   it('keys the startup series that have a METRIC constant by it', () => {
@@ -23,10 +23,11 @@ describe('ADMITTED_SERIES', () => {
     );
   });
 
+  it('admits add account at the size its recall passed at', () => {
+    expect(getAdmittedDeltaBlockMs('loadNewAccount.load_new_account')).toBe(50);
+  });
+
   it('leaves out series without a verdict', () => {
-    expect(
-      getAdmittedDeltaBlockMs('loadNewAccount.load_new_account'),
-    ).toBeUndefined();
     expect(
       getAdmittedDeltaBlockMs(METRIC.startupStandardHome.uiStartup),
     ).toBeUndefined();

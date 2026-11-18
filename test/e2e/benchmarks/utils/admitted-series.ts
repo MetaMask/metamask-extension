@@ -7,7 +7,10 @@ import { METRIC } from './thresholds';
  */
 export type AdmittedSeries = {
   readonly series: string;
-  /** `δ_block` in ms: `max(33, 10% of the A/A arm's base mean)`. */
+  /**
+   * `δ_block` in ms: `max(33, 10% of the A/A arm's base mean)`, or half the
+   * smallest planted regression the series catches at the recall bar, if larger.
+   */
   readonly deltaBlockMs: number;
 };
 
@@ -32,6 +35,9 @@ export const ADMITTED_SERIES: readonly AdmittedSeries[] = [
   // hold `assetClickToPriceChartLegacy`.
   { series: 'assetDetails.assetClickToPriceChart', deltaBlockMs: 36.055 },
   { series: 'solanaAssetDetails.assetClickToPriceChart', deltaBlockMs: 33 },
+
+  // Add account. Recall missed at 2 x 34.81 ms and passed with a 100 ms hold.
+  { series: 'loadNewAccount.load_new_account', deltaBlockMs: 50 },
 
   // Bridge long-task total and total blocking time.
   // No `METRIC` key for either blocking series.
