@@ -341,6 +341,7 @@ const SUMMARY_KEYS = new Set<string>([
   'p95',
   'trimmedCount',
   'outliers',
+  'host',
 ]);
 
 type IterationRecord = { iteration: number } & Record<string, unknown>;
@@ -546,6 +547,9 @@ export function mergePairedRuns({
 
   return {
     ...statistics,
+    // The merge runs where no browser session did; a run's own record has the
+    // browser and driver versions the job measured on.
+    ...(first?.host && { host: first.host }),
     ...merged,
     pairing: { order, warmup: warmupEntries, runs: runEntries },
     ...(failures.length > 0 && {

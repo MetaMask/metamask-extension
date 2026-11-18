@@ -44,6 +44,7 @@ import {
 } from './comparison-utils';
 import {
   evaluatePairedGate,
+  formatJobProvenance,
   formatPairedOutcome,
   type PairedGateOutcome,
 } from './paired-gate';
@@ -87,6 +88,8 @@ export type ComparisonResult = {
   comparisons: BenchmarkEntryComparison[];
   /** One per admitted series with a result file; the only blocking outcomes. */
   paired: PairedGateOutcome[];
+  /** What each job with an admitted series ran on, from its results' `host`. */
+  provenance: string[];
   anyFailed: boolean;
 };
 
@@ -156,6 +159,7 @@ export function runComparison(
   return {
     comparisons,
     paired,
+    provenance: formatJobProvenance(benchmarks),
     anyFailed: paired.some((outcome) => outcome.failed),
   };
 }
@@ -350,6 +354,13 @@ export function printReport(result: ComparisonResult): void {
   const clearedSeries = result.paired.filter((outcome) => !outcome.failed);
   for (const outcome of clearedSeries) {
     console.log(`\nPASS  ${formatPairedOutcome(outcome)}`);
+  }
+
+  if (result.provenance.length > 0) {
+    console.log('\nRunner provenance');
+    for (const line of result.provenance) {
+      console.log(`      ${line}`);
+    }
   }
 
   // Show warned entries with details

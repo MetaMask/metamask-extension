@@ -488,6 +488,20 @@ describe('mergePairedRuns', () => {
     ]);
   });
 
+  it('takes the job’s host record from its first measured run and keeps it out of pairing.runs', () => {
+    const host = {
+      cpuModel: 'AMD EPYC 7763',
+      browserName: 'chrome',
+      browserVersion: '131.0.6778.85',
+    };
+    const merged = merge(job(() => ({ host })));
+
+    expect(merged.host).toStrictEqual(host);
+    for (const run of merged.pairing.runs) {
+      expect(run).not.toHaveProperty('host');
+    }
+  });
+
   it('records the warm-up runs under pairing.warmup, not in runs, and keeps none of their values', () => {
     const merged = merge();
 

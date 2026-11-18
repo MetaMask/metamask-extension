@@ -13,6 +13,11 @@ import {
   type PairedDecision,
   type PairedVerdict,
 } from '../../test/e2e/benchmarks/utils/paired-decision';
+import {
+  provenanceProblems,
+  STABLE_RUNNER_SPEC,
+  type StableRunnerSpec,
+} from '../../test/e2e/benchmarks/utils/stable-runner-spec';
 import { parseArtifactName } from './utils';
 
 /** A results file as `loadCurrentBenchmarks` reads it. */
@@ -186,11 +191,13 @@ function pairDifferences(
  * @param benchmarks - The result files; a flow's jobs pool per browser and build.
  * @param decide - `false` only checks the values are there, for one leg.
  * @param requireAll - A series missing any paired job's differences fails.
+ * @param spec - A job whose `host` falls outside it counts as missing for every series it carries.
  */
 export function evaluatePairedGate(
   benchmarks: readonly PairedGateInput[],
   decide = true,
   requireAll = false,
+  spec: StableRunnerSpec = STABLE_RUNNER_SPEC,
 ): PairedGateOutcome[] {
   const groups = new Map<string, Group>();
   const groupFor = (source: string, entry: AdmittedSeries): Group => {
@@ -224,6 +231,16 @@ export function evaluatePairedGate(
         continue;
       }
       if (!('pairing' in results || 'baseValues' in results)) {
+        continue;
+      }
+
+      const nonconforming = provenanceProblems(results.host, spec);
+      if (nonconforming.length > 0) {
+        for (const entry of admitted) {
+          groupFor(source, entry).problems.push(
+            ...nonconforming.map((problem) => `${name}: ${problem}`),
+          );
+        }
         continue;
       }
 
@@ -309,4 +326,32 @@ export function formatPairedOutcome(outcome: PairedGateOutcome): string {
     default:
       return `${prefix}: ${outcome.verdict}, ${decision?.n} differences, shift ${ms(decision?.shift)}, lower bound ${ms(decision?.lower)} against δ_block ${ms(outcome.deltaBlockMs)}`;
   }
+}
+
+// One line per result file holding an admitted series' flow: what the job ran
+// on, `null` for what it did not record.
+export function formatJobProvenance(
+  benchmarks: readonly PairedGateInput[],
+): string[] {
+  const admittedFlows = new Set(
+    ADMITTED_SERIES.map(({ series }) => splitSeries(series).flow),
+  );
+  return benchmarks.flatMap(({ name, data }) => {
+    const carried = Object.entries(data).filter(([flow]) =>
+      admittedFlows.has(flow),
+    );
+    if (carried.length === 0) {
+      return [];
+    }
+    const host = carried
+      .map(([, results]) => (isPlainObject(results) ? results.host : undefined))
+      .find(isPlainObject);
+    if (!host) {
+      return [`${name}: no provenance recorded`];
+    }
+    const field = (key: string): string => JSON.stringify(host[key] ?? null);
+    return [
+      `${name}: cpu ${field('cpuModel')} x${field('cpuCount')}, image ${field('imageOs')} ${field('imageVersion')}, runner ${field('runnerEnvironment')} ${field('name')}, browser ${field('browserName')} ${field('browserVersion')}, driver ${field('driverVersion')}, commit ${field('commitHash')}`,
+    ];
+  });
 }
