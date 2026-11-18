@@ -29,7 +29,7 @@ export type SidePanelToolbarBehaviorController = {
 export type SidePanelToolbarBehaviorDeps = {
   getController: () => SidePanelToolbarBehaviorController | null | undefined;
   waitUntilInitialized: () => Promise<void>;
-  onPreferSidePanelChange?: (useSidePanelAsDefault: boolean) => void;
+  onPreferSidePanelChange?: (value: boolean) => void;
 };
 
 export type SidePanelBehaviorApi = {
