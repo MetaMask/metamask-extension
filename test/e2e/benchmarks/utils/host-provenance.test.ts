@@ -120,6 +120,19 @@ describe('runner image and environment', () => {
       commitHash: null,
     });
   });
+
+  it('reads the build-source hash CI computed', () => {
+    process.env = { ...env, BUILD_SOURCE_HASH: 'f00dfeed' };
+    expect(captureHostProvenance().buildSourceHash).toBe('f00dfeed');
+  });
+
+  it('records the build-source hash as null when CI passed none', () => {
+    const { BUILD_SOURCE_HASH, ...rest } = env;
+    process.env = rest;
+    expect(captureHostProvenance().buildSourceHash).toBeNull();
+    process.env = { ...rest, BUILD_SOURCE_HASH: '' };
+    expect(captureHostProvenance().buildSourceHash).toBeNull();
+  });
 });
 
 describe('browser session', () => {

@@ -96,6 +96,11 @@ export type HostProvenance = {
   driverVersion: string | null;
   /** The commit the job measured, from `HEAD_COMMIT_HASH`. */
   commitHash: string | null;
+  /**
+   * Build-source hash of the build measured, from `BUILD_SOURCE_HASH`. Null
+   * where CI did not compute it or reused builds without checking it.
+   */
+  buildSourceHash: string | null;
 };
 
 /** Per-metric statistics (mean, percentiles, etc.) */

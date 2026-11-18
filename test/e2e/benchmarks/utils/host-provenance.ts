@@ -175,5 +175,7 @@ export function captureHostProvenance(): HostProvenance {
     runnerEnvironment: process.env.RUNNER_ENVIRONMENT ?? null,
     ...browserSession,
     commitHash: process.env.HEAD_COMMIT_HASH ?? null,
+    // An unset workflow input reaches the env as an empty string.
+    buildSourceHash: process.env.BUILD_SOURCE_HASH || null,
   };
 }
