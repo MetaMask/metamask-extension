@@ -372,8 +372,8 @@ export type TraceRequest = {
    *
    * In the background (service worker or persistent background page), once
    * its pageload has ended, a trace whose parent is undeclared or does not
-   * resolve, started outside any active span, also starts a new trace, as if
-   * `root` were set. The SDK keeps the ended pageload's trace id
+   * resolve, that would not nest under the active span, also starts a new
+   * trace, as if `root` were set. The SDK keeps the ended pageload's trace id
    * and sampling decision on the scope for the background's whole life, so such
    * work would otherwise join that trace and be kept or dropped with it.
    *
@@ -623,13 +623,14 @@ export function trackBackgroundPageloadEnd(client?: Client): void {
 }
 
 /**
- * Whether new work would join the ended background pageload's trace: no
- * active span, and the scope still carries that pageload's trace id.
+ * Whether the scope still carries the ended background pageload's trace id,
+ * which a span starting without a parent would take. An active span is not
+ * considered: callers ask this only for work that would not nest under it.
  *
  * @returns True when such work should start its own trace.
  */
 function isOnEndedBackgroundPageload(): boolean {
-  if (!endedBackgroundPageloadTraceId || sentryGetActiveSpan()) {
+  if (!endedBackgroundPageloadTraceId) {
     return false;
   }
   return getScopeTraceId() === endedBackgroundPageloadTraceId;
@@ -1126,10 +1127,14 @@ function startSpan<T>(
   // Work without a resolved parent leaves the scope's ambient trace id, which
   // is the ended background pageload's, or the UI document's latest route's. In
   // either case it starts its own trace, declared parent or not. `traceparent`
-  // data is handled below and is not a root.
+  // data is handled below and is not a root. In the background, an active span
+  // that the fallback or the unresolved-parent nesting below adopts keeps the
+  // work out of the ended pageload's trace.
   const root =
     request.root ||
-    (!parentSpan && isOnEndedBackgroundPageload()) ||
+    (!parentSpan &&
+      !((parentDeclared || allowActiveSpanFallback) && sentryGetActiveSpan()) &&
+      isOnEndedBackgroundPageload()) ||
     (!parentSpan &&
       isOnDocumentRouteTrace() &&
       (!parentDeclared || !sentryGetActiveSpan()));
