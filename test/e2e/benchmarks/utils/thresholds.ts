@@ -272,17 +272,17 @@ const CONFIRM_TX = {
 } satisfies ThresholdConfig;
 
 const BRIDGE_USER_ACTIONS = {
-  bridge_load_page: {
+  bridge_load_pageLegacy: {
     p75: { warn: 500, fail: 800 },
     p95: { warn: 800, fail: 1200 },
     ciMultiplier: CI_MULTIPLIER.DEFAULT,
   },
-  bridge_load_asset_picker: {
+  bridge_load_asset_pickerLegacy: {
     p75: { warn: 500, fail: 800 },
     p95: { warn: 800, fail: 1200 },
     ciMultiplier: CI_MULTIPLIER.DEFAULT,
   },
-  bridge_search_token: {
+  bridge_search_tokenLegacy: {
     p75: { warn: 1200, fail: 1800 },
     p95: { warn: 1800, fail: 2500 },
     ciMultiplier: CI_MULTIPLIER.DEFAULT,
