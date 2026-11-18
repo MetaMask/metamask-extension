@@ -683,7 +683,7 @@ async function initialize(backup: Backup | null) {
     getState: initializedController.getState.bind(initializedController),
   })
     .on('navigate', async ({ url, parsed }) => {
-      // don't track deep links that are immediately redirected (like /buy)
+      // Don't track deep links that are immediately redirected.
       if (shouldTrackDeepLinkNavigation(parsed)) {
         trackEvent(createEvent({ signature: parsed.signature, url }));
       }
@@ -809,9 +809,7 @@ export function setupController(
   // User Interface setup
   //
   const { updateBadge, clearFailedTxBadge } = createBadgeManager({
-    getController: () =>
-      // @ts-expect-error MetamaskController is JS until metamask-controller is TS (#41735)
-      metamaskController as BadgeManagerController,
+    getController: () => metamaskController as BadgeManagerController,
     browser,
     notificationManager,
     triggerUi,

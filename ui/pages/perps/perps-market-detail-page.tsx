@@ -835,7 +835,7 @@ const PerpsMarketDetailPage = () => {
   const handlePeriodChange = useCallback(
     (period: CandlePeriod) => {
       setLocalPeriodOverride(period);
-      submitRequestToBackground('setPreference', [
+      submitRequestToBackground('PreferencesController:setPreference', [
         'perpsSelectedCandlePeriod',
         period,
       ]).catch(() => {
@@ -849,11 +849,11 @@ const PerpsMarketDetailPage = () => {
   );
 
   const handleVisibleCandleCountChange = useCallback((count: number) => {
-    submitRequestToBackground('perpsSetVisibleCandleCount', [count]).catch(
-      () => {
-        // The chart remains interactive if preference persistence fails.
-      },
-    );
+    submitRequestToBackground('PerpsController:setVisibleCandleCount', [
+      count,
+    ]).catch(() => {
+      // The chart remains interactive if preference persistence fails.
+    });
   }, []);
 
   const handleBackClick = useCallback(() => {
@@ -1078,7 +1078,7 @@ const PerpsMarketDetailPage = () => {
       [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
         PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
     });
-    submitRequestToBackground('perpsToggleWatchlistMarket', [
+    submitRequestToBackground('PerpsController:toggleWatchlistMarket', [
       decodedSymbol,
     ]).catch((error) => {
       // The star icon renders from `isInWatchlist`, a controller-backed Redux

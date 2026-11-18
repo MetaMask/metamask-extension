@@ -607,6 +607,9 @@ describe('preferences controller', () => {
           sortCallback: 'stringNumeric',
         },
         tokenNetworkFilter: {},
+        tdpChartType: 2,
+        tdpChartInterval: '15m',
+        tdpChartIndicators: [],
         gasSponsorshipOptOutByChainId: {},
       });
     });
@@ -647,6 +650,9 @@ describe('preferences controller', () => {
           sortCallback: 'stringNumeric',
         },
         tokenNetworkFilter: {},
+        tdpChartType: 2,
+        tdpChartInterval: '15m',
+        tdpChartIndicators: [],
         gasSponsorshipOptOutByChainId: {},
       });
     });
@@ -1065,6 +1071,9 @@ describe('preferences controller', () => {
             "smartTransactionsMigrationApplied": false,
             "smartTransactionsOptInStatus": true,
             "supportDataSharingPreference": null,
+            "tdpChartIndicators": [],
+            "tdpChartInterval": "15m",
+            "tdpChartType": 2,
             "tokenNetworkFilter": {},
             "tokenSortConfig": {
               "key": "tokenFiatAmount",
@@ -1141,6 +1150,9 @@ describe('preferences controller', () => {
             "smartTransactionsMigrationApplied": false,
             "smartTransactionsOptInStatus": true,
             "supportDataSharingPreference": null,
+            "tdpChartIndicators": [],
+            "tdpChartInterval": "15m",
+            "tdpChartType": 2,
             "tokenNetworkFilter": {},
             "tokenSortConfig": {
               "key": "tokenFiatAmount",
@@ -1231,6 +1243,9 @@ describe('preferences controller', () => {
             "smartTransactionsMigrationApplied": false,
             "smartTransactionsOptInStatus": true,
             "supportDataSharingPreference": null,
+            "tdpChartIndicators": [],
+            "tdpChartInterval": "15m",
+            "tdpChartType": 2,
             "tokenNetworkFilter": {},
             "tokenSortConfig": {
               "key": "tokenFiatAmount",
@@ -1322,6 +1337,9 @@ describe('preferences controller', () => {
             "smartTransactionsMigrationApplied": false,
             "smartTransactionsOptInStatus": true,
             "supportDataSharingPreference": null,
+            "tdpChartIndicators": [],
+            "tdpChartInterval": "15m",
+            "tdpChartType": 2,
             "tokenNetworkFilter": {},
             "tokenSortConfig": {
               "key": "tokenFiatAmount",

@@ -7,7 +7,8 @@ import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { mockIdentityServices } from '../mocks';
 import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
-import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
+import ContactsListPage from '../../../page-objects/pages/contacts/contacts-list-page';
+import { addContact } from '../../../page-objects/flows/contacts.flow';
 import { skipOnFirefox } from '../helpers';
 import { arrangeContactSyncingTestUtils } from './helpers';
 import { MOCK_CONTACT_ADDRESSES } from './mock-data';
@@ -77,15 +78,15 @@ describe('Contact syncing - New User', function () {
         await driver.delay(1000);
 
         await header.openContactsPage();
-        const contactsSettings = new ContactsSettings(driver);
-        await contactsSettings.checkPageIsLoaded();
+        const contactsListPage = new ContactsListPage(driver);
+        await contactsListPage.checkPageIsLoaded();
 
         // First, let's check if the page is actually showing the right content
         console.log('About to add contact...');
-        await contactsSettings.addContact(
-          testContact.name,
-          testContact.address,
-        );
+        await addContact(driver, {
+          name: testContact.name,
+          address: testContact.address,
+        });
         console.log('Contact added');
 
         // Wait for contact to be synced
@@ -109,7 +110,7 @@ describe('Contact syncing - New User', function () {
         });
 
         // Verify contact was added locally and synced
-        await contactsSettings.checkContactDisplayed({
+        await contactsListPage.checkContactDisplayed({
           contactName: testContact.name,
           address: '0x12345...67890', // Properly shortened address format
         });

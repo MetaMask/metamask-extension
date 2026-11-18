@@ -34,7 +34,7 @@ export default function AboutInfo(): React.ReactElement {
 
   function renderInfoLinks(): React.ReactElement {
     const privacyUrl = 'https://metamask.com/privacy.html';
-    const siteUrl = 'https://metamask.io/';
+    const siteUrl = 'https://metamask.com/';
 
     const linkProps = {
       size: TextButtonSize.BodyMd,

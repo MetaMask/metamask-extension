@@ -17,7 +17,10 @@ import {
 } from '../../../store/actions';
 import { SECOND } from '../../../../shared/constants/time';
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../../helpers/constants/routes';
 import { Header, Page } from '../../../components/multichain/pages/page';
 import {
   getIsSocialLoginFlow,
@@ -107,15 +110,17 @@ export const ImportSrp = () => {
         startAccessory={
           <ButtonIcon
             ariaLabel="back"
+            data-testid="import-srp-back-button"
             iconName={IconName.ArrowLeft}
             onClick={() => {
-              navigate(DEFAULT_ROUTE);
+              navigate(PREVIOUS_ROUTE);
             }}
           />
         }
         endAccessory={
           <ButtonIcon
             ariaLabel="close"
+            data-testid="import-srp-close-button"
             iconName={IconName.Close}
             onClick={() => {
               navigate(DEFAULT_ROUTE);

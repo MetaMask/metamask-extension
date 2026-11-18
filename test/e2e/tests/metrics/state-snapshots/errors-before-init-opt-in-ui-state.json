@@ -113,7 +113,6 @@
       "lastFetched": null,
       "version": "0"
     },
-    "CurrencyController": {},
     "DeFiPositionsControllerV2": "object",
     "GasFeeController": {
       "estimatedGasFeeTimeBounds": {},
@@ -258,6 +257,9 @@
         "smartTransactionsMigrationApplied": "boolean",
         "smartTransactionsOptInStatus": true,
         "supportDataSharingPreference": null,
+        "tdpChartIndicators": "object",
+        "tdpChartInterval": "string",
+        "tdpChartType": "number",
         "tokenNetworkFilter": {
           "0x539": "boolean"
         },
@@ -293,10 +295,13 @@
       "syncQueue": "object"
     },
     "RampsController": {
+      "autorampTransactionRecords": "object",
       "autoramps": "object",
+      "moneyAccountWalletRegistrations": "object",
       "orders": "object",
       "providerAutoSelected": "boolean",
-      "userRegion": null
+      "userRegion": null,
+      "vbaAutorampListFetchedAt": null
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": "number",
@@ -364,6 +369,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 234
+    "version": 235
   }
 }
