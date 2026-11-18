@@ -522,9 +522,9 @@ exports[`TokenTransferInfo renders correctly 1`] = `
             </button>
             <p
               class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-              data-testid="native-currency"
+              data-testid="first-gas-field"
             >
-              $1.26
+              0.0023
             </p>
             <div
               class="gap-1 items-center inline-flex"
