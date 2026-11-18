@@ -481,7 +481,7 @@ describe('setupSidePanelToolbarBehavior', () => {
       sidePanelApi,
     );
 
-    setPanelBehavior.mockRejectedValue(new Error('update failed'));
+    setPanelBehavior.mockRejectedValueOnce(new Error('update failed'));
     preferenceChangeHandler?.(false);
     await new Promise((resolve) => {
       setImmediate(resolve);
