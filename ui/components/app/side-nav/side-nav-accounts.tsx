@@ -95,7 +95,7 @@ export const SideNavAccounts = () => {
         >
           {t('accounts')}
         </Text>
-        <div className="flex items-center gap-1 opacity-0 pointer-events-none group-hover/accounts:pointer-events-auto group-hover/accounts:opacity-100 has-[[aria-pressed=true]]:pointer-events-auto has-[[aria-pressed=true]]:opacity-100">
+        <div className="flex items-center gap-1 opacity-0 pointer-events-none group-hover/accounts:pointer-events-auto group-hover/accounts:opacity-100 focus-within:pointer-events-auto focus-within:opacity-100 has-[[aria-pressed=true]]:pointer-events-auto has-[[aria-pressed=true]]:opacity-100">
           <ButtonIcon
             ref={searchButtonRef}
             iconName={IconName.Search}
