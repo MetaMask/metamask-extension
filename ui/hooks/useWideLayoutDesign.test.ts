@@ -57,7 +57,7 @@ function mockViewportWidth(initialWidth: number) {
   };
 }
 
-function renderuseWideLayoutDesign(
+function renderUseWideLayoutDesign(
   remoteFeatureFlags: Record<string, unknown> = {
     [WIDE_SCREEN_REDESIGN_AB_KEY]: { name: 'treatment' },
   },
@@ -82,19 +82,19 @@ describe('useWideLayoutDesign', () => {
 
   it('returns true when treatment is assigned and the viewport is wide', () => {
     mockViewportWidth(WIDE_SCREEN_DESIGN_MIN_WIDTH);
-    const { result } = renderuseWideLayoutDesign();
+    const { result } = renderUseWideLayoutDesign();
     expect(result.current).toBe(true);
   });
 
   it('returns false when treatment is assigned but the viewport is narrow', () => {
     mockViewportWidth(WIDE_SCREEN_DESIGN_MIN_WIDTH - 1);
-    const { result } = renderuseWideLayoutDesign();
+    const { result } = renderUseWideLayoutDesign();
     expect(result.current).toBe(false);
   });
 
   it('returns false when control is assigned on a wide viewport', () => {
     mockViewportWidth(1280);
-    const { result } = renderuseWideLayoutDesign({
+    const { result } = renderUseWideLayoutDesign({
       [WIDE_SCREEN_REDESIGN_AB_KEY]: { name: 'control' },
     });
     expect(result.current).toBe(false);
@@ -102,13 +102,13 @@ describe('useWideLayoutDesign', () => {
 
   it('returns false when the assignment is missing on a wide viewport', () => {
     mockViewportWidth(1280);
-    const { result } = renderuseWideLayoutDesign({});
+    const { result } = renderUseWideLayoutDesign({});
     expect(result.current).toBe(false);
   });
 
   it('updates when the viewport crosses the breakpoint', () => {
     const viewport = mockViewportWidth(1280);
-    const { result } = renderuseWideLayoutDesign();
+    const { result } = renderUseWideLayoutDesign();
     expect(result.current).toBe(true);
 
     act(() => viewport.resize(WIDE_SCREEN_DESIGN_MIN_WIDTH - 1));
@@ -120,7 +120,7 @@ describe('useWideLayoutDesign', () => {
 
   it('removes its media query listener on unmount', () => {
     const viewport = mockViewportWidth(1280);
-    const { unmount } = renderuseWideLayoutDesign();
+    const { unmount } = renderUseWideLayoutDesign();
     expect(viewport.getListenerCount()).toBe(1);
 
     unmount();
@@ -130,7 +130,7 @@ describe('useWideLayoutDesign', () => {
 
   it('records exposure on the wide home screen', () => {
     mockViewportWidth(1280);
-    renderuseWideLayoutDesign();
+    renderUseWideLayoutDesign();
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -149,14 +149,14 @@ describe('useWideLayoutDesign', () => {
 
   it('does not record exposure on a narrow home screen', () => {
     mockViewportWidth(WIDE_SCREEN_DESIGN_MIN_WIDTH - 1);
-    renderuseWideLayoutDesign();
+    renderUseWideLayoutDesign();
 
     expect(mockTrackEvent).not.toHaveBeenCalled();
   });
 
   it('does not record exposure away from home', () => {
     mockViewportWidth(1280);
-    renderuseWideLayoutDesign(
+    renderUseWideLayoutDesign(
       { [WIDE_SCREEN_REDESIGN_AB_KEY]: { name: 'treatment' } },
       SETTINGS_ROUTE,
     );
@@ -166,7 +166,7 @@ describe('useWideLayoutDesign', () => {
 
   it('records exposure when a narrow home screen becomes wide', () => {
     const viewport = mockViewportWidth(WIDE_SCREEN_DESIGN_MIN_WIDTH - 1);
-    renderuseWideLayoutDesign();
+    renderUseWideLayoutDesign();
     expect(mockTrackEvent).not.toHaveBeenCalled();
 
     act(() => viewport.resize(WIDE_SCREEN_DESIGN_MIN_WIDTH));

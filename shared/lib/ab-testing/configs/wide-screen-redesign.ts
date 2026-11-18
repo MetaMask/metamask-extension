@@ -1,11 +1,5 @@
 import { ABTestVariant, type ABTestVariantName } from '../variants';
 
-/**
- * Remote feature flag key for the wide screen redesign A/B test.
- *
- * Naming follows the extension A/B flag convention enforced by
- * `test/scripts/check-ab-testing-compliance.ts`.
- */
 export const WIDE_SCREEN_REDESIGN_AB_KEY =
   'coreCEUX1492AbtestWideScreenRedesign';
 

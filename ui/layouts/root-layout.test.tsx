@@ -10,7 +10,7 @@ jest.mock('#ui/components/app/rewards/money-referral/ReferralInvite', () => ({
   ReferralInvite: () => null,
 }));
 
-const mockuseWideLayoutDesign = jest.mocked(useWideLayoutDesign);
+const mockUseWideLayoutDesign = jest.mocked(useWideLayoutDesign);
 
 const AppLayoutProbe = () => {
   const { isWideLayout } = useAppLayout();
@@ -40,7 +40,7 @@ const renderRootLayout = () => {
 
 describe('RootLayout', () => {
   it('provides the classic layout when the fullscreen design is off', () => {
-    mockuseWideLayoutDesign.mockReturnValue(false);
+    mockUseWideLayoutDesign.mockReturnValue(false);
 
     const layout = renderRootLayout();
 
@@ -52,7 +52,7 @@ describe('RootLayout', () => {
   });
 
   it('provides the wide layout when the fullscreen design is on', () => {
-    mockuseWideLayoutDesign.mockReturnValue(true);
+    mockUseWideLayoutDesign.mockReturnValue(true);
 
     const layout = renderRootLayout();
 
