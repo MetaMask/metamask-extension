@@ -12,11 +12,11 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import { shortenAddress } from '../../../../../ui/helpers/utils/util';
 import { Driver } from '../../../webdriver/driver';
 import { withStellarFixtures } from '../../stellar/fixtures/with-stellar-fixtures';
+import { buildStellarFixture } from '../../stellar/mocks/common-stellar';
 import {
   STELLAR_NETWORK_NAME,
   XLM_FIAT_DISPLAY,
-  buildStellarFixture,
-} from '../../stellar/mocks/common-stellar';
+} from '../../stellar/mocks/stellar-constants';
 
 /**
  * Stellar HD address derivation E2E cluster.
