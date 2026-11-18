@@ -86,30 +86,27 @@ jest.mock('../../../store/actions', () => ({
 jest.mock('../../../store/controller-actions/transaction-controller');
 
 const mockUseAssetPerpsMarket = jest.fn(
-  (
-    _symbol?: string,
-    _options?: { isRwa?: boolean },
-  ): { market: { name: string } | undefined; isLoading: boolean } => ({
+  (): { market: { name: string } | undefined; isLoading: boolean } => ({
     market: undefined,
     isLoading: false,
   }),
 );
 jest.mock('../hooks/useAssetPerpsMarket', () => ({
   useAssetPerpsMarket: (symbol: string, options?: { isRwa?: boolean }) =>
-    mockUseAssetPerpsMarket(symbol, options),
+    (mockUseAssetPerpsMarket as jest.Mock)(symbol, options),
 }));
 
 type MockTokenAssetQueryResult = {
   data?: { rwaData?: { ticker: string } } | null;
 };
 const mockUseTokenAssetQuery = jest.fn(
-  (_props: { enabled?: boolean }): MockTokenAssetQueryResult => ({
+  (): MockTokenAssetQueryResult => ({
     data: null,
   }),
 );
 jest.mock('../../../hooks/token-asset/useTokenAssetQuery', () => ({
   useTokenAssetQuery: (props: { enabled?: boolean }) =>
-    mockUseTokenAssetQuery(props),
+    (mockUseTokenAssetQuery as jest.Mock)(props),
 }));
 
 const mockUsePerpsPositionForAsset = jest.fn(() => ({
