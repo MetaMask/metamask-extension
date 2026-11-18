@@ -10,7 +10,7 @@ import { withStellarFixtures } from '../stellar/fixtures/with-stellar-fixtures';
 import {
   STELLAR_CHAIN_ID,
   STELLAR_NETWORK_NAME,
-} from '../stellar/mocks/common-stellar';
+} from '../stellar/mocks/stellar-constants';
 
 describe('Stellar - Network', function () {
   describe('default wallet', function () {

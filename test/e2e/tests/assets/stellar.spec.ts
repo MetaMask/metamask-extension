@@ -6,13 +6,13 @@ import AssetDetailsPage from '../../page-objects/pages/asset/asset-details';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import { withStellarFixtures } from '../stellar/fixtures/with-stellar-fixtures';
+import { buildStellarFixture } from '../stellar/mocks/common-stellar';
 import {
   STELLAR_NETWORK_NAME,
   STELLAR_USDC_ASSET_ID,
   XLM_BALANCE_DISPLAY,
   XLM_FIAT_DISPLAY,
-  buildStellarFixture,
-} from '../stellar/mocks/common-stellar';
+} from '../stellar/mocks/stellar-constants';
 
 /** Max wait for Stellar Snap balances to appear in the token list after refresh. */
 const STELLAR_ASSET_LIST_TIMEOUT_MS = 30_000;
