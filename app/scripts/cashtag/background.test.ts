@@ -170,27 +170,6 @@ describe('createCashtagResponse', () => {
     });
   });
 
-  it('delegates swap opens to the shared side-panel route handler', async () => {
-    const openRouteMock = openRoute as jest.Mock;
-
-    await createCashtagResponse(openSwapMessage, widgetSender, getController);
-
-    expect(openRouteMock).toHaveBeenCalledWith({
-      controller: expect.objectContaining({
-        preferencesController: expect.objectContaining({
-          state: expect.objectContaining({
-            preferences: expect.objectContaining({
-              useSidePanelAsDefault: true,
-            }),
-          }),
-        }),
-      }),
-      windowId: 7,
-      path: '/cross-chain/swaps/prepare-bridge-page',
-      search: '?to=eip155%3A1%2Fslip44%3A60',
-    });
-  });
-
   it('does not enable the widget when Basic Functionality is disabled', async () => {
     const controller = getController(false);
 
@@ -224,7 +203,7 @@ describe('createCashtagResponse', () => {
     });
   });
 
-  it('sets bridge location to x_widget before opening swap route', async () => {
+  it('sets bridge location to x_widget and opens the swap route', async () => {
     const controller = getController();
     await createCashtagResponse(
       openSwapMessage,
@@ -235,6 +214,12 @@ describe('createCashtagResponse', () => {
     expect(controller.bridgeController?.setLocation).toHaveBeenCalledWith(
       'x_widget',
     );
+    expect(openRoute).toHaveBeenCalledWith({
+      controller,
+      windowId: 7,
+      path: '/cross-chain/swaps/prepare-bridge-page',
+      search: '?to=eip155%3A1%2Fslip44%3A60',
+    });
   });
 });
 
