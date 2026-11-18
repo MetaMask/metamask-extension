@@ -541,6 +541,23 @@ describe('mergePairedRuns', () => {
     expect(merged.outliers?.tbt).toBe(0);
   });
 
+  it('leaves a page load with no value out of the head statistics, whether its value was NaN or dropped', () => {
+    const outcomes = job();
+    for (const outcome of outcomes.runs) {
+      outcome.result = runResult({
+        heroPainted: [
+          { iteration: 0, value: 300 },
+          { iteration: 1, value: Number.NaN },
+          { iteration: 2 } as unknown as PairedMetricSample,
+        ],
+      });
+    }
+    const merged = merge(outcomes);
+
+    expect(merged.mean.heroPainted).toBe(300);
+    expect(merged.p75?.heroPainted).toBe(300);
+  });
+
   it('merges other per-iteration records across both builds, each entry with its build and run, and leaves any other key on its run', () => {
     const merged = merge(
       job((position) => ({
