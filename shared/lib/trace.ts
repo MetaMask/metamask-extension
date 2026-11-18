@@ -258,6 +258,11 @@ export type SharedTraceState = {
    * the background.
    */
   endedBackgroundPageloadTraceId?: string;
+  /**
+   * The trace id of the UI document's latest pageload or navigation, which the
+   * SDK keeps on the scope until the next navigation. Unset in the background.
+   */
+  documentRouteTraceId?: string;
 };
 
 type PendingTrace = {
@@ -657,10 +662,6 @@ function isOnEndedBackgroundPageload(): boolean {
   return getScopeTraceId() === endedBackgroundPageloadTraceId;
 }
 
-// The trace id of the UI document's latest pageload or navigation, which the
-// SDK keeps on the scope until the next navigation. Unset in the background.
-let documentRouteTraceId: string | undefined;
-
 const ROUTE_OPS = new Set(['pageload', 'navigation']);
 
 /**
@@ -679,7 +680,7 @@ export function trackDocumentRouteTrace(client?: Client): void {
       getRootSpan(span) === span &&
       ROUTE_OPS.has(spanToJSON(span).op ?? '')
     ) {
-      documentRouteTraceId = span.spanContext().traceId;
+      getSharedState().documentRouteTraceId = span.spanContext().traceId;
     }
   };
 
@@ -693,6 +694,7 @@ export function trackDocumentRouteTrace(client?: Client): void {
  * @returns True when such work should start its own trace.
  */
 function isOnDocumentRouteTrace(): boolean {
+  const { documentRouteTraceId } = getSharedState();
   return (
     documentRouteTraceId !== undefined &&
     getScopeTraceId() === documentRouteTraceId
