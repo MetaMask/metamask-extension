@@ -140,6 +140,7 @@ describe('useRouteAssetToken', () => {
     });
     expect(result.current.hasError).toBe(false);
     expect(mockFetchTokenAssets).toHaveBeenCalledWith([daiAssetId], {
+      includeRwaData: true,
       includeTokenSecurityData: true,
     });
   });
