@@ -15,6 +15,7 @@ import type {
   WebVitalsSummary,
 } from '../../../../shared/constants/benchmarks';
 import { BENCHMARK_PERSONA } from '../../../../shared/constants/benchmarks';
+import { captureHostProvenance } from './host-provenance';
 import {
   ALL_METRICS,
   DEFAULT_NUM_BROWSER_LOADS,
@@ -300,6 +301,7 @@ export function convertTimerStatisticsToBenchmarkResults(
   const hasTrimmedCounts = Object.keys(trimmedCount).length > 0;
   const hasOutliers = Object.keys(outliers).length > 0;
   const hasValues = Object.keys(values).length > 0;
+  const host = captureHostProvenance();
 
   return {
     testTitle,
@@ -316,6 +318,7 @@ export function convertTimerStatisticsToBenchmarkResults(
     ...(hasTrimmedCounts && { trimmedCount }),
     ...(hasOutliers && { outliers }),
     ...(hasValues && { values }),
+    host,
     ...(webVitals && { webVitals }),
   };
 }
@@ -509,6 +512,7 @@ export async function runPageLoadBenchmark(
     trimmedCount: trimmedCounts,
     outliers: { ...trimmedCounts },
     values,
+    host: captureHostProvenance(),
     ...(webVitals && { webVitals }),
   };
 }

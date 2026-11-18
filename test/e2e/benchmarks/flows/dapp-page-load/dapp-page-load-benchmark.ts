@@ -12,6 +12,7 @@ import type {
   DappPageLoadStats,
 } from '../../utils/types';
 import { DAPP_URL } from '../../../constants';
+import { recordBrowserSession } from '../../utils/host-provenance';
 import { aggregateDappPageLoadStatistics } from './dapp-page-load-stats';
 
 /**
@@ -104,6 +105,11 @@ export class PageLoadBenchmark {
       throw new Error('Failed to get browser instance from persistent context');
     }
     this.browser = browser;
+    recordBrowserSession({
+      browserName: browser.browserType().name(),
+      browserVersion: browser.version(),
+      driverVersion: null,
+    });
 
     await this.waitForExtensionLoad();
   }
