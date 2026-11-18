@@ -415,10 +415,10 @@ describe('in-page-step-timer', () => {
 
     it('installs nothing when `MutationObserver` is scuttled', () => {
       const descriptor = Object.getOwnPropertyDescriptor(
-        window,
+        globalThis,
         'MutationObserver',
       );
-      Object.defineProperty(window, 'MutationObserver', {
+      Object.defineProperty(globalThis, 'MutationObserver', {
         configurable: true,
         get: () => {
           throw new Error('scuttled');
@@ -428,7 +428,7 @@ describe('in-page-step-timer', () => {
         expect(install()).toBe('MutationObserver unavailable: Error: scuttled');
       } finally {
         Object.defineProperty(
-          window,
+          globalThis,
           'MutationObserver',
           descriptor as PropertyDescriptor,
         );
