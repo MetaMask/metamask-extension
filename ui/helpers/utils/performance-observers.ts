@@ -115,6 +115,15 @@ export function setupLongTaskObserver(sampleRate: number = 0.1): () => void {
   }
 
   try {
+    // `observe({ type })` with an unsupported type is a silent no-op, not a
+    // throw. Without this check `observed` reads true where `longtask` is
+    // unsupported (Firefox), over counters that never move.
+    if (!PerformanceObserver.supportedEntryTypes?.includes('longtask')) {
+      return () => {
+        // Nothing attached, so nothing to disconnect
+      };
+    }
+
     observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
         longTaskMetrics.count += 1;
@@ -138,17 +147,6 @@ export function setupLongTaskObserver(sampleRate: number = 0.1): () => void {
         }
       }
     });
-
-    // `observe({ type })` with an unsupported type is a silent no-op, not a
-    // throw. Without this check `observed` reads true where `longtask` is
-    // unsupported (Firefox), over counters that never move.
-    if (!PerformanceObserver.supportedEntryTypes?.includes('longtask')) {
-      observer = null;
-      observerAttached = false;
-      return () => {
-        // Nothing attached, so nothing to disconnect
-      };
-    }
 
     observer.observe({ type: 'longtask', buffered: true });
     observerAttached = true;
