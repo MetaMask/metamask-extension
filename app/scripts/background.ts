@@ -1107,25 +1107,27 @@ async function triggerUi() {
     firstTab?.extData &&
     firstTab.extData.indexOf('vivaldi_tab') > -1;
 
-  const preferSidePanel = shouldUseSidepanel(requireController());
-  if (preferSidePanel) {
-    if (openSidePanelCount > 0) {
-      return;
-    }
+  if (openSidePanelCount > 0) {
+    return;
+  }
 
+  // Attempt to open the sidepanel with a roundtrip request
+  if (shouldUseSidepanel(requireController())) {
     const tab = await getCurrentTab();
     if (tab?.id) {
       const opened = await requestOpenSidepanel(tab.id);
       if (opened) {
         return;
       }
+      // If the sidepanel failed to open, fall back to opening the popup
     }
   }
 
   if (
     !uiIsTriggering &&
     (isVivaldi || openPopupCount === 0) &&
-    !currentlyActiveMetamaskTab
+    !currentlyActiveMetamaskTab &&
+    openSidePanelCount === 0
   ) {
     uiIsTriggering = true;
     try {
@@ -1150,6 +1152,11 @@ browser.runtime.onUpdateAvailable.addListener((details) => {
 setupSidePanelToolbarBehavior({
   getController: () => controller,
   waitUntilInitialized: async () => await isInitialized,
+  onUseSidePanelAsDefaultChange: (useSidePanelAsDefault) => {
+    if (!useSidePanelAsDefault) {
+      openSidePanelCount = 0;
+    }
+  },
 });
 
 function setupSentryGetStateGlobal(store: MetaMaskControllerStore) {
