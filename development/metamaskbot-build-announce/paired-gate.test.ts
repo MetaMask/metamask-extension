@@ -4,6 +4,7 @@ import {
   makeShiftedFlowResults,
 } from '../../test/e2e/benchmarks/utils/fixtures/paired-results';
 import type { PairedOrder } from '../../test/e2e/benchmarks/utils/paired';
+import type { StableRunnerSpec } from '../../test/e2e/benchmarks/utils/stable-runner-spec';
 import {
   evaluatePairedGate,
   formatPairedOutcome,
@@ -285,5 +286,115 @@ describe('evaluatePairedGate', () => {
 
     expect(outcomes).toHaveLength(BRIDGE_SERIES.length * 2);
     expect(outcomes.every(({ decision }) => decision?.n === 8)).toBe(true);
+  });
+});
+
+describe('evaluatePairedGate against a stable-runner spec', () => {
+  const HOST = {
+    cpuModel: 'AMD EPYC 7763',
+    cpuCount: 4,
+    imageOs: 'ubuntu24',
+    imageVersion: '20260101.1.0',
+    runnerEnvironment: 'github-hosted',
+    browserName: 'chrome',
+    browserVersion: '131.0.6778.85',
+    driverVersion: '131.0.6778.85',
+    commitHash: 'abc123',
+  };
+  const SPEC: StableRunnerSpec = { cpuModel: ['AMD EPYC 7763'] };
+
+  /** The jobs of every admitted flow, `host` set per job index by `hostOf`. */
+  const jobsWithHosts = (hostOf: (flow: string, index: number) => unknown) => {
+    const index = new Map<string, number>();
+    return everyFlowsJobs().map((job) => {
+      const [flow] = Object.keys(job.data);
+      const i = index.get(flow) ?? 0;
+      index.set(flow, i + 1);
+      return {
+        ...job,
+        data: { [flow]: { ...job.data[flow], host: hostOf(flow, i) } },
+      };
+    });
+  };
+
+  it('changes no outcome under the empty spec, whatever the jobs recorded', () => {
+    const bare = evaluatePairedGate(everyFlowsJobs(), true, true);
+    expect(
+      evaluatePairedGate(
+        jobsWithHosts((_flow, i) => (i === 0 ? { cpuModel: null } : HOST)),
+        true,
+        true,
+      ),
+    ).toStrictEqual(bare);
+    expect(evaluatePairedGate(everyFlowsJobs(), true, true, {})).toStrictEqual(
+      bare,
+    );
+    expect(bare.some(({ failed }) => failed)).toBe(false);
+  });
+
+  it('passes jobs that conform to a constrained spec', () => {
+    const outcomes = evaluatePairedGate(
+      jobsWithHosts(() => HOST),
+      true,
+      true,
+      SPEC,
+    );
+    expect(outcomes.some(({ failed }) => failed)).toBe(false);
+  });
+
+  it('excludes a nonconforming paired job, naming the field and value, and the series goes incomplete under --paired', () => {
+    const jobs = jobsWithHosts((flow, i) =>
+      flow === 'assetDetails' && i === 1
+        ? { ...HOST, cpuModel: 'Intel Xeon' }
+        : HOST,
+    );
+    const outcomes = evaluatePairedGate(jobs, true, true, SPEC);
+
+    expect(
+      outcomes.find(
+        ({ series }) => series === 'assetDetails.assetClickToPriceChart',
+      ),
+    ).toMatchObject({
+      verdict: 'incomplete',
+      failed: true,
+      problems: [
+        expect.stringContaining('cpuModel "Intel Xeon" is not allowed'),
+      ],
+    });
+    expect(
+      outcomes.filter(({ failed }) => failed).map(({ series }) => series),
+    ).toStrictEqual(['assetDetails.assetClickToPriceChart']);
+  });
+
+  it('counts a job that recorded null as nonconforming only when its field is constrained', () => {
+    const unrecorded = jobsWithHosts((flow, i) =>
+      flow === 'assetDetails' && i === 0 ? { ...HOST, cpuModel: null } : HOST,
+    );
+    expect(
+      evaluatePairedGate(unrecorded, true, true).some(({ failed }) => failed),
+    ).toBe(false);
+
+    const constrained = evaluatePairedGate(unrecorded, true, true, SPEC);
+    expect(
+      constrained.filter(({ failed }) => failed).map(({ series }) => series),
+    ).toStrictEqual(['assetDetails.assetClickToPriceChart']);
+    expect(constrained.find(({ failed }) => failed)?.problems[0]).toContain(
+      'cpuModel is not recorded',
+    );
+  });
+
+  it('excludes the job from the decision, so a block it carried is not read', () => {
+    const outcomes = evaluatePairedGate(
+      fourJobs((order) => ({
+        ...makeShiftedFlowResults(order, BRIDGE_IDS, 500),
+        host: { ...HOST, cpuModel: 'Intel Xeon' },
+      })),
+      true,
+      false,
+      SPEC,
+    );
+    expect(outcomes.every(({ verdict }) => verdict === 'incomplete')).toBe(
+      true,
+    );
   });
 });

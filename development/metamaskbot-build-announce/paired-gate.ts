@@ -13,6 +13,11 @@ import {
   type PairedDecision,
   type PairedVerdict,
 } from '../../test/e2e/benchmarks/utils/paired-decision';
+import {
+  provenanceProblems,
+  STABLE_RUNNER_SPEC,
+  type StableRunnerSpec,
+} from '../../test/e2e/benchmarks/utils/stable-runner-spec';
 import { parseArtifactName } from './utils';
 
 /** A results file as `loadCurrentBenchmarks` reads it. */
@@ -181,11 +186,13 @@ function pairDifferences(
  * @param benchmarks - The result files; a flow's jobs pool per browser and build.
  * @param decide - `false` only checks the values are there, for one leg.
  * @param requireAll - A series missing any paired job's differences fails.
+ * @param spec - A job whose `host` falls outside it counts as missing for every series it carries.
  */
 export function evaluatePairedGate(
   benchmarks: readonly PairedGateInput[],
   decide = true,
   requireAll = false,
+  spec: StableRunnerSpec = STABLE_RUNNER_SPEC,
 ): PairedGateOutcome[] {
   const groups = new Map<string, Group>();
   const groupFor = (source: string, entry: AdmittedSeries): Group => {
@@ -219,6 +226,16 @@ export function evaluatePairedGate(
         continue;
       }
       if (!('pairing' in results || 'baseValues' in results)) {
+        continue;
+      }
+
+      const nonconforming = provenanceProblems(results.host, spec);
+      if (nonconforming.length > 0) {
+        for (const entry of admitted) {
+          groupFor(source, entry).problems.push(
+            ...nonconforming.map((problem) => `${name}: ${problem}`),
+          );
+        }
         continue;
       }
 
