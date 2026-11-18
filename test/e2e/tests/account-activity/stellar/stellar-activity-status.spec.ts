@@ -10,7 +10,7 @@ import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { withStellarFixtures } from '../../stellar/fixtures/with-stellar-fixtures';
 import { DEFAULT_STELLAR_ADDRESS } from '../../../constants';
-import { STELLAR_NETWORK_NAME } from '../../stellar/mocks/common-stellar';
+import { STELLAR_NETWORK_NAME } from '../../stellar/mocks/stellar-constants';
 import {
   STELLAR_RECIPIENT_ADDRESS,
   xlmSendTx,

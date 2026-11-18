@@ -22,7 +22,7 @@ import {
   STELLAR_CHAIN_ID,
   STELLAR_NATIVE_ASSET_ID,
   STELLAR_USDC_ISSUER,
-} from './common-stellar';
+} from './stellar-constants';
 
 const ETH_MAINNET_USDC_ASSET_ID =
   'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as const;
