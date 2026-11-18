@@ -100,6 +100,12 @@ export type BenchmarkRunResult = {
   success: boolean;
   error?: string;
   benchmarkType?: BenchmarkType;
+  /**
+   * Timer ids this run is meant to report, such as in-page step timers, which
+   * are left out of a run when their probe reads nothing. The runner fails the
+   * flow when too many runs lack one.
+   */
+  expectedTimers?: string[];
 };
 
 export type BenchmarkSummary = {
@@ -171,4 +177,6 @@ export type BenchmarkFunction = () => Promise<BenchmarkRunResult>;
 export type UserActionMeasurement = {
   timers: TimerResult[];
   webVitals?: WebVitalsMetrics;
+  /** See {@link BenchmarkRunResult.expectedTimers}. */
+  expectedTimers?: string[];
 };
