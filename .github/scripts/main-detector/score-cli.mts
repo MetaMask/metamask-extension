@@ -1,23 +1,20 @@
 /**
- * Usage: yarn tsx test/e2e/benchmarks/main-detector/score-cli.ts --stage first|final --dir ARTIFACTS --plan plan.json --out result.json [--summary FILE] [--github-output FILE] [--shards 5]
+ * Usage: node .github/scripts/main-detector/score-cli.mts --stage first|final --dir ARTIFACTS --plan plan.json --out result.json [--summary FILE] [--github-output FILE] [--shards 5]
  * Reads the artifacts of batch 1 (and 2) from detector-b<batch>-<browser>-s<shard> folders and scores them.
  */
-import fs from 'fs';
-import path from 'path';
-import { hideBin } from 'yargs/helpers';
-import yargs from 'yargs/yargs';
-import { renderSummary, resultLabel, type PlanInfo } from './report';
+import fs from 'node:fs';
+import path from 'node:path';
+import { parseArgs } from 'node:util';
+import { renderSummary, resultLabel, type PlanInfo } from './report.mts';
 import {
+  BROWSERS,
   DEFAULT_CONFIG,
   decide,
   needsConfirmation,
   scoreBatch,
   type BatchScores,
-  type Browser,
   type JobResult,
-} from './score';
-
-const BROWSERS = ['chrome', 'firefox'] as const;
+} from './score.mts';
 
 function readJob(directory: string): JobResult {
   const unusable: JobResult = { sessions: [], samples: {} };
@@ -61,7 +58,7 @@ function loadBatch(
     const jobs = Array.from({ length: shards }, (_, shard) =>
       readJob(path.join(root, `detector-b${batch}-${browser}-s${shard + 1}`)),
     );
-    scores[browser] = scoreBatch(browser as Browser, jobs, DEFAULT_CONFIG);
+    scores[browser] = scoreBatch(browser, jobs, DEFAULT_CONFIG);
   }
   return scores;
 }
@@ -76,37 +73,43 @@ function setOutputs(file: string | undefined, values: Record<string, string>) {
 }
 
 async function main(): Promise<void> {
-  const argv = await yargs(hideBin(process.argv))
-    .option('stage', {
-      choices: ['first', 'final'] as const,
-      demandOption: true,
-    })
-    .option('dir', { type: 'string', demandOption: true })
-    .option('plan', { type: 'string', demandOption: true })
-    .option('out', { type: 'string', demandOption: true })
-    .option('summary', { type: 'string' })
-    .option('github-output', { type: 'string' })
-    .option('shards', { type: 'number', default: 5 })
-    .parseAsync();
+  const { values } = parseArgs({
+    options: {
+      stage: { type: 'string' },
+      dir: { type: 'string' },
+      plan: { type: 'string' },
+      out: { type: 'string' },
+      summary: { type: 'string' },
+      'github-output': { type: 'string' },
+      shards: { type: 'string', default: '5' },
+    },
+  });
+  const { stage, dir, plan: planFile, out } = values;
+  if ((stage !== 'first' && stage !== 'final') || !dir || !planFile || !out) {
+    throw new Error(
+      '--stage first|final, --dir, --plan and --out are required',
+    );
+  }
+  const shards = Number(values.shards);
 
-  const plan: PlanInfo = JSON.parse(fs.readFileSync(argv.plan, 'utf8'));
-  const first = loadBatch(argv.dir, 1, argv.shards) as BatchScores;
+  const plan: PlanInfo = JSON.parse(fs.readFileSync(planFile, 'utf8'));
+  const first = loadBatch(dir, 1, shards) as BatchScores;
 
-  if (argv.stage === 'first') {
+  if (stage === 'first') {
     const confirm = needsConfirmation(first);
-    fs.writeFileSync(argv.out, JSON.stringify({ first, confirm }, null, 2));
+    fs.writeFileSync(out, JSON.stringify({ first, confirm }, null, 2));
     // The workflow reads this exact snake_case output name.
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    setOutputs(argv.githubOutput, { needs_confirm: String(confirm) });
+    setOutputs(values['github-output'], { needs_confirm: String(confirm) });
     console.log(`needs confirmation: ${confirm}`);
     return;
   }
 
-  const second = loadBatch(argv.dir, 2, argv.shards, true);
+  const second = loadBatch(dir, 2, shards, true);
   const decision = decide(first, second, DEFAULT_CONFIG);
   const label = resultLabel(decision, plan);
   fs.writeFileSync(
-    argv.out,
+    out,
     JSON.stringify({ plan, first, second, decision, label }, null, 2),
   );
   const summary = renderSummary({
@@ -116,10 +119,10 @@ async function main(): Promise<void> {
     decision,
     config: DEFAULT_CONFIG,
   });
-  if (argv.summary) {
-    fs.appendFileSync(argv.summary, `${summary}\n`);
+  if (values.summary) {
+    fs.appendFileSync(values.summary, `${summary}\n`);
   }
-  setOutputs(argv.githubOutput, { ping: decision.ping, result: label });
+  setOutputs(values['github-output'], { ping: decision.ping, result: label });
   console.log(summary);
 }
 

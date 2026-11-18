@@ -2,7 +2,7 @@ import {
   fingerprint,
   locateCentralDirectory,
   parseCentralDirectory,
-} from './zip-fingerprint';
+} from './zip-fingerprint.mts';
 
 function entryRecord(name: string, crc: number, size: number): Buffer {
   const nameBytes = Buffer.from(name);

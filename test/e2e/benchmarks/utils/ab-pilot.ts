@@ -29,6 +29,9 @@ export type AbPilotRecord = {
 
 const DEFAULT_SEQUENCE = 'ABBABAABAB';
 
+const getSequence = () => process.env.BENCHMARK_AB_SEQUENCE || DEFAULT_SEQUENCE;
+const getFlip = () => process.env.BENCHMARK_AB_FLIP === '1';
+
 // Chrome honors version_name; Firefox ignores it, so use short_name there.
 export function getMarkerKey(browser: string): string {
   return browser === 'firefox' ? 'short_name' : 'version_name';
@@ -91,9 +94,7 @@ export function beginAbSession(index: number): AbBuild | undefined {
     return undefined;
   }
   const browser = process.env.SELENIUM_BROWSER ?? 'chrome';
-  const sequence = process.env.BENCHMARK_AB_SEQUENCE || DEFAULT_SEQUENCE;
-  const flip = process.env.BENCHMARK_AB_FLIP === '1';
-  const build = getBuildForIndex(index, sequence, flip);
+  const build = getBuildForIndex(index, getSequence(), getFlip());
   const directory = getBuildDirectory(browser, build);
   const marker = readMarker(directory, browser);
   if (marker !== getMarkerValue(build)) {
@@ -133,8 +134,8 @@ export function getAbPilotRecord(): AbPilotRecord | undefined {
     return undefined;
   }
   return {
-    sequence: process.env.BENCHMARK_AB_SEQUENCE || DEFAULT_SEQUENCE,
-    flip: process.env.BENCHMARK_AB_FLIP === '1',
+    sequence: getSequence(),
+    flip: getFlip(),
     sessions: [...sessions],
   };
 }

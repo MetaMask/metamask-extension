@@ -4,9 +4,10 @@
  * one runner, so a job gives one log ratio of head to base per metric. A batch
  * is several jobs; a suspicious batch is confirmed by a second, independent one.
  */
-import { mean, summarizeShifts, type ShiftSummary } from './stats';
+import { mean, summarizeShifts, type ShiftSummary } from './stats.mts';
 
 export type Browser = 'chrome' | 'firefox';
+export const BROWSERS = ['chrome', 'firefox'] as const;
 
 // Metrics that can raise a ping.
 export const VERDICT_METRICS = ['uiStartup', 'load'] as const;
@@ -171,17 +172,21 @@ export function scoreBatch(
 
 export type BatchScores = Record<Browser, BatchScore>;
 
+// Verdict metrics that crossed a threshold in one batch.
+function suspiciousMetrics(score: BatchScore) {
+  return VERDICT_METRICS.filter(
+    (metric) => score.metrics[metric].verdict.level !== 'none',
+  );
+}
+
 /**
  * @param first - Scores of the first batch.
  * @returns Whether any browser and metric is suspicious enough to need a second batch.
  */
 export function needsConfirmation(first: BatchScores): boolean {
-  return (['chrome', 'firefox'] as const).some(
+  return BROWSERS.some(
     (browser) =>
-      first[browser].measurable &&
-      VERDICT_METRICS.some(
-        (metric) => first[browser].metrics[metric].verdict.level !== 'none',
-      ),
+      first[browser].measurable && suspiciousMetrics(first[browser]).length > 0,
   );
 }
 
@@ -204,7 +209,7 @@ export type Decision = {
 
 /**
  * A finding is confirmed when the pooled jobs of both batches pass the rule
- * and the second batch alone moved the same way by at least the floor.
+ * and the second batch alone passes it too, in the same direction.
  *
  * @param first - Scores of the first batch.
  * @param second - Scores of the confirmation batch, absent when none was run.
@@ -217,14 +222,12 @@ export function decide(
 ): Decision {
   const findings: Finding[] = [];
   const unmeasured: Browser[] = [];
-  for (const browser of ['chrome', 'firefox'] as const) {
+  for (const browser of BROWSERS) {
     if (!first[browser].measurable) {
       unmeasured.push(browser);
       continue;
     }
-    const suspicious = VERDICT_METRICS.filter(
-      (metric) => first[browser].metrics[metric].verdict.level !== 'none',
-    );
+    const suspicious = suspiciousMetrics(first[browser]);
     if (suspicious.length === 0) {
       continue;
     }
@@ -245,9 +248,8 @@ export function decide(
       const floor = config.floorPct[browser];
       const verdict = classify(pooled, floor, config.loudPct);
       const sameWay =
-        verdict.direction === 'slower'
-          ? secondSummary.shiftPct >= floor
-          : secondSummary.shiftPct <= -floor;
+        classify(secondSummary, floor, config.loudPct).direction ===
+        verdict.direction;
       if (verdict.level !== 'none' && verdict.direction && sameWay) {
         findings.push({
           browser,

@@ -9,6 +9,7 @@ const T95 = [
   1.714, 1.711, 1.708, 1.706, 1.703, 1.701, 1.699, 1.697,
 ];
 
+// Beyond 30 degrees of freedom the normal critical value is close enough.
 export function tCritical95(degreesOfFreedom: number): number {
   if (degreesOfFreedom < 1) {
     throw new Error('Need at least one degree of freedom');
@@ -37,7 +38,7 @@ export type ShiftSummary = {
   sdPct: number;
 };
 
-const toPercent = (logRatio: number) => 100 * (Math.exp(logRatio) - 1);
+export const toPercent = (logRatio: number) => 100 * (Math.exp(logRatio) - 1);
 
 /**
  * @param logRatios - One natural-log ratio of head to base per job.

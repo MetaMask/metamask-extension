@@ -1,18 +1,15 @@
 /**
- * Usage: yarn tsx test/e2e/benchmarks/main-detector/slack-cli.ts --result result.json [--run-url URL]
+ * Usage: node .github/scripts/main-detector/slack-cli.mts --result result.json [--run-url URL]
  * Posts a Slack message when the detector result has a ping. With no
  * SLACK_WEBHOOK_MAIN_DETECTOR set it prints the payload instead, so the same
  * command doubles as a dry run. Needs `gh` for the commit author.
  */
-import { execFileSync } from 'child_process';
-import fs from 'fs';
-import { IncomingWebhook } from '@slack/webhook';
-import { hideBin } from 'yargs/helpers';
-import yargs from 'yargs/yargs';
-import { buildSlackMessage } from './slack';
-
-const REPOSITORY =
-  process.env.GITHUB_REPOSITORY ?? 'MetaMask/metamask-extension';
+import { execFileSync } from 'node:child_process';
+import fs from 'node:fs';
+import { parseArgs } from 'node:util';
+import { REPOSITORY } from './build-source.mts';
+import { postOrPrint } from './post-webhook.mts';
+import { buildSlackMessage } from './slack.mts';
 
 function authorOf(sha: string): string {
   try {
@@ -33,12 +30,17 @@ function authorOf(sha: string): string {
 }
 
 async function main(): Promise<void> {
-  const argv = await yargs(hideBin(process.argv))
-    .option('result', { type: 'string', demandOption: true })
-    .option('run-url', { type: 'string', default: '' })
-    .parseAsync();
+  const { values } = parseArgs({
+    options: {
+      result: { type: 'string' },
+      'run-url': { type: 'string', default: '' },
+    },
+  });
+  if (!values.result) {
+    throw new Error('--result is required');
+  }
 
-  const result = JSON.parse(fs.readFileSync(argv.result, 'utf8'));
+  const result = JSON.parse(fs.readFileSync(values.result, 'utf8'));
   if (result.decision.ping === 'none') {
     console.log(`No ping (${result.label}); nothing to post.`);
     return;
@@ -50,18 +52,11 @@ async function main(): Promise<void> {
     second: result.second,
     decision: result.decision,
     repository: REPOSITORY,
-    runUrl: argv.runUrl,
+    runUrl: values['run-url'],
     author: authorOf(result.plan.headSha),
   });
 
-  const webhookUrl = process.env.SLACK_WEBHOOK_MAIN_DETECTOR;
-  if (!webhookUrl) {
-    console.log('SLACK_WEBHOOK_MAIN_DETECTOR is not set; dry run:');
-    console.log(JSON.stringify(payload, null, 2));
-    return;
-  }
-  await new IncomingWebhook(webhookUrl).send(payload);
-  console.log('Posted to Slack.');
+  await postOrPrint(payload, process.env.SLACK_WEBHOOK_MAIN_DETECTOR);
 }
 
 main().catch((error) => {

@@ -1,22 +1,19 @@
 /**
- * Usage: yarn tsx test/e2e/benchmarks/main-detector/compare-builds-cli.ts --resolve resolve.json --out compare.json
+ * Usage: node .github/scripts/main-detector/compare-builds-cli.mts --resolve resolve.json --out compare.json
  * Decides whether the head and base builds hold the same files, by reading
  * only each zip's central directory with HTTP range requests (no downloads).
  * Any failure counts as "not identical", so the detector measures instead.
  */
-import fs from 'fs';
-import { hideBin } from 'yargs/helpers';
-import yargs from 'yargs/yargs';
+import fs from 'node:fs';
+import { parseArgs } from 'node:util';
+import { BUILD_HOST, buildZipUrl } from './build-source.mts';
+import { BROWSERS } from './score.mts';
 import {
   fingerprint,
   locateCentralDirectory,
   parseCentralDirectory,
   TAIL_BYTES,
-} from './zip-fingerprint';
-
-const HOST =
-  process.env.DETECTOR_BUILD_HOST ??
-  'https://diuv6g5fj9pvx.cloudfront.net/metamask-extension';
+} from './zip-fingerprint.mts';
 
 async function range(url: string, spec: string): Promise<Buffer> {
   const response = await fetch(url, { headers: { Range: `bytes=${spec}` } });
@@ -39,20 +36,15 @@ async function zipFingerprint(url: string): Promise<string> {
   return fingerprint(parseCentralDirectory(directory, location.entries));
 }
 
-type Side = { run: string; version: string };
-
-function urlFor(browser: string, side: Side): string {
-  const folder =
-    browser === 'firefox' ? 'build-test-mv2-webpack' : 'build-test-webpack';
-  return `${HOST}/${side.run}/${folder}/builds/metamask-${browser}-${side.version}.zip`;
-}
-
 async function main(): Promise<void> {
-  const argv = await yargs(hideBin(process.argv))
-    .option('resolve', { type: 'string', demandOption: true })
-    .option('out', { type: 'string', demandOption: true })
-    .parseAsync();
-  const resolved = JSON.parse(fs.readFileSync(argv.resolve, 'utf8'));
+  const { values } = parseArgs({
+    options: { resolve: { type: 'string' }, out: { type: 'string' } },
+  });
+  if (!values.resolve || !values.out) {
+    throw new Error('--resolve and --out are required');
+  }
+  const { out } = values;
+  const resolved = JSON.parse(fs.readFileSync(values.resolve, 'utf8'));
 
   const result: Record<string, unknown> = { identical: false };
   const baseRef = resolved.base;
@@ -65,16 +57,16 @@ async function main(): Promise<void> {
   ) {
     result.identical = true;
     result.via = baseRef.run === headRef.run ? 'same-run' : 'source-hash';
-    fs.writeFileSync(argv.out, JSON.stringify(result, null, 2));
+    fs.writeFileSync(out, JSON.stringify(result, null, 2));
     console.log(JSON.stringify(result));
     return;
   }
   try {
     const same: boolean[] = [];
-    for (const browser of ['chrome', 'firefox']) {
+    for (const browser of BROWSERS) {
       const [base, head] = await Promise.all([
-        zipFingerprint(urlFor(browser, resolved.base)),
-        zipFingerprint(urlFor(browser, resolved.head)),
+        zipFingerprint(buildZipUrl(browser, baseRef.run, baseRef.version)),
+        zipFingerprint(buildZipUrl(browser, headRef.run, headRef.version)),
       ]);
       result[browser] = { base, head };
       same.push(base === head);
@@ -83,11 +75,11 @@ async function main(): Promise<void> {
   } catch (error) {
     result.error = String(error);
   }
-  fs.writeFileSync(argv.out, JSON.stringify(result, null, 2));
+  fs.writeFileSync(out, JSON.stringify(result, null, 2));
   console.log(JSON.stringify(result));
 }
 
 main().catch((error) => {
   console.error(error);
-  process.exit(1);
+  process.exitCode = 1;
 });

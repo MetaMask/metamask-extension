@@ -1,16 +1,10 @@
 name: Main performance detector
 
-# TEMPORARY (1/3): prototype of the main-commit performance detector (Phase C of
-# the runner-calibration plan). For one commit on main it finds the nearest
-# first-parent ancestor with a build, skips identical builds, runs a batch of 5
-# paired base/head jobs per browser, and runs a second independent batch when
-# the first looks suspicious. Results are a job summary and an artifact; there
-# is no Slack message and nothing blocks. Runs only on trigger-ci-pilot-b, which
-# main.yml ignores. Remove this file, main-detector-measure.yml and the
-# main-detector folder under test/e2e/benchmarks when the detector moves to main.
-#
-# The push trigger only registers the workflow so it can be dispatched; it checks
-# the latest main commit.
+# Posts to Slack when one commit on main changes startup performance by more
+# than the noise. For each push to main it compares the commit's build with
+# its first-parent ancestor's in paired jobs on one runner, and confirms a
+# suspicious result with a second batch. Identical builds exit early. It is
+# not a merge gate. See .github/scripts/main-detector/README.md.
 
 on:
   workflow_run:
@@ -40,11 +34,6 @@ on:
         required: false
         type: boolean
         default: false
-  push:
-    branches:
-      - trigger-ci-pilot-b
-    paths:
-      - .github/workflows/main-detector.yml
 
 run-name: ${{ format('Main performance detector {0}{1}{2}', inputs.head_sha || github.event.workflow_run.head_sha || github.sha, inputs.mode == 'aa' && ' (aa)' || '', inputs.inject_head_ms && ' (inject)' || '') }}
 
@@ -57,9 +46,6 @@ concurrency:
 permissions:
   contents: read
   actions: read
-
-env:
-  DETECTOR_HOST: https://diuv6g5fj9pvx.cloudfront.net/metamask-extension
 
 jobs:
   plan:
@@ -90,6 +76,7 @@ jobs:
             });
             const head = commit.sha;
             const parent = commit.parents[0]?.sha;
+            // Canary rule: keep in step with the shell check in the plan step below.
             if (!parent || parseInt(head.slice(0, 8), 16) % 10 === 0) return;
 
             const hashOf = async (ref) => {
@@ -117,12 +104,20 @@ jobs:
             core.setOutput('proceed', 'false');
             core.setOutput('done', 'true');
 
-      - name: Checkout and setup environment
+      - name: Checkout the scripts
         if: ${{ steps.quick.outputs.done != 'true' }}
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: actions/checkout@v6
         with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
+          sparse-checkout: |
+            .github
+            .nvmrc
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Node.js
+        if: ${{ steps.quick.outputs.done != 'true' }}
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
 
       - name: Resolve the builds and compare them
         id: plan
@@ -138,7 +133,7 @@ jobs:
           head=$(git rev-parse "${HEAD_INPUT:-FETCH_HEAD}")
           summary() { printf '## Main performance detector\n\n%s\n' "$1" >> "$GITHUB_STEP_SUMMARY"; }
 
-          node node_modules/tsx/dist/cli.mjs test/e2e/benchmarks/main-detector/resolve-cli.ts \
+          node .github/scripts/main-detector/resolve-cli.mts \
             --head "$head" --out resolve.json > /dev/null
           status=$(jq -r .status resolve.json)
           if [[ "$status" != measure ]]; then
@@ -151,7 +146,7 @@ jobs:
           base=$(jq -r .base.sha resolve.json)
           # Compares each zip's file list (names, sizes, CRCs) from its central
           # directory with range requests, so identical builds exit without downloads.
-          node node_modules/tsx/dist/cli.mjs test/e2e/benchmarks/main-detector/compare-builds-cli.ts \
+          node .github/scripts/main-detector/compare-builds-cli.mts \
             --resolve resolve.json --out compare.json > /dev/null
           identical=$(jq -r .identical compare.json)
 
@@ -209,11 +204,18 @@ jobs:
     outputs:
       needs_confirm: ${{ steps.score.outputs.needs_confirm }}
     steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+      - name: Checkout the scripts
+        uses: actions/checkout@v6
         with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
+          sparse-checkout: |
+            .github
+            .nvmrc
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
 
       - name: Download batch 1
         uses: actions/download-artifact@v8
@@ -227,7 +229,7 @@ jobs:
           PLAN: ${{ needs.plan.outputs.plan }}
         run: |
           echo "$PLAN" > plan.json
-          yarn tsx test/e2e/benchmarks/main-detector/score-cli.ts --stage first \
+          node .github/scripts/main-detector/score-cli.mts --stage first \
             --dir artifacts --plan plan.json --out first.json \
             --github-output "$GITHUB_OUTPUT"
 
@@ -246,11 +248,18 @@ jobs:
     if: ${{ always() && needs.plan.outputs.proceed == 'true' && needs.score-first.result == 'success' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+      - name: Checkout the scripts
+        uses: actions/checkout@v6
         with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
+          sparse-checkout: |
+            .github
+            .nvmrc
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
 
       - name: Download the batches
         uses: actions/download-artifact@v8
@@ -263,7 +272,7 @@ jobs:
           PLAN: ${{ needs.plan.outputs.plan }}
         run: |
           echo "$PLAN" > plan.json
-          yarn tsx test/e2e/benchmarks/main-detector/score-cli.ts --stage final \
+          node .github/scripts/main-detector/score-cli.mts --stage final \
             --dir artifacts --plan plan.json --out result.json \
             --summary "$GITHUB_STEP_SUMMARY" > /dev/null
 
@@ -281,5 +290,5 @@ jobs:
           SLACK_WEBHOOK_MAIN_DETECTOR: ${{ secrets.SLACK_WEBHOOK_MAIN_DETECTOR }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          yarn tsx test/e2e/benchmarks/main-detector/slack-cli.ts \
+          node .github/scripts/main-detector/slack-cli.mts \
             --result result.json --run-url "$RUN_URL"

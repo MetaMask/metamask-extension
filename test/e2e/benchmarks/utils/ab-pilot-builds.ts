@@ -6,7 +6,9 @@ import {
   getMarkerKey,
   getMarkerValue,
   type AbBuild,
-} from './ab-pilot';
+  // prepare-ab-builds.mts runs this file under plain Node, which needs the extension.
+  // eslint-disable-next-line import-x/extensions
+} from './ab-pilot.ts';
 
 // 'first', 'middle', 'last', or a zero-based index into home.html's scripts.
 export type InjectionSite = string;
@@ -94,25 +96,74 @@ function hashFile(file: string): string {
 }
 
 /**
- * Hash of the relative paths and contents of every file not in `exclude`.
+ * Content hash of every file under `root`, keyed by its forward-slash path.
  *
  * @param root - Directory to hash.
- * @param exclude
  */
-function hashContent(
-  root: string,
-  exclude: string[],
-): { files: string[]; hash: string } {
-  const files = listFiles(root);
-  const hash = createHash('sha256');
-  for (const file of files) {
+function hashTree(root: string): Map<string, string> {
+  const hashes = new Map<string, string>();
+  for (const file of listFiles(root)) {
+    hashes.set(file.split(path.sep).join('/'), hashFile(path.join(root, file)));
+  }
+  return hashes;
+}
+
+/**
+ * One hash over the paths and contents of every file not in `exclude`.
+ *
+ * @param hashes - Result of {@link hashTree}.
+ * @param exclude - Forward-slash paths to leave out.
+ */
+function digestOf(hashes: Map<string, string>, exclude: string[]): string {
+  const digest = createHash('sha256');
+  for (const [file, hash] of hashes) {
     if (!exclude.includes(file)) {
-      hash.update(
-        `${file.split(path.sep).join('/')}\0${hashFile(path.join(root, file))}\n`,
-      );
+      digest.update(`${file}\0${hash}\n`);
     }
   }
-  return { files, hash: hash.digest('hex') };
+  return digest.digest('hex');
+}
+
+/**
+ * Copies a build into the directory for A or B and stamps its manifest with
+ * that build's marker.
+ *
+ * @param options - What to copy and where.
+ * @param options.browser - `chrome` or `firefox`.
+ * @param options.source - Absolute path of the unpacked build.
+ * @param options.baseDirectory - Working directory the output path is under.
+ * @param options.build - Which copy this is.
+ */
+function copyAndStamp({
+  browser,
+  source,
+  baseDirectory,
+  build,
+}: {
+  browser: string;
+  source: string;
+  baseDirectory: string;
+  build: AbBuild;
+}) {
+  const manifest = JSON.parse(
+    fs.readFileSync(path.join(source, 'manifest.json'), 'utf8'),
+  );
+  const relative = getBuildDirectory(browser, build);
+  const target = path.resolve(baseDirectory, relative);
+  fs.rmSync(target, { recursive: true, force: true });
+  fs.cpSync(source, target, { recursive: true });
+  const text = JSON.stringify(
+    { ...manifest, [getMarkerKey(browser)]: getMarkerValue(build) },
+    null,
+    2,
+  );
+  fs.writeFileSync(path.join(target, 'manifest.json'), text);
+  return {
+    relative,
+    target,
+    version: manifest.version as string,
+    manifestHash: createHash('sha256').update(text).digest('hex'),
+  };
 }
 
 /**
@@ -146,23 +197,13 @@ export function prepareAbBuilds({
   }
   const markerKey = getMarkerKey(browser);
   const source = path.resolve(baseDirectory, sourceDirectory);
-  const manifest = JSON.parse(
-    fs.readFileSync(path.join(source, 'manifest.json'), 'utf8'),
-  );
-  const builds: AbBuild[] = ['A', 'B'];
   const directories = {} as Record<AbBuild, string>;
   const manifestHashes = {} as Record<AbBuild, string>;
 
-  for (const build of builds) {
-    const relative = getBuildDirectory(browser, build);
-    const target = path.resolve(baseDirectory, relative);
-    fs.rmSync(target, { recursive: true, force: true });
-    fs.cpSync(source, target, { recursive: true });
-    const stamped = { ...manifest, [markerKey]: getMarkerValue(build) };
-    const text = JSON.stringify(stamped, null, 2);
-    fs.writeFileSync(path.join(target, 'manifest.json'), text);
-    directories[build] = relative;
-    manifestHashes[build] = createHash('sha256').update(text).digest('hex');
+  for (const build of ['A', 'B'] as AbBuild[]) {
+    const copy = copyAndStamp({ browser, source, baseDirectory, build });
+    directories[build] = copy.relative;
+    manifestHashes[build] = copy.manifestHash;
   }
 
   const exclude = ['manifest.json'];
@@ -172,7 +213,7 @@ export function prepareAbBuilds({
     const targetB = path.resolve(baseDirectory, directories.B, file);
     const original = fs.readFileSync(targetB, 'utf8');
     fs.writeFileSync(targetB, getInjectionSnippet(injectMs) + original);
-    exclude.push(path.normalize(file));
+    exclude.push(file);
     injection = {
       file,
       site: injectSite,
@@ -184,9 +225,13 @@ export function prepareAbBuilds({
     };
   }
 
-  const a = hashContent(path.resolve(baseDirectory, directories.A), exclude);
-  const b = hashContent(path.resolve(baseDirectory, directories.B), exclude);
-  if (a.hash !== b.hash || a.files.join('\n') !== b.files.join('\n')) {
+  const treeA = hashTree(path.resolve(baseDirectory, directories.A));
+  const treeB = hashTree(path.resolve(baseDirectory, directories.B));
+  const contentHash = digestOf(treeA, exclude);
+  if (
+    contentHash !== digestOf(treeB, exclude) ||
+    [...treeA.keys()].join('\n') !== [...treeB.keys()].join('\n')
+  ) {
     throw new Error(`A/B builds differ outside ${exclude.join(', ')}`);
   }
   const manifestA = JSON.parse(
@@ -211,8 +256,8 @@ export function prepareAbBuilds({
     browser,
     sourceDirectory,
     directories,
-    fileCount: a.files.length,
-    contentHash: a.hash,
+    fileCount: treeA.size,
+    contentHash,
     manifestHashes,
     markerKey,
     ...(injection && { injection }),
@@ -231,24 +276,6 @@ export type PairBuildsSummary = {
   >;
   differingFiles: number;
 };
-
-/**
- * Hash of each file's relative path, excluding manifest.json.
- *
- * @param root - Directory to hash.
- */
-function hashFiles(root: string): Map<string, string> {
-  const hashes = new Map<string, string>();
-  for (const file of listFiles(root)) {
-    if (file !== 'manifest.json') {
-      hashes.set(
-        file.split(path.sep).join('/'),
-        hashFile(path.join(root, file)),
-      );
-    }
-  }
-  return hashes;
-}
 
 /**
  * Copies a base and a head build into the A and B directories and stamps each
@@ -277,42 +304,31 @@ export function preparePairBuilds({
   const directories = {} as Record<AbBuild, string>;
   const manifestHashes = {} as Record<AbBuild, string>;
   const builds = {} as PairBuildsSummary['builds'];
-  const fileHashes = {} as Record<AbBuild, Map<string, string>>;
+  const trees = {} as Record<AbBuild, Map<string, string>>;
 
   for (const build of ['A', 'B'] as AbBuild[]) {
     const source = path.resolve(baseDirectory, sources[build]);
-    const manifest = JSON.parse(
-      fs.readFileSync(path.join(source, 'manifest.json'), 'utf8'),
-    );
     if (!fs.existsSync(path.join(source, 'home.html'))) {
       throw new Error(`No home.html in ${sources[build]}`);
     }
-    const relative = getBuildDirectory(browser, build);
-    const target = path.resolve(baseDirectory, relative);
-    fs.rmSync(target, { recursive: true, force: true });
-    fs.cpSync(source, target, { recursive: true });
-    const text = JSON.stringify(
-      { ...manifest, [markerKey]: getMarkerValue(build) },
-      null,
-      2,
-    );
-    fs.writeFileSync(path.join(target, 'manifest.json'), text);
-    directories[build] = relative;
-    manifestHashes[build] = createHash('sha256').update(text).digest('hex');
-    const content = hashContent(target, ['manifest.json']);
-    fileHashes[build] = hashFiles(target);
+    const copy = copyAndStamp({ browser, source, baseDirectory, build });
+    directories[build] = copy.relative;
+    manifestHashes[build] = copy.manifestHash;
+    trees[build] = hashTree(copy.target);
     builds[build] = {
       source: sources[build],
-      fileCount: content.files.length,
-      contentHash: content.hash,
-      version: manifest.version,
+      fileCount: trees[build].size,
+      contentHash: digestOf(trees[build], ['manifest.json']),
+      version: copy.version,
     };
   }
 
-  const names = new Set([...fileHashes.A.keys(), ...fileHashes.B.keys()]);
+  // The manifests differ by their marker alone, so they are not counted.
+  const names = new Set([...trees.A.keys(), ...trees.B.keys()]);
+  names.delete('manifest.json');
   let differingFiles = 0;
   for (const name of names) {
-    if (fileHashes.A.get(name) !== fileHashes.B.get(name)) {
+    if (trees.A.get(name) !== trees.B.get(name)) {
       differingFiles += 1;
     }
   }

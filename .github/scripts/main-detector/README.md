@@ -21,17 +21,19 @@ When the `Main` workflow finishes for a push to `main`, `main-detector.yml`:
 
 ## Reading a ping
 
-A ping is only sent when both batches agree. The message shows the pooled shift
+A ping is only sent when the second batch confirms it: the pooled jobs and the
+second batch alone must each pass the same rule as the first batch. The message shows the pooled shift
 with its 95% bounds, the per-job shifts, and a breakdown (`loadScripts`,
 `setupStore`, `firstReactRender`, `longTaskTotalDuration`) to point at the phase.
 
-| | Chrome | Firefox |
-| --- | --- | --- |
-| Quiet ping | shift of 1.5% or more | shift of 2% or more |
-| Loud ping | 5% or more (both browsers) | |
+|            | Chrome                     | Firefox             |
+| ---------- | -------------------------- | ------------------- |
+| Quiet ping | shift of 1.5% or more      | shift of 2% or more |
+| Loud ping  | 5% or more (both browsers) |                     |
 
 Faster is reported too. A large speed-up can mean the metric stopped timing
-what it should, so check that first.
+what it should, so check that first. A breakdown metric that moves by more than
+100% is flagged, because the commit probably changed what it measures.
 
 ## Triage
 
@@ -42,20 +44,31 @@ what it should, so check that first.
 3. For a suspected harness or metric change (the breakdown moves by orders of
    magnitude, or one browser only), compare the artifacts `detector-b1-*` and
    `detector-b2-*`, which hold the raw per-session samples.
-4. The A/A canary message ("Detector false alarm") means the detector fired on
+4. The A/A canary message ("a false alarm on the A/A canary") means the detector fired on
    identical builds. Note it, and do not investigate the commit.
 
 ## Operating it
 
 - Secret: `SLACK_WEBHOOK_MAIN_DETECTOR` (an incoming webhook for the channel).
-  Without it, `slack-cli.ts` prints the message instead of posting it.
+  Without it, `slack-cli.mts` prints the message instead of posting it.
 - Manual runs: `workflow_dispatch` with `head_sha`, `mode=aa` for a canary, and
   `post_slack` to post. `inject_head_ms` adds a busy-wait to the head build for
   a positive control.
 - Stop it: disable the workflow in the Actions tab. Nothing else depends on it.
-- Local checks: `slack-cli.ts --result result.json` prints the message
-  (a dry run); `resolve-cli.ts`, `compare-builds-cli.ts` and `score-cli.ts` are
+- Local checks: `slack-cli.mts --result result.json` prints the message
+  (a dry run); `resolve-cli.mts`, `compare-builds-cli.mts` and `score-cli.mts` are
   the same steps the workflow runs.
+
+## Heartbeat
+
+`main-detector-heartbeat.yml` runs daily at 14:17 UTC. It takes the Main runs
+on `main` that finished between 27 and 3 hours ago (the 3 hours let the detector
+finish), drops cancelled ones, and checks that each commit has a detector run.
+It posts to the same channel only when a commit has no detector run or all its
+runs failed. A day with no Main runs (weekends, holidays) says nothing. Without
+the secret it prints the message instead. It cannot notice its own death:
+scheduled workflows are disabled after 60 days without repository activity, and
+GitHub emails the last person to edit the schedule when one fails.
 
 ## Known limits
 

@@ -1,19 +1,13 @@
 /**
- * Usage: yarn tsx test/e2e/benchmarks/main-detector/resolve-cli.ts --head SHA --out resolve.json [--depth 40]
+ * Usage: node .github/scripts/main-detector/resolve-cli.mts --head SHA --out resolve.json [--depth 40]
  * Resolves the head build and its base from main.yml push runs and CloudFront.
  * Needs a checkout with enough first-parent history and the `gh` CLI.
  */
-import { execFileSync } from 'child_process';
-import fs from 'fs';
-import { hideBin } from 'yargs/helpers';
-import yargs from 'yargs/yargs';
-import { resolveBuilds, type BuildRef } from './resolve';
-
-const HOST =
-  process.env.DETECTOR_BUILD_HOST ??
-  'https://diuv6g5fj9pvx.cloudfront.net/metamask-extension';
-const REPOSITORY =
-  process.env.GITHUB_REPOSITORY ?? 'MetaMask/metamask-extension';
+import { execFileSync } from 'node:child_process';
+import fs from 'node:fs';
+import { parseArgs } from 'node:util';
+import { REPOSITORY, buildZipUrl } from './build-source.mts';
+import { resolveBuilds, type BuildRef } from './resolve.mts';
 
 const run = (command: string, args: string[]) =>
   execFileSync(command, args, {
@@ -77,11 +71,9 @@ async function lookup(sha: string): Promise<BuildRef | undefined> {
         .split('\n')
         .filter(Boolean);
   for (const id of candidates) {
-    const chrome = `${HOST}/${id}/build-test-webpack/builds/metamask-chrome-${version}.zip`;
-    const firefox = `${HOST}/${id}/build-test-mv2-webpack/builds/metamask-firefox-${version}.zip`;
     const [hasChrome, hasFirefox] = await Promise.all([
-      exists(chrome),
-      exists(firefox),
+      exists(buildZipUrl('chrome', id, version)),
+      exists(buildZipUrl('firefox', id, version)),
     ]);
     if (hasChrome && hasFirefox) {
       return { sha, run: id, version, sourceHash };
@@ -91,18 +83,23 @@ async function lookup(sha: string): Promise<BuildRef | undefined> {
 }
 
 async function main(): Promise<void> {
-  const argv = await yargs(hideBin(process.argv))
-    .option('head', { type: 'string', default: 'HEAD' })
-    .option('depth', { type: 'number', default: 40 })
-    .option('out', { type: 'string', demandOption: true })
-    .parseAsync();
+  const { values } = parseArgs({
+    options: {
+      head: { type: 'string', default: 'HEAD' },
+      depth: { type: 'string', default: '40' },
+      out: { type: 'string' },
+    },
+  });
+  if (!values.out) {
+    throw new Error('--out is required');
+  }
 
   const commits = run('git', [
     'log',
     '--first-parent',
     '--format=%H',
-    `-n${argv.depth}`,
-    argv.head,
+    `-n${values.depth}`,
+    values.head,
   ]).split('\n');
   const result = await resolveBuilds(commits, lookup);
   const subjects = Object.fromEntries(
@@ -112,7 +109,7 @@ async function main(): Promise<void> {
     ]),
   );
   fs.writeFileSync(
-    argv.out,
+    values.out,
     JSON.stringify({ ...result, headSha: commits[0], subjects }, null, 2),
   );
   console.log(JSON.stringify({ ...result, subjects }, null, 2));

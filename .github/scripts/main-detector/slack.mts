@@ -6,9 +6,9 @@ import {
   type Browser,
   type Decision,
   type Finding,
-} from './score';
-import { summarizeShifts } from './stats';
-import type { PlanInfo } from './report';
+} from './score.mts';
+import { summarizeShifts, toPercent } from './stats.mts';
+import type { PlanInfo } from './report.mts';
 
 export type SlackPayload = {
   // Fallback for notifications and clients without block support.
@@ -28,10 +28,28 @@ export type SlackInput = {
 
 const pct = (value: number) => `${value >= 0 ? '+' : ''}${value.toFixed(1)}%`;
 
-const toPercent = (logRatio: number) => (Math.exp(logRatio) - 1) * 100;
-
 const browserName = (browser: Browser) =>
   browser === 'chrome' ? 'Chrome' : 'Firefox';
+
+// The detector runs a single benchmark preset, so every finding is about it.
+const SCENARIO =
+  'Standard user (default wallet state, not the power user with 30 accounts), loading the home page';
+
+const METRIC_LABELS: Record<string, string> = {
+  uiStartup: 'UI Startup',
+  load: 'Page load',
+  loadScripts: 'Load Scripts',
+  setupStore: 'Setup Store',
+  firstReactRender: 'First Render',
+  longTaskTotalDuration: 'Long tasks (total)',
+};
+
+const METRIC_MEANINGS: Record<string, string> = {
+  uiStartup: 'time from opening the UI until it is ready',
+  load: 'browser load event of the home page',
+};
+
+const metricLabel = (metric: string) => METRIC_LABELS[metric] ?? metric;
 
 function linkPullRequest(subject: string, repository: string): string {
   return subject.replace(
@@ -48,21 +66,33 @@ function formatFinding(finding: Finding, scores: BatchScores[]): string {
     .join(', ');
   const { pooled, first, second } = finding;
   return (
-    `• *${browserName(finding.browser)} ${finding.metric}* (${size}% ${finding.direction})` +
+    `• *${browserName(finding.browser)}, ${metricLabel(finding.metric)}* (\`${finding.metric}\`, ${METRIC_MEANINGS[finding.metric] ?? 'see breakdown'}): ${size}% ${finding.direction}` +
     ` — pooled ${pct(pooled.shiftPct)} [${pct(pooled.lowerPct)}, ${pct(pooled.upperPct)}],` +
     ` batch 1 ${pct(first.shiftPct)}, batch 2 ${pct(second.shiftPct)}\n` +
     `  per job: ${jobs} %`
   );
 }
 
-function formatBreakdown(browser: Browser, scores: BatchScores[]): string {
-  const parts = BREAKDOWN_METRICS.flatMap((metric) => {
+// A shift this large means the metric measures something else now.
+const HUGE_SHIFT_PCT = 100;
+
+const FLAG = ':triangular_flag_on_post:';
+
+function breakdownShifts(browser: Browser, scores: BatchScores[]) {
+  return BREAKDOWN_METRICS.flatMap((metric) => {
     const ratios = scores.flatMap(
       (batch) => batch[browser].logRatios[metric] ?? [],
     );
     const summary = summarizeShifts(ratios);
-    return summary ? [`${metric} ${pct(summary.shiftPct)}`] : [];
+    return summary ? [{ metric, shiftPct: summary.shiftPct }] : [];
   });
+}
+
+function formatBreakdown(browser: Browser, scores: BatchScores[]): string {
+  const parts = breakdownShifts(browser, scores).map(
+    ({ metric, shiftPct }) =>
+      `${metricLabel(metric)} ${pct(shiftPct)}${Math.abs(shiftPct) > HUGE_SHIFT_PCT ? ` ${FLAG}` : ''}`,
+  );
   return `• *${browserName(browser)}* — ${parts.join(', ')}`;
 }
 
@@ -114,6 +144,13 @@ export function buildSlackMessage(input: SlackInput): SlackPayload {
     ),
   ];
 
+  const jobs = first.chrome.jobsTotal;
+  blocks.push(
+    section(
+      `:test_tube: *What was measured*\n• ${SCENARIO}\n• Benchmark \`startupStandardHome\` in Chrome and Firefox, ${scores.length} batch${scores.length === 1 ? '' : 'es'} of ${jobs} paired jobs per browser, base and head builds alternating on one runner`,
+    ),
+  );
+
   const large = decision.findings.filter((f) => f.level === 'loud');
   const small = decision.findings.filter((f) => f.level === 'quiet');
   if (large.length > 0) {
@@ -145,6 +182,16 @@ export function buildSlackMessage(input: SlackInput): SlackPayload {
   );
 
   const notes: string[] = [];
+  const huge = browsers.some((browser) =>
+    breakdownShifts(browser, scores).some(
+      ({ shiftPct }) => Math.abs(shiftPct) > HUGE_SHIFT_PCT,
+    ),
+  );
+  if (huge) {
+    notes.push(
+      `_${FLAG} Moved by more than ${HUGE_SHIFT_PCT}%. The commit probably changed what the metric measures, not how fast it is._`,
+    );
+  }
   if (decision.findings.some((finding) => finding.direction === 'faster')) {
     notes.push(
       '_A speed-up can also mean the metric stopped timing what it should. Check that the metric still measures the same thing._',
@@ -177,7 +224,7 @@ export function buildSlackMessage(input: SlackInput): SlackPayload {
   const summary = decision.findings
     .map(
       (finding) =>
-        `${browserName(finding.browser)} ${finding.metric} ${pct(finding.pooled.shiftPct)}`,
+        `${browserName(finding.browser)} ${metricLabel(finding.metric)} (standard user) ${pct(finding.pooled.shiftPct)}`,
     )
     .join(', ');
   return {

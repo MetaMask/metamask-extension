@@ -1,4 +1,4 @@
-import { resolveBuilds, type BuildLookup, type BuildRef } from './resolve';
+import { resolveBuilds, type BuildLookup, type BuildRef } from './resolve.mts';
 
 const build = (sha: string): BuildRef => ({
   sha,

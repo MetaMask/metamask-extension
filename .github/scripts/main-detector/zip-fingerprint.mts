@@ -1,4 +1,4 @@
-import { createHash } from 'crypto';
+import { createHash } from 'node:crypto';
 
 const END_SIGNATURE = 0x06054b50;
 const ENTRY_SIGNATURE = 0x02014b50;
@@ -56,6 +56,7 @@ export function parseCentralDirectory(
     if (directory.readUInt32LE(position) !== ENTRY_SIGNATURE) {
       throw new Error(`Bad central directory entry ${i}`);
     }
+    // Fixed 46-byte header; the name, extra field and comment follow it.
     const nameLength = directory.readUInt16LE(position + 28);
     const extraLength = directory.readUInt16LE(position + 30);
     const commentLength = directory.readUInt16LE(position + 32);

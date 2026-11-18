@@ -490,7 +490,7 @@ export async function runPageLoadBenchmark(
     p95,
     trimmedCount: trimmedCounts,
     outliers: { ...trimmedCounts },
-    // TEMPORARY (2/2): raw per-load values for the A/B pilot analysis. Remove with pilot-ab.yml.
+    // Raw per-load values, which the main detector scores per job.
     ...(isAbPilotEnabled() && { samples }),
     ...(webVitals && { webVitals }),
   };

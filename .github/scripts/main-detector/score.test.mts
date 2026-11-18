@@ -7,8 +7,8 @@ import {
   scoreBatch,
   type BatchScores,
   type JobResult,
-} from './score';
-import { summarizeShifts, tCritical95 } from './stats';
+} from './score.mts';
+import { summarizeShifts, tCritical95 } from './stats.mts';
 
 // Ten sessions, alternating A and B, two page loads each. The first two sessions
 // are warm-up and slower. `headFactor` scales the head (B) values.
@@ -140,6 +140,15 @@ describe('detector decisions', () => {
     const decision = decide(first, scores(makeJobs(same)), DEFAULT_CONFIG);
     expect(decision.ping).toBe('none');
     expect(decision.unmeasured).toStrictEqual([]);
+  });
+
+  it('does not ping when the second batch moves the same way but its own bound includes zero', () => {
+    const first = scores(makeJobs([1.03, 1.032, 1.028, 1.031, 1.029]));
+    const noisy = scores(makeJobs([1.12, 0.98, 1.04, 1, 1]));
+    expect(noisy.chrome.metrics.uiStartup.summary?.shiftPct).toBeGreaterThan(
+      DEFAULT_CONFIG.floorPct.chrome,
+    );
+    expect(decide(first, noisy, DEFAULT_CONFIG).ping).toBe('none');
   });
 
   it('is loud when the confirmed shift reaches the loud threshold', () => {

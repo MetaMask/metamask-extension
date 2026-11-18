@@ -1,13 +1,13 @@
 import {
   BREAKDOWN_METRICS,
+  BROWSERS,
   VERDICT_METRICS,
   type BatchScores,
-  type Browser,
   type Decision,
   type DetectorConfig,
   type Verdict,
-} from './score';
-import type { ShiftSummary } from './stats';
+} from './score.mts';
+import type { ShiftSummary } from './stats.mts';
 
 export type PlanInfo = {
   headSha: string;
@@ -43,7 +43,7 @@ function batchTable(
       : '| Browser | Metric | Head vs base [95% bounds] |',
     withVerdict ? '|---|---|---|---|' : '|---|---|---|',
   ];
-  for (const browser of ['chrome', 'firefox'] as const) {
+  for (const browser of BROWSERS) {
     for (const metric of metrics) {
       const score = scores[browser].metrics[metric];
       const row = `| ${browser} | ${metric} | ${cell(score.summary)}`;
@@ -56,12 +56,10 @@ function batchTable(
 }
 
 const jobsLine = (title: string, scores: BatchScores) =>
-  `${title}: ${(['chrome', 'firefox'] as const)
-    .map(
-      (browser: Browser) =>
-        `${browser} ${scores[browser].jobsUsable}/${scores[browser].jobsTotal} jobs usable`,
-    )
-    .join(', ')}`;
+  `${title}: ${BROWSERS.map(
+    (browser) =>
+      `${browser} ${scores[browser].jobsUsable}/${scores[browser].jobsTotal} jobs usable`,
+  ).join(', ')}`;
 
 export function renderSummary(options: {
   plan: PlanInfo;

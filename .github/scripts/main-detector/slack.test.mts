@@ -1,5 +1,5 @@
-import type { BatchScores, Decision, Finding } from './score';
-import { buildSlackMessage } from './slack';
+import type { BatchScores, Decision, Finding } from './score.mts';
+import { buildSlackMessage } from './slack.mts';
 
 const summary = (shiftPct: number) => ({
   shiftPct,
@@ -88,9 +88,41 @@ describe('buildSlackMessage', () => {
       build({ ping: 'quiet', findings: [finding()], unmeasured: [] }),
     );
 
-    expect(text).toContain('Chrome uiStartup* (2.5% slower)');
+    expect(text).toContain(
+      'Chrome, UI Startup* (`uiStartup`, time from opening the UI until it is ready): 2.5% slower',
+    );
     expect(text).toContain('per job: +2.0, +3.0, +3.0 %');
-    expect(text).toContain('loadScripts');
+    expect(text).toContain('Load Scripts');
+    expect(text).toContain('Standard user');
+    expect(text).toContain('startupStandardHome');
+  });
+
+  it('flags a breakdown metric that moved by more than 100%', () => {
+    const decision: Decision = {
+      ping: 'quiet',
+      findings: [finding()],
+      unmeasured: [],
+    };
+    const payload = buildSlackMessage({
+      plan: {
+        headSha: 'a'.repeat(40),
+        headSubject: 'feat: x (#42)',
+        baseSha: 'b'.repeat(40),
+        canary: false,
+        rangeSize: 1,
+      },
+      first: batch({ uiStartup: [0.02], firstReactRender: [4.3, 4.3] }),
+      decision,
+      repository: 'MetaMask/metamask-extension',
+      runUrl: 'https://github.com/MetaMask/metamask-extension/actions/runs/1',
+      author: 'someone',
+    });
+    expect(render(payload)).toContain('First Render +7');
+    expect(render(payload)).toContain('triangular_flag_on_post');
+    expect(render(payload)).toContain('changed what the metric measures');
+    expect(
+      render(build({ ping: 'quiet', findings: [finding()], unmeasured: [] })),
+    ).not.toContain('triangular_flag_on_post');
   });
 
   it('asks whether the metric still measures the same thing on a speed-up', () => {
