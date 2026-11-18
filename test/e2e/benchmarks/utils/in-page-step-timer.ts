@@ -313,6 +313,15 @@ export function readInPageStepProbe([stepId]: [
 }
 
 /**
+ * Whether a step's probe, left installed, has reset the app's long-task metrics
+ * at the trigger. Runs in the page.
+ */
+export function peekInPageLongTasksReset([stepId]: [string]): boolean {
+  const host = window as unknown as ProbeHost;
+  return host.__benchSteps?.[stepId]?.longTasksReset === true;
+}
+
+/**
  * Turn a reading into the step's in-page timer, reported as `<stepId>`, or into
  * nothing with the reason logged: absent, never zero.
  */
@@ -456,8 +465,9 @@ export async function finishInPageStep(
 
 /**
  * Time a step inside the page around its existing timed wait, `settle`, which
- * is told whether the probe installed: a step that asked the probe to open its
- * long-task window at the trigger opens it itself when the probe did not.
+ * is told whether the probe reset the app's long-task metrics at the trigger. A
+ * step that asked for that reset opens its long-task window itself when the
+ * probe did not, so the window never runs back into the previous step's.
  */
 export async function measureStepInPage(
   driver: Driver,
@@ -468,12 +478,19 @@ export async function measureStepInPage(
     ...options
   }: InPageStepOptions & {
     trigger: () => Promise<void>;
-    settle: (probe: { installed: boolean }) => Promise<void>;
+    settle: (probe: { longTasksReset: boolean }) => Promise<void>;
   },
 ): Promise<TimerResult[]> {
   const installed = await startInPageStep(driver, stepId, options);
   await trigger();
-  await settle({ installed });
+  const longTasksReset =
+    installed &&
+    options.resetLongTasksAtStart === true &&
+    (await driver
+      .executeScript(peekInPageLongTasksReset, stepId)
+      .then((reset) => reset === true)
+      .catch(() => false));
+  await settle({ longTasksReset });
   return installed ? await finishInPageStep(driver, stepId) : [];
 }
 

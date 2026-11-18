@@ -8,6 +8,7 @@ import {
   inPageTimerResult,
   installInPageStepProbe,
   measureStepInPage,
+  peekInPageLongTasksReset,
   readInPageStepProbe,
   startInPageStep,
   type InPageProbeConfig,
@@ -776,24 +777,120 @@ describe('in-page-step-timer', () => {
       expect(result).toStrictEqual([]);
     });
 
-    it('tells the timed wait whether the probe installed', async () => {
-      const installedSeen: boolean[] = [];
-      const options = {
-        endSelector: '#destination',
-        trigger: async () => undefined,
-        settle: async ({ installed }: { installed: boolean }) => {
-          installedSeen.push(installed);
-        },
-      };
+    describe('what the timed wait is told about the long-task reset', () => {
+      /**
+       * Run a step that asks for the reset, with a trusted trigger input.
+       * @param options - What the page and the driver do.
+       * @param options.hook - The app's reset hook; null for an app without one.
+       * @param options.failFirst - Reject the install, so no probe exists.
+       * @param options.resetLongTasksAtStart - Ask the probe for the reset.
+       * @returns What `settle` was told, and the scripts the driver ran.
+       */
+      async function seen({
+        hook = jest.fn(),
+        failFirst = false,
+        resetLongTasksAtStart = true,
+      }: {
+        hook?: (() => void) | null;
+        failFirst?: boolean;
+        resetLongTasksAtStart?: boolean;
+      } = {}) {
+        (window as unknown as ProbeHost).stateHooks = {
+          resetLongTaskMetrics: hook ?? undefined,
+        };
+        captureInputHandler();
+        const { driver, order } = fakeDriver({ failFirst });
+        const told: boolean[] = [];
 
-      await measureStepInPage(fakeDriver().driver, 'step', options);
-      await measureStepInPage(
-        fakeDriver({ failFirst: true }).driver,
-        'step',
-        options,
-      );
+        await measureStepInPage(driver, 'step', {
+          endSelector: '#destination',
+          resetLongTasksAtStart,
+          trigger: async () => {
+            if (inputHandler) {
+              trustedInput('pointerdown', element('#go'));
+            }
+          },
+          settle: async ({ longTasksReset }) => {
+            told.push(longTasksReset);
+          },
+        });
+        return { told, order };
+      }
 
-      expect(installedSeen).toStrictEqual([true, false]);
+      it('says the window opened when the probe reset the metrics at the trigger', async () => {
+        const hook = jest.fn();
+
+        expect((await seen({ hook })).told).toStrictEqual([true]);
+        expect(hook).toHaveBeenCalledTimes(1);
+      });
+
+      it('says it did not when the app has no reset hook, though the probe installed', async () => {
+        expect((await seen({ hook: null })).told).toStrictEqual([false]);
+      });
+
+      it('says it did not when the trigger never reached the probe', async () => {
+        const hook = jest.fn();
+        (window as unknown as ProbeHost).stateHooks = {
+          resetLongTaskMetrics: hook,
+        };
+        const { driver } = fakeDriver();
+        const told: boolean[] = [];
+
+        await measureStepInPage(driver, 'step', {
+          endSelector: '#destination',
+          resetLongTasksAtStart: true,
+          trigger: async () => undefined,
+          settle: async ({ longTasksReset }) => {
+            told.push(longTasksReset);
+          },
+        });
+
+        expect(told).toStrictEqual([false]);
+        expect(hook).not.toHaveBeenCalled();
+      });
+
+      it('says it did not when the probe could not be installed', async () => {
+        const { told, order } = await seen({ failFirst: true });
+
+        expect(told).toStrictEqual([false]);
+        expect(order).toStrictEqual(['executeScript:installInPageStepProbe']);
+      });
+
+      it('does not ask the page when the step did not ask for the reset', async () => {
+        const { told, order } = await seen({ resetLongTasksAtStart: false });
+
+        expect(told).toStrictEqual([false]);
+        expect(order).not.toContain('executeScript:peekInPageLongTasksReset');
+      });
+
+      it('says it did not when the page cannot be asked', async () => {
+        captureInputHandler();
+        const driver = {
+          executeScript: jest.fn(
+            async (
+              script: (args: unknown[]) => unknown,
+              ...args: unknown[]
+            ) => {
+              if (script === peekInPageLongTasksReset) {
+                throw new Error('javascript error');
+              }
+              return script(args);
+            },
+          ),
+        } as unknown as Driver;
+        const told: boolean[] = [];
+
+        await measureStepInPage(driver, 'step', {
+          endSelector: '#destination',
+          resetLongTasksAtStart: true,
+          trigger: async () => undefined,
+          settle: async ({ longTasksReset }) => {
+            told.push(longTasksReset);
+          },
+        });
+
+        expect(told).toStrictEqual([false]);
+      });
     });
 
     it('propagates an error from the timed wait, as the step always has', async () => {

@@ -125,7 +125,7 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
             // Long tasks the click causes count: the window opens at the click.
             resetLongTasksAtStart: true,
             trigger: () => tokensTab.clickOnAsset('Ethereum'),
-            settle: async ({ installed }) => {
+            settle: async ({ longTasksReset }) => {
               steps.push(
                 await measureStepWithLongTasks(
                   driver,
@@ -134,7 +134,10 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
                     await tokensTab.checkPriceChartIsShown();
                     await driver.waitForSelector(PRICE_CHART_DATA);
                   },
-                  { legacyTimerId: true, windowOpenedAtTrigger: installed },
+                  {
+                    legacyTimerId: true,
+                    windowOpenedAtTrigger: longTasksReset,
+                  },
                 ),
               );
             },
