@@ -5,7 +5,7 @@ const globals = globalThis as {
   sentry?: unknown;
 };
 
-// A real client as the worker runs it: no pageload, every trace sampled.
+// A real client with no pageload running and every trace sampled.
 // Returns the trace id the scope holds outside any operation.
 export function startServiceWorkerSentry(): string {
   const perf = globalThis.performance as unknown as Record<string, unknown>;
