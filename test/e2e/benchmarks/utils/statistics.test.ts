@@ -295,6 +295,33 @@ describe('Statistics Utils', () => {
       );
     });
 
+    it('marks only the values the sanity check dropped as excluded', () => {
+      const sanity = calculateTimerStatistics(
+        'sanity',
+        [100, 105, 0, 102, -5, 10000000],
+        { iterations: [0, 1, 2, 3, 4, 5] },
+      );
+      expect(sanity.values?.map((sample) => sample.excluded)).toStrictEqual([
+        undefined,
+        undefined,
+        true,
+        undefined,
+        true,
+        true,
+      ]);
+
+      // 1000 is an IQR outlier the sanity check accepts, so it stays unmarked.
+      const trimmed = calculateTimerStatistics(
+        'trimmed',
+        [100, 101, 99, 102, 98, 100, 1000],
+        { iterations: [0, 1, 2, 3, 4, 5, 6] },
+      );
+      expect(trimmed.trimmedCount).toBeGreaterThan(0);
+      expect(trimmed.values?.some((sample) => 'excluded' in sample)).toBe(
+        false,
+      );
+    });
+
     it('omits values when no iteration numbering is supplied', () => {
       const stats = calculateTimerStatistics('unnumbered', [100, 105]);
       expect(stats.values).toBeUndefined();
