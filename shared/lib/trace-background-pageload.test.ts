@@ -119,6 +119,84 @@ describe('trace with no caller after the background pageload ends (real SDK)', (
     },
   );
 
+  describe('with a declared parentContext', () => {
+    // The shape `serializeTraceContext` writes, which crosses process
+    // boundaries; the underscore names are that contract.
+    function serialized(name: string, id?: string, traceparent?: string) {
+      return {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        _name: name,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        ...(id && { _id: id }),
+        ...(traceparent && { traceparent }),
+      };
+    }
+
+    function childTrace(parentContext: unknown) {
+      return trace(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        { name: NO_CALLER, parentContext: parentContext as any },
+        (span) => (span as Sentry.Span).spanContext().traceId,
+      );
+    }
+
+    // @ts-expect-error This function is missing from the Mocha type definitions
+    it.each([
+      ['an ended serialized context', serialized('Ended Trace', 'gone')],
+      ['null', null],
+    ])(
+      'starts a new trace when the parent does not resolve (%s)',
+      (_label: string, parentContext: unknown) => {
+        inContext('/service-worker.js');
+        const pageloadTraceId = endPageload({ pageload: 0, noCaller: 1 });
+
+        expect(childTrace(parentContext)).not.toBe(pageloadTraceId);
+      },
+    );
+
+    it('nests under a parent that resolves', () => {
+      inContext('/service-worker.js');
+      const pageloadTraceId = endPageload({ pageload: 0, noCaller: 1 });
+      const parent = trace({ name: TraceName.Middleware, root: true });
+
+      const childTraceId = childTrace(parent);
+
+      expect(childTraceId).toBe((parent as Sentry.Span).spanContext().traceId);
+      expect(childTraceId).not.toBe(pageloadTraceId);
+    });
+
+    it('continues the trace of an unresolved context that keeps its traceparent', () => {
+      inContext('/service-worker.js');
+      endPageload({ pageload: 0, noCaller: 1 });
+      const traceId = 'a'.repeat(32);
+
+      expect(
+        childTrace(
+          serialized(
+            'Ended Trace',
+            undefined,
+            `00-${traceId}-${'b'.repeat(16)}-01`,
+          ),
+        ),
+      ).toBe(traceId);
+    });
+
+    it('nests under the active span when the parent does not resolve', () => {
+      inContext('/service-worker.js');
+      endPageload({ pageload: 0, noCaller: 1 });
+
+      const result = trace(
+        { name: 'Background RPC: setAddressBook', root: true },
+        (rpc) => ({
+          rpcTraceId: (rpc as Sentry.Span).spanContext().traceId,
+          childTraceId: childTrace(serialized('Ended Trace', 'gone')),
+        }),
+      );
+
+      expect(result.childTraceId).toBe(result.rpcTraceId);
+    });
+  });
+
   it('keeps the trace id of a running rooted span', () => {
     inContext('/service-worker.js');
     endPageload({ pageload: 0, noCaller: 1 });
