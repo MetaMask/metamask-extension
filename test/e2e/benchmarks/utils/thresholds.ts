@@ -192,8 +192,12 @@ const SEND_TRANSACTIONS = {
   ...CLS_THRESHOLDS,
 } satisfies ThresholdConfig;
 
+// In the asset-details, add-account and bridge flows, a step's threshold is
+// keyed by `<stepId>Legacy`: each was calibrated on the step's harness-clock
+// timer, which those flows report under that name. The step's in-page timer is
+// reported under the bare step id and has no threshold here.
 const ASSET_DETAILS = {
-  assetClickToPriceChart: {
+  assetClickToPriceChartLegacy: {
     p75: { warn: 500, fail: 1500 },
     p95: { warn: 1500, fail: 3000 },
     ciMultiplier: CI_MULTIPLIER.DEFAULT,
@@ -202,7 +206,7 @@ const ASSET_DETAILS = {
 } satisfies ThresholdConfig;
 
 const SOLANA_ASSET_DETAILS = {
-  assetClickToPriceChart: {
+  assetClickToPriceChartLegacy: {
     p75: { warn: 500, fail: 1500 },
     p95: { warn: 1500, fail: 3000 },
     ciMultiplier: CI_MULTIPLIER.DEFAULT,

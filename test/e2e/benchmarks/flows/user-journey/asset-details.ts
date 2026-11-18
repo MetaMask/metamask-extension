@@ -23,6 +23,7 @@ import {
   measureStepWithLongTasks,
   buildLongTaskTimerResults,
 } from '../../utils/long-task-helper';
+import { measureStepInPage } from '../../utils/in-page-step-timer';
 import {
   getTestSpecificMock,
   shouldUseMockedRequests,
@@ -40,13 +41,21 @@ import type {
   TimerResult,
 } from '../../utils/types';
 
-const ETH_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000';
+/**
+ * The chart header's percent change, rendered only once real historical prices
+ * load (`asset-chart.tsx`, `token-price-header.tsx`). It never appears unless
+ * the historical-prices mock matches the URL the chart requests.
+ */
+const PRICE_CHART_DATA =
+  '[data-testid="parent-selector-asset-details"] [data-testid="asset-price-percent-change"]';
+
 export const testTitle = 'benchmark-asset-details-power-user';
 export const persona = BENCHMARK_PERSONA.POWER_USER;
 
 export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
   const steps: LongTaskStepResult[] = [];
   const traceTimers: TimerResult[] = [];
+  const inPageTimers: TimerResult[] = [];
   let webVitals: WebVitalsMetrics | undefined;
   try {
     await withFixtures(
@@ -104,18 +113,30 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         // Wait for token list to refresh after network switch
         await tokensTab.checkTokenListIsDisplayed();
 
-        await tokensTab.clickOnAsset('Ethereum');
-
-        // Measure: Asset click to price chart loaded
-        steps.push(
-          await measureStepWithLongTasks(
-            driver,
-            'assetClickToPriceChart',
-            async () => {
-              await tokensTab.checkPriceChartIsShown();
-              await tokensTab.checkPriceChartLoaded(ETH_TOKEN_ADDRESS);
+        // Measure: Asset click to the price chart's data. Both timers end at
+        // `PRICE_CHART_DATA`, not at the asset page's first render, which is
+        // where the chart container and the balance row's percentage already
+        // are. `clickOnAsset` may first expand the low-value section, so the
+        // in-page timer starts only on input inside a token row.
+        inPageTimers.push(
+          ...(await measureStepInPage(driver, 'assetClickToPriceChart', {
+            endSelector: PRICE_CHART_DATA,
+            startWithin: '[data-testid="multichain-token-list-button"]',
+            trigger: () => tokensTab.clickOnAsset('Ethereum'),
+            settle: async () => {
+              steps.push(
+                await measureStepWithLongTasks(
+                  driver,
+                  'assetClickToPriceChart',
+                  async () => {
+                    await tokensTab.checkPriceChartIsShown();
+                    await driver.waitForSelector(PRICE_CHART_DATA);
+                  },
+                  { legacyTimerId: true },
+                ),
+              );
             },
-          ),
+          })),
         );
 
         // `Asset Details` ends at the asset page's mount, before the chart data
@@ -152,6 +173,7 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         ...collectTimerResults(),
         ...buildLongTaskTimerResults(steps),
         ...traceTimers,
+        ...inPageTimers,
       ],
       webVitals,
       success: true,
@@ -163,6 +185,7 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         ...collectTimerResults(),
         ...buildLongTaskTimerResults(steps),
         ...traceTimers,
+        ...inPageTimers,
       ],
       webVitals,
       success: false,
