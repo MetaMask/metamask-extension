@@ -30,10 +30,8 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  MultichainAccountCell,
-  type MultichainAccountCellProps,
-} from '../multichain-account-cell';
+import { MultichainAccountCell } from '../multichain-account-cell';
+import type { MultichainAccountCellProps } from '../multichain-account-cell/multichain-account-cell';
 import {
   AccountTreeWallets,
   MultichainAccountsState,

@@ -31,7 +31,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import { type MultichainAccountCellProps } from '../multichain-account-cell';
+import type { MultichainAccountCellProps } from '../multichain-account-cell/multichain-account-cell';
 import {
   MultichainAccountList,
   MultichainAccountListProps,
