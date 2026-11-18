@@ -142,6 +142,9 @@ function buildState(network: NonZeroNativeNetwork) {
         lastUpdated: Date.now(),
       },
     },
+    assetsLoadingStatus: {
+      [selectedAccount.id]: 'loaded' as const,
+    },
     currencyRates: {
       [network.symbol]: {
         conversionRate: 1,
