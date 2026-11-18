@@ -122,12 +122,12 @@ For startup benchmarks, use the `startup` prefix: `standard-home.ts` → `startu
 
 ### 3. Add to a preset (optional)
 
-If your benchmark should run in CI, add its file path to the appropriate preset in `run-benchmark.ts`.
+If your benchmark should run in CI, add its file path to the appropriate preset in `utils/presets.ts`.
 
 To create a **new** preset, update these locations:
 
 1. `test/e2e/benchmarks/utils/constants.ts` — add a key to the relevant preset object (`USER_JOURNEY_PRESETS` for user journeys, `INTERACTION_PRESETS` for interactions, `STARTUP_PRESETS` for startup) or create a new one
-2. `test/e2e/benchmarks/run-benchmark.ts` — add a `PRESETS` entry (using the constant key) mapping to benchmark file paths
+2. `test/e2e/benchmarks/utils/presets.ts` — add a `PRESETS` entry (using the constant key) mapping to benchmark file paths
 3. `.github/workflows/run-benchmarks.yml` — add the preset to the CI matrix
 
 ## Output Format
