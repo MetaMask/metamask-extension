@@ -286,8 +286,7 @@ export const MultichainAccountMenu = ({
         }
         padding={1}
         onClick={togglePopover}
-        // The side nav keeps this control visible from aria-expanded while its
-        // popover is open and the pointer has left the row.
+        // Used to manage the open state UI of the popover
         aria-expanded={isOpen}
       >
         <Icon

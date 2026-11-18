@@ -114,9 +114,7 @@ export type MultichainAccountListProps = {
    */
   shouldNavigateOnSelect?: boolean;
   /**
-   * Cell rendered for each account. Defaults to {@link MultichainAccountCell}.
-   * A surface can pass its own component to change the row without adding
-   * variant branches to the shared cell. The replacement receives the same props.
+   * Cell component rendered per account. Defaults to {@link MultichainAccountCell}.
    */
   accountCellComponent?: React.ComponentType<MultichainAccountCellProps>;
 };

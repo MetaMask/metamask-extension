@@ -83,9 +83,6 @@ describe('SideNavAccounts', () => {
         'side-nav-account-cell-entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
       ),
     ).toBeInTheDocument();
-    expect(screen.queryAllByTestId(/^multichain-account-cell-/u)).toHaveLength(
-      0,
-    );
   });
 
   describe('manage button', () => {

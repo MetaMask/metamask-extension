@@ -8,7 +8,7 @@ import mockDefaultState from '../../../../test/data/mock-state.json';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { normalizeSafeAddress } from '../../../../shared/lib/multichain/address';
-import { type MultichainAccountCellProps } from '../../multichain-accounts/multichain-account-cell';
+import type { MultichainAccountCellProps } from '../../multichain-accounts/multichain-account-cell/multichain-account-cell';
 import { SideNavAccountCell } from './side-nav-account-cell';
 
 jest.mock('../../../hooks/useCopyToClipboard', () => ({

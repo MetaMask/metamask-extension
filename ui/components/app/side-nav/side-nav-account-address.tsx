@@ -20,16 +20,7 @@ export type SideNavAccountAddressProps = {
   groupId: AccountGroupId;
 };
 
-/**
- * Copyable default address for a side-nav account row.
- *
- * Unlike the shared account cell, this has no dropdown for the other addresses
- * in the group. The parent decides whether the preference is on; this only
- * renders the address, or the "no address" fallback when the group has none.
- *
- * @param props - Component props.
- * @param props.groupId - Account group whose scoped default address is shown.
- */
+// Copyable default address for a side-nav account row
 export const SideNavAccountAddress = ({
   groupId,
 }: SideNavAccountAddressProps) => {
@@ -67,7 +58,7 @@ export const SideNavAccountAddress = ({
   return (
     <button
       type="button"
-      className="relative z-10 flex min-w-0 items-center gap-1 bg-transparent p-0"
+      className="relative z-10 flex min-w-0 items-center gap-1 px-1 rounded-lg hover:bg-hover"
       onClick={handleClick}
       data-testid="side-nav-account-cell-address"
     >

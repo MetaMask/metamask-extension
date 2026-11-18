@@ -8,32 +8,19 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { ConnectedStatus } from '../../multichain/connected-status/connected-status';
-import { type MultichainAccountCellProps } from '../../multichain-accounts/multichain-account-cell';
+import type { MultichainAccountCellProps } from '../../multichain-accounts/multichain-account-cell/multichain-account-cell';
 import { getIconSeedAddressByAccountGroupId } from '../../../selectors/multichain-accounts/account-tree';
 import { SideNavAccountAddress } from './side-nav-account-address';
 
 /**
- * Account row for the fullscreen side navigation.
+ * Account row component shown in the wide screen side-nav.
  *
  * The balance sits in the subtitle. When the show-default-address preference
  * is on, the scoped default address follows it; otherwise the wallet name
- * passed by the list does, matching the shared account cell. The whole row is
+ * passed by the list does, matching {@link MultichainAccountCell}. The whole row is
  * selected through a native button that covers it, so the copy and menu
  * controls sit above that button and keep their own behaviour. The menu is
  * hidden until the row is hovered, and stays visible while its popover is open.
- *
- * @param props
- * @param props.accountId
- * @param props.accountName
- * @param props.accountNameString
- * @param props.onClick
- * @param props.balance
- * @param props.selected
- * @param props.walletName
- * @param props.privacyMode
- * @param props.showDefaultAddress
- * @param props.pending
- * @param props.endAccessory
  */
 export const SideNavAccountCell = ({
   accountId,
@@ -126,7 +113,8 @@ export const SideNavAccountCell = ({
                 <SensitiveText
                   data-testid="side-nav-account-cell-balance"
                   variant={TextVariant.BodySm}
-                  color={TextColor.TextAlternative}
+                  color={TextColor.TextDefault}
+                  fontWeight={FontWeight.Medium}
                   ellipsis
                   isHidden={privacyMode}
                   className="shrink-0"
