@@ -175,6 +175,7 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         ...traceTimers,
         ...inPageTimers,
       ],
+      expectedTimers: ['assetClickToPriceChart'],
       webVitals,
       success: true,
       benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
