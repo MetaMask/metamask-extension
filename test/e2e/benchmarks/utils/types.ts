@@ -16,6 +16,10 @@ export type TimerResult = {
 };
 
 export type LongTaskStepResult = {
+  /**
+   * The step id. Where the step also has an in-page timer, its harness-clock
+   * timer is reported as `<id>Legacy`.
+   */
   id: string;
   duration: number;
   longTaskCount: number;
