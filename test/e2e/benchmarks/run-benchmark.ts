@@ -30,6 +30,7 @@ import {
   STARTUP_PRESETS,
   DAPP_PAGE_LOAD_BENCHMARK_SPEC_BASENAME,
 } from './utils/constants';
+import { omitFiles } from './utils/paired-flows';
 import { PRESETS } from './utils/presets';
 import { THRESHOLD_REGISTRY } from './utils/thresholds';
 import { resolveFlowIterations } from './utils/flow-iterations';
@@ -396,6 +397,12 @@ async function main(): Promise<void> {
       description: 'Number of retries per benchmark run',
       type: 'number',
     })
+    .option('skip', {
+      type: 'array',
+      string: true,
+      description:
+        'Benchmark files to leave out of the preset, run paired in another job',
+    })
     .option('out', {
       alias: 'o',
       description: 'Output filename. Output printed to STDOUT if omitted.',
@@ -413,7 +420,7 @@ async function main(): Promise<void> {
     if (!(argv.preset in PRESETS)) {
       throw new Error(`Unknown preset: ${argv.preset}`);
     }
-    filesToRun = PRESETS[argv.preset];
+    filesToRun = omitFiles(PRESETS[argv.preset], argv.skip ?? []);
     if (filesToRun.length === 0) {
       console.log(
         `⚠️Preset '${argv.preset}' is currently disabled (empty). Skipping.`,
