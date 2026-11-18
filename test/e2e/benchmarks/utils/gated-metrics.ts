@@ -101,8 +101,9 @@ export const GATED_METRICS: ReadonlySet<GatedMetric> = new Set(
 export type AdmittedSeries = {
   readonly series: string;
   /**
-   * `δ_block` in ms: `max(33, 10% of the A/A arm's base mean)`, or half the
-   * smallest planted regression the series catches at the recall bar, if larger.
+   * `δ_block` in ms: `max(33, 10% of the A/A median less the series' listed fixed
+   * waits)`, of the A/A mean for the long-task series, or half the smallest planted
+   * regression the series catches at the recall bar, if larger.
    */
   readonly deltaBlockMs: number;
 };
