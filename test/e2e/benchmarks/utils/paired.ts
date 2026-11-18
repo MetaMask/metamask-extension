@@ -385,13 +385,15 @@ function tagIterations<TEntry extends IterationRecord>(
 
 /**
  * The head build's statistics as `runBenchmarkWithIterations` computes them, except that every
- * timer but `total` may be 0: results do not record which timers carry a unit.
+ * timer but `total` may be 0: results do not record which timers carry a unit. A page load that
+ * recorded no value (no hero mark, say) is left out, as the startup runner leaves it out.
  */
 function headTimerStatistics(
   values: Record<string, PairedMetricSample[]>,
 ): TimerStatistics[] {
-  return Object.entries(values).map(([id, samples]) =>
-    calculateTimerStatistics(
+  return Object.entries(values).map(([id, entries]) => {
+    const samples = entries.filter((sample) => Number.isFinite(sample.value));
+    return calculateTimerStatistics(
       id,
       samples.map((sample) => sample.value),
       {
@@ -400,8 +402,8 @@ function headTimerStatistics(
           ? { maxDurationMs: MAX_TOTAL_DURATION_MS }
           : { minDurationMs: 0 }),
       },
-    ),
-  );
+    );
+  });
 }
 
 /** Why a run gave no values; the runner writes an entry without `values` when every iteration failed. */
