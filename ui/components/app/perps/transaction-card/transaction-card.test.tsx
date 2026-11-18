@@ -819,11 +819,33 @@ describe('TransactionCard', () => {
       const card = screen.getByTestId(`transaction-card-${transaction.id}`);
       const adlButton = screen.getByTestId('perps-fill-tag-adl-button');
 
+      // The interactive row is a role="button" element, so the badge must sit
+      // outside it entirely — a nested control would be invalid and its
+      // keyboard events would bubble into the row.
+      expect(card.contains(adlButton)).toBe(false);
+
       let ancestor = adlButton.parentElement;
       while (ancestor && ancestor !== card) {
         expect(ancestor.tagName).not.toBe('BUTTON');
         ancestor = ancestor.parentElement;
       }
+    });
+
+    it('does not fire the row click when the ADL badge is keyboard-activated', () => {
+      const handleClick = jest.fn();
+      globalThis.platform = { openTab: jest.fn() } as never;
+      const transaction = createAdlTransaction();
+
+      renderWithProvider(
+        <TransactionCard transaction={transaction} onClick={handleClick} />,
+        mockStore,
+      );
+
+      const adlButton = screen.getByTestId('perps-fill-tag-adl-button');
+      fireEvent.keyDown(adlButton, { key: 'Enter' });
+      fireEvent.keyDown(adlButton, { key: ' ' });
+
+      expect(handleClick).not.toHaveBeenCalled();
     });
 
     it('fires row onClick from the interactive row root when ADL badge is present', () => {

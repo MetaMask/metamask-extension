@@ -3,7 +3,7 @@
 exports[`PermissionsCellConnectionListItem renders correctly with required props 1`] = `
 <div>
   <div
-    class="bg-default flex w-full px-4 py-3 min-h-[72px] justify-center cursor-pointer active:bg-pressed multichain-permissions-list-item pt-0 pb-2"
+    class="bg-default flex w-full justify-center cursor-pointer active:bg-pressed multichain-permissions-list-item px-0 py-0 min-h-0 pt-0 pb-2"
     data-testid="permissions-cell-connection-list-item"
     role="button"
     tabindex="0"

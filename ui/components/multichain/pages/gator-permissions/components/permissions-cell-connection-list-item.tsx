@@ -48,7 +48,10 @@ export const PermissionsCellConnectionListItem = ({
       isInteractive
       onClick={onClick}
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
-      className={`multichain-permissions-list-item pt-${paddingTopValue} pb-${paddingBottomValue}`}
+      // The parent permissions cell owns the surrounding padding; ListItem's
+      // default padded row chrome is stripped so the row keeps only the
+      // dynamic vertical spacing.
+      className={`multichain-permissions-list-item px-0 py-0 min-h-0 pt-${paddingTopValue} pb-${paddingBottomValue}`}
       data-testid="permissions-cell-connection-list-item"
       avatar={
         <AvatarIcon

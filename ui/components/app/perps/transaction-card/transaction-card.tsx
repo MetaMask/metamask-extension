@@ -3,6 +3,8 @@ import {
   twMerge,
   AvatarTokenSize,
   Box,
+  BoxAlignItems,
+  BoxFlexDirection,
   ContentVariant,
   ListItem,
   TextColor,
@@ -166,16 +168,20 @@ export const TransactionCard = ({
   const hasInteractiveBadge =
     transaction.fill?.fillType === FillType.AutoDeleveraging;
 
-  return (
+  const listItem = (
     <ListItem
       variant={ContentVariant.TwoLines}
       isInteractive={isClickable}
       onClick={isClickable ? handleClick : undefined}
-      className={twMerge(
-        '[container-name:list-item] [container-type:inline-size]',
-        variantStyles,
-        showTopBorder && 'border-t border-background-default',
-      )}
+      className={
+        isClickable && hasInteractiveBadge
+          ? 'min-w-0 flex-1'
+          : twMerge(
+              '[container-name:list-item] [container-type:inline-size]',
+              variantStyles,
+              showTopBorder && 'border-t border-background-default',
+            )
+      }
       data-testid={`transaction-card-${transaction.id}`}
       avatar={
         <PerpsTokenLogo
@@ -197,19 +203,33 @@ export const TransactionCard = ({
         color: amountDisplay.color,
         className: 'text-s-body-md @compact:text-s-body-sm text-right',
       }}
-      endAccessory={
-        isClickable && hasInteractiveBadge ? (
-          <Box
-            className="shrink-0"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <PerpsFillTag transaction={transaction} screenName={screenName} />
-          </Box>
-        ) : undefined
-      }
-      accessoryGap={isClickable && hasInteractiveBadge ? 4 : undefined}
     />
   );
+
+  if (isClickable && hasInteractiveBadge) {
+    // The ADL badge is its own control (it opens the support article), so it
+    // stays outside the interactive row: a button nested inside the row's
+    // role="button" is invalid, and the row's Enter/Space handling would
+    // otherwise also fire the row click when the badge is keyboard-activated.
+    return (
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        className={twMerge(
+          '[container-name:list-item] [container-type:inline-size]',
+          variantStyles,
+          showTopBorder && 'border-t border-background-default',
+        )}
+      >
+        {listItem}
+        <Box className="pr-4 shrink-0">
+          <PerpsFillTag transaction={transaction} screenName={screenName} />
+        </Box>
+      </Box>
+    );
+  }
+
+  return listItem;
 };
 
 export default TransactionCard;
