@@ -9,6 +9,8 @@ export type SentrySpan = {
   attributes: Record<string, unknown>;
 };
 
+// Sentry span-payload keys, not ours.
+/* eslint-disable @typescript-eslint/naming-convention */
 type SpanItemPayload = {
   items: {
     name: string;
@@ -16,6 +18,7 @@ type SpanItemPayload = {
     attributes?: SerializedAttributes;
   }[];
 };
+/* eslint-enable @typescript-eslint/naming-convention */
 
 /**
  * Reads the spans of a Sentry envelope body. With `traceLifecycle: 'stream'`

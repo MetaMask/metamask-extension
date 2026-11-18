@@ -1231,7 +1231,7 @@ function sentryWithScope<T>(callback: (scope: Sentry.Scope) => T): T {
 }
 
 function getActiveRootSpan(): Sentry.Span | undefined {
-  const sentry = globalThis.sentry;
+  const { sentry } = globalThis;
   const activeSpan = sentry?.getActiveSpan?.();
   return activeSpan ? sentry?.getRootSpan?.(activeSpan) : undefined;
 }
