@@ -15,6 +15,7 @@ import type {
   WebVitalsSummary,
 } from '../../../../shared/constants/benchmarks';
 import { BENCHMARK_PERSONA } from '../../../../shared/constants/benchmarks';
+import type { Driver } from '../../webdriver/driver';
 import {
   ALL_METRICS,
   DEFAULT_NUM_BROWSER_LOADS,
@@ -350,6 +351,51 @@ export function convertSummaryToResults(
   );
 }
 
+/** Per-page-load metrics from a startup flow, with the series it adds. */
+export type StartupMetrics = Metrics & { heroPainted?: number };
+
+/** What the startup flows read from the page after each page load. */
+export type StartupPageSignals = {
+  /** `startTime` of the first `mm-hero-painted` mark; null if none was set. */
+  heroPainted: number | null;
+};
+
+/**
+ * Runs in the page. Kept free of closures: it is serialized and sent there.
+ */
+const readStartupPageSignalsInPage = (): StartupPageSignals => {
+  const marks = performance.getEntriesByName('mm-hero-painted', 'mark');
+  return { heroPainted: marks.length > 0 ? marks[0].startTime : null };
+};
+
+/**
+ * Read the home view's hero mark from the page.
+ *
+ * @param driver - The benchmark's driver, on the extension page.
+ */
+export async function readStartupPageSignals(
+  driver: Driver,
+): Promise<StartupPageSignals> {
+  return (await driver.executeScript(
+    readStartupPageSignalsInPage,
+  )) as StartupPageSignals;
+}
+
+/**
+ * Fold what `readStartupPageSignals` read into one page load's metrics.
+ * @param metrics - From `driver.collectMetrics()`.
+ * @param signals - From `readStartupPageSignals`.
+ */
+export function applyStartupPageSignals(
+  metrics: Metrics,
+  signals: StartupPageSignals,
+): StartupMetrics {
+  return {
+    ...metrics,
+    ...(signals.heroPainted !== null && { heroPainted: signals.heroPainted }),
+  };
+}
+
 /**
  * Run the dApp page-load benchmark and aggregate results.
  *
@@ -456,7 +502,11 @@ export async function runPageLoadBenchmark(
   const values: MetricSamples = {};
   for (const [key, tracePath] of Object.entries(ALL_METRICS)) {
     const rawSamples = measuredResults.map((m) => get(m, tracePath) as number);
-    const { filtered, outlierCount } = detectOutliersIQR(rawSamples);
+    // A page load that set no hero mark has no `heroPainted` value; it stays
+    // in `values` and is left out of the statistics.
+    const { filtered, outlierCount } = detectOutliersIQR(
+      rawSamples.filter((value) => Number.isFinite(value)),
+    );
     result[key] = [...filtered].sort((a, b) => a - b);
     trimmedCounts[key] = outlierCount;
     // `result[key]` is filtered and sorted, so neither the discarded samples nor
