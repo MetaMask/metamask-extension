@@ -2640,9 +2640,9 @@
   "browserNotSupported": {
     "message": "Your browser is not supported..."
   },
-  "bugbotCanaryTitleCaseLabel": {
-    "message": "Bugbot Experiment Canary Label",
-    "description": "BUGBOT experiment canary: deliberately Title Case user-facing string for review-rule testing; do not translate or merge."
+  "bugbotCanaryLabel": {
+    "message": "Bugbot experiment canary label",
+    "description": "Bugbot experiment canary: label shown in the token list footer for review-rule testing; do not translate."
   },
   "busy": {
     "message": "Busy"
