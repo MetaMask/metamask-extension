@@ -1992,7 +1992,7 @@
         "@metamask/safe-event-emitter": true,
         "@metamask/utils>@metamask/type-utils": true,
         "@metamask/utils": true,
-        "@metamask/json-rpc-middleware-stream>readable-stream": true
+        "readable-stream": true
       }
     },
     "@metamask/providers>@metamask/json-rpc-middleware-stream": {
@@ -6641,21 +6641,6 @@
         "webpack>events": true,
         "process": true,
         "browserify>string_decoder": true
-      }
-    },
-    "@metamask/json-rpc-middleware-stream>readable-stream": {
-      "globals": {
-        "process.nextTick": true,
-        "process.stderr": true,
-        "process.stdout": true
-      },
-      "packages": {
-        "buffer": true,
-        "webpack>events": true,
-        "duplexify>inherits": true,
-        "process": true,
-        "browserify>string_decoder": true,
-        "readable-stream-2>util-deprecate": true
       }
     },
     "@metamask/object-multiplex>readable-stream": {
