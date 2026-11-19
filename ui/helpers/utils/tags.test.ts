@@ -230,7 +230,15 @@ describe('Tags Utils', () => {
 
       const tags = getStartupTraceTags(state);
 
-      expect(tags['wallet.token_count']).toStrictEqual(4);
+      expect(tags['wallet.asset_count']).toStrictEqual(4);
+    });
+
+    it('names no tag with "token", which Sentry\'s data scrubbing drops', () => {
+      const tags = getStartupTraceTags(createMockState({}));
+
+      expect(
+        Object.keys(tags).filter((key) => /token/iu.test(key)),
+      ).toStrictEqual([]);
     });
 
     it('includes transaction count', () => {

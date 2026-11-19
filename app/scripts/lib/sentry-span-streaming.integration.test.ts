@@ -136,7 +136,7 @@ describe('span streaming (integration with the shipped Sentry options)', () => {
       {
         name: TraceName.Transaction,
         tags: {
-          'wallet.token_count': 7,
+          'wallet.asset_count': 7,
           'wallet.unlocked': true,
           'wallet.ui_type': 'popup',
         },
@@ -152,7 +152,7 @@ describe('span streaming (integration with the shipped Sentry options)', () => {
     const segment = sentSpans().find((span) => span.is_segment);
     expect(segment?.name).toBe(TraceName.Transaction);
     expect(segment?.attributes).toMatchObject({
-      'wallet.token_count': { value: 7, type: 'integer' },
+      'wallet.asset_count': { value: 7, type: 'integer' },
       'wallet.unlocked': { value: true, type: 'boolean' },
       'wallet.ui_type': { value: 'popup', type: 'string' },
       extra: { value: 'x', type: 'string' },

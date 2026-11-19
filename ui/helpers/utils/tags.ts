@@ -32,7 +32,9 @@ export function getStartupTraceTags(state: MetaMaskReduxState) {
     'wallet.nft_count': nftCount,
     'wallet.notification_count': notificationCount,
     'wallet.pending_approval': firstApprovalType,
-    'wallet.token_count': tokenCount,
+    // Not `token_count`: Sentry's default data scrubbing drops attribute keys
+    // containing "token".
+    'wallet.asset_count': tokenCount,
     'wallet.transaction_count': transactionCount,
     'wallet.unlocked': unlocked,
     'wallet.ui_type': uiType,

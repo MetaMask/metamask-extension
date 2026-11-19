@@ -91,7 +91,7 @@ describe('UI startup tags (real Sentry SDK in stream mode)', () => {
     await Sentry.close();
   });
 
-  it('puts every startup tag, `wallet.token_count` included, on the `UI Startup` segment span', async () => {
+  it('puts every startup tag, `wallet.asset_count` included, on the `UI Startup` segment span', async () => {
     const initialState = { ...defaultMockState.metamask, currentLocale: 'en' };
     const traceContext = trace({ name: TraceName.UIStartup });
 
@@ -113,8 +113,12 @@ describe('UI startup tags (real Sentry SDK in stream mode)', () => {
       (span) => span.name === TraceName.UIStartup && span.is_segment,
     );
 
-    expect(expected.map(([key]) => key)).toContain('wallet.token_count');
+    expect(expected.map(([key]) => key)).toContain('wallet.asset_count');
     expect(root).toBeDefined();
+    // Sentry's default data scrubbing drops attribute keys containing "token".
+    expect(
+      Object.keys(root.attributes).filter((key) => /token/iu.test(key)),
+    ).toStrictEqual([]);
     for (const [key, value] of expected) {
       expect(root.attributes[key]?.value).toStrictEqual(value);
     }
