@@ -2,7 +2,6 @@ import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 import { priceApiBaseUrl } from '#shared/constants/price-api';
 import { TOKEN_API_METASWAP_CODEFI_URL } from '#shared/constants/tokens';
 import { getCaipAssetImageUrl } from '#shared/lib/asset-utils';
-import { byMarketCap } from '#shared/lib/token-search/token-search-api';
 import type { AssetData, PricePoint, ResolvedTicker } from './types';
 
 const tokenSearchUrl = `${TOKEN_API_METASWAP_CODEFI_URL}search`;
@@ -146,9 +145,9 @@ export async function resolveTicker(
     return null;
   }
 
-  const assets = symbolMatches.map(toAssetData).toSorted(byMarketCap);
+  // Token search already returns hits in market cap order.
+  const assets = symbolMatches.map(toAssetData);
 
-  // Since assets are sorted by market cap descending, checking the first one is enough
   if ((assets[0].marketCap ?? 0) <= 0) {
     return null;
   }

@@ -11,7 +11,7 @@ afterEach(() => {
 });
 
 describe('resolveTicker', () => {
-  it('sorts the primary and similar assets by market cap descending', async () => {
+  it('keeps exact matches in the order returned by token search', async () => {
     fetchMock.mockResolvedValue({
       ok: true,
       json: async () => ({
@@ -46,15 +46,15 @@ describe('resolveTicker', () => {
 
     await expect(resolveTicker(' qqq ')).resolves.toMatchObject({
       primary: {
-        ticker: 'qqq',
-        name: 'Higher QQQ',
-        caipAssetId: 'eip155:1/erc20:0xhigh',
+        ticker: 'QQQ',
+        name: 'Lower QQQ',
+        caipAssetId: 'eip155:1/erc20:0xlow',
       },
       similar: [
         expect.objectContaining({
-          ticker: 'QQQ',
-          name: 'Lower QQQ',
-          caipAssetId: 'eip155:1/erc20:0xlow',
+          ticker: 'qqq',
+          name: 'Higher QQQ',
+          caipAssetId: 'eip155:1/erc20:0xhigh',
         }),
       ],
     });
@@ -169,22 +169,22 @@ describe('resolveTicker', () => {
     await expect(resolveTicker('QQQ')).resolves.toBeNull();
   });
 
-  it('keeps a match when another resource has no market cap', async () => {
+  it('keeps a later zero-cap match in similar assets', async () => {
     fetchMock.mockResolvedValue({
       ok: true,
       json: async () => ({
         data: [
           {
-            assetId: 'eip155:1/erc20:0xzero',
-            symbol: 'QQQ',
-            name: 'Zero cap',
-            marketCap: 0,
-          },
-          {
             assetId: 'eip155:1/erc20:0xpriced',
             symbol: 'QQQ',
             name: 'Priced',
             marketCap: 5,
+          },
+          {
+            assetId: 'eip155:1/erc20:0xzero',
+            symbol: 'QQQ',
+            name: 'Zero cap',
+            marketCap: 0,
           },
         ],
       }),

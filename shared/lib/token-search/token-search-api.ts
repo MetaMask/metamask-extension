@@ -226,10 +226,3 @@ export const browseTokens = async (
     },
   };
 };
-
-export function byMarketCap(
-  a: { marketCap?: number | null },
-  b: { marketCap?: number | null },
-) {
-  return (b.marketCap ?? 0) - (a.marketCap ?? 0);
-}
