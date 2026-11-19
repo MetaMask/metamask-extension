@@ -344,12 +344,13 @@ function handleConsumePendingRoute(message: {
     pendingRoutes.delete(windowId);
   }
 
-  return {
+  // MV3 reply delivery requires a Promise from onMessage (not a plain object).
+  return Promise.resolve({
     type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
     body: entry
       ? { path: entry.path, search: entry.search ?? null }
       : { path: null, search: null },
-  };
+  });
 }
 
 function registerPendingRouteListeners() {
