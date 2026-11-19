@@ -15,6 +15,10 @@ import {
   mockTokensV3Assets,
 } from '../btc/mocks/tokens-api';
 import {
+  accountsBalancesV5,
+  accountsSupportedNetworksV2,
+} from '../../mock-response-data/api-responses';
+import {
   mockAccountsApiV2SupportedNetworks,
   mockAccountsApiV5MultiaccountBalances,
 } from './mocks/accounts-api';
@@ -74,8 +78,8 @@ const SMALL_USDC_TO_SOL_SWAP_AMOUNTS: UsdcToSolSwapAmounts = {
  * @param mockServer
  */
 async function mockAccountsApiV2WithSolana(mockServer: Mockttp) {
-  return mockServer
-    .forGet(/https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
+  return accountsSupportedNetworksV2
+    .rule(mockServer)
     .always()
     .thenJson(200, {
       fullSupport: [
@@ -119,10 +123,8 @@ async function mockAccountsApiV5WithSolana(mockServer: Mockttp) {
     },
   ];
 
-  return mockServer
-    .forGet(
-      /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
-    )
+  return accountsBalancesV5
+    .rule(mockServer)
     .always()
     .thenCallback(() => ({
       statusCode: 200,

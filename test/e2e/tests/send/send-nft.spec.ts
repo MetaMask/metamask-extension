@@ -31,14 +31,15 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { login } from '../../page-objects/flows/login.flow';
 import ContractAddressRegistry from '../../seeder/contract-address-registry';
 import { withTransactionEnvelopeTypeFixtures } from '../confirmations/helpers';
+import { fourByteSignatures } from '../../mock-response-data/api-responses';
 
 const DEFAULT_RECIPIENT = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 
 // Mock for ERC721 transferFrom
 async function erc721Mocks(server: Mockttp) {
   return [
-    await server
-      .forGet('https://www.4byte.directory/api/v1/signatures/')
+    await fourByteSignatures
+      .rule(server)
       // eslint-disable-next-line @typescript-eslint/naming-convention
       .withQuery({ hex_signature: '0x23b872dd' })
       .always()
@@ -69,8 +70,8 @@ async function erc721Mocks(server: Mockttp) {
 // Mock for ERC1155 safeTransferFrom
 async function erc1155Mocks(server: Mockttp) {
   return [
-    await server
-      .forGet('https://www.4byte.directory/api/v1/signatures/')
+    await fourByteSignatures
+      .rule(server)
       // eslint-disable-next-line @typescript-eslint/naming-convention
       .withQuery({ hex_signature: '0xf242432a' })
       .always()

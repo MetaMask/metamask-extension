@@ -16,6 +16,10 @@ import { mockTokensV2SupportedNetworks } from '../btc/mocks/tokens-api';
 import SelectNetworkModal from '../../page-objects/pages/networks/select-network-modal';
 import { NetworkId } from '../../helpers/network-constants';
 import NetworkFilter from '../../page-objects/pages/networks/network-filter';
+import {
+  priceV3Spot,
+  tokensV3Assets,
+} from '../../mock-response-data/api-responses';
 import { getMockAssetsPrice } from './utils/mocks';
 
 const ETH_CONVERSION_RATE_USD = 1700;
@@ -24,8 +28,6 @@ const MAINNET_MUSD_ASSET_ID = `eip155:1/erc20:${MUSD_ADDRESS.toLowerCase()}`;
 const LINEA_MUSD_ASSET_ID = `eip155:59144/erc20:${MUSD_ADDRESS.toLowerCase()}`;
 const POLYGON_USDT_ADDRESS = '0xc2132d05d31c914a87c6611c10748aeb04b58e8f';
 
-const SPOT_PRICES_V3_URL =
-  /^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u;
 /**
  * Spot payload for native ETH when unified assets are on — USD price is normalized
  * against conversionRate in selectors (`shared/lib/selectors/assets-migration.ts`).
@@ -127,7 +129,7 @@ async function importTokensTestMock(mockServer: Mockttp) {
 
 async function mockPriceFetch(mockServer: Mockttp) {
   return [
-    await mockServer.forGet(SPOT_PRICES_V3_URL).thenCallback(() => {
+    await priceV3Spot.rule(mockServer).thenCallback(() => {
       return {
         statusCode: 200,
         json: {
@@ -187,7 +189,7 @@ async function mockSpotPricesV3(mockServer: Mockttp) {
     },
   };
 
-  return await mockServer.forGet(SPOT_PRICES_V3_URL).thenCallback((request) => {
+  return await priceV3Spot.rule(mockServer).thenCallback((request) => {
     const url = new URL(request.url);
     const assetIds = (url.searchParams.get('assetIds') ?? '').toLowerCase();
 
@@ -350,8 +352,8 @@ async function mockPolygonBridgeApi(mockServer: Mockttp) {
 }
 
 async function mockAssetsV3(mockServer: Mockttp) {
-  return mockServer
-    .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+  return tokensV3Assets
+    .rule(mockServer)
     .always()
     .thenCallback((request) => {
       const url = new URL(request.url);

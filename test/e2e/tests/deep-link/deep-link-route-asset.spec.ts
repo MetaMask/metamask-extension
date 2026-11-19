@@ -6,6 +6,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import { importPrivateKeyAccount } from '../../page-objects/flows/add-account.flow';
 import { navigateDeepLinkToDestination } from '../../page-objects/flows/deep-link.flow';
+import { tokensV3Assets } from '../../mock-response-data/api-responses';
 import {
   bytesToB64,
   generateECDSAKeyPair,
@@ -30,8 +31,8 @@ const ASSET_DEEP_LINK_ROUTE = `/asset?assetId=${SOLANA_USDC_ASSET_ID}`;
  * @param server
  */
 async function mockSolanaAssetMetadata(server: Mockttp): Promise<void> {
-  await server
-    .forGet('https://tokens.api.cx.metamask.io/v3/assets')
+  await tokensV3Assets
+    .rule(server)
     .withQuery({ assetIds: SOLANA_USDC_ASSET_ID })
     .always()
     .thenJson(200, [

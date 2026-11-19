@@ -23,6 +23,7 @@ import {
   skipPasskeySetup,
 } from '../../page-objects/flows/onboarding.flow';
 import { mockSpotPrices } from '../tokens/utils/mocks';
+import { accountsBalancesV5 } from '../../mock-response-data/api-responses';
 
 // 1 ETH in wei, hex-encoded
 const ONE_ETH_IN_WEI_HEX = '0xde0b6b3a7640000';
@@ -45,10 +46,8 @@ async function mockIncrementalSecurityEndpoints(mockServer: Mockttp) {
   });
 
   // With assetsUnifyState, homepage balance reads Accounts API v5 instead of RPC.
-  await mockServer
-    .forGet(
-      /^https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
-    )
+  await accountsBalancesV5
+    .rule(mockServer)
     .asPriority(99)
     .always()
     .thenCallback((req) => {

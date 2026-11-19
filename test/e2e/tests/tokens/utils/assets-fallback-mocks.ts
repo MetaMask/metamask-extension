@@ -1,6 +1,12 @@
 import { type Json } from '@metamask/utils';
 import { Mockttp } from 'mockttp';
 import { getProductionRemoteFlagApiResponse } from '../../../feature-flags/feature-flag-registry';
+import {
+  accountsBalancesV5,
+  accountsSupportedNetworksV2,
+  priceV1ExchangeRates,
+  priceV3Spot,
+} from '../../../mock-response-data/api-responses';
 
 const ACCOUNTS_API = 'https://accounts.api.cx.metamask.io';
 const PRICE_API = 'https://price.api.cx.metamask.io';
@@ -187,16 +193,16 @@ export async function mockAccountsApiDown(mockServer: Mockttp) {
   const failBalances = () => ({ statusCode: 500, json: {} });
 
   return [
-    await mockServer
-      .forGet(`${ACCOUNTS_API}/v5/multiaccount/balances`)
+    await accountsBalancesV5
+      .rule(mockServer)
       .always()
       .thenCallback(failBalances),
     await mockServer
       .forGet(`${ACCOUNTS_API}/v6/multiaccount/balances`)
       .always()
       .thenCallback(failBalances),
-    await mockServer
-      .forGet(`${ACCOUNTS_API}/v2/supportedNetworks`)
+    await accountsSupportedNetworksV2
+      .rule(mockServer)
       .always()
       .thenJson(200, {
         fullSupport: ['eip155:1337'],
@@ -213,12 +219,12 @@ export async function mockAccountsApiDown(mockServer: Mockttp) {
  */
 export async function mockPriceApiDown(mockServer: Mockttp) {
   return [
-    await mockServer
-      .forGet(`${PRICE_API}/v3/spot-prices`)
+    await priceV3Spot
+      .rule(mockServer)
       .always()
       .thenCallback(() => ({ statusCode: 500, json: {} })),
-    await mockServer
-      .forGet(`${PRICE_API}/v1/exchange-rates`)
+    await priceV1ExchangeRates
+      .rule(mockServer)
       .always()
       .thenCallback(() => ({ statusCode: 500, json: {} })),
     await mockJsonRpc(
@@ -238,8 +244,10 @@ export async function mockPriceApiDown(mockServer: Mockttp) {
  */
 export async function mockUnprocessedChainBalances(mockServer: Mockttp) {
   const balances = (version: 'v5' | 'v6') =>
-    mockServer
-      .forGet(`${ACCOUNTS_API}/${version}/multiaccount/balances`)
+    (version === 'v5'
+      ? accountsBalancesV5.rule(mockServer)
+      : mockServer.forGet(`${ACCOUNTS_API}/v6/multiaccount/balances`)
+    )
       .always()
       .thenCallback((request) => ({
         statusCode: 200,
@@ -254,8 +262,8 @@ export async function mockUnprocessedChainBalances(mockServer: Mockttp) {
         statusCode: 200,
         json: flagsWithAccountsApiV6(),
       })),
-    await mockServer
-      .forGet(`${ACCOUNTS_API}/v2/supportedNetworks`)
+    await accountsSupportedNetworksV2
+      .rule(mockServer)
       .always()
       .thenJson(200, {
         fullSupport: ['eip155:1', 'eip155:137'],

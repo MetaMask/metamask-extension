@@ -9,6 +9,10 @@ import TestDapp from '../../../page-objects/pages/test-dapp';
 import { TRANSACTION_DATA_UNISWAP } from '../../../../data/confirmations/transaction-decode';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
+import {
+  fourByteSignatures,
+  tokenList,
+} from '../../../mock-response-data/api-responses';
 import { TestSuiteArguments } from './shared';
 
 describe('Confirmation Redesign Contract Interaction Transaction Decoding', function () {
@@ -174,8 +178,8 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
 });
 
 async function mocked4BytesResponse(mockServer: MockttpServer) {
-  return await mockServer
-    .forGet('https://www.4byte.directory/api/v1/signatures/')
+  return await fourByteSignatures
+    .rule(mockServer)
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     .withQuery({ hex_signature: '0x3b4b1381' })
@@ -237,33 +241,31 @@ async function mockTokensAndInfura(mockServer: MockttpServer) {
 }
 
 async function mockWethAndUsdcToken(mockServer: MockttpServer) {
-  return await mockServer
-    .forGet('https://token.api.cx.metamask.io/tokens/1')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: [
-          {
-            address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-            symbol: 'WETH',
-            decimals: 18,
-            name: 'Wrapped Ether',
-            iconUrl: '',
-            aggregators: [],
-            occurrences: 1,
-          },
-          {
-            address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-            symbol: 'USDC',
-            decimals: 6,
-            name: 'USDC',
-            iconUrl: '',
-            aggregators: [],
-            occurrences: 1,
-          },
-        ],
-      };
-    });
+  return await tokenList.rule(mockServer, { chainId: 1 }).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: [
+        {
+          address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+          symbol: 'WETH',
+          decimals: 18,
+          name: 'Wrapped Ether',
+          iconUrl: '',
+          aggregators: [],
+          occurrences: 1,
+        },
+        {
+          address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+          symbol: 'USDC',
+          decimals: 6,
+          name: 'USDC',
+          iconUrl: '',
+          aggregators: [],
+          occurrences: 1,
+        },
+      ],
+    };
+  });
 }
 
 async function mockInfura(mockServer: MockttpServer) {

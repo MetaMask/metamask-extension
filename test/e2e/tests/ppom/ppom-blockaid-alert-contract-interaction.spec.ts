@@ -6,6 +6,7 @@ import { withFixtures } from '../../helpers';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import { login } from '../../page-objects/flows/login.flow';
+import { fourByteSignatures } from '../../mock-response-data/api-responses';
 import { mockServerJsonRpc } from './mocks/mock-server-json-rpc';
 import { SECURITY_ALERTS_PROD_API_BASE_URL } from './constants';
 
@@ -159,8 +160,8 @@ async function mockInfura(mockServer: MockttpServer): Promise<void> {
       };
     });
 
-  await mockServer
-    .forGet('https://www.4byte.directory/api/v1/signatures/')
+  await fourByteSignatures
+    .rule(mockServer)
     .always()
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention

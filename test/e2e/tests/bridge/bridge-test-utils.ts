@@ -14,14 +14,15 @@ import {
 import { formatAmount } from '../../../../shared/lib/format-amount';
 import { emptyHtmlPage, MOCK_SUGGESTED_GAS_FEES } from '../../mock-e2e';
 import {
-  API_RESPONSES,
-  buildBridgePopularToken,
-  buildBridgeTokensSearch,
-  buildBridgeTxStatus,
-  buildGasPrices,
-  buildSpotPrice,
-  buildTxSentinelBatchStatus,
-  buildTxSentinelNetwork,
+  bridgeGetTokensPopular,
+  bridgeGetTokensSearch,
+  bridgeGetTxStatus,
+  gasPrices,
+  priceV3Spot,
+  txSentinelBatchStatus,
+  txSentinelGetFees,
+  txSentinelNetwork,
+  type SpotPriceInput,
 } from '../../mock-response-data/api-responses';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
@@ -146,7 +147,7 @@ const BRIDGE_DEST_TX_HASH =
   '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
 
 export async function mockGetTxStatus(mockServer: Mockttp) {
-  return await mockServer.forGet(/getTxStatus/u).thenCallback(async (req) => {
+  return await bridgeGetTxStatus.rule(mockServer).thenCallback(async (req) => {
     const urlObj = new URL(req.url);
     const srcTxHash =
       urlObj.searchParams.get('srcTxHash') ||
@@ -155,7 +156,7 @@ export async function mockGetTxStatus(mockServer: Mockttp) {
     const destChainId = urlObj.searchParams.get('destChainId');
     return {
       statusCode: 200,
-      json: buildBridgeTxStatus({
+      json: bridgeGetTxStatus.response({
         srcChain: {
           chainId: Number(srcChainId) || 1,
           txHash: srcTxHash,
@@ -335,38 +336,42 @@ export async function mockTokensWithSecurityData(
     return base;
   });
 
-  await mockServer
-    .forPost(/getTokens\/popular/u)
+  await bridgeGetTokensPopular
+    .rule(mockServer)
     .asPriority(99)
     .thenCallback(() => ({
       statusCode: 200,
-      json: tokensWithSecurity.map((token) => buildBridgePopularToken(token)),
+      json: bridgeGetTokensPopular.response(tokensWithSecurity),
     }));
 
-  await mockServer
-    .forPost(/getTokens\/search/u)
+  await bridgeGetTokensSearch
+    .rule(mockServer)
     .withJsonBodyIncluding({ chainIds: ['eip155:1'] })
     .asPriority(99)
     .thenCallback(() => ({
       statusCode: 200,
-      json: buildBridgeTokensSearch(tokensWithSecurity),
+      json: bridgeGetTokensSearch.response(tokensWithSecurity),
     }));
 }
 
 export async function mockGetPopularTokens(mockServer: Mockttp) {
-  return await mockServer.forPost(/getTokens\/popular/u).thenCallback(() => ({
+  return await bridgeGetTokensPopular.rule(mockServer).thenCallback(() => ({
     statusCode: 200,
-    json: [
-      MOCK_TOKENS_ETHEREUM.map((token) => toBridgeTokenResponse(1, token)),
-      MOCK_TOKENS_LINEA.map((token) => toBridgeTokenResponse(59144, token)),
-      MOCK_TOKENS_ARBITRUM.map((token) => toBridgeTokenResponse(42161, token)),
-      MOCK_GET_TOKEN_ARBITRUM.map((token) =>
-        toBridgeTokenResponse(42161, token),
-      ),
-      MOCK_TOKENS_ROBINHOOD.map((token) => toBridgeTokenResponse(4663, token)),
-    ]
-      .flat()
-      .map((token) => buildBridgePopularToken(token)),
+    json: bridgeGetTokensPopular.response(
+      [
+        MOCK_TOKENS_ETHEREUM.map((token) => toBridgeTokenResponse(1, token)),
+        MOCK_TOKENS_LINEA.map((token) => toBridgeTokenResponse(59144, token)),
+        MOCK_TOKENS_ARBITRUM.map((token) =>
+          toBridgeTokenResponse(42161, token),
+        ),
+        MOCK_GET_TOKEN_ARBITRUM.map((token) =>
+          toBridgeTokenResponse(42161, token),
+        ),
+        MOCK_TOKENS_ROBINHOOD.map((token) =>
+          toBridgeTokenResponse(4663, token),
+        ),
+      ].flat(),
+    ),
   }));
 }
 
@@ -387,8 +392,8 @@ function filterTokensByQuery<Token extends { symbol: string; name: string }>(
 
 async function mockSearchTokens(mockServer: Mockttp) {
   return [
-    await mockServer
-      .forPost(/getTokens\/search/u)
+    await bridgeGetTokensSearch
+      .rule(mockServer)
       .withJsonBodyIncluding({
         chainIds: ['eip155:1'],
       })
@@ -400,13 +405,13 @@ async function mockSearchTokens(mockServer: Mockttp) {
         );
         return {
           statusCode: 200,
-          json: buildBridgeTokensSearch(
+          json: bridgeGetTokensSearch.response(
             tokens.map((token) => toBridgeTokenResponse(1, token)),
           ),
         };
       }),
-    await mockServer
-      .forPost(/getTokens\/search/u)
+    await bridgeGetTokensSearch
+      .rule(mockServer)
       .withJsonBodyIncluding({
         chainIds: ['eip155:59144'],
       })
@@ -415,13 +420,13 @@ async function mockSearchTokens(mockServer: Mockttp) {
         const tokens = filterTokensByQuery(MOCK_TOKENS_LINEA, body.query ?? '');
         return {
           statusCode: 200,
-          json: buildBridgeTokensSearch(
+          json: bridgeGetTokensSearch.response(
             tokens.map((token) => toBridgeTokenResponse(59144, token)),
           ),
         };
       }),
-    await mockServer
-      .forPost(/getTokens\/search/u)
+    await bridgeGetTokensSearch
+      .rule(mockServer)
       .withJsonBodyIncluding({
         chainIds: ['eip155:42161'],
       })
@@ -434,13 +439,13 @@ async function mockSearchTokens(mockServer: Mockttp) {
         const tokens = filterTokensByQuery(allArbitrum, body.query ?? '');
         return {
           statusCode: 200,
-          json: buildBridgeTokensSearch(
+          json: bridgeGetTokensSearch.response(
             tokens.map((token) => toBridgeTokenResponse(42161, token)),
           ),
         };
       }),
-    await mockServer
-      .forPost(/getTokens\/search/u)
+    await bridgeGetTokensSearch
+      .rule(mockServer)
       .withJsonBodyIncluding({
         chainIds: ['eip155:4663'],
       })
@@ -452,7 +457,7 @@ async function mockSearchTokens(mockServer: Mockttp) {
         );
         return {
           statusCode: 200,
-          json: buildBridgeTokensSearch(
+          json: bridgeGetTokensSearch.response(
             tokens.map((token) => toBridgeTokenResponse(4663, token)),
           ),
         };
@@ -462,8 +467,8 @@ async function mockSearchTokens(mockServer: Mockttp) {
 
 async function mockSearchTokensMonadBase(mockServer: Mockttp) {
   return [
-    await mockServer
-      .forPost(/getTokens\/search/u)
+    await bridgeGetTokensSearch
+      .rule(mockServer)
       .withJsonBodyIncluding({
         chainIds: ['eip155:143'],
       })
@@ -472,13 +477,13 @@ async function mockSearchTokensMonadBase(mockServer: Mockttp) {
         const tokens = filterTokensByQuery(MOCK_TOKENS_MONAD, body.query ?? '');
         return {
           statusCode: 200,
-          json: buildBridgeTokensSearch(
+          json: bridgeGetTokensSearch.response(
             tokens.map((token) => toBridgeTokenResponse(143, token)),
           ),
         };
       }),
-    await mockServer
-      .forPost(/getTokens\/search/u)
+    await bridgeGetTokensSearch
+      .rule(mockServer)
       .withJsonBodyIncluding({
         chainIds: ['eip155:8453'],
       })
@@ -487,7 +492,7 @@ async function mockSearchTokensMonadBase(mockServer: Mockttp) {
         const tokens = filterTokensByQuery(MOCK_TOKENS_BASE, body.query ?? '');
         return {
           statusCode: 200,
-          json: buildBridgeTokensSearch(
+          json: bridgeGetTokensSearch.response(
             tokens.map((token) => toBridgeTokenResponse(8453, token)),
           ),
         };
@@ -496,14 +501,14 @@ async function mockSearchTokensMonadBase(mockServer: Mockttp) {
 }
 
 async function mockGetPopularTokensMonadBase(mockServer: Mockttp) {
-  return await mockServer.forPost(/getTokens\/popular/u).thenCallback(() => ({
+  return await bridgeGetTokensPopular.rule(mockServer).thenCallback(() => ({
     statusCode: 200,
-    json: [
-      MOCK_TOKENS_MONAD.map((token) => toBridgeTokenResponse(143, token)),
-      MOCK_TOKENS_BASE.map((token) => toBridgeTokenResponse(8453, token)),
-    ]
-      .flat()
-      .map((token) => buildBridgePopularToken(token)),
+    json: bridgeGetTokensPopular.response(
+      [
+        MOCK_TOKENS_MONAD.map((token) => toBridgeTokenResponse(143, token)),
+        MOCK_TOKENS_BASE.map((token) => toBridgeTokenResponse(8453, token)),
+      ].flat(),
+    ),
   }));
 }
 
@@ -793,8 +798,8 @@ async function mockGetTxStatusInvalid(
   mockServer: Mockttp,
   options: { statusCode: number; json: unknown },
 ) {
-  return await mockServer
-    .forGet(/getTxStatus/u)
+  return await bridgeGetTxStatus
+    .rule(mockServer)
 
     .thenCallback(() => {
       return {
@@ -1075,13 +1080,12 @@ async function mockPriceSpotPricesV3(
     id: string,
     price: number,
     pricePercentChange1d: number = 0.1,
-  ) =>
-    buildSpotPrice({
-      assetPriceType: 'fungible',
-      id,
-      price,
-      pricePercentChange1d,
-    });
+  ): SpotPriceInput => ({
+    assetPriceType: 'fungible',
+    id,
+    price,
+    pricePercentChange1d,
+  });
 
   const ethNativeAssetIds = [
     'eip155:1/slip44:60',
@@ -1098,8 +1102,8 @@ async function mockPriceSpotPricesV3(
     ),
   );
 
-  return await mockServer
-    .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+  return await priceV3Spot
+    .rule(mockServer)
     .always()
     .thenCallback((request) => {
       const url = new URL(request.url);
@@ -1117,7 +1121,7 @@ async function mockPriceSpotPricesV3(
           ? requestedAssetIds
           : [...ethNativeAssetIds, ...Object.keys(stablecoins)];
 
-      const json: Record<string, ReturnType<typeof tokenEntry>> = {};
+      const entries: Record<string, SpotPriceInput> = {};
 
       for (const assetId of assetIdsToReturn) {
         if (
@@ -1126,23 +1130,25 @@ async function mockPriceSpotPricesV3(
           assetId.endsWith('/slip44:1') ||
           assetId === MONAD_NATIVE_ASSET_ID
         ) {
-          json[assetId] = tokenEntry(
+          entries[assetId] = tokenEntry(
             'ethereum',
             resolvedEthPrice,
             ethPriceChange1d,
           );
         } else if (stablecoins[assetId]) {
-          json[assetId] = stablecoins[assetId];
+          entries[assetId] = stablecoins[assetId];
         } else if (assetId.startsWith('solana:')) {
-          json[assetId] = tokenEntry('solana', SOLANA_SPOT_PRICE, 6.5);
+          entries[assetId] = tokenEntry('solana', SOLANA_SPOT_PRICE, 6.5);
         } else if (assetId.startsWith('bip122:')) {
-          json[assetId] = tokenEntry(
+          entries[assetId] = tokenEntry(
             'bitcoin',
             DEFAULT_BTC_CONVERSION_RATE,
             0.12,
           );
         }
       }
+
+      const json = priceV3Spot.response(entries);
 
       if (includeMarketData) {
         return { statusCode: 200, json };
@@ -1180,39 +1186,21 @@ const BRIDGE_GAS_PRICES = {
 };
 
 export async function mockGasPricesArbitrum(mockServer: Mockttp) {
-  return await mockServer
-    .forGet('https://gas.api.cx.metamask.io/networks/42161/gasPrices')
-    .always()
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: buildGasPrices(BRIDGE_GAS_PRICES),
-      };
-    });
+  return await gasPrices.mock(mockServer, BRIDGE_GAS_PRICES, {
+    chainId: 42161,
+  });
 }
 
 export async function mockGasPricesMainnet(mockServer: Mockttp) {
-  return await mockServer
-    .forGet('https://gas.api.cx.metamask.io/networks/1/gasPrices')
-    .always()
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: buildGasPrices(BRIDGE_GAS_PRICES),
-      };
-    });
+  return await gasPrices.mock(mockServer, BRIDGE_GAS_PRICES, {
+    chainId: 1,
+  });
 }
 
 export async function mockGasPricesMonad(mockServer: Mockttp) {
-  return await mockServer
-    .forGet('https://gas.api.cx.metamask.io/networks/143/gasPrices')
-    .always()
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: buildGasPrices(BRIDGE_GAS_PRICES),
-      };
-    });
+  return await gasPrices.mock(mockServer, BRIDGE_GAS_PRICES, {
+    chainId: 143,
+  });
 }
 
 export async function mockSwapAggregatorMetadataLinea(mockServer: Mockttp) {
@@ -1365,23 +1353,18 @@ async function mockSmartTransactionsForBridge(
   let latestMinedHash = STX_TRANSACTION_HASH; // fallback if Anvil submission fails
 
   // Sentinel /network: called by fetchLiveness to set livenessByChainId
-  await mockServer
-    .forGet(`${sentinelUrl}/network`)
-    .always()
-    .thenCallback(() => ({
-      ok: true,
-      statusCode: 200,
-      json: { smartTransactions: true },
-    }));
+  await txSentinelNetwork.mockRaw(
+    mockServer,
+    { smartTransactions: true },
+    { baseUrl: sentinelUrl },
+  );
 
   // getFees: queried before submitting each STX
-  await mockServer
-    .forPost(`${sentinelUrl}/v1/networks/${chainId}/getFees`)
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: API_RESPONSES['tx-sentinel-get-fees'],
-    }));
+  await txSentinelGetFees.mock(
+    mockServer,
+    {},
+    { baseUrl: sentinelUrl, chainId },
+  );
 
   // submitTransactions: forward each raw signed tx to Anvil so the hash is
   // genuinely on-chain and eth_getTransactionReceipt resolves once Anvil mines it.
@@ -1436,14 +1419,15 @@ async function mockSmartTransactionsForBridge(
 
   // batchStatus: return the on-chain hash with the given status so the
   // STX controller resolves accordingly.
-  await mockServer
-    .forGet(`${sentinelUrl}/v1/networks/${chainId}/batchStatus`)
+  await txSentinelBatchStatus
+    .rule(mockServer, { baseUrl: sentinelUrl, chainId })
     .always()
     .thenCallback((req) => {
       const uuid = new URL(req.url).searchParams.get('uuids') ?? STX_UUID;
       return {
         statusCode: 200,
-        json: buildTxSentinelBatchStatus(uuid, {
+        json: txSentinelBatchStatus.response({
+          uuid,
           minedHash: latestMinedHash,
           ...batchStatusOverride,
         }),
@@ -1981,7 +1965,7 @@ async function mockSentinelNetworks(
   mockServer: Mockttp,
   sendBundle: boolean = true,
 ) {
-  const network = buildTxSentinelNetwork({
+  const overrides = {
     network: 'ethereum-mainnet',
     explorer: 'https://etherscan.io',
     confirmations: true,
@@ -1990,15 +1974,12 @@ async function mockSentinelNetworks(
     cubistSigners: ['0x1111111111111111111111111111111111111111'],
     hidden: false,
     sendBundle,
-  });
+  };
+  const network = txSentinelNetwork.response(overrides);
 
-  await mockServer
-    .forGet('https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/network')
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: network,
-    }));
+  await txSentinelNetwork.mock(mockServer, overrides, {
+    baseUrl: STX_MAINNET_SENTINEL_URL,
+  });
 
   return await mockServer
     .forGet('https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/networks')

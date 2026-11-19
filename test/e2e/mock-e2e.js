@@ -34,6 +34,15 @@ const {
 const {
   setupSnapRegistryMocks,
 } = require('./mock-response-data/snaps/snap-registry-mocks');
+const {
+  API_ENDPOINTS,
+  accountsBalancesV5,
+  fourByteSignatures,
+  priceV3Spot,
+  tokenList,
+  tokensV3Assets,
+  txSentinelNetwork,
+} = require('./mock-response-data/api-responses');
 
 const DEFAULT_ETH_USD_PRICE = 3010;
 
@@ -1040,41 +1049,31 @@ async function setupMocking(
     };
   });
 
-  await server
-    .forGet('https://www.4byte.directory/api/v1/signatures/')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          count: 1,
-          next: null,
-          previous: null,
-          results: [
-            {
-              id: 1,
-              created_at: null,
-              text_signature: 'deposit()',
-              hex_signature: null,
-              bytes_signature: null,
-            },
-          ],
-        },
-      };
-    });
+  // The default body predates the 4byte-signatures fixture and differs from it.
+  await fourByteSignatures.rule(server).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: {
+        count: 1,
+        next: null,
+        previous: null,
+        results: [
+          {
+            id: 1,
+            created_at: null,
+            text_signature: 'deposit()',
+            hex_signature: null,
+            bytes_signature: null,
+          },
+        ],
+      },
+    };
+  });
 
-  const targetChainId = chainId === 1337 ? 1 : chainId;
-  await server
-    .forGet(`${GAS_API_BASE_URL}/networks/${targetChainId}/gasPrices`)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          SafeGasPrice: '1',
-          ProposeGasPrice: '2',
-          FastGasPrice: '3',
-        },
-      };
-    });
+  // Endpoints whose default response is their fixture body.
+  for (const endpoint of Object.values(API_ENDPOINTS)) {
+    await endpoint.mockDefault(server, { chainId });
+  }
 
   await server
     .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/token`)
@@ -1120,8 +1119,8 @@ async function setupMocking(
   await server
     .forGet(/https:\/\/tx-sentinel-[\w-]+\.api\.cx\.metamask\.io\/networks$/u)
     .thenJson(200, txSentinelNetworksRegistry);
-  await server
-    .forGet(/https:\/\/tx-sentinel-[\w-]+\.api\.cx\.metamask\.io\/network$/u)
+  await txSentinelNetwork
+    .rule(server)
     .thenJson(200, txSentinelNetworksRegistry[1]);
 
   await server
@@ -1177,67 +1176,65 @@ async function setupMocking(
       };
     });
 
-  await server
-    .forGet(`https://token.api.cx.metamask.io/tokens/${chainId}`)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: [
-          {
-            address: '0x0d8775f648430679a709e98d2b0cb6250d2887ef',
-            symbol: 'BAT',
-            decimals: 18,
-            name: 'Basic Attention Token',
-            iconUrl:
-              'https://assets.coingecko.com/coins/images/677/thumb/basic-attention-token.png?1547034427',
-            aggregators: [
-              'aave',
-              'bancor',
-              'coinGecko',
-              'oneInch',
-              'paraswap',
-              'pmm',
-              'zapper',
-              'zerion',
-              'zeroEx',
-            ],
-            occurrences: 9,
-          },
-          {
-            address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-            symbol: 'DAI',
-            decimals: 18,
-            name: 'Dai Stablecoin',
-            iconUrl:
-              'https://raw.githubusercontent.com/MetaMask/contract-metadata/master/images/dai.svg',
-            type: 'erc20',
-            aggregators: [
-              'metamask',
-              'aave',
-              'bancor',
-              'cmc',
-              'cryptocom',
-              'coinGecko',
-              'oneInch',
-              'pmm',
-              'sushiswap',
-              'zerion',
-              'lifi',
-              'socket',
-              'squid',
-              'openswap',
-              'sonarwatch',
-              'uniswapLabs',
-              'coinmarketcap',
-            ],
-            occurrences: 17,
-            erc20Permit: true,
-            fees: { '0xb0da5965d43369968574d399dbe6374683773a65': 0 },
-            storage: { balance: 2 },
-          },
-        ],
-      };
-    });
+  await tokenList.rule(server, { chainId }).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: [
+        {
+          address: '0x0d8775f648430679a709e98d2b0cb6250d2887ef',
+          symbol: 'BAT',
+          decimals: 18,
+          name: 'Basic Attention Token',
+          iconUrl:
+            'https://assets.coingecko.com/coins/images/677/thumb/basic-attention-token.png?1547034427',
+          aggregators: [
+            'aave',
+            'bancor',
+            'coinGecko',
+            'oneInch',
+            'paraswap',
+            'pmm',
+            'zapper',
+            'zerion',
+            'zeroEx',
+          ],
+          occurrences: 9,
+        },
+        {
+          address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+          symbol: 'DAI',
+          decimals: 18,
+          name: 'Dai Stablecoin',
+          iconUrl:
+            'https://raw.githubusercontent.com/MetaMask/contract-metadata/master/images/dai.svg',
+          type: 'erc20',
+          aggregators: [
+            'metamask',
+            'aave',
+            'bancor',
+            'cmc',
+            'cryptocom',
+            'coinGecko',
+            'oneInch',
+            'pmm',
+            'sushiswap',
+            'zerion',
+            'lifi',
+            'socket',
+            'squid',
+            'openswap',
+            'sonarwatch',
+            'uniswapLabs',
+            'coinmarketcap',
+          ],
+          occurrences: 17,
+          erc20Permit: true,
+          fees: { '0xb0da5965d43369968574d399dbe6374683773a65': 0 },
+          storage: { balance: 2 },
+        },
+      ],
+    };
+  });
 
   // Token API: per-chain suggested occurrence floors — mocked globally so token
   // list / spam-filter fetches do not hit the live endpoint in E2E.
@@ -1588,8 +1585,8 @@ async function setupMocking(
   // Price API: Spot prices for native token (ETH)
   // Uses zero address (0x0000000000000000000000000000000000000000) to represent native token
   // API format: v3/spot-prices?assetIds={assetIds}&vsCurrency=usd&includeMarketData=true
-  await server
-    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+  await priceV3Spot
+    .rule(server)
     .withQuery({
       assetIds: 'eip155:1/slip44:60',
       vsCurrency: 'usd',
@@ -1617,8 +1614,8 @@ async function setupMocking(
     marketCap: 382623505141,
     pricePercentChange1d: 0,
   };
-  await server
-    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+  await priceV3Spot
+    .rule(server)
     .withQuery({
       assetIds: 'eip155:11155111/slip44:60',
       vsCurrency: 'usd',
@@ -1630,8 +1627,8 @@ async function setupMocking(
         'eip155:11155111/slip44:60': sepoliaSpotPrice,
       },
     }));
-  await server
-    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+  await priceV3Spot
+    .rule(server)
     .withQuery({
       assetIds:
         'eip155:11155111/erc20:0x0000000000000000000000000000000000000000',
@@ -1649,8 +1646,8 @@ async function setupMocking(
 
   // Localhost (chain 1337) native ETH — slip44:1 per nativeAssetIdentifiers in fixtures.
   // assets-unify requests this with cacheOnly=false; extra query params are allowed by mockttp.
-  await server
-    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+  await priceV3Spot
+    .rule(server)
     .withQuery({
       assetIds: 'eip155:1337/slip44:1',
       vsCurrency: 'usd',
@@ -1669,8 +1666,8 @@ async function setupMocking(
     }));
 
   // Monad native — slip44:268435779 (not ETH slip44:60).
-  await server
-    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+  await priceV3Spot
+    .rule(server)
     .withQuery({
       assetIds: 'eip155:143/slip44:268435779',
       vsCurrency: 'usd',
@@ -1688,8 +1685,8 @@ async function setupMocking(
       },
     }));
 
-  await server
-    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+  await priceV3Spot
+    .rule(server)
     .asPriority(RulePriority.FALLBACK)
     .always()
     .thenCallback((request) => {
@@ -1807,8 +1804,8 @@ async function setupMocking(
 
   // Native SOL + BTC v3 spot (multichain portfolio / assets unify). Without these,
   // Tron-only or default E2E flows still request these URLs but only ETH was mocked above.
-  await server
-    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+  await priceV3Spot
+    .rule(server)
     .withQuery({
       assetIds: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
       vsCurrency: 'usd',
@@ -1841,8 +1838,8 @@ async function setupMocking(
       },
     }));
 
-  await server
-    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+  await priceV3Spot
+    .rule(server)
     .withQuery({
       assetIds: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
       vsCurrency: 'usd',
@@ -2061,8 +2058,8 @@ async function setupMocking(
   // Tokens API v3 assets: default handler for token metadata lookups used by
   // useTokensData (via useDisplayName). Returns well-known tokens by asset ID;
   // all other requests get an empty array. Tests can override via testSpecificMock.
-  await server
-    .forGet('https://tokens.api.cx.metamask.io/v3/assets')
+  await tokensV3Assets
+    .rule(server)
     .always()
     .thenCallback((request) => {
       const assetIds = new URL(request.url).searchParams
@@ -2163,29 +2160,6 @@ async function setupMocking(
     .always()
     .thenJson(200, tokenSupportedNetworks);
 
-  // Accounts API: v2 supported networks (used by AccountsApiDataSource when assetsUnifyState is enabled)
-  await server
-    .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
-    .always()
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          fullSupport: [
-            'eip155:1',
-            'eip155:137',
-            'eip155:56',
-            'eip155:59144',
-            'eip155:8453',
-            'eip155:10',
-            'eip155:42161',
-            'eip155:534352',
-          ],
-          partialSupport: ['eip155:42220', 'eip155:43114'],
-        },
-      };
-    });
-
   // Veda performance API: vault APY, fetched by MoneyAccountBalanceService
   // whenever a Money Account surface renders. A minimal valid response stops
   // TanStack Query from retrying against the catch-all.
@@ -2262,8 +2236,8 @@ async function setupMocking(
     };
   };
 
-  await server
-    .forGet('https://accounts.api.cx.metamask.io/v5/multiaccount/balances')
+  await accountsBalancesV5
+    .rule(server)
     .always()
     .thenCallback(respondWithUnifiedEvmAccountsApiBalances(false));
 

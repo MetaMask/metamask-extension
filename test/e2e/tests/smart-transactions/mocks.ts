@@ -6,6 +6,13 @@ import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
 import { SSE_RESPONSE_HEADER } from '../bridge/constants';
 import { TX_SENTINEL_URL } from '../../../../shared/constants/transaction';
+import {
+  bridgeGetTokensPopular,
+  bridgeGetTokensSearch,
+  txSentinelBatchStatus,
+  txSentinelGetFees,
+  txSentinelNetwork,
+} from '../../mock-response-data/api-responses';
 
 const STX_UUID = '0d506aaa-5e38-4cab-ad09-2039cb7a0f33';
 
@@ -703,12 +710,12 @@ export async function mockGasIncludedTransactionRequests(
   // Mock bridge token list endpoints. Without these, the catch-all in
   // mock-e2e.js returns an empty body and `JSON.parse('')` throws
   // "Unexpected end of JSON input" when fetchPopularTokens consumes it.
-  await mockServer.forPost(/getTokens\/popular/u).thenCallback(() => ({
+  await bridgeGetTokensPopular.rule(mockServer).thenCallback(() => ({
     statusCode: 200,
     json: [SWAP_ETH_TOKEN, SWAP_MUSD_TOKEN],
   }));
 
-  await mockServer.forPost(/getTokens\/search/u).thenCallback(() => ({
+  await bridgeGetTokensSearch.rule(mockServer).thenCallback(() => ({
     statusCode: 200,
     json: {
       data: [SWAP_ETH_TOKEN, SWAP_MUSD_TOKEN],
@@ -792,22 +799,22 @@ export async function mockSmartTransactionRequestsBase(
     ['eth_chainId', { result: `0x1` }],
   ]);
 
-  await mockServer
-    .forPost(`${TX_SENTINEL_URL}/v1/networks/1/getFees`)
+  await txSentinelGetFees
+    .rule(mockServer, { baseUrl: TX_SENTINEL_URL, chainId: 1 })
     .thenCallback(() => {
       return { statusCode: 200, json: GET_FEES_RESPONSE };
     });
 
-  await mockServer
-    .forGet(`${TX_SENTINEL_URL}/v1/networks/1/batchStatus`)
+  await txSentinelBatchStatus
+    .rule(mockServer, { baseUrl: TX_SENTINEL_URL, chainId: 1 })
     .withQuery({ uuids: STX_UUID })
     .once()
     .thenCallback(() => {
       return { statusCode: 200, json: GET_BATCH_STATUS_RESPONSE_PENDING };
     });
 
-  await mockServer
-    .forGet(`${TX_SENTINEL_URL}/v1/networks/1/batchStatus`)
+  await txSentinelBatchStatus
+    .rule(mockServer, { baseUrl: TX_SENTINEL_URL, chainId: 1 })
     .withQuery({ uuids: STX_UUID })
     .once()
     .thenCallback(() => {
@@ -882,8 +889,8 @@ export async function mockSentinelNetworks(mockServer: MockttpServer) {
       };
     });
 
-  await mockServer
-    .forGet(`${TX_SENTINEL_URL}/network`)
+  await txSentinelNetwork
+    .rule(mockServer, { baseUrl: TX_SENTINEL_URL })
     .always()
     .thenCallback(() => {
       return {
@@ -1048,12 +1055,12 @@ function mockSseEventSource(mockQuotes: unknown[], delay: number = 2000) {
 }
 
 export async function mockSwapTokensMockApis(mockServer: MockttpServer) {
-  await mockServer.forPost(/getTokens\/popular/u).thenCallback(() => ({
+  await bridgeGetTokensPopular.rule(mockServer).thenCallback(() => ({
     statusCode: 200,
     json: [SWAP_ETH_TOKEN, SWAP_DAI_TOKEN],
   }));
 
-  await mockServer.forPost(/getTokens\/search/u).thenCallback(() => ({
+  await bridgeGetTokensSearch.rule(mockServer).thenCallback(() => ({
     statusCode: 200,
     json: {
       data: [SWAP_ETH_TOKEN, SWAP_DAI_TOKEN],

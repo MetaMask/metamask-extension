@@ -15,17 +15,15 @@ import SendPage from '../../page-objects/pages/send/send-page';
 import TokenOverviewPage from '../../page-objects/pages/asset/token-overview-page';
 import { login } from '../../page-objects/flows/login.flow';
 import { mockEmptyPrices } from '../tokens/utils/mocks';
+import { accountsSupportedNetworksV2 } from '../../mock-response-data/api-responses';
 
 async function mocks(server: Mockttp) {
   return [
     await mockEmptyPrices(server),
-    await server
-      .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
-      .always()
-      .thenJson(200, {
-        fullSupport: [],
-        partialSupport: [],
-      }),
+    await accountsSupportedNetworksV2.rule(server).always().thenJson(200, {
+      fullSupport: [],
+      partialSupport: [],
+    }),
   ];
 }
 

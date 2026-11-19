@@ -21,14 +21,15 @@ import {
   NETWORK_CLIENT_ID,
 } from '../../constants';
 import { MAINNET_DISPLAY_NAME } from '../../../../shared/constants/network';
+import { priceV3Spot } from '../../mock-response-data/api-responses';
 
 const DAI_CAIP_ASSET =
   'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F';
 
 async function mockSpotPriceV3ForDai(mockServer: Mockttp) {
   return [
-    await mockServer
-      .forGet(/https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+    await priceV3Spot
+      .rule(mockServer)
       .always()
       .thenCallback((request) => {
         const url = new URL(request.url);

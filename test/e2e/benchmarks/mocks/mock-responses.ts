@@ -1,6 +1,6 @@
 import {
-  buildExchangeRates,
-  buildGasPrices,
+  priceV1ExchangeRates,
+  gasPrices,
 } from '../../mock-response-data/api-responses';
 import { PRICES, POWER_USER_PRICES, type PriceData } from './price-data';
 
@@ -176,7 +176,7 @@ export const FIAT_EXCHANGE_RATES = {
 
 export const CRYPTO_EXCHANGE_RATES = {
   statusCode: 200,
-  json: buildExchangeRates({
+  json: priceV1ExchangeRates.response({
     eth: 1 / PRICES.ETH,
     usd: 1,
     btc: 1 / PRICES.BTC,
@@ -322,7 +322,7 @@ export const SUGGESTED_GAS_FEES = {
 
 export const GAS_PRICES = {
   statusCode: 200,
-  json: buildGasPrices({
+  json: gasPrices.response({
     SafeGasPrice: '30',
     ProposeGasPrice: '30',
     FastGasPrice: '30',

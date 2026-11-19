@@ -5,12 +5,16 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Mockttp } from '../../mock-e2e';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { login } from '../../page-objects/flows/login.flow';
+import {
+  priceV1ExchangeRates,
+  priceV3Spot,
+} from '../../mock-response-data/api-responses';
 
 async function mockPhpConversion(mockServer: Mockttp) {
   return [
     // Mock v1/exchange-rates for PHP
-    await mockServer
-      .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+    await priceV1ExchangeRates
+      .rule(mockServer)
       .withQuery({ baseCurrency: 'php' })
       .thenCallback(() => {
         return {
@@ -32,8 +36,8 @@ async function mockPhpConversion(mockServer: Mockttp) {
         };
       }),
     // Mock v1/exchange-rates for USD
-    await mockServer
-      .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+    await priceV1ExchangeRates
+      .rule(mockServer)
       .withQuery({ baseCurrency: 'usd' })
       .thenCallback(() => {
         return {
@@ -55,40 +59,38 @@ async function mockPhpConversion(mockServer: Mockttp) {
         };
       }),
     // Mock v3 spot-prices
-    await mockServer
-      .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
-      .thenCallback((request) => {
-        const url = new URL(request.url);
-        const vsCurrency = url.searchParams.get('vsCurrency');
+    await priceV3Spot.rule(mockServer).thenCallback((request) => {
+      const url = new URL(request.url);
+      const vsCurrency = url.searchParams.get('vsCurrency');
 
-        // Return PHP price if requesting PHP
-        if (vsCurrency === 'php') {
-          return {
-            statusCode: 200,
-            json: {
-              'eip155:1/slip44:60': {
-                id: 'ethereum',
-                price: 100000, // 1 ETH = 100,000 PHP
-                marketCap: 382623505141,
-                pricePercentChange1d: 0,
-              },
-            },
-          };
-        }
-
-        // Return USD price for any other currency
+      // Return PHP price if requesting PHP
+      if (vsCurrency === 'php') {
         return {
           statusCode: 200,
           json: {
             'eip155:1/slip44:60': {
               id: 'ethereum',
-              price: 1,
+              price: 100000, // 1 ETH = 100,000 PHP
               marketCap: 382623505141,
               pricePercentChange1d: 0,
             },
           },
         };
-      }),
+      }
+
+      // Return USD price for any other currency
+      return {
+        statusCode: 200,
+        json: {
+          'eip155:1/slip44:60': {
+            id: 'ethereum',
+            price: 1,
+            marketCap: 382623505141,
+            pricePercentChange1d: 0,
+          },
+        },
+      };
+    }),
   ];
 }
 

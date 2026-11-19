@@ -14,6 +14,7 @@ import { MOCK_ANALYTICS_ID } from '../../constants';
 import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import { login } from '../../page-objects/flows/login.flow';
 import { mockSpotPrices } from '../tokens/utils/mocks';
+import { priceV1ExchangeRates } from '../../mock-response-data/api-responses';
 
 const FEATURE_FLAGS_RESPONSE = [
   { feature1: true },
@@ -317,8 +318,8 @@ describe('Sentry errors', function () {
                 pricePercentChange1d: 0,
               },
             });
-            await mockServer
-              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+            await priceV1ExchangeRates
+              .rule(mockServer)
               .withQuery({ baseCurrency: 'usd' })
               .thenCallback(() => {
                 return {
@@ -388,8 +389,8 @@ describe('Sentry errors', function () {
                 pricePercentChange1d: 0,
               },
             });
-            await mockServer
-              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+            await priceV1ExchangeRates
+              .rule(mockServer)
               .withQuery({ baseCurrency: 'usd' })
               .thenCallback(() => {
                 return {
@@ -469,8 +470,8 @@ describe('Sentry errors', function () {
                 pricePercentChange1d: 0,
               },
             });
-            await mockServer
-              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+            await priceV1ExchangeRates
+              .rule(mockServer)
               .withQuery({ baseCurrency: 'usd' })
               .thenCallback(() => {
                 return {
@@ -555,8 +556,8 @@ describe('Sentry errors', function () {
                 pricePercentChange1d: 0,
               },
             });
-            await mockServer
-              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+            await priceV1ExchangeRates
+              .rule(mockServer)
               .withQuery({ baseCurrency: 'usd' })
               .thenCallback(() => {
                 return {
@@ -657,8 +658,8 @@ describe('Sentry errors', function () {
                 pricePercentChange1d: 0,
               },
             });
-            await mockServer
-              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+            await priceV1ExchangeRates
+              .rule(mockServer)
               .withQuery({ baseCurrency: 'usd' })
               .thenCallback(() => {
                 return {
@@ -746,8 +747,8 @@ describe('Sentry errors', function () {
                 pricePercentChange1d: 0,
               },
             });
-            await mockServer
-              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+            await priceV1ExchangeRates
+              .rule(mockServer)
               .withQuery({ baseCurrency: 'usd' })
               .thenCallback(() => {
                 return {
@@ -831,8 +832,8 @@ describe('Sentry errors', function () {
                 pricePercentChange1d: 0,
               },
             });
-            await mockServer
-              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+            await priceV1ExchangeRates
+              .rule(mockServer)
               .withQuery({ baseCurrency: 'usd' })
               .thenCallback(() => {
                 return {
@@ -939,8 +940,8 @@ describe('Sentry errors', function () {
                 pricePercentChange1d: 0,
               },
             });
-            await mockServer
-              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+            await priceV1ExchangeRates
+              .rule(mockServer)
               .withQuery({ baseCurrency: 'usd' })
               .thenCallback(() => {
                 return {
@@ -1014,8 +1015,8 @@ describe('Sentry errors', function () {
                 pricePercentChange1d: 0,
               },
             });
-            await mockServer
-              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+            await priceV1ExchangeRates
+              .rule(mockServer)
               .withQuery({ baseCurrency: 'usd' })
               .thenCallback(() => {
                 return {
@@ -1089,8 +1090,8 @@ describe('Sentry errors', function () {
                 pricePercentChange1d: 0,
               },
             });
-            await mockServer
-              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+            await priceV1ExchangeRates
+              .rule(mockServer)
               .withQuery({ baseCurrency: 'usd' })
               .thenCallback(() => {
                 return {
@@ -1179,8 +1180,8 @@ describe('Sentry errors', function () {
                 pricePercentChange1d: 0,
               },
             });
-            await mockServer
-              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+            await priceV1ExchangeRates
+              .rule(mockServer)
               .withQuery({ baseCurrency: 'usd' })
               .thenCallback(() => {
                 return {
@@ -1282,8 +1283,8 @@ describe('Sentry errors', function () {
                 pricePercentChange1d: 0,
               },
             });
-            await mockServer
-              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+            await priceV1ExchangeRates
+              .rule(mockServer)
               .withQuery({ baseCurrency: 'usd' })
               .thenCallback(() => {
                 return {
@@ -1367,8 +1368,8 @@ describe('Sentry errors', function () {
                 pricePercentChange1d: 0,
               },
             });
-            await mockServer
-              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+            await priceV1ExchangeRates
+              .rule(mockServer)
               .withQuery({ baseCurrency: 'usd' })
               .thenCallback(() => {
                 return {

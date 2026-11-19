@@ -3,7 +3,7 @@ import { Anvil } from '../../../seeder/anvil';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { Mockttp } from '../../../mock-e2e';
-import { buildFourByteSignatures } from '../../../mock-response-data/api-responses';
+import { fourByteSignatures } from '../../../mock-response-data/api-responses';
 
 export type TestSuiteArguments = {
   driver: Driver;
@@ -31,15 +31,15 @@ export async function assertAdvancedGasDetailsWithFewerFields(driver: Driver) {
 }
 
 export async function mocked4BytesApprove(mockServer: MockttpServer) {
-  return await mockServer
-    .forGet('https://www.4byte.directory/api/v1/signatures/')
+  return await fourByteSignatures
+    .rule(mockServer)
     .always()
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     .withQuery({ hex_signature: '0x095ea7b3' })
     .thenCallback(() => ({
       statusCode: 200,
-      json: buildFourByteSignatures({
+      json: fourByteSignatures.response({
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         hex_signature: '0x095ea7b3',
@@ -51,15 +51,15 @@ export async function mocked4BytesApprove(mockServer: MockttpServer) {
 }
 
 export async function mocked4BytesSetApprovalForAll(mockServer: Mockttp) {
-  return await mockServer
-    .forGet('https://www.4byte.directory/api/v1/signatures/')
+  return await fourByteSignatures
+    .rule(mockServer)
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     .withQuery({ hex_signature: '0xa22cb465' })
     .always()
     .thenCallback(() => ({
       statusCode: 200,
-      json: buildFourByteSignatures({
+      json: fourByteSignatures.response({
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         hex_signature: '0xa22cb465',
@@ -71,15 +71,15 @@ export async function mocked4BytesSetApprovalForAll(mockServer: Mockttp) {
 }
 
 export async function mocked4BytesIncreaseAllowance(mockServer: Mockttp) {
-  return await mockServer
-    .forGet('https://www.4byte.directory/api/v1/signatures/')
+  return await fourByteSignatures
+    .rule(mockServer)
     .always()
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     .withQuery({ hex_signature: '0x39509351' })
     .thenCallback(() => ({
       statusCode: 200,
-      json: buildFourByteSignatures({
+      json: fourByteSignatures.response({
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         hex_signature: '0x39509351',

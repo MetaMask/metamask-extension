@@ -10,6 +10,7 @@ import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install
 import { mockLookupSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import SendPage from '../page-objects/pages/send/send-page';
 import { mockSpotPrices } from '../tests/tokens/utils/mocks';
+import { tokensV3Assets } from '../mock-response-data/api-responses';
 
 async function mockTokensApiSupportedNetworks(mockServer: Mockttp) {
   const supportedNetworks = {
@@ -28,8 +29,8 @@ async function mockTokensApiSupportedNetworks(mockServer: Mockttp) {
 }
 
 async function mockTokensApiV3Assets(mockServer: Mockttp) {
-  return mockServer
-    .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+  return tokensV3Assets
+    .rule(mockServer)
     .always()
     .thenCallback((request) => {
       const url = new URL(request.url);

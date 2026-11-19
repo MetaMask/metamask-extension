@@ -1,168 +1,147 @@
 import { readdirSync, readFileSync } from 'fs';
 import path from 'path';
 import {
-  API_RESPONSES,
-  buildAccountsSupportedNetworksV2,
-  buildBridgePopularToken,
-  buildBridgeTokensSearch,
-  buildBridgeTxStatus,
-  buildExchangeRates,
-  buildFourByteSignatures,
-  buildGasPrices,
-  buildMultiaccountBalancesV5,
-  buildSpotPrice,
-  buildTokenListToken,
-  buildTokensV3Asset,
-  buildTxSentinelBatchStatus,
-  buildTxSentinelNetwork,
-  placeholderOf,
-  withOverrides,
+  API_ENDPOINTS,
+  accountsBalancesV5,
+  accountsSupportedNetworksV2,
+  bridgeGetTokensPopular,
+  bridgeGetTokensSearch,
+  bridgeGetTxStatus,
+  fourByteSignatures,
+  gasPrices,
+  priceV1ExchangeRates,
+  priceV3Spot,
+  tokenList,
+  tokensV3Assets,
+  txSentinelBatchStatus,
+  txSentinelNetwork,
 } from '.';
 
-const REGISTRY_FILE = 'sources.json';
-
-type RegistryEntry = {
-  method?: string;
-  url?: string;
-  mode?: string;
-  reason?: string;
-  follows?: string;
-};
-
 const fixtureIds = readdirSync(__dirname)
-  .filter((name) => name.endsWith('.json') && name !== REGISTRY_FILE)
+  .filter((name) => name.endsWith('.json'))
   .map((name) => name.slice(0, -'.json'.length))
   .sort();
 
-const registry: Record<string, RegistryEntry> = JSON.parse(
-  readFileSync(path.join(__dirname, REGISTRY_FILE), 'utf8'),
-);
+const endpoints = Object.entries(API_ENDPOINTS);
 
 const USDC_ASSET_ID =
   'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 
-describe('api-responses', () => {
-  describe('fixture files, registry and API_RESPONSES', () => {
-    it('registers every fixture file', () => {
-      expect(Object.keys(registry).sort()).toStrictEqual(fixtureIds);
+/**
+ * Whether the endpoint matcher accepts a URL, following mockttp: a string
+ * matches the URL without its query, a regex is tested against the full URL.
+ *
+ * @param matcher - The endpoint matcher.
+ * @param url - The URL to test.
+ * @returns True when the matcher accepts the URL.
+ */
+function matches(matcher: string | RegExp, url: string): boolean {
+  return typeof matcher === 'string'
+    ? url.split('?')[0] === matcher
+    : matcher.test(url);
+}
+
+describe('API endpoint definitions', () => {
+  describe('consistency', () => {
+    it('defines one endpoint for every JSON fixture in the folder', () => {
+      expect(Object.keys(API_ENDPOINTS).sort()).toStrictEqual(fixtureIds);
     });
 
-    it('exports every fixture file from API_RESPONSES', () => {
-      expect(Object.keys(API_RESPONSES).sort()).toStrictEqual(fixtureIds);
-    });
-
-    for (const id of fixtureIds) {
-      it(`${id} has a valid registry entry`, () => {
-        const { method, url, mode, reason, follows } = registry[id];
-
-        expect(['write', 'derived', 'skip']).toContain(mode);
-        expect(url).toMatch(/^https:\/\//u);
-        expect(mode !== 'write' || method === 'GET').toBe(true);
-        expect(mode !== 'skip' || Boolean(reason?.trim())).toBe(true);
-        expect(mode !== 'derived' || fixtureIds.includes(follows ?? '')).toBe(
-          true,
+    for (const [key, endpoint] of endpoints) {
+      it(`keys ${key} by its id and serves its JSON fixture`, () => {
+        expect(endpoint.id).toBe(key);
+        expect(endpoint.body).toStrictEqual(
+          JSON.parse(readFileSync(path.join(__dirname, `${key}.json`), 'utf8')),
         );
       });
+
+      it(`matches the sync URL of ${key}`, () => {
+        expect(endpoint.syncUrl).toMatch(/^https:\/\//u);
+        expect(matches(endpoint.url, endpoint.syncUrl)).toBe(true);
+      });
     }
+
+    it('registers fixture defaults only for the endpoints that have one', () => {
+      expect(
+        endpoints
+          .filter(([, endpoint]) => endpoint.hasDefault)
+          .map(([key]) => key)
+          .sort(),
+      ).toStrictEqual(['accounts-supported-networks-v2', 'gas-prices']);
+    });
   });
 
-  describe('override types', () => {
-    it('require identity fields and reject unknown keys', () => {
-      // @ts-expect-error: a spot price needs the asset's id.
-      buildSpotPrice({ price: 1 });
+  describe('identity fields', () => {
+    it('require the asset identity and reject unknown keys', () => {
+      // @ts-expect-error: a spot price needs its Price API slug.
+      priceV3Spot.response({ [USDC_ASSET_ID]: { price: 1 } });
       // @ts-expect-error: a v3 asset needs its assetId.
-      buildTokensV3Asset({ symbol: 'USDC' });
+      tokensV3Assets.response([{ symbol: 'USDC' }]);
       // @ts-expect-error: a token list entry needs its address.
-      buildTokenListToken({ symbol: 'USDC' });
+      tokenList.response([{ symbol: 'USDC' }]);
       // @ts-expect-error: a bridge token needs its address and assetId.
-      buildBridgePopularToken({ symbol: 'USDC' });
-      buildBridgeTokensSearch([
-        // @ts-expect-error: a bridge token needs its address and assetId.
-        { symbol: 'USDC' },
-      ]);
+      bridgeGetTokensPopular.response([{ symbol: 'USDC' }]);
+      // @ts-expect-error: a bridge token needs its address and assetId.
+      bridgeGetTokensSearch.response([{ symbol: 'USDC' }]);
+      // @ts-expect-error: a balance row needs its accountId and assetId.
+      accountsBalancesV5.response([{ balance: '1' }]);
+      // @ts-expect-error: a 4byte result needs its signature.
+      fourByteSignatures.response({ id: 1 });
+      priceV3Spot.response({
+        // @ts-expect-error: misspelled field.
+        [USDC_ASSET_ID]: { id: 'usd-coin', prce: 1 },
+      });
       // @ts-expect-error: misspelled field.
-      buildSpotPrice({ id: 'usd-coin', prce: 1 });
-      // @ts-expect-error: misspelled field.
-      buildGasPrices({ SafeGasPrise: '1' });
+      gasPrices.response({ SafeGasPrise: '1' });
 
       expect(true).toBe(true);
     });
   });
 
-  describe('withOverrides', () => {
-    it('merges nested objects and replaces arrays and scalars', () => {
-      expect(
-        withOverrides(
-          { a: { b: 1, c: 2 }, list: [1, 2], keep: 'x' },
-          { a: { b: 3 }, list: [9] },
-        ),
-      ).toStrictEqual({ a: { b: 3, c: 2 }, list: [9], keep: 'x' });
-    });
-  });
-
-  describe('placeholderOf', () => {
-    it('keeps the shape and drops the values', () => {
-      expect(
-        placeholderOf({
-          id: 'ethereum',
-          price: 3010,
-          active: true,
-          missing: null,
-          tags: ['a'],
-          rows: [{ name: 'x' }],
-        }),
-      ).toStrictEqual({
-        id: '',
-        price: 0,
-        active: false,
-        missing: null,
-        tags: [],
-        rows: [{ name: '' }],
-      });
-    });
-  });
-
-  describe('buildExchangeRates', () => {
+  describe('priceV1ExchangeRates', () => {
     it('returns only the requested tickers with the given values', () => {
-      expect(buildExchangeRates({ eth: 0.5, usd: 2 })).toStrictEqual({
-        eth: { ...API_RESPONSES['price-v1-exchange-rates'].eth, value: 0.5 },
-        usd: { ...API_RESPONSES['price-v1-exchange-rates'].usd, value: 2 },
-      });
+      expect(priceV1ExchangeRates.response({ eth: 0.5, usd: 2 })).toStrictEqual(
+        {
+          eth: { ...priceV1ExchangeRates.body.eth, value: 0.5 },
+          usd: { ...priceV1ExchangeRates.body.usd, value: 2 },
+        },
+      );
     });
 
-    it('throws for a ticker the fixture does not have', () => {
+    it('throws for a ticker without a fixture entry', () => {
       expect(() =>
-        buildExchangeRates({
-          xyz: 1,
-        } as Parameters<typeof buildExchangeRates>[0]),
+        priceV1ExchangeRates.response({ xyz: 1 } as unknown as Record<
+          'eth',
+          number
+        >),
       ).toThrow('No exchange rate fixture for "xyz"');
     });
   });
 
-  describe('buildSpotPrice', () => {
-    it('does not copy the fixture asset onto another asset', () => {
-      const spot = buildSpotPrice({ id: 'usd-coin', price: 0.9999 });
-      const fixtureEntry = API_RESPONSES['price-v3-spot']['eip155:1/slip44:60'];
+  describe('priceV3Spot', () => {
+    it('keeps the caller slug and never copies the fixture asset or the map key', () => {
+      const response = priceV3Spot.response({
+        [USDC_ASSET_ID]: { id: 'usd-coin', price: 0.9999 },
+      });
+      const entry = response[USDC_ASSET_ID];
+      const fixtureEntry = priceV3Spot.body['eip155:1/slip44:60'];
 
-      expect(spot.id).toBe('usd-coin');
-      expect(spot.price).toBe(0.9999);
-      expect(spot.totalVolume).toBe(0);
-      expect(spot.dilutedMarketCap).toBe(0);
-      expect(Object.keys(spot).sort()).toStrictEqual(
+      expect(entry.id).toBe('usd-coin');
+      expect(entry.price).toBe(0.9999);
+      expect(entry.totalVolume).toBe(0);
+      expect(entry.dilutedMarketCap).toBe(0);
+      expect(Object.keys(entry).sort()).toStrictEqual(
         Object.keys(fixtureEntry).sort(),
       );
     });
   });
 
-  describe('buildTokensV3Asset', () => {
+  describe('tokensV3Assets', () => {
     it('applies overrides and takes unset fields from the fixture shape', () => {
-      const asset = buildTokensV3Asset({
-        assetId: 'eip155:1/slip44:60',
-        symbol: 'ETH',
-        occurrences: 100,
-      });
+      const [asset] = tokensV3Assets.response([
+        { assetId: 'eip155:1/slip44:60', symbol: 'ETH', occurrences: 100 },
+      ]);
 
-      expect(asset.assetId).toBe('eip155:1/slip44:60');
       expect(asset.symbol).toBe('ETH');
       expect(asset.occurrences).toBe(100);
       expect(asset.name).toBe('');
@@ -170,37 +149,37 @@ describe('api-responses', () => {
     });
   });
 
-  describe('buildTokenListToken', () => {
+  describe('tokenList', () => {
     it('applies overrides and takes unset fields from the fixture shape', () => {
-      const token = buildTokenListToken({
-        address: '0x2efa2cb29c2341d8e5ba7d3262c9e9d6f1bf3711',
-        symbol: 'foo',
-      });
+      const [token] = tokenList.response([
+        {
+          address: '0x2efa2cb29c2341d8e5ba7d3262c9e9d6f1bf3711',
+          symbol: 'foo',
+        },
+      ]);
 
-      expect(token.address).toBe('0x2efa2cb29c2341d8e5ba7d3262c9e9d6f1bf3711');
       expect(token.symbol).toBe('foo');
       expect(token.aggregators).toStrictEqual([]);
       expect(token.storage).toStrictEqual({ balance: 0, approval: 0 });
     });
   });
 
-  describe('buildBridgePopularToken', () => {
-    it('applies overrides and takes unset fields from the fixture shape', () => {
-      const token = buildBridgePopularToken({
-        address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-        assetId: USDC_ASSET_ID,
-        symbol: 'USDC',
-      });
+  describe('bridge tokens', () => {
+    it('builds popular tokens from the fixture shape', () => {
+      const [token] = bridgeGetTokensPopular.response([
+        {
+          address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+          assetId: USDC_ASSET_ID,
+          symbol: 'USDC',
+        },
+      ]);
 
       expect(token.symbol).toBe('USDC');
-      expect(token.assetId).toBe(USDC_ASSET_ID);
       expect(token.name).toBe('');
       expect(token.decimals).toBe(0);
     });
-  });
 
-  describe('buildBridgeTokensSearch', () => {
-    it('wraps the tokens in the fixture page envelope', () => {
+    it('wraps search results in the fixture page envelope', () => {
       const token = {
         address: '0x1',
         assetId: 'eip155:1/erc20:0x1',
@@ -209,142 +188,94 @@ describe('api-responses', () => {
         name: 'One',
       };
 
-      expect(buildBridgeTokensSearch([token])).toStrictEqual({
+      expect(bridgeGetTokensSearch.response([token])).toStrictEqual({
         data: [token],
-        pageInfo: API_RESPONSES['bridge-get-tokens-search'].pageInfo,
+        pageInfo: bridgeGetTokensSearch.body.pageInfo,
       });
     });
   });
 
-  describe('buildMultiaccountBalancesV5', () => {
+  describe('accountsBalancesV5', () => {
     it('counts the rows and fills unset row fields from the fixture shape', () => {
-      const response = buildMultiaccountBalancesV5([
+      const response = accountsBalancesV5.response([
         { accountId: 'eip155:1:0xabc', assetId: USDC_ASSET_ID },
         { accountId: 'eip155:1:0xdef', assetId: USDC_ASSET_ID, balance: '7' },
       ]);
 
       expect(response.count).toBe(2);
       expect(response.unprocessedNetworks).toStrictEqual(
-        API_RESPONSES['accounts-balances-v5'].unprocessedNetworks,
+        accountsBalancesV5.body.unprocessedNetworks,
       );
-      expect(response.balances[0]).toStrictEqual({
-        accountId: 'eip155:1:0xabc',
-        assetId: USDC_ASSET_ID,
-        balance: '',
-      });
+      expect(response.balances[0].balance).toBe('');
       expect(response.balances[1].balance).toBe('7');
     });
   });
 
-  describe('buildBridgeTxStatus', () => {
-    it('merges chain overrides with the fixture chains', () => {
-      const response = buildBridgeTxStatus({
+  describe('envelope endpoints', () => {
+    it('merges nested overrides for bridgeGetTxStatus', () => {
+      const response = bridgeGetTxStatus.response({
         status: 'PENDING',
         srcChain: { chainId: 10 },
       });
 
       expect(response.status).toBe('PENDING');
-      expect(response.bridge).toBe(
-        API_RESPONSES['bridge-get-tx-status'].bridge,
-      );
+      expect(response.bridge).toBe(bridgeGetTxStatus.body.bridge);
       expect(response.srcChain).toStrictEqual({
-        ...API_RESPONSES['bridge-get-tx-status'].srcChain,
+        ...bridgeGetTxStatus.body.srcChain,
         chainId: 10,
       });
-      expect(response.destChain).toStrictEqual(
-        API_RESPONSES['bridge-get-tx-status'].destChain,
-      );
     });
-  });
 
-  describe('buildAccountsSupportedNetworksV2', () => {
-    it('replaces the lists it is given and keeps the others', () => {
-      const response = buildAccountsSupportedNetworksV2({ fullSupport: [] });
+    it('replaces lists for accountsSupportedNetworksV2', () => {
+      const response = accountsSupportedNetworksV2.response({
+        fullSupport: [],
+      });
 
       expect(response.fullSupport).toStrictEqual([]);
       expect(response.partialSupport).toStrictEqual(
-        API_RESPONSES['accounts-supported-networks-v2'].partialSupport,
+        accountsSupportedNetworksV2.body.partialSupport,
       );
     });
-  });
 
-  describe('buildGasPrices', () => {
-    it('applies overrides and keeps unset fields from the fixture', () => {
-      const response = buildGasPrices({ FastGasPrice: '99' });
+    it('keeps unset gas prices from the fixture', () => {
+      const response = gasPrices.response({ FastGasPrice: '99' });
 
       expect(response.FastGasPrice).toBe('99');
-      expect(response.SafeGasPrice).toBe(
-        API_RESPONSES['gas-prices'].SafeGasPrice,
-      );
+      expect(response.SafeGasPrice).toBe(gasPrices.body.SafeGasPrice);
     });
 
-    it('returns the fixture when nothing is overridden', () => {
-      expect(buildGasPrices()).toStrictEqual(API_RESPONSES['gas-prices']);
-    });
-  });
-
-  describe('buildTxSentinelNetwork', () => {
-    it('applies overrides and keeps unset fields from the fixture', () => {
-      const network = buildTxSentinelNetwork({
+    it('keeps unset tx-sentinel network flags from the fixture', () => {
+      const response = txSentinelNetwork.response({
         sendBundle: true,
         cubistSigners: ['0x1111111111111111111111111111111111111111'],
       });
 
-      expect(network.sendBundle).toBe(true);
-      expect(network.cubistSigners).toStrictEqual([
-        '0x1111111111111111111111111111111111111111',
-      ]);
-      expect(network.network).toBe(
-        API_RESPONSES['tx-sentinel-network'].network,
-      );
+      expect(response.sendBundle).toBe(true);
+      expect(response.network).toBe(txSentinelNetwork.body.network);
     });
 
-    it('returns the fixture when nothing is overridden', () => {
-      expect(buildTxSentinelNetwork()).toStrictEqual(
-        API_RESPONSES['tx-sentinel-network'],
-      );
-    });
-  });
-
-  describe('buildTxSentinelBatchStatus', () => {
-    it('keys the status by the given UUID and keeps unset fields', () => {
-      const response = buildTxSentinelBatchStatus('uuid-1', {
+    it('keys the batch status by the given UUID', () => {
+      const response = txSentinelBatchStatus.response({
+        uuid: 'uuid-1',
         minedTx: 'reverted',
       });
-      const [fixtureStatus] = Object.values(
-        API_RESPONSES['tx-sentinel-batch-status'],
-      );
+      const [fixtureStatus] = Object.values(txSentinelBatchStatus.body);
 
       expect(Object.keys(response)).toStrictEqual(['uuid-1']);
       expect(response['uuid-1'].minedTx).toBe('reverted');
       expect(response['uuid-1'].isSettled).toBe(fixtureStatus.isSettled);
     });
 
-    it('returns the fixture status when nothing is overridden', () => {
-      const [fixtureStatus] = Object.values(
-        API_RESPONSES['tx-sentinel-batch-status'],
-      );
-
-      expect(buildTxSentinelBatchStatus('uuid-0')['uuid-0']).toStrictEqual(
-        fixtureStatus,
-      );
-    });
-  });
-
-  describe('buildFourByteSignatures', () => {
-    it('returns one result with the given signature', () => {
-      const response = buildFourByteSignatures({
+    it('returns one 4byte result with the given signature', () => {
+      const response = fourByteSignatures.response({
         // eslint-disable-next-line @typescript-eslint/naming-convention
         hex_signature: '0x095ea7b3',
         // eslint-disable-next-line @typescript-eslint/naming-convention
         text_signature: 'approve(address,uint256)',
       });
 
-      expect(response.count).toBe(API_RESPONSES['4byte-signatures'].count);
+      expect(response.count).toBe(fourByteSignatures.body.count);
       expect(response.results).toHaveLength(1);
-      expect(response.results[0].text_signature).toBe(
-        'approve(address,uint256)',
-      );
       expect(response.results[0].bytes_signature).toBe('');
     });
   });

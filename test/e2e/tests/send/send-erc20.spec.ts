@@ -30,6 +30,10 @@ import {
   mockedSourcifyTokenSend,
   withTransactionEnvelopeTypeFixtures,
 } from '../confirmations/helpers';
+import {
+  priceV1ExchangeRates,
+  priceV3Spot,
+} from '../../mock-response-data/api-responses';
 
 const DEFAULT_RECIPIENT = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 const smartContract = SMART_CONTRACTS.HST;
@@ -37,8 +41,8 @@ const smartContract = SMART_CONTRACTS.HST;
 async function erc20Mocks(server: Mockttp) {
   return [
     await mockedSourcifyTokenSend(server),
-    await server
-      .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
+    await priceV3Spot
+      .rule(server)
       .always()
       .thenCallback(() => ({
         statusCode: 200,
@@ -52,8 +56,8 @@ async function erc20Mocks(server: Mockttp) {
           },
         },
       })),
-    await server
-      .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+    await priceV1ExchangeRates
+      .rule(server)
       .always()
       .thenCallback(() => ({
         statusCode: 200,

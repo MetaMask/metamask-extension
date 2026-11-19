@@ -25,6 +25,10 @@ import {
 import { Driver } from '../../webdriver/driver';
 import { METAMASK_STALELIST_URL } from '../phishing-controller/helpers';
 import {
+  priceV3Spot,
+  tokensV3Assets,
+} from '../../mock-response-data/api-responses';
+import {
   OnboardingPrivacyMocks,
   assertNoInfuraRequestsBeforeOnboarding,
   mockOnboardingInfuraPrivacy,
@@ -44,8 +48,8 @@ type BasicFunctionalityOnMocks = OnboardingPrivacyMocks & {
 };
 
 async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
-  const tokenPriceMock = await mockServer
-    .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
+  const tokenPriceMock = await priceV3Spot
+    .rule(mockServer)
     .always()
     .thenCallback(() => ({
       statusCode: 200,
@@ -58,8 +62,8 @@ async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
       statusCode: 200,
       json: [{ fakedata: true }],
     }));
-  const tokenMetadataMock = await mockServer
-    .forGet('https://tokens.api.cx.metamask.io/v3/assets')
+  const tokenMetadataMock = await tokensV3Assets
+    .rule(mockServer)
     .always()
     .thenCallback((request) => ({
       statusCode: 200,

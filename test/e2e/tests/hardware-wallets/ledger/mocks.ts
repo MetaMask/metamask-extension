@@ -5,6 +5,10 @@ import {
   TOP_ASSETS_API_MOCK_RESULT,
 } from '../../../../data/mock-data';
 import { mockMultiNetworkBalancePolling } from '../../../mock-balance-polling/mock-balance-polling';
+import {
+  gasPrices,
+  priceV3Spot,
+} from '../../../mock-response-data/api-responses';
 
 // Simplified ETH->DAI trade mock with only essential data for ledger swap test
 const LEDGER_SWAP_ETH_DAI_TRADES_MOCK = [
@@ -228,12 +232,10 @@ async function mockSwapNetworkInfo(mockServer: MockttpServer) {
 // Mock price APIs - essential for swap page to load
 async function mockPriceAPIs(mockServer: MockttpServer) {
   // Mock empty spot prices for mainnet
-  await mockServer
-    .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {},
-    }));
+  await priceV3Spot.rule(mockServer).thenCallback(() => ({
+    statusCode: 200,
+    json: {},
+  }));
 
   // Mock historical prices for ETH (0x000...000)
   await mockServer
@@ -256,12 +258,10 @@ async function mockPriceAPIs(mockServer: MockttpServer) {
     }));
 
   // Generic spot-prices with query params
-  await mockServer
-    .forGet(/https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices\?.*/u)
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {},
-    }));
+  await priceV3Spot.rule(mockServer).thenCallback(() => ({
+    statusCode: 200,
+    json: {},
+  }));
 
   // Generic historical prices for any token
   await mockServer
@@ -366,12 +366,10 @@ async function mockSwapAggregatorMetadata(mockServer: MockttpServer) {
 
 // Mock swap gas prices API
 async function mockSwapGasPrices(mockServer: MockttpServer) {
-  return await mockServer
-    .forGet('https://gas.api.cx.metamask.io/networks/1/gasPrices')
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: GAS_PRICE_API_MOCK_RESULT,
-    }));
+  return await gasPrices.rule(mockServer, { chainId: 1 }).thenCallback(() => ({
+    statusCode: 200,
+    json: GAS_PRICE_API_MOCK_RESULT,
+  }));
 }
 
 // Mock suggested gas fees API for chainId 1337 (localhost)

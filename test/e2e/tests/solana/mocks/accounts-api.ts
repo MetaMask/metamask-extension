@@ -2,8 +2,8 @@ import { Mockttp } from 'mockttp';
 
 import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../../constants';
 import {
-  API_RESPONSES,
-  buildAccountsSupportedNetworksV2,
+  accountsBalancesV5,
+  accountsSupportedNetworksV2,
 } from '../../../mock-response-data/api-responses';
 
 /**
@@ -18,18 +18,12 @@ import {
  * @param mockServer - The mock server instance.
  */
 export function mockAccountsApiV2SupportedNetworks(mockServer: Mockttp) {
-  return mockServer
-    .forGet(/https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
-    .always()
-    .thenJson(
-      200,
-      buildAccountsSupportedNetworksV2({
-        fullSupport: [
-          ...API_RESPONSES['accounts-supported-networks-v2'].fullSupport,
-          'eip155:1337',
-        ],
-      }),
-    );
+  return accountsSupportedNetworksV2.mock(mockServer, {
+    fullSupport: [
+      ...accountsSupportedNetworksV2.body.fullSupport,
+      'eip155:1337',
+    ],
+  });
 }
 
 /**
@@ -64,10 +58,8 @@ export function mockAccountsApiV5MultiaccountBalances(mockServer: Mockttp) {
     },
   ];
 
-  return mockServer
-    .forGet(
-      /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
-    )
+  return accountsBalancesV5
+    .rule(mockServer)
     .always()
     .thenCallback(() => ({
       statusCode: 200,

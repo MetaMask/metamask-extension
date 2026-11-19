@@ -1,4 +1,5 @@
 import { Mockttp } from 'mockttp';
+import { tokensV3Assets } from '../../../mock-response-data/api-responses';
 
 const BTC_CAIP_ASSET_ID = 'bip122:000000000019d6689c085ae165831e93/slip44:0';
 const BTC_CHAIN_CAIP_ID = 'bip122:000000000019d6689c085ae165831e93';
@@ -62,8 +63,8 @@ export const mockTokensV2SupportedNetworks = async (mockServer: Mockttp) => {
  * @param mockServer - The mock server instance.
  */
 export const mockTokensV3Assets = (mockServer: Mockttp) =>
-  mockServer
-    .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+  tokensV3Assets
+    .rule(mockServer)
     .always()
     .thenCallback((request) => {
       const url = new URL(request.url);

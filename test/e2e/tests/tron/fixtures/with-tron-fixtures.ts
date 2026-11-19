@@ -31,6 +31,11 @@ import {
   mockTronPriceSupportedNetworks,
 } from '../mocks/common-tron';
 import { proxyTronBlockchainCalls } from '../mocks/local-tron-node-mocks';
+import {
+  accountsBalancesV5,
+  priceV3Spot,
+  tokensV3Assets,
+} from '../../../mock-response-data/api-responses';
 
 const TRON_PROVIDER_ANY_ACCOUNT_RE =
   /^(https:\/\/tron-mainnet\.infura\.io\/v3\/[^/]+|https:\/\/api\.trongrid\.io|https:\/\/api\.shasta\.trongrid\.io|https:\/\/shasta\.api\.trongrid\.io|https:\/\/nile\.trongrid\.io|https:\/\/nile\.api\.trongrid\.io)\/v1\/accounts\/([A-Za-z0-9]{20,})(\/transactions(\/trc20)?)?(\?.*)?$/u;
@@ -456,10 +461,8 @@ async function mockTronFixtureAccountsApiV5(
     return assetBalances;
   });
 
-  return mockServer
-    .forGet(
-      /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
-    )
+  return accountsBalancesV5
+    .rule(mockServer)
     .always()
     .thenCallback((request) => {
       // Honor the requested `accountIds` (multi-value, comma-split) so each
@@ -491,8 +494,8 @@ async function mockTronFixtureAssets(
 ): Promise<MockedEndpoint> {
   const knownAssets = buildFixtureTokenMetadata(accounts, tronNode);
 
-  return mockServer
-    .forGet('https://tokens.api.cx.metamask.io/v3/assets')
+  return tokensV3Assets
+    .rule(mockServer)
     .always()
     .thenCallback((request) => {
       const assetIdsParam =
@@ -526,8 +529,8 @@ async function mockTronFixtureSpotPrices(
     ]),
   ]);
 
-  return mockServer
-    .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
+  return priceV3Spot
+    .rule(mockServer)
     .always()
     .thenCallback((request) => {
       const assetIds = new URL(request.url).searchParams

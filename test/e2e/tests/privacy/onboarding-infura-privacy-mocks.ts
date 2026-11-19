@@ -1,6 +1,7 @@
 import assert from 'assert';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
+import { accountsBalancesV5 } from '../../mock-response-data/api-responses';
 
 export type OnboardingPrivacyMocks = {
   infuraMocks: MockedEndpoint[];
@@ -79,10 +80,8 @@ export async function mockOnboardingInfuraPrivacy(
       }),
   ];
 
-  const accountsApiBalancesMock = await mockServer
-    .forGet(
-      /^https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
-    )
+  const accountsApiBalancesMock = await accountsBalancesV5
+    .rule(mockServer)
     .always()
     .thenCallback(() => ({
       statusCode: 200,

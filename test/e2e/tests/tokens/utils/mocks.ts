@@ -3,17 +3,16 @@ import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils'
 import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../../../constants';
 import { v6AccountsApiBalancesJson } from '../../../helpers/accounts-api-v6-balances';
 import {
-  buildExchangeRates,
-  buildMultiaccountBalancesV5,
-  buildSpotPrice,
-  buildTokenListToken,
-  buildTokensV3Asset,
+  accountsBalancesV5,
+  priceV1ExchangeRates,
+  priceV3Spot,
+  tokenList,
+  tokensV3Assets,
+  type SpotPriceInput,
 } from '../../../mock-response-data/api-responses';
 
 const ACCOUNTS_API_URL = 'https://accounts.api.cx.metamask.io';
 const PRICE_API_URL = 'https://price.api.cx.metamask.io';
-const TOKENS_API_URL = 'https://tokens.api.cx.metamask.io';
-const TOKEN_API_URL = 'https://token.api.cx.metamask.io';
 const NATIVE_ASSET_ID_BY_CHAIN_ID: Record<number, string> = {
   1: 'eip155:1/slip44:60',
   56: 'eip155:56/slip44:714',
@@ -48,12 +47,10 @@ const getPriceUrl = (version: string, chainId: string, endpoint: string) =>
   `${PRICE_API_URL}/${version}/chains/${chainId}/${endpoint}`;
 
 export const mockEmptyPrices = async (mockServer: Mockttp) => {
-  return mockServer
-    .forGet(`${PRICE_API_URL}/v3/spot-prices`)
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {},
-    }));
+  return priceV3Spot.rule(mockServer).thenCallback(() => ({
+    statusCode: 200,
+    json: {},
+  }));
 };
 
 /**
@@ -77,8 +74,8 @@ export async function mockTokenMetadataApis(
 
   const assetsV3Mock = includeAssetsV3
     ? [
-        await mockServer
-          .forGet(new RegExp(`${TOKENS_API_URL}/v3/assets`, 'u'))
+        await tokensV3Assets
+          .rule(mockServer)
           .always()
           .thenCallback((request) => {
             const url = new URL(request.url);
@@ -87,15 +84,15 @@ export async function mockTokenMetadataApis(
               .join(',')
               .toLowerCase();
 
-            const results = [
+            const results = tokensV3Assets.response([
               ...(assetIds.includes('eip155:1')
                 ? [
-                    buildTokensV3Asset({
+                    {
                       assetId: 'eip155:1/slip44:60',
                       name: 'Ethereum',
                       symbol: 'ETH',
                       decimals: 18,
-                    }),
+                    },
                   ]
                 : []),
               ...normalizedTokens
@@ -106,18 +103,16 @@ export async function mockTokenMetadataApis(
                     assetIds.includes(token.address)
                   );
                 })
-                .map((token) =>
-                  buildTokensV3Asset({
-                    assetId: `eip155:${token.chainId}/erc20:${token.address}`,
-                    name: token.name,
-                    symbol: token.symbol,
-                    decimals: token.decimals,
-                    // TokenDataSource treats missing occurrences as 0 and drops
-                    // ERC-20s below the chain floor (mainnet default 3).
-                    occurrences: 100,
-                  }),
-                ),
-            ];
+                .map((token) => ({
+                  assetId: `eip155:${token.chainId}/erc20:${token.address}`,
+                  name: token.name,
+                  symbol: token.symbol,
+                  decimals: token.decimals,
+                  // TokenDataSource treats missing occurrences as 0 and drops
+                  // ERC-20s below the chain floor (mainnet default 3).
+                  occurrences: 100,
+                })),
+            ]);
 
             return { statusCode: 200, json: results };
           }),
@@ -127,36 +122,32 @@ export async function mockTokenMetadataApis(
   const tokenListMocks = await Promise.all(
     [...new Set(normalizedTokens.map((token) => token.chainId))].map(
       async (chainId) =>
-        mockServer
-          .forGet(
-            new RegExp(`${TOKEN_API_URL}/tokens/${chainId}(\\?.*)?$`, 'u'),
-          )
-          .always()
-          .thenCallback(() => ({
-            statusCode: 200,
-            json: normalizedTokens
-              .filter((token) => token.chainId === chainId)
-              .map((token) =>
-                buildTokenListToken({
-                  address: token.address,
-                  symbol: token.symbol,
-                  decimals: token.decimals,
-                  name: token.name,
-                  iconUrl: '',
-                  type: 'erc20',
-                  aggregators: [],
-                  occurrences: 1,
-                  erc20Permit: false,
-                }),
-              ),
-          })),
+        tokenList.mock(
+          mockServer,
+          normalizedTokens
+            .filter((token) => token.chainId === chainId)
+            .map((token) => ({
+              address: token.address,
+              symbol: token.symbol,
+              decimals: token.decimals,
+              name: token.name,
+              iconUrl: '',
+              type: 'erc20',
+              aggregators: [],
+              occurrences: 1,
+              erc20Permit: false,
+            })),
+          { chainId },
+        ),
     ),
   );
 
   const accountBalancesMocks = await Promise.all(
     ['v5', 'v6'].map((version) =>
-      mockServer
-        .forGet(`${ACCOUNTS_API_URL}/${version}/multiaccount/balances`)
+      (version === 'v5'
+        ? accountsBalancesV5.rule(mockServer)
+        : mockServer.forGet(`${ACCOUNTS_API_URL}/v6/multiaccount/balances`)
+      )
         .always()
         .thenCallback((request) => {
           const accountIds = (
@@ -197,7 +188,7 @@ export async function mockTokenMetadataApis(
           }
           return {
             statusCode: 200,
-            json: buildMultiaccountBalancesV5(balances),
+            json: accountsBalancesV5.response(balances),
           };
         }),
     ),
@@ -220,43 +211,16 @@ export const mockEmptyHistoricalPrices = async (
 };
 
 /**
- * One v3 spot-price entry. `id` is the Price API slug (`ethereum`, `usd-coin`),
- * never the CAIP asset id used as the map key.
- */
-export type MockSpotPrice = {
-  id: string;
-  price: number;
-  pricePercentChange1d?: number;
-  marketCap: number;
-};
-
-/**
- * Builds the v3 spot-prices body. The map key stays the CAIP asset id; `id`
- * on each entry is the slug the caller passed.
+ * Mocks v3 spot-prices with the given entries, keyed by CAIP asset id. Each
+ * entry's `id` is the Price API slug (`ethereum`, `usd-coin`).
  *
+ * @param mockServer - Mockttp instance.
  * @param prices - Spot entries keyed by CAIP asset id.
- * @returns The JSON body the Price API returns.
  */
-export const toSpotPriceResponse = (prices: Record<string, MockSpotPrice>) =>
-  Object.fromEntries(
-    Object.entries(prices).map(([assetId, price]) => [
-      assetId,
-      buildSpotPrice(price),
-    ]),
-  );
-
 export const mockSpotPrices = async (
   mockServer: Mockttp,
-  prices: Record<string, MockSpotPrice>,
-) => {
-  return mockServer
-    .forGet(`${PRICE_API_URL}/v3/spot-prices`)
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: toSpotPriceResponse(prices),
-    }));
-};
+  prices: Record<string, SpotPriceInput>,
+) => priceV3Spot.mock(mockServer, prices);
 
 /**
  * Mocks Price API v3 spot-prices (native ETH for the given chain) and v1 exchange-rates.
@@ -274,29 +238,20 @@ export async function mockPriceApi(
   const chainIdDecimal = Number.parseInt(chainId, 16);
   const nativeAssetId = `eip155:${chainIdDecimal}/slip44:60`;
 
-  const spotPricesMockEth = await mockServer
-    .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        [nativeAssetId]: buildSpotPrice({
-          id: 'ethereum',
-          price: resolvedEthPrice,
-          marketCap: 112500000,
-          totalVolume: 4500000,
-          dilutedMarketCap: 120000000,
-          pricePercentChange1d: 0,
-        }),
-      },
-    }));
-  const mockExchangeRates = await mockServer
-    .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: buildExchangeRates({ eth: 1 / MOCK_ETH_CONVERSION_RATE, usd: 1 }),
-    }));
+  const spotPricesMockEth = await priceV3Spot.mock(mockServer, {
+    [nativeAssetId]: {
+      id: 'ethereum',
+      price: resolvedEthPrice,
+      marketCap: 112500000,
+      totalVolume: 4500000,
+      dilutedMarketCap: 120000000,
+      pricePercentChange1d: 0,
+    },
+  });
+  const mockExchangeRates = await priceV1ExchangeRates.mock(mockServer, {
+    eth: 1 / MOCK_ETH_CONVERSION_RATE,
+    usd: 1,
+  });
 
   return [spotPricesMockEth, mockExchangeRates];
 }
@@ -313,7 +268,7 @@ export async function mockEthPrices(
   ethPrice: number,
   chainIds: `0x${string}`[] = ['0x1', '0x539'],
 ) {
-  const spotEntries: Record<string, MockSpotPrice> = {};
+  const spotEntries: Record<string, SpotPriceInput> = {};
   for (const cid of chainIds) {
     const dec = Number.parseInt(cid, 16);
     spotEntries[`eip155:${dec}/slip44:60`] = {
@@ -326,13 +281,7 @@ export async function mockEthPrices(
 
   await mockSpotPrices(mockServer, spotEntries);
 
-  await mockServer
-    .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: buildExchangeRates({ eth: 1 / ethPrice, usd: 1 }),
-    }));
+  await priceV1ExchangeRates.mock(mockServer, { eth: 1 / ethPrice, usd: 1 });
 }
 
 type HistoricalPricesOptions = {

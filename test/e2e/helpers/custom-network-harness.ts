@@ -4,6 +4,7 @@ import type { NativeAssetIdentifiersMap } from '@metamask/network-enablement-con
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../constants';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
+import { accountsSupportedNetworksV2 } from '../mock-response-data/api-responses';
 import {
   checksumErc20AssetId,
   v6AccountsApiBalancesJson,
@@ -371,15 +372,12 @@ function applyScenarioState(
   }
 }
 
-const ACCOUNTS_API_V2_SUPPORTED_NETWORKS_URL =
-  'https://accounts.api.cx.metamask.io/v2/supportedNetworks';
-
 const ACCOUNTS_API_V6_BALANCES_URL =
   'https://accounts.api.cx.metamask.io/v6/multiaccount/balances';
 
 async function mockXdcAccountsApiSupportedNetworks(mockServer: Mockttp) {
-  return mockServer
-    .forGet(ACCOUNTS_API_V2_SUPPORTED_NETWORKS_URL)
+  return accountsSupportedNetworksV2
+    .rule(mockServer)
     .asPriority(99)
     .always()
     .thenJson(200, {

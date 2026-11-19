@@ -17,6 +17,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { WINDOW_TITLES } from '../../constants';
 import { PAGES, type Driver } from '../../webdriver/driver';
 import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
+import { priceV3Spot, tokenList } from '../../mock-response-data/api-responses';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
@@ -203,18 +204,16 @@ async function mockPulseChainRpc(mockServer: Mockttp): Promise<void> {
 // restart. That aggregate is sourced separately and is not what this test
 // asserts (we check the token row amount "100 UFO"), so its value is cosmetic.
 async function mockPulseChainAssetApis(mockServer: Mockttp): Promise<void> {
-  await mockServer
-    .forGet(
-      `https://token.api.cx.metamask.io/tokens/${PULSECHAIN_CHAIN_ID_DECIMAL}`,
-    )
+  await tokenList
+    .rule(mockServer, { chainId: PULSECHAIN_CHAIN_ID_DECIMAL })
     .always()
     .thenCallback(() => ({ statusCode: 200, json: [] }));
 
   // Echo a price for whatever assetIds are requested. Matching by query is
   // brittle here because token assetIds use checksummed (mixed-case) addresses,
   // so we respond generically and case-agnostically instead.
-  await mockServer
-    .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
+  await priceV3Spot
+    .rule(mockServer)
     .always()
     .thenCallback((request) => {
       const assetIds = (new URL(request.url).searchParams.get('assetIds') ?? '')

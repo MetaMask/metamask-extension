@@ -16,9 +16,9 @@ import {
 } from '../../helpers/accounts-api-v6-balances';
 import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import {
-  API_RESPONSES,
-  buildFourByteSignatures,
-  buildSpotPrice,
+  fourByteSignatures,
+  priceV3Spot,
+  signatureInsightsSignature,
 } from '../../mock-response-data/api-responses';
 
 export const DECODING_E2E_API_URL =
@@ -117,12 +117,10 @@ async function createMockSegmentEvent(mockServer: Mockttp, eventName: string) {
 }
 
 async function createMockSignatureDecodingEvent(mockServer: Mockttp) {
-  return await mockServer
-    .forPost(`${DECODING_E2E_API_URL}/signature`)
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: API_RESPONSES['signature-insights-signature'],
-    }));
+  return await signatureInsightsSignature.rule(mockServer).thenCallback(() => ({
+    statusCode: 200,
+    json: signatureInsightsSignature.response(),
+  }));
 }
 
 export async function mockSignatureApproved(
@@ -187,15 +185,15 @@ export async function mockPermitDecoding(mockServer: Mockttp) {
 }
 
 export async function mockedSourcifyTokenSend(mockServer: Mockttp) {
-  return await mockServer
-    .forGet('https://www.4byte.directory/api/v1/signatures/')
+  return await fourByteSignatures
+    .rule(mockServer)
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     .withQuery({ hex_signature: '0xa9059cbb' })
     .always()
     .thenCallback(() => ({
       statusCode: 200,
-      json: buildFourByteSignatures({
+      json: fourByteSignatures.response({
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         hex_signature: '0xa9059cbb',
@@ -940,21 +938,19 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
           ],
         };
       }),
-    await mockServer
-      .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            'eip155:1/slip44:60': buildSpotPrice({
-              id: 'ethereum',
-              price: 1700,
-              marketCap: 382623505141,
-              pricePercentChange1d: 0,
-            }),
+    await priceV3Spot.rule(mockServer).thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: priceV3Spot.response({
+          'eip155:1/slip44:60': {
+            id: 'ethereum',
+            price: 1700,
+            marketCap: 382623505141,
+            pricePercentChange1d: 0,
           },
-        };
-      }),
+        }),
+      };
+    }),
   ];
 }
 export async function mockNoDeFiPositionFeatureFlag(mockServer: Mockttp) {
