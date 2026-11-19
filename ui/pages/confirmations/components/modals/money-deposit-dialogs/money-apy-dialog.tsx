@@ -5,6 +5,24 @@ import { MoneyInfoDialog } from './money-info-dialog';
 
 export const MONEY_APY_DIALOG_TEST_ID = 'money-apy-dialog';
 
+const APY_SECTIONS = [
+  {
+    id: 'how-it-works',
+    titleKey: 'moneyHowItWorks',
+    bodyKey: 'moneyAccountDepositApyDialogHowItWorksBody',
+  },
+  {
+    id: 'why-changes',
+    titleKey: 'moneyAccountDepositApyDialogWhyChangesTitle',
+    bodyKey: 'moneyAccountDepositApyDialogWhyChangesBody',
+  },
+  {
+    id: 'where-it-comes-from',
+    titleKey: 'moneyAccountDepositApyDialogWhereItComesFromTitle',
+    bodyKey: 'moneyAccountDepositApyDialogWhereItComesFromBody',
+  },
+] as const;
+
 export type MoneyApyDialogProps = {
   isOpen: boolean;
   onClose: () => void;
@@ -57,32 +75,19 @@ export function MoneyApyDialog({
           </Text>
         </div>
 
-        <div className="flex flex-col gap-1">
-          <Text variant={TextVariant.HeadingSm} color={TextColor.TextDefault}>
-            {t('moneyHowItWorks')}
-          </Text>
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {t('moneyAccountDepositApyDialogHowItWorksBody')}
-          </Text>
-        </div>
-
-        <div className="flex flex-col gap-1">
-          <Text variant={TextVariant.HeadingSm} color={TextColor.TextDefault}>
-            {t('moneyAccountDepositApyDialogWhyChangesTitle')}
-          </Text>
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {t('moneyAccountDepositApyDialogWhyChangesBody')}
-          </Text>
-        </div>
-
-        <div className="flex flex-col gap-1">
-          <Text variant={TextVariant.HeadingSm} color={TextColor.TextDefault}>
-            {t('moneyAccountDepositApyDialogWhereItComesFromTitle')}
-          </Text>
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {t('moneyAccountDepositApyDialogWhereItComesFromBody')}
-          </Text>
-        </div>
+        {APY_SECTIONS.map(({ id, titleKey, bodyKey }) => (
+          <div key={id} className="flex flex-col gap-1">
+            <Text variant={TextVariant.HeadingSm} color={TextColor.TextDefault}>
+              {t(titleKey)}
+            </Text>
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+            >
+              {t(bodyKey)}
+            </Text>
+          </div>
+        ))}
       </div>
     </MoneyInfoDialog>
   );
