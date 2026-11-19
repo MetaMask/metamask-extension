@@ -9,6 +9,15 @@ on:
   schedule:
     - cron: '17 14 * * *'
   workflow_dispatch:
+    inputs:
+      window_hours:
+        description: Hours of finished Main runs to check (default 24)
+        required: false
+        type: string
+      settle_hours:
+        description: Skip Main runs that finished within this many hours of the slot (default 3)
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -36,6 +45,11 @@ jobs:
       - name: Check the detector ran for recent Main commits
         env:
           GH_TOKEN: ${{ github.token }}
-          SLACK_WEBHOOK_MAIN_DETECTOR: ${{ secrets.SLACK_WEBHOOK_MAIN_DETECTOR }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_MAIN_DETECTOR }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        run: node ./.github/scripts/main-detector/heartbeat-cli.mts
+          WINDOW_HOURS: ${{ inputs.window_hours }}
+          SETTLE_HOURS: ${{ inputs.settle_hours }}
+        run: |
+          node ./.github/scripts/main-detector/heartbeat-cli.mts \
+            --window-hours "${WINDOW_HOURS:-24}" \
+            --settle-hours "${SETTLE_HOURS:-3}"

@@ -4,14 +4,12 @@ import type { SlackPayload } from './slack.mts';
  * Scheduled and workflow_run runs have no one watching the log, so a missing
  * webhook there must fail the run instead of silently becoming a dry run.
  *
- * @param webhookUrl - The incoming webhook, if any.
  */
-export function requireWebhookInCi(webhookUrl: string | undefined): void {
+export function requireWebhookInCi(): void {
+  const webhookUrl = process.env.SLACK_WEBHOOK_URL;
   const event = process.env.GITHUB_EVENT_NAME;
   if (!webhookUrl && (event === 'workflow_run' || event === 'schedule')) {
-    throw new Error(
-      'SLACK_WEBHOOK_MAIN_DETECTOR is not set; pings would be lost',
-    );
+    throw new Error('SLACK_WEBHOOK_URL is not set; pings would be lost');
   }
 }
 
@@ -20,15 +18,12 @@ export function requireWebhookInCi(webhookUrl: string | undefined): void {
  * is configured so the same command doubles as a dry run.
  *
  * @param payload - The message.
- * @param webhookUrl - The incoming webhook, if any.
  */
-export async function postOrPrint(
-  payload: SlackPayload,
-  webhookUrl: string | undefined,
-): Promise<void> {
-  requireWebhookInCi(webhookUrl);
+export async function postOrPrint(payload: SlackPayload): Promise<void> {
+  requireWebhookInCi();
+  const webhookUrl = process.env.SLACK_WEBHOOK_URL;
   if (!webhookUrl) {
-    console.log('SLACK_WEBHOOK_MAIN_DETECTOR is not set; dry run:');
+    console.log('SLACK_WEBHOOK_URL is not set; dry run:');
     console.log(JSON.stringify(payload, null, 2));
     return;
   }

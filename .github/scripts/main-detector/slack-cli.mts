@@ -1,7 +1,7 @@
 /**
  * Usage: node .github/scripts/main-detector/slack-cli.mts --result result.json [--run-url URL]
  * Posts a Slack message when the detector result has a ping. With no
- * SLACK_WEBHOOK_MAIN_DETECTOR set it prints the payload instead, so the same
+ * SLACK_WEBHOOK_URL set it prints the payload instead, so the same
  * command doubles as a dry run. Needs `gh` for the commit author.
  */
 import { execFileSync } from 'node:child_process';
@@ -39,7 +39,7 @@ async function main(): Promise<void> {
   if (!values.result) {
     throw new Error('--result is required');
   }
-  requireWebhookInCi(process.env.SLACK_WEBHOOK_MAIN_DETECTOR);
+  requireWebhookInCi();
 
   const result = JSON.parse(fs.readFileSync(values.result, 'utf8'));
   if (result.decision.ping === 'none') {
@@ -57,7 +57,7 @@ async function main(): Promise<void> {
     author: authorOf(result.plan.headSha),
   });
 
-  await postOrPrint(payload, process.env.SLACK_WEBHOOK_MAIN_DETECTOR);
+  await postOrPrint(payload);
 }
 
 main().catch((error) => {

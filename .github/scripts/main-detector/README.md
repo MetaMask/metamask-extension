@@ -56,7 +56,7 @@ what it should, so check that first. A breakdown metric that moves by more than
 
 ## Operating it
 
-- Secret: `SLACK_WEBHOOK_MAIN_DETECTOR` (an incoming webhook for the channel).
+- Secret: `SLACK_WEBHOOK_MAIN_DETECTOR` (an incoming webhook for the channel), mapped to the `SLACK_WEBHOOK_URL` env var the scripts read.
   Without it, `slack-cli.mts` prints the message instead of posting it, except
   on `workflow_run` and `schedule` runs, where it fails.
 - A dispatch without `head_sha` measures the tip of `main` and is titled
