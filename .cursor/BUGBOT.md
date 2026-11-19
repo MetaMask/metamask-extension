@@ -222,3 +222,54 @@ Use the rules in the [front-end-performance-rendering](rules/front-end-performan
 - Ensure efficient selector patterns (avoid Object.values() without memoization, combine multiple useSelector calls)
 
 Use the rules in the [front-end-performance-state-management](rules/front-end-performance-state-management/RULE.md) to enforce the test quality and bug detection.
+
+### 6. UI Review — MMDS & Content Guidelines (EXPERIMENT SECTION — DO NOT MERGE)
+
+> This section is part of a Bugbot experiment, not a permanent rule. It tests
+> whether Bugbot reads this file (`.cursor/BUGBOT.md`) from a PR's **base
+> branch**: it exists on the experiment branch, not on `main`. See the
+> experiment PR description for the test plan.
+
+#### When to apply
+
+Apply this section when the diff touches any of:
+
+- `ui/components/**` or `ui/pages/**`
+- Sass files (`*.scss`)
+- Tailwind `className` usage
+- imports from `ui/components/component-library` or `@metamask/design-system-react`
+
+#### UI rules
+
+1. Prefer MetaMask Design System (MMDS) components from
+   `@metamask/design-system-react` over `ui/components/component-library` and
+   over raw HTML / `Box` hacks. If a `component-library` import has an MMDS
+   equivalent (including deprecated `component-library` components), flag it
+   and suggest the MMDS component.
+2. Use design tokens / Tailwind classes from the MMDS preset. Flag hardcoded
+   colours (hex, rgb, named) and hardcoded px-based spacing.
+3. User-facing copy must follow MetaMask content guidelines: sentence case,
+   clear, concise, no jargon. Flag Title Case strings and jargon.
+4. Flag new usage of deprecated `component-library` components.
+
+#### Canary tags (REQUIRED for this experiment)
+
+- If you apply these rules, start **every** UI finding with the tag
+  `[MMDS-RULES]`.
+- If you loaded reference link 1 (the in-repo file), also include
+  `[IN-REPO-LINK]` in findings it informed.
+- If you fetched reference link 2 (the GitHub blob URL), also include
+  `[GITHUB-BLOB-LINK]`.
+- If you fetched reference link 3 (the raw.githubusercontent.com URL), also
+  include `[RAW-LINK]`.
+
+In verbose output, state which of the three reference links you actually
+loaded (all / some / none), next to their labels.
+
+#### Reference files to load for UI reviews (each labeled)
+
+1. `[IN-REPO]` In-repo condensed UI guide: `.cursor/bugbot/ui-development.md`
+   (path relative to the repository root; the file exists on this branch, not
+   on `main`).
+2. `[GITHUB-BLOB]` https://github.com/MetaMask/skills/blob/main/domains/ui/skills/ui-development/skill.md
+3. `[RAW]` https://raw.githubusercontent.com/MetaMask/skills/main/domains/ui/skills/content-guidelines/skill.md
