@@ -47,11 +47,11 @@ export type PPOMMiddlewareRequest<
 /**
  * Middleware function that handles JSON RPC requests.
  * This function will be called for every JSON RPC request.
- * It will call the PPOM to check if the request is malicious or benign.
- * If the request is benign, it will be forwarded to the next middleware.
- * If the request is malicious or warning, it will trigger the PPOM alert dialog,
- * after the user has confirmed or rejected the request,
- * the request will be forwarded to the next middleware, together with the PPOM response.
+ * For confirmation requests, it starts a security validation with the
+ * Security Alerts API without blocking the request. It attaches a loading
+ * security alert response to the request and forwards it to the next
+ * middleware. The final response is written to the transaction or signature
+ * request when the validation completes.
  *
  * @param preferencesController - Instance of PreferenceController.
  * @param networkController - Instance of NetworkController.

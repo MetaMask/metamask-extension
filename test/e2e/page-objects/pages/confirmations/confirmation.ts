@@ -76,9 +76,6 @@ class Confirmation {
 
   private sectionCollapseButton = '[data-testid="sectionCollapseButton"]';
 
-  private securityProviderBannerAlert =
-    '[data-testid="security-provider-banner-alert"]';
-
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -159,19 +156,6 @@ class Confirmation {
         text: option[1],
       });
     }
-  }
-
-  async checkSecurityProviderBannerAlertIsNotPresent(): Promise<void> {
-    await this.driver.assertElementNotPresent(
-      this.securityProviderBannerAlert,
-      {
-        waitAtLeastGuard: 1000,
-      },
-    );
-  }
-
-  async checkSecurityProviderBannerAlertIsPresent(): Promise<void> {
-    await this.driver.waitForSelector(this.securityProviderBannerAlert);
   }
 
   async clickCollapseSectionButton() {
