@@ -117,14 +117,7 @@ jobs:
         if: ${{ inputs.build-script != '' && (inputs.build-artifact == '' || steps.download-build-artifact.outcome == 'failure') }}
         env:
           BUILD_SCRIPT: ${{ inputs.build-script }}
-        shell: bash
-        run: |
-          if [[ "$BUILD_SCRIPT" != build && "$BUILD_SCRIPT" != build:* ]] ||
-            ! jq -e --arg name "$BUILD_SCRIPT" '.scripts[$name] | type == "string"' package.json >/dev/null; then
-            echo "::error::Expected a build script from the root package.json"
-            exit 1
-          fi
-          yarn run "$BUILD_SCRIPT"
+        run: yarn run "$BUILD_SCRIPT"
 
       - name: Download changed-files artifact
         if: ${{ env.BRANCH != 'main' }}
@@ -170,11 +163,6 @@ jobs:
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
         shell: bash
         run: |
-          if [[ "$TEST_SCRIPT" != test:e2e:* && "$TEST_SCRIPT" != test:api-specs && "$TEST_SCRIPT" != test:api-specs-multichain ]] ||
-            ! jq -e --arg name "$TEST_SCRIPT" '.scripts[$name] | type == "string"' package.json >/dev/null; then
-            echo "::error::Expected an E2E test script from the root package.json"
-            exit 1
-          fi
           if [[ "$E2E_DEBUG_ENABLED" == true ]]; then
             export E2E_DEBUG=true
           fi

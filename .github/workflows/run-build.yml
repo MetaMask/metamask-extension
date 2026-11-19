@@ -100,11 +100,6 @@ jobs:
           BUILD_ARGS: ${{ inputs.build-args }}${{ inputs.bundle-analyzer && ' --bundleAnalyzer' || '' }}
         shell: bash
         run: |
-          if [[ "$BUILD_SCRIPT" != build && "$BUILD_SCRIPT" != build:* ]] ||
-            ! jq -e --arg name "$BUILD_SCRIPT" '.scripts[$name] | type == "string"' package.json >/dev/null; then
-            echo "::error::Expected a build script from the root package.json"
-            exit 1
-          fi
           if [[ "$BUILD_ARGS" == *$'\n'* || "$BUILD_ARGS" == *$'\r'* ]]; then
             echo "::error::Build arguments must be on a single line"
             exit 1
