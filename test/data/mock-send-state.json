@@ -700,33 +700,6 @@
     ],
     "swapsState": {}
   },
-  "swaps": {
-    "aggregatorMetadata": null,
-    "approveTxId": null,
-    "tradeTxId": null,
-    "balanceError": false,
-    "fetchingQuotes": false,
-    "fromToken": null,
-    "fromTokenInputValue": "",
-    "fromTokenError": null,
-    "isFeatureFlagLoaded": false,
-    "maxSlippage": "Slippage.default",
-    "quotesFetchStartTime": null,
-    "reviewSwapClickedTimestamp": null,
-    "topAssets": {},
-    "toToken": null,
-    "customGas": {
-      "price": null,
-      "limit": null,
-      "loading": "GAS_PRICES_LOADING_STATES.INITIAL",
-      "priceEstimates": {},
-      "fallBackPrice": null
-    },
-    "currentSmartTransactionsError": "",
-    "swapsSTXLoading": false,
-    "transactionSettingsOpened": false,
-    "latestAddedTokenTo": ""
-  },
   "unconnectedAccount": {
     "state": "CLOSED"
   }
