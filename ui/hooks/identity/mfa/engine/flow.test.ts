@@ -207,14 +207,6 @@ describe('createMfaFlow', () => {
     const fake = createFakeController([]);
     const { flow, outcome } = await startFlow(EMAIL_ONLY, fake.controller);
 
-    expect(flow.getState().step).toStrictEqual({
-      name: 'intro',
-      methods: ['email_otp'],
-      missing: ['email_otp'],
-      email: undefined,
-    });
-
-    await act(flow, { type: 'continue' });
     expect(flow.getState()).toMatchObject({
       step: { name: 'emailEntry' },
       progress: { current: 1, total: 1 },
@@ -1053,16 +1045,14 @@ describe('createMfaFlow', () => {
 
   it('does not offer a passkey to confirm with when the client has no passkey support', async () => {
     const fake = createFakeController([passkey]);
-    const { flow } = await startFlow(EMAIL_ONLY, fake.controller, {
+    const { outcome } = await startFlow(EMAIL_ONLY, fake.controller, {
       passkey: undefined,
     });
 
-    await act(flow, { type: 'continue' });
-    expect(flow.getState().step).toStrictEqual({
-      name: 'failure',
-      code: 'passkey_unsupported',
-      canRetry: false,
-    });
+    const result = await outcome;
+    expect(result.ok || getMfaErrorCode(result.error)).toBe(
+      'passkey_unsupported',
+    );
   });
 
   (
