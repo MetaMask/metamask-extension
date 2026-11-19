@@ -13,21 +13,23 @@ import {
   TRON_CHAIN_ID,
   TRON_RECIPIENT_ADDRESS,
 } from '../../tron/mocks/common-tron';
-import { TRON_PORTFOLIO_ACCOUNT } from '../../tron/fixtures/environments';
+import {
+  TRON_PORTFOLIO_ACCOUNT,
+  TRON_PORTFOLIO_TRX_BALANCE_IN_SUN,
+} from '../../tron/fixtures/environments';
 import { withTronFixtures } from '../../tron/fixtures/with-tron-fixtures';
+import { formatSunAmount } from './utils/formatSunAmount';
 
 /**
- * Manual amount (in TRX) sent from the seeded 6.072392 TRX balance. It leaves
- * room for the network fee and the account activation reserve that the Tron
- * Snap reserves when the recipient is inactive. Max is not offered for native
- * non-EVM assets, so this flow enters the amount by hand.
+ * Fee buffer (in sun) subtracted from the seeded TRX balance when sending near
+ * the total balance: 1 TRX account activation plus 0.1 TRX bandwidth.
  */
-const TRON_SEND_AMOUNT = '4.572392';
+const TRON_SEND_FEE_BUFFER_IN_SUN = 1_100_000;
 
 describe('Tron Send', function (this: Suite) {
   this.timeout(180_000);
 
-  it('sends fee-buffered TRX balance via manual full-amount entry', async function () {
+  it('sends the Snap max TRX amount, leaving room for fees', async function () {
     await withTronFixtures(
       {
         accounts: [TRON_PORTFOLIO_ACCOUNT],
@@ -52,7 +54,12 @@ describe('Tron Send', function (this: Suite) {
         await sendPage.fillRecipient({
           recipientAddress: TRON_RECIPIENT_ADDRESS,
         });
-        await sendPage.fillAmount(TRON_SEND_AMOUNT);
+        await sendPage.clickMaxButton();
+        await sendPage.checkAmountInputValue(
+          formatSunAmount(
+            TRON_PORTFOLIO_TRX_BALANCE_IN_SUN - TRON_SEND_FEE_BUFFER_IN_SUN,
+          ),
+        );
         await sendPage.pressContinueButton();
 
         const snapConfirmation = new SnapTransactionConfirmation(driver);
