@@ -79,9 +79,9 @@ export function renderSummary(options: {
     plan.canary
       ? 'This is an A/A canary: base and head are the same build, so any finding is a false alarm.'
       : '',
-    typeof plan.injectMs !== 'number'
-      ? ''
-      : `Dry run: the head build was slowed by ${plan.injectMs} ms on purpose.`,
+    typeof plan.injectMs === 'number'
+      ? `Dry run: the head build was slowed by ${plan.injectMs} ms on purpose.`
+      : '',
     '',
     `**Result: ${resultLabel(decision, plan)}**`,
     '',
