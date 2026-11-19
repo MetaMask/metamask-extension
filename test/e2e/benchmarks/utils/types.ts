@@ -22,11 +22,6 @@ export type LongTaskStepResult = {
   longTaskTotalDuration: number;
   longTaskMaxDuration: number;
   tbt: number;
-  /**
-   * Whether the `longtask` observer was attached for this step. False means the
-   * four counts above are initialized zeros rather than observations.
-   */
-  longTasksObserved: boolean;
 };
 
 export type PageLoadBenchmarkOptions = {
