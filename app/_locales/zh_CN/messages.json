@@ -3480,12 +3480,6 @@
   "deepLink_GoToTheHomePageButton": {
     "message": "返回主页"
   },
-  "deepLink_MobileShareDescription": {
-    "message": "使用您的移动设备扫描此二维码，以在 MetaMask 移动端打开此链接。"
-  },
-  "deepLink_MobileShareTitle": {
-    "message": "在 MetaMask 移动端继续"
-  },
   "deepLink_RedirectingToMetaMask": {
     "message": "重定向至 MetaMask"
   },
@@ -3635,9 +3629,6 @@
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "要删除MetaMetrics数据吗？"
-  },
-  "deleteMetaMetricsDataPrivacyNotice": {
-    "message": "隐私声明"
   },
   "deleteMetaMetricsDataRequestedDescription": {
     "message": "您在 $1 发起了删除操作。此过程最长可能需要 30 天。查看 $2。",
@@ -5666,13 +5657,6 @@
   "mfaOtpDescriptionTotp": {
     "message": "打开您的身份验证应用，输入 6 位验证码。"
   },
-  "mfaOtpDescriptionUnsent": {
-    "message": "我们将向您的电子邮件发送 6 位验证码。请在下方输入以验证您的电子邮件。"
-  },
-  "mfaOtpDescriptionUnsentWithEmail": {
-    "message": "我们将向 $1 发送 6 位验证码。请在下方输入以验证您的电子邮件。",
-    "description": "$1 is the user's masked email address"
-  },
   "mfaOtpDescriptionWithEmail": {
     "message": "我们已向 $1 发送 6 位验证码。请在下方输入以验证您的电子邮件。",
     "description": "$1 is the email address the code was sent to"
@@ -5699,9 +5683,6 @@
   },
   "mfaOtpRetryIn": {
     "message": "$1 秒后重试"
-  },
-  "mfaOtpSend": {
-    "message": "发送验证码"
   },
   "mfaOtpSendIn": {
     "message": "$1 秒后发送验证码",
@@ -5767,9 +5748,6 @@
   "mfaSettingsNotice": {
     "message": "这些方式可为 Money Account 交易提供更多保障。它们无法恢复您的钱包。"
   },
-  "mfaSettingsNoticeSocialLogin": {
-    "message": "这些方式为 Money Account 交易和恢复钱包提供更多保障。"
-  },
   "mfaSettingsRemoveElsewhereDescription": {
     "message": "您的其他方式仅在 MetaMask 移动应用中有效。请从那里移除您的电子邮件。"
   },
@@ -5808,9 +5786,6 @@
   },
   "mfaSettingsUsedForMoney": {
     "message": "正在验证 Money 交易"
-  },
-  "mfaSettingsUsedForWalletRecovery": {
-    "message": "钱包恢复"
   },
   "mfaTotpSetupContinue": {
     "message": "继续"
@@ -5906,10 +5881,6 @@
   },
   "moneyActivity": {
     "message": "活动"
-  },
-  "moneyActivityAmountUnavailable": {
-    "message": "金额不可用",
-    "description": "Shown in place of a Money card activity amount when the historical mUSD value cannot be calculated"
   },
   "moneyActivityCard": {
     "message": "卡"
@@ -7208,7 +7179,8 @@
     "message": "其他相关宣传材料"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "我们希望使用数据（例如来自 Cookie 的信息）来了解您如何与我们的营销传播互动。"
+    "message": "我们希望使用数据（例如来自 Cookie 的信息）来了解您如何与我们的营销传播互动。",
+    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
     "message": "这可以帮助我们个性化与您分享的内容，例如："
@@ -12436,9 +12408,6 @@
   },
   "to": {
     "message": "至"
-  },
-  "today": {
-    "message": "今天"
   },
   "toggleDecodeDescription": {
     "message": "我们使用 4byte.directory 和 Sourcify 服务来解码和显示更易读的交易数据。这可以帮助您了解待定交易和过去交易的结果，但可能会导致您的 IP 地址共享。"

@@ -3480,12 +3480,6 @@
   "deepLink_GoToTheHomePageButton": {
     "message": "Ana sayfaya git"
   },
-  "deepLink_MobileShareDescription": {
-    "message": "Bu bağlantıyı MetaMask Mobil'de açmak için mobil cihazınızla bu QR kodunu tarayın."
-  },
-  "deepLink_MobileShareTitle": {
-    "message": "MetaMask Mobil'de devam et"
-  },
   "deepLink_RedirectingToMetaMask": {
     "message": "Yeniden MetaMask'e yönlendiriliyor"
   },
@@ -3635,9 +3629,6 @@
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "MetaMetrics verilerini sil?"
-  },
-  "deleteMetaMetricsDataPrivacyNotice": {
-    "message": "Gizlilik Bildirisi"
   },
   "deleteMetaMetricsDataRequestedDescription": {
     "message": "$1 tarihinde bir silme işlemi başlattınız. Bu işlem 30 güne kadar sürebilir. $2 bölümünü görüntüleyin.",
@@ -5670,13 +5661,6 @@
   "mfaOtpDescriptionTotp": {
     "message": "Kimlik doğrulama uygulamanızı açıp 6 haneli kodu girin."
   },
-  "mfaOtpDescriptionUnsent": {
-    "message": "E-postanıza 6 haneli bir kod göndereceğiz. E-postanızı doğrulamak için kodu aşağıya girin."
-  },
-  "mfaOtpDescriptionUnsentWithEmail": {
-    "message": "Şuraya 6 haneli bir kod göndereceğiz: $1. E-postanızı doğrulamak için kodu aşağıya girin.",
-    "description": "$1 is the user's masked email address"
-  },
   "mfaOtpDescriptionWithEmail": {
     "message": "Şuraya 6 haneli bir kod gönderdik: $1. E-postanızı doğrulamak için aşağıya girin.",
     "description": "$1 is the email address the code was sent to"
@@ -5703,9 +5687,6 @@
   },
   "mfaOtpRetryIn": {
     "message": "$1sn sonra tekrar deneyin"
-  },
-  "mfaOtpSend": {
-    "message": "Kod gönder"
   },
   "mfaOtpSendIn": {
     "message": "Kod göndermek için kalan süre: $1sn",
@@ -5771,9 +5752,6 @@
   "mfaSettingsNotice": {
     "message": "Bu yöntemler Money account işlemlerine koruma ekler. Cüzdanınızı kurtaramazlar."
   },
-  "mfaSettingsNoticeSocialLogin": {
-    "message": "Bu yöntemler, Money account işlemlerine ve cüzdanınızın kurtarılmasına yönelik ek koruma sağlar."
-  },
   "mfaSettingsRemoveElsewhereDescription": {
     "message": "Diğer yöntemleriniz yalnızca MetaMask mobil uygulamasında çalışır. E-postanızı oradan kaldırabilirsiniz."
   },
@@ -5812,9 +5790,6 @@
   },
   "mfaSettingsUsedForMoney": {
     "message": "Para işlemleri doğrulanıyor"
-  },
-  "mfaSettingsUsedForWalletRecovery": {
-    "message": "Cüzdan kurtarma"
   },
   "mfaTotpSetupContinue": {
     "message": "Devam Et"
@@ -5910,10 +5885,6 @@
   },
   "moneyActivity": {
     "message": "İşlemler"
-  },
-  "moneyActivityAmountUnavailable": {
-    "message": "Tutar mevcut değil",
-    "description": "Shown in place of a Money card activity amount when the historical mUSD value cannot be calculated"
   },
   "moneyActivityCard": {
     "message": "Kart"
@@ -7212,7 +7183,8 @@
     "message": "İlgili diğer promosyon materyalleri"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "Verileri (çerezlerden alınan bilgiler gibi) pazarlama iletişimlerimizle nasıl etkileşimde bulunduğunuzu öğrenmek amacıyla kullanmak isteriz."
+    "message": "Verileri (çerezlerden alınan bilgiler gibi) pazarlama iletişimlerimizle nasıl etkileşimde bulunduğunuzu öğrenmek amacıyla kullanmak isteriz.",
+    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
     "message": "Sizinle örneğin şunlar gibi neleri paylaşacağımızı kişiselleştirebilmemize yardımcı olur:"
@@ -12444,9 +12416,6 @@
   },
   "to": {
     "message": "Alıcı"
-  },
-  "today": {
-    "message": "Bugün"
   },
   "toggleDecodeDescription": {
     "message": "Şifre çözmek ve daha okunabilir işlem verileri göstermek için 4byte.directory ve Sourcify hizmetlerini kullanıyoruz. Bu da, bekleyen ve geçmiş işlemlerinin sonucunu anlamanıza yardımcı olur ancak IP adresinizin paylaşılmasıyla sonuçlanabilir."

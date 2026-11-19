@@ -3480,12 +3480,6 @@
   "deepLink_GoToTheHomePageButton": {
     "message": "Magpunta sa home page"
   },
-  "deepLink_MobileShareDescription": {
-    "message": "I-scan ang QR code na ito sa iyong mobile device para buksan ang link na ito sa MetaMask Mobile."
-  },
-  "deepLink_MobileShareTitle": {
-    "message": "Magpatuloy sa MetaMask Mobile"
-  },
   "deepLink_RedirectingToMetaMask": {
     "message": "Inire-redirect sa MetaMask"
   },
@@ -3635,9 +3629,6 @@
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Tanggalin ang data ng MetaMetrics?"
-  },
-  "deleteMetaMetricsDataPrivacyNotice": {
-    "message": "Patakaran sa Pagkapribado"
   },
   "deleteMetaMetricsDataRequestedDescription": {
     "message": "Pinasimulan mo ang pagtatanggal sa $1. Ang prosesong ito ay maaaring tumagal nang hanggang 30 araw. Tingnan ang $2.",
@@ -5666,13 +5657,6 @@
   "mfaOtpDescriptionTotp": {
     "message": "Buksan ang iyong authenticator app at ilagay ang 6 digit code."
   },
-  "mfaOtpDescriptionUnsent": {
-    "message": "Magpapadala kami ng 6 digit code sa iyong email. Ilagay ito sa ibaba para i-verify ang email mo."
-  },
-  "mfaOtpDescriptionUnsentWithEmail": {
-    "message": "Magpapadala kami ng 6 digit code sa $1. Ilagay ito sa ibaba para i-verify ang email mo.",
-    "description": "$1 is the user's masked email address"
-  },
   "mfaOtpDescriptionWithEmail": {
     "message": "Nagpadala kami ng 6 digit code sa $1. Ilagay ito sa ibaba para i-verify ang email mo.",
     "description": "$1 is the email address the code was sent to"
@@ -5699,9 +5683,6 @@
   },
   "mfaOtpRetryIn": {
     "message": "Subukan muli sa $1s"
-  },
-  "mfaOtpSend": {
-    "message": "Magpadala ng code"
   },
   "mfaOtpSendIn": {
     "message": "Magpadala ng code pagkalipas ng $1s",
@@ -5767,9 +5748,6 @@
   "mfaSettingsNotice": {
     "message": "Ang mga pamamaraang ito ay nagdadagdag ng proteksyon sa mga transaksyon ng Money account. Hindi nila mababawi ang wallet mo."
   },
-  "mfaSettingsNoticeSocialLogin": {
-    "message": "Ang mga pamamaraang ito ay nagdadagdag ng proteksyon sa mga transaksyon ng Money account at para mabawi ang wallet mo."
-  },
   "mfaSettingsRemoveElsewhereDescription": {
     "message": "Gumagana lamang ang ibang mga paraan mo sa MetaMask mobile app. Tanggalin ang email mo mula rito."
   },
@@ -5808,9 +5786,6 @@
   },
   "mfaSettingsUsedForMoney": {
     "message": "I-verify ang mga transaksyong Money"
-  },
-  "mfaSettingsUsedForWalletRecovery": {
-    "message": "Pag-recover ng wallet"
   },
   "mfaTotpSetupContinue": {
     "message": "Magpatuloy"
@@ -5906,10 +5881,6 @@
   },
   "moneyActivity": {
     "message": "Aktibidad"
-  },
-  "moneyActivityAmountUnavailable": {
-    "message": "Hindi available ang halaga",
-    "description": "Shown in place of a Money card activity amount when the historical mUSD value cannot be calculated"
   },
   "moneyActivityCard": {
     "message": "Card"
@@ -7208,7 +7179,8 @@
     "message": "Iba pang kaugnay na mga materyal sa promosyon"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "Nais naming gamitin ang data (tulad ng impormasyon mula sa mga cookie) upang matutunan kung paano ka nakikipag-ugnayan sa aming mga komunikasyon sa marketing."
+    "message": "Nais naming gamitin ang data (tulad ng impormasyon mula sa mga cookie) upang matutunan kung paano ka nakikipag-ugnayan sa aming mga komunikasyon sa marketing.",
+    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
     "message": "Tumutulong ito sa amin na maiangkop ang aming ibinabahagi sa iyo, tulad ng:"
@@ -12430,9 +12402,6 @@
   },
   "to": {
     "message": "Sa/Kay"
-  },
-  "today": {
-    "message": "Ngayong araw"
   },
   "toggleDecodeDescription": {
     "message": "Ginagamit namin ang mga serbisyo ng 4byte.directory at Sourcify para i-decode at ipakita ang mas nababasang data ng transaksyon. Tinutulungan ka nito na maunawaan ang kinalabasan ng mga nakabinbin at nakalipas na transaksyon, ngunit maaaring humantong sa pagbabahagi ng iyong IP address."

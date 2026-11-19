@@ -3480,12 +3480,6 @@
   "deepLink_GoToTheHomePageButton": {
     "message": "ホームページに移動"
   },
-  "deepLink_MobileShareDescription": {
-    "message": "MetaMask Mobileでこのリンクを開くには、モバイルデバイスでこのQRコードをスキャンしてください。"
-  },
-  "deepLink_MobileShareTitle": {
-    "message": "MetaMask Mobileで続ける"
-  },
   "deepLink_RedirectingToMetaMask": {
     "message": "MetaMaskにリダイレクトしています"
   },
@@ -3635,9 +3629,6 @@
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "MetaMetricsデータを削除しますか？"
-  },
-  "deleteMetaMetricsDataPrivacyNotice": {
-    "message": "プライバシー通知"
   },
   "deleteMetaMetricsDataRequestedDescription": {
     "message": "$1で削除を開始しました。このプロセスには最長30日間かかる場合があります。$2をご覧ください。",
@@ -5670,13 +5661,6 @@
   "mfaOtpDescriptionTotp": {
     "message": "認証アプリを開き、6桁のコードを入力してください。"
   },
-  "mfaOtpDescriptionUnsent": {
-    "message": "6桁のコードをメールで送信します。コードをこの下に入力して、メールアドレスを認証してください。"
-  },
-  "mfaOtpDescriptionUnsentWithEmail": {
-    "message": "6桁のコードを$1宛に送信します。コードをこの下に入力して、メールアドレスを認証してください。",
-    "description": "$1 is the user's masked email address"
-  },
   "mfaOtpDescriptionWithEmail": {
     "message": "6桁のコードを$1宛に送信しました。コードをこの下に入力して、メールアドレスを認証してください。",
     "description": "$1 is the email address the code was sent to"
@@ -5703,9 +5687,6 @@
   },
   "mfaOtpRetryIn": {
     "message": "$1秒後にもう一度お試しください"
-  },
-  "mfaOtpSend": {
-    "message": "コードを送信"
   },
   "mfaOtpSendIn": {
     "message": "$1秒後にコードを送信できます",
@@ -5771,9 +5752,6 @@
   "mfaSettingsNotice": {
     "message": "これらの認証方法により、Money Accountのトランザクションに対する保護が強化されます。これらを使ってウォレットを復元することはできません。"
   },
-  "mfaSettingsNoticeSocialLogin": {
-    "message": "これらの認証方法により、Money Accountのトランザクションとウォレットの復元をより安全に行えます。"
-  },
   "mfaSettingsRemoveElsewhereDescription": {
     "message": "設定したその他の認証方法は、MetaMask Mobileアプリでのみ機能します。そちらからメールアドレスを削除してください。"
   },
@@ -5812,9 +5790,6 @@
   },
   "mfaSettingsUsedForMoney": {
     "message": "Moneyのトランザクションの検証"
-  },
-  "mfaSettingsUsedForWalletRecovery": {
-    "message": "ウォレットの復元"
   },
   "mfaTotpSetupContinue": {
     "message": "続行"
@@ -5910,10 +5885,6 @@
   },
   "moneyActivity": {
     "message": "アクティビティ"
-  },
-  "moneyActivityAmountUnavailable": {
-    "message": "金額を取得できません",
-    "description": "Shown in place of a Money card activity amount when the historical mUSD value cannot be calculated"
   },
   "moneyActivityCard": {
     "message": "カード"
@@ -7212,7 +7183,8 @@
     "message": "その他関連プロモーション資料"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "当社のマーケティングコミュニケーションに対するお客様の反応を把握するために、データ (Cookieからの情報など) を使用できればと思います。"
+    "message": "当社のマーケティングコミュニケーションに対するお客様の反応を把握するために、データ (Cookieからの情報など) を使用できればと思います。",
+    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
     "message": "これは、次のようなお伝えする情報のカスタマイズに役立ちます:"
@@ -12434,9 +12406,6 @@
   },
   "to": {
     "message": "送り先"
-  },
-  "today": {
-    "message": "今日"
   },
   "toggleDecodeDescription": {
     "message": "当社は4byte.directoryとSourcifyサービスを使用してトランザクションデータを解読し、より読みやすい形で表示しています。これにより、保留中および過去のトランザクションの結果を理解しやすくなりますが、IPアドレスが共有される可能性があります。"

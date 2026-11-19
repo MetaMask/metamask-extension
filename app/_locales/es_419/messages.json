@@ -3480,12 +3480,6 @@
   "deepLink_GoToTheHomePageButton": {
     "message": "Ir a la página de inicio"
   },
-  "deepLink_MobileShareDescription": {
-    "message": "Escanea este código QR con tu dispositivo móvil para abrir este enlace en MetaMask Mobile."
-  },
-  "deepLink_MobileShareTitle": {
-    "message": "Continuar en MetaMask Mobile"
-  },
   "deepLink_RedirectingToMetaMask": {
     "message": "Redireccionando a MetaMask"
   },
@@ -3635,9 +3629,6 @@
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "¿Eliminar datos de MetaMetrics?"
-  },
-  "deleteMetaMetricsDataPrivacyNotice": {
-    "message": "Aviso de privacidad"
   },
   "deleteMetaMetricsDataRequestedDescription": {
     "message": "Iniciaste esta acción el $1. Este proceso puede tardar hasta 30 días. Consulta la $2.",
@@ -5670,13 +5661,6 @@
   "mfaOtpDescriptionTotp": {
     "message": "Abre tu aplicación de autenticación e ingresa el código de 6 dígitos."
   },
-  "mfaOtpDescriptionUnsent": {
-    "message": "Enviaremos un código de 6 dígitos a tu correo electrónico. Ingrésalo a continuación para verificar tu correo electrónico."
-  },
-  "mfaOtpDescriptionUnsentWithEmail": {
-    "message": "Enviaremos un código de 6 dígitos a $1. Ingrésalo a continuación para verificar tu correo electrónico.",
-    "description": "$1 is the user's masked email address"
-  },
   "mfaOtpDescriptionWithEmail": {
     "message": "Enviamos un código de 6 dígitos a $1. Ingrésalo a continuación para verificar tu correo electrónico.",
     "description": "$1 is the email address the code was sent to"
@@ -5703,9 +5687,6 @@
   },
   "mfaOtpRetryIn": {
     "message": "Vuelve a intentarlo en $1 s"
-  },
-  "mfaOtpSend": {
-    "message": "Enviar un código"
   },
   "mfaOtpSendIn": {
     "message": "Enviar un código en $1s",
@@ -5771,9 +5752,6 @@
   "mfaSettingsNotice": {
     "message": "Estos métodos añaden protección a las transacciones de Money Account. No permiten recuperar tu billetera."
   },
-  "mfaSettingsNoticeSocialLogin": {
-    "message": "Estos métodos añaden protección a las transacciones de la cuenta Money y para recuperar tu billetera."
-  },
   "mfaSettingsRemoveElsewhereDescription": {
     "message": "Tus otros métodos solo funcionan en la aplicación móvil de MetaMask. Elimina tu correo electrónico desde allí."
   },
@@ -5812,9 +5790,6 @@
   },
   "mfaSettingsUsedForMoney": {
     "message": "Verificar transacciones de Money Account"
-  },
-  "mfaSettingsUsedForWalletRecovery": {
-    "message": "Recuperación de billetera"
   },
   "mfaTotpSetupContinue": {
     "message": "Continuar"
@@ -5910,10 +5885,6 @@
   },
   "moneyActivity": {
     "message": "Actividad"
-  },
-  "moneyActivityAmountUnavailable": {
-    "message": "Monto no disponible",
-    "description": "Shown in place of a Money card activity amount when the historical mUSD value cannot be calculated"
   },
   "moneyActivityCard": {
     "message": "Tarjeta"
@@ -7212,7 +7183,8 @@
     "message": "Otros materiales promocionales relevantes"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "Nos gustaría utilizar datos (como la información de las cookies) para saber cómo interactúa con nuestras comunicaciones de marketing."
+    "message": "Nos gustaría utilizar datos (como la información de las cookies) para saber cómo interactúa con nuestras comunicaciones de marketing.",
+    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
     "message": "Esto nos ayuda a personalizar lo que compartimos con usted, como:"
@@ -12444,9 +12416,6 @@
   },
   "to": {
     "message": "Hacia"
-  },
-  "today": {
-    "message": "Hoy"
   },
   "toggleDecodeDescription": {
     "message": "Utilizamos los servicios de 4byte.directory y Sourcify para decodificar y mostrar datos de transacciones de forma más legible. Esto le ayuda a comprender el resultado de las transacciones pendientes y pasadas, pero puede dar lugar a que se comparta su dirección IP."

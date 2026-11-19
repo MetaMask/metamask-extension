@@ -3480,12 +3480,6 @@
   "deepLink_GoToTheHomePageButton": {
     "message": "Buka halaman beranda"
   },
-  "deepLink_MobileShareDescription": {
-    "message": "Pindai kode QR ini dengan perangkat seluler Anda untuk membuka tautan ini di MetaMask Mobile."
-  },
-  "deepLink_MobileShareTitle": {
-    "message": "Lanjutkan di MetaMask Mobile"
-  },
   "deepLink_RedirectingToMetaMask": {
     "message": "Mengalihkan ke MetaMask"
   },
@@ -3635,9 +3629,6 @@
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Hapus data MetaMetrics?"
-  },
-  "deleteMetaMetricsDataPrivacyNotice": {
-    "message": "Pemberitahuan Privasi"
   },
   "deleteMetaMetricsDataRequestedDescription": {
     "message": "Anda memulai penghapusan pada $1. Proses ini dapat memakan waktu hingga 30 hari. Lihat $2.",
@@ -5670,13 +5661,6 @@
   "mfaOtpDescriptionTotp": {
     "message": "Buka aplikasi autentikator Anda dan masukkan kode 6 digit tersebut."
   },
-  "mfaOtpDescriptionUnsent": {
-    "message": "Kami akan mengirimkan kode 6 digit ke email Anda. Masukkan kode tersebut di bawah ini untuk memverifikasi email Anda."
-  },
-  "mfaOtpDescriptionUnsentWithEmail": {
-    "message": "Kami akan mengirimkan kode 6 digit ke $1. Masukkan kode tersebut di bawah ini untuk memverifikasi email Anda.",
-    "description": "$1 is the user's masked email address"
-  },
   "mfaOtpDescriptionWithEmail": {
     "message": "Kami telah mengirimkan kode 6 digit ke $1. Masukkan kode tersebut di bawah ini untuk memverifikasi email Anda.",
     "description": "$1 is the email address the code was sent to"
@@ -5703,9 +5687,6 @@
   },
   "mfaOtpRetryIn": {
     "message": "Coba lagi dalam $1 detik"
-  },
-  "mfaOtpSend": {
-    "message": "Kirim kode"
   },
   "mfaOtpSendIn": {
     "message": "Kirim kode dalam $1 detik",
@@ -5771,9 +5752,6 @@
   "mfaSettingsNotice": {
     "message": "Metode-metode ini memberikan perlindungan tambahan untuk transaksi Money account. Metode tersebut tidak dapat memulihkan dompet Anda."
   },
-  "mfaSettingsNoticeSocialLogin": {
-    "message": "Metode-metode ini memberikan perlindungan untuk transaksi Money account dan memulihkan dompet Anda."
-  },
   "mfaSettingsRemoveElsewhereDescription": {
     "message": "Metode-metode Anda yang lain hanya berfungsi di aplikasi seluler MetaMask. Hapus alamat email Anda dari sana."
   },
@@ -5812,9 +5790,6 @@
   },
   "mfaSettingsUsedForMoney": {
     "message": "Memverifikasi transaksi Money"
-  },
-  "mfaSettingsUsedForWalletRecovery": {
-    "message": "Pemulihan dompet"
   },
   "mfaTotpSetupContinue": {
     "message": "Lanjutkan"
@@ -5910,10 +5885,6 @@
   },
   "moneyActivity": {
     "message": "Aktivitas"
-  },
-  "moneyActivityAmountUnavailable": {
-    "message": "Jumlah tidak tersedia",
-    "description": "Shown in place of a Money card activity amount when the historical mUSD value cannot be calculated"
   },
   "moneyActivityCard": {
     "message": "Kartu"
@@ -7212,7 +7183,8 @@
     "message": "Materi promosi lain yang relevan"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "Kami ingin menggunakan data (seperti informasi dari cookie) untuk mempelajari cara Anda berinteraksi dengan komunikasi pemasaran Kami."
+    "message": "Kami ingin menggunakan data (seperti informasi dari cookie) untuk mempelajari cara Anda berinteraksi dengan komunikasi pemasaran Kami.",
+    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
     "message": "Ini membantu kami mempersonalisasi hal yang kami bagikan kepada Anda, seperti:"
@@ -12438,9 +12410,6 @@
   },
   "to": {
     "message": "Ke"
-  },
-  "today": {
-    "message": "Hari ini"
   },
   "toggleDecodeDescription": {
     "message": "Kami menggunakan layanan 4byte.directory dan Sourcify untuk mengonversi kode dan menampilkan data transaksi yang lebih mudah dibaca. Ini membantu Anda memahami hasil transaksi yang tertunda dan yang sudah lewat, tetapi alamat IP Anda berpotensi tersebar."

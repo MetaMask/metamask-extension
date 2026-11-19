@@ -3480,12 +3480,6 @@
   "deepLink_GoToTheHomePageButton": {
     "message": "Zur Startseite gehen"
   },
-  "deepLink_MobileShareDescription": {
-    "message": "Scannen Sie diesen QR-Code mit Ihrem Mobilgerät, um diesen Link in MetaMask Mobile zu öffnen."
-  },
-  "deepLink_MobileShareTitle": {
-    "message": "Auf MetaMask Mobile fortfahren"
-  },
   "deepLink_RedirectingToMetaMask": {
     "message": "Weiterleitung zu MetaMask"
   },
@@ -3635,9 +3629,6 @@
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "MetaMetrics-Daten löschen?"
-  },
-  "deleteMetaMetricsDataPrivacyNotice": {
-    "message": "Datenschutzerklärung"
   },
   "deleteMetaMetricsDataRequestedDescription": {
     "message": "Sie haben die Löschung von $1 eingeleitet. Dieser Vorgang kann bis zu 30 Tage dauern. Sehen Sie die $2 ein.",
@@ -5666,13 +5657,6 @@
   "mfaOtpDescriptionTotp": {
     "message": "Öffnen Sie Ihre Authentifizierungs-App und geben Sie den 6-stelligen Code ein."
   },
-  "mfaOtpDescriptionUnsent": {
-    "message": "Wir werden einen 6-stelligen Code an Ihre E-Mail-Adresse senden. Geben Sie diesen zur Bestätigung Ihrer E-Mail-Adresse unten ein."
-  },
-  "mfaOtpDescriptionUnsentWithEmail": {
-    "message": "Wir werden einen 6-stelligen Code an $1 senden. Geben Sie diesen zur Bestätigung Ihrer E-Mail-Adresse bitte unten ein.",
-    "description": "$1 is the user's masked email address"
-  },
   "mfaOtpDescriptionWithEmail": {
     "message": "Wir haben einen 6-stelligen Code an $1 gesendet. Geben Sie diesen zur Bestätigung Ihrer E-Mail-Adresse bitte unten ein.",
     "description": "$1 is the email address the code was sent to"
@@ -5699,9 +5683,6 @@
   },
   "mfaOtpRetryIn": {
     "message": "Versuchen Sie es in $1 Sek. erneut"
-  },
-  "mfaOtpSend": {
-    "message": "Code senden"
   },
   "mfaOtpSendIn": {
     "message": "Code in $1 Sek. senden",
@@ -5767,9 +5748,6 @@
   "mfaSettingsNotice": {
     "message": "Diese Methoden bieten zusätzlichen Schutz bei Transaktionen über Ihren Money Account. Sie können Ihre Wallet jedoch nicht wiederherstellen."
   },
-  "mfaSettingsNoticeSocialLogin": {
-    "message": "Diese Methoden bieten zusätzlichen Schutz bei Transaktionen über Ihren Money Account und bei der Wiederherstellung Ihrer Wallet."
-  },
   "mfaSettingsRemoveElsewhereDescription": {
     "message": "Ihre anderen Methoden funktionieren nur in der MetaMask-Mobil-App. Löschen Sie dort Ihre E-Mail-Adresse."
   },
@@ -5808,9 +5786,6 @@
   },
   "mfaSettingsUsedForMoney": {
     "message": "Geldtransaktionen werden verifiziert"
-  },
-  "mfaSettingsUsedForWalletRecovery": {
-    "message": "Wallet-Wiederherstellung"
   },
   "mfaTotpSetupContinue": {
     "message": "Fortfahren"
@@ -5906,10 +5881,6 @@
   },
   "moneyActivity": {
     "message": "Aktivität"
-  },
-  "moneyActivityAmountUnavailable": {
-    "message": "Betrag nicht verfügbar",
-    "description": "Shown in place of a Money card activity amount when the historical mUSD value cannot be calculated"
   },
   "moneyActivityCard": {
     "message": "Karte"
@@ -7208,7 +7179,8 @@
     "message": "Andere relevante Werbematerialien"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "Möchten wir Daten (z. B. Informationen aus Cookies) verwenden, um zu erfahren, wie Sie mit unserer Marketingkommunikation interagieren."
+    "message": "Möchten wir Daten (z. B. Informationen aus Cookies) verwenden, um zu erfahren, wie Sie mit unserer Marketingkommunikation interagieren.",
+    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
     "message": "Dies hilft uns, das, was wir mit Ihnen teilen, zu personalisieren, wie z. B.:"
@@ -12430,9 +12402,6 @@
   },
   "to": {
     "message": "An"
-  },
-  "today": {
-    "message": "Heute"
   },
   "toggleDecodeDescription": {
     "message": "Wir nutzen die Dienste von 4byte.directory und Sourcify, um Transaktionsdaten zu dekodieren und lesbarer anzuzeigen. Dadurch können Sie das Ergebnis ausstehender und vergangener Transaktionen leichter einsehen, allerdings kann dies zur Weitergabe Ihrer IP-Adresse führen."

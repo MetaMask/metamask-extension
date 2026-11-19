@@ -3480,12 +3480,6 @@
   "deepLink_GoToTheHomePageButton": {
     "message": "Перейдите на главную страницу"
   },
-  "deepLink_MobileShareDescription": {
-    "message": "Отсканируйте этот QR-код мобильным устройством, чтобы открыть эту ссылку в MetaMask Mobile."
-  },
-  "deepLink_MobileShareTitle": {
-    "message": "Продолжить в MetaMask Mobile"
-  },
   "deepLink_RedirectingToMetaMask": {
     "message": "Перенаправление на MetaMask"
   },
@@ -3635,9 +3629,6 @@
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Удалить данные MetaMetrics?"
-  },
-  "deleteMetaMetricsDataPrivacyNotice": {
-    "message": "Уведомлении о конфиденциальности"
   },
   "deleteMetaMetricsDataRequestedDescription": {
     "message": "Вы инициировали удаление $1. Этот процесс может занять до 30 дней. См. $2",
@@ -5666,13 +5657,6 @@
   "mfaOtpDescriptionTotp": {
     "message": "Откройте приложение-аутентификатор и введите 6-значный код."
   },
-  "mfaOtpDescriptionUnsent": {
-    "message": "Мы отправим 6-значный код на вашу эл. почту. Введите его ниже, чтобы подтвердить ваш адрес эл. почты."
-  },
-  "mfaOtpDescriptionUnsentWithEmail": {
-    "message": "Мы отправим 6-значный код на $1. Введите его ниже, чтобы подтвердить ваш адрес эл. почты.",
-    "description": "$1 is the user's masked email address"
-  },
   "mfaOtpDescriptionWithEmail": {
     "message": "Мы отправили 6-значный код на $1. Введите его ниже, чтобы подтвердить ваш адрес эл. почты.",
     "description": "$1 is the email address the code was sent to"
@@ -5699,9 +5683,6 @@
   },
   "mfaOtpRetryIn": {
     "message": "Повторите попытку через $1 с"
-  },
-  "mfaOtpSend": {
-    "message": "Отправить код"
   },
   "mfaOtpSendIn": {
     "message": "Отправить код через $1 с",
@@ -5767,9 +5748,6 @@
   "mfaSettingsNotice": {
     "message": "Эти методы добавляют защиту транзакциям на счете Money Account. Они не могут восстановить ваш кошелек."
   },
-  "mfaSettingsNoticeSocialLogin": {
-    "message": "Эти методы дополнительно защищают транзакции по счету Money Account и восстановление вашего кошелька."
-  },
   "mfaSettingsRemoveElsewhereDescription": {
     "message": "Другие ваши методы работают только в мобильном приложении MetaMask. Удалите свой адрес эл. почты там."
   },
@@ -5808,9 +5786,6 @@
   },
   "mfaSettingsUsedForMoney": {
     "message": "Подтверждения транзакций Money"
-  },
-  "mfaSettingsUsedForWalletRecovery": {
-    "message": "Восстановление кошелька"
   },
   "mfaTotpSetupContinue": {
     "message": "Продолжить"
@@ -5906,10 +5881,6 @@
   },
   "moneyActivity": {
     "message": "Активность"
-  },
-  "moneyActivityAmountUnavailable": {
-    "message": "Сумма недоступна",
-    "description": "Shown in place of a Money card activity amount when the historical mUSD value cannot be calculated"
   },
   "moneyActivityCard": {
     "message": "Карта"
@@ -7208,7 +7179,8 @@
     "message": "Другие соответствующие промоматериалы"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "Мы хотели бы использовать данные (например, информацию из файлов cookie), чтобы узнать, как вы взаимодействуете с нашими маркетинговыми сообщениями."
+    "message": "Мы хотели бы использовать данные (например, информацию из файлов cookie), чтобы узнать, как вы взаимодействуете с нашими маркетинговыми сообщениями.",
+    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
     "message": "Это помогает нам персонализировать то, чем мы делимся с вами, например:"
@@ -12430,9 +12402,6 @@
   },
   "to": {
     "message": "Место назначения"
-  },
-  "today": {
-    "message": "Сегодня"
   },
   "toggleDecodeDescription": {
     "message": "Мы используем сервисы 4byte.directory и Sourcify для декодирования и отображения более читаемых данных транзакций. Это поможет Вам понять результат ожидающих и прошлых транзакций, но может привести к раскрытию вашего IP-адреса."

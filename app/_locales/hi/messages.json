@@ -3480,12 +3480,6 @@
   "deepLink_GoToTheHomePageButton": {
     "message": "होम पेज पर जाएं"
   },
-  "deepLink_MobileShareDescription": {
-    "message": "MetaMask मोबाइल में इस लिंक को खोलने के लिए अपने मोबाइल डिवाइस से इस QR कोड को स्कैन करें।"
-  },
-  "deepLink_MobileShareTitle": {
-    "message": "MetaMask मोबाइल पर जारी रखें"
-  },
   "deepLink_RedirectingToMetaMask": {
     "message": "MetaMask पर रीडायरेक्ट किया जा रहा है"
   },
@@ -3635,9 +3629,6 @@
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "मेटामेट्रिक्स डेटा हटाएं?"
-  },
-  "deleteMetaMetricsDataPrivacyNotice": {
-    "message": "गोपनीयता नोटिस"
   },
   "deleteMetaMetricsDataRequestedDescription": {
     "message": "आपने यह मिटाने की कार्रवाई $1 पर शुरू की। इस प्रक्रिया में 30 दिन तक का समय लग सकता है। $2 देखें।",
@@ -5666,13 +5657,6 @@
   "mfaOtpDescriptionTotp": {
     "message": "अपना ऑथेंटिकेटर ऐप खोलें और 6-डिजिट का कोड डालें।"
   },
-  "mfaOtpDescriptionUnsent": {
-    "message": "हम आपके ईमेल पर 6-डिजिट का कोड भेजेंगे। अपना ईमेल वेरिफ़ाई करने के लिए इसे नीचे एंटर करें।"
-  },
-  "mfaOtpDescriptionUnsentWithEmail": {
-    "message": "हम $1 पर 6-डिजिट का कोड भेजेंगे। अपना ईमेल वेरिफ़ाई करने के लिए इसे नीचे एंटर करें।",
-    "description": "$1 is the user's masked email address"
-  },
   "mfaOtpDescriptionWithEmail": {
     "message": "हमने $1 पर 6-डिजिट का कोड भेजा है। अपना ईमेल वेरिफ़ाई करने के लिए इसे नीचे डालें।",
     "description": "$1 is the email address the code was sent to"
@@ -5699,9 +5683,6 @@
   },
   "mfaOtpRetryIn": {
     "message": "$1s में फिर से कोशिश करें"
-  },
-  "mfaOtpSend": {
-    "message": "कोड भेजें"
   },
   "mfaOtpSendIn": {
     "message": "$1सेकंड में कोड भेजें",
@@ -5767,9 +5748,6 @@
   "mfaSettingsNotice": {
     "message": "ये तरीके Money account ट्रांसेक्शन में सुरक्षा जोड़ते हैं। वे आपके वॉलेट को रिकवर नहीं कर सकते।"
   },
-  "mfaSettingsNoticeSocialLogin": {
-    "message": "ये तरीके Money account ट्रांसेक्शन में और आपके वॉलेट को रिकवर करने में सुरक्षा जोड़ते हैं।"
-  },
   "mfaSettingsRemoveElsewhereDescription": {
     "message": "आपके दूसरे तरीके सिर्फ़ MetaMask मोबाइल ऐप में काम करते हैं। वहां से अपना ईमेल हटा दें।"
   },
@@ -5808,9 +5786,6 @@
   },
   "mfaSettingsUsedForMoney": {
     "message": "Money ट्रांसेक्शन वेरिफ़ाई किया जा रहा है"
-  },
-  "mfaSettingsUsedForWalletRecovery": {
-    "message": "वॉलेट रिकवरी"
   },
   "mfaTotpSetupContinue": {
     "message": "जारी रखें"
@@ -5906,10 +5881,6 @@
   },
   "moneyActivity": {
     "message": "गतिविधि"
-  },
-  "moneyActivityAmountUnavailable": {
-    "message": "अमाउंट उपलब्ध नहीं है",
-    "description": "Shown in place of a Money card activity amount when the historical mUSD value cannot be calculated"
   },
   "moneyActivityCard": {
     "message": "कार्ड"
@@ -7208,7 +7179,8 @@
     "message": "अन्य प्रासंगिक प्रमोशनल सामग्री"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "हम यह जानने के लिए डेटा (जैसे कुकीज़ से जानकारी) का उपयोग करना चाहेंगे कि आप हमारे मार्केटिंग कम्यूनिकेशन्स के साथ कैसे इंटरैक्ट करते हैं।"
+    "message": "हम यह जानने के लिए डेटा (जैसे कुकीज़ से जानकारी) का उपयोग करना चाहेंगे कि आप हमारे मार्केटिंग कम्यूनिकेशन्स के साथ कैसे इंटरैक्ट करते हैं।",
+    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
     "message": "इससे हमें आपके साथ साझा की जाने वाली चीज़ों को निजीकृत करने में मदद मिलती है, जैसे:"
@@ -12430,9 +12402,6 @@
   },
   "to": {
     "message": "प्रति"
-  },
-  "today": {
-    "message": "आज"
   },
   "toggleDecodeDescription": {
     "message": "हम अधिक पठनीय ट्रांसेक्शन डेटा को डिकोड करने और प्रदर्शित करने के लिए 4byte.directory और Sourcify सेवाओं का उपयोग करते हैं। इससे आपको लंबित और पिछले ट्रांसेक्शन के परिणाम को समझने में मदद मिलती है, लेकिन इसके परिणामस्वरूप आपका आईपी ​​एड्रेस साझा किया जा सकता है।"

@@ -3480,12 +3480,6 @@
   "deepLink_GoToTheHomePageButton": {
     "message": "Μεταβείτε στην αρχική σελίδα"
   },
-  "deepLink_MobileShareDescription": {
-    "message": "Σαρώστε αυτόν τον κωδικό QR με την κινητή συσκευή σας για να ανοίξετε αυτόν τον σύνδεσμο στο MetaMask Mobile."
-  },
-  "deepLink_MobileShareTitle": {
-    "message": "Συνέχεια στο MetaMask Mobile"
-  },
   "deepLink_RedirectingToMetaMask": {
     "message": "Γίνεται ανακατεύθυνση στο MetaMask"
   },
@@ -3635,9 +3629,6 @@
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Διαγραφή δεδομένων MetaMetrics;"
-  },
-  "deleteMetaMetricsDataPrivacyNotice": {
-    "message": "Ενημέρωση Απορρήτου"
   },
   "deleteMetaMetricsDataRequestedDescription": {
     "message": "Ξεκινήσατε τη διαγραφή στις $1. Η διαδικασία μπορεί να διαρκέσει έως και 30 ημέρες. Δείτε την $2.",
@@ -5666,13 +5657,6 @@
   "mfaOtpDescriptionTotp": {
     "message": "Ανοίξτε την εφαρμογή ελέγχου ταυτότητας και πληκτρολογήστε τον 6ψήφιο κωδικό."
   },
-  "mfaOtpDescriptionUnsent": {
-    "message": "Θα στείλουμε έναν 6ψήφιο κωδικό στο email σας. Πληκτρολογήστε το παρακάτω για να επαληθεύσετε το email σας."
-  },
-  "mfaOtpDescriptionUnsentWithEmail": {
-    "message": "Θα στείλουμε έναν 6ψήφιο κωδικό στο $1. Πληκτρολογήστε το παρακάτω για να επαληθεύσετε το email σας.",
-    "description": "$1 is the user's masked email address"
-  },
   "mfaOtpDescriptionWithEmail": {
     "message": "Στείλαμε έναν 6ψήφιο κωδικό στο $1. Πληκτρολογήστε το παρακάτω για να επαληθεύσετε το email σας.",
     "description": "$1 is the email address the code was sent to"
@@ -5699,9 +5683,6 @@
   },
   "mfaOtpRetryIn": {
     "message": "Προσπαθήστε ξανά σε $1 δευτ."
-  },
-  "mfaOtpSend": {
-    "message": "Αποστολή κωδικού"
   },
   "mfaOtpSendIn": {
     "message": "Αποστολή κωδικού σε $1 δευτ",
@@ -5767,9 +5748,6 @@
   "mfaSettingsNotice": {
     "message": "Αυτές οι μέθοδοι προσθέτουν ένα επιπλέον επίπεδο προστασίας στις συναλλαγές σας στο Money account. Δεν μπορούν να ανακτήσουν το πορτοφόλι σας."
   },
-  "mfaSettingsNoticeSocialLogin": {
-    "message": "Αυτές οι μέθοδοι προσθέτουν προστασία στις συναλλαγές του λογαριασμού Money και στην ανάκτηση του πορτοφολιού σας."
-  },
   "mfaSettingsRemoveElsewhereDescription": {
     "message": "Οι άλλες μέθοδοι επαλήθευσης λειτουργούν μόνο στην εφαρμογή MetaMask για κινητά. Αφαιρέστε το email σας από εκεί."
   },
@@ -5808,9 +5786,6 @@
   },
   "mfaSettingsUsedForMoney": {
     "message": "Επαλήθευση συναλλαγών στον Money account"
-  },
-  "mfaSettingsUsedForWalletRecovery": {
-    "message": "Επαναφορά πορτοφολιού"
   },
   "mfaTotpSetupContinue": {
     "message": "Συνεχίστε"
@@ -5906,10 +5881,6 @@
   },
   "moneyActivity": {
     "message": "Δραστηριότητα"
-  },
-  "moneyActivityAmountUnavailable": {
-    "message": "Μη διαθέσιμο ποσό",
-    "description": "Shown in place of a Money card activity amount when the historical mUSD value cannot be calculated"
   },
   "moneyActivityCard": {
     "message": "Κάρτα"
@@ -7208,7 +7179,8 @@
     "message": "Άλλο σχετικό προωθητικό υλικό"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "Θέλουμε να χρησιμοποιήσουμε δεδομένα (όπως πληροφορίες από τα cookies) για να μάθουμε πώς αλληλεπιδράτε με τις επικοινωνίες μάρκετινγκ."
+    "message": "Θέλουμε να χρησιμοποιήσουμε δεδομένα (όπως πληροφορίες από τα cookies) για να μάθουμε πώς αλληλεπιδράτε με τις επικοινωνίες μάρκετινγκ.",
+    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
     "message": "Αυτό μας βοηθά να εξατομικεύσουμε αυτά που κοινοποιούμε σε εσάς, όπως:"
@@ -12430,9 +12402,6 @@
   },
   "to": {
     "message": "Προς"
-  },
-  "today": {
-    "message": "Σήμερα"
   },
   "toggleDecodeDescription": {
     "message": "Χρησιμοποιούμε τις υπηρεσίες 4byte.directory και Sourcify για να αποκωδικοποιήσουμε και να εμφανίσουμε πιο ευανάγνωστα τα δεδομένα συναλλαγών. Έτσι μπορείτε να κατανοήσετε το αποτέλεσμα των εκκρεμών και προηγούμενων συναλλαγών, αλλά μπορεί να προκαλέσει στην κοινοποίηση της διεύθυνσης IP σας."
