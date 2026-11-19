@@ -101,7 +101,10 @@ export class ManifestPlugin<Z extends boolean> {
 
   manifests: Map<Browser, Manifest> = new Map();
 
-  private browserAssets = new Map<Browser, Record<string, webpackApi.sources.RawSource>>();
+  private browserAssets = new Map<
+    Browser,
+    Record<string, webpackApi.sources.RawSource>
+  >();
 
   private watchedFiles: string[] = [];
 
