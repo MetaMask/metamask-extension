@@ -1,3 +1,4 @@
+import type { SectionBlock } from '@slack/types';
 import {
   assessHealth,
   buildHeartbeatMessage,
@@ -102,5 +103,22 @@ describe('buildHeartbeatMessage', () => {
     expect(text).toContain('No detector run');
     expect(text).toContain('Detector run failed');
     expect(text).toContain('commit/aaaaaaaa');
+  });
+
+  it('keeps every section within the Slack limit when many commits are missing', () => {
+    const runs = Array.from({ length: 40 }, (_, i) =>
+      run(String(i).padStart(40, '0')),
+    );
+    const message = buildHeartbeatMessage(
+      assessHealth(runs, []),
+      'MetaMask/metamask-extension',
+      'https://r',
+    );
+    for (const block of (message.blocks ?? []) as SectionBlock[]) {
+      if (block.type === 'section' && block.text) {
+        expect(block.text.text.length).toBeLessThanOrEqual(3000);
+      }
+    }
+    expect(JSON.stringify(message)).toContain('and 30 more');
   });
 });

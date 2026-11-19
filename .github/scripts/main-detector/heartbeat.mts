@@ -89,13 +89,21 @@ export function latestSlot(now: number): number {
   return slot <= now ? slot : slot - DAY_MS;
 }
 
-const list = (runs: RunInfo[], repository: string) =>
-  runs
+// A Slack section holds at most 3000 characters; a day of failures can exceed it.
+export const MAX_LISTED = 10;
+
+const list = (runs: RunInfo[], repository: string) => {
+  const lines = runs
+    .slice(0, MAX_LISTED)
     .map(
       (run) =>
         `• <https://github.com/${repository}/commit/${run.sha}|${run.sha.slice(0, 7)}> (<${run.url}|run>)`,
-    )
-    .join('\n');
+    );
+  if (runs.length > MAX_LISTED) {
+    lines.push(`• and ${runs.length - MAX_LISTED} more`);
+  }
+  return lines.join('\n');
+};
 
 /**
  * Slack message for a failed health check, in the style of the detector's
