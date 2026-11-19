@@ -254,8 +254,10 @@ const TokenTableRow = ({
               symbol={token.symbol}
               assetId={token.assetId}
             />
-            <Box className="flex min-w-0 flex-col items-start">
-              <TokenCellTitle token={displayToken} />
+            <Box className="flex min-w-0 flex-1 flex-col items-start overflow-hidden">
+              <Box className="w-full min-w-0">
+                <TokenCellTitle token={displayToken} />
+              </Box>
               {showMoneyCta && moneyCta ? (
                 <MoneyTokenListCta cta={moneyCta} token={token} />
               ) : null}
