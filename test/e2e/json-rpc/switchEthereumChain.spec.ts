@@ -86,6 +86,14 @@ describe('Switch Ethereum Chain for two dapps', function () {
 
         // Dapp Two ChainId Assertion
         await dappTwo.checkNetworkIsConnected('0x53a');
+
+        const ethAccountsRequest = JSON.stringify({
+          method: 'eth_accounts',
+        });
+        const accountsAfterSwitch = await driver.executeScript(
+          `return window.ethereum.request(${ethAccountsRequest})`,
+        );
+        assert.deepEqual(accountsAfterSwitch, []);
       },
     );
   });
