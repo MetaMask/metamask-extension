@@ -109,6 +109,9 @@ const defaultControllerState = {
   providersError: null,
   selectedProvider: transak,
   setSelectedProvider: mockSetSelectedProvider,
+  selectProviderForAsset: jest.fn().mockResolvedValue(null),
+  controllerProviders: [],
+  previouslyUsedProviderIds: [],
   selectedPaymentMethod: debitCard,
   selectedToken,
   userRegion: {
@@ -280,7 +283,9 @@ describe('RampsProviderSelectionModal', () => {
       );
     });
 
-    expect(mockSetSelectedProvider).toHaveBeenCalledWith(moonpay);
+    expect(mockSetSelectedProvider).toHaveBeenCalledWith(moonpay, {
+      userSelected: true,
+    });
     expect(mockOnClose).toHaveBeenCalled();
   });
 
