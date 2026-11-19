@@ -7,8 +7,10 @@ import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import {
   DottedTrigger,
   MONEY_APY_DIALOG_TEST_ID,
+  MONEY_INTRO_DIALOG_TEST_ID,
   MONEY_USD_DIALOG_TEST_ID,
   MoneyApyDialog,
+  MoneyIntroDialog,
   MoneyUsdDialog,
 } from '.';
 
@@ -158,6 +160,58 @@ describe('MoneyUsdDialog', () => {
 
     fireEvent.click(
       screen.getByTestId(`${MONEY_USD_DIALOG_TEST_ID}-close-button`),
+    );
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('MoneyIntroDialog', () => {
+  it('renders nothing when closed', () => {
+    renderWithProvider(
+      <MoneyIntroDialog
+        isOpen={false}
+        onClose={jest.fn()}
+        apyPercentFormatted="6.2%"
+      />,
+      store,
+    );
+
+    expect(
+      screen.queryByTestId(MONEY_INTRO_DIALOG_TEST_ID),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders read-only Money overview without Start earning, triggers APY, and closes via X', () => {
+    const onClose = jest.fn();
+    const onOpenApyDialog = jest.fn();
+    renderWithProvider(
+      <MoneyIntroDialog
+        isOpen
+        onClose={onClose}
+        apyPercentFormatted="6.2%"
+        onOpenApyDialog={onOpenApyDialog}
+      />,
+      store,
+    );
+
+    expect(screen.getByTestId('money-intro-dialog-title')).toHaveTextContent(
+      messages.moneyFtueTitle.message,
+    );
+    expect(screen.getByTestId('money-intro-dialog-headline')).toHaveTextContent(
+      messages.moneyFtueHeadline.message,
+    );
+    expect(
+      screen.getByTestId('money-intro-dialog-benefit-convert'),
+    ).toHaveTextContent(messages.moneyFtueBenefitConvertTitle.message);
+    expect(
+      screen.queryByText(messages.moneyFtueStartEarning.message),
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('money-intro-dialog-apy-trigger'));
+    expect(onOpenApyDialog).toHaveBeenCalledTimes(1);
+
+    fireEvent.click(
+      screen.getByTestId(`${MONEY_INTRO_DIALOG_TEST_ID}-close-button`),
     );
     expect(onClose).toHaveBeenCalledTimes(1);
   });

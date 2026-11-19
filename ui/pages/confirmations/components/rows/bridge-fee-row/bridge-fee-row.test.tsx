@@ -477,7 +477,7 @@ describe('BridgeFeeRow', () => {
   });
 
   describe('useDottedValueTooltip', () => {
-    it('hides the question icon and shows the fee tooltip on hovering the dotted fee value', async () => {
+    it('hides the question icon and shows the fee tooltip via focusable button on hover, focus, and click', async () => {
       const { getByTestId, queryByTestId, findByText } = render({
         variant: ConfirmInfoRowSize.Small,
         useDottedValueTooltip: true,
@@ -488,18 +488,46 @@ describe('BridgeFeeRow', () => {
       ).not.toBeInTheDocument();
 
       const trigger = getByTestId('bridge-fee-tooltip-popover-trigger');
+      expect(trigger.tagName).toBe('BUTTON');
       expect(trigger).toHaveTextContent('$1.23');
       expect(trigger).toHaveClass('underline', 'decoration-dotted');
 
       await act(async () => {
         fireEvent.mouseEnter(trigger);
       });
-
       const tooltip = await findByText((content) =>
         content.includes(`${messages.networkFee.message}:`),
       );
       expect(tooltip.textContent).toContain(`${messages.bridgeFee.message}:`);
       expect(tooltip.textContent).toContain(`${messages.metamaskFee.message}:`);
+
+      await act(async () => {
+        fireEvent.mouseLeave(trigger);
+      });
+      expect(
+        queryByTestId('bridge-fee-tooltip-popover'),
+      ).not.toBeInTheDocument();
+
+      await act(async () => {
+        fireEvent.focus(trigger);
+      });
+      expect(getByTestId('bridge-fee-tooltip-popover')).toHaveTextContent(
+        `${messages.networkFee.message}:`,
+      );
+
+      await act(async () => {
+        fireEvent.blur(trigger);
+      });
+      expect(
+        queryByTestId('bridge-fee-tooltip-popover'),
+      ).not.toBeInTheDocument();
+
+      await act(async () => {
+        fireEvent.click(trigger);
+      });
+      expect(getByTestId('bridge-fee-tooltip-popover')).toHaveTextContent(
+        `${messages.networkFee.message}:`,
+      );
     });
 
     it('formats fee and tooltip breakdown with "$" and en-US separators even in a non-US locale', async () => {

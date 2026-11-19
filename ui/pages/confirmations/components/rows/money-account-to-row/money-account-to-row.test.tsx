@@ -3,7 +3,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
-import { MoneyFtueEntryPoint } from '../../../../../helpers/money/money-ftue-entry-point';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { useMoneyVaultApy } from '../../../../../hooks/money/useMoneyVaultApy';
 import { useMoneyAnalytics } from '../../../../../hooks/money/useMoneyAnalytics';
 import { createMoneyAnalyticsMock } from '../../../../../hooks/money/useMoneyAnalytics.mock';
@@ -15,7 +15,10 @@ import {
   MoneyTooltipType,
 } from '../../../../money/constants/money-events';
 /* eslint-enable import-x/no-restricted-paths */
-import { MONEY_APY_DIALOG_TEST_ID } from '../../modals/money-deposit-dialogs';
+import {
+  MONEY_APY_DIALOG_TEST_ID,
+  MONEY_INTRO_DIALOG_TEST_ID,
+} from '../../modals/money-deposit-dialogs';
 import { MoneyAccountToRow } from './money-account-to-row';
 
 jest.mock('../../../../../hooks/money/useMoneyVaultApy', () => ({
@@ -77,19 +80,38 @@ describe('MoneyAccountToRow', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('opens the existing Money FTUE splash when MetaMask Money is clicked', () => {
+  it('opens the read-only Money intro dialog when MetaMask Money is clicked without opening FTUE splash', () => {
     const { store } = renderToRow();
 
     fireEvent.click(screen.getByTestId('money-account-to-splash-trigger'));
 
-    expect(store.getState().moneyFtue).toMatchObject({
-      isOpen: true,
-      source: 'deposit',
-      origin: {
-        entryPoint: MoneyFtueEntryPoint.Unknown,
-      },
-      pendingDeposit: {},
-    });
+    expect(store.getState().moneyFtue.isOpen).toBe(false);
+    expect(screen.getByTestId(MONEY_INTRO_DIALOG_TEST_ID)).toBeInTheDocument();
+    expect(screen.getByTestId('money-intro-dialog-title')).toHaveTextContent(
+      messages.moneyFtueTitle.message,
+    );
+    expect(
+      screen.queryByText(messages.moneyFtueStartEarning.message),
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByTestId(`${MONEY_INTRO_DIALOG_TEST_ID}-close-button`),
+    );
+    expect(
+      screen.queryByTestId(MONEY_INTRO_DIALOG_TEST_ID),
+    ).not.toBeInTheDocument();
+  });
+
+  it('opens the APY dialog from the Money intro dialog APY trigger', () => {
+    renderToRow();
+
+    fireEvent.click(screen.getByTestId('money-account-to-splash-trigger'));
+    fireEvent.click(screen.getByTestId('money-intro-dialog-apy-trigger'));
+
+    expect(
+      screen.queryByTestId(MONEY_INTRO_DIALOG_TEST_ID),
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId(MONEY_APY_DIALOG_TEST_ID)).toBeInTheDocument();
   });
 
   it('opens the APY dialog and tracks analytics when the APY trigger is clicked', () => {

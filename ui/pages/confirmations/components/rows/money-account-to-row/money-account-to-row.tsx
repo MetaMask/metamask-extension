@@ -11,8 +11,6 @@ import {
   ConfirmInfoRow,
   ConfirmInfoRowSize,
 } from '../../../../../components/app/confirm/info/row/row';
-import { openMoneyFtue } from '../../../../../ducks/money-ftue';
-import { MoneyFtueEntryPoint } from '../../../../../helpers/money/money-ftue-entry-point';
 import { useMoneyAnalytics } from '../../../../../hooks/money/useMoneyAnalytics';
 import { useMoneyVaultApy } from '../../../../../hooks/money/useMoneyVaultApy';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -24,10 +22,10 @@ import {
   MoneyTooltipType,
 } from '../../../../money/constants/money-events';
 /* eslint-enable import-x/no-restricted-paths */
-import { useDispatch } from '../../../../../store/hooks';
 import {
   DottedTrigger,
   MoneyApyDialog,
+  MoneyIntroDialog,
 } from '../../modals/money-deposit-dialogs';
 
 export type MoneyAccountToRowProps = {
@@ -38,36 +36,34 @@ export type MoneyAccountToRowProps = {
  * Destination row shown on Money Account deposits:
  * `To: [Money icon] MetaMask Money • 6.2% APY`.
  *
- * Activating `MetaMask Money` opens the existing Money intro splash, and
+ * Activating `MetaMask Money` opens the read-only Money intro dialog, and
  * activating the APY opens the APY info dialog.
  */
 export function MoneyAccountToRow({
   variant = ConfirmInfoRowSize.Small,
 }: MoneyAccountToRowProps = {}) {
   const t = useI18nContext();
-  const dispatch = useDispatch();
   const { apyPercentFormatted } = useMoneyVaultApy({ enabled: true });
   const { trackTooltipClicked } = useMoneyAnalytics({
     screenName: MoneyScreenName.MoneyDeposit,
   });
+  const [isIntroDialogOpen, setIsIntroDialogOpen] = useState(false);
   const [isApyDialogOpen, setIsApyDialogOpen] = useState(false);
 
   const handleOpenMoneyIntro = useCallback(() => {
-    dispatch(
-      openMoneyFtue({
-        source: 'deposit',
-        origin: {
-          entryPoint: MoneyFtueEntryPoint.Unknown,
-        },
-      }),
-    );
-  }, [dispatch]);
+    setIsIntroDialogOpen(true);
+  }, []);
+
+  const handleCloseMoneyIntro = useCallback(() => {
+    setIsIntroDialogOpen(false);
+  }, []);
 
   const handleOpenApyDialog = useCallback(() => {
     trackTooltipClicked({
       tooltipName: MoneyTooltipName.Apy,
       tooltipType: MoneyTooltipType.Info,
     });
+    setIsIntroDialogOpen(false);
     setIsApyDialogOpen(true);
   }, [trackTooltipClicked]);
 
@@ -122,6 +118,12 @@ export function MoneyAccountToRow({
           ) : null}
         </Box>
       </ConfirmInfoRow>
+      <MoneyIntroDialog
+        isOpen={isIntroDialogOpen}
+        onClose={handleCloseMoneyIntro}
+        apyPercentFormatted={apyPercentFormatted}
+        onOpenApyDialog={apyPercentFormatted ? handleOpenApyDialog : undefined}
+      />
       {apyPercentFormatted ? (
         <MoneyApyDialog
           isOpen={isApyDialogOpen}

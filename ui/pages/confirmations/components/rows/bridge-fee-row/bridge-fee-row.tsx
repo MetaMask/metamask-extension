@@ -37,7 +37,6 @@ import {
   useSponsoredNetworkFeeFlags,
   type SponsoredNetworkFeeFlags,
 } from '../../../hooks/pay/useIsPaidByMetaMask';
-import { TooltipText } from '../../../../../components/app/money/tooltip-text';
 import { InfoPopoverTooltip } from '../../info-popover-tooltip';
 
 const { formatCurrency: formatEnUsCurrency } = createFormatters({
@@ -225,15 +224,17 @@ function FeeValue({
   if (dottedTooltipContent) {
     return (
       <span data-testid="transaction-fee-value">
-        <TooltipText
-          text={feeTotalUsd}
-          variant={TextVariant.BodyMd}
-          color={isSmall ? TextColor.TextAlternative : TextColor.TextDefault}
+        <InfoPopoverTooltip
           position={PopoverPosition.Top}
+          dottedText={feeTotalUsd}
+          textVariant={TextVariant.BodyMd}
+          textColor={
+            isSmall ? TextColor.TextAlternative : TextColor.TextDefault
+          }
           data-testid="bridge-fee-tooltip-popover"
         >
           {dottedTooltipContent}
-        </TooltipText>
+        </InfoPopoverTooltip>
       </span>
     );
   }
