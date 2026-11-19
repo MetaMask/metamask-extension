@@ -30,6 +30,8 @@ import {
   sortNetworksByPrioity,
   getFilteredFeaturedNetworks,
   getAllEnabledNetworkClientIds,
+  getNetworkImageUrl,
+  getNetworkIcon,
 } from './network.utils';
 
 describe('network utils', () => {
@@ -574,5 +576,53 @@ describe('network utils', () => {
 
       expect(result).toStrictEqual(['mainnet']);
     });
+  });
+});
+
+describe('getNetworkImageUrl', () => {
+  it('resolves hex keys, EVM CAIP-2 IDs via their hex key, and non-EVM CAIP-2 keys directly', () => {
+    const map = {
+      '0x1': 'https://eth.png',
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'https://sol.png',
+    };
+
+    expect(getNetworkImageUrl('0x1', map)).toBe('https://eth.png');
+    expect(getNetworkImageUrl('eip155:1', map)).toBe('https://eth.png');
+    expect(
+      getNetworkImageUrl('solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', map),
+    ).toBe('https://sol.png');
+  });
+
+  it('returns undefined for unknown chain IDs', () => {
+    expect(getNetworkImageUrl('eip155:9999', {})).toBeUndefined();
+    expect(getNetworkImageUrl('solana:unknown', {})).toBeUndefined();
+  });
+});
+
+describe('getNetworkIcon', () => {
+  it('resolves EVM network icons from the map by hex chain ID', () => {
+    const evmNetwork = {
+      isEvm: true,
+      chainId: 'eip155:1',
+      name: 'Ethereum',
+    } as never;
+
+    expect(getNetworkIcon(evmNetwork, { '0x1': './images/eth_logo.svg' })).toBe(
+      './images/eth_logo.svg',
+    );
+  });
+
+  it('resolves non-EVM network icons from the map by CAIP chain ID', () => {
+    const nonEvmNetwork = {
+      isEvm: false,
+      chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      name: 'Solana',
+    } as never;
+
+    expect(
+      getNetworkIcon(nonEvmNetwork, {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': './images/solana.svg',
+      }),
+    ).toBe('./images/solana.svg');
   });
 });
