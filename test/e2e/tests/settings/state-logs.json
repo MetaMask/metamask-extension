@@ -1309,7 +1309,6 @@
     "useMultiAccountBalanceChecker": "boolean",
     "useNftDetection": "boolean",
     "usePhishDetect": "boolean",
-    "userOperations": {},
     "userRegion": "null",
     "vbaAutorampListFetchedAt": "null",
     "vbaCustomerAbilities": "null",

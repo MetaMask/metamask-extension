@@ -354,9 +354,6 @@
       "transactionBatches": "object",
       "transactions": "object"
     },
-    "UserOperationController": {
-      "userOperations": "object"
-    },
     "UserStorageController": {
       "isAccountSyncingEnabled": true,
       "isBackupAndSyncEnabled": true,
