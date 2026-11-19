@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync, type Dirent } from 'node:fs';
 import path from 'node:path';
 import {
   sources,
@@ -738,7 +738,7 @@ export class ManifestPlugin<Z extends boolean> {
     this.bundleSizeCategoriesByHtmlResource = new Map();
   }
 
-  private addManifestScript = ({
+  private addSelfContainedScript = ({
     compiler,
     entries,
     filename,
@@ -813,7 +813,7 @@ export class ManifestPlugin<Z extends boolean> {
       // collect content_scripts (MV2 + MV3)
       for (const contentScript of manifest.content_scripts ?? []) {
         for (const script of contentScript.js ?? []) {
-          this.addManifestScript({
+          this.addSelfContainedScript({
             compiler,
             entries,
             filename: script,
@@ -825,7 +825,7 @@ export class ManifestPlugin<Z extends boolean> {
       if (manifest.manifest_version === 2) {
         // collect MV2 background scripts
         for (const script of manifest.background?.scripts ?? []) {
-          this.addManifestScript({
+          this.addSelfContainedScript({
             compiler,
             entries,
             filename: script,
@@ -835,7 +835,7 @@ export class ManifestPlugin<Z extends boolean> {
         // collect MV2 web accessible resources
         for (const resource of manifest.web_accessible_resources ?? []) {
           if (resource.endsWith('.js')) {
-            this.addManifestScript({
+            this.addSelfContainedScript({
               compiler,
               entries,
               filename: resource,
@@ -846,7 +846,7 @@ export class ManifestPlugin<Z extends boolean> {
       } else if (manifest.manifest_version === 3) {
         // collect MV3 service worker
         if (manifest.background?.service_worker) {
-          this.addManifestScript({
+          this.addSelfContainedScript({
             compiler,
             entries,
             filename: manifest.background.service_worker,
@@ -858,7 +858,7 @@ export class ManifestPlugin<Z extends boolean> {
         for (const resource of manifest.web_accessible_resources ?? []) {
           for (const filename of resource.resources) {
             if (filename.endsWith('.js')) {
-              this.addManifestScript({
+              this.addSelfContainedScript({
                 compiler,
                 entries,
                 filename,
@@ -900,25 +900,40 @@ export class ManifestPlugin<Z extends boolean> {
       }
     }
 
-    const directory = path.resolve(compiler.context, 'workers');
     if (
-      [...this.manifests.values()].some(
+      ![...this.manifests.values()].some(
         (manifest) => manifest.manifest_version === 3,
-      ) &&
-      existsSync(directory)
+      )
     ) {
-      for (const file of readdirSync(directory, { withFileTypes: true })) {
-        if (file.isFile() && /\.ts$/u.test(file.name)) {
-          const filename = path.posix.join('workers', file.name);
-          this.isolatedEntries.add(filename);
-          this.addManifestScript({
-            compiler,
-            entries,
-            filename,
-            category: 'other',
-            opts: { runtime: false, asyncChunks: false },
-          });
-        }
+      return;
+    }
+
+    const directory = path.resolve(compiler.context, 'workers');
+    let workerFiles: Dirent[];
+    try {
+      workerFiles = readdirSync(directory, { withFileTypes: true });
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        'code' in error &&
+        error.code === 'ENOENT'
+      ) {
+        return;
+      }
+      throw error;
+    }
+
+    for (const file of workerFiles) {
+      if (file.isFile() && /\.ts$/u.test(file.name)) {
+        const filename = path.posix.join('workers', file.name);
+        this.isolatedEntries.add(filename);
+        this.addSelfContainedScript({
+          compiler,
+          entries,
+          filename,
+          category: 'other',
+          opts: { runtime: false, asyncChunks: false },
+        });
       }
     }
   }
