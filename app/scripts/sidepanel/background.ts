@@ -333,7 +333,7 @@ function openRouteInTab(hash: string) {
   });
 }
 
-async function handleConsumePendingRoute(message: {
+function handleConsumePendingRoute(message: {
   body?: Record<string, unknown>;
 }) {
   const windowId = message.body?.windowId;
