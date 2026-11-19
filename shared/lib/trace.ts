@@ -248,10 +248,15 @@ if (process.env.IN_TEST && globalThis.stateHooks) {
  */
 export type SharedTraceState = {
   /**
-   * The background's pageload trace id, once the pageload ended. Unset outside
-   * the background.
+   * The background's pageload trace id, from the moment the pageload starts.
+   * Unset outside the background.
    */
-  endedBackgroundPageloadTraceId?: string;
+  backgroundPageloadTraceId?: string;
+  /**
+   * The background's pageload span id, from the moment the pageload starts.
+   * Unset outside the background.
+   */
+  backgroundPageloadSpanId?: string;
 };
 
 type PendingTrace = {
@@ -368,12 +373,12 @@ export type TraceRequest = {
    * Start the span as the root of a new trace, ignoring the active span. A
    * `parentContext` that resolves still takes precedence.
    *
-   * In the background (service worker or persistent background page), once
-   * its pageload has ended, a trace whose parent is undeclared or does not
-   * resolve, that would not nest under the active span, also starts a new
-   * trace, as if `root` were set. The SDK keeps the ended pageload's trace id
-   * and sampling decision on the scope for the background's whole life, so such
-   * work would otherwise join that trace and be kept or dropped with it.
+   * In the background (service worker or persistent background page), a trace
+   * whose parent is undeclared or does not resolve, that would not nest under
+   * the active span, also starts a new trace, as if `root` were set. The SDK
+   * keeps the pageload's trace id and sampling decision on the scope for the
+   * background's whole life, so such work would otherwise join that trace and
+   * be kept or dropped with it.
    */
   root?: boolean;
 };
@@ -611,45 +616,56 @@ function getSharedState(): SharedTraceState {
 
 /**
  * In the background (the service worker, or Firefox's persistent background
- * page), record the pageload's trace id when the pageload ends, so a trace with
- * no caller started on that stale scope gets its own trace (see
- * {@link TraceRequest.root}). Neither context navigates again, so the ended
- * pageload's trace would otherwise absorb all later work. Does nothing in a UI
+ * page), record the pageload span when it starts. Neither context navigates
+ * again, so its trace id stays on the scope for the background's whole life: a
+ * trace with no parent started there gets its own trace (see
+ * {@link TraceRequest.root}), and the pageload span never counts as an active
+ * span to nest under (see {@link sentryGetActiveSpan}). The idle pageload stays
+ * open and active while background fetches keep it busy, and a transaction
+ * forced out of it is not counted in its recorded end. Does nothing in a UI
  * document, where the pageload trace belongs to the document.
  *
- * @param client - The Sentry client that emits the pageload's `spanEnd`.
+ * @param client - The Sentry client that emits the pageload's `spanStart`.
  */
-export function trackBackgroundPageloadEnd(client?: Client): void {
+export function trackBackgroundPageload(client?: Client): void {
   if (
     getEnvironmentType(globalThis.location.href) !== ENVIRONMENT_TYPE_BACKGROUND
   ) {
     return;
   }
 
-  client?.on('spanEnd', (span) => {
+  const record = (span: Span) => {
     if (spanToJSON(span).op === 'pageload') {
-      getSharedState().endedBackgroundPageloadTraceId =
-        span.spanContext().traceId;
+      const { traceId, spanId } = span.spanContext();
+      const state = getSharedState();
+      state.backgroundPageloadTraceId = traceId;
+      state.backgroundPageloadSpanId = spanId;
     }
-  });
+  };
+  // `Sentry.init` starts the pageload before this runs.
+  const running = globalThis.sentry?.getActiveSpan?.();
+  if (running) {
+    record(running);
+  }
+  client?.on('spanStart', record);
 }
 
 /**
- * Whether the scope still carries the ended background pageload's trace id,
- * which a span starting without a parent would take. An active span is not
- * considered: callers ask this only for work that would not nest under it.
+ * Whether the scope carries the background pageload's trace id, which a span
+ * starting without a parent would take. An active span is not considered:
+ * callers ask this only for work that would not nest under it.
  *
  * @returns True when such work should start its own trace.
  */
-function isOnEndedBackgroundPageload(): boolean {
-  const { endedBackgroundPageloadTraceId } = getSharedState();
-  if (!endedBackgroundPageloadTraceId) {
+function isOnBackgroundPageload(): boolean {
+  const { backgroundPageloadTraceId } = getSharedState();
+  if (!backgroundPageloadTraceId) {
     return false;
   }
   const scopeTraceId = globalThis.sentry
     ?.getCurrentScope?.()
     ?.getPropagationContext?.()?.traceId;
-  return scopeTraceId === endedBackgroundPageloadTraceId;
+  return scopeTraceId === backgroundPageloadTraceId;
 }
 
 /**
@@ -1088,15 +1104,15 @@ function startSpan<T>(
   const parentDeclared = parentContext !== undefined;
 
   // A parent that did not resolve leaves the scope's ambient trace id, which
-  // after the background pageload ended is that pageload's. `traceparent` data
+  // in the background is the pageload's. `traceparent` data
   // and an active span are handled below and are not roots.
   // An active span that the fallback or the unresolved-parent nesting below
-  // adopts keeps the work out of the ended pageload's trace.
+  // adopts keeps the work out of the pageload's trace.
   const root =
     request.root ||
     (!parentSpan &&
       !((parentDeclared || allowActiveSpanFallback) && sentryGetActiveSpan()) &&
-      isOnEndedBackgroundPageload());
+      isOnBackgroundPageload());
 
   // Read the active span before `withScope` forks the scope. `forceTransaction`
   // keeps an inherited span in transaction-level dashboards.
@@ -1363,6 +1379,9 @@ function sentrySetMeasurement(
  * Get the currently active Sentry span, if any.
  * Used by wrappers to avoid trace overhead when no span is active.
  *
+ * The background's pageload span counts as no span, running or ended: it is the
+ * scope's ambient span rather than a parent a caller chose.
+ *
  * @returns The active span or null.
  */
 export function sentryGetActiveSpan(): Sentry.Span | null {
@@ -1372,7 +1391,16 @@ export function sentryGetActiveSpan(): Sentry.Span | null {
     return null;
   }
 
-  return actual() ?? null;
+  const activeSpan = actual() ?? null;
+  const { backgroundPageloadSpanId } = getSharedState();
+  if (
+    activeSpan &&
+    backgroundPageloadSpanId &&
+    activeSpan.spanContext().spanId === backgroundPageloadSpanId
+  ) {
+    return null;
+  }
+  return activeSpan;
 }
 
 /**
