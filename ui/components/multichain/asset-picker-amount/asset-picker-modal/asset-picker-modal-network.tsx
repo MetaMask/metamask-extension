@@ -22,6 +22,7 @@ import {
   ModalHeader,
   ModalBody,
 } from '@metamask/design-system-react';
+import { getChainIdToNetworkImageUrlMap } from '../../../../selectors/config-registry/config-registry';
 import {
   Display,
   FlexDirection,
@@ -99,6 +100,7 @@ export const AssetPickerModalNetwork = ({
   const { balanceByChainId } = useMultichainBalances();
 
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
   const showTestnets = useSelector(getShouldShowTestNetworks);
   const currency = useSelector(getCurrentCurrency);
   // Use the networks prop if it is provided, otherwise use all available networks
@@ -303,7 +305,7 @@ export const AssetPickerModalNetwork = ({
                       onNetworkChange(networkConfig);
                       onBack();
                     }}
-                    iconSrc={getImageForChainId(chainId)}
+                    iconSrc={getImageForChainId(chainId, networkImageUrls)}
                     iconSize={AvatarNetworkSize.Sm}
                     focus={false}
                     disabled={shouldDisableNetwork?.(networkConfig)}

@@ -101,8 +101,7 @@ export class ManifestPlugin<Z extends boolean> {
 
   manifests: Map<Browser, Manifest> = new Map();
 
-  private manifestSources: Map<Browser, webpackApi.sources.RawSource> =
-    new Map();
+  private browserAssets = new Map<Browser, Record<string, webpackApi.sources.RawSource>>();
 
   private watchedFiles: string[] = [];
 
@@ -189,27 +188,26 @@ export class ManifestPlugin<Z extends boolean> {
   }
 
   /**
-   * Emits each browser-specific manifest into its final output location.
+   * Emits browser-specific JSON assets into their final output locations.
    *
    * @param compilation - The active compilation.
    * @param browsers - The browsers being built.
    */
-  private emitManifestAssets(
+  private emitBrowserAssets(
     compilation: Compilation,
     browsers: readonly Browser[],
   ): void {
     browsers.forEach((browser) => {
-      const manifest = this.manifestSources.get(
-        browser,
-      ) as webpackApi.sources.RawSource;
-      compilation.emitAsset(
-        path.posix.join(browser, 'manifest.json'),
-        manifest,
-        {
+      const assets = this.browserAssets.get(browser) as Record<
+        string,
+        webpackApi.sources.RawSource
+      >;
+      for (const [filename, source] of Object.entries(assets)) {
+        compilation.emitAsset(path.posix.join(browser, filename), source, {
           javascriptModule: false,
           contentType: 'application/json',
-        },
-      );
+        });
+      }
     });
   }
 
@@ -421,20 +419,29 @@ export class ManifestPlugin<Z extends boolean> {
     const compressionOptions: ZipCompressionOptions = { level };
     const moveSourceMapsToDedicatedDirectory =
       compilation.options.devtool === 'hidden-source-map';
-    const [primaryBrowser, ...additionalBrowsers] = browsers;
+    const hasAdditionalBrowsers = browsers.length > 1;
     const assetNames = Object.keys(assets);
     const zipEligibleAssetCount = assetNames.filter(
       (assetName) => !excludeExtensions.includes(path.extname(assetName)),
     ).length;
 
     let filesProcessed = 0;
-    const totalWork = browsers.length * (zipEligibleAssetCount + 1);
+    const totalWork = browsers.reduce(
+      (total, browser) =>
+        total +
+        zipEligibleAssetCount +
+        Object.keys(
+          this.browserAssets.get(browser) as Record<string, sources.RawSource>,
+        ).length,
+      0,
+    );
     const reportProgress =
       ProgressPlugin.getReporter(compilation.compiler) ?? noop;
     const zipBuilders = browsers.map((browser) => {
-      const manifest = this.manifestSources.get(
-        browser,
-      ) as webpackApi.sources.RawSource;
+      const browserAssets = this.browserAssets.get(browser) as Record<
+        string,
+        webpackApi.sources.RawSource
+      >;
       const onAssetAdded = (assetName: string) => {
         reportProgress(
           0,
@@ -448,7 +455,7 @@ export class ManifestPlugin<Z extends boolean> {
         builder: createBrowserZipBuilder({
           compressionOptions,
           excludeExtensions,
-          manifest,
+          assets: browserAssets,
           mtime,
           onAssetAdded,
         }),
@@ -462,7 +469,7 @@ export class ManifestPlugin<Z extends boolean> {
         moveSourceMapsToDedicatedDirectory && assetName.endsWith('.map');
       const shouldZip = !excludeExtensions.includes(extName);
       const shouldCache =
-        shouldZip || (additionalBrowsers.length > 0 && !isSourceMapAsset);
+        shouldZip || (hasAdditionalBrowsers && !isSourceMapAsset);
       let { source } = assetDetails;
 
       if (shouldCache && !(source instanceof CachedSource)) {
@@ -481,29 +488,10 @@ export class ManifestPlugin<Z extends boolean> {
         );
       }
 
-      if (isSourceMapAsset) {
-        compilation.renameAsset(
-          assetName,
-          path.posix.join(SOURCEMAPS_DIRECTORY, assetName),
-        );
-        continue;
-      }
-
-      const primaryAssetPath = path.posix.join(primaryBrowser, assetName);
-      if (assetName !== primaryAssetPath) {
-        compilation.renameAsset(assetName, primaryAssetPath);
-      }
-
-      additionalBrowsers.forEach((browser) => {
-        compilation.emitAsset(
-          path.posix.join(browser, assetName),
-          source,
-          assetDetails.info,
-        );
-      });
+      this.moveAssetToBrowsers(compilation, assetDetails, source, browsers);
     }
 
-    this.emitManifestAssets(compilation, browsers);
+    this.emitBrowserAssets(compilation, browsers);
 
     for (const { browser, builder } of zipBuilders) {
       const data = await builder.finalize();
@@ -514,6 +502,47 @@ export class ManifestPlugin<Z extends boolean> {
         contentType: 'application/zip',
         development: true,
       });
+    }
+  }
+
+  /**
+   * Moves one asset to its primary browser and shares its source with the others.
+   * Hidden source maps are moved once to the dedicated source-map directory.
+   *
+   * @param compilation - The active compilation.
+   * @param asset - The original asset name and metadata.
+   * @param source - The source to emit, including any cache wrapper.
+   * @param browsers - The ordered browser output targets.
+   */
+  private moveAssetToBrowsers(
+    compilation: Compilation,
+    asset: Readonly<Asset>,
+    source: sources.Source,
+    browsers: readonly Browser[],
+  ): void {
+    const { name, info } = asset;
+    if (
+      compilation.options.devtool === 'hidden-source-map' &&
+      name.endsWith('.map')
+    ) {
+      compilation.renameAsset(
+        name,
+        path.posix.join(SOURCEMAPS_DIRECTORY, name),
+      );
+      return;
+    }
+
+    const primaryAssetPath = path.posix.join(browsers[0], name);
+    if (name !== primaryAssetPath) {
+      compilation.renameAsset(name, primaryAssetPath);
+    }
+
+    for (let index = 1; index < browsers.length; index++) {
+      compilation.emitAsset(
+        path.posix.join(browsers[index], name),
+        source,
+        info,
+      );
     }
   }
 
@@ -538,7 +567,7 @@ export class ManifestPlugin<Z extends boolean> {
     const moveSourceMapsToDedicatedDirectory =
       compilation.options.devtool === 'hidden-source-map';
     const { browsers } = options;
-    const [primaryBrowser, ...additionalBrowsers] = browsers;
+    const hasAdditionalBrowsers = browsers.length > 1;
 
     for (const assetName of Object.keys(assets)) {
       const assetDetails = compilation.getAsset(assetName) as Readonly<Asset>;
@@ -548,7 +577,7 @@ export class ManifestPlugin<Z extends boolean> {
       let { source } = assetDetails;
 
       if (
-        additionalBrowsers.length > 0 &&
+        hasAdditionalBrowsers &&
         !isSourceMapAsset &&
         !(source instanceof CachedSource)
       ) {
@@ -561,29 +590,10 @@ export class ManifestPlugin<Z extends boolean> {
         });
       }
 
-      if (isSourceMapAsset) {
-        compilation.renameAsset(
-          assetName,
-          path.posix.join(SOURCEMAPS_DIRECTORY, assetName),
-        );
-        continue;
-      }
-
-      const primaryAssetPath = path.posix.join(primaryBrowser, assetName);
-      if (assetName !== primaryAssetPath) {
-        compilation.renameAsset(assetName, primaryAssetPath);
-      }
-
-      additionalBrowsers.forEach((browser) => {
-        compilation.emitAsset(
-          path.posix.join(browser, assetName),
-          source,
-          assetDetails.info,
-        );
-      });
+      this.moveAssetToBrowsers(compilation, assetDetails, source, browsers);
     }
 
-    this.emitManifestAssets(compilation, browsers);
+    this.emitBrowserAssets(compilation, browsers);
   }
 
   /**
@@ -967,11 +977,12 @@ export class ManifestPlugin<Z extends boolean> {
         ? { ...manifest, build_id: compilation.fullHash }
         : manifest;
 
-      // cache the resolved manifests as RawSource
-      this.manifestSources.set(
-        browser,
-        new RawSource(JSON.stringify(manifestForEmit, null, 2)),
-      );
+      const browserAssets: Record<string, sources.RawSource> = {
+        'manifest.json': new RawSource(
+          JSON.stringify(manifestForEmit, null, 2),
+        ),
+      };
+      this.browserAssets.set(browser, browserAssets);
     }
   }
 
