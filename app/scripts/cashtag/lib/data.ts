@@ -2,7 +2,6 @@ import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 import { priceApiBaseUrl } from '#shared/constants/price-api';
 import { TOKEN_API_METASWAP_CODEFI_URL } from '#shared/constants/tokens';
 import { getCaipAssetImageUrl } from '#shared/lib/asset-utils';
-import { byMarketCap } from '#shared/lib/token-search/token-search-api';
 import type { AssetData, PricePoint, ResolvedTicker } from './types';
 
 const tokenSearchUrl = `${TOKEN_API_METASWAP_CODEFI_URL}search`;
@@ -146,33 +145,17 @@ export async function resolveTicker(
     return null;
   }
 
-  const ranked = symbolMatches
-    .map((match) => ({
-      asset: toAssetData(match),
-      rwaExact: match.rwaData?.ticker?.trim().toUpperCase() === ticker,
-    }))
-    .toSorted((left, right) => byMarketCap(left.asset, right.asset));
-
-  // Token search is usually market-cap ordered, but not always, so rank here.
-  // An exact RWA ticker with a market cap is placed ahead of symbol matches.
-  const preferExactRwa = ranked.some(
-    (entry) => entry.rwaExact && (entry.asset.marketCap ?? 0) > 0,
-  );
-  const assets = (
-    preferExactRwa
-      ? [
-          ...ranked.filter((entry) => entry.rwaExact),
-          ...ranked.filter((entry) => !entry.rwaExact),
-        ]
-      : ranked
-  ).map((entry) => entry.asset);
-
-  if ((assets[0].marketCap ?? 0) <= 0) {
+  const assets = symbolMatches.map(toAssetData);
+  if (assets.every((asset) => (asset.marketCap ?? 0) <= 0)) {
     return null;
   }
 
+  const exactRwaIndex = symbolMatches.findIndex(
+    (match) => match.rwaData?.ticker?.trim().toUpperCase() === ticker,
+  );
+
   return {
-    primary: assets[0],
-    similar: assets.slice(1),
+    primary: assets[exactRwaIndex === -1 ? 0 : exactRwaIndex],
+    similar: assets,
   };
 }

@@ -11,7 +11,7 @@ afterEach(() => {
 });
 
 describe('resolveTicker', () => {
-  it('sorts the primary and similar assets by market cap descending', async () => {
+  it('keeps search order for the table and uses the first match for the card', async () => {
     fetchMock.mockResolvedValue({
       ok: true,
       json: async () => ({
@@ -46,15 +46,18 @@ describe('resolveTicker', () => {
 
     await expect(resolveTicker(' qqq ')).resolves.toMatchObject({
       primary: {
-        ticker: 'qqq',
-        name: 'Higher QQQ',
-        caipAssetId: 'eip155:1/erc20:0xhigh',
+        ticker: 'QQQ',
+        name: 'Lower QQQ',
+        caipAssetId: 'eip155:1/erc20:0xlow',
       },
       similar: [
         expect.objectContaining({
-          ticker: 'QQQ',
           name: 'Lower QQQ',
           caipAssetId: 'eip155:1/erc20:0xlow',
+        }),
+        expect.objectContaining({
+          name: 'Higher QQQ',
+          caipAssetId: 'eip155:1/erc20:0xhigh',
         }),
       ],
     });
@@ -93,7 +96,7 @@ describe('resolveTicker', () => {
 
     await expect(resolveTicker('dog')).resolves.toMatchObject({
       primary: { ticker: 'DOG' },
-      similar: [],
+      similar: [expect.objectContaining({ ticker: 'DOG' })],
     });
   });
 
@@ -141,7 +144,10 @@ describe('resolveTicker', () => {
 
     await expect(resolveTicker(' MSFT ')).resolves.toMatchObject({
       primary: { ticker: 'MSFTX', name: 'Microsoft stock token' },
-      similar: [expect.objectContaining({ ticker: 'msft' })],
+      similar: [
+        expect.objectContaining({ name: 'Microsoft stock token' }),
+        expect.objectContaining({ ticker: 'msft' }),
+      ],
     });
   });
 
@@ -191,8 +197,11 @@ describe('resolveTicker', () => {
     } as Response);
 
     await expect(resolveTicker('QQQ')).resolves.toMatchObject({
-      primary: { name: 'Priced', marketCap: 5 },
-      similar: [expect.objectContaining({ name: 'Zero cap', marketCap: 0 })],
+      primary: { name: 'Zero cap', marketCap: 0 },
+      similar: [
+        expect.objectContaining({ name: 'Zero cap', marketCap: 0 }),
+        expect.objectContaining({ name: 'Priced', marketCap: 5 }),
+      ],
     });
   });
 
