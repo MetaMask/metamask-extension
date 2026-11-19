@@ -13,27 +13,29 @@ import { useSendType } from './useSendType';
 /**
  * Returns the Max amount for the selected asset.
  *
- * Max is the full balance, except for Tron, where the Snap computes the
- * amount that still leaves room for the network fees and, when the recipient
- * is unknown or inactive, the account activation reserve.
- *
- * For native EVM sends, the gas fee is subtracted on the confirmation by
- * `useMaxValueRefresher`, using the gas estimated by
+ * Max is the full balance. For native EVM sends, the gas fee is subtracted on
+ * the confirmation by `useMaxValueRefresher`, using the gas estimated by
  * `TransactionController`.
+ *
+ * For non-EVM sends the Snap computes the maximum. Tron subtracts the network
+ * fees and, when the recipient is unknown or inactive, the account activation
+ * reserve.
  */
 export const useMaxAmount = () => {
   const { asset, fromAccount, toResolved } = useSendContext();
-  const { isTronSendType } = useSendType();
+  const { isNonEvmSendType } = useSendType();
   const { rawBalanceNumeric } = useBalance();
 
   const getMaxAmount = useCallback(async () => {
-    if (isTronSendType && asset && fromAccount) {
+    if (isNonEvmSendType && asset && fromAccount) {
       try {
         const { amount } = await getMaxSendableAmountMultichain(
           fromAccount as InternalAccount,
           {
             accountId: (fromAccount as InternalAccount).id,
             assetId: asset.assetId as CaipAssetType,
+            // `toResolved` is the resolved destination address
+            // (`toResolved ?? to` in the send context).
             ...(toResolved ? { toAddress: toResolved } : {}),
           },
         );
@@ -44,7 +46,7 @@ export const useMaxAmount = () => {
     }
 
     return getMaxAmountFn(asset, rawBalanceNumeric);
-  }, [asset, fromAccount, isTronSendType, rawBalanceNumeric, toResolved]);
+  }, [asset, fromAccount, isNonEvmSendType, rawBalanceNumeric, toResolved]);
 
   return { getMaxAmount };
 };
