@@ -74,6 +74,7 @@ import { PerpsActivityPage } from '../page-objects/pages/perps/perps-activity-pa
 import { PerpsMarketDetailPage } from '../page-objects/pages/perps/perps-market-detail-page';
 import { PerpsMarketListPage } from '../page-objects/pages/perps/perps-market-list-page';
 import { PerpsOrderEntryPage } from '../page-objects/pages/perps/perps-order-entry-page';
+import { PerpsTransactionDetailsPage } from '../page-objects/pages/perps/perps-transaction-details-page';
 import { PerpsWithdrawPage } from '../page-objects/pages/perps/perps-withdraw-page';
 import RevealSrpPage from '../page-objects/pages/reveal-srp-page';
 import RewardsPage from '../page-objects/pages/rewards/rewards-page';
@@ -165,7 +166,7 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/perps/market/:symbol': PerpsMarketDetailPage,
   '/perps/trade/:symbol': PerpsOrderEntryPage,
   '/perps/activity': PerpsActivityPage,
-  '/perps/transaction-details': null,
+  '/perps/transaction-details': PerpsTransactionDetailsPage,
   '/perps/withdraw': PerpsWithdrawPage,
 
   // Accounts

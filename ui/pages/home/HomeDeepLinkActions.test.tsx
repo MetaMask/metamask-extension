@@ -354,7 +354,7 @@ describe('HomeDeepLinkActions', () => {
       pathname: DEFAULT_ROUTE,
       search: `?${new URLSearchParams({
         [HomeQueryParams.BatchSellDeeplinkUrl]:
-          'https://link.metamask.io/rewards?referral=ABC123',
+          'https://link.metamask.io/rewards',
       }).toString()}`,
       isNetworkMenuOpen: false,
     });
@@ -372,7 +372,7 @@ describe('HomeDeepLinkActions', () => {
       pathname: DEFAULT_ROUTE,
       search: `?${new URLSearchParams({
         [HomeQueryParams.PredictDeeplinkUrl]:
-          'https://link.metamask.io/rewards?referral=ABC123',
+          'https://link.metamask.io/rewards',
       }).toString()}`,
       isNetworkMenuOpen: false,
     });
@@ -426,7 +426,7 @@ describe('HomeDeepLinkActions', () => {
       pathname: DEFAULT_ROUTE,
       search: `?${new URLSearchParams({
         [HomeQueryParams.TrendingDeeplinkUrl]:
-          'https://link.metamask.io/rewards?referral=ABC123',
+          'https://link.metamask.io/rewards',
       }).toString()}`,
       isNetworkMenuOpen: false,
     });
