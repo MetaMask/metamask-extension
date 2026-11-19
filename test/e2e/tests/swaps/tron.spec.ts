@@ -1,6 +1,10 @@
 import { Suite } from 'mocha';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
+import {
+  createSwap,
+  selectDestinationToken,
+} from '../../page-objects/flows/bridge.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -33,7 +37,7 @@ describe('Swap on Tron', function (this: Suite) {
         await homePage.checkPageIsLoaded();
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSwap({
+        await createSwap(driver, {
           amount: 1,
           swapTo: 'USDT',
           swapFrom: 'TRX',
@@ -69,7 +73,7 @@ describe('Swap on Tron', function (this: Suite) {
         await homePage.checkPageIsLoaded();
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSwap({
+        await createSwap(driver, {
           amount: 1,
           swapTo: 'USDT',
           swapFrom: 'TRX',
@@ -99,7 +103,7 @@ describe('Swap on Tron', function (this: Suite) {
         await homePage.checkPageIsLoaded();
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSwap({
+        await createSwap(driver, {
           amount: 1,
           swapTo: 'USDT',
           swapFrom: 'TRX',
@@ -129,7 +133,7 @@ describe('Swap on Tron', function (this: Suite) {
         await homePage.checkPageIsLoaded();
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSwap({
+        await createSwap(driver, {
           amount: 1,
           swapTo: 'TRX',
           swapFrom: 'USDT',
@@ -162,7 +166,7 @@ describe('Swap on Tron', function (this: Suite) {
         await homePage.checkPageIsLoaded();
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSwap({
+        await createSwap(driver, {
           amount: 999999,
           swapTo: 'USDT',
           swapFrom: 'TRX',
@@ -191,7 +195,7 @@ describe('Swap on Tron', function (this: Suite) {
         await homePage.checkPageIsLoaded();
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSwap({
+        await createSwap(driver, {
           amount: 10,
           swapTo: 'USDT',
           swapFrom: 'TRX',
@@ -201,7 +205,7 @@ describe('Swap on Tron', function (this: Suite) {
         await swapPage.waitForSwapQuote();
         await swapPage.checkQuoteIsDisplayed();
 
-        await swapPage.selectDestToken('USDC');
+        await selectDestinationToken(driver, 'USDC');
         await swapPage.waitForSwapQuote();
         await swapPage.checkQuoteIsDisplayed();
         await swapPage.checkDestinationToken('USDC');
