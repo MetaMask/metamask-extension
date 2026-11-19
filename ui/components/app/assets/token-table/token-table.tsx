@@ -254,18 +254,19 @@ const TokenTableRow = ({
               symbol={token.symbol}
               assetId={token.assetId}
             />
-            <TokenCellTitle token={displayToken} />
+            <Box className="flex min-w-0 flex-col">
+              <TokenCellTitle token={displayToken} />
+              {showMoneyCta && moneyCta ? (
+                <MoneyTokenListCta cta={moneyCta} token={token} />
+              ) : null}
+            </Box>
           </Box>
           <Box className="flex min-w-0 flex-col items-end @2xl/token-table:contents">
             <Box className={PRICE_AND_CHANGE_ITEM_CLASS_NAME}>
               <TokenCellPrice token={displayToken} />
             </Box>
             <Box className={PERCENT_CHANGE_CLASS_NAME}>
-              {showMoneyCta && moneyCta ? (
-                <MoneyTokenListCta cta={moneyCta} token={token} />
-              ) : (
-                <TokenCellPercentChange token={displayToken} />
-              )}
+              <TokenCellPercentChange token={displayToken} />
             </Box>
           </Box>
           <Box className="flex min-w-0 flex-col items-end">
