@@ -118,7 +118,7 @@ export class ManifestPlugin<Z extends boolean> {
     BACKGROUND_CLIENT_ENTRY_NAME,
   ]);
 
-  private isolatedHtmlEntries: Set<string> = new Set();
+  private readonly isolatedEntries = new Set<string>();
 
   private bundleSizeCategoriesByEntrypoint: Map<
     string,
@@ -143,10 +143,10 @@ export class ManifestPlugin<Z extends boolean> {
     return !name || !this.selfContainedScripts.has(name);
   };
 
-  isIsolatedHtmlEntry = (name?: string | null) =>
-    Boolean(name && this.isolatedHtmlEntries.has(name));
-
-  getIsolatedHtmlEntryNames = () => [...this.isolatedHtmlEntries];
+  /** Chunk names that need their own LavaMoat runtime. */
+  get isolates(): ReadonlySet<string> {
+    return this.isolatedEntries;
+  }
 
   private isWebAccessibleHtml(filename: string) {
     for (const manifest of this.manifests.values()) {
@@ -790,14 +790,14 @@ export class ManifestPlugin<Z extends boolean> {
     addToSetMap(this.bundleSizeCategoriesByHtmlResource, filePath, category);
     entries[parsedFileName] = { import: [filePath], ...opts };
     if (this.isWebAccessibleHtml(filename)) {
-      this.isolatedHtmlEntries.add(parsedFileName);
+      this.isolatedEntries.add(parsedFileName);
 
       // `cashtag-widget.html` is the web-accessible HTML entry, but HtmlBundler
       // names its imported frame script `frame`. Both entries must be isolated so
       // Webpack does not split the iframe bundle.
       if (parsedFileName === 'cashtag-widget') {
         this.selfContainedScripts.add('frame');
-        this.isolatedHtmlEntries.add('frame');
+        this.isolatedEntries.add('frame');
       }
     }
   };
@@ -807,7 +807,7 @@ export class ManifestPlugin<Z extends boolean> {
     entries: Record<string, EntryDescriptionNormalized>,
   ): void {
     this.resetBundleSizeEntrypointMetadata();
-    this.isolatedHtmlEntries.clear();
+    this.isolatedEntries.clear();
 
     for (const manifest of this.manifests.values()) {
       // collect content_scripts (MV2 + MV3)
@@ -896,6 +896,28 @@ export class ManifestPlugin<Z extends boolean> {
             continue;
           }
           this.addHtml({ compiler, entries, directory, filename, category });
+        }
+      }
+    }
+
+    const directory = path.resolve(compiler.context, 'workers');
+    if (
+      [...this.manifests.values()].some(
+        (manifest) => manifest.manifest_version === 3,
+      ) &&
+      existsSync(directory)
+    ) {
+      for (const file of readdirSync(directory, { withFileTypes: true })) {
+        if (file.isFile() && /\.ts$/u.test(file.name)) {
+          const filename = path.posix.join('workers', file.name);
+          this.isolatedEntries.add(filename);
+          this.addManifestScript({
+            compiler,
+            entries,
+            filename,
+            category: 'other',
+            opts: { runtime: false, asyncChunks: false },
+          });
         }
       }
     }

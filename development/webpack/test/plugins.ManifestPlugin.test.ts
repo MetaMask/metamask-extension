@@ -1600,6 +1600,7 @@ describe('ManifestPlugin', () => {
           undefined,
           'should skip offscreen.html for MV2',
         );
+        assert.strictEqual(entries['workers/example.ts'], undefined);
 
         // Non-HTML files should be excluded
         assert.strictEqual(
@@ -1671,6 +1672,15 @@ describe('ManifestPlugin', () => {
         assert.ok(entries.notification, 'should have notification HTML entry');
         assert.ok(entries.home, 'should have home HTML entry');
         assert.ok(entries.offscreen, 'should include offscreen.html for MV3');
+        const worker = entries['workers/example.ts'];
+        assert.ok(worker, 'discovers the isolated worker');
+        assert.strictEqual(worker.filename, 'workers/example.js');
+        assert.strictEqual(worker.runtime, false);
+        assert.strictEqual(worker.asyncChunks, false);
+        assert.strictEqual(worker.chunkLoading, false);
+        assert.ok(!plugin.canBeChunked({ name: 'workers/example.ts' }));
+        assert.ok(plugin.isolates.has('workers/example.ts'));
+        assert.ok(!plugin.isolates.has('service-worker.ts'));
         assert.ok(
           entries['trezor-usb-permissions'],
           'should include trezor-usb-permissions.html',
@@ -1689,6 +1699,26 @@ describe('ManifestPlugin', () => {
           undefined,
           'should skip non-html files',
         );
+      });
+
+      it('skips isolated workers when Firefox overrides MV3 to MV2', async () => {
+        const { compiler, entries, promise } = mockWebpack([], [], []);
+        compiler.context = entrypointsContext;
+
+        const plugin = new ManifestPlugin({
+          browsers: ['firefox'],
+          manifest_version: 3,
+          version: '1.0.0.0',
+          versionName: '1.0.0',
+          description: null,
+          buildType: 'main',
+          zip: false,
+        });
+
+        plugin.apply(compiler);
+        await promise;
+
+        assert.strictEqual(entries['workers/example.ts'], undefined);
       });
 
       it('should not add duplicate script entries across multiple browsers', async () => {
