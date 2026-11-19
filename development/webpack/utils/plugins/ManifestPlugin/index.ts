@@ -434,7 +434,10 @@ export class ManifestPlugin<Z extends boolean> {
         total +
         zipEligibleAssetCount +
         Object.keys(
-          this.browserAssets.get(browser) as Record<string, sources.RawSource>,
+          this.browserAssets.get(browser) as Record<
+            string,
+            webpackApi.sources.RawSource
+          >,
         ).length,
       0,
     );
@@ -520,7 +523,7 @@ export class ManifestPlugin<Z extends boolean> {
   private moveAssetToBrowsers(
     compilation: Compilation,
     asset: Readonly<Asset>,
-    source: sources.Source,
+    source: webpackApi.sources.Source,
     browsers: readonly Browser[],
   ): void {
     const { name, info } = asset;
@@ -980,7 +983,7 @@ export class ManifestPlugin<Z extends boolean> {
         ? { ...manifest, build_id: compilation.fullHash }
         : manifest;
 
-      const browserAssets: Record<string, sources.RawSource> = {
+      const browserAssets: Record<string, webpackApi.sources.RawSource> = {
         'manifest.json': new RawSource(
           JSON.stringify(manifestForEmit, null, 2),
         ),
