@@ -1,4 +1,4 @@
-import { WINDOW_TITLES } from '../constants';
+import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import Confirmation from '../page-objects/pages/confirmations/confirmation';
@@ -83,6 +83,8 @@ describe('Switch Ethereum Chain for two dapps with pending confirmation in the o
 
         // Wait for chain id element to change, there's a page reload.
         await testDapp.checkNetworkIsConnected('0x53a');
+
+        await testDapp.checkConnectedAccounts(DEFAULT_FIXTURE_ACCOUNT);
       },
     );
   });
@@ -162,6 +164,8 @@ describe('Switch Ethereum Chain for two dapps with pending confirmation in the o
 
         // Wait for chain id element to change, there's a page reload.
         await testDapp.checkNetworkIsConnected('0x53a');
+
+        await testDapp.checkConnectedAccounts(DEFAULT_FIXTURE_ACCOUNT);
       },
     );
   });
