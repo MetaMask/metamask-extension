@@ -314,8 +314,8 @@ export const CoinOverview = ({
         (!isZeroFiatBalanceDelayStateCurrent ||
           !hasZeroFiatBalanceDelayElapsed)) ||
         (shouldCheckBalanceState &&
-          (!assetsHaveLoaded ||
-            (!hasBalance && (balanceIsLoading || !balanceIsLoaded))))),
+          !hasBalance &&
+          (balanceIsLoading || !balanceIsLoaded || !assetsHaveLoaded))),
     [
       isEvm,
       shouldDelayZeroFiatBalance,

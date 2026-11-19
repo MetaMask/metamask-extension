@@ -518,62 +518,6 @@ describe('EthOverview', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('should keep showing a balance skeleton when a partial non-zero balance arrives', async () => {
-      const mockedStoreWithPartialBalance = {
-        ...mockStore,
-        metamask: {
-          ...mockStore.metamask,
-          enabledNetworkMap: {
-            eip155: {
-              [CHAIN_IDS.MAINNET]: true,
-              [CHAIN_IDS.POLYGON]: true,
-            },
-          },
-          assetsBackgroundLoadingStatus: {
-            [mockEvmAccount1.id]: 'loading',
-          },
-        },
-      };
-      const mockedStore = configureMockStore([thunk])(
-        mockedStoreWithPartialBalance,
-      );
-
-      const { queryByTestId } = renderWithProvider(
-        <EthOverview />,
-        mockedStore,
-      );
-
-      expect(queryByTestId(ETH_OVERVIEW_BALANCE_SKELETON)).toBeInTheDocument();
-      expect(
-        queryByTestId(ETH_OVERVIEW_PRIMARY_CURRENCY),
-      ).not.toBeInTheDocument();
-    });
-
-    it('should keep showing a balance skeleton until background assets finish loading', async () => {
-      const mockedStoreWithCompleteBalances = {
-        ...mockStore,
-        metamask: {
-          ...mockStore.metamask,
-          assetsBackgroundLoadingStatus: {
-            [mockEvmAccount1.id]: 'loading',
-          },
-        },
-      };
-      const mockedStore = configureMockStore([thunk])(
-        mockedStoreWithCompleteBalances,
-      );
-
-      const { queryByTestId } = renderWithProvider(
-        <EthOverview />,
-        mockedStore,
-      );
-
-      expect(queryByTestId(ETH_OVERVIEW_BALANCE_SKELETON)).toBeInTheDocument();
-      expect(
-        queryByTestId(ETH_OVERVIEW_PRIMARY_CURRENCY),
-      ).not.toBeInTheDocument();
-    });
-
     it('should show the cached primary balance', async () => {
       const mockedStoreWithCachedBalance = {
         ...mockStore,
