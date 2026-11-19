@@ -26,6 +26,7 @@ import {
   getState,
 } from './sentry-get-state';
 import { makeTransport } from './sentry-make-transport';
+import { spanUserAgentInferenceIntegration } from './sentry-span-user-agent-inference';
 import { getInstallType, initInstallType } from './install-type';
 import { createTracesSampler } from './sentry-traces-sampler';
 
@@ -219,6 +220,7 @@ export function getClientOptions(): SentryClientOptions {
       Sentry.extraErrorDataIntegration(),
       // `traceLifecycle: 'stream'` is inert without this integration.
       Sentry.spanStreamingIntegration(),
+      spanUserAgentInferenceIntegration(),
       Sentry.browserTracingIntegration({
         // Creates ui.long-animation-frame spans (falls back to ui.long-task).
         // Pairs with TBT aggregate measurements from performance-observers.ts.

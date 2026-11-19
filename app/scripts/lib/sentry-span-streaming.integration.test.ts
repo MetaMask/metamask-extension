@@ -17,7 +17,11 @@ type SentSpan = {
   attributes: Record<string, { value: unknown; type: string; unit?: string }>;
 };
 /* eslint-enable @typescript-eslint/naming-convention */
-type SpanItemPayload = { items: SentSpan[] };
+type SpanItemPayload = {
+  items: SentSpan[];
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  ingest_settings?: { infer_ip?: string; infer_user_agent?: string };
+};
 type TransactionPayload = {
   transaction?: string;
   spans?: { description?: string }[];
@@ -175,6 +179,36 @@ describe('span streaming (integration with the shipped Sentry options)', () => {
       'ci.branch': { value: 'ci-branch', type: 'string' },
       'ci.commitHash': { value: 'abc123', type: 'string' },
     });
+  });
+
+  // Relay derives `browser.name` and `os.name` for a streamed span only when
+  // the envelope allows it. Transaction events got them from the request's
+  // user agent whatever `sendDefaultPii` said. The IP stays uninferred: with
+  // `infer_ip` at `auto` Relay would store the client address on every span,
+  // which transaction events never did.
+  it('lets Relay infer browser and OS from the user agent, and nothing from the IP', async () => {
+    trace({ name: TraceName.Transaction }, () => undefined);
+    await Sentry.flush();
+
+    const spanContainers = envelopes
+      .flatMap(([, items]) => items)
+      .filter(([header]) => header.type === 'span')
+      .map(([, payload]) => payload as SpanItemPayload);
+    expect(spanContainers).not.toHaveLength(0);
+    for (const container of spanContainers) {
+      expect(container.ingest_settings).toStrictEqual({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        infer_ip: 'never',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        infer_user_agent: 'auto',
+      });
+    }
+    const attributeNames = sentSpans().flatMap((span) =>
+      Object.keys(span.attributes),
+    );
+    expect(
+      attributeNames.filter((name) => /^(client\.address|user\.)/u.test(name)),
+    ).toStrictEqual([]);
   });
 
   // Sentry rejects a span envelope whose `trace` header lacks `public_key`
