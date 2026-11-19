@@ -31,17 +31,6 @@ const backgroundConnectionMocked = {
   onNotification: jest.fn(),
 };
 
-const OAuthMethods = {
-  setMarketingConsent: 'OAuthService:setMarketingConsent',
-  getMarketingConsent: 'OAuthService:getMarketingConsent',
-} as const;
-
-const backgroundMethods = {
-  optInToMarketing: 'AnalyticsController:optInToMarketing',
-  optOutOfMarketing: 'AnalyticsController:optOutOfMarketing',
-  trackAnalyticsEvent: 'trackAnalyticsEvent',
-};
-
 const selectors = {
   accountOptionsMenuButton: 'account-options-menu-button',
   settingsMenuItem: 'global-menu-settings',
@@ -53,17 +42,32 @@ const baseBackgroundMock = createMockImplementation({});
 
 const setupSubmitRequestToBackgroundMocks = ({
   marketingConsentWriteFails = false,
-}: { marketingConsentWriteFails?: boolean } = {}) => {
+  marketingConsentRead = Promise.resolve(false),
+}: {
+  marketingConsentWriteFails?: boolean;
+  marketingConsentRead?: Promise<boolean>;
+} = {}) => {
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
-    (method: string, ...args: unknown[]) => {
-      if (method === OAuthMethods.setMarketingConsent) {
+    (method: string) => {
+      if (method === 'OAuthService:setMarketingConsent') {
         return marketingConsentWriteFails
           ? Promise.reject(new Error('Failed to post marketing opt in status'))
           : Promise.resolve(true);
       }
+      if (method === 'OAuthService:getMarketingConsent') {
+        return marketingConsentRead;
+      }
       return baseBackgroundMock(method);
     },
   );
+};
+
+const createDeferred = <Type,>() => {
+  let resolve: (value: Type) => void = () => undefined;
+  const promise = new Promise<Type>((res) => {
+    resolve = res;
+  });
+  return { promise, resolve };
 };
 
 const getSocialLoginState = (overrides: Record<string, unknown> = {}) => ({
@@ -73,8 +77,6 @@ const getSocialLoginState = (overrides: Record<string, unknown> = {}) => ({
   consentDecisionMade: true,
   optedIn: true,
   analyticsId: 'test-metametrics-id',
-  // A social-login user who already opted in to marketing; individual tests
-  // override this to model the state they need.
   marketingConsentDecisionMade: true,
   optedInToMarketing: true,
   ...overrides,
@@ -91,21 +93,17 @@ const getBackgroundCalls = (method: string) =>
     (call) => call[0] === method,
   );
 
-const getAnalyticsPreferenceEvents = () =>
-  mockedBackgroundConnection.submitRequestToBackground.mock.calls.filter(
-    (call) =>
-      call[0] === backgroundMethods.trackAnalyticsEvent &&
-      call[1]?.[0]?.name === MetaMetricsEventName.AnalyticsPreferenceSelected,
-  );
-
 const expectMarketingConsentEvent = async (
   hasMarketingConsent: boolean,
   location: string,
   category: MetaMetricsEventCategory,
 ) => {
   const getMatchingEvents = () =>
-    getAnalyticsPreferenceEvents().filter(
+    mockedBackgroundConnection.submitRequestToBackground.mock.calls.filter(
       (call) =>
+        call[0] === 'trackAnalyticsEvent' &&
+        call[1]?.[0]?.name ===
+          MetaMetricsEventName.AnalyticsPreferenceSelected &&
         call[1]?.[0]?.properties?.[MetaMetricsUserTrait.HasMarketingConsent] ===
           hasMarketingConsent &&
         call[1]?.[0]?.properties?.location === location,
@@ -140,9 +138,7 @@ const openPrivacySettings = async () => {
 
 describe('Marketing Consent', () => {
   beforeAll(() => {
-    // The failure-path tests intentionally exercise the error logging in the
-    // setMarketingConsent action; silence loglevel so the expected errors do
-    // not pollute the console baseline for this file.
+    // Silence expected error logs from the failure-path mocks.
     log.setLevel(log.levels.SILENT);
   });
 
@@ -156,9 +152,11 @@ describe('Marketing Consent', () => {
   });
 
   describe('Data collection toggle in privacy settings', () => {
-    it('keeps the toggle off after the user opts out while the OAuth marketing consent write fails', async () => {
+    it('keeps the toggle off when a social login user opts out and the OAuth marketing consent write fails', async () => {
+      const staleServerConsentRead = createDeferred<boolean>();
       setupSubmitRequestToBackgroundMocks({
         marketingConsentWriteFails: true,
+        marketingConsentRead: staleServerConsentRead.promise,
       });
 
       await integrationTestRender({
@@ -171,22 +169,19 @@ describe('Marketing Consent', () => {
 
       await clickElementById(selectors.marketingConsentToggleInput);
 
-      // The local decision is applied...
       await expectToggleValue('false');
       expect(
-        getBackgroundCalls(backgroundMethods.optOutOfMarketing),
+        getBackgroundCalls('AnalyticsController:optOutOfMarketing'),
       ).toHaveLength(1);
-      // ...the failed write is still attempted with the new value...
-      expect(getBackgroundCalls(OAuthMethods.setMarketingConsent)).toHaveLength(
-        1,
-      );
       expect(
-        getBackgroundCalls(OAuthMethods.setMarketingConsent)[0][1],
+        getBackgroundCalls('OAuthService:setMarketingConsent'),
+      ).toHaveLength(1);
+      expect(
+        getBackgroundCalls('OAuthService:setMarketingConsent')[0][1],
       ).toEqual([false]);
-      // ...and the mount-time read that used to revert the local choice is gone.
-      expect(getBackgroundCalls(OAuthMethods.getMarketingConsent)).toHaveLength(
-        0,
-      );
+      expect(
+        getBackgroundCalls('OAuthService:getMarketingConsent'),
+      ).toHaveLength(0);
 
       await expectMarketingConsentEvent(
         false,
@@ -194,12 +189,17 @@ describe('Marketing Consent', () => {
         MetaMetricsEventCategory.Settings,
       );
 
-      // Let every pending promise chain settle; the toggle must not snap back.
+      staleServerConsentRead.resolve(true);
       await flushPendingAsyncWork();
       await expectToggleValue('false');
     });
 
-    it('keeps the toggle off after the user opts out while the OAuth marketing consent write succeeds', async () => {
+    it('keeps the toggle off when a social login user opts out and the OAuth marketing consent write succeeds', async () => {
+      const staleServerConsentRead = createDeferred<boolean>();
+      setupSubmitRequestToBackgroundMocks({
+        marketingConsentRead: staleServerConsentRead.promise,
+      });
+
       await integrationTestRender({
         preloadedState: getSocialLoginState(),
         backgroundConnection: backgroundConnectionMocked,
@@ -212,13 +212,13 @@ describe('Marketing Consent', () => {
 
       await expectToggleValue('false');
       expect(
-        getBackgroundCalls(backgroundMethods.optOutOfMarketing),
+        getBackgroundCalls('AnalyticsController:optOutOfMarketing'),
       ).toHaveLength(1);
-      expect(getBackgroundCalls(OAuthMethods.setMarketingConsent)).toHaveLength(
-        1,
-      );
       expect(
-        getBackgroundCalls(OAuthMethods.setMarketingConsent)[0][1],
+        getBackgroundCalls('OAuthService:setMarketingConsent'),
+      ).toHaveLength(1);
+      expect(
+        getBackgroundCalls('OAuthService:setMarketingConsent')[0][1],
       ).toEqual([false]);
 
       await expectMarketingConsentEvent(
@@ -227,13 +227,16 @@ describe('Marketing Consent', () => {
         MetaMetricsEventCategory.Settings,
       );
 
+      staleServerConsentRead.resolve(true);
       await flushPendingAsyncWork();
       await expectToggleValue('false');
     });
 
-    it('keeps the toggle on after the user opts in while the OAuth marketing consent write fails', async () => {
+    it('keeps the toggle on when a social login user opts in and the OAuth marketing consent write fails', async () => {
+      const staleServerConsentRead = createDeferred<boolean>();
       setupSubmitRequestToBackgroundMocks({
         marketingConsentWriteFails: true,
+        marketingConsentRead: staleServerConsentRead.promise,
       });
 
       await integrationTestRender({
@@ -250,14 +253,17 @@ describe('Marketing Consent', () => {
 
       await expectToggleValue('true');
       expect(
-        getBackgroundCalls(backgroundMethods.optInToMarketing),
+        getBackgroundCalls('AnalyticsController:optInToMarketing'),
       ).toHaveLength(1);
-      expect(getBackgroundCalls(OAuthMethods.setMarketingConsent)).toHaveLength(
-        1,
-      );
       expect(
-        getBackgroundCalls(OAuthMethods.setMarketingConsent)[0][1],
+        getBackgroundCalls('OAuthService:setMarketingConsent'),
+      ).toHaveLength(1);
+      expect(
+        getBackgroundCalls('OAuthService:setMarketingConsent')[0][1],
       ).toEqual([true]);
+      expect(
+        getBackgroundCalls('OAuthService:getMarketingConsent'),
+      ).toHaveLength(0);
 
       await expectMarketingConsentEvent(
         true,
@@ -265,6 +271,7 @@ describe('Marketing Consent', () => {
         MetaMetricsEventCategory.Settings,
       );
 
+      staleServerConsentRead.resolve(false);
       await flushPendingAsyncWork();
       await expectToggleValue('true');
     });
@@ -288,14 +295,14 @@ describe('Marketing Consent', () => {
 
       await expectToggleValue('false');
       expect(
-        getBackgroundCalls(backgroundMethods.optOutOfMarketing),
+        getBackgroundCalls('AnalyticsController:optOutOfMarketing'),
       ).toHaveLength(1);
-      expect(getBackgroundCalls(OAuthMethods.setMarketingConsent)).toHaveLength(
-        0,
-      );
-      expect(getBackgroundCalls(OAuthMethods.getMarketingConsent)).toHaveLength(
-        0,
-      );
+      expect(
+        getBackgroundCalls('OAuthService:setMarketingConsent'),
+      ).toHaveLength(0);
+      expect(
+        getBackgroundCalls('OAuthService:getMarketingConsent'),
+      ).toHaveLength(0);
     });
   });
 
@@ -315,7 +322,7 @@ describe('Marketing Consent', () => {
       await screen.findByText(tEn('onboardedMetametricsTitle'));
     };
 
-    it('keeps the opt-in decision when the OAuth write fails after accepting the consent modal', async () => {
+    it('keeps the opt-in decision when the OAuth write fails after the consent modal is accepted', async () => {
       setupSubmitRequestToBackgroundMocks({
         marketingConsentWriteFails: true,
       });
@@ -324,21 +331,19 @@ describe('Marketing Consent', () => {
 
       await clickElementByText(tEn('onboardedMetametricsAccept'));
 
-      // The modal closes because the local decision was applied...
       await waitFor(() => {
         expect(
           screen.queryByText(tEn('onboardedMetametricsTitle')),
         ).not.toBeInTheDocument();
       });
       expect(
-        getBackgroundCalls(backgroundMethods.optInToMarketing),
+        getBackgroundCalls('AnalyticsController:optInToMarketing'),
       ).toHaveLength(1);
-      // ...the failed write is still attempted with the accepted value...
-      expect(getBackgroundCalls(OAuthMethods.setMarketingConsent)).toHaveLength(
-        1,
-      );
       expect(
-        getBackgroundCalls(OAuthMethods.setMarketingConsent)[0][1],
+        getBackgroundCalls('OAuthService:setMarketingConsent'),
+      ).toHaveLength(1);
+      expect(
+        getBackgroundCalls('OAuthService:setMarketingConsent')[0][1],
       ).toEqual([true]);
 
       await expectMarketingConsentEvent(
@@ -347,14 +352,13 @@ describe('Marketing Consent', () => {
         MetaMetricsEventCategory.Home,
       );
 
-      // Let every pending promise chain settle; the modal must not come back.
       await flushPendingAsyncWork();
       expect(
         screen.queryByText(tEn('onboardedMetametricsTitle')),
       ).not.toBeInTheDocument();
     });
 
-    it('records the opt-out when the user declines the consent modal while the OAuth write fails', async () => {
+    it('records the opt-out when the consent modal is declined while the OAuth write fails', async () => {
       setupSubmitRequestToBackgroundMocks({
         marketingConsentWriteFails: true,
       });
@@ -369,13 +373,13 @@ describe('Marketing Consent', () => {
         ).not.toBeInTheDocument();
       });
       expect(
-        getBackgroundCalls(backgroundMethods.optOutOfMarketing),
+        getBackgroundCalls('AnalyticsController:optOutOfMarketing'),
       ).toHaveLength(1);
-      expect(getBackgroundCalls(OAuthMethods.setMarketingConsent)).toHaveLength(
-        1,
-      );
       expect(
-        getBackgroundCalls(OAuthMethods.setMarketingConsent)[0][1],
+        getBackgroundCalls('OAuthService:setMarketingConsent'),
+      ).toHaveLength(1);
+      expect(
+        getBackgroundCalls('OAuthService:setMarketingConsent')[0][1],
       ).toEqual([false]);
 
       await expectMarketingConsentEvent(
@@ -403,14 +407,14 @@ describe('Marketing Consent', () => {
         ).not.toBeInTheDocument();
       });
       expect(
-        getBackgroundCalls(backgroundMethods.optInToMarketing),
+        getBackgroundCalls('AnalyticsController:optInToMarketing'),
       ).toHaveLength(1);
-      expect(getBackgroundCalls(OAuthMethods.setMarketingConsent)).toHaveLength(
-        0,
-      );
-      expect(getBackgroundCalls(OAuthMethods.getMarketingConsent)).toHaveLength(
-        0,
-      );
+      expect(
+        getBackgroundCalls('OAuthService:setMarketingConsent'),
+      ).toHaveLength(0);
+      expect(
+        getBackgroundCalls('OAuthService:getMarketingConsent'),
+      ).toHaveLength(0);
     });
   });
 });
