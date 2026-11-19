@@ -8,17 +8,14 @@ type SpanContainer = {
 };
 
 /**
- * Lets Relay derive `browser.name`, `os.name` and the rest of the browser
- * context for streamed spans from the request's user agent, as it did for
- * transaction events. The SDK sets `infer_user_agent` to `never` while
- * `sendDefaultPii` is off, which leaves every dashboard filtering on those
- * fields empty.
+ * Lets Relay derive `browser.name` and `user.geo.*` for streamed spans, as it
+ * did for transaction events. The SDK sets `infer_ip` and `infer_user_agent`
+ * to `never` while `sendDefaultPii` is off, which leaves every dashboard and
+ * detector filtering on those fields empty.
  *
- * Only the user agent is opened up: `infer_ip` is left as the SDK set it
- * (`never`), because `auto` makes Relay store the client address on every
- * span, which transaction events never carried. The user agent is already
- * sent with every request, and is the value the SDK itself puts on segment
- * spans as `http.request.header.user_agent`.
+ * The client sends no address: Relay takes the browser from the request's
+ * user agent and the geo from the connection IP. It derives the geo before the
+ * org's IP scrubbing removes the address, so no `client.address` is stored.
  *
  * @returns The integration.
  */
@@ -34,7 +31,7 @@ export function spanUserAgentInferenceIntegration(): Integration {
           const container = payload as SpanContainer;
           container.ingest_settings = {
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            infer_ip: container.ingest_settings?.infer_ip ?? 'never',
+            infer_ip: 'auto',
             // eslint-disable-next-line @typescript-eslint/naming-convention
             infer_user_agent: 'auto',
           };

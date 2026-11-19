@@ -181,12 +181,12 @@ describe('span streaming (integration with the shipped Sentry options)', () => {
     });
   });
 
-  // Relay derives `browser.name` and `os.name` for a streamed span only when
-  // the envelope allows it. Transaction events got them from the request's
-  // user agent whatever `sendDefaultPii` said. The IP stays uninferred: with
-  // `infer_ip` at `auto` Relay would store the client address on every span,
-  // which transaction events never did.
-  it('lets Relay infer browser and OS from the user agent, and nothing from the IP', async () => {
+  // Relay derives `browser.name` and `user.geo.*` for a streamed span only
+  // when the envelope allows it. Transaction events got both whatever
+  // `sendDefaultPii` said. The client sets no address or user field: Relay
+  // takes the geo from the connection IP, and the org's IP scrubbing removes
+  // the address afterwards.
+  it('lets Relay infer the browser and geo, with no address or user field set by the client', async () => {
     trace({ name: TraceName.Transaction }, () => undefined);
     await Sentry.flush();
 
@@ -198,7 +198,7 @@ describe('span streaming (integration with the shipped Sentry options)', () => {
     for (const container of spanContainers) {
       expect(container.ingest_settings).toStrictEqual({
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        infer_ip: 'never',
+        infer_ip: 'auto',
         // eslint-disable-next-line @typescript-eslint/naming-convention
         infer_user_agent: 'auto',
       });
