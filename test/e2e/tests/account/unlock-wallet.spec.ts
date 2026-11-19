@@ -30,6 +30,9 @@ describe('Unlock wallet - ', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
+        // The test locks right after login, so the notifications setup that
+        // starts on unlock can run against an already locked wallet.
+        ignoredConsoleErrors: ['Unable to enable notifications'],
         title: this.test?.fullTitle(),
       },
       async ({
