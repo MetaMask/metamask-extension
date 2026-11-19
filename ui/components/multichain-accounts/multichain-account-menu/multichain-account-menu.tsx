@@ -286,6 +286,8 @@ export const MultichainAccountMenu = ({
         }
         padding={1}
         onClick={togglePopover}
+        // Used to manage the open state UI of the popover
+        aria-expanded={isOpen}
       >
         <Icon
           className="multichain-account-cell-popover-menu-button-icon"

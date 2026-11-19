@@ -14,14 +14,14 @@ export const buildQuote = async (driver: Driver, options: SwapOptions) => {
   const swapPage = new SwapPage(driver);
 
   await homePage.startSwapFlow();
-  await swapPage.fillSwapAmount(options.amount.toString());
+  await swapPage.enterSwapAmount(options.amount.toString());
 
   if (options.swapTo && options.mainnet) {
     await swapPage.checkQuoteIsDisplayed();
   }
 
   if (options.swapTo) {
-    await swapPage.selectDestinationToken(options.swapTo);
+    await swapPage.selectDestToken(options.swapTo);
     return;
   }
 
@@ -30,15 +30,4 @@ export const buildQuote = async (driver: Driver, options: SwapOptions) => {
       options.swapToContractAddress,
     );
   }
-};
-
-export const waitForTransactionToComplete = async (
-  driver: Driver,
-  options: { tokenName: string },
-) => {
-  const swapPage = new SwapPage(driver);
-  const homePage = new HomePage(driver);
-
-  await swapPage.waitForTransactionCompleteWithToken(options.tokenName);
-  await homePage.checkPageIsLoaded();
 };
