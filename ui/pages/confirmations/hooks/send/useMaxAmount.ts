@@ -34,8 +34,8 @@ export const useMaxAmount = () => {
           {
             accountId: (fromAccount as InternalAccount).id,
             assetId: asset.assetId as CaipAssetType,
-            // `toResolved` is the resolved destination address
-            // (`toResolved ?? to` in the send context).
+            // `toResolved` is the resolved destination address for when there
+            // is a name service like ENS.
             ...(toResolved ? { toAddress: toResolved } : {}),
           },
         );
