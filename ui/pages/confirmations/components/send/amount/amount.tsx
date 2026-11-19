@@ -52,7 +52,7 @@ export const Amount = ({
     getNativeValue,
   } = useCurrencyConversions();
   const { getMaxAmount } = useMaxAmount();
-  const { isNonEvmNativeSendType } = useSendType();
+  const { isNonEvmSendType, isTronSendType } = useSendType();
   const {
     setAmountInputMethodManual,
     setAmountInputMethodPasted,
@@ -221,7 +221,7 @@ export const Amount = ({
           >
             {balanceDisplayValue}
           </Text>
-          {!isNonEvmNativeSendType && (
+          {(!isNonEvmSendType || isTronSendType) && (
             <ButtonLink
               marginLeft={2}
               onClick={updateToMax}

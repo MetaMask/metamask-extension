@@ -5,7 +5,7 @@ import { Numeric } from '../../../../../shared/lib/Numeric';
 import {
   EVM_ASSET,
   EVM_NATIVE_ASSET,
-  SOLANA_ASSET,
+  SOLANA_NATIVE_ASSET,
 } from '../../../../../test/data/send/assets';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
@@ -31,6 +31,14 @@ const MOCK_TRON_ACCOUNT = {
   id: 'tron-account-id',
   address: 'TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3',
   metadata: { snap: { id: 'npm:@metamask/tron-wallet-snap', enabled: true } },
+} as unknown as InternalAccount;
+
+const MOCK_SOLANA_ACCOUNT = {
+  ...MOCK_TRON_ACCOUNT,
+  id: 'solana-account-id',
+  metadata: {
+    snap: { id: 'npm:@metamask/solana-wallet-snap', enabled: true },
+  },
 } as unknown as InternalAccount;
 
 function renderHook() {
@@ -97,11 +105,21 @@ describe('useMaxAmount', () => {
     expect(await renderHook().getMaxAmount()).toBe('48573');
   });
 
-  it('returns the full balance for solana assets', async () => {
-    mockSendContext(SOLANA_ASSET);
-    mockBalance('1007248', 6);
+  it('returns the Snap maximum for Solana assets', async () => {
+    const getMaxMock = jest
+      .spyOn(MultichainSnaps, 'getMaxSendableAmountMultichain')
+      .mockResolvedValue({ amount: '0.999' });
+    mockSendContext(SOLANA_NATIVE_ASSET, {
+      chainId: SOLANA_NATIVE_ASSET.chainId,
+      fromAccount: MOCK_SOLANA_ACCOUNT,
+    });
+    mockBalance('1000000000', 9);
 
-    expect(await renderHook().getMaxAmount()).toBe('1.007248');
+    expect(await renderHook().getMaxAmount()).toBe('0.999');
+    expect(getMaxMock).toHaveBeenCalledWith(MOCK_SOLANA_ACCOUNT, {
+      accountId: MOCK_SOLANA_ACCOUNT.id,
+      assetId: SOLANA_NATIVE_ASSET.assetId,
+    });
   });
 
   it('returns the Snap maximum for Tron assets', async () => {
