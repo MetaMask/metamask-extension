@@ -1605,16 +1605,6 @@ export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
     filterExcludedAssets(selectAssetsBySelectedAccountGroup(assetListState)),
 );
 
-export const selectEnabledNetworksHaveAssetsForSelectedAccountGroup =
-  createSelector(
-    [getAssetsBySelectedAccountGroup, getAllEnabledNetworksForAllNamespaces],
-    (assetsBySelectedAccountGroup, enabledNetworks) =>
-      enabledNetworks.length > 0 &&
-      enabledNetworks.every(
-        (chainId) => (assetsBySelectedAccountGroup[chainId]?.length ?? 0) > 0,
-      ),
-  );
-
 export const getSelectedAccountGroupNetworkGenerationKey = createSelector(
   [getSelectedAccountGroup, getAllEnabledNetworksForAllNamespaces],
   (selectedAccountGroup, allEnabledNetworksForAllNamespaces) =>

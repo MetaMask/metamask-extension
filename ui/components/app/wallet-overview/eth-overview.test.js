@@ -549,7 +549,7 @@ describe('EthOverview', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('should show a funded balance once every enabled network has assets', async () => {
+    it('should keep showing a balance skeleton until background assets finish loading', async () => {
       const mockedStoreWithCompleteBalances = {
         ...mockStore,
         metamask: {
@@ -568,10 +568,10 @@ describe('EthOverview', () => {
         mockedStore,
       );
 
+      expect(queryByTestId(ETH_OVERVIEW_BALANCE_SKELETON)).toBeInTheDocument();
       expect(
-        queryByTestId(ETH_OVERVIEW_BALANCE_SKELETON),
+        queryByTestId(ETH_OVERVIEW_PRIMARY_CURRENCY),
       ).not.toBeInTheDocument();
-      expect(queryByTestId(ETH_OVERVIEW_PRIMARY_CURRENCY)).toBeInTheDocument();
     });
 
     it('should show the cached primary balance', async () => {
