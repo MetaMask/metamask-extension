@@ -109,7 +109,7 @@ jobs:
           run-id: ${{ inputs.builds-from-run }} # Download from the run that produced the builds.
 
       # if there is a build-command and there is no build artifact, or the specified artifact does not exist, we run the build command
-      - run: ${{ inputs.build-command }}
+      - run: ${{ inputs.build-command }} # zizmor: ignore[template-injection] MWPE-822: current callers pass hardcoded Yarn commands.
         if: ${{ inputs.build-command != '' && (inputs.build-artifact == '' || steps.download-build-artifact.outcome == 'failure') }}
 
       - name: Download changed-files artifact
@@ -154,7 +154,7 @@ jobs:
 
       - name: Run E2E tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
-        run: ${{ inputs.test-command }} --retries 1
+        run: ${{ inputs.test-command }} --retries 1 # zizmor: ignore[template-injection] MWPE-822: current callers pass hardcoded Yarn commands.
         env:
           # The properties are picked up by mocha-junit-reporter and added to the XML test results
           PROPERTIES: 'JOB_NAME:${{ env.JOB_NAME }},JOB_ID:${{ job.check_run_id }},RUN_ID:${{ env.RUN_ID }},PR_NUMBER:${{ env.PR_NUMBER }}'

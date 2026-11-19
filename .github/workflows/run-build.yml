@@ -91,7 +91,7 @@ jobs:
         run: yarn webpack:tsc
 
       - name: Run build
-        run: ${{ inputs.build-command }}${{ inputs.bundle-analyzer && ' --bundleAnalyzer' || '' }}
+        run: ${{ inputs.build-command }}${{ inputs.bundle-analyzer && ' --bundleAnalyzer' || '' }} # zizmor: ignore[template-injection] MWPE-822: current callers pass hardcoded Yarn commands.
 
       - name: Validate source maps
         run: yarn validate-source-maps
