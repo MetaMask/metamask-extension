@@ -9,6 +9,7 @@ import {
   getMainnet25EthAssetsControllerPatch,
 } from '../tokens/utils/mocks';
 import { login } from '../../page-objects/flows/login.flow';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 
 describe('Privacy Mode', function () {
   it('should hide fiat balance and token balance when privacy mode is activated', async function () {
@@ -26,7 +27,7 @@ describe('Privacy Mode', function () {
         await homePage.checkExpectedBalanceIsDisplayed('••••••', '••••••');
 
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
 
         const accountList = new AccountListPage(driver);
         await accountList.checkPageIsLoaded();
@@ -60,7 +61,7 @@ describe('Privacy Mode', function () {
         await homePage.checkExpectedBalanceIsDisplayed('$85,025');
 
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
 
         const accountList = new AccountListPage(driver);
         await accountList.checkPageIsLoaded();

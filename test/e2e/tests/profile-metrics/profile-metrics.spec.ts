@@ -5,9 +5,9 @@ import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { Driver } from '../../webdriver/driver';
 import { MockedEndpoint } from '../../mock-e2e';
-import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import { MOCK_ANALYTICS_ID } from '../../constants';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
@@ -214,8 +214,7 @@ describe('Profile Metrics', function () {
           const requestsBeforeAddingAccount = (await authCall.getSeenRequests())
             .length;
 
-          const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.openAccountMenu();
+          await openAccountMenu(driver);
           const accountListPage = new AccountListPage(driver);
           await accountListPage.checkPageIsLoaded();
           await accountListPage.addMultichainAccount();

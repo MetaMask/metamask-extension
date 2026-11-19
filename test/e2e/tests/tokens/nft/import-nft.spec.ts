@@ -7,6 +7,7 @@ import Homepage from '../../../page-objects/pages/home/homepage';
 import ImportNftPage from '../../../page-objects/pages/asset/import-nft-page';
 import NftsTab from '../../../page-objects/pages/home/nfts-tab';
 import { login } from '../../../page-objects/flows/login.flow';
+import { openAccountMenu } from '../../../page-objects/flows/account-menu.flow';
 
 describe('Import NFT', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -71,7 +72,7 @@ describe('Import NFT', function () {
 
         // Create new account with default name Account 2
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkPageIsLoaded();
@@ -81,7 +82,7 @@ describe('Import NFT', function () {
         await homepage.checkExpectedBalanceIsDisplayed('24.997');
 
         // Switch back to Account 1 and check that the NFT is still displayed
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountDisplayedInAccountList('Account 1');
         await accountListPage.switchToAccount('Account 1');

@@ -11,6 +11,7 @@ import AccountDetailsPage from '../../../page-objects/pages/accounts/details-pag
 import { login } from '../../../page-objects/flows/login.flow';
 import { openConnectHardwareWallet } from '../../../page-objects/flows/add-wallet.flow';
 import { checkAccountAddressDisplayedInAccountList } from '../../../page-objects/flows/account-list.flow';
+import { openAccountMenu } from '../../../page-objects/flows/account-menu.flow';
 
 describe('Ledger Hardware', function () {
   it('derives the correct accounts and unlocks the first account', async function () {
@@ -23,7 +24,7 @@ describe('Ledger Hardware', function () {
         await login(driver);
 
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
 
         // Choose connect hardware wallet from the account menu
         const accountListPage = new AccountListPage(driver);
@@ -70,7 +71,7 @@ describe('Ledger Hardware', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('0');
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await checkAccountAddressDisplayedInAccountList(driver, 'Ledger', 1);
       },
     );
@@ -85,7 +86,7 @@ describe('Ledger Hardware', function () {
       async ({ driver }) => {
         await login(driver);
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
 
         // Choose connect hardware wallet from the account menu
         const accountListPage = new AccountListPage(driver);
@@ -121,7 +122,7 @@ describe('Ledger Hardware', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('0');
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await checkAccountAddressDisplayedInAccountList(driver, 'Ledger', 5);
 
         // Remove Ledger 1 account and check Ledger 1 account is removed

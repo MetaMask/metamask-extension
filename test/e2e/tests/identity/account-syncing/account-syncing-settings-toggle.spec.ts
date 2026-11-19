@@ -18,6 +18,7 @@ import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-a
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import { skipOnFirefox } from '../helpers';
 import { mockIdentityServices } from '../mocks';
+import { openAccountMenu } from '../../../page-objects/flows/account-menu.flow';
 import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Settings Toggle', function () {
@@ -66,7 +67,7 @@ describe('Account syncing - Settings Toggle', function () {
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
-        await header.openAccountMenu();
+        await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
@@ -113,7 +114,7 @@ describe('Account syncing - Settings Toggle', function () {
         // Navigate back to wallet to create third account
         await driver.navigate(PAGES.HOME);
         await header.checkPageIsLoaded();
-        await header.openAccountMenu();
+        await openAccountMenu(driver);
         await accountListPage.checkPageIsLoaded();
 
         // Create third account with sync disabled - this should NOT sync to user storage
@@ -145,7 +146,7 @@ describe('Account syncing - Settings Toggle', function () {
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
-        await header.openAccountMenu();
+        await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();

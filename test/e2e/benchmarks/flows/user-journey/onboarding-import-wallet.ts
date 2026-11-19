@@ -15,7 +15,6 @@ import {
   skipPasskeySetup,
 } from '../../../page-objects/flows/onboarding.flow';
 import AccountListPage from '../../../page-objects/pages/accounts/list-page';
-import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../../page-objects/pages/onboarding/onboarding-complete-page';
@@ -44,6 +43,7 @@ import {
 } from '../../../../../shared/constants/benchmarks';
 import { collectWebVitals } from '../../utils';
 import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
+import { openAccountMenu } from '../../../page-objects/flows/account-menu.flow';
 
 export const testTitle = 'benchmark-onboarding-import-wallet';
 export const persona = BENCHMARK_PERSONA.POWER_USER;
@@ -187,8 +187,7 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
         );
 
         // Measure: Account list load
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         steps.push(
           await measureStepWithLongTasks(
             driver,

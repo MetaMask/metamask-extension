@@ -10,6 +10,7 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
 import { closeSettings } from '../../page-objects/flows/settings.flow';
 import { openAddWalletMenu } from '../../page-objects/flows/add-wallet.flow';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 
 describe('Add snap account experimental settings', function (this: Suite) {
   it('switch "Enable Add account snap" to on', async function () {
@@ -23,7 +24,7 @@ describe('Add snap account experimental settings', function (this: Suite) {
 
         // Make sure the "Add snap account" button is not visible.
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         const accountListPage = new AccountListPage(driver);
         const chooseWalletTypePage = new ChooseWalletTypePage(driver);
         await openAddWalletMenu(driver);
@@ -42,7 +43,7 @@ describe('Add snap account experimental settings', function (this: Suite) {
         await experimentalSettings.toggleAddAccountSnap();
         await closeSettings(driver);
         // Make sure the "Add account Snap" button is visible.
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await openAddWalletMenu(driver);
         await chooseWalletTypePage.checkSnapAccountOptionIsDisplayed();
       },

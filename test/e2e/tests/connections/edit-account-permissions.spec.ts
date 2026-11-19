@@ -6,13 +6,13 @@ import {
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
-import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
 import { getEditConnectedAccountsPageForHost } from '../../page-objects/flows/permissions.flow';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { login } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 
 const accountLabel1 = 'Account 1';
 const accountLabel2 = 'Account 2';
@@ -39,7 +39,7 @@ describe('Edit Accounts Permissions', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await new Homepage(driver).checkPageIsLoaded();
-        new HeaderNavbar(driver).openAccountMenu();
+        await openAccountMenu(driver);
 
         // create second account with custom label
         const accountListPage = new AccountListPage(driver);
@@ -53,7 +53,7 @@ describe('Edit Accounts Permissions', function () {
         await homepage.checkExpectedBalanceIsDisplayed();
 
         // create third account with custom label
-        await homepage.headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await accountListPage.checkPageIsLoaded();
         await accountListPage.addMultichainAccount();
         await accountListPage.checkAccountDisplayedInAccountList(accountLabel3);
@@ -63,7 +63,7 @@ describe('Edit Accounts Permissions', function () {
         await homepage.checkExpectedBalanceIsDisplayed();
 
         // select back Account 1
-        await homepage.headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await accountListPage.checkPageIsLoaded();
         await accountListPage.selectAccount(accountLabel1);
 

@@ -8,7 +8,6 @@ import { generateWalletState } from '../../../../../app/scripts/fixtures/generat
 import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
 import AccountListPage from '../../../page-objects/pages/accounts/list-page';
-import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import { userStorageHostMock } from '../../mocks/performance-mocks';
 import { mockNotificationServices } from '../../../tests/notifications/mocks';
 import {
@@ -26,6 +25,7 @@ import type {
   PageLoadBenchmarkOptions,
   MeasurePageResult,
 } from '../../utils/types';
+import { openAccountMenu } from '../../../page-objects/flows/account-menu.flow';
 
 async function measurePagePowerUser(
   pageName: string,
@@ -62,7 +62,7 @@ async function measurePagePowerUser(
         await driver.navigate(pageName);
 
         // Confirm the number of accounts in the account list
-        await new HeaderNavbar(driver).openAccountMenu();
+        await openAccountMenu(driver);
         const accountListPage = new AccountListPage(driver);
 
         // Wait for Account Sync to finish.
