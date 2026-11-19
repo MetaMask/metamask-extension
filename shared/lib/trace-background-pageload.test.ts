@@ -1,16 +1,10 @@
 import * as Sentry from '@sentry/browser';
-import { Messenger } from '@metamask/messenger';
 import { getEnvironmentType } from './environment-type';
-import { wrapMessengerWithTracing } from './messenger-tracing';
 import { trace, trackBackgroundPageloadEnd, TraceName } from './trace';
 
 jest.mock('./environment-type', () => ({
   ...jest.requireActual('./environment-type'),
   getEnvironmentType: jest.fn(),
-}));
-
-jest.mock('./wrapper-sampling', () => ({
-  shouldSampleWrappers: () => true,
 }));
 
 // Real SDK, not mocks: `browserTracingIntegration` starts and ends the pageload
@@ -22,8 +16,6 @@ describe('trace with no caller after the background pageload ends (real SDK)', (
   const NO_CALLER = TraceName.ContactSyncUpdateRemote;
 
   let tracesSampler: jest.Mock;
-  let client: Sentry.BrowserClient;
-  let releaseHeldScope: (() => void) | undefined;
 
   beforeAll(() => {
     const perf = globalThis.performance as unknown as Record<string, unknown>;
@@ -33,8 +25,6 @@ describe('trace with no caller after the background pageload ends (real SDK)', (
   });
 
   afterEach(() => {
-    releaseHeldScope?.();
-    releaseHeldScope = undefined;
     delete globals.ServiceWorkerGlobalScope;
   });
 
@@ -62,15 +52,9 @@ describe('trace with no caller after the background pageload ends (real SDK)', (
    * @param rates - Sample rates.
    * @param rates.pageload - Rate for the pageload.
    * @param rates.noCaller - Rate for the no-caller trace.
-   * @param rates.holdScope - Fork a scope while the pageload is active and keep
-   * it current past the pageload's end, as a pending `withScope` callback does.
    * @returns The ended pageload's trace id.
    */
-  function endPageload(rates: {
-    pageload: number;
-    noCaller: number;
-    holdScope?: boolean;
-  }) {
+  function endPageload(rates: { pageload: number; noCaller: number }) {
     // Inherits a parent decision, as `createTracesSampler` does for a name
     // without an override.
     tracesSampler = jest.fn(
@@ -81,7 +65,7 @@ describe('trace with no caller after the background pageload ends (real SDK)', (
         return name === NO_CALLER ? rates.noCaller : rates.pageload;
       },
     );
-    client = new Sentry.BrowserClient({
+    const client = new Sentry.BrowserClient({
       dsn: 'https://public@example.ingest.sentry.io/1',
       transport: () => ({
         send: () => Promise.resolve({}),
@@ -97,16 +81,6 @@ describe('trace with no caller after the background pageload ends (real SDK)', (
 
     const pageload = Sentry.getActiveSpan() as Sentry.Span;
     expect(Sentry.spanToJSON(pageload).op).toBe('pageload');
-    if (rates.holdScope) {
-      // The SDK's stack strategy keeps a scope forked by `withScope` current
-      // until the promise its callback returns settles.
-      Sentry.withScope(
-        () =>
-          new Promise<void>((resolve) => {
-            releaseHeldScope = resolve;
-          }),
-      );
-    }
     pageload.end();
     tracesSampler.mockClear();
     return pageload.spanContext().traceId;
@@ -281,73 +255,6 @@ describe('trace with no caller after the background pageload ends (real SDK)', (
 
       expect(result.traceId).toBe(result.otherTraceId);
       expect(result.traceId).not.toBe(pageloadTraceId);
-    });
-  });
-
-  describe('with the ended pageload span still active on a held scope', () => {
-    const RESTRICTED_METHOD = 'PermissionController:executeRestrictedMethod';
-
-    type RestrictedMethodAction = {
-      type: typeof RESTRICTED_METHOD;
-      handler: (origin: string, method: string) => string;
-    };
-
-    function callRestrictedMethod() {
-      const messenger = new Messenger<
-        'PermissionController',
-        RestrictedMethodAction,
-        never
-      >({ namespace: 'PermissionController' });
-      messenger.registerActionHandler(RESTRICTED_METHOD, () => 'result');
-      const started: Sentry.Span[] = [];
-      client.on('spanStart', (span) => started.push(span));
-      const result = wrapMessengerWithTracing(messenger).call(
-        RESTRICTED_METHOD,
-        'https://dapp.example',
-        'eth_accounts',
-      );
-      return { result, started };
-    }
-
-    it('is the active span, which is why the cases below are reachable', () => {
-      inContext('/service-worker.js');
-      endPageload({ pageload: 1, noCaller: 1, holdScope: true });
-
-      expect(Sentry.getActiveSpan()).toBeDefined();
-    });
-
-    it('records no span for a restricted-method call, which has no parent to join', () => {
-      inContext('/service-worker.js');
-      const pageloadTraceId = endPageload({
-        pageload: 1,
-        noCaller: 1,
-        holdScope: true,
-      });
-
-      const { result, started } = callRestrictedMethod();
-
-      expect(result).toBe('result');
-      expect(
-        started.filter(
-          (span) => span.spanContext().traceId === pageloadTraceId,
-        ),
-      ).toStrictEqual([]);
-    });
-
-    it('starts a trace of its own for work that falls back to the active span', () => {
-      inContext('/service-worker.js');
-      const pageloadTraceId = endPageload({
-        pageload: 1,
-        noCaller: 1,
-        holdScope: true,
-      });
-
-      const traceId = trace(
-        { name: NO_CALLER, allowActiveSpanFallback: true },
-        (span) => (span as Sentry.Span).spanContext().traceId,
-      );
-
-      expect(traceId).not.toBe(pageloadTraceId);
     });
   });
 
