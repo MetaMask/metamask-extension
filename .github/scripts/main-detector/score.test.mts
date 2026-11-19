@@ -27,6 +27,22 @@ function makeJob(headFactor: number, jitter = 0, success = true): JobResult {
   return { sessions, samples: { uiStartup: values, load: values } };
 }
 
+// A job that follows an A/B sequence such as the harness runs, with the head (B)
+// slower by headFactor. The first two sessions are warm-up and slower.
+function makeSequencedJob(sequence: string, headFactor: number): JobResult {
+  const sessions = [...sequence].map((letter, index) => ({
+    index,
+    build: letter as 'A' | 'B',
+    success: true,
+    pageLoads: 1,
+  }));
+  const values = sessions.map((session) => {
+    const level = session.index < 2 ? 1500 : 1000;
+    return session.build === 'B' ? level * headFactor : level;
+  });
+  return { sessions, samples: { uiStartup: values, load: values } };
+}
+
 function makeJobs(factors: number[]): JobResult[] {
   return factors.map((factor) => makeJob(factor));
 }
@@ -78,6 +94,30 @@ describe('jobLogRatios', () => {
     (job.samples.uiStartup as (number | null)[])[6] = null;
     const ratios = jobLogRatios(job, ['uiStartup'], 2);
     expect(ratios?.uiStartup).toBeCloseTo(Math.log(1.03), 10);
+  });
+
+  it('scores a flipped job, where the head runs first, like a normal one', () => {
+    const sequence = 'ABBABAABAB';
+    const flipped = [...sequence]
+      .map((letter) => (letter === 'A' ? 'B' : 'A'))
+      .join('');
+    for (const order of [sequence, flipped]) {
+      const ratios = jobLogRatios(
+        makeSequencedJob(order, 1.03),
+        ['uiStartup'],
+        2,
+      );
+      expect(ratios?.uiStartup).toBeCloseTo(Math.log(1.03), 10);
+    }
+  });
+
+  it('attributes each session to its recorded build, not to its position', () => {
+    // Every even index is the head here, the opposite of makeJob.
+    const job = makeSequencedJob('BABABABABA', 1.03);
+    expect(jobLogRatios(job, ['uiStartup'], 2)?.uiStartup).toBeCloseTo(
+      Math.log(1.03),
+      10,
+    );
   });
 
   it('skips metrics a build does not record', () => {

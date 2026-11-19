@@ -6,7 +6,7 @@
  */
 import fs from 'node:fs';
 import { parseArgs } from 'node:util';
-import { BUILD_HOST, buildZipUrl } from './build-source.mts';
+import { buildZipUrl } from './build-source.mts';
 import { BROWSERS } from './score.mts';
 import {
   fingerprint,

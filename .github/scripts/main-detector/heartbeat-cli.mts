@@ -53,8 +53,13 @@ async function main(): Promise<void> {
     },
   });
   requireWebhookInCi(process.env.SLACK_WEBHOOK_MAIN_DETECTOR);
-  const to = latestSlot(Date.now()) - Number(values['settle-hours']) * HOUR_MS;
-  const from = to - Number(values['window-hours']) * HOUR_MS;
+  const settleHours = Number(values['settle-hours']);
+  const windowHours = Number(values['window-hours']);
+  if (!(settleHours >= 0) || !(windowHours > 0)) {
+    throw new Error('--settle-hours must be >= 0 and --window-hours > 0');
+  }
+  const to = latestSlot(Date.now()) - settleHours * HOUR_MS;
+  const from = to - windowHours * HOUR_MS;
 
   // Main runs can start long before they finish, so look back further.
   const mainRuns = listRuns(
@@ -67,7 +72,8 @@ async function main(): Promise<void> {
   });
   const detectorRuns = listRuns('main-detector.yml', new Date(from))
     .map((run) => ({ ...run, sha: shaOf(run.title) }))
-    .filter((run) => run.sha !== '');
+    // Positive controls and canaries say nothing about whether the commit was checked.
+    .filter((run) => run.sha !== '' && !/\((aa|inject)\)/u.test(run.title));
 
   const health = assessHealth(mainRuns, detectorRuns);
   const line = `Main finished ${health.expected} commit(s) between ${new Date(from).toISOString()} and ${new Date(to).toISOString()}: ${health.missing.length} without a detector run, ${health.failed.length} with only failed runs (${health.status}).`;

@@ -35,12 +35,14 @@ on:
         type: boolean
         default: false
 
-run-name: ${{ format('Main performance detector {0}{1}{2}', inputs.head_sha || github.event.workflow_run.head_sha || github.sha, inputs.mode == 'aa' && ' (aa)' || '', inputs.inject_head_ms && ' (inject)' || '') }}
+run-name: ${{ format('Main performance detector {0}{1}{2}', inputs.head_sha || github.event.workflow_run.head_sha || 'latest-main', inputs.mode == 'aa' && ' (aa)' || '', inputs.inject_head_ms && ' (inject)' || '') }}
 
 # One run per commit. Runs for different commits are independent and none is
-# cancelled: a later merge must not drop the check of an earlier one.
+# cancelled: a later merge must not drop the check of an earlier one. A dispatch
+# with no head_sha measures the tip of main, which a title cannot name, so it
+# is called latest-main and no commit's heartbeat or re-run check counts it.
 concurrency:
-  group: main-detector-${{ inputs.head_sha || github.event.workflow_run.head_sha || github.sha }}
+  group: main-detector-${{ inputs.head_sha || github.event.workflow_run.head_sha || 'latest-main' }}
   cancel-in-progress: false
 
 permissions:
@@ -107,13 +109,31 @@ jobs:
                 created: `>=${since}`,
                 per_page: 100,
               });
-              const checked = runs.some(
+              // A run that could not measure leaves detector-unmeasured, not a verdict.
+              let checked = false;
+              const earlier = runs.filter(
                 (run) =>
                   run.id !== context.runId &&
-                  run.display_title.includes(head) &&
-                  !/\((aa|inject)\)/u.test(run.display_title) &&
-                  (run.conclusion === 'success' || run.conclusion === null),
+                  run.event === 'workflow_run' &&
+                  run.display_title.includes(head),
               );
+              for (const run of earlier) {
+                if (run.conclusion === null) {
+                  checked = true;
+                  break;
+                }
+                if (run.conclusion !== 'success') continue;
+                const artifacts = await github.paginate(github.rest.actions.listWorkflowRunArtifacts, {
+                  owner,
+                  repo,
+                  run_id: run.id,
+                  per_page: 100,
+                });
+                if (artifacts.some((a) => a.name === 'detector-result' || a.name === 'detector-skip')) {
+                  checked = true;
+                  break;
+                }
+              }
               if (checked) {
                 await finish(
                   'already checked (Main re-run)',
@@ -170,7 +190,7 @@ jobs:
         run: |
           set -euo pipefail
           # Commits only: trees and blobs are fetched on demand, since the deep fetch took about a minute.
-          git fetch --no-tags --depth=150 --filter=tree:0 origin main
+          git fetch --no-tags --depth=150 --filter=tree:0 origin "$HEAD_SHA"
           head=$(git rev-parse "$HEAD_SHA")
           summary() { printf '## Main performance detector\n\n%s\n' "$1" >> "$GITHUB_STEP_SUMMARY"; }
           if [[ -n "$INJECT" && ! "$INJECT" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
@@ -184,7 +204,7 @@ jobs:
           # An A/A canary never uses the base, so a missing one does not matter.
           if [[ "$status" != measure && ! ( "$MODE" == aa && "$status" == no-base ) ]]; then
             summary "Head \`${head:0:10}\`: **could not measure** ($status). No build for the head, or none for any of its recent ancestors."
-            printf '{"headSha":"%s","label":"could not measure (%s)"}\n' "$head" "$status" > skip.json
+            printf '{"headSha":"%s","label":"could not measure (%s)"}\n' "$head" "$status" > unmeasured.json
             echo "proceed=false" >> "$GITHUB_OUTPUT"
             # A successful Main run always leaves a build, so a missing one
             # means the lookup is broken; fail so the heartbeat reports it.
@@ -241,6 +261,17 @@ jobs:
         with:
           name: detector-skip
           path: skip.json
+          overwrite: true
+          retention-days: 30
+
+      # Kept apart from detector-skip so a Main re-run can tell "decided" from "could not decide".
+      - name: Upload the could-not-measure verdict
+        if: ${{ always() && hashFiles('unmeasured.json') != '' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: detector-unmeasured
+          path: unmeasured.json
+          overwrite: true
           retention-days: 30
 
   measure-first:
@@ -339,6 +370,7 @@ jobs:
         with:
           name: detector-result
           path: result.json
+          overwrite: true
           retention-days: 30
 
       - name: Post to Slack
