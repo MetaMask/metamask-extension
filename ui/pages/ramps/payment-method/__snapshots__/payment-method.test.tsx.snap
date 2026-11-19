@@ -1162,7 +1162,6 @@ exports[`RampsPaymentMethodScreen opens provider selection modal when change pro
           </header>
           <div
             class="relative max-h-full overflow-y-auto px-0 pt-0"
-            tabindex="0"
           >
             <div
               class="max-h-[60vh] overflow-y-auto"

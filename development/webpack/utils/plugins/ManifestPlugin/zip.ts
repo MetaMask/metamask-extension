@@ -35,7 +35,7 @@ export type ZipCompressionOptions = Pick<ZipOptions['zipOptions'], 'level'>;
 type CreateBrowserZipBuilderOptions = {
   compressionOptions: ZipCompressionOptions;
   excludeExtensions: string[];
-  manifest: sources.RawSource;
+  assets: Record<string, sources.RawSource>;
   mtime: number;
   onAssetAdded: (assetName: string) => void;
 };
@@ -61,7 +61,7 @@ export type BrowserZipBuilder = {
  * @param options - Zip generation options.
  * @param options.compressionOptions - ZIP compression settings.
  * @param options.excludeExtensions - Asset extensions to skip entirely.
- * @param options.manifest - The browser-specific manifest source.
+ * @param options.assets - Required browser-specific JSON files, including the manifest.
  * @param options.mtime - The zip entry modification time.
  * @param options.onAssetAdded - Progress callback for each added file.
  * @returns The zip builder.
@@ -69,7 +69,7 @@ export type BrowserZipBuilder = {
 export function createBrowserZipBuilder({
   compressionOptions,
   excludeExtensions,
-  manifest,
+  assets,
   mtime,
   onAssetAdded,
 }: CreateBrowserZipBuilderOptions): BrowserZipBuilder {
@@ -112,15 +112,17 @@ export function createBrowserZipBuilder({
     }
   });
 
-  addAssetToZip(
-    manifest.buffer(),
-    'manifest.json',
-    true,
-    compressionOptions,
-    zipEntryDate,
-    zipFile,
-  );
-  onAssetAdded('manifest.json');
+  for (const [filename, source] of Object.entries(assets)) {
+    addAssetToZip(
+      source.buffer(),
+      filename,
+      true,
+      compressionOptions,
+      zipEntryDate,
+      zipFile,
+    );
+    onAssetAdded(filename);
+  }
 
   const addAsset = (assetName: string, asset: sources.Source) => {
     if (finalized) {
