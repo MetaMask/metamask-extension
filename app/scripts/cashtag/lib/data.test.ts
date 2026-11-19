@@ -135,7 +135,7 @@ describe('resolveTicker', () => {
             assetId: 'eip155:1/erc20:0xexact',
             symbol: 'msft',
             name: 'Exact symbol',
-            rwaData: { ticker: 'OTHER' },
+            rwaData: { ticker: 'MSFT' },
             marketCap: 10,
           },
         ],
