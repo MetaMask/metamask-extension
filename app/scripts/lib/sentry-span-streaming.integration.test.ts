@@ -102,6 +102,7 @@ describe('span streaming (integration with the shipped Sentry options)', () => {
   });
 
   afterEach(async () => {
+    jest.restoreAllMocks();
     delete (globalThis as { sentry?: unknown }).sentry;
     await Sentry.close();
   });
@@ -209,6 +210,70 @@ describe('span streaming (integration with the shipped Sentry options)', () => {
     expect(
       attributeNames.filter((name) => /^(client\.address|user\.)/u.test(name)),
     ).toStrictEqual([]);
+  });
+
+  // Relay infers `browser.name` for a streamed span but no OS, so the segment
+  // span carries `os.name` parsed from the user agent the SDK already sends.
+  // The values are the ones transaction events had in production.
+  const userAgentsByOs: [string, string][] = [
+    [
+      'Windows',
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+    ],
+    [
+      'Mac OS X',
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+    ],
+    [
+      'Linux',
+      'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+    ],
+    [
+      'Ubuntu',
+      'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0',
+    ],
+    [
+      'Chrome OS',
+      'Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+    ],
+    [
+      'Android',
+      'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+    ],
+    [
+      'iOS',
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
+    ],
+  ];
+
+  for (const [osName, userAgent] of userAgentsByOs) {
+    it(`sets \`os.name\` ${osName} on the segment span only`, async () => {
+      jest
+        .spyOn(window.navigator, 'userAgent', 'get')
+        .mockReturnValue(userAgent);
+      trace({ name: TraceName.Transaction }, () =>
+        trace({ name: 'Child' as TraceName }, () => undefined),
+      );
+      await Sentry.flush();
+
+      const spans = sentSpans();
+      const segment = spans.find((span) => span.is_segment);
+      expect(segment?.attributes['os.name']?.value).toBe(osName);
+      expect(
+        spans.filter(
+          (span) => !span.is_segment && 'os.name' in span.attributes,
+        ),
+      ).toStrictEqual([]);
+    });
+  }
+
+  it('sets no `os.name` for a user agent it does not recognise', async () => {
+    jest.spyOn(window.navigator, 'userAgent', 'get').mockReturnValue('curl/8');
+    trace({ name: TraceName.Transaction }, () => undefined);
+    await Sentry.flush();
+
+    const segment = sentSpans().find((span) => span.is_segment);
+    expect(segment?.attributes).not.toHaveProperty('os.name');
   });
 
   // Sentry rejects a span envelope whose `trace` header lacks `public_key`
