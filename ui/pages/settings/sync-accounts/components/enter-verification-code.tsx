@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
   Box,
   Text,
@@ -14,20 +14,18 @@ import {
 import { useSelector } from 'react-redux';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { QrSyncErrorCodes } from '../../../../../shared/constants/qr-sync';
 import {
-  QR_SYNC_TIMEOUT_MS,
-  QrSyncErrorCodes,
-} from '../../../../../shared/constants/qr-sync';
-import { selectQrSyncError } from '../../../../selectors/qr-sync/qr-sync';
+  selectQrSyncError,
+  selectQrSyncExpiresAt,
+} from '../../../../selectors/qr-sync/qr-sync';
+import { useQrSyncCountdown } from '../hooks/use-qr-sync-countdown';
 
 const CODE_LENGTH = 6;
 const NON_DIGITS_REGEX = /\D/gu;
 const SINGLE_DIGIT_REGEX = /^[0-9]$/u;
-// TODO: source this from the controller
 
 const createEmptyCode = () => new Array<string>(CODE_LENGTH).fill('');
-const MWP_SESSION_REQUEST_EXPIRY_SECONDS =
-  QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT / 1000;
 
 type EnterVerificationCodeProps = {
   onRestart: () => void;
@@ -36,27 +34,14 @@ type EnterVerificationCodeProps = {
 const EnterVerificationCode = ({ onRestart }: EnterVerificationCodeProps) => {
   const t = useI18nContext();
   const qrSyncError = useSelector(selectQrSyncError);
+  const expiresAt = useSelector(selectQrSyncExpiresAt);
+  const secondsLeft = useQrSyncCountdown(expiresAt);
   const hasMaxedOutAttempts =
     qrSyncError?.code === QrSyncErrorCodes.OTP_ATTEMPTS_EXCEEDED;
   const [isError, setIsError] = useState(false);
   const [code, setCode] = useState<string[]>(createEmptyCode);
-  const [secondsLeft, setSecondsLeft] = useState(
-    MWP_SESSION_REQUEST_EXPIRY_SECONDS,
-  );
-  const isExpired = secondsLeft <= 0;
+  const isExpired = secondsLeft === 0;
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-
-  useEffect(() => {
-    if (isExpired) {
-      return undefined;
-    }
-
-    const intervalId = setInterval(() => {
-      setSecondsLeft((prev) => Math.max(prev - 1, 0));
-    }, 1000);
-
-    return () => clearInterval(intervalId);
-  }, [isExpired]);
 
   const focusInput = useCallback((index: number) => {
     const clampedIndex = Math.max(0, Math.min(index, CODE_LENGTH - 1));
@@ -247,7 +232,7 @@ const EnterVerificationCode = ({ onRestart }: EnterVerificationCodeProps) => {
         alignItems={BoxAlignItems.Center}
         gap={1}
       >
-        {!isExpired && !hasMaxedOutAttempts && (
+        {secondsLeft !== null && !isExpired && !hasMaxedOutAttempts && (
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             {t('enter_verification_code_expires_in', [secondsLeft])}
           </Text>

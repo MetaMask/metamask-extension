@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import qrCode from 'qrcode-generator';
 import {
   Box,
@@ -14,12 +14,12 @@ import {
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Skeleton } from '../../../../components/component-library/skeleton';
-import { selectQrSyncQrPayload } from '../../../../selectors/qr-sync/qr-sync';
+import {
+  selectQrSyncExpiresAt,
+  selectQrSyncQrPayload,
+} from '../../../../selectors/qr-sync/qr-sync';
 import { ENVIRONMENT } from '../../../../../shared/constants/build';
-import { QR_SYNC_TIMEOUT_MS } from '../../../../../shared/constants/qr-sync';
-
-const MWP_SESSION_REQUEST_EXPIRY_SECONDS =
-  QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT / 1000;
+import { useQrSyncCountdown } from '../hooks/use-qr-sync-countdown';
 
 /** Minimal type for qrcode-generator instance (no @types package) */
 type QRCodeInstance = {
@@ -39,6 +39,8 @@ type QrCodeScanProps = {
 const QrCodeScan = ({ onRestart }: QrCodeScanProps) => {
   const t = useI18nContext();
   const qrPayload = useSelector(selectQrSyncQrPayload);
+  const expiresAt = useSelector(selectQrSyncExpiresAt);
+  const secondsLeft = useQrSyncCountdown(expiresAt);
   const [lastQrPayload, setLastQrPayload] = useState<string | null>(null);
 
   if (qrPayload && qrPayload !== lastQrPayload) {
@@ -55,28 +57,8 @@ const QrCodeScan = ({ onRestart }: QrCodeScanProps) => {
     qrImage.make();
     return qrImage.createDataURL(QR_CODE_CELL_SIZE, QR_CODE_MARGIN);
   }, [displayedPayload]);
-  const [secondsLeft, setSecondsLeft] = useState(
-    () => MWP_SESSION_REQUEST_EXPIRY_SECONDS,
-  );
-  const isExpired = secondsLeft <= 0;
+  const isExpired = secondsLeft === 0;
   const shouldDimQr = isExpired;
-
-  useEffect(() => {
-    if (shouldDimQr) {
-      return undefined;
-    }
-
-    const intervalId = setInterval(() => {
-      setSecondsLeft((prev) => Math.max(prev - 1, 0));
-    }, 1000);
-
-    return () => clearInterval(intervalId);
-  }, [shouldDimQr]);
-
-  const handleReset = useCallback(() => {
-    setSecondsLeft(MWP_SESSION_REQUEST_EXPIRY_SECONDS);
-    onRestart();
-  }, [onRestart]);
 
   const renderResetBlock = (message: string) => (
     <Box
@@ -89,17 +71,17 @@ const QrCodeScan = ({ onRestart }: QrCodeScanProps) => {
       </Text>
       <TextButton
         data-testid="qr-sync-generate-new-qr-code"
-        onClick={handleReset}
+        onClick={onRestart}
       >
         {t('generateNewQrCode')}
       </TextButton>
     </Box>
   );
 
-  let statusContent;
+  let statusContent = null;
   if (isExpired) {
     statusContent = renderResetBlock(t('qrCodeExpired'));
-  } else {
+  } else if (secondsLeft !== null) {
     statusContent = (
       <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
         {t('qrCodeExpiresIn', [secondsLeft])}

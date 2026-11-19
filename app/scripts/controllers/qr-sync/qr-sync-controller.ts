@@ -555,6 +555,7 @@ export class QrSyncController extends BaseController<
       state.qrSyncPhase = QR_SYNC_PHASES.DISPLAYING_QR;
       state.qrSyncConnectionStatus = QrSyncConnectionStatus.CONNECTING;
       state.qrSyncCreatedAt = state.qrSyncCreatedAt ?? Date.now();
+      state.qrSyncExpiresAt = request.expiresAt;
       state.qrSyncUpdatedAt = Date.now();
       state.qrSyncError = null;
     });
@@ -564,8 +565,11 @@ export class QrSyncController extends BaseController<
     this.#otpSubmitCallback = payload.submit;
     this.#otpCancelCallback = payload.cancel;
 
+    const otpExpiresAt = Date.now() + QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT;
+
     this.update((state) => {
       state.qrSyncPhase = QR_SYNC_PHASES.AWAITING_OTP_INPUT;
+      state.qrSyncExpiresAt = otpExpiresAt;
       state.qrSyncUpdatedAt = Date.now();
       state.qrSyncError = null;
     });
@@ -575,27 +579,30 @@ export class QrSyncController extends BaseController<
     //   type: QrSyncActionTypes.OTP_DISPLAY_GRANT,
     // });
 
-    this.#scheduleOtpTimeout();
+    this.#scheduleOtpTimeout(otpExpiresAt);
 
     this.#finishSubmission();
   }
 
-  #scheduleOtpTimeout(): void {
+  #scheduleOtpTimeout(expiresAt: number): void {
     this.#clearOtpTimeout();
 
-    this.#otpTimeoutId = setTimeout(() => {
-      if (this.state.qrSyncPhase !== QR_SYNC_PHASES.AWAITING_OTP_INPUT) {
-        return;
-      }
+    this.#otpTimeoutId = setTimeout(
+      () => {
+        if (this.state.qrSyncPhase !== QR_SYNC_PHASES.AWAITING_OTP_INPUT) {
+          return;
+        }
 
-      this.#setError({
-        qrSyncError: {
-          code: QrSyncErrorCodes.OTP_EXPIRED,
-          message: QrSyncErrorMessages.OTP_EXPIRED,
-        },
-        cancelOtp: false, // we don't need to invoke the OTP cancel callback here because the OTP has already expired
-      });
-    }, QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT);
+        this.#setError({
+          qrSyncError: {
+            code: QrSyncErrorCodes.OTP_EXPIRED,
+            message: QrSyncErrorMessages.OTP_EXPIRED,
+          },
+          cancelOtp: false, // we don't need to invoke the OTP cancel callback here because the OTP has already expired
+        });
+      },
+      Math.max(expiresAt - Date.now(), 0),
+    );
   }
 
   #clearOtpTimeout(): void {
