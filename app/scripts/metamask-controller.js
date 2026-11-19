@@ -233,7 +233,6 @@ import {
   trackEvent,
   trackPage,
 } from './controllers/analytics';
-import Backup from './lib/backup';
 import { handleRampsOrderStatusChanged } from './lib/ramps/handleRampsOrderStatusChanged';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import {
@@ -345,7 +344,6 @@ import { TokenDetectionControllerInit } from './messenger-client-init/token-dete
 import { TokensControllerInit } from './messenger-client-init/tokens-controller-init';
 import { StaticAssetsControllerInit } from './messenger-client-init/static-assets-controller-init';
 import { RatesControllerInit } from './messenger-client-init/rates-controller-init';
-import { CurrencyRateControllerInit } from './messenger-client-init/currency-rate-controller-init';
 import { NameControllerInit } from './messenger-client-init/confirmations/name-controller-init';
 import { ShieldSubscriptionServiceInit } from './messenger-client-init/subscription';
 import { NetworkConnectionBannerControllerInit } from './messenger-client-init/network-connection-banner';
@@ -393,7 +391,6 @@ import { MoneyAccountUpgradeControllerInit } from './messenger-client-init/money
 import { initializeWallet } from './wallet-init/initialization';
 import { setupNetworkEnablementController } from './wallet-init/network-enablement-controller';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
-import { getTransactionControllerApi } from './wallet-init/instance-options/transaction-controller';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -591,7 +588,6 @@ export default class MetamaskController extends EventEmitter {
       NftController: NftControllerInit,
       AssetsContractController: AssetsContractControllerInit,
       NftDetectionController: NftDetectionControllerInit,
-      CurrencyRateController: CurrencyRateControllerInit,
       RatesController: RatesControllerInit,
       TokenDetectionController: TokenDetectionControllerInit,
       TokensController: TokensControllerInit,
@@ -747,7 +743,6 @@ export default class MetamaskController extends EventEmitter {
     this.tokenDetectionController =
       messengerClientsByName.TokenDetectionController;
     this.tokensController = messengerClientsByName.TokensController;
-    this.currencyRateController = messengerClientsByName.CurrencyRateController;
     this.multichainNetworkController =
       messengerClientsByName.MultichainNetworkController;
     this.multichainRatesController = messengerClientsByName.RatesController;
@@ -794,12 +789,6 @@ export default class MetamaskController extends EventEmitter {
     this.configRegistryController = this.wallet.getInstance(
       'ConfigRegistryController',
     );
-    this.backup = new Backup({
-      preferencesController: this.preferencesController,
-      addressBookController: this.addressBookController,
-      accountsController: this.accountsController,
-      networkController: this.networkController,
-    });
     this.geolocationController = this.wallet.getInstance(
       'GeolocationController',
     );
@@ -1394,7 +1383,6 @@ export default class MetamaskController extends EventEmitter {
       GeolocationController: this.geolocationController,
       MetaMetricsDataDeletionController: this.metaMetricsDataDeletionController,
       AddressBookController: this.addressBookController,
-      CurrencyController: this.currencyRateController,
       MultichainNetworkController: this.multichainNetworkController,
       NetworkController: this.networkController,
       AlertController: this.alertController,
@@ -1457,7 +1445,6 @@ export default class MetamaskController extends EventEmitter {
         MetaMetricsDataDeletionController:
           this.metaMetricsDataDeletionController,
         AddressBookController: this.addressBookController,
-        CurrencyController: this.currencyRateController,
         AlertController: this.alertController,
         OnboardingController: this.onboardingController,
         PasskeyController: this.passkeyController,
@@ -2400,7 +2387,7 @@ export default class MetamaskController extends EventEmitter {
    * New methods should be defined in controllers and exposed via the messenger, rather than being added to this API object.
    */
   getApi() {
-    const { appStateController, backup } = this;
+    const { appStateController } = this;
 
     return {
       // AppStateController
@@ -2425,11 +2412,6 @@ export default class MetamaskController extends EventEmitter {
 
       trackAnalyticsEvent: trackEvent,
       trackMetaMetricsPage: trackPage,
-
-      // Backup
-
-      backupUserData: backup.backupUserData.bind(backup),
-      restoreUserData: backup.restoreUserData.bind(backup),
     };
   }
 
@@ -3466,7 +3448,6 @@ export default class MetamaskController extends EventEmitter {
     const api = {
       ...this.getApi(),
       ...this.messengerClientApi,
-      ...getTransactionControllerApi(this.txController),
       ...(perpsStream ? perpsStream.bridgeApi() : {}),
       startSendingPatches: () => {
         onStartSendingPatchesOrStreamClosed();
@@ -4011,6 +3992,15 @@ export default class MetamaskController extends EventEmitter {
     if (subjectType === SubjectType.Snap && isSnapPreinstalled(origin)) {
       engine.push(
         createPreinstalledSnapsMiddleware({
+          getEvmScopes: () => {
+            const chainIds = Object.keys(
+              this.controllerMessenger.call('NetworkController:getState')
+                .networkConfigurationsByChainId,
+            );
+            return chainIds.map(
+              (chainId) => `eip155:${BigInt(chainId).toString(10)}`,
+            );
+          },
           getPermissions: this.permissionController.getPermissions.bind(
             this.permissionController,
             origin,
@@ -4234,7 +4224,13 @@ export default class MetamaskController extends EventEmitter {
             // `captureException` imported from `@sentry/browser` does not seem to
             // work in E2E tests. This is a workaround which works in both E2E
             // tests and production.
-            return global.sentry?.captureException?.(error);
+            if (subjectType !== SubjectType.Snap) {
+              return global.sentry?.captureException?.(error);
+            }
+
+            return global.sentry?.captureException?.(error, {
+              tags: { feature: 'snaps', snap_id: origin },
+            });
           },
           trackEvent: (payload, options) => {
             trackEvent(
@@ -5112,7 +5108,6 @@ export default class MetamaskController extends EventEmitter {
   onClientClosed() {
     try {
       this.gasFeeController.stopAllPolling();
-      this.currencyRateController.stopAllPolling();
       this.tokenDetectionController.stopAllPolling();
       this.staticAssetsController.stopAllPolling();
       this.appStateController.clearPollingTokens();
@@ -5139,7 +5134,6 @@ export default class MetamaskController extends EventEmitter {
       // We don't know which controller the token is associated with, so try them all.
       // Consider storing the tokens per controller in state instead.
       this.gasFeeController.stopPollingByPollingToken(pollingToken);
-      this.currencyRateController.stopPollingByPollingToken(pollingToken);
       this.tokenDetectionController.stopPollingByPollingToken(pollingToken);
       this.staticAssetsController.stopPollingByPollingToken(pollingToken);
       this.accountTrackerController.stopPollingByPollingToken(pollingToken);
