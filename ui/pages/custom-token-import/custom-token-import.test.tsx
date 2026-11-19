@@ -578,4 +578,102 @@ describe('CustomTokenImportPage', () => {
       screen.getByTestId('custom-token-import-submit-button'),
     ).toBeDisabled();
   });
+
+  it('shows a non-blocking mainnet token warning when importing a mainnet token address on another network', async () => {
+    const actions = getMockedActions();
+    const daiAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
+    const apeAddress = '0x1111111111111111111111111111111111111111';
+
+    actions.getTokenStandardAndDetailsByChain.mockResolvedValue({
+      standard: 'ERC20',
+      symbol: 'DAI',
+      decimals: '18',
+      name: 'Dai Stablecoin',
+    });
+
+    renderPage({
+      selectedNetworkClientId: 'pulsechain',
+      selectedMultichainNetworkChainId: 'eip155:369',
+      networkConfigurationsByChainId: {
+        '0x171': {
+          chainId: '0x171',
+          name: 'PulseChain',
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              networkClientId: 'pulsechain',
+              type: 'custom',
+              url: 'https://rpc.pulsechain.com',
+            },
+          ],
+        },
+      },
+    });
+
+    fireEvent.change(screen.getByTestId('custom-token-import-address-input'), {
+      target: { value: daiAddress },
+    });
+
+    expect(
+      await screen.findByTestId('custom-token-import-mainnet-warning'),
+    ).toBeInTheDocument();
+
+    fireEvent.change(screen.getByTestId('custom-token-import-address-input'), {
+      target: { value: apeAddress },
+    });
+
+    await waitFor(() =>
+      expect(
+        screen.queryByTestId('custom-token-import-mainnet-warning'),
+      ).not.toBeInTheDocument(),
+    );
+
+    fireEvent.change(screen.getByTestId('custom-token-import-address-input'), {
+      target: { value: daiAddress },
+    });
+
+    expect(
+      await screen.findByTestId('custom-token-import-mainnet-warning'),
+    ).toBeInTheDocument();
+
+    const symbolInput = (await screen.findByTestId(
+      'custom-token-import-symbol-input',
+    )) as HTMLInputElement;
+    expect(symbolInput.value).toBe('DAI');
+
+    const submit = screen.getByTestId('custom-token-import-submit-button');
+    await waitFor(() => expect(submit).not.toBeDisabled());
+
+    fireEvent.click(submit);
+
+    await waitFor(() =>
+      expect(actions.addImportedTokens).toHaveBeenCalledWith(
+        [
+          expect.objectContaining({
+            address: daiAddress,
+            symbol: 'DAI',
+            decimals: 18,
+            isERC721: false,
+          }),
+        ],
+        'pulsechain',
+      ),
+    );
+  });
+
+  it('does not show the mainnet token warning when importing a mainnet token address on mainnet', async () => {
+    const daiAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
+
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('custom-token-import-address-input'), {
+      target: { value: daiAddress },
+    });
+
+    await screen.findByTestId('custom-token-import-symbol-input');
+
+    expect(
+      screen.queryByTestId('custom-token-import-mainnet-warning'),
+    ).not.toBeInTheDocument();
+  });
 });

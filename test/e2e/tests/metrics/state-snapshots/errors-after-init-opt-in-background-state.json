@@ -147,10 +147,6 @@
   },
   "ConnectivityController": { "connectivityStatus": "online" },
   "CronjobController": { "events": "object" },
-  "CurrencyController": {
-    "currencyRates": {},
-    "currentCurrency": "usd"
-  },
   "DeFiPositionsController": "object",
   "DeFiPositionsControllerV2": "object",
   "DecryptMessageController": {
@@ -294,6 +290,7 @@
       "hideZeroBalanceTokens": false,
       "isBasicFunctionalityConsolidatedEnabled": "boolean",
       "privacyMode": "boolean",
+      "shouldShowSupportConsent": "boolean",
       "showConfirmationAdvancedDetails": false,
       "showDefaultAddress": "boolean",
       "showExtensionInFullSizeView": false,
@@ -305,6 +302,7 @@
       "skipDeepLinkInterstitial": "boolean",
       "smartTransactionsMigrationApplied": "boolean",
       "smartTransactionsOptInStatus": true,
+      "supportDataSharingPreference": null,
       "tdpChartIndicators": "object",
       "tdpChartInterval": "string",
       "tdpChartType": "number",
@@ -433,7 +431,6 @@
     "transactionBatches": "object",
     "transactions": "object"
   },
-  "UserOperationController": { "userOperations": "object" },
   "UserStorageController": {
     "isAccountSyncingEnabled": true,
     "isBackupAndSyncEnabled": true,
