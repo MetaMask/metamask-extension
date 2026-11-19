@@ -101,7 +101,7 @@ function formatBreakdown(browser: Browser, scores: BatchScores[]): string {
 }
 
 function policyText(plan: PlanInfo, loud: boolean): string {
-  if (plan.injectMs != null) {
+  if (typeof plan.injectMs === 'number') {
     return `The head build was slowed by ${plan.injectMs} ms on purpose to test the detector. This is not a real change.`;
   }
   if (plan.canary) {
@@ -131,7 +131,7 @@ export function buildSlackMessage(input: SlackInput): SlackPayload {
   const subject = linkPullRequest(escapeSlack(plan.headSubject), repository);
 
   let headline = 'a performance change';
-  if (plan.injectMs != null) {
+  if (typeof plan.injectMs === 'number') {
     headline = 'a dry-run change injected into the head build';
   } else if (plan.canary) {
     headline = 'a false alarm on the A/A canary';
