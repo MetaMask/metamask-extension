@@ -108,6 +108,7 @@ import ThirdPartyApisSettings from '../page-objects/pages/settings/privacy/third
 import TransactionsSettingsPage from '../page-objects/pages/settings/transactions-settings';
 import TurnOffPasskeySettings from '../page-objects/pages/settings/security-and-password/turn-off-passkey-settings';
 import SnapListPage from '../page-objects/pages/snaps/list-page';
+import SwapAssetPickerPage from '../page-objects/pages/swap/swap-asset-picker-page';
 import SwapPage from '../page-objects/pages/swap/swap-page';
 import CustomTokenImportPage from '../page-objects/pages/token-management/custom-token-import-page';
 import TokenManagementPage from '../page-objects/pages/token-management/token-management-page';
@@ -207,7 +208,7 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   // Send, swap and bridge
   '/send/:page?': SendPage,
   '/cross-chain/swaps/prepare-bridge-page': SwapPage,
-  '/cross-chain/swaps/prepare-bridge-page/assets': null,
+  '/cross-chain/swaps/prepare-bridge-page/assets': SwapAssetPickerPage,
   '/swaps/awaiting-signatures': null,
   '/swaps/hardware-wallet-signatures': HardwareWalletSignaturesPage,
 

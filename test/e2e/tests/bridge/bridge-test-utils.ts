@@ -16,6 +16,7 @@ import { emptyHtmlPage, MOCK_SUGGESTED_GAS_FEES } from '../../mock-e2e';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
+import { enterBridgeQuote } from '../../page-objects/flows/bridge.flow';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 
 import {
@@ -2356,9 +2357,10 @@ export const checkQuoteRequestsAreNotMadeAfterTimestamp = async (
   }
 };
 
-export async function enterBridgeQuote(driver: Driver): Promise<SwapPage> {
-  const swapPage = new SwapPage(driver);
-  await swapPage.enterBridgeQuote({
+export async function enterEthToLineaBridgeQuote(
+  driver: Driver,
+): Promise<SwapPage> {
+  await enterBridgeQuote(driver, {
     amount: '1',
     tokenFrom: 'ETH',
     tokenTo: 'ETH',
@@ -2366,7 +2368,7 @@ export async function enterBridgeQuote(driver: Driver): Promise<SwapPage> {
     toChain: 'Linea',
   });
 
-  return swapPage;
+  return new SwapPage(driver);
 }
 
 /**

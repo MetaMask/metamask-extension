@@ -1,5 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
+import { enterBridgeQuote } from '../../page-objects/flows/bridge.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
@@ -59,7 +60,7 @@ describe('Swaps - notifications', function () {
 
         const swapPage = new SwapPage(driver);
         // Explicitly select mUSD so the token comes from the API with securityData
-        await swapPage.enterBridgeQuote({
+        await enterBridgeQuote(driver, {
           amount: '1',
           tokenTo: 'mUSD',
         });
@@ -83,7 +84,7 @@ describe('Swaps - notifications', function () {
         await homePage.startSwapFlow();
 
         const swapPage = new SwapPage(driver);
-        await swapPage.enterBridgeQuote({
+        await enterBridgeQuote(driver, {
           amount: '24.9950',
           tokenFrom: 'ETH',
           tokenTo: 'WETH',
@@ -114,7 +115,7 @@ describe('Swaps - notifications', function () {
         await homePage.startSwapFlow();
 
         const swapPage = new SwapPage(driver);
-        await swapPage.enterBridgeQuote({
+        await enterBridgeQuote(driver, {
           amount: '1',
           tokenFrom: 'ETH',
           tokenTo: 'ETH',
@@ -138,7 +139,7 @@ describe('Swaps - notifications', function () {
         await homePage.startSwapFlow();
 
         const swapPage = new SwapPage(driver);
-        await swapPage.enterBridgeQuote({ amount: '1' });
+        await enterBridgeQuote(driver, { amount: '1' });
         await swapPage.waitForQuote();
 
         await swapPage.setCustomSlippage('101');
@@ -159,7 +160,7 @@ describe('Swaps - notifications', function () {
         await homePage.startSwapFlow();
 
         const swapPage = new SwapPage(driver);
-        await swapPage.enterBridgeQuote({
+        await enterBridgeQuote(driver, {
           amount: '1',
         });
         await swapPage.waitForQuote();
