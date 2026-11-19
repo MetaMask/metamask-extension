@@ -19,8 +19,8 @@ import en from '../../../../app/_locales/en/messages.json';
 // eslint-disable-next-line camelcase
 import es_419 from '../../../../app/_locales/es_419/messages.json';
 import hi from '../../../../app/_locales/hi/messages.json';
+import SendAmountRecipientPage from '../../page-objects/pages/send/send-amount-recipient-page';
 import SendAssetPickerPage from '../../page-objects/pages/send/send-asset-picker-page';
-import SendPage from '../../page-objects/pages/send/send-page';
 
 const selectors = {
   // Preferences V2 row uses `t('language')` (see create-select-item), not `currentLanguage`.
@@ -154,16 +154,18 @@ describe('Settings - Preferences and display', function (this: Suite) {
         await homepage.checkExpectedBalanceIsDisplayed();
         await homepage.startSendFlow();
 
-        const sendPage = new SendPage(driver);
+        const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
         const sendAssetPickerPage = new SendAssetPickerPage(driver);
         await sendAssetPickerPage.selectToken('0x539', 'ETH');
-        await sendPage.fillRecipient({
+        await sendAmountRecipientPage.fillRecipient({
           recipientAddress: '0xAAA',
           validAddress: false,
         });
 
         // Recipient validation is debounced (~500ms); waits for the German error.
-        await sendPage.checkRecipientValidationError(de.invalidAddress.message);
+        await sendAmountRecipientPage.checkRecipientValidationError(
+          de.invalidAddress.message,
+        );
       },
     );
   });

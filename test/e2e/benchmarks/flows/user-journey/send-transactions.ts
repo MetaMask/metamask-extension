@@ -12,8 +12,8 @@ import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import SnapTransactionConfirmation from '../../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
+import SendAmountRecipientPage from '../../../page-objects/pages/send/send-amount-recipient-page';
 import SendAssetPickerPage from '../../../page-objects/pages/send/send-asset-picker-page';
-import SendPage from '../../../page-objects/pages/send/send-page';
 import { Driver } from '../../../webdriver/driver';
 import { collectTimerResults } from '../../utils/timer-helper';
 import {
@@ -94,21 +94,23 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
           'SOL',
         );
-        const sendPage = new SendPage(driver);
+        const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
         steps.push(
           await measureStepWithLongTasks(
             driver,
             'selectTokenToSendFormLoaded',
             async () => {
-              await sendPage.checkPageIsLoaded();
+              await sendAmountRecipientPage.checkPageIsLoaded();
             },
           ),
         );
 
         // Measure: Review transaction
-        await sendPage.fillRecipient({ recipientAddress: RECIPIENT_ADDRESS });
-        await sendPage.fillAmount('0.00001');
-        await sendPage.pressContinueButton();
+        await sendAmountRecipientPage.fillRecipient({
+          recipientAddress: RECIPIENT_ADDRESS,
+        });
+        await sendAmountRecipientPage.fillAmount('0.00001');
+        await sendAmountRecipientPage.pressContinueButton();
         steps.push(
           await measureStepWithLongTasks(
             driver,

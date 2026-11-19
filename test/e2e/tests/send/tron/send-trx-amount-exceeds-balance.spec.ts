@@ -6,8 +6,8 @@ import { login } from '../../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../../page-objects/flows/network.flow';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
+import SendAmountRecipientPage from '../../../page-objects/pages/send/send-amount-recipient-page';
 import SendAssetPickerPage from '../../../page-objects/pages/send/send-asset-picker-page';
-import SendPage from '../../../page-objects/pages/send/send-page';
 import {
   TRON_CHAIN_ID,
   TRON_RECIPIENT_ADDRESS,
@@ -36,17 +36,17 @@ describe('Tron Send', function (this: Suite) {
         await tokensTab.checkExpectedTokenBalanceIsDisplayed('6.072', 'TRX');
 
         await homePage.startSendFlow();
-        const sendPage = new SendPage(driver);
+        const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
         const sendAssetPickerPage = new SendAssetPickerPage(driver);
         await sendAssetPickerPage.selectToken(TRON_CHAIN_ID, 'TRX');
-        await sendPage.checkPageIsLoaded();
+        await sendAmountRecipientPage.checkPageIsLoaded();
 
-        await sendPage.fillRecipient({
+        await sendAmountRecipientPage.fillRecipient({
           recipientAddress: TRON_RECIPIENT_ADDRESS,
         });
-        await sendPage.fillAmount('999999');
-        await sendPage.checkInsufficientFundsError();
-        await sendPage.checkContinueButtonIsDisabled();
+        await sendAmountRecipientPage.fillAmount('999999');
+        await sendAmountRecipientPage.checkInsufficientFundsError();
+        await sendAmountRecipientPage.checkContinueButtonIsDisabled();
       },
     );
   });

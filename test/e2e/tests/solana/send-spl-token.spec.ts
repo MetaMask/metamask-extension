@@ -8,8 +8,8 @@ import SelectNetworkModal from '../../page-objects/pages/networks/select-network
 import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
+import SendAmountRecipientPage from '../../page-objects/pages/send/send-amount-recipient-page';
 import SendAssetPickerPage from '../../page-objects/pages/send/send-asset-picker-page';
-import SendPage from '../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import {
   mockAccountsApiV2SupportedNetworks,
@@ -253,7 +253,7 @@ describe('Send flow - SPL Token', function (this: Suite) {
         await homePage.checkExpectedBalanceIsDisplayed('50');
         await homePage.clickOnSendButton();
 
-        const sendPage = new SendPage(driver);
+        const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
         const sendAssetPickerPage = new SendAssetPickerPage(driver);
         await sendAssetPickerPage.checkSolanaNetworkIsPresent();
         await sendAssetPickerPage.selectToken(
@@ -261,12 +261,16 @@ describe('Send flow - SPL Token', function (this: Suite) {
           'USDC',
         );
 
-        await sendPage.checkContinueButton({ state: 'disabled' });
-        await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
-        await sendPage.fillAmount('0.1');
-        await sendPage.checkContinueButton({ state: 'enabled' });
+        await sendAmountRecipientPage.checkContinueButton({
+          state: 'disabled',
+        });
+        await sendAmountRecipientPage.fillRecipient({
+          recipientAddress: commonSolanaAddress,
+        });
+        await sendAmountRecipientPage.fillAmount('0.1');
+        await sendAmountRecipientPage.checkContinueButton({ state: 'enabled' });
 
-        await sendPage.pressContinueButton();
+        await sendAmountRecipientPage.pressContinueButton();
 
         const confirmation = new SnapTransactionConfirmation(driver);
         await confirmation.checkPageIsLoaded();
@@ -328,7 +332,7 @@ describe('Send flow - SPL Token', function (this: Suite) {
         await homePage.checkExpectedBalanceIsDisplayed('50');
         await homePage.clickOnSendButton();
 
-        const sendPage = new SendPage(driver);
+        const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
         const sendAssetPickerPage = new SendAssetPickerPage(driver);
         await sendAssetPickerPage.checkSolanaNetworkIsPresent();
         await sendAssetPickerPage.selectToken(
@@ -336,12 +340,16 @@ describe('Send flow - SPL Token', function (this: Suite) {
           'USDC',
         );
 
-        await sendPage.checkContinueButton({ state: 'disabled' });
-        await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
-        await sendPage.fillAmount('0.1');
-        await sendPage.checkContinueButton({ state: 'enabled' });
+        await sendAmountRecipientPage.checkContinueButton({
+          state: 'disabled',
+        });
+        await sendAmountRecipientPage.fillRecipient({
+          recipientAddress: commonSolanaAddress,
+        });
+        await sendAmountRecipientPage.fillAmount('0.1');
+        await sendAmountRecipientPage.checkContinueButton({ state: 'enabled' });
 
-        await sendPage.pressContinueButton();
+        await sendAmountRecipientPage.pressContinueButton();
 
         const confirmation = new SnapTransactionConfirmation(driver);
         await confirmation.checkPageIsLoaded();

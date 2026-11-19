@@ -91,6 +91,8 @@ describe('getRouteCoverage', () => {
   });
 
   describe('screens of a dynamic route', () => {
+    class SendAmountRecipientPage {}
+
     class SendAssetPickerPage {}
 
     const dynamicRoutes = [{ path: '/send/:page?', label: 'Send Page' }];
@@ -101,7 +103,7 @@ describe('getRouteCoverage', () => {
         {
           '/send/:page?': NOT_A_SCREEN,
           '/send/asset': SendAssetPickerPage,
-          '/send/amount-recipient': SendPage,
+          '/send/amount-recipient': SendAmountRecipientPage,
           '/send/loader': NOT_A_SCREEN,
         },
       );
@@ -117,7 +119,7 @@ describe('getRouteCoverage', () => {
           label: 'Send Page',
           parentRoute: '/send/:page?',
           status: 'page-object',
-          pageObject: 'SendPage',
+          pageObject: 'SendAmountRecipientPage',
         },
         {
           path: '/send/asset',
@@ -139,7 +141,7 @@ describe('getRouteCoverage', () => {
 
     it('lists concrete paths as stale when the dynamic route is a screen', () => {
       const { staleEntries } = getRouteCoverage(dynamicRoutes, {
-        '/send/:page?': SendPage,
+        '/send/:page?': SendAmountRecipientPage,
         '/send/asset': SendAssetPickerPage,
       });
 
@@ -149,7 +151,7 @@ describe('getRouteCoverage', () => {
     it('lists paths with dynamic segments or no matching route as stale', () => {
       const { staleEntries } = getRouteCoverage(dynamicRoutes, {
         '/send/:page?': NOT_A_SCREEN,
-        '/send/:step': SendPage,
+        '/send/:step': SendAmountRecipientPage,
         '/send/asset/extra': SendAssetPickerPage,
       });
 

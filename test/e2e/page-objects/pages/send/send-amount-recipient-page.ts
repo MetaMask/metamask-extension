@@ -16,7 +16,7 @@ import { Driver } from '../../../webdriver/driver';
  * @see ui/pages/confirmations/components/send/amount-recipient/amount-recipient.tsx
  * @see test/e2e/page-objects/flows/transaction.flow.ts
  */
-class SendPage {
+class SendAmountRecipientPage {
   private readonly amountBalance = { testId: 'send-amount-balance' };
 
   private readonly amountFiatValue = { testId: 'send-amount-fiat-value' };
@@ -410,4 +410,4 @@ class SendPage {
   }
 }
 
-export default SendPage;
+export default SendAmountRecipientPage;

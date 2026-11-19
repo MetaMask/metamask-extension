@@ -6,8 +6,8 @@ import { login } from '../../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../../page-objects/flows/network.flow';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
+import SendAmountRecipientPage from '../../../page-objects/pages/send/send-amount-recipient-page';
 import SendAssetPickerPage from '../../../page-objects/pages/send/send-asset-picker-page';
-import SendPage from '../../../page-objects/pages/send/send-page';
 import {
   TRON_CHAIN_ID,
   TRON_RECIPIENT_ADDRESS,
@@ -36,19 +36,19 @@ describe('Tron Send', function (this: Suite) {
         await tokensTab.checkExpectedTokenBalanceIsDisplayed('6.072', 'TRX');
 
         await homePage.startSendFlow();
-        const sendPage = new SendPage(driver);
+        const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
         const sendAssetPickerPage = new SendAssetPickerPage(driver);
         await sendAssetPickerPage.selectToken(TRON_CHAIN_ID, 'TRX');
-        await sendPage.checkPageIsLoaded();
+        await sendAmountRecipientPage.checkPageIsLoaded();
 
-        await sendPage.fillRecipient({
+        await sendAmountRecipientPage.fillRecipient({
           recipientAddress: TRON_RECIPIENT_ADDRESS,
         });
         // Empty amount leaves Continue enabled; Tron snap rejects on submit and
         // surfaces transactionError on the Continue button.
-        await sendPage.pressContinueButton();
-        await sendPage.checkTransactionError();
-        await sendPage.checkContinueButtonIsDisabled();
+        await sendAmountRecipientPage.pressContinueButton();
+        await sendAmountRecipientPage.checkTransactionError();
+        await sendAmountRecipientPage.checkContinueButtonIsDisabled();
       },
     );
   });

@@ -3,8 +3,8 @@ import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../pages/home/homepage';
 import TestDappIndividualRequest from '../pages/test-dapp-individual-request';
+import SendAmountRecipientPage from '../pages/send/send-amount-recipient-page';
 import SendAssetPickerPage from '../pages/send/send-asset-picker-page';
-import SendPage from '../pages/send/send-page';
 import SnapSimpleKeyringPage from '../pages/snaps/simple-keyring-page';
 import TransactionConfirmation from '../pages/confirmations/transaction-confirmation';
 
@@ -32,16 +32,18 @@ const selectAssetAndRecipient = async ({
   symbol: string;
   recipientAddress?: string;
   recipientName?: string;
-}): Promise<SendPage> => {
+}): Promise<SendAmountRecipientPage> => {
   await new SendAssetPickerPage(driver).selectToken(chainId, symbol);
-  const sendPage = new SendPage(driver);
+  const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
   if (recipientAddress) {
-    await sendPage.fillRecipient({ recipientAddress });
+    await sendAmountRecipientPage.fillRecipient({ recipientAddress });
   }
   if (recipientName) {
-    await sendPage.selectAccountFromRecipientModal(recipientName);
+    await sendAmountRecipientPage.selectAccountFromRecipientModal(
+      recipientName,
+    );
   }
-  return sendPage;
+  return sendAmountRecipientPage;
 };
 
 /**
@@ -71,18 +73,18 @@ const createSendRequest = async ({
   amount?: string;
 }): Promise<void> => {
   console.log('Creating send request');
-  const sendPage = await selectAssetAndRecipient({
+  const sendAmountRecipientPage = await selectAssetAndRecipient({
     driver,
     chainId,
     symbol,
     recipientAddress,
     recipientName,
   });
-  await sendPage.fillAmount(amount);
-  await sendPage.checkAmountInputValue(amount);
-  await sendPage.waitForSendAmountBalance();
-  await sendPage.checkContinueButton({ state: 'enabled' });
-  await sendPage.pressContinueButton();
+  await sendAmountRecipientPage.fillAmount(amount);
+  await sendAmountRecipientPage.checkAmountInputValue(amount);
+  await sendAmountRecipientPage.waitForSendAmountBalance();
+  await sendAmountRecipientPage.checkContinueButton({ state: 'enabled' });
+  await sendAmountRecipientPage.pressContinueButton();
 };
 
 /**
@@ -110,17 +112,17 @@ const createMaxSendRequest = async ({
   recipientName?: string;
 }): Promise<void> => {
   console.log('Creating max send request');
-  const sendPage = await selectAssetAndRecipient({
+  const sendAmountRecipientPage = await selectAssetAndRecipient({
     driver,
     chainId,
     symbol,
     recipientAddress,
     recipientName,
   });
-  await sendPage.clickMaxButton();
-  await sendPage.waitForSendAmountBalance();
-  await sendPage.checkContinueButton({ state: 'enabled' });
-  await sendPage.pressContinueButton();
+  await sendAmountRecipientPage.clickMaxButton();
+  await sendAmountRecipientPage.waitForSendAmountBalance();
+  await sendAmountRecipientPage.checkContinueButton({ state: 'enabled' });
+  await sendAmountRecipientPage.pressContinueButton();
 };
 
 export const createInternalTransaction = async ({

@@ -5,8 +5,9 @@ import { Driver } from '../../../webdriver/driver';
  *
  * Screen: `#/send/asset` (also `#/send` without a page).
  * Owns: network filter, token list and NFT list.
- * Boundaries: picking an asset opens the send form, which is `SendPage`.
- * Related: `SendPage`, `flows/transaction.flow.ts`.
+ * Boundaries: picking an asset opens the send form, which is
+ * `SendAmountRecipientPage`.
+ * Related: `SendAmountRecipientPage`, `flows/transaction.flow.ts`.
  *
  * @see ui/pages/confirmations/components/send/asset/asset.tsx
  * @see test/e2e/page-objects/flows/transaction.flow.ts

@@ -83,8 +83,8 @@ import { PerpsWithdrawPage } from '../page-objects/pages/perps/perps-withdraw-pa
 import RevealSrpPage from '../page-objects/pages/reveal-srp-page';
 import RewardsPage from '../page-objects/pages/rewards/rewards-page';
 import DeepLink from '../page-objects/pages/security/deep-link-page';
+import SendAmountRecipientPage from '../page-objects/pages/send/send-amount-recipient-page';
 import SendAssetPickerPage from '../page-objects/pages/send/send-asset-picker-page';
-import SendPage from '../page-objects/pages/send/send-page';
 import AboutPage from '../page-objects/pages/settings/about-page';
 import AccountIdenticonSettings from '../page-objects/pages/settings/preferences-and-display/account-identicon-settings';
 import AssetsSettings from '../page-objects/pages/settings/assets-settings';
@@ -214,7 +214,7 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   // Send, swap and bridge
   '/send/:page?': NOT_A_SCREEN,
   '/send/asset': SendAssetPickerPage,
-  '/send/amount-recipient': SendPage,
+  '/send/amount-recipient': SendAmountRecipientPage,
   '/send/loader': NOT_A_SCREEN,
   '/cross-chain/swaps/prepare-bridge-page': SwapPage,
   '/cross-chain/swaps/prepare-bridge-page/assets': null,

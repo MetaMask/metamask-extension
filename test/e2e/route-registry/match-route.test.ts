@@ -1,8 +1,8 @@
 import AccountListPage from '../page-objects/pages/accounts/list-page';
 import ActivityTab from '../page-objects/pages/home/activity-tab';
 import HomePage from '../page-objects/pages/home/homepage';
+import SendAmountRecipientPage from '../page-objects/pages/send/send-amount-recipient-page';
 import SendAssetPickerPage from '../page-objects/pages/send/send-asset-picker-page';
-import SendPage from '../page-objects/pages/send/send-page';
 import { matchRoute } from './match-route';
 import { NOT_A_SCREEN } from './route-registry';
 
@@ -47,7 +47,7 @@ describe('matchRoute', () => {
     });
     expect(matchRoute('/send/amount-recipient')).toStrictEqual({
       path: '/send/amount-recipient',
-      pageObject: SendPage,
+      pageObject: SendAmountRecipientPage,
     });
   });
 

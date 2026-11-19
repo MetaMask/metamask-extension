@@ -8,8 +8,8 @@ import SnapTransactionConfirmation from '../../../page-objects/pages/confirmatio
 import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
+import SendAmountRecipientPage from '../../../page-objects/pages/send/send-amount-recipient-page';
 import SendAssetPickerPage from '../../../page-objects/pages/send/send-asset-picker-page';
-import SendPage from '../../../page-objects/pages/send/send-page';
 import {
   TRON_CHAIN_ID,
   TRON_RECIPIENT_ADDRESS,
@@ -40,19 +40,19 @@ describe('Tron Send', function (this: Suite) {
         await tokensTab.checkExpectedTokenBalanceIsDisplayed('2.805', 'USDT');
 
         await homePage.startSendFlow();
-        const sendPage = new SendPage(driver);
+        const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
         const sendAssetPickerPage = new SendAssetPickerPage(driver);
         await sendAssetPickerPage.selectToken(TRON_CHAIN_ID, 'USDT');
-        await sendPage.checkPageIsLoaded();
+        await sendAmountRecipientPage.checkPageIsLoaded();
 
-        await sendPage.fillRecipient({
+        await sendAmountRecipientPage.fillRecipient({
           recipientAddress: TRON_RECIPIENT_ADDRESS,
         });
         // Seeded USDT balance is 2_804_595 raw = 2.804595 USDT.
         // TRC20 has no fee buffer (fee paid in TRX).
-        await sendPage.fillAmount('2.804595');
-        await sendPage.waitForSendAmountBalance();
-        await sendPage.pressContinueButton();
+        await sendAmountRecipientPage.fillAmount('2.804595');
+        await sendAmountRecipientPage.waitForSendAmountBalance();
+        await sendAmountRecipientPage.pressContinueButton();
 
         const snapConfirmation = new SnapTransactionConfirmation(driver);
         await snapConfirmation.checkPageIsLoaded();
