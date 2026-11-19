@@ -6,6 +6,7 @@ import {
 import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
+import { createFormatters } from '@metamask/client-utils';
 import {
   hasTransactionType,
   isPostQuoteWithdrawTransaction,
@@ -19,7 +20,6 @@ import {
 import { useConfirmContext } from '../../context/confirm';
 import { PayWithModal } from '../../components/modals/pay-with-modal';
 import { useMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useMoneyAccountWithdrawableFiat';
-import { formatConfirmationUsd } from '../../utils/format-confirmation-usd';
 import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
 import { usePayTokenAccountBalance } from './usePayTokenAccountBalance';
 import { useTransactionPayToken } from './useTransactionPayToken';
@@ -37,6 +37,11 @@ const CONVERT_ROW_LABEL_TRANSACTION_TYPES = [
   TransactionType.moneyAccountDeposit,
   TransactionType.perpsDeposit,
 ];
+
+const { formatCurrency: formatEnUsCurrency } = createFormatters({
+  locale: 'en-US',
+  currencyDisplay: 'narrowSymbol',
+});
 
 type PayWithToken = {
   displayToken: PayWithDisplayToken | undefined;
@@ -129,7 +134,7 @@ export function usePayWithToken(): PayWithToken {
     }
     const balanceNumber = new BigNumber(cryptoBalanceUsd).toNumber();
     return isMoneyAccountDeposit
-      ? formatConfirmationUsd(balanceNumber)
+      ? formatEnUsCurrency(balanceNumber, 'usd')
       : fiatFormatter(balanceNumber);
   }, [
     cryptoBalanceUsd,

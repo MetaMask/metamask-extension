@@ -184,7 +184,7 @@ describe('ReceiveRow', () => {
 
     expect(screen.getByTestId('money-usd-dialog')).toBeInTheDocument();
     expect(screen.getByTestId('money-usd-dialog-title')).toHaveTextContent(
-      "You'll receive $100 of MetaMask USD",
+      "You'll receive $100.00 of MetaMask USD",
     );
     expect(
       screen.getByTestId('money-usd-dialog-earns-title'),

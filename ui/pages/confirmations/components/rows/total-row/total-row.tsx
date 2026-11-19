@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { createFormatters } from '@metamask/client-utils';
 import { BigNumber } from 'bignumber.js';
 import type { TransactionPayTotals } from '@metamask/transaction-pay-controller';
 import { Box, Text } from '../../../../../components/component-library';
@@ -27,7 +28,13 @@ import {
 } from '../../../hooks/pay/useIsPaidByMetaMask';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
-import { formatConfirmationUsd } from '../../../utils/format-confirmation-usd';
+
+const { formatCurrency: formatEnUsCurrency } = createFormatters({
+  locale: 'en-US',
+  currencyDisplay: 'narrowSymbol',
+});
+
+const formatUsd = (amount: number) => formatEnUsCurrency(amount, 'usd');
 
 export type TotalRowProps = {
   variant?: ConfirmInfoRowSize;
@@ -40,7 +47,7 @@ export function TotalRow({
 }: TotalRowProps) {
   const t = useI18nContext();
   const formatLocaleFiat = useFiatFormatter({ overrideCurrency: 'usd' });
-  const formatFiat = useEnUsUsd ? formatConfirmationUsd : formatLocaleFiat;
+  const formatFiat = useEnUsUsd ? formatUsd : formatLocaleFiat;
   const isPayLoading = useIsTransactionPayLoading();
   const { isAmountPending } = useConfirmContext();
   // Totals come from the executable quote. While a typed amount is still

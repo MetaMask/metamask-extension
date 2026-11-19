@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { createFormatters } from '@metamask/client-utils';
 import { BigNumber } from 'bignumber.js';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { TransactionPayTotals } from '@metamask/transaction-pay-controller';
@@ -36,9 +37,15 @@ import {
   useSponsoredNetworkFeeFlags,
   type SponsoredNetworkFeeFlags,
 } from '../../../hooks/pay/useIsPaidByMetaMask';
-import { formatConfirmationUsd } from '../../../utils/format-confirmation-usd';
 import { TooltipText } from '../../../../../components/app/money/tooltip-text';
 import { InfoPopoverTooltip } from '../../info-popover-tooltip';
+
+const { formatCurrency: formatEnUsCurrency } = createFormatters({
+  locale: 'en-US',
+  currencyDisplay: 'narrowSymbol',
+});
+
+const formatUsd = (amount: number) => formatEnUsCurrency(amount, 'usd');
 
 export type BridgeFeeRowProps = {
   variant?: ConfirmInfoRowSize;
@@ -61,9 +68,7 @@ export function BridgeFeeRow({
 }: BridgeFeeRowProps) {
   const t = useI18nContext();
   const formatLocaleFiat = useFiatFormatter({ overrideCurrency: 'usd' });
-  const formatFiat = useDottedValueTooltip
-    ? formatConfirmationUsd
-    : formatLocaleFiat;
+  const formatFiat = useDottedValueTooltip ? formatUsd : formatLocaleFiat;
   const isLoading = useIsTransactionPayQuotePending();
   const quotes = useTransactionPayQuotes();
   const totals = useTransactionPayTotals();

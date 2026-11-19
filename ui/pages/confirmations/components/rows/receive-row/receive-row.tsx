@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
+import { createFormatters } from '@metamask/client-utils';
 import { BigNumber } from 'bignumber.js';
 import {
   TextColor as DsTextColor,
@@ -20,10 +21,6 @@ import {
   MoneyUsdDialog,
 } from '../../modals/money-deposit-dialogs';
 import {
-  formatCompactConfirmationUsd,
-  formatConfirmationUsd,
-} from '../../../utils/format-confirmation-usd';
-import {
   useIsTransactionPayQuotePending,
   useTransactionPayQuotes,
   useTransactionPayTotals,
@@ -32,6 +29,13 @@ import { useIsPaidByMetaMask } from '../../../hooks/pay/useIsPaidByMetaMask';
 import { useMoneyVaultApy } from '../../../../../hooks/money/useMoneyVaultApy';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
+
+const { formatCurrency: formatEnUsCurrency } = createFormatters({
+  locale: 'en-US',
+  currencyDisplay: 'narrowSymbol',
+});
+
+const formatUsd = (amount: number) => formatEnUsCurrency(amount, 'usd');
 
 export type ReceiveRowProps = {
   /** The user's input amount in USD / fiat */
@@ -70,9 +74,7 @@ export function ReceiveRow({
   // currency symbol matches the numerical value even if the user has set a
   // non-USD primary currency.
   const formatLocaleFiat = useFiatFormatter({ overrideCurrency: 'usd' });
-  const formatFiat = enableMoneyUsdDialog
-    ? formatConfirmationUsd
-    : formatLocaleFiat;
+  const formatFiat = enableMoneyUsdDialog ? formatUsd : formatLocaleFiat;
   const isLoading = useIsTransactionPayQuotePending();
   const totals = useTransactionPayTotals();
   const quotes = useTransactionPayQuotes();
@@ -84,33 +86,27 @@ export function ReceiveRow({
 
   const hasQuotes = Boolean(quotes?.length);
 
-  const { receiveNumeric, receiveUsd } = useMemo(() => {
+  const receiveUsd = useMemo(() => {
     if (
       !totals ||
       inputAmountUsd === null ||
       inputAmountUsd === undefined ||
       !hasQuotes
     ) {
-      return { receiveNumeric: null, receiveUsd: '' };
+      return '';
     }
 
     if (totals.isInputBased === true) {
-      const target = new BigNumber(totals.targetAmount.usd);
-      return {
-        receiveNumeric: target,
-        receiveUsd: formatFiat(target.toNumber()),
-      };
+      return formatFiat(new BigNumber(totals.targetAmount.usd).toNumber());
     }
 
     const inputUsd = new BigNumber(inputAmountUsd || '0');
     // Same-token Money Account withdraws quote estimated network gas that
     // Monad sponsors. Subtracting it would show $0 received on a tiny send.
     if (isPaidByMetaMask) {
-      const clamped = inputUsd.gte(0) ? inputUsd : new BigNumber(0);
-      return {
-        receiveNumeric: clamped,
-        receiveUsd: formatFiat(clamped.toNumber()),
-      };
+      return formatFiat(
+        (inputUsd.gte(0) ? inputUsd : new BigNumber(0)).toNumber(),
+      );
     }
 
     const providerFee = new BigNumber(totals.fees?.provider?.usd ?? 0);
@@ -127,12 +123,10 @@ export function ReceiveRow({
       .plus(targetNetworkFee)
       .plus(metaMaskFee);
     const youReceive = inputUsd.minus(totalFees);
-    const clamped = youReceive.gte(0) ? youReceive : new BigNumber(0);
 
-    return {
-      receiveNumeric: clamped,
-      receiveUsd: formatFiat(clamped.toNumber()),
-    };
+    return formatFiat(
+      (youReceive.gte(0) ? youReceive : new BigNumber(0)).toNumber(),
+    );
   }, [formatFiat, hasQuotes, inputAmountUsd, isPaidByMetaMask, totals]);
 
   const openUsdDialog = useCallback(() => setIsUsdDialogOpen(true), []);
@@ -179,10 +173,6 @@ export function ReceiveRow({
     );
   }
 
-  const dialogReceiveFormatted = receiveNumeric
-    ? formatCompactConfirmationUsd(receiveNumeric)
-    : receiveUsd;
-
   return (
     <Box data-testid="receive-row">
       <ConfirmInfoRow label={t('youllReceive')} rowVariant={variant}>
@@ -192,7 +182,7 @@ export function ReceiveRow({
         <MoneyUsdDialog
           isOpen={isUsdDialogOpen}
           onClose={closeUsdDialog}
-          receiveAmountFormatted={dialogReceiveFormatted}
+          receiveAmountFormatted={receiveUsd}
           apyPercentFormatted={apyPercentFormatted}
         />
       ) : null}
