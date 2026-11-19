@@ -94,7 +94,12 @@ describe('trace with no caller after the background pageload ends (real SDK)', (
     });
     Sentry.getCurrentScope().setClient(client);
     client.init();
+    // `setupSentry` calls this right after `Sentry.init`, before the global
+    // `sentry` that `trace.ts` reads is assigned.
+    const assigned = (globalThis as { sentry?: unknown }).sentry;
+    delete (globalThis as { sentry?: unknown }).sentry;
     trackBackgroundPageload(client);
+    (globalThis as { sentry?: unknown }).sentry = assigned;
 
     const pageload = Sentry.getActiveSpan() as Sentry.Span;
     expect(Sentry.spanToJSON(pageload).op).toBe('pageload');

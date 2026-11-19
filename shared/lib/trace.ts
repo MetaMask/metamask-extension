@@ -1,5 +1,10 @@
 import type * as Sentry from '@sentry/browser';
-import { SPAN_STATUS_ERROR, SPAN_STATUS_OK, spanToJSON } from '@sentry/core';
+import {
+  getActiveSpan,
+  SPAN_STATUS_ERROR,
+  SPAN_STATUS_OK,
+  spanToJSON,
+} from '@sentry/core';
 import type {
   Client,
   MeasurementUnit,
@@ -642,8 +647,9 @@ export function trackBackgroundPageload(client?: Client): void {
       state.backgroundPageloadSpanId = spanId;
     }
   };
-  // `Sentry.init` starts the pageload before this runs.
-  const running = globalThis.sentry?.getActiveSpan?.();
+  // `Sentry.init` has started the pageload by now, and `setupSentry` calls this
+  // before the global `sentry` is assigned, so read the span from `@sentry/core`.
+  const running = getActiveSpan();
   if (running) {
     record(running);
   }
