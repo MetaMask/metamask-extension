@@ -100,11 +100,6 @@ jobs:
           BUILD_ARGS: ${{ inputs.build-args }}${{ inputs.bundle-analyzer && ' --bundleAnalyzer' || '' }}
         shell: bash
         run: |
-          if [[ "$BUILD_ARGS" == *$'\n'* || "$BUILD_ARGS" == *$'\r'* ]]; then
-            echo "::error::Build arguments must be on a single line"
-            exit 1
-          fi
-
           # Split on spaces once. Quoting the array preserves each argument as data.
           IFS=' ' read -r -a build_args <<< "$BUILD_ARGS"
           yarn run "$BUILD_SCRIPT" "${build_args[@]}"
