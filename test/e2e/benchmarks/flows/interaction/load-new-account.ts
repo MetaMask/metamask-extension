@@ -58,6 +58,7 @@ export async function run(): Promise<BenchmarkRunResult> {
           longTaskTotalDuration: longTaskData?.totalDuration ?? 0,
           longTaskMaxDuration: longTaskData?.maxDuration ?? 0,
           tbt: longTaskData?.tbt ?? 0,
+          longTasksObserved: longTaskData?.observed ?? false,
         });
 
         try {
