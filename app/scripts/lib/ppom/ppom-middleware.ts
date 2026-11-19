@@ -23,7 +23,6 @@ import {
   generateSecurityAlertId,
   handlePPOMError,
   validateRequestWithPPOM,
-  type PPOMMessenger,
 } from './ppom-util';
 import {
   SecurityAlertResponse,
