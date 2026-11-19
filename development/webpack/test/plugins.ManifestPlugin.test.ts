@@ -1,5 +1,7 @@
 import { describe, it, afterEach } from 'node:test';
 import assert from 'node:assert';
+import { cpSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { Open } from 'unzipper';
 import { sources, type Compilation } from 'webpack';
@@ -1699,6 +1701,31 @@ describe('ManifestPlugin', () => {
           undefined,
           'should skip non-html files',
         );
+      });
+
+      it('propagates the read error when the workers path is a file', (testContext) => {
+        const context = mkdtempSync(join(tmpdir(), 'manifest-plugin-'));
+        testContext.after(() =>
+          rmSync(context, { recursive: true, force: true }),
+        );
+        cpSync(join(__dirname, 'fixtures/ManifestPlugin/empty'), context, {
+          recursive: true,
+        });
+        writeFileSync(join(context, 'workers'), '');
+
+        const { compiler } = mockWebpack([], [], []);
+        compiler.context = context;
+        const plugin = new ManifestPlugin({
+          browsers: ['chrome'],
+          manifest_version: 3,
+          version: '1.0.0.0',
+          versionName: '1.0.0',
+          description: null,
+          buildType: 'main',
+          zip: false,
+        });
+
+        assert.throws(() => plugin.apply(compiler), { code: 'ENOTDIR' });
       });
 
       it('skips isolated workers when Firefox overrides MV3 to MV2', async () => {
