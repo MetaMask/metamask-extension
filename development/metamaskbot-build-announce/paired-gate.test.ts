@@ -195,7 +195,7 @@ describe('evaluatePairedGate', () => {
     );
   });
 
-  it('leaves an unpaired file alone unless it carries an error', () => {
+  it('leaves an unpaired file alone, errors included', () => {
     const unpaired = {
       name: 'benchmark-firefox-webpack-startupStandardHome',
       data: { startupStandardHome: { mean: {}, p75: {}, p95: {} } },
@@ -205,8 +205,20 @@ describe('evaluatePairedGate', () => {
     expect(
       evaluatePairedGate([
         { ...unpaired, data: { startupStandardHome: { error: 'Error: x' } } },
-      ]).every(({ failed }) => failed),
-    ).toBe(true);
+      ]),
+    ).toStrictEqual([]);
+  });
+
+  it('fails every admitted series of a paired job that carries an error', () => {
+    const outcomes = evaluatePairedGate([
+      {
+        name: 'benchmark-chrome-webpack-startupStandardHome-r1-base-head-head-base',
+        data: { startupStandardHome: { error: 'Error: x' } },
+      },
+    ]);
+
+    expect(outcomes.length).toBeGreaterThan(0);
+    expect(outcomes.every(({ failed }) => failed)).toBe(true);
   });
 
   it('checks completeness and defers the decision for one leg', () => {
