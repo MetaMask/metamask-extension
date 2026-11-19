@@ -60,6 +60,7 @@ describe('MoneyAccountToRow', () => {
       screen.getByTestId('money-account-to-splash-trigger'),
     ).toHaveTextContent('MetaMask Money');
     expect(screen.getByTestId('money-account-to-row')).toHaveTextContent('•');
+    expect(screen.getByText('•')).toHaveAttribute('aria-hidden', 'true');
     expect(
       screen.getByTestId('money-account-to-apy-trigger'),
     ).toHaveTextContent('6.2% APY');

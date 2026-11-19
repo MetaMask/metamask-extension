@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, render, fireEvent } from '@testing-library/react';
+import { act, render, fireEvent, waitFor } from '@testing-library/react';
 import {
   ButtonIconSize,
   IconColor,
@@ -137,12 +137,22 @@ describe('InfoPopoverTooltip', () => {
       await act(async () => {
         fireEvent.mouseEnter(trigger);
       });
+      const popover = getByTestId('dotted-tooltip');
+      expect(popover).toHaveTextContent('Dotted content');
+
+      // Moving pointer from trigger onto the popover keeps it open (WCAG 1.4.13).
+      await act(async () => {
+        fireEvent.mouseLeave(trigger);
+        fireEvent.mouseEnter(popover);
+      });
       expect(getByTestId('dotted-tooltip')).toHaveTextContent('Dotted content');
 
       await act(async () => {
-        fireEvent.mouseLeave(trigger);
+        fireEvent.mouseLeave(popover);
       });
-      expect(queryByTestId('dotted-tooltip')).not.toBeInTheDocument();
+      await waitFor(() => {
+        expect(queryByTestId('dotted-tooltip')).not.toBeInTheDocument();
+      });
 
       await act(async () => {
         fireEvent.focus(trigger);

@@ -105,7 +105,7 @@ export function MoneyAccountToRow({
                 color={TextColor.TextAlternative}
                 asChild
               >
-                <span>•</span>
+                <span aria-hidden="true">•</span>
               </Text>
               <DottedTrigger
                 text={t('moneyApy', [apyPercentFormatted])}

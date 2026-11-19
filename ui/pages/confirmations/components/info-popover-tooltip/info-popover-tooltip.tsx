@@ -1,5 +1,6 @@
 import React, {
   useCallback,
+  useEffect,
   useId,
   useRef,
   useState,
@@ -30,6 +31,8 @@ const POPOVER_STYLE = {
   paddingRight: '16px',
   maxWidth: 250,
 } as const;
+
+const HOVER_CLOSE_DELAY_MS = 150;
 
 type InfoPopoverTooltipProps = {
   children: ReactNode;
@@ -77,9 +80,20 @@ export function InfoPopoverTooltip({
     null,
   );
   const popoverId = useId();
-  const isHoveredRef = useRef(false);
+  const isPointerOverTriggerRef = useRef(false);
+  const isPointerOverPopoverRef = useRef(false);
   const isFocusedRef = useRef(false);
   const isClickPinnedRef = useRef(false);
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearCloseTimeout = useCallback(() => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => clearCloseTimeout, [clearCloseTimeout]);
 
   const setTriggerRef = useCallback((node: HTMLElement | null) => {
     setReferenceElement(node);
@@ -90,38 +104,67 @@ export function InfoPopoverTooltip({
   }, []);
 
   const handleClose = useCallback(() => {
-    isHoveredRef.current = false;
+    clearCloseTimeout();
+    isPointerOverTriggerRef.current = false;
+    isPointerOverPopoverRef.current = false;
     isFocusedRef.current = false;
     isClickPinnedRef.current = false;
     setIsOpen(false);
-  }, []);
+  }, [clearCloseTimeout]);
 
-  const handleMouseEnter = useCallback(() => {
-    isHoveredRef.current = true;
+  const scheduleHoverClose = useCallback(() => {
+    clearCloseTimeout();
+    closeTimeoutRef.current = setTimeout(() => {
+      closeTimeoutRef.current = null;
+      if (
+        !isPointerOverTriggerRef.current &&
+        !isPointerOverPopoverRef.current &&
+        !isFocusedRef.current &&
+        !isClickPinnedRef.current
+      ) {
+        setIsOpen(false);
+      }
+    }, HOVER_CLOSE_DELAY_MS);
+  }, [clearCloseTimeout]);
+
+  const handleTriggerMouseEnter = useCallback(() => {
+    clearCloseTimeout();
+    isPointerOverTriggerRef.current = true;
     setIsOpen(true);
-  }, []);
+  }, [clearCloseTimeout]);
 
-  const handleMouseLeave = useCallback(() => {
-    isHoveredRef.current = false;
-    if (!isFocusedRef.current && !isClickPinnedRef.current) {
-      setIsOpen(false);
-    }
-  }, []);
+  const handleTriggerMouseLeave = useCallback(() => {
+    isPointerOverTriggerRef.current = false;
+    scheduleHoverClose();
+  }, [scheduleHoverClose]);
+
+  const handlePopoverMouseEnter = useCallback(() => {
+    clearCloseTimeout();
+    isPointerOverPopoverRef.current = true;
+    setIsOpen(true);
+  }, [clearCloseTimeout]);
+
+  const handlePopoverMouseLeave = useCallback(() => {
+    isPointerOverPopoverRef.current = false;
+    scheduleHoverClose();
+  }, [scheduleHoverClose]);
 
   const handleFocus = useCallback(() => {
+    clearCloseTimeout();
     isFocusedRef.current = true;
     setIsOpen(true);
-  }, []);
+  }, [clearCloseTimeout]);
 
   const handleBlur = useCallback(() => {
     isFocusedRef.current = false;
     isClickPinnedRef.current = false;
-    if (!isHoveredRef.current) {
+    if (!isPointerOverTriggerRef.current && !isPointerOverPopoverRef.current) {
       setIsOpen(false);
     }
   }, []);
 
   const handleDottedClick = useCallback(() => {
+    clearCloseTimeout();
     if (isClickPinnedRef.current) {
       isClickPinnedRef.current = false;
       setIsOpen(false);
@@ -129,11 +172,13 @@ export function InfoPopoverTooltip({
       isClickPinnedRef.current = true;
       setIsOpen(true);
     }
-  }, []);
+  }, [clearCloseTimeout]);
 
   const marginStyle = iconMarginLeft
     ? { marginLeft: `${iconMarginLeft * 4}px` }
     : undefined;
+
+  const isDotted = dottedText !== undefined;
 
   const popover = (
     <Popover
@@ -147,6 +192,8 @@ export function InfoPopoverTooltip({
       offset={offset}
       onPressEscKey={handleClose}
       onClickOutside={handleClose}
+      onMouseEnter={isDotted ? handlePopoverMouseEnter : undefined}
+      onMouseLeave={isDotted ? handlePopoverMouseLeave : undefined}
       isPortal
       style={POPOVER_STYLE}
       data-testid={dataTestId}
@@ -155,7 +202,7 @@ export function InfoPopoverTooltip({
     </Popover>
   );
 
-  if (dottedText !== undefined) {
+  if (isDotted) {
     return (
       <>
         <DottedTrigger
@@ -164,8 +211,8 @@ export function InfoPopoverTooltip({
           variant={textVariant}
           color={textColor}
           onClick={handleDottedClick}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
+          onMouseEnter={handleTriggerMouseEnter}
+          onMouseLeave={handleTriggerMouseLeave}
           onFocus={handleFocus}
           onBlur={handleBlur}
           aria-describedby={isOpen ? popoverId : undefined}

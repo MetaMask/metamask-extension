@@ -44,7 +44,6 @@ export function MoneyInfoDialog({
   return (
     <Modal isOpen onClose={onClose} restoreFocus>
       <ModalOverlay
-        className="bg-black/30"
         data-testid={dataTestId ? `${dataTestId}-overlay` : undefined}
       />
       <ModalContent
@@ -54,8 +53,7 @@ export function MoneyInfoDialog({
           'aria-labelledby': resolvedTitleId,
           paddingTop: 0,
           paddingBottom: 0,
-          className:
-            'max-h-[calc(100vh-32px)] min-h-0 max-w-[368px] rounded-3xl',
+          className: 'min-h-0',
           'data-testid': dataTestId,
         }}
       >
@@ -68,11 +66,10 @@ export function MoneyInfoDialog({
             )}
             <ButtonIcon
               iconName={IconName.Close}
-              size={ButtonIconSize.Md}
+              size={ButtonIconSize.Lg}
               variant={ButtonIconVariant.Filled}
               ariaLabel={t('close')}
               onClick={onClose}
-              className="h-9 w-9 bg-section"
               data-testid={
                 closeButtonTestId ??
                 (dataTestId ? `${dataTestId}-close-button` : undefined)

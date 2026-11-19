@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, fireEvent } from '@testing-library/react';
+import { act, fireEvent, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import configureMockStore from 'redux-mock-store';
 import { TransactionType } from '@metamask/transaction-controller';
@@ -504,9 +504,11 @@ describe('BridgeFeeRow', () => {
       await act(async () => {
         fireEvent.mouseLeave(trigger);
       });
-      expect(
-        queryByTestId('bridge-fee-tooltip-popover'),
-      ).not.toBeInTheDocument();
+      await waitFor(() => {
+        expect(
+          queryByTestId('bridge-fee-tooltip-popover'),
+        ).not.toBeInTheDocument();
+      });
 
       await act(async () => {
         fireEvent.focus(trigger);
