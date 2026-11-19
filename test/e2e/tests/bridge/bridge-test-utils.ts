@@ -1386,7 +1386,7 @@ async function mockSmartTransactionsForBridge(
   let latestMinedHash = STX_TRANSACTION_HASH; // fallback if Anvil submission fails
 
   const sentinelSubdomain =
-    sentinelUrl.match(/tx-sentinel-(.+?)\.api/)?.[1] ?? 'ethereum-mainnet';
+    sentinelUrl.match(/tx-sentinel-(.+?)\.api/u)?.[1] ?? 'ethereum-mainnet';
   const sentinelNetwork = {
     network: sentinelSubdomain,
     confirmations: true,
