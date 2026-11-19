@@ -10,7 +10,7 @@ import { Driver } from '../../../webdriver/driver';
  * empty/disabled NFT or token assertions inside the modal.
  * Boundaries: the picker modal only. Parent flow pages own amount entry,
  * quotes, and submit; confirmation pages own post-selection approvals.
- * Related: `SendPage`, `SwapPage`, `BridgeQuotePage` (hosts that open this).
+ * Related: `SendPage`, `SwapPage` (hosts that open this).
  *
  * @see ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.tsx
  */

@@ -7,15 +7,16 @@ import {
 } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
+import { selectDestinationToken } from '../../page-objects/flows/bridge.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import {
   createDappTransaction,
   createInternalTransaction,
 } from '../../page-objects/flows/transaction.flow';
+import SwapPage from '../../page-objects/pages/swap/swap-page';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
-import SwapPage from '../../page-objects/pages/swap/swap-page';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from '../bridge/constants';
 import { mockGetTxStatus } from '../bridge/bridge-test-utils';
 import {
@@ -156,11 +157,9 @@ describe('Smart Transactions', function () {
         const swapPage = new SwapPage(driver);
         await swapPage.checkPageIsLoaded();
         await swapPage.enterSwapAmount('2');
-        await swapPage.selectDestinationToken('DAI');
-        await swapPage.checkQuoteIsGasIncluded();
+        await selectDestinationToken(driver, 'DAI');
+        await swapPage.checkGasIncludedIsDisplayed();
         await swapPage.submitSwap();
-
-        await swapPage.waitForSmartTransactionToComplete();
         await swapPage.goBackAfterSubmit();
 
         await homePage.checkPageIsLoaded();
@@ -189,11 +188,9 @@ describe('Smart Transactions', function () {
         const swapPage = new SwapPage(driver);
         await swapPage.checkPageIsLoaded();
         await swapPage.enterSwapAmount('20');
-        await swapPage.waitForQuote();
-        await swapPage.checkQuoteIsGasIncluded();
+        await swapPage.waitForSwapQuote();
+        await swapPage.checkGasIncludedIsDisplayed();
         await swapPage.submitSwap();
-
-        await swapPage.waitForSmartTransactionToComplete();
         await swapPage.goBackAfterSubmit();
 
         await homePage.checkPageIsLoaded();

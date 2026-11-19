@@ -358,19 +358,18 @@ export const DEFAULT_STELLAR_ADDRESS =
   'GDEM2RN4QLPSSPGSPSKSEQ3XXFGM4X4BRH4X4EOPABHAXBVV6OQ6YE6K';
 
 /**
- * Stellar addresses derived from `E2E_SRP` for HD accounts 1-3 (SLIP-0010
- * ed25519 path `m/44'/148'/i'`). Used by Stellar account-derivation E2E.
- * Re-derive with `@metamask/key-tree` `SLIP10Node` (curve `ed25519`,
- * `slip10:` path segments) + `@stellar/stellar-base` Keypair — not BIP-32
- * secp256k1 HDKey, which yields different addresses.
+ * Stellar addresses derived from `E2E_SRP` for HD Account 1 (SLIP-0010
+ * ed25519 path `m/44'/148'/0'`). Account-derivation E2E covers Account 1
+ * only; keep this list to one entry so Horizon discovery does not auto-create
+ * HD accounts 2+. Re-derive with `@metamask/key-tree` `SLIP10Node` (curve
+ * `ed25519`, `slip10:` path segments) + `@stellar/stellar-base` Keypair —
+ * not BIP-32 secp256k1 HDKey, which yields different addresses.
  *
  * Note: index 0 matches `DEFAULT_STELLAR_ADDRESS`.
  */
 export const EXPECTED_STELLAR_ADDRESSES_BY_INDEX = [
   DEFAULT_STELLAR_ADDRESS,
-  'GBIIXG2ZPGFMANK4XIF6MMWJXMX4F4BQHIIAJ5GOAB5DXBDQPJ6IRVJK',
-  'GBDJSQAXWNQF55G6QY6AF4GWKOINELOND7A7RHZPBXBPEV3YSY5M7LVU',
-] as const satisfies readonly [string, string, string];
+] as const satisfies readonly [string];
 
 /* Account types */
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
