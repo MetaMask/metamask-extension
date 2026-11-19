@@ -142,15 +142,12 @@ const SyncAccountsSettings = () => {
     switch (effectivePhase) {
       case QR_SYNC_PHASES.IDLE:
       case QR_SYNC_PHASES.DISPLAYING_QR:
-        return <QrCodeScan onRestart={handleRetry} />;
+        return <QrCodeScan />;
       case QR_SYNC_PHASES.AWAITING_OTP_INPUT:
         return <EnterVerificationCode onRestart={handleRetry} />;
       case QR_SYNC_PHASES.AWAITING_SYNC_OFFER:
         return (
-          <LoadingStep
-            title={`${t('add_device_validating_title')}...`}
-            message={t('add_device_validating_desc')}
-          />
+          <EnterVerificationCode onRestart={handleRetry} isAwaitingSyncOffer />
         );
       case QR_SYNC_PHASES.REVIEWING_SYNC_OFFER:
         return password ? (
