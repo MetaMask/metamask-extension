@@ -426,8 +426,10 @@ describe('in-page-step-timer', () => {
       Object.defineProperty(globalThis, 'MutationObserver', {
         configurable: true,
         writable: true,
-        value: function ScuttledMutationObserver() {
-          throw new Error('scuttled');
+        value: class {
+          constructor() {
+            throw new Error('scuttled');
+          }
         },
       });
       try {
