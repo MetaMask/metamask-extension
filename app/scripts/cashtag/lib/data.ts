@@ -146,9 +146,27 @@ export async function resolveTicker(
     return null;
   }
 
-  const assets = symbolMatches.map(toAssetData).toSorted(byMarketCap);
+  const ranked = symbolMatches
+    .map((match) => ({
+      asset: toAssetData(match),
+      rwaExact: match.rwaData?.ticker?.trim().toUpperCase() === ticker,
+    }))
+    .toSorted((left, right) => byMarketCap(left.asset, right.asset));
 
-  // Since assets are sorted by market cap descending, checking the first one is enough
+  // Token search is usually market-cap ordered, but not always, so rank here.
+  // An exact RWA ticker with a market cap is placed ahead of symbol matches.
+  const preferExactRwa = ranked.some(
+    (entry) => entry.rwaExact && (entry.asset.marketCap ?? 0) > 0,
+  );
+  const assets = (
+    preferExactRwa
+      ? [
+          ...ranked.filter((entry) => entry.rwaExact),
+          ...ranked.filter((entry) => !entry.rwaExact),
+        ]
+      : ranked
+  ).map((entry) => entry.asset);
+
   if ((assets[0].marketCap ?? 0) <= 0) {
     return null;
   }
