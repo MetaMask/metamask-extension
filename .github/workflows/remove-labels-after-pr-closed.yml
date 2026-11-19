@@ -3,14 +3,14 @@ name: Remove labels after issue (or PR) closed
 on:
   issues:
     types: [closed]
-  # Use pull_request_target so closed-PR cleanup always runs with the
-  # workflow definition from the default branch (not the PR head SHA).
-  # This ensures newly added cleanup labels are applied consistently.
-  pull_request_target:
+  pull_request:
     types: [closed]
 
 jobs:
   cleanup:
+    # Fork PRs get a read-only token under `pull_request`, so every removal
+    # would fail; skip them.
+    if: ${{ github.event_name == 'issues' || github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
