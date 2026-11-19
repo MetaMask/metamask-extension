@@ -279,7 +279,7 @@ function shouldCheckPullRequestLabels(
 
   return (
     labelable.type === LabelableType.PullRequest &&
-    context.eventName === 'pull_request_target' &&
+    context.eventName === 'pull_request' &&
     context.payload.pull_request?.base?.ref === 'main' &&
     requiredLabelActions.has(context.payload.action ?? '')
   );
