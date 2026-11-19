@@ -21526,13 +21526,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bigint-buffer@npm:^1.1.5":
-  version: 1.1.5
-  resolution: "bigint-buffer@npm:1.1.5"
-  dependencies:
-    bindings: "npm:^1.3.0"
-    node-gyp: "npm:latest"
-  checksum: 10/be70c7ad00f5e1a4739251755ef35fe8f183ec34782353cfde0820dcc7c84eefa647c12d75c003650a19c333a0528fde2d4fb9d0c41c724c27cd6b0245d20987
+"bigint-buffer@npm:@exodus/bigint-buffer@1.1.5-exodus.1":
+  version: 1.1.5-exodus.1
+  resolution: "@exodus/bigint-buffer@npm:1.1.5-exodus.1"
+  checksum: 10/2489991c764511c03b34f90c190dbf38b0b911c1619f352bfe8031458202483d37f9e70f150350aa433f0be749e83cc1e1bf7bc14d3e2ca219741baa6d997961
   languageName: node
   linkType: hard
 
