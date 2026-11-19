@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useRef } from 'react';
 
-type Props = {
+type ResizeBarProps = {
   property: string;
   value: number;
   min: number;
@@ -10,7 +10,8 @@ type Props = {
 const className =
   'absolute -right-1 top-0 z-10 h-full w-2 cursor-col-resize touch-none focus-visible:outline-none before:absolute before:inset-y-0 before:left-[3px] before:w-px before:bg-border-muted hover:before:bg-primary-default focus-visible:before:bg-primary-default';
 
-export const ResizeBar = ({ property, min, max, value }: Props) => {
+export const ResizeBar = ({ property, min, max, value }: ResizeBarProps) => {
+  const dragOriginLeft = useRef<number | null>(null);
   const resolvedValueNow = value ?? Math.round((min + max) / 2);
 
   const getResizeTarget = (handle: HTMLDivElement) => handle.parentElement;
@@ -30,7 +31,10 @@ export const ResizeBar = ({ property, min, max, value }: Props) => {
   };
 
   const resize = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (event.currentTarget.dataset.resizing !== 'true') {
+    if (
+      event.currentTarget.dataset.resizing !== 'true' ||
+      dragOriginLeft.current === null
+    ) {
       return;
     }
 
@@ -39,10 +43,7 @@ export const ResizeBar = ({ property, min, max, value }: Props) => {
       return;
     }
 
-    const width = setWidth(
-      target,
-      event.clientX - target.getBoundingClientRect().left,
-    );
+    const width = setWidth(target, event.clientX - dragOriginLeft.current);
     event.currentTarget.setAttribute('aria-valuenow', String(width));
   };
 
@@ -70,6 +71,12 @@ export const ResizeBar = ({ property, min, max, value }: Props) => {
     event.currentTarget.setAttribute('aria-valuenow', String(width));
   };
 
+  const endResize = (event: React.PointerEvent<HTMLDivElement>) => {
+    dragOriginLeft.current = null;
+    delete event.currentTarget.dataset.resizing;
+    event.currentTarget.releasePointerCapture?.(event.pointerId);
+  };
+
   return (
     <div
       role="separator"
@@ -81,18 +88,18 @@ export const ResizeBar = ({ property, min, max, value }: Props) => {
       tabIndex={0}
       className={className}
       onPointerDown={(event) => {
+        const target = getResizeTarget(event.currentTarget);
+        if (!target) {
+          return;
+        }
+
+        dragOriginLeft.current = target.getBoundingClientRect().left;
         event.currentTarget.dataset.resizing = 'true';
         event.currentTarget.setPointerCapture?.(event.pointerId);
       }}
       onPointerMove={resize}
-      onPointerUp={(event) => {
-        delete event.currentTarget.dataset.resizing;
-        event.currentTarget.releasePointerCapture?.(event.pointerId);
-      }}
-      onPointerCancel={(event) => {
-        delete event.currentTarget.dataset.resizing;
-        event.currentTarget.releasePointerCapture?.(event.pointerId);
-      }}
+      onPointerUp={endResize}
+      onPointerCancel={endResize}
       onKeyDown={resizeByKey}
     />
   );
