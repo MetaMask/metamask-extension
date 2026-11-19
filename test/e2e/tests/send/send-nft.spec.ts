@@ -309,7 +309,7 @@ describe('Send NFT', function () {
             await nftDetailsPage.clickNFTSendButton();
 
             const sendPage = new SendPage(driver);
-            await sendPage.checkSendFormIsLoaded();
+            await sendPage.checkPageIsLoaded();
             await sendPage.fillRecipient({
               recipientAddress: DEFAULT_RECIPIENT,
             });

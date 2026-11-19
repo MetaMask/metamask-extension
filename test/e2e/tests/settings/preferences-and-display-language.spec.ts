@@ -19,6 +19,7 @@ import en from '../../../../app/_locales/en/messages.json';
 // eslint-disable-next-line camelcase
 import es_419 from '../../../../app/_locales/es_419/messages.json';
 import hi from '../../../../app/_locales/hi/messages.json';
+import SendAssetPickerPage from '../../page-objects/pages/send/send-asset-picker-page';
 import SendPage from '../../page-objects/pages/send/send-page';
 
 const selectors = {
@@ -154,7 +155,8 @@ describe('Settings - Preferences and display', function (this: Suite) {
         await homepage.startSendFlow();
 
         const sendPage = new SendPage(driver);
-        await sendPage.selectToken('0x539', 'ETH');
+        const sendAssetPickerPage = new SendAssetPickerPage(driver);
+        await sendAssetPickerPage.selectToken('0x539', 'ETH');
         await sendPage.fillRecipient({
           recipientAddress: '0xAAA',
           validAddress: false,

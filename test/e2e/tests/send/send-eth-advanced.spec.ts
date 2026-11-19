@@ -19,6 +19,7 @@ import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
+import SendAssetPickerPage from '../../page-objects/pages/send/send-asset-picker-page';
 import SendPage from '../../page-objects/pages/send/send-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { Anvil } from '../../seeder/anvil';
@@ -232,7 +233,8 @@ describe('Send ETH - Advanced', function () {
 
           await homePage.startSendFlow();
 
-          await sendPage.selectToken('0x539', 'ETH');
+          const sendAssetPickerPage = new SendAssetPickerPage(driver);
+          await sendAssetPickerPage.selectToken('0x539', 'ETH');
 
           await sendPage.fillRecipient({
             recipientAddress: '0xc427D562164062a23a5cFf596A4a3208e72Acd28',

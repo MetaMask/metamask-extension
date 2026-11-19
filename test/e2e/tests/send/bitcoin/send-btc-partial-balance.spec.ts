@@ -7,6 +7,7 @@ import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import BitcoinReviewTxPage from '../../../page-objects/pages/send/bitcoin-review-tx-page';
+import SendAssetPickerPage from '../../../page-objects/pages/send/send-asset-picker-page';
 import SendPage from '../../../page-objects/pages/send/send-page';
 import { BitcoinNode } from '../../../seeder/bitcoin/node';
 import { withBitcoinFixtures } from '../../btc/fixtures/with-bitcoin-fixtures';
@@ -47,7 +48,8 @@ describe('Bitcoin Send', function (this: Suite) {
 
         await homePage.startSendFlow();
         const sendPage = new SendPage(driver);
-        await sendPage.selectToken(
+        const sendAssetPickerPage = new SendAssetPickerPage(driver);
+        await sendAssetPickerPage.selectToken(
           'bip122:000000000019d6689c085ae165831e93',
           'BTC',
         );

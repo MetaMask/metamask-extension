@@ -13,6 +13,7 @@ import { Driver } from '../../webdriver/driver';
 import Homepage from '../../page-objects/pages/home/homepage';
 import NftsTab from '../../page-objects/pages/home/nfts-tab';
 import { login } from '../../page-objects/flows/login.flow';
+import SendAssetPickerPage from '../../page-objects/pages/send/send-asset-picker-page';
 import SendPage from '../../page-objects/pages/send/send-page';
 
 describe('Send NFT - Filtering', function () {
@@ -46,9 +47,11 @@ describe('Send NFT - Filtering', function () {
         await nftsTab.checkPageIsLoaded();
         await homepage.startSendFlow();
 
+        const sendAssetPickerPage = new SendAssetPickerPage(driver);
+        await sendAssetPickerPage.checkPageIsLoaded();
+        await sendAssetPickerPage.selectNft('Test Dapp NFTs #1');
+
         const sendPage = new SendPage(driver);
-        await sendPage.checkPageIsLoaded();
-        await sendPage.selectNft('Test Dapp NFTs #1');
         await sendPage.fillRecipient({
           recipientAddress: '0x1234567890123456789012345678901234567890',
         });

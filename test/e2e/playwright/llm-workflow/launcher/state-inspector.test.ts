@@ -166,6 +166,11 @@ describe('state-inspector', () => {
       );
     });
 
+    it('detects the screens of a dynamic route by their own path', () => {
+      expect(atHash('/send/asset')).toBe('send-asset');
+      expect(atHash('/send/amount-recipient')).toBe('send-amount-recipient');
+    });
+
     it('ignores the query string', () => {
       expect(atHash('/activity?tab=nfts')).toBe('activity');
     });

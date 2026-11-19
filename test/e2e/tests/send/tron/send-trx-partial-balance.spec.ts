@@ -8,6 +8,7 @@ import SnapTransactionConfirmation from '../../../page-objects/pages/confirmatio
 import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
+import SendAssetPickerPage from '../../../page-objects/pages/send/send-asset-picker-page';
 import SendPage from '../../../page-objects/pages/send/send-page';
 import {
   TRON_CHAIN_ID,
@@ -38,8 +39,9 @@ describe('Tron Send', function (this: Suite) {
 
         await homePage.startSendFlow();
         const sendPage = new SendPage(driver);
-        await sendPage.selectToken(TRON_CHAIN_ID, 'TRX');
-        await sendPage.checkSendFormIsLoaded();
+        const sendAssetPickerPage = new SendAssetPickerPage(driver);
+        await sendAssetPickerPage.selectToken(TRON_CHAIN_ID, 'TRX');
+        await sendPage.checkPageIsLoaded();
 
         await sendPage.fillRecipient({
           recipientAddress: TRON_RECIPIENT_ADDRESS,

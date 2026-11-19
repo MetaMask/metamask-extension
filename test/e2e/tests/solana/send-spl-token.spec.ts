@@ -8,6 +8,7 @@ import SelectNetworkModal from '../../page-objects/pages/networks/select-network
 import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
+import SendAssetPickerPage from '../../page-objects/pages/send/send-asset-picker-page';
 import SendPage from '../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import {
@@ -253,8 +254,9 @@ describe('Send flow - SPL Token', function (this: Suite) {
         await homePage.clickOnSendButton();
 
         const sendPage = new SendPage(driver);
-        await sendPage.checkSolanaNetworkIsPresent();
-        await sendPage.selectToken(
+        const sendAssetPickerPage = new SendAssetPickerPage(driver);
+        await sendAssetPickerPage.checkSolanaNetworkIsPresent();
+        await sendAssetPickerPage.selectToken(
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
           'USDC',
         );
@@ -327,8 +329,9 @@ describe('Send flow - SPL Token', function (this: Suite) {
         await homePage.clickOnSendButton();
 
         const sendPage = new SendPage(driver);
-        await sendPage.checkSolanaNetworkIsPresent();
-        await sendPage.selectToken(
+        const sendAssetPickerPage = new SendAssetPickerPage(driver);
+        await sendAssetPickerPage.checkSolanaNetworkIsPresent();
+        await sendAssetPickerPage.selectToken(
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
           'USDC',
         );

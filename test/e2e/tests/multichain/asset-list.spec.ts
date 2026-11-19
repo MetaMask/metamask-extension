@@ -10,6 +10,7 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Mockttp } from '../../mock-e2e';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { mockSpotPrices } from '../tokens/utils/mocks';
+import SendAssetPickerPage from '../../page-objects/pages/send/send-asset-picker-page';
 import SendPage from '../../page-objects/pages/send/send-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import {
@@ -300,7 +301,8 @@ describe('Multichain Asset List', function (this: Suite) {
         await tokensTab.checkTokenItemNumber(2);
 
         await homePage.startSendFlow();
-        await sendPage.selectToken('0x89', 'TST');
+        const sendAssetPickerPage = new SendAssetPickerPage(driver);
+        await sendAssetPickerPage.selectToken('0x89', 'TST');
         await sendPage.fillRecipient({
           recipientAddress: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         });

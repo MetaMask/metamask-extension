@@ -12,6 +12,7 @@ import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import SnapTransactionConfirmation from '../../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
+import SendAssetPickerPage from '../../../page-objects/pages/send/send-asset-picker-page';
 import SendPage from '../../../page-objects/pages/send/send-page';
 import { Driver } from '../../../webdriver/driver';
 import { collectTimerResults } from '../../utils/timer-helper';
@@ -81,24 +82,25 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
             driver,
             'openSendPageFromHome',
             async () => {
-              const sendPage = new SendPage(driver);
-              await sendPage.checkNetworkFilterToggleIsDisplayed();
+              const sendAssetPickerPage = new SendAssetPickerPage(driver);
+              await sendAssetPickerPage.checkNetworkFilterToggleIsDisplayed();
             },
           ),
         );
 
         // Measure: Select token and load form
-        const sendPage = new SendPage(driver);
-        await sendPage.selectToken(
+        const sendAssetPickerPage = new SendAssetPickerPage(driver);
+        await sendAssetPickerPage.selectToken(
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
           'SOL',
         );
+        const sendPage = new SendPage(driver);
         steps.push(
           await measureStepWithLongTasks(
             driver,
             'selectTokenToSendFormLoaded',
             async () => {
-              await sendPage.checkSendFormIsLoaded();
+              await sendPage.checkPageIsLoaded();
             },
           ),
         );

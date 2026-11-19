@@ -1,6 +1,7 @@
 import { Suite } from 'mocha';
 import { MockedEndpoint, Mockttp } from 'mockttp';
 
+import SendAssetPickerPage from '../../page-objects/pages/send/send-asset-picker-page';
 import SendPage from '../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
@@ -67,8 +68,9 @@ describe('Send flow', function (this: Suite) {
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('0', 'SOL', false);
         await homePage.clickOnSendButton();
-        await sendPage.checkSolanaNetworkIsPresent();
-        await sendPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
+        const sendAssetPickerPage = new SendAssetPickerPage(driver);
+        await sendAssetPickerPage.checkSolanaNetworkIsPresent();
+        await sendAssetPickerPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
 
         await sendPage.fillRecipient({
           recipientAddress: '2433asd',
@@ -120,8 +122,9 @@ describe('Send flow', function (this: Suite) {
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('50');
         await homePage.clickOnSendButton();
-        await sendPage.checkSolanaNetworkIsPresent();
-        await sendPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
+        const sendAssetPickerPage = new SendAssetPickerPage(driver);
+        await sendAssetPickerPage.checkSolanaNetworkIsPresent();
+        await sendAssetPickerPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
 
         await sendPage.checkContinueButton({ state: 'disabled' });
         await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
@@ -175,8 +178,9 @@ describe('Send flow', function (this: Suite) {
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('50');
         await homePage.clickOnSendButton();
-        await sendPage.checkSolanaNetworkIsPresent();
-        await sendPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
+        const sendAssetPickerPage = new SendAssetPickerPage(driver);
+        await sendAssetPickerPage.checkSolanaNetworkIsPresent();
+        await sendAssetPickerPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
 
         await sendPage.checkContinueButton({ state: 'disabled' });
         await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });

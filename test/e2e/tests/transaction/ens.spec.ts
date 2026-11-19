@@ -8,6 +8,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
 import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
+import SendAssetPickerPage from '../../page-objects/pages/send/send-asset-picker-page';
 import SendPage from '../../page-objects/pages/send/send-page';
 
 describe('ENS', function (this: Suite) {
@@ -70,7 +71,8 @@ describe('ENS', function (this: Suite) {
 
         // fill ens address as recipient when user lands on send token screen
         const sendToPage = new SendPage(driver);
-        await sendToPage.selectToken('0x1', 'ETH');
+        const sendAssetPickerPage = new SendAssetPickerPage(driver);
+        await sendAssetPickerPage.selectToken('0x1', 'ETH');
         await sendToPage.fillRecipient({ recipientAddress: sampleEnsDomain });
 
         // Verify that ens is resolved to the correct address

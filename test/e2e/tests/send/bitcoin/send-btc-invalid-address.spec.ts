@@ -6,6 +6,7 @@ import { login } from '../../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../../page-objects/flows/network.flow';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
+import SendAssetPickerPage from '../../../page-objects/pages/send/send-asset-picker-page';
 import SendPage from '../../../page-objects/pages/send/send-page';
 
 describe('Bitcoin Send', function (this: Suite) {
@@ -29,7 +30,8 @@ describe('Bitcoin Send', function (this: Suite) {
 
         await homePage.startSendFlow();
         const sendPage = new SendPage(driver);
-        await sendPage.selectToken(
+        const sendAssetPickerPage = new SendAssetPickerPage(driver);
+        await sendAssetPickerPage.selectToken(
           'bip122:000000000019d6689c085ae165831e93',
           'BTC',
         );

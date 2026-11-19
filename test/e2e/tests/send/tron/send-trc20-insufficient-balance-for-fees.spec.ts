@@ -5,6 +5,7 @@ import { waitUntilAccountTreeSyncIdle } from '../../../page-objects/flows/add-ac
 import { login } from '../../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../../page-objects/flows/network.flow';
 import HomePage from '../../../page-objects/pages/home/homepage';
+import SendAssetPickerPage from '../../../page-objects/pages/send/send-asset-picker-page';
 import SendPage from '../../../page-objects/pages/send/send-page';
 import {
   TRON_CHAIN_ID,
@@ -33,8 +34,9 @@ describe('Tron Send', function (this: Suite) {
 
         await homePage.startSendFlow();
         const sendPage = new SendPage(driver);
-        await sendPage.selectToken(TRON_CHAIN_ID, 'USDT');
-        await sendPage.checkSendFormIsLoaded();
+        const sendAssetPickerPage = new SendAssetPickerPage(driver);
+        await sendAssetPickerPage.selectToken(TRON_CHAIN_ID, 'USDT');
+        await sendPage.checkPageIsLoaded();
 
         await sendPage.fillRecipient({
           recipientAddress: TRON_RECIPIENT_ADDRESS,

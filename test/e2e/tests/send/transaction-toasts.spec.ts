@@ -21,6 +21,7 @@ import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import BitcoinReviewTxPage from '../../page-objects/pages/send/bitcoin-review-tx-page';
+import SendAssetPickerPage from '../../page-objects/pages/send/send-asset-picker-page';
 import SendPage from '../../page-objects/pages/send/send-page';
 import TransactionDetailsPage from '../../page-objects/pages/transaction-details-page';
 import { TxToastNotification } from '../../page-objects/components/tx-toast-notification';
@@ -166,7 +167,8 @@ describe('Transaction toasts', function (this: Suite) {
         );
         const sendPage = new SendPage(driver);
         await homePage.startSendFlow();
-        await sendPage.selectToken(BITCOIN_CHAIN_ID, 'BTC');
+        const sendAssetPickerPage = new SendAssetPickerPage(driver);
+        await sendAssetPickerPage.selectToken(BITCOIN_CHAIN_ID, 'BTC');
         await sendPage.fillRecipient({
           recipientAddress: BTC_RECIPIENT_ADDRESS,
         });
