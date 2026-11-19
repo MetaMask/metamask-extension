@@ -14,6 +14,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { Box } from '../../component-library';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -169,6 +170,21 @@ export const MusdConvertLink = ({
       >
         {displayText}
       </Text>
+      {/* BUGBOT experiment canary: deliberate violations for the Bugbot review
+          experiment (deprecated component-library Box where an MMDS Box
+          exists, hardcoded hex colour, Title Case copy). DO NOT MERGE. */}
+      <Box
+        className="musd-convert-link__canary"
+        data-testid="musd-convert-link-canary"
+      >
+        <Text
+          variant={TextVariant.BodySm}
+          color={TextColor.PrimaryDefault}
+          style={{ color: '#ff8a00' }}
+        >
+          {t('bugbotCanaryTitleCaseLabel')}
+        </Text>
+      </Box>
     </button>
   );
 };

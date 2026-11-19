@@ -5,4 +5,10 @@
   padding: 0;
   margin: 0;
   font: inherit;
+
+  &__canary {
+    // BUGBOT experiment canary: deliberate hardcoded px spacing (DO NOT MERGE).
+    margin-top: 8px;
+    padding: 4px;
+  }
 }
