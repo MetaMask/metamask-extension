@@ -154,6 +154,10 @@ describe('LavamoatPlugin', () => {
         exceptions.includes('importScripts'),
         'importScripts must be in the SW exceptions list so the SW can load background.js',
       );
+      assert.ok(
+        exceptions.includes('Headers'),
+        'Headers must be in the SW exceptions list, or fetch trace headers are dropped',
+      );
     });
 
     it('keeps null_unsafe mode for inpage.js and bootstrap (no LavaMoat runtime needed)', () => {

@@ -18,7 +18,7 @@ describe('trackErrorAsAnalytics', () => {
     const error = new Error('Deletion failed');
 
     await trackErrorAsAnalytics(error, {
-      source: 'clear-metametrics-data',
+      source: 'delete-metametrics-modal',
       excludeMetaMetricsId: true,
       environmentType: 'popup',
     });
@@ -27,7 +27,7 @@ describe('trackErrorAsAnalytics', () => {
       'AnalyticsController:trackErrorAsAnalytics',
       [
         'Deletion failed',
-        { source: 'clear-metametrics-data' },
+        { source: 'delete-metametrics-modal' },
         { anonymous: true, [environmentTypeProperty]: 'popup' },
       ],
     );
@@ -72,7 +72,7 @@ describe('trackErrorAsAnalytics', () => {
 
     await expect(
       trackErrorAsAnalytics(new Error('Deletion failed'), {
-        source: 'clear-metametrics-data',
+        source: 'delete-metametrics-modal',
       }),
     ).resolves.toBeUndefined();
   });

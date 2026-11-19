@@ -1,10 +1,4 @@
-import React, {
-  Suspense,
-  useEffect,
-  useState,
-  useMemo,
-  useCallback,
-} from 'react';
+import React, { Suspense, useEffect, useState, useMemo } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import classnames from 'clsx';
@@ -67,9 +61,6 @@ import {
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterUnlock,
 } from '../../selectors';
-import type { UIMetricsEventPayload } from '../../contexts/metametrics';
-import { useAnalytics } from '../../hooks/useAnalytics';
-import type { MetaMetricsEventOptions } from '../../../shared/constants/metametrics';
 import { submitRequestToBackgroundAndCatch } from '../../components/app/toast-master/utils';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import {
@@ -149,28 +140,8 @@ const OnboardingFlowContent = () => {
   );
   const { isFromReminder, isFromSettingsSecurity } =
     useOnboardingSearchParams();
-  const { trackEvent, createEventBuilder } = useAnalytics();
   const { startJourney, endJourney } = useOnboardingTrace();
 
-  const trackLegacyEventForAction = useCallback(
-    async (
-      payload: UIMetricsEventPayload,
-      options?: MetaMetricsEventOptions,
-    ): Promise<void> => {
-      trackEvent(
-        createEventBuilder(payload.event)
-          .addProperties({
-            ...payload.properties,
-            ...(payload.category === undefined
-              ? {}
-              : { category: payload.category }),
-          })
-          .addSensitiveProperties(payload.sensitiveProperties)
-          .build(options),
-      );
-    },
-    [createEventBuilder, trackEvent],
-  );
   const isUnlocked = useSelector(getIsUnlocked);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSeedlessOnboardingFeatureEnabled =
@@ -321,10 +292,7 @@ const OnboardingFlowContent = () => {
         firstTimeFlowType === FirstTimeFlowType.socialImport
       ) {
         retrievedSecretRecoveryPhrase = await dispatch(
-          restoreSocialBackupAndGetSeedPhrase(
-            password,
-            trackLegacyEventForAction,
-          ),
+          restoreSocialBackupAndGetSeedPhrase(password),
         );
       } else {
         retrievedSecretRecoveryPhrase = await dispatch(

@@ -21,6 +21,9 @@ class CustomTokenImportPage {
 
   private readonly driver: Driver;
 
+  private readonly mainnetAddressWarning =
+    '[data-testid="custom-token-import-mainnet-warning"]';
+
   private readonly networkSelector = '[data-testid="network-selector"]';
 
   private readonly pageSelector = '[data-testid="custom-token-import-page"]';
@@ -35,9 +38,29 @@ class CustomTokenImportPage {
     this.driver = driver;
   }
 
+  async checkImportButtonIsEnabled(): Promise<void> {
+    console.log('Check that the custom token import button is enabled');
+    await this.driver.waitForSelector(this.submitButtonEnabled);
+  }
+
+  async checkMainnetAddressWarningIsDisplayed(): Promise<void> {
+    console.log('Check that the Mainnet token address warning is displayed');
+    await this.driver.waitForSelector(this.mainnetAddressWarning);
+  }
+
   async checkPageIsLoaded(): Promise<void> {
     console.log('Check that the Add Custom Token page is loaded');
     await this.driver.waitForSelector(this.pageSelector);
+  }
+
+  async enterTokenAddress(tokenAddress: string): Promise<void> {
+    console.log(`Enter custom token address ${tokenAddress}`);
+    // Product clears the form whenever selectedNetwork changes
+    // (custom-token-import.tsx:423-428). Wait for the network picker and
+    // address input to settle, then fill once — do not retry typing.
+    await this.driver.waitForElementToStopMoving(this.networkSelector);
+    await this.waitForAddressInputStable();
+    await this.driver.fill(this.addressInput, tokenAddress);
   }
 
   async goBackToHomepage(): Promise<void> {
@@ -47,12 +70,12 @@ class CustomTokenImportPage {
 
   async importToken(tokenAddress: string): Promise<void> {
     console.log(`Import custom token at address ${tokenAddress}`);
-    // Product clears the form whenever selectedNetwork changes
-    // (custom-token-import.tsx:423-428). Wait for the network picker and
-    // address input to settle, then fill once — do not retry typing.
-    await this.driver.waitForElementToStopMoving(this.networkSelector);
-    await this.waitForAddressInputStable();
-    await this.driver.fill(this.addressInput, tokenAddress);
+    await this.enterTokenAddress(tokenAddress);
+    await this.submitTokenImport();
+  }
+
+  async submitTokenImport(): Promise<void> {
+    console.log('Submit the custom token import');
     await this.driver.waitForSelector(this.submitButtonEnabled);
     await this.driver.clickElement(this.submitButton);
   }

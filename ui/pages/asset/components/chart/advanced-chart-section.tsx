@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import { Box, BoxFlexDirection, Skeleton } from '@metamask/design-system-react';
 import { getIsAdvancedChartsThemingEnabled } from '../../../../selectors/multichain/feature-flags';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useHistoricalPrices } from '../../hooks/useHistoricalPrices';
 import { computePercentChange } from '../../../../components/app/assets/util/percentChange';
 import AdvancedChartIframe from './advanced-chart-iframe';
@@ -15,7 +16,9 @@ import { AssetChartBody, type HoveredPoint } from './asset-chart-body';
 import ChartErrorState from './chart-error-state';
 import TokenPriceHeader from './token-price-header';
 import { useAdvancedChartData } from './useAdvancedChartData';
+import { useCandle24hChange } from './useCandle24hChange';
 import { useAdvancedChartPreferences } from './useAdvancedChartPreferences';
+import { useAdvancedChartInteractions } from './useAdvancedChartInteractions';
 
 /**
  * The aspect ratio of the legacy chart's plot area, from
@@ -95,6 +98,7 @@ export const AdvancedChartSection = ({
   currency,
   currentPrice,
 }: AdvancedChartSectionProps) => {
+  const t = useI18nContext();
   const {
     chartType,
     interval,
@@ -153,8 +157,6 @@ export const AdvancedChartSection = ({
     realtimePrice,
     realtimeTimestamp,
     price: ohlcvPrice,
-    percentChange: ohlcvPercentChange,
-    timestamp: ohlcvTimestamp,
     isLoading: isOhlcvLoading,
     error: ohlcvError,
     resolvedCurrency,
@@ -166,13 +168,17 @@ export const AdvancedChartSection = ({
     needsHistory: !isLineChart,
   });
 
+  // Line mode's header and legacy chart body both read this series, so it uses
+  // the range the chart is showing. In candle mode the body is hidden and the
+  // candle header's 24H change comes from `useCandle24hChange` instead, so the
+  // range is pinned to P1D only to keep the hidden body warm for a fast toggle.
   const historical = useHistoricalPrices({
     chainId,
     address,
     currency,
-    timeRange:
-      LINE_TIME_RANGE_TO_ISO8601[lineTimeRange] ?? DEFAULT_LINE_ISO8601,
-    enabled: isLineChart,
+    timeRange: isLineChart
+      ? (LINE_TIME_RANGE_TO_ISO8601[lineTimeRange] ?? DEFAULT_LINE_ISO8601)
+      : DEFAULT_LINE_ISO8601,
   });
 
   // Line mode anchors the header to the opening price of the range the chart
@@ -186,6 +192,8 @@ export const AdvancedChartSection = ({
       historical.isPlaceholderData ? undefined : historical.data.prices?.[0]?.y,
     ),
     timestamp: hovered?.date ?? realtimeTimestamp,
+    // Line mode keeps rendering the formatted date, not a static label.
+    periodLabel: undefined as string | undefined,
     loading: historical.loading || historical.isPlaceholderData,
     currency,
   };
@@ -207,10 +215,35 @@ export const AdvancedChartSection = ({
       ? '--color-error-default'
       : '--color-success-default';
 
+  // The live/spot price the candle header falls back to when the OHLCV API
+  // fails, so the header is never blank.
+  const candleFallbackPrice = realtimePrice ?? currentPrice;
+  // On an /ohlcv-chart failure there is no candle price, so fall back to the
+  // live/spot price rather than render a blank header.
+  const candlePrice =
+    ohlcvPrice ?? (ohlcvError ? candleFallbackPrice : undefined);
+
+  // The 24H change is owned by a dedicated hook so its source can change (e.g.
+  // a future `percentChange1D` WebSocket stream) without touching this
+  // component. Today it is derived from the interval-independent P1D series,
+  // which keeps the figure identical across candle intervals and a true 24H
+  // change, and keeps it available when the OHLCV API fails.
+  const candle24hChange = useCandle24hChange({
+    chainId,
+    address,
+    currency,
+    candlePrice,
+    candleCurrency: resolvedCurrency,
+    currentPrice,
+    enabled: !isLineChart,
+  });
   const candleHeader = {
-    price: ohlcvPrice,
-    percentChange: ohlcvPercentChange,
-    timestamp: ohlcvTimestamp,
+    price: candlePrice,
+    percentChange: candle24hChange.percentChange,
+    // Candle mode shows the last-24H change, labelled "Today" to match mobile,
+    // instead of the latest bar's date.
+    timestamp: undefined as number | undefined,
+    periodLabel: t('today'),
     loading: isOhlcvLoading,
     // The price API does not quote every fiat, so label whatever came back.
     currency: resolvedCurrency,
@@ -234,6 +267,30 @@ export const AdvancedChartSection = ({
   const showIndicatorBar =
     !isLineChart && chartReady && !candleFailed && !candleEmpty;
 
+  // Interaction handlers and empty-state tracking live in their own hook to
+  // keep this component focused on layout.
+  const {
+    handleChartTypeSelect,
+    handleLineTimeRangeSelect,
+    handleCandleIntervalSelect,
+    handleIndicatorToggle,
+    handleMASelectorOpen,
+    handleChartInteracted,
+    handleTradingViewClicked,
+  } = useAdvancedChartInteractions({
+    chartType,
+    indicators,
+    isLineChart,
+    caipAssetId,
+    isOhlcvLoading,
+    candleFailed,
+    ohlcvBarCount: ohlcvData.length,
+    setChartType,
+    setLineTimeRange,
+    setCandleInterval,
+    toggleIndicator,
+  });
+
   let candleChart;
   if (candleFailed || candleEmpty) {
     candleChart = <ChartErrorState />;
@@ -248,6 +305,8 @@ export const AdvancedChartSection = ({
         ohlcvData={ohlcvData}
         onError={setChartError}
         onReady={handleChartReady}
+        onChartInteracted={handleChartInteracted}
+        onTradingViewClicked={handleTradingViewClicked}
         realtimeBar={realtimeBar}
         fetchOlderBars={fetchOlderBars}
       />
@@ -267,15 +326,18 @@ export const AdvancedChartSection = ({
         percentChange={header.percentChange}
         currency={header.currency}
         timestamp={header.timestamp}
+        periodLabel={header.periodLabel}
         loading={header.loading}
       />
 
       <IntervalBar
         intervals={isLineChart ? LINE_CHART_TIME_RANGES : undefined}
         selectedInterval={isLineChart ? lineTimeRange : interval}
-        onIntervalSelect={isLineChart ? setLineTimeRange : setCandleInterval}
+        onIntervalSelect={
+          isLineChart ? handleLineTimeRangeSelect : handleCandleIntervalSelect
+        }
         chartType={chartType}
-        onChartTypeSelect={setChartType}
+        onChartTypeSelect={handleChartTypeSelect}
       />
 
       {/* Both modes share one grid cell rather than taking turns in the tree.
@@ -351,8 +413,9 @@ export const AdvancedChartSection = ({
               >
                 <IndicatorBar
                   activeIndicators={indicators}
-                  onIndicatorToggle={toggleIndicator}
-                  onMAToggle={toggleIndicator}
+                  onIndicatorToggle={handleIndicatorToggle}
+                  onMAToggle={handleIndicatorToggle}
+                  onMASelectorOpen={handleMASelectorOpen}
                 />
               </Box>
             </Box>

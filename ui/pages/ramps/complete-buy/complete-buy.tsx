@@ -24,7 +24,7 @@ import { AccountName } from '../../../components/app/transaction/account-name';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useRampsScreenViewed } from '../../../hooks/ramps/useRampsScreenViewed';
-import { getImageForChainId } from '../../../selectors/multichain';
+import { useImageForChainId } from '../../../hooks/useImageForChainId';
 import RampsTokenSelectionHeader from '../token-selection/components/ramps-token-selection-header';
 import type { RampsCompleteBuyLocationState } from './types';
 
@@ -58,6 +58,7 @@ export default function RampsCompleteBuyScreen() {
   useRampsScreenViewed('Complete Buy', { waitForRegion: false });
 
   const state = isCompleteBuyState(location.state) ? location.state : null;
+  const networkImageUrl = useImageForChainId(state?.tokenChainId);
 
   const handleBackToWallet = useCallback(() => {
     navigate(DEFAULT_ROUTE);
@@ -76,10 +77,6 @@ export default function RampsCompleteBuyScreen() {
           minimumFractionDigits: 0,
         })
       : undefined;
-
-  const networkImageUrl = state.tokenChainId
-    ? getImageForChainId(state.tokenChainId)
-    : undefined;
 
   const detailRows: { label: string; value: ReactNode; testId: string }[] = [
     {

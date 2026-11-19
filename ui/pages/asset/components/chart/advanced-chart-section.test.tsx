@@ -3,10 +3,12 @@ import { act, screen } from '@testing-library/react';
 import { Hex } from '@metamask/utils';
 import configureStore from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { useHistoricalPrices } from '../../hooks/useHistoricalPrices';
 import { AdvancedChartSection } from './advanced-chart-section';
 import { useAdvancedChartData } from './useAdvancedChartData';
 import { useAdvancedChartPreferences } from './useAdvancedChartPreferences';
+import { useChartAnalytics } from './useChartAnalytics';
 import {
   CHART_TYPE_LINE,
   CHART_TYPE_CANDLE,
@@ -15,6 +17,7 @@ import {
 jest.mock('../../hooks/useHistoricalPrices');
 jest.mock('./useAdvancedChartData');
 jest.mock('./useAdvancedChartPreferences');
+jest.mock('./useChartAnalytics');
 
 // The iframe loads a cross-origin chart engine that cannot run under jsdom, so
 // stand in for it and expose the props the section is responsible for wiring.
@@ -26,11 +29,15 @@ jest.mock('./advanced-chart-iframe', () => ({
     selectedInterval,
     onError,
     onReady,
+    onChartInteracted,
+    onTradingViewClicked,
   }: {
     assetId: string;
     selectedInterval: string;
     onError: (error: string) => void;
     onReady: () => void;
+    onChartInteracted: (type: 'zoom' | 'pan' | 'tooltip') => void;
+    onTradingViewClicked: () => void;
   }) => (
     <div
       data-testid="chart-iframe"
@@ -42,6 +49,16 @@ jest.mock('./advanced-chart-iframe', () => ({
         type="button"
         data-testid="simulate-error"
         onClick={() => onError('boom')}
+      />
+      <button
+        type="button"
+        data-testid="simulate-gesture"
+        onClick={() => onChartInteracted('zoom')}
+      />
+      <button
+        type="button"
+        data-testid="simulate-tradingview"
+        onClick={() => onTradingViewClicked()}
       />
     </div>
   ),
@@ -84,6 +101,10 @@ const mockUseAdvancedChartData = jest.mocked(useAdvancedChartData);
 const mockUseAdvancedChartPreferences = jest.mocked(
   useAdvancedChartPreferences,
 );
+const mockUseChartAnalytics = jest.mocked(useChartAnalytics);
+
+const trackChartInteraction = jest.fn();
+const trackChartEmptyDisplayed = jest.fn();
 
 const setChartType = jest.fn();
 const setCandleInterval = jest.fn();
@@ -130,7 +151,6 @@ function setupData(
     realtimePrice: undefined,
     realtimeTimestamp: undefined,
     price: undefined,
-    percentChange: undefined,
     timestamp: undefined,
     isLoading: false,
     error: null,
@@ -199,6 +219,10 @@ describe('AdvancedChartSection', () => {
     setupPreferences();
     setupData();
     setupHistorical();
+    mockUseChartAnalytics.mockReturnValue({
+      trackChartInteraction,
+      trackChartEmptyDisplayed,
+    });
   });
 
   describe('line mode', () => {
@@ -216,7 +240,7 @@ describe('AdvancedChartSection', () => {
       render();
 
       expect(mockUseHistoricalPrices).toHaveBeenCalledWith(
-        expect.objectContaining({ timeRange: 'P1D', enabled: true }),
+        expect.objectContaining({ timeRange: 'P1D' }),
       );
       expect(mockUseAdvancedChartData).toHaveBeenCalledWith(
         expect.objectContaining({ needsHistory: false }),
@@ -338,6 +362,129 @@ describe('AdvancedChartSection', () => {
     });
   });
 
+  describe('analytics', () => {
+    const click = (element: Element) =>
+      act(() => (element as HTMLElement).click());
+
+    it('reports a chart type change with the newly selected type', () => {
+      render();
+
+      click(
+        screen.getByRole('button', {
+          name: messages.chartTypeCandlestick.message,
+        }),
+      );
+
+      expect(trackChartInteraction).toHaveBeenCalledWith({
+        interactionType: 'chart_type_changed',
+        chartType: CHART_TYPE_CANDLE,
+      });
+    });
+
+    it('reports a line timeframe change', () => {
+      render();
+
+      click(screen.getByText('1W'));
+
+      expect(trackChartInteraction).toHaveBeenCalledWith({
+        interactionType: 'timeframe_changed',
+        chartTimeframe: '1W',
+      });
+    });
+
+    it('reports a candle granularity change, lowercased', () => {
+      setupPreferences(CHART_TYPE_CANDLE);
+      render();
+
+      click(screen.getByText('4h'));
+
+      expect(trackChartInteraction).toHaveBeenCalledWith({
+        interactionType: 'granularity_changed',
+        chartGranularity: '4h',
+      });
+    });
+
+    it('reports an indicator toggle with the post-toggle set', () => {
+      setupPreferences(CHART_TYPE_CANDLE);
+      render();
+
+      click(screen.getByText('RSI'));
+
+      expect(trackChartInteraction).toHaveBeenCalledWith({
+        interactionType: 'indicator_toggled',
+        indicatorType: 'RSI',
+        indicatorAction: 'on',
+        indicatorsActive: ['RSI'],
+      });
+    });
+
+    it('reports the moving-average selector opening', () => {
+      setupPreferences(CHART_TYPE_CANDLE);
+      render();
+
+      // The moving-average dropdown trigger is the only button that opens a menu.
+      click(screen.getByTestId('advanced-chart-ma-trigger'));
+
+      expect(trackChartInteraction).toHaveBeenCalledWith({
+        interactionType: 'indicator_selector_opened',
+        selectorType: 'moving_averages',
+      });
+    });
+
+    it('reports gesture interactions forwarded by the iframe', () => {
+      setupPreferences(CHART_TYPE_CANDLE);
+      render();
+
+      click(screen.getByTestId('simulate-gesture'));
+
+      expect(trackChartInteraction).toHaveBeenCalledWith({
+        interactionType: 'zoom',
+      });
+    });
+
+    it('reports a TradingView attribution click', () => {
+      setupPreferences(CHART_TYPE_CANDLE);
+      render();
+
+      click(screen.getByTestId('simulate-tradingview'));
+
+      expect(trackChartInteraction).toHaveBeenCalledWith({
+        interactionType: 'tradingview_clicked',
+      });
+    });
+
+    it('reports an empty chart once candle data loads with no bars', () => {
+      setupPreferences(CHART_TYPE_CANDLE);
+      setupData({ ohlcvData: [] });
+      render();
+
+      expect(trackChartEmptyDisplayed).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not report empty while the candle data is still loading', () => {
+      setupPreferences(CHART_TYPE_CANDLE);
+      setupData({ ohlcvData: [], isLoading: true });
+      render();
+
+      expect(trackChartEmptyDisplayed).not.toHaveBeenCalled();
+    });
+
+    it('does not report empty when the candle chart errored', () => {
+      setupPreferences(CHART_TYPE_CANDLE);
+      setupData({ ohlcvData: [], error: 'boom' });
+      render();
+
+      expect(trackChartEmptyDisplayed).not.toHaveBeenCalled();
+    });
+
+    it('does not report empty in line mode, where candles are not shown', () => {
+      setupData({ ohlcvData: [] });
+      render();
+
+      expect(trackChartEmptyDisplayed).not.toHaveBeenCalled();
+    });
+  });
+
   describe('candle mode', () => {
     beforeEach(() => {
       setupPreferences(CHART_TYPE_CANDLE);
@@ -351,14 +498,16 @@ describe('AdvancedChartSection', () => {
       expect(isSlotVisible('legacy-chart-slot')).toBe(false);
     });
 
-    it('fetches the candle history and skips the historical prices', () => {
+    it('fetches the candle history plus the P1D historical series for the 24H change', () => {
       render();
 
       expect(mockUseAdvancedChartData).toHaveBeenCalledWith(
         expect.objectContaining({ needsHistory: true }),
       );
+      // The 24H percentage is always sourced from the interval-independent P1D
+      // series, so it is fetched in candle mode regardless of the interval.
       expect(mockUseHistoricalPrices).toHaveBeenCalledWith(
-        expect.objectContaining({ enabled: false }),
+        expect.objectContaining({ timeRange: 'P1D' }),
       );
     });
 
@@ -403,6 +552,61 @@ describe('AdvancedChartSection', () => {
       render({ caipAssetId: undefined });
 
       expect(screen.queryByTestId('chart-iframe')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('candle mode header', () => {
+    beforeEach(() => {
+      setupPreferences(CHART_TYPE_CANDLE);
+    });
+
+    it('labels the 24H change with "Today" rather than a date', () => {
+      // 24H change is derived from the P1D historical series (opens at 100, see
+      // PRICES), not from the candle data: (150 - 100) / 100 = +50%. The candle
+      // resolved in the requested currency (EUR), so the live candle price is
+      // used as the current value.
+      setupData({ price: 150 });
+      render();
+
+      expect(
+        screen.getByTestId('asset-price-percent-change'),
+      ).toHaveTextContent('+50.00%');
+      expect(screen.getByText(messages.today.message)).toBeInTheDocument();
+    });
+
+    it('does not mix currencies in the 24H change when the candle data resolved to a different fiat', () => {
+      // The candle resolved to USD while the user currency is EUR, so the USD
+      // candle price must NOT be compared against the EUR P1D baseline. The
+      // percentage uses a EUR-denominated current price (the wallet current
+      // price, 200) against the EUR P1D open (100): (200 - 100) / 100 = +100%.
+      // The displayed price still shows the USD figure the data came back in.
+      setupData({ price: 150, resolvedCurrency: 'usd' });
+      render({ currency: 'EUR', currentPrice: 200 });
+
+      expect(
+        screen.getByTestId('asset-price-percent-change'),
+      ).toHaveTextContent('+100.00%');
+      expect(screen.getByText(/\$150/u)).toBeInTheDocument();
+    });
+
+    it('keeps the 24H change identical across candle intervals', () => {
+      // The percentage comes from the interval-independent P1D series, so it
+      // must not change when the candle interval does. A naive candle-derived
+      // baseline would differ between a 15m and a 1w interval (and collapse to
+      // 0% on 1w).
+      setupData({ price: 150 });
+
+      setupPreferences(CHART_TYPE_CANDLE, { interval: '15m' });
+      const { rerender } = render();
+      expect(
+        screen.getByTestId('asset-price-percent-change'),
+      ).toHaveTextContent('+50.00%');
+
+      setupPreferences(CHART_TYPE_CANDLE, { interval: '1w' });
+      rerender(<AdvancedChartSection {...DEFAULT_PROPS} />);
+      expect(
+        screen.getByTestId('asset-price-percent-change'),
+      ).toHaveTextContent('+50.00%');
     });
   });
 
@@ -487,6 +691,68 @@ describe('AdvancedChartSection', () => {
       render();
 
       expect(screen.getByTestId('chart-error-state')).toBeInTheDocument();
+    });
+
+    it('falls back to the live price and a 24H change from historical prices when candle data fails', () => {
+      // Historical P1D series opens at 100 (see PRICES), live price is 175.
+      setupData({
+        price: undefined,
+        realtimePrice: 175,
+        error: 'OHLCV API error: 500',
+      });
+      render();
+
+      // Chart keeps its overlay, but the header is no longer blank.
+      expect(screen.getByTestId('chart-error-state')).toBeInTheDocument();
+      expect(screen.getByTestId('asset-hovered-price')).toHaveTextContent(
+        '175',
+      );
+      // 24H change derived from historical prices: (175 - 100) / 100 = +75%,
+      // still labelled "Today".
+      expect(
+        screen.getByTestId('asset-price-percent-change'),
+      ).toHaveTextContent('+75.00%');
+      expect(screen.getByText(messages.today.message)).toBeInTheDocument();
+    });
+
+    it('keeps the P1D historical series for the 24H change when the candle API fails', () => {
+      setupData({ error: 'OHLCV API error: 500' });
+      render();
+
+      expect(mockUseHistoricalPrices).toHaveBeenCalledWith(
+        expect.objectContaining({ timeRange: 'P1D' }),
+      );
+    });
+
+    it('hides the percentage while the historical fallback is still loading', () => {
+      setupHistorical({ isPlaceholderData: true });
+      setupData({
+        price: undefined,
+        realtimePrice: 175,
+        error: 'OHLCV API error: 500',
+      });
+      render();
+
+      // Price is shown immediately, but the 24H change waits for real data.
+      expect(screen.getByTestId('asset-hovered-price')).toHaveTextContent(
+        '175',
+      );
+      expect(
+        screen.queryByTestId('asset-price-percent-change'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('falls back to the wallet-wide current price when there is no live price', () => {
+      setupData({
+        price: undefined,
+        realtimePrice: undefined,
+        error: 'OHLCV API error: 500',
+      });
+      render({ currentPrice: 200 });
+
+      expect(screen.getByTestId('asset-hovered-price')).toHaveTextContent(
+        '200',
+      );
     });
 
     it('hides the indicator bar while the chart is failed', () => {

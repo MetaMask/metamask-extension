@@ -2,6 +2,7 @@ import React from 'react';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { SUPPORT_LINK } from '#shared/lib/ui-utils';
 import { openWindow } from '#ui/helpers/utils/window';
+import { UPDATE_METAMASK_STATE } from '#ui/store/actionConstants';
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -29,6 +30,14 @@ jest.mock('../../../store/actions', () => ({
   getCustomerServiceToken: jest
     .fn()
     .mockResolvedValue('test-customer-service-token'),
+  setShouldShowSupportConsent: jest.fn((value: boolean) => ({
+    type: 'SET_SHOULD_SHOW_SUPPORT_CONSENT',
+    value,
+  })),
+  setSupportDataSharingPreference: jest.fn((value: boolean) => ({
+    type: 'SET_SUPPORT_DATA_SHARING_PREFERENCE',
+    value,
+  })),
 }));
 
 jest.mock('#ui/helpers/utils/window', () => ({
@@ -180,6 +189,33 @@ describe('Global menu', () => {
     jest.clearAllMocks();
   });
 
+  it('waits for Terms before opening a requested drawer', async () => {
+    const store = configureStore({
+      ...mockDefaultState,
+      metamask: {
+        ...mockDefaultState.metamask,
+        completedOnboarding: true,
+        termsOfUseLastAgreed: 0,
+      },
+    });
+    renderWithProvider(
+      <AppHeaderUnlockedContent menuRef={{ current: null }} />,
+      store,
+      '/?drawerOpen=true',
+    );
+
+    const drawer = screen.getByRole('dialog', { hidden: true });
+    await waitFor(() => expect(drawer).not.toHaveAttribute('open'));
+
+    act(() => {
+      store.dispatch({
+        type: UPDATE_METAMASK_STATE,
+        value: { termsOfUseLastAgreed: Date.now() },
+      });
+    });
+    expect(drawer).toHaveAttribute('open');
+  });
+
   it('opens settings from the account options menu', async () => {
     const store = configureStore(mockDefaultState);
     const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
@@ -211,6 +247,8 @@ describe('Global menu', () => {
     });
 
     it('opens the support site when Confirm is clicked', async () => {
+      const openTab = jest.fn().mockResolvedValue(undefined);
+      global.platform.openTab = openTab;
       fireEvent.click(
         await screen.findByTestId(
           'visit-support-data-consent-modal-accept-button',
@@ -218,7 +256,9 @@ describe('Global menu', () => {
       );
 
       await waitFor(() => {
-        expect(openWindow).toHaveBeenCalled();
+        expect(openTab).toHaveBeenCalledWith({
+          url: expect.stringContaining('customer_service_token='),
+        });
       });
     });
 
@@ -269,9 +309,9 @@ describe('Fullscreen design', () => {
       await renderHeader(false);
 
       expect(screen.getByTestId('account-menu-icon')).toBeInTheDocument();
-      expect(
-        screen.queryByTestId('app-header-account-name'),
-      ).not.toBeInTheDocument();
+      expect(screen.getByTestId('app-header-account-name')).toHaveTextContent(
+        'Account 1',
+      );
       expect(screen.getByTestId('discover-search-button').tagName).toBe(
         'BUTTON',
       );

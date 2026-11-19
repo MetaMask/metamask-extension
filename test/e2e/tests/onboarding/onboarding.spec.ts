@@ -28,6 +28,7 @@ import {
   importSRPOnboardingFlow,
   incompleteCreateNewWalletOnboardingFlow,
   onboardingMetricsFlow,
+  revealAndConfirmSrp,
   skipPasskeySetup,
 } from '../../page-objects/flows/onboarding.flow';
 import LoginPage from '../../page-objects/pages/onboarding/login-page';
@@ -124,7 +125,7 @@ describe('MetaMask onboarding', function () {
 
         const secureWalletPage = new SecureWalletPage(driver);
         await secureWalletPage.checkPageIsLoaded();
-        await secureWalletPage.revealAndConfirmSRP();
+        await revealAndConfirmSrp(driver);
 
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           await onboardingMetricsFlow(driver);
@@ -466,7 +467,7 @@ describe('MetaMask onboarding', function () {
       signed: 'signed with sig_params',
       privateKey: keyPair.privateKey,
     });
-    const expectedUrlOpened = 'https://metamask.io/card?amount=100';
+    const expectedUrlOpened = 'https://metamask.com/card?amount=100';
 
     await withFixtures(
       {

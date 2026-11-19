@@ -42,6 +42,7 @@ const HANDLING: Record<MfaFlowErrorCode, MfaErrorHandling> = {
   invalid_response: 'failure',
   invalid_request: 'failure',
   passkey_unsupported: 'failure',
+  passkey_already_exists: 'failure',
   authentication_required: 'failure',
   flow_cancelled: 'failure',
   flow_in_progress: 'failure',
@@ -77,6 +78,16 @@ export const getErrorHandling = (code: MfaFlowErrorCode): MfaErrorHandling =>
  */
 export const isReportable = (code: MfaFlowErrorCode): boolean =>
   code === 'invalid_response' || code === 'invalid_request';
+
+/**
+ * Whether the failure screen offers to try again: trying again can work, for
+ * example with another password manager.
+ *
+ * @param code - The flow error code.
+ * @returns `true` when the user can retry.
+ */
+export const isRetryableFailure = (code: MfaFlowErrorCode): boolean =>
+  code === 'passkey_already_exists';
 
 /**
  * Rejection of `verifyOrEnroll` and `enroll`. `mfaCode` is what

@@ -492,15 +492,6 @@ function buildUsdcToSolFixture() {
         },
       },
     },
-    CurrencyController: {
-      currencyRates: {
-        ETH: {
-          conversionDate: 1770832998.066,
-          conversionRate: 1932.163232734,
-          usdConversionRate: 1932.163232734,
-        },
-      },
-    },
     ...MULTICHAIN_ASSETS_CONTROLLER_USDC_PATCH,
   });
   return fixture;
@@ -532,15 +523,6 @@ describe('Swap on Solana', function () {
                 },
               },
             },
-            CurrencyController: {
-              currencyRates: {
-                ETH: {
-                  conversionDate: 1770832998.066,
-                  conversionRate: 1932.163232734,
-                  usdConversionRate: 1932.163232734,
-                },
-              },
-            },
           });
           return fixture;
         })(),
@@ -551,7 +533,6 @@ describe('Swap on Solana', function () {
         await login(driver, { validateBalance: false });
 
         const homePage = new HomePage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
 
         // Switch to Solana network
         const selectNetworkModal = new SelectNetworkModal(driver);
@@ -723,7 +704,6 @@ describe('Swap on Solana', function () {
         await login(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
 
         // Switch to Solana network
         const selectNetworkModal = new SelectNetworkModal(driver);
@@ -764,7 +744,6 @@ describe('Swap on Solana', function () {
         await login(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
 
         // Switch to Solana network
         const selectNetworkModal = new SelectNetworkModal(driver);

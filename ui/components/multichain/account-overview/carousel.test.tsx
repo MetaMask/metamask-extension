@@ -6,7 +6,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
-import { getAppIsLoading } from '../../../selectors';
+import { getAppIsLoading, getUseExternalServices } from '../../../selectors';
 import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
 import { useCarouselManagement } from '../../../hooks/useCarouselManagement';
 import { CarouselWithEmptyState } from '../carousel';
@@ -86,12 +86,35 @@ describe('AccountOverview Carousel', () => {
       if (selector === getAppIsLoading) {
         return false;
       }
+      if (selector === getUseExternalServices) {
+        return true;
+      }
       if (selector === getRemoteFeatureFlags) {
         return { carouselBanners: true };
       }
       return undefined;
     });
     jest.mocked(useCarouselManagement).mockReturnValue({ slides: mockSlides });
+  });
+
+  it('does not render or load slides when Basic Functionality is off', () => {
+    jest.mocked(useSelector).mockImplementation((selector) => {
+      if (selector === getAppIsLoading) {
+        return false;
+      }
+      if (selector === getUseExternalServices) {
+        return false;
+      }
+      if (selector === getRemoteFeatureFlags) {
+        return { carouselBanners: true };
+      }
+      return undefined;
+    });
+
+    renderCarousel();
+
+    expect(useCarouselManagement).toHaveBeenCalledWith({ enabled: false });
+    expect(CarouselWithEmptyState).not.toHaveBeenCalled();
   });
 
   it('tracks a Banner Dismissed event when a slide is dismissed', () => {

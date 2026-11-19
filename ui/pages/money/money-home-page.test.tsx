@@ -67,8 +67,19 @@ const interestResponse = (value: string) => ({
 });
 
 jest.mock('react-redux', () => ({
-  useSelector: (selector: () => unknown) => selector(),
+  useSelector: (selector: (state: unknown) => unknown) =>
+    selector({ metamask: {} }),
 }));
+
+jest.mock(
+  '../../components/app/modals/visit-support-data-consent-modal',
+  () => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: () => null,
+    useOpenSupport: () => jest.fn(),
+  }),
+);
 
 jest.mock('../../selectors/money/money-account-feature-flags', () => ({
   ...jest.requireActual('../../selectors/money/money-account-feature-flags'),
@@ -361,7 +372,7 @@ describe('MoneyHomePage', () => {
     });
 
     expect(global.platform.openTab).toHaveBeenCalledWith({
-      url: 'https://metamask.io/money?utm_source=extension',
+      url: 'https://metamask.com/money?utm_source=extension',
     });
   });
 
@@ -671,13 +682,16 @@ describe('MoneyHomePage', () => {
       screen.getByRole('link', { name: messages.moneyMeetMusd.message }),
     ).toHaveAttribute(
       'href',
-      'https://metamask.io/price/metamask-usd?utm_source=extension',
+      'https://metamask.com/price/metamask-usd?utm_source=extension',
     );
     expect(
       screen.getByRole('link', {
         name: messages.moneyExploreBenefits.message,
       }),
-    ).toHaveAttribute('href', 'https://metamask.io/money?utm_source=extension');
+    ).toHaveAttribute(
+      'href',
+      'https://metamask.com/money?utm_source=extension',
+    );
     expect(
       screen.getByRole('link', {
         name: messages.moneyHowYourMoneyGrows.message,
@@ -806,7 +820,7 @@ describe('MoneyHomePage', () => {
     fireEvent.click(screen.getByTestId('money-condensed-info-card-musd'));
 
     expect(global.platform.openTab).toHaveBeenCalledWith({
-      url: 'https://metamask.io/price/metamask-usd?utm_source=extension',
+      url: 'https://metamask.com/price/metamask-usd?utm_source=extension',
     });
   });
 
@@ -829,7 +843,7 @@ describe('MoneyHomePage', () => {
     fireEvent.click(screen.getByTestId('money-condensed-info-card-benefits'));
 
     expect(global.platform.openTab).toHaveBeenCalledWith({
-      url: 'https://metamask.io/money?utm_source=extension',
+      url: 'https://metamask.com/money?utm_source=extension',
     });
   });
 
