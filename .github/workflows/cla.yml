@@ -2,7 +2,11 @@ name: 'CLA Signature Bot'
 on:
   issue_comment:
     types: [created]
-  pull_request_target:
+  # `pull_request` gives same-repo PRs a write token, which the bot needs to
+  # comment, commit signatures and lock the PR on close. Fork PRs get a
+  # read-only token here, so the job skips them; a fork contributor can still
+  # sign by commenting, which runs through `issue_comment` with a write token.
+  pull_request:
     types: [opened, closed, synchronize]
 
 concurrency:
@@ -11,7 +15,9 @@ concurrency:
 
 jobs:
   CLABot:
-    if: github.event_name == 'pull_request_target' || contains(github.event.comment.html_url, '/pull/')
+    if: >-
+      (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
+      || (github.event_name == 'issue_comment' && contains(github.event.comment.html_url, '/pull/'))
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
