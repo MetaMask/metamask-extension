@@ -6,7 +6,7 @@ import { buildAssetRoutePath } from '../../../../shared/lib/asset-route';
 import { Driver } from '../../webdriver/driver';
 import AccountListPage from '../pages/accounts/list-page';
 import ActivityTab from '../pages/home/activity-tab';
-import BridgeQuotePage, { type BridgeQuote } from '../pages/bridge/quote-page';
+import SwapPage, { type BridgeQuote } from '../pages/swap/swap-page';
 import HomePage from '../pages/home/homepage';
 import TokenOverviewPage from '../pages/asset/token-overview-page';
 
@@ -31,7 +31,7 @@ export const verifySubmittedSwapTransaction = async ({
   expectedDetailsDestAmount?: string;
   expectedActivityAmount?: string;
 }) => {
-  await new BridgeQuotePage(driver).goBackAfterSubmit();
+  await new SwapPage(driver).goBackAfterSubmit();
   const homePage = new HomePage(driver);
   await homePage.goToActivityList();
 
@@ -151,29 +151,29 @@ export const bridgeTransaction = async ({
   await homePage.goToHomePage();
   await homePage.startSwapFlow();
 
-  const bridgePage = new BridgeQuotePage(driver);
+  const swapPage = new SwapPage(driver);
 
-  await bridgePage.checkAssetsAreSelected(
+  await swapPage.checkAssetsAreSelected(
     expectedInitialSourceToken,
     expectedInitialDestToken,
   );
-  await bridgePage.enterBridgeQuote(quote, { openPickersWithDebounce });
-  await bridgePage.waitForQuote();
+  await swapPage.enterBridgeQuote(quote, { openPickersWithDebounce });
+  await swapPage.waitForQuote();
   if (!skipNetworkFeeCheck) {
-    await bridgePage.checkExpectedNetworkFeeIsDisplayed();
+    await swapPage.checkExpectedNetworkFeeIsDisplayed();
   }
   submitDelay && (await driver.delay(submitDelay));
   if (expectedDestAmount) {
-    await bridgePage.checkDestAmount(expectedDestAmount);
+    await swapPage.checkDestAmount(expectedDestAmount);
   }
   if (expectedTotalCost) {
-    await bridgePage.checkQuoteTotalCost(expectedTotalCost);
+    await swapPage.checkQuoteTotalCost(expectedTotalCost);
   }
 
   if (skipStatusPage) {
-    await bridgePage.submitQuote();
+    await swapPage.submitQuote();
   } else {
-    await bridgePage.submitQuoteAndDismiss();
+    await swapPage.submitQuoteAndDismiss();
   }
 
   await verifySubmittedSwapTransaction({
@@ -249,8 +249,8 @@ export const goToAssetPage = async ({
   address: string;
   assetPicker?: string;
 }) => {
-  const bridgePage = new BridgeQuotePage(driver);
-  const picker = assetPicker ?? bridgePage.sourceAssetPickerButton;
+  const swapPage = new SwapPage(driver);
+  const picker = assetPicker ?? swapPage.sourceAssetPickerButton;
   const assetId = toAssetId(address, chainId);
   if (!assetId) {
     throw new Error('Unable to resolve asset id for bridge flow');
@@ -261,7 +261,7 @@ export const goToAssetPage = async ({
       chainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
     ];
 
-  await bridgePage.searchAndClickAssetInfo({
+  await swapPage.searchAndClickAssetInfo({
     token,
     assetId,
     assetPicker: picker,
