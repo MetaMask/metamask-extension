@@ -3,10 +3,7 @@ import {
   AccountsControllerGetStateAction,
 } from '@metamask/accounts-controller';
 import { ApprovalControllerActions } from '@metamask/approval-controller';
-import {
-  AccountTrackerControllerGetStateAction,
-  CurrencyRateControllerGetStateAction,
-} from '@metamask/assets-controllers';
+import { AccountTrackerControllerGetStateAction } from '@metamask/assets-controllers';
 import {
   BridgeStatusControllerActions,
   BridgeStatusControllerStateChangeEvent,
@@ -65,8 +62,6 @@ import {
   InstitutionalSnapControllerPublishHookAction,
 } from '../../controllers/institutional-snap/InstitutionalSnapController-method-action-types';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
-import { registerAccountTrackerGetStateCompat } from '../../messenger-client-init/messengers/account-tracker-controller-compat';
-import { registerCurrencyRateGetStateCompat } from '../../messenger-client-init/messengers/currency-rate-controller-compat';
 
 export type TransactionControllerInitMessenger = ReturnType<
   typeof getTransactionControllerInitMessenger
@@ -81,9 +76,6 @@ export type TransactionControllerInitMessengerActions =
   | AppStateControllerSetDefaultHomeActiveTabNameAction
   | AuthenticationController.AuthenticationControllerGetBearerTokenAction
   | BridgeStatusControllerActions
-  // Compat shim only exposes getState. The rest of CurrencyRateControllerActions
-  // (polling, setCurrentCurrency, updateExchangeRate) are not on the root messenger.
-  | CurrencyRateControllerGetStateAction
   | DelegationControllerSignDelegationAction
   | GasFeeControllerFetchGasFeeEstimatesAction
   | InstitutionalSnapControllerPublishHookAction
@@ -133,11 +125,6 @@ export function getTransactionControllerInitMessenger(
     TransactionControllerInitMessengerEvents
   >,
 ) {
-  // Compat shims: wallet-init TransactionController may still request
-  // AccountTrackerController:getState / CurrencyRateController:getState.
-  registerAccountTrackerGetStateCompat(messenger as RootMessenger);
-  registerCurrencyRateGetStateCompat(messenger as RootMessenger);
-
   const controllerInitMessenger = new Messenger<
     'TransactionControllerInit',
     TransactionControllerInitMessengerActions,
@@ -166,7 +153,6 @@ export function getTransactionControllerInitMessenger(
       'TransactionController:unapprovedTransactionAdded',
     ],
     actions: [
-      // Compat shim: derives accountsByChainId from AssetsController.
       'AccountTrackerController:getState',
       'AccountsController:getState',
       'ApprovalController:acceptRequest',
@@ -178,8 +164,6 @@ export function getTransactionControllerInitMessenger(
       'AuthenticationController:getBearerToken',
       'BridgeStatusController:getState',
       'BridgeStatusController:submitTx',
-      // Compat shim: derives currentCurrency from AssetsController.
-      'CurrencyRateController:getState',
       'DelegationController:signDelegation',
       'InstitutionalSnapController:beforeCheckPendingTransactionHook',
       'InstitutionalSnapController:publishHook',

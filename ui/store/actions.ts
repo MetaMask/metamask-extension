@@ -1726,32 +1726,17 @@ export function updateEditableParams(
 }
 
 export async function backupUserData(): Promise<{
-  filename: string;
+  fileName: string;
   data: string;
 }> {
-  let backedupData;
   try {
-    backedupData = await submitRequestToBackground<{
-      filename: string;
-      data: string;
-    }>('backupUserData');
+    return await submitRequestToBackground(
+      'LegacyBackgroundApiService:backupUserData',
+    );
   } catch (error) {
     logErrorWithMessage(error);
     throw error;
   }
-
-  return backedupData;
-}
-
-export async function restoreUserData(jsonString: Json): Promise<true> {
-  try {
-    await submitRequestToBackground('restoreUserData', [jsonString]);
-  } catch (error) {
-    logErrorWithMessage(error);
-    throw error;
-  }
-
-  return true;
 }
 
 export function updateSlides(
@@ -2131,8 +2116,8 @@ export async function checkFirstTimeInteraction(request: {
   to: string;
   chainId: number;
 }): Promise<boolean | undefined> {
-  return submitRequestToBackground<boolean | undefined>(
-    'checkFirstTimeInteraction',
+  return submitRequestToBackground(
+    'LegacyBackgroundApiService:checkFirstTimeInteraction',
     [request],
   );
 }
@@ -7891,6 +7876,27 @@ export async function getSentinelNetworkFlags(
  */
 export function setSkipDeepLinkInterstitial(value: boolean) {
   return setPreference('skipDeepLinkInterstitial', value, false);
+}
+
+/**
+ * Sets whether the support data sharing consent modal is shown every time,
+ * or the saved `supportDataSharingPreference` is applied instead.
+ *
+ * @param value - Whether to show the consent modal every time.
+ * @returns A promise that resolves when the preference is set.
+ */
+export function setShouldShowSupportConsent(value: boolean) {
+  return setPreference('shouldShowSupportConsent', value, false);
+}
+
+/**
+ * Saves the user's support data sharing choice.
+ *
+ * @param value - Whether to share the user ID and app version with support.
+ * @returns A promise that resolves when the preference is set.
+ */
+export function setSupportDataSharingPreference(value: boolean) {
+  return setPreference('supportDataSharingPreference', value, false);
 }
 
 /**

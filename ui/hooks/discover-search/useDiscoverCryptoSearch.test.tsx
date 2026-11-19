@@ -304,4 +304,131 @@ describe('useDiscoverCryptoSearch', () => {
 
     expect(result.current.data).toStrictEqual([]);
   });
+
+  it('drops Warning, Spam, and Malicious tokens from trending, keeping Verified, Benign, and unscanned', async () => {
+    mockGetTrendingTokens.mockResolvedValue([
+      {
+        assetId: 'eip155:1/erc20:0xver',
+        name: 'Verified Token',
+        symbol: 'VER',
+        decimals: 18,
+        securityData: { resultType: 'Verified' },
+      },
+      {
+        assetId: 'eip155:1/erc20:0xbng',
+        name: 'Benign Token',
+        symbol: 'BNG',
+        decimals: 18,
+        securityData: { resultType: 'Benign' },
+      },
+      {
+        assetId: 'eip155:1/erc20:0xunsc',
+        name: 'Unscanned Token',
+        symbol: 'UNS',
+        decimals: 18,
+      },
+      {
+        assetId: 'eip155:1/erc20:0xwrn',
+        name: 'Warning Token',
+        symbol: 'WRN',
+        decimals: 18,
+        securityData: { resultType: 'Warning' },
+      },
+      {
+        assetId: 'eip155:1/erc20:0xspm',
+        name: 'Spam Token',
+        symbol: 'SPM',
+        decimals: 18,
+        securityData: { resultType: 'Spam' },
+      },
+      {
+        assetId: 'eip155:1/erc20:0xmal',
+        name: 'Malicious Token',
+        symbol: 'MAL',
+        decimals: 18,
+        securityData: { resultType: 'Malicious' },
+      },
+    ] as never);
+
+    const { result } = renderHook(
+      () => useDiscoverCryptoSearch({ query: '' }),
+      { wrapper: createWrapper() },
+    );
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.data.map(({ symbol }) => symbol)).toStrictEqual([
+      'VER',
+      'BNG',
+      'UNS',
+    ]);
+  });
+
+  it('drops Warning, Spam, and Malicious tokens from search, keeping Verified, Benign, and unscanned', async () => {
+    mockSearchTokens.mockResolvedValue({
+      count: 6,
+      totalCount: 6,
+      data: [
+        {
+          assetId: 'eip155:1/erc20:0xver',
+          name: 'Verified Token',
+          symbol: 'VER',
+          decimals: 18,
+          securityData: { resultType: 'Verified' },
+        },
+        {
+          assetId: 'eip155:1/erc20:0xbng',
+          name: 'Benign Token',
+          symbol: 'BNG',
+          decimals: 18,
+          securityData: { resultType: 'Benign' },
+        },
+        {
+          assetId: 'eip155:1/erc20:0xunsc',
+          name: 'Unscanned Token',
+          symbol: 'UNS',
+          decimals: 18,
+        },
+        {
+          assetId: 'eip155:1/erc20:0xwrn',
+          name: 'Warning Token',
+          symbol: 'WRN',
+          decimals: 18,
+          securityData: { resultType: 'Warning' },
+        },
+        {
+          assetId: 'eip155:1/erc20:0xspm',
+          name: 'Spam Token',
+          symbol: 'SPM',
+          decimals: 18,
+          securityData: { resultType: 'Spam' },
+        },
+        {
+          assetId: 'eip155:1/erc20:0xmal',
+          name: 'Malicious Token',
+          symbol: 'MAL',
+          decimals: 18,
+          securityData: { resultType: 'Malicious' },
+        },
+      ],
+      pageInfo: { hasNextPage: false, endCursor: null },
+    } as never);
+
+    const { result } = renderHook(
+      () => useDiscoverCryptoSearch({ query: 'tok' }),
+      { wrapper: createWrapper() },
+    );
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.data.map(({ symbol }) => symbol)).toStrictEqual([
+      'VER',
+      'BNG',
+      'UNS',
+    ]);
+  });
 });

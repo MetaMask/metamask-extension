@@ -7,7 +7,10 @@ import type { AssetData, PricePoint, ResolvedTicker } from './types';
 
 const tokenSearchUrl = `${TOKEN_API_METASWAP_CODEFI_URL}search`;
 const historicalPricesUrl = `${priceApiBaseUrl}/v3/historical-prices`;
-const clientIdHeader = { 'X-Client-Id': 'extension' };
+const clientIdHeader = {
+  'X-Client-Id': 'extension',
+  'x-mm-service-profile': 'assets--cashtag-widget',
+};
 
 type SearchHit = {
   assetId: CaipAssetType;
