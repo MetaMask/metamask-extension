@@ -213,7 +213,9 @@ describe('span streaming (integration with the shipped Sentry options)', () => {
   });
 
   // Relay infers `browser.name` for a streamed span but no OS, so the segment
-  // span carries `os.name` parsed from the user agent the SDK already sends.
+  // span carries `sentry.os.name` parsed from the user agent the SDK already
+  // sends. Sentry stores a bare `os.name` attribute as a tag that the `os.name`
+  // field does not read.
   // The values are the ones transaction events had in production.
   const userAgentsByOs: [string, string][] = [
     [
@@ -247,7 +249,7 @@ describe('span streaming (integration with the shipped Sentry options)', () => {
   ];
 
   for (const [osName, userAgent] of userAgentsByOs) {
-    it(`sets \`os.name\` ${osName} on the segment span only`, async () => {
+    it(`sets \`sentry.os.name\` ${osName} on the segment span only`, async () => {
       jest
         .spyOn(window.navigator, 'userAgent', 'get')
         .mockReturnValue(userAgent);
@@ -258,22 +260,25 @@ describe('span streaming (integration with the shipped Sentry options)', () => {
 
       const spans = sentSpans();
       const segment = spans.find((span) => span.is_segment);
-      expect(segment?.attributes['os.name']?.value).toBe(osName);
+      expect(segment?.attributes['sentry.os.name']?.value).toBe(osName);
       expect(
         spans.filter(
-          (span) => !span.is_segment && 'os.name' in span.attributes,
+          (span) => !span.is_segment && 'sentry.os.name' in span.attributes,
         ),
+      ).toStrictEqual([]);
+      expect(
+        spans.filter((span) => 'os.name' in span.attributes),
       ).toStrictEqual([]);
     });
   }
 
-  it('sets no `os.name` for a user agent it does not recognise', async () => {
+  it('sets no `sentry.os.name` for a user agent it does not recognise', async () => {
     jest.spyOn(window.navigator, 'userAgent', 'get').mockReturnValue('curl/8');
     trace({ name: TraceName.Transaction }, () => undefined);
     await Sentry.flush();
 
     const segment = sentSpans().find((span) => span.is_segment);
-    expect(segment?.attributes).not.toHaveProperty('os.name');
+    expect(segment?.attributes).not.toHaveProperty('sentry.os.name');
   });
 
   // Sentry rejects a span envelope whose `trace` header lacks `public_key`

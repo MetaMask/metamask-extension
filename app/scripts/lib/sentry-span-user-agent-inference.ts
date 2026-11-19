@@ -37,8 +37,10 @@ function getOsName(userAgent: unknown): string | undefined {
  * user agent and the geo from the connection IP. It derives the geo before the
  * org's IP scrubbing removes the address, so no `client.address` is stored.
  *
- * Relay derives no OS for a span, so the segment span also carries `os.name`,
- * parsed from the user agent the SDK already puts on it.
+ * Relay derives no OS for a span, so the segment span also carries
+ * `sentry.os.name`, parsed from the user agent the SDK already puts on it.
+ * Sentry reads the `os.name` field from that key; a bare `os.name` attribute
+ * is stored as a tag the field does not read.
  *
  * @returns The integration.
  */
@@ -50,7 +52,7 @@ export function spanUserAgentInferenceIntegration(): Integration {
         span.attributes?.['http.request.header.user_agent'],
       );
       if (osName) {
-        span.attributes = { ...span.attributes, 'os.name': osName };
+        span.attributes = { ...span.attributes, 'sentry.os.name': osName };
       }
     },
     setup(client) {
