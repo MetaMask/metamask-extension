@@ -103,6 +103,12 @@ const getScuttleGlobalThisExceptions = (args: Args) => [
   // Sentry creates its layout-shift (CLS) observer only after first paint,
   // once scuttling is in place, and drops CLS silently when this throws.
   'PerformanceObserver',
+  // Sentry ties each scope to its span through a weak reference; scuttled, it
+  // holds every scope strongly until the span ends.
+  'WeakRef',
+  // Sentry's handler map for listeners added on `window`; scuttled, click and
+  // keypress breadcrumbs from those listeners are lost.
+  '__sentry_instrumentation_handlers__',
   // globals used by e2e
   ...(args.test ? ['ret_nodes', 'browser', 'chrome', 'indexedDB'] : []),
 ];

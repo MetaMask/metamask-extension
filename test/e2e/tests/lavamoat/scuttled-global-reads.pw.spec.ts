@@ -12,12 +12,10 @@ import { login } from '../../page-objects/flows/login.flow';
 // warning and fails, and the callers we know of swallow the failure, so a new
 // entry here means something stopped working without an error.
 const KNOWN_SCUTTLED_READS = [
-  // Sentry request matching and URL parsing.
+  // Sentry request matching and URL parsing. Excepting `URL` alone makes Sentry
+  // name every UI navigation transaction `/`, so it needs the route-name fix
+  // that ships with it.
   'URL',
-  // Sentry's scope-to-span references; falls back to strong references.
-  'WeakRef',
-  // Sentry's click and keypress breadcrumbs on `window` listeners.
-  '__sentry_instrumentation_handlers__',
 ];
 
 const SCUTTLED_READ = /property "([^"]+)" of globalThis is inaccessible/u;
