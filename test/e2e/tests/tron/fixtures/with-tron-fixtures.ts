@@ -9,7 +9,7 @@ import {
   TronTrc10Symbol,
   TronTrc20Symbol,
   createEmptyTronGridTransactionsResponse,
-  createTronGridAccountResponse,
+  normalizeTronHexAddress,
 } from '../../../seeder/tron/assets';
 import { TronNode } from '../../../seeder/tron/node';
 import { TronSeeder } from '../../../seeder/tron/tron-seeder';
@@ -248,7 +248,7 @@ async function mockTronFixtureApis(
   );
 
   const accountByAddress = new Map(
-    accounts.map((account) => [account.address, account]),
+    accounts.map((account) => [normalizeTronAddress(account.address), account]),
   );
   const fixtureHistoryEndpoints = await mockFixtureTransactionHistory(
     mockServer,
@@ -383,7 +383,7 @@ async function mockWildcardTronAccountApis(
       const match = req.url.match(TRON_PROVIDER_ANY_ACCOUNT_RE);
       const address = match?.[2] ?? '';
       const suffix = match?.[3] ?? '';
-      const account = accountByAddress.get(address);
+      const account = accountByAddress.get(normalizeTronAddress(address));
 
       if (suffix.startsWith('/transactions')) {
         const transactions = suffix.includes('/trc20')
@@ -396,16 +396,29 @@ async function mockWildcardTronAccountApis(
         return {
           statusCode: 200,
           json: tronNode
-            ? await tronNode.getTronGridAccountResponse(address)
+            ? await tronNode.getTronGridAccountResponse(account.address)
             : buildStaticTronGridAccountResponse(account),
         };
       }
 
+      // TronGrid returns no account data for an address that is not activated.
       return {
         statusCode: 200,
-        json: createTronGridAccountResponse({ address }),
+        json: createEmptyTronGridTransactionsResponse(),
       };
     });
+}
+
+/**
+ * Normalizes Tron addresses so hex and base58 forms resolve to the same account.
+ * @param address
+ */
+function normalizeTronAddress(address: string): string {
+  try {
+    return normalizeTronHexAddress(address);
+  } catch {
+    return address;
+  }
 }
 
 function formatFixtureBalanceForAccountsApi(asset: TronFixtureAsset): string {
