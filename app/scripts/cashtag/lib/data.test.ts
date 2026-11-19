@@ -143,7 +143,7 @@ describe('resolveTicker', () => {
     } as Response);
 
     await expect(resolveTicker(' MSFT ')).resolves.toMatchObject({
-      primary: { ticker: 'MSFTX', name: 'Microsoft stock token' },
+      primary: { ticker: 'msft', name: 'Exact symbol' },
       similar: [
         expect.objectContaining({ name: 'Microsoft stock token' }),
         expect.objectContaining({ ticker: 'msft' }),

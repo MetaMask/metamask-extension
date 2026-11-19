@@ -151,7 +151,8 @@ export async function resolveTicker(
   }
 
   const exactRwaIndex = symbolMatches.findIndex(
-    (match) => match.rwaData?.ticker?.trim().toUpperCase() === ticker,
+    (match) =>
+      Boolean(match.rwaData) && match.symbol.trim().toUpperCase() === ticker,
   );
 
   return {
