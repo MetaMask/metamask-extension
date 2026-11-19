@@ -163,6 +163,37 @@ describe('./utils/config.ts', () => {
       );
     });
 
+    for (const [input, expected] of [
+      [undefined, null],
+      ['', null],
+      ['true', null],
+      ['sdk.iad-07.braze.com', 'sdk.iad-07.braze.com'],
+      ['https://sdk.iad-07.braze.com', null],
+      ['sdk.iad-07.braze.com:443', null],
+      ['sdk.iad-07.braze.com/api/v3/data/', null],
+      ['sdk.iad-07.braze.com.example', null],
+    ] as const) {
+      it(`inlines the validated Braze SDK endpoint for ${JSON.stringify(input)}`, () => {
+        mockRc();
+        if (input !== undefined) {
+          process.env.BRAZE_SDK_ENDPOINT = input;
+        }
+
+        const buildTypes = loadBuildTypesConfig();
+        const { args } = parseArgv(['--no-validateEnv'], buildTypes);
+        const { variables, safeVariables } = config.getVariables(
+          args,
+          buildTypes,
+        );
+
+        assert.strictEqual(variables.get('BRAZE_SDK_ENDPOINT'), expected);
+        assert.strictEqual(
+          safeVariables.BRAZE_SDK_ENDPOINT,
+          JSON.stringify(expected),
+        );
+      });
+    }
+
     it('should return buildEnvVarDeclarations with keys from activeBuild.env and buildConfig.env', () => {
       mockRc();
       const buildTypes = loadBuildTypesConfig();

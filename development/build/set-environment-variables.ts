@@ -47,6 +47,7 @@ export function setEnvironmentVariables({
   variables,
   version,
 }: SetEnvironmentVariablesOptions): void {
+  const brazeSdkEndpoint = variables.getMaybe('BRAZE_SDK_ENDPOINT');
   variables.set({
     DEBUG: isDevBuild || isTestBuild ? variables.getMaybe('DEBUG') : undefined,
     EIP_4337_ENTRYPOINT: isTestBuild
@@ -77,6 +78,11 @@ export function setEnvironmentVariables({
       variables,
       testing: isTestBuild,
     }),
+    BRAZE_SDK_ENDPOINT:
+      typeof brazeSdkEndpoint === 'string' &&
+      /^sdk\.[a-z0-9-]+\.braze\.com$/u.test(brazeSdkEndpoint)
+        ? brazeSdkEndpoint
+        : null,
     SEGMENT_WRITE_KEY: getSegmentWriteKey({
       buildType,
       variables,

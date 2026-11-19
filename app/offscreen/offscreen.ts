@@ -10,6 +10,7 @@ import { bootstrapLedger } from './hardware-wallets/ledger-router';
 import initTrezor from './hardware-wallets/trezor';
 import initLattice from './hardware-wallets/lattice';
 import initConnectivityDetection from './connectivity';
+import { installBrazeTransport } from './braze';
 
 /**
  * Initialize a post message stream with the parent window that is initialized
@@ -31,6 +32,7 @@ function initializePostMessageStream() {
  * post message stream for the Snaps environment.
  */
 async function init(): Promise<void> {
+  installBrazeTransport();
   initializePostMessageStream();
   initTrezor();
   initLattice();
