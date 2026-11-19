@@ -1,4 +1,5 @@
 import { Driver } from '../../../webdriver/driver';
+import SideNavAccounts from './side-nav-accounts';
 
 /**
  * Unlocked app header chrome: account menu, global menu, network picker.
@@ -81,11 +82,6 @@ class HeaderNavbar {
     `.multichain-network-list-item--selected [data-testid="${networkName}"]`;
 
   private readonly settingsButton = '[data-testid="global-menu-settings"]';
-
-  private readonly sideNavAccounts = '[data-testid="side-nav-accounts"]';
-
-  private readonly sideNavAccountsHeader =
-    '[data-testid="side-nav-accounts"] > div:first-child';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -273,39 +269,35 @@ class HeaderNavbar {
     await this.driver.clickElementSafe(this.accountDetailsTab);
   }
 
+  /**
+   * Opens the account list in either layout. Narrow layout: the manage button is
+   * in the app header. Wide layout: it lives in the side nav's accounts section.
+   * Waits until one of the two renders, because the layout is only known once
+   * the page has rendered (it depends on the viewport and the A/B variant).
+   */
   async openAccountMenu(): Promise<void> {
-    // Narrow layout: the button is visible straight away. Wide layout: the
-    // button only exists once the side nav has rendered, and the side nav hides
-    // its account actions until the section is hovered, so hover it before
-    // looking for the button (Playwright counts a transparent button as visible,
-    // so it must not be checked first). Each attempt moves the pointer onto the
-    // section and then onto its header: Firefox drops its hover state when the
-    // page re-renders, and WebDriver skips a move to the position it believes
-    // the pointer is already at, so a single repeated hover would never
-    // re-trigger it.
+    const sideNavAccounts = new SideNavAccounts(this.driver);
+    let isSideNavLayout = false;
+
     await this.driver.waitUntil(
       async () => {
-        if (
-          await this.driver.isElementPresentAndVisible(
-            this.sideNavAccounts,
+        isSideNavLayout = await sideNavAccounts.isPresentAndVisible(200);
+        return (
+          isSideNavLayout ||
+          (await this.driver.isElementPresentAndVisible(
+            this.accountMenuButton,
             200,
-          )
-        ) {
-          await this.driver.hoverElement(
-            await this.driver.findElement(this.sideNavAccounts),
-          );
-          await this.driver.hoverElement(
-            await this.driver.findElement(this.sideNavAccountsHeader),
-          );
-        }
-        return await this.driver.isElementPresentAndVisible(
-          this.accountMenuButton,
-          200,
+          ))
         );
       },
       { timeout: this.driver.timeout, interval: 200 },
     );
-    await this.driver.clickElement(this.accountMenuButton);
+
+    if (isSideNavLayout) {
+      await sideNavAccounts.clickManageAccounts();
+    } else {
+      await this.driver.clickElement(this.accountMenuButton);
+    }
     await this.driver.waitForSelector(this.accountListPage);
   }
 

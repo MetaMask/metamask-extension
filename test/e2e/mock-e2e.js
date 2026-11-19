@@ -2314,8 +2314,8 @@ async function setupMocking(
     });
 
   // Nft API: tokens
-  // Matches any account, not just the default fixture account.
-  // Registered at FALLBACK priority like the other broad defaults so
+  // Matches any address, not just the default fixture account.
+  // Has fallback priority like the other broad defaults so
   // specs that mock a specific address take precedence.
   await server
     .forGet(
