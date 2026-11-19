@@ -10,6 +10,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import SendPage from '../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
+import { tokensV3Assets } from '../../mock-response-data/api-responses';
 import {
   mockAccountsApiV2SupportedNetworks,
   mockAccountsApiV5MultiaccountBalances,
@@ -141,8 +142,9 @@ async function mockSolanaTokenApiAssets(mockServer: Mockttp) {
 
   // Only intercept v3/assets requests that contain Solana asset IDs.
   // EVM-only and Tron-only requests fall through to mockTokenApiMainnetTest.
-  return await mockServer
-    .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets.*solana/u)
+  return await tokensV3Assets
+    .rule(mockServer)
+    .matching((request) => request.url.includes('solana'))
     .always()
     .thenCallback((request) => {
       const url = new URL(request.url);

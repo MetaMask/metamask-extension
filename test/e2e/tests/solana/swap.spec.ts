@@ -17,6 +17,7 @@ import {
 import {
   accountsBalancesV5,
   accountsSupportedNetworksV2,
+  tokensV3Assets,
 } from '../../mock-response-data/api-responses';
 import {
   mockAccountsApiV2SupportedNetworks,
@@ -165,8 +166,9 @@ async function mockSolanaTokenApiAssets(mockServer: Mockttp) {
     },
   };
 
-  return mockServer
-    .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets.*solana/u)
+  return tokensV3Assets
+    .rule(mockServer)
+    .matching((request) => request.url.includes('solana'))
     .always()
     .thenCallback((request) => {
       const url = new URL(request.url);
