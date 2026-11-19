@@ -73,7 +73,7 @@ const TotpSetupStep = ({ step, state, onAction }: StepProps<'totpSetup'>) => {
         ) : null}
         <Box
           alignItems={BoxAlignItems.Center}
-          className="self-center overflow-hidden rounded-2xl border border-muted bg-white p-4"
+          className="self-center overflow-hidden rounded-2xl border border-muted bg-white"
         >
           <img
             src={step.qrCode}

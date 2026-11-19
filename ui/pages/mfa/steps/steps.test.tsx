@@ -919,7 +919,7 @@ describe('TotpSetupStep', () => {
     expect(qrCode.parentElement).toHaveClass('bg-white');
     expect(qrCode.parentElement).toHaveClass('border');
     expect(qrCode.parentElement).toHaveClass('border-muted');
-    expect(qrCode.parentElement).toHaveClass('p-4');
+    expect(qrCode.parentElement).not.toHaveClass('p-4');
     expect(screen.getByTestId(MfaFlowTestIds.TOTP_SETUP_KEY)).toHaveTextContent(
       'JBSW Y3DP EHPK 3PXP',
     );
@@ -945,7 +945,7 @@ describe('TotpSetupStep', () => {
     expect(qrCode.parentElement).toHaveClass('bg-white');
     expect(qrCode.parentElement).toHaveClass('border');
     expect(qrCode.parentElement).toHaveClass('border-muted');
-    expect(qrCode.parentElement).toHaveClass('p-4');
+    expect(qrCode.parentElement).not.toHaveClass('p-4');
   });
 
   it('copies the setup key as sensitive data when the key section is clicked', () => {
