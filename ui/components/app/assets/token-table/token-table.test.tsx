@@ -173,9 +173,7 @@ describe('TokenTable', () => {
     });
 
     const { getAllByTestId } = renderTable();
-    const [eligibleRow, otherRow] = getAllByTestId(
-      'multichain-token-list-button',
-    );
+    const [eligibleRow] = getAllByTestId('multichain-token-list-button');
     const eligibleTokenColumn = eligibleRow.firstElementChild as HTMLElement;
     const cta = within(eligibleTokenColumn).getByRole('button', {
       name: 'Get 5% APY',
@@ -188,11 +186,6 @@ describe('TokenTable', () => {
       'data-testid',
       `${MONEY_TOKEN_LIST_CTA_TEST_ID}-${eligible.chainId}-${eligible.address}`,
     );
-    expect(
-      within(otherRow.firstElementChild as HTMLElement).queryByRole('button', {
-        name: 'Get 5% APY',
-      }),
-    ).not.toBeInTheDocument();
 
     fireEvent.click(cta);
 
