@@ -177,8 +177,8 @@ export function MoneyHomePage() {
   } = useMoneyAccountLifecycle();
   const isMoneyAccountReadOnly = isReadOnly || isLifecycleUnavailable;
   useOpenMoneyFtueOnFirstVisit({
-    isAvailable: availability.isAvailable,
-    isLoading: isAvailabilityLoading,
+    isAvailable: availability.isAvailable && !isMoneyAccountReadOnly,
+    isLoading: isAvailabilityLoading || isLifecycleLoading,
   });
   useUpgradeMoneyAccount();
   const {

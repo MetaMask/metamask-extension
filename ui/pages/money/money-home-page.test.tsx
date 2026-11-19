@@ -310,6 +310,38 @@ describe('MoneyHomePage', () => {
     });
   });
 
+  it('does not auto-open the FTUE for a read-only account', () => {
+    mockUseMoneyAccountLifecycle.mockReturnValue({
+      lifecycle: { type: 'mfa' },
+      isLifecycleUnavailable: false,
+      isReadOnly: true,
+      isLoading: false,
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(mockUseOpenMoneyFtueOnFirstVisit).toHaveBeenCalledWith({
+      isAvailable: false,
+      isLoading: false,
+    });
+  });
+
+  it('waits for the lifecycle read before auto-opening the FTUE', () => {
+    mockUseMoneyAccountLifecycle.mockReturnValue({
+      lifecycle: undefined,
+      isLifecycleUnavailable: false,
+      isReadOnly: false,
+      isLoading: true,
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(mockUseOpenMoneyFtueOnFirstVisit).toHaveBeenCalledWith({
+      isAvailable: true,
+      isLoading: true,
+    });
+  });
+
   it('keeps groundwork actions other than the transfer entry points inert', () => {
     renderWithLocalization(<MoneyHomePage />);
 
