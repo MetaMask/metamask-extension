@@ -13,12 +13,6 @@ import {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,
 } from '../../tests/btc/mocks/tokens-api';
-import {
-  KNOWN_ANSWER_HISTORICAL_PRICES_DELAY,
-  KNOWN_ANSWER_QUOTE_DELAY,
-  KNOWN_ANSWER_SOLANA_BLOCKHASH_DELAY,
-  withKnownAnswerDelay,
-} from './known-answer';
 import { POWER_USER_PRICES } from './price-data';
 import { buildSseResponseBody } from './swap-mocks';
 import bridgeNetworkTokens from './bridge-network-tokens.json';
@@ -83,70 +77,18 @@ export const MOCK_PRIORITIES = {
 export type MockPriorityLevel = keyof typeof MOCK_PRIORITIES;
 
 /**
- * Named sets of fixture delays. `BENCHMARK_ZERO_MOCK_DELAY_SET=<name>` zeroes
- * one set and leaves every other delay as written. A delay joins a set through
- * the `set` argument at its call site.
- */
-export const MOCK_DELAY_SETS = [
-  'auth-api',
-  'user-storage',
-  'solana-rpc',
-] as const;
-
-export type MockDelaySet = (typeof MOCK_DELAY_SETS)[number];
-
-const ZERO_MOCK_DELAY_SET = 'BENCHMARK_ZERO_MOCK_DELAY_SET';
-
-/**
- * Read which named set of fixture delays this run zeroes.
- * @returns The set `BENCHMARK_ZERO_MOCK_DELAY_SET` names, or undefined when it
- * is unset or empty.
- */
-export function getZeroedMockDelaySet(): MockDelaySet | undefined {
-  const raw = process.env[ZERO_MOCK_DELAY_SET];
-  if (raw === undefined || raw === '') {
-    return undefined;
-  }
-  const set = MOCK_DELAY_SETS.find((name) => name === raw);
-  if (set === undefined) {
-    throw new Error(
-      `${ZERO_MOCK_DELAY_SET} must be one of ${MOCK_DELAY_SETS.join(', ')}, got "${raw}"`,
-    );
-  }
-  return set;
-}
-
-/**
- * Every fixture delay in these mocks goes through here, so that
- * `BENCHMARK_ZERO_MOCK_DELAYS=1` zeroes them all and
- * `BENCHMARK_ZERO_MOCK_DELAY_SET` zeroes only the named set.
- */
-export function mockDelayMs(ms: number, set?: MockDelaySet): number {
-  if (process.env.BENCHMARK_ZERO_MOCK_DELAYS === '1') {
-    return 0;
-  }
-  const zeroedSet = getZeroedMockDelaySet();
-  return set !== undefined && set === zeroedSet ? 0 : ms;
-}
-
-/**
  * Wraps a static response with a simulated network delay.
  * Delay values are based on Sentry production traces.
  *
- * @param delayMs - The delay the fixture specifies.
- * @param response - The response to return after it.
- * @param set - The named set the delay belongs to, if any.
- * @returns A mockttp callback.
+ * @param delayMs
+ * @param response
  */
 function delayedResponse<TResponse>(
   delayMs: number,
   response: TResponse,
-  set?: MockDelaySet,
 ): (req: { url: string }) => Promise<TResponse> {
   return async () => {
-    await new Promise((resolve) =>
-      setTimeout(resolve, mockDelayMs(delayMs, set)),
-    );
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
     return response;
   };
 }
@@ -156,7 +98,7 @@ function delayedCallback<TResponse>(
   callback: (req: { url: string }) => TResponse,
 ): (req: { url: string }) => Promise<TResponse> {
   return async (req) => {
-    await new Promise((resolve) => setTimeout(resolve, mockDelayMs(delayMs)));
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
     return callback(req);
   };
 }
@@ -167,13 +109,11 @@ type AuthMockResponse = {
   response: unknown;
 };
 
-export async function mockAuthAPICall(
+async function mockAuthAPICall(
   server: Mockttp,
   mockResponse: AuthMockResponse,
   delayMs = 0,
 ): Promise<MockedEndpoint> {
-  // Fail at registration, before any browser starts, on an unknown set name.
-  getZeroedMockDelaySet();
   let requestRuleBuilder: RequestRuleBuilder | undefined;
 
   if (mockResponse.requestMethod === 'GET') {
@@ -196,9 +136,8 @@ export async function mockAuthAPICall(
     .asPriority(150)
     .always()
     .thenCallback(async (request) => {
-      const waitMs = mockDelayMs(delayMs, 'auth-api');
-      if (waitMs > 0) {
-        await new Promise((resolve) => setTimeout(resolve, waitMs));
+      if (delayMs > 0) {
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
       }
 
       const { path, body } = request;
@@ -634,14 +573,9 @@ export function userStorageHostMock(server: Mockttp): Promise<MockedEndpoint> {
 
 const SOLANA_URL_REGEX = /^https:\/\/solana-mainnet\.infura\.io\/v3\/.*/u;
 
-const HISTORICAL_PRICES_V3_URL =
-  /^https:\/\/price\.api\.cx\.metamask\.io\/v3\/historical-prices\/[^/]+\/[^/]+/u;
-
 export async function mockBenchmarkEndpoints(
   server: Mockttp,
 ): Promise<MockedEndpoint[]> {
-  // Fail at registration, before any browser starts, on an unknown set name.
-  getZeroedMockDelaySet();
   const endpoints: MockedEndpoint[] = [];
 
   endpoints.push(
@@ -744,9 +678,7 @@ export async function mockBenchmarkEndpoints(
       .forGet(/user-storage\.api\.cx\.metamask\.io/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(
-        delayedResponse(500, { statusCode: 200, json: null }, 'user-storage'),
-      ),
+      .thenCallback(delayedResponse(500, { statusCode: 200, json: null })),
   );
 
   endpoints.push(
@@ -754,9 +686,7 @@ export async function mockBenchmarkEndpoints(
       .forPut(/user-storage\.api\.cx\.metamask\.io/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(
-        delayedResponse(500, { statusCode: 204, json: null }, 'user-storage'),
-      ),
+      .thenCallback(delayedResponse(500, { statusCode: 204, json: null })),
   );
 
   endpoints.push(
@@ -1093,8 +1023,6 @@ export async function mockBenchmarkEndpoints(
       ),
   );
 
-  // The three historical-prices rules carry the known-answer lever outside
-  // their fixed delay, so it applies with the fixture's delays zeroed too.
   endpoints.push(
     await server
       .forGet(
@@ -1102,12 +1030,7 @@ export async function mockBenchmarkEndpoints(
       )
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(
-        withKnownAnswerDelay(
-          KNOWN_ANSWER_HISTORICAL_PRICES_DELAY,
-          delayedResponse(600, buildHistoricalPricesResponse()),
-        ),
-      ),
+      .thenCallback(delayedResponse(600, buildHistoricalPricesResponse())),
   );
 
   endpoints.push(
@@ -1117,29 +1040,7 @@ export async function mockBenchmarkEndpoints(
       )
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(
-        withKnownAnswerDelay(
-          KNOWN_ANSWER_HISTORICAL_PRICES_DELAY,
-          delayedResponse(600, buildHistoricalPricesResponse()),
-        ),
-      ),
-  );
-
-  // The asset page's price chart requests
-  // `/v3/historical-prices/{caipChainId}/{assetType}`
-  // (`ui/pages/asset/hooks/useHistoricalPrices.ts`), which neither rule above
-  // matches.
-  endpoints.push(
-    await server
-      .forGet(HISTORICAL_PRICES_V3_URL)
-      .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
-      .always()
-      .thenCallback(
-        withKnownAnswerDelay(
-          KNOWN_ANSWER_HISTORICAL_PRICES_DELAY,
-          delayedResponse(600, buildHistoricalPricesResponse()),
-        ),
-      ),
+      .thenCallback(delayedResponse(600, buildHistoricalPricesResponse())),
   );
 
   endpoints.push(
@@ -1194,9 +1095,7 @@ export async function mockBenchmarkEndpoints(
       .always()
       .thenCallback(async (req) => {
         const body = (await req.body.getJson()) as { id?: string };
-        await new Promise((resolve) =>
-          setTimeout(resolve, mockDelayMs(150, 'solana-rpc')),
-        );
+        await new Promise((resolve) => setTimeout(resolve, 150));
         return solanaGetBalanceResponse(body.id || '1337');
       }),
   );
@@ -1209,9 +1108,7 @@ export async function mockBenchmarkEndpoints(
       .always()
       .thenCallback(async (req) => {
         const body = (await req.body.getJson()) as { id?: string };
-        await new Promise((resolve) =>
-          setTimeout(resolve, mockDelayMs(150, 'solana-rpc')),
-        );
+        await new Promise((resolve) => setTimeout(resolve, 150));
         return solanaGetAccountInfoResponse(body.id || '1337');
       }),
   );
@@ -1222,12 +1119,7 @@ export async function mockBenchmarkEndpoints(
       .withJsonBodyIncluding({ method: 'getLatestBlockhash' })
       .asPriority(MOCK_PRIORITIES.HIGH_PRIORITY)
       .always()
-      .thenCallback(
-        withKnownAnswerDelay(
-          KNOWN_ANSWER_SOLANA_BLOCKHASH_DELAY,
-          delayedResponse(100, SOLANA_GET_LATEST_BLOCKHASH, 'solana-rpc'),
-        ),
-      ),
+      .thenCallback(delayedResponse(100, SOLANA_GET_LATEST_BLOCKHASH)),
   );
 
   endpoints.push(
@@ -1236,9 +1128,7 @@ export async function mockBenchmarkEndpoints(
       .withJsonBodyIncluding({ method: 'getFeeForMessage' })
       .asPriority(MOCK_PRIORITIES.HIGH_PRIORITY)
       .always()
-      .thenCallback(
-        delayedResponse(100, SOLANA_GET_FEE_FOR_MESSAGE, 'solana-rpc'),
-      ),
+      .thenCallback(delayedResponse(100, SOLANA_GET_FEE_FOR_MESSAGE)),
   );
 
   endpoints.push(
@@ -1248,11 +1138,7 @@ export async function mockBenchmarkEndpoints(
       .asPriority(MOCK_PRIORITIES.HIGH_PRIORITY)
       .always()
       .thenCallback(
-        delayedResponse(
-          100,
-          SOLANA_GET_MIN_BALANCE_RENT_EXEMPTION,
-          'solana-rpc',
-        ),
+        delayedResponse(100, SOLANA_GET_MIN_BALANCE_RENT_EXEMPTION),
       ),
   );
 
@@ -1262,9 +1148,7 @@ export async function mockBenchmarkEndpoints(
       .withJsonBodyIncluding({ method: 'getTokenAccountsByOwner' })
       .asPriority(MOCK_PRIORITIES.HIGH_PRIORITY)
       .always()
-      .thenCallback(
-        delayedResponse(200, SOLANA_GET_TOKEN_ACCOUNTS_BY_OWNER, 'solana-rpc'),
-      ),
+      .thenCallback(delayedResponse(200, SOLANA_GET_TOKEN_ACCOUNTS_BY_OWNER)),
   );
 
   endpoints.push(
@@ -1273,9 +1157,7 @@ export async function mockBenchmarkEndpoints(
       .withJsonBodyIncluding({ method: 'simulateTransaction' })
       .asPriority(MOCK_PRIORITIES.HIGH_PRIORITY)
       .always()
-      .thenCallback(
-        delayedResponse(300, SOLANA_SIMULATE_TRANSACTION, 'solana-rpc'),
-      ),
+      .thenCallback(delayedResponse(300, SOLANA_SIMULATE_TRANSACTION)),
   );
 
   endpoints.push(
@@ -1284,9 +1166,7 @@ export async function mockBenchmarkEndpoints(
       .withJsonBodyIncluding({ method: 'getSignaturesForAddress' })
       .asPriority(MOCK_PRIORITIES.HIGH_PRIORITY)
       .always()
-      .thenCallback(
-        delayedResponse(350, SOLANA_GET_SIGNATURES_FOR_ADDRESS, 'solana-rpc'),
-      ),
+      .thenCallback(delayedResponse(350, SOLANA_GET_SIGNATURES_FOR_ADDRESS)),
   );
 
   endpoints.push(
@@ -1296,9 +1176,7 @@ export async function mockBenchmarkEndpoints(
       .always()
       .thenCallback(async (req) => {
         const body = (await req.body.getJson()) as { id?: string };
-        await new Promise((resolve) =>
-          setTimeout(resolve, mockDelayMs(450, 'solana-rpc')),
-        );
+        await new Promise((resolve) => setTimeout(resolve, 450));
         return solanaCatchAllResponse(body.id || '1337');
       }),
   );
@@ -1339,20 +1217,15 @@ export async function mockBenchmarkEndpoints(
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
       .thenCallback(
-        // The known-answer lever wraps the fixed delay rather than adding to
-        // it, so `BENCHMARK_ZERO_MOCK_DELAYS=1` zeroes the fixed delay alone.
-        withKnownAnswerDelay(
-          KNOWN_ANSWER_QUOTE_DELAY,
-          delayedCallback(2000, (req) => {
-            const isSolana = req.url.includes('srcChainId=1151111081099710');
-            const quote = isSolana ? swapQuoteSolUsdc : swapQuoteEthUsdc;
-            return {
-              statusCode: 200,
-              headers: { 'Content-Type': 'text/event-stream' },
-              body: buildSseResponseBody([quote]),
-            };
-          }),
-        ),
+        delayedCallback(2000, (req) => {
+          const isSolana = req.url.includes('srcChainId=1151111081099710');
+          const quote = isSolana ? swapQuoteSolUsdc : swapQuoteEthUsdc;
+          return {
+            statusCode: 200,
+            headers: { 'Content-Type': 'text/event-stream' },
+            body: buildSseResponseBody([quote]),
+          };
+        }),
       ),
   );
 
@@ -1362,14 +1235,11 @@ export async function mockBenchmarkEndpoints(
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
       .thenCallback(
-        withKnownAnswerDelay(
-          KNOWN_ANSWER_QUOTE_DELAY,
-          delayedCallback(2000, (req) => {
-            const isSolana = req.url.includes('srcChainId=1151111081099710');
-            const quote = isSolana ? swapQuoteSolUsdc : swapQuoteEthUsdc;
-            return { statusCode: 200, json: [quote] };
-          }),
-        ),
+        delayedCallback(2000, (req) => {
+          const isSolana = req.url.includes('srcChainId=1151111081099710');
+          const quote = isSolana ? swapQuoteSolUsdc : swapQuoteEthUsdc;
+          return { statusCode: 200, json: [quote] };
+        }),
       ),
   );
 
