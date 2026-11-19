@@ -9,30 +9,23 @@ import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import SendPage from '../../../page-objects/pages/send/send-page';
+import { TRON_CHAIN_ID } from '../../tron/mocks/common-tron';
 import {
-  TRON_CHAIN_ID,
-  TRON_RECIPIENT_ADDRESS,
-} from '../../tron/mocks/common-tron';
-import {
+  TRON_ACTIVE_RECIPIENT_ACCOUNT,
+  TRON_ACTIVE_RECIPIENT_ADDRESS,
   TRON_PORTFOLIO_ACCOUNT,
   TRON_PORTFOLIO_TRX_BALANCE_IN_SUN,
 } from '../../tron/fixtures/environments';
 import { withTronFixtures } from '../../tron/fixtures/with-tron-fixtures';
 import { formatSunAmount } from './utils/formatSunAmount';
 
-/**
- * Fee buffer (in sun) subtracted from the seeded TRX balance when sending near
- * the total balance: 1 TRX account activation plus 0.1 TRX bandwidth.
- */
-const TRON_SEND_FEE_BUFFER_IN_SUN = 1_100_000;
-
 describe('Tron Send', function (this: Suite) {
   this.timeout(180_000);
 
-  it('sends the Snap max TRX amount, leaving room for fees', async function () {
+  it('sends the Snap max TRX amount to an active recipient', async function () {
     await withTronFixtures(
       {
-        accounts: [TRON_PORTFOLIO_ACCOUNT],
+        accounts: [TRON_PORTFOLIO_ACCOUNT, TRON_ACTIVE_RECIPIENT_ACCOUNT],
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
@@ -52,13 +45,11 @@ describe('Tron Send', function (this: Suite) {
         await sendPage.checkSendFormIsLoaded();
 
         await sendPage.fillRecipient({
-          recipientAddress: TRON_RECIPIENT_ADDRESS,
+          recipientAddress: TRON_ACTIVE_RECIPIENT_ADDRESS,
         });
         await sendPage.clickMaxButton();
         await sendPage.checkAmountInputValue(
-          formatSunAmount(
-            TRON_PORTFOLIO_TRX_BALANCE_IN_SUN - TRON_SEND_FEE_BUFFER_IN_SUN,
-          ),
+          formatSunAmount(TRON_PORTFOLIO_TRX_BALANCE_IN_SUN),
         );
         await sendPage.pressContinueButton();
 
