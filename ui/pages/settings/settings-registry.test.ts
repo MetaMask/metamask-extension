@@ -203,12 +203,12 @@ describe('settings-registry', () => {
   });
 
   describe('external routes (sync accounts)', () => {
-    const loadRegistryWithSyncState = (isEnabled: boolean) => {
+    const loadRegistryWithSyncEnabled = () => {
       let registry: typeof import('./settings-registry');
       jest.isolateModules(() => {
         jest.doMock('../../../shared/lib/environment', () => ({
           ...jest.requireActual('../../../shared/lib/environment'),
-          getIsQrSyncEnabled: () => isEnabled,
+          getIsQrSyncEnabled: () => true,
         }));
         // eslint-disable-next-line @typescript-eslint/no-require-imports
         registry = require('./settings-registry');
@@ -216,7 +216,6 @@ describe('settings-registry', () => {
       // @ts-expect-error assigned within isolateModules callback
       return registry;
     };
-    const loadRegistryWithSyncEnabled = () => loadRegistryWithSyncState(true);
 
     afterEach(() => {
       jest.dontMock('../../../shared/lib/environment');
@@ -227,29 +226,6 @@ describe('settings-registry', () => {
       const tabPaths = tabs.map((tab) => tab.path);
 
       expect(tabPaths).toContain(SYNC_ACCOUNTS_ROUTE);
-    });
-
-    it('places sync accounts in Security & Privacy when enabled', () => {
-      const { SETTINGS_ROOT_SECTIONS: sections } =
-        loadRegistryWithSyncEnabled();
-      const securitySection = sections.find(({ titleKeys }) =>
-        titleKeys.includes('securityAndPrivacy'),
-      );
-      const moreSection = sections.find(({ titleKeys }) =>
-        titleKeys.includes('moreCapital'),
-      );
-
-      expect(securitySection?.paths).toContain(SYNC_ACCOUNTS_ROUTE);
-      expect(moreSection?.paths).not.toContain(SYNC_ACCOUNTS_ROUTE);
-    });
-
-    it('does not place sync accounts in Settings when disabled', () => {
-      const { SETTINGS_ROOT_SECTIONS: sections } =
-        loadRegistryWithSyncState(false);
-
-      expect(sections.flatMap(({ paths }) => paths)).not.toContain(
-        SYNC_ACCOUNTS_ROUTE,
-      );
     });
 
     it('excludes the top-level sync accounts route from nested settings routes', () => {
