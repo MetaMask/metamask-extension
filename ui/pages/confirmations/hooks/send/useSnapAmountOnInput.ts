@@ -18,10 +18,8 @@ export const useSnapAmountOnInput = () => {
           value: amount,
           accountId: (fromAccount as InternalAccount).id,
           assetId: asset?.assetId as CaipAssetType,
-          // `toResolved` is the resolved destination address
-          // (`toResolved ?? to` in the send context). The Tron Snap quotes fees
-          // against it; without it the account activation reserve is assumed
-          // for every send.
+          // `toResolved` is the resolved destination address for when there is
+          // a name service like ENS.
           ...(isTronSendType && toResolved ? { toAddress: toResolved } : {}),
         },
       );
