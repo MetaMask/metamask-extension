@@ -93,6 +93,8 @@ export type BaseStore = {
 
   getBytesInUseByKey?: (keys: string[]) => Promise<Map<string, number>>;
 
+  getTotalBytesInUse?: (keys: string[]) => Promise<number>;
+
   getSplitStateReadDiagnostics?: () => Promise<SplitStateReadDiagnostics>;
 
   set: (state: Required<MetaMaskStorageStructure>) => Promise<void>;

@@ -67,7 +67,8 @@ const interestResponse = (value: string) => ({
 });
 
 jest.mock('react-redux', () => ({
-  useSelector: (selector: () => unknown) => selector(),
+  useSelector: (selector: (state: unknown) => unknown) =>
+    selector({ metamask: {} }),
 }));
 
 jest.mock('../../selectors/money/money-account-feature-flags', () => ({
