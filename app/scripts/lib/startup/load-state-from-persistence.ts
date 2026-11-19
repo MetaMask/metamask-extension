@@ -15,6 +15,7 @@ import migrations from '../../migrations';
 import { useSplitStateStorage } from '../use-split-state-storage';
 import getObjStructure from '../getObjStructure';
 import type rawFirstTimeState from '../../first-time-state';
+import { readPersistedStateWithTrace } from './trace-state-load';
 
 export type FirstTimeState = typeof rawFirstTimeState;
 
@@ -186,7 +187,9 @@ export async function loadStateFromPersistence(
     }
   } else {
     const validateVault = true;
-    preMigrationVersionedData = await persistenceManager.get({ validateVault });
+    preMigrationVersionedData = await readPersistedStateWithTrace(() =>
+      persistenceManager.get({ validateVault }),
+    );
   }
 
   const migrator = new Migrator({
