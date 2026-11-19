@@ -35,7 +35,6 @@ const arrangeMocks = () => {
 const arrangeParams = () => ({
   chainId: '0x1' as Hex | CaipChainId,
   ticker: 'ETH',
-  type: 'mainnet',
   rpcUrl: '',
   enabled: true,
 });
@@ -49,13 +48,10 @@ const arrangeActHook = (overrides?: (mocks: Mocks, params: Params) => void) => {
 
   const hook = renderHookWithProviderTyped(
     () =>
-      useIsOriginalNativeTokenSymbol(
-        params.chainId,
-        params.ticker,
-        params.type,
-        params.rpcUrl,
-        params.enabled,
-      ),
+      useIsOriginalNativeTokenSymbol(params.chainId, params.ticker, {
+        rpcUrl: params.rpcUrl,
+        enabled: params.enabled,
+      }),
     {},
   );
 

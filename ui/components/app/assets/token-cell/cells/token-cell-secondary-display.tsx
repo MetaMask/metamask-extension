@@ -43,14 +43,15 @@ export const TokenCellSecondaryDisplay = React.memo(
     privacyMode,
   }: TokenCellSecondaryDisplayProps) => {
     const isEvm = isEvmChainId(token.chainId);
-    const { type, rpcUrl } = useSelector(getProviderConfig);
+    const { rpcUrl } = useSelector(getProviderConfig);
 
     const isOriginalNativeToken = useIsOriginalNativeTokenSymbol(
       token.chainId,
       token.symbol,
-      type,
-      rpcUrl,
-      Boolean(token.isNative && isEvm),
+      {
+        rpcUrl,
+        enabled: Boolean(token.isNative && isEvm),
+      },
     );
 
     const nativeSymbolValidationIsLoading =

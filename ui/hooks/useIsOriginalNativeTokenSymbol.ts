@@ -17,12 +17,15 @@ const isLocalhostUrl = (urlString: string) => {
   );
 };
 
+type NativeTokenSymbolValidationOptions = {
+  rpcUrl?: string;
+  enabled?: boolean;
+};
+
 export function useIsOriginalNativeTokenSymbol(
   chainId: Hex | CaipChainId,
   ticker: string,
-  _type: string,
-  rpcUrl = '',
-  enabled = true,
+  { rpcUrl = '', enabled = true }: NativeTokenSymbolValidationOptions = {},
 ) {
   const [validation, setValidation] = useState<{
     key: string;
