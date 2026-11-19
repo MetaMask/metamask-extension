@@ -14,7 +14,7 @@ import {
   EXPECTED_EVENT_TYPES,
   checkInputChangedEvents,
 } from '../bridge/bridge-test-utils';
-import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import SwapPage from '../../page-objects/pages/swap/swap-page';
 import { login } from '../../page-objects/flows/login.flow';
 
 const quote = {
@@ -39,7 +39,7 @@ describe('Bridge tests', function (this: Suite) {
         });
 
         const homePage = new HomePage(driver);
-        const bridgePage = new BridgeQuotePage(driver);
+        const swapPage = new SwapPage(driver);
 
         // QUOTE REQUEST #1
         console.log('Starting 1st Swap flow');
@@ -71,11 +71,11 @@ describe('Bridge tests', function (this: Suite) {
         );
 
         console.log('Entering 2nd Swap quote');
-        await bridgePage.enterBridgeQuote(quote, {
+        await swapPage.enterBridgeQuote(quote, {
           openPickersWithDebounce: true,
         });
-        await bridgePage.waitForQuote();
-        await bridgePage.checkExpectedNetworkFeeIsDisplayed();
+        await swapPage.waitForQuote();
+        await swapPage.checkExpectedNetworkFeeIsDisplayed();
 
         const inputChangesCount3 = await checkInputChangedEvents(
           'quoteRequest2',
@@ -86,7 +86,7 @@ describe('Bridge tests', function (this: Suite) {
 
         // QUOTE REQUEST #3
         console.log('Switching tokens');
-        await bridgePage.switchTokens();
+        await swapPage.switchTokens();
 
         let events = await getEventPayloads(driver, mockedEndpoints);
         events = events.filter((event) => event !== null);

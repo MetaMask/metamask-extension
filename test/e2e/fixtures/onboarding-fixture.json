@@ -1985,6 +1985,7 @@
         "hideZeroBalanceTokens": false,
         "isBasicFunctionalityConsolidatedEnabled": false,
         "privacyMode": false,
+        "shouldShowSupportConsent": true,
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": true,
         "showExtensionInFullSizeView": false,
@@ -1996,6 +1997,7 @@
         "skipDeepLinkInterstitial": false,
         "smartTransactionsMigrationApplied": false,
         "smartTransactionsOptInStatus": true,
+        "supportDataSharingPreference": null,
         "tdpChartIndicators": [],
         "tdpChartInterval": "15m",
         "tdpChartType": 2,
@@ -2077,6 +2079,8 @@
         "https://app-gamma.signer.cubist.dev": "mainnet",
         "https://app.metamask.io": "mainnet",
         "https://app.signer.cubist.dev": "mainnet",
+        "https://console.dev.mpcvault.com": "mainnet",
+        "https://console.mpcvault.com": "mainnet",
         "https://developer.metamask.io": "mainnet",
         "https://docs.metamask.io": "mainnet",
         "https://localhost:3000": "mainnet",
@@ -2204,9 +2208,6 @@
       "submitHistory": [],
       "transactionBatches": [],
       "transactions": []
-    },
-    "UserOperationController": {
-      "userOperations": {}
     },
     "UserStorageController": {
       "isAccountSyncingEnabled": true,

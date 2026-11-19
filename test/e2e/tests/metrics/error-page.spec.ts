@@ -42,7 +42,7 @@ async function mockSupportLinkConsentMetrics(mockServer: Mockttp) {
 }
 
 describe('Error Page', function () {
-  it('sends "Support Link Click" event with customer_service_token when user consents', async function () {
+  it('sends "Support Link Click" event without customer_service_token when user consents', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
@@ -79,8 +79,13 @@ describe('Error Page', function () {
         const queryString = new URL(trackedUrl).search;
         assert.match(
           queryString,
+          /utm_source=extension/u,
+          'Non-personal attribution parameter missing from tracked URL',
+        );
+        assert.doesNotMatch(
+          queryString,
           /customer_service_token/u,
-          'Customer service token missing from tracked URL when user consents',
+          'Customer service token should not be in tracked URL when user consents',
         );
       },
     );

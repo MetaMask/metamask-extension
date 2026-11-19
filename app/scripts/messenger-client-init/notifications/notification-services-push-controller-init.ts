@@ -12,6 +12,7 @@ import type {
   NotificationServicesPushControllerMessenger,
   NotificationServicesPushControllerInitMessenger,
 } from '../messengers/notifications';
+import { loadAuthenticationConfig } from '../../../../shared/lib/authentication';
 import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
 import {
   onPushNotificationClicked,
@@ -94,6 +95,7 @@ export const NotificationServicesPushControllerInit: MessengerClientInitFunction
     config: {
       isPushFeatureEnabled: isManifestV3 && !process.env.IN_TEST,
       platform: 'extension',
+      env: loadAuthenticationConfig(),
       pushService: {
         createRegToken,
         deleteRegToken,

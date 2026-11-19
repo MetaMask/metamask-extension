@@ -168,6 +168,40 @@ describe('ExtensionStore', () => {
     });
   });
 
+  describe('getTotalBytesInUse', () => {
+    it('throws an error if called in a browser that does not support local storage', async () => {
+      const localStore = setup({ localMock: false });
+
+      await expect(localStore.getTotalBytesInUse(['foo'])).rejects.toThrow(
+        'MetaMask - cannot measure state size in local store as this browser does not support this action',
+      );
+    });
+
+    it('throws an error if getBytesInUse is unavailable', async () => {
+      const localStore = setup({ localMock: { get: jest.fn() } });
+
+      await expect(localStore.getTotalBytesInUse(['foo'])).rejects.toThrow(
+        'MetaMask - cannot measure state size because getBytesInUse is not available',
+      );
+    });
+
+    it('returns the total bytes for all requested keys in one call', async () => {
+      const getBytesInUse = jest.fn().mockResolvedValue(49);
+      const localStore = setup({
+        localMock: { getBytesInUse },
+      });
+
+      await expect(
+        localStore.getTotalBytesInUse(['FooController', 'BarController']),
+      ).resolves.toBe(49);
+      expect(getBytesInUse).toHaveBeenCalledTimes(1);
+      expect(getBytesInUse).toHaveBeenCalledWith([
+        'FooController',
+        'BarController',
+      ]);
+    });
+  });
+
   describe('getSplitStateReadDiagnostics', () => {
     it('reports unsupported storage as a failed manifest read', async () => {
       const localStore = setup({ localMock: false });
