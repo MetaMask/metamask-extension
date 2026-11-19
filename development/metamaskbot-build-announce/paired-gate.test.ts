@@ -195,7 +195,22 @@ describe('evaluatePairedGate', () => {
     );
   });
 
-  it('leaves an unpaired file alone, errors included', () => {
+  it("fails an unpaired file's error in its own leg check", () => {
+    const outcomes = evaluatePairedGate(
+      [
+        {
+          name: 'benchmark-firefox-webpack-startupStandardHome',
+          data: { startupStandardHome: { error: 'Error: x' } },
+        },
+      ],
+      false,
+    );
+
+    expect(outcomes.length).toBeGreaterThan(0);
+    expect(outcomes.every(({ failed }) => failed)).toBe(true);
+  });
+
+  it('leaves an unpaired file alone in the gate, errors included', () => {
     const unpaired = {
       name: 'benchmark-firefox-webpack-startupStandardHome',
       data: { startupStandardHome: { mean: {}, p75: {}, p95: {} } },
