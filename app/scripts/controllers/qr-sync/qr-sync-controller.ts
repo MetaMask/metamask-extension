@@ -89,6 +89,8 @@ export class QrSyncController extends BaseController<
 
   #otpTimeoutId: NodeJS.Timeout | null = null;
 
+  #sessionCreationPromise: Promise<void> | null = null;
+
   #cleanupPromise: Promise<void> | null = null;
 
   #clientEventHandlers: {
@@ -126,20 +128,64 @@ export class QrSyncController extends BaseController<
   }
 
   async createSession(): Promise<void> {
+    if (this.#cleanupPromise) {
+      await this.#cleanupPromise;
+    }
+
+    if (this.#sessionCreationPromise) {
+      await this.#sessionCreationPromise;
+      return;
+    }
+
+    // Multiple extension surfaces can render this flow at the same time. Reuse
+    // the active session so one surface cannot invalidate the QR shown by
+    // another.
+    if (this.#mwpDappClient) {
+      return;
+    }
+
+    this.#sessionCreationPromise = this.#createSession();
+    try {
+      await this.#sessionCreationPromise;
+    } finally {
+      this.#sessionCreationPromise = null;
+    }
+  }
+
+  async #createSession(): Promise<void> {
     await this.#initialize();
     this.#assertDappClientInitialized(this.#mwpDappClient);
 
-    try {
-      await this.#mwpDappClient.connect({
-        initialPayload: createInitSyncSessionMessage(),
-        mode: 'untrusted',
+    const mwpDappClient = this.#mwpDappClient;
+    const connectionPromise = mwpDappClient.connect({
+      initialPayload: createInitSyncSessionMessage(),
+      mode: 'untrusted',
+    });
+
+    // `connect` emits the session request synchronously, before waiting for the
+    // phone to complete the handshake. Do not keep the messenger action open
+    // for that handshake: it blocks controller state updates from reaching the
+    // UI, leaving the QR skeleton visible until the request times out.
+    connectionPromise
+      .catch(async (error) => {
+        if (this.#cleanupPromise || this.#mwpDappClient !== mwpDappClient) {
+          return;
+        }
+
+        await this.#setError({ error });
+        log.error('QrSyncController: failed to create session', error);
+      })
+      .finally(() => {
+        if (!this.#cleanupPromise && this.#mwpDappClient === mwpDappClient) {
+          this.#finishSubmission();
+        }
+      })
+      .catch((error) => {
+        log.error(
+          'QrSyncController: failed to handle session connection result',
+          error,
+        );
       });
-    } catch (error) {
-      await this.#setError({ error });
-      log.error('QrSyncController: failed to create session', error);
-    } finally {
-      this.#finishSubmission();
-    }
   }
 
   async submitOtp(otp: string): Promise<void> {

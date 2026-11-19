@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { submitRequestToBackground } from '../../../store/background-connection';
@@ -7,6 +7,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   QR_SYNC_ERROR_PHASE_OVERRIDES,
   QR_SYNC_PHASES,
+  QrSyncErrorCodes,
 } from '../../../../shared/constants/qr-sync';
 import {
   selectQrSyncError,
@@ -28,6 +29,7 @@ const SyncAccountsSettings = () => {
   const t = useI18nContext();
   const qrSyncPhase = useSelector(selectQrSyncPhase);
   const qrSyncError = useSelector(selectQrSyncError);
+  const previousErrorCodeRef = useRef(qrSyncError?.code);
   const [isExiting, setIsExiting] = useState(false);
   const [passwordState, setPasswordState] = useState<{
     phase: typeof qrSyncPhase;
@@ -67,6 +69,19 @@ const SyncAccountsSettings = () => {
   }, [cancelQrSyncSession, createQrSyncSession]);
 
   useEffect(() => {
+    const previousErrorCode = previousErrorCodeRef.current;
+    previousErrorCodeRef.current = qrSyncError?.code;
+
+    if (
+      !isExiting &&
+      qrSyncError?.code === QrSyncErrorCodes.QR_EXPIRED &&
+      previousErrorCode !== QrSyncErrorCodes.QR_EXPIRED
+    ) {
+      startNewSession().catch(() => undefined);
+    }
+  }, [isExiting, qrSyncError?.code, startNewSession]);
+
+  useEffect(() => {
     if (isExiting) {
       return undefined;
     }
@@ -74,7 +89,6 @@ const SyncAccountsSettings = () => {
     let isActive = true;
 
     const initializeSession = async () => {
-      await cancelQrSyncSession();
       if (!isActive || isExiting) {
         return;
       }
@@ -86,9 +100,8 @@ const SyncAccountsSettings = () => {
 
     return () => {
       isActive = false;
-      cancelQrSyncSession().catch(() => undefined);
     };
-  }, [cancelQrSyncSession, createQrSyncSession, isExiting]);
+  }, [createQrSyncSession, isExiting]);
 
   const handleExit = useCallback(async () => {
     setIsExiting(true);
