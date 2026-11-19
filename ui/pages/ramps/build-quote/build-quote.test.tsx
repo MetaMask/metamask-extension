@@ -825,7 +825,7 @@ describe('RampsBuildQuoteScreen', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('picks the provider for the token once the controller lists providers', () => {
+  it('picks the provider for the token once the controller lists providers', async () => {
     const selectProviderForAsset = jest.fn().mockResolvedValue('transak');
     useRampsController.mockReturnValue({
       ...mockControllerState(),
@@ -835,8 +835,10 @@ describe('RampsBuildQuoteScreen', () => {
 
     renderWithProvider(<RampsBuildQuoteScreen />, createStore());
 
-    expect(selectProviderForAsset).toHaveBeenCalledWith(
-      mockSelectedToken.assetId,
+    await waitFor(() =>
+      expect(selectProviderForAsset).toHaveBeenCalledWith(
+        mockSelectedToken.assetId,
+      ),
     );
   });
 
