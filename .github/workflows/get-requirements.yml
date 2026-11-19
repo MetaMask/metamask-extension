@@ -240,19 +240,18 @@ jobs:
             }
 
             // main.yml is in the denylist (most changes are CI plumbing), but
-            // the build-command values it passes to run-build.yml DO affect
-            // output. Extract and sort them so only command changes bust the hash.
+            // the build inputs it passes to run-build.yml affect the artifacts.
+            // Keep them in job order so each script stays paired with its arguments.
             const { stdout: mainYml } = await exec.getExecOutput(
               'git', ['show', `HEAD:.github/workflows/main.yml`],
               { silent: true },
             );
-            const buildCommands = (mainYml.match(/build-command: .+/g) ?? [])
-              .sort()
+            const buildInputs = (mainYml.match(/^ {6}(?:build-name|build-script|build-args|bundle-analyzer):[^\n]*(?:\n {8,}[^\n]*)*/gm) ?? [])
               .join('\n') + '\n';
 
             const { stdout: hash } = await exec.getExecOutput(
               'git', ['hash-object', '--stdin'],
-              { silent: true, input: Buffer.from(kept + buildCommands) },
+              { silent: true, input: Buffer.from(kept + buildInputs) },
             );
             const buildHash = hash.trim();
             core.setOutput('build-hash', buildHash);

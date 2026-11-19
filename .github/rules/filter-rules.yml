@@ -105,15 +105,15 @@ e2e_test_files:
 # and therefore non_e2e_related_files) but they DO affect build output, so a
 # PR touching only these must NOT skip E2E via the non_e2e_related_files gate.
 #
-# NOTE: main.yml also contains build-command values that affect the build hash,
+# NOTE: main.yml also contains build inputs that affect the build hash,
 # but it is NOT listed here because it changes very frequently (~weekly) for
 # non-build reasons (job reordering, adding CI gates, etc.). The risk is
-# accepted: if someone changes a build-command line in main.yml without
+# accepted: if someone changes a build input in main.yml without
 # touching any other build-affecting file, E2E could be skipped via the
 # "all files match non_e2e_related_files" gate in the "Compute needs-e2e
 # flag" step of get-requirements.yml. In practice this is safe because the
 # "builds reused + no E2E test files" gate in the same step would only fire
-# if builds are reused — and a build-command change busts the build hash,
+# if builds are reused — and a build input change busts the build hash,
 # forcing fresh builds.
 build_affecting_ci_files:
   - '.github/workflows/run-build.yml'
