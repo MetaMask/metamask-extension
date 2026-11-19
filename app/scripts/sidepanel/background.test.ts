@@ -4,7 +4,6 @@ import * as manifestFlags from '../../../shared/lib/manifestFlags';
 import type { PreferencesControllerState } from '../controllers/preferences-controller';
 import type { RootMessenger } from '../lib/messenger';
 import {
-  applyEarlySidePanelToolbarBehavior,
   applyToolbarSidePanelBehavior,
   createSidepanelOpener,
   openRoute,
@@ -248,28 +247,6 @@ function createToolbarController(
   };
 }
 
-describe('applyEarlySidePanelToolbarBehavior', () => {
-  it('sets openPanelOnActionClick to true when sidePanel API is available', () => {
-    const { sidePanelApi, setPanelBehavior } = createSidePanelMock();
-
-    applyEarlySidePanelToolbarBehavior(sidePanelApi);
-
-    expect(setPanelBehavior).toHaveBeenCalledWith({
-      openPanelOnActionClick: true,
-    });
-  });
-
-  it('ignores setPanelBehavior rejection', async () => {
-    const { sidePanelApi, setPanelBehavior } = createSidePanelMock();
-    setPanelBehavior.mockRejectedValue(new Error('side panel unavailable'));
-
-    applyEarlySidePanelToolbarBehavior(sidePanelApi);
-
-    await Promise.resolve();
-    expect(setPanelBehavior).toHaveBeenCalledTimes(1);
-  });
-});
-
 describe('applyToolbarSidePanelBehavior', () => {
   const setPopup = jest.fn().mockResolvedValue(undefined);
   let originalChrome: typeof chrome;
@@ -317,26 +294,45 @@ describe('setupSidePanelToolbarBehavior', () => {
   let consoleErrorSpy: jest.SpyInstance;
   const setPopup = jest.fn().mockResolvedValue(undefined);
   let originalChrome: typeof chrome;
+  let originalStateHooks: typeof globalThis.stateHooks;
+  const getPersistedState = jest.fn().mockResolvedValue({
+    data: {
+      PreferencesController: {
+        preferences: { useSidePanelAsDefault: true },
+      },
+    },
+  });
 
   beforeEach(() => {
     consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
     setPopup.mockClear();
+    getPersistedState.mockClear();
+    getPersistedState.mockResolvedValue({
+      data: {
+        PreferencesController: {
+          preferences: { useSidePanelAsDefault: true },
+        },
+      },
+    });
     originalChrome = globalThis.chrome;
+    originalStateHooks = globalThis.stateHooks;
     globalThis.chrome = {
       ...(globalThis.chrome ?? ({} as typeof chrome)),
       action: { setPopup },
     } as unknown as typeof chrome;
+    globalThis.stateHooks = {
+      ...globalThis.stateHooks,
+      getPersistedState,
+    };
   });
 
   afterEach(() => {
     globalThis.chrome = originalChrome;
-  });
-
-  afterEach(() => {
+    globalThis.stateHooks = originalStateHooks;
     consoleErrorSpy.mockRestore();
   });
 
-  it('applies early toolbar behavior before init, then preference and subscription', async () => {
+  it('applies persisted toolbar preference before init, then reconciles after init', async () => {
     const { sidePanelApi, setPanelBehavior } = createSidePanelMock();
     const subscribe = jest.fn();
     let resolveInitialization: () => void = () => undefined;
@@ -358,9 +354,15 @@ describe('setupSidePanelToolbarBehavior', () => {
       sidePanelApi,
     );
 
+    await new Promise<void>((resolve) => {
+      setImmediate(resolve);
+    });
+
+    expect(getPersistedState).toHaveBeenCalledWith({ reportErrors: false });
     expect(setPanelBehavior).toHaveBeenCalledWith({
       openPanelOnActionClick: true,
     });
+    expect(setPopup).toHaveBeenCalledWith({ popup: '' });
     expect(getController).not.toHaveBeenCalled();
 
     resolveInitialization();
@@ -519,7 +521,7 @@ describe('setupSidePanelToolbarBehavior', () => {
     );
   });
 
-  it('does nothing when sidePanel API is unavailable', async () => {
+  it('restores popup-init when sidePanel API is unavailable', async () => {
     const { sidePanel } = createSidePanelWithoutBehaviorMock();
     const getController = jest.fn(() => createToolbarController());
 
@@ -532,7 +534,43 @@ describe('setupSidePanelToolbarBehavior', () => {
         sidePanel,
       ),
     ).resolves.toBeUndefined();
+    expect(setPopup).toHaveBeenCalledWith({ popup: 'popup-init.html' });
     expect(getController).not.toHaveBeenCalled();
+  });
+
+  it('restores popup-init from persisted state before init when popup is preferred', async () => {
+    getPersistedState.mockResolvedValue({
+      data: {
+        PreferencesController: {
+          preferences: { useSidePanelAsDefault: false },
+        },
+      },
+    });
+    const { sidePanelApi, setPanelBehavior } = createSidePanelMock();
+    let resolveInitialization: () => void = () => undefined;
+    const waitUntilInitialized = new Promise<void>((resolve) => {
+      resolveInitialization = resolve;
+    });
+
+    const setupPromise = setupSidePanelToolbarBehavior(
+      {
+        getController: () => createToolbarController(false),
+        waitUntilInitialized: () => waitUntilInitialized,
+      },
+      sidePanelApi,
+    );
+
+    await new Promise<void>((resolve) => {
+      setImmediate(resolve);
+    });
+
+    expect(setPopup).toHaveBeenCalledWith({ popup: 'popup-init.html' });
+    expect(setPanelBehavior).toHaveBeenCalledWith({
+      openPanelOnActionClick: false,
+    });
+
+    resolveInitialization();
+    await setupPromise;
   });
 });
 

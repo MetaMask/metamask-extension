@@ -185,17 +185,43 @@ function getUseSidePanelAsDefault(
   );
 }
 
+function getUseSidePanelAsDefaultFromPersistedState(
+  persistedState: unknown,
+): boolean | undefined {
+  if (!isObject(persistedState) || !isObject(persistedState.data)) {
+    return undefined;
+  }
+
+  const preferencesController = persistedState.data.PreferencesController;
+  if (
+    !isObject(preferencesController) ||
+    !isObject(preferencesController.preferences)
+  ) {
+    return undefined;
+  }
+
+  const { useSidePanelAsDefault } = preferencesController.preferences;
+  return typeof useSidePanelAsDefault === 'boolean'
+    ? useSidePanelAsDefault
+    : undefined;
+}
+
 /**
- * Prefer opening the side panel on toolbar click as soon as the service worker starts.
- *
- * @param sidePanelApi - Side panel API with `setPanelBehavior` (validated by caller).
+ * Read `useSidePanelAsDefault` from disk before the controller is ready so the
+ * toolbar has a popup or side-panel target without manifest `default_popup`.
  */
-export function applyEarlySidePanelToolbarBehavior(
-  sidePanelApi: SidePanelApiWithBehavior,
-): void {
-  sidePanelApi.setPanelBehavior({ openPanelOnActionClick: true }).catch(() => {
-    // Non-fatal: `applyToolbarSidePanelBehavior` applies persisted preference once ready.
-  });
+async function readPersistedUseSidePanelAsDefault(): Promise<boolean> {
+  const getPersistedState = globalThis.stateHooks?.getPersistedState;
+  if (typeof getPersistedState !== 'function') {
+    return true;
+  }
+
+  try {
+    const persistedState = await getPersistedState({ reportErrors: false });
+    return getUseSidePanelAsDefaultFromPersistedState(persistedState) ?? true;
+  } catch {
+    return true;
+  }
 }
 
 async function applyToolbarSidePanelPreference(
@@ -370,10 +396,18 @@ export async function setupSidePanelToolbarBehavior(
 ): Promise<void> {
   const sidePanelApi = getSidePanelApi(sidePanel);
   if (!sidePanelApi) {
+    await setActionPopup(POPUP_INIT_FILE);
     return;
   }
 
-  applyEarlySidePanelToolbarBehavior(sidePanelApi);
+  try {
+    await applyToolbarSidePanelPreference(
+      await readPersistedUseSidePanelAsDefault(),
+      sidePanelApi,
+    );
+  } catch (error) {
+    log.warn('Failed to apply persisted toolbar preference', error);
+  }
 
   try {
     await deps.waitUntilInitialized();
