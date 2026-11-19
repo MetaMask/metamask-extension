@@ -1,4 +1,5 @@
 import { join, sep } from 'node:path';
+import escapeRegExp from 'lodash/escapeRegExp.js';
 import type { EntryObject, Stats } from 'webpack';
 import webpackApi from 'webpack';
 import { projectRoot } from '../../lib/build-paths.ts';
@@ -45,12 +46,18 @@ export const TREZOR_MODULE_RE = new RegExp(
 );
 
 /**
- * Regular expression to match React files in the top-level `ui/` directory
- * Uses a platform-specific path separator: `/` on Unix-like systems and `\` on
- * Windows.
+ * Regular expression to match React files in the top-level `ui/` directory.
+ * The project root is escaped with lodash's `escapeRegExp` so the directory is
+ * matched literally. Uses a platform-specific path separator: `/` on Unix-like
+ * systems and `\` on Windows.
  */
 export const UI_DIR_RE = new RegExp(
-  `^${join(projectRoot, 'ui').replaceAll(sep, slash)}${slash}(?:components|contexts|hooks|layouts|pages)${slash}.*$`,
+  `^${join(projectRoot, 'ui')
+    .split(sep)
+    .map(escapeRegExp)
+    .join(
+      slash,
+    )}${slash}(?:components|contexts|hooks|layouts|pages)${slash}.*$`,
   'u',
 );
 
