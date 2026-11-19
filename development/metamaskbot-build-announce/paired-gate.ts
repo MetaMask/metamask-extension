@@ -258,6 +258,13 @@ export function evaluatePairedGate(
         continue;
       }
 
+      const pairedJob =
+        'pairing' in results ||
+        'baseValues' in results ||
+        /-(?:r\d+-)?(?:base-head-head-base|head-base-base-head)$/u.test(name);
+      if (!pairedJob) {
+        continue;
+      }
       if (results.error !== undefined && results.error !== null) {
         for (const entry of admitted) {
           groupFor(source, entry).problems.push(
