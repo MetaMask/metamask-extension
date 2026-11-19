@@ -915,9 +915,11 @@ describe('TotpSetupStep', () => {
     expect(qrCode).toHaveAttribute('src', 'data:image/png;base64,QR');
     expect(qrCode).toHaveAttribute('width', '184');
     expect(qrCode).toHaveAttribute('height', '184');
-    expect(qrCode).toHaveClass('mix-blend-multiply');
-    expect(qrCode.parentElement).toHaveClass('bg-muted');
-    expect(qrCode.parentElement).not.toHaveClass('p-4');
+    expect(qrCode).not.toHaveClass('mix-blend-multiply');
+    expect(qrCode.parentElement).toHaveClass('bg-white');
+    expect(qrCode.parentElement).toHaveClass('border');
+    expect(qrCode.parentElement).toHaveClass('border-muted');
+    expect(qrCode.parentElement).toHaveClass('p-4');
     expect(screen.getByTestId(MfaFlowTestIds.TOTP_SETUP_KEY)).toHaveTextContent(
       'JBSW Y3DP EHPK 3PXP',
     );
@@ -934,14 +936,16 @@ describe('TotpSetupStep', () => {
     ).not.toHaveTextContent('Then enter the 6-digit code it shows.');
   });
 
-  it('keeps the QR card white without blending in dark mode', () => {
+  it('uses consistent styling in both light and dark mode', () => {
     mockTheme = ThemeType.dark;
     renderSetup();
 
     const qrCode = screen.getByTestId(MfaFlowTestIds.TOTP_QR_IMAGE);
     expect(qrCode).not.toHaveClass('mix-blend-multiply');
     expect(qrCode.parentElement).toHaveClass('bg-white');
-    expect(qrCode.parentElement).not.toHaveClass('p-4');
+    expect(qrCode.parentElement).toHaveClass('border');
+    expect(qrCode.parentElement).toHaveClass('border-muted');
+    expect(qrCode.parentElement).toHaveClass('p-4');
   });
 
   it('copies the setup key as sensitive data when the key section is clicked', () => {
