@@ -18,6 +18,9 @@ import { Driver } from '../../../webdriver/driver';
  * @see ui/components/app/side-nav/side-nav-accounts.tsx
  * @see ui/components/app/side-nav/side-nav-account-cell.tsx
  */
+// How long a single click attempt waits for a revealed button, in milliseconds.
+const CLICK_ATTEMPT_TIMEOUT = 2000;
+
 class SideNavAccounts {
   private readonly accountCellName =
     '[data-testid="side-nav-account-cell-name"]';
@@ -144,11 +147,42 @@ class SideNavAccounts {
   /**
    * Reveals a header action, then clicks it.
    *
+   * The reveal only lasts while the pointer stays over the section, and the
+   * page can re-render in between and drop it. Revealing and clicking are
+   * therefore one attempt, with a short click timeout so a button that has
+   * hidden again fails fast, and the next attempt hovers the section again.
+   * The click moves the pointer onto the button and clicks in a single action,
+   * so it does not rely on the earlier hover still being in place.
+   *
    * @param actionButton - Selector of the header action to click.
    */
   private async revealAndClick(actionButton: string): Promise<void> {
-    await this.revealActions(actionButton);
-    await this.driver.clickElement(actionButton);
+    let lastFailure = 'the button was never revealed';
+    try {
+      await this.driver.waitUntil(
+        async () => {
+          try {
+            await this.revealActions(actionButton);
+            await this.driver.clickElementUsingMouseMove(
+              actionButton,
+              1,
+              CLICK_ATTEMPT_TIMEOUT,
+            );
+            return true;
+          } catch (error) {
+            lastFailure = String(error);
+            console.log(`Retrying side nav click after: ${lastFailure}`);
+            return false;
+          }
+        },
+        { timeout: this.driver.timeout * 2, interval: 200 },
+      );
+    } catch (error) {
+      throw new Error(
+        `Could not click ${actionButton} in the side nav. Last failure: ${lastFailure}`,
+        { cause: error },
+      );
+    }
   }
 
   /**

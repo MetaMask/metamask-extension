@@ -1060,11 +1060,18 @@ class Driver {
    *
    * @param rawLocator
    * @param retries
+   * @param timeout - How long (ms) to wait for the element to be clickable on each attempt
    */
-  async clickElementUsingMouseMove(rawLocator, retries = 3) {
+  async clickElementUsingMouseMove(
+    rawLocator,
+    retries = 3,
+    timeout = this.timeout,
+  ) {
     for (let attempt = 0; attempt < retries; attempt++) {
       try {
-        const element = await this.findClickableElement(rawLocator);
+        const element = await this.findClickableElement(rawLocator, {
+          timeout,
+        });
         await this.scrollToElement(element);
         await this.driver
           .actions()

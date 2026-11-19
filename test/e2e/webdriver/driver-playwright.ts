@@ -869,11 +869,15 @@ export class PlaywrightDriver {
     await element.locator.hover();
   }
 
-  async clickElementUsingMouseMove(rawLocator: RawLocator): Promise<void> {
+  async clickElementUsingMouseMove(
+    rawLocator: RawLocator,
+    _retries = 3,
+    timeout = this.timeout,
+  ): Promise<void> {
     // `force: true`, which skips the receives-pointer-events actionability
     // check while still waiting for the element to be visible and stable.
     const locator = this.buildLocator(rawLocator).first();
-    await locator.click({ force: true, timeout: this.timeout });
+    await locator.click({ force: true, timeout });
   }
 
   async pasteIntoField(
