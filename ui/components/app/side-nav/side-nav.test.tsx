@@ -16,6 +16,19 @@ import { createMoneyAnalyticsMock } from '../../../hooks/money/useMoneyAnalytics
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { SideNav } from './side-nav';
 
+class PointerEventPolyfill extends MouseEvent {
+  pointerId: number;
+
+  constructor(
+    type: string,
+    props: MouseEventInit & { pointerId?: number } = {},
+  ) {
+    super(type, props);
+    this.pointerId = props.pointerId ?? 0;
+  }
+}
+
+const widthStorageKey = 'metamask-side-nav-width';
 const mockNavigate = jest.fn();
 const moneyAccountAvailable: { availability: MoneyAccountAvailability } = {
   availability: {
@@ -82,7 +95,16 @@ function renderSideNav(state = baseState, pathname = DEFAULT_ROUTE) {
 }
 
 describe('SideNav', () => {
+  beforeAll(() => {
+    Object.defineProperty(window, 'PointerEvent', {
+      configurable: true,
+      writable: true,
+      value: PointerEventPolyfill,
+    });
+  });
+
   beforeEach(() => {
+    localStorage.removeItem(widthStorageKey);
     jest.clearAllMocks();
     setBackgroundConnection(backgroundConnectionMock as never);
     mockUseMoneyAccountAvailability.mockReturnValue(moneyAccountAvailable);
@@ -132,6 +154,57 @@ describe('SideNav', () => {
     const { queryByTestId } = renderSideNav();
 
     expect(queryByTestId('main-nav-money')).not.toBeInTheDocument();
+  });
+
+  it('opens at the stored width', () => {
+    localStorage.setItem(widthStorageKey, '420');
+
+    const { getByTestId } = renderSideNav();
+
+    expect(
+      getByTestId('parent-selector-main-nav').style.getPropertyValue(
+        '--side-nav-width',
+      ),
+    ).toBe('420px');
+  });
+
+  it('opens at the default width when the stored value is unusable', () => {
+    localStorage.setItem(widthStorageKey, 'nope');
+
+    const { getByTestId } = renderSideNav();
+
+    expect(
+      getByTestId('parent-selector-main-nav').style.getPropertyValue(
+        '--side-nav-width',
+      ),
+    ).toBe('360px');
+  });
+
+  it('clamps a stored width to the supported range', () => {
+    localStorage.setItem(widthStorageKey, '20');
+
+    const { getByTestId } = renderSideNav();
+
+    expect(
+      getByTestId('parent-selector-main-nav').style.getPropertyValue(
+        '--side-nav-width',
+      ),
+    ).toBe('240px');
+  });
+
+  it('stores the width after a resize', () => {
+    const { getByRole, getByTestId } = renderSideNav();
+    const nav = getByTestId('parent-selector-main-nav');
+    const separator = getByRole('separator');
+
+    jest
+      .spyOn(nav, 'getBoundingClientRect')
+      .mockReturnValue({ left: 0 } as DOMRect);
+
+    fireEvent.pointerDown(separator, { pointerId: 1, clientX: 360 });
+    fireEvent.pointerMove(separator, { pointerId: 1, clientX: 400 });
+
+    expect(localStorage.getItem(widthStorageKey)).toBe('400');
   });
 
   it('marks only the item for the current route as active', () => {
