@@ -109,6 +109,7 @@ type UseAcceptMoneyReferralCodeOptions = {
 };
 
 type UseAcceptMoneyReferralCodeResult = {
+  /** True throughout validation, registration, and the read-back. */
   isAccepting: boolean;
   /** True while a 429 `Retry-After` is still running. Accept stays disabled. */
   isAcceptCoolingDown: boolean;
@@ -151,15 +152,18 @@ export function useAcceptMoneyReferralCode({
     useState<ReferralRefusalReason | null>(null);
   const isAcceptCoolingDownRef = useRef(false);
   const acceptCooldownRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mountedRef = useRef(true);
+  const acceptingRef = useRef(false);
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
       if (acceptCooldownRef.current !== null) {
         clearTimeout(acceptCooldownRef.current);
       }
-    },
-    [],
-  );
+    };
+  }, []);
 
   const startAcceptCooldown = useCallback((seconds: number) => {
     if (acceptCooldownRef.current !== null) {
@@ -190,38 +194,51 @@ export function useAcceptMoneyReferralCode({
 
   const accept = useCallback(
     async (code: string): Promise<AcceptMoneyReferralCodeResult> => {
-      if (isAcceptCoolingDownRef.current) {
+      if (
+        !mountedRef.current ||
+        acceptingRef.current ||
+        isAcceptCoolingDownRef.current
+      ) {
         return { accepted: false };
       }
+      acceptingRef.current = true;
+      setIsAccepting(true);
       setErrorMessage('');
       setRefusalReason(null);
-      let validationError: string;
       try {
-        validationError = await validateCode(code);
-      } catch (error) {
-        return { accepted: false, refusalReason: noteRefusal(error) };
-      }
-      if (
-        validationError &&
-        validationError !== MONEY_REFERRAL_CODE_UNKNOWN_ERROR
-      ) {
-        setErrorMessage(validationError);
-        setRefusalReason('invalid_code');
-        return { accepted: false, refusalReason: 'invalid_code' };
-      }
+        const validationError = await validateCode(code);
+        if (!mountedRef.current) {
+          return { accepted: false };
+        }
+        if (
+          validationError &&
+          validationError !== MONEY_REFERRAL_CODE_UNKNOWN_ERROR
+        ) {
+          setErrorMessage(validationError);
+          setRefusalReason('invalid_code');
+          return { accepted: false, refusalReason: 'invalid_code' };
+        }
 
-      setIsAccepting(true);
-      try {
         await messenger.call('RewardsMoneyController:registerReferee', {
           code,
         });
-        await refreshReferralMeWithRetries(fetchReferralMe);
-        onAccepted();
+        if (mountedRef.current) {
+          await refreshReferralMeWithRetries(fetchReferralMe);
+          if (mountedRef.current) {
+            onAccepted();
+          }
+        }
         return { accepted: true };
       } catch (error) {
+        if (!mountedRef.current) {
+          return { accepted: false };
+        }
         return { accepted: false, refusalReason: noteRefusal(error) };
       } finally {
-        setIsAccepting(false);
+        acceptingRef.current = false;
+        if (mountedRef.current) {
+          setIsAccepting(false);
+        }
       }
     },
     [fetchReferralMe, messenger, noteRefusal, onAccepted, validateCode],

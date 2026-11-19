@@ -29,10 +29,7 @@ import {
   MULTICHAIN_PROVIDER_CONFIGS,
   type MultichainProviderConfig,
 } from '../../../shared/constants/multichain/networks';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  infuraProjectId,
-} from '../../../shared/constants/network';
+import { getChainIdToNetworkImageUrlMap } from '../config-registry/config-registry';
 import {
   type ProviderConfigState,
   type SelectedNetworkClientIdState,
@@ -535,6 +532,21 @@ export function getMultichainIsEvm(
   );
 }
 
+// Memoized so the merged object keeps a stable reference between calls;
+// an inline object literal here would defeat the outer selector's
+// reference-equality memoization.
+const selectSelectedChainIdAndNetworkImageUrls = createSelector(
+  [
+    (state: MultichainNetworkConfigState) =>
+      state.metamask.selectedMultichainNetworkChainId,
+    getChainIdToNetworkImageUrlMap,
+  ],
+  (selectedChainId, networkImageUrls) => ({
+    selectedChainId,
+    networkImageUrls,
+  }),
+);
+
 export const getMultichainNetwork = createSelector(
   [
     (
@@ -562,8 +574,7 @@ export const getMultichainNetwork = createSelector(
     ) => account ?? getSelectedInternalAccount(state),
     (state: MultichainNetworkConfigState & AccountsState) =>
       getMultichainNetworkProviders(state),
-    (state: MultichainNetworkConfigState & AccountsState) =>
-      state.metamask.selectedMultichainNetworkChainId,
+    selectSelectedChainIdAndNetworkImageUrls,
   ],
   (
     isEvm,
@@ -572,18 +583,16 @@ export const getMultichainNetwork = createSelector(
     networkConfigurations,
     selectedAccount,
     nonEvmNetworks,
-    selectedChainId,
+    { selectedChainId, networkImageUrls },
   ): MultichainNetwork => {
     if (isEvm) {
       const evmNetwork = {
         ...evmProviderConfig,
       } as ProviderConfigWithImageUrlAndExplorerUrl;
-      const evmChainIdKey =
-        evmChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP;
 
       evmNetwork.rpcPrefs = {
         ...evmNetwork.rpcPrefs,
-        imageUrl: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[evmChainIdKey],
+        imageUrl: networkImageUrls[evmChainId],
       };
 
       return {

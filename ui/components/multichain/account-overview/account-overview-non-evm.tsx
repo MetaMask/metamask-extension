@@ -10,7 +10,6 @@ export const AccountOverviewNonEvm = ({
 }: AccountOverviewNonEvmProps) => {
   return (
     <AccountOverviewLayout
-      showTokensLinks={true}
       {...props}
       data-testid="parent-selector-non-evm-home"
     >

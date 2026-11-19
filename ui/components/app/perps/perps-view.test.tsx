@@ -269,6 +269,7 @@ describe('PerpsView', () => {
     jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
       positions: mocks.mockPositions,
       isInitialLoading: false,
+      isSeeded: false,
     });
     jest.mocked(streamHooks.usePerpsLiveOrders).mockReturnValue({
       orders: mocks.mockOrders,
@@ -411,6 +412,7 @@ describe('PerpsView', () => {
           },
         ],
         isInitialLoading: false,
+        isSeeded: false,
       });
       jest.mocked(streamHooks.usePerpsLiveAccount).mockReturnValue({
         account: {
@@ -444,6 +446,7 @@ describe('PerpsView', () => {
           },
         ],
         isInitialLoading: false,
+        isSeeded: false,
       });
       jest.mocked(streamHooks.usePerpsLiveAccount).mockReturnValue({
         account: {
@@ -1135,6 +1138,7 @@ describe('PerpsView', () => {
       jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
         positions: mocks.mockPositions,
         isInitialLoading: true,
+        isSeeded: false,
       });
 
       renderWithProvider(<PerpsView />, mockStore);

@@ -10,6 +10,7 @@ import type { MoneyAccountActivityItem } from '../../../../../shared/lib/activit
 import { useLocalTransactionMeta } from '../../../../hooks/activity/useLocalTransactionMeta';
 import { useMoneyAccountDeposit } from '../../../../hooks/money/useMoneyAccountDeposit';
 import { useMoneyAccountInfo } from '../../../../hooks/money/useMoneyAccountInfo';
+import { MoneyFtueEntryPoint } from '../../../../helpers/money/money-ftue-entry-point';
 import { MoneyAccountDetails } from './money-account-details';
 
 jest.mock('../../../../hooks/activity/useLocalTransactionMeta');
@@ -281,6 +282,11 @@ describe('MoneyAccountDetails', () => {
       await userEvent.click(screen.getByText('addFunds'));
 
       expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
+      expect(mockInitiateDeposit).toHaveBeenCalledWith({
+        ftueOrigin: {
+          entryPoint: MoneyFtueEntryPoint.MoneyActivityDetails,
+        },
+      });
     });
 
     it('falls back to the block explorer for a withdrawal', () => {
@@ -296,6 +302,26 @@ describe('MoneyAccountDetails', () => {
       expect(button).toHaveAttribute('data-chain-id', 'eip155:1');
       expect(button).toHaveAttribute('data-tx-hash', '0xhash');
       expect(screen.queryByText('addFunds')).toBeNull();
+    });
+
+    it('opens a cross-chain withdrawal on the destination chain explorer', () => {
+      mockUseLocalTransactionMeta.mockReturnValue({
+        ...buildTransactionMeta(),
+        type: 'moneyAccountWithdraw',
+        chainId: '0x8f',
+        metamaskPay: { chainId: '0x2105', isPostQuote: true },
+      } as unknown as TransactionMeta);
+
+      render(
+        <MoneyAccountDetails
+          item={buildItem({ type: 'moneyAccountWithdraw' })}
+        />,
+      );
+
+      expect(screen.getByTestId('block-explorer-button')).toHaveAttribute(
+        'data-chain-id',
+        'eip155:8453',
+      );
     });
 
     it('falls back to the block explorer when the user has no money account', () => {

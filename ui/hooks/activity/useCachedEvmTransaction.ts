@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import { useQueryClient, type InfiniteData } from '@tanstack/react-query';
-import type { V4MultiAccountTransactionsResponse } from '@metamask/core-backend';
+import type { V5MultiAccountTransactionsResponse } from '@metamask/core-backend';
 
 export const activityQueryKey = [
   'accounts',
   'transactions',
-  'v4MultiAccount',
+  'v5MultiAccount',
 ] as const;
 
 export function useCachedEvmTransaction({
@@ -22,10 +22,9 @@ export function useCachedEvmTransaction({
       return undefined;
     }
 
-    const numericChainId = Number(chainId.split(':')[1]);
     const normalizedHash = txHash.toLowerCase();
     const cachedQueries = queryClient.getQueriesData<
-      InfiniteData<V4MultiAccountTransactionsResponse>
+      InfiniteData<V5MultiAccountTransactionsResponse>
     >({
       queryKey: activityQueryKey,
     });
@@ -35,8 +34,8 @@ export function useCachedEvmTransaction({
         .flatMap((page) => page.data)
         .find(
           (item) =>
-            item.chainId === numericChainId &&
-            item.hash.toLowerCase() === normalizedHash,
+            item.tx.chainId === chainId &&
+            item.tx.id.toLowerCase() === normalizedHash,
         );
 
       if (transaction) {

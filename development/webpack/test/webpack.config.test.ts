@@ -125,35 +125,36 @@ describe('webpack.config.test.ts', () => {
     // reset argv to avoid affecting other tests
     process.argv = [process.argv0, process.argv[1]];
     process.env = originalEnv;
-    // each test needs to load a fresh config, so we need to clear webpack's cache
-    // TODO: can we use `await import` instead to get a fresh copy each time?
-    const cliPath = require.resolve('../utils/cli.ts');
-    const helpersPath = require.resolve('../utils/helpers.ts');
-    const webpackConfigPath = require.resolve('../webpack.config.ts');
-    delete require.cache[cliPath];
-    delete require.cache[helpersPath];
-    delete require.cache[webpackConfigPath];
+    // The config reads argv and env when loaded, so reload it for each case.
+    delete require.cache[require.resolve('../webpack.config.ts')];
     mock.restoreAll();
   });
 
-  function getWebpackConfig(args: string[] = [], env: NodeJS.ProcessEnv = {}) {
-    // argv is automatically read when webpack.config is required/imported.
+  async function getWebpackConfig(
+    args: string[] = [],
+    env: NodeJS.ProcessEnv = {},
+  ) {
+    // The config reads argv when its module is loaded.
     // first two args are always ignored.
     process.argv = [...process.argv.slice(0, 2), ...args];
     process.env = { ...env };
-    mock.method(fs, 'readFileSync', (path: string, options?: null) => {
-      if (path === resolve(__dirname, '../../../.metamaskrc')) {
-        // mock `.metamaskrc`, as users might have customized it which may
-        // break our tests
-        return `
+    mock.method(
+      fs,
+      'readFileSync',
+      (path: string, options: Parameters<typeof fs.readFileSync>[1]) => {
+        if (path === resolve(__dirname, '../../../.metamaskrc')) {
+          // mock `.metamaskrc`, as users might have customized it which may
+          // break our tests
+          return `
 ${Object.entries(env)
   .map(([key, value]) => `${key}=${value}`)
   .join('\n')}
 `;
-      }
-      return originalReadFileSync.call(fs, path, options);
-    });
-    return require('../webpack.config.ts').default;
+        }
+        return originalReadFileSync.call(fs, path, options);
+      },
+    );
+    return require('../webpack.config.ts').default();
   }
 
   function getPluginNames(config: Configuration): string[] {
@@ -212,10 +213,59 @@ ${Object.entries(env)
     );
   }
 
-  it('should have the correct defaults', () => {
+  for (const enabled of [false, true]) {
+    it(`resolves installed developer tools only when enabled: ${enabled}`, async () => {
+      mockOptionalRcFiles();
+      const config = await getWebpackConfig(['--no-cache'], {
+        METAMASK_REACT_REDUX_DEVTOOLS: enabled ? 'true' : '',
+      });
+      const compiler = webpack(config);
+      const resolver = compiler.resolverFactory.get('normal');
+      for (const request of ['remote-redux-devtools']) {
+        const resolved = await new Promise<string | false | undefined>(
+          (resolveModule, reject) => {
+            resolver.resolve(
+              {},
+              resolve(__dirname, '../../..'),
+              request,
+              {},
+              (error, result) => {
+                if (error) reject(error);
+                else resolveModule(result);
+              },
+            );
+          },
+        );
+        assert.strictEqual(
+          resolved,
+          enabled ? require.resolve(request) : false,
+        );
+      }
+      await new Promise<void>((resolveClose, reject) =>
+        compiler.close((error) => {
+          if (error) reject(error);
+          else resolveClose();
+        }),
+      );
+    });
+  }
+
+  it('includes optional developer tools while generating LavaMoat policies', async () => {
+    mockOptionalRcFiles();
+    const config = await getWebpackConfig(['--no-cache', '--generatePolicy'], {
+      METAMASK_REACT_REDUX_DEVTOOLS: '',
+    });
+    const aliases = config.resolve?.alias as Record<string, string>;
+    assert.strictEqual(
+      aliases['remote-redux-devtools'],
+      require.resolve('remote-redux-devtools'),
+    );
+  });
+
+  it('should have the correct defaults', async () => {
     mockOptionalRcFiles();
 
-    const config: Configuration = getWebpackConfig();
+    const config: Configuration = await getWebpackConfig();
     // check that options are valid
     const { options } = webpack(config);
     assert.strictEqual(options.name, 'MetaMask – development');
@@ -225,9 +275,8 @@ ${Object.entries(env)
     assert.strictEqual(options.devtool, 'source-map');
     const stats = options.stats as { preset: string };
     assert.strictEqual(stats.preset, 'none');
-    const fallback = options.resolve.fallback as Record<string, false>;
-    assert.strictEqual(typeof fallback['react-devtools-core'], 'boolean');
-    assert.strictEqual(typeof fallback['remote-redux-devtools'], 'boolean');
+    const aliases = options.resolve.alias as Record<string, false>;
+    assert.strictEqual(typeof aliases['remote-redux-devtools'], 'boolean');
     assert.strictEqual(options.optimization.minimize, false);
     assert.strictEqual(options.optimization.sideEffects, false);
     assert.strictEqual(options.optimization.providedExports, false);
@@ -321,10 +370,10 @@ ${Object.entries(env)
     assert(progressPlugin, 'Progress plugin should present');
   });
 
-  it('includes existing optional rc files in cache dependencies', () => {
+  it('includes existing optional rc files in cache dependencies', async () => {
     mockOptionalRcFiles({ metamaskrc: true });
 
-    const config: Configuration = getWebpackConfig();
+    const config: Configuration = await getWebpackConfig();
     const cache = config.cache as FileCacheOptions;
     const configBuildDependencies = (cache.buildDependencies?.config ?? []).map(
       buildDependencyPath,
@@ -346,7 +395,7 @@ ${Object.entries(env)
     for (const test of [false, true]) {
       it(`inlines public flags only for the npm loader in ${mode} with test=${test}`, async () => {
         mockOptionalRcFiles();
-        const config: Configuration = getWebpackConfig(
+        const config: Configuration = await getWebpackConfig(
           [
             '--mode',
             mode,
@@ -410,7 +459,7 @@ ${Object.entries(env)
 
   for (const watch of [false, true]) {
     it(`compiles TypeScript files with configured loaders and watch=${watch}`, async () => {
-      const config = getWebpackConfig(watch ? ['--watch'] : []);
+      const config = await getWebpackConfig(watch ? ['--watch'] : []);
       for (const extension of ['ts', 'mts', 'tsx']) {
         const filename = resolve(__dirname, `../../../ui/test.${extension}`);
         const rule = getSwcReactRules(config).find(
@@ -429,10 +478,47 @@ ${Object.entries(env)
     });
   }
 
-  it('enables React Refresh for development watch builds', () => {
+  it('loads the self-injection plugin for Firefox MV2', async () => {
+    mockOptionalRcFiles();
+    const config = await getWebpackConfig([
+      '--browser',
+      'firefox',
+      '--manifestVersion',
+      '2',
+    ]);
+    assert(getPluginNames(config).includes('SelfInjectPlugin'));
+  });
+
+  it('loads the React Compiler reporting plugin when verbose output is enabled', async () => {
+    mockOptionalRcFiles();
+    const config = await getWebpackConfig(['--reactCompilerVerbose']);
+    assert(getPluginNames(config).includes('ReactCompilerPlugin'));
+  });
+
+  function getPluginBuildDependencies(config: Configuration) {
+    return ((config.cache as FileCacheOptions).buildDependencies?.config ?? [])
+      .map(buildDependencyPath)
+      .filter((path) => path.includes(join('utils', 'plugins')));
+  }
+
+  it('does not track optional plugins as cache build dependencies by default', async () => {
+    mockOptionalRcFiles();
+    const config = await getWebpackConfig();
+    assert.deepStrictEqual(getPluginBuildDependencies(config), []);
+  });
+
+  it('tracks a loaded optional plugin as a cache build dependency', async () => {
+    mockOptionalRcFiles();
+    const config = await getWebpackConfig(['--reactCompilerVerbose']);
+    assert.deepStrictEqual(getPluginBuildDependencies(config), [
+      require.resolve('../utils/plugins/ReactCompilerPlugin'),
+    ]);
+  });
+
+  it('enables React Refresh for development watch builds', async () => {
     mockOptionalRcFiles();
 
-    const config: Configuration = getWebpackConfig(['--watch']);
+    const config: Configuration = await getWebpackConfig(['--watch']);
 
     assert.strictEqual(config.watch, true);
     assert.deepStrictEqual(
@@ -463,8 +549,8 @@ ${Object.entries(env)
     );
   });
 
-  it('does not enable React Refresh for production watch builds', () => {
-    const config: Configuration = getWebpackConfig(
+  it('does not enable React Refresh for production watch builds', async () => {
+    const config: Configuration = await getWebpackConfig(
       [
         '--mode',
         'production',
@@ -496,9 +582,9 @@ ${Object.entries(env)
     );
   });
 
-  it('should apply non-default options', () => {
+  it('should apply non-default options', async () => {
     const removeUnsupportedFeatures = ['--no-lavamoat'];
-    const config: Configuration = getWebpackConfig(
+    const config: Configuration = await getWebpackConfig(
       [
         '--mode',
         'production',
@@ -532,9 +618,8 @@ ${Object.entries(env)
     assert.strictEqual(instance.options.devtool, 'hidden-source-map');
     const stats = instance.options.stats as { preset: string };
     assert.strictEqual(stats.preset, 'none');
-    const fallback = instance.options.resolve.fallback as Record<string, false>;
-    assert.strictEqual(typeof fallback['react-devtools-core'], 'string');
-    assert.strictEqual(typeof fallback['remote-redux-devtools'], 'string');
+    const aliases = instance.options.resolve.alias as Record<string, string>;
+    assert.strictEqual(typeof aliases['remote-redux-devtools'], 'string');
     assert.strictEqual(instance.options.optimization.minimize, true);
     assert.strictEqual(instance.options.optimization.sideEffects, true);
     assert.strictEqual(instance.options.optimization.providedExports, true);
@@ -596,8 +681,8 @@ ${Object.entries(env)
     );
   });
 
-  it('uses SOURCE_DATE_EPOCH as the default zip mtime when set', () => {
-    const config: Configuration = getWebpackConfig(['--zip'], {
+  it('uses SOURCE_DATE_EPOCH as the default zip mtime when set', async () => {
+    const config: Configuration = await getWebpackConfig(['--zip'], {
       SOURCE_DATE_EPOCH: '1711141205',
     });
     const instance = getWebpackInstance(config);
@@ -610,8 +695,8 @@ ${Object.entries(env)
     assert.strictEqual(manifestPlugin.options.zipOptions.mtime, 1711141205000);
   });
 
-  it('should include BundleAnalyzerPlugin when --bundleAnalyzer is passed', () => {
-    const config: Configuration = getWebpackConfig(['--bundleAnalyzer']);
+  it('should include BundleAnalyzerPlugin when --bundleAnalyzer is passed', async () => {
+    const config: Configuration = await getWebpackConfig(['--bundleAnalyzer']);
     const instance = getWebpackInstance(config);
     const stats = instance.options.stats as { preset: string };
     assert.strictEqual(stats.preset, 'none');
@@ -621,15 +706,15 @@ ${Object.entries(env)
     assert.ok(bundleAnalyzerPlugin, 'BundleAnalyzerPlugin should be present');
   });
 
-  it('should allow disabling source maps', () => {
-    const config: Configuration = getWebpackConfig(['--devtool', 'none']);
+  it('should allow disabling source maps', async () => {
+    const config: Configuration = await getWebpackConfig(['--devtool', 'none']);
     // check that options are valid
     const instance = getWebpackInstance(config);
     assert.strictEqual(instance.options.devtool, false);
   });
 
-  it('enables manifest build IDs for test builds', () => {
-    const config: Configuration = getWebpackConfig(['--test']);
+  it('enables manifest build IDs for test builds', async () => {
+    const config: Configuration = await getWebpackConfig(['--test']);
     const instance = getWebpackInstance(config);
     const manifestPlugin = instance.options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ManifestPlugin',
@@ -712,12 +797,12 @@ ${Object.entries(env)
     );
   });
 
-  it('should write the `dry-run` message then call exit(0)', () => {
+  it('should write the `dry-run` message then call exit(0)', async () => {
     const exit = mock.method(process, 'exit', noop, { times: 1 });
     const error = mock.method(console, 'error', noop, { times: 1 });
 
     // we don't care about the return value, just that it logs and calls `exit`
-    getWebpackConfig(['--dry-run']);
+    await getWebpackConfig(['--dry-run']);
     assert.strictEqual(error.mock.calls.length, 1);
     assert.strictEqual(error.mock.calls[0].arguments.length, 1);
     // we don't care about the message, just that it is logged
@@ -728,12 +813,12 @@ ${Object.entries(env)
     assert.strictEqual(exit.mock.calls[0].arguments[0], 0);
   });
 
-  it('should write the `dryRun` message then call exit(0)', () => {
+  it('should write the `dryRun` message then call exit(0)', async () => {
     const exit = mock.method(process, 'exit', noop, { times: 1 });
     const error = mock.method(console, 'error', noop, { times: 1 });
 
     // we don't care about the return value, just that it logs and calls `exit`
-    getWebpackConfig(['--dryRun']);
+    await getWebpackConfig(['--dryRun']);
     assert.strictEqual(error.mock.calls.length, 1);
     assert.strictEqual(error.mock.calls[0].arguments.length, 1);
     // we don't care about the message, just that it is logged
@@ -744,11 +829,11 @@ ${Object.entries(env)
     assert.strictEqual(exit.mock.calls[0].arguments[0], 0);
   });
 
-  it('includes the resolved zip mtime in the dry-run message when zipping', () => {
+  it('includes the resolved zip mtime in the dry-run message when zipping', async () => {
     const exit = mock.method(process, 'exit', noop, { times: 1 });
     const error = mock.method(console, 'error', noop, { times: 1 });
 
-    getWebpackConfig(['--zip', '--dry-run'], {
+    await getWebpackConfig(['--zip', '--dry-run'], {
       SOURCE_DATE_EPOCH: '1711141205',
     });
 
@@ -762,8 +847,8 @@ ${Object.entries(env)
     assert.strictEqual(exit.mock.calls[0].arguments[0], 0);
   });
 
-  it('validates SOURCE_DATE_EPOCH during zip dry-run', () => {
-    assert.throws(
+  it('validates SOURCE_DATE_EPOCH during zip dry-run', async () => {
+    await assert.rejects(
       () =>
         getWebpackConfig(['--zip', '--dry-run'], {
           SOURCE_DATE_EPOCH: '0',

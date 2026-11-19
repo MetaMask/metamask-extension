@@ -4,7 +4,6 @@ import { EthScope, isEvmAccountType } from '@metamask/keyring-api';
 import { type AddNetworkFields } from '@metamask/network-controller';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { type CaipChainId } from '@metamask/utils';
-import { FEATURED_RPCS } from '../../../../../../shared/constants/network';
 import {
   convertCaipToHexChainId,
   getFilteredFeaturedNetworks,
@@ -12,6 +11,7 @@ import {
   sortNetworks,
 } from '../../../../../../shared/lib/network.utils';
 import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
+import { getFeaturedEvmNetworks } from '../../../../../selectors/config-registry/config-registry';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   addNetwork,
@@ -43,21 +43,23 @@ import { useDispatch } from '../../../../../store/hooks';
 export const getSelectableChainId = (network: MultichainNetworkConfiguration) =>
   network.isEvm ? convertCaipToHexChainId(network.chainId) : network.chainId;
 
+type UseHomeNetworkFilterOptions = {
+  onClose?: () => void;
+  onPendingChange?: (isPending: boolean) => void;
+};
+
 /**
- * The home network filter: which networks can be chosen, which is selected and
- * the handlers that change the selection.
+ * The home network filter: which networks can be chosen, which is selected
+ * and the handlers that change the selection.
  *
- * @param options - Hook options.
+ * @param options - The hook options.
  * @param options.onClose - Called after a selection or an add.
  * @param options.onPendingChange - Called when a network switch starts or ends.
  */
 export const useHomeNetworkFilter = ({
   onClose,
   onPendingChange,
-}: {
-  onClose?: () => void;
-  onPendingChange?: (isPending: boolean) => void;
-} = {}) => {
+}: UseHomeNetworkFilterOptions = {}) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const orderedNetworksList = useSelector(getOrderedNetworksList);
@@ -72,6 +74,7 @@ export const useHomeNetworkFilter = ({
   const isEvmNetworkSelected = useSelector(getIsEvmMultichainNetworkSelected);
   const useExternalServices = useSelector(getUseExternalServices);
   const showTestnets = useSelector(getShouldShowTestNetworks);
+  const featuredNetworksBaseList = useSelector(getFeaturedEvmNetworks);
   const blacklistedChainIds = useSelector(
     selectAdditionalNetworksBlacklistFeatureFlag,
   );
@@ -186,18 +189,23 @@ export const useHomeNetworkFilter = ({
     customNetworks.length === 0 && !(showTestnets && testNetworks.length > 0);
 
   const additionalNetworks = useMemo(() => {
-    const availableNetworks = FEATURED_RPCS.filter(
-      ({ chainId }) => !evmNetworks[chainId],
-    ).filter(
-      ({ chainId }) =>
-        isEvmChainId(chainId as CaipChainId) || useExternalServices,
-    );
+    const availableNetworks = featuredNetworksBaseList
+      .filter(({ chainId }) => !evmNetworks[chainId])
+      .filter(
+        ({ chainId }) =>
+          isEvmChainId(chainId as CaipChainId) || useExternalServices,
+      );
 
     return getFilteredFeaturedNetworks(
       blacklistedChainIds,
       availableNetworks,
     ).sort((a, b) => a.name.localeCompare(b.name));
-  }, [blacklistedChainIds, evmNetworks, useExternalServices]);
+  }, [
+    blacklistedChainIds,
+    evmNetworks,
+    useExternalServices,
+    featuredNetworksBaseList,
+  ]);
 
   const handleSelectAllDefaultNetworks = useCallback(() => {
     if (isPending) {
@@ -234,14 +242,14 @@ export const useHomeNetworkFilter = ({
   ]);
 
   const handleSelectNetwork = useCallback(
-    async (chainId: CaipChainId) => {
+    async (chainId: CaipChainId, location?: string) => {
       if (isPending) {
         return;
       }
       onPendingChange?.(true);
       onClose?.();
       try {
-        await handleNetworkChange(chainId);
+        await handleNetworkChange(chainId, location);
       } finally {
         onPendingChange?.(false);
       }

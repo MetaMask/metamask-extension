@@ -961,6 +961,40 @@ async function collectFeatureFlagCoverage(): Promise<Record<string, number>> {
 }
 
 // ---------------------------------------------------------------------------
+// Route page object coverage collector
+// ---------------------------------------------------------------------------
+
+/**
+ * Reports how many extension routes have an E2E page object, using the
+ * shared report generator in test/e2e/scripts/route-coverage-report.ts.
+ *
+ * No artifact download required — the analysis compares `ROUTES` with the
+ * route page object registry in test/e2e/route-registry.
+ */
+async function collectRouteCoverage(): Promise<Record<string, number>> {
+  console.log('[e2e_routes] running static route coverage analysis...');
+
+  const { generateReport } =
+    await import('../../test/e2e/scripts/route-coverage-report');
+
+  const { summary } = generateReport();
+
+  console.log(
+    `[e2e_routes] total: ${summary.totalRoutes}, with page object: ${summary.withPageObject}, not a screen: ${summary.notAScreen}, coverage: ${summary.coveragePercentage}%`,
+  );
+
+  return {
+    total_routes: summary.totalRoutes,
+    routes_with_page_object: summary.withPageObject,
+    routes_without_page_object: summary.withoutPageObject,
+    routes_not_a_screen: summary.notAScreen,
+    unregistered_routes: summary.unregistered,
+    stale_registry_entries: summary.staleEntries,
+    coverage_percentage: summary.coveragePercentage,
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 
@@ -974,6 +1008,7 @@ async function main(): Promise<void> {
     { namespace: 'benchmark', collect: collectBenchmarkScenarioCount },
     { namespace: 'metametrics', collect: collectMetametricsQaStats },
     { namespace: 'e2e_feature_flags', collect: collectFeatureFlagCoverage },
+    { namespace: 'e2e_routes', collect: collectRouteCoverage },
   ];
 
   for (const { namespace, collect } of collectors) {

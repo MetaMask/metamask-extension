@@ -4,6 +4,7 @@ import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import {
+  ACTIVITY_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
   PREVIOUS_ROUTE,
@@ -127,18 +128,17 @@ export const useSendActions = () => {
 
           if (isRemainInSendScreen()) {
             updateNonEVMSubmitError(errorMessage);
+            navigate(PREVIOUS_ROUTE);
           } else {
             // Show generic error message rather than error message from error code mapping
             toast.error(genericErrorMessage);
           }
-
-          navigate(PREVIOUS_ROUTE);
           return;
         }
 
         // Success. The Snap owns the rest of the non-EVM transaction
         // lifecycle (Submitted/Finalized) and emits those itself.
-        navigate(`${DEFAULT_ROUTE}?tab=activity`);
+        navigate(ACTIVITY_ROUTE);
       } catch (error) {
         // Check for user rejection using error code (4001) - this is language-independent
         const { errorCode, failurePhase } = classifyNonEvmSendError(error);
@@ -146,17 +146,25 @@ export const useSendActions = () => {
 
         captureSendFailed({ chainIdCaip, snapId, failurePhase, errorCode });
 
+        const isOnSendScreen = isRemainInSendScreen();
+
         if (isUserRejection) {
           // User deliberately cancelled - clear error and navigate back silently
           updateNonEVMSubmitError(undefined);
-        } else if (isRemainInSendScreen()) {
+        } else if (isOnSendScreen) {
           // Actual snap/internal error - display error message to user
           updateNonEVMSubmitError(genericErrorMessage);
         } else {
           // Show generic error message rather than error message from error code mapping
           toast.error(genericErrorMessage);
         }
-        navigate(PREVIOUS_ROUTE);
+
+        // Once the Snap confirmation has replaced the loader, the confirmation
+        // page redirects on close. Navigating back here as well races that
+        // redirect and can leave the app on an empty confirmation route.
+        if (isOnSendScreen) {
+          navigate(PREVIOUS_ROUTE);
+        }
       }
     }
   }, [

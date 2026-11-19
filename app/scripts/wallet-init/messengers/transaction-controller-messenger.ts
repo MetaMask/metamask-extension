@@ -3,10 +3,7 @@ import {
   AccountsControllerGetStateAction,
 } from '@metamask/accounts-controller';
 import { ApprovalControllerActions } from '@metamask/approval-controller';
-import {
-  AccountTrackerControllerGetStateAction,
-  CurrencyRateControllerActions,
-} from '@metamask/assets-controllers';
+import { AccountTrackerControllerGetStateAction } from '@metamask/assets-controllers';
 import {
   BridgeStatusControllerActions,
   BridgeStatusControllerStateChangeEvent,
@@ -79,7 +76,6 @@ export type TransactionControllerInitMessengerActions =
   | AppStateControllerSetDefaultHomeActiveTabNameAction
   | AuthenticationController.AuthenticationControllerGetBearerTokenAction
   | BridgeStatusControllerActions
-  | CurrencyRateControllerActions
   | DelegationControllerSignDelegationAction
   | GasFeeControllerFetchGasFeeEstimatesAction
   | InstitutionalSnapControllerPublishHookAction
@@ -165,11 +161,9 @@ export function getTransactionControllerInitMessenger(
       'ApprovalController:startFlow',
       'ApprovalController:updateRequestState',
       'AppStateController:getState',
-      'AppStateController:setDefaultHomeActiveTabName',
       'AuthenticationController:getBearerToken',
       'BridgeStatusController:getState',
       'BridgeStatusController:submitTx',
-      'CurrencyRateController:getState',
       'DelegationController:signDelegation',
       'InstitutionalSnapController:beforeCheckPendingTransactionHook',
       'InstitutionalSnapController:publishHook',
