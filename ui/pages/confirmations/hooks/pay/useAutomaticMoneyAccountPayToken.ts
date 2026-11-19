@@ -8,6 +8,7 @@ import {
 import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
 import { useMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useMoneyAccountWithdrawableFiat';
+import { useMoneyAccountLifecycle } from '../../../../hooks/money/use-money-account-lifecycle';
 import { useIsHardwareWalletAccount } from '../../../../hooks/useIsHardwareWalletAccount';
 import { selectPrimaryMoneyAccount } from '../../../../selectors/money-account';
 import {
@@ -83,13 +84,24 @@ export function useAutomaticMoneyAccountPayToken({
   const isMoneyAccountPayEnabled = useSelector((state) =>
     selectIsMoneyAccountTransactionEnabled(state, transactionType),
   );
+  const {
+    isLifecycleUnavailable,
+    isReadOnly,
+    isLoading: isLifecycleLoading,
+  } = useMoneyAccountLifecycle();
 
-  const canUseMoneyAccountPay =
+  const isMoneyAccountPayPossible =
     !disable &&
     !isHardwareWallet &&
     paymentOverride !== PaymentOverride.MoneyAccount &&
     Boolean(transactionType) &&
     isMoneyAccountPayEnabled;
+
+  const canUseMoneyAccountPay =
+    isMoneyAccountPayPossible &&
+    !isLifecycleLoading &&
+    !isReadOnly &&
+    !isLifecycleUnavailable;
 
   const { isLoading, withdrawableFiatRaw } = useMoneyAccountWithdrawableFiat(
     canUseMoneyAccountPay,
@@ -105,7 +117,9 @@ export function useAutomaticMoneyAccountPayToken({
     highestBalanceToken &&
     preferredTokens.some((token) => isSamePayToken(highestBalanceToken, token)),
   );
-  const isPending = canUseMoneyAccountPay && isLoading;
+  const isPending =
+    (isMoneyAccountPayPossible && isLifecycleLoading) ||
+    (canUseMoneyAccountPay && isLoading);
   const shouldSelect = Boolean(
     canUseMoneyAccountPay &&
     withdrawableBalance?.greaterThan(0) &&
