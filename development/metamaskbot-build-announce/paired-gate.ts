@@ -262,7 +262,9 @@ export function evaluatePairedGate(
         'pairing' in results ||
         'baseValues' in results ||
         /-(?:r\d+-)?(?:base-head-head-base|head-base-base-head)$/u.test(name);
-      if (!pairedJob) {
+      // The leg check still fails an unpaired job's error, in that job; the
+      // gate decides admitted series from paired jobs only.
+      if (!pairedJob && decide) {
         continue;
       }
       if (results.error !== undefined && results.error !== null) {
