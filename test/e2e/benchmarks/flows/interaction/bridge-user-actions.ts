@@ -16,6 +16,11 @@ import {
 import { Driver } from '../../../webdriver/driver';
 import { buildLongTaskTimerResults } from '../../utils/long-task-helper';
 import {
+  KNOWN_ANSWER_TOKEN_SEARCH_DELAY,
+  withKnownAnswerDelay,
+} from '../../mocks/known-answer';
+import { WARMUP_RUNS } from '../../utils/constants';
+import {
   BENCHMARK_PERSONA,
   BENCHMARK_TYPE,
 } from '../../../../../shared/constants/benchmarks';
@@ -26,8 +31,8 @@ export const testTitle = 'benchmark-user-actions-bridge-user-actions';
 export const persona = BENCHMARK_PERSONA.STANDARD;
 
 async function mockTokensEthereum(mockServer: Mockttp) {
-  return await mockServer.forPost(/getTokens\/search/u).thenCallback(() => {
-    return {
+  return await mockServer.forPost(/getTokens\/search/u).thenCallback(
+    withKnownAnswerDelay(KNOWN_ANSWER_TOKEN_SEARCH_DELAY, () => ({
       statusCode: 200,
       json: {
         data: MOCK_TOKENS_ETHEREUM.map((token) => ({
@@ -40,8 +45,28 @@ async function mockTokensEthereum(mockServer: Mockttp) {
           endCursor: null,
         },
       },
-    };
-  });
+    })),
+  );
+}
+
+/**
+ * Run this flow at {@link BRIDGE_SCORED_ITERATIONS} scored iterations after the
+ * warm-up instead of `--iterations`. Off unless set to `1`.
+ */
+export const BRIDGE_17_ITERATIONS = 'BENCHMARK_BRIDGE_17_ITERATIONS';
+
+/** The iterations scored when {@link BRIDGE_17_ITERATIONS} is on. */
+export const BRIDGE_SCORED_ITERATIONS = 16;
+
+/**
+ * This flow's iteration count, read by `run-benchmark.ts`.
+ * @returns 17 (scored iterations plus the warm-up) when
+ * `BENCHMARK_BRIDGE_17_ITERATIONS=1`, else `undefined`.
+ */
+export function iterations(): number | undefined {
+  return process.env[BRIDGE_17_ITERATIONS] === '1'
+    ? BRIDGE_SCORED_ITERATIONS + WARMUP_RUNS
+    : undefined;
 }
 
 export async function run(): Promise<BenchmarkRunResult> {
@@ -87,6 +112,7 @@ export async function run(): Promise<BenchmarkRunResult> {
           longTaskTotalDuration: longTaskData?.totalDuration ?? 0,
           longTaskMaxDuration: longTaskData?.maxDuration ?? 0,
           tbt: longTaskData?.tbt ?? 0,
+          longTasksObserved: longTaskData?.observed ?? false,
         });
 
         await driver.resetLongTaskMetrics();
@@ -104,6 +130,7 @@ export async function run(): Promise<BenchmarkRunResult> {
           longTaskTotalDuration: longTaskData?.totalDuration ?? 0,
           longTaskMaxDuration: longTaskData?.maxDuration ?? 0,
           tbt: longTaskData?.tbt ?? 0,
+          longTasksObserved: longTaskData?.observed ?? false,
         });
 
         const tokenToSearch = 'FXS';
@@ -126,6 +153,7 @@ export async function run(): Promise<BenchmarkRunResult> {
           longTaskTotalDuration: longTaskData?.totalDuration ?? 0,
           longTaskMaxDuration: longTaskData?.maxDuration ?? 0,
           tbt: longTaskData?.tbt ?? 0,
+          longTasksObserved: longTaskData?.observed ?? false,
         });
 
         try {

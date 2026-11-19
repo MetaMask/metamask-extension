@@ -34,6 +34,7 @@ import {
   DAPP_PAGE_LOAD_BENCHMARK_SPEC_BASENAME,
 } from './utils/constants';
 import { THRESHOLD_REGISTRY } from './utils/thresholds';
+import { resolveFlowIterations } from './utils/flow-iterations';
 import {
   validateResultThresholds,
   logThresholdResult,
@@ -204,15 +205,12 @@ async function runBenchmarkFile(
   if (supportsIterations(filePath) && options.iterations > 0) {
     const testTitle = benchmark.testTitle || fileName;
     const { persona } = benchmark;
-
-    console.log(
-      `Running ${fileName} with ${options.iterations} iterations (retries: ${options.retries})`,
-    );
+    const iterations = resolveFlowIterations(fileName, benchmark, options);
 
     const summary = await runBenchmarkWithIterations(
       fileName,
       runFn,
-      options.iterations,
+      iterations,
       options.retries,
       thresholdConfig,
     );
