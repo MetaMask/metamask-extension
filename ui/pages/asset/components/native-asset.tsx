@@ -9,7 +9,6 @@ import { getNativeCurrencyForChain } from '../../../selectors';
 import { getChainIdToNativeTokenImageUrlMap } from '../../../selectors/config-registry/config-registry';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import {
-  getProviderConfig,
   selectNetworkConfigurationByChainId,
   type NetworkConfigurationsByChainIdState,
 } from '../../../../shared/lib/selectors/networks';
@@ -31,7 +30,6 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
   const nativeTokenImageUrls = useSelector(getChainIdToNativeTokenImageUrlMap);
   const image =
     nativeTokenImageUrls[chainId] ?? getNativeCurrencyForChain(chainId);
-  const { type } = useSelector(getProviderConfig) ?? {};
   const { address } = useSelector(getSelectedInternalAccount);
   const networkConfig = useSelector(
     (state: NetworkConfigurationsByChainIdState) =>
@@ -70,7 +68,6 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     chainId,
     symbol,
-    type,
   );
 
   return (
@@ -82,7 +79,7 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
         name: token.name,
         image,
         decimals: token.decimals,
-        isOriginalNativeSymbol: isOriginalNativeSymbol === true,
+        isOriginalNativeSymbol: isOriginalNativeSymbol !== false,
       }}
       optionsButton={
         <AssetOptions

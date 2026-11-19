@@ -107,7 +107,7 @@ describe('Swap on Tron', function (this: Suite) {
         });
 
         // Verify no quotes available message
-        await swapPage.checkNoQuotesAvailable();
+        await swapPage.checkNoTradeRouteMessageIsDisplayed();
       },
     );
   });
@@ -136,7 +136,7 @@ describe('Swap on Tron', function (this: Suite) {
           network: 'Tron',
         });
 
-        await swapPage.waitForQuote();
+        await swapPage.waitForSwapQuote();
         await swapPage.checkQuoteIsDisplayed();
         await swapPage.checkSourceToken('USDT');
         await swapPage.checkDestinationToken('TRX');
@@ -198,11 +198,11 @@ describe('Swap on Tron', function (this: Suite) {
           network: 'Tron',
         });
 
-        await swapPage.waitForQuote();
+        await swapPage.waitForSwapQuote();
         await swapPage.checkQuoteIsDisplayed();
 
-        await swapPage.selectDestinationToken('USDC');
-        await swapPage.waitForQuote();
+        await swapPage.selectDestToken('USDC');
+        await swapPage.waitForSwapQuote();
         await swapPage.checkQuoteIsDisplayed();
         await swapPage.checkDestinationToken('USDC');
         await swapPage.checkSourceToken('TRX');
