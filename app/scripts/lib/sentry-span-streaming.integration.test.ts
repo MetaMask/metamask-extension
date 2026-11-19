@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/browser';
 import type { Integration } from '@sentry/core';
 import {
+  continueTraceContext,
   setMeasurement,
   setRootSpanAttribute,
   trace,
@@ -27,7 +28,10 @@ jest.mock('../../../shared/lib/manifestFlags', () => ({
   }),
 }));
 
-type SentEnvelope = [unknown, [{ type: string }, unknown][]];
+type SentEnvelope = [
+  { trace?: { trace_id?: string; public_key?: string } },
+  [{ type: string }, unknown][],
+];
 
 // Uses the options `setupSentry` ships and the real SDK, so a change back to
 // `traceLifecycle: 'static'` fails here. In static mode a child still running
@@ -171,5 +175,30 @@ describe('span streaming (integration with the shipped Sentry options)', () => {
       'ci.branch': { value: 'ci-branch', type: 'string' },
       'ci.commitHash': { value: 'abc123', type: 'string' },
     });
+  });
+
+  // Sentry rejects a span envelope whose `trace` header lacks `public_key`
+  // (`missing_dsc`), so a continued trace must carry a complete DSC.
+  it('sends the envelope of a continued UI trace with a complete `trace` header', async () => {
+    const traceId = '4bf92f3577b34da6a3ce929d0e0e4736';
+
+    continueTraceContext(
+      { traceId, parentSpanId: '00f067aa0ba902b7', parentSampled: true },
+      () => Sentry.startSpan({ name: 'Background RPC: example' }, () => 1),
+    );
+    await Sentry.flush();
+
+    const spanEnvelopes = envelopes.filter(([, items]) =>
+      items.some(([header]) => header.type === 'span'),
+    );
+    expect(spanEnvelopes).not.toHaveLength(0);
+    for (const [envelopeHeader] of spanEnvelopes) {
+      expect(envelopeHeader.trace).toMatchObject({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        trace_id: traceId,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        public_key: 'public',
+      });
+    }
   });
 });

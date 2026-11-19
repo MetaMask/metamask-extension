@@ -1286,8 +1286,11 @@ export function sentryGetActiveSpan(): Sentry.Span | null {
 }
 
 /**
- * Baggage for a continued trace. It must carry `sentry-sampled`, which backends
- * route spans to Sentry on.
+ * Baggage for a continued trace. The SDK freezes it as the segment's dynamic
+ * sampling context, and Sentry rejects span envelopes whose `trace` header has
+ * no `public_key`, so it carries the client's DSN key, environment and release
+ * beside the trace id. `sentry-sampled` is what backends route spans to Sentry
+ * on.
  *
  * @param sentryTrace - A `{traceId}-{spanId}-{sampled}` header.
  * @returns A `baggage` string, or undefined when the header is malformed.
@@ -1297,7 +1300,19 @@ function sentryTraceToBaggage(sentryTrace: string): string | undefined {
   if (!traceId || (sampled !== '0' && sampled !== '1')) {
     return undefined;
   }
-  return `sentry-trace_id=${traceId},sentry-sampled=${sampled === '1'}`;
+  const client = globalThis.sentry?.getClient?.();
+  const options = client?.getOptions();
+  const entries: Record<string, string | undefined> = {
+    'sentry-trace_id': traceId,
+    'sentry-public_key': client?.getDsn()?.publicKey,
+    'sentry-environment': options?.environment,
+    'sentry-release': options?.release,
+    'sentry-sampled': String(sampled === '1'),
+  };
+  return Object.entries(entries)
+    .filter(([, value]) => value !== undefined)
+    .map(([key, value]) => `${key}=${encodeURIComponent(value as string)}`)
+    .join(',');
 }
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
