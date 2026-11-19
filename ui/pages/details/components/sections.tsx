@@ -3,13 +3,13 @@ import type {
   ActivityListItem,
   TokenAmount,
 } from '../../../../shared/lib/activity/types';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useFormatters } from '../../../hooks/useFormatters';
-import { NetworkName } from '../../../components/app/transaction/network-name';
-import { TransactionStatus } from '../../../components/app/transaction/transaction-status';
-import { AccountName } from '../../../components/app/transaction/account-name';
-import { TransactionId } from '../../../components/app/transaction/transaction-id';
 import { isValidTransactionHash } from '../../../../shared/lib/transactions.utils';
+import { AccountName } from '../../../components/app/transaction/account-name';
+import { NetworkName } from '../../../components/app/transaction/network-name';
+import { TransactionId } from '../../../components/app/transaction/transaction-id';
+import { TransactionStatus } from '../../../components/app/transaction/transaction-status';
+import { useFormatters } from '../../../hooks/useFormatters';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Row, Section } from './shared';
 import { TokenRow } from './token-row';
 
@@ -61,7 +61,7 @@ export function MetadataSection({
     <Section>
       <Row
         label={t('status')}
-        value={<TransactionStatus status={item.status} />}
+        value={<TransactionStatus status={item.status} hash={item.hash} />}
       />
 
       <Row label={t('date')} value={formatDateTime(item.timestamp)} />

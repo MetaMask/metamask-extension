@@ -368,7 +368,7 @@ const ClaimsForm = ({
       captureShieldClaimSubmissionEvent({
         subscriptionStatus: latestShieldSubscription.status,
         attachmentsCount: files?.length ?? 0,
-        submissionStatus,
+        status: submissionStatus,
         errorMessage,
       });
     };

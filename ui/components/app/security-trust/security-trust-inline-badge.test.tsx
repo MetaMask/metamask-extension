@@ -1,0 +1,119 @@
+import React from 'react';
+import { fireEvent, render } from '@testing-library/react';
+import { IconSize } from '@metamask/design-system-react';
+import type { TokenTrustConfig } from '#shared/lib/token-search/types';
+import {
+  getSecurityTrustBadgeConfig,
+  SecurityTrustInlineBadge,
+} from './security-trust-inline-badge';
+
+const t = (key: string) => key;
+
+const getTestBadgeConfig = (resultType: string): TokenTrustConfig => {
+  const badge = getSecurityTrustBadgeConfig(resultType, t);
+  expect(badge).toBeDefined();
+  if (!badge) {
+    throw new Error(`Expected badge config for result type: ${resultType}`);
+  }
+  return badge;
+};
+
+describe('SecurityTrustInlineBadge', () => {
+  it('renders verified icon without onClick', () => {
+    const badge = getTestBadgeConfig('Verified');
+    const { getByLabelText, getByTestId } = render(
+      <SecurityTrustInlineBadge
+        badge={badge}
+        testId="security-badge-verified"
+      />,
+    );
+
+    expect(getByTestId('security-badge-verified')).toBeInTheDocument();
+    expect(getByLabelText('securityTrustVerified')).toBeInTheDocument();
+  });
+
+  it('renders the verified icon at 16px by default', () => {
+    const badge = getTestBadgeConfig('Verified');
+    const { getByLabelText } = render(
+      <SecurityTrustInlineBadge
+        badge={badge}
+        testId="security-badge-verified"
+      />,
+    );
+
+    expect(getByLabelText('securityTrustVerified')).toHaveClass('w-4', 'h-4');
+  });
+
+  it('renders the verified icon at 20px when iconSize is Md', () => {
+    const badge = getTestBadgeConfig('Verified');
+    const { getByLabelText } = render(
+      <SecurityTrustInlineBadge
+        badge={badge}
+        testId="security-badge-verified"
+        iconSize={IconSize.Md}
+      />,
+    );
+
+    expect(getByLabelText('securityTrustVerified')).toHaveClass('w-5', 'h-5');
+  });
+
+  it('wraps verified icon in a button when onClick is provided', () => {
+    const badge = getTestBadgeConfig('Verified');
+    const onClick = jest.fn();
+    const { getByTestId } = render(
+      <SecurityTrustInlineBadge
+        badge={badge}
+        testId="security-badge-verified"
+        onClick={onClick}
+      />,
+    );
+
+    fireEvent.click(getByTestId('security-badge-verified'));
+    expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders labeled warning badge with warning background', () => {
+    const badge = getTestBadgeConfig('Warning');
+    const { getByTestId, getByText } = render(
+      <SecurityTrustInlineBadge
+        badge={badge}
+        testId="security-badge-warning"
+      />,
+    );
+
+    expect(getByTestId('security-badge-warning')).toHaveClass(
+      'bg-warning-muted',
+    );
+    expect(getByText('securityTrustRisky')).toBeInTheDocument();
+  });
+
+  it('renders labeled malicious badge with error background', () => {
+    const badge = getTestBadgeConfig('Malicious');
+    const { getByTestId, getByText } = render(
+      <SecurityTrustInlineBadge
+        badge={badge}
+        testId="security-badge-malicious"
+      />,
+    );
+
+    expect(getByTestId('security-badge-malicious')).toHaveClass(
+      'bg-error-muted',
+    );
+    expect(getByText('securityTrustMalicious')).toBeInTheDocument();
+  });
+
+  it('wraps labeled badge in a button when onClick is provided', () => {
+    const badge = getTestBadgeConfig('Warning');
+    const onClick = jest.fn();
+    const { getByTestId } = render(
+      <SecurityTrustInlineBadge
+        badge={badge}
+        testId="security-badge-warning"
+        onClick={onClick}
+      />,
+    );
+
+    fireEvent.click(getByTestId('security-badge-warning'));
+    expect(onClick).toHaveBeenCalledTimes(1);
+  });
+});

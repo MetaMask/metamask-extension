@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 
 import BigNumber from 'bignumber.js';
 import { CANCEL_RATE, SPEED_UP_RATE } from '@metamask/transaction-controller';
@@ -21,6 +20,8 @@ import {
   updateSwapsUserFeeLevel,
 } from '../../../store/actions';
 import { updateTransactionGasFees } from '../../../store/actions/update-transaction-gas-fees';
+import { useDispatch } from '../../../store/hooks';
+
 import {
   decGWEIToHexWEI,
   decimalToHex,

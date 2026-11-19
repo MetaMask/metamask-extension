@@ -1,9 +1,9 @@
 import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import {
-  QuoteResponse,
   RequestStatus,
   formatChainIdToCaip,
+  QuoteResponse,
 } from '@metamask/bridge-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
@@ -18,8 +18,12 @@ import { BridgeDiscountFeeMessage } from './bridge-discount-fee-message';
 
 const mockGetVipTierForAccount = jest.fn();
 setBackgroundConnection({
-  rewardsGetVipTierForAccount: async (...args: unknown[]) =>
-    mockGetVipTierForAccount(...args),
+  messengerCall: async (action: string, args: unknown[]) => {
+    if (action !== 'RewardsController:getVipTierForAccount') {
+      throw new Error(`Unexpected messenger action: ${action}`);
+    }
+    return mockGetVipTierForAccount(...args);
+  },
 } as never);
 
 const createDiscountedQuotes = (
@@ -31,13 +35,13 @@ const createDiscountedQuotes = (
       ...quote.quote,
       feeData: {
         ...quote.quote.feeData,
-        metabridge: {
-          ...quote.quote.feeData.metabridge,
+        metabridge: quote.quote.feeData.metabridge.map((fee) => ({
+          ...fee,
           amount: '1000000000000000000',
           quoteBpsFee: 50,
           baseBpsFee: 87.5,
           ...(discountType !== undefined && { discountType }),
-        },
+        })),
       },
     },
   }));

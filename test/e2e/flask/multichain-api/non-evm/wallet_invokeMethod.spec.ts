@@ -9,6 +9,7 @@ import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { login } from '../../../page-objects/flows/login.flow';
 import SnapTransactionConfirmation from '../../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import SnapSignInConfirmation from '../../../page-objects/pages/confirmations/snap-sign-in-confirmation';
+import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
 
 describe('Multichain API - Non EVM', function () {
   describe('Calling `wallet_invokeMethod`', function () {
@@ -23,13 +24,13 @@ describe('Multichain API - Non EVM', function () {
           async ({ driver, extensionId }) => {
             await login(driver);
             const testDapp = new TestDappMultichain(driver);
+            const connectAccountConfirmation = new ConnectAccountConfirmation(
+              driver,
+            );
             await testDapp.openTestDappPage();
             await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes([SOLANA_MAINNET_SCOPE]);
-            await driver.clickElementAndWaitForWindowToClose({
-              text: 'Connect',
-              tag: 'button',
-            });
+            await connectAccountConfirmation.confirmConnect();
 
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
@@ -63,13 +64,13 @@ describe('Multichain API - Non EVM', function () {
           async ({ driver, extensionId }) => {
             await login(driver);
             const testDapp = new TestDappMultichain(driver);
+            const connectAccountConfirmation = new ConnectAccountConfirmation(
+              driver,
+            );
             await testDapp.openTestDappPage();
             await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes([SOLANA_MAINNET_SCOPE]);
-            await driver.clickElementAndWaitForWindowToClose({
-              text: 'Connect',
-              tag: 'button',
-            });
+            await connectAccountConfirmation.confirmConnect();
 
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
@@ -87,7 +88,10 @@ describe('Multichain API - Non EVM', function () {
             const confirmation = new SnapTransactionConfirmation(driver);
             await confirmation.checkPageIsLoaded();
             await confirmation.checkAccountIsDisplayed('Account 1');
-            await confirmation.clickFooterConfirmButtonAndWaitForWindowToClose();
+            await confirmation.clickFooterButton({
+              button: 'confirm',
+              waitUntil: 'windowClose',
+            });
 
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
@@ -107,7 +111,7 @@ describe('Multichain API - Non EVM', function () {
 
             assert.strictEqual(
               parsedTransactionResult.signature,
-              'TE42WbnNvycJGiEVxVV7gjZ3wnCHvZAWFcA2b8rnvp2SZQoQQwirTbTfNBiZWHnzzkg38AayUob29w7eFD3SVGj',
+              'qyEFmpyDqeqiRHcEJXrb3Z1brwMadm4hLDzxDkCFF7ktPcPF7khxf8chzWHSdKzd95TPcY5BDHdX8z6GMutzpdm',
               'transaction result signature should be defined',
             );
           },

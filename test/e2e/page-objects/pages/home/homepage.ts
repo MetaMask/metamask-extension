@@ -1,7 +1,6 @@
-import { WebElement } from 'selenium-webdriver';
+import { ACTIVITY_ROUTE } from '../../../../../ui/helpers/constants/routes';
 import { Driver } from '../../../webdriver/driver';
 import { Anvil } from '../../../seeder/anvil';
-import HeaderNavbar from '../header-navbar';
 import { getCleanAppState, regularDelayMs } from '../../../helpers';
 import { HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS } from '../../../constants';
 import {
@@ -9,6 +8,7 @@ import {
   BASE_ACCOUNT_SYNC_TIMEOUT,
   POST_UNLOCK_DELAY,
 } from '../../../tests/identity/account-syncing/helpers';
+import HeaderNavbar from './header-navbar';
 
 export type CheckExpectedBalanceOptions = {
   expectedBalance?: string;
@@ -17,54 +17,48 @@ export type CheckExpectedBalanceOptions = {
   timeout?: number;
 };
 
-// TODO: Remove this widened wait once #43958 completes the Solana discovery
-// mocks; until then the unmocked discovery RPCs retry-storm the Solana icon
-// past the default 10s wait.
-const NON_EVM_ICON_TIMEOUT = 20_000;
-
+/**
+ * Wallet home / account overview: balance, primary CTAs, and tab navigation.
+ *
+ * Screen: `#/` (DEFAULT_ROUTE), after unlock / onboarding.
+ * Owns: balance and empty-state checks, Send / Swap / Bridge / Receive,
+ * navigating to Tokens / NFTs / DeFi / Perps / Activity page, home notifications,
+ * shield entry modal, survey and SRP toasts, and page-ready waits.
+ * Boundaries: tab content belongs to `TokensTab`, `NftsTab`, `DeFiTab`,
+ * `ActivityTab`, and `PerpsTab`. The promotional carousel belongs to
+ * `CarouselPage`.
+ * Related: `HeaderNavbar`, `TokensTab` / `NftsTab` / `DeFiTab` /
+ * `ActivityTab` / `PerpsTab` / `CarouselPage`.
+ *
+ * @see ui/pages/home/home.tsx
+ */
 class HomePage {
-  protected driver: Driver;
-
-  public headerNavbar: HeaderNavbar;
-
-  protected readonly activityTab = {
-    testId: 'account-overview__activity-tab',
-  };
+  private readonly accountImportedToast =
+    '[data-testid="account-imported-toast"]';
 
   private readonly backupRemindMeLaterButton = {
     tag: 'button',
     text: 'Remind me later',
   };
 
-  private readonly backupSecretRecoveryPhraseButton = {
-    text: 'Back up now',
-    css: '.home-notification__accept-button',
-  };
+  private readonly backupSecretRecoveryPhraseButton =
+    '[data-testid="backup-srp-toast"] button';
 
-  private readonly backupSecretRecoveryPhraseNotification = {
-    text: 'Back up your Secret Recovery Phrase to keep your wallet and funds secure.',
-    css: '.home-notification__text',
-  };
+  private readonly backupSecretRecoveryPhraseNotification =
+    '[data-testid="backup-srp-toast"]';
 
   // Matches both the EVM (`eth-overview__primary-currency`) and non-EVM
   // (`coin-overview__primary-currency`) balance containers.
   protected readonly balance: string =
     '[data-testid$="overview__primary-currency"]';
 
-  private readonly basicFunctionalityOffWarningMessage = {
-    text: 'Basic functionality is off',
-    css: '.mm-banner-base',
-  };
-
-  private readonly bitcoinAccountIcon = 'img[src="./images/bitcoin-logo.svg"]';
-
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
 
-  protected readonly buySellButton = { css: 'button', text: 'Buy' };
+  protected readonly buySellButton = '[data-testid$="-overview-buy"]';
 
   private readonly closeSurveyToastBannerButton =
-    '[data-testid="survey-toast-banner-base"] [aria-label="Close"] span';
+    '.toast-container button[aria-label="Close"]';
 
   private readonly closeUseNetworkNotificationModalButton = {
     text: 'Got it',
@@ -74,14 +68,14 @@ class HomePage {
   private readonly connectionsRemovedModal =
     '[data-testid="connections-removed-modal"]';
 
-  private readonly copyAddressButton = '[data-testid="app-header-copy-button"]';
-
   private readonly defaultAddressContainer =
     '[data-testid="default-address-container"]';
 
   protected readonly defiTab = {
     testId: 'account-overview__defi-tab',
   };
+
+  protected driver: Driver;
 
   private readonly emptyBalance =
     '[data-testid="coin-overview-balance-empty-state"]';
@@ -90,29 +84,44 @@ class HomePage {
     text: 'Fund your wallet',
   };
 
+  public headerNavbar: HeaderNavbar;
+
+  private readonly loadingLogo = '.loading-logo';
+
   private readonly loadingOverlay = {
     text: 'Connecting to Localhost 8545',
   };
+
+  protected readonly mainNavActivityButton =
+    '[data-testid="main-nav-activity"]';
+
+  private readonly mainNavHomeButton = '[data-testid="main-nav-home"]';
+
+  protected readonly mainNavPerpsButton = '[data-testid="main-nav-perps"]';
 
   protected readonly nftTab = {
     testId: 'account-overview__nfts-tab',
   };
 
-  private readonly overviewBalanceSection = '.wallet-overview__balance';
+  private readonly page = {
+    testId: 'parent-selector-home',
+  };
 
   private readonly popoverBackground = '.popover-bg';
-
-  private readonly portfolioLink = '[data-testid="portfolio-link"]';
 
   private readonly privacyBalanceToggle = {
     testId: 'account-value-and-suffix',
   };
 
-  protected readonly receiveButton = { css: 'button', text: 'Receive' };
+  // Narrow layout: Receive is the only action left in the "More" group, which
+  // renders as `-overview-default`. Wide layout: actions are pills and Receive
+  // is its own `-overview-receive` pill.
+  private readonly receiveButton =
+    '[data-testid$="-overview-default"], [data-testid$="-overview-receive"]';
 
   private readonly revealSrpPasswordInput = '[data-testid="input-password"]';
 
-  protected readonly sendButton = { css: 'button', text: 'Send' };
+  protected readonly sendButton = '[data-testid$="-overview-send"]';
 
   private readonly shieldEntryModal = '[data-testid="shield-entry-modal"]';
 
@@ -121,8 +130,6 @@ class HomePage {
 
   private readonly shieldEntryModalSkip =
     '[data-testid="shield-entry-modal-close-button"]';
-
-  private readonly solanaAccountIcon = 'img[src="./images/solana-logo.svg"]';
 
   private readonly srpAddedToast = '[data-testid="new-srp-added-toast"]';
 
@@ -138,7 +145,7 @@ class HomePage {
 
   private readonly surveyToast = '[data-testid="survey-toast"]';
 
-  protected readonly swapButton = { css: 'button', text: 'Swap' };
+  protected readonly swapButton = '[data-testid$="-overview-swap"]';
 
   protected readonly tokensTab = {
     testId: 'account-overview__asset-tab',
@@ -149,202 +156,10 @@ class HomePage {
     this.headerNavbar = new HeaderNavbar(driver);
   }
 
-  async checkPageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForMultipleSelectors([
-        this.overviewBalanceSection,
-        this.tokensTab,
-      ]);
-    } catch (e) {
-      console.log('Timeout while waiting for home page to be loaded', e);
-      throw e;
-    }
-    console.log('Home page is loaded');
-  }
-
-  async waitForNetworkAndDOMReady(): Promise<void> {
-    console.log(
-      'Waiting for network idle, DOM loaded, page completed, and Redux state ready',
-    );
-    try {
-      // Wait for DOM to be ready
-      await this.driver.executeScript(`
-        return new Promise((resolve) => {
-          if (document.readyState === 'complete') {
-            resolve();
-          } else {
-            window.addEventListener('load', () => resolve(), { once: true });
-          }
-        });
-      `);
-
-      // Wait for Redux state to be ready
-      await this.driver.executeAsyncScript(`
-        const callback = arguments[arguments.length - 1];
-        const maxAttempts = 50;
-        let attempts = 0;
-
-        const checkReduxReady = () => {
-          attempts++;
-
-          if (window.stateHooks?.getCleanAppState) {
-            try {
-              const state = window.stateHooks.getCleanAppState();
-
-              if (state && typeof state === 'object') {
-                if (state.metamask && typeof state.metamask === 'object') {
-                  console.log('Redux state is ready');
-                  callback();
-                  return;
-                }
-              }
-            } catch (e) {
-              console.log('Redux state not ready yet, attempt ' + attempts);
-            }
-          }
-
-          if (attempts >= maxAttempts) {
-            console.log('Redux state check timeout, continuing anyway');
-            callback();
-            return;
-          }
-          setTimeout(checkReduxReady, 100);
-        };
-        checkReduxReady();
-      `);
-
-      console.log(
-        'Network idle, DOM loaded, page completed, and Redux state ready',
-      );
-    } catch (e) {
-      console.log('Error waiting for network, DOM, and Redux ready', e);
-    }
-  }
-
-  async waitForNonEvmAccountsLoaded(): Promise<void> {
-    console.log('Waiting for Non EVM account icons to be visible');
-    // See the removal TODO on `NON_EVM_ICON_TIMEOUT`. Still polled: returns
-    // as soon as the icons render.
-    await this.driver.waitForSelector(this.solanaAccountIcon, {
-      timeout: NON_EVM_ICON_TIMEOUT,
-    });
-    await this.driver.waitForSelector(this.bitcoinAccountIcon, {
-      timeout: NON_EVM_ICON_TIMEOUT,
-    });
-  }
-
-  async checkPageIsNotLoaded(): Promise<void> {
-    console.log('Check home page is not loaded');
-    await this.driver.assertElementNotPresent(this.activityTab, {
-      waitAtLeastGuard: 500,
-    });
-    await this.driver.assertElementNotPresent(this.tokensTab, {
-      waitAtLeastGuard: 500,
-    });
-  }
-
-  async clickBackupRemindMeLaterButton(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(
-      this.backupRemindMeLaterButton,
-    );
-  }
-
-  async closeSurveyToast(surveyName: string): Promise<void> {
-    console.log(`Close survey toast for ${surveyName}`);
+  async checkAccountImportedToastIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector({
-      css: this.surveyToast,
-      text: surveyName,
-    });
-    await this.driver.clickElement(this.closeSurveyToastBannerButton);
-  }
-
-  /**
-   * Checks if the storage error toast is displayed.
-   * This toast appears when storage.local.set() operations fail.
-   */
-  async checkStorageErrorToastIsDisplayed(): Promise<void> {
-    console.log('Check storage error toast is displayed on homepage');
-    await this.driver.waitForSelector(this.storageErrorToast);
-  }
-
-  /**
-   * Clicks the "Back up Secret Recovery Phrase" button on the storage error toast
-   * and verifies navigation to the reveal SRP page.
-   */
-  async clickStorageErrorToastBackupButton(): Promise<void> {
-    console.log(
-      'Click backup button on storage error toast to navigate to reveal SRP page',
-    );
-    await this.driver.clickElement(this.storageErrorToastBackupButton);
-    await this.driver.waitForSelector(this.revealSrpPasswordInput);
-  }
-
-  async closeUseNetworkNotificationModal(): Promise<void> {
-    // We need to use clickElementSafe + assertElementNotPresent as sometimes the network dialog doesn't appear, as per this issue (#25788)
-    // TODO: change the 2 actions for clickElementAndWaitToDisappear, once the issue is fixed
-    await this.driver.assertElementNotPresent(this.popoverBackground);
-    await this.driver.clickElementSafe(
-      this.closeUseNetworkNotificationModalButton,
-    );
-    await this.driver.assertElementNotPresent(
-      this.closeUseNetworkNotificationModalButton,
-    );
-  }
-
-  async goToActivityList(): Promise<void> {
-    console.log(`Open activity tab on homepage`);
-    await this.driver.clickElement(this.activityTab);
-  }
-
-  async goToBackupSRPPage(): Promise<void> {
-    console.log(`Go to backup secret recovery phrase on homepage`);
-    await this.driver.waitForSelector(
-      this.backupSecretRecoveryPhraseNotification,
-    );
-    await this.driver.clickElement(this.backupSecretRecoveryPhraseButton);
-  }
-
-  async goToNftTab(): Promise<void> {
-    console.log(`Go to NFT tab on homepage`);
-    await this.driver.clickElement(this.nftTab);
-  }
-
-  async goToDeFiTab(): Promise<void> {
-    console.log(`Go to DeFi tab on homepage`);
-    await this.driver.clickElement(this.defiTab);
-  }
-
-  async goToTokensTab(): Promise<void> {
-    console.log(`Go to tokens tab on homepage`);
-    await this.driver.clickElement(this.tokensTab);
-  }
-
-  async openPortfolioPage(): Promise<void> {
-    console.log(`Open portfolio page on homepage`);
-    await this.driver.clickElement(this.portfolioLink);
-  }
-
-  async startSendFlow(): Promise<void> {
-    await this.driver.clickElement(this.sendButton);
-  }
-
-  async startSwapFlow(): Promise<void> {
-    await this.driver.clickElement(this.swapButton);
-  }
-
-  async startBridgeFlow(): Promise<void> {
-    await this.driver.clickElement(this.bridgeButton);
-  }
-
-  async togglePrivacyBalance(): Promise<void> {
-    await this.driver.clickElement(this.privacyBalanceToggle);
-  }
-
-  async waitForLoadingOverlayToDisappear(): Promise<void> {
-    console.log(`Wait for loading overlay to disappear`);
-    await this.driver.assertElementNotPresent(this.loadingOverlay, {
-      waitAtLeastGuard: 1000,
-      timeout: 10000,
+      css: this.accountImportedToast,
+      text: 'Account imported',
     });
   }
 
@@ -371,6 +186,19 @@ class HomePage {
   }
 
   /**
+   * Checks if the balance empty state is displayed on homepage.
+   * Criteria:
+   * - The account group has a zero balance across all aggregated mainnet networks.
+   * - The account group is not on a test network
+   * - The account group is not in a cached state
+   * Not a replacement for checkExpectedBalanceIsDisplayed('0') this is still valid in certain cases.
+   */
+  async checkBalanceEmptyStateIsDisplayed(): Promise<void> {
+    console.log('Check balance empty state is displayed on homepage');
+    await this.driver.waitForSelector(this.emptyBalance);
+  }
+
+  /**
    * Checks that balance is displayed with ETH symbol.
    * We verify the element contains "ETH" rather than exact values since gas fees vary.
    */
@@ -383,11 +211,18 @@ class HomePage {
     console.log('Balance is displayed in correct format');
   }
 
-  async checkBasicFunctionalityOffWarnigMessageIsDisplayed(): Promise<void> {
-    console.log(
-      'Check if basic functionality off warning message is displayed on homepage',
-    );
-    await this.driver.waitForSelector(this.basicFunctionalityOffWarningMessage);
+  async checkConnectionsRemovedModalIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.connectionsRemovedModal);
+  }
+
+  async checkDefaultAddressIsDisplayed(): Promise<void> {
+    console.log('Check default address is displayed in header on homepage');
+    await this.driver.waitForSelector(this.defaultAddressContainer);
+  }
+
+  async checkDefaultAddressIsNotDisplayed(): Promise<void> {
+    console.log('Check default address is not displayed in header on homepage');
+    await this.driver.assertElementNotPresent(this.defaultAddressContainer);
   }
 
   async checkDisabledButtonTooltip(tooltipText: string): Promise<void> {
@@ -473,19 +308,6 @@ class HomePage {
   }
 
   /**
-   * Checks if the balance empty state is displayed on homepage.
-   * Criteria:
-   * - The account group has a zero balance across all aggregated mainnet networks.
-   * - The account group is not on a test network
-   * - The account group is not in a cached state
-   * Not a replacement for checkExpectedBalanceIsDisplayed('0') this is still valid in certain cases.
-   */
-  async checkBalanceEmptyStateIsDisplayed(): Promise<void> {
-    console.log('Check balance empty state is displayed on homepage');
-    await this.driver.waitForSelector(this.emptyBalance);
-  }
-
-  /**
    * This function checks if account syncing has been successfully completed at least once.
    * Includes a delay before checking to give Firefox more time to initialize (reduces flakiness).
    */
@@ -508,20 +330,6 @@ class HomePage {
         timeout: BASE_ACCOUNT_SYNC_TIMEOUT, // Syncing can take some time so adding a longer timeout to reduce flakes
       },
     );
-  }
-
-  async checkSendButtonIsClickable(clickable: boolean = true): Promise<void> {
-    console.log(`Check Send button is ${clickable ? 'enabled' : 'disabled'}`);
-    await this.driver.waitForSelector(this.sendButton, {
-      state: clickable ? 'enabled' : 'disabled',
-    });
-  }
-
-  async checkSwapButtonIsClickable(clickable: boolean = true): Promise<void> {
-    console.log(`Check Swap button is ${clickable ? 'enabled' : 'disabled'}`);
-    await this.driver.waitForSelector(this.swapButton, {
-      state: clickable ? 'enabled' : 'disabled',
-    });
   }
 
   async checkLocalNodeBalanceIsDisplayed(
@@ -549,10 +357,43 @@ class HomePage {
     });
   }
 
-  async dismissSrpAddedToast(): Promise<void> {
-    console.log('Dismiss SRP added toast');
-    // The toast can take some time to appear
-    await this.driver.clickElementSafe(this.srpAddedToastCloseButton, 15_000);
+  async checkNoErrorToastIsDisplayed(): Promise<void> {
+    console.log('Check no blocking error toast is displayed on homepage');
+    await this.driver.assertElementNotPresent(this.storageErrorToast, {
+      waitAtLeastGuard: regularDelayMs,
+      timeout: 5000,
+    });
+    await this.driver.assertElementNotPresent(this.surveyToast, {
+      waitAtLeastGuard: regularDelayMs,
+      timeout: 5000,
+    });
+    await this.driver.assertElementNotPresent(
+      {
+        css: '.toast-container',
+        text: 'cryptocurrencies',
+      },
+      {
+        waitAtLeastGuard: regularDelayMs,
+        timeout: 5000,
+      },
+    );
+    await this.driver.assertElementNotPresent(
+      {
+        css: '.toast-container',
+        text: 'unsupported',
+      },
+      {
+        waitAtLeastGuard: regularDelayMs,
+        timeout: 5000,
+      },
+    );
+  }
+
+  async checkNoShieldEntryModalIsDisplayed(): Promise<void> {
+    console.log('Check no shield entry modal is displayed on homepage');
+    await this.driver.assertElementNotPresent(this.shieldEntryModal, {
+      waitAtLeastGuard: regularDelayMs,
+    });
   }
 
   async checkNoSurveyToastIsDisplayed(): Promise<void> {
@@ -562,9 +403,52 @@ class HomePage {
     });
   }
 
-  async checkPortfolioLinkIsDisplayed(): Promise<void> {
-    console.log('Check if portfolio link is displayed on homepage');
-    await this.driver.waitForSelector(this.portfolioLink);
+  async checkPageIsLoaded(): Promise<void> {
+    await this.driver.waitForSelector(this.page);
+    console.log('Home page is loaded');
+  }
+
+  async checkPageIsNotLoaded(): Promise<void> {
+    console.log('Check home page is not loaded');
+    await this.driver.assertElementNotPresent(this.page, {
+      waitAtLeastGuard: 500,
+    });
+  }
+
+  async checkSendButtonIsClickable(clickable: boolean = true): Promise<void> {
+    console.log(`Check Send button is ${clickable ? 'enabled' : 'disabled'}`);
+    await this.driver.waitForSelector(this.sendButton, {
+      state: clickable ? 'enabled' : 'disabled',
+    });
+  }
+
+  async checkShieldEntryModalIsDisplayed(): Promise<void> {
+    console.log('Check shield entry modal is displayed on homepage');
+    await this.driver.waitForSelector(this.shieldEntryModal);
+  }
+
+  async checkShieldEntryModalNotPresent(): Promise<void> {
+    console.log('Check shield entry modal is not present on homepage');
+    await this.driver.assertElementNotPresent(this.shieldEntryModal, {
+      waitAtLeastGuard: regularDelayMs,
+      timeout: 2000,
+    });
+  }
+
+  /**
+   * Checks if the storage error toast is displayed.
+   * This toast appears when storage.local.set() operations fail.
+   */
+  async checkStorageErrorToastIsDisplayed(): Promise<void> {
+    console.log('Check storage error toast is displayed on homepage');
+    await this.driver.waitForSelector(this.storageErrorToast);
+  }
+
+  async checkSwapButtonIsClickable(clickable: boolean = true): Promise<void> {
+    console.log(`Check Swap button is ${clickable ? 'enabled' : 'disabled'}`);
+    await this.driver.waitForSelector(this.swapButton, {
+      state: clickable ? 'enabled' : 'disabled',
+    });
   }
 
   /**
@@ -580,37 +464,13 @@ class HomePage {
     });
   }
 
-  /**
-   * Clicks the copy address button.
-   */
-  async getAccountAddress(): Promise<string> {
-    const accountAddress = await this.driver.findElement(
-      this.copyAddressButton,
+  async clickBackupRemindMeLaterButton(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(
+      this.backupRemindMeLaterButton,
     );
-    return accountAddress.getText();
-  }
-
-  async checkConnectionsRemovedModalIsDisplayed(): Promise<void> {
-    await this.driver.waitForSelector(this.connectionsRemovedModal);
-  }
-
-  async checkDefaultAddressIsDisplayed(): Promise<void> {
-    console.log('Check default address is displayed in header on homepage');
-    await this.driver.waitForSelector(this.defaultAddressContainer);
-  }
-
-  async checkDefaultAddressIsNotDisplayed(): Promise<void> {
-    console.log('Check default address is not displayed in header on homepage');
-    await this.driver.assertElementNotPresent(this.defaultAddressContainer);
-  }
-
-  async checkShieldEntryModalIsDisplayed(): Promise<void> {
-    console.log('Check shield entry modal is displayed on homepage');
-    await this.driver.waitForSelector(this.shieldEntryModal);
   }
 
   async clickOnReceiveButton(): Promise<void> {
-    await this.driver.waitForSelector(this.receiveButton);
     await this.driver.clickElement(this.receiveButton);
   }
 
@@ -621,12 +481,20 @@ class HomePage {
 
   async clickOnShieldEntryModalGetStarted(): Promise<void> {
     console.log('Click on shield entry modal get started');
-    await this.driver.clickElement(this.shieldEntryModalGetStarted);
+    await this.driver.findClickableElement(this.shieldEntryModalGetStarted);
+    await this.driver.waitForElementToStopMoving(
+      this.shieldEntryModalGetStarted,
+    );
+    await this.driver.clickElementAndWaitToDisappear(
+      this.shieldEntryModalGetStarted,
+    );
   }
 
   async clickOnShieldEntryModalSkip(): Promise<void> {
     console.log('Click on shield entry modal skip');
-    await this.driver.clickElement(this.shieldEntryModalSkip);
+    await this.driver.findClickableElement(this.shieldEntryModalSkip);
+    await this.driver.waitForElementToStopMoving(this.shieldEntryModalSkip);
+    await this.driver.clickElementAndWaitToDisappear(this.shieldEntryModalSkip);
   }
 
   async clickOnSwapButton(): Promise<void> {
@@ -634,19 +502,245 @@ class HomePage {
     await this.driver.clickElement(this.swapButton);
   }
 
-  async checkNoShieldEntryModalIsDisplayed(): Promise<void> {
-    console.log('Check no shield entry modal is displayed on homepage');
-    await this.driver.assertElementNotPresent(this.shieldEntryModal, {
-      waitAtLeastGuard: regularDelayMs,
+  /**
+   * Clicks the "Back up Secret Recovery Phrase" button on the storage error toast
+   * and verifies navigation to the reveal SRP page.
+   */
+  async clickStorageErrorToastBackupButton(): Promise<void> {
+    console.log(
+      'Click backup button on storage error toast to navigate to reveal SRP page',
+    );
+    await this.driver.clickElement(this.storageErrorToastBackupButton);
+    await this.driver.waitForSelector(this.revealSrpPasswordInput);
+  }
+
+  async closeSurveyToast(surveyName: string): Promise<void> {
+    console.log(`Close survey toast for ${surveyName}`);
+    await this.driver.waitForSelector({
+      css: this.surveyToast,
+      text: surveyName,
+    });
+    await this.driver.clickElement(this.closeSurveyToastBannerButton);
+  }
+
+  async closeUseNetworkNotificationModal(): Promise<void> {
+    // We need to use clickElementSafe + assertElementNotPresent as sometimes the network dialog doesn't appear, as per this issue (#25788)
+    // TODO: change the 2 actions for clickElementAndWaitToDisappear, once the issue is fixed
+    await this.driver.assertElementNotPresent(this.popoverBackground);
+    await this.driver.clickElementSafe(
+      this.closeUseNetworkNotificationModalButton,
+    );
+    await this.driver.assertElementNotPresent(
+      this.closeUseNetworkNotificationModalButton,
+    );
+  }
+
+  async dismissAccountImportedToast(): Promise<void> {
+    await this.driver.clickElementSafe(this.srpAddedToastCloseButton, 15_000);
+  }
+
+  async dismissSrpAddedToast(): Promise<void> {
+    console.log('Dismiss SRP added toast');
+    // The toast can take some time to appear
+    await this.driver.clickElementSafe(this.srpAddedToastCloseButton, 15_000);
+  }
+
+  /**
+   * Ensures the home page is rendered and idle (loaded + loading overlay gone).
+   */
+  async ensurePageIsReady(): Promise<void> {
+    await this.checkPageIsLoaded();
+    await this.waitForLoadingOverlayToDisappear();
+  }
+
+  /**
+   * Returns the primary balance text shown on the account overview.
+   *
+   * @param timeout - Max ms to wait for the balance; defaults to `driver.timeout`.
+   */
+  async getBalance(timeout?: number): Promise<string> {
+    const balance = await this.driver.waitForSelector(
+      this.balance,
+      timeout === undefined ? {} : { timeout },
+    );
+    return (await balance.getText()).trim();
+  }
+
+  async goToActivityList(): Promise<void> {
+    console.log('Open the activity page from the main navigation');
+    await this.driver.clickElement(this.mainNavActivityButton);
+    await this.driver.waitForSelector({
+      testId: 'parent-selector-activity-tab',
     });
   }
 
-  async checkShieldEntryModalNotPresent(): Promise<void> {
-    console.log('Check shield entry modal is not present on homepage');
-    await this.driver.assertElementNotPresent(this.shieldEntryModal, {
-      waitAtLeastGuard: regularDelayMs,
-      timeout: 2000,
+  async goToBackupSRPPage(): Promise<void> {
+    console.log(`Go to backup secret recovery phrase on homepage`);
+    await this.driver.waitForSelector(
+      this.backupSecretRecoveryPhraseNotification,
+    );
+    await this.driver.clickElement(this.backupSecretRecoveryPhraseButton);
+  }
+
+  async goToDeFiTab(): Promise<void> {
+    console.log(`Go to DeFi tab on homepage`);
+    await this.driver.clickElement(this.defiTab);
+  }
+
+  async goToHomePage(): Promise<void> {
+    console.log('Go to home page');
+    const alreadyOnHome = await this.driver.isElementPresentAndVisible(
+      this.balance,
+      1000,
+    );
+    if (alreadyOnHome) {
+      return;
+    }
+    await this.driver.clickElement(this.mainNavHomeButton);
+    await this.checkPageIsLoaded();
+  }
+
+  async goToNftTab(): Promise<void> {
+    console.log(`Go to NFT tab on homepage`);
+    await this.goToHomePage();
+    await this.driver.clickElement(this.nftTab);
+  }
+
+  async goToTokensTab(): Promise<void> {
+    console.log(`Go to tokens tab on homepage`);
+    await this.goToHomePage();
+    await this.driver.clickElement(this.tokensTab);
+  }
+
+  /**
+   * Navigates to home.html so the current route is left, even when in-page
+   * navigation elements are unavailable (e.g. header in search mode).
+   */
+  async navigateToHome(): Promise<void> {
+    console.log('Navigate to home.html so the current route is left');
+    await this.driver.navigate();
+    await this.checkPageIsLoaded();
+  }
+
+  /**
+   * Refreshes the home page and waits for it to load again.
+   */
+  async refreshPage(): Promise<void> {
+    console.log('Refreshing home page');
+    await this.driver.refresh();
+    await this.checkPageIsLoaded();
+  }
+
+  async startBridgeFlow(): Promise<void> {
+    await this.driver.clickElement(this.bridgeButton);
+  }
+
+  async startSendFlow(): Promise<void> {
+    await this.driver.clickElement(this.sendButton);
+  }
+
+  async startSwapFlow(): Promise<void> {
+    await this.driver.clickElement(this.swapButton);
+  }
+
+  async togglePrivacyBalance(): Promise<void> {
+    await this.driver.clickElement(this.privacyBalanceToggle);
+  }
+
+  async waitForLoadingLogoToDisappear(): Promise<void> {
+    console.log('Wait for loading logo to disappear');
+    await this.driver.assertElementNotPresent(this.loadingLogo, {
+      timeout: 10000,
     });
+  }
+
+  async waitForLoadingOverlayToDisappear(): Promise<void> {
+    console.log(`Wait for loading overlay to disappear`);
+    await this.driver.assertElementNotPresent(this.loadingOverlay, {
+      waitAtLeastGuard: 1000,
+      timeout: 10000,
+    });
+  }
+
+  async waitForNetworkAndDOMReady(): Promise<void> {
+    console.log(
+      'Waiting for network idle, DOM loaded, page completed, and Redux state ready',
+    );
+    try {
+      // Wait for DOM to be ready
+      await this.driver.executeScript(`
+          return new Promise((resolve) => {
+            if (document.readyState === 'complete') {
+              resolve();
+            } else {
+              window.addEventListener('load', () => resolve(), { once: true });
+            }
+          });
+        `);
+
+      // Wait for Redux state to be ready
+      await this.driver.executeAsyncScript(`
+          const callback = arguments[arguments.length - 1];
+          const maxAttempts = 50;
+          let attempts = 0;
+
+          const checkReduxReady = () => {
+            attempts++;
+
+            if (window.stateHooks?.getCleanAppState) {
+              try {
+                const state = window.stateHooks.getCleanAppState();
+
+                if (state && typeof state === 'object') {
+                  if (state.metamask && typeof state.metamask === 'object') {
+                    console.log('Redux state is ready');
+                    callback();
+                    return;
+                  }
+                }
+              } catch (e) {
+                console.log('Redux state not ready yet, attempt ' + attempts);
+              }
+            }
+
+            if (attempts >= maxAttempts) {
+              console.log('Redux state check timeout, continuing anyway');
+              callback();
+              return;
+            }
+            setTimeout(checkReduxReady, 100);
+          };
+          checkReduxReady();
+        `);
+
+      console.log(
+        'Network idle, DOM loaded, page completed, and Redux state ready',
+      );
+    } catch (e) {
+      console.log('Error waiting for network, DOM, and Redux ready', e);
+    }
+  }
+
+  /**
+   * Waits until the selected network's metadata status is `'available'`.
+   */
+  async waitForNetworkStatusAvailable(): Promise<void> {
+    console.log('Waiting for selected network status to be available in Redux');
+    await this.driver.waitUntil(
+      async () => {
+        const uiState = await getCleanAppState(this.driver);
+        if (!uiState?.metamask) {
+          return false;
+        }
+        const { networksMetadata, selectedNetworkClientId } = uiState.metamask;
+        if (!networksMetadata || !selectedNetworkClientId) {
+          return false;
+        }
+        const metadata = networksMetadata[selectedNetworkClientId];
+        return metadata?.status === 'available';
+      },
+      { timeout: 15000, interval: 500, stableFor: 5000 },
+    );
   }
 }
 

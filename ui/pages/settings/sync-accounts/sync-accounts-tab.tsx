@@ -20,15 +20,17 @@ const SyncAccountsTab = () => {
   const navigate = useNavigate();
 
   const handleBack = async () => {
-    await submitRequestToBackground('messengerCall', [
-      'QrSyncController:cancelSync',
-      [],
-    ]).catch(() => undefined);
+    await submitRequestToBackground('QrSyncController:cancelSync', []).catch(
+      () => undefined,
+    );
     navigate(SETTINGS_ROUTE, { replace: true });
   };
 
   return (
-    <Page data-testid="sync-accounts-page" className="max-w-[600px]">
+    <Page
+      data-testid="parent-selector-sync-accounts-page"
+      className="max-w-[600px]"
+    >
       <Header
         startAccessory={
           <ButtonIcon

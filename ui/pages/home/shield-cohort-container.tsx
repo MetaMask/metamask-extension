@@ -1,10 +1,11 @@
 import { memo, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { COHORT_NAMES } from '@metamask/subscription-controller';
 import { useShieldSubscriptionContext } from '../../contexts/shield/shield-subscription';
 import { getPendingShieldCohort } from '../../selectors';
 import { setPendingShieldCohort } from '../../store/actions';
 import type { MetaMaskReduxState } from '../../store/store';
+import { useDispatch } from '../../store/hooks';
 
 /**
  * Ghost component that manages the Shield cohort eligibility evaluation.

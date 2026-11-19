@@ -23,7 +23,7 @@ jest.mock('../../../../../hooks/useTheme', () => ({
 
 jest.mock('../../../../../selectors', () => ({
   getAnalyticsId: jest.fn(),
-  getCompletedMetaMetricsOnboarding: jest.fn(),
+  getConsentDecisionMade: jest.fn(),
   getOptedIn: jest.fn(),
   getDataCollectionForMarketing: jest.fn(),
 }));
@@ -41,19 +41,19 @@ const mockGetPortfolioUrl = jest.mocked(getPortfolioUrl);
 
 // Seed the useSelector calls in component order:
 // 1. getAnalyticsId
-// 2. getCompletedMetaMetricsOnboarding
+// 2. getConsentDecisionMade
 // 3. getOptedIn
 // 4. getDataCollectionForMarketing
 function seedSelectors({
   analyticsId = 'mock-metrics-id',
-  completedMetaMetricsOnboarding = true,
+  consentDecisionMade = true,
   isOptedIn = true,
   isMarketingEnabled = false,
 } = {}) {
   mockUseSelector.mockReset();
   mockUseSelector
     .mockReturnValueOnce(analyticsId as never)
-    .mockReturnValueOnce(completedMetaMetricsOnboarding as never)
+    .mockReturnValueOnce(consentDecisionMade as never)
     .mockReturnValueOnce(isOptedIn as never)
     .mockReturnValueOnce(isMarketingEnabled as never);
 }
@@ -129,7 +129,7 @@ describe('BatchSellEmptySelectTokens', () => {
     it('passes the correct arguments to getPortfolioUrl', () => {
       seedSelectors({
         analyticsId: 'test-id',
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         isOptedIn: true,
         isMarketingEnabled: true,
       });
@@ -149,7 +149,7 @@ describe('BatchSellEmptySelectTokens', () => {
     it('passes updated selector values when they change between renders', () => {
       seedSelectors({
         analyticsId: 'id-a',
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         isOptedIn: false,
         isMarketingEnabled: false,
       });
@@ -169,7 +169,7 @@ describe('BatchSellEmptySelectTokens', () => {
 
       seedSelectors({
         analyticsId: 'id-b',
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         isOptedIn: true,
         isMarketingEnabled: true,
       });

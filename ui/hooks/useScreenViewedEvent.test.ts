@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import React from 'react';
@@ -66,8 +66,8 @@ describe('useScreenViewedEvent', () => {
 
   it('fires at most once per mount even if dependencies change', () => {
     const { rerender } = renderHook<
-      { entryPoint?: ScreenViewedEntryPoint },
-      void
+      void,
+      { entryPoint?: ScreenViewedEntryPoint }
     >(
       ({ entryPoint }) =>
         useScreenViewedEvent(MetaMetricsEventName.DeFiScreenViewed, entryPoint),

@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import type {
+  INotification,
   OnChainRawNotification,
   OnChainRawNotificationsWithNetworkFields,
   NetworkMetadata,
@@ -26,6 +27,24 @@ import {
   hexWEIToDecETH,
   decimalToHex,
 } from '../../../shared/lib/conversion.utils';
+
+/**
+ * Derives the `notification_type` analytics property (the producer-owned
+ * axis, e.g. `wallet_activity`) for a processed notification. API-backed
+ * notifications carry `notification_type` directly; snap and
+ * feature-announcement notifications don't, so fall back to their top-level
+ * `type` (`snap` / `features_announcement`).
+ *
+ * @param notification - a processed notification.
+ * @returns the `notification_type` value to report in analytics events.
+ */
+export function getNotificationTypeForAnalytics(
+  notification: INotification,
+): string {
+  return 'notification_type' in notification
+    ? notification.notification_type
+    : notification.type;
+}
 
 /**
  * Checks if 2 date objects are on the same day
@@ -288,11 +307,16 @@ export const getNetworkNameByChainId = (
  * Retrieves the native currency logo URL for a given chain ID.
  *
  * @param chainId - The chain ID of the network.
+ * @param networkImageUrls - Chain ID (hex) to image URL map; defaults to the
+ * static map, pass the config-registry-aware map to honor registry logos.
  * @returns The logo URL of the native currency, or an empty string if not found.
  */
-export function getNativeCurrencyLogoByChainId(chainId: number): string {
+export function getNativeCurrencyLogoByChainId(
+  chainId: number,
+  networkImageUrls: Record<string, string> = CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+): string {
   const hexChainId = `0x${decimalToHex(chainId)}`;
-  return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[hexChainId] ?? '';
+  return networkImageUrls[hexChainId] ?? '';
 }
 
 /**

@@ -8,7 +8,10 @@ import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboa
 import { MOCK_ANALYTICS_ID, WALLET_PASSWORD } from '../../constants';
 import OnboardingPasswordPage from '../../page-objects/pages/onboarding/onboarding-password-page';
 import SecureWalletPage from '../../page-objects/pages/onboarding/secure-wallet-page';
-import { skipPasskeySetup } from '../../page-objects/flows/onboarding.flow';
+import {
+  revealAndConfirmSrp,
+  skipPasskeySetup,
+} from '../../page-objects/flows/onboarding.flow';
 
 /**
  * Mocks the segment API multiple times for specific payloads that we expect to
@@ -48,9 +51,9 @@ describe('App Installed Events', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
@@ -77,7 +80,7 @@ describe('App Installed Events', function () {
 
         const secureWalletPage = new SecureWalletPage(driver);
         await secureWalletPage.checkPageIsLoaded();
-        await secureWalletPage.revealAndConfirmSRP();
+        await revealAndConfirmSrp(driver);
 
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
@@ -105,7 +108,7 @@ describe('App Installed Events', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
           })
           .build(),
@@ -132,7 +135,7 @@ describe('App Installed Events', function () {
 
         const secureWalletPage = new SecureWalletPage(driver);
         await secureWalletPage.checkPageIsLoaded();
-        await secureWalletPage.revealAndConfirmSRP();
+        await revealAndConfirmSrp(driver);
 
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);

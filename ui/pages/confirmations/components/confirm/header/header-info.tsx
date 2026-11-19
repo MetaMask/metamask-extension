@@ -135,7 +135,7 @@ const HeaderInfo = () => {
         isClosedOnOutsideClick={false}
       >
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent data-testid="parent-selector-account-details-modal">
           <ModalHeader>
             <Box
               display={Display.Flex}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Text, TextColor, TextVariant } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAnalytics } from '../../../hooks/useAnalytics';
@@ -8,16 +8,8 @@ import {
   useDisableMetametrics,
 } from '../../../hooks/useMetametrics';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
-import {
-  getOptedIn,
-  getUseExternalServices,
-  getIsSocialLoginFlow,
-} from '../../../selectors';
+import { getOptedIn, getUseExternalServices } from '../../../selectors';
 import { getDataCollectionForMarketing } from '../../../selectors/metametrics';
-import {
-  setDataCollectionForMarketing,
-  setMarketingConsent,
-} from '../../../store/actions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -28,7 +20,6 @@ import { PRIVACY_ITEMS } from '../search-config';
 
 export const MetametricsToggleItem = () => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { enableMetametrics, error: enableMetametricsError } =
     useEnableMetametrics();
@@ -41,7 +32,6 @@ export const MetametricsToggleItem = () => {
   const isOptedIn = useSelector(getOptedIn);
   const useExternalServices = useSelector(getUseExternalServices);
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
-  const socialLoginEnabled = useSelector(getIsSocialLoginFlow);
 
   const handleToggle = async (currentValue: boolean) => {
     const newValue = !currentValue;
@@ -59,13 +49,6 @@ export const MetametricsToggleItem = () => {
           .build(),
       );
     } else {
-      if (dataCollectionForMarketing) {
-        if (socialLoginEnabled) {
-          dispatch(setMarketingConsent(false));
-        }
-        dispatch(setDataCollectionForMarketing(false));
-      }
-
       trackEvent(
         createEventBuilder(MetaMetricsEventName.TurnOffMetaMetrics)
           .addCategory(MetaMetricsEventCategory.Settings)
@@ -81,7 +64,8 @@ export const MetametricsToggleItem = () => {
           .addCategory(MetaMetricsEventCategory.Settings)
           .addProperties({
             [MetaMetricsUserTrait.IsMetricsOptedIn]: false,
-            [MetaMetricsUserTrait.HasMarketingConsent]: false,
+            [MetaMetricsUserTrait.HasMarketingConsent]:
+              dataCollectionForMarketing === true,
             location: 'Settings',
           })
           .build(),

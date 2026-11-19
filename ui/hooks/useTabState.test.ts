@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import { useTabState } from './useTabState';
 
 const mockSetSearchParams = jest.fn();

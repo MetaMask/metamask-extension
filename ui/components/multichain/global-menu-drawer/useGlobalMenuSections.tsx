@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxAlignItems,
@@ -8,8 +8,9 @@ import {
   BoxJustifyContent,
   IconColor,
   IconName,
+  Tag,
+  TagSeverity,
   TextColor,
-  TextVariant,
 } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useSegmentContext } from '../../../hooks/useSegmentContext';
@@ -33,12 +34,12 @@ import {
   setShowSupportDataConsentModal,
   toggleDefaultView,
 } from '../../../store/actions';
+import { useOpenSupport } from '../../app/modals/visit-support-data-consent-modal';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/lib/environment';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import { useBrowserSupportsSidePanel } from '../../../hooks/useBrowserSupportsSidePanel';
 import { selectIsMetamaskNotificationsFeatureSeen } from '../../../selectors/metamask-notifications/metamask-notifications';
-import { Tag } from '../../component-library';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -47,18 +48,16 @@ import {
 } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
-
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-
 import {
   getUnapprovedTransactions,
   getAnySnapUpdateAvailable,
   getUseExternalServices,
   getAnalyticsId,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getOptedIn,
   getDataCollectionForMarketing,
 } from '../../../selectors';
@@ -73,6 +72,8 @@ import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscri
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import type { GlobalMenuSection } from '../global-menu/global-menu-list.types';
 import { isBeta, isFlask } from '../../../../shared/lib/build-types';
+import { useDispatch } from '../../../store/hooks';
+import { preserveDrawerOpen } from './global-menu-drawer';
 
 const METRICS_LOCATION = 'Global Menu';
 
@@ -128,11 +129,9 @@ export function useGlobalMenuSections(
   );
 
   const analyticsId = useSelector(getAnalyticsId);
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
-  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
+  const isMetaMetricsEnabled = consentDecisionMade && isOptedIn;
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const supportText =
@@ -153,6 +152,7 @@ export function useGlobalMenuSections(
         })
         .build(),
     );
+    preserveDrawerOpen();
     navigate(
       `${NOTIFICATIONS_ROUTE}?from=${encodeURIComponent(location.pathname)}`,
       { state: { globalMenuTransition: 'forward' } },
@@ -166,17 +166,17 @@ export function useGlobalMenuSections(
     location.pathname,
   ]);
 
-  const handleSupportMenuClick = useCallback(() => {
+  const showSupportDataConsentModal = useCallback(() => {
     dispatch(setShowSupportDataConsentModal(true));
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
-        .addCategory(MetaMetricsEventCategory.Home)
-        .addProperties({
-          url: supportLink,
-          location: segmentContext.page?.title,
-        })
-        .build(),
-    );
+  }, [dispatch]);
+  // Non-priority clicks are tracked by handleSupportMenuClick, so the hook must not track them again.
+  const openSupport = useOpenSupport(showSupportDataConsentModal, {
+    trackLinkClick: showPriorityTag,
+  });
+
+  const handleSupportMenuClick = useCallback(() => {
+    openSupport();
+
     if (showPriorityTag) {
       const shieldSubscription = getShieldSubscription(subscriptions);
       const { cryptoPaymentChain, cryptoPaymentCurrency } =
@@ -193,10 +193,21 @@ export function useGlobalMenuSections(
           MetaMetricsEventName.ShieldPrioritySupportClicked,
         );
       }
+    } else {
+      // if shield subscription is not active, track the support link clicked event for non-priority support
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
+          .addCategory(MetaMetricsEventCategory.Home)
+          .addProperties({
+            url: supportLink,
+            location: segmentContext.page?.title,
+          })
+          .build(),
+      );
     }
     onClose();
   }, [
-    dispatch,
+    openSupport,
     trackEvent,
     createEventBuilder,
     segmentContext.page?.title,
@@ -334,7 +345,7 @@ export function useGlobalMenuSections(
         {
           id: 'global-menu-connected-sites',
           iconName: IconName.SecurityTick,
-          label: t('allPermissions'),
+          label: t('permissions'),
           to: isGatorPermissionsRevocationFeatureEnabled()
             ? `${GATOR_PERMISSIONS}?from=${encodeURIComponent(location.pathname)}`
             : `${PERMISSIONS}?from=${encodeURIComponent(location.pathname)}`,
@@ -395,17 +406,12 @@ export function useGlobalMenuSections(
               {supportText}
               {showPriorityTag && (
                 <Tag
-                  label={t('priority')}
-                  textVariant={TextVariant.BodySm}
-                  className="rounded-lg border-0 bg-success-muted"
-                  labelProps={{
-                    className: 'text-success-default',
-                  }}
-                  iconName={IconName.Sparkle}
-                  startIconProps={{
-                    className: 'text-success-default',
-                  }}
-                />
+                  severity={TagSeverity.Success}
+                  className="rounded-lg border-0"
+                  startIconName={IconName.Sparkle}
+                >
+                  {t('priority')}
+                </Tag>
               )}
             </Box>
           ),

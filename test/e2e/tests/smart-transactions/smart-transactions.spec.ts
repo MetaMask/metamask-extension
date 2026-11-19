@@ -12,10 +12,10 @@ import {
   createDappTransaction,
   createInternalTransaction,
 } from '../../page-objects/flows/transaction.flow';
+import SwapPage from '../../page-objects/pages/swap/swap-page';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
-import SwapPage from '../../page-objects/pages/swap/swap-page';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from '../bridge/constants';
 import { mockGetTxStatus } from '../bridge/bridge-test-utils';
 import {
@@ -91,7 +91,6 @@ async function withFixturesForSmartTransactions(
     async ({ driver }) => {
       await login(driver, {
         expectedBalance,
-        waitForNonEvmAccounts: false,
       });
       await runTestWithFixtures({ driver });
     },
@@ -126,7 +125,10 @@ describe('Smart Transactions', function () {
         });
 
         await transactionConfirmation.selectTokenFee('USDC');
-        await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
+        await transactionConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'disappear',
+        });
 
         await homePage.goToActivityList();
         await activityTab.checkCompletedTxNumberDisplayedInActivity(1);
@@ -154,12 +156,10 @@ describe('Smart Transactions', function () {
         const swapPage = new SwapPage(driver);
         await swapPage.checkPageIsLoaded();
         await swapPage.enterSwapAmount('2');
-        await swapPage.selectDestinationToken('DAI');
-        await swapPage.checkQuoteIsGasIncluded();
+        await swapPage.selectDestToken('DAI');
+        await swapPage.checkGasIncludedIsDisplayed();
         await swapPage.submitSwap();
-
-        await swapPage.waitForSmartTransactionToComplete();
-        await swapPage.clickViewActivity();
+        await swapPage.goBackAfterSubmit();
 
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
@@ -187,12 +187,10 @@ describe('Smart Transactions', function () {
         const swapPage = new SwapPage(driver);
         await swapPage.checkPageIsLoaded();
         await swapPage.enterSwapAmount('20');
-        await swapPage.waitForQuote();
-        await swapPage.checkQuoteIsGasIncluded();
+        await swapPage.waitForSwapQuote();
+        await swapPage.checkGasIncludedIsDisplayed();
         await swapPage.submitSwap();
-
-        await swapPage.waitForSmartTransactionToComplete();
-        await swapPage.clickViewActivity();
+        await swapPage.goBackAfterSubmit();
 
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
@@ -216,7 +214,7 @@ describe('Smart Transactions', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const confirmation = new TransactionConfirmation(driver);
-        await confirmation.clickFooterConfirmButton();
+        await confirmation.clickFooterButton({ button: 'confirm' });
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );

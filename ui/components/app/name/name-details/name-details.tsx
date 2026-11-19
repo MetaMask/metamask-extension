@@ -13,7 +13,7 @@ import {
   NameType,
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { toChecksumAddress } from 'ethereumjs-util';
 import {
   Box,
@@ -57,6 +57,7 @@ import { useName } from '../../../../hooks/useName';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
+import { useDispatch } from '../../../../store/hooks';
 import NameDisplay from './name-display';
 import { usePetnamesMetrics } from './metrics';
 
@@ -166,7 +167,10 @@ function useProposedNames(value: string, type: NameType, variation: string) {
 
   // Track latest proposed names without resetting polling interval.
   const proposedNamesRef = useRef(proposedNames);
-  proposedNamesRef.current = proposedNames;
+
+  useEffect(() => {
+    proposedNamesRef.current = proposedNames;
+  }, [proposedNames]);
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -235,12 +239,31 @@ export default function NameDetails({
   });
 
   const nameSources = useSelector(getNameSources);
-  const [name, setName] = useState('');
-  const [openMetricSent, setOpenMetricSent] = useState(false);
-  const [selectedSourceId, setSelectedSourceId] = useState<string>();
-  const [selectedSourceName, setSelectedSourceName] = useState<string>();
+  const [name, setName] = useState(savedPetname ?? '');
+  const openMetricSentRef = useRef(false);
+  const [selectedSourceId, setSelectedSourceId] = useState<string | undefined>(
+    savedSourceId ?? undefined,
+  );
+  const [selectedSourceName, setSelectedSourceName] = useState<
+    string | undefined
+  >(savedSourceId ? (savedPetname ?? undefined) : undefined);
+  const [prevSavedPetname, setPrevSavedPetname] = useState(savedPetname);
+  const [prevSavedSourceId, setPrevSavedSourceId] = useState(savedSourceId);
   const dispatch = useDispatch();
   const t = useI18nContext();
+
+  if (
+    savedPetname !== prevSavedPetname ||
+    savedSourceId !== prevSavedSourceId
+  ) {
+    setPrevSavedPetname(savedPetname);
+    setPrevSavedSourceId(savedSourceId);
+    setName(savedPetname ?? '');
+    setSelectedSourceId(savedSourceId ?? undefined);
+    setSelectedSourceName(
+      savedSourceId ? (savedPetname ?? undefined) : undefined,
+    );
+  }
 
   const formattedValue = formatValue(value, type);
 
@@ -251,17 +274,7 @@ export default function NameDetails({
   );
 
   // useCopyToClipboard analysis: Copies the public address of the name
-  const [copiedAddress, handleCopyAddress] = useCopyToClipboard({
-    clearDelayMs: null,
-  });
-
-  useEffect(() => {
-    setName(savedPetname ?? '');
-    setSelectedSourceId(savedSourceId ?? undefined);
-    setSelectedSourceName(
-      savedSourceId ? (savedPetname ?? undefined) : undefined,
-    );
-  }, [savedPetname, savedSourceId, setName, setSelectedSourceId]);
+  const [copiedAddress, handleCopyAddress] = useCopyToClipboard();
 
   const proposedNameOptions = useMemo(
     () => generateComboOptions(proposedNames, t, nameSources),
@@ -281,11 +294,11 @@ export default function NameDetails({
   );
 
   useEffect(() => {
-    if (initialSources && !openMetricSent) {
+    if (initialSources && !openMetricSentRef.current) {
       trackPetnamesOpenEvent();
-      setOpenMetricSent(true);
+      openMetricSentRef.current = true;
     }
-  }, [initialSources, openMetricSent, trackPetnamesOpenEvent]);
+  }, [initialSources, trackPetnamesOpenEvent]);
 
   const handleSaveClick = useCallback(async () => {
     trackPetnamesSaveEvent();
@@ -346,12 +359,12 @@ export default function NameDetails({
 
     switch (displayState) {
       case TrustSignalDisplayState.Malicious:
-        titleKey = 'nameModalTitleMalicious';
-        instructionsKey = 'nameInstructionsMalicious';
+        titleKey = 'alertReasonAddressTrustSignalMalicious';
+        instructionsKey = 'alertMessageAddressTrustSignalMalicious';
         break;
       case TrustSignalDisplayState.Warning:
-        titleKey = 'nameModalTitleWarning';
-        instructionsKey = 'nameInstructionsWarning';
+        titleKey = 'alertReasonAddressTrustSignalWarning';
+        instructionsKey = 'alertMessageAddressTrustSignal';
         break;
       case TrustSignalDisplayState.Verified:
         titleKey = 'nameModalTitleVerified';
@@ -428,7 +441,7 @@ export default function NameDetails({
               label={t('nameAddressLabel')}
               value={formattedValue}
               marginBottom={4}
-              disabled
+              readOnly
               endAccessory={
                 <ButtonIcon
                   display={Display.Flex}

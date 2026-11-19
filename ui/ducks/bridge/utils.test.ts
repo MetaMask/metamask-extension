@@ -2,7 +2,11 @@ import { type CaipAssetType } from '@metamask/utils';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { BridgeAssetSecurityDataType } from '../../pages/bridge/utils/tokens';
-import { isSupportedBridgeChain, toBridgeToken } from './utils';
+import {
+  getDefaultFromToken,
+  isSupportedBridgeChain,
+  toBridgeToken,
+} from './utils';
 
 const BASE_PAYLOAD = {
   assetId:
@@ -24,14 +28,12 @@ describe('isSupportedBridgeChain', () => {
 
     it('returns true for a supported EVM chain (BSC)', () => {
       expect(
-        isSupportedBridgeChain(
-          `eip155:${parseInt(CHAIN_IDS.BSC, 16)}` as never,
-        ),
+        isSupportedBridgeChain(`eip155:${parseInt(CHAIN_IDS.BSC, 16)}`),
       ).toBe(true);
     });
 
     it('returns false for an unknown EVM chain', () => {
-      expect(isSupportedBridgeChain(`eip155:99999` as never)).toBe(false);
+      expect(isSupportedBridgeChain(`eip155:99999`)).toBe(false);
     });
   });
 
@@ -45,13 +47,22 @@ describe('isSupportedBridgeChain', () => {
     });
 
     it('returns false for an unknown Solana network', () => {
-      expect(isSupportedBridgeChain(`solana:unknown-testnet` as never)).toBe(
-        false,
-      );
+      expect(isSupportedBridgeChain(`solana:unknown-testnet`)).toBe(false);
     });
 
     it('returns false for an entirely unknown non-EVM namespace', () => {
-      expect(isSupportedBridgeChain(`cosmos:cosmoshub-4` as never)).toBe(false);
+      expect(isSupportedBridgeChain(`cosmos:cosmoshub-4`)).toBe(false);
+    });
+  });
+});
+
+describe('getDefaultFromToken', () => {
+  it('uses native USDC on Arc', () => {
+    expect(getDefaultFromToken('eip155:5042')).toMatchObject({
+      assetId: 'eip155:5042/slip44:5042',
+      chainId: 'eip155:5042',
+      decimals: 18,
+      symbol: 'USDC',
     });
   });
 });

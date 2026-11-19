@@ -1,8 +1,42 @@
-import LoginPage from '../pages/login-page';
+import LoginPage from '../pages/onboarding/login-page';
 import HomePage from '../pages/home/homepage';
-import HeaderNavbar from '../pages/header-navbar';
-import { Driver } from '../../webdriver/driver';
+import HeaderNavbar from '../pages/home/header-navbar';
+import { WALLET_PASSWORD } from '../../constants';
+import { getCleanAppState } from '../../helpers';
 import { Anvil } from '../../seeder/anvil';
+import { Driver } from '../../webdriver/driver';
+import { reloadExtension } from '../../tests/state-persistence/helpers';
+
+/**
+ * Reloads the extension, unlocks with the wallet password, and waits for home readiness.
+ * Does not use {@link login} (which navigates and runs balance checks).
+ *
+ * @param driver - WebDriver instance.
+ */
+export const reloadAndUnlock = async (driver: Driver): Promise<void> => {
+  await reloadExtension(driver);
+  const loginPage = new LoginPage(driver);
+  await loginPage.checkPageIsLoaded();
+  await loginPage.loginToHomepage(WALLET_PASSWORD);
+  const homePage = new HomePage(driver);
+  await homePage.ensurePageIsReady();
+};
+
+/**
+ * Waits until AuthenticationController reports the user is signed in.
+ *
+ * @param driver - The webdriver instance.
+ */
+const waitForSignIn = async (driver: Driver): Promise<void> => {
+  console.log('Waiting for authentication sign-in to complete');
+  await driver.waitUntil(
+    async () => {
+      const uiState = await getCleanAppState(driver);
+      return uiState?.metamask?.isSignedIn === true;
+    },
+    { interval: 500, timeout: driver.timeout },
+  );
+};
 
 /**
  * Unlocks the wallet and lands the user on the homepage.
@@ -15,8 +49,8 @@ import { Anvil } from '../../seeder/anvil';
  * @param options.localNode - A local node instance whose balance should be verified.
  * @param options.password - The password used to unlock the wallet.
  * @param options.validateBalance - Whether to verify the balance is displayed. Defaults to true.
- * @param options.waitForNonEvmAccounts - Whether to wait for non-EVM accounts to load on the homepage. Defaults to true; set to false to skip.
  * @param options.ignorePasskeyUnlock - Whether to ignore the passkey unlock and use password instead. Defaults to false.
+ * @param options.waitForSignIn - Whether to wait for the profile sign-in that follows unlock. Needed before triggering events that must include the profile ID. Defaults to false.
  */
 export const login = async (
   driver: Driver,
@@ -25,8 +59,8 @@ export const login = async (
     localNode?: Anvil;
     password?: string;
     validateBalance?: boolean;
-    waitForNonEvmAccounts?: boolean;
     ignorePasskeyUnlock?: boolean;
+    waitForSignIn?: boolean;
   },
 ) => {
   console.log('Navigate to unlock page and try to login with password');
@@ -41,10 +75,6 @@ export const login = async (
 
   const homePage = new HomePage(driver);
   await homePage.checkPageIsLoaded();
-  if (options?.waitForNonEvmAccounts !== false) {
-    await homePage.waitForNonEvmAccountsLoaded();
-  }
-
   if (options?.localNode) {
     await homePage.checkLocalNodeBalanceIsDisplayed(options.localNode);
   } else if (options?.expectedBalance !== undefined) {
@@ -52,6 +82,10 @@ export const login = async (
   } else if (options?.validateBalance !== false) {
     // defaults to 25 ETH
     await homePage.checkExpectedBalanceIsDisplayed();
+  }
+
+  if (options?.waitForSignIn) {
+    await waitForSignIn(driver);
   }
 };
 

@@ -3,11 +3,13 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
 import { genUnapprovedTokenTransferConfirmation } from '../../../../test/data/confirmations/token-transfer';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import * as ConfirmSendNavigation from './useConfirmSendNavigation';
 import { useConfirmActions } from './useConfirmActions';
 
 const mockDispatch = jest.fn();
 const mockNavigate = jest.fn();
+let mockLocationKey = 'default';
 
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
@@ -20,6 +22,13 @@ jest.mock('react-redux', () => {
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
+  useLocation: () => ({
+    pathname: '/',
+    search: '',
+    hash: '',
+    state: null,
+    key: mockLocationKey,
+  }),
 }));
 
 function renderHook(pathname = '/') {
@@ -39,6 +48,7 @@ function renderHook(pathname = '/') {
 describe('useConfirmActions', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockLocationKey = 'default';
   });
 
   it('returns correct functions', () => {
@@ -106,6 +116,33 @@ describe('useConfirmActions', () => {
       navigateBackToPreviousPage: true,
     });
     expect(mockNavigate).toHaveBeenCalledWith('/', { replace: true });
+  });
+
+  it('pops history when the confirmation was pushed onto an in-app page', async () => {
+    mockLocationKey = 'earn-page';
+    mockDispatch.mockResolvedValue(undefined);
+    const result = renderHook(
+      '/?goBackTo=%2Fmoney-home%2Fearn&goBackAction=pop',
+    );
+    await result.onCancel({
+      location: 'dummy',
+      navigateBackToPreviousPage: true,
+    });
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+  });
+
+  it('replaces with goBackTo when pop was requested from the first history entry', async () => {
+    mockDispatch.mockResolvedValue(undefined);
+    const result = renderHook(
+      '/?goBackTo=%2Fmoney-home%2Fearn&goBackAction=pop',
+    );
+    await result.onCancel({
+      location: 'dummy',
+      navigateBackToPreviousPage: true,
+    });
+    expect(mockNavigate).toHaveBeenCalledWith('/money-home/earn', {
+      replace: true,
+    });
   });
 
   it('does not navigate back by default', async () => {

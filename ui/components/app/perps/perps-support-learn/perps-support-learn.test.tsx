@@ -83,4 +83,28 @@ describe('PerpsSupportLearn', () => {
       url: FEEDBACK_CONFIG.Url,
     });
   });
+
+  it('names the tapped button via button_clicked on Perp UI Interaction', () => {
+    const store = configureStore(mockState);
+    renderWithProvider(<PerpsSupportLearn />, store, PERPS_ROUTE);
+
+    fireEvent.click(screen.getByTestId('perps-learn-basics'));
+
+    const uiInteraction = mockTrackEvent.mock.calls
+      .map(([event]) => event)
+      .find((event) => event.name === MetaMetricsEventName.PerpsUiInteraction);
+    expect(uiInteraction?.properties).toHaveProperty(
+      'interaction_type',
+      'button_clicked',
+    );
+    expect(uiInteraction?.properties).toHaveProperty(
+      'button_clicked',
+      'tutorial',
+    );
+    expect(uiInteraction?.properties).toHaveProperty(
+      'button_location',
+      'perps_tab',
+    );
+    expect(uiInteraction?.properties).not.toHaveProperty('button_type');
+  });
 });

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import type { Location as RouterLocation } from 'react-router-dom';
 import classnames from 'clsx';
 import {
@@ -35,6 +35,7 @@ import {
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
+import { useDispatch } from '../../../store/hooks';
 
 type OnboardingAppHeaderProps = {
   isWelcomePage: boolean;

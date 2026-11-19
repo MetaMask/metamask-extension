@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   AvatarAccountSize,
   AvatarNetwork,
@@ -15,6 +15,7 @@ import {
   BoxFlexDirection,
   BoxAlignItems,
 } from '@metamask/design-system-react';
+import { useDispatch } from '../../../store/hooks';
 import { PreferredAvatar } from '../../../components/app/preferred-avatar';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -27,6 +28,7 @@ import {
   BorderRadius,
 } from '../../../helpers/constants/design-system';
 import { getImageForChainId } from '../../../selectors/multichain';
+import { getChainIdToNetworkImageUrlMap } from '../../../selectors/config-registry/config-registry';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import {
   addToAddressBook,
@@ -53,7 +55,6 @@ export function EditContactForm({
   initialName,
   initialMemo,
   contactChainId,
-  onCancel,
   onSuccess,
 }: EditContactFormProps) {
   const t = useI18nContext();
@@ -62,6 +63,7 @@ export function EditContactForm({
   const addressBook = useSelector(getCompleteAddressBook);
   const internalAccounts = useSelector(getInternalAccounts);
   const networks = useSelector(getNetworkConfigurationsByChainId);
+  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
 
   const [contactName, setContactName] = useState(initialName);
   const [newAddress, setNewAddress] = useState(address);
@@ -271,7 +273,7 @@ export function EditContactForm({
                   className="rounded-md"
                   src={
                     contactChainId
-                      ? getImageForChainId(contactChainId) || undefined
+                      ? getImageForChainId(contactChainId, networkImageUrls)
                       : undefined
                   }
                   name={selectedNetworkName}
@@ -292,27 +294,16 @@ export function EditContactForm({
 
       {/* Footer */}
       <Box
-        flexDirection={BoxFlexDirection.Row}
-        gap={4}
         padding={4}
         paddingBottom={6}
-        className="shrink-0 flex-row bg-background-default"
+        className="shrink-0 bg-background-default"
       >
-        <Button
-          variant={ButtonVariant.Secondary}
-          size={ButtonSize.Lg}
-          onClick={onCancel}
-          className="flex-1 rounded-xl border border-border-default"
-          data-testid="page-container-footer-cancel"
-        >
-          {t('cancel')}
-        </Button>
         <Button
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
           isDisabled={isSaveDisabled}
           onClick={handleSubmit}
-          className="flex-1 rounded-xl"
+          isFullWidth
           data-testid="page-container-footer-next"
         >
           {t('save')}

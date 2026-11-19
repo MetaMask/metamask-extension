@@ -4,8 +4,8 @@ import { Driver } from '../../webdriver/driver';
 import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
+import SnapSimpleKeyringPage from '../../page-objects/pages/snaps/simple-keyring-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { login } from '../../page-objects/flows/login.flow';
@@ -15,8 +15,8 @@ import {
   signTypedDataV4WithSnapAccount,
 } from '../../page-objects/flows/sign.flow';
 import {
+  mockRewardsOptOut,
   mockSnapSimpleKeyringAndSite,
-  SNAP_SIMPLE_KEYRING_E2E_MANIFEST_FLAGS,
 } from './snap-keyring-site-mocks';
 
 describe('Snap Account Signatures and Disconnects', function (this: Suite) {
@@ -29,10 +29,13 @@ describe('Snap Account Signatures and Disconnects', function (this: Suite) {
         },
         fixtures: new FixtureBuilderV2()
           .withSnapsPrivacyWarningAlreadyShown()
+          // Leave basic functionality on. Turning it off disables snaps, and
+          // login then times out waiting for the Bitcoin account icon.
           .build(),
-        manifestFlags: SNAP_SIMPLE_KEYRING_E2E_MANIFEST_FLAGS,
-        testSpecificMock: (mockServer: Mockttp) =>
-          mockSnapSimpleKeyringAndSite(mockServer, 8081),
+        testSpecificMock: async (mockServer: Mockttp) => [
+          ...(await mockSnapSimpleKeyringAndSite(mockServer, 8081)),
+          ...(await mockRewardsOptOut(mockServer)),
+        ],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

@@ -56,27 +56,32 @@ export const PerpsTokenLogo = ({
       return 'bg-icon-default';
     }
 
-    return '';
+    // AvatarToken paints image logos with `bg-white`. That would hide light
+    // logos in dark mode; per-asset backgrounds come from the config above.
+    return 'bg-alternative';
   }, [displaySymbol, theme]);
   const [resolvedSrc, setResolvedSrc] = useState<string | undefined>(undefined);
-  const [isResolving, setIsResolving] = useState(true);
+  const [isResolving, setIsResolving] = useState(() =>
+    Boolean(symbol && getAssetIconUrls(symbol)),
+  );
+  const [prevSymbol, setPrevSymbol] = useState(symbol);
+
+  if (symbol !== prevSymbol) {
+    setPrevSymbol(symbol);
+    setResolvedSrc(undefined);
+    setIsResolving(Boolean(symbol && getAssetIconUrls(symbol)));
+  }
 
   useEffect(() => {
     if (!symbol) {
-      setResolvedSrc(undefined);
-      setIsResolving(false);
       return undefined;
     }
 
     const iconUrls = getAssetIconUrls(symbol);
     if (!iconUrls) {
-      setResolvedSrc(undefined);
-      setIsResolving(false);
       return undefined;
     }
 
-    setResolvedSrc(undefined);
-    setIsResolving(true);
     let cancelled = false;
     const urls = [iconUrls.primary, iconUrls.fallback];
     let idx = 0;

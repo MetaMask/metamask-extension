@@ -1,7 +1,8 @@
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
+import { AvatarNetworkSize } from '@metamask/design-system-react';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import {
   convertCaipToHexChainId,
@@ -17,7 +18,6 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
-  AvatarNetworkSize,
   Box,
   Button,
   ButtonSize,
@@ -31,30 +31,33 @@ import { useNetworkChangeHandlers } from '../../hooks/useNetworkChangeHandlers';
 import { useNetworkItemCallbacks } from '../../hooks/useNetworkItemCallbacks';
 import { useNetworkManagerState } from '../../hooks/useNetworkManagerState';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
+import { getChainIdToNetworkImageUrlMap } from '../../../../../selectors/config-registry/config-registry';
 import {
   getEnabledNetworksByNamespace,
   getMultichainNetworkConfigurationsByChainId,
   getOrderedNetworksList,
-  getShowTestNetworks,
+  getShouldShowTestNetworks,
 } from '../../../../../selectors';
 import { hideModal } from '../../../../../store/actions';
+import { useDispatch } from '../../../../../store/hooks';
 
 export const CustomNetworks = React.memo(() => {
   const t = useI18nContext();
   const [, setSearchParams] = useSearchParams();
   const dispatch = useDispatch();
   const orderedNetworksList = useSelector(getOrderedNetworksList);
+  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
-  const showTestnets = useSelector(getShowTestNetworks);
+  const showTestnets = useSelector(getShouldShowTestNetworks);
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
 
   const { nonTestNetworks, testNetworks } = useNetworkManagerState();
 
   const { getItemCallbacks, hasMultiRpcOptions, isNetworkEnabled } =
     useNetworkItemCallbacks();
-  const { handleNetworkChange } = useNetworkChangeHandlers();
+  const { handleNetworkChange, isPending } = useNetworkChangeHandlers();
 
   const isEvmNetworkSelected = useSelector(getMultichainIsEvm);
 
@@ -73,10 +76,13 @@ export const CustomNetworks = React.memo(() => {
   // Memoize the network click handler
   const handleNetworkClick = useCallback(
     async (chainId: MultichainNetworkConfiguration['chainId']) => {
+      if (isPending) {
+        return;
+      }
       await handleNetworkChange(chainId);
       await dispatch(hideModal());
     },
-    [dispatch, handleNetworkChange],
+    [dispatch, handleNetworkChange, isPending],
   );
 
   // Renders a network in the network list
@@ -107,7 +113,7 @@ export const CustomNetworks = React.memo(() => {
           key={network.chainId}
           chainId={network.chainId}
           name={network.name}
-          iconSrc={getNetworkIcon(network)}
+          iconSrc={getNetworkIcon(network, networkImageUrls)}
           iconSize={AvatarNetworkSize.Md}
           focus={false}
           rpcEndpoint={rpcEndpoint}
@@ -118,7 +124,7 @@ export const CustomNetworks = React.memo(() => {
           onDiscoverClick={onDiscoverClick}
           selected={isEnabled}
           onRpcEndpointClick={onRpcSelect}
-          disabled={!isNetworkEnabled(network)}
+          disabled={isPending || !isNetworkEnabled(network)}
         />
       );
     },
@@ -129,6 +135,8 @@ export const CustomNetworks = React.memo(() => {
       evmNetworks,
       isNetworkEnabled,
       handleNetworkClick,
+      isPending,
+      networkImageUrls,
     ],
   );
 

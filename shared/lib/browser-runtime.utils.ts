@@ -4,6 +4,7 @@
 
 import Bowser from 'bowser';
 import browser from 'webextension-polyfill';
+import type { Runtime } from 'webextension-polyfill';
 import log from 'loglevel';
 import {
   PLATFORM_BRAVE,
@@ -151,4 +152,12 @@ export function getMozExtensionOriginForDisplay(): string {
   } catch {
     return '';
   }
+}
+
+/**
+ * Bridges webextension-polyfill `Runtime.Port` to APIs typed against `chrome.runtime.Port`.
+ * @param port
+ */
+export function asChromeRuntimePort(port: Runtime.Port): chrome.runtime.Port {
+  return port as chrome.runtime.Port;
 }

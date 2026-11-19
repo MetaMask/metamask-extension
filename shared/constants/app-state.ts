@@ -1,13 +1,9 @@
-import { NetworkClientId } from '@metamask/network-controller';
-import type { Hex } from 'viem';
 import { TraceName } from '../lib/trace';
 
 export enum AccountOverviewTabKey {
   Tokens = 'tokens',
   Nfts = 'nfts',
-  Activity = 'activity',
   DeFi = 'defi',
-  Perps = 'perps',
 }
 
 export type AccountOverviewTab = `${AccountOverviewTabKey}`;
@@ -15,9 +11,7 @@ export type AccountOverviewTab = `${AccountOverviewTabKey}`;
 export const ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP = {
   [AccountOverviewTabKey.Tokens]: TraceName.AccountOverviewAssetListTab,
   [AccountOverviewTabKey.Nfts]: TraceName.AccountOverviewNftsTab,
-  [AccountOverviewTabKey.Activity]: TraceName.AccountOverviewActivityTab,
   [AccountOverviewTabKey.DeFi]: TraceName.AccountOverviewDeFiTab,
-  [AccountOverviewTabKey.Perps]: TraceName.AccountOverviewPerpsTab,
 } as const;
 
 export type CarouselSlide = {
@@ -54,19 +48,3 @@ export enum StorageWriteErrorType {
   /** Device is out of disk space */
   FileErrorNoSpace = 'file-error-no-space',
 }
-
-export type NetworkConnectionBanner =
-  | { status: 'unknown' | 'available' }
-  | {
-      status: 'degraded' | 'unavailable';
-      networkName: string;
-      networkClientId: NetworkClientId;
-      chainId: Hex;
-      isInfuraEndpoint: boolean;
-      /**
-       * The index of an available Infura RPC endpoint in the network's
-       * rpcEndpoints array. Only set for custom networks that have an
-       * Infura endpoint available to switch to.
-       */
-      infuraEndpointIndex?: number;
-    };

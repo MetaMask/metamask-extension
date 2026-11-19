@@ -14,7 +14,7 @@ import {
   EXPECTED_EVENT_TYPES,
   checkInputChangedEvents,
 } from '../bridge/bridge-test-utils';
-import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import SwapPage from '../../page-objects/pages/swap/swap-page';
 import { login } from '../../page-objects/flows/login.flow';
 
 const quote = {
@@ -36,11 +36,10 @@ describe('Bridge tests', function (this: Suite) {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver, {
           expectedBalance: '225,730.11',
-          waitForNonEvmAccounts: false,
         });
 
         const homePage = new HomePage(driver);
-        const bridgePage = new BridgeQuotePage(driver);
+        const swapPage = new SwapPage(driver);
 
         // QUOTE REQUEST #1
         console.log('Starting 1st Swap flow');
@@ -50,6 +49,7 @@ describe('Bridge tests', function (this: Suite) {
           expectedTransactionsCount: 2,
           expectedDestAmount: '0.0157',
           expectedActivityAmount: '+0.01567',
+          openPickersWithDebounce: true,
         });
 
         const inputChangesCount1 = await checkInputChangedEvents(
@@ -60,6 +60,7 @@ describe('Bridge tests', function (this: Suite) {
 
         // QUOTE REQUEST #2 - Start the flow again
         console.log('Starting 2nd Swap flow');
+        await homePage.goToHomePage();
         await homePage.startSwapFlow();
 
         const inputChangesCount2 = await checkInputChangedEvents(
@@ -70,9 +71,11 @@ describe('Bridge tests', function (this: Suite) {
         );
 
         console.log('Entering 2nd Swap quote');
-        await bridgePage.enterBridgeQuote(quote);
-        await bridgePage.waitForQuote();
-        await bridgePage.checkExpectedNetworkFeeIsDisplayed();
+        await swapPage.enterBridgeQuote(quote, {
+          openPickersWithDebounce: true,
+        });
+        await swapPage.waitForQuote();
+        await swapPage.checkExpectedNetworkFeeIsDisplayed();
 
         const inputChangesCount3 = await checkInputChangedEvents(
           'quoteRequest2',
@@ -83,7 +86,7 @@ describe('Bridge tests', function (this: Suite) {
 
         // QUOTE REQUEST #3
         console.log('Switching tokens');
-        await bridgePage.switchTokens();
+        await swapPage.switchTokens();
 
         let events = await getEventPayloads(driver, mockedEndpoints);
         events = events.filter((event) => event !== null);
@@ -206,7 +209,19 @@ describe('Bridge tests', function (this: Suite) {
             unifiedSwapBridgeSubmitted[0].properties
               .token_symbol_destination === 'ETH',
         );
+        const { actionId, ...properties } =
+          unifiedSwapBridgeSubmitted[0]?.properties ?? {};
 
+        console.log('Verifying Submitted event properties');
+        const propertiesString = JSON.stringify(properties);
+        const expectedProperties =
+          '{"category":"Unified SwapBridge","action_type":"swapbridge-v1","feature_id":"unified_swap_bridge","price_impact":-0.003660017836029515,"usd_quoted_gas":241.72268937750394,"gas_included":false,"gas_included_7702":false,"provider":"lifi_across","quoted_time_minutes":0.8,"usd_quoted_return":-194.5627915675127,"chain_id_source":"eip155:1","token_symbol_source":"DAI","token_address_source":"eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f","chain_id_destination":"eip155:59144","token_symbol_destination":"ETH","token_address_destination":"eip155:59144/slip44:60","token_security_type_destination":null,"account_hardware_type":null,"is_hardware_wallet":false,"swap_type":"crosschain","usd_amount_source":0,"stx_enabled":true,"slippage_limit":0,"custom_slippage":false,"location":"Main View","source_hash_present":false,"destination_hash_present":false,"input_primary_denomination":"token_amount","environment_type":"background","locale":"en","chain_id":"0x1","profile_id":"MOCK_SRP_IDENTIFIER_1","canonical_profile_id":"MOCK_SRP_IDENTIFIER_1"}';
+        assert.ok(
+          propertiesString === expectedProperties,
+          `Expected Submitted event properties: ${expectedProperties} but got ${propertiesString}`,
+        );
+
+        console.log('Verifying other events');
         const assetTypeCheck1 = [
           (req: {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

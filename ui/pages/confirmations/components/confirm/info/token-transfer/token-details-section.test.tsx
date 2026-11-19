@@ -1,6 +1,11 @@
+import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { getMockTokenTransferConfirmState } from '../../../../../../../test/data/confirmations/helper';
+import {
+  getMockConfirmStateForTransaction,
+  getMockTokenTransferConfirmState,
+} from '../../../../../../../test/data/confirmations/helper';
+import { genUnapprovedTokenTransferConfirmation } from '../../../../../../../test/data/confirmations/token-transfer';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import { TokenDetailsSection } from './token-details-section';
@@ -35,5 +40,30 @@ describe('TokenDetailsSection', () => {
     expect(getByText(messages.network.message)).toBeInTheDocument();
     expect(getByText(messages.networkNameGoerli.message)).toBeInTheDocument();
     expect(getByText(messages.interactingWith.message)).toBeInTheDocument();
+  });
+
+  it('renders the original interacting-with address when the transaction is wrapped', () => {
+    const transactionMeta =
+      genUnapprovedTokenTransferConfirmation() as TransactionMeta;
+    transactionMeta.txParamsOriginal = { ...transactionMeta.txParams };
+    transactionMeta.txParams = {
+      ...transactionMeta.txParams,
+      to: '0x1111111111111111111111111111111111111111',
+    };
+    const mockStore = configureMockStore([])(
+      getMockConfirmStateForTransaction(transactionMeta),
+    );
+
+    const { getByText, queryByText } = renderWithConfirmContextProvider(
+      <TokenDetailsSection />,
+      mockStore,
+    );
+
+    expect(
+      getByText('0x076146c765189d51bE3160A2140cF80BFC73ad68'),
+    ).toBeInTheDocument();
+    expect(
+      queryByText('0x1111111111111111111111111111111111111111'),
+    ).not.toBeInTheDocument();
   });
 });

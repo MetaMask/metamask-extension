@@ -46,13 +46,11 @@ type ControllerMessengerCallback = (
 export type MessengerClientsToInitialize =
   | 'AccountTrackerController'
   | 'AuthenticationController'
-  | 'ClientController'
   | 'CronjobController'
   | 'DeFiPositionsController'
+  | 'DeFiPositionsControllerV2'
   | 'ExecutionService'
   | 'MultichainAssetsController'
-  | 'MultichainAssetsRatesController'
-  | 'MultichainBalancesController'
   | 'MultichainNetworkController'
   | 'MultichainTransactionsController'
   | 'NotificationServicesController'
@@ -62,10 +60,11 @@ export type MessengerClientsToInitialize =
   | 'SnapController'
   | 'SnapInsightsController'
   | 'SnapInterfaceController'
-  | 'GeolocationApiService'
-  | 'GeolocationController'
   | 'PerpsController'
   | 'QrSyncController'
+  | 'SentinelApiService'
+  | 'SentryTracingService'
+  | 'ShieldSubscriptionService'
   | 'TransactionPayController'
   | 'UserStorageController';
 

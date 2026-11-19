@@ -28,7 +28,6 @@ export const SLIPPAGE_HIGH_ERROR = 'slippage-high';
 export const SLIPPAGE_LOW_ERROR = 'slippage-low';
 export const SLIPPAGE_NEGATIVE_ERROR = 'slippage-negative';
 
-export const MAX_ALLOWED_SLIPPAGE = 15;
 export const SWAPS_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE = 0.35;
 
 // An address that the metaswap-api recognizes as the default token for the current network,
@@ -106,14 +105,6 @@ export const GOERLI_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
   iconUrl: TEST_ETH_TOKEN_IMAGE_URL,
 } as const;
 
-export const SEPOLIA_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
-  symbol: CURRENCY_SYMBOLS.ETH,
-  name: 'Ether',
-  address: DEFAULT_TOKEN_ADDRESS,
-  decimals: 18,
-  iconUrl: TEST_ETH_TOKEN_IMAGE_URL,
-} as const;
-
 export const ARBITRUM_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
   ...ETH_SWAPS_TOKEN_OBJECT,
 } as const;
@@ -170,8 +161,13 @@ const SOLANA_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
   iconUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.SOLANA],
 };
 
-// A gas value for ERC20 approve calls that should be sufficient for all ERC20 approve implementations
-export const DEFAULT_ERC20_APPROVE_GAS = '0x1d4c0';
+const STELLAR_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
+  symbol: 'XLM',
+  name: 'Stellar Lumens',
+  address: MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.XLM,
+  decimals: 7,
+  iconUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.STELLAR],
+};
 
 // Contract addresses below should be in lowercase.
 const MAINNET_CONTRACT_ADDRESS = '0x881d40237659c251811cec9c364ef91dc08d300c';
@@ -244,6 +240,7 @@ export const ALLOWED_PROD_SWAPS_CHAIN_IDS = [
   CHAIN_IDS.HYPE,
   CHAIN_IDS.MEGAETH_MAINNET,
   MultichainNetworks.SOLANA,
+  MultichainNetworks.STELLAR,
 ] as const;
 
 export const ALLOWED_DEV_SWAPS_CHAIN_IDS = [
@@ -373,6 +370,7 @@ export const SWAPS_CHAINID_DEFAULT_TOKEN_MAP = {
   [CHAIN_IDS.HYPE]: HYPE_SWAPS_TOKEN_OBJECT,
   [CHAIN_IDS.MEGAETH_MAINNET]: MEGAETH_SWAPS_TOKEN_OBJECT,
   [MultichainNetworks.SOLANA]: SOLANA_SWAPS_TOKEN_OBJECT,
+  [MultichainNetworks.STELLAR]: STELLAR_SWAPS_TOKEN_OBJECT,
 } as const;
 
 export const ETHEREUM = 'ethereum';

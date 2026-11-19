@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Box,
   Button,
@@ -33,6 +33,7 @@ import {
 } from '../../store/actions';
 import { getIsBasicFunctionalityConsolidationEnabled } from '../../selectors/multichain/feature-flags';
 import type { BasicFunctionalityOffState } from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
+import { useDispatch } from '../../store/hooks';
 
 const CONTAINER_STYLE = { marginTop: '111px' } as const;
 const CARD_BOX_STYLE = { width: '446px', minHeight: '592px' } as const;
@@ -89,6 +90,7 @@ export const BasicFunctionalityOff = () => {
       display={Display.Flex}
       alignItems={AlignItems.center}
       flexDirection={FlexDirection.Column}
+      data-testid="parent-selector-basic-functionality-off-page"
       style={CONTAINER_STYLE}
     >
       <Box

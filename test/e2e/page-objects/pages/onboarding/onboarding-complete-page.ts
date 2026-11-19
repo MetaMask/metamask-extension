@@ -1,43 +1,55 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Wallet-ready / completion step at the end of onboarding.
+ *
+ * Screen: `#/onboarding/completion`.
+ * Owns: wallet-ready / keep-SRP-safe messaging, Done, and the manage default
+ * settings entry.
+ * Boundaries: completion CTAs only. Default privacy settings are
+ * `OnboardingPrivacySettingsPage` after `navigateToDefaultPrivacySettings`.
+ * The download-app step before this screen belongs to `DownloadAppPage`.
+ * Related: preceded by `OnboardingMetricsPage` (or earlier steps on Firefox)
+ * or `DownloadAppPage`; optional detour to `OnboardingPrivacySettingsPage`;
+ * then home via Done; `flows/onboarding.flow.ts`.
+ *
+ * @see ui/pages/onboarding-flow/creation-successful/creation-successful.tsx
+ */
 class OnboardingCompletePage {
   private driver: Driver;
-
-  private readonly onboardingCompleteDoneButton =
-    '[data-testid="onboarding-complete-done"]';
-
-  private readonly downloadAppContinueButton =
-    '[data-testid="download-app-continue"]';
-
-  private readonly walletReadyMessage = {
-    text: 'Your wallet is ready!',
-  };
 
   private readonly keepSrpSafeMessage = {
     text: 'Keep your Secret Recovery Phrase safe!',
     tag: 'h2',
   };
 
-  private readonly remindMeLaterButton = {
-    text: 'We’ll remind you later',
-    tag: 'h2',
-  };
-
   private readonly manageDefaultSettingsButton =
     '[data-testid="manage-default-settings"]';
 
-  private readonly downloadAppTitle = {
-    text: 'Scan QR code and download the app',
-    tag: 'h2',
+  private readonly onboardingCompleteDoneButton =
+    '[data-testid="onboarding-complete-done"]';
+
+  private readonly onboardingCompleteDoneButtonEnabled =
+    '[data-testid="onboarding-complete-done"]:not([disabled])';
+
+  private readonly page = '[data-testid="parent-selector-onboarding-complete"]';
+
+  private readonly walletReadyMessage = {
+    text: 'Your wallet is ready!',
   };
 
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
+  async checkKeepSrpSafeMessageIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.keepSrpSafeMessage);
+  }
+
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.page,
         this.manageDefaultSettingsButton,
         this.onboardingCompleteDoneButton,
       ]);
@@ -54,6 +66,7 @@ class OnboardingCompletePage {
   async checkPageIsLoadedBackup(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.page,
         this.keepSrpSafeMessage,
         this.onboardingCompleteDoneButton,
       ]);
@@ -67,27 +80,22 @@ class OnboardingCompletePage {
     console.log('SRP backup complete page is loaded');
   }
 
+  async checkWalletReadyMessageIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.walletReadyMessage);
+  }
+
   async clickCreateWalletDoneButton(): Promise<void> {
     // With sidepanel enabled, clicking done opens a new window instead of
     // navigating in the current window, so the button doesn't "disappear"
-    // We just click it without waiting for it to disappear
-    await this.driver.clickElement(this.onboardingCompleteDoneButton);
-  }
-
-  async displayDownloadAppPageAndContinue(): Promise<void> {
-    await this.driver.waitForSelector(this.downloadAppTitle);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.downloadAppContinueButton,
+    await this.driver.waitForElementToStopMoving(
+      this.onboardingCompleteDoneButton,
     );
+    await this.waitForDoneButtonStablyEnabled();
+    await this.driver.clickElement(this.onboardingCompleteDoneButton);
   }
 
   async completeOnboarding(): Promise<void> {
     console.log('Complete onboarding');
-    await this.clickCreateWalletDoneButton();
-  }
-
-  async completeBackup(): Promise<void> {
-    console.log('Complete backup');
     await this.clickCreateWalletDoneButton();
   }
 
@@ -97,16 +105,17 @@ class OnboardingCompletePage {
     );
   }
 
-  async checkWalletReadyMessageIsDisplayed(): Promise<void> {
-    await this.driver.waitForSelector(this.walletReadyMessage);
-  }
-
-  async checkKeepSrpSafeMessageIsDisplayed(): Promise<void> {
-    await this.driver.waitForSelector(this.keepSrpSafeMessage);
-  }
-
-  async checkRemindMeLaterButtonIsDisplayed(): Promise<void> {
-    await this.driver.waitForSelector(this.remindMeLaterButton);
+  async waitForDoneButtonStablyEnabled(): Promise<void> {
+    console.log('Waiting for onboarding Done button to be stably enabled');
+    await this.driver.waitUntil(
+      async () => {
+        return await this.driver.isElementPresentAndVisible(
+          this.onboardingCompleteDoneButtonEnabled,
+          1000,
+        );
+      },
+      { timeout: 10000, interval: 500, stableFor: 2000 },
+    );
   }
 }
 

@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -7,6 +7,7 @@ import {
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { selectShowTermsOfUse } from '../../../selectors/home-modals';
 import { setTermsOfUseLastAgreed } from '../../../store/actions';
+import { useDispatch } from '../../../store/hooks';
 import TermsOfUsePopup from './terms-of-use-popup';
 
 export function TermsOfUsePopupContainer() {

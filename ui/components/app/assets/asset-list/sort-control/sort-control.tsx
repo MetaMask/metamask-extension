@@ -1,12 +1,11 @@
 import React, { ReactNode, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import classnames from 'clsx';
 import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
 import { Text } from '../../../../component-library';
 import { SortOrder, SortingCallbacksT } from '../../util/sort';
 import {
   AlignItems,
-  BackgroundColor,
   BlockSize,
   Display,
   TextVariant,
@@ -16,12 +15,15 @@ import { useAnalytics } from '../../../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsTokenSortLocation,
+  MetaMetricsTokenSortPreference,
   MetaMetricsUserTrait,
 } from '../../../../../../shared/constants/metametrics';
 import { getTokenSortConfig } from '../../../../../selectors';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getCurrencySymbol } from '../../../../../helpers/utils/common.util';
+import { useDispatch } from '../../../../../store/hooks';
 
 // intentionally used generic naming convention for styled selectable list item
 // inspired from ui/components/multichain/network-list-item
@@ -56,7 +58,6 @@ export const SelectableListItem = ({
         variant={TextVariant.bodySmMedium}
         as="button"
         width={BlockSize.Full}
-        backgroundColor={BackgroundColor.backgroundDefault}
         display={Display.Flex}
         alignItems={AlignItems.center}
       >
@@ -76,6 +77,16 @@ type SortControlProps = {
   handleClose: () => void;
 };
 
+type SortKey = 'title' | 'tokenFiatAmount';
+
+const TOKEN_SORT_PREFERENCE_BY_KEY: Record<
+  SortKey,
+  MetaMetricsTokenSortPreference
+> = {
+  title: MetaMetricsTokenSortPreference.Title,
+  tokenFiatAmount: MetaMetricsTokenSortPreference.TokenFiatAmount,
+};
+
 const SortControl = ({ handleClose }: SortControlProps) => {
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
@@ -84,13 +95,8 @@ const SortControl = ({ handleClose }: SortControlProps) => {
 
   const dispatch = useDispatch();
 
-  type SortKeys = 'title' | 'tokenFiatAmount';
   const handleSort = useCallback(
-    (
-      key: SortKeys,
-      sortCallback: keyof SortingCallbacksT,
-      order: SortOrder,
-    ) => {
+    (key: SortKey, sortCallback: keyof SortingCallbacksT, order: SortOrder) => {
       dispatch(
         setTokenSortConfig({
           key,
@@ -102,7 +108,9 @@ const SortControl = ({ handleClose }: SortControlProps) => {
         createEventBuilder(MetaMetricsEventName.TokenSortPreference)
           .addCategory(MetaMetricsEventCategory.Settings)
           .addProperties({
-            [MetaMetricsUserTrait.TokenSortPreference]: key,
+            [MetaMetricsUserTrait.TokenSortPreference]:
+              TOKEN_SORT_PREFERENCE_BY_KEY[key],
+            location: MetaMetricsTokenSortLocation.SortMenu,
           })
           .build(),
       );

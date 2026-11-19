@@ -63,7 +63,7 @@ describe('Send flow', function (this: Suite) {
         const homePage = new HomePage(driver);
         const sendPage = new SendPage(driver);
 
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        await switchToNetworkFromNetworkSelect(driver, 'Solana');
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('0', 'SOL', false);
         await homePage.clickOnSendButton();
@@ -116,7 +116,7 @@ describe('Send flow', function (this: Suite) {
         const homePage = new HomePage(driver);
         const sendPage = new SendPage(driver);
 
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        await switchToNetworkFromNetworkSelect(driver, 'Solana');
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('50');
         await homePage.clickOnSendButton();
@@ -135,11 +135,22 @@ describe('Send flow', function (this: Suite) {
         const confirmation = new SnapTransactionConfirmation(driver);
         await confirmation.checkPageIsLoaded();
         await confirmation.checkAccountIsDisplayed('Account 1');
-        await confirmation.clickFooterConfirmButton();
+        await confirmation.clickFooterButton({ button: 'confirm' });
 
         const activityTab = new ActivityTab(driver);
-        await activityTab.checkTxAction({ action: 'Sent SOL' });
+        // 2 confirmed txs: the send + the initial funding airdrop from the
+        // local solana-test-validator (requestAirdrop in the seeder).
+        await activityTab.checkTxAction({
+          action: 'Sent SOL',
+          confirmedTx: 2,
+        });
         await activityTab.checkTxAmountInActivity('-0.1 SOL', 1);
+        // The airdrop is a real receive, classified by the snap mapper.
+        await activityTab.checkTxAction({
+          action: 'Received SOL',
+          txIndex: 2,
+          confirmedTx: 2,
+        });
         await activityTab.checkNoFailedTransactions();
       },
     );
@@ -160,7 +171,7 @@ describe('Send flow', function (this: Suite) {
         const homePage = new HomePage(driver);
         const sendPage = new SendPage(driver);
 
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        await switchToNetworkFromNetworkSelect(driver, 'Solana');
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('50');
         await homePage.clickOnSendButton();
@@ -178,8 +189,9 @@ describe('Send flow', function (this: Suite) {
         await confirmation.checkPageIsLoaded();
         await confirmation.checkAccountIsDisplayed('Account 1');
         await confirmation.checkSecurityAlertsErrorIsDisplayed();
-        await confirmation.clickFooterConfirmButton();
+        await confirmation.clickFooterButton({ button: 'confirm' });
         const activityTab = new ActivityTab(driver);
+        await activityTab.checkPageIsLoaded();
         await activityTab.checkFailedTxNumberDisplayedInActivity();
         await activityTab.checkTxAction({
           action: 'Interaction failed',

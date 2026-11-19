@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useDeferredValue, useState, useMemo, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   type INotification,
@@ -28,6 +28,7 @@ import { useSafeState } from '../../hooks/metamask-notifications/useNotification
 import { getNotifySnaps } from '../../selectors';
 import {
   selectIsMetamaskNotificationsEnabled,
+  selectIsFeatureAnnouncementsEnabled,
   getMetamaskNotifications,
 } from '../../selectors/metamask-notifications/metamask-notifications';
 import {
@@ -40,13 +41,17 @@ import {
   getNotificationPreferences,
 } from '../../store/actions';
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
+import { useDispatch } from '../../store/hooks';
 import { NotificationsList, TAB_KEYS } from './notifications-list';
 import { NewFeatureTag } from './NewFeatureTag';
 
 const useFeatureAnnouncementsEnabled = () => {
   const dispatch = useDispatch();
+  const featureAnnouncementsEnabledInState = useSelector(
+    selectIsFeatureAnnouncementsEnabled,
+  );
   const [areFeatureAnnouncementsEnabled, setAreFeatureAnnouncementsEnabled] =
-    useSafeState(false);
+    useSafeState(featureAnnouncementsEnabledInState);
 
   useEffect(() => {
     const loadPreferences = async () => {
@@ -59,12 +64,18 @@ const useFeatureAnnouncementsEnabled = () => {
           Boolean(preferences?.marketing.inAppNotificationsEnabled),
         );
       } catch {
-        setAreFeatureAnnouncementsEnabled(false);
+        setAreFeatureAnnouncementsEnabled(
+          Boolean(featureAnnouncementsEnabledInState),
+        );
       }
     };
 
     loadPreferences();
-  }, [dispatch, setAreFeatureAnnouncementsEnabled]);
+  }, [
+    dispatch,
+    featureAnnouncementsEnabledInState,
+    setAreFeatureAnnouncementsEnabled,
+  ]);
 
   return areFeatureAnnouncementsEnabled;
 };
@@ -184,10 +195,11 @@ export default function Notifications() {
 
   const [activeTab, setActiveTab] = useState<TAB_KEYS>(TAB_KEYS.ALL);
   const combinedNotifications = useCombinedNotifications();
+  const deferredCombinedNotifications = useDeferredValue(combinedNotifications);
   const { notificationsUnreadCount } = useUnreadNotificationsCounter();
   const filteredNotifications = useMemo(
-    () => filterNotifications(activeTab, combinedNotifications),
-    [activeTab, combinedNotifications],
+    () => filterNotifications(activeTab, deferredCombinedNotifications),
+    [activeTab, deferredCombinedNotifications],
   );
 
   let hasNotifySnaps = false;

@@ -13,13 +13,8 @@ import { toHex } from '@metamask/controller-utils';
 import type { Messenger } from '@metamask/messenger';
 import type { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import type { KeyringControllerSignEip7702AuthorizationAction } from '@metamask/keyring-controller';
-import {
-  createExactExecutionBatchTerms,
-  createExactExecutionTerms,
-  createLimitedCallsTerms,
-  ROOT_AUTHORITY,
-  ANY_BENEFICIARY,
-} from '@metamask/delegation-core';
+import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import { ROOT_AUTHORITY, ANY_BENEFICIARY } from '@metamask/delegation-core';
 import {
   ExecutionMode,
   getDeleGatorEnvironment,
@@ -31,14 +26,16 @@ import {
   type Delegation,
   type UnsignedDelegation,
 } from '../../../../shared/lib/delegation';
+import { getDelegationCaveats } from './caveats';
 
 const log = createProjectLogger('transaction-delegation');
 
 export const PRIMARY_TYPE_DELEGATION = 'Delegation';
 
-type DelegationMessengerActions =
+export type DelegationMessengerActions =
   | DelegationControllerSignDelegationAction
   | KeyringControllerSignEip7702AuthorizationAction
+  | RemoteFeatureFlagControllerGetStateAction
   | TransactionControllerGetNonceLockAction
   | TransactionControllerIsAtomicBatchSupportedAction;
 
@@ -96,6 +93,29 @@ type ConvertTransactionToRedeemDelegationsRequest = {
    * Omit to skip authorization list building entirely.
    */
   authorization?: AuthorizationRequest;
+
+  /**
+   * Addresses allowed to submit the `redeemDelegations` call.
+   * When non-empty, a RedeemerEnforcer caveat is added restricting redemption
+   * to these addresses, plus the `delegatee` if provided.
+   */
+  redeemers?: Hex[];
+
+  /**
+   * When true, build the Relay-execute subsidized shape: a single execution
+   * of the 7702 batch and caveats that leave the order-id placeholder free.
+   */
+  isSubsidized?: boolean;
+
+  /**
+   * When true, build a single execution from the parent `txParams` (`to` /
+   * `data`) even when `nestedTransactions` exist. Matches the mobile publish
+   * hook: for 7702 batches the parent `execute()` calldata is the canonical
+   * payload — redeeming the nested calls directly is a shape mobile never
+   * publishes and it does not move funds on-chain (e.g. sponsored Money
+   * Account withdrawals on Monad).
+   */
+  useParentExecution?: boolean;
 };
 
 type ConvertTransactionToRedeemDelegationsResult = {
@@ -106,7 +126,12 @@ type ConvertTransactionToRedeemDelegationsResult = {
 };
 
 type GetDelegationTransactionRequest = {
-  messenger: DelegationMessenger;
+  /**
+   * Messenger that can perform at least the delegation / EIP-7702 signing
+   * actions. Callers may pass a wider messenger (e.g. payment-override init).
+   */
+  messenger: Messenger<string, DelegationMessengerActions, never>;
+  isSubsidized?: boolean;
 };
 
 type DelegationTransactionResult = {
@@ -131,30 +156,45 @@ type DelegationTransactionResult = {
 export async function convertTransactionToRedeemDelegations(
   request: ConvertTransactionToRedeemDelegationsRequest,
 ): Promise<ConvertTransactionToRedeemDelegationsResult> {
-  const { transaction, messenger } = request;
+  const { transaction, messenger, isSubsidized = false } = request;
   const { chainId } = transaction;
   const environment = getDeleGatorEnvironment(parseInt(chainId, 16));
 
-  const defaultExecutions = getDefaultTransactionExecutions(transaction);
+  const defaultExecutions = getDefaultTransactionExecutions(
+    transaction,
+    isSubsidized || request.useParentExecution,
+  );
 
-  const additionalExecutions = request.additionalExecutions ?? [];
+  const additionalExecutions = isSubsidized
+    ? []
+    : (request.additionalExecutions ?? []);
   const executions: ExecutionStruct[][] = [
     [...defaultExecutions, ...additionalExecutions],
   ];
 
-  const caveats =
-    request.caveats ?? buildDefaultCaveats(environment, executions[0]);
+  const caveats = getDelegationCaveats({
+    caveats: request.caveats,
+    delegatee: request.delegatee,
+    environment,
+    executions: executions[0],
+    isSubsidized,
+    messenger,
+    redeemers: request.redeemers,
+    transaction,
+  });
 
   const modes: ExecutionMode[] = [
-    executions[0].length > 1 ? BATCH_DEFAULT_MODE : SINGLE_DEFAULT_MODE,
+    isSubsidized || executions[0].length <= 1
+      ? SINGLE_DEFAULT_MODE
+      : BATCH_DEFAULT_MODE,
   ];
 
   const delegations = await signAndWrapDelegation({
-    transaction,
     caveats,
-    messenger,
     delegatee: request.delegatee,
     delegationSignature: request.delegationSignature,
+    messenger,
+    transaction,
   });
 
   log('Built delegations', { delegations, modes, executions });
@@ -192,6 +232,7 @@ export async function getDelegationTransaction(
       transaction,
       messenger: request.messenger,
       authorization: {},
+      isSubsidized: request.isSubsidized,
     });
 
   return {
@@ -203,27 +244,6 @@ export async function getDelegationTransaction(
   };
 }
 
-export function normalizeCallData(data: unknown): Hex {
-  if (typeof data !== 'string' || data.length === 0) {
-    return '0x';
-  }
-
-  const hasHexPrefix = data.slice(0, 2).toLowerCase() === '0x';
-  const lower = data.toLowerCase();
-  const prefixed = hasHexPrefix ? `0x${lower.slice(2)}` : `0x${lower}`;
-  const hexBody = prefixed.slice(2);
-
-  if (hexBody.length === 0) {
-    return '0x';
-  }
-
-  if (hexBody.length % 2 !== 0) {
-    return normalizeCallData(`0x0${hexBody}`);
-  }
-
-  return prefixed as Hex;
-}
-
 function hasExecutableNestedTransactions(
   transactionMeta: TransactionMeta,
 ): boolean {
@@ -233,10 +253,12 @@ function hasExecutableNestedTransactions(
 
 function getDefaultTransactionExecutions(
   transactionMeta: TransactionMeta,
+  useParentExecution = false,
 ): ExecutionStruct[] {
   const { nestedTransactions, txParams } = transactionMeta;
 
   if (
+    !useParentExecution &&
     nestedTransactions?.length &&
     hasExecutableNestedTransactions(transactionMeta)
   ) {
@@ -254,43 +276,6 @@ function getDefaultTransactionExecutions(
       callData: normalizeCallData(txParams.data),
     },
   ];
-}
-
-function buildDefaultCaveats(
-  environment: ReturnType<typeof getDeleGatorEnvironment>,
-  executions: ExecutionStruct[],
-): Caveat[] {
-  const caveats: Caveat[] = [
-    {
-      enforcer: environment.caveatEnforcers.LimitedCallsEnforcer,
-      terms: createLimitedCallsTerms({
-        limit: 1,
-      }),
-      args: '0x',
-    },
-  ];
-
-  if (executions.length > 1) {
-    caveats.push({
-      enforcer: environment.caveatEnforcers.ExactExecutionBatchEnforcer,
-      terms: createExactExecutionBatchTerms({
-        executions,
-      }),
-      args: '0x',
-    });
-  } else {
-    const execution = executions[0];
-
-    caveats.push({
-      enforcer: environment.caveatEnforcers.ExactExecutionEnforcer,
-      terms: createExactExecutionTerms({
-        execution,
-      }),
-      args: '0x',
-    });
-  }
-
-  return caveats;
 }
 
 async function signAndWrapDelegation({
@@ -460,4 +445,32 @@ async function buildAuthorizationList(
       yParity,
     },
   ];
+}
+
+/**
+ * Normalizes calldata to a lowercase, 0x-prefixed, even-length hex string so
+ * byte offsets used by caveat terms cannot shift.
+ *
+ * @param data - Raw calldata value.
+ * @returns Normalized calldata, or `0x` if empty or not a string.
+ */
+function normalizeCallData(data: unknown): Hex {
+  if (typeof data !== 'string' || data.length === 0) {
+    return '0x';
+  }
+
+  const hasHexPrefix = data.slice(0, 2).toLowerCase() === '0x';
+  const lower = data.toLowerCase();
+  const prefixed = hasHexPrefix ? `0x${lower.slice(2)}` : `0x${lower}`;
+  const hexBody = prefixed.slice(2);
+
+  if (hexBody.length === 0) {
+    return '0x';
+  }
+
+  if (hexBody.length % 2 !== 0) {
+    return normalizeCallData(`0x0${hexBody}`);
+  }
+
+  return prefixed as Hex;
 }

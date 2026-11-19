@@ -30,7 +30,7 @@ import {
   BadgeStatusStatus,
   IconSize,
 } from '@metamask/design-system-react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import React from 'react';
 
 const meta: Meta = {
@@ -126,7 +126,7 @@ const WalletHome = () => {
             Receive
           </ButtonBase>
           <ButtonBase className="h-auto flex-1 flex-col justify-center rounded-lg bg-muted py-4 hover:bg-muted-hover active:bg-muted-pressed">
-            <Icon name={IconName.Send} className="mb-2" />
+            <Icon name={IconName.Arrow2UpRight} className="mb-2" />
             Send
           </ButtonBase>
         </Box>

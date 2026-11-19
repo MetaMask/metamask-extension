@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import { useQuery } from '@tanstack/react-query';
 import { setRampsSelectedPaymentMethod } from '../../store/controller-actions/ramps-controller';
 import { useRampsPaymentMethods } from './useRampsPaymentMethods';

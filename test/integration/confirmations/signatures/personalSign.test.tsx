@@ -88,9 +88,10 @@ describe('PersonalSign Confirmation', () => {
         preloadedState: {
           ...mockedMetaMaskState,
           analyticsId: 'test-metametrics-id',
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
-          dataCollectionForMarketing: false,
+          optedInToMarketing: false,
+          marketingConsentDecisionMade: true,
         },
         backgroundConnection: backgroundConnectionMocked,
       });
@@ -132,7 +133,9 @@ describe('PersonalSign Confirmation', () => {
     await waitFor(() => {
       confirmAccountDetailsModalMetricsEvent =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'trackAnalyticsEvent',
+          (call) =>
+            call[0] === 'trackAnalyticsEvent' &&
+            call[1]?.[0]?.name === MetaMetricsEventName.AccountDetailsOpened,
         );
       expect(confirmAccountDetailsModalMetricsEvent?.[0]).toBe(
         'trackAnalyticsEvent',

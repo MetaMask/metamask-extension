@@ -8,6 +8,7 @@ describe('HeaderSearch', () => {
   const defaultSearchProps = {
     value: '',
     placeholder: messages.search.message,
+    inputAriaLabel: messages.search.message,
   };
 
   describe('Screen variant', () => {
@@ -17,10 +18,7 @@ describe('HeaderSearch', () => {
         <HeaderSearch
           variant={HeaderSearchVariant.Screen}
           onClickBackButton={onClickBackButton}
-          textFieldSearchProps={{
-            ...defaultSearchProps,
-            inputProps: { 'data-testid': 'header-search-input' },
-          }}
+          textFieldSearchProps={defaultSearchProps}
         />,
       );
 

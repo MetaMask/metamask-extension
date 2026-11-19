@@ -1,21 +1,25 @@
+import { Hex } from '@metamask/utils';
 import { act } from '@testing-library/react';
 import {
   TransactionEnvelopeType,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { useDispatch } from 'react-redux';
 import {
   addTransactionAndRouteToConfirmationPage,
   getCode,
 } from '../../../store/actions';
 import { EIP_7702_REVOKE_ADDRESS } from '../../../../shared/lib/eip7702-utils';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { useDispatch } from '../../../store/hooks';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
 import { useEIP7702Account } from './useEIP7702Account';
 
+jest.mock('../../../store/hooks', () => ({
+  useDispatch: jest.fn(),
+}));
+
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
 }));
 
 jest.mock('../../../store/actions', () => ({
@@ -90,7 +94,8 @@ describe('useEIP7702Account', () => {
     // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([undefined, '', '0x'])(
       'returns false if code is %s',
-      async (code: string) => {
+      async (code: Hex | undefined) => {
+        // @ts-expect-error Intentionally forcing `LegacyBackgroundApiService:getCode` to return nothing.
         getCodeMock.mockResolvedValue(code);
         const result = await runHook().isUpgraded(ADDRESS_MOCK);
         expect(result).toBe(false);

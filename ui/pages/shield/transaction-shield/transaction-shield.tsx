@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   Product,
   PRODUCT_TYPES,
@@ -23,7 +29,7 @@ import {
   TextVariant,
   Skeleton,
 } from '@metamask/design-system-react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import log from 'loglevel';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -33,8 +39,6 @@ import {
   useUserSubscriptionByProduct,
   useUserSubscriptions,
 } from '../../../hooks/subscription/useSubscription';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { getShortDateFormatterV2 } from '../../asset/util';
 import {
   DEFAULT_ROUTE,
   SHIELD_PLAN_ROUTE,
@@ -64,11 +68,13 @@ import {
 } from '../../../../shared/constants/subscriptions';
 import ApiErrorHandler from '../../../components/app/api-error-handler';
 import { useHandlePayment } from '../../../hooks/subscription/useHandlePayment';
-import { MetaMaskReduxDispatch } from '../../../store/store';
+import type { MetaMaskReduxDispatch } from '../../../store/types';
+import { useDispatch } from '../../../store/hooks';
 import { setRewardsModalOpen } from '../../../ducks/rewards';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { linkRewardToShieldSubscription } from '../../../store/actions';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
+import { formatOptionalDate } from './utils';
 import {
   ButtonRow,
   ButtonRowContainer,
@@ -81,7 +87,7 @@ import CryptoAccountDisplay from './components/crypto-account-display';
 const TransactionShield = () => {
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { search } = useLocation();
   const { captureShieldCtaClickedEvent } = useSubscriptionMetrics();
@@ -121,23 +127,23 @@ const TransactionShield = () => {
     | (Subscription & { rewardAccountId?: string }) // TODO: fix this type once we have controller released.
     | undefined = currentShieldSubscription ?? lastShieldSubscription;
 
-  const [timeoutCancelled, setTimeoutCancelled] = useState(false);
+  const timeoutCancelledRef = useRef(false);
   useEffect(() => {
     // cancel timeout when component unmounts
     return () => {
-      setTimeoutCancelled(true);
+      timeoutCancelledRef.current = true;
     };
   }, []);
   useEffect(() => {
     // cancel timeout when subscription is created
     if (currentShieldSubscription) {
-      setTimeoutCancelled(true);
+      timeoutCancelledRef.current = true;
     }
   }, [currentShieldSubscription]);
 
   const startSubscriptionCreationTimeout = useTimeout(
     () => {
-      if (timeoutCancelled) {
+      if (timeoutCancelledRef.current) {
         return;
       }
 
@@ -458,9 +464,7 @@ const TransactionShield = () => {
           <Icon name={IconName.Info} size={IconSize.Lg} />
           <Text variant={TextVariant.BodySm}>
             {t('shieldTxMembershipCancelNotification', [
-              getShortDateFormatterV2().format(
-                new Date(currentShieldSubscription.currentPeriodEnd),
-              ),
+              formatOptionalDate(currentShieldSubscription.currentPeriodEnd),
             ])}
           </Text>
         </Box>
@@ -533,8 +537,8 @@ const TransactionShield = () => {
                     RECURRING_INTERVALS.year
                       ? t('shieldPlanYearly')
                       : t('shieldPlanMonthly'),
-                    getShortDateFormatterV2().format(
-                      new Date(displayedShieldSubscription?.currentPeriodEnd),
+                    formatOptionalDate(
+                      displayedShieldSubscription?.currentPeriodEnd,
                     ),
                   ])}
                   descriptionTestId="shield-detail-next-billing"
@@ -665,8 +669,10 @@ const TransactionShield = () => {
                       ? t('shieldTxPastPlansYearly')
                       : t('shieldTxPastPlansMonthly')
                   }
-                  description={`${getShortDateFormatterV2().format(new Date(lastShieldSubscription.currentPeriodStart))} - ${getShortDateFormatterV2().format(
-                    new Date(lastShieldSubscription.currentPeriodEnd),
+                  description={`${formatOptionalDate(
+                    lastShieldSubscription.currentPeriodStart,
+                  )} - ${formatOptionalDate(
+                    lastShieldSubscription.currentPeriodEnd,
                   )}`}
                   loading={showSkeletonLoader}
                   onClick={() => {

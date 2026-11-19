@@ -1,5 +1,4 @@
-import { act } from '@testing-library/react-hooks';
-import { waitFor } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 import log from 'loglevel';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
@@ -845,14 +844,13 @@ describe('useCandidateSubscriptionId', () => {
       );
     });
 
-    it('handles rewards disabled with rewardsEnabled flag false', async () => {
+    it('handles rewards disabled when basic functionality is off', async () => {
       const { result, store } = renderHookWithProvider(
         () => useCandidateSubscriptionId(),
         {
           metamask: {
             isUnlocked: false,
-            useExternalServices: true,
-            remoteFeatureFlags: { rewardsEnabled: false },
+            useExternalServices: false,
             rewardsActiveAccount: null,
             rewardsSubscriptions: {},
           },

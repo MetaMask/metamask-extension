@@ -36,10 +36,6 @@ export {
 } from './formatPerpsDisplayPrice';
 
 export {
-  isValidTakeProfitPrice,
-  isValidStopLossPrice,
   getTakeProfitErrorDirection,
   getStopLossErrorDirection,
 } from './tpslValidation';
-
-export { buildPerpsVipTrackingData } from './trackingData';

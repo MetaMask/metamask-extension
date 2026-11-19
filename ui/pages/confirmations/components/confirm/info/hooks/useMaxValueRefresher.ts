@@ -1,26 +1,26 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { useSearchParams } from 'react-router-dom';
 
-import {
-  getCrossChainMetaMaskCachedBalances,
-  selectMaxValueModeForTransaction,
-} from '../../../../../../selectors';
+import { getCrossChainMetaMaskCachedBalances } from '../../../../../../selectors';
+import { selectMaxValueModeForTransaction } from '../../../../../../ducks/send-max-value/send-max-value';
 import {
   addHexes,
   multiplyHexes,
 } from '../../../../../../../shared/lib/conversion.utils';
 import { Numeric } from '../../../../../../../shared/lib/Numeric';
 import { updateEditableParams } from '../../../../../../store/actions';
+import type { MetaMaskReduxState } from '../../../../../../store/store';
 import { useConfirmContext } from '../../../../context/confirm';
 import { HEX_ZERO } from '../shared/constants';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 import { useIsGaslessSupported } from '../../../../hooks/gas/useIsGaslessSupported';
+import { useGasSponsorshipPreference } from '../../../../hooks/gas/useGasSponsorshipPreference';
+import { useDispatch } from '../../../../../../store/hooks';
 import { useSupportsEIP1559 } from './useSupportsEIP1559';
 
 /**
@@ -48,13 +48,11 @@ export const useMaxValueRefresher = () => {
     txParams: { from },
   } = transactionMeta;
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();
-  const isMaxAmountMode = useSelector((state) =>
+  const { isSponsorshipOptedOut } = useGasSponsorshipPreference(chainId);
+  const isMaxValueMode = useSelector((state: MetaMaskReduxState) =>
     selectMaxValueModeForTransaction(state, transactionMeta?.id),
   );
   const { updateTransactionEventFragment } = useTransactionEventFragment();
-  const [searchParams] = useSearchParams();
-  const paramMaxValueMode = searchParams.get('maxValueMode') === 'true';
-  const isMaxValueMode = isMaxAmountMode || paramMaxValueMode;
   const crossChainNativeBalances = useSelector(
     getCrossChainMetaMaskCachedBalances,
   ) as { [chainId: string]: { [from: string]: string } };
@@ -82,7 +80,8 @@ export const useMaxValueRefresher = () => {
   useEffect(() => {
     if (
       !isMaxValueMode ||
-      transactionMeta.type !== TransactionType.simpleSend
+      transactionMeta.type !== TransactionType.simpleSend ||
+      transactionMeta.simulationFails
     ) {
       return;
     }
@@ -91,7 +90,11 @@ export const useMaxValueRefresher = () => {
 
     // Gas Sponsorship means the user has no native gas to pay at all.
     // This will allow to send the full max value of the native balance.
-    if (!transactionMeta.isGasFeeSponsored || !isGaslessSupported) {
+    if (
+      !transactionMeta.isGasFeeSponsored ||
+      !isGaslessSupported ||
+      isSponsorshipOptedOut
+    ) {
       gasFeeInHex = multiplyHexes(
         gas,
         supportsEIP1559 ? maxFeePerGas : gasPrice,
@@ -111,8 +114,11 @@ export const useMaxValueRefresher = () => {
       return;
     }
 
+    // Keep the transaction type so a send to a contract recipient remains a
+    // simple send rather than becoming a contract interaction.
     dispatch(
       updateEditableParams(transactionMeta.id, {
+        updateType: false,
         value: remainingBalance.toPrefixedHexString(),
       }),
     );
@@ -127,5 +133,6 @@ export const useMaxValueRefresher = () => {
     dispatch,
     transactionMeta,
     isGaslessSupported,
+    isSponsorshipOptedOut,
   ]);
 };

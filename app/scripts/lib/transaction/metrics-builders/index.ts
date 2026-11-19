@@ -10,6 +10,7 @@ import { buildTransactionMetricsContext } from '../metrics-context';
 import { getAccountMetricsProperties } from './account';
 import { getBaseMetricsProperties } from './base';
 import { getBatchMetricsProperties } from './batch';
+import { getEnforcedSimulationsMetricsProperties } from './enforced-simulations';
 import { getGasMetricsProperties } from './gas';
 import { getGaslessMetricsProperties } from './gasless';
 import { getHashMetricsProperties } from './hash';
@@ -17,6 +18,7 @@ import { getRPCMetricsProperties } from './rpc';
 import { getSecurityMetricsProperties } from './security';
 import { getSmartTransactionProperties } from './smart-transactions';
 import { getMetaMaskPayProperties } from './metamask-pay';
+import { getWalletPayMetricsProperties } from './wallet-pay';
 import { getSwapBridgeMetricsProperties } from './swap-bridge';
 import { getTransactionDetailsMetricsProperties } from './transaction-details';
 import { getUICustomizationsMetricsProperties } from './ui-customizations';
@@ -36,12 +38,14 @@ const METRICS_BUILDERS: TransactionMetricsBuilder[] = [
   getHashMetricsProperties,
   getSmartTransactionProperties,
   getSecurityMetricsProperties,
+  getEnforcedSimulationsMetricsProperties,
   getRPCMetricsProperties,
   getSwapBridgeMetricsProperties,
   getAccountMetricsProperties,
   getGaslessMetricsProperties,
   getTransactionDetailsMetricsProperties,
   getMetaMaskPayProperties,
+  getWalletPayMetricsProperties,
   getUICustomizationsMetricsProperties,
 ];
 

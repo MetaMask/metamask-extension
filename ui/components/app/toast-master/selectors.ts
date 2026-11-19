@@ -15,7 +15,7 @@ type State = {
       | 'onboardingDate'
       | 'shieldEndingToastLastClickedOrClosed'
       | 'shieldPausedToastLastClickedOrClosed'
-      | 'completedMetaMetricsOnboarding'
+      | 'consentDecisionMade'
       | 'optedIn'
       | 'remoteFeatureFlags'
       | 'pna25Acknowledged'
@@ -167,7 +167,7 @@ export function selectShowSidePanelMigrationToast(
 export function selectShowPna25Modal(state: Pick<State, 'metamask'>): boolean {
   const {
     completedOnboarding,
-    completedMetaMetricsOnboarding,
+    consentDecisionMade,
     optedIn,
     pna25Acknowledged,
   } = state.metamask || {};
@@ -177,7 +177,7 @@ export function selectShowPna25Modal(state: Pick<State, 'metamask'>): boolean {
     return false; // User hasn't completed onboarding yet
   }
 
-  if (completedMetaMetricsOnboarding !== true || optedIn !== true) {
+  if (consentDecisionMade !== true || optedIn !== true) {
     return false; // User hasn't opted into analytics
   }
 

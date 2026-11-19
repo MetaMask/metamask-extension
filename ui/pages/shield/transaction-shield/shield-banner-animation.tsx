@@ -131,15 +131,10 @@ const ShieldBannerAnimation = ({
     // it's intended to trigger the animation when the isInactive changes
   }, [isInactive]);
 
-  // Stop animation on unmount or when rive instance changes
   useEffect(() => {
     return () => {
-      if (rive) {
-        rive.cleanup();
-      }
       isInitializedRef.current = false;
     };
-    // it's intended to stop the animation when the component unmounts
   }, []);
 
   // Don't render Rive component until WASM and buffer are ready to avoid errors

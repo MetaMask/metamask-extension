@@ -1,11 +1,12 @@
-import { DEEP_LINK_HOST } from '../constants';
+import { CANONICAL_DEEP_LINK_HOST } from '../common';
 import { DEFAULT_ROUTE, Route } from './route';
 import type { Destination } from './route';
 
-export const DEEP_LINK_ORIGIN = `https://${DEEP_LINK_HOST}`;
+export const DEEP_LINK_ORIGIN = `https://${CANONICAL_DEEP_LINK_HOST}`;
 
 export enum HomeQueryParams {
   BatchSellDeeplinkUrl = 'batchSellDeeplinkUrl',
+  LimitOrderDeeplinkUrl = 'limitOrderDeeplinkUrl',
   OpenNetworkSelector = 'openNetworkSelector',
   PredictDeeplinkUrl = 'predictDeeplinkUrl',
   TrendingDeeplinkUrl = 'trendingDeeplinkUrl',
@@ -14,6 +15,7 @@ export enum HomeQueryParams {
 export function createHomeQrCodeDestination(
   queryParam:
     | HomeQueryParams.BatchSellDeeplinkUrl
+    | HomeQueryParams.LimitOrderDeeplinkUrl
     | HomeQueryParams.PredictDeeplinkUrl
     | HomeQueryParams.TrendingDeeplinkUrl,
   deeplinkUrl: string,

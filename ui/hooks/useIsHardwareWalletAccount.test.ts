@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { useSelector } from 'react-redux';
@@ -100,6 +100,17 @@ describe('useIsHardwareWalletAccount', () => {
     const { result } = renderWithMock({
       address: LEDGER_ADDRESS,
       accountByAddress: hdAccount,
+    });
+
+    expect(result.current).toBe(false);
+  });
+
+  it('returns false when the address has no internal account, even if a hardware wallet is selected', () => {
+    const { result } = renderWithMock({
+      address: '0x9999999999999999999999999999999999999999',
+      accountByAddress: undefined,
+      evmAccountFromSelectedGroup: ledgerAccount,
+      isHardwareWalletSelected: true,
     });
 
     expect(result.current).toBe(false);

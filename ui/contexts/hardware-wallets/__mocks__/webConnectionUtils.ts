@@ -1,4 +1,5 @@
 import { CameraPermissionState } from '../constants';
+import { LEDGER_USB_VENDOR_ID } from '../../../../shared/constants/hardware-wallets';
 import {
   HardwareWalletType,
   HardwareConnectionPermissionState,
@@ -18,6 +19,7 @@ export const checkCameraPermissionState = jest.fn();
 export const checkCameraPermission = jest.fn();
 export const checkHardwareWalletPermission = jest.fn();
 export const requestWebHidPermission = jest.fn();
+export const requestWebHidDevices = jest.fn();
 export const requestWebUsbPermission = jest.fn();
 export const requestCameraPermission = jest.fn();
 export const requestHardwareWalletPermission = jest.fn();
@@ -58,6 +60,9 @@ checkCameraPermissionState.mockResolvedValue(
 );
 checkCameraPermission.mockResolvedValue(CameraPermissionState.Granted);
 requestWebHidPermission.mockResolvedValue(true);
+requestWebHidDevices.mockResolvedValue([
+  { vendorId: Number(LEDGER_USB_VENDOR_ID) },
+]);
 requestWebUsbPermission.mockResolvedValue(true);
 requestCameraPermission.mockResolvedValue(true);
 requestHardwareWalletPermission.mockImplementation(
@@ -116,6 +121,9 @@ export const resetwebConnectionUtilsMocks = () => {
   );
   checkCameraPermission.mockResolvedValue(CameraPermissionState.Granted);
   requestWebHidPermission.mockResolvedValue(true);
+  requestWebHidDevices.mockResolvedValue([
+    { vendorId: Number(LEDGER_USB_VENDOR_ID) },
+  ]);
   requestWebUsbPermission.mockResolvedValue(true);
   requestCameraPermission.mockResolvedValue(true);
   requestHardwareWalletPermission.mockImplementation(
@@ -167,6 +175,7 @@ export const mockPermissionsDenied = () => {
     HardwareConnectionPermissionState.Denied,
   );
   requestWebHidPermission.mockResolvedValue(false);
+  requestWebHidDevices.mockResolvedValue([]);
   requestWebUsbPermission.mockResolvedValue(false);
   requestCameraPermission.mockResolvedValue(false);
   requestHardwareWalletPermission.mockResolvedValue(false);
@@ -196,6 +205,7 @@ export const mockWebHidUnavailable = () => {
     HardwareConnectionPermissionState.Denied,
   );
   requestWebHidPermission.mockResolvedValue(false);
+  requestWebHidDevices.mockResolvedValue([]);
 };
 
 export const mockWebUsbUnavailable = () => {

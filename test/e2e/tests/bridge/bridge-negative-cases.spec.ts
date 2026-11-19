@@ -2,7 +2,7 @@ import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import SwapPage from '../../page-objects/pages/swap/swap-page';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import {
   enterBridgeQuote,
@@ -38,16 +38,16 @@ describe('Bridge functionality', function (this: Suite) {
         );
         await homePage.startSwapFlow();
 
-        const bridgePage = new BridgeQuotePage(driver);
-        await bridgePage.enterBridgeQuote({
+        const swapPage = new SwapPage(driver);
+        await swapPage.enterBridgeQuote({
           amount: '24.9950',
           tokenFrom: 'ETH',
           tokenTo: 'WETH',
           fromChain: 'Ethereum',
           toChain: 'Linea',
         });
-        await bridgePage.checkInsufficientFundsButtonIsDisplayed();
-        await bridgePage.checkMoreETHneededIsDisplayed();
+        await swapPage.checkInsufficientFundsButtonIsDisplayed();
+        await swapPage.checkMoreETHneededIsDisplayed();
       },
     );
   });
@@ -74,8 +74,8 @@ describe('Bridge functionality', function (this: Suite) {
         );
         await homePage.startSwapFlow();
 
-        const bridgePage = await enterBridgeQuote(driver);
-        await bridgePage.checkNoTradeRouteMessageIsDisplayed();
+        const swapPage = await enterBridgeQuote(driver);
+        await swapPage.checkNoTradeRouteMessageIsDisplayed();
       },
     );
   });
@@ -101,8 +101,8 @@ describe('Bridge functionality', function (this: Suite) {
         );
         await homePage.startSwapFlow();
 
-        const bridgePage = await enterBridgeQuote(driver);
-        await bridgePage.checkNoTradeRouteMessageIsDisplayed();
+        const swapPage = await enterBridgeQuote(driver);
+        await swapPage.checkNoTradeRouteMessageIsDisplayed();
       },
     );
   });
@@ -130,8 +130,8 @@ describe('Bridge functionality', function (this: Suite) {
 
         await homePage.startSwapFlow();
 
-        const bridgePage = await enterBridgeQuote(driver);
-        await bridgePage.checkNoTradeRouteMessageIsDisplayed();
+        const swapPage = await enterBridgeQuote(driver);
+        await swapPage.checkNoTradeRouteMessageIsDisplayed();
       },
     );
   });
@@ -160,11 +160,11 @@ describe('Bridge functionality', function (this: Suite) {
         );
         await homePage.startSwapFlow();
 
-        const bridgePage = await enterBridgeQuote(driver);
+        const swapPage = await enterBridgeQuote(driver);
 
-        await bridgePage.submitQuote();
-        await bridgePage.approveModalIfPresent();
-        await driver.clickElementSafe({ text: 'View activity' });
+        await swapPage.submitQuote();
+        await swapPage.approveModalIfPresent();
+        await swapPage.goBackAfterSubmit();
         await homePage.goToActivityList();
 
         const activityTab = new ActivityTab(driver);
@@ -204,8 +204,9 @@ describe('Bridge functionality', function (this: Suite) {
         );
         await homePage.startSwapFlow();
 
-        const bridgePage = await enterBridgeQuote(driver);
-        await bridgePage.submitQuoteAndDismiss();
+        const swapPage = await enterBridgeQuote(driver);
+        await swapPage.submitQuoteAndDismiss();
+        await swapPage.goBackAfterSubmit();
         await homePage.goToActivityList();
 
         const activityTab = new ActivityTab(driver);
@@ -245,8 +246,9 @@ describe('Bridge functionality', function (this: Suite) {
         );
         await homePage.startSwapFlow();
 
-        const bridgePage = await enterBridgeQuote(driver);
-        await bridgePage.submitQuoteAndDismiss();
+        const swapPage = await enterBridgeQuote(driver);
+        await swapPage.submitQuoteAndDismiss();
+        await swapPage.goBackAfterSubmit();
         await homePage.goToActivityList();
 
         const activityTab = new ActivityTab(driver);

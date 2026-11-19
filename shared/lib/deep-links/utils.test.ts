@@ -21,6 +21,7 @@ const routesProtectedByInterstitial = [
   '/card-onboarding',
   '/swap',
   '/money',
+  '/money-account-deposit',
   '/earn-musd',
   '/perps',
   '/perps-markets',
@@ -88,6 +89,7 @@ describe('Deep link utils', () => {
         expect(result).toStrictEqual({
           type: DeferredDeepLinkRouteType.Redirect,
           url: 'https://app.metamask.io/buy',
+          signature: VALID,
         });
       });
 
@@ -135,6 +137,7 @@ describe('Deep link utils', () => {
         expect(result).toStrictEqual({
           type: DeferredDeepLinkRouteType.Redirect,
           url: 'https://app.metamask.io/buy',
+          signature: VALID,
         });
       });
 
@@ -186,6 +189,7 @@ describe('Deep link utils', () => {
           expect(result).toStrictEqual({
             type: DeferredDeepLinkRouteType.Interstitial,
             urlPathAndQuery: route,
+            signature,
           });
         });
       }
@@ -208,6 +212,7 @@ describe('Deep link utils', () => {
         expect(result).toStrictEqual({
           type: DeferredDeepLinkRouteType.Interstitial,
           urlPathAndQuery: '/buy',
+          signature: MISSING,
         });
       });
 
@@ -235,6 +240,7 @@ describe('Deep link utils', () => {
           type: DeferredDeepLinkRouteType.Interstitial,
           urlPathAndQuery:
             '/asset?assetId=eip155%3A1%2Ferc20%3A0x6b175474e89094c44da98b954eedeac495271d0f',
+          signature: MISSING,
         });
       });
     });

@@ -3,31 +3,45 @@ import { Driver } from '../../webdriver/driver';
 const FEEDBACK_MESSAGE =
   'Message: Unable to find value of key "debug" for locale "en"';
 
+/**
+ * React error boundary / crash page with Sentry feedback and support CTAs.
+ *
+ * Screen: in-app error page rendered when a UI crash is caught (not a stable
+ * hash route users navigate to).
+ * Owns: error title/message, contact support + data-consent modal, and Sentry
+ * feedback form submit/success modal flows.
+ * Boundaries: the error page and its support/Sentry modals only. Generating a
+ * crash belongs to `DebugOptions`; fatal startup failures belong to
+ * `CriticalErrorPage`.
+ * Related: `DebugOptions` (can trigger a crash into this page).
+ *
+ * @see ui/pages/error-page/error-page.component.tsx
+ */
 class ErrorPage {
+  private readonly contactSupportButton =
+    '[data-testid="error-page-contact-support-button"]';
+
   private readonly driver: Driver;
+
+  private readonly errorMessage = '[data-testid="error-page-error-message"]';
 
   // Locators
   private readonly errorPageTitle = '[data-testid="error-page-title"]';
 
-  private readonly errorMessage = '[data-testid="error-page-error-message"]';
-
   private readonly sendReportToSentryButton =
     '[data-testid="error-page-describe-what-happened-button"]';
-
-  private readonly sentryReportForm =
-    '[data-testid="error-page-sentry-feedback-modal"]';
-
-  private readonly contactSupportButton =
-    '[data-testid="error-page-contact-support-button"]';
-
-  private readonly sentryFeedbackTextarea =
-    '[data-testid="error-page-sentry-feedback-textarea"]';
 
   private readonly sentryFeedbackSubmitButton =
     '[data-testid="error-page-sentry-feedback-submit-button"]';
 
   private readonly sentryFeedbackSuccessModal =
     '[data-testid="error-page-sentry-feedback-success-modal"]';
+
+  private readonly sentryFeedbackTextarea =
+    '[data-testid="error-page-sentry-feedback-textarea"]';
+
+  private readonly sentryReportForm =
+    '[data-testid="error-page-sentry-feedback-modal"]';
 
   private readonly visitSupportDataConsentModal =
     '[data-testid="visit-support-data-consent-modal"]';
@@ -52,11 +66,30 @@ class ErrorPage {
     console.log('Error page is loaded');
   }
 
-  async validateErrorMessage(): Promise<void> {
-    await this.driver.waitForSelector({
-      text: `Message: Unable to find value of key "debug" for locale "en"`,
-      css: this.errorMessage,
-    });
+  async clickContactButton(): Promise<void> {
+    console.log(`Contact metamask support form in a separate page`);
+    await this.driver.waitUntilXWindowHandles(1);
+    await this.driver.findScrollToAndClickElement(this.contactSupportButton);
+  }
+
+  async consentDataToMetamaskSupport(): Promise<void> {
+    await this.driver.waitForSelector(this.visitSupportDataConsentModal);
+    // Accept awaits getCustomerServiceToken (up to 5s product timeout).
+    // Default clickElementAndWaitToDisappear timeout (3s) is too short.
+    await this.driver.clickElementAndWaitToDisappear(
+      this.visitSupportDataConsentModalAcceptButton,
+      10000,
+    );
+    // metamask, help page
+    await this.driver.waitUntilXWindowHandles(2);
+  }
+
+  async rejectDataToMetamaskSupport(): Promise<void> {
+    await this.driver.waitForSelector(this.visitSupportDataConsentModal);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.visitSupportDataConsentModalRejectButton,
+    );
+    await this.driver.waitUntilXWindowHandles(2);
   }
 
   async submitToSentryUserFeedbackForm(): Promise<void> {
@@ -69,27 +102,11 @@ class ErrorPage {
     );
   }
 
-  async clickContactButton(): Promise<void> {
-    console.log(`Contact metamask support form in a separate page`);
-    await this.driver.waitUntilXWindowHandles(1);
-    await this.driver.findScrollToAndClickElement(this.contactSupportButton);
-  }
-
-  async consentDataToMetamaskSupport(): Promise<void> {
-    await this.driver.waitForSelector(this.visitSupportDataConsentModal);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.visitSupportDataConsentModalAcceptButton,
-    );
-    // metamask, help page
-    await this.driver.waitUntilXWindowHandles(2);
-  }
-
-  async rejectDataToMetamaskSupport(): Promise<void> {
-    await this.driver.waitForSelector(this.visitSupportDataConsentModal);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.visitSupportDataConsentModalRejectButton,
-    );
-    await this.driver.waitUntilXWindowHandles(2);
+  async validateErrorMessage(): Promise<void> {
+    await this.driver.waitForSelector({
+      text: `Message: Unable to find value of key "debug" for locale "en"`,
+      css: this.errorMessage,
+    });
   }
 
   async waitForSentrySuccessModal(): Promise<void> {

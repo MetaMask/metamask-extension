@@ -14,6 +14,7 @@ import {
 } from '../../../shared/constants/app';
 import { AccountOverviewTabKey } from '../../../shared/constants/app-state';
 import { MINUTE } from '../../../shared/constants/time';
+import { recordUiInteraction } from '../../../shared/lib/telemetry/last-activity';
 import { AppStateController } from './app-state-controller';
 import type {
   AppStateControllerMessenger,
@@ -30,6 +31,9 @@ type RootMessenger = Messenger<
 
 jest.mock('webextension-polyfill');
 jest.mock('../../../shared/lib/deep-links/utils');
+jest.mock('../../../shared/lib/telemetry/last-activity', () => ({
+  recordUiInteraction: jest.fn(),
+}));
 
 const mockIsManifestV3 = jest.fn().mockReturnValue(false);
 jest.mock('../../../shared/lib/mv3.utils', () => ({
@@ -81,6 +85,21 @@ describe('AppStateController', () => {
         controller.setPasskeyAutoUnlockSuppressed(false);
         expect(controller.state.passkeyAutoUnlockSuppressed).toStrictEqual(
           false,
+        );
+      });
+    });
+  });
+
+  describe('setLastShownPrfMigrationReminderAt', () => {
+    it('sets lastShownPrfMigrationReminderAt', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.lastShownPrfMigrationReminderAt).toBeNull();
+
+        const timestamp = Date.now();
+        controller.setLastShownPrfMigrationReminderAt(timestamp);
+
+        expect(controller.state.lastShownPrfMigrationReminderAt).toBe(
+          timestamp,
         );
       });
     });
@@ -226,10 +245,10 @@ describe('AppStateController', () => {
   describe('setDefaultHomeActiveTabName', () => {
     it('sets the default home tab name', async () => {
       await withController(({ controller }) => {
-        controller.setDefaultHomeActiveTabName(AccountOverviewTabKey.Activity);
+        controller.setDefaultHomeActiveTabName(AccountOverviewTabKey.Tokens);
 
         expect(controller.state.defaultHomeActiveTabName).toBe(
-          AccountOverviewTabKey.Activity,
+          AccountOverviewTabKey.Tokens,
         );
       });
     });
@@ -344,6 +363,16 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('recordUiInteraction', () => {
+    it('records a UI interaction for last-activity telemetry', async () => {
+      await withController(({ controller }) => {
+        controller.recordUiInteraction();
+
+        expect(recordUiInteraction).toHaveBeenCalledTimes(1);
+      });
+    });
+  });
+
   describe('setBrowserEnvironment', () => {
     it('sets the current browser and OS environment', async () => {
       await withController(({ controller }) => {
@@ -410,6 +439,15 @@ describe('AppStateController', () => {
         expect(controller.state.currentPopupId).toBe(popupId);
       });
     });
+
+    it('clears the currentPopupId when undefined is passed', async () => {
+      await withController(({ controller }) => {
+        controller.setCurrentPopupId(12345);
+        controller.setCurrentPopupId(undefined);
+
+        expect(controller.state.currentPopupId).toBeUndefined();
+      });
+    });
   });
 
   describe('getCurrentPopupId', () => {
@@ -471,6 +509,18 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setMoneyFtueSeen', () => {
+    it('defaults to unseen and updates when set', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.moneyFtueSeen).toStrictEqual(false);
+
+        controller.setMoneyFtueSeen(true);
+
+        expect(controller.state.moneyFtueSeen).toStrictEqual(true);
+      });
+    });
+  });
+
   describe('setOnboardingDate', () => {
     it('set the onboardingDate', async () => {
       await withController(({ controller }) => {
@@ -518,6 +568,22 @@ describe('AppStateController', () => {
         expect(controller.state.newPrivacyPolicyToastShownDate).toStrictEqual(
           mockParams,
         );
+      });
+    });
+  });
+
+  describe('setArcUsageNoticeShown', () => {
+    it('defaults arcUsageNoticeShown to false', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.arcUsageNoticeShown).toBe(false);
+      });
+    });
+
+    it('sets arcUsageNoticeShown to true', async () => {
+      await withController(({ controller }) => {
+        controller.setArcUsageNoticeShown();
+
+        expect(controller.state.arcUsageNoticeShown).toBe(true);
       });
     });
   });
@@ -775,22 +841,6 @@ describe('AppStateController', () => {
     });
   });
 
-  describe('setCanTrackWalletFundsObtained', () => {
-    it('updates the canTrackWalletFundsObtained state with a boolean value', async () => {
-      await withController(({ controller }) => {
-        expect(controller.state.canTrackWalletFundsObtained).toBe(true);
-
-        controller.setCanTrackWalletFundsObtained(false);
-
-        expect(controller.state.canTrackWalletFundsObtained).toBe(false);
-
-        controller.setCanTrackWalletFundsObtained(true);
-
-        expect(controller.state.canTrackWalletFundsObtained).toBe(true);
-      });
-    });
-  });
-
   describe('metadata', () => {
     it('includes expected state in debug snapshots', async () => {
       await withController(
@@ -822,8 +872,8 @@ describe('AppStateController', () => {
               "activeQrCodeScanRequest": null,
               "addressSecurityAlertResponses": {},
               "appActiveTab": undefined,
+              "arcUsageNoticeShown": false,
               "browserEnvironment": {},
-              "canTrackWalletFundsObtained": true,
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
               "currentPopupId": 0,
@@ -838,11 +888,15 @@ describe('AppStateController', () => {
                 "origin": "https://example.com",
                 "timestamp": 1000,
               },
+              "lastPerpsDepositEntryPoint": null,
               "lastQrScanCompletedSuccessfully": null,
+              "lastShownPrfMigrationReminderAt": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
               "lastVisitedRoute": null,
+              "moneyEarnBannerDismissedTokenKeys": [],
+              "moneyFtueSeen": false,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -912,8 +966,8 @@ describe('AppStateController', () => {
             {
               "addressSecurityAlertResponses": {},
               "appActiveTab": undefined,
+              "arcUsageNoticeShown": false,
               "browserEnvironment": {},
-              "canTrackWalletFundsObtained": true,
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
               "currentPopupId": 0,
@@ -928,9 +982,13 @@ describe('AppStateController', () => {
                 "origin": "https://example.com",
                 "timestamp": 1000,
               },
+              "lastPerpsDepositEntryPoint": null,
+              "lastShownPrfMigrationReminderAt": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "moneyEarnBannerDismissedTokenKeys": [],
+              "moneyFtueSeen": false,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -998,8 +1056,8 @@ describe('AppStateController', () => {
             ),
           ).toMatchInlineSnapshot(`
             {
+              "arcUsageNoticeShown": false,
               "browserEnvironment": {},
-              "canTrackWalletFundsObtained": true,
               "connectedStatusPopoverHasBeenShown": true,
               "defaultHomeActiveTabName": null,
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
@@ -1011,9 +1069,12 @@ describe('AppStateController', () => {
                 "origin": "https://example.com",
                 "timestamp": 1000,
               },
+              "lastShownPrfMigrationReminderAt": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "moneyEarnBannerDismissedTokenKeys": [],
+              "moneyFtueSeen": false,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -1073,6 +1134,7 @@ describe('AppStateController', () => {
               "activeQrCodeScanRequest": null,
               "addressSecurityAlertResponses": {},
               "appActiveTab": undefined,
+              "arcUsageNoticeShown": false,
               "browserEnvironment": {},
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
@@ -1088,16 +1150,17 @@ describe('AppStateController', () => {
                 "origin": "https://example.com",
                 "timestamp": 1000,
               },
+              "lastPerpsDepositEntryPoint": null,
               "lastQrScanCompletedSuccessfully": null,
+              "lastShownPrfMigrationReminderAt": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
               "lastVisitedRoute": null,
+              "moneyEarnBannerDismissedTokenKeys": [],
+              "moneyFtueSeen": false,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
-              "networkConnectionBanner": {
-                "status": "unknown",
-              },
               "newPrivacyPolicyToastClickedOrClosed": null,
               "newPrivacyPolicyToastShownDate": null,
               "nftsDropdownState": {},
@@ -1132,6 +1195,20 @@ describe('AppStateController', () => {
           `);
         },
       );
+    });
+  });
+
+  describe('addMoneyEarnBannerDismissedTokenKey', () => {
+    it('adds each token key once', async () => {
+      await withController(async ({ controller }) => {
+        controller.addMoneyEarnBannerDismissedTokenKey('0x1:0xabc');
+        controller.addMoneyEarnBannerDismissedTokenKey('0xe708:0xdef');
+        controller.addMoneyEarnBannerDismissedTokenKey('0x1:0xabc');
+
+        expect(
+          controller.state.moneyEarnBannerDismissedTokenKeys,
+        ).toStrictEqual(['0x1:0xabc', '0xe708:0xdef']);
+      });
     });
   });
 
@@ -1200,7 +1277,7 @@ describe('AppStateController', () => {
       );
     });
 
-    it('sets lastQrScanCompletedSuccessfully to false when cancelQrCodeScan is called', async () => {
+    it('rejects with UserCancelled when cancelQrCodeScan is called without an error', async () => {
       await withController(
         { state: {} },
         async ({ controller, appStateMessenger }) => {
@@ -1216,7 +1293,61 @@ describe('AppStateController', () => {
 
           expect(controller.state.activeQrCodeScanRequest).toBeNull();
           expect(controller.state.lastQrScanCompletedSuccessfully).toBe(false);
-          await expect(scanPromise).rejects.toThrow('Scan cancelled');
+          await expect(scanPromise).rejects.toMatchObject({
+            name: 'HardwareWalletError',
+            message: 'Scan cancelled',
+            code: 2001,
+          });
+        },
+      );
+    });
+
+    it('rejects with a HardwareWalletError when cancelQrCodeScan receives a string', async () => {
+      await withController(
+        { state: {} },
+        async ({ controller, appStateMessenger }) => {
+          const scanPromise = (
+            appStateMessenger as unknown as {
+              call: (action: string, request: unknown) => Promise<unknown>;
+            }
+          ).call('AppStateController:requestQrCodeScan', mockQrScanRequest);
+
+          controller.cancelQrCodeScan('Camera permission denied');
+
+          await expect(scanPromise).rejects.toMatchObject({
+            name: 'HardwareWalletError',
+            message: 'Camera permission denied',
+          });
+        },
+      );
+    });
+
+    it('rejects with a HardwareWalletError when cancelQrCodeScan receives a serialized hardware wallet error', async () => {
+      await withController(
+        { state: {} },
+        async ({ controller, appStateMessenger }) => {
+          const scanPromise = (
+            appStateMessenger as unknown as {
+              call: (action: string, request: unknown) => Promise<unknown>;
+            }
+          ).call('AppStateController:requestQrCodeScan', mockQrScanRequest);
+
+          controller.cancelQrCodeScan({
+            name: 'HardwareWalletError',
+            message: 'Camera permission blocked by the browser',
+            code: 7301,
+            severity: 'Error',
+            category: 'Configuration',
+            userMessage:
+              'To continue, allow camera access in your browser settings.',
+          });
+
+          await expect(scanPromise).rejects.toMatchObject({
+            name: 'HardwareWalletError',
+            code: 7301,
+            userMessage:
+              'To continue, allow camera access in your browser settings.',
+          });
         },
       );
     });

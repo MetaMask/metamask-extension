@@ -24,15 +24,6 @@
     }
   }
 
-  &__back-button {
-    margin-right: 8px;
-
-    [dir='rtl'] & {
-      margin: 0 0 0 8px;
-      transform: rotate(180deg);
-    }
-  }
-
   &__body {
     padding: 0 16px 16px 16px;
   }
@@ -54,35 +45,8 @@
       height: initial;
     }
 
-    &--without-height {
-      height: initial;
-    }
-
-    &--disabled {
-      cursor: not-allowed;
-      opacity: 0.5;
-    }
-
     & .dialog {
       margin-top: 10px;
-    }
-
-    &__title {
-      font-size: 14px;
-      font-weight: 500;
-      line-height: 22px;
-    }
-
-    &__identicon {
-      display: flex;
-      flex-direction: row;
-      align-items: baseline;
-    }
-
-    &__description {
-      @include design-system.H6;
-
-      line-height: 22px;
     }
   }
 

@@ -1,23 +1,37 @@
-import { act } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react';
 import { AccountGroupType, AccountWalletType } from '@metamask/account-api';
 import { XlmScope } from '@metamask/keyring-api';
 import { errorCodes } from '@metamask/rpc-errors';
 import type { CaipAssetType } from '@metamask/utils';
 
-import { AssetType } from '../../../../shared/constants/transaction';
 import { MOCK_ACCOUNT_STELLAR_PUBNET } from '../../../../test/data/mock-accounts';
 import initializedMockState from '../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { getAssetsBySelectedAccountGroup } from '../../../selectors/assets';
+import {
+  ASSET_ACTIVATION_LOADER_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../../helpers/constants/routes';
 import * as storeActions from '../../../store/actions';
+import { toast } from '../../../components/ui/toast/toast';
 import * as stellarSnapRequests from '../utils/stellar-snap-client-requests';
-import { Asset } from '../types/asset';
 import { useAssetActivation } from './useAssetActivation';
+
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
+
+jest.mock('../../../components/ui/toast/toast', () => ({
+  toast: {
+    error: jest.fn(),
+  },
+}));
 
 const PUBNET_USDC_ASSET =
   'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN' as CaipAssetType;
 const SEP41_ASSET_ID =
-  'stellar:pubnet/sep41:CBIJBDNZNF4X35BJ4FFZWCDBSCKOP5NB4PLG4SNENRMLAPYG4P5FM6VN';
+  'stellar:pubnet/sep41:CBIJBDNZNF4X35BJ4FFZWCDBSCKOP5NB4PLG4SNENRMLAPYG4P5FM6VN' as CaipAssetType;
 const STELLAR_WALLET_ID = 'entropy:stellar-test';
 const STELLAR_GROUP_ID = 'entropy:stellar-test/0';
 const EVM_SELECTED_GROUP_ID = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0';
@@ -27,27 +41,23 @@ const STELLAR_TRUSTLINE_ADD_ERROR =
 const STELLAR_TRUSTLINE_REMOVE_ERROR =
   'Something went wrong while removing this trustline. Try again.';
 
-// TODO: unskip this test once the unified asset controller is ready
-describe.skip('useAssetActivation', () => {
-  const createTrustlineAsset = (overrides: Partial<Asset> = {}): Asset =>
-    ({
-      type: AssetType.token,
-      address: PUBNET_USDC_ASSET,
-      chainId: XlmScope.Pubnet,
-      symbol: 'USDC',
-      name: 'USD Coin',
-      decimals: 7,
-      image: '',
-      balance: { value: '0', display: '0', fiat: '0' },
-      ...overrides,
-    }) as Asset;
+const DEFAULT_HOOK_PARAMS = {
+  assetId: PUBNET_USDC_ASSET,
+  assetSymbol: 'USDC',
+};
 
+const STELLAR_NATIVE_ASSET_ID =
+  `${XlmScope.Pubnet}/slip44:148` as CaipAssetType;
+
+describe('useAssetActivation', () => {
   const createStellarState = ({
     trustlineLimit,
+    balanceAmount,
     includeAssetInState = true,
     selectedAccountGroup = STELLAR_GROUP_ID,
   }: {
     trustlineLimit?: string;
+    balanceAmount?: string;
     includeAssetInState?: boolean;
     selectedAccountGroup?: string;
   } = {}) => ({
@@ -107,14 +117,27 @@ describe.skip('useAssetActivation', () => {
             },
           }
         : {},
-      balances:
-        includeAssetInState && trustlineLimit !== undefined
+      assetsInfo: includeAssetInState
+        ? {
+            [PUBNET_USDC_ASSET]: {
+              type: 'asset',
+              symbol: 'USDC',
+              name: 'USD Coin',
+              decimals: 7,
+              image: '',
+            },
+          }
+        : {},
+      assetsBalance:
+        includeAssetInState &&
+        (balanceAmount !== undefined || trustlineLimit !== undefined)
           ? {
               [MOCK_ACCOUNT_STELLAR_PUBNET.id]: {
                 [PUBNET_USDC_ASSET]: {
-                  amount: '0',
-                  unit: 'USDC',
-                  accountAssetInfo: { limit: trustlineLimit },
+                  amount: balanceAmount ?? '0',
+                  ...(trustlineLimit === undefined
+                    ? {}
+                    : { metadata: { limit: trustlineLimit } }),
                 },
               },
             }
@@ -124,7 +147,9 @@ describe.skip('useAssetActivation', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    getAssetsBySelectedAccountGroup.memoizedResultFunc.clearCache();
+    mockNavigate.mockClear();
+    // Still on the loader after the snap returns (no confirmation handoff).
+    window.location.hash = `#${ASSET_ACTIVATION_LOADER_ROUTE}`;
     jest
       .spyOn(stellarSnapRequests, 'requestStellarChangeTrustOptAdd')
       .mockResolvedValue({ status: true });
@@ -137,23 +162,18 @@ describe.skip('useAssetActivation', () => {
   });
 
   afterEach(() => {
+    window.location.hash = '';
     jest.restoreAllMocks();
   });
 
   describe('canDeactivate', () => {
     it('returns false for a native asset when the asset does not require a trustline', async () => {
-      const nativeAsset: Asset = {
-        type: AssetType.native,
-        isOriginalNativeSymbol: true,
-        chainId: XlmScope.Pubnet as unknown as `0x${string}`,
-        symbol: 'XLM',
-        name: 'Stellar',
-        decimals: 7,
-        image: '',
-      };
-
       const { result } = renderHookWithProvider(
-        () => useAssetActivation({ asset: nativeAsset }),
+        () =>
+          useAssetActivation({
+            assetId: STELLAR_NATIVE_ASSET_ID,
+            assetSymbol: 'XLM',
+          }),
         createStellarState(),
       );
 
@@ -173,12 +193,12 @@ describe.skip('useAssetActivation', () => {
     });
 
     it('returns false for a non-trustline token when the asset does not require a trustline', async () => {
-      const asset = createTrustlineAsset({
-        address: SEP41_ASSET_ID,
-      });
-
       const { result } = renderHookWithProvider(
-        () => useAssetActivation({ asset }),
+        () =>
+          useAssetActivation({
+            assetId: SEP41_ASSET_ID,
+            assetSymbol: 'SEP41',
+          }),
         createStellarState(),
       );
 
@@ -199,7 +219,7 @@ describe.skip('useAssetActivation', () => {
 
     it('returns false when the trustline limit is zero', () => {
       const { result } = renderHookWithProvider(
-        () => useAssetActivation({ asset: createTrustlineAsset() }),
+        () => useAssetActivation(DEFAULT_HOOK_PARAMS),
         createStellarState({ trustlineLimit: '0' }),
       );
 
@@ -208,7 +228,7 @@ describe.skip('useAssetActivation', () => {
 
     it('returns false when trustline metadata is unavailable', () => {
       const { result } = renderHookWithProvider(
-        () => useAssetActivation({ asset: createTrustlineAsset() }),
+        () => useAssetActivation(DEFAULT_HOOK_PARAMS),
         createStellarState({ includeAssetInState: false }),
       );
 
@@ -217,7 +237,7 @@ describe.skip('useAssetActivation', () => {
 
     it('returns true when the trustline limit is greater than zero', () => {
       const { result } = renderHookWithProvider(
-        () => useAssetActivation({ asset: createTrustlineAsset() }),
+        () => useAssetActivation(DEFAULT_HOOK_PARAMS),
         createStellarState({ trustlineLimit: '10' }),
       );
 
@@ -227,9 +247,8 @@ describe.skip('useAssetActivation', () => {
 
   describe('activateAsset', () => {
     it('requests trustline add and refreshes state on success', async () => {
-      const asset = createTrustlineAsset();
       const { result } = renderHookWithProvider(
-        () => useAssetActivation({ asset }),
+        () => useAssetActivation(DEFAULT_HOOK_PARAMS),
         createStellarState(),
       );
 
@@ -237,6 +256,10 @@ describe.skip('useAssetActivation', () => {
         await result.current.activateAsset();
       });
 
+      expect(mockNavigate).toHaveBeenNthCalledWith(
+        1,
+        ASSET_ACTIVATION_LOADER_ROUTE,
+      );
       expect(
         stellarSnapRequests.requestStellarChangeTrustOptAdd,
       ).toHaveBeenCalledWith({
@@ -245,6 +268,7 @@ describe.skip('useAssetActivation', () => {
         scope: XlmScope.Pubnet,
       });
       expect(storeActions.forceUpdateMetamaskState).toHaveBeenCalled();
+      expect(mockNavigate).toHaveBeenLastCalledWith(PREVIOUS_ROUTE);
       expect(result.current.isActivating).toBe(false);
       expect(result.current.errorMessage).toBeNull();
     });
@@ -255,7 +279,7 @@ describe.skip('useAssetActivation', () => {
         .mockResolvedValue({ status: false });
 
       const { result } = renderHookWithProvider(
-        () => useAssetActivation({ asset: createTrustlineAsset() }),
+        () => useAssetActivation(DEFAULT_HOOK_PARAMS),
         createStellarState(),
       );
 
@@ -267,11 +291,12 @@ describe.skip('useAssetActivation', () => {
         stellarSnapRequests.requestStellarChangeTrustOptAdd,
       ).toHaveBeenCalled();
       expect(storeActions.forceUpdateMetamaskState).not.toHaveBeenCalled();
+      expect(mockNavigate).toHaveBeenLastCalledWith(PREVIOUS_ROUTE);
     });
 
     it('does nothing when account is unavailable', async () => {
       const { result } = renderHookWithProvider(
-        () => useAssetActivation({ asset: createTrustlineAsset() }),
+        () => useAssetActivation(DEFAULT_HOOK_PARAMS),
         createStellarState({ selectedAccountGroup: EVM_SELECTED_GROUP_ID }),
       );
 
@@ -282,15 +307,16 @@ describe.skip('useAssetActivation', () => {
       expect(
         stellarSnapRequests.requestStellarChangeTrustOptAdd,
       ).not.toHaveBeenCalled();
+      expect(mockNavigate).not.toHaveBeenCalled();
     });
 
-    it('sets an error message when activation fails', async () => {
+    it('toasts an error when activation fails', async () => {
       jest
         .spyOn(stellarSnapRequests, 'requestStellarChangeTrustOptAdd')
         .mockRejectedValue(new Error('activation failed'));
 
       const { result } = renderHookWithProvider(
-        () => useAssetActivation({ asset: createTrustlineAsset() }),
+        () => useAssetActivation(DEFAULT_HOOK_PARAMS),
         createStellarState(),
       );
 
@@ -298,10 +324,12 @@ describe.skip('useAssetActivation', () => {
         await result.current.activateAsset();
       });
 
+      expect(toast.error).toHaveBeenCalledWith(STELLAR_TRUSTLINE_ADD_ERROR);
       expect(result.current.errorMessage).toBe(STELLAR_TRUSTLINE_ADD_ERROR);
+      expect(mockNavigate).toHaveBeenLastCalledWith(PREVIOUS_ROUTE);
     });
 
-    it('does not set an error message when the user rejects activation', async () => {
+    it('does not toast when the user rejects activation', async () => {
       jest
         .spyOn(stellarSnapRequests, 'requestStellarChangeTrustOptAdd')
         .mockRejectedValue({
@@ -309,7 +337,7 @@ describe.skip('useAssetActivation', () => {
         });
 
       const { result } = renderHookWithProvider(
-        () => useAssetActivation({ asset: createTrustlineAsset() }),
+        () => useAssetActivation(DEFAULT_HOOK_PARAMS),
         createStellarState(),
       );
 
@@ -317,15 +345,32 @@ describe.skip('useAssetActivation', () => {
         await result.current.activateAsset();
       });
 
+      expect(toast.error).not.toHaveBeenCalled();
       expect(result.current.errorMessage).toBeNull();
+      expect(mockNavigate).toHaveBeenLastCalledWith(PREVIOUS_ROUTE);
+    });
+
+    it('does not navigate back when the confirmation already replaced the loader', async () => {
+      window.location.hash = '#/confirmation/pending-trustline';
+
+      const { result } = renderHookWithProvider(
+        () => useAssetActivation(DEFAULT_HOOK_PARAMS),
+        createStellarState(),
+      );
+
+      await act(async () => {
+        await result.current.activateAsset();
+      });
+
+      expect(mockNavigate).toHaveBeenCalledWith(ASSET_ACTIVATION_LOADER_ROUTE);
+      expect(mockNavigate).not.toHaveBeenCalledWith(PREVIOUS_ROUTE);
     });
   });
 
   describe('deactivateAsset', () => {
     it('requests trustline delete and refreshes state on success', async () => {
-      const asset = createTrustlineAsset();
       const { result } = renderHookWithProvider(
-        () => useAssetActivation({ asset }),
+        () => useAssetActivation(DEFAULT_HOOK_PARAMS),
         createStellarState({ trustlineLimit: '10' }),
       );
 
@@ -333,6 +378,10 @@ describe.skip('useAssetActivation', () => {
         await result.current.deactivateAsset();
       });
 
+      expect(mockNavigate).toHaveBeenNthCalledWith(
+        1,
+        ASSET_ACTIVATION_LOADER_ROUTE,
+      );
       expect(
         stellarSnapRequests.requestStellarChangeTrustOptDelete,
       ).toHaveBeenCalledWith({
@@ -341,13 +390,14 @@ describe.skip('useAssetActivation', () => {
         scope: XlmScope.Pubnet,
       });
       expect(storeActions.forceUpdateMetamaskState).toHaveBeenCalled();
+      expect(mockNavigate).toHaveBeenLastCalledWith(PREVIOUS_ROUTE);
       expect(result.current.isDeactivating).toBe(false);
       expect(result.current.errorMessage).toBeNull();
     });
 
     it('does nothing when deactivation is not allowed', async () => {
       const { result } = renderHookWithProvider(
-        () => useAssetActivation({ asset: createTrustlineAsset() }),
+        () => useAssetActivation(DEFAULT_HOOK_PARAMS),
         createStellarState({ trustlineLimit: '0' }),
       );
 
@@ -358,54 +408,38 @@ describe.skip('useAssetActivation', () => {
       expect(
         stellarSnapRequests.requestStellarChangeTrustOptDelete,
       ).not.toHaveBeenCalled();
+      expect(mockNavigate).not.toHaveBeenCalled();
     });
 
-    it('does nothing when balance display is missing', async () => {
-      const asset = createTrustlineAsset({ balance: undefined });
-
-      const { result } = renderHookWithProvider(
-        () => useAssetActivation({ asset }),
-        createStellarState({ trustlineLimit: '10' }),
-      );
-
-      await act(async () => {
-        await result.current.deactivateAsset();
-      });
-
-      expect(
-        stellarSnapRequests.requestStellarChangeTrustOptDelete,
-      ).not.toHaveBeenCalled();
-    });
-
-    it('sets a non-zero balance error when deactivation fails with balance', async () => {
+    it('toasts a non-zero balance error when deactivation fails with balance', async () => {
       jest
         .spyOn(stellarSnapRequests, 'requestStellarChangeTrustOptDelete')
         .mockRejectedValue(new Error('deactivation failed'));
 
-      const asset = createTrustlineAsset({
-        balance: { value: '100', display: '1', fiat: '1' },
-      });
+      const nonZeroBalanceError =
+        'You still have 100 USDC in this wallet. You must send or swap it all before deactivating this asset on Stellar.';
+
       const { result } = renderHookWithProvider(
-        () => useAssetActivation({ asset }),
-        createStellarState({ trustlineLimit: '10' }),
+        () => useAssetActivation(DEFAULT_HOOK_PARAMS),
+        createStellarState({ trustlineLimit: '10', balanceAmount: '100' }),
       );
 
       await act(async () => {
         await result.current.deactivateAsset();
       });
 
-      expect(result.current.errorMessage).toBe(
-        'You still have 1 USDC in this wallet. You must send or swap it all before deactivating this asset on Stellar.',
-      );
+      expect(toast.error).toHaveBeenCalledWith(nonZeroBalanceError);
+      expect(result.current.errorMessage).toBe(nonZeroBalanceError);
+      expect(mockNavigate).toHaveBeenLastCalledWith(PREVIOUS_ROUTE);
     });
 
-    it('sets a generic remove error when deactivation fails with zero balance', async () => {
+    it('toasts a generic remove error when deactivation fails with zero balance', async () => {
       jest
         .spyOn(stellarSnapRequests, 'requestStellarChangeTrustOptDelete')
         .mockRejectedValue(new Error('deactivation failed'));
 
       const { result } = renderHookWithProvider(
-        () => useAssetActivation({ asset: createTrustlineAsset() }),
+        () => useAssetActivation(DEFAULT_HOOK_PARAMS),
         createStellarState({ trustlineLimit: '10' }),
       );
 
@@ -413,10 +447,12 @@ describe.skip('useAssetActivation', () => {
         await result.current.deactivateAsset();
       });
 
+      expect(toast.error).toHaveBeenCalledWith(STELLAR_TRUSTLINE_REMOVE_ERROR);
       expect(result.current.errorMessage).toBe(STELLAR_TRUSTLINE_REMOVE_ERROR);
+      expect(mockNavigate).toHaveBeenLastCalledWith(PREVIOUS_ROUTE);
     });
 
-    it('does not set an error message when the user rejects deactivation', async () => {
+    it('does not toast when the user rejects deactivation', async () => {
       jest
         .spyOn(stellarSnapRequests, 'requestStellarChangeTrustOptDelete')
         .mockRejectedValue({
@@ -424,7 +460,7 @@ describe.skip('useAssetActivation', () => {
         });
 
       const { result } = renderHookWithProvider(
-        () => useAssetActivation({ asset: createTrustlineAsset() }),
+        () => useAssetActivation(DEFAULT_HOOK_PARAMS),
         createStellarState({ trustlineLimit: '10' }),
       );
 
@@ -432,7 +468,25 @@ describe.skip('useAssetActivation', () => {
         await result.current.deactivateAsset();
       });
 
+      expect(toast.error).not.toHaveBeenCalled();
       expect(result.current.errorMessage).toBeNull();
+      expect(mockNavigate).toHaveBeenLastCalledWith(PREVIOUS_ROUTE);
+    });
+
+    it('does not navigate back when the confirmation already replaced the loader', async () => {
+      window.location.hash = '#/confirmation/pending-trustline';
+
+      const { result } = renderHookWithProvider(
+        () => useAssetActivation(DEFAULT_HOOK_PARAMS),
+        createStellarState({ trustlineLimit: '10' }),
+      );
+
+      await act(async () => {
+        await result.current.deactivateAsset();
+      });
+
+      expect(mockNavigate).toHaveBeenCalledWith(ASSET_ACTIVATION_LOADER_ROUTE);
+      expect(mockNavigate).not.toHaveBeenCalledWith(PREVIOUS_ROUTE);
     });
   });
 
@@ -443,7 +497,7 @@ describe.skip('useAssetActivation', () => {
         .mockRejectedValue(new Error('activation failed'));
 
       const { result } = renderHookWithProvider(
-        () => useAssetActivation({ asset: createTrustlineAsset() }),
+        () => useAssetActivation(DEFAULT_HOOK_PARAMS),
         createStellarState(),
       );
 

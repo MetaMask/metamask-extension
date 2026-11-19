@@ -8,6 +8,8 @@ import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsTokenSortLocation,
+  MetaMetricsTokenSortPreference,
 } from '../../../../../../shared/constants/metametrics';
 import mockState from '../../../../../../test/data/mock-state.json';
 import configureStore from '../../../../../store/store';
@@ -77,7 +79,7 @@ describe('SortControl', () => {
       metamask: {
         ...mockState.metamask,
         analyticsId: 'test-analytics-id',
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: true,
       },
     });
@@ -127,7 +129,8 @@ describe('SortControl', () => {
           category: MetaMetricsEventCategory.Settings,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_sort_preference: 'title',
+          token_sort_preference: MetaMetricsTokenSortPreference.Title,
+          location: MetaMetricsTokenSortLocation.SortMenu,
         },
         sensitiveProperties: {},
       }),
@@ -156,7 +159,8 @@ describe('SortControl', () => {
           category: MetaMetricsEventCategory.Settings,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_sort_preference: 'tokenFiatAmount',
+          token_sort_preference: MetaMetricsTokenSortPreference.TokenFiatAmount,
+          location: MetaMetricsTokenSortLocation.SortMenu,
         },
         sensitiveProperties: {},
       }),

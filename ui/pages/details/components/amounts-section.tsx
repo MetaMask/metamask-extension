@@ -3,22 +3,14 @@ import { CaipAssetType } from '@metamask/utils';
 import type {
   ActivityFee,
   ActivityListItem,
-  FiatAmount,
   TokenAmount,
 } from '../../../../shared/lib/activity/types';
-import { GAS_FEE_SPONSORED } from '../../../../shared/lib/activity/fees';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useFormatters } from '../../../hooks/useFormatters';
+import { useIsGasFeeSponsored } from '../../../hooks/activity/useIsGasFeeSponsored';
 import { SuccessPill } from '../../../components/component-library';
 import { TokenFiatValue } from '../../../components/app/transaction/token-fiat-value';
 import { TokenLabel } from '../../../components/app/transaction/token-label';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { PERPS_CURRENCY } from '../../confirmations/constants/perps';
 import { Row } from './shared';
-
-function getFiatValue(fiat?: FiatAmount) {
-  return typeof fiat?.amount === 'string' ? Number(fiat.amount) : undefined;
-}
 
 function feeToToken(fee: ActivityFee): TokenAmount {
   return {
@@ -32,12 +24,17 @@ function feeToToken(fee: ActivityFee): TokenAmount {
 
 export function FeesRows({ item }: { item: ActivityListItem }) {
   const t = useI18nContext();
-  const visibleFees =
+  const isGasFeeSponsored = useIsGasFeeSponsored(item.hash);
+
+  const amountFees =
     'fees' in item.data
-      ? (item.data.fees?.filter(
-          (fee) => fee.amount || fee.type === GAS_FEE_SPONSORED,
-        ) ?? [])
+      ? (item.data.fees?.filter((fee) => Boolean(fee.amount)) ?? [])
       : [];
+  const hasBaseFee = amountFees.some((fee) => fee.type === 'base');
+  const visibleFees =
+    isGasFeeSponsored && !hasBaseFee
+      ? [{ type: 'base' }, ...amountFees]
+      : amountFees;
 
   if (!visibleFees.length) {
     return null;
@@ -57,65 +54,22 @@ export function FeesRows({ item }: { item: ActivityListItem }) {
 
         if (type === 'base') {
           label = t('networkFee');
+          if (isGasFeeSponsored) {
+            value = <SuccessPill label={t('paidByMetaMask')} />;
+          }
         } else if (type === 'priority') {
           label = t('priorityFee');
-        } else if (type === GAS_FEE_SPONSORED) {
-          label = t('networkFee');
-          value = <SuccessPill label={t('paidByMetaMask')} />;
         }
 
         return (
           <Row
             key={`${type}-${assetId ?? symbol ?? index}`}
             label={label}
-            testId={
-              type === 'base' || type === GAS_FEE_SPONSORED
-                ? 'transaction-base-fee'
-                : undefined
-            }
+            testId={type === 'base' ? 'transaction-base-fee' : undefined}
             value={value}
           />
         );
       })}
-    </>
-  );
-}
-
-export function PerpsFiatRows({
-  item,
-}: {
-  item: Extract<ActivityListItem, { type: 'perpsAddFunds' | 'perpsWithdraw' }>;
-}) {
-  const t = useI18nContext();
-  const { formatCurrencyWithMinThreshold } = useFormatters();
-  const { fiat, networkFee } = item.data;
-  const amount = getFiatValue(fiat);
-  const networkFeeAmount = getFiatValue(networkFee);
-  const signedAmount =
-    item.type === 'perpsWithdraw' && typeof amount === 'number'
-      ? -amount
-      : amount;
-
-  const formatFiat = (value: number, currency?: string) =>
-    formatCurrencyWithMinThreshold(value, currency ?? PERPS_CURRENCY);
-
-  return (
-    <>
-      {typeof networkFeeAmount === 'number' &&
-      Number.isFinite(networkFeeAmount) ? (
-        <Row
-          label={t('networkFee')}
-          testId="transaction-base-fee"
-          value={formatFiat(networkFeeAmount, networkFee?.currency)}
-        />
-      ) : null}
-      {typeof signedAmount === 'number' && Number.isFinite(signedAmount) ? (
-        <Row
-          label={t('totalAmount')}
-          testId="transaction-breakdown-value-amount"
-          value={formatFiat(signedAmount, fiat?.currency)}
-        />
-      ) : null}
     </>
   );
 }

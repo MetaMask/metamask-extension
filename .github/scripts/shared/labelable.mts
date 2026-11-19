@@ -10,7 +10,7 @@ export const LabelableType = {
 export type LabelableType = (typeof LabelableType)[keyof typeof LabelableType];
 
 // A labelable object can be a pull request or an issue
-export interface Labelable {
+export type Labelable = {
   id: string;
   type: LabelableType;
   number: number;
@@ -19,11 +19,13 @@ export interface Labelable {
   createdAt: string;
   body: string;
   author: string;
+  // GraphQL actor type of the author, such as User or Bot.
+  authorType?: string;
   labels: {
     id: string;
     name: string;
   }[];
-}
+};
 
 // This function tries to find a label on a labelable object (i.e. a pull request or an issue) if present
 export function findLabel(
@@ -54,6 +56,7 @@ export async function addLabelToLabelable(
   );
 
   await addLabelByIdToLabelable(octokit, labelable, labelId);
+  addLabelToCachedLabelable(labelable, labelId, label.name);
 }
 
 // This function adds label by id to a labelable object (i.e. a pull request or an issue)
@@ -94,6 +97,7 @@ export async function removeLabelFromLabelable(
     labelableId: labelable?.id,
     labelIds: [labelId],
   });
+  removeLabelFromCachedLabelable(labelable, labelId);
 }
 
 // This function removes a label from a labelable object (i.e. a pull request or an issue) if present
@@ -109,4 +113,26 @@ export async function removeLabelFromLabelableIfPresent(
     // Remove label from labelable
     await removeLabelFromLabelable(octokit, labelable, labelFound?.id);
   }
+}
+
+function addLabelToCachedLabelable(
+  labelable: Labelable,
+  labelId: string,
+  labelName: string,
+): void {
+  if (labelable.labels.some(({ name }) => name === labelName)) {
+    return;
+  }
+
+  labelable.labels.push({
+    id: labelId,
+    name: labelName,
+  });
+}
+
+function removeLabelFromCachedLabelable(
+  labelable: Labelable,
+  labelId: string,
+): void {
+  labelable.labels = labelable.labels.filter(({ id }) => id !== labelId);
 }

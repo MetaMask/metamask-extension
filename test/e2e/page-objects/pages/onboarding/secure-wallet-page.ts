@@ -1,20 +1,26 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Create-wallet SRP backup: reveal and review the SRP, or remind later.
+ *
+ * Screen: `#/onboarding/review-recovery-phrase`.
+ * Owns: revealing the SRP, reading the revealed words, continue, and the
+ * "remind me later" skip.
+ * Boundaries: the review screen only. The password gate shown from the home
+ * backup reminder belongs to `RevealRecoveryPhrasePage`, and the quiz belongs
+ * to `ConfirmRecoveryPhrasePage` (see `revealAndConfirmSrp` in
+ * `flows/onboarding.flow.ts`). Import-flow SRP entry is `OnboardingSrpPage`.
+ * Related: preceded by `OnboardingPasswordPage` / `SetupPasskeyPage`; next
+ * is `ConfirmRecoveryPhrasePage`, or `OnboardingMetricsPage` (Chrome) /
+ * `OnboardingCompletePage` when skipping.
+ *
+ * @see ui/pages/onboarding-flow/recovery-phrase/review-recovery-phrase.tsx
+ * @see ui/pages/onboarding-flow/recovery-phrase/recovery-phrase-chips.tsx
+ */
 class SecureWalletPage {
   private driver: Driver;
 
-  private readonly confirmPasswordButton =
-    '[data-testid="reveal-recovery-phrase-continue"]';
-
-  private readonly confirmRecoveryPhraseButton =
-    '[data-testid="recovery-phrase-confirm"]';
-
-  private readonly confirmSecretRecoveryPhraseMessage = {
-    text: 'Confirm your Secret Recovery Phrase',
-    tag: 'h2',
-  };
-
-  private readonly passwordInput = '#account-details-authenticate';
+  private readonly page = '[data-testid="parent-selector-secure-wallet"]';
 
   private readonly recoveryPhraseChips =
     '[data-testid="recovery-phrase-chips"]';
@@ -33,21 +39,16 @@ class SecureWalletPage {
     tag: 'h2',
   };
 
-  private readonly confirmSrpSuccessMessage = {
-    text: 'Perfect',
-    tag: 'h3',
-  };
-
-  private readonly confirmSrpConfirmButton =
-    '[data-testid="confirm-srp-modal-button"]';
-
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.secureWalletRecommendedButton);
+      await this.driver.waitForMultipleSelectors([
+        this.page,
+        this.secureWalletRecommendedButton,
+      ]);
     } catch (e) {
       console.log(
         'Timeout while waiting for secure wallet page to be loaded',
@@ -59,69 +60,19 @@ class SecureWalletPage {
   }
 
   /**
-   * Reveal and confirm SRP on secure wallet page during onboarding
-   *
-   * @param needEnterPassword - Whether to enter the password
+   * Reveal the SRP and continue to the confirm quiz.
    */
-  async revealAndConfirmSRP(needEnterPassword: string = ''): Promise<void> {
-    console.log('Reveal and confirm SRP on Reveal SRP Onboarding page');
-    if (needEnterPassword) {
-      await this.driver.fill(this.passwordInput, needEnterPassword);
-      await this.driver.clickElement(this.confirmPasswordButton);
-    }
+  async revealAndContinue(): Promise<void> {
+    console.log('Reveal SRP and continue on review recovery phrase page');
     await this.driver.waitForMultipleSelectors([
       this.writeDownSecretRecoveryPhraseMessage,
       this.revealSecretRecoveryPhraseButton,
     ]);
-
-    // click reveal button to reveal SRP
     await this.driver.clickElementAndWaitToDisappear(
       this.revealSecretRecoveryPhraseButton,
     );
     await this.driver.clickElementAndWaitToDisappear(
       this.recoveryPhraseContinueButton,
-    );
-
-    await this.driver.waitForMultipleSelectors([
-      this.confirmSecretRecoveryPhraseMessage,
-      this.recoveryPhraseChips,
-    ]);
-
-    let quizWordsString = '';
-    const recoveryPhraseChips = await this.driver.findElement(
-      this.recoveryPhraseChips,
-    );
-    quizWordsString = await recoveryPhraseChips.getAttribute('data-quiz-words');
-
-    // confirm SRP
-    const quizWords = JSON.parse(quizWordsString).sort(
-      (
-        a: { word: string; index: number },
-        b: { word: string; index: number },
-      ) => a.index - b.index,
-    );
-    const quizInputSelector0 = `[data-testid="recovery-phrase-quiz-unanswered-${quizWords[0].index}"]`;
-    const quizInputSelector1 = `[data-testid="recovery-phrase-quiz-unanswered-${quizWords[1].index}"]`;
-    const quizInputSelector2 = `[data-testid="recovery-phrase-quiz-unanswered-${quizWords[2].index}"]`;
-
-    await this.driver.waitForMultipleSelectors([
-      quizInputSelector0,
-      quizInputSelector1,
-      quizInputSelector2,
-    ]);
-    await this.driver.clickElement(quizInputSelector0);
-    await this.driver.clickElement(quizInputSelector1);
-    await this.driver.clickElement(quizInputSelector2);
-
-    await this.driver.clickElement(this.confirmRecoveryPhraseButton);
-
-    await this.driver.waitForMultipleSelectors([
-      this.confirmSrpSuccessMessage,
-      this.confirmSrpConfirmButton,
-    ]);
-
-    await this.driver.clickElementAndWaitToDisappear(
-      this.confirmSrpConfirmButton,
     );
   }
 

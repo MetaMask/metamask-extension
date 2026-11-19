@@ -388,6 +388,42 @@ jobs:
     if: ${{ needs.get-requirements.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/prep-e2e.yml
 
+  ai-pr-risk-analysis:
+    name: AI PR risk analysis
+    needs:
+      - get-requirements
+    # PRs to main require the auto-merge label; PRs to release/* always run.
+    if: >-
+      ${{
+        !cancelled()
+        && needs.get-requirements.result == 'success'
+        && needs.get-requirements.outputs.changed-files != '[]'
+        && github.event_name == 'pull_request'
+        && !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
+        && github.event.pull_request.draft == false
+        && (
+          (
+            github.event.pull_request.base.ref == 'main'
+            && contains(github.event.pull_request.labels.*.name, 'auto-merge')
+          )
+          || (
+            startsWith(github.event.pull_request.base.ref, 'release/')
+          )
+        )
+      }}
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+      checks: write
+    uses: ./.github/workflows/ai-pr-risk-analysis.yml
+    with:
+      changed-files: ${{ join(fromJSON(needs.get-requirements.outputs.changed-files), ' ') }}
+    secrets:
+      AI_ANALYZER_LITELLM_KEY: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
+      AI_ANALYZER_LANGFUSE_PUBLIC_KEY: ${{ secrets.AI_ANALYZER_LANGFUSE_PUBLIC_KEY }}
+      AI_ANALYZER_LANGFUSE_SECRET_KEY: ${{ secrets.AI_ANALYZER_LANGFUSE_SECRET_KEY }}
+
   e2e-chrome:
     needs:
       - get-requirements
@@ -486,73 +522,12 @@ jobs:
       E2E_CLAUDE_API_KEY: ${{ secrets.E2E_CLAUDE_API_KEY }}
       E2E_GEMINI_API_KEY: ${{ secrets.E2E_GEMINI_API_KEY }}
 
-  trigger-regression-validation:
-    name: Trigger Regression Validation
-    # Guard: three conditions must all be true.
-    #  1. Release branch — only release/* branches need regression validation.
-    #  2. Not a fork repo — fork repos don't have the release-ci environment
-    #     or its METAMASK_REGRESSION_TRIGGER_TEST secret.
-    #  3. Not a cross-repo PR — GitHub withholds environment secrets from PRs
-    #     whose head branch lives in a different repository, so the job would
-    #     fail trying to read the dispatch token.
-    # Build reuse is banned on release/* branches (in get-requirements.yml),
-    # so build-dist-webpack always runs here — no !cancelled() needed.
-    if: >-
-      ${{
-        startsWith(github.head_ref || github.ref_name, 'release/')
-        && !github.event.repository.fork
-        && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
-      }}
-    needs:
-      - get-requirements
-      - build-dist-webpack
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    environment: release-ci
-    steps:
-      - name: Get token
-        id: token
-        uses: MetaMask/github-tools/.github/actions/get-token@v1
-        with:
-          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
-          target-repository: MetaMask/extension-regression-validation-poc
-          permissions: |
-            contents: write
-
-      - name: Trigger regression validation in external repo
-        env:
-          DISPATCH_TOKEN: ${{ steps.token.outputs.token }}
-          BUILDS_FROM_RUN: ${{ needs.get-requirements.outputs.builds-from-run }}
-        run: |
-          # Extract version from branch name (e.g., release/12.5.0 -> 12.5.0)
-          # Use BRANCH env var which correctly handles both push and pull_request events
-          VERSION="${BRANCH#release/}"
-
-          echo "Triggering regression validation..."
-          echo "Run ID (builds): $BUILDS_FROM_RUN"
-          echo "Branch: $BRANCH"
-          echo "Version: $VERSION"
-          echo "Commit SHA: $HEAD_COMMIT_HASH"
-
-          curl -X POST \
-            -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: token $DISPATCH_TOKEN" \
-            https://api.github.com/repos/MetaMask/extension-regression-validation-poc/dispatches \
-            -d '{
-              "event_type": "release_pr_updated",
-              "client_payload": {
-                "run_id": "'"$BUILDS_FROM_RUN"'",
-                "version": "'"$VERSION"'",
-                "branch": "'"$BRANCH"'",
-                "commit_sha": "'"$HEAD_COMMIT_HASH"'"
-              }
-            }'
-
-          echo "Regression validation triggered successfully"
-
   ci-status-gate:
     if: ${{ !cancelled() }}
     permissions:
+      # The reusable gate reads current-run jobs to find E2E quality-gate
+      # annotations, then posts both aggregate and terminal status contexts.
+      actions: read
       pull-requests: read
       statuses: write
       checks: read
@@ -565,6 +540,8 @@ jobs:
     # Jobs intentionally excluded:
     # - Publish jobs (not required for CI pass)
     # - Jobs that depend on ci-status-gate (e.g., log-merge-group-failure) cannot be included here
+    # E2E workflows remain direct dependencies so their failed annotations are
+    # available to the reusable gate even when another dependency is skipped.
     needs:
       - get-requirements
       - locales-changed-only
@@ -592,9 +569,17 @@ jobs:
       - e2e-firefox
       - build-storybook
       - build-ts-migration-dashboard
-      - trigger-regression-validation
     uses: ./.github/workflows/ci-status-gate.yml
     with:
       needs-json: ${{ toJson(needs) }}
       skip-builds: ${{ needs.get-requirements.outputs.skip-builds }}
     secrets: inherit
+
+  deploy-platform-api-docs:
+    name: Deploy Platform API Docs
+    needs: lint-workflows
+    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/deploy-platform-api-docs.yml

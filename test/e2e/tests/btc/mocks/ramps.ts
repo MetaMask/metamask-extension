@@ -10,7 +10,7 @@ export async function mockRampsDynamicFeatureFlag(
       `https://on-ramp-content.${subDomain}.cx.metamask.io/regions/networks`,
     )
     .withQuery({
-      context: 'extension',
+      context: 'browser',
     })
     .thenJson(200, {
       networks: [

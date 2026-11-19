@@ -7,18 +7,19 @@ import {
   FlexDirection,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
+import { toChecksumHexAddress } from '../../../../../../shared/lib/hexstring-utils';
 import { Box, Text } from '../../../../component-library';
 import NicknamePopovers from '../../../modals/nickname-popovers';
 import Name from '../../../name/name';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import { PreferredAvatar } from '../../../preferred-avatar';
-import { useFallbackDisplayName } from './hook';
 
 export type ConfirmInfoRowAddressProps = {
   address: string;
   chainId: string;
   isSnapUsingThis?: boolean;
   showFullName?: boolean;
+  fillWidth?: boolean;
 };
 
 export const ConfirmInfoRowAddress = memo(
@@ -27,8 +28,9 @@ export const ConfirmInfoRowAddress = memo(
     chainId,
     isSnapUsingThis,
     showFullName = false,
+    fillWidth = false,
   }: ConfirmInfoRowAddressProps) => {
-    const { displayName, hexAddress } = useFallbackDisplayName(address);
+    const hexAddress = toChecksumHexAddress(address);
     const [isNicknamePopoverShown, setIsNicknamePopoverShown] = useState(false);
     const handleDisplayNameClick = () => setIsNicknamePopoverShown(true);
     const onCloseHandler = () => setIsNicknamePopoverShown(false);
@@ -38,6 +40,7 @@ export const ConfirmInfoRowAddress = memo(
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         alignItems={AlignItems.center}
+        className={fillWidth ? 'ml-2 min-w-0 flex-1' : undefined}
       >
         {
           // PetNames on this component are disabled for snaps until the `<Name />`
@@ -60,7 +63,7 @@ export const ConfirmInfoRowAddress = memo(
                   color={TextColor.inherit}
                   data-testid="confirm-info-row-display-name"
                 >
-                  {isSnapUsingThis ? shortenAddress(address) : displayName}
+                  {shortenAddress(address)}
                 </Text>
               </Box>
               {isNicknamePopoverShown ? (
@@ -77,7 +80,10 @@ export const ConfirmInfoRowAddress = memo(
               preferContractSymbol
               variation={chainId}
               showFullName={showFullName}
-              className="overflow-hidden"
+              fillWidth={fillWidth}
+              className={
+                fillWidth ? 'flex-1 overflow-hidden' : 'overflow-hidden'
+              }
             />
           )
         }

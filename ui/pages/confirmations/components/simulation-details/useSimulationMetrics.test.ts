@@ -6,7 +6,7 @@ import {
   SimulationErrorCode,
 } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import {
@@ -161,6 +161,7 @@ describe('useSimulationMetrics', () => {
     useAnalyticsMock.mockReturnValue({
       trackEvent: trackEventMock,
       createEventBuilder,
+      trackErrorAsAnalytics: jest.fn(),
     });
     useContextMock.mockReturnValue({
       bufferedTrace: jest.fn(),

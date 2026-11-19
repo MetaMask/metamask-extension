@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { mapApiTransaction } from '@metamask/client-utils';
-import { mergeActivityItemSponsoredFees } from '../../../shared/lib/activity/fees';
+import { mapV5ApiTransaction } from '@metamask/client-utils';
+import { isValidTransactionHash } from '../../../shared/lib/transactions.utils';
 import {
   selectEvmAddress,
   selectLocalActivityItemsByIdentifier,
@@ -11,6 +11,7 @@ import ErrorBoundary from '../../components/app/error-boundary/error-boundary';
 import { useApiTransaction } from '../../hooks/activity/useApiTransaction';
 import { Header } from './components/header';
 import { TemplateLoader } from './templates/template-loader';
+import { useRampsDetailsItem } from './templates/ramps/hooks';
 
 type Props = {
   chainId: string | undefined;
@@ -33,19 +34,29 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
       ? nonEvmActivityItems.get(txIdentifier.toLowerCase())
       : undefined;
 
+  const rampsActivityItem = useRampsDetailsItem(txIdentifier);
+
   const apiTransaction = useApiTransaction({
     chainId,
-    txHash: isEvm && selectedAddress ? txIdentifier : undefined,
+    txHash:
+      isEvm &&
+      selectedAddress &&
+      txIdentifier &&
+      isValidTransactionHash(txIdentifier)
+        ? txIdentifier
+        : undefined,
   });
 
   const transaction = useMemo(() => {
-    const apiActivityItem =
-      apiTransaction && selectedAddress
-        ? mapApiTransaction({
-            subjectAddress: selectedAddress,
-            transaction: apiTransaction,
-          })
-        : undefined;
+    // Ramps first so settled orders keep the ramp classification over the
+    // generic transaction that shares their settlement hash.
+    if (rampsActivityItem) {
+      return rampsActivityItem;
+    }
+
+    const apiActivityItem = apiTransaction
+      ? mapV5ApiTransaction({ transaction: apiTransaction })
+      : undefined;
 
     if (localActivityItem) {
       // More categorized items take precedence, unless it's a generic interaction
@@ -58,10 +69,7 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
         apiActivityItem &&
         (hasMatchingActivityType || isLocalUncategorized)
       ) {
-        return mergeActivityItemSponsoredFees(
-          localActivityItem,
-          apiActivityItem,
-        );
+        return apiActivityItem;
       }
 
       return localActivityItem;
@@ -76,19 +84,20 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
     }
 
     return undefined;
-  }, [apiTransaction, localActivityItem, nonEvmActivityItem, selectedAddress]);
+  }, [
+    apiTransaction,
+    localActivityItem,
+    nonEvmActivityItem,
+    rampsActivityItem,
+  ]);
 
   return (
-    <div className="flex h-full flex-col bg-background-default [container-name:list-item] [container-type:inline-size]">
-      <div className="shrink-0 px-4 py-4">
-        <Header item={transaction} onBack={onBack} />
-      </div>
+    <div className="flex h-full flex-col py-4 [container-name:list-item] [container-type:inline-size]">
+      <Header item={transaction} onBack={onBack} />
 
-      <div className="flex flex-col flex-1 overflow-y-auto px-4 pb-4">
-        <ErrorBoundary>
-          <TemplateLoader item={transaction} />
-        </ErrorBoundary>
-      </div>
+      <ErrorBoundary>
+        <TemplateLoader item={transaction} />
+      </ErrorBoundary>
     </div>
   );
 }

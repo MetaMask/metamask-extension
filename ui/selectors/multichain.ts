@@ -1,9 +1,9 @@
 import type {
   MultichainAssetsControllerState,
-  MultichainAssetsRatesControllerState,
   MultichainBalancesControllerState,
   RatesControllerState,
 } from '@metamask/assets-controllers';
+import type { AssetsControllerState } from '@metamask/assets-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
@@ -17,16 +17,21 @@ import {
   NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { CaipChainId, Hex } from '@metamask/utils';
+import { CaipChainId, Hex, isCaipChainId } from '@metamask/utils';
 import PropTypes from 'prop-types';
 import { createSelector } from 'reselect';
 import {
   MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET,
-  MULTICHAIN_TOKEN_IMAGE_MAP,
+  MULTICHAIN_TESTNET_NETWORKS,
   MultichainNetworks,
   MultichainProviderConfig,
 } from '../../shared/constants/multichain/networks';
 import { Numeric } from '../../shared/lib/Numeric';
+import { isEvmChainId } from '../../shared/lib/asset-utils';
+import {
+  convertCaipToHexChainId,
+  DEFAULT_NETWORK_IMAGE_URLS,
+} from '../../shared/lib/network.utils';
 import {
   getMultichainAssetsRatesControllerConversionRates,
   getMultiChainBalancesControllerBalances,
@@ -38,11 +43,7 @@ import {
 } from '../ducks/metamask/metamask';
 import { getConversionRate } from '../ducks/metamask/base-selectors';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  CHAIN_IDS,
-  TEST_NETWORK_IDS,
-} from '../../shared/constants/network';
+import { CHAIN_IDS, TEST_NETWORK_IDS } from '../../shared/constants/network';
 import {
   getNetworkConfigurationsByChainId,
   getProviderConfig,
@@ -78,9 +79,8 @@ export type AssetsState = {
 };
 
 export type AssetsRatesState = {
-  metamask: MultichainAssetsRatesControllerState;
+  metamask: Pick<AssetsControllerState, 'assetsPrice'>;
 };
-
 export type RatesState = {
   metamask: RatesControllerState;
 };
@@ -323,14 +323,9 @@ export function getMultichainIsTestnet(
 
   // TODO: For now we only check for Bitcoin, Solana, and Tron, but we will need to
   // update this for other non-EVM networks later!
-  return [
-    MultichainNetworks.BITCOIN_TESTNET,
-    MultichainNetworks.BITCOIN_SIGNET,
-    MultichainNetworks.SOLANA_DEVNET,
-    MultichainNetworks.SOLANA_TESTNET,
-    MultichainNetworks.TRON_NILE,
-    MultichainNetworks.TRON_SHASTA,
-  ].includes(providerConfig.chainId as MultichainNetworks);
+  return MULTICHAIN_TESTNET_NETWORKS.includes(
+    providerConfig.chainId as MultichainNetworks,
+  );
 }
 
 // TODO: Update all references to use asset-migration.ts
@@ -374,11 +369,20 @@ function getNonEvmCachedBalance(
   return balanceOfAsset?.amount ?? 0;
 }
 
-export function getImageForChainId(chainId: string): string | undefined {
-  return {
-    ...CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-    ...MULTICHAIN_TOKEN_IMAGE_MAP,
-  }[chainId];
+export function getImageForChainId(
+  chainId: string,
+  networkImageUrls: Record<string, string> = DEFAULT_NETWORK_IMAGE_URLS,
+): string | undefined {
+  const directMatch = networkImageUrls[chainId];
+  if (directMatch) {
+    return directMatch;
+  }
+
+  if (isCaipChainId(chainId) && isEvmChainId(chainId)) {
+    return networkImageUrls[convertCaipToHexChainId(chainId)];
+  }
+
+  return undefined;
 }
 
 // This selector is not compatible with `useMultichainSelector` since it uses the selected
@@ -407,7 +411,9 @@ export function getMultichainConversionRate(
   const { chainId } = getMultichainNetwork(state, account);
 
   const conversionRate = getMultichainIsEvm(state, account)
-    ? getConversionRate(state as Parameters<typeof getConversionRate>[0])
+    ? getConversionRate(
+        state as unknown as Parameters<typeof getConversionRate>[0],
+      )
     : getConversionRatesForNativeAsset({
         conversionRates:
           getMultichainAssetsRatesControllerConversionRates(state),
@@ -437,6 +443,7 @@ const SYNTHETIC_MULTICHAIN_CHAIN_IDS: readonly MultichainNetworks[] = [
   MultichainNetworks.TRON,
   MultichainNetworks.TRON_NILE,
   MultichainNetworks.TRON_SHASTA,
+  MultichainNetworks.STELLAR,
 ];
 
 /**

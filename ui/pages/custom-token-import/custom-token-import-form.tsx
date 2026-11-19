@@ -12,6 +12,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useSelector } from 'react-redux';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -30,6 +31,7 @@ import {
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getImageForChainId } from '../../selectors/multichain';
+import { getChainIdToNetworkImageUrlMap } from '../../selectors/config-registry/config-registry';
 import { Content } from '../../components/multichain/pages/page';
 import {
   CustomTokenImportNetworkSelector,
@@ -109,6 +111,7 @@ const NetworkPickerField = ({
   onClick: () => void;
 }) => {
   const t = useI18nContext();
+  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
 
   return (
     <Box>
@@ -128,7 +131,7 @@ const NetworkPickerField = ({
           <AvatarNetwork
             size={AvatarNetworkSize.Xs}
             className="rounded-md"
-            src={getImageForChainId(selectedNetwork) || undefined}
+            src={getImageForChainId(selectedNetwork, networkImageUrls)}
             name={networkName}
           />
         }
@@ -256,9 +259,9 @@ const SubmitBar = ({ isDisabled, isLoading, onSubmit }: SubmitBarProps) => {
         isDisabled={isDisabled}
         isLoading={isLoading}
         onClick={onSubmit}
-        className="flex-1 rounded-xl"
+        className="flex-1"
       >
-        {t('addToken')}
+        {t('save')}
       </Button>
     </Box>
   );

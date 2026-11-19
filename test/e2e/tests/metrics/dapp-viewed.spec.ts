@@ -10,8 +10,8 @@ import { login } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 
-// E2E Fixtures setup has 4 identities (1 EVM, 1 Solana, 1 Bitcoin, 1 Tron)
-const METAMASK_IDENTITIES = 4;
+// E2E Fixtures setup has 5 identities (1 EVM, 1 Solana, 1 Bitcoin, 1 Tron, 1 Stellar)
+const METAMASK_IDENTITIES = 5;
 
 async function mockedDappViewedEndpointFirstVisit(mockServer: Mockttp) {
   return await mockServer
@@ -89,9 +89,11 @@ describe('Dapp viewed Event', function () {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
-            analyticsId: null,
-            completedMetaMetricsOnboarding: true,
+          .withAnalyticsController({
+            // Non-null invalid ID: null is replaced with a generated ID at
+            // AnalyticsController init, which can still sample into the 1%.
+            analyticsId: 'fake-metrics-id-invalid',
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
@@ -121,9 +123,9 @@ describe('Dapp viewed Event', function () {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: validFakeMetricsId, // 1% sample rate for dapp viewed event
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
@@ -164,9 +166,9 @@ describe('Dapp viewed Event', function () {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: validFakeMetricsId,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
@@ -210,9 +212,9 @@ describe('Dapp viewed Event', function () {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: validFakeMetricsId,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
@@ -259,9 +261,9 @@ describe('Dapp viewed Event', function () {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: validFakeMetricsId,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
@@ -305,9 +307,9 @@ describe('Dapp viewed Event', function () {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: validFakeMetricsId,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),

@@ -27,7 +27,7 @@ import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
 import { isWebUrl } from '../../../../../../shared/lib/url-utils';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
-import { getImageForChainId } from '../../../../../selectors/multichain';
+import { useImageForChainId } from '../../../../../hooks/useImageForChainId';
 import {
   ASSET_ROUTE,
   PREVIOUS_ROUTE,
@@ -60,7 +60,7 @@ export default function NftFullImage() {
   const nftNetworkConfigs = useSelector(getNetworkConfigurationsByChainId);
   const hexChainId = toHex(chainId?.toString() ?? '');
   const nftChainNetwork = nftNetworkConfigs[hexChainId];
-  const nftChainImage = getImageForChainId(hexChainId);
+  const nftChainImage = useImageForChainId(hexChainId);
   const nftImageURL = useGetAssetImageUrl(imageOriginal ?? image, ipfsGateway);
 
   const nftImageAlt = getNftImageAlt({
@@ -80,7 +80,11 @@ export default function NftFullImage() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    setVisible(true);
+    // Async so the initial opacity:0 paint can occur before fading in.
+    const frameId = requestAnimationFrame(() => {
+      setVisible(true);
+    });
+    return () => cancelAnimationFrame(frameId);
   }, []);
 
   const onClose = useCallback(() => {

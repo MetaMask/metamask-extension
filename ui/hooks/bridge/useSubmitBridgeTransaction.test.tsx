@@ -1,9 +1,14 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderHook } from '@testing-library/react-hooks';
-import { act } from '@testing-library/react';
-import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
+import { renderHook, act } from '@testing-library/react';
+import {
+  type QuoteMetadata,
+  type QuoteResponse,
+  SwapFeatureTag,
+  mergeQuoteMetadata,
+} from '@metamask/bridge-controller';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { createMemoryRouterWrapper } from '../../../test/lib/render-helpers-navigate';
 import {
   createBridgeMockStore,
@@ -16,17 +21,33 @@ import {
   OP_0_005_ETH_TO_ARB_METADATA,
 } from '../../../test/data/bridge/dummy-quotes';
 import {
-  AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
-  DEFAULT_ROUTE,
+  HARDWARE_WALLET_SIGNATURES_ROUTE,
+  PREPARE_SWAP_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import * as keyringSelectors from '../../../shared/lib/selectors/keyring';
 import * as sentry from '../../../shared/lib/sentry';
 import * as bridgeStatusActions from '../../ducks/bridge-status/actions';
+import {
+  submitBridgeTx,
+  submitBridgeIntent,
+} from '../../ducks/bridge-status/actions';
 import * as bridgeActions from '../../ducks/bridge/actions';
 import { setBackgroundConnection } from '../../store/background-connection';
-import { HardwareWalletProvider } from '../../contexts/hardware-wallets';
+import {
+  HardwareWalletProvider,
+  HardwareWalletType,
+} from '../../contexts/hardware-wallets';
+import { createHardwareWalletError } from '../../contexts/hardware-wallets/errors';
+import { createActiveABTestAssignment } from '../../../shared/lib/ab-testing/active-ab-test-assignment';
+import { CHAIN_VALUE_ORDER_AB_KEY } from '../../../shared/lib/ab-testing/configs/chain-value-order';
 import useSubmitBridgeTransaction from './useSubmitBridgeTransaction';
+
+jest.mock('../../../shared/lib/sentry', () => ({
+  ...jest.requireActual('../../../shared/lib/sentry'),
+  captureException: jest.fn(),
+}));
 
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
@@ -45,17 +66,33 @@ jest.mock('../../ducks/bridge/utils', () => ({
   })),
 }));
 
-const mockEnsureDeviceReady = jest.fn().mockResolvedValue(true);
+const mockEnsureDeviceReady = jest.fn().mockResolvedValue(null);
 jest.mock('../../contexts/hardware-wallets/HardwareWalletContext', () => {
   return {
     ...jest.requireActual(
       '../../contexts/hardware-wallets/HardwareWalletContext',
     ),
     useHardwareWalletActions: () => ({
-      ensureDeviceReady: () => mockEnsureDeviceReady(),
+      ensureDeviceReadyOrError: () => mockEnsureDeviceReady(),
     }),
   };
 });
+
+const mockShowErrorModal = jest.fn();
+jest.mock(
+  '../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+  () => ({
+    ...jest.requireActual(
+      '../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+    ),
+    useHardwareWalletError: () => ({
+      showErrorModal: mockShowErrorModal,
+      dismissErrorModal: jest.fn(),
+      isErrorModalVisible: false,
+      setErrorModalSuppressed: jest.fn(),
+    }),
+  }),
+);
 
 jest.mock('../../store/actions', () => {
   const original = jest.requireActual('../../store/actions');
@@ -174,9 +211,13 @@ const makeMockStore = (
   );
 };
 
-const makeWrapper = (store: ReturnType<typeof makeMockStore>) => {
+const makeWrapper = (
+  store: ReturnType<typeof makeMockStore>,
+  initialEntries?: string[],
+) => {
   const MemoryRouter = createMemoryRouterWrapper({
     store,
+    initialEntries,
   });
 
   return ({ children }: { children: React.ReactNode }) => (
@@ -186,27 +227,39 @@ const makeWrapper = (store: ReturnType<typeof makeMockStore>) => {
   );
 };
 
-const submitTxSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeTx');
-const submitIntentSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeIntent');
+let submitTxSpy: jest.SpyInstance<
+  ReturnType<typeof submitBridgeTx>,
+  Parameters<typeof submitBridgeTx>
+>;
+let submitIntentSpy: jest.SpyInstance<
+  ReturnType<typeof submitBridgeIntent>,
+  Parameters<typeof submitBridgeIntent>
+>;
 const isHardwareWalletSpy = keyringSelectors.isHardwareWallet as jest.Mock;
 const captureExceptionSpy = jest.spyOn(sentry, 'captureException');
 const mockResetState = jest.fn();
 const resetBridgeStoreSpy = jest.spyOn(bridgeActions, 'resetInputFields');
 
-describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
+describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
   describe('submitBridgeTransaction', () => {
     beforeEach(() => {
       jest.clearAllMocks();
+      submitTxSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeTx');
+      submitIntentSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeIntent');
       isHardwareWalletSpy.mockImplementation(() => false);
-      mockEnsureDeviceReady.mockResolvedValue(true);
+      mockEnsureDeviceReady.mockResolvedValue(null);
       captureExceptionSpy.mockReturnValue(undefined);
       setBackgroundConnection({
-        submitTx: submitTxSpy,
-        submitIntent: submitIntentSpy,
-        getLocation: jest.fn().mockResolvedValue('Main View'),
         getStatePatches: jest.fn(),
-        setEnabledAllPopularNetworks: jest.fn(),
-        resetState: () => mockResetState(),
+        messengerCall: jest.fn((actionType: string) => {
+          if (actionType === 'BridgeController:getLocation') {
+            return Promise.resolve('Main View');
+          }
+          if (actionType === 'BridgeController:resetState') {
+            return Promise.resolve(mockResetState());
+          }
+          return Promise.resolve(undefined);
+        }),
       } as never);
     });
 
@@ -216,10 +269,11 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         wrapper: makeWrapper(store),
       });
 
-      const quoteWithMetadata: QuoteResponse & QuoteMetadata = {
-        ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
-        ...ETH_11_USDC_TO_ARB_METADATA,
-      };
+      const quoteWithMetadata: QuoteResponse & QuoteMetadata =
+        mergeQuoteMetadata(
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+          ETH_11_USDC_TO_ARB_METADATA,
+        );
 
       await act(async () => {
         await result.current.submitBridgeTransaction(quoteWithMetadata);
@@ -228,34 +282,23 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(quoteWithMetadata.toTokenAmount?.usd).toBe('12');
 
       expect(submitTxSpy.mock.calls).toMatchSnapshot();
-      expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
-        [
-          [
-            "/",
-            {
-              "replace": true,
-              "state": {
-                "stayOnHomePage": true,
-              },
-            },
-          ],
-        ]
-      `);
+      expect(mockUseNavigate).not.toHaveBeenCalled();
       expect(result.current.isSubmitting).toBe(false);
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
     });
 
-    it.only('executes EVM bridge transaction with no approval', async () => {
+    it('executes EVM bridge transaction with no approval', async () => {
       const store = makeMockStore();
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
       });
 
-      const quoteWithMetadata: QuoteResponse & QuoteMetadata = {
-        ...DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0],
-        ...OP_0_005_ETH_TO_ARB_METADATA,
-      };
+      const quoteWithMetadata: QuoteResponse & QuoteMetadata =
+        mergeQuoteMetadata(
+          DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0],
+          OP_0_005_ETH_TO_ARB_METADATA,
+        );
       await act(async () => {
         await result.current.submitBridgeTransaction(quoteWithMetadata);
       });
@@ -268,7 +311,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(mockResetState).not.toHaveBeenCalled();
     });
 
-    it('routes to default route after EVM bridge transaction', async () => {
+    it('stays on swaps with the amount cleared after EVM bridge transaction', async () => {
       const store = makeMockStore();
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
@@ -281,19 +324,10 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       });
 
       // Assert
-      expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
-        [
-          [
-            "/",
-            {
-              "replace": true,
-              "state": {
-                "stayOnHomePage": true,
-              },
-            },
-          ],
-        ]
-      `);
+      expect(mockUseNavigate).not.toHaveBeenCalled();
+      expect(store.getActions()).toContainEqual(
+        bridgeActions.setFromTokenInputValue(null),
+      );
 
       expect(result.current.isSubmitting).toBe(false);
       expect(submitTxSpy).toHaveBeenCalled();
@@ -301,7 +335,31 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(mockResetState).not.toHaveBeenCalled();
     });
 
-    it('routes to awaiting signatures for hardware wallets', async () => {
+    it('returns to transaction shield after submitting a swap opened from transaction shield', async () => {
+      const store = makeMockStore();
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store, [
+          `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}?isFromTransactionShield=true`,
+        ]),
+      });
+
+      await act(async () => {
+        await result.current.submitBridgeTransaction(
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+        );
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        TRANSACTION_SHIELD_ROUTE,
+        expect.objectContaining({ replace: true }),
+      );
+      expect(store.getActions()).not.toContainEqual(
+        bridgeActions.setFromTokenInputValue(null),
+      );
+      expect(mockResetState).not.toHaveBeenCalled();
+    });
+
+    it('routes to hardware wallet signatures for hardware wallets without submitting immediately', async () => {
       const store = makeMockStore({
         metamaskStateOverrides: {
           internalAccounts: {
@@ -327,26 +385,214 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
         [
           [
-            "/cross-chain/swaps/awaiting-signatures",
+            "/cross-chain/swaps/hardware-wallet-signatures",
             {
               "state": {},
-            },
-          ],
-          [
-            "/",
-            {
-              "replace": true,
-              "state": {
-                "stayOnHomePage": true,
-              },
             },
           ],
         ]
       `);
       expect(result.current.isSubmitting).toBe(false);
-      expect(submitTxSpy).toHaveBeenCalledTimes(1);
+      expect(submitTxSpy).not.toHaveBeenCalled();
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
+    });
+
+    it('submits hardware-wallet transactions from the hardware wallet signatures page', async () => {
+      const store = makeMockStore({
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+          accountTree: {
+            selectedAccountGroup:
+              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+          },
+        },
+      });
+      isHardwareWalletSpy.mockImplementation(() => true);
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store, [
+          `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}/`,
+        ]),
+      });
+
+      await act(async () => {
+        await result.current.submitBridgeTransaction(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
+        );
+      });
+
+      expect(mockUseNavigate).not.toHaveBeenCalled();
+      expect(submitTxSpy).toHaveBeenCalledTimes(1);
+      expect(result.current.isSubmitting).toBe(false);
+    });
+
+    it('throws when hardware-wallet submission fails from the signing page without marking the tx declined', async () => {
+      const store = makeMockStore({
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+          accountTree: {
+            selectedAccountGroup:
+              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+          },
+        },
+      });
+      const submitError = new Error('transport disconnected');
+      submitTxSpy.mockReturnValueOnce(async () => {
+        throw submitError;
+      });
+      isHardwareWalletSpy.mockImplementation(() => true);
+      const { result, unmount } = renderHook(
+        () => useSubmitBridgeTransaction(),
+        {
+          wrapper: makeWrapper(store, [
+            `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`,
+          ]),
+        },
+      );
+
+      let didThrow = false;
+      await act(async () => {
+        try {
+          await result.current.submitBridgeTransaction(
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
+          );
+        } catch (error) {
+          didThrow = true;
+          expect(error).toBe(submitError);
+        }
+      });
+      unmount();
+
+      expect(didThrow).toBe(true);
+      expect(captureExceptionSpy).toHaveBeenCalledWith(submitError, {
+        tags: { feature: SwapFeatureTag.SWAP },
+      });
+      expect(mockUseNavigate).not.toHaveBeenCalled();
+      expect(result.current.isSubmitting).toBe(false);
+      expect(store.getActions()).not.toContainEqual(
+        expect.objectContaining({
+          type: 'bridge/setWasTxDeclined',
+          payload: true,
+        }),
+      );
+    });
+
+    it('marks the tx declined only when the hardware wallet user rejects signing', async () => {
+      const store = makeMockStore({
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+          accountTree: {
+            selectedAccountGroup:
+              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+          },
+        },
+      });
+      const submitError = new Error('user rejected the request');
+      submitTxSpy.mockReturnValueOnce(async () => {
+        throw submitError;
+      });
+      isHardwareWalletSpy.mockImplementation(() => true);
+      const { result, unmount } = renderHook(
+        () => useSubmitBridgeTransaction(),
+        {
+          wrapper: makeWrapper(store, [
+            `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`,
+          ]),
+        },
+      );
+
+      await act(async () => {
+        await expect(
+          result.current.submitBridgeTransaction(
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
+          ),
+        ).rejects.toThrow(submitError);
+      });
+      unmount();
+
+      expect(captureExceptionSpy).toHaveBeenCalledWith(submitError, {
+        tags: { feature: SwapFeatureTag.SWAP },
+      });
+      expect(store.getActions()).toContainEqual(
+        expect.objectContaining({
+          type: 'bridge/setWasTxDeclined',
+          payload: true,
+        }),
+      );
+      expect(result.current.isSubmitting).toBe(false);
+    });
+
+    it('does not dispatch a second submitBridgeTx when retrying after rpcTimeoutMs', async () => {
+      const store = makeMockStore({
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+          accountTree: {
+            selectedAccountGroup:
+              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+          },
+        },
+      });
+      // Never-resolving promise simulates a hung hardware-wallet RPC.
+      submitTxSpy.mockReturnValue(() => new Promise(() => undefined));
+      isHardwareWalletSpy.mockImplementation(() => true);
+      const { result, unmount } = renderHook(
+        () => useSubmitBridgeTransaction(),
+        {
+          wrapper: makeWrapper(store, [
+            `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`,
+          ]),
+        },
+      );
+
+      const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
+
+      await act(async () => {
+        await expect(
+          result.current.submitBridgeTransaction(
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            quote as any,
+            { rpcTimeoutMs: 20 },
+          ),
+        ).rejects.toThrow('Bridge transaction RPC timed out');
+      });
+
+      expect(submitTxSpy).toHaveBeenCalledTimes(1);
+
+      await act(async () => {
+        await expect(
+          result.current.submitBridgeTransaction(
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            quote as any,
+            { rpcTimeoutMs: 20 },
+          ),
+        ).rejects.toThrow('Bridge transaction RPC timed out');
+      });
+
+      // Retry must reuse the in-flight dispatch instead of starting another.
+      expect(submitTxSpy).toHaveBeenCalledTimes(1);
+      expect(store.getActions()).not.toContainEqual(
+        expect.objectContaining({
+          type: 'bridge/setWasTxDeclined',
+          payload: true,
+        }),
+      );
+      unmount();
     });
 
     it('returns early if hardware device is not ready', async () => {
@@ -361,7 +607,9 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
           },
         },
       });
-      mockEnsureDeviceReady.mockResolvedValue(false);
+      mockEnsureDeviceReady.mockResolvedValue(
+        new Error('Hardware wallet device is not ready'),
+      );
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
       });
@@ -379,12 +627,112 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(mockResetState).not.toHaveBeenCalled();
     });
 
-    it('submits intent quotes via submitBridgeIntent', async () => {
-      const store = makeMockStore();
-      submitIntentSpy.mockReturnValueOnce((async () => undefined) as never);
+    it('shows the hardware wallet error modal when the device preflight fails', async () => {
+      const store = makeMockStore({
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+          accountTree: {
+            selectedAccountGroup:
+              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+          },
+        },
+      });
+      mockEnsureDeviceReady.mockResolvedValue(
+        new Error('Hardware wallet device is not ready'),
+      );
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
       });
+
+      await act(async () => {
+        await result.current.submitBridgeTransaction(
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+        );
+      });
+
+      expect(mockShowErrorModal).toHaveBeenCalledWith(
+        new Error('Hardware wallet device is not ready'),
+      );
+      expect(result.current.isSubmitting).toBe(false);
+      expect(submitTxSpy).not.toHaveBeenCalled();
+      expect(mockUseNavigate).not.toHaveBeenCalled();
+    });
+
+    it('shows the hardware wallet error modal with the error returned by the device preflight', async () => {
+      const store = makeMockStore({
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+          accountTree: {
+            selectedAccountGroup:
+              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+          },
+        },
+      });
+      const deviceError = createHardwareWalletError(
+        ErrorCode.AuthenticationDeviceLocked,
+        HardwareWalletType.Ledger,
+        'Ledger device is locked',
+      );
+      mockEnsureDeviceReady.mockResolvedValue(deviceError);
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store),
+      });
+
+      await act(async () => {
+        await result.current.submitBridgeTransaction(
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+        );
+      });
+
+      expect(mockShowErrorModal).toHaveBeenCalledWith(deviceError);
+      expect(result.current.isSubmitting).toBe(false);
+      expect(submitTxSpy).not.toHaveBeenCalled();
+      expect(mockUseNavigate).not.toHaveBeenCalled();
+    });
+
+    it('does not show the hardware wallet error modal for non-device submit failures', async () => {
+      const store = makeMockStore();
+      const submitError = new Error('quote submit failed');
+      submitIntentSpy.mockReturnValueOnce(async () => {
+        throw submitError;
+      });
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store),
+      });
+
+      const quoteWithIntent = {
+        ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+        quote: {
+          ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0].quote,
+          intent: {
+            order: {},
+          } as never,
+        },
+      };
+
+      await act(async () => {
+        await result.current.submitBridgeTransaction(quoteWithIntent);
+      });
+
+      expect(mockShowErrorModal).not.toHaveBeenCalled();
+      expect(captureExceptionSpy).toHaveBeenCalledWith(submitError, {
+        tags: { feature: SwapFeatureTag.SWAP },
+      });
+    });
+
+    it('submits intent quotes via submitBridgeIntent', async () => {
+      const store = makeMockStore();
+      submitIntentSpy.mockReturnValueOnce((async () => undefined) as never);
+      const { result } = renderHook(
+        () => useSubmitBridgeTransaction('fiat_value'),
+        {
+          wrapper: makeWrapper(store),
+        },
+      );
 
       const quoteWithIntent = {
         ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
@@ -405,68 +753,138 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         accountAddress: expect.any(String),
         location: 'Main View',
         tokenSecurityTypeDestination: null,
+        activeAbTests: undefined,
+        inputPrimaryDenomination: 'fiat_value',
+        quotesReceivedContext: expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+          custom_slippage: false,
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+          slippage_limit: 0,
+        }),
       });
       expect(submitTxSpy).not.toHaveBeenCalled();
-      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
-        replace: true,
-        state: {
-          stayOnHomePage: true,
-        },
-      });
+      expect(mockUseNavigate).not.toHaveBeenCalled();
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
     });
 
-    it('routes to default route with replace when non-HW intent submission fails', async () => {
-      const store = makeMockStore();
-      const consoleErrorSpy = jest
-        .spyOn(console, 'error')
-        .mockImplementation(() => undefined);
-      submitIntentSpy.mockImplementationOnce((async () => {
-        throw new Error('submit failed');
-      }) as never);
+    it('forwards the chain value order assignment to regular submissions', async () => {
+      const store = makeMockStore({
+        featureFlagOverrides: {
+          // @ts-expect-error - the mock store type only declares bridgeConfig
+          [CHAIN_VALUE_ORDER_AB_KEY]: {
+            name: 'treatment',
+          },
+        },
+      });
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
       });
-
-      const quoteWithIntent = {
-        ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
-        quote: {
-          ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0].quote,
-          intent: {
-            order: {},
-          } as never,
-        },
+      const quoteWithMetadata = {
+        ...DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0],
+        ...OP_0_005_ETH_TO_ARB_METADATA,
       };
 
       await act(async () => {
-        await result.current.submitBridgeTransaction(quoteWithIntent);
+        await result.current.submitBridgeTransaction(quoteWithMetadata);
       });
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
-        replace: true,
-        state: {
-          stayOnHomePage: true,
-        },
-      });
-      expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
-      expect(mockResetState).not.toHaveBeenCalled();
-      expect(
-        consoleErrorSpy.mock.calls.some(
-          (call) =>
-            call[0] instanceof Error && call[0].message === 'submit failed',
-        ),
-      ).toBe(true);
-      consoleErrorSpy.mockRestore();
+      expect(submitTxSpy.mock.calls[0][6]).toStrictEqual([
+        createActiveABTestAssignment(CHAIN_VALUE_ORDER_AB_KEY, 'treatment'),
+      ]);
     });
 
-    it('routes hardware-wallet intent quotes to default route after submit', async () => {
-      const store = makeMockStore();
-      isHardwareWalletSpy.mockImplementation(() => true);
+    it('forwards the chain value order assignment to intent submissions', async () => {
+      const store = makeMockStore({
+        featureFlagOverrides: {
+          // @ts-expect-error - the mock store type only declares bridgeConfig
+          [CHAIN_VALUE_ORDER_AB_KEY]: {
+            name: 'control',
+          },
+        },
+      });
       submitIntentSpy.mockReturnValueOnce((async () => undefined) as never);
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
       });
+      const quoteWithIntent = {
+        ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+        quote: {
+          ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0].quote,
+          intent: {
+            order: {},
+          } as never,
+        },
+      };
+
+      await act(async () => {
+        await result.current.submitBridgeTransaction(quoteWithIntent);
+      });
+
+      expect(submitIntentSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          activeAbTests: [
+            createActiveABTestAssignment(CHAIN_VALUE_ORDER_AB_KEY, 'control'),
+          ],
+        }),
+      );
+    });
+
+    // @ts-expect-error - each is a valid test function
+    it.each([undefined, { name: 'invalid' }])(
+      'forwards no assignment for a missing or malformed experiment value',
+      async (
+        experimentValue:
+          | undefined
+          | {
+              name: string;
+            },
+      ) => {
+        const store = makeMockStore({
+          featureFlagOverrides: {
+            // @ts-expect-error - the mock store type only declares bridgeConfig
+            [CHAIN_VALUE_ORDER_AB_KEY]: experimentValue,
+          },
+        });
+        const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+          wrapper: makeWrapper(store),
+        });
+        const quoteWithIntent = {
+          ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+          quote: {
+            ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0].quote,
+            intent: {
+              order: {},
+            } as never,
+          },
+        };
+
+        await act(async () => {
+          await result.current.submitBridgeTransaction(quoteWithIntent);
+        });
+
+        expect(submitIntentSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            activeAbTests: undefined,
+          }),
+        );
+        expect(store.getActions()).not.toContainEqual(
+          expect.objectContaining({
+            type: expect.stringContaining('Experiment'),
+          }),
+        );
+      },
+    );
+
+    it('stays on swaps without clearing the amount when non-HW intent submission fails', async () => {
+      const store = makeMockStore();
+      const submitError = new Error('submit failed');
+      submitIntentSpy.mockReturnValueOnce(async () => {
+        throw submitError;
+      });
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store),
+      });
 
       const quoteWithIntent = {
         ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
@@ -482,17 +900,51 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         await result.current.submitBridgeTransaction(quoteWithIntent);
       });
 
-      expect(mockUseNavigate).toHaveBeenNthCalledWith(
-        1,
-        `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`,
-        { state: {} },
+      expect(mockUseNavigate).not.toHaveBeenCalled();
+      expect(store.getActions()).not.toContainEqual(
+        bridgeActions.setFromTokenInputValue(null),
       );
-      expect(mockUseNavigate).toHaveBeenNthCalledWith(2, DEFAULT_ROUTE, {
-        replace: true,
-        state: {
-          stayOnHomePage: true,
+      expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
+      expect(mockResetState).not.toHaveBeenCalled();
+      expect(captureExceptionSpy).toHaveBeenCalledWith(submitError, {
+        tags: { feature: SwapFeatureTag.SWAP },
+      });
+    });
+
+    it('routes hardware-wallet intent quotes to hardware wallet signatures without submitting immediately', async () => {
+      const store = makeMockStore({
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+          accountTree: {
+            selectedAccountGroup:
+              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+          },
         },
       });
+      isHardwareWalletSpy.mockImplementation(() => true);
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store),
+      });
+
+      const quoteWithIntent = {
+        ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+        quote: {
+          ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0].quote,
+          intent: {
+            order: {},
+          } as never,
+        },
+      };
+
+      await act(async () => {
+        await result.current.submitBridgeTransaction(quoteWithIntent);
+      });
+
+      expect(result.current.isSubmitting).toBe(false);
+      expect(submitIntentSpy).not.toHaveBeenCalled();
+      expect(submitTxSpy).not.toHaveBeenCalled();
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
     });

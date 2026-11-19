@@ -1,3 +1,4 @@
+import { act } from '@testing-library/react';
 import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
 import {
   Alert,
@@ -341,12 +342,16 @@ describe('useAlerts', () => {
   describe('setAlertConfirmed', () => {
     it('dismisses alert confirmation', () => {
       const result = renderAndReturnResult();
-      result.current.setAlertConfirmed(fromAlertKeyMock, false);
+      act(() => {
+        result.current.setAlertConfirmed(fromAlertKeyMock, false);
+      });
       expect(result.current.isAlertConfirmed(fromAlertKeyMock)).toBe(false);
     });
     it('confirms an alert', () => {
       const result = renderAndReturnResult(ownerId2Mock);
-      result.current.setAlertConfirmed(fromAlertKeyMock, true);
+      act(() => {
+        result.current.setAlertConfirmed(fromAlertKeyMock, true);
+      });
       expect(result.current.isAlertConfirmed(fromAlertKeyMock)).toBe(true);
     });
   });

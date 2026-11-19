@@ -1,7 +1,10 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
+import {
+  SwapFeatureTag,
+  type QuoteResponse,
+} from '@metamask/bridge-controller';
 import { captureException } from '../../../../../../shared/lib/sentry';
 import { submitBatchSellTrade } from '../../../../../ducks/bridge-status/actions';
 import {
@@ -10,12 +13,12 @@ import {
 } from '../../../../../ducks/bridge/selectors';
 import { getMaybeHexChainId } from '../../../../../ducks/bridge/utils';
 import { getIsSmartTransaction } from '../../../../../../shared/lib/selectors';
-import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
-import type { MetaMaskReduxDispatch } from '../../../../../store/store';
+import { ACTIVITY_ROUTE } from '../../../../../helpers/constants/routes';
 import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
+import { useDispatch } from '../../../../../store/hooks';
 
 type UseBatchSellSubmitQuotesArgs = {
-  quoteResponses: ((QuoteResponse & QuoteMetadata) | null)[];
+  quoteResponses: (QuoteResponse | null)[];
   receivedAsset: BatchSellAsset;
 };
 
@@ -37,11 +40,13 @@ export default function useBatchSellSubmitQuotes({
   receivedAsset,
 }: UseBatchSellSubmitQuotesArgs) {
   const navigate = useNavigate();
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
-  const srcChainId = quoteResponses.find((q) => q)?.quote.srcChainId;
+  const dispatch = useDispatch();
+  const srcChainId = quoteResponses.find((q) => q)?.chainId;
   const srcChainIdHex = getMaybeHexChainId(srcChainId?.toString());
   const isStxEnabled = useSelector((state) =>
-    getIsSmartTransaction(state as BridgeAppState, srcChainIdHex),
+    srcChainIdHex
+      ? getIsSmartTransaction(state as BridgeAppState, srcChainIdHex)
+      : false,
   );
   const fromAccount = useSelector(getFromAccount);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -64,13 +69,14 @@ export default function useBatchSellSubmitQuotes({
         }),
       );
     } catch (e) {
-      captureException(e);
+      captureException(e, {
+        tags: { feature: SwapFeatureTag.BATCH_SELL },
+      });
     } finally {
       setIsSubmitting(false);
     }
 
-    navigate(`${DEFAULT_ROUTE}?tab=activity`, {
-      state: { stayOnHomePage: true },
+    navigate(ACTIVITY_ROUTE, {
       replace: true,
     });
   };

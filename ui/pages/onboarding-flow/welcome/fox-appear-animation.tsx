@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import {
   useRive,
   useRiveFile,
@@ -17,40 +17,34 @@ type FoxAppearAnimationProps = {
   skipTransition?: boolean;
 };
 
-export default function FoxAppearAnimation({
+type FoxAppearAnimationInnerProps = FoxAppearAnimationProps & {
+  buffer: ArrayBuffer;
+};
+
+/**
+ * Mount Rive only after .riv bytes exist. Keep Start/play independent of the
+ * canvas node — requiring canvas before play skipped the raise-up entirely
+ * when the canvas was not queryable on the first effect pass.
+ *
+ * @param options0
+ * @param options0.buffer
+ * @param options0.isLoader
+ * @param options0.skipTransition
+ */
+const FoxAppearAnimationInner = ({
+  buffer,
   isLoader = false,
   skipTransition = false,
-}: FoxAppearAnimationProps) {
-  const context = useRiveWasmContext();
-  const { isWasmReady, error: wasmError } = context;
-  const {
-    buffer,
-    error: bufferError,
-    loading: bufferLoading,
-  } = useRiveWasmFile('./images/riv_animations/fox_appear.riv');
+}: FoxAppearAnimationInnerProps) => {
+  const { isWasmReady } = useRiveWasmContext();
   const containerRef = useRef<HTMLDivElement>(null);
+  // Copy so Rive cannot detach the shared module-cache ArrayBuffer.
+  const riveBuffer = useMemo(() => buffer.slice(0), [buffer]);
 
-  useEffect(() => {
-    if (wasmError) {
-      console.error(
-        '[Rive - FoxAppearAnimation] Failed to load WASM:',
-        wasmError,
-      );
-    }
-    if (bufferError) {
-      console.error(
-        '[Rive - FoxAppearAnimation] Failed to load buffer:',
-        bufferError,
-      );
-    }
-  }, [wasmError, bufferError]);
-
-  // Use the buffer parameter instead of src
   const { riveFile, status } = useRiveFile({
-    buffer,
+    buffer: riveBuffer,
   });
 
-  // Only initialize Rive after WASM is ready and riveFile is loaded
   const { rive, RiveComponent } = useRive({
     riveFile: riveFile ?? undefined,
     stateMachines: riveFile ? 'FoxRaiseUp' : undefined,
@@ -61,83 +55,95 @@ export default function FoxAppearAnimation({
     }),
   });
 
+  // Start the raise-up as soon as the runtime is ready. Do not gate on canvas.
+  useEffect(() => {
+    if (!rive || !isWasmReady) {
+      return undefined;
+    }
+
+    let cancelled = false;
+
+    const startAnimation = () => {
+      if (cancelled) {
+        return;
+      }
+
+      const inputs = rive.stateMachineInputs('FoxRaiseUp');
+      if (!inputs) {
+        // Inputs can lag one frame behind `rive` after createRoot remounts.
+        requestAnimationFrame(startAnimation);
+        return;
+      }
+
+      if (skipTransition) {
+        inputs.find((input) => input.name === 'Wiggle')?.fire();
+      } else {
+        inputs.find((input) => input.name === 'Start')?.fire();
+      }
+
+      if (isLoader) {
+        inputs.find((input) => input.name === 'Loader2')?.fire();
+      }
+
+      rive.play();
+    };
+
+    startAnimation();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [rive, isLoader, isWasmReady, skipTransition]);
+
+  // Resize independently so it cannot block or re-order Start/play.
   useEffect(() => {
     if (!rive || !containerRef.current) {
       return undefined;
     }
-    const canvasEl = containerRef.current.querySelector('canvas');
-    if (!canvasEl) {
-      return undefined;
-    }
+
+    let frameId = 0;
+
     const syncCanvasSize = () => {
       const container = containerRef.current;
-      if (!container) {
-        return;
+      const canvasEl = container?.querySelector('canvas');
+      if (!container || !canvasEl) {
+        return false;
       }
       const { clientWidth, clientHeight } = container;
+      if (clientWidth === 0 || clientHeight === 0) {
+        return false;
+      }
       const dpr = window.devicePixelRatio || 1;
       const scaledWidth = Math.round(clientWidth * dpr);
       const scaledHeight = Math.round(clientHeight * dpr);
       if (canvasEl.width === scaledWidth && canvasEl.height === scaledHeight) {
-        return;
+        return true;
       }
       canvasEl.width = scaledWidth;
       canvasEl.height = scaledHeight;
       canvasEl.style.width = `${clientWidth}px`;
       canvasEl.style.height = `${clientHeight}px`;
       rive.resizeToCanvas();
+      return true;
     };
-    syncCanvasSize();
+
+    const ensureSized = () => {
+      if (!syncCanvasSize()) {
+        frameId = requestAnimationFrame(ensureSized);
+      }
+    };
+
+    // Wait a frame so Start/play can begin before the first bitmap clear.
+    frameId = requestAnimationFrame(ensureSized);
     window.addEventListener('resize', syncCanvasSize);
-    return () => window.removeEventListener('resize', syncCanvasSize);
+
+    return () => {
+      cancelAnimationFrame(frameId);
+      window.removeEventListener('resize', syncCanvasSize);
+    };
   }, [rive]);
 
-  // Trigger the animation start when rive is loaded and WASM is ready
-  useEffect(() => {
-    if (rive && isWasmReady && !bufferLoading && buffer) {
-      // Get the state machine inputs
-      const inputs = rive.stateMachineInputs('FoxRaiseUp');
-
-      if (inputs) {
-        // Fire the Start trigger to begin the animation
-        // (Fox raises up from bottom of the artboard)
-        if (skipTransition) {
-          const wiggleTrigger = inputs.find((input) => input.name === 'Wiggle');
-          if (wiggleTrigger) {
-            wiggleTrigger.fire();
-          }
-        } else {
-          const startTrigger = inputs.find((input) => input.name === 'Start');
-          if (startTrigger) {
-            startTrigger.fire();
-          }
-        }
-
-        // Fire the Loader trigger to show loading animation
-        // (Fox moves to center and looks left/right with blinks)
-        if (isLoader) {
-          const loaderTrigger = inputs.find(
-            (input) => input.name === 'Loader2',
-          );
-          if (loaderTrigger) {
-            loaderTrigger.fire();
-          }
-        }
-
-        // Play the state machine
-        rive.play();
-      }
-    }
-  }, [rive, isLoader, isWasmReady, skipTransition, bufferLoading, buffer]);
-
-  // Don't render Rive component until ready or if loading/failed
-  if (
-    !isWasmReady ||
-    bufferLoading ||
-    !buffer ||
-    status === 'loading' ||
-    status === 'failed'
-  ) {
+  if (status === 'loading' || status === 'failed') {
     return (
       <Box
         className={`${isLoader ? 'riv-animation__fox-container--loader' : 'riv-animation__fox-container'}`}
@@ -169,5 +175,58 @@ export default function FoxAppearAnimation({
         />
       )}
     </Box>
+  );
+};
+
+export default function FoxAppearAnimation({
+  isLoader = false,
+  skipTransition = false,
+}: FoxAppearAnimationProps) {
+  const context = useRiveWasmContext();
+  const { isWasmReady, error: wasmError } = context;
+  const {
+    buffer,
+    error: bufferError,
+    loading: bufferLoading,
+  } = useRiveWasmFile('./images/riv_animations/fox_appear.riv');
+
+  useEffect(() => {
+    if (wasmError) {
+      console.error(
+        '[Rive - FoxAppearAnimation] Failed to load WASM:',
+        wasmError,
+      );
+    }
+    if (bufferError) {
+      console.error(
+        '[Rive - FoxAppearAnimation] Failed to load buffer:',
+        bufferError,
+      );
+    }
+  }, [wasmError, bufferError]);
+
+  if (!isWasmReady || bufferLoading || !buffer) {
+    return (
+      <Box
+        className={`${isLoader ? 'riv-animation__fox-container--loader' : 'riv-animation__fox-container'}`}
+      >
+        {isLoader && (
+          <img
+            data-testid="loading-indicator"
+            className="riv-animation__spinner"
+            src="./images/spinner.gif"
+            alt=""
+          />
+        )}
+      </Box>
+    );
+  }
+
+  return (
+    <FoxAppearAnimationInner
+      buffer={buffer}
+      isLoader={isLoader}
+      skipTransition={skipTransition}
+    />
   );
 }

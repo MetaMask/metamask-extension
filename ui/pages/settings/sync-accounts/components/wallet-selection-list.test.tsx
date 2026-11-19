@@ -10,12 +10,13 @@ import configureStore from '../../../../store/store';
 import { AccountTreeWallets } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { WalletSelectionList } from './wallet-selection-list';
 
+const mockStableWalletBalances = { wallets: {} };
+
 jest.mock('../../../../selectors/assets', () => ({
-  selectBalanceForAllWallets: () => ({ wallets: {} }),
+  selectBalanceForAllWallets: () => mockStableWalletBalances,
 }));
 
 jest.mock('../../../../selectors', () => ({
-  getIsDefaultAddressEnabled: () => false,
   getShowDefaultAddressPreference: () => false,
 }));
 

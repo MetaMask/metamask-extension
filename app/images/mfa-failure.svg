@@ -1,0 +1,24 @@
+<svg width="370" height="64.2854" viewBox="0 0 370 64.2854" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Failure">
+<path id="Vector" d="M153 40.1126L164.696 51.9517L166.351 61.2899L154.854 49.8121L153 40.1126Z" fill="#121314"/>
+<g id="Group">
+<path id="Vector_2" d="M157.707 10.8058L183.121 37.9929L184.776 47.3311L159.126 20.0257L157.707 10.8058Z" fill="#121314"/>
+<path id="Vector_3" d="M157.707 10.8058L159.126 20.0257L184.776 47.3311L183.121 37.9929L157.707 10.8058Z" stroke-width="0.570559" stroke-linecap="round" stroke-linejoin="round" stroke="#121314"/>
+<path id="Vector_4" d="M215.081 13.8492L216.617 23.4238L166.408 61.0807L164.554 51.9518L215.081 13.8492Z" fill="url(#paint0_linear_0_425)"/>
+<path id="Vector_5" d="M212.481 44.2492L214.192 53.7614L201.07 63.9335L199.358 54.6619L212.481 44.2492Z" fill="url(#paint1_linear_0_425)" stroke-width="0.570559" stroke-linejoin="round" stroke="black"/>
+<path id="Vector_6" d="M215.038 13.7327L164.697 51.9448L166.551 61.0807L216.575 23.3073L215.038 13.7327Z" stroke-width="0.570559" stroke-linecap="round" stroke-linejoin="round" stroke="#121314"/>
+<path id="Vector_7" d="M182.812 38.1157L199.358 54.6619L201.013 64.2854L184.381 47.2447L182.812 38.1157Z" fill="#121314"/>
+<path id="Vector_8" d="M157.707 10.8055L172.128 0.285288L186.076 16.3612L204.208 2.88359L215.083 13.7584L196.505 27.8455L212.481 44.2491L199.501 54.6618L182.812 37.973L164.411 51.809L153.285 40.1126L172.128 26.2327L157.707 10.8055Z" fill="#FA4B00" stroke-width="0.570559" stroke-linejoin="round" stroke="black"/>
+</g>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_425" x1="212.766" y1="22.14" x2="168.833" y2="54.8045" gradientUnits="userSpaceOnUse">
+<stop stop-color="#C56FF6"/>
+<stop offset="1" stop-color="#FA4B00"/>
+</linearGradient>
+<linearGradient id="paint1_linear_0_425" x1="214.192" y1="48.2431" x2="199.817" y2="60.4788" gradientUnits="userSpaceOnUse">
+<stop stop-color="#C56FF6"/>
+<stop offset="1" stop-color="#FA4B00"/>
+</linearGradient>
+</defs>
+</svg>

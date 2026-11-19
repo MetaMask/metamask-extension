@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   getAllChainsToPoll,
@@ -13,6 +13,7 @@ import {
 import { SECOND } from '../../../../../../shared/constants/time';
 import { toast, ToastContent } from '../../../../ui/toast/toast';
 import { BannerAlert } from '../../../../component-library';
+import { useDispatch } from '../../../../../store/hooks';
 
 const nftDetectionEnabledToastId = 'enabled-nft-auto-detection';
 const autoHideToastDelay = 5 * SECOND;

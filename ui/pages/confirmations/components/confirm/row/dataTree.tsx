@@ -19,6 +19,7 @@ import {
   ConfirmInfoRowText,
   ConfirmInfoRowTextTokenUnits,
 } from '../../../../../components/app/confirm/info/row';
+import { MAX_UINT48 } from '../../../constants';
 import { useGetTokenStandardAndDetails } from '../../../hooks/useGetTokenStandardAndDetails';
 
 type ValueType = string | Record<string, TreeData> | TreeData[];
@@ -120,7 +121,7 @@ export const DataTree = ({
             label.charAt(0).toUpperCase() + label.slice(1),
           )}:`}
           style={{ paddingRight: 0 }}
-          key={`tree-data-${label}-index-${i}`}
+          key={`tree-data-${label}`}
           data-testid={`confirmation_data-${label}-index-${i}`}
         >
           {
@@ -181,6 +182,10 @@ const DataField = memo(
 
     if (isDateField(label, primaryType) && Boolean(value)) {
       const intValue = parseInt(value, 10);
+
+      if (intValue === MAX_UINT48) {
+        return <ConfirmInfoRowText text={t('confirmFieldNeverExpires')} />;
+      }
 
       return intValue === NONE_DATE_VALUE ? (
         <ConfirmInfoRowText text={t('none')}></ConfirmInfoRowText>

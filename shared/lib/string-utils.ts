@@ -39,3 +39,13 @@ export function prependZero(num: number, maxLength: number): string {
 export function toCamelCase(str: string): string {
   return str.replaceAll(/-([a-z])/gu, (_, letter) => letter.toUpperCase());
 }
+
+/**
+ * Converts a camelCase string to snake_case.
+ *
+ * @param value - CamelCase string (e.g., 'walletAddress')
+ * @returns snake_case string (e.g., 'wallet_address')
+ */
+export function toSnakeCase(value: string): string {
+  return value.replace(/[A-Z]/gu, (letter) => `_${letter.toLowerCase()}`);
+}

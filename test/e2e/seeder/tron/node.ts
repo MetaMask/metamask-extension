@@ -13,6 +13,7 @@ import {
   getAvailablePorts,
   isTcpPortAvailable,
 } from '../ports';
+import { stopProcess } from '../stop-process';
 import {
   TRON_TEST_ASSETS,
   TronLocalNodeOptions,
@@ -245,7 +246,12 @@ export class TronNode {
       }
 
       if (runtimeDirectory) {
-        await rm(runtimeDirectory, { force: true, recursive: true });
+        await rm(runtimeDirectory, {
+          force: true,
+          maxRetries: 5,
+          recursive: true,
+          retryDelay: 200,
+        });
       }
     } finally {
       this.#resetSeederState();
@@ -945,52 +951,4 @@ export async function resolveJavaTronPrivateNetworkPorts(
   }
 
   return resolvedPorts as JavaTronPrivateNetworkPorts;
-}
-
-async function stopProcess(childProcess: ChildProcess): Promise<void> {
-  if (childProcess.exitCode !== null || childProcess.signalCode !== null) {
-    return;
-  }
-
-  const exitPromise = new Promise<void>((resolvePromise) => {
-    childProcess.once('exit', () => resolvePromise());
-  });
-  killProcessTree(childProcess, 'SIGTERM');
-
-  const exitedAfterTerm = await Promise.race([
-    exitPromise,
-    new Promise<boolean>((resolvePromise) => {
-      setTimeout(() => {
-        resolvePromise(false);
-      }, 5_000);
-    }),
-  ]);
-
-  if (exitedAfterTerm !== false) {
-    return;
-  }
-
-  killProcessTree(childProcess, 'SIGKILL');
-  await Promise.race([
-    exitPromise,
-    new Promise<void>((resolvePromise) => setTimeout(resolvePromise, 1_000)),
-  ]);
-}
-
-function killProcessTree(
-  childProcess: ChildProcess,
-  signal: NodeJS.Signals,
-): void {
-  if (process.platform === 'win32') {
-    childProcess.kill(signal);
-    return;
-  }
-
-  if (childProcess.pid) {
-    try {
-      process.kill(-childProcess.pid, signal);
-    } catch {
-      childProcess.kill(signal);
-    }
-  }
 }

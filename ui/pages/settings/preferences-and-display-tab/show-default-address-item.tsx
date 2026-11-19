@@ -1,12 +1,11 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import Dropdown from '../../../components/ui/dropdown';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getShowDefaultAddressPreference,
   getDefaultAddressScope,
-  getIsDefaultAddressEnabled,
 } from '../../../selectors';
 import {
   setShowDefaultAddress,
@@ -23,13 +22,13 @@ import {
 } from '../../../../shared/constants/default-address';
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { PREFERENCES_ITEMS } from '../search-config';
+import { useDispatch } from '../../../store/hooks';
 
 export const ShowDefaultAddressItem = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
 
-  const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
   const showDefaultAddress = useSelector(getShowDefaultAddressPreference);
   const defaultAddressScope = useSelector(
     getDefaultAddressScope,
@@ -71,10 +70,6 @@ export const ShowDefaultAddressItem = () => {
       dispatch(setShowDefaultAddress(true));
     }
   };
-
-  if (!isDefaultAddressEnabled) {
-    return null;
-  }
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={1} marginBottom={3}>

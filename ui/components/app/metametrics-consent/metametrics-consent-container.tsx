@@ -1,6 +1,16 @@
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Text } from '@metamask/design-system-react';
+import { useSelector } from 'react-redux';
+import {
+  Box,
+  BoxFlexDirection,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Text,
+} from '@metamask/design-system-react';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -8,46 +18,39 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getDataCollectionForMarketing } from '../../../selectors/metametrics';
+import { getIsSocialLoginFlow } from '../../../selectors/first-time-flow';
 import {
-  getCompletedMetaMetricsOnboarding,
-  getOptedIn,
-} from '../../../selectors/metametrics';
-import { setDataCollectionForMarketing } from '../../../store/actions';
-import {
-  Box,
-  Button,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-} from '../../component-library';
-import {
-  AlignItems,
-  BlockSize,
-  Display,
-  FlexDirection,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
-import { METAMETRICS_SETTINGS_LINK } from '../../../helpers/constants/common';
-import type { MetaMaskReduxState } from '../../../store/store';
+  optOutOfMarketing,
+  optInToMarketing,
+  setMarketingConsent,
+} from '../../../store/actions';
+import { useDispatch } from '../../../store/hooks';
 
 export function MetaMetricsConsentContainer() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
 
-  const dataCollectionForMarketing = useSelector(
-    (state: MetaMaskReduxState) => state.metamask.dataCollectionForMarketing,
-  );
-  const isMetaMetricsEnabled = useSelector(
-    (state: MetaMaskReduxState) =>
-      getCompletedMetaMetricsOnboarding(state) && getOptedIn(state),
+  const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
+  const socialLoginEnabled = useSelector(getIsSocialLoginFlow);
+
+  // Social-login wallets also store the choice server-side so the auth
+  // service can create the HubSpot contact for email marketing and learn
+  // of opt-outs. A failed sync keeps the local decision; reads that would
+  // overwrite the local choice stay removed.
+  const syncMarketingConsentToServer = useCallback(
+    (consent: boolean) => {
+      if (socialLoginEnabled) {
+        dispatch(setMarketingConsent(consent));
+      }
+    },
+    [dispatch, socialLoginEnabled],
   );
 
   const handleClose = useCallback(() => {
-    dispatch(setDataCollectionForMarketing(false));
+    dispatch(optOutOfMarketing());
+    syncMarketingConsentToServer(false);
     trackEvent(
       createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
         .addCategory(MetaMetricsEventCategory.Home)
@@ -57,11 +60,12 @@ export function MetaMetricsConsentContainer() {
         })
         .build(),
     );
-  }, [createEventBuilder, dispatch, trackEvent]);
+  }, [createEventBuilder, dispatch, syncMarketingConsentToServer, trackEvent]);
 
   const handleConsent = useCallback(
     (consent: boolean) => {
-      dispatch(setDataCollectionForMarketing(consent));
+      dispatch(consent ? optInToMarketing() : optOutOfMarketing());
+      syncMarketingConsentToServer(consent);
       trackEvent(
         createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
           .addCategory(MetaMetricsEventCategory.Home)
@@ -72,10 +76,10 @@ export function MetaMetricsConsentContainer() {
           .build(),
       );
     },
-    [createEventBuilder, dispatch, trackEvent],
+    [createEventBuilder, dispatch, syncMarketingConsentToServer, trackEvent],
   );
 
-  if (dataCollectionForMarketing !== null || !isMetaMetricsEnabled) {
+  if (dataCollectionForMarketing !== null) {
     return null;
   }
 
@@ -85,34 +89,13 @@ export function MetaMetricsConsentContainer() {
       <ModalContent>
         <ModalHeader
           onClose={handleClose}
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.center}
-          gap={4}
-          paddingBottom={0}
+          closeButtonProps={{ ariaLabel: t('close') }}
         >
           {t('onboardedMetametricsTitle')}
         </ModalHeader>
         <ModalBody>
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            gap={2}
-            margin={4}
-          >
-            <Text>
-              {t('onboardedMetametricsParagraph1', [
-                <a
-                  href={METAMETRICS_SETTINGS_LINK}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  key="retention-link"
-                >
-                  {t('onboardedMetametricsLink')}
-                </a>,
-              ])}
-            </Text>
+          <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+            <Text>{t('onboardedMetametricsParagraph1')}</Text>
             <Text>{t('onboardedMetametricsParagraph2')}</Text>
             <ul className="home__onboarding_list">
               <li>{t('onboardedMetametricsKey1')}</li>
@@ -122,21 +105,16 @@ export function MetaMetricsConsentContainer() {
             <Text>{t('onboardedMetametricsParagraph3')}</Text>
           </Box>
         </ModalBody>
-        <ModalFooter>
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            gap={2}
-            width={BlockSize.Full}
-          >
-            <Button type="secondary" onClick={() => handleConsent(false)}>
-              {t('onboardedMetametricsDisagree')}
-            </Button>
-            <Button type="primary" onClick={() => handleConsent(true)}>
-              {t('onboardedMetametricsAccept')}
-            </Button>
-          </Box>
-        </ModalFooter>
+        <ModalFooter
+          secondaryButtonProps={{
+            children: t('onboardedMetametricsDisagree'),
+            onClick: () => handleConsent(false),
+          }}
+          primaryButtonProps={{
+            children: t('onboardedMetametricsAccept'),
+            onClick: () => handleConsent(true),
+          }}
+        />
       </ModalContent>
     </Modal>
   );

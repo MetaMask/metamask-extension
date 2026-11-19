@@ -81,9 +81,6 @@
   "back": {
     "message": "Tagasi"
   },
-  "backupApprovalInfo": {
-    "message": "See salakood on vajalik teie rahakoti taastamiseks, kui kaotate oma seadme, unustate parooli, peate MetaMaski uuesti alla laadima, või kui soovite avada oma rahakoti mõnel teisel seadmel."
-  },
   "backupApprovalNotice": {
     "message": "Varundage oma salajane taastamisvõti, et oma rahakott ja vahendid turvalisena hoida."
   },
@@ -214,10 +211,6 @@
   "fast": {
     "message": "Kiire"
   },
-  "fileImportFail": {
-    "message": "Faili importimine ei toimi? Klõpsake siia!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "Unusta see seade"
   },
@@ -226,9 +219,6 @@
   },
   "gasLimit": {
     "message": "Gaasi ülemmäär"
-  },
-  "gasLimitTooLow": {
-    "message": "Gaasi ülemmäär peab olema vähemalt 21 000"
   },
   "gasUsed": {
     "message": "Kasutatud gaasihulk"
@@ -392,10 +382,6 @@
   "passwordsDontMatch": {
     "message": "Paroolid ei ühti"
   },
-  "pastePrivateKey": {
-    "message": "Kleepige oma privaatne võtmestring siia:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "ootel"
   },
@@ -411,9 +397,6 @@
   "privateKey": {
     "message": "Privaatvõti",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Hoiatus: ärge seda võtit kellelegi avaldage. Suvaline isik, kes teab teie privaatvõtmeid, võib teie kontolt varasid varastada."
   },
   "privateNetwork": {
     "message": "Privaatvõrk"
@@ -586,9 +569,6 @@
   },
   "urlErrorMsg": {
     "message": "URI-d nõuavad sobivat HTTP/HTTPS-i prefiksit."
-  },
-  "usedByClients": {
-    "message": "Kasutavad erinevad kliendid"
   },
   "visitWebSite": {
     "message": "Külastage meie veebilehte"

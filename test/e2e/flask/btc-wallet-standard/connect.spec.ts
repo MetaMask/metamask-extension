@@ -6,10 +6,9 @@ import {
 } from '../../page-objects/pages/test-dapp-bitcoin';
 import { connectBitcoinTestDapp } from '../../page-objects/flows/bitcoin-dapp.flow';
 import { switchToAccount } from '../../page-objects/flows/account-list.flow';
-import { WINDOW_TITLES } from '../../constants';
+import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../constants';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
-import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
-import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
+import EditConnectedAccountsPage from '../../page-objects/pages/permission/edit-connected-accounts-page';
 import {
   account1Short,
   account2Short,
@@ -81,51 +80,6 @@ describe('Bitcoin Wallet Standard Connect - e2e tests', function () {
       );
     });
 
-    it(`Does not create session when Bitcoin permissions are deselected with ${connectionLibrary}`, async function () {
-      await withBtcWalletStandardSnap(
-        {
-          ...DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS,
-          title: this.test?.fullTitle(),
-        },
-        async (driver) => {
-          const testDapp = new TestDappBitcoin(driver);
-          await testDapp.openTestDappPage();
-          await testDapp.checkPageIsLoaded();
-
-          // Start connection
-          await testDapp.connectToWallet(connectionLibrary);
-
-          // Open the permissions modal
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          const connectAccountConfirmation = new ConnectAccountConfirmation(
-            driver,
-          );
-          await connectAccountConfirmation.checkPageIsLoaded();
-
-          // Deselect all networks except "Ethereum"
-          await connectAccountConfirmation.goToPermissionsTab();
-          await connectAccountConfirmation.openEditNetworksModal();
-
-          const networkPermissionSelectModal = new NetworkPermissionSelectModal(
-            driver,
-          );
-          await networkPermissionSelectModal.checkPageIsLoaded();
-          await networkPermissionSelectModal.updateNetworkStatus(['Ethereum']);
-          await networkPermissionSelectModal.clickConfirmEditButton();
-
-          // Click connect
-          await connectAccountConfirmation.checkPageIsLoaded();
-          await connectAccountConfirmation.confirmConnect();
-
-          // Switch back to test dapp
-          await testDapp.switchTo();
-
-          // Verify we're not connected
-          await testDapp.findHeaderNotConnectedState();
-        },
-      );
-    });
-
     it(`Switching between 2 accounts should reflects in the dapp with ${connectionLibrary}`, async function () {
       await withBtcWalletStandardSnap(
         {
@@ -145,11 +99,11 @@ describe('Bitcoin Wallet Standard Connect - e2e tests', function () {
           );
           await connectAccountConfirmation.checkPageIsLoaded();
           await connectAccountConfirmation.openEditAccountsModal();
-          const editConnectedAccountsModal = new EditConnectedAccountsModal(
+          const editConnectedAccountsPage = new EditConnectedAccountsPage(
             driver,
           );
-          await editConnectedAccountsModal.selectAccount(2);
-          await editConnectedAccountsModal.clickOnConnect();
+          await editConnectedAccountsPage.selectAccount(2);
+          await editConnectedAccountsPage.clickOnConnect();
           await connectAccountConfirmation.confirmConnect();
 
           await testDapp.switchTo();

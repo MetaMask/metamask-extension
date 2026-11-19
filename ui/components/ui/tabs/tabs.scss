@@ -6,7 +6,37 @@
   --tabs-list-fade-size: 1.5rem;
 }
 
+.stuck-top-border {
+  @container overview-tabs scroll-state(stuck: top) {
+    border-color: var(--bar-border-color);
+  }
+}
+
+.tab-end-slot:empty {
+  display: none;
+}
+
+[data-wide-layout] {
+  .tab-end-slot:not(:empty) {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    margin-inline-end: 8px;
+  }
+
+  .tab-controls .asset-list-control-bar {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    height: 40px;
+    margin: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
 .tablist-fade {
+  container-name: tablist;
   container-type: scroll-state;
 
   &::before,
@@ -32,7 +62,7 @@
         transparent
       );
 
-    @container scroll-state(scrollable: inline-start) {
+    @container tablist scroll-state(scrollable: inline-start) {
       opacity: 1;
     }
   }
@@ -47,7 +77,7 @@
         var(--color-background-default)
       );
 
-    @container scroll-state(scrollable: inline-end) {
+    @container tablist scroll-state(scrollable: inline-end) {
       opacity: 1;
     }
   }

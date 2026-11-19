@@ -15,7 +15,8 @@ import {
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import {
   getMultichainNativeTokenBalance,
-  selectBalanceBySelectedAccountGroup,
+  selectAssetsHaveLoadedForSelectedAccountGroup,
+  selectUnifiedBalanceBySelectedAccountGroup,
 } from '../../../../selectors/assets';
 import * as useMultichainSelectorHook from '../../../../hooks/useMultichainSelector';
 import {
@@ -50,6 +51,7 @@ describe('AccountGroupBalance', () => {
     anyEnabledNetworksAreAvailable?: boolean;
     showFiatInTestnets?: boolean;
     privacyMode?: boolean;
+    assetsHaveLoaded?: boolean;
   };
 
   const arrange = ({
@@ -59,10 +61,15 @@ describe('AccountGroupBalance', () => {
     anyEnabledNetworksAreAvailable = true,
     showFiatInTestnets = false,
     privacyMode = false,
+    assetsHaveLoaded = true,
   }: ArrangeOptions = {}) => {
-    const mockSelectBalanceBySelectedAccountGroup = jest
-      .mocked(selectBalanceBySelectedAccountGroup)
+    jest
+      .mocked(selectUnifiedBalanceBySelectedAccountGroup)
       .mockReturnValue(selectedGroupBalance);
+
+    jest
+      .mocked(selectAssetsHaveLoadedForSelectedAccountGroup)
+      .mockReturnValue(assetsHaveLoaded);
 
     jest
       .mocked(selectAnyEnabledNetworksAreAvailable)
@@ -98,7 +105,6 @@ describe('AccountGroupBalance', () => {
     } as ReturnType<typeof getMultichainNativeTokenBalance>);
 
     return {
-      mockSelectBalanceBySelectedAccountGroup,
       mockGetPreferences,
       mockGetIntlLocale,
       mockGetCurrentCurrency,
@@ -237,6 +243,34 @@ describe('AccountGroupBalance', () => {
         (content) => content.includes('99.50') || content.includes('99.5'),
       ),
     ).toBeInTheDocument();
+  });
+
+  it('renders a skeleton instead of a zero balance before assets finish loading', () => {
+    arrange({
+      assetsHaveLoaded: false,
+      selectedGroupBalance: {
+        ...createMockBalance(),
+        totalBalanceInUserCurrency: 0,
+      },
+    });
+
+    const { getByTestId } = renderComponent();
+
+    expect(getByTestId('account-group-balance-skeleton')).toBeInTheDocument();
+  });
+
+  it('renders a non-zero balance before assets finish loading', () => {
+    arrange({
+      assetsHaveLoaded: false,
+      selectedGroupBalance: createMockBalance(),
+    });
+
+    const { getByText, queryByTestId } = renderComponent();
+
+    expect(
+      queryByTestId('account-group-balance-skeleton'),
+    ).not.toBeInTheDocument();
+    expect(getByText(/123\.45/u)).toBeInTheDocument();
   });
 
   it('renders skeleton when no networks available and no balance', () => {

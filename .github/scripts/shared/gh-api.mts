@@ -11,12 +11,12 @@
 
 import { execFileSync } from 'node:child_process';
 
-export interface GhApiOptions {
+export type GhApiOptions = {
   paginate?: boolean;
   jq?: string;
   method?: string;
   body?: Record<string, unknown>;
-}
+};
 
 /**
  * Call a GitHub REST API endpoint via `gh api`.
@@ -31,10 +31,18 @@ export function ghApi(
   token?: string,
 ): string {
   const args = ['api', path];
-  if (opts?.paginate) args.push('--paginate');
-  if (opts?.jq) args.push('--jq', opts.jq);
-  if (opts?.method) args.push('--method', opts.method);
-  if (opts?.body) args.push('--input', '-');
+  if (opts?.paginate) {
+    args.push('--paginate');
+  }
+  if (opts?.jq) {
+    args.push('--jq', opts.jq);
+  }
+  if (opts?.method) {
+    args.push('--method', opts.method);
+  }
+  if (opts?.body) {
+    args.push('--input', '-');
+  }
   const env = token ? { ...process.env, GH_TOKEN: token } : process.env;
   return execFileSync('gh', args, {
     encoding: 'utf8',

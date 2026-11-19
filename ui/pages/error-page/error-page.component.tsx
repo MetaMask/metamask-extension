@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -8,7 +8,7 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
-import { getCompletedMetaMetricsOnboarding, getOptedIn } from '../../selectors';
+import { getConsentDecisionMade, getOptedIn } from '../../selectors';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   BannerAlert,
@@ -39,7 +39,9 @@ import {
 import { Textarea } from '../../components/component-library/textarea/textarea';
 import { TextareaResize } from '../../components/component-library/textarea/textarea.types';
 import { ButtonSize } from '../../components/component-library/button/button.types';
-import VisitSupportDataConsentModal from '../../components/app/modals/visit-support-data-consent-modal';
+import VisitSupportDataConsentModal, {
+  useOpenSupport,
+} from '../../components/app/modals/visit-support-data-consent-modal';
 import { reloadExtensionFromUi } from '../../helpers/utils/reload-extension-from-ui';
 
 type ErrorPageProps = {
@@ -53,17 +55,19 @@ type ErrorPageProps = {
 
 const ErrorPage = ({ error }: ErrorPageProps) => {
   const t = useI18nContext();
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
-  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
+  const isMetaMetricsEnabled = consentDecisionMade && isOptedIn;
 
   const [feedbackMessage, setFeedbackMessage] = useState('');
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [isSuccessModalShown, setIsSuccessModalShown] = useState(false);
   const [isSupportDataConsentModalOpen, setIsSupportDataConsentModalOpen] =
     useState(false);
+  const showSupportDataConsentModal = useCallback(() => {
+    setIsSupportDataConsentModalOpen(true);
+  }, []);
+  const openSupport = useOpenSupport(showSupportDataConsentModal);
 
   const handleClickDescribeButton = (): void => {
     setIsFeedbackModalOpen(true);
@@ -297,7 +301,7 @@ const ErrorPage = ({ error }: ErrorPageProps) => {
             variant={ButtonVariant.Secondary}
             block
             data-testid="error-page-contact-support-button"
-            onClick={() => setIsSupportDataConsentModalOpen(true)}
+            onClick={openSupport}
           >
             {t('errorPageContactSupport')}
           </Button>

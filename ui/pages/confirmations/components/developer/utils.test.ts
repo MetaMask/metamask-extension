@@ -1,6 +1,38 @@
+import { act, waitFor } from '@testing-library/react';
 import type { Hex } from '@metamask/utils';
+import { TransactionType } from '@metamask/transaction-controller';
 import { parseStandardTokenTransactionData } from '../../../../../shared/lib/transaction.utils';
-import { generateERC20TransferData } from './utils';
+import mockState from '../../../../../test/data/mock-state.json';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import {
+  addTransaction,
+  findNetworkClientIdByChainId,
+} from '../../../../store/actions';
+import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
+import {
+  ConfirmationLoader,
+  useConfirmationNavigation,
+} from '../../hooks/useConfirmationNavigation';
+import {
+  generateERC20TransferData,
+  useDeveloperTransferTransaction,
+} from './utils';
+
+jest.mock('../../../../store/actions', () => ({
+  addTransaction: jest.fn(),
+  findNetworkClientIdByChainId: jest.fn(),
+}));
+
+jest.mock('../../../../../shared/lib/selectors/accounts', () => ({
+  getSelectedInternalAccount: jest.fn(),
+}));
+
+jest.mock('../../hooks/useConfirmationNavigation', () => ({
+  ConfirmationLoader: {
+    CustomAmount: 'customAmount',
+  },
+  useConfirmationNavigation: jest.fn(),
+}));
 
 const MOCK_RECIPIENT = '0x1234567890123456789012345678901234567890' as Hex;
 const TRANSFER_SELECTOR = '0xa9059cbb';
@@ -60,5 +92,138 @@ describe('generateERC20TransferData', () => {
     const parsed = parseStandardTokenTransactionData(data);
 
     expect(parsed?.args?.[0]?.toLowerCase()).toBe(MOCK_RECIPIENT.toLowerCase());
+  });
+});
+
+describe('useDeveloperTransferTransaction', () => {
+  const addTransactionMock = jest.mocked(addTransaction);
+  const findNetworkClientIdByChainIdMock = jest.mocked(
+    findNetworkClientIdByChainId,
+  );
+  const getSelectedInternalAccountMock = jest.mocked(
+    getSelectedInternalAccount,
+  );
+  const useConfirmationNavigationMock = jest.mocked(useConfirmationNavigation);
+  const navigateToTransactionMock = jest.fn();
+
+  const SENDER_ADDRESS = '0xabcabcabcabcabcabcabcabcabcabcabcabcabca' as Hex;
+  const TOKEN_ADDRESS = '0xdeaddeaddeaddeaddeaddeaddeaddeaddeaddead' as Hex;
+  const CHAIN_ID = '0x1' as Hex;
+  const NETWORK_CLIENT_ID = 'mainnet';
+  const TX_ID = 'tx-id';
+
+  const BASE_OPTIONS = {
+    chainId: CHAIN_ID,
+    tokenAddress: TOKEN_ADDRESS,
+    decimals: 6,
+    type: TransactionType.moneyAccountDeposit,
+    errorMessage: 'Failed to create transaction',
+  };
+
+  function renderTransferHook(
+    options: Partial<
+      Parameters<typeof useDeveloperTransferTransaction>[0]
+    > = {},
+  ) {
+    return renderHookWithProvider(
+      () => useDeveloperTransferTransaction({ ...BASE_OPTIONS, ...options }),
+      mockState,
+    );
+  }
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+
+    getSelectedInternalAccountMock.mockReturnValue({
+      address: SENDER_ADDRESS,
+    } as never);
+    findNetworkClientIdByChainIdMock.mockResolvedValue(NETWORK_CLIENT_ID);
+    addTransactionMock.mockResolvedValue({ id: TX_ID } as never);
+    useConfirmationNavigationMock.mockReturnValue({
+      navigateToTransaction: navigateToTransactionMock,
+    } as never);
+  });
+
+  it('creates a self-transfer transaction and navigates to it', async () => {
+    const { result } = renderTransferHook();
+
+    await act(async () => {
+      await result.current.handleTrigger();
+    });
+
+    expect(findNetworkClientIdByChainIdMock).toHaveBeenCalledWith(CHAIN_ID);
+
+    const [txParams, txOptions] = addTransactionMock.mock.calls[0];
+    expect(txParams).toStrictEqual({
+      from: SENDER_ADDRESS,
+      to: TOKEN_ADDRESS,
+      data: generateERC20TransferData(SENDER_ADDRESS, '0', 6),
+      value: '0x0',
+    });
+    expect(txOptions).toStrictEqual({
+      networkClientId: NETWORK_CLIENT_ID,
+      type: TransactionType.moneyAccountDeposit,
+    });
+    expect(navigateToTransactionMock).toHaveBeenCalledWith(TX_ID, {
+      loader: ConfirmationLoader.CustomAmount,
+    });
+  });
+
+  it('uses a custom recipient when getRecipient is provided', async () => {
+    const { result } = renderTransferHook({
+      getRecipient: () => MOCK_RECIPIENT,
+    });
+
+    await act(async () => {
+      await result.current.handleTrigger();
+    });
+
+    const [txParams] = addTransactionMock.mock.calls[0];
+    expect(txParams.data).toBe(
+      generateERC20TransferData(MOCK_RECIPIENT, '0', 6),
+    );
+  });
+
+  it('does not create a transaction when there is no selected account', async () => {
+    getSelectedInternalAccountMock.mockReturnValue(undefined as never);
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+
+    const { result } = renderTransferHook();
+
+    await act(async () => {
+      await result.current.handleTrigger();
+    });
+
+    expect(addTransactionMock).not.toHaveBeenCalled();
+    expect(navigateToTransactionMock).not.toHaveBeenCalled();
+    expect(consoleErrorSpy).toHaveBeenCalledWith('No selected account');
+
+    consoleErrorSpy.mockRestore();
+  });
+
+  it('logs the error message and does not navigate when creation fails', async () => {
+    const error = new Error('boom');
+    addTransactionMock.mockRejectedValue(error);
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+
+    const { result } = renderTransferHook();
+
+    await act(async () => {
+      await result.current.handleTrigger();
+    });
+
+    await waitFor(() => {
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        'Failed to create transaction',
+        error,
+      );
+    });
+    expect(navigateToTransactionMock).not.toHaveBeenCalled();
+
+    consoleErrorSpy.mockRestore();
   });
 });

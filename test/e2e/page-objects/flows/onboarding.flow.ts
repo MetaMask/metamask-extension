@@ -6,19 +6,22 @@ import OnboardingPasswordPage from '../pages/onboarding/onboarding-password-page
 import OnboardingSrpPage from '../pages/onboarding/onboarding-srp-page';
 import StartOnboardingPage from '../pages/onboarding/start-onboarding-page';
 import SecureWalletPage from '../pages/onboarding/secure-wallet-page';
+import RevealRecoveryPhrasePage from '../pages/onboarding/reveal-recovery-phrase-page';
+import ConfirmRecoveryPhrasePage from '../pages/onboarding/confirm-recovery-phrase-page';
 import SetupPasskeyPage from '../pages/onboarding/setup-passkey-page';
 import OnboardingCompletePage from '../pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../pages/onboarding/onboarding-privacy-settings-page';
 import { E2E_SRP, WALLET_PASSWORD } from '../../constants';
-import HeaderNavbar from '../pages/header-navbar';
+import HeaderNavbar from '../pages/home/header-navbar';
 import HomePage from '../pages/home/homepage';
-import LoginPage from '../pages/login-page';
+import LoginPage from '../pages/onboarding/login-page';
+import BasicFunctionalityMigrationModal from '../pages/dialog/basic-functionality-migration-modal';
 import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
 import { AuthConnection } from '../../../../shared/constants/onboarding';
 
 export type OnboardingMetricsFlowOptions = {
   optedIn?: boolean;
-  completedMetaMetricsOnboarding?: boolean;
+  consentDecisionMade?: boolean;
   dataCollectionForMarketing?: boolean;
 };
 
@@ -41,12 +44,18 @@ export const handleSidepanelPostOnboarding = async (
     return;
   }
 
-  // Give the onboarding completion time to process (needed for sidepanel)
-  await driver.delay(2000);
+  // waitUntil completedOnboarding is true, then navigate once
+  await driver.waitUntil(
+    async () => {
+      const uiState = await getCleanAppState(driver);
+      return Boolean(uiState?.metamask?.completedOnboarding);
+    },
+    { timeout: 30000, interval: 500 },
+  );
 
   // Navigate directly to home page in current window
   // With sidepanel enabled, this ensures we load home page in the test window
-  await driver.driver.get(`${driver.extensionUrl}/home.html`);
+  await driver.openNewURL(`${driver.extensionUrl}/home.html`);
 
   // Wait for the home page to fully load
   const headerNavbar = new HeaderNavbar(driver);
@@ -127,6 +136,32 @@ export const skipPasskeySetup = async (
 };
 
 /**
+ * Reveal the SRP and complete the confirm quiz.
+ * Expects the review recovery phrase screen to be open, or the password gate
+ * when `password` is passed (backup started from the home reminder).
+ *
+ * @param driver - The WebDriver instance.
+ * @param password - The wallet password, only needed when the backup starts
+ * from the home reminder.
+ */
+export const revealAndConfirmSrp = async (
+  driver: Driver,
+  password?: string,
+): Promise<void> => {
+  if (password) {
+    const revealRecoveryPhrasePage = new RevealRecoveryPhrasePage(driver);
+    await revealRecoveryPhrasePage.checkPageIsLoaded();
+    await revealRecoveryPhrasePage.enterPasswordAndContinue(password);
+  }
+
+  await new SecureWalletPage(driver).revealAndContinue();
+
+  const confirmRecoveryPhrasePage = new ConfirmRecoveryPhrasePage(driver);
+  await confirmRecoveryPhrasePage.checkPageIsLoaded();
+  await confirmRecoveryPhrasePage.answerQuizAndConfirm();
+};
+
+/**
  * Create new wallet with social login onboarding flow
  *
  * @param options - The options object.
@@ -160,20 +195,23 @@ export const createNewWalletWithSocialLoginOnboardingFlow = async ({
     dataCollectionForMarketing,
   });
 
-  const originalWindowHandle = await driver.getCurrentWindowHandle();
   await assertTermsOfUsageAndPrivacyLinksOnCreateLoginOptions(
     startOnboardingPage,
   );
+  const originalWindowHandle = await driver.getCurrentWindowHandle();
+  const handlesBeforeAuthTab = await driver.getAllWindowHandles();
+  const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await startOnboardingPage.clickCreateWalletSocialLoginButton(authConnection);
 
   if (authConnection === AuthConnection.Telegram) {
     await recoverFromTelegramAuthTab({
       driver,
       originalWindowHandle,
+      handlesBeforeAuthTab,
+      isOnboardingReady: () => onboardingPasswordPage.isPageLoaded(),
     });
   }
 
-  const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await onboardingPasswordPage.checkPageIsLoaded();
 
   await onboardingPasswordPage.createWalletPassword(password);
@@ -213,41 +251,87 @@ export const importWalletWithSocialLoginOnboardingFlow = async ({
     dataCollectionForMarketing,
   });
 
-  const originalWindowHandle = await driver.getCurrentWindowHandle();
   await assertTermsOfUsageAndPrivacyLinksOnImportLoginOptions(
     startOnboardingPage,
   );
+  const originalWindowHandle = await driver.getCurrentWindowHandle();
+  const handlesBeforeAuthTab = await driver.getAllWindowHandles();
+  const loginPage = new LoginPage(driver);
   await startOnboardingPage.clickImportWalletSocialLoginButton(authConnection);
 
   if (authConnection === AuthConnection.Telegram) {
     await recoverFromTelegramAuthTab({
       driver,
       originalWindowHandle,
+      handlesBeforeAuthTab,
+      isOnboardingReady: () => loginPage.isPageLoaded(),
     });
   }
 
-  const loginPage = new LoginPage(driver);
   await loginPage.checkPageIsLoaded();
   await loginPage.loginToHomepage(password);
 
-  // if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
-  //   await onboardingMetricsFlow(driver, {
-  //     optedIn: true,
-  //     dataCollectionForMarketing: true,
-  //   });
-  // }
+  const homePage = new HomePage(driver);
+  await homePage.checkPageIsLoaded();
+
+  const basicFunctionalityMigrationModal = new BasicFunctionalityMigrationModal(
+    driver,
+  );
+  await basicFunctionalityMigrationModal.checkPageIsLoaded();
+  await basicFunctionalityMigrationModal.acceptAndClose();
 };
 
+/**
+ * Restores the original onboarding window after Telegram login.
+ *
+ * @param options - The options object.
+ * @param options.driver - The WebDriver instance.
+ * @param options.originalWindowHandle - Handle of the onboarding window to restore.
+ * @param options.handlesBeforeAuthTab - Window handles present before the Telegram auth tab opens.
+ * @param options.isOnboardingReady - Returns true when the post-login onboarding screen is visible.
+ */
 async function recoverFromTelegramAuthTab({
   driver,
   originalWindowHandle,
+  handlesBeforeAuthTab,
+  isOnboardingReady,
 }: {
   driver: Driver;
   originalWindowHandle: string;
+  handlesBeforeAuthTab: string[];
+  isOnboardingReady: () => Promise<boolean>;
 }): Promise<void> {
-  // OAuthService resolves after the redirect is handled and the auth tab close
-  // is already in flight, so the E2E flow only needs to restore focus.
-  await driver.switchToWindow(originalWindowHandle);
+  let authTabHandle: string | undefined;
+  let switchedToOriginal = false;
+
+  await driver.waitUntil(
+    async () => {
+      const handles = await driver.getAllWindowHandles();
+      const extraHandle = handles.find(
+        (handle) => !handlesBeforeAuthTab.includes(handle),
+      );
+
+      if (extraHandle) {
+        authTabHandle = extraHandle;
+        if (!switchedToOriginal) {
+          await driver.switchToWindow(originalWindowHandle);
+          switchedToOriginal = true;
+        }
+        return false;
+      }
+
+      if (authTabHandle) {
+        return true;
+      }
+
+      return await isOnboardingReady();
+    },
+    { timeout: 30000, interval: 50 },
+  );
+
+  if (!switchedToOriginal) {
+    await driver.switchToWindow(originalWindowHandle);
+  }
 }
 
 /**
@@ -305,7 +389,7 @@ export const createNewWalletOnboardingFlow = async ({
   if (skipSRPBackup) {
     await secureWalletPage.skipSRPBackup();
   } else {
-    await secureWalletPage.revealAndConfirmSRP();
+    await revealAndConfirmSrp(driver);
   }
 
   if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
@@ -547,9 +631,8 @@ export const completeOnboardingWithPasskey = async ({
   await setupPasskeyPage.waitForEnrollmentSteps();
   await setupPasskeyPage.waitForEnrollmentSuccess();
 
-  const secureWalletPage = new SecureWalletPage(driver);
-  await secureWalletPage.checkPageIsLoaded();
-  await secureWalletPage.revealAndConfirmSRP();
+  await new SecureWalletPage(driver).checkPageIsLoaded();
+  await revealAndConfirmSrp(driver);
 
   if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
     await onboardingMetricsFlow(driver);
@@ -722,7 +805,7 @@ export const completeCreateNewWalletOnboardingFlowWithCustomSettings = async ({
     await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
   }
   if (toggleAssetsPrivacy) {
-    await onboardingPrivacySettingsPage.toggleAssetsSettings();
+    await onboardingPrivacySettingsPage.togglePrivacySettings();
   }
 
   await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();

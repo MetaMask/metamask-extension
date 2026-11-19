@@ -33,34 +33,51 @@
     },
     "AnalyticsController": {
       "analyticsId": null,
-      "optedIn": false
+      "consentDecisionMade": false,
+      "marketingCampaignCookieId": null,
+      "marketingConsentDecisionMade": false,
+      "optedIn": false,
+      "optedInToMarketing": false,
+      "preConsentEventQueue": {
+        "00000000-0000-4000-8000-000000000000": {
+          "eventName": "App Installed",
+          "messageId": "00000000-0000-4000-8000-000000000000",
+          "properties": {},
+          "timestamp": "2026-01-01T00:00:00.000Z",
+          "type": "track"
+        }
+      }
     },
     "AnnouncementController": {
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 220,
+      "currentMigrationVersion": 236,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
       },
+      "installAttribution": null,
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
     "AppStateController": {
+      "arcUsageNoticeShown": false,
       "browserEnvironment": {
         "browser": "chrome",
         "os": "mac"
       },
-      "canTrackWalletFundsObtained": true,
       "connectedStatusPopoverHasBeenShown": true,
       "defaultHomeActiveTabName": null,
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
       "hasShownMultichainAccountsIntroModal": false,
       "isWalletResetInProgress": false,
+      "lastShownPrfMigrationReminderAt": null,
       "lastUpdatedAt": null,
       "lastUpdatedFromVersion": null,
       "lastViewedUserSurvey": null,
+      "moneyEarnBannerDismissedTokenKeys": [],
+      "moneyFtueSeen": false,
       "musdConversionDismissedCtaKeys": [],
       "musdConversionEducationSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": null,
@@ -115,68 +132,16 @@
     },
     "ConfigRegistryController": {
       "configs": {
+        "eventsConfig": null,
         "networks": {}
       },
       "etag": null,
+      "eventsConfigEtag": null,
       "lastFetched": null,
       "version": null
     },
-    "CurrencyController": {
-      "currencyRates": {
-        "ETH": {
-          "conversionDate": 0,
-          "conversionRate": 0,
-          "usdConversionRate": null
-        }
-      },
-      "currentCurrency": "usd"
-    },
-    "EnsController": {
-      "ensEntries": {
-        "0x1": {
-          ".": {
-            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-            "chainId": "0x1",
-            "ensName": "."
-          }
-        },
-        "0x3": {
-          ".": {
-            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-            "chainId": "0x3",
-            "ensName": "."
-          }
-        },
-        "0x4": {
-          ".": {
-            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-            "chainId": "0x4",
-            "ensName": "."
-          }
-        },
-        "0x4268": {
-          ".": {
-            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-            "chainId": "0x4268",
-            "ensName": "."
-          }
-        },
-        "0x5": {
-          ".": {
-            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-            "chainId": "0x5",
-            "ensName": "."
-          }
-        },
-        "0xaa36a7": {
-          ".": {
-            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-            "chainId": "0xaa36a7",
-            "ensName": "."
-          }
-        }
-      },
-      "ensResolutionsByAddress": {}
+    "DeFiPositionsControllerV2": {
+      "allDeFiPositionsV2": {}
     },
     "GasFeeController": {
       "estimatedGasFeeTimeBounds": {},
@@ -193,47 +158,21 @@
     "LoggingController": {
       "logs": {}
     },
-    "MetaMetricsController": {
-      "completedMetaMetricsOnboarding": false,
-      "dataCollectionForMarketing": null,
-      "eventsBeforeMetricsOptIn": [
-        {
-          "category": "App",
-          "event": "App Installed",
-          "properties": {}
-        }
-      ],
-      "fragments": {},
-      "marketingCampaignCookieId": null,
-      "tracesBeforeMetricsOptIn": [
-        {
-          "request": {
-            "name": "Onboarding - Overall Journey",
-            "op": "onboarding.user_journey",
-            "startTime": 1764061390458
-          },
-          "type": "start"
-        }
-      ],
-      "traits": {
-        "install_date_ext": "2026-01-22",
-        "storage_kind": "split"
-      }
-    },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
+    },
+    "MoneyAccountController": {
+      "defaultMoneyAccountId": null,
+      "moneyAccounts": {}
+    },
+    "MoneyAccountUpgradeController": {
+      "upgradedAccounts": {}
     },
     "MultichainAssetsController": {
       "accountsAssets": {},
       "allIgnoredAssets": {},
       "assetsMetadata": {}
-    },
-    "MultichainAssetsRatesController": {
-      "conversionRates": {}
-    },
-    "MultichainBalancesController": {
-      "balances": {}
     },
     "MultichainNetworkController": {
       "isEvmSelected": true,
@@ -354,9 +293,6 @@
           "nativeCurrency": "ETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://dimensional-special-breeze.quiknode.pro/d5e2d185c1561ef5ecb9aadf1ae7cc58863f4fa4/"
-              ],
               "networkClientId": "mainnet",
               "type": "infura",
               "url": "https://mainnet.infura.io/v3/{infuraProjectId}"
@@ -372,7 +308,6 @@
           "nativeCurrency": "MegaETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [],
               "networkClientId": "megaeth-testnet-v2",
               "type": "custom",
               "url": "https://carrot.megaeth.com/rpc"
@@ -388,9 +323,6 @@
           "nativeCurrency": "ETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://ancient-quaint-water.base-mainnet.quiknode.pro/a2cb04635063b578dba24f656fe376a55e8d9939/"
-              ],
               "networkClientId": "base-mainnet",
               "type": "infura",
               "url": "https://base-mainnet.infura.io/v3/{infuraProjectId}"
@@ -406,7 +338,6 @@
           "nativeCurrency": "MON",
           "rpcEndpoints": [
             {
-              "failoverUrls": [],
               "networkClientId": "monad-testnet",
               "type": "custom",
               "url": "https://testnet-rpc.monad.xyz"
@@ -422,7 +353,6 @@
           "nativeCurrency": "BNB",
           "rpcEndpoints": [
             {
-              "failoverUrls": [],
               "networkClientId": "bsc-mainnet",
               "type": "infura",
               "url": "https://bsc-mainnet.infura.io/v3/{infuraProjectId}"
@@ -438,9 +368,6 @@
           "nativeCurrency": "POL",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://powerful-radial-aura.matic.quiknode.pro/edaa1cc73ef2a19230e2e715e766b6783ad8126a/"
-              ],
               "networkClientId": "polygon-mainnet",
               "type": "infura",
               "url": "https://polygon-mainnet.infura.io/v3/{infuraProjectId}"
@@ -456,7 +383,6 @@
           "nativeCurrency": "MON",
           "rpcEndpoints": [
             {
-              "failoverUrls": [],
               "networkClientId": "monad-mainnet",
               "type": "infura",
               "url": "https://monad-mainnet.infura.io/v3/{infuraProjectId}"
@@ -472,9 +398,6 @@
           "nativeCurrency": "ETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://holy-convincing-diagram.optimism.quiknode.pro/4804f72f80b7566982ad24a7a1d8e1ae48bca208/"
-              ],
               "networkClientId": "optimism-mainnet",
               "type": "infura",
               "url": "https://optimism-mainnet.infura.io/v3/{infuraProjectId}"
@@ -490,9 +413,6 @@
           "nativeCurrency": "ETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://purple-young-mansion.arbitrum-mainnet.quiknode.pro/f48c5cbfd1f5b39f0e5542d3b23c181b4085a2b5/"
-              ],
               "networkClientId": "arbitrum-mainnet",
               "type": "infura",
               "url": "https://arbitrum-mainnet.infura.io/v3/{infuraProjectId}"
@@ -508,7 +428,6 @@
           "nativeCurrency": "SepoliaETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [],
               "networkClientId": "sepolia",
               "type": "infura",
               "url": "https://sepolia.infura.io/v3/{infuraProjectId}"
@@ -524,7 +443,6 @@
           "nativeCurrency": "LineaETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [],
               "networkClientId": "linea-sepolia",
               "type": "infura",
               "url": "https://linea-sepolia.infura.io/v3/{infuraProjectId}"
@@ -540,9 +458,6 @@
           "nativeCurrency": "ETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://patient-sleek-daylight.linea-mainnet.quiknode.pro/d0e608bf5f231ef9ae6756de4d7876cb0f5ece55/"
-              ],
               "networkClientId": "linea-mainnet",
               "type": "infura",
               "url": "https://linea-mainnet.infura.io/v3/{infuraProjectId}"
@@ -573,6 +488,7 @@
           "0x2105": true,
           "0x279f": false,
           "0x38": true,
+          "0x531": false,
           "0x89": true,
           "0x8f": true,
           "0xa": true,
@@ -587,7 +503,7 @@
           "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": false
         },
         "stellar": {
-          "stellar:pubnet": false,
+          "stellar:pubnet": true,
           "stellar:testnet": false
         },
         "tron": {
@@ -635,6 +551,7 @@
       "completedOnboarding": false,
       "firstTimeFlowType": null,
       "hasSeenOnboardingCompletionPage": false,
+      "onboardingJourneyEnded": false,
       "seedPhraseBackedUp": null
     },
     "PasskeyController": {
@@ -2054,13 +1971,17 @@
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
         "avatarType": "maskicon",
+        "basicFunctionalityMigrationNotification": null,
+        "basicFunctionalityMigrationNotificationDismissed": false,
         "defaultAddressScope": "eip155",
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
         "gasSponsorshipOptOutByChainId": {},
+        "hasLinkedSocialLoginProfile": false,
         "hideZeroBalanceTokens": false,
         "isBasicFunctionalityConsolidatedEnabled": false,
         "privacyMode": false,
+        "shouldShowSupportConsent": true,
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": true,
         "showExtensionInFullSizeView": false,
@@ -2068,9 +1989,14 @@
         "showMultiRpcModal": false,
         "showNativeTokenAsMainBalance": false,
         "showTestNetworks": false,
+        "showTickerWidget": true,
         "skipDeepLinkInterstitial": false,
         "smartTransactionsMigrationApplied": false,
         "smartTransactionsOptInStatus": true,
+        "supportDataSharingPreference": null,
+        "tdpChartIndicators": [],
+        "tdpChartInterval": "15m",
+        "tdpChartType": 2,
         "tokenNetworkFilter": {},
         "tokenSortConfig": {
           "key": "tokenFiatAmount",
@@ -2083,7 +2009,8 @@
       "referrals": {
         "asterdex": {},
         "gmx": {},
-        "hyperliquid": {}
+        "hyperliquid": {},
+        "variational": {}
       },
       "securityAlertsEnabled": true,
       "showSidePanelMigrationToast": false,
@@ -2104,20 +2031,20 @@
       "watchEthereumAccountEnabled": false
     },
     "ProfileMetricsController": {
+      "accountSourceBackfillEnqueued": false,
       "initialEnqueueCompleted": false,
       "proofBackfillEnqueued": false,
+      "reportedAccounts": [],
       "syncQueue": {}
     },
     "RampsController": {
-      "userRegion": null,
-      "countries": {
-        "data": [],
-        "error": null,
-        "isLoading": false,
-        "selected": null
-      },
+      "autorampTransactionRecords": {},
+      "autoramps": [],
+      "moneyAccountWalletRegistrations": [],
       "orders": [],
-      "providerAutoSelected": false
+      "providerAutoSelected": false,
+      "userRegion": null,
+      "vbaAutorampListFetchedAt": null
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 0,
@@ -2144,39 +2071,20 @@
       "domains": {
         "http://localhost:3000": "mainnet",
         "http://localhost:8000": "mainnet",
-        "https://alpha.mycactus.io": "mainnet",
         "https://app-beta.signer.cubist.dev": "mainnet",
         "https://app-gamma.signer.cubist.dev": "mainnet",
-        "https://app.bitgo-test.com": "mainnet",
-        "https://app.bitgo.com": "mainnet",
         "https://app.metamask.io": "mainnet",
         "https://app.signer.cubist.dev": "mainnet",
-        "https://apps-portal.safe.global": "mainnet",
-        "https://console.dev.mpcvault.com": "mainnet",
-        "https://console.fireblocks.io": "mainnet",
-        "https://console.mpcvault.com": "mainnet",
-        "https://debug.mycactus.dev:1443": "mainnet",
-        "https://dev10-console.waterballoons.xyz": "mainnet",
-        "https://dev4-console.waterballoons.xyz": "mainnet",
         "https://developer.metamask.io": "mainnet",
         "https://docs.metamask.io": "mainnet",
-        "https://eu-console.fireblocks.io": "mainnet",
-        "https://eu2-console.fireblocks.io": "mainnet",
-        "https://local.waterballoons.xyz:4200": "mainnet",
         "https://localhost:3000": "mainnet",
-        "https://neptune-custody-ui.metamask-institutional.io": "mainnet",
         "https://portfolio-builds.metafi-dev.codefi.network": "mainnet",
         "https://portfolio.metamask.io": "mainnet",
-        "https://pre.mycactus.com": "mainnet",
-        "https://sandbox.fireblocks.io": "mainnet",
-        "https://saturn-custody-ui.metamask-institutional.io": "mainnet",
         "https://ui-preprod-v2.qa.zodia.io": "mainnet",
         "https://ui-preprod-v2.uat.zodia.io": "mainnet",
         "https://ui-v2.qa.zodia.io": "mainnet",
         "https://ui-v2.sit.zodia.io": "mainnet",
         "https://v2.custody.zodia.io": "mainnet",
-        "https://www.mycactus.com": "mainnet",
-        "https://www.mycactus.dev": "mainnet",
         "localhost:8000": "mainnet",
         "npm:@metamask/bitcoin-wallet-snap": "mainnet",
         "npm:@metamask/ens-resolver-snap": "mainnet",
@@ -2185,6 +2093,7 @@
         "npm:@metamask/message-signing-snap": "mainnet",
         "npm:@metamask/permissions-kernel-snap": "mainnet",
         "npm:@metamask/solana-wallet-snap": "mainnet",
+        "npm:@metamask/stellar-wallet-snap": "mainnet",
         "npm:@metamask/tron-wallet-snap": "mainnet"
       }
     },
@@ -2282,12 +2191,6 @@
       "subscriptions": [],
       "trialedProducts": []
     },
-    "TokenBalancesController": {
-      "tokenBalances": {}
-    },
-    "TokenRatesController": {
-      "marketData": {}
-    },
     "TokensController": {
       "allDetectedTokens": {},
       "allIgnoredTokens": {},
@@ -2300,18 +2203,16 @@
       "transactionBatches": [],
       "transactions": []
     },
-    "UserOperationController": {
-      "userOperations": {}
-    },
     "UserStorageController": {
       "isAccountSyncingEnabled": true,
       "isBackupAndSyncEnabled": true,
-      "isContactSyncingEnabled": true
+      "isContactSyncingEnabled": true,
+      "isRampsSyncingEnabled": true
     },
     "config": {}
   },
   "meta": {
     "storageKind": "split",
-    "version": 220
+    "version": 236
   }
 }

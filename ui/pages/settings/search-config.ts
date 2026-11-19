@@ -57,6 +57,7 @@ export const PREFERENCES_ITEMS = {
   'local-currency': 'localCurrency',
   'account-identicon': 'accountIdenticon',
   'show-default-address': 'showDefaultAddress',
+  'show-ticker-widget': 'showTickerWidget',
   'show-extension': 'showExtensionInFullSizeView',
   'manage-institutional-wallet': 'manageInstitutionalWallets',
 } as const;
@@ -70,6 +71,7 @@ export const PRIVACY_ITEMS = {
   metametrics: 'participateInMetaMetrics',
   'data-collection': 'dataCollectionForMarketing',
   'delete-metametrics-data': 'deleteMetaMetricsData',
+  'remember-support-preference': 'rememberSupportPreference',
   'download-state-logs': 'downloadStateLogs',
   'export-your-data': 'exportYourData',
 } as const;
@@ -87,6 +89,7 @@ export const SECURITY_ITEMS = {
   'manage-wallet-recovery': 'manageWalletRecovery',
   password: 'password',
   passkey: 'unlockWithPasskey',
+  mfa: 'mfaSettingsTitle',
   'auto-lock': 'autoLock',
   'phishing-detection': 'usePhishingDetection',
 } as const;

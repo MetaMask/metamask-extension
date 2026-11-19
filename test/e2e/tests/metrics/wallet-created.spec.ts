@@ -11,6 +11,7 @@ import {
 } from '../../page-objects/flows/onboarding.flow';
 import { MOCK_ANALYTICS_ID } from '../../constants';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
+import DownloadAppPage from '../../page-objects/pages/onboarding/download-app-page';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import { Driver } from '../../webdriver/driver';
 
@@ -106,7 +107,7 @@ describe('Wallet Created Events', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
           })
           .build(),
@@ -116,7 +117,7 @@ describe('Wallet Created Events', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await completeCreateNewWalletOnboardingFlow({
           driver,
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
         });
         const events = await getEventPayloads(driver, mockedEndpoints);
@@ -206,7 +207,7 @@ describe('Wallet Created Events', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
           })
           .build(),
@@ -255,8 +256,11 @@ describe('Wallet Created Events', function () {
 
         await createNewWalletWithSocialLoginOnboardingFlow(onboardingOptions);
 
+        const downloadAppPage = new DownloadAppPage(driver);
+        await downloadAppPage.checkPageIsLoaded();
+        await downloadAppPage.clickContinue();
+
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.displayDownloadAppPageAndContinue();
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
         await onboardingCompletePage.completeOnboarding();

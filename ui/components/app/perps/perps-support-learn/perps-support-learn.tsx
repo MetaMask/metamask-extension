@@ -12,7 +12,6 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
-import { useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { useSegmentContext } from '../../../../hooks/useSegmentContext';
@@ -30,6 +29,7 @@ import {
 } from '../../../../../shared/constants/perps';
 import { setTutorialModalOpen } from '../../../../ducks/perps';
 import { usePerpsEventTracking } from '../../../../hooks/perps';
+import { useDispatch } from '../../../../store/hooks';
 
 const LIST_ITEM_BASE =
   'flex items-center gap-3 px-4 py-3 bg-background-muted cursor-pointer hover:bg-hover active:bg-pressed';
@@ -85,7 +85,7 @@ export const PerpsSupportLearn = () => {
     track(MetaMetricsEventName.PerpsUiInteraction, {
       [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
         PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+      [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
         PERPS_EVENT_VALUE.BUTTON_CLICKED.TUTORIAL,
       [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
         PERPS_EVENT_VALUE.BUTTON_LOCATION.WALLET_HOME_PERPS_TAB,
@@ -97,7 +97,7 @@ export const PerpsSupportLearn = () => {
     track(MetaMetricsEventName.PerpsUiInteraction, {
       [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
         PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+      [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
         PERPS_EVENT_VALUE.BUTTON_CLICKED.SUPPORT,
       [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
         PERPS_EVENT_VALUE.BUTTON_LOCATION.WALLET_HOME_PERPS_TAB,
@@ -118,7 +118,7 @@ export const PerpsSupportLearn = () => {
     track(MetaMetricsEventName.PerpsUiInteraction, {
       [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
         PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+      [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
         PERPS_EVENT_VALUE.BUTTON_CLICKED.FEEDBACK,
       [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
         PERPS_EVENT_VALUE.BUTTON_LOCATION.WALLET_HOME_PERPS_TAB,

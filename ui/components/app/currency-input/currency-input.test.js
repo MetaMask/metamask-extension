@@ -6,6 +6,21 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import CurrencyInput from '.';
 
+/**
+ * This suite seeds AssetsController fields (`assetsInfo`, `assetsPrice`).
+ * Override the global jest setup mock so migration selectors resolve those
+ * fields instead of legacy controller slices.
+ */
+jest.mock(
+  '../../../../shared/lib/assets-unify-state/remote-feature-flag',
+  () => ({
+    ...jest.requireActual(
+      '../../../../shared/lib/assets-unify-state/remote-feature-flag',
+    ),
+    isAssetsUnifyStateFeatureEnabled: () => true,
+  }),
+);
+
 jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
   return {
     useIsOriginalNativeTokenSymbol: jest.fn(),
@@ -18,17 +33,25 @@ describe('CurrencyInput Component', () => {
   const mockStore = {
     metamask: {
       ...mockState.metamask,
-      currentCurrency: 'usd',
-      currencyRates: {
-        ETH: {
-          conversionRate: 231.06,
+      selectedCurrency: 'usd',
+      assetsInfo: {
+        ...mockState.metamask.assetsInfo,
+        'eip155:1/slip44:60': {
+          type: 'native',
+          decimals: 18,
+          symbol: 'ETH',
+        },
+      },
+      assetsPrice: {
+        'eip155:1/slip44:60': {
+          assetPriceType: 'fungible',
+          price: 231.06,
+          usdPrice: 231.06,
+          lastUpdated: 0,
         },
       },
       preferences: {
         showFiatInTestnets: true,
-      },
-      marketData: {
-        '0x5': {},
       },
       useCurrencyRateCheck: true,
     },

@@ -15,6 +15,9 @@ const { sprintf } = require('sprintf-js');
 const lodash = require('lodash');
 const { retry } = require('../../../development/lib/retry');
 const { quoteXPathText } = require('../../helpers/quoteXPathText');
+const {
+  WIDE_SCREEN_DESIGN_MIN_WIDTH,
+} = require('../../../shared/constants/layout');
 const { isManifestV3 } = require('../../../shared/lib/mv3.utils');
 const { WindowHandles } = require('../background-socket/window-handles');
 const {
@@ -72,7 +75,7 @@ function wrapElementWithAPI(element, driver) {
   element.waitForElementState = async (state, timeout) => {
     switch (state) {
       case 'hidden':
-        return await driver.wait(until.stalenessOf(element), timeout);
+        return await driver.wait(until.elementIsNotVisible(element), timeout);
       case 'visible':
         return await driver.wait(until.elementIsVisible(element), timeout);
       case 'disabled':
@@ -201,6 +204,149 @@ class Driver {
       }
     }
     return this.driver.executeScript(script, args);
+  }
+
+  /**
+   * Asserts the viewport is wide enough for the wide screen design to apply.
+   * Fails with a clear message instead of a missing-element timeout when
+   * the browser window is too narrow, e.g. a headed run on a small screen.
+   */
+  async checkWideLayoutViewport() {
+    const viewportWidth = await this.executeScript('return window.innerWidth');
+    assert.ok(
+      viewportWidth >= WIDE_SCREEN_DESIGN_MIN_WIDTH,
+      `Expected the wide layout but the viewport is ${viewportWidth}px, below the ${WIDE_SCREEN_DESIGN_MIN_WIDTH}px breakpoint. Use a larger browser window or run headless.`,
+    );
+  }
+
+  /**
+   * Opens a Chrome DevTools Protocol (CDP) connection attached to the
+   * extension's service worker target.
+   *
+   * The returned connection implements `Symbol.asyncDispose`, so callers
+   * should use `await using` to guarantee the CDP session is detached — no
+   * manual cleanup required. Dispose is best-effort and swallows detach
+   * errors.
+   *
+   * @param {object} [options]
+   * @param {number} [options.timeout] - Milliseconds to wait for the service
+   * worker target to become available. Defaults to `this.timeout`.
+   * @returns {Promise<import('selenium-webdriver/devtools/CDPConnection').CdpConnection & AsyncDisposable>} The attached CDP
+   * connection (with `sessionId` set to the attached service worker session).
+   * Disposing it detaches from the target.
+   * @throws {Error} If the service worker target cannot be resolved within
+   * `timeout`, or if attaching to the resolved target fails.
+   */
+  async #createServiceWorkerConnection({ timeout = this.timeout } = {}) {
+    const cdpConnection = await this.driver.createCDPConnection('browser');
+    let attachedSessionId = null;
+    let targetInfo;
+
+    try {
+      await this.waitUntil(
+        async () => {
+          const { result } = await cdpConnection.send('Target.getTargets');
+          const targetInfos = result?.targetInfos ?? [];
+          targetInfo = targetInfos.find(
+            (info) =>
+              info.type === 'service_worker' &&
+              typeof info.url === 'string' &&
+              info.url.startsWith(this.extensionUrl),
+          );
+          return Boolean(targetInfo);
+        },
+        { interval: 250, timeout },
+      );
+    } catch (error) {
+      const { result } = await cdpConnection.send('Target.getTargets');
+      const knownTargets = result?.targetInfos ?? [];
+
+      const errorMessage =
+        error instanceof Error && error.message ? `${error.message}. ` : '';
+
+      throw new Error(
+        `Failed to resolve extension service worker target for ${this.extensionUrl}. ${errorMessage}Known targets: ${JSON.stringify(knownTargets, null, 2)}`,
+      );
+    }
+
+    const { result: attachResult } = await cdpConnection.send(
+      'Target.attachToTarget',
+      {
+        targetId: targetInfo.targetId,
+        flatten: true,
+      },
+    );
+
+    attachedSessionId = attachResult?.sessionId ?? null;
+    if (!attachedSessionId) {
+      throw new Error(
+        `Failed to attach to extension service worker target ${targetInfo.targetId}`,
+      );
+    }
+
+    cdpConnection.sessionId = attachedSessionId;
+
+    cdpConnection[Symbol.asyncDispose] = async () => {
+      if (!attachedSessionId) {
+        return;
+      }
+
+      cdpConnection.sessionId = null;
+      try {
+        await cdpConnection.send('Target.detachFromTarget', {
+          sessionId: attachedSessionId,
+        });
+      } catch (_) {
+        // Best-effort cleanup.
+      }
+    };
+
+    return cdpConnection;
+  }
+
+  /**
+   * Evaluates a script inside the extension's service worker context.
+   *
+   * The `script` is wrapped in an `async` IIFE and evaluated with
+   * `Runtime.evaluate` (`awaitPromise: true`, `returnByValue: true`), so
+   * `await` and returning a serializable value both work. Use `return` inside
+   * `script` to surface a value. Exceptions raised in the service worker are
+   * rethrown here with the remote description.
+   *
+   * @param {string} script - Body of the async IIFE to evaluate in the
+   * service worker. Any value must be returned explicitly (e.g. `'return true;'`).
+   * @param {object} [options]
+   * @param {number} [options.timeout] - Milliseconds to wait for the service
+   * worker target to become available. Defaults to `this.timeout`.
+   * @returns {Promise<unknown>} The `returnByValue` result of the evaluation,
+   * or `undefined` if the script returned nothing.
+   * @throws {Error} If the service worker target cannot be resolved or
+   * attached to within `timeout`, or if the evaluated script throws.
+   */
+  async executeScriptInExtensionServiceWorker(script, { timeout } = {}) {
+    await using cdpConnection = await this.#createServiceWorkerConnection({
+      timeout,
+    });
+
+    await cdpConnection.send('Runtime.enable');
+
+    const evaluationResponse = await cdpConnection.send('Runtime.evaluate', {
+      expression: `(async () => {\n${script}\n})()`,
+      awaitPromise: true,
+      returnByValue: true,
+    });
+
+    const evaluationResult = evaluationResponse?.result ?? {};
+    if (evaluationResult.exceptionDetails) {
+      const { description } = evaluationResult.exceptionDetails.exception ?? {};
+      throw new Error(
+        description ??
+          evaluationResult.exceptionDetails.text ??
+          'Runtime evaluation failed in extension service worker',
+      );
+    }
+
+    return evaluationResult.result?.value;
   }
 
   /**
@@ -1131,6 +1277,30 @@ class Driver {
   }
 
   /**
+   * Waits until the clipboard contains the expected text.
+   * Clipboard writes from the extension are async; reading immediately after
+   * a copy click can race and return stale or empty content.
+   *
+   * @param {string} expectedContent - The expected clipboard text.
+   * @param {object} [options] - Wait options.
+   * @param {number} [options.interval] - Poll interval in milliseconds.
+   * @param {number} [options.timeout] - Maximum wait time in milliseconds.
+   * @returns {Promise<void>}
+   */
+  async waitForClipboardContent(
+    expectedContent,
+    { interval = 100, timeout = this.timeout } = {},
+  ) {
+    await this.waitUntil(
+      async () => {
+        const content = await this.getClipboardContent();
+        return content === expectedContent;
+      },
+      { interval, timeout },
+    );
+  }
+
+  /**
    * Paste a string into a field.
    *
    * @param {string | object} rawLocator  - Element locator
@@ -1416,15 +1586,24 @@ class Driver {
 
     while (timeElapsed <= this.timeout) {
       for (const handle of windowHandles) {
-        // Wait 25 x 200ms = 5 seconds for the title to match the target title
+        // Wait 25 x 200ms = 5 seconds for the title to match the target title.
+        // A window that reload already closed will never recover, so skip it
+        // and keep polling the remaining handles.
         const handleTitle = await retry(
           {
             retries: 25,
             delay: 200,
           },
           async () => {
-            await this.driver.switchTo().window(handle);
-            return await this.driver.getTitle();
+            try {
+              await this.driver.switchTo().window(handle);
+              return await this.driver.getTitle();
+            } catch (error) {
+              if (error?.name === 'NoSuchWindowError') {
+                return undefined;
+              }
+              throw error;
+            }
           },
         );
 
@@ -1855,6 +2034,12 @@ class Driver {
       // performSignIn, getBearerToken, ...) can re-check #isUnlocked after
       // a lock fires mid-flight. No user impact; tracked in #37459.
       'unable to proceed, wallet is locked',
+      // PerpsStreamManager account fallback: the E2E perps WebSocket mock
+      // terminates around teardown, so perpsGetAccountState rejects and the
+      // channel logs. Unrelated suites that merely unlock the wallet inherit
+      // it, which made Tron account derivation, Edit Account Permissions and
+      // dapp interactions look flaky in turn; tracked in #46623.
+      '[PerpsStreamManager] Failed to fetch account',
     ]);
 
     const cdpConnection = await this.driver.createCDPConnection('page');

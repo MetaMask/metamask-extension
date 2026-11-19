@@ -13,6 +13,10 @@ const firefox = require('selenium-webdriver/firefox');
 const { retry } = require('../../../development/lib/retry');
 const { isHeadless } = require('../../helpers/env');
 const { getOrBuildXpi } = require('../helpers/xpi');
+const {
+  CONSTRAINED_WINDOW_SIZE,
+  DEFAULT_WINDOW_SIZE,
+} = require('./window-size');
 
 // geckodriver 0.37.0 breaks some e2e tests as the dapp can't detect the wallet.
 // We pin the version as a temporary patch until migration to Playwright (in progress)
@@ -23,9 +27,9 @@ const PINNED_GECKODRIVER_VERSION = '0.36.0';
  * Resolve the geckodriver binary to use.
  *
  * Resolution order:
- * 1. `GECKODRIVER_PATH` env var, if set. CI sets this explicitly via the
- *    "Pin geckodriver" step in `.github/workflows/run-e2e.yml` (also usable as
- *    a manual override to test a different driver version).
+ * 1. `GECKODRIVER_PATH` env var, if set. CI sets this via
+ *    `.github/scripts/pin-geckodriver.sh` (also usable as a manual override to
+ *    test a different driver version).
  * 2. The pinned {@link PINNED_GECKODRIVER_VERSION}, resolved (and downloaded +
  *    cached cross-platform) via the `selenium-manager` binary that ships with
  *    `selenium-webdriver`. This is the fallback that fixes local runs without
@@ -162,6 +166,23 @@ class FirefoxDriver {
       ? new firefox.ServiceBuilder(FF_SNAP_GECKO_PATH)
       : new firefox.ServiceBuilder(resolveGeckodriverPath());
 
+    // Firefox 153 restricts WebDriver navigation to privileged pages (most
+    // `about:` pages, `chrome://`, `resource://`) unless system access is
+    // allowed. `getInternalId` reads the extension UUID from
+    // `about:debugging#addons`, so without this the session cannot start.
+    // - Firefox 153-158: geckodriver's `--allow-system-access` enables it by
+    //   forwarding `--remote-allow-system-access` to Firefox (geckodriver
+    //   rejects that flag when set via Firefox capabilities).
+    // - Firefox 159+: that flag was removed; Firefox only reads the
+    //   `MOZ_REMOTE_ALLOW_SYSTEM_ACCESS` env var, inherited from geckodriver.
+    // See https://bugzilla.mozilla.org/show_bug.cgi?id=1579790
+    // See https://bugzilla.mozilla.org/show_bug.cgi?id=2054896
+    service.addArguments('--allow-system-access');
+    service.setEnvironment({
+      ...process.env,
+      MOZ_REMOTE_ALLOW_SYSTEM_ACCESS: '1',
+    });
+
     if (port) {
       service.setPort(port);
     }
@@ -183,7 +204,17 @@ class FirefoxDriver {
       const internalExtensionId = await fxDriver.getInternalId();
 
       if (responsive || constrainWindowSize) {
-        await driver.manage().window().setRect({ width: 320, height: 600 });
+        await driver.manage().window().setRect({
+          width: CONSTRAINED_WINDOW_SIZE.width,
+          height: CONSTRAINED_WINDOW_SIZE.height,
+        });
+      } else if (!isHeadless('SELENIUM')) {
+        // A headed window uses the browser default; set the size explicitly
+        // so the wide screen design applies whenever its feature flag is on.
+        await driver.manage().window().setRect({
+          width: DEFAULT_WINDOW_SIZE.width,
+          height: DEFAULT_WINDOW_SIZE.height,
+        });
       }
 
       return {

@@ -62,9 +62,9 @@ describe('Test Snap installed', function () {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: 'fake-metrics-id',
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .withSnapsPrivacyWarningAlreadyShown()
@@ -80,12 +80,12 @@ describe('Test Snap installed', function () {
 
         // Open a new tab and navigate to test snaps page and click dialog snap
         const testSnaps = new TestSnaps(driver);
-        await openTestSnapClickButtonAndInstall(driver, 'connectDialogsButton');
-
-        // Check installation success
-        await testSnaps.checkInstallationComplete(
+        await openTestSnapClickButtonAndInstall(
+          driver,
           'connectDialogsButton',
-          'Reconnect to Dialogs Snap',
+          {
+            expectedMessage: 'Reconnect to Dialogs Snap',
+          },
         );
 
         // Check that snap installed event metrics have been sent

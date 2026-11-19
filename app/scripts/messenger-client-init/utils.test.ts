@@ -15,7 +15,7 @@ type InitFunctions = Parameters<
 >[0]['initFunctions'];
 
 const CONTROLLER_NAME_MOCK = 'TransactionPayController';
-const CONTROLLER_NAME_2_MOCK = 'ClientController';
+const CONTROLLER_NAME_2_MOCK = 'QrSyncController';
 
 function buildControllerMock(name?: string) {
   return {

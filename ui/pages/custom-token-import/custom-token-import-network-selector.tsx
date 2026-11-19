@@ -3,23 +3,23 @@ import { formatChainIdToHex } from '@metamask/bridge-controller';
 import {
   Box,
   FontWeight,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
   Text,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import { type CaipChainId } from '@metamask/utils';
 
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-} from '../../components/component-library';
-import { NetworkListItem } from '../../components/multichain';
+import { useSelector } from 'react-redux';
+import { NetworkListItem } from '../../components/multichain/network-list-item';
 import { isEvmChainId } from '../../../shared/lib/asset-utils';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getImageForChainId } from '../../selectors/multichain';
+import { getChainIdToNetworkImageUrlMap } from '../../selectors/config-registry/config-registry';
 import { getNetworkSections } from '../../helpers/utils/network-sections';
 
 export type CustomTokenImportNetworkOption = {
@@ -45,6 +45,7 @@ export const CustomTokenImportNetworkSelector = ({
   onSelectNetwork,
 }: CustomTokenImportNetworkSelectorProps) => {
   const t = useI18nContext();
+  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
   const networkSections = getNetworkSections(networks);
 
   return (
@@ -56,18 +57,16 @@ export const CustomTokenImportNetworkSelector = ({
       data-testid="custom-token-import-network-selector"
     >
       <ModalOverlay />
-      <ModalContent
-        padding={0}
-        modalDialogProps={{ padding: 0, height: '100%' }}
-      >
-        <ModalHeader onBack={onBack} onClose={onClose}>
+      <ModalContent modalDialogProps={{ padding: 0, className: 'h-full' }}>
+        <ModalHeader
+          onBack={onBack}
+          onClose={onClose}
+          backButtonProps={{ ariaLabel: t('back') }}
+          closeButtonProps={{ ariaLabel: t('close') }}
+        >
           {t('networkMenuHeading')}
         </ModalHeader>
-        <ModalBody
-          paddingLeft={0}
-          paddingRight={0}
-          className="flex min-h-0 flex-1 flex-col overflow-auto"
-        >
+        <ModalBody className="flex min-h-0 flex-1 flex-col overflow-auto px-0">
           {networkSections.map((section, index) => (
             <Box key={section.key} className="flex flex-col">
               {index > 0 ? (
@@ -93,7 +92,10 @@ export const CustomTokenImportNetworkSelector = ({
                     key={network.chainId}
                     chainId={network.chainId}
                     name={network.name}
-                    iconSrc={getImageForChainId(network.chainId)}
+                    iconSrc={getImageForChainId(
+                      network.chainId,
+                      networkImageUrls,
+                    )}
                     selected={isSelected}
                     onClick={() => onSelectNetwork(network)}
                     focus={false}

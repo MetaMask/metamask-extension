@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { PERPS_EVENT_VALUE } from '../../../shared/constants/perps-events';
 import { PERPS_SLIPPAGE_DEFAULT_BPS } from '../../components/app/perps/constants/slippageConfig';
 import { usePerpsMaxSlippage } from './usePerpsMaxSlippage';
@@ -11,13 +11,13 @@ jest.mock('../../store/background-connection', () => ({
 
 function setMaxSlippageResponse(value: number | undefined | Error) {
   mockSubmitRequestToBackground.mockImplementation((method: string) => {
-    if (method === 'perpsGetMaxSlippage') {
+    if (method === 'PerpsController:getMaxSlippage') {
       if (value instanceof Error) {
         return Promise.reject(value);
       }
       return Promise.resolve(value);
     }
-    if (method === 'perpsSetMaxSlippage') {
+    if (method === 'PerpsController:setMaxSlippage') {
       return Promise.resolve(undefined);
     }
     return Promise.resolve(undefined);
@@ -32,30 +32,26 @@ describe('usePerpsMaxSlippage', () => {
   it('falls back to the documented default when no value is stored', async () => {
     setMaxSlippageResponse(undefined);
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      usePerpsMaxSlippage(),
-    );
-    await waitForNextUpdate();
-
-    expect(result.current.maxSlippageBps).toBe(PERPS_SLIPPAGE_DEFAULT_BPS);
-    expect(result.current.maxSlippageSource).toBe(
-      PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.DEFAULT,
-    );
-    expect(result.current.isLoading).toBe(false);
+    const { result } = renderHook(() => usePerpsMaxSlippage());
+    await waitFor(() => {
+      expect(result.current.maxSlippageBps).toBe(PERPS_SLIPPAGE_DEFAULT_BPS);
+      expect(result.current.maxSlippageSource).toBe(
+        PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.DEFAULT,
+      );
+      expect(result.current.isLoading).toBe(false);
+    });
   });
 
   it('resolves a persisted user-configured max slippage value', async () => {
     setMaxSlippageResponse(200);
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      usePerpsMaxSlippage(),
-    );
-    await waitForNextUpdate();
-
-    expect(result.current.maxSlippageBps).toBe(200);
-    expect(result.current.maxSlippageSource).toBe(
-      PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.USER_CONFIGURED,
-    );
+    const { result } = renderHook(() => usePerpsMaxSlippage());
+    await waitFor(() => {
+      expect(result.current.maxSlippageBps).toBe(200);
+      expect(result.current.maxSlippageSource).toBe(
+        PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.USER_CONFIGURED,
+      );
+    });
   });
 
   it('falls back to the default when the controller read rejects', async () => {
@@ -77,17 +73,18 @@ describe('usePerpsMaxSlippage', () => {
   it('persists a new max slippage value and updates the resolved source', async () => {
     setMaxSlippageResponse(undefined);
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      usePerpsMaxSlippage(),
-    );
-    await waitForNextUpdate();
+    const { result } = renderHook(() => usePerpsMaxSlippage());
+    const prevUpdate0 = result.current;
+    await waitFor(() => {
+      expect(result.current).not.toBe(prevUpdate0);
+    });
 
     await act(async () => {
       await result.current.setMaxSlippage(150);
     });
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-      'perpsSetMaxSlippage',
+      'PerpsController:setMaxSlippage',
       [150],
     );
     expect(result.current.maxSlippageBps).toBe(150);

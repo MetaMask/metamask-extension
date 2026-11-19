@@ -331,7 +331,10 @@ const AccountList = ({
   );
 
   return (
-    <Box className="new-external-account-form account-list">
+    <Box
+      className="new-external-account-form account-list"
+      data-testid="parent-selector-connect-hardware-account-list-page"
+    >
       {renderHeader()}
       {renderAccounts()}
       {renderPagination()}

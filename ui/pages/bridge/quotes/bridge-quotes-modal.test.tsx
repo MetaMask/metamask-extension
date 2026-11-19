@@ -1,7 +1,7 @@
 import React from 'react';
 import { act, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { QuoteResponse, RequestStatus } from '@metamask/bridge-controller';
+import { RequestStatus } from '@metamask/bridge-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
@@ -14,7 +14,7 @@ import { setBackgroundConnection } from '../../../store/background-connection';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 setBackgroundConnection({
-  trackUnifiedSwapBridgeEvent: jest.fn(),
+  messengerCall: jest.fn(),
   getStatePatches: jest.fn(),
 } as never);
 
@@ -89,7 +89,7 @@ describe('BridgeQuotesModal', () => {
       'trackUnifiedSwapBridgeEvent',
     );
 
-    const { baseElement, findByText } = renderWithProvider(
+    const { baseElement, findByTestId, findByText } = renderWithProvider(
       <BridgeQuotesModal
         isOpen={true}
         onClose={() => {
@@ -99,6 +99,7 @@ describe('BridgeQuotesModal', () => {
       configureStore(mockStore),
     );
 
+    expect(await findByTestId('quotes-modal')).toBeInTheDocument();
     expect(baseElement).toMatchSnapshot();
     await act(async () => {
       const acrossQuote = await findByText('Across');
@@ -188,6 +189,26 @@ describe('BridgeQuotesModal', () => {
   });
 
   it('should render gasIncluded quotes', () => {
+    const mockQuotes = mockBridgeQuotesErc20Erc20.map((quote) => ({
+      ...quote,
+      quote: {
+        ...quote.quote,
+        gasIncluded: true,
+        feeData: {
+          ...quote.quote.feeData,
+          txFee: [
+            {
+              amount: '9999900',
+              asset: quote.quote.src.asset,
+              maxFeePerGas:
+                quote.quote.feeData?.txFee?.[0]?.maxFeePerGas ?? '0',
+              maxPriorityFeePerGas:
+                quote.quote.feeData?.txFee?.[0]?.maxPriorityFeePerGas ?? '0',
+            },
+          ],
+        },
+      },
+    }));
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
@@ -199,23 +220,7 @@ describe('BridgeQuotesModal', () => {
         },
       },
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesErc20Erc20.map(
-          (quote) =>
-            ({
-              ...quote,
-              quote: {
-                ...quote.quote,
-                gasIncluded: true,
-                feeData: {
-                  ...quote.quote.feeData,
-                  txFee: {
-                    amount: '9999900',
-                    asset: quote.quote.srcAsset,
-                  },
-                },
-              },
-            }) as unknown as QuoteResponse,
-        ),
+        quotes: mockQuotes,
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
         quoteRequest: {

@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import {
   TransactionStatus,
   type TransactionMeta,
@@ -73,7 +73,7 @@ describe('useActivityCacheInvalidation', () => {
     );
 
     expect(mockInvalidateQueries).toHaveBeenCalledWith({
-      queryKey: ['accounts', 'transactions', 'v4MultiAccount'],
+      queryKey: ['accounts', 'transactions', 'v5MultiAccount'],
     });
   });
 

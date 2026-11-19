@@ -1,11 +1,24 @@
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { SolScope } from '@metamask/keyring-api';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { removeNetwork, showModal } from '../../../../store/actions';
 import { getSelectedMultichainNetworkChainId } from '../../../../selectors';
 import { useNetworkItemCallbacks } from './useNetworkItemCallbacks';
+
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      createEventBuilder,
+      trackEvent: jest.fn(),
+    }),
+  };
+});
 
 const mockDispatch = jest.fn();
 
@@ -127,6 +140,7 @@ describe('useNetworkItemCallbacks', () => {
       showModal({
         name: 'CONFIRM_DELETE_NETWORK',
         target: '0xabc',
+        metricsEntryPoint: 'settings_networks',
         onConfirm: expect.any(Function),
         onHide: expect.any(Function),
       }),

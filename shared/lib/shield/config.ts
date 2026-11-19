@@ -1,24 +1,13 @@
 import { Env as SubscriptionEnv } from '@metamask/subscription-controller';
 import { Env as ClaimsEnv } from '@metamask/claims-controller';
+import { Env as ShieldEnv } from '@metamask/shield-controller';
 import { ENVIRONMENT } from '../../constants/build';
 import { ShieldEnvConfig } from './type';
 
-const ENV = {
-  dev: 'dev',
-  uat: 'uat',
-  prd: 'prod',
-} as const;
-
 const SHIELD_GATEWAY_URL = {
-  [ENV.dev]: 'https://shield-gateway.dev-api.cx.metamask.io',
-  [ENV.uat]: 'https://shield-gateway.uat-api.cx.metamask.io',
-  [ENV.prd]: 'https://shield-gateway.api.cx.metamask.io',
-} as const;
-
-const SHIELD_RULE_ENGINE_URL = {
-  [ENV.dev]: 'https://ruleset-engine.dev-api.cx.metamask.io',
-  [ENV.uat]: 'https://ruleset-engine.uat-api.cx.metamask.io',
-  [ENV.prd]: 'https://ruleset-engine.api.cx.metamask.io',
+  [ShieldEnv.DEV]: 'https://shield-gateway.dev-api.cx.metamask.io',
+  [ShieldEnv.UAT]: 'https://shield-gateway.uat-api.cx.metamask.io',
+  [ShieldEnv.PRD]: 'https://shield-gateway.api.cx.metamask.io',
 } as const;
 
 const BUILD_TYPE = {
@@ -36,38 +25,38 @@ export const ShieldConfigMap: Record<BuildType, ShieldEnvConfig> = {
   [BUILD_TYPE.main]: {
     subscriptionEnv: SubscriptionEnv.PRD,
     claimsEnv: ClaimsEnv.PRD,
-    gatewayUrl: SHIELD_GATEWAY_URL[ENV.prd],
-    ruleEngineUrl: SHIELD_RULE_ENGINE_URL[ENV.prd],
+    shieldEnv: ShieldEnv.PRD,
+    gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.PRD],
   },
   [BUILD_TYPE.flask]: {
     subscriptionEnv: SubscriptionEnv.PRD,
     claimsEnv: ClaimsEnv.PRD,
-    gatewayUrl: SHIELD_GATEWAY_URL[ENV.prd],
-    ruleEngineUrl: SHIELD_RULE_ENGINE_URL[ENV.prd],
+    shieldEnv: ShieldEnv.PRD,
+    gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.PRD],
   },
   [BUILD_TYPE.beta]: {
     subscriptionEnv: SubscriptionEnv.UAT,
     claimsEnv: ClaimsEnv.UAT,
-    gatewayUrl: SHIELD_GATEWAY_URL[ENV.uat],
-    ruleEngineUrl: SHIELD_RULE_ENGINE_URL[ENV.uat],
+    shieldEnv: ShieldEnv.UAT,
+    gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.UAT],
   },
   [BUILD_TYPE.experimental]: {
     subscriptionEnv: SubscriptionEnv.PRD,
     claimsEnv: ClaimsEnv.PRD,
-    gatewayUrl: SHIELD_GATEWAY_URL[ENV.prd],
-    ruleEngineUrl: SHIELD_RULE_ENGINE_URL[ENV.prd],
+    shieldEnv: ShieldEnv.PRD,
+    gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.PRD],
   },
   [BUILD_TYPE.dev]: {
     subscriptionEnv: SubscriptionEnv.DEV,
     claimsEnv: ClaimsEnv.DEV,
-    gatewayUrl: SHIELD_GATEWAY_URL[ENV.dev],
-    ruleEngineUrl: SHIELD_RULE_ENGINE_URL[ENV.dev],
+    shieldEnv: ShieldEnv.DEV,
+    gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.DEV],
   },
   [BUILD_TYPE.uat]: {
     subscriptionEnv: SubscriptionEnv.UAT,
     claimsEnv: ClaimsEnv.UAT,
-    gatewayUrl: SHIELD_GATEWAY_URL[ENV.uat],
-    ruleEngineUrl: SHIELD_RULE_ENGINE_URL[ENV.uat],
+    shieldEnv: ShieldEnv.UAT,
+    gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.UAT],
   },
 };
 

@@ -7,6 +7,7 @@
 import { merge } from 'lodash';
 import { toHex } from '@metamask/controller-utils';
 import type { Mockttp } from 'mockttp';
+import { v6AccountsApiBalancesJson } from '../../helpers/accounts-api-v6-balances';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import {
@@ -28,11 +29,16 @@ const CHAIN_ID_HEX = toHex(CHAIN_ID);
 const TOKEN_ADDRESS = '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947';
 const TOKEN_DECIMALS = 4;
 const SYMBOL = 'TST';
-const INITIAL_RAW_BALANCE = '0x186a0';
+const TOKEN_NAME = 'Test Standard Token';
 const POST_SEND_RAW_BALANCE = '0xc350';
 const RECIPIENT_ADDRESS = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 
 function mockCommonApis(mockServer: Mockttp) {
+  const supportedNetworks = {
+    fullSupport: ['eip155:1', 'eip155:1337'],
+    partialSupport: [],
+  };
+
   return Promise.all([
     mockServer
       .forGet(
@@ -40,16 +46,26 @@ function mockCommonApis(mockServer: Mockttp) {
       )
       .always()
       .thenJson(200, {
-        fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 1337],
-        partialSupport: { balances: [] },
-      }),
-    mockServer
-      .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
-      .always()
-      .thenJson(200, {
-        fullSupport: ['eip155:1', 'eip155:1337'],
+        fullSupport: [
+          'eip155:1',
+          'eip155:137',
+          'eip155:56',
+          'eip155:59144',
+          'eip155:8453',
+          'eip155:10',
+          'eip155:42161',
+          'eip155:1337',
+        ],
         partialSupport: [],
       }),
+    mockServer
+      .forGet('https://token.api.cx.metamask.io/v2/supportedNetworks')
+      .always()
+      .thenJson(200, supportedNetworks),
+    mockServer
+      .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
+      .always()
+      .thenJson(200, supportedNetworks),
     mockServer
       .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
       .always()
@@ -72,33 +88,47 @@ function mockCommonApis(mockServer: Mockttp) {
 
 function mockV5Balances(mockServer: Mockttp, tstBalance: { value: string }) {
   const account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
+  const rows = () => [
+    {
+      accountId: `eip155:${CHAIN_ID}:${account}`,
+      // Chain 1337's native asset is slip44:1 (not slip44:60); using the
+      // correct id keeps the native balance populated and steady.
+      assetId: `eip155:${CHAIN_ID}/slip44:1`,
+      balance: '25',
+    },
+    {
+      accountId: `eip155:${CHAIN_ID}:${account}`,
+      assetId: `eip155:${CHAIN_ID}/erc20:${TOKEN_ADDRESS}`,
+      balance: tstBalance.value,
+    },
+  ];
 
-  return mockServer
-    .forGet(
-      /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
-    )
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        count: 2,
-        unprocessedNetworks: [],
-        balances: [
-          {
-            accountId: `eip155:${CHAIN_ID}:${account}`,
-            // Chain 1337's native asset is slip44:1 (not slip44:60); using the
-            // correct id keeps the native balance populated and steady.
-            assetId: `eip155:${CHAIN_ID}/slip44:1`,
-            balance: '25',
-          },
-          {
-            accountId: `eip155:${CHAIN_ID}:${account}`,
-            assetId: `eip155:${CHAIN_ID}/erc20:${TOKEN_ADDRESS}`,
-            balance: tstBalance.value,
-          },
-        ],
-      },
-    }));
+  return Promise.all(
+    (['v5', 'v6'] as const).map((version) =>
+      mockServer
+        .forGet(
+          `https://accounts.api.cx.metamask.io/${version}/multiaccount/balances`,
+        )
+        .always()
+        .thenCallback((request) => {
+          const balances = rows();
+          if (version === 'v6') {
+            return {
+              statusCode: 200,
+              json: v6AccountsApiBalancesJson(request.url, balances),
+            };
+          }
+          return {
+            statusCode: 200,
+            json: {
+              count: balances.length,
+              unprocessedNetworks: [],
+              balances,
+            },
+          };
+        }),
+    ),
+  );
 }
 
 describe('Send ERC20 - Max Balance Validation', function () {
@@ -145,7 +175,7 @@ describe('Send ERC20 - Max Balance Validation', function () {
             aggregators: [],
             decimals: TOKEN_DECIMALS,
             image: undefined,
-            name: 'Test Standard Token',
+            name: TOKEN_NAME,
             symbol: SYMBOL,
             type: 'erc20',
           },
@@ -159,15 +189,6 @@ describe('Send ERC20 - Max Balance Validation', function () {
           [CHAIN_ID_HEX]: {
             [account]: {
               balance: '0x15af1d78b58c400000', // 25 ETH
-            },
-          },
-        },
-      },
-      TokenBalancesController: {
-        tokenBalances: {
-          [account]: {
-            [CHAIN_ID_HEX]: {
-              [TOKEN_ADDRESS]: INITIAL_RAW_BALANCE,
             },
           },
         },
@@ -231,9 +252,13 @@ describe('Send ERC20 - Max Balance Validation', function () {
         wsServer.sendMessage(JSON.stringify(notification));
 
         await tokensTab.checkTokenAmountIsDisplayed(`5 ${SYMBOL}`);
-        await tokensTab.openTokenDetails(SYMBOL);
+        await tokensTab.openTokenDetails(TOKEN_NAME);
         await tokensTab.startSendFlow();
         await sendPage.fillRecipient({ recipientAddress: RECIPIENT_ADDRESS });
+
+        // Wait for the Send balance to reflect the update before clicking Max,
+        // otherwise Max races the async balance convergence.
+        await sendPage.checkAvailableBalance('5');
 
         await sendPage.clickMaxButton();
         await sendPage.checkAmountInputValue('5');

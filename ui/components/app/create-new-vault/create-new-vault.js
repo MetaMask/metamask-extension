@@ -1,8 +1,9 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
+import { Checkbox } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TextField from '../../ui/text-field';
-import { ButtonVariant, Button, Checkbox } from '../../component-library';
+import { ButtonVariant, Button } from '../../component-library';
 import SrpInput from '../srp-input';
 import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
 import { useSignOut } from '../../../hooks/identity/useAuthentication';
@@ -90,7 +91,7 @@ export default function CreateNewVault({
     <a
       className="create-new-vault__terms-link"
       key="create-new-vault__link-text"
-      href="https://metamask.io/terms.html"
+      href="https://metamask.com/terms.html"
       target="_blank"
       rel="noopener noreferrer"
     >
@@ -132,7 +133,7 @@ export default function CreateNewVault({
           <Checkbox
             id="create-new-vault-terms-checkbox"
             data-testid="create-new-vault-terms-checkbox"
-            isChecked={termsChecked}
+            isSelected={termsChecked}
             onChange={toggleTermsCheck}
             label={termsOfUse}
           />

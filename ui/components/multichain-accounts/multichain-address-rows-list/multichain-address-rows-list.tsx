@@ -10,7 +10,6 @@ import {
   TextAlign,
   TextColor,
   TextFieldSearch,
-  TextFieldSize,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -52,7 +51,7 @@ export const MultichainAddressRowsList = ({
   const [searchPattern, setSearchPattern] = React.useState<string>('');
 
   // useCopyToClipboard analysis: Copies one of your public addresses
-  const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const [, handleCopy] = useCopyToClipboard();
 
   const getAccountsSpreadByNetworkByGroupId = useSelector((state) =>
     getInternalAccountListSpreadByScopesByGroupId(state, groupId),
@@ -126,15 +125,14 @@ export const MultichainAddressRowsList = ({
       },
       index: number,
     ): JSX.Element => {
-      const handleCopyClick = () => {
-        handleCopy(item.normalizedAddress);
-      };
+      const handleCopyClick = () => handleCopy(item.normalizedAddress);
 
       return (
         <MultichainAddressRow
           key={`${item.account.address}-${item.scope}-${index}`}
           chainId={item.scope}
           networkName={item.networkName}
+          accountType={item.account.type}
           address={item.normalizedAddress}
           copyActionParams={{
             message: t('multichainAccountAddressCopied'),
@@ -158,17 +156,17 @@ export const MultichainAddressRowsList = ({
       flexDirection={BoxFlexDirection.Column}
       data-testid="multichain-address-rows-list"
     >
-      <Box paddingLeft={4} paddingRight={4}>
+      <search className="px-4">
         <TextFieldSearch
-          className="app-text-field-search"
+          className="w-full"
           clearButtonOnClick={handleClearSearch}
           data-testid="multichain-address-rows-list-search"
+          inputAriaLabel={t('searchNetworks')}
           onChange={handleSearchChange}
           placeholder={t('searchNetworks')}
-          size={TextFieldSize.Lg}
           value={searchPattern}
         />
-      </Box>
+      </search>
 
       <Box>
         {filteredItems.length > 0 ? (

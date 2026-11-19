@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -16,7 +16,6 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { updateCurrentLocale } from '../../../store/actions';
-import { PREFERENCES_AND_DISPLAY_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
@@ -25,6 +24,7 @@ import { isMaintainedLocale } from '../../../../shared/constants/locales';
 import type { MetaMaskReduxState } from '../../../store/store';
 import { Divider } from '../shared';
 import { transitionBack } from '../../../components/ui/transition';
+import { useDispatch } from '../../../store/hooks';
 
 type LocaleEntry = (typeof locales)[number];
 
@@ -51,7 +51,7 @@ const LanguageSubPage = () => {
 
   const handleSelect = (value: string) => {
     dispatch(updateCurrentLocale(value));
-    transitionBack(() => navigate(PREFERENCES_AND_DISPLAY_ROUTE));
+    transitionBack(() => navigate(-1));
   };
 
   const renderLocaleRows = (entries: LocaleEntry[]) =>

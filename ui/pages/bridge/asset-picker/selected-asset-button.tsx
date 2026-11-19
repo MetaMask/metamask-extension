@@ -1,0 +1,89 @@
+import React from 'react';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  AvatarToken,
+  BadgeWrapper,
+} from '@metamask/design-system-react';
+import { useSelector } from 'react-redux';
+import {
+  SelectButtonProps,
+  SelectButtonSize,
+} from '../../../components/component-library/select-button/select-button.types';
+import {
+  AlignItems,
+  BackgroundColor,
+  BorderColor,
+  BorderRadius,
+  Display,
+} from '../../../helpers/constants/design-system';
+import { BridgeToken } from '../../../ducks/bridge/types';
+import {
+  IconName,
+  Label,
+  SelectButton,
+} from '../../../components/component-library';
+import {
+  BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP,
+  NETWORK_TO_SHORT_NETWORK_NAME_MAP,
+} from '../../../../shared/constants/bridge';
+import { getChainIdToNetworkImageUrlMap } from '../../../selectors/config-registry/config-registry';
+import { getNetworkImageUrl } from '../../../../shared/lib/network.utils';
+import { useAssetSecurityData } from '../hooks/useAssetSecurityData';
+import { AssetSecurityBadge } from './asset-security-badge';
+
+export const SelectedAssetButton = ({
+  asset,
+  ...props
+}: {
+  asset: BridgeToken;
+} & SelectButtonProps<'div'>) => {
+  const caipChainId = formatChainIdToCaip(asset.chainId);
+  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+  const { assetIsVerified } = useAssetSecurityData(asset);
+
+  return (
+    <SelectButton
+      className="bridge-selected-asset-button"
+      borderRadius={BorderRadius.pill}
+      backgroundColor={BackgroundColor.backgroundMuted}
+      borderColor={BorderColor.transparent}
+      style={{
+        padding: 8,
+        paddingRight: 11,
+        minWidth: 'fit-content',
+      }}
+      size={SelectButtonSize.Lg}
+      alignItems={AlignItems.center}
+      caretIconProps={{
+        name: IconName.ArrowDown,
+        style: { display: Display.None },
+      }}
+      startAccessory={
+        <div className="flex items-center gap-1">
+          <BadgeWrapper
+            key={asset.assetId}
+            badge={
+              <AvatarNetwork
+                name={NETWORK_TO_SHORT_NETWORK_NAME_MAP[caipChainId]}
+                src={
+                  getNetworkImageUrl(asset.chainId, networkImageUrls) ??
+                  BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP[caipChainId]
+                }
+                size={AvatarNetworkSize.Xs}
+                style={{ borderWidth: 1, borderRadius: 6 }}
+                hasBorder
+              />
+            }
+          >
+            <AvatarToken src={asset.iconUrl ?? undefined} name={asset.symbol} />
+          </BadgeWrapper>
+          <Label className="cursor-pointer ml-1">{asset.symbol}</Label>
+          {assetIsVerified ? <AssetSecurityBadge asset={asset} /> : null}
+        </div>
+      }
+      {...props}
+    />
+  );
+};

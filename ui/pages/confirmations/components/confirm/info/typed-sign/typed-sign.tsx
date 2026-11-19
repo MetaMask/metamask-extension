@@ -18,6 +18,7 @@ import { useGetTokenStandardAndDetails } from '../../../../hooks/useGetTokenStan
 import {
   isOrderSignatureRequest,
   isPermitSignatureRequest,
+  parseSanitizeTypedDataMessage,
 } from '../../../../utils';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useTypesSignSimulationEnabledInfo } from '../../../../hooks/useTypesSignSimulationEnabledInfo';
@@ -36,7 +37,9 @@ const useTokenContract = () => {
   const {
     domain: { verifyingContract },
     message: { spender },
-  } = parseTypedDataMessage(currentConfirmation.msgParams.data as string);
+  } = parseSanitizeTypedDataMessage(
+    currentConfirmation.msgParams.data as string,
+  );
 
   const isPermit = isPermitSignatureRequest(currentConfirmation);
   const isOrder = isOrderSignatureRequest(currentConfirmation);
@@ -77,7 +80,11 @@ const TypedSignInfo = () => {
               ownerId={currentConfirmation.id}
               label={t('spender')}
             >
-              <ConfirmInfoRowAddress address={spender} chainId={chainId} />
+              <ConfirmInfoRowAddress
+                address={spender}
+                chainId={chainId}
+                fillWidth
+              />
             </ConfirmInfoAlertRow>
             <ConfirmInfoRowDivider />
           </>
@@ -101,6 +108,7 @@ const TypedSignInfo = () => {
             <ConfirmInfoRowAddress
               address={verifyingContract}
               chainId={chainId}
+              fillWidth
             />
           </ConfirmInfoAlertRow>
         )}

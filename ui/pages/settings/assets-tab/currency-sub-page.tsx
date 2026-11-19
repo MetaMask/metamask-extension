@@ -12,18 +12,18 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import availableCurrencies from '../../../helpers/constants/available-conversions.json';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { setCurrentCurrency } from '../../../store/actions';
-import { PREFERENCES_AND_DISPLAY_ROUTE } from '../../../helpers/constants/routes';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { transitionBack } from '../../../components/ui/transition';
+import { useDispatch } from '../../../store/hooks';
 
 const sortedCurrencies = [...availableCurrencies].sort((a, b) =>
   a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase()),
@@ -52,7 +52,7 @@ const CurrencySubPage = () => {
         .build(),
     );
     dispatch(setCurrentCurrency(value));
-    transitionBack(() => navigate(PREFERENCES_AND_DISPLAY_ROUTE));
+    transitionBack(() => navigate(-1));
   };
 
   return (

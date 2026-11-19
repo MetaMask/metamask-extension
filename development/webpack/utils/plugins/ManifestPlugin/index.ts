@@ -76,6 +76,12 @@ function emitJsonAsset(
   });
 }
 
+function webAccessibleResourcePaths(manifest: Manifest) {
+  return (manifest.web_accessible_resources ?? []).flatMap((entry) =>
+    typeof entry === 'string' ? [entry] : entry.resources,
+  );
+}
+
 function addToSetMap<TKey, TValue>(
   map: Map<TKey, Set<TValue>>,
   key: TKey,
@@ -99,7 +105,7 @@ export class ManifestPlugin<Z extends boolean> {
 
   manifests: Map<Browser, Manifest> = new Map();
 
-  private manifestSources: Map<Browser, sources.RawSource> = new Map();
+  private browserAssets = new Map<Browser, Record<string, sources.RawSource>>();
 
   private watchedFiles: string[] = [];
 
@@ -111,6 +117,8 @@ export class ManifestPlugin<Z extends boolean> {
     'bootstrap',
     BACKGROUND_CLIENT_ENTRY_NAME,
   ]);
+
+  private isolatedHtmlEntries: Set<string> = new Set();
 
   private bundleSizeCategoriesByEntrypoint: Map<
     string,
@@ -134,6 +142,25 @@ export class ManifestPlugin<Z extends boolean> {
   canBeChunked = ({ name }: { name?: string | null }): boolean => {
     return !name || !this.selfContainedScripts.has(name);
   };
+
+  isIsolatedHtmlEntry = (name?: string | null) =>
+    Boolean(name && this.isolatedHtmlEntries.has(name));
+
+  getIsolatedHtmlEntryNames = () => [...this.isolatedHtmlEntries];
+
+  private isWebAccessibleHtml(filename: string) {
+    for (const manifest of this.manifests.values()) {
+      for (const resource of webAccessibleResourcePaths(manifest)) {
+        if (
+          /\.html?$/iu.test(resource) &&
+          (resource === filename || path.basename(resource) === filename)
+        ) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
 
   constructor(options: ManifestPluginOptions<Z>) {
     validate(schema, options, { name: NAME });
@@ -165,25 +192,26 @@ export class ManifestPlugin<Z extends boolean> {
   }
 
   /**
-   * Emits each browser-specific manifest into its final output location.
+   * Emits browser-specific JSON assets into their final output locations.
    *
    * @param compilation - The active compilation.
    * @param browsers - The browsers being built.
    */
-  private emitManifestAssets(
+  private emitBrowserAssets(
     compilation: Compilation,
     browsers: readonly Browser[],
   ): void {
     browsers.forEach((browser) => {
-      const manifest = this.manifestSources.get(browser) as sources.RawSource;
-      compilation.emitAsset(
-        path.posix.join(browser, 'manifest.json'),
-        manifest,
-        {
+      const assets = this.browserAssets.get(browser) as Record<
+        string,
+        sources.RawSource
+      >;
+      for (const [filename, source] of Object.entries(assets)) {
+        compilation.emitAsset(path.posix.join(browser, filename), source, {
           javascriptModule: false,
           contentType: 'application/json',
-        },
-      );
+        });
+      }
     });
   }
 
@@ -240,6 +268,41 @@ export class ManifestPlugin<Z extends boolean> {
     }
 
     return categories;
+  }
+
+  /**
+   * Returns the uncompressed size of the files included in a browser zip.
+   *
+   * @param compilation - The active compilation.
+   * @param browser - The browser whose unzipped assets should be measured.
+   * @returns The uncompressed zip contents size, if zip output is enabled.
+   */
+  private getBundleUnzippedSize(
+    compilation: Compilation,
+    browser: Browser,
+  ): number | undefined {
+    if (this.options.zip !== true) {
+      return undefined;
+    }
+
+    const { excludeExtensions, outFilePath } = (
+      this.options as ManifestPluginOptions<true>
+    ).zipOptions;
+    const browserPrefix = `${browser}/`;
+    const zipAssetPath = outFilePath.replaceAll('[browser]', browser);
+    let size = 0;
+
+    for (const [assetName, source] of Object.entries(compilation.assets)) {
+      if (
+        assetName.startsWith(browserPrefix) &&
+        assetName !== zipAssetPath &&
+        !excludeExtensions.includes(path.extname(assetName))
+      ) {
+        size += source.size();
+      }
+    }
+
+    return size;
   }
 
   /**
@@ -312,9 +375,14 @@ export class ManifestPlugin<Z extends boolean> {
       const { outFile } = this.options.stats;
       for (const browser of this.options.browsers) {
         const statsFile = outFile.replaceAll('[browser]', browser);
+        const unzipped = this.getBundleUnzippedSize(compilation, browser);
         const zip = this.getBundleZipSize(compilation, browser);
         const { partSizes, timestamp, debugEntrypoints } = bundleSizeStats;
-        const summary = createBundleSizeSummary(partSizes, { zip, timestamp });
+        const summary = createBundleSizeSummary(partSizes, {
+          unzipped,
+          zip,
+          timestamp,
+        });
         emitJsonAsset(compilation, statsFile, summary);
 
         if (debugEntrypoints) {
@@ -355,18 +423,29 @@ export class ManifestPlugin<Z extends boolean> {
     const compressionOptions: ZipCompressionOptions = { level };
     const moveSourceMapsToDedicatedDirectory =
       compilation.options.devtool === 'hidden-source-map';
-    const [primaryBrowser, ...additionalBrowsers] = browsers;
+    const hasAdditionalBrowsers = browsers.length > 1;
     const assetNames = Object.keys(assets);
     const zipEligibleAssetCount = assetNames.filter(
       (assetName) => !excludeExtensions.includes(path.extname(assetName)),
     ).length;
 
     let filesProcessed = 0;
-    const totalWork = browsers.length * (zipEligibleAssetCount + 1);
+    const totalWork = browsers.reduce(
+      (total, browser) =>
+        total +
+        zipEligibleAssetCount +
+        Object.keys(
+          this.browserAssets.get(browser) as Record<string, sources.RawSource>,
+        ).length,
+      0,
+    );
     const reportProgress =
       ProgressPlugin.getReporter(compilation.compiler) ?? noop;
     const zipBuilders = browsers.map((browser) => {
-      const manifest = this.manifestSources.get(browser) as sources.RawSource;
+      const browserAssets = this.browserAssets.get(browser) as Record<
+        string,
+        sources.RawSource
+      >;
       const onAssetAdded = (assetName: string) => {
         reportProgress(
           0,
@@ -380,7 +459,7 @@ export class ManifestPlugin<Z extends boolean> {
         builder: createBrowserZipBuilder({
           compressionOptions,
           excludeExtensions,
-          manifest,
+          assets: browserAssets,
           mtime,
           onAssetAdded,
         }),
@@ -394,7 +473,7 @@ export class ManifestPlugin<Z extends boolean> {
         moveSourceMapsToDedicatedDirectory && assetName.endsWith('.map');
       const shouldZip = !excludeExtensions.includes(extName);
       const shouldCache =
-        shouldZip || (additionalBrowsers.length > 0 && !isSourceMapAsset);
+        shouldZip || (hasAdditionalBrowsers && !isSourceMapAsset);
       let { source } = assetDetails;
 
       if (shouldCache && !(source instanceof CachedSource)) {
@@ -413,29 +492,10 @@ export class ManifestPlugin<Z extends boolean> {
         );
       }
 
-      if (isSourceMapAsset) {
-        compilation.renameAsset(
-          assetName,
-          path.posix.join(SOURCEMAPS_DIRECTORY, assetName),
-        );
-        continue;
-      }
-
-      const primaryAssetPath = path.posix.join(primaryBrowser, assetName);
-      if (assetName !== primaryAssetPath) {
-        compilation.renameAsset(assetName, primaryAssetPath);
-      }
-
-      additionalBrowsers.forEach((browser) => {
-        compilation.emitAsset(
-          path.posix.join(browser, assetName),
-          source,
-          assetDetails.info,
-        );
-      });
+      this.moveAssetToBrowsers(compilation, assetDetails, source, browsers);
     }
 
-    this.emitManifestAssets(compilation, browsers);
+    this.emitBrowserAssets(compilation, browsers);
 
     for (const { browser, builder } of zipBuilders) {
       const data = await builder.finalize();
@@ -446,6 +506,47 @@ export class ManifestPlugin<Z extends boolean> {
         contentType: 'application/zip',
         development: true,
       });
+    }
+  }
+
+  /**
+   * Moves one asset to its primary browser and shares its source with the others.
+   * Hidden source maps are moved once to the dedicated source-map directory.
+   *
+   * @param compilation - The active compilation.
+   * @param asset - The original asset name and metadata.
+   * @param source - The source to emit, including any cache wrapper.
+   * @param browsers - The ordered browser output targets.
+   */
+  private moveAssetToBrowsers(
+    compilation: Compilation,
+    asset: Readonly<Asset>,
+    source: sources.Source,
+    browsers: readonly Browser[],
+  ): void {
+    const { name, info } = asset;
+    if (
+      compilation.options.devtool === 'hidden-source-map' &&
+      name.endsWith('.map')
+    ) {
+      compilation.renameAsset(
+        name,
+        path.posix.join(SOURCEMAPS_DIRECTORY, name),
+      );
+      return;
+    }
+
+    const primaryAssetPath = path.posix.join(browsers[0], name);
+    if (name !== primaryAssetPath) {
+      compilation.renameAsset(name, primaryAssetPath);
+    }
+
+    for (let index = 1; index < browsers.length; index++) {
+      compilation.emitAsset(
+        path.posix.join(browsers[index], name),
+        source,
+        info,
+      );
     }
   }
 
@@ -470,7 +571,7 @@ export class ManifestPlugin<Z extends boolean> {
     const moveSourceMapsToDedicatedDirectory =
       compilation.options.devtool === 'hidden-source-map';
     const { browsers } = options;
-    const [primaryBrowser, ...additionalBrowsers] = browsers;
+    const hasAdditionalBrowsers = browsers.length > 1;
 
     for (const assetName of Object.keys(assets)) {
       const assetDetails = compilation.getAsset(assetName) as Readonly<Asset>;
@@ -480,7 +581,7 @@ export class ManifestPlugin<Z extends boolean> {
       let { source } = assetDetails;
 
       if (
-        additionalBrowsers.length > 0 &&
+        hasAdditionalBrowsers &&
         !isSourceMapAsset &&
         !(source instanceof CachedSource)
       ) {
@@ -493,29 +594,10 @@ export class ManifestPlugin<Z extends boolean> {
         });
       }
 
-      if (isSourceMapAsset) {
-        compilation.renameAsset(
-          assetName,
-          path.posix.join(SOURCEMAPS_DIRECTORY, assetName),
-        );
-        continue;
-      }
-
-      const primaryAssetPath = path.posix.join(primaryBrowser, assetName);
-      if (assetName !== primaryAssetPath) {
-        compilation.renameAsset(assetName, primaryAssetPath);
-      }
-
-      additionalBrowsers.forEach((browser) => {
-        compilation.emitAsset(
-          path.posix.join(browser, assetName),
-          source,
-          assetDetails.info,
-        );
-      });
+      this.moveAssetToBrowsers(compilation, assetDetails, source, browsers);
     }
 
-    this.emitManifestAssets(compilation, browsers);
+    this.emitBrowserAssets(compilation, browsers);
   }
 
   /**
@@ -621,7 +703,7 @@ export class ManifestPlugin<Z extends boolean> {
           manifest.web_accessible_resources =
             manifest.web_accessible_resources || [];
           const war = manifest.web_accessible_resources.find((resource) =>
-            resource.matches.includes('<all_urls>'),
+            resource.matches?.includes('<all_urls>'),
           );
           if (war) {
             // merge the resources into the existing <all_urls> resource, ensure uniqueness using `Set`
@@ -707,6 +789,17 @@ export class ManifestPlugin<Z extends boolean> {
     );
     addToSetMap(this.bundleSizeCategoriesByHtmlResource, filePath, category);
     entries[parsedFileName] = { import: [filePath], ...opts };
+    if (this.isWebAccessibleHtml(filename)) {
+      this.isolatedHtmlEntries.add(parsedFileName);
+
+      // `cashtag-widget.html` is the web-accessible HTML entry, but HtmlBundler
+      // names its imported frame script `frame`. Both entries must be isolated so
+      // Webpack does not split the iframe bundle.
+      if (parsedFileName === 'cashtag-widget') {
+        this.selfContainedScripts.add('frame');
+        this.isolatedHtmlEntries.add('frame');
+      }
+    }
   };
 
   private collectEntrypoints(
@@ -714,6 +807,7 @@ export class ManifestPlugin<Z extends boolean> {
     entries: Record<string, EntryDescriptionNormalized>,
   ): void {
     this.resetBundleSizeEntrypointMetadata();
+    this.isolatedHtmlEntries.clear();
 
     for (const manifest of this.manifests.values()) {
       // collect content_scripts (MV2 + MV3)
@@ -887,11 +981,34 @@ export class ManifestPlugin<Z extends boolean> {
         ? { ...manifest, build_id: compilation.fullHash }
         : manifest;
 
-      // cache the resolved manifests as RawSource
-      this.manifestSources.set(
-        browser,
-        new RawSource(JSON.stringify(manifestForEmit, null, 2)),
-      );
+      const browserAssets: Record<string, sources.RawSource> = {
+        'manifest.json': new RawSource(
+          JSON.stringify(manifestForEmit, null, 2),
+        ),
+      };
+      this.browserAssets.set(browser, browserAssets);
+    }
+  }
+
+  private emitContentScriptCssAssets(compilation: Compilation) {
+    const cssPaths = new Set(
+      [...this.manifests.values()].flatMap((manifest) =>
+        (manifest.content_scripts ?? []).flatMap(
+          (contentScript: { css?: string[] }) => contentScript.css ?? [],
+        ),
+      ),
+    );
+
+    for (const cssPath of cssPaths) {
+      if (compilation.getAsset(cssPath)) {
+        continue;
+      }
+
+      const sourcePath = path.join(compilation.compiler.context, cssPath);
+      compilation.fileDependencies.add(sourcePath);
+      compilation.emitAsset(cssPath, new RawSource(readFileSync(sourcePath)), {
+        contentType: 'text/css',
+      });
     }
   }
 
@@ -903,6 +1020,7 @@ export class ManifestPlugin<Z extends boolean> {
       compilation.hooks.processAssets.tapPromise(
         tapOptions,
         async (assets: Assets) => {
+          this.emitContentScriptCssAssets(compilation);
           this.resolveEntrypoints(compilation);
           const bundleSizeStats = this.collectBundleSizeStats(compilation);
           await this.zipAndMoveAssets(compilation, assets, options);
@@ -912,6 +1030,7 @@ export class ManifestPlugin<Z extends boolean> {
     } else {
       const options = this.options as ManifestPluginOptions<false>;
       compilation.hooks.processAssets.tap(tapOptions, (assets: Assets) => {
+        this.emitContentScriptCssAssets(compilation);
         this.resolveEntrypoints(compilation);
         const bundleSizeStats = this.collectBundleSizeStats(compilation);
         this.moveAssets(compilation, assets, options);

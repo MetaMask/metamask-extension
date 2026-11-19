@@ -1,12 +1,44 @@
 import React, { useMemo } from 'react';
-import { Text, Box } from '../../../../../components/component-library';
+import { TransactionType } from '@metamask/transaction-controller';
+import { MUSD_DECIMALS, MUSD_TOKEN } from '@metamask/money-account-utils';
+import { BigNumber } from 'bignumber.js';
 import {
-  Display,
-  AlignItems,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  FontFamily,
+  Text,
   TextVariant,
-} from '../../../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
+import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
+import { getMoneyAccountWithdrawTransferDetails } from '../../../utils/money-account-withdraw';
 import { useTransactionDetails } from '../transaction-details-context';
+
+/**
+ * Amount-plus-symbol label for the activity hero (e.g. `1.5 mUSD`).
+ *
+ * @param transactionMeta - Withdraw transaction with nested transfer calldata.
+ * @param transactionMeta.nestedTransactions
+ * @returns Display label, or `undefined` when the transfer amount is missing
+ * or zero.
+ */
+function getWithdrawTransferAmountDisplay(transactionMeta: {
+  nestedTransactions?: { data?: string; type?: string }[];
+}): string | undefined {
+  const { amountRaw } = getMoneyAccountWithdrawTransferDetails(transactionMeta);
+  if (!amountRaw) {
+    return undefined;
+  }
+  const amount = new BigNumber(amountRaw).dividedBy(
+    new BigNumber(10).pow(MUSD_DECIMALS),
+  );
+  if (amount.isZero()) {
+    return undefined;
+  }
+  return `${amount.toFixed()} ${MUSD_TOKEN.symbol}`;
+}
 
 export function TransactionDetailsHero() {
   const { transactionMeta } = useTransactionDetails();
@@ -14,13 +46,21 @@ export function TransactionDetailsHero() {
 
   const { metamaskPay } = transactionMeta;
   const { targetFiat } = metamaskPay || {};
+  const isMoneyAccountWithdraw = hasTransactionType(transactionMeta, [
+    TransactionType.moneyAccountWithdraw,
+  ]);
 
   const formattedAmount = useMemo(() => {
-    if (!targetFiat || targetFiat === '0') {
-      return null;
+    if (targetFiat && targetFiat !== '0') {
+      return fiatFormatter(Number(targetFiat));
     }
-    return fiatFormatter(Number(targetFiat));
-  }, [fiatFormatter, targetFiat]);
+    // Direct withdraws have no quotes, so targetFiat stays 0. Show the
+    // nested transfer amount instead of an empty / $0 hero.
+    if (isMoneyAccountWithdraw) {
+      return getWithdrawTransferAmountDisplay(transactionMeta);
+    }
+    return null;
+  }, [fiatFormatter, isMoneyAccountWithdraw, targetFiat, transactionMeta]);
 
   if (!formattedAmount) {
     return null;
@@ -28,14 +68,16 @@ export function TransactionDetailsHero() {
 
   return (
     <Box
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      style={{ justifyContent: 'center' }}
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Center}
       paddingTop={4}
       paddingBottom={4}
       data-testid="transaction-details-hero"
     >
-      <Text variant={TextVariant.displayMd}>{formattedAmount}</Text>
+      <Text variant={TextVariant.AmountDisplayLg} fontFamily={FontFamily.Hero}>
+        {formattedAmount}
+      </Text>
     </Box>
   );
 }

@@ -1,6 +1,6 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { BRIDGE_MM_FEE_RATE } from '@metamask/bridge-controller';
+import { shallowEqual, useSelector } from 'react-redux';
+import { BRIDGE_MM_FEE_RATE, sumAmounts } from '@metamask/bridge-controller';
 import { BigNumber } from 'bignumber.js';
 import { Text } from '../../../components/component-library';
 import {
@@ -22,13 +22,14 @@ export const BridgeCTAInfoText = () => {
 
   const { activeQuote } = useSelector(getBridgeQuotes);
 
-  const { isQuoteExpired } = useSelector((state) =>
-    getValidationErrors(state as BridgeAppState, Date.now()),
+  const { isQuoteExpired } = useSelector(
+    (state: BridgeAppState) => getValidationErrors(state, Date.now()),
+    shallowEqual,
   );
 
-  const hasMMFee = new BigNumber(
-    activeQuote?.quote.feeData.metabridge.amount ?? '0',
-  ).gt(0);
+  const mmFee =
+    activeQuote && sumAmounts(activeQuote?.quote.feeData.metabridge)?.amount;
+  const hasMMFee = new BigNumber(mmFee ?? '0').gt(0);
 
   if (!activeQuote) {
     return null;

@@ -34,7 +34,6 @@ describe('Ledger Hardware', function (this: Suite) {
         )) ?? console.error('localNodes is undefined or empty');
         await login(driver, {
           expectedBalance: '1.21M',
-          waitForNonEvmAccounts: false,
         });
 
         // deploy action
@@ -86,7 +85,6 @@ describe('Ledger Hardware', function (this: Suite) {
         await login(driver, {
           expectedBalance:
             `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
-          waitForNonEvmAccounts: false,
         });
 
         const contractAddress =
@@ -99,7 +97,7 @@ describe('Ledger Hardware', function (this: Suite) {
         await testDappPage.clickERC721MintButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const mintConfirmation = new TransactionConfirmation(driver);
-        await mintConfirmation.clickFooterConfirmButton();
+        await mintConfirmation.clickFooterButton({ button: 'confirm' });
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -151,7 +149,6 @@ describe('Ledger Hardware', function (this: Suite) {
         await login(driver, {
           expectedBalance:
             `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
-          waitForNonEvmAccounts: false,
         });
 
         const contractAddress =
@@ -164,7 +161,7 @@ describe('Ledger Hardware', function (this: Suite) {
         await testDappPage.clickERC721ApproveButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const approveConfirmation = new TransactionConfirmation(driver);
-        await approveConfirmation.clickFooterConfirmButton();
+        await approveConfirmation.clickFooterButton({ button: 'confirm' });
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -211,7 +208,6 @@ describe('Ledger Hardware', function (this: Suite) {
         await login(driver, {
           expectedBalance:
             `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
-          waitForNonEvmAccounts: false,
         });
 
         const contractAddress =
@@ -229,7 +225,9 @@ describe('Ledger Hardware', function (this: Suite) {
         await setApprovalForAllConfirmation.checkSetApprovalForAllTitle();
         await setApprovalForAllConfirmation.checkSetApprovalForAllSubHeading();
         await setApprovalForAllConfirmation.clickScrollToBottomButton();
-        await setApprovalForAllConfirmation.clickFooterConfirmButton();
+        await setApprovalForAllConfirmation.clickFooterButton({
+          button: 'confirm',
+        });
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );

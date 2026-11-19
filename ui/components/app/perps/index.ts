@@ -1,5 +1,8 @@
-export { PerpsBalanceDropdown } from './perps-balance-dropdown';
-export type { PerpsBalanceDropdownProps } from './perps-balance-dropdown';
+export {
+  PerpsMarketBalanceActions,
+  invokePerpsBalanceAction,
+  type PerpsBalanceActionHandler,
+} from './perps-market-balance-actions';
 export { PerpsRecentActivity } from './perps-recent-activity';
 export type { PerpsRecentActivityProps } from './perps-recent-activity';
 export { PerpsTab } from './perps-tab';
@@ -13,6 +16,7 @@ export type { PerpsPositionsOrdersProps } from './perps-positions-orders';
 export { PerpsExploreMarkets } from './perps-explore-markets';
 export type { PerpsExploreMarketsProps } from './perps-explore-markets';
 export { PerpsSupportLearn } from './perps-support-learn';
+export { PerpsServiceInterruptionBanner } from './perps-service-interruption-banner';
 export {
   getPositionDirection,
   formatOrderType,
@@ -71,7 +75,6 @@ export type {
 // Skeleton components
 export {
   PerpsCardSkeleton,
-  PerpsControlBarSkeleton,
   PerpsSectionSkeleton,
   PerpsBalanceActionsSkeleton,
   PerpsHomeCardSkeleton,

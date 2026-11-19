@@ -1,6 +1,4 @@
-import { act } from '@testing-library/react-hooks';
-import { waitFor } from '@testing-library/react';
-import React from 'react';
+import { act, waitFor } from '@testing-library/react';
 import {
   AccountGroupId,
   AccountWalletType,

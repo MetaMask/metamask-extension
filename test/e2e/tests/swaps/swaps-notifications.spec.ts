@@ -2,7 +2,7 @@ import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import SwapPage from '../../page-objects/pages/swap/swap-page';
 import {
   getBridgeFixtures,
   getInsufficientFundsFixtures,
@@ -13,7 +13,6 @@ import {
   BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
   DEFAULT_BRIDGE_FEATURE_FLAGS,
 } from '../bridge/constants';
-import { checkNotification } from './shared';
 
 const MUSD_MALICIOUS_SECURITY_DATA = {
   type: 'Malicious',
@@ -58,18 +57,16 @@ describe('Swaps - notifications', function () {
         const homePage = new HomePage(driver);
         await homePage.startSwapFlow();
 
-        const bridgeQuotePage = new BridgeQuotePage(driver);
+        const swapPage = new SwapPage(driver);
         // Explicitly select mUSD so the token comes from the API with securityData
-        await bridgeQuotePage.enterBridgeQuote({
+        await swapPage.enterBridgeQuote({
           amount: '1',
           tokenTo: 'mUSD',
         });
-        await bridgeQuotePage.waitForQuote();
+        await swapPage.waitForQuote();
 
         // Banner title is bridgeTokenIsMaliciousBanner ("$1 is a malicious token.")
-        await bridgeQuotePage.checkTokenRiskWarningIsDisplayed(
-          'malicious token',
-        );
+        await swapPage.checkTokenRiskWarningIsDisplayed('malicious token');
       },
     );
   });
@@ -85,16 +82,16 @@ describe('Swaps - notifications', function () {
         const homePage = new HomePage(driver);
         await homePage.startSwapFlow();
 
-        const bridgeQuotePage = new BridgeQuotePage(driver);
-        await bridgeQuotePage.enterBridgeQuote({
+        const swapPage = new SwapPage(driver);
+        await swapPage.enterBridgeQuote({
           amount: '24.9950',
           tokenFrom: 'ETH',
           tokenTo: 'WETH',
           fromChain: 'Ethereum',
           toChain: 'Linea',
         });
-        await bridgeQuotePage.checkInsufficientFundsButtonIsDisplayed();
-        await bridgeQuotePage.checkMoreETHneededIsDisplayed();
+        await swapPage.checkInsufficientFundsButtonIsDisplayed();
+        await swapPage.checkMoreETHneededIsDisplayed();
       },
     );
   });
@@ -116,15 +113,36 @@ describe('Swaps - notifications', function () {
         const homePage = new HomePage(driver);
         await homePage.startSwapFlow();
 
-        const bridgeQuotePage = new BridgeQuotePage(driver);
-        await bridgeQuotePage.enterBridgeQuote({
+        const swapPage = new SwapPage(driver);
+        await swapPage.enterBridgeQuote({
           amount: '1',
           tokenFrom: 'ETH',
           tokenTo: 'ETH',
           fromChain: 'Ethereum',
           toChain: 'Linea',
         });
-        await bridgeQuotePage.checkNoTradeRouteMessageIsDisplayed();
+        await swapPage.checkNoTradeRouteMessageIsDisplayed();
+      },
+    );
+  });
+
+  it('clamps slippage to 100% maximum in transaction settings', async function () {
+    await withFixtures(
+      getBridgeFixtures({
+        title: this.test?.fullTitle(),
+        featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+      }),
+      async ({ driver }) => {
+        await login(driver, { expectedBalance: '$225,730.11' });
+        const homePage = new HomePage(driver);
+        await homePage.startSwapFlow();
+
+        const swapPage = new SwapPage(driver);
+        await swapPage.enterBridgeQuote({ amount: '1' });
+        await swapPage.waitForQuote();
+
+        await swapPage.setCustomSlippage('101');
+        await swapPage.checkCustomSlippageDisplayedValue('100');
       },
     );
   });
@@ -140,18 +158,18 @@ describe('Swaps - notifications', function () {
         const homePage = new HomePage(driver);
         await homePage.startSwapFlow();
 
-        const bridgeQuotePage = new BridgeQuotePage(driver);
-        await bridgeQuotePage.enterBridgeQuote({
+        const swapPage = new SwapPage(driver);
+        await swapPage.enterBridgeQuote({
           amount: '1',
         });
-        await bridgeQuotePage.waitForQuote();
+        await swapPage.waitForQuote();
 
-        await bridgeQuotePage.setCustomSlippage('0.1');
+        await swapPage.setCustomSlippage('0.1');
 
-        await checkNotification(driver, {
-          title: 'Low slippage',
-          text: 'A value this low (0.1%) may result in a failed swap',
-        });
+        await swapPage.checkNotificationBanner(
+          'Low slippage',
+          'A value this low (0.1%) may result in a failed swap',
+        );
       },
     );
   });

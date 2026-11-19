@@ -5,6 +5,10 @@ import { IconName } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { RewardsBadge } from './RewardsBadge';
 
+jest.mock('../../../store/hooks', () => ({
+  useDispatch: jest.fn(),
+}));
+
 // Mock dependencies
 jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(),

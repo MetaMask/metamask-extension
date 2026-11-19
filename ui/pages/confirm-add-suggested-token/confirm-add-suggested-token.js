@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import classnames from 'clsx';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
@@ -39,6 +39,7 @@ import { getSuggestedTokens } from '../../selectors';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { Nav } from '../confirmations/components/confirm/nav';
 import { hideAppHeader } from '../routes/utils';
+import { useDispatch } from '../../store/hooks';
 
 function getTokenName(name, symbol) {
   return name === undefined ? symbol : `${name} (${symbol})`;
@@ -189,7 +190,10 @@ const ConfirmAddSuggestedToken = () => {
   }, [suggestedTokens.length, navigate, mostRecentOverviewPage]);
 
   return (
-    <div className={classNames}>
+    <div
+      className={classNames}
+      data-testid="parent-selector-add-token-confirmation"
+    >
       <Nav confirmationId={approvalId} />
       <div className="page-container__header">
         <div className="page-container__title">{t('addSuggestedTokens')}</div>
@@ -224,7 +228,10 @@ const ConfirmAddSuggestedToken = () => {
                   </div>
                 </div>
                 <div className="confirm-add-suggested-token__balance">
-                  <TokenBalance token={asset} />
+                  <TokenBalance
+                    token={asset}
+                    data-testid="confirm-add-suggested-token-balance"
+                  />
                 </div>
               </div>
             );

@@ -1,6 +1,6 @@
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { HardwareKeyringType } from '../../../shared/constants/hardware-wallets';
 
 // Import after mocks

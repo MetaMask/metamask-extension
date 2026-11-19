@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Box,
   BoxAlignItems,
@@ -18,10 +18,12 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PRIVACY_ROUTE } from '../../../helpers/constants/routes';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import ErrorBoundary from '../error-boundary/error-boundary';
+import { PerpsAttributionProvider } from '../../../providers/perps/PerpsAttributionContext';
 import { AccessRestrictedProvider } from '../compliance';
 import { PerpsView } from './perps-view';
 import { PerpsViewStreamBoundary } from './perps-view-stream-boundary';
 import { PerpsToastProvider } from './perps-toast';
+import { PerpsServiceInterruptionBanner } from './perps-service-interruption-banner';
 
 /**
  * Perps tab content for the account overview.
@@ -37,6 +39,7 @@ import { PerpsToastProvider } from './perps-toast';
 export function PerpsTab() {
   const useExternalServices = useSelector(getUseExternalServices);
   const navigate = useNavigate();
+  const { search } = useLocation();
   const t = useI18nContext();
 
   useEffect(() => {
@@ -77,14 +80,22 @@ export function PerpsTab() {
   }
 
   return (
-    <AccessRestrictedProvider>
-      <PerpsToastProvider>
-        <ErrorBoundary key="perps">
-          <PerpsViewStreamBoundary>
-            <PerpsView />
-          </PerpsViewStreamBoundary>
-        </ErrorBoundary>
-      </PerpsToastProvider>
-    </AccessRestrictedProvider>
+    // Provide perps attribution so the wallet_home_perps_tab PERPS_SCREEN_VIEWED
+    // (and the compliance / tutorial screen views rendered here) merge UTM /
+    // deeplink attribution — this path is not under the perps-layout provider.
+    <PerpsAttributionProvider locationSearch={search}>
+      <AccessRestrictedProvider>
+        <PerpsToastProvider>
+          {/* Outside the error boundary so an outage message stays up when
+              home content fails to load. */}
+          <PerpsServiceInterruptionBanner />
+          <ErrorBoundary key="perps">
+            <PerpsViewStreamBoundary>
+              <PerpsView />
+            </PerpsViewStreamBoundary>
+          </ErrorBoundary>
+        </PerpsToastProvider>
+      </AccessRestrictedProvider>
+    </PerpsAttributionProvider>
   );
 }

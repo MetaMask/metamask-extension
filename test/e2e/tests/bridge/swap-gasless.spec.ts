@@ -2,7 +2,7 @@ import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import SwapPage from '../../page-objects/pages/swap/swap-page';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import {
   getGasIncludedSwapFixtures,
@@ -23,18 +23,19 @@ describe('Gasless swap tests', function (this: Suite) {
 
         await homePage.startSwapFlow();
 
-        const bridgePage = new BridgeQuotePage(driver);
-        await bridgePage.checkPageIsLoaded();
+        const swapPage = new SwapPage(driver);
+        await swapPage.checkPageIsLoaded();
 
-        await bridgePage.selectDestToken('USDC');
+        await swapPage.selectDestToken('USDC');
 
-        await bridgePage.clickMaxButton();
+        await swapPage.clickMaxButton();
 
-        await bridgePage.waitForQuote();
-        await bridgePage.checkGasIncludedIsDisplayed();
+        await swapPage.waitForQuote();
+        await swapPage.checkGasIncludedIsDisplayed();
 
-        await bridgePage.submitQuoteAndDismiss();
+        await swapPage.submitQuoteAndDismiss();
 
+        await swapPage.goBackAfterSubmit();
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkCompletedBridgeTransactionActivity(1);
@@ -57,19 +58,20 @@ describe('Gasless swap tests', function (this: Suite) {
 
         await homePage.startSwapFlow();
 
-        const bridgePage = new BridgeQuotePage(driver);
-        await bridgePage.checkPageIsLoaded();
+        const swapPage = new SwapPage(driver);
+        await swapPage.checkPageIsLoaded();
 
-        await bridgePage.selectSrcToken('USDC');
-        await bridgePage.selectDestToken('DAI');
+        await swapPage.selectSrcToken('USDC');
+        await swapPage.selectDestToken('DAI');
 
-        await bridgePage.clickMaxButton();
+        await swapPage.clickMaxButton();
 
-        await bridgePage.waitForQuote();
-        await bridgePage.checkGasIncludedIsDisplayed();
+        await swapPage.waitForQuote();
+        await swapPage.checkGasIncludedIsDisplayed();
 
-        await bridgePage.submitQuoteAndDismiss();
+        await swapPage.submitQuoteAndDismiss();
 
+        await swapPage.goBackAfterSubmit();
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkCompletedBridgeTransactionActivity(2);
@@ -98,18 +100,19 @@ describe('Gasless swap tests', function (this: Suite) {
 
         await homePage.startSwapFlow();
 
-        const bridgePage = new BridgeQuotePage(driver);
-        await bridgePage.checkPageIsLoaded();
+        const swapPage = new SwapPage(driver);
+        await swapPage.checkPageIsLoaded();
 
-        await bridgePage.selectDestToken('USDC');
+        await swapPage.selectDestToken('USDC');
 
-        await bridgePage.clickMaxButton();
+        await swapPage.clickMaxButton();
 
-        await bridgePage.waitForQuote();
-        await bridgePage.checkGasSponsoredIsDisplayed();
+        await swapPage.waitForQuote();
+        await swapPage.checkGasSponsoredIsDisplayed();
 
-        await bridgePage.submitQuoteAndDismiss();
+        await swapPage.submitQuoteAndDismiss();
 
+        await swapPage.goBackAfterSubmit();
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkCompletedBridgeTransactionActivity(1);

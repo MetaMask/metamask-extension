@@ -1,15 +1,16 @@
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { startCase } from 'lodash';
 import {
-  type QuoteMetadata,
   type QuoteResponse,
   FeatureId,
+  QuoteMetadata,
   UnifiedSwapBridgeEventName,
   formatProviderLabel,
 } from '@metamask/bridge-controller';
 import {
   Modal,
+  ModalBody,
   ModalContent,
   ModalHeader,
   ModalOverlay,
@@ -25,7 +26,6 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   setSelectedQuote,
@@ -40,6 +40,14 @@ import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getMultichainNativeCurrency } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { useDispatch } from '../../../store/hooks';
+import {
+  getGasFees,
+  getPriceImpactNumber,
+  getTotalNetworkFee,
+  formatCurrencyAmount,
+  formatTokenAmount,
+} from '../utils/quote';
 
 export const BridgeQuotesModal = ({
   onClose,
@@ -57,14 +65,14 @@ export const BridgeQuotesModal = ({
   const locale = useSelector(getIntlLocale);
 
   const isRecommendedQuote = useCallback(
-    (quote: QuoteMetadata & QuoteResponse) => {
+    (quote: QuoteResponse) => {
       return quote.quote.requestId === recommendedQuote?.quote.requestId;
     },
     [recommendedQuote],
   );
 
   const handleQuoteSelected = useCallback(
-    (quote: QuoteMetadata & QuoteResponse) => {
+    (quote: QuoteResponse) => {
       dispatch(setSelectedQuote(quote));
       recommendedQuote &&
         dispatch(
@@ -82,17 +90,17 @@ export const BridgeQuotesModal = ({
               best_quote_provider: formatProviderLabel(recommendedQuote.quote),
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              usd_quoted_gas: Number(quote.gasFee?.effective?.usd ?? 0),
+              usd_quoted_gas: Number(getGasFees(quote)?.usd ?? 0),
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
               quoted_time_minutes: quote.estimatedProcessingTimeInSeconds / 60,
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              usd_quoted_return: Number(quote.toTokenAmount.usd),
+              usd_quoted_return: Number(quote.quote.dest.usd),
               provider: formatProviderLabel(quote.quote),
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              price_impact: Number(quote.quote?.priceData?.priceImpact ?? '0'),
+              price_impact: getPriceImpactNumber(quote) ?? 0,
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
               gas_included: Boolean(quote.quote?.gasIncluded),
@@ -110,12 +118,12 @@ export const BridgeQuotesModal = ({
   );
 
   return (
-    <Modal className="quotes-modal" onClose={onClose} {...modalProps}>
+    <Modal onClose={onClose} {...modalProps}>
       <ModalOverlay />
 
       <ModalContent
         modalDialogProps={{
-          padding: 0,
+          'data-testid': 'quotes-modal',
         }}
       >
         <ModalHeader onBack={onClose}>
@@ -124,142 +132,154 @@ export const BridgeQuotesModal = ({
           </Text>
         </ModalHeader>
 
-        {/* HEADER */}
-        <Row padding={4} paddingTop={0}>
-          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
-            {t('bridgeQuotesSortedByCost')}
-          </Text>
-        </Row>
-        {/* QUOTE LIST */}
-        <Column maxWidth={BlockSize.Full} style={{ overflow: 'auto' }}>
-          {sortedQuotes.map(
-            (quote: QuoteMetadata & QuoteResponse, index: number) => {
-              const {
-                totalNetworkFee,
-                toTokenAmount,
-                cost,
-                quote: { destAsset, bridges, requestId },
-              } = quote;
-              const isQuoteActive = requestId === activeQuote?.quote.requestId;
-              const isRecommended = isRecommendedQuote(quote);
+        <ModalBody paddingLeft={0} paddingRight={0}>
+          {/* HEADER */}
+          <Row padding={4} paddingTop={0}>
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.textAlternative}
+            >
+              {t('bridgeQuotesSortedByCost')}
+            </Text>
+          </Row>
+          {/* QUOTE LIST */}
+          <Column maxWidth={BlockSize.Full}>
+            {sortedQuotes.map(
+              (quote: QuoteMetadata & QuoteResponse, index: number) => {
+                const {
+                  quote: { dest, protocols, requestId },
+                } = quote;
+                const totalNetworkFee = getTotalNetworkFee(quote);
+                const { priceImpact } = quote.quote.priceData ?? {};
+                const isQuoteActive =
+                  requestId === activeQuote?.quote.requestId;
+                const isRecommended = isRecommendedQuote(quote);
 
-              return (
-                <Column
-                  className={`bridge-quote-option${isQuoteActive ? ' bridge-quote-option--selected' : ''}`}
-                  alignItems={AlignItems.flexStart}
-                  key={index}
-                  backgroundColor={
-                    isQuoteActive ? BackgroundColor.primaryMuted : undefined
-                  }
-                  onClick={() => handleQuoteSelected(quote)}
-                  paddingInline={4}
-                  paddingTop={3}
-                  paddingBottom={3}
-                  style={{ position: 'relative', cursor: 'pointer' }}
-                >
-                  {isQuoteActive && (
-                    <Column
-                      style={{
-                        position: 'absolute',
-                        left: 4,
-                        top: 4,
-                        height: 'calc(100% - 8px)',
-                        width: 4,
-                        borderRadius: 8,
-                      }}
-                      backgroundColor={BackgroundColor.primaryDefault}
-                    />
-                  )}
-
-                  <Row maxWidth={BlockSize.Full} width={BlockSize.Full} gap={2}>
-                    {/* PROVIDER NAME */}
-                    <Text
-                      variant={TextVariant.bodyMd}
-                      fontWeight={FontWeight.Medium}
-                      ellipsis={true}
-                      style={{
-                        whiteSpace: 'nowrap',
-                        flexShrink: 1,
-                        textOverflow: 'ellipsis',
-                      }}
-                    >
-                      {startCase(bridges[0])}
-                    </Text>
-                    {/* DEST AMOUNT */}
-                    <Text
-                      variant={TextVariant.bodyMd}
-                      fontWeight={FontWeight.Medium}
-                      style={{ whiteSpace: 'nowrap' }}
-                    >
-                      {formatTokenAmount(
-                        locale,
-                        toTokenAmount.amount,
-                        destAsset.symbol,
-                      )}
-                    </Text>
-                  </Row>
-
-                  <Row
-                    alignItems={AlignItems.stretch}
-                    gap={2}
-                    width={BlockSize.Full}
+                return (
+                  <Column
+                    className={`bridge-quote-option${isQuoteActive ? ' bridge-quote-option--selected' : ''}`}
+                    data-testid="bridge-quote-option"
+                    alignItems={AlignItems.flexStart}
+                    key={index}
+                    backgroundColor={
+                      isQuoteActive ? BackgroundColor.primaryMuted : undefined
+                    }
+                    onClick={() => handleQuoteSelected(quote)}
+                    paddingInline={4}
+                    paddingTop={3}
+                    paddingBottom={3}
+                    style={{ position: 'relative', cursor: 'pointer' }}
                   >
-                    {/* TOTAL COST + TAG */}
-                    <Row gap={1}>
+                    {isQuoteActive && (
+                      <Column
+                        style={{
+                          position: 'absolute',
+                          left: 4,
+                          top: 4,
+                          height: 'calc(100% - 8px)',
+                          width: 4,
+                          borderRadius: 8,
+                        }}
+                        backgroundColor={BackgroundColor.primaryDefault}
+                      />
+                    )}
+
+                    <Row
+                      maxWidth={BlockSize.Full}
+                      width={BlockSize.Full}
+                      gap={2}
+                    >
+                      {/* PROVIDER NAME */}
+                      <Text
+                        variant={TextVariant.bodyMd}
+                        fontWeight={FontWeight.Medium}
+                        ellipsis={true}
+                        style={{
+                          whiteSpace: 'nowrap',
+                          flexShrink: 1,
+                          textOverflow: 'ellipsis',
+                        }}
+                      >
+                        {startCase(protocols[0])}
+                      </Text>
+                      {/* DEST AMOUNT */}
+                      <Text
+                        variant={TextVariant.bodyMd}
+                        fontWeight={FontWeight.Medium}
+                        style={{ whiteSpace: 'nowrap' }}
+                      >
+                        {formatTokenAmount(
+                          locale,
+                          dest.normalizedAmount,
+                          dest.asset.symbol,
+                        )}
+                      </Text>
+                    </Row>
+
+                    <Row
+                      alignItems={AlignItems.stretch}
+                      gap={2}
+                      width={BlockSize.Full}
+                    >
+                      {/* TOTAL COST + TAG */}
+                      <Row gap={1}>
+                        <Text
+                          data-testid="bridge-quote-total-cost"
+                          variant={TextVariant.bodySm}
+                          color={TextColor.textAlternative}
+                          style={{ whiteSpace: 'nowrap' }}
+                        >
+                          {t('quotedTotalCost', [
+                            (quote.quote.priceData?.cost?.valueInCurrency
+                              ? formatCurrencyAmount(
+                                  quote.quote.priceData.cost.valueInCurrency,
+                                  currency,
+                                  2,
+                                )
+                              : totalNetworkFee?.normalizedAmount &&
+                                formatTokenAmount(
+                                  locale,
+                                  totalNetworkFee.normalizedAmount,
+                                  nativeCurrency,
+                                )) ?? '',
+                          ])}
+                        </Text>
+                        {isRecommended && (
+                          <Tag
+                            backgroundColor={BackgroundColor.successMuted}
+                            labelProps={{
+                              color: TextColor.successDefault,
+                              fontWeight: FontWeight.Medium,
+                            }}
+                            style={{
+                              whiteSpace: 'nowrap',
+                              paddingInline: 6,
+                              paddingTop: 0,
+                              paddingBottom: 0,
+                            }}
+                            label={t('bridgeLowestCost')}
+                          />
+                        )}
+                      </Row>
+                      {/* RECEIVED AMOUNT */}
                       <Text
                         variant={TextVariant.bodySm}
                         color={TextColor.textAlternative}
                         style={{ whiteSpace: 'nowrap' }}
                       >
-                        {t('quotedTotalCost', [
-                          cost.valueInCurrency === null
-                            ? formatTokenAmount(
-                                locale,
-                                totalNetworkFee.amount,
-                                nativeCurrency,
-                              )
-                            : formatCurrencyAmount(
-                                cost.valueInCurrency,
-                                currency,
-                                2,
-                              ),
-                        ])}
+                        {formatCurrencyAmount(
+                          dest.valueInCurrency,
+                          currency,
+                          2,
+                        )}
                       </Text>
-                      {isRecommended && (
-                        <Tag
-                          backgroundColor={BackgroundColor.successMuted}
-                          labelProps={{
-                            color: TextColor.successDefault,
-                            fontWeight: FontWeight.Medium,
-                          }}
-                          style={{
-                            whiteSpace: 'nowrap',
-                            paddingInline: 6,
-                            paddingTop: 0,
-                            paddingBottom: 0,
-                          }}
-                          label={t('bridgeLowestCost')}
-                        />
-                      )}
                     </Row>
-                    {/* RECEIVED AMOUNT */}
-                    <Text
-                      variant={TextVariant.bodySm}
-                      color={TextColor.textAlternative}
-                      style={{ whiteSpace: 'nowrap' }}
-                    >
-                      {formatCurrencyAmount(
-                        toTokenAmount.valueInCurrency,
-                        currency,
-                        2,
-                      ) ?? ''}
-                    </Text>
-                  </Row>
-                </Column>
-              );
-            },
-          )}
-        </Column>
+                  </Column>
+                );
+              },
+            )}
+          </Column>
+        </ModalBody>
       </ModalContent>
     </Modal>
   );

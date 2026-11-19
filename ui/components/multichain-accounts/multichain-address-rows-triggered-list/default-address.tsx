@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxAlignItems,
@@ -30,6 +30,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useDispatch } from '../../../store/hooks';
 
 const METRICS_LOCATION = 'Account Hover Menu';
 
@@ -47,7 +48,7 @@ export const DefaultAddress = () => {
   );
 
   return (
-    <Box paddingLeft={4} paddingBottom={2}>
+    <Box paddingLeft={4} paddingBottom={2} className="shrink-0">
       <Box
         flexDirection={BoxFlexDirection.Row}
         justifyContent={BoxJustifyContent.Between}

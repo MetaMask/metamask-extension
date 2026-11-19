@@ -6,13 +6,14 @@
 
 :root {
   --width-sm: 576px;
-  --width-max: 798px;
+  --width-md: 798px;
+  --width-max: 1200px;
   --width-max-sidepanel: 490px;
   --header-height: 68px;
+  --header-height-wide-layout: 80px;
 
   color-scheme: dark light;
   color: light-dark(var(--brand-colors-grey-grey1000), var(--brand-colors-grey-grey050));
-  // TODO: @metamask/design-system-engineers remove once pure black is shipped targeted(13.43.0)
   background-color: light-dark(var(--brand-colors-grey-grey050), var(--brand-colors-black));
 }
 
@@ -31,11 +32,6 @@ body {
 
 html[data-theme] {
   color: var(--color-text-default);
-  background-color: var(--color-background-alternative);
-}
-
-// TODO: @metamask/design-system-engineers remove once pure black is shipped targeted(13.43.0)
-html[data-theme='dark'][data-pure-black='true'] {
   background-color: var(--color-background-default);
 }
 
@@ -59,12 +55,7 @@ html[data-theme='dark'] {
 /* Overlay scrim, dialog top-aligned in panel. */
 #critical-error-content {
   justify-content: flex-start;
-  background-color:
-    color-mix(
-      in srgb,
-      var(--brand-colors-grey-grey400) 20%,
-      transparent
-    );
+  background-color: var(--color-overlay-default);
 }
 
 a {

@@ -1,4 +1,4 @@
-import { QuoteResponse } from '@metamask/bridge-controller';
+import { QuoteResponseV1 } from '@metamask/bridge-controller';
 import { SimulationTokenStandard } from '@metamask/transaction-controller';
 
 import {
@@ -123,7 +123,7 @@ describe('dapp-swap utils', () => {
   describe('getBestQuote', () => {
     it('returns the best quote', () => {
       const result = getBestQuote(
-        MOCK_QUOTES as unknown as QuoteResponse[],
+        MOCK_QUOTES as unknown as QuoteResponseV1[],
         '0x32',
         (val) => val,
         (val) => val.toString(),
@@ -134,7 +134,7 @@ describe('dapp-swap utils', () => {
 
     it('bestFilteredQuote is undefined if no quote has minimum amount greater than confirmation', () => {
       const result = getBestQuote(
-        MOCK_QUOTES as unknown as QuoteResponse[],
+        MOCK_QUOTES as unknown as QuoteResponseV1[],
         '0x64',
         (val) => val,
         (val) => val.toString(),
@@ -145,13 +145,44 @@ describe('dapp-swap utils', () => {
 
     it('returns undefined for empty quotes array', () => {
       const result = getBestQuote(
-        [] as unknown as QuoteResponse[],
+        [] as unknown as QuoteResponseV1[],
         '0x32',
         (val) => val,
         (val) => val.toString(),
       );
       expect(result.bestQuote).toBe(undefined);
       expect(result.bestFilteredQuote).toBe(undefined);
+    });
+
+    it('falls back to destTokenAmount when minDestTokenAmount is undefined', () => {
+      const quotesWithoutMin = [
+        {
+          ...MOCK_QUOTES[0],
+          quote: {
+            ...MOCK_QUOTES[0].quote,
+            destTokenAmount: '100',
+            minDestTokenAmount: undefined,
+          },
+        },
+        {
+          ...MOCK_QUOTES[1],
+          quote: {
+            ...MOCK_QUOTES[1].quote,
+            destTokenAmount: '80',
+            minDestTokenAmount: '70',
+          },
+        },
+      ];
+
+      const result = getBestQuote(
+        quotesWithoutMin as unknown as QuoteResponseV1[],
+        '0x32',
+        (val) => val,
+        (val) => val.toString(),
+      );
+
+      expect(result.bestQuote).toBe(quotesWithoutMin[0]);
+      expect(result.bestFilteredQuote).toBe(quotesWithoutMin[0]);
     });
   });
 

@@ -1,6 +1,7 @@
 import {
-  TransactionController,
+  TransactionControllerGetStateAction,
   TransactionControllerUnapprovedTransactionAddedEvent,
+  TransactionControllerUpdateSecurityAlertResponseAction,
   TransactionMeta,
   TransactionParams,
   normalizeTransactionParams,
@@ -8,7 +9,7 @@ import {
 import { Hex, JsonRpcRequest, createProjectLogger } from '@metamask/utils';
 import { v4 as uuid } from 'uuid';
 import {
-  SignatureController,
+  GetSignatureState,
   SignatureControllerState,
   SignatureRequest,
   SignatureStateChange,
@@ -24,7 +25,7 @@ import {
 } from '../../../../shared/constants/security-provider';
 import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
-import { AppStateController } from '../../controllers/app-state-controller';
+import { AppStateControllerAddSignatureSecurityAlertResponseAction } from '../../controllers/app-state-controller-method-action-types';
 import { sanitizeMessageRecursively } from '../../../../shared/lib/typed-signature';
 import { parseTypedDataMessage } from '../../../../shared/lib/transaction.utils';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
@@ -40,6 +41,18 @@ import {
 } from './security-alerts-api';
 
 const log = createProjectLogger('ppom-util');
+
+/**
+ * Messenger able to read/write the loading + final security alert response
+ * onto the pending transaction or signature request.
+ */
+export type PPOMMessenger = RootMessenger<
+  | TransactionControllerGetStateAction
+  | TransactionControllerUpdateSecurityAlertResponseAction
+  | GetSignatureState
+  | AppStateControllerAddSignatureSecurityAlertResponseAction,
+  TransactionControllerUnapprovedTransactionAddedEvent | SignatureStateChange
+>;
 
 const SECURITY_ALERT_RESPONSE_ERROR = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -100,32 +113,25 @@ export function generateSecurityAlertId(): string {
 }
 
 export async function updateSecurityAlertResponse({
-  appStateController,
   messenger,
   method,
   securityAlertId,
   securityAlertResponse,
-  signatureController,
-  transactionController,
 }: {
-  appStateController: AppStateController;
-  messenger: RootMessenger;
+  messenger: PPOMMessenger;
   method: string;
   securityAlertId: string;
   securityAlertResponse: SecurityAlertResponse;
-  signatureController: SignatureController;
-  transactionController: TransactionController;
 }): Promise<TransactionMeta | SignatureRequest> {
   const isSignatureRequest = SIGNING_METHODS.includes(method);
 
   if (isSignatureRequest) {
     const signatureRequest = await waitForSignatureRequest(
-      signatureController,
       securityAlertId,
       messenger,
     );
 
-    appStateController.addSignatureSecurityAlertResponse({
+    messenger.call('AppStateController:addSignatureSecurityAlertResponse', {
       ...securityAlertResponse,
       securityAlertId,
     });
@@ -134,15 +140,18 @@ export async function updateSecurityAlertResponse({
   }
 
   const transactionMeta = await waitForTransactionMetadata(
-    transactionController,
     securityAlertId,
     messenger,
   );
 
-  transactionController.updateSecurityAlertResponse(transactionMeta.id, {
-    ...securityAlertResponse,
-    securityAlertId,
-  } as SecurityAlertResponse);
+  messenger.call(
+    'TransactionController:updateSecurityAlertResponse',
+    transactionMeta.id,
+    {
+      ...securityAlertResponse,
+      securityAlertId,
+    } as SecurityAlertResponse,
+  );
 
   return transactionMeta;
 }
@@ -313,19 +322,16 @@ async function validateWithAPI(
 }
 
 async function waitForTransactionMetadata(
-  transactionController: TransactionController,
   securityAlertId: string,
-  messenger: RootMessenger<
-    never,
-    TransactionControllerUnapprovedTransactionAddedEvent
-  >,
+  messenger: PPOMMessenger,
 ): Promise<TransactionMeta> {
   const transactionFilter = (meta: TransactionMeta) =>
     meta.securityAlertResponse?.securityAlertId === securityAlertId;
 
   return new Promise((resolve) => {
-    const transactionMeta =
-      transactionController.state.transactions.find(transactionFilter);
+    const transactionMeta = messenger
+      .call('TransactionController:getState')
+      .transactions.find(transactionFilter);
 
     if (transactionMeta) {
       resolve(transactionMeta);
@@ -357,9 +363,8 @@ async function waitForTransactionMetadata(
 }
 
 async function waitForSignatureRequest(
-  signatureController: SignatureController,
   securityAlertId: string,
-  messenger: RootMessenger<never, SignatureStateChange>,
+  messenger: PPOMMessenger,
 ): Promise<SignatureRequest> {
   const signatureFilter = (state: SignatureControllerState) =>
     Object.values(state.signatureRequests).find(
@@ -368,7 +373,9 @@ async function waitForSignatureRequest(
     );
 
   return new Promise((resolve) => {
-    const signatureRequest = signatureFilter(signatureController.state);
+    const signatureRequest = signatureFilter(
+      messenger.call('SignatureController:getState'),
+    );
 
     if (signatureRequest) {
       resolve(signatureRequest);

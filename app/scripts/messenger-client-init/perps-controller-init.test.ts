@@ -28,110 +28,130 @@ jest.mock('../controllers/analytics', () => {
   };
 });
 
-jest.mock('@metamask/perps-controller', () => ({
-  getDefaultPerpsControllerState: jest.fn().mockReturnValue({
-    activeProvider: 'hyperliquid',
-    isTestnet: false,
-    initializationState: 'uninitialized',
-    initializationError: null,
-    initializationAttempts: 0,
-    accountState: null,
-    perpsBalances: {},
-    depositInProgress: false,
-    lastDepositResult: null,
-    withdrawInProgress: false,
-    lastDepositTransactionId: null,
-    lastWithdrawResult: null,
-    withdrawalRequests: [],
-    withdrawalProgress: {
-      progress: 0,
-      lastUpdated: 0,
-      activeWithdrawalId: null,
-    },
-    depositRequests: [],
-    lastError: null,
-    lastUpdateTimestamp: 0,
-    isEligible: false,
-    isFirstTimeUser: { testnet: true, mainnet: true },
-    hasPlacedFirstOrder: { testnet: false, mainnet: false },
-    watchlistMarkets: { testnet: [], mainnet: [] },
-    tradeConfigurations: { testnet: {}, mainnet: {} },
-    marketFilterPreferences: { optionId: 'volume', direction: 'desc' },
-    hip3ConfigVersion: 0,
-    selectedPaymentToken: null,
-    cachedMarketDataByProvider: {},
-    cachedUserDataByProvider: {},
-  }),
-  PerpsController: jest.fn().mockImplementation(() => ({
-    state: { initializationState: 'uninitialized' },
-    init: jest.fn().mockResolvedValue(undefined),
-    disconnect: jest.fn(),
-    placeOrder: jest.fn(),
-    closePosition: jest.fn(),
-    closePositions: jest.fn(),
-    editOrder: jest.fn(),
-    cancelOrder: jest.fn(),
-    cancelOrders: jest.fn(),
-    updatePositionTPSL: jest.fn(),
-    updateMargin: jest.fn(),
-    flipPosition: jest.fn(),
-    withdraw: jest.fn(),
-    validateWithdrawal: jest.fn(),
-    getWithdrawalRoutes: jest.fn(),
-    updateWithdrawalStatus: jest.fn(),
-    updateWithdrawalProgress: jest.fn(),
-    getWithdrawalProgress: jest.fn(),
-    depositWithConfirmation: jest.fn(),
-    getPositions: jest.fn(),
-    getMarkets: jest.fn(),
-    getMarketDataWithPrices: jest.fn(),
-    getOrderFills: jest.fn(),
-    getOrders: jest.fn(),
-    getOpenOrders: jest.fn(),
-    getFunding: jest.fn(),
-    getAccountState: jest.fn(),
-    getHistoricalPortfolio: jest.fn(),
-    fetchHistoricalCandles: jest.fn(),
-    calculateFees: jest.fn(),
-    calculateLiquidationPrice: jest.fn(),
-    getAvailableDexs: jest.fn(),
-    refreshEligibility: jest.fn(),
-    startEligibilityMonitoring: jest.fn(),
-    stopEligibilityMonitoring: jest.fn(),
-    toggleTestnet: jest.fn(),
-    saveTradeConfiguration: jest.fn(),
-    getTradeConfiguration: jest.fn(),
-    savePendingTradeConfiguration: jest.fn(),
-    getPendingTradeConfiguration: jest.fn(),
-    clearPendingTradeConfiguration: jest.fn(),
-    saveMarketFilterPreferences: jest.fn(),
-    getMarketFilterPreferences: jest.fn(),
-    setSelectedPaymentToken: jest.fn(),
-    resetSelectedPaymentToken: jest.fn(),
-    markTutorialCompleted: jest.fn(),
-    markFirstOrderCompleted: jest.fn(),
-    resetFirstTimeUserState: jest.fn(),
-    clearPendingTransactionRequests: jest.fn(),
-    saveOrderBookGrouping: jest.fn(),
-    getOrderBookGrouping: jest.fn(),
-    getMaxSlippage: jest.fn(),
-    setMaxSlippage: jest.fn(),
-    getActiveProvider: jest.fn().mockReturnValue({
-      getUserHistory: jest.fn(),
-      getUserNonFundingLedgerUpdates: jest.fn(),
+jest.mock('@metamask/perps-controller', () => {
+  const perpsControllerStub = jest.requireActual(
+    '../../../test/mocks/metamask-perps-controller.js',
+  );
+  return {
+    ...perpsControllerStub,
+    getDefaultPerpsControllerState: jest.fn().mockReturnValue({
+      activeProvider: 'hyperliquid',
+      isTestnet: false,
+      initializationState: 'uninitialized',
+      initializationError: null,
+      initializationAttempts: 0,
+      accountState: null,
+      perpsBalances: {},
+      depositInProgress: false,
+      lastDepositResult: null,
+      withdrawInProgress: false,
+      lastDepositTransactionId: null,
+      lastWithdrawResult: null,
+      withdrawalRequests: [],
+      withdrawalProgress: {
+        progress: 0,
+        lastUpdated: 0,
+        activeWithdrawalId: null,
+      },
+      depositRequests: [],
+      lastError: null,
+      lastUpdateTimestamp: 0,
+      isEligible: false,
+      isFirstTimeUser: { testnet: true, mainnet: true },
+      hasPlacedFirstOrder: { testnet: false, mainnet: false },
+      watchlistMarkets: { testnet: [], mainnet: [] },
+      tradeConfigurations: { testnet: {}, mainnet: {} },
+      marketFilterPreferences: { optionId: 'volume', direction: 'desc' },
+      hip3ConfigVersion: 0,
+      selectedPaymentToken: null,
+      cachedMarketDataByProvider: {},
+      cachedUserDataByProvider: {},
     }),
-    clearDepositResult: jest.fn(),
-    clearWithdrawResult: jest.fn(),
-    getBlockExplorerUrl: jest.fn(),
-    getCurrentNetwork: jest.fn(),
-    isFirstTimeUserOnCurrentNetwork: jest.fn(),
-    getWatchlistMarkets: jest.fn(),
-    toggleWatchlistMarket: jest.fn(),
-    isWatchlistMarket: jest.fn(),
-    reconnect: jest.fn().mockResolvedValue(undefined),
-    getWebSocketConnectionState: jest.fn().mockReturnValue('connected'),
-  })),
-}));
+    PerpsController: jest.fn().mockImplementation(() => ({
+      state: { initializationState: 'uninitialized' },
+      init: jest.fn().mockResolvedValue(undefined),
+      disconnect: jest.fn(),
+      placeOrder: jest.fn(),
+      closePosition: jest.fn(),
+      closePositions: jest.fn(),
+      editOrder: jest.fn(),
+      cancelOrder: jest.fn(),
+      cancelOrders: jest.fn(),
+      updatePositionTPSL: jest.fn(),
+      updateMargin: jest.fn(),
+      flipPosition: jest.fn(),
+      withdraw: jest.fn(),
+      validateWithdrawal: jest.fn(),
+      getWithdrawalRoutes: jest.fn(),
+      updateWithdrawalStatus: jest.fn(),
+      updateWithdrawalProgress: jest.fn(),
+      getWithdrawalProgress: jest.fn(),
+      depositWithConfirmation: jest.fn(),
+      getPositions: jest.fn(),
+      getMarkets: jest.fn(),
+      getMarketDataWithPrices: jest.fn(),
+      getOrderFills: jest.fn(),
+      getOrders: jest.fn(),
+      getOpenOrders: jest.fn(),
+      getFunding: jest.fn(),
+      getAccountState: jest.fn(),
+      getHistoricalPortfolio: jest.fn(),
+      fetchHistoricalCandles: jest.fn(),
+      calculateFees: jest.fn(),
+      calculateLiquidationPrice: jest.fn(),
+      getAvailableDexs: jest.fn(),
+      refreshEligibility: jest.fn(),
+      startEligibilityMonitoring: jest.fn(),
+      stopEligibilityMonitoring: jest.fn(),
+      toggleTestnet: jest.fn(),
+      saveTradeConfiguration: jest.fn(),
+      getTradeConfiguration: jest.fn(),
+      savePendingTradeConfiguration: jest.fn(),
+      getPendingTradeConfiguration: jest.fn(),
+      clearPendingTradeConfiguration: jest.fn(),
+      saveMarketFilterPreferences: jest.fn(),
+      getMarketFilterPreferences: jest.fn(),
+      setSelectedPaymentToken: jest.fn(),
+      resetSelectedPaymentToken: jest.fn(),
+      markTutorialCompleted: jest.fn(),
+      markFirstOrderCompleted: jest.fn(),
+      resetFirstTimeUserState: jest.fn(),
+      clearPendingTransactionRequests: jest.fn(),
+      saveOrderBookGrouping: jest.fn(),
+      getOrderBookGrouping: jest.fn(),
+      getOrderBookPreferences: jest.fn(),
+      setOrderBookPreferences: jest.fn(),
+      getSelectedOrderType: jest.fn(),
+      setSelectedOrderType: jest.fn(),
+      getVisibleCandleCount: jest.fn(),
+      setVisibleCandleCount: jest.fn(),
+      getProLayoutPreferences: jest.fn(),
+      setProLayoutPreferences: jest.fn(),
+      getMaxSlippage: jest.fn(),
+      setMaxSlippage: jest.fn(),
+      getActiveProvider: jest.fn().mockReturnValue({
+        getUserHistory: jest.fn(),
+        getUserNonFundingLedgerUpdates: jest.fn(),
+      }),
+      clearDepositResult: jest.fn(),
+      clearWithdrawResult: jest.fn(),
+      getBlockExplorerUrl: jest.fn(),
+      getCurrentNetwork: jest.fn(),
+      isFirstTimeUserOnCurrentNetwork: jest.fn(),
+      getWatchlistMarkets: jest.fn(),
+      toggleWatchlistMarket: jest.fn(),
+      isWatchlistMarket: jest.fn(),
+      reconnect: jest.fn().mockResolvedValue(undefined),
+      getWebSocketConnectionState: jest.fn().mockReturnValue('connected'),
+      setAttributionContext: jest.fn(),
+      getAttributionContext: jest.fn().mockReturnValue({}),
+      clearAttributionContext: jest.fn(),
+      mergeAttributionContext: jest
+        .fn()
+        .mockImplementation((props) => props ?? {}),
+    })),
+  };
+});
 
 jest.mock('../controllers/perps/infrastructure', () => ({
   createPerpsInfrastructure: jest.fn().mockReturnValue({}),
@@ -310,6 +330,7 @@ describe('PerpsControllerInit', () => {
         removeStorageItem: expect.any(Function),
         isDisconnecting: expect.any(Function),
         getPerpsDiscountForAccount: expect.any(Function),
+        mergeAttributionContext: expect.any(Function),
       });
     });
 
@@ -560,10 +581,8 @@ describe('PerpsControllerInit', () => {
       ['perpsFlipPosition', 'flipPosition'],
       ['perpsWithdraw', 'withdraw'],
       ['perpsValidateWithdrawal', 'validateWithdrawal'],
-      ['perpsGetWithdrawalRoutes', 'getWithdrawalRoutes'],
       ['perpsUpdateWithdrawalStatus', 'updateWithdrawalStatus'],
       ['perpsUpdateWithdrawalProgress', 'updateWithdrawalProgress'],
-      ['perpsGetWithdrawalProgress', 'getWithdrawalProgress'],
       ['perpsGetPositions', 'getPositions'],
       ['perpsGetMarkets', 'getMarkets'],
       ['perpsGetMarketDataWithPrices', 'getMarketDataWithPrices'],
@@ -577,41 +596,9 @@ describe('PerpsControllerInit', () => {
       ['perpsCalculateFees', 'calculateFees'],
       ['perpsCalculateLiquidationPrice', 'calculateLiquidationPrice'],
       ['perpsGetAvailableDexs', 'getAvailableDexs'],
-      ['perpsRefreshEligibility', 'refreshEligibility'],
       ['perpsStartEligibilityMonitoring', 'startEligibilityMonitoring'],
       ['perpsStopEligibilityMonitoring', 'stopEligibilityMonitoring'],
       ['perpsToggleTestnet', 'toggleTestnet'],
-      ['perpsSaveTradeConfiguration', 'saveTradeConfiguration'],
-      ['perpsGetTradeConfiguration', 'getTradeConfiguration'],
-      ['perpsSavePendingTradeConfiguration', 'savePendingTradeConfiguration'],
-      ['perpsGetPendingTradeConfiguration', 'getPendingTradeConfiguration'],
-      ['perpsClearPendingTradeConfiguration', 'clearPendingTradeConfiguration'],
-      ['perpsSaveMarketFilterPreferences', 'saveMarketFilterPreferences'],
-      ['perpsGetMarketFilterPreferences', 'getMarketFilterPreferences'],
-      ['perpsSetSelectedPaymentToken', 'setSelectedPaymentToken'],
-      ['perpsResetSelectedPaymentToken', 'resetSelectedPaymentToken'],
-      ['perpsMarkTutorialCompleted', 'markTutorialCompleted'],
-      ['perpsMarkFirstOrderCompleted', 'markFirstOrderCompleted'],
-      ['perpsResetFirstTimeUserState', 'resetFirstTimeUserState'],
-      [
-        'perpsClearPendingTransactionRequests',
-        'clearPendingTransactionRequests',
-      ],
-      ['perpsSaveOrderBookGrouping', 'saveOrderBookGrouping'],
-      ['perpsGetOrderBookGrouping', 'getOrderBookGrouping'],
-      ['perpsGetMaxSlippage', 'getMaxSlippage'],
-      ['perpsSetMaxSlippage', 'setMaxSlippage'],
-      ['perpsClearDepositResult', 'clearDepositResult'],
-      ['perpsClearWithdrawResult', 'clearWithdrawResult'],
-      ['perpsGetBlockExplorerUrl', 'getBlockExplorerUrl'],
-      ['perpsGetCurrentNetwork', 'getCurrentNetwork'],
-      [
-        'perpsIsFirstTimeUserOnCurrentNetwork',
-        'isFirstTimeUserOnCurrentNetwork',
-      ],
-      ['perpsGetWatchlistMarkets', 'getWatchlistMarkets'],
-      ['perpsToggleWatchlistMarket', 'toggleWatchlistMarket'],
-      ['perpsIsWatchlistMarket', 'isWatchlistMarket'],
     ];
 
     for (const [apiMethod, controllerMethod] of apiToController) {
@@ -682,7 +669,7 @@ describe('PerpsControllerInit', () => {
       expect(result).toEqual([{ symbol: 'ETH' }]);
     });
 
-    it('retries after CLIENT_REINITIALIZING and succeeds', async () => {
+    it('retries the legacy market lookup after a benign disconnect', async () => {
       const { api, messengerClient } = initWithApi();
       const getMarkets = messengerClient.getMarkets as jest.Mock;
       getMarkets
@@ -714,22 +701,6 @@ describe('PerpsControllerInit', () => {
       // perpsInit should NOT auto-retry — it IS the init
       await expect(api.perpsInit()).rejects.toThrow('CLIENT_NOT_INITIALIZED');
       expect(init).toHaveBeenCalledTimes(1);
-    });
-
-    it('does not wrap preference methods (perpsSaveTradeConfiguration)', async () => {
-      const { api, messengerClient } = initWithApi();
-      const save = messengerClient.saveTradeConfiguration as jest.Mock;
-      save.mockRejectedValueOnce(new Error('CLIENT_NOT_INITIALIZED'));
-
-      // Preferences are state-only — should NOT auto-retry
-      await expect(
-        api.perpsSaveTradeConfiguration(
-          ...([] as unknown as Parameters<
-            typeof messengerClient.saveTradeConfiguration
-          >),
-        ),
-      ).rejects.toThrow('CLIENT_NOT_INITIALIZED');
-      expect(messengerClient.init).not.toHaveBeenCalled();
     });
 
     it('recovers provider passthrough (perpsGetUserHistory)', async () => {
@@ -989,6 +960,119 @@ describe('PerpsControllerInit', () => {
           );
           expect(result).toBe('tx-retry');
         });
+      });
+
+      describe('perpsCancelOrder recovers from an unhydrated asset map', () => {
+        it('retries once after init when the provider reports ORDER_UNKNOWN_COIN', async () => {
+          const { api, messengerClient } = initWithApi();
+          const cancelOrder = messengerClient.cancelOrder as jest.Mock;
+          cancelOrder
+            .mockResolvedValueOnce({
+              success: false,
+              error: 'ORDER_UNKNOWN_COIN',
+            })
+            .mockResolvedValueOnce({ success: true, orderId: '1' });
+
+          const result = await api.perpsCancelOrder({
+            orderId: '1',
+            symbol: 'ETH',
+          });
+
+          expect(messengerClient.init).toHaveBeenCalledTimes(1);
+          expect(cancelOrder).toHaveBeenCalledTimes(2);
+          expect(result).toStrictEqual({ success: true, orderId: '1' });
+        });
+
+        it('surfaces other cancel failures without retrying', async () => {
+          const { api, messengerClient } = initWithApi();
+          const cancelOrder = messengerClient.cancelOrder as jest.Mock;
+          cancelOrder.mockResolvedValueOnce({
+            success: false,
+            error: 'Order cancellation failed',
+          });
+
+          const result = await api.perpsCancelOrder({
+            orderId: '1',
+            symbol: 'ETH',
+          });
+
+          expect(messengerClient.init).not.toHaveBeenCalled();
+          expect(cancelOrder).toHaveBeenCalledTimes(1);
+          expect(result).toStrictEqual({
+            success: false,
+            error: 'Order cancellation failed',
+          });
+        });
+
+        it('resolves with the original failure when the retry init throws', async () => {
+          const { api, messengerClient } = initWithApi();
+          const cancelOrder = messengerClient.cancelOrder as jest.Mock;
+          cancelOrder.mockResolvedValueOnce({
+            success: false,
+            error: 'ORDER_UNKNOWN_COIN',
+          });
+          (messengerClient.init as jest.Mock).mockRejectedValueOnce(
+            new Error('init failed'),
+          );
+
+          const result = await api.perpsCancelOrder({
+            orderId: '1',
+            symbol: 'ETH',
+          });
+
+          expect(cancelOrder).toHaveBeenCalledTimes(1);
+          expect(result).toStrictEqual({
+            success: false,
+            error: 'ORDER_UNKNOWN_COIN',
+          });
+        });
+
+        it('surfaces a throw from the retried cancel instead of the original failure', async () => {
+          const { api, messengerClient } = initWithApi();
+          const cancelOrder = messengerClient.cancelOrder as jest.Mock;
+          cancelOrder
+            .mockResolvedValueOnce({
+              success: false,
+              error: 'ORDER_UNKNOWN_COIN',
+            })
+            .mockRejectedValueOnce(new Error('WebSocket connection closed'));
+
+          await expect(
+            api.perpsCancelOrder({ orderId: '1', symbol: 'ETH' }),
+          ).rejects.toThrow('WebSocket connection closed');
+          expect(cancelOrder).toHaveBeenCalledTimes(2);
+        });
+      });
+    });
+  });
+
+  describe('attribution APIs', () => {
+    it('wires mergeAttributionContext into createPerpsInfrastructure so metrics can merge UTM', () => {
+      let capturedDeps: InfrastructureDeps | undefined;
+      jest
+        .mocked(createPerpsInfrastructure)
+        .mockImplementationOnce((deps: InfrastructureDeps) => {
+          capturedDeps = deps;
+          return {} as PerpsPlatformDependencies;
+        });
+
+      const { messengerClient } = initWithApi();
+      expect(capturedDeps?.mergeAttributionContext).toEqual(
+        expect.any(Function),
+      );
+
+      (messengerClient.mergeAttributionContext as jest.Mock).mockReturnValue({
+        [PERPS_EVENT_PROPERTY.UTM_SOURCE]: 'newsletter',
+      });
+      const merged = capturedDeps?.mergeAttributionContext?.({
+        asset: 'ETH',
+      });
+
+      expect(messengerClient.mergeAttributionContext).toHaveBeenCalledWith({
+        asset: 'ETH',
+      });
+      expect(merged).toEqual({
+        [PERPS_EVENT_PROPERTY.UTM_SOURCE]: 'newsletter',
       });
     });
   });

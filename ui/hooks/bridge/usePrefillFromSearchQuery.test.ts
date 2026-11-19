@@ -1,4 +1,5 @@
 import * as bridgeControllerUtils from '@metamask/bridge-controller';
+import { waitFor, act } from '@testing-library/react';
 import { useLocation } from 'react-router-dom';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import {
@@ -94,12 +95,16 @@ describe('usePrefillFromSearchQuery', () => {
       '/?' + searchParams.toString(),
     );
 
-    const { waitForNextUpdate, store, result } = renderResult;
+    const { store, result } = renderResult;
 
-    await waitForNextUpdate();
-    expect(result.current.location.search).toBe('?swaps=true');
-    expect(result.current.location.pathname).toBe('/');
-    expect(store).toBeDefined();
+    await waitFor(() => {
+      expect(result.current.location.search).toBe(
+        `?${searchParams.toString()}`,
+      );
+      expect(result.current.location.pathname).toBe('/');
+      expect(store?.getState().bridge?.fromToken).toBeDefined();
+      expect(store?.getState().bridge?.toToken).toBeDefined();
+    });
     const { fromToken, toToken, fromTokenInputValue } =
       store?.getState().bridge ?? {};
     expect({
@@ -150,16 +155,19 @@ describe('usePrefillFromSearchQuery', () => {
       swaps: 'true',
     });
 
-    const { result, waitForNextUpdate, store } = renderUseBridgeQueryParams(
+    const { result, store } = renderUseBridgeQueryParams(
       mockStoreState,
       // eslint-disable-next-line prefer-template
       '/?' + searchParams.toString(),
     );
 
-    await waitForNextUpdate();
-
-    expect(result.current.location.search).toBe('?swaps=true');
-    expect(store).toBeDefined();
+    await waitFor(() => {
+      expect(result.current.location.search).toBe(
+        `?${searchParams.toString()}`,
+      );
+      expect(store?.getState().bridge?.fromToken).toBeDefined();
+      expect(store?.getState().bridge?.toToken).toBeDefined();
+    });
     const {
       fromToken,
       toToken,
@@ -205,16 +213,18 @@ describe('usePrefillFromSearchQuery', () => {
       swaps: 'true',
     });
 
-    const { result, waitForNextUpdate, store } = renderUseBridgeQueryParams(
+    const { result, store } = renderUseBridgeQueryParams(
       mockStoreState,
       // eslint-disable-next-line prefer-template
       '/?' + searchParams.toString(),
     );
 
-    await waitForNextUpdate();
-
-    expect(result.current.location.search).toBe('?swaps=true');
-    expect(store).toBeDefined();
+    await waitFor(() => {
+      expect(result.current.location.search).toBe(
+        `?${searchParams.toString()}`,
+      );
+      expect(store).toBeDefined();
+    });
     const { fromToken, toToken, fromTokenInputValue } =
       store?.getState().bridge ?? {};
     expect({
@@ -256,16 +266,15 @@ describe('usePrefillFromSearchQuery', () => {
       from: 'eip155:59144/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580D',
     });
 
-    const { result, waitForNextUpdate, store } = renderUseBridgeQueryParams(
+    const { store } = renderUseBridgeQueryParams(
       mockStoreState,
       // eslint-disable-next-line prefer-template
       '/?' + searchParams.toString(),
     );
 
-    await waitForNextUpdate();
-
-    expect(result.current.location.search).toBe('');
-    expect(store).toBeDefined();
+    await waitFor(() => {
+      expect(store?.getState().bridge?.fromToken).toBeDefined();
+    });
     const { fromToken, toToken, fromTokenInputValue } =
       store?.getState().bridge ?? {};
     expect({
@@ -306,16 +315,15 @@ describe('usePrefillFromSearchQuery', () => {
       from: 'eip155:59144/slip44:60',
     });
 
-    const { result, waitForNextUpdate, store } = renderUseBridgeQueryParams(
+    const { store } = renderUseBridgeQueryParams(
       mockStoreState,
       // eslint-disable-next-line prefer-template
       '/?' + searchParams.toString(),
     );
 
-    await waitForNextUpdate();
-
-    expect(result.current.location.search).toBe('');
-    expect(store).toBeDefined();
+    await waitFor(() => {
+      expect(store?.getState().bridge?.fromToken).toBeDefined();
+    });
     const { fromToken, toToken, fromTokenInputValue } =
       store?.getState().bridge ?? {};
     expect({
@@ -387,16 +395,15 @@ describe('usePrefillFromSearchQuery', () => {
       to: 'eip155:59144/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580D',
     });
 
-    const { result, waitForNextUpdate, store } = renderUseBridgeQueryParams(
+    const { store } = renderUseBridgeQueryParams(
       mockStoreState,
       // eslint-disable-next-line prefer-template
       '/?' + searchParams.toString(),
     );
 
-    await waitForNextUpdate();
-
-    expect(result.current.location.search).toBe('');
-    expect(store).toBeDefined();
+    await waitFor(() => {
+      expect(store?.getState().bridge?.toToken).toBeDefined();
+    });
     const { fromToken, toToken, fromTokenInputValue } =
       store?.getState().bridge ?? {};
     expect(fromTokenInputValue).toBeUndefined();
@@ -440,16 +447,16 @@ describe('usePrefillFromSearchQuery', () => {
       from: 'eip155:59144/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580D',
     });
 
-    const { result, waitForNextUpdate, store } = renderUseBridgeQueryParams(
+    const { store } = renderUseBridgeQueryParams(
       mockStoreState,
       // eslint-disable-next-line prefer-template
       '/?' + searchParams.toString(),
     );
 
-    await waitForNextUpdate();
-
-    expect(result.current.location.search).toBe('');
-    expect(store).toBeDefined();
+    await waitFor(() => {
+      expect(store?.getState().bridge?.fromToken).toBeDefined();
+      expect(store?.getState().bridge?.fromTokenInputValue).toBeDefined();
+    });
     const { fromToken, toToken, fromTokenInputValue } =
       store?.getState().bridge ?? {};
     expect({
@@ -537,13 +544,15 @@ describe('usePrefillFromSearchQuery', () => {
         from: 'eip155:1/erc20:0x0000000000000000000000000000000000000001',
       });
 
-      const { waitForNextUpdate, store } = renderUseBridgeQueryParams(
+      const { store } = renderUseBridgeQueryParams(
         mockStoreState,
         // eslint-disable-next-line prefer-template
         '/?' + searchParams.toString(),
       );
 
-      await waitForNextUpdate();
+      await act(async () => {
+        await Promise.resolve();
+      });
 
       const { fromToken } = store?.getState().bridge ?? {};
       expect(fromToken?.assetId).not.toBe(
@@ -566,13 +575,15 @@ describe('usePrefillFromSearchQuery', () => {
         to: 'eip155:1/erc20:0x0000000000000000000000000000000000000001',
       });
 
-      const { waitForNextUpdate, store } = renderUseBridgeQueryParams(
+      const { store } = renderUseBridgeQueryParams(
         mockStoreState,
         // eslint-disable-next-line prefer-template
         '/?' + searchParams.toString(),
       );
 
-      await waitForNextUpdate();
+      await act(async () => {
+        await Promise.resolve();
+      });
 
       const { toToken } = store?.getState().bridge ?? {};
       expect(toToken?.assetId).not.toBe(
@@ -602,12 +613,11 @@ describe('usePrefillFromSearchQuery', () => {
       amount: '100',
     });
 
-    const { result, store } = renderUseBridgeQueryParams(
+    const { store } = renderUseBridgeQueryParams(
       mockStoreState,
       // eslint-disable-next-line prefer-template
       '/?' + searchParams.toString(),
     );
-    expect(result.current.location.search).toBe('');
     expect(store).toBeDefined();
     const { fromToken, toToken, fromTokenInputValue } =
       store?.getState().bridge ?? {};

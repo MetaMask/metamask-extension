@@ -1,4 +1,5 @@
 import type { QrSignatureRequest } from '@metamask/eth-qr-keyring';
+import type { ErrorCode } from '@metamask/hw-wallet-sdk';
 
 /**
  * Two-phase flow status for the QR hardware signing request.
@@ -23,4 +24,9 @@ export type QRHardwareSignRequestProps = {
   setErrorTitle: (title: string) => void;
   /** Signals the parent that the scanner is showing error content. */
   setErrorActive: (active: boolean) => void;
+  /**
+   * Reports the camera-permission ErrorCode for the current recovery state,
+   * or `null` when not on a permission screen.
+   */
+  setCameraPermissionErrorCode?: (errorCode: ErrorCode | null) => void;
 };

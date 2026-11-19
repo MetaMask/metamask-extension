@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import type { UR } from '@ngraveio/bc-ur';
 import { completeQrCodeScan } from '../../../../store/actions';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -7,6 +6,7 @@ import BaseQrReader, {
   CBOR_ENCODING,
   PAIRING_EXPECTED_UR_TYPES,
 } from '../base-qr-reader';
+import { useDispatch } from '../../../../store/hooks';
 import type { QRHardwareWalletImporterProps } from './qr-hardware-wallet-importer.types';
 
 /**
@@ -20,11 +20,14 @@ import type { QRHardwareWalletImporterProps } from './qr-hardware-wallet-importe
  * @param props.handleCancel - Called when the user cancels the wallet import.
  * @param props.setErrorTitle - Sets the popover title to an error heading.
  * @param props.setErrorActive - Signals the parent that the scanner is showing error content.
+ * @param props.setCameraPermissionErrorCode - Reports the camera-permission
+ * ErrorCode for the current recovery state.
  */
 const QRHardwareWalletImporter = ({
   handleCancel,
   setErrorTitle,
   setErrorActive,
+  setCameraPermissionErrorCode,
 }: QRHardwareWalletImporterProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -57,6 +60,7 @@ const QRHardwareWalletImporter = ({
       handleSuccess={handleSuccess}
       setErrorTitle={setErrorTitle}
       setErrorActive={setErrorActive}
+      setCameraPermissionErrorCode={setCameraPermissionErrorCode}
     />
   );
 };

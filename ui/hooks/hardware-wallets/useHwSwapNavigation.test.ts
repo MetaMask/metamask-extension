@@ -1,20 +1,33 @@
-import { act } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react';
 import { HardwareWalletSignatureStatus } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 import { createSignatureState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/test-helpers';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { useHwSwapNavigation } from './useHwSwapNavigation';
 
-jest.mock('../../components/app/toast-listener/shared', () => ({
-  showSuccessToast: jest.fn(),
-}));
-
 jest.mock('../bridge/useBridgeNavigation', () => ({
   useBridgeNavigation: jest.fn(),
 }));
 
-const mockShowSuccessToast = jest.requireMock(
-  '../../components/app/toast-listener/shared',
-).showSuccessToast;
+const mockNavigate = jest.fn();
+let mockLocationKey = 'default';
+let mockLocationSearch = '';
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+  useLocation: () => ({ key: mockLocationKey, search: mockLocationSearch }),
+}));
+
+const mockResetBridgeController = jest.fn(() => Promise.resolve());
+const mockSetFromTokenInputValue = jest.fn();
+jest.mock('../../ducks/bridge/actions', () => ({
+  ...jest.requireActual('../../ducks/bridge/actions'),
+  resetBridgeController: () => () => mockResetBridgeController(),
+  setFromTokenInputValue: (value: string | null) => {
+    mockSetFromTokenInputValue(value);
+    return { type: 'bridge/setFromTokenInputValue', payload: value };
+  },
+}));
+
 const mockUseBridgeNavigation = jest.requireMock(
   '../bridge/useBridgeNavigation',
 ).useBridgeNavigation;
@@ -25,6 +38,8 @@ describe('useHwSwapNavigation', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
+    mockLocationKey = 'default';
+    mockLocationSearch = '';
     mockUseBridgeNavigation.mockReturnValue({
       navigateToDefaultRoute: mockNavigateToDefaultRoute,
     });
@@ -32,6 +47,75 @@ describe('useHwSwapNavigation', () => {
 
   afterEach(() => {
     jest.useRealTimers();
+  });
+
+  it('navigates back to swaps for swaps with a previous history entry', async () => {
+    mockLocationKey = 'signing';
+    renderHookWithProvider(
+      () =>
+        useHwSwapNavigation({
+          signatureState: createSignatureState(
+            HardwareWalletSignatureStatus.Submitted,
+          ),
+        }),
+      {},
+    );
+
+    await act(async () => {
+      jest.advanceTimersByTime(1000);
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith(-1);
+    expect(mockNavigateToDefaultRoute).not.toHaveBeenCalled();
+    // Swaps restores the amount from the active quote on remount, so the
+    // controller must be reset before navigating back.
+    expect(mockResetBridgeController.mock.invocationCallOrder[0]).toBeLessThan(
+      mockNavigate.mock.invocationCallOrder[0],
+    );
+  });
+
+  it('navigates to the default route for swaps opened from transaction shield', async () => {
+    mockLocationKey = 'signing';
+    mockLocationSearch = '?isFromTransactionShield=true';
+    renderHookWithProvider(
+      () =>
+        useHwSwapNavigation({
+          signatureState: createSignatureState(
+            HardwareWalletSignatureStatus.Submitted,
+          ),
+        }),
+      {},
+    );
+
+    await act(async () => {
+      jest.advanceTimersByTime(1000);
+    });
+
+    expect(mockNavigateToDefaultRoute).toHaveBeenCalledWith({ replace: true });
+    expect(mockNavigate).not.toHaveBeenCalled();
+    // Swaps stays in history behind Shield, so its amount must be cleared.
+    expect(mockSetFromTokenInputValue).toHaveBeenCalledWith(null);
+  });
+
+  it('navigates to the default route for sendBundle flows', async () => {
+    mockLocationKey = 'signing';
+    renderHookWithProvider(
+      () =>
+        useHwSwapNavigation({
+          signatureState: createSignatureState(
+            HardwareWalletSignatureStatus.Submitted,
+          ),
+          isSendBundleFlow: true,
+        }),
+      {},
+    );
+
+    await act(async () => {
+      jest.advanceTimersByTime(1000);
+    });
+
+    expect(mockNavigateToDefaultRoute).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 
   it('navigates to default route when status is Submitted', async () => {
@@ -49,7 +133,6 @@ describe('useHwSwapNavigation', () => {
       jest.advanceTimersByTime(1000);
     });
 
-    expect(mockShowSuccessToast).toHaveBeenCalledTimes(1);
     expect(mockNavigateToDefaultRoute).toHaveBeenCalledTimes(1);
   });
 
@@ -69,7 +152,6 @@ describe('useHwSwapNavigation', () => {
     });
 
     expect(mockNavigateToDefaultRoute).not.toHaveBeenCalled();
-    expect(mockShowSuccessToast).not.toHaveBeenCalled();
   });
 
   it('does not navigate twice when status remains Submitted', async () => {
@@ -124,7 +206,6 @@ describe('useHwSwapNavigation', () => {
       jest.advanceTimersByTime(1000);
     });
 
-    expect(mockShowSuccessToast).toHaveBeenCalledTimes(1);
     expect(mockNavigateToDefaultRoute).not.toHaveBeenCalled();
     expect(updatedNavigateToDefaultRoute).toHaveBeenCalledTimes(1);
   });
@@ -154,7 +235,6 @@ describe('useHwSwapNavigation', () => {
       jest.advanceTimersByTime(1000);
     });
 
-    expect(mockShowSuccessToast).toHaveBeenCalledTimes(1);
     expect(mockNavigateToDefaultRoute).toHaveBeenCalledTimes(1);
 
     rerender();
@@ -163,7 +243,6 @@ describe('useHwSwapNavigation', () => {
       jest.advanceTimersByTime(1000);
     });
 
-    expect(mockShowSuccessToast).toHaveBeenCalledTimes(1);
     expect(mockNavigateToDefaultRoute).toHaveBeenCalledTimes(1);
     expect(updatedNavigateToDefaultRoute).not.toHaveBeenCalled();
   });

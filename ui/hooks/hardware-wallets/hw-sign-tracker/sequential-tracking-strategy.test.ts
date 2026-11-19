@@ -41,10 +41,10 @@ describe('SequentialTrackingStrategy', () => {
       // First, track a tx
       strategy.processStatusUpdated(createTxMeta({ id: 'tx-old' }));
 
-      // Simulate retry generation bump
+      // Simulate retry generation bump; the call returns the new last-seen
+      // generation for the caller to persist.
       const retryGenRef = createRetryGenRef(1);
-      const lastSeenRef = { current: 0 };
-      strategy.checkRetryGeneration(retryGenRef, lastSeenRef);
+      expect(strategy.checkRetryGeneration(retryGenRef, 0)).toBe(1);
 
       const result = strategy.processStatusUpdated(
         createTxMeta({ id: 'tx-old', type: TransactionType.bridge }),
@@ -81,8 +81,7 @@ describe('SequentialTrackingStrategy', () => {
       strategy.processStatusUpdated(createTxMeta({ id: 'tx-old' }));
 
       const retryGenRef = createRetryGenRef(1);
-      const lastSeenRef = { current: 0 };
-      strategy.checkRetryGeneration(retryGenRef, lastSeenRef);
+      expect(strategy.checkRetryGeneration(retryGenRef, 0)).toBe(1);
 
       const result = strategy.processStatusUpdated(
         createTxMeta({ id: 'tx-old', status: TransactionStatus.failed }),
@@ -164,12 +163,11 @@ describe('SequentialTrackingStrategy', () => {
   describe('checkRetryGeneration', () => {
     it('clears tracked tx ids on retry generation change', () => {
       const retryGenRef = createRetryGenRef(0);
-      const lastSeenRef = { current: 0 };
 
       strategy.processStatusUpdated(createTxMeta({ id: 'tx-old' }));
 
       retryGenRef.current = 1;
-      strategy.checkRetryGeneration(retryGenRef, lastSeenRef);
+      expect(strategy.checkRetryGeneration(retryGenRef, 0)).toBe(1);
 
       // Stale tx should be blocked
       const result = strategy.processRejected(createTxMeta({ id: 'tx-old' }));
@@ -178,12 +176,11 @@ describe('SequentialTrackingStrategy', () => {
 
     it('processes events from new tx after retry', () => {
       const retryGenRef = createRetryGenRef(0);
-      const lastSeenRef = { current: 0 };
 
       strategy.processStatusUpdated(createTxMeta({ id: 'tx-old' }));
 
       retryGenRef.current = 1;
-      strategy.checkRetryGeneration(retryGenRef, lastSeenRef);
+      expect(strategy.checkRetryGeneration(retryGenRef, 0)).toBe(1);
 
       const result = strategy.processStatusUpdated(
         createTxMeta({
@@ -194,6 +191,19 @@ describe('SequentialTrackingStrategy', () => {
       expect(result.action).toEqual({
         type: HardwareWalletSignatureEvent.TransactionSubmitted,
       });
+    });
+
+    it('returns null when the generation has not bumped', () => {
+      const retryGenRef = createRetryGenRef(1);
+
+      // Already seen generation 1 → no bump, nothing to persist.
+      expect(strategy.checkRetryGeneration(retryGenRef, 1)).toBeNull();
+    });
+
+    it('returns null when retry tracking is disabled', () => {
+      strategy.processStatusUpdated(createTxMeta({ id: 'tx-1' }));
+
+      expect(strategy.checkRetryGeneration(undefined, 0)).toBeNull();
     });
   });
 

@@ -76,6 +76,25 @@ describe('mapRampsTokensToSendAssets', () => {
     ).toMatchSnapshot();
   });
 
+  it('uses the branded mUSD symbol for the mUSD token', () => {
+    const musdToken = {
+      assetId: 'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da',
+      chainId: 'eip155:1',
+      name: 'MetaMask USD',
+      symbol: 'MUSD',
+      decimals: 6,
+      iconUrl: 'https://example.com/musd.png',
+      tokenSupported: true,
+    };
+
+    expect(
+      mapRampsTokenToSendAsset(musdToken, {
+        networkName: 'Ethereum',
+        networkImage: 'eth.png',
+      }),
+    ).toMatchObject({ symbol: 'mUSD' });
+  });
+
   it('resolves native token images from chain maps when iconUrl is empty', () => {
     const polygonNative = {
       assetId: 'eip155:137/slip44:966',

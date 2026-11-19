@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -8,12 +8,17 @@ import {
   ButtonSize,
   ButtonVariant,
   Text,
+  TextButton,
+  TextButtonSize,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { HeroAmountInput } from '../../../../components/ui/hero-amount-input';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import RampsTokenSelectionHeader from '../../token-selection/components/ramps-token-selection-header';
+import RampsProviderSelectionModal from '../../provider-selection';
 import type { RampsBuildQuoteReadyViewModel } from '../hooks/useRampsBuildQuote';
+import { parseFiatAmount } from '../utils/build-quote';
 import RampsPaymentMethodPill from './ramps-payment-method-pill';
 
 export default function RampsBuildQuoteView({
@@ -21,10 +26,11 @@ export default function RampsBuildQuoteView({
   pageSubtitle,
   currencySymbol,
   amount,
-  amountTextClassName,
+  hasAmountError,
   paymentMethodLabel,
   showPaymentMethodSpinner,
   displayedQuoteError,
+  isQuoteUnavailableError,
   providerStatusLabel,
   isQuoteLoading,
   canContinue,
@@ -34,6 +40,7 @@ export default function RampsBuildQuoteView({
   handleContinue,
 }: RampsBuildQuoteReadyViewModel) {
   const t = useI18nContext();
+  const [isProviderModalOpen, setIsProviderModalOpen] = useState(false);
 
   return (
     <Box
@@ -58,23 +65,40 @@ export default function RampsBuildQuoteView({
           flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Center}
         >
-          <Box
-            className="flex items-baseline justify-center"
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
-          >
-            <span className={amountTextClassName}>{currencySymbol}</span>
-            <input
-              aria-label={t('amount')}
-              className={`min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none ${amountTextClassName}`}
-              data-testid="ramps-build-quote-amount-input"
-              inputMode="decimal"
-              onChange={handleAmountChange}
-              size={Math.max(amount.length, 1)}
-              type="text"
-              value={amount}
-            />
-          </Box>
+          <HeroAmountInput
+            prefix={currencySymbol}
+            value={amount}
+            onChange={handleAmountChange}
+            hasError={hasAmountError}
+            data-testid="ramps-build-quote-amount"
+          />
+
+          {displayedQuoteError ? (
+            <Box
+              className="flex flex-col items-center"
+              flexDirection={BoxFlexDirection.Column}
+              alignItems={BoxAlignItems.Center}
+              gap={1}
+            >
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.ErrorDefault}
+                className="text-center"
+                data-testid="ramps-build-quote-error"
+              >
+                {displayedQuoteError}
+              </Text>
+              <TextButton
+                size={TextButtonSize.BodySm}
+                onClick={() => setIsProviderModalOpen(true)}
+                data-testid="ramps-build-quote-change-provider"
+              >
+                {isQuoteUnavailableError
+                  ? t('rampsChangeProviders')
+                  : t('rampsChangeProvider')}
+              </TextButton>
+            </Box>
+          ) : null}
 
           <RampsPaymentMethodPill
             label={paymentMethodLabel}
@@ -82,17 +106,6 @@ export default function RampsBuildQuoteView({
             onClick={handlePaymentMethodPress}
           />
         </Box>
-
-        {displayedQuoteError ? (
-          <Text
-            variant={TextVariant.BodySm}
-            color={TextColor.ErrorDefault}
-            className="mb-4 text-center"
-            data-testid="ramps-build-quote-error"
-          >
-            {displayedQuoteError}
-          </Text>
-        ) : null}
 
         <Box
           className="pb-4"
@@ -123,6 +136,14 @@ export default function RampsBuildQuoteView({
           </Button>
         </Box>
       </Box>
+
+      {isProviderModalOpen ? (
+        <RampsProviderSelectionModal
+          isOpen
+          onClose={() => setIsProviderModalOpen(false)}
+          amount={parseFiatAmount(amount)}
+        />
+      ) : null}
     </Box>
   );
 }

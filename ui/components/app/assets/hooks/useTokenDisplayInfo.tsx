@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
-import { isCaipChainId } from '@metamask/utils';
+import { CaipAssetType, isCaipChainId } from '@metamask/utils';
 import {
   getAllTokens,
   getEnabledNetworksByNamespace,
@@ -12,16 +12,18 @@ import {
 } from '../../../../selectors';
 import { Token, TokenDisplayInfo, TokenWithFiatAmount } from '../types';
 import {
-  getImageForChainId,
   isChainIdMainnet,
   makeGetMultichainShouldShowFiatByChainId,
 } from '../../../../selectors/multichain';
+import { useImageForChainId } from '../../../../hooks/useImageForChainId';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
 import { TEST_CHAINS } from '../../../../../shared/constants/network';
+import { getIsAssetRequireActivate } from '../../../../selectors/stellar-assets';
+import { useAssetsHaveLoaded } from './useAssetsHaveLoaded';
 
 type UseTokenDisplayInfoProps = {
   token: TokenWithFiatAmount;
@@ -37,7 +39,7 @@ export const useTokenDisplayInfo = ({
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
   const currentCurrency = useSelector(getCurrentCurrency);
   const { formatCurrencyWithMinThreshold } = useFormatters();
-  const tokenChainImage = getImageForChainId(token.chainId);
+  const tokenChainImage = useImageForChainId(token.chainId);
   const caipChainId = isCaipChainId(token.chainId)
     ? token.chainId
     : formatChainIdToCaip(token.chainId);
@@ -64,6 +66,7 @@ export const useTokenDisplayInfo = ({
   const anyEnabledNetworksAreAvailable = useSelector(
     selectAnyEnabledNetworksAreAvailable,
   );
+  const assetsHaveLoaded = useAssetsHaveLoaded();
 
   // isTestnet value is tied to the value of state.metamask.selectedNetworkClientId;
   // In some cases; the user has "all popular networks" selected or a specific popular network selected, while being on a dapp that is connected to a testnet,
@@ -90,13 +93,19 @@ export const useTokenDisplayInfo = ({
   const isFiatLoading =
     shouldAttemptFiat &&
     (token.tokenFiatAmount === null || token.tokenFiatAmount === undefined) &&
-    !anyEnabledNetworksAreAvailable;
+    (!anyEnabledNetworksAreAvailable || !assetsHaveLoaded);
 
   const isEvmMainnet =
     token.chainId && isEvm ? isChainIdMainnet(token.chainId) : false;
 
   const isStakeable =
     token.isStakeable || (isEvmMainnet && isEvm && token.isNative);
+
+  const tokenRequireActivate = useSelector((state) =>
+    getIsAssetRequireActivate(state, {
+      assetId: (token.assetId as CaipAssetType | undefined) ?? '',
+    }),
+  );
 
   if (isEvm) {
     const tokenData = (
@@ -149,6 +158,7 @@ export const useTokenDisplayInfo = ({
     isFiatLoading,
     isStakeable: false,
     tokenChainImage: token.image as string,
+    tokenRequireActivate,
   };
 };
 

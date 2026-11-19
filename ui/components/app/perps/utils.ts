@@ -17,7 +17,6 @@ import {
 // resolve to this file (TypeScript prefers sibling `utils.ts` over the
 // `utils/index.ts` barrel). Keep the surface area in sync with `utils/index.ts`.
 export { willFlipPosition } from './utils/orderUtils';
-export { buildPerpsVipTrackingData } from './utils/trackingData';
 
 /**
  * Determines if a position is long (positive size) or short (negative size)
@@ -517,27 +516,6 @@ export function getPrivacyAwareColor(
   return isHidden ? TextColor.TextDefault : color;
 }
 
-/**
- * Format a RoE% value for display in TP/SL inputs.
- * Always returns the absolute value: integers with no decimal ("25"),
- * non-integers with 2 decimal places ("25.50").
- *
- * @param value - The numeric percentage value to format
- * @returns The formatted percentage string (sign preserved for negative values)
- * @example
- * formatRoePercent(10) => '10'
- * formatRoePercent(-25.5) => '-25.50'
- * formatRoePercent(0) => '0'
- */
-export const formatRoePercent = (value: number): string => {
-  const abs = Math.abs(value);
-  const rounded = Math.round(abs * 100) / 100;
-  const formatted = Number.isInteger(rounded)
-    ? rounded.toFixed(0)
-    : rounded.toFixed(2);
-  return value < 0 && rounded !== 0 ? `-${formatted}` : formatted;
-};
-
 const volumeMultipliers: Record<string, number> = {
   K: 1e3,
   M: 1e6,
@@ -643,36 +621,4 @@ export const getPositionPnlRatio = (position: {
   }
 
   return undefined;
-};
-
-/**
- * Derives the TP/SL risk management type string for analytics.
- * Returns a value like 'create_tpsl', 'update_tp', 'create_sl', etc.
- *
- * @param options - Input values used to determine the type string.
- * @param options.takeProfitPrice - The take profit price, if set.
- * @param options.stopLossPrice - The stop loss price, if set.
- * @param options.hasExistingTpsl - Whether the position already has a TP or SL set.
- * @returns A type string such as 'create_tpsl', 'update_tp', or 'create_sl'.
- */
-export const deriveTpslType = ({
-  takeProfitPrice,
-  stopLossPrice,
-  hasExistingTpsl,
-}: {
-  takeProfitPrice: string | null | undefined;
-  stopLossPrice: string | null | undefined;
-  hasExistingTpsl: boolean;
-}): string => {
-  const prefix = hasExistingTpsl ? 'update' : 'create';
-  if (takeProfitPrice && stopLossPrice) {
-    return `${prefix}_tpsl`;
-  }
-  if (takeProfitPrice) {
-    return `${prefix}_tp`;
-  }
-  if (stopLossPrice) {
-    return `${prefix}_sl`;
-  }
-  return `${prefix}_tpsl`;
 };

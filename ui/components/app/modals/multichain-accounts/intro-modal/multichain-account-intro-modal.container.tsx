@@ -5,7 +5,6 @@ import React, {
   useRef,
   useMemo,
 } from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { captureException } from '../../../../../../shared/lib/sentry';
@@ -17,6 +16,8 @@ import {
 } from '../../../../../store/actions';
 import { ACCOUNT_LIST_PAGE_ROUTE } from '../../../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
+import { useDispatch } from '../../../../../store/hooks';
+
 import {
   MultichainAccountIntroModal,
   MultichainAccountIntroModalProps,

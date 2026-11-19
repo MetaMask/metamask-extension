@@ -1,8 +1,12 @@
 import React from 'react';
 import { render, screen, within } from '@testing-library/react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
-import { GAS_FEE_SPONSORED } from '../../../../shared/lib/activity/fees';
+import { useIsGasFeeSponsored } from '../../../hooks/activity/useIsGasFeeSponsored';
 import { FeesRows } from './amounts-section';
+
+jest.mock('../../../hooks/activity/useIsGasFeeSponsored', () => ({
+  useIsGasFeeSponsored: jest.fn(),
+}));
 
 jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) =>
@@ -25,19 +29,40 @@ jest.mock('../../../components/app/transaction/token-label', () => ({
   ),
 }));
 
+const mockUseIsGasFeeSponsored = jest.mocked(useIsGasFeeSponsored);
+
+function renderFeesRows({
+  item,
+  isGasFeeSponsored = false,
+}: {
+  item: ActivityListItem;
+  isGasFeeSponsored?: boolean;
+}) {
+  mockUseIsGasFeeSponsored.mockReturnValue(isGasFeeSponsored);
+  return render(<FeesRows item={item} />);
+}
+
 describe('FeesRows', () => {
+  beforeEach(() => {
+    mockUseIsGasFeeSponsored.mockReset();
+  });
+
   it('renders sponsored network fees as Paid by MetaMask', () => {
-    render(
-      <FeesRows
-        item={
-          {
-            data: {
-              fees: [{ type: GAS_FEE_SPONSORED }],
+    renderFeesRows({
+      item: {
+        hash: '0xabc',
+        data: {
+          fees: [
+            {
+              amount: '6',
+              symbol: 'MON',
+              type: 'base',
             },
-          } as ActivityListItem
-        }
-      />,
-    );
+          ],
+        },
+      } as ActivityListItem,
+      isGasFeeSponsored: true,
+    });
 
     const row = screen.getByTestId('transaction-base-fee');
 
@@ -47,26 +72,24 @@ describe('FeesRows', () => {
     expect(
       within(row).getByTestId('transaction-breakdown-row-value'),
     ).toHaveTextContent('Paid by MetaMask');
+    expect(screen.queryByTestId('token-fiat-value')).not.toBeInTheDocument();
   });
 
-  it('renders base network fees as token amounts', () => {
-    render(
-      <FeesRows
-        item={
-          {
-            data: {
-              fees: [
-                {
-                  amount: '6',
-                  symbol: 'ETH',
-                  type: 'base',
-                },
-              ],
+  it('renders base network fees as token amounts when not sponsored', () => {
+    renderFeesRows({
+      item: {
+        hash: '0xabc',
+        data: {
+          fees: [
+            {
+              amount: '6',
+              symbol: 'ETH',
+              type: 'base',
             },
-          } as ActivityListItem
-        }
-      />,
-    );
+          ],
+        },
+      } as ActivityListItem,
+    });
 
     const row = screen.getByTestId('transaction-base-fee');
 

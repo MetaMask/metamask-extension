@@ -1,8 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import { CaipAssetType, Hex } from '@metamask/utils';
+import { Hex } from '@metamask/utils';
 import { Skeleton } from '@metamask/design-system-react';
+import { getCachedPercentChange } from '../../../../../../shared/lib/token-price';
 import { getMarketData } from '../../../../../selectors';
 import { TokenFiatDisplayInfo } from '../../types';
 import { PercentageChange } from '../../../../multichain/token-list-item/price/percentage-change';
@@ -23,7 +24,8 @@ export const TokenCellPercentChange = React.memo(
 
     const tokenAddress =
       token.isNative && isEvm
-        ? getNativeTokenAddress(token.chainId as Hex)
+        ? // For custom networks with a slip44, this will be `0x0000...` instead of slip44.
+          getNativeTokenAddress(token.chainId as Hex)
         : token.address;
 
     if (token.isFiatLoading) {
@@ -35,19 +37,16 @@ export const TokenCellPercentChange = React.memo(
       );
     }
 
-    let tokenPercentageChange;
-
-    // Compare null and undefined
-    // eslint-disable-next-line no-eq-null
-    if (price != null && comparePrice != null) {
-      tokenPercentageChange = ((price - comparePrice) / comparePrice) * 100;
-    } else {
-      tokenPercentageChange = isEvm
-        ? multiChainMarketData?.[token.chainId as Hex]?.[tokenAddress as Hex]
-            ?.pricePercentChange1d
-        : nonEvmConversionRates?.[tokenAddress as CaipAssetType]?.marketData
-            ?.pricePercentChange?.P1D;
-    }
+    const tokenPercentageChange =
+      typeof price === 'number' && typeof comparePrice === 'number'
+        ? ((price - comparePrice) / comparePrice) * 100
+        : getCachedPercentChange({
+            isNative: Boolean(token.isNative),
+            chainId: token.chainId,
+            address: token.address,
+            marketData: multiChainMarketData,
+            conversionRates: nonEvmConversionRates,
+          });
 
     return (
       <PercentageChange value={tokenPercentageChange} address={tokenAddress} />

@@ -49,7 +49,8 @@ export function useDisplayNames(
   const nameEntries = useNames(requests);
   const firstPartyContractNames = useFirstPartyContractNames(requests);
   const trustSignals = useTrustSignals(
-    requests.map((req) => ({ ...req, chainId: req.variation })),
+    // For ETHEREUM_ADDRESS name requests the variation is a hex chain ID.
+    requests.map((req) => ({ ...req, chainId: req.variation as Hex })),
   );
   const erc20Tokens = useERC20Tokens(requests);
   const watchedNFTNames = useWatchedNFTNames(requests);

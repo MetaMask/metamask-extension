@@ -1,10 +1,9 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import {
   Box,
   BoxAlignItems,
-  BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
 import {
@@ -26,6 +25,7 @@ import { setShowMultiRpcModal } from '../../../store/actions';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import { useDispatch } from '../../../store/hooks';
 import NetworkListItem from './network-list-item/network-list-item';
 
 function MultiRpcEditModal() {

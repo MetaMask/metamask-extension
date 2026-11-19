@@ -11,8 +11,7 @@ import {
 } from '../../../../components/component-library';
 import { AlignItems } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { getShortDateFormatterV2 } from '../../../asset/util';
+import { formatOptionalDate } from '../utils';
 import {
   getIsShieldSubscriptionPaused,
   getIsSubscriptionCancelNotAllowed,
@@ -54,11 +53,7 @@ export default function CancelMembershipModal({
             variant={TextVariant.BodyMd}
             fontWeight={FontWeight.Medium}
           >
-            <span>
-              {getShortDateFormatterV2().format(
-                new Date(subscription.currentPeriodEnd),
-              )}
-            </span>
+            <span>{formatOptionalDate(subscription.currentPeriodEnd)}</span>
           </Text>,
         ]);
     }

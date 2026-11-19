@@ -21,7 +21,12 @@ import { useEnabledAdvancedPermissions } from '../../../../../hooks/gator-permis
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import { ConfirmationLoader } from '../../../hooks/useConfirmationNavigation';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
+import { useInitialTransactionConfirmationReady } from '../../../confirmation-performance';
 import Info from './info';
+
+jest.mock('../../../confirmation-performance', () => ({
+  useInitialTransactionConfirmationReady: jest.fn(),
+}));
 
 jest.mock('../../simulation-details/useBalanceChanges', () => ({
   useBalanceChanges: jest.fn(() => ({ pending: false, value: [] })),
@@ -46,13 +51,23 @@ jest.mock('../../../../../store/actions', () => ({
     lowerTimeBound: 0,
     upperTimeBound: 60000,
   }),
+  getTokenStandardAndDetailsByChain: jest.fn().mockResolvedValue({
+    standard: 'ERC721',
+  }),
 }));
 
 jest.mock('../../../hooks/useAssetDetails', () => ({
   ...jest.requireActual('../../../hooks/useAssetDetails'),
-  useAssetDetails: jest.fn().mockResolvedValue({
+  useAssetDetails: jest.fn(() => ({
     decimals: '4',
-  }),
+  })),
+}));
+
+jest.mock('./approve/hooks/use-is-nft', () => ({
+  useIsNFT: jest.fn(() => ({
+    isNFT: true,
+    pending: false,
+  })),
 }));
 
 jest.mock('../../../hooks/useTransactionFocusEffect', () => ({
@@ -112,6 +127,42 @@ jest.mock('../../../hooks/gas/useGasSponsorshipPreference', () => ({
   })),
 }));
 
+/**
+ * Tippy assigns incrementing IDs; normalize so snapshots are order-stable.
+ *
+ * @param container - Rendered DOM container to clone and normalize.
+ * @returns A clone of the container with Tippy aria IDs normalized.
+ */
+const normalizeTippyIds = (container: HTMLElement): HTMLElement => {
+  const clone = container.cloneNode(true) as HTMLElement;
+  clone
+    .querySelectorAll('[aria-describedby^="tippy-tooltip-"]')
+    .forEach((el) => {
+      el.setAttribute('aria-describedby', 'tippy-tooltip');
+    });
+  return clone;
+};
+
+/**
+ * Asserts that a render callback throws, while suppressing React's
+ * "The above error occurred in ..." console.error noise so it does not
+ * pollute the console baseline.
+ *
+ * @param render - Render callback that is expected to throw.
+ * @param expectedError - Expected error message or matcher.
+ */
+function expectRenderToThrow(render: () => void, expectedError: string): void {
+  const consoleError = jest
+    .spyOn(console, 'error')
+    .mockImplementation(() => undefined);
+
+  try {
+    expect(render).toThrow(expectedError);
+  } finally {
+    consoleError.mockRestore();
+  }
+}
+
 describe('Info', () => {
   const mockedAssetDetails = jest.mocked(useAssetDetails);
   const mockedUseParams = jest.mocked(useParams);
@@ -137,6 +188,9 @@ describe('Info', () => {
     const state = getMockPersonalSignConfirmState();
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
+    expect(useInitialTransactionConfirmationReady).toHaveBeenLastCalledWith(
+      expect.objectContaining({ msgParams: expect.any(Object) }),
+    );
     expect(container).toMatchSnapshot();
   });
 
@@ -162,7 +216,8 @@ describe('Info', () => {
 
     const state = getMockTypedSignPermissionConfirmState();
     const mockStore = configureMockStore([])(state);
-    expect(() => renderWithConfirmContext(<Info />, mockStore)).toThrow(
+    expectRenderToThrow(
+      () => renderWithConfirmContext(<Info />, mockStore),
       'Invalid eth_signTypedData_v4 request - Advanced Permission type: native-token-stream not enabled',
     );
   });
@@ -173,7 +228,8 @@ describe('Info', () => {
 
     const state = getMockTypedSignPermissionConfirmState();
     const mockStore = configureMockStore([])(state);
-    expect(() => renderWithConfirmContext(<Info />, mockStore)).toThrow(
+    expectRenderToThrow(
+      () => renderWithConfirmContext(<Info />, mockStore),
       'Invalid eth_signTypedData_v4 request - Advanced Permission type: native-token-stream not enabled',
     );
   });
@@ -182,6 +238,9 @@ describe('Info', () => {
     const state = getMockContractInteractionConfirmState();
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
+    expect(useInitialTransactionConfirmationReady).toHaveBeenLastCalledWith(
+      expect.objectContaining({ txParams: expect.any(Object) }),
+    );
     expect(container).toMatchSnapshot();
   });
 
@@ -192,9 +251,14 @@ describe('Info', () => {
 
     await waitFor(() => {
       expect(screen.getByText(messages.speed.message)).toBeInTheDocument();
+      // useIsNFT pending renders Container loader (advanced-details-data-section);
+      // wait for the settled simulation before snapshotting.
+      expect(
+        screen.getByTestId('confirmation__simulation_section'),
+      ).toBeInTheDocument();
     });
 
-    expect(container).toMatchSnapshot();
+    expect(normalizeTippyIds(container)).toMatchSnapshot();
   });
 
   it('renders info section for setApprovalForAll request', async () => {
@@ -204,9 +268,12 @@ describe('Info', () => {
 
     await waitFor(() => {
       expect(screen.getByText(messages.speed.message)).toBeInTheDocument();
+      expect(
+        screen.getByTestId('confirmation__simulation_section'),
+      ).toBeInTheDocument();
     });
 
-    expect(container).toMatchSnapshot();
+    expect(normalizeTippyIds(container)).toMatchSnapshot();
   });
 
   it('renders info section for addEthereumChain request', () => {
@@ -234,6 +301,9 @@ describe('Info', () => {
         isScrollToBottomCompleted: true,
         setIsScrollToBottomCompleted: jest.fn(),
         goBackTo: undefined,
+        suppressAutoExit: jest.fn(),
+        isAmountPending: false,
+        setIsAmountPending: jest.fn(),
       };
     });
 
@@ -248,6 +318,9 @@ describe('Info', () => {
       const mockStore = configureMockStore([])(state);
       renderWithConfirmContextProvider(<Info />, mockStore);
 
+      expect(useInitialTransactionConfirmationReady).toHaveBeenLastCalledWith(
+        undefined,
+      );
       expect(
         screen.getByTestId('confirmation__info_skeleton'),
       ).toBeInTheDocument();

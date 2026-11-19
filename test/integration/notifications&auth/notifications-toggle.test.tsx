@@ -25,7 +25,8 @@ const setupSubmitRequestToBackgroundMocks = (
 ) => {
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
-      getNotificationPreferences: createMockNotificationPreferences(),
+      'AuthenticatedUserStorageService:getNotificationPreferences':
+        createMockNotificationPreferences(),
       ...mockRequests,
     }),
   );
@@ -42,8 +43,9 @@ const selectors = {
 };
 
 const clickElement = async (testId: string) => {
+  const element = await screen.findByTestId(testId);
   await act(async () => {
-    fireEvent.click(await screen.findByTestId(testId));
+    fireEvent.click(element);
   });
 };
 
@@ -95,9 +97,10 @@ describe('Notifications Toggle', () => {
       preloadedState: {
         ...mockedState,
         analyticsId: 'test-metametrics-id',
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: true,
-        dataCollectionForMarketing: false,
+        optedInToMarketing: false,
+        marketingConsentDecisionMade: true,
       },
       backgroundConnection: backgroundConnectionMocked,
     });
@@ -113,20 +116,24 @@ describe('Notifications Toggle', () => {
     await waitFor(() => {
       const disableNotificationsCall =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'disableMetamaskNotifications',
+          (call) =>
+            call[0] ===
+            'NotificationServicesController:disableNotificationServices',
         );
 
       const fetchAndUpdateMetamaskNotificationsCall =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'fetchAndUpdateMetamaskNotifications',
+          (call) =>
+            call[0] ===
+            'NotificationServicesController:fetchAndUpdateMetamaskNotifications',
         );
 
       expect(disableNotificationsCall?.[0]).toBe(
-        'disableMetamaskNotifications',
+        'NotificationServicesController:disableNotificationServices',
       );
 
       expect(fetchAndUpdateMetamaskNotificationsCall?.[0]).toBe(
-        'fetchAndUpdateMetamaskNotifications',
+        'NotificationServicesController:fetchAndUpdateMetamaskNotifications',
       );
     });
 
@@ -134,18 +141,11 @@ describe('Notifications Toggle', () => {
       MetaMetricsEventName.NotificationsSettingsUpdated,
       MetaMetricsEventCategory.NotificationSettings,
       {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        settings_type: 'notifications',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        was_profile_syncing_on: true,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        old_value: true,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        new_value: false,
+        /* eslint-disable @typescript-eslint/naming-convention */
+        settings_type: 'master',
+        notification_channel: 'all',
+        enabled: false,
+        /* eslint-enable @typescript-eslint/naming-convention */
       },
     );
   });
@@ -153,12 +153,13 @@ describe('Notifications Toggle', () => {
   it('enables marketing in-app notifications from settings', async () => {
     const mockedState = getMockedNotificationsState();
     setupSubmitRequestToBackgroundMocks({
-      getNotificationPreferences: createMockNotificationPreferences({
-        marketing: {
-          pushNotificationsEnabled: false,
-          inAppNotificationsEnabled: false,
-        },
-      }),
+      'AuthenticatedUserStorageService:getNotificationPreferences':
+        createMockNotificationPreferences({
+          marketing: {
+            pushNotificationsEnabled: false,
+            inAppNotificationsEnabled: false,
+          },
+        }),
     });
 
     await integrationTestRender({
@@ -168,8 +169,9 @@ describe('Notifications Toggle', () => {
         isNotificationServicesEnabled: true,
         isFeatureAnnouncementsEnabled: false,
         isMetamaskNotificationsFeatureSeen: true,
-        dataCollectionForMarketing: false,
-        completedMetaMetricsOnboarding: true,
+        optedInToMarketing: false,
+        marketingConsentDecisionMade: true,
+        consentDecisionMade: true,
         optedIn: true,
       },
       backgroundConnection: backgroundConnectionMocked,
@@ -188,16 +190,20 @@ describe('Notifications Toggle', () => {
     await waitFor(() => {
       const putNotificationPreferencesCall =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'putNotificationPreferences',
+          (call) =>
+            call[0] ===
+            'AuthenticatedUserStorageService:putNotificationPreferences',
         );
 
       const fetchAndUpdateMetamaskNotificationsCall =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'fetchAndUpdateMetamaskNotifications',
+          (call) =>
+            call[0] ===
+            'NotificationServicesController:fetchAndUpdateMetamaskNotifications',
         );
 
       expect(putNotificationPreferencesCall?.[0]).toBe(
-        'putNotificationPreferences',
+        'AuthenticatedUserStorageService:putNotificationPreferences',
       );
       expect(putNotificationPreferencesCall?.[1]?.[0]).toMatchObject({
         marketing: {
@@ -208,7 +214,7 @@ describe('Notifications Toggle', () => {
       expect(putNotificationPreferencesCall?.[1]?.[1]).toBe('extension');
 
       expect(fetchAndUpdateMetamaskNotificationsCall?.[0]).toBe(
-        'fetchAndUpdateMetamaskNotifications',
+        'NotificationServicesController:fetchAndUpdateMetamaskNotifications',
       );
     });
 
@@ -216,15 +222,11 @@ describe('Notifications Toggle', () => {
       MetaMetricsEventName.NotificationsSettingsUpdated,
       MetaMetricsEventCategory.NotificationSettings,
       {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        settings_type: 'marketing_inAppNotificationsEnabled',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        old_value: false,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        new_value: true,
+        /* eslint-disable @typescript-eslint/naming-convention */
+        settings_type: 'marketing',
+        notification_channel: 'in_app',
+        enabled: true,
+        /* eslint-enable @typescript-eslint/naming-convention */
       },
     );
   });

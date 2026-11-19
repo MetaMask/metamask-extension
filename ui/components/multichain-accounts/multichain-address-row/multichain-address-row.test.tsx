@@ -1,6 +1,10 @@
 import React from 'react';
 import { fireEvent, screen, render } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import { BtcAccountType } from '@metamask/keyring-api';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import configureStore from '../../../store/store';
+import mockState from '../../../../test/data/mock-state.json';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MultichainAddressRow } from './multichain-address-row';
 
@@ -13,7 +17,7 @@ jest.mock('@metamask/bridge-controller', () => ({
   formatChainIdToCaip: jest.fn(),
 }));
 
-const mockCopyCallback = jest.fn();
+const mockCopyCallback = jest.fn().mockResolvedValue(true);
 const mockQrCallback = jest.fn();
 
 const mockFormatChainIdToCaip = formatChainIdToCaip as jest.Mock;
@@ -42,7 +46,11 @@ const propsWithQrCode = {
 };
 
 const renderComponent = (props = {}) => {
-  return render(<MultichainAddressRow {...defaultProps} {...props} />);
+  return render(
+    <Provider store={configureStore(mockState)}>
+      <MultichainAddressRow {...defaultProps} {...props} />
+    </Provider>,
+  );
 };
 
 describe('MultichainAddressRow', () => {
@@ -87,6 +95,20 @@ describe('MultichainAddressRow', () => {
     expect(
       screen.getByTestId('multichain-address-row-qr-button'),
     ).toBeInTheDocument();
+  });
+
+  it('renders the Bitcoin account type label beside the network name', () => {
+    renderComponent({
+      networkName: 'Bitcoin',
+      accountType: BtcAccountType.P2wpkh,
+    });
+
+    expect(
+      screen.getByTestId('multichain-address-row-network-name'),
+    ).toHaveTextContent('Bitcoin');
+    expect(screen.getByTestId('account-type-label')).toHaveTextContent(
+      'Native SegWit',
+    );
   });
 
   it('handles empty networkName gracefully', () => {
@@ -138,6 +160,18 @@ describe('MultichainAddressRow', () => {
     renderComponent({ className: 'custom-class' });
     const addressRow = screen.getByTestId('multichain-address-row');
     expect(addressRow).toHaveClass('custom-class');
+  });
+
+  it('does not show copy feedback when copying fails', async () => {
+    mockCopyCallback.mockResolvedValueOnce(false);
+    renderComponent();
+
+    fireEvent.click(screen.getByTestId('multichain-address-row-copy-button'));
+
+    await Promise.resolve();
+    expect(
+      screen.getByTestId('multichain-address-row-address'),
+    ).toHaveTextContent('0x12345...67890');
   });
 
   it('converts decimal chainId to CAIP format in QR callback', () => {

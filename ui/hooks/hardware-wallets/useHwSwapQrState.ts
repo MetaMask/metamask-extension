@@ -1,5 +1,5 @@
-import { useCallback, useState, useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useCallback, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import type { SerializedUR } from '@metamask/eth-qr-keyring';
 
 import { HardwareKeyringType } from '../../../shared/constants/hardware-wallets';
@@ -13,6 +13,8 @@ import {
 import type { MetaMaskReduxDispatch } from '../../store/store';
 import { HardwareWalletSignatureStatus } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 import type { HardwareWalletSignaturesState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import { useDispatch } from '../../store/hooks';
+
 import {
   isQrHardwareSignRequest,
   cleanupPendingApproval,
@@ -51,7 +53,7 @@ export function useHwSwapQrState({
   confirmationTxData,
   stepTrackingResetKey,
 }: UseHardwareWalletQrStateOptions) {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const activeQrCodeScanRequest = useSelector(getActiveQrCodeScanRequest);
 
@@ -63,12 +65,6 @@ export function useHwSwapQrState({
     isQrHardwareWallet && isQrHardwareSignRequest(activeQrCodeScanRequest)
       ? activeQrCodeScanRequest
       : undefined;
-
-  // Keep cancellation callbacks stable while still using the latest request data.
-  const qrSignRequestRef = useRef(qrSignRequest);
-  qrSignRequestRef.current = qrSignRequest;
-  const confirmationTxDataRef = useRef(confirmationTxData);
-  confirmationTxDataRef.current = confirmationTxData;
 
   const currentQrRequestId = qrSignRequest?.request.requestId;
 
@@ -130,19 +126,15 @@ export function useHwSwapQrState({
   );
 
   const handleQrSignatureCancel = useCallback(() => {
-    const currentConfirmationTxData = confirmationTxDataRef.current;
-
-    if (currentConfirmationTxData?.id) {
-      cleanupPendingApproval(dispatch, currentConfirmationTxData.id);
-      dispatch(
-        cancelTx(currentConfirmationTxData as Parameters<typeof cancelTx>[0]),
-      );
+    if (confirmationTxData?.id) {
+      cleanupPendingApproval(dispatch, confirmationTxData.id);
+      dispatch(cancelTx(confirmationTxData as Parameters<typeof cancelTx>[0]));
     }
 
-    if (qrSignRequestRef.current) {
+    if (qrSignRequest) {
       dispatch(cancelQrCodeScan());
     }
-  }, [dispatch]);
+  }, [dispatch, confirmationTxData, qrSignRequest]);
 
   return {
     isReadingQrSignature,

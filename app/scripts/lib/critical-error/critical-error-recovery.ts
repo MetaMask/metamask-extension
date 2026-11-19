@@ -1,18 +1,37 @@
-import type { Backup } from '../../../../shared/lib/stores/persistence-manager';
+import log from 'loglevel';
+import {
+  hasVault,
+  type Backup,
+} from '../../../../shared/lib/stores/persistence-manager';
 import { CRITICAL_ERROR_SCREEN_VIEWED } from '../../../../shared/constants/start-up-errors';
 import {
+  CriticalErrorRepairAction,
   CriticalErrorType,
-  METHOD_REPAIR_DATABASE_TIMEOUT,
-} from '../../../../shared/constants/state-corruption';
+  isStateCorruptionErrorType,
+  METHOD_REPAIR_DATABASE,
+} from '../../../../shared/constants/critical-error';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { captureException } from '../../../../shared/lib/sentry';
+import { trackVaultCorruptionEvent } from '../state-corruption/track-vault-corruption';
 import { trackCriticalErrorEvent } from './track-critical-error';
 
 type Message = Parameters<chrome.runtime.Port['postMessage']>[0];
 
+export type RepairCallbackOptions = {
+  repairAction: CriticalErrorRepairAction;
+  criticalErrorType: CriticalErrorType;
+  backup: Backup | null;
+  connectedPorts: Set<chrome.runtime.Port>;
+};
+
+export type RepairCallback = (
+  options: RepairCallbackOptions,
+) => Promise<boolean>;
+
 export type RegisterPortForCriticalErrorConfig = {
+  getBackup: () => Promise<Backup | null>;
   port: chrome.runtime.Port;
-  repairCallback: () => Promise<boolean>;
+  repairCallback: RepairCallback;
 };
 
 /**
@@ -31,10 +50,10 @@ function getCriticalErrorType(
 }
 
 /**
- * Per-port handler for critical error messages from the UI (timeout/init flow).
- * Listens for METHOD_REPAIR_DATABASE_TIMEOUT and CRITICAL_ERROR_SCREEN_VIEWED.
- * Same listener instances are added to every port (like state-corruption's
- * restoreVaultListener). On disconnect, the handler calls removeListenersForPort;
+ * Per-port handler for critical error messages from the UI.
+ * Listens for METHOD_REPAIR_DATABASE and CRITICAL_ERROR_SCREEN_VIEWED.
+ * Same listener instances are added to every port. On disconnect, the handler
+ * calls removeListenersForPort;
  * the caller may also call removeListenersForPort(port) when the UI signals
  * readiness (e.g. on startSendingPatches), which removes message and disconnect
  * listeners.
@@ -47,7 +66,16 @@ export class CriticalErrorHandler {
    */
   connectedPorts = new Set<chrome.runtime.Port>();
 
-  #repairCallback: (() => Promise<boolean>) | null = null;
+  #repairCallback: RepairCallback | null = null;
+
+  #getBackup: (() => Promise<Backup | null>) | null = null;
+
+  /**
+   * Backup captured from a PersistenceError at init-failure time. Preferred
+   * over a later IndexedDB re-read so Recover can still run if that second
+   * read fails.
+   */
+  #cachedBackup: Backup | null = null;
 
   #portDisconnectHandlers = new WeakMap<chrome.runtime.Port, () => void>();
 
@@ -65,14 +93,17 @@ export class CriticalErrorHandler {
    * unregister from all UI windows in one go when one triggers repair), and
    * removes listeners when the port disconnects.
    *
-   * @param config - Configuration for this port (port, repairCallback).
+   * @param config - Configuration for this port.
+   * @param config.getBackup - Reads the backup in the background process.
    * @param config.port
    * @param config.repairCallback
    */
   registerPortForCriticalError({
+    getBackup,
     port,
     repairCallback,
   }: RegisterPortForCriticalErrorConfig): void {
+    this.#getBackup = getBackup;
     this.#repairCallback = repairCallback;
 
     this.connectedPorts.add(port);
@@ -104,39 +135,107 @@ export class CriticalErrorHandler {
   }
 
   /**
-   * Handles a message from the UI to restore from backup (same role as
-   * state-corruption's restoreVaultListener). Unregisters from all ports,
-   * then runs repairCallback.
+   * Stores the backup captured when a PersistenceError is thrown so repair can
+   * reuse it without sending vault data over the UI port.
+   *
+   * @param backup - Error-time backup snapshot, or `null` to clear.
+   */
+  cacheBackup(backup: Backup | null): void {
+    this.#cachedBackup = backup;
+  }
+
+  /**
+   * Returns the error-time backup when present, otherwise re-reads via
+   * `getBackup`.
+   */
+  async #resolveBackup(): Promise<Backup | null> {
+    if (this.#cachedBackup !== null) {
+      return this.#cachedBackup;
+    }
+    return (await this.#getBackup?.()) ?? null;
+  }
+
+  /**
+   * Handles a message from the UI to restore/reset after a critical error.
+   *
    * @param message
    */
   async #restoreVaultListener(message: Message): Promise<void> {
-    if (message?.data?.method !== METHOD_REPAIR_DATABASE_TIMEOUT) {
+    if (message?.data?.method !== METHOD_REPAIR_DATABASE) {
       return;
     }
     const params = message?.data?.params ?? {};
-    if (!this.#repairCallback || !params.backup) {
+    const repairAction = Object.values(CriticalErrorRepairAction).includes(
+      params.repairAction as CriticalErrorRepairAction,
+    )
+      ? (params.repairAction as CriticalErrorRepairAction)
+      : CriticalErrorRepairAction.None;
+    if (
+      !this.#repairCallback ||
+      !this.#getBackup ||
+      repairAction === CriticalErrorRepairAction.None
+    ) {
       return;
     }
 
+    const backup = await this.#resolveBackup();
+    const backupHasVault = hasVault(backup);
+    if (
+      !(
+        (repairAction === CriticalErrorRepairAction.Recover &&
+          backupHasVault) ||
+        (repairAction === CriticalErrorRepairAction.Reset && !backupHasVault)
+      )
+    ) {
+      log.warn(
+        'critical-error-repair: ignoring unexpected repairAction',
+        repairAction,
+        { backupHasVault },
+      );
+      return;
+    }
+    const criticalErrorType = getCriticalErrorType(params);
+    const connectedPorts = new Set(this.connectedPorts);
+
     // only allow the restore process once, unregister
     // listeners from all UI windows
-    for (const connectedPort of this.connectedPorts) {
+    for (const connectedPort of connectedPorts) {
       this.removeListenersForPort(connectedPort);
     }
 
-    const criticalErrorType = getCriticalErrorType(params);
-
     try {
-      // Track that the user clicked the restore button.
+      if (isStateCorruptionErrorType(criticalErrorType)) {
+        // Legacy transition event. We keep sending it for backward compatibility
+        // until it is fully replaced by trackCriticalErrorEvent, which carries
+        // the same information.
+        trackVaultCorruptionEvent(
+          backup,
+          MetaMetricsEventName.VaultCorruptionRestoreWalletButtonPressed,
+          criticalErrorType,
+        );
+      }
+
+      // Track that the user clicked the repair button.
       trackCriticalErrorEvent(
-        params.backup as Backup | null,
+        backup,
         MetaMetricsEventName.CriticalErrorRestoreWalletButtonPressed,
         criticalErrorType,
+        {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          repair_action: repairAction,
+        },
       );
 
-      await this.#repairCallback();
+      await this.#repairCallback({
+        repairAction,
+        criticalErrorType,
+        backup,
+        connectedPorts,
+      });
     } catch (repairError) {
       captureException(repairError);
+    } finally {
+      this.#cachedBackup = null;
     }
   }
 
@@ -145,20 +244,34 @@ export class CriticalErrorHandler {
       return;
     }
     const params = message?.data?.params ?? {};
-    if (!params.backup) {
-      return;
-    }
-
-    const canTriggerRestore = Boolean(params.canTriggerRestore);
+    const repairAction = Object.values(CriticalErrorRepairAction).includes(
+      params.repairAction as CriticalErrorRepairAction,
+    )
+      ? (params.repairAction as CriticalErrorRepairAction)
+      : CriticalErrorRepairAction.None;
+    const backup = await this.#resolveBackup();
     const criticalErrorType = getCriticalErrorType(params);
+
+    if (isStateCorruptionErrorType(criticalErrorType)) {
+      // Legacy transition event. We keep sending it for backward compatibility
+      // until it is fully replaced by trackCriticalErrorEvent, which carries
+      // the same information.
+      trackVaultCorruptionEvent(
+        backup,
+        MetaMetricsEventName.VaultCorruptionRestoreWalletScreenViewed,
+        criticalErrorType,
+      );
+    }
 
     // Track that the user viewed the critical error screen.
     trackCriticalErrorEvent(
-      params.backup as Backup | null,
+      backup,
       MetaMetricsEventName.CriticalErrorScreenViewed,
       criticalErrorType,
-      // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment property
-      { restore_accounts_enabled: canTriggerRestore },
+      {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        repair_action: repairAction,
+      },
     );
   }
 }

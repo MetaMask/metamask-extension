@@ -1,4 +1,4 @@
-import { act } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react';
 import {
   AssetType,
   FeatureId,
@@ -13,8 +13,9 @@ import { MultichainNetworks } from '../../../shared/constants/multichain/network
 import * as environmentTypeUtils from '../../../shared/lib/environment-type';
 import * as bridgeActions from '../../ducks/bridge/actions';
 import {
-  AWAITING_SIGNATURES_ROUTE,
+  ACTIVITY_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
+  HARDWARE_WALLET_SIGNATURES_ROUTE,
   PREPARE_SWAP_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
@@ -26,7 +27,7 @@ const mockUseLocation = jest.fn();
 const mockDispatch = jest.fn((...args: unknown[]) => jest.fn()(...args));
 
 const BRIDGE_PREPARE_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
-const AWAITING_SIGNATURES_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`;
+const HARDWARE_WALLET_SIGNATURES_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`;
 
 const locationToken = {
   symbol: 'USDC',
@@ -225,10 +226,12 @@ describe('useBridgeNavigation', () => {
           search: 'from=test-from',
         },
         {
-          state: {
+          state: expect.objectContaining({
             bridgeState: locationBridgeState,
+            swapViewPrefilledAmount: false,
+            swapViewTraceId: expect.any(String),
             token: locationToken,
-          },
+          }),
           replace: false,
         },
       );
@@ -257,39 +260,6 @@ describe('useBridgeNavigation', () => {
     });
   });
 
-  describe('resetSearchParams', () => {
-    it('removes the requested search params and preserves location state', () => {
-      mockUseLocation.mockReturnValue({
-        pathname: '/cross-chain/swaps/prepare-bridge-page',
-        search: `?${BridgeQueryParams.From}=from-token&${BridgeQueryParams.Amount}=10`,
-        state: {
-          token: locationToken,
-          bridgeState: locationBridgeState,
-        },
-      });
-
-      const { result } = renderUseBridgeNavigation();
-
-      act(() => {
-        result.current.resetSearchParams([BridgeQueryParams.From]);
-      });
-
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        {
-          pathname: '/cross-chain/swaps/prepare-bridge-page',
-          search: `${BridgeQueryParams.Amount}=10`,
-        },
-        {
-          replace: true,
-          state: {
-            token: locationToken,
-            bridgeState: locationBridgeState,
-          },
-        },
-      );
-    });
-  });
-
   describe('resetLocationState', () => {
     it('clears bridge navigation state on the current route', () => {
       const { result } = renderUseBridgeNavigation();
@@ -299,32 +269,83 @@ describe('useBridgeNavigation', () => {
       });
 
       expect(mockUseNavigate).toHaveBeenCalledWith(
-        { pathname: '/cross-chain/swaps/prepare-bridge-page' },
+        { pathname: '/cross-chain/swaps/prepare-bridge-page', search: '' },
         {
           state: {
             bridgeState: null,
             token: null,
-            stayOnHomePage: false,
           },
         },
+      );
+    });
+
+    it('preserves deep-link search query params when clearing navigation state', () => {
+      mockUseLocation.mockReturnValue({
+        pathname: '/cross-chain/swaps/prepare-bridge-page',
+        search:
+          '?to=eip155%3A1%2Ferc20%3A0x6B175474E89094C44Da98b954EedeAC495271d0F',
+        state: {
+          token: locationToken,
+        },
+      });
+
+      const { result } = renderUseBridgeNavigation();
+
+      act(() => {
+        result.current.resetLocationState();
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        {
+          pathname: '/cross-chain/swaps/prepare-bridge-page',
+          search:
+            '?to=eip155%3A1%2Ferc20%3A0x6B175474E89094C44Da98b954EedeAC495271d0F',
+        },
+        expect.objectContaining({
+          state: {
+            bridgeState: null,
+            token: null,
+          },
+        }),
       );
     });
   });
 
   describe('navigateToHwSigningPage', () => {
-    it('navigates to the awaiting signatures route', () => {
+    it('navigates to the hardware wallet signatures route', () => {
       const { result } = renderUseBridgeNavigation();
 
       act(() => {
         result.current.navigateToHwSigningPage();
       });
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(AWAITING_SIGNATURES_PATH, {
-        state: {
-          token: locationToken,
-          bridgeState: locationBridgeState,
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        HARDWARE_WALLET_SIGNATURES_PATH,
+        {
+          state: {
+            token: locationToken,
+            bridgeState: locationBridgeState,
+          },
         },
+      );
+    });
+
+    it('keeps the transaction shield flag on the signing route', () => {
+      mockUseLocation.mockReturnValue({
+        pathname: '/cross-chain/swaps/prepare-bridge-page',
+        search: `?${BridgeQueryParams.IsFromTransactionShield}=true`,
+        state: {},
       });
+      const { result } = renderUseBridgeNavigation();
+
+      act(() => {
+        result.current.navigateToHwSigningPage();
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        `${HARDWARE_WALLET_SIGNATURES_PATH}?${BridgeQueryParams.IsFromTransactionShield}=true`,
+        expect.anything(),
+      );
     });
   });
 
@@ -336,17 +357,13 @@ describe('useBridgeNavigation', () => {
         result.current.navigateToActivityPage();
       });
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${DEFAULT_ROUTE}?tab=activity`,
-        {
-          state: {
-            bridgeState: null,
-            token: null,
-            stayOnHomePage: true,
-          },
-          replace: true,
+      expect(mockUseNavigate).toHaveBeenCalledWith(ACTIVITY_ROUTE, {
+        state: {
+          bridgeState: null,
+          token: null,
         },
-      );
+        replace: true,
+      });
     });
   });
 
@@ -368,7 +385,6 @@ describe('useBridgeNavigation', () => {
         state: {
           bridgeState: null,
           token: null,
-          stayOnHomePage: true,
         },
       });
     });
@@ -397,7 +413,6 @@ describe('useBridgeNavigation', () => {
         state: {
           bridgeState: null,
           token: null,
-          stayOnHomePage: false,
         },
       });
     });

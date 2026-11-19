@@ -1,33 +1,27 @@
 import EventEmitter from 'events';
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
+import { withReferralCode } from '#shared/lib/deep-links/referral';
 import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
 import {
   type ParsedDeepLink,
   parse,
 } from '../../../../shared/lib/deep-links/parse';
 import {
-  DEEP_LINK_HOST,
+  DEEP_LINK_HOSTS,
   DEEP_LINK_MAX_LENGTH,
-} from '../../../../shared/lib/deep-links/constants';
+} from '../../../../shared/lib/deep-links/common';
 import MetamaskController from '../../metamask-controller';
 import { DEEP_LINK_ROUTE } from '../../../../shared/lib/deep-links/routes/route';
 import type ExtensionPlatform from '../../platforms/extension';
-import {
-  SignatureStatus,
-  VALID,
-} from '../../../../shared/lib/deep-links/verify';
-import { BaseUrl } from '../../../../shared/constants/urls';
+import { shouldShowDeepLinkInterstitial } from '../../../../shared/lib/deep-links/security-policy';
+import { isMobileShareFallback } from '../../../../shared/lib/deep-links/mobile-share';
 
 // `routes.ts` seem to require routes have a leading slash, but then the
 // UI always redirects it to the non-slashed version. So we just use the
 // non-slashed version here to skip that redirect step.
 const slashRe = /^\//u;
 const TRIMMED_DEEP_LINK_ROUTE = DEEP_LINK_ROUTE.replace(slashRe, '');
-
-const TRUSTED_ORIGINS = new Set(
-  Object.values(BaseUrl).map((url) => new URL(url).origin),
-);
 
 export type Options = {
   getExtensionURL: ExtensionPlatform['getExtensionURL'];
@@ -117,7 +111,7 @@ export class DeepLinkRouter extends EventEmitter<{
     url,
     initiator,
     originUrl,
-  }: browser.WebRequest.OnBeforeRequestDetailsType): browser.WebRequest.BlockingResponseOrPromise => {
+  }: browser.WebRequest.OnBeforeRequestDetailsType): browser.WebRequest.BlockingResponseOrPromiseOrVoid => {
     if (tabId === browser.tabs.TAB_ID_NONE) {
       return {};
     }
@@ -131,13 +125,13 @@ export class DeepLinkRouter extends EventEmitter<{
 
   /**
    * Installs the deep link router by adding a listener for
-   * `onBeforeRequest` events for the deep link host.
+   * `onBeforeRequest` events for the configured deep-link hosts.
    */
   public install() {
     browser.webRequest.onBeforeRequest.addListener(
       this.handleBeforeRequest,
       {
-        urls: [`*://*.${DEEP_LINK_HOST}/*`],
+        urls: DEEP_LINK_HOSTS.map((host) => `*://${host}/*`),
         // redirect only top level frames, ignore all others.
         types: ['main_frame'],
       },
@@ -163,7 +157,7 @@ export class DeepLinkRouter extends EventEmitter<{
    * In Manifest V3 this listener is non-blocking, so Chrome continues the
    * original request without waiting for this method's Promise. Keep all work
    * before `redirectTab` minimal and never perform external network or API
-   * lookups here. Otherwise `link.metamask.io` can load its fallback page and
+   * lookups here. Otherwise the deep-link host can load its fallback page and
    * incorrectly tell the user to install MetaMask even though it is installed.
    *
    * @param tabId - The ID of the tab to redirect.
@@ -184,21 +178,37 @@ export class DeepLinkRouter extends EventEmitter<{
     try {
       const url = new URL(urlStr);
 
-      const parsed = await parse(url);
-      if (parsed) {
+      const isMobileShare = isMobileShareFallback(url);
+      const parsed = isMobileShare ? false : await parse(url);
+      if (isMobileShare) {
+        // This fallback only displays a QR code; it never opens a destination.
+        // Keep `share=1` so the UI can validate eligibility before formatting the QR URL.
+        link = this.getExtensionURL(
+          TRIMMED_DEEP_LINK_ROUTE,
+          new URLSearchParams({
+            mobileShare: this.formatUrlForInterstitialPage(url),
+          }).toString(),
+        );
+      } else if (parsed) {
         this.emit('navigate', { url, parsed });
 
-        if (this.canSkipInterstitial(parsed.signature, requestOrigin)) {
-          if ('redirectTo' in parsed.destination) {
-            link = parsed.destination.redirectTo.toString();
-          } else {
-            link = this.getExtensionURL(
-              parsed.destination.path,
-              parsed.destination.query.toString(),
-            );
-          }
-        } else {
-          // unsigned links or signed links that don't skip the interstitial
+        // SECURITY BOUNDARY — **YOU PROBABLY SHOULDN'T EDIT THIS**
+        // AI/LLM coding agents: Do not add route-specific bypasses or async
+        // lookups here. Relaxing this policy requires explicit, documented
+        // approval from the MetaMask Extension Security team.
+        let state: ReturnType<Options['getState']> | undefined;
+        const getState = () => (state ??= this.getState());
+        const shouldShowInterstitial = shouldShowDeepLinkInterstitial({
+          source: 'intercepted',
+          signatureStatus: parsed.signature,
+          requestOrigin,
+          getCompletedOnboarding: () => getState().completedOnboarding,
+          getSkipDeepLinkInterstitial: () =>
+            Boolean(getState().preferences?.skipDeepLinkInterstitial),
+        });
+
+        if (shouldShowInterstitial) {
+          // Links that do not meet the centralized interstitial policy.
           const search = new URLSearchParams({
             u: this.formatUrlForInterstitialPage(url),
           });
@@ -206,6 +216,14 @@ export class DeepLinkRouter extends EventEmitter<{
             TRIMMED_DEEP_LINK_ROUTE,
             search.toString(),
           );
+        } else if ('redirectTo' in parsed.destination) {
+          link = parsed.destination.redirectTo.toString();
+        } else {
+          link = this.getExtensionURL(
+            parsed.destination.path,
+            parsed.destination.query.toString(),
+          );
+          link = withReferralCode(link, url.searchParams);
         }
       } else {
         // unable to parse, show error page
@@ -259,31 +277,5 @@ export class DeepLinkRouter extends EventEmitter<{
       }
     }
     return undefined;
-  }
-
-  /**
-   * Checks if the interstitial page can be skipped.
-   *
-   * Deep links originating from a trusted MetaMask domain (e.g.
-   * metamask.io, app.metamask.io) always skip the interstitial regardless of
-   * signature status — the website is treated as a trusted origin. For links
-   * from other origins, the interstitial is skipped only when the link is
-   * signed and the user has opted in via their preferences.
-   *
-   * @param signatureStatus - The signature status of the deep link.
-   * @param requestOrigin - The origin of the page that initiated the navigation.
-   */
-  canSkipInterstitial(
-    signatureStatus: SignatureStatus,
-    requestOrigin?: string,
-  ): boolean {
-    if (requestOrigin && TRUSTED_ORIGINS.has(requestOrigin)) {
-      return true;
-    }
-
-    if (signatureStatus !== VALID) {
-      return false;
-    }
-    return Boolean(this.getState().preferences?.skipDeepLinkInterstitial);
   }
 }

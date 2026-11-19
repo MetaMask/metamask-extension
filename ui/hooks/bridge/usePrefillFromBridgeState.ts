@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
@@ -12,6 +12,7 @@ import {
   setToToken,
 } from '../../ducks/bridge/actions';
 import { getBridgeQuotes, getFromChains } from '../../ducks/bridge/selectors';
+import { useDispatch } from '../../store/hooks';
 import { useEventListener } from '../useEventListener';
 import { useBridgeNavigation } from './useBridgeNavigation';
 
@@ -71,8 +72,8 @@ export const usePrefillFromBridgeState = () => {
         }
       }
 
-      // Clear location state after using it to prevent infinite re-renders
-      resetLocationState();
+      // Replace this entry so clearing state does not add another Back step.
+      resetLocationState(undefined, { replace: true });
     } else if (shouldRestoreInputsFromQuote) {
       dispatch(restoreQuoteRequestFromState(activeQuote));
     }

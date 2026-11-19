@@ -1,16 +1,44 @@
+import { quoteXPathText } from '../../../../helpers/quoteXPathText';
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Bitcoin snap send review: amount, fee, and confirm/cancel footer.
+ *
+ * Screen: snap confirmation dialog with "Transaction request" header after
+ * Bitcoin send Continue (not redesigned MetaMask `#/confirmation`).
+ * Owns: send amount / network fee / total display checks and confirm.
+ * Boundaries: review and footer only. The send form is `SendPage`; other snap
+ * sign/send confirmations use the `confirmations/` snap page objects.
+ * Related: `SendPage`, Bitcoin send specs under `tests/send/bitcoin/`.
+ *
+ * @see ui/components/app/snaps/snap-ui-footer-button/snap-ui-footer-button.tsx
+ * @see ui/components/app/snaps/snap-ui-renderer/components/footer.ts
+ */
 class BitcoinReviewTxPage {
-  private driver: Driver;
-
   private readonly cancelButton =
     '[data-testid="confirmation-cancel-snap-footer-button"]';
+
+  private readonly confirmationPage = {
+    testId: 'parent-selector-snap-confirmation-page',
+  };
 
   private readonly confirmButton =
     '[data-testid="confirmation-confirm-snap-footer-button"]';
 
+  private driver: Driver;
+
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async checkNetworkFeeIsDisplayed(fee: string): Promise<void> {
+    console.log(
+      `Check if network fee ${fee} is displayed on bitcoin review tx page`,
+    );
+    await this.driver.waitForSelector({
+      text: `${fee} BTC`,
+      tag: 'p',
+    });
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -18,6 +46,7 @@ class BitcoinReviewTxPage {
       await this.driver.waitForMultipleSelectors([
         this.cancelButton,
         this.confirmButton,
+        this.confirmationPage,
       ]);
       await this.driver.waitForSelector({
         text: 'Transaction request',
@@ -33,28 +62,18 @@ class BitcoinReviewTxPage {
     console.log('Bitcoin review tx page is loaded');
   }
 
-  async clickConfirmButton() {
-    console.log('Click confirm button on bitcoin review tx page');
-    await this.driver.clickElementAndWaitToDisappear(this.confirmButton);
-  }
-
-  async checkNetworkFeeIsDisplayed(fee: string): Promise<void> {
-    console.log(
-      `Check if network fee ${fee} is displayed on bitcoin review tx page`,
-    );
-    await this.driver.waitForSelector({
-      text: `${fee} BTC`,
-      tag: 'p',
-    });
-  }
-
   async checkSendAmountIsDisplayed(amount: string): Promise<void> {
     console.log(
       `Check if send amount ${amount} is displayed on bitcoin review tx page`,
     );
     await this.driver.waitForSelector({
-      text: `-${amount} BTC`,
-      tag: 'p',
+      xpath:
+        '//*[contains(concat(" ", normalize-space(@class), " "), ' +
+        '" snap-ui-renderer__text ") and ' +
+        'contains(concat(" ", normalize-space(@class), " "), ' +
+        `" mm-box--color-error-default ") and normalize-space(.)=${quoteXPathText(
+          `-${amount}`,
+        )}]`,
     });
   }
 
@@ -66,6 +85,11 @@ class BitcoinReviewTxPage {
       text: `${total} USD`,
       tag: 'p',
     });
+  }
+
+  async clickConfirmButton() {
+    console.log('Click confirm button on bitcoin review tx page');
+    await this.driver.clickElementAndWaitToDisappear(this.confirmButton);
   }
 }
 

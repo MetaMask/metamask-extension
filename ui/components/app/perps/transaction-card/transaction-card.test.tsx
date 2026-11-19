@@ -297,6 +297,114 @@ describe('TransactionCard', () => {
       expect(amountElement).toHaveClass('text-error-default');
     });
 
+    it('shows the translated verb, amount, and asset in the title for a deposit', () => {
+      const transaction = createMockTransaction({
+        type: 'deposit',
+        category: 'deposit',
+        symbol: 'USDC',
+        title: 'Deposited 5.00 USDC',
+        fill: undefined,
+        depositWithdrawal: {
+          amount: '+$5.00',
+          amountNumber: 5,
+          isPositive: true,
+          asset: 'USDC',
+          txHash: '0x1234567890abcdef',
+          status: 'completed',
+          type: 'deposit',
+        },
+      });
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByText(`${messages.perpsDepositedVerb.message} 5.00 USDC`),
+      ).toBeInTheDocument();
+    });
+
+    it('shows the translated verb, amount, and asset in the title for a withdrawal', () => {
+      const transaction = createMockTransaction({
+        type: 'withdrawal',
+        category: 'withdrawal',
+        symbol: 'USDC',
+        title: 'Withdrew 5.00 USDC',
+        fill: undefined,
+        depositWithdrawal: {
+          amount: '-$5.00',
+          amountNumber: -5,
+          isPositive: false,
+          asset: 'USDC',
+          txHash: '0xabcdef1234567890',
+          status: 'completed',
+          type: 'withdrawal',
+        },
+      });
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByText(`${messages.perpsWithdrewVerb.message} 5.00 USDC`),
+      ).toBeInTheDocument();
+    });
+
+    it('shows the translated empty-state title for a zero-amount deposit', () => {
+      const transaction = createMockTransaction({
+        type: 'deposit',
+        category: 'deposit',
+        symbol: 'USDC',
+        title: 'Deposit',
+        fill: undefined,
+        depositWithdrawal: {
+          amount: '+$0.00',
+          amountNumber: 0,
+          isPositive: true,
+          asset: 'USDC',
+          txHash: '0x1234567890abcdef',
+          status: 'pending',
+          type: 'deposit',
+        },
+      });
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByText(messages.perpsDepositEmptyTitle.message),
+      ).toBeInTheDocument();
+    });
+
+    it('shows the translated empty-state title for a zero-amount withdrawal', () => {
+      const transaction = createMockTransaction({
+        type: 'withdrawal',
+        category: 'withdrawal',
+        symbol: 'USDC',
+        title: 'Withdrawal',
+        fill: undefined,
+        depositWithdrawal: {
+          amount: '-$0.00',
+          amountNumber: 0,
+          isPositive: false,
+          asset: 'USDC',
+          txHash: '0xabcdef1234567890',
+          status: 'pending',
+          type: 'withdrawal',
+        },
+      });
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByText(messages.perpsWithdrawalEmptyTitle.message),
+      ).toBeInTheDocument();
+    });
+
     it('shows "Completed" status for deposits', () => {
       const transaction = createMockTransaction({
         type: 'deposit',
@@ -321,6 +429,87 @@ describe('TransactionCard', () => {
 
       expect(
         screen.getByText(messages.perpsStatusCompleted.message),
+      ).toBeInTheDocument();
+    });
+
+    it('shows "Pending" status for a pending wallet-tracked deposit', () => {
+      const transaction = createMockTransaction({
+        type: 'deposit',
+        category: 'deposit',
+        symbol: 'USDC',
+        title: 'Deposited 100.00 USDC',
+        fill: undefined,
+        depositWithdrawal: {
+          amount: '+$100.00',
+          amountNumber: 100,
+          isPositive: true,
+          asset: 'USDC',
+          txHash: '0x1234567890abcdef',
+          status: 'pending',
+          type: 'deposit',
+        },
+      });
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByText(messages.perpsStatusPending.message),
+      ).toBeInTheDocument();
+    });
+
+    it('shows "Failed" status for a failed wallet-tracked deposit', () => {
+      const transaction = createMockTransaction({
+        type: 'deposit',
+        category: 'deposit',
+        symbol: 'USDC',
+        title: 'Deposited 100.00 USDC',
+        fill: undefined,
+        depositWithdrawal: {
+          amount: '+$100.00',
+          amountNumber: 100,
+          isPositive: true,
+          asset: 'USDC',
+          txHash: '0x1234567890abcdef',
+          status: 'failed',
+          type: 'deposit',
+        },
+      });
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByText(messages.perpsStatusFailed.message),
+      ).toBeInTheDocument();
+    });
+
+    it('shows "Pending" status for a pending wallet-tracked withdrawal', () => {
+      const transaction = createMockTransaction({
+        type: 'withdrawal',
+        category: 'withdrawal',
+        symbol: 'USDC',
+        title: 'Withdrew 50.00 USDC',
+        fill: undefined,
+        depositWithdrawal: {
+          amount: '-$50.00',
+          amountNumber: 50,
+          isPositive: false,
+          asset: 'USDC',
+          txHash: '0xabcdef1234567890',
+          status: 'pending',
+          type: 'withdrawal',
+        },
+      });
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByText(messages.perpsStatusPending.message),
       ).toBeInTheDocument();
     });
   });

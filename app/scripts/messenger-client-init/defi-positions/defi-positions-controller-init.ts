@@ -9,6 +9,11 @@ import {
   FeatureFlagNames,
 } from '../../../../shared/lib/feature-flags';
 import {
+  DEFI_CONTROLLER_V2_FLAG,
+  isDefiControllerV2Enabled,
+  type DefiControllerV2FeatureFlag,
+} from '../../../../shared/lib/defi-controller-v2/remote-feature-flag';
+import {
   MetaMetricsEventOptions,
   MetaMetricsEventPayload,
 } from '../../../../shared/constants/metametrics';
@@ -34,16 +39,27 @@ export const DeFiPositionsControllerInit: MessengerClientInitFunction<
         state: { completedOnboarding },
       } = getOnboardingController();
 
+      const { remoteFeatureFlags } = initMessenger.call(
+        'RemoteFeatureFlagController:getState',
+      );
       const assetsDefiPositionsEnabled = Boolean(
-        initMessenger.call('RemoteFeatureFlagController:getState')
-          ?.remoteFeatureFlags?.[FeatureFlagNames.AssetsDefiPositionsEnabled] ??
+        remoteFeatureFlags?.[FeatureFlagNames.AssetsDefiPositionsEnabled] ??
         DEFAULT_FEATURE_FLAG_VALUES[
           FeatureFlagNames.AssetsDefiPositionsEnabled
         ],
       );
+      const defiControllerV2Enabled = isDefiControllerV2Enabled(
+        remoteFeatureFlags?.[DEFI_CONTROLLER_V2_FLAG] as
+          | DefiControllerV2FeatureFlag
+          | undefined,
+      );
 
+      // Legacy controller runs only when V2 is disabled.
       return (
-        completedOnboarding && useExternalServices && assetsDefiPositionsEnabled
+        completedOnboarding &&
+        useExternalServices &&
+        assetsDefiPositionsEnabled &&
+        !defiControllerV2Enabled
       );
     },
     trackEvent: (

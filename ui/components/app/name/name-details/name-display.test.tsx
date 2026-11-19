@@ -1,16 +1,20 @@
 import React from 'react';
 import { NameType } from '@metamask/name-controller';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
+import { useDispatch } from '../../../../store/hooks';
 import NameDisplay from './name-display';
+
+jest.mock('../../../../store/hooks', () => ({
+  useDispatch: jest.fn(),
+}));
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
   useSelector: jest.fn(),
 }));
 
@@ -81,5 +85,25 @@ describe('NameDisplay', () => {
       />,
     );
     expect(getByText('TEST')).toBeInTheDocument();
+  });
+
+  it('renders the address instead of a security label with fillWidth', () => {
+    const address = '0x1111111111111111111111111111111111111111';
+    useDisplayNameMock.mockReturnValue({
+      name: 'Null: 0x111...111',
+      hasPetname: false,
+      displayState: TrustSignalDisplayState.Unknown,
+      isAccount: false,
+    });
+    const { getByText, queryByText } = renderWithProvider(
+      <NameDisplay
+        value={address}
+        type={NameType.ETHEREUM_ADDRESS}
+        variation={'0x1'}
+        fillWidth
+      />,
+    );
+    expect(getByText(address)).toBeInTheDocument();
+    expect(queryByText('Null: 0x111...111')).toBeNull();
   });
 });

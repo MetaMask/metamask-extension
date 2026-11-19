@@ -26,11 +26,13 @@ window.metamaskFeatureFlags = {};
 
 export const parameters = {
   backgrounds: {
-    default: 'default',
-    values: [
-      { name: 'default', value: 'var(--color-background-default)' },
-      { name: 'alternative', value: 'var(--color-background-alternative)' },
-    ],
+    options: {
+      default: { name: 'default', value: 'var(--color-background-default)' },
+      alternative: {
+        name: 'alternative',
+        value: 'var(--color-background-alternative)',
+      },
+    },
   },
   options: {
     storySort: {
@@ -128,7 +130,10 @@ const metamaskDecorator = (story, context) => {
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
-        <MemoryRouter initialEntries={initialEntries}>
+        <MemoryRouter
+          key={initialEntries.join('|')}
+          initialEntries={initialEntries}
+        >
           <AlertMetricsProvider
             metrics={{
               trackAlertActionClicked: () => undefined,
@@ -203,3 +208,9 @@ const withColorScheme = (Story, context) => {
 };
 
 export const decorators = [metamaskDecorator, withColorScheme];
+
+export const initialGlobals = {
+  backgrounds: {
+    value: 'default',
+  },
+};

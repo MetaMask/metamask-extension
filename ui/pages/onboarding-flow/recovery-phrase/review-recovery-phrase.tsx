@@ -1,6 +1,6 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   Text,
@@ -43,6 +43,8 @@ import { useIsFirefox } from '../../../hooks/useIsFirefox';
 import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
+import { useDispatch } from '../../../store/hooks';
+import { useOnboardingTrace } from '../../../contexts/onboarding-trace';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
 type RecoveryPhraseProps = {
@@ -58,6 +60,7 @@ export default function RecoveryPhrase({
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const hasSeedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const { endJourney } = useOnboardingTrace();
   const { bufferedEndTrace } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const [phraseRevealed, setPhraseRevealed] = useState(false);
@@ -145,7 +148,7 @@ export default function RecoveryPhrase({
         .build(),
     );
     bufferedEndTrace?.({ name: TraceName.OnboardingNewSrpCreateWallet });
-    bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
+    endJourney({ success: true });
 
     if (isFirefox || firstTimeFlowType === FirstTimeFlowType.restore) {
       navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
@@ -155,6 +158,7 @@ export default function RecoveryPhrase({
   }, [
     bufferedEndTrace,
     dispatch,
+    endJourney,
     firstTimeFlowType,
     hdEntropyIndex,
     isFirefox,
@@ -183,7 +187,7 @@ export default function RecoveryPhrase({
       alignItems={BoxAlignItems.Center}
       gap={6}
       className="recovery-phrase h-full"
-      data-testid="recovery-phrase"
+      data-testid="parent-selector-secure-wallet"
     >
       <Box>
         {showSrpDetailsModal && (

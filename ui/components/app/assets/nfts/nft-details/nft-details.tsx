@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { getTokenTrackerLink, getAccountLink } from '@metamask/etherscan-link';
@@ -75,9 +75,10 @@ import {
   isWebUrl,
 } from '../../../../../../shared/lib/url-utils';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
-import { getImageForChainId } from '../../../../../selectors/multichain';
+import { useImageForChainId } from '../../../../../hooks/useImageForChainId';
 import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
 import { navigateToSendRoute } from '../../../../../pages/confirmations/utils/send';
+import { useDispatch } from '../../../../../store/hooks';
 import NftDetailInformationRow from './nft-detail-information-row';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 import NftDetailDescription from './nft-detail-description';
@@ -125,16 +126,14 @@ export function NftDetailsComponent({
   const { defaultRpcEndpointIndex } = nftChainNetwork;
   const { networkClientId: nftNetworkClientId } =
     nftChainNetwork.rpcEndpoints[defaultRpcEndpointIndex];
-  const nftChainImage = getImageForChainId(nftChainId as string);
+  const nftChainImage = useImageForChainId(nftChainId as string);
   const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
     string,
     string
   >;
 
   // useCopyToClipboard analysis: Copies the public address of the NFT
-  const [addressCopied, handleAddressCopy] = useCopyToClipboard({
-    clearDelayMs: null,
-  });
+  const [addressCopied, handleAddressCopy] = useCopyToClipboard();
 
   const { image: imageFromTokenURI } = useFetchNftDetailsFromTokenURI(tokenURI);
 

@@ -1,7 +1,6 @@
 import type { Json } from '@metamask/utils';
 
 import { getManifestFlags } from '../manifestFlags';
-import { BOTTOM_NAV_AB_TEST_ANALYTICS_MAPPING } from './configs/bottom-nav-bar';
 import { DEFI_REFERRAL_UI_AB_TEST_ANALYTICS_MAPPING } from './configs/defi-referral-ui';
 import {
   createActiveABTestAssignment,
@@ -18,7 +17,6 @@ export type ABTestAnalyticsMapping = {
 
 export const AB_TEST_ANALYTICS_MAPPINGS: ABTestAnalyticsMapping[] = [
   DEFI_REFERRAL_UI_AB_TEST_ANALYTICS_MAPPING,
-  BOTTOM_NAV_AB_TEST_ANALYTICS_MAPPING,
 ];
 export function clearABTestAnalyticsMappings(): void {
   AB_TEST_ANALYTICS_MAPPINGS.length = 0;
@@ -84,6 +82,7 @@ export function enrichWithABTests<TEvent extends ABTestAnalyticsEvent>(
   event: TEvent,
   featureFlags: Record<string, unknown> | null | undefined,
   mappings: readonly ABTestAnalyticsMapping[] = AB_TEST_ANALYTICS_MAPPINGS,
+  thresholdGroups?: Record<string, string> | null,
 ): TEvent {
   const existingAssignments = normalizeActiveABTestAssignments(
     event.properties?.active_ab_tests,
@@ -105,6 +104,7 @@ export function enrichWithABTests<TEvent extends ABTestAnalyticsEvent>(
       featureFlags,
       mapping.flagKey,
       mapping.validVariants,
+      thresholdGroups,
     );
 
     return isActive

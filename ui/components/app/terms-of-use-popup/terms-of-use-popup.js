@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { Box, BoxAlignItems } from '@metamask/design-system-react';
+import { Box, BoxAlignItems, Checkbox } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
 import {
   Button,
@@ -8,7 +8,6 @@ import {
   ButtonPrimary,
   ButtonSize,
   ButtonVariant,
-  Checkbox,
   IconName,
   IconSize,
   Modal,
@@ -151,7 +150,7 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
               time and (2) consent to the collection, use, disclosure and other
               handling of information as described in our{' '}
               <ButtonLink
-                href="https://consensys.io/privacy-policy/"
+                href="https://metamask.com/privacy-notice"
                 target="_blank"
                 rel="noopener noreferrer"
                 color={TextColor.primaryDefault}
@@ -1163,13 +1162,13 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
             <Text variant={TextVariant.bodySm} marginBottom={4}>
               “Privacy Policy” means the privacy policy located at{' '}
               <ButtonLink
-                href="https://consensys.io/privacy-policy"
+                href="https://metamask.com/privacy-notice"
                 target="_blank"
                 rel="noopener noreferrer"
                 color={TextColor.primaryDefault}
                 variant={TextVariant.bodySm}
               >
-                https://consensys.io/privacy-policy
+                https://metamask.com/privacy-notice
               </ButtonLink>{' '}
               (and any successor or related locations designated by us), as it
               may be updated by us from time to time.
@@ -1229,10 +1228,9 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
         >
           <Checkbox
             id="terms-of-use__checkbox"
-            className="terms-of-use__checkbox"
+            className="terms-of-use__checkbox items-start"
             data-testid="terms-of-use-checkbox"
-            isChecked={isTermsOfUseChecked}
-            alignItems={AlignItems.flexStart}
+            isSelected={isTermsOfUseChecked}
             onChange={toggle}
             label={t('termsOfUseAgreeText')}
           />

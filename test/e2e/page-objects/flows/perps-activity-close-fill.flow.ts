@@ -8,6 +8,9 @@ import { PerpsMarketListPage } from '../pages/perps/perps-market-list-page';
  * After a simulated position change in E2E, pushes a `userFills` snapshot via
  * `pushUserFills`, then opens Perps Activity and asserts a trade row appears
  * with the expected title fragment (same navigation pattern as other lifecycle tests).
+ * `pushUserFills` must also make the mocked `userFills` REST read return the fill:
+ * opening Activity force-refreshes history, so that read is what the page renders
+ * regardless of whether the live stream delivered the push.
  *
  * @param options
  * @param options.driver
@@ -27,17 +30,19 @@ export async function assertPerpsActivityShowsCloseFill({
   pushUserFills();
 
   const marketDetailPage = new PerpsMarketDetailPage(driver);
+  await marketDetailPage.checkPageIsLoaded();
   await marketDetailPage.clickBack();
-  try {
-    const marketListPage = new PerpsMarketListPage(driver);
+
+  const marketListPage = new PerpsMarketListPage(driver);
+  const onMarketList = await marketListPage.isPageLoaded();
+  if (onMarketList) {
     await marketListPage.clickBack();
-  } catch (error) {
-    console.error('Market list not displayed, moving on', error);
   }
 
   const perpsTab = new PerpsTab(driver);
   await perpsTab.navigateToPerpsHome();
-  await perpsTab.checkPageIsLoaded();
+  await perpsTab.waitForPerpsViewStable();
+  await perpsTab.waitForRecentActivitySection();
   await perpsTab.clickRecentActivitySeeAll();
 
   const activityPage = new PerpsActivityPage(driver);

@@ -1,5 +1,5 @@
 {
-  "author": "https://metamask.io",
+  "author": "https://metamask.com",
   "background": {
     "page": "background.html",
     "persistent": true
@@ -59,7 +59,6 @@
   "permissions": [
     "storage",
     "unlimitedStorage",
-    "clipboardWrite",
     "http://*/*",
     "https://*/*",
     "ws://*/*",

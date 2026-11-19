@@ -4,11 +4,34 @@ import {
   SOL_ACCOUNT_PROVIDER_NAME,
   TRX_ACCOUNT_PROVIDER_NAME,
   BTC_ACCOUNT_PROVIDER_NAME,
+  AccountProviderWrapper,
+  XlmAccountProvider,
 } from '@metamask/multichain-account-service';
 import { MessengerClientInitFunction } from '../types';
 import { MultichainAccountServiceInitMessenger } from '../messengers/accounts';
 import { previousValueComparator } from '../../lib/util';
-import { trace } from '../../../../shared/lib/trace';
+import {
+  trace,
+  type TraceCallback,
+  type TraceRequest,
+} from '../../../../shared/lib/trace';
+
+// The account service starts these without a `parentContext`, so they nest
+// under the active span; for group creation that is its own trace.
+const NESTED_TRACE_NAMES = new Set<string>([
+  'Provider Create Accounts (v2 - batched)',
+  'Wallet Alignment',
+]);
+
+function traceWithNestedFallback<ResultType>(
+  request: TraceRequest,
+  fn?: TraceCallback<ResultType>,
+) {
+  const req = NESTED_TRACE_NAMES.has(request.name)
+    ? { ...request, allowActiveSpanFallback: true }
+    : request;
+  return fn ? trace(req, fn) : trace(req);
+}
 
 /**
  * Initialize the multichain account service.
@@ -37,15 +60,22 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
     },
     createAccounts: {
       timeoutMs: 3000,
-      batched: true,
     },
     resyncAccounts: {
       autoRemoveExtraSnapAccounts: false,
     },
   };
 
+  // Stellar is GA; keep the custom provider until MultichainAccountService
+  // wires XLM via `XLM_ACCOUNT_PROVIDER_NAME` like SOL/BTC/TRX.
+  const xlmProvider = new AccountProviderWrapper(
+    controllerMessenger,
+    new XlmAccountProvider(controllerMessenger, snapAccountProviderConfig),
+  );
+
   const messengerClient = new MultichainAccountService({
     messenger: controllerMessenger,
+    providers: [xlmProvider],
     providerConfigs: {
       [SOL_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
       [BTC_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
@@ -53,7 +83,7 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
     },
     config: {
       // @ts-expect-error Controller uses string for names rather than enum
-      trace,
+      trace: traceWithNestedFallback,
     },
     ensureOnboardingComplete,
   });

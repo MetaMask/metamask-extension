@@ -3,6 +3,21 @@ import { Driver } from '../../../webdriver/driver';
 import { RawLocator } from '../../common';
 import Confirmation from './confirmation';
 
+/**
+ * Personal sign and SIWE (sign-in with Ethereum) confirmation.
+ *
+ * Screen: `#/confirmation` for personal_sign / SIWE signature approvals.
+ * Owns: signature vs sign-in titles, origin/message checks, and SIWE terms
+ * copy.
+ * Boundaries: inherits footer/nav from `Confirmation`. Typed-data and permit
+ * signatures are `SignTypedData` / `PermitConfirmation`. Snap-rendered
+ * sign-in is `SnapSignInConfirmation`.
+ * Related: `Confirmation`, `SignTypedData`, `PermitConfirmation`.
+ *
+ * @see ui/pages/confirmations/components/confirm/info/personal-sign/personal-sign.tsx
+ * @see ui/pages/confirmations/components/confirm/info/personal-sign/siwe-sign/siwe-sign.tsx
+ * @see ui/pages/confirmations/components/confirm/title/title.tsx
+ */
 export default class PersonalSignConfirmation extends Confirmation {
   private readonly messageSelector: RawLocator = {
     text: 'Example `personal_sign` message',
@@ -29,8 +44,12 @@ export default class PersonalSignConfirmation extends Confirmation {
     text: 'https://127.0.0.1:8080',
   };
 
-  private readonly siweMessage: RawLocator = {
-    text: 'I accept the MetaMask Terms of Service: https://community.metamask.io/tos',
+  // Temporary dual-match: @metamask/test-dapp still emits community.metamask.io
+  // while in-repo fixtures migrate to community.metamask.com. Remove the .io
+  // branch once the test-dapp package is bumped.
+  private readonly siweMessage = {
+    xpath:
+      "//*[contains(text(), 'I accept the MetaMask Terms of Service: https://community.metamask.io/tos') or contains(text(), 'I accept the MetaMask Terms of Service: https://community.metamask.com/tos')]",
   };
 
   constructor(driver: Driver) {

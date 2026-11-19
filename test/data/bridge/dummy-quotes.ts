@@ -1,7 +1,6 @@
 import {
   getNativeAssetForChainId,
-  type QuoteResponse,
-  type QuoteMetadata,
+  toQuoteResponseV2,
 } from '@metamask/bridge-controller';
 
 export const OP_0_005_ETH_TO_ARB_METADATA = {
@@ -14,6 +13,10 @@ export const OP_0_005_ETH_TO_ARB_METADATA = {
     effective: { amount: '12', valueInCurrency: '12', usd: '12' },
     total: { amount: '12', valueInCurrency: '12', usd: '12' },
     max: { amount: '12', valueInCurrency: '12', usd: '12' },
+  },
+  priceImpact: {
+    valueInCurrency: '988',
+    usd: '988',
   },
   totalNetworkFee: {
     amount: '12',
@@ -447,7 +450,7 @@ export const DummyQuotesNoApproval = {
       },
       estimatedProcessingTimeInSeconds: 60,
     },
-  ] as unknown as (QuoteResponse & QuoteMetadata)[],
+  ].map(toQuoteResponseV2),
 };
 
 export const ETH_11_USDC_TO_ARB_METADATA = {
@@ -456,9 +459,11 @@ export const ETH_11_USDC_TO_ARB_METADATA = {
     valueInCurrency: '1000',
     usd: '1000',
   },
+  priceImpact: {
+    valueInCurrency: '988',
+    usd: '988',
+  },
   gasFee: {
-    effective: { amount: '12', valueInCurrency: '12', usd: '12' },
-    max: { amount: '12', valueInCurrency: '12', usd: '12' },
     total: { amount: '12', valueInCurrency: '12', usd: '12' },
   },
   totalNetworkFee: {
@@ -926,7 +931,7 @@ export const DummyQuotesWithApproval = {
       },
       estimatedProcessingTimeInSeconds: 1020,
     },
-  ] as unknown as (QuoteResponse & QuoteMetadata)[],
+  ].map(toQuoteResponseV2),
   ARB_11_USDC_TO_ETH: [
     {
       quote: {
@@ -1031,7 +1036,7 @@ export const DummyQuotesWithApproval = {
       },
       estimatedProcessingTimeInSeconds: 1140,
     },
-  ] as unknown as (QuoteResponse & QuoteMetadata)[],
+  ].map(toQuoteResponseV2),
   ARB_11_USDC_TO_OP: [
     {
       quote: {
@@ -2706,7 +2711,7 @@ export const DummyQuotesWithApproval = {
       },
       estimatedProcessingTimeInSeconds: 20,
     },
-  ] as unknown as (QuoteResponse & QuoteMetadata)[],
+  ].map(toQuoteResponseV2),
   OP_11_USDC_TO_ARB: [
     {
       quote: {
@@ -4373,5 +4378,5 @@ export const DummyQuotesWithApproval = {
       },
       estimatedProcessingTimeInSeconds: 20,
     },
-  ] as unknown as (QuoteResponse & QuoteMetadata)[],
+  ].map(toQuoteResponseV2),
 };

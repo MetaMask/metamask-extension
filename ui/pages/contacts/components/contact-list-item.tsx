@@ -25,7 +25,7 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
-import { getImageForChainId } from '../../../selectors/multichain';
+import { useImageForChainId } from '../../../hooks/useImageForChainId';
 import Tooltip from '../../../components/ui/tooltip';
 import type { ContactListItemProps } from '../contacts.types';
 
@@ -39,11 +39,11 @@ export function ContactListItem({
   isDuplicate = false,
 }: ContactListItemProps) {
   const t = useI18nContext();
-  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const [copied, handleCopy] = useCopyToClipboard();
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const network = allNetworks?.[chainId as Hex];
   const networkName = network?.name ?? t('networkTabCustom');
-  const networkImage = getImageForChainId(chainId);
+  const networkImage = useImageForChainId(chainId);
 
   const onCopy = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -117,7 +117,7 @@ export function ContactListItem({
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
         gap={2}
-        className="mt-4 shrink-0"
+        className="shrink-0"
       >
         {isDuplicate && (
           <Tooltip title={t('duplicateContactTooltip')} position="top">

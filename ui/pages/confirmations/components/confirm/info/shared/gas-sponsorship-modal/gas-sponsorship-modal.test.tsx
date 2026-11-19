@@ -77,6 +77,7 @@ describe('GasSponsorshipModal', () => {
 
     useFeeCalculationsMock.mockReturnValue({
       addedProtectionFeeFiat: null,
+      addedProtectionFeeUsd: null,
       calculateGasEstimate: jest.fn(),
       estimatedFeeFiat: '$1.50',
       estimatedFeeFiatWith18SignificantDigits: null,
@@ -109,6 +110,20 @@ describe('GasSponsorshipModal', () => {
     expect(
       result.getByText(messages.paidByMetaMask.message),
     ).toBeInTheDocument();
+    expect(
+      result.getByText(messages.includesSmartAccountActivation.message),
+    ).toBeInTheDocument();
+  });
+
+  it('renders the sponsor option when a sponsor is provided', () => {
+    const result = renderWithConfirmContextProvider(
+      <GasSponsorshipModal sponsor="Uniswap" onClose={jest.fn()} />,
+      store,
+    );
+
+    expect(result.getByText('Paid by Uniswap')).toBeInTheDocument();
+    expect(result.getByText('U')).toBeInTheDocument();
+    expect(result.queryByText(messages.paidByMetaMask.message)).toBeNull();
     expect(
       result.getByText(messages.includesSmartAccountActivation.message),
     ).toBeInTheDocument();
@@ -209,6 +224,7 @@ describe('GasSponsorshipModal', () => {
   it('displays native fee in fiat when available', () => {
     useFeeCalculationsMock.mockReturnValue({
       addedProtectionFeeFiat: null,
+      addedProtectionFeeUsd: null,
       calculateGasEstimate: jest.fn(),
       estimatedFeeFiat: '$2.75',
       estimatedFeeFiatWith18SignificantDigits: null,
@@ -231,6 +247,7 @@ describe('GasSponsorshipModal', () => {
   it('displays native fee in token amount when fiat is not available', () => {
     useFeeCalculationsMock.mockReturnValue({
       addedProtectionFeeFiat: null,
+      addedProtectionFeeUsd: null,
       calculateGasEstimate: jest.fn(),
       estimatedFeeFiat: '',
       estimatedFeeFiatWith18SignificantDigits: null,

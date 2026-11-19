@@ -54,6 +54,11 @@ export type NameProps = {
    * Whether to disable the onClick handler.
    */
   disableNameClick?: boolean;
+
+  /**
+   * Whether to fill the available width on one line. See `NameDisplay`.
+   */
+  fillWidth?: boolean;
 };
 
 const Name = memo(
@@ -64,6 +69,7 @@ const Name = memo(
     variation,
     className,
     disableNameClick = false,
+    fillWidth,
     ...props
   }: NameProps) => {
     const [modalOpen, setModalOpen] = useState(false);
@@ -90,7 +96,6 @@ const Name = memo(
           })
           .build(),
       );
-      // eslint-disable-next-line react-compiler/react-compiler
       // eslint-disable-next-line react-hooks/exhaustive-deps -- only want to call `trackEvent` on the initial render
     }, []);
 
@@ -126,6 +131,7 @@ const Name = memo(
           variation={variation}
           handleClick={handleClick}
           disableNameClick={disableNameClick}
+          fillWidth={fillWidth}
           {...props}
         />
         {subtitle && (

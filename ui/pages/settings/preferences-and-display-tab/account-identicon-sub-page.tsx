@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   AvatarAccount,
@@ -18,11 +18,11 @@ import {
   AvatarAccountSize,
 } from '@metamask/design-system-react';
 import { setAvatarType } from '../../../store/actions';
-import { PREFERENCES_AND_DISPLAY_ROUTE } from '../../../helpers/constants/routes';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { transitionBack } from '../../../components/ui/transition';
+import { useDispatch } from '../../../store/hooks';
 import { AVATAR_OPTIONS } from './account-identicon-utils';
 
 const AccountIdenticonSubPage = () => {
@@ -37,7 +37,7 @@ const AccountIdenticonSubPage = () => {
 
   const handleSelect = (value: AvatarAccountVariant) => {
     dispatch(setAvatarType(value));
-    transitionBack(() => navigate(PREFERENCES_AND_DISPLAY_ROUTE));
+    transitionBack(() => navigate(-1));
   };
 
   return (

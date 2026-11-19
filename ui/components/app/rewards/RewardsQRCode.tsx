@@ -1,13 +1,13 @@
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   setRewardsModalOpen,
-  setOnboardingReferralCode,
   setRewardsDeeplinkUrl,
 } from '../../../ducks/rewards';
 import { selectRewardsDeeplinkUrl } from '../../../ducks/rewards/selectors';
 import { DeeplinkQRCode } from '../deeplink-qr-code';
+import { useDispatch } from '../../../store/hooks';
 import { REWARDS_DEEPLINK_BASE_URL } from './utils/constants';
 
 export default function RewardsQRCode() {
@@ -17,7 +17,6 @@ export default function RewardsQRCode() {
 
   const handleClose = useCallback(() => {
     dispatch(setRewardsModalOpen(false));
-    dispatch(setOnboardingReferralCode(null));
     dispatch(setRewardsDeeplinkUrl(null));
   }, [dispatch]);
 

@@ -1,12 +1,11 @@
-import copyToClipboard from 'copy-to-clipboard';
 import log from 'loglevel';
 import React from 'react';
-// TODO: https://github.com/MetaMask/MetaMask-planning/issues/6925
-// eslint-disable-next-line react/no-deprecated
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 
+import { consumeReferralCode } from '#ui/helpers/utils/consume-referral-code';
+import { setPendingReferralCode } from '#ui/ducks/rewards-money';
 import { captureException } from '../shared/lib/sentry';
 import { withResolvers } from '../shared/lib/promise-with-resolvers';
 import { getEnvironmentType } from '../shared/lib/environment-type';
@@ -23,11 +22,10 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../shared/constants/app';
 import { getBrowserName } from '../shared/lib/browser-runtime.utils';
-import { COPY_OPTIONS } from '../shared/constants/copy';
 import { START_UI_SYNC } from '../shared/constants/ui-initialization';
 import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
-import { trace, TraceName } from '../shared/lib/trace';
+import { endTrace, trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/lib/selectors/networks';
 import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../shared/constants/messages';
 import { getSelectedInternalAccount } from '../shared/lib/selectors/accounts';
@@ -51,7 +49,10 @@ import {
   getUnconnectedAccountAlertShown,
 } from './ducks/metamask/metamask';
 import { getIsUnlocked } from './ducks/metamask/base-selectors';
-import Root from './pages';
+import Root, { router } from './pages';
+import { registerInitialTransactionConfirmationMeasurement } from './pages/confirmations/confirmation-performance';
+import { registerHomeMeasurement } from './pages/home/home-performance';
+import { registerUnlockMeasurement } from './pages/unlock-page/unlock-performance';
 import txHelper from './helpers/utils/tx-helper';
 import {
   setBackgroundConnection,
@@ -61,8 +62,13 @@ import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
 import { initWebVitals } from './helpers/utils/web-vitals';
 import { getPerpsStreamManager } from './providers/perps';
+import {
+  primePerpsLifecycleContext,
+  markPerpsLifecycleWarm,
+} from './helpers/perps/entry-trace';
 import { createUIMessenger } from './messengers/ui-messenger';
 
+export { trackDocumentPageClose } from './helpers/utils/useful-screen-ready';
 export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-handler';
 export {
   displayCriticalErrorMessage,
@@ -70,6 +76,17 @@ export {
 } from './helpers/utils/display-critical-error';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
+
+const reactRoots = new WeakMap();
+
+function renderUi(element, container) {
+  let root = reactRoots.get(container);
+  if (!root) {
+    root = createRoot(container);
+    reactRoots.set(container, root);
+  }
+  root.render(element);
+}
 
 /**
  * @type {PromiseWithResolvers<ReturnType<typeof configureStore>>}
@@ -93,9 +110,15 @@ export const connectToBackground = (
       const store = await reduxStore.promise;
       store.dispatch(actions.updateMetamaskState(data.params[0]));
     } else if (method === START_UI_SYNC) {
+      primePerpsLifecycleContext();
       await handleStartUISync(data.params[0]);
     } else if (method === 'perpsStreamUpdate') {
-      getPerpsStreamManager().handleBackgroundUpdate(data.params[0]);
+      const payload = data.params[0];
+      if (payload.channel === 'lifecycleContext' && payload.data === 'warm') {
+        markPerpsLifecycleWarm();
+      } else {
+        getPerpsStreamManager().handleBackgroundUpdate(payload);
+      }
     } else if (method !== MESSENGER_SUBSCRIPTION_NOTIFICATION) {
       throw new Error(
         `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(data)}`,
@@ -124,6 +147,7 @@ export async function launchMetamaskUi(opts) {
  * @returns redux store
  */
 export async function setupInitialStore(metamaskState, activeTab) {
+  const referralCode = consumeReferralCode();
   // parse opts
   if (!metamaskState.featureFlags) {
     metamaskState.featureFlags = {};
@@ -189,6 +213,7 @@ export async function setupInitialStore(metamaskState, activeTab) {
   }
 
   const store = configureStore(draftInitialState);
+  store.dispatch(setPendingReferralCode(referralCode));
   reduxStore.resolve(store);
 
   const unapprovedTxs = getUnapprovedTransactions(metamaskState);
@@ -216,12 +241,15 @@ export async function setupInitialStore(metamaskState, activeTab) {
 }
 
 async function startApp(metamaskState, opts) {
-  const { traceContext } = opts;
+  const { traceContext, onFirstCommit } = opts;
 
   // Initialize Core Web Vitals (INP, LCP, CLS) measurement
   initWebVitals();
 
   const tags = getStartupTraceTags({ metamask: metamaskState });
+  registerHomeMeasurement(metamaskState, router);
+  registerInitialTransactionConfirmationMeasurement(metamaskState, router);
+  registerUnlockMeasurement(metamaskState, router);
 
   const store = await trace(
     {
@@ -250,8 +278,21 @@ async function startApp(metamaskState, opts) {
   // UI messenger is created here in preparation for completely replacing
   // `submitRequestToBackground` with it.
   const uiMessenger = createUIMessenger();
-  trace({ name: TraceName.FirstRender, parentContext: traceContext }, () =>
-    render(<Root store={store} uiMessenger={uiMessenger} />, opts.container),
+  // StrictMode is applied once in `ui/pages/index.js` (withStrictMode).
+  // Do not wrap again here — nested StrictMode doubles remounts and races Rive.
+  // `createRoot().render()` only schedules the render, so the trace ends when
+  // React commits it instead of when `renderUi` returns.
+  trace({ name: TraceName.FirstRender, parentContext: traceContext });
+  renderUi(
+    <Root
+      store={store}
+      uiMessenger={uiMessenger}
+      onFirstCommit={() => {
+        endTrace({ name: TraceName.FirstRender });
+        onFirstCommit?.();
+      }}
+    />,
+    opts.container,
   );
 
   return store;
@@ -456,6 +497,13 @@ function setupStateHooks(store) {
     globalThis.stateHooks.submitRequestToBackground = submitRequestToBackground;
     globalThis.stateHooks.getPerpsStreamManager = getPerpsStreamManager;
   }
+
+  if (process.env.IN_TEST) {
+    // Load conditionally so this test-only package is excluded from production builds and policies.
+    window.stateHooks.hasConsoleAccess = () =>
+      // eslint-disable-next-line n/global-require
+      require('@metamask/dummy-package').hasConsoleAccess();
+  }
 }
 
 /**
@@ -469,18 +517,4 @@ window.logStateString = async function () {
   state.logs = window.stateHooks.getLogs();
   state.platform = await browser.runtime.getPlatformInfo();
   return JSON.stringify(state, null, 2);
-};
-
-window.logState = async function (toClipboard) {
-  try {
-    const result = await window.logStateString();
-    if (toClipboard) {
-      copyToClipboard(result, COPY_OPTIONS);
-      console.log('State log copied');
-    } else {
-      console.log(result);
-    }
-  } catch (err) {
-    console.error(err.message);
-  }
 };

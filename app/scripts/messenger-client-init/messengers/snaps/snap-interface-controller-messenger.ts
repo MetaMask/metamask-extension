@@ -31,7 +31,7 @@ export function getSnapInterfaceControllerMessenger(
       'ApprovalController:hasRequest',
       'ApprovalController:acceptRequest',
       'SnapController:getSnap',
-      'MultichainAssetsController:getState',
+      'AssetsController:getState',
       'AccountsController:getSelectedMultichainAccount',
       'AccountsController:getAccountByAddress',
       'AccountsController:listMultichainAccounts',

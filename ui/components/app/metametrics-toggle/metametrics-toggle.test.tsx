@@ -31,7 +31,7 @@ const disableMetametricsMock = jest.fn(() => Promise.resolve());
 type StateOverrides = {
   isSignedIn?: boolean;
   useExternalServices?: boolean;
-  completedMetaMetricsOnboarding?: boolean;
+  consentDecisionMade?: boolean;
   optedIn?: boolean;
   isBackupAndSyncEnabled?: boolean;
 };
@@ -39,7 +39,7 @@ type StateOverrides = {
 const initialState: StateOverrides = {
   isSignedIn: true,
   useExternalServices: true,
-  completedMetaMetricsOnboarding: true,
+  consentDecisionMade: true,
   optedIn: true,
   isBackupAndSyncEnabled: true,
 };
@@ -76,10 +76,7 @@ const arrangeMocks = (stateOverrides: StateOverrides = {}) => {
 
   const { getByTestId } = render(
     <Provider store={store}>
-      <MetametricsToggle
-        dataCollectionForMarketing={false}
-        setDataCollectionForMarketing={() => Promise.resolve()}
-      />
+      <MetametricsToggle />
     </Provider>,
   );
 
@@ -115,7 +112,7 @@ describe('MetametricsToggle', () => {
   it('tracks the enabled preference after enabling metrics', async () => {
     const { metaMetricsToggleButton } = arrangeMocks({
       useExternalServices: true,
-      completedMetaMetricsOnboarding: true,
+      consentDecisionMade: true,
       optedIn: false,
     });
     fireEvent.click(metaMetricsToggleButton);
@@ -138,7 +135,7 @@ describe('MetametricsToggle', () => {
   it('tracks the disabled preference when metrics are disabled', async () => {
     const { metaMetricsToggleButton } = arrangeMocks({
       useExternalServices: true,
-      completedMetaMetricsOnboarding: true,
+      consentDecisionMade: true,
       optedIn: true,
     });
 

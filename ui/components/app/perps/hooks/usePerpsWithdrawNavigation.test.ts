@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import mockState from '../../../../../test/data/mock-state.json';
 import {

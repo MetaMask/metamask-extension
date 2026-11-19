@@ -31,7 +31,7 @@ describe('Confirmation Redesign Contract Deployment Component', function () {
         );
         await deploymentConfirmation.checkTitle();
         await deploymentConfirmation.checkDeploymentSiteInfo();
-        await deploymentConfirmation.clickFooterConfirmButton();
+        await deploymentConfirmation.clickFooterButton({ button: 'confirm' });
 
         // check activity list
         await driver.switchToWindowWithTitle(

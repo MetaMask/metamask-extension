@@ -2,6 +2,32 @@ import { Driver } from '../../../webdriver/driver';
 import { RawLocator } from '../../common';
 import Confirmation from './confirmation';
 
+export type PermitInfoValues = {
+  contractPetName: string;
+  deadline: string;
+  nonce: string;
+  origin: string;
+  ownerName: string;
+  primaryType: string;
+  spenderAddress: string;
+  value: string;
+};
+
+/**
+ * EIP-2612 / permit-style typed signature confirmation details.
+ *
+ * Screen: `#/confirmation` for permit typed-sign approvals.
+ * Owns: confirm title/description, origin, primary type, named addresses,
+ * and data-tree field checks (and bundled permit info assertions).
+ * Boundaries: inherits footer/nav from `Confirmation`. Generic typed-data
+ * without permit simulation is `SignTypedData`. On-chain ERC-20 approve is
+ * `ERC20ApproveTransactionConfirmation`.
+ * Related: `SignTypedData`, `Confirmation`.
+ *
+ * @see ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign.tsx
+ * @see ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/permit-simulation/permit-simulation.tsx
+ * @see ui/pages/confirmations/components/confirm/row/typed-sign-data/typedSignData.tsx
+ */
 export default class PermitConfirmation extends Confirmation {
   private readonly addressName = (text: string): RawLocator => ({
     css: '.name__name',
@@ -61,6 +87,23 @@ export default class PermitConfirmation extends Confirmation {
 
   async checkDescription(description: string) {
     await this.driver.waitForSelector(this.confirmDescription(description));
+  }
+
+  /**
+   * Assert Permit confirmation details from caller-provided expected values.
+   *
+   * @param info - Expected origin, addresses, and data-tree field values.
+   */
+  async checkInfoValues(info: PermitInfoValues): Promise<void> {
+    await this.clickCollapseSectionButton();
+    await this.checkOrigin(info.origin);
+    await this.checkAddressValue(info.contractPetName);
+    await this.checkPrimaryType(info.primaryType);
+    await this.checkAddressName(info.ownerName);
+    await this.checkAddressValue(info.spenderAddress);
+    await this.checkDataTreeField('value', info.value);
+    await this.checkDataTreeField('nonce', info.nonce);
+    await this.checkDataTreeField('deadline', info.deadline);
   }
 
   async checkOrigin(origin: string) {

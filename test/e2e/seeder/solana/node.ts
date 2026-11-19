@@ -16,6 +16,7 @@ import {
   isTcpPortAvailable,
   isTcpPortRangeAvailable,
 } from '../ports';
+import { stopProcess } from '../stop-process';
 
 export const SOLANA_LOCAL_NODE_HOST = '127.0.0.1';
 export const SOLANA_LOCAL_NODE_RPC_PORT = 8899;
@@ -99,7 +100,12 @@ export class SolanaNode {
     }
 
     if (ledgerDirectory) {
-      await rm(ledgerDirectory, { force: true, recursive: true });
+      await rm(ledgerDirectory, {
+        force: true,
+        maxRetries: 5,
+        recursive: true,
+        retryDelay: 200,
+      });
     }
   }
 
@@ -326,52 +332,4 @@ function dynamicPortRangeOverlapsExcludedPorts(
     }
   }
   return false;
-}
-
-async function stopProcess(childProcess: ChildProcess): Promise<void> {
-  if (childProcess.exitCode !== null || childProcess.signalCode !== null) {
-    return;
-  }
-
-  const exitPromise = new Promise<void>((resolvePromise) => {
-    childProcess.once('exit', () => resolvePromise());
-  });
-  killProcessTree(childProcess, 'SIGTERM');
-
-  const exitedAfterTerm = await Promise.race([
-    exitPromise,
-    new Promise<boolean>((resolvePromise) => {
-      setTimeout(() => {
-        resolvePromise(false);
-      }, 5_000);
-    }),
-  ]);
-
-  if (exitedAfterTerm !== false) {
-    return;
-  }
-
-  killProcessTree(childProcess, 'SIGKILL');
-  await Promise.race([
-    exitPromise,
-    new Promise<void>((resolvePromise) => setTimeout(resolvePromise, 1_000)),
-  ]);
-}
-
-function killProcessTree(
-  childProcess: ChildProcess,
-  signal: NodeJS.Signals,
-): void {
-  if (process.platform === 'win32') {
-    childProcess.kill(signal);
-    return;
-  }
-
-  if (childProcess.pid) {
-    try {
-      process.kill(-childProcess.pid, signal);
-    } catch {
-      childProcess.kill(signal);
-    }
-  }
 }

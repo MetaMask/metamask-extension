@@ -4,10 +4,16 @@ import {
   Category,
 } from '@metamask/hw-wallet-sdk';
 import {
+  LEDGER_BRIDGE_MESSAGE_TIMEOUT_MS,
   LedgerAction,
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
-import { LedgerOffscreenBridge } from './ledger-offscreen-bridge';
+import {
+  LedgerOffscreenBridge,
+  MESSAGE_TIMEOUT_MS,
+  GET_PUBLIC_KEY_TIMEOUT_MS,
+  SIGN_TIMEOUT_MS,
+} from './ledger-offscreen-bridge';
 
 type SendMessageCallback = (response: unknown) => void;
 
@@ -156,6 +162,29 @@ describe('LedgerOffscreenBridge', () => {
       respond({ success: true, payload: expected });
       await expect(promise).resolves.toEqual(expected);
     });
+
+    it('deviceSignDelegationAuthorization forwards params and resolves with payload', async () => {
+      const bridge = new LedgerOffscreenBridge();
+      const params = {
+        hdPath: "m/44'/60'/0'/0/0",
+        chainId: 1,
+        contractAddress: '0x1234',
+        nonce: 2,
+      };
+      const expected = { v: '0x1c', r: '0xrr', s: '0xss' };
+
+      const promise = bridge.deviceSignDelegationAuthorization(params);
+
+      const [payload] = chromeRuntimeMock.sendMessage.mock.calls[0];
+      expect(payload).toEqual({
+        action: LedgerAction.signDelegationAuthorization,
+        target: OffscreenCommunicationTarget.ledgerOffscreen,
+        params,
+      });
+
+      respond({ success: true, payload: expected });
+      await expect(promise).resolves.toEqual(expected);
+    });
   });
 
   describe('success response unwrapping', () => {
@@ -220,9 +249,16 @@ describe('LedgerOffscreenBridge', () => {
       const bridge = new LedgerOffscreenBridge();
       const promise = bridge.getPublicKey({ hdPath: "m/44'/60'/0'/0/0" });
 
+      // No `name` → skips the HardwareWalletError branch and reaches
+      // `createLedgerError` via the known status code.
       respond({
         success: false,
-        payload: { error: { statusCode: 0x6985 } },
+        payload: {
+          error: {
+            message: 'User rejected action on device',
+            statusCode: 0x6985,
+          },
+        },
       });
 
       // createLedgerError() returns a HardwareWalletError with a numeric
@@ -237,9 +273,12 @@ describe('LedgerOffscreenBridge', () => {
       const bridge = new LedgerOffscreenBridge();
       const promise = bridge.getPublicKey({ hdPath: "m/44'/60'/0'/0/0" });
 
+      // Real payloads always carry `message` (from `serializeLedgerError`).
       respond({
         success: false,
-        payload: { error: { statusCode: 0x6fff } },
+        payload: {
+          error: { message: 'Transport status error', statusCode: 0x6fff },
+        },
       });
 
       // TransportStatusError carries statusCode on the instance.
@@ -268,17 +307,87 @@ describe('LedgerOffscreenBridge', () => {
 
       await expect(promise).rejects.toThrow('Unknown Ledger error occurred');
     });
+
+    it('falls back to the generic error when the error field is not a SerializedLedgerError', async () => {
+      const bridge = new LedgerOffscreenBridge();
+      const promise = bridge.getPublicKey({ hdPath: "m/44'/60'/0'/0/0" });
+
+      // Non-object error fails the guard and degrades to the fallback, but
+      // the raw value is still attached as `cause` so it isn't lost.
+      respond({ success: false, payload: { error: 'something went wrong' } });
+
+      const rejection = await promise.catch((error: unknown) => error);
+      expect(rejection).toBeInstanceOf(Error);
+      expect((rejection as Error).message).toBe(
+        'Unknown Ledger error occurred',
+      );
+      expect((rejection as Error).cause).toBe('something went wrong');
+    });
   });
 
   describe('timeout handling', () => {
-    it('rejects with "Ledger iframe timeout" after the configured timeout', async () => {
+    it('rejects with a descriptive timeout error after the configured timeout', async () => {
       jest.useFakeTimers();
       const bridge = new LedgerOffscreenBridge();
       const promise = bridge.attemptMakeApp();
 
-      jest.advanceTimersByTime(5000);
+      // attemptMakeApp uses MESSAGE_TIMEOUT_MS; cross it.
+      jest.advanceTimersByTime(MESSAGE_TIMEOUT_MS + 1_000);
 
-      await expect(promise).rejects.toThrow('Ledger iframe timeout');
+      await expect(promise).rejects.toThrow(
+        `Ledger device did not respond to "ledger-make-app" within ${MESSAGE_TIMEOUT_MS}ms`,
+      );
+    });
+
+    it('getPublicKey rejects after GET_PUBLIC_KEY_TIMEOUT_MS (30s) when the offscreen never responds', async () => {
+      jest.useFakeTimers();
+      const bridge = new LedgerOffscreenBridge();
+      const promise = bridge.getPublicKey({ hdPath: "m/44'/60'/0'/0/0" });
+
+      // Just under the timeout: still pending.
+      jest.advanceTimersByTime(GET_PUBLIC_KEY_TIMEOUT_MS - 1_000);
+      const settled = await Promise.race([
+        promise.then(
+          () => 'resolved',
+          () => 'rejected',
+        ),
+        Promise.resolve('pending'),
+      ]);
+      expect(settled).toBe('pending');
+
+      // Cross the threshold.
+      jest.advanceTimersByTime(2_000);
+
+      await expect(promise).rejects.toThrow(
+        `Ledger device did not respond to "ledger-unlock" within ${GET_PUBLIC_KEY_TIMEOUT_MS}ms`,
+      );
+    });
+
+    it('deviceSignTransaction rejects after SIGN_TIMEOUT_MS (5min) when the offscreen never responds', async () => {
+      jest.useFakeTimers();
+      const bridge = new LedgerOffscreenBridge();
+      const promise = bridge.deviceSignTransaction({
+        hdPath: "m/44'/60'/0'/0/0",
+        tx: '0x0',
+      });
+
+      jest.advanceTimersByTime(SIGN_TIMEOUT_MS + 1);
+
+      await expect(promise).rejects.toThrow(
+        `Ledger device did not respond to "ledger-sign-transaction" within ${SIGN_TIMEOUT_MS}ms`,
+      );
+    });
+
+    it('getPublicKey still resolves if the offscreen responds before the timeout', async () => {
+      jest.useFakeTimers();
+      const bridge = new LedgerOffscreenBridge();
+      const expected = { publicKey: '04abcd', address: '0xabc' };
+      const promise = bridge.getPublicKey({ hdPath: "m/44'/60'/0'/0/0" });
+
+      jest.advanceTimersByTime(1_000);
+      respond({ success: true, payload: expected });
+
+      await expect(promise).resolves.toEqual(expected);
     });
   });
 });

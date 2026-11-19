@@ -54,6 +54,7 @@ describe('trackEarlySegmentEvent', () => {
           name: 'MetaMask Extension',
           version: process.env.METAMASK_VERSION,
         },
+        userAgent: window.navigator.userAgent,
       },
     });
     expect(mockSegment.flush).toHaveBeenCalledTimes(1);
@@ -87,6 +88,7 @@ describe('trackEarlySegmentEvent', () => {
           name: 'MetaMask Extension',
           version: process.env.METAMASK_VERSION,
         },
+        userAgent: window.navigator.userAgent,
         page: {
           path: '/test',
         },
@@ -135,6 +137,7 @@ describe('trackSegmentEventWhileOptedOut', () => {
       hasMarketingConsent: () => false,
       hasBasicFunctionalityEnabled: () => true,
       getRemoteFeatureFlags: () => ({}),
+      getFeatureFlagThresholdGroups: () => ({}),
       appVersion: '1.0.0',
       userAgent: '',
     });
@@ -201,6 +204,7 @@ describe('trackSegmentEventWhileOptedOut', () => {
       hasMarketingConsent: () => false,
       hasBasicFunctionalityEnabled: () => false,
       getRemoteFeatureFlags: () => ({}),
+      getFeatureFlagThresholdGroups: () => ({}),
       appVersion: '1.0.0',
       userAgent: '',
     });

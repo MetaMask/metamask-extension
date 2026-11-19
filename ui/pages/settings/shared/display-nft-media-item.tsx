@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { getOpenSeaEnabled, getUseNftDetection } from '../../../selectors';
@@ -9,6 +9,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { ASSET_ITEMS } from '../search-config';
+import { useDispatch } from '../../../store/hooks';
 import { SettingsToggleItem } from './settings-toggle-item';
 
 export const DisplayNftMediaToggleItem = () => {
