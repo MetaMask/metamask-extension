@@ -24,7 +24,7 @@ beforeAll(() => {
   });
 });
 
-function renderResizeBar(value = 360) {
+function renderResizeBar(value = 360, onResize?: (width: number) => void) {
   return render(
     <div>
       <ResizeBar
@@ -32,6 +32,7 @@ function renderResizeBar(value = 360) {
         value={value}
         min={240}
         max={480}
+        onResize={onResize}
       />
     </div>,
   );
@@ -43,7 +44,8 @@ function widthOf(separator: HTMLElement) {
 
 describe('ResizeBar', () => {
   it('resizes from the left edge captured on pointer down', () => {
-    const { getByRole } = renderResizeBar();
+    const onResize = jest.fn();
+    const { getByRole } = renderResizeBar(360, onResize);
     const separator = getByRole('separator');
     const parent = separator.parentElement as HTMLElement;
     const rect = { left: 100 };
@@ -57,6 +59,7 @@ describe('ResizeBar', () => {
     fireEvent.pointerMove(separator, { pointerId: 1, clientX: 500 });
 
     expect(widthOf(separator)).toBe('400px');
+    expect(onResize).toHaveBeenCalledWith(400);
     expect(parent.getBoundingClientRect).toHaveBeenCalledTimes(1);
   });
 

@@ -5,14 +5,36 @@ import { SideNavAccounts } from './side-nav-accounts';
 import { SideNavItem } from './side-nav-item';
 
 const widthCssVar = '--side-nav-width';
+const widthStorageKey = 'metamask-side-nav-width';
 const defaultWidth = 360;
 const minWidth = 240;
 const maxWidth = 480;
+
+function clampSideNavWidth(width: number) {
+  return Math.min(maxWidth, Math.max(minWidth, width));
+}
+
+function readSideNavWidth() {
+  const parsed = Number.parseInt(
+    localStorage.getItem(widthStorageKey) ?? '',
+    10,
+  );
+  if (!Number.isFinite(parsed)) {
+    return defaultWidth;
+  }
+
+  return clampSideNavWidth(parsed);
+}
+
+function writeSideNavWidth(width: number) {
+  localStorage.setItem(widthStorageKey, String(clampSideNavWidth(width)));
+}
 
 // Persistent left navigation for the fullscreen design: the logo, the main
 // navigation items and the accounts list.
 export const SideNav = () => {
   const items = useMainNavItems();
+  const width = readSideNavWidth();
 
   return (
     <div
@@ -21,7 +43,7 @@ export const SideNav = () => {
       // Keeps the side nav out of the root page transition, like the bottom nav bar.
       style={
         {
-          [widthCssVar]: `${defaultWidth}px`,
+          [widthCssVar]: `${width}px`,
           viewTransitionName: 'side-nav',
         } as React.CSSProperties
       }
@@ -42,9 +64,10 @@ export const SideNav = () => {
       <SideNavAccounts />
       <ResizeBar
         property={widthCssVar}
-        value={defaultWidth}
+        value={width}
         min={minWidth}
         max={maxWidth}
+        onResize={writeSideNavWidth}
       />
     </div>
   );

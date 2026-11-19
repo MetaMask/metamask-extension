@@ -5,12 +5,19 @@ type ResizeBarProps = {
   value: number;
   min: number;
   max: number;
+  onResize?: (width: number) => void;
 };
 
 const className =
   'absolute -right-1 top-0 z-10 h-full w-2 cursor-col-resize touch-none focus-visible:outline-none before:absolute before:inset-y-0 before:left-[3px] before:w-px before:bg-border-muted hover:before:bg-primary-default focus-visible:before:bg-primary-default';
 
-export const ResizeBar = ({ property, min, max, value }: ResizeBarProps) => {
+export const ResizeBar = ({
+  property,
+  min,
+  max,
+  value,
+  onResize,
+}: ResizeBarProps) => {
   const dragOriginLeft = useRef<number | null>(null);
   const resolvedValueNow = value ?? Math.round((min + max) / 2);
 
@@ -22,6 +29,7 @@ export const ResizeBar = ({ property, min, max, value }: ResizeBarProps) => {
   const setWidth = (target: HTMLElement, width: number) => {
     const nextWidth = clampWidth(width);
     target.style.setProperty(property, `${nextWidth}px`);
+    onResize?.(nextWidth);
     return nextWidth;
   };
 
