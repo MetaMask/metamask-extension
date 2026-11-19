@@ -589,9 +589,7 @@ describe('selectLocalTransactions', () => {
     it('does not route deposits by the persisted Pay account override', () => {
       const state = buildStateWithMoneyAccount(
         buildMoneyAccountTransaction({
-          metamaskPay: {
-            accountOverride: LEDGER_ACCOUNT_ID,
-          } as TransactionMeta['metamaskPay'],
+          metamaskPay: { accountOverride: LEDGER_ACCOUNT_ID },
         }),
       );
       const ledgerState = structuredClone(state);
@@ -651,9 +649,7 @@ describe('selectLocalTransactions', () => {
 
       it('shows a finalized withdrawal only in the recipient hardware account activity', () => {
         const state = buildWithdrawState(MONEY_ACCOUNT_ADDRESS, {
-          metamaskPay: {
-            accountOverride: LEDGER_ACCOUNT_ID,
-          } as TransactionMeta['metamaskPay'],
+          metamaskPay: { accountOverride: LEDGER_ACCOUNT_ID },
         });
 
         expectOnlyInLedgerActivity(state);

@@ -195,9 +195,7 @@ function getMoneyAccountWithdrawRecipient(
 
   const accountId =
     transactionPayData[tx.id]?.accountOverride ??
-    // Cast until the published transaction types include the property.
-    (tx.metamaskPay as { accountOverride?: string } | undefined)
-      ?.accountOverride;
+    tx.metamaskPay?.accountOverride;
   const transferRecipient =
     getMoneyAccountWithdrawTransferDetails(tx).recipient?.toLowerCase();
 
