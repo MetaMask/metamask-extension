@@ -252,6 +252,11 @@ export type SharedTraceState = {
    * the background.
    */
   endedBackgroundPageloadTraceId?: string;
+  /**
+   * The ended pageload's own span id, which a scope forked during the pageload
+   * keeps as its active span. Unset outside the background.
+   */
+  endedBackgroundPageloadSpanId?: string;
 };
 
 type PendingTrace = {
@@ -628,8 +633,10 @@ export function trackBackgroundPageloadEnd(client?: Client): void {
 
   client?.on('spanEnd', (span) => {
     if (spanToJSON(span).op === 'pageload') {
-      getSharedState().endedBackgroundPageloadTraceId =
-        span.spanContext().traceId;
+      const { traceId, spanId } = span.spanContext();
+      const state = getSharedState();
+      state.endedBackgroundPageloadTraceId = traceId;
+      state.endedBackgroundPageloadSpanId = spanId;
     }
   });
 }
@@ -1363,6 +1370,10 @@ function sentrySetMeasurement(
  * Get the currently active Sentry span, if any.
  * Used by wrappers to avoid trace overhead when no span is active.
  *
+ * The background's ended pageload span counts as no span: a scope forked while
+ * the pageload ran, such as one a pending `withScope` callback holds, keeps it
+ * active, and work nested under it joins the ended pageload's trace.
+ *
  * @returns The active span or null.
  */
 export function sentryGetActiveSpan(): Sentry.Span | null {
@@ -1372,7 +1383,16 @@ export function sentryGetActiveSpan(): Sentry.Span | null {
     return null;
   }
 
-  return actual() ?? null;
+  const activeSpan = actual() ?? null;
+  const { endedBackgroundPageloadSpanId } = getSharedState();
+  if (
+    activeSpan &&
+    endedBackgroundPageloadSpanId &&
+    activeSpan.spanContext().spanId === endedBackgroundPageloadSpanId
+  ) {
+    return null;
+  }
+  return activeSpan;
 }
 
 /**
