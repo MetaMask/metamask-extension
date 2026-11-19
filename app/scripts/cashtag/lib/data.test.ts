@@ -52,10 +52,6 @@ describe('resolveTicker', () => {
       },
       similar: [
         expect.objectContaining({
-          name: 'Lower QQQ',
-          caipAssetId: 'eip155:1/erc20:0xlow',
-        }),
-        expect.objectContaining({
           name: 'Higher QQQ',
           caipAssetId: 'eip155:1/erc20:0xhigh',
         }),
@@ -96,7 +92,7 @@ describe('resolveTicker', () => {
 
     await expect(resolveTicker('dog')).resolves.toMatchObject({
       primary: { ticker: 'DOG' },
-      similar: [expect.objectContaining({ ticker: 'DOG' })],
+      similar: [],
     });
   });
 
@@ -144,10 +140,7 @@ describe('resolveTicker', () => {
 
     await expect(resolveTicker(' MSFT ')).resolves.toMatchObject({
       primary: { ticker: 'msft', name: 'Exact symbol' },
-      similar: [
-        expect.objectContaining({ name: 'Microsoft stock token' }),
-        expect.objectContaining({ ticker: 'msft' }),
-      ],
+      similar: [expect.objectContaining({ name: 'Microsoft stock token' })],
     });
   });
 
@@ -198,10 +191,7 @@ describe('resolveTicker', () => {
 
     await expect(resolveTicker('QQQ')).resolves.toMatchObject({
       primary: { name: 'Zero cap', marketCap: 0 },
-      similar: [
-        expect.objectContaining({ name: 'Zero cap', marketCap: 0 }),
-        expect.objectContaining({ name: 'Priced', marketCap: 5 }),
-      ],
+      similar: [expect.objectContaining({ name: 'Priced', marketCap: 5 })],
     });
   });
 

@@ -155,9 +155,10 @@ export async function resolveTicker(
       match.symbol.trim().toUpperCase() === ticker &&
       match.rwaData?.ticker?.trim().toUpperCase() === ticker,
   );
+  const primaryIndex = exactRwaIndex === -1 ? 0 : exactRwaIndex;
 
   return {
-    primary: assets[exactRwaIndex === -1 ? 0 : exactRwaIndex],
-    similar: assets,
+    primary: assets[primaryIndex],
+    similar: assets.filter((_, index) => index !== primaryIndex),
   };
 }

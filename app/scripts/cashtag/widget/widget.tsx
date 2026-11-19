@@ -23,7 +23,10 @@ export function Widget({
     setView('detail');
   }, [data]);
 
-  const results = similar.length > 0 ? similar : [data];
+  const results = [
+    data,
+    ...similar.filter((asset) => asset.caipAssetId !== data.caipAssetId),
+  ];
 
   return (
     <div className="mm-cashtag-card w-full h-full overflow-y-auto rounded-xl border border-muted bg-elevated1 text-default">

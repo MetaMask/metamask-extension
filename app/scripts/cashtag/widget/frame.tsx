@@ -62,10 +62,6 @@ function trackWidgetEvent({
     .catch(() => undefined);
 }
 
-function otherTokenCount(resolved: ResolvedTicker) {
-  return Math.max(resolved.similar.length - 1, 0);
-}
-
 async function loadTicker(symbol: string): Promise<ResolvedTicker | null> {
   try {
     const response = await browser.runtime.sendMessage({
@@ -113,7 +109,7 @@ async function main() {
 
   trackWidgetEvent({
     primary: resolved.primary,
-    similarTokenCount: otherTokenCount(resolved),
+    similarTokenCount: resolved.similar.length,
   });
 
   createRoot(mountPoint).render(
@@ -125,7 +121,7 @@ async function main() {
         trackWidgetEvent({
           event: 'swap_clicked',
           primary: resolved.primary,
-          similarTokenCount: otherTokenCount(resolved),
+          similarTokenCount: resolved.similar.length,
           selected: asset,
         });
         openExtensionPage('swap', asset);
@@ -134,7 +130,7 @@ async function main() {
         trackWidgetEvent({
           event: 'token_details_clicked',
           primary: resolved.primary,
-          similarTokenCount: otherTokenCount(resolved),
+          similarTokenCount: resolved.similar.length,
           selected: asset,
         });
         openExtensionPage('asset', asset);
@@ -143,14 +139,14 @@ async function main() {
         trackWidgetEvent({
           action: 'view_similar',
           primary: resolved.primary,
-          similarTokenCount: otherTokenCount(resolved),
+          similarTokenCount: resolved.similar.length,
         })
       }
       onSelectSimilar={(asset) =>
         trackWidgetEvent({
           action: 'select_similar',
           primary: resolved.primary,
-          similarTokenCount: otherTokenCount(resolved),
+          similarTokenCount: resolved.similar.length,
           selected: asset,
         })
       }
