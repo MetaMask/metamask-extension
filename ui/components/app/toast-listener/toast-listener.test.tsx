@@ -14,6 +14,10 @@ jest.mock('react-redux', () => ({
   useSelector: (selector: unknown) => mockUseSelector(selector),
 }));
 
+jest.mock('react-router-dom', () => ({
+  useLocation: () => ({ search: '' }),
+}));
+
 jest.mock('../../../ducks/metamask/base-selectors', () => ({
   getIsUnlocked: jest.fn(),
 }));

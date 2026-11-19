@@ -171,7 +171,7 @@ describe('isAllowedCashtagSender', () => {
 describe('createCashtagResponse', () => {
   const caipAssetId = 'eip155:1/slip44:60';
   const swapHash =
-    '#/cross-chain/swaps/prepare-bridge-page?to=eip155%3A1%2Fslip44%3A60';
+    '#/cross-chain/swaps/prepare-bridge-page?to=eip155%3A1%2Fslip44%3A60&fromXWidget=1';
   const widgetSender = sender({
     frameId: 1,
     tab: { ...xTab, windowId: 7 } as chrome.tabs.Tab,
@@ -260,7 +260,7 @@ describe('createCashtagResponse', () => {
     await expect(consumeDuringOpen).resolves.toMatchObject({
       body: {
         path: '/cross-chain/swaps/prepare-bridge-page',
-        search: '?to=eip155%3A1%2Fslip44%3A60',
+        search: '?to=eip155%3A1%2Fslip44%3A60&fromXWidget=1',
       },
     });
   });
@@ -377,7 +377,7 @@ describe('createCashtagResponse', () => {
       type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
       body: {
         path: '/cross-chain/swaps/prepare-bridge-page',
-        search: '?to=eip155%3A1%2Fslip44%3A60',
+        search: '?to=eip155%3A1%2Fslip44%3A60&fromXWidget=1',
       },
     });
 
@@ -684,7 +684,7 @@ describe('createCashtagResponse', () => {
     expect(consume).toMatchObject({
       body: {
         path: '/cross-chain/swaps/prepare-bridge-page',
-        search: '?to=eip155%3A1%2Fslip44%3A60',
+        search: '?to=eip155%3A1%2Fslip44%3A60&fromXWidget=1',
       },
     });
   });

@@ -285,14 +285,18 @@ async function openExtensionPage({
   search?: `?${string}`;
   caipAssetId: string | null;
 }) {
-  const hash = routeHash(path, search);
+  const params = new URLSearchParams(search ? search.slice(1) : '');
+  params.set('fromXWidget', '1');
+  const flaggedSearch: `?${string}` = `?${params.toString()}`;
+
+  const hash = routeHash(path, flaggedSearch);
 
   await openExtensionSurface({
     controller,
     sender,
     hash,
     path,
-    search,
+    search: flaggedSearch,
   });
 
   return {
