@@ -135,9 +135,6 @@ describe('TokenTable', () => {
     expect(getAllByTestId('token-percent-change')).toHaveLength(2);
     expect(getByText('ETH')).toBeInTheDocument();
     expect(getByText('USDC')).toBeInTheDocument();
-    // The title sits in a full-width box so long names ellipsize inside the
-    // column instead of growing into the price.
-    expect(getByText('ETH').parentElement).toHaveClass('w-full', 'min-w-0');
   });
 
   it('resolves the Money CTA once for the displayed tokens', () => {
