@@ -12,7 +12,15 @@ jobs:
   prepare:
     name: Prepare
     # Only run when the comment is on a pull request containing '@metamaskbot update-policies'
-    if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, '@metamaskbot update-policies') }}
+    if: >-
+      ${{
+        github.event.issue.pull_request &&
+        startsWith(github.event.comment.body, '@metamaskbot update-policies') &&
+        (
+          github.event.comment.author_association == 'MEMBER' ||
+          github.event.comment.author_association == 'OWNER'
+        )
+      }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     env:

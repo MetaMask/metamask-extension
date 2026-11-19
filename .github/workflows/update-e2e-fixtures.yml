@@ -8,7 +8,15 @@ on:
 jobs:
   is-cross-repo-pr:
     name: Determine whether this PR is cross-repo
-    if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, '@metamaskbot update-e2e-fixture') }}
+    if: >-
+      ${{
+        github.event.issue.pull_request &&
+        startsWith(github.event.comment.body, '@metamaskbot update-e2e-fixture') &&
+        (
+          github.event.comment.author_association == 'MEMBER' ||
+          github.event.comment.author_association == 'OWNER'
+        )
+      }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     outputs:
