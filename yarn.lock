@@ -41041,7 +41041,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"readable-stream@npm:4.7.0, readable-stream@npm:^3.6.2 || ^4.4.2, readable-stream@npm:^4.5.2, readable-stream@npm:^4.7.0":
+"readable-stream@npm:4.7.0":
   version: 4.7.0
   resolution: "readable-stream@npm:4.7.0"
   dependencies:
@@ -41069,7 +41069,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"readable-stream@npm:^4.8.0":
+"readable-stream@npm:^3.6.2 || ^4.4.2, readable-stream@npm:^4.5.2, readable-stream@npm:^4.7.0, readable-stream@npm:^4.8.0":
   version: 4.8.0
   resolution: "readable-stream@npm:4.8.0"
   dependencies:
