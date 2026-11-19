@@ -75,6 +75,27 @@ export async function main({
     process.exit(1);
   }
 
+  // Fork PRs run under `pull_request` with a read-only token, so every label
+  // write is skipped for them. Fork authors are external contributors by
+  // definition.
+  const isForkPullRequest =
+    labelable.type === LabelableType.PullRequest &&
+    isPullRequestFromFork(context);
+  const addLabel = async (label: Label): Promise<void> => {
+    if (isForkPullRequest) {
+      console.log(`Read-only run for a fork PR: skip adding ${label.name}.`);
+      return;
+    }
+    await addLabelToLabelable(octokit, labelable, label);
+  };
+  const removeLabelIfPresent = async (label: Label): Promise<void> => {
+    if (isForkPullRequest) {
+      console.log(`Read-only run for a fork PR: skip removing ${label.name}.`);
+      return;
+    }
+    await removeLabelFromLabelableIfPresent(octokit, labelable, label);
+  };
+
   // loginsExemptFromOrgCheck actors skip the org check but still get the template checks, so they never count as bots here.
   const isLoginExempt = loginsExemptFromOrgCheck.includes(labelable?.author);
   const authorIsBot =
@@ -87,9 +108,10 @@ export async function main({
   if (
     !authorIsBot &&
     !isLoginExempt &&
+    !isForkPullRequest &&
     !(await userBelongsToMetaMaskOrg(octokit, labelable?.author))
   ) {
-    await addLabelToLabelable(octokit, labelable, externalContributorLabel);
+    await addLabel(externalContributorLabel);
   }
 
   // Check if labelable's body matches one of the issue or PR templates ('general-issue.yml' or 'bug-report.yml' or 'pull-request-template.md').
@@ -105,7 +127,12 @@ export async function main({
         labelable.type === LabelableType.PullRequest ? 'PR' : 'Issue'
       } was created by a bot (${labelable.author}). Skip template checks.`,
     );
-    failIfPullRequestHasRequiredLabelError(labelable, context, core);
+    failIfPullRequestHasRequiredLabelError(
+      labelable,
+      context,
+      core,
+      isForkPullRequest,
+    );
     process.exit(0); // Stop the process and exit with a success status code
   }
 
@@ -181,7 +208,11 @@ export async function main({
     }
   } else if (labelable.type === LabelableType.PullRequest) {
     const pullRequestRequiredLabelError =
-      getPullRequestRequiredLabelErrorIfNeeded(labelable, context);
+      getPullRequestRequiredLabelErrorIfNeeded(
+        labelable,
+        context,
+        isForkPullRequest,
+      );
 
     // Check changelog entry for all PRs (regardless of template match)
     const hasNoChangelogLabel = labelable.labels?.some(
@@ -201,22 +232,14 @@ export async function main({
 
     if (templateType === TemplateType.PullRequest) {
       console.log("PR matches 'pull-request-template.md' template.");
-      await removeLabelFromLabelableIfPresent(
-        octokit,
-        labelable,
-        invalidPullRequestTemplateLabel,
-      );
+      await removeLabelIfPresent(invalidPullRequestTemplateLabel);
       failIfErrors(core, pullRequestRequiredLabelError);
     } else {
       const errorMessage = `PR body does not match template ('pull-request-template.md').\n\nMake sure PR's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/shared/template.mts#L40-L47`;
       console.log(errorMessage);
 
       // Add label to indicate PR body doesn't match template
-      await addLabelToLabelable(
-        octokit,
-        labelable,
-        invalidPullRequestTemplateLabel,
-      );
+      await addLabel(invalidPullRequestTemplateLabel);
 
       // TODO: Remove these two lines in January 2024. By then, most PRs will match the new PR template, and we'll want the action to fail if they don't.
       // For now, we're in a transition period and Github action shall add an annotation in case PR doesn't match template, but shall not fail.
@@ -285,17 +308,26 @@ function shouldCheckPullRequestLabels(
   );
 }
 
+// A PR whose head repository differs from the base repository. A missing head
+// repo (deleted fork) is treated as a fork.
+function isPullRequestFromFork(context: Context): boolean {
+  const headRepoFullName = context.payload.pull_request?.head?.repo?.full_name;
+  return headRepoFullName !== `${context.repo.owner}/${context.repo.repo}`;
+}
+
 function getPullRequestRequiredLabelErrorIfNeeded(
   labelable: Labelable,
   context: Context,
+  isExternalContributor: boolean,
 ): string | undefined {
   return shouldCheckPullRequestLabels(labelable, context)
-    ? getPullRequestRequiredLabelError(labelable)
+    ? getPullRequestRequiredLabelError(labelable, isExternalContributor)
     : undefined;
 }
 
 function getPullRequestRequiredLabelError(
   pullRequest: Labelable,
+  isExternalContributor: boolean,
 ): string | undefined {
   const pullRequestLabels =
     pullRequest.labels?.map((labelObject) => labelObject?.name) || [];
@@ -308,7 +340,9 @@ function getPullRequestRequiredLabelError(
     'DO-NOT-MERGE',
   ];
 
-  let hasTeamLabel = false;
+  // Fork PRs cannot receive labels, so a head repo != base repo stands in for
+  // the external-contributor label.
+  let hasTeamLabel = isExternalContributor;
   let preventMergeLabel: string | undefined;
 
   for (const label of pullRequestLabels) {
@@ -337,10 +371,15 @@ function failIfPullRequestHasRequiredLabelError(
   labelable: Labelable,
   context: Context,
   core: Core,
+  isExternalContributor: boolean,
 ): void {
   failIfErrors(
     core,
-    getPullRequestRequiredLabelErrorIfNeeded(labelable, context),
+    getPullRequestRequiredLabelErrorIfNeeded(
+      labelable,
+      context,
+      isExternalContributor,
+    ),
   );
 }
 

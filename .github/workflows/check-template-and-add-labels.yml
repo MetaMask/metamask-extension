@@ -27,9 +27,10 @@ jobs:
 
       - name: Get access token
         id: label-token
-        # pull_request_target runs can include cross-repo PRs. This token is safe here
-        # because we only checkout and run trusted workflow-repository scripts,
-        # never code from the PR branch.
+        # Fork PRs get a read-only GITHUB_TOKEN and no OIDC token under
+        # pull_request, so the exchange only runs for same-repo PRs. Fork PRs
+        # run the script with the default token and skip every label write.
+        if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
         uses: MetaMask/github-tools/.github/actions/get-token@v1
         with:
           token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
@@ -74,7 +75,7 @@ jobs:
         id: check-template-and-add-labels
         uses: actions/github-script@v9
         with:
-          github-token: ${{ steps.label-token.outputs.token }}
+          github-token: ${{ steps.label-token.outputs.token || github.token }}
           script: |
             const { join } = await import('node:path');
             const { pathToFileURL } = await import('node:url');
