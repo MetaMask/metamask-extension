@@ -1,0 +1,118 @@
+name: Benchmarks on a throttled CPU
+
+# Report-only: nothing here gates a PR, writes the benchmark history, or sends
+# to Sentry. The results are uploaded as artifacts for admission under ADR 0072.
+on:
+  schedule:
+    # Daily at 07:00 UTC, after the scheduled Main runs, which start hourly from
+    # 02:00 to 06:00 UTC.
+    - cron: '0 7 * * *'
+  workflow_dispatch:
+    inputs:
+      cpu-throttle-rate:
+        description: How many times slower Chrome runs page CPU work
+        required: false
+        default: '2'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  find-build:
+    name: Find the latest main build
+    if: ${{ !github.event.repository.fork }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      run-id: ${{ steps.find.outputs.run-id }}
+      head-sha: ${{ steps.find.outputs.head-sha }}
+    steps:
+      - name: Find the newest Main run on main with a Chrome test build
+        id: find
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          while read -r run_id head_sha; do
+            if gh api "repos/$REPO/actions/runs/$run_id/artifacts?per_page=100" \
+              --jq '.artifacts[] | select(.name == "build-test-webpack" and (.expired | not)) | .name' \
+              | grep -q .; then
+              echo "Using Main run $run_id at $head_sha"
+              echo "run-id=$run_id" >> "$GITHUB_OUTPUT"
+              echo "head-sha=$head_sha" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          done < <(gh run list --repo "$REPO" --workflow main.yml --branch main \
+            --status completed --limit 10 --json databaseId,headSha \
+            --jq '.[] | "\(.databaseId) \(.headSha)"')
+          echo "No Main run among the last 10 on main has a build-test-webpack artifact" >&2
+          exit 1
+        shell: bash
+
+  benchmarks:
+    name: chrome-webpack-${{ matrix.pageType }}-cpu${{ inputs.cpu-throttle-rate || '2' }}x
+    needs: find-build
+    strategy:
+      fail-fast: false
+      matrix:
+        # The presets of the `benchmarks` job in run-benchmarks.yml, Chrome only.
+        pageType:
+          - startupStandardHome
+          - startupPowerUserHome
+          - interactionUserActions
+          - userJourneyOnboardingImport
+          - userJourneyOnboardingNew
+          - userJourneyAssets
+          - userJourneyTransactions
+          - userJourneyAccountManagement
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SELENIUM_BROWSER: chrome
+      SELENIUM_HEADLESS: true
+      BENCHMARK_CPU_THROTTLE_RATE: ${{ inputs.cpu-throttle-rate || '2' }}
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
+      RESULT: test-artifacts/benchmarks/throttled-cpu${{ inputs.cpu-throttle-rate || '2' }}x-benchmark-chrome-webpack-${{ matrix.pageType }}.json
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+          # The benchmark code must match the build it measures.
+          ref: ${{ needs.find-build.outputs.head-sha }}
+
+      - name: Install anvil with retry
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
+        with:
+          timeout_minutes: 1
+          max_attempts: 4
+          retry_wait_seconds: 30
+          command: yarn mm-foundryup
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: build-test-webpack
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ needs.find-build.outputs.run-id }}
+
+      - name: Run the benchmark
+        # Job timeouts propagate to later jobs, step timeouts just cause job failure.
+        timeout-minutes: 25
+        run: >-
+          ${{ matrix.pageType == 'startupPowerUserHome' && 'yarn test:e2e:benchmark --preset startupPowerUserHome --browserLoads 15 --pageLoads 7 --out "$RESULT" --retries 2' || format('yarn test:e2e:benchmark --preset {0} --out "$RESULT" --retries 2', matrix.pageType) }}
+        shell: bash
+
+      - name: Upload benchmark result as GitHub artifact
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v6
+        with:
+          # Must not match `benchmark-*.json`, the pattern the quality gate and
+          # the stats store download.
+          name: throttled-cpu${{ env.BENCHMARK_CPU_THROTTLE_RATE }}x-benchmark-chrome-webpack-${{ matrix.pageType }}.json
+          path: ${{ env.RESULT }}
+          retention-days: 30
+          if-no-files-found: ignore
