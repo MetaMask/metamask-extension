@@ -1041,16 +1041,27 @@ describe('getControllerConnectionApiMemberNames', () => {
       ).toThrow('This messenger client init function does not return a value');
     });
 
-    it('ignores a messengerClientApi spread wrapped in parentheses', () => {
-      const { sourceFile, context } = parseSource(`class MetamaskController {
-        setupControllerConnection() {
-          const api = { ...(this.messengerClientApi) };
-        }
-      }`);
+    it('follows a messengerClientApi spread wrapped in parentheses', () => {
+      const { sourceFile, context } = parseSource(`
+        const PerpsControllerInit = () => ({
+          messengerClient: {},
+          api: { perpsInit() {} },
+        });
+        class MetamaskController {
+          constructor() {
+            const messengerClientInitFunctions = {
+              PerpsController: PerpsControllerInit,
+            };
+          }
+          setupControllerConnection() {
+            const api = { ...(this.messengerClientApi) };
+          }
+        }`);
 
       const names = getControllerConnectionApiMemberNames(sourceFile, context);
 
       expect(names).toStrictEqual({
+        messengerClientApiMethods: new Set(['perpsInit']),
         getApiMethods: new Set(),
         adhocControllerConnectionMethods: new Set(),
       });
