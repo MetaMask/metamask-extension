@@ -47,6 +47,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixed a crash when opening a MetaMask Pay confirmation with a token balance that has many decimal places (#47932)
+- Fixed a bug that blocked custom token imports on chains that forked Ethereum Mainnet (such as PulseChain) whenever the token address matched a known Ethereum Mainnet token (#47928)
+- Hid the X widget when all matching tokens have a missing or zero market cap (#47914)
 - Fixed Perps token logo backgrounds so light logos remained visible in dark mode (#47599)
 - Fixed navigation after submitting a swap or bridge so users stayed on the Swaps page instead of returning to Home (#47591)
 - Fixed Discover Search crypto results to show the order provided by the search API (#47699)
