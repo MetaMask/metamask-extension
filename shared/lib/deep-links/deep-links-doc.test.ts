@@ -17,6 +17,8 @@ import { parse } from './parse';
 import { canonicalize } from './canonicalize';
 // eslint-disable-next-line import-x/first
 import { createEvent } from './metrics';
+// eslint-disable-next-line import-x/first
+import { withReferralCode } from './referral';
 
 const ORIGIN = 'https://link.metamask.io';
 
@@ -140,6 +142,35 @@ describe('docs/deep-links.md', () => {
 
       expect(parsed && parsed.signature).toBe('valid');
       expect(handlerReceived(parsed)).toBe('a=1');
+    });
+
+    it('with a ref added after signing, verifies, keeps it from the handler, and carries it to the destination and the event', async () => {
+      const url = await signedUrl(
+        `${ORIGIN}/card-onboarding?sig_params=a&a=1`,
+        '&ref=ADDEDCODE',
+      );
+      const parsed = await parse(url);
+      const destination = new URL(
+        withReferralCode('chrome-extension://id/home.html', url.searchParams),
+      );
+
+      expect(parsed && parsed.signature).toBe('valid');
+      expect(handlerReceived(parsed)).toBe('a=1');
+      expect(destination.searchParams.get('ref')).toBe('ADDEDCODE');
+      expect(eventProperty(url, 'valid', 'referral_code')).toBe('ADDEDCODE');
+    });
+
+    it('with a repeated ref, neither the destination nor the event accepts it', async () => {
+      const url = await signedUrl(
+        `${ORIGIN}/card-onboarding?sig_params=a&a=1`,
+        '&ref=FIRSTCODE&ref=SECONDCODE',
+      );
+      const destination = new URL(
+        withReferralCode('chrome-extension://id/home.html', url.searchParams),
+      );
+
+      expect(destination.searchParams.has('ref')).toBe(false);
+      expect(eventProperty(url, 'valid', 'referral_code')).toBeUndefined();
     });
 
     it('the route lookup lowercases the path and the signature does not', async () => {
