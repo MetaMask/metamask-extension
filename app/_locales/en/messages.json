@@ -2641,7 +2641,7 @@
     "message": "Your browser is not supported..."
   },
   "bugbotCanaryPleaseCopy": {
-    "message": "Please wait a moment.",
+    "message": "mUSD conversion may take a moment.",
     "description": "BUGBOT experiment canary: do not translate or merge."
   },
   "busy": {

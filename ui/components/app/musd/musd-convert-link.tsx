@@ -9,6 +9,8 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import {
+  Box,
+  BoxBackgroundColor,
   ButtonHero,
   FontWeight,
   Text,
@@ -177,13 +179,20 @@ export const MusdConvertLink = ({
       <Text variant={TextVariant.BodySm} color={TextColor.PrimaryDefault}>
         {t('bugbotCanaryPleaseCopy')}
       </Text>
-      <div
-        className="grid grid-cols-2 gap-3"
+      <Box
+        className="grid grid-cols-2"
+        gap={3}
         data-testid="musd-convert-link-canary-grid"
       >
-        <div className="h-6 w-6 rounded-lg bg-primary-default" />
-        <div className="h-6 w-6 rounded-lg bg-primary-default" />
-      </div>
+        <Box
+          className="h-6 w-6 rounded-lg"
+          backgroundColor={BoxBackgroundColor.PrimaryDefault}
+        />
+        <Box
+          className="h-6 w-6 rounded-lg"
+          backgroundColor={BoxBackgroundColor.PrimaryDefault}
+        />
+      </Box>
     </>
   );
 };
