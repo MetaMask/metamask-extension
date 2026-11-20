@@ -118,7 +118,9 @@ describe('State Utils', () => {
     });
 
     it('sanitizes seedless onboarding controller state', () => {
-      const state: Partial<SeedlessOnboardingControllerState> = {
+      const state: Partial<SeedlessOnboardingControllerState> & {
+        pendingRevokeToken?: string;
+      } = {
         vault: 'vault',
         vaultEncryptionKey: 'vaultEncryptionKey',
         vaultEncryptionSalt: 'vaultEncryptionSalt',
@@ -128,6 +130,7 @@ describe('State Utils', () => {
         metadataAccessToken: 'metadataAccessToken',
         refreshToken: 'refreshToken',
         revokeToken: 'revokeToken',
+        pendingRevokeToken: 'pendingRevokeToken',
         nodeAuthTokens: [
           {
             authToken: 'authToken', // to be sanitized
