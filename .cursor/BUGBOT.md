@@ -222,3 +222,54 @@ Use the rules in the [front-end-performance-rendering](rules/front-end-performan
 - Ensure efficient selector patterns (avoid Object.values() without memoization, combine multiple useSelector calls)
 
 Use the rules in the [front-end-performance-state-management](rules/front-end-performance-state-management/RULE.md) to enforce the test quality and bug detection.
+
+### 6. UI Review — source-attribution experiment (ROUND 2 — DO NOT MERGE)
+
+> This section is part of a Bugbot experiment, not a permanent rule. It exists
+> on the experiment branch only, not on `main`. See the experiment PR
+> description for context. Do not merge experiment-only changes.
+
+#### When to apply
+
+Apply this section when the diff touches any of:
+
+- `ui/components/**` or `ui/pages/**`
+- Sass files (`*.scss`)
+- Tailwind `className` usage
+- imports from `ui/components/component-library` or `@metamask/design-system-react`
+
+#### Sources to consult, in this order
+
+For every changed UI file, consult these sources before reporting:
+
+1. **MetaMask/skills v0.4.0 (commit `12753ca099ebe66edfdec57cd97664fbd82df93e`)** —
+   fetch these raw files and follow the UI rules written in them:
+   - UI development rules:
+     https://raw.githubusercontent.com/MetaMask/skills/12753ca099ebe66edfdec57cd97664fbd82df93e/domains/ui/skills/ui-development/skill.md
+   - Content/copy rules:
+     https://raw.githubusercontent.com/MetaMask/skills/12753ca099ebe66edfdec57cd97664fbd82df93e/domains/ui/skills/content-guidelines/skill.md
+2. **MMDS component contract** — check every `@metamask/design-system-react`
+   component, prop, and enum value in the diff against the Storybook
+   components manifest:
+   https://metamask.github.io/metamask-design-system/manifests/components.json
+   and against the installed type definitions under
+   `node_modules/@metamask/design-system-react/dist/components/`.
+3. **Design Brain** (Notion, the "Lessons & Rules" database, Active rules
+   only) — fallback source for anything the sources above do not cover.
+
+#### Source tags (required on every finding)
+
+Prefix EVERY UI finding with exactly the source tag(s) for where the rule,
+prop fact, or manifest entry came from, and quote or cite the specific rule,
+prop doc, or manifest entry you relied on:
+
+- `[SRC:SKILLS-UI]` — a rule from the skills ui-development file
+- `[SRC:SKILLS-CONTENT]` — a rule from the skills content-guidelines file
+- `[SRC:MANIFEST]` — a component, prop, or enum fact from the MMDS manifest
+  or the installed `@metamask/design-system-react` types
+- `[SRC:DESIGN-BRAIN]` — an Active rule from Design Brain (Notion)
+- `[SRC:BUGBOT-MD]` — a rule stated in this file itself
+- `[SRC:OTHER]` — anything else (state what it was)
+
+If a finding rests on more than one source, list every tag that applies. If
+you could not load or consult a source, say so explicitly.
