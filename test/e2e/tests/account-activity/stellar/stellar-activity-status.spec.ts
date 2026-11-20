@@ -1,4 +1,3 @@
-import { Suite } from 'mocha';
 import { Driver } from '../../../webdriver/driver';
 import {
   closeActivityTransactionDetails,
@@ -18,9 +17,7 @@ import {
 
 const BASE_TIMESTAMP = Date.now();
 
-describe('Stellar - Activity status', function (this: Suite) {
-  this.timeout(180_000);
-
+describe('Stellar - Activity status', function () {
   it('shows a failed XLM send with Failed status in the list and details', async function () {
     // Horizon maps successful → Confirmed / Failed only. Pending (Unconfirmed)
     // is snap-local and belongs in the Send flow, not a storage-seed + reload.

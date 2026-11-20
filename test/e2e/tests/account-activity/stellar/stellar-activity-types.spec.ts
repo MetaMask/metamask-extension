@@ -1,4 +1,3 @@
-import { Suite } from 'mocha';
 import { Driver } from '../../../webdriver/driver';
 import {
   closeActivityTransactionDetails,
@@ -27,9 +26,7 @@ import { mockEvmActivityApi } from '../utils/mock-evm-activity-api';
 
 const BASE_TIMESTAMP = Date.now();
 
-describe('Stellar - Activity types', function (this: Suite) {
-  this.timeout(180_000);
-
+describe('Stellar - Activity types', function () {
   it('renders sent, received, swapped and bridged transactions', async function () {
     // Staggered timestamps keep the activity list ordering deterministic.
     const sendTx = xlmSendTx({
