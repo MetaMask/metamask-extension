@@ -826,7 +826,7 @@ describe('TransactionCard', () => {
       }
     });
 
-    it('fires row onClick from the row button when ADL badge is present', () => {
+    it('fires row onClick from the interactive row root when ADL badge is present', () => {
       const handleClick = jest.fn();
       globalThis.platform = { openTab: jest.fn() } as never;
       const transaction = createAdlTransaction();
@@ -837,11 +837,10 @@ describe('TransactionCard', () => {
       );
 
       const card = screen.getByTestId(`transaction-card-${transaction.id}`);
-      const rowButton = card.querySelector(
-        'button:not([data-testid="perps-fill-tag-adl-button"])',
-      );
-      expect(rowButton).not.toBeNull();
-      fireEvent.click(rowButton as HTMLElement);
+      // ListItem exposes the interactive row as role="button" instead of a
+      // native <button>, so the row handler is exercised via the root.
+      expect(card).toHaveAttribute('role', 'button');
+      fireEvent.click(card);
       expect(handleClick).toHaveBeenCalledWith(transaction);
     });
 

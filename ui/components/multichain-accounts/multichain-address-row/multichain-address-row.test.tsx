@@ -115,18 +115,22 @@ describe('MultichainAddressRow', () => {
     renderComponent({
       networkName: '',
     });
+    // ListItem omits empty title slots, so the row renders without the name
     expect(
-      screen.getByTestId('multichain-address-row-network-name'),
-    ).toHaveTextContent(''); // Should render empty content without error
+      screen.queryByTestId('multichain-address-row-network-name'),
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId('multichain-address-row')).toBeInTheDocument();
   });
 
   it('handles empty address gracefully', () => {
     renderComponent({
       address: '',
     });
+    // ListItem omits empty description slots, so the row renders without the address
     expect(
-      screen.getByTestId('multichain-address-row-address'),
-    ).toHaveTextContent(''); // Should render empty address without error
+      screen.queryByTestId('multichain-address-row-address'),
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId('multichain-address-row')).toBeInTheDocument();
   });
 
   it('handles QR button click with onQrClick callback', () => {

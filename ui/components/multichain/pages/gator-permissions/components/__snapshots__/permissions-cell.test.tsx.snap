@@ -7,98 +7,104 @@ exports[`PermissionsCell renders correctly with required props 1`] = `
     data-testid="gator-permissions-cell"
   >
     <div
-      class="flex flex-row gap-4 items-center pt-0 pb-0 bg-default multichain-permissions-list-item"
+      class="bg-default flex w-full px-4 py-3 min-h-[72px] justify-center cursor-pointer active:bg-pressed multichain-permissions-list-item pt-0 pb-0"
       data-testid="permissions-cell-connection-list-item"
-      style="cursor: pointer;"
+      role="button"
+      tabindex="0"
     >
       <div
-        class="items-start"
+        class="flex flex-row gap-0 items-center w-full min-w-0"
       >
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-8 w-8 bg-muted"
-          color="text-icon-alternative"
+          class="flex flex-row gap-4 items-center min-w-0 flex-1"
         >
-          <svg
-            class="inline-block w-5 h-5 text-icon-alternative"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M12 2.25A9.75 9.75 0 1 0 21.75 12 9.76 9.76 0 0 0 12 2.25m0 18A8.25 8.25 0 1 1 20.25 12 8.26 8.26 0 0 1 12 20.25m3.75-6.375a2.625 2.625 0 0 1-2.625 2.625h-.375v.75a.75.75 0 0 1-1.5 0v-.75h-1.5a.75.75 0 0 1 0-1.5h3.375a1.125 1.125 0 0 0 0-2.25h-2.25a2.625 2.625 0 0 1 0-5.25h.375v-.75a.75.75 0 0 1 1.5 0v.75h1.5a.75.75 0 0 1 0 1.5h-3.375a1.125 1.125 0 0 0 0 2.25h2.25a2.625 2.625 0 0 1 2.625 2.625"
-            />
-          </svg>
-        </div>
-      </div>
-      <div
-        class="flex flex-col items-start justify-start"
-        style="flex-grow: 1;"
-      >
-        <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
-        >
-          Token transfer
-        </p>
-        <div
-          class="flex flex-row gap-1 items-baseline"
-        >
-          <p
-            class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate"
-          >
-            5
-             
-            tokens
-          </p>
           <div
-            aria-describedby="tippy-tooltip-1"
-            class=""
-            data-original-title="undefined"
-            data-tooltipped=""
-            style="display: inline;"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-8 w-8 bg-muted"
+            color="text-icon-alternative"
+          >
+            <svg
+              class="inline-block w-5 h-5 text-icon-alternative"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 2.25A9.75 9.75 0 1 0 21.75 12 9.76 9.76 0 0 0 12 2.25m0 18A8.25 8.25 0 1 1 20.25 12 8.26 8.26 0 0 1 12 20.25m3.75-6.375a2.625 2.625 0 0 1-2.625 2.625h-.375v.75a.75.75 0 0 1-1.5 0v-.75h-1.5a.75.75 0 0 1 0-1.5h3.375a1.125 1.125 0 0 0 0-2.25h-2.25a2.625 2.625 0 0 1 0-5.25h.375v-.75a.75.75 0 0 1 1.5 0v.75h1.5a.75.75 0 0 1 0 1.5h-3.375a1.125 1.125 0 0 0 0 2.25h2.25a2.625 2.625 0 0 1 2.625 2.625"
+              />
+            </svg>
+          </div>
+          <div
+            class="flex flex-col min-w-0 flex-1"
           >
             <div
-              class="mm-box multichain-avatar-group mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
-              data-testid="avatar-group"
+              class="flex flex-row gap-1 items-center min-w-0 w-full"
+            >
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+              >
+                Token transfer
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center min-w-0 w-full"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--align-items-center"
+                class="min-w-0"
+              >
+                <p
+                  class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default truncate"
+                >
+                  5 tokens
+                </p>
+              </div>
+              <div
+                aria-describedby="tippy-tooltip-1"
+                class=""
+                data-original-title="undefined"
+                data-tooltipped=""
+                style="display: inline;"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--rounded-full"
-                  style="margin-left: 0px;"
+                  class="mm-box multichain-avatar-group mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
+                  data-testid="avatar-group"
                 >
                   <div
-                    class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-4 w-4 bg-white"
+                    class="mm-box mm-box--display-flex mm-box--align-items-center"
                   >
-                    <img
-                      alt="Polygon"
-                      class="size-full object-cover"
-                      src="./images/pol-token.svg"
-                    />
-                  </div>
-                </div>
-                <div
-                  class="mm-box mm-box--display-flex mm-box--rounded-full"
-                  style="margin-left: -8px;"
-                >
-                  <div
-                    class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-4 w-4 bg-white"
-                  >
-                    <img
-                      alt="Ethereum Mainnet"
-                      class="size-full object-cover"
-                      src="./images/eth_logo.svg"
-                    />
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--rounded-full"
+                      style="margin-left: 0px;"
+                    >
+                      <div
+                        class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-4 w-4 bg-white"
+                      >
+                        <img
+                          alt="Polygon"
+                          class="size-full object-cover"
+                          src="./images/pol-token.svg"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--rounded-full"
+                      style="margin-left: -8px;"
+                    >
+                      <div
+                        class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-4 w-4 bg-white"
+                      >
+                        <img
+                          alt="Ethereum Mainnet"
+                          class="size-full object-cover"
+                          src="./images/eth_logo.svg"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div
-        class="items-end justify-end"
-      >
         <svg
           class="inline-block w-4 h-4 text-icon-alternative"
           fill="currentColor"

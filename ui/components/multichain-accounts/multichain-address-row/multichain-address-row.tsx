@@ -5,18 +5,15 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
-  BoxAlignItems,
   BoxBackgroundColor,
   BoxFlexDirection,
-  BoxJustifyContent,
   ButtonIcon,
   ButtonIconSize,
-  FontWeight,
+  ContentVariant,
   IconColor,
   IconName,
-  Text,
+  ListItem,
   TextColor,
-  TextVariant,
 } from '@metamask/design-system-react';
 import { AccountTypeLabel } from '../account-type-label/account-type-label';
 import { shortenAddress } from '../../../helpers/utils/util';
@@ -163,89 +160,66 @@ export const MultichainAddressRow = ({
   };
 
   return (
-    <Box
+    <ListItem
+      variant={ContentVariant.TwoLines}
       className={`multichain-address-row ${className}`}
-      flexDirection={BoxFlexDirection.Row}
-      alignItems={BoxAlignItems.Center}
-      justifyContent={BoxJustifyContent.Between}
-      padding={4}
-      gap={4}
-      data-testid="multichain-address-row"
       backgroundColor={
         addressCopied
           ? BoxBackgroundColor.SuccessMuted
           : BoxBackgroundColor.BackgroundDefault
       }
-    >
-      <AvatarNetwork
-        size={AvatarNetworkSize.Md}
-        name={networkName}
-        src={networkImageSrc}
-        className="rounded-lg"
-        data-testid="multichain-address-row-network-icon"
-      />
-      <Box
-        flexDirection={BoxFlexDirection.Column}
-        alignItems={BoxAlignItems.Start}
-        className="min-w-0 flex-1"
-      >
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          gap={1}
-          className="min-w-0 w-full"
-        >
-          <Text
-            variant={TextVariant.BodyMd}
-            fontWeight={FontWeight.Medium}
-            color={TextColor.TextDefault}
-            data-testid="multichain-address-row-network-name"
-            ellipsis
-            className="min-w-0"
-          >
-            {networkName}
-          </Text>
-          <AccountTypeLabel accountType={accountType} />
-        </Box>
-        <Text
-          variant={TextVariant.BodySm}
-          color={
-            addressCopied ? TextColor.SuccessDefault : TextColor.TextAlternative
-          }
-          data-testid="multichain-address-row-address"
-        >
-          {subText}
-        </Text>
-      </Box>
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        gap={2}
-      >
-        <ButtonIcon
-          iconName={copyIcon}
-          size={ButtonIconSize.Md}
-          onClick={handleCopyClick}
-          ariaLabel={t('copyAddressShort')}
-          iconProps={{
-            color: addressCopied
-              ? IconColor.SuccessDefault
-              : IconColor.IconDefault,
-          }}
-          data-testid="multichain-address-row-copy-button"
+      data-testid="multichain-address-row"
+      avatar={
+        <AvatarNetwork
+          size={AvatarNetworkSize.Md}
+          name={networkName}
+          src={networkImageSrc}
+          className="rounded-lg"
+          data-testid="multichain-address-row-network-icon"
         />
-        {qrActionParams ? (
+      }
+      title={networkName}
+      titleProps={{
+        ellipsis: true,
+        className: 'min-w-0',
+        'data-testid': 'multichain-address-row-network-name',
+      }}
+      titleEndAccessory={<AccountTypeLabel accountType={accountType} />}
+      description={subText}
+      descriptionProps={{
+        'data-testid': 'multichain-address-row-address',
+        color: addressCopied
+          ? TextColor.SuccessDefault
+          : TextColor.TextAlternative,
+      }}
+      accessoryGap={4}
+      endAccessory={
+        <Box flexDirection={BoxFlexDirection.Row} className="gap-2">
           <ButtonIcon
-            iconName={IconName.QrCode}
+            iconName={copyIcon}
             size={ButtonIconSize.Md}
-            onClick={handleQrClick}
-            ariaLabel="Show QR code"
-            iconProps={{ color: IconColor.IconDefault }}
-            data-testid="multichain-address-row-qr-button"
+            onClick={handleCopyClick}
+            ariaLabel={t('copyAddressShort')}
+            iconProps={{
+              color: addressCopied
+                ? IconColor.SuccessDefault
+                : IconColor.IconDefault,
+            }}
+            data-testid="multichain-address-row-copy-button"
           />
-        ) : null}
-      </Box>
-    </Box>
+          {qrActionParams ? (
+            <ButtonIcon
+              iconName={IconName.QrCode}
+              size={ButtonIconSize.Md}
+              onClick={handleQrClick}
+              ariaLabel="Show QR code"
+              iconProps={{ color: IconColor.IconDefault }}
+              data-testid="multichain-address-row-qr-button"
+            />
+          ) : null}
+        </Box>
+      }
+    />
   );
 };
 

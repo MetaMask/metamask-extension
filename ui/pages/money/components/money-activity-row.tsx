@@ -3,20 +3,14 @@ import {
   AvatarIcon,
   AvatarIconSeverity,
   AvatarIconSize,
-  Box,
-  BoxAlignItems,
-  BoxFlexDirection,
-  BoxJustifyContent,
-  FontWeight,
+  ContentVariant,
   Icon,
   IconColor,
   IconName,
   IconSize,
-  SensitiveText,
+  ListItem,
   SensitiveTextLength,
-  Text,
   TextColor,
-  TextVariant,
 } from '@metamask/design-system-react';
 import { useMoneyActivityDisplayInfo } from '../../../hooks/money/use-money-activity-display';
 import type { MoneyActivityItem } from '../types/money-activity';
@@ -57,106 +51,56 @@ export function MoneyActivityRow({
   });
   const isClickable = Boolean(onItemClick);
 
-  const content = (
-    <>
-      <AvatarIcon
-        iconName={display.icon}
-        severity={AvatarIconSeverity.Neutral}
-        size={AvatarIconSize.Lg}
-        className="shrink-0"
-      />
-      <Box className="min-w-0 flex-1" flexDirection={BoxFlexDirection.Column}>
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          gap={2}
-        >
-          <Text
-            variant={TextVariant.BodyMd}
-            fontWeight={FontWeight.Medium}
-            color={isFailed ? TextColor.ErrorDefault : TextColor.TextDefault}
-            className="min-w-0 truncate"
-          >
-            {display.label}
-          </Text>
-          {isPending ? (
-            <Icon
-              name={IconName.Loading}
-              size={IconSize.Sm}
-              color={IconColor.IconDefault}
-              className="animate-spin"
-              aria-hidden
-            />
-          ) : null}
-        </Box>
-        {display.description ? (
-          <Text
-            variant={TextVariant.BodySm}
-            fontWeight={FontWeight.Medium}
-            color={TextColor.TextAlternative}
-            className="truncate"
-          >
-            {display.description}
-          </Text>
-        ) : null}
-      </Box>
-      <Box
-        flexDirection={BoxFlexDirection.Column}
-        alignItems={BoxAlignItems.End}
-        justifyContent={BoxJustifyContent.Center}
-        className="shrink-0"
-      >
-        <SensitiveText
-          variant={TextVariant.BodyMd}
-          fontWeight={FontWeight.Medium}
-          color={amountColor}
-          isHidden={privacyMode}
-          length={SensitiveTextLength.Medium}
-          className="text-right"
-          data-testid={`money-activity-row-primary-${item.id}`}
-        >
-          {display.primaryAmount}
-        </SensitiveText>
-        <SensitiveText
-          variant={TextVariant.BodySm}
-          fontWeight={FontWeight.Medium}
-          color={TextColor.TextAlternative}
-          isHidden={privacyMode}
-          length={SensitiveTextLength.Short}
-          className="text-right"
-          data-testid={`money-activity-row-fiat-${item.id}`}
-        >
-          {display.fiatAmount}
-        </SensitiveText>
-      </Box>
-    </>
-  );
-
-  const rowClassName = 'flex w-full items-center gap-4 p-4';
-
-  if (isClickable && onItemClick) {
-    return (
-      <button
-        type="button"
-        onClick={() => onItemClick(item)}
-        className={`${rowClassName} bg-transparent text-left hover:bg-hover`}
-        data-testid={`money-activity-row-${item.id}`}
-      >
-        {content}
-      </button>
-    );
-  }
-
   return (
-    <Box
-      flexDirection={BoxFlexDirection.Row}
-      alignItems={BoxAlignItems.Center}
-      gap={4}
-      padding={4}
-      className="w-full"
+    <ListItem
+      variant={
+        display.description ? ContentVariant.TwoLines : ContentVariant.OneLine
+      }
+      isInteractive={isClickable}
+      onClick={isClickable ? () => onItemClick?.(item) : undefined}
+      className={isClickable ? 'hover:bg-hover' : undefined}
       data-testid={`money-activity-row-${item.id}`}
-    >
-      {content}
-    </Box>
+      avatar={
+        <AvatarIcon
+          iconName={display.icon}
+          severity={AvatarIconSeverity.Neutral}
+          size={AvatarIconSize.Lg}
+          className="shrink-0"
+        />
+      }
+      title={display.label}
+      titleProps={{
+        color: isFailed ? TextColor.ErrorDefault : TextColor.TextDefault,
+        className: 'min-w-0 truncate',
+      }}
+      titleEndAccessory={
+        isPending ? (
+          <Icon
+            name={IconName.Loading}
+            size={IconSize.Sm}
+            color={IconColor.IconDefault}
+            className="animate-spin"
+            aria-hidden
+          />
+        ) : undefined
+      }
+      description={display.description}
+      descriptionProps={{ className: 'truncate' }}
+      value={display.primaryAmount}
+      valueProps={{
+        color: amountColor,
+        isHidden: privacyMode,
+        length: SensitiveTextLength.Medium,
+        className: 'text-right',
+        'data-testid': `money-activity-row-primary-${item.id}`,
+      }}
+      subvalue={display.fiatAmount}
+      subvalueProps={{
+        isHidden: privacyMode,
+        length: SensitiveTextLength.Short,
+        className: 'text-right',
+        'data-testid': `money-activity-row-fiat-${item.id}`,
+      }}
+    />
   );
 }

@@ -776,6 +776,17 @@
         "TextEncoder": true
       }
     },
+    "@metamask/design-system-react>@metamask-previews/design-system-shared": {
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/byte-utils' and webpack collapsed that to a direct import."
+        ]
+      },
+      "packages": {
+        "@metamask/utils>@metamask/byte-utils": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/7715-permission-types": {
       "meta": {
         "webpack-optimization": [
@@ -1420,7 +1431,7 @@
       "packages": {
         "@metamask/design-system-react>@floating-ui/react-dom>@floating-ui/dom": true,
         "@metamask/design-system-react>@floating-ui/react-dom": true,
-        "@metamask/design-system-shared": true,
+        "@metamask/design-system-react>@metamask-previews/design-system-shared": true,
         "@metamask/jazzicon": true,
         "@metamask/design-system-react>@radix-ui/react-slot": true,
         "@metamask/design-system-react>blo": true,
@@ -1428,17 +1439,6 @@
         "react-dom": true,
         "react-focus-lock": true,
         "@metamask/design-system-react>tailwind-merge": true
-      }
-    },
-    "@metamask/design-system-shared": {
-      "meta": {
-        "webpack-optimization": [
-          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/byte-utils' and webpack collapsed that to a direct import."
-        ]
-      },
-      "packages": {
-        "@metamask/utils>@metamask/byte-utils": true,
-        "@metamask/utils": true
       }
     },
     "@metamask/eip-5792-middleware": {

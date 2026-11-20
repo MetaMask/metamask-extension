@@ -7,16 +7,28 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
   >
     <div>
       <div
-        class="flex flex-col gap-1 px-4 py-3"
+        class="flex w-full px-4 py-3 min-h-[48px] justify-center"
       >
         <div
-          class="flex flex-row items-center justify-between"
+          class="flex flex-row gap-0 items-center w-full min-w-0"
         >
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          <div
+            class="flex flex-row gap-4 items-center min-w-0 flex-1"
           >
-            Show native token as main balance
-          </p>
+            <div
+              class="flex flex-col min-w-0 flex-1"
+            >
+              <div
+                class="flex flex-row gap-1 items-center min-w-0 w-full"
+              >
+                <p
+                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Show native token as main balance
+                </p>
+              </div>
+            </div>
+          </div>
           <div
             data-testid="show-native-token-as-main-balance-toggle"
           >
@@ -58,16 +70,28 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 px-4 py-3"
+        class="flex w-full px-4 py-3 min-h-[48px] justify-center"
       >
         <div
-          class="flex flex-row items-center justify-between"
+          class="flex flex-row gap-0 items-center w-full min-w-0"
         >
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          <div
+            class="flex flex-row gap-4 items-center min-w-0 flex-1"
           >
-            Hide tokens without balance
-          </p>
+            <div
+              class="flex flex-col min-w-0 flex-1"
+            >
+              <div
+                class="flex flex-row gap-1 items-center min-w-0 w-full"
+              >
+                <p
+                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Hide tokens without balance
+                </p>
+              </div>
+            </div>
+          </div>
           <div>
             <label
               class="toggle-button toggle-button--off"
@@ -110,16 +134,41 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
     />
     <div>
       <div
-        class="flex flex-col gap-1 px-4 py-3"
+        class="flex w-full px-4 py-3 min-h-[88px] justify-start"
       >
         <div
-          class="flex flex-row items-center justify-between"
+          class="flex flex-row gap-0 items-start w-full min-w-0"
         >
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          <div
+            class="flex flex-row gap-4 items-start min-w-0 flex-1"
           >
-            Display NFT media
-          </p>
+            <div
+              class="flex flex-col min-w-0 flex-1"
+            >
+              <div
+                class="flex flex-row gap-1 items-center min-w-0 w-full"
+              >
+                <p
+                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Display NFT media
+                </p>
+              </div>
+              <div
+                class="flex flex-row gap-1 items-start min-w-0 w-full"
+              >
+                <div
+                  class="min-w-0"
+                >
+                  <p
+                    class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                  >
+                    NFT autodetection relies on this feature.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
           <div>
             <label
               class="toggle-button toggle-button--on"
@@ -155,25 +204,45 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
             </label>
           </div>
         </div>
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          NFT autodetection relies on this feature.
-        </p>
       </div>
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 px-4 py-3"
+        class="flex w-full px-4 py-3 min-h-[88px] justify-start"
       >
         <div
-          class="flex flex-row items-center justify-between"
+          class="flex flex-row gap-0 items-start w-full min-w-0"
         >
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          <div
+            class="flex flex-row gap-4 items-start min-w-0 flex-1"
           >
-            Autodetect NFTs
-          </p>
+            <div
+              class="flex flex-col min-w-0 flex-1"
+            >
+              <div
+                class="flex flex-row gap-1 items-center min-w-0 w-full"
+              >
+                <p
+                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Autodetect NFTs
+                </p>
+              </div>
+              <div
+                class="flex flex-row gap-1 items-start min-w-0 w-full"
+              >
+                <div
+                  class="min-w-0"
+                >
+                  <p
+                    class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                  >
+                    Displays all NFTs, including fake ones airdropped by scammers.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
           <div
             data-testid="use-nft-detection"
           >
@@ -211,25 +280,45 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
             </label>
           </div>
         </div>
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          Displays all NFTs, including fake ones airdropped by scammers.
-        </p>
       </div>
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 px-4 py-3"
+        class="flex w-full px-4 py-3 min-h-[88px] justify-start"
       >
         <div
-          class="flex flex-row items-center justify-between"
+          class="flex flex-row gap-0 items-start w-full min-w-0"
         >
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          <div
+            class="flex flex-row gap-4 items-start min-w-0 flex-1"
           >
-            Autodetect tokens
-          </p>
+            <div
+              class="flex flex-col min-w-0 flex-1"
+            >
+              <div
+                class="flex flex-row gap-1 items-center min-w-0 w-full"
+              >
+                <p
+                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Autodetect tokens
+                </p>
+              </div>
+              <div
+                class="flex flex-row gap-1 items-start min-w-0 w-full"
+              >
+                <div
+                  class="min-w-0"
+                >
+                  <p
+                    class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                  >
+                    Displays new tokens sent to your wallet.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
           <div
             data-testid="autodetect-tokens"
           >
@@ -267,11 +356,6 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
             </label>
           </div>
         </div>
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          Displays new tokens sent to your wallet.
-        </p>
       </div>
     </div>
   </div>

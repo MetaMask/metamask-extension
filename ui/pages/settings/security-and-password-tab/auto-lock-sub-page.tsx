@@ -3,16 +3,12 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
-  BoxFlexDirection,
-  BoxJustifyContent,
-  BoxAlignItems,
-  FontWeight,
+  ContentVariant,
   Icon,
   IconName,
   IconSize,
   IconColor,
-  Text,
-  TextVariant,
+  ListItem,
 } from '@metamask/design-system-react';
 import { setAutoLockTimeLimit } from '../../../store/actions';
 import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
@@ -57,30 +53,28 @@ const AutoLockSubPage = () => {
       {AUTO_LOCK_OPTIONS.map(({ labelKey, value }) => {
         const isSelected = autoLockTimeLimit === value;
         return (
-          <Box
+          <ListItem
             key={value}
-            data-testid={`auto-lock-option-${value}`}
-            flexDirection={BoxFlexDirection.Row}
-            justifyContent={BoxJustifyContent.Between}
-            alignItems={BoxAlignItems.Center}
-            className={`w-full cursor-pointer border-0 p-4 ${
+            variant={ContentVariant.OneLine}
+            isInteractive
+            onClick={() => handleSelect(value)}
+            className={
               isSelected
                 ? 'bg-muted hover:bg-muted-hover'
                 : 'bg-background-default hover:bg-background-default-hover'
-            }`}
-            onClick={() => handleSelect(value)}
-          >
-            <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-              {t(labelKey)}
-            </Text>
-            {isSelected && (
-              <Icon
-                name={IconName.Check}
-                size={IconSize.Md}
-                color={IconColor.IconDefault}
-              />
-            )}
-          </Box>
+            }
+            data-testid={`auto-lock-option-${value}`}
+            title={t(labelKey)}
+            endAccessory={
+              isSelected ? (
+                <Icon
+                  name={IconName.Check}
+                  size={IconSize.Md}
+                  color={IconColor.IconDefault}
+                />
+              ) : undefined
+            }
+          />
         );
       })}
     </Box>

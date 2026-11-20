@@ -2,13 +2,13 @@ import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
-  BoxAlignItems,
   BoxFlexDirection,
-  FontWeight,
+  ContentVariant,
   Icon,
   IconColor,
   IconName,
   IconSize,
+  ListItem,
   Text,
   TextColor,
   TextVariant,
@@ -76,37 +76,30 @@ export const SettingsRoot = ({ onBeforeNavigate }: SettingsRootProps) => {
             </Text>
             <Box flexDirection={BoxFlexDirection.Column} className="w-full">
               {items.map((item) => (
-                <button
+                <ListItem
                   key={item.id}
-                  type="button"
-                  className="w-full border-0 bg-transparent p-0 text-left text-inherit cursor-pointer hover:bg-background-default-hover"
+                  variant={ContentVariant.OneLine}
+                  isInteractive
                   onClick={() => handleSelectItem(item)}
+                  className="hover:bg-background-default-hover"
                   data-testid={`settings-root-item-${item.id}`}
-                >
-                  <Box
-                    flexDirection={BoxFlexDirection.Row}
-                    alignItems={BoxAlignItems.Center}
-                    className="w-full gap-2 px-4 py-3"
-                  >
+                  accessoryGap={2}
+                  startAccessory={
                     <Icon
                       name={item.iconName}
                       size={IconSize.Md}
                       color={IconColor.IconAlternative}
                     />
-                    <Text
-                      variant={TextVariant.BodyMd}
-                      fontWeight={FontWeight.Medium}
-                      className="flex-1 min-w-0 text-left"
-                    >
-                      {t(item.labelKey)}
-                    </Text>
+                  }
+                  title={t(item.labelKey)}
+                  endAccessory={
                     <Icon
                       name={IconName.ArrowRight}
                       size={IconSize.Sm}
                       color={IconColor.IconAlternative}
                     />
-                  </Box>
-                </button>
+                  }
+                />
               ))}
             </Box>
             {index === groupedItems.length - 1 ? null : (

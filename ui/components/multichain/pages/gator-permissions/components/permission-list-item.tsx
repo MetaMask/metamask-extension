@@ -1,15 +1,10 @@
 import React from 'react';
 import {
-  Box,
-  Text,
-  TextVariant,
-  FontWeight,
-  BoxFlexDirection,
-  BoxJustifyContent,
-  BoxAlignItems,
-  IconName,
+  ContentVariant,
   Icon,
+  IconName,
   IconSize,
+  ListItem,
   TextColor,
 } from '@metamask/design-system-react';
 
@@ -34,41 +29,22 @@ export const PermissionListItem = ({
   onClick,
 }: PermissionListItemProps) => {
   return (
-    <button
-      type="button"
+    <ListItem
+      variant={ContentVariant.OneLine}
+      isInteractive
       onClick={onClick}
-      className="block w-full hover:bg-background-default-hover"
+      className="hover:bg-background-default-hover"
       data-testid="permission-list-item"
-    >
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.Between}
-        alignItems={BoxAlignItems.Center}
-        paddingVertical={3}
-        paddingHorizontal={4}
-      >
-        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-          {permissionGroupName}
-        </Text>
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          gap={2}
-        >
-          <Text
-            color={TextColor.TextAlternative}
-            variant={TextVariant.BodyMd}
-            fontWeight={FontWeight.Medium}
-          >
-            {total}
-          </Text>
-          <Icon
-            name={IconName.ArrowRight}
-            size={IconSize.Sm}
-            className="text-icon-alternative"
-          />
-        </Box>
-      </Box>
-    </button>
+      title={permissionGroupName}
+      value={total}
+      valueProps={{ color: TextColor.TextAlternative }}
+      valueEndAccessory={
+        <Icon
+          name={IconName.ArrowRight}
+          size={IconSize.Sm}
+          className="text-icon-alternative"
+        />
+      }
+    />
   );
 };
