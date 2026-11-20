@@ -21,7 +21,7 @@ function readLongTaskMetricsWithoutReset(): {
 /**
  * Name for a step's harness-clock timer when the step also has an in-page timer
  * (`in-page-step-timer.ts`), which owns the bare step id. The harness timer
- * starts after the triggering click returns, so it is not the app's latency.
+ * includes WebDriver round trips and polling, so it is not the app's latency.
  */
 export function legacyStepTimerId(stepId: string): string {
   return `${stepId}Legacy`;
