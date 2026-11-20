@@ -173,6 +173,21 @@ describe('docs/deep-links.md', () => {
       expect(eventProperty(url, 'valid', 'referral_code')).toBeUndefined();
     });
 
+    it('with a signed ref and a second ref added after signing, the signature fails and neither is accepted', async () => {
+      const url = await signedUrl(
+        `${ORIGIN}/card-onboarding?sig_params=ref&ref=SIGNEDCODE`,
+        '&ref=ADDEDCODE',
+      );
+      const parsed = await parse(url);
+      const destination = new URL(
+        withReferralCode('chrome-extension://id/home.html', url.searchParams),
+      );
+
+      expect(parsed && parsed.signature).toBe('invalid');
+      expect(destination.searchParams.has('ref')).toBe(false);
+      expect(eventProperty(url, 'invalid', 'referral_code')).toBeUndefined();
+    });
+
     it('the route lookup lowercases the path and the signature does not', async () => {
       const url = await signedUrl(`${ORIGIN}/card-onboarding?sig_params=a&a=1`);
       const parsed = await parse(
