@@ -4,6 +4,22 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 const getAccountName = (account: InternalAccount): string =>
   account?.metadata?.name ?? '';
 
+const CONTACT_BURN_ADDRESSES = [
+  '0x0000000000000000000000000000000000000000',
+  '0x000000000000000000000000000000000000dead',
+];
+
+/**
+ * Whether an address is a burn address that must not be saved as a contact.
+ * Sending to the dead address stays allowed, so this is separate from
+ * `isBurnAddress` in `shared/lib/hexstring-utils`.
+ *
+ * @param address - The address to check.
+ * @returns `true` for the zero address and the dead address, in any case.
+ */
+export const isContactBurnAddress = (address: string): boolean =>
+  CONTACT_BURN_ADDRESSES.includes(address.toLowerCase());
+
 export const buildDuplicateContactMap = (
   addressBook: AddressBookEntry[],
   internalAccounts: InternalAccount[],
