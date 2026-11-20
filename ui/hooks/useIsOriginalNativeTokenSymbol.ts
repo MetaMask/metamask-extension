@@ -8,30 +8,51 @@ import { isEvmChainId } from '../../shared/lib/asset-utils';
 import { getValidUrl } from '../../shared/lib/url-utils';
 import { isOriginalNativeTokenSymbol } from '../helpers/utils/isOriginalNativeTokenSymbol';
 
+const isLocalhostUrl = (urlString: string) => {
+  const url = getValidUrl(urlString);
+
+  return (
+    url !== null &&
+    (url.hostname === 'localhost' || url.hostname === '127.0.0.1')
+  );
+};
+
+type NativeTokenSymbolValidationOptions = {
+  rpcUrl?: string;
+  enabled?: boolean;
+};
+
 export function useIsOriginalNativeTokenSymbol(
   chainId: Hex | CaipChainId,
   ticker: string,
-  type: string,
-  rpcUrl = '',
+  { rpcUrl = '', enabled = true }: NativeTokenSymbolValidationOptions = {},
 ) {
-  const [isOriginalNativeSymbol, setIsOriginalNativeSymbol] = useState(false);
+  const [validation, setValidation] = useState<{
+    key: string;
+    value: boolean;
+  }>();
   const useSafeChainsListValidation = useSelector(
     getUseSafeChainsListValidation,
   );
 
   const isEvm = isEvmChainId(chainId);
   const providerConfig = useSelector(getMultichainCurrentNetwork);
+  const isLocalhostRpc = isLocalhostUrl(rpcUrl);
+  const validationKey = isEvm
+    ? [chainId, ticker, useSafeChainsListValidation, isLocalhostRpc].join(':')
+    : [chainId, ticker, providerConfig?.ticker].join(':');
 
   useEffect(() => {
+    if (!enabled) {
+      return undefined;
+    }
+
     let isMounted = true;
 
-    const isLocalhost = (urlString: string) => {
-      const url = getValidUrl(urlString);
-
-      return (
-        url !== null &&
-        (url.hostname === 'localhost' || url.hostname === '127.0.0.1')
-      );
+    const setIsOriginalNativeSymbol = (value: boolean) => {
+      if (isMounted) {
+        setValidation({ key: validationKey, value });
+      }
     };
 
     async function getNativeTokenSymbol(networkId: Hex | CaipChainId) {
@@ -42,7 +63,7 @@ export function useIsOriginalNativeTokenSymbol(
 
       try {
         // exclude local dev network
-        if (isLocalhost(rpcUrl)) {
+        if (isLocalhostRpc) {
           setIsOriginalNativeSymbol(true);
           return;
         }
@@ -53,13 +74,9 @@ export function useIsOriginalNativeTokenSymbol(
           useAPICall: useSafeChainsListValidation,
         });
 
-        if (isMounted) {
-          setIsOriginalNativeSymbol(isOriginalNativeToken);
-        }
+        setIsOriginalNativeSymbol(isOriginalNativeToken);
       } catch (err) {
-        if (isMounted) {
-          setIsOriginalNativeSymbol(false);
-        }
+        setIsOriginalNativeSymbol(false);
       }
     }
 
@@ -69,15 +86,19 @@ export function useIsOriginalNativeTokenSymbol(
       isMounted = false;
     };
   }, [
-    isOriginalNativeSymbol,
     chainId,
     ticker,
-    type,
-    rpcUrl,
+    enabled,
+    isLocalhostRpc,
     useSafeChainsListValidation,
     isEvm,
     providerConfig?.ticker,
+    validationKey,
   ]);
 
-  return isOriginalNativeSymbol;
+  if (!enabled) {
+    return true;
+  }
+
+  return validation?.key === validationKey ? validation.value : undefined;
 }
