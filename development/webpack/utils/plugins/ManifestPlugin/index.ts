@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync, type Dirent } from 'node:fs';
 import path from 'node:path';
 import {
   sources,
@@ -118,7 +118,7 @@ export class ManifestPlugin<Z extends boolean> {
     BACKGROUND_CLIENT_ENTRY_NAME,
   ]);
 
-  private isolatedHtmlEntries: Set<string> = new Set();
+  private readonly isolatedEntries = new Set<string>();
 
   private bundleSizeCategoriesByEntrypoint: Map<
     string,
@@ -143,10 +143,10 @@ export class ManifestPlugin<Z extends boolean> {
     return !name || !this.selfContainedScripts.has(name);
   };
 
-  isIsolatedHtmlEntry = (name?: string | null) =>
-    Boolean(name && this.isolatedHtmlEntries.has(name));
-
-  getIsolatedHtmlEntryNames = () => [...this.isolatedHtmlEntries];
+  /** Chunk names that need their own LavaMoat runtime. */
+  get isolates(): ReadonlySet<string> {
+    return this.isolatedEntries;
+  }
 
   private isWebAccessibleHtml(filename: string) {
     for (const manifest of this.manifests.values()) {
@@ -738,7 +738,7 @@ export class ManifestPlugin<Z extends boolean> {
     this.bundleSizeCategoriesByHtmlResource = new Map();
   }
 
-  private addManifestScript = ({
+  private addSelfContainedScript = ({
     compiler,
     entries,
     filename,
@@ -790,14 +790,14 @@ export class ManifestPlugin<Z extends boolean> {
     addToSetMap(this.bundleSizeCategoriesByHtmlResource, filePath, category);
     entries[parsedFileName] = { import: [filePath], ...opts };
     if (this.isWebAccessibleHtml(filename)) {
-      this.isolatedHtmlEntries.add(parsedFileName);
+      this.isolatedEntries.add(parsedFileName);
 
       // `cashtag-widget.html` is the web-accessible HTML entry, but HtmlBundler
       // names its imported frame script `frame`. Both entries must be isolated so
       // Webpack does not split the iframe bundle.
       if (parsedFileName === 'cashtag-widget') {
         this.selfContainedScripts.add('frame');
-        this.isolatedHtmlEntries.add('frame');
+        this.isolatedEntries.add('frame');
       }
     }
   };
@@ -807,13 +807,13 @@ export class ManifestPlugin<Z extends boolean> {
     entries: Record<string, EntryDescriptionNormalized>,
   ): void {
     this.resetBundleSizeEntrypointMetadata();
-    this.isolatedHtmlEntries.clear();
+    this.isolatedEntries.clear();
 
     for (const manifest of this.manifests.values()) {
       // collect content_scripts (MV2 + MV3)
       for (const contentScript of manifest.content_scripts ?? []) {
         for (const script of contentScript.js ?? []) {
-          this.addManifestScript({
+          this.addSelfContainedScript({
             compiler,
             entries,
             filename: script,
@@ -825,7 +825,7 @@ export class ManifestPlugin<Z extends boolean> {
       if (manifest.manifest_version === 2) {
         // collect MV2 background scripts
         for (const script of manifest.background?.scripts ?? []) {
-          this.addManifestScript({
+          this.addSelfContainedScript({
             compiler,
             entries,
             filename: script,
@@ -835,7 +835,7 @@ export class ManifestPlugin<Z extends boolean> {
         // collect MV2 web accessible resources
         for (const resource of manifest.web_accessible_resources ?? []) {
           if (resource.endsWith('.js')) {
-            this.addManifestScript({
+            this.addSelfContainedScript({
               compiler,
               entries,
               filename: resource,
@@ -846,7 +846,7 @@ export class ManifestPlugin<Z extends boolean> {
       } else if (manifest.manifest_version === 3) {
         // collect MV3 service worker
         if (manifest.background?.service_worker) {
-          this.addManifestScript({
+          this.addSelfContainedScript({
             compiler,
             entries,
             filename: manifest.background.service_worker,
@@ -858,7 +858,7 @@ export class ManifestPlugin<Z extends boolean> {
         for (const resource of manifest.web_accessible_resources ?? []) {
           for (const filename of resource.resources) {
             if (filename.endsWith('.js')) {
-              this.addManifestScript({
+              this.addSelfContainedScript({
                 compiler,
                 entries,
                 filename,
@@ -897,6 +897,43 @@ export class ManifestPlugin<Z extends boolean> {
           }
           this.addHtml({ compiler, entries, directory, filename, category });
         }
+      }
+    }
+
+    if (
+      ![...this.manifests.values()].some(
+        (manifest) => manifest.manifest_version === 3,
+      )
+    ) {
+      return;
+    }
+
+    const directory = path.resolve(compiler.context, 'workers');
+    let workerFiles: Dirent[];
+    try {
+      workerFiles = readdirSync(directory, { withFileTypes: true });
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        'code' in error &&
+        error.code === 'ENOENT'
+      ) {
+        return;
+      }
+      throw error;
+    }
+
+    for (const file of workerFiles) {
+      if (file.isFile() && /\.ts$/u.test(file.name)) {
+        const filename = path.posix.join('workers', file.name);
+        this.isolatedEntries.add(filename);
+        this.addSelfContainedScript({
+          compiler,
+          entries,
+          filename,
+          category: 'other',
+          opts: { runtime: false, asyncChunks: false },
+        });
       }
     }
   }
