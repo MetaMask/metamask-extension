@@ -1503,9 +1503,11 @@ const PerpsOrderEntryPage = () => {
     }
     return {
       size: position.size,
-      // `leverage.value` is absent when the provider does not report one;
-      // fall back to the trading default the form itself seeds with.
-      leverage: position.leverage.value ?? TRADING_DEFAULTS.leverage,
+      // Venue-reported leverage; absent when the provider does not report one.
+      // Do not fall back to the new-order default here: this value seeds the
+      // modify form's leverage (and its slider minimum), so a fabricated
+      // default could silently re-lever the live position on submit.
+      leverage: position.leverage.value,
       entryPrice: position.entryPrice,
       takeProfitPrice: position.takeProfitPrice,
       stopLossPrice: position.stopLossPrice,

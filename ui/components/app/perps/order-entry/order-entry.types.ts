@@ -32,8 +32,12 @@ export type ExistingPositionData = {
   symbol?: string;
   /** Position size (signed: positive = long, negative = short) */
   size: string;
-  /** Current leverage multiplier */
-  leverage: number;
+  /**
+   * Venue-reported leverage multiplier. Absent when the provider does not
+   * report one; consumers seed their default and show a placeholder rather
+   * than fabricating a value that the venue never reported.
+   */
+  leverage?: number;
   /** Entry price for reference display */
   entryPrice: string;
   /** Take profit price (if set) */
