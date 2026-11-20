@@ -201,7 +201,13 @@ describe('PayChecklistDialog', () => {
           foregroundSrc: './images/fg.png',
         }}
         isOpen
-        items={[{ body: 'Fast conversion', id: 'convert', title: 'Convert' }]}
+        items={[
+          {
+            body: 'Fast settlement',
+            id: 'settlement',
+            title: 'Instant settlement',
+          },
+        ]}
         lead="Deposit and earn."
         leadTestId="pay-overview-dialog-description"
         onClose={jest.fn()}
@@ -220,6 +226,6 @@ describe('PayChecklistDialog', () => {
     expect(
       screen.getByTestId('pay-overview-dialog-description'),
     ).toHaveTextContent('Deposit and earn.');
-    expect(screen.getByText('Convert')).toBeInTheDocument();
+    expect(screen.getByText('Instant settlement')).toBeInTheDocument();
   });
 });
