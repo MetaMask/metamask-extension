@@ -292,19 +292,18 @@ const HardwareWalletErrorMonitor = ({ children }: { children: ReactNode }) => {
     // Don't dismiss manually shown modals based on selected account.
     // This is important for signature flows where the signing account
     // (from msgParams.from) may be a hardware wallet even if the
-    // currently selected account is not.
-    if (isManuallyShownRef.current) {
-      return;
-    }
+    // currently selected account is not. Refreshing the modal with a newer
+    // device error is still allowed below.
+    if (!isManuallyShownRef.current) {
+      // Reset state when not a hardware wallet account (for auto-shown modals only)
+      if (!isHardwareWalletAccount && displayedError) {
+        resetModalState();
+        return;
+      }
 
-    // Reset state when not a hardware wallet account (for auto-shown modals only)
-    if (!isHardwareWalletAccount && displayedError) {
-      resetModalState();
-      return;
-    }
-
-    if (!isHardwareWalletAccount) {
-      return;
+      if (!isHardwareWalletAccount) {
+        return;
+      }
     }
 
     if (isErrorModalSuppressed) {
@@ -317,9 +316,18 @@ const HardwareWalletErrorMonitor = ({ children }: { children: ReactNode }) => {
       return;
     }
 
-    // Only auto-show errors on transaction, signing, and bridge pages.
+    // Only auto-OPEN errors on transaction, signing, and bridge pages.
     // Other pages (e.g. home) should not show auto-triggered error modals.
-    if (!isOnErrorModalRoute) {
+    //
+    // An already-open modal is exempt: the route gate exists so a stray
+    // connection error does not interrupt quote browsing. When the modal is
+    // open on such a page (shown manually by the submit preflight), its retry
+    // re-runs `ensureDeviceReady` and updates `connectionState` with the
+    // device's *current* problem. Without refreshing here the modal would keep
+    // showing the first error, so a user who unlocks their device would still
+    // see "unlock device" instead of "open the Ethereum app", then never see
+    // "enable blind signing".
+    if (!isOnErrorModalRoute && !isModalOpenRef.current) {
       return;
     }
 

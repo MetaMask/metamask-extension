@@ -15,6 +15,7 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   AWAITING_SIGNATURES_ROUTE,
   HARDWARE_WALLET_REPAIR_ROUTE,
+  PREPARE_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
 import { createHardwareWalletError } from './errors';
 import {
@@ -533,6 +534,53 @@ describe('HardwareWalletErrorProvider', () => {
       );
 
       expect(mockShowModal).not.toHaveBeenCalled();
+    });
+
+    it('updates a manually shown modal with the next device error on a non auto-show route', () => {
+      // Bridge/swap quote pages gate auto-shown modals off, but the submit
+      // preflight shows one manually. When the modal's retry re-runs
+      // ensureDeviceReady and the device reports a DIFFERENT error (e.g. the
+      // user unlocked but the Ethereum app is closed), the modal must show the
+      // new error rather than the stale one.
+      const lockedError = createHardwareWalletError(
+        ErrorCode.AuthenticationDeviceLocked,
+        HardwareWalletType.Ledger,
+        'Device is locked',
+      );
+      const appClosedError = createHardwareWalletError(
+        ErrorCode.DeviceStateEthAppClosed,
+        HardwareWalletType.Ledger,
+        'Ethereum app is closed',
+      );
+
+      mockConnectionState.current = { status: 'ready' };
+
+      const store = mockStore(createMockState());
+      const { result, rerender } = renderHardwareWalletErrorHook(
+        store,
+        `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`,
+      );
+
+      act(() => {
+        result.current.showErrorModal(lockedError);
+      });
+
+      expect(mockShowModal).toHaveBeenLastCalledWith(
+        expect.objectContaining({ error: lockedError }),
+      );
+
+      mockConnectionState.current = {
+        status: ConnectionStatus.ErrorState,
+        error: appClosedError,
+      };
+
+      act(() => {
+        rerender();
+      });
+
+      expect(mockShowModal).toHaveBeenLastCalledWith(
+        expect.objectContaining({ error: appClosedError }),
+      );
     });
 
     it('auto-shows errors on the confirmation vNext page', () => {
