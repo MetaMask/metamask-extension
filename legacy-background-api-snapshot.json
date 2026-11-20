@@ -1,5 +1,37 @@
 {
-  "LegacyBackgroundApiService": [
+  "adhocControllerConnectionMethods": [
+    "getStatePatches",
+    "messengerCall",
+    "messengerSubscribe",
+    "messengerUnsubscribe",
+    "perpsActivateCandleStream",
+    "perpsActivateOrderBookAggregatedStream",
+    "perpsActivateOrderBookStream",
+    "perpsActivatePriceStream",
+    "perpsActivateStreaming",
+    "perpsCheckHealth",
+    "perpsDeactivateCandleStream",
+    "perpsDeactivateOrderBookAggregatedStream",
+    "perpsDeactivateOrderBookStream",
+    "perpsDeactivatePriceStream",
+    "perpsDisconnect",
+    "perpsGetLifecycleContext",
+    "perpsInit",
+    "perpsInitForAccount",
+    "perpsMarkForegroundSettled",
+    "perpsRegisterPreload",
+    "perpsStartPreload",
+    "perpsStopPreload",
+    "perpsToggleTestnet",
+    "perpsViewActive",
+    "startSendingPatches"
+  ],
+  "getApiMethods": [
+    "setArcUsageNoticeShown",
+    "trackAnalyticsEvent",
+    "trackMetaMetricsPage"
+  ],
+  "legacyBackgroundApiServiceMethods": [
     "acceptPermissionsRequest",
     "addNetwork",
     "addNewSeedPhraseBackup",
@@ -98,10 +130,5 @@
     "unlockHardwareWalletAccount",
     "unlockWithPasskey",
     "upsertTransactionUIMetricsFragment"
-  ],
-  "MetamaskController.getApi": [
-    "setArcUsageNoticeShown",
-    "trackAnalyticsEvent",
-    "trackMetaMetricsPage"
   ]
 }
