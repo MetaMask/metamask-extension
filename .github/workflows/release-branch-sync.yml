@@ -1,8 +1,7 @@
 name: Release Branch Sync
 
 permissions:
-  pull-requests: write
-  contents: write
+  contents: read
 
 on:
   pull_request:
