@@ -5,7 +5,7 @@ import {
   FunctionWithBody,
   getEnclosingClassDeclaration,
   getPropertyNameText,
-  isFunctionWithBody,
+  isInlineFunctionWithBody,
   isNullishExpression,
   unwrapExpression,
 } from './ast-utils';
@@ -204,7 +204,7 @@ export function resolveFunctions(
   // EXAMPLE:
   //   () => ({ startSendingPatches })
   //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  if (isFunctionWithBody(normalizedExpression)) {
+  if (isInlineFunctionWithBody(normalizedExpression)) {
     return [normalizedExpression];
   }
 

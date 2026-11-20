@@ -1,13 +1,21 @@
 import ts from 'typescript';
 
 /**
+ * A function written inline as an expression, which always has a body.
+ */
+export type InlineFunctionWithBody = ts.ArrowFunction | ts.FunctionExpression;
+
+/**
  * A function whose return values can be inspected.
+ *
+ * Function and method declarations can lack a body, as with TypeScript
+ * overload signatures and `declare function`. Those only describe types, so
+ * they are skipped when following a call to the code it runs.
  */
 export type FunctionWithBody =
   | ts.FunctionDeclaration
   | ts.MethodDeclaration
-  | ts.ArrowFunction
-  | ts.FunctionExpression;
+  | InlineFunctionWithBody;
 
 /**
  * Unwraps parentheses and assertions from an expression.
@@ -126,14 +134,14 @@ export function forEachNodeInFunctionBody(
 }
 
 /**
- * Determines whether a node is a function whose return values can be followed.
+ * Determines whether a node is a function written inline as an expression.
  *
  * @param node - The node to inspect.
  * @returns True for arrow functions and function expressions.
  */
-export function isFunctionWithBody(
+export function isInlineFunctionWithBody(
   node: ts.Node,
-): node is ts.ArrowFunction | ts.FunctionExpression {
+): node is InlineFunctionWithBody {
   return ts.isArrowFunction(node) || ts.isFunctionExpression(node);
 }
 
