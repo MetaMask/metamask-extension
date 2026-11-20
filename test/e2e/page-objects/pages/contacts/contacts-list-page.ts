@@ -98,11 +98,19 @@ class ContactsListPage {
   }
 
   /**
-   * Closes the contact updated toast if it is shown.
+   * Closes the contact updated toast and waits for it to be removed, so it
+   * can't intercept clicks on the next screen.
    */
   async closeContactUpdatedToast(): Promise<void> {
     console.log('Closing contact updated toast on contacts page');
-    await this.driver.clickElementSafe(this.closeContactUpdatedToastButton);
+    // The toast slides in, so a click during the animation can miss the close
+    // button and leave the toast on screen.
+    await this.driver.waitForElementToStopMoving(
+      this.closeContactUpdatedToastButton,
+    );
+    await this.driver.clickElementAndWaitToDisappear(
+      this.closeContactUpdatedToastButton,
+    );
   }
 
   /**

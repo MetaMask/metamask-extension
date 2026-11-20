@@ -18,6 +18,7 @@ import { DeleteMetametricsDataItem } from './delete-metametrics-data-item';
 import { DownloadStateLogsItem } from './download-state-logs-item';
 import { ExportYourDataItem } from './export-your-data-item';
 import { IpfsGatewayItem } from './ipfs-gateway-item';
+import { RememberSupportPreferenceToggleItem } from './remember-support-preference-item';
 
 const BatchAccountBalanceRequestsToggleItem = createToggleItem({
   name: 'BatchAccountBalanceRequestsToggleItem',
@@ -41,6 +42,11 @@ const SkipLinkConfirmationToggleItem = createToggleItem({
   trackEventProperty: 'skip_deep_link_interstitial',
 });
 
+const REMEMBER_SUPPORT_PREFERENCE_ITEM: SettingItemConfig = {
+  id: 'remember-support-preference',
+  component: RememberSupportPreferenceToggleItem,
+};
+
 /** Registry of setting items for the Privacy page. Add new items here */
 export const PRIVACY_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'basic-functionality', component: BasicFunctionalityToggleItem },
@@ -58,6 +64,7 @@ export const PRIVACY_SETTING_ITEMS: SettingItemConfig[] = [
   },
   { id: 'data-collection', component: DataCollectionToggleItem },
   { id: 'delete-metametrics-data', component: DeleteMetametricsDataItem },
+  REMEMBER_SUPPORT_PREFERENCE_ITEM,
   {
     id: 'download-state-logs',
     component: DownloadStateLogsItem,
@@ -81,6 +88,7 @@ export const CONSOLIDATED_BASIC_FUNCTIONALITY_PRIVACY_ITEMS: SettingItemConfig[]
     },
     { id: 'data-collection', component: DataCollectionToggleItem },
     { id: 'delete-metametrics-data', component: DeleteMetametricsDataItem },
+    REMEMBER_SUPPORT_PREFERENCE_ITEM,
     {
       id: 'download-state-logs',
       component: DownloadStateLogsItem,

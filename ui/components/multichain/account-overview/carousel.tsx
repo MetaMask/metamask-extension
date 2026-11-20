@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { removeSlide } from '../../../store/actions';
 import { useDispatch } from '../../../store/hooks';
 import { CarouselWithEmptyState } from '../carousel';
-import { getAppIsLoading } from '../../../selectors';
+import { getAppIsLoading, getUseExternalServices } from '../../../selectors';
 import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
@@ -17,9 +17,10 @@ import DownloadMobileAppModal from '../../app/download-mobile-modal/download-mob
 export const Carousel = () => {
   const dispatch = useDispatch();
   const isLoading = useSelector(getAppIsLoading);
+  const useExternalServices = useSelector(getUseExternalServices);
   const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
   const isCarouselEnabled = Boolean(
-    remoteFeatureFlags && remoteFeatureFlags.carouselBanners,
+    useExternalServices && remoteFeatureFlags?.carouselBanners,
   );
   const { trackEvent, createEventBuilder } = useAnalytics();
   const displayedSlideIds = useRef<Set<string>>(new Set());
