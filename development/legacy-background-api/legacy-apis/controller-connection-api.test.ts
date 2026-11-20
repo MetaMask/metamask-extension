@@ -57,6 +57,36 @@ describe('getControllerConnectionApiMemberNames', () => {
       );
     });
 
+    it('rejects an api that may be reassigned', () => {
+      const { sourceFile, context } = parseSource(`class MetamaskController {
+        setupControllerConnection() {
+          let api = {};
+          api = { exposed() {} };
+        }
+      }`);
+
+      expect(() =>
+        getControllerConnectionApiMemberNames(sourceFile, context),
+      ).toThrow(
+        'MetamaskController.setupControllerConnection api must be declared with const',
+      );
+    });
+
+    it('finds an api wrapped in parentheses and type assertions', () => {
+      const { sourceFile, context } = parseSource(`class MetamaskController {
+        setupControllerConnection() {
+          const api = ({ exposed() {} } as Api);
+        }
+      }`);
+
+      const { adhocControllerConnectionMethods } =
+        getControllerConnectionApiMemberNames(sourceFile, context);
+
+      expect(adhocControllerConnectionMethods).toStrictEqual(
+        new Set(['exposed']),
+      );
+    });
+
     it('rejects a non-object api', () => {
       const { sourceFile, context } = parseSource(
         'class MetamaskController { setupControllerConnection() { const api = createApi(); } }',

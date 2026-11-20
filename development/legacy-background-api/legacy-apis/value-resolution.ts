@@ -5,6 +5,7 @@ import {
   FunctionWithBody,
   getEnclosingClassDeclaration,
   getPropertyNameText,
+  isConstVariableDeclaration,
   isInlineFunctionWithBody,
   isNullishExpression,
   unwrapExpression,
@@ -492,18 +493,7 @@ function resolveDeclarationValues(
 function assertConstDeclaration(
   variableDeclaration: ts.VariableDeclaration,
 ): void {
-  // EXAMPLE:
-  //   const api = { ... };
-  //   ^^^^^ const flag
-  //
-  // ANTI-EXAMPLE:
-  //   let api = {};
-  //   ^^^ may be reassigned later
-  const declarationList = variableDeclaration.parent;
-  if (
-    !ts.isVariableDeclarationList(declarationList) ||
-    declarationList.getFirstToken()?.kind !== ts.SyntaxKind.ConstKeyword
-  ) {
+  if (!isConstVariableDeclaration(variableDeclaration)) {
     throw new UnresolvableExpressionError(
       variableDeclaration,
       'Cannot follow a variable that is not declared with const, since it may be reassigned',

@@ -1,6 +1,10 @@
 import ts from 'typescript';
 import { setSubtract } from '../set-utils';
-import { getPropertyNameText, unwrapExpression } from './ast-utils';
+import {
+  getPropertyNameText,
+  isConstVariableDeclaration,
+  unwrapExpression,
+} from './ast-utils';
 import { ResolutionContext } from './module-resolution';
 import { resolvePropertyNamesFromObjectElement } from './value-resolution';
 
@@ -170,12 +174,19 @@ function findControllerConnectionApiObject(
       'MetamaskController.setupControllerConnection did not define api',
     );
   }
-  if (!ts.isObjectLiteralExpression(apiVariable.initializer)) {
+  if (!isConstVariableDeclaration(apiVariable)) {
+    throw new Error(
+      'MetamaskController.setupControllerConnection api must be declared with const',
+    );
+  }
+
+  const apiObject = unwrapExpression(apiVariable.initializer);
+  if (!ts.isObjectLiteralExpression(apiObject)) {
     throw new Error(
       'MetamaskController.setupControllerConnection api must be an object literal',
     );
   }
-  return apiVariable.initializer;
+  return apiObject;
 }
 
 /**

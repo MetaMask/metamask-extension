@@ -146,6 +146,31 @@ export function isInlineFunctionWithBody(
 }
 
 /**
+ * Determines whether a variable is declared with `const`.
+ *
+ * Only `const` variables can be followed to their initializer, since any other
+ * variable may be reassigned later.
+ *
+ * @param variableDeclaration - The variable declaration to check.
+ * @returns True if the variable is declared with `const`.
+ */
+export function isConstVariableDeclaration(
+  variableDeclaration: ts.VariableDeclaration,
+): boolean {
+  // EXAMPLE:
+  //   const api = { ... };
+  //   ^^^^^
+  // ANTI-EXAMPLE:
+  //   let api = {};
+  //   ^^^
+  const declarationList = variableDeclaration.parent;
+  return (
+    ts.isVariableDeclarationList(declarationList) &&
+    declarationList.getFirstToken()?.kind === ts.SyntaxKind.ConstKeyword
+  );
+}
+
+/**
  * Determines whether an expression is `null` or `undefined`.
  *
  * @param expression - The expression to inspect.
