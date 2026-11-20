@@ -645,7 +645,7 @@ export const ROBINHOOD_CHAIN_IMAGE_URL = './images/robinhood.svg';
 export const ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL = './images/rootstock-native.svg';
 export const ZERO_G_IMAGE_URL = './images/0g.svg';
 export const ZERO_G_NATIVE_TOKEN_IMAGE_URL = './images/0g-native.svg';
-export const ELYSIUM_NETWORK_IMAGE_URL = './images/elysium-network.png';
+export const ELYSIUM_NETWORK_IMAGE_URL = './images/elysium-network.svg';
 export const TEMPO_TESTNET_IMAGE_URL = './images/tempo.svg';
 export const TEMPO_MAINNET_IMAGE_URL = './images/tempo.svg';
 export const CHILIZ_IMAGE_URL = './images/chiliz.svg';
@@ -1338,6 +1338,8 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [MultichainNetworks.TRON_NILE]: TRON_NILE_IMAGE_URL,
   [MultichainNetworks.TRON_SHASTA]: TRON_SHASTA_IMAGE_URL,
   [MultichainNetworks.STELLAR]: STELLAR_IMAGE_URL,
+  // Kinetiq Elysium (chain 99901): native HYPE, same mark as its network logo.
+  '0x1863d': ELYSIUM_NETWORK_IMAGE_URL,
 } as const;
 
 /**
