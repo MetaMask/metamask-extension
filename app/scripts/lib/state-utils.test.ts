@@ -436,6 +436,7 @@ describe('State Utils', () => {
         qrSyncSelectedAccountGroupIds: ['account-group-1'],
         qrSyncError: { code: 'SYNC_FAILED', message: 'failed' },
         qrSyncCreatedAt: 1,
+        qrSyncExpiresAt: 3,
         qrSyncUpdatedAt: 2,
       };
 

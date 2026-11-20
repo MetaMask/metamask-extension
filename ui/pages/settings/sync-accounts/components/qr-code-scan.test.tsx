@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, fireEvent, screen } from '@testing-library/react';
+import { act, cleanup, fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -25,12 +25,15 @@ jest.mock('../../../../selectors/qr-sync/qr-sync', () => ({
 const mockSelectQrSyncQrPayload = jest.mocked(selectQrSyncQrPayload);
 const defaultOnRestart = jest.fn();
 
+const SESSION_NOW = 1_000_000;
+
 const createMockStore = (metamaskOverrides = {}) =>
   configureMockStore([thunk])({
     ...mockState,
     metamask: {
       ...mockState.metamask,
       qrSyncQrPayload: 'metamask://connect/mwp?p=test',
+      qrSyncExpiresAt: SESSION_NOW + QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT,
       qrSyncError: null,
       ...metamaskOverrides,
     },
@@ -51,6 +54,7 @@ describe('QrCodeScan', () => {
   });
 
   afterEach(() => {
+    cleanup();
     jest.useRealTimers();
   });
 
@@ -99,6 +103,8 @@ describe('QrCodeScan', () => {
   });
 
   it('shows the countdown while the QR code is valid', () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(SESSION_NOW);
     const mockStore = createMockStore();
     renderQrCodeScan(mockStore);
 
@@ -109,8 +115,28 @@ describe('QrCodeScan', () => {
     ).toBeInTheDocument();
   });
 
+  it('shows the shared session expiry when a second surface opens later', () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(SESSION_NOW);
+    const expiresAt = SESSION_NOW + 21_000;
+    const mockStore = createMockStore({ qrSyncExpiresAt: expiresAt });
+
+    renderQrCodeScan(mockStore);
+
+    expect(screen.getByText('Expires in 21s')).toBeInTheDocument();
+
+    act(() => {
+      jest.advanceTimersByTime(6_000);
+    });
+
+    renderQrCodeScan(mockStore);
+
+    expect(screen.getAllByText('Expires in 15s')).toHaveLength(2);
+  });
+
   it('shows the expired message and reset button after the timer runs out', () => {
     jest.useFakeTimers();
+    jest.setSystemTime(SESSION_NOW);
     const mockStore = createMockStore();
     renderQrCodeScan(mockStore);
 
@@ -140,6 +166,7 @@ describe('QrCodeScan', () => {
 
   it('calls onRestart when the reset button is clicked', () => {
     jest.useFakeTimers();
+    jest.setSystemTime(SESSION_NOW);
     const mockStore = createMockStore();
     const onRestart = jest.fn();
     renderQrCodeScan(mockStore, onRestart);
@@ -152,9 +179,7 @@ describe('QrCodeScan', () => {
 
     expect(onRestart).toHaveBeenCalledTimes(1);
     expect(
-      screen.getByText(
-        `Expires in ${QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT / 1000}s`,
-      ),
+      screen.getByText(messages.qrCodeExpired.message),
     ).toBeInTheDocument();
   });
 });

@@ -381,6 +381,55 @@ describe('QrSyncController', () => {
       );
       expect(decodedSessionRequest.id).toBe(TEST_SESSION_ID);
       expect(controller.state.qrSyncConnectionStatus).toBe('connecting');
+      expect(controller.state.qrSyncExpiresAt).toEqual(expect.any(Number));
+    });
+
+    it('records the session expiry so every surface shares one countdown', async () => {
+      const { controller } = setupController();
+      const expiresAt = 1_700_000_000_000;
+      const createSessionPromise = controller.createSession();
+      await new Promise((resolve) => {
+        setImmediate(resolve);
+      });
+      mockEmitSessionRequest({ expiresAt });
+      await createSessionPromise;
+
+      expect(controller.state.qrSyncExpiresAt).toBe(expiresAt);
+    });
+
+    it('returns after exposing the QR without waiting for the mobile handshake', async () => {
+      const { controller } = setupController();
+      let resolveConnection!: () => void;
+      const connectionPromise = new Promise<void>((resolve) => {
+        resolveConnection = resolve;
+      });
+      mockMwp.connect.mockImplementationOnce(() => {
+        mockEmitSessionRequest();
+        return connectionPromise;
+      });
+
+      await controller.createSession();
+
+      expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.DISPLAYING_QR);
+      expect(controller.state.qrSyncQrPayload).not.toBeNull();
+
+      resolveConnection();
+      await flushAsyncWork();
+    });
+
+    it('reuses an active session when another extension surface mounts', async () => {
+      const { controller } = setupController();
+
+      await mockStartSession(controller);
+      const qrPayload = controller.state.qrSyncQrPayload;
+      const expiresAt = controller.state.qrSyncExpiresAt;
+
+      await controller.createSession();
+
+      expect(mockMwp.connect).toHaveBeenCalledTimes(1);
+      expect(controller.state.qrSyncQrPayload).toBe(qrPayload);
+      expect(controller.state.qrSyncExpiresAt).toBe(expiresAt);
+      expect(controller.state.qrSyncSessionId).toBe(TEST_SESSION_ID);
     });
 
     it('marks the session as failed when the relay connection fails', async () => {
@@ -388,6 +437,7 @@ describe('QrSyncController', () => {
       mockMwp.connect.mockRejectedValueOnce(new Error('Relay unavailable'));
 
       await controller.createSession();
+      await flushAsyncWork();
 
       expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
       expect(controller.state.qrSyncConnectionStatus).toBe('errored');
@@ -409,6 +459,7 @@ describe('QrSyncController', () => {
       });
 
       await controller.createSession();
+      await flushAsyncWork();
 
       expect(cancelOtp).toHaveBeenCalledTimes(1);
       expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
@@ -425,6 +476,7 @@ describe('QrSyncController', () => {
       mockMwp.connect.mockRejectedValueOnce(expiredError);
 
       await controller.createSession();
+      await flushAsyncWork();
 
       expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
       expect(controller.state.qrSyncConnectionStatus).toBe('errored');
@@ -491,8 +543,13 @@ describe('QrSyncController', () => {
       await mockStartSession(controller);
 
       jest.useFakeTimers();
+      jest.setSystemTime(5_000_000);
       try {
         mockEmitOtpRequired(jest.fn(), cancelOtp);
+
+        expect(controller.state.qrSyncExpiresAt).toBe(
+          5_000_000 + QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT,
+        );
 
         await jest.advanceTimersByTimeAsync(
           QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT,
@@ -1173,6 +1230,7 @@ describe('QrSyncController', () => {
       mockMwp.connect.mockRejectedValueOnce(connectError);
 
       await controller.createSession();
+      await flushAsyncWork();
 
       expect(captureException).toHaveBeenCalledTimes(1);
       const sentryError = captureException.mock.calls[0][0] as Error & {
@@ -1196,6 +1254,7 @@ describe('QrSyncController', () => {
       mockMwp.connect.mockRejectedValueOnce(expiredError);
 
       await controller.createSession();
+      await flushAsyncWork();
 
       expect(captureException).not.toHaveBeenCalled();
     });
