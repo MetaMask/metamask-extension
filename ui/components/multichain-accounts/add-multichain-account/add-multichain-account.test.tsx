@@ -1,4 +1,5 @@
 import React from 'react';
+import { it } from '@jest/globals';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 
 import configureStore, { MetaMaskReduxDispatch } from '../../../store/store';
@@ -6,6 +7,12 @@ import { createNextMultichainAccountGroup } from '../../../store/actions';
 import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../shared/constants/app';
 import { AddMultichainAccount } from './add-multichain-account';
 
 jest.mock('../../../../shared/lib/trace', () => {
@@ -22,6 +29,18 @@ const addMultichainAccountIconClass = '.add-multichain-account__icon-box__icon';
 const addMultichainAccountIconLoadingClass =
   '.add-multichain-account__icon-box__icon-loading';
 const addMultichainAccountIconBoxTestId = 'add-multichain-account-icon-box';
+
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
+
+const mockGetEnvironmentType = jest.fn();
+jest.mock('../../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../../shared/lib/environment-type'),
+  getEnvironmentType: () => mockGetEnvironmentType(),
+}));
 
 jest.mock('../../../store/actions', () => ({
   createNextMultichainAccountGroup: jest.fn(
@@ -331,6 +350,92 @@ describe('AddMultichainAccount', () => {
       expect(
         getByText(messages.createMultichainAccountButton.message),
       ).toBeInTheDocument();
+    });
+  });
+
+  describe('hardware wallets', () => {
+    const hardwareWalletId = 'keyring:Ledger Hardware';
+    const mockOpenExtensionInBrowser = jest.fn();
+
+    beforeEach(() => {
+      mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+      mockUseAccountsOperationsLoadingStates.mockReturnValue({
+        isAccountTreeSyncingInProgress: false,
+        areAnyOperationsLoading: false,
+        loadingMessage: undefined,
+      });
+      globalThis.platform = {
+        openExtensionInBrowser: mockOpenExtensionInBrowser,
+      } as unknown as typeof globalThis.platform;
+    });
+
+    const renderHardwareButton = (
+      hardwareDevice: HardwareDeviceNames = HardwareDeviceNames.ledger,
+    ) =>
+      renderWithProvider(
+        <AddMultichainAccount
+          walletId={hardwareWalletId}
+          hardwareDevice={hardwareDevice}
+        />,
+        configureStore(initialState),
+      );
+
+    it('navigates to the device account selector instead of creating an account', () => {
+      renderHardwareButton();
+
+      fireEvent.click(screen.getByTestId('add-hardware-wallet-account-button'));
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        '/new-account/connect?device=ledger',
+      );
+      expect(createNextMultichainAccountGroup).not.toHaveBeenCalled();
+    });
+
+    it('encodes device names containing spaces in the query', () => {
+      renderHardwareButton(HardwareDeviceNames.qr);
+
+      fireEvent.click(screen.getByTestId('add-hardware-wallet-account-button'));
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        '/new-account/connect?device=QR+Hardware',
+      );
+    });
+
+    it.each([
+      [ENVIRONMENT_TYPE_POPUP, false],
+      [ENVIRONMENT_TYPE_SIDEPANEL, true],
+    ])(
+      'opens the device account selector in an expanded tab from the %s',
+      (environmentType, keepWindowOpen) => {
+        mockGetEnvironmentType.mockReturnValue(environmentType);
+        renderHardwareButton();
+
+        fireEvent.click(
+          screen.getByTestId('add-hardware-wallet-account-button'),
+        );
+
+        expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(
+          '/new-account/connect',
+          'device=ledger',
+          keepWindowOpen,
+        );
+        expect(mockNavigate).not.toHaveBeenCalled();
+      },
+    );
+
+    it('is not blocked by account tree syncing', () => {
+      mockUseAccountsOperationsLoadingStates.mockReturnValue({
+        isAccountTreeSyncingInProgress: true,
+        areAnyOperationsLoading: true,
+        loadingMessage: messages.syncing.message,
+      });
+      renderHardwareButton();
+
+      expect(
+        screen.getByText(messages.createMultichainAccountButton.message),
+      ).toBeInTheDocument();
+      fireEvent.click(screen.getByTestId('add-hardware-wallet-account-button'));
+      expect(mockNavigate).toHaveBeenCalled();
     });
   });
 });
