@@ -3,7 +3,6 @@ import {
   AccountsControllerGetStateAction,
 } from '@metamask/accounts-controller';
 import { ApprovalControllerActions } from '@metamask/approval-controller';
-import { AccountTrackerControllerGetStateAction } from '@metamask/assets-controllers';
 import {
   BridgeStatusControllerActions,
   BridgeStatusControllerStateChangeEvent,
@@ -53,7 +52,7 @@ import {
   TransactionControllerUpdateTransactionAction,
 } from '@metamask/transaction-controller';
 import { TransactionPayControllerActions } from '@metamask/transaction-pay-controller';
-import { RootMessenger } from '../../lib/messenger';
+import type { RootMessenger } from '../../lib/messenger';
 import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
 import { AppStateControllerSetDefaultHomeActiveTabNameAction } from '../../controllers/app-state-controller-method-action-types';
 import { ShieldSubscriptionServiceSubmitSubscriptionSponsorshipIntentAction } from '../../services/subscription/types';
@@ -62,7 +61,6 @@ import {
   InstitutionalSnapControllerPublishHookAction,
 } from '../../controllers/institutional-snap/InstitutionalSnapController-method-action-types';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
-import { registerAccountTrackerGetStateCompat } from '../../messenger-client-init/messengers/account-tracker-controller-compat';
 
 export type TransactionControllerInitMessenger = ReturnType<
   typeof getTransactionControllerInitMessenger
@@ -71,7 +69,6 @@ export type TransactionControllerInitMessenger = ReturnType<
 export type TransactionControllerInitMessengerActions =
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerGetStateAction
-  | AccountTrackerControllerGetStateAction
   | ApprovalControllerActions
   | AppStateControllerGetStateAction
   | AppStateControllerSetDefaultHomeActiveTabNameAction
@@ -126,10 +123,6 @@ export function getTransactionControllerInitMessenger(
     TransactionControllerInitMessengerEvents
   >,
 ) {
-  // AccountTrackerController is removed. TransactionController still calls
-  // AccountTrackerController:getState, served from AssetsController.
-  registerAccountTrackerGetStateCompat(messenger as RootMessenger);
-
   const controllerInitMessenger = new Messenger<
     'TransactionControllerInit',
     TransactionControllerInitMessengerActions,
@@ -158,8 +151,6 @@ export function getTransactionControllerInitMessenger(
       'TransactionController:unapprovedTransactionAdded',
     ],
     actions: [
-      // Compat shim: derives accountsByChainId from AssetsController.
-      'AccountTrackerController:getState',
       'AccountsController:getState',
       'ApprovalController:acceptRequest',
       'ApprovalController:addRequest',
