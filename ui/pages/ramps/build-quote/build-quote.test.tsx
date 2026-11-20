@@ -154,7 +154,17 @@ describe('RampsBuildQuoteScreen', () => {
     useRampsController.mockReturnValue(mockControllerState());
     useRampsQuotes.mockReturnValue({
       data: {
-        success: [{ provider: 'transak', id: 'quote-1' }],
+        success: [
+          {
+            provider: 'transak',
+            id: 'quote-1',
+            quote: {
+              amountIn: 100,
+              amountOut: 0.001,
+              paymentMethod: 'debit-credit-card',
+            },
+          },
+        ],
         error: [],
       },
       loading: false,
@@ -332,10 +342,73 @@ describe('RampsBuildQuoteScreen', () => {
 
     expect(screen.getByTestId('ramps-build-quote-continue')).toBeDisabled();
     expect(
+      screen.queryByTestId('ramps-build-quote-provider-label'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('shows provider label while quotes are loading', () => {
+    useRampsQuotes.mockReturnValue({
+      data: null,
+      loading: true,
+      error: null,
+    });
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    expect(
       screen.getByTestId('ramps-build-quote-provider-label'),
     ).toHaveTextContent(
       messages.rampsBuyingViaProvider.message.replace('$1', 'Transak'),
     );
+  });
+
+  it('does not show provider label when selected provider has no quote', () => {
+    useRampsController.mockReturnValue({
+      ...mockControllerState(),
+      selectedProvider: { id: 'banxa', name: 'Banxa' },
+    });
+    useRampsQuotes.mockReturnValue({
+      data: {
+        success: [
+          {
+            provider: 'moonpay',
+            id: 'quote-1',
+            quote: {
+              amountIn: 100,
+              amountOut: 0.001,
+              paymentMethod: 'debit-credit-card',
+            },
+          },
+          {
+            provider: 'coinbase',
+            id: 'quote-2',
+            quote: {
+              amountIn: 100,
+              amountOut: 0.0009,
+              paymentMethod: 'debit-credit-card',
+            },
+          },
+        ],
+        error: [],
+      },
+      loading: false,
+      error: null,
+    });
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    expect(screen.getByTestId('ramps-build-quote-continue')).toBeDisabled();
+    expect(
+      screen.queryByTestId('ramps-build-quote-provider-label'),
+    ).not.toBeInTheDocument();
   });
 
   it('shows a quote error with a change-provider action when no provider returns a quote', () => {

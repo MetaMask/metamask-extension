@@ -328,10 +328,13 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     ? networksByCaipChainId[selectedToken.chainId]?.name
     : undefined;
 
-  const providerLabel = selectedProvider?.name
-    ? t('rampsBuyingViaProvider', [selectedProvider.name])
-    : '';
   const isQuoteLoading = selectedQuoteLoading && hasSettledQuoteAmount;
+
+  // Show provider label when loading or when provider has a quote.
+  const providerLabel =
+    selectedProvider?.name && (selectedQuote || isQuoteLoading)
+      ? t('rampsBuyingViaProvider', [selectedProvider.name])
+      : '';
 
   return {
     kind: 'ready',
