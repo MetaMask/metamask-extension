@@ -2,6 +2,7 @@ import browser from 'webextension-polyfill';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { t } from '../../../shared/lib/translate';
+import notificationIcon from '../../../shared/assets/images/icon-64';
 import ExtensionPlatform from './extension';
 
 const TEST_URL =
@@ -273,6 +274,23 @@ describe('extension platform', () => {
   });
 
   describe('showTransactionNotification', () => {
+    it('uses the bundled notification icon', async () => {
+      const extensionPlatform = new ExtensionPlatform();
+      const iconUrl = `chrome-extension://test/${notificationIcon}`;
+      mockedBrowser.runtime.getURL.mockReturnValue(iconUrl);
+
+      await extensionPlatform.showTransactionNotification(
+        createTxMeta({ status: TransactionStatus.failed }),
+      );
+
+      expect(mockedBrowser.runtime.getURL).toHaveBeenCalledWith(
+        notificationIcon,
+      );
+      expect(mockedBrowser.notifications.create).toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'basic', iconUrl }),
+      );
+    });
+
     it('shows failed transaction with EthAppNftNotSupported error message', async () => {
       const txMeta = createTxMeta({
         status: TransactionStatus.failed,
