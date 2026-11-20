@@ -1,10 +1,10 @@
 import ts from 'typescript';
-import { setSubtract } from '../set-utils';
 import {
   getPropertyNameText,
   isConstVariableDeclaration,
   unwrapExpression,
 } from './ast-utils';
+import { getMessengerClientApiMemberNames } from './messenger-client-api';
 import { ResolutionContext } from './module-resolution';
 import { resolvePropertyNamesFromObjectElement } from './value-resolution';
 
@@ -15,12 +15,16 @@ import { resolvePropertyNamesFromObjectElement } from './value-resolution';
  */
 export type ControllerConnectionApiMemberNames = {
   /**
-   * Names contributed by `...this.getApi()`.
+   * Names whose final value comes from `...this.messengerClientApi`.
+   */
+  messengerClientApiMethods: Set<string>;
+  /**
+   * Names whose final value comes from `...this.getApi()`.
    */
   getApiMethods: Set<string>;
   /**
-   * Names added directly in `setupControllerConnection`, through properties or
-   * other spreads, and not contributed by `getApi`.
+   * Names whose final value is added directly in `setupControllerConnection`,
+   * through properties or other spreads.
    */
   adhocControllerConnectionMethods: Set<string>;
 };
@@ -28,7 +32,13 @@ export type ControllerConnectionApiMemberNames = {
 /**
  * Extracts the names of the properties exposed by the API object returned by
  * `MetamaskController.setupControllerConnection`, grouped by where they come
- * from (`MetamaskController.getApi`, or somewhere else).
+ * from (the in-client init system, `MetamaskController.getApi`, or somewhere
+ * else).
+ *
+ * When several elements of the object define the same name, the last one
+ * wins, just as it does at runtime, so the name is listed under the group of
+ * that element only. For example, the Perps stream bridge is spread in after
+ * `messengerClientApi` and replaces some of its methods.
  *
  * @param sourceFile - The parsed file that defines `MetamaskController`.
  * @param context - The resolution context.
@@ -54,56 +64,33 @@ export function getControllerConnectionApiMemberNames(
     sourceFile,
   );
 
-  const getApiMethods = new Set<string>();
-  const nonGetApiMethods = new Set<string>();
+  const groupsByName = new Map<
+    string,
+    keyof ControllerConnectionApiMemberNames
+  >();
 
   for (const objectElement of controllerConnectionApiObject.properties) {
-    // `messengerClientApi` is assembled at runtime from the `api` objects that
-    // messenger client init functions return, so it cannot be followed like
-    // other values. It is not tracked yet.
-    //
-    // EXAMPLE:
-    //   const api = { ...this.messengerClientApi };
-    //                 ^^^^^^^^^^^^^^^^^^^^^^^^^^ spread assignment
-    if (
-      ts.isSpreadAssignment(objectElement) &&
-      isMessengerClientApiAccess(objectElement.expression)
-    ) {
-      continue;
-    }
-
-    let namesToCapture;
-    if (
-      ts.isSpreadAssignment(objectElement) &&
-      isGetApiCall(objectElement.expression)
-    ) {
-      // EXAMPLE:
-      //   const api = { ...this.getApi() };
-      namesToCapture = getApiMethods;
-    } else {
-      // EXAMPLE:
-      //   const api = { ...getTransactionControllerApi(this.txController) };
-      namesToCapture = nonGetApiMethods;
-    }
-
-    const propertyNames = resolvePropertyNamesFromObjectElement(
-      objectElement,
-      context,
-    );
+    const group = getGroupOfObjectElement(objectElement);
+    const propertyNames =
+      // `messengerClientApi` is assembled at runtime, so its names are found by
+      // following the messenger client init functions instead.
+      group === 'messengerClientApiMethods'
+        ? getMessengerClientApiMemberNames(metamaskControllerClass, context)
+        : resolvePropertyNamesFromObjectElement(objectElement, context);
     for (const name of propertyNames) {
-      namesToCapture.add(name);
+      groupsByName.set(name, group);
     }
   }
 
-  return {
-    getApiMethods,
-    // Make sure everything in adhocControllerConnectionMethods is not also
-    // listed elsewhere
-    adhocControllerConnectionMethods: setSubtract(
-      nonGetApiMethods,
-      getApiMethods,
-    ),
+  const memberNames: ControllerConnectionApiMemberNames = {
+    messengerClientApiMethods: new Set(),
+    getApiMethods: new Set(),
+    adhocControllerConnectionMethods: new Set(),
   };
+  for (const [name, group] of groupsByName) {
+    memberNames[group].add(name);
+  }
+  return memberNames;
 }
 
 /**
@@ -221,4 +208,41 @@ function isGetApiCall(expression: ts.Expression): boolean {
       ts.SyntaxKind.ThisKeyword &&
     getPropertyNameText(normalizedExpression.expression.name) === 'getApi'
   );
+}
+
+/**
+ * Determines which group the names contributed by one element of the
+ * controller connection API object belong to.
+ *
+ * @param objectElement - The element of the API object.
+ * @returns The group of the element's names.
+ */
+function getGroupOfObjectElement(
+  objectElement: ts.ObjectLiteralElementLike,
+): keyof ControllerConnectionApiMemberNames {
+  if (!ts.isSpreadAssignment(objectElement)) {
+    // EXAMPLE:
+    //   const api = { startSendingPatches: () => { ... } };
+    //                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ property assignment
+    return 'adhocControllerConnectionMethods';
+  }
+
+  // EXAMPLE:
+  //   const api = { ...this.messengerClientApi };
+  //                 ^^^^^^^^^^^^^^^^^^^^^^^^^^ spread assignment
+  if (isMessengerClientApiAccess(objectElement.expression)) {
+    return 'messengerClientApiMethods';
+  }
+
+  // EXAMPLE:
+  //   const api = { ...this.getApi() };
+  //                 ^^^^^^^^^^^^^^^^ spread assignment
+  if (isGetApiCall(objectElement.expression)) {
+    return 'getApiMethods';
+  }
+
+  // EXAMPLE:
+  //   const api = { ...getTransactionControllerApi(this.txController) };
+  //                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ spread assignment
+  return 'adhocControllerConnectionMethods';
 }
