@@ -4,11 +4,12 @@ import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import {
   bridgeTransaction,
+  enterBridgeQuote,
   verifySubmittedSwapTransaction,
 } from '../../page-objects/flows/bridge.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import SwapPage from '../../page-objects/pages/swap/swap-page';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from './constants';
 import {
   getBridgeFixtures,
@@ -237,22 +238,22 @@ describe('Swap tests', function (this: Suite) {
         await homePage.startSwapFlow();
 
         console.log('Requesting swap quote');
-        const bridgePage = new BridgeQuotePage(driver);
+        const swapPage = new SwapPage(driver);
         // Explicitly select MUSD so the token comes from the API with securityData
-        await bridgePage.enterBridgeQuote({
+        await enterBridgeQuote(driver, {
           amount: '1',
           tokenTo: 'mUSD',
         });
-        await bridgePage.waitForQuote();
+        await swapPage.waitForQuote();
 
         // 1 banner: token-security
-        await bridgePage.submitQuoteWithWarning(1);
-        await bridgePage.rejectModal();
+        await swapPage.submitQuoteWithWarning(1);
+        await swapPage.rejectModal();
         console.log('Rejected token alert modal');
 
         // Re-submit and approve the single confirmation alert (token-security) → tx submits
-        await bridgePage.submitQuoteWithWarning();
-        await bridgePage.approveModal();
+        await swapPage.submitQuoteWithWarning();
+        await swapPage.approveModal();
         console.log('Approved token alert modal and submitted swap');
 
         await verifySubmittedSwapTransaction({
@@ -327,25 +328,25 @@ describe('Swap tests', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.startSwapFlow();
 
-        const bridgePage = new BridgeQuotePage(driver);
+        const swapPage = new SwapPage(driver);
 
         console.log('Requesting swap quote');
-        await bridgePage.enterBridgeQuote({
+        await enterBridgeQuote(driver, {
           amount: '1',
           tokenTo: 'mUSD',
         });
-        await bridgePage.waitForQuote();
-        await bridgePage.checkPriceImpactModalIsDisplayed();
+        await swapPage.waitForQuote();
+        await swapPage.checkPriceImpactModalIsDisplayed();
 
         // 2 banners: token-security + price-impact
-        await bridgePage.submitQuoteWithWarning(2);
-        await bridgePage.rejectModal();
+        await swapPage.submitQuoteWithWarning(2);
+        await swapPage.rejectModal();
         console.log('Rejected confirmation modal on first alert');
 
         // Re-submit and approve both confirmation alerts (token-security + price-impact) → tx submits
-        await bridgePage.submitQuoteWithWarning();
-        await bridgePage.approveModal();
-        await bridgePage.approveModal();
+        await swapPage.submitQuoteWithWarning();
+        await swapPage.approveModal();
+        await swapPage.approveModal();
         console.log('Approved all confirmation alerts and submitted swap');
 
         await verifySubmittedSwapTransaction({
@@ -410,24 +411,24 @@ describe('Swap tests', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.startSwapFlow();
 
-        const bridgePage = new BridgeQuotePage(driver);
+        const swapPage = new SwapPage(driver);
 
         console.log('Requesting swap quote');
-        await bridgePage.enterBridgeQuote({
+        await enterBridgeQuote(driver, {
           amount: '1',
           tokenTo: 'mUSD',
         });
-        await bridgePage.waitForQuote();
+        await swapPage.waitForQuote();
 
         // 2 confirmation alerts: token-security + price-impact
-        await bridgePage.submitQuoteWithWarning();
-        await bridgePage.rejectModal();
+        await swapPage.submitQuoteWithWarning();
+        await swapPage.rejectModal();
         console.log('Rejected confirmation modal');
 
         // Approve both alerts → tx submits
-        await bridgePage.submitQuoteWithWarning();
-        await bridgePage.approveModal();
-        await bridgePage.approveModal();
+        await swapPage.submitQuoteWithWarning();
+        await swapPage.approveModal();
+        await swapPage.approveModal();
         console.log('Approved all alerts and submitted swap');
 
         await verifySubmittedSwapTransaction({

@@ -78,10 +78,6 @@ import { getNetworkConnectionBannerControllerMessenger } from './network-connect
 import { getGatorPermissionsControllerMessenger } from './gator-permissions/gator-permissions-controller-messenger';
 import { getUserStorageControllerInitMessenger } from './identity/user-storage-controller-messenger';
 import {
-  getTokenDetectionControllerInitMessenger,
-  getTokenDetectionControllerMessenger,
-} from './token-detection-controller-messenger';
-import {
   getTokensControllerInitMessenger,
   getTokensControllerMessenger,
 } from './tokens-controller-messenger';
@@ -143,10 +139,6 @@ import {
   getSignatureControllerInitMessenger,
   getSignatureControllerMessenger,
 } from './signature-controller-messenger';
-import {
-  getUserOperationControllerInitMessenger,
-  getUserOperationControllerMessenger,
-} from './user-operation-controller-messenger';
 import { getRewardsDataServiceMessenger } from './reward-data-service-messenger';
 import { getAuthenticatedUserStorageServiceMessenger } from './authenticated-user-storage-service-messenger';
 import {
@@ -265,11 +257,6 @@ export {
   getStaticAssetsControllerMessenger,
   getStaticAssetsControllerInitMessenger,
 } from './static-assets-controller-messenger';
-export type { TokenDetectionControllerInitMessenger } from './token-detection-controller-messenger';
-export {
-  getTokenDetectionControllerMessenger,
-  getTokenDetectionControllerInitMessenger,
-} from './token-detection-controller-messenger';
 export type { TokensControllerInitMessenger } from './tokens-controller-messenger';
 export {
   getTokensControllerMessenger,
@@ -280,11 +267,6 @@ export {
   getTransactionPayControllerMessenger,
   getTransactionPayControllerInitMessenger,
 } from './transaction-pay-controller-messenger';
-export type { UserOperationControllerInitMessenger } from './user-operation-controller-messenger';
-export {
-  getUserOperationControllerMessenger,
-  getUserOperationControllerInitMessenger,
-} from './user-operation-controller-messenger';
 export type { ProfileMetricsControllerInitMessenger } from './profile-metrics-controller-messenger';
 export {
   getProfileMetricsControllerMessenger,
@@ -566,10 +548,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getRampsControllerMessenger,
     getInitMessenger: getRampsControllerInitMessenger,
   },
-  TokenDetectionController: {
-    getMessenger: getTokenDetectionControllerMessenger,
-    getInitMessenger: getTokenDetectionControllerInitMessenger,
-  },
   TokensController: {
     getMessenger: getTokensControllerMessenger,
     getInitMessenger: getTokensControllerInitMessenger,
@@ -577,10 +555,6 @@ export const MESSENGER_FACTORIES = {
   TransactionPayController: {
     getMessenger: getTransactionPayControllerMessenger,
     getInitMessenger: getTransactionPayControllerInitMessenger,
-  },
-  UserOperationController: {
-    getMessenger: getUserOperationControllerMessenger,
-    getInitMessenger: getUserOperationControllerInitMessenger,
   },
   UserStorageController: {
     getMessenger: getUserStorageControllerMessenger,

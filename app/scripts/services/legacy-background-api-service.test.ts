@@ -6063,8 +6063,6 @@ describe('LegacyBackgroundApiService', () => {
       const handlers = {
         toggleExternalServices: jest.fn(),
         getState: jest.fn().mockReturnValue({ subscriptions: [] }),
-        enableTokenDetection: jest.fn(),
-        disableTokenDetection: jest.fn(),
         enableGasFeeApis: jest.fn(),
         disableGasFeeApis: jest.fn(),
         stopAllPolling: jest.fn(),
@@ -6078,14 +6076,6 @@ describe('LegacyBackgroundApiService', () => {
       rootMessenger.registerActionHandler(
         'SubscriptionController:getState',
         handlers.getState,
-      );
-      rootMessenger.registerActionHandler(
-        'TokenDetectionController:enable',
-        handlers.enableTokenDetection,
-      );
-      rootMessenger.registerActionHandler(
-        'TokenDetectionController:disable',
-        handlers.disableTokenDetection,
       );
       rootMessenger.registerActionHandler(
         'GasFeeController:enableNonRPCGasFeeApis',
@@ -6125,10 +6115,8 @@ describe('LegacyBackgroundApiService', () => {
           true,
           undefined,
         );
-        expect(handlers.enableTokenDetection).toHaveBeenCalledTimes(1);
         expect(handlers.enableGasFeeApis).toHaveBeenCalledTimes(1);
         expect(handlers.startShield).toHaveBeenCalledTimes(1);
-        expect(handlers.disableTokenDetection).not.toHaveBeenCalled();
         expect(handlers.stopAllPolling).not.toHaveBeenCalled();
         expect(handlers.stopShield).not.toHaveBeenCalled();
       });
@@ -6145,7 +6133,6 @@ describe('LegacyBackgroundApiService', () => {
           true,
         );
 
-        expect(handlers.enableTokenDetection).toHaveBeenCalledTimes(1);
         expect(handlers.enableGasFeeApis).toHaveBeenCalledTimes(1);
         expect(handlers.startShield).not.toHaveBeenCalled();
       });
@@ -6168,7 +6155,6 @@ describe('LegacyBackgroundApiService', () => {
           true,
           ownedPreferences,
         );
-        expect(handlers.enableTokenDetection).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -6187,11 +6173,9 @@ describe('LegacyBackgroundApiService', () => {
           false,
           undefined,
         );
-        expect(handlers.disableTokenDetection).toHaveBeenCalledTimes(1);
         expect(handlers.disableGasFeeApis).toHaveBeenCalledTimes(1);
         expect(handlers.stopAllPolling).toHaveBeenCalledTimes(1);
         expect(handlers.stopShield).toHaveBeenCalledTimes(1);
-        expect(handlers.enableTokenDetection).not.toHaveBeenCalled();
         expect(handlers.startShield).not.toHaveBeenCalled();
       });
     });
@@ -6207,7 +6191,6 @@ describe('LegacyBackgroundApiService', () => {
           false,
         );
 
-        expect(handlers.disableTokenDetection).toHaveBeenCalledTimes(1);
         expect(handlers.disableGasFeeApis).toHaveBeenCalledTimes(1);
         expect(handlers.stopAllPolling).toHaveBeenCalledTimes(1);
         expect(handlers.stopShield).not.toHaveBeenCalled();
@@ -9065,8 +9048,6 @@ function getMessenger(
       'PhishingController:testOrigin',
       'PreferencesController:toggleExternalServices',
       'SubscriptionController:getState',
-      'TokenDetectionController:enable',
-      'TokenDetectionController:disable',
       'GasFeeController:enableNonRPCGasFeeApis',
       'GasFeeController:disableNonRPCGasFeeApis',
       'ShieldController:start',
