@@ -173,6 +173,12 @@
     "yarn-binary:download": "corepack pack -o .yarn/yarn-corepack.tgz",
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
+  "previewBuilds": {
+    "@metamask/notification-services-controller": {
+      "type": "breaking",
+      "previewVersion": "30.1.0-preview-74f76ac55"
+    }
+  },
   "resolutions": {
     "@metamask/design-system-react": "0.53.0",
     "@metamask/network-controller": "^38.0.1",
