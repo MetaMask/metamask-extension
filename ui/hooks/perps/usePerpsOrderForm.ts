@@ -352,7 +352,14 @@ export function usePerpsOrderForm({
     return {
       amount: '',
       balancePercent: 0,
-      leverage: pos.leverage,
+      // The form state is numeric, but the venue may not report a leverage
+      // (`pos.leverage` is optional). Open positions always carry one in
+      // practice — the provider's position adapters refuse or filter open
+      // positions with underivable margin — so this only satisfies the type
+      // contract for a hypothetical future provider, matching new-order
+      // seeding. The user can still set the leverage explicitly via the
+      // slider before submitting.
+      leverage: pos.leverage ?? TRADING_DEFAULTS.leverage,
       takeProfitPrice: pos.takeProfitPrice ?? '',
       stopLossPrice: pos.stopLossPrice ?? '',
       autoCloseEnabled: Boolean(pos.takeProfitPrice || pos.stopLossPrice),
