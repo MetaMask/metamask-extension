@@ -235,6 +235,7 @@ import {
 } from './controllers/analytics';
 import { handleRampsOrderStatusChanged } from './lib/ramps/handleRampsOrderStatusChanged';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
+import { traceSubscriptionControllerPolls } from './wallet-init/subscription-controller-poll-trace';
 import {
   addHexPrefix,
   getMethodDataName,
@@ -762,6 +763,7 @@ export default class MetamaskController extends EventEmitter {
     this.subscriptionController = this.wallet.getInstance(
       'SubscriptionController',
     );
+    traceSubscriptionControllerPolls(this.subscriptionController);
     this.networkOrderController = messengerClientsByName.NetworkOrderController;
     this.shieldController = this.wallet.getInstance('ShieldController');
     this.gatorPermissionsController =
