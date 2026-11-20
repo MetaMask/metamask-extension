@@ -1386,6 +1386,25 @@ async function mockSmartTransactionsForBridge(
   // Track the latest mined hash(es) so batchStatus can return them
   let latestMinedHash = STX_TRANSACTION_HASH; // fallback if Anvil submission fails
 
+  const sentinelSubdomain =
+    sentinelUrl.match(/tx-sentinel-(.+?)\.api/u)?.[1] ?? 'ethereum-mainnet';
+  const sentinelNetwork = {
+    network: sentinelSubdomain,
+    confirmations: true,
+    smartTransactions: true,
+  };
+
+  // Registry lookup. getNetworks always hits the ethereum-mainnet host, then
+  // getNetwork follows `network` to this chain's sentinel URL.
+  await mockServer
+    .forGet(`${STX_MAINNET_SENTINEL_URL}/networks`)
+    .always()
+    .thenCallback(() => ({
+      ok: true,
+      statusCode: 200,
+      json: { [String(chainId)]: sentinelNetwork },
+    }));
+
   // Sentinel /network: called by fetchLiveness to set livenessByChainId
   await mockServer
     .forGet(`${sentinelUrl}/network`)
@@ -1393,7 +1412,7 @@ async function mockSmartTransactionsForBridge(
     .thenCallback(() => ({
       ok: true,
       statusCode: 200,
-      json: { smartTransactions: true },
+      json: sentinelNetwork,
     }));
 
   // getFees: queried before submitting each STX
@@ -1495,12 +1514,14 @@ async function mockSmartTransactionsForBridge(
             cancellationFeeWei: 0,
             cancellationReason: 'not_cancelled',
             deadlineRatio: 0,
+            duplicated: false,
             isSettled: true,
-            minedTx: 'success',
-            wouldRevertMessage: null,
             minedHash: latestMinedHash,
-            timedOut: true,
+            minedTx: 'success',
+            originalTransactionStatus: 'VALIDATED',
             proxied: false,
+            timedOut: true,
+            wouldRevertMessage: '',
             type: 'sentinel',
             ...batchStatusOverride,
           },

@@ -12,6 +12,7 @@ import { getPublicMethodNamesOfLegacyBackgroundApiService } from './legacy-apis/
  */
 export type LegacyApiName =
   | 'legacyBackgroundApiServiceMethods'
+  | 'messengerClientApiMethods'
   | 'getApiMethods'
   | 'adhocControllerConnectionMethods';
 
@@ -60,6 +61,13 @@ export const LEGACY_APIS = {
     newMethodsExplanation:
       'New methods have been added to LegacyBackgroundApiService',
     snapshotEntryDescription: 'LegacyBackgroundApiService methods',
+  },
+  messengerClientApiMethods: {
+    name: 'messengerClientApiMethods',
+    newMethodsExplanation:
+      'Some controller/service init functions return an `api` object that includes new methods',
+    snapshotEntryDescription:
+      'methods from `api` objects returned by controller/service init functions',
   },
   getApiMethods: {
     name: 'getApiMethods',
