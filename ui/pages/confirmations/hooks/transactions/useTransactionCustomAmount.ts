@@ -44,6 +44,7 @@ import {
   useTransactionPayTotals,
 } from '../pay/useTransactionPayData';
 import { getTokenAddress } from '../../utils/transaction-pay';
+import { decodePaymentTokenAssetId } from '../../../../../shared/lib/transaction/pay-token';
 import {
   MUSD_CONVERSION_DEFAULT_CHAIN_ID,
   MUSD_TOKEN_ADDRESS,
@@ -124,11 +125,16 @@ export function useTransactionCustomAmount({
   const { balanceRaw: livePayTokenBalanceRaw } = usePayTokenAccountBalance();
 
   const { payToken } = useTransactionPayToken();
+  const payTokenAsset = useMemo(
+    () => decodePaymentTokenAssetId(payToken),
+    [payToken],
+  );
   const accountOverride = useTransactionAccountOverride();
   const isAccountTokensLoading = useAccountTokensLoading();
   const { isNoFeeToken } = usePayWithNoFeeToken();
   const isNoFeePayToken = Boolean(
-    payToken && isNoFeeToken(payToken.address, String(payToken.chainId)),
+    payTokenAsset &&
+    isNoFeeToken(payTokenAsset.address, String(payTokenAsset.chainId)),
   );
 
   const { updateTokenAmount: updateTokenAmountCallback } =
@@ -340,8 +346,8 @@ export function useTransactionCustomAmount({
     isSubsidizedRoute(
       relayFixedSpread,
       {
-        chainId: payToken?.chainId ? String(payToken.chainId) : '',
-        address: payToken?.address ?? '',
+        chainId: payTokenAsset?.chainId ? String(payTokenAsset.chainId) : '',
+        address: payTokenAsset?.address ?? '',
       },
       { chainId: chainId ?? '', address: tokenAddress ?? '' },
     );
@@ -356,10 +362,10 @@ export function useTransactionCustomAmount({
             ? {
                 isAtomicMaxAllowed,
                 sourceAccountAddress: accountOverride,
-                sourceChainId: payToken?.chainId
-                  ? String(payToken.chainId)
+                sourceChainId: payTokenAsset?.chainId
+                  ? String(payTokenAsset.chainId)
                   : undefined,
-                sourceTokenAddress: payToken?.address,
+                sourceTokenAddress: payTokenAsset?.address,
               }
             : {}),
         });
@@ -367,9 +373,9 @@ export function useTransactionCustomAmount({
     },
     [
       accountOverride,
+      payTokenAsset,
       isAtomicMaxAllowed,
       isMoneyAccountDeposit,
-      payToken,
       transactionId,
     ],
   );
@@ -385,7 +391,7 @@ export function useTransactionCustomAmount({
     setTransactionPayAtomic(transactionId, isAtomicMaxAllowed);
   }, [isAtomicMaxAllowed, isMaxAmount, isMoneyAccountDeposit, transactionId]);
 
-  const payTokenKey = `${payToken?.address ?? ''}:${payToken?.chainId ?? ''}:${accountOverride ?? ''}`;
+  const payTokenKey = `${payTokenAsset?.address ?? ''}:${payTokenAsset?.chainId ?? ''}:${accountOverride ?? ''}`;
   const prevPayTokenKeyRef = useRef(payTokenKey);
 
   // Pay-with / funding-account switches are token-specific: drop the raw Max
@@ -441,8 +447,8 @@ export function useTransactionCustomAmount({
     amountHuman,
     isMaxAmount,
     isMoneyAccountWithdraw,
-    payToken?.address,
-    payToken?.chainId,
+    payTokenAsset?.address,
+    payTokenAsset?.chainId,
     transactionId,
   ]);
 

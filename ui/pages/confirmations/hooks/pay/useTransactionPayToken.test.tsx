@@ -15,19 +15,17 @@ jest.mock(
 );
 
 const TRANSACTION_ID_MOCK = 'transaction-id-mock';
-const TOKEN_ADDRESS_MOCK = '0x1234567890abcdef1234567890abcdef12345678';
-const CHAIN_ID_MOCK = '0x1';
+const TOKEN_ADDRESS_MOCK = '0x1234567890AbcdEF1234567890aBcdef12345678';
 
-const PAY_TOKEN_MOCK = {
-  address: TOKEN_ADDRESS_MOCK,
+const PAY_TOKEN_MOCK: TransactionPaymentToken = {
+  assetId: `eip155:1/erc20:${TOKEN_ADDRESS_MOCK}`,
   balanceHuman: '123.456',
   balanceFiat: '456.12',
   balanceUsd: '456.123',
   balanceRaw: '123456000000000000000',
-  chainId: CHAIN_ID_MOCK,
   decimals: 4,
   symbol: 'TST',
-} as TransactionPaymentToken;
+};
 
 const mockStore = configureStore([]);
 
@@ -99,27 +97,22 @@ describe('useTransactionPayToken', () => {
     expect(result.current.isNative).toBe(false);
   });
 
-  it('sets token in state', () => {
+  it('selects a payment token by its asset ID', () => {
     const { result } = renderHookWithProvider();
 
     result.current.setPayToken({
-      address: PAY_TOKEN_MOCK.address,
-      chainId: PAY_TOKEN_MOCK.chainId,
+      assetId: `eip155:1/erc20:${TOKEN_ADDRESS_MOCK}`,
     });
 
     expect(updatePaymentTokenMock).toHaveBeenCalledWith({
       transactionId: TRANSACTION_ID_MOCK,
-      tokenAddress: PAY_TOKEN_MOCK.address,
-      chainId: PAY_TOKEN_MOCK.chainId,
+      assetId: `eip155:1/erc20:${TOKEN_ADDRESS_MOCK}`,
     });
   });
 
-  it('returns isNative true when pay token is native address', () => {
+  it('returns isNative true when pay token is an EVM native asset', () => {
     const { result } = renderHookWithProvider({
-      payToken: {
-        ...PAY_TOKEN_MOCK,
-        address: '0x0000000000000000000000000000000000000000',
-      } as TransactionPaymentToken,
+      payToken: { ...PAY_TOKEN_MOCK, assetId: 'eip155:1/slip44:60' },
     });
 
     expect(result.current.isNative).toBe(true);

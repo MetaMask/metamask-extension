@@ -84,9 +84,12 @@ jest.mock('../../rows/total-row/total-row', () => ({
 const MOCK_TRANSACTION_META =
   genUnapprovedContractInteractionConfirmation() as TransactionMeta;
 
+const PERSISTED_PAYMENT_TOKEN_ADDRESS =
+  '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+const PERSISTED_PAYMENT_TOKEN_CHAIN_ID = '0x14a33';
+
 const PERSISTED_PAYMENT_TOKEN = {
-  address: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-  chainId: '0x14a33' as const,
+  assetId: `eip155:84531/erc20:${PERSISTED_PAYMENT_TOKEN_ADDRESS}`,
 };
 
 const DEFAULT_HOOK_PAYMENT_TOKEN = {
@@ -278,8 +281,8 @@ describe('MusdConversionInfo', () => {
       expect.objectContaining({
         name: 'MusdConversionNavigation',
         data: {
-          paymentTokenChainId: PERSISTED_PAYMENT_TOKEN.chainId,
-          paymentTokenAddress: PERSISTED_PAYMENT_TOKEN.address,
+          paymentTokenChainId: PERSISTED_PAYMENT_TOKEN_CHAIN_ID,
+          paymentTokenAddress: PERSISTED_PAYMENT_TOKEN_ADDRESS,
         },
       }),
     );
@@ -359,8 +362,8 @@ describe('MusdConversionInfo', () => {
         expect.objectContaining({
           disable: true,
           preferredToken: {
-            address: PERSISTED_PAYMENT_TOKEN.address,
-            chainId: PERSISTED_PAYMENT_TOKEN.chainId,
+            address: PERSISTED_PAYMENT_TOKEN_ADDRESS,
+            chainId: PERSISTED_PAYMENT_TOKEN_CHAIN_ID,
           },
         }),
       );
