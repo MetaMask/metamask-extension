@@ -165,6 +165,20 @@ export const KEYRING_DEVICE_PROPERTY_MAP = {
   [KeyringType.Qr]: 'QR Hardware',
 };
 
+/**
+ * Maps keyring `.type` strings stored in KeyringController state to the
+ * analytics device labels used by MetaMetrics and Sentinel, and omits
+ * non-hardware keyrings (`HD Key Tree`, `Simple Key Pair`, `Snap Keyring`, etc.).
+ */
+export const HARDWARE_KEYRING_DEVICE_PROPERTY_MAP: Record<string, string> = {
+  [HardwareKeyringType.ledger]: KEYRING_DEVICE_PROPERTY_MAP[KeyringType.Ledger],
+  [HardwareKeyringType.trezor]: KEYRING_DEVICE_PROPERTY_MAP[KeyringType.Trezor],
+  [HardwareKeyringType.oneKey]: KEYRING_DEVICE_PROPERTY_MAP[KeyringType.OneKey],
+  [HardwareKeyringType.lattice]:
+    KEYRING_DEVICE_PROPERTY_MAP[KeyringType.Lattice],
+  [HardwareKeyringType.qr]: KEYRING_DEVICE_PROPERTY_MAP[KeyringType.Qr],
+};
+
 export const U2F_ERROR = 'U2F';
 
 /** Trezor SDK error code when Trezor Suite Desktop is unavailable (Firefox MV2). */

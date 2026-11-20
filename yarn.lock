@@ -34751,7 +34751,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/seedless-onboarding-controller": "npm:^12.0.0"
     "@metamask/selected-network-controller": "npm:^27.1.0"
-    "@metamask/sentinel-api-service": "npm:^2.1.0"
+    "@metamask/sentinel-api-service": "npm:^2.3.0"
     "@metamask/shield-controller": "npm:^7.1.1"
     "@metamask/signature-controller": "npm:^40.1.1"
     "@metamask/skills": "npm:^0.4.0"

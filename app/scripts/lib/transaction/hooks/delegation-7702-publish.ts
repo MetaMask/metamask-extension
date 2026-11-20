@@ -21,6 +21,7 @@ import {
   waitForRelayResult,
 } from '../transaction-relay';
 import { getSentinelSigners } from '../sentinel-api';
+import { getAccountHardwareType } from '../../../../../shared/lib/hardware-wallets';
 import {
   getClientForTransactionMetadata,
   getClientVersionForTransactionMetadata,
@@ -194,16 +195,24 @@ export class Delegation7702PublishHook {
         useParentExecution: true,
       });
 
+    const accountHardwareType = getAccountHardwareType(this.#messenger, from);
+
+    const metadata: NonNullable<RelaySubmitRequest['metadata']> = {
+      txType: transactionMeta.type as RelayTransactionTxType,
+      client: getClientForTransactionMetadata(),
+      clientVersion: getClientVersionForTransactionMetadata(),
+      origin: sanitizeOrigin(transactionMeta.origin),
+    };
+
+    if (accountHardwareType) {
+      metadata.accountHardwareType = accountHardwareType;
+    }
+
     const relayRequest: RelaySubmitRequest = {
       chainId,
       data,
       to,
-      metadata: {
-        txType: transactionMeta.type as RelayTransactionTxType,
-        client: getClientForTransactionMetadata(),
-        clientVersion: getClientVersionForTransactionMetadata(),
-        origin: sanitizeOrigin(transactionMeta.origin),
-      },
+      metadata,
     };
 
     if (authorizationList) {
