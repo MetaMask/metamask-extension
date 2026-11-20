@@ -1,5 +1,6 @@
 import React from 'react';
 import { ChainId, getNativeAssetForChainId } from '@metamask/bridge-controller';
+import type { CaipAssetType } from '@metamask/utils';
 import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../../shared/constants/bridge';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -96,5 +97,23 @@ describe('SelectedAssetButton', () => {
     expect(
       container.querySelector('.bridge-selected-asset-button'),
     ).toBeInTheDocument();
+  });
+});
+
+describe('SelectedAssetButton network logo fallback', () => {
+  it('renders a native asset whose chain is not in the network image maps', () => {
+    // toBridgeToken derives chainId from assetId, so the unknown chain has
+    // to be set on assetId for the network logo lookups to miss.
+    const unknownChainNativeAsset = {
+      ...getNativeAssetForChainId('0x1'),
+      assetId: 'eip155:9999/slip44:60' as CaipAssetType,
+    };
+
+    const { getByText, container } = renderButton(
+      toBridgeToken(unknownChainNativeAsset),
+    );
+
+    expect(getByText('ETH')).toBeInTheDocument();
+    expect(container.innerHTML).not.toContain('eth_logo.svg');
   });
 });

@@ -69,6 +69,13 @@ describe('MetaMetricsConsentContainer', () => {
       screen.getByText(messages.onboardedMetametricsTitle.message),
     ).toBeInTheDocument();
     expect(
+      screen.getByText(messages.onboardedMetametricsParagraph1.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.onboardedMetametricsParagraph3.message),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('link')).not.toBeInTheDocument();
+    expect(
       screen.getByRole('button', {
         name: messages.onboardedMetametricsDisagree.message,
       }),

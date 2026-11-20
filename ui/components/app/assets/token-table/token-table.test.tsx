@@ -1,6 +1,6 @@
 import React from 'react';
 import { it } from '@jest/globals';
-import { act, fireEvent } from '@testing-library/react';
+import { act, fireEvent, within } from '@testing-library/react';
 import type { Asset } from '@metamask/assets-controllers';
 import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
@@ -152,7 +152,7 @@ describe('TokenTable', () => {
     expect(useMoneyTokenListCta).toHaveBeenCalledWith(displayedTokens);
   });
 
-  it('replaces the 24h change with the Money CTA for an eligible token', () => {
+  it('shows the Money CTA under the token name for an eligible token', () => {
     const eligible = createToken('USDC');
     const other = createToken('ETH');
     const onCtaClick = jest.fn();
@@ -172,14 +172,20 @@ describe('TokenTable', () => {
       getTokenClickHandler: () => onRowClick,
     });
 
-    const { getByRole, getAllByTestId } = renderTable();
-    const cta = getByRole('button', { name: 'Get 5% APY' });
+    const { getAllByTestId } = renderTable();
+    const [eligibleRow] = getAllByTestId('multichain-token-list-button');
+    const eligibleTokenColumn = eligibleRow.firstElementChild as HTMLElement;
+    const cta = within(eligibleTokenColumn).getByRole('button', {
+      name: 'Get 5% APY',
+    });
 
+    expect(
+      within(eligibleTokenColumn).getByText(eligible.title),
+    ).toBeInTheDocument();
     expect(cta).toHaveAttribute(
       'data-testid',
       `${MONEY_TOKEN_LIST_CTA_TEST_ID}-${eligible.chainId}-${eligible.address}`,
     );
-    expect(getAllByTestId('token-percent-change')).toHaveLength(1);
 
     fireEvent.click(cta);
 
