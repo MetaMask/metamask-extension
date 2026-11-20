@@ -174,6 +174,59 @@ describe('getAccountTrackerControllerAccountsByChainId', () => {
     });
   });
 
+  describe('when assetsUnifyState is disabled', () => {
+    const assetsControllerState = {
+      remoteFeatureFlags: {},
+      assetsInfo: {
+        [nativeEthAssetId]: { type: 'native', decimals: 18 },
+      },
+      assetsBalance: {
+        [mockAccountId]: {
+          [nativeEthAssetId]: { amount: '0' },
+        },
+      },
+      internalAccounts: {
+        accounts: {
+          [mockAccountId]: {
+            id: mockAccountId,
+            address: mockAccountAddressLowercase,
+            type: 'eip155:eoa',
+          },
+        },
+      },
+    };
+
+    it('derives zero native balances from AssetsController when legacy accountsByChainId is absent', () => {
+      const state = { metamask: assetsControllerState };
+
+      const result = getAccountTrackerControllerAccountsByChainId(state);
+
+      expect(result).toStrictEqual({
+        '0x1': {
+          [mockAccountAddressChecksummed]: { balance: '0x0' },
+        },
+      });
+    });
+
+    it('returns legacy accountsByChainId when it is present', () => {
+      const legacyAccountsByChainId = {
+        '0x1': {
+          [mockAccountAddressChecksummed]: { balance: '0x5' },
+        },
+      };
+      const state = {
+        metamask: {
+          ...assetsControllerState,
+          accountsByChainId: legacyAccountsByChainId,
+        },
+      };
+
+      const result = getAccountTrackerControllerAccountsByChainId(state);
+
+      expect(result).toStrictEqual(legacyAccountsByChainId);
+    });
+  });
+
   describe('edge cases', () => {
     it('handles multiple chains for the same EVM account', () => {
       const state = {

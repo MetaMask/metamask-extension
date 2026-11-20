@@ -124,8 +124,10 @@ export const getAccountTrackerControllerAccountsByChainId =
     [
       getIsAssetsUnifyStateEnabled,
       (state: {
-        metamask: Pick<AccountTrackerControllerState, 'accountsByChainId'>;
-      }) => state.metamask?.accountsByChainId ?? {},
+        metamask: Partial<
+          Pick<AccountTrackerControllerState, 'accountsByChainId'>
+        >;
+      }) => state.metamask?.accountsByChainId,
       (state: { metamask: Pick<AssetsControllerState, 'assetsBalance'> }) =>
         state.metamask?.assetsBalance ?? {},
       (state: { metamask: Pick<AssetsControllerState, 'assetsInfo'> }) =>
@@ -141,7 +143,11 @@ export const getAccountTrackerControllerAccountsByChainId =
       assetsInfo,
       internalAccountsById,
     ) => {
-      if (!isAssetsUnifyStateEnabled) {
+      // AccountTrackerController no longer exists, so raw `accountsByChainId`
+      // is only present in legacy-shaped state. AssetsController runs
+      // regardless of the unify flag (e.g. before remote flags are fetched,
+      // or when external services are disabled), so derive from it otherwise.
+      if (!isAssetsUnifyStateEnabled && accountsByChainId) {
         return accountsByChainId;
       }
 
@@ -186,9 +192,8 @@ export const getAccountTrackerControllerAccountsByChainId =
 
       return result;
     },
-  ) as unknown as ControllerStateSelector<
-    AccountTrackerControllerState,
-    'accountsByChainId'
+  ) as unknown as MigratingControllerStateSelector<
+    AccountTrackerControllerState['accountsByChainId']
   >;
 
 // ChainId (hex) -> AccountAddress (hex lowercase) -> Array of Tokens
