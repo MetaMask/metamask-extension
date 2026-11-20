@@ -1,6 +1,5 @@
 import { screen, render, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../test/data/mock-state.json';
@@ -44,22 +43,6 @@ jest.mock(
   }),
 );
 
-jest.mock('./notifications-tab/wallet-activity-sub-page.tsx', () => {
-  const { useIsCompactSettingsLayout } = jest.requireActual(
-    './settings-layout-context',
-  );
-  const MockWalletActivitySubPage = () => (
-    <div data-testid="mock-compact-settings-layout">
-      {String(useIsCompactSettingsLayout())}
-    </div>
-  );
-  return {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    __esModule: true,
-    default: MockWalletActivitySubPage,
-  };
-});
-
 let mockPathname = SETTINGS_ROUTE;
 
 const backgroundConnectionMock = new Proxy(
@@ -72,20 +55,6 @@ const renderSettings = (
 ) => {
   return renderWithProvider(<Settings />, store, mockPathname, render);
 };
-
-const renderNestedSettings = (
-  store: ReturnType<ReturnType<typeof configureMockStore>>,
-) => {
-  return renderWithProvider(
-    <Routes>
-      <Route path={`${SETTINGS_ROUTE}/*`} element={<Settings />} />
-    </Routes>,
-    store,
-    mockPathname,
-    render,
-  );
-};
-
 describe('Settings', () => {
   const mockStore = configureMockStore([thunk])(mockState);
 
@@ -222,26 +191,22 @@ describe('Settings', () => {
       });
     });
 
-    it('titles a notification section header "Notifications" and flags the compact layout in the popup', async () => {
+    it('titles a notification section header "Notifications" in the compact layout', async () => {
       mockPathname = NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE;
-      const { container } = renderNestedSettings(mockStore);
+      const { container } = renderSettings(mockStore);
 
-      expect(
-        await screen.findByTestId('mock-compact-settings-layout'),
-      ).toHaveTextContent('true');
+      await screen.findByTestId('page-header-back-button');
       expect(
         container.querySelector('.multichain-page-header'),
       ).toHaveTextContent(messages.notifications.message);
     });
 
-    it('keeps the "Settings" header with section breadcrumbs and flags the fullscreen layout', async () => {
+    it('keeps the "Settings" header with section breadcrumbs in the fullscreen layout', async () => {
       mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
       mockPathname = NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE;
-      const { container } = renderNestedSettings(mockStore);
+      const { container } = renderSettings(mockStore);
 
-      expect(
-        await screen.findByTestId('mock-compact-settings-layout'),
-      ).toHaveTextContent('false');
+      await screen.findByTestId('page-header-back-button');
       expect(
         container.querySelector('.multichain-page-header'),
       ).toHaveTextContent(messages.settings.message);

@@ -17,13 +17,22 @@ import {
   type NotificationPreferences,
 } from '../../../hooks/metamask-notifications/useNotificationPreferences';
 import { useAccountSettingsProps } from '../../../hooks/metamask-notifications/useSwitchNotifications';
-import { CompactSettingsLayoutContext } from '../settings-layout-context';
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_POPUP,
+} from '../../../../shared/constants/app';
 import { NotificationSectionSubPage } from './notification-section-sub-page';
 
+const mockGetEnvironmentType = jest.fn(() => ENVIRONMENT_TYPE_FULLSCREEN);
 const mockTrackEvent = jest.fn();
 const mockSwitchAccountNotifications = jest.fn();
 const mockUpdateAccountSettings = jest.fn();
 const mockRefetchPreferences = jest.fn();
+
+jest.mock('../../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../../shared/lib/environment-type'),
+  getEnvironmentType: () => mockGetEnvironmentType(),
+}));
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -124,6 +133,7 @@ describe('NotificationSectionSubPage', () => {
   let consoleWarnSpy: jest.SpyInstance;
 
   beforeEach(() => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
     consoleWarnSpy = jest
       .spyOn(console, 'warn')
       .mockImplementation(() => undefined);
@@ -923,7 +933,6 @@ describe('NotificationSectionSubPage', () => {
     const renderSection = (
       section: NotificationsSettingsSectionType,
       preferences: NotificationPreferences,
-      { isCompactLayout = false }: { isCompactLayout?: boolean } = {},
     ) => {
       const updatePreference = jest.fn();
       jest.mocked(useNotificationPreferences).mockReturnValue({
@@ -937,9 +946,7 @@ describe('NotificationSectionSubPage', () => {
         updatePreferencesSection: jest.fn(),
       });
       renderWithProvider(
-        <CompactSettingsLayoutContext.Provider value={isCompactLayout}>
-          <NotificationSectionSubPage sectionType={section} />
-        </CompactSettingsLayoutContext.Provider>,
+        <NotificationSectionSubPage sectionType={section} />,
         buildStore(),
         NOTIFICATIONS_SETTINGS_SECTION_ROUTES[section],
       );
@@ -1004,9 +1011,8 @@ describe('NotificationSectionSubPage', () => {
     });
 
     it('displays the section title above the description in the compact settings layout', () => {
-      renderSection('walletActivity', createMockNotificationPreferences(), {
-        isCompactLayout: true,
-      });
+      mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+      renderSection('walletActivity', createMockNotificationPreferences());
 
       const title = screen.getByTestId('notifications-settings-section-title');
       expect(title).toHaveTextContent(
@@ -1022,9 +1028,7 @@ describe('NotificationSectionSubPage', () => {
     });
 
     it('omits the section title in the fullscreen settings layout', () => {
-      renderSection('walletActivity', createMockNotificationPreferences(), {
-        isCompactLayout: false,
-      });
+      renderSection('walletActivity', createMockNotificationPreferences());
 
       expect(
         screen.queryByTestId('notifications-settings-section-title'),

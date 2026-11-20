@@ -37,11 +37,6 @@ import {
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import { SnapSettingsRenderer } from '../../components/app/snaps/snap-settings-page';
-import { getEnvironmentType } from '../../../shared/lib/environment-type';
-import {
-  ENVIRONMENT_TYPE_POPUP,
-  ENVIRONMENT_TYPE_SIDEPANEL,
-} from '../../../shared/constants/app';
 import {
   getUseExternalServices,
   getSettingsPageSnapsIds,
@@ -67,15 +62,14 @@ import {
   SETTINGS_RENDERABLE_ROUTES,
   getSettingsRouteMeta,
 } from './settings-registry';
-import { CompactSettingsLayoutContext } from './settings-layout-context';
 import { SettingsRoot, SettingsSearchResults } from './shared';
 import { useSettingsSearch, MIN_SEARCH_LENGTH } from './useSettingsSearch';
 import { useSettingsI18n } from './useSettingsI18n';
+import { useIsCompactSettingsLayout } from './useIsCompactSettingsLayout';
 
 const firstTab = SETTINGS_TABS.find((tab) => tab.index) ?? SETTINGS_TABS[0];
 const FIRST_TAB_PATH = firstTab?.path;
 const FirstTabComponent = firstTab?.component;
-const SIDEPANEL_COMPACT_SETTINGS_MAX_WIDTH = 575;
 
 const normalizeSettingsPath = (path: string) =>
   path !== '/' && path.endsWith('/') ? path.slice(0, -1) : path;
@@ -92,40 +86,6 @@ const clearReactInternalReferences = (element: Element) => {
   }
 };
 
-const useIsSidepanelCompactSettingsLayout = (isSidepanel: boolean) => {
-  const [isCompact, setIsCompact] = useState(() =>
-    isSidepanel && typeof window !== 'undefined'
-      ? window.innerWidth <= SIDEPANEL_COMPACT_SETTINGS_MAX_WIDTH
-      : false,
-  );
-
-  const [prevIsSidepanel, setPrevIsSidepanel] = useState(isSidepanel);
-  if (isSidepanel !== prevIsSidepanel) {
-    setPrevIsSidepanel(isSidepanel);
-    setIsCompact(
-      isSidepanel && typeof window !== 'undefined'
-        ? window.innerWidth <= SIDEPANEL_COMPACT_SETTINGS_MAX_WIDTH
-        : false,
-    );
-  }
-
-  useEffect(() => {
-    if (!isSidepanel) {
-      return undefined;
-    }
-
-    const updateIsCompact = () => {
-      setIsCompact(window.innerWidth <= SIDEPANEL_COMPACT_SETTINGS_MAX_WIDTH);
-    };
-
-    window.addEventListener('resize', updateIsCompact);
-
-    return () => window.removeEventListener('resize', updateIsCompact);
-  }, [isSidepanel]);
-
-  return isCompact;
-};
-
 /**
  * Layout for Settings: header, tab bar, and content area.
  *
@@ -139,12 +99,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const t = useSettingsI18n();
   const normalizedPathname = normalizeSettingsPath(location.pathname);
   const meta = getSettingsRouteMeta(normalizedPathname);
-  const environmentType = getEnvironmentType();
-
-  const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
-  const isCompactSidepanel = useIsSidepanelCompactSettingsLayout(isSidepanel);
-  const usesCompactSettingsLayout =
-    environmentType === ENVIRONMENT_TYPE_POPUP || isCompactSidepanel;
+  const usesCompactSettingsLayout = useIsCompactSettingsLayout();
   const isOnSettingsRoot = normalizedPathname === SETTINGS_ROUTE;
   const showRootLandingPage = isOnSettingsRoot && usesCompactSettingsLayout;
   const backRoute = isOnSettingsRoot
@@ -455,11 +410,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
               })}
             </Box>
           )}
-          <CompactSettingsLayoutContext.Provider
-            value={usesCompactSettingsLayout}
-          >
-            <Suspense fallback={null}>{children}</Suspense>
-          </CompactSettingsLayoutContext.Provider>
+          <Suspense fallback={null}>{children}</Suspense>
         </Box>
       </Box>
     );

@@ -18,7 +18,7 @@ import { useAccountSettingsProps } from '../../../hooks/metamask-notifications/u
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useNotificationPreferences } from '../../../hooks/metamask-notifications/useNotificationPreferences';
 import { selectIsMetamaskNotificationsEnabled } from '../../../selectors/metamask-notifications/metamask-notifications';
-import { useIsCompactSettingsLayout } from '../settings-layout-context';
+import { useIsCompactSettingsLayout } from '../useIsCompactSettingsLayout';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { NotificationSettingsSection } from '../../notifications-settings/notification-settings-section';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
