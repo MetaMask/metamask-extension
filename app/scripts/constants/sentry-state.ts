@@ -305,6 +305,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     nativeProviders: false,
     orders: false,
     providerAutoSelected: false,
+    userSelectedProviderId: false,
   },
   RewardsController: {
     rewardsActiveAccount: false,
@@ -361,8 +362,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   SubjectMetadataController: {
     subjectMetadata: false,
   },
-  // TokenDetectionController has no public controller state.
-  TokenDetectionController: {},
   TokensController: {
     allDetectedTokens: {
       [AllProperties]: false,
@@ -386,9 +385,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   TxController: {
     transactions: false,
     batchTransactionCounts: false,
-  },
-  UserOperationController: {
-    userOperations: false,
   },
   UserStorageController: {
     isBackupAndSyncEnabled: true,
