@@ -166,7 +166,8 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-webpack
-      build-command: yarn webpack:lavamoat:build --zip --stats
+      build-script: build
+      build-args: '--zip --stats'
       bundle-analyzer: true
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
@@ -181,7 +182,8 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-mv2-webpack
-      build-command: yarn webpack:lavamoat:build:mv2 --zip
+      build-script: build:mv2
+      build-args: '--zip'
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -195,7 +197,8 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-beta-webpack
-      build-command: yarn webpack:lavamoat:build --type beta --zip
+      build-script: build
+      build-args: '--type beta --zip'
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -209,7 +212,8 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-beta-mv2-webpack
-      build-command: yarn webpack:lavamoat:build:mv2 --type beta --zip
+      build-script: build:mv2
+      build-args: '--type beta --zip'
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -223,7 +227,8 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-webpack
-      build-command: yarn webpack:lavamoat:build --type flask --zip
+      build-script: build
+      build-args: '--type flask --zip'
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -237,7 +242,8 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-mv2-webpack
-      build-command: yarn webpack:lavamoat:build:mv2 --type flask --zip
+      build-script: build:mv2
+      build-args: '--type flask --zip'
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -251,7 +257,8 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-webpack
-      build-command: yarn build:test --zip
+      build-script: build:test
+      build-args: '--zip'
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -265,7 +272,8 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-mv2-webpack
-      build-command: yarn build:test:mv2 --zip
+      build-script: build:test:mv2
+      build-args: '--zip'
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -279,7 +287,8 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-flask-webpack
-      build-command: yarn build:test:flask --zip
+      build-script: build:test:flask
+      build-args: '--zip'
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -293,7 +302,8 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-flask-mv2-webpack
-      build-command: yarn build:test:flask:mv2 --zip
+      build-script: build:test:flask:mv2
+      build-args: '--zip'
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 

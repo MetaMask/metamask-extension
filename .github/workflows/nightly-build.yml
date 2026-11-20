@@ -17,7 +17,8 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-webpack
-      build-command: yarn webpack:lavamoat:build --zip
+      build-script: build
+      build-args: '--zip'
       builds-from-run: ${{ github.run_id }}
     secrets: inherit
 
@@ -28,7 +29,8 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-mv2-webpack
-      build-command: yarn webpack:lavamoat:build:mv2 --zip
+      build-script: build:mv2
+      build-args: '--zip'
       builds-from-run: ${{ github.run_id }}
     secrets: inherit
 
@@ -39,7 +41,8 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-experimental-webpack
-      build-command: yarn webpack:lavamoat:build --type experimental --zip
+      build-script: build
+      build-args: '--type experimental --zip'
       builds-from-run: ${{ github.run_id }}
     secrets: inherit
 
@@ -50,7 +53,8 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-experimental-mv2-webpack
-      build-command: yarn webpack:lavamoat:build:mv2 --type experimental --zip
+      build-script: build:mv2
+      build-args: '--type experimental --zip'
       builds-from-run: ${{ github.run_id }}
     secrets: inherit
 

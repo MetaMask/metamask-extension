@@ -7,10 +7,14 @@ on:
         required: true
         type: string
         description: The name of the build
-      build-command:
+      build-script:
         type: string
         required: true
-        description: The build command to run
+        description: The build script in the root package.json
+      build-args:
+        type: string
+        default: ''
+        description: A single line of space-separated arguments for the build script
       builds-from-run:
         required: true
         type: string
@@ -91,7 +95,14 @@ jobs:
         run: yarn webpack:tsc
 
       - name: Run build
-        run: ${{ inputs.build-command }}${{ inputs.bundle-analyzer && ' --bundleAnalyzer' || '' }}
+        env:
+          BUILD_SCRIPT: ${{ inputs.build-script }}
+          BUILD_ARGS: ${{ inputs.build-args }}${{ inputs.bundle-analyzer && ' --bundleAnalyzer' || '' }}
+        shell: bash
+        run: |
+          # Split on spaces once. Quoting the array preserves each argument as data.
+          IFS=' ' read -r -a build_args <<< "$BUILD_ARGS"
+          yarn run "$BUILD_SCRIPT" "${build_args[@]}"
 
       - name: Validate source maps
         run: yarn validate-source-maps
