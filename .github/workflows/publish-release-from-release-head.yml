@@ -19,7 +19,6 @@ permissions:
   contents: read # publish-release uses EXTENSION_PUBLISH_TOKEN for write operations
   statuses: read # Required by verify-ci-checks.sh to read commit statuses
   actions: read # Required to download artifacts from build jobs
-  id-token: write # Required for OIDC in build-job S3 uploads (run-build.yml) and publish-release
 
 jobs:
   validate-branch:
@@ -86,6 +85,11 @@ jobs:
     needs:
       - validate-branch
       - approve-release
+    permissions:
+      contents: read
+      statuses: read
+      actions: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-webpack
@@ -98,6 +102,11 @@ jobs:
     needs:
       - validate-branch
       - approve-release
+    permissions:
+      contents: read
+      statuses: read
+      actions: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-mv2-webpack
@@ -110,6 +119,11 @@ jobs:
     needs:
       - validate-branch
       - approve-release
+    permissions:
+      contents: read
+      statuses: read
+      actions: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-webpack
@@ -122,6 +136,11 @@ jobs:
     needs:
       - validate-branch
       - approve-release
+    permissions:
+      contents: read
+      statuses: read
+      actions: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-mv2-webpack
