@@ -1,7 +1,10 @@
 import {
   buildLongTaskTimerResults,
+  legacyStepTimerId,
   measureStepWithLongTasks,
 } from './long-task-helper';
+import { performanceTracker } from './performance-tracker';
+import TimerHelper from './timer-helper';
 import type { LongTaskStepResult } from './types';
 
 jest.mock('./timer-helper', () => {
@@ -23,7 +26,57 @@ jest.mock('./performance-tracker', () => ({
 }));
 
 describe('long-task-helper', () => {
+  describe('legacyStepTimerId', () => {
+    it('appends Legacy to the step id', () => {
+      expect(legacyStepTimerId('openSwapPageFromHome')).toBe(
+        'openSwapPageFromHomeLegacy',
+      );
+      expect(legacyStepTimerId('bridge_load_page')).toBe(
+        'bridge_load_pageLegacy',
+      );
+    });
+  });
+
   describe('measureStepWithLongTasks', () => {
+    it('reports its timer under the step id by default', async () => {
+      const mockDriver = {
+        resetLongTaskMetrics: jest.fn(),
+        collectLongTaskMetrics: jest.fn().mockResolvedValue(null),
+      } as unknown as import('../../webdriver/driver').Driver;
+
+      const result = await measureStepWithLongTasks(
+        mockDriver,
+        'namedStep',
+        async () => undefined,
+      );
+
+      expect(TimerHelper).toHaveBeenLastCalledWith('namedStep');
+      expect(performanceTracker.addTimer).toHaveBeenLastCalledWith(
+        expect.objectContaining({ id: 'namedStep' }),
+      );
+      expect(result.id).toBe('namedStep');
+    });
+
+    it('reports its timer as the step id plus Legacy when asked, and returns the step id', async () => {
+      const mockDriver = {
+        resetLongTaskMetrics: jest.fn(),
+        collectLongTaskMetrics: jest.fn().mockResolvedValue(null),
+      } as unknown as import('../../webdriver/driver').Driver;
+
+      const result = await measureStepWithLongTasks(
+        mockDriver,
+        'namedStep',
+        async () => undefined,
+        { legacyTimerId: true },
+      );
+
+      expect(TimerHelper).toHaveBeenLastCalledWith('namedStepLegacy');
+      expect(performanceTracker.addTimer).toHaveBeenLastCalledWith(
+        expect.objectContaining({ id: 'namedStepLegacy' }),
+      );
+      expect(result.id).toBe('namedStep');
+    });
+
     it('resets metrics, runs action, and returns step result', async () => {
       const mockDriver = {
         resetLongTaskMetrics: jest.fn(),

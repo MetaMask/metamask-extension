@@ -43,6 +43,7 @@ import type {
   UserActionMeasurement,
 } from './types';
 import { performanceTracker } from './performance-tracker';
+import { assertNoMissingTimers } from './missing-timers';
 
 /**
  * Promote web vitals aggregated stats into a TimerStatistics array.
@@ -125,6 +126,8 @@ export async function runBenchmarkWithIterations(
       failedRuns += 1;
     }
   }
+
+  assertNoMissingTimers(allResults);
 
   // Aggregate timer results and collect per-run web vitals
   const timerMap = new Map<string, number[]>();
@@ -493,8 +496,8 @@ export async function runUserActionBenchmark(
   benchmarkType?: BenchmarkType,
 ): Promise<BenchmarkRunResult> {
   try {
-    const { timers, webVitals } = await measureFn();
-    return { timers, webVitals, success: true, benchmarkType };
+    const { timers, webVitals, expectedTimers } = await measureFn();
+    return { timers, webVitals, expectedTimers, success: true, benchmarkType };
   } catch (error) {
     return {
       timers: [],
