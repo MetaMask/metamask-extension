@@ -1,5 +1,6 @@
 import { Messenger } from '@metamask/messenger';
 import { getRootMessenger } from '../../../lib/messenger';
+import { getAuthenticatedUserStorageServiceMessenger } from '../authenticated-user-storage-service-messenger';
 import {
   ASSETS_CONTROLLER_DELEGATED_ACTIONS,
   ASSETS_CONTROLLER_DELEGATED_EVENTS,
@@ -84,6 +85,43 @@ describe('getAssetsControllerMessenger', () => {
         ]),
       }),
     );
+  });
+
+  it('delegates AuthenticatedUserStorageService custom token actions', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getAssetsControllerMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        actions: expect.arrayContaining([
+          'AuthenticatedUserStorageService:getUserAssets',
+          'AuthenticatedUserStorageService:setUserAssets',
+          'AuthenticatedUserStorageService:importTokens',
+          'AuthenticatedUserStorageService:hideTokens',
+        ]),
+      }),
+    );
+  });
+
+  it('routes getUserAssets to the AuthenticatedUserStorageService handler', async () => {
+    const messenger = getRootMessenger<never, never>();
+    const serviceMessenger =
+      getAuthenticatedUserStorageServiceMessenger(messenger);
+    const getUserAssets = jest.fn().mockResolvedValue(null);
+    serviceMessenger.registerActionHandler(
+      'AuthenticatedUserStorageService:getUserAssets',
+      getUserAssets,
+    );
+    const assetsControllerMessenger = getAssetsControllerMessenger(messenger);
+
+    await expect(
+      assetsControllerMessenger.call(
+        'AuthenticatedUserStorageService:getUserAssets',
+      ),
+    ).resolves.toBeNull();
+    expect(getUserAssets).toHaveBeenCalledTimes(1);
   });
 
   it('delegates core#10059 lifecycle getState/isUnlocked actions', () => {
