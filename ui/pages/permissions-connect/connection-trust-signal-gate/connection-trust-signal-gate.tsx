@@ -1,4 +1,7 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { isXDotCom } from '#shared/lib/url-utils';
+import { getIsXDappConnectionWarningEnabled } from '#ui/selectors/dapp';
 import { useOriginTrustSignals } from '../../../hooks/useOriginTrustSignals';
 import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
 import { TrustSignalModal } from '../../../components/app/trust-signal-modal/trust-signal-modal';
@@ -17,8 +20,11 @@ export function ConnectionTrustSignalGate({
 }: Readonly<ConnectionTrustSignalGateProps>) {
   const { state } = useOriginTrustSignals(origin);
   const { value: dismissed, setTrue: dismiss } = useBoolean(false);
+  const isXWarningEnabled = useSelector(getIsXDappConnectionWarningEnabled);
 
-  const showModal = !dismissed && state === TrustSignalDisplayState.Malicious;
+  const isMalicious = state === TrustSignalDisplayState.Malicious;
+  const showModal =
+    !dismissed && (isMalicious || (isXWarningEnabled && isXDotCom(origin)));
 
   return (
     <>
