@@ -21,7 +21,6 @@ import { scanAddressAndAddToCache } from './security-alerts-api';
 
 jest.mock('./security-alerts-api');
 jest.mock('../../../../shared/lib/transaction.utils');
-process.env.SECURITY_ALERTS_API_ENABLED = 'true';
 
 // Test constants
 const TEST_ADDRESSES = {

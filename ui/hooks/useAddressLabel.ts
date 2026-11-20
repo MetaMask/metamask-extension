@@ -8,7 +8,6 @@ import type { CaipChainId } from '@metamask/utils';
 import {
   fetchEvmAddressScan,
   hasEvmChainName,
-  isSecurityAlertsAPIEnabled,
 } from '#shared/lib/bridge-utils/security-alerts-api.util';
 import {
   getIsAddressResolutionEnabled,
@@ -54,7 +53,6 @@ export function useAddressLabel({
       Boolean(address) &&
       isExternalServicesEnabled &&
       isAddressResolutionFeatureEnabled &&
-      isSecurityAlertsAPIEnabled() &&
       hasEvmChainName(chainId),
     select: extractLabel,
   });

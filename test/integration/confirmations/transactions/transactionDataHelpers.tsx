@@ -218,12 +218,7 @@ export const getMaliciousUnapprovedTransaction = (
       description:
         'Interaction with a known malicious address: 0x5fbdb2315678afecb367f032d93f642f64180aa3',
       features: ['Interaction with a known malicious address'],
-      providerRequestsCount: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        eth_getBlockByNumber: 1,
-      },
-      source: 'local',
+      source: 'api',
       securityAlertId: '22ff30c4-0fe6-4d8b-af39-92aae0bd3c2c',
     },
   };

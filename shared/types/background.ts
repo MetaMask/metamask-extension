@@ -44,7 +44,6 @@ import type {
 } from '@metamask/snaps-controllers';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { SignatureControllerState } from '@metamask/signature-controller';
-import type { PPOMState } from '@metamask/ppom-validator';
 import type { PasskeyControllerState } from '@metamask/passkey-controller';
 import type { NameControllerState } from '@metamask/name-controller';
 import type { TransactionControllerState } from '@metamask/transaction-controller';
@@ -254,8 +253,6 @@ export type ControllerStatePropertiesEnumerated = {
   subjects: PermissionControllerState<PermissionConstraint>['subjects'];
   permissionActivityLog: PermissionLogControllerState['permissionActivityLog'];
   permissionHistory: PermissionLogControllerState['permissionHistory'];
-  storageMetadata: PPOMState['storageMetadata'];
-  versionInfo: PPOMState['versionInfo'];
   featureFlags: PreferencesControllerState['featureFlags'];
   ipfsGateway: PreferencesControllerState['ipfsGateway'];
   isIpfsGatewayEnabled: PreferencesControllerState['isIpfsGatewayEnabled'];
@@ -389,7 +386,6 @@ export type ControllerStateTypesMerged = AccountsControllerState &
   PasskeyControllerState &
   PermissionControllerState<PermissionConstraint> &
   PermissionLogControllerState &
-  PPOMState &
   PreferencesControllerState &
   RemoteFeatureFlagControllerState &
   RatesControllerState &

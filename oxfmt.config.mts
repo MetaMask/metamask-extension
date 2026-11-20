@@ -7,7 +7,6 @@ export default defineConfig({
     '*.scss',
     '/.yarn/',
     '/app/html/partials/partial-head.html',
-    '/app/scripts/lib/ppom/ppom.js',
     '/app/vendor/',
     '/CHANGELOG*.md',
     '/development/chromereload.js',

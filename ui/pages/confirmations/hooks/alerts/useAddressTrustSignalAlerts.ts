@@ -7,8 +7,6 @@ import { useConfirmContext } from '../../context/confirm';
 import { useTrustSignals } from '../../../../hooks/useTrustSignals';
 import { SignatureRequestType } from '../../types/confirm';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { isSecurityAlertsAPIEnabled } from '../../../../../app/scripts/lib/ppom/security-alerts-api';
 import {
   buildTrustSignalAlerts,
   buildTrustSignalRequests,
@@ -71,7 +69,7 @@ export function useAddressTrustSignalAlerts(): Alert[] {
   const trustSignals = useTrustSignals(trustSignalsRequests);
 
   return useMemo(() => {
-    if (addressesToCheck.length === 0 || !isSecurityAlertsAPIEnabled()) {
+    if (addressesToCheck.length === 0) {
       return [];
     }
 

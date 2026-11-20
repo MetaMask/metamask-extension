@@ -117,18 +117,6 @@ async function mockInfuraWithFailedResponses(
     },
     { statusCode: 500, message: 'Internal server error' },
   );
-
-  // Retained this mock to support fallback to the local PPOM
-  await mockServer
-    .forGet(
-      'https://static.cx.metamask.io/api/v1/confirmations/ppom/ppom_version.json',
-    )
-    .thenCallback(() => {
-      console.log('mocked ppom_version.json');
-      return {
-        statusCode: 500,
-      };
-    });
 }
 
 /**
