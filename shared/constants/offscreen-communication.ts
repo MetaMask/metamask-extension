@@ -31,6 +31,9 @@ export enum OffscreenCommunicationTarget {
   latticeOffscreen = 'lattice-offscreen',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
+  brazeOffscreen = 'braze-offscreen',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   extension = 'extension-offscreen',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -121,6 +124,30 @@ export enum LedgerAction {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   getAppConfiguration = 'ledger-get-app-configuration',
 }
+
+/**
+ * Defines actions intended to be sent to the Braze host in the MV3 offscreen
+ * document.
+ */
+export enum BrazeAction {
+  /**
+   * Apply the Braze user the background wants identified. A `profileId` of
+   * `null` clears local Braze data.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  syncUser = 'braze-sync-user',
+}
+
+export type BrazeSyncUserMessage = {
+  target: OffscreenCommunicationTarget.brazeOffscreen;
+  action: BrazeAction.syncUser;
+  profileId: string | null;
+};
+
+export type BrazeSyncUserResponse =
+  | { success: true }
+  | { success: false; error: string };
 
 /**
  * Selects which Ledger handler implementation the offscreen document should
