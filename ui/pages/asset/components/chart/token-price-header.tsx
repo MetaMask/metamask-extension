@@ -24,6 +24,12 @@ export type TokenPriceHeaderProps = {
   currency: string;
   /** Timestamp for the price (shown as formatted date) */
   timestamp?: number;
+  /**
+   * Static label shown next to the percentage instead of the formatted
+   * timestamp date (e.g. "Today" for the candle 24H change). When provided it
+   * takes precedence over `timestamp`.
+   */
+  periodLabel?: string;
   /** Whether data is currently loading */
   loading?: boolean;
 };
@@ -101,6 +107,7 @@ const getPercentChangeColor = (value: number | undefined): TextColor => {
  * @param options.percentChange - Pre-computed percentage change (e.g., 5.25 for +5.25%)
  * @param options.currency - Currency code for formatting (e.g., 'USD')
  * @param options.timestamp - Timestamp for the price (shown as formatted date)
+ * @param options.periodLabel - Static label shown instead of the timestamp date
  * @param options.loading - Whether data is currently loading
  * @returns The rendered TokenPriceHeader component
  */
@@ -109,6 +116,7 @@ const TokenPriceHeader = ({
   percentChange,
   currency,
   timestamp,
+  periodLabel,
   loading = false,
 }: TokenPriceHeaderProps) => {
   const { formatCurrencyTokenPrice, formatNumber } = useFormatters();
@@ -172,14 +180,14 @@ const TokenPriceHeader = ({
           >
             {formattedPercent || '-'}
           </Text>
-          {timestamp !== undefined && (
+          {(periodLabel !== undefined || timestamp !== undefined) && (
             <Box marginLeft={2}>
               <Text
                 variant={TextVariant.BodyMd}
                 fontWeight={FontWeight.Medium}
                 color={TextColor.TextAlternative}
               >
-                {getDynamicShortDate(timestamp)}
+                {periodLabel ?? getDynamicShortDate(timestamp as number)}
               </Text>
             </Box>
           )}
