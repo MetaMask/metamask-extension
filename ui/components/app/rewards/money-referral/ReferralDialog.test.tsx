@@ -23,7 +23,29 @@ describe('ReferralDialog', () => {
     expect(dialog.open).toBe(false);
   });
 
-  it('keeps keyboard cancellation and mouse interactions away from other dialogs', () => {
+  it('keeps mouse interactions away from other dialogs', () => {
+    const onClose = jest.fn();
+    const background = jest.fn();
+    render(
+      <ReferralDialog onClose={onClose} data-testid="invite">
+        <button>Accept</button>
+      </ReferralDialog>,
+    );
+    document.addEventListener('mousedown', background);
+    document.addEventListener('click', background);
+    try {
+      const button = screen.getByRole('button');
+      fireEvent.mouseDown(button);
+      fireEvent.click(button);
+      expect(onClose).not.toHaveBeenCalled();
+      expect(background).not.toHaveBeenCalled();
+    } finally {
+      document.removeEventListener('mousedown', background);
+      document.removeEventListener('click', background);
+    }
+  });
+
+  it('dismisses once on Escape and prevents native cancellation', () => {
     const onClose = jest.fn();
     const background = jest.fn();
     render(
@@ -32,25 +54,37 @@ describe('ReferralDialog', () => {
       </ReferralDialog>,
     );
     document.addEventListener('keydown', background);
-    document.addEventListener('mousedown', background);
-    document.addEventListener('click', background);
     try {
-      const button = screen.getByRole('button');
-      fireEvent.mouseDown(button);
-      fireEvent.click(button);
-      expect(onClose).not.toHaveBeenCalled();
-      fireEvent.keyDown(button, { key: 'Escape' });
+      const escapeEvent = new KeyboardEvent('keydown', {
+        key: 'Escape',
+        bubbles: true,
+        cancelable: true,
+      });
+      fireEvent(screen.getByRole('button'), escapeEvent);
+
+      expect(escapeEvent.defaultPrevented).toBe(true);
       expect(onClose).toHaveBeenCalledTimes(1);
       expect(background).not.toHaveBeenCalled();
-      const cancel = new Event('cancel', { cancelable: true });
-      fireEvent(screen.getByRole('dialog'), cancel);
-      expect(cancel.defaultPrevented).toBe(true);
-      expect(onClose).toHaveBeenCalledTimes(2);
     } finally {
       document.removeEventListener('keydown', background);
-      document.removeEventListener('mousedown', background);
-      document.removeEventListener('click', background);
     }
+  });
+
+  it('dismisses once on native cancellation and leaves closing to the parent', () => {
+    const onClose = jest.fn();
+    render(
+      <ReferralDialog onClose={onClose} data-testid="invite">
+        Invite
+      </ReferralDialog>,
+    );
+    const dialog = screen.getByRole('dialog') as HTMLDialogElement;
+    const cancel = new Event('cancel', { cancelable: true });
+
+    fireEvent(dialog, cancel);
+
+    expect(cancel.defaultPrevented).toBe(true);
+    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(dialog.open).toBe(true);
   });
 
   it('dismisses only gestures that start and finish on the backdrop', () => {
@@ -61,11 +95,32 @@ describe('ReferralDialog', () => {
       </ReferralDialog>,
     );
     const dialog = screen.getByRole('dialog');
-    fireEvent.mouseDown(screen.getByText('Invite'));
-    fireEvent.click(dialog);
+    Object.defineProperty(dialog, 'closedBy', { value: 'closerequest' });
+    jest.spyOn(dialog, 'getBoundingClientRect').mockReturnValue({
+      x: 100,
+      y: 100,
+      width: 280,
+      height: 180,
+      top: 100,
+      right: 380,
+      bottom: 280,
+      left: 100,
+      toJSON: () => ({}),
+    });
+    fireEvent.mouseDown(dialog, { clientX: 150, clientY: 150 });
+    fireEvent.click(dialog, { clientX: 150, clientY: 150 });
     expect(onClose).not.toHaveBeenCalled();
-    fireEvent.mouseDown(dialog);
-    fireEvent.click(dialog);
+    fireEvent.mouseDown(screen.getByText('Invite'), {
+      clientX: 150,
+      clientY: 150,
+    });
+    fireEvent.click(dialog, { clientX: 10, clientY: 10 });
+    expect(onClose).not.toHaveBeenCalled();
+    fireEvent.mouseDown(dialog, { clientX: 10, clientY: 10 });
+    fireEvent.click(dialog, { clientX: 150, clientY: 150 });
+    expect(onClose).not.toHaveBeenCalled();
+    fireEvent.mouseDown(dialog, { clientX: 10, clientY: 10 });
+    fireEvent.click(dialog, { clientX: 10, clientY: 10 });
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 });
