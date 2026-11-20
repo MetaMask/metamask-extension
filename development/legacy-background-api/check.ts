@@ -76,7 +76,7 @@ export function check({
   }
 
   if (newApiMemberResults.length > 0) {
-    reportNewApiMembersError(newApiMemberResults, { stdout, stderr });
+    reportNewApiMembersError(newApiMemberResults, stderr);
   } else {
     reportOutdatedSnapshotError(outdatedSnapshotResults, stderr);
   }
@@ -121,14 +121,9 @@ function checkApiMemberNamesMatchSnapshot({
  * Prints the message shown when new members are added to a frozen API.
  *
  * @param results - The APIs that gained new members.
- * @param streams - Where to write the guidance and errors.
- * @param streams.stdout - Where to write standard out.
- * @param streams.stderr - Where to write the error message.
+ * @param stderr - Where to write the error message.
  */
-function reportNewApiMembersError(
-  results: Result[],
-  { stdout, stderr }: { stdout: Writable; stderr: Writable },
-): void {
+function reportNewApiMembersError(results: Result[], stderr: Writable): void {
   stderr.write(
     `${chalk.red(
       'ERROR: New methods have been added to some background<->UI APIs which are deprecated. More details below.',
