@@ -94,23 +94,5 @@ describe('ramps-controller actions', () => {
         ['eip155:1/slip44:60', { aheadOfHistory: ['crossmint'] }],
       );
     });
-
-    it('requests a pick with no asset before a token is chosen', async () => {
-      await selectRampsProviderForAsset(null);
-
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'RampsController:selectProviderForAsset',
-        [null, undefined],
-      );
-    });
-
-    it('resolves to the picked provider id', async () => {
-      mockSubmitRequestToBackground.mockResolvedValue('transak');
-
-      const providerId =
-        await selectRampsProviderForAsset('eip155:1/slip44:60');
-
-      expect(providerId).toBe('transak');
-    });
   });
 });

@@ -10,6 +10,7 @@ import type {
 } from '@metamask/ramps-controller';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { RampsProviderSelectionModal } from './provider-selection';
 
 const mockSetSelectedProvider = jest.fn().mockResolvedValue(undefined);
@@ -269,12 +270,12 @@ describe('RampsProviderSelectionModal', () => {
     expect(
       within(
         screen.getByTestId('ramps-provider-item-/providers/moonpay'),
-      ).getByText('Last used'),
+      ).getByText(messages.rampsPreviouslyUsed.message),
     ).toBeInTheDocument();
     expect(
       within(
         screen.getByTestId('ramps-provider-item-/providers/transak'),
-      ).queryByText('Last used'),
+      ).queryByText(messages.rampsPreviouslyUsed.message),
     ).not.toBeInTheDocument();
   });
 

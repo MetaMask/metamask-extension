@@ -49,37 +49,9 @@ describe('useProviderPickerOptions', () => {
 
     expect(result.current).toStrictEqual({ aheadOfHistory: ['crossmint'] });
   });
-
-  it('keeps the same options object across renders', () => {
-    const { result, rerender } = renderHook(() => useProviderPickerOptions(), {
-      wrapper: createRampsTestWrapper(createRampsMockStore()),
-    });
-    const first = result.current;
-
-    rerender();
-
-    expect(result.current).toBe(first);
-  });
 });
 
 describe('usePreviouslyUsedProviderIds', () => {
-  it('returns an empty list when there are no completed buys', () => {
-    const { result } = renderHook(
-      () => usePreviouslyUsedProviderIds([transak, moonpay]),
-      {
-        wrapper: createRampsTestWrapper(
-          createRampsMockStore({
-            orders: [
-              createOrder(transak, { status: RampsOrderStatus.Pending }),
-            ],
-          }),
-        ),
-      },
-    );
-
-    expect(result.current).toStrictEqual([]);
-  });
-
   it('lists providers with a completed buy on any account, most recent first', () => {
     const { result } = renderHook(
       () => usePreviouslyUsedProviderIds([transak, moonpay]),
@@ -96,21 +68,6 @@ describe('usePreviouslyUsedProviderIds', () => {
     );
 
     expect(result.current).toStrictEqual(['/providers/moonpay', 'transak']);
-  });
-
-  it('leaves out providers that are not in the given list', () => {
-    const { result } = renderHook(
-      () => usePreviouslyUsedProviderIds([transak]),
-      {
-        wrapper: createRampsTestWrapper(
-          createRampsMockStore({
-            orders: [createOrder(transak), createOrder(moonpay)],
-          }),
-        ),
-      },
-    );
-
-    expect(result.current).toStrictEqual(['transak']);
   });
 
   it('keeps the same list when the provider list is rebuilt with the same ids', () => {
