@@ -1,0 +1,231 @@
+import type { BatchScores, Decision, Finding } from './score.mts';
+import { buildSlackMessage } from './slack.mts';
+
+const summary = (shiftPct: number) => ({
+  shiftPct,
+  lowerPct: shiftPct - 1,
+  upperPct: shiftPct + 1,
+  sdPct: 0.5,
+  jobs: 5,
+});
+
+const batch = (logRatios: Record<string, number[]>): BatchScores => {
+  const score = {
+    jobsTotal: 5,
+    jobsUsable: 5,
+    measurable: true,
+    logRatios,
+    metrics: {},
+  };
+  return { chrome: score, firefox: score };
+};
+
+const finding = (overrides: Partial<Finding> = {}): Finding => ({
+  browser: 'chrome',
+  metric: 'uiStartup',
+  direction: 'slower',
+  level: 'quiet',
+  first: summary(2),
+  second: summary(3),
+  pooled: summary(2.5),
+  ...overrides,
+});
+
+const build = (decision: Decision, rangeSize = 1, subject = 'feat: x (#42)') =>
+  buildSlackMessage({
+    plan: {
+      headSha: 'a'.repeat(40),
+      headSubject: subject,
+      baseSha: 'b'.repeat(40),
+      canary: false,
+      rangeSize,
+    },
+    first: batch({ uiStartup: [0.02, 0.03], loadScripts: [0.01] }),
+    second: batch({ uiStartup: [0.03], loadScripts: [0.02] }),
+    decision,
+    repository: 'MetaMask/metamask-extension',
+    runUrl: 'https://github.com/MetaMask/metamask-extension/actions/runs/1',
+    author: 'someone',
+  });
+
+const render = (payload: ReturnType<typeof build>) =>
+  JSON.stringify(payload.blocks);
+
+describe('buildSlackMessage', () => {
+  it('links the commit and pull request and names the author', () => {
+    const payload = build({
+      ping: 'quiet',
+      findings: [finding()],
+      unmeasured: [],
+    });
+
+    expect(render(payload)).toContain(
+      'https://github.com/MetaMask/metamask-extension/pull/42|#42',
+    );
+    expect(render(payload)).toContain('by someone');
+  });
+
+  it('words quiet and loud pings differently', () => {
+    const quiet = build({
+      ping: 'quiet',
+      findings: [finding()],
+      unmeasured: [],
+    });
+    const loud = build({
+      ping: 'loud',
+      findings: [finding({ level: 'loud' })],
+      unmeasured: [],
+    });
+
+    expect(quiet.text).toContain('a performance change');
+    expect(render(quiet)).toContain('large_yellow_circle');
+    expect(loud.text).toContain('a large performance change');
+    expect(render(loud)).toContain('red_circle');
+  });
+
+  it('reports pooled shift, per-job values and the breakdown', () => {
+    const text = render(
+      build({ ping: 'quiet', findings: [finding()], unmeasured: [] }),
+    );
+
+    expect(text).toContain(
+      'Chrome, UI Startup* (`uiStartup`, time from opening the UI until it is ready): 2.5% slower',
+    );
+    expect(text).toContain('per job: +2.0, +3.0, +3.0 %');
+    expect(text).toContain('Load Scripts');
+    expect(text).toContain('Standard user');
+    expect(text).toContain('startupStandardHome');
+  });
+
+  it('flags a breakdown metric that moved by more than 100%', () => {
+    const decision: Decision = {
+      ping: 'quiet',
+      findings: [finding()],
+      unmeasured: [],
+    };
+    const payload = buildSlackMessage({
+      plan: {
+        headSha: 'a'.repeat(40),
+        headSubject: 'feat: x (#42)',
+        baseSha: 'b'.repeat(40),
+        canary: false,
+        rangeSize: 1,
+      },
+      first: batch({ uiStartup: [0.02], firstReactRender: [4.3, 4.3] }),
+      decision,
+      repository: 'MetaMask/metamask-extension',
+      runUrl: 'https://github.com/MetaMask/metamask-extension/actions/runs/1',
+      author: 'someone',
+    });
+    expect(render(payload)).toContain('First Render +7');
+    expect(render(payload)).toContain('triangular_flag_on_post');
+    expect(render(payload)).toContain('changed what the metric measures');
+    expect(
+      render(build({ ping: 'quiet', findings: [finding()], unmeasured: [] })),
+    ).not.toContain('triangular_flag_on_post');
+  });
+
+  it('asks whether the metric still measures the same thing on a speed-up', () => {
+    const faster = build({
+      ping: 'loud',
+      findings: [
+        finding({
+          direction: 'faster',
+          level: 'loud',
+          pooled: summary(-7),
+        }),
+      ],
+      unmeasured: [],
+    });
+    const slower = build({
+      ping: 'quiet',
+      findings: [finding()],
+      unmeasured: [],
+    });
+
+    expect(render(faster)).toContain('still measures the same thing');
+    expect(render(slower)).not.toContain('still measures the same thing');
+  });
+
+  it('escapes commit text so it cannot ping a channel or fake a link', () => {
+    const payload = buildSlackMessage({
+      plan: {
+        headSha: 'a'.repeat(40),
+        headSubject: 'fix: <!channel> a < b <https://evil.test|click> (#7)',
+        baseSha: 'b'.repeat(40),
+        canary: false,
+        rangeSize: 1,
+      },
+      first: batch({ uiStartup: [0.02] }),
+      second: batch({ uiStartup: [0.03] }),
+      decision: { ping: 'quiet', findings: [finding()], unmeasured: [] },
+      repository: 'MetaMask/metamask-extension',
+      runUrl: 'https://github.com/MetaMask/metamask-extension/actions/runs/1',
+      author: '<@U123> & co',
+    });
+    const text = render(payload);
+
+    expect(text).not.toContain('<!channel>');
+    expect(text).not.toContain('<https://evil.test');
+    expect(text).toContain(
+      '&lt;!channel&gt; a &lt; b &lt;https://evil.test|click&gt;',
+    );
+    expect(text).toContain('by &lt;@U123&gt; &amp; co');
+    expect(text).toContain('pull/7|#7');
+  });
+
+  it('labels an injected dry run so it is not mistaken for a real change', () => {
+    const payload = buildSlackMessage({
+      plan: {
+        headSha: 'a'.repeat(40),
+        headSubject: 'feat: x (#42)',
+        baseSha: 'b'.repeat(40),
+        canary: false,
+        injectMs: 40,
+        rangeSize: 1,
+      },
+      first: batch({ uiStartup: [0.02] }),
+      second: batch({ uiStartup: [0.03] }),
+      decision: { ping: 'quiet', findings: [finding()], unmeasured: [] },
+      repository: 'MetaMask/metamask-extension',
+      runUrl: 'https://github.com/MetaMask/metamask-extension/actions/runs/1',
+      author: 'someone',
+    });
+
+    expect(payload.text).toContain('dry-run change injected');
+    expect(render(payload)).toContain('slowed by 40 ms on purpose');
+  });
+
+  it('calls a canary ping a detector false alarm', () => {
+    const payload = buildSlackMessage({
+      plan: {
+        headSha: 'a'.repeat(40),
+        headSubject: 'feat: x (#42)',
+        baseSha: 'a'.repeat(40),
+        canary: true,
+        rangeSize: 1,
+      },
+      first: batch({ uiStartup: [0.02] }),
+      second: batch({ uiStartup: [0.03] }),
+      decision: { ping: 'quiet', findings: [finding()], unmeasured: [] },
+      repository: 'MetaMask/metamask-extension',
+      runUrl: 'https://github.com/MetaMask/metamask-extension/actions/runs/1',
+      author: 'someone',
+    });
+
+    expect(payload.text).toContain('false alarm on the A/A canary');
+    expect(render(payload)).toContain('same build, so this is noise');
+  });
+
+  it('notes a range of commits and unmeasured browsers', () => {
+    const text = render(
+      build(
+        { ping: 'quiet', findings: [finding()], unmeasured: ['firefox'] },
+        3,
+      ),
+    );
+
+    expect(text).toContain('3 commits back');
+    expect(text).toContain('Could not measure: Firefox');
+  });
+});
