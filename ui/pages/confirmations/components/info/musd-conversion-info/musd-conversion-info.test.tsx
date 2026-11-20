@@ -150,6 +150,7 @@ function setupDefaultMocks({
       isDepositPrefillSkipped: false,
       isInputChanged: false,
       isQuoteDerivedAmountLoading: false,
+      resolveAmountFiat: (amountFiat: string) => amountFiat,
       updatePendingAmount: jest.fn(),
       updatePendingAmountPercentage: jest.fn(),
     });
