@@ -35,7 +35,7 @@ import {
   UI_COMPONENT_RE,
   SNOW_MODULE_RE,
   TREZOR_MODULE_RE,
-  UI_DIR_RE,
+  UI_DIR_PREFIXES,
 } from './utils/helpers.ts';
 import { transformManifest } from './utils/plugins/ManifestPlugin/helpers.ts';
 import { parseArgv, getDryRunMessage } from './utils/cli.ts';
@@ -348,7 +348,7 @@ async function getPlugins() {
     plugins.push(
       new HotModuleReplacementPlugin(),
       new ReactRefreshWebpackPlugin({
-        include: UI_DIR_RE,
+        include: UI_DIR_PREFIXES,
         overlay: false,
         runtimeEntry: false,
       }),
@@ -517,7 +517,7 @@ const config = {
       // thread-loader pool for UI component files (must appear before SWC rules)
       threadLoader && {
         test: UI_COMPONENT_RE,
-        include: UI_DIR_RE,
+        include: UI_DIR_PREFIXES,
         use: threadLoader,
       },
       // own typescript, and own typescript with jsx
@@ -525,12 +525,12 @@ const config = {
         ? [
             {
               test: TYPESCRIPT_FILE_RE,
-              include: UI_DIR_RE,
+              include: UI_DIR_PREFIXES,
               use: reactRefreshTsLoader,
             },
             {
               test: TYPESCRIPT_FILE_RE,
-              exclude: [NODE_MODULES_RE, UI_DIR_RE],
+              exclude: [NODE_MODULES_RE, ...UI_DIR_PREFIXES],
               use: tsLoader,
             },
           ]
@@ -546,12 +546,12 @@ const config = {
         ? [
             {
               test: JAVASCRIPT_FILE_RE,
-              include: UI_DIR_RE,
+              include: UI_DIR_PREFIXES,
               use: reactRefreshJsxLoader,
             },
             {
               test: JAVASCRIPT_FILE_RE,
-              exclude: [NODE_MODULES_RE, UI_DIR_RE],
+              exclude: [NODE_MODULES_RE, ...UI_DIR_PREFIXES],
               use: jsxLoader,
             },
           ]
@@ -563,7 +563,7 @@ const config = {
             },
           ]),
       // React Compiler for UI component files (must appear after SWC rules)
-      { test: UI_COMPONENT_RE, include: UI_DIR_RE, use: reactCompiler },
+      { test: UI_COMPONENT_RE, include: UI_DIR_PREFIXES, use: reactCompiler },
       // vendor javascript. We must transform all npm modules to ensure browser
       // compatibility.
       {

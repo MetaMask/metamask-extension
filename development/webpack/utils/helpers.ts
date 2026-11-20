@@ -1,5 +1,4 @@
 import { join, sep } from 'node:path';
-import escapeRegExp from 'lodash/escapeRegExp.js';
 import type { EntryObject, Stats } from 'webpack';
 import webpackApi from 'webpack';
 import { projectRoot } from '../../lib/build-paths.ts';
@@ -46,25 +45,21 @@ export const TREZOR_MODULE_RE = new RegExp(
 );
 
 /**
- * Regular expression to match React files in the top-level `ui/` directory.
- * The project root is escaped with lodash's `escapeRegExp` so the directory is
- * matched literally. Uses a platform-specific path separator: `/` on Unix-like
- * systems and `\` on Windows.
+ * Directory prefixes for React source under the top-level `ui/` directory.
+ * Each prefix ends with a separator so sibling directory names do not match.
  */
-export const UI_DIR_RE = new RegExp(
-  `^${join(projectRoot, 'ui')
-    .split(sep)
-    .map(escapeRegExp)
-    .join(
-      slash,
-    )}${slash}(?:components|contexts|hooks|layouts|pages)${slash}.*$`,
-  'u',
-);
+export const UI_DIR_PREFIXES = [
+  'components',
+  'contexts',
+  'hooks',
+  'layouts',
+  'pages',
+].map((directory) => join(projectRoot, 'ui', directory, sep));
 
 /**
  * Regular expression to match UI component source files, excluding test files,
  * stories, container files, type declarations, mocks, and spec files.
- * Used with `UI_DIR_RE` to scope thread-loader and React Compiler to UI components.
+ * Used with `UI_DIR_PREFIXES` to scope thread-loader and React Compiler.
  */
 export const UI_COMPONENT_RE = new RegExp(
   `^(?!.*(?:\\.(?:test|spec|stories|container)\\.|__mocks__${slash}|\\.d\\.[jt]s$)).*\\.(?:m?[jt]s|[jt]sx)$`,

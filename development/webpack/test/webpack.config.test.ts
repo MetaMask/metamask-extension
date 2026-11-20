@@ -15,7 +15,11 @@ import type {
   WebpackPluginInstance,
   RuleSetRule,
 } from 'webpack';
-import { resolvePackage, webpackFile } from '../../lib/build-paths.ts';
+import {
+  projectRoot,
+  resolvePackage,
+  webpackFile,
+} from '../../lib/build-paths.ts';
 import { noop, type Manifest, NODE_MODULES_RE } from '../utils/helpers.ts';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin/index.ts';
 import { getLatestCommit } from '../utils/git.ts';
@@ -551,14 +555,25 @@ ${Object.entries(env)
       reactRefreshRules.map((rule) => rule.exclude),
       [undefined, undefined],
     );
-    assert.ok(
-      reactRefreshRules.every(
-        (rule) =>
-          rule.include instanceof RegExp &&
-          rule.use.options.jsc.transform.react.development,
-      ),
-      'React Refresh rules should be scoped to UI source with development React transforms',
+    const uiSource = join(projectRoot, 'ui', 'components', 'example.tsx');
+    const siblingSource = join(
+      projectRoot,
+      'ui',
+      'components-old',
+      'example.tsx',
     );
+    for (const rule of reactRefreshRules) {
+      const { include } = rule;
+      assert.ok(
+        Array.isArray(include) &&
+          include.every((prefix) => typeof prefix === 'string'),
+      );
+      assert.ok(webpackApi.ModuleFilenameHelpers.matchPart(uiSource, include));
+      assert.ok(
+        !webpackApi.ModuleFilenameHelpers.matchPart(siblingSource, include),
+      );
+      assert.ok(rule.use.options.jsc.transform.react.development);
+    }
   });
 
   it('does not enable React Refresh for production watch builds', async () => {
