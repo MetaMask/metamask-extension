@@ -130,6 +130,21 @@ export const ERROR_CODE_TO_I18N_KEY = {
   [PERPS_ERROR_CODES.WITHDRAW_FAILED]: 'perpsWithdrawFailed',
   [PERPS_ERROR_CODES.POSITIONS_FAILED]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.ACCOUNT_STATE_FAILED]: 'somethingWentWrong',
+  // Batched order management could not complete for every affected order.
+  [PERPS_ERROR_CODES.BATCH_INCOMPLETE]: 'somethingWentWrong',
+  [PERPS_ERROR_CODES.ORDERS_FAILED]: 'somethingWentWrong',
+  // Scale-order bookkeeping failures: the controller could not preserve the
+  // intended size or exposure distribution across the scale's levels.
+  [PERPS_ERROR_CODES.ORDER_SCALE_SIZE_CONSERVATION_FAILED]:
+    'somethingWentWrong',
+  [PERPS_ERROR_CODES.ORDER_SCALE_EXPOSURE_EXCEEDS_INTENT]: 'somethingWentWrong',
+  // Display-only data gap: the liquidation price could not be computed.
+  [PERPS_ERROR_CODES.LIQUIDATION_PRICE_UNAVAILABLE]: 'somethingWentWrong',
+  // The order is already off the book. The cancel modal intercepts this code
+  // as a benign already-gone end state before translation, so this entry is
+  // defensive for any other flow that surfaces a failed cancellation of an
+  // order that is no longer open.
+  [PERPS_ERROR_CODES.ORDER_NO_LONGER_OPEN]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.MARKETS_FAILED]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.UNKNOWN_ERROR]: 'somethingWentWrong',
 
