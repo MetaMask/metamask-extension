@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { ERC721, ERC1155 } from '@metamask/controller-utils';
 
 import {
@@ -7,13 +13,17 @@ import {
   ButtonIconSize,
   ButtonLink,
   IconName,
+  IconSize,
   Text,
   TextField,
   TextFieldSize,
 } from '../../../../../components/component-library';
 import {
+  AlignItems,
   BlockSize,
   Display,
+  FlexWrap,
+  IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -30,6 +40,7 @@ import {
   getFractionLength,
   isValidPositiveNumericString,
 } from '../../../utils/send';
+import { getSymbolLayout, SYMBOL_RIGHT_INSET_PX } from './symbol-layout';
 
 export const Amount = ({
   amountError,
@@ -149,6 +160,72 @@ export const Amount = ({
     t,
   ]);
 
+  const symbol = fiatMode ? fiatCurrencyName?.toUpperCase() : asset?.symbol;
+  const fieldRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const measureRef = useRef<HTMLSpanElement | null>(null);
+  const symbolRef = useRef<HTMLElement | null>(null);
+  const [symbolLayout, setSymbolLayout] = useState<SymbolLayout>({
+    left: SYMBOL_RIGHT_INSET_PX,
+    paddingRight: 0,
+  });
+
+  useLayoutEffect(() => {
+    const field = fieldRef.current;
+    const input = inputRef.current;
+    const measure = measureRef.current;
+    const symbolElement = symbolRef.current;
+    if (!field || !input || !measure || !symbolElement) {
+      return undefined;
+    }
+
+    const update = () => {
+      const inputStyle = window.getComputedStyle(input);
+      measure.style.font = inputStyle.font;
+      measure.style.letterSpacing = inputStyle.letterSpacing;
+      measure.style.fontVariantNumeric = inputStyle.fontVariantNumeric;
+      measure.style.fontFeatureSettings = inputStyle.fontFeatureSettings;
+
+      const fieldRect = field.getBoundingClientRect();
+      const inputRect = input.getBoundingClientRect();
+      const paddingLeft = Number.parseFloat(inputStyle.paddingLeft) || 0;
+      const { left, paddingRight } = getSymbolLayout({
+        fieldLeft: fieldRect.left,
+        fieldWidth: fieldRect.width,
+        inputRight: inputRect.right,
+        symbolWidth: symbolElement.getBoundingClientRect().width,
+        textStart: inputRect.left - fieldRect.left + paddingLeft,
+        textWidth: measure.getBoundingClientRect().width,
+      });
+
+      setSymbolLayout((current) =>
+        current.left === left && current.paddingRight === paddingRight
+          ? current
+          : { left, paddingRight },
+      );
+    };
+
+    update();
+
+    const observer =
+      typeof ResizeObserver === 'undefined'
+        ? undefined
+        : new ResizeObserver(update);
+    observer?.observe(field);
+
+    let cancelled = false;
+    void document.fonts?.ready.then(() => {
+      if (!cancelled) {
+        update();
+      }
+    });
+
+    return () => {
+      cancelled = true;
+      observer?.disconnect();
+    };
+  }, [amount, symbol]);
+
   if (asset?.standard === ERC721) {
     return null;
   }
@@ -158,50 +235,102 @@ export const Amount = ({
       <Text variant={TextVariant.bodyMd} paddingBottom={1}>
         {t('amount')}
       </Text>
-      <TextField
-        error={Boolean(amountError)}
-        onChange={onChange}
-        onPaste={setAmountInputMethodPasted}
-        onInput={setAmountInputMethodManual}
-        placeholder="0"
-        testId="send-amount-input"
-        value={amount}
-        endAccessory={
-          <Box display={Display.Flex}>
-            <Text>
-              {fiatMode ? fiatCurrencyName?.toUpperCase() : asset?.symbol}
-            </Text>
-            {conversionSupportedForAsset && (
-              <ButtonIcon
-                ariaLabel="toggle fiat mode"
-                iconName={IconName.SwapVertical}
-                onClick={toggleFiatMode}
-                size={ButtonIconSize.Sm}
-                data-testid="toggle-fiat-mode"
-              />
-            )}
-          </Box>
-        }
+      <Box
+        ref={fieldRef}
+        style={{ position: 'relative' }}
         width={BlockSize.Full}
-        size={TextFieldSize.Lg}
-        paddingRight={3}
-      />
+      >
+        <span
+          aria-hidden="true"
+          ref={measureRef}
+          style={{
+            position: 'absolute',
+            visibility: 'hidden',
+            whiteSpace: 'pre',
+            pointerEvents: 'none',
+          }}
+        >
+          {amount || '0'}
+        </span>
+        <TextField
+          error={Boolean(amountError)}
+          inputProps={
+            symbolLayout.paddingRight > 0
+              ? {
+                  style: {
+                    boxSizing: 'border-box',
+                    paddingRight: symbolLayout.paddingRight,
+                  },
+                }
+              : undefined
+          }
+          inputRef={inputRef}
+          onChange={onChange}
+          onPaste={setAmountInputMethodPasted}
+          onInput={setAmountInputMethodManual}
+          placeholder="0"
+          testId="send-amount-input"
+          value={amount}
+          width={BlockSize.Full}
+          size={TextFieldSize.Lg}
+        />
+        {symbol ? (
+          <Text
+            as="span"
+            data-testid="send-amount-symbol"
+            ref={symbolRef}
+            style={{
+              position: 'absolute',
+              left: symbolLayout.left,
+              top: '50%',
+              margin: 0,
+              transform: 'translateY(-50%)',
+              pointerEvents: 'none',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {symbol}
+          </Text>
+        ) : null}
+      </Box>
       <Box
         display={Display.Flex}
+        flexWrap={FlexWrap.Wrap}
+        gap={1}
         justifyContent={JustifyContent.spaceBetween}
         marginTop={1}
       >
-        <Text
-          color={
-            amountError ? TextColor.errorDefault : TextColor.textAlternative
-          }
-          variant={TextVariant.bodySm}
-          data-testid="send-amount-fiat-value"
+        <Box
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          gap={1}
+          paddingLeft={4}
         >
-          {amountError ||
-            (conversionSupportedForAsset ? alternateDisplayValue : '')}
-        </Text>
-        <Box display={Display.Flex}>
+          <Text
+            color={
+              amountError ? TextColor.errorDefault : TextColor.textAlternative
+            }
+            data-testid="send-amount-fiat-value"
+            role={amountError ? 'alert' : undefined}
+            variant={TextVariant.bodySm}
+          >
+            {amountError ||
+              (conversionSupportedForAsset ? alternateDisplayValue : '')}
+          </Text>
+          {conversionSupportedForAsset && !amountError && (
+            <ButtonIcon
+              aria-pressed={fiatMode}
+              ariaLabel="toggle fiat mode"
+              color={IconColor.iconAlternative}
+              data-testid="toggle-fiat-mode"
+              iconName={IconName.SwapVertical}
+              iconProps={{ size: IconSize.Md }}
+              onClick={toggleFiatMode}
+              size={ButtonIconSize.Sm}
+            />
+          )}
+        </Box>
+        <Box display={Display.Flex} marginLeft="auto">
           <Text
             color={TextColor.textAlternative}
             variant={TextVariant.bodySm}

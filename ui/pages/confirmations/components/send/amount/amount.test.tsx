@@ -438,4 +438,25 @@ describe('Amount', () => {
       });
     });
   });
+
+  it('hides the fiat toggle when an amount error is shown', () => {
+    jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
+      conversionSupportedForAsset: true,
+      fiatCurrencySymbol: '$',
+      fiatCurrencyName: 'usd',
+      getFiatValue: () => '20',
+      getFiatDisplayValue: () => '$ 20.00',
+      getNativeValue: () => '20',
+    });
+
+    const { getByText, queryByTestId } = render(
+      undefined,
+      messages.insufficientFundsSend.message,
+    );
+
+    expect(
+      getByText(messages.insufficientFundsSend.message),
+    ).toBeInTheDocument();
+    expect(queryByTestId('toggle-fiat-mode')).not.toBeInTheDocument();
+  });
 });
