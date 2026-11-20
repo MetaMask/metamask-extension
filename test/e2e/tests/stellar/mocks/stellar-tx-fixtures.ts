@@ -2,11 +2,6 @@
 import { createHash } from 'crypto';
 import { StatusTypes } from '@metamask/bridge-controller';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
-import {
-  TransactionStatus,
-  TransactionType,
-  type Transaction as KeyringTransaction,
-} from '@metamask/keyring-api';
 import type { CaipAssetType } from '@metamask/utils';
 import {
   Account,
@@ -19,7 +14,6 @@ import {
 import { DEFAULT_STELLAR_ADDRESS } from '../../../constants';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import {
-  STELLAR_CHAIN_ID,
   STELLAR_NATIVE_ASSET_ID,
   STELLAR_USDC_ISSUER,
 } from './stellar-constants';
@@ -280,64 +274,5 @@ export function stellarBridgeHistoryItem(opts: {
     estimatedProcessingTimeInSeconds: 60,
     slippagePercentage: 0.5,
   } as unknown as BridgeHistoryItem;
-}
-
-/**
- * Builds a keyring Send transaction for MultichainTransactionsController seeding
- * (used when Horizon cannot express Pending / Unconfirmed).
- *
- * @param opts - Keyring send options.
- * @param opts.accountId - Multichain account id that owns the send.
- * @param opts.amount - Human-readable XLM amount.
- * @param opts.destination - Recipient Stellar account id (G…).
- * @param opts.status - Keyring status (`Unconfirmed` or `Failed`).
- * @param opts.timestampMs - Event time in ms (converted to seconds for keyring).
- * @param opts.id - Stable transaction id used as the activity key.
- */
-export function stellarKeyringSendTx(opts: {
-  accountId: string;
-  amount: string;
-  destination: string;
-  status:
-    | typeof TransactionStatus.Unconfirmed
-    | typeof TransactionStatus.Failed;
-  timestampMs: number;
-  id: string;
-}): KeyringTransaction {
-  const timestamp = Math.floor(opts.timestampMs / 1000);
-  const asset = {
-    unit: 'XLM',
-    type: STELLAR_NATIVE_ASSET_ID as CaipAssetType,
-    amount: opts.amount,
-    fungible: true as const,
-  };
-
-  return {
-    type: TransactionType.Send,
-    id: opts.id,
-    account: opts.accountId,
-    chain: STELLAR_CHAIN_ID,
-    status: opts.status,
-    timestamp,
-    from: [
-      {
-        address: DEFAULT_STELLAR_ADDRESS,
-        asset,
-      },
-    ],
-    to: [
-      {
-        address: opts.destination,
-        asset,
-      },
-    ],
-    events: [
-      {
-        status: opts.status,
-        timestamp,
-      },
-    ],
-    fees: [],
-  };
 }
 /* eslint-enable @typescript-eslint/naming-convention */
