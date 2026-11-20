@@ -96,17 +96,20 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
           // (slip44:60 and the zero-address ERC-20 alias AC 15 requests).
           await mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
+              id: 'ethereum',
               price: MOCK_ETH_CONVERSION_RATE,
               marketCap: 112500000,
               pricePercentChange1d: 0,
             },
             [SEPOLIA_NATIVE_ASSET_ID]: {
+              id: 'ethereum',
               price: MOCK_ETH_CONVERSION_RATE,
               marketCap: 112500000,
               pricePercentChange1d: 0,
             },
             'eip155:11155111/erc20:0x0000000000000000000000000000000000000000':
               {
+                id: 'ethereum',
                 price: MOCK_ETH_CONVERSION_RATE,
                 marketCap: 112500000,
                 pricePercentChange1d: 0,

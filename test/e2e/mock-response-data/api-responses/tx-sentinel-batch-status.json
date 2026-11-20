@@ -1,0 +1,14 @@
+{
+  "0d506aaa-5e38-4cab-ad09-2039cb7a0f33": {
+    "cancellationFeeWei": 0,
+    "cancellationReason": "not_cancelled",
+    "deadlineRatio": 0,
+    "isSettled": true,
+    "minedTx": "success",
+    "wouldRevertMessage": null,
+    "minedHash": "0xec9d6214684d6dc191133ae4a7ec97db3e521fff9cfe5c4f48a84cb6c93a5fa5",
+    "timedOut": true,
+    "proxied": false,
+    "type": "sentinel"
+  }
+}

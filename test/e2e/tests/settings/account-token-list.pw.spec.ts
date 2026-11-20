@@ -17,6 +17,10 @@ import {
 import { login } from '../../page-objects/flows/login.flow';
 import { closeSettings } from '../../page-objects/flows/settings.flow';
 import { DEFAULT_FIXTURE_ACCOUNT_ID, E2E_DRIVER } from '../../constants';
+import {
+  priceV1ExchangeRates,
+  priceV3Spot,
+} from '../../mock-response-data/api-responses';
 
 const SEPOLIA_NATIVE_ASSET_ID = 'eip155:11155111/slip44:60';
 
@@ -54,8 +58,8 @@ const ETH_CONVERSION_RATE_USD = 1700;
 
 async function mockPriceApi(mockServer: Mockttp) {
   const price = ETH_CONVERSION_RATE_USD;
-  await mockServer
-    .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+  await priceV3Spot
+    .rule(mockServer)
     .always()
     .thenCallback(() => ({
       statusCode: 200,
@@ -67,8 +71,8 @@ async function mockPriceApi(mockServer: Mockttp) {
         },
       },
     }));
-  await mockServer
-    .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+  await priceV1ExchangeRates
+    .rule(mockServer)
     .always()
     .thenCallback(() => ({
       statusCode: 200,
