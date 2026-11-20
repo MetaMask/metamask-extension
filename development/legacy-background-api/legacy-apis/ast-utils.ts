@@ -1,4 +1,5 @@
 import ts from 'typescript';
+import { UnresolvableExpressionError } from './errors';
 
 /**
  * A function written inline as an expression, which always has a body.
@@ -42,28 +43,24 @@ export function unwrapExpression(expression: ts.Expression): ts.Expression {
 }
 
 /**
- * Gets the text of a property-like name.
+ * Gets the text of a property-like name, throwing if the name is only known at
+ * runtime.
+ *
+ * This is used for names that are recorded in the snapshot, where writing
+ * source text such as `[DYNAMIC_KEY]` instead of a real name would be wrong.
  *
  * @param name - The name node to read.
  * @returns The name text.
  */
 export function getPropertyNameText(name: ts.PropertyName): string {
-  // EXAMPLES:
-  //   api
-  //   ^^^    identifier
-  //   'api'
-  //   ^^^^^  string literal
-  //   0
-  //   ^      numeric literal
-  if (
-    ts.isIdentifier(name) ||
-    ts.isStringLiteral(name) ||
-    ts.isNumericLiteral(name)
-  ) {
-    return name.text;
+  const text = getStaticPropertyNameText(name);
+  if (text === undefined) {
+    throw new UnresolvableExpressionError(
+      name,
+      'Cannot determine the name of this property',
+    );
   }
-
-  return name.getText();
+  return text;
 }
 
 /**
@@ -106,7 +103,10 @@ export function findClassMembers(
   return classDeclaration.members.filter(
     (member) =>
       member.name !== undefined &&
-      getPropertyNameText(member.name) === memberName,
+      // A member whose name is only known at runtime, such as
+      // `[Symbol.iterator]() { ... }`, cannot be the one being looked up, so
+      // it is skipped rather than rejected.
+      getStaticPropertyNameText(member.name) === memberName,
   );
 }
 
@@ -156,4 +156,49 @@ export function isNullishExpression(expression: ts.Expression): boolean {
     expression.kind === ts.SyntaxKind.NullKeyword ||
     (ts.isIdentifier(expression) && expression.text === 'undefined')
   );
+}
+
+/**
+ * Gets the text of a property-like name, if it is known without running the
+ * code.
+ *
+ * @param name - The name node to read.
+ * @returns The name text, or undefined for a computed name that is not a
+ * literal.
+ */
+function getStaticPropertyNameText(name: ts.PropertyName): string | undefined {
+  if (ts.isComputedPropertyName(name)) {
+    const { expression } = name;
+    // EXAMPLES:
+    //   {
+    //     ['api']: ...
+    //      ^^^^  string literal
+    //     [42]: ...
+    //      ^^    numeric literal
+    //   }
+    if (ts.isStringLiteralLike(expression) || ts.isNumericLiteral(expression)) {
+      return expression.text;
+    }
+    // EXAMPLES:
+    //   [DYNAMIC_KEY]: ...
+    //    ^^^^^^^^^^^  dynamic key only known at runtime
+    return undefined;
+  }
+
+  // EXAMPLES:
+  //   api
+  //   ^^^    identifier
+  //   'api'
+  //   ^^^^^  string literal
+  //   42
+  //   ^^     numeric literal
+  if (
+    ts.isIdentifier(name) ||
+    ts.isStringLiteral(name) ||
+    ts.isNumericLiteral(name)
+  ) {
+    return name.text;
+  }
+
+  return name.getText();
 }

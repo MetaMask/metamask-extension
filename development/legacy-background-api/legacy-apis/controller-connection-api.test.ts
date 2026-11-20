@@ -208,6 +208,33 @@ describe('getControllerConnectionApiMemberNames', () => {
         ]),
       );
     });
+
+    it('collects computed property names written as literals', () => {
+      const { sourceFile, context } = parseSource(`class MetamaskController {
+        setupControllerConnection() {
+          const api = { ['quoted']: () => {}, [1]: () => {} };
+        }
+      }`);
+
+      const { adhocControllerConnectionMethods } =
+        getControllerConnectionApiMemberNames(sourceFile, context);
+
+      expect(adhocControllerConnectionMethods).toStrictEqual(
+        new Set(['quoted', '1']),
+      );
+    });
+
+    it('rejects a computed property name that is not a literal', () => {
+      const { sourceFile, context } = parseSource(`class MetamaskController {
+        setupControllerConnection() {
+          const api = { [DYNAMIC_KEY]: () => {} };
+        }
+      }`);
+
+      expect(() =>
+        getControllerConnectionApiMemberNames(sourceFile, context),
+      ).toThrow('Cannot determine the name of this property');
+    });
   });
 
   describe('spreads of values', () => {
@@ -444,6 +471,21 @@ describe('getControllerConnectionApiMemberNames', () => {
       expect(adhocControllerConnectionMethods).toStrictEqual(
         new Set(['exposed']),
       );
+    });
+
+    it('ignores computed class members when looking up a method', () => {
+      const { sourceFile, context } = parseSource(`class MetamaskController {
+        [Symbol.iterator]() {}
+        getApi() { return { exposed() {} }; }
+        setupControllerConnection() { const api = { ...this.getApi() }; }
+      }`);
+
+      const { getApiMethods } = getControllerConnectionApiMemberNames(
+        sourceFile,
+        context,
+      );
+
+      expect(getApiMethods).toStrictEqual(new Set(['exposed']));
     });
 
     it('follows a call to a method on an instance', () => {
