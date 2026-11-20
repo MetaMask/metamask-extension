@@ -1390,7 +1390,7 @@
     "message": "Choose what to sync"
   },
   "add_wallets_desc": {
-    "message": "Pick the wallets and accounts to import to your phone. You can change this later."
+    "message": "Pick the wallets and accounts to import to your phone."
   },
   "added": {
     "message": "Added"

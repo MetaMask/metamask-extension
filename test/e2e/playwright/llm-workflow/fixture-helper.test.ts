@@ -27,8 +27,10 @@ describe('buildDefaultFixture', () => {
     const presets = createFixturePresets();
 
     expectSyncDisabled(presets.withMultipleAccounts());
+    expectSyncDisabled(presets.withMultipleWallets());
     expectSyncDisabled(presets.withERC20Tokens());
     expectExternalServicesDisabled(presets.withMultipleAccounts());
+    expectExternalServicesDisabled(presets.withMultipleWallets());
     expectExternalServicesDisabled(presets.withERC20Tokens());
   });
 });

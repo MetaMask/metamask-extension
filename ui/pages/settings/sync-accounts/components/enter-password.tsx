@@ -7,13 +7,11 @@ import {
   FontWeight,
   Button,
   BoxFlexDirection,
+  FormTextField,
+  TextFieldSize,
+  TextFieldType,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  FormTextField,
-  FormTextFieldSize,
-  TextFieldType,
-} from '../../../../components/component-library';
 import { verifyPassword } from '../../../../store/actions';
 
 type EnterPasswordProps = {
@@ -36,7 +34,12 @@ const EnterPassword = ({ onPasswordChange }: EnterPasswordProps) => {
   }, [password, onPasswordChange]);
 
   return (
-    <Box flexDirection={BoxFlexDirection.Column} gap={4} className="flex-1">
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      gap={4}
+      paddingBottom={4}
+      className="flex-1"
+    >
       <Text
         variant={TextVariant.HeadingLg}
         color={TextColor.TextDefault}
@@ -61,12 +64,11 @@ const EnterPassword = ({ onPasswordChange }: EnterPasswordProps) => {
               setPassword(e.target.value);
               setIsIncorrectPasswordError(false);
             }}
-            size={FormTextFieldSize.Lg}
-            error={isIncorrectPasswordError}
+            size={TextFieldSize.Lg}
+            isError={isIncorrectPasswordError}
             helpText={
               isIncorrectPasswordError ? t('unlockPageIncorrectPassword') : null
             }
-            inputProps={{ 'data-testid': 'qr-sync-password-input' }}
             autoFocus
           />
         </form>

@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import qrCode from 'qrcode-generator';
+import React, { useState } from 'react';
+import { QRCodeSVG } from 'qrcode.react';
 import {
   Box,
   Text,
@@ -10,102 +10,23 @@ import {
   BoxAlignItems,
   BoxJustifyContent,
   TextButton,
+  Skeleton,
 } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Skeleton } from '../../../../components/component-library/skeleton';
 import { selectQrSyncQrPayload } from '../../../../selectors/qr-sync/qr-sync';
 import { ENVIRONMENT } from '../../../../../shared/constants/build';
-import { QR_SYNC_TIMEOUT_MS } from '../../../../../shared/constants/qr-sync';
 
-const MWP_SESSION_REQUEST_EXPIRY_SECONDS =
-  QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT / 1000;
+const QR_CODE_SIZE = 184;
+const QR_CODE_INNER_SIZE = 152;
 
-/** Minimal type for qrcode-generator instance (no @types package) */
-type QRCodeInstance = {
-  addData: (data: string) => void;
-  make: () => void;
-  createDataURL: (cellSize?: number, margin?: number) => string;
-};
-
-const QR_CODE_CELL_SIZE = 5;
-const QR_CODE_MARGIN = 16;
-const QR_CODE_SIZE = 340;
-
-type QrCodeScanProps = {
-  onRestart: () => void;
-};
-
-const QrCodeScan = ({ onRestart }: QrCodeScanProps) => {
+const QrCodeScan = () => {
   const t = useI18nContext();
   const qrPayload = useSelector(selectQrSyncQrPayload);
-  const [lastQrPayload, setLastQrPayload] = useState<string | null>(null);
-
-  if (qrPayload && qrPayload !== lastQrPayload) {
-    setLastQrPayload(qrPayload);
-  }
-
-  const displayedPayload = qrPayload ?? lastQrPayload;
-  const qrDataUrl = useMemo(() => {
-    if (!displayedPayload) {
-      return null;
-    }
-    const qrImage = qrCode(0, 'M') as QRCodeInstance;
-    qrImage.addData(displayedPayload);
-    qrImage.make();
-    return qrImage.createDataURL(QR_CODE_CELL_SIZE, QR_CODE_MARGIN);
-  }, [displayedPayload]);
-  const [secondsLeft, setSecondsLeft] = useState(
-    () => MWP_SESSION_REQUEST_EXPIRY_SECONDS,
-  );
-  const isExpired = secondsLeft <= 0;
-  const shouldDimQr = isExpired;
-
-  useEffect(() => {
-    if (shouldDimQr) {
-      return undefined;
-    }
-
-    const intervalId = setInterval(() => {
-      setSecondsLeft((prev) => Math.max(prev - 1, 0));
-    }, 1000);
-
-    return () => clearInterval(intervalId);
-  }, [shouldDimQr]);
-
-  const handleReset = useCallback(() => {
-    setSecondsLeft(MWP_SESSION_REQUEST_EXPIRY_SECONDS);
-    onRestart();
-  }, [onRestart]);
-
-  const renderResetBlock = (message: string) => (
-    <Box
-      flexDirection={BoxFlexDirection.Column}
-      alignItems={BoxAlignItems.Center}
-      gap={1}
-    >
-      <Text variant={TextVariant.BodyMd} color={TextColor.ErrorDefault}>
-        {message}
-      </Text>
-      <TextButton
-        data-testid="qr-sync-generate-new-qr-code"
-        onClick={handleReset}
-      >
-        {t('generateNewQrCode')}
-      </TextButton>
-    </Box>
-  );
-
-  let statusContent;
-  if (isExpired) {
-    statusContent = renderResetBlock(t('qrCodeExpired'));
-  } else {
-    statusContent = (
-      <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-        {t('qrCodeExpiresIn', [secondsLeft])}
-      </Text>
-    );
-  }
+  const [isPayloadVisible, setIsPayloadVisible] = useState(false);
+  const canRevealQrPayload =
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT ||
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING;
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={4} className="flex-1">
@@ -114,7 +35,7 @@ const QrCodeScan = ({ onRestart }: QrCodeScanProps) => {
         color={TextColor.TextDefault}
         fontWeight={FontWeight.Bold}
       >
-        {t('scanQrCode')}
+        {t('syncAccounts')}
       </Text>
       <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
         {t('scan_qr_code_desc')}
@@ -130,57 +51,58 @@ const QrCodeScan = ({ onRestart }: QrCodeScanProps) => {
           className="relative inline-flex"
           justifyContent={BoxJustifyContent.Center}
           alignItems={BoxAlignItems.Center}
-          style={{
-            opacity: shouldDimQr ? 0.3 : 1,
-            filter: shouldDimQr ? 'blur(4px)' : 'none',
-          }}
           data-testid={qrPayload ? 'qr-sync-qr-code' : 'qr-sync-qr-loading'}
         >
-          {qrDataUrl ? (
-            <>
-              <img
+          {qrPayload ? (
+            <Box className="relative self-center overflow-hidden rounded-2xl border border-muted bg-white p-4">
+              <QRCodeSVG
                 data-testid="qr-code-image"
-                src={qrDataUrl}
-                alt={t('scanQrCode')}
-                width={QR_CODE_SIZE}
-                height={QR_CODE_SIZE}
-                className="rounded-2xl"
+                value={qrPayload}
+                size={QR_CODE_INNER_SIZE}
+                level="M"
+                marginSize={0}
+                title={t('scanQrCode')}
               />
-              <Box
-                // Background must remain white regardless of theme
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg flex overflow-hidden"
-                justifyContent={BoxJustifyContent.Center}
-                alignItems={BoxAlignItems.Center}
-                style={{ height: 40, width: 45 }}
-              >
+              <Box className="absolute left-1/2 top-1/2 flex h-10 w-[45px] -translate-x-1/2 -translate-y-1/2 items-center justify-center overflow-hidden bg-white">
                 <img
                   src="images/logo/metamask-fox.svg"
-                  alt="Logo"
-                  width={35}
-                  height={35}
+                  alt=""
+                  aria-hidden
+                  className="h-[35px] w-[35px] object-contain"
+                  data-testid="qr-code-fox"
                 />
               </Box>
-            </>
+            </Box>
           ) : (
             <Skeleton width={QR_CODE_SIZE} height={QR_CODE_SIZE} />
           )}
         </Box>
-        {process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT &&
-        qrPayload ? (
-          <Text
-            variant={TextVariant.BodyXs}
-            color={TextColor.TextAlternative}
-            className="w-full text-center"
-            style={{
-              maxWidth: QR_CODE_SIZE,
-              overflowWrap: 'anywhere',
-            }}
-            data-testid="qr-sync-qr-payload"
+        {canRevealQrPayload && qrPayload ? (
+          <Box
+            flexDirection={BoxFlexDirection.Column}
+            alignItems={BoxAlignItems.Center}
+            gap={2}
+            className="w-full"
           >
-            {qrPayload}
-          </Text>
+            <TextButton
+              onClick={() => setIsPayloadVisible((visible) => !visible)}
+              data-testid="qr-sync-toggle-qr-payload"
+              className="text-alternative hover:text-alternative active:text-alternative"
+            >
+              {isPayloadVisible ? t('hideQrData') : t('cantScanQrCode')}
+            </TextButton>
+            {isPayloadVisible ? (
+              <Text
+                variant={TextVariant.BodyXs}
+                color={TextColor.TextAlternative}
+                className="w-full max-w-[208px] break-all text-center"
+                data-testid="qr-sync-qr-payload"
+              >
+                {qrPayload}
+              </Text>
+            ) : null}
+          </Box>
         ) : null}
-        {statusContent}
       </Box>
     </Box>
   );

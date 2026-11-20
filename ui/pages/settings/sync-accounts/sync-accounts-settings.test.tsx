@@ -1,5 +1,11 @@
 import React from 'react';
-import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
@@ -122,7 +128,7 @@ describe('SyncAccountsSettings', () => {
     expect(screen.getByTestId('enter-verification-code')).toBeInTheDocument();
   });
 
-  it('renders LoadingStep when the phase is awaiting a sync offer', () => {
+  it('keeps the verification code screen while awaiting a sync offer', () => {
     const store = configureMockStore([thunk])({
       ...qrSyncState,
       metamask: {
@@ -131,7 +137,8 @@ describe('SyncAccountsSettings', () => {
       },
     });
     renderWithProvider(<SyncAccountsSettings />, store);
-    expect(screen.getByTestId('loading-step')).toBeInTheDocument();
+    expect(screen.getByTestId('enter-verification-code')).toBeInTheDocument();
+    expect(screen.queryByTestId('loading-step')).not.toBeInTheDocument();
   });
 
   it('renders EnterPassword when the phase is reviewing the sync offer', () => {
@@ -158,23 +165,23 @@ describe('SyncAccountsSettings', () => {
     expect(screen.getByTestId('loading-step')).toBeInTheDocument();
   });
 
-  it('reconciles and creates a QR sync session when mounted in the idle phase', async () => {
+  it('creates a QR sync session without cancelling another surface when mounted', async () => {
     const store = configureMockStore([thunk])(qrSyncState);
     renderWithProvider(<SyncAccountsSettings />, store);
 
     await waitFor(() => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'QrSyncController:cancelSync',
-        [],
-      );
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'QrSyncController:createSession',
         [],
       );
     });
+    expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+      'QrSyncController:cancelSync',
+      [],
+    );
   });
 
-  it('reconciles and creates a QR sync session when mounted with a stale displaying-qr phase', async () => {
+  it('reuses the active QR sync session when mounted in the displaying-qr phase', async () => {
     const store = configureMockStore([thunk])({
       ...qrSyncState,
       metamask: {
@@ -186,14 +193,34 @@ describe('SyncAccountsSettings', () => {
 
     await waitFor(() => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'QrSyncController:cancelSync',
+        'QrSyncController:createSession',
         [],
       );
+    });
+    expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+      'QrSyncController:cancelSync',
+      [],
+    );
+  });
+
+  it('does not cancel the shared session when another extension surface unmounts', async () => {
+    const store = configureMockStore([thunk])(qrSyncState);
+    const { unmount } = renderWithProvider(<SyncAccountsSettings />, store);
+
+    await waitFor(() => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'QrSyncController:createSession',
         [],
       );
     });
+    mockSubmitRequestToBackground.mockClear();
+
+    unmount();
+
+    expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+      'QrSyncController:cancelSync',
+      [],
+    );
   });
 
   it('renders SyncError when the phase is cancelled', () => {
@@ -235,6 +262,47 @@ describe('SyncAccountsSettings', () => {
     renderWithProvider(<SyncAccountsSettings />, store);
     expect(screen.getByTestId('qr-code-scan')).toBeInTheDocument();
     expect(screen.queryByTestId('sync-error')).not.toBeInTheDocument();
+  });
+
+  it('starts a new session when the displayed QR code expires', async () => {
+    let currentState = qrSyncState;
+    const store = configureMockStore([thunk])(() => currentState);
+    renderWithProvider(<SyncAccountsSettings />, store);
+
+    await waitFor(() => {
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'QrSyncController:createSession',
+        [],
+      );
+    });
+    mockSubmitRequestToBackground.mockClear();
+
+    currentState = {
+      ...qrSyncState,
+      metamask: {
+        ...qrSyncState.metamask,
+        qrSyncPhase: QR_SYNC_PHASES.FAILED,
+        qrSyncQrPayload: null,
+        qrSyncError: {
+          code: QrSyncErrorCodes.QR_EXPIRED,
+          message: 'QR code expired.',
+        },
+      },
+    };
+    act(() => {
+      store.dispatch({ type: 'QR_SYNC_TEST_EXPIRED' });
+    });
+
+    await waitFor(() => {
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'QrSyncController:cancelSync',
+        [],
+      );
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'QrSyncController:createSession',
+        [],
+      );
+    });
   });
 
   it('renders EnterVerificationCode when the phase is failed with an OTP_EXPIRED error', () => {
@@ -321,6 +389,16 @@ describe('SyncAccountsSettings', () => {
         onClick={() =>
           onAddWallets({
             selectedAccountGroupIds: ['entropy:wallet/0'],
+            selectedAccountGroupCounts: { 'entropy:wallet/0': 3 },
+            importSummary: {
+              wallets: [
+                {
+                  id: 'demo-wallet-1',
+                  name: 'Wallet 1',
+                  accounts: [{ id: 'demo-wallet-1/0', name: 'Account 1' }],
+                },
+              ],
+            },
             syncedAccountCount: 1,
             syncedWalletCount: 1,
           })
@@ -344,7 +422,20 @@ describe('SyncAccountsSettings', () => {
     await waitFor(() => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'QrSyncController:syncAccounts',
-        ['test-password', ['entropy:wallet/0']],
+        [
+          'test-password',
+          ['entropy:wallet/0'],
+          { 'entropy:wallet/0': 3 },
+          {
+            wallets: [
+              {
+                id: 'demo-wallet-1',
+                name: 'Wallet 1',
+                accounts: [{ id: 'demo-wallet-1/0', name: 'Account 1' }],
+              },
+            ],
+          },
+        ],
       );
     });
   });
