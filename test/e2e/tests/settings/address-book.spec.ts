@@ -31,7 +31,7 @@ async function mockTokenList(mockServer: Mockttp) {
     });
 }
 
-describe('Address Book TEST', function (this: Suite) {
+describe('Address Book', function (this: Suite) {
   it('Sends to an address book entry', async function () {
     await withFixtures(
       {
