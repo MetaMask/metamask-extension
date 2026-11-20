@@ -67,7 +67,7 @@ export const LEGACY_APIS = {
     newMethodsExplanation:
       'Some controller/service init functions return an `api` object that includes new methods',
     snapshotEntryDescription:
-      'all methods from `api` objects returned by controller/service init functions',
+      'methods from `api` objects returned by controller/service init functions',
   },
   getApiMethods: {
     name: 'getApiMethods',

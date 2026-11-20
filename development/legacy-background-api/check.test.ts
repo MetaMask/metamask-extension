@@ -227,7 +227,7 @@ describe('check', () => {
       [
         '- legacyBackgroundApiServiceMethods (LegacyBackgroundApiService methods):',
         '  - addPermittedAccounts',
-        '- messengerClientApiMethods (all methods from `api` objects returned by controller/service init functions):',
+        '- messengerClientApiMethods (methods from `api` objects returned by controller/service init functions):',
         '  - updateMoneyAccountWithdrawAmount',
         '- getApiMethods (methods from the API object returned by MetamaskController.getApi()):',
         '  - isPublicEndpointUrl',
