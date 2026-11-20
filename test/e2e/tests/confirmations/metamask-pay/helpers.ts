@@ -5,7 +5,6 @@ import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import {
   ACCOUNT_2,
   DEFAULT_FIXTURE_ACCOUNT_ID,
-  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   NETWORK_CLIENT_ID,
 } from '../../../constants';
 import type { Anvil } from '../../../seeder/anvil';
@@ -96,23 +95,10 @@ export function buildMoneyAccountDepositFixture({
   remoteFlagOverrides?: Record<string, Json>;
   moneyFtueSeen?: boolean;
 } = {}) {
-  const accountAddresses = [
-    DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-    ...(withAccount2 ? [ACCOUNT_2.toLowerCase()] : []),
-  ];
   const accountIds = [
     DEFAULT_FIXTURE_ACCOUNT_ID,
     ...(withAccount2 ? [ACCOUNT_2_FIXTURE_ID] : []),
   ];
-  const usdcToken = {
-    address: MAINNET_USDC_ADDRESS,
-    symbol: 'USDC',
-    decimals: 6,
-    isERC721: false,
-    aggregators: [],
-    name: 'USD Coin',
-  };
-
   let builder = new FixtureBuilderV2();
   if (withAccount2) {
     builder = builder
@@ -130,13 +116,6 @@ export function buildMoneyAccountDepositFixture({
     })
     .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
     .withEnabledNetworks({ eip155: { [CHAIN_IDS.MAINNET]: true } })
-    .withTokensController({
-      allTokens: {
-        [CHAIN_IDS.MAINNET]: Object.fromEntries(
-          accountAddresses.map((address) => [address, [usdcToken]]),
-        ),
-      },
-    })
     .withAssetsController({
       customAssets: Object.fromEntries(
         accountIds.map((accountId) => [accountId, [MAINNET_USDC_ASSET_ID]]),

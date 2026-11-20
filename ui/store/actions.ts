@@ -2907,10 +2907,10 @@ export function addImportedTokens(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('TokensController:addTokens', [
-        tokensToImport,
-        networkClientId,
-      ]);
+      await submitRequestToBackground(
+        'LegacyBackgroundApiService:addImportedTokens',
+        [tokensToImport, networkClientId],
+      );
     } catch (error) {
       logErrorWithMessage(error);
     } finally {
@@ -2969,10 +2969,10 @@ export function ignoreTokens({
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('TokensController:ignoreTokens', [
-        _tokensToIgnore,
-        networkClientId,
-      ]);
+      await submitRequestToBackground(
+        'LegacyBackgroundApiService:ignoreTokens',
+        [_tokensToIgnore, networkClientId],
+      );
     } catch (error) {
       logErrorWithMessage(error);
     } finally {
@@ -6108,19 +6108,6 @@ export function estimateGas(params: TransactionParams): Promise<Hex> {
   return submitRequestToBackground('LegacyBackgroundApiService:estimateGas', [
     params,
   ]);
-}
-
-export async function updateTokenType(
-  tokenAddress: string,
-): Promise<Token | undefined> {
-  try {
-    return await submitRequestToBackground('TokensController:updateTokenType', [
-      tokenAddress,
-    ]);
-  } catch (error) {
-    logErrorWithMessage(error);
-  }
-  return undefined;
 }
 
 export async function addPollingTokenToAppState(pollingToken: string) {

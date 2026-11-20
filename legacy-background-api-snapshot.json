@@ -33,6 +33,7 @@
   ],
   "legacyBackgroundApiServiceMethods": [
     "acceptPermissionsRequest",
+    "addImportedTokens",
     "addNetwork",
     "addNewSeedPhraseBackup",
     "addPermittedAccount",
@@ -86,6 +87,7 @@
     "getTrezorFeatures",
     "handleDefiReferral",
     "handleDefiReferralOnPermittedAccountsAdded",
+    "ignoreTokens",
     "importAccountWithStrategy",
     "importMnemonicToVault",
     "isPublicEndpointUrl",
