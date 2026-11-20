@@ -460,7 +460,6 @@
     "useSafeChainsListValidation": true,
     "useTokenDetection": true,
     "useTransactionSimulations": true,
-    "userOperations": "object",
     "userRegion": null,
     "vbaAutorampListFetchedAt": null,
     "vbaCustomerAbilities": null,

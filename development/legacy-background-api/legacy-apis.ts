@@ -1,17 +1,19 @@
 import ts from 'typescript';
-import { getPublicMethodNamesOfLegacyBackgroundApiService } from './legacy-apis/legacy-background-api-service';
 import {
   getOrLoadSourceFile,
   ResolutionContext,
 } from './legacy-apis/module-resolution';
+import { getControllerConnectionApiMemberNames } from './legacy-apis/controller-connection-api';
+import { getPublicMethodNamesOfLegacyBackgroundApiService } from './legacy-apis/legacy-background-api-service';
 
 /**
  * The name of a tracked legacy background API, which is also the key of its
  * snapshot entry.
  */
 export type LegacyApiName =
-  | 'MetamaskController.getApi'
-  | 'LegacyBackgroundApiService';
+  | 'legacyBackgroundApiServiceMethods'
+  | 'getApiMethods'
+  | 'adhocControllerConnectionMethods';
 
 /**
  * Information about a legacy background API.
@@ -22,129 +24,90 @@ export type LegacyApi = {
    */
   name: LegacyApiName;
   /**
-   * The repository-relative path of the file where the API is defined.
+   * Explains, when the API gains methods that are not in the snapshot, where
+   * those methods were added.
    */
-  filePath: string;
+  newMethodsExplanation: string;
   /**
-   * Extracts the names of the API's members from the parsed file.
+   * Describes which methods the snapshot entry lists, shown when the snapshot
+   * refers to methods that the API no longer has.
    */
-  getMemberNames: (
-    sourceFile: ts.SourceFile,
-    context: ResolutionContext,
-  ) => Set<string>;
+  snapshotEntryDescription: string;
 };
 
 /**
+ * The repository-relative path of the file that defines
+ * `LegacyBackgroundApiService`.
+ */
+export const LEGACY_BACKGROUND_API_SERVICE_FILE_PATH =
+  'app/scripts/services/legacy-background-api-service.ts';
+
+/**
+ * The repository-relative path of the file that defines `MetamaskController`.
+ */
+export const METAMASK_CONTROLLER_FILE_PATH =
+  'app/scripts/metamask-controller.js';
+
+/**
  * The APIs tracked by the legacy background API snapshot, keyed by name.
+ *
+ * The controller connection API is split by where each method comes from, so
+ * that the snapshot shows which part of `MetamaskController` exposes it.
  */
 export const LEGACY_APIS = {
-  'MetamaskController.getApi': {
-    name: 'MetamaskController.getApi',
-    filePath: 'app/scripts/metamask-controller.js',
-    getMemberNames: getPropertyNamesOfGetApi,
+  legacyBackgroundApiServiceMethods: {
+    name: 'legacyBackgroundApiServiceMethods',
+    newMethodsExplanation:
+      'New methods have been added to LegacyBackgroundApiService',
+    snapshotEntryDescription: 'LegacyBackgroundApiService methods',
   },
-  LegacyBackgroundApiService: {
-    name: 'LegacyBackgroundApiService',
-    filePath: 'app/scripts/services/legacy-background-api-service.ts',
-    getMemberNames: getPublicMethodNamesOfLegacyBackgroundApiService,
+  getApiMethods: {
+    name: 'getApiMethods',
+    newMethodsExplanation:
+      'New methods have been added to the API object returned by MetamaskController.getApi()',
+    snapshotEntryDescription:
+      'methods from the API object returned by MetamaskController.getApi()',
+  },
+  adhocControllerConnectionMethods: {
+    name: 'adhocControllerConnectionMethods',
+    newMethodsExplanation:
+      'New methods have been directly (or indirectly) added to the API object returned by MetamaskController.setupControllerConnection()',
+    snapshotEntryDescription:
+      'methods directly/indirectly defined in MetamaskController.setupControllerConnection()',
   },
 } as const satisfies Record<LegacyApiName, LegacyApi>;
 
 /**
- * Reads the current names of a legacy API's members from the working tree.
+ * Reads the current names of every legacy API's members from the working tree.
  *
- * @param legacyApi - The API to inspect.
- * @returns The names of the members currently exposed by the API.
+ * Several APIs are extracted from the same file, so each file is analyzed once
+ * and split into its APIs, and parsed files are shared across all of them.
+ *
+ * @returns The names of the members currently exposed by each API.
  */
-export function readApiMemberNames(legacyApi: LegacyApi): Set<string> {
+export function readApiMemberNames(): Record<LegacyApiName, Set<string>> {
   const context = {
     sourceFilesByPath: new Map<string, ts.SourceFile>(),
+    nodesBeingResolved: new Set<ts.Node>(),
   } satisfies ResolutionContext;
-  const sourceFile = getOrLoadSourceFile(context, legacyApi.filePath);
-
-  return legacyApi.getMemberNames(sourceFile, context);
-}
-
-/**
- * Extracts the names of the properties of the object that
- * `MetamaskController.getApi` returns.
- *
- * @param sourceFile - The parsed file that defines `MetamaskController`.
- * @returns The names of the properties.
- */
-function getPropertyNamesOfGetApi(sourceFile: ts.SourceFile): Set<string> {
-  // EXAMPLE:
-  // class MetamaskController { ... }
-  // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  const controller = sourceFile.statements.find(
-    (statement): statement is ts.ClassDeclaration =>
-      ts.isClassDeclaration(statement) &&
-      statement.name?.text === 'MetamaskController',
+  const legacyBackgroundApiServiceSourceFile = getOrLoadSourceFile(
+    context,
+    LEGACY_BACKGROUND_API_SERVICE_FILE_PATH,
   );
-  if (!controller) {
-    throw new Error('MetamaskController was not found');
-  }
-
-  // EXAMPLE (each member of the class):
-  // class MetamaskController extends EventEmitter {
-  //   constructor(opts) { ... }
-  //   ^^^^^^^^^^^^^^^^^^^^^^^^^
-  //   getApi() { ... }
-  //   ^^^^^^^^^^^^^^^^
-  // }
-  const method = controller.members.find(
-    (member): member is ts.MethodDeclaration =>
-      ts.isMethodDeclaration(member) &&
-      member.name.getText(sourceFile) === 'getApi',
+  const metamaskControllerSourceFile = getOrLoadSourceFile(
+    context,
+    METAMASK_CONTROLLER_FILE_PATH,
   );
-  if (!method?.body) {
-    throw new Error('MetamaskController.getApi was not found');
-  }
 
-  // EXAMPLE:
-  // return { setTheme: ..., addToken: ... };
-  // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  const returnStatements = method.body.statements.filter(ts.isReturnStatement);
-  if (returnStatements.length > 1) {
-    throw new Error(
-      'MetamaskController.getApi has more than one return statement',
-    );
-  }
-
-  const returnStatement = returnStatements[0];
-  if (
-    !returnStatement?.expression ||
-    !ts.isObjectLiteralExpression(returnStatement.expression)
-  ) {
-    throw new Error(
-      'MetamaskController.getApi does not return an object literal',
-    );
-  }
-
-  const returnedObject = returnStatement.expression;
-
-  const names = new Set<string>();
-  // EXAMPLE (each property of the returned object):
-  // return {
-  //   setTheme: preferencesController.setTheme.bind(preferencesController),
-  //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  //   setParticipateInMetaMetrics,
-  //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  //   ...this.otherApi,
-  //   ^^^^^^^^^^^^^^^^
-  // };
-  for (const property of returnedObject.properties) {
-    // EXAMPLE:
-    // ...this.otherApi,
-    // ^^^^^^^^^^^^^^^^
-    // A spread has no name of its own, so its source text is used instead.
-    if (ts.isSpreadAssignment(property)) {
-      names.add(property.getText(sourceFile));
-      continue;
-    }
-
-    names.add(property.name.getText(sourceFile));
-  }
-
-  return names;
+  return {
+    legacyBackgroundApiServiceMethods:
+      getPublicMethodNamesOfLegacyBackgroundApiService(
+        legacyBackgroundApiServiceSourceFile,
+        context,
+      ),
+    ...getControllerConnectionApiMemberNames(
+      metamaskControllerSourceFile,
+      context,
+    ),
+  };
 }
