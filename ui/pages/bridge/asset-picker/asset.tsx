@@ -75,7 +75,13 @@ export const BridgeAsset = React.forwardRef(
         backgroundColor={
           selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent
         }
-        className={`cursor-pointer bridge-asset${selected ? '--selected' : ''}`}
+        // `:has(...)` keeps the row background unchanged while the info icon
+        // is hovered, matching the previous `.bridge-asset` SCSS rule.
+        className={
+          selected
+            ? 'cursor-pointer'
+            : 'cursor-pointer [&:hover:not(:has(.bridge-asset-info-icon:hover))]:bg-default-hover'
+        }
         height={BlockSize.Max}
         width={BlockSize.Full}
         data-testid={`bridge-asset--${asset.assetId}`}
