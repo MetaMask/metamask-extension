@@ -223,12 +223,11 @@ Use the rules in the [front-end-performance-rendering](rules/front-end-performan
 
 Use the rules in the [front-end-performance-state-management](rules/front-end-performance-state-management/RULE.md) to enforce the test quality and bug detection.
 
-### 6. UI Review — MMDS & Content Guidelines (EXPERIMENT SECTION — DO NOT MERGE)
+### 6. UI Review — source-attribution experiment (ROUND 2 — DO NOT MERGE)
 
-> This section is part of a Bugbot experiment, not a permanent rule. It tests
-> whether Bugbot reads this file (`.cursor/BUGBOT.md`) from a PR's **base
-> branch**: it exists on the experiment branch, not on `main`. See the
-> experiment PR description for the test plan.
+> This section is part of a Bugbot experiment, not a permanent rule. It exists
+> on the experiment branch only, not on `main`. See the experiment PR
+> description for context. Do not merge experiment-only changes.
 
 #### When to apply
 
@@ -239,37 +238,38 @@ Apply this section when the diff touches any of:
 - Tailwind `className` usage
 - imports from `ui/components/component-library` or `@metamask/design-system-react`
 
-#### UI rules
+#### Sources to consult, in this order
 
-1. Prefer MetaMask Design System (MMDS) components from
-   `@metamask/design-system-react` over `ui/components/component-library` and
-   over raw HTML / `Box` hacks. If a `component-library` import has an MMDS
-   equivalent (including deprecated `component-library` components), flag it
-   and suggest the MMDS component.
-2. Use design tokens / Tailwind classes from the MMDS preset. Flag hardcoded
-   colours (hex, rgb, named) and hardcoded px-based spacing.
-3. User-facing copy must follow MetaMask content guidelines: sentence case,
-   clear, concise, no jargon. Flag Title Case strings and jargon.
-4. Flag new usage of deprecated `component-library` components.
+For every changed UI file, consult these sources before reporting:
 
-#### Canary tags (REQUIRED for this experiment)
+1. **MetaMask/skills v0.4.0 (commit `12753ca099ebe66edfdec57cd97664fbd82df93e`)** —
+   fetch these raw files and follow the UI rules written in them:
+   - UI development rules:
+     https://raw.githubusercontent.com/MetaMask/skills/12753ca099ebe66edfdec57cd97664fbd82df93e/domains/ui/skills/ui-development/skill.md
+   - Content/copy rules:
+     https://raw.githubusercontent.com/MetaMask/skills/12753ca099ebe66edfdec57cd97664fbd82df93e/domains/ui/skills/content-guidelines/skill.md
+2. **MMDS component contract** — check every `@metamask/design-system-react`
+   component, prop, and enum value in the diff against the Storybook
+   components manifest:
+   https://metamask.github.io/metamask-design-system/manifests/components.json
+   and against the installed type definitions under
+   `node_modules/@metamask/design-system-react/dist/components/`.
+3. **Design Brain** (Notion, the "Lessons & Rules" database, Active rules
+   only) — fallback source for anything the sources above do not cover.
 
-- If you apply these rules, start **every** UI finding with the tag
-  `[MMDS-RULES]`.
-- If you loaded reference link 1 (the in-repo file), also include
-  `[IN-REPO-LINK]` in findings it informed.
-- If you fetched reference link 2 (the GitHub blob URL), also include
-  `[GITHUB-BLOB-LINK]`.
-- If you fetched reference link 3 (the raw.githubusercontent.com URL), also
-  include `[RAW-LINK]`.
+#### Source tags (required on every finding)
 
-In verbose output, state which of the three reference links you actually
-loaded (all / some / none), next to their labels.
+Prefix EVERY UI finding with exactly the source tag(s) for where the rule,
+prop fact, or manifest entry came from, and quote or cite the specific rule,
+prop doc, or manifest entry you relied on:
 
-#### Reference files to load for UI reviews (each labeled)
+- `[SRC:SKILLS-UI]` — a rule from the skills ui-development file
+- `[SRC:SKILLS-CONTENT]` — a rule from the skills content-guidelines file
+- `[SRC:MANIFEST]` — a component, prop, or enum fact from the MMDS manifest
+  or the installed `@metamask/design-system-react` types
+- `[SRC:DESIGN-BRAIN]` — an Active rule from Design Brain (Notion)
+- `[SRC:BUGBOT-MD]` — a rule stated in this file itself
+- `[SRC:OTHER]` — anything else (state what it was)
 
-1. `[IN-REPO]` In-repo condensed UI guide: `.cursor/bugbot/ui-development.md`
-   (path relative to the repository root; the file exists on this branch, not
-   on `main`).
-2. `[GITHUB-BLOB]` https://github.com/MetaMask/skills/blob/main/domains/ui/skills/ui-development/skill.md
-3. `[RAW]` https://raw.githubusercontent.com/MetaMask/skills/main/domains/ui/skills/content-guidelines/skill.md
+If a finding rests on more than one source, list every tag that applies. If
+you could not load or consult a source, say so explicitly.

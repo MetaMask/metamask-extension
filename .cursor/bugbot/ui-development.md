@@ -1,8 +1,7 @@
-<!-- CANARY: This file exists to test whether Bugbot follows the in-repo link
-from `.cursor/BUGBOT.md`. If these rules inform a finding, include the tag
-`[IN-REPO-LINK]` in that finding so we can tell this file was loaded.
-Condensed from:
-https://github.com/MetaMask/skills/blob/main/domains/ui/skills/ui-development/skill.md -->
+<!-- Condensed from MetaMask/skills v0.4.0 (commit 12753ca099ebe66edfdec57cd97664fbd82df93e):
+https://raw.githubusercontent.com/MetaMask/skills/12753ca099ebe66edfdec57cd97664fbd82df93e/domains/ui/skills/ui-development/skill.md
+Reference copy only; it is not linked from `.cursor/BUGBOT.md` in the
+round-2 experiment, so findings can be attributed to their real source. -->
 
 # MetaMask UI Development — MMDS Guidance (condensed, in-repo)
 
@@ -102,4 +101,4 @@ the migration is deleting the `Legacy*` import and its usages.
 
 User-facing strings follow the MetaMask content guidelines (sentence case,
 clear, no jargon): see
-https://raw.githubusercontent.com/MetaMask/skills/main/domains/ui/skills/content-guidelines/skill.md
+https://raw.githubusercontent.com/MetaMask/skills/12753ca099ebe66edfdec57cd97664fbd82df93e/domains/ui/skills/content-guidelines/skill.md
