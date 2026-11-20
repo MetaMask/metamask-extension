@@ -140,7 +140,11 @@ export function useRampsProviders(options?: {
     ) {
       return;
     }
-    selectRampsProviderForAsset(selectedTokenAssetId ?? null, pickerOptions);
+    // A failed pick keeps the current selection; the next trigger picks again.
+    selectRampsProviderForAsset(
+      selectedTokenAssetId ?? null,
+      pickerOptions,
+    ).catch(() => undefined);
     // The token is read, not watched: the Buy screen picks on token changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
