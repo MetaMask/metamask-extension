@@ -8,7 +8,10 @@ import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
 import { createInternalTransaction } from '../../../page-objects/flows/transaction.flow';
 import { Driver } from '../../../webdriver/driver';
-import { buildLongTaskTimerResults } from '../../utils/long-task-helper';
+import {
+  buildLongTaskTimerResults,
+  toLongTaskStepResult,
+} from '../../utils/long-task-helper';
 import {
   BENCHMARK_PERSONA,
   BENCHMARK_TYPE,
@@ -59,15 +62,9 @@ export async function run(): Promise<BenchmarkRunResult> {
           timestampAfterAction.getTime() - timestampBeforeAction.getTime();
 
         const longTaskData = await driver.collectLongTaskMetrics();
-        steps.push({
-          id: 'confirm_tx',
-          duration: loadingTimes,
-          longTaskCount: longTaskData?.count ?? 0,
-          longTaskTotalDuration: longTaskData?.totalDuration ?? 0,
-          longTaskMaxDuration: longTaskData?.maxDuration ?? 0,
-          tbt: longTaskData?.tbt ?? 0,
-          longTasksObserved: longTaskData?.observed ?? false,
-        });
+        steps.push(
+          toLongTaskStepResult('confirm_tx', loadingTimes, longTaskData),
+        );
 
         try {
           webVitals = await collectWebVitals(driver);
