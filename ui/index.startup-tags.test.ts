@@ -29,6 +29,7 @@ jest.mock('react-dom/client', () => ({
 }));
 
 jest.mock('./pages', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => null,
   router: {},
