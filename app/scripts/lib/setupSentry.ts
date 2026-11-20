@@ -17,7 +17,7 @@ import { getSentryRelease } from '../../../shared/lib/sentry-release';
 import { applySentryRemoteRates } from '../../../shared/lib/sentry-remote-rates';
 import {
   trackDocumentRouteTrace,
-  trackBackgroundPageloadEnd,
+  trackBackgroundPageload,
 } from '../../../shared/lib/trace';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { metaMetricsIntegration } from './sentry-metametrics';
@@ -367,7 +367,7 @@ function setSentryClient(): true {
 
   Sentry.registerSpanErrorInstrumentation();
   Sentry.init(clientOptions);
-  trackBackgroundPageloadEnd(Sentry.getClient());
+  trackBackgroundPageload(Sentry.getClient());
   trackDocumentRouteTrace(Sentry.getClient());
 
   // Apply remote-flag sample-rate overrides once, post-init; compile-time
