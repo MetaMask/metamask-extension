@@ -22,7 +22,7 @@ import { withReferralCode } from './referral';
 
 const ORIGIN = 'https://link.metamask.io';
 
-let privateKey: CryptoKey;
+let privateKey: webcrypto.CryptoKey;
 
 async function signString(value: string): Promise<string> {
   const signature = await webcrypto.subtle.sign(
