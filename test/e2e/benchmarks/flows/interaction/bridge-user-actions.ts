@@ -8,7 +8,7 @@ import { Key } from 'selenium-webdriver';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
-import BridgeQuotePage from '../../../page-objects/pages/bridge/quote-page';
+import SwapAssetPickerPage from '../../../page-objects/pages/swap/swap-asset-picker-page';
 import SwapPage from '../../../page-objects/pages/swap/swap-page';
 import {
   DEFAULT_BRIDGE_FEATURE_FLAGS,
@@ -43,6 +43,10 @@ import type {
 
 export const testTitle = 'benchmark-user-actions-bridge-user-actions';
 export const persona = BENCHMARK_PERSONA.STANDARD;
+
+// `SwapPage` keeps this selector private; the step waits for the button
+// outside its timers.
+const SOURCE_ASSET_PICKER_BUTTON = '[data-testid="bridge-source-button"]';
 
 const FXS_ADDRESS = MOCK_TOKENS_ETHEREUM.find(
   (token) => token.symbol === 'FXS',
@@ -168,7 +172,7 @@ export async function run(): Promise<BenchmarkRunResult> {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
-        const quotePage = new BridgeQuotePage(driver);
+        const assetPickerPage = new SwapAssetPickerPage(driver);
 
         // Wait for the input's target and clear the search field before the
         // timer starts, so it holds only the input and the page's response.
@@ -208,7 +212,7 @@ export async function run(): Promise<BenchmarkRunResult> {
         // Measure: source asset button to the asset picker's search field.
         // With `BENCHMARK_PAGE_IDLE_BEFORE_STEP=1` the step starts once the
         // swap page has gone idle, outside both timers.
-        await driver.findClickableElement(quotePage.sourceAssetPickerButton);
+        await driver.findClickableElement(SOURCE_ASSET_PICKER_BUTTON);
         await waitForPageIdleBeforeStep(driver);
         const assetPickerProbe = await startInPageStep(
           driver,
@@ -217,8 +221,8 @@ export async function run(): Promise<BenchmarkRunResult> {
         );
         await driver.resetLongTaskMetrics();
         const timestampBeforeClickAssetPicker = new Date();
-        await driver.clickElement(quotePage.sourceAssetPickerButton);
-        await driver.waitForSelector(quotePage.assetPrickerSearchInput);
+        await driver.clickElement(SOURCE_ASSET_PICKER_BUTTON);
+        await driver.waitForSelector(assetPickerPage.searchInput);
         const timestampAfterClickAssetPicker = new Date();
         loadAssetPicker =
           timestampAfterClickAssetPicker.getTime() -
@@ -246,7 +250,7 @@ export async function run(): Promise<BenchmarkRunResult> {
         // cannot match the symbol text the step timer waits on.
         const tokenToSearch = 'FXS';
         const searchInput = await driver.findElement(
-          quotePage.assetPrickerSearchInput,
+          assetPickerPage.searchInput,
         );
         if ((await searchInput.getAttribute('value')) !== '') {
           await searchInput.sendKeys(
@@ -257,17 +261,17 @@ export async function run(): Promise<BenchmarkRunResult> {
           FXS_ADDRESS !== undefined &&
           (await startInPageStep(driver, 'bridge_search_token', {
             endSelector: `[data-testid^="bridge-asset--"][data-testid$="${FXS_ADDRESS}" i]`,
-            startWithin: quotePage.assetPrickerSearchInput,
+            startWithin: assetPickerPage.searchInput,
             typedOnly: true,
           }));
         await driver.resetLongTaskMetrics();
         const timestampBeforeTokenSearch = new Date();
         await (
-          await driver.findElement(quotePage.assetPrickerSearchInput)
+          await driver.findElement(assetPickerPage.searchInput)
         ).sendKeys(tokenToSearch);
         await driver.waitForSelector({
           text: tokenToSearch,
-          css: quotePage.tokenButton,
+          css: assetPickerPage.tokenButton,
         });
         const timestampAfterTokenSearch = new Date();
         searchToken =
