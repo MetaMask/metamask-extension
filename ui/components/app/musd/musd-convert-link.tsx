@@ -9,6 +9,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import {
+  ButtonHero,
   FontWeight,
   Text,
   TextColor,
@@ -153,23 +154,37 @@ export const MusdConvertLink = ({
   );
 
   return (
-    <button
-      type="button"
-      onClick={handleClick}
-      disabled={isLoading}
-      data-testid={`musd-convert-link-${chainId}`}
-      className="musd-convert-link"
-    >
-      <Text
-        variant={TextVariant.BodySm}
-        color={TextColor.PrimaryDefault}
-        fontWeight={FontWeight.Medium}
-        data-testid="musd-convert-link-text"
-        style={isLoading ? { opacity: 0.5 } : undefined}
+    <>
+      <button
+        type="button"
+        onClick={handleClick}
+        disabled={isLoading}
+        data-testid={`musd-convert-link-${chainId}`}
+        className="musd-convert-link"
       >
-        {displayText}
+        <Text
+          variant={TextVariant.BodySm}
+          color={TextColor.PrimaryDefault}
+          fontWeight={FontWeight.Medium}
+          data-testid="musd-convert-link-text"
+          style={isLoading ? { opacity: 0.5 } : undefined}
+        >
+          {displayText}
+        </Text>
+      </button>
+      {/* BUGBOT experiment canary (round 2). See the PR description. DO NOT MERGE. */}
+      <ButtonHero onClick={() => undefined}>{displayText}</ButtonHero>
+      <Text variant={TextVariant.BodySm} color={TextColor.PrimaryDefault}>
+        {t('bugbotCanaryPleaseCopy')}
       </Text>
-    </button>
+      <div
+        className="grid grid-cols-2 gap-3"
+        data-testid="musd-convert-link-canary-grid"
+      >
+        <div className="h-6 w-6 rounded-lg bg-primary-default" />
+        <div className="h-6 w-6 rounded-lg bg-primary-default" />
+      </div>
+    </>
   );
 };
 

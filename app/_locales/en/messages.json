@@ -2640,6 +2640,10 @@
   "browserNotSupported": {
     "message": "Your browser is not supported..."
   },
+  "bugbotCanaryPleaseCopy": {
+    "message": "Please wait a moment.",
+    "description": "BUGBOT experiment canary: do not translate or merge."
+  },
   "busy": {
     "message": "Busy"
   },
