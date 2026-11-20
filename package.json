@@ -900,6 +900,7 @@
       "eslint-plugin-import-x>unrs-resolver#1.12.2": false,
       "@storybook/test-runner>@swc/core#1.16.1": true,
       "@metamask/platform-api-docs>@docusaurus/core>core-js#3.50.0": false,
+      "@metamask/notification-services-controller>firebase>@firebase/util#1.15.3": false,
       "@swc/core#1.16.2": true
     }
   },
