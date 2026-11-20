@@ -671,6 +671,7 @@
     "@sentry/node": "10.38.0",
     "@slack/types": "^2.14.0",
     "@slack/webhook": "^7.0.5",
+    "@stellar/stellar-sdk": "^13.3.0",
     "@storybook/addon-a11y": "9.1.21",
     "@storybook/addon-docs": "9.1.21",
     "@storybook/addon-webpack5-compiler-babel": "^4.0.0",

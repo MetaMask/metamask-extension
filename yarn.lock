@@ -34813,6 +34813,7 @@ __metadata:
     "@slack/types": "npm:^2.14.0"
     "@slack/webhook": "npm:^7.0.5"
     "@solana/addresses": "npm:2.0.0-rc.4"
+    "@stellar/stellar-sdk": "npm:^13.3.0"
     "@storybook/addon-a11y": "npm:9.1.21"
     "@storybook/addon-docs": "npm:9.1.21"
     "@storybook/addon-webpack5-compiler-babel": "npm:^4.0.0"

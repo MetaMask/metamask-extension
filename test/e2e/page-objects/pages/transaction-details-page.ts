@@ -140,6 +140,15 @@ class TransactionDetailsPage {
     await this.waitForDetailsRouteToClose();
   }
 
+  /**
+   * Clicks the details back button when present, without waiting for the `/tx/`
+   * route to clear. Use from a flow that then navigates via bottom nav —
+   * waiting on `!url.includes('/tx/')` is flaky for some CAIP chain ids.
+   */
+  async clickBackButtonIfPresentWithoutRouteWait(): Promise<void> {
+    await this.driver.clickElementSafe(this.backButton, 1_000);
+  }
+
   private async waitForDetailsRouteToClose(): Promise<void> {
     await this.driver.waitUntil(
       async () => !(await this.driver.getCurrentUrl()).includes('/tx/'),
