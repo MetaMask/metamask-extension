@@ -242,6 +242,12 @@ jobs:
       - name: Checkout quality-gate sources
         uses: actions/checkout@v6
         with:
+          # Compile the gate from the pull request's base commit, so a pull
+          # request cannot change the thresholds or gated-metric list that judge
+          # it, and a re-run is judged by the same base its build was merged
+          # onto. Other events have no pull_request and check out the triggering
+          # commit, as before.
+          ref: ${{ github.event.pull_request.base.sha || github.sha }}
           sparse-checkout: |
             .nvmrc
             tsconfig.json
