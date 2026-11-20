@@ -20,10 +20,7 @@ import * as SendType from '../../../hooks/send/useSendType';
 import * as SendContext from '../../../context/send';
 import { Amount } from './amount';
 
-const render = (
-  args?: Record<string, unknown>,
-  mockAmountError = undefined,
-) => {
+const render = (args?: Record<string, unknown>, mockAmountError?: string) => {
   const store = configureStore(args ?? mockState);
 
   return renderWithProvider(<Amount amountError={mockAmountError} />, store);
