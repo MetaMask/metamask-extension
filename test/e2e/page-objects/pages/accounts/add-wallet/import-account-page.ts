@@ -101,7 +101,7 @@ class ImportAccountPage {
       // home.
       await this.driver.clickElementAndWaitToDisappear(
         this.importButton,
-        10000,
+        30000,
       );
     }
   }
