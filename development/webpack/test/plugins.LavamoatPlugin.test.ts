@@ -160,6 +160,27 @@ describe('LavamoatPlugin', () => {
       );
     });
 
+    it('excepts URL from scuttling in the UI and the service worker', () => {
+      // Sentry's `shouldAttachHeaders` runs `new URL(target, location.href)` in
+      // pages (not in the service worker); scuttled, it throws and the fetch
+      // goes out with no trace headers.
+      const sw = runtimeConfig(mockChunk('service-worker.ts')) as {
+        embeddedOptions?: { scuttleGlobalThis?: { exceptions: unknown[] } };
+      };
+      assert.ok(
+        sw.embeddedOptions?.scuttleGlobalThis?.exceptions.includes('URL'),
+      );
+      const globalExceptions = (
+        plugin.options as unknown as {
+          scuttleGlobalThis: { exceptions: unknown[] };
+        }
+      ).scuttleGlobalThis.exceptions;
+      assert.ok(
+        globalExceptions.includes('URL'),
+        'URL must be in the page scuttling exceptions, or UI fetches get no trace headers',
+      );
+    });
+
     it('keeps null_unsafe mode for inpage.js and bootstrap (no LavaMoat runtime needed)', () => {
       for (const name of ['scripts/inpage.js', 'bootstrap']) {
         const result = runtimeConfig(mockChunk(name)) as { mode: string };
