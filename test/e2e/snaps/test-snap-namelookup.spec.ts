@@ -8,7 +8,8 @@ import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockLookupSnap } from '../mock-response-data/snaps/snap-binary-mocks';
-import SendPage from '../page-objects/pages/send/send-page';
+import SendAmountRecipientPage from '../page-objects/pages/send/send-amount-recipient-page';
+import SendAssetPickerPage from '../page-objects/pages/send/send-asset-picker-page';
 import { mockSpotPrices } from '../tests/tokens/utils/mocks';
 
 async function mockTokensApiSupportedNetworks(mockServer: Mockttp) {
@@ -95,7 +96,7 @@ describe('Name lookup', function () {
         await login(driver);
 
         const homePage = new HomePage(driver);
-        const sendPage = new SendPage(driver);
+        const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
 
         // Open a new tab and navigate to test snaps page and click name lookup
         await openTestSnapClickButtonAndInstall(
@@ -108,8 +109,11 @@ describe('Name lookup', function () {
         // Navigate to the extension home page and validate the recipient address in the send flow
         await homePage.startSendFlow();
 
-        await sendPage.selectToken('0x1', 'ETH');
-        await sendPage.fillRecipient({ recipientAddress: 'metamask.domain' });
+        const sendAssetPickerPage = new SendAssetPickerPage(driver);
+        await sendAssetPickerPage.selectToken('0x1', 'ETH');
+        await sendAmountRecipientPage.fillRecipient({
+          recipientAddress: 'metamask.domain',
+        });
 
         // End of the resolved address. The start is shortened to fit.
         await driver.findElement({ text: '10F9d54979' });

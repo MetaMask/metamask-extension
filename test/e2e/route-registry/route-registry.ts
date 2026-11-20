@@ -15,6 +15,11 @@
  * plain strings on purpose so renaming or removing a route never breaks the
  * build; route-registry.test.ts fails instead and lists the paths to fix.
  *
+ * When a dynamic segment picks which screen a route renders (e.g. the `:page`
+ * of `/send/:page?`), mark the route `NOT_A_SCREEN` and list each screen under
+ * the concrete path the app navigates to (e.g. `/send/asset`). Only these
+ * paths may be missing from `ROUTES`, so check them against the app.
+ *
  * When you add, rename or remove a route, update this registry too: use its
  * page object if there is one, `NOT_A_SCREEN` if it renders no screen of its
  * own, otherwise `null`.
@@ -78,7 +83,8 @@ import { PerpsWithdrawPage } from '../page-objects/pages/perps/perps-withdraw-pa
 import RevealSrpPage from '../page-objects/pages/reveal-srp-page';
 import RewardsPage from '../page-objects/pages/rewards/rewards-page';
 import DeepLink from '../page-objects/pages/security/deep-link-page';
-import SendPage from '../page-objects/pages/send/send-page';
+import SendAmountRecipientPage from '../page-objects/pages/send/send-amount-recipient-page';
+import SendAssetPickerPage from '../page-objects/pages/send/send-asset-picker-page';
 import AboutPage from '../page-objects/pages/settings/about-page';
 import AccountIdenticonSettings from '../page-objects/pages/settings/preferences-and-display/account-identicon-settings';
 import AssetsSettings from '../page-objects/pages/settings/assets-settings';
@@ -120,7 +126,8 @@ export type PageObjectClass = new (driver: Driver) => object;
 
 /**
  * Marks a route that never renders a screen of its own, so it needs no page
- * object: it redirects, runs an action, or only hosts nested routes.
+ * object: it redirects, runs an action, only hosts nested routes, or lists
+ * its screens under concrete paths.
  */
 export const NOT_A_SCREEN = 'not-a-screen';
 
@@ -206,7 +213,10 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/ramps/buy-interstitial': null,
 
   // Send, swap and bridge
-  '/send/:page?': SendPage,
+  '/send/:page?': NOT_A_SCREEN,
+  '/send/asset': SendAssetPickerPage,
+  '/send/amount-recipient': SendAmountRecipientPage,
+  '/send/loader': NOT_A_SCREEN,
   '/cross-chain/swaps/prepare-bridge-page': SwapPage,
   '/cross-chain/swaps/prepare-bridge-page/assets': SwapAssetPickerPage,
   '/swaps/awaiting-signatures': null,

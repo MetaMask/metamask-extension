@@ -8,7 +8,8 @@ import SnapTransactionConfirmation from '../../../page-objects/pages/confirmatio
 import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
-import SendPage from '../../../page-objects/pages/send/send-page';
+import SendAmountRecipientPage from '../../../page-objects/pages/send/send-amount-recipient-page';
+import SendAssetPickerPage from '../../../page-objects/pages/send/send-asset-picker-page';
 import {
   TRON_CHAIN_ID,
   TRON_RECIPIENT_ADDRESS,
@@ -48,18 +49,19 @@ describe('Tron Send', function (this: Suite) {
         await tokensTab.checkExpectedTokenBalanceIsDisplayed('6.072', 'TRX');
 
         await homePage.startSendFlow();
-        const sendPage = new SendPage(driver);
-        await sendPage.selectToken(TRON_CHAIN_ID, 'TRX');
-        await sendPage.checkSendFormIsLoaded();
+        const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
+        const sendAssetPickerPage = new SendAssetPickerPage(driver);
+        await sendAssetPickerPage.selectToken(TRON_CHAIN_ID, 'TRX');
+        await sendAmountRecipientPage.checkPageIsLoaded();
 
-        await sendPage.fillRecipient({
+        await sendAmountRecipientPage.fillRecipient({
           recipientAddress: TRON_RECIPIENT_ADDRESS,
         });
         const sendAmount = formatSunAmount(
           TRON_PORTFOLIO_TRX_BALANCE_IN_SUN - TRON_SEND_FEE_BUFFER_IN_SUN,
         );
-        await sendPage.fillAmount(sendAmount);
-        await sendPage.pressContinueButton();
+        await sendAmountRecipientPage.fillAmount(sendAmount);
+        await sendAmountRecipientPage.pressContinueButton();
 
         const snapConfirmation = new SnapTransactionConfirmation(driver);
         await snapConfirmation.checkPageIsLoaded();

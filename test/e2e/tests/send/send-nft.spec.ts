@@ -15,7 +15,7 @@ import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import NFTDetailsPage from '../../page-objects/pages/asset/nft-details-page';
 import NftsTab from '../../page-objects/pages/home/nfts-tab';
-import SendPage from '../../page-objects/pages/send/send-page';
+import SendAmountRecipientPage from '../../page-objects/pages/send/send-amount-recipient-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/token-transfer-confirmation';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
@@ -156,11 +156,11 @@ describe('Send NFT', function () {
             const nftDetailsPage = new NFTDetailsPage(driver);
             await nftDetailsPage.clickNFTSendButton();
 
-            const sendPage = new SendPage(driver);
-            await sendPage.fillRecipient({
+            const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
+            await sendAmountRecipientPage.fillRecipient({
               recipientAddress: DEFAULT_RECIPIENT,
             });
-            await sendPage.pressContinueButton();
+            await sendAmountRecipientPage.pressContinueButton();
 
             const tokenTransferConfirmation =
               new TokenTransferTransactionConfirmation(driver);
@@ -308,13 +308,13 @@ describe('Send NFT', function () {
             await nftDetailsPage.checkPageIsLoaded();
             await nftDetailsPage.clickNFTSendButton();
 
-            const sendPage = new SendPage(driver);
-            await sendPage.checkSendFormIsLoaded();
-            await sendPage.fillRecipient({
+            const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
+            await sendAmountRecipientPage.checkPageIsLoaded();
+            await sendAmountRecipientPage.fillRecipient({
               recipientAddress: DEFAULT_RECIPIENT,
             });
-            await sendPage.fillAmount('1');
-            await sendPage.pressContinueButton();
+            await sendAmountRecipientPage.fillAmount('1');
+            await sendAmountRecipientPage.pressContinueButton();
 
             const tokenTransferConfirmation =
               new TokenTransferTransactionConfirmation(driver);

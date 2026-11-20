@@ -3,9 +3,127 @@ import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../pages/home/homepage';
 import TestDappIndividualRequest from '../pages/test-dapp-individual-request';
-import SendPage from '../pages/send/send-page';
+import SendAmountRecipientPage from '../pages/send/send-amount-recipient-page';
+import SendAssetPickerPage from '../pages/send/send-asset-picker-page';
 import SnapSimpleKeyringPage from '../pages/snaps/simple-keyring-page';
 import TransactionConfirmation from '../pages/confirmations/transaction-confirmation';
+
+/**
+ * Picks the asset on the send asset picker, then sets the recipient on the
+ * send form.
+ *
+ * @param params - An object containing the parameters.
+ * @param params.driver - The webdriver instance.
+ * @param params.chainId - The chain ID of the asset to send.
+ * @param params.symbol - The symbol of the asset to send.
+ * @param params.recipientAddress - The recipient address to paste.
+ * @param params.recipientName - The account to pick from the recipient modal.
+ * @returns The send form page object.
+ */
+const selectAssetAndRecipient = async ({
+  driver,
+  chainId,
+  symbol,
+  recipientAddress,
+  recipientName,
+}: {
+  driver: Driver;
+  chainId: string;
+  symbol: string;
+  recipientAddress?: string;
+  recipientName?: string;
+}): Promise<SendAmountRecipientPage> => {
+  await new SendAssetPickerPage(driver).selectToken(chainId, symbol);
+  const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
+  if (recipientAddress) {
+    await sendAmountRecipientPage.fillRecipient({ recipientAddress });
+  }
+  if (recipientName) {
+    await sendAmountRecipientPage.selectAccountFromRecipientModal(
+      recipientName,
+    );
+  }
+  return sendAmountRecipientPage;
+};
+
+/**
+ * Creates a send request from the send asset picker through Continue.
+ *
+ * @param params - An object containing the parameters.
+ * @param params.driver - The webdriver instance.
+ * @param params.chainId - The chain ID of the asset to send.
+ * @param params.symbol - The symbol of the asset to send.
+ * @param params.recipientAddress - The recipient address to paste.
+ * @param params.recipientName - The account to pick from the recipient modal.
+ * @param params.amount - The amount to send.
+ */
+const createSendRequest = async ({
+  driver,
+  chainId,
+  symbol,
+  recipientAddress,
+  recipientName,
+  amount = '0',
+}: {
+  driver: Driver;
+  chainId: string;
+  symbol: string;
+  recipientAddress?: string;
+  recipientName?: string;
+  amount?: string;
+}): Promise<void> => {
+  console.log('Creating send request');
+  const sendAmountRecipientPage = await selectAssetAndRecipient({
+    driver,
+    chainId,
+    symbol,
+    recipientAddress,
+    recipientName,
+  });
+  await sendAmountRecipientPage.fillAmount(amount);
+  await sendAmountRecipientPage.checkAmountInputValue(amount);
+  await sendAmountRecipientPage.waitForSendAmountBalance();
+  await sendAmountRecipientPage.checkContinueButton({ state: 'enabled' });
+  await sendAmountRecipientPage.pressContinueButton();
+};
+
+/**
+ * Creates a send request for the max amount from the send asset picker
+ * through Continue.
+ *
+ * @param params - An object containing the parameters.
+ * @param params.driver - The webdriver instance.
+ * @param params.chainId - The chain ID of the asset to send.
+ * @param params.symbol - The symbol of the asset to send.
+ * @param params.recipientAddress - The recipient address to paste.
+ * @param params.recipientName - The account to pick from the recipient modal.
+ */
+const createMaxSendRequest = async ({
+  driver,
+  chainId,
+  symbol,
+  recipientAddress,
+  recipientName,
+}: {
+  driver: Driver;
+  chainId: string;
+  symbol: string;
+  recipientAddress?: string;
+  recipientName?: string;
+}): Promise<void> => {
+  console.log('Creating max send request');
+  const sendAmountRecipientPage = await selectAssetAndRecipient({
+    driver,
+    chainId,
+    symbol,
+    recipientAddress,
+    recipientName,
+  });
+  await sendAmountRecipientPage.clickMaxButton();
+  await sendAmountRecipientPage.waitForSendAmountBalance();
+  await sendAmountRecipientPage.checkContinueButton({ state: 'enabled' });
+  await sendAmountRecipientPage.pressContinueButton();
+};
 
 export const createInternalTransaction = async ({
   driver,
@@ -31,8 +149,8 @@ export const createInternalTransaction = async ({
     respAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
   }
 
-  const sendPage = new SendPage(driver);
-  await sendPage.createSendRequest({
+  await createSendRequest({
+    driver,
     chainId,
     symbol,
     recipientAddress: respAddress,
@@ -63,8 +181,8 @@ export const createInternalTransactionWithMaxAmount = async ({
     respAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
   }
 
-  const sendPage = new SendPage(driver);
-  await sendPage.createMaxSendRequest({
+  await createMaxSendRequest({
+    driver,
     chainId,
     symbol,
     recipientAddress: respAddress,

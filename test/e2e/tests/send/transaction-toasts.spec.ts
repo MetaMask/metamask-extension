@@ -21,7 +21,8 @@ import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import BitcoinReviewTxPage from '../../page-objects/pages/send/bitcoin-review-tx-page';
-import SendPage from '../../page-objects/pages/send/send-page';
+import SendAmountRecipientPage from '../../page-objects/pages/send/send-amount-recipient-page';
+import SendAssetPickerPage from '../../page-objects/pages/send/send-asset-picker-page';
 import TransactionDetailsPage from '../../page-objects/pages/transaction-details-page';
 import { TxToastNotification } from '../../page-objects/components/tx-toast-notification';
 import {
@@ -164,15 +165,16 @@ describe('Transaction toasts', function (this: Suite) {
         await new TokensTab(driver).checkTokenAmountIsDisplayed(
           `${DEFAULT_BTC_BALANCE} BTC`,
         );
-        const sendPage = new SendPage(driver);
+        const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
         await homePage.startSendFlow();
-        await sendPage.selectToken(BITCOIN_CHAIN_ID, 'BTC');
-        await sendPage.fillRecipient({
+        const sendAssetPickerPage = new SendAssetPickerPage(driver);
+        await sendAssetPickerPage.selectToken(BITCOIN_CHAIN_ID, 'BTC');
+        await sendAmountRecipientPage.fillRecipient({
           recipientAddress: BTC_RECIPIENT_ADDRESS,
         });
-        await sendPage.fillAmount('0.5');
-        await sendPage.checkContinueButton({ state: 'enabled' });
-        await sendPage.pressContinueButton();
+        await sendAmountRecipientPage.fillAmount('0.5');
+        await sendAmountRecipientPage.checkContinueButton({ state: 'enabled' });
+        await sendAmountRecipientPage.pressContinueButton();
         const reviewPage = new BitcoinReviewTxPage(driver);
         await reviewPage.checkPageIsLoaded();
         await reviewPage.clickConfirmButton();

@@ -6,7 +6,8 @@ import { login } from '../../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../../page-objects/flows/network.flow';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
-import SendPage from '../../../page-objects/pages/send/send-page';
+import SendAmountRecipientPage from '../../../page-objects/pages/send/send-amount-recipient-page';
+import SendAssetPickerPage from '../../../page-objects/pages/send/send-asset-picker-page';
 import { TRON_CHAIN_ID } from '../../tron/mocks/common-tron';
 import { TRON_PORTFOLIO_ACCOUNT } from '../../tron/fixtures/environments';
 import { withTronFixtures } from '../../tron/fixtures/with-tron-fixtures';
@@ -32,18 +33,19 @@ describe('Tron Send', function (this: Suite) {
         await tokensTab.checkExpectedTokenBalanceIsDisplayed('6.072', 'TRX');
 
         await homePage.startSendFlow();
-        const sendPage = new SendPage(driver);
-        await sendPage.selectToken(TRON_CHAIN_ID, 'TRX');
-        await sendPage.checkSendFormIsLoaded();
+        const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
+        const sendAssetPickerPage = new SendAssetPickerPage(driver);
+        await sendAssetPickerPage.selectToken(TRON_CHAIN_ID, 'TRX');
+        await sendAmountRecipientPage.checkPageIsLoaded();
 
-        await sendPage.fillRecipient({
+        await sendAmountRecipientPage.fillRecipient({
           recipientAddress: 'not-a-valid-address',
           // The formatted recipient element never renders for an invalid
           // address, so skip the post-paste re-render wait.
           validAddress: false,
         });
-        await sendPage.checkInvalidAddressError();
-        await sendPage.checkContinueButtonIsDisabled();
+        await sendAmountRecipientPage.checkInvalidAddressError();
+        await sendAmountRecipientPage.checkContinueButtonIsDisabled();
       },
     );
   });

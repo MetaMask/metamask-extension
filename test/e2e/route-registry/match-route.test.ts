@@ -1,6 +1,8 @@
 import AccountListPage from '../page-objects/pages/accounts/list-page';
 import ActivityTab from '../page-objects/pages/home/activity-tab';
 import HomePage from '../page-objects/pages/home/homepage';
+import SendAmountRecipientPage from '../page-objects/pages/send/send-amount-recipient-page';
+import SendAssetPickerPage from '../page-objects/pages/send/send-asset-picker-page';
 import { matchRoute } from './match-route';
 import { NOT_A_SCREEN } from './route-registry';
 
@@ -36,6 +38,17 @@ describe('matchRoute', () => {
     expect(matchRoute('/asset/0x1/0xabc')?.path).toBe(
       '/asset/:chainId/:asset?/:id?',
     );
+  });
+
+  it('matches the screens of a dynamic route before the route itself', () => {
+    expect(matchRoute('/send/asset')).toStrictEqual({
+      path: '/send/asset',
+      pageObject: SendAssetPickerPage,
+    });
+    expect(matchRoute('/send/amount-recipient')).toStrictEqual({
+      path: '/send/amount-recipient',
+      pageObject: SendAmountRecipientPage,
+    });
   });
 
   it('returns null for routes without a page object', () => {

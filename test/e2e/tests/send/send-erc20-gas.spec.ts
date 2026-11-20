@@ -20,7 +20,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/token-transfer-confirmation';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
-import SendPage from '../../page-objects/pages/send/send-page';
+import SendAmountRecipientPage from '../../page-objects/pages/send/send-amount-recipient-page';
 
 const recipientAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 
@@ -51,7 +51,7 @@ describe('Send ERC20 - Gas Customization', function () {
 
         const homePage = new HomePage(driver);
         const tokensTab = new TokensTab(driver);
-        const sendPage = new SendPage(driver);
+        const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
         const tokenTransferRedesignedConfirmPage =
           new TokenTransferTransactionConfirmation(driver);
         const gasFeeModal = new GasFeeModal(driver);
@@ -66,9 +66,9 @@ describe('Send ERC20 - Gas Customization', function () {
         await tokensTab.openTokenDetails(symbol);
         await tokensTab.startSendFlow();
 
-        await sendPage.fillRecipient({ recipientAddress });
-        await sendPage.fillAmount('1');
-        await sendPage.pressContinueButton();
+        await sendAmountRecipientPage.fillRecipient({ recipientAddress });
+        await sendAmountRecipientPage.fillAmount('1');
+        await sendAmountRecipientPage.pressContinueButton();
 
         // check transaction details
         const expectedNetworkFee = '0.0001';
