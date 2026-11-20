@@ -4,6 +4,7 @@ import {
   type Order,
   type OrderParams,
   type Position,
+  PERPS_ERROR_CODES,
 } from '@metamask/perps-controller';
 
 const FULL_POSITION_SIZE_TOLERANCE = new BigNumber('0.00000001');
@@ -17,16 +18,33 @@ const TP_SL_DETAILED_ORDER_TYPES = new Set([
   'Take Profit Market',
 ]);
 /**
- * HyperLiquid rejects a cancel for an order it no longer holds open with this
- * status text (surfaced by the SDK as `<type> <index>: <error>`).
+ * HyperLiquid rejects a cancel for an order it no longer holds open with status
+ * text like `never placed, already canceled, or filled` (surfaced by the SDK as
+ * `<type> <index>: <error>`), which the controller normalizes to the stable
+ * `PERPS_ERROR_CODES.ORDER_NO_LONGER_OPEN` code.
  *
- * Protocol-specific prose, like `API_ERROR_PATTERNS` in
- * `utils/translate-perps-error.ts`, and it should stay in sync with mobile the
- * same way. It lives here instead of in that list because it maps to a benign
- * end state the UI closes out on, not to a `PerpsErrorCode` to display.
+ * These protocol-specific markers, like `API_ERROR_PATTERNS` in
+ * `utils/translate-perps-error.ts`, and they should stay in sync with mobile the
+ * same way. They live here instead of in that list because they map to a benign
+ * end state the UI closes out on, not to a `PerpsErrorCode` to display. The
+ * markers mirror the controller's `normalizeHyperLiquidError` mapping; older
+ * supported controller versions may still surface the raw prose.
  */
 const ORDER_NO_LONGER_OPEN_PATTERN =
-  /never placed, already canceled, or filled/iu;
+  /never placed|already canceled|already cancelled|order not found|twap not found/iu;
+
+/**
+ * Checks a cancel error message for the stable controller code or the legacy
+ * provider prose. The exact code covers messages reconstructed from a
+ * serialized failed result; the prose covers older supported controller
+ * versions that still surface the raw venue sentence.
+ *
+ * @param message - The error message or serialized error string.
+ * @returns Whether the message identifies an order that is no longer open.
+ */
+const isOrderNoLongerOpenErrorMessage = (message: string): boolean =>
+  message === PERPS_ERROR_CODES.ORDER_NO_LONGER_OPEN ||
+  ORDER_NO_LONGER_OPEN_PATTERN.test(message);
 
 /**
  * Maps a lowercased `PerpsOrderTransactionStatus` string (e.g. `'filled'`,
@@ -514,12 +532,41 @@ export const isClosingOrder = (
  * — which is the outcome the user asked for, so the UI treats it as a benign
  * end state instead of a failure the user has to react to.
  *
- * @param error - The error surfaced by the cancel request.
+ * Accepts the controller's structured failed result (or thrown error), which
+ * carries the stable `ORDER_NO_LONGER_OPEN` code, as well as `Error` objects
+ * and plain strings holding the code or the legacy provider prose.
+ *
+ * @param error - The error or failed result surfaced by the cancel request.
  * @returns Whether the order is no longer open on the provider.
  */
 export const isOrderNoLongerOpenError = (error: unknown): boolean => {
-  const message = error instanceof Error ? error.message : String(error ?? '');
-  return ORDER_NO_LONGER_OPEN_PATTERN.test(message);
+  if (error === null || error === undefined) {
+    return false;
+  }
+  if (typeof error === 'object') {
+    const structured = error as {
+      errorCode?: unknown;
+      errorDetails?: { code?: unknown };
+      error?: unknown;
+      message?: unknown;
+    };
+    // A failed controller result / thrown SDK error carries the stable code
+    // directly once the controller normalizes the provider prose.
+    if (
+      structured.errorCode === PERPS_ERROR_CODES.ORDER_NO_LONGER_OPEN ||
+      structured.errorDetails?.code ===
+        PERPS_ERROR_CODES.ORDER_NO_LONGER_OPEN ||
+      structured.error === PERPS_ERROR_CODES.ORDER_NO_LONGER_OPEN
+    ) {
+      return true;
+    }
+    // `Error` objects reconstructed from the serialized `error` field (as the
+    // cancel modal does) only keep the message.
+    return typeof structured.message === 'string'
+      ? isOrderNoLongerOpenErrorMessage(structured.message)
+      : false;
+  }
+  return isOrderNoLongerOpenErrorMessage(String(error));
 };
 
 /**

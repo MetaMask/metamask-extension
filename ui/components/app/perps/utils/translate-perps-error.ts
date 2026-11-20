@@ -121,6 +121,7 @@ export const ERROR_CODE_TO_I18N_KEY = {
   // Routing failures across the controller's multi-provider layer. The
   // extension exposes no provider picker, so neither is user-actionable.
   [PERPS_ERROR_CODES.PROVIDER_NOT_FOUND]: 'somethingWentWrong',
+  [PERPS_ERROR_CODES.PROVIDER_ROUTE_REQUIRED]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.PROVIDER_LIFECYCLE_STALE]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.TOKEN_NOT_SUPPORTED]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.BRIDGE_CONTRACT_NOT_FOUND]: 'somethingWentWrong',
@@ -129,11 +130,27 @@ export const ERROR_CODE_TO_I18N_KEY = {
   [PERPS_ERROR_CODES.WITHDRAW_FAILED]: 'perpsWithdrawFailed',
   [PERPS_ERROR_CODES.POSITIONS_FAILED]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.ACCOUNT_STATE_FAILED]: 'somethingWentWrong',
+  // Batched order management could not complete for every affected order.
+  [PERPS_ERROR_CODES.BATCH_INCOMPLETE]: 'somethingWentWrong',
+  [PERPS_ERROR_CODES.ORDERS_FAILED]: 'somethingWentWrong',
+  // Scale-order bookkeeping failures: the controller could not preserve the
+  // intended size or exposure distribution across the scale's levels.
+  [PERPS_ERROR_CODES.ORDER_SCALE_SIZE_CONSERVATION_FAILED]:
+    'somethingWentWrong',
+  [PERPS_ERROR_CODES.ORDER_SCALE_EXPOSURE_EXCEEDS_INTENT]: 'somethingWentWrong',
+  // Display-only data gap: the liquidation price could not be computed.
+  [PERPS_ERROR_CODES.LIQUIDATION_PRICE_UNAVAILABLE]: 'somethingWentWrong',
+  // The order is already off the book. The cancel modal intercepts this code
+  // as a benign already-gone end state before translation, so this entry is
+  // defensive for any other flow that surfaces a failed cancellation of an
+  // order that is no longer open.
+  [PERPS_ERROR_CODES.ORDER_NO_LONGER_OPEN]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.MARKETS_FAILED]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.UNKNOWN_ERROR]: 'somethingWentWrong',
 
   // Order errors
-  [PERPS_ERROR_CODES.ORDER_LEVERAGE_REDUCTION_FAILED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_LEVERAGE_REDUCTION_FAILED]:
+    'perpsLeverageReductionFailed',
   [PERPS_ERROR_CODES.IOC_CANCEL]: 'perpsIocCancel',
 
   // Connection
@@ -162,10 +179,13 @@ export const ERROR_CODE_TO_I18N_KEY = {
   [PERPS_ERROR_CODES.ORDER_UNKNOWN_COIN]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_SIZE_POSITIVE]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_PRICE_REQUIRED]: 'perpsOrderFailed',
-  [PERPS_ERROR_CODES.ORDER_SIZE_MIN]: 'perpsOrderFailed',
-  [PERPS_ERROR_CODES.ORDER_LEVERAGE_INVALID]: 'perpsOrderFailed',
-  [PERPS_ERROR_CODES.ORDER_LEVERAGE_BELOW_POSITION]: 'perpsOrderFailed',
-  [PERPS_ERROR_CODES.ORDER_MAX_VALUE_EXCEEDED]: 'perpsOrderFailed',
+  // Mobile interpolates the limit into these; the controller result carries no
+  // limit, so the extension copy names the cause without the number.
+  [PERPS_ERROR_CODES.ORDER_SIZE_MIN]: 'perpsOrderSizeMin',
+  [PERPS_ERROR_CODES.ORDER_LEVERAGE_INVALID]: 'perpsLeverageInvalid',
+  [PERPS_ERROR_CODES.ORDER_LEVERAGE_BELOW_POSITION]:
+    'perpsLeverageBelowPosition',
+  [PERPS_ERROR_CODES.ORDER_MAX_VALUE_EXCEEDED]: 'perpsOrderMaxValueExceeded',
 
   // Order validation — trigger placements and partial TP/SL. The extension
   // places neither today, so these are unreachable from its UI and share the
@@ -220,6 +240,11 @@ export const ERROR_CODE_TO_I18N_KEY = {
   [PERPS_ERROR_CODES.ORDER_MARGIN_MODE_UNSUPPORTED]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_MARGIN_MODE_POSITION_OPEN]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_MARGIN_MODE_ORDER_OPEN]: 'perpsOrderFailed',
+  // Post-only rejections stay off `perpsOrderFailed`. The cancel-flow override
+  // rewrites that key to `perpsCancelOrderFailed`, and the would-cross case
+  // tells the trader how to place the order.
+  [PERPS_ERROR_CODES.ORDER_POST_ONLY_WOULD_CROSS]: 'perpsPostOnlyWouldCross',
+  [PERPS_ERROR_CODES.ORDER_POST_ONLY_WINDOW]: 'perpsPostOnlyWindow',
 
   // HyperLiquid client errors
   [PERPS_ERROR_CODES.EXCHANGE_CLIENT_NOT_AVAILABLE]: 'somethingWentWrong',
@@ -260,16 +285,17 @@ export const ERROR_CODE_TO_I18N_KEY = {
 
   // Position / margin
   [PERPS_ERROR_CODES.INSUFFICIENT_MARGIN]: 'perpsInsufficientMargin',
-  [PERPS_ERROR_CODES.INSUFFICIENT_BALANCE]: 'perpsWithdrawInsufficient',
-  [PERPS_ERROR_CODES.REDUCE_ONLY_VIOLATION]: 'perpsOrderFailed',
-  [PERPS_ERROR_CODES.POSITION_WOULD_FLIP]: 'perpsOrderFailed',
-  [PERPS_ERROR_CODES.POSITION_NOT_FOUND]: 'somethingWentWrong',
-  [PERPS_ERROR_CODES.MARGIN_ADJUSTMENT_FAILED]: 'somethingWentWrong',
-  [PERPS_ERROR_CODES.TPSL_UPDATE_FAILED]: 'somethingWentWrong',
+  [PERPS_ERROR_CODES.INSUFFICIENT_BALANCE]: 'perpsInsufficientBalance',
+  [PERPS_ERROR_CODES.REDUCE_ONLY_VIOLATION]: 'perpsReduceOnlyViolation',
+  [PERPS_ERROR_CODES.POSITION_WOULD_FLIP]: 'perpsPositionWouldFlip',
+  [PERPS_ERROR_CODES.POSITION_NOT_FOUND]: 'perpsPositionNotFound',
+  [PERPS_ERROR_CODES.MARGIN_ADJUSTMENT_FAILED]: 'perpsMarginAdjustmentFailed',
+  [PERPS_ERROR_CODES.TPSL_UPDATE_FAILED]: 'perpsTpslUpdateFailed',
   // The controller could not keep the position's TP/SL triggers in place. The
-  // user cannot re-arm them from the error toast, so it shares the generic copy
-  // with the update failure above.
-  [PERPS_ERROR_CODES.TPSL_PROTECTION_LOST]: 'somethingWentWrong',
+  // user cannot re-arm them from the error toast, so it shares the copy with
+  // the update failure above.
+  [PERPS_ERROR_CODES.TPSL_PROTECTION_LOST]: 'perpsTpslUpdateFailed',
+  [PERPS_ERROR_CODES.TPSL_LEG_REPLACE_UNSUPPORTED]: 'perpsTpslUpdateFailed',
 
   // Order execution
   [PERPS_ERROR_CODES.ORDER_REJECTED]: 'perpsOrderRejected',
@@ -297,7 +323,7 @@ function isPerpsErrorCodeValue(value: unknown): value is PerpsErrorCode {
 /**
  * Cancel-flow remapping of the keys above.
  *
- * Every `ORDER_*` code funnels into `perpsOrderFailed` ("Order could not be
+ * Most `ORDER_*` codes funnel into `perpsOrderFailed` ("Order could not be
  * placed."), which is the wrong verb on a screen where the user just pressed
  * Cancel order — `ORDER_UNKNOWN_COIN` reaches it through the cancel retry.
  * Remapping the resolved key rather than enumerating codes keeps this correct
@@ -318,6 +344,17 @@ export const API_ERROR_PATTERNS: {
   pattern: RegExp;
   code: PerpsErrorCode;
 }[] = [
+  // Post-only rejections come first. The would-cross sentence embeds raw bbo
+  // prices such as 2503.1, which a broad "503" pattern can misread as an outage.
+  {
+    pattern: /post only order would have immediately matched/iu,
+    code: PERPS_ERROR_CODES.ORDER_POST_ONLY_WOULD_CROSS,
+  },
+  {
+    pattern:
+      /only post-only orders allowed immediately after network upgrade/iu,
+    code: PERPS_ERROR_CODES.ORDER_POST_ONLY_WINDOW,
+  },
   // Order execution
   {
     pattern: /insufficient margin/iu,

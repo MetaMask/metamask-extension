@@ -8362,6 +8362,10 @@
   "perpsIncludesPnl": {
     "message": "includes P&L $1"
   },
+  "perpsInsufficientBalance": {
+    "message": "Insufficient balance to complete this operation. Check your available funds.",
+    "description": "Shown when a perps action fails because the account balance is too low"
+  },
   "perpsInsufficientMargin": {
     "message": "Insufficient margin to place this order."
   },
@@ -8383,6 +8387,18 @@
   },
   "perpsLeverage": {
     "message": "Leverage"
+  },
+  "perpsLeverageBelowPosition": {
+    "message": "Leverage must be at least as high as your existing position.",
+    "description": "Shown when an order uses lower leverage than the open position on the same market"
+  },
+  "perpsLeverageInvalid": {
+    "message": "This leverage is outside the allowed range.",
+    "description": "Shown when an order leverage is outside the market range"
+  },
+  "perpsLeverageReductionFailed": {
+    "message": "You cannot reduce your leverage.",
+    "description": "Shown when the exchange rejects lowering leverage on an open position"
   },
   "perpsLimit": {
     "message": "Limit"
@@ -8418,6 +8434,10 @@
   },
   "perpsMargin": {
     "message": "Margin"
+  },
+  "perpsMarginAdjustmentFailed": {
+    "message": "Unable to adjust margin. Try again.",
+    "description": "Shown when adding or removing margin on a position fails"
   },
   "perpsMarginRiskWarning": {
     "message": "Removing margin moves your liquidation price closer. Ensure you have sufficient buffer."
@@ -8593,11 +8613,19 @@
   "perpsOrderFilled": {
     "message": "Filled"
   },
+  "perpsOrderMaxValueExceeded": {
+    "message": "This order is above the maximum size.",
+    "description": "Shown when an order exceeds the maximum order value"
+  },
   "perpsOrderOriginalSize": {
     "message": "Original size"
   },
   "perpsOrderRejected": {
     "message": "Your order was rejected. Try again."
+  },
+  "perpsOrderSizeMin": {
+    "message": "This order is below the minimum size.",
+    "description": "Shown when an order is smaller than the minimum order size"
   },
   "perpsOrderStatus": {
     "message": "Status"
@@ -8624,8 +8652,24 @@
   "perpsPosition": {
     "message": "Position"
   },
+  "perpsPositionNotFound": {
+    "message": "Position not found.",
+    "description": "Shown when an action targets a position that no longer exists"
+  },
+  "perpsPositionWouldFlip": {
+    "message": "This order would flip your position direction. Please close your existing position first.",
+    "description": "Shown when a closing order would reverse the position direction"
+  },
   "perpsPositions": {
     "message": "Positions"
+  },
+  "perpsPostOnlyWindow": {
+    "message": "Trading is temporarily restricted after a network upgrade and will resume shortly. Try again in a few minutes.",
+    "description": "Shown when the exchange only accepts post-only orders immediately after a network upgrade."
+  },
+  "perpsPostOnlyWouldCross": {
+    "message": "This price would cross the spread, so the post-only order wasn't placed. Adjust the price or use a non-post-only order.",
+    "description": "Shown when a post-only order is rejected because its price would immediately match the book."
   },
   "perpsPriceMoved": {
     "message": "The price moved $1%, exceeding your $2% slippage tolerance. Review the updated price and try again.",
@@ -8659,6 +8703,10 @@
   },
   "perpsReduceOnly": {
     "message": "Reduce only"
+  },
+  "perpsReduceOnlyViolation": {
+    "message": "This order would increase your position. Only reduce-only orders are allowed.",
+    "description": "Shown when the exchange rejects a reduce-only order that would increase the position"
   },
   "perpsRemoveFromFavorites": {
     "message": "Remove from favorites"
@@ -8993,6 +9041,10 @@
   "perpsTopMoversLosers": {
     "message": "Losers",
     "description": "Toggle option showing the markets that fell the most over 24h in the Top movers section"
+  },
+  "perpsTpslUpdateFailed": {
+    "message": "Unable to update take profit/stop loss. Try again.",
+    "description": "Shown when updating take profit or stop loss on a position fails"
   },
   "perpsTrades": {
     "message": "Trades"

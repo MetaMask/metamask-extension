@@ -1,4 +1,5 @@
 import type { Order, OrderParams, Position } from '@metamask/perps-controller';
+import { PERPS_ERROR_CODES } from '@metamask/perps-controller';
 import {
   isOrderAssociatedWithFullPosition,
   shouldDisplayOrderInMarketDetailsOrders,
@@ -828,12 +829,91 @@ describe('orderUtils', () => {
       ).toBe(true);
     });
 
-    it('does not match an unrelated failure', () => {
+    it('matches a structured result carrying the stable error code', () => {
+      expect(
+        isOrderNoLongerOpenError({
+          success: false,
+          orderId: '123',
+          error: 'ORDER_NO_LONGER_OPEN',
+          errorCode: PERPS_ERROR_CODES.ORDER_NO_LONGER_OPEN,
+          errorDetails: {
+            code: PERPS_ERROR_CODES.ORDER_NO_LONGER_OPEN,
+            provider: 'hyperliquid',
+          },
+        }),
+      ).toBe(true);
+    });
+
+    it('matches an Error whose message is the stable error code', () => {
+      expect(
+        isOrderNoLongerOpenError(
+          new Error(PERPS_ERROR_CODES.ORDER_NO_LONGER_OPEN),
+        ),
+      ).toBe(true);
+    });
+
+    it('matches a plain string holding the stable error code', () => {
+      expect(isOrderNoLongerOpenError('ORDER_NO_LONGER_OPEN')).toBe(true);
+    });
+
+    it('matches a legacy prefixed provider sentence', () => {
+      expect(
+        isOrderNoLongerOpenError(
+          'cancel 0: Order was never placed, already cancelled, or filled. asset=4',
+        ),
+      ).toBe(true);
+    });
+
+    it('matches the venue markers the controller normalizes', () => {
+      expect(isOrderNoLongerOpenError('order not found')).toBe(true);
+      expect(isOrderNoLongerOpenError('cancel twap 3: twap not found')).toBe(
+        true,
+      );
+    });
+
+    it('does not match UNKNOWN_ERROR', () => {
+      expect(
+        isOrderNoLongerOpenError({
+          success: false,
+          error: 'UNKNOWN_ERROR',
+          errorCode: PERPS_ERROR_CODES.UNKNOWN_ERROR,
+        }),
+      ).toBe(false);
+    });
+
+    it('does not match other structured failures', () => {
+      expect(
+        isOrderNoLongerOpenError({
+          success: false,
+          error: PERPS_ERROR_CODES.ORDER_UNKNOWN_COIN,
+          errorCode: PERPS_ERROR_CODES.ORDER_UNKNOWN_COIN,
+        }),
+      ).toBe(false);
+      expect(
+        isOrderNoLongerOpenError({
+          success: false,
+          error: PERPS_ERROR_CODES.POSITION_NOT_FOUND,
+          errorCode: PERPS_ERROR_CODES.POSITION_NOT_FOUND,
+        }),
+      ).toBe(false);
+    });
+
+    it('does not match transport-level failures', () => {
       expect(isOrderNoLongerOpenError(new Error('Network error'))).toBe(false);
+      expect(isOrderNoLongerOpenError(new Error('Nonce too low'))).toBe(false);
+      expect(isOrderNoLongerOpenError(new Error('Rate limit exceeded'))).toBe(
+        false,
+      );
+    });
+
+    it('does not match bare fill text', () => {
+      expect(isOrderNoLongerOpenError('filled')).toBe(false);
+      expect(isOrderNoLongerOpenError('partially filled')).toBe(false);
     });
 
     it('does not match a missing error', () => {
       expect(isOrderNoLongerOpenError(undefined)).toBe(false);
+      expect(isOrderNoLongerOpenError(null)).toBe(false);
     });
   });
 });

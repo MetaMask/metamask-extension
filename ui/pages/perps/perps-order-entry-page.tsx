@@ -82,13 +82,12 @@ import {
 import {
   type PerpsState,
   selectPerpsDepositPending,
-  selectPerpsTradeConfigurations,
-  selectPerpsIsTestnet,
   selectPerpsActiveProvider,
   selectOrderBookPosition,
   selectOrderBookExpanded,
   selectChartExpanded,
   selectPerpsPendingTradeConfiguration,
+  selectPerpsTradeConfiguration,
   selectPerpsSelectedOrderType,
   selectPerpsVisibleCandleCount,
 } from '../../selectors/perps-controller';
@@ -408,13 +407,11 @@ const PerpsOrderEntryPage = () => {
   // Same reason: the considered event reads the latest slippage config without
   // re-arming its debounce whenever the estimate recomputes.
   const slippageTradePropertiesRef = useRef<Record<string, Json>>({});
-  const tradeConfigurations = useSelector(selectPerpsTradeConfigurations);
 
   useLayoutEffect(() => {
     trackRef.current = track;
   }, [track]);
 
-  const isTestnet = useSelector(selectPerpsIsTestnet);
   const activeProvider = useSelector(selectPerpsActiveProvider);
   const hasPendingPerpsDeposit = useSelector(selectPerpsDepositPending);
   const orderBookPosition = useSelector(selectOrderBookPosition);
@@ -452,6 +449,11 @@ const PerpsOrderEntryPage = () => {
       ? selectPerpsPendingTradeConfiguration(state, decodedSymbol)
       : undefined,
   );
+  const savedTradeConfiguration = useSelector((state: PerpsState) =>
+    decodedSymbol
+      ? selectPerpsTradeConfiguration(state, decodedSymbol)
+      : undefined,
+  );
 
   // Computed before the screen-view tracking below so the trading event can be
   // gated on the market existing (an unknown symbol renders the error state).
@@ -473,31 +475,31 @@ const PerpsOrderEntryPage = () => {
   // `default_payment_token` is intentionally omitted — the Extension
   // trade flow has no pay-with-token selector.
   const tradingScreenDefaults = useMemo(() => {
-    const env = isTestnet ? 'testnet' : 'mainnet';
-    const config = decodedSymbol
-      ? tradeConfigurations[env]?.[decodedSymbol]
-      : undefined;
-    const pending = config?.pendingConfig;
     // Report the leverage the UI actually seeds, which is clamped to the
     // market max (mirrors `initialLeverage`) — not the raw saved config.
     const marketMaxLeverage = market
       ? parseInt(market.maxLeverage.replace('x', ''), 10)
       : DEFAULT_MAX_LEVERAGE;
-    const savedLeverage = config?.leverage ?? TRADING_DEFAULTS.leverage;
+    const savedLeverage =
+      savedTradeConfiguration?.leverage ?? TRADING_DEFAULTS.leverage;
     return {
-      [PERPS_EVENT_PROPERTY.SAVED_ORDER]: Boolean(pending),
+      [PERPS_EVENT_PROPERTY.SAVED_ORDER]: Boolean(pendingTradeConfiguration),
       [PERPS_EVENT_PROPERTY.DEFAULT_LEVERAGE]: Math.min(
         savedLeverage,
         marketMaxLeverage,
       ),
-      ...(pending?.amount
-        ? { [PERPS_EVENT_PROPERTY.DEFAULT_SIZE_AMOUNT]: pending.amount }
+      ...(pendingTradeConfiguration?.amount
+        ? {
+            [PERPS_EVENT_PROPERTY.DEFAULT_SIZE_AMOUNT]:
+              pendingTradeConfiguration.amount,
+          }
         : {}),
       [PERPS_EVENT_PROPERTY.DEFAULT_AUTO_CLOSE]: Boolean(
-        pending?.takeProfitPrice || pending?.stopLossPrice,
+        pendingTradeConfiguration?.takeProfitPrice ||
+        pendingTradeConfiguration?.stopLossPrice,
       ),
     };
-  }, [tradeConfigurations, isTestnet, decodedSymbol, market]);
+  }, [pendingTradeConfiguration, savedTradeConfiguration, market]);
 
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
@@ -1443,11 +1445,10 @@ const PerpsOrderEntryPage = () => {
     if (!decodedSymbol || orderMode !== 'new') {
       return undefined;
     }
-    const env = isTestnet ? 'testnet' : 'mainnet';
-    const config = tradeConfigurations[env]?.[decodedSymbol];
-    const saved = config?.leverage ?? TRADING_DEFAULTS.leverage;
+    const saved =
+      savedTradeConfiguration?.leverage ?? TRADING_DEFAULTS.leverage;
     return Math.min(saved, maxLeverage);
-  }, [decodedSymbol, orderMode, maxLeverage, tradeConfigurations, isTestnet]);
+  }, [decodedSymbol, orderMode, maxLeverage, savedTradeConfiguration]);
 
   const existingPositionForOrder = useMemo(() => {
     if (!position) {
@@ -1455,6 +1456,10 @@ const PerpsOrderEntryPage = () => {
     }
     return {
       size: position.size,
+      // Venue-reported leverage; absent when the provider does not report one.
+      // Do not fall back to the new-order default here: this value seeds the
+      // modify form's leverage (and its slider minimum), so a fabricated
+      // default could silently re-lever the live position on submit.
       leverage: position.leverage.value,
       entryPrice: position.entryPrice,
       takeProfitPrice: position.takeProfitPrice,

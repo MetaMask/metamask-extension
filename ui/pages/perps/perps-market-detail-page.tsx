@@ -35,7 +35,7 @@ import {
   Skeleton,
   twMerge,
 } from '@metamask/design-system-react';
-import type { PriceUpdate } from '@metamask/perps-controller';
+import { type PriceUpdate } from '@metamask/perps-controller';
 import {
   formatFundingRate,
   formatPerpsFiat,
@@ -1705,7 +1705,11 @@ const PerpsMarketDetailPage = () => {
                     {parseFloat(position.size) >= 0
                       ? t('perpsLong')
                       : t('perpsShort')}{' '}
-                    {position.leverage.value}x
+                    {/* Venue-reported only: a placeholder, not the new-order
+                    default, so the summary never shows a fabricated value. */}
+                    {position.leverage.value === undefined
+                      ? '--'
+                      : `${position.leverage.value}x`}
                   </Text>
                 </Box>
 
@@ -1775,8 +1779,10 @@ const PerpsMarketDetailPage = () => {
                     data-testid="perps-position-funding-value"
                   >
                     {(() => {
+                      // `cumulativeFunding` is absent when the venue does not
+                      // report funding history; treat as no funding paid.
                       const fundingSinceOpen = Number.parseFloat(
-                        position.cumulativeFunding.sinceOpen,
+                        position.cumulativeFunding?.sinceOpen ?? '0',
                       );
                       const isNearZeroFunding =
                         Math.abs(fundingSinceOpen) < 0.005;
