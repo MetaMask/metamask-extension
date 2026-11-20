@@ -1,0 +1,10 @@
+rules:
+  unpinned-uses:
+    config:
+      policies:
+        # Allow symbolic refs for GitHub-owned and MetaMask-owned actions.
+        'actions/*': ref-pin
+        'github/*': ref-pin
+        'dependabot/*': ref-pin
+        'MetaMask/*': ref-pin
+        '*': hash-pin
