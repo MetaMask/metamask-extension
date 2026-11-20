@@ -194,7 +194,9 @@ const PopularNetworkList = ({
                     },
                   );
 
-                  // Then enable it in the network list
+                  // Then enable it in the network list (matching mobile behavior)
+                  // Small delay to ensure background listeners complete
+                  await new Promise((resolve) => setTimeout(resolve, 100));
                   await dispatch(setEnabledNetworks(network.chainId));
                 }}
               />
