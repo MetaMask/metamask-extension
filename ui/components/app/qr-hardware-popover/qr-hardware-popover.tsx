@@ -1,4 +1,10 @@
-import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import React, {
+  Suspense,
+  useCallback,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
@@ -30,9 +36,16 @@ import {
 import { createHardwareWalletError } from '../../../contexts/hardware-wallets/errors';
 import { HardwareWalletType } from '../../../contexts/hardware-wallets/types';
 import { useDispatch } from '../../../store/hooks';
+import { mmLazy } from '../../../helpers/utils/mm-lazy';
+import Spinner from '../../ui/spinner';
 import type { ConfirmTransactionSlice } from './qr-hardware-popover.types';
-import QRHardwareWalletImporter from './qr-hardware-wallet-importer';
-import QRHardwareSignRequest from './qr-hardware-sign-request';
+
+const QRHardwareWalletImporter = mmLazy(
+  () => import('./qr-hardware-wallet-importer'),
+);
+const QRHardwareSignRequest = mmLazy(
+  () => import('./qr-hardware-sign-request'),
+);
 
 // Keeps the ModalHeader children slot rendered so the close button stays on the right.
 const EMPTY_HEADER_PLACEHOLDER = '\u00A0';
@@ -175,23 +188,25 @@ const QRHardwarePopover = () => {
         <ModalHeader onClose={onClose}>
           {title || EMPTY_HEADER_PLACEHOLDER}
         </ModalHeader>
-        {activeScanRequest.type === QrScanRequestType.PAIR && (
-          <QRHardwareWalletImporter
-            handleCancel={walletImporterCancel}
-            setErrorTitle={setErrorTitle}
-            setErrorActive={setErrorActive}
-            setCameraPermissionErrorCode={setCameraPermissionErrorCode}
-          />
-        )}
-        {activeScanRequest.type === QrScanRequestType.SIGN && (
-          <QRHardwareSignRequest
-            setErrorTitle={setErrorTitle}
-            setErrorActive={setErrorActive}
-            setCameraPermissionErrorCode={setCameraPermissionErrorCode}
-            handleCancel={signRequestCancel}
-            request={activeScanRequest.request}
-          />
-        )}
+        <Suspense fallback={<Spinner />}>
+          {activeScanRequest.type === QrScanRequestType.PAIR && (
+            <QRHardwareWalletImporter
+              handleCancel={walletImporterCancel}
+              setErrorTitle={setErrorTitle}
+              setErrorActive={setErrorActive}
+              setCameraPermissionErrorCode={setCameraPermissionErrorCode}
+            />
+          )}
+          {activeScanRequest.type === QrScanRequestType.SIGN && (
+            <QRHardwareSignRequest
+              setErrorTitle={setErrorTitle}
+              setErrorActive={setErrorActive}
+              setCameraPermissionErrorCode={setCameraPermissionErrorCode}
+              handleCancel={signRequestCancel}
+              request={activeScanRequest.request}
+            />
+          )}
+        </Suspense>
       </ModalContent>
     </Modal>
   );
