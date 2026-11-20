@@ -304,12 +304,15 @@ jest.mock('../../shared/lib/trace', () => {
   return {
     ...actual,
     getPerformanceTimestamp: jest.fn(() => 1_000),
-    // Run the callback only for the RPC-dispatch path and the phishing list
-    // refresh, whose caller needs its result; other instrumentation traces
-    // stay no-ops, as the rest of the suite assumes.
+    // Run the callback for the RPC-dispatch path and the traces that wrap a
+    // call whose caller needs its result; other instrumentation traces stay
+    // no-ops, as the rest of the suite assumes.
     trace: jest.fn((request, fn) =>
       request?.op === 'rpc.handler' ||
-      request?.name === actual.TraceName.PhishingListsUpdate
+      [
+        actual.TraceName.PhishingListsUpdate,
+        actual.TraceName.RemoteFeatureFlagsFetch,
+      ].includes(request?.name)
         ? fn?.()
         : undefined,
     ),
