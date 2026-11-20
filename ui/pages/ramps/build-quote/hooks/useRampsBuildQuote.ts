@@ -126,7 +126,13 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
           setUnservedAssetId(providerId ? null : pickAssetId);
         }
       })
-      .catch(() => undefined);
+      .catch(() => {
+        // A failed pick must not leave the screen waiting: quote with the
+        // provider already selected, as when none offers the token.
+        if (isCurrent) {
+          setUnservedAssetId(pickAssetId);
+        }
+      });
     return () => {
       isCurrent = false;
     };

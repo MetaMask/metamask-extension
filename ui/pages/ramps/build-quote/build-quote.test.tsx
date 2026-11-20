@@ -890,6 +890,23 @@ describe('RampsBuildQuoteScreen', () => {
     );
   });
 
+  it('fetches quotes with the selected provider when the pick fails', async () => {
+    useRampsController.mockReturnValue({
+      ...mockControllerState(),
+      selectProviderForAsset: jest.fn().mockRejectedValue(new Error('failed')),
+      controllerProviders: [{ id: 'moonpay', name: 'MoonPay' }],
+      selectedProvider: { id: 'moonpay', name: 'MoonPay' },
+    });
+
+    renderWithProvider(<RampsBuildQuoteScreen />, createStore());
+
+    await waitFor(() =>
+      expect(useRampsQuotes).toHaveBeenLastCalledWith(
+        expect.objectContaining({ providers: ['moonpay'] }),
+      ),
+    );
+  });
+
   it('navigates to payment method selection when the pill is clicked', () => {
     renderWithProvider(
       <RampsBuildQuoteScreen />,
