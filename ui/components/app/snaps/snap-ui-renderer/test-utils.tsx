@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { DeepPartial, Reducer } from 'redux';
 import { RenderResult } from '@testing-library/react';
 import type { SnapId } from '@metamask/snaps-sdk';
@@ -114,14 +114,16 @@ export function renderInterface(
   };
 
   const result = renderWithProvider(
-    <SnapUIRenderer
-      snapId={snapId}
-      interfaceId={MOCK_INTERFACE_ID}
-      useFooter={useFooter}
-      onCancel={onCancel}
-      contentBackgroundColor={contentBackgroundColor}
-      PERF_DEBUG
-    />,
+    <Suspense fallback={null}>
+      <SnapUIRenderer
+        snapId={snapId}
+        interfaceId={MOCK_INTERFACE_ID}
+        useFooter={useFooter}
+        onCancel={onCancel}
+        contentBackgroundColor={contentBackgroundColor}
+        PERF_DEBUG
+      />
+    </Suspense>,
     store,
   );
 
