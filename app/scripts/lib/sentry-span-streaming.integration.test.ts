@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/browser';
-import type { Integration } from '@sentry/core';
+import type { DynamicSamplingContext, Integration } from '@sentry/core';
 import {
   continueTraceContext,
   setMeasurement,
@@ -33,7 +33,7 @@ jest.mock('../../../shared/lib/manifestFlags', () => ({
 }));
 
 type SentEnvelope = [
-  { trace?: { trace_id?: string; public_key?: string } },
+  { trace?: Partial<DynamicSamplingContext> },
   [{ type: string }, unknown][],
 ];
 
