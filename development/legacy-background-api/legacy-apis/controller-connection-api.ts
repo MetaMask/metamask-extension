@@ -1,5 +1,4 @@
 import ts from 'typescript';
-import { setSubtract } from '../set-utils';
 import {
   getPropertyNameText,
   isConstVariableDeclaration,
