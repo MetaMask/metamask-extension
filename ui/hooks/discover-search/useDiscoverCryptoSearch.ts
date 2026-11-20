@@ -123,11 +123,9 @@ export const useDiscoverCryptoSearch = ({
       }
 
       const searchResults = response.data as TokenSearchMarketResult[];
-      const data = filterRiskyTokens(
-        searchResults
-          .filter((item) => !item.rwaData)
-          .map(mapSearchResultToTrendingAsset),
-      );
+      const data = searchResults
+        .filter((item) => !item.rwaData)
+        .map(mapSearchResultToTrendingAsset);
 
       return {
         data,

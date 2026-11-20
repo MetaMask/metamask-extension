@@ -3,6 +3,7 @@ import { Mockttp } from 'mockttp';
 import { DEFAULT_BTC_BALANCE } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
+import { enterBridgeQuote } from '../../page-objects/flows/bridge.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
@@ -118,7 +119,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
 
         const swapPage = new SwapPage(driver);
         await swapPage.checkPageIsLoaded();
-        await swapPage.enterBridgeQuote({
+        await enterBridgeQuote(driver, {
           amount: '0.5',
           tokenTo: 'ETH',
           toChain: 'Ethereum',
@@ -128,7 +129,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         await swapPage.checkAssetsAreSelected('BTC', 'ETH');
         await swapPage.checkDestAmount('14.72');
 
-        await swapPage.enterBridgeQuote({
+        await enterBridgeQuote(driver, {
           amount: '0.5',
           tokenTo: 'USDC',
           toChain: 'Ethereum',
@@ -165,7 +166,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         const swapPage = new SwapPage(driver);
         await swapPage.checkPageIsLoaded();
 
-        await swapPage.enterBridgeQuote({
+        await enterBridgeQuote(driver, {
           amount: '10',
           tokenTo: 'ETH',
           toChain: 'Ethereum',
@@ -198,7 +199,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
 
         const swapPage = new SwapPage(driver);
         await swapPage.checkPageIsLoaded();
-        await swapPage.enterBridgeQuote({
+        await enterBridgeQuote(driver, {
           amount: '0.5',
           tokenTo: 'ETH',
           toChain: 'Ethereum',
@@ -235,7 +236,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         const swapPage = new SwapPage(driver);
         await swapPage.checkPageIsLoaded();
 
-        await swapPage.enterBridgeQuote({
+        await enterBridgeQuote(driver, {
           amount: '0.5',
           tokenTo: 'ETH',
           toChain: 'Ethereum',
@@ -271,7 +272,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         const swapPage = new SwapPage(driver);
         await swapPage.checkPageIsLoaded();
 
-        await swapPage.enterBridgeQuote({
+        await enterBridgeQuote(driver, {
           amount: '0.1',
           tokenTo: 'ETH',
           toChain: 'Ethereum',
@@ -323,7 +324,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         const swapPage = new SwapPage(driver);
         await swapPage.checkPageIsLoaded();
 
-        await swapPage.enterBridgeQuote({
+        await enterBridgeQuote(driver, {
           amount: '0.1',
           tokenTo: 'USDC',
           toChain: 'Ethereum',

@@ -1,6 +1,7 @@
 import { Suite } from 'mocha';
 import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
+import { enterBridgeQuote } from '../../../page-objects/flows/bridge.flow';
 import { login } from '../../../page-objects/flows/login.flow';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import SwapPage from '../../../page-objects/pages/swap/swap-page';
@@ -35,7 +36,7 @@ describe('Ledger Swap', function (this: Suite) {
         );
 
         const swapPage = new SwapPage(driver);
-        await swapPage.enterBridgeQuote({
+        await enterBridgeQuote(driver, {
           amount: '2',
           tokenTo: 'DAI',
         });
