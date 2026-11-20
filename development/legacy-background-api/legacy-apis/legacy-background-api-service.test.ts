@@ -264,6 +264,17 @@ describe('getPublicMethodNamesOfLegacyBackgroundApiService', () => {
     expect(names).toStrictEqual(new Set(['exposed']));
   });
 
+  it('rejects a public method with a computed name that is not a literal', () => {
+    const { sourceFile, context } =
+      parseSource(`class LegacyBackgroundApiService {
+      [DYNAMIC_KEY]() {}
+    }`);
+
+    expect(() =>
+      getPublicMethodNamesOfLegacyBackgroundApiService(sourceFile, context),
+    ).toThrow('Cannot determine the name of this property');
+  });
+
   it('throws when the service class is missing', () => {
     const { sourceFile, context } = parseSource('class OtherService {}');
 
@@ -288,6 +299,7 @@ function parseSource(source: string) {
   );
   const context = {
     sourceFilesByPath: new Map<string, ts.SourceFile>(),
+    nodesBeingResolved: new Set<ts.Node>(),
   } satisfies ResolutionContext;
 
   return { sourceFile, context };
