@@ -23,13 +23,15 @@ import { createSelector } from 'reselect';
 import {
   MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET,
   MULTICHAIN_TESTNET_NETWORKS,
-  MULTICHAIN_TOKEN_IMAGE_MAP,
   MultichainNetworks,
   MultichainProviderConfig,
 } from '../../shared/constants/multichain/networks';
 import { Numeric } from '../../shared/lib/Numeric';
 import { isEvmChainId } from '../../shared/lib/asset-utils';
-import { convertCaipToHexChainId } from '../../shared/lib/network.utils';
+import {
+  convertCaipToHexChainId,
+  DEFAULT_NETWORK_IMAGE_URLS,
+} from '../../shared/lib/network.utils';
 import {
   getMultichainAssetsRatesControllerConversionRates,
   getMultiChainBalancesControllerBalances,
@@ -41,11 +43,7 @@ import {
 } from '../ducks/metamask/metamask';
 import { getConversionRate } from '../ducks/metamask/base-selectors';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  CHAIN_IDS,
-  TEST_NETWORK_IDS,
-} from '../../shared/constants/network';
+import { CHAIN_IDS, TEST_NETWORK_IDS } from '../../shared/constants/network';
 import {
   getNetworkConfigurationsByChainId,
   getProviderConfig,
@@ -371,19 +369,17 @@ function getNonEvmCachedBalance(
   return balanceOfAsset?.amount ?? 0;
 }
 
-export function getImageForChainId(chainId: string): string | undefined {
-  const imageMap: Record<string, string> = {
-    ...CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-    ...MULTICHAIN_TOKEN_IMAGE_MAP,
-  };
-
-  const directMatch = imageMap[chainId];
+export function getImageForChainId(
+  chainId: string,
+  networkImageUrls: Record<string, string> = DEFAULT_NETWORK_IMAGE_URLS,
+): string | undefined {
+  const directMatch = networkImageUrls[chainId];
   if (directMatch) {
     return directMatch;
   }
 
   if (isCaipChainId(chainId) && isEvmChainId(chainId)) {
-    return imageMap[convertCaipToHexChainId(chainId)];
+    return networkImageUrls[convertCaipToHexChainId(chainId)];
   }
 
   return undefined;
