@@ -43,9 +43,9 @@ For each, the question is whether a route in the change consumes a parameter tha
 
 ## Testing
 
-The unit tests do not sign with a real key. [`verify.test.ts`](../shared/lib/deep-links/verify.test.ts) mocks `getKeyData` and stubs `crypto.subtle`, and [`parse.test.ts`](../shared/lib/deep-links/parse.test.ts) mocks `verify`. Real P-256 signing happens in the end-to-end specs under [`test/e2e/tests/deep-link/`](../test/e2e/tests/deep-link/). A route's own tests call its `handler` directly, so they exercise the destination logic and have no power over the signature boundary.
+[`deep-links-doc.test.ts`](../shared/lib/deep-links/deep-links-doc.test.ts) asserts this guide's claims about what a handler receives, what a valid signature covers and when `verify()` retries, signing with a real P-256 key. When a change makes one of its cases fail, the code and this guide disagree, and the change should update whichever is wrong. The other unit tests do not sign with a real key: [`verify.test.ts`](../shared/lib/deep-links/verify.test.ts) mocks `getKeyData` and stubs `crypto.subtle`, and [`parse.test.ts`](../shared/lib/deep-links/parse.test.ts) mocks `verify`. Real P-256 signing also happens in the end-to-end specs under [`test/e2e/tests/deep-link/`](../test/e2e/tests/deep-link/). A route's own tests call its `handler` directly, so they exercise the destination logic and have no power over the signature boundary.
 
-A unit test with a real key is cheap: run it under `@jest-environment node`, generate a P-256 key pair with `crypto.subtle.generateKey`, and replace only `getKeyData` with the generated public key. When writing one:
+A unit test with a real key is cheap, and `deep-links-doc.test.ts` shows the pattern: run it under `@jest-environment node`, generate a P-256 key pair with `crypto.subtle.generateKey`, and replace only `getKeyData` with the generated public key. When writing one:
 
 - **Assert absence, not inequality.** A test that checks a specific value did not arrive still passes when a different unsigned value does. Assert the key is absent.
 - **Vary values across cases.** If the accepted case and the rejected cases use the same literal for a parameter, no assertion can tell "correctly stripped" from "never checked".
