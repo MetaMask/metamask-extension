@@ -35,7 +35,7 @@ import { useTransactionEventFragment } from '../../../hooks/useTransactionEventF
 import { getEnforcedSimulationsSlippageBasisPoints } from '../../../../../../shared/lib/transaction/enforced-simulations';
 
 const ADDED_PROTECTION_LEARN_MORE_URL =
-  'https://support.metamask.io/manage-crypto/transactions/simulations/';
+  'https://support.metamask.com/manage-crypto/transactions/simulations/';
 
 export function EnforcedSimulationsRow() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -170,7 +170,15 @@ export function EnforcedSimulationsRow() {
     [transactionId, updateTransactionEventFragment],
   );
 
-  if (isUnavailable || !hasInitialized) {
+  // Eligibility can be lost after initialization, for example when a
+  // re-simulation fails after opting out, so stop offering protection that
+  // cannot be enforced. Keep the row while protection is applied so the user
+  // can still opt out.
+  if (
+    isUnavailable ||
+    !hasInitialized ||
+    (!isEligible && !hasEnforcedSimulations)
+  ) {
     return null;
   }
 

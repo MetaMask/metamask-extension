@@ -7,7 +7,10 @@ import type { AssetData, PricePoint, ResolvedTicker } from './types';
 
 const tokenSearchUrl = `${TOKEN_API_METASWAP_CODEFI_URL}search`;
 const historicalPricesUrl = `${priceApiBaseUrl}/v3/historical-prices`;
-const clientIdHeader = { 'X-Client-Id': 'extension' };
+const clientIdHeader = {
+  'X-Client-Id': 'extension',
+  'x-mm-service-profile': 'assets--cashtag-widget',
+};
 
 type SearchHit = {
   assetId: CaipAssetType;
@@ -144,6 +147,12 @@ export async function resolveTicker(
   }
 
   const assets = symbolMatches.map(toAssetData).toSorted(byMarketCap);
+
+  // Since assets are sorted by market cap descending, checking the first one is enough
+  if ((assets[0].marketCap ?? 0) <= 0) {
+    return null;
+  }
+
   return {
     primary: assets[0],
     similar: assets.slice(1),

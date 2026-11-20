@@ -88,6 +88,7 @@ export type MfaKitErrorCode =
   | 'flow_in_progress'
   | 'passkey_unsupported'
   | 'passkey_ceremony_cancelled'
+  | 'passkey_already_exists'
   | 'invalid_request'
   | 'email_already_enrolled'
   | 'totp_already_enrolled';
@@ -169,6 +170,13 @@ export interface VerifyOrEnrollRequest {
   verifyWith?: MfaMethod | MfaMethod[];
   /** Tightens how old a reused verification may be. */
   maxSessionAgeMs?: number;
+  /**
+   * Never sets anything up, for a wallet that cannot enroll, such as one that
+   * is still locked. `methods` are then the ones that may prove it's the user,
+   * and `verifyWith` is required: the flow verifies with the active ones this
+   * platform runs, or rejects with `credential_not_enrolled` when none is.
+   */
+  verifyOnly?: boolean;
 }
 
 export type VerifyOrEnrollOptions = VerifyOrEnrollRequest & {
@@ -188,7 +196,7 @@ export type PlanStep =
 
 export type Plan =
   | { ok: true; steps: PlanStep[] }
-  | { ok: false; code: MfaKitErrorCode };
+  | { ok: false; code: MfaFlowErrorCode };
 
 export interface PlanContext {
   platform: MfaPlatform;
@@ -253,7 +261,7 @@ export interface MfaFlowState {
   busy: boolean;
   /** Code of an error to show on the current screen. */
   error?: MfaFlowErrorCode;
-  /** A new code was sent without the user asking (expired flow). */
+  /** A new email code was sent after the user asked for one. */
   codeResent?: boolean;
   /** When the next code may be requested. */
   resendAvailableAt?: number;
@@ -266,7 +274,7 @@ export type MfaFlowAction =
   | { type: 'choose'; method: MfaMethod }
   | { type: 'submitEmail'; email: string }
   | { type: 'submitCode'; code: string }
-  | { type: 'resend'; trigger?: 'user' | 'auto' }
+  | { type: 'resend' }
   | { type: 'retry' }
   | { type: 'errorCtaClicked'; cta: MfaErrorCta }
   | { type: 'dismiss' }
@@ -295,6 +303,11 @@ export interface MfaFlowOptions {
    * code or a secret.
    */
   trackEvent?: MfaTrackEvent;
+  /**
+   * Whether the flow runs while the wallet is locked, as social login
+   * recovery does. Any other flow ends when the wallet locks.
+   */
+  whileLocked?: boolean;
 }
 
 export interface MfaErrorContext {
@@ -305,6 +318,7 @@ export interface MfaErrorContext {
 
 export interface MfaFlow {
   readonly reason: MfaReason;
+  readonly whileLocked: boolean;
   readonly result: Promise<MfaFlowResult>;
   start: () => Promise<void>;
   getState: () => MfaFlowState;

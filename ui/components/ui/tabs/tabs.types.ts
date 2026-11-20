@@ -53,6 +53,10 @@ export type TabsProps<TKey extends string = string> = Omit<
   className?: string;
   /** Enable transition animation when switching tabs */
   animated?: boolean;
+  /** Renders a slot at the end of the tab row */
+  hasTabEndSlot?: boolean;
+  /** Class name for the row that has the tab list and the end slot */
+  tabRowClassName?: string;
 };
 
 export type TabsHandle<TKey extends string = string> = {

@@ -24,7 +24,7 @@ import { PreferredAvatar } from '../../../components/app/preferred-avatar';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
-import { getImageForChainId } from '../../../selectors/multichain';
+import { useImageForChainId } from '../../../hooks/useImageForChainId';
 import type { ViewContactContentProps } from '../contacts.types';
 
 export function ViewContactContent({
@@ -41,7 +41,7 @@ export function ViewContactContent({
   const networks = useSelector(getNetworkConfigurationsByChainId);
   const network = networks?.[chainId as Hex];
   const networkName = network?.name ?? t('networkTabCustom');
-  const networkImage = getImageForChainId(chainId);
+  const networkImage = useImageForChainId(chainId);
 
   return (
     <Box

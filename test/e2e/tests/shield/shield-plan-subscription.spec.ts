@@ -479,6 +479,7 @@ describe('Shield Subscription Tests', function () {
           await homePage.clickOnShieldEntryModalGetStarted();
 
           const shieldPlanPage = new ShieldPlanPage(driver);
+          await shieldPlanPage.checkPageIsLoaded();
           await shieldPlanPage.clickBackButton();
 
           await homePage.checkPageIsLoaded();
@@ -514,6 +515,7 @@ describe('Shield Subscription Tests', function () {
           await homePage.clickOnShieldEntryModalGetStarted();
 
           const shieldPlanPage = new ShieldPlanPage(driver);
+          await shieldPlanPage.checkPageIsLoaded();
           await shieldPlanPage.clickBackButton();
 
           await settingsPage.checkPageIsLoaded();
