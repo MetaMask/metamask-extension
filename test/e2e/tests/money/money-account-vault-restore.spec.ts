@@ -18,6 +18,10 @@ import ResetPasswordPage from '../../page-objects/pages/onboarding/reset-passwor
 import SetupPasskeyPage from '../../page-objects/pages/onboarding/setup-passkey-page';
 import { Driver } from '../../webdriver/driver';
 import { TEST_SEED_PHRASE } from '../../constants';
+import {
+  BASE_ACCOUNT_SYNC_INTERVAL,
+  BASE_ACCOUNT_SYNC_TIMEOUT,
+} from '../identity/account-syncing/helpers';
 import { MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME } from '../../../../shared/lib/money/feature-flags';
 
 /**
@@ -105,6 +109,29 @@ async function waitForMoneyAccounts(
   }, 10000);
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   return uiState!.metamask;
+}
+
+/**
+ * Wait until the account tree's first backup-and-sync run after unlock has
+ * finished. Locking while that run is still in flight leaves it to collide
+ * with the sync the vault restore awaits, and the restore never resolves.
+ *
+ * @param driver - The webdriver instance.
+ */
+async function waitForAccountTreeSyncToFinish(driver: Driver): Promise<void> {
+  await driver.waitUntil(
+    async () => {
+      const uiState = await getCleanAppState(driver);
+      return (
+        uiState?.metamask?.hasAccountTreeSyncingSyncedAtLeastOnce === true &&
+        uiState?.metamask?.isAccountTreeSyncingInProgress === false
+      );
+    },
+    {
+      interval: BASE_ACCOUNT_SYNC_INTERVAL,
+      timeout: BASE_ACCOUNT_SYNC_TIMEOUT,
+    },
+  );
 }
 
 describe('Money account', function (this: Suite) {
@@ -209,6 +236,9 @@ describe('Money account', function (this: Suite) {
               [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: MONEY_ACCOUNT_FLAG_VALUE,
             },
           })
+          .withAccountTreeController({
+            hasAccountTreeSyncingSyncedAtLeastOnce: false,
+          })
           .build(),
         testSpecificMock: mockMoneyAccountFlag,
         // Locking the wallet mid-test can cut off in-flight requests; these
@@ -236,6 +266,7 @@ describe('Money account', function (this: Suite) {
         // Restore a different SRP over the wallet via the forgot-password
         // flow. This replaces every keyring, orphaning the recorded money
         // account's entropy source.
+        await waitForAccountTreeSyncToFinish(driver);
         await lockAndWaitForLoginPage(driver);
         await new LoginPage(driver).gotoResetPasswordPage();
 
