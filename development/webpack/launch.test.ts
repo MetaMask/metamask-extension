@@ -11,7 +11,11 @@ jest.mock('node:child_process', () => ({
   spawn: jest.fn(),
 }));
 jest.mock('node:tty', () => ({ isatty: () => false }));
-jest.mock('@lydell/node-pty', () => ({ open: jest.fn() }));
+jest.mock('@lydell/node-pty', () => {
+  throw new Error(
+    '@lydell/node-pty should stay unloaded unless a TTY stream is created',
+  );
+});
 jest.mock('yargs-parser', () => ({ __esModule: true, default: jest.fn() }));
 jest.mock('./build', () => ({ build: jest.fn() }));
 
