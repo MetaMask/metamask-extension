@@ -1,8 +1,9 @@
 import type * as Sentry from '@sentry/browser';
 import {
-  getActiveSpan,
   SPAN_STATUS_ERROR,
   SPAN_STATUS_OK,
+  getActiveSpan,
+  getRootSpan,
   spanToJSON,
 } from '@sentry/core';
 import type {
@@ -262,6 +263,11 @@ export type SharedTraceState = {
    * Unset outside the background.
    */
   backgroundPageloadSpanId?: string;
+  /**
+   * The trace id of the UI document's latest pageload or navigation, which the
+   * SDK keeps on the scope until the next navigation. Unset in the background.
+   */
+  documentRouteTraceId?: string;
 };
 
 type PendingTrace = {
@@ -384,6 +390,10 @@ export type TraceRequest = {
    * keeps the pageload's trace id and sampling decision on the scope for the
    * background's whole life, so such work would otherwise join that trace and
    * be kept or dropped with it.
+   *
+   * In a UI document, so does a trace started on the current route's trace id,
+   * which the SDK keeps on the scope until the next navigation. While a span is
+   * active, a declared parent that does not resolve nests under it instead.
    */
   root?: boolean;
 };
@@ -633,9 +643,7 @@ function getSharedState(): SharedTraceState {
  * @param client - The Sentry client that emits the pageload's `spanStart`.
  */
 export function trackBackgroundPageload(client?: Client): void {
-  if (
-    getEnvironmentType(globalThis.location.href) !== ENVIRONMENT_TYPE_BACKGROUND
-  ) {
+  if (!isBackground()) {
     return;
   }
 
@@ -668,10 +676,57 @@ function isOnBackgroundPageload(): boolean {
   if (!backgroundPageloadTraceId) {
     return false;
   }
-  const scopeTraceId = globalThis.sentry
-    ?.getCurrentScope?.()
-    ?.getPropagationContext?.()?.traceId;
-  return scopeTraceId === backgroundPageloadTraceId;
+  return getScopeTraceId() === backgroundPageloadTraceId;
+}
+
+const ROUTE_OPS = new Set(['pageload', 'navigation']);
+
+/**
+ * Records UI route trace ids for {@link TraceRequest.root}; call right after `Sentry.init`.
+ *
+ * @param client - The Sentry client that emits each navigation's `spanStart`.
+ */
+export function trackDocumentRouteTrace(client?: Client): void {
+  if (!client || isBackground()) {
+    return;
+  }
+
+  const recordRoute = (span?: Span) => {
+    if (
+      span &&
+      getRootSpan(span) === span &&
+      ROUTE_OPS.has(spanToJSON(span).op ?? '')
+    ) {
+      getSharedState().documentRouteTraceId = span.spanContext().traceId;
+    }
+  };
+
+  recordRoute(getActiveSpan());
+  client.on('spanStart', recordRoute);
+}
+
+/**
+ * Whether the scope still holds the latest route's trace id, running or ended.
+ *
+ * @returns True when such work should start its own trace.
+ */
+function isOnDocumentRouteTrace(): boolean {
+  const { documentRouteTraceId } = getSharedState();
+  return (
+    documentRouteTraceId !== undefined &&
+    getScopeTraceId() === documentRouteTraceId
+  );
+}
+
+function isBackground(): boolean {
+  return (
+    getEnvironmentType(globalThis.location.href) === ENVIRONMENT_TYPE_BACKGROUND
+  );
+}
+
+function getScopeTraceId(): string | undefined {
+  return globalThis.sentry?.getCurrentScope?.()?.getPropagationContext?.()
+    ?.traceId;
 }
 
 /**
@@ -1109,16 +1164,20 @@ function startSpan<T>(
   // has no span. `resolveParentSpan` returns `null` for both, so read the input.
   const parentDeclared = parentContext !== undefined;
 
-  // A parent that did not resolve leaves the scope's ambient trace id, which
-  // in the background is the pageload's. `traceparent` data
-  // and an active span are handled below and are not roots.
-  // An active span that the fallback or the unresolved-parent nesting below
-  // adopts keeps the work out of the pageload's trace.
+  // Work without a resolved parent leaves the scope's ambient trace id, which
+  // is the background pageload's, or the UI document's latest route's. In
+  // either case it starts its own trace, declared parent or not. `traceparent`
+  // data is handled below and is not a root. In the background, an active span
+  // that the fallback or the unresolved-parent nesting below adopts keeps the
+  // work out of the pageload's trace.
   const root =
     request.root ||
     (!parentSpan &&
       !((parentDeclared || allowActiveSpanFallback) && sentryGetActiveSpan()) &&
-      isOnBackgroundPageload());
+      isOnBackgroundPageload()) ||
+    (!parentSpan &&
+      isOnDocumentRouteTrace() &&
+      (!parentDeclared || !sentryGetActiveSpan()));
 
   // Read the active span before `withScope` forks the scope. `forceTransaction`
   // keeps an inherited span in transaction-level dashboards.
