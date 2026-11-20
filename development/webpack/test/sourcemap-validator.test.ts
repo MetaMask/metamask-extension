@@ -1,7 +1,9 @@
+import { spawn } from 'node:child_process';
 import { describe, it, afterEach, beforeEach, mock } from 'node:test';
 import assert from 'node:assert';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { SourceMapGenerator } from 'source-map';
 import {
@@ -10,11 +12,50 @@ import {
   indicesOf,
   detectMapLocationFromContentscript,
   discoverWebpackBundles,
-  validateBundle,
   main,
+  validateBundle,
 } from '../sourcemap-validator.ts';
 
 const noop = () => undefined;
+
+/**
+ * Runs a TypeScript file in a fresh Node process, so `projectRoot` is computed
+ * from that process entry path.
+ *
+ * @param scriptPath - Absolute path to the script.
+ * @param cwd - Working directory for the child.
+ * @returns The child exit code and captured output.
+ */
+function runNodeScript(
+  scriptPath: string,
+  cwd: string,
+): Promise<{ code: number | null; stderr: string; stdout: string }> {
+  return new Promise((resolve, reject) => {
+    const child = spawn(process.execPath, [scriptPath], {
+      cwd,
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+    if (child.stdout === null || child.stderr === null) {
+      reject(new Error('Expected piped stdio from the discovery process'));
+      return;
+    }
+
+    let stdout = '';
+    let stderr = '';
+    child.stdout.setEncoding('utf8');
+    child.stderr.setEncoding('utf8');
+    child.stdout.on('data', (chunk: string) => {
+      stdout += chunk;
+    });
+    child.stderr.on('data', (chunk: string) => {
+      stderr += chunk;
+    });
+    child.on('error', reject);
+    child.on('close', (code) => {
+      resolve({ code, stderr, stdout });
+    });
+  });
+}
 
 const FIXTURES_DIR = join(import.meta.dirname, 'fixtures');
 const EMPTY_FIXTURE = join(FIXTURES_DIR, 'sourcemap-validator-empty');
@@ -420,6 +461,60 @@ describe('sourcemap-validator', () => {
         );
       } finally {
         await rm(fixtureDir, { recursive: true, force: true });
+      }
+    });
+
+    it('reads the checkout dist directory when distDir is omitted and cwd is unrelated', async () => {
+      const checkout = await mkdtemp(
+        join(tmpdir(), 'sourcemap-validator-checkout-'),
+      );
+      const unrelatedCwd = await mkdtemp(
+        join(tmpdir(), 'sourcemap-validator-unrelated-cwd-'),
+      );
+
+      try {
+        const checkoutChromeDir = join(checkout, 'dist', 'chrome');
+        const unrelatedChromeDir = join(unrelatedCwd, 'dist', 'chrome');
+        await mkdir(checkoutChromeDir, { recursive: true });
+        await mkdir(unrelatedChromeDir, { recursive: true });
+        await writeFile(join(checkout, 'builds.yml'), '');
+        await writeFile(join(checkout, 'package.json'), '{}');
+        await writeFile(
+          join(checkoutChromeDir, 'marker.js'),
+          'throw new Error("marker");',
+        );
+        await writeFile(join(checkoutChromeDir, 'marker.js.map'), '{}');
+        await writeFile(
+          join(unrelatedChromeDir, 'decoy.js'),
+          'throw new Error("decoy");',
+        );
+        await writeFile(join(unrelatedChromeDir, 'decoy.js.map'), '{}');
+
+        const validatorUrl = pathToFileURL(
+          join(import.meta.dirname, '../sourcemap-validator.ts'),
+        ).href;
+        const runnerPath = join(checkout, 'run-discovery.ts');
+        await writeFile(
+          runnerPath,
+          `import { discoverWebpackBundles } from ${JSON.stringify(validatorUrl)};
+const pairs = await discoverWebpackBundles({ mapLocation: 'sibling', platform: 'chrome' });
+process.stdout.write(JSON.stringify(pairs));
+`,
+        );
+
+        const { code, stderr, stdout } = await runNodeScript(
+          runnerPath,
+          unrelatedCwd,
+        );
+        assert.strictEqual(code, 0, `discovery process failed:\n${stderr}`);
+        const pairs = JSON.parse(stdout) as { label: string }[];
+        assert.deepStrictEqual(
+          pairs.map((pair) => pair.label),
+          ['marker.js'],
+        );
+      } finally {
+        await rm(checkout, { recursive: true, force: true });
+        await rm(unrelatedCwd, { recursive: true, force: true });
       }
     });
   });
