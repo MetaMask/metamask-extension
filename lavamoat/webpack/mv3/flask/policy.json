@@ -1153,7 +1153,6 @@
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/core-backend": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,

@@ -129,15 +129,6 @@ export function buildMaxAmountParityFixture(network: MaxAmountNetwork) {
         },
       },
     })
-    .withAccountTracker({
-      accountsByChainId: {
-        [network.chainId]: {
-          [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
-            balance: NATIVE_BALANCE_HEX,
-          },
-        },
-      },
-    })
     .build();
 
   merge(fixture.data.NetworkEnablementController, {

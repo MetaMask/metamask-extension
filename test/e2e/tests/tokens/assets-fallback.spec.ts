@@ -36,15 +36,6 @@ describe('Assets API fallbacks', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
-          .withAccountTracker({
-            accountsByChainId: {
-              '0x539': {
-                [DEFAULT_FIXTURE_ACCOUNT]: {
-                  balance: weiHex(BigInt(STALE_FIXTURE_BALANCE)),
-                },
-              },
-            },
-          })
           .withAssetsController({
             assetsBalance: {
               [DEFAULT_FIXTURE_ACCOUNT_ID]: {
@@ -95,15 +86,6 @@ describe('Assets API fallbacks', function () {
         fixtures: new FixtureBuilderV2()
           .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({ eip155: { '0x1': true } })
-          .withAccountTracker({
-            accountsByChainId: {
-              '0x1': {
-                [DEFAULT_FIXTURE_ACCOUNT]: {
-                  balance: weiHex(BigInt(STALE_FIXTURE_BALANCE)),
-                },
-              },
-            },
-          })
           .withAssetsController(
             {
               assetsPrice: {},
@@ -155,20 +137,6 @@ describe('Assets API fallbacks', function () {
           })
           .withRemoteFeatureFlagController({
             remoteFeatureFlags: { assetsAccountsApiV6: true },
-          })
-          .withAccountTracker({
-            accountsByChainId: {
-              '0x1': {
-                [DEFAULT_FIXTURE_ACCOUNT]: {
-                  balance: weiHex(BigInt(STALE_FIXTURE_BALANCE)),
-                },
-              },
-              '0x89': {
-                [DEFAULT_FIXTURE_ACCOUNT]: {
-                  balance: weiHex(BigInt(STALE_FIXTURE_BALANCE)),
-                },
-              },
-            },
           })
           .withAssetsController({
             assetsBalance: {
