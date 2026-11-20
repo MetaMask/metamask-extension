@@ -71,12 +71,11 @@ jest.mock('../../../page-objects/flows/login.flow', () => ({
     mockEvents.push('login');
   }),
 }));
-jest.mock('../../../page-objects/pages/bridge/quote-page', () => ({
+jest.mock('../../../page-objects/pages/swap/swap-asset-picker-page', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn().mockImplementation(() => ({
-    sourceAssetPickerButton: 'sourceAssetPickerButton',
-    assetPrickerSearchInput: 'assetPickerSearchInput',
+    searchInput: 'assetPickerSearchInput',
     tokenButton: 'tokenButton',
   })),
 }));
@@ -249,11 +248,11 @@ describe('bridge user actions', () => {
     expect(mockEvents.filter((event) => event === pageIdle)).toHaveLength(1);
     expect(at('read:bridge_load_page')).toBeLessThan(at(pageIdle));
     expect(
-      at('driver.findClickableElement:sourceAssetPickerButton'),
+      at('driver.findClickableElement:[data-testid="bridge-source-button"]'),
     ).toBeLessThan(at(pageIdle));
     expect(at(pageIdle)).toBeLessThan(at('probe:bridge_load_asset_picker'));
     expect(at(pageIdle)).toBeLessThan(
-      at('driver.clickElement:sourceAssetPickerButton'),
+      at('driver.clickElement:[data-testid="bridge-source-button"]'),
     );
   });
 
