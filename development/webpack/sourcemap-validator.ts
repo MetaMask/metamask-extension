@@ -20,7 +20,7 @@ import type {
 } from 'source-map';
 import { SourceMapConsumer } from 'source-map';
 import { codeFrameColumns } from '@babel/code-frame';
-import { webpackFile } from '../lib/build-paths.ts';
+import { projectRoot, webpackFile } from '../lib/build-paths.ts';
 
 const PLATFORMS = ['chrome', 'firefox'] as const;
 const SOURCEMAPS_DIRNAME = 'sourcemaps';
@@ -50,12 +50,25 @@ export type MapLocation = (typeof MAP_LOCATIONS)[number];
 
 export type SourceMapValidatorOptions = {
   mapLocation?: MapLocation;
+  /** Absolute path to the build output directory. Defaults to `<projectRoot>/dist`. */
+  distDir?: string;
 };
 
 type DiscoverWebpackBundlesOptions = {
   mapLocation: MapLocation;
   platform: string;
+  distDir?: string;
 };
+
+/**
+ * Resolves the directory that contains platform builds.
+ *
+ * @param distDir - Optional absolute override.
+ * @returns The dist directory.
+ */
+function resolveDistDir(distDir?: string): string {
+  return distDir ?? join(projectRoot, 'dist');
+}
 
 /**
  * Returns true if the bundle line at the given position is likely a comment
@@ -164,11 +177,12 @@ export async function detectMapLocationFromContentscript(
  *
  * @param options - Source map validation options.
  * @param options.mapLocation - Optional override for where map files are expected for each bundle.
+ * @param options.distDir - Optional absolute path to the build output directory.
  */
 export async function main(
   options: SourceMapValidatorOptions = {},
 ): Promise<void> {
-  const distDir = join(process.cwd(), 'dist');
+  const distDir = resolveDistDir(options.distDir);
   const availablePlatforms: string[] = [];
 
   for (const platform of PLATFORMS) {
@@ -212,7 +226,11 @@ export async function main(
     mapLocation = options.mapLocation;
   }
 
-  const pairs = await discoverWebpackBundles({ mapLocation, platform });
+  const pairs = await discoverWebpackBundles({
+    mapLocation,
+    platform,
+    distDir,
+  });
   if (pairs.length === 0) {
     const searchedLocation =
       mapLocation === 'sibling' ? `dist/${platform}/` : 'dist/sourcemaps/';
@@ -254,13 +272,14 @@ export async function main(
  * @param options - Source map discovery options.
  * @param options.mapLocation - Where map files are expected for each bundle.
  * @param options.platform - The platform directory name (e.g. 'chrome' or 'firefox').
+ * @param options.distDir - Optional absolute path to the build output directory.
  * @returns Sorted array of { jsPath, mapPath, label } for each bundle.
  */
 export async function discoverWebpackBundles(
   options: DiscoverWebpackBundlesOptions,
 ): Promise<FilePair[]> {
   const { mapLocation, platform } = options;
-  const distDir = join(process.cwd(), 'dist');
+  const distDir = resolveDistDir(options.distDir);
   const platformDir = join(distDir, platform);
   const sourcemapsDir = join(distDir, SOURCEMAPS_DIRNAME);
   const pairs: FilePair[] = [];

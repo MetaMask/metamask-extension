@@ -1,6 +1,8 @@
 import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import assert from 'node:assert';
 import phishingWarningPackageJson from '@metamask/phishing-warning/package.json' with { type: 'json' };
+import { projectRoot } from '../lib/build-paths.ts';
 import { ENVIRONMENT, type BuildEnvironment } from './constants.ts';
 
 export type { BuildEnvironment };
@@ -112,10 +114,11 @@ const BUILD_TYPES_TO_SVG_LOGO_PATH = {
 } as const satisfies Record<string, string>;
 
 function getBuildIcon({ buildType }: { buildType: string }): string {
-  const svgLogoPath =
+  const relativeLogoPath =
     BUILD_TYPES_TO_SVG_LOGO_PATH[
       buildType as keyof typeof BUILD_TYPES_TO_SVG_LOGO_PATH
     ] ?? BUILD_TYPES_TO_SVG_LOGO_PATH.main;
+  const svgLogoPath = join(projectRoot, relativeLogoPath);
   return `data:image/svg+xml;base64,${readFileSync(svgLogoPath, 'base64')}`;
 }
 

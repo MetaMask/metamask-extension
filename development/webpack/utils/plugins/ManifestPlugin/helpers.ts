@@ -6,6 +6,7 @@ import {
   CHROME_MANIFEST_KEY_RELEASE_CANDIDATE,
   ENVIRONMENTS,
 } from '../../constants.ts';
+import { projectRoot } from '../../../../lib/build-paths.ts';
 import type { Args } from '../../cli';
 import type { Browser } from '../../helpers';
 
@@ -105,7 +106,7 @@ export function transformManifest(
     if (manifestOverridesPath) {
       try {
         const manifestFlagsContent = fs.readFileSync(
-          path.resolve(process.cwd(), manifestOverridesPath),
+          path.resolve(projectRoot, manifestOverridesPath),
           'utf8',
         );
         manifestFlags = JSON.parse(manifestFlagsContent);
