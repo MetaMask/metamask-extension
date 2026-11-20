@@ -587,6 +587,18 @@ describe('NetworkForm Component', () => {
           }),
         }),
       );
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Network Added',
+          properties: expect.objectContaining({
+            chain_id: '0x64',
+            source: 'manual',
+            entry_point: 'network_picker',
+            rpc_count: 1,
+            block_explorer_set: false,
+          }),
+        }),
+      );
     });
   });
 
@@ -641,6 +653,15 @@ describe('NetworkForm Component', () => {
         },
       );
       expect(setTokenNetworkFilter).toHaveBeenCalledTimes(1);
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Network Edited',
+          properties: expect.objectContaining({
+            chain_id: '0x64',
+            entry_point: 'edit_network_modal',
+          }),
+        }),
+      );
     });
   });
 

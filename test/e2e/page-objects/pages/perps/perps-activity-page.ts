@@ -6,9 +6,11 @@ import { Driver } from '../../../webdriver/driver';
  * Screen: `#/perps/activity`, reached from `PerpsTab.clickRecentActivitySeeAll`.
  * Owns: the activity page shell, filter button and type options, transaction
  * cards, waiting for trade-title fragments, and the header back control.
- * Boundaries: the activity list only. Opening a card may leave this screen;
- * asserting Perps home or market detail after back belongs to those objects.
- * Related: `PerpsTab` (how tests get here),
+ * Boundaries: the activity list only. Opening a card leaves this screen;
+ * asserting transaction details, or Perps home or market detail after back,
+ * belongs to those objects.
+ * Related: `PerpsTab` (how tests get here), `PerpsTransactionDetailsPage`
+ * (opened from a card),
  * `flows/perps-activity-close-fill.flow.ts` for close-fill assertions that
  * span market detail and activity.
  *

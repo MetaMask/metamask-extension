@@ -3,7 +3,7 @@ import { Suite } from 'mocha';
 import { buildAssetRoutePath } from '../../../../shared/lib/asset-route';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
-import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import SwapPage from '../../page-objects/pages/swap/swap-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokenOverviewPage from '../../page-objects/pages/asset/token-overview-page';
 import { getBridgeFixtures } from '../bridge/bridge-test-utils';
@@ -47,8 +47,8 @@ describe('Balance-aware Swap defaults from Token Detail Page', function (this: S
         await tokenOverviewPage.checkPageIsLoaded();
         await tokenOverviewPage.clickSwap();
 
-        const bridgePage = new BridgeQuotePage(driver);
-        await bridgePage.checkAssetsAreSelected('ETH', 'mUSD');
+        const swapPage = new SwapPage(driver);
+        await swapPage.checkAssetsAreSelected('ETH', 'mUSD');
       },
     );
   });
@@ -81,8 +81,8 @@ describe('Balance-aware Swap defaults from Token Detail Page', function (this: S
 
         // Without balance-aware defaults, DAI would open as the source and
         // leave Swap unusable until the user changed tokens.
-        const bridgePage = new BridgeQuotePage(driver);
-        await bridgePage.checkAssetsAreSelected('ETH', 'DAI');
+        const swapPage = new SwapPage(driver);
+        await swapPage.checkAssetsAreSelected('ETH', 'DAI');
       },
     );
   });
