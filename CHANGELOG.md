@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed ERC-20 approvals being shown as NFT approvals when the token standard could not be determined (#46093)
+
 ## [13.57.0]
 
 ### Added

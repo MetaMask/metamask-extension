@@ -28,7 +28,7 @@ exports[`<ApproveDetails /> renders component for approve details 1`] = `
             <div
               aria-describedby="tippy-tooltip-1"
               class=""
-              data-original-title="This is the address that will be able to withdraw your NFTs."
+              data-original-title="This is the address that will be able to spend your tokens on your behalf."
               data-tooltipped=""
               style="display: flex;"
               tabindex="0"

@@ -22,6 +22,12 @@ jest.mock('../../../../../../store/actions', () => ({
 
 describe('useCurrentSpendingCap', () => {
   it('returns the correct spending cap', async () => {
+    jest.mocked(getTokenStandardAndDetailsByChain).mockResolvedValue({
+      standard: ERC20,
+      decimals: '6',
+      symbol: 'USDC',
+    } as TokenStandAndDetails);
+
     const transactionMeta = genUnapprovedApproveConfirmation({
       address: CONTRACT_INTERACTION_SENDER_ADDRESS,
     }) as TransactionMeta;
@@ -32,7 +38,7 @@ describe('useCurrentSpendingCap', () => {
     );
 
     await waitFor(() => {
-      expect(result.current.customSpendingCap).toMatchInlineSnapshot(`"#1"`);
+      expect(result.current.customSpendingCap).toBe('1');
     });
   });
 

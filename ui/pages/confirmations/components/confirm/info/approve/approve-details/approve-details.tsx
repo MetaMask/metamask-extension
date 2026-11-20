@@ -84,7 +84,9 @@ const Spender = ({
         ownerId={transactionMeta.id}
         label={t(isSetApprovalForAll ? 'permissionFor' : 'spender')}
         tooltip={t(
-          isNFT ? 'spenderTooltipDesc' : 'spenderTooltipERC20ApproveDesc',
+          isSetApprovalForAll || isNFT
+            ? 'spenderTooltipDesc'
+            : 'spenderTooltipERC20ApproveDesc',
         )}
         data-testid="confirmation__approve-spender"
       >
