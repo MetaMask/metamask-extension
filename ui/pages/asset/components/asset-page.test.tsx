@@ -453,6 +453,7 @@ describe('AssetPage', () => {
 
     mockUseMoneyEarnBanner.mockReturnValue({
       isVisible: false,
+      isCtaDisabled: false,
       apyPercentFormatted: undefined,
       onBannerClick: jest.fn(),
       onCtaClick: jest.fn(),
@@ -460,6 +461,7 @@ describe('AssetPage', () => {
     });
     mockUseMoneyAssetOverviewBalanceCta.mockReturnValue({
       display: undefined,
+      isStartEarningDisabled: false,
       isLoading: false,
       onStartEarning: mockOnStartEarning,
       onProjectionTooltipOpen: mockOnProjectionTooltipOpen,
@@ -970,6 +972,7 @@ describe('AssetPage', () => {
     it('renders the earn banner when eligible', () => {
       mockUseMoneyEarnBanner.mockReturnValue({
         isVisible: true,
+        isCtaDisabled: false,
         apyPercentFormatted: '6%',
         onBannerClick: jest.fn(),
         onCtaClick: jest.fn(),
@@ -995,6 +998,7 @@ describe('AssetPage', () => {
       } as const;
       mockUseMoneyEarnBanner.mockReturnValue({
         isVisible: true,
+        isCtaDisabled: false,
         apyPercentFormatted: '6%',
         onBannerClick: jest.fn(),
         onCtaClick: jest.fn(),
@@ -1033,6 +1037,7 @@ describe('AssetPage', () => {
     it('renders placeholders while the APY loads', () => {
       mockUseMoneyAssetOverviewBalanceCta.mockReturnValue({
         display: undefined,
+        isStartEarningDisabled: false,
         isLoading: true,
         onStartEarning: mockOnStartEarning,
         onProjectionTooltipOpen: mockOnProjectionTooltipOpen,
@@ -1064,6 +1069,7 @@ describe('AssetPage', () => {
           apyPercentFormatted: '6.2%',
           projectedEarningsFormatted: '+$74.34',
         },
+        isStartEarningDisabled: false,
         isLoading: false,
         onStartEarning: mockOnStartEarning,
         onProjectionTooltipOpen: mockOnProjectionTooltipOpen,

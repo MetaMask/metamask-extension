@@ -385,6 +385,7 @@ import { MoneyAccountApiDataServiceInit } from './messenger-client-init/money-ac
 import { MoneyAccountAvailabilityServiceInit } from './messenger-client-init/money-account-availability-service-init';
 import { MoneyAccountBalanceServiceInit } from './messenger-client-init/money-account-balance-service-init';
 import { MoneyAccountControllerInit } from './messenger-client-init/money-account-controller-init';
+import { MoneyAccountLifecycleControllerInit } from './messenger-client-init/money-account-lifecycle-controller-init';
 import { MoneyAccountUpgradeControllerInit } from './messenger-client-init/money-account-upgrade-controller-init';
 import { initializeWallet } from './wallet-init/initialization';
 import { setupNetworkEnablementController } from './wallet-init/network-enablement-controller';
@@ -629,6 +630,7 @@ export default class MetamaskController extends EventEmitter {
       MoneyAccountAvailabilityService: MoneyAccountAvailabilityServiceInit,
       MoneyAccountBalanceService: MoneyAccountBalanceServiceInit,
       MoneyAccountController: MoneyAccountControllerInit,
+      MoneyAccountLifecycleController: MoneyAccountLifecycleControllerInit,
       MoneyAccountUpgradeController: MoneyAccountUpgradeControllerInit,
       AssetsController: AssetsControllerInit,
       LegacyBackgroundApiService: LegacyBackgroundApiServiceInit,
@@ -786,6 +788,8 @@ export default class MetamaskController extends EventEmitter {
     );
     this.moneyAccountUpgradeController =
       messengerClientsByName.MoneyAccountUpgradeController;
+    this.moneyAccountLifecycleController =
+      messengerClientsByName.MoneyAccountLifecycleController;
 
     this.extension.runtime.onInstalled.addListener((details) => {
       if (details.reason === 'update') {
@@ -909,6 +913,7 @@ export default class MetamaskController extends EventEmitter {
     this.snapController.init();
     this.cronjobController.init();
     this.moneyAccountUpgradeController.init();
+    this.moneyAccountLifecycleController.init();
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionStatusUpdated',

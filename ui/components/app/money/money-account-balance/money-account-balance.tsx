@@ -117,10 +117,12 @@ const Balance = ({
 const Add = ({
   onAddClick,
   isDepositLoading,
+  isDisabled,
   moneyAccountEmpty,
 }: {
   onAddClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
   isDepositLoading: boolean;
+  isDisabled: boolean;
   moneyAccountEmpty: boolean;
 }) => {
   const t = useI18nContext();
@@ -134,6 +136,7 @@ const Add = ({
       }
       className="w-full"
       isLoading={isDepositLoading}
+      isDisabled={isDisabled || isDepositLoading}
       data-testid={MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID}
       onClick={onAddClick}
     >
@@ -214,8 +217,11 @@ export const MoneyAccountBalance = () => {
     apyPercentFormatted,
     vaultApyQuery,
   } = useMoneyAccountBalance();
-  const { initiateDeposit, isLoading: isDepositLoading } =
-    useMoneyAccountDeposit();
+  const {
+    initiateDeposit,
+    isDisabled: isDepositDisabled,
+    isLoading: isDepositLoading,
+  } = useMoneyAccountDeposit();
   const {
     trackButtonClicked,
     trackSurfaceClicked,
@@ -267,7 +273,7 @@ export const MoneyAccountBalance = () => {
   };
 
   const startDeposit = () => {
-    if (isDepositLoading) {
+    if (isDepositLoading || isDepositDisabled) {
       return;
     }
     trackButtonClicked({
@@ -389,6 +395,7 @@ export const MoneyAccountBalance = () => {
           moneyAccountEmpty={moneyAccountEmpty}
           onAddClick={handleAddClick}
           isDepositLoading={isDepositLoading}
+          isDisabled={isDepositDisabled}
         />
       </Box>
     </Box>

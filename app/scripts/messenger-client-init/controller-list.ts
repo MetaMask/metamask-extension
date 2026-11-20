@@ -108,6 +108,7 @@ import { SentinelApiService } from '@metamask/sentinel-api-service';
 import { MoneyAccountApiDataService } from '@metamask/money-account-api-data-service';
 import { MoneyAccountBalanceService } from '@metamask/money-account-balance-service';
 import { MoneyAccountController } from '@metamask/money-account-controller';
+import { MoneyAccountLifecycleController } from '@metamask/money-account-lifecycle-controller';
 import { MoneyAccountUpgradeController } from '@metamask/money-account-upgrade-controller';
 import { MoneyAccountAvailabilityService } from '../lib/money/money-account-availability';
 import { OnboardingController } from '../controllers/onboarding';
@@ -180,6 +181,8 @@ export type MessengerClient =
   | MoneyAccountAvailabilityService
   | MoneyAccountBalanceService
   | MoneyAccountController
+  // Not in MessengerClientFlatState: its `moneyAccounts` key collides with MoneyAccountController's.
+  | MoneyAccountLifecycleController
   | MoneyAccountUpgradeController
   | MultichainAssetsController
   | MultichainTransactionsController

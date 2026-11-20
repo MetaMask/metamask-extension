@@ -9,6 +9,7 @@ import {
 } from '../../pages/confirmations/hooks/useConfirmationNavigation';
 import { createMoneyAccountWithdrawTransaction } from '../../store/controller-actions/transaction-pay-controller';
 import { useMoneyErrorReporter } from './useMoneyErrorReporter';
+import { useMoneyAccountLifecycle } from './use-money-account-lifecycle';
 
 /**
  * Initiates a Money Account withdrawal: creates the placeholder withdraw +
@@ -36,7 +37,7 @@ import { useMoneyErrorReporter } from './useMoneyErrorReporter';
  * hook, matching mobile. The promise resolves after that so callers do not
  * each need a `.catch`.
  *
- * @returns The initiator and its loading state.
+ * @returns The initiator, its loading state, and whether withdrawals are disabled.
  */
 export function useMoneyAccountWithdrawal() {
   const { navigateToTransaction } = useConfirmationNavigation();
@@ -44,8 +45,18 @@ export function useMoneyAccountWithdrawal() {
   const recipientAccount = useSelector(selectMoneyWithdrawalRecipient);
   const reportError = useMoneyErrorReporter();
   const [isLoading, setIsLoading] = useState(false);
+  const {
+    isLifecycleUnavailable,
+    isReadOnly,
+    isLoading: isLifecycleLoading,
+  } = useMoneyAccountLifecycle();
+  const isDisabled = isReadOnly || isLifecycleUnavailable || isLifecycleLoading;
 
   const initiateWithdrawal = useCallback(async () => {
+    if (isDisabled) {
+      return;
+    }
+
     setIsLoading(true);
     try {
       if (!recipientAccount) {
@@ -72,6 +83,7 @@ export function useMoneyAccountWithdrawal() {
       setIsLoading(false);
     }
   }, [
+    isDisabled,
     location.pathname,
     location.search,
     navigateToTransaction,
@@ -79,5 +91,5 @@ export function useMoneyAccountWithdrawal() {
     reportError,
   ]);
 
-  return { initiateWithdrawal, isLoading };
+  return { initiateWithdrawal, isDisabled, isLoading };
 }

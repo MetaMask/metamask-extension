@@ -64,8 +64,11 @@ function useMoneyAssetOverviewCta(
     isFlagEnabled && hasMoneyAccount && fiatAmountUsd !== undefined;
 
   const vaultApy = useMoneyVaultApy({ enabled: isEligible });
-  const { initiateDeposit, isLoading: isDepositLoading } =
-    useMoneyAccountDeposit();
+  const {
+    initiateDeposit,
+    isDisabled: isDepositDisabled,
+    isLoading: isDepositLoading,
+  } = useMoneyAccountDeposit();
   const analytics = useMoneyAnalytics({
     screenName: MoneyScreenName.AssetDetail,
     componentName,
@@ -102,6 +105,7 @@ function useMoneyAssetOverviewCta(
     analytics,
     tokenProperties,
     deposit,
+    isDepositDisabled,
     isDepositLoading,
   };
 }
@@ -127,6 +131,7 @@ export function useMoneyEarnBanner(token: MoneyAssetOverviewToken) {
     analytics,
     tokenProperties,
     deposit,
+    isDepositDisabled,
     isDepositLoading,
   } = useMoneyAssetOverviewCta(
     token,
@@ -136,7 +141,7 @@ export function useMoneyEarnBanner(token: MoneyAssetOverviewToken) {
   const { trackTokenButtonClicked, trackTokenSurfaceClicked } = analytics;
 
   const onBannerClick = useCallback(() => {
-    if (isDepositLoading) {
+    if (isDepositLoading || isDepositDisabled) {
       return;
     }
     trackTokenSurfaceClicked({
@@ -144,10 +149,16 @@ export function useMoneyEarnBanner(token: MoneyAssetOverviewToken) {
       redirectTarget: MoneyScreenName.MoneyDeposit,
     });
     deposit();
-  }, [deposit, isDepositLoading, tokenProperties, trackTokenSurfaceClicked]);
+  }, [
+    deposit,
+    isDepositDisabled,
+    isDepositLoading,
+    tokenProperties,
+    trackTokenSurfaceClicked,
+  ]);
 
   const onCtaClick = useCallback(() => {
-    if (isDepositLoading) {
+    if (isDepositLoading || isDepositDisabled) {
       return;
     }
     trackTokenButtonClicked({
@@ -161,6 +172,7 @@ export function useMoneyEarnBanner(token: MoneyAssetOverviewToken) {
     deposit();
   }, [
     deposit,
+    isDepositDisabled,
     isDepositLoading,
     token.symbol,
     tokenProperties,
@@ -182,6 +194,7 @@ export function useMoneyEarnBanner(token: MoneyAssetOverviewToken) {
 
   return {
     isVisible: isEligible,
+    isCtaDisabled: isDepositDisabled,
     apyPercentFormatted:
       apyPercent !== undefined && apyPercent > 0
         ? apyPercentFormatted
@@ -217,6 +230,7 @@ export function useMoneyAssetOverviewBalanceCta(
     analytics,
     tokenProperties,
     deposit,
+    isDepositDisabled,
     isDepositLoading,
   } = useMoneyAssetOverviewCta(
     token,
@@ -244,7 +258,7 @@ export function useMoneyAssetOverviewBalanceCta(
   );
 
   const onStartEarning = useCallback(() => {
-    if (isDepositLoading) {
+    if (isDepositLoading || isDepositDisabled) {
       return;
     }
     trackTokenButtonClicked({
@@ -255,7 +269,13 @@ export function useMoneyAssetOverviewBalanceCta(
       redirectTarget: MoneyScreenName.MoneyDeposit,
     });
     deposit();
-  }, [deposit, isDepositLoading, tokenProperties, trackTokenButtonClicked]);
+  }, [
+    deposit,
+    isDepositDisabled,
+    isDepositLoading,
+    tokenProperties,
+    trackTokenButtonClicked,
+  ]);
 
   const onProjectionTooltipOpen = useCallback(() => {
     trackTooltipClicked({
@@ -281,5 +301,11 @@ export function useMoneyAssetOverviewBalanceCta(
   const isLoading =
     isEligible && display === undefined && vaultApyQuery.isLoading;
 
-  return { display, isLoading, onStartEarning, onProjectionTooltipOpen };
+  return {
+    display,
+    isStartEarningDisabled: isDepositDisabled,
+    isLoading,
+    onStartEarning,
+    onProjectionTooltipOpen,
+  };
 }

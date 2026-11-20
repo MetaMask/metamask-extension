@@ -123,6 +123,7 @@ describe('MoneyEarnPage', () => {
     mockUseMoneyAddDepositToken.mockReturnValue({
       handleAddToken: mockHandleAddToken,
       initiateDeposit: mockInitiateDeposit,
+      isDepositDisabled: false,
       isDepositLoading: false,
     });
   });
@@ -225,6 +226,22 @@ describe('MoneyEarnPage', () => {
     expect(convertButton).toBeDisabled();
     fireEvent.click(convertButton);
     expect(mockHandleAddToken).not.toHaveBeenCalled();
+  });
+
+  it('disables the token rows and Convert your crypto when the Money Account is read-only', () => {
+    mockUseMoneyAddDepositToken.mockReturnValue({
+      handleAddToken: mockHandleAddToken,
+      initiateDeposit: mockInitiateDeposit,
+      isDepositDisabled: true,
+      isDepositLoading: false,
+    });
+
+    renderWithLocalization(<MoneyEarnPage />);
+
+    expect(screen.getByTestId('money-earn-convert-cta')).toBeDisabled();
+    screen
+      .getAllByTestId('money-potential-earnings-token-add')
+      .forEach((button) => expect(button).toBeDisabled());
   });
 
   it('tracks the projected earnings tooltip from the view header', async () => {

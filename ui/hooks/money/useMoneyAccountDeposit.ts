@@ -28,6 +28,7 @@ import { selectIsPayHardwareEnabled } from '../../pages/confirmations/selectors/
 import { createMoneyAccountDepositTransaction } from '../../store/controller-actions/transaction-pay-controller';
 import { useDispatch } from '../../store/hooks';
 import { useMoneyErrorReporter } from './useMoneyErrorReporter';
+import { useMoneyAccountLifecycle } from './use-money-account-lifecycle';
 
 export type InitiateDepositOptions = {
   /**
@@ -130,7 +131,7 @@ let isDepositInitiationInFlight = false;
  * (the extension navigates after creation) and no user-rejection path at
  * initiation (rejection happens later, inside the confirmation).
  *
- * @returns The initiator and its loading state.
+ * @returns The initiator, its loading state, and whether deposits are disabled.
  */
 export function useMoneyAccountDeposit() {
   const { navigateToTransaction } = useConfirmationNavigation();
@@ -145,10 +146,16 @@ export function useMoneyAccountDeposit() {
   );
   const reportError = useMoneyErrorReporter();
   const [isLoading, setIsLoading] = useState(false);
+  const {
+    isLifecycleUnavailable,
+    isReadOnly,
+    isLoading: isLifecycleLoading,
+  } = useMoneyAccountLifecycle();
+  const isDisabled = isReadOnly || isLifecycleUnavailable || isLifecycleLoading;
 
   const initiateDeposit = useCallback(
     async (options?: InitiateDepositOptions): Promise<boolean> => {
-      if (isDepositInitiationInFlight) {
+      if (isDisabled || isDepositInitiationInFlight) {
         return false;
       }
 
@@ -216,6 +223,7 @@ export function useMoneyAccountDeposit() {
       dispatch,
       fundingAccount,
       hasSeenFtue,
+      isDisabled,
       location.pathname,
       location.search,
       navigateToTransaction,
@@ -223,5 +231,5 @@ export function useMoneyAccountDeposit() {
     ],
   );
 
-  return { initiateDeposit, isLoading };
+  return { initiateDeposit, isDisabled, isLifecycleLoading, isLoading };
 }
