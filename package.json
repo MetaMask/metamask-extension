@@ -173,6 +173,12 @@
     "yarn-binary:download": "corepack pack -o .yarn/yarn-corepack.tgz",
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
+  "previewBuilds": {
+    "@metamask/money-account-api-data-service": {
+      "type": "non-breaking",
+      "previewVersion": "2.4.0-preview-2caafa97d"
+    }
+  },
   "resolutions": {
     "@metamask/design-system-react": "0.53.0",
     "@metamask/network-controller": "^38.0.1",

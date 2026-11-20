@@ -113,7 +113,7 @@ const mockApy = (
   { isLoading = false } = {},
 ) =>
   mockUseMoneyVaultApy.mockReturnValue({
-    vaultApyQuery: { isLoading },
+    isApyLoading: isLoading,
     apyDecimal,
     apyPercent,
     apyPercentFormatted:

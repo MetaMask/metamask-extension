@@ -45,7 +45,7 @@ function mockBalance({
   useMoneyAccountBalanceMock.mockReturnValue({
     apyDecimal,
     apyPercent,
-    vaultApyQuery: { isLoading },
+    isApyLoading: isLoading,
   } as UseMoneyAccountBalanceResult);
 }
 
