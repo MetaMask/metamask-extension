@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import React from 'react';
-import { act, fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen, within } from '@testing-library/react';
 import type {
   PaymentMethod,
   Provider,
@@ -242,6 +242,40 @@ describe('RampsProviderSelectionModal', () => {
     const { baseElement } = renderModal({ amount: 100 });
 
     expect(baseElement).toMatchSnapshot();
+  });
+
+  it('tags only the previously used provider', () => {
+    useRampsController.mockReturnValue({
+      ...defaultControllerState,
+      previouslyUsedProviderIds: [moonpay.id],
+    });
+    mockUseRampsQuotes.mockReturnValue({
+      data: {
+        success: [transakQuote, { ...transakQuote, provider: moonpay.id }],
+        sorted: [{ sortBy: 'reliability', ids: [transak.id, moonpay.id] }],
+        error: [],
+        customActions: [],
+      },
+      loading: false,
+      status: 'success',
+      isSuccess: true,
+      error: null,
+      getQuotes: jest.fn(),
+      getBuyWidgetData: jest.fn(),
+    });
+
+    renderModal({ amount: 100 });
+
+    expect(
+      within(
+        screen.getByTestId('ramps-provider-item-/providers/moonpay'),
+      ).getByText('Last used'),
+    ).toBeInTheDocument();
+    expect(
+      within(
+        screen.getByTestId('ramps-provider-item-/providers/transak'),
+      ).queryByText('Last used'),
+    ).not.toBeInTheDocument();
   });
 
   it('matches snapshot when no providers return quotes', () => {
