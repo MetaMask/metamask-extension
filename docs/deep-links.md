@@ -1,6 +1,6 @@
 # Deep links
 
-A deep link is attacker-supplied input that arrives looking like navigation. Its signature makes some of that input trustworthy, and reviewing a deep-link change comes down to which part. This document describes how a link is processed from interception to destination, what its signature covers, and how to review and test a change that touches it.
+A deep link is attacker-supplied input that arrives looking like navigation. Its signature makes some of that input trustworthy, and reviewing a deep-link change comes down to which part. This document describes how a link is processed from interception to destination, what its signature covers, how to add a route, and how to review and test a change that touches it.
 
 ## How a link is processed
 
@@ -27,6 +27,25 @@ Three mechanisms are deliberately absent:
 - **No route opts in to the original parameters.** A handler receives the canonical parameters and nothing else.
 - **No route declares parameters that must be signed.** A route that forwards attribution decides what to forward in its own handler, under question 4 below.
 - **`ref` is not ignored when `sig_params` leaves it out.** Referral links add `ref` after signing, so ignoring an unlisted `ref` drops the code from every link built that way. Both ways of keeping the code would cost the referral program. Signatures come from an admin interface MetaMask operates ([Deep Linking Into Wallet](https://github.com/MetaMask/decisions/blob/aa3ad7e1c642cf5e080fafa92c450b323fe8ddca/decisions/core/0011-deep-linking-into-wallet.md#both-public-and-private-deep-links)), so every sharer's code would need its own link signed there. An unsigned link instead shows every recipient the untrusted interstitial wherever one is shown.
+
+## Adding a route
+
+A route is a `Route` in [`shared/lib/deep-links/routes/`](../shared/lib/deep-links/routes/). Adding one is the feature team's change, and the parsing, verification and interstitial code around it belongs to the Extension Security team. [`.github/CODEOWNERS`](../.github/CODEOWNERS) draws the line:
+
+- **The feature team** owns the route file, `routes/<name>.ts`, and its registration in `routes/index.ts`.
+- **Extension Security** owns `routes/route*`, and `parse*`, `verify*`, `utils*` and `security-policy*` under `shared/lib/deep-links/`, as well as the router, `resolve-deep-link-href*` and `ui/pages/deep-link/`.
+
+A change that reaches the second group is more than adding a route, and the review questions below apply to it in full. Two changes reach it without looking like they do:
+
+- A route file whose name starts with `route` matches `routes/route*`, so Extension Security owns it.
+- A destination constant that [`routes/route.ts`](../shared/lib/deep-links/routes/route.ts) does not already export has to be added to that file's export list.
+
+The steps:
+
+1. **Write the route file.** A `Route` takes a `pathname`, a `getTitle` that returns an i18n message key rather than display text, and a `handler` that returns `{ path, query }` or `{ redirectTo }` and may throw when it cannot process the parameters. [`shield.ts`](../shared/lib/deep-links/routes/shield.ts) is a short example of a handler whose destination depends on a parameter it read.
+2. **Register it** with `addRoute` in [`routes/index.ts`](../shared/lib/deep-links/routes/index.ts). Registration makes the destination reachable, including unsigned and without an interstitial from the `TRUSTED_WEB_ORIGINS`. In `DEBUG` builds, `addRoute` throws when two routes claim one pathname.
+3. **Add an end-to-end test** under [`test/e2e/tests/deep-link/`](../test/e2e/tests/deep-link/), signing the link with the helpers there.
+4. **Add a CODEOWNERS entry** for the route file when a team owns the feature, as `routes/perps.ts` has.
 
 ## Reviewing a change
 
