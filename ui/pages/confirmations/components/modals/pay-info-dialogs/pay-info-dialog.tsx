@@ -11,28 +11,28 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
-export type MoneyInfoDialogProps = {
+export type PayInfoDialogProps = {
+  children: ReactNode;
+  closeButtonTestId?: string;
+  'data-testid'?: string;
+  headerTitle?: ReactNode;
   isOpen: boolean;
   onClose: () => void;
-  headerTitle?: ReactNode;
   titleId?: string;
-  children: ReactNode;
-  'data-testid'?: string;
-  closeButtonTestId?: string;
 };
 
 /**
- * Centered, scrollable info dialog card used on the Money deposit confirmation.
+ * Centered, scrollable info dialog shell used by MetaMask Pay confirmations.
  */
-export function MoneyInfoDialog({
+export function PayInfoDialog({
+  children,
+  closeButtonTestId,
+  'data-testid': dataTestId,
+  headerTitle,
   isOpen,
   onClose,
-  headerTitle,
   titleId: externalTitleId,
-  children,
-  'data-testid': dataTestId,
-  closeButtonTestId,
-}: Readonly<MoneyInfoDialogProps>) {
+}: Readonly<PayInfoDialogProps>) {
   const t = useI18nContext();
   const fallbackId = useId();
   const resolvedTitleId = externalTitleId ?? fallbackId;
@@ -47,15 +47,15 @@ export function MoneyInfoDialog({
         data-testid={dataTestId ? `${dataTestId}-overlay` : undefined}
       />
       <ModalContent
-        size={ModalContentSize.Sm}
         className="items-center p-4"
         modalDialogProps={{
           'aria-labelledby': resolvedTitleId,
-          paddingTop: 0,
-          paddingBottom: 0,
           className: 'min-h-0',
           'data-testid': dataTestId,
+          paddingBottom: 0,
+          paddingTop: 0,
         }}
+        size={ModalContentSize.Sm}
       >
         <div className="flex min-h-0 flex-1 flex-col">
           <div className="flex items-center justify-between gap-2 px-4 pt-4">
@@ -65,15 +65,15 @@ export function MoneyInfoDialog({
               <span />
             )}
             <ButtonIcon
-              iconName={IconName.Close}
-              size={ButtonIconSize.Lg}
-              variant={ButtonIconVariant.Filled}
               ariaLabel={t('close')}
-              onClick={onClose}
               data-testid={
                 closeButtonTestId ??
                 (dataTestId ? `${dataTestId}-close-button` : undefined)
               }
+              iconName={IconName.Close}
+              onClick={onClose}
+              size={ButtonIconSize.Lg}
+              variant={ButtonIconVariant.Filled}
             />
           </div>
           <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-6 pt-2">

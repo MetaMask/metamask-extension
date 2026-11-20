@@ -7,9 +7,9 @@ export type DottedTriggerProps = Omit<TextProps, 'children' | 'asChild'> &
     React.ButtonHTMLAttributes<HTMLButtonElement>,
     'aria-describedby' | 'onBlur' | 'onFocus' | 'onMouseEnter' | 'onMouseLeave'
   > & {
-    text: string;
-    onClick: () => void;
     'data-testid'?: string;
+    onClick: () => void;
+    text: string;
   };
 
 /**
@@ -21,15 +21,15 @@ export const DottedTrigger = React.forwardRef<
 >(
   (
     {
-      text,
-      onClick,
+      'aria-describedby': ariaDescribedBy,
       className,
       'data-testid': dataTestId,
-      'aria-describedby': ariaDescribedBy,
       onBlur,
+      onClick,
       onFocus,
       onMouseEnter,
       onMouseLeave,
+      text,
       ...textProps
     },
     ref,
@@ -45,14 +45,14 @@ export const DottedTrigger = React.forwardRef<
       >
         <button
           ref={ref}
-          type="button"
-          onClick={onClick}
+          aria-describedby={ariaDescribedBy}
+          data-testid={dataTestId}
           onBlur={onBlur}
+          onClick={onClick}
           onFocus={onFocus}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
-          aria-describedby={ariaDescribedBy}
-          data-testid={dataTestId}
+          type="button"
         >
           {text}
         </button>

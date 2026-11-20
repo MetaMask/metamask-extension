@@ -5,6 +5,7 @@ import { renderWithProvider } from '../../../../../../../test/lib/render-helpers
 import { useAddToken } from '../../../../hooks/tokens/useAddToken';
 import { useDefaultPaySelectedSection } from '../../../../hooks/pay/useDefaultPaySelectedSection';
 import { CustomAmountInfo } from '../../../info/custom-amount-info';
+import { PerpsToRow } from '../../../rows/perps-to-row';
 import { ARBITRUM_USDC, PERPS_CURRENCY } from '../../../../constants/perps';
 import { PerpsDepositInfo } from './perps-deposit-info';
 
@@ -52,13 +53,14 @@ describe('PerpsDepositInfo', () => {
     });
   });
 
-  it('renders CustomAmountInfo with the Perps currency and hidePayTokenAmount', () => {
+  it('renders CustomAmountInfo with the Perps currency, hidePayTokenAmount, and resultRows', () => {
     renderWithProvider(<PerpsDepositInfo />, configureStore(mockState));
 
     expect(customAmountInfoMock).toHaveBeenCalledWith(
       expect.objectContaining({
         currency: PERPS_CURRENCY,
         hidePayTokenAmount: true,
+        resultRows: expect.objectContaining({ type: PerpsToRow }),
       }),
       expect.anything(),
     );

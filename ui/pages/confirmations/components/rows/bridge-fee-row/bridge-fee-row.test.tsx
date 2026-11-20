@@ -52,6 +52,21 @@ function getPerpsWithdrawState() {
   return getMockConfirmStateForTransaction(withdraw);
 }
 
+function getMoneyDepositState(
+  stateOverride?: Parameters<typeof getMockConfirmStateForTransaction>[1],
+) {
+  const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
+  const deposit = {
+    ...base,
+    type: TransactionType.batch,
+    nestedTransactions: [
+      { type: TransactionType.tokenMethodApprove },
+      { type: TransactionType.moneyAccountDeposit },
+    ],
+  } as Parameters<typeof getMockConfirmStateForTransaction>[0];
+  return getMockConfirmStateForTransaction(deposit, stateOverride);
+}
+
 describe('BridgeFeeRow', () => {
   const useTransactionPayTotalsMock = jest.mocked(useTransactionPayTotals);
   const useTransactionPayQuotesMock = jest.mocked(useTransactionPayQuotes);
@@ -476,12 +491,12 @@ describe('BridgeFeeRow', () => {
     });
   });
 
-  describe('useDottedValueTooltip', () => {
+  describe('moneyAccountDeposit dotted value tooltip', () => {
     it('hides the question icon and shows the fee tooltip via focusable button on hover, focus, and click', async () => {
-      const { getByTestId, queryByTestId, findByText } = render({
-        variant: ConfirmInfoRowSize.Small,
-        useDottedValueTooltip: true,
-      });
+      const { getByTestId, queryByTestId, findByText } = render(
+        { variant: ConfirmInfoRowSize.Small },
+        getMoneyDepositState(),
+      );
 
       expect(
         queryByTestId('bridge-fee-tooltip-popover-button'),
@@ -542,16 +557,13 @@ describe('BridgeFeeRow', () => {
         },
       } as TransactionPayTotals);
 
-      const state = getMockPersonalSignConfirmState({
+      const state = getMoneyDepositState({
         metamask: {},
         localeMessages: { currentLocale: 'en_GB' },
       });
 
       const { getByTestId, findByText } = render(
-        {
-          variant: ConfirmInfoRowSize.Small,
-          useDottedValueTooltip: true,
-        },
+        { variant: ConfirmInfoRowSize.Small },
         state,
       );
 

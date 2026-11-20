@@ -1,7 +1,7 @@
 import React from 'react';
-import type {
-  TransactionMeta,
+import {
   TransactionType,
+  type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { Text } from '../../../../../components/component-library';
 import {
@@ -25,20 +25,18 @@ import { hasTransactionType } from '../../../../../../shared/lib/transactions.ut
 
 const SAME_CHAIN_DURATION_SECONDS = '< 10';
 
+const COMPACT_TIME_LABEL_TRANSACTION_TYPES: TransactionType[] = [
+  TransactionType.moneyAccountDeposit,
+];
+
 const HIDE_TYPES: TransactionType[] = [];
 
 export type BridgeTimeRowProps = {
   rowVariant?: ConfirmInfoRowSize;
-  /**
-   * When true, uses Money-deposit-specific copy (`Est. time` and
-   * `Less than 1 min`). Other flows keep `Estimated time` and `< 1 min`.
-   */
-  useMoneyDepositCopy?: boolean;
 };
 
 export function BridgeTimeRow({
   rowVariant = ConfirmInfoRowSize.Default,
-  useMoneyDepositCopy = false,
 }: BridgeTimeRowProps) {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -51,10 +49,14 @@ export function BridgeTimeRow({
   const showEstimate =
     !hasTransactionType(currentConfirmation, HIDE_TYPES) &&
     (isLoading || Boolean(quotes?.length));
+  const useCompactCopy = hasTransactionType(
+    currentConfirmation,
+    COMPACT_TIME_LABEL_TRANSACTION_TYPES,
+  );
 
   const isSmall = rowVariant === ConfirmInfoRowSize.Small;
   const textVariant = isSmall ? TextVariant.bodyMd : TextVariant.bodyMdMedium;
-  const timeLabel = useMoneyDepositCopy
+  const timeLabel = useCompactCopy
     ? t('moneyAccountDepositEstTime')
     : t('estimatedTime');
 
@@ -77,7 +79,7 @@ export function BridgeTimeRow({
     t,
     estimatedDuration ?? 0,
     isSameChain,
-    useMoneyDepositCopy,
+    useCompactCopy,
   );
 
   return (
@@ -101,14 +103,14 @@ function formatSeconds(
   t: ReturnType<typeof useI18nContext>,
   seconds: number,
   isSameChainPayment: boolean,
-  useMoneyDepositCopy: boolean,
+  useCompactCopy: boolean,
 ): string {
   if (isSameChainPayment) {
     return `${SAME_CHAIN_DURATION_SECONDS} ${t('second')}`;
   }
 
   if (seconds <= 30) {
-    return useMoneyDepositCopy
+    return useCompactCopy
       ? t('moneyAccountDepositLessThanOneMinute')
       : `< 1 ${t('minute')}`;
   }

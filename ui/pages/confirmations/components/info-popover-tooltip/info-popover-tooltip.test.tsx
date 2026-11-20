@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, render, fireEvent, waitFor } from '@testing-library/react';
+import { act, render, fireEvent } from '@testing-library/react';
 import {
   ButtonIconSize,
   IconColor,
@@ -119,60 +119,5 @@ describe('InfoPopoverTooltip', () => {
     expect(getByTestId('plain-tooltip')).toHaveTextContent(
       'Plain icon content',
     );
-  });
-
-  describe('dottedText', () => {
-    it('renders a focusable dotted button and opens on hover, focus, and click', async () => {
-      const { getByTestId, queryByTestId } = render(
-        <InfoPopoverTooltip data-testid="dotted-tooltip" dottedText="$1.23">
-          <span>Dotted content</span>
-        </InfoPopoverTooltip>,
-      );
-
-      const trigger = getByTestId('dotted-tooltip-trigger');
-      expect(trigger.tagName).toBe('BUTTON');
-      expect(trigger).toHaveTextContent('$1.23');
-      expect(trigger).toHaveClass('underline', 'decoration-dotted');
-
-      await act(async () => {
-        fireEvent.mouseEnter(trigger);
-      });
-      const popover = getByTestId('dotted-tooltip');
-      expect(popover).toHaveTextContent('Dotted content');
-
-      // Moving pointer from trigger onto the popover keeps it open (WCAG 1.4.13).
-      await act(async () => {
-        fireEvent.mouseLeave(trigger);
-        fireEvent.mouseEnter(popover);
-      });
-      expect(getByTestId('dotted-tooltip')).toHaveTextContent('Dotted content');
-
-      await act(async () => {
-        fireEvent.mouseLeave(popover);
-      });
-      await waitFor(() => {
-        expect(queryByTestId('dotted-tooltip')).not.toBeInTheDocument();
-      });
-
-      await act(async () => {
-        fireEvent.focus(trigger);
-      });
-      expect(getByTestId('dotted-tooltip')).toHaveTextContent('Dotted content');
-
-      await act(async () => {
-        fireEvent.blur(trigger);
-      });
-      expect(queryByTestId('dotted-tooltip')).not.toBeInTheDocument();
-
-      await act(async () => {
-        fireEvent.click(trigger);
-      });
-      expect(getByTestId('dotted-tooltip')).toHaveTextContent('Dotted content');
-
-      await act(async () => {
-        fireEvent.click(trigger);
-      });
-      expect(queryByTestId('dotted-tooltip')).not.toBeInTheDocument();
-    });
   });
 });

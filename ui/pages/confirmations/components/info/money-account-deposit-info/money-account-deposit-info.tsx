@@ -8,9 +8,12 @@ import {
 } from '../../../constants/musd';
 import { useAddToken } from '../../../hooks/tokens/useAddToken';
 import { useConfirmationNavigationOptions } from '../../../hooks/useConfirmationNavigation';
+import { MoneyAccountToRow } from '../../rows/money-account-to-row';
 import { CustomAmountInfo } from '../custom-amount-info';
 
 const MONEY_ACCOUNT_DEPOSIT_CURRENCY = 'usd';
+
+const RESULT_ROWS = <MoneyAccountToRow />;
 
 /**
  * Amount-screen subtitle for the deposit flow.
@@ -52,6 +55,8 @@ export const MoneyAccountDepositInfo = () => {
       hasMax
       hidePayTokenAmount
       preferredToken={preferredPaymentToken}
+      resultRows={RESULT_ROWS}
+      showAccountDivider={false}
     />
   );
 };

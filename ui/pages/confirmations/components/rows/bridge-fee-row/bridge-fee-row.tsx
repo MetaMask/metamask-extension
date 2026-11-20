@@ -1,7 +1,10 @@
 import React, { useMemo } from 'react';
 import { createFormatters } from '@metamask/client-utils';
 import { BigNumber } from 'bignumber.js';
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import type { TransactionPayTotals } from '@metamask/transaction-pay-controller';
 import {
   Box,
@@ -30,14 +33,20 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 import { useConfirmContext } from '../../../context/confirm';
-import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
+import {
+  hasTransactionType,
+  isPerpsWithdrawTransaction,
+} from '../../../../../../shared/lib/transactions.utils';
 import { getUserPaidNetworkFeeUsd } from '../../../hooks/pay/sponsored-network-fees';
 import {
   useIsPaidByMetaMask,
   useSponsoredNetworkFeeFlags,
   type SponsoredNetworkFeeFlags,
 } from '../../../hooks/pay/useIsPaidByMetaMask';
+import { DottedTriggerTooltip } from '../../dotted-trigger-tooltip';
 import { InfoPopoverTooltip } from '../../info-popover-tooltip';
+
+const VALUE_TOOLTIP_TRANSACTION_TYPES = [TransactionType.moneyAccountDeposit];
 
 const { formatCurrency: formatEnUsCurrency } = createFormatters({
   locale: 'en-US',
@@ -53,25 +62,23 @@ export type BridgeFeeRowProps = {
    * (e.g. mUSD conversion copy from the parent).
    */
   tooltipDescription?: string;
-  /**
-   * When true, omits the label question icon and renders the fee value with a
-   * dotted underline that reveals the fee breakdown tooltip.
-   */
-  useDottedValueTooltip?: boolean;
 };
 
 export function BridgeFeeRow({
   variant = ConfirmInfoRowSize.Default,
   tooltipDescription,
-  useDottedValueTooltip = false,
 }: BridgeFeeRowProps) {
   const t = useI18nContext();
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const useDottedValueTooltip = hasTransactionType(
+    currentConfirmation,
+    VALUE_TOOLTIP_TRANSACTION_TYPES,
+  );
   const formatLocaleFiat = useFiatFormatter({ overrideCurrency: 'usd' });
   const formatFiat = useDottedValueTooltip ? formatUsd : formatLocaleFiat;
   const isLoading = useIsTransactionPayQuotePending();
   const quotes = useTransactionPayQuotes();
   const totals = useTransactionPayTotals();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const isPaidByMetaMask = useIsPaidByMetaMask();
   const sponsoredNetworkFees = useSponsoredNetworkFeeFlags();
 
@@ -224,17 +231,17 @@ function FeeValue({
   if (dottedTooltipContent) {
     return (
       <span data-testid="transaction-fee-value">
-        <InfoPopoverTooltip
+        <DottedTriggerTooltip
+          data-testid="bridge-fee-tooltip-popover"
           position={PopoverPosition.Top}
-          dottedText={feeTotalUsd}
-          textVariant={TextVariant.BodyMd}
+          text={feeTotalUsd}
           textColor={
             isSmall ? TextColor.TextAlternative : TextColor.TextDefault
           }
-          data-testid="bridge-fee-tooltip-popover"
+          textVariant={TextVariant.BodyMd}
         >
           {dottedTooltipContent}
-        </InfoPopoverTooltip>
+        </DottedTriggerTooltip>
       </span>
     );
   }

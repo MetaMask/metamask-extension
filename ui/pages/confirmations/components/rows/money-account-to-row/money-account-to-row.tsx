@@ -22,11 +22,119 @@ import {
   MoneyTooltipType,
 } from '../../../../money/constants/money-events';
 /* eslint-enable import-x/no-restricted-paths */
+import { DottedTrigger } from '../../dotted-trigger';
 import {
-  DottedTrigger,
-  MoneyApyDialog,
-  MoneyIntroDialog,
-} from '../../modals/money-deposit-dialogs';
+  PayChecklistDialog,
+  PaySectionsDialog,
+} from '../../modals/pay-info-dialogs';
+
+export const MONEY_APY_DIALOG_TEST_ID = 'money-apy-dialog';
+export const MONEY_INTRO_DIALOG_TEST_ID = 'money-intro-dialog';
+
+const APY_SECTION_KEYS = [
+  {
+    bodyKey: 'moneyAccountDepositApyDialogHowItWorksBody',
+    id: 'how-it-works',
+    titleKey: 'moneyHowItWorks',
+  },
+  {
+    bodyKey: 'moneyAccountDepositApyDialogWhyChangesBody',
+    id: 'why-changes',
+    titleKey: 'moneyAccountDepositApyDialogWhyChangesTitle',
+  },
+  {
+    bodyKey: 'moneyAccountDepositApyDialogWhereItComesFromBody',
+    id: 'where-it-comes-from',
+    titleKey: 'moneyAccountDepositApyDialogWhereItComesFromTitle',
+  },
+] as const;
+
+const INTRO_BENEFIT_KEYS = [
+  {
+    bodyKey: 'moneyFtueBenefitConvertDescription',
+    id: 'convert',
+    titleKey: 'moneyFtueBenefitConvertTitle',
+  },
+  {
+    bodyKey: 'moneyFtueBenefitEarnDescription',
+    id: 'earn',
+    titleKey: 'moneyFtueBenefitEarnTitle',
+  },
+  {
+    bodyKey: 'moneyFtueBenefitTradeDescription',
+    id: 'trade',
+    titleKey: 'moneyFtueBenefitTradeTitle',
+  },
+  {
+    bodyKey: 'moneyFtueBenefitWithdrawDescription',
+    id: 'withdraw',
+    titleKey: 'moneyFtueBenefitWithdrawTitle',
+  },
+  {
+    bodyKey: 'moneyFtueBenefitSpendDescription',
+    id: 'spend',
+    titleKey: 'moneyFtueBenefitSpendTitle',
+  },
+] as const;
+
+const INTRO_HERO_IMAGES = {
+  backgroundSrc: './images/money-ftue-hero-background-card.svg',
+  foregroundSrc: './images/money-ftue-hero-coins.png',
+} as const;
+
+const MoneyIntroContentDialog = ({
+  apyPercentFormatted,
+  isOpen,
+  onClose,
+  onOpenApyDialog,
+}: Readonly<{
+  apyPercentFormatted?: string;
+  isOpen: boolean;
+  onClose: () => void;
+  onOpenApyDialog?: () => void;
+}>) => {
+  const t = useI18nContext();
+  const apyDisplay = apyPercentFormatted ?? '—';
+
+  const apyNode =
+    apyPercentFormatted && onOpenApyDialog ? (
+      <DottedTrigger
+        key="apy"
+        color={TextColor.SuccessDefault}
+        data-testid="money-intro-dialog-apy-trigger"
+        onClick={onOpenApyDialog}
+        text={apyPercentFormatted}
+        variant={TextVariant.BodyMd}
+      />
+    ) : (
+      <span key="apy" className="text-success-default">
+        {apyDisplay}
+      </span>
+    );
+
+  const items = INTRO_BENEFIT_KEYS.map(({ bodyKey, id, titleKey }) => ({
+    body: t(bodyKey),
+    id,
+    itemTestId: `money-intro-dialog-benefit-${id}`,
+    title: t(titleKey),
+  }));
+
+  return (
+    <PayChecklistDialog
+      data-testid={MONEY_INTRO_DIALOG_TEST_ID}
+      headerTitle={t('moneyFtueTitle')}
+      headerTitleTestId="money-intro-dialog-title"
+      heroImages={INTRO_HERO_IMAGES}
+      isOpen={isOpen}
+      items={items}
+      lead={t('moneyFtueDescription', [apyNode])}
+      leadTestId="money-intro-dialog-description"
+      onClose={onClose}
+      title={t('moneyFtueHeadline')}
+      titleTestId="money-intro-dialog-headline"
+    />
+  );
+};
 
 export type MoneyAccountToRowProps = {
   variant?: ConfirmInfoRowSize;
@@ -118,17 +226,26 @@ export function MoneyAccountToRow({
           ) : null}
         </Box>
       </ConfirmInfoRow>
-      <MoneyIntroDialog
+      <MoneyIntroContentDialog
+        apyPercentFormatted={apyPercentFormatted}
         isOpen={isIntroDialogOpen}
         onClose={handleCloseMoneyIntro}
-        apyPercentFormatted={apyPercentFormatted}
         onOpenApyDialog={apyPercentFormatted ? handleOpenApyDialog : undefined}
       />
       {apyPercentFormatted ? (
-        <MoneyApyDialog
+        <PaySectionsDialog
+          data-testid={MONEY_APY_DIALOG_TEST_ID}
           isOpen={isApyDialogOpen}
+          lead={t('moneyAccountDepositApyDialogLead')}
           onClose={handleCloseApyDialog}
-          apyPercentFormatted={apyPercentFormatted}
+          sections={APY_SECTION_KEYS.map(({ bodyKey, id, titleKey }) => ({
+            body: t(bodyKey),
+            id,
+            title: t(titleKey),
+          }))}
+          subtitle={t('moneyAccountDepositApyDialogSubtitle')}
+          title={t('moneyApy', [apyPercentFormatted])}
+          titleColor={TextColor.SuccessDefault}
         />
       ) : null}
     </>

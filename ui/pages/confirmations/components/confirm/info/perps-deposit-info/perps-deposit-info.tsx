@@ -2,7 +2,10 @@ import React from 'react';
 import { useAddToken } from '../../../../hooks/tokens/useAddToken';
 import { useDefaultPaySelectedSection } from '../../../../hooks/pay/useDefaultPaySelectedSection';
 import { CustomAmountInfo } from '../../../info/custom-amount-info';
+import { PerpsToRow } from '../../../rows/perps-to-row';
 import { PERPS_CURRENCY, ARBITRUM_USDC } from '../../../../constants/perps';
+
+const RESULT_ROWS = <PerpsToRow />;
 
 export const PerpsDepositInfo = () => {
   useDefaultPaySelectedSection();
@@ -19,6 +22,7 @@ export const PerpsDepositInfo = () => {
       autoFocusAmount
       currency={PERPS_CURRENCY}
       hidePayTokenAmount
+      resultRows={RESULT_ROWS}
     />
   );
 };

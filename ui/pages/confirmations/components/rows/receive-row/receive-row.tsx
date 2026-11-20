@@ -1,5 +1,9 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { createFormatters } from '@metamask/client-utils';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import {
   TextColor as DsTextColor,
@@ -16,19 +20,28 @@ import {
   ConfirmInfoRowSkeleton,
 } from '../../../../../components/app/confirm/info/row/row';
 import { ConfirmInfoRowText } from '../../../../../components/app/confirm/info/row/text';
+import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
+import { DottedTrigger } from '../../dotted-trigger';
 import {
-  DottedTrigger,
-  MoneyUsdDialog,
-} from '../../modals/money-deposit-dialogs';
+  PayChecklistDialog,
+  type PayCheckListItem,
+} from '../../modals/pay-info-dialogs';
 import {
   useIsTransactionPayQuotePending,
   useTransactionPayQuotes,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useIsPaidByMetaMask } from '../../../hooks/pay/useIsPaidByMetaMask';
+import { useConfirmContext } from '../../../context/confirm';
 import { useMoneyVaultApy } from '../../../../../hooks/money/useMoneyVaultApy';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
+
+const RECEIVE_INFO_DIALOG_TRANSACTION_TYPES = [
+  TransactionType.moneyAccountDeposit,
+];
+
+const MONEY_USD_DIALOG_TEST_ID = 'money-usd-dialog';
 
 const { formatCurrency: formatEnUsCurrency } = createFormatters({
   locale: 'en-US',
@@ -41,11 +54,6 @@ export type ReceiveRowProps = {
   /** The user's input amount in USD / fiat */
   inputAmountUsd: string;
   variant?: ConfirmInfoRowSize;
-  /**
-   * When true, renders the receive amount with a dotted underline that opens
-   * the MetaMask USD (mUSD) info dialog.
-   */
-  enableMoneyUsdDialog?: boolean;
 };
 
 /**
@@ -59,14 +67,17 @@ export type ReceiveRowProps = {
  * @param options0
  * @param options0.inputAmountUsd
  * @param options0.variant
- * @param options0.enableMoneyUsdDialog
  */
 export function ReceiveRow({
   inputAmountUsd,
   variant = ConfirmInfoRowSize.Default,
-  enableMoneyUsdDialog = false,
 }: ReceiveRowProps) {
   const t = useI18nContext();
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const hasReceiveInfoDialog = hasTransactionType(
+    currentConfirmation,
+    RECEIVE_INFO_DIALOG_TRANSACTION_TYPES,
+  );
   // The fee values from `TransactionPayController` (`provider.usd`,
   // `sourceNetwork.estimate.usd`, etc.) are explicitly USD-denominated, and
   // the input is sourced from the `usd`-currency `useTransactionCustomAmount`
@@ -74,13 +85,13 @@ export function ReceiveRow({
   // currency symbol matches the numerical value even if the user has set a
   // non-USD primary currency.
   const formatLocaleFiat = useFiatFormatter({ overrideCurrency: 'usd' });
-  const formatFiat = enableMoneyUsdDialog ? formatUsd : formatLocaleFiat;
+  const formatFiat = hasReceiveInfoDialog ? formatUsd : formatLocaleFiat;
   const isLoading = useIsTransactionPayQuotePending();
   const totals = useTransactionPayTotals();
   const quotes = useTransactionPayQuotes();
   const isPaidByMetaMask = useIsPaidByMetaMask();
   const { apyPercentFormatted } = useMoneyVaultApy({
-    enabled: enableMoneyUsdDialog,
+    enabled: hasReceiveInfoDialog,
   });
   const [isUsdDialogOpen, setIsUsdDialogOpen] = useState(false);
 
@@ -147,7 +158,7 @@ export function ReceiveRow({
   }
 
   let valueNode: React.ReactNode;
-  if (enableMoneyUsdDialog && receiveUsd) {
+  if (hasReceiveInfoDialog && receiveUsd) {
     valueNode = (
       <DottedTrigger
         text={receiveUsd}
@@ -173,17 +184,48 @@ export function ReceiveRow({
     );
   }
 
+  const apyDisplay = apyPercentFormatted ?? '—';
+  const usdBullets: PayCheckListItem[] = [
+    {
+      body: t('moneyAccountDepositUsdDialogAlwaysWorthBody'),
+      id: 'always-worth',
+      title: t('moneyAccountDepositUsdDialogAlwaysWorthTitle'),
+    },
+    {
+      body: t('moneyAccountDepositUsdDialogBackedBody'),
+      id: 'backed',
+      title: t('moneyAccountDepositUsdDialogBackedTitle'),
+    },
+    {
+      body: t('moneyAccountDepositUsdDialogEarnsBody'),
+      id: 'earns',
+      title: t('moneyAccountDepositUsdDialogEarnsTitle', [
+        <span key="apy" className="text-success-default">
+          {t('moneyApy', [apyDisplay])}
+        </span>,
+      ]),
+      titleTestId: 'money-usd-dialog-earns-title',
+    },
+    {
+      body: t('moneyAccountDepositNoLockupsBody'),
+      id: 'no-lockups',
+      title: t('moneyAccountDepositNoLockupsTitle'),
+    },
+  ];
+
   return (
     <Box data-testid="receive-row">
       <ConfirmInfoRow label={t('youllReceive')} rowVariant={variant}>
         {valueNode}
       </ConfirmInfoRow>
-      {enableMoneyUsdDialog && receiveUsd ? (
-        <MoneyUsdDialog
+      {hasReceiveInfoDialog && receiveUsd ? (
+        <PayChecklistDialog
+          data-testid={MONEY_USD_DIALOG_TEST_ID}
           isOpen={isUsdDialogOpen}
+          items={usdBullets}
+          lead={t('moneyAccountDepositUsdDialogLead')}
           onClose={closeUsdDialog}
-          receiveAmountFormatted={receiveUsd}
-          apyPercentFormatted={apyPercentFormatted}
+          title={t('moneyAccountDepositUsdDialogTitle', [receiveUsd])}
         />
       ) : null}
     </Box>

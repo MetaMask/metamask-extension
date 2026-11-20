@@ -1,8 +1,5 @@
 import React, { ReactNode, useCallback } from 'react';
-import {
-  TransactionType,
-  type TransactionMeta,
-} from '@metamask/transaction-controller';
+import { type TransactionMeta } from '@metamask/transaction-controller';
 import { Box, Text } from '../../../../../components/component-library';
 import {
   Display,
@@ -28,17 +25,12 @@ import { BridgeTimeRow } from '../../rows/bridge-time-row/bridge-time-row';
 import { TotalRow } from '../../rows/total-row/total-row';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { ReceiveRow } from '../../rows/receive-row/receive-row';
-import { MoneyAccountToRow } from '../../rows/money-account-to-row';
 import { PerpsAccountPickerRow } from '../../rows/perps-account-picker-row';
-import { PerpsToRow } from '../../rows/perps-to-row';
 import {
   PercentageButtons,
   PercentageButtonsSkeleton,
 } from '../../percentage-buttons';
-import {
-  hasTransactionType,
-  isPerpsWithdrawTransaction,
-} from '../../../../../../shared/lib/transactions.utils';
+import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { useTransactionCustomAmount } from '../../../hooks/transactions/useTransactionCustomAmount';
 import { useTransactionCustomAmountAlerts } from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
 import { useAutomaticTransactionPayToken } from '../../../hooks/pay/useAutomaticTransactionPayToken';
@@ -123,6 +115,15 @@ export type CustomAmountInfoProps = {
    */
   prefillMaxOnLoad?: boolean;
   preferredToken?: SetPayTokenRequest;
+  /**
+   * Optional flow-specific rows rendered inside the result section before the
+   * standard fee, time, and total/receive rows.
+   */
+  resultRows?: ReactNode;
+  /**
+   * When false, hides the divider rendered below `FromAccountRow`.
+   */
+  showAccountDivider?: boolean;
 };
 
 export const CustomAmountInfo = React.memo(
@@ -143,6 +144,8 @@ export const CustomAmountInfo = React.memo(
     overrideCenterContent,
     prefillMaxOnLoad,
     preferredToken,
+    resultRows,
+    showAccountDivider = true,
   }: CustomAmountInfoProps) => {
     const isDefaultMoneyAccount = useIsMoneyAccountFlagDefault();
     useDefaultPaySelectedSection();
@@ -278,6 +281,8 @@ export const CustomAmountInfo = React.memo(
             displayAccountRow={displayAccountRow}
             hasAmount={hasAmount}
             hideResults={hideResults}
+            resultRows={resultRows}
+            showAccountDivider={showAccountDivider}
           />
         )}
       </Box>
@@ -404,24 +409,22 @@ function BottomContainer({
   displayAccountRow,
   hasAmount,
   hideResults,
+  resultRows,
+  showAccountDivider,
 }: {
   amountFiat: string;
   disablePay?: boolean;
   displayAccountRow?: boolean;
   hasAmount: boolean;
   hideResults: boolean;
+  resultRows?: ReactNode;
+  showAccountDivider: boolean;
 }) {
   const t = useI18nContext();
   const isResultReady = useIsResultReady(hasAmount, disablePay);
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
-  const isMoneyAccountDeposit = hasTransactionType(currentConfirmation, [
-    TransactionType.moneyAccountDeposit,
-  ]);
-  const isPerpsDeposit = hasTransactionType(currentConfirmation, [
-    TransactionType.perpsDeposit,
-  ]);
   // Withdrawals show Receive only when post-quote token selection is enabled;
   // otherwise the direct transfer keeps its regular Total. Input-based quotes
   // show Receive according to the controller-owned totals semantics.
@@ -435,54 +438,32 @@ function BottomContainer({
       gap={2}
       paddingBottom={4}
     >
-      {displayAccountRow && (
-        <FromAccountRow showDivider={!isMoneyAccountDeposit} />
-      )}
+      {displayAccountRow && <FromAccountRow showDivider={showAccountDivider} />}
       <PerpsAccountPickerRow />
       {/* Keep mounted while funding tokens load after account override so the
           selector does not unmount for the reselect wait, then remount. */}
       {disablePay !== true && <PayWithRow />}
       {isResultReady && !hideResults && (
         <>
-          {isMoneyAccountDeposit && <MoneyAccountToRow />}
-          {isPerpsDeposit && <PerpsToRow />}
+          {resultRows}
           {disablePay !== true && (
             <>
-              {isMoneyAccountDeposit ? (
-                <>
-                  <BridgeTimeRow
-                    rowVariant={ConfirmInfoRowSize.Small}
-                    useMoneyDepositCopy
-                  />
-                  <BridgeFeeRow
-                    variant={ConfirmInfoRowSize.Small}
-                    useDottedValueTooltip
-                  />
-                </>
-              ) : (
-                <>
-                  <BridgeFeeRow
-                    variant={ConfirmInfoRowSize.Small}
-                    tooltipDescription={
-                      isPerpsWithdraw ? t('perpsWithdrawTooltip') : undefined
-                    }
-                  />
-                  <BridgeTimeRow rowVariant={ConfirmInfoRowSize.Small} />
-                </>
-              )}
+              <BridgeFeeRow
+                variant={ConfirmInfoRowSize.Small}
+                tooltipDescription={
+                  isPerpsWithdraw ? t('perpsWithdrawTooltip') : undefined
+                }
+              />
+              <BridgeTimeRow rowVariant={ConfirmInfoRowSize.Small} />
             </>
           )}
           {(canSelectWithdrawToken || isInputBased) && disablePay !== true ? (
             <ReceiveRow
               inputAmountUsd={amountFiat}
               variant={ConfirmInfoRowSize.Small}
-              enableMoneyUsdDialog={isMoneyAccountDeposit}
             />
           ) : (
-            <TotalRow
-              variant={ConfirmInfoRowSize.Small}
-              useEnUsUsd={isMoneyAccountDeposit}
-            />
+            <TotalRow variant={ConfirmInfoRowSize.Small} />
           )}
         </>
       )}

@@ -10,53 +10,53 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 
-export type MoneyCheckListItem = {
-  id: string;
-  title: React.ReactNode;
+export type PayCheckListItem = {
   body: string;
-  titleTestId?: string;
+  id: string;
   itemTestId?: string;
+  title: React.ReactNode;
+  titleTestId?: string;
 };
 
-export type MoneyCheckListProps = {
-  items: readonly MoneyCheckListItem[];
+export type PayCheckListProps = {
   className?: string;
+  items: readonly PayCheckListItem[];
 };
 
 /**
- * Green-checkmark benefit list shared by Money deposit info dialogs.
+ * Green-checkmark benefit list shared by MetaMask Pay info dialogs.
  */
-export function MoneyCheckList({
-  items,
+export function PayCheckList({
   className = 'mt-1 flex flex-col gap-4',
-}: Readonly<MoneyCheckListProps>) {
+  items,
+}: Readonly<PayCheckListProps>) {
   return (
     <ul className={className}>
-      {items.map(({ id, title, body, titleTestId, itemTestId }) => (
+      {items.map(({ body, id, itemTestId, title, titleTestId }) => (
         <li
           key={id}
           className="flex items-start gap-4"
           data-testid={itemTestId}
         >
           <Icon
+            className="mt-0.5 shrink-0"
+            color={IconColor.SuccessDefault}
             name={IconName.Check}
             size={IconSize.Lg}
-            color={IconColor.SuccessDefault}
-            className="mt-0.5 shrink-0"
           />
           <div>
             <Text
-              variant={TextVariant.BodyMd}
-              fontWeight={FontWeight.Medium}
               color={TextColor.TextDefault}
               data-testid={titleTestId}
+              fontWeight={FontWeight.Medium}
+              variant={TextVariant.BodyMd}
             >
               {title}
             </Text>
             <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.TextAlternative}
               className="mt-1"
+              color={TextColor.TextAlternative}
+              variant={TextVariant.BodySm}
             >
               {body}
             </Text>

@@ -1,12 +1,17 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
+import { TransactionType } from '@metamask/transaction-controller';
 import type {
   TransactionPayQuote,
   TransactionPayTotals,
 } from '@metamask/transaction-pay-controller';
 import type { Json } from '@metamask/utils';
-import { getMockPersonalSignConfirmState } from '../../../../../../test/data/confirmations/helper';
+import {
+  getMockConfirmStateForTransaction,
+  getMockPersonalSignConfirmState,
+} from '../../../../../../test/data/confirmations/helper';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import {
   useIsTransactionPayQuotePending,
@@ -26,6 +31,21 @@ jest.mock('../../../../../hooks/money/useMoneyVaultApy', () => ({
 }));
 
 const mockStore = configureMockStore([]);
+
+function getMoneyDepositState(
+  stateOverride?: Parameters<typeof getMockConfirmStateForTransaction>[1],
+) {
+  const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
+  const deposit = {
+    ...base,
+    type: TransactionType.batch,
+    nestedTransactions: [
+      { type: TransactionType.tokenMethodApprove },
+      { type: TransactionType.moneyAccountDeposit },
+    ],
+  } as Parameters<typeof getMockConfirmStateForTransaction>[0];
+  return getMockConfirmStateForTransaction(deposit, stateOverride);
+}
 
 function render(
   props: Partial<ReceiveRowProps> = {},
@@ -164,17 +184,19 @@ describe('ReceiveRow', () => {
     expect(value).toHaveTextContent('$8.50');
   });
 
-  it('opens the MetaMask USD dialog when enableMoneyUsdDialog is true and the dotted receive value is clicked', () => {
+  it('opens the MetaMask USD dialog for moneyAccountDeposit transactions when the dotted receive value is clicked', () => {
     useTransactionPayTotalsMock.mockReturnValue({
       isInputBased: true,
       targetAmount: { fiat: '100', usd: '100' },
     } as TransactionPayTotals);
 
-    render({
-      inputAmountUsd: '100',
-      variant: ConfirmInfoRowSize.Small,
-      enableMoneyUsdDialog: true,
-    });
+    render(
+      {
+        inputAmountUsd: '100',
+        variant: ConfirmInfoRowSize.Small,
+      },
+      getMoneyDepositState(),
+    );
 
     const trigger = screen.getByTestId('receive-value');
     expect(trigger).toHaveTextContent('$100.00');
@@ -194,13 +216,13 @@ describe('ReceiveRow', () => {
     expect(screen.queryByTestId('money-usd-dialog')).not.toBeInTheDocument();
   });
 
-  it('formats receive amounts with "$" and en-US separators even when currentLocale is non-US', () => {
+  it('formats receive amounts with "$" and en-US separators for moneyAccountDeposit even when currentLocale is non-US', () => {
     useTransactionPayTotalsMock.mockReturnValue({
       isInputBased: true,
       targetAmount: { fiat: '1234.5', usd: '1234.5' },
     } as TransactionPayTotals);
 
-    const state = getMockPersonalSignConfirmState({
+    const state = getMoneyDepositState({
       metamask: {},
       localeMessages: { currentLocale: 'en_GB' },
     });
@@ -209,7 +231,6 @@ describe('ReceiveRow', () => {
       {
         inputAmountUsd: '1234.5',
         variant: ConfirmInfoRowSize.Small,
-        enableMoneyUsdDialog: true,
       },
       state,
     );

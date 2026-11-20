@@ -18,8 +18,8 @@ import {
 import {
   MONEY_APY_DIALOG_TEST_ID,
   MONEY_INTRO_DIALOG_TEST_ID,
-} from '../../modals/money-deposit-dialogs';
-import { MoneyAccountToRow } from './money-account-to-row';
+  MoneyAccountToRow,
+} from './money-account-to-row';
 
 jest.mock('../../../../../hooks/money/useMoneyVaultApy', () => ({
   useMoneyVaultApy: jest.fn(),

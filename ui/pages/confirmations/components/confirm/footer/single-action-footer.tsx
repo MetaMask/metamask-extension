@@ -57,10 +57,6 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   const isMoneyAccountDeposit = hasTransactionType(currentConfirmation, [
     TransactionType.moneyAccountDeposit,
   ]);
-  const isConvertDeposit = hasTransactionType(
-    currentConfirmation,
-    CONVERT_BUTTON_TRANSACTION_TYPES,
-  );
   const isMoneyAccountPerpsDeposit = useIsMoneyAccountPerpsNavigation();
   const { payToken } = useTransactionPayToken();
   const paymentOverride = useSelector((state: TransactionPayState) =>
@@ -93,11 +89,10 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
 
   return useMemo(() => {
     const defaultButtonText = getSingleActionButtonLabel({
-      isConvertDeposit,
       isMoneyAccountPerpsDeposit,
       payTokenSymbol,
       t,
-      transactionType,
+      transaction: currentConfirmation,
     });
 
     // Money-account withdraw batches have no `requiredAssets`, so Pay never
@@ -139,18 +134,17 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
     return { buttonText, isDisabled, isLoading };
   }, [
     blockingAlerts,
+    currentConfirmation,
     isAmountPending,
     isGaslessLoading,
     isMoneyAccountWithdraw,
     isPayReady,
     isPayLoading,
-    isConvertDeposit,
     isMoneyAccountPerpsDeposit,
     lastWithdrawAmount,
     payTokenSymbol,
     primaryRequiredToken,
     totals,
-    transactionType,
     t,
   ]);
 }
@@ -160,35 +154,36 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
  * Deposit flows name the pay token ("Convert USDC") once Pay has selected
  * one. Until then the generic add-funds label stays, matching mobile.
  *
- * @param options - Transaction type and the selected pay token symbol.
- * @param options.isConvertDeposit - Whether this confirmation is a Money or Perps deposit.
+ * @param options - Confirmation transaction and selected pay token symbol.
  * @param options.isMoneyAccountPerpsDeposit - Whether this is a Perps deposit paid from the Money account.
  * @param options.payTokenSymbol - Symbol of the selected pay token, if Pay has one.
  * @param options.t - i18n function.
- * @param options.transactionType - Resolved confirmation transaction type.
+ * @param options.transaction - Current confirmation transaction.
  * @returns The confirm button label.
  */
 function getSingleActionButtonLabel({
-  isConvertDeposit,
   isMoneyAccountPerpsDeposit,
   payTokenSymbol,
   t,
-  transactionType,
+  transaction,
 }: {
-  isConvertDeposit: boolean;
   isMoneyAccountPerpsDeposit: boolean;
   payTokenSymbol: string | undefined;
   t: ReturnType<typeof useI18nContext>;
-  transactionType: TransactionType | undefined;
+  transaction: TransactionMeta | undefined;
 }): string {
   if (isMoneyAccountPerpsDeposit) {
     return t('send');
   }
 
-  if (isConvertDeposit && payTokenSymbol) {
+  if (
+    payTokenSymbol &&
+    hasTransactionType(transaction, CONVERT_BUTTON_TRANSACTION_TYPES)
+  ) {
     return t('moneyAccountDepositConvert', [payTokenSymbol]);
   }
 
+  const transactionType = getConfirmationTransactionType(transaction);
   const i18nKey =
     (transactionType && BUTTON_TEXT_BY_TYPE[transactionType]) ?? 'confirm';
   return t(i18nKey);

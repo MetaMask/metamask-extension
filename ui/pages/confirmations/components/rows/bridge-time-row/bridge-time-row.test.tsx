@@ -1,5 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { TransactionType } from '@metamask/transaction-controller';
 import type {
   TransactionPayQuote,
   TransactionPayTotals,
@@ -76,12 +77,25 @@ describe('BridgeTimeRow', () => {
     expect(getByTestId('bridge-time-value')).toHaveTextContent('< 1 min');
   });
 
-  it('renders Est. time and Less than 1 min when useMoneyDepositCopy is true', () => {
+  it('renders Est. time and Less than 1 min for moneyAccountDeposit transactions', () => {
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: {
+        chainId: '0x1' as Hex,
+        type: TransactionType.batch,
+        nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+      },
+      isScrollToBottomCompleted: true,
+      setIsScrollToBottomCompleted: jest.fn(),
+      goBackTo: undefined,
+      suppressAutoExit: jest.fn(),
+      isAmountPending: false,
+      setIsAmountPending: jest.fn(),
+    } as ReturnType<typeof useConfirmContext>);
     useTransactionPayTotalsMock.mockReturnValue({
       estimatedDuration: 29,
     } as TransactionPayTotals);
 
-    const { getByTestId, getByText } = render({ useMoneyDepositCopy: true });
+    const { getByTestId, getByText } = render();
     expect(
       getByText(messages.moneyAccountDepositEstTime.message),
     ).toBeInTheDocument();

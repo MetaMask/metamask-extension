@@ -82,38 +82,14 @@ jest.mock('../../rows/from-account-row', () => ({
 jest.mock('../../rows/perps-account-picker-row', () => ({
   PerpsAccountPickerRow: () => <div data-testid="perps-account-picker-row" />,
 }));
-jest.mock('../../rows/perps-to-row', () => ({
-  PerpsToRow: () => <div data-testid="perps-to-row" />,
-}));
-jest.mock('../../rows/money-account-to-row', () => ({
-  MoneyAccountToRow: () => <div data-testid="money-account-to-row" />,
-}));
 jest.mock('../../rows/bridge-fee-row/bridge-fee-row', () => ({
-  BridgeFeeRow: ({
-    useDottedValueTooltip,
-  }: {
-    useDottedValueTooltip?: boolean;
-  }) => (
-    <div
-      data-testid="bridge-fee-row"
-      data-dotted-tooltip={String(Boolean(useDottedValueTooltip))}
-    />
-  ),
+  BridgeFeeRow: () => <div data-testid="bridge-fee-row" />,
 }));
 jest.mock('../../../../../hooks/money/useMoneyVaultApy', () => ({
   useMoneyVaultApy: () => ({ apyPercentFormatted: '6.2%' }),
 }));
 jest.mock('../../rows/bridge-time-row/bridge-time-row', () => ({
-  BridgeTimeRow: ({
-    useMoneyDepositCopy,
-  }: {
-    useMoneyDepositCopy?: boolean;
-  }) => (
-    <div
-      data-testid="bridge-time-row"
-      data-money-deposit-copy={String(Boolean(useMoneyDepositCopy))}
-    />
-  ),
+  BridgeTimeRow: () => <div data-testid="bridge-time-row" />,
 }));
 jest.mock('../../rows/total-row/total-row', () => ({
   TotalRow: () => <div data-testid="total-row" />,
@@ -218,6 +194,8 @@ function render(
     primaryRequiredToken?: typeof MOCK_PRIMARY_REQUIRED_TOKEN | undefined;
     withdraw?: { isWithdraw: boolean; canSelectWithdrawToken: boolean };
     isDefaultMoneyAccount?: boolean;
+    resultRows?: React.ReactNode;
+    showAccountDivider?: boolean;
   } = {},
 ) {
   const {
@@ -244,6 +222,8 @@ function render(
     requiredTokens = [],
     withdraw = { isWithdraw: false, canSelectWithdrawToken: false },
     isDefaultMoneyAccount = false,
+    resultRows,
+    showAccountDivider,
   } = options;
   const primaryRequiredToken = Object.prototype.hasOwnProperty.call(
     options,
@@ -359,6 +339,8 @@ function render(
       displayPercentageButtons={displayPercentageButtons}
       hasMax={hasMax}
       hidePayTokenAmount={hidePayTokenAmount}
+      resultRows={resultRows}
+      showAccountDivider={showAccountDivider}
     />,
     mockStore(state),
   );
@@ -1020,7 +1002,45 @@ describe('CustomAmountInfo', () => {
       expect(queryByTestId('receive-row')).not.toBeInTheDocument();
     });
 
-    it('renders MoneyAccountToRow before BridgeTimeRow and BridgeFeeRow with dotted fee tooltip and mUSD receive dialog for money-account deposits', () => {
+    it('renders resultRows directly below PayWithRow and before BridgeFeeRow when results are ready', () => {
+      const { getByTestId } = render({
+        hasQuotes: true,
+        resultRows: <div data-testid="custom-result-row" />,
+      });
+
+      const payWithRow = getByTestId('pay-with-row');
+      const customResultRow = getByTestId('custom-result-row');
+      const feeRow = getByTestId('bridge-fee-row');
+      const timeRow = getByTestId('bridge-time-row');
+
+      expect(customResultRow).toBeInTheDocument();
+      expect(payWithRow.compareDocumentPosition(customResultRow)).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      );
+      expect(customResultRow.compareDocumentPosition(feeRow)).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      );
+      expect(feeRow.compareDocumentPosition(timeRow)).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      );
+    });
+
+    it('hides resultRows when results are hidden', () => {
+      const { queryByTestId } = render({
+        alertsHookReturn: {
+          alertMessage: 'Error',
+          hasAlert: true,
+          hideResults: true,
+          disableUpdate: false,
+        },
+        hasQuotes: true,
+        resultRows: <div data-testid="custom-result-row" />,
+      });
+
+      expect(queryByTestId('custom-result-row')).not.toBeInTheDocument();
+    });
+
+    it('renders ReceiveRow with dotted mUSD dialog trigger for input-based money-account deposits', () => {
       const { getByTestId } = render({
         hasQuotes: true,
         transactionMeta: MOCK_MONEY_ACCOUNT_DEPOSIT_TRANSACTION_META,
@@ -1030,76 +1050,28 @@ describe('CustomAmountInfo', () => {
         } as TransactionPayTotals,
       });
 
-      const toRow = getByTestId('money-account-to-row');
-      const timeRow = getByTestId('bridge-time-row');
-      const feeRow = getByTestId('bridge-fee-row');
       const receiveValue = getByTestId('receive-value');
-
-      expect(toRow).toBeInTheDocument();
-      expect(timeRow).toHaveAttribute('data-money-deposit-copy', 'true');
-      expect(feeRow).toHaveAttribute('data-dotted-tooltip', 'true');
       expect(receiveValue.tagName).toBe('BUTTON');
-      expect(toRow.compareDocumentPosition(timeRow)).toBe(
-        Node.DOCUMENT_POSITION_FOLLOWING,
-      );
-      expect(timeRow.compareDocumentPosition(feeRow)).toBe(
-        Node.DOCUMENT_POSITION_FOLLOWING,
-      );
     });
 
-    it('renders PerpsToRow directly below PayWithRow and before BridgeFeeRow for perpsDeposit', () => {
-      const perpsDepositMeta = {
-        ...MOCK_TRANSACTION_META,
-        type: TransactionType.perpsDeposit,
-      } as TransactionMeta;
-
-      const { getByTestId } = render({
-        hasQuotes: true,
-        transactionMeta: perpsDepositMeta,
-      });
-
-      const payWithRow = getByTestId('pay-with-row');
-      const perpsToRow = getByTestId('perps-to-row');
-      const feeRow = getByTestId('bridge-fee-row');
-
-      expect(perpsToRow).toBeInTheDocument();
-      expect(payWithRow.compareDocumentPosition(perpsToRow)).toBe(
-        Node.DOCUMENT_POSITION_FOLLOWING,
-      );
-      expect(perpsToRow.compareDocumentPosition(feeRow)).toBe(
-        Node.DOCUMENT_POSITION_FOLLOWING,
-      );
-    });
-
-    it('does not render PerpsToRow for non-perpsDeposit transactions', () => {
-      const { queryByTestId } = render({
-        hasQuotes: true,
-        transactionMeta: MOCK_MONEY_ACCOUNT_DEPOSIT_TRANSACTION_META,
-      });
-
-      expect(queryByTestId('perps-to-row')).not.toBeInTheDocument();
-    });
-
-    it('hides the FromAccountRow divider on money-account deposits while keeping it on withdraws', () => {
-      const { getByTestId: getDepositTestId, unmount } = render({
+    it('respects showAccountDivider on FromAccountRow', () => {
+      const { getByTestId: getHiddenDividerTestId, unmount } = render({
         displayAccountRow: true,
-        transactionMeta: MOCK_MONEY_ACCOUNT_DEPOSIT_TRANSACTION_META,
+        showAccountDivider: false,
       });
 
-      expect(getDepositTestId('from-account-row')).toHaveAttribute(
+      expect(getHiddenDividerTestId('from-account-row')).toHaveAttribute(
         'data-show-divider',
         'false',
       );
 
       unmount();
 
-      const { getByTestId: getWithdrawTestId } = render({
+      const { getByTestId: getDefaultDividerTestId } = render({
         displayAccountRow: true,
-        transactionMeta: MOCK_MONEY_ACCOUNT_WITHDRAW_TRANSACTION_META,
-        withdraw: { isWithdraw: true, canSelectWithdrawToken: false },
       });
 
-      expect(getWithdrawTestId('from-account-row')).toHaveAttribute(
+      expect(getDefaultDividerTestId('from-account-row')).toHaveAttribute(
         'data-show-divider',
         'true',
       );
