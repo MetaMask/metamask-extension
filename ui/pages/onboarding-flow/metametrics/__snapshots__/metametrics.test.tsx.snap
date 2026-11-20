@@ -9,7 +9,7 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
     <h2
       class="text-default text-s-heading-lg leading-s-heading-lg tracking-s-heading-lg md:text-l-heading-lg md:leading-l-heading-lg md:tracking-l-heading-lg font-bold font-default text-left"
     >
-      Help improve MetaMask
+      Help us improve MetaMask
     </h2>
     <div
       class="onboarding-metametrics__user-control w-full"
@@ -25,7 +25,7 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
     <p
       class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default text-left"
     >
-      We’d like to request these permissions. You can opt out or delete your usage data at any time.
+      We’d like to request these permissions. You can opt out or delete your usage data anytime.
     </p>
     <div
       class="flex flex-col gap-2 p-3 bg-muted onboarding-metametrics__checkbox rounded-lg"
@@ -65,7 +65,7 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
           <p
             class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
           >
-            Gather basic usage data
+            Basic usage data
           </p>
         </span>
       </label>
@@ -112,14 +112,14 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
           <p
             class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
           >
-            Marketing updates
+            Marketing data
           </p>
         </span>
       </label>
       <p
         class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default text-left"
       >
-        We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features).
+        We’ll collect data to learn how you interact with our marketing communications. We may use this data to share relevant news (like product updates).
       </p>
     </div>
     <div
@@ -150,7 +150,7 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
     <h2
       class="text-default text-s-heading-lg leading-s-heading-lg tracking-s-heading-lg md:text-l-heading-lg md:leading-l-heading-lg md:tracking-l-heading-lg font-bold font-default text-left"
     >
-      Help improve MetaMask
+      Help us improve MetaMask
     </h2>
     <div
       class="onboarding-metametrics__user-control w-full"
@@ -166,7 +166,7 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
     <p
       class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default text-left"
     >
-      We’d like to request these permissions. You can opt out or delete your usage data at any time.
+      We’d like to request these permissions. You can opt out or delete your usage data anytime.
     </p>
     <div
       class="flex flex-col gap-2 p-3 bg-muted onboarding-metametrics__checkbox rounded-lg"
@@ -206,7 +206,7 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
           <p
             class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
           >
-            Gather basic usage data
+            Basic usage data
           </p>
         </span>
       </label>
@@ -253,14 +253,14 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
           <p
             class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
           >
-            Marketing updates
+            Marketing data
           </p>
         </span>
       </label>
       <p
         class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default text-left"
       >
-        We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features).
+        We’ll collect data to learn how you interact with our marketing communications. We may use this data to share relevant news (like product updates).
       </p>
     </div>
     <div

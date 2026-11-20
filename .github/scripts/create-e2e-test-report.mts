@@ -1,10 +1,11 @@
 import * as fs from 'fs/promises';
 import path from 'path';
-import type {
-  TestCase,
-  TestFile,
-  TestRun,
-  TestSuite,
+import {
+  getTestSuiteTime,
+  type TestCase,
+  type TestFile,
+  type TestRun,
+  type TestSuite,
 } from './shared/test-reports.mts';
 import {
   consoleBold,
@@ -97,6 +98,7 @@ async function main() {
           };
           testSuite.testCases.push(testCase);
         }
+        testSuite.time = getTestSuiteTime(testSuite.time, testSuite.testCases);
 
         const testFile: TestFile = {
           path: normalizeTestPath(suite.$.file),
