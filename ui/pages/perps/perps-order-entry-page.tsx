@@ -1503,7 +1503,9 @@ const PerpsOrderEntryPage = () => {
     }
     return {
       size: position.size,
-      leverage: position.leverage.value,
+      // `leverage.value` is absent when the provider does not report one;
+      // fall back to the trading default the form itself seeds with.
+      leverage: position.leverage.value ?? TRADING_DEFAULTS.leverage,
       entryPrice: position.entryPrice,
       takeProfitPrice: position.takeProfitPrice,
       stopLossPrice: position.stopLossPrice,
