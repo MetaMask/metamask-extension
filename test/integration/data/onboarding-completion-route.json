@@ -383,13 +383,6 @@
       "subjectType": "website",
       "origin": "https://5c4669a19fd4b55728637d0c236c6cea.safeframe.googlesyndication.com",
       "extensionId": null
-    },
-    "https://start.metamask.io": {
-      "iconUrl": null,
-      "name": "Start | MetaMask",
-      "subjectType": "website",
-      "origin": "https://start.metamask.io",
-      "extensionId": null
     }
   },
   "subjects": {
