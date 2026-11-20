@@ -83,11 +83,6 @@ export function DottedTriggerTooltip({
     }, POPOVER_CLOSE_DELAY_MS);
   }, [clearCloseTimer]);
 
-  const handleToggle = useCallback(() => {
-    clearCloseTimer();
-    setIsOpen((prev) => !prev);
-  }, [clearCloseTimer]);
-
   return (
     <Box>
       <DottedTrigger
@@ -96,7 +91,7 @@ export function DottedTriggerTooltip({
         color={textColor}
         data-testid={dataTestId ? `${dataTestId}-trigger` : undefined}
         onBlur={handleClose}
-        onClick={handleToggle}
+        onClick={handleOpen}
         onFocus={handleOpen}
         onMouseEnter={handleOpen}
         onMouseLeave={handleScheduleClose}

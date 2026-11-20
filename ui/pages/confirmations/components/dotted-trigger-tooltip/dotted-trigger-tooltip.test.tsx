@@ -55,6 +55,27 @@ describe('DottedTriggerTooltip', () => {
     );
   });
 
+  it('stays open when clicked after mouseEnter and focus', async () => {
+    renderWithProvider(
+      <DottedTriggerTooltip data-testid="click-after-hover" text="$1.23">
+        <span>Fee breakdown</span>
+      </DottedTriggerTooltip>,
+      store,
+    );
+
+    const trigger = screen.getByTestId('click-after-hover-trigger');
+
+    await act(async () => {
+      fireEvent.mouseEnter(trigger);
+      fireEvent.focus(trigger);
+      fireEvent.click(trigger);
+    });
+
+    expect(screen.getByTestId('click-after-hover')).toHaveTextContent(
+      'Fee breakdown',
+    );
+  });
+
   it('stays open when moving the pointer from the trigger onto the popover', async () => {
     renderWithProvider(
       <DottedTriggerTooltip data-testid="hover-bridge-tooltip" text="$1.23">
