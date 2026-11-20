@@ -11,10 +11,14 @@ import { SNAPSHOT_PATH } from './constants';
  * @param options.stdout
  */
 export async function update({ stdout }: { stdout: Writable }): Promise<void> {
+  const currentNamesByApiName = readApiMemberNames();
   const entries = Object.values(LEGACY_APIS)
     .map(
       (legacyApi) =>
-        [legacyApi.name, [...readApiMemberNames(legacyApi)].sort()] as const,
+        [
+          legacyApi.name,
+          [...currentNamesByApiName[legacyApi.name]].sort(),
+        ] as const,
     )
     .sort(([a], [b]) => a.localeCompare(b));
   const prettier = await import('prettier');
@@ -28,6 +32,6 @@ export async function update({ stdout }: { stdout: Writable }): Promise<void> {
   );
   writeFileSync(SNAPSHOT_PATH, contents);
   stdout.write(
-    `Updated legacy background API snapshot with current members: ${SNAPSHOT_PATH}.\n`,
+    `Updated ${SNAPSHOT_PATH} with current set of legacy API methods.\n`,
   );
 }

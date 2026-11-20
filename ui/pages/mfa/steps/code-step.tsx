@@ -58,7 +58,7 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const secondsLeft = useSecondsUntil(state.resendAvailableAt);
-  const { busy, error, codeResent, resendAvailableAt } = state;
+  const { busy, error, codeResent } = state;
   const { codeSent } = step;
   // Authenticator app codes are on the user's app, so nothing is sent or
   // resent.
@@ -81,19 +81,6 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
       inputRef.current?.focus();
     }
   }, [error, codeResent]);
-
-  // The first email code of a flow can hit the cooldown left by the previous
-  // one.
-  useEffect(() => {
-    if (
-      !isTotp &&
-      !codeSent &&
-      resendAvailableAt !== undefined &&
-      secondsLeft === 0
-    ) {
-      onAction({ type: 'resend', trigger: 'auto' });
-    }
-  }, [isTotp, codeSent, resendAvailableAt, secondsLeft, onAction]);
 
   useEffect(() => {
     if (codeSent) {
@@ -142,13 +129,23 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
         String(secondsLeft),
       ]);
     }
-    return t(busy && !codeSent ? 'mfaOtpSending' : 'mfaOtpResend');
+    if (busy && !codeSent) {
+      return t('mfaOtpSending');
+    }
+    // A first code that hit the resend limit is sent when the user asks.
+    return t(codeSent ? 'mfaOtpResend' : 'mfaOtpSend');
   };
   const canResend = !isCoolingDown && !busy;
 
   const getDescription = () => {
     if (isTotp) {
       return t('mfaOtpDescriptionTotp');
+    }
+    // A first code that hit the resend limit isn't sent until the user asks.
+    if (!codeSent) {
+      return step.email
+        ? t('mfaOtpDescriptionUnsentWithEmail', [maskEmail(step.email)])
+        : t('mfaOtpDescriptionUnsent');
     }
     return step.email
       ? t('mfaOtpDescriptionWithEmail', [maskEmail(step.email)])
