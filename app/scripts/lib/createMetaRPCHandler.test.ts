@@ -24,7 +24,9 @@ jest.mock('../../../shared/lib/trace', () => {
 jest.mock('../../../shared/lib/wrapper-sampling', () => ({
   shouldSampleWrappers: jest.fn().mockReturnValue(true),
   isRootWrapperEnabled: jest.fn().mockReturnValue(true),
-  admitTraceWrappers: jest.fn((_traceId: unknown, fn: () => unknown) => fn()),
+  admitTraceWrappers: jest.fn(async (_traceId: unknown, fn: () => unknown) =>
+    fn(),
+  ),
 }));
 
 type Api = Record<string, TaggedApiMethod>;
@@ -35,7 +37,8 @@ const createStream = () => new PassThrough({ objectMode: true });
 // and the `TraceparentData` it unpacks to once extracted.
 const TRACE_ID_MOCK = '4bf92f3577b34da6a3ce929d0e0e4736';
 const SPAN_ID_MOCK = '00f067aa0ba902b7';
-const TRACEPARENT_MOCK = `00-${TRACE_ID_MOCK}-${SPAN_ID_MOCK}-01`;
+const SAMPLED_TRACEPARENT_MOCK = `00-${TRACE_ID_MOCK}-${SPAN_ID_MOCK}-01`;
+const UNSAMPLED_TRACEPARENT_MOCK = `00-${TRACE_ID_MOCK}-${SPAN_ID_MOCK}-00`;
 const TRACE_CONTEXT_MOCK = {
   traceId: TRACE_ID_MOCK,
   parentSpanId: SPAN_ID_MOCK,
@@ -193,7 +196,7 @@ describe('createMetaRPCHandler', () => {
           'bar',
           {
             _trace: {
-              traceparent: TRACEPARENT_MOCK,
+              traceparent: SAMPLED_TRACEPARENT_MOCK,
               spanName: 'Background RPC: foo',
             },
           },
@@ -229,7 +232,7 @@ describe('createMetaRPCHandler', () => {
           'bar',
           {
             _trace: {
-              traceparent: TRACEPARENT_MOCK,
+              traceparent: SAMPLED_TRACEPARENT_MOCK,
               spanName: 'Background RPC: foo',
             },
           },
@@ -262,7 +265,7 @@ describe('createMetaRPCHandler', () => {
           [],
           {
             _trace: {
-              traceparent: TRACEPARENT_MOCK,
+              traceparent: SAMPLED_TRACEPARENT_MOCK,
               spanName: 'Background RPC: AppStateController:getState',
               messengerAction: 'AppStateController:getState',
             },
@@ -327,7 +330,7 @@ describe('createMetaRPCHandler', () => {
           'bar',
           {
             _trace: {
-              traceparent: TRACEPARENT_MOCK,
+              traceparent: SAMPLED_TRACEPARENT_MOCK,
               spanName: 'Background RPC: foo',
             },
           },
@@ -359,7 +362,7 @@ describe('createMetaRPCHandler', () => {
           'bar',
           {
             _trace: {
-              traceparent: `00-${TRACE_ID_MOCK}-${SPAN_ID_MOCK}-00`,
+              traceparent: UNSAMPLED_TRACEPARENT_MOCK,
               spanName: 'Background RPC: foo',
             },
           },
