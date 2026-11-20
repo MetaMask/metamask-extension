@@ -35,6 +35,12 @@ import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { useBoolean } from '../../../../hooks/useBoolean';
 import type { FeaturedNetwork } from '../../../../selectors/config-registry/config-registry';
 import { useDispatch } from '../../../../store/hooks';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
+import {
+  NetworkManagementEntryPoint,
+  NetworkManagementSource,
+} from '../../../../../shared/constants/metametrics';
+import { trackNetworkAdded } from '../../../../helpers/utils/network-management-metrics';
 
 const PopularNetworkList = ({
   searchAddNetworkResults,
@@ -44,6 +50,7 @@ const PopularNetworkList = ({
   const t = useI18nContext();
   const isPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const dispatch = useDispatch();
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const { value: isOpen, setTrue: open, setFalse: close } = useBoolean();
 
   const [referenceElement, setReferenceElement] = useState();
@@ -173,6 +180,19 @@ const PopularNetworkList = ({
 
                   // First add the network to user's configuration
                   await dispatch(addNetwork(network));
+                  trackNetworkAdded(
+                    { trackEvent, createEventBuilder },
+                    {
+                      chainId: network.chainId,
+                      source: NetworkManagementSource.PopularList,
+                      entryPoint:
+                        NetworkManagementEntryPoint.PopularNetworkList,
+                      rpcCount: network.rpcEndpoints?.length ?? 1,
+                      blockExplorerSet: Boolean(
+                        network.blockExplorerUrls?.length,
+                      ),
+                    },
+                  );
 
                   // Then enable it in the network list
                   await dispatch(setEnabledNetworks(network.chainId));
