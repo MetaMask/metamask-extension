@@ -76,12 +76,11 @@ export default function CurrencyInput({
   const [fiatDecimalValue, setFiatDecimalValue] = useState('0');
 
   const chainId = useSelector(getCurrentChainId);
-  const { ticker, type, rpcUrl } = useSelector(getProviderConfig);
+  const { ticker, rpcUrl } = useSelector(getProviderConfig);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     chainId,
     ticker,
-    type,
-    rpcUrl,
+    { rpcUrl },
   );
 
   const inputRef = useRef();
