@@ -113,9 +113,9 @@ describe('ExportYourDataItem', () => {
     );
   });
 
-  it('supports filename responses from the typed action', async () => {
+  it('uses the filename returned by the backup action', async () => {
     mockBackupUserData.mockResolvedValue({
-      filename: 'MetaMaskUserData.typed.json',
+      fileName: 'MetaMaskUserData.typed.json',
       data: '{"accounts":[]}',
     });
     mockExportAsFile.mockResolvedValue(undefined);

@@ -9,20 +9,29 @@
  * @see {@link ./launch.ts}
  */
 
-const PPID = Number(process.env.PPID);
-if (isNaN(PPID) || PPID !== process.ppid) {
-  throw new Error(
-    `${__filename} must be run with a \`PPID\` environment variable. See ${__dirname}/launch.ts for an example.`,
-  );
+// TODO: Replace this wrapper with top-level await once the tooling runs
+// as ESM under LavaMoat.
+async function main() {
+  const PPID = Number(process.env.PPID);
+  if (isNaN(PPID) || PPID !== process.ppid) {
+    throw new Error(
+      `${__filename} must be run with a \`PPID\` environment variable. See ${__dirname}/launch.ts for an example.`,
+    );
+  }
+
+  const { build } = await import('./build');
+  await build(() => {
+    // stop writing now because the parent process is still listening to these
+    // streams and we don't want any more output to be shown to the user.
+    process.stdout.write = process.stderr.write = () => true;
+
+    // use IPC if we have it, otherwise send a POSIX signal
+    process.send?.('SIGUSR2') || process.kill(PPID, 'SIGUSR2');
+  });
 }
-
-require('./build').build(() => {
-  // stop writing now because the parent process is still listening to these
-  // streams and we don't want any more output to be shown to the user.
-  process.stdout.write = process.stderr.write = () => true;
-
-  // use IPC if we have it, otherwise send a POSIX signal
-  process.send?.('SIGUSR2') || process.kill(PPID, 'SIGUSR2');
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
 });
 
 export {};
