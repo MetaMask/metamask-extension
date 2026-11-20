@@ -2,7 +2,6 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -19,13 +18,12 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../../../../hooks/useFiatFormatter';
-import { getPreferences } from '../../../../../../../../shared/lib/selectors/preferences';
+import { getShouldShowFiat } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useDappSwapContext } from '../../../../../context/dapp-swap';
 import { useEstimationFailed } from '../../../../../hooks/gas/useEstimationFailed';
@@ -77,7 +75,7 @@ export const EditGasFeesRow = ({
 
   const estimationFailed = useEstimationFailed();
   const gasFeeToken = useSelectedGasFeeToken();
-  const showFiat = useShowFiat(chainId);
+  const showFiat = useSelector((state) => getShouldShowFiat(state, chainId));
   const fiatValue = gasFeeToken?.amountFiat || fiatFee;
   const hasFiatValue = Boolean(fiatValue);
   const tokenValue = gasFeeToken ? gasFeeToken.amountFormatted : nativeFee;
@@ -238,14 +236,17 @@ export const EditGasFeesRow = ({
                 : ' '}
             </Text>
           </Box>
-          {showAdvancedDetails && !estimationFailed && hasFiatValue && (
-            <FiatValue
-              fullValue={fiatFeeWith18SignificantDigits}
-              roundedValue={fiatValue}
-              variant={TextVariant.BodySm}
-              color={TextColor.TextAlternative}
-            />
-          )}
+          {showFiat &&
+            showAdvancedDetails &&
+            !estimationFailed &&
+            hasFiatValue && (
+              <FiatValue
+                fullValue={fiatFeeWith18SignificantDigits}
+                roundedValue={fiatValue}
+                variant={TextVariant.BodySm}
+                color={TextColor.TextAlternative}
+              />
+            )}
         </Box>
       )}
     </Box>
@@ -311,13 +312,4 @@ function GasFeeSponsored({ sponsor }: { sponsor?: string }) {
       </Text>
     </Box>
   );
-}
-
-function useShowFiat(chainId: Hex): boolean {
-  type TestNetChainId = (typeof TEST_CHAINS)[number];
-
-  const isTestnet = TEST_CHAINS.includes(chainId as TestNetChainId);
-  const { showFiatInTestnets } = useSelector(getPreferences);
-
-  return !isTestnet || Boolean(showFiatInTestnets);
 }

@@ -17,11 +17,14 @@ import {
 } from '../../../../../../../../shared/constants/network';
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/lib/selectors/networks';
+import { getPreferences } from '../../../../../../../../shared/lib/selectors/preferences';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import { useFiatFormatter } from '../../../../../../../hooks/useFiatFormatter';
-import { selectConversionRateByChainId } from '../../../../../../../selectors';
-import { getPreferences } from '../../../../../../../../shared/lib/selectors/preferences';
+import {
+  getUseCurrencyRateCheck,
+  selectConversionRateByChainId,
+} from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { formatAmount } from '../../../../../../../../shared/lib/format-amount';
 import { useSendingValueMetric } from '../../hooks/useSendingValueMetric';
@@ -42,13 +45,15 @@ const NativeSendHeading = () => {
   const conversionRate = useSelector((state) =>
     selectConversionRateByChainId(state, chainId),
   );
+  const shouldShowFiat = useSelector(getUseCurrencyRateCheck);
 
-  const fiatValue =
-    conversionRate &&
-    nativeAssetTransferValue &&
-    new BigNumber(String(conversionRate))
-      .times(nativeAssetTransferValue, 10)
-      .toNumber();
+  const fiatValue = shouldShowFiat
+    ? conversionRate &&
+      nativeAssetTransferValue &&
+      new BigNumber(String(conversionRate))
+        .times(nativeAssetTransferValue, 10)
+        .toNumber()
+    : undefined;
   const fiatFormatter = useFiatFormatter();
   const isNonZeroSmallValue =
     fiatValue &&

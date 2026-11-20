@@ -6,12 +6,14 @@ import { calcTokenAmount } from '../../../../../../../shared/lib/transactions-co
 import useTokenExchangeRate from '../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { getIntlLocale } from '../../../../../../ducks/locale/locale';
 import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
+import { getUseCurrencyRateCheck } from '../../../../../../selectors';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
 import { formatAmount } from '../../../../../../../shared/lib/format-amount';
 import { useTokenTransactionData } from './useTokenTransactionData';
 
 export const useTokenValues = (transactionMeta: TransactionMeta) => {
   const locale = useSelector(getIntlLocale);
+  const shouldShowFiat = useSelector(getUseCurrencyRateCheck);
   const parsedTransactionData = useTokenTransactionData();
   const { txParams, txParamsOriginal } = transactionMeta;
   const tokenAddress = txParamsOriginal?.to ?? txParams.to;
@@ -37,10 +39,11 @@ export const useTokenValues = (transactionMeta: TransactionMeta) => {
       ? calcTokenAmount(value, Number(decimals)).toFixed()
       : '0';
 
-  const fiatValue =
-    exchangeRate &&
-    decodedTransferValue &&
-    exchangeRate.times(decodedTransferValue, 10).toNumber();
+  const fiatValue = shouldShowFiat
+    ? exchangeRate &&
+      decodedTransferValue &&
+      exchangeRate.times(decodedTransferValue, 10).toNumber()
+    : undefined;
 
   const isNonZeroSmallValue =
     fiatValue &&
@@ -68,5 +71,6 @@ export const useTokenValues = (transactionMeta: TransactionMeta) => {
     fiatDisplayValue,
     fiatValue,
     pending,
+    shouldShowFiat,
   };
 };
