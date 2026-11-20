@@ -14,7 +14,7 @@ const renderRow = (
     <PaymentMethodRow
       id="row-1"
       icon={<span data-testid="row-icon" />}
-      title="Money account"
+      title="MetaMask Money"
       {...props}
     />,
     configureStore(mockState),
@@ -29,7 +29,7 @@ describe('PaymentMethodRow', () => {
 
     expect(screen.getByTestId('payment-method-row')).toBeInTheDocument();
     expect(screen.getByTestId('payment-method-row-title')).toHaveTextContent(
-      'Money account',
+      'MetaMask Money',
     );
     expect(screen.getByTestId('payment-method-row-subtitle')).toHaveTextContent(
       '$7.05 available',

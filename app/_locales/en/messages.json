@@ -21,7 +21,7 @@
     "message": "Reject"
   },
   "QRHardwareSignRequestDescription": {
-    "message": "After you’ve signed with your wallet, click on 'Get Signature' to receive the signature"
+    "message": "After you’ve signed with your wallet, click on 'Get Signature' to receive the signature."
   },
   "QRHardwareSignRequestGetSignature": {
     "message": "Get signature"
@@ -121,11 +121,11 @@
     "description": "Error help text used under the input field for renaming multichain account when user tries to use existing name."
   },
   "accountNameDuplicate": {
-    "message": "This account name already exists",
+    "message": "This account name already exists.",
     "description": "This is an error message shown when the user enters a new account name that matches an existing account name"
   },
   "accountNameReserved": {
-    "message": "This account name is reserved",
+    "message": "This account name is reserved.",
     "description": "This is an error message shown when the user enters a new account name that is reserved for future use"
   },
   "accountNotFoundCreateOne": {
@@ -519,40 +519,40 @@
     "message": "Closed short - market"
   },
   "activity_moneyAccountDeposit_failed_description": {
-    "message": "To: Money account"
+    "message": "To: MetaMask Money"
   },
   "activity_moneyAccountDeposit_failed_title": {
     "message": "Deposit failed"
   },
   "activity_moneyAccountDeposit_pending_description": {
-    "message": "To: Money account"
+    "message": "To: MetaMask Money"
   },
   "activity_moneyAccountDeposit_pending_title": {
     "message": "Depositing $1",
     "description": "$1 is the token symbol"
   },
   "activity_moneyAccountDeposit_success_description": {
-    "message": "To: Money account"
+    "message": "To: MetaMask Money"
   },
   "activity_moneyAccountDeposit_success_title": {
     "message": "Deposited $1",
     "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_failed_description": {
-    "message": "From: Money account"
+    "message": "From: MetaMask Money"
   },
   "activity_moneyAccountWithdraw_failed_title": {
     "message": "Receive failed"
   },
   "activity_moneyAccountWithdraw_pending_description": {
-    "message": "From: Money account"
+    "message": "From: MetaMask Money"
   },
   "activity_moneyAccountWithdraw_pending_title": {
     "message": "Receiving $1",
     "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_success_description": {
-    "message": "From: Money account"
+    "message": "From: MetaMask Money"
   },
   "activity_moneyAccountWithdraw_success_title": {
     "message": "Received $1",
@@ -1445,7 +1445,7 @@
     "message": "Address poisoning detected"
   },
   "addressQrCodeModalDescription": {
-    "message": "Use this address to receive tokens and collectibles on $1",
+    "message": "Use this address to receive tokens and collectibles on $1.",
     "description": "$1 is the network name"
   },
   "addressQrCodeModalHeading": {
@@ -1541,7 +1541,7 @@
     "description": "$1 is the formatted USD deposit limit (e.g. $100,000)"
   },
   "alertDisableTooltip": {
-    "message": "This can be changed in \"Settings > Alerts\""
+    "message": "This can be changed in \"Settings > Alerts\"."
   },
   "alertInsufficientPayMethodBalance": {
     "message": "Add less or use a different payment method."
@@ -2627,7 +2627,7 @@
     "message": "More $1 needed for gas"
   },
   "bridgeValidationInsufficientNativeReserveMessage": {
-    "message": "This specific network requires maintaining a reserve of $1 $3 in your account. With your current balance you can use a maximum of $2 $3",
+    "message": "This specific network requires maintaining a reserve of $1 $3 in your account. With your current balance you can use a maximum of $2 $3.",
     "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
   },
   "bridgeValidationInsufficientNativeReserveTitle": {
@@ -2845,7 +2845,7 @@
     "message": "Completed"
   },
   "concentratedSupplyDistributionDescription": {
-    "message": "The majority of the token's supply is held by the top token holders, posing a risk of centralized price manipulation"
+    "message": "The majority of the token's supply is held by the top token holders, posing a risk of centralized price manipulation."
   },
   "concentratedSupplyDistributionTitle": {
     "message": "Concentrated supply distribution"
@@ -3127,7 +3127,7 @@
     "description": "$1 is the account name"
   },
   "connectedSnapAndNoAccountDescription": {
-    "message": "MetaMask is connected to this site, but no accounts are connected yet"
+    "message": "MetaMask is connected to this site, but no accounts are connected yet."
   },
   "connectedSnaps": {
     "message": "Connected Snaps"
@@ -3157,7 +3157,7 @@
     "message": "Connecting to Sepolia test network"
   },
   "connectionDescription": {
-    "message": "Connect this website with MetaMask"
+    "message": "Connect this website with MetaMask."
   },
   "connectionFailed": {
     "message": "Connection failed"
@@ -3459,7 +3459,7 @@
     "description": "$1 is error message"
   },
   "decryptMessageNotice": {
-    "message": "$1 would like to read this message to complete your action",
+    "message": "$1 would like to read this message to complete your action.",
     "description": "$1 is the web3 site name"
   },
   "decryptMetamask": {
@@ -3650,7 +3650,7 @@
     "message": "Try visiting again later."
   },
   "defiTabErrorTitle": {
-    "message": "We could not load this page."
+    "message": "We could not load this page"
   },
   "defiUnsupportedEmptyDescription": {
     "message": "DeFi isn't supported on this network."
@@ -3685,7 +3685,7 @@
     "description": "$1 will be the date on which teh deletion is requested and $2 will have text saying Privacy Policy "
   },
   "deleteMetaMetricsDataToast": {
-    "message": "Data will be deleted within 30 days"
+    "message": "Data will be deleted within 30 days."
   },
   "deleteNetworkIntro": {
     "message": "If you delete this network, you will need to add it again to view your assets in this network"
@@ -3852,10 +3852,10 @@
     "message": "Dropped"
   },
   "duplicateContactTooltip": {
-    "message": "This contact name collides with an existing account or contact"
+    "message": "This contact name collides with an existing account or contact."
   },
   "duplicateContactWarning": {
-    "message": "You have duplicate contacts"
+    "message": "You have duplicate contacts."
   },
   "durationSuffixDay": {
     "message": "D",
@@ -4216,7 +4216,7 @@
     "message": "You can export data like your contacts and preferences."
   },
   "extendWalletWithSnaps": {
-    "message": "Explore community-built Snaps to customize your web3 experience",
+    "message": "Explore community-built Snaps to customize your web3 experience.",
     "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalAccount": {
@@ -4247,7 +4247,7 @@
     "message": "Failover RPC URL"
   },
   "failureMessage": {
-    "message": "Something went wrong, and we were unable to complete the action"
+    "message": "Something went wrong, and we were unable to complete the action."
   },
   "fast": {
     "message": "Fast"
@@ -4671,7 +4671,7 @@
     "description": "Description shown when a hardware wallet is locked during an operation"
   },
   "hardwareWalletErrorOnlyV4SupportedDescription": {
-    "message": "Your $1 can only sign version 4 (V4) typed data. This site requested an older signature type that isn't supported",
+    "message": "Your $1 can only sign version 4 (V4) typed data. This site requested an older signature type that isn't supported.",
     "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorReconnectButton": {
@@ -5356,7 +5356,7 @@
     "message": "Ledger Live is taking too long to respond or connection timeout. Make sure Ledger Live app is opened and your device is unlocked."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
-    "message": "The Ledger device was not connected. If you wish to connect your Ledger, click 'Continue' again and approve HID connection",
+    "message": "The Ledger device was not connected. If you wish to connect your Ledger, click 'Continue' again and approve HID connection.",
     "description": "An error message shown to the user during the hardware connect flow."
   },
   "lightTheme": {
@@ -5632,13 +5632,13 @@
     "message": "Something went wrong. Try again."
   },
   "mfaErrorInvalidCode": {
-    "message": "This code isn’t correct. Try again"
+    "message": "This code isn’t correct. Try again."
   },
   "mfaErrorInvalidPasskey": {
     "message": "Your passkey couldn't be verified. Try again."
   },
   "mfaErrorInvalidTotpCode": {
-    "message": "This code isn’t correct. Try again"
+    "message": "This code isn’t correct. Try again."
   },
   "mfaErrorLimitReached": {
     "message": "You've reached the limit for this method."
@@ -5823,10 +5823,10 @@
     "message": "Authenticator app can’t be removed"
   },
   "mfaSettingsNotice": {
-    "message": "These methods add protection to Money account transactions. They can’t recover your wallet."
+    "message": "These methods add protection to MetaMask Money transactions. They can’t recover your wallet."
   },
   "mfaSettingsNoticeSocialLogin": {
-    "message": "These methods add protection to Money account transactions and to recovering your wallet."
+    "message": "These methods add protection to MetaMask Money transactions and to recovering your wallet."
   },
   "mfaSettingsRemoveElsewhereDescription": {
     "message": "Your other methods only work in the MetaMask mobile app. Remove your email from there."
@@ -6024,7 +6024,7 @@
     "message": "Sends"
   },
   "moneyActivityLoadError": {
-    "message": "Couldn't load your activity"
+    "message": "Couldn't load your activity."
   },
   "moneyActivityMusdBack": {
     "message": "mUSD back"
@@ -6098,7 +6098,7 @@
     "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
-    "message": "Get full liquidity with no lockups, so you can trade or withdraw anytime"
+    "message": "Get full liquidity with no lockups and direct access"
   },
   "moneyBenefitSend": {
     "message": "Send to any of your wallets across MetaMask"
@@ -6123,7 +6123,7 @@
     "message": "Earn up to $1 APY"
   },
   "moneyEarnBalanceDescription": {
-    "message": "Add your $1 to your Money account and earn up to $2 in one year.",
+    "message": "Add your $1 to MetaMask Money and earn up to $2 in one year.",
     "description": "Token details balance section. $1 is the token symbol, e.g. USDC. $2 is the projected USD earnings, e.g. +$74.34"
   },
   "moneyEarnBannerCta": {
@@ -6131,11 +6131,11 @@
     "description": "Token details Money earn banner CTA. $1 is the token symbol, e.g. USDC"
   },
   "moneyEarnBannerDescription": {
-    "message": "Add $1 to your Money account—no lockups or minimums.",
+    "message": "Add $1 to MetaMask Money with no lockups or minimums.",
     "description": "Token details Money earn banner body. $1 is the token symbol, e.g. USDC"
   },
   "moneyEarnBannerTitleNoApy": {
-    "message": "Earn with your Money account",
+    "message": "Earn with MetaMask Money",
     "description": "Token details Money earn banner title when the APY is unavailable"
   },
   "moneyEarnOnCrypto": {
@@ -6194,10 +6194,10 @@
     "message": "Trade from the same balance"
   },
   "moneyFtueBenefitWithdrawDescription": {
-    "message": "No lockups, notice periods, or penalties. Your money is always yours to take out."
+    "message": "No lockups, notice periods, or penalties."
   },
   "moneyFtueBenefitWithdrawTitle": {
-    "message": "Withdraw anytime"
+    "message": "Direct access"
   },
   "moneyFtueDescription": {
     "message": "MetaMask Money is a stablecoin account that earns up to $1 APY - with trading, sending, and spending built in.",
@@ -6213,10 +6213,10 @@
     "message": "MetaMask Money"
   },
   "moneyFundDescription": {
-    "message": "Fund your Money account and watch your balance grow."
+    "message": "Fund your MetaMask Money balance."
   },
   "moneyFundDescriptionWithApy": {
-    "message": "Fund your Money account and watch your balance grow with up to $1 APY."
+    "message": "Fund your MetaMask Money balance and earn up to $1 APY."
   },
   "moneyGetApy": {
     "message": "Get $1 APY",
@@ -6226,91 +6226,91 @@
     "message": "The rate shown is the current Annual Percentage Yield (APY). APY is variable and is not guaranteed."
   },
   "moneyHomeApyTooltipEarning": {
-    "message": "Your Money account earns up to $1 APY automatically.",
+    "message": "Your MetaMask Money balance earns up to $1 APY automatically.",
     "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
   },
   "moneyHomeApyTooltipPoweredBy": {
-    "message": "Money account is powered by Monad."
+    "message": "MetaMask Money is powered by Monad."
   },
   "moneyHowItWorks": {
     "message": "How it works"
   },
   "moneyHowItWorksDescription": {
-    "message": "Add mUSD and your dollar-backed balance is ready to spend, trade, or send anytime."
+    "message": "Add mUSD. You have direct access to spend, trade, or send your dollar-backed balance."
   },
   "moneyHowItWorksDescription1": {
-    "message": "Convert any crypto into your Money account and earn up to $1 APY (variable) automatically. Funds go into a DeFi vault, administered by Veda with risk monitoring by Steakhouse Financial. The rate is generated by third-party DeFi platforms that deploy funds in blockchain protocols. No staking, no claiming, no lock-ups.",
+    "message": "Convert any crypto into MetaMask Money and earn up to $1 APY (variable) automatically. Funds go into a DeFi vault, administered by Veda with risk monitoring by Steakhouse Financial. The rate is generated by third-party DeFi platforms that deploy funds in blockchain protocols. No staking, no claiming, no lockups.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksDescriptionWithApy": {
-    "message": "Add mUSD and earn up to $1. Your balance is dollar-backed and ready to spend, trade, or send anytime.",
+    "message": "Add mUSD and earn up to $1. You have direct access to your dollar-backed balance.",
     "description": "$1 is the current mUSD APY."
   },
   "moneyHowItWorksDisclosuresBody": {
-    "message": "Money account is not a bank account, savings account, or insured deposit product. APY is variable and not guaranteed. Money account involves smart contract, protocol, liquidity, and other risks, and you may lose some or all of your funds. Subject to regional restrictions. Terms apply."
+    "message": "MetaMask Money is not a bank account, savings account, or insured deposit product. APY is variable and not guaranteed. MetaMask Money involves smart contract, protocol, liquidity, and other risks, and you may lose some or all of your funds. Subject to regional restrictions. Terms apply."
   },
   "moneyHowItWorksDisclosuresTitle": {
     "message": "Risk and Disclosures"
   },
   "moneyHowItWorksFaqApyAnswer": {
-    "message": "Up to $1 APY. The rate is variable and fluctuates with market conditions. The current rate is always visible inside the Money account.",
+    "message": "Up to $1 APY. The rate is variable and fluctuates with market conditions. The current rate is always visible in MetaMask Money.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksFaqApyQuestion": {
-    "message": "How much can I earn with a MetaMask Money account?"
+    "message": "How much can I earn with MetaMask Money?"
   },
   "moneyHowItWorksFaqControlsAnswer": {
     "message": "You! MetaMask is a self-custodial wallet, meaning only the account holder's Private Keys control it. MetaMask can't access, freeze, or move your funds. This is what distinguishes us from traditional bank accounts and custodial crypto platforms—there's no third party holding your funds."
   },
   "moneyHowItWorksFaqControlsQuestion": {
-    "message": "Who controls my MetaMask Money account?"
+    "message": "Who controls my MetaMask Money?"
   },
   "moneyHowItWorksFaqCountriesAnswer": {
     "message": "Most places! We currently aren't available in the UK and countries on the USA sanctions list."
   },
   "moneyHowItWorksFaqCountriesQuestion": {
-    "message": "Which countries is MetaMask Money account available in?"
+    "message": "Which countries is MetaMask Money available in?"
   },
   "moneyHowItWorksFaqFeesAnswer": {
-    "message": "There's no fee to open a Money account and no fee to deposit stablecoins. You will get charged fees when depositing non-stablecoin tokens."
+    "message": "There's no fee to open MetaMask Money and no fee to deposit stablecoins. You will get charged fees when depositing non-stablecoin tokens."
   },
   "moneyHowItWorksFaqFeesQuestion": {
-    "message": "What are MetaMask Money account fees?"
+    "message": "What are MetaMask Money fees?"
   },
   "moneyHowItWorksFaqIdentityAnswer": {
-    "message": "No, opening a Money account doesn't require identity verification. However, certain features, including Card and Ramps, do require verification. Checks are carried out by third-party providers that operate regulated services, not by MetaMask. If needed, you will be guided through the process inside the app during sign-up."
+    "message": "No, opening MetaMask Money doesn't require identity verification. However, certain features, including Card and Ramps, do require verification. Checks are carried out by third-party providers that operate regulated services, not by MetaMask. If needed, you will be guided through the process inside the app during sign-up."
   },
   "moneyHowItWorksFaqIdentityQuestion": {
-    "message": "Do I need to complete identity verification to use MetaMask Money account?"
+    "message": "Do I need to complete identity verification to use MetaMask Money?"
   },
   "moneyHowItWorksFaqLockedAnswer": {
-    "message": "Yes. You can send or withdraw your full balance at any time with no notice periods, no penalties, and no withdrawal fees from MetaMask. If liquidity is tight, there may be temporary delays."
+    "message": "Yes. No lockups, no notice periods or penalties, and no withdrawal fees from MetaMask. If liquidity is tight, there may be temporary delays."
   },
   "moneyHowItWorksFaqLockedQuestion": {
-    "message": "Can I withdraw from the MetaMask Money account anytime?"
+    "message": "Can I access my MetaMask Money balance?"
   },
   "moneyHowItWorksFaqMoneyAccountAnswer": {
-    "message": "An account that earns up to $1 variable APY. You deposit funds, which are held in the account as mUSD, and earn up to $1 APY. mUSD is MetaMask's dollar-backed stablecoin. You can use or withdraw your funds anytime with no penalties.",
+    "message": "MetaMask Money earns up to $1 variable APY. You deposit funds, which are held as mUSD, and earn up to $1 APY. mUSD is MetaMask's dollar-backed stablecoin. No lockups, and no penalties.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
-    "message": "What is a MetaMask Money account?"
+    "message": "What is MetaMask Money?"
   },
   "moneyHowItWorksFaqSafeAnswer": {
-    "message": "Yes, but like all DeFi products, it carries risk. It's a self-custodial wallet, meaning you have full control over your account with your Private Keys.\n\nRisks include smart-contract failures, protocol exploits, liquidity shortages, third-party failures, and legal or regulatory restrictions. The Money account isn't insured by the FDIC or any government agency. There is a risk of loss."
+    "message": "Yes, but like all DeFi products, it carries risk. It's a self-custodial wallet, meaning you have full control over your account with your Private Keys.\n\nRisks include smart-contract failures, protocol exploits, liquidity shortages, third-party failures, and legal or regulatory restrictions. MetaMask Money isn't insured by the FDIC or any government agency. There is a risk of loss."
   },
   "moneyHowItWorksFaqSafeQuestion": {
-    "message": "Is MetaMask Money account safe?"
+    "message": "Is MetaMask Money safe?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "FAQs"
   },
   "moneyHowItWorksFaqTokensAnswer": {
-    "message": "You can deposit the following stablecoins and aTokens into your Money account with no conversion fees:\nEthereum: USDC, USDT, DAI, aUSDC, aUSDT, aDAI\nArbitrum: USDC\nBase: USDC\nBNB Chain: USDC, USDT\n\nAll other EVM tokens can be deposited into the Money account, but standard fees may apply. You can also fund your Money account using a debit card, credit card, bank account, PayPal, Apple Pay, or Google Pay.\n\nNote: There's an initial max deposit of $1 per token to ensure liquidity.",
+    "message": "You can deposit the following stablecoins and aTokens into MetaMask Money with no conversion fees:\nEthereum: USDC, USDT, DAI, aUSDC, aUSDT, aDAI\nArbitrum: USDC\nBase: USDC\nBNB Chain: USDC, USDT\n\nAll other EVM tokens can be deposited into MetaMask Money, but standard fees may apply. You can also fund MetaMask Money using a debit card, credit card, bank account, PayPal, Apple Pay, or Google Pay.\n\nNote: There's an initial max deposit of $1 per token to ensure liquidity.",
     "description": "$1 is the maximum initial deposit per token in USD, e.g. \"$100,000\"."
   },
   "moneyHowItWorksFaqTokensQuestion": {
-    "message": "What tokens can I deposit into the Money account?"
+    "message": "What tokens can I deposit into MetaMask Money?"
   },
   "moneyHowItWorksFaqYieldAnswer": {
     "message": "When you deposit funds, they're put in established DeFi protocols, like Aave and Morpho, where they earn returns from real economic activity. These returns are then delivered to you in the form of APY.\n\nA third-party service provider called Steakhouse Financial monitors how funds are allocated in the protocols. Veda, a third-party infrastructure provider, deploys and maintains the vault smart contracts that hold your funds.\n\nEarnings are not interest paid by MetaMask or by the issuer of mUSD. They are the onchain returns generated by positions in third-party DeFi protocols."
@@ -6328,13 +6328,13 @@
     "message": "Lifetime"
   },
   "moneyLifetimeTooltip": {
-    "message": "The total you've earned on your Money account balance over time."
+    "message": "The total you've earned on your MetaMask Money balance over time."
   },
   "moneyMeetMusd": {
     "message": "Meet mUSD"
   },
   "moneyMonthlyTooltip": {
-    "message": "The total you've earned on your Money account balance in the last 30 days."
+    "message": "The total you've earned on your MetaMask Money balance in the last 30 days."
   },
   "moneyMoreInformation": {
     "message": "More information"
@@ -6346,7 +6346,7 @@
     "message": "mUSD"
   },
   "moneyOnboardingFundTitle": {
-    "message": "Fund your Money account",
+    "message": "Fund MetaMask Money",
     "description": "English-only analytics step title for the Money onboarding card, matching mobile's step_title. Not shown in the UI."
   },
   "moneySend": {
@@ -6384,11 +6384,11 @@
     "message": "Converting crypto"
   },
   "moneyToastDepositSuccessDescription": {
-    "message": "$1 added to Money account.",
+    "message": "$1 added to MetaMask Money.",
     "description": "$1 is the formatted fiat amount deposited (e.g. $20.00)"
   },
   "moneyToastDepositSuccessDescriptionNoAmount": {
-    "message": "Added to Money account."
+    "message": "Added to MetaMask Money."
   },
   "moneyToastDepositSuccessTitleAddMusd": {
     "message": "Funds added"
@@ -7035,7 +7035,7 @@
     "message": "Not busy"
   },
   "notCurrentAccount": {
-    "message": "Is this the correct account? It's different from the currently selected account in your wallet"
+    "message": "Is this the correct account? It's different from the currently selected account in your wallet."
   },
   "notificationDetail": {
     "message": "Details"
@@ -7352,7 +7352,7 @@
     "message": "Clear all"
   },
   "onboardingSrpInputPlaceholder": {
-    "message": "Add a space between each word and make sure no one is watching."
+    "message": "Add a space between each word and make sure no one is watching"
   },
   "oneKey": {
     "message": "OneKey",
@@ -7454,7 +7454,7 @@
     "message": "Participate in MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Participate in MetaMetrics to help us make MetaMask better"
+    "message": "Participate in MetaMetrics to help us make MetaMask better."
   },
   "passkeyAuthMethodBiometrics": {
     "message": "Biometrics",
@@ -7663,7 +7663,7 @@
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
   },
   "payWithMoneyAccount": {
-    "message": "Money account",
+    "message": "MetaMask Money",
     "description": "Label for paying with the user's Money account in the Pay with picker"
   },
   "payWithOtherAssets": {
@@ -7782,7 +7782,7 @@
     "description": "An extended description for the `snap_dialog` permission. $1 is the snap name."
   },
   "permission_ethereumAccounts": {
-    "message": "See address, account balance, activity and suggest transactions to approve",
+    "message": "See address, account balance, activity and suggest transactions to approve.",
     "description": "The description for the `eth_accounts` permission"
   },
   "permission_ethereumProvider": {
@@ -7810,11 +7810,11 @@
     "description": "An extended description for the `snap_getLocale` permission. $1 is the snap name."
   },
   "permission_getPreferences": {
-    "message": "See information like your preferred language and fiat currency.",
+    "message": "See information like your preferred language and local currency.",
     "description": "The description for the `snap_getPreferences` permission"
   },
   "permission_getPreferencesDescription": {
-    "message": "Let $1 access information like your preferred language and fiat currency in your MetaMask settings. This helps $1 display content tailored to your preferences. ",
+    "message": "Let $1 access information like your preferred language and local currency in your MetaMask settings. This helps $1 display content tailored to your preferences. ",
     "description": "An extended description for the `snap_getPreferences` permission. $1 is the snap name."
   },
   "permission_homePage": {
@@ -7826,7 +7826,7 @@
     "description": "An extended description for the `endowment:page-home` permission. $1 is the snap name."
   },
   "permission_keyring": {
-    "message": "Allow requests for adding and controlling Ethereum accounts",
+    "message": "Allow requests for adding and controlling Ethereum accounts.",
     "description": "The description for the `endowment:keyring` permission"
   },
   "permission_keyringDescription": {
@@ -7842,7 +7842,7 @@
     "description": "An extended description for the `endowment:lifecycle-hooks` permission. $1 is the snap name."
   },
   "permission_manageAccounts": {
-    "message": "Add and control Ethereum accounts",
+    "message": "Add and control Ethereum accounts.",
     "description": "The description for `snap_manageAccounts` permission"
   },
   "permission_manageAccountsDescription": {
@@ -7922,7 +7922,7 @@
     "description": "An extended description for the `endowment:signature-insight` permission. $1 is the snap name."
   },
   "permission_signatureInsightOrigin": {
-    "message": "See the origins of websites that initiate a signature request",
+    "message": "See the origins of websites that initiate a signature request.",
     "description": "The description for the `signatureOrigin` caveat, to be used with the `endowment:signature-insight` permission"
   },
   "permission_signatureInsightOriginDescription": {
@@ -7938,7 +7938,7 @@
     "description": "An extended description for the `endowment:transaction-insight` permission. $1 is the snap name."
   },
   "permission_transactionInsightOrigin": {
-    "message": "See the origins of websites that suggest transactions",
+    "message": "See the origins of websites that suggest transactions.",
     "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
   },
   "permission_transactionInsightOriginDescription": {
@@ -9706,7 +9706,7 @@
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
   },
   "removeAccountModalBannerTitle": {
-    "message": "This account will be removed from MetaMask.",
+    "message": "This account will be removed from MetaMask",
     "description": "Title of a banner alert used on account remove modal."
   },
   "removeAll": {
@@ -9901,7 +9901,7 @@
     "message": "An unknown error occurred while authenticating this account with the rewards program. Please try again later."
   },
   "rewardsAuthFailTitle": {
-    "message": "Unknown error."
+    "message": "Unknown error"
   },
   "rewardsErrorMessagesAccountAlreadyRegistered": {
     "message": "This account is already registered with another Rewards profile. Please switch account to continue."
@@ -12396,7 +12396,7 @@
     "message": "You’re getting $1% back on fees"
   },
   "swapsRebateTooltipContent": {
-    "message": "Get $1% of the MetaMask fee on this trade back as a reward, paid in mUSD to your Money account. Network fees aren’t included. See the Rewards tab for details."
+    "message": "Get $1% of the MetaMask fee on this trade back as a reward, paid in mUSD to your MetaMask Money balance. Network fees aren’t included. See the Rewards tab for details."
   },
   "swapsRebateTooltipTitle": {
     "message": "Trading Rewards"
@@ -12761,7 +12761,7 @@
     "message": "This error could be intermittent, so try restarting the extension."
   },
   "troubleStartingTitle": {
-    "message": "MetaMask had trouble starting."
+    "message": "MetaMask had trouble starting"
   },
   "trustSignalPhishingWarning": {
     "message": "This site shows signs of phishing or wallet-draining activity. It may request transactions designed to steal your funds."

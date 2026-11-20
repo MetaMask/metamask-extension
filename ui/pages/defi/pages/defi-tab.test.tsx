@@ -227,7 +227,7 @@ describe('DefiList', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('defi-tab-error-message')).toHaveTextContent(
-        'We could not load this page.',
+        'We could not load this page',
       );
       expect(screen.getByTestId('defi-tab-error-message')).toHaveTextContent(
         'Try visiting again later.',

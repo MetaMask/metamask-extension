@@ -53,7 +53,7 @@ jest.mock('../../../../hooks/useI18nContext', () => ({
     const messages: Record<string, string> = {
       payWith: 'Pay with',
       withdrawTo: 'Withdraw to',
-      payWithMoneyAccount: 'Money account',
+      payWithMoneyAccount: 'MetaMask Money',
     };
     return messages[key] ?? key;
   },
@@ -196,7 +196,7 @@ describe('usePayWithToken', () => {
     expect(result.current.isMoneyAccountSelected).toBe(true);
     expect(result.current.displayToken).toMatchObject({
       address: '',
-      symbol: 'Money account',
+      symbol: 'MetaMask Money',
       balanceUsd: '$12.34',
     });
     expect(result.current.balanceUsdFormatted).toBe('$12.34');
@@ -216,7 +216,7 @@ describe('usePayWithToken', () => {
     expect(result.current.isMoneyAccountSelected).toBe(true);
     expect(result.current.displayToken).toMatchObject({
       address: '',
-      symbol: 'Money account',
+      symbol: 'MetaMask Money',
     });
   });
 

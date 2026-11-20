@@ -193,7 +193,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                 <div
                   aria-describedby="tippy-tooltip-4"
                   class=""
-                  data-original-title="This can be changed in "Settings > Alerts""
+                  data-original-title="This can be changed in "Settings > Alerts"."
                   data-tooltipped=""
                   style="display: inline;"
                   tabindex="0"
@@ -418,7 +418,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                 <div
                   aria-describedby="tippy-tooltip-2"
                   class=""
-                  data-original-title="This can be changed in "Settings > Alerts""
+                  data-original-title="This can be changed in "Settings > Alerts"."
                   data-tooltipped=""
                   style="display: inline;"
                   tabindex="0"

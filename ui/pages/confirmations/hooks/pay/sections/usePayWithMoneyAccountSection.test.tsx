@@ -28,7 +28,7 @@ jest.mock('../../../context/confirm', () => ({
 jest.mock('../../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => {
     const copy: Record<string, string> = {
-      payWithMoneyAccount: 'Money account',
+      payWithMoneyAccount: 'MetaMask Money',
       available: 'available',
       noDepositFee: 'No deposit fee',
     };
@@ -131,7 +131,7 @@ describe('usePayWithMoneyAccountSection', () => {
       id: 'money-account',
       rows: [
         expect.objectContaining({
-          title: 'Money account',
+          title: 'MetaMask Money',
           subtitle: '$12.34 available',
           testId: PAY_WITH_MONEY_ACCOUNT_ROW_TEST_ID,
           isSelected: false,
@@ -156,7 +156,7 @@ describe('usePayWithMoneyAccountSection', () => {
       id: 'money-account',
       rows: [
         expect.objectContaining({
-          title: 'Money account',
+          title: 'MetaMask Money',
           testId: PAY_WITH_MONEY_ACCOUNT_ROW_TEST_ID,
         }),
       ],

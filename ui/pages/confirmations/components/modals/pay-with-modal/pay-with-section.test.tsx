@@ -51,7 +51,7 @@ describe('PayWithSection', () => {
         {
           id: 'money',
           icon: <span />,
-          title: 'Money account',
+          title: 'MetaMask Money',
           testId: 'money-row',
         },
       ],

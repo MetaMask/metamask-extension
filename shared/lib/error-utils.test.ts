@@ -47,7 +47,7 @@ jest.mock('webextension-polyfill', () => {
 });
 
 const enMessages: I18NMessageDict = {
-  troubleStartingTitle: { message: 'MetaMask had trouble starting.' },
+  troubleStartingTitle: { message: 'MetaMask had trouble starting' },
   troubleStartingMessage: {
     message:
       'This error could be intermittent, so try restarting the extension.',

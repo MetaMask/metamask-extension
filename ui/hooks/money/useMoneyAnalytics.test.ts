@@ -57,7 +57,7 @@ const mockState = {
       moneyGetApy: { message: 'Get $1 APY' },
       money: { message: 'Money' },
       moneyLearnMore: { message: 'Learn more' },
-      moneyOnboardingFundTitle: { message: 'Fund your Money account' },
+      moneyOnboardingFundTitle: { message: 'Fund MetaMask Money' },
     },
   },
 };
@@ -621,7 +621,7 @@ describe('useMoneyAnalytics', () => {
         screen_name: MoneyScreenName.MoneyHome,
         component_name: MoneyComponentName.OnboardingCard,
         step: 1,
-        step_title: 'Fund your Money account',
+        step_title: 'Fund MetaMask Money',
         total_steps: 2,
         step_action: MoneyOnboardingStepAction.DepositInitiated,
         redirect_target: MoneyScreenName.MoneyDeposit,

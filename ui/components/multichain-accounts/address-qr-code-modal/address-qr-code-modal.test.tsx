@@ -69,7 +69,7 @@ describe('AddressQRCodeModal', () => {
     expect(screen.getByText('Ethereum Address')).toBeInTheDocument();
     expect(
       screen.getByText(
-        'Use this address to receive tokens and collectibles on Ethereum',
+        'Use this address to receive tokens and collectibles on Ethereum.',
       ),
     ).toBeInTheDocument();
   });
