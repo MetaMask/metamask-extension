@@ -1,4 +1,10 @@
 import * as Sentry from '@sentry/browser';
+import type {
+  Envelope,
+  EnvelopeItem,
+  SerializedStreamedSpan,
+  SerializedStreamedSpanContainer,
+} from '@sentry/core';
 import * as browserRuntimeUtils from '../shared/lib/browser-runtime.utils';
 import { endTrace, trace, TraceName } from '../shared/lib/trace';
 // eslint-disable-next-line import-x/no-restricted-paths
@@ -48,30 +54,35 @@ jest.mock('./ducks/metamask/base-selectors', () => ({
 // Streamed spans carry no tags, so the startup tags dashboards read as
 // `tags[wallet.*]` must be attributes on the `UI Startup` segment span.
 describe('UI startup tags (real Sentry SDK in stream mode)', () => {
-  let envelopes;
+  let envelopes: Envelope[];
 
-  const sentSpans = () =>
+  const sentSpans = (): SerializedStreamedSpan[] =>
     envelopes
-      .flatMap(([, items]) => items)
+      .flatMap(([, items]) => items as EnvelopeItem[])
       .filter(([header]) => header.type === 'span')
-      .flatMap(([, payload]) => payload.items);
+      .flatMap(
+        ([, payload]) => (payload as SerializedStreamedSpanContainer).items,
+      );
 
   beforeEach(() => {
     envelopes = [];
-    globalThis.nw = {};
+    (globalThis as unknown as { nw: object }).nw = {};
     performance.getEntriesByType ??= () => [];
     globalThis.sentry = Sentry;
-    window.stateHooks = {};
+    window.stateHooks = {} as typeof window.stateHooks;
     jest.spyOn(browserRuntimeUtils, 'getBrowserName').mockReturnValue('chrome');
-    selectors.getNetworkToAutomaticallySwitchTo.mockReturnValue(undefined);
-    metamaskBaseSelectors.getIsUnlocked.mockReturnValue(false);
+    jest
+      .mocked(selectors.getNetworkToAutomaticallySwitchTo)
+      .mockReturnValue(undefined);
+    jest.mocked(metamaskBaseSelectors.getIsUnlocked).mockReturnValue(false);
 
     const options = getClientOptions();
     Sentry.init({
       ...options,
-      integrations: options.integrations.filter(
-        (integration) => integration.name !== 'MetaMetrics',
-      ),
+      integrations: (Array.isArray(options.integrations)
+        ? options.integrations
+        : []
+      ).filter((integration) => integration.name !== 'MetaMetrics'),
       dsn: 'https://public@example.ingest.sentry.io/1',
       transport: () => ({
         send: async (envelope) => {
@@ -87,7 +98,7 @@ describe('UI startup tags (real Sentry SDK in stream mode)', () => {
 
   afterEach(async () => {
     delete globalThis.sentry;
-    delete window.stateHooks;
+    Reflect.deleteProperty(window, 'stateHooks');
     jest.restoreAllMocks();
     await Sentry.close();
   });
@@ -108,7 +119,9 @@ describe('UI startup tags (real Sentry SDK in stream mode)', () => {
     await Sentry.flush();
 
     const expected = Object.entries(
-      getStartupTraceTags({ metamask: initialState }),
+      getStartupTraceTags({
+        metamask: initialState,
+      } as unknown as Parameters<typeof getStartupTraceTags>[0]),
     ).filter(([, value]) => value !== undefined);
     const root = sentSpans().find(
       (span) => span.name === TraceName.UIStartup && span.is_segment,
@@ -118,10 +131,10 @@ describe('UI startup tags (real Sentry SDK in stream mode)', () => {
     expect(root).toBeDefined();
     // Sentry's default data scrubbing drops attribute keys containing "token".
     expect(
-      Object.keys(root.attributes).filter((key) => /token/iu.test(key)),
+      Object.keys(root?.attributes ?? {}).filter((key) => /token/iu.test(key)),
     ).toStrictEqual([]);
     for (const [key, value] of expected) {
-      expect(root.attributes[key]?.value).toStrictEqual(value);
+      expect(root?.attributes?.[key]?.value).toStrictEqual(value);
     }
   });
 });
