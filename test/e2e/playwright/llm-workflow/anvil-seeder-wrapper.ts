@@ -50,16 +50,13 @@ export class AnvilSeederWrapper {
   ): Promise<DeployedContract> {
     const hardfork = options.hardfork ?? this.defaultHardfork;
 
-    const contractKeyMap: Record<SmartContractName, string> = {
+    const contractKeyMap: Partial<Record<SmartContractName, string>> = {
       hst: SMART_CONTRACTS.HST,
       nfts: SMART_CONTRACTS.NFTS,
       erc1155: SMART_CONTRACTS.ERC1155,
       piggybank: SMART_CONTRACTS.PIGGYBANK,
       failing: SMART_CONTRACTS.FAILING,
       multisig: SMART_CONTRACTS.MULTISIG,
-      entrypoint: SMART_CONTRACTS.ENTRYPOINT,
-      simpleAccountFactory: SMART_CONTRACTS.SIMPLE_ACCOUNT_FACTORY,
-      verifyingPaymaster: SMART_CONTRACTS.VERIFYING_PAYMASTER,
     };
 
     const contractKey = contractKeyMap[name];
@@ -147,15 +144,6 @@ export class AnvilSeederWrapper {
    */
   async transfer(to: string, valueWei: bigint): Promise<void> {
     await this.seeder.transfer(to, `0x${valueWei.toString(16)}`);
-  }
-
-  /**
-   * Deposit funds to the verifying paymaster.
-   *
-   * @param amountWei - Amount in wei
-   */
-  async paymasterDeposit(amountWei: bigint): Promise<void> {
-    await this.seeder.paymasterDeposit(`0x${amountWei.toString(16)}`);
   }
 
   /**

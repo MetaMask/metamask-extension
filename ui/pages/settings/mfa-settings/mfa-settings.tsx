@@ -118,7 +118,9 @@ const MfaSettings = () => {
         color={TextColor.TextAlternative}
         className="px-4 pt-4 pb-2"
       >
-        {t('mfaSettingsNotice')}
+        {t(
+          isSocialLogin ? 'mfaSettingsNoticeSocialLogin' : 'mfaSettingsNotice',
+        )}
       </Text>
       {rows.map((row) => (
         <Box
