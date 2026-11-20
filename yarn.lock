@@ -7916,7 +7916,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-system-react@npm:0.53.0":
+"@metamask/design-system-react@npm:^0.53.0":
   version: 0.53.0
   resolution: "@metamask/design-system-react@npm:0.53.0"
   dependencies:
@@ -8788,14 +8788,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-internal-api@npm:^12.1.0":
-  version: 12.1.0
-  resolution: "@metamask/keyring-internal-api@npm:12.1.0"
+"@metamask/keyring-internal-api@npm:^12.0.0, @metamask/keyring-internal-api@npm:^12.1.0, @metamask/keyring-internal-api@npm:^12.1.1, @metamask/keyring-internal-api@npm:^12.1.2":
+  version: 12.1.2
+  resolution: "@metamask/keyring-internal-api@npm:12.1.2"
   dependencies:
-    "@metamask/keyring-api": "npm:^24.1.0"
+    "@metamask/keyring-api": "npm:^24.3.0"
     "@metamask/keyring-utils": "npm:^5.0.0"
     "@metamask/superstruct": "npm:^3.4.1"
-  checksum: 10/7319992a2956015d3ba4bba917786bf579a209c86253adb036bdf2c3e9493b4114387a4f2e8643e00ac09b281785e2e3c097c2916a9695cfe7fa71303b8d9a80
+  checksum: 10/ab68aa303552c6e2de633c8f1b8957634e5262cf283347ada07108989cd45947e7575eae8422961890b56e101511033bb9cc0038e50a7f527b672de80165298c
   languageName: node
   linkType: hard
 
