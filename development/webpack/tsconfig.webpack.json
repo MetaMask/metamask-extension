@@ -7,11 +7,13 @@
     "isolatedModules": true,
     "outDir": "../.webpack",
     "rootDir": ".",
+    "module": "commonjs",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "noCheck": true
   },
-  "exclude": ["test", "../build/**/*.ts", "../lib/**/*.ts"],
+  "exclude": ["test", "*.test.ts", "../build/**/*.ts", "../lib/**/*.ts"],
   // Compiler baseline compatible with the supported Node.js runtimes.
   "extends": "@tsconfig/node24/tsconfig.json"
 }
