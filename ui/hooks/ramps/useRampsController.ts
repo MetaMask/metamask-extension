@@ -23,7 +23,10 @@ export type UseRampsControllerResult = {
   setUserRegion: UseRampsUserRegionResult['setUserRegion'];
   selectedProvider: UseRampsProvidersResult['selectedProvider'];
   setSelectedProvider: UseRampsProvidersResult['setSelectedProvider'];
+  selectProviderForAsset: UseRampsProvidersResult['selectProviderForAsset'];
   providers: UseRampsProvidersResult['providers'];
+  controllerProviders: UseRampsProvidersResult['controllerProviders'];
+  previouslyUsedProviderIds: UseRampsProvidersResult['previouslyUsedProviderIds'];
   providersLoading: UseRampsProvidersResult['isLoading'];
   providersError: UseRampsProvidersResult['error'];
   tokens: UseRampsTokensResult['tokens'];
@@ -56,8 +59,11 @@ export function useRampsController(): UseRampsControllerResult {
   const { userRegion, setUserRegion } = useRampsUserRegion();
   const {
     providers,
+    controllerProviders,
+    previouslyUsedProviderIds,
     selectedProvider,
     setSelectedProvider,
+    selectProviderForAsset,
     isLoading: providersLoading,
     error: providersError,
   } = useRampsProviders();
@@ -98,7 +104,10 @@ export function useRampsController(): UseRampsControllerResult {
     setUserRegion,
     selectedProvider,
     setSelectedProvider,
+    selectProviderForAsset,
     providers,
+    controllerProviders,
+    previouslyUsedProviderIds,
     providersLoading,
     providersError,
     tokens,
