@@ -16,7 +16,8 @@ import {
   getUserAgent,
   type PlatformAdapterEnrichmentContext,
 } from '../../controllers/analytics/platform-adapter';
-import { segment } from '.';
+import type { SegmentDeliveryState } from './delivery';
+import { segment, initializeSegmentDeliveryState } from '.';
 
 let optOutEnrichmentContext: PlatformAdapterEnrichmentContext | undefined;
 
@@ -163,6 +164,8 @@ export function trackEarlySegmentEvent({
   if (!analyticsId) {
     return;
   }
+
+  initializeSegmentDeliveryState(state as SegmentDeliveryState);
 
   const baseContext = {
     app: {
