@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type ReactNode } from 'react';
 import { fireEvent } from '@testing-library/react';
 import configureStore from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
@@ -9,12 +9,14 @@ describe('LowValueAssetsToggle', () => {
     count?: number;
     isExpanded?: boolean;
     onClick?: () => void;
+    trailing?: ReactNode;
   }) =>
     renderWithProvider(
       <LowValueAssetsToggle
         count={props.count ?? 3}
         isExpanded={props.isExpanded ?? false}
         onClick={props.onClick ?? jest.fn()}
+        trailing={props.trailing}
       />,
       configureStore({}),
     );
@@ -52,5 +54,27 @@ describe('LowValueAssetsToggle', () => {
     fireEvent.click(getByTestId('low-value-assets-toggle'));
 
     expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps a trailing control from expanding the section', () => {
+    const onClick = jest.fn();
+    const onTrailingClick = jest.fn();
+    const { getByTestId } = renderToggle({
+      onClick,
+      trailing: (
+        <button
+          type="button"
+          data-testid="trailing-control"
+          onClick={onTrailingClick}
+        >
+          Redeem
+        </button>
+      ),
+    });
+
+    fireEvent.click(getByTestId('trailing-control'));
+
+    expect(onTrailingClick).toHaveBeenCalledTimes(1);
+    expect(onClick).not.toHaveBeenCalled();
   });
 });
