@@ -1,6 +1,6 @@
-# Deep links: signature verification and review
+# Deep links
 
-A deep link is attacker-supplied input that arrives looking like navigation. Its signature makes some of that input trustworthy, and reviewing a deep-link change always comes down to which part. This document describes how `shared/lib/deep-links/` decides that, and what to check when a change touches it.
+A deep link is attacker-supplied input that arrives looking like navigation. Its signature makes some of that input trustworthy, and reviewing a deep-link change always comes down to which part. This document describes how a link is processed from interception to destination, what its signature covers, and how to review and test a change that touches it.
 
 ## How a link is processed
 
