@@ -55,7 +55,10 @@ export type ProductRate = {
 export type EarnRatesView = {
   /** @deprecated Summary only; use `cashback_by_product`. */
   cashback_rate_bps: number | null;
-  /** Window of the cashback row that pays the caller now. Null when none does. */
+  /**
+   * Window of the cashback row that pays the caller now. Null when none does.
+   * The dates follow the product behind the summary rate.
+   */
   cashback_earning_start: string | null;
   cashback_earning_end: string | null;
   /** @deprecated Summary only; use `revshare_by_product`. */
@@ -63,12 +66,26 @@ export type EarnRatesView = {
   /** Window of the revenue-share row that pays the caller now. */
   revshare_earning_start: string | null;
   revshare_earning_end: string | null;
-  /** Null where no row covers now. */
-  revshare_by_product: Record<RateProduct, ProductRate | null>;
-  /** Null where no rate exists; `predict` is null while Predict cashback is off. */
-  cashback_by_product: Record<RateProduct, ProductRate | null>;
-  /** Program copy-trading commission per product, in bps. Null where none covers now. */
-  copy_trading_by_product: Record<'perps' | 'swaps', number | null>;
+  /**
+   * The caller's own revenue share rate per product (0% included). Null where
+   * no row covers now. Absent in a payload cached before the backend change,
+   * or from an older backend.
+   */
+  revshare_by_product?: Record<RateProduct, ProductRate | null>;
+  /**
+   * The caller's own cashback rate per product (0% included). The program rate
+   * (`source` null) shows only for a prospective referee: no referee row, not a
+   * KOL, never in the cashback experiment. Otherwise null; `predict` is null
+   * while Predict cashback is off. Absent in a payload cached before the
+   * backend change, or from an older backend.
+   */
+  cashback_by_product?: Record<RateProduct, ProductRate | null>;
+  /**
+   * Program copy-trading commission per product, in bps. Null where none
+   * covers now. Absent in a payload cached before the backend change, or from
+   * an older backend.
+   */
+  copy_trading_by_product?: Record<'perps' | 'swaps', number | null>;
 };
 
 export type ReferralMeDto = {
