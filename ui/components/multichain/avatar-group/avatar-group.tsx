@@ -10,14 +10,14 @@ import {
   AvatarNetworkSize,
   AvatarToken,
   AvatarTokenSize,
+  Text,
+  TextColor,
+  TextVariant,
 } from '@metamask/design-system-react';
-import { Text } from '../../component-library/text';
 import {
   AlignItems,
   BorderRadius,
   Display,
-  TextColor,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library/box';
 import { AvatarGroupProps, AvatarType } from './avatar-group.types';
@@ -117,7 +117,7 @@ export const AvatarGroup = ({
       </Box>
       {showTag && !isTagOverlay ? (
         <Box>
-          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             {tagValue}
           </Text>
         </Box>
