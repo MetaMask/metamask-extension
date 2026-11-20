@@ -1,4 +1,5 @@
 import { Driver } from '../../../webdriver/driver';
+import SideNavAccounts from './side-nav-accounts';
 
 /**
  * Unlocked app header chrome: account menu, global menu, network picker.
@@ -268,8 +269,35 @@ class HeaderNavbar {
     await this.driver.clickElementSafe(this.accountDetailsTab);
   }
 
+  /**
+   * Opens the account list in either layout. Narrow layout: the manage button is
+   * in the app header. Wide layout: it lives in the side nav's accounts section.
+   * Waits until one of the two renders, because the layout is only known once
+   * the page has rendered (it depends on the viewport and the A/B variant).
+   */
   async openAccountMenu(): Promise<void> {
-    await this.driver.clickElement(this.accountMenuButton);
+    const sideNavAccounts = new SideNavAccounts(this.driver);
+    let isSideNavLayout = false;
+
+    await this.driver.waitUntil(
+      async () => {
+        isSideNavLayout = await sideNavAccounts.isPresentAndVisible(200);
+        return (
+          isSideNavLayout ||
+          (await this.driver.isElementPresentAndVisible(
+            this.accountMenuButton,
+            200,
+          ))
+        );
+      },
+      { timeout: this.driver.timeout, interval: 200 },
+    );
+
+    if (isSideNavLayout) {
+      await sideNavAccounts.clickManageAccounts();
+    } else {
+      await this.driver.clickElement(this.accountMenuButton);
+    }
     await this.driver.waitForSelector(this.accountListPage);
   }
 
