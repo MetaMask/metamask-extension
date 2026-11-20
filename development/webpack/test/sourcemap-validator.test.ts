@@ -1,7 +1,9 @@
+import { spawn } from 'node:child_process';
 import { describe, it, afterEach, beforeEach, mock } from 'node:test';
 import assert from 'node:assert';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { SourceMapGenerator } from 'source-map';
 import {
@@ -10,11 +12,50 @@ import {
   indicesOf,
   detectMapLocationFromContentscript,
   discoverWebpackBundles,
-  validateBundle,
   main,
+  validateBundle,
 } from '../sourcemap-validator.ts';
 
 const noop = () => undefined;
+
+/**
+ * Runs a TypeScript file in a fresh Node process, so `projectRoot` is computed
+ * from that process entry path.
+ *
+ * @param scriptPath - Absolute path to the script.
+ * @param cwd - Working directory for the child.
+ * @returns The child exit code and captured output.
+ */
+function runNodeScript(
+  scriptPath: string,
+  cwd: string,
+): Promise<{ code: number | null; stderr: string; stdout: string }> {
+  return new Promise((resolve, reject) => {
+    const child = spawn(process.execPath, [scriptPath], {
+      cwd,
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+    if (child.stdout === null || child.stderr === null) {
+      reject(new Error('Expected piped stdio from the discovery process'));
+      return;
+    }
+
+    let stdout = '';
+    let stderr = '';
+    child.stdout.setEncoding('utf8');
+    child.stderr.setEncoding('utf8');
+    child.stdout.on('data', (chunk: string) => {
+      stdout += chunk;
+    });
+    child.stderr.on('data', (chunk: string) => {
+      stderr += chunk;
+    });
+    child.on('error', reject);
+    child.on('close', (code) => {
+      resolve({ code, stderr, stdout });
+    });
+  });
+}
 
 const FIXTURES_DIR = join(import.meta.dirname, 'fixtures');
 const EMPTY_FIXTURE = join(FIXTURES_DIR, 'sourcemap-validator-empty');
@@ -262,12 +303,12 @@ describe('sourcemap-validator', () => {
   });
 
   describe('discoverWebpackBundles', () => {
-    // With cwd = DIST_FIXTURE, discoverWebpackBundles() scans dist/chrome and
-    // asserts on labels. Required fixtures: background.abc123.js+.map (label
-    // includes 'background'), ui.def456.js+.map ('ui'), scripts/contentscript.js+.map ('contentscript').
+    // Fixtures live under dist/ next to the checkout, not the shell cwd.
+    // Required fixtures: background.abc123.js+.map (label includes 'background'),
+    // ui.def456.js+.map ('ui'), scripts/contentscript.js+.map ('contentscript').
     it('returns empty array when dist/chrome does not exist', async () => {
-      mock.method(process, 'cwd', () => EMPTY_FIXTURE, { times: Infinity });
       const pairs = await discoverWebpackBundles({
+        distDir: join(EMPTY_FIXTURE, 'dist'),
         mapLocation: 'sibling',
         platform: 'chrome',
       });
@@ -275,8 +316,8 @@ describe('sourcemap-validator', () => {
     });
 
     it('finds .js files that have a .map sibling', async () => {
-      mock.method(process, 'cwd', () => DIST_FIXTURE, { times: Infinity });
       const pairs = await discoverWebpackBundles({
+        distDir: join(DIST_FIXTURE, 'dist'),
         mapLocation: 'sibling',
         platform: 'chrome',
       });
@@ -289,8 +330,8 @@ describe('sourcemap-validator', () => {
     });
 
     it('scans subdirectories (e.g. scripts/)', async () => {
-      mock.method(process, 'cwd', () => DIST_FIXTURE, { times: Infinity });
       const pairs = await discoverWebpackBundles({
+        distDir: join(DIST_FIXTURE, 'dist'),
         mapLocation: 'sibling',
         platform: 'chrome',
       });
@@ -321,14 +362,15 @@ describe('sourcemap-validator', () => {
           '{}',
         );
 
-        mock.method(process, 'cwd', () => fixtureDir, { times: Infinity });
         const siblingPairs = await discoverWebpackBundles({
+          distDir: join(fixtureDir, 'dist'),
           mapLocation: 'sibling',
           platform: 'chrome',
         });
         assert.strictEqual(siblingPairs.length, 0);
 
         const pairs = await discoverWebpackBundles({
+          distDir: join(fixtureDir, 'dist'),
           mapLocation: 'sourcemaps',
           platform: 'chrome',
         });
@@ -344,8 +386,8 @@ describe('sourcemap-validator', () => {
     });
 
     it('does not include sibling maps when map location is sourcemaps', async () => {
-      mock.method(process, 'cwd', () => DIST_FIXTURE, { times: Infinity });
       const pairs = await discoverWebpackBundles({
+        distDir: join(DIST_FIXTURE, 'dist'),
         mapLocation: 'sourcemaps',
         platform: 'chrome',
       });
@@ -365,8 +407,8 @@ describe('sourcemap-validator', () => {
         );
         await writeFile(join(firefoxDir, 'background.js.map'), '{}');
 
-        mock.method(process, 'cwd', () => fixtureDir, { times: Infinity });
         const pairs = await discoverWebpackBundles({
+          distDir: join(fixtureDir, 'dist'),
           mapLocation: 'sibling',
           platform: 'firefox',
         });
@@ -406,8 +448,8 @@ describe('sourcemap-validator', () => {
           '{}',
         );
 
-        mock.method(process, 'cwd', () => fixtureDir, { times: Infinity });
         const pairs = await discoverWebpackBundles({
+          distDir: join(fixtureDir, 'dist'),
           mapLocation: 'sourcemaps',
           platform: 'firefox',
         });
@@ -419,6 +461,60 @@ describe('sourcemap-validator', () => {
         );
       } finally {
         await rm(fixtureDir, { recursive: true, force: true });
+      }
+    });
+
+    it('reads the checkout dist directory when distDir is omitted and cwd is unrelated', async () => {
+      const checkout = await mkdtemp(
+        join(tmpdir(), 'sourcemap-validator-checkout-'),
+      );
+      const unrelatedCwd = await mkdtemp(
+        join(tmpdir(), 'sourcemap-validator-unrelated-cwd-'),
+      );
+
+      try {
+        const checkoutChromeDir = join(checkout, 'dist', 'chrome');
+        const unrelatedChromeDir = join(unrelatedCwd, 'dist', 'chrome');
+        await mkdir(checkoutChromeDir, { recursive: true });
+        await mkdir(unrelatedChromeDir, { recursive: true });
+        await writeFile(join(checkout, 'builds.yml'), '');
+        await writeFile(join(checkout, 'package.json'), '{}');
+        await writeFile(
+          join(checkoutChromeDir, 'marker.js'),
+          'throw new Error("marker");',
+        );
+        await writeFile(join(checkoutChromeDir, 'marker.js.map'), '{}');
+        await writeFile(
+          join(unrelatedChromeDir, 'decoy.js'),
+          'throw new Error("decoy");',
+        );
+        await writeFile(join(unrelatedChromeDir, 'decoy.js.map'), '{}');
+
+        const validatorUrl = pathToFileURL(
+          join(import.meta.dirname, '../sourcemap-validator.ts'),
+        ).href;
+        const runnerPath = join(checkout, 'run-discovery.ts');
+        await writeFile(
+          runnerPath,
+          `import { discoverWebpackBundles } from ${JSON.stringify(validatorUrl)};
+const pairs = await discoverWebpackBundles({ mapLocation: 'sibling', platform: 'chrome' });
+process.stdout.write(JSON.stringify(pairs));
+`,
+        );
+
+        const { code, stderr, stdout } = await runNodeScript(
+          runnerPath,
+          unrelatedCwd,
+        );
+        assert.strictEqual(code, 0, `discovery process failed:\n${stderr}`);
+        const pairs = JSON.parse(stdout) as { label: string }[];
+        assert.deepStrictEqual(
+          pairs.map((pair) => pair.label),
+          ['marker.js'],
+        );
+      } finally {
+        await rm(checkout, { recursive: true, force: true });
+        await rm(unrelatedCwd, { recursive: true, force: true });
       }
     });
   });
@@ -807,14 +903,16 @@ describe('sourcemap-validator', () => {
     });
 
     it('exits with 1 when no platform directories exist', async () => {
-      mock.method(process, 'cwd', () => EMPTY_FIXTURE, { times: Infinity });
       const exitMock = mock.method(process, 'exit', noop as () => never);
       const errors: string[] = [];
       mock.method(console, 'error', (...args: unknown[]) => {
         errors.push(args.map((a) => String(a)).join(' '));
       });
       mock.method(console, 'log', noop);
-      await main({ mapLocation: 'sibling' });
+      await main({
+        distDir: join(EMPTY_FIXTURE, 'dist'),
+        mapLocation: 'sibling',
+      });
       assert.strictEqual(exitMock.mock.calls.length, 1);
       assert.strictEqual(exitMock.mock.calls[0].arguments[0], 1);
       assert.ok(
@@ -836,8 +934,10 @@ describe('sourcemap-validator', () => {
       });
       mock.method(console, 'error', noop);
       mock.method(console, 'warn', noop);
-      mock.method(process, 'cwd', () => mainTestDir, { times: Infinity });
-      await main({ mapLocation: 'sibling' });
+      await main({
+        distDir: join(mainTestDir, 'dist'),
+        mapLocation: 'sibling',
+      });
       assert.ok(
         logs.some((l) => l.includes('using platform: firefox')),
         'should log that firefox platform is being used',
@@ -859,8 +959,10 @@ describe('sourcemap-validator', () => {
       });
       mock.method(console, 'error', noop);
       mock.method(console, 'warn', noop);
-      mock.method(process, 'cwd', () => mainTestDir, { times: Infinity });
-      await main({ mapLocation: 'sibling' });
+      await main({
+        distDir: join(mainTestDir, 'dist'),
+        mapLocation: 'sibling',
+      });
       assert.ok(
         logs.some((l) => l.includes('using platform: chrome')),
         'should prefer chrome (first in PLATFORMS array)',
@@ -873,11 +975,13 @@ describe('sourcemap-validator', () => {
         join(tmpdir(), 'sourcemap-validator-empty-chrome-'),
       );
       await mkdir(join(mainTestDir, 'dist', 'chrome'), { recursive: true });
-      mock.method(process, 'cwd', () => mainTestDir, { times: Infinity });
       const exitMock = mock.method(process, 'exit', noop as () => never);
       mock.method(console, 'error', noop);
       mock.method(console, 'log', noop);
-      await main({ mapLocation: 'sibling' });
+      await main({
+        distDir: join(mainTestDir, 'dist'),
+        mapLocation: 'sibling',
+      });
       assert.strictEqual(exitMock.mock.calls.length, 1);
       assert.strictEqual(exitMock.mock.calls[0].arguments[0], 1);
     });
@@ -906,12 +1010,14 @@ describe('sourcemap-validator', () => {
         join(chromeDir, 'fail.js.map'),
         JSON.stringify(gen.toJSON()),
       );
-      mock.method(process, 'cwd', () => mainTestDir, { times: Infinity });
       const exitMock = mock.method(process, 'exit', noop as () => never);
       mock.method(console, 'log', noop);
       mock.method(console, 'error', noop);
       mock.method(console, 'warn', noop);
-      await main({ mapLocation: 'sibling' });
+      await main({
+        distDir: join(mainTestDir, 'dist'),
+        mapLocation: 'sibling',
+      });
       assert.strictEqual(exitMock.mock.calls.length, 1);
       assert.strictEqual(exitMock.mock.calls[0].arguments[0], 1);
     });

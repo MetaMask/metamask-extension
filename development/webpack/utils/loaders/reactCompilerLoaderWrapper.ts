@@ -18,10 +18,11 @@ import { createRequire } from 'node:module';
 import { join, relative } from 'node:path';
 import type { Schema } from 'schema-utils';
 import type { LoaderDefinitionFunction } from 'webpack';
+import { projectRoot } from '../../../lib/build-paths.ts';
 
 // Resolve the CommonJS loader from the project root in both native TypeScript
 // workers and compiled LavaMoat builds.
-const requireFromRepoRoot = createRequire(join(process.cwd(), 'package.json'));
+const requireFromRepoRoot = createRequire(join(projectRoot, 'package.json'));
 const reactCompilerModule = requireFromRepoRoot(
   'react-compiler-webpack/dist/react-compiler-loader.js',
 ) as { default: LoaderDefinitionFunction } | LoaderDefinitionFunction;
