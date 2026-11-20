@@ -3,12 +3,26 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { HYPERLIQUID_ORIGIN } from '../../../../shared/constants/defi-referrals';
 import { DappConnectionControlBar } from './dapp-connection-control-bar';
 
 const mockNavigate = jest.fn();
+const mockGetIsPerpsExperienceAvailable = jest.fn(() => false);
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
+}));
+
+jest.mock('../../../selectors/perps', () => ({
+  ...jest.requireActual('../../../selectors/perps'),
+  getIsPerpsExperienceAvailable: () => mockGetIsPerpsExperienceAvailable(),
+}));
+
+jest.mock('../../app/hyperliquid-dapp-bar-deposit-sheet', () => ({
+  HyperliquidDappBarDepositSheet: () => (
+    <div data-testid="hyperliquid-dapp-bar-deposit-sheet" />
+  ),
 }));
 
 const mockRemovePermissionsFor = jest.fn(
@@ -172,6 +186,7 @@ const disconnectedMockState = {
 describe('DappConnectionControlBar', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetIsPerpsExperienceAvailable.mockReturnValue(false);
   });
 
   describe('when connected to a dapp', () => {
@@ -183,6 +198,13 @@ describe('DappConnectionControlBar', () => {
     it('renders the control bar', () => {
       const { getByTestId } = renderConnected();
       expect(getByTestId('dapp-connection-control-bar')).toBeInTheDocument();
+    });
+
+    it('does not show the Hyperliquid deposit sheet for non-Hyperliquid origins', () => {
+      const { queryByTestId } = renderConnected();
+      expect(
+        queryByTestId('hyperliquid-dapp-bar-deposit-sheet'),
+      ).not.toBeInTheDocument();
     });
 
     it('displays the site origin', () => {
@@ -726,6 +748,89 @@ describe('DappConnectionControlBar', () => {
       );
       expect(
         queryByTestId('dapp-connection-control-bar'),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('when connected to Hyperliquid', () => {
+    const hyperliquidConnectedState = {
+      metamask: {
+        ...mockState.metamask,
+        ...sharedMetamaskOverrides,
+        accountTree: {
+          ...mockState.metamask.accountTree,
+          selectedAccountGroup: GROUP_1_ID,
+        },
+        internalAccounts: {
+          ...mockState.metamask.internalAccounts,
+          accounts: {
+            ...mockState.metamask.internalAccounts.accounts,
+            [ACCOUNT_1_ID]: {
+              ...mockState.metamask.internalAccounts.accounts[ACCOUNT_1_ID],
+              metadata: {
+                ...mockState.metamask.internalAccounts.accounts[ACCOUNT_1_ID]
+                  .metadata,
+                lastSelected: 1000,
+              },
+            },
+          },
+          selectedAccount: ACCOUNT_1_ID,
+        },
+        subjectMetadata: {
+          ...mockState.metamask.subjectMetadata,
+          [HYPERLIQUID_ORIGIN]: {
+            name: 'Hyperliquid',
+            iconUrl: 'https://app.hyperliquid.xyz/favicon.ico',
+            subjectType: 'website',
+            origin: HYPERLIQUID_ORIGIN,
+          },
+        },
+        domains: {
+          [HYPERLIQUID_ORIGIN]: 'sepolia-test-client',
+        },
+        subjects: {
+          [HYPERLIQUID_ORIGIN]: {
+            permissions: makeCaip25Permission(
+              [`eip155:0:${ACCOUNT_1_ADDRESS}`],
+              'eip155:0',
+              { 'eip1193-compatible': true },
+            ),
+          },
+        },
+      },
+      activeTab: {
+        ...activeTab,
+        title: 'Hyperliquid',
+        origin: HYPERLIQUID_ORIGIN,
+        url: `${HYPERLIQUID_ORIGIN}/trade`,
+      },
+    };
+
+    const renderHyperliquidConnected = () => {
+      const store = configureStore(hyperliquidConnectedState);
+      return renderWithProvider(<DappConnectionControlBar />, store);
+    };
+
+    it('shows the Hyperliquid deposit sheet when Perps is available', () => {
+      mockGetIsPerpsExperienceAvailable.mockReturnValue(true);
+      const { getByTestId } = renderHyperliquidConnected();
+
+      expect(
+        getByTestId('hyperliquid-dapp-bar-deposit-sheet'),
+      ).toBeInTheDocument();
+      // The sheet sits directly above the bar; the darker seam is a CSS
+      // sibling rule, so the sheet must be the bar's previous sibling.
+      expect(
+        getByTestId('hyperliquid-dapp-bar-deposit-sheet').nextElementSibling,
+      ).toBe(getByTestId('dapp-connection-control-bar'));
+    });
+
+    it('hides the Hyperliquid deposit sheet when Perps is unavailable', () => {
+      mockGetIsPerpsExperienceAvailable.mockReturnValue(false);
+      const { queryByTestId } = renderHyperliquidConnected();
+
+      expect(
+        queryByTestId('hyperliquid-dapp-bar-deposit-sheet'),
       ).not.toBeInTheDocument();
     });
   });

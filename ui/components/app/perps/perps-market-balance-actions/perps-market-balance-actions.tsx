@@ -5,6 +5,8 @@ import {
   Button,
   ButtonVariant,
   ButtonSize,
+  BoxAlignItems,
+  BoxJustifyContent,
   SensitiveText,
   SensitiveTextLength,
   Text,
@@ -51,6 +53,11 @@ export function invokePerpsBalanceAction(
 type PerpsMarketBalanceActionsProps = {
   /** Whether to show the action buttons (Add funds, Withdraw) */
   showActionButtons?: boolean;
+  /**
+   * Size of the Withdraw and Add funds buttons.
+   * Defaults to large so the Perps home header stays unchanged.
+   */
+  actionButtonSize?: ButtonSize;
   /** Whether add funds transaction creation is in progress */
   isAddFundsLoading?: boolean;
   /** Callback when Add funds button is pressed */
@@ -64,17 +71,32 @@ type PerpsMarketBalanceActionsProps = {
   onLearnMore?: () => void;
   /** Whether the action buttons are stacked (default) or in a row. */
   layout?: 'column' | 'row';
+  /**
+   * `below` stacks the buttons under the balance (Perps home).
+   * `beside` puts content-sized buttons on the balance row, to its right.
+   * Does not change `layout`.
+   */
+  actionsPlacement?: 'below' | 'beside';
+  /**
+   * Label for the add-funds button. Defaults to the shared Add funds string
+   * so other callers stay unchanged.
+   */
+  addFundsLabel?: string;
 };
 
 const PerpsMarketBalanceActions = ({
   showActionButtons = true,
+  actionButtonSize = ButtonSize.Lg,
   isAddFundsLoading = false,
   onAddFunds,
   onWithdraw,
   onLearnMore,
   layout = 'column',
+  actionsPlacement = 'below',
+  addFundsLabel,
 }: PerpsMarketBalanceActionsProps) => {
   const t = useI18nContext();
+  const addFundsText = addFundsLabel ?? t('perpsAddFunds');
   const { track } = usePerpsEventTracking();
   const { formatCurrency } = useFormatters();
   const { account, isInitialLoading } = usePerpsLiveAccount();
@@ -146,7 +168,98 @@ const PerpsMarketBalanceActions = ({
   // Show a skeleton while the initial account snapshot is being fetched so we
   // don't flash the zero-balance state before real data arrives.
   if (isInitialLoading) {
-    return <PerpsBalanceActionsSkeleton />;
+    return (
+      <PerpsBalanceActionsSkeleton
+        placement={actionsPlacement === 'beside' ? 'beside' : 'stacked'}
+      />
+    );
+  }
+
+  // Sheet-only row: balance (and available, under it) on the left. Content-sized
+  // Withdraw and Fund buttons are pushed to the trailing edge. `layout` is ignored.
+  if (actionsPlacement === 'beside') {
+    return (
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Start}
+        justifyContent={BoxJustifyContent.Between}
+        className="w-full"
+        data-testid="perps-balance-actions"
+      >
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          className="min-w-0 flex-1"
+          data-testid="perps-balance-actions-summary"
+        >
+          <SensitiveText
+            variant={TextVariant.AmountDisplayLg}
+            fontFamily={FontFamily.Hero}
+            isHidden={privacyMode}
+            length={SensitiveTextLength.Medium}
+            data-testid="perps-balance-actions-total"
+          >
+            {formatCurrency(accountValue, 'USD')}
+          </SensitiveText>
+          {accountValue > 0 && (
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              gap={1}
+              marginTop={1}
+              data-testid="perps-balance-actions-available"
+            >
+              <SensitiveText
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+                isHidden={privacyMode}
+                length={SensitiveTextLength.Short}
+                data-testid="perps-balance-actions-available-value"
+              >
+                {formatCurrency(parseFloat(availableBalance), 'USD')}
+              </SensitiveText>
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+              >
+                {t('perpsAvailable').toLowerCase()}
+              </Text>
+            </Box>
+          )}
+        </Box>
+        {showActionButtons && (
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            gap={2}
+            className="ml-auto w-fit shrink-0"
+            data-testid="perps-balance-actions-buttons"
+          >
+            {accountValue > 0 && (
+              <Button
+                variant={ButtonVariant.Secondary}
+                size={actionButtonSize}
+                className="w-fit shrink-0"
+                onClick={handleWithdraw}
+                data-testid="perps-balance-actions-withdraw"
+              >
+                {t('perpsWithdraw')}
+              </Button>
+            )}
+            <Button
+              variant={ButtonVariant.Primary}
+              size={actionButtonSize}
+              className="w-fit shrink-0"
+              isLoading={isAddFundsLoading}
+              onClick={handleAddFunds}
+              disabled={isAddFundsLoading}
+              data-testid="perps-balance-actions-add-funds"
+            >
+              {addFundsText}
+            </Button>
+          </Box>
+        )}
+        {geoBlockModal}
+      </Box>
+    );
   }
 
   // Renders the same balance header regardless of whether the account is
@@ -215,7 +328,7 @@ const PerpsMarketBalanceActions = ({
             {accountValue > 0 && (
               <Button
                 variant={ButtonVariant.Secondary}
-                size={ButtonSize.Lg}
+                size={actionButtonSize}
                 className="w-full"
                 onClick={handleWithdraw}
                 data-testid="perps-balance-actions-withdraw"
@@ -226,14 +339,14 @@ const PerpsMarketBalanceActions = ({
 
             <Button
               variant={ButtonVariant.Primary}
-              size={ButtonSize.Lg}
+              size={actionButtonSize}
               className="w-full"
               isLoading={isAddFundsLoading}
               onClick={handleAddFunds}
               disabled={isAddFundsLoading}
               data-testid="perps-balance-actions-add-funds"
             >
-              {t('perpsAddFunds')}
+              {addFundsText}
             </Button>
           </Box>
 

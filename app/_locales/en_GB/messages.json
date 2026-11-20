@@ -3734,6 +3734,10 @@
   "disable": {
     "message": "Disable"
   },
+  "disableThisFeature": {
+    "message": "Disable this feature",
+    "description": "Overflow menu item on the Hyperliquid dapp-bar deposit sheet."
+  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original network fee.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -4816,6 +4820,14 @@
   "hideAdvancedDetails": {
     "message": "Hide advanced details"
   },
+  "hidePerpsBalanceOnDappConnectionDescription": {
+    "message": "You won't see your balance on the connection bar when connected to Hyperliquid anymore. Turn it back on any time in Settings > Preferences.",
+    "description": "Body of the confirmation shown before hiding the Perps balance on the Hyperliquid dapp connection bar."
+  },
+  "hidePerpsBalanceOnDappConnectionTitle": {
+    "message": "Hide Hyperliquid balance?",
+    "description": "Title of the confirmation shown before hiding the Perps balance on the Hyperliquid dapp connection bar."
+  },
   "hideSentitiveInfo": {
     "message": "Hide sensitive information"
   },
@@ -4915,6 +4927,10 @@
   "hyperliquidDepositPromptTitle": {
     "message": "Fund Hyperliquid with MetaMask",
     "description": "The title of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositSheetBalanceHeader": {
+    "message": "Hyperliquid balance",
+    "description": "Header at the top of the Hyperliquid dapp-bar deposit sheet, above the Perps balance."
   },
   "hyperliquidDepositToastSuccessDescription": {
     "message": "Funds are ready to trade on Hyperliquid and MetaMask Perps.",
