@@ -38,6 +38,7 @@ import {
   PERPS_ERROR_CODES,
   PERFORMANCE_CONFIG,
   TRADING_DEFAULTS,
+  validateTPSLPrices,
   type ClosePositionParams,
   type OrderType,
   type OrderParams,
@@ -151,11 +152,6 @@ import {
   formatPerpsFiatUniversal,
 } from '../../components/app/perps/utils/formatPerpsDisplayPrice';
 import { isNearLiquidationPrice as checkNearLiquidationPrice } from '../../components/app/perps/order-entry/limit-price-warnings';
-import {
-  isValidTakeProfitPrice,
-  isValidStopLossPrice,
-  isStopLossSafeFromLiquidation,
-} from '../../components/app/perps/utils/tpslValidation';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import {
   PERPS_MIN_MARKET_ORDER_USD,
@@ -1271,38 +1267,19 @@ const PerpsOrderEntryPage = () => {
       ? Number.parseFloat(orderFormState.limitPrice.replaceAll(/[$,]/gu, ''))
       : currentPrice;
 
-    if (!referencePrice || referencePrice <= 0) {
-      return false;
-    }
-
-    const tp = orderFormState.takeProfitPrice;
-    const sl = orderFormState.stopLossPrice;
-    const dir = orderFormState.direction;
-    const liquidationPrice = orderCalculations?.liquidationPriceRaw;
-
-    const tpInvalid = Boolean(
-      tp?.trim() &&
-      !isValidTakeProfitPrice(tp, {
-        currentPrice: referencePrice,
-        direction: dir,
-      }),
+    // Core's check; a pair it cannot resolve yet (no reference price) does
+    // not block submission.
+    return (
+      validateTPSLPrices(
+        orderFormState.takeProfitPrice?.trim(),
+        orderFormState.stopLossPrice?.trim(),
+        {
+          currentPrice: referencePrice,
+          direction: orderFormState.direction,
+          liquidationPrice: orderCalculations?.liquidationPriceRaw?.toString(),
+        },
+      ) === 'invalid'
     );
-    const slInvalid = Boolean(
-      sl?.trim() &&
-      !isValidStopLossPrice(sl, {
-        currentPrice: referencePrice,
-        direction: dir,
-      }),
-    );
-    const slLiquidationInvalid = Boolean(
-      sl?.trim() &&
-      !isStopLossSafeFromLiquidation(sl, {
-        liquidationPrice,
-        direction: dir,
-      }),
-    );
-
-    return tpInvalid || slInvalid || slLiquidationInvalid;
   }, [
     orderFormState,
     orderType,

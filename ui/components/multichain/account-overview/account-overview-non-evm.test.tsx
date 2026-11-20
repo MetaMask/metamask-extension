@@ -66,6 +66,7 @@ const render = (
       enabledNetworkMap: {
         eip155: {},
       },
+      useExternalServices: true,
       ...stateOverrides,
     },
   });
@@ -109,6 +110,17 @@ describe('AccountOverviewBtc', () => {
       expectAllTabs(queryByTestId);
     });
 
+    it('hides the DeFi tab when Basic Functionality is off', () => {
+      const { queryByTestId } = render(defaultProps, {
+        useExternalServices: false,
+      });
+
+      expectStandardTabs(queryByTestId);
+      expect(
+        queryByTestId('account-overview__defi-tab'),
+      ).not.toBeInTheDocument();
+    });
+
     it('shows tokens links', () => {
       const { queryByTestId } = render(defaultProps, {
         enabledNetworkMap: {
@@ -121,7 +133,7 @@ describe('AccountOverviewBtc', () => {
       expect(button).toBeInTheDocument(); // Verify the button is present
       expect(button).toBeEnabled(); // Verify the button is enabled
       // TODO: This one might be required, but we do not really handle tokens for BTC yet...
-      expect(queryByTestId('refresh-list-button')).not.toBeInTheDocument();
+      expect(queryByTestId('refreshList__button')).not.toBeInTheDocument();
     });
   });
 

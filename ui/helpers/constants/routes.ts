@@ -28,6 +28,9 @@ export const PREVIOUS_ROUTE = -1;
 export const UNLOCK_ROUTE = '/unlock';
 export const LOCK_ROUTE = '/lock';
 export const ASSET_ROUTE = '/asset';
+/** Fullscreen-safe waiting screen while a Stellar trustline snap dialog opens. */
+export const ASSET_ACTIVATION_LOADER_ROUTE =
+  `${ASSET_ROUTE}/activation/loader` as const;
 export const ASSET_DETAILS_ROUTE =
   `${ASSET_ROUTE}/:chainId/:asset?/:id?` as const;
 export const ASSET_SECURITY_TRUST_ROUTE =
@@ -198,6 +201,7 @@ export const RAMPS_BUILD_QUOTE_ROUTE = '/ramps/build-quote';
 export const RAMPS_TOKEN_SELECTION_ROUTE = '/ramps/token-selection';
 export const RAMPS_PAYMENT_METHOD_ROUTE = '/ramps/payment-method';
 export const RAMPS_COMPLETE_BUY_ROUTE = '/ramps/complete-buy';
+export const RAMPS_BUY_INTERSTITIAL_ROUTE = '/ramps/buy-interstitial';
 
 // Perps routes
 export const PERPS_ROUTE = '/perps';
@@ -339,6 +343,11 @@ export const ROUTES = [
     path: ASSET_IMAGE_ROUTE,
     label: 'Nft Image Page',
     trackInAnalytics: true,
+  },
+  {
+    path: ASSET_ACTIVATION_LOADER_ROUTE,
+    label: 'Asset Activation Loader Page',
+    trackInAnalytics: false,
   },
   {
     path: ASSET_DETAILS_ROUTE,
@@ -536,6 +545,11 @@ export const ROUTES = [
   {
     path: RAMPS_COMPLETE_BUY_ROUTE,
     label: 'Ramps Complete Buy Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: RAMPS_BUY_INTERSTITIAL_ROUTE,
+    label: 'Ramps Buy Interstitial Page',
     trackInAnalytics: false,
   },
   {

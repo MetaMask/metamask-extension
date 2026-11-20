@@ -3,10 +3,17 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { MUSD_MONEY_ACCOUNT_CHAIN_IDS } from '@metamask/money-account-utils';
 import { apiClient } from '../../helpers/api-client';
 import { MINUTE } from '../../../shared/constants/time';
-import { selectMoneyActivityMockDataEnabled } from '../../selectors/money/money-account-feature-flags';
+import {
+  selectMoneyAccountPremiumVaultConfig,
+  selectMoneyAccountVaultConfig,
+  selectMoneyActivityMockDataEnabled,
+  selectMoneyEnableHistoricalVaultShareValuations,
+} from '../../selectors/money/money-account-feature-flags';
 import { parseAccountsApiActivity } from '../../pages/money/utils/accounts-api';
 import type { AccountsApiActivity } from '../../pages/money/types/money-activity';
+import { useTrace } from '../useTrace';
 import { useMoneyAccountInfo } from './useMoneyAccountInfo';
+import { useMoneyActivityValuations } from './use-money-activity-valuations';
 import { useMoneyAccountApiActivity } from './use-money-account-api-activity';
 
 jest.mock('@tanstack/react-query', () => ({
@@ -27,10 +34,21 @@ jest.mock('../../helpers/api-client', () => ({
 
 jest.mock('../../selectors/money/money-account-feature-flags', () => ({
   selectMoneyActivityMockDataEnabled: jest.fn(),
+  selectMoneyAccountPremiumVaultConfig: jest.fn(),
+  selectMoneyAccountVaultConfig: jest.fn(),
+  selectMoneyEnableHistoricalVaultShareValuations: jest.fn(),
 }));
 
 jest.mock('./useMoneyAccountInfo', () => ({
   useMoneyAccountInfo: jest.fn(),
+}));
+
+jest.mock('./use-money-activity-valuations', () => ({
+  useMoneyActivityValuations: jest.fn(),
+}));
+
+jest.mock('../useTrace', () => ({
+  useTrace: jest.fn(),
 }));
 
 jest.mock('../../pages/money/utils/accounts-api', () => ({
@@ -47,11 +65,29 @@ const mockUseMoneyAccountInfo = jest.mocked(useMoneyAccountInfo);
 const mockSelectMoneyActivityMockDataEnabled = jest.mocked(
   selectMoneyActivityMockDataEnabled,
 );
+const mockSelectHistorical = jest.mocked(
+  selectMoneyEnableHistoricalVaultShareValuations,
+);
+const mockSelectStandardVault = jest.mocked(selectMoneyAccountVaultConfig);
+const mockSelectPremiumVault = jest.mocked(
+  selectMoneyAccountPremiumVaultConfig,
+);
+const mockUseValuations = jest.mocked(useMoneyActivityValuations);
+const mockUseTrace = jest.mocked(useTrace);
+const mockGetDisplayAmount = jest.fn();
 
 const ADDR_A = '0xbF4bC559f929cE3994Ba12D71d564737357bC8C2';
 const QUERY_OPTIONS_MOCK = {
   queryKey: ['accounts', 'transactions', 'v1Account'],
 };
+
+const STANDARD_VAULT = {
+  chainId: '0x8f',
+  boringVault: '0xb4563bcD3B7764CCBf497f515585f70B6C3EA5Ae',
+  tellerAddress: '0x2D49EA58A4C70b62c8B56DE971310d9e999c8117',
+  accountantAddress: '0x7382c5b8B51B8C4f127B3123C1039581BAA5A06B',
+  lensAddress: '0xA816ECd922de94c6879AD23B9A884dB257F20947',
+} as const;
 
 const CARD: AccountsApiActivity = {
   kind: 'card',
@@ -87,6 +123,14 @@ describe('useMoneyAccountApiActivity', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockSelectMoneyActivityMockDataEnabled.mockReturnValue(false);
+    mockSelectHistorical.mockReturnValue(false);
+    mockSelectStandardVault.mockReturnValue(undefined);
+    mockSelectPremiumVault.mockReturnValue(undefined);
+    mockGetDisplayAmount.mockReturnValue(undefined);
+    mockUseValuations.mockReturnValue({
+      getDisplayAmount: mockGetDisplayAmount,
+      isSettling: false,
+    });
     mockUseMoneyAccountInfo.mockReturnValue({
       isMoneyAccountFeatureEnabled: true,
       hasMoneyAccount: true,
@@ -202,6 +246,68 @@ describe('useMoneyAccountApiActivity', () => {
     expect(result.current.activity).toStrictEqual([CARD]);
     expect(result.current.pageCount).toBe(2);
     expect(result.current.hasMore).toBe(true);
+  });
+
+  it('keeps raw amounts and skips valuations when the flag is off', () => {
+    mockParse.mockReturnValue([CARD]);
+    mockQueryResult({
+      data: { pages: [PAGE_MOCK], pageParams: [undefined] },
+      hasNextPage: false,
+    });
+
+    const { result } = renderHook(() => useMoneyAccountApiActivity());
+
+    expect(mockParse).toHaveBeenCalledWith(
+      PAGE_MOCK,
+      ADDR_A,
+      expect.any(Array),
+      [],
+    );
+    expect(mockUseValuations).toHaveBeenCalledWith(
+      expect.objectContaining({ enabled: false }),
+    );
+    expect(result.current.activity).toStrictEqual([CARD]);
+  });
+
+  it('parses with the configured vault-share tokens and attaches valuations', () => {
+    mockSelectHistorical.mockReturnValue(true);
+    mockSelectStandardVault.mockReturnValue(STANDARD_VAULT);
+    mockParse.mockReturnValue([CARD]);
+    mockGetDisplayAmount.mockReturnValue({
+      type: 'historical',
+      value: '1017488',
+      decimals: 6,
+    });
+    mockQueryResult({
+      data: { pages: [PAGE_MOCK], pageParams: [undefined] },
+      hasNextPage: false,
+    });
+
+    const { result } = renderHook(() => useMoneyAccountApiActivity());
+
+    expect(mockParse).toHaveBeenCalledWith(
+      PAGE_MOCK,
+      ADDR_A,
+      expect.any(Array),
+      [
+        {
+          chainId: STANDARD_VAULT.chainId,
+          address: STANDARD_VAULT.boringVault,
+        },
+      ],
+    );
+    expect(result.current.activity).toStrictEqual([
+      {
+        ...CARD,
+        displayAmount: { type: 'historical', value: '1017488', decimals: 6 },
+      },
+    ]);
+    expect(mockUseValuations).toHaveBeenCalledWith(
+      expect.objectContaining({ enabled: true }),
+    );
+    expect(mockUseTrace).toHaveBeenCalledWith(
+      expect.objectContaining({ enabled: true, ready: true }),
+    );
   });
 
   it('opens the watermark once paging is complete', () => {

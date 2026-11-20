@@ -7,9 +7,6 @@
         "scripts": {
           "required": ["webpack", "webpack:clearcache", "postinstall"],
           "properties": {
-            "start:dev": {
-              "description": "Runs `yarn start` with the addition of react/redux backend devtool servers enabled."
-            },
             "webpack": {
               "type": "string",
               "description": "Builds the extension in \"dev\" mode. Run `yarn webpack --help` for usage information."

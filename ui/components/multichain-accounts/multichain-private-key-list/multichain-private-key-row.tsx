@@ -21,7 +21,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { getImageForChainId } from '../../../selectors/multichain';
+import { useImageForChainId } from '../../../hooks/useImageForChainId';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SensitiveClipboardCleanup } from '../../ui/sensitive-clipboard-cleanup/sensitive-clipboard-cleanup';
 import type { SensitiveClipboardState } from '../../../hooks/useCopyToClipboard';
@@ -167,7 +167,7 @@ export const MultichainPrivateKeyRow = ({
   privateKey,
   sensitiveClipboardState,
 }: MultichainPrivateKeyRowProps) => {
-  const networkImageSrc = getImageForChainId(chainId);
+  const networkImageSrc = useImageForChainId(chainId);
 
   return (
     <Box

@@ -61,6 +61,15 @@ jest.mock('../../fixtures/generate-wallet-state', () => ({
 
 jest.mock('../getObjStructure', () => jest.fn(() => ({})));
 
+const mockReadPersistedStateWithTrace = jest.fn(
+  (read: () => Promise<unknown>) => read(),
+);
+
+jest.mock('./trace-state-load', () => ({
+  readPersistedStateWithTrace: (read: () => Promise<unknown>) =>
+    mockReadPersistedStateWithTrace(read),
+}));
+
 const defaultFirstTimeState: FirstTimeState = { config: {} };
 
 const migratedState: MetaMaskStorageStructure = {
@@ -110,6 +119,22 @@ describe('loadStateFromPersistence', () => {
       migratedState.data?.KeyringController,
     );
     expect(versionedData).toStrictEqual(migratedState);
+  });
+
+  it('reads persisted state inside the State Load trace', async () => {
+    await loadState();
+
+    expect(mockReadPersistedStateWithTrace).toHaveBeenCalledTimes(1);
+    expect(mockGet).toHaveBeenCalledWith({ validateVault: true });
+  });
+
+  it('does not trace the read when restoring from backup', async () => {
+    await loadState({
+      KeyringController: { vault: 'from-backup' },
+      meta: { version: 157, storageKind: 'split' },
+    });
+
+    expect(mockReadPersistedStateWithTrace).not.toHaveBeenCalled();
   });
 
   it('restores from backup and sets storageKind from backup meta', async () => {

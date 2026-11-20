@@ -33,6 +33,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyScreenName,
   MoneyTooltipName,
   MoneyTooltipType,
@@ -73,10 +74,10 @@ const Balance = ({
   return (
     <>
       {isLoading ? (
-        // 22px matches the bodyMd line-height of the balance text so
+        // 24px matches the HeadingMd line-height of the balance text so
         // the row doesn't shift when the figure arrives.
         <Skeleton
-          height={22}
+          height={24}
           width={100}
           data-testid={MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID}
         />
@@ -234,7 +235,8 @@ export const MoneyAccountBalance = () => {
     hasMoneyAccount &&
     (fiatBalance !== undefined || isLoading);
   const moneyAccountEmpty =
-    tokenTotal !== undefined && !isMoneyBalanceFunded(tokenTotal);
+    isLoading ||
+    (tokenTotal !== undefined && !isMoneyBalanceFunded(tokenTotal));
 
   useTrackOnce(isVisible, trackComponentViewed);
 
@@ -274,7 +276,12 @@ export const MoneyAccountBalance = () => {
       labelKey: 'moneyAdd',
       redirectTarget: MoneyScreenName.MoneyDeposit,
     });
-    initiateDeposit();
+    initiateDeposit({
+      ftueOrigin: {
+        entryPoint: MoneyFtueEntryPoint.WalletHome,
+        componentName: MoneyComponentName.BalanceCard,
+      },
+    });
   };
 
   const handleAddClick = (event: React.MouseEvent<HTMLButtonElement>) => {

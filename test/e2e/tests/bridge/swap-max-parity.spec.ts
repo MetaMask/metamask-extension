@@ -13,9 +13,10 @@
  */
 
 import { withFixtures } from '../../helpers';
+import { selectSourceTokenIfNeeded } from '../../page-objects/flows/bridge.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import SwapPage from '../../page-objects/pages/swap/swap-page';
 import { MAX_AMOUNT_NETWORKS } from '../send/max-amount-parity.constants';
 import {
   assertAmountEquals,
@@ -31,20 +32,17 @@ describe('Swap max amount', function () {
           includeBridgeFlags: true,
         }),
         async ({ driver }) => {
-          await login(driver, {
-            validateBalance: false,
-            waitForNonEvmAccounts: false,
-          });
+          await login(driver, { validateBalance: false });
 
           const homePage = new HomePage(driver);
           await homePage.startSwapFlow();
 
-          const bridgePage = new BridgeQuotePage(driver);
-          await bridgePage.checkPageIsLoaded();
-          await bridgePage.selectSrcTokenIfNeeded(network.symbol);
-          await bridgePage.clickMaxButton();
+          const swapPage = new SwapPage(driver);
+          await swapPage.checkPageIsLoaded();
+          await selectSourceTokenIfNeeded(driver, network.symbol);
+          await swapPage.clickMaxButton();
 
-          const swapMax = await bridgePage.getSourceAmount();
+          const swapMax = await swapPage.getSourceAmount();
 
           // Ethereum: full balance, same as send-page Max.
           // Monad: balance minus the intentional 10 MON native reserve.

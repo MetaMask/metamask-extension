@@ -4,10 +4,8 @@ import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { TokenListItem } from '../../token-list-item';
 import { useFormatters } from '../../../../hooks/useFormatters';
-import {
-  getMultichainNetworkConfigurationsByChainId,
-  getImageForChainId,
-} from '../../../../selectors/multichain';
+import { getMultichainNetworkConfigurationsByChainId } from '../../../../selectors/multichain';
+import { useImageForChainId } from '../../../../hooks/useImageForChainId';
 import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
 
 type AssetProps = AssetWithDisplayData<NativeAsset | ERC20Asset> & {
@@ -65,7 +63,7 @@ export default function Asset({
       primary={isTokenChainIdInWallet ? primaryAmountToUse : undefined}
       title={name ?? symbol}
       tooltipText={tooltipText}
-      tokenChainImage={getImageForChainId(chainId)}
+      tokenChainImage={useImageForChainId(chainId)}
       isDestinationToken={isDestinationToken}
       address={address}
       rwaData={rwaData}

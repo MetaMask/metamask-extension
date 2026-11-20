@@ -4,10 +4,12 @@ import {
   FALLBACK_MONEY_DEPOSIT_MIN_BALANCE,
   selectMoneyAccountDepositQuotePipelineEnabled,
   selectMoneyAccountFeatureEnabled,
+  selectMoneyAccountPremiumVaultConfig,
   selectMoneyAccountVaultConfig,
   selectMoneyActivityDetailsEnabled,
   selectMoneyActivityMockDataEnabled,
   selectMoneyEarningSectionEnabled,
+  selectMoneyEnableHistoricalVaultShareValuations,
   selectMoneyHomeScreenCardEnabled,
   selectMoneyDepositMinBalance,
   selectMoneyDepositCtaTokenKeys,
@@ -190,6 +192,33 @@ describe('selectMoneyAccountVaultConfig', () => {
       selectMoneyAccountVaultConfig(
         mockState({
           moneyAccountVaultConfig: { ...VALID_CONFIG, lensAddress: '0x0' },
+        }),
+      ),
+    ).toBeUndefined();
+  });
+});
+
+describe('selectMoneyAccountPremiumVaultConfig', () => {
+  it('returns the parsed config from the flag', () => {
+    expect(
+      selectMoneyAccountPremiumVaultConfig(
+        mockState({ moneyAccountPremiumVaultConfig: { ...VALID_CONFIG } }),
+      ),
+    ).toStrictEqual(VALID_CONFIG);
+  });
+
+  it('returns undefined when the flag is unserved', () => {
+    expect(selectMoneyAccountPremiumVaultConfig(mockState())).toBeUndefined();
+  });
+
+  it('returns undefined when the flag is malformed', () => {
+    expect(
+      selectMoneyAccountPremiumVaultConfig(
+        mockState({
+          moneyAccountPremiumVaultConfig: {
+            ...VALID_CONFIG,
+            lensAddress: '0x0',
+          },
         }),
       ),
     ).toBeUndefined();
@@ -407,6 +436,53 @@ describe('selectMoneyActivityDetailsEnabled', () => {
 
   it('is false when the flag is unserved and the env var is off', () => {
     expect(selectMoneyActivityDetailsEnabled(mockState())).toBe(false);
+  });
+});
+
+describe('selectMoneyEnableHistoricalVaultShareValuations', () => {
+  it('is true for an enabled, version-satisfied flag', () => {
+    expect(
+      selectMoneyEnableHistoricalVaultShareValuations(
+        mockState({
+          moneyEnableHistoricalVaultShareValuations: {
+            enabled: true,
+            minimumVersion: '0.0.1',
+          },
+        }),
+      ),
+    ).toBe(true);
+  });
+
+  it('is false when the flag is disabled', () => {
+    expect(
+      selectMoneyEnableHistoricalVaultShareValuations(
+        mockState({
+          moneyEnableHistoricalVaultShareValuations: {
+            enabled: false,
+            minimumVersion: '0.0.1',
+          },
+        }),
+      ),
+    ).toBe(false);
+  });
+
+  it('is false when the flag is unserved', () => {
+    expect(selectMoneyEnableHistoricalVaultShareValuations(mockState())).toBe(
+      false,
+    );
+  });
+
+  it('is false when the current version is below the flag minimum', () => {
+    expect(
+      selectMoneyEnableHistoricalVaultShareValuations(
+        mockState({
+          moneyEnableHistoricalVaultShareValuations: {
+            enabled: true,
+            minimumVersion: '9999.0.0',
+          },
+        }),
+      ),
+    ).toBe(false);
   });
 });
 

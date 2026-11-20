@@ -6,12 +6,12 @@ import {
 } from '@metamask/money-account-utils';
 import type { Hex } from '@metamask/utils';
 import BigNumber from 'bignumber.js';
+import { isMoneyWithdrawTx } from '../../../helpers/money/money-transaction-guards';
 import { moneyFormatUsd } from '../../../helpers/money/format';
 import { shortenString } from '../../../helpers/utils/util';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
 import { isValidTransactionHash } from '../../../../shared/lib/transactions.utils';
 import type { MoneyActivityTransactionMeta } from '../constants/mock-activity-data';
-import type { AccountsApiActivity } from '../types/money-activity';
 import {
   classifyMoneyActivity,
   getMoneyActivityStatus,
@@ -54,26 +54,6 @@ export function getMoneyTransactionDetailsHeroAmount(
 
   return {
     amount: `${isIncoming ? '+' : '-'}${formatted}`,
-    isSuccessColor: isIncoming,
-  };
-}
-
-/**
- * Formats the details-page hero amount for an Accounts API settlement.
- *
- * @param activity - Parsed Accounts API card, cashback, or refund.
- * @returns Formatted fiat amount and whether to use the success color.
- */
-export function getMoneyApiActivityDetailsHeroAmount(
-  activity: AccountsApiActivity,
-): MoneyTransactionDetailsHeroAmount {
-  const isIncoming = activity.kind === 'cashback' || activity.kind === 'refund';
-  const amount = new BigNumber(activity.amount).dividedBy(
-    new BigNumber(10).pow(activity.token.decimals),
-  );
-
-  return {
-    amount: `${isIncoming ? '+' : '-'}${moneyFormatUsd(amount)}`,
     isSuccessColor: isIncoming,
   };
 }
@@ -204,7 +184,12 @@ export function getMoneyActivityTransactionHash(
   requiredTransaction?: TransactionMeta,
 ): MoneyActivityTransactionHash | undefined {
   if (tx.hash && isValidTransactionHash(tx.hash)) {
-    return { hash: tx.hash as Hex, chainId: tx.chainId };
+    return {
+      hash: tx.hash as Hex,
+      chainId: isMoneyWithdrawTx(tx)
+        ? (tx.metamaskPay?.chainId ?? tx.chainId)
+        : tx.chainId,
+    };
   }
 
   if (

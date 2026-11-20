@@ -23,6 +23,7 @@ import {
 import { useSelector } from 'react-redux';
 import { getNetworkIcon } from '../../../../shared/lib/network.utils';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
+import { getChainIdToNetworkImageUrlMap } from '../../../selectors/config-registry/config-registry';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -136,6 +137,7 @@ export const NetworkPillSelector = () => {
   const t = useI18nContext();
   const { formatCurrency } = useFormatters();
   const { privacyMode } = useSelector(getPreferences);
+  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
   const {
     defaultNetworks,
     handleSelectAllDefaultNetworks,
@@ -211,7 +213,7 @@ export const NetworkPillSelector = () => {
   if (isLoading) {
     return (
       <div
-        className="flex gap-2 px-4 py-2"
+        className="flex gap-2 p-4"
         data-testid="network-pill-selector-skeleton"
       >
         {[0, 1, 2].map((key) => (
@@ -222,7 +224,7 @@ export const NetworkPillSelector = () => {
   }
 
   return (
-    <div className="px-4 py-2" data-testid="network-pill-selector">
+    <div className="p-4" data-testid="network-pill-selector">
       <div
         ref={pillsRef}
         className={classnames(
@@ -263,7 +265,7 @@ export const NetworkPillSelector = () => {
             icon={
               <AvatarNetwork
                 name={network.name}
-                src={getNetworkIcon(network)}
+                src={getNetworkIcon(network, networkImageUrls)}
                 size={AvatarNetworkSize.Sm}
                 className="rounded-full"
               />

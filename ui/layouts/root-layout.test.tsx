@@ -2,12 +2,15 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { useAppLayout } from '../contexts/app-layout';
-import { useFullScreenDesign } from '../hooks/useFullScreenDesign';
+import { useWideLayoutDesign } from '../hooks/useWideLayoutDesign';
 import { RootLayout } from './root-layout';
 
-jest.mock('../hooks/useFullScreenDesign');
+jest.mock('../hooks/useWideLayoutDesign');
+jest.mock('#ui/components/app/rewards/money-referral/ReferralInvite', () => ({
+  ReferralInvite: () => null,
+}));
 
-const mockUseFullScreenDesign = jest.mocked(useFullScreenDesign);
+const mockUseWideLayoutDesign = jest.mocked(useWideLayoutDesign);
 
 const AppLayoutProbe = () => {
   const { isWideLayout } = useAppLayout();
@@ -37,7 +40,7 @@ const renderRootLayout = () => {
 
 describe('RootLayout', () => {
   it('provides the classic layout when the fullscreen design is off', () => {
-    mockUseFullScreenDesign.mockReturnValue(false);
+    mockUseWideLayoutDesign.mockReturnValue(false);
 
     const layout = renderRootLayout();
 
@@ -49,7 +52,7 @@ describe('RootLayout', () => {
   });
 
   it('provides the wide layout when the fullscreen design is on', () => {
-    mockUseFullScreenDesign.mockReturnValue(true);
+    mockUseWideLayoutDesign.mockReturnValue(true);
 
     const layout = renderRootLayout();
 

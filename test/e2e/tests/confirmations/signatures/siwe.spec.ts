@@ -14,10 +14,6 @@ import Confirmation from '../../../page-objects/pages/confirmations/confirmation
 import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
 import TestDapp, { SignatureType } from '../../../page-objects/pages/test-dapp';
 import { login } from '../../../page-objects/flows/login.flow';
-import {
-  BlockaidReason,
-  BlockaidResultType,
-} from '../../../../../shared/constants/security-provider';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
@@ -38,7 +34,7 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
         const confirmation = new Confirmation(driver);
         const accountDetailsModal = new AccountDetailsModal(driver);
 
-        await login(driver);
+        await login(driver, { waitForSignIn: true });
         await testDapp.openTestDappAndTriggerSignature(SignatureType.SIWE);
 
         await confirmation.clickHeaderAccountDetailsButton();
@@ -63,8 +59,6 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'personal_sign',
           uiCustomizations: ['sign_in_with_ethereum'],
-          securityAlertReason: BlockaidReason.notApplicable,
-          securityAlertResponse: BlockaidResultType.NotApplicable,
           requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
       },
@@ -82,7 +76,7 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
         const confirmation = new PersonalSignConfirmation(driver);
         const testDapp = new TestDapp(driver);
 
-        await login(driver);
+        await login(driver, { waitForSignIn: true });
         await testDapp.openTestDappAndTriggerSignature(SignatureType.SIWE);
 
         await confirmation.clickFooterButton({
@@ -100,8 +94,6 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
           uiCustomizations: ['sign_in_with_ethereum'],
           location: 'confirmation',
           requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
-          securityAlertReason: BlockaidReason.notApplicable,
-          securityAlertResponse: BlockaidResultType.NotApplicable,
         });
       },
       mockSignatureRejected,

@@ -110,8 +110,10 @@ const WS_GRACE_PERIOD_MS = 3000;
 // HyperLiquid's WebSocket can take >10s to reflect new TP/SL trigger orders
 const OPTIMISTIC_OVERRIDE_TTL_MS = 30000;
 
-// Block period: ignore WebSocket pushes for this long after optimistic update
-// Prevents immediate overwrite from stale WebSocket data
+// Block period: hold back WebSocket position pushes for this long after an
+// optimistic update so stale stream data does not immediately overwrite it.
+// The latest held push is applied when the period ends: the background only
+// emits positions when they change, so a dropped push would never be resent.
 const WEBSOCKET_BLOCK_MS = 3000;
 
 class PerpsStreamManager {
@@ -191,6 +193,11 @@ class PerpsStreamManager {
 
   // When we last set an optimistic update - used to block WebSocket overwrites
   private lastOptimisticUpdateTime = 0;
+
+  // Latest WebSocket positions push held back during the block period
+  private blockedPositions: Position[] | null = null;
+
+  private blockedPositionsTimer: ReturnType<typeof setTimeout> | null = null;
 
   private _useTerminalApi = false;
 
@@ -489,6 +496,8 @@ class PerpsStreamManager {
    * @param positions - Raw positions from REST
    */
   pushPositionsWithOverrides(positions: Position[]): void {
+    // This snapshot arrived after any held stream push, so it supersedes it.
+    this.clearBlockedPositions();
     const withOverrides = this.applyOptimisticOverrides(positions, false);
     this.positions.pushData(withOverrides);
   }
@@ -511,6 +520,57 @@ class PerpsStreamManager {
       return;
     }
     this.pushPositionsWithOverrides(positions);
+  }
+
+  private isInWebSocketBlockPeriod(): boolean {
+    return (
+      this.optimisticTPSLOverrides.size > 0 &&
+      Date.now() - this.lastOptimisticUpdateTime < WEBSOCKET_BLOCK_MS
+    );
+  }
+
+  private pushStreamPositions(positions: Position[]): void {
+    this.positions.pushData(this.applyOptimisticOverrides(positions));
+  }
+
+  /**
+   * Hold a WebSocket positions push received during the block period and
+   * apply the latest one once the period ends.
+   *
+   * @param positions - Positions from the stream
+   */
+  private holdBlockedPositions(positions: Position[]): void {
+    this.blockedPositions = positions;
+    if (this.blockedPositionsTimer) {
+      return;
+    }
+    const remainingMs =
+      this.lastOptimisticUpdateTime + WEBSOCKET_BLOCK_MS - Date.now();
+    this.blockedPositionsTimer = setTimeout(
+      () => {
+        this.blockedPositionsTimer = null;
+        const held = this.blockedPositions;
+        this.blockedPositions = null;
+        if (!held) {
+          return;
+        }
+        // A newer optimistic update may have extended the block period.
+        if (this.isInWebSocketBlockPeriod()) {
+          this.holdBlockedPositions(held);
+          return;
+        }
+        this.pushStreamPositions(held);
+      },
+      Math.max(remainingMs, 0),
+    );
+  }
+
+  private clearBlockedPositions(): void {
+    if (this.blockedPositionsTimer) {
+      clearTimeout(this.blockedPositionsTimer);
+      this.blockedPositionsTimer = null;
+    }
+    this.blockedPositions = null;
   }
 
   /**
@@ -613,6 +673,7 @@ class PerpsStreamManager {
       this.orderBookAggregatedStatus.reset();
       this.candles.clearAll();
       this.optimisticTPSLOverrides.clear();
+      this.clearBlockedPositions();
       this._lastStreamUpdateAt = 0;
       clearPerpsMarketInfoModuleCache();
       clearPerpsMarketFillsModuleCache();
@@ -719,14 +780,12 @@ class PerpsStreamManager {
     switch (channel) {
       case 'positions': {
         const positions = data as Position[];
-        const now = Date.now();
-        const inBlockPeriod =
-          now - this.lastOptimisticUpdateTime < WEBSOCKET_BLOCK_MS;
-        if (inBlockPeriod && this.optimisticTPSLOverrides.size > 0) {
+        if (this.isInWebSocketBlockPeriod()) {
+          this.holdBlockedPositions(positions);
           return;
         }
-        const withOverrides = this.applyOptimisticOverrides(positions);
-        this.positions.pushData(withOverrides);
+        this.clearBlockedPositions();
+        this.pushStreamPositions(positions);
         break;
       }
       case 'orders':
@@ -1068,6 +1127,7 @@ class PerpsStreamManager {
     this.orderBookAggregated.clearCache();
     this.orderBookAggregatedStatus.clearCache();
     this.candles.clearCache();
+    this.clearBlockedPositions();
     this._lastStreamUpdateAt = 0;
     clearPerpsMarketInfoModuleCache();
     clearPerpsMarketFillsModuleCache();
@@ -1101,6 +1161,7 @@ class PerpsStreamManager {
       this.candles.clearAll();
     }
     this.optimisticTPSLOverrides.clear();
+    this.clearBlockedPositions();
     this.initializedAddress = null;
     this._lastStreamUpdateAt = 0;
     clearPerpsMarketInfoModuleCache();

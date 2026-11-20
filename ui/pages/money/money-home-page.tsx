@@ -57,6 +57,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyOnboardingStepAction,
   MoneyScreenName,
   MoneyTooltipName,
@@ -239,6 +240,7 @@ export function MoneyHomePage() {
       screenName: MoneyScreenName.MoneyHome,
       tokenRowComponentName:
         MoneyComponentName.PotentialEarningsSectionTokenRow,
+      ftueEntryPoint: MoneyFtueEntryPoint.MoneyHome,
     });
   const { initiateWithdrawal, isLoading: isWithdrawLoading } =
     useMoneyAccountWithdrawal();
@@ -321,7 +323,12 @@ export function MoneyHomePage() {
       buttonPosition: 1,
       buttonRowButtonCount: ACTION_BUTTON_ROW_BUTTON_COUNT,
     });
-    initiateDeposit();
+    initiateDeposit({
+      ftueOrigin: {
+        entryPoint: MoneyFtueEntryPoint.MoneyHome,
+        componentName: MoneyComponentName.ActionButtonRow,
+      },
+    });
   }, [initiateDeposit, trackButtonClicked]);
   const handleAddFundsFromFundCard = useCallback(() => {
     trackOnboardingEvent({
@@ -331,7 +338,12 @@ export function MoneyHomePage() {
       stepAction: MoneyOnboardingStepAction.DepositInitiated,
       redirectTarget: MoneyScreenName.MoneyDeposit,
     });
-    initiateDeposit();
+    initiateDeposit({
+      ftueOrigin: {
+        entryPoint: MoneyFtueEntryPoint.MoneyHome,
+        componentName: MoneyComponentName.OnboardingCard,
+      },
+    });
   }, [initiateDeposit, trackOnboardingEvent]);
   const handleLearnMore = useCallback(() => {
     trackButtonClicked({

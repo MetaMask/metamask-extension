@@ -52,6 +52,7 @@ const render = (
     activeTab: mockState.activeTab,
     metamask: {
       ...mockState.metamask,
+      useExternalServices: true,
       remoteFeatureFlags: { assetsDefiPositionsEnabled: true }, // this to be removed when the feature flag is removed
       preferences: {
         ...mockState.metamask.preferences,
@@ -89,6 +90,22 @@ describe('AccountOverviewEth', () => {
     expect(queryByTestId('account-overview__asset-tab')).toBeInTheDocument();
     expect(queryByTestId('account-overview__nfts-tab')).toBeInTheDocument();
     expect(queryByTestId('account-overview__defi-tab')).toBeInTheDocument();
+  });
+
+  it('hides the DeFi tab when Basic Functionality is off', () => {
+    const { queryByTestId } = render(
+      {
+        setBasicFunctionalityModalOpen: jest.fn(),
+        onSupportLinkClick: jest.fn(),
+      },
+      {
+        useExternalServices: false,
+      },
+    );
+
+    expect(queryByTestId('account-overview__asset-tab')).toBeInTheDocument();
+    expect(queryByTestId('account-overview__nfts-tab')).toBeInTheDocument();
+    expect(queryByTestId('account-overview__defi-tab')).not.toBeInTheDocument();
   });
 
   it('hides the DeFi tab when DeFi positions are disabled', () => {

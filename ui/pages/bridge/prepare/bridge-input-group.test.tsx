@@ -472,6 +472,37 @@ describe('BridgeInputGroup', () => {
     expect(getByTestId('security-badge')).toBeInTheDocument();
   });
 
+  it('copies the destination token block explorer link from a native button', async () => {
+    const mockState = createBridgeMockStore();
+    const fromToken = getFromToken(mockState);
+    const token = {
+      ...fromToken,
+      assetId:
+        'eip155:1/erc20:0x1f9840a85d5af5bf1d1762f925bdaddc4201f984' as CaipAssetType,
+      chainId: 'eip155:1' as const,
+    };
+    const onBlockExplorerClick = jest.fn();
+    renderWithProvider(
+      <InputGroup
+        mockState={mockState}
+        token={token}
+        isDestination
+        amountFieldProps={{ testId: 'to-amount', readOnly: true, value: '1' }}
+        onBlockExplorerClick={onBlockExplorerClick}
+      />,
+      configureStore(mockState),
+    );
+
+    const addressButton = screen.getByRole('button', { name: '0x1f...f984' });
+    expect(addressButton).toHaveAttribute('type', 'button');
+
+    await act(async () => {
+      await userEvent.click(addressButton);
+    });
+
+    expect(onBlockExplorerClick).toHaveBeenCalledWith(token);
+  });
+
   it('leaves the selected asset button unchanged without fetched metadata', () => {
     const { queryByTestId } = renderBridgeInputGroup();
 

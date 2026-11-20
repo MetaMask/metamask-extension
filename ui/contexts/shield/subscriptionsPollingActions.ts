@@ -11,8 +11,8 @@ import { submitRequestToBackground } from '../../store/background-connection';
  * @returns Polling token that can be used to stop polling.
  */
 export async function subscriptionsStartPolling(): Promise<string> {
-  const pollingToken = await submitRequestToBackground<string>(
-    'subscriptionsStartPolling',
+  const pollingToken = await submitRequestToBackground(
+    'SubscriptionController:startPolling',
     [SUBSCRIPTIONS_POLLING_INPUT],
   );
 
@@ -26,6 +26,9 @@ export async function subscriptionsStartPolling(): Promise<string> {
  * @param pollingToken - Poll token received from calling subscriptionsStartPolling.
  */
 export async function subscriptionsStopPolling(pollingToken: string) {
-  await submitRequestToBackground('subscriptionsStopPolling', [pollingToken]);
+  await submitRequestToBackground(
+    'SubscriptionController:stopPollingByPollingToken',
+    [pollingToken],
+  );
   await removePollingTokenFromAppState(pollingToken);
 }
