@@ -9056,17 +9056,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/money-account-api-data-service@npm:^2.4.0":
-  version: 2.4.0
-  resolution: "@metamask/money-account-api-data-service@npm:2.4.0"
+"@metamask/money-account-api-data-service@npm:@metamask-previews/money-account-api-data-service@2.4.0-preview-2caafa97d":
+  version: 2.4.0-preview-2caafa97d
+  resolution: "@metamask-previews/money-account-api-data-service@npm:2.4.0-preview-2caafa97d"
   dependencies:
     "@metamask/base-data-service": "npm:^2.1.0"
     "@metamask/controller-utils": "npm:^13.0.0"
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/superstruct": "npm:^3.4.1"
-    "@metamask/utils": "npm:^12.0.1"
-    "@tanstack/query-core": "npm:^5.103.2"
-  checksum: 10/7b959ec3982f6c34219c45db4d1f7f2758e087e977ff20f5c3601888bfe94d759d26d16a0b5c04639bdae6cdbff4bb126aa2ede02b7b74e8f227d10ea8c7a246
+    "@metamask/utils": "npm:^12.0.2"
+    "@tanstack/query-core": "npm:^5.107.1"
+  checksum: 10/9accf27ed7d00f42c6c016ecfe5f6e8efc815b30477742c7fce2e31cb576ba13207dc6c8bd4788e284b89aafe31d7912343541a1efd4f883764dacfde2a5e3da
   languageName: node
   linkType: hard
 

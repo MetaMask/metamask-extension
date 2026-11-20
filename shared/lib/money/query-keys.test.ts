@@ -10,7 +10,6 @@ describe('MoneyAccountBalanceServiceQueryKeys', () => {
     expect(MoneyAccountBalanceServiceQueryKeys).toStrictEqual({
       GET_MUSD_BALANCE: 'MoneyAccountBalanceService:getMusdBalance',
       GET_VMUSD_BALANCE: 'MoneyAccountBalanceService:getVmusdBalance',
-      GET_VAULT_APY: 'MoneyAccountBalanceService:getVaultApy',
       GET_MUSD_EQUIVALENT_VALUE:
         'MoneyAccountBalanceService:getMusdEquivalentValue',
       GET_EXCHANGE_RATE: 'MoneyAccountBalanceService:getExchangeRate',
@@ -39,6 +38,7 @@ describe('MoneyAccountApiDataServiceQueryKeys', () => {
     expect(MoneyAccountApiDataServiceQueryKeys).toStrictEqual({
       FETCH_POSITIONS: 'MoneyAccountApiDataService:fetchPositions',
       FETCH_INTEREST: 'MoneyAccountApiDataService:fetchInterest',
+      FETCH_VAULTS: 'MoneyAccountApiDataService:fetchVaults',
       FETCH_VAULT_RATE: 'MoneyAccountApiDataService:fetchVaultRate',
       FETCH_VAULT_SHARE_VALUATIONS:
         'MoneyAccountApiDataService:fetchVaultShareValuations',
