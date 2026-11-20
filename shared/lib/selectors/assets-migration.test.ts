@@ -208,7 +208,30 @@ describe('getAccountTrackerControllerAccountsByChainId', () => {
       });
     });
 
-    it('returns legacy accountsByChainId when it is present', () => {
+    it('derives native balances from AssetsController when legacy accountsByChainId is empty', () => {
+      const state = {
+        metamask: {
+          ...assetsControllerState,
+          accountsByChainId: {},
+          assetsBalance: {
+            [mockAccountId]: {
+              [nativeEthAssetId]: { amount: '1' },
+            },
+          },
+        },
+      };
+
+      const result = getAccountTrackerControllerAccountsByChainId(state);
+
+      expect(result).toStrictEqual({
+        '0x1': {
+          // 1 native unit at 18 decimals
+          [mockAccountAddressChecksummed]: { balance: '0xde0b6b3a7640000' },
+        },
+      });
+    });
+
+    it('returns non-empty legacy accountsByChainId', () => {
       const legacyAccountsByChainId = {
         '0x1': {
           [mockAccountAddressChecksummed]: { balance: '0x5' },

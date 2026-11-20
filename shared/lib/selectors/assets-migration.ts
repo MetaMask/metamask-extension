@@ -143,11 +143,17 @@ export const getAccountTrackerControllerAccountsByChainId =
       assetsInfo,
       internalAccountsById,
     ) => {
-      // AccountTrackerController no longer exists, so raw `accountsByChainId`
-      // is only present in legacy-shaped state. AssetsController runs
-      // regardless of the unify flag (e.g. before remote flags are fetched,
-      // or when external services are disabled), so derive from it otherwise.
-      if (!isAssetsUnifyStateEnabled && accountsByChainId) {
+      // AccountTrackerController no longer exists, so a populated
+      // `accountsByChainId` is only present in legacy-shaped state. An empty
+      // object is leftover persisted state (the controller no longer fills
+      // it), so treat it as absent. AssetsController runs regardless of the
+      // unify flag (e.g. before remote flags are fetched, or when external
+      // services are disabled), so derive from it otherwise.
+      if (
+        !isAssetsUnifyStateEnabled &&
+        accountsByChainId &&
+        Object.keys(accountsByChainId).length > 0
+      ) {
         return accountsByChainId;
       }
 
