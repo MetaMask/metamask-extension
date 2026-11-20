@@ -22,6 +22,8 @@ jest.mock('@sentry/core', () => ({
 
 jest.mock('@sentry/browser', () => ({
   getActiveSpan: jest.fn(),
+  // A running span: no end timestamp.
+  spanToJSON: jest.fn(() => ({})),
   getCurrentScope: jest.fn(),
   getIsolationScope: jest.fn(),
 }));

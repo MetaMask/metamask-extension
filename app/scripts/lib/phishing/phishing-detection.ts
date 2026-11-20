@@ -8,6 +8,7 @@ import {
 import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
 import { createEventBuilder, trackEvent } from '../../controllers/analytics';
 import { getPlatform } from '../util';
+import { updatePhishingLists } from '../update-phishing-lists';
 import { phishingPageHref, phishingPageUrl } from './phishing-warning-page';
 import type { PhishingDetectionController } from './types';
 
@@ -144,7 +145,7 @@ export function maybeDetectPhishing(
         return {};
       }
 
-      controller.phishingController.maybeUpdateState();
+      updatePhishingLists(controller.phishingController);
 
       const blockedRequestResponse: PhishingDetectorResult =
         controller.phishingController.isBlockedRequest(details.url);

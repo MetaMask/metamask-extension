@@ -36,6 +36,12 @@ export const DEFAULT_TRANSACTION_SAMPLE_RATES: Readonly<
   'Homepage Ready': 0.001,
   'Homepage Section Time To Content': 0.001,
   'Useful Screen Ready': 0.001,
+  // Boot-time operations: up to four roots per worker cold start, so each is
+  // sampled at a fifth of the default rate.
+  'Accounts API Supported Networks Fetch': 0.001,
+  'Geolocation Fetch': 0.001,
+  'Phishing Lists Update': 0.001,
+  'Ramps Init': 0.001,
 });
 
 /**

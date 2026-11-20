@@ -16,7 +16,11 @@ import type {
 import { type MessengerClientInitFunction } from '../types';
 import { type AssetsControllerInitMessenger } from '../messengers/assets/assets-controller-messenger';
 import type { OnboardingControllerState } from '../../controllers/onboarding';
-import { traceAsControllerCallback } from '../../../../shared/lib/trace';
+import {
+  traceAsControllerCallback,
+  TraceName,
+} from '../../../../shared/lib/trace';
+import { withOwnTraceWithoutCaller } from '../../lib/trace-without-caller';
 import {
   getBackendApiUrlsOption,
   isBackendAuthDisabled,
@@ -194,12 +198,20 @@ function getApiClient(
   initMessenger: AssetsControllerInitMessenger,
 ): AssetsControllerOptions['queryApiClient'] {
   if (!apiClient) {
-    apiClient = createApiPlatformClient({
+    const client = createApiPlatformClient({
       clientProduct: 'metamask-extension',
       clientVersion: process.env.METAMASK_VERSION,
       getBearerToken: () => safeGetBearerToken(initMessenger),
       ...getBackendApiUrlsOption(),
-    }) as unknown as AssetsControllerOptions['queryApiClient'];
+    });
+    // The Accounts API data source fetches supported networks from its
+    // constructor and on a timer, with no caller.
+    const { accounts } = client;
+    accounts.fetchV2SupportedNetworks = withOwnTraceWithoutCaller(
+      TraceName.AccountsApiSupportedNetworksFetch,
+      accounts.fetchV2SupportedNetworks.bind(accounts),
+    );
+    apiClient = client as unknown as AssetsControllerOptions['queryApiClient'];
   }
   return apiClient;
 }
