@@ -7,6 +7,7 @@ import {
   STATUS_CONNECTED,
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
 } from '../../../helpers/constants/connected-sites';
+import { getIconSeedAddressByAccountGroupId } from '../../../selectors/multichain-accounts/account-tree';
 import {
   MultichainAccountCell,
   MultichainAccountCellProps,
@@ -17,6 +18,12 @@ jest.mock('@metamask/chain-agnostic-permission', () => ({
   isInternalAccountInPermittedAccountIds: jest.fn(),
   getCaip25CaveatFromPermission: jest.fn(),
   getCaipAccountIdsFromCaip25CaveatValue: jest.fn(),
+}));
+
+jest.mock('../../app/preferred-avatar', () => ({
+  PreferredAvatar: ({ address }: { address: string }) => (
+    <div data-testid="preferred-avatar" data-address={address} />
+  ),
 }));
 
 const mockChainAgnosticPermission = jest.requireMock(
@@ -173,6 +180,20 @@ describe('MultichainAccountCell', () => {
 
     expect(screen.getByTestId('start-accessory')).toBeInTheDocument();
     expect(screen.getByText('Start')).toBeInTheDocument();
+  });
+
+  it('renders accountNameAccessory next to the account name', () => {
+    renderWithProvider(
+      <MultichainAccountCell
+        {...defaultProps}
+        accountNameAccessory={
+          <span data-testid="account-name-accessory">Accessory</span>
+        }
+      />,
+      store,
+    );
+
+    expect(screen.getByTestId('account-name-accessory')).toBeInTheDocument();
   });
 
   it('renders with startAccessory when provided', () => {
@@ -357,6 +378,11 @@ describe('MultichainAccountCell', () => {
     });
 
     it('uses seed address from selector for ConnectedStatus component', () => {
+      const expectedSeedAddress = getIconSeedAddressByAccountGroupId(
+        store.getState(),
+        defaultProps.accountId,
+      );
+
       renderWithProvider(
         <MultichainAccountCell
           {...defaultProps}
@@ -372,6 +398,27 @@ describe('MultichainAccountCell', () => {
       // Avatar container should still be present
       const avatarContainer = screen.getByTestId('account-cell-avatar');
       expect(avatarContainer).toBeInTheDocument();
+      expect(screen.getByTestId('preferred-avatar')).toHaveAttribute(
+        'data-address',
+        expectedSeedAddress,
+      );
+    });
+
+    it('uses avatarSeedAddress as the avatar seed when provided', () => {
+      const avatarSeedAddress = '0x1234567890123456789012345678901234567890';
+
+      renderWithProvider(
+        <MultichainAccountCell
+          {...defaultProps}
+          avatarSeedAddress={avatarSeedAddress}
+        />,
+        store,
+      );
+
+      expect(screen.getByTestId('preferred-avatar')).toHaveAttribute(
+        'data-address',
+        avatarSeedAddress,
+      );
     });
   });
 
