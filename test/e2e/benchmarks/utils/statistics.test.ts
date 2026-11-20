@@ -256,6 +256,83 @@ describe('Statistics Utils', () => {
       expect(stats.samples).toBeLessThan(durations.length);
       expect(stats.outliers).toBeGreaterThan(0);
     });
+
+    it('retains each duration against the iteration that produced it', () => {
+      const durations = [100, 110, 105];
+      const stats = calculateTimerStatistics('retained', durations, {
+        iterations: [0, 1, 2],
+      });
+
+      expect(stats.values).toStrictEqual([
+        { iteration: 0, value: 100 },
+        { iteration: 1, value: 110 },
+        { iteration: 2, value: 105 },
+      ]);
+    });
+
+    it('numbers by the supplied iteration, not by position', () => {
+      // Iterations 1 and 3 failed, so they contributed no duration. Numbering by
+      // position would report four consecutive iterations and hide the gap that
+      // a missingness model reads.
+      const stats = calculateTimerStatistics('sparse', [100, 105, 102], {
+        iterations: [0, 2, 4],
+      });
+
+      expect(stats.values?.map((sample) => sample.iteration)).toStrictEqual([
+        0, 2, 4,
+      ]);
+    });
+
+    it('retains the values a filter discarded', () => {
+      const durations = [100, 105, 102, 10000000];
+      const stats = calculateTimerStatistics('withOutlier', durations, {
+        iterations: [0, 1, 2, 3],
+      });
+
+      expect(stats.samples).toBeLessThan(durations.length);
+      expect(stats.values?.map((sample) => sample.value)).toStrictEqual(
+        durations,
+      );
+    });
+
+    it('marks only the values the sanity check dropped as excluded', () => {
+      const sanity = calculateTimerStatistics(
+        'sanity',
+        [100, 105, 0, 102, -5, 10000000],
+        { iterations: [0, 1, 2, 3, 4, 5] },
+      );
+      expect(sanity.values?.map((sample) => sample.excluded)).toStrictEqual([
+        undefined,
+        undefined,
+        true,
+        undefined,
+        true,
+        true,
+      ]);
+
+      // 1000 is an IQR outlier the sanity check accepts, so it stays unmarked.
+      const trimmed = calculateTimerStatistics(
+        'trimmed',
+        [100, 101, 99, 102, 98, 100, 1000],
+        { iterations: [0, 1, 2, 3, 4, 5, 6] },
+      );
+      expect(trimmed.trimmedCount).toBeGreaterThan(0);
+      expect(trimmed.values?.some((sample) => 'excluded' in sample)).toBe(
+        false,
+      );
+    });
+
+    it('omits values when no iteration numbering is supplied', () => {
+      const stats = calculateTimerStatistics('unnumbered', [100, 105]);
+      expect(stats.values).toBeUndefined();
+    });
+
+    it('omits values when the numbering does not cover every duration', () => {
+      const stats = calculateTimerStatistics('mismatched', [100, 105, 102], {
+        iterations: [0, 1],
+      });
+      expect(stats.values).toBeUndefined();
+    });
   });
 
   describe('checkExclusionRate', () => {
