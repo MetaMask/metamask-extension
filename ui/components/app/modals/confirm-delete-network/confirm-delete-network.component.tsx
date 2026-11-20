@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import type { CaipChainId, Hex } from '@metamask/utils';
 import {
@@ -21,6 +21,17 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
+import {
+  NetworkManagementEntryPoint,
+  NetworkManagementInteractionType,
+  NetworkRemovalType,
+} from '../../../../../shared/constants/metametrics';
+import {
+  trackNetworkManagementInteracted,
+  trackNetworkRemoved,
+} from '../../../../helpers/utils/network-management-metrics';
+import { getNetworkSectionKey } from '../../../../helpers/utils/network-sections';
 
 type ConfirmDeleteNetworkProps = {
   hideModal: () => void;
@@ -30,6 +41,7 @@ type ConfirmDeleteNetworkProps = {
   chainId: Hex;
   isChainToDeleteSelected?: boolean;
   switchToEthereumNetwork?: () => Promise<void>;
+  metricsEntryPoint?: NetworkManagementEntryPoint;
 };
 
 export default function ConfirmDeleteNetwork({
@@ -40,8 +52,25 @@ export default function ConfirmDeleteNetwork({
   chainId,
   isChainToDeleteSelected,
   switchToEthereumNetwork,
+  metricsEntryPoint = NetworkManagementEntryPoint.SettingsNetworks,
 }: ConfirmDeleteNetworkProps) {
   const t = useI18nContext();
+  const { trackEvent, createEventBuilder } = useAnalytics();
+
+  useEffect(() => {
+    trackNetworkManagementInteracted(
+      { trackEvent, createEventBuilder },
+      {
+        interactionType:
+          NetworkManagementInteractionType.NetworkRemovalRequested,
+        entryPoint: metricsEntryPoint,
+        chainId,
+        networkType: getNetworkSectionKey(chainId),
+      },
+    );
+    // The confirmation is shown once when the modal opens.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleDelete = useCallback(async () => {
     // NOTE: We only support EVM networks removal, so the conversion is safe here.
@@ -53,6 +82,14 @@ export default function ConfirmDeleteNetwork({
     }
 
     await removeNetwork(caipChainId);
+    trackNetworkRemoved(
+      { trackEvent, createEventBuilder },
+      {
+        chainId,
+        entryPoint: metricsEntryPoint,
+        removalType: NetworkRemovalType.Deleted,
+      },
+    );
 
     onConfirm();
     hideModal();
@@ -60,9 +97,12 @@ export default function ConfirmDeleteNetwork({
     chainId,
     hideModal,
     isChainToDeleteSelected,
+    metricsEntryPoint,
     onConfirm,
     removeNetwork,
     switchToEthereumNetwork,
+    trackEvent,
+    createEventBuilder,
   ]);
 
   return (

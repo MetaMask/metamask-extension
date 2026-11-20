@@ -23,6 +23,7 @@ import {
   AssetsContractController,
   BalanceMap,
   Nft,
+  Source,
   Token,
 } from '@metamask/assets-controllers';
 import { PayloadAction } from '@reduxjs/toolkit';
@@ -158,7 +159,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsEventAccountType,
-  MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
 import {
   createEventBuilder,
@@ -198,6 +198,7 @@ import {
   TraceName,
   TraceOperation,
   TraceRequest,
+  withoutTraceContext,
 } from '../../shared/lib/trace';
 import type { SerializedTraceContext } from '../../shared/lib/trace';
 import { SortCriteria } from '../components/app/assets/util/sort';
@@ -452,9 +453,9 @@ export function decodeSeedPhraseFromBackground(
 }
 
 type SeedPhraseBackgroundMethod =
-  | 'createNewVaultAndGetSeedPhrase'
-  | 'unlockAndGetSeedPhrase'
-  | 'getSeedPhrase';
+  | 'LegacyBackgroundApiService:createNewVaultAndGetSeedPhrase'
+  | 'LegacyBackgroundApiService:unlockAndGetSeedPhrase'
+  | 'LegacyBackgroundApiService:getSeedPhrase';
 
 /**
  * Fetches and decodes a seed phrase from a background RPC method.
@@ -465,13 +466,9 @@ type SeedPhraseBackgroundMethod =
  */
 async function fetchSeedPhraseFromBackground(
   method: SeedPhraseBackgroundMethod,
-  args: unknown[],
+  args: [password: string, keyringId?: string],
 ): Promise<string> {
-  const encodedSeedPhrase =
-    await submitRequestToBackground<SeedPhraseBytesFromBackground>(
-      method,
-      args,
-    );
+  const encodedSeedPhrase = await submitRequestToBackground(method, args);
   return decodeSeedPhraseFromBackground(encodedSeedPhrase);
 }
 
@@ -490,7 +487,7 @@ export function createNewVaultAndSyncWithSocial(
   ) => {
     try {
       const seedPhrase = await fetchSeedPhraseFromBackground(
-        'createNewVaultAndGetSeedPhrase',
+        'LegacyBackgroundApiService:createNewVaultAndGetSeedPhrase',
         [password],
       );
 
@@ -532,7 +529,7 @@ export function subscriptionsStartPolling(): ThunkAction<
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       const pollingToken = await submitRequestToBackground(
-        'subscriptionsStartPolling',
+        'SubscriptionController:startPolling',
         // We need to provide the polling input when start polling
         // Otherwise, stop polling won't work with `undefined` input.
         [SUBSCRIPTIONS_POLLING_INPUT],
@@ -983,15 +980,10 @@ export async function setShieldSubscriptionError(
  * Fetches and restores the seed phrase from the metadata store using the social login and restore the vault using the seed phrase.
  *
  * @param password - The password.
- * @param trackEvent - The track event function from MetaMetrics context.
  * @returns The seed phrase.
  */
 export function restoreSocialBackupAndGetSeedPhrase(
   password: string,
-  trackEvent?: (
-    payload: MetaMetricsEventPayload,
-    options?: MetaMetricsEventOptions,
-  ) => Promise<void>,
 ): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     // restore the vault using the seed phrase
@@ -999,20 +991,6 @@ export function restoreSocialBackupAndGetSeedPhrase(
       'LegacyBackgroundApiService:restoreSocialBackupAndGetSeedPhrase',
       [password],
     );
-
-    // sync marketing consent with metametrics
-    const marketingConsent = await getMarketingConsent();
-    dispatch(setDataCollectionForMarketing(marketingConsent));
-
-    await trackEvent?.({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-      properties: {
-        [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
-        [MetaMetricsUserTrait.HasMarketingConsent]: marketingConsent,
-        location: 'onboarding_social_login_rehydration',
-      },
-    });
 
     await forceUpdateMetamaskState(dispatch);
     return mnemonic;
@@ -1221,7 +1199,7 @@ export function createNewVaultAndGetSeedPhrase(
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       const seedPhrase = await fetchSeedPhraseFromBackground(
-        'createNewVaultAndGetSeedPhrase',
+        'LegacyBackgroundApiService:createNewVaultAndGetSeedPhrase',
         [password],
       );
 
@@ -1245,7 +1223,7 @@ export function unlockAndGetSeedPhrase(
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       const seedPhrase = await fetchSeedPhraseFromBackground(
-        'unlockAndGetSeedPhrase',
+        'LegacyBackgroundApiService:unlockAndGetSeedPhrase',
         [password],
       );
       await forceUpdateMetamaskState(dispatch);
@@ -1295,7 +1273,10 @@ export async function verifyPassword(password: string): Promise<boolean> {
 }
 
 export async function getSeedPhrase(password: string, keyringId?: string) {
-  return fetchSeedPhraseFromBackground('getSeedPhrase', [password, keyringId]);
+  return fetchSeedPhraseFromBackground(
+    'LegacyBackgroundApiService:getSeedPhrase',
+    [password, keyringId],
+  );
 }
 
 export function requestRevealSeedWords(
@@ -1745,32 +1726,17 @@ export function updateEditableParams(
 }
 
 export async function backupUserData(): Promise<{
-  filename: string;
+  fileName: string;
   data: string;
 }> {
-  let backedupData;
   try {
-    backedupData = await submitRequestToBackground<{
-      filename: string;
-      data: string;
-    }>('backupUserData');
+    return await submitRequestToBackground(
+      'LegacyBackgroundApiService:backupUserData',
+    );
   } catch (error) {
     logErrorWithMessage(error);
     throw error;
   }
-
-  return backedupData;
-}
-
-export async function restoreUserData(jsonString: Json): Promise<true> {
-  try {
-    await submitRequestToBackground('restoreUserData', [jsonString]);
-  } catch (error) {
-    logErrorWithMessage(error);
-    throw error;
-  }
-
-  return true;
 }
 
 export function updateSlides(
@@ -2150,8 +2116,8 @@ export async function checkFirstTimeInteraction(request: {
   to: string;
   chainId: number;
 }): Promise<boolean | undefined> {
-  return submitRequestToBackground<boolean | undefined>(
-    'checkFirstTimeInteraction',
+  return submitRequestToBackground(
+    'LegacyBackgroundApiService:checkFirstTimeInteraction',
     [request],
   );
 }
@@ -3253,10 +3219,11 @@ export function addNft(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('addNft', [
+      await submitRequestToBackground('NftController:addNft', [
         address,
         tokenID,
         networkClientId,
+        { source: Source.Custom },
       ]);
     } catch (error) {
       logErrorWithMessage(error);
@@ -3287,10 +3254,11 @@ export function addNftVerifyOwnership(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('addNftVerifyOwnership', [
+      await submitRequestToBackground('NftController:addNftVerifyOwnership', [
         address,
         tokenID,
         networkClientId,
+        { source: Source.Custom },
       ]);
     } catch (error) {
       if (isErrorWithMessage(error)) {
@@ -3328,7 +3296,7 @@ export function removeAndIgnoreNft(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('removeAndIgnoreNft', [
+      await submitRequestToBackground('NftController:removeAndIgnoreNft', [
         address,
         tokenID,
         networkClientId,
@@ -3373,7 +3341,7 @@ export function removeNft(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('removeNft', [
+      await submitRequestToBackground('NftController:removeNft', [
         address,
         tokenID,
         networkClientId,
@@ -3390,9 +3358,10 @@ export function removeNft(
 export async function checkAndUpdateAllNftsOwnershipStatus(
   networkClientId: NetworkClientId,
 ) {
-  await submitRequestToBackground('checkAndUpdateAllNftsOwnershipStatus', [
-    networkClientId,
-  ]);
+  await submitRequestToBackground(
+    'NftController:checkAndUpdateAllNftsOwnershipStatus',
+    [networkClientId],
+  );
 }
 
 export async function isNftOwner(
@@ -3401,7 +3370,7 @@ export async function isNftOwner(
   nftId: string,
   networkClientId: NetworkClientId,
 ): Promise<boolean> {
-  return await submitRequestToBackground('isNftOwner', [
+  return await submitRequestToBackground('NftController:isNftOwner', [
     ownerAddress,
     nftAddress,
     nftId,
@@ -3413,10 +3382,10 @@ export async function checkAndUpdateSingleNftOwnershipStatus(
   nft: Nft,
   networkClientId: NetworkClientId,
 ) {
-  await submitRequestToBackground('checkAndUpdateSingleNftOwnershipStatus', [
-    nft,
-    networkClientId,
-  ]);
+  await submitRequestToBackground(
+    'NftController:checkAndUpdateSingleNftOwnershipStatus',
+    [nft, networkClientId],
+  );
 }
 
 // When we upgrade to TypeScript 4.5 this is part of the language. It will get
@@ -3730,7 +3699,10 @@ export function removeNetwork(
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
-      await submitRequestToBackground('removeNetwork', [chainId]);
+      await submitRequestToBackground(
+        'MultichainNetworkController:removeNetwork',
+        [chainId],
+      );
     } catch (error) {
       logErrorWithMessage(error);
     }
@@ -4522,8 +4494,8 @@ export function setParticipateInMetaMetrics(
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setParticipateInMetaMetrics`);
     try {
-      const metaMetricsId = await submitRequestToBackground<string>(
-        'setParticipateInMetaMetrics',
+      const metaMetricsId = await submitRequestToBackground(
+        'LegacyBackgroundApiService:setParticipateInMetaMetrics',
         [participationPreference],
       );
 
@@ -4540,22 +4512,32 @@ export function setParticipateInMetaMetrics(
   };
 }
 
-export function setDataCollectionForMarketing(
-  dataCollectionPreference: boolean,
-): ThunkAction<
-  Promise<[boolean, string]>,
+export function optInToMarketing(): ThunkAction<
+  Promise<void>,
   MetaMaskReduxState,
   unknown,
   AnyAction
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.setDataCollectionForMarketing`);
-    await submitRequestToBackground('setDataCollectionForMarketing', [
-      dataCollectionPreference,
-    ]);
+    await submitRequestToBackground('AnalyticsController:optInToMarketing');
     dispatch({
       type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
-      value: dataCollectionPreference,
+      value: true,
+    });
+  };
+}
+
+export function optOutOfMarketing(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('AnalyticsController:optOutOfMarketing');
+    dispatch({
+      type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
+      value: false,
     });
   };
 }
@@ -4762,21 +4744,6 @@ export function setUseCurrencyRateCheck(
   };
 }
 
-// TokenDetectionController
-export function detectTokens(
-  chainIds?: string[],
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.detectTokens`);
-    await submitRequestToBackground('TokenDetectionController:detectTokens', [
-      { chainIds },
-    ]);
-    dispatch(hideLoadingIndication());
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
 // TODO: with support of non EVM, check if possible to refactor this and get chainIds from the state in the fct instead of passing it as a param
 export function detectNfts(
   chainIds: string[],
@@ -4785,7 +4752,9 @@ export function detectNfts(
     dispatch(showNftStillFetchingIndication());
     log.debug(`background.detectNfts`);
     try {
-      await submitRequestToBackground('detectNfts', [chainIds]);
+      await submitRequestToBackground('NftDetectionController:detectNfts', [
+        chainIds,
+      ]);
     } finally {
       dispatch(hideNftStillFetchingIndication());
     }
@@ -5744,6 +5713,29 @@ export function setLastActiveTime(): ThunkAction<
   };
 }
 
+/**
+ * Forwards a trusted UI click or keypress to the background for state-write
+ * telemetry. Failures are ignored so activity tracking never breaks the UI.
+ *
+ * @returns A thunk that reports the interaction.
+ */
+export function recordUiInteraction(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      await withoutTraceContext(() =>
+        submitRequestToBackground('AppStateController:recordUiInteraction'),
+      );
+    } catch {
+      // Telemetry must not surface background failures in the UI.
+    }
+  };
+}
+
 export function setDismissSeedBackUpReminder(
   value: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -6146,71 +6138,6 @@ export async function removePollingTokenFromAppState(pollingToken: string) {
 }
 
 /**
- * Informs the CurrencyRateController that the UI requires currency rate polling
- *
- * @param nativeCurrencies - An array of native currency symbols
- * @returns polling token that can be used to stop polling
- */
-export async function currencyRateStartPolling(
-  nativeCurrencies: string[],
-): Promise<string> {
-  const pollingToken = await submitRequestToBackground(
-    'currencyRateStartPolling',
-    [{ nativeCurrencies }],
-  );
-  await addPollingTokenToAppState(pollingToken);
-  return pollingToken;
-}
-
-/**
- * Informs the CurrencyRateController that the UI no longer requires currency rate polling
- * for the given network client.
- * If all network clients unsubscribe, the controller stops polling.
- *
- * @param pollingToken - Poll token received from calling currencyRateStartPolling
- */
-export async function currencyRateStopPollingByPollingToken(
-  pollingToken: string,
-) {
-  await submitRequestToBackground('currencyRateStopPollingByPollingToken', [
-    pollingToken,
-  ]);
-  await removePollingTokenFromAppState(pollingToken);
-}
-
-/**
- * Informs the TokenDetectionController that the UI requires token detection polling
- *
- * @param chainIds - An array of chain ids to poll token detection on.
- * @returns polling token that can be used to stop polling.
- */
-export async function tokenDetectionStartPolling(
-  chainIds: string[],
-): Promise<string> {
-  const pollingToken = await submitRequestToBackground(
-    'tokenDetectionStartPolling',
-    [{ chainIds }],
-  );
-
-  await addPollingTokenToAppState(pollingToken);
-  return pollingToken;
-}
-
-/**
- * Informs the TokenDetectionController that the UI no longer token detection polling
- *
- * @param pollingToken - Poll token received from calling tokenDetectionStartPolling
- */
-export async function tokenDetectionStopPollingByPollingToken(
-  pollingToken: string,
-) {
-  await submitRequestToBackground('tokenDetectionStopPollingByPollingToken', [
-    pollingToken,
-  ]);
-  await removePollingTokenFromAppState(pollingToken);
-}
-
-/**
  * Informs the StaticAssetsController that the UI requires static assets polling
  * for the given chain ids and selected account address.
  *
@@ -6226,7 +6153,7 @@ export async function staticAssetsStartPolling(params: {
   selectedAccountId: string;
 }): Promise<string> {
   const pollingToken = await submitRequestToBackground(
-    'staticAssetsStartPolling',
+    'StaticAssetsController:startPolling',
     [params],
   );
   await addPollingTokenToAppState(pollingToken);
@@ -6236,42 +6163,10 @@ export async function staticAssetsStartPolling(params: {
 export async function staticAssetsStopPollingByPollingToken(
   pollingToken: string,
 ) {
-  await submitRequestToBackground('staticAssetsStopPollingByPollingToken', [
-    pollingToken,
-  ]);
-  await removePollingTokenFromAppState(pollingToken);
-}
-
-/**
- * Informs the TokenRatesController that the UI requires
- * token rate polling for the given chain id.
- *
- * @param chainIds - An array of chain ids to poll token rates on.
- * @returns polling token that can be used to stop polling
- */
-export async function tokenRatesStartPolling(
-  chainIds: string[],
-): Promise<string> {
-  const pollingToken = await submitRequestToBackground(
-    'tokenRatesStartPolling',
-    [{ chainIds }],
+  await submitRequestToBackground(
+    'StaticAssetsController:stopPollingByPollingToken',
+    [pollingToken],
   );
-  await addPollingTokenToAppState(pollingToken);
-  return pollingToken;
-}
-
-/**
- * Informs the TokenRatesController that the UI no longer
- * requires token rate polling for the given chain id.
- *
- * @param pollingToken -
- */
-export async function tokenRatesStopPollingByPollingToken(
-  pollingToken: string,
-) {
-  await submitRequestToBackground('tokenRatesStopPollingByPollingToken', [
-    pollingToken,
-  ]);
   await removePollingTokenFromAppState(pollingToken);
 }
 
@@ -6298,9 +6193,10 @@ export async function accountTrackerStopPollingByPollingToken(
 export async function gasFeeStartPollingByNetworkClientId(
   networkClientId: string,
 ) {
-  const pollingToken = await submitRequestToBackground('gasFeeStartPolling', [
-    { networkClientId },
-  ]);
+  const pollingToken = await submitRequestToBackground(
+    'GasFeeController:startPolling',
+    [{ networkClientId }],
+  );
   await addPollingTokenToAppState(pollingToken);
   return pollingToken;
 }
@@ -6313,9 +6209,10 @@ export async function gasFeeStartPollingByNetworkClientId(
  * @param pollingToken - Poll token received from calling gasFeeStartPolling
  */
 export async function gasFeeStopPollingByPollingToken(pollingToken: string) {
-  await submitRequestToBackground('gasFeeStopPollingByPollingToken', [
-    pollingToken,
-  ]);
+  await submitRequestToBackground(
+    'GasFeeController:stopPollingByPollingToken',
+    [pollingToken],
+  );
   await removePollingTokenFromAppState(pollingToken);
 }
 
@@ -6403,6 +6300,36 @@ export function trackAnalyticsEvent(
   return submitRequestToBackground('trackAnalyticsEvent', [payload, options]);
 }
 
+export async function trackErrorAsAnalytics(
+  error: unknown,
+  options: {
+    source: string;
+    volumeControls?: object;
+    excludeMetaMetricsId?: boolean;
+    environmentType?: string;
+  },
+  properties?: Record<string, unknown>,
+) {
+  const { excludeMetaMetricsId, environmentType, ...controllerOptions } =
+    options;
+  const controllerProperties: Record<string, unknown> = {
+    ...properties,
+    ...(excludeMetaMetricsId ? { anonymous: true } : {}),
+  };
+  if (environmentType) {
+    controllerProperties.environment_type = environmentType;
+  }
+
+  try {
+    await submitRequestToBackground(
+      'AnalyticsController:trackErrorAsAnalytics',
+      [getErrorMessage(error), controllerOptions, controllerProperties],
+    );
+  } catch {
+    // Swallow background RPC failures. Error reporting must not break UI.
+  }
+}
+
 export function upsertTransactionUIMetricsFragment(
   transactionId: string,
   payload: MetaMetricsEventFragmentPayload,
@@ -6431,13 +6358,13 @@ export function trackMetaMetricsPage(payload: MetaMetricsPagePayload) {
 }
 
 export function resetViewedNotifications() {
-  return submitRequestToBackground('resetViewedNotifications');
+  return submitRequestToBackground('AnnouncementController:resetViewed');
 }
 
 export function updateViewedNotifications(notificationIdViewedStatusMap: {
   [notificationId: string]: boolean;
 }) {
-  return submitRequestToBackground('updateViewedNotifications', [
+  return submitRequestToBackground('AnnouncementController:updateViewed', [
     notificationIdViewedStatusMap,
   ]);
 }
@@ -6875,22 +6802,6 @@ export function estimateRewardsPoints(
   };
 }
 
-export function validateRewardsReferralCode(
-  code: string,
-): ThunkAction<
-  Promise<{ valid: boolean; isVipCode: boolean }>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    return await submitRequestToBackground(
-      'RewardsController:validateReferralCode',
-      [code],
-    );
-  };
-}
-
 export function getRewardsGeoMetadata(): ThunkAction<
   Promise<RewardsGeoMetadata | null>,
   MetaMaskReduxState,
@@ -6906,10 +6817,8 @@ export function getRewardsGeoMetadata(): ThunkAction<
 
 export function rewardsOptIn({
   accounts,
-  referralCode,
 }: {
   accounts: InternalAccount[];
-  referralCode?: string;
 }): ThunkAction<
   Promise<string | null>,
   MetaMaskReduxState,
@@ -6919,7 +6828,6 @@ export function rewardsOptIn({
   return async () => {
     return await submitRequestToBackground('RewardsController:optIn', [
       accounts,
-      referralCode,
     ]);
   };
 }
@@ -7243,7 +7151,9 @@ export function requestProfilePairing(): ThunkAction<
 > {
   return async () => {
     try {
-      await submitRequestToBackground('requestProfilePairing');
+      await submitRequestToBackground(
+        'AuthenticationController:requestProfilePairing',
+      );
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -7316,7 +7226,7 @@ export async function getUserProfileLineage(): Promise<
 > {
   try {
     const userProfileLineage = await submitRequestToBackground(
-      'getUserProfileLineage',
+      'AuthenticationController:getUserProfileLineage',
     );
     return userProfileLineage;
   } catch (error) {
@@ -7808,6 +7718,20 @@ export function setMusdConversionEducationSeen(value: boolean) {
 }
 
 /**
+ * Persist that the Money account FTUE splash has been seen.
+ * Stored in AppStateController until uninstall.
+ *
+ * @param value
+ */
+export function setMoneyFtueSeen(value: boolean) {
+  return async () => {
+    await submitRequestToBackground('AppStateController:setMoneyFtueSeen', [
+      value,
+    ]);
+  };
+}
+
+/**
  * Persist that the user has seen (and dismissed) the Perps tab "New" badge.
  * Stored in AppStateController until uninstall.
  *
@@ -7966,6 +7890,27 @@ export async function getSentinelNetworkFlags(
  */
 export function setSkipDeepLinkInterstitial(value: boolean) {
   return setPreference('skipDeepLinkInterstitial', value, false);
+}
+
+/**
+ * Sets whether the support data sharing consent modal is shown every time,
+ * or the saved `supportDataSharingPreference` is applied instead.
+ *
+ * @param value - Whether to show the consent modal every time.
+ * @returns A promise that resolves when the preference is set.
+ */
+export function setShouldShowSupportConsent(value: boolean) {
+  return setPreference('shouldShowSupportConsent', value, false);
+}
+
+/**
+ * Saves the user's support data sharing choice.
+ *
+ * @param value - Whether to share the user ID and app version with support.
+ * @returns A promise that resolves when the preference is set.
+ */
+export function setSupportDataSharingPreference(value: boolean) {
+  return setPreference('supportDataSharingPreference', value, false);
 }
 
 /**

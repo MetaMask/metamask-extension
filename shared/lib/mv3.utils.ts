@@ -1,12 +1,17 @@
+// `chrome` exists on ordinary web pages, including Storybook, without
+// `chrome.runtime`. Optional calls avoid throwing while this module evaluates
+// and fall through to `browser.runtime`, then to ENABLE_MV3 below. Extension
+// pages still read the runtime manifest, so MV2 and MV3 builds are unchanged.
 const runtimeManifest =
-  global.chrome?.runtime.getManifest() || global.browser?.runtime.getManifest();
+  global.chrome?.runtime?.getManifest?.() ||
+  global.browser?.runtime?.getManifest?.();
 
 /**
  * A boolean indicating whether the manifest of the current extension is set to manifest version 3.
  *
- * If this function is running in the Extension, it will use the runtime manifest.
- * If this function is running in Node doing a build job, it will read process.env.ENABLE_MV3.
- * If this function is running in Node doing an E2E test, it will `fs.readFileSync` the manifest.json file.
+ * Extension pages use the runtime manifest. When `getManifest` is unavailable,
+ * this reads `process.env.ENABLE_MV3`. The build system inlines that as a
+ * boolean; in Node it can be a string. An unset value is treated as Manifest V3.
  */
 const isManifestV3: boolean = runtimeManifest
   ? runtimeManifest.manifest_version === 3

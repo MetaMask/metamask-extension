@@ -164,10 +164,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   CronjobController: {
     events: false,
   },
-  CurrencyController: {
-    currentCurrency: true,
-    currencyRates: true,
-  },
   DecryptMessageController: {
     unapprovedDecryptMsgs: false,
     unapprovedDecryptMsgCount: true,
@@ -191,6 +187,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     logs: false,
   },
   MoneyAccountController: {
+    defaultMoneyAccountId: false,
     moneyAccounts: false,
   },
   MoneyAccountUpgradeController: {
@@ -364,11 +361,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   SubjectMetadataController: {
     subjectMetadata: false,
   },
-  // TokenDetectionController has no public controller state.
-  TokenDetectionController: {},
-  TokenRatesController: {
-    marketData: false,
-  },
   TokensController: {
     allDetectedTokens: {
       [AllProperties]: false,
@@ -392,9 +384,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   TxController: {
     transactions: false,
     batchTransactionCounts: false,
-  },
-  UserOperationController: {
-    userOperations: false,
   },
   UserStorageController: {
     isBackupAndSyncEnabled: true,

@@ -4,8 +4,9 @@ import {
   BoxAlignItems,
   BoxBorderColor,
   BoxFlexDirection,
-  ButtonHero,
-  ButtonHeroSize,
+  Button,
+  ButtonSize,
+  ButtonVariant,
   FontWeight,
   Icon,
   IconName,
@@ -346,9 +347,10 @@ export const ReviewAndConfirmModal = ({
           />
         </ModalBody>
         <ModalFooter className="flex flex-col gap-2">
-          <ButtonHero
+          <Button
             isFullWidth
-            size={ButtonHeroSize.Lg}
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
             disabled={!isBatchSellTradeAvailable}
             isLoading={isSubmitting}
             onClick={submitBatchSellQuotes}
@@ -361,7 +363,7 @@ export const ReviewAndConfirmModal = ({
             >
               {submitLabel}
             </Text>
-          </ButtonHero>
+          </Button>
           <Text
             variant={TextVariant.BodyXs}
             color={TextColor.TextAlternative}

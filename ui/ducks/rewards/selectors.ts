@@ -10,9 +10,6 @@ import {
 export const selectRewardsModalOpen = (state: MetaMaskReduxState) =>
   state.rewards.rewardsModalOpen;
 
-export const selectOnboardingReferralCode = (state: MetaMaskReduxState) =>
-  state.rewards.onboardingReferralCode;
-
 export const selectOptinAllowedForGeo = (state: MetaMaskReduxState) =>
   state.rewards.optinAllowedForGeo;
 

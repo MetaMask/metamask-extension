@@ -288,6 +288,7 @@ describe('setup-initial-state-hooks', () => {
           sidePanelCount: 0,
           startupPhase: StartupPhase.Unknown,
         },
+        lastActivity: {},
         bytesByController: new Map([['FooController', 13]]),
         coalescedUpdates: 1,
         environmentType: 'unknown',
@@ -317,11 +318,15 @@ describe('setup-initial-state-hooks', () => {
         persistenceManagerModule.PersistenceManager;
       const [{ getIsIdle }] = persistenceManagerConstructor.mock.calls.at(
         -1,
-      ) as [{ getIsIdle: () => boolean | undefined }];
+      ) as [
+        {
+          getIsIdle: (currentActivity: object, lastActivity: object) => unknown;
+        },
+      ];
       // @ts-expect-error intentional missing hooks for regression coverage
       delete globalThis.stateHooks;
 
-      expect(getIsIdle()).toBeUndefined();
+      expect(getIsIdle({}, {})).toBeUndefined();
     });
 
     it('tracks write retry recovery events to Segment', async () => {
@@ -366,6 +371,15 @@ describe('setup-initial-state-hooks', () => {
   });
 
   describe('stateHooks', () => {
+    it('registers getIsIdle on globalThis.stateHooks', async () => {
+      setSelfHref('chrome-extension://abc123/home.html');
+      await importFresh();
+
+      expect(globalThis.stateHooks.getIsIdle).toBeDefined();
+      expect(typeof globalThis.stateHooks.getIsIdle).toBe('function');
+      expect(globalThis.stateHooks.getIsIdle?.({}, {})).toBe('unknown');
+    });
+
     it('registers getPersistedState on globalThis.stateHooks', async () => {
       setSelfHref('chrome-extension://abc123/home.html');
       await importFresh();

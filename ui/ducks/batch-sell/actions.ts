@@ -16,18 +16,6 @@ function getSmartTransactionsState(
   return state;
 }
 
-const callBridgeControllerMethod = <Action extends keyof BridgeController>(
-  bridgeAction: Action,
-  ...args: BridgeController[Action] extends (...a: infer A) => unknown
-    ? A
-    : never
-) => {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground(bridgeAction, args);
-    await forceUpdateMetamaskState(dispatch);
-  };
-};
-
 export const updateBatchSellTrades = (
   quotes: Parameters<BridgeController['updateBatchSellTrades']>[0],
   chain: string,
@@ -40,12 +28,10 @@ export const updateBatchSellTrades = (
     const isSmartTransaction = hexChainId
       ? getIsSmartTransaction(getSmartTransactionsState(getState()), hexChainId)
       : false;
-    await dispatch(
-      callBridgeControllerMethod(
-        'updateBatchSellTrades',
-        quotes,
-        isSmartTransaction,
-      ),
-    );
+    await submitRequestToBackground('BridgeController:updateBatchSellTrades', [
+      quotes,
+      isSmartTransaction,
+    ]);
+    await forceUpdateMetamaskState(dispatch);
   };
 };

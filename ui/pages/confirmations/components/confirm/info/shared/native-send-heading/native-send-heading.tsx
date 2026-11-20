@@ -3,6 +3,7 @@ import {
   AvatarToken,
   AvatarTokenSize,
   Box,
+  FontFamily,
   Text,
   TextColor,
   TextVariant,
@@ -90,15 +91,29 @@ const NativeSendHeading = () => {
   const NativeAssetAmount =
     roundedTransferValue === transferValue ? (
       <Box paddingBottom={1}>
-        <Text variant={TextVariant.HeadingLg} color={TextColor.Inherit}>
-          {`${roundedTransferValue} ${nativeCurrency}`}
+        <Text
+          asChild
+          variant={TextVariant.AmountDisplayLg}
+          fontFamily={FontFamily.Hero}
+          color={TextColor.Inherit}
+        >
+          <h2 data-testid="confirm-send-amount">
+            {`${roundedTransferValue} ${nativeCurrency}`}
+          </h2>
         </Text>
       </Box>
     ) : (
       <Tooltip title={transferValue} position="right">
         <Box paddingBottom={1}>
-          <Text variant={TextVariant.HeadingLg} color={TextColor.Inherit}>
-            {`${roundedTransferValue} ${nativeCurrency}`}
+          <Text
+            asChild
+            variant={TextVariant.AmountDisplayLg}
+            fontFamily={FontFamily.Hero}
+            color={TextColor.Inherit}
+          >
+            <h2 data-testid="confirm-send-amount">
+              {`${roundedTransferValue} ${nativeCurrency}`}
+            </h2>
           </Text>
         </Box>
       </Tooltip>

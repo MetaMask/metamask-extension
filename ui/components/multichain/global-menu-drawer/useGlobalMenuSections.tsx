@@ -34,6 +34,7 @@ import {
   setShowSupportDataConsentModal,
   toggleDefaultView,
 } from '../../../store/actions';
+import { useOpenSupport } from '../../app/modals/visit-support-data-consent-modal';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/lib/environment';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
@@ -165,8 +166,16 @@ export function useGlobalMenuSections(
     location.pathname,
   ]);
 
-  const handleSupportMenuClick = useCallback(() => {
+  const showSupportDataConsentModal = useCallback(() => {
     dispatch(setShowSupportDataConsentModal(true));
+  }, [dispatch]);
+  // Non-priority clicks are tracked by handleSupportMenuClick, so the hook must not track them again.
+  const openSupport = useOpenSupport(showSupportDataConsentModal, {
+    trackLinkClick: showPriorityTag,
+  });
+
+  const handleSupportMenuClick = useCallback(() => {
+    openSupport();
 
     if (showPriorityTag) {
       const shieldSubscription = getShieldSubscription(subscriptions);
@@ -198,7 +207,7 @@ export function useGlobalMenuSections(
     }
     onClose();
   }, [
-    dispatch,
+    openSupport,
     trackEvent,
     createEventBuilder,
     segmentContext.page?.title,

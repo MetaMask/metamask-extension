@@ -13,6 +13,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { HeroAmountInput } from '../../../../components/ui/hero-amount-input';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import RampsTokenSelectionHeader from '../../token-selection/components/ramps-token-selection-header';
 import RampsProviderSelectionModal from '../../provider-selection';
@@ -25,7 +26,7 @@ export default function RampsBuildQuoteView({
   pageSubtitle,
   currencySymbol,
   amount,
-  amountTextClassName,
+  hasAmountError,
   paymentMethodLabel,
   showPaymentMethodSpinner,
   displayedQuoteError,
@@ -64,31 +65,13 @@ export default function RampsBuildQuoteView({
           flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Center}
         >
-          <Box
-            className="flex items-baseline justify-center"
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
-          >
-            <span className={amountTextClassName}>{currencySymbol}</span>
-            {/* The hidden amount sets an exact cross-browser input width. */}
-            <span className="relative w-max min-w-[1ch]">
-              <span
-                aria-hidden="true"
-                className={`block invisible min-w-[1ch] whitespace-pre ${amountTextClassName}`}
-              >
-                {amount || '0'}
-              </span>
-              <input
-                aria-label={t('amount')}
-                className={`absolute inset-0 min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none ${amountTextClassName}`}
-                data-testid="ramps-build-quote-amount-input"
-                inputMode="decimal"
-                onChange={handleAmountChange}
-                type="text"
-                value={amount}
-              />
-            </span>
-          </Box>
+          <HeroAmountInput
+            prefix={currencySymbol}
+            value={amount}
+            onChange={handleAmountChange}
+            hasError={hasAmountError}
+            data-testid="ramps-build-quote-amount"
+          />
 
           {displayedQuoteError ? (
             <Box

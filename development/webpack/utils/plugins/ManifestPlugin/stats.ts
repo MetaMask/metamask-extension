@@ -22,6 +22,7 @@ export type BundleSizeSummary = {
   common: number;
   other?: number;
   contentScripts?: number;
+  unzipped?: number;
   zip?: number;
   timestamp: number;
 };
@@ -127,15 +128,18 @@ export function mapBundleParts<TResult>(
 export function createBundleSizeSummary(
   partSizes: Record<BundlePart, number>,
   {
+    unzipped,
     zip,
     timestamp,
   }: {
+    unzipped?: number;
     zip?: number;
     timestamp: number;
   },
 ): BundleSizeSummary {
   return {
     ...mapBundleParts((part) => partSizes[part]),
+    unzipped,
     zip,
     timestamp,
   };

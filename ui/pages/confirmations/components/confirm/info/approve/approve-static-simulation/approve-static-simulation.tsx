@@ -1,6 +1,7 @@
 import { NameType } from '@metamask/name-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
+import { resolveApprovalTokenContractAddress } from '../../../../../../../../shared/lib/transaction.utils';
 import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row';
 import Name from '../../../../../../../components/app/name';
 import {
@@ -38,8 +39,10 @@ export const ApproveStaticSimulation = ({
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
+  const tokenAddress = resolveApprovalTokenContractAddress(transactionMeta);
+
   const { decimals } = useAssetDetails(
-    transactionMeta?.txParams?.to,
+    tokenAddress,
     transactionMeta?.txParams?.from,
     transactionMeta?.txParams?.data,
     transactionMeta?.chainId,
@@ -107,7 +110,7 @@ export const ApproveStaticSimulation = ({
             )}
           </Box>
           <Name
-            value={transactionMeta.txParams.to as string}
+            value={tokenAddress as string}
             type={NameType.ETHEREUM_ADDRESS}
             preferContractSymbol
             variation={chainId}

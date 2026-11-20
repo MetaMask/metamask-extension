@@ -8,8 +8,12 @@ import { RewardsVipBadge } from './RewardsVipBadge';
 
 const mockGetVipTierForAccount = jest.fn();
 setBackgroundConnection({
-  rewardsGetVipTierForAccount: async (...args: unknown[]) =>
-    mockGetVipTierForAccount(...args),
+  messengerCall: async (action: string, args: unknown[]) => {
+    if (action !== 'RewardsController:getVipTierForAccount') {
+      throw new Error(`Unexpected messenger action: ${action}`);
+    }
+    return mockGetVipTierForAccount(...args);
+  },
 } as never);
 
 const vipEnabledStore = () => {

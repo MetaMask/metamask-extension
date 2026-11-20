@@ -31,6 +31,7 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAccountCell } from '../multichain-account-cell';
+import type { MultichainAccountCellProps } from '../multichain-account-cell/multichain-account-cell';
 import {
   AccountTreeWallets,
   MultichainAccountsState,
@@ -103,6 +104,17 @@ export type MultichainAccountListProps = {
    * @default false
    */
   isEditMode?: boolean;
+  /**
+   * Whether selecting an account with the default click handler navigates away
+   * from the list. Set to false when embedded in a persistent surface such as a
+   * side navigation. Ignored when a custom `handleAccountClick` is provided.
+   * @default true
+   */
+  shouldNavigateOnSelect?: boolean;
+  /**
+   * Cell component rendered per account. Defaults to {@link MultichainAccountCell}.
+   */
+  accountCellComponent?: React.ComponentType<MultichainAccountCellProps>;
 };
 
 type WalletData = AccountTreeWallets[AccountWalletId];
@@ -204,6 +216,8 @@ export const MultichainAccountList = ({
   showConnectionStatus = false,
   showDefaultAddress = false,
   isEditMode = false,
+  shouldNavigateOnSelect = true,
+  accountCellComponent: AccountCell = MultichainAccountCell,
 }: MultichainAccountListProps) => {
   const showAccountMenu = !showAccountCheckbox && !isEditMode;
 
@@ -445,6 +459,9 @@ export const MultichainAccountList = ({
 
       startTransition(() => {
         dispatch(setSelectedMultichainAccount(accountGroupId));
+        if (!shouldNavigateOnSelect) {
+          return;
+        }
         if (isFreshTab) {
           navigate(DEFAULT_ROUTE, { replace: true });
         } else {
@@ -461,6 +478,7 @@ export const MultichainAccountList = ({
       location.key,
       location.state,
       navigate,
+      shouldNavigateOnSelect,
       startTransition,
     ],
   );
@@ -538,7 +556,7 @@ export const MultichainAccountList = ({
 
       return (
         <Box className="multichain-account-menu-popover__list--menu-item">
-          <MultichainAccountCell
+          <AccountCell
             accountId={groupId as AccountGroupId}
             accountName={groupData.metadata.name}
             accountNameString={groupData.metadata.name}
@@ -631,6 +649,7 @@ export const MultichainAccountList = ({
       internalAccountsById,
       visibilityOverrides,
       handleVisibilityToggle,
+      AccountCell,
     ],
   );
 

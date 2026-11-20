@@ -61,6 +61,30 @@ export function getFailoverUrlsForChainId(chainId: Hex): string[] {
 }
 
 /**
+ * Returns the failover URLs that apply to an RPC endpoint.
+ *
+ * Failover only applies to Infura endpoints: NetworkController wires failover
+ * URLs solely for Infura endpoints, because applying them to custom RPCs would
+ * leak requests to the failover. The URLs come from the chain ID keyed map the
+ * NetworkController is initialized with.
+ *
+ * @param chainId - The chain ID of the endpoint's network.
+ * @param endpointUrl - The URL of the RPC endpoint.
+ * @returns The failover URLs, empty when none apply.
+ */
+export function getFailoverUrlsForEndpoint(
+  chainId: Hex,
+  endpointUrl?: string,
+): string[] {
+  if (!endpointUrl) {
+    return [];
+  }
+  return new URL(endpointUrl).hostname.endsWith('.infura.io')
+    ? getFailoverUrlsForChainId(chainId)
+    : [];
+}
+
+/**
  * Returns whether the given endpoint URL is one of the known QuickNode failover
  * URLs.
  *

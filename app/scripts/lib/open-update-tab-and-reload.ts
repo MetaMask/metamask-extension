@@ -15,7 +15,7 @@ export async function openUpdateTabAndReload(
 ) {
   try {
     await browser.tabs.create({
-      url: 'https://metamask.io/updating',
+      url: 'https://metamask.com/updating',
       active: true,
     });
   } catch (error) {

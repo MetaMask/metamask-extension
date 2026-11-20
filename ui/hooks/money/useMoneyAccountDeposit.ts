@@ -5,6 +5,12 @@ import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { parse as uuidParse, v4 as uuidv4 } from 'uuid';
 import {
+  openMoneyFtue,
+  selectHasSeenMoneyFtue,
+  type MoneyFtueOrigin,
+} from '../../ducks/money-ftue';
+import { MoneyFtueEntryPoint } from '../../pages/money/constants/money-events';
+import {
   selectMoneyFundingAccount,
   type MoneyFundingAccountState,
 } from '../../selectors/money/money-funding-account';
@@ -20,6 +26,7 @@ import {
 import type { SetPayTokenRequest } from '../../pages/confirmations/hooks/pay/types';
 import { selectIsPayHardwareEnabled } from '../../pages/confirmations/selectors/feature-flags';
 import { createMoneyAccountDepositTransaction } from '../../store/controller-actions/transaction-pay-controller';
+import { useDispatch } from '../../store/hooks';
 import { useMoneyErrorReporter } from './useMoneyErrorReporter';
 
 export type InitiateDepositOptions = {
@@ -33,6 +40,27 @@ export type InitiateDepositOptions = {
    * Token to pre-select as the source of funds.
    */
   preferredPaymentToken?: SetPayTokenRequest;
+  /**
+   * Internal: set only by the Money FTUE splash after the user has
+   * acknowledged it, so continuing the pending deposit does not re-open the
+   * splash.
+   */
+  skipFtue?: boolean;
+  /**
+   * Where the user came from, used only when this deposit opens the splash.
+   */
+  ftueOrigin?: MoneyFtueOrigin;
+  /**
+   * Replace the current page with the confirmation instead of pushing it,
+   * for entry points that should not be returned to (e.g. the deeplink
+   * bridge).
+   */
+  replaceConfirmation?: boolean;
+  /**
+   * Route to show when the confirmation closes. Defaults to the current
+   * location.
+   */
+  goBackTo?: string;
 };
 
 const DEPOSIT_FAILED_TOAST_COPY = {
@@ -92,13 +120,13 @@ let isDepositInitiationInFlight = false;
  * the confirmation defaults the From row — and quotes — to that account instead of
  * the money account that executes the batch.
  *
- * The current location is passed as `goBackTo` so closing the confirmation
- * returns the user to the surface they started from (e.g. the Money home)
- * rather than the global wallet home.
+ * The current location is passed as `goBackTo` (unless overridden) so
+ * closing the confirmation returns the user to the surface they started from
+ * (e.g. the Money home) rather than the global wallet home.
  *
  * Setup failures are reported to Sentry and shown as a toast inside this
  * hook, matching mobile. The promise resolves after that so callers do not
- * each need a `.catch`. There is no navigation to roll back on failure
+ * each need a `.catch`; it resolves to whether the confirmation was opened. There is no navigation to roll back on failure
  * (the extension navigates after creation) and no user-rejection path at
  * initiation (rejection happens later, inside the confirmation).
  *
@@ -107,6 +135,8 @@ let isDepositInitiationInFlight = false;
 export function useMoneyAccountDeposit() {
   const { navigateToTransaction } = useConfirmationNavigation();
   const location = useLocation();
+  const dispatch = useDispatch();
+  const hasSeenFtue = useSelector(selectHasSeenMoneyFtue);
   const isHardwareFundingEnabled = useSelector((state) =>
     selectIsPayHardwareEnabled(state, TransactionType.moneyAccountDeposit),
   );
@@ -117,9 +147,23 @@ export function useMoneyAccountDeposit() {
   const [isLoading, setIsLoading] = useState(false);
 
   const initiateDeposit = useCallback(
-    async (options?: InitiateDepositOptions) => {
+    async (options?: InitiateDepositOptions): Promise<boolean> => {
       if (isDepositInitiationInFlight) {
-        return;
+        return false;
+      }
+
+      if (!hasSeenFtue && !options?.skipFtue) {
+        dispatch(
+          openMoneyFtue({
+            source: 'deposit',
+            origin: options?.ftueOrigin ?? {
+              entryPoint: MoneyFtueEntryPoint.Unknown,
+            },
+            preferredPaymentToken: options?.preferredPaymentToken,
+            intent: options?.intent,
+          }),
+        );
+        return false;
       }
 
       const batchId = bytesToHex(new Uint8Array(uuidParse(uuidv4())));
@@ -144,9 +188,11 @@ export function useMoneyAccountDeposit() {
 
         navigateToTransaction(transactionId, {
           loader: ConfirmationLoader.CustomAmount,
-          goBackTo: location.pathname + location.search,
+          goBackTo: options?.goBackTo ?? location.pathname + location.search,
           preferredPaymentToken: options?.preferredPaymentToken,
+          replace: options?.replaceConfirmation,
         });
+        return true;
       } catch (error) {
         clearMoneyAccountDepositIntent(batchId);
         const toastCopy = getDepositFailedToastCopy(options?.intent);
@@ -160,13 +206,16 @@ export function useMoneyAccountDeposit() {
             ...(options?.intent ? { intent: options.intent } : {}),
           },
         });
+        return false;
       } finally {
         isDepositInitiationInFlight = false;
         setIsLoading(false);
       }
     },
     [
+      dispatch,
       fundingAccount,
+      hasSeenFtue,
       location.pathname,
       location.search,
       navigateToTransaction,
