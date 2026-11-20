@@ -2,6 +2,7 @@ import {
   SentinelApiService,
   type SentinelApiServiceMessenger,
 } from '@metamask/sentinel-api-service';
+import { traceAsControllerCallback } from '../../../shared/lib/trace';
 import { setSentinelApiMessenger } from '../lib/transaction/sentinel-api';
 import type { MessengerClientInitFunction } from './types';
 
@@ -21,6 +22,7 @@ export const SentinelApiServiceInit: MessengerClientInitFunction<
     fetch: fetch.bind(globalThis),
     clientId: 'extension',
     clientVersion: process.env.METAMASK_VERSION,
+    trace: traceAsControllerCallback,
   });
 
   // Legacy Sentinel utils query the service via its messenger.
