@@ -152,6 +152,7 @@ export const unrestrictedMethods = Object.freeze([
   'eth_uninstallFilter',
   'eth_unsubscribe',
   'metamask_getProviderState',
+  'metamask_getStateLogs',
   'metamask_logWeb3ShimUsage',
   'metamask_sendDomainMetadata',
   'metamask_watchAsset',
