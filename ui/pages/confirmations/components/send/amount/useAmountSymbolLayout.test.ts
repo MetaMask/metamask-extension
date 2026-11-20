@@ -1,8 +1,4 @@
-import {
-  getSymbolLayout,
-  SYMBOL_GAP_PX,
-  SYMBOL_RIGHT_INSET_PX,
-} from './symbol-layout';
+import { getSymbolLayout } from './useAmountSymbolLayout';
 
 describe('getSymbolLayout', () => {
   it('places the symbol one gap after the typed amount', () => {
@@ -15,7 +11,7 @@ describe('getSymbolLayout', () => {
         textStart: 16,
         textWidth: 40,
       }),
-    ).toStrictEqual({ left: 16 + 40 + SYMBOL_GAP_PX, paddingRight: 0 });
+    ).toStrictEqual({ left: 64, paddingRight: 0 });
   });
 
   it('pins the symbol to the field inset when the amount would run under it', () => {
@@ -28,9 +24,6 @@ describe('getSymbolLayout', () => {
         textStart: 16,
         textWidth: 400,
       }),
-    ).toStrictEqual({
-      left: 300 - 28 - SYMBOL_RIGHT_INSET_PX,
-      paddingRight: 52,
-    });
+    ).toStrictEqual({ left: 256, paddingRight: 52 });
   });
 });

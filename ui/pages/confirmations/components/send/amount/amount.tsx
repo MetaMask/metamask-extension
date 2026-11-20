@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { ERC721, ERC1155 } from '@metamask/controller-utils';
 
 import {
@@ -40,7 +34,7 @@ import {
   getFractionLength,
   isValidPositiveNumericString,
 } from '../../../utils/send';
-import { getSymbolLayout, SYMBOL_RIGHT_INSET_PX } from './symbol-layout';
+import { useAmountSymbolLayout } from './useAmountSymbolLayout';
 
 export const Amount = ({
   amountError,
@@ -161,70 +155,9 @@ export const Amount = ({
   ]);
 
   const symbol = fiatMode ? fiatCurrencyName?.toUpperCase() : asset?.symbol;
-  const fieldRef = useRef<HTMLDivElement | null>(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const measureRef = useRef<HTMLSpanElement | null>(null);
-  const symbolRef = useRef<HTMLElement | null>(null);
-  const [symbolLayout, setSymbolLayout] = useState<SymbolLayout>({
-    left: SYMBOL_RIGHT_INSET_PX,
-    paddingRight: 0,
-  });
-
-  useLayoutEffect(() => {
-    const field = fieldRef.current;
-    const input = inputRef.current;
-    const measure = measureRef.current;
-    const symbolElement = symbolRef.current;
-    if (!field || !input || !measure || !symbolElement) {
-      return undefined;
-    }
-
-    const update = () => {
-      const inputStyle = window.getComputedStyle(input);
-      measure.style.font = inputStyle.font;
-      measure.style.letterSpacing = inputStyle.letterSpacing;
-      measure.style.fontVariantNumeric = inputStyle.fontVariantNumeric;
-      measure.style.fontFeatureSettings = inputStyle.fontFeatureSettings;
-
-      const fieldRect = field.getBoundingClientRect();
-      const inputRect = input.getBoundingClientRect();
-      const paddingLeft = Number.parseFloat(inputStyle.paddingLeft) || 0;
-      const { left, paddingRight } = getSymbolLayout({
-        fieldLeft: fieldRect.left,
-        fieldWidth: fieldRect.width,
-        inputRight: inputRect.right,
-        symbolWidth: symbolElement.getBoundingClientRect().width,
-        textStart: inputRect.left - fieldRect.left + paddingLeft,
-        textWidth: measure.getBoundingClientRect().width,
-      });
-
-      setSymbolLayout((current) =>
-        current.left === left && current.paddingRight === paddingRight
-          ? current
-          : { left, paddingRight },
-      );
-    };
-
-    update();
-
-    const observer =
-      typeof ResizeObserver === 'undefined'
-        ? undefined
-        : new ResizeObserver(update);
-    observer?.observe(field);
-
-    let cancelled = false;
-    void document.fonts?.ready.then(() => {
-      if (!cancelled) {
-        update();
-      }
-    });
-
-    return () => {
-      cancelled = true;
-      observer?.disconnect();
-    };
-  }, [amount, symbol]);
+  const { fieldRef, inputRef, measureRef, symbolLayout, symbolRef } =
+    useAmountSymbolLayout(amount, symbol);
+  const showFiatToggle = conversionSupportedForAsset && !amountError;
 
   if (asset?.standard === ERC721) {
     return null;
@@ -235,23 +168,15 @@ export const Amount = ({
       <Text variant={TextVariant.bodyMd} paddingBottom={1}>
         {t('amount')}
       </Text>
-      <Box
-        ref={fieldRef}
-        style={{ position: 'relative' }}
-        width={BlockSize.Full}
-      >
-        <span
+      <Box className="relative" ref={fieldRef} width={BlockSize.Full}>
+        <Box
           aria-hidden="true"
+          as="span"
+          className="pointer-events-none invisible absolute whitespace-pre"
           ref={measureRef}
-          style={{
-            position: 'absolute',
-            visibility: 'hidden',
-            whiteSpace: 'pre',
-            pointerEvents: 'none',
-          }}
         >
           {amount || '0'}
-        </span>
+        </Box>
         <TextField
           error={Boolean(amountError)}
           inputProps={
@@ -277,17 +202,10 @@ export const Amount = ({
         {symbol ? (
           <Text
             as="span"
+            className="pointer-events-none absolute top-1/2 -translate-y-1/2 whitespace-nowrap"
             data-testid="send-amount-symbol"
             ref={symbolRef}
-            style={{
-              position: 'absolute',
-              left: symbolLayout.left,
-              top: '50%',
-              margin: 0,
-              transform: 'translateY(-50%)',
-              pointerEvents: 'none',
-              whiteSpace: 'nowrap',
-            }}
+            style={{ left: symbolLayout.left }}
           >
             {symbol}
           </Text>
@@ -317,7 +235,7 @@ export const Amount = ({
             {amountError ||
               (conversionSupportedForAsset ? alternateDisplayValue : '')}
           </Text>
-          {conversionSupportedForAsset && !amountError && (
+          {showFiatToggle && (
             <ButtonIcon
               aria-pressed={fiatMode}
               ariaLabel="toggle fiat mode"
