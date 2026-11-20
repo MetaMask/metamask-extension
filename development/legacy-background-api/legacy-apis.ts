@@ -88,6 +88,7 @@ export const LEGACY_APIS = {
 export function readApiMemberNames(): Record<LegacyApiName, Set<string>> {
   const context = {
     sourceFilesByPath: new Map<string, ts.SourceFile>(),
+    nodesBeingResolved: new Set<ts.Node>(),
   } satisfies ResolutionContext;
   const legacyBackgroundApiServiceSourceFile = getOrLoadSourceFile(
     context,

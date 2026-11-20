@@ -299,6 +299,7 @@ function parseSource(source: string) {
   );
   const context = {
     sourceFilesByPath: new Map<string, ts.SourceFile>(),
+    nodesBeingResolved: new Set<ts.Node>(),
   } satisfies ResolutionContext;
 
   return { sourceFile, context };

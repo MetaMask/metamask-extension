@@ -405,6 +405,19 @@ describe('getControllerConnectionApiMemberNames', () => {
         getControllerConnectionApiMemberNames(sourceFile, context),
       ).toThrow('Cannot determine which object this expression produces');
     });
+
+    it('rejects spreads that refer to each other', () => {
+      const { sourceFile, context } = parseSource(`
+        const firstApi = { ...secondApi };
+        const secondApi = { ...firstApi };
+        class MetamaskController {
+          setupControllerConnection() { const api = { ...firstApi }; }
+        }`);
+
+      expect(() =>
+        getControllerConnectionApiMemberNames(sourceFile, context),
+      ).toThrow('This expression refers back to itself');
+    });
   });
 
   describe('spreads of call results', () => {
@@ -545,6 +558,48 @@ describe('getControllerConnectionApiMemberNames', () => {
       expect(() =>
         getControllerConnectionApiMemberNames(sourceFile, context),
       ).toThrow('Cannot find an implementation of "createApi"');
+    });
+
+    it('rejects a recursive helper', () => {
+      const { sourceFile, context } = parseSource(`
+        function createApi(depth) {
+          return depth > 0 ? createApi(depth - 1) : { exposed() {} };
+        }
+        class MetamaskController {
+          setupControllerConnection() { const api = { ...createApi(2) }; }
+        }`);
+
+      expect(() =>
+        getControllerConnectionApiMemberNames(sourceFile, context),
+      ).toThrow('This expression refers back to itself');
+    });
+
+    it('rejects functions that refer to each other', () => {
+      const { sourceFile, context } = parseSource(`
+        const createFirstApi = createSecondApi;
+        const createSecondApi = createFirstApi;
+        class MetamaskController {
+          setupControllerConnection() { const api = { ...createFirstApi() }; }
+        }`);
+
+      expect(() =>
+        getControllerConnectionApiMemberNames(sourceFile, context),
+      ).toThrow('This expression refers back to itself');
+    });
+
+    it('rejects receivers that refer to each other', () => {
+      const { sourceFile, context } = parseSource(`
+        const firstBridge = secondBridge;
+        const secondBridge = firstBridge;
+        class MetamaskController {
+          setupControllerConnection() {
+            const api = { ...firstBridge.bridgeApi() };
+          }
+        }`);
+
+      expect(() =>
+        getControllerConnectionApiMemberNames(sourceFile, context),
+      ).toThrow('This expression refers back to itself');
     });
 
     it('follows a call to a method on an instance', () => {
@@ -742,6 +797,7 @@ describe('getControllerConnectionApiMemberNames', () => {
 function parseSource(source: string) {
   const context = {
     sourceFilesByPath: new Map<string, ts.SourceFile>(),
+    nodesBeingResolved: new Set<ts.Node>(),
   } satisfies ResolutionContext;
   const sourceFile = addSource(context, 'controller.ts', source);
 

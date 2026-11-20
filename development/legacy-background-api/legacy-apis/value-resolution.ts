@@ -121,52 +121,54 @@ export function resolveObjectLiterals(
 ): ts.ObjectLiteralExpression[] {
   const normalizedExpression = unwrapExpression(expression);
 
-  // EXAMPLE:
-  //   { setTheme: preferencesController.setTheme.bind(preferencesController) }
-  //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  if (ts.isObjectLiteralExpression(normalizedExpression)) {
-    return [normalizedExpression];
-  }
+  return guardingAgainstCycles(normalizedExpression, context, () => {
+    // EXAMPLE:
+    //   { setTheme: preferencesController.setTheme.bind(preferencesController) }
+    //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    if (ts.isObjectLiteralExpression(normalizedExpression)) {
+      return [normalizedExpression];
+    }
 
-  // EXAMPLES:
-  //   null
-  //   undefined
-  if (isNullishExpression(normalizedExpression)) {
-    return [];
-  }
+    // EXAMPLES:
+    //   null
+    //   undefined
+    if (isNullishExpression(normalizedExpression)) {
+      return [];
+    }
 
-  // EXAMPLE:
-  //   perpsStream ? perpsStream.bridgeApi() : {}
-  //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  if (ts.isConditionalExpression(normalizedExpression)) {
-    return [
-      ...resolveObjectLiterals(normalizedExpression.whenTrue, context),
-      ...resolveObjectLiterals(normalizedExpression.whenFalse, context),
-    ];
-  }
+    // EXAMPLE:
+    //   perpsStream ? perpsStream.bridgeApi() : {}
+    //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    if (ts.isConditionalExpression(normalizedExpression)) {
+      return [
+        ...resolveObjectLiterals(normalizedExpression.whenTrue, context),
+        ...resolveObjectLiterals(normalizedExpression.whenFalse, context),
+      ];
+    }
 
-  // EXAMPLE:
-  //   getTransactionControllerApi(this.txController)
-  //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  if (ts.isCallExpression(normalizedExpression)) {
-    return resolveCallResults(normalizedExpression, context).flatMap((result) =>
-      resolveObjectLiterals(result, context),
+    // EXAMPLE:
+    //   getTransactionControllerApi(this.txController)
+    //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    if (ts.isCallExpression(normalizedExpression)) {
+      return resolveCallResults(normalizedExpression, context).flatMap(
+        (result) => resolveObjectLiterals(result, context),
+      );
+    }
+
+    // EXAMPLE:
+    //   sharedApi
+    //   ^^^^^^^^^
+    if (ts.isIdentifier(normalizedExpression)) {
+      return resolveIdentifierValues(normalizedExpression, context).flatMap(
+        (value) => resolveObjectLiterals(value, context),
+      );
+    }
+
+    throw new UnresolvableExpressionError(
+      normalizedExpression,
+      'Cannot determine which object this expression produces',
     );
-  }
-
-  // EXAMPLE:
-  //   sharedApi
-  //   ^^^^^^^^^
-  if (ts.isIdentifier(normalizedExpression)) {
-    return resolveIdentifierValues(normalizedExpression, context).flatMap(
-      (value) => resolveObjectLiterals(value, context),
-    );
-  }
-
-  throw new UnresolvableExpressionError(
-    normalizedExpression,
-    'Cannot determine which object this expression produces',
-  );
+  });
 }
 
 /**
@@ -202,62 +204,64 @@ export function resolveFunctions(
 ): FunctionWithBody[] {
   const normalizedExpression = unwrapExpression(expression);
 
-  // EXAMPLE:
-  //   () => ({ startSendingPatches })
-  //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  if (isInlineFunctionWithBody(normalizedExpression)) {
-    return [normalizedExpression];
-  }
-
-  // EXAMPLE:
-  //   perpsStream.bridgeApi
-  //   ^^^^^^^^^^^^^^^^^^^^^ (as in `perpsStream.bridgeApi()`)
-  if (ts.isPropertyAccessExpression(normalizedExpression)) {
-    return resolveMethods(normalizedExpression, context);
-  }
-
-  // EXAMPLE:
-  //   getTransactionControllerApi
-  //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^ (as in `getTransactionControllerApi(...)`)
-  if (ts.isIdentifier(normalizedExpression)) {
-    const declarations = resolveGuaranteedDeclarations(
-      normalizedExpression,
-      context,
-    );
-    const functions = declarations.flatMap((declaration) => {
-      // EXAMPLE:
-      //   function getTransactionControllerApi(transactionController) { ... }
-      //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-      if (ts.isFunctionDeclaration(declaration)) {
-        // An overload signature is still a function declaration, but skip it
-        // since it doesn't have a body.
-        // EXAMPLE:
-        //   function getTransactionControllerApi(): Api;
-        //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        return declaration.body ? [declaration] : [];
-      }
-
-      // EXAMPLE:
-      //   const PerpsControllerInit = (request) => { ... };
-      //         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-      return resolveDeclarationValues(declaration, context).flatMap((value) =>
-        resolveFunctions(value, context),
-      );
-    });
-
-    if (functions.length === 0) {
-      throw new UnresolvableExpressionError(
-        normalizedExpression,
-        `Cannot find an implementation of "${normalizedExpression.text}"`,
-      );
+  return guardingAgainstCycles(normalizedExpression, context, () => {
+    // EXAMPLE:
+    //   () => ({ startSendingPatches })
+    //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    if (isInlineFunctionWithBody(normalizedExpression)) {
+      return [normalizedExpression];
     }
-    return functions;
-  }
 
-  throw new UnresolvableExpressionError(
-    normalizedExpression,
-    'Cannot determine which function this expression refers to',
-  );
+    // EXAMPLE:
+    //   perpsStream.bridgeApi
+    //   ^^^^^^^^^^^^^^^^^^^^^ (as in `perpsStream.bridgeApi()`)
+    if (ts.isPropertyAccessExpression(normalizedExpression)) {
+      return resolveMethods(normalizedExpression, context);
+    }
+
+    // EXAMPLE:
+    //   getTransactionControllerApi
+    //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^ (as in `getTransactionControllerApi(...)`)
+    if (ts.isIdentifier(normalizedExpression)) {
+      const declarations = resolveGuaranteedDeclarations(
+        normalizedExpression,
+        context,
+      );
+      const functions = declarations.flatMap((declaration) => {
+        // EXAMPLE:
+        //   function getTransactionControllerApi(transactionController) { ... }
+        //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        if (ts.isFunctionDeclaration(declaration)) {
+          // An overload signature is still a function declaration, but skip it
+          // since it doesn't have a body.
+          // EXAMPLE:
+          //   function getTransactionControllerApi(): Api;
+          //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          return declaration.body ? [declaration] : [];
+        }
+
+        // EXAMPLE:
+        //   const PerpsControllerInit = (request) => { ... };
+        //         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        return resolveDeclarationValues(declaration, context).flatMap((value) =>
+          resolveFunctions(value, context),
+        );
+      });
+
+      if (functions.length === 0) {
+        throw new UnresolvableExpressionError(
+          normalizedExpression,
+          `Cannot find an implementation of "${normalizedExpression.text}"`,
+        );
+      }
+      return functions;
+    }
+
+    throw new UnresolvableExpressionError(
+      normalizedExpression,
+      'Cannot determine which function this expression refers to',
+    );
+  });
 }
 
 /**
@@ -337,58 +341,61 @@ function resolveReceiverClasses(
 ): ts.ClassDeclaration[] {
   const normalizedExpression = unwrapExpression(expression);
 
-  // EXAMPLE:
-  //   this.getApi()
-  //   ^^^^
-  if (normalizedExpression.kind === ts.SyntaxKind.ThisKeyword) {
-    const classDeclaration = getEnclosingClassDeclaration(normalizedExpression);
-    if (!classDeclaration) {
-      throw new UnresolvableExpressionError(
-        normalizedExpression,
-        'Cannot find the class that `this` refers to',
+  return guardingAgainstCycles(normalizedExpression, context, () => {
+    // EXAMPLE:
+    //   this.getApi()
+    //   ^^^^
+    if (normalizedExpression.kind === ts.SyntaxKind.ThisKeyword) {
+      const classDeclaration =
+        getEnclosingClassDeclaration(normalizedExpression);
+      if (!classDeclaration) {
+        throw new UnresolvableExpressionError(
+          normalizedExpression,
+          'Cannot find the class that `this` refers to',
+        );
+      }
+      return [classDeclaration];
+    }
+
+    // EXAMPLES:
+    //   null
+    //   undefined
+    if (isNullishExpression(normalizedExpression)) {
+      return [];
+    }
+
+    // EXAMPLE:
+    //   new PerpsStreamBridge(options)
+    //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ new expression
+    //       ^^^^^^^^^^^^^^^^^ identifier naming the class
+    if (ts.isNewExpression(normalizedExpression)) {
+      return resolveConstructedClasses(normalizedExpression, context);
+    }
+
+    // EXAMPLE:
+    //   perpsController ? new PerpsStreamBridge(options) : null
+    //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    if (ts.isConditionalExpression(normalizedExpression)) {
+      return [
+        ...resolveReceiverClasses(normalizedExpression.whenTrue, context),
+        ...resolveReceiverClasses(normalizedExpression.whenFalse, context),
+      ];
+    }
+
+    // EXAMPLE:
+    //   perpsStream
+    //   ^^^^^^^^^^^
+    if (ts.isIdentifier(normalizedExpression)) {
+      return resolveIdentifierValues(normalizedExpression, context).flatMap(
+        (value) => resolveReceiverClasses(value, context),
       );
     }
-    return [classDeclaration];
-  }
 
-  // EXAMPLES:
-  //   null
-  //   undefined
-  if (isNullishExpression(normalizedExpression)) {
-    return [];
-  }
-
-  // EXAMPLE:
-  //   new PerpsStreamBridge(options)
-  //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ new expression
-  //       ^^^^^^^^^^^^^^^^^ identifier naming the class
-  if (ts.isNewExpression(normalizedExpression)) {
-    return resolveConstructedClasses(normalizedExpression, context);
-  }
-
-  // EXAMPLE:
-  //   perpsController ? new PerpsStreamBridge(options) : null
-  //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  if (ts.isConditionalExpression(normalizedExpression)) {
-    return [
-      ...resolveReceiverClasses(normalizedExpression.whenTrue, context),
-      ...resolveReceiverClasses(normalizedExpression.whenFalse, context),
-    ];
-  }
-
-  // EXAMPLE:
-  //   perpsStream
-  //   ^^^^^^^^^^^
-  if (ts.isIdentifier(normalizedExpression)) {
-    return resolveIdentifierValues(normalizedExpression, context).flatMap(
-      (value) => resolveReceiverClasses(value, context),
+    throw new UnresolvableExpressionError(
+      normalizedExpression,
+      'Cannot determine which class this expression is an instance of',
     );
-  }
-
-  throw new UnresolvableExpressionError(
-    normalizedExpression,
-    'Cannot determine which class this expression is an instance of',
-  );
+  });
 }
 
 /**
@@ -574,8 +581,58 @@ export function collectPropertyNamesFromObject(
   objectLiteral: ts.ObjectLiteralExpression,
   context: ResolutionContext,
 ): Set<string> {
-  const names = objectLiteral.properties.flatMap((objectElement) => [
-    ...resolvePropertyNamesFromObjectElement(objectElement, context),
-  ]);
+  const names = guardingAgainstCycles(objectLiteral, context, () =>
+    objectLiteral.properties.flatMap((objectElement) => [
+      ...resolvePropertyNamesFromObjectElement(objectElement, context),
+    ]),
+  );
   return new Set(names);
+}
+
+/**
+ * Resolves a node, throwing if it is already being resolved further up.
+ *
+ * Code that refers back to itself, such as two objects that spread each other,
+ * would otherwise recurse until the stack overflows. Throwing instead points at
+ * the code that closes the loop.
+ *
+ * For example, given:
+ *
+ * ```js
+ * const firstApi = { ...secondApi };
+ * const secondApi = { ...firstApi };
+ * const api = { ...firstApi };
+ * ```
+ *
+ * Collecting the names in `api` follows `firstApi` to its object, which
+ * spreads `secondApi`, whose object spreads `firstApi` again. The object
+ * assigned to `firstApi` is still being resolved at that point, so this throws
+ * an error pointing at `{ ...secondApi }`.
+ *
+ * @param node - The node about to be resolved.
+ * @param context - The resolution context.
+ * @param resolve - Resolves the node.
+ * @returns The result of `resolve`.
+ */
+function guardingAgainstCycles<Value>(
+  node: ts.Node,
+  context: ResolutionContext,
+  resolve: () => Value[],
+): Value[] {
+  if (context.nodesBeingResolved.has(node)) {
+    throw new UnresolvableExpressionError(
+      node,
+      'This expression refers back to itself',
+    );
+  }
+
+  context.nodesBeingResolved.add(node);
+  try {
+    return resolve();
+  } finally {
+    // Remove node once it has been resolved, so a node that is reached twice
+    // through separate paths, rather than through itself, is not mistaken for a
+    // cycle.
+    context.nodesBeingResolved.delete(node);
+  }
 }
