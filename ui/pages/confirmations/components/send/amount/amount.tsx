@@ -16,7 +16,6 @@ import {
   AlignItems,
   BlockSize,
   Display,
-  FlexWrap,
   IconColor,
   JustifyContent,
   TextColor,
@@ -34,7 +33,6 @@ import {
   getFractionLength,
   isValidPositiveNumericString,
 } from '../../../utils/send';
-import { useAmountSymbolLayout } from './useAmountSymbolLayout';
 
 export const Amount = ({
   amountError,
@@ -154,9 +152,6 @@ export const Amount = ({
     t,
   ]);
 
-  const symbol = fiatMode ? fiatCurrencyName?.toUpperCase() : asset?.symbol;
-  const { fieldRef, inputRef, measureRef, symbolLayout, symbolRef } =
-    useAmountSymbolLayout(amount, symbol);
   const showFiatToggle = conversionSupportedForAsset && !amountError;
 
   if (asset?.standard === ERC721) {
@@ -168,59 +163,31 @@ export const Amount = ({
       <Text variant={TextVariant.bodyMd} paddingBottom={1}>
         {t('amount')}
       </Text>
-      <Box className="relative" ref={fieldRef} width={BlockSize.Full}>
-        <Box
-          aria-hidden="true"
-          as="span"
-          className="pointer-events-none invisible absolute whitespace-pre"
-          ref={measureRef}
-        >
-          {amount || '0'}
-        </Box>
-        <TextField
-          error={Boolean(amountError)}
-          inputProps={
-            symbolLayout.paddingRight > 0
-              ? {
-                  style: {
-                    boxSizing: 'border-box',
-                    paddingRight: symbolLayout.paddingRight,
-                  },
-                }
-              : undefined
-          }
-          inputRef={inputRef}
-          onChange={onChange}
-          onPaste={setAmountInputMethodPasted}
-          onInput={setAmountInputMethodManual}
-          placeholder="0"
-          testId="send-amount-input"
-          value={amount}
-          width={BlockSize.Full}
-          size={TextFieldSize.Lg}
-        />
-        {symbol ? (
-          <Text
-            as="span"
-            className="pointer-events-none absolute top-1/2 -translate-y-1/2 whitespace-nowrap"
-            data-testid="send-amount-symbol"
-            ref={symbolRef}
-            style={{ left: symbolLayout.left }}
-          >
-            {symbol}
+      <TextField
+        error={Boolean(amountError)}
+        endAccessory={
+          <Text>
+            {fiatMode ? fiatCurrencyName?.toUpperCase() : asset?.symbol}
           </Text>
-        ) : null}
-      </Box>
+        }
+        onChange={onChange}
+        onPaste={setAmountInputMethodPasted}
+        onInput={setAmountInputMethodManual}
+        paddingRight={3}
+        placeholder="0"
+        size={TextFieldSize.Lg}
+        testId="send-amount-input"
+        value={amount}
+        width={BlockSize.Full}
+      />
       <Box
         display={Display.Flex}
-        flexWrap={FlexWrap.Wrap}
-        gap={1}
         justifyContent={JustifyContent.spaceBetween}
         marginTop={1}
       >
         <Box
-          display={Display.Flex}
           alignItems={AlignItems.center}
+          display={Display.Flex}
           gap={1}
           paddingLeft={4}
         >
@@ -229,7 +196,6 @@ export const Amount = ({
               amountError ? TextColor.errorDefault : TextColor.textAlternative
             }
             data-testid="send-amount-fiat-value"
-            role={amountError ? 'alert' : undefined}
             variant={TextVariant.bodySm}
           >
             {amountError ||
@@ -237,7 +203,6 @@ export const Amount = ({
           </Text>
           {showFiatToggle && (
             <ButtonIcon
-              aria-pressed={fiatMode}
               ariaLabel="toggle fiat mode"
               color={IconColor.iconAlternative}
               data-testid="toggle-fiat-mode"
@@ -248,7 +213,7 @@ export const Amount = ({
             />
           )}
         </Box>
-        <Box display={Display.Flex} marginLeft="auto">
+        <Box display={Display.Flex}>
           <Text
             color={TextColor.textAlternative}
             variant={TextVariant.bodySm}
