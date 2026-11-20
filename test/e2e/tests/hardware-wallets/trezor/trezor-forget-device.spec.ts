@@ -10,7 +10,7 @@ import AccountListPage from '../../../page-objects/pages/accounts/list-page';
 import ChooseWalletTypePage from '../../../page-objects/pages/accounts/add-wallet/choose-wallet-type-page';
 import ConnectHardwareWalletPage from '../../../page-objects/pages/hardware-wallet/connect-hardware-wallet-page';
 import SelectHardwareWalletAccountPage from '../../../page-objects/pages/hardware-wallet/select-hardware-wallet-account-page';
-import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
+import { openAccountMenu } from '../../../page-objects/flows/account-menu.flow';
 
 describe('Trezor Hardware', function (this: Suite) {
   it('forgets device and checks if it is removed from the list', async function () {
@@ -25,8 +25,7 @@ describe('Trezor Hardware', function (this: Suite) {
         });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
         await openConnectHardwareWallet(driver);

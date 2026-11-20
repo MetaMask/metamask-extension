@@ -17,6 +17,7 @@ import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import { skipOnFirefox } from '../helpers';
+import { openAccountMenu } from '../../../page-objects/flows/account-menu.flow';
 import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Unsupported Account types', function () {
@@ -68,7 +69,7 @@ describe('Account syncing - Unsupported Account types', function () {
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
-        await header.openAccountMenu();
+        await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
@@ -131,7 +132,7 @@ describe('Account syncing - Unsupported Account types', function () {
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
-        await header.openAccountMenu();
+        await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();

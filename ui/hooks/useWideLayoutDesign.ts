@@ -5,7 +5,9 @@ import {
   WIDE_SCREEN_REDESIGN_AB_TEST_EXPOSURE_METADATA,
   WIDE_SCREEN_REDESIGN_AB_TEST_VARIANTS,
 } from '../../shared/lib/ab-testing/configs/wide-screen-redesign';
+import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import { WIDE_SCREEN_DESIGN_MIN_WIDTH } from '../../shared/constants/layout';
+import { getEnvironmentType } from '../../shared/lib/environment-type';
 import { DEFAULT_ROUTE } from '../helpers/constants/routes';
 import { useABTest } from './useABTest';
 
@@ -47,12 +49,14 @@ export function useWideLayoutDesign(): boolean {
   const { pathname } = useLocation();
   const isWideViewport = useMediaQueryMatches(WIDE_SCREEN_MEDIA_QUERY);
   const isHome = pathname === DEFAULT_ROUTE;
+  const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+
   const { variant } = useABTest(
     WIDE_SCREEN_REDESIGN_AB_KEY,
     WIDE_SCREEN_REDESIGN_AB_TEST_VARIANTS,
     WIDE_SCREEN_REDESIGN_AB_TEST_EXPOSURE_METADATA,
-    { trackExposure: isHome && isWideViewport },
+    { trackExposure: isHome && isWideViewport && !isPopup },
   );
 
-  return variant.useWideLayout && isWideViewport;
+  return variant.useWideLayout && isWideViewport && !isPopup;
 }

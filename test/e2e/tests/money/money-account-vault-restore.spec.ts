@@ -11,7 +11,6 @@ import {
   login,
 } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import ResetPasswordPage from '../../page-objects/pages/onboarding/reset-password-page';
@@ -23,6 +22,7 @@ import {
   BASE_ACCOUNT_SYNC_TIMEOUT,
 } from '../identity/account-syncing/helpers';
 import { MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME } from '../../../../shared/lib/money/feature-flags';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 
 /**
  * The money account address derived from `E2E_SRP` at the fixed money
@@ -218,7 +218,7 @@ describe('Money account', function (this: Suite) {
         );
 
         // And the account list UI shows only the restored account.
-        await new HeaderNavbar(driver).openAccountMenu();
+        await openAccountMenu(driver);
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountDisplayedInAccountList('Account 1');

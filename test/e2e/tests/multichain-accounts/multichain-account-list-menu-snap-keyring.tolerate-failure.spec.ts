@@ -6,7 +6,6 @@ import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
-import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snaps/simple-keyring-page';
 import { Driver } from '../../webdriver/driver';
 import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
@@ -16,6 +15,7 @@ import {
   MOCK_ETH_CONVERSION_RATE,
   mockPriceApi,
 } from '../tokens/utils/mocks';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 
 describe('Multichain Accounts - Account tree', function (this: Suite) {
   it('should display wallet for Snap Keyring', async function () {
@@ -53,8 +53,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();

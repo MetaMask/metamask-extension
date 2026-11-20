@@ -10,6 +10,7 @@ import SnapListPage from '../../page-objects/pages/snaps/list-page';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snaps/simple-keyring-page';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { login } from '../../page-objects/flows/login.flow';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
 
 describe('Create and remove Snap Account', function (this: Suite) {
@@ -49,7 +50,7 @@ describe('Create and remove Snap Account', function (this: Suite) {
         await snapListPage.clickBackButton();
 
         // Assert that the snap account is removed from the account list
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountIsNotDisplayedInAccountList(

@@ -24,6 +24,7 @@ import {
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import { normalizeSafeAddress } from '../../../../shared/lib/multichain/address';
 import { AuthConnection } from '../../../../shared/constants/onboarding';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 
 const ETH_MAINNET_ASSET_ID = 'eip155:1/slip44:60';
 const MUSD_MAINNET_ASSET_ID =
@@ -237,7 +238,7 @@ describe('Metamask onboarding (with social login)', function () {
           timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         const accountListPage = new AccountListPage(driver);
 
         await accountListPage.openMultichainAccountMenu({
@@ -284,7 +285,7 @@ describe('Metamask onboarding (with social login)', function () {
           timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         const accountListPage = new AccountListPage(driver);
 
         await accountListPage.openMultichainAccountMenu({

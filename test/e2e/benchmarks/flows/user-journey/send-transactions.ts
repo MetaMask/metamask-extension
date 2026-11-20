@@ -8,7 +8,6 @@ import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-n
 import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
 import AccountListPage from '../../../page-objects/pages/accounts/list-page';
-import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import SnapTransactionConfirmation from '../../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -31,6 +30,7 @@ import {
 import { WITH_STATE_POWER_USER } from '../../utils/constants';
 import { collectWebVitals } from '../../utils';
 import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
+import { openAccountMenu } from '../../../page-objects/flows/account-menu.flow';
 
 const RECIPIENT_ADDRESS = 'GxSJqxAyTjCjyDmPxdBBfVE9QwuMhEoHrPLRTmMyqxnU';
 
@@ -64,8 +64,7 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
         const tokensTab = new TokensTab(driver);
         await tokensTab.checkTokenListIsDisplayed();
         const accountListPage = new AccountListPage(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await accountListPage.switchToAccount('Account 1');
         // Wait for Solana balance to load before starting the send flow
         if (shouldUseMockedRequests()) {
