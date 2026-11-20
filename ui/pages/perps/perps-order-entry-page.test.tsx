@@ -427,6 +427,14 @@ jest.mock('../../components/app/perps/order-entry/limit-price-warnings', () => {
       mockIsNearLiquidationPrice(...args),
   };
 });
+
+const mockPerpsRebateBanner = jest.fn(
+  (_props: Record<string, unknown>) => null,
+);
+jest.mock('../../components/app/perps/perps-rebate-banner', () => ({
+  PerpsRebateBanner: (props: Record<string, unknown>) =>
+    mockPerpsRebateBanner(props),
+}));
 describe('PerpsOrderEntryPage', () => {
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
@@ -674,6 +682,37 @@ describe('PerpsOrderEntryPage', () => {
       expect(body.className).not.toContain('flex-row-reverse');
       Array.from(body.children).forEach((child) =>
         expect((child as HTMLElement).style.order).toBe(''),
+      );
+    });
+  });
+
+  describe('rebate banner', () => {
+    it('renders with the current trade', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('500');
+      expect(mockPerpsRebateBanner).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          coin: 'ETH',
+          direction: 'long',
+          notionalUsd: '500',
+        }),
+      );
+    });
+
+    it('updates the trade as the form changes', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('500');
+      fireEvent.click(screen.getByTestId('direction-tab-short'));
+
+      expect(mockPerpsRebateBanner).toHaveBeenCalledWith(
+        expect.objectContaining({
+          coin: 'ETH',
+          direction: 'short',
+        }),
       );
     });
   });

@@ -146,6 +146,14 @@ jest.mock('../../rewards/RewardsVipBadge', () => ({
   RewardsVipBadge: () => null,
 }));
 
+const mockPerpsRebateBanner = jest.fn(
+  (_props: Record<string, unknown>) => null,
+);
+jest.mock('../perps-rebate-banner', () => ({
+  PerpsRebateBanner: (props: Record<string, unknown>) =>
+    mockPerpsRebateBanner(props),
+}));
+
 const mockUseVipTier = jest.fn<number | null, []>(() => null);
 jest.mock('../../../../hooks/rewards/useVipTier', () => ({
   useVipTier: () => mockUseVipTier(),
@@ -487,6 +495,38 @@ describe('ReversePositionModal', () => {
         screen.getByTestId('perps-reverse-est-size-value'),
       ).toHaveTextContent('2.5 TSLA');
       expect(screen.queryByText(/xyz:/u)).not.toBeInTheDocument();
+    });
+  });
+
+  describe('rebate banner', () => {
+    it('renders above the footer with the flipped trade', () => {
+      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
+
+      expect(mockPerpsRebateBanner).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          coin: 'ETH',
+          direction: 'short',
+          notionalUsd: '14250',
+        }),
+      );
+    });
+
+    it('renders without trade metadata when the notional is unavailable', () => {
+      renderWithProvider(
+        <ReversePositionModal
+          {...defaultProps}
+          position={{ ...longPosition, positionValue: '7125 USD' }}
+        />,
+        mockStore,
+      );
+
+      expect(mockPerpsRebateBanner).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          coin: 'ETH',
+          direction: 'short',
+          notionalUsd: undefined,
+        }),
+      );
     });
   });
 

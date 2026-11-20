@@ -3874,6 +3874,19 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  perpsRebatesEnabled: {
+    // Dark-launched: default OFF in production until rollout. Same LaunchDarkly
+    // key mobile gates the Perps rebate banner on.
+    inProd: true,
+    name: 'perpsRebatesEnabled',
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '0.0.0',
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   perpsShowFullAssetNames: {
     // Dark-launched: default OFF in production until rollout.
     inProd: true,
