@@ -2,12 +2,14 @@ import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 import { priceApiBaseUrl } from '#shared/constants/price-api';
 import { TOKEN_API_METASWAP_CODEFI_URL } from '#shared/constants/tokens';
 import { getCaipAssetImageUrl } from '#shared/lib/asset-utils';
-import { byMarketCap } from '#shared/lib/token-search/token-search-api';
 import type { AssetData, PricePoint, ResolvedTicker } from './types';
 
 const tokenSearchUrl = `${TOKEN_API_METASWAP_CODEFI_URL}search`;
 const historicalPricesUrl = `${priceApiBaseUrl}/v3/historical-prices`;
-const clientIdHeader = { 'X-Client-Id': 'extension' };
+const clientIdHeader = {
+  'X-Client-Id': 'extension',
+  'x-mm-service-profile': 'assets--cashtag-widget',
+};
 
 type SearchHit = {
   assetId: CaipAssetType;
@@ -143,15 +145,20 @@ export async function resolveTicker(
     return null;
   }
 
-  const assets = symbolMatches.map(toAssetData).toSorted(byMarketCap);
-
-  // Since assets are sorted by market cap descending, checking the first one is enough
-  if ((assets[0].marketCap ?? 0) <= 0) {
+  const assets = symbolMatches.map(toAssetData);
+  if (assets.every((asset) => (asset.marketCap ?? 0) <= 0)) {
     return null;
   }
 
+  const exactRwaIndex = symbolMatches.findIndex(
+    (match) =>
+      match.symbol.trim().toUpperCase() === ticker &&
+      match.rwaData?.ticker?.trim().toUpperCase() === ticker,
+  );
+  const primaryIndex = exactRwaIndex === -1 ? 0 : exactRwaIndex;
+
   return {
-    primary: assets[0],
-    similar: assets.slice(1),
+    primary: assets[primaryIndex],
+    similar: assets.filter((_, index) => index !== primaryIndex),
   };
 }

@@ -256,7 +256,7 @@ describe('useOHLCVRealtime', () => {
       // Simulate WS bar event
       act(() => {
         emitMessengerEvent('OHLCVService:barUpdated', {
-          channel: 'market-data.v1.ethereum.1h.usd',
+          channel: 'ohlcv.v1.ethereum.1h.usd',
           bar: MOCK_WS_BAR,
         });
       });
@@ -290,7 +290,7 @@ describe('useOHLCVRealtime', () => {
       act(() => {
         emitMessengerEvent('OHLCVService:barUpdated', [
           {
-            channel: 'market-data.v1.ethereum.1h.usd',
+            channel: 'ohlcv.v1.ethereum.1h.usd',
             bar: MOCK_WS_BAR,
           },
         ]);
@@ -327,7 +327,7 @@ describe('useOHLCVRealtime', () => {
       // Simulate WS bar from a different channel
       act(() => {
         emitMessengerEvent('OHLCVService:barUpdated', {
-          channel: 'market-data.v1.bitcoin.1d.eur',
+          channel: 'ohlcv.v1.bitcoin.1d.eur',
           bar: { ...MOCK_WS_BAR, close: 99999 },
         });
       });
@@ -401,7 +401,7 @@ describe('useOHLCVRealtime', () => {
       act(() => {
         emitMessengerEvent('OHLCVService:subscriptionError', [
           {
-            channel: 'market-data.v1.ethereum.1h.usd',
+            channel: 'ohlcv.v1.ethereum.1h.usd',
             error: 'Connection failed',
             operation: 'subscribe',
           },
@@ -467,7 +467,7 @@ describe('useOHLCVRealtime', () => {
       // Simulate subscription error
       act(() => {
         emitMessengerEvent('OHLCVService:subscriptionError', {
-          channel: 'market-data.v1.ethereum.1h.usd',
+          channel: 'ohlcv.v1.ethereum.1h.usd',
           error: 'Connection failed',
           operation: 'subscribe',
         });
@@ -783,7 +783,7 @@ describe('useOHLCVRealtime', () => {
       // Simulate another WS bar with identical data
       act(() => {
         emitMessengerEvent('OHLCVService:barUpdated', {
-          channel: 'market-data.v1.ethereum.1h.usd',
+          channel: 'ohlcv.v1.ethereum.1h.usd',
           bar: MOCK_WS_BAR,
         });
       });
@@ -815,7 +815,7 @@ describe('useOHLCVRealtime', () => {
       // Simulate WS bar with different close price
       act(() => {
         emitMessengerEvent('OHLCVService:barUpdated', {
-          channel: 'market-data.v1.ethereum.1h.usd',
+          channel: 'ohlcv.v1.ethereum.1h.usd',
           bar: { ...MOCK_WS_BAR, close: 99.99 },
         });
       });

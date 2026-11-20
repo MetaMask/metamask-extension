@@ -6,7 +6,7 @@
 import type { LegacyBackgroundApiService } from './legacy-background-api-service';
 
 /**
- * Sets the current currency for the CurrencyRateController and AssetsController.
+ * Sets the selected currency on the AssetsController.
  *
  * @param currencyCode - The currency code to set as the current currency.
  */
@@ -1156,6 +1156,34 @@ export type LegacyBackgroundApiServiceSetParticipateInMetaMetricsAction = {
 };
 
 /**
+ * Determines whether the sender has no prior interaction with an address.
+ *
+ * Missing relationship data and request failures remain unknown so callers
+ * can distinguish them from a confirmed first interaction.
+ *
+ * @param request - The chain, sender, and recipient to check.
+ * @param request.chainId - The numeric chain ID.
+ * @param request.from - The sender address.
+ * @param request.to - The recipient address.
+ * @returns Whether this is the first interaction, or undefined if unknown.
+ */
+export type LegacyBackgroundApiServiceCheckFirstTimeInteractionAction = {
+  type: `LegacyBackgroundApiService:checkFirstTimeInteraction`;
+  handler: LegacyBackgroundApiService['checkFirstTimeInteraction'];
+};
+
+/**
+ * Creates a JSON backup of the user's preferences, accounts, address book,
+ * and network configurations for download from the UI.
+ *
+ * @returns The backup filename and serialized data.
+ */
+export type LegacyBackgroundApiServiceBackupUserDataAction = {
+  type: `LegacyBackgroundApiService:backupUserData`;
+  handler: LegacyBackgroundApiService['backupUserData'];
+};
+
+/**
  * Union of all LegacyBackgroundApiService action types.
  */
 export type LegacyBackgroundApiServiceMethodActions =
@@ -1252,4 +1280,6 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceRemovePermittedChainAction
   | LegacyBackgroundApiServiceSetPermittedChainsAction
   | LegacyBackgroundApiServiceRequestAccountsAndChainPermissionsWithIdAction
-  | LegacyBackgroundApiServiceSetParticipateInMetaMetricsAction;
+  | LegacyBackgroundApiServiceSetParticipateInMetaMetricsAction
+  | LegacyBackgroundApiServiceCheckFirstTimeInteractionAction
+  | LegacyBackgroundApiServiceBackupUserDataAction;
