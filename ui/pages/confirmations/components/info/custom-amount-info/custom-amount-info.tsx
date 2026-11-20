@@ -115,6 +115,15 @@ export type CustomAmountInfoProps = {
    */
   prefillMaxOnLoad?: boolean;
   preferredToken?: SetPayTokenRequest;
+  /**
+   * Optional flow-specific rows rendered inside the result section before the
+   * standard fee, time, and total/receive rows.
+   */
+  resultRows?: ReactNode;
+  /**
+   * When false, hides the divider rendered below `FromAccountRow`.
+   */
+  showAccountDivider?: boolean;
 };
 
 export const CustomAmountInfo = React.memo(
@@ -135,6 +144,8 @@ export const CustomAmountInfo = React.memo(
     overrideCenterContent,
     prefillMaxOnLoad,
     preferredToken,
+    resultRows,
+    showAccountDivider = true,
   }: CustomAmountInfoProps) => {
     const isDefaultMoneyAccount = useIsMoneyAccountFlagDefault();
     useDefaultPaySelectedSection();
@@ -270,6 +281,8 @@ export const CustomAmountInfo = React.memo(
             displayAccountRow={displayAccountRow}
             hasAmount={hasAmount}
             hideResults={hideResults}
+            resultRows={resultRows}
+            showAccountDivider={showAccountDivider}
           />
         )}
       </Box>
@@ -396,12 +409,16 @@ function BottomContainer({
   displayAccountRow,
   hasAmount,
   hideResults,
+  resultRows,
+  showAccountDivider,
 }: {
   amountFiat: string;
   disablePay?: boolean;
   displayAccountRow?: boolean;
   hasAmount: boolean;
   hideResults: boolean;
+  resultRows?: ReactNode;
+  showAccountDivider: boolean;
 }) {
   const t = useI18nContext();
   const isResultReady = useIsResultReady(hasAmount, disablePay);
@@ -421,13 +438,14 @@ function BottomContainer({
       gap={2}
       paddingBottom={4}
     >
-      {displayAccountRow && <FromAccountRow showDivider />}
+      {displayAccountRow && <FromAccountRow showDivider={showAccountDivider} />}
       <PerpsAccountPickerRow />
       {/* Keep mounted while funding tokens load after account override so the
           selector does not unmount for the reselect wait, then remount. */}
       {disablePay !== true && <PayWithRow />}
       {isResultReady && !hideResults && (
         <>
+          {resultRows}
           {disablePay !== true && (
             <>
               <BridgeFeeRow
