@@ -74,7 +74,7 @@ describe('trace state shared across module instances', () => {
     });
     Sentry.getCurrentScope().setClient(client);
     client.init();
-    setupSentryInstance.trackBackgroundPageloadEnd(client);
+    setupSentryInstance.trackBackgroundPageload(client);
 
     const pageload = Sentry.getActiveSpan() as Sentry.Span;
     expect(Sentry.spanToJSON(pageload).op).toBe('pageload');
