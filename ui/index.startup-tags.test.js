@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/browser';
 import * as browserRuntimeUtils from '../shared/lib/browser-runtime.utils';
 import { endTrace, trace, TraceName } from '../shared/lib/trace';
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getClientOptions } from '../app/scripts/lib/setupSentry';
 import defaultMockState from '../test/data/mock-state.json';
 import * as selectors from './selectors';
