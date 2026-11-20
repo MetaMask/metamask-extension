@@ -6,6 +6,7 @@ import type { AccountTreeControllerState } from '@metamask/account-tree-controll
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type { AnnouncementControllerState } from '@metamask/announcement-controller';
 import type { BridgeStatusControllerState } from '@metamask/bridge-status-controller';
+import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import type {
   AccountTrackerControllerState,
   CurrencyRateState,
@@ -338,6 +339,17 @@ class FixtureBuilderV2 {
 
   withMultichainRatesController(data: Partial<RatesControllerState>): this {
     merge(this.fixture.data.MultichainRatesController, data);
+    return this;
+  }
+
+  withMultichainTransactionsController(
+    data: Partial<MultichainTransactionsControllerState>,
+  ): this {
+    merge(
+      (this.fixture.data as Record<string, unknown>)
+        .MultichainTransactionsController,
+      data,
+    );
     return this;
   }
 

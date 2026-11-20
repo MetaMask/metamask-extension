@@ -7,13 +7,18 @@ import {
 import { captureException } from '../../../../shared/lib/sentry';
 import { useAnalytics } from '../../useAnalytics';
 import { selectEnrolledCredentials } from '../../../selectors/identity/authentication';
-import { extensionMfaControllerAdapter } from './bindings';
+import {
+  createSocialLoginControllerAdapter,
+  extensionMfaControllerAdapter,
+} from './bindings';
 import { startMfaFlow } from './engine/activeFlow';
 import type { MfaEvent, MfaTrackEvent } from './engine/analytics';
+import { METHOD_COST_RANKING } from './engine/planner';
 import type {
   EnrollOptions,
   MfaFlowOptions,
   MfaFlowResult,
+  MfaReason,
   VerifyOrEnrollOptions,
 } from './engine/types';
 
@@ -52,6 +57,10 @@ const clientOptions: Pick<
  * the screens), and lint rejects it outside this folder.
  * - `enroll`: sets up one method, for example from settings. No intro, no
  * verification after.
+ * - `verifyForSocialLogin`: proves it's the user with one of the methods
+ * already set up, while the wallet is still locked (social-login wallet
+ * recovery). Never enrolls: rejects with `credential_not_enrolled` when
+ * no method can be used on this platform.
  * - `credentials`: the profile's methods, as last fetched from the server.
  *
  * @returns The kit's entry points and the credential list.
@@ -81,6 +90,26 @@ export const useMfa = () => {
           request: { kind: 'verifyOrEnroll', ...request },
           reason,
           ...options,
+        }),
+      verifyForSocialLogin: ({
+        reason,
+      }: {
+        reason: MfaReason;
+      }): Promise<MfaFlowResult> =>
+        startMfaFlow({
+          // Every method may verify: the flow keeps the active ones this
+          // platform runs, and never plans a setup.
+          request: {
+            kind: 'verifyOrEnroll',
+            methods: [...METHOD_COST_RANKING],
+            verifyWith: [...METHOD_COST_RANKING],
+            verifyOnly: true,
+          },
+          reason,
+          ...options,
+          whileLocked: true,
+          // One adapter per flow: it keeps the flow's own verification token.
+          controller: createSocialLoginControllerAdapter(),
         }),
       enroll: ({ method, reason }: EnrollOptions): Promise<MfaFlowResult> =>
         startMfaFlow({

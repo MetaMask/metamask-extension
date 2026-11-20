@@ -26,7 +26,7 @@ jest.mock('../../../hooks/useAnalytics', () => {
 });
 
 jest.mock('../../../store/actions', () => ({
-  setDataCollectionForMarketing: jest.fn(),
+  optOutOfMarketing: jest.fn(),
   setParticipateInMetaMetrics: jest.fn(),
   toggleBasicFunctionality: jest.fn(),
   toggleExternalServices: jest.fn(),
@@ -170,8 +170,7 @@ describe('BasicConfigurationModal', () => {
       expect(onboardingToggleBasicFunctionalityOff).toHaveBeenCalledTimes(1);
       expect(Actions.setParticipateInMetaMetrics).toHaveBeenCalledTimes(1);
       expect(Actions.setParticipateInMetaMetrics).toHaveBeenCalledWith(false);
-      expect(Actions.setDataCollectionForMarketing).toHaveBeenCalledTimes(1);
-      expect(Actions.setDataCollectionForMarketing).toHaveBeenCalledWith(false);
+      expect(Actions.optOutOfMarketing).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -216,8 +215,7 @@ describe('BasicConfigurationModal', () => {
       expect(hideBasicFunctionalityModal).toHaveBeenCalledTimes(1);
       expect(Actions.setParticipateInMetaMetrics).toHaveBeenCalledTimes(1);
       expect(Actions.setParticipateInMetaMetrics).toHaveBeenCalledWith(false);
-      expect(Actions.setDataCollectionForMarketing).toHaveBeenCalledTimes(1);
-      expect(Actions.setDataCollectionForMarketing).toHaveBeenCalledWith(false);
+      expect(Actions.optOutOfMarketing).toHaveBeenCalledTimes(1);
       expect(Actions.toggleExternalServices).toHaveBeenCalledTimes(1);
       expect(Actions.toggleExternalServices).toHaveBeenCalledWith(false);
     });
@@ -237,7 +235,7 @@ describe('BasicConfigurationModal', () => {
 
       expect(hideBasicFunctionalityModal).toHaveBeenCalledTimes(1);
       expect(Actions.setParticipateInMetaMetrics).toHaveBeenCalledTimes(0);
-      expect(Actions.setDataCollectionForMarketing).toHaveBeenCalledTimes(0);
+      expect(Actions.optOutOfMarketing).toHaveBeenCalledTimes(0);
       expect(Actions.toggleExternalServices).toHaveBeenCalledTimes(1);
       expect(Actions.toggleExternalServices).toHaveBeenCalledWith(true);
     });

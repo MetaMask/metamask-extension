@@ -11,7 +11,6 @@ import {
 } from './buildQuoteRequest';
 
 const CHAIN_ID = BATCH_SELL_CHAIN_ID as unknown as CaipChainId;
-const ASSET_ID = BATCH_SELL_ASSET_IDS.USDC;
 const DEST_ASSET_ID = BATCH_SELL_ASSET_IDS.ETH_NATIVE;
 const WALLET_ADDRESS = '0xWalletAddress';
 

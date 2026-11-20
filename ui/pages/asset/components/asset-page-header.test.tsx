@@ -250,9 +250,10 @@ describe('AssetPageHeader', () => {
     it('renders the compact contract address', () => {
       renderHeader();
 
-      expect(screen.getByTestId('asset-page-header-address')).toHaveTextContent(
-        '0x..5831',
-      );
+      const address = screen.getByTestId('asset-page-header-address');
+      expect(address).toHaveTextContent('0x..5831');
+      expect(address).toHaveClass('h-6', 'px-2', 'py-1');
+      expect(address).toHaveAttribute('aria-label', 'copyToClipboard');
     });
 
     it('copies the full contract address when clicked', () => {
@@ -261,6 +262,29 @@ describe('AssetPageHeader', () => {
       fireEvent.click(screen.getByTestId('asset-page-header-address'));
 
       expect(mockHandleCopy).toHaveBeenCalledWith(CONTRACT_ADDRESS);
+    });
+
+    it('shows the copied message in place of the ticker and address', () => {
+      (useCopyToClipboard as jest.Mock).mockReturnValue([true, mockHandleCopy]);
+      renderHeader({ name: 'USD Coin', symbol: 'USDC' });
+
+      const subtitle = screen.getByTestId('asset-page-header-subtitle');
+      expect(subtitle).toHaveTextContent('tokenContractAddressCopied');
+      expect(subtitle).not.toHaveTextContent('USDC');
+      expect(subtitle).not.toHaveTextContent('0x..5831');
+      expect(
+        screen.queryByTestId('asset-page-header-ticker'),
+      ).not.toBeInTheDocument();
+      const address = screen.getByTestId('asset-page-header-address');
+      expect(address).toHaveClass('h-6', 'px-2', 'py-1');
+      expect(address).not.toHaveClass('w-full');
+      expect(address).toHaveAttribute(
+        'aria-label',
+        'tokenContractAddressCopied',
+      );
+      expect(screen.getByRole('status')).toHaveTextContent(
+        'tokenContractAddressCopied',
+      );
     });
 
     it('is omitted for native assets without a contract address', () => {

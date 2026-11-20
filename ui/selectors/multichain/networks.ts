@@ -29,10 +29,7 @@ import {
   MULTICHAIN_PROVIDER_CONFIGS,
   type MultichainProviderConfig,
 } from '../../../shared/constants/multichain/networks';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  infuraProjectId,
-} from '../../../shared/constants/network';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../shared/constants/network';
 import {
   type ProviderConfigState,
   type SelectedNetworkClientIdState,

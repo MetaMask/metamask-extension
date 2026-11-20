@@ -192,7 +192,6 @@ function transformState(state: Record<string, unknown>) {
     );
     if (!isEndpointExist) {
       megaethTestnetV2Configuration.rpcEndpoints.push({
-        failoverUrls: [],
         networkClientId:
           MEGAETH_TESTNET_V2_CONFIG.rpcEndpoints[0].networkClientId,
         type: RpcEndpointType.Custom,

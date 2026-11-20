@@ -1,5 +1,7 @@
+import { useCallback, useSyncExternalStore } from 'react';
 import type { Position } from '@metamask/perps-controller';
 import { usePerpsChannel } from './usePerpsChannel';
+import { usePerpsStreamManager } from './usePerpsStreamManager';
 
 /**
  * Options for usePerpsLivePositions hook
@@ -17,6 +19,8 @@ export type UsePerpsLivePositionsReturn = {
   positions: Position[];
   /** Whether we're waiting for the first real data */
   isInitialLoading: boolean;
+  /** Whether positions come from a cached snapshot no live update has confirmed */
+  isSeeded: boolean;
 };
 
 // Stable empty array reference to prevent re-renders
@@ -30,15 +34,27 @@ const EMPTY_POSITIONS: Position[] = [];
  * skeletons when navigating between Perps views.
  *
  * @param _options - Configuration options (unused, for API compatibility)
- * @returns Object containing positions array and loading state
+ * @returns Object containing positions array, loading and seeded state
  */
 export function usePerpsLivePositions(
   _options: UsePerpsLivePositionsOptions = {},
 ): UsePerpsLivePositionsReturn {
+  const { streamManager } = usePerpsStreamManager();
   const { data: positions, isInitialLoading } = usePerpsChannel(
     (sm) => sm.positions,
     EMPTY_POSITIONS,
   );
+  const subscribe = useCallback(
+    (notify: () => void) =>
+      streamManager
+        ? streamManager.positions.subscribe(notify)
+        : () => undefined,
+    [streamManager],
+  );
+  const isSeeded = useSyncExternalStore(
+    subscribe,
+    () => streamManager?.positions.isSeeded() ?? false,
+  );
 
-  return { positions, isInitialLoading };
+  return { positions, isInitialLoading, isSeeded };
 }

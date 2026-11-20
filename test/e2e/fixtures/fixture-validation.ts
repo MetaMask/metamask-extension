@@ -30,8 +30,8 @@ type JsonLike = Record<string, unknown>;
 /**
  * Returns a list of keys to ignore when comparing fixture schemas.
  * These are properties that change frequently or are impractical to include
- * (making the diff file unreadable). Keep this list small: RPC fields such as
- * `failoverUrls` are validated so unintended network config changes surface in CI.
+ * (making the diff file unreadable). Keep this list small: other fields are
+ * validated so unintended network config changes surface in CI.
  *
  * @returns Array of dot-separated key paths to ignore
  */
@@ -104,12 +104,6 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.AnalyticsController.preConsentEventQueue',
   'data.MultichainTransactionsController.nonEvmTransactions',
   'data.NetworkController.networkConfigurationsByChainId.0x539.rpcEndpoints[0].networkClientId',
-  'data.NetworkController.networkConfigurationsByChainId.0x1.rpcEndpoints[0].failoverUrls',
-  'data.NetworkController.networkConfigurationsByChainId.0x2105.rpcEndpoints[0].failoverUrls',
-  'data.NetworkController.networkConfigurationsByChainId.0x89.rpcEndpoints[0].failoverUrls',
-  'data.NetworkController.networkConfigurationsByChainId.0xa.rpcEndpoints[0].failoverUrls',
-  'data.NetworkController.networkConfigurationsByChainId.0xa4b1.rpcEndpoints[0].failoverUrls',
-  'data.NetworkController.networkConfigurationsByChainId.0xe708.rpcEndpoints[0].failoverUrls',
   'data.NetworkController.networksMetadata',
   'data.NetworkController.selectedNetworkClientId',
   'data.ProfileMetricsController.syncQueue',
@@ -525,7 +519,7 @@ export const formatSchemaDiff = ({
   }
 
   messages.push(
-    '\nUpdate the fixture and commit the change. Options: comment `@metamaskbot update-e2e-fixture` on the pull request (CI-aligned state), or regenerate locally using the same env as CI (e.g. QUICKNODE_* and other build vars from a CI job artifact) so RPC fields such as `failoverUrls` match.',
+    '\nUpdate the fixture and commit the change. Options: comment `@metamaskbot update-e2e-fixture` on the pull request (CI-aligned state), or regenerate locally using the same env as CI (e.g. build vars from a CI job artifact) so the state matches.',
   );
 
   return messages.join('\n\n');

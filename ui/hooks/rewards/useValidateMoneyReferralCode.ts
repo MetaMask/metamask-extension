@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { MONEY_REFERRAL_CODE_MIN_LENGTH } from '#shared/lib/money-referral-code';
 import { useI18nContext } from '../useI18nContext';
 import { useMessenger } from '../useMessenger';
 import { isBusyRewardsMoneyRead } from './read-rewards-money-http-failure';
 import type { RewardsMoneyInviteMessenger } from './rewards-money-messenger';
-
-const MONEY_REFERRAL_CODE_MIN_LENGTH = 3;
 
 const MONEY_REFERRAL_VALIDATE_DEBOUNCE_MS = 1000;
 

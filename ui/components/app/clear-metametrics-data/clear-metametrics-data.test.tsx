@@ -12,6 +12,7 @@ import { DELETE_METAMETRICS_DATA_MODAL_CLOSE } from '../../../store/actionConsta
 import ClearMetaMetricsData from './clear-metametrics-data';
 
 const mockTrackEvent = jest.fn();
+const mockTrackErrorAsAnalytics = jest.fn();
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -21,6 +22,7 @@ jest.mock('../../../hooks/useAnalytics', () => {
   return {
     useAnalytics: () => ({
       trackEvent: mockTrackEvent,
+      trackErrorAsAnalytics: mockTrackErrorAsAnalytics,
       createEventBuilder,
     }),
   };
@@ -84,24 +86,19 @@ describe('ClearMetaMetricsData', () => {
   });
 
   it('tracks the error when creating the deletion task fails', async () => {
+    const deletionError = new Error('Deletion failed');
     jest
       .mocked(Actions.createMetaMetricsDataDeletionTask)
-      .mockRejectedValueOnce(new Error('Deletion failed'));
+      .mockRejectedValueOnce(deletionError);
     const store = configureStore({});
     const { getByText } = renderWithProvider(<ClearMetaMetricsData />, store);
 
     fireEvent.click(getByText(messages.delete.message));
 
     await waitFor(() => {
-      expect(mockTrackEvent).toHaveBeenCalledWith({
-        name: MetaMetricsEventName.ErrorOccured,
-        properties: {
-          category: MetaMetricsEventCategory.Settings,
-        },
-        sensitiveProperties: {},
-        options: {
-          excludeMetaMetricsId: true,
-        },
+      expect(mockTrackErrorAsAnalytics).toHaveBeenCalledWith(deletionError, {
+        source: 'clear-metametrics-data',
+        excludeMetaMetricsId: true,
       });
     });
   });

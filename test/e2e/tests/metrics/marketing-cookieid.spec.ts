@@ -10,7 +10,7 @@ import { TestSuiteArguments } from '../confirmations/transactions/shared';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { MOCK_ANALYTICS_ID, WINDOW_TITLES } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';
-import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import PrivacySettings from '../../page-objects/pages/settings/privacy/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { login } from '../../page-objects/flows/login.flow';

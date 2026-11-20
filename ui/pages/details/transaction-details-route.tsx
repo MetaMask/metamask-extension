@@ -13,7 +13,7 @@ export default function TransactionDetailsRoute() {
   }
 
   return (
-    <div className="main-container">
+    <div className="main-container bg-background-default">
       <TransactionDetails
         chainId={caipChainId}
         txIdentifier={txIdentifier}

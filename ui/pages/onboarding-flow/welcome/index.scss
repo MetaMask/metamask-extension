@@ -1,17 +1,5 @@
 @use "design-system";
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(5px) scale(0.8);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
 @keyframes fadeInUpSmooth {
   from {
     opacity: 0;
@@ -106,17 +94,6 @@
 
 .welcome-container {
   position: relative;
-
-  &__wordmark-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    &--complete {
-      animation: slideUpSmooth 1s ease-out forwards;
-    }
-  }
 }
 
 .welcome-login {
@@ -149,12 +126,6 @@
 
     &--fade-in {
       animation: fadeInUpSmooth 0.2s ease-in-out forwards;
-    }
-  }
-
-  &__mascot {
-    &--image {
-      margin-bottom: 60px;
     }
   }
 }

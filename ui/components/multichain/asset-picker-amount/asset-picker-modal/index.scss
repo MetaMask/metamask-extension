@@ -13,10 +13,6 @@
 .asset-picker-modal {
   $self: &;
 
-  &__autodetect {
-    vertical-align: unset;
-  }
-
   .multichain-asset-picker-list-item {
     position: relative;
     cursor: pointer;
@@ -70,34 +66,9 @@
   }
 
   .modal-tab {
-    &__main-view {
-      max-height: 100%;
-      background: var(--color-background-default);
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      overflow: auto;
-    }
-
     &__wrapper {
       max-height: 100%;
       overflow-y: scroll;
-    }
-
-    &__loading {
-      display: flex;
-      height: 200px;
-      align-items: center;
-      justify-content: center;
-      padding: 15px;
-    }
-
-    &__fetching {
-      display: flex;
-      height: 100px;
-      align-items: center;
-      justify-content: center;
-      padding: 15px;
     }
   }
 }

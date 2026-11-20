@@ -18,7 +18,8 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   setParticipateInMetaMetrics,
-  setDataCollectionForMarketing,
+  optInToMarketing,
+  optOutOfMarketing,
   setPna25Acknowledged,
 } from '../../../store/actions';
 import {
@@ -191,7 +192,9 @@ export default function OnboardingMetametrics() {
       }
 
       dispatch(
-        setDataCollectionForMarketing(isDataCollectionForMarketingChecked),
+        isDataCollectionForMarketingChecked
+          ? optInToMarketing()
+          : optOutOfMarketing(),
       );
       dispatch(setParticipateInMetaMetrics(isParticipateInMetaMetricsChecked));
     } catch (error) {

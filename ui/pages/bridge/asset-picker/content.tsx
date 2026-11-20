@@ -9,7 +9,6 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import {
-  Box,
   ButtonBase,
   ButtonBaseSize,
   FontWeight,
@@ -157,11 +156,12 @@ export const BridgeAssetPickerContent = forwardRef<
     return (
       <>
         <div className="flex flex-col gap-4">
-          <Box className="mx-4">
+          <search className="mx-4">
             <TextFieldSearch
               autoFocus
               className="w-full"
               clearButtonOnClick={() => setSearchQuery('')}
+              inputAriaLabel={t('enterTokenNameOrAddress')}
               inputProps={
                 {
                   'data-testid': 'bridge-asset-picker-search-input',
@@ -171,7 +171,7 @@ export const BridgeAssetPickerContent = forwardRef<
               placeholder={t('enterTokenNameOrAddress')}
               value={searchQuery}
             />
-          </Box>
+          </search>
           <ButtonBase
             onClick={() =>
               isNetworkPickerOpen

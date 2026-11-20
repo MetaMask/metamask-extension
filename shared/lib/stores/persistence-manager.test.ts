@@ -1286,7 +1286,7 @@ describe('PersistenceManager', () => {
       });
       try {
         manager = new PersistenceManager({
-          getIsIdle: () => true,
+          getIsIdle: () => 'idle',
           getPersistenceWriteSampleRate: () => 1,
           localStore: new ExtensionStore(),
           random: () => 0,
@@ -1336,6 +1336,38 @@ describe('PersistenceManager', () => {
           delete (globalThis as { self?: unknown }).self;
         }
       }
+    });
+
+    it('calls getIsIdle with the current and last activity snapshots', async () => {
+      mockGetLastActivityContext.mockReturnValue({ msSinceLastAppStart: 42 });
+      const getIsIdle = jest.fn(() => 'idle' as const);
+      manager = new PersistenceManager({
+        getIsIdle,
+        getPersistenceWriteSampleRate: () => 1,
+        localStore: new ExtensionStore(),
+        random: () => 0,
+      });
+      manager.setCurrentActivityProvider(() => ({
+        startupPhase: StartupPhase.Initialized,
+      }));
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      await manager.persist();
+
+      expect(getIsIdle).toHaveBeenCalledWith(
+        { startupPhase: StartupPhase.Initialized },
+        { msSinceLastAppStart: 42 },
+      );
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          currentActivity: { startupPhase: StartupPhase.Initialized },
+          lastActivity: { msSinceLastAppStart: 42 },
+          idleStatus: 'idle',
+        }),
+      );
     });
 
     it('uses exact storage byte measurements when available', async () => {

@@ -16,7 +16,7 @@ export const SEND_ETH_TRANSACTION_MOCK = {
 
 export const SEND_ETH_REQUEST_MOCK: MockRequestResponse = {
   request: {
-    id: '0',
+    id: '1',
     jsonrpc: '2.0',
     method: 'infura_simulateTransactions',
     params: [

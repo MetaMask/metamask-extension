@@ -8,11 +8,14 @@
  */
 
 import { BigNumber } from 'bignumber.js';
-import type {
-  Funding,
-  Order,
-  OrderFill,
-  UserHistoryItem,
+import {
+  calculateNetClosedPnl,
+  formatPerpsFiat,
+  formatPnl,
+  type Funding,
+  type Order,
+  type OrderFill,
+  type UserHistoryItem,
 } from '@metamask/perps-controller';
 import {
   TransactionStatus as WalletTransactionStatus,
@@ -68,6 +71,16 @@ function getCloseDirectionForAggregation(
 }
 
 /**
+ * Whether a fill reports its fee: a non-empty, finite amount.
+ *
+ * @param fee - The fill's fee.
+ * @returns True when the fee is known.
+ */
+function isKnownFillFee(fee: string | undefined): fee is string {
+  return fee !== undefined && fee.trim() !== '' && Number.isFinite(Number(fee));
+}
+
+/**
  * Aggregates fills that occur at the same timestamp for the same asset when closing positions.
  * This handles cases where a stop loss or take profit order is split into multiple fills
  * by HyperLiquid, ensuring users see the aggregate PnL instead of partial amounts.
@@ -80,7 +93,8 @@ function getCloseDirectionForAggregation(
  * For aggregated fills:
  * - Sizes are summed
  * - PnLs are summed
- * - Fees are summed
+ * - Fees are summed; the total stays unknown (empty) when any fill's fee is
+ *   unknown, so the net PnL is not computed from a partial fee
  * - Price is calculated as VWAP (Volume Weighted Average Price)
  * - First fill's orderId and metadata are preserved
  * - detailedOrderType (Stop Loss, Take Profit) is preserved from any grouped fill
@@ -135,6 +149,7 @@ export function aggregateFillsByTimestamp(fills: OrderFill[]): OrderFill[] {
     let totalPnl = new BigNumber(0);
     const hasKnownPnl = groupedFills.every((fill) => fill.pnl !== undefined);
     let totalFee = new BigNumber(0);
+    const hasKnownFee = groupedFills.every((fill) => isKnownFillFee(fill.fee));
     let totalNotional = new BigNumber(0); // For VWAP calculation: sum of (size * price)
 
     // Preserve detailedOrderType and liquidation from any fill in the group
@@ -145,13 +160,14 @@ export function aggregateFillsByTimestamp(fills: OrderFill[]): OrderFill[] {
     for (const fill of groupedFills) {
       const size = new BigNumber(fill.size);
       const price = new BigNumber(fill.price);
-      const fee = new BigNumber(fill.fee || '0');
 
       totalSize = totalSize.plus(size);
       if (fill.pnl !== undefined) {
         totalPnl = totalPnl.plus(fill.pnl);
       }
-      totalFee = totalFee.plus(fee);
+      if (isKnownFillFee(fill.fee)) {
+        totalFee = totalFee.plus(fill.fee);
+      }
       totalNotional = totalNotional.plus(size.times(price));
 
       // Preserve detailedOrderType from any fill that has it
@@ -184,7 +200,7 @@ export function aggregateFillsByTimestamp(fills: OrderFill[]): OrderFill[] {
       price: vwapPrice.toString(),
       pnl: hasKnownPnl ? totalPnl.toString() : undefined,
       direction: firstFill.direction,
-      fee: totalFee.toString(),
+      fee: hasKnownFee ? totalFee.toString() : '',
       feeToken: firstFill.feeToken,
       timestamp: firstFill.timestamp, // Use first fill's timestamp
       startPosition: aggregatedStartPosition,
@@ -281,25 +297,30 @@ export function transformFillsToTransactions(
       displayAmount = `-$${Math.abs(amountBN.toNumber()).toFixed(2)}`;
       isPositive = false; // Fee is always a cost
     } else if (isClosed || isSell || isFlipped || isAutoDeleveraging) {
-      // For closing positions: show PnL minus fee
-      hasKnownAmount = fill.pnl !== undefined;
-      if (fill.pnl !== undefined) {
-        amountBN = new BigNumber(fill.pnl).minus(fill.fee || 0);
+      // For closing positions: show PnL net of the fee, unknown when either
+      // the PnL or the fee is missing
+      const netPnl = calculateNetClosedPnl({ pnl: fill.pnl, fee: fill.fee });
+      hasKnownAmount = netPnl !== undefined;
+      if (netPnl !== undefined) {
+        amountBN = new BigNumber(String(netPnl));
       }
       const netPnL = amountBN.toNumber();
-      // For display, show + for positive, - for negative, nothing for 0
+      // Core's signed PnL formatter keeps cents (a sub-cent amount reads as
+      // +$0.00, not "<$0.01"); the activity row and the details page both
+      // render this string. Break-even stays unsigned.
       if (!hasKnownAmount) {
         displayAmount = t ? t('unknown') : 'Unknown';
         isPositive = false;
-      } else if (netPnL > 0) {
-        displayAmount = `+$${Math.abs(netPnL).toFixed(2)}`;
-        isPositive = true;
-      } else if (netPnL < 0) {
-        displayAmount = `-$${Math.abs(netPnL).toFixed(2)}`;
-        isPositive = false;
-      } else {
-        displayAmount = `$${Math.abs(netPnL).toFixed(2)}`;
+      } else if (netPnL === 0) {
+        displayAmount = formatPerpsFiat(0, {
+          minimumDecimals: 2,
+          maximumDecimals: 2,
+          stripTrailingZeros: false,
+        });
         isPositive = true; // Treat break-even as positive (green)
+      } else {
+        displayAmount = formatPnl(netPnL);
+        isPositive = netPnL > 0;
       }
     } else {
       // Fallback: show order size value

@@ -190,9 +190,8 @@ describe('Send flow', function (this: Suite) {
         await confirmation.checkAccountIsDisplayed('Account 1');
         await confirmation.checkSecurityAlertsErrorIsDisplayed();
         await confirmation.clickFooterButton({ button: 'confirm' });
-        await homePage.checkPageIsLoaded();
-        await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
+        await activityTab.checkPageIsLoaded();
         await activityTab.checkFailedTxNumberDisplayedInActivity();
         await activityTab.checkTxAction({
           action: 'Interaction failed',

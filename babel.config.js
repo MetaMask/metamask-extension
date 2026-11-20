@@ -10,7 +10,7 @@ module.exports = function (api) {
       strictMode: true,
     },
     targets: {
-      browsers: ['chrome >= 123', 'firefox >= 128'],
+      browsers: ['chrome >= 137', 'firefox >= 140'],
     },
     overrides: [
       {

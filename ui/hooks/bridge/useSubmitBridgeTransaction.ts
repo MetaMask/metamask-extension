@@ -17,8 +17,10 @@ import {
 } from '../../ducks/bridge-status/actions';
 import {
   getBridgeLocation,
+  setFromTokenInputValue,
   setWasTxDeclined,
 } from '../../ducks/bridge/actions';
+import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import {
   getBridgeQuotes,
   getFromAmountInCurrency,
@@ -62,6 +64,7 @@ export default function useSubmitBridgeTransaction(
     navigateToHwSigningPage,
     navigateToDefaultRoute,
     isHardwareWalletSigningPage,
+    search,
   } = useBridgeNavigation();
   const dispatch = useDispatch();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
@@ -284,6 +287,7 @@ export default function useSubmitBridgeTransaction(
       if (hardwareWalletUsed) {
         throw e;
       }
+      return;
     } finally {
       setIsSubmitting(false);
     }
@@ -294,7 +298,14 @@ export default function useSubmitBridgeTransaction(
       return;
     }
 
-    await navigateToDefaultRoute({ replace: true }, false);
+    if (
+      new URLSearchParams(search).get(BridgeQueryParams.IsFromTransactionShield)
+    ) {
+      await navigateToDefaultRoute({ replace: true }, false);
+      return;
+    }
+
+    dispatch(setFromTokenInputValue(null));
   };
 
   return {

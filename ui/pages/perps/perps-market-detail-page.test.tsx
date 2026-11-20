@@ -53,6 +53,7 @@ jest.mock('@metamask/perps-controller', () => ({
     BRIDGE_CONTRACT_NOT_FOUND: 'BRIDGE_CONTRACT_NOT_FOUND',
     WITHDRAW_FAILED: 'WITHDRAW_FAILED',
     POSITIONS_FAILED: 'POSITIONS_FAILED',
+    POSITION_NOT_FOUND: 'POSITION_NOT_FOUND',
     ACCOUNT_STATE_FAILED: 'ACCOUNT_STATE_FAILED',
     MARKETS_FAILED: 'MARKETS_FAILED',
     UNKNOWN_ERROR: 'UNKNOWN_ERROR',
@@ -325,10 +326,16 @@ jest.mock(
   }),
 );
 
-const mockLivePositions = jest.fn(() => ({
-  positions: mockPositions,
-  isInitialLoading: false,
-}));
+const mockLivePositions = jest.fn(
+  (): {
+    positions: typeof mockPositions;
+    isInitialLoading: boolean;
+    isSeeded?: boolean;
+  } => ({
+    positions: mockPositions,
+    isInitialLoading: false,
+  }),
+);
 const mockLiveMarketData = jest.fn(() => ({
   markets: [...mockCryptoMarkets, ...mockHip3Markets],
   isInitialLoading: false,
@@ -1333,7 +1340,7 @@ describe('PerpsMarketDetailPage', () => {
       fireEvent.click(chart);
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsSetVisibleCandleCount',
+        'PerpsController:setVisibleCandleCount',
         [75],
       );
     });
@@ -1912,7 +1919,7 @@ describe('PerpsMarketDetailPage', () => {
       fireEvent.click(screen.getByTestId('perps-candle-period-modal-30m'));
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'setPreference',
+        'PreferencesController:setPreference',
         ['perpsSelectedCandlePeriod', '30m'],
       );
     });
@@ -1925,14 +1932,14 @@ describe('PerpsMarketDetailPage', () => {
       fireEvent.click(screen.getByTestId('perps-candle-period-15m'));
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'setPreference',
+        'PreferencesController:setPreference',
         ['perpsSelectedCandlePeriod', '15m'],
       );
     });
 
     it('updates chart even if preference save fails', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'setPreference') {
+        if (method === 'PreferencesController:setPreference') {
           return Promise.reject(new Error('save failed'));
         }
         return Promise.resolve({ success: true });
@@ -2005,6 +2012,26 @@ describe('PerpsMarketDetailPage', () => {
       expect(
         screen.getByText(messages.perpsDisclaimer.message),
       ).toBeInTheDocument();
+    });
+
+    it('disables TP/SL and close controls while positions are a seeded snapshot', async () => {
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+        isSeeded: true,
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(screen.getByTestId('perps-close-cta-button')).toBeDisabled();
+      expect(screen.getByTestId('perps-modify-cta-button')).toBeDisabled();
+      const autoCloseRow = screen.getByTestId('perps-auto-close-row');
+      expect(autoCloseRow).toHaveAttribute('aria-disabled', 'true');
+      fireEvent.click(autoCloseRow);
+      expect(
+        screen.queryByText(messages.perpsTakeProfit.message),
+      ).not.toBeInTheDocument();
     });
 
     it('opens TP/SL modal when Auto Close row is clicked', async () => {

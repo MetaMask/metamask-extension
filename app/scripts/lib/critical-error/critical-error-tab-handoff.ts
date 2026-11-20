@@ -172,7 +172,7 @@ async function tryHandoffViaRestoringTab(
   }
 
   const actual = new URL(tab.url);
-  // metamask.io may redirect to a locale-prefixed path (e.g. /en-GB/restoring)
+  // metamask.com may redirect to a locale-prefixed path (e.g. /en-GB/restoring)
   if (
     actual.origin !== expected.origin ||
     !actual.pathname.endsWith('/restoring') ||

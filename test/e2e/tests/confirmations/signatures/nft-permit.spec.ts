@@ -132,7 +132,8 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
 
 async function assertInfoValues(driver: Driver) {
   const confirmation = new PermitConfirmation(driver);
-  const contractAddress = '0x581c3...45947';
+  // End of the contract address. The start is shortened to fit the row.
+  const contractAddress = '6E42945947';
   const title = 'Withdrawal request';
   const description = 'This site wants permission to withdraw your NFTs';
   const tokenId = '3606393';

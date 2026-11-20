@@ -34,8 +34,15 @@ export const CarouselWithEmptyState = (props: CarouselProps) => {
     setHasCompletedEmptyState(false);
   }
 
-  // Show the fold-up animation when triggered by carousel
-  if (showFoldAnimation) {
+  // Last slide just left the list. Carousel renders nothing in that case, and
+  // its empty-state callback waits out the exit animation — that gap is the
+  // banner collapsing, then popping back with "You're all caught up!".
+  // Mount the caught-up message in this same render so the slot never drops
+  // to zero height before the message is on screen.
+  const lastSlideDismissed =
+    hasEverHadSlides && visibleSlidesCount === 0 && !hasCompletedEmptyState;
+
+  if (showFoldAnimation || lastSlideDismissed) {
     return <EmptyStateComponent onComplete={handleEmptyStateComplete} />;
   }
 

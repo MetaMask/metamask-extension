@@ -76,6 +76,7 @@ describe('useNetworkPillBalances', () => {
       balanceByChainId: { 'eip155:1': 10, [SOLANA.chainId]: 10 },
       total: 20,
       currency: 'usd',
+      isLoading: false,
     });
   });
 
@@ -88,6 +89,7 @@ describe('useNetworkPillBalances', () => {
       balanceByChainId: { 'eip155:1': undefined },
       total: undefined,
       currency: undefined,
+      isLoading: false,
     });
   });
 
@@ -110,6 +112,7 @@ describe('useNetworkPillBalances', () => {
       'eip155:1': undefined,
     });
     expect(result.current.total).toBeUndefined();
+    expect(result.current.isLoading).toBe(true);
   });
 
   it('returns the balances while loading when the account has a balance', () => {

@@ -25,6 +25,8 @@ type InterceptedDeepLinkContext = {
   source: 'intercepted';
   requestOrigin?: string;
   signatureStatus: SignatureStatus;
+  /** Unknown onboarding state retains the normal interstitial policy. */
+  getCompletedOnboarding?: () => boolean | undefined;
   /**
    * Reads the local interstitial preference. This remains lazy because reading
    * controller state is unnecessary for trusted origins or invalid links.
@@ -45,14 +47,15 @@ export type DeepLinkInterstitialContext =
  * Determines whether a deep link must show the security interstitial.
  *
  * Intercepted links may skip only when they come directly from an explicitly
- * trusted MetaMask web origin, or when their signature is valid and the user
- * has opted out of future warnings. Deferred links may skip only when their
- * signature is valid.
+ * trusted MetaMask web origin, or when their signature is valid and either
+ * onboarding is incomplete or the user has opted out of future warnings.
+ * Deferred links may skip only when their signature is valid.
  *
  * This function must remain synchronous. In particular, asset reputation,
  * product configuration, feature flags, and other remote data must never
  * influence this decision. The intercepted preference getter is evaluated
- * only for valid signatures from untrusted origins.
+ * only for valid signatures from untrusted origins when onboarding is not
+ * explicitly incomplete.
  *
  * @param context - The trusted inputs available for the relevant deep-link
  * flow.
@@ -70,6 +73,8 @@ export function shouldShowDeepLinkInterstitial(
   }
 
   return (
-    context.signatureStatus !== VALID || !context.getSkipDeepLinkInterstitial()
+    context.signatureStatus !== VALID ||
+    (context.getCompletedOnboarding?.() !== false &&
+      !context.getSkipDeepLinkInterstitial())
   );
 }

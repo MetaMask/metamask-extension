@@ -32,7 +32,6 @@ import {
 } from '../../components/app/perps/utils/formatPerpsDisplayPrice';
 import { usePerpsRecordedOrderFees } from '../../hooks/perps/usePerpsRecordedOrderFees';
 import { PERPS_EVENT_VALUE } from '../../../shared/constants/perps-events';
-import { formatPnl } from '../../../shared/lib/perps-formatters';
 import type { PerpsTransaction } from '../../components/app/perps/types';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { Row } from '../details/components/shared';
@@ -135,14 +134,12 @@ const TradeDetailRows = ({
     return null;
   }
 
-  // Use the already net-of-fees amount (`pnl - fee`, computed in
-  // `transformFillsToTransactions`) rather than the raw gross `fill.pnl`
-  // field from the provider — this matches what's shown as the colored
-  // amount in the activity list row and what mobile renders as "Net P&L".
+  // Show the net closed PnL exactly as the activity rows do: the amount
+  // `transformFillsToTransactions` derives with Core's `calculateNetClosedPnl`,
+  // so the fee is not subtracted again here. A zero net PnL is a real reading
+  // and shows like any other; an unknown one shows as unknown.
   const pnlNumber = fill.amountNumber;
-  const showPnl =
-    transaction.category === 'position_close' &&
-    (pnlNumber === undefined || (!isNaN(pnlNumber) && pnlNumber !== 0));
+  const showPnl = transaction.category === 'position_close';
 
   return (
     <>
@@ -162,10 +159,7 @@ const TradeDetailRows = ({
             pnlNumber === undefined ? (
               t('unknown')
             ) : (
-              <SignedValue
-                value={formatPnl(pnlNumber)}
-                isPositive={pnlNumber >= 0}
-              />
+              <SignedValue value={fill.amount} isPositive={pnlNumber >= 0} />
             )
           }
         />

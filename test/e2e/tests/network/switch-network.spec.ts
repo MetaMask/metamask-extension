@@ -6,6 +6,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import { NetworkName } from '../../helpers/network-constants';
 import {
   mockGasPricesArbitrum,
   mockSwapTokensArbitrum,
@@ -34,19 +35,19 @@ describe('Switch network - ', function (this: Suite) {
         const homePage = new HomePage(driver);
 
         // Validate the switch network functionality to Ethereum
-        await switchToNetworkFromNetworkSelect(driver, 'Ethereum');
+        await switchToNetworkFromNetworkSelect(driver, NetworkName.ETHEREUM);
         await homePage.checkLocalNodeBalanceIsDisplayed();
 
         // Validate the switch network functionality to test network
-        await switchToNetworkFromNetworkSelect(driver, 'Localhost 8545');
+        await switchToNetworkFromNetworkSelect(driver, NetworkName.LOCALHOST);
         await homePage.checkLocalNodeBalanceIsDisplayed();
 
         // Add Arbitrum network and perform the switch network functionality
-        await switchToNetworkFromNetworkSelect(driver, 'Arbitrum');
+        await switchToNetworkFromNetworkSelect(driver, NetworkName.ARBITRUM);
         await homePage.checkLocalNodeBalanceIsDisplayed();
 
         // Validate the switch network functionality back to Ethereum
-        await switchToNetworkFromNetworkSelect(driver, 'Ethereum');
+        await switchToNetworkFromNetworkSelect(driver, NetworkName.ETHEREUM);
         await homePage.checkPageIsLoaded();
         await homePage.checkLocalNodeBalanceIsDisplayed();
       },

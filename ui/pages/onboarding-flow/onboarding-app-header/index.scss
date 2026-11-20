@@ -65,19 +65,6 @@
   }
 
   // SRP_OVERRIDE: dropdown on welcome banner page
-  &__dropdown--welcome--banner {
-    .dropdown__select {
-      border: 0;
-      background-color: var(--color-accent03-dark);
-      color: var(--color-accent03-light);
-    }
-
-    .dropdown__icon-caret-down {
-      color: var(--color-accent03-light);
-    }
-  }
-
-  // SRP_OVERRIDE: dropdown on welcome banner page
   &__dropdown--welcome--login {
     .dropdown__select {
       border: 0;

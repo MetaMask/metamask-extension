@@ -8,7 +8,6 @@ import {
   SECOND_NODE_NETWORK_CLIENT_ID,
   WINDOW_TITLES,
 } from '../../constants';
-import { TxToastNotification } from '../../page-objects/components/tx-toast-notification';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TransactionDetailsPage from '../../page-objects/pages/transaction-details-page';
@@ -301,7 +300,6 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        await new TxToastNotification(driver).dismissConfirmedToastIfPresent();
         await new TransactionDetailsPage(driver).clickBackButtonIfPresent();
 
         const homePage = new HomePage(driver);

@@ -37,7 +37,7 @@ export async function openMoneyFtueSplash(
 ): Promise<MoneyFtueSplashPage> {
   const bottomNavBar = new BottomNavBar(driver);
   await bottomNavBar.checkPageIsLoaded();
-  await bottomNavBar.clickMoney({ assertRoute: false });
+  await bottomNavBar.clickMoney();
 
   const splash = new MoneyFtueSplashPage(driver);
   await splash.checkPageIsLoaded();

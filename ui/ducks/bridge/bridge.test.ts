@@ -1,8 +1,13 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { zeroAddress } from 'ethereumjs-util';
-import { FeatureId, RequestStatus } from '@metamask/bridge-controller';
+import {
+  FeatureId,
+  formatChainIdToCaip,
+  RequestStatus,
+} from '@metamask/bridge-controller';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
+import { mockNetworkState } from '../../../test/stub/networks';
 import * as networkConstants from '../../../shared/constants/network';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { setBackgroundConnection } from '../../store/background-connection';
@@ -146,6 +151,57 @@ describe('Ducks - Bridge', () => {
       expect(addNetworkSpy).toHaveBeenCalledTimes(1);
       expect(addNetworkSpy).toHaveBeenCalledWith(arbitrum);
       expect(actions.some((a) => a.type === 'bridge/setFromToken')).toBe(true);
+    });
+
+    it('does not enable all popular networks when the token matches the single selected network', async () => {
+      const enableAllPopularNetworksSpy = jest
+        .spyOn(storeActions, 'setEnabledAllPopularNetworks')
+        .mockReturnValue((() => undefined) as never);
+
+      const filteredStore = configureMockStore(middleware)(
+        createBridgeMockStore({
+          metamaskStateOverrides: {
+            ...mockNetworkState(
+              { chainId: CHAIN_IDS.MAINNET },
+              { chainId: CHAIN_IDS.POLYGON },
+            ),
+            enabledNetworkMap: {
+              eip155: {
+                [CHAIN_IDS.POLYGON]: true,
+              },
+            },
+          },
+          featureFlagOverrides: {
+            bridgeConfig: {
+              chainRanking: [
+                { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+                { chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON) },
+              ],
+            },
+          },
+        }),
+      );
+
+      try {
+        await filteredStore.dispatch(
+          setFromToken({
+            symbol: 'POL',
+            name: 'Polygon',
+            chainId: 'eip155:137',
+            assetId: 'eip155:137/slip44:966',
+            decimals: 18,
+          } as never) as never,
+        );
+
+        expect(enableAllPopularNetworksSpy).not.toHaveBeenCalled();
+        expect(
+          filteredStore
+            .getActions()
+            .some((action) => action.type === 'bridge/setFromToken'),
+        ).toBe(true);
+      } finally {
+        enableAllPopularNetworksSpy.mockRestore();
+      }
     });
 
     it('captures a Sentry exception when chain is supported but absent from both user configs and FEATURED_RPCS', () => {

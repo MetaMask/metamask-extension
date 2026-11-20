@@ -15,7 +15,6 @@ const mockNetworkConfig = {
     nativeCurrency: 'ETH',
     rpcEndpoints: [
       {
-        failoverUrls: [],
         networkClientId: 'mainnet',
         type: 'infura',
         url: 'https://mainnet.infura.io/v3/{infuraProjectId}',
@@ -31,7 +30,6 @@ const mockNetworkConfig = {
     nativeCurrency: 'GoerliETH',
     rpcEndpoints: [
       {
-        failoverUrls: [],
         networkClientId: 'goerli',
         type: 'infura',
         url: 'https://goerli.infura.io/v3/{infuraProjectId}',
@@ -47,7 +45,6 @@ const mockNetworkConfig = {
     nativeCurrency: 'MegaETH',
     rpcEndpoints: [
       {
-        failoverUrls: [],
         networkClientId: 'megaeth-testnet-v2',
         type: 'custom',
         url: 'https://carrot.megaeth.com/rpc',
@@ -63,7 +60,6 @@ const mockNetworkConfig = {
     nativeCurrency: 'SepoliaETH',
     rpcEndpoints: [
       {
-        failoverUrls: [],
         networkClientId: 'sepolia',
         type: 'infura',
         url: 'https://sepolia.infura.io/v3/{infuraProjectId}',

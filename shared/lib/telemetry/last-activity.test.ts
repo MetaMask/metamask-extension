@@ -132,6 +132,121 @@ describe('last-activity', () => {
       expect(getLastActivityContext(4_100).msSinceLastUiClosed).toBe(100);
     });
 
+    it('omits msSinceLastUiInteraction before the first interaction', async () => {
+      jest.setSystemTime(1_000);
+      const { getLastActivityContext, hydrateLastActivity } =
+        await import('./last-activity');
+      await hydrateLastActivity();
+
+      expect(
+        getLastActivityContext(1_500).msSinceLastUiInteraction,
+      ).toBeUndefined();
+    });
+
+    it('reports the elapsed time since the last UI interaction after the UI closes', async () => {
+      jest.setSystemTime(1_000);
+      const {
+        getLastActivityContext,
+        hydrateLastActivity,
+        recordUiClosed,
+        recordUiInteraction,
+        recordUiOpen,
+      } = await import('./last-activity');
+      await hydrateLastActivity();
+
+      jest.setSystemTime(3_000);
+      recordUiOpen();
+      jest.setSystemTime(5_000);
+      recordUiInteraction();
+      jest.setSystemTime(6_000);
+      recordUiClosed();
+
+      expect(getLastActivityContext(6_050).msSinceLastUiOpen).toBeUndefined();
+      expect(getLastActivityContext(6_050).msSinceLastUiInteraction).toBe(
+        1_050,
+      );
+    });
+
+    it('omits RPC signals before the first request', async () => {
+      jest.setSystemTime(1_000);
+      const { getLastActivityContext, hydrateLastActivity } =
+        await import('./last-activity');
+      await hydrateLastActivity();
+
+      const context = getLastActivityContext(1_500);
+      expect(context.msSinceLastDappRpc).toBeUndefined();
+      expect(context.msSinceLastConnectedDappRpc).toBeUndefined();
+      expect(context.msSinceLastSnapRpc).toBeUndefined();
+      expect(context.msSinceLastExternalExtensionRpc).toBeUndefined();
+    });
+
+    it('reports elapsed time for each RPC caller independently', async () => {
+      jest.setSystemTime(1_000);
+      const {
+        getLastActivityContext,
+        hydrateLastActivity,
+        recordConnectedDappRpc,
+        recordDappRpc,
+        recordExternalExtensionRpc,
+        recordSnapRpc,
+      } = await import('./last-activity');
+      await hydrateLastActivity();
+
+      jest.setSystemTime(2_000);
+      recordDappRpc();
+      jest.setSystemTime(2_500);
+      recordConnectedDappRpc();
+      jest.setSystemTime(3_000);
+      recordSnapRpc();
+      jest.setSystemTime(4_000);
+      recordExternalExtensionRpc();
+
+      expect(getLastActivityContext(4_500)).toStrictEqual(
+        expect.objectContaining({
+          msSinceLastDappRpc: 2_500,
+          msSinceLastConnectedDappRpc: 2_000,
+          msSinceLastSnapRpc: 1_500,
+          msSinceLastExternalExtensionRpc: 500,
+        }),
+      );
+    });
+
+    it('throttles each RPC signal to once per second', async () => {
+      jest.setSystemTime(1_000);
+      const {
+        getLastActivityContext,
+        hydrateLastActivity,
+        recordConnectedDappRpc,
+        recordDappRpc,
+        recordExternalExtensionRpc,
+        recordSnapRpc,
+      } = await import('./last-activity');
+      await hydrateLastActivity();
+
+      jest.setSystemTime(2_000);
+      recordDappRpc();
+      recordConnectedDappRpc();
+      jest.setSystemTime(2_500);
+      recordDappRpc();
+      recordConnectedDappRpc();
+      recordSnapRpc();
+      recordExternalExtensionRpc();
+
+      expect(getLastActivityContext(2_800)).toStrictEqual(
+        expect.objectContaining({
+          msSinceLastDappRpc: 800,
+          msSinceLastConnectedDappRpc: 800,
+          msSinceLastSnapRpc: 300,
+          msSinceLastExternalExtensionRpc: 300,
+        }),
+      );
+
+      jest.setSystemTime(3_000);
+      recordDappRpc();
+
+      expect(getLastActivityContext(3_100).msSinceLastDappRpc).toBe(100);
+    });
+
     it('reports the elapsed time since the last window event', async () => {
       jest.setSystemTime(1_000);
       const { getLastActivityContext, hydrateLastActivity, recordWindowEvent } =
@@ -231,6 +346,41 @@ describe('last-activity', () => {
         msSinceLastWrite: 500,
       });
     });
+
+    it('does not write session state when recordDappRpc runs in a UI context', async () => {
+      mockUiEnvironment();
+      jest.setSystemTime(1_000);
+      const { getLastActivityContext, hydrateLastActivity, recordDappRpc } =
+        await import('./last-activity');
+      await hydrateLastActivity();
+
+      jest.setSystemTime(2_000);
+      recordDappRpc();
+      await Promise.resolve();
+
+      expect(mockStorageSessionGet).not.toHaveBeenCalled();
+      expect(mockStorageSessionSet).not.toHaveBeenCalled();
+      expect(getLastActivityContext(2_500).msSinceLastDappRpc).toBe(500);
+    });
+
+    it('does not write session state when recordUiInteraction runs in a UI context', async () => {
+      mockUiEnvironment();
+      jest.setSystemTime(1_000);
+      const {
+        getLastActivityContext,
+        hydrateLastActivity,
+        recordUiInteraction,
+      } = await import('./last-activity');
+      await hydrateLastActivity();
+
+      jest.setSystemTime(2_000);
+      recordUiInteraction();
+      await Promise.resolve();
+
+      expect(mockStorageSessionGet).not.toHaveBeenCalled();
+      expect(mockStorageSessionSet).not.toHaveBeenCalled();
+      expect(getLastActivityContext(2_500).msSinceLastUiInteraction).toBe(500);
+    });
   });
 
   describe('session persistence', () => {
@@ -262,6 +412,101 @@ describe('last-activity', () => {
         msSinceLastServiceWorkerReload: 500,
         serviceWorkerReloadCount: 1,
       });
+    });
+
+    it('restores RPC timestamps across a service-worker reload', async () => {
+      jest.setSystemTime(1_000);
+      const first = await import('./last-activity');
+      await first.hydrateLastActivity();
+      jest.setSystemTime(2_000);
+      first.recordDappRpc();
+      jest.setSystemTime(2_500);
+      first.recordConnectedDappRpc();
+      jest.setSystemTime(3_000);
+      first.recordSnapRpc();
+      jest.setSystemTime(4_000);
+      first.recordExternalExtensionRpc();
+      await Promise.resolve();
+
+      jest.resetModules();
+      jest.setSystemTime(9_000);
+      const second = await import('./last-activity');
+      await second.hydrateLastActivity();
+
+      expect(second.getLastActivityContext(9_200)).toStrictEqual(
+        expect.objectContaining({
+          msSinceLastDappRpc: 7_200,
+          msSinceLastConnectedDappRpc: 6_700,
+          msSinceLastSnapRpc: 6_200,
+          msSinceLastExternalExtensionRpc: 5_200,
+        }),
+      );
+    });
+
+    it('keeps newer in-memory RPC timestamps recorded before hydrate finishes', async () => {
+      let releaseGet: (() => void) | undefined;
+      mockStorageSessionGet.mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            releaseGet = () => {
+              resolve({
+                lastActivity: {
+                  appStartedAt: 10,
+                  lastDappRpcAt: 50,
+                  lastConnectedDappRpcAt: 40,
+                  lastSnapRpcAt: 50,
+                  lastExternalExtensionRpcAt: 50,
+                  serviceWorkerReloadCount: 4,
+                },
+              });
+            };
+          }),
+      );
+
+      jest.setSystemTime(1_000);
+      const {
+        getLastActivityContext,
+        hydrateLastActivity,
+        recordConnectedDappRpc,
+        recordDappRpc,
+        recordExternalExtensionRpc,
+        recordSnapRpc,
+      } = await import('./last-activity');
+
+      jest.setSystemTime(2_000);
+      recordDappRpc();
+      recordConnectedDappRpc();
+      recordSnapRpc();
+      recordExternalExtensionRpc();
+      releaseGet?.();
+      await hydrateLastActivity();
+
+      expect(getLastActivityContext(2_500)).toStrictEqual(
+        expect.objectContaining({
+          msSinceLastDappRpc: 500,
+          msSinceLastConnectedDappRpc: 500,
+          msSinceLastSnapRpc: 500,
+          msSinceLastExternalExtensionRpc: 500,
+        }),
+      );
+    });
+
+    it('restores the last UI interaction across a service-worker reload', async () => {
+      jest.setSystemTime(1_000);
+      const first = await import('./last-activity');
+      await first.hydrateLastActivity();
+      jest.setSystemTime(4_000);
+      first.recordUiInteraction();
+      await Promise.resolve();
+
+      jest.resetModules();
+      jest.setSystemTime(9_000);
+      const second = await import('./last-activity');
+      await second.hydrateLastActivity();
+
+      expect(
+        second.getLastActivityContext(9_200).msSinceLastUiInteraction,
+      ).toBe(5_200);
     });
 
     it('restores UI-open presence across a service-worker reload', async () => {
@@ -348,6 +593,38 @@ describe('last-activity', () => {
         msSinceLastServiceWorkerReload: 1_500,
         serviceWorkerReloadCount: 5,
       });
+    });
+
+    it('keeps an in-memory UI interaction timestamp recorded before hydrate finishes', async () => {
+      let releaseGet: (() => void) | undefined;
+      mockStorageSessionGet.mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            releaseGet = () => {
+              resolve({
+                lastActivity: {
+                  appStartedAt: 10,
+                  lastUiInteractionAt: 50,
+                  serviceWorkerReloadCount: 4,
+                },
+              });
+            };
+          }),
+      );
+
+      jest.setSystemTime(1_000);
+      const {
+        getLastActivityContext,
+        hydrateLastActivity,
+        recordUiInteraction,
+      } = await import('./last-activity');
+
+      jest.setSystemTime(2_000);
+      recordUiInteraction();
+      releaseGet?.();
+      await hydrateLastActivity();
+
+      expect(getLastActivityContext(2_500).msSinceLastUiInteraction).toBe(500);
     });
 
     it('does not inflate serviceWorkerReloadCount when a UI context hydrates between two background reloads', async () => {

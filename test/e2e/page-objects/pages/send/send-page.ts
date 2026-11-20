@@ -9,8 +9,7 @@ import { Driver } from '../../../webdriver/driver';
  * Boundaries: the send form through Continue. Confirmation / review screens
  * (including Bitcoin snap review) belong to confirmation or
  * `BitcoinReviewTxPage`.
- * Related: `BitcoinReviewTxPage`, `flows/transaction.flow.ts`,
- * `flows/bitcoin-send.flow.ts`.
+ * Related: `BitcoinReviewTxPage`, `flows/transaction.flow.ts`.
  *
  * @see ui/pages/confirmations/send/send.tsx
  * @see ui/pages/confirmations/send/send-inner.tsx
@@ -66,6 +65,10 @@ class SendPage {
     text: 'Invalid address',
   };
 
+  private readonly invalidValueError = {
+    text: 'Invalid value',
+  };
+
   private readonly maxButton = {
     text: 'Max',
     tag: 'button',
@@ -81,7 +84,9 @@ class SendPage {
     testId: 'send-network-filter-toggle',
   };
 
-  private readonly recipientClassRendered = '.break-all';
+  private readonly recipientFormatted = {
+    testId: 'clear-recipient-btn',
+  };
 
   private readonly recipientModalButton = {
     testId: 'open-recipient-modal-btn',
@@ -243,6 +248,11 @@ class SendPage {
     await this.driver.waitForSelector(this.invalidAddressError);
   }
 
+  async checkInvalidValueError(): Promise<void> {
+    console.log('Checking for invalid value error');
+    await this.driver.waitForSelector(this.invalidValueError);
+  }
+
   async checkNetworkFilterToggleIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.networkPicker);
   }
@@ -397,7 +407,7 @@ class SendPage {
     // We wait for that to happen before proceeding with the next step to prevent flakiness.
     // When the address is invalid the formatted element never renders, so we skip the wait.
     if (validAddress) {
-      await this.driver.waitForSelector(this.recipientClassRendered);
+      await this.driver.waitForSelector(this.recipientFormatted);
     }
   }
 

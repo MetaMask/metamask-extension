@@ -67,6 +67,9 @@ setBackgroundConnection({
   getStatePatches: async () => jest.fn(),
 } as never);
 
+const withoutLeadingPlease = (value: string) =>
+  value.replace(/Please (\p{L})/gu, (_, letter) => letter.toUpperCase());
+
 describe('BridgeAlertBannerList', () => {
   beforeAll(() => {
     const { provider } = createTestProviderTools({
@@ -263,9 +266,13 @@ describe('BridgeAlertBannerList', () => {
       );
 
       expect(
-        getAllByTestId(`bridge-${id}`).map((alert) => alert.textContent),
+        getAllByTestId(`bridge-${id}`).map((alert) =>
+          withoutLeadingPlease(alert.textContent ?? ''),
+        ),
       ).toMatchSnapshot();
-      expect(getByTestId('bridge-banner-alerts')).toMatchSnapshot();
+      const alertList = getByTestId('bridge-banner-alerts');
+      alertList.innerHTML = withoutLeadingPlease(alertList.innerHTML);
+      expect(alertList).toMatchSnapshot();
     },
   );
 

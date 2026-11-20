@@ -5,10 +5,9 @@ import { Driver } from '../../webdriver/driver';
  *
  */
 export class TxToastNotification {
-  private readonly anyTransactionToast =
-    '[data-testid="transaction-submitted-toast"], [data-testid="transaction-confirmed-toast"], [data-testid="transaction-failed-toast"]';
-
   private readonly closeButton = '[data-testid="toast-close-button"]';
+
+  private readonly confirmedToastLink = 'a[aria-label="Transaction confirmed"]';
 
   protected driver: Driver;
 
@@ -17,8 +16,8 @@ export class TxToastNotification {
     text: 'Transaction confirmed',
   };
 
-  private readonly transactionConfirmedToast =
-    '[data-testid="transaction-confirmed-toast"]';
+  private readonly transactionFailedToast =
+    '[data-testid="transaction-failed-toast"]';
 
   private readonly transactionSubmittedToast =
     '[data-testid="transaction-submitted-toast"]';
@@ -32,6 +31,11 @@ export class TxToastNotification {
     await this.driver.waitForSelector(this.transactionConfirmedText);
   }
 
+  async checkTxFailedToast(): Promise<void> {
+    console.log('Check transaction failed toast is displayed');
+    await this.driver.waitForSelector(this.transactionFailedToast);
+  }
+
   async checkTxSubmittedToast(): Promise<void> {
     console.log('Check transaction submitted toast is displayed');
     await this.driver.waitForSelector(this.transactionSubmittedToast);
@@ -42,21 +46,8 @@ export class TxToastNotification {
     await this.driver.clickElementSafe(this.closeButton);
   }
 
-  async dismissConfirmedToastIfPresent(): Promise<void> {
-    console.log('Dismiss the transaction confirmed toast when it is open');
-    const toastOpen = await this.driver.isElementPresentAndVisible(
-      this.transactionConfirmedToast,
-      1000,
-    );
-    if (!toastOpen) {
-      return;
-    }
-    await this.driver.clickElement(this.closeButton);
-    await this.driver.assertElementNotPresent(this.transactionConfirmedToast);
-  }
-
-  async waitForToastNotification(): Promise<void> {
-    console.log('Waiting for transaction toast notification');
-    await this.driver.waitForSelector(this.anyTransactionToast);
+  async openConfirmedToast(): Promise<void> {
+    console.log('Open transaction details from the confirmed toast');
+    await this.driver.clickElement(this.confirmedToastLink);
   }
 }

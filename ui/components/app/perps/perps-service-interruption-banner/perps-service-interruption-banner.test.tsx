@@ -88,7 +88,7 @@ describe('PerpsServiceInterruptionBanner', () => {
 
     expect(faqLink).toHaveAttribute(
       'href',
-      'https://support.metamask.io/trade/perps/troubleshoot/?utm_source=extension',
+      'https://support.metamask.com/trade/perps/troubleshoot/?utm_source=extension',
     );
     expect(faqLink).toHaveAttribute('href', SERVICE_INTERRUPTION_CONFIG.FaqUrl);
     expect(faqLink).toHaveAttribute('target', '_blank');
@@ -110,7 +110,7 @@ describe('PerpsServiceInterruptionBanner', () => {
 
     expect(modal).toHaveAttribute(
       'data-support-link',
-      'https://support.metamask.io/?utm_source=extension',
+      'https://support.metamask.com/?utm_source=extension',
     );
     expect(modal).toHaveAttribute(
       'data-support-link',

@@ -27,7 +27,7 @@ const ERROR_KEYS: Partial<Record<MfaFlowErrorCode, string>> = {
 };
 
 const ERROR_LINKS: Partial<Record<MfaFlowErrorCode, string>> = {
-  email_claimed: 'https://support.metamask.io/configure/wallet/email-in-use',
+  email_claimed: 'https://support.metamask.com/configure/wallet/email-in-use',
 };
 
 /**

@@ -39,6 +39,7 @@ module.exports = {
     plugin(({ addVariant, addUtilities, addBase }) => {
       addVariant('@compact', '@container list-item (max-width: 399px)');
       addVariant('light', 'html[data-theme="light"] &');
+      addVariant('wide-layout', '[data-wide-layout] &');
       // TODO: Remove these polyfills once we update to Tailwind v4
       addVariant('starting', '@starting-style');
       addUtilities({

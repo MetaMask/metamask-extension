@@ -5,6 +5,7 @@ exports[`RampsControllerInit exposes ramps background API methods 1`] = `
   "addRampsOrder",
   "addRampsPrecreatedOrder",
   "getRampsBuyWidgetData",
+  "getRampsCountries",
   "getRampsOrderFromCallback",
   "getRampsPaymentMethods",
   "getRampsProviders",

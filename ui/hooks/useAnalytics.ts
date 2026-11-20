@@ -1,5 +1,9 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import type {
+  AnalyticsEventProperties,
+  TrackErrorAsAnalyticsOptions,
+} from '@metamask/analytics-controller';
 import {
   createEventBuilder,
   type AnalyticsEvent,
@@ -16,7 +20,10 @@ import {
   getConsentDecisionMade,
   getOptedIn,
 } from '../selectors';
-import { trackAnalyticsEvent } from '../store/actions';
+import {
+  trackAnalyticsEvent,
+  trackErrorAsAnalytics as trackErrorAsAnalyticsAction,
+} from '../store/actions';
 import { useSegmentContext } from './useSegmentContext';
 
 type UIAnalyticsTrackEventOptions = AnalyticsEventBuildOptions & {
@@ -25,9 +32,18 @@ type UIAnalyticsTrackEventOptions = AnalyticsEventBuildOptions & {
   referrer?: MetaMetricsReferrerObject;
 };
 
+type TrackErrorAsAnalyticsUiOptions = TrackErrorAsAnalyticsOptions & {
+  excludeMetaMetricsId?: boolean;
+};
+
 type UseAnalyticsResult = {
   createEventBuilder: typeof createEventBuilder;
   trackEvent: (built: AnalyticsEvent) => Promise<void>;
+  trackErrorAsAnalytics: (
+    error: unknown,
+    options: TrackErrorAsAnalyticsUiOptions,
+    properties?: AnalyticsEventProperties,
+  ) => Promise<void>;
 };
 
 export function useAnalytics(): UseAnalyticsResult {
@@ -59,11 +75,34 @@ export function useAnalytics(): UseAnalyticsResult {
     [canMaybeTrackLater, canTrackImmediately, context],
   );
 
+  const trackErrorAsAnalytics = useCallback(
+    async (
+      error: unknown,
+      options: TrackErrorAsAnalyticsUiOptions,
+      properties?: AnalyticsEventProperties,
+    ): Promise<void> => {
+      if (!canTrackImmediately && !canMaybeTrackLater) {
+        return;
+      }
+
+      await trackErrorAsAnalyticsAction(
+        error,
+        {
+          ...options,
+          environmentType: getEnvironmentType(),
+        },
+        properties,
+      );
+    },
+    [canMaybeTrackLater, canTrackImmediately],
+  );
+
   return useMemo(
     () => ({
       createEventBuilder,
       trackEvent,
+      trackErrorAsAnalytics,
     }),
-    [trackEvent],
+    [trackEvent, trackErrorAsAnalytics],
   );
 }

@@ -39,17 +39,17 @@ export const submitBridgeTx =
     const result = await submitRequestToBackground(
       'BridgeStatusController:submitTx',
       [
-        accountAddress,
-        quote,
-        isStxSupportedInClient,
-        context,
-        location,
-        undefined,
-        activeAbTests,
-        tokenSecurityTypeDestination,
-        undefined,
-        inputPrimaryDenomination,
-        BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE,
+        {
+          accountAddress,
+          quoteResponses: [quote],
+          isStxEnabled: isStxSupportedInClient,
+          quotesReceivedContext: context,
+          location,
+          activeAbTests,
+          tokenSecurityTypeDestination,
+          inputPrimaryDenomination,
+          migrationPhase: BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE,
+        },
       ],
     );
     await forceUpdateMetamaskState(dispatch);

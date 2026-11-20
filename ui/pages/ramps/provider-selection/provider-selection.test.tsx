@@ -24,6 +24,16 @@ jest.mock('../../../hooks/ramps/useRampsQuotes', () => ({
   useRampsQuotes: (...args: unknown[]) => mockUseRampsQuotes(...args),
 }));
 
+// Analytics events go through the background connection, which this UI test
+// does not initialize.
+jest.mock('../../../hooks/ramps/useRampsAnalytics', () => ({
+  useRampsAnalytics: () => ({
+    trackTokenSelected: jest.fn(),
+    trackScreenViewed: jest.fn(),
+    trackProviderSelected: jest.fn(),
+  }),
+}));
+
 jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
   getInternalAccountBySelectedAccountGroupAndCaip: jest.fn(() => null),
 }));

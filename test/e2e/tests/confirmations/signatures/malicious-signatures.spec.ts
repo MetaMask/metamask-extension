@@ -32,7 +32,6 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
           SignatureType.SIWE_BadDomain,
         );
 
-        await confirmation.clickScrollToBottomButton();
         await confirmation.clickInlineAlert();
 
         await alertModal.acknowledgeAlert();

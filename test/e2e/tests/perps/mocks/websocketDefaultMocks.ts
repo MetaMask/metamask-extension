@@ -84,7 +84,11 @@ export function getResponsePayload(mock: WebSocketMessageMock): object | null {
  *
  * The @nktkas/hyperliquid SDK's WebSocketSubscriptionManager awaits a `subscriptionResponse`
  * event and checks isSubset(subscriptionPayload, responseData). Sending back the original
- * message as `data` satisfies that check regardless of subscription type.
+ * message as `data` satisfies that check regardless of subscription type (and also confirms
+ * `unsubscribe` requests, which reach the generic fallback mock).
+ *
+ * Without a matching confirmation the SDK times the subscribe request out after 10 s and
+ * removes the channel listener, so every later push on that channel is silently dropped.
  *
  * @param message - The raw WebSocket message string to echo back.
  * @returns The subscription confirmation object, or a fallback with empty data.
@@ -92,9 +96,9 @@ export function getResponsePayload(mock: WebSocketMessageMock): object | null {
 export function buildSubscribedConfirmation(message: string): object | null {
   try {
     const parsed = JSON.parse(message);
-    return { channel: 'subscribed', data: parsed };
+    return { channel: 'subscriptionResponse', data: parsed };
   } catch {
-    return { channel: 'subscribed', data: {} };
+    return { channel: 'subscriptionResponse', data: {} };
   }
 }
 

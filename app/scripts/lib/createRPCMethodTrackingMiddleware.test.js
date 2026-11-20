@@ -228,6 +228,27 @@ messenger.registerActionHandler('RemoteFeatureFlagController:getState', () => ({
   remoteFeatureFlags: {},
 }));
 
+// This is a straight copy of the actual implementation of this action.
+messenger.registerActionHandler(
+  'LegacyBackgroundApiService:setParticipateInMetaMetrics',
+  async (participateInMetaMetrics) => {
+    const { analyticsId } = messenger.call('AnalyticsController:getState');
+
+    if (participateInMetaMetrics === true) {
+      await messenger.call('AnalyticsController:optIn');
+      messenger.call('SentryTracingService:trackTracesAfterMetricsOptIn');
+      messenger.call('SentryTracingService:clearTracesAfterMetricsOptIn');
+    } else if (participateInMetaMetrics === false) {
+      messenger.call('AnalyticsController:optOut');
+      messenger.call('SentryTracingService:clearTracesAfterMetricsOptIn');
+    } else {
+      messenger.call('AnalyticsController:resetConsentDecision');
+    }
+
+    return analyticsId;
+  },
+);
+
 configureAnalytics({
   messenger: getAnalyticsControllerInitMessenger(messenger),
 });

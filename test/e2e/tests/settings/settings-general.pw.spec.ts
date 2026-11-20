@@ -1,7 +1,8 @@
 import { test as pwTest } from '@playwright/test';
 import { E2E_DRIVER } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import PreferencesAndDisplaySettings from '../../page-objects/pages/settings/preferences-and-display-settings';
+import AccountIdenticonSettings from '../../page-objects/pages/settings/preferences-and-display/account-identicon-settings';
+import PreferencesAndDisplaySettings from '../../page-objects/pages/settings/preferences-and-display/preferences-and-display-settings';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import { login } from '../../page-objects/flows/login.flow';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
@@ -34,10 +35,11 @@ pwTest.describe('Settings', () => {
           await settingsPage.checkPageIsLoaded();
 
           // Verify identicon options
-          await preferencesAndDisplaySettings.checkIdenticonOptionsAreDisplayed();
-          await preferencesAndDisplaySettings.checkIdenticonIsActive(
-            'maskicon',
-          );
+          await preferencesAndDisplaySettings.openAccountIdenticonSettings();
+          const accountIdenticonSettings = new AccountIdenticonSettings(driver);
+          await accountIdenticonSettings.checkPageIsLoaded();
+          await accountIdenticonSettings.checkIdenticonOptionsAreDisplayed();
+          await accountIdenticonSettings.checkIdenticonIsActive('maskicon');
         },
       );
     },

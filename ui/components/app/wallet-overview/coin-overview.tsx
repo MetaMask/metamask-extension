@@ -67,8 +67,8 @@ import {
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import { useAccountGroupBalanceDisplay } from '../assets/account-group-balance-change/useAccountGroupBalanceDisplay';
 import { useDispatch } from '../../../store/hooks';
+import { useAppLayout } from '../../../contexts/app-layout';
 import WalletOverview from './wallet-overview';
-import { getBalanceAlignmentClassName } from './wallet-overview-layout';
 import CoinButtons from './coin-buttons';
 
 export type CoinOverviewProps = {
@@ -101,8 +101,7 @@ const BalanceOverviewSkeleton = () => {
     >
       <Box
         className={classnames(
-          'flex w-full max-w-[368px] flex-col justify-center gap-[2px]',
-          getBalanceAlignmentClassName(),
+          'flex w-full max-w-[368px] flex-col justify-center gap-[2px] max-[490px]:items-start',
         )}
       >
         <Skeleton className="h-14 w-full rounded-lg md:h-[75px]" />
@@ -223,6 +222,7 @@ export const CoinOverview = ({
   isSigningEnabled,
 }: CoinOverviewProps) => {
   const t: ReturnType<typeof useI18nContext> = useContext(I18nContext);
+  const { isWideLayout } = useAppLayout();
 
   const { trackEvent, createEventBuilder } = useAnalytics();
 
@@ -417,8 +417,8 @@ export const CoinOverview = ({
     >
       <div
         className={classnames(
-          `${classPrefix}-overview__balance`,
-          getBalanceAlignmentClassName(),
+          `${classPrefix}-overview__balance max-[490px]:items-start`,
+          isWideLayout ? 'items-start' : 'items-center',
         )}
       >
         <div className={`${classPrefix}-overview__primary-container`}>
@@ -437,7 +437,10 @@ export const CoinOverview = ({
   } else if (shouldShowBalanceEmptyState) {
     balanceContent = (
       <BalanceEmptyState
-        className="w-full max-w-[460px] self-center"
+        className={classnames('w-full max-w-[460px]', {
+          'self-center': !isWideLayout,
+          'self-start max-w-none': isWideLayout,
+        })}
         data-testid="coin-overview-balance-empty-state"
         onClickReceive={handleReceiveOnClick}
       />
@@ -458,6 +461,7 @@ export const CoinOverview = ({
             isBridgeChain,
             classPrefix,
           }}
+          showAsPills={isWideLayout}
         />
       }
       className={className}

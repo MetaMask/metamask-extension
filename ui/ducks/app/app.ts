@@ -96,6 +96,7 @@ type AppState = {
   newTokensImported: string;
   newTokensImportedError: string;
   onboardedInThisUISession: boolean;
+  onboardingRedirect: string | null;
   customTokenAmount: string;
   txId: string | null;
   showDeleteMetaMetricsDataModal: boolean;
@@ -191,6 +192,7 @@ const initialState: AppState = {
   newTokensImported: '',
   newTokensImportedError: '',
   onboardedInThisUISession: false,
+  onboardingRedirect: null,
   customTokenAmount: '',
   txId: null,
   showDeleteMetaMetricsDataModal: false,
@@ -567,6 +569,11 @@ export default function reduceApp(
         ...appState,
         onboardedInThisUISession: action.payload,
       };
+    case actionConstants.SET_ONBOARDING_REDIRECT:
+      if (state && state.onboardingRedirect === action.payload) {
+        return state;
+      }
+      return { ...appState, onboardingRedirect: action.payload };
     case actionConstants.SET_CUSTOM_TOKEN_AMOUNT:
       return {
         ...appState,
@@ -741,6 +748,18 @@ export function setCustomTokenAmount(payload: string): PayloadAction<string> {
 }
 
 /**
+ * Retains an internal destination across onboarding steps in this UI session.
+ *
+ * @param payload - The route to resume, or null to clear it.
+ * @returns The action recording the intended destination.
+ */
+export function setOnboardingRedirect(
+  payload: string | null,
+): PayloadAction<string | null> {
+  return { type: actionConstants.SET_ONBOARDING_REDIRECT, payload };
+}
+
+/**
  * An action creator for display a error to the user in various places in the
  * UI. It will not be cleared until a new error replaces it or `hideErrorInSettings`
  * is called.
@@ -762,6 +781,16 @@ export function hideErrorInSettings() {
 }
 
 // Selectors
+/**
+ * Reads the internal destination retained for onboarding completion.
+ *
+ * @param state - The UI state.
+ * @returns The pending route, or null when onboarding started normally.
+ */
+export function getOnboardingRedirect(state: AppSliceState): string | null {
+  return state.appState?.onboardingRedirect ?? null;
+}
+
 export function getQrCodeData(state: AppSliceState): {
   type?: string | null;
   values?: { address?: string | null };

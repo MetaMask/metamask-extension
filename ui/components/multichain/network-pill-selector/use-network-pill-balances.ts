@@ -34,7 +34,7 @@ const toEnabledNetworkMap = (
  *
  * @param networks - The networks to get balances for.
  * @returns The balance of each network keyed by CAIP chain ID, the total of all
- * the networks, and the currency they are in.
+ * networks, their currency, and whether the balances are still loading.
  */
 export const useNetworkPillBalances = (
   networks: MultichainNetworkConfiguration[],
@@ -70,6 +70,7 @@ export const useNetworkPillBalances = (
       balanceByChainId,
       total: isLoading ? undefined : total?.totalBalanceInUserCurrency,
       currency: total?.userCurrency,
+      isLoading,
     };
   }, [getBalance, isLoading, networks]);
 };

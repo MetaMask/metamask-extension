@@ -36,13 +36,15 @@ const withdrawFixtures = (title?: string) => ({
 });
 
 const withdrawConfirmationFixtures = (title?: string) => {
-  const fixtures = {
-    ...getPerpsConfigEligibleWithArbitrumUsdc(title),
-    perpsWebSocketSpecificMocks: WS_USER_WITH_FUNDED_ACCOUNT,
-  };
+  const config = getPerpsConfigEligibleWithArbitrumUsdc(title);
 
   return {
-    ...fixtures,
+    ...config,
+    manifestFlags: {
+      ...config.manifestFlags,
+      testing: { disableTransactionToasts: false },
+    },
+    perpsWebSocketSpecificMocks: WS_USER_WITH_FUNDED_ACCOUNT,
   };
 };
 

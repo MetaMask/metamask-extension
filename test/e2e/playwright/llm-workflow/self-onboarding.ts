@@ -1,18 +1,22 @@
 import { importSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
+import {
+  DEFAULT_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
+  UNLOCK_ROUTE,
+} from '../../../../ui/helpers/constants/routes';
 import type { Driver } from '../../webdriver/driver';
-import type { ScreenName } from './launcher-types';
 import { SCREEN_CHECKS, waitForAnyScreen } from './launcher/state-inspector';
 
 const CANARY_SRP_PREFIX = 'CANARY-NOT-A-REAL-SRP-';
 
-const UNLOCKED_SCREENS: ScreenName[] = ['onboarding-complete', 'home'];
-const UNLOCKED_SCREEN_CHECKS = SCREEN_CHECKS.filter(({ screen }) =>
-  UNLOCKED_SCREENS.includes(screen),
+const UNLOCKED_ROUTES = [ONBOARDING_COMPLETION_ROUTE, DEFAULT_ROUTE];
+const UNLOCKED_SCREEN_CHECKS = SCREEN_CHECKS.filter(({ route }) =>
+  UNLOCKED_ROUTES.includes(route),
 );
 const FINISH_SCREEN_CHECKS = SCREEN_CHECKS.filter(
-  ({ screen }) => screen === 'unlock' || UNLOCKED_SCREENS.includes(screen),
+  ({ route }) => route === UNLOCK_ROUTE || UNLOCKED_ROUTES.includes(route),
 );
 
 /**
@@ -47,14 +51,14 @@ export async function finishOnboarding(
   driver: Driver,
   password: string,
 ): Promise<void> {
-  let { screen } = await waitForAnyScreen(driver, FINISH_SCREEN_CHECKS);
-  if (screen === 'unlock') {
+  let { route } = await waitForAnyScreen(driver, FINISH_SCREEN_CHECKS);
+  if (route === UNLOCK_ROUTE) {
     await new LoginPage(driver).loginToHomepage(password);
     // The unlock form stays mounted while the vault decrypts, so only the
     // screens that follow a successful unlock count as progress.
-    ({ screen } = await waitForAnyScreen(driver, UNLOCKED_SCREEN_CHECKS));
+    ({ route } = await waitForAnyScreen(driver, UNLOCKED_SCREEN_CHECKS));
   }
-  if (screen === 'onboarding-complete') {
+  if (route === ONBOARDING_COMPLETION_ROUTE) {
     await new OnboardingCompletePage(driver).completeOnboarding();
   }
 }

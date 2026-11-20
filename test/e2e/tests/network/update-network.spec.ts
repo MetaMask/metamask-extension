@@ -11,6 +11,7 @@ import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import NetworksPage from '../../page-objects/pages/networks/networks-page';
 import { login } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
+import { NetworkId } from '../../helpers/network-constants';
 
 describe('Update Network:', function (this: Suite) {
   it('update network details and validate the ui elements', async function () {
@@ -30,7 +31,7 @@ describe('Update Network:', function (this: Suite) {
 
         const networksPage = new NetworksPage(driver);
         await networksPage.checkPageIsLoaded();
-        await networksPage.openNetworkListOptions('eip155:1337');
+        await networksPage.openNetworkListOptions(NetworkId.LOCALHOST);
         await networksPage.openEditNetworkPage();
 
         // Verify chain id is not editable when updating a network
@@ -53,7 +54,7 @@ describe('Update Network:', function (this: Suite) {
         await headerNavbar.openGlobalNetworksMenu();
 
         await networksPage.checkPageIsLoaded();
-        await networksPage.openNetworkListOptions('eip155:1337');
+        await networksPage.openNetworkListOptions(NetworkId.LOCALHOST);
         await networksPage.openEditNetworkPage();
         await editNetworkPage.checkPageIsLoaded();
 
@@ -149,7 +150,7 @@ describe('Update Network:', function (this: Suite) {
         await networksPage.checkPageIsLoaded();
 
         // Go to Edit Menu
-        await networksPage.openNetworkListOptions('eip155:42161');
+        await networksPage.openNetworkListOptions(NetworkId.ARBITRUM);
         await networksPage.openEditNetworkPage();
         const editNetworkPage = new AddEditNetworkPage(driver);
         await editNetworkPage.checkPageIsLoaded();
@@ -168,7 +169,7 @@ describe('Update Network:', function (this: Suite) {
         await headerNavbar.openGlobalNetworksMenu();
 
         await networksPage.checkPageIsLoaded();
-        await networksPage.openNetworkListOptions('eip155:42161');
+        await networksPage.openNetworkListOptions(NetworkId.ARBITRUM);
         await networksPage.openEditNetworkPage();
         await editNetworkPage.checkPageIsLoaded();
 
@@ -235,7 +236,7 @@ describe('Update Network:', function (this: Suite) {
         await networksPage.checkPageIsLoaded();
 
         // Go to Edit Menu
-        await networksPage.openNetworkListOptions('eip155:42161');
+        await networksPage.openNetworkListOptions(NetworkId.ARBITRUM);
         await networksPage.openEditNetworkPage();
         const editNetworkPage = new AddEditNetworkPage(driver);
         await editNetworkPage.checkPageIsLoaded();
@@ -264,7 +265,7 @@ describe('Update Network:', function (this: Suite) {
         await headerNavbar.openGlobalNetworksMenu();
 
         await networksPage.checkPageIsLoaded();
-        await networksPage.openNetworkListOptions('eip155:42161');
+        await networksPage.openNetworkListOptions(NetworkId.ARBITRUM);
         await networksPage.openEditNetworkPage();
         await editNetworkPage.checkPageIsLoaded();
 

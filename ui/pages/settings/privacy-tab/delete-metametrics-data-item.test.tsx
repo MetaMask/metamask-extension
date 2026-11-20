@@ -20,6 +20,7 @@ jest.mock('../../../hooks/useAnalytics', () => {
   return {
     useAnalytics: () => ({
       trackEvent: jest.fn(),
+      trackErrorAsAnalytics: jest.fn(),
       createEventBuilder,
     }),
   };
