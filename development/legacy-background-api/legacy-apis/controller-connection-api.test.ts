@@ -518,6 +518,35 @@ describe('getControllerConnectionApiMemberNames', () => {
       expect(getApiMethods).toStrictEqual(new Set(['exposed']));
     });
 
+    it('follows an overloaded function to its implementation', () => {
+      const { sourceFile, context } = parseSource(`
+        function createApi(): Api;
+        function createApi(enabled: boolean): Api;
+        function createApi(enabled?: boolean) { return { exposed() {} }; }
+        class MetamaskController {
+          setupControllerConnection() { const api = { ...createApi() }; }
+        }`);
+
+      const { adhocControllerConnectionMethods } =
+        getControllerConnectionApiMemberNames(sourceFile, context);
+
+      expect(adhocControllerConnectionMethods).toStrictEqual(
+        new Set(['exposed']),
+      );
+    });
+
+    it('rejects a function declared without an implementation', () => {
+      const { sourceFile, context } = parseSource(`
+        declare function createApi(): Api;
+        class MetamaskController {
+          setupControllerConnection() { const api = { ...createApi() }; }
+        }`);
+
+      expect(() =>
+        getControllerConnectionApiMemberNames(sourceFile, context),
+      ).toThrow('Cannot find an implementation of "createApi"');
+    });
+
     it('follows a call to a method on an instance', () => {
       const { sourceFile, context } = parseSource(`
         class Bridge { bridgeApi() { return { exposed() {} }; } }

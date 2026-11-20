@@ -224,12 +224,17 @@ export function resolveFunctions(
       normalizedExpression,
       context,
     );
-    return declarations.flatMap((declaration) => {
+    const functions = declarations.flatMap((declaration) => {
       // EXAMPLE:
       //   function getTransactionControllerApi(transactionController) { ... }
       //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-      if (ts.isFunctionDeclaration(declaration) && declaration.body) {
-        return [declaration];
+      if (ts.isFunctionDeclaration(declaration)) {
+        // An overload signature is still a function declaration, but skip it
+        // since it doesn't have a body.
+        // EXAMPLE:
+        //   function getTransactionControllerApi(): Api;
+        //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        return declaration.body ? [declaration] : [];
       }
 
       // EXAMPLE:
@@ -239,6 +244,14 @@ export function resolveFunctions(
         resolveFunctions(value, context),
       );
     });
+
+    if (functions.length === 0) {
+      throw new UnresolvableExpressionError(
+        normalizedExpression,
+        `Cannot find an implementation of "${normalizedExpression.text}"`,
+      );
+    }
+    return functions;
   }
 
   throw new UnresolvableExpressionError(
