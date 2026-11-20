@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
-import type { UseQueryResult } from '@tanstack/react-query';
 import { useQuery } from '@metamask/react-data-query';
 import type { VaultsResponse } from '@metamask/money-account-api-data-service';
 import { MoneyAccountApiDataServiceQueryKeys } from '../../../shared/lib/money/query-keys';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import {
   clearReportedMoneyQueryError,
   reportMoneyQueryErrorOnce,
@@ -23,7 +23,7 @@ const PERCENT = 100;
 const APY_PERCENT_DP = 1;
 
 export type UseMoneyVaultApyResult = {
-  vaultApyQuery: UseQueryResult<VaultsResponse>;
+  isApyLoading: boolean;
   apyDecimal: number | undefined;
   apyPercent: number | undefined;
   apyPercentFormatted: string | undefined;
@@ -78,9 +78,8 @@ export function useMoneyVaultApy({
 
   const vaults = vaultApyQuery.data?.vaults;
   const configuredVault = configuredVaultAddress
-    ? vaults?.find(
-        ({ vault_address: vaultAddress }) =>
-          vaultAddress.toLowerCase() === configuredVaultAddress.toLowerCase(),
+    ? vaults?.find(({ vault_address: vaultAddress }) =>
+        isEqualCaseInsensitive(vaultAddress, configuredVaultAddress),
       )
     : undefined;
   const vault =
@@ -111,5 +110,10 @@ export function useMoneyVaultApy({
   const apyPercentFormatted =
     apyPercent === undefined ? undefined : `${apyPercent}%`;
 
-  return { vaultApyQuery, apyDecimal, apyPercent, apyPercentFormatted };
+  return {
+    isApyLoading: vaultApyQuery.isLoading,
+    apyDecimal,
+    apyPercent,
+    apyPercentFormatted,
+  };
 }

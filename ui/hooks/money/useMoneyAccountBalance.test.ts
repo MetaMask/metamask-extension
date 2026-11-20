@@ -363,14 +363,11 @@ describe('useMoneyAccountBalance', () => {
       expect(result.current.totalFiatRaw).toBe('0.000002');
     });
 
-    it('surfaces the query object so a caller can read isFetching directly', () => {
+    it('surfaces the balance query object', () => {
       const { result } = renderBalanceHook();
 
       expect(result.current.moneyBalanceQuery.data).toStrictEqual(
         LOADED_BALANCE,
-      );
-      expect(result.current.vaultApyQuery.data?.vaults[0].current_apy).toBe(
-        '0.05',
       );
     });
   });

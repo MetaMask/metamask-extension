@@ -4,7 +4,6 @@ import BigNumber from 'bignumber.js';
 import type { UseQueryResult } from '@tanstack/react-query';
 import { useQuery } from '@metamask/react-data-query';
 import type { CanonicalMoneyAccountBalanceResponse } from '@metamask/money-account-balance-service';
-import type { VaultsResponse } from '@metamask/money-account-api-data-service';
 import { MoneyAccountBalanceServiceQueryKeys } from '../../../shared/lib/money/query-keys';
 import { MUSD_UNIT } from '../../../shared/lib/money/withdrawable-balance';
 import {
@@ -29,7 +28,6 @@ const DEFAULT_REFETCH_INTERVAL = 30 * 1000; // 30 seconds
 
 export type UseMoneyAccountBalanceResult = {
   moneyBalanceQuery: UseQueryResult<CanonicalMoneyAccountBalanceResponse>;
-  vaultApyQuery: UseQueryResult<VaultsResponse>;
   isBalanceLoading: boolean;
   isBalanceFetchError: boolean;
   isBalanceUnavailable: boolean;
@@ -55,6 +53,7 @@ export type UseMoneyAccountBalanceResult = {
   /** Exact withdrawable balance. Drives Max, so it keeps full precision. */
   withdrawableFiatRaw: string | undefined;
   withdrawableMusd: BigNumber | undefined;
+  isApyLoading: boolean;
   apyDecimal: number | undefined;
   apyPercent: number | undefined;
   apyPercentFormatted: string | undefined;
@@ -95,7 +94,7 @@ export function useMoneyAccountBalance({
     refetchInterval,
   });
 
-  const { vaultApyQuery, apyDecimal, apyPercent, apyPercentFormatted } =
+  const { isApyLoading, apyDecimal, apyPercent, apyPercentFormatted } =
     useMoneyVaultApy({ enabled: enabled && hasAddress });
 
   /**
@@ -225,7 +224,6 @@ export function useMoneyAccountBalance({
 
   return {
     moneyBalanceQuery,
-    vaultApyQuery,
     isBalanceLoading,
     isBalanceFetchError,
     isBalanceUnavailable,
@@ -240,6 +238,7 @@ export function useMoneyAccountBalance({
     withdrawableFiatFormatted,
     withdrawableFiatRaw,
     withdrawableMusd,
+    isApyLoading,
     apyDecimal,
     apyPercent,
     apyPercentFormatted,
