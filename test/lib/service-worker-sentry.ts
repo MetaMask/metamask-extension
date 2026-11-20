@@ -1,9 +1,6 @@
 import * as Sentry from '@sentry/browser';
 
-const globals = globalThis as {
-  ServiceWorkerGlobalScope?: unknown;
-  sentry?: unknown;
-};
+const globals = globalThis as Record<string, unknown>;
 
 // A real client with no pageload running and every trace sampled.
 // Returns the trace id the scope holds outside any operation.
