@@ -93,6 +93,7 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
   getEthAccounts,
+  getPermittedEthChainIds,
   getSessionScopes,
   setPermittedEthChainIds,
   getPermittedAccountsForScopes,
@@ -191,6 +192,7 @@ import {
 import { isPerpsRemoteConfigSatisfied } from '../../shared/lib/perps-feature-flags';
 import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
 import { accountSupports7702 } from './lib/account-supports-7702';
+import { createSessionCapabilities } from './lib/session-capabilities/session-capabilities';
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
@@ -995,6 +997,36 @@ export default class MetamaskController extends EventEmitter {
       return this.getPermittedAccounts(innerOrigin, scope);
     };
 
+    this.getEip5792Capabilities = (address, chainIds) =>
+      getCapabilities(
+        {
+          getDismissSmartAccountSuggestionEnabled: () =>
+            this.preferencesController.state.preferences
+              .dismissSmartAccountSuggestionEnabled,
+          getIsSmartTransaction: (chainId) =>
+            getIsSmartTransaction(this._getMetaMaskState(), chainId),
+          getSmartTransactionsPreferenceEnabled: () =>
+            getSmartTransactionsPreferenceEnabled(this._getMetaMaskState()),
+          getSmartTransactionsEnabled: (chainId) =>
+            getSmartTransactionsEnabled(this._getMetaMaskState(), chainId),
+          isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
+            this.txController,
+          ),
+          isRelaySupported,
+          getSendBundleSupportedChains,
+          isAuxiliaryFundsSupported: (chainId) =>
+            ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
+        },
+        this.controllerMessenger,
+        address,
+        chainIds,
+      );
+
+    this.sessionCapabilities = createSessionCapabilities({
+      computeCapabilities: (address, chainIds) =>
+        this.getEip5792Capabilities(address, chainIds),
+    });
+
     this.eip5792Middleware = createScaffoldMiddleware({
       wallet_getCapabilities: createAsyncMiddleware(async (req, res) =>
         walletGetCapabilities(req, res, {
@@ -1002,29 +1034,7 @@ export default class MetamaskController extends EventEmitter {
           getPermittedAccountsForOrigin: async () => {
             return getAccounts({ origin: req.origin });
           },
-          getCapabilities: getCapabilities.bind(
-            null,
-            {
-              getDismissSmartAccountSuggestionEnabled: () =>
-                this.preferencesController.state.preferences
-                  .dismissSmartAccountSuggestionEnabled,
-              getIsSmartTransaction: (chainId) =>
-                getIsSmartTransaction(this._getMetaMaskState(), chainId),
-              getSmartTransactionsPreferenceEnabled: () =>
-                getSmartTransactionsPreferenceEnabled(this._getMetaMaskState()),
-              getSmartTransactionsEnabled: (chainId) =>
-                getSmartTransactionsEnabled(this._getMetaMaskState(), chainId),
-              isAtomicBatchSupported:
-                this.txController.isAtomicBatchSupported.bind(
-                  this.txController,
-                ),
-              isRelaySupported,
-              getSendBundleSupportedChains,
-              isAuxiliaryFundsSupported: (chainId) =>
-                ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
-            },
-            this.controllerMessenger,
-          ),
+          getCapabilities: this.getEip5792Capabilities,
         }),
       ),
       wallet_sendCalls: createAsyncMiddleware(async (req, res) => {
@@ -2882,6 +2892,29 @@ export default class MetamaskController extends EventEmitter {
   //=============================================================================
 
   /**
+   * Gets the EVM chain IDs granted by an origin's CAIP-25 permission.
+   *
+   * @param {string} origin - The origin that holds the permission.
+   * @returns {import('@metamask/utils').Hex[]} The permitted chain IDs, or an
+   * empty array when the origin holds no CAIP-25 permission.
+   */
+  #getPermittedEvmChainIds(origin) {
+    try {
+      const caveat = this.permissionController.getCaveat(
+        origin,
+        Caip25EndowmentPermissionName,
+        Caip25CaveatType,
+      );
+      return getPermittedEthChainIds(caveat.value);
+    } catch (error) {
+      if (error instanceof PermissionDoesNotExistError) {
+        return [];
+      }
+      throw error;
+    }
+  }
+
+  /**
    * Validates ERC-20 `wallet_watchAsset` input that the unified path requires
    * before the EIP-747 confirmation flow. Does not persist; see
    * {@link #persistUnifiedWatchAsset}.
@@ -4492,6 +4525,17 @@ export default class MetamaskController extends EventEmitter {
           ),
         sortAccountIdsByLastSelected:
           this.sortAccountIdsByLastSelected.bind(this),
+        // The session handlers hydrate `sessionProperties.eip155Capabilities`
+        // through this hook. The permission is already granted when
+        // `wallet_createSession` calls it, so the caveat is resolved at call
+        // time. Only the permitted EVM chains are computed, so RPC calls are
+        // not fanned out to, and capabilities are not disclosed for, networks
+        // the dapp was not granted.
+        getCapabilities: ({ address }) =>
+          this.sessionCapabilities.getSessionCapabilities(
+            address,
+            this.#getPermittedEvmChainIds(origin),
+          ),
       }),
     );
 

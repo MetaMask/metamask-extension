@@ -53,7 +53,7 @@ async function main() {
       await driver.openNewPage(DAPP_URL);
 
       const testCoverageResults = await testCoverage({
-        openrpcDocument: parsedDoc,
+        openrpcDocument: parsedDoc as OpenrpcDocument,
         transport,
         reporters: [
           'console-streaming',
