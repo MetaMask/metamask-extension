@@ -686,6 +686,21 @@ describe('getControllerConnectionApiMemberNames', () => {
         adhocControllerConnectionMethods: new Set(),
       });
     });
+
+    it('ignores a messengerClientApi spread wrapped in parentheses', () => {
+      const { sourceFile, context } = parseSource(`class MetamaskController {
+        setupControllerConnection() {
+          const api = { ...(this.messengerClientApi) };
+        }
+      }`);
+
+      const names = getControllerConnectionApiMemberNames(sourceFile, context);
+
+      expect(names).toStrictEqual({
+        getApiMethods: new Set(),
+        adhocControllerConnectionMethods: new Set(),
+      });
+    });
   });
 });
 

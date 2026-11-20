@@ -196,10 +196,12 @@ function findControllerConnectionApiObject(
  * @returns True if the expression is `this.messengerClientApi`.
  */
 function isMessengerClientApiAccess(expression: ts.Expression): boolean {
+  const normalizedExpression = unwrapExpression(expression);
+
   return (
-    ts.isPropertyAccessExpression(expression) &&
-    expression.expression.kind === ts.SyntaxKind.ThisKeyword &&
-    getPropertyNameText(expression.name) === 'messengerClientApi'
+    ts.isPropertyAccessExpression(normalizedExpression) &&
+    normalizedExpression.expression.kind === ts.SyntaxKind.ThisKeyword &&
+    getPropertyNameText(normalizedExpression.name) === 'messengerClientApi'
   );
 }
 
