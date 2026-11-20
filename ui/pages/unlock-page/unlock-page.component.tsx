@@ -408,6 +408,9 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
     switch (message) {
       case 'Incorrect password':
       case SeedlessOnboardingControllerErrorMessage.IncorrectPassword:
+        if (data?.numberOfAttempts === undefined) {
+          this.failed_attempts += 1;
+        }
         finalErrorMessage = t('unlockPageIncorrectPassword');
         errorReason = 'incorrect_password';
         break;
