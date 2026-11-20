@@ -6,6 +6,7 @@ import {
 } from '@metamask/money-account-utils';
 import type { Hex } from '@metamask/utils';
 import BigNumber from 'bignumber.js';
+import { isMoneyWithdrawTx } from '../../../helpers/money/money-transaction-guards';
 import { moneyFormatUsd } from '../../../helpers/money/format';
 import { shortenString } from '../../../helpers/utils/util';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
@@ -183,7 +184,12 @@ export function getMoneyActivityTransactionHash(
   requiredTransaction?: TransactionMeta,
 ): MoneyActivityTransactionHash | undefined {
   if (tx.hash && isValidTransactionHash(tx.hash)) {
-    return { hash: tx.hash as Hex, chainId: tx.chainId };
+    return {
+      hash: tx.hash as Hex,
+      chainId: isMoneyWithdrawTx(tx)
+        ? (tx.metamaskPay?.chainId ?? tx.chainId)
+        : tx.chainId,
+    };
   }
 
   if (

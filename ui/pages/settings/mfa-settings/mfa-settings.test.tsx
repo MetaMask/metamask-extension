@@ -97,6 +97,19 @@ describe('MfaSettings', () => {
     expect(screen.getByTestId(MfaSettingsTestIds.TOTP_ROW)).toBeInTheDocument();
   });
 
+  it.each([
+    [false, messages.mfaSettingsNotice.message],
+    [true, messages.mfaSettingsNoticeSocialLogin.message],
+  ])(
+    'says what the methods protect when social login is %s',
+    (isSocialLogin, notice) => {
+      mockGetIsSocialLoginFlow.mockReturnValue(isSocialLogin);
+      renderSettings([]);
+
+      expect(screen.getByText(notice)).toBeInTheDocument();
+    },
+  );
+
   it('only offers to add the methods the flag allows', () => {
     renderSettings([], {
       mfaUiKit: {

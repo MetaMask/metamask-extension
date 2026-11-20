@@ -26,6 +26,7 @@ import {
   getAccountTree,
   getSelectedAccountGroup,
 } from '../../../selectors/multichain-accounts/account-tree';
+import { SideNavAccountCell } from './side-nav-account-cell';
 
 // The "Accounts" section of the side navigation: a header with search/manage/add
 // actions above the account list, which scrolls independently of the page.
@@ -83,7 +84,7 @@ export const SideNavAccounts = () => {
 
   return (
     <section
-      className="flex min-h-0 flex-1 flex-col border-t-2 border-border-muted"
+      className="group/accounts flex min-h-0 flex-1 flex-col border-t-2 border-border-muted"
       data-testid="side-nav-accounts"
     >
       <div className="flex items-center justify-between p-4">
@@ -94,7 +95,7 @@ export const SideNavAccounts = () => {
         >
           {t('accounts')}
         </Text>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 opacity-0 pointer-events-none group-hover/accounts:pointer-events-auto group-hover/accounts:opacity-100 focus-within:pointer-events-auto focus-within:opacity-100 has-[[aria-pressed=true]]:pointer-events-auto has-[[aria-pressed=true]]:opacity-100">
           <ButtonIcon
             ref={searchButtonRef}
             iconName={IconName.Search}
@@ -109,7 +110,7 @@ export const SideNavAccounts = () => {
             size={ButtonIconSize.Sm}
             ariaLabel={t('manageAccounts')}
             onClick={handleManageClick}
-            data-testid="side-nav-accounts-manage-button"
+            data-testid="account-menu-icon"
           />
           <ButtonIcon
             iconName={IconName.Add}
@@ -149,6 +150,7 @@ export const SideNavAccounts = () => {
             displayWalletHeader={hasMultipleWallets}
             showDefaultAddress={showDefaultAddress}
             shouldNavigateOnSelect={false}
+            accountCellComponent={SideNavAccountCell}
           />
         ) : (
           <Text

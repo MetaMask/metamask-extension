@@ -65,6 +65,7 @@ const ERROR_TYPES: Partial<Record<MfaFlowErrorCode, string>> = {
   invalid_attestation: 'passkey_failed',
   passkey_ceremony_cancelled: 'passkey_failed',
   passkey_unsupported: 'passkey_failed',
+  passkey_already_exists: 'passkey_failed',
 };
 
 /**
