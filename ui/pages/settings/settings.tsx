@@ -67,6 +67,7 @@ import {
   SETTINGS_RENDERABLE_ROUTES,
   getSettingsRouteMeta,
 } from './settings-registry';
+import { CompactSettingsLayoutContext } from './settings-layout-context';
 import { SettingsRoot, SettingsSearchResults } from './shared';
 import { useSettingsSearch, MIN_SEARCH_LENGTH } from './useSettingsSearch';
 import { useSettingsI18n } from './useSettingsI18n';
@@ -218,7 +219,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
     [shouldInterceptShieldTab],
   );
 
-  const currentPageLabelKey = meta?.labelKey;
+  const currentPageLabelKey = meta?.headerLabelKey ?? meta?.labelKey;
 
   const handleClose = useCallback(() => {
     if (isOnSettingsRoot) {
@@ -454,7 +455,11 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
               })}
             </Box>
           )}
-          <Suspense fallback={null}>{children}</Suspense>
+          <CompactSettingsLayoutContext.Provider
+            value={usesCompactSettingsLayout}
+          >
+            <Suspense fallback={null}>{children}</Suspense>
+          </CompactSettingsLayoutContext.Provider>
         </Box>
       </Box>
     );

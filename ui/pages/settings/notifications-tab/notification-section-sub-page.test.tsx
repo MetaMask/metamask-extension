@@ -17,6 +17,7 @@ import {
   type NotificationPreferences,
 } from '../../../hooks/metamask-notifications/useNotificationPreferences';
 import { useAccountSettingsProps } from '../../../hooks/metamask-notifications/useSwitchNotifications';
+import { CompactSettingsLayoutContext } from '../settings-layout-context';
 import { NotificationSectionSubPage } from './notification-section-sub-page';
 
 const mockTrackEvent = jest.fn();
@@ -922,6 +923,7 @@ describe('NotificationSectionSubPage', () => {
     const renderSection = (
       section: NotificationsSettingsSectionType,
       preferences: NotificationPreferences,
+      { isCompactLayout = false }: { isCompactLayout?: boolean } = {},
     ) => {
       const updatePreference = jest.fn();
       jest.mocked(useNotificationPreferences).mockReturnValue({
@@ -935,7 +937,9 @@ describe('NotificationSectionSubPage', () => {
         updatePreferencesSection: jest.fn(),
       });
       renderWithProvider(
-        <NotificationSectionSubPage sectionType={section} />,
+        <CompactSettingsLayoutContext.Provider value={isCompactLayout}>
+          <NotificationSectionSubPage sectionType={section} />
+        </CompactSettingsLayoutContext.Provider>,
         buildStore(),
         NOTIFICATIONS_SETTINGS_SECTION_ROUTES[section],
       );
@@ -987,10 +991,43 @@ describe('NotificationSectionSubPage', () => {
       expect(
         screen.queryByTestId('walletActivity-push-notifications-toggle-input'),
       ).not.toBeInTheDocument();
+    });
+
+    it('displays the wallet activity description', () => {
+      renderSection('walletActivity', createMockNotificationPreferences());
+
       expect(
-        screen.queryByText(
+        screen.getByText(
           messages.notificationsSettingsWalletActivityDescription.message,
         ),
+      ).toBeInTheDocument();
+    });
+
+    it('displays the section title above the description in the compact settings layout', () => {
+      renderSection('walletActivity', createMockNotificationPreferences(), {
+        isCompactLayout: true,
+      });
+
+      const title = screen.getByTestId('notifications-settings-section-title');
+      expect(title).toHaveTextContent(
+        messages.notificationsSettingsWalletActivityTitle.message,
+      );
+      expect(
+        title.compareDocumentPosition(
+          screen.getByText(
+            messages.notificationsSettingsWalletActivityDescription.message,
+          ),
+        ),
+      ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    });
+
+    it('omits the section title in the fullscreen settings layout', () => {
+      renderSection('walletActivity', createMockNotificationPreferences(), {
+        isCompactLayout: false,
+      });
+
+      expect(
+        screen.queryByTestId('notifications-settings-section-title'),
       ).not.toBeInTheDocument();
     });
 

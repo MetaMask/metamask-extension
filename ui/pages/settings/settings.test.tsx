@@ -1,5 +1,6 @@
 import { screen, render, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
+import { Route, Routes } from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../test/data/mock-state.json';
@@ -43,6 +44,22 @@ jest.mock(
   }),
 );
 
+jest.mock('./notifications-tab/wallet-activity-sub-page.tsx', () => {
+  const { useIsCompactSettingsLayout } = jest.requireActual(
+    './settings-layout-context',
+  );
+  const MockWalletActivitySubPage = () => (
+    <div data-testid="mock-compact-settings-layout">
+      {String(useIsCompactSettingsLayout())}
+    </div>
+  );
+  return {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: MockWalletActivitySubPage,
+  };
+});
+
 let mockPathname = SETTINGS_ROUTE;
 
 const backgroundConnectionMock = new Proxy(
@@ -54,6 +71,19 @@ const renderSettings = (
   store: ReturnType<ReturnType<typeof configureMockStore>>,
 ) => {
   return renderWithProvider(<Settings />, store, mockPathname, render);
+};
+
+const renderNestedSettings = (
+  store: ReturnType<ReturnType<typeof configureMockStore>>,
+) => {
+  return renderWithProvider(
+    <Routes>
+      <Route path={`${SETTINGS_ROUTE}/*`} element={<Settings />} />
+    </Routes>,
+    store,
+    mockPathname,
+    render,
+  );
 };
 
 describe('Settings', () => {
@@ -190,6 +220,36 @@ describe('Settings', () => {
           PREFERENCES_AND_DISPLAY_ROUTE,
         );
       });
+    });
+
+    it('titles a notification section header "Notifications" and flags the compact layout in the popup', async () => {
+      mockPathname = NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE;
+      const { container } = renderNestedSettings(mockStore);
+
+      expect(
+        await screen.findByTestId('mock-compact-settings-layout'),
+      ).toHaveTextContent('true');
+      expect(
+        container.querySelector('.multichain-page-header'),
+      ).toHaveTextContent(messages.notifications.message);
+    });
+
+    it('keeps the "Settings" header with section breadcrumbs and flags the fullscreen layout', async () => {
+      mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+      mockPathname = NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE;
+      const { container } = renderNestedSettings(mockStore);
+
+      expect(
+        await screen.findByTestId('mock-compact-settings-layout'),
+      ).toHaveTextContent('false');
+      expect(
+        container.querySelector('.multichain-page-header'),
+      ).toHaveTextContent(messages.settings.message);
+      expect(
+        screen.getByText(
+          messages.notificationsSettingsWalletActivityTitle.message,
+        ),
+      ).toBeInTheDocument();
     });
 
     it('navigates from a notification section back to the main notifications settings page', async () => {

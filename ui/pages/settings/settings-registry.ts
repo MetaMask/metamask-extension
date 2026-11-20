@@ -65,6 +65,11 @@ import {
 export type SettingsRouteMeta = {
   /** i18n key for the route label (used in header, breadcrumbs, TabBar) */
   labelKey: string;
+  /**
+   * i18n key for the compact-layout header title, when it should differ from
+   * `labelKey`. Breadcrumbs still use `labelKey`.
+   */
+  headerLabelKey?: string;
   /** Parent path for back navigation; undefined = settings root */
   parentPath?: string;
   /** Lazy-loaded component to render for this route */
@@ -185,6 +190,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
   },
   [NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE]: {
     labelKey: 'notificationsSettingsWalletActivityTitle',
+    headerLabelKey: 'notifications',
     parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
     component: mmLazy(
       () => import('./notifications-tab/wallet-activity-sub-page.tsx'),
@@ -194,6 +200,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     ? {
         [NOTIFICATIONS_SETTINGS_PERPS_ROUTE]: {
           labelKey: 'notificationsSettingsPerpsTitle',
+          headerLabelKey: 'notifications',
           parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
           component: mmLazy(
             () => import('./notifications-tab/perps-sub-page.tsx'),
@@ -203,6 +210,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     : {}),
   [NOTIFICATIONS_SETTINGS_MARKETING_ROUTE]: {
     labelKey: 'notificationsSettingsMarketingTitle',
+    headerLabelKey: 'notifications',
     parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
     component: mmLazy(
       () => import('./notifications-tab/marketing-sub-page.tsx'),
@@ -210,6 +218,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
   },
   [NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE]: {
     labelKey: 'notificationsSettingsAgenticCliTitle',
+    headerLabelKey: 'notifications',
     parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
     component: mmLazy(
       () => import('./notifications-tab/agentic-cli-sub-page.tsx'),
