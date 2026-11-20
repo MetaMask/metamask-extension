@@ -1,3 +1,5 @@
+import type { CaipAssetType } from '@metamask/utils';
+import { buildAssetRoutePath } from '../../../../../shared/lib/asset-route';
 import { Driver } from '../../../webdriver/driver';
 import { readResolvedAssetActionsLayout } from './asset-actions-layout';
 
@@ -26,6 +28,13 @@ type SectionTitle = (typeof SECTION_TITLES)[number];
  * @see ui/components/app/wallet-overview/coin-overview.tsx
  */
 class AssetDetailsPage {
+  private readonly assetActivateButton =
+    '[data-testid="asset-activate-button"]';
+
+  private readonly assetActivateCard = '[data-testid="asset-activate-card"]';
+
+  private readonly assetInactiveBadge = '[data-testid="asset-inactive-badge"]';
+
   private readonly assetName = '[data-testid="asset-name"]';
 
   private driver: Driver;
@@ -69,6 +78,14 @@ class AssetDetailsPage {
   private readonly priceHeader = '[data-testid="asset-hovered-price"]';
 
   private readonly tokenBuyButton = '[data-testid="token-overview-buy"]';
+
+  /**
+   * Present when a Stellar classic trustline is active (`canDeactivate`).
+   * Stronger readiness signal than the page shell for absence checks of the
+   * activate card / inactive badge.
+   */
+  private readonly tokenDeactivateButton =
+    '[data-testid="token-overview-deactivate-asset"]';
 
   private readonly tokenSendButton = '[data-testid="eth-overview-send"]';
 
@@ -135,6 +152,24 @@ class AssetDetailsPage {
     }
   }
 
+  /**
+   * Asserts the Stellar trustline activation card is not present.
+   */
+  async checkActivateCardIsAbsent(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.assetActivateCard, {
+      findElementGuard: this.tokenDeactivateButton,
+    });
+  }
+
+  /**
+   * Asserts the Stellar trustline activation card is visible on the asset page.
+   */
+  async checkActivateCardIsDisplayed(): Promise<void> {
+    await this.checkPageIsLoaded();
+    await this.driver.waitForSelector(this.assetActivateCard);
+    await this.driver.waitForSelector(this.assetActivateButton);
+  }
+
   async checkAllStandardSections(): Promise<void> {
     for (const title of SECTION_TITLES) {
       await this.checkSection(title);
@@ -170,6 +205,23 @@ class AssetDetailsPage {
 
   async checkDailyResourcesSectionIsAbsent(): Promise<void> {
     await this.driver.assertElementNotPresent(this.tronDailyResourcesSection);
+  }
+
+  /**
+   * Asserts the Inactive trustline badge is not present.
+   */
+  async checkInactiveBadgeIsAbsent(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.assetInactiveBadge, {
+      findElementGuard: this.tokenDeactivateButton,
+    });
+  }
+
+  /**
+   * Asserts the Inactive trustline badge is visible on the asset page header.
+   */
+  async checkInactiveBadgeIsDisplayed(): Promise<void> {
+    await this.checkPageIsLoaded();
+    await this.driver.waitForSelector(this.assetInactiveBadge);
   }
 
   /**
@@ -234,6 +286,20 @@ class AssetDetailsPage {
     await this.driver.waitForSelector(this.tokenSwapButton);
     await this.driver.assertElementNotPresent(this.nativeOverflowReceiveInMenu);
     await this.driver.assertElementNotPresent(this.nativeOverflowSoleAction);
+  }
+
+  /**
+   * Opens an asset details route by full hash navigation so createHashRouter
+   * mounts on the target path (needed when the asset is absent from the list).
+   *
+   * @param assetId - CAIP-19 asset id for the details route.
+   */
+  async navigateToAsset(assetId: CaipAssetType): Promise<void> {
+    await this.driver.openNewURL(
+      `${this.driver.extensionUrl}/home.html#${buildAssetRoutePath(assetId)}`,
+    );
+    await this.driver.waitForControllersLoaded();
+    await this.checkPageIsLoaded();
   }
 }
 

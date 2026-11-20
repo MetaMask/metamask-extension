@@ -1,5 +1,8 @@
 import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import configureStore from '../../../store/store';
+import mockState from '../../../../test/data/mock-state.json';
 // eslint-disable-next-line import-x/no-restricted-paths
 import messages from '../../../../app/_locales/en/messages.json';
 import { MultichainPrivateKeyRow } from './multichain-private-key-row';
@@ -19,15 +22,17 @@ const renderComponent = ({
   sensitiveClipboardState?: 'idle' | 'ready' | 'cleared' | 'error';
 } = {}) =>
   render(
-    <MultichainPrivateKeyRow
-      address="0x1234567890abcdef1234567890abcdef12345678"
-      chainId={CHAIN_ID}
-      networkName={messages.ethereumAndEvms.message}
-      onCopy={mockOnCopy}
-      onClearClipboard={mockOnClearClipboard}
-      privateKey={PRIVATE_KEY}
-      sensitiveClipboardState={sensitiveClipboardState}
-    />,
+    <Provider store={configureStore(mockState)}>
+      <MultichainPrivateKeyRow
+        address="0x1234567890abcdef1234567890abcdef12345678"
+        chainId={CHAIN_ID}
+        networkName={messages.ethereumAndEvms.message}
+        onCopy={mockOnCopy}
+        onClearClipboard={mockOnClearClipboard}
+        privateKey={PRIVATE_KEY}
+        sensitiveClipboardState={sensitiveClipboardState}
+      />
+    </Provider>,
   );
 
 describe('MultichainPrivateKeyRow', () => {

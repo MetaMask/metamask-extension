@@ -93,6 +93,7 @@ const APPROVE_TIMEOUT = MILLISECOND * 1200;
 function getDefaultSelectedAccounts(
   currentAddress: string,
   permissions: PermissionsRequest,
+  isRequestApprovalPermittedChains: boolean,
 ) {
   const requestedCaip25CaveatValue =
     getCaip25CaveatValueFromPermissions(permissions);
@@ -129,6 +130,12 @@ function getDefaultSelectedAccounts(
         .map((address) => address.toLowerCase())
         .filter(isEthAddress),
     );
+  }
+
+  // A permitted chains approval (e.g. wallet_switchEthereumChain from an origin with
+  // no existing permissions) should not grant accounts.
+  if (isRequestApprovalPermittedChains) {
+    return new Set<string>();
   }
 
   // Final fallback: use current address if it's an EVM address
@@ -297,6 +304,7 @@ function PermissionsConnect() {
     getDefaultSelectedAccounts(
       currentAddress,
       permissions as PermissionsRequest,
+      isRequestApprovalPermittedChains,
     ),
   );
   const [permissionsApproved, setPermissionsApproved] = useState<

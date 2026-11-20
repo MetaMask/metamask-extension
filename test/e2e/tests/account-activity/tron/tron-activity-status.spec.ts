@@ -40,6 +40,7 @@ describe('Tron - Activity status', function (this: Suite) {
             transactions: { raw: [pendingSend, failedSend] },
           },
         ],
+        localNode: false,
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
