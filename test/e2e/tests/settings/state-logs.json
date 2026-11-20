@@ -1312,6 +1312,7 @@
     "useNftDetection": "boolean",
     "usePhishDetect": "boolean",
     "userRegion": "null",
+    "userSelectedProviderId": "null",
     "vbaAutorampListFetchedAt": "null",
     "vbaCustomerAbilities": "null",
     "walletComplianceStatusMap": {},
