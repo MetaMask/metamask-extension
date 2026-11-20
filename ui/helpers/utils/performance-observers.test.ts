@@ -10,6 +10,19 @@ import {
   exposeLongTaskMetricsForTesting,
 } from './performance-observers';
 
+// Measurements and tag-like values are attributes on the active trace's
+// root span.
+const createMockSentry = () => {
+  const setAttribute = jest.fn();
+  return {
+    setAttribute,
+    getActiveSpan: () => ({}),
+    getRootSpan: () => ({ setAttribute }),
+    setTag: jest.fn(),
+    addBreadcrumb: jest.fn(),
+  };
+};
+
 describe('performance-observers', () => {
   beforeEach(() => {
     resetLongTaskMetrics();
@@ -316,27 +329,25 @@ describe('performance-observers', () => {
     });
 
     it('reports metrics to Sentry when available', () => {
-      const mockSentry = {
-        setMeasurement: jest.fn(),
-        setTag: jest.fn(),
-        addBreadcrumb: jest.fn(),
-      };
+      const mockSentry = createMockSentry();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (globalThis as any).sentry = mockSentry;
 
       reportLongTaskMetricsToSentry();
 
-      expect(mockSentry.setMeasurement).toHaveBeenCalledWith(
-        'long_task_count',
-        0,
-        'none',
-      );
-      expect(mockSentry.setMeasurement).toHaveBeenCalledWith(
-        'tbt',
-        0,
-        'millisecond',
-      );
+      expect(mockSentry.setAttribute).toHaveBeenCalledWith('long_task_count', {
+        value: 0,
+        unit: 'none',
+      });
+      expect(mockSentry.setAttribute).toHaveBeenCalledWith('tbt', {
+        value: 0,
+        unit: 'millisecond',
+      });
       expect(mockSentry.setTag).toHaveBeenCalledWith('tbt.rating', 'good');
+      expect(mockSentry.setAttribute).toHaveBeenCalledWith(
+        'tbt.rating',
+        'good',
+      );
       expect(mockSentry.addBreadcrumb).toHaveBeenCalledWith(
         expect.objectContaining({
           category: 'performance',
@@ -346,11 +357,7 @@ describe('performance-observers', () => {
     });
 
     it('reports provided metrics instead of current metrics', () => {
-      const mockSentry = {
-        setMeasurement: jest.fn(),
-        setTag: jest.fn(),
-        addBreadcrumb: jest.fn(),
-      };
+      const mockSentry = createMockSentry();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (globalThis as any).sentry = mockSentry;
 
@@ -365,24 +372,18 @@ describe('performance-observers', () => {
 
       reportLongTaskMetricsToSentry(customMetrics);
 
-      expect(mockSentry.setMeasurement).toHaveBeenCalledWith(
-        'long_task_count',
-        5,
-        'none',
-      );
-      expect(mockSentry.setMeasurement).toHaveBeenCalledWith(
-        'tbt',
-        150,
-        'millisecond',
-      );
+      expect(mockSentry.setAttribute).toHaveBeenCalledWith('long_task_count', {
+        value: 5,
+        unit: 'none',
+      });
+      expect(mockSentry.setAttribute).toHaveBeenCalledWith('tbt', {
+        value: 150,
+        unit: 'millisecond',
+      });
     });
 
     function expectBucket(count: number, expected: string) {
-      const mockSentry = {
-        setMeasurement: jest.fn(),
-        setTag: jest.fn(),
-        addBreadcrumb: jest.fn(),
-      };
+      const mockSentry = createMockSentry();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (globalThis as any).sentry = mockSentry;
 
@@ -396,6 +397,10 @@ describe('performance-observers', () => {
       });
 
       expect(mockSentry.setTag).toHaveBeenCalledWith(
+        'long_task.count_bucket',
+        expected,
+      );
+      expect(mockSentry.setAttribute).toHaveBeenCalledWith(
         'long_task.count_bucket',
         expected,
       );
@@ -428,11 +433,7 @@ describe('performance-observers', () => {
     });
 
     it('reports to Sentry when document becomes hidden', () => {
-      const mockSentry = {
-        setMeasurement: jest.fn(),
-        setTag: jest.fn(),
-        addBreadcrumb: jest.fn(),
-      };
+      const mockSentry = createMockSentry();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (globalThis as any).sentry = mockSentry;
 
@@ -445,11 +446,10 @@ describe('performance-observers', () => {
       });
       document.dispatchEvent(new Event('visibilitychange'));
 
-      expect(mockSentry.setMeasurement).toHaveBeenCalledWith(
-        'tbt',
-        expect.any(Number),
-        'millisecond',
-      );
+      expect(mockSentry.setAttribute).toHaveBeenCalledWith('tbt', {
+        value: expect.any(Number),
+        unit: 'millisecond',
+      });
 
       Object.defineProperty(document, 'visibilityState', {
         value: 'visible',
@@ -460,11 +460,7 @@ describe('performance-observers', () => {
     });
 
     it('does not report when document becomes visible', () => {
-      const mockSentry = {
-        setMeasurement: jest.fn(),
-        setTag: jest.fn(),
-        addBreadcrumb: jest.fn(),
-      };
+      const mockSentry = createMockSentry();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (globalThis as any).sentry = mockSentry;
 
@@ -477,16 +473,12 @@ describe('performance-observers', () => {
       });
       document.dispatchEvent(new Event('visibilitychange'));
 
-      expect(mockSentry.setMeasurement).not.toHaveBeenCalled();
+      expect(mockSentry.setAttribute).not.toHaveBeenCalled();
       cleanup();
     });
 
     it('cleanup removes the visibilitychange listener', () => {
-      const mockSentry = {
-        setMeasurement: jest.fn(),
-        setTag: jest.fn(),
-        addBreadcrumb: jest.fn(),
-      };
+      const mockSentry = createMockSentry();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (globalThis as any).sentry = mockSentry;
 
@@ -500,7 +492,7 @@ describe('performance-observers', () => {
       });
       document.dispatchEvent(new Event('visibilitychange'));
 
-      expect(mockSentry.setMeasurement).not.toHaveBeenCalled();
+      expect(mockSentry.setAttribute).not.toHaveBeenCalled();
 
       Object.defineProperty(document, 'visibilityState', {
         value: 'visible',

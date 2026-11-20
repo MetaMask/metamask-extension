@@ -4,7 +4,6 @@ import type {
   Breadcrumb,
   ErrorEvent as SentryErrorEvent,
   Event as SentryEvent,
-  TransactionEvent,
 } from '@sentry/types';
 import { debug as sentrySdkLogger } from '@sentry/core';
 import { cloneDeep, escapeRegExp } from 'lodash';
@@ -27,6 +26,7 @@ import {
   getState,
 } from './sentry-get-state';
 import { makeTransport } from './sentry-make-transport';
+import { spanUserAgentInferenceIntegration } from './sentry-span-user-agent-inference';
 import { getInstallType, initInstallType } from './install-type';
 import { createTracesSampler } from './sentry-traces-sampler';
 
@@ -130,6 +130,21 @@ export const IGNORED_ERROR_MESSAGES = [
   new RegExp(`^${escapeRegExp(BROWSER_SHUTTING_DOWN_ERROR)}$`, 'u'),
 ];
 
+// `op: 'mark'` span names with no Sentry-side consumer, never recorded.
+const LOW_VALUE_TRACE_MARKS = ['sentry-tracing-init', 'mm-hero-painted'];
+
+/**
+ * `ignoreSpans` filters for the {@link LOW_VALUE_TRACE_MARKS} `op: 'mark'`
+ * spans. Names are anchored so a longer mark that merely contains one is kept;
+ * measures and all other spans are kept.
+ */
+export const LOW_VALUE_MARK_SPAN_FILTERS = LOW_VALUE_TRACE_MARKS.map(
+  (name) => ({
+    op: 'mark',
+    name: new RegExp(`^${escapeRegExp(name)}$`, 'u'),
+  }),
+);
+
 export default function setupSentry(): typeof Sentry | undefined {
   if (!RELEASE) {
     throw new Error('Missing release');
@@ -170,7 +185,12 @@ function safeCloneReport<Report>(report: Report): Report {
   }
 }
 
-function getClientOptions(): SentryClientOptions {
+/**
+ * Builds the `Sentry.init` options; exported so tests run the shipped options.
+ *
+ * @returns The Sentry client options.
+ */
+export function getClientOptions(): SentryClientOptions {
   const environment = getSentryEnvironment();
   const sentryTarget = getSentryTarget();
   const tracesSampleRate = getTracesSampleRate(sentryTarget);
@@ -185,25 +205,27 @@ function getClientOptions(): SentryClientOptions {
       rewriteReport(
         safeCloneReport(report as SentryReport),
       ) as SentryErrorEvent,
-    beforeSendTransaction: (report) => {
-      const transaction = rewriteTransactionReport(
-        safeCloneReport(report as SentryReport),
-      );
-      dropLowValueMarkSpans(transaction);
-      return transaction as TransactionEvent;
-    },
     debug: Boolean(METAMASK_DEBUG),
     dist: isManifestV3 ? 'mv3' : 'mv2',
     dsn: sentryTarget,
     environment,
+    // Each span is sent when it ends instead of with its trace root's
+    // transaction, so a child still running when the root ends is no longer
+    // dropped. No transaction event is built, which retires
+    // `beforeSendTransaction`: the mark-span drop moved to `ignoreSpans`.
+    ignoreSpans: LOW_VALUE_MARK_SPAN_FILTERS,
+    traceLifecycle: 'stream',
     integrations: [
       Sentry.dedupeIntegration(),
       Sentry.extraErrorDataIntegration(),
+      // `traceLifecycle: 'stream'` is inert without this integration.
+      Sentry.spanStreamingIntegration(),
+      spanUserAgentInferenceIntegration(),
       Sentry.browserTracingIntegration({
         // Creates ui.long-animation-frame spans (falls back to ui.long-task).
         // Pairs with TBT aggregate measurements from performance-observers.ts.
         enableLongAnimationFrame: true,
-        shouldCreateSpanForRequest,
+        shouldCreateSpanForRequest: shouldCreateSpanForRequestUnderParent,
       }),
       metaMetricsIntegration({
         getAnalyticsState,
@@ -287,25 +309,28 @@ function getTracesSampleRate(sentryTarget: string | undefined): number {
 
 /**
  * Get CI tags passed from the test environment, through manifest.json,
- * and give them to the Sentry client.
+ * and give them to the Sentry client: as tags for error events and as scope
+ * attributes, which every streamed span carries.
  */
-function setCITags(): void {
+export function setCITags(): void {
   const { ci } = getManifestFlags();
 
-  if (ci?.enabled) {
-    Sentry.setTag('ci.enabled', ci.enabled);
-    Sentry.setTag('ci.branch', ci.branch);
-    Sentry.setTag('ci.commitHash', ci.commitHash);
-    Sentry.setTag('ci.job', ci.job);
-    Sentry.setTag('ci.matrixIndex', ci.matrixIndex);
-    Sentry.setTag('ci.prNumber', ci.prNumber);
-    if (ci.persona) {
-      Sentry.setTag('ci.persona', ci.persona);
-    }
-    if (ci.testTitle) {
-      Sentry.setTag('ci.testTitle', ci.testTitle);
-    }
+  if (!ci?.enabled) {
+    return;
   }
+
+  const tags = {
+    'ci.enabled': ci.enabled,
+    'ci.branch': ci.branch,
+    'ci.commitHash': ci.commitHash,
+    'ci.job': ci.job,
+    'ci.matrixIndex': ci.matrixIndex,
+    'ci.prNumber': ci.prNumber,
+    ...(ci.persona ? { 'ci.persona': ci.persona } : {}),
+    ...(ci.testTitle ? { 'ci.testTitle': ci.testTitle } : {}),
+  };
+  Sentry.setTags(tags);
+  Sentry.getIsolationScope().setAttributes(tags);
 }
 
 function getSentryEnvironment(): string | undefined {
@@ -461,6 +486,19 @@ export function shouldCreateSpanForRequest(url: string): boolean {
 }
 
 /**
+ * {@link shouldCreateSpanForRequest}, and only under an active span: stream
+ * mode would otherwise record a one-span trace per parentless fetch.
+ *
+ * @param url - The request URL.
+ * @returns Whether to create a span for the request.
+ */
+export function shouldCreateSpanForRequestUnderParent(url: string): boolean {
+  return (
+    Sentry.getActiveSpan() !== undefined && shouldCreateSpanForRequest(url)
+  );
+}
+
+/**
  * Receives a Sentry breadcrumb object and potentially removes urls
  * from its `data` property, in particular those possibly found at
  * data.from, data.to and data.url. Performs a deep address scrub for use when
@@ -495,9 +533,8 @@ export function removeUrlsFromBreadCrumb(
 }
 
 /**
- * Deep-scrubs all breadcrumbs attached to an outbound Sentry event (errors and
- * transactions). The report must already be cloned (see `safeCloneReport` in
- * `beforeSend` / `beforeSendTransaction`) so breadcrumb mutation is safe.
+ * Deep-scrubs the breadcrumbs of an error event; the report must already be
+ * cloned (see `safeCloneReport`) so mutation is safe.
  *
  * @param report - A Sentry event object.
  */
@@ -508,45 +545,6 @@ export function sanitizeBreadcrumbsInReport(report: SentryReport): void {
   for (const breadcrumb of report.breadcrumbs) {
     removeUrlsFromBreadCrumb(breadcrumb);
   }
-}
-
-// `op: 'mark'` span names with no Sentry-side consumer, dropped from transactions.
-const LOW_VALUE_TRACE_MARKS = new Set([
-  'sentry-tracing-init',
-  'mm-hero-painted',
-]);
-
-/**
- * Removes the {@link LOW_VALUE_TRACE_MARKS} `op: 'mark'` child spans from a
- * transaction event in place. Measures and all other spans are kept.
- *
- * @param report - A Sentry transaction event object.
- */
-export function dropLowValueMarkSpans(report: SentryReport): void {
-  if (!Array.isArray(report.spans)) {
-    return;
-  }
-  report.spans = report.spans.filter((span) => {
-    const markName = span?.description ?? span?.name;
-    return !(
-      span?.op === 'mark' &&
-      markName &&
-      LOW_VALUE_TRACE_MARKS.has(markName)
-    );
-  });
-}
-
-/**
- * Scrubs breadcrumb payloads on performance transaction events before send.
- * {@link rewriteReport} handles errors via `beforeSend`; transactions use
- * `beforeSendTransaction` instead.
- *
- * @param report - A Sentry transaction event object.
- * @returns The modified report (same reference).
- */
-export function rewriteTransactionReport(report: SentryReport): SentryReport {
-  sanitizeBreadcrumbsInReport(report);
-  return report;
 }
 
 /**
@@ -858,6 +856,10 @@ function addDebugListeners(): void {
     if (isCompletedSessionEnvelope(event)) {
       log('Completed session', event);
     }
+    // Streamed spans never pass through `afterSendEvent`.
+    if (isSpanEnvelope(event)) {
+      log('Trace', event);
+    }
   });
 
   client?.on('afterSendEvent', (event: unknown) => {
@@ -879,11 +881,12 @@ function isCompletedSessionEnvelope(envelope: unknown): boolean {
   return type === 'session' && data.status === 'exited';
 }
 
-function getEventType(event: SentryEvent): string {
-  if (event.type === 'transaction') {
-    return 'Trace';
-  }
+function isSpanEnvelope(envelope: unknown): boolean {
+  const spanEnvelope = envelope as SessionEnvelope;
+  return spanEnvelope?.[1]?.[0]?.[0]?.type === 'span';
+}
 
+function getEventType(event: SentryEvent): string {
   if (event.level === 'error') {
     return 'Error';
   }

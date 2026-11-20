@@ -1,4 +1,9 @@
-import type { Client, Event as SentryEvent, EventHint } from '@sentry/core';
+import type {
+  Client,
+  Event as SentryEvent,
+  EventHint,
+  StreamedSpanJSON,
+} from '@sentry/core';
 import {
   getActiveSpan,
   getCurrentScope,
@@ -437,6 +442,30 @@ describe('consensysTracePropagationIntegration', () => {
       } as SentryEvent) as SentryEvent;
 
       expect(event.tags?.consensysRequestId).toBe('uuid-fixed');
+    });
+
+    it('puts the same correlation ids on a streamed segment span as attributes', () => {
+      mockActiveSpan();
+      const handler = getFetchHandler();
+      handler({
+        fetchData: { url: BACKEND_URL, method: 'GET' },
+        args: [BACKEND_URL, undefined],
+      } as unknown as Parameters<typeof handler>[0]);
+      const span = {
+        trace_id: TRACE_ID,
+        attributes: { existing: 'kept' },
+      } as unknown as StreamedSpanJSON;
+
+      consensysTracePropagationIntegration({ log }).processSegmentSpan?.(
+        span,
+        {} as Client,
+      );
+
+      expect(span.attributes).toStrictEqual({
+        existing: 'kept',
+        otelTraceId: TRACE_ID,
+        consensysRequestId: 'uuid-fixed',
+      });
     });
 
     it('does not tag consensysRequestId for a different trace id', () => {

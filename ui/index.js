@@ -25,7 +25,7 @@ import { getBrowserName } from '../shared/lib/browser-runtime.utils';
 import { START_UI_SYNC } from '../shared/constants/ui-initialization';
 import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
-import { endTrace, trace, TraceName } from '../shared/lib/trace';
+import { annotateTrace, endTrace, trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/lib/selectors/networks';
 import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../shared/constants/messages';
 import { getSelectedInternalAccount } from '../shared/lib/selectors/accounts';
@@ -246,7 +246,8 @@ async function startApp(metamaskState, opts) {
   // Initialize Core Web Vitals (INP, LCP, CLS) measurement
   initWebVitals();
 
-  const tags = getStartupTraceTags({ metamask: metamaskState });
+  // Dashboards read the startup tags on the `UI Startup` segment span.
+  annotateTrace(traceContext, getStartupTraceTags({ metamask: metamaskState }));
   registerHomeMeasurement(metamaskState, router);
   registerInitialTransactionConfirmationMeasurement(metamaskState, router);
   registerUnlockMeasurement(metamaskState, router);
@@ -255,7 +256,6 @@ async function startApp(metamaskState, opts) {
     {
       name: TraceName.SetupStore,
       parentContext: traceContext,
-      tags,
     },
     () => setupInitialStore(metamaskState, opts.activeTab),
   );
