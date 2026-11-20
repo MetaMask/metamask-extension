@@ -81,6 +81,16 @@ assemble_performance_data() {
         build_type=$(echo "${base_name}" | cut -d'-' -f2)
         preset_name=$(echo "${base_name}" | cut -d'-' -f3-)
 
+        # A paired job's file, `<flow>-<order>`, holds base and head runs of one PR.
+        # Pairing is off on main and release branches, so one here has no place in
+        # the per-commit history, and a key per flow and order would grow it.
+        case "${preset_name}" in
+            *-base-head-head-base|*-head-base-base-head)
+                echo "  Skipping ${browser}-${build_type}-${preset_name} (paired)" >&2
+                continue
+                ;;
+        esac
+
         local is_startup=false
         for startup_preset in "${STARTUP_PRESETS[@]}"; do
             if [[ "${preset_name}" == "${startup_preset}" ]]; then
