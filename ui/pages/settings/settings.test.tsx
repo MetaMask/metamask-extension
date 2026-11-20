@@ -55,7 +55,6 @@ const renderSettings = (
 ) => {
   return renderWithProvider(<Settings />, store, mockPathname, render);
 };
-
 describe('Settings', () => {
   const mockStore = configureMockStore([thunk])(mockState);
 
@@ -190,6 +189,32 @@ describe('Settings', () => {
           PREFERENCES_AND_DISPLAY_ROUTE,
         );
       });
+    });
+
+    it('titles a notification section header "Notifications" in the compact layout', async () => {
+      mockPathname = NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE;
+      const { container } = renderSettings(mockStore);
+
+      await screen.findByTestId('page-header-back-button');
+      expect(
+        container.querySelector('.multichain-page-header'),
+      ).toHaveTextContent(messages.notifications.message);
+    });
+
+    it('keeps the "Settings" header with section breadcrumbs in the fullscreen layout', async () => {
+      mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+      mockPathname = NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE;
+      const { container } = renderSettings(mockStore);
+
+      await screen.findByTestId('page-header-back-button');
+      expect(
+        container.querySelector('.multichain-page-header'),
+      ).toHaveTextContent(messages.settings.message);
+      expect(
+        screen.getByText(
+          messages.notificationsSettingsWalletActivityTitle.message,
+        ),
+      ).toBeInTheDocument();
     });
 
     it('navigates from a notification section back to the main notifications settings page', async () => {

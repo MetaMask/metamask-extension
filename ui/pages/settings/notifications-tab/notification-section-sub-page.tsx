@@ -18,6 +18,7 @@ import { useAccountSettingsProps } from '../../../hooks/metamask-notifications/u
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useNotificationPreferences } from '../../../hooks/metamask-notifications/useNotificationPreferences';
 import { selectIsMetamaskNotificationsEnabled } from '../../../selectors/metamask-notifications/metamask-notifications';
+import { useIsCompactSettingsLayout } from '../useIsCompactSettingsLayout';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { NotificationSettingsSection } from '../../notifications-settings/notification-settings-section';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
@@ -34,6 +35,8 @@ export const NotificationSectionSubPage = ({
 }: NotificationSectionSubPageProps) => {
   const navigate = useNavigate();
   const t = useI18nContext();
+  // Fullscreen breadcrumbs already name the section.
+  const showSectionTitle = useIsCompactSettingsLayout();
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
@@ -136,6 +139,7 @@ export const NotificationSectionSubPage = ({
     >
       <NotificationSettingsSection
         section={section}
+        showTitle={showSectionTitle}
         preferences={preferences}
         notificationAccountGroups={notificationAccountGroups}
         accountSettingsProps={accountSettingsProps}

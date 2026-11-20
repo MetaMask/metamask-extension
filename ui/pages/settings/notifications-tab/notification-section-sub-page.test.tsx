@@ -17,12 +17,22 @@ import {
   type NotificationPreferences,
 } from '../../../hooks/metamask-notifications/useNotificationPreferences';
 import { useAccountSettingsProps } from '../../../hooks/metamask-notifications/useSwitchNotifications';
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_POPUP,
+} from '../../../../shared/constants/app';
 import { NotificationSectionSubPage } from './notification-section-sub-page';
 
+const mockGetEnvironmentType = jest.fn(() => ENVIRONMENT_TYPE_FULLSCREEN);
 const mockTrackEvent = jest.fn();
 const mockSwitchAccountNotifications = jest.fn();
 const mockUpdateAccountSettings = jest.fn();
 const mockRefetchPreferences = jest.fn();
+
+jest.mock('../../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../../shared/lib/environment-type'),
+  getEnvironmentType: () => mockGetEnvironmentType(),
+}));
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -123,6 +133,7 @@ describe('NotificationSectionSubPage', () => {
   let consoleWarnSpy: jest.SpyInstance;
 
   beforeEach(() => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
     consoleWarnSpy = jest
       .spyOn(console, 'warn')
       .mockImplementation(() => undefined);
@@ -987,10 +998,40 @@ describe('NotificationSectionSubPage', () => {
       expect(
         screen.queryByTestId('walletActivity-push-notifications-toggle-input'),
       ).not.toBeInTheDocument();
+    });
+
+    it('displays the wallet activity description', () => {
+      renderSection('walletActivity', createMockNotificationPreferences());
+
       expect(
-        screen.queryByText(
+        screen.getByText(
           messages.notificationsSettingsWalletActivityDescription.message,
         ),
+      ).toBeInTheDocument();
+    });
+
+    it('displays the section title above the description in the compact settings layout', () => {
+      mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+      renderSection('walletActivity', createMockNotificationPreferences());
+
+      const title = screen.getByTestId('notifications-settings-section-title');
+      expect(title).toHaveTextContent(
+        messages.notificationsSettingsWalletActivityTitle.message,
+      );
+      expect(
+        title.compareDocumentPosition(
+          screen.getByText(
+            messages.notificationsSettingsWalletActivityDescription.message,
+          ),
+        ),
+      ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    });
+
+    it('omits the section title in the fullscreen settings layout', () => {
+      renderSection('walletActivity', createMockNotificationPreferences());
+
+      expect(
+        screen.queryByTestId('notifications-settings-section-title'),
       ).not.toBeInTheDocument();
     });
 

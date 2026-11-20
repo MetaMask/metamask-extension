@@ -48,6 +48,8 @@ type SectionContentProps = {
 
 type NotificationSettingsSectionProps = {
   section: NotificationsSettingsSectionConfig;
+  /** Renders the section title above its description. */
+  showTitle?: boolean;
   preferences: NotificationPreferences;
   notificationAccountGroups: NotificationWalletGroup[];
   accountSettingsProps: AccountSettingsProps;
@@ -389,6 +391,7 @@ const SECTION_CONTENT_BY_TYPE: Partial<
 
 export function NotificationSettingsSection({
   section,
+  showTitle = false,
   preferences,
   notificationAccountGroups,
   accountSettingsProps,
@@ -461,37 +464,54 @@ export function NotificationSettingsSection({
       gap={6}
       data-testid={`notifications-settings-section-content-${section.type}`}
     >
-      {showChannelToggles ? (
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          alignItems={BoxAlignItems.Stretch}
-          gap={4}
-        >
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Stretch}
+        gap={4}
+      >
+        <Box flexDirection={BoxFlexDirection.Column} gap={1}>
+          {showTitle ? (
+            <Text
+              variant={TextVariant.HeadingLg}
+              color={TextColor.TextDefault}
+              data-testid="notifications-settings-section-title"
+            >
+              {section.title}
+            </Text>
+          ) : null}
           <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
             {section.description}
           </Text>
-          <NotificationsSettingsBox
-            value={sectionPreferences.pushNotificationsEnabled}
-            onToggle={() => handleTogglePreference('pushNotificationsEnabled')}
-            error={preferenceError}
-            dataTestId={`${section.type}-push-notifications`}
-          >
-            <NotificationsSettingsType
-              title={t('notificationsSettingsPushNotifications')}
-            />
-          </NotificationsSettingsBox>
-          <NotificationsSettingsBox
-            value={sectionPreferences.inAppNotificationsEnabled}
-            onToggle={() => handleTogglePreference('inAppNotificationsEnabled')}
-            error={preferenceError}
-            dataTestId={`${section.type}-in-app-notifications`}
-          >
-            <NotificationsSettingsType
-              title={t('notificationsSettingsInAppNotifications')}
-            />
-          </NotificationsSettingsBox>
         </Box>
-      ) : null}
+        {showChannelToggles ? (
+          <>
+            <NotificationsSettingsBox
+              value={sectionPreferences.pushNotificationsEnabled}
+              onToggle={() =>
+                handleTogglePreference('pushNotificationsEnabled')
+              }
+              error={preferenceError}
+              dataTestId={`${section.type}-push-notifications`}
+            >
+              <NotificationsSettingsType
+                title={t('notificationsSettingsPushNotifications')}
+              />
+            </NotificationsSettingsBox>
+            <NotificationsSettingsBox
+              value={sectionPreferences.inAppNotificationsEnabled}
+              onToggle={() =>
+                handleTogglePreference('inAppNotificationsEnabled')
+              }
+              error={preferenceError}
+              dataTestId={`${section.type}-in-app-notifications`}
+            >
+              <NotificationsSettingsType
+                title={t('notificationsSettingsInAppNotifications')}
+              />
+            </NotificationsSettingsBox>
+          </>
+        ) : null}
+      </Box>
 
       {SectionContent && (
         <SectionContent
