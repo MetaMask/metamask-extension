@@ -2996,11 +2996,9 @@
     },
     "@metamask/smart-transactions-controller": {
       "globals": {
-        "URLSearchParams": true,
         "clearInterval": true,
         "console.error": true,
         "console.log": true,
-        "fetch": true,
         "setInterval": true
       },
       "meta": {
@@ -3017,6 +3015,7 @@
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/polling-controller": true,
+        "@metamask/sentinel-api-service": true,
         "@metamask/superstruct": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils>@metamask/type-utils": true,

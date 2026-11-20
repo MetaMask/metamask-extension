@@ -9972,9 +9972,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:^27.3.0":
-  version: 27.3.0
-  resolution: "@metamask/smart-transactions-controller@npm:27.3.0"
+"@metamask/smart-transactions-controller@npm:^28.0.0":
+  version: 28.0.0
+  resolution: "@metamask/smart-transactions-controller@npm:28.0.0"
   dependencies:
     "@babel/runtime": "npm:^7.29.7"
     "@ethersproject/bytes": "npm:^5.8.0"
@@ -9987,15 +9987,15 @@ __metadata:
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/network-controller": "npm:^38.0.1"
     "@metamask/polling-controller": "npm:^17.0.0"
-    "@metamask/profile-sync-controller": "npm:^36.1.2"
     "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
+    "@metamask/sentinel-api-service": "npm:^2.3.0"
     "@metamask/superstruct": "npm:^3.4.1"
-    "@metamask/transaction-controller": "npm:^74.1.0"
+    "@metamask/transaction-controller": "npm:^74.2.0"
     "@metamask/utils": "npm:^12.0.2"
     bignumber.js: "npm:^9.1.2"
     lodash-es: "npm:^4.18.1"
     reselect: "npm:^5.3.0"
-  checksum: 10/f99fe5bb775f5f01b890311df26148eb6342947e0dbcef4a088e1a0677d19b9a1b0a10afc662918fe5c70e6cd9f3b17e702182d031f2d647bc6f83867c3ca123
+  checksum: 10/e6a6a0aa8096763e99d05462ed6c55254e8020baf944587ebbdf841c58d99c10339a8d2f84fecba0435109b715a3d9186811b59cef1097a21a794bf7af347638
   languageName: node
   linkType: hard
 
@@ -34751,11 +34751,11 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/seedless-onboarding-controller": "npm:^12.0.0"
     "@metamask/selected-network-controller": "npm:^27.1.0"
-    "@metamask/sentinel-api-service": "npm:^2.1.0"
+    "@metamask/sentinel-api-service": "npm:^2.3.0"
     "@metamask/shield-controller": "npm:^7.1.1"
     "@metamask/signature-controller": "npm:^40.1.1"
     "@metamask/skills": "npm:^0.4.0"
-    "@metamask/smart-transactions-controller": "npm:^27.3.0"
+    "@metamask/smart-transactions-controller": "npm:^28.0.0"
     "@metamask/snap-account-service": "npm:^4.0.0"
     "@metamask/snap-simple-keyring-site": "npm:^2.1.1"
     "@metamask/snaps-controllers": "npm:^23.0.1"
