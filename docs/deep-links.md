@@ -1,6 +1,6 @@
 # Deep links
 
-A deep link is attacker-supplied input that arrives looking like navigation. Its signature makes some of that input trustworthy, and reviewing a deep-link change comes down to which part. This document describes how a link is processed from interception to destination, what its signature covers, how to add a route, and how to review and test a change that touches it.
+A deep link is untrusted input that arrives looking like navigation: most links come from MetaMask, but anyone can build one. Its signature makes some of that input trustworthy, and reviewing a deep-link change comes down to which part. This document describes how a link is processed from interception to destination, what its signature covers, how to add a route, and how to review and test a change that touches it.
 
 ## How a link is processed
 
