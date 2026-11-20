@@ -3,6 +3,7 @@ import type { LoaderDefinitionFunction } from 'webpack';
 import { validate, type JSONSchema7 } from 'schema-utils';
 import type { FromSchema } from 'json-schema-to-ts';
 import { transform, type Options } from '@swc/core';
+import { toWebpackSourceName } from '../helpers';
 
 // the schema here is limited to only the options we actually use
 // there are loads more options available to SWC we could add.
@@ -192,7 +193,10 @@ const swcLoader: LoaderDefinitionFunction<SwcLoaderOptions> =
           : typeof srcMap === 'object' && srcMap !== null
             ? JSON.stringify(srcMap)
             : srcMap,
-      sourceFileName: this.resourcePath,
+      // Name the file relative to the build context inside the source map, so
+      // the map (which webpack hashes into the module hash) does not depend on
+      // where the project lives on disk. See `toWebpackSourceName`.
+      sourceFileName: toWebpackSourceName(this.rootContext, this.resourcePath),
       sourceMaps: this.sourceMap,
       swcrc: false,
     };

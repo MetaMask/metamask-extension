@@ -18,7 +18,8 @@ describe('swcLoader', () => {
 `;
 
     // swc doesn't use node's fs module, so we can't mock
-    const resourcePath = 'test.ts';
+    const rootContext = '/project/app';
+    const resourcePath = '/project/ui/test.ts';
 
     // `withResolvers` is supported by Node.js LTS. It's optional in global type due to older
     // browser support.
@@ -30,6 +31,7 @@ describe('swcLoader', () => {
       getOptions: () => {
         return {};
       },
+      rootContext,
       resourcePath,
       async: () => {
         return (...args: CallbackArgs) => {
@@ -49,8 +51,13 @@ describe('swcLoader', () => {
     const [err, content, map] = await deferredPromise;
     assert.strictEqual(err, null);
     assert.strictEqual(content, expected);
+    // The map is handed to webpack as a string, and the file is named relative
+    // to the build context (webpack's own `webpack://` form), so the map, which
+    // webpack hashes into the module hash, carries no absolute path.
+    assert.strictEqual(typeof map, 'string');
     const mapObj = JSON.parse(map as string);
-    assert.deepStrictEqual(mapObj.sources, [context.resourcePath]);
+    assert.deepStrictEqual(mapObj.sources, ['webpack://../ui/test.ts']);
+    assert.ok(!(map as string).includes(context.rootContext));
   });
 
   it('should throw an error when options are invalid', () => {
