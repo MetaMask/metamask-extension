@@ -1,43 +1,52 @@
-import { addRoute, routes, Route } from '.';
+import { it as jestIt } from '@jest/globals';
+import { home } from './home';
+import { matchRoute, routes } from '.';
 
-describe('addRoute', () => {
-  const testRoute: Route = {
-    pathname: '/test',
-    name: 'Test Route',
-  } as unknown as Route;
+function getRegisteredPathnames(children: typeof routes): string[] {
+  return [...children.values()].flatMap((node) => [
+    ...(node.route ? [node.route.pathname] : []),
+    ...getRegisteredPathnames(node.children),
+  ]);
+}
 
-  beforeEach(() => {
-    routes.clear();
-    delete process.env.DEBUG;
+function isValidRoutePattern(pathname: string): boolean {
+  return (
+    pathname.startsWith('/') &&
+    !/\/\*\/+$/u.test(pathname) &&
+    pathname
+      .split('/')
+      .every((segment) => segment === '*' || !segment.includes('*'))
+  );
+}
+
+const registeredPathnames = getRegisteredPathnames(routes);
+
+describe('registered route patterns', () => {
+  it('registers built-in routes through the index', () => {
+    expect(matchRoute('/home')).toBe(home);
   });
 
-  it('adds a route to the routes map', () => {
-    addRoute(testRoute);
-    expect(routes.has('/test')).toBe(true);
-    expect(routes.get('/test')).toBe(testRoute);
+  it('uses only supported wildcard patterns', () => {
+    expect(registeredPathnames.length).toBeGreaterThan(0);
+    expect(
+      registeredPathnames.filter((pathname) => !isValidRoutePattern(pathname)),
+    ).toStrictEqual([]);
   });
 
-  it('allows adding multiple unique routes', () => {
-    const route2: Route = { pathname: '/b', name: 'B' } as unknown as Route;
-    addRoute(testRoute);
-    addRoute(route2);
-    expect(routes.size).toBe(2);
-    expect(routes.get('/test')).toBe(testRoute);
-    expect(routes.get('/b')).toBe(route2);
-  });
+  jestIt.each(['/social', '/social/*', '/social/*/whatever'])(
+    'allows the pattern %s',
+    (pathname) => {
+      expect(isValidRoutePattern(pathname)).toBe(true);
+    },
+  );
 
-  it('throws if adding a duplicate route in DEBUG mode', () => {
-    process.env.DEBUG = 'true';
-    const clonedRoute = { ...testRoute };
-    addRoute(testRoute);
-    expect(() => addRoute(clonedRoute)).toThrow(
-      `Route with pathname "${testRoute.pathname}" already exists.`,
-    );
-  });
-
-  it('does not throw if adding a duplicate route when DEBUG is not set', () => {
-    addRoute(testRoute);
-    expect(() => addRoute(testRoute)).not.toThrow();
-    expect(routes.get('/test')).toBe(testRoute);
+  jestIt.each([
+    '/social/*/',
+    '/social/*//',
+    '/social/pre*',
+    '/social/*suffix',
+    '/social/**',
+  ])('rejects the pattern %s in tests', (pathname) => {
+    expect(isValidRoutePattern(pathname)).toBe(false);
   });
 });
