@@ -11,7 +11,12 @@ import {
   type BenchmarkResults,
   type WebVitalsMetrics,
 } from '../../../../../shared/constants/benchmarks';
-import { runPageLoadBenchmark, collectWebVitals } from '../../utils';
+import {
+  runPageLoadBenchmark,
+  collectWebVitals,
+  applyStartupPageSignals,
+  readStartupPageSignals,
+} from '../../utils';
 import type {
   Metrics,
   PageLoadBenchmarkOptions,
@@ -40,8 +45,11 @@ async function measurePageStandard(
         await driver.navigate(pageName);
         await driver.delay(1000);
 
-        const metricsThisLoad = await driver.collectMetrics();
-        metricsThisLoad.numNetworkReqs = getNetworkReport().numNetworkReqs;
+        const collected = await driver.collectMetrics();
+        const { numNetworkReqs } = getNetworkReport();
+        const signals = await readStartupPageSignals(driver);
+        const metricsThisLoad = applyStartupPageSignals(collected, signals);
+        metricsThisLoad.numNetworkReqs = numNetworkReqs;
         metrics.push(metricsThisLoad);
 
         try {
