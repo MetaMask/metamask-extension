@@ -34,12 +34,14 @@ function openExtensionPage(page: 'swap' | 'asset', asset: AssetData) {
 function trackWidgetEvent({
   event,
   action,
+  interactionType,
   primary,
   similarTokenCount,
   selected,
 }: {
   event?: 'swap_clicked' | 'token_details_clicked';
   action?: 'view_similar' | 'select_similar';
+  interactionType?: 'hover';
   primary: AssetData;
   similarTokenCount: number;
   selected?: AssetData;
@@ -52,6 +54,7 @@ function trackWidgetEvent({
       body: {
         event,
         action,
+        interactionType,
         tokenSymbol: asset.ticker,
         caipAssetId: asset.caipAssetId,
         chainId: asset.chainId,
@@ -112,53 +115,69 @@ async function main() {
     similarTokenCount: resolved.similar.length,
   });
 
-  createRoot(mountPoint).render(
-    <Widget
-      data={resolved.primary}
-      similar={resolved.similar}
-      displayTicker={symbol}
-      onSwap={(asset) => {
-        trackWidgetEvent({
-          event: 'swap_clicked',
-          primary: resolved.primary,
-          similarTokenCount: resolved.similar.length,
-          selected: asset,
-        });
-        openExtensionPage('swap', asset);
-      }}
-      onViewDetails={(asset) => {
-        trackWidgetEvent({
-          event: 'token_details_clicked',
-          primary: resolved.primary,
-          similarTokenCount: resolved.similar.length,
-          selected: asset,
-        });
-        openExtensionPage('asset', asset);
-      }}
-      onViewSimilar={() =>
-        trackWidgetEvent({
-          action: 'view_similar',
-          primary: resolved.primary,
-          similarTokenCount: resolved.similar.length,
-        })
-      }
-      onSelectSimilar={(asset) =>
-        trackWidgetEvent({
-          action: 'select_similar',
-          primary: resolved.primary,
-          similarTokenCount: resolved.similar.length,
-          selected: asset,
-        })
-      }
-      onDisable={() => {
-        browser.runtime
-          .sendMessage({
-            type: EXTENSION_MESSAGES.SET_X_WIDGET_ENABLED,
-            body: { enabled: false },
+  let hasTrackedHover = false;
+  const handleHover = () => {
+    if (hasTrackedHover) {
+      return;
+    }
+    hasTrackedHover = true;
+    trackWidgetEvent({
+      interactionType: 'hover',
+      primary: resolved.primary,
+      similarTokenCount: resolved.similar.length,
+    });
+  };
+
+  const root = createRoot(mountPoint);
+  root.render(
+    <div onMouseEnter={handleHover}>
+      <Widget
+        data={resolved.primary}
+        similar={resolved.similar}
+        displayTicker={symbol}
+        onSwap={(asset) => {
+          trackWidgetEvent({
+            event: 'swap_clicked',
+            primary: resolved.primary,
+            similarTokenCount: resolved.similar.length,
+            selected: asset,
+          });
+          openExtensionPage('swap', asset);
+        }}
+        onViewDetails={(asset) => {
+          trackWidgetEvent({
+            event: 'token_details_clicked',
+            primary: resolved.primary,
+            similarTokenCount: resolved.similar.length,
+            selected: asset,
+          });
+          openExtensionPage('asset', asset);
+        }}
+        onViewSimilar={() =>
+          trackWidgetEvent({
+            action: 'view_similar',
+            primary: resolved.primary,
+            similarTokenCount: resolved.similar.length,
           })
-          .catch(() => undefined);
-      }}
-    />,
+        }
+        onSelectSimilar={(asset) =>
+          trackWidgetEvent({
+            action: 'select_similar',
+            primary: resolved.primary,
+            similarTokenCount: resolved.similar.length,
+            selected: asset,
+          })
+        }
+        onDisable={() => {
+          browser.runtime
+            .sendMessage({
+              type: EXTENSION_MESSAGES.SET_X_WIDGET_ENABLED,
+              body: { enabled: false },
+            })
+            .catch(() => undefined);
+        }}
+      />
+    </div>,
   );
 }
 
