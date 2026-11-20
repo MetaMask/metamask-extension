@@ -188,7 +188,8 @@ export async function mockHorizonAccounts(
         };
       }
 
-      // Only seed known HD addresses; unknown G… ids stay 404 so discovery stops.
+      // Only Account 1 is in EXPECTED_STELLAR_ADDRESSES_BY_INDEX so discovery
+      // does not auto-create HD accounts 2+. Unknown G… ids stay 404.
       if (
         !(EXPECTED_STELLAR_ADDRESSES_BY_INDEX as readonly string[]).includes(
           address,
