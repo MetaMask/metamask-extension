@@ -52,7 +52,7 @@ For each, the question is whether a route in the change consumes a parameter tha
 
 ## Testing
 
-[`deep-links-doc.test.ts`](../shared/lib/deep-links/deep-links-doc.test.ts) asserts this guide's claims about what a handler receives, what a valid signature covers and when `verify()` retries, signing with a real P-256 key. When a change makes one of its cases fail, the code and this guide disagree, and the change should update whichever is wrong.
+[`signature-boundary.test.ts`](../shared/lib/deep-links/signature-boundary.test.ts) asserts what a handler receives, what a valid signature covers and when `verify()` retries, signing with a real P-256 key.
 
 The other suites reach the signature boundary less directly:
 
@@ -60,7 +60,7 @@ The other suites reach the signature boundary less directly:
 - The end-to-end specs under [`test/e2e/tests/deep-link/`](../test/e2e/tests/deep-link/) do sign with a real P-256 key, through [`helpers.ts`](../test/e2e/tests/deep-link/helpers.ts).
 - A route's own tests call its `handler` directly, so they exercise the destination logic and have no power over the signature boundary.
 
-A unit test with a real key is cheap, and `deep-links-doc.test.ts` shows the pattern: run it under `@jest-environment node`, generate a P-256 key pair with `crypto.subtle.generateKey`, and replace only `getKeyData` with the generated public key. When writing one:
+A unit test with a real key is cheap, and `signature-boundary.test.ts` shows the pattern: run it under `@jest-environment node`, generate a P-256 key pair with `crypto.subtle.generateKey`, and replace only `getKeyData` with the generated public key. When writing one:
 
 - **Assert absence, not inequality.** A test that checks a specific value did not arrive still passes when a different unsigned value does. Assert the key is absent.
 - **Vary values across cases.** If the accepted case and the rejected cases use the same literal for a parameter, no assertion can tell "correctly stripped" from "never checked".

@@ -1,8 +1,8 @@
 /**
  * @jest-environment node
  */
-// Each case asserts a claim in docs/deep-links.md with a real P-256 signature.
-// A failure means the code and the guide disagree: update whichever is wrong.
+// Signs with a real P-256 key so that only `getKeyData` is replaced, and asserts
+// what a valid signature covers and what reaches the handler on every status.
 import { webcrypto } from 'node:crypto';
 
 let mockRawPublicKey: Uint8Array;
@@ -55,7 +55,7 @@ function eventProperty(url: URL, signature: string, key: string): unknown {
   return (event.properties as Record<string, unknown>)[key];
 }
 
-describe('docs/deep-links.md', () => {
+describe('deep-link signature boundary', () => {
   beforeAll(async () => {
     const pair = await webcrypto.subtle.generateKey(
       { name: 'ECDSA', namedCurve: 'P-256' },
