@@ -32,12 +32,17 @@ describe('Test Snap Management', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectNotificationButton',
+          {
+            expectedMessage: 'Reconnect to Notifications Snap',
+            snapId: 'npm:@metamask/notification-example-snap',
+          },
         );
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         await homePage.headerNavbar.openSnapListPage();
 
         const snapListPage = new SnapListPage(driver);
