@@ -35,13 +35,14 @@ env:
   RUN_ID: ${{ github.run_id }}
 
 permissions:
-  contents: write # required for releases
-  id-token: write # required for s3 uploads
-  statuses: write # required for build-source-hash and ci-status-gate
+  contents: read
 
 jobs:
   get-requirements:
     name: Get workflow and job requirements
+    permissions:
+      contents: read
+      statuses: write # Posts build-source-hash and builds-from-run.
     uses: ./.github/workflows/get-requirements.yml
 
   locales-changed-only:
@@ -159,6 +160,9 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-webpack
@@ -172,6 +176,9 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-mv2-webpack
@@ -184,6 +191,9 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-beta-webpack
@@ -196,6 +206,9 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-beta-mv2-webpack
@@ -208,6 +221,9 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-webpack
@@ -220,6 +236,9 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-mv2-webpack
@@ -232,6 +251,9 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-webpack
@@ -244,6 +266,9 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-mv2-webpack
@@ -256,6 +281,9 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-flask-webpack
@@ -268,6 +296,9 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-flask-mv2-webpack
@@ -340,6 +371,9 @@ jobs:
       - get-requirements
       - build-dist-webpack
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
+    permissions:
+      contents: read
+      id-token: write
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
@@ -470,6 +504,9 @@ jobs:
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
     needs:
       - get-requirements
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/build-storybook.yml
     secrets: inherit
 
@@ -478,6 +515,9 @@ jobs:
     if: ${{ github.event_name != 'merge_group' && needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
     needs:
       - get-requirements
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/build-ts-migration-dashboard.yml
 
   publish-prerelease:
@@ -523,6 +563,9 @@ jobs:
       - bundle-size
       - build-storybook
       - build-ts-migration-dashboard
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/publish-prerelease.yml
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}

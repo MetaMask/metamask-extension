@@ -9763,9 +9763,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ramps-controller@npm:^30.0.0":
-  version: 30.0.0
-  resolution: "@metamask/ramps-controller@npm:30.0.0"
+"@metamask/ramps-controller@npm:^30.0.0, @metamask/ramps-controller@npm:^30.1.0":
+  version: 30.1.0
+  resolution: "@metamask/ramps-controller@npm:30.1.0"
   dependencies:
     "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/base-data-service": "npm:^2.1.0"
@@ -9777,7 +9777,7 @@ __metadata:
     "@metamask/utils": "npm:^12.0.2"
     bignumber.js: "npm:^9.1.2"
     fast-deep-equal: "npm:^3.1.3"
-  checksum: 10/74ff7653e79ec4285cdb3c17dd4c4a2b45561d3d1f6e63f37055b05fd345cfc12d1baa224e4683e02c579061bf51394f4d3dd2261f0ec4b2e51a62b5376cdd8e
+  checksum: 10/4d8f36941b85374ee3322581535991da49a14a43a526cb7b5959bb2841182cd00cfd943e66b6a0c85d4b7b476e34d85efed241547cad0af5cfebb95d7afc15f6
   languageName: node
   linkType: hard
 
@@ -9972,9 +9972,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:^27.3.0":
-  version: 27.3.0
-  resolution: "@metamask/smart-transactions-controller@npm:27.3.0"
+"@metamask/smart-transactions-controller@npm:^28.0.0":
+  version: 28.0.0
+  resolution: "@metamask/smart-transactions-controller@npm:28.0.0"
   dependencies:
     "@babel/runtime": "npm:^7.29.7"
     "@ethersproject/bytes": "npm:^5.8.0"
@@ -9987,15 +9987,15 @@ __metadata:
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/network-controller": "npm:^38.0.1"
     "@metamask/polling-controller": "npm:^17.0.0"
-    "@metamask/profile-sync-controller": "npm:^36.1.2"
     "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
+    "@metamask/sentinel-api-service": "npm:^2.3.0"
     "@metamask/superstruct": "npm:^3.4.1"
-    "@metamask/transaction-controller": "npm:^74.1.0"
+    "@metamask/transaction-controller": "npm:^74.2.0"
     "@metamask/utils": "npm:^12.0.2"
     bignumber.js: "npm:^9.1.2"
     lodash-es: "npm:^4.18.1"
     reselect: "npm:^5.3.0"
-  checksum: 10/f99fe5bb775f5f01b890311df26148eb6342947e0dbcef4a088e1a0677d19b9a1b0a10afc662918fe5c70e6cd9f3b17e702182d031f2d647bc6f83867c3ca123
+  checksum: 10/e6a6a0aa8096763e99d05462ed6c55254e8020baf944587ebbdf841c58d99c10339a8d2f84fecba0435109b715a3d9186811b59cef1097a21a794bf7af347638
   languageName: node
   linkType: hard
 
@@ -34742,7 +34742,7 @@ __metadata:
     "@metamask/profile-metrics-controller": "npm:^5.2.2"
     "@metamask/profile-sync-controller": "npm:^36.1.2"
     "@metamask/providers": "npm:^22.1.1"
-    "@metamask/ramps-controller": "npm:^30.0.0"
+    "@metamask/ramps-controller": "npm:^30.1.0"
     "@metamask/rate-limit-controller": "npm:^8.0.0"
     "@metamask/react-data-query": "npm:^2.0.0"
     "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
@@ -34751,11 +34751,11 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/seedless-onboarding-controller": "npm:^12.0.0"
     "@metamask/selected-network-controller": "npm:^27.1.0"
-    "@metamask/sentinel-api-service": "npm:^2.1.0"
+    "@metamask/sentinel-api-service": "npm:^2.3.0"
     "@metamask/shield-controller": "npm:^7.1.1"
     "@metamask/signature-controller": "npm:^40.1.1"
     "@metamask/skills": "npm:^0.4.0"
-    "@metamask/smart-transactions-controller": "npm:^27.3.0"
+    "@metamask/smart-transactions-controller": "npm:^28.0.0"
     "@metamask/snap-account-service": "npm:^4.0.0"
     "@metamask/snap-simple-keyring-site": "npm:^2.1.1"
     "@metamask/snaps-controllers": "npm:^23.0.1"

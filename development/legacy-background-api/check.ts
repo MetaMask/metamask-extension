@@ -206,6 +206,10 @@ function readSnapshot(): Snapshot {
       snapshot,
       'legacyBackgroundApiServiceMethods',
     ),
+    messengerClientApiMethods: readSnapshottedApiMemberNames(
+      snapshot,
+      'messengerClientApiMethods',
+    ),
     getApiMethods: readSnapshottedApiMemberNames(snapshot, 'getApiMethods'),
     adhocControllerConnectionMethods: readSnapshottedApiMemberNames(
       snapshot,

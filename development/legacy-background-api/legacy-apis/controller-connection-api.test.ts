@@ -130,16 +130,26 @@ describe('getControllerConnectionApiMemberNames', () => {
   });
 
   describe('grouping by source', () => {
-    it('groups names from getApi and the api object itself', () => {
+    it('groups names from messengerClientApi, getApi, and the api object itself', () => {
       const { sourceFile, context } = parseSource(`
+        const PerpsControllerInit = () => ({
+          messengerClient: {},
+          api: { perpsPlaceOrder() {} },
+        });
         function getTransactionControllerApi() {
           return { abortTransactionSigning() {} };
         }
         class MetamaskController {
+          constructor() {
+            const messengerClientInitFunctions = {
+              PerpsController: PerpsControllerInit,
+            };
+          }
           getApi() { return { setLocked() {} }; }
           setupControllerConnection() {
             const api = {
               ...this.getApi(),
+              ...this.messengerClientApi,
               ...getTransactionControllerApi(),
               startSendingPatches: () => {},
             };
@@ -149,6 +159,7 @@ describe('getControllerConnectionApiMemberNames', () => {
       const names = getControllerConnectionApiMemberNames(sourceFile, context);
 
       expect(names).toStrictEqual({
+        messengerClientApiMethods: new Set(['perpsPlaceOrder']),
         getApiMethods: new Set(['setLocked']),
         adhocControllerConnectionMethods: new Set([
           'abortTransactionSigning',
@@ -183,25 +194,102 @@ describe('getControllerConnectionApiMemberNames', () => {
       const names = getControllerConnectionApiMemberNames(sourceFile, context);
 
       expect(names).toStrictEqual({
+        messengerClientApiMethods: new Set(),
         getApiMethods: new Set(),
         adhocControllerConnectionMethods: new Set(['fromBridge']),
       });
     });
 
-    it('lists an ad hoc name only under getApi when getApi also contributes it', () => {
+    it('lists a name under messengerClientApi when it is spread after getApi', () => {
+      const { sourceFile, context } = parseSource(`
+        const RampsControllerInit = () => ({
+          messengerClient: {},
+          api: { shared() {} },
+        });
+        class MetamaskController {
+          constructor() {
+            const messengerClientInitFunctions = {
+              RampsController: RampsControllerInit,
+            };
+          }
+          getApi() { return { shared() {}, setLocked() {} }; }
+          setupControllerConnection() {
+            const api = { ...this.getApi(), ...this.messengerClientApi };
+          }
+        }`);
+
+      const names = getControllerConnectionApiMemberNames(sourceFile, context);
+
+      expect(names).toStrictEqual({
+        messengerClientApiMethods: new Set(['shared']),
+        getApiMethods: new Set(['setLocked']),
+        adhocControllerConnectionMethods: new Set(),
+      });
+    });
+
+    it('lists a name as ad hoc when it is defined after getApi', () => {
       const { sourceFile, context } = parseSource(`class MetamaskController {
-        getApi() { return { shared() {} }; }
+        getApi() { return { shared() {}, setLocked() {} }; }
         setupControllerConnection() {
-          const api = { ...this.getApi(), shared: () => {}, startSendingPatches: () => {} };
+          const api = { ...this.getApi(), shared: () => {} };
         }
       }`);
 
-      const { adhocControllerConnectionMethods } =
-        getControllerConnectionApiMemberNames(sourceFile, context);
+      const names = getControllerConnectionApiMemberNames(sourceFile, context);
 
-      expect(adhocControllerConnectionMethods).toStrictEqual(
-        new Set(['startSendingPatches']),
-      );
+      expect(names).toStrictEqual({
+        messengerClientApiMethods: new Set(),
+        getApiMethods: new Set(['setLocked']),
+        adhocControllerConnectionMethods: new Set(['shared']),
+      });
+    });
+
+    it('lists a name as ad hoc when it is spread after messengerClientApi', () => {
+      const { sourceFile, context } = parseSource(`
+        const PerpsControllerInit = () => ({
+          messengerClient: {},
+          api: { perpsInit() {}, perpsPlaceOrder() {} },
+        });
+        class PerpsStreamBridge { bridgeApi() { return { perpsInit() {} }; } }
+        class MetamaskController {
+          constructor() {
+            const messengerClientInitFunctions = {
+              PerpsController: PerpsControllerInit,
+            };
+          }
+          setupControllerConnection() {
+            const perpsStream = perpsController ? new PerpsStreamBridge() : null;
+            const api = {
+              ...this.messengerClientApi,
+              ...(perpsStream ? perpsStream.bridgeApi() : {}),
+            };
+          }
+        }`);
+
+      const names = getControllerConnectionApiMemberNames(sourceFile, context);
+
+      expect(names).toStrictEqual({
+        messengerClientApiMethods: new Set(['perpsPlaceOrder']),
+        getApiMethods: new Set(),
+        adhocControllerConnectionMethods: new Set(['perpsInit']),
+      });
+    });
+
+    it('lists a name under getApi when getApi is spread after it is defined', () => {
+      const { sourceFile, context } = parseSource(`class MetamaskController {
+        getApi() { return { shared() {} }; }
+        setupControllerConnection() {
+          const api = { shared: () => {}, ...this.getApi() };
+        }
+      }`);
+
+      const names = getControllerConnectionApiMemberNames(sourceFile, context);
+
+      expect(names).toStrictEqual({
+        messengerClientApiMethods: new Set(),
+        getApiMethods: new Set(['shared']),
+        adhocControllerConnectionMethods: new Set(),
+      });
     });
   });
 
@@ -755,32 +843,225 @@ describe('getControllerConnectionApiMemberNames', () => {
   });
 
   describe('messengerClientApi', () => {
-    it('ignores the messengerClientApi spread', () => {
-      const { sourceFile, context } = parseSource(`class MetamaskController {
-        getApi() { return { setLocked() {} }; }
-        setupControllerConnection() {
-          const api = { ...this.getApi(), ...this.messengerClientApi };
-        }
-      }`);
+    it('collects the api objects returned by messenger client init functions', () => {
+      const { sourceFile, context } = parseSource(`
+        function getPerpsApi() { return { perpsInit() {} }; }
+        const PerpsControllerInit = () => {
+          const api = getPerpsApi();
+          return { messengerClient: {}, api };
+        };
+        const RampsControllerInit = () => ({
+          messengerClient: {},
+          api: { startRampsLifecycle() {} },
+        });
+        class MetamaskController {
+          constructor() {
+            const messengerClientInitFunctions = {
+              PerpsController: PerpsControllerInit,
+              RampsController: RampsControllerInit,
+            };
+          }
+          setupControllerConnection() {
+            const api = { ...this.messengerClientApi };
+          }
+        }`);
 
-      const names = getControllerConnectionApiMemberNames(sourceFile, context);
+      const { messengerClientApiMethods } =
+        getControllerConnectionApiMemberNames(sourceFile, context);
 
-      expect(names).toStrictEqual({
-        getApiMethods: new Set(['setLocked']),
-        adhocControllerConnectionMethods: new Set(),
-      });
+      expect(messengerClientApiMethods).toStrictEqual(
+        new Set(['perpsInit', 'startRampsLifecycle']),
+      );
     });
 
-    it('ignores a messengerClientApi spread wrapped in parentheses', () => {
+    it('ignores init functions that do not return an api', () => {
+      const { sourceFile, context } = parseSource(`
+        const AlertControllerInit = () => ({ messengerClient: {} });
+        class MetamaskController {
+          constructor() {
+            const messengerClientInitFunctions = {
+              AlertController: AlertControllerInit,
+            };
+          }
+          setupControllerConnection() {
+            const api = { ...this.messengerClientApi };
+          }
+        }`);
+
+      const { messengerClientApiMethods } =
+        getControllerConnectionApiMemberNames(sourceFile, context);
+
+      expect(messengerClientApiMethods).toStrictEqual(new Set());
+    });
+
+    it('follows init functions included through a conditional spread', () => {
+      const { sourceFile, context } = parseSource(`
+        const PerpsControllerInit = () => ({
+          messengerClient: {},
+          api: { perpsInit() {} },
+        });
+        class MetamaskController {
+          constructor() {
+            const messengerClientInitFunctions = {
+              ...(isPerpsIncluded()
+                ? { PerpsController: PerpsControllerInit }
+                : {}),
+            };
+          }
+          setupControllerConnection() {
+            const api = { ...this.messengerClientApi };
+          }
+        }`);
+
+      const { messengerClientApiMethods } =
+        getControllerConnectionApiMemberNames(sourceFile, context);
+
+      expect(messengerClientApiMethods).toStrictEqual(new Set(['perpsInit']));
+    });
+
+    it('follows imported init functions', () => {
+      const { sourceFile, context } = parseSource(`
+        import { PerpsControllerInit } from './perps-controller-init';
+        class MetamaskController {
+          constructor() {
+            const messengerClientInitFunctions = {
+              PerpsController: PerpsControllerInit,
+            };
+          }
+          setupControllerConnection() {
+            const api = { ...this.messengerClientApi };
+          }
+        }`);
+      addSource(
+        context,
+        'perps-controller-init.ts',
+        `function getApi() { return { perpsInit() {} }; }
+        export const PerpsControllerInit = () => {
+          const api = getApi();
+          return { messengerClient: {}, api };
+        };`,
+      );
+
+      const { messengerClientApiMethods } =
+        getControllerConnectionApiMemberNames(sourceFile, context);
+
+      expect(messengerClientApiMethods).toStrictEqual(new Set(['perpsInit']));
+    });
+
+    it('rejects an init function result that spreads in its api', () => {
+      const { sourceFile, context } = parseSource(`
+        const baseResult = { api: { perpsInit() {} } };
+        const PerpsControllerInit = () => ({ messengerClient: {}, ...baseResult });
+        class MetamaskController {
+          constructor() {
+            const messengerClientInitFunctions = {
+              PerpsController: PerpsControllerInit,
+            };
+          }
+          setupControllerConnection() {
+            const api = { ...this.messengerClientApi };
+          }
+        }`);
+
+      expect(() =>
+        getControllerConnectionApiMemberNames(sourceFile, context),
+      ).toThrow('Cannot look up "api" through a spread');
+    });
+
+    it('rejects a controller without messengerClientInitFunctions', () => {
       const { sourceFile, context } = parseSource(`class MetamaskController {
         setupControllerConnection() {
-          const api = { ...(this.messengerClientApi) };
+          const api = { ...this.messengerClientApi };
         }
       }`);
+
+      expect(() =>
+        getControllerConnectionApiMemberNames(sourceFile, context),
+      ).toThrow(
+        'MetamaskController must declare messengerClientInitFunctions exactly once',
+      );
+    });
+
+    it('names an init function declaration that does not return a value', () => {
+      const { sourceFile, context } = parseSource(`
+        function AlertControllerInit() { initialize(); }
+        class MetamaskController {
+          constructor() {
+            const messengerClientInitFunctions = {
+              AlertController: AlertControllerInit,
+            };
+          }
+          setupControllerConnection() {
+            const api = { ...this.messengerClientApi };
+          }
+        }`);
+
+      expect(() =>
+        getControllerConnectionApiMemberNames(sourceFile, context),
+      ).toThrow(
+        'The messenger client init function "AlertControllerInit" does not return a value',
+      );
+    });
+
+    it('names an init function assigned to a variable that does not return a value', () => {
+      const { sourceFile, context } = parseSource(`
+        const AlertControllerInit = () => { initialize(); };
+        class MetamaskController {
+          constructor() {
+            const messengerClientInitFunctions = {
+              AlertController: AlertControllerInit,
+            };
+          }
+          setupControllerConnection() {
+            const api = { ...this.messengerClientApi };
+          }
+        }`);
+
+      expect(() =>
+        getControllerConnectionApiMemberNames(sourceFile, context),
+      ).toThrow(
+        'The messenger client init function "AlertControllerInit" does not return a value',
+      );
+    });
+
+    it('rejects an anonymous init function that does not return a value', () => {
+      const { sourceFile, context } = parseSource(`class MetamaskController {
+        constructor() {
+          const messengerClientInitFunctions = {
+            AlertController: () => { initialize(); },
+          };
+        }
+        setupControllerConnection() {
+          const api = { ...this.messengerClientApi };
+        }
+      }`);
+
+      expect(() =>
+        getControllerConnectionApiMemberNames(sourceFile, context),
+      ).toThrow('This messenger client init function does not return a value');
+    });
+
+    it('follows a messengerClientApi spread wrapped in parentheses', () => {
+      const { sourceFile, context } = parseSource(`
+        const PerpsControllerInit = () => ({
+          messengerClient: {},
+          api: { perpsInit() {} },
+        });
+        class MetamaskController {
+          constructor() {
+            const messengerClientInitFunctions = {
+              PerpsController: PerpsControllerInit,
+            };
+          }
+          setupControllerConnection() {
+            const api = { ...(this.messengerClientApi) };
+          }
+        }`);
 
       const names = getControllerConnectionApiMemberNames(sourceFile, context);
 
       expect(names).toStrictEqual({
+        messengerClientApiMethods: new Set(['perpsInit']),
         getApiMethods: new Set(),
         adhocControllerConnectionMethods: new Set(),
       });

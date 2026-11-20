@@ -41,6 +41,7 @@ describe('check', () => {
     mockFiles({
       snapshot: {
         legacyBackgroundApiServiceMethods: ['serviceMethod'],
+        messengerClientApiMethods: [],
         getApiMethods: ['getApiMethod'],
         adhocControllerConnectionMethods: [],
       },
@@ -68,6 +69,7 @@ describe('check', () => {
     mockFiles({
       snapshot: {
         legacyBackgroundApiServiceMethods: ['serviceMethod'],
+        messengerClientApiMethods: [],
         getApiMethods: [],
         adhocControllerConnectionMethods: [],
       },
@@ -96,15 +98,27 @@ describe('check', () => {
     mockFiles({
       snapshot: {
         legacyBackgroundApiServiceMethods: [],
+        messengerClientApiMethods: [],
         getApiMethods: [],
         adhocControllerConnectionMethods: [],
       },
-      controllerSource: `class MetamaskController {
+      controllerSource: `const TransactionPayControllerInit = () => ({
+        messengerClient: {},
+        api: { setTransactionPayPaymentOverride() {} },
+      });
+      class MetamaskController {
+        constructor() {
+          const messengerClientInitFunctions = {
+            TransactionPayController: TransactionPayControllerInit,
+          };
+        }
+
         getApi() { return { addNftVerifyOwnership() {} }; }
 
         setupControllerConnection() {
           const api = {
             ...this.getApi(),
+            ...this.messengerClientApi,
             perpsDeactivateCandleStream: () => {},
           };
         }
@@ -121,6 +135,8 @@ describe('check', () => {
       [
         '- New methods have been added to LegacyBackgroundApiService:',
         '  - addPermittedChains',
+        '- Some controller/service init functions return an `api` object that includes new methods:',
+        '  - setTransactionPayPaymentOverride',
         '- New methods have been added to the API object returned by MetamaskController.getApi():',
         '  - addNftVerifyOwnership',
         '- New methods have been directly (or indirectly) added to the API object returned by MetamaskController.setupControllerConnection():',
@@ -133,6 +149,7 @@ describe('check', () => {
     mockFiles({
       snapshot: {
         legacyBackgroundApiServiceMethods: [],
+        messengerClientApiMethods: [],
         getApiMethods: [],
         adhocControllerConnectionMethods: [],
       },
@@ -156,6 +173,7 @@ describe('check', () => {
     mockFiles({
       snapshot: {
         legacyBackgroundApiServiceMethods: ['serviceMethod', 'removedMethod'],
+        messengerClientApiMethods: [],
         getApiMethods: ['getApiMethod'],
         adhocControllerConnectionMethods: [],
       },
@@ -184,14 +202,19 @@ describe('check', () => {
     mockFiles({
       snapshot: {
         legacyBackgroundApiServiceMethods: ['addPermittedAccounts'],
+        messengerClientApiMethods: ['updateMoneyAccountWithdrawAmount'],
         getApiMethods: ['isPublicEndpointUrl'],
         adhocControllerConnectionMethods: ['perpsDeactivatePriceStream'],
       },
       controllerSource: `class MetamaskController {
+        constructor() {
+          const messengerClientInitFunctions = {};
+        }
+
         getApi() { return {}; }
 
         setupControllerConnection() {
-          const api = { ...this.getApi() };
+          const api = { ...this.getApi(), ...this.messengerClientApi };
         }
       }`,
       serviceSource: 'class LegacyBackgroundApiService {}',
@@ -204,6 +227,8 @@ describe('check', () => {
       [
         '- legacyBackgroundApiServiceMethods (LegacyBackgroundApiService methods):',
         '  - addPermittedAccounts',
+        '- messengerClientApiMethods (methods from `api` objects returned by controller/service init functions):',
+        '  - updateMoneyAccountWithdrawAmount',
         '- getApiMethods (methods from the API object returned by MetamaskController.getApi()):',
         '  - isPublicEndpointUrl',
         '- adhocControllerConnectionMethods (methods directly/indirectly defined in MetamaskController.setupControllerConnection()):',

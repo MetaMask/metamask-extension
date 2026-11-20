@@ -18,6 +18,38 @@ describe('readApiMemberNames', () => {
     mockReadFileSync.mockClear();
   });
 
+  describe('messengerClientApiMethods', () => {
+    it('reads methods from the api objects returned by messenger client init functions', () => {
+      mockSourceFiles({
+        controllerSource: `const PerpsControllerInit = () => ({ messengerClient: {}, api: { perpsPlaceOrder() {} } });
+
+class MetamaskController {
+  constructor() {
+    const messengerClientInitFunctions = { PerpsController: PerpsControllerInit };
+  }
+
+  getApi() {
+    return { setLocked() {} };
+  }
+
+  setupControllerConnection() {
+    const api = {
+      ...this.getApi(),
+      ...this.messengerClientApi,
+      startSendingPatches: () => {},
+    };
+  }
+}`,
+      });
+
+      const { messengerClientApiMethods } = readApiMemberNames();
+
+      expect(messengerClientApiMethods).toStrictEqual(
+        new Set(['perpsPlaceOrder']),
+      );
+    });
+  });
+
   describe('getApiMethods', () => {
     it('reads methods from MetamaskController.getApi and its spreads', () => {
       mockSourceFiles({
@@ -51,7 +83,7 @@ class MetamaskController {
   });
 
   describe('adhocControllerConnectionMethods', () => {
-    it('reads methods added in setupControllerConnection outside of getApi', () => {
+    it('reads methods added in setupControllerConnection outside of getApi and messengerClientApi', () => {
       mockSourceFiles({
         controllerSource: `import { getTransactionControllerApi } from './wallet-init/instance-options/transaction-controller';
 

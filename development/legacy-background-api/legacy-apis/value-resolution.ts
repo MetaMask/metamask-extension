@@ -636,3 +636,79 @@ function guardingAgainstCycles<Value>(
     context.nodesBeingResolved.delete(node);
   }
 }
+
+/**
+ * Finds the values that an object literal may assign to one property.
+ *
+ * Spreads are not followed and throw instead, since no tracked code needs
+ * them yet.
+ *
+ * @param objectLiteral - The object literal to search.
+ * @param propertyName - The name of the property to find.
+ * @param context - The resolution context.
+ * @returns The expressions that may be assigned to the property.
+ */
+export function collectPropertyValuesFromObject(
+  objectLiteral: ts.ObjectLiteralExpression,
+  propertyName: string,
+  context: ResolutionContext,
+): ts.Expression[] {
+  return objectLiteral.properties.flatMap((objectElement) =>
+    resolvePropertyValuesFromObjectElement(
+      objectElement,
+      propertyName,
+      context,
+    ),
+  );
+}
+
+/**
+ * Finds the values that one object element may assign to a property.
+ *
+ * @param objectElement - The object element to inspect.
+ * @param propertyName - The name of the property to find.
+ * @param context - The resolution context.
+ * @returns The expressions that may be assigned to the property.
+ */
+function resolvePropertyValuesFromObjectElement(
+  objectElement: ts.ObjectLiteralElementLike,
+  propertyName: string,
+  context: ResolutionContext,
+): ts.Expression[] {
+  // ANTI-EXAMPLE:
+  //   { messengerClient, ...baseResult }
+  //                      ^^^^^^^^^^^^^ spread assignment
+  if (ts.isSpreadAssignment(objectElement)) {
+    throw new UnresolvableExpressionError(
+      objectElement,
+      `Cannot look up "${propertyName}" through a spread`,
+    );
+  }
+
+  if (
+    objectElement.name === undefined ||
+    getPropertyNameText(objectElement.name) !== propertyName
+  ) {
+    return [];
+  }
+
+  // EXAMPLE:
+  //   { api: getApi(messengerClient) }
+  //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ property assignment
+  //          ^^^^^^^^^^^^^^^^^^^^^^^ initializer
+  if (ts.isPropertyAssignment(objectElement)) {
+    return [objectElement.initializer];
+  }
+
+  // EXAMPLE:
+  //   { messengerClient, api }
+  //                      ^^^ shorthand property assignment
+  if (ts.isShorthandPropertyAssignment(objectElement)) {
+    return [objectElement.name];
+  }
+
+  throw new UnresolvableExpressionError(
+    objectElement,
+    'Cannot determine the value of this property',
+  );
+}
