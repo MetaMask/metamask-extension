@@ -11,10 +11,6 @@ import Confirmation from '../../../page-objects/pages/confirmations/confirmation
 import ConfirmAlertModal from '../../../page-objects/pages/dialog/confirm-alert';
 import TestDapp, { SignatureType } from '../../../page-objects/pages/test-dapp';
 import { login } from '../../../page-objects/flows/login.flow';
-import {
-  BlockaidReason,
-  BlockaidResultType,
-} from '../../../../../shared/constants/security-provider';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import { assertSignatureRejectedMetrics } from './signature-helpers';
 
@@ -32,7 +28,6 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
           SignatureType.SIWE_BadDomain,
         );
 
-        await confirmation.clickScrollToBottomButton();
         await confirmation.clickInlineAlert();
 
         await alertModal.acknowledgeAlert();
@@ -56,7 +51,7 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
         const confirmation = new Confirmation(driver);
         const testDapp = new TestDapp(driver);
 
-        await login(driver);
+        await login(driver, { waitForSignIn: true });
         await testDapp.openTestDappAndTriggerSignature(
           SignatureType.SIWE_BadDomain,
         );
@@ -101,8 +96,6 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
             // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_visualized_count: 0,
           },
-          securityAlertReason: BlockaidReason.notApplicable,
-          securityAlertResponse: BlockaidResultType.NotApplicable,
           requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
       },
@@ -120,7 +113,7 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
         const alertModal = new ConfirmAlertModal(driver);
         const testDapp = new TestDapp(driver);
 
-        await login(driver);
+        await login(driver, { waitForSignIn: true });
         await testDapp.openTestDappAndTriggerSignature(
           SignatureType.SIWE_BadDomain,
         );
@@ -167,8 +160,6 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
             // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_visualized_count: 1,
           },
-          securityAlertReason: BlockaidReason.notApplicable,
-          securityAlertResponse: BlockaidResultType.NotApplicable,
           requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
       },

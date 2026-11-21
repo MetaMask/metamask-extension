@@ -18,6 +18,10 @@ const EVENT: SplitStateWriteEvent = {
     msSinceLastUiOpen: 2_000,
     msSinceLastUiInteraction: 4_000,
     msSinceLastWindowEvent: 3_000,
+    msSinceLastDappRpc: 6_000,
+    msSinceLastConnectedDappRpc: 6_500,
+    msSinceLastSnapRpc: 7_000,
+    msSinceLastExternalExtensionRpc: 8_000,
   },
   bytesByController: new Map([
     ['BarController', 21],
@@ -76,6 +80,10 @@ describe('trackSplitStateWrite', () => {
           'state.write.ms_since_ui_open': 2_000,
           'state.write.ms_since_ui_interaction': 4_000,
           'state.write.ms_since_window_event': 3_000,
+          'state.write.ms_since_dapp_rpc': 6_000,
+          'state.write.ms_since_connected_dapp_rpc': 6_500,
+          'state.write.ms_since_snap_rpc': 7_000,
+          'state.write.ms_since_external_extension_rpc': 8_000,
           'state.write.sample_rate': 0.01,
           'state.write.size_measurement_source': 'storage_get_bytes_in_use',
           'state.write.notification_is_open': true,
@@ -148,6 +156,14 @@ describe('trackSplitStateWrite', () => {
       'state.write.ms_since_ui_interaction',
     );
     expect(attributes).not.toHaveProperty('state.write.ms_since_window_event');
+    expect(attributes).not.toHaveProperty('state.write.ms_since_dapp_rpc');
+    expect(attributes).not.toHaveProperty(
+      'state.write.ms_since_connected_dapp_rpc',
+    );
+    expect(attributes).not.toHaveProperty('state.write.ms_since_snap_rpc');
+    expect(attributes).not.toHaveProperty(
+      'state.write.ms_since_external_extension_rpc',
+    );
     expect(attributes).not.toHaveProperty(
       'state.write.ms_since_last_service_worker_reload',
     );
@@ -184,11 +200,13 @@ describe('trackSplitStateWrite', () => {
     expect(attributes['state.write.service_worker_reload_count']).toBe(2);
   });
 
-  it('forces a transaction when an ambient active span exists', () => {
+  it('starts its own trace instead of joining an ambient active span', () => {
     const activeSpan = { spanContext: jest.fn() };
     const startSpan = jest.fn((_options, callback) => callback(null));
+    const startNewTrace = jest.fn((callback) => callback());
     globalThis.sentry = {
       getActiveSpan: jest.fn(() => activeSpan),
+      startNewTrace,
       startSpan,
       withIsolationScope: jest.fn((callback) =>
         callback({ setTag: jest.fn() }),
@@ -197,13 +215,17 @@ describe('trackSplitStateWrite', () => {
 
     trackSplitStateWrite(EVENT);
 
+    expect(startNewTrace).toHaveBeenCalledTimes(1);
     expect(startSpan).toHaveBeenCalledWith(
       expect.objectContaining({
-        forceTransaction: true,
         name: TraceName.StatePersist,
-        parentSpan: activeSpan,
+        parentSpan: null,
       }),
       expect.any(Function),
+    );
+    expect(startSpan.mock.calls[0][0]).not.toHaveProperty(
+      'forceTransaction',
+      true,
     );
   });
 });

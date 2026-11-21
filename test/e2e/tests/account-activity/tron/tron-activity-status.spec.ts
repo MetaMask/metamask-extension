@@ -40,13 +40,13 @@ describe('Tron - Activity status', function (this: Suite) {
             transactions: { raw: [pendingSend, failedSend] },
           },
         ],
+        localNode: false,
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, {
           validateBalance: false,
-          waitForNonEvmAccounts: false,
         });
         await switchToNetworkFromNetworkSelect(driver, 'Tron');
 

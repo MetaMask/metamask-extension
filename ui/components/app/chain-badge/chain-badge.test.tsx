@@ -1,6 +1,9 @@
 import * as React from 'react';
 import { render } from '@testing-library/react';
+import { Provider } from 'react-redux';
 import { AvatarNetworkSize } from '@metamask/design-system-react';
+import configureStore from '../../../store/store';
+import mockState from '../../../../test/data/mock-state.json';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { ChainBadge } from './chain-badge';
 
@@ -10,6 +13,9 @@ jest.mock('../../../selectors/multichain', () => ({
   getImageForChainId: (chainId: string) => mockGetImage(chainId),
 }));
 
+const renderWithProvider = (ui: React.ReactElement) =>
+  render(<Provider store={configureStore(mockState)}>{ui}</Provider>);
+
 describe('ChainBadge', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -18,7 +24,7 @@ describe('ChainBadge', () => {
   it('renders with valid chainId and children', () => {
     mockGetImage.mockReturnValue('https://example.com/ethereum.png');
 
-    const { getByText, getByRole } = render(
+    const { getByText, getByRole } = renderWithProvider(
       <ChainBadge chainId={CHAIN_IDS.MAINNET}>
         <div>Child Content</div>
       </ChainBadge>,
@@ -32,7 +38,7 @@ describe('ChainBadge', () => {
   it('renders with custom size', () => {
     mockGetImage.mockReturnValue('https://example.com/ethereum.png');
 
-    const { getByRole } = render(
+    const { getByRole } = renderWithProvider(
       <ChainBadge chainId={CHAIN_IDS.MAINNET} size={AvatarNetworkSize.Sm}>
         <div>Content</div>
       </ChainBadge>,
@@ -45,7 +51,7 @@ describe('ChainBadge', () => {
   it('renders when image is unavailable', () => {
     mockGetImage.mockReturnValue(undefined);
 
-    const { getByText } = render(
+    const { getByText } = renderWithProvider(
       <ChainBadge chainId="0x12345">
         <div>Unknown Chain Content</div>
       </ChainBadge>,
@@ -57,7 +63,7 @@ describe('ChainBadge', () => {
   it('resolves the image with the CAIP id for an EVM CAIP-2 chainId', () => {
     mockGetImage.mockReturnValue('https://example.com/ethereum.png');
 
-    const { getByRole } = render(
+    const { getByRole } = renderWithProvider(
       <ChainBadge chainId="eip155:1">
         <div>Content</div>
       </ChainBadge>,
@@ -74,7 +80,7 @@ describe('ChainBadge', () => {
     const solanaChainId = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
     mockGetImage.mockReturnValue('https://example.com/solana.png');
 
-    const { getByText } = render(
+    const { getByText } = renderWithProvider(
       <ChainBadge chainId={solanaChainId}>
         <div>Solana Content</div>
       </ChainBadge>,

@@ -46,6 +46,8 @@ const referralMe = {
     inviteReferralCode: 'Code',
     inviteDecline: 'Decline',
     inviteAccept: 'Accept',
+    inviteTermsLearnMore: 'Learn more',
+    inviteTermsUrl: '',
     inviteAcceptedEyebrow: 'Eyebrow',
     inviteAcceptedTitle: 'Title',
     inviteAcceptedBody: 'Body {date}',
@@ -65,6 +67,9 @@ const referralMe = {
     revshare_rate_bps: null,
     revshare_earning_start: null,
     revshare_earning_end: null,
+    revshare_by_product: { perps: null, swaps: null, predict: null },
+    cashback_by_product: { perps: null, swaps: null, predict: null },
+    copy_trading_by_product: { perps: null, swaps: null },
   },
   /* eslint-enable @typescript-eslint/naming-convention */
   // eslint-disable-next-line @typescript-eslint/naming-convention -- money API field

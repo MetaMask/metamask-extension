@@ -12,6 +12,7 @@ import type {
 } from '@metamask/keyring-api';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { TX_DETAILS_ROUTE } from '#ui/helpers/constants/routes';
+import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
 import { useMessenger } from '../../../hooks/useMessenger';
 import {
   hasTransactionType,
@@ -172,6 +173,10 @@ export function useTransactionEventToasts(): void {
   const store = useStore<MetaMaskReduxState>();
 
   useEffect(() => {
+    if (getManifestFlags().testing?.disableTransactionToasts) {
+      return undefined;
+    }
+
     // EVM via TransactionController
     const handleEvmStatusUpdate = (
       raw:

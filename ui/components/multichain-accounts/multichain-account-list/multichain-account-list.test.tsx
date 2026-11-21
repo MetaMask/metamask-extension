@@ -31,6 +31,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import type { MultichainAccountCellProps } from '../multichain-account-cell/multichain-account-cell';
 import {
   MultichainAccountList,
   MultichainAccountListProps,
@@ -424,6 +425,24 @@ describe('MultichainAccountList', () => {
     expect(screen.getByText('Account 1 from wallet 2')).toBeInTheDocument();
   });
 
+  it('renders a provided account cell instead of the default cell', () => {
+    const CustomAccountCell = ({
+      accountId,
+      accountName,
+    }: MultichainAccountCellProps) => (
+      <div data-testid={`custom-account-cell-${accountId}`}>{accountName}</div>
+    );
+
+    renderComponent({ accountCellComponent: CustomAccountCell });
+
+    expect(
+      screen.getByTestId(`custom-account-cell-${walletOneGroupId}`),
+    ).toHaveTextContent('Account 1 from wallet 1');
+    expect(
+      screen.queryByTestId(`multichain-account-cell-${walletOneGroupId}`),
+    ).not.toBeInTheDocument();
+  });
+
   it('renders no balance for account groups with no fetched balance', () => {
     renderComponent();
 
@@ -664,7 +683,9 @@ describe('MultichainAccountList', () => {
     expect(modalHeader).toBeInTheDocument();
 
     // Find the header text inside the modal
-    const headerText = within(modalHeader).getByText(messages.rename.message);
+    const headerText = within(modalHeader).getByText(
+      messages.renameAccount.message,
+    );
     expect(headerText).toBeInTheDocument();
 
     // Find the actual input element directly
@@ -682,7 +703,7 @@ describe('MultichainAccountList', () => {
     });
 
     // Find and click the confirmation button
-    const confirmButton = screen.getByText(messages.confirm.message);
+    const confirmButton = screen.getByText(messages.save.message);
     expect(confirmButton).toBeInTheDocument();
 
     // The button should no longer be disabled after entering text

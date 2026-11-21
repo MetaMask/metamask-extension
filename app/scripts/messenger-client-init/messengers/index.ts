@@ -26,6 +26,7 @@ import {
   getBackendWebSocketServiceMessenger,
   getBackendWebSocketServiceInitMessenger,
   getAccountActivityServiceMessenger,
+  getOHLCVServiceMessenger,
 } from './core-backend';
 import {
   getMultichainTransactionsControllerMessenger,
@@ -41,13 +42,11 @@ import {
 } from './identity';
 import {
   getAssetsContractControllerMessenger,
-  getNetworkEnablementControllerMessenger,
   getNetworkOrderControllerMessenger,
   getNftControllerInitMessenger,
   getNftControllerMessenger,
   getNftDetectionControllerMessenger,
   getAssetsContractControllerInitMessenger,
-  getNetworkEnablementControllerInitMessenger,
   getAssetsControllerMessenger,
   getAssetsControllerInitMessenger,
 } from './assets';
@@ -79,10 +78,6 @@ import { getNetworkConnectionBannerControllerMessenger } from './network-connect
 import { getGatorPermissionsControllerMessenger } from './gator-permissions/gator-permissions-controller-messenger';
 import { getUserStorageControllerInitMessenger } from './identity/user-storage-controller-messenger';
 import {
-  getTokenDetectionControllerInitMessenger,
-  getTokenDetectionControllerMessenger,
-} from './token-detection-controller-messenger';
-import {
   getTokensControllerInitMessenger,
   getTokensControllerMessenger,
 } from './tokens-controller-messenger';
@@ -91,10 +86,6 @@ import {
   getStaticAssetsControllerMessenger,
 } from './static-assets-controller-messenger';
 import { getRatesControllerMessenger } from './rates-controller-messenger';
-import {
-  getCurrencyRateControllerInitMessenger,
-  getCurrencyRateControllerMessenger,
-} from './currency-rate-controller-messenger';
 import {
   getNameControllerInitMessenger,
   getNameControllerMessenger,
@@ -148,10 +139,6 @@ import {
   getSignatureControllerInitMessenger,
   getSignatureControllerMessenger,
 } from './signature-controller-messenger';
-import {
-  getUserOperationControllerInitMessenger,
-  getUserOperationControllerMessenger,
-} from './user-operation-controller-messenger';
 import { getRewardsDataServiceMessenger } from './reward-data-service-messenger';
 import { getAuthenticatedUserStorageServiceMessenger } from './authenticated-user-storage-service-messenger';
 import {
@@ -200,11 +187,6 @@ export {
   getBridgeControllerInitMessenger,
 } from './bridge-controller-messenger';
 export { getBridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
-export type { CurrencyRateControllerInitMessenger } from './currency-rate-controller-messenger';
-export {
-  getCurrencyRateControllerMessenger,
-  getCurrencyRateControllerInitMessenger,
-} from './currency-rate-controller-messenger';
 export {
   getDecryptMessageControllerMessenger,
   getDecryptMessageControllerInitMessenger,
@@ -275,11 +257,6 @@ export {
   getStaticAssetsControllerMessenger,
   getStaticAssetsControllerInitMessenger,
 } from './static-assets-controller-messenger';
-export type { TokenDetectionControllerInitMessenger } from './token-detection-controller-messenger';
-export {
-  getTokenDetectionControllerMessenger,
-  getTokenDetectionControllerInitMessenger,
-} from './token-detection-controller-messenger';
 export type { TokensControllerInitMessenger } from './tokens-controller-messenger';
 export {
   getTokensControllerMessenger,
@@ -290,11 +267,6 @@ export {
   getTransactionPayControllerMessenger,
   getTransactionPayControllerInitMessenger,
 } from './transaction-pay-controller-messenger';
-export type { UserOperationControllerInitMessenger } from './user-operation-controller-messenger';
-export {
-  getUserOperationControllerMessenger,
-  getUserOperationControllerInitMessenger,
-} from './user-operation-controller-messenger';
 export type { ProfileMetricsControllerInitMessenger } from './profile-metrics-controller-messenger';
 export {
   getProfileMetricsControllerMessenger,
@@ -367,10 +339,6 @@ export const MESSENGER_FACTORIES = {
   CronjobController: {
     getMessenger: getCronjobControllerMessenger,
     getInitMessenger: noop,
-  },
-  CurrencyRateController: {
-    getMessenger: getCurrencyRateControllerMessenger,
-    getInitMessenger: getCurrencyRateControllerInitMessenger,
   },
   DataDeletionService: {
     getMessenger: getDataDeletionServiceMessenger,
@@ -580,10 +548,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getRampsControllerMessenger,
     getInitMessenger: getRampsControllerInitMessenger,
   },
-  TokenDetectionController: {
-    getMessenger: getTokenDetectionControllerMessenger,
-    getInitMessenger: getTokenDetectionControllerInitMessenger,
-  },
   TokensController: {
     getMessenger: getTokensControllerMessenger,
     getInitMessenger: getTokensControllerInitMessenger,
@@ -591,10 +555,6 @@ export const MESSENGER_FACTORIES = {
   TransactionPayController: {
     getMessenger: getTransactionPayControllerMessenger,
     getInitMessenger: getTransactionPayControllerInitMessenger,
-  },
-  UserOperationController: {
-    getMessenger: getUserOperationControllerMessenger,
-    getInitMessenger: getUserOperationControllerInitMessenger,
   },
   UserStorageController: {
     getMessenger: getUserStorageControllerMessenger,
@@ -628,6 +588,10 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getAccountActivityServiceMessenger,
     getInitMessenger: noop,
   },
+  OHLCVService: {
+    getMessenger: getOHLCVServiceMessenger,
+    getInitMessenger: noop,
+  },
   SmartTransactionsController: {
     getMessenger: getSmartTransactionsControllerMessenger,
     getInitMessenger: getSmartTransactionsControllerInitMessenger,
@@ -639,10 +603,6 @@ export const MESSENGER_FACTORIES = {
   NetworkOrderController: {
     getMessenger: getNetworkOrderControllerMessenger,
     getInitMessenger: noop,
-  },
-  NetworkEnablementController: {
-    getMessenger: getNetworkEnablementControllerMessenger,
-    getInitMessenger: getNetworkEnablementControllerInitMessenger,
   },
   ProfileMetricsController: {
     getMessenger: getProfileMetricsControllerMessenger,

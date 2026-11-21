@@ -51,7 +51,10 @@ import {
   setTokenNetworkFilter,
   detectNfts,
 } from '../../../store/actions';
-import { isDisableableDefaultNetwork } from '../../../helpers/utils/network-sections';
+import {
+  getNetworkSectionKey,
+  isDisableableDefaultNetwork,
+} from '../../../helpers/utils/network-sections';
 import type { NetworkItemCallbacks } from '../network-manager/hooks/useNetworkItemCallbacks';
 import {
   CHAIN_IDS,
@@ -79,7 +82,10 @@ import {
 } from '../../../selectors';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../selectors/network-blacklist/network-blacklist';
-import { getFeaturedEvmNetworks } from '../../../selectors/config-registry/config-registry';
+import {
+  getFeaturedEvmNetworks,
+  getChainIdToNetworkImageUrlMap,
+} from '../../../selectors/config-registry/config-registry';
 import ToggleButton from '../../ui/toggle-button';
 import {
   Display,
@@ -93,7 +99,18 @@ import { Box, Text } from '../../component-library';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  NetworkManagementEntryPoint,
+  NetworkManagementInteractionType,
+  NetworkManagementSource,
+  NetworkRemovalType,
 } from '../../../../shared/constants/metametrics';
+import {
+  trackNetworkManagementInteracted,
+  trackNetworkRemoved,
+  trackRpcAdded,
+  useTrackNetworkManagementStep,
+  type NetworkManagementStep,
+} from '../../../helpers/utils/network-management-metrics';
 import {
   convertCaipToHexChainId,
   sortNetworks,
@@ -141,6 +158,14 @@ export enum ACTION_MODE {
 type NetworkListMenuProps = {
   onClose: () => void;
 };
+
+const PICKER_STEPS: Partial<Record<ACTION_MODE, NetworkManagementStep>> = {
+  [ACTION_MODE.ADD_RPC]: 'rpc-form-add',
+  [ACTION_MODE.SELECT_RPC]: 'rpc-selector',
+};
+
+const getOptionalNetworkSectionKey = (chainId?: string) =>
+  chainId ? getNetworkSectionKey(chainId) : undefined;
 
 const isCustomNetworkConfiguration = (
   network: MultichainNetworkConfiguration,
@@ -214,6 +239,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     selectAdditionalNetworksBlacklistFeatureFlag,
   );
   const featuredNetworksBaseList = useSelector(getFeaturedEvmNetworks);
+  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
   const canSelectNetwork: boolean = useMemo(
     () =>
       Boolean(selectedTabOrigin) &&
@@ -278,6 +304,15 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const networkFormState = useNetworkFormState(editedNetwork);
   const { rpcUrls, setRpcUrls, blockExplorers, setBlockExplorers } =
     networkFormState;
+  const pickerStep = PICKER_STEPS[actionMode] ?? null;
+
+  useTrackNetworkManagementStep({
+    step: pickerStep,
+    entryPoint: NetworkManagementEntryPoint.NetworkPicker,
+    chainId: editedNetwork?.chainId,
+    rpcCount: rpcUrls.rpcEndpoints.length,
+    networkType: getOptionalNetworkSectionKey(editedNetwork?.chainId),
+  });
 
   const [orderedNetworks, setOrderedNetworks] = useState(
     sortNetworks(nonTestNetworks, orderedNetworksList),
@@ -602,13 +637,37 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         ? () => {
             dispatch(toggleNetworkMenu());
             if (isDisableableDefault) {
-              dispatch(removeNetwork(chainId as CaipChainId));
+              const removalChainId = hexChainId ?? chainId;
+              trackNetworkManagementInteracted(
+                { trackEvent, createEventBuilder },
+                {
+                  interactionType:
+                    NetworkManagementInteractionType.NetworkRemovalRequested,
+                  entryPoint: NetworkManagementEntryPoint.NetworkPicker,
+                  chainId: removalChainId,
+                  networkType: getNetworkSectionKey(removalChainId),
+                },
+              );
+              // Track only once the removal has actually completed.
+              Promise.resolve(dispatch(removeNetwork(chainId as CaipChainId)))
+                .then(() =>
+                  trackNetworkRemoved(
+                    { trackEvent, createEventBuilder },
+                    {
+                      chainId: removalChainId,
+                      entryPoint: NetworkManagementEntryPoint.NetworkPicker,
+                      removalType: NetworkRemovalType.Disabled,
+                    },
+                  ),
+                )
+                .catch(() => undefined);
               return;
             }
             dispatch(
               showModal({
                 name: 'CONFIRM_DELETE_NETWORK',
                 target: hexChainId,
+                metricsEntryPoint: NetworkManagementEntryPoint.NetworkPicker,
                 onConfirm: () => undefined,
               }),
             );
@@ -664,6 +723,8 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       hasMultiRpcOptions,
       isUnlocked,
       isDiscoverBtnEnabled,
+      trackEvent,
+      createEventBuilder,
     ],
   );
 
@@ -678,7 +739,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         onDiscoverClick,
         onRpcSelect,
       } = getItemCallbacks(network);
-      const iconSrc = getNetworkIcon(network);
+      const iconSrc = getNetworkIcon(network, networkImageUrls);
 
       return (
         <NetworkListItem
@@ -719,6 +780,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       evmNetworks,
       handleNetworkChange,
       isNetworkEnabled,
+      networkImageUrls,
     ],
   );
 
@@ -895,6 +957,15 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
                 ],
                 defaultRpcEndpointIndex: rpcUrls.rpcEndpoints.length,
               });
+              trackRpcAdded(
+                { trackEvent, createEventBuilder },
+                {
+                  chainId: editedNetwork?.chainId,
+                  rpcCount: rpcUrls.rpcEndpoints.length + 1,
+                  source: NetworkManagementSource.Manual,
+                  entryPoint: NetworkManagementEntryPoint.NetworkPicker,
+                },
+              );
             }
             setActionMode(ACTION_MODE.ADD_EDIT);
           }}
@@ -919,6 +990,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       return (
         <SelectRpcUrlModal
           networkConfiguration={evmNetworks[editedNetwork.chainId]}
+          entryPoint={NetworkManagementEntryPoint.NetworkPicker}
           onNetworkChange={handleEvmNetworkChange}
         />
       );

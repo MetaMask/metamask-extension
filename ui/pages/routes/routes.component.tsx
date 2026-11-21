@@ -17,6 +17,7 @@ import Alert from '../../components/ui/alert';
 import Alerts from '../../components/app/alerts';
 
 import {
+  ASSET_ACTIVATION_LOADER_ROUTE,
   ASSET_DETAILS_ROUTE,
   ASSET_SECURITY_TRUST_ROUTE,
   ASSET_IMAGE_ROUTE,
@@ -51,6 +52,7 @@ import {
   RAMPS_TOKEN_SELECTION_ROUTE,
   RAMPS_PAYMENT_METHOD_ROUTE,
   RAMPS_COMPLETE_BUY_ROUTE,
+  RAMPS_BUY_INTERSTITIAL_ROUTE,
   DEEP_LINK_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
@@ -235,6 +237,9 @@ const NftFullImage = mmLazy(
     import('../../components/app/assets/nfts/nft-details/nft-full-image.tsx'),
 );
 const Asset = mmLazy(() => import('../asset/index.js'));
+const AssetActivationLoader = mmLazy(
+  () => import('../asset/components/asset-activation-loader/index.ts'),
+);
 const SecurityTrustPage = mmLazy(
   () => import('../asset/security-trust/index.ts'),
 );
@@ -247,6 +252,9 @@ const RampsTokenSelection = mmLazy(
 );
 const RampsPaymentMethod = mmLazy(
   () => import('../ramps/payment-method/index.ts'),
+);
+const BuyInterstitial = mmLazy(
+  () => import('../ramps/buy-interstitial/index.ts'),
 );
 const RampsCompleteBuy = mmLazy(() => import('../ramps/complete-buy/index.ts'));
 const PermissionsPage = mmLazy(
@@ -385,6 +393,12 @@ export const routeConfig = [
         path: BASIC_FUNCTIONALITY_OFF_ROUTE,
         element: <BasicFunctionalityOff />,
       },
+      // Not behind `RequireAuthenticated`: social login recovery runs it while
+      // the wallet is locked. The page sends any other flow to unlock.
+      {
+        path: MFA_FLOW_ROUTE,
+        element: <MfaFlowHost />,
+      },
       createRouteWithMessenger({
         path: RESTORE_VAULT_ROUTE,
         element: <RestoreVaultPage />,
@@ -449,10 +463,6 @@ export const routeConfig = [
           ]
         : []),
       {
-        path: MFA_FLOW_ROUTE,
-        element: <MfaFlowHost />,
-      },
-      {
         path: `${LEGACY_SETTINGS_V2_ROUTE}/*`,
         element: <SettingsV2LegacyRedirect />,
       },
@@ -503,6 +513,12 @@ export const routeConfig = [
       {
         path: ASSET_SECURITY_TRUST_ROUTE,
         element: <SecurityTrustPage />,
+      },
+      {
+        // Static path must be registered before ASSET_DETAILS_ROUTE so
+        // `/asset/activation/loader` is not captured as `:chainId`.
+        path: ASSET_ACTIVATION_LOADER_ROUTE,
+        element: <AssetActivationLoader />,
       },
       createRouteWithMessenger({
         path: ASSET_DETAILS_ROUTE,
@@ -651,6 +667,11 @@ export const routeConfig = [
                 element: <RampsPaymentMethod />,
               },
             ],
+          },
+          {
+            // Resolves the intent and redirects; no flow chrome to show.
+            path: RAMPS_BUY_INTERSTITIAL_ROUTE,
+            element: <BuyInterstitial />,
           },
           {
             path: RAMPS_COMPLETE_BUY_ROUTE,
@@ -953,7 +974,7 @@ export default function Routes() {
       <ConfirmationRouter />
       <NetworkHandler />
       <ToastListener />
-      {isUnlocked ? <MfaFlowLauncher /> : null}
+      <MfaFlowLauncher />
 
       <QRHardwarePopover />
       {isUnlocked ? <Modal /> : null}

@@ -897,14 +897,14 @@ describe('PerpsOrderEntryPage', () => {
       enterAmount('25');
 
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
-        'perpsSavePendingTradeConfiguration',
+        'PerpsController:savePendingTradeConfiguration',
         expect.anything(),
       );
 
       unmount();
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsSavePendingTradeConfiguration',
+        'PerpsController:savePendingTradeConfiguration',
         [
           'ETH',
           expect.objectContaining({
@@ -941,7 +941,7 @@ describe('PerpsOrderEntryPage', () => {
       unmount();
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsSavePendingTradeConfiguration',
+        'PerpsController:savePendingTradeConfiguration',
         [
           'ETH',
           expect.objectContaining({
@@ -989,15 +989,15 @@ describe('PerpsOrderEntryPage', () => {
       fireEvent.click(screen.getByTestId('direction-tab-short'));
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsSetSelectedOrderType',
+        'PerpsController:setSelectedOrderType',
         ['limit'],
       );
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsSaveTradeConfiguration',
+        'PerpsController:saveTradeConfiguration',
         ['ETH', 5],
       );
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsClearPendingTradeConfiguration',
+        'PerpsController:clearPendingTradeConfiguration',
         ['ETH'],
       );
     });
@@ -1019,13 +1019,13 @@ describe('PerpsOrderEntryPage', () => {
       });
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsClearPendingTradeConfiguration',
+        'PerpsController:clearPendingTradeConfiguration',
         ['ETH'],
       );
       mockSubmitRequestToBackground.mockClear();
       unmount();
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
-        'perpsSavePendingTradeConfiguration',
+        'PerpsController:savePendingTradeConfiguration',
         expect.anything(),
       );
     });
@@ -1040,7 +1040,7 @@ describe('PerpsOrderEntryPage', () => {
       fireEvent.click(chart);
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsSetVisibleCandleCount',
+        'PerpsController:setVisibleCandleCount',
         [75],
       );
     });
@@ -1310,13 +1310,13 @@ describe('PerpsOrderEntryPage', () => {
 
       fireEvent.click(toggle);
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsSetProLayoutPreferences',
+        'PerpsController:setProLayoutPreferences',
         [{ orderBookExpanded: true }],
       );
 
       fireEvent.click(toggle);
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsSetProLayoutPreferences',
+        'PerpsController:setProLayoutPreferences',
         [{ orderBookExpanded: false }],
       );
     });
@@ -1809,7 +1809,7 @@ describe('PerpsOrderEntryPage', () => {
 
         fireEvent.click(toggle);
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-          'perpsSetProLayoutPreferences',
+          'PerpsController:setProLayoutPreferences',
           [{ chartExpanded: true }],
         );
         const cta = screen.getByTestId('submit-order-button').parentElement;
@@ -1818,7 +1818,7 @@ describe('PerpsOrderEntryPage', () => {
 
         fireEvent.click(toggle);
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-          'perpsSetProLayoutPreferences',
+          'PerpsController:setProLayoutPreferences',
           [{ chartExpanded: false }],
         );
         expect(cta?.style.left).toBe('');
@@ -1840,7 +1840,7 @@ describe('PerpsOrderEntryPage', () => {
       });
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'setPreference',
+        'PreferencesController:setPreference',
         ['perpsSelectedCandlePeriod', '15m'],
       );
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
@@ -3585,7 +3585,7 @@ describe('PerpsOrderEntryPage', () => {
         }),
       );
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsSavePendingTradeConfiguration',
+        'PerpsController:savePendingTradeConfiguration',
         [
           'ETH',
           expect.objectContaining({
