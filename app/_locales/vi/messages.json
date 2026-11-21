@@ -6096,9 +6096,6 @@
   "moneyExploreBenefits": {
     "message": "Khám phá các quyền lợi của bạn"
   },
-  "moneyFtueBenefitConvertDescription": {
-    "message": "Số tiền bạn nạp được chuyển đổi sang MetaMask USD theo tỷ lệ 1:1, hoàn toàn miễn phí."
-  },
   "moneyFtueBenefitConvertTitle": {
     "message": "Chuyển đổi sang MetaMask USD theo tỷ lệ 1:1"
   },
@@ -6108,9 +6105,6 @@
   "moneyFtueBenefitEarnTitle": {
     "message": "Tự động sinh lời"
   },
-  "moneyFtueBenefitSpendDescription": {
-    "message": "Gửi tiền đến bất kỳ ví hoặc ngân hàng nào, hoặc chi tiêu bằng MetaMask Card để được hoàn tiền đến 3%."
-  },
   "moneyFtueBenefitSpendTitle": {
     "message": "Gửi tiền hoặc chi tiêu ở bất cứ đâu"
   },
@@ -6119,12 +6113,6 @@
   },
   "moneyFtueBenefitTradeTitle": {
     "message": "Giao dịch từ cùng một số dư"
-  },
-  "moneyFtueBenefitWithdrawDescription": {
-    "message": "Tiền không bị khóa. Bạn không cần báo trước hay chịu phạt. Bạn luôn có thể rút tiền của mình."
-  },
-  "moneyFtueBenefitWithdrawTitle": {
-    "message": "Rút tiền bất cứ lúc nào"
   },
   "moneyFtueDescription": {
     "message": "MetaMask Tài chính là tài khoản đồng ổn định có thể sinh lời với APY lên đến $1, tích hợp tính năng giao dịch, gửi tiền và chi tiêu.",
@@ -12961,17 +12949,8 @@
   "visitSite": {
     "message": "Truy cập trang web"
   },
-  "visitSupportDataConsentModalAccept": {
-    "message": "Xác nhận"
-  },
-  "visitSupportDataConsentModalDescription": {
-    "message": "Bạn có muốn chia sẻ Mã định danh MetaMask và phiên bản ứng dụng của mình với Trung tâm hỗ trợ không? Điều này có thể giúp chúng tôi giải quyết vấn đề của bạn tốt hơn, nhưng không bắt buộc."
-  },
   "visitSupportDataConsentModalReject": {
     "message": "Không chia sẻ"
-  },
-  "visitSupportDataConsentModalTitle": {
-    "message": "Chia sẻ thông tin thiết bị với bộ phận hỗ trợ"
   },
   "visitWebSite": {
     "message": "Truy cập trang web của chúng tôi"

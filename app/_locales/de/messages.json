@@ -6092,9 +6092,6 @@
   "moneyExploreBenefits": {
     "message": "Erkunden Sie Ihre Vorteile"
   },
-  "moneyFtueBenefitConvertDescription": {
-    "message": "Die von Ihnen hinzugefügten Gelder werden gebührenfrei 1:1 in MetaMask USD konvertiert."
-  },
   "moneyFtueBenefitConvertTitle": {
     "message": "Wird in MetaMask USD zu 1:1 konvertiert"
   },
@@ -6104,9 +6101,6 @@
   "moneyFtueBenefitEarnTitle": {
     "message": "Automatisch verdienen"
   },
-  "moneyFtueBenefitSpendDescription": {
-    "message": "An jede Wallet oder Bank senden oder mit der MetaMask Card ausgeben und bis zu 3 % zurückerhalten."
-  },
   "moneyFtueBenefitSpendTitle": {
     "message": "Überall überweisen oder ausgeben"
   },
@@ -6115,12 +6109,6 @@
   },
   "moneyFtueBenefitTradeTitle": {
     "message": "Mit demselben Guthaben handeln"
-  },
-  "moneyFtueBenefitWithdrawDescription": {
-    "message": "Keine Sperrfristen, Kündigungsfristen oder Strafgebühren. Sie können jederzeit über Ihr Geld verfügen."
-  },
-  "moneyFtueBenefitWithdrawTitle": {
-    "message": "Jederzeit auszahlen"
   },
   "moneyFtueDescription": {
     "message": "MetaMask Money ist ein Stablecoin-Konto, mit dem Sie bis zu $1 APY erzielen können – inklusive integrierter Funktionen für Handel, Überweisungen und Ausgaben.",
@@ -12947,17 +12935,8 @@
   "visitSite": {
     "message": "Seite besuchen"
   },
-  "visitSupportDataConsentModalAccept": {
-    "message": "Bestätigen"
-  },
-  "visitSupportDataConsentModalDescription": {
-    "message": "Möchten Sie Ihre MetaMask-Kennung und Ihre App-Version mit unserem Support Center teilen? Dies kann uns bei der Lösung Ihres Problems helfen, ist aber optional."
-  },
   "visitSupportDataConsentModalReject": {
     "message": "Nicht teilen"
-  },
-  "visitSupportDataConsentModalTitle": {
-    "message": "Gerätedetails mit dem Support teilen"
   },
   "visitWebSite": {
     "message": "Besuchen Sie unsere Webseite."

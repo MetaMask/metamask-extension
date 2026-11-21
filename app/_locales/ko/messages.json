@@ -6096,9 +6096,6 @@
   "moneyExploreBenefits": {
     "message": "혜택 살펴보기"
   },
-  "moneyFtueBenefitConvertDescription": {
-    "message": "입금한 자금은 수수료 없이 MetaMask USD로 1:1 전환됩니다."
-  },
   "moneyFtueBenefitConvertTitle": {
     "message": "MetaMask USD로 1:1 전환"
   },
@@ -6108,9 +6105,6 @@
   "moneyFtueBenefitEarnTitle": {
     "message": "자동으로 수익 얻기"
   },
-  "moneyFtueBenefitSpendDescription": {
-    "message": "모든 지갑이나 은행으로 송금하거나, MetaMask Card로 결제하고 최대 3% 캐시백을 받으세요."
-  },
   "moneyFtueBenefitSpendTitle": {
     "message": "어디서나 송금 및 결제"
   },
@@ -6119,12 +6113,6 @@
   },
   "moneyFtueBenefitTradeTitle": {
     "message": "동일한 잔고로 바로 거래"
-  },
-  "moneyFtueBenefitWithdrawDescription": {
-    "message": "락업이나 사전 신청 기간, 위약금이 없습니다. 자금을 언제든 자유롭게 출금할 수 있습니다."
-  },
-  "moneyFtueBenefitWithdrawTitle": {
-    "message": "언제든지 출금 가능"
   },
   "moneyFtueDescription": {
     "message": "MetaMask Money는 거래, 송금, 결제 기능이 기본 내장되어 있으며 최대 $1 APY의 수익을 제공하는 스테이블코인 계정입니다.",
@@ -12955,17 +12943,8 @@
   "visitSite": {
     "message": "사이트 방문"
   },
-  "visitSupportDataConsentModalAccept": {
-    "message": "컨펌"
-  },
-  "visitSupportDataConsentModalDescription": {
-    "message": "MetaMask 식별자와 앱 버전을 지원 센터에 공유하시겠습니까? 문제 해결에 도움이 될 수 있으며, 선택 사항입니다."
-  },
   "visitSupportDataConsentModalReject": {
     "message": "공유하지 않기"
-  },
-  "visitSupportDataConsentModalTitle": {
-    "message": "지원팀과 장치 세부정보 공유"
   },
   "visitWebSite": {
     "message": "웹사이트를 방문하세요"

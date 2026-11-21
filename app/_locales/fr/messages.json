@@ -5279,7 +5279,7 @@
     "message": "Ledger Live met trop de temps à répondre ou la connexion est interrompue. Assurez-vous que l’application Ledger Live est bien ouverte et que votre appareil est déverrouillé."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
-    "message": "L’appareil Ledger n’est pas connecté. Si vous souhaitez le connecter, cliquez à nouveau sur « Continuer » et approuvez la connexion au HID",
+    "message": "L’appareil Ledger n’est pas connecté. Si vous souhaitez le connecter, cliquez à nouveau sur « Continuer » et approuvez la connexion HID",
     "description": "An error message shown to the user during the hardware connect flow."
   },
   "lightTheme": {
@@ -5573,7 +5573,7 @@
     "message": "Connectez-vous pour continuer."
   },
   "mfaErrorTooManyAttempts": {
-    "message": "Trop de codes erronés. Saisissez un nouveau code."
+    "message": "Trop de codes erronés. Obtenez un nouveau code."
   },
   "mfaErrorTotpExpired": {
     "message": "Cela a pris trop de temps. Saisissez le code actuel affiché dans votre application."
@@ -6092,9 +6092,6 @@
   "moneyExploreBenefits": {
     "message": "Découvrez vos avantages"
   },
-  "moneyFtueBenefitConvertDescription": {
-    "message": "Les fonds que vous ajoutez sont convertis à parité 1:1 en MetaMask USD, sans frais."
-  },
   "moneyFtueBenefitConvertTitle": {
     "message": "Convertit en MetaMask USD, à parité 1:1"
   },
@@ -6103,9 +6100,6 @@
   },
   "moneyFtueBenefitEarnTitle": {
     "message": "Générez des revenus automatiquement"
-  },
-  "moneyFtueBenefitSpendDescription": {
-    "message": "Envoyez vos fonds vers un portefeuille ou compte bancaire, ou utilisez votre MetaMask Card pour récupérer jusqu’à 3 %."
   },
   "moneyFtueBenefitSpendTitle": {
     "message": "Envoyer ou dépenser partout"
@@ -6116,14 +6110,8 @@
   "moneyFtueBenefitTradeTitle": {
     "message": "Trader avec le même solde"
   },
-  "moneyFtueBenefitWithdrawDescription": {
-    "message": "Aucun blocage, ni préavis, ni pénalité : vous pouvez retirer votre argent à tout moment."
-  },
-  "moneyFtueBenefitWithdrawTitle": {
-    "message": "Retirer à tout moment"
-  },
   "moneyFtueDescription": {
-    "message": "MetaMask Money est un compte de stablecoinss offrant jusqu’à $1 de TRA (APY) et des fonctionnalités de trading, d’envoi et de dépense.",
+    "message": "MetaMask Money est un compte de stablecoins offrant jusqu’à $1 de TRA (APY) et des fonctionnalités de trading, d’envoi et de dépense.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyFtueHeadline": {
@@ -12947,17 +12935,8 @@
   "visitSite": {
     "message": "Visiter le site"
   },
-  "visitSupportDataConsentModalAccept": {
-    "message": "Confirmer"
-  },
-  "visitSupportDataConsentModalDescription": {
-    "message": "Voulez-vous partager votre identifiant MetaMask et la version de l’application que vous utilisez actuellement avec notre centre d’assistance ? Cela peut nous aider à résoudre le problème, mais vous n’êtes pas obligé à le faire."
-  },
   "visitSupportDataConsentModalReject": {
     "message": "Ne pas partager"
-  },
-  "visitSupportDataConsentModalTitle": {
-    "message": "Partager les détails de l’appareil avec le centre d’assistance"
   },
   "visitWebSite": {
     "message": "Visitez notre site web"

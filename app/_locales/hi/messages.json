@@ -6092,9 +6092,6 @@
   "moneyExploreBenefits": {
     "message": "अपने फ़ायदे जानें"
   },
-  "moneyFtueBenefitConvertDescription": {
-    "message": "आप जो फ़ंड डालते हैं, वे बिना किसी फ़ीस के 1:1 MetaMask USD में कन्वर्ट होते हैं।"
-  },
   "moneyFtueBenefitConvertTitle": {
     "message": "MetaMask USD, 1:1 में कन्वर्ट होता है"
   },
@@ -6104,9 +6101,6 @@
   "moneyFtueBenefitEarnTitle": {
     "message": "ऑटोमैटिकली कमाएं"
   },
-  "moneyFtueBenefitSpendDescription": {
-    "message": "किसी भी वॉलेट या बैंक में भेजें, या MetaMask कार्ड से खर्च करें और 3% तक वापस पाएं।"
-  },
   "moneyFtueBenefitSpendTitle": {
     "message": "कहीं भी भेजें या खर्च करें"
   },
@@ -6115,12 +6109,6 @@
   },
   "moneyFtueBenefitTradeTitle": {
     "message": "उसी बैलेंस से ट्रेड करें"
-  },
-  "moneyFtueBenefitWithdrawDescription": {
-    "message": "कोई लॉकअप, नोटिस पीरियड या पेनल्टी नहीं। आपका पैसा हमेशा आपका होता है, आप इसे कभी भी निकाल सकते हैं।"
-  },
-  "moneyFtueBenefitWithdrawTitle": {
-    "message": "कभी भी निकालें"
   },
   "moneyFtueDescription": {
     "message": "MetaMask Money एक स्टेबलकॉइन अकाउंट है जो $1 APY तक कमाता है - जिसमें ट्रेडिंग, भेजने और खर्च करने की बिल्ट-इन सुविधा है।",
@@ -12947,17 +12935,8 @@
   "visitSite": {
     "message": "साइट पर जाएं"
   },
-  "visitSupportDataConsentModalAccept": {
-    "message": "कन्फर्म करें"
-  },
-  "visitSupportDataConsentModalDescription": {
-    "message": "क्या आप अपना MetaMask पहचानकर्ता और ऐप संस्करण हमारे सपोर्ट सेंटर के साथ साझा करना चाहते हैं? इससे हमें आपकी समस्या को बेहतर ढंग से हल करने में मदद मिल सकती है, लेकिन यह वैकल्पिक है।"
-  },
   "visitSupportDataConsentModalReject": {
     "message": "साझा न करें"
-  },
-  "visitSupportDataConsentModalTitle": {
-    "message": "सपोर्ट के साथ डिवाइस विवरण साझा करें"
   },
   "visitWebSite": {
     "message": "हमारी वेबसाइट पर जाएं"

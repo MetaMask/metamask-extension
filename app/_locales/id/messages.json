@@ -6096,9 +6096,6 @@
   "moneyExploreBenefits": {
     "message": "Jelajahi manfaat Anda"
   },
-  "moneyFtueBenefitConvertDescription": {
-    "message": "Dana yang Anda tambahkan dikonversi dengan rasio 1:1 ke MetaMask USD tanpa biaya."
-  },
   "moneyFtueBenefitConvertTitle": {
     "message": "Dikonversi ke MetaMask USD dengan rasio 1:1"
   },
@@ -6108,9 +6105,6 @@
   "moneyFtueBenefitEarnTitle": {
     "message": "Dapatkan secara otomatis"
   },
-  "moneyFtueBenefitSpendDescription": {
-    "message": "Kirim ke dompet atau bank mana pun, atau gunakan dengan MetaMask Card dan dapatkan pengembalian hingga 3%."
-  },
   "moneyFtueBenefitSpendTitle": {
     "message": "Kirim atau gunakan di mana pun"
   },
@@ -6119,12 +6113,6 @@
   },
   "moneyFtueBenefitTradeTitle": {
     "message": "Berdagang dari saldo yang sama"
-  },
-  "moneyFtueBenefitWithdrawDescription": {
-    "message": "Tanpa penguncian, periode pemberitahuan, ataupun penalti. Uang Anda sepenuhnya milik Anda untuk ditarik."
-  },
-  "moneyFtueBenefitWithdrawTitle": {
-    "message": "Tarik setiap saat"
   },
   "moneyFtueDescription": {
     "message": "MetaMask Money adalah akun stablecoin yang memberikan hingga $1 APY dan dilengkapi dengan fitur untuk melakukan perdagangan, pengiriman, dan penggunaan.",
@@ -12955,17 +12943,8 @@
   "visitSite": {
     "message": "Kunjungi situs"
   },
-  "visitSupportDataConsentModalAccept": {
-    "message": "Konfirmasikan"
-  },
-  "visitSupportDataConsentModalDescription": {
-    "message": "Ingin membagikan Pengidentifikasi MetaMask dan versi aplikasi dengan Pusat Dukungan kami? Ini dapat membantu kami menyelesaikan masalah Anda dengan lebih baik, tetapi tindakan ini bersifat opsional."
-  },
   "visitSupportDataConsentModalReject": {
     "message": "Jangan bagikan"
-  },
-  "visitSupportDataConsentModalTitle": {
-    "message": "Bagikan detail perangkat kepada dukungan"
   },
   "visitWebSite": {
     "message": "Kunjungi situs web kami"

@@ -6092,9 +6092,6 @@
   "moneyExploreBenefits": {
     "message": "Alamin ang mga benepisyo mo"
   },
-  "moneyFtueBenefitConvertDescription": {
-    "message": "Ang mga pondo na idinadagdag mo ay nako-convert ng 1:1 sa MetaMask USD, nang walang bayarin."
-  },
   "moneyFtueBenefitConvertTitle": {
     "message": "Nako-convert sa MetaMask USD, 1:1"
   },
@@ -6104,9 +6101,6 @@
   "moneyFtueBenefitEarnTitle": {
     "message": "Kumita nang awtomatiko"
   },
-  "moneyFtueBenefitSpendDescription": {
-    "message": "Ipadala sa anumang wallet o bangko, o gastusin gamit ang MetaMask Card para sa hanggang 3% na balik."
-  },
   "moneyFtueBenefitSpendTitle": {
     "message": "Ipadala o gastusin kahit saan"
   },
@@ -6115,12 +6109,6 @@
   },
   "moneyFtueBenefitTradeTitle": {
     "message": "I-trade mula sa parehong balanse"
-  },
-  "moneyFtueBenefitWithdrawDescription": {
-    "message": "Walang mga lockup, abiso sa panahon, o mga penalty. Pwede mong ilabas ang pera mo anumang oras."
-  },
-  "moneyFtueBenefitWithdrawTitle": {
-    "message": "I-withdraw anumang oras"
   },
   "moneyFtueDescription": {
     "message": "Ang MetaMask Money ay isang stablecoin account na kumikita nang hanggang $1 APY - sa pamamagitan ng pagti-trade, pagpapadala, at paggastos na naka-built in.",
@@ -12947,17 +12935,8 @@
   "visitSite": {
     "message": "Bisitahin ang site"
   },
-  "visitSupportDataConsentModalAccept": {
-    "message": "Kumpirmahin"
-  },
-  "visitSupportDataConsentModalDescription": {
-    "message": "Gusto mo bang ibahagi ang Identifier at bersyon ng app ng MetaMask sa aming Sentro ng Suporta? Makakatulong ito sa amin na malutas ang problema mo, pero opsyonal ito."
-  },
   "visitSupportDataConsentModalReject": {
     "message": "Huwag ibahagi"
-  },
-  "visitSupportDataConsentModalTitle": {
-    "message": "Magbahagi ng mga detalye ng device sa suporta"
   },
   "visitWebSite": {
     "message": "Bisitahin ang aming website"

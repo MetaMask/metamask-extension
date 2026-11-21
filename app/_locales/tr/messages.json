@@ -6096,9 +6096,6 @@
   "moneyExploreBenefits": {
     "message": "Faydalarınızı keşfedin"
   },
-  "moneyFtueBenefitConvertDescription": {
-    "message": "Eklediğiniz fonlar hiçbir ücret kesilmeden 1:1 oranda olmak üzere MetaMask USD'ye dönüşür."
-  },
   "moneyFtueBenefitConvertTitle": {
     "message": "1:1 oranda olmak üzere MetaMask USD'ye dönüştürür"
   },
@@ -6108,9 +6105,6 @@
   "moneyFtueBenefitEarnTitle": {
     "message": "Otomatik kazanın"
   },
-  "moneyFtueBenefitSpendDescription": {
-    "message": "Dilediğiniz cüzdana veya bankaya gönderin veya MetaMask Card ile harcama yaparak %3'e varan iade kazanın."
-  },
   "moneyFtueBenefitSpendTitle": {
     "message": "Dilediğiniz yere gönderin veya dilediğiniz yerde harcayın"
   },
@@ -6119,12 +6113,6 @@
   },
   "moneyFtueBenefitTradeTitle": {
     "message": "Aynı bakiyeden işlem yapın"
-  },
-  "moneyFtueBenefitWithdrawDescription": {
-    "message": "Kilitleme, ihbar süresi veya para cezası yok. Paranız her zaman çekilmeye hazırdır."
-  },
-  "moneyFtueBenefitWithdrawTitle": {
-    "message": "Dilediğiniz zaman çekin"
   },
   "moneyFtueDescription": {
     "message": "MetaMask Money, işlem, gönderim ve harcama özelliklerini bünyesinde bulunduran, $1 APY tutara kadar kazanç sağlayan bir stabil kripto para hesabıdır.",
@@ -12961,17 +12949,8 @@
   "visitSite": {
     "message": "Siteyi ziyaret edin"
   },
-  "visitSupportDataConsentModalAccept": {
-    "message": "Onayla"
-  },
-  "visitSupportDataConsentModalDescription": {
-    "message": "MetaMask Tanımlayıcınızı ve uygulama sürümünüzü Destek Merkezimizle paylaşmak ister misiniz? Probleminizi daha iyi bir şekilde çözmemize yardımcı olabilir ancak isteğe bağlıdır."
-  },
   "visitSupportDataConsentModalReject": {
     "message": "Paylaşma"
-  },
-  "visitSupportDataConsentModalTitle": {
-    "message": "Cihaz bilgilerini destek ile paylaş"
   },
   "visitWebSite": {
     "message": "Web sitemizi ziyaret et"

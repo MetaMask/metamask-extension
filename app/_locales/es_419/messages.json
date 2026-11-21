@@ -6096,9 +6096,6 @@
   "moneyExploreBenefits": {
     "message": "Explora tus beneficios"
   },
-  "moneyFtueBenefitConvertDescription": {
-    "message": "Los fondos que añades se convierten 1:1 a MetaMask USD, sin comisiones."
-  },
   "moneyFtueBenefitConvertTitle": {
     "message": "Se convierte a USD en MetaMask, 1:1"
   },
@@ -6108,9 +6105,6 @@
   "moneyFtueBenefitEarnTitle": {
     "message": "Gana automáticamente"
   },
-  "moneyFtueBenefitSpendDescription": {
-    "message": "Envía fondos a cualquier billetera o banco, o realiza pagos con la tarjeta MetaMask y obtén hasta un 3 % de reembolso."
-  },
   "moneyFtueBenefitSpendTitle": {
     "message": "Envía o gasta en cualquier lugar"
   },
@@ -6119,12 +6113,6 @@
   },
   "moneyFtueBenefitTradeTitle": {
     "message": "Opera desde el mismo saldo"
-  },
-  "moneyFtueBenefitWithdrawDescription": {
-    "message": "Sin bloqueos, plazos de preaviso ni penalizaciones. Tu dinero es siempre tuyo; puedes retirarlo cuando quieras."
-  },
-  "moneyFtueBenefitWithdrawTitle": {
-    "message": "Retira en cualquier momento"
   },
   "moneyFtueDescription": {
     "message": "MetaMask Money es una cuenta de monedas estables que genera hasta un $1 de rendimiento anual (APY), con funciones integradas para operar, enviar y gastar.",
@@ -12961,17 +12949,8 @@
   "visitSite": {
     "message": "Visitar sitio"
   },
-  "visitSupportDataConsentModalAccept": {
-    "message": "Confirmar"
-  },
-  "visitSupportDataConsentModalDescription": {
-    "message": "¿Desea compartir su identificador de MetaMask y la versión de la aplicación con nuestro Centro de soporte técnico? Esto puede ayudarnos a resolver mejor su problema, pero es opcional."
-  },
   "visitSupportDataConsentModalReject": {
     "message": "No compartir"
-  },
-  "visitSupportDataConsentModalTitle": {
-    "message": "Compartir detalles del dispositivo con soporte"
   },
   "visitWebSite": {
     "message": "Visite nuestro sitio web"
