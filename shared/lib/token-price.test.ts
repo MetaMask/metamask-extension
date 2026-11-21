@@ -5,7 +5,11 @@ import {
   type TokenRatesControllerState,
 } from '@metamask/assets-controllers';
 import type { Hex } from '@metamask/utils';
-import { getCachedPercentChange, getCachedSpotPrice } from './token-price';
+import {
+  getCachedPercentChange,
+  getCachedSpotPrice,
+  readAssetsPricePercentChange1d,
+} from './token-price';
 
 const marketData = (data: object) =>
   data as TokenRatesControllerState['marketData'];
@@ -123,5 +127,39 @@ describe('getCachedPercentChange', () => {
     });
 
     expect(change).toBeUndefined();
+  });
+});
+
+describe('readAssetsPricePercentChange1d', () => {
+  const assetId = 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+
+  it('reads the fungible 1d change', () => {
+    const change = readAssetsPricePercentChange1d(
+      {
+        [assetId]: {
+          assetPriceType: 'fungible',
+          pricePercentChange1d: 1.84,
+        },
+      },
+      assetId,
+    );
+
+    expect(change).toBe(1.84);
+  });
+
+  it('returns undefined for a non-fungible entry or a missing change', () => {
+    expect(
+      readAssetsPricePercentChange1d(
+        { [assetId]: { assetPriceType: 'nft', pricePercentChange1d: 1.84 } },
+        assetId,
+      ),
+    ).toBeUndefined();
+    expect(
+      readAssetsPricePercentChange1d(
+        { [assetId]: { assetPriceType: 'fungible' } },
+        assetId,
+      ),
+    ).toBeUndefined();
+    expect(readAssetsPricePercentChange1d(undefined, assetId)).toBeUndefined();
   });
 });

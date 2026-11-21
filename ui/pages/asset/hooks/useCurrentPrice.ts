@@ -12,6 +12,7 @@ import { getCachedSpotPrice } from '../../../../shared/lib/token-price';
 import { getCurrencyRates, getMarketData } from '../../../selectors';
 import { getAssetsRates } from '../../../selectors/assets';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import { useMarketStatsSubscription } from '../../../hooks/assets/market-stats';
 import { apiClient } from '../../../helpers/api-client';
 import { Asset } from '../types/asset';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
@@ -75,7 +76,11 @@ export const useCachedPrice = (asset: Asset): { currentPrice?: number } => {
 const useSpotPrice = (
   asset: Asset,
   enabled: boolean,
-): { currentPrice?: number; marketData?: AssetMarketData } => {
+): {
+  currentPrice?: number;
+  marketData?: AssetMarketData;
+  assetId?: string;
+} => {
   const currency = useSelector(getCurrentCurrency);
   const isEvm = isEvmChainId(asset.chainId);
   const { chainId, type } = asset;
@@ -125,16 +130,28 @@ const useSpotPrice = (
         (value) => value !== undefined,
       );
 
+      const pricePercentChange1d = entry?.pricePercentChange1d;
+
       return {
         currentPrice:
           response?.[assetId]?.price ??
           response?.[assetId.toLowerCase()]?.price,
         marketData: hasMarketData ? marketData : undefined,
+        pricePercentChange1d:
+          typeof pricePercentChange1d === 'number' &&
+          Number.isFinite(pricePercentChange1d)
+            ? pricePercentChange1d
+            : undefined,
       };
     },
   });
 
-  return { currentPrice: data?.currentPrice, marketData: data?.marketData };
+  return {
+    currentPrice: data?.currentPrice,
+    marketData: data?.marketData,
+    pricePercentChange1d: data?.pricePercentChange1d,
+    assetId,
+  };
 };
 
 /**
@@ -150,12 +167,29 @@ const useSpotPrice = (
  */
 export const useCurrentPrice = (
   asset: Asset,
-): { currentPrice?: number; marketData?: AssetMarketData } => {
+): {
+  currentPrice?: number;
+  marketData?: AssetMarketData;
+  pricePercentChange1d?: number;
+} => {
   const { currentPrice: cachedPrice } = useCachedPrice(asset);
-  const { currentPrice: spotPrice, marketData } = useSpotPrice(
-    asset,
-    cachedPrice === undefined,
+  const {
+    currentPrice: spotPrice,
+    marketData,
+    pricePercentChange1d,
+    assetId,
+  } = useSpotPrice(asset, cachedPrice === undefined);
+  // The price poll only opens channels for holdings. This covers a token
+  // opened from search or trending, and a holding whose poll has not ticked.
+  const marketStatsAssetIds = useMemo(
+    () => (assetId ? [assetId] : []),
+    [assetId],
   );
+  useMarketStatsSubscription(marketStatsAssetIds);
 
-  return { currentPrice: cachedPrice ?? spotPrice, marketData };
+  return {
+    currentPrice: cachedPrice ?? spotPrice,
+    marketData,
+    pricePercentChange1d,
+  };
 };

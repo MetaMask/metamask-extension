@@ -39,6 +39,10 @@ export const ASSETS_CONTROLLER_DELEGATED_ACTIONS = [
   'PermissionController:getPermissions',
   'PhishingController:bulkScanTokens',
   'RemoteFeatureFlagController:getState',
+  'MarketStatsService:subscribe',
+  'MarketStatsService:unsubscribe',
+  'MarketStatsService:getSubscriptions',
+  'MarketStatsService:getChainStatuses',
 ] as const;
 
 /**

@@ -16,7 +16,6 @@ import { AssetChartBody, type HoveredPoint } from './asset-chart-body';
 import ChartErrorState from './chart-error-state';
 import TokenPriceHeader from './token-price-header';
 import { useAdvancedChartData } from './useAdvancedChartData';
-import { useCandle24hChange } from './useCandle24hChange';
 import { useAdvancedChartPreferences } from './useAdvancedChartPreferences';
 import { useAdvancedChartInteractions } from './useAdvancedChartInteractions';
 
@@ -75,6 +74,11 @@ export type AdvancedChartSectionProps = {
   caipAssetId?: string;
   currency: string;
   currentPrice?: number;
+  /**
+   * Resting 1d percent, shared with Your Balance. Market stats when the
+   * stream has one, otherwise the fungible assets-price change.
+   */
+  percentChange1d?: number;
 };
 
 /**
@@ -84,10 +88,11 @@ export type AdvancedChartSectionProps = {
  * between them moves nothing on screen. What changes underneath is the chart
  * and where the header's numbers come from:
  *
- * - Line mode renders the legacy Chart.js chart on historical prices, with the
- *   header derived from those same prices so the two always agree on a range.
- * - Candle mode renders the TradingView iframe, with the header derived from
- *   the OHLCV candles that feed it.
+ * - Line mode renders the legacy Chart.js chart on historical prices. The
+ *   header price follows the hovered point; at rest the percent is the shared
+ *   1d change.
+ * - Candle mode renders the TradingView iframe. The header price is the OHLCV
+ *   close, and the percent is the same shared 1d change.
  *
  * In both modes the live OHLCV bar drives the current price, mirroring mobile.
  */
@@ -97,6 +102,7 @@ export const AdvancedChartSection = ({
   caipAssetId,
   currency,
   currentPrice,
+  percentChange1d,
 }: AdvancedChartSectionProps) => {
   const t = useI18nContext();
   const {
@@ -168,10 +174,10 @@ export const AdvancedChartSection = ({
     needsHistory: !isLineChart,
   });
 
-  // Line mode's header and legacy chart body both read this series, so it uses
-  // the range the chart is showing. In candle mode the body is hidden and the
-  // candle header's 24H change comes from `useCandle24hChange` instead, so the
-  // range is pinned to P1D only to keep the hidden body warm for a fast toggle.
+  // Line mode's chart body reads this series, so it uses the range the chart is
+  // showing. In candle mode the body is hidden and the range is pinned to P1D
+  // only to keep that body warm for a fast toggle. The resting header percent
+  // is `percentChange1d` in both modes.
   const historical = useHistoricalPrices({
     chainId,
     address,
@@ -181,16 +187,18 @@ export const AdvancedChartSection = ({
       : DEFAULT_LINE_ISO8601,
   });
 
-  // Line mode anchors the header to the opening price of the range the chart
-  // is actually showing, so the two can never disagree. Releasing a hover
-  // falls back to the live price rather than a stale snapshot.
+  // The header price is the OHLCV close. Releasing a hover returns to that
+  // close. At rest the percent is the shared 1d change; a hover reads the
+  // chart's own point.
+  const lineRangeStart = historical.isPlaceholderData
+    ? undefined
+    : historical.data.prices?.[0]?.y;
   const linePrice = hovered?.price ?? realtimePrice ?? currentPrice;
   const lineHeader = {
     price: linePrice,
-    percentChange: computePercentChange(
-      linePrice,
-      historical.isPlaceholderData ? undefined : historical.data.prices?.[0]?.y,
-    ),
+    percentChange: hovered
+      ? computePercentChange(linePrice, lineRangeStart)
+      : percentChange1d,
     timestamp: hovered?.date ?? realtimeTimestamp,
     // Line mode keeps rendering the formatted date, not a static label.
     periodLabel: undefined as string | undefined,
@@ -223,23 +231,9 @@ export const AdvancedChartSection = ({
   const candlePrice =
     ohlcvPrice ?? (ohlcvError ? candleFallbackPrice : undefined);
 
-  // The 24H change is owned by a dedicated hook so its source can change (e.g.
-  // a future `percentChange1D` WebSocket stream) without touching this
-  // component. Today it is derived from the interval-independent P1D series,
-  // which keeps the figure identical across candle intervals and a true 24H
-  // change, and keeps it available when the OHLCV API fails.
-  const candle24hChange = useCandle24hChange({
-    chainId,
-    address,
-    currency,
-    candlePrice,
-    candleCurrency: resolvedCurrency,
-    currentPrice,
-    enabled: !isLineChart,
-  });
   const candleHeader = {
     price: candlePrice,
-    percentChange: candle24hChange.percentChange,
+    percentChange: percentChange1d,
     // Candle mode shows the last-24H change, labelled "Today" to match mobile,
     // instead of the latest bar's date.
     timestamp: undefined as number | undefined,

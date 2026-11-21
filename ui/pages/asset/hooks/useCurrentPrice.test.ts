@@ -7,6 +7,13 @@ import { apiClient } from '../../../helpers/api-client';
 import { Asset } from '../types/asset';
 import { useCurrentPrice } from './useCurrentPrice';
 
+jest.mock('../../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn(() => Promise.resolve(undefined)),
+  subscribeToMessengerEvent: jest.fn(() =>
+    Promise.resolve(async () => undefined),
+  ),
+}));
+
 jest.mock('../../../helpers/api-client', () => ({
   apiClient: {
     prices: {
@@ -239,6 +246,33 @@ describe('useCurrentPrice', () => {
           allTimeLow: 22.9079773125515,
           dilutedMarketCap: 2565738439,
         });
+      });
+    });
+
+    it('returns the 1d change from the spot price before a live quote arrives', async () => {
+      const address = '0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55';
+      const assetId = `eip155:1/erc20:${address}`;
+      const tokenAssetMissingMarket: Asset = {
+        chainId: '0x1',
+        type: AssetType.token,
+        address,
+        symbol: 'MISS',
+        decimals: 18,
+        name: 'Missing Token',
+        image: '',
+      };
+
+      mockSpotPricesFetch.mockResolvedValue({
+        [assetId]: { price: 61404.84, pricePercentChange1d: -3.69 },
+      });
+
+      const { result } = renderHookWithProvider(
+        () => useCurrentPrice(tokenAssetMissingMarket),
+        mockStateIsEvm,
+      );
+
+      await waitFor(() => {
+        expect(result.current.pricePercentChange1d).toBe(-3.69);
       });
     });
 

@@ -5,7 +5,10 @@ import configureStore from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { useHistoricalPrices } from '../../hooks/useHistoricalPrices';
-import { AdvancedChartSection } from './advanced-chart-section';
+import {
+  AdvancedChartSection,
+  type AdvancedChartSectionProps,
+} from './advanced-chart-section';
 import { useAdvancedChartData } from './useAdvancedChartData';
 import { useAdvancedChartPreferences } from './useAdvancedChartPreferences';
 import { useChartAnalytics } from './useChartAnalytics';
@@ -191,7 +194,8 @@ function indicatorSlotVisibility(): string {
 }
 
 function render(
-  props: Partial<typeof DEFAULT_PROPS> = {},
+  props: Partial<typeof DEFAULT_PROPS> &
+    Pick<Partial<AdvancedChartSectionProps>, 'percentChange1d'> = {},
   { themingEnabled = false }: { themingEnabled?: boolean } = {},
 ) {
   const store = configureStore({
@@ -275,13 +279,12 @@ describe('AdvancedChartSection', () => {
   });
 
   describe('line mode header', () => {
-    it('anchors the change to the first price of the displayed range', () => {
-      // Opened at 100, live at 150: the header must agree with the plotted line
-      // rather than with some other range's opening price.
+    it('shows the shared 1d change at rest instead of the range change', () => {
       setupData({ realtimePrice: 150 });
-      render();
+      render({ percentChange1d: -4.5 });
 
-      expect(screen.getByText('+50.00%')).toBeInTheDocument();
+      expect(screen.getByText('-4.50%')).toBeInTheDocument();
+      expect(screen.queryByText('+50.00%')).not.toBeInTheDocument();
     });
 
     it('prefers the live price over the wallet-wide current price', () => {
@@ -291,9 +294,9 @@ describe('AdvancedChartSection', () => {
       expect(screen.queryByText('+100.00%')).not.toBeInTheDocument();
     });
 
-    it('shows the hovered point while hovering and the live price after', () => {
+    it('shows the hovered point while hovering and the 1d change after', () => {
       setupData({ realtimePrice: 150 });
-      render();
+      render({ percentChange1d: 1.8 });
 
       act(() => {
         screen.getByTestId('simulate-hover').click();
@@ -304,7 +307,8 @@ describe('AdvancedChartSection', () => {
       act(() => {
         screen.getByTestId('simulate-unhover').click();
       });
-      expect(screen.getByText('+50.00%')).toBeInTheDocument();
+      expect(screen.getByText('+1.80%')).toBeInTheDocument();
+      expect(screen.queryByText('+50.00%')).not.toBeInTheDocument();
     });
 
     it('does not anchor to placeholder data from the previous range', () => {
@@ -313,6 +317,26 @@ describe('AdvancedChartSection', () => {
       render();
 
       expect(screen.queryByText('+50.00%')).not.toBeInTheDocument();
+    });
+
+    it('shows the live quote 1d change at rest instead of the range change', () => {
+      setupData({ realtimePrice: 150 });
+      render({ percentChange1d: -4.5 });
+
+      expect(screen.getByText('-4.50%')).toBeInTheDocument();
+      expect(screen.queryByText('+50.00%')).not.toBeInTheDocument();
+    });
+
+    it('keeps the range change while hovering with a live quote', () => {
+      setupData({ realtimePrice: 150 });
+      render({ percentChange1d: -4.5 });
+
+      act(() => {
+        screen.getByTestId('simulate-hover').click();
+      });
+
+      // Hovered at 42 against an opening price of 100.
+      expect(screen.getByText('-58.00%')).toBeInTheDocument();
     });
   });
 
@@ -498,14 +522,14 @@ describe('AdvancedChartSection', () => {
       expect(isSlotVisible('legacy-chart-slot')).toBe(false);
     });
 
-    it('fetches the candle history plus the P1D historical series for the 24H change', () => {
+    it('fetches the candle history and keeps the hidden line chart on P1D', () => {
       render();
 
       expect(mockUseAdvancedChartData).toHaveBeenCalledWith(
         expect.objectContaining({ needsHistory: true }),
       );
-      // The 24H percentage is always sourced from the interval-independent P1D
-      // series, so it is fetched in candle mode regardless of the interval.
+      // The hidden line body stays on P1D so toggling back is immediate. The
+      // header percent does not come from that series.
       expect(mockUseHistoricalPrices).toHaveBeenCalledWith(
         expect.objectContaining({ timeRange: 'P1D' }),
       );
@@ -525,6 +549,27 @@ describe('AdvancedChartSection', () => {
       render({ currency: 'XYZ' });
 
       expect(screen.getByText(/\$1,234/u)).toBeInTheDocument();
+    });
+
+    it('keeps the OHLCV price and shows the shared 1d change at rest', () => {
+      setupData({ price: 1234, resolvedCurrency: 'usd' });
+      render({ percentChange1d: -2 });
+
+      expect(screen.getByText(/\$1,234/u)).toBeInTheDocument();
+      expect(screen.queryByText(/\$1,500/u)).not.toBeInTheDocument();
+      expect(screen.getByText('-2.00%')).toBeInTheDocument();
+      expect(screen.queryByText('+100.00%')).not.toBeInTheDocument();
+    });
+
+    it('keeps the candle price and shows no percent when there is no 1d change', () => {
+      setupData({ price: 1234, resolvedCurrency: 'usd' });
+      render();
+
+      expect(screen.getByText(/\$1,234/u)).toBeInTheDocument();
+      expect(screen.queryByText(/\$1,500/u)).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('asset-price-percent-change'),
+      ).not.toBeInTheDocument();
     });
 
     it('reveals the indicator bar only once the engine reports ready', () => {
@@ -560,53 +605,42 @@ describe('AdvancedChartSection', () => {
       setupPreferences(CHART_TYPE_CANDLE);
     });
 
-    it('labels the 24H change with "Today" rather than a date', () => {
-      // 24H change is derived from the P1D historical series (opens at 100, see
-      // PRICES), not from the candle data: (150 - 100) / 100 = +50%. The candle
-      // resolved in the requested currency (EUR), so the live candle price is
-      // used as the current value.
+    it('labels the shared 1d change with "Today" rather than a date', () => {
       setupData({ price: 150 });
-      render();
+      render({ percentChange1d: 1.8 });
 
       expect(
         screen.getByTestId('asset-price-percent-change'),
-      ).toHaveTextContent('+50.00%');
+      ).toHaveTextContent('+1.80%');
       expect(screen.getByText(messages.today.message)).toBeInTheDocument();
     });
 
-    it('does not mix currencies in the 24H change when the candle data resolved to a different fiat', () => {
-      // The candle resolved to USD while the user currency is EUR, so the USD
-      // candle price must NOT be compared against the EUR P1D baseline. The
-      // percentage uses a EUR-denominated current price (the wallet current
-      // price, 200) against the EUR P1D open (100): (200 - 100) / 100 = +100%.
-      // The displayed price still shows the USD figure the data came back in.
+    it('keeps the candle price in its resolved currency and the shared 1d change', () => {
       setupData({ price: 150, resolvedCurrency: 'usd' });
-      render({ currency: 'EUR', currentPrice: 200 });
+      render({ currency: 'EUR', currentPrice: 200, percentChange1d: 1.8 });
 
       expect(
         screen.getByTestId('asset-price-percent-change'),
-      ).toHaveTextContent('+100.00%');
+      ).toHaveTextContent('+1.80%');
       expect(screen.getByText(/\$150/u)).toBeInTheDocument();
     });
 
-    it('keeps the 24H change identical across candle intervals', () => {
-      // The percentage comes from the interval-independent P1D series, so it
-      // must not change when the candle interval does. A naive candle-derived
-      // baseline would differ between a 15m and a 1w interval (and collapse to
-      // 0% on 1w).
+    it('keeps the 1d change identical across candle intervals', () => {
       setupData({ price: 150 });
 
       setupPreferences(CHART_TYPE_CANDLE, { interval: '15m' });
-      const { rerender } = render();
+      const { rerender } = render({ percentChange1d: 1.8 });
       expect(
         screen.getByTestId('asset-price-percent-change'),
-      ).toHaveTextContent('+50.00%');
+      ).toHaveTextContent('+1.80%');
 
       setupPreferences(CHART_TYPE_CANDLE, { interval: '1w' });
-      rerender(<AdvancedChartSection {...DEFAULT_PROPS} />);
+      rerender(
+        <AdvancedChartSection {...DEFAULT_PROPS} percentChange1d={1.8} />,
+      );
       expect(
         screen.getByTestId('asset-price-percent-change'),
-      ).toHaveTextContent('+50.00%');
+      ).toHaveTextContent('+1.80%');
     });
   });
 
@@ -693,25 +727,21 @@ describe('AdvancedChartSection', () => {
       expect(screen.getByTestId('chart-error-state')).toBeInTheDocument();
     });
 
-    it('falls back to the live price and a 24H change from historical prices when candle data fails', () => {
-      // Historical P1D series opens at 100 (see PRICES), live price is 175.
+    it('falls back to the live price and keeps the shared 1d change when candle data fails', () => {
       setupData({
         price: undefined,
         realtimePrice: 175,
         error: 'OHLCV API error: 500',
       });
-      render();
+      render({ percentChange1d: 1.8 });
 
-      // Chart keeps its overlay, but the header is no longer blank.
       expect(screen.getByTestId('chart-error-state')).toBeInTheDocument();
       expect(screen.getByTestId('asset-hovered-price')).toHaveTextContent(
         '175',
       );
-      // 24H change derived from historical prices: (175 - 100) / 100 = +75%,
-      // still labelled "Today".
       expect(
         screen.getByTestId('asset-price-percent-change'),
-      ).toHaveTextContent('+75.00%');
+      ).toHaveTextContent('+1.80%');
       expect(screen.getByText(messages.today.message)).toBeInTheDocument();
     });
 
@@ -724,7 +754,7 @@ describe('AdvancedChartSection', () => {
       );
     });
 
-    it('hides the percentage while the historical fallback is still loading', () => {
+    it('shows no percent when candle data fails and there is no 1d change', () => {
       setupHistorical({ isPlaceholderData: true });
       setupData({
         price: undefined,
@@ -733,7 +763,7 @@ describe('AdvancedChartSection', () => {
       });
       render();
 
-      // Price is shown immediately, but the 24H change waits for real data.
+      // The price is shown. With no 1d change there is no percent to show.
       expect(screen.getByTestId('asset-hovered-price')).toHaveTextContent(
         '175',
       );

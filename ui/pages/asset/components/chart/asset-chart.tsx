@@ -21,6 +21,7 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { useHistoricalPrices } from '../../hooks/useHistoricalPrices';
+import { useOHLCVRealtime } from './useOHLCVRealtime';
 import { processAssetParams } from '../../util';
 import { AssetChartBody } from './asset-chart-body';
 import AssetChartPrice from './asset-chart-price';
@@ -92,12 +93,18 @@ const getChartAddress = (
 const AssetChart = ({
   chainId,
   address,
+  caipAssetId,
   currentPrice,
+  percentChange1d,
   currency,
 }: {
   chainId: Hex;
   address: string;
+  /** CAIP-19 id used to read the OHLCV close for the header price. */
+  caipAssetId?: string;
   currentPrice?: number;
+  /** Resting 1d percent, shared with Your Balance. */
+  percentChange1d?: number;
   currency: string;
 }) => {
   const t = useI18nContext();
@@ -105,6 +112,13 @@ const AssetChart = ({
   const [selectedTimeRange, setSelectedTimeRange] = useState<string>(
     TIME_RANGES[0],
   );
+  const { latestBar } = useOHLCVRealtime({
+    assetId: caipAssetId,
+    interval: '1m',
+    currency: currency.toLowerCase(),
+    enabled: Boolean(caipAssetId),
+  });
+  const headerPrice = latestBar?.close ?? currentPrice;
 
   const {
     loading,
@@ -123,16 +137,16 @@ const AssetChart = ({
   const shouldShowChartEmptyState = !loading && prices.length === 0;
 
   const priceRef = useRef<{
-    setPrice: (_: { price?: number; date?: number }) => void;
+    setPrice: (_: { price?: number; date?: number; hovered?: boolean }) => void;
   }>();
 
   // Init the price ref with the current price
   useEffect(() => {
     priceRef?.current?.setPrice({
-      price: currentPrice,
+      price: headerPrice,
       date: Date.now(),
     });
-  }, [currentPrice]);
+  }, [headerPrice]);
 
   return (
     <Box className="flex rounded-lg" flexDirection={BoxFlexDirection.Column}>
@@ -140,13 +154,14 @@ const AssetChart = ({
         ref={priceRef}
         loading={loading || isPlaceholderData}
         currency={currency}
-        price={currentPrice}
+        price={headerPrice}
         date={Date.now()}
         comparePrice={
           isPlaceholderData || shouldShowChartEmptyState
             ? undefined
             : prices?.[0]?.y
         }
+        livePercentChange1d={percentChange1d}
       />
 
       <AssetChartBody
@@ -159,7 +174,9 @@ const AssetChart = ({
         currentPrice={currentPrice}
         onHoverPrice={(point) =>
           priceRef?.current?.setPrice(
-            point ?? { price: currentPrice, date: Date.now() },
+            point
+              ? { ...point, hovered: true }
+              : { price: headerPrice, date: Date.now(), hovered: false },
           )
         }
       >
