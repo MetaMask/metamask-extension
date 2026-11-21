@@ -6092,9 +6092,6 @@
   "moneyExploreBenefits": {
     "message": "查看您的权益"
   },
-  "moneyFtueBenefitConvertDescription": {
-    "message": "您添加的资金将按 1:1 转换为 MetaMask USD，且无手续费。"
-  },
   "moneyFtueBenefitConvertTitle": {
     "message": "按 1:1 转换为 MetaMask USD"
   },
@@ -6104,9 +6101,6 @@
   "moneyFtueBenefitEarnTitle": {
     "message": "自动赚取收益"
   },
-  "moneyFtueBenefitSpendDescription": {
-    "message": "可发送到任意钱包或银行，或使用 MetaMask 卡消费，最高可获得 3% 返还。"
-  },
   "moneyFtueBenefitSpendTitle": {
     "message": "随处发送或消费"
   },
@@ -6115,12 +6109,6 @@
   },
   "moneyFtueBenefitTradeTitle": {
     "message": "使用同一余额交易"
-  },
-  "moneyFtueBenefitWithdrawDescription": {
-    "message": "无锁定期，无通知期，无罚金。您的资金始终由您随时提取。"
-  },
-  "moneyFtueBenefitWithdrawTitle": {
-    "message": "随时提现"
   },
   "moneyFtueDescription": {
     "message": "MetaMask Money 是一个稳定币账户，最高可赚取 $1 年化收益率，内置交易、发送和消费功能。",
@@ -12953,17 +12941,8 @@
   "visitSite": {
     "message": "访问网站"
   },
-  "visitSupportDataConsentModalAccept": {
-    "message": "确认"
-  },
-  "visitSupportDataConsentModalDescription": {
-    "message": "您是否愿意将 MetaMask 标识符和应用程序版本信息分享给我们的支持中心？这将有助于我们更好地解决您的问题，但此操作为可选。"
-  },
   "visitSupportDataConsentModalReject": {
     "message": "不分享"
-  },
-  "visitSupportDataConsentModalTitle": {
-    "message": "与支持团队分享设备信息"
   },
   "visitWebSite": {
     "message": "访问我们的网站"

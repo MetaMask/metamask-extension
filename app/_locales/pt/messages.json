@@ -6092,9 +6092,6 @@
   "moneyExploreBenefits": {
     "message": "Explore seus benefícios"
   },
-  "moneyFtueBenefitConvertDescription": {
-    "message": "Os fundos que você adicionar são convertidos na proporção 1:1 para MetaMask USD, sem taxas."
-  },
   "moneyFtueBenefitConvertTitle": {
     "message": "Conversão para MetaMask USD, 1:1"
   },
@@ -6104,9 +6101,6 @@
   "moneyFtueBenefitEarnTitle": {
     "message": "Ganhe automaticamente"
   },
-  "moneyFtueBenefitSpendDescription": {
-    "message": "Envie para qualquer carteira ou banco, ou utilize o cartão MetaMask Card para receber até 3% de cashback."
-  },
   "moneyFtueBenefitSpendTitle": {
     "message": "Envie ou gaste em qualquer lugar"
   },
@@ -6115,12 +6109,6 @@
   },
   "moneyFtueBenefitTradeTitle": {
     "message": "Negocie usando o mesmo saldo"
-  },
-  "moneyFtueBenefitWithdrawDescription": {
-    "message": "Sem prazos de carência, aviso prévio ou multas. Seu dinheiro está sempre livre para você sacar."
-  },
-  "moneyFtueBenefitWithdrawTitle": {
-    "message": "Saque quando quiser"
   },
   "moneyFtueDescription": {
     "message": "O MetaMask Money é uma conta de moeda estável com rendimento de até $1 APY, com recursos integrados para negociar, enviar e gastar.",
@@ -12947,17 +12935,8 @@
   "visitSite": {
     "message": "Visitar site"
   },
-  "visitSupportDataConsentModalAccept": {
-    "message": "Confirmar"
-  },
-  "visitSupportDataConsentModalDescription": {
-    "message": "Deseja compartilhar seu identificador e versão do aplicativo MetaMask com a nossa Central de Suporte? Isso pode nos ajudar a resolver melhor o seu problema, mas é opcional."
-  },
   "visitSupportDataConsentModalReject": {
     "message": "Não compartilhar"
-  },
-  "visitSupportDataConsentModalTitle": {
-    "message": "Compartilhar detalhes do dispositivo com o suporte"
   },
   "visitWebSite": {
     "message": "Visite nosso site"

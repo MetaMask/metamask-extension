@@ -6092,9 +6092,6 @@
   "moneyExploreBenefits": {
     "message": "Εξερευνήστε τα οφέλη σας"
   },
-  "moneyFtueBenefitConvertDescription": {
-    "message": "Τα κεφάλαια που προσθέτετε μετατρέπονται σε MetaMask USD με αναλογία 1:1, χωρίς χρεώσεις."
-  },
   "moneyFtueBenefitConvertTitle": {
     "message": "Μετατρέπεται σε MetaMask USD, αναλογία 1:1"
   },
@@ -6104,9 +6101,6 @@
   "moneyFtueBenefitEarnTitle": {
     "message": "Κερδίζετε αυτόματα"
   },
-  "moneyFtueBenefitSpendDescription": {
-    "message": "Στείλετε σε οποιοδήποτε πορτοφόλι ή τράπεζα, ή πραγματοποιήστε πληρωμές με την κάρτα MetaMask κερδίζοντας έως και 3% επιστροφή."
-  },
   "moneyFtueBenefitSpendTitle": {
     "message": "Στείλε ή ξόδεψε οπουδήποτε"
   },
@@ -6115,12 +6109,6 @@
   },
   "moneyFtueBenefitTradeTitle": {
     "message": "Πραγματοποιήστε συναλλαγές από το ίδιο υπόλοιπο"
-  },
-  "moneyFtueBenefitWithdrawDescription": {
-    "message": "Χωρίς δεσμεύσεις, περιόδους προειδοποίησης ή ποινές. Τα χρήματά σας είναι πάντα δικά σας για να τα αποσύρετε."
-  },
-  "moneyFtueBenefitWithdrawTitle": {
-    "message": "Κάντε ανάληψη ανά πάσα στιγμή"
   },
   "moneyFtueDescription": {
     "message": "Το MetaMask Money είναι ένας λογαριασμός stablecoin που αποφέρει ετήσια απόδοση (APY) έως και $1 – με ενσωματωμένες δυνατότητες συναλλαγών, αποστολής και δαπανών.",
@@ -12947,17 +12935,8 @@
   "visitSite": {
     "message": "Επισκεφθείτε τον ιστότοπο"
   },
-  "visitSupportDataConsentModalAccept": {
-    "message": "Επιβεβαίωση"
-  },
-  "visitSupportDataConsentModalDescription": {
-    "message": "Μπορείτε να μας δώσετε το MetaMask Identifier καθώς και την έκδοση της εφαρμογής σας στο Κέντρο Υποστήριξης; Αυτό θα μας βοηθήσει να κατανοήσουμε καλύτερα το πρόβλημά σας, αλλά είναι προαιρετικό."
-  },
   "visitSupportDataConsentModalReject": {
     "message": "Δεν θέλω"
-  },
-  "visitSupportDataConsentModalTitle": {
-    "message": "Παρέχετε τα στοιχεία της συσκευής στην υποστήριξη"
   },
   "visitWebSite": {
     "message": "Επισκεφθείτε τον ιστότοπό μας"

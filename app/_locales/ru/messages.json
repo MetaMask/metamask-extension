@@ -6092,9 +6092,6 @@
   "moneyExploreBenefits": {
     "message": "Изучите свои преимущества"
   },
-  "moneyFtueBenefitConvertDescription": {
-    "message": "Внесенные средства конвертируются в MetaMask USD по курсу 1:1 без комиссий."
-  },
   "moneyFtueBenefitConvertTitle": {
     "message": "Конвертация в MetaMask USD по курсу 1:1"
   },
@@ -6104,9 +6101,6 @@
   "moneyFtueBenefitEarnTitle": {
     "message": "Зарабатывайте автоматически"
   },
-  "moneyFtueBenefitSpendDescription": {
-    "message": "Переводите средства на любой кошелек или банковский счет либо оплачивайте покупки картой MetaMask Card и получайте до 3% кешбэка."
-  },
   "moneyFtueBenefitSpendTitle": {
     "message": "Переводите средства и оплачивайте покупки где угодно"
   },
@@ -6115,12 +6109,6 @@
   },
   "moneyFtueBenefitTradeTitle": {
     "message": "Торгуйте с того же баланса"
-  },
-  "moneyFtueBenefitWithdrawDescription": {
-    "message": "Без блокировок, предварительного уведомления и штрафов. Вы можете вывести свои деньги в любой момент."
-  },
-  "moneyFtueBenefitWithdrawTitle": {
-    "message": "Выводите средства в любое время"
   },
   "moneyFtueDescription": {
     "message": "MetaMask Money — это счет в стейблкоинах с годовой процентной доходностью до $1 и встроенными возможностями торговли, переводов и оплаты покупок.",
@@ -12947,17 +12935,8 @@
   "visitSite": {
     "message": "Посетить сайт"
   },
-  "visitSupportDataConsentModalAccept": {
-    "message": "Подтвердить"
-  },
-  "visitSupportDataConsentModalDescription": {
-    "message": "Хотите сообщить свой идентификатор MetaMask и версию приложения в наш Центр поддержки? Возможно, это поможет нам лучше решить вашу проблему, хотя это не гарантируется."
-  },
   "visitSupportDataConsentModalReject": {
     "message": "Не сообщать"
-  },
-  "visitSupportDataConsentModalTitle": {
-    "message": "Передать сведения об устройстве в службу поддержки"
   },
   "visitWebSite": {
     "message": "Посетите наш веб-сайт"
