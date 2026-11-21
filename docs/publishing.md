@@ -19,9 +19,19 @@ We try to ensure certain criteria are met before deploying:
 
 ## Incrementing Version & Changelog
 
-Version can be automatically incremented by creating a branch with the name `release/X.Y.Z`, where `X`, `Y`, and `Z` are numbers. Branches should be created off of the main branch. [Branches can be created on GitHub.](https://help.github.com/en/articles/creating-and-deleting-branches-within-your-repository)
+A minor or major release starts when the version bump pull request is merged to `main`.
 
-Once a version branch has been created, a build on CI will create a Pull Request for the release with the app manifest and changelog versions bumped.
+1. The version bump pull request comes from `version-bump/X.Y.Z` and bumps `package.json` from the version on `main` to the next minor or major version.
+2. Merging it runs [Cut Release On Version Bump](../.github/workflows/cut-release-on-version-bump.yml), which creates `release/<previous version>` at the commit before the bump.
+3. Creating that branch runs [Auto Create Release PR](../.github/workflows/auto-create-release-pr.yml), which opens the release pull request, and Update Release Changelog PR, which opens the changelog pull request.
+
+Until that merge, `package.json` on `main` is still the version being released, and pull requests merged to `main` are part of that release. The post-merge validation sheet reads that version, so it files those pull requests under the release they are actually in.
+
+Do not create `release/X.Y.0` by hand. A release pull request only opens when the branch is at the commit before a version bump, and the cut fails if the branch already exists somewhere else.
+
+Hotfixes are unchanged. Create `release/X.Y.Z` with a patch greater than 0. That push opens the hotfix release pull request and does not bump `main`.
+
+To run [Create Release Pull Request](../.github/workflows/create-release-pr.yml) by hand, start it from the `release/X.Y.Z` branch. It runs in the `release-ci` environment, which does not allow `main`.
 
 ## Preparing for Sensitive Changes
 
