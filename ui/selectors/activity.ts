@@ -605,6 +605,8 @@ export const selectLocalActivityItems = createSelector(
         transactionGroup.initialTransaction.txParams.to,
       );
 
+      const fees = getLocalTransactionFees(transactionGroup);
+
       if (
         type === TransactionType.swap ||
         type === TransactionType.swapAndSend ||
@@ -614,7 +616,6 @@ export const selectLocalActivityItems = createSelector(
           transactionGroup.initialTransaction,
         );
         const activityStatus = getBridgeActivityStatus(bridgeHistoryItem);
-        const fees = getLocalTransactionFees(transactionGroup);
 
         const prepared = {
           ...transactionGroup,
@@ -630,6 +631,7 @@ export const selectLocalActivityItems = createSelector(
 
       const prepared = {
         ...transactionGroup,
+        fees,
         nativeAssetSymbol,
         contractTokenMetadata,
       };
