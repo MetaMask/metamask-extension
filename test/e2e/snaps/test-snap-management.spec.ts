@@ -26,7 +26,7 @@ describe('Test Snap Management', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { waitForNonEvmAccounts: false });
 
         const testSnaps = new TestSnaps(driver);
         await openTestSnapClickButtonAndInstall(
