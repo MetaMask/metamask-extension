@@ -5,6 +5,7 @@ import {
 } from '@metamask/transaction-controller';
 import type { CaipAssetType } from '@metamask/utils';
 import { useSelector } from 'react-redux';
+import { toCanonicalAssetId } from '#shared/lib/asset-utils';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { selectLocalTransactionsByHash } from '../../selectors/activity';
@@ -33,7 +34,11 @@ export function activityMatchesAssetId(
 
   return tokenAssetIds.some(
     (tokenAssetId) =>
-      tokenAssetId && isEqualCaseInsensitive(tokenAssetId, assetId),
+      tokenAssetId &&
+      isEqualCaseInsensitive(
+        toCanonicalAssetId(tokenAssetId),
+        toCanonicalAssetId(assetId),
+      ),
   );
 }
 
