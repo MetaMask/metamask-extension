@@ -657,6 +657,7 @@ describe('TokenManagementPage', () => {
     renderPage();
 
     expect(screen.getByText('Alpha Token')).toBeInTheDocument();
+    expect(screen.getByText('1.23 AAA')).toBeInTheDocument();
     expect(
       screen.getByText(messages.networkNameEthereum.message),
     ).toBeInTheDocument();
