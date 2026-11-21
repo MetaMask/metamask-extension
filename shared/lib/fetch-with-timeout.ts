@@ -32,6 +32,12 @@ const getFetchWithTimeout = memoize((timeout = SECOND * 30) => {
     const abortHandler = () => combinedAbortController.abort();
     abortSignals.forEach((sig) => sig.addEventListener('abort', abortHandler));
 
+    // If a signal is already aborted, the 'abort' event won't fire again,
+    // so propagate the abortion immediately.
+    if (abortSignals.some((sig) => sig.aborted)) {
+      combinedAbortController.abort();
+    }
+
     const f = window.fetch(url, {
       ...opts,
       signal: combinedAbortController.signal,
