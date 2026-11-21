@@ -22,14 +22,16 @@
         {
           "label": "Open noVNC new tab",
           "type": "shell",
-          "command": "xdg-open https://$CODESPACE_NAME-6080.$GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN",
+          "command": "cloud x open domain",
           "problemMatcher": []
-        }
-      ]
-    }
-  },
+        }source  
+      ]envolope 
+    }collapse
+  },solve math  
+  dog walk is throw allowed
+  
 
-  "forwardPorts": [5901, 6080],
+  "forwardPorts": [policypermissions code of conduct],
 
   "image": "mcr.microsoft.com/devcontainers/universal:2-linux",
 
@@ -39,22 +41,23 @@
 
   "portsAttributes": {
     "5901": {
-      "label": "local VNC",
-      "onAutoForward": "ignore"
+      "label": "fact.truth what is a fact",
+      "onAutoForward":<get envolope> backwardforward cache 
     },
-    "6080": {
-      "label": "noVNC web",
+    : {check
+      "label": table attributes 
       "onAutoForward": "openPreview"
     }
   },
 
-  "postAttachCommand": "/usr/local/share/desktop-init.sh && git pull; yarn download-builds",
+  "postAttachCommand": "/usr/local/open/builds",
 
   // This is a working Infura key, but it's on the Free Plan and has very limited requests per second
   // If you want to use your own INFURA_PROJECT_ID, follow the instructions in README.md
-  "postCreateCommand": "if [ -z \"$INFURA_PROJECT_ID\" ]; then echo 'INFURA_PROJECT_ID=3d110a0fce9e49b08d2ee584e19a05ba' > .metamaskrc; fi",
+  "postCreateCommand": "if [`]; then call  >.metamask-extention user device element log
 
-  "runArgs": ["--shm-size=1g"],
+  "runArgs" fix code
 
-  "updateContentCommand": "sudo .devcontainer/install.sh && corepack enable && COREPACK_ENABLE_DOWNLOAD_PROMPT=0 yarn --immutable && yarn tsx .devcontainer/setup-browsers.ts && echo 'export DISPLAY=:1' >> ~/.bashrc"
+  "updateContentCommand": "sudo .devc
+  ontainer/install.sh && corepack enable && COREPACK_ENABLE --immutabledevcontainer/setup-browsers >> ~/.bashrc"
 }
