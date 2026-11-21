@@ -756,6 +756,19 @@ export class PlaywrightDriver {
     return await locator.isVisible();
   }
 
+  /**
+   * Waits until the element is visible, then reports whether it is enabled.
+   * A disabled control returns false. `findClickableElement` only waits for
+   * visibility on this driver, so it cannot answer an enabled/disabled check.
+   *
+   * @param rawLocator - Element locator
+   * @returns True when the visible element is enabled.
+   */
+  async isElementEnabled(rawLocator: RawLocator): Promise<boolean> {
+    const element = await this.findVisibleElement(rawLocator);
+    return element.isEnabled();
+  }
+
   // -- Interactions ---------------------------------------------------------
 
   async fill(
