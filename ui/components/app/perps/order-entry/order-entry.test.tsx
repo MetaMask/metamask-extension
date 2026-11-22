@@ -208,6 +208,36 @@ describe('OrderEntry', () => {
     });
   });
 
+  it('sizes the margin from the page precision when its own lookup failed', () => {
+    // $1 at $60,000 is 0.0000167 BTC, placed as 0.00002 on the 5-decimal grid.
+    mockMarketInfo = undefined;
+    const props = {
+      ...defaultProps,
+      currentPrice: 60000,
+      orderType: 'market' as const,
+      initialDraft: {
+        type: 'market' as const,
+        direction: 'long' as const,
+        amount: '1',
+        leverage: 1,
+        limitPrice: '',
+      },
+    };
+    const { rerender } = renderWithProvider(
+      <OrderEntry {...props} sizeDecimals={undefined} />,
+      mockStore,
+    );
+    expect(
+      screen.getByTestId('perps-order-summary-margin-required'),
+    ).not.toHaveTextContent('$1.2');
+
+    rerender(<OrderEntry {...props} sizeDecimals={5} />);
+
+    expect(
+      screen.getByTestId('perps-order-summary-margin-required'),
+    ).toHaveTextContent('$1.20');
+  });
+
   it.each([NaN, Infinity])(
     'keeps order entry mounted until price %s becomes available',
     (currentPrice) => {

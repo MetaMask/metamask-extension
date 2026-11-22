@@ -110,6 +110,9 @@ export const OrderEntry = ({
 
   // Fetch full MarketInfo for szDecimals (used to round position size before margin calc)
   const { market: marketInfo } = usePerpsMarketInfo(asset);
+  // Prefer the page's precision so the form, fee preview and placement all
+  // recover together after a market-info retry.
+  const szDecimals = sizeDecimals ?? marketInfo?.szDecimals;
 
   // Use custom hook for form state management
   const {
@@ -141,7 +144,7 @@ export const OrderEntry = ({
     initialDraft,
     sizeDecimals,
     maxLeverage,
-    szDecimals: marketInfo?.szDecimals,
+    szDecimals,
     markPrice,
     limitPricePrefill,
   });
@@ -255,9 +258,6 @@ export const OrderEntry = ({
   // Get position size for close mode
   const positionSize = existingPosition?.size ?? '0';
 
-  // Prefer the page's precision so the fee preview and placement recover
-  // together after a market-info retry.
-  const szDecimals = sizeDecimals ?? marketInfo?.szDecimals;
   // Same size the page submits: notional at the fill price, on the size grid.
   const estimatedSize = useMemo(() => {
     if (mode === 'modify' && existingPosition) {
@@ -352,7 +352,7 @@ export const OrderEntry = ({
             leverage={formState.leverage}
             asset={asset}
             currentPrice={currentPrice}
-            szDecimals={sizeDecimals ?? marketInfo?.szDecimals}
+            szDecimals={szDecimals}
             currentPositionSize={
               mode === 'modify' ? existingPosition?.size : undefined
             }
