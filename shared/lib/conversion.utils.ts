@@ -31,12 +31,6 @@ export function multiplyHexes(aHexWEI: Hex, bHexWEI: Hex): Hex {
     .toString() as Hex;
 }
 
-export function decWEIToDecETH(decWEI: string) {
-  return new Numeric(decWEI, 10, EtherDenomination.WEI)
-    .toDenomination(EtherDenomination.ETH)
-    .toString();
-}
-
 export function hexWEIToDecETH(hexWEI: string) {
   return new Numeric(hexWEI, 16, EtherDenomination.WEI)
     .toDenomination(EtherDenomination.ETH)
@@ -76,44 +70,6 @@ export function getWeiHexFromDecimalValue({
     numeric = numeric.applyConversionRate(conversionRate, invertConversionRate);
   }
   return numeric.toBase(16).toDenomination(EtherDenomination.WEI).toString();
-}
-
-export function getEthConversionFromWeiHex({
-  value,
-  fromCurrency = EtherDenomination.ETH,
-  conversionRate,
-  numberOfDecimals = 6,
-}: {
-  value: NumericValue;
-  conversionRate?: number;
-  fromCurrency?: EtherDenomination | string;
-  numberOfDecimals?: number;
-}) {
-  const denominations = [
-    EtherDenomination.ETH,
-    EtherDenomination.GWEI,
-    EtherDenomination.WEI,
-  ];
-
-  let nonZeroDenomination;
-
-  for (let i = 0; i < denominations.length; i++) {
-    const convertedValue = getValueFromWeiHex({
-      value,
-      conversionRate,
-      fromCurrency,
-      toCurrency: fromCurrency,
-      numberOfDecimals,
-      toDenomination: denominations[i],
-    });
-
-    if (convertedValue !== '0' || i === denominations.length - 1) {
-      nonZeroDenomination = `${convertedValue} ${denominations[i]}`;
-      break;
-    }
-  }
-
-  return nonZeroDenomination;
 }
 
 export function getValueFromWeiHex({

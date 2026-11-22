@@ -1,22 +1,22 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  JustifyContent,
-  AlignItems,
-  Display,
-  TextVariant,
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxBorderColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   BlockSize,
-  BorderColor,
-  FlexDirection,
-  BackgroundColor,
-  BorderRadius,
+  TextVariant,
   IconColor,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
 import {
   AvatarToken,
   AvatarTokenSize,
-  Box,
   Button,
   ButtonSize,
   ButtonVariant,
@@ -29,55 +29,53 @@ import PermissionsConnectFooter from '../../../components/app/permissions-connec
 
 export default function PermissionsRedirect({ subjectMetadata }) {
   const t = useContext(I18nContext);
-  const [cachedSubjectMetadata, setCachedSubjectMetadata] =
-    useState(subjectMetadata);
+  const [lastValidSubjectMetadata, setLastValidSubjectMetadata] = useState(() =>
+    subjectMetadata?.origin ? subjectMetadata : null,
+  );
 
   // While this redirecting screen is showing, the subject metadata will become invalidated
   // for that reason we cache the last seen valid subject metadata and show that.
-  useEffect(() => {
-    if (subjectMetadata && subjectMetadata.origin) {
-      setCachedSubjectMetadata(subjectMetadata);
-    }
-  }, [subjectMetadata]);
+  if (subjectMetadata?.origin && subjectMetadata !== lastValidSubjectMetadata) {
+    setLastValidSubjectMetadata(subjectMetadata);
+  }
+
+  const displaySubjectMetadata = subjectMetadata?.origin
+    ? subjectMetadata
+    : (lastValidSubjectMetadata ?? subjectMetadata);
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      width={BlockSize.Full}
-      height={BlockSize.Full}
-      justifyContent={JustifyContent.spaceBetween}
+      className="flex h-full w-full"
+      flexDirection={BoxFlexDirection.Column}
+      justifyContent={BoxJustifyContent.Between}
     >
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
-        width={BlockSize.Full}
-        height={BlockSize.Full}
-        backgroundColor={BackgroundColor.backgroundDefault}
-        borderRadius={BorderRadius.XS}
-        border={`1px solid ${BorderColor.borderMuted}`}
+        className="flex h-full w-full rounded-sm"
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
+        backgroundColor={BoxBackgroundColor.BackgroundDefault}
+        borderColor={BoxBorderColor.BorderMuted}
+        borderWidth={1}
         boxShadow="var(--shadow-size-lg) var(--color-shadow-default)"
       >
-        <Box display={Display.Flex} marginBottom={4}>
+        <Box className="flex" marginBottom={4}>
           <Text variant={TextVariant.headingMd}>{t('connecting')}</Text>
         </Box>
         <Box
-          display={Display.Flex}
-          backgroundColor={BackgroundColor.infoMuted}
-          borderRadius={BorderRadius.pill}
+          className="flex rounded-full"
+          backgroundColor={BoxBackgroundColor.InfoMuted}
           padding={2}
         >
           <AvatarToken
-            src={cachedSubjectMetadata.iconUrl}
-            name={cachedSubjectMetadata.name}
+            src={displaySubjectMetadata.iconUrl}
+            name={displaySubjectMetadata.name}
             size={AvatarTokenSize.Lg}
           />
           <Box
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
+            className="flex"
+            alignItems={BoxAlignItems.Center}
+            justifyContent={BoxJustifyContent.Center}
             paddingLeft={4}
             paddingRight={4}
           >
@@ -94,15 +92,14 @@ export default function PermissionsRedirect({ subjectMetadata }) {
           />
         </Box>
       </Box>
-      <Box backgroundColor={BackgroundColor.backgroundDefault} padding={4}>
-        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+      <Box backgroundColor={BoxBackgroundColor.BackgroundDefault} padding={4}>
+        <Box className="flex" flexDirection={BoxFlexDirection.Column}>
           <PermissionsConnectFooter />
           <Box
-            display={Display.Flex}
+            className="flex w-full"
             paddingTop={4}
-            width={BlockSize.Full}
-            justifyContent={JustifyContent.center}
-            alignItems={AlignItems.center}
+            justifyContent={BoxJustifyContent.Center}
+            alignItems={BoxAlignItems.Center}
           >
             <Button
               variant={ButtonVariant.Secondary}

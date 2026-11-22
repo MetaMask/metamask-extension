@@ -1,9 +1,11 @@
-import { NameController } from '@metamask/name-controller';
+import {
+  NameController,
+  NameControllerMessenger,
+} from '@metamask/name-controller';
 import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getNameControllerMessenger,
-  NameControllerMessenger,
   getNameControllerInitMessenger,
   NameControllerInitMessenger,
 } from '../messengers';
@@ -28,12 +30,6 @@ function getInitRequestMock(): jest.Mocked<
 
   // @ts-expect-error: Partial mock.
   requestMock.getMessengerClient.mockImplementation((name: string) => {
-    if (name === 'EnsController') {
-      return {
-        reverseResolveAddress: jest.fn(),
-      };
-    }
-
     if (name === 'SnapsNameProvider') {
       return {};
     }

@@ -16,10 +16,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     env:
-      GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
       REPO: ${{ github.repository }}
       PR_NUMBER: ${{ github.event.issue.number }}
       COMMENT_ID: ${{ github.event.comment.id }}
+    permissions:
+      contents: read
+      pull-requests: read
+      id-token: write
     outputs:
       IS_CROSS_REPO_PR: ${{ steps.is-cross-repo.outputs.IS_CROSS_REPO_PR }}
       RUN_ID: ${{ steps.find-ci-run.outputs.RUN_ID }}
@@ -31,10 +34,25 @@ jobs:
     steps:
       - name: Determine whether this PR is cross-repo
         id: is-cross-repo
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: echo "IS_CROSS_REPO_PR=$(gh pr view "${PR_NUMBER}" --repo "${REPO}" --json isCrossRepository --jq '.isCrossRepository')" >> "$GITHUB_OUTPUT"
+
+      - name: Get token
+        if: ${{ steps.is-cross-repo.outputs.IS_CROSS_REPO_PR == 'false' }}
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            actions: read
+            contents: read
+            pull_requests: write
 
       - name: React to the comment
         if: ${{ steps.is-cross-repo.outputs.IS_CROSS_REPO_PR == 'false' }}
+        env:
+          GH_TOKEN: ${{ steps.token.outputs.token }}
         run: |
           gh api \
             --method POST \
@@ -46,6 +64,8 @@ jobs:
       - name: Find CI run for PR head commit
         if: ${{ steps.is-cross-repo.outputs.IS_CROSS_REPO_PR == 'false' }}
         id: find-ci-run
+        env:
+          GH_TOKEN: ${{ steps.token.outputs.token }}
         run: |
           HEAD_SHA=$(gh pr view "${PR_NUMBER}" --repo "${REPO}" --json headRefOid --jq '.headRefOid')
           echo "Looking for main.yml run for commit ${HEAD_SHA}..."
@@ -108,7 +128,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
       REPO: ${{ github.repository }}
       PR_NUMBER: ${{ github.event.issue.number }}
       RUN_ID: ${{ needs.prepare.outputs.RUN_ID }}
@@ -118,15 +137,30 @@ jobs:
       VALIDATION_FAILED: ${{ needs.prepare.outputs.VALIDATION_FAILED }}
       FAILED_JOBS: ${{ needs.prepare.outputs.FAILED_JOBS }}
       ACTION_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    permissions:
+      contents: read
+      id-token: write
     steps:
+      - name: Get token
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            actions: read
+            contents: write
+            pull_requests: write
+
       - name: Checkout repository
         if: ${{ env.VALIDATION_FAILED == 'true' }}
         uses: actions/checkout@v6
         with:
-          token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          token: ${{ steps.token.outputs.token }}
 
       - name: Checkout pull request
         if: ${{ env.VALIDATION_FAILED == 'true' }}
+        env:
+          GH_TOKEN: ${{ steps.token.outputs.token }}
         run: gh pr checkout "${PR_NUMBER}"
 
       - name: Download policy diffs from CI
@@ -137,7 +171,7 @@ jobs:
           pattern: lavamoat-policy-diff-*
           merge-multiple: true
           run-id: ${{ env.RUN_ID }}
-          github-token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          github-token: ${{ steps.token.outputs.token }}
 
       - name: Check for policy diffs
         if: ${{ !cancelled() }}
@@ -162,6 +196,8 @@ jobs:
 
       - name: Compare policy changes
         if: ${{ steps.check-diffs.outputs.HAS_DIFFS == 'true' }}
+        env:
+          GH_TOKEN: ${{ steps.token.outputs.token }}
         run: |
           BASE_REF=$(gh pr view "${PR_NUMBER}" --json baseRefName --jq .baseRefName)
           git fetch origin "${BASE_REF}"
@@ -185,42 +221,55 @@ jobs:
           }
 
           {
-            compare_policies "lavamoat/browserify/main/" "lavamoat/browserify/"
             compare_policies "lavamoat/webpack/mv2/main/" "lavamoat/webpack/mv2/"
             compare_policies "lavamoat/webpack/mv3/main/" "lavamoat/webpack/mv3/"
           } > does_diff_diff.txt
 
       - name: Post comment (policies updated)
         if: ${{ steps.check-diffs.outputs.HAS_DIFFS == 'true' }}
+        env:
+          GH_TOKEN: ${{ steps.token.outputs.token }}
         run: |
           echo -e 'Policies updated.  \n👀 Please review the diff for suspicious new powers.  \n\n> [!TIP]  \n> Follow the policy review process outlined in the [LavaMoat Policy Review Process doc](https://github.com/MetaMask/metamask-extension/blob/main/docs/lavamoat-policy-review-process.md) before expecting an approval from Policy Reviewers.  \n🧠 Learn how to read policy diffs: https://lavamoat.github.io/guides/policy-diff/#what-to-look-for-when-reviewing-a-policy-diff \n\n' | cat - does_diff_diff.txt | gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body-file -
 
       - name: Post comment (no CI run found)
         if: ${{ needs.prepare.result == 'success' && env.NO_CI_RUN == 'true' }}
+        env:
+          GH_TOKEN: ${{ steps.token.outputs.token }}
         run: |
           gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body "No CI run found for this commit. Please wait for CI to start and retry \`@metamaskbot update-policies\`."
 
       - name: Post comment (validation still running)
         if: ${{ needs.prepare.result == 'success' && env.VALIDATION_PENDING == 'true' }}
+        env:
+          GH_TOKEN: ${{ steps.token.outputs.token }}
         run: |
           gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body "LavaMoat validation is still running. Please retry \`@metamaskbot update-policies\` after CI validation completes."
 
       - name: Post comment (validation failed but no diffs available)
         if: ${{ !cancelled() && env.VALIDATION_FAILED == 'true' && steps.check-diffs.outputs.HAS_DIFFS != 'true' }}
+        env:
+          GH_TOKEN: ${{ steps.token.outputs.token }}
         run: |
           printf 'LavaMoat validation failed but no policy diffs were produced (the validation job may have crashed before generating diffs).\n\nFailed jobs:\n%s' "$FAILED_JOBS" | gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body-file -
 
       - name: Post comment (validation skipped)
         if: ${{ needs.prepare.result == 'success' && env.VALIDATION_SKIPPED == 'true' }}
+        env:
+          GH_TOKEN: ${{ steps.token.outputs.token }}
         run: |
           gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body "LavaMoat validation was skipped in CI. Policies were not checked for this commit."
 
       - name: Post comment (no policy changes)
         if: ${{ needs.prepare.result == 'success' && env.RUN_ID && env.VALIDATION_FAILED != 'true' && !env.VALIDATION_PENDING && env.VALIDATION_SKIPPED != 'true' }}
+        env:
+          GH_TOKEN: ${{ steps.token.outputs.token }}
         run: |
           gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body "No policy changes"
 
       - name: Post comment if the update failed
         if: ${{ (failure() && !(env.VALIDATION_FAILED == 'true' && steps.check-diffs.outputs.HAS_DIFFS != 'true')) || needs.prepare.result == 'failure' }}
+        env:
+          GH_TOKEN: ${{ steps.token.outputs.token }}
         run: |
           gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body "Policy update failed. You can [review the logs or retry the policy update here](${ACTION_RUN_URL})"

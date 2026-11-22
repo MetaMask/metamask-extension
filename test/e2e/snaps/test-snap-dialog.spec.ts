@@ -6,7 +6,7 @@ import { login } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { withFixtures } from '../helpers';
 import { mockDialogSnap } from '../mock-response-data/snaps/snap-binary-mocks';
-import { DAPP_PATH, DAPP_URL_LOCALHOST, WINDOW_TITLES } from '../constants';
+import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 
 describe('Test Snap Dialog', function () {
   it('test all four snap_dialog types', async function () {
@@ -31,12 +31,8 @@ describe('Test Snap Dialog', function () {
           driver,
           'connectDialogsButton',
           {
-            url: DAPP_URL_LOCALHOST,
+            expectedMessage: 'Reconnect to Dialogs Snap',
           },
-        );
-        await testSnaps.checkInstallationComplete(
-          'connectDialogsButton',
-          'Reconnect to Dialogs Snap',
         );
 
         // Test 1 - alert dialog
@@ -98,7 +94,7 @@ describe('Test Snap Dialog', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await snapInstall.clickDialogButtonAndWaitForClose({
           text: 'Cancel',
-          tag: 'span',
+          tag: 'button',
         });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await testSnaps.checkMessageResultSpan('dialogResultSpan', 'null');
@@ -109,7 +105,7 @@ describe('Test Snap Dialog', function () {
         await snapInstall.pasteIntoCustomDialogInput('2323');
         await snapInstall.clickDialogButtonAndWaitForClose({
           text: 'Confirm',
-          tag: 'span',
+          tag: 'button',
         });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await testSnaps.checkMessageResultSpan('dialogResultSpan', '"2323"');

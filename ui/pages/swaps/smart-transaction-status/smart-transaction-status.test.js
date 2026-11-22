@@ -9,6 +9,19 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import SmartTransactionStatusLabel from '.';
 
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
+
 const middleware = [thunk];
 setBackgroundConnection({
   stopPollingForQuotes: jest.fn(),

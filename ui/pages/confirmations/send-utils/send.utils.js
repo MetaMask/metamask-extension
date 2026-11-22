@@ -1,8 +1,6 @@
 import { encode } from '@metamask/abi-utils';
 import { isHexString } from '@metamask/utils';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { addHexPrefix } from '../../../../app/scripts/lib/util';
+import { addHexPrefix } from '../../../../shared/lib/add-hex-prefix';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { Numeric } from '../../../../shared/lib/Numeric';
 import { BURN_ADDRESS } from '../../../../shared/lib/hexstring-utils';
@@ -148,7 +146,7 @@ function generateERC1155TransferData({
             addHexPrefix(fromAddress),
             addHexPrefix(toAddress),
             BigInt(tokenId),
-            addHexPrefix(amount),
+            BigInt(amount),
             addHexPrefix(data),
           ],
         ),

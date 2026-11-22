@@ -9,7 +9,7 @@ export const PARTITIONS_FILE = join(
 );
 
 export function readPartitionsFile() {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   return require('../build/intermediate/partitions.json') as ModulePartition[];
 }
 

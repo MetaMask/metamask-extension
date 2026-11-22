@@ -1,11 +1,11 @@
 import {
   GatorPermissionsController,
+  type GatorPermissionsControllerMessenger,
   type GatorPermissionsControllerConfig,
 } from '@metamask/gator-permissions-controller';
 import { assertIsValidSnapId } from '@metamask/snaps-utils';
 import { MessengerClientInitFunction } from '../types';
 import { getEnabledAdvancedPermissions } from '../../../../shared/lib/gator-permissions/feature-flags';
-import { GatorPermissionsControllerMessenger } from '../messengers/gator-permissions';
 
 const createGatorPermissionsConfig = (
   remoteFeatureFlagControllerState: Parameters<
@@ -58,15 +58,5 @@ export const GatorPermissionsControllerInit: MessengerClientInitFunction<
     state: persistedState.GatorPermissionsController,
   });
 
-  return {
-    messengerClient,
-    api: {
-      fetchAndUpdateGatorPermissions:
-        messengerClient.fetchAndUpdateGatorPermissions.bind(messengerClient),
-      addPendingRevocation:
-        messengerClient.addPendingRevocation.bind(messengerClient),
-      submitDirectRevocation:
-        messengerClient.submitDirectRevocation.bind(messengerClient),
-    },
-  };
+  return { messengerClient };
 };

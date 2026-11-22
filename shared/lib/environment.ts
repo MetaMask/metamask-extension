@@ -1,4 +1,24 @@
-import { ENVIRONMENT } from '../../development/build/constants';
+import { ENVIRONMENT } from '../constants/build';
+
+/**
+ * Get a boolean value for a string or boolean value.
+ *
+ * @param value - The value to convert to a boolean.
+ * @returns `true` if the value is `'true'` or `true`, otherwise `false`.
+ */
+export function getBooleanFlag(value: string | boolean | undefined): boolean {
+  return value === true || value === 'true';
+}
+
+/**
+ * Returns whether the code is running in an unpacked E2E test extension rather
+ * than inside a Jest worker.
+ */
+export function isInE2eTest(): boolean {
+  return Boolean(
+    process.env.IN_TEST && process.env.JEST_WORKER_ID === 'undefined',
+  );
+}
 
 export const isProduction = (): boolean => {
   return (
@@ -25,14 +45,25 @@ export const getIsPerpsIncludedInBuild = (): boolean => {
 };
 
 /**
- * Compile-time gate (`ASSETS_UNIFIED_STATE_ENABLED`): controls whether
- * AssetsController populates state. The controller is always instantiated,
- * but when this is false the state remains empty. Distinct from the remote
- * `assetsUnifyState` rollout flag which provides an additional runtime gate.
+ * The assets unified state is included in every build. This compatibility
+ * helper remains while its callers are removed in the subsequent stack PR.
  */
 export const getIsAssetsUnifiedStateIncludedInBuild = (): boolean => {
-  return process.env.ASSETS_UNIFIED_STATE_ENABLED?.toString() === 'true';
+  return true;
 };
+
+/**
+ * Compile-time gate (`BFT_CONSOLIDATION_ENABLED`):
+ * - Onboarding: assign new users to the consolidated experience (remote flags
+ * are not reliable during onboarding).
+ * - Existing BF-off wallets: hardcode consolidation + notice in this release,
+ * because Basic Functionality off disables remote feature flag fetching.
+ * BF-on existing users still use the remote flag as a kill switch.
+ */
+export const getIsBasicFunctionalityConsolidationEnabledInBuild =
+  (): boolean => {
+    return process.env.BFT_CONSOLIDATION_ENABLED?.toString() === 'true';
+  };
 
 export const getIsSettingsPageDevOptionsEnabled = (): boolean => {
   return process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS?.toString() === 'true';
@@ -45,12 +76,33 @@ export const isGatorPermissionsRevocationFeatureEnabled = (): boolean => {
 };
 
 /**
+ * Compile-time gate (`QR_SYNC_ENABLED`): when true the
+ * Add Device tab is shown in Settings, allowing users to pair a second device
+ * via QR code scan and verification code.
+ */
+export const getIsQrSyncEnabled = (): boolean => {
+  return process.env.QR_SYNC_ENABLED?.toString() === 'true';
+};
+
+/**
  * Compile-time gate (`NEW_HARDWARE_WALLET_ONBOARDING`): when true the
  * extension uses the redesigned hardware-wallet onboarding flows (device
  * discovery and error handling).
  */
 export const getIsNewHardwareWalletOnboardingEnabled = (): boolean => {
   return process.env.NEW_HARDWARE_WALLET_ONBOARDING?.toString() === 'true';
+};
+
+/**
+ * Compile-time gate (`MM_MONEY_MPC_KEYRING_ENABLED`): when true the MPC money
+ * keyring builder is registered with the `KeyringController`. Gated while the
+ * feature is unreleased — no released build can yet hold an MPC money keyring
+ * in its vault — and once one can, the registration must become unconditional
+ * so the controller can always recognize the type while deserializing the
+ * vault.
+ */
+export const getIsMpcMoneyKeyringIncludedInBuild = (): boolean => {
+  return process.env.MM_MONEY_MPC_KEYRING_ENABLED?.toString() === 'true';
 };
 
 export const getIsSidePanelFeatureEnabled = (): boolean => {

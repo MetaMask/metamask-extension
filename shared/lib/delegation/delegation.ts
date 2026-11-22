@@ -15,11 +15,6 @@ import {
 import type { Caveat } from '.';
 
 /**
- * The function selector for the redeemDelegations function
- */
-export const REDEEM_DELEGATIONS_SELECTOR = '0xcef6d209' as Hex;
-
-/**
  * Converts a Delegation to a DelegationStruct.
  * The DelegationStruct is the format used in the Delegation Framework.
  *

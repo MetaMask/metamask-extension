@@ -1,11 +1,12 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
-import { MOCK_META_METRICS_ID } from '../../constants';
+import { MOCK_ANALYTICS_ID } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import ErrorPage from '../../page-objects/pages/error-page';
 import { triggerCrash } from '../../page-objects/flows/crash.flow';
 import { login } from '../../page-objects/flows/login.flow';
+import { mockIdentityServices } from '../identity/mocks';
 
 /**
  * Mocks the segment API for events tracked from the error page.
@@ -28,30 +29,46 @@ async function mockSegment(mockServer: Mockttp) {
   ];
 }
 
+/**
+ * Mocks Segment and authentication services needed to fetch a customer-service token.
+ *
+ * @param mockServer - The mock server instance.
+ * @returns The mocked Segment endpoints
+ */
+async function mockSupportLinkConsentMetrics(mockServer: Mockttp) {
+  const segmentMocks = await mockSegment(mockServer);
+  await mockIdentityServices(mockServer);
+  return segmentMocks;
+}
+
 describe('Error Page', function () {
-  it('sends "Support Link Click" event with metrics ID when user consents', async function () {
+  it('sends "Support Link Click" event without customer_service_token when user consents', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+          .withAnalyticsController({
+            analyticsId: MOCK_ANALYTICS_ID,
+            consentDecisionMade: true,
+            optedIn: true,
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSegment,
+        testSpecificMock: mockSupportLinkConsentMetrics,
         ignoredConsoleErrors: [
           'Unable to find value of key "debug" for locale "en"',
         ],
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await login(driver);
+        await login(driver, { waitForSignIn: true });
+
         await triggerCrash(driver);
 
         const errorPage = new ErrorPage(driver);
         await errorPage.checkPageIsLoaded();
 
         await errorPage.clickContactButton();
+
+        // Apply bigger timeout to consentDataToMetamaskSupport to avoid flakiness
         await errorPage.consentDataToMetamaskSupport();
 
         const events = await getEventPayloads(driver, mockedEndpoints);
@@ -62,20 +79,26 @@ describe('Error Page', function () {
         const queryString = new URL(trackedUrl).search;
         assert.match(
           queryString,
-          /metamask_metametrics_id/u,
-          'Metrics ID missing from tracked URL',
+          /utm_source=extension/u,
+          'Non-personal attribution parameter missing from tracked URL',
+        );
+        assert.doesNotMatch(
+          queryString,
+          /customer_service_token/u,
+          'Customer service token should not be in tracked URL when user consents',
         );
       },
     );
   });
 
-  it('sends "Support Link Click" event without metrics ID when user does not consent', async function () {
+  it('sends "Support Link Click" event without customer_service_token when user does not consent', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+          .withAnalyticsController({
+            analyticsId: MOCK_ANALYTICS_ID,
+            consentDecisionMade: true,
+            optedIn: true,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -106,7 +129,12 @@ describe('Error Page', function () {
           /utm_source=extension/u,
           'Non-personal attribution parameter missing from tracked URL',
         );
-        // Personal data like metrics ID should NOT be present
+        // Personal data should NOT be present when user does not consent
+        assert.doesNotMatch(
+          queryString,
+          /customer_service_token/u,
+          'Customer service token should not be in tracked URL when user does not consent',
+        );
         assert.doesNotMatch(
           queryString,
           /metamask_metametrics_id/u,

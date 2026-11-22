@@ -1,6 +1,8 @@
-import { NftDetectionController } from '@metamask/assets-controllers';
+import {
+  NftDetectionController,
+  NftDetectionControllerMessenger,
+} from '@metamask/assets-controllers';
 import { MessengerClientInitFunction } from '../types';
-import { NftDetectionControllerMessenger } from '../messengers/assets';
 
 /**
  * Initialize the NFT detection controller.
@@ -23,6 +25,7 @@ export const NftDetectionControllerInit: MessengerClientInitFunction<
   const messengerClient = new NftDetectionController({
     messenger: controllerMessenger,
     addNfts: (...args) => nftController().addNfts(...args),
+    removeNft: (...args) => nftController().removeNft(...args),
     getNftState: () => nftController().state,
     // added this to track previous value of useNftDetection, should be true on very first initializing of controller[]
     disabled: !preferencesController().state.useNftDetection,

@@ -17,7 +17,10 @@ import {
   getAssetImageUrl,
   fetchAssetMetadata,
   toAssetId,
+  toNormalizedCaipAssetId,
   fetchAssetMetadataForAssetIds,
+  getNativeAssetId,
+  isNativeCaipAssetId,
   isEvmChainId,
   isTronSpecialAsset,
 } from './asset-utils';
@@ -37,6 +40,45 @@ jest.mock('./fetch-with-timeout', () => ({
 describe('asset-utils', () => {
   const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
   const TOKEN_API_V3_BASE_URL = 'https://tokens.api.cx.metamask.io/v3';
+
+  describe('getNativeAssetId', () => {
+    it('returns the native asset id for a supported chain', () => {
+      expect(getNativeAssetId('eip155:1')).toBe(
+        getNativeAssetForChainId('eip155:1').assetId,
+      );
+    });
+
+    it('returns undefined when no chainId is given', () => {
+      expect(getNativeAssetId(undefined)).toBeUndefined();
+    });
+
+    it('returns undefined for a chain unknown to the asset map', () => {
+      // getNativeAssetForChainId throws on custom/unsupported networks.
+      expect(getNativeAssetId('0x123456' as Hex)).toBeUndefined();
+    });
+  });
+
+  describe('isNativeCaipAssetId', () => {
+    it('returns true for slip44 native asset ids', () => {
+      expect(isNativeCaipAssetId('eip155:1/slip44:60' as CaipAssetType)).toBe(
+        true,
+      );
+    });
+
+    it('returns false for erc20 asset ids', () => {
+      expect(
+        isNativeCaipAssetId(
+          'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f' as CaipAssetType,
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false for invalid asset ids', () => {
+      expect(isNativeCaipAssetId('not-a-caip-asset-id' as CaipAssetType)).toBe(
+        false,
+      );
+    });
+  });
 
   describe('toAssetId', () => {
     beforeEach(() => {
@@ -131,6 +173,18 @@ describe('asset-utils', () => {
       ]);
     });
 
+    it('returns native asset ID for Polygon native token address', () => {
+      const polygonNativeAddress = '0x0000000000000000000000000000000000001010';
+      const chainId = 'eip155:137' as CaipChainId;
+
+      const result = toAssetId(polygonNativeAddress, chainId);
+      expect(result).toBe(getNativeAssetForChainId(chainId).assetId);
+      expect(CaipAssetTypeStruct.validate(result)).toStrictEqual([
+        undefined,
+        result,
+      ]);
+    });
+
     it('should handle checksummed addresses', () => {
       const address = '0x1F9840a85d5aF5bf1D1762F925BDADdC4201F984';
       const chainId = 'eip155:1' as CaipChainId;
@@ -142,6 +196,73 @@ describe('asset-utils', () => {
         result,
       ]);
     });
+
+    it('creates Stellar classic asset ID from CODE-ISSUER reference', () => {
+      const ref =
+        'USDY-GAJMPX5NBOG6TQFPQGRABJEEB2YE7RFRLUKJDZAZGAD5GFX4J7TADAZ6';
+      const chainId = MultichainNetworks.STELLAR;
+
+      const result = toAssetId(ref, chainId);
+      expect(result).toBe(`${chainId}/asset:${ref}`);
+      expect(CaipAssetTypeStruct.validate(result)).toStrictEqual([
+        undefined,
+        result,
+      ]);
+    });
+
+    it('creates Stellar SEP-41 asset ID from Soroban contract StrKey', () => {
+      const contractId =
+        'CAUP7NFABXE5TJRL3FKTPMWRLC7IAXYDCTHQRFSCLR5TMGKHOOQO772J';
+      const chainId = MultichainNetworks.STELLAR;
+
+      const result = toAssetId(contractId, chainId);
+      expect(result).toBe(`${chainId}/sep41:${contractId}`);
+      expect(CaipAssetTypeStruct.validate(result)).toStrictEqual([
+        undefined,
+        result,
+      ]);
+    });
+
+    it('creates Stellar SEP-41 asset ID when reference includes sep41: prefix', () => {
+      const contractId =
+        'CBOOCGZSVRSZFRE4U2NWR2B4RXYVJWRCBTGOUD2JPI2TDJPWMTJX7FZP';
+      const chainId = MultichainNetworks.STELLAR;
+
+      expect(toAssetId(contractId, chainId)).toBe(
+        `${chainId}/sep41:${contractId}`,
+      );
+      expect(toAssetId(`sep41:${contractId}`, chainId)).toBe(
+        `${chainId}/sep41:${contractId}`,
+      );
+    });
+  });
+
+  describe('toNormalizedCaipAssetId', () => {
+    const usdcAddress = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+    const normalizedUsdcId =
+      'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+
+    it('returns a normalized CAIP-19 id for a caip chain id and address', () => {
+      expect(toNormalizedCaipAssetId(usdcAddress, 'eip155:1')).toBe(
+        normalizedUsdcId,
+      );
+    });
+
+    it('returns undefined for decimal chain ids that would make toAssetId throw', () => {
+      expect(toNormalizedCaipAssetId(usdcAddress, '1')).toBeUndefined();
+    });
+
+    it('returns undefined when the address is missing', () => {
+      expect(toNormalizedCaipAssetId(undefined, '0x1')).toBeUndefined();
+    });
+
+    it('normalizes an existing CAIP-19 asset id without a chain id', () => {
+      expect(
+        toNormalizedCaipAssetId(
+          'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        ),
+      ).toBe(normalizedUsdcId);
+    });
   });
 
   describe('getAssetImageUrl', () => {
@@ -150,6 +271,53 @@ describe('asset-utils', () => {
       const expectedUrl = `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/eip155/1/erc20/0x123.png`;
 
       expect(getAssetImageUrl(assetId, 'eip155:1')).toBe(expectedUrl);
+    });
+
+    it('keeps the SLIP-44 path for a native asset on a chain missing from the bridge native asset map', () => {
+      const assetId = 'eip155:50/slip44:550' as CaipAssetType;
+      const expectedUrl = `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/eip155/50/slip44/550.png`;
+
+      expect(getAssetImageUrl(assetId, 'eip155:50')).toBe(expectedUrl);
+    });
+
+    (
+      [
+        ['Ethereum', 'eip155:1/slip44:60', 'eip155:1'],
+        ['Arc', 'eip155:5042/slip44:5042', 'eip155:5042'],
+        ['Polygon', 'eip155:137/slip44:966', 'eip155:137'],
+      ] as [string, CaipAssetType, CaipChainId][]
+    ).forEach(([name, assetId, chainId]) => {
+      it(`keeps the SLIP-44 path for ${name} native asset`, () => {
+        const expectedUrl = `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/${assetId.replaceAll(':', '/')}.png`;
+
+        expect(getAssetImageUrl(assetId, chainId)).toBe(expectedUrl);
+      });
+    });
+
+    it('keeps the SLIP-44 path for a non-EVM native asset', () => {
+      const assetId =
+        `${MultichainNetworks.SOLANA}/slip44:501` as CaipAssetType;
+      const expectedUrl = `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/${assetId.replaceAll(':', '/')}.png`;
+
+      expect(getAssetImageUrl(assetId, MultichainNetworks.SOLANA)).toBe(
+        expectedUrl,
+      );
+    });
+
+    it('still lowercases an ERC-20 address and ignores slip44 handling', () => {
+      const assetId =
+        'eip155:50/erc20:0x2A8E898b6242355c290E1f4Fc966b8788729A4D4' as CaipAssetType;
+      const expectedUrl = `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/eip155/50/erc20/0x2a8e898b6242355c290e1f4fc966b8788729a4d4.png`;
+
+      expect(getAssetImageUrl(assetId, 'eip155:50')).toBe(expectedUrl);
+    });
+
+    it('resolves a bare hex address through toAssetId', () => {
+      const address = '0x2A8E898b6242355c290E1f4Fc966b8788729A4D4';
+      const url = getAssetImageUrl(address, 'eip155:50');
+
+      expect(url).toContain('/eip155/50/erc20/0x');
+      expect(url).not.toContain('slip44');
     });
 
     it('should return correct image URL for non-hex CAIP asset ID', () => {
@@ -503,6 +671,20 @@ describe('asset-utils', () => {
       expect(isEvmChainId('1439' as Hex)).toBe(true); // Decimal string
       expect(isEvmChainId('0x59f' as Hex)).toBe(true); // Hex format
       expect(isEvmChainId('eip155:1439' as CaipChainId)).toBe(true); // CAIP format
+    });
+
+    it('returns false for non-string chain ids without recursing', () => {
+      let depth = 0;
+      const chainId = {
+        toString() {
+          depth += 1;
+          isEvmChainId(chainId as never);
+          return '0x1';
+        },
+      };
+
+      expect(isEvmChainId(chainId as never)).toBe(false);
+      expect(depth).toBe(0);
     });
   });
 

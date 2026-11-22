@@ -1,9 +1,10 @@
 import {
   Infer,
-  object,
+  type,
   boolean,
   nullable,
   string,
+  array,
   assert,
   optional,
 } from '@metamask/superstruct';
@@ -18,28 +19,18 @@ import {
 } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
 
-/**
- * Feature flag structure for assets-unify-state feature
- */
-const AssetsUnifyStateFeatureFlag = object({
+const AssetsUnifyStateFeatureFlag = type({
   enabled: boolean(),
   featureVersion: nullable(string()),
   minimumVersion: optional(nullable(string())),
+  deprecatedControllers: optional(array(string())),
+  tracesEnabled: optional(boolean()),
 });
 
-/**
- * Feature flag type for assets-unify-state feature
- */
 export type AssetsUnifyStateFeatureFlagType = Infer<
   typeof AssetsUnifyStateFeatureFlag
 >;
 
-/**
- * Selector to get the assets-unify-state remote feature flag.
- *
- * @param state - The MetaMask state object
- * @returns AssetsUnifyStateFeatureFlagType - The feature flag for assets-unify-state, or undefined if not set.
- */
 export const getAssetsUnifyStateRemoteFeatureFlag = (
   state: RemoteFeatureFlagsState,
 ): AssetsUnifyStateFeatureFlagType | undefined => {
@@ -55,14 +46,6 @@ export const getAssetsUnifyStateRemoteFeatureFlag = (
   }
 };
 
-/**
- * Selector to check if the assets-unify-state feature is enabled.
- * When enabled, the UI will use the unified AssetsController state
- * for both EVM and non-EVM assets.
- *
- * @param state - The MetaMask state object
- * @returns boolean - True if the feature is enabled, false otherwise.
- */
 export const getIsAssetsUnifyStateEnabled = (
   state: RemoteFeatureFlagsState,
 ): boolean => {
@@ -74,4 +57,20 @@ export const getIsAssetsUnifyStateEnabled = (
     remoteFlag,
     ASSETS_UNIFY_STATE_VERSION_1,
   );
+};
+
+export const getIsControllerDeprecated = (
+  state: RemoteFeatureFlagsState,
+  controllerName: string,
+): boolean => {
+  if (process.env.IN_TEST) {
+    return true;
+  }
+
+  if (!getIsAssetsUnifyStateEnabled(state)) {
+    return false;
+  }
+
+  const featureFlag = getAssetsUnifyStateRemoteFeatureFlag(state);
+  return featureFlag?.deprecatedControllers?.includes(controllerName) ?? false;
 };

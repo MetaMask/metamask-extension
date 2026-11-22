@@ -3,14 +3,14 @@ import { login } from '../../page-objects/flows/login.flow';
 import {
   createInternalTransaction,
   createDappTransaction,
-} from '../../page-objects/flows/transaction';
+} from '../../page-objects/flows/transaction.flow';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
-import { mockSpotPrices } from '../tokens/utils/mocks';
+import { mockPriceApi } from '../tokens/utils/mocks';
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
@@ -35,7 +35,7 @@ describe('Editing Confirm Transaction', function () {
 
         const transactionConfirmation = new TransactionConfirmation(driver);
         const gasFeeModal = new GasFeeModal(driver);
-        const activityListPage = new ActivityListPage(driver);
+        const activityTab = new ActivityTab(driver);
 
         await transactionConfirmation.checkSendAmount('1 ETH');
 
@@ -63,13 +63,16 @@ describe('Editing Confirm Transaction', function () {
         await transactionConfirmation.checkInlineAlertIsDisplayed();
 
         // confirms the transaction
-        await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
+        await transactionConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'disappear',
+        });
 
         // check transaction in activity tab
-        await activityListPage.openActivityTab();
-        await activityListPage.checkWaitForTransactionStatus('confirmed');
+        await activityTab.goToActivityList();
+        await activityTab.checkWaitForTransactionStatus('confirmed');
 
-        await activityListPage.checkTransactionAmount('-1 ETH');
+        await activityTab.checkTransactionAmount('-1 ETH');
       },
     );
   });
@@ -82,15 +85,8 @@ describe('Editing Confirm Transaction', function () {
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test?.fullTitle(),
-        testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, {
-            'eip155:1/slip44:60': {
-              price: 1700,
-              marketCap: 382623505141,
-              pricePercentChange1d: 0,
-            },
-          });
-        },
+        testSpecificMock: async (mockServer: MockttpServer) =>
+          mockPriceApi(mockServer, 1700),
       },
       async ({ driver }) => {
         await login(driver);
@@ -98,7 +94,7 @@ describe('Editing Confirm Transaction', function () {
 
         const transactionConfirmation = new TransactionConfirmation(driver);
         const gasFeeModal = new GasFeeModal(driver);
-        const activityListPage = new ActivityListPage(driver);
+        const activityTab = new ActivityTab(driver);
 
         await transactionConfirmation.checkSendAmount('1 ETH');
 
@@ -114,12 +110,15 @@ describe('Editing Confirm Transaction', function () {
         await transactionConfirmation.checkGasFeeFiat('$0.30');
 
         // confirms the transaction
-        await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
+        await transactionConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'disappear',
+        });
 
-        await activityListPage.openActivityTab();
-        await activityListPage.checkWaitForTransactionStatus('confirmed');
+        await activityTab.goToActivityList();
+        await activityTab.checkWaitForTransactionStatus('confirmed');
 
-        await activityListPage.checkTransactionAmount('-1 ETH');
+        await activityTab.checkTransactionAmount('-1 ETH');
       },
     );
   });
@@ -134,15 +133,8 @@ describe('Editing Confirm Transaction', function () {
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test?.fullTitle(),
-        testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, {
-            'eip155:1/slip44:60': {
-              price: 1700,
-              marketCap: 382623505141,
-              pricePercentChange1d: 0,
-            },
-          });
-        },
+        testSpecificMock: async (mockServer: MockttpServer) =>
+          mockPriceApi(mockServer, 1700),
       },
       async ({ driver }) => {
         // login to extension
@@ -155,7 +147,7 @@ describe('Editing Confirm Transaction', function () {
 
         const transactionConfirmation = new TransactionConfirmation(driver);
         const gasFeeModal = new GasFeeModal(driver);
-        const activityListPage = new ActivityListPage(driver);
+        const activityTab = new ActivityTab(driver);
 
         // check transaction in extension popup
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -173,17 +165,17 @@ describe('Editing Confirm Transaction', function () {
         await transactionConfirmation.checkGasFeeFiat('$3.15');
 
         // confirms the transaction
-        await transactionConfirmation.clickFooterConfirmButton();
+        await transactionConfirmation.clickFooterButton({ button: 'confirm' });
 
         // transaction should correct values in activity tab
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        await activityListPage.openActivityTab();
-        await activityListPage.checkWaitForTransactionStatus('confirmed');
+        await activityTab.goToActivityList();
+        await activityTab.checkWaitForTransactionStatus('confirmed');
 
-        await activityListPage.checkTransactionAmount('-0.001 ETH');
+        await activityTab.checkTransactionAmount('-0.001 ETH');
       },
     );
   });

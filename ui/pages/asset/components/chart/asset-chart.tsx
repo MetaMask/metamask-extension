@@ -1,87 +1,29 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  Chart,
-  LineElement,
-  LinearScale,
-  PointElement,
-  Filler,
-  ChartOptions,
-  Decimation,
-  Point,
-  // @ts-expect-error suppress CommonJS vs ECMAScript error
-} from 'chart.js';
-// @ts-expect-error suppress CommonJS vs ECMAScript error
-import { Line } from 'react-chartjs-2';
 import classnames from 'clsx';
-import { brandColor } from '@metamask/design-tokens';
-import { Hex } from '@metamask/utils';
+import { Hex, isCaipAssetType } from '@metamask/utils';
 import { trim } from 'lodash';
 import { Duration } from 'luxon';
-import { useTheme } from '../../../../hooks/useTheme';
-import {
-  BackgroundColor,
-  Display,
-  JustifyContent,
-  TextColor,
-  TextVariant,
-  BorderRadius,
-  FlexDirection,
-} from '../../../../helpers/constants/design-system';
+import { useParams } from 'react-router-dom';
 import {
   Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
+  BackgroundColor,
+  TextColor,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
+import {
   ButtonBase,
   ButtonBaseSize,
 } from '../../../../components/component-library';
-import { TokenFiatDisplayInfo } from '../../../../components/app/assets/types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { useHistoricalPrices } from '../../hooks/useHistoricalPrices';
-import { loadingOpacity } from '../../util';
-import ChartTooltip from './chart-tooltip';
-import { CrosshairPlugin } from './crosshair-plugin';
-import { AssetChartEmptyState } from './asset-chart-empty-state';
-import { AssetChartLoading } from './asset-chart-loading';
+import { processAssetParams } from '../../util';
+import { AssetChartBody } from './asset-chart-body';
 import AssetChartPrice from './asset-chart-price';
-
-Chart.register(
-  LinearScale,
-  PointElement,
-  LineElement,
-  Filler,
-  Decimation,
-  CrosshairPlugin,
-);
-
-const initialChartOptions: ChartOptions<'line'> & { fill: boolean } = {
-  normalized: true,
-  parsing: false,
-  aspectRatio: 2.6,
-  layout: { autoPadding: false, padding: 0 },
-  animation: { duration: 0 },
-  fill: true,
-  backgroundColor: ({ chart }) => {
-    const gradient = chart.ctx.createLinearGradient(0, 0, 0, chart.height);
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    gradient.addColorStop(0, `${chart.options.borderColor}60`);
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    gradient.addColorStop(1, `${chart.options.borderColor}00`);
-    return gradient;
-  },
-  elements: {
-    line: { borderWidth: 1.5 },
-    point: { pointStyle: false },
-  },
-  plugins: {
-    // Downsample to a maximum number of points
-    decimation: {
-      algorithm: 'lttb',
-      samples: 150,
-      threshold: 150,
-      enabled: true,
-    },
-  },
-};
 
 /**
  * Returns a translated time range label for a given ISO 8601 duration string.
@@ -133,56 +75,53 @@ const getTranslatedTimeRangeLabel = (
 
 const TIME_RANGES = ['P1D', 'P1W', 'P1M', 'P3M', 'P1Y', 'P1000Y'];
 
+// Non-EVM routes carry the CAIP-19 id. `address` can be the selected
+// account's native asset on a different chain.
+const getChartAddress = (
+  chainId: Hex,
+  decodedAsset: string | undefined,
+  address: string,
+): string => {
+  if (!isEvmChainId(chainId) && decodedAsset && isCaipAssetType(decodedAsset)) {
+    return decodedAsset;
+  }
+  return address;
+};
+
 // A chart showing historic prices for a native or token asset
 const AssetChart = ({
   chainId,
   address,
   currentPrice,
   currency,
-  asset,
 }: {
   chainId: Hex;
   address: string;
   currentPrice?: number;
   currency: string;
-  asset?: TokenFiatDisplayInfo;
 }) => {
   const t = useI18nContext();
-  const theme = useTheme();
-
+  const { decodedAsset } = processAssetParams(useParams());
   const [selectedTimeRange, setSelectedTimeRange] = useState<string>(
     TIME_RANGES[0],
   );
 
   const {
     loading,
-    data: {
-      prices,
-      metadata: { minPricePoint, maxPricePoint, xMin, xMax, yMin, yMax },
-    },
+    isFetching,
+    isPlaceholderData,
+    data: { prices, metadata },
   } = useHistoricalPrices({
     chainId,
-    address,
+    address: getChartAddress(chainId, decodedAsset, address),
     currency,
     timeRange: selectedTimeRange,
   });
 
-  // The cases below are intentionally mutually exclusive, in order to flatten the render logic
-  const shouldShowChartLoading = loading && prices.length === 0;
-  const shouldShowChartEmptyState = !loading && prices.length === 0; // When the chart is not loading anymore and there are no prices, show an empty state
-  const shouldShowChartMuted = loading && prices.length > 0;
-  const shouldShowChart = !loading && prices.length > 0;
+  // When the chart is not loading anymore and there are no prices, there is
+  // nothing to compare the current price against.
+  const shouldShowChartEmptyState = !loading && prices.length === 0;
 
-  const options = {
-    ...initialChartOptions,
-    borderColor: theme === 'dark' ? brandColor.blue400 : brandColor.blue500,
-    scales: {
-      x: { min: xMin, max: xMax, display: false, type: 'linear' },
-      y: { min: yMin, max: yMax, display: false },
-    },
-  } as const;
-
-  const chartRef = useRef<Chart<'line', Point[]>>();
   const priceRef = useRef<{
     setPrice: (_: { price?: number; date?: number }) => void;
   }>();
@@ -196,102 +135,38 @@ const AssetChart = ({
   }, [currentPrice]);
 
   return (
-    <Box
-      borderRadius={BorderRadius.LG}
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-    >
+    <Box className="flex rounded-lg" flexDirection={BoxFlexDirection.Column}>
       <AssetChartPrice
         ref={priceRef}
-        loading={loading}
+        loading={loading || isPlaceholderData}
         currency={currency}
         price={currentPrice}
         date={Date.now()}
-        comparePrice={prices?.[0]?.y}
-        asset={asset}
+        comparePrice={
+          isPlaceholderData || shouldShowChartEmptyState
+            ? undefined
+            : prices?.[0]?.y
+        }
       />
 
-      <Box
-        data-testid="asset-price-chart"
-        marginTop={4}
-        backgroundColor={
-          loading && !prices
-            ? BackgroundColor.backgroundSection
-            : BackgroundColor.transparent
+      <AssetChartBody
+        prices={prices}
+        metadata={metadata}
+        loading={loading}
+        isFetching={isFetching}
+        isPlaceholderData={isPlaceholderData}
+        currency={currency}
+        currentPrice={currentPrice}
+        onHoverPrice={(point) =>
+          priceRef?.current?.setPrice(
+            point ?? { price: currentPrice, date: Date.now() },
+          )
         }
-        borderRadius={BorderRadius.LG}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
       >
-        {shouldShowChartLoading && <AssetChartLoading />}
-        {shouldShowChartEmptyState && <AssetChartEmptyState />}
-        {(shouldShowChart || shouldShowChartMuted) && (
-          <Box style={{ opacity: shouldShowChartMuted ? loadingOpacity : 1 }}>
-            <ChartTooltip
-              point={maxPricePoint}
-              xMin={xMin}
-              xMax={xMax}
-              currency={currency}
-            />
-            <Box
-              style={{ aspectRatio: `${options.aspectRatio}` }}
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              justifyContent={
-                currentPrice ? JustifyContent.flexEnd : JustifyContent.flexStart
-              }
-            >
-              <Line
-                ref={chartRef}
-                data={{ datasets: [{ data: prices }] }}
-                options={options}
-                updateMode="none"
-                // Update the price display on chart hover
-                onMouseMove={(event) => {
-                  const data = chartRef?.current?.data?.datasets?.[0]?.data;
-                  if (data) {
-                    const target = event.target as HTMLElement;
-                    const index = Math.max(
-                      0,
-                      Math.min(
-                        data.length - 1,
-                        Math.round(
-                          (event.nativeEvent.offsetX / target.clientWidth) *
-                            data.length,
-                        ),
-                      ),
-                    );
-                    const point = data[index];
-                    if (point) {
-                      priceRef?.current?.setPrice({
-                        price: point.y,
-                        date: point.x,
-                      });
-                    }
-                  }
-                }}
-                // Revert to current price when not hovering
-                onMouseOut={() => {
-                  priceRef?.current?.setPrice({
-                    price: currentPrice,
-                    date: Date.now(),
-                  });
-                }}
-              />
-            </Box>
-            <ChartTooltip
-              point={minPricePoint}
-              xMin={xMin}
-              xMax={xMax}
-              currency={currency}
-            />
-          </Box>
-        )}
-
         <Box
           style={prices ? undefined : { visibility: `hidden` }}
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
+          className="flex"
+          justifyContent={BoxJustifyContent.Between}
           marginTop={2}
           marginLeft={3}
           marginRight={3}
@@ -317,7 +192,7 @@ const AssetChart = ({
             </ButtonBase>
           ))}
         </Box>
-      </Box>
+      </AssetChartBody>
     </Box>
   );
 };

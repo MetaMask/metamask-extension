@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import IconButton from './icon-button';
 import { IconColor } from '../../../helpers/constants/design-system';
 import Tooltip from '../tooltip/tooltip';
@@ -17,7 +17,7 @@ const meta: Meta<typeof IconButton> = {
   },
   args: {
     onClick: () => {},
-    Icon: <Icon name={IconName.Send} />,
+    Icon: <Icon name={IconName.Arrow2UpRight} />,
     disabled: false,
     label: 'Send',
     className: '',

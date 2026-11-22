@@ -3,7 +3,6 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
@@ -32,6 +31,7 @@ import { useConfirmContext } from '../../../context/confirm';
 import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
 import { useEnableShieldCoverageChecks } from '../../../hooks/transactions/useEnableShieldCoverageChecks';
 import { useTransactionConfirm } from '../../../hooks/transactions/useTransactionConfirm';
+import { useTransactionPayingAccount } from '../../../hooks/transactions/useTransactionPayingAccount';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
 import { useDappSwapActions } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapActions';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
@@ -40,22 +40,90 @@ import {
   useAddEthereumChain,
 } from '../../../hooks/useAddEthereumChain';
 import { isSignatureTransactionType } from '../../../utils';
+import ScamQuestionnaire from '../../../../../components/app/product-safety/scam-questionnaire/scam-questionnaire';
+import { useScamQuestionnaire } from '../../../../../components/app/product-safety/scam-questionnaire/useScamQuestionnaire';
 import { getConfirmationSender } from '../utils';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
 import {
   useHardwareFooter,
   useHardwareWalletError,
 } from '../../../../../contexts/hardware-wallets';
+import { useDispatch } from '../../../../../store/hooks';
 import OriginThrottleModal from './origin-throttle-modal';
 import ShieldFooterAgreement from './shield-footer-agreement';
 import ShieldFooterCoverageIndicator from './shield-footer-coverage-indicator/shield-footer-coverage-indicator';
 import { SingleActionFooter } from './single-action-footer';
 
 const SINGLE_ACTION_FOOTER_TYPES = [
+  TransactionType.moneyAccountDeposit,
+  TransactionType.moneyAccountWithdraw,
   TransactionType.musdConversion,
   TransactionType.perpsDeposit,
   TransactionType.perpsWithdraw,
 ];
+
+/**
+ * The only companion legs a single-action batch is ever built with: a
+ * deposit's approve-then-deposit batch, and a withdrawal's withdraw-then-
+ * transfer batch. Allowed alongside `SINGLE_ACTION_FOOTER_TYPES` so those
+ * two-leg batches still route to the single-action footer, while anything
+ * else mixed in falls through.
+ */
+const SINGLE_ACTION_FOOTER_COMPANION_TYPES = [
+  TransactionType.tokenMethodApprove,
+  TransactionType.tokenMethodTransfer,
+];
+
+/**
+ * Money Account deposit/withdraw transactions are submitted via
+ * `addTransactionBatch`, which always sets the top-level transaction type to
+ * `TransactionType.batch` — the money-account type only appears on the
+ * nested transactions. `SINGLE_ACTION_FOOTER_TYPES` must therefore also be
+ * checked against the nested transactions, or these confirmations silently
+ * fall through to the plain footer, which has no "amount entered" gate.
+ *
+ * Routes to the single-action footer when at least one nested transaction is
+ * a single-action type and every other nested transaction is one of its
+ * known companion legs (approve/transfer) — a batch that mixed in anything
+ * else must fall through to the full multi-step footer instead of silently
+ * hiding that other call's confirmation UI.
+ *
+ * @param confirmation - The transaction confirmation to route.
+ * @returns Whether the confirmation should use the single-action footer.
+ */
+function isSingleActionFooterConfirmation(
+  confirmation: TransactionMeta,
+): boolean {
+  if (
+    confirmation.type &&
+    SINGLE_ACTION_FOOTER_TYPES.includes(confirmation.type)
+  ) {
+    return true;
+  }
+
+  const { nestedTransactions } = confirmation;
+  if (!nestedTransactions?.length) {
+    return false;
+  }
+
+  const hasSingleActionLeg = nestedTransactions.some(
+    (nestedTransaction) =>
+      nestedTransaction.type &&
+      SINGLE_ACTION_FOOTER_TYPES.includes(nestedTransaction.type),
+  );
+
+  return (
+    hasSingleActionLeg &&
+    nestedTransactions.every(
+      (nestedTransaction) =>
+        nestedTransaction.type &&
+        (SINGLE_ACTION_FOOTER_TYPES.includes(nestedTransaction.type) ||
+          SINGLE_ACTION_FOOTER_COMPANION_TYPES.includes(
+            nestedTransaction.type,
+          )),
+    )
+  );
+}
 
 export type OnCancelHandler = ({
   location,
@@ -135,6 +203,13 @@ const ConfirmButton = ({
     setConfirmModalVisible(true);
   }, []);
 
+  const {
+    isScamQuestionnaireRequired,
+    isScamQuestionnaireVisible,
+    showScamQuestionnaire,
+    scamQuestionnaireProps,
+  } = useScamQuestionnaire({ ownerId: alertOwnerId, onCancel });
+
   const handleSubmitConfirmModal = useCallback(async () => {
     if (currentConfirmation?.id && alertOwnerId === currentConfirmation.id) {
       const [selectedUnconfirmedDangerAlert] = unconfirmedDangerAlerts;
@@ -165,6 +240,9 @@ const ConfirmButton = ({
           onSubmit={handleSubmitConfirmModal}
         />
       )}
+      {isScamQuestionnaireVisible && (
+        <ScamQuestionnaire {...scamQuestionnaireProps} />
+      )}
       {shouldShowDangerConfirmButton ? (
         <Button
           block
@@ -175,7 +253,11 @@ const ConfirmButton = ({
             hasDangerBlockingAlerts,
             disabled,
           )}
-          onClick={handleOpenConfirmModal}
+          onClick={
+            isScamQuestionnaireRequired
+              ? showScamQuestionnaire
+              : handleOpenConfirmModal
+          }
           size={ButtonSize.Lg}
           startIconName={
             hasUnconfirmedFieldDangerAlerts
@@ -190,7 +272,9 @@ const ConfirmButton = ({
           block
           data-testid="confirm-footer-button"
           disabled={disabled}
-          onClick={onSubmit}
+          onClick={
+            isScamQuestionnaireRequired ? showScamQuestionnaire : onSubmit
+          }
           size={ButtonSize.Lg}
         >
           {currentConfirmation?.type ===
@@ -238,7 +322,8 @@ const Footer = () => {
   const { onDappSwapCompleted } = useDappSwapActions();
   const { onTransactionConfirm } = useTransactionConfirm();
   const { navigateNext } = useConfirmationNavigation();
-  const { onSubmit: onAddEthereumChain } = useAddEthereumChain();
+  const { onSubmit: onAddEthereumChain, onReject: onRejectAddEthereumChain } =
+    useAddEthereumChain();
 
   const { currentConfirmation, isScrollToBottomCompleted, goBackTo } =
     useConfirmContext<TransactionMeta>();
@@ -246,7 +331,13 @@ const Footer = () => {
   const t = useI18nContext();
   const { isGaslessLoading } = useIsGaslessLoading();
 
-  const { from: fromAddress } = getConfirmationSender(currentConfirmation);
+  // Hardware preflight and signing follow the paying account: Money Account
+  // deposits are signed by the money account but funded on-device by the
+  // selected payer.
+  const payingAccount = useTransactionPayingAccount();
+  const { from: confirmationSender } =
+    getConfirmationSender(currentConfirmation);
+  const fromAddress = payingAccount ?? confirmationSender;
   const { shouldThrottleOrigin } = useOriginThrottling();
   const [showOriginThrottleModal, setShowOriginThrottleModal] = useState(false);
   const { onCancel, resetTransactionState } = useConfirmActions();
@@ -289,6 +380,7 @@ const Footer = () => {
   } = useHardwareFooter({
     currentConfirmation,
     currentConfirmationId,
+    fromAddress,
     onUserRejectedHardwareWalletError,
   });
 
@@ -406,6 +498,7 @@ const Footer = () => {
     }
 
     if (isAddEthereumChain) {
+      onRejectAddEthereumChain();
       navigate(DEFAULT_ROUTE);
       return;
     }
@@ -423,6 +516,7 @@ const Footer = () => {
     navigate,
     onDappSwapCompleted,
     dismissErrorModal,
+    onRejectAddEthereumChain,
   ]);
 
   const { isShowCoverageIndicator } = useEnableShieldCoverageChecks();
@@ -431,10 +525,7 @@ const Footer = () => {
     return null;
   }
 
-  if (
-    currentConfirmation.type &&
-    SINGLE_ACTION_FOOTER_TYPES.includes(currentConfirmation.type)
-  ) {
+  if (isSingleActionFooterConfirmation(currentConfirmation)) {
     return (
       <SingleActionFooter
         onSubmit={onSubmit}

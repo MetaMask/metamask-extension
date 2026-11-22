@@ -9,7 +9,7 @@ import {
   Messenger,
   MockAnyNamespace,
 } from '@metamask/messenger';
-import { TransactionControllerInitMessenger } from '../../../messenger-client-init/messengers/transaction-controller-messenger';
+import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';
 import { applyTransactionContainers } from '../containers/util';
 import { EnforceSimulationHook } from './enforce-simulation-hook';
 
@@ -80,6 +80,7 @@ describe('EnforceSimulationHook', () => {
     const updateTransactionMock = jest.fn();
 
     applyTransactionContainersMock.mockResolvedValue({
+      enforcedSimulationsSlippage: 2.5,
       updateTransaction: updateTransactionMock,
     });
 

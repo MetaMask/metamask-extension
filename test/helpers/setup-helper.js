@@ -165,6 +165,11 @@ if (!window.crypto.getRandomValues) {
   window.crypto.getRandomValues = require('crypto').webcrypto.getRandomValues;
 }
 
+if (!window.crypto.subtle) {
+  // eslint-disable-next-line n/global-require
+  window.crypto.subtle = require('crypto').webcrypto.subtle;
+}
+
 // Ensure `crypto.randomUUID` exists in the test environment (some Jest
 // environments don't expose the webcrypto `crypto.randomUUID` even on Node 18+).
 if (typeof window.crypto.randomUUID !== 'function') {
@@ -180,12 +185,26 @@ if (typeof window.crypto.randomUUID !== 'function') {
 window.TextEncoder = TextEncoder;
 window.TextDecoder = TextDecoder;
 
-// Used to test `clearClipboard` function
+// Clipboard API is missing in JSDOM
 if (!window.navigator.clipboard) {
-  window.navigator.clipboard = {};
-}
-if (!window.navigator.clipboard.writeText) {
-  window.navigator.clipboard.writeText = () => undefined;
+  Object.defineProperty(window.navigator, 'clipboard', {
+    value: {
+      writeText: jest.fn(() => ({
+        then(onFulfilled) {
+          onFulfilled?.();
+          return Promise.resolve();
+        },
+      })),
+      readText: jest.fn(() => ({
+        then(onFulfilled) {
+          onFulfilled?.('');
+          return Promise.resolve('');
+        },
+      })),
+    },
+    writable: true,
+    configurable: true,
+  });
 }
 
 window.SVGPathElement = window.SVGPathElement || { prototype: {} };

@@ -1,9 +1,13 @@
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
+import {
+  searchAndSelectToken,
+  selectDestinationToken,
+} from '../../page-objects/flows/bridge.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import SwapPage from '../../page-objects/pages/swap/swap-page';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import {
   getGasIncludedSwapFixtures,
   getGasless7702SwapFixtures,
@@ -23,23 +27,24 @@ describe('Gasless swap tests', function (this: Suite) {
 
         await homePage.startSwapFlow();
 
-        const bridgePage = new BridgeQuotePage(driver);
-        await bridgePage.checkPageIsLoaded();
+        const swapPage = new SwapPage(driver);
+        await swapPage.checkPageIsLoaded();
 
-        await bridgePage.selectDestToken('USDC');
+        await selectDestinationToken(driver, 'USDC');
 
-        await bridgePage.clickMaxButton();
+        await swapPage.clickMaxButton();
 
-        await bridgePage.waitForQuote();
-        await bridgePage.checkGasIncludedIsDisplayed();
+        await swapPage.waitForQuote();
+        await swapPage.checkGasIncludedIsDisplayed();
 
-        await bridgePage.submitQuoteAndDismiss();
+        await swapPage.submitQuoteAndDismiss();
 
+        await swapPage.goBackAfterSubmit();
         await homePage.goToActivityList();
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkCompletedBridgeTransactionActivity(1);
-        await activityList.checkTxAction({
-          action: 'Swap ETH to USDC',
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkCompletedBridgeTransactionActivity(1);
+        await activityTab.checkTxAction({
+          action: 'Swapped',
           confirmedTx: 1,
         });
       },
@@ -57,29 +62,30 @@ describe('Gasless swap tests', function (this: Suite) {
 
         await homePage.startSwapFlow();
 
-        const bridgePage = new BridgeQuotePage(driver);
-        await bridgePage.checkPageIsLoaded();
+        const swapPage = new SwapPage(driver);
+        await swapPage.checkPageIsLoaded();
 
-        await bridgePage.selectSrcToken('USDC');
-        await bridgePage.selectDestToken('DAI');
+        await searchAndSelectToken(driver, 'USDC');
+        await selectDestinationToken(driver, 'DAI');
 
-        await bridgePage.clickMaxButton();
+        await swapPage.clickMaxButton();
 
-        await bridgePage.waitForQuote();
-        await bridgePage.checkGasIncludedIsDisplayed();
+        await swapPage.waitForQuote();
+        await swapPage.checkGasIncludedIsDisplayed();
 
-        await bridgePage.submitQuoteAndDismiss();
+        await swapPage.submitQuoteAndDismiss();
 
+        await swapPage.goBackAfterSubmit();
         await homePage.goToActivityList();
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkCompletedBridgeTransactionActivity(2);
-        await activityList.checkTxAction({
-          action: 'Swap USDC to DAI',
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkCompletedBridgeTransactionActivity(2);
+        await activityTab.checkTxAction({
+          action: 'Swapped',
           confirmedTx: 0,
           txIndex: 1,
         });
-        await activityList.checkTxAction({
-          action: 'Approve USDC for swaps',
+        await activityTab.checkTxAction({
+          action: 'Approved spending cap',
           confirmedTx: 0,
           txIndex: 2,
         });
@@ -98,23 +104,24 @@ describe('Gasless swap tests', function (this: Suite) {
 
         await homePage.startSwapFlow();
 
-        const bridgePage = new BridgeQuotePage(driver);
-        await bridgePage.checkPageIsLoaded();
+        const swapPage = new SwapPage(driver);
+        await swapPage.checkPageIsLoaded();
 
-        await bridgePage.selectDestToken('USDC');
+        await selectDestinationToken(driver, 'USDC');
 
-        await bridgePage.clickMaxButton();
+        await swapPage.clickMaxButton();
 
-        await bridgePage.waitForQuote();
-        await bridgePage.checkGasSponsoredIsDisplayed();
+        await swapPage.waitForQuote();
+        await swapPage.checkGasSponsoredIsDisplayed();
 
-        await bridgePage.submitQuoteAndDismiss();
+        await swapPage.submitQuoteAndDismiss();
 
+        await swapPage.goBackAfterSubmit();
         await homePage.goToActivityList();
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkCompletedBridgeTransactionActivity(1);
-        await activityList.checkTxAction({
-          action: 'Swap ETH to USDC',
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkCompletedBridgeTransactionActivity(1);
+        await activityTab.checkTxAction({
+          action: 'Swapped',
           confirmedTx: 1,
         });
       },

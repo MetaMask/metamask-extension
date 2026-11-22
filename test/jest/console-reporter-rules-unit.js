@@ -76,7 +76,7 @@ module.exports = [
 
   // MetaMetrics warnings
   {
-    match: /MetaMetricsController:.*value is not a valid trait type/u,
+    match: /analytics#identify:.*value is not a valid trait type/u,
     group: 'MetaMask: MetaMetrics invalid trait types',
   },
 
@@ -276,6 +276,35 @@ module.exports = [
   {
     match: /Unable to find an element/u,
     group: 'Testing Library: Element not found warnings',
+  },
+
+  // ===========================================================================
+  // JSDOM LIMITATIONS
+  // ===========================================================================
+
+  {
+    match: /Warning: The tag <search> is unrecognized in this browser/u,
+    group: null,
+  },
+
+  // ===========================================================================
+  // REACT 18 MIGRATION (temporary — will be removed by
+  // https://github.com/MetaMask/MetaMask-planning/issues/6934)
+  // ===========================================================================
+
+  {
+    match: /Warning: ReactDOM\.render is no longer/u,
+    group: null,
+  },
+
+  {
+    match: /Warning: `ReactDOMTestUtils\.act` is deprecated/u,
+    group: null,
+  },
+
+  {
+    match: /Warning: unmountComponentAtNode is deprecated/u,
+    group: null,
   },
 
   // ===========================================================================

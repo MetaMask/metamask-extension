@@ -26,6 +26,8 @@ import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions/update-transaction-gas-fees';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import { EMPTY_ARRAY } from '../../selectors/shared';
+import { getIsUnlocked } from './base-selectors';
 
 const initialState = {
   isInitialized: false,
@@ -48,10 +50,14 @@ const initialState = {
   },
   firstTimeFlowType: null,
   completedOnboarding: false,
+  hasSeenOnboardingCompletionPage: false,
   knownMethodData: {},
   use4ByteResolution: true,
-  participateInMetaMetrics: null,
-  dataCollectionForMarketing: null,
+  analyticsId: null,
+  optedIn: false,
+  consentDecisionMade: false,
+  optedInToMarketing: false,
+  marketingConsentDecisionMade: false,
   currencyRates: {
     ETH: {
       conversionRate: null,
@@ -135,13 +141,15 @@ export default function reduceMetamask(state = initialState, action) {
     case actionConstants.SET_PARTICIPATE_IN_METAMETRICS:
       return {
         ...metamaskState,
-        participateInMetaMetrics: action.value,
+        consentDecisionMade: action.value !== null,
+        optedIn: action.value === true,
       };
 
     case actionConstants.SET_DATA_COLLECTION_FOR_MARKETING:
       return {
         ...metamaskState,
-        dataCollectionForMarketing: action.value,
+        optedInToMarketing: action.value === true,
+        marketingConsentDecisionMade: true,
       };
 
     case actionConstants.COMPLETE_ONBOARDING: {
@@ -159,18 +167,29 @@ export default function reduceMetamask(state = initialState, action) {
       };
     }
 
+    case actionConstants.SET_HAS_SEEN_ONBOARDING_COMPLETION_PAGE: {
+      return {
+        ...metamaskState,
+        hasSeenOnboardingCompletionPage: true,
+      };
+    }
+
     case actionConstants.RESET_ONBOARDING: {
       return {
         ...metamaskState,
         isInitialized: false,
         completedOnboarding: false,
+        hasSeenOnboardingCompletionPage: false,
         firstTimeFlowType: null,
         isUnlocked: false,
         onboardingTabs: {},
         seedPhraseBackedUp: null,
-        // reset metametrics optin status
-        participateInMetaMetrics: null,
-        metaMetricsId: null,
+        // reset analytics opt-in status
+        analyticsId: null,
+        optedIn: false,
+        consentDecisionMade: false,
+        optedInToMarketing: false,
+        marketingConsentDecisionMade: false,
       };
     }
 
@@ -277,7 +296,7 @@ export const getNfts = (state) => {
 
   const { chainId } = getProviderConfig(state);
 
-  return allNfts?.[selectedAddress]?.[chainId] ?? [];
+  return allNfts?.[selectedAddress]?.[chainId] ?? EMPTY_ARRAY;
 };
 
 export const getAllNfts = (state) => {
@@ -286,7 +305,7 @@ export const getAllNfts = (state) => {
   } = state;
   const { address: selectedAddress } = getSelectedInternalAccount(state);
 
-  return allNfts?.[selectedAddress] ?? [];
+  return allNfts?.[selectedAddress] ?? EMPTY_ARRAY;
 };
 
 export const getNFTsByChainId = (state, chainId) => {
@@ -295,7 +314,7 @@ export const getNFTsByChainId = (state, chainId) => {
   } = state;
   const { address: selectedAddress } = getSelectedInternalAccount(state);
 
-  return allNfts?.[selectedAddress]?.[chainId] ?? [];
+  return allNfts?.[selectedAddress]?.[chainId] ?? EMPTY_ARRAY;
 };
 
 export const getNftContracts = (state) => {
@@ -304,7 +323,7 @@ export const getNftContracts = (state) => {
   } = state;
   const { address: selectedAddress } = getSelectedInternalAccount(state);
   const { chainId } = getProviderConfig(state);
-  return allNftContracts?.[selectedAddress]?.[chainId] ?? [];
+  return allNftContracts?.[selectedAddress]?.[chainId] ?? EMPTY_ARRAY;
 };
 
 export function getNativeCurrency(state) {
@@ -485,6 +504,11 @@ export function getIsNetworkBusyByChainId(state, chainId) {
 export function getCompletedOnboarding(state) {
   return state.metamask.completedOnboarding;
 }
+
+export function getHasSeenOnboardingCompletionPage(state) {
+  return state.metamask.hasSeenOnboardingCompletionPage;
+}
+
 export function getIsInitialized(state) {
   return state.metamask.isInitialized;
 }
@@ -563,4 +587,34 @@ export function getOpenedWithSidepanel(state) {
  */
 export function getPasskeyAutoUnlockSuppressed(state) {
   return Boolean(state.metamask.passkeyAutoUnlockSuppressed);
+}
+
+/**
+ * Returns when the legacy passkey PRF migration reminder was last shown.
+ *
+ * @param {object} state - Redux root state
+ * @returns {number|null}
+ */
+export function getLastShownPrfMigrationReminderAt(state) {
+  return state.metamask.lastShownPrfMigrationReminderAt ?? null;
+}
+
+/**
+ * True when a locked user should unlock before resuming the onboarding
+ * completion page (return visit without tapping Done).
+ *
+ * @param {object} state - MetaMask state tree
+ * @returns {boolean} Whether the user must unlock before onboarding completion
+ */
+export function getShouldUnlockBeforeOnboardingCompletion(state) {
+  const { hasSeenOnboardingCompletionPage, completedOnboarding } =
+    state.metamask;
+
+  return (
+    hasSeenOnboardingCompletionPage &&
+    !completedOnboarding &&
+    !getIsUnlocked(state) &&
+    getIsInitialized(state) &&
+    !getIsWalletResetInProgress(state)
+  );
 }

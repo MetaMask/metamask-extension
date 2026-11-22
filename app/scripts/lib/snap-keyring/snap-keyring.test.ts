@@ -16,10 +16,7 @@ import {
 import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
 import { getSnapName } from '../../../../shared/lib/accounts/snaps';
 import { showAccountCreationDialog, snapKeyringBuilder } from './snap-keyring';
-import {
-  SnapKeyringBuilderAllowActions,
-  SnapKeyringBuilderMessenger,
-} from './types';
+import { SnapKeyringBuilderMessenger } from './types';
 
 const mockAddRequest = jest.fn();
 const mockStartFlow = jest.fn();
@@ -34,6 +31,17 @@ const mockSetSelectedAccount = jest.fn();
 const mockSetAccountName = jest.fn();
 const mockRemoveAccountHelper = jest.fn();
 const mockTrackEvent = jest.fn();
+jest.mock('../../controllers/analytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    createEventBuilder,
+    trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
+  };
+});
+
 const mockGetAccountByAddress = jest.fn();
 const mockListMultichainAccounts = jest.fn();
 const mockLocale = 'en';
@@ -85,12 +93,7 @@ const createControllerMessenger = ({
   account?: InternalAccount;
 } = {}): SnapKeyringBuilderMessenger => {
   const rootMessenger = getRootMessenger();
-  const messenger = new Messenger<
-    'SnapKeyring',
-    SnapKeyringBuilderAllowActions,
-    never,
-    typeof rootMessenger
-  >({
+  const messenger: SnapKeyringBuilderMessenger = new Messenger({
     namespace: 'SnapKeyring',
     parent: rootMessenger,
   });
@@ -134,16 +137,22 @@ const createControllerMessenger = ({
         return mockEndFlow.mockReturnValue(true)(params);
 
       case 'ApprovalController:showSuccess':
-        return mockShowSuccess();
+        return mockShowSuccess(params);
 
       case 'ApprovalController:showError':
-        return mockShowError();
+        return mockShowError(params);
 
       case 'KeyringController:getAccounts':
         return mockGetAccounts.mockResolvedValue([])();
 
       case 'AccountsController:getAccountByAddress':
         return mockGetAccountByAddress.mockReturnValue(account)(params);
+
+      case 'KeyringController:persistAllKeyrings':
+        return mockPersistKeyringHelper();
+
+      case 'AccountsController:updateAccounts':
+        return undefined;
 
       case 'AccountsController:listMultichainAccounts':
         return mockListMultichainAccounts.mockReturnValue([])();
@@ -164,6 +173,7 @@ const createControllerMessenger = ({
           id: mockSnapId,
           manifest: {
             proposedName: mockSnapName,
+            initialPermissions: {},
           },
         })(params);
 
@@ -172,6 +182,9 @@ const createControllerMessenger = ({
 
       case 'RemoteFeatureFlagController:getState':
         return mockRemoteFeatureFlagsGetStateRequest(params);
+
+      case 'LegacyBackgroundApiService:removeAccount':
+        return mockRemoveAccountHelper(...params);
 
       default:
         throw new Error(
@@ -198,11 +211,7 @@ const createSnapKeyringBuilder = ({
     remoteFeatureFlags: {},
   } as RemoteFeatureFlagControllerState);
 
-  return snapKeyringBuilder(createControllerMessenger(), {
-    persistKeyringHelper: mockPersistKeyringHelper,
-    removeAccountHelper: mockRemoveAccountHelper,
-    trackEvent: mockTrackEvent,
-  });
+  return snapKeyringBuilder(createControllerMessenger());
 };
 
 /**
@@ -277,9 +286,9 @@ describe('Snap Keyring Methods', () => {
       expect(mockPersistKeyringHelper).toHaveBeenCalledTimes(1);
       expect(mockTrackEvent).toHaveBeenCalledTimes(3);
       expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
-        category: MetaMetricsEventCategory.Accounts,
-        event: MetaMetricsEventName.AddSnapAccountSuccessViewed,
+        name: MetaMetricsEventName.AddSnapAccountSuccessViewed,
         properties: {
+          category: MetaMetricsEventCategory.Accounts,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'snap',
@@ -290,11 +299,12 @@ describe('Snap Keyring Methods', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_name: mockSnapName,
         },
+        sensitiveProperties: {},
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
-        category: MetaMetricsEventCategory.Accounts,
-        event: MetaMetricsEventName.AddSnapAccountSuccessClicked,
+        name: MetaMetricsEventName.AddSnapAccountSuccessClicked,
         properties: {
+          category: MetaMetricsEventCategory.Accounts,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'snap',
@@ -305,11 +315,12 @@ describe('Snap Keyring Methods', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_name: mockSnapName,
         },
+        sensitiveProperties: {},
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(3, {
-        category: MetaMetricsEventCategory.Accounts,
-        event: MetaMetricsEventName.AccountAdded,
+        name: MetaMetricsEventName.AccountAdded,
         properties: {
+          category: MetaMetricsEventCategory.Accounts,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'snap',
@@ -323,8 +334,23 @@ describe('Snap Keyring Methods', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           is_suggested_name: false,
         },
+        sensitiveProperties: {},
       });
       expect(mockShowSuccess).toHaveBeenCalledTimes(1);
+      expect(mockShowSuccess).toHaveBeenCalledWith([
+        expect.objectContaining({
+          message: expect.objectContaining({
+            key: 'snapAccountSuccessMessage',
+            name: 'SnapAccountSuccessMessage',
+            properties: {
+              message: 'Your new account is ready to use!',
+              address: address.toLowerCase(),
+              learnMoreLink:
+                'https://support.metamask.com/managing-my-wallet/accounts-and-addresses/how-to-add-accounts-in-your-wallet/?utm_source=extension',
+            },
+          }),
+        }),
+      ]);
       expect(mockSetAccountName).not.toHaveBeenCalled();
       expect(mockEndFlow).toHaveBeenCalledTimes(2);
       expect(mockEndFlow).toHaveBeenNthCalledWith(1, [{ id: mockFlowId }]);
@@ -348,9 +374,9 @@ describe('Snap Keyring Methods', () => {
       expect(mockPersistKeyringHelper).toHaveBeenCalledTimes(1);
       expect(mockTrackEvent).toHaveBeenCalledTimes(1);
       expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
-        category: MetaMetricsEventCategory.Accounts,
-        event: MetaMetricsEventName.AccountAdded,
+        name: MetaMetricsEventName.AccountAdded,
         properties: {
+          category: MetaMetricsEventCategory.Accounts,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'snap',
@@ -364,6 +390,7 @@ describe('Snap Keyring Methods', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           is_suggested_name: false,
         },
+        sensitiveProperties: {},
       });
       expect(mockSetAccountName).not.toHaveBeenCalled();
       expect(mockEndFlow).toHaveBeenCalledTimes(0);
@@ -426,6 +453,22 @@ describe('Snap Keyring Methods', () => {
         errorMessage,
       );
 
+      expect(mockShowError).toHaveBeenCalledTimes(1);
+      expect(mockShowError).toHaveBeenCalledWith([
+        expect.objectContaining({
+          error: expect.objectContaining({
+            key: 'snapAccountErrorMessage',
+            name: 'SnapAccountErrorMessage',
+            properties: {
+              message: "mock-snap didn't manage to create an account for you.",
+              learnMoreLink:
+                'https://support.metamask.com/managing-my-wallet/accounts-and-addresses/how-to-add-accounts-in-your-wallet/?utm_source=extension',
+              error: errorMessage,
+            },
+          }),
+        }),
+      ]);
+
       expect(mockStartFlow).toHaveBeenCalledTimes(2);
       expect(mockEndFlow).toHaveBeenCalledTimes(2);
       expect(mockEndFlow).toHaveBeenNthCalledWith(1, [{ id: mockFlowId }]);
@@ -455,6 +498,21 @@ describe('Snap Keyring Methods', () => {
       expect(mockRemoveAccountHelper).toHaveBeenCalledWith(
         address.toLowerCase(),
       );
+      expect(mockShowError).toHaveBeenCalledTimes(1);
+      expect(mockShowError).toHaveBeenCalledWith([
+        expect.objectContaining({
+          error: expect.objectContaining({
+            key: 'snapAccountErrorMessage',
+            name: 'SnapAccountErrorMessage',
+            properties: {
+              message:
+                'This account will no longer be available to use in MetaMask.',
+              learnMoreLink:
+                'https://support.metamask.com/managing-my-wallet/accounts-and-addresses/how-to-remove-an-account-from-your-metamask-wallet/?utm_source=extension',
+            },
+          }),
+        }),
+      ]);
     });
   });
 });

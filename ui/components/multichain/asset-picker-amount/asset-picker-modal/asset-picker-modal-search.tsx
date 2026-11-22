@@ -1,14 +1,9 @@
 import React from 'react';
 import {
   Box,
-  ButtonIconSize,
   TextFieldSearch,
-  TextFieldSearchSize,
-} from '../../../component-library';
-import {
-  BlockSize,
-  BorderRadius,
-} from '../../../../helpers/constants/design-system';
+  TextFieldSize,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 /**
@@ -41,39 +36,28 @@ export const Search = ({
   const t = useI18nContext();
 
   return (
-    <Box
-      paddingTop={4}
-      paddingLeft={4}
-      paddingRight={4}
-      paddingBottom={2}
-      {...props}
-    >
+    <search className="px-4 pt-4 pb-2" {...props}>
       <TextFieldSearch
-        borderRadius={BorderRadius.LG}
+        autoFocus={autoFocus}
+        className="w-full"
+        clearButtonOnClick={() => onChange('')}
+        inputAriaLabel={
+          placeholder ??
+          t(isNFTSearch ? 'searchNfts' : 'searchTokensByNameOrAddress')
+        }
+        inputProps={
+          {
+            'data-testid': 'asset-picker-modal-search-input',
+          } as React.ComponentPropsWithoutRef<'input'>
+        }
+        onChange={(event) => onChange(event.target.value)}
         placeholder={
           placeholder ??
           t(isNFTSearch ? 'searchNfts' : 'searchTokensByNameOrAddress')
         }
+        size={TextFieldSize.Lg}
         value={searchQuery}
-        onChange={(e) => onChange(e.target.value)}
-        error={false}
-        autoFocus={autoFocus}
-        autoComplete={false}
-        width={BlockSize.Full}
-        clearButtonOnClick={() => onChange('')}
-        clearButtonProps={{
-          size: ButtonIconSize.Sm,
-        }}
-        style={{ paddingInline: 12 }}
-        showClearButton
-        className="asset-picker-modal__search-list"
-        inputProps={{
-          'data-testid': 'asset-picker-modal-search-input',
-          marginRight: 0,
-        }}
-        endAccessory={null}
-        size={TextFieldSearchSize.Lg}
       />
-    </Box>
+    </search>
   );
 };

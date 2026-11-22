@@ -1,17 +1,21 @@
-import { GitHub } from '@actions/github/lib/utils';
+import type { GitHub } from '@actions/github/lib/utils';
 
 import { retrieveRepo } from './repo.mts';
 
-export enum RegressionStage {
-  Testing,
-  Beta,
-  Production,
-}
-export interface Label {
+export const RegressionStage = {
+  Testing: 0,
+  Beta: 1,
+  Production: 2,
+} as const;
+
+export type RegressionStage =
+  (typeof RegressionStage)[keyof typeof RegressionStage];
+
+export type Label = {
   name: string;
   color: string;
   description: string;
-}
+};
 
 export const typeBugLabel: Label = {
   name: 'type-bug',

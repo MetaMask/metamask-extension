@@ -1,13 +1,31 @@
 import {
   BridgeStatusController,
   BridgeStatusControllerMessenger,
+  QuoteStatusGetError,
+  QuoteStatusUpdateError,
 } from '@metamask/bridge-status-controller';
 import { handleFetch } from '@metamask/controller-utils';
 import { BridgeClientId } from '@metamask/bridge-controller';
-import { trace } from '../../../shared/lib/trace';
+import { trace, traceBackgroundPoll } from '../../../shared/lib/trace';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { accountSupports7702 } from '../lib/account-supports-7702';
+import { captureException } from '../../../shared/lib/sentry';
 import { MessengerClientInitFunction } from './types';
+
+type ControllerWithExecutePoll = {
+  _executePoll?: (input: unknown) => Promise<void>;
+};
+
+/**
+ * Shape of the `bridgeQuoteStatusManager` remote feature flag after it has been resolved by
+ * `RemoteFeatureFlagController`. The controller processes the raw
+ * version-scoped format (`{ versions: { "11.0.0": { enabled: true } } }`)
+ * and stores only the matching version's value, so the UI receives a flat
+ * `{ enabled: boolean }` object.
+ */
+type BridgeQuoteStatusManagerFeatureFlag = {
+  enabled?: boolean;
+};
 
 /**
  * Initialize the bridge status controller.
@@ -24,11 +42,16 @@ export const BridgeStatusControllerInit: MessengerClientInitFunction<
 > = ({ controllerMessenger, persistedState, getMessengerClient }) => {
   const transactionController = getMessengerClient('TransactionController');
   const keyringController = getMessengerClient('KeyringController');
+  const remoteFeatureFlagController = getMessengerClient(
+    'RemoteFeatureFlagController',
+  );
 
   const messengerClient = new BridgeStatusController({
     messenger: controllerMessenger,
     state: persistedState.BridgeStatusController,
     clientId: BridgeClientId.EXTENSION,
+    clientProduct: 'metamask-extension',
+    clientVersion: process.env.METAMASK_VERSION,
     fetchFn: async (url, requestOptions) => {
       return await handleFetch(url, {
         method: 'GET',
@@ -59,9 +82,36 @@ export const BridgeStatusControllerInit: MessengerClientInitFunction<
       customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
     },
 
-    // @ts-expect-error: `trace` function type does not match the expected type.
-    traceFn: (...args) => trace(...args),
+    traceFn: trace,
+    onQuoteStatusManagerError: (
+      error: QuoteStatusUpdateError | QuoteStatusGetError,
+    ) => {
+      if (error instanceof QuoteStatusUpdateError) {
+        captureException(error);
+      }
+    },
+    isQuoteStatusManagerEnabled: () => {
+      const { remoteFeatureFlags } = remoteFeatureFlagController.state;
+      const bridgeQuoteStatusManager =
+        remoteFeatureFlags.bridgeQuoteStatusManager as
+          | BridgeQuoteStatusManagerFeatureFlag
+          | undefined;
+      return bridgeQuoteStatusManager?.enabled === true;
+    },
   });
+
+  // Overrides the polling base class's per-cycle `_executePoll` hook. The cast
+  // and `?.` skip type checks, so an upstream rename silently drops this wrap.
+  const pollingController =
+    messengerClient as unknown as ControllerWithExecutePoll;
+  const executePoll = pollingController._executePoll?.bind(messengerClient);
+
+  if (executePoll) {
+    pollingController._executePoll = (pollingInput: unknown) =>
+      traceBackgroundPoll('BridgeStatusController', () =>
+        executePoll(pollingInput),
+      );
+  }
 
   return {
     messengerClient,

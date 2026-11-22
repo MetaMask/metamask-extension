@@ -13,15 +13,17 @@ import {
   findAtomicBatchSupportForChain,
   checkEip7702Support,
 } from '../../../../../shared/lib/eip7702-support-utils';
-import { TransactionControllerInitMessenger } from '../../../messenger-client-init/messengers/transaction-controller-messenger';
+import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';
 import {
   RelayStatus,
   RelaySubmitRequest,
   submitRelayTransaction,
   waitForRelayResult,
 } from '../transaction-relay';
+import { getSentinelSigners } from '../sentinel-api';
 import {
   getClientForTransactionMetadata,
+  getClientVersionForTransactionMetadata,
   sanitizeOrigin,
 } from '../../smart-transaction/utils';
 import {
@@ -98,18 +100,32 @@ export class Delegation7702PublishHook {
     const { isSupported, delegationAddress, upgradeContractAddress } =
       checkEip7702Support(atomicBatchChainSupport);
 
-    if (!isSupported) {
-      log('Skipping as EIP-7702 is not supported', { from, chainId });
-      return EMPTY_RESULT;
-    }
-
-    const isGaslessSwap = transactionMeta.isGasFeeIncluded;
+    const { isGasFeeIncluded } = transactionMeta;
 
     const isSponsored = Boolean(transactionMeta.isGasFeeSponsored);
 
+    if (!isSupported) {
+      log('Skipping as EIP-7702 is not supported', { from, chainId });
+
+      if (isGasFeeIncluded || isSponsored) {
+        // Same as mobile: sponsored and gas-included transactions skip local
+        // signing, so falling through to the default publish would raw-send
+        // an unsigned payload ("Transaction decoding error"). Fail loudly.
+        throw new Error(
+          `Chain must support EIP-7702 for sponsored or gas included transaction. chainId: ${chainId}, delegationAddress: ${
+            atomicBatchChainSupport?.delegationAddress ?? 'none'
+          }, upgradeContractAddress: ${
+            atomicBatchChainSupport?.upgradeContractAddress ?? 'none'
+          }, entryFound: ${Boolean(atomicBatchChainSupport)}`,
+        );
+      }
+
+      return EMPTY_RESULT;
+    }
+
     if (
       (!selectedGasFeeToken || !gasFeeTokens?.length) &&
-      !isGaslessSwap &&
+      !isGasFeeIncluded &&
       !isSponsored
     ) {
       log('Skipping as no selected gas fee token');
@@ -117,7 +133,7 @@ export class Delegation7702PublishHook {
     }
 
     const gasFeeToken =
-      isGaslessSwap || isSponsored
+      isGasFeeIncluded || isSponsored
         ? undefined
         : gasFeeTokens?.find(
             (token) =>
@@ -125,12 +141,19 @@ export class Delegation7702PublishHook {
               selectedGasFeeToken?.toLowerCase(),
           );
 
-    if (!gasFeeToken && !isGaslessSwap && !isSponsored) {
+    if (!gasFeeToken && !isGasFeeIncluded && !isSponsored) {
       throw new Error('Selected gas fee token not found');
     }
 
+    const redeemers = await getSentinelSigners(chainId);
+
+    if (!redeemers.length) {
+      // Fail closed rather than sign a delegation any address could redeem.
+      throw new Error(`No relay signers found for chain ${chainId}`);
+    }
+
     const includeTransfer =
-      !isGaslessSwap && !transactionMeta.isGasFeeSponsored;
+      !isGasFeeIncluded && !transactionMeta.isGasFeeSponsored;
 
     const { nonce, ...txParamsWithoutNonce } = transactionMeta.txParams;
     const finalTransactionMeta: TransactionMeta = {
@@ -162,6 +185,13 @@ export class Delegation7702PublishHook {
               upgradeContractAddress:
                 (upgradeContractAddress as Hex) ?? undefined,
             },
+        // Only the Sentinel relay signers may submit the redeem.
+        redeemers,
+        // Same as mobile's publish hook: relay the parent `execute()` as a
+        // single execution. Expanding `nestedTransactions` into a batch
+        // redeem is a shape mobile never publishes — on Monad it mined
+        // without moving funds for Money Account withdrawals.
+        useParentExecution: true,
       });
 
     const relayRequest: RelaySubmitRequest = {
@@ -171,6 +201,7 @@ export class Delegation7702PublishHook {
       metadata: {
         txType: transactionMeta.type as RelayTransactionTxType,
         client: getClientForTransactionMetadata(),
+        clientVersion: getClientVersionForTransactionMetadata(),
         origin: sanitizeOrigin(transactionMeta.origin),
       },
     };

@@ -1,8 +1,10 @@
 import { Mockttp, RequestRuleBuilder } from 'mockttp';
+import type { NotificationPreferences } from '@metamask/authenticated-user-storage';
 import {
   getMockFeatureAnnouncementResponse,
   getMockListNotificationsResponse,
   getMockMarkNotificationsAsReadResponse,
+  createMockFeatureAnnouncementAPIResult,
   createMockNotificationEthSent,
   createMockNotificationEthReceived,
   createMockNotificationERC20Sent,
@@ -23,8 +25,14 @@ import {
   getMockCreateFCMRegistrationTokenResponse,
   getMockDeleteFCMRegistrationTokenResponse,
 } from '@metamask/notification-services-controller/push-services/mocks';
-import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
+import {
+  TRIGGER_TYPES,
+  isOnChainNotification,
+  isPlatformNotification,
+  type NormalisedAPINotification,
+} from '@metamask/notification-services-controller/notification-services';
 import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
+import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 
 type MockResponse = {
   url: string | RegExp;
@@ -57,8 +65,38 @@ export const notificationsMockAccounts: UserStorageAccount[] = [
   },
 ];
 
-const mockListNotificationsResponse = getMockListNotificationsResponse();
-mockListNotificationsResponse.response = [
+export function getMockNotificationPreferences(): NotificationPreferences {
+  return {
+    walletActivity: {
+      pushNotificationsEnabled: true,
+      inAppNotificationsEnabled: true,
+      accounts: [],
+    },
+    marketing: {
+      pushNotificationsEnabled: true,
+      inAppNotificationsEnabled: true,
+    },
+    perps: {
+      pushNotificationsEnabled: true,
+      inAppNotificationsEnabled: true,
+    },
+    socialAI: {
+      pushNotificationsEnabled: true,
+      inAppNotificationsEnabled: true,
+      mutedTraderProfileIds: [],
+    },
+    agenticCli: {
+      pushNotificationsEnabled: true,
+      inAppNotificationsEnabled: true,
+    },
+    priceAlerts: {
+      pushNotificationsEnabled: true,
+      inAppNotificationsEnabled: true,
+    },
+  };
+}
+
+const mockNotifications: NormalisedAPINotification[] = [
   createMockNotificationEthSent(),
   createMockNotificationEthReceived(),
   createMockNotificationERC20Sent(),
@@ -83,24 +121,33 @@ mockListNotificationsResponse.response = [
   return n;
 });
 
+const mockListNotificationsResponse = {
+  ...getMockListNotificationsResponse(),
+  response: mockNotifications,
+};
+
+const mockFeatureAnnouncementContent = createMockFeatureAnnouncementAPIResult();
+const FEATURE_ANNOUNCEMENT_EXPIRED_MS = 31 * 24 * 60 * 60 * 1000;
+const date = new Date(Date.now() - FEATURE_ANNOUNCEMENT_EXPIRED_MS);
+const firstFeatureAnnouncementItem = mockFeatureAnnouncementContent.items?.[0];
+if (firstFeatureAnnouncementItem) {
+  firstFeatureAnnouncementItem.sys.createdAt = date.toISOString();
+}
+
 const mockFeatureAnnouncementResponse = {
   ...getMockFeatureAnnouncementResponse(),
   url: /^https:\/\/cdn\.contentful\.com\/.*$/u,
+  response: mockFeatureAnnouncementContent,
 };
-const FEATURE_ANNOUNCEMENT_EXPIRED_MS = 31 * 24 * 60 * 60 * 1000;
-const date = new Date(Date.now() - FEATURE_ANNOUNCEMENT_EXPIRED_MS);
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-(mockFeatureAnnouncementResponse.response as any).items[0].sys.createdAt =
-  date.toISOString();
 
 export function getMockWalletNotificationItemId(trigger: TRIGGER_TYPES) {
   return (
-    mockListNotificationsResponse.response.find((n) => {
-      if (n.notification_type === 'on-chain') {
-        return n.payload.data.kind === trigger;
+    mockNotifications.find((n) => {
+      if (isOnChainNotification(n)) {
+        return n.payload.data?.kind === trigger;
       }
-      if (n.notification_type === 'platform') {
-        return n.notification_type === trigger;
+      if (isPlatformNotification(n)) {
+        return trigger === TRIGGER_TYPES.PLATFORM;
       }
       return false;
     })?.id ?? 'DOES NOT EXIST'
@@ -109,8 +156,7 @@ export function getMockWalletNotificationItemId(trigger: TRIGGER_TYPES) {
 
 export function getMockFeatureAnnouncementItemId() {
   return (
-    mockFeatureAnnouncementResponse.response.items?.at(0)?.fields?.id ??
-    'DOES NOT EXIST'
+    mockFeatureAnnouncementContent.items?.at(0)?.fields?.id ?? 'DOES NOT EXIST'
   );
 }
 
@@ -124,7 +170,15 @@ export async function mockNotificationServices(
   server: Mockttp,
   triggerServer: MockttpNotificationTriggerServer = new MockttpNotificationTriggerServer(),
 ) {
-  // Trigger Server
+  // Wallet-activity addresses come from the keyring and the per-address
+  // enabled bit from the Trigger API, so the fixture account must be reported
+  // as subscribed for wallet notifications to be fetched. Don't overwrite a
+  // config a persisted server already recorded.
+  if (
+    triggerServer.getNotificationConfig(DEFAULT_FIXTURE_ACCOUNT) === undefined
+  ) {
+    triggerServer.setNotificationConfig(DEFAULT_FIXTURE_ACCOUNT, true);
+  }
   triggerServer.setupServer(server);
 
   // Notification Server

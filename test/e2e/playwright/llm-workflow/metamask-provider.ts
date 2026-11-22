@@ -1,3 +1,4 @@
+import path from 'path';
 import type { Page, BrowserContext } from '@playwright/test';
 import {
   type ISessionManager,
@@ -18,9 +19,9 @@ import {
   type EnvironmentMode,
   ErrorCodes,
   generateSessionId,
-  knowledgeStore,
-  MockServerCapability,
+  writeSessionMetadata,
 } from '@metamask/client-mcp-core';
+import { isHeadless, parseBoolean } from '../../../helpers/env';
 import type {
   CreateMetaMaskContextOptions,
   CreateMetaMaskProdContextOptions,
@@ -33,11 +34,20 @@ import {
   createMetaMaskE2EContext,
   createMetaMaskProdContext,
 } from './capabilities/factory';
+import { resolveRepoRoot } from './resolve-repo-root';
 import { MetaMaskExtensionLauncher } from '.';
 
 const DEFAULT_ANVIL_PORT = 8545;
 const DEFAULT_FIXTURE_SERVER_PORT = 12345;
-const HEADLESS = true;
+const DEFAULT_ARTIFACTS_DIR = 'test-artifacts';
+
+// Preserve MM_HEADLESS as the explicit mm CLI override. Otherwise, share the
+// Playwright harness convention: honor PLAYWRIGHT_HEADLESS/HEADLESS, use
+// headless mode in CI, and launch headed locally by default.
+const HEADLESS =
+  process.env.MM_HEADLESS === undefined
+    ? isHeadless('PLAYWRIGHT') || Boolean(process.env.CI)
+    : parseBoolean(process.env.MM_HEADLESS);
 
 export class MetaMaskSessionManager implements ISessionManager {
   private activeSession: {
@@ -89,10 +99,6 @@ export class MetaMaskSessionManager implements ISessionManager {
     return this.workflowContext?.stateSnapshot;
   }
 
-  private getMockServerCapability(): MockServerCapability | undefined {
-    return this.workflowContext?.mockServer;
-  }
-
   setContext(
     context: 'e2e' | 'prod',
     options?: CreateMetaMaskContextOptions | CreateMetaMaskProdContextOptions,
@@ -133,9 +139,6 @@ export class MetaMaskSessionManager implements ISessionManager {
     if (this.workflowContext.fixture) {
       stops.push(this.workflowContext.fixture.stop().catch(() => undefined));
     }
-    if (this.workflowContext.mockServer) {
-      stops.push(this.workflowContext.mockServer.stop().catch(() => undefined));
-    }
     if (this.workflowContext.chain) {
       stops.push(this.workflowContext.chain.stop().catch(() => undefined));
     }
@@ -167,9 +170,6 @@ export class MetaMaskSessionManager implements ISessionManager {
     }
     if (this.getStateSnapshotCapability()) {
       availableCapabilities.push('stateSnapshot');
-    }
-    if (this.getMockServerCapability()) {
-      availableCapabilities.push('mockServer');
     }
 
     return {
@@ -371,6 +371,16 @@ export class MetaMaskSessionManager implements ISessionManager {
     const environment = this.workflowContext?.config?.environment ?? 'e2e';
     const isProdMode = environment === 'prod';
 
+    const launchRequest = input as SessionLaunchInput & {
+      selfOnboarding?: boolean;
+      srp?: string;
+      password?: string;
+    };
+    const secretRecoveryPhrase = launchRequest.srp;
+    launchRequest.srp = undefined;
+    const vaultPassword = launchRequest.password;
+    launchRequest.password = undefined;
+
     const { extensionPath } = input;
 
     // In prod mode, reject fixture-related options (no fixtures available)
@@ -386,7 +396,6 @@ export class MetaMaskSessionManager implements ISessionManager {
 
     const fixtureCapability = this.getMetaMaskFixtureCapability();
     const chainCapability = this.getChainCapability();
-    const mockServerCapability = this.getMockServerCapability();
     const contractSeedingCapability = this.getContractSeedingCapability();
 
     if (!isProdMode && !fixtureCapability) {
@@ -405,7 +414,6 @@ export class MetaMaskSessionManager implements ISessionManager {
     const startedCapabilities: {
       fixture?: boolean;
       chain?: boolean;
-      mockServer?: boolean;
     } = {};
 
     let launcher: MetaMaskExtensionLauncher | undefined;
@@ -416,6 +424,15 @@ export class MetaMaskSessionManager implements ISessionManager {
         ? workflowConfig.ports
         : undefined;
     const resolvedFixturePort = contextPorts?.fixtureServer;
+
+    // Core sets input.artifactsDir from MM_ARTIFACTS_DIR, else from the
+    // workflow config. Relative paths resolve against the repo root.
+    const artifactsDir = path.resolve(
+      resolveRepoRoot(),
+      input.artifactsDir ??
+        workflowConfig?.artifactsDir ??
+        DEFAULT_ARTIFACTS_DIR,
+    );
 
     try {
       if (!isProdMode && fixtureCapability) {
@@ -434,16 +451,6 @@ export class MetaMaskSessionManager implements ISessionManager {
         startedCapabilities.chain = true;
       }
 
-      let proxyServer: string | undefined;
-      if (mockServerCapability) {
-        await mockServerCapability.start();
-        startedCapabilities.mockServer = true;
-
-        if (mockServerCapability.isRunning()) {
-          proxyServer = `127.0.0.1:${mockServerCapability.getPort()}`;
-        }
-      }
-
       if (contractSeedingCapability) {
         contractSeedingCapability.initialize();
 
@@ -457,7 +464,10 @@ export class MetaMaskSessionManager implements ISessionManager {
         stateMode,
         slowMo: input.slowMo ?? 0,
         extensionPath,
-        proxyServer,
+        screenshotDir: path.join(artifactsDir, 'screenshots'),
+        selfOnboarding: launchRequest.selfOnboarding === true,
+        srp: secretRecoveryPhrase,
+        password: vaultPassword,
         manifestFlags: resolvedFixturePort
           ? {
               testing: {
@@ -474,7 +484,6 @@ export class MetaMaskSessionManager implements ISessionManager {
         startedCapabilities,
         launcher,
         fixtureCapability,
-        mockServerCapability,
         chainCapability,
       );
       throw error;
@@ -516,8 +525,6 @@ export class MetaMaskSessionManager implements ISessionManager {
       schemaVersion: 1,
       sessionId,
       createdAt: startedAt,
-      goal: input.goal,
-      flowTags: input.flowTags ?? [],
       tags: input.tags ?? [],
       launch: {
         stateMode,
@@ -530,7 +537,8 @@ export class MetaMaskSessionManager implements ISessionManager {
       },
     };
 
-    await knowledgeStore.writeSessionMetadata(metadata);
+    // Writes <artifactsDir>/<sessionId>/session.json.
+    await writeSessionMetadata(artifactsDir, metadata);
     this.sessionMetadata = metadata;
 
     return {
@@ -541,19 +549,15 @@ export class MetaMaskSessionManager implements ISessionManager {
   }
 
   private async rollbackStartedCapabilities(
-    started: { fixture?: boolean; chain?: boolean; mockServer?: boolean },
+    started: { fixture?: boolean; chain?: boolean },
     launcher: MetaMaskExtensionLauncher | undefined,
     fixtureCapability: FixtureCapability | undefined,
-    mockServerCapability: MockServerCapability | undefined,
     chainCapability: ChainCapability | undefined,
   ): Promise<void> {
     const stops: Promise<void>[] = [];
 
     if (launcher) {
       stops.push(launcher.cleanup().catch(() => undefined));
-    }
-    if (started.mockServer && mockServerCapability) {
-      stops.push(mockServerCapability.stop().catch(() => undefined));
     }
     if (started.fixture && fixtureCapability) {
       stops.push(fixtureCapability.stop().catch(() => undefined));
@@ -581,15 +585,6 @@ export class MetaMaskSessionManager implements ISessionManager {
       stops.push(
         fixtureCapability.stop().catch((e) => {
           console.warn('Failed to stop fixture server:', e);
-        }),
-      );
-    }
-
-    const mockServerCapability = this.getMockServerCapability();
-    if (mockServerCapability) {
-      stops.push(
-        mockServerCapability.stop().catch((e) => {
-          console.warn('Failed to stop mock server:', e);
         }),
       );
     }

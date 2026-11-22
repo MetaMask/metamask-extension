@@ -7,9 +7,11 @@ import {
   completeCreateNewWalletOnboardingFlow,
   createNewWalletWithSocialLoginOnboardingFlow,
   handleSidepanelPostOnboarding,
+  type OnboardingMetricsFlowOptions,
 } from '../../page-objects/flows/onboarding.flow';
-import { MOCK_META_METRICS_ID } from '../../constants';
+import { MOCK_ANALYTICS_ID } from '../../constants';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
+import DownloadAppPage from '../../page-objects/pages/onboarding/download-app-page';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import { Driver } from '../../webdriver/driver';
 
@@ -105,8 +107,8 @@ describe('Wallet Created Events', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
+          .withAnalyticsController({
+            analyticsId: MOCK_ANALYTICS_ID,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -115,7 +117,8 @@ describe('Wallet Created Events', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await completeCreateNewWalletOnboardingFlow({
           driver,
-          participateInMetaMetrics: true,
+          consentDecisionMade: true,
+          optedIn: true,
         });
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 6);
@@ -204,8 +207,8 @@ describe('Wallet Created Events', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
+          .withAnalyticsController({
+            analyticsId: MOCK_ANALYTICS_ID,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -241,22 +244,23 @@ describe('Wallet Created Events', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         const onboardingOptions: {
           driver: Driver;
-          participateInMetaMetrics?: boolean;
-          dataCollectionForMarketing?: boolean;
-        } = {
+        } & OnboardingMetricsFlowOptions = {
           driver,
         };
         // If running in Firefox, set the onboarding options to true
-        // Otherwise, `participateInMetaMetrics` is automatically set to true for social login users
+        // Otherwise, `optedIn` is automatically set to true for social login users
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
-          onboardingOptions.participateInMetaMetrics = true;
+          onboardingOptions.optedIn = true;
           onboardingOptions.dataCollectionForMarketing = true;
         }
 
         await createNewWalletWithSocialLoginOnboardingFlow(onboardingOptions);
 
+        const downloadAppPage = new DownloadAppPage(driver);
+        await downloadAppPage.checkPageIsLoaded();
+        await downloadAppPage.clickContinue();
+
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.displayDownloadAppPageAndContinue();
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
         await onboardingCompletePage.completeOnboarding();

@@ -33,7 +33,6 @@ const EMPTY_ORDERS: Order[] = [];
  * @returns Object containing orders array and loading state
  */
 export function usePerpsLiveOrders(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _options: UsePerpsLiveOrdersOptions = {},
 ): UsePerpsLiveOrdersReturn {
   const { data: orders, isInitialLoading } = usePerpsChannel(

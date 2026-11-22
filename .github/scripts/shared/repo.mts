@@ -1,4 +1,4 @@
-import { GitHub } from '@actions/github/lib/utils';
+import type { GitHub } from '@actions/github/lib/utils';
 
 // This function retrieves the repo
 export async function retrieveRepo(
@@ -26,7 +26,9 @@ export async function retrieveRepo(
   const repoId = retrieveRepoResult?.repository?.id;
 
   if (!repoId) {
-    throw new Error(`Repo with owner ${repoOwner} and name ${repoName} was not found.`);
+    throw new Error(
+      `Repo with owner ${repoOwner} and name ${repoName} was not found.`,
+    );
   }
 
   return repoId;

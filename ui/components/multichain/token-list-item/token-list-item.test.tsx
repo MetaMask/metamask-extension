@@ -15,6 +15,21 @@ import { getMultichainIsEvm } from '../../../selectors/multichain';
 import { getIsRWATokensEnabled } from '../../../selectors/rwa/feature-flags';
 import { TokenListItem } from '.';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 const state = {
   metamask: {
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -98,12 +113,11 @@ describe('TokenListItem', () => {
       }
       return undefined;
     });
-    const { getByTestId, container } = renderWithProvider(
+    const { getByTestId } = renderWithProvider(
       <TokenListItem {...props} />,
       store,
     );
     expect(getByTestId('multichain-token-list-item')).toBeDefined();
-    expect(container).toMatchSnapshot();
   });
 
   it('should render with custom className', () => {
@@ -127,12 +141,11 @@ describe('TokenListItem', () => {
       title: '',
       chainId: '0x1',
     };
-    const { getByText, container } = renderWithProvider(
+    const { getByText } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
       store,
     );
     expect(getByText('11.9751 ETH')).toBeInTheDocument();
-    expect(container).toMatchSnapshot();
   });
 
   it('should display warning scam modal', () => {
@@ -157,18 +170,19 @@ describe('TokenListItem', () => {
       chainId: '0x1',
       nativeCurrencySymbol: 'ETH',
     };
-    const { getByTestId, getByText, container } = renderWithProvider(
+    const { getByTestId, getByText } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
       store,
     );
-    expect(container).toMatchSnapshot();
 
     const warningScamModal = getByTestId('scam-warning');
     fireEvent.click(warningScamModal);
 
     expect(
       getByText(
-        'The native token symbol does not match the expected symbol of the native token for the network with the associated chain ID. You have entered SCAM_TOKEN while the expected token symbol is ETH. Please verify you are connected to the correct chain.',
+        messages.nativeTokenScamWarningDescription.message
+          .replace('$1', 'SCAM_TOKEN')
+          .replace('$2', 'ETH'),
       ),
     ).toBeInTheDocument();
   });
@@ -186,18 +200,23 @@ describe('TokenListItem', () => {
       chainId: '0x1',
       nativeCurrencySymbol: undefined,
     };
-    const { getByTestId, getByText, container } = renderWithProvider(
+    const { getByTestId, getByText } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
       store,
     );
 
-    expect(container).toMatchSnapshot();
     const warningScamModal = getByTestId('scam-warning');
     fireEvent.click(warningScamModal);
 
     expect(
       getByText(
-        'The native token symbol does not match the expected symbol of the native token for the network with the associated chain ID. You have entered SCAM_TOKEN while the expected token symbol is something else. Please verify you are connected to the correct chain.',
+        messages.nativeTokenScamWarningDescription.message
+          .replace('$1', 'SCAM_TOKEN')
+          .replace(
+            '$2',
+            messages.nativeTokenScamWarningDescriptionExpectedTokenFallback
+              .message,
+          ),
       ),
     ).toBeInTheDocument();
   });
@@ -216,12 +235,11 @@ describe('TokenListItem', () => {
       chainId: '0x1',
     };
 
-    const { getByText, container } = renderWithProvider(
+    const { getByText } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
       store,
     );
     expect(getByText('11.9751 ETH')).toBeInTheDocument();
-    expect(container).toMatchSnapshot();
   });
 
   it('handles click action and fires onClick', () => {
@@ -298,7 +316,7 @@ describe('TokenListItem', () => {
 
   it('handles clicking staking opens tab', async () => {
     const store = configureMockStore()(state);
-    const { queryByTestId, container } = renderWithProvider(
+    const { queryByTestId } = renderWithProvider(
       <TokenListItem isStakeable {...props} />,
       store,
     );
@@ -309,7 +327,6 @@ describe('TokenListItem', () => {
 
     expect(stakeButton).toBeInTheDocument();
     expect(stakeButton).not.toBeDisabled();
-    expect(container).toMatchSnapshot();
 
     stakeButton && fireEvent.click(stakeButton);
     expect(openTabSpy).toHaveBeenCalledTimes(1);

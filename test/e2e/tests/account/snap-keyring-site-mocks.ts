@@ -1,5 +1,40 @@
-import { Mockttp } from 'mockttp';
+import { CompletedRequest, Mockttp } from 'mockttp';
+import { REWARDS_API_URL } from '../../../../shared/constants/rewards';
 import { mockSimpleKeyringSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
+
+/**
+ * Prevents rewards silent authentication from competing with Snap dialogs.
+ *
+ * The response has one explicit opt-out result per requested address. An empty
+ * result lets the rewards controller proceed to silent authentication.
+ *
+ * @param mockServer - The E2E mock server.
+ */
+export async function mockRewardsOptOut(mockServer: Mockttp) {
+  const mockOptInStatus = async (request: CompletedRequest) => {
+    const body = (await request.body.getJson()) as {
+      addresses?: unknown[];
+    };
+    const addressCount = body.addresses?.length ?? 0;
+
+    return {
+      statusCode: 200,
+      json: {
+        ois: Array(addressCount).fill(false),
+        sids: Array(addressCount).fill(null),
+      },
+    };
+  };
+
+  return await Promise.all(
+    [REWARDS_API_URL.UAT, REWARDS_API_URL.PRD].map((apiUrl) =>
+      mockServer
+        .forPost(`${apiUrl}/public/rewards/ois`)
+        .always()
+        .thenCallback(mockOptInStatus),
+    ),
+  );
+}
 
 export async function serveSnapKeyRingFromLocalhost(
   mockServer: Mockttp,
@@ -43,8 +78,8 @@ export async function mockSnapSimpleKeyringAndSite(
   mockServer: Mockttp,
   port: number = 8080,
 ) {
-  const simpleKeyring = await mockSimpleKeyringSnap(mockServer);
-  const siteProxy = await serveSnapKeyRingFromLocalhost(mockServer, port);
-
-  return [simpleKeyring, siteProxy];
+  return [
+    await mockSimpleKeyringSnap(mockServer),
+    await serveSnapKeyRingFromLocalhost(mockServer, port),
+  ];
 }

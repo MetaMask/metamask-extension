@@ -1,10 +1,11 @@
 import * as fs from 'fs/promises';
 import path from 'path';
-import type {
-  TestCase,
-  TestFile,
-  TestRun,
-  TestSuite,
+import {
+  getTestSuiteTime,
+  type TestCase,
+  type TestFile,
+  type TestRun,
+  type TestSuite,
 } from './shared/test-reports.mts';
 import {
   consoleBold,
@@ -12,14 +13,8 @@ import {
   normalizeTestPath,
   XML,
 } from './shared/utils.mts';
-import type { Endpoints } from '@octokit/types';
-
-type Job =
-  Endpoints['GET /repos/{owner}/{repo}/actions/runs/{run_id}/jobs']['response']['data']['jobs'][number];
 
 async function main() {
-  const { Octokit } = await import('octokit');
-
   const env = {
     OWNER: process.env.OWNER || 'metamask',
     REPOSITORY: process.env.REPOSITORY || 'metamask-extension',
@@ -29,43 +24,8 @@ async function main() {
     TEST_RESULTS_PATH: process.env.TEST_RESULTS_PATH || 'test/test-results/e2e',
     TEST_RUNS_PATH:
       process.env.TEST_RUNS_PATH || 'test/test-results/test-runs.json',
-    GITHUB_TOKEN: process.env.GITHUB_TOKEN!,
     GITHUB_ACTIONS: process.env.GITHUB_ACTIONS === 'true',
   };
-
-  const github = new Octokit({ auth: env.GITHUB_TOKEN });
-
-  const jobsCache: { [runId: number]: Job[] } = {};
-
-  async function getJobs(runId: number) {
-    if (!runId) {
-      return [];
-    } else if (jobsCache[runId]) {
-      return jobsCache[runId];
-    } else {
-      try {
-        const jobs = await github.paginate(
-          github.rest.actions.listJobsForWorkflowRun,
-          {
-            owner: env.OWNER,
-            repo: env.REPOSITORY,
-            run_id: runId,
-            per_page: 100,
-          },
-        );
-        jobsCache[runId] = jobs;
-        return jobsCache[runId];
-      } catch (error) {
-        return [];
-      }
-    }
-  }
-
-  async function getJobId(runId: number, jobName: string) {
-    const jobs = await getJobs(runId);
-    const job = jobs.find((job) => job.name.endsWith(jobName));
-    return job?.id;
-  }
 
   let summary = '';
   const core = env.GITHUB_ACTIONS
@@ -95,7 +55,9 @@ async function main() {
       const results = await XML.parse(file);
 
       for (const suite of results.testsuites.testsuite || []) {
-        if (!suite.testcase || !suite.$.file) continue;
+        if (!suite.testcase || !suite.$.file) {
+          continue;
+        }
         const tests = +suite.$.tests;
         const failed = +suite.$.failures;
         const skipped = tests - suite.testcase.length;
@@ -104,12 +66,14 @@ async function main() {
         const jobName = suite.properties?.[0].property?.[0]?.$.value
           ? `${suite.properties?.[0].property?.[0]?.$.value}`
           : '';
-        const runId = suite.properties?.[0].property?.[1]?.$.value
+        const jobId = suite.properties?.[0].property?.[1]?.$.value
           ? +suite.properties?.[0].property?.[1]?.$.value
           : 0;
-        const jobId = (await getJobId(runId, jobName)) ?? 0;
-        const prNumber = suite.properties?.[0].property?.[2]?.$.value
+        const runId = suite.properties?.[0].property?.[2]?.$.value
           ? +suite.properties?.[0].property?.[2]?.$.value
+          : 0;
+        const prNumber = suite.properties?.[0].property?.[3]?.$.value
+          ? +suite.properties?.[0].property?.[3]?.$.value
           : 0;
 
         const testSuite: TestSuite = {
@@ -134,6 +98,7 @@ async function main() {
           };
           testSuite.testCases.push(testCase);
         }
+        testSuite.time = getTestSuiteTime(testSuite.time, testSuite.testCases);
 
         const testFile: TestFile = {
           path: normalizeTestPath(suite.$.file),
@@ -229,11 +194,15 @@ async function main() {
         );
 
         if (total.failed > 0) {
-          if (testRun.name) console.log(`${consoleBold(title)} ❌`);
+          if (testRun.name) {
+            console.log(`${consoleBold(title)} ❌`);
+          }
           core.summary.addRaw(`\n<details open>\n`);
           core.summary.addRaw(`\n<summary>${title} ❌</summary>\n`);
         } else {
-          if (testRun.name) console.log(`${consoleBold(title)} ✅`);
+          if (testRun.name) {
+            console.log(`${consoleBold(title)} ✅`);
+          }
           core.summary.addRaw(`\n<details>\n`);
           core.summary.addRaw(`\n<summary>${title} ✅</summary>\n`);
         }
@@ -268,13 +237,17 @@ async function main() {
             `\n<hr style="height: 1px; margin-top: -5px; margin-bottom: 10px;">\n`,
           );
           for (const file of testRun.testFiles) {
-            if (file.failed === 0) continue;
+            if (file.failed === 0) {
+              continue;
+            }
             console.error(file.path);
             const testUrl = new URL(repositoryUrl);
             testUrl.pathname += `/blob/${env.BRANCH}/${file.path}`;
             core.summary.addRaw(`\n#### [${file.path}](${testUrl})\n`);
             for (const suite of file.testSuites) {
-              if (suite.failed === 0) continue;
+              if (suite.failed === 0) {
+                continue;
+              }
               if (suite.job.name && suite.job.id && suite.job.runId) {
                 const jobUrl = new URL(repositoryUrl);
                 jobUrl.pathname += `/actions/runs/${suite.job.runId}/job/${suite.job.id}`;
@@ -288,7 +261,9 @@ async function main() {
                 );
               }
               for (const test of suite.testCases) {
-                if (test.status !== 'failed') continue;
+                if (test.status !== 'failed') {
+                  continue;
+                }
                 console.error(`  ${test.name}`);
                 console.error(`  ${test.error}\n`);
                 core.summary.addRaw(`\n##### ${test.name}\n`);

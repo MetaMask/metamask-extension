@@ -4,7 +4,7 @@ import type { CaipChainId, Hex } from '@metamask/utils';
 import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
 import { sortAssets, type SortCriteria } from './sort';
 
-// These are the only two options for sorting assets
+// Saved tokenSortConfig values. Header overrides are applied by sortTokenAssets.
 // {"key": "name", "order": "asc", "sortCallback": "alphaNumeric"}
 // {"key": "tokenFiatAmount", "order": "dsc", "sortCallback": "stringNumeric"}
 export function sortAssetsWithPriority(
@@ -19,7 +19,102 @@ export function sortAssetsWithPriority(
     });
   }
 
-  return [...array].sort(compareFiatBalanceWithPriority);
+  return [...array].sort(compareFiatBalanceDescending);
+}
+
+export type TokenTableSort =
+  | {
+      column: 'token' | 'balance';
+      reversed: boolean;
+    }
+  | {
+      column: 'price' | 'change';
+      reversed: boolean;
+      getValue: (asset: Asset) => number | undefined;
+    };
+
+export type TokenTableHeaderSort = {
+  column: TokenTableSort['column'];
+  reversed: boolean;
+};
+
+/**
+ * Sorts tokens for the table header. Without an override, this is the saved
+ * preference. The override is not written back to that preference.
+ *
+ * Price and 24h values are read once per asset, then the entries are sorted.
+ *
+ * @param array - The assets to sort.
+ * @param criteria - The saved token sort preference.
+ * @param override - A table-header sort, when the user has clicked a column.
+ * @returns The assets in the requested order.
+ */
+export function sortTokenAssets(
+  array: Asset[],
+  criteria: SortCriteria,
+  override?: TokenTableSort | null,
+): Asset[] {
+  if (!override) {
+    return sortAssetsWithPriority(array, criteria);
+  }
+
+  if (override.column === 'token') {
+    return sortAssets(array, {
+      key: 'name',
+      order: override.reversed ? 'dsc' : 'asc',
+      sortCallback: 'alphaNumeric',
+    });
+  }
+
+  if (override.column === 'price' || override.column === 'change') {
+    return array
+      .map((asset) => ({
+        asset,
+        value: override.getValue(asset),
+      }))
+      .sort((entryA, entryB) => {
+        const comparison = compareOptionalNumbers(
+          entryA.value,
+          entryB.value,
+          override.reversed,
+        );
+        if (comparison !== 0) {
+          return comparison;
+        }
+        return entryA.asset.name.localeCompare(entryB.asset.name);
+      })
+      .map((entry) => entry.asset);
+  }
+
+  return [...array].sort((a, b) => compareFiatBalance(a, b, override.reversed));
+}
+
+/**
+ * Compares two numbers. A missing number sorts after a known number in either
+ * direction.
+ *
+ * @param valueA - The first value.
+ * @param valueB - The second value.
+ * @param reversed - When true, the lower value comes first.
+ * @returns A negative number when the first value comes first.
+ */
+function compareOptionalNumbers(
+  valueA: number | undefined,
+  valueB: number | undefined,
+  reversed: boolean,
+) {
+  if (valueA === undefined || !Number.isFinite(valueA)) {
+    return valueB === undefined || !Number.isFinite(valueB) ? 0 : 1;
+  }
+  if (valueB === undefined || !Number.isFinite(valueB)) {
+    return -1;
+  }
+  if (valueA === valueB) {
+    return 0;
+  }
+
+  const lowToHigh = valueA - valueB;
+  return reversed ? lowToHigh : -lowToHigh;
 }
 
 // Higher priority assets are last in the array to facilitate sorting
@@ -32,30 +127,19 @@ const defaultNativeAssetOrder: (Hex | CaipChainId)[] = [
   TrxScope.Mainnet,
   BtcScope.Mainnet,
   SolScope.Mainnet,
-  CHAIN_IDS.LINEA_MAINNET,
   CHAIN_IDS.MAINNET,
 ];
 
 /**
- * Compares assets by fiat balance with priority sorting.
+ * Orders assets that have the same fiat balance.
+ * Native assets come before tokens. Two native assets follow
+ * `defaultNativeAssetOrder`. Everything else is ordered by name.
  *
  * @param a - The first asset to compare.
  * @param b - The second asset to compare.
  * @returns A negative number if the first asset should appear before the second, a positive number if the first asset should appear after the second, or 0 if they are equal.
  */
-export function compareFiatBalanceWithPriority(a: Asset, b: Asset) {
-  // If one of the fiat balances is greater than the other, return the comparison
-  const fiatBalanceComparison = (b.fiat?.balance ?? 0) - (a.fiat?.balance ?? 0);
-
-  // Only return comparison if it is not zero
-  if (fiatBalanceComparison) {
-    return fiatBalanceComparison;
-  }
-
-  // With equal fiat balances
-  // Always return native assets before token assets
-  // Apply the priority defined in defaultNativeAssetOrder if both are native assets
-  // If both assets are tokens or none is in the defaultNativeAssetOrder, compare by name
+function compareAssetsWithEqualFiatBalance(a: Asset, b: Asset) {
   if (a.isNative && !b.isNative) {
     return -1;
   }
@@ -79,4 +163,36 @@ export function compareFiatBalanceWithPriority(a: Asset, b: Asset) {
 
   // If neither asset is in the defaultNativeAssetOrder, compare by name
   return a.name.localeCompare(b.name);
+}
+
+/**
+ * Compares assets by fiat balance. Equal balances use the native-asset and
+ * name ordering from {@link compareAssetsWithEqualFiatBalance}.
+ *
+ * @param a - The first asset to compare.
+ * @param b - The second asset to compare.
+ * @param lowToHigh - When true, the lower balance comes first.
+ * @returns A negative number if the first asset should appear before the second, a positive number if the first asset should appear after the second, or 0 if they are equal.
+ */
+function compareFiatBalance(a: Asset, b: Asset, lowToHigh: boolean) {
+  const fiatBalanceComparison = lowToHigh
+    ? (a.fiat?.balance ?? 0) - (b.fiat?.balance ?? 0)
+    : (b.fiat?.balance ?? 0) - (a.fiat?.balance ?? 0);
+
+  if (fiatBalanceComparison) {
+    return fiatBalanceComparison;
+  }
+
+  return compareAssetsWithEqualFiatBalance(a, b);
+}
+
+/**
+ * Compares assets by fiat balance, highest first.
+ *
+ * @param a - The first asset to compare.
+ * @param b - The second asset to compare.
+ * @returns A negative number if the first asset should appear before the second, a positive number if the first asset should appear after the second, or 0 if they are equal.
+ */
+export function compareFiatBalanceDescending(a: Asset, b: Asset) {
+  return compareFiatBalance(a, b, false);
 }

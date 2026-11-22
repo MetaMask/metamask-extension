@@ -1,73 +1,159 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import {
+  NOTIFICATIONS_SETTINGS_ROUTE,
+  NOTIFICATIONS_SETTINGS_SECTION_ROUTES,
+  NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+  type NotificationsSettingsSectionType,
+} from '../../../shared/lib/notifications-settings';
+import { createMockNotificationPreferences } from '../../hooks/metamask-notifications/mocks';
+import { useNotificationPreferences } from '../../hooks/metamask-notifications/useNotificationPreferences';
 import { useAccountSettingsProps } from '../../hooks/metamask-notifications/useSwitchNotifications';
+import { useEnableNotifications } from '../../hooks/metamask-notifications/useNotifications';
+import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
+
+// eslint-disable-next-line import-x/no-restricted-paths -- Test the section redirect and main page together.
+import { NotificationSectionSubPage } from '../settings/notifications-tab/notification-section-sub-page';
 import { NotificationsSettingsContent } from './notifications-settings';
 
-jest.mock('./notifications-settings-allow-notifications', () => ({
-  NotificationsSettingsAllowNotifications: () => (
-    <div data-testid="notifications-settings-allow" />
-  ),
-}));
+const mockEnableNotifications = jest.fn();
+const mockRefetchPreferences = jest.fn();
+const mockListNotifications = jest.fn();
 
-jest.mock('./notifications-settings-types', () => ({
-  NotificationsSettingsTypes: () => (
-    <div data-testid="notifications-settings-types" />
-  ),
-}));
-
-jest.mock('./notifications-settings-per-account', () => ({
-  NotificationsSettingsPerAccount: ({
-    address,
-    name,
+// Keep the real notification toggle handler, replacing only the legacy toggle UI.
+jest.mock('../../components/ui/toggle-button', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  default: ({
+    value,
+    onToggle,
+    disabled,
+    dataTestId,
   }: {
-    address: string;
-    name: string;
+    value: boolean;
+    onToggle: () => void;
+    disabled: boolean;
+    dataTestId: string;
   }) => (
-    <div data-testid={`notifications-settings-account-${address}`}>{name}</div>
+    <input
+      type="checkbox"
+      checked={value}
+      onChange={onToggle}
+      disabled={disabled}
+      data-testid={dataTestId}
+    />
   ),
 }));
+
+jest.mock('../../hooks/metamask-notifications/useNotifications', () => ({
+  ...jest.requireActual('../../hooks/metamask-notifications/useNotifications'),
+  useEnableNotifications: jest.fn(),
+  useDisableNotifications: () => ({
+    disableNotifications: jest.fn(),
+    error: null,
+  }),
+}));
+
+jest.mock(
+  '../../contexts/metamask-notifications/metamask-notifications',
+  () => ({
+    useMetamaskNotificationsContext: () => ({
+      listNotifications: mockListNotifications,
+    }),
+  }),
+);
+
+jest.mock('../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
+  return {
+    useAnalytics: () => ({ trackEvent: jest.fn(), createEventBuilder }),
+  };
+});
 
 jest.mock('../../hooks/metamask-notifications/useSwitchNotifications', () => ({
   useAccountSettingsProps: jest.fn(),
+  useSwitchAccountNotificationsChange: () => ({
+    onChange: jest.fn(),
+    error: null,
+  }),
 }));
+
+jest.mock(
+  '../../hooks/metamask-notifications/useNotificationPreferences',
+  () => ({
+    useNotificationPreferences: jest.fn(),
+  }),
+);
 
 const mockStore = configureMockStore([thunk]);
 
-const createInternalAccount = ({
-  id,
-  address,
-  type,
-  name,
-}: {
-  id: string;
-  address: string;
-  type: string;
-  name: string;
-}) => ({
-  id,
-  address,
-  type,
-  options: {},
-  methods: [],
-  metadata: {
-    name,
-    keyring: {},
-    importTime: 0,
-  },
-  scopes: ['eip155:1'],
+const createPreferencesResult = (): ReturnType<
+  typeof useNotificationPreferences
+> => ({
+  preferences: createMockNotificationPreferences(),
+  hasNotificationPreferences: true,
+  isLoading: false,
+  isUpdatingPreferences: false,
+  error: null,
+  refetchPreferences: mockRefetchPreferences,
+  updatePreference: jest.fn(),
+  updatePreferencesSection: jest.fn(),
 });
 
-describe('NotificationsSettingsContent', () => {
-  let consoleWarnSpy: jest.SpyInstance;
+const NotificationSettingsFlow = () => {
+  const { pathname, search } = useLocation();
+  const navigate = useNavigate();
+  return (
+    <>
+      <output data-testid="notification-settings-location">
+        {pathname}
+        {search}
+      </output>
+      <button onClick={() => navigate(NOTIFICATIONS_SETTINGS_ROUTE)}>
+        Back to notifications
+      </button>
+      <button onClick={() => navigate('/other-page')}>Leave settings</button>
+      <Routes>
+        <Route
+          path={NOTIFICATIONS_SETTINGS_ROUTE}
+          element={<NotificationsSettingsContent />}
+        />
+        {Object.entries(NOTIFICATIONS_SETTINGS_SECTION_ROUTES).map(
+          ([sectionType, path]) => (
+            <Route
+              key={sectionType}
+              path={path}
+              element={
+                <NotificationSectionSubPage
+                  sectionType={sectionType as NotificationsSettingsSectionType}
+                />
+              }
+            />
+          ),
+        )}
+        <Route path="*" element={<div>Other page</div>} />
+      </Routes>
+    </>
+  );
+};
 
+describe('NotificationsSettingsContent', () => {
   beforeEach(() => {
-    consoleWarnSpy = jest
-      .spyOn(console, 'warn')
-      .mockImplementation(() => undefined);
+    jest.clearAllMocks();
+    mockEnableNotifications.mockReset();
+    mockRefetchPreferences.mockReset();
+    jest.mocked(useEnableNotifications).mockReturnValue({
+      enableNotifications: mockEnableNotifications,
+      error: null,
+    });
     jest.mocked(useAccountSettingsProps).mockReturnValue({
       data: {},
       initialLoading: false,
@@ -75,195 +161,338 @@ describe('NotificationsSettingsContent', () => {
       accountsBeingUpdated: [],
       update: jest.fn(),
     });
+    jest
+      .mocked(useNotificationPreferences)
+      .mockReturnValue(createPreferencesResult());
   });
 
-  afterEach(() => {
-    consoleWarnSpy.mockRestore();
-    jest.clearAllMocks();
-  });
-
-  it('renders notification accounts grouped by wallet', () => {
-    const account1 = createInternalAccount({
-      id: 'account-1',
-      address: '0x1111111111111111111111111111111111111111',
-      type: 'eip155:eoa',
-      name: 'Account 1',
-    });
-    const account2 = createInternalAccount({
-      id: 'account-2',
-      address: '0x2222222222222222222222222222222222222222',
-      type: 'eip155:eoa',
-      name: 'Account 2',
-    });
-    const account3 = createInternalAccount({
-      id: 'account-3',
-      address: '0x3333333333333333333333333333333333333333',
-      type: 'eip155:eoa',
-      name: 'Imported 1',
-    });
-    const nonEvmAccount = createInternalAccount({
-      id: 'account-4',
-      address: 'SolanaAddress222222222222222222222222222222',
-      type: 'solana:data-account',
-      name: 'Imported 2',
-    });
-
+  it('renders the notifications settings list page', () => {
     const store = mockStore({
       metamask: {
         isNotificationServicesEnabled: true,
         isUpdatingMetamaskNotifications: false,
-        isUpdatingMetamaskNotificationsAccount: [],
-        subscriptionAccountsSeen: [
-          account1.address,
-          account2.address,
-          account3.address,
-        ],
-        accountTree: {
-          selectedAccountGroup: 'entropy:wallet-1/0',
-          wallets: {
-            'entropy:wallet-1': {
-              id: 'entropy:wallet-1',
-              type: 'entropy',
-              metadata: { name: 'Wallet 1' },
-              groups: {
-                'entropy:wallet-1/0': {
-                  id: 'entropy:wallet-1/0',
-                  type: 'multichain-account',
-                  metadata: {
-                    name: 'Account 1',
-                    pinned: false,
-                    hidden: false,
-                  },
-                  accounts: [account1.id],
-                },
-                'entropy:wallet-1/1': {
-                  id: 'entropy:wallet-1/1',
-                  type: 'multichain-account',
-                  metadata: {
-                    name: 'Account 2',
-                    pinned: false,
-                    hidden: false,
-                  },
-                  accounts: [account2.id],
-                },
-              },
-            },
-            'keyring:wallet-2': {
-              id: 'keyring:wallet-2',
-              type: 'keyring',
-              metadata: { name: 'Imported wallet' },
-              groups: {
-                'keyring:wallet-2/0': {
-                  id: 'keyring:wallet-2/0',
-                  type: 'multichain-account',
-                  metadata: {
-                    name: 'Imported 1',
-                    pinned: false,
-                    hidden: false,
-                  },
-                  accounts: [account3.id],
-                },
-                'keyring:wallet-2/1': {
-                  id: 'keyring:wallet-2/1',
-                  type: 'multichain-account',
-                  metadata: {
-                    name: 'Imported 2',
-                    pinned: false,
-                    hidden: false,
-                  },
-                  accounts: [nonEvmAccount.id],
-                },
-              },
-            },
-          },
-        },
-        internalAccounts: {
-          selectedAccount: account1.id,
-          accounts: {
-            [account1.id]: account1,
-            [account2.id]: account2,
-            [account3.id]: account3,
-            [nonEvmAccount.id]: nonEvmAccount,
-          },
-        },
+        accountTree: { selectedAccountGroup: '', wallets: {} },
+        internalAccounts: { selectedAccount: '', accounts: {} },
       },
     });
 
-    renderWithProvider(<NotificationsSettingsContent />, store);
+    renderWithProvider(
+      <NotificationsSettingsContent />,
+      store,
+      NOTIFICATIONS_SETTINGS_ROUTE,
+    );
 
     expect(
-      screen.getByTestId('notifications-settings-per-account'),
-    ).toBeInTheDocument();
-    expect(screen.getByText('Wallet 1')).toBeInTheDocument();
-    expect(screen.getByText('Imported wallet')).toBeInTheDocument();
-    expect(
-      screen.getByTestId(
-        'notifications-settings-account-0x1111111111111111111111111111111111111111',
-      ),
+      screen.getByTestId('notifications-settings-allow-toggle-input'),
     ).toBeInTheDocument();
     expect(
-      screen.getByTestId(
-        'notifications-settings-account-0x2222222222222222222222222222222222222222',
-      ),
+      screen.getByTestId('notifications-settings-per-types'),
     ).toBeInTheDocument();
     expect(
-      screen.getByTestId(
-        'notifications-settings-account-0x3333333333333333333333333333333333333333',
-      ),
+      screen.getByText(messages.notificationsSettingsAgenticCliTitle.message),
     ).toBeInTheDocument();
-    expect(screen.queryByText('Imported 2')).not.toBeInTheDocument();
+    expect(
+      screen.getByTestId('notifications-settings-section-walletActivity'),
+    ).not.toHaveTextContent(
+      `${messages.notificationsSettingsStatusPush.message}, ${messages.notificationsSettingsStatusInApp.message}`,
+    );
+    expect(
+      screen.getByTestId('notifications-settings-section-marketing'),
+    ).toHaveTextContent(
+      `${messages.notificationsSettingsStatusPush.message}, ${messages.notificationsSettingsStatusInApp.message}`,
+    );
   });
 
-  it('hides the account section when there are no notification-eligible accounts', () => {
-    const account = createInternalAccount({
-      id: 'account-1',
-      address: '0x1111111111111111111111111111111111111111',
-      type: 'eip155:eoa',
-      name: 'Account 1',
+  describe('deferred section navigation', () => {
+    const createStore = (enabled = false) => {
+      let state = {
+        metamask: {
+          isNotificationServicesEnabled: enabled,
+          isUpdatingMetamaskNotifications: false,
+          accountTree: { selectedAccountGroup: '', wallets: {} },
+          internalAccounts: { selectedAccount: '', accounts: {} },
+        },
+      };
+      const store = mockStore(() => state);
+      const enable = () => {
+        state = {
+          metamask: { ...state.metamask, isNotificationServicesEnabled: true },
+        };
+        store.dispatch({ type: 'NOTIFICATIONS_ENABLED' });
+      };
+      return { store, enable };
+    };
+
+    it('resumes the requested section after the main toggle enables notifications', async () => {
+      const { store, enable } = createStore();
+      mockEnableNotifications.mockImplementation(async () => enable());
+      renderWithProvider(
+        <NotificationSettingsFlow />,
+        store,
+        NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+      );
+
+      expect(
+        screen.getByTestId('notification-settings-location'),
+      ).toHaveTextContent(
+        `${NOTIFICATIONS_SETTINGS_ROUTE}?section=wallet-activity`,
+      );
+      expect(
+        screen.queryByTestId(
+          'notifications-settings-section-content-walletActivity',
+        ),
+      ).not.toBeInTheDocument();
+
+      fireEvent.click(
+        screen.getByTestId('notifications-settings-allow-toggle-input'),
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(
+            'notifications-settings-section-content-walletActivity',
+          ),
+        ).toBeInTheDocument();
+      });
+      expect(
+        screen.getByTestId('notification-settings-location').textContent,
+      ).toBe(NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE);
+
+      fireEvent.click(screen.getByText('Back to notifications'));
+      expect(
+        screen.getByTestId('notification-settings-location').textContent,
+      ).toBe(NOTIFICATIONS_SETTINGS_ROUTE);
+      expect(
+        screen.getByTestId('notifications-settings-per-types'),
+      ).toBeInTheDocument();
     });
 
-    const store = mockStore({
-      metamask: {
-        isNotificationServicesEnabled: true,
-        isUpdatingMetamaskNotifications: false,
-        isUpdatingMetamaskNotificationsAccount: [],
-        subscriptionAccountsSeen: [],
-        accountTree: {
-          selectedAccountGroup: 'entropy:wallet-1/0',
-          wallets: {
-            'entropy:wallet-1': {
-              id: 'entropy:wallet-1',
-              type: 'entropy',
-              metadata: { name: 'Wallet 1' },
-              groups: {
-                'entropy:wallet-1/0': {
-                  id: 'entropy:wallet-1/0',
-                  type: 'multichain-account',
-                  metadata: {
-                    name: 'Account 1',
-                    pinned: false,
-                    hidden: false,
-                  },
-                  accounts: [account.id],
-                },
-              },
-            },
-          },
-        },
-        internalAccounts: {
-          selectedAccount: account.id,
-          accounts: {
-            [account.id]: account,
-          },
-        },
-      },
+    it('waits for section preferences before resuming navigation', async () => {
+      const { store, enable } = createStore();
+      mockEnableNotifications.mockImplementation(async () => enable());
+      let finishRefresh: () => void = () => undefined;
+      mockRefetchPreferences.mockReturnValueOnce(
+        new Promise<void>((resolve) => {
+          finishRefresh = resolve;
+        }),
+      );
+      const preferencesMock = jest.mocked(useNotificationPreferences);
+      const initialResult = createPreferencesResult();
+      preferencesMock.mockReturnValue({
+        ...initialResult,
+        preferences: undefined,
+        hasNotificationPreferences: false,
+        isLoading: true,
+      });
+      renderWithProvider(
+        <NotificationSettingsFlow />,
+        store,
+        NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+      );
+      fireEvent.click(
+        screen.getByTestId('notifications-settings-allow-toggle-input'),
+      );
+      await waitFor(() => {
+        expect(mockRefetchPreferences).toHaveBeenCalled();
+      });
+
+      expect(
+        screen.getByTestId('notification-settings-location').textContent,
+      ).toBe(`${NOTIFICATIONS_SETTINGS_ROUTE}?section=wallet-activity`);
+
+      preferencesMock.mockReturnValue(initialResult);
+      await act(async () => finishRefresh());
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(
+            'notifications-settings-section-content-walletActivity',
+          ),
+        ).toBeInTheDocument();
+      });
     });
 
-    renderWithProvider(<NotificationsSettingsContent />, store);
+    it('waits for the enable operation and preference refresh to finish', async () => {
+      const { store, enable } = createStore();
+      mockEnableNotifications.mockImplementation(async () => enable());
+      let finishRefresh: () => void = () => undefined;
+      mockRefetchPreferences.mockReturnValueOnce(
+        new Promise<void>((resolve) => {
+          finishRefresh = resolve;
+        }),
+      );
+      renderWithProvider(
+        <NotificationSettingsFlow />,
+        store,
+        NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+      );
+      fireEvent.click(
+        screen.getByTestId('notifications-settings-allow-toggle-input'),
+      );
 
-    expect(
-      screen.queryByTestId('notifications-settings-per-account'),
-    ).not.toBeInTheDocument();
-    expect(screen.queryByText('Wallet 1')).not.toBeInTheDocument();
+      await waitFor(() => {
+        expect(mockRefetchPreferences).toHaveBeenCalled();
+      });
+      expect(
+        screen.getByTestId('notification-settings-location').textContent,
+      ).toBe(`${NOTIFICATIONS_SETTINGS_ROUTE}?section=wallet-activity`);
+
+      await act(async () => finishRefresh());
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(
+            'notifications-settings-section-content-walletActivity',
+          ),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it('keeps the pending section when enabling does not enable notifications', async () => {
+      const { store } = createStore();
+      mockEnableNotifications.mockResolvedValueOnce(undefined);
+      renderWithProvider(
+        <NotificationSettingsFlow />,
+        store,
+        NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+      );
+      fireEvent.click(
+        screen.getByTestId('notifications-settings-allow-toggle-input'),
+      );
+      await waitFor(() => {
+        expect(mockRefetchPreferences).toHaveBeenCalled();
+      });
+
+      expect(
+        screen.getByTestId('notification-settings-location').textContent,
+      ).toBe(`${NOTIFICATIONS_SETTINGS_ROUTE}?section=wallet-activity`);
+      expect(
+        screen.queryByTestId(
+          'notifications-settings-section-content-walletActivity',
+        ),
+      ).not.toBeInTheDocument();
+    });
+
+    it('returns to the main page when the requested section has no preferences', () => {
+      const { store } = createStore(true);
+      const preferences = createMockNotificationPreferences();
+      Reflect.deleteProperty(preferences, 'agenticCli');
+      jest.mocked(useNotificationPreferences).mockReturnValue({
+        ...createPreferencesResult(),
+        preferences,
+      });
+      renderWithProvider(
+        <NotificationSettingsFlow />,
+        store,
+        NOTIFICATIONS_SETTINGS_SECTION_ROUTES.agenticCli,
+      );
+
+      expect(
+        screen.getByTestId('notification-settings-location').textContent,
+      ).toBe(NOTIFICATIONS_SETTINGS_ROUTE);
+    });
+
+    it('does not resume a pending section when preferences fail to load', () => {
+      const { store } = createStore(true);
+      jest.mocked(useNotificationPreferences).mockReturnValue({
+        ...createPreferencesResult(),
+        error: new Error('Unable to load preferences'),
+      });
+      renderWithProvider(
+        <NotificationSettingsFlow />,
+        store,
+        `${NOTIFICATIONS_SETTINGS_ROUTE}?section=wallet-activity`,
+      );
+
+      expect(
+        screen.getByTestId('notification-settings-location').textContent,
+      ).toBe(`${NOTIFICATIONS_SETTINGS_ROUTE}?section=wallet-activity`);
+      expect(
+        screen.queryByTestId(
+          'notifications-settings-section-content-walletActivity',
+        ),
+      ).not.toBeInTheDocument();
+    });
+
+    const otherSections: NotificationsSettingsSectionType[] = [
+      'marketing',
+      'agenticCli',
+      ...(getIsPerpsIncludedInBuild() ? ['perps' as const] : []),
+    ];
+    for (const sectionType of otherSections) {
+      it(`resumes the ${sectionType} section after enabling`, async () => {
+        const { store, enable } = createStore();
+        mockEnableNotifications.mockImplementation(async () => enable());
+        const path = NOTIFICATIONS_SETTINGS_SECTION_ROUTES[sectionType];
+        renderWithProvider(<NotificationSettingsFlow />, store, path);
+        fireEvent.click(
+          screen.getByTestId('notifications-settings-allow-toggle-input'),
+        );
+
+        await waitFor(() => {
+          expect(
+            screen.getByTestId(
+              `notifications-settings-section-content-${sectionType}`,
+            ),
+          ).toBeInTheDocument();
+        });
+        expect(
+          screen.getByTestId('notification-settings-location').textContent,
+        ).toBe(path);
+      });
+    }
+
+    it('does not resume navigation after leaving the notifications page', async () => {
+      const { store, enable } = createStore();
+      let finishEnable: () => void = () => undefined;
+      mockEnableNotifications.mockImplementation(
+        () =>
+          new Promise<void>((resolve) => {
+            finishEnable = () => {
+              enable();
+              resolve();
+            };
+          }),
+      );
+      renderWithProvider(
+        <NotificationSettingsFlow />,
+        store,
+        NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+      );
+      fireEvent.click(
+        screen.getByTestId('notifications-settings-allow-toggle-input'),
+      );
+      fireEvent.click(screen.getByText('Leave settings'));
+
+      await act(async () => finishEnable());
+      expect(
+        screen.getByTestId('notification-settings-location').textContent,
+      ).toBe('/other-page');
+    });
+
+    for (const search of [
+      '',
+      '?section=price-alerts',
+      '?section=not-a-section',
+    ]) {
+      it(`stays on the main page after enabling without a supported pending section (${search})`, async () => {
+        const { store, enable } = createStore();
+        mockEnableNotifications.mockImplementation(async () => enable());
+        renderWithProvider(
+          <NotificationSettingsFlow />,
+          store,
+          `${NOTIFICATIONS_SETTINGS_ROUTE}${search}`,
+        );
+        fireEvent.click(
+          screen.getByTestId('notifications-settings-allow-toggle-input'),
+        );
+        await waitFor(() => {
+          expect(
+            screen.getByTestId('notifications-settings-per-types'),
+          ).toBeInTheDocument();
+        });
+        expect(
+          screen.getByTestId('notification-settings-location').textContent,
+        ).toBe(`${NOTIFICATIONS_SETTINGS_ROUTE}${search}`);
+      });
+    }
   });
 });

@@ -1,3 +1,4 @@
+import type { ReadonlyAnalyticsEventFragment } from '@metamask/analytics-controller';
 import type { Provider } from '@metamask/network-controller';
 import type { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
 import type { SmartTransaction } from '@metamask/smart-transactions-controller';
@@ -9,7 +10,7 @@ import {
   RecurringInterval,
   SubscriptionStatus,
 } from '@metamask/subscription-controller';
-import type { MetaMetricsEventFragment } from '../constants/metametrics';
+import type { MetaMetricsEventFragmentPayload } from '../constants/metametrics';
 import type { TokenStandard } from '../constants/transaction';
 import type { HardwareKeyringType } from '../constants/hardware-wallets';
 // TODO: Remove restricted import
@@ -18,13 +19,28 @@ import type { SnapAndHardwareMessenger } from '../../app/scripts/lib/snap-keyrin
 import { ShieldMetricsSourceEnum } from '../constants/subscriptions';
 import type { ScanAddressResponse } from '../lib/trust-signals';
 
+export type UTMParameter =
+  | 'utm_campaign'
+  | 'utm_content'
+  | 'utm_medium'
+  | 'utm_source'
+  | 'utm_term';
+
+export const UTM_PARAMETERS = new Set([
+  'utm_campaign',
+  'utm_content',
+  'utm_medium',
+  'utm_source',
+  'utm_term',
+]) as Set<UTMParameter> & { has: (key: string) => key is UTMParameter };
+
 export type TransactionMetricsRequest = {
   getTransactionUIMetricsFragment: (
     transactionId: string,
-  ) => Partial<MetaMetricsEventFragment> | undefined;
+  ) => ReadonlyAnalyticsEventFragment | undefined;
   upsertTransactionUIMetricsFragment: (
     transactionId: string,
-    payload: Partial<MetaMetricsEventFragment>,
+    payload: MetaMetricsEventFragmentPayload,
   ) => void;
   getAccountBalance: (account: Hex, chainId: Hex) => Hex;
   getAccountType: (

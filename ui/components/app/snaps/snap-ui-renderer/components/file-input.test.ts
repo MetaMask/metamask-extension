@@ -50,7 +50,7 @@ describe('SnapUIFileInput', () => {
     await waitFor(() => {
       expect(submitRequestToBackground).toHaveBeenNthCalledWith(
         1,
-        'updateInterfaceState',
+        'SnapInterfaceController:updateInterfaceState',
         [
           MOCK_INTERFACE_ID,
           {
@@ -69,7 +69,7 @@ describe('SnapUIFileInput', () => {
 
     expect(submitRequestToBackground).toHaveBeenNthCalledWith(
       2,
-      'handleSnapRequest',
+      'SnapController:handleRequest',
       [
         {
           handler: 'onUserInput',
@@ -100,8 +100,8 @@ describe('SnapUIFileInput', () => {
     fireEvent.click(button);
 
     expect(submitRequestToBackground).toHaveBeenNthCalledWith(
-      3,
-      'handleSnapRequest',
+      5,
+      'SnapController:handleRequest',
       [
         {
           handler: 'onUserInput',
@@ -120,8 +120,8 @@ describe('SnapUIFileInput', () => {
     );
 
     expect(submitRequestToBackground).toHaveBeenNthCalledWith(
-      4,
-      'handleSnapRequest',
+      6,
+      'SnapController:handleRequest',
       [
         {
           handler: 'onUserInput',

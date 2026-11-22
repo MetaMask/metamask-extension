@@ -1,0 +1,133 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ramps-controller actions matches snapshot for background action calls 1`] = `
+[
+  [
+    "RampsController:setUserRegion",
+    [
+      "us-ca",
+      {
+        "forceRefresh": true,
+      },
+    ],
+  ],
+  [
+    "RampsController:setSelectedToken",
+    [
+      "eip155:1/erc20:0x0",
+    ],
+  ],
+  [
+    "RampsController:setSelectedProvider",
+    [
+      "transak",
+      {
+        "autoSelected": true,
+      },
+    ],
+  ],
+  [
+    "RampsController:setSelectedPaymentMethod",
+    [
+      "credit_debit_card",
+    ],
+  ],
+  [
+    "RampsController:getCountries",
+  ],
+  [
+    "RampsController:getTokens",
+    [
+      "us-ca",
+      "buy",
+    ],
+  ],
+  [
+    "RampsController:getTokens",
+    [
+      "us-ca",
+      "sell",
+    ],
+  ],
+  [
+    "RampsController:getProviders",
+    [
+      "us-ca",
+    ],
+  ],
+  [
+    "RampsController:getPaymentMethods",
+    [
+      "us-ca",
+      {
+        "assetId": "eip155:1/erc20:0x0",
+        "fiat": "USD",
+        "provider": "transak",
+      },
+    ],
+  ],
+  [
+    "RampsController:getQuotes",
+    [
+      {
+        "amount": 100,
+        "assetId": "eip155:1/erc20:0x0",
+        "walletAddress": "0xabc",
+      },
+    ],
+  ],
+  [
+    "RampsController:getBuyWidgetData",
+    [
+      {
+        "id": "quote-1",
+      },
+    ],
+  ],
+  [
+    "RampsController:addPrecreatedOrder",
+    [
+      {
+        "chainId": "eip155:1",
+        "orderId": "order-1",
+        "providerCode": "transak",
+        "walletAddress": "0xabc",
+      },
+    ],
+  ],
+  [
+    "RampsController:addOrder",
+    [
+      {
+        "id": "order-1",
+        "providerOrderId": "abc",
+      },
+    ],
+  ],
+  [
+    "RampsController:removeOrder",
+    [
+      "order-1",
+    ],
+  ],
+  [
+    "RampsController:getOrder",
+    [
+      "transak",
+      "order-1",
+      "0xabc",
+    ],
+  ],
+  [
+    "RampsController:getOrderFromCallback",
+    [
+      "transak",
+      "https://callback",
+      "0xabc",
+    ],
+  ],
+  [
+    "RampsController:syncOrdersWithUserStorage",
+  ],
+]
+`;

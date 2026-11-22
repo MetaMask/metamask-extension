@@ -1,11 +1,10 @@
+import { it } from '@jest/globals';
 import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
-import { DefaultRootState } from 'react-redux';
 import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-
 import {
   getMockConfirmStateForTransaction,
   getMockContractInteractionConfirmState,
@@ -23,7 +22,9 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => jest.fn(),
 }));
 
-const render = (state: DefaultRootState = getMockTypedSignConfirmState()) => {
+const render = (
+  state: Parameters<typeof configureStore>[0] = getMockTypedSignConfirmState(),
+) => {
   const store = configureStore(state);
   return renderWithConfirmContextProvider(<Header />, store);
 };
@@ -98,4 +99,27 @@ describe('Header', () => {
       getByTestId('wallet-initiated-header-back-button'),
     ).toBeInTheDocument();
   });
+
+  it.each([TransactionType.perpsDeposit, TransactionType.perpsWithdraw])(
+    'renders the dApp-initiated header with a close button for %s transactions from a dApp',
+    (type) => {
+      const base = genUnapprovedContractInteractionConfirmation({
+        chainId: '0x1',
+      });
+      const state = getMockConfirmStateForTransaction({
+        ...base,
+        type,
+        origin: 'https://example.test',
+      } as TransactionMeta);
+
+      const { getByTestId, queryByTestId } = render(state);
+
+      expect(
+        getByTestId('dapp-initiated-header-close-button'),
+      ).toBeInTheDocument();
+      expect(
+        queryByTestId('wallet-initiated-header-back-button'),
+      ).not.toBeInTheDocument();
+    },
+  );
 });

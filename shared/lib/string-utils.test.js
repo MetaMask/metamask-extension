@@ -1,8 +1,8 @@
 import {
   isEqualCaseInsensitive,
   prependZero,
-  toKebabCase,
   toCamelCase,
+  toSnakeCase,
 } from './string-utils';
 
 describe('string-utils', () => {
@@ -30,14 +30,6 @@ describe('string-utils', () => {
     });
   });
 
-  describe('toKebabCase', () => {
-    it('converts camelCase and PascalCase to kebab-case', () => {
-      expect(toKebabCase('startupStandardHome')).toBe('startup-standard-home');
-      expect(toKebabCase('SwapPage')).toBe('swap-page');
-      expect(toKebabCase('getHTTPSUrl')).toBe('get-h-t-t-p-s-url');
-    });
-  });
-
   describe('toCamelCase', () => {
     it('converts kebab-case to camelCase', () => {
       expect(toCamelCase('onboarding-import-wallet')).toBe(
@@ -46,9 +38,15 @@ describe('string-utils', () => {
       expect(toCamelCase('load-new-account')).toBe('loadNewAccount');
     });
 
-    it('is the inverse of toKebabCase', () => {
-      const original = 'myVariableName';
-      expect(toCamelCase(toKebabCase(original))).toBe(original);
+    it('converts multi-segment kebab-case to camelCase', () => {
+      expect(toCamelCase('my-variable-name')).toBe('myVariableName');
+    });
+  });
+
+  describe('toSnakeCase', () => {
+    it('converts camelCase to snake_case', () => {
+      expect(toSnakeCase('walletAddress')).toBe('wallet_address');
+      expect(toSnakeCase('traceId')).toBe('trace_id');
     });
   });
 });

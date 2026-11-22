@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { Caip25CaveatValue } from '@metamask/chain-agnostic-permission';
@@ -150,7 +150,10 @@ const renderHookWithStore = (
 ) => {
   const state = createMockState(stateOverrides);
   const wrapper = ({ children }: { children: React.ReactNode }) =>
-    React.createElement(Provider, { store: configureStore(state) }, children);
+    React.createElement(Provider, {
+      store: configureStore(state),
+      children,
+    });
 
   return renderHook(
     () =>

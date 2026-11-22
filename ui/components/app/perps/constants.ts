@@ -5,6 +5,13 @@
  * These may eventually be moved to core.
  */
 
+import { IconName } from '@metamask/design-system-react';
+import {
+  MARKET_CATEGORY_FILTERS,
+  type MarketCategoryFilter,
+  type MarketFilter,
+} from '../../../../shared/constants/perps';
+
 /**
  * Height of list item rows (positions, orders, markets, transactions).
  * Matches ASSET_CELL_HEIGHT from the tokens tab for visual consistency.
@@ -50,15 +57,36 @@ export const PERPS_CONSTANTS = {
 
   /** Max markets shown in the explore section (aligned with mobile). */
   EXPLORE_MARKETS_LIMIT: 8,
+
+  /**
+   * Max markets ranked in the Top movers section. Matches mobile's
+   * `TOP_MOVERS_LIMIT` and fills the design's 2-column x 4-row grid exactly,
+   * so the pills stack without scrolling.
+   */
+  TOP_MOVERS_LIMIT: 8,
 } as const;
 
 /**
- * Minimum USD notional for market / reduce-only orders on HyperLiquid (mainnet and testnet).
+ * Collateral asset used to settle perps positions. Shown in market pair labels
+ * such as "BTC-USDC perp".
+ */
+export const PERPS_COLLATERAL_SYMBOL = 'USDC';
+
+/**
+ * Minimum USD notional for market, limit and reduce-only orders on HyperLiquid (mainnet and testnet).
  * Partial closes below this amount fail with ORDER_SIZE_MIN; full closes omit this check.
  * Duplicates TRADING_DEFAULTS.amount in @metamask/perps-controller until a shared export exists.
  * @see TRADING_DEFAULTS.amount in @metamask/perps-controller hyperLiquidConfig
  */
 export const PERPS_MIN_MARKET_ORDER_USD = 10;
+
+/**
+ * A tradeable balance below this rounds to `0.00 USDC` in the displayed
+ * available-to-trade row, so a disabled Insufficient funds button reads as a
+ * bug. Treat it as unfunded and offer Add funds instead. This is a display
+ * threshold, not an order-minimum one — see `PERPS_MIN_MARKET_ORDER_USD`.
+ */
+export const PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC = 0.01;
 
 /**
  * Market sorting configuration
@@ -80,7 +108,8 @@ export const MARKET_SORTING_CONFIG = {
 /**
  * HIP-3 market configuration
  *
- * HIP-3 markets are non-crypto assets (stocks, commodities, forex) available
+ * HIP-3 markets are non-crypto assets (stock, pre-IPO, index, ETF,
+ * commodity, forex) available
  * through partner DEX integrations. Each source identifier corresponds to a
  * specific DEX provider.
  *
@@ -108,89 +137,61 @@ export const HIP3_MARKET_CONFIG = {
 } as const;
 
 /**
- * HIP-3 market type for asset classification
+ * i18n label key for every market filter. Driven by the controller's
+ * `MARKET_CATEGORIES` plus the UI-only `all` / `new` pseudo-filters and the
+ * `watchlist` user-state filter — adding a core category only requires a new
+ * label key here.
+ *
+ * Shared by every surface that labels a category: the market list's category
+ * rail and the Perps tab's Products chips, both through
+ * `PerpsMarketCategoryPill`, plus the rail's `More` menu options — so no two
+ * can drift.
  */
-export type Hip3MarketType = 'equity' | 'commodity' | 'forex';
-
-/**
- * HIP-3 asset market type classifications (PRODUCTION DEFAULT)
- *
- * This is the production default configuration, can be overridden via feature flag
- * (remoteFeatureFlags.perpsAssetMarketTypes) for dynamic control.
- *
- * Maps asset symbols (e.g., "xyz:TSLA") to their market type for badge display.
- *
- * Market type determines the badge shown in the UI:
- * - 'equity': STOCK badge (stocks like TSLA, NVDA)
- * - 'commodity': COMMODITY badge (commodities like GOLD)
- * - 'forex': FOREX badge (forex pairs)
- * - undefined: No badge for crypto or unmapped assets
- *
- * Format: 'dex:SYMBOL' → MarketType
- * This allows flexible per-asset classification.
- * Assets not listed here will have no market type (undefined).
- */
-export const HIP3_ASSET_MARKET_TYPES: Record<string, Hip3MarketType> = {
-  // xyz DEX - Equities
-  'xyz:TSLA': 'equity',
-  'xyz:NVDA': 'equity',
-  'xyz:XYZ100': 'equity',
-  'xyz:INTC': 'equity',
-  'xyz:MU': 'equity',
-  'xyz:CRCL': 'equity',
-  'xyz:HOOD': 'equity',
-  'xyz:SNDK': 'equity',
-  'xyz:GOOGL': 'equity',
-  'xyz:COIN': 'equity',
-  'xyz:ORCL': 'equity',
-  'xyz:AMZN': 'equity',
-  'xyz:PLTR': 'equity',
-  'xyz:AAPL': 'equity',
-  'xyz:META': 'equity',
-  'xyz:AMD': 'equity',
-  'xyz:MSFT': 'equity',
-  'xyz:BABA': 'equity',
-  'xyz:RIVN': 'equity',
-  'xyz:NFLX': 'equity',
-  'xyz:COST': 'equity',
-  'xyz:LLY': 'equity',
-  'xyz:TSM': 'equity',
-  'xyz:SKHX': 'equity',
-  'xyz:MSTR': 'equity',
-  'xyz:CRWV': 'equity',
-  'xyz:SMSN': 'equity',
-
-  // xyz DEX - Commodities
-  'xyz:GOLD': 'commodity',
-  'xyz:SILVER': 'commodity',
-  'xyz:CL': 'commodity',
-  'xyz:COPPER': 'commodity',
-  'xyz:ALUMINIUM': 'commodity',
-  'xyz:URANIUM': 'commodity',
-  'xyz:USAR': 'commodity',
-  'xyz:NATGAS': 'commodity',
-  'xyz:PLATINUM': 'commodity',
-
-  // xyz DEX - Forex
-  'xyz:EUR': 'forex',
-  'xyz:JPY': 'forex',
-} as const;
-
-/**
- * Get the market type for a given asset symbol.
- *
- * Looks up the symbol in HIP3_ASSET_MARKET_TYPES mapping.
- * Falls back to the market's own marketType property if not found in the mapping.
- *
- * @param symbol - The asset symbol (e.g., 'xyz:TSLA')
- * @param fallbackMarketType - Optional fallback from the market data
- * @returns The market type or undefined
- */
-export const getHip3MarketType = (
-  symbol: string,
-  fallbackMarketType?: string,
-): Hip3MarketType | undefined => {
-  return (
-    HIP3_ASSET_MARKET_TYPES[symbol] ?? (fallbackMarketType as Hip3MarketType)
-  );
+export const MARKET_FILTER_LABEL_KEYS: Record<MarketFilter, string> = {
+  all: 'perpsFilterAll',
+  // Reuses the Perps tab section heading rather than adding a duplicate string.
+  watchlist: 'perpsWatchlist',
+  crypto: 'perpsFilterCrypto',
+  memecoin: 'perpsFilterMemecoins',
+  stock: 'perpsFilterStocks',
+  'pre-ipo': 'perpsFilterPreIpo',
+  index: 'perpsFilterIndex',
+  etf: 'perpsFilterEtf',
+  commodity: 'perpsFilterCommodities',
+  forex: 'perpsFilterForex',
+  new: 'perpsFilterNew',
 };
+
+/**
+ * Leading glyph for each product category chip except `memecoin`, taken from
+ * the Products design (Figma `13192:28387`). Indices and ETFs deliberately
+ * share `Chart` — the design uses one bar-chart glyph for both. Memecoins use
+ * the local `PerpsSentimentSatisfiedIcon` until MMDS ships
+ * `IconName.SentimentSatisfied`.
+ */
+export const MARKET_CATEGORY_ICONS: Record<
+  Exclude<MarketCategoryFilter, 'memecoin'>,
+  IconName
+> = {
+  // `all` never renders a chip; kept so the record stays exhaustive.
+  all: IconName.Category,
+  crypto: IconName.Ethereum,
+  stock: IconName.Diagram,
+  'pre-ipo': IconName.Rocket,
+  commodity: IconName.Tint,
+  index: IconName.Chart,
+  new: IconName.Fire,
+  forex: IconName.Exchange,
+  etf: IconName.Chart,
+};
+
+export const MEMECOIN_CATEGORY_ID = 'memecoin' satisfies MarketCategoryFilter;
+
+/**
+ * Categories shown as Products chips on the Perps tab, taken from the
+ * controller's filters in its own order — the order the market list's filter
+ * rail uses too — so a core category change reaches the tab with no change
+ * here. `all` is the absence of a filter and never gets a chip.
+ */
+export const PERPS_PRODUCT_CATEGORIES: readonly MarketCategoryFilter[] =
+  MARKET_CATEGORY_FILTERS.filter((category) => category !== 'all');

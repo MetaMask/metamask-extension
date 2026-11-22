@@ -30,9 +30,6 @@
   "activity": {
     "message": "交易紀錄"
   },
-  "addAcquiredTokens": {
-    "message": "將您已經擁有的代幣顯示於 MetaMask"
-  },
   "addAlias": {
     "message": "新增化名"
   },
@@ -108,9 +105,6 @@
   },
   "back": {
     "message": "上一頁"
-  },
-  "backupApprovalInfo": {
-    "message": "在裝置遺失、忘記密碼、需要重新安裝 MetaMask、或是想在另一裝置開啟錢包的情形下，你需要此秘密代碼來復原錢包。"
   },
   "backupApprovalNotice": {
     "message": "備份你的助憶詞，保護你的錢包與資金。"
@@ -272,20 +266,11 @@
   "currencySymbolDefinition": {
     "message": "用來代表這個網路的貨幣的代碼。"
   },
-  "currentAccountNotConnected": {
-    "message": "您目前的帳戶並未連結"
-  },
   "currentExtension": {
     "message": "目前擴充功能頁面"
   },
-  "customToken": {
-    "message": "自訂代幣"
-  },
   "decimal": {
     "message": "小數點位數"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "小數點位數至少為 0，至多為 36。"
   },
   "decrypt": {
     "message": "解密"
@@ -339,9 +324,6 @@
   },
   "dontShowThisAgain": {
     "message": "不要再顯示"
-  },
-  "downloadGoogleChrome": {
-    "message": "下載 Google Chrome 瀏覽器"
   },
   "downloadStateLogs": {
     "message": "下載狀態紀錄"
@@ -422,10 +404,6 @@
   "fast": {
     "message": "快"
   },
-  "fileImportFail": {
-    "message": "檔案匯入失敗？點擊這裡！",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forbiddenIpfsGateway": {
     "message": "禁止使用的 IPFS Gateway：請指定一個 CID gateway"
   },
@@ -437,9 +415,6 @@
   },
   "gasLimit": {
     "message": "Gas 上限"
-  },
-  "gasLimitTooLow": {
-    "message": "Gas 上限至少為 21000"
   },
   "gasPriceExcessive": {
     "message": "您的 gas 費用設定得太高了。考慮降低一些。"
@@ -466,14 +441,8 @@
     "message": "(舊版)",
     "description": "Text representing the MEW path"
   },
-  "hardwareWalletSupportLinkConversion": {
-    "message": "點選這裡"
-  },
   "hardwareWallets": {
     "message": "連線硬體錢包"
-  },
-  "hardwareWalletsMsg": {
-    "message": "選擇要連線到 MetaMask 的硬體錢包"
   },
   "here": {
     "message": "這裡",
@@ -504,9 +473,6 @@
   },
   "importAccountMsg": {
     "message": " 匯入的帳戶並不會與您原有 MetaMask 帳戶助憶詞建立關聯。請用以下連結瞭解匯入帳戶相關的資料： "
-  },
-  "importTokensCamelCase": {
-    "message": "Import Tokens"
   },
   "imported": {
     "message": "已匯入私鑰",
@@ -634,9 +600,6 @@
     "message": "驗證網路的詳細資料",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
   },
-  "mustSelectOne": {
-    "message": "必須選擇至少 1 代幣。"
-  },
   "name": {
     "message": "名稱"
   },
@@ -669,9 +632,6 @@
   "networks": {
     "message": "網路"
   },
-  "nevermind": {
-    "message": "算了"
-  },
   "newAccountNumberName": {
     "message": "帳戶 $1",
     "description": "Default name of next account to be created on create account screen"
@@ -699,9 +659,6 @@
   },
   "notCurrentAccount": {
     "message": "這是正確的帳戶嗎？它與您的錢包目前所選擇的帳戶不同"
-  },
-  "notEnoughGas": {
-    "message": "Gas 不夠"
   },
   "ofTextNofM": {
     "message": "之"
@@ -740,10 +697,6 @@
   "passwordsDontMatch": {
     "message": "您所輸入的密碼不一致"
   },
-  "pastePrivateKey": {
-    "message": "請貼上您的私鑰字串：",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "等待處理"
   },
@@ -762,9 +715,6 @@
   "privateKey": {
     "message": "私鑰",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "警告：永遠不要公開這個私鑰。任何取得這把私鑰的人都可以竊取這個帳戶中的所有資產。"
   },
   "privateNetwork": {
     "message": "私有網路"
@@ -807,9 +757,6 @@
   },
   "restore": {
     "message": "還原"
-  },
-  "retryTransaction": {
-    "message": "重試交易"
   },
   "reusedTokenNameWarning": {
     "message": "這裡的其中一個代幣重複使用了您關注的另一個代幣的符號，這可能會造成混淆甚至讓您被誤導。"
@@ -884,9 +831,6 @@
   "sign": {
     "message": "簽署"
   },
-  "signatureRequest": {
-    "message": "請求簽署"
-  },
   "signed": {
     "message": "已簽署"
   },
@@ -910,19 +854,6 @@
   },
   "statusNotConnected": {
     "message": "未連結"
-  },
-  "step1LedgerWallet": {
-    "message": "下載 Ledger 應用程式"
-  },
-  "step1LedgerWalletMsg": {
-    "message": "下載、安裝、然後輸入密碼來解鎖 $1。",
-    "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1TrezorWallet": {
-    "message": "插入 Trezor 錢包"
-  },
-  "step2LedgerWallet": {
-    "message": "插入 Ledger 錢包"
   },
   "submit": {
     "message": "傳送"
@@ -974,9 +905,6 @@
   },
   "tokenContractAddress": {
     "message": "代幣合約位址"
-  },
-  "tokenDecimalFetchFailed": {
-    "message": "需要填入代幣的小數位數。"
   },
   "tokenSymbol": {
     "message": "代幣代號"
@@ -1032,9 +960,6 @@
   },
   "usePhishingDetectionDescription": {
     "message": "遇到針對以太坊使用者的釣魚網域名稱的時候顯示警告"
-  },
-  "usedByClients": {
-    "message": "可用於各種不同的客戶端"
   },
   "viewOnCustomBlockExplorer": {
     "message": "在 $1 瀏覽",

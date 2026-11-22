@@ -14,7 +14,9 @@ type EmptyObj = {};
 type NotificationFC<
   Notif = INotification,
   AdditionalProps extends Record<string, unknown> = EmptyObj,
-> = FC<Compute<{ notification: Notif } & AdditionalProps>>;
+> = FC<
+  React.PropsWithChildren<Compute<{ notification: Notif } & AdditionalProps>>
+>;
 
 export enum NotificationComponentType {
   AnnouncementBody = 'body_feature_announcement',

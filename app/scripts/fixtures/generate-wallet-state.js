@@ -8,7 +8,7 @@ import { E2E_SRP, WALLET_PASSWORD } from '../../../test/e2e/constants';
 import defaultFixtureJson from '../../../test/e2e/fixtures/default-fixture.json';
 import FixtureBuilderV2 from '../../../test/e2e/fixtures/fixture-builder-v2';
 import { encryptorFactory } from '../lib/encryptor-factory';
-import { normalizeSafeAddress } from '../lib/multichain/address';
+import { normalizeSafeAddress } from '../../../shared/lib/multichain/address';
 import { getRootMessenger } from '../lib/messenger';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { withAddressBook } from './with-address-book';

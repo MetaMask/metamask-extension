@@ -22,15 +22,15 @@ import type { QrErrorContentProps } from './qr-error-content.types';
 import { resolveErrorCopy, rootTestId } from './qr-error-content.utils';
 
 /**
- * Presentational component for QR scan / decode error states.
+ * Presentational component for QR scan and decode error states.
  *
- * Renders one of five copy variations depending on `errorType` and
- * `flowContext`, plus "Learn more" (opens support article) and
- * "Try again" (calls `onTryAgain`).
- * @param options0
- * @param options0.errorType
- * @param options0.flowContext
- * @param options0.onTryAgain
+ * Renders localized title and body copy based on `errorType` and
+ * `flowContext`, plus "Learn more" and "Try again" action buttons.
+ *
+ * @param options0 - Component props.
+ * @param options0.errorType - Which scan error occurred.
+ * @param options0.flowContext - Whether the scan is for pairing or signing.
+ * @param options0.onTryAgain - Called when the user taps "Try again".
  */
 export const QrErrorContent = ({
   errorType,

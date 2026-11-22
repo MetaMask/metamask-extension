@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "আপনাকে একটি অ্যাকাউন্ট নির্বাচন করতে হবে!"
   },
-  "addAcquiredTokens": {
-    "message": "MetaMask ব্যবহার করে আপনি যে টোকেনগুলি অর্জন করেছেন সেগুলি যোগ করুন"
-  },
   "addAlias": {
     "message": "উপনাম যোগ করুন"
   },
@@ -83,9 +80,6 @@
   },
   "back": {
     "message": "ফিরুন"
-  },
-  "backupApprovalInfo": {
-    "message": "আপনি আপনার ডিভাইস হারিয়ে ফেললে, পাসওয়ার্ড ভুলে গেলে, MetaMask রিইনস্টল করতে হলে বা অন্য ডিভাইসে আপনার ওয়ালেট অ্যাক্সেস করার ক্ষেত্রে আপনার ওয়ালেট পুনরুদ্ধার করতে এই গোপন কোডটি প্রয়োজন।"
   },
   "backupApprovalNotice": {
     "message": "আপনার ওয়ালেট এবং তহবিল সুরক্ষিত রাখতে আপনার গোপন পুনরুদ্ধারের কোড ব্যাক আপ করুন।"
@@ -178,14 +172,8 @@
   "custom": {
     "message": "উন্নত"
   },
-  "customToken": {
-    "message": "কাস্টম টোকেন"
-  },
   "decimal": {
     "message": "নির্ভুলতার দশমিক"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "দশমিকগুলি অবশ্যই অন্তত 0 হতে হবে, এবং 36 এর উপর হবে না।"
   },
   "delete": {
     "message": "মুছুন"
@@ -195,9 +183,6 @@
   },
   "done": {
     "message": "সম্পন্ন "
-  },
-  "downloadGoogleChrome": {
-    "message": "Google Chrome ডাউনলোড করুন"
   },
   "downloadStateLogs": {
     "message": "স্টেট লগগুলি ডাউনলোড করুন"
@@ -223,10 +208,6 @@
   "fast": {
     "message": "দ্রুত"
   },
-  "fileImportFail": {
-    "message": "ফাইল আমদানি কাজ করছে না? এখানে ক্লিক করুন!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "এই ডিভাইসটি সম্পর্কে ভুলে যান"
   },
@@ -235,9 +216,6 @@
   },
   "gasLimit": {
     "message": "গ্যাসের সীমা"
-  },
-  "gasLimitTooLow": {
-    "message": "গ্যাসের সীমা অবশ্যই অন্তত 21000 এ থাকতে হবে"
   },
   "gasUsed": {
     "message": "গ্যাস ব্যবহার করা হয়েছে"
@@ -256,9 +234,6 @@
   },
   "hardwareWallets": {
     "message": "একটি হার্ডওয়্যার ওয়ালেট সংযুক্ত করুন"
-  },
-  "hardwareWalletsMsg": {
-    "message": "আপনি MetaMask এর সাথে ব্যবহার করতে চান এমন একটি হার্ডওয়্যার ওয়ালেট নির্বাচন করুন"
   },
   "here": {
     "message": "এখানে",
@@ -351,9 +326,6 @@
   "metamaskVersion": {
     "message": "MetaMask সংস্করণ"
   },
-  "mustSelectOne": {
-    "message": "অবশ্যই অন্তত 1টি টোকেন নির্বাচন করতে হবে।"
-  },
   "needImportFile": {
     "message": "আমদানি করার জন্য আপনাকে অবশ্যই একটি ফাইল নির্বাচন করতে হবে।",
     "description": "User is important an account and needs to add a file to continue"
@@ -363,9 +335,6 @@
   },
   "networks": {
     "message": "নেটওয়ার্কসমূহ"
-  },
-  "nevermind": {
-    "message": "কিছু মনে করবেন না"
   },
   "newAccountNumberName": {
     "message": "অ্যাকাউন্ট $1",
@@ -385,9 +354,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "ওয়েবক্যাম খুঁজে পাওয়া যায় নি"
-  },
-  "notEnoughGas": {
-    "message": "পর্যাপ্ত গ্যাস নেই"
   },
   "ofTextNofM": {
     "message": "এর"
@@ -419,10 +385,6 @@
   "passwordsDontMatch": {
     "message": "পাসওয়ার্ডগুলি মেলেনি"
   },
-  "pastePrivateKey": {
-    "message": "আপনার গোপনীয় কী স্ট্রিং এখানে পেস্ট করুন:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "বাকি"
   },
@@ -438,9 +400,6 @@
   "privateKey": {
     "message": "ব্যক্তিগত কী",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "সতর্কতা: কখনও এই কী টি প্রকাশ করবেন না। আপনার গোপন কী কারোর কাছে থাকলে তিনি যে কোনো সময় আপনার অ্যাকাউন্টে থাকা যে কোনো সম্পদ চুরি করে নিতে পারবেন।"
   },
   "privateNetwork": {
     "message": "ব্যক্তিগত নেটওয়ার্ক"
@@ -526,9 +485,6 @@
   },
   "sign": {
     "message": "স্বাক্ষর করুন"
-  },
-  "signatureRequest": {
-    "message": "স্বাক্ষরের অনুরোধ"
   },
   "signed": {
     "message": "স্বাক্ষরিত"
@@ -616,9 +572,6 @@
   },
   "urlErrorMsg": {
     "message": "URI গুলির যথাযথ HTTP/HTTPS প্রেফিক্সের প্রয়োজন।"
-  },
-  "usedByClients": {
-    "message": "বিভিন্ন ধরণের গ্রাহকদের দ্বারা ব্যবহৃত হয়"
   },
   "visitWebSite": {
     "message": "আমাদের ওয়েবসাইট দেখুন"

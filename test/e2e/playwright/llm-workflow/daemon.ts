@@ -1,20 +1,10 @@
 #!/usr/bin/env node
 import path from 'path';
-import {
-  createServer,
-  KnowledgeStore,
-  setKnowledgeStore,
-  allocatePort,
-} from '@metamask/client-mcp-core';
+import { createServer, allocatePort } from '@metamask/client-mcp-core';
 
 import { MetaMaskSessionManager } from './metamask-provider';
 import { createMetaMaskE2EContext } from './capabilities/factory';
 import { resolveRepoRoot } from './resolve-repo-root';
-
-// Single shared KnowledgeStore instance used by both the global singleton
-// (for session manager metadata recording) and createServer (for tool context).
-const knowledgeStore = new KnowledgeStore();
-setKnowledgeStore(knowledgeStore);
 
 function releasePort(
   alloc: Awaited<ReturnType<typeof allocatePort>>,
@@ -24,20 +14,14 @@ function releasePort(
 
 const server = createServer({
   sessionManager: new MetaMaskSessionManager(),
-  knowledgeStore,
   idleShutdownMs: 30 * 60 * 1000,
   logFilePath: path.join(resolveRepoRoot(), '.mm-daemon.log'),
   contextFactory: async () => {
-    const [anvilAlloc, fixtureAlloc, mockAlloc] = await Promise.all([
-      allocatePort(),
+    const [anvilAlloc, fixtureAlloc] = await Promise.all([
       allocatePort(),
       allocatePort(),
     ]);
-    await Promise.all([
-      releasePort(anvilAlloc),
-      releasePort(fixtureAlloc),
-      releasePort(mockAlloc),
-    ]);
+    await Promise.all([releasePort(anvilAlloc), releasePort(fixtureAlloc)]);
     const context = createMetaMaskE2EContext({
       config: {
         ports: {
@@ -45,16 +29,12 @@ const server = createServer({
           fixtureServer: fixtureAlloc.port,
         },
       },
-      mockServer: {
-        port: mockAlloc.port,
-      },
     });
     return {
       ...context,
       allocatedPorts: {
         anvil: anvilAlloc.port,
         fixture: fixtureAlloc.port,
-        mock: mockAlloc.port,
       },
     };
   },

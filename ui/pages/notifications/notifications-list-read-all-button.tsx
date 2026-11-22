@@ -1,7 +1,7 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -25,7 +25,7 @@ export const NotificationsListReadAllButton = ({
 }: NotificationsListReadAllButtonProps) => {
   const t = useI18nContext();
   const { markNotificationAsRead } = useMarkNotificationAsRead();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const { setNotificationTimeout } = useSnapNotificationTimeouts();
 
   const handleOnClick = () => {
@@ -50,10 +50,11 @@ export const NotificationsListReadAllButton = ({
         );
     }
 
-    trackEvent({
-      category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.MarkAllNotificationsRead,
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.MarkAllNotificationsRead)
+        .addCategory(MetaMetricsEventCategory.NotificationInteraction)
+        .build(),
+    );
 
     // Mark all metamask notifications as read
     markNotificationAsRead(notificationsRead);

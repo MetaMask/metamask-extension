@@ -3,6 +3,7 @@ import {
   AvatarToken,
   AvatarTokenSize,
   Box,
+  FontFamily,
   Text,
   TextColor,
   TextVariant,
@@ -22,7 +23,7 @@ import { useFiatFormatter } from '../../../../../../../hooks/useFiatFormatter';
 import { selectConversionRateByChainId } from '../../../../../../../selectors';
 import { getPreferences } from '../../../../../../../../shared/lib/selectors/preferences';
 import { useConfirmContext } from '../../../../../context/confirm';
-import { formatAmount } from '../../../../simulation-details/formatAmount';
+import { formatAmount } from '../../../../../../../../shared/lib/format-amount';
 import { useSendingValueMetric } from '../../hooks/useSendingValueMetric';
 import SendHeadingLayout from '../send-heading-layout/send-heading-layout';
 
@@ -45,7 +46,7 @@ const NativeSendHeading = () => {
   const fiatValue =
     conversionRate &&
     nativeAssetTransferValue &&
-    new BigNumber(conversionRate)
+    new BigNumber(String(conversionRate))
       .times(nativeAssetTransferValue, 10)
       .toNumber();
   const fiatFormatter = useFiatFormatter();
@@ -90,15 +91,29 @@ const NativeSendHeading = () => {
   const NativeAssetAmount =
     roundedTransferValue === transferValue ? (
       <Box paddingBottom={1}>
-        <Text variant={TextVariant.HeadingLg} color={TextColor.Inherit}>
-          {`${roundedTransferValue} ${nativeCurrency}`}
+        <Text
+          asChild
+          variant={TextVariant.AmountDisplayLg}
+          fontFamily={FontFamily.Hero}
+          color={TextColor.Inherit}
+        >
+          <h2 data-testid="confirm-send-amount">
+            {`${roundedTransferValue} ${nativeCurrency}`}
+          </h2>
         </Text>
       </Box>
     ) : (
       <Tooltip title={transferValue} position="right">
         <Box paddingBottom={1}>
-          <Text variant={TextVariant.HeadingLg} color={TextColor.Inherit}>
-            {`${roundedTransferValue} ${nativeCurrency}`}
+          <Text
+            asChild
+            variant={TextVariant.AmountDisplayLg}
+            fontFamily={FontFamily.Hero}
+            color={TextColor.Inherit}
+          >
+            <h2 data-testid="confirm-send-amount">
+              {`${roundedTransferValue} ${nativeCurrency}`}
+            </h2>
           </Text>
         </Box>
       </Tooltip>

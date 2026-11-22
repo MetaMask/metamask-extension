@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect, useContext } from 'react';
+import React, { useMemo, useEffect, useRef } from 'react';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { sortBy } from 'lodash';
@@ -10,15 +10,12 @@ import {
   Button,
   ButtonVariant,
   ButtonSize,
-  Icon,
   IconName,
-  IconColor,
   ButtonIcon,
   ButtonIconSize,
 } from '@metamask/design-system-react';
 import { Header, Page } from '../../components/multichain/pages/page';
-import { Toast, ToastContainer } from '../../components/multichain/toast';
-import { BorderRadius } from '../../helpers/constants/design-system';
+import { toast } from '../../components/ui/toast/toast';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   CONTACTS_ADD_ROUTE,
@@ -33,30 +30,27 @@ import {
   BannerAlert,
   BannerAlertSeverity,
 } from '../../components/component-library';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
 import { buildDuplicateContactMap, hasDuplicateContacts } from './utils';
 import { ContactListItem } from './components/contact-list-item';
 import { ContactsEmptyState } from './components/contacts-empty-state';
 
-const TOAST_AUTO_HIDE_MS = 2500;
-
 export function ContactsListPage() {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const runCloseTransition = useGlobalMenuRouteTransition();
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const fromPath = searchParams.get('from') ?? undefined;
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const lastTrackedContactCountRef = useRef<number | null>(null);
   const completeAddressBook = useSelector(getCompleteAddressBook);
   const internalAccounts = useSelector(getInternalAccounts);
-  const [showDeletedToast, setShowDeletedToast] = useState(false);
-  const [showUpdatedToast, setShowUpdatedToast] = useState(false);
-
-  const TOAST_CLEAR_STATE_DELAY_MS = 100;
 
   const contacts = useMemo(() => {
     const list = (completeAddressBook ?? []).filter(
@@ -86,99 +80,54 @@ export function ContactsListPage() {
   );
 
   useEffect(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Contacts,
-      event: MetaMetricsEventName.ContactsPageViewed,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        number_of_contacts: contacts.length,
-      },
+    if (lastTrackedContactCountRef.current === contacts.length) {
+      return;
+    }
+
+    lastTrackedContactCountRef.current = contacts.length;
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ContactsPageViewed)
+        .addCategory(MetaMetricsEventCategory.Contacts)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          number_of_contacts: contacts.length,
+        })
+        .build(),
+    );
+  }, [contacts.length, createEventBuilder, trackEvent]);
+
+  useEffect(() => {
+    if (!location.state?.showContactDeletedToast) {
+      return;
+    }
+
+    toast.success(t('contactDeleted'), {
+      id: 'contact-deleted-toast',
     });
-  }, [trackEvent, contacts.length]);
+    navigate(CONTACTS_ROUTE, { replace: true, state: {} });
+  }, [location.state?.showContactDeletedToast, navigate, t]);
 
   useEffect(() => {
-    if (location.state?.showContactDeletedToast) {
-      setShowDeletedToast(true);
-    }
-  }, [location.state?.showContactDeletedToast]);
-
-  useEffect(() => {
-    if (location.state?.showContactUpdatedToast) {
-      setShowUpdatedToast(true);
-    }
-  }, [location.state?.showContactUpdatedToast]);
-
-  useEffect(() => {
-    if (!showDeletedToast) {
+    if (!location.state?.showContactUpdatedToast) {
       return;
     }
-    const id = setTimeout(() => {
-      navigate(CONTACTS_ROUTE, { replace: true, state: {} });
-    }, TOAST_CLEAR_STATE_DELAY_MS);
-    return () => clearTimeout(id);
-  }, [showDeletedToast, navigate]);
 
-  useEffect(() => {
-    if (!showUpdatedToast) {
-      return;
-    }
-    const id = setTimeout(() => {
-      navigate(CONTACTS_ROUTE, { replace: true, state: {} });
-    }, TOAST_CLEAR_STATE_DELAY_MS);
-    return () => clearTimeout(id);
-  }, [showUpdatedToast, navigate]);
+    toast.success(t('contactUpdated'), {
+      id: 'contact-updated-toast',
+    });
+    navigate(CONTACTS_ROUTE, { replace: true, state: {} });
+  }, [location.state?.showContactUpdatedToast, navigate, t]);
 
   const handleBack = () => {
     if (fromPath === DEFAULT_ROUTE) {
-      navigate(PREVIOUS_ROUTE);
+      runCloseTransition(() => navigate(PREVIOUS_ROUTE));
     } else {
       navigate(DEFAULT_ROUTE);
     }
   };
 
-  const showDeletedToastNow =
-    showDeletedToast || Boolean(location.state?.showContactDeletedToast);
-  const showUpdatedToastNow =
-    showUpdatedToast || Boolean(location.state?.showContactUpdatedToast);
-
-  const toastContent = (
-    <>
-      {showDeletedToastNow && (
-        <Toast
-          startAdornment={
-            <Icon name={IconName.CheckBold} color={IconColor.SuccessDefault} />
-          }
-          text={t('contactDeleted')}
-          onClose={() => setShowDeletedToast(false)}
-          autoHideTime={TOAST_AUTO_HIDE_MS}
-          onAutoHideToast={() => setShowDeletedToast(false)}
-          borderRadius={BorderRadius.LG}
-          textClassName="text-base"
-          data-testid="contact-deleted-toast"
-        />
-      )}
-      {showUpdatedToastNow && (
-        <Toast
-          startAdornment={
-            <Icon name={IconName.CheckBold} color={IconColor.SuccessDefault} />
-          }
-          text={t('contactUpdated')}
-          onClose={() => setShowUpdatedToast(false)}
-          autoHideTime={TOAST_AUTO_HIDE_MS}
-          onAutoHideToast={() => setShowUpdatedToast(false)}
-          borderRadius={BorderRadius.LG}
-          textClassName="text-base"
-          data-testid="contact-updated-toast"
-        />
-      )}
-    </>
-  );
-
   return (
-    <Page data-testid="contacts-page">
-      {!contacts.length && (showDeletedToastNow || showUpdatedToastNow) && (
-        <ToastContainer>{toastContent}</ToastContainer>
-      )}
+    <Page data-testid="parent-selector-contacts-page">
       <Header
         startAccessory={
           <ButtonIcon
@@ -256,11 +205,12 @@ export function ContactsListPage() {
             >
               <ContactsEmptyState
                 onAddContact={() => {
-                  trackEvent({
-                    category: MetaMetricsEventCategory.Contacts,
-                    event: MetaMetricsEventName.AddContactClicked,
-                    properties: { location: 'contacts_list' },
-                  });
+                  trackEvent(
+                    createEventBuilder(MetaMetricsEventName.AddContactClicked)
+                      .addCategory(MetaMetricsEventCategory.Contacts)
+                      .addProperties({ location: 'contacts_list' })
+                      .build(),
+                  );
                   navigate(CONTACTS_ADD_ROUTE);
                 }}
               />
@@ -273,21 +223,19 @@ export function ContactsListPage() {
             padding={4}
             paddingBottom={6}
             paddingTop={4}
-            className="shrink-0 bg-background-default"
+            className="shrink-0 bg-background-default cta-footer"
           >
-            {(showDeletedToastNow || showUpdatedToastNow) && (
-              <Box marginBottom={4}>{toastContent}</Box>
-            )}
             <Button
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               isFullWidth
               onClick={() => {
-                trackEvent({
-                  category: MetaMetricsEventCategory.Contacts,
-                  event: MetaMetricsEventName.AddContactClicked,
-                  properties: { location: 'contacts_list' },
-                });
+                trackEvent(
+                  createEventBuilder(MetaMetricsEventName.AddContactClicked)
+                    .addCategory(MetaMetricsEventCategory.Contacts)
+                    .addProperties({ location: 'contacts_list' })
+                    .build(),
+                );
                 navigate(CONTACTS_ADD_ROUTE);
               }}
               data-testid="contacts-add-contact-button"

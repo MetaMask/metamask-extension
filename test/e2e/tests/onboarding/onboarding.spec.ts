@@ -10,6 +10,7 @@ import { Driver } from '../../webdriver/driver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import HomePage from '../../page-objects/pages/home/homepage';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingMetricsPage from '../../page-objects/pages/onboarding/onboarding-metrics-page';
 import OnboardingPasswordPage from '../../page-objects/pages/onboarding/onboarding-password-page';
@@ -19,16 +20,39 @@ import SecureWalletPage from '../../page-objects/pages/onboarding/secure-wallet-
 import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
 import {
   completeCreateNewWalletOnboardingFlow,
+  completeImportSRPOnboardingWithPasskey,
   completeImportSRPOnboardingFlow,
+  completeOnboardingWithPasskey,
+  goToOnboardingWelcomeLoginPage,
   handleSidepanelPostOnboarding,
   importSRPOnboardingFlow,
   incompleteCreateNewWalletOnboardingFlow,
   onboardingMetricsFlow,
+  revealAndConfirmSrp,
   skipPasskeySetup,
 } from '../../page-objects/flows/onboarding.flow';
-import LoginPage from '../../page-objects/pages/login-page';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
+import { lockAndWaitForPasskeyUnlockPage } from '../../page-objects/flows/login.flow';
+import DeepLink from '../../page-objects/pages/security/deep-link-page';
+import { getMockAssetsPrice } from '../tokens/utils/mocks';
+import {
+  bytesToB64,
+  generateECDSAKeyPair,
+  prepareDeepLinkUrl,
+} from '../deep-link/helpers';
 
 const IMPORTED_SRP_ACCOUNT_1 = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
+
+const MOCK_ETH_PRICE = 1700;
+
+const NATIVE_ASSETS_INFO = {
+  'eip155:1/slip44:60': {
+    type: 'native' as const,
+    decimals: 18,
+    symbol: 'ETH',
+    name: 'Ethereum',
+  },
+};
 
 async function mockSpotPrices(mockServer: Mockttp) {
   return await mockServer
@@ -37,6 +61,41 @@ async function mockSpotPrices(mockServer: Mockttp) {
       statusCode: 200,
       json: {
         'eip155:1/slip44:60': {
+          id: 'ethereum',
+          price: MOCK_ETH_PRICE,
+          marketCap: 382623505141,
+          pricePercentChange1d: 0,
+        },
+      },
+    }));
+}
+
+async function mockCustomNetworkOnboarding(mockServer: Mockttp) {
+  await mockServer
+    .forGet(/https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
+    .always()
+    .thenJson(200, {
+      fullSupport: [
+        'eip155:1',
+        'eip155:137',
+        'eip155:56',
+        'eip155:59144',
+        'eip155:8453',
+        'eip155:10',
+        'eip155:42161',
+        'eip155:534352',
+        'eip155:1337',
+        'eip155:1338',
+      ],
+      partialSupport: ['eip155:42220', 'eip155:43114'],
+    });
+
+  await mockServer
+    .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'eip155:1338/slip44:60': {
           id: 'ethereum',
           price: 1700,
           marketCap: 382623505141,
@@ -50,7 +109,9 @@ describe('MetaMask onboarding', function () {
   it("Creates a new wallet, sets up a secure password, and doesn't complete the onboarding process and refreshes the page", async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2({ onboarding: true })
+          .withAssetsController({ assetsInfo: NATIVE_ASSETS_INFO })
+          .build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -64,7 +125,7 @@ describe('MetaMask onboarding', function () {
 
         const secureWalletPage = new SecureWalletPage(driver);
         await secureWalletPage.checkPageIsLoaded();
-        await secureWalletPage.revealAndConfirmSRP();
+        await revealAndConfirmSrp(driver);
 
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           await onboardingMetricsFlow(driver);
@@ -81,6 +142,24 @@ describe('MetaMask onboarding', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('0');
+      },
+    );
+  });
+
+  it('opens Terms of Use and Privacy notice links from login options', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        const startOnboardingPage = await goToOnboardingWelcomeLoginPage({
+          driver,
+        });
+        await startOnboardingPage.clickCreateWalletButton();
+        await startOnboardingPage.checkTermsOfUsageAndPrivacyLinksAreVisible();
+        await startOnboardingPage.clickTermsOfUseLinkAndVerifyExpectedUrlOpens();
+        await startOnboardingPage.clickPrivacyNoticeLinkAndVerifyExpectedUrlOpens();
       },
     );
   });
@@ -115,6 +194,9 @@ describe('MetaMask onboarding', function () {
             eip155: {
               '0x1': true,
             },
+          })
+          .withAssetsController({
+            assetsPrice: getMockAssetsPrice(MOCK_ETH_PRICE),
           })
           .build(),
         testSpecificMock: mockSpotPrices,
@@ -167,7 +249,7 @@ describe('MetaMask onboarding', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        const wrongTestPassword = 'test test test test';
+        const wrongTestPassword = 'wrong horse battery staple test';
         await driver.navigate();
 
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
@@ -208,6 +290,11 @@ describe('MetaMask onboarding', function () {
               showNativeTokenAsMainBalance: true,
             },
           })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         localNodeOptions: [
           {
@@ -221,7 +308,10 @@ describe('MetaMask onboarding', function () {
             },
           },
         ],
-        testSpecificMock: mockSpotPrices,
+        unifiedEvmAccountsApiBalances: {
+          nativeBalance: '10',
+        },
+        testSpecificMock: mockCustomNetworkOnboarding,
         title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes }) => {
@@ -257,54 +347,22 @@ describe('MetaMask onboarding', function () {
         await handleSidepanelPostOnboarding(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-
-        // Fiat value should be displayed as we mock the price and that is not a 'test network'
-        await homePage.checkExpectedBalanceIsDisplayed('10', 'ETH');
+        const networkFilter = new NetworkFilter(driver);
 
         // Check for network addition toast
         // Note: With sidepanel enabled, appState is lost during page reload,
-        // so the toast notification won't appear. The successful balance display
-        // above confirms the network was added correctly.
+        // so the toast notification won't appear. The network filter above
+        // confirms the network was added and selected correctly.
         if (await isSidePanelEnabled()) {
           console.log(
-            `Skipping toast check for sidepanel build - network '${networkName}' added successfully (verified by balance display)`,
+            `Skipping toast check for sidepanel build - network '${networkName}' added successfully (verified by network filter)`,
           );
         } else {
           await homePage.checkAddNetworkMessageIsDisplayed(networkName);
         }
-      },
-    );
-  });
 
-  it('User can turn off basic functionality in default settings', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }) => {
-        await importSRPOnboardingFlow({ driver });
-
-        const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.checkPageIsLoaded();
-        await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
-        await onboardingCompletePage.navigateToDefaultPrivacySettings();
-
-        const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
-          driver,
-        );
-        await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
-        await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
-
-        await onboardingCompletePage.checkPageIsLoaded();
-        await onboardingCompletePage.completeOnboarding();
-
-        // Handle sidepanel navigation if needed
-        await handleSidepanelPostOnboarding(driver);
-
-        const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+        await networkFilter.checkLabelIs(networkName);
       },
     );
   });
@@ -323,10 +381,12 @@ describe('MetaMask onboarding', function () {
             completedOnboarding: false,
             firstTimeFlowType: FirstTimeFlowType.restore,
             seedPhraseBackedUp: null,
+            hasSeenOnboardingCompletionPage: false,
           })
-          .withMetaMetricsController({
-            participateInMetaMetrics: null,
-            metaMetricsId: null,
+          .withAnalyticsController({
+            consentDecisionMade: false,
+            optedIn: false,
+            analyticsId: null,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -398,10 +458,16 @@ describe('MetaMask onboarding', function () {
   });
 
   it('Navigates to an external web page using deferred deep link after onboarding completes', async function () {
-    const referringLink =
-      'https://link.metamask.io/buy?address=0xacA92E438df0B2401fF60dA7E4337B687a2435DA&amount=100&chainId=1&sig=aagQN9osZ1tfoYIEKvU6t5i8FVaW4Gi6EGimMcZ0VTDmAlPDk800-Nx3131QlDTmO3UF2JCmR2Y2RAJhceNOYw';
-    const expectedUrlOpened =
-      'https://app.metamask.io/buy?address=0xacA92E438df0B2401fF60dA7E4337B687a2435DA&amount=100&chainId=1';
+    const keyPair = await generateECDSAKeyPair();
+    const deepLinkPublicKey = bytesToB64(
+      await crypto.subtle.exportKey('raw', keyPair.publicKey),
+    );
+    const referringLink = await prepareDeepLinkUrl({
+      route: '/card-onboarding?amount=100',
+      signed: 'signed with sig_params',
+      privateKey: keyPair.privateKey,
+    });
+    const expectedUrlOpened = 'https://metamask.com/card?amount=100';
 
     await withFixtures(
       {
@@ -413,6 +479,11 @@ describe('MetaMask onboarding', function () {
             },
           })
           .build(),
+        manifestFlags: {
+          testing: {
+            deepLinkPublicKey,
+          },
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -537,10 +608,9 @@ describe('MetaMask onboarding', function () {
 
         // Verify the interstitial page shows the caution warning
         // The page displays: "You were sent here by a third party, not MetaMask."
-        await driver.waitForSelector({
-          css: '[data-testid="deep-link-description"]',
-          text: 'third party',
-        });
+        await new DeepLink(driver).checkDescriptionTextIsDisplayed(
+          'third party',
+        );
       },
     );
   });
@@ -594,10 +664,57 @@ describe('MetaMask onboarding', function () {
 
         // Verify the interstitial page shows the caution warning
         // The page displays: "You were sent here by a third party, not MetaMask."
-        await driver.waitForSelector({
-          css: '[data-testid="deep-link-description"]',
-          text: 'third party',
-        });
+        await new DeepLink(driver).checkDescriptionTextIsDisplayed(
+          'third party',
+        );
+      },
+    );
+  });
+
+  it('Creates a new wallet and sets up passkey with virtual authenticator during onboarding', async function () {
+    // Firefox does not support Selenium's Virtual Authenticator API
+    if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+      this.skip();
+    }
+
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+        virtualAuthenticator: true,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await completeOnboardingWithPasskey({ driver });
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('0');
+      },
+    );
+  });
+
+  it('Imports a wallet with SRP and sets up passkey during onboarding', async function () {
+    // Firefox does not support Selenium's Virtual Authenticator API
+    if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+      this.skip();
+    }
+
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+        virtualAuthenticator: true,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await completeImportSRPOnboardingWithPasskey({ driver });
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+
+        await lockAndWaitForPasskeyUnlockPage(driver);
+
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPasskeyUnlockPageIsLoaded();
       },
     );
   });

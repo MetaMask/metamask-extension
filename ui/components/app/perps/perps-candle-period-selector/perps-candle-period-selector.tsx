@@ -33,10 +33,10 @@ export type PerpsCandlePeriodSelectorProps = {
   onPeriodChange?: (period: CandlePeriod) => void;
 };
 
-const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
+const PerpsCandlePeriodSelector = ({
   selectedPeriod,
   onPeriodChange,
-}) => {
+}: PerpsCandlePeriodSelectorProps) => {
   const t = useI18nContext();
   const { track } = usePerpsEventTracking();
   const [isMoreModalOpen, setIsMoreModalOpen] = useState(false);
@@ -76,6 +76,7 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
           return (
             <ButtonBase
               key={period.value}
+              type="button"
               className={twMerge(
                 'py-1.5 h-auto min-w-12 rounded-lg bg-transparent hover:bg-hover active:bg-pressed',
                 isSelected && 'bg-muted',
@@ -96,6 +97,7 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
         })}
 
         <ButtonBase
+          type="button"
           className={twMerge(
             'py-1.5 h-auto min-w-12 rounded-lg flex items-center gap-1 bg-transparent hover:bg-hover active:bg-pressed',
             isMorePeriodSelected && 'bg-muted',

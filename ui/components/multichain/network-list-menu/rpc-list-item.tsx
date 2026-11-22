@@ -1,8 +1,11 @@
 import { RpcEndpointType } from '@metamask/network-controller';
+import { Tag } from '@metamask/design-system-react';
+import type { Hex } from '@metamask/utils';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { infuraProjectId } from '../../../../shared/constants/network';
-import { Box, Tag, Text } from '../../component-library';
+import { getFailoverUrlsForEndpoint } from '../../../../shared/constants/network-failover';
+import { Box, Text } from '../../component-library';
 import {
   Display,
   FlexDirection,
@@ -37,12 +40,13 @@ export const stripProtocol = (endpoint: string) => {
 // This components represents an RPC endpoint in a list,
 // currently when selecting or editing endpoints for a network.
 const RpcListItem = ({
+  chainId,
   rpcEndpoint,
 }: {
+  chainId: Hex;
   rpcEndpoint: {
     name?: string;
     url: string;
-    failoverUrls?: string[];
     type: RpcEndpointType;
   };
 }) => {
@@ -72,7 +76,7 @@ const RpcListItem = ({
     >
       <Box>
         <Text
-          as="button"
+          as="span"
           padding={0}
           width={BlockSize.Full}
           color={name ? TextColor.textDefault : TextColor.textAlternative}
@@ -83,13 +87,10 @@ const RpcListItem = ({
           alignItems={AlignItems.center}
           gap={1}
         >
-          {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880 */}
-          {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
           {name || displayEndpoint(url)}
           {isRpcFailoverEnabled &&
-          rpcEndpoint.failoverUrls &&
-          rpcEndpoint.failoverUrls.length > 0 ? (
-            <Tag label={t('failover')} display={Display.Inline} />
+          getFailoverUrlsForEndpoint(chainId, url).length > 0 ? (
+            <Tag className="inline-flex">{t('failover')}</Tag>
           ) : null}
         </Text>
       </Box>

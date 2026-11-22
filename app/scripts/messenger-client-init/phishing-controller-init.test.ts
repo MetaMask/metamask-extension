@@ -1,11 +1,12 @@
-import { PhishingController } from '@metamask/phishing-controller';
+import {
+  PhishingController,
+  PhishingControllerMessenger,
+  RequestSourcePlatform,
+} from '@metamask/phishing-controller';
 import { getRootMessenger } from '../lib/messenger';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
-import {
-  getPhishingControllerMessenger,
-  PhishingControllerMessenger,
-} from './messengers';
+import { getPhishingControllerMessenger } from './messengers';
 import { PhishingControllerInit } from './phishing-controller-init';
 
 jest.mock('@metamask/phishing-controller');
@@ -39,6 +40,7 @@ describe('PhishingControllerInit', () => {
       state: undefined,
       hotlistRefreshInterval: 5_000,
       stalelistRefreshInterval: 30_000,
+      platform: RequestSourcePlatform.Extension,
     });
   });
 });

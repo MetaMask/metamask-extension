@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Izbrati morate račun!"
   },
-  "addAcquiredTokens": {
-    "message": "Dodaj žetone pridobljene z MetaMask"
-  },
   "addAlias": {
     "message": "Dodaj vzdevek"
   },
@@ -83,9 +80,6 @@
   },
   "back": {
     "message": "Nazaj"
-  },
-  "backupApprovalInfo": {
-    "message": "Ta skrivna koda je potrebna za obnovitev denarnice, če izgubite napravo, pozabite geslo, ponovno namestite MetaMask ali želite dostopati do denarnice v drugi napravi."
   },
   "backupApprovalNotice": {
     "message": "Varnostno kopirajte kodo Secret Recovery, da ohranite denarnico in sredstva varna."
@@ -181,14 +175,8 @@
   "custom": {
     "message": "Napredno"
   },
-  "customToken": {
-    "message": "Žeton po meri"
-  },
   "decimal": {
     "message": "Decimalna natančnost"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Decimalk mora biti med 0 in 36."
   },
   "delete": {
     "message": "Izbriši"
@@ -198,9 +186,6 @@
   },
   "done": {
     "message": "Končano"
-  },
-  "downloadGoogleChrome": {
-    "message": "Prenesi Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Prenesi dnevnike state"
@@ -226,18 +211,11 @@
   "fast": {
     "message": "Hiter"
   },
-  "fileImportFail": {
-    "message": "Uvoz z datoteko ne deluje? Kliknite tukaj!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "Pozabi to napravo"
   },
   "from": {
     "message": "Od"
-  },
-  "gasLimitTooLow": {
-    "message": "Gas limit mora biti vsaj 21000"
   },
   "gasUsed": {
     "message": "Uporabljen gas"
@@ -256,9 +234,6 @@
   },
   "hardwareWallets": {
     "message": "Poveži strojno denarnico"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Izberite vrsto strojne denarnice"
   },
   "here": {
     "message": "tukaj",
@@ -342,9 +317,6 @@
   "metamaskVersion": {
     "message": "Različica"
   },
-  "mustSelectOne": {
-    "message": "Izbran mora biti vsaj 1 žeton."
-  },
   "needImportFile": {
     "message": "Za uvoz morate izbrati datoteko.",
     "description": "User is important an account and needs to add a file to continue"
@@ -354,9 +326,6 @@
   },
   "networks": {
     "message": "Omrežja"
-  },
-  "nevermind": {
-    "message": "Pozabi"
   },
   "newAccountNumberName": {
     "message": "Račun $1",
@@ -376,9 +345,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Spletna kamera ni najdena"
-  },
-  "notEnoughGas": {
-    "message": "Ni dovolj plina"
   },
   "ofTextNofM": {
     "message": "od"
@@ -410,10 +376,6 @@
   "passwordsDontMatch": {
     "message": "Gesli se ne ujemata"
   },
-  "pastePrivateKey": {
-    "message": "Tukaj prilepite vaš zasebni ključ:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "v obdelavi"
   },
@@ -429,9 +391,6 @@
   "privateKey": {
     "message": "Zasebni lljuč",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Opozorilo: Nikoli ne razkrijte tega ključa. Kdorkoli lahko z njim ukrade vse vaše premoženje v računu."
   },
   "privateNetwork": {
     "message": "Zasebno omrežje"
@@ -517,9 +476,6 @@
   },
   "sign": {
     "message": "Podpiši"
-  },
-  "signatureRequest": {
-    "message": "Zahteva za podpis"
   },
   "signed": {
     "message": "Podpisano"
@@ -607,9 +563,6 @@
   },
   "urlErrorMsg": {
     "message": "URI zahtevajo ustrezno HTTP/HTTPS predpono."
-  },
-  "usedByClients": {
-    "message": "Uporabljen s strani večih različnih odjemalcev"
   },
   "visitWebSite": {
     "message": "Obiščite našo spletno stran"

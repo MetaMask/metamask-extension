@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -14,11 +14,7 @@ import {
   IconSize,
 } from '@metamask/design-system-react';
 import type { Position as PerpsPosition } from '@metamask/perps-controller';
-import {
-  formatPerpsFiat,
-  formatPositionSize,
-  PRICE_RANGES_MINIMAL_VIEW,
-} from '../../../../../shared/lib/perps-formatters';
+import { formatPositionSize } from '../../../../../shared/lib/perps-formatters';
 import {
   Modal,
   ModalContent,
@@ -40,12 +36,18 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
-import { getPositionDirection } from '../utils';
+import { getPositionDirection, getDisplaySymbol } from '../utils';
+import { usePerpsAttribution } from '../../../../hooks/perps/usePerpsAttribution';
 import { handlePerpsError } from '../utils/translate-perps-error';
+import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
+import { PerpsFeesDisplay } from '../perps-fees-display';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
+import { getPerpsNotionalUsd } from '../../../../hooks/perps/perps-fee-utils';
 import type { Position } from '../types';
+import { useVipTier } from '../../../../hooks/rewards/useVipTier';
+import { useSelectedAccountComplianceGate } from '../../compliance';
 
 export type ReversePositionModalProps = {
   isOpen: boolean;
@@ -66,23 +68,27 @@ function toFlipPositionPayload(pos: Position): Position {
   };
 }
 
-export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
+export const ReversePositionModal = ({
   isOpen,
   onClose,
   position,
   currentPrice,
   sizeDecimals,
-}) => {
+}: ReversePositionModalProps) => {
   const t = useI18nContext();
   const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();
+  const { buildTrackingData } = usePerpsAttribution();
+  const { gate } = useSelectedAccountComplianceGate();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
-  useEffect(() => {
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  if (isOpen !== prevIsOpen) {
+    setPrevIsOpen(isOpen);
     if (isOpen) {
       setIsGeoBlockModalOpen(false);
     }
-  }, [isOpen]);
+  }
 
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
@@ -95,6 +101,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     },
   });
   const { replacePerpsToastByKey } = usePerpsToast();
+  const vipTier = useVipTier();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -104,21 +111,58 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
       ? `${t('perpsLong')} → ${t('perpsShort')}`
       : `${t('perpsShort')} → ${t('perpsLong')}`;
   const sizeNum = Math.abs(parseFloat(position.size));
-  const estSizeLabel = `${formatPositionSize(sizeNum, sizeDecimals)} ${position.symbol}`;
+  // flipPosition resolves its fee against twice the controller position value.
+  let flipNotionalUsd: number | undefined;
+  try {
+    flipNotionalUsd = getPerpsNotionalUsd({
+      usdAmount: position.positionValue,
+      multiplier: 2,
+      allowEmpty: false,
+    });
+  } catch (notionalError) {
+    if (!(notionalError instanceof RangeError)) {
+      throw notionalError;
+    }
+    // Invalid live values leave the preview unavailable until the next update.
+  }
+  const estSizeLabel = `${formatPositionSize(sizeNum, sizeDecimals)} ${getDisplaySymbol(position.symbol)}`;
 
   const {
     feeRate,
+    protocolFeeRate,
+    metamaskFeeRate,
+    undiscountedFeeRate,
     isLoading: isFeeLoading,
     hasError: hasFeeError,
+    metamaskFeeRateDiscountPercentage,
   } = usePerpsOrderFees({
     symbol: position.symbol,
     orderType: 'market',
+    amount: flipNotionalUsd?.toString(),
   });
 
   const estimatedFees = useMemo(
     () =>
-      feeRate === undefined ? undefined : 2 * sizeNum * currentPrice * feeRate,
-    [sizeNum, currentPrice, feeRate],
+      feeRate === undefined || flipNotionalUsd === undefined
+        ? undefined
+        : flipNotionalUsd * feeRate,
+    [flipNotionalUsd, feeRate],
+  );
+
+  const originalEstimatedFees = useMemo(
+    () =>
+      undiscountedFeeRate === undefined || flipNotionalUsd === undefined
+        ? undefined
+        : flipNotionalUsd * undiscountedFeeRate,
+    [flipNotionalUsd, undiscountedFeeRate],
+  );
+
+  const estimatedMetamaskFee = useMemo(
+    () =>
+      metamaskFeeRate === undefined || flipNotionalUsd === undefined
+        ? undefined
+        : flipNotionalUsd * metamaskFeeRate,
+    [flipNotionalUsd, metamaskFeeRate],
   );
 
   const shouldShowFeePlaceholder =
@@ -130,52 +174,89 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   );
 
   const handleSave = useCallback(async () => {
-    if (!isEligible) {
-      setIsGeoBlockModalOpen(true);
-      return;
-    }
-
-    setIsSubmitting(true);
-    setError(null);
-
-    replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.REVERSE_IN_PROGRESS });
-
-    try {
-      const flipResult = await submitRequestToBackground<{
-        success: boolean;
-        error?: string;
-      }>('perpsFlipPosition', [
-        { symbol: position.symbol, position: positionForFlip },
-      ]);
-      if (flipResult?.success !== true) {
-        throw new Error(flipResult?.error || 'Failed to flip position');
+    await gate(async () => {
+      if (!isEligible) {
+        setIsGeoBlockModalOpen(true);
+        return;
       }
-      const streamManager = getPerpsStreamManager();
-      const freshPositions = await submitRequestToBackground<PerpsPosition[]>(
-        'perpsGetPositions',
-        [{ skipCache: true }],
-      );
-      streamManager.pushPositionsWithOverrides(freshPositions);
 
-      replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.REVERSE_SUCCESS });
-      onClose();
-    } catch (err) {
-      const raw =
-        err instanceof Error ? err.message : 'An unknown error occurred';
-      track(MetaMetricsEventName.PerpsError, {
-        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: raw,
-      });
-      const message = handlePerpsError(err, t as (key: string) => string);
-      setError(message);
-      replacePerpsToastByKey({
-        key: PERPS_TOAST_KEYS.REVERSE_FAILED,
-        description: message,
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+      setIsSubmitting(true);
+      setError(null);
+
+      replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.REVERSE_IN_PROGRESS });
+
+      try {
+        const flipResult = await submitRequestToBackground<{
+          success: boolean;
+          error?: string;
+        }>('perpsFlipPosition', [
+          {
+            symbol: position.symbol,
+            position: positionForFlip,
+            trackingData: buildTrackingData({
+              totalFee: estimatedFees ?? 0,
+              metamaskFee: estimatedMetamaskFee,
+              marketPrice: currentPrice,
+              vipTier,
+              vipDiscount: metamaskFeeRateDiscountPercentage,
+              hlFeeRate: protocolFeeRate,
+            }),
+          },
+        ]);
+        if (flipResult?.success !== true) {
+          // Controller already emitted flip submitted/terminal analytics —
+          // surface UI only; do not throw into catch (would duplicate PerpsError).
+          const err = new Error(flipResult?.error || 'Failed to flip position');
+          const message = handlePerpsError(err, t as (key: string) => string);
+          setError(message);
+          // Error is DISPLAYED — emit the error screen view.
+          trackPerpsErrorScreenViewed(
+            track,
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+            PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+          );
+          replacePerpsToastByKey({
+            key: PERPS_TOAST_KEYS.REVERSE_FAILED,
+            description: message,
+          });
+          return;
+        }
+        const streamManager = getPerpsStreamManager();
+        const freshPositions = await submitRequestToBackground<PerpsPosition[]>(
+          'perpsGetPositions',
+          [{ skipCache: true }],
+        );
+        streamManager.pushPositionsWithOverrides(freshPositions);
+
+        replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.REVERSE_SUCCESS });
+        onClose();
+      } catch (err) {
+        // Transport/background throws never reach the controller flip
+        // submitted/terminal pipeline — keep client PerpsError for that gap.
+        const raw =
+          err instanceof Error ? err.message : 'An unknown error occurred';
+        track(MetaMetricsEventName.PerpsError, {
+          [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: raw,
+        });
+        trackPerpsErrorScreenViewed(
+          track,
+          PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+        );
+        const message = handlePerpsError(err, t as (key: string) => string);
+        setError(message);
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.REVERSE_FAILED,
+          description: message,
+        });
+      } finally {
+        setIsSubmitting(false);
+      }
+    });
   }, [
+    gate,
     isEligible,
     onClose,
     position.symbol,
@@ -183,6 +264,13 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     replacePerpsToastByKey,
     track,
     t,
+    estimatedFees,
+    estimatedMetamaskFee,
+    currentPrice,
+    vipTier,
+    metamaskFeeRateDiscountPercentage,
+    protocolFeeRate,
+    buildTrackingData,
   ]);
 
   return (
@@ -259,17 +347,18 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
                 >
                   {t('perpsFees')}
                 </Text>
-                <Text
-                  variant={TextVariant.BodySm}
-                  fontWeight={FontWeight.Medium}
-                  data-testid="perps-reverse-fee-value"
-                >
-                  {shouldShowFeePlaceholder
-                    ? '--'
-                    : formatPerpsFiat(estimatedFees, {
-                        ranges: PRICE_RANGES_MINIMAL_VIEW,
-                      })}
-                </Text>
+                <PerpsFeesDisplay
+                  metamaskFeeRateDiscountPercentage={
+                    shouldShowFeePlaceholder
+                      ? undefined
+                      : metamaskFeeRateDiscountPercentage
+                  }
+                  originalFee={originalEstimatedFees}
+                  fee={shouldShowFeePlaceholder ? undefined : estimatedFees}
+                  placeholder="--"
+                  feeTextFontWeight={FontWeight.Medium}
+                  feeTextTestId="perps-reverse-fee-value"
+                />
               </Box>
               {error && (
                 <Box
@@ -298,7 +387,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
             submitButtonProps={{
               'data-testid': 'perps-reverse-position-modal-save',
               children: isSubmitting ? t('perpsSubmitting') : t('confirm'),
-              disabled: isSubmitting,
+              disabled: isSubmitting || flipNotionalUsd === undefined,
             }}
           />
         </ModalContent>

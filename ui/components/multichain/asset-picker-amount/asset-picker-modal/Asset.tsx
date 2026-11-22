@@ -4,11 +4,8 @@ import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { TokenListItem } from '../../token-list-item';
 import { useFormatters } from '../../../../hooks/useFormatters';
-import {
-  getMultichainNetworkConfigurationsByChainId,
-  getImageForChainId,
-} from '../../../../selectors/multichain';
-import { selectERC20TokensByChain } from '../../../../selectors/selectors';
+import { getMultichainNetworkConfigurationsByChainId } from '../../../../selectors/multichain';
+import { useImageForChainId } from '../../../../hooks/useImageForChainId';
 import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
 
 type AssetProps = AssetWithDisplayData<NativeAsset | ERC20Asset> & {
@@ -21,8 +18,6 @@ type AssetProps = AssetWithDisplayData<NativeAsset | ERC20Asset> & {
   isDestinationToken?: boolean;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Asset({
   address,
   image,
@@ -32,7 +27,6 @@ export default function Asset({
   tooltipText,
   tokenFiatAmount,
   chainId,
-  accountType,
   assetItemProps = {},
   isDestinationToken = false,
   rwaData,
@@ -44,8 +38,6 @@ export default function Asset({
   const isTokenChainIdInWallet = Boolean(
     chainId ? allNetworks[chainId as keyof typeof allNetworks] : true,
   );
-
-  const cachedTokens = useSelector(selectERC20TokensByChain);
 
   const formattedFiat = useTokenFiatAmount(
     address ?? undefined,
@@ -66,20 +58,14 @@ export default function Asset({
       key={`${chainId}-${symbol}-${address}`}
       chainId={chainId}
       tokenSymbol={symbol}
-      tokenImage={
-        image ??
-        cachedTokens?.[chainId]?.data?.[
-          ((address as string) ?? '').toLowerCase()
-        ]?.iconUrl
-      }
+      tokenImage={image}
       secondary={isTokenChainIdInWallet ? formattedAmount : undefined}
       primary={isTokenChainIdInWallet ? primaryAmountToUse : undefined}
       title={name ?? symbol}
       tooltipText={tooltipText}
-      tokenChainImage={getImageForChainId(chainId)}
+      tokenChainImage={useImageForChainId(chainId)}
       isDestinationToken={isDestinationToken}
       address={address}
-      accountType={accountType}
       rwaData={rwaData}
       {...assetItemProps}
     />

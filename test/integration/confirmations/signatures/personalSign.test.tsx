@@ -13,6 +13,7 @@ import mockMetaMaskState from '../../data/integration-init-state.json';
 import {
   getSelectedAccountGroupAccounts,
   getSelectedAccountGroupName,
+  createMockImplementation,
 } from '../../helpers';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
@@ -70,6 +71,9 @@ const getMetaMaskStateWithUnapprovedPersonalSign = (accountAddress: string) => {
 describe('PersonalSign Confirmation', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
+      createMockImplementation({}),
+    );
   });
 
   it('displays the header account modal with correct data', async () => {
@@ -83,9 +87,11 @@ describe('PersonalSign Confirmation', () => {
       await integrationTestRender({
         preloadedState: {
           ...mockedMetaMaskState,
-          participateInMetaMetrics: true,
-          metaMetricsId: 'test-metametrics-id',
-          dataCollectionForMarketing: false,
+          analyticsId: 'test-metametrics-id',
+          consentDecisionMade: true,
+          optedIn: true,
+          optedInToMarketing: false,
+          marketingConsentDecisionMade: true,
         },
         backgroundConnection: backgroundConnectionMocked,
       });
@@ -127,19 +133,21 @@ describe('PersonalSign Confirmation', () => {
     await waitFor(() => {
       confirmAccountDetailsModalMetricsEvent =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'trackMetaMetricsEvent',
+          (call) =>
+            call[0] === 'trackAnalyticsEvent' &&
+            call[1]?.[0]?.name === MetaMetricsEventName.AccountDetailsOpened,
         );
       expect(confirmAccountDetailsModalMetricsEvent?.[0]).toBe(
-        'trackMetaMetricsEvent',
+        'trackAnalyticsEvent',
       );
     });
 
     expect(confirmAccountDetailsModalMetricsEvent?.[1]).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          category: MetaMetricsEventCategory.Confirmations,
-          event: MetaMetricsEventName.AccountDetailsOpened,
-          properties: {
+          name: MetaMetricsEventName.AccountDetailsOpened,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Confirmations,
             action: 'Confirm Screen',
             location: MetaMetricsEventLocation.SignatureConfirmation,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -148,8 +156,9 @@ describe('PersonalSign Confirmation', () => {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             hd_entropy_index: 0,
-          },
+          }),
         }),
+        expect.anything(),
       ]),
     );
 

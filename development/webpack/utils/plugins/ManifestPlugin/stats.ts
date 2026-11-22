@@ -22,6 +22,7 @@ export type BundleSizeSummary = {
   common: number;
   other?: number;
   contentScripts?: number;
+  unzipped?: number;
   zip?: number;
   timestamp: number;
 };
@@ -34,7 +35,7 @@ export type BundleSizeAssetStat = {
 };
 
 export type BundleSizeDebugEntrypoint = {
-  category: BundleSizeCategory;
+  categories: BundleSizeCategory[];
   initialFiles: BundleSizeAssetStat[];
   asyncFiles: BundleSizeAssetStat[];
 };
@@ -117,15 +118,18 @@ export function mapBundleParts<TResult>(
 export function createBundleSizeSummary(
   partSizes: Record<BundlePart, number>,
   {
+    unzipped,
     zip,
     timestamp,
   }: {
+    unzipped?: number;
     zip?: number;
     timestamp: number;
   },
 ): BundleSizeSummary {
   return {
     ...mapBundleParts((part) => partSizes[part]),
+    unzipped,
     zip,
     timestamp,
   };

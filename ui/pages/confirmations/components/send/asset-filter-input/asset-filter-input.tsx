@@ -1,14 +1,5 @@
 import React from 'react';
-import {
-  Box,
-  ButtonIconSize,
-  TextFieldSearch,
-  TextFieldSearchSize,
-} from '../../../../../components/component-library';
-import {
-  BlockSize,
-  BorderRadius,
-} from '../../../../../helpers/constants/design-system';
+import { TextFieldSearch } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 type AssetFilterInputProps = {
@@ -25,28 +16,21 @@ export const AssetFilterInput = ({
   const t = useI18nContext();
 
   return (
-    <Box paddingLeft={4} paddingRight={4} paddingBottom={2}>
+    <search className="px-4 pb-2">
       <TextFieldSearch
-        borderRadius={BorderRadius.LG}
+        autoFocus
+        className="w-full"
+        clearButtonOnClick={() => onChange('')}
+        inputAriaLabel={placeholder ?? t('searchForAnAssetToSend')}
+        inputProps={
+          {
+            'data-testid': 'asset-filter-search-input',
+          } as React.ComponentPropsWithoutRef<'input'>
+        }
+        onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder ?? t('searchForAnAssetToSend')}
         value={searchQuery}
-        onChange={(e) => onChange(e.target.value)}
-        error={false}
-        autoFocus
-        autoComplete={false}
-        width={BlockSize.Full}
-        clearButtonOnClick={() => onChange('')}
-        clearButtonProps={{
-          size: ButtonIconSize.Sm,
-        }}
-        style={{ paddingInline: 12 }}
-        showClearButton
-        inputProps={{
-          'data-testid': 'asset-filter-search-input',
-        }}
-        endAccessory={null}
-        size={TextFieldSearchSize.Lg}
       />
-    </Box>
+    </search>
   );
 };

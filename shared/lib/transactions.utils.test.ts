@@ -7,11 +7,35 @@ import {
   isBatchTransaction,
   hasTransactionType,
   getPostQuoteWithdrawTransactionType,
+  getTransactionPayingAccount,
+  getTransactionType,
+  isInWalletPerpsDepositTransaction,
   isPostQuoteWithdrawTransaction,
   isPerpsWithdrawTransaction,
+  isValidTransactionHash,
 } from './transactions.utils';
 
 describe('Transactions utils', () => {
+  describe('isValidTransactionHash', () => {
+    it('returns true for a valid EVM transaction hash', () => {
+      expect(
+        isValidTransactionHash(
+          '0x8586e162e456a23c1969573a4b79e77912705b474bc5aa0c2a63d56556623ab2',
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false for invalid EVM transaction hashes', () => {
+      expect(
+        isValidTransactionHash('48a75190-45ca-11ef-9001-f3886ec2397c'),
+      ).toBe(false);
+    });
+
+    it('returns false for truncated EVM hashes', () => {
+      expect(isValidTransactionHash('0x1234')).toBe(false);
+    });
+  });
+
   describe('isBatchTransaction', () => {
     it('returns true when nestedTransactions has items', () => {
       const nested: NestedTransactionMetadata[] = [{ to: '0x1', data: '0x' }];
@@ -119,6 +143,70 @@ describe('Transactions utils', () => {
     });
   });
 
+  describe('getTransactionType', () => {
+    it('returns undefined for undefined input', () => {
+      expect(getTransactionType(undefined)).toBeUndefined();
+    });
+
+    it('returns direct type for regular transactions', () => {
+      const transactionMeta = {
+        type: TransactionType.perpsDeposit,
+      } as TransactionMeta;
+
+      expect(getTransactionType(transactionMeta)).toBe(
+        TransactionType.perpsDeposit,
+      );
+    });
+
+    it('returns nested type when nested transactions exist', () => {
+      const transactionMeta = {
+        type: TransactionType.batch,
+        nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+      } as TransactionMeta;
+
+      expect(getTransactionType(transactionMeta)).toBe(
+        TransactionType.moneyAccountDeposit,
+      );
+    });
+
+    it('returns direct type when nested transactions have no type', () => {
+      const transactionMeta = {
+        type: TransactionType.simpleSend,
+        nestedTransactions: [{}],
+      } as TransactionMeta;
+
+      expect(getTransactionType(transactionMeta)).toBe(
+        TransactionType.simpleSend,
+      );
+    });
+
+    it('returns first nested type that has a type', () => {
+      const transactionMeta = {
+        type: TransactionType.batch,
+        nestedTransactions: [
+          {},
+          { type: TransactionType.perpsWithdraw },
+          { type: TransactionType.predictWithdraw },
+        ],
+      } as TransactionMeta;
+
+      expect(getTransactionType(transactionMeta)).toBe(
+        TransactionType.perpsWithdraw,
+      );
+    });
+
+    it('returns direct type when nestedTransactions is empty', () => {
+      const transactionMeta = {
+        type: TransactionType.perpsDeposit,
+        nestedTransactions: [],
+      } as unknown as TransactionMeta;
+
+      expect(getTransactionType(transactionMeta)).toBe(
+        TransactionType.perpsDeposit,
+      );
+    });
+  });
+
   describe('isPerpsWithdrawTransaction', () => {
     it('returns true when type is perpsWithdraw', () => {
       const transactionMeta = {
@@ -153,6 +241,49 @@ describe('Transactions utils', () => {
     });
   });
 
+  describe('isInWalletPerpsDepositTransaction', () => {
+    it('returns true for a perpsDeposit started in the wallet', () => {
+      const transactionMeta = {
+        type: TransactionType.perpsDeposit,
+        origin: 'metamask',
+      } as TransactionMeta;
+
+      expect(isInWalletPerpsDepositTransaction(transactionMeta)).toBe(true);
+    });
+
+    it('returns true when a nested transaction is perpsDeposit', () => {
+      const transactionMeta = {
+        type: TransactionType.batch,
+        origin: 'metamask',
+        nestedTransactions: [{ type: TransactionType.perpsDeposit }],
+      } as unknown as TransactionMeta;
+
+      expect(isInWalletPerpsDepositTransaction(transactionMeta)).toBe(true);
+    });
+
+    it('returns false for a perpsDeposit requested by a dApp', () => {
+      const transactionMeta = {
+        type: TransactionType.perpsDeposit,
+        origin: 'https://example.test',
+      } as TransactionMeta;
+
+      expect(isInWalletPerpsDepositTransaction(transactionMeta)).toBe(false);
+    });
+
+    it('returns false for other in-wallet transaction types', () => {
+      const transactionMeta = {
+        type: TransactionType.perpsWithdraw,
+        origin: 'metamask',
+      } as TransactionMeta;
+
+      expect(isInWalletPerpsDepositTransaction(transactionMeta)).toBe(false);
+    });
+
+    it('returns false when transactionMeta is undefined', () => {
+      expect(isInWalletPerpsDepositTransaction(undefined)).toBe(false);
+    });
+  });
+
   describe('getPostQuoteWithdrawTransactionType', () => {
     it('returns perpsWithdraw when type is perpsWithdraw', () => {
       const transactionMeta = {
@@ -161,6 +292,16 @@ describe('Transactions utils', () => {
 
       expect(getPostQuoteWithdrawTransactionType(transactionMeta)).toBe(
         TransactionType.perpsWithdraw,
+      );
+    });
+
+    it('returns moneyAccountWithdraw when type is moneyAccountWithdraw', () => {
+      const transactionMeta = {
+        type: TransactionType.moneyAccountWithdraw,
+      } as TransactionMeta;
+
+      expect(getPostQuoteWithdrawTransactionType(transactionMeta)).toBe(
+        TransactionType.moneyAccountWithdraw,
       );
     });
 
@@ -195,8 +336,72 @@ describe('Transactions utils', () => {
       expect(isPostQuoteWithdrawTransaction(transactionMeta)).toBe(true);
     });
 
+    it('returns true for moneyAccountWithdraw', () => {
+      const transactionMeta = {
+        type: TransactionType.moneyAccountWithdraw,
+      } as TransactionMeta;
+
+      expect(isPostQuoteWithdrawTransaction(transactionMeta)).toBe(true);
+    });
+
     it('returns false when transactionMeta is undefined', () => {
       expect(isPostQuoteWithdrawTransaction(undefined)).toBe(false);
+    });
+  });
+
+  describe('getTransactionPayingAccount', () => {
+    const FROM = '0x1234567890123456789012345678901234567890';
+    const OVERRIDE = '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd';
+
+    const CASES = [
+      ['the override', TransactionType.contractInteraction, OVERRIDE, OVERRIDE],
+      ['from without an override', TransactionType.simpleSend, undefined, FROM],
+      [
+        'from for post-quote withdraws',
+        TransactionType.perpsWithdraw,
+        OVERRIDE,
+        FROM,
+      ],
+      [
+        'from for Money Account withdraws, ignoring the recipient override',
+        TransactionType.moneyAccountWithdraw,
+        OVERRIDE,
+        FROM,
+      ],
+      [
+        'the override for Money Account deposits',
+        TransactionType.moneyAccountDeposit,
+        OVERRIDE,
+        OVERRIDE,
+      ],
+    ] as const;
+
+    for (const [label, type, override, expected] of CASES) {
+      it(`returns ${label}`, () => {
+        const transactionMeta = { type, txParams: { from: FROM } };
+
+        expect(
+          getTransactionPayingAccount(
+            transactionMeta as TransactionMeta,
+            override,
+          ),
+        ).toBe(expected);
+      });
+    }
+
+    it('returns from for a Money Account withdraw nested in a batch', () => {
+      const transactionMeta = {
+        type: TransactionType.batch,
+        nestedTransactions: [{ type: TransactionType.moneyAccountWithdraw }],
+        txParams: { from: FROM },
+      };
+
+      expect(
+        getTransactionPayingAccount(
+          transactionMeta as TransactionMeta,
+          OVERRIDE,
+        ),
+      ).toBe(FROM);
     });
   });
 });

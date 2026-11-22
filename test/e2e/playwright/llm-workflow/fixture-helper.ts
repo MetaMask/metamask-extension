@@ -19,9 +19,13 @@ export type FixtureBuildOptions = {
 export function createFixtureBuilder(
   options: FixtureBuilderOptions = {},
 ): FixtureBuilderV2 {
-  return new FixtureBuilderV2({
+  const builder = new FixtureBuilderV2({
     onboarding: options.onboarding === true,
   });
+
+  return options.onboarding === true
+    ? builder
+    : builder.withSyncDisabled().withUseBasicFunctionalityDisabled();
 }
 
 /**
@@ -38,6 +42,7 @@ function applyAnvilPort(
   anvilPort: number,
 ): FixtureBuilderV2 {
   return builder.withNetworkController({
+    selectedNetworkClientId: 'localhost',
     networkConfigurationsByChainId: {
       '0x539': {
         blockExplorerUrls: [],

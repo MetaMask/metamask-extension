@@ -13,12 +13,12 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import mockState from '../../../../../test/data/mock-send-state.json';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import {
+  getAllTokens,
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
   getSelectedEvmInternalAccount,
   getShouldHideZeroBalanceTokens,
   getTokenExchangeRates,
-  getTokenList,
 } from '../../../../selectors';
 import {
   getNativeCurrency,
@@ -38,6 +38,11 @@ import {
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import {
+  ARC_USDC_ERC20_TOKEN_ADDRESS,
+  STABLE_USDT0_ERC20_ADDRESS,
+} from '../../../app/assets/enablement/networks-customization';
 import { AssetPickerModal } from './asset-picker-modal';
 import { ERC20Asset } from './types';
 
@@ -81,14 +86,21 @@ jest.mock('../../../../hooks/useMultichainBalances', () => ({
   useMultichainBalances: () => mockUseMultichainBalances(),
 }));
 
-jest.mock('lodash', () => ({
-  ...jest.requireActual('lodash'),
-  debounce: jest.fn().mockImplementation((fn) => {
-    const debouncedFn = fn;
-    debouncedFn.cancel = jest.fn();
-    return debouncedFn;
-  }),
-}));
+const networkPickerNetwork = {
+  nativeCurrency: 'ETH',
+  chainId: '0x1',
+  defaultBlockExplorerUrlIndex: 0,
+  blockExplorerUrls: ['https://explorerurl'],
+  defaultRpcEndpointIndex: 0,
+  rpcEndpoints: [
+    {
+      networkClientId: 'test1',
+      url: 'https://rpcurl',
+      type: RpcEndpointType.Custom,
+    },
+  ],
+  name: 'Network name',
+} as unknown as NetworkConfiguration;
 
 describe('AssetPickerModal', () => {
   const useSelectorMock = useSelector as jest.Mock;
@@ -146,20 +158,6 @@ describe('AssetPickerModal', () => {
       if (selector === getTokenExchangeRates) {
         return {};
       }
-      if (selector === getTokenList) {
-        return {
-          '0xAddress': { ...defaultProps.asset, symbol: 'TOKEN' },
-          '0xtoken1': {
-            address: '0xToken1',
-            symbol: 'TOKEN1',
-            type: AssetType.token,
-            image: 'image1.png',
-            string: '10',
-            decimals: 18,
-            balance: '0',
-          },
-        };
-      }
       if (selector === getConversionRate) {
         return 1;
       }
@@ -205,6 +203,30 @@ describe('AssetPickerModal', () => {
   });
 
   it('filters tokens based on search query', () => {
+    mockUseMultichainBalances.mockReturnValue({
+      assetsWithBalance: [
+        {
+          address: 'token-1',
+          assetId: 'eip155:1/erc20:token-1',
+          balance: '0',
+          chainId: '0x1',
+          decimals: 18,
+          isNative: false,
+          symbol: 'TOKEN',
+          type: AssetType.token,
+        },
+        {
+          address: 'token-2',
+          assetId: 'eip155:1/erc20:token-2',
+          balance: '0',
+          chainId: '0x1',
+          decimals: 18,
+          isNative: false,
+          symbol: 'TOKEN1',
+          type: AssetType.token,
+        },
+      ],
+    });
     renderWithProvider(<AssetPickerModal {...defaultProps} />, store);
 
     fireEvent.change(
@@ -274,21 +296,7 @@ describe('AssetPickerModal', () => {
       <AssetPickerModal
         {...defaultProps}
         header="selectNetworkHeader"
-        network={{
-          nativeCurrency: 'ETH',
-          chainId: '0x1',
-          defaultBlockExplorerUrlIndex: 0,
-          blockExplorerUrls: ['https://explorerurl'],
-          defaultRpcEndpointIndex: 0,
-          rpcEndpoints: [
-            {
-              networkClientId: 'test1',
-              url: 'https://rpcurl',
-              type: RpcEndpointType.Custom,
-            },
-          ],
-          name: 'Network name',
-        }}
+        network={networkPickerNetwork}
       />,
       store,
     );
@@ -301,27 +309,34 @@ describe('AssetPickerModal', () => {
     expect(modalContent).toBeInTheDocument();
   });
 
+  it('renders the multiselect network avatar group with member logos', () => {
+    const { getByTestId } = renderWithProvider(
+      <AssetPickerModal
+        {...defaultProps}
+        header="selectNetworkHeader"
+        network={networkPickerNetwork}
+        isMultiselectEnabled
+        selectedChainIds={['0x1', '0xa']}
+        networks={
+          [
+            { chainId: '0x1', name: 'Ethereum Mainnet' },
+            { chainId: '0xa', name: 'Optimism' },
+          ] as unknown as NetworkConfiguration[]
+        }
+      />,
+      store,
+    );
+
+    expect(getByTestId('multichain-asset-picker__network')).toBeInTheDocument();
+  });
+
   it('should not render network picker when onNetworkPickerClick prop is not defined', () => {
     const { getByText, getAllByRole } = renderWithProvider(
       <AssetPickerModal
         {...defaultProps}
         onNetworkPickerClick={undefined}
         header="selectNetworkHeader"
-        network={{
-          nativeCurrency: 'ETH',
-          chainId: '0x1',
-          defaultBlockExplorerUrlIndex: 0,
-          blockExplorerUrls: ['https://explorerurl'],
-          defaultRpcEndpointIndex: 0,
-          rpcEndpoints: [
-            {
-              networkClientId: 'test1',
-              url: 'https://rpcurl',
-              type: RpcEndpointType.Custom,
-            },
-          ],
-          name: 'Network name',
-        }}
+        network={networkPickerNetwork}
       />,
       store,
     );
@@ -330,6 +345,63 @@ describe('AssetPickerModal', () => {
     expect(modalTitle).toBeInTheDocument();
 
     expect(getAllByRole('img')).toHaveLength(1);
+  });
+
+  it('should hide excluded ERC-20 coming from detected tokens', () => {
+    useSelectorMock.mockImplementation((selector) => {
+      switch (selector) {
+        case getMultichainCurrentChainId:
+          return CHAIN_IDS.ARC;
+        case getMultichainNetworkConfigurationsByChainId:
+          return { [CHAIN_IDS.ARC]: { chainId: CHAIN_IDS.ARC } };
+        case getAllTokens:
+          return {
+            [CHAIN_IDS.ARC]: {
+              '0xAddress': [
+                {
+                  address: ARC_USDC_ERC20_TOKEN_ADDRESS,
+                  symbol: 'USDC',
+                  decimals: 6,
+                },
+                { address: '0xother', symbol: 'OTHER', decimals: 18 },
+              ],
+            },
+          };
+        case getSelectedEvmInternalAccount:
+          return { address: '0xAddress' };
+        case getMultichainCurrentCurrency:
+          return 'USD';
+        case getTokenExchangeRates:
+          return {};
+        case getConversionRate:
+          return 1;
+        default:
+          return {};
+      }
+    });
+
+    renderWithProvider(
+      <AssetPickerModal
+        {...defaultProps}
+        onNetworkPickerClick={undefined}
+        isMultiselectEnabled={false}
+        network={
+          {
+            chainId: CHAIN_IDS.ARC,
+            name: 'Arc',
+          } as unknown as NetworkConfiguration
+        }
+        selectedChainIds={[CHAIN_IDS.ARC]}
+      />,
+      store,
+    );
+
+    const { tokenList } = mockAssetList.mock.calls.at(-1)[0];
+    const addresses = tokenList.map((t: { address?: string }) =>
+      t.address?.toLowerCase(),
+    );
+    expect(addresses).not.toContain(ARC_USDC_ERC20_TOKEN_ADDRESS.toLowerCase());
+    expect(addresses).toContain('0xother');
   });
 });
 
@@ -576,6 +648,12 @@ describe('AssetPickerModal token filtering', () => {
       />,
     );
 
+    expect(
+      screen.queryByTestId('solana-account-creation-prompt'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText('searchTokensByNameOrAddress'),
+    ).toBeInTheDocument();
     expect(mockAssetList.mock.calls.at(-1)).toMatchSnapshot();
   });
 
@@ -661,7 +739,7 @@ describe('AssetPickerModal token filtering', () => {
 
     renderWithProvider(<AssetPickerModal {...defaultProps} />);
 
-    expect(mockAssetList.mock.calls.at(-1)).toMatchSnapshot();
+    expect(mockAssetList.mock.calls.at(-1)?.[0].tokenList).toHaveLength(30);
   });
 
   it('should fetch metadata for unlisted tokens', async () => {
@@ -684,5 +762,97 @@ describe('AssetPickerModal token filtering', () => {
 
     expect(mockUseAssetMetadata.mock.calls.at(-1)).toMatchSnapshot();
     expect(mockAssetList.mock.calls.at(-1)).toMatchSnapshot();
+  });
+
+  it('should hide excluded homonym ERC-20s (Arc USDC, Stable USDT0)', () => {
+    mockUseMultichainBalances.mockReturnValue({
+      assetsWithBalance: [
+        {
+          address: '',
+          balance: '100',
+          chainId: CHAIN_IDS.STABLE,
+          decimals: 6,
+          isNative: true,
+          symbol: 'USDT0',
+          type: 'NATIVE',
+        },
+        {
+          address: STABLE_USDT0_ERC20_ADDRESS,
+          balance: '100',
+          chainId: CHAIN_IDS.STABLE,
+          decimals: 6,
+          isNative: false,
+          symbol: 'USDT0',
+          type: 'TOKEN',
+        },
+        {
+          address: ARC_USDC_ERC20_TOKEN_ADDRESS,
+          balance: '50',
+          chainId: CHAIN_IDS.ARC,
+          decimals: 6,
+          isNative: false,
+          symbol: 'USDC',
+          type: 'TOKEN',
+        },
+      ],
+    });
+
+    mockUseAssetMetadata.mockReturnValue(undefined);
+
+    renderWithProvider(
+      <AssetPickerModal
+        {...defaultProps}
+        selectedChainIds={[CHAIN_IDS.STABLE, CHAIN_IDS.ARC]}
+      />,
+    );
+
+    const { tokenList } = mockAssetList.mock.calls.at(-1)[0];
+    const addresses = tokenList.map((token: { address: string }) =>
+      token.address?.toLowerCase(),
+    );
+    expect(addresses).not.toContain(STABLE_USDT0_ERC20_ADDRESS);
+    expect(addresses).not.toContain(ARC_USDC_ERC20_TOKEN_ADDRESS.toLowerCase());
+    expect(
+      tokenList.some(
+        (token: { isNative?: boolean; symbol: string }) =>
+          token.isNative && token.symbol === 'USDT0',
+      ),
+    ).toBe(true);
+  });
+
+  it('should not filter excluded ERC-20s supplied by customTokenListGenerator (bridge/swap exception)', () => {
+    renderWithProvider(
+      <AssetPickerModal
+        {...defaultProps}
+        isMultiselectEnabled={false}
+        network={
+          {
+            chainId: CHAIN_IDS.ARC,
+            name: 'Arc',
+          } as unknown as NetworkConfiguration
+        }
+        selectedChainIds={[CHAIN_IDS.ARC]}
+        customTokenListGenerator={function* () {
+          yield {
+            address: ARC_USDC_ERC20_TOKEN_ADDRESS,
+            balance: '50',
+            chainId: CHAIN_IDS.ARC,
+            decimals: 6,
+            isNative: false,
+            symbol: 'USDC',
+            type: AssetType.token,
+          } as never;
+        }}
+      />,
+    );
+
+    const { tokenList } = mockAssetList.mock.calls.at(-1)[0];
+    expect(
+      tokenList.some(
+        (t: { address?: string }) =>
+          t.address?.toLowerCase() ===
+          ARC_USDC_ERC20_TOKEN_ADDRESS.toLowerCase(),
+      ),
+    ).toBe(true);
   });
 });

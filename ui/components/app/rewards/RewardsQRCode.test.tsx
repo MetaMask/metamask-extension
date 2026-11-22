@@ -1,16 +1,20 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   setRewardsModalOpen,
-  setOnboardingReferralCode,
   setRewardsDeeplinkUrl,
 } from '../../../ducks/rewards';
 import { selectRewardsDeeplinkUrl } from '../../../ducks/rewards/selectors';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { useDispatch } from '../../../store/hooks';
 import RewardsQRCode from './RewardsQRCode';
 import { REWARDS_DEEPLINK_BASE_URL } from './utils/constants';
+
+jest.mock('../../../store/hooks', () => ({
+  useDispatch: jest.fn(),
+}));
 
 // Mock react-redux hooks
 jest.mock('react-redux', () => ({
@@ -60,7 +64,9 @@ jest.mock('qrcode-generator', () => {
 });
 
 const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
-const mockUseDispatch = useDispatch as jest.MockedFunction<typeof useDispatch>;
+const mockUseAppDispatch = useDispatch as jest.MockedFunction<
+  typeof useDispatch
+>;
 
 describe('RewardsQRCode', () => {
   beforeEach(() => {
@@ -85,7 +91,7 @@ describe('RewardsQRCode', () => {
   });
 
   it('encodes the stored deeplink URL in the QR code when present', () => {
-    const deeplink = 'https://link.metamask.io/rewards?referral=ABC123';
+    const deeplink = 'https://link.metamask.io/rewards';
     mockUseSelector.mockImplementation((selector) => {
       if (selector === selectRewardsDeeplinkUrl) {
         return deeplink;
@@ -123,7 +129,7 @@ describe('RewardsQRCode', () => {
       return null;
     });
     const dispatchMock = jest.fn();
-    mockUseDispatch.mockReturnValue(dispatchMock);
+    mockUseAppDispatch.mockReturnValue(dispatchMock);
 
     render(<RewardsQRCode />);
 
@@ -134,7 +140,6 @@ describe('RewardsQRCode', () => {
     fireEvent.click(closeButton);
 
     expect(dispatchMock).toHaveBeenCalledWith(setRewardsModalOpen(false));
-    expect(dispatchMock).toHaveBeenCalledWith(setOnboardingReferralCode(null));
     expect(dispatchMock).toHaveBeenCalledWith(setRewardsDeeplinkUrl(null));
   });
 });

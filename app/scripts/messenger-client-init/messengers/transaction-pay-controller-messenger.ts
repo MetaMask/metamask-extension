@@ -6,45 +6,45 @@ import {
 import type { TransactionPayControllerMessenger } from '@metamask/transaction-pay-controller';
 import type { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import type { KeyringControllerSignEip7702AuthorizationAction } from '@metamask/keyring-controller';
-import type { TransactionControllerGetNonceLockAction } from '@metamask/transaction-controller';
+import type { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
+import type { MoneyAccountControllerGetMoneyAccountAction } from '@metamask/money-account-controller';
+import type {
+  NetworkControllerFindNetworkClientIdByChainIdAction,
+  NetworkControllerGetNetworkClientByIdAction,
+} from '@metamask/network-controller';
+import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import type {
+  TransactionControllerAddTransactionBatchAction,
+  TransactionControllerGetNonceLockAction,
+  TransactionControllerGetStateAction,
+  TransactionControllerIsAtomicBatchSupportedAction,
+  TransactionControllerUnapprovedTransactionAddedEvent,
+  TransactionControllerUpdateTransactionAction,
+  TransactionControllerUpdateTransactionMetadataAction,
+} from '@metamask/transaction-controller';
 import type { RootMessenger } from '../../lib/messenger';
-import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../shared/lib/environment';
-import { getAssetsControllerMessenger } from './assets/assets-controller-messenger';
 
 export function getTransactionPayControllerMessenger(
-  messenger: RootMessenger,
-): TransactionPayControllerMessenger {
-  const controllerMessenger = new Messenger<
-    'TransactionPayController',
+  messenger: RootMessenger<
     MessengerActions<TransactionPayControllerMessenger>,
-    MessengerEvents<TransactionPayControllerMessenger>,
-    typeof messenger
-  >({
+    MessengerEvents<TransactionPayControllerMessenger>
+  >,
+): TransactionPayControllerMessenger {
+  const controllerMessenger: TransactionPayControllerMessenger = new Messenger({
     namespace: 'TransactionPayController',
     parent: messenger,
   });
 
-  // TODO: Remove this once the assets unified state is fully rolled out
-  registerAssetsControllerGetStateForTransactionPayAction(
-    messenger,
-    controllerMessenger,
-  );
-
   messenger.delegate({
     messenger: controllerMessenger,
     actions: [
-      'AccountTrackerController:getState',
-      'AssetsController:getStateForTransactionPay',
-      'BridgeController:fetchQuotes',
-      'BridgeStatusController:submitTx',
-      'CurrencyRateController:getState',
+      'AccountsController:getState',
+      'AssetsController:getState',
       'GasFeeController:getState',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
+      'NetworkController:getNetworkConfigurationByChainId',
       'RemoteFeatureFlagController:getState',
-      'TokenBalancesController:getState',
-      'TokenRatesController:getState',
-      'TokensController:getState',
       'TransactionController:estimateGas',
       'TransactionController:estimateGasBatch',
       'TransactionController:getGasFeeTokens',
@@ -52,13 +52,12 @@ export function getTransactionPayControllerMessenger(
       'TransactionController:updateTransaction',
       'KeyringController:getState',
       'KeyringController:signTypedMessage',
+      'RampsController:getOrder',
+      'RampsController:getQuoteWithFees',
+      'SentinelApiService:simulateTransactions',
     ],
     events: [
       'AssetsController:stateChange',
-      'BridgeStatusController:stateChange',
-      'CurrencyRateController:stateChange',
-      'TokenRatesController:stateChange',
-      'TokensController:stateChange',
       'TransactionController:stateChange',
       'TransactionController:unapprovedTransactionAdded',
     ],
@@ -68,11 +67,21 @@ export function getTransactionPayControllerMessenger(
 }
 
 type InitMessengerActions =
+  | AccountsControllerGetSelectedAccountAction
   | DelegationControllerSignDelegationAction
   | KeyringControllerSignEip7702AuthorizationAction
-  | TransactionControllerGetNonceLockAction;
+  | TransactionControllerGetNonceLockAction
+  | TransactionControllerGetStateAction
+  | TransactionControllerIsAtomicBatchSupportedAction
+  | TransactionControllerUpdateTransactionAction
+  | TransactionControllerUpdateTransactionMetadataAction
+  | MoneyAccountControllerGetMoneyAccountAction
+  | NetworkControllerFindNetworkClientIdByChainIdAction
+  | NetworkControllerGetNetworkClientByIdAction
+  | RemoteFeatureFlagControllerGetStateAction
+  | TransactionControllerAddTransactionBatchAction;
 
-type InitMessengerEvents = never;
+type InitMessengerEvents = TransactionControllerUnapprovedTransactionAddedEvent;
 
 export type TransactionPayControllerInitMessenger = ReturnType<
   typeof getTransactionPayControllerInitMessenger
@@ -94,51 +103,22 @@ export function getTransactionPayControllerInitMessenger(
   messenger.delegate({
     messenger: controllerInitMessenger,
     actions: [
+      'AccountsController:getSelectedAccount',
       'DelegationController:signDelegation',
       'KeyringController:signEip7702Authorization',
+      'MoneyAccountController:getMoneyAccount',
+      'NetworkController:findNetworkClientIdByChainId',
+      'NetworkController:getNetworkClientById',
+      'RemoteFeatureFlagController:getState',
+      'TransactionController:addTransactionBatch',
       'TransactionController:getNonceLock',
+      'TransactionController:getState',
+      'TransactionController:isAtomicBatchSupported',
+      'TransactionController:updateTransaction',
+      'TransactionController:updateTransactionMetadata',
     ],
-    events: [],
+    events: ['TransactionController:unapprovedTransactionAdded'],
   });
 
   return controllerInitMessenger;
-}
-
-function registerAssetsControllerGetStateForTransactionPayAction(
-  messenger: RootMessenger,
-  controllerMessenger: TransactionPayControllerMessenger,
-) {
-  if (!getIsAssetsUnifiedStateIncludedInBuild()) {
-    const assetsControllerMessenger = getAssetsControllerMessenger(messenger);
-    assetsControllerMessenger.registerActionHandler(
-      'AssetsController:getStateForTransactionPay' as const,
-      () => {
-        const tokenBalancesControllerState = controllerMessenger.call(
-          'TokenBalancesController:getState',
-        );
-        const accountsByChainIdControllerState = controllerMessenger.call(
-          'AccountTrackerController:getState',
-        );
-        const tokensControllerState = controllerMessenger.call(
-          'TokensController:getState',
-        );
-        const marketDataControllerState = controllerMessenger.call(
-          'TokenRatesController:getState',
-        );
-        const currencyRatesControllerState = controllerMessenger.call(
-          'CurrencyRateController:getState',
-        );
-
-        return {
-          tokenBalances: tokenBalancesControllerState?.tokenBalances ?? {},
-          accountsByChainId:
-            accountsByChainIdControllerState?.accountsByChainId ?? {},
-          allTokens: tokensControllerState?.allTokens ?? {},
-          marketData: marketDataControllerState?.marketData ?? {},
-          currencyRates: currencyRatesControllerState?.currencyRates ?? {},
-          currentCurrency: currencyRatesControllerState?.currentCurrency ?? '',
-        };
-      },
-    );
-  }
 }

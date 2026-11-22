@@ -10,8 +10,26 @@ export const AuthServer = {
   RenewRefreshToken:
     'https://auth-service.dev-api.cx.metamask.io/api/v2/oauth/renew_refresh_token',
 
-  GetMarketingOptInStatus:
+  MarketingOptInStatus:
     'https://auth-service.dev-api.cx.metamask.io/api/v1/oauth/marketing_opt_in_status',
+
+  // Mint token from Profile Sync OIDC server to Auth Service
+  MintToken: 'https://auth-service.dev-api.cx.metamask.io/api/v1/oauth/mint',
+
+  // Pair the social login identifier to the profile, authorised with the social access token (`social_jwt`)
+  PairSocialIdentifier:
+    'https://authentication.api.cx.metamask.io/api/v2/profile/pair/identifier',
+};
+
+export const ProfileSyncServer = {
+  // Initiating Telegram login flow
+  OAuthInitiate: /\/api\/v2\/telegram\/login\/initiate/u,
+
+  // Verify the Telegram Login Response
+  OAuthVerify: /\/api\/v2\/telegram\/login\/verify$/u,
+
+  // Exchange the OIDC Access Token for the Verified Telegram Login Response
+  OIDCToken: /\/oauth2\/token$/u,
 };
 
 export const SSSBaseUrlRgx =

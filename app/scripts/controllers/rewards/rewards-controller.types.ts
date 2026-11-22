@@ -31,11 +31,11 @@ import {
   RewardsDataServiceMobileJoinAction,
   RewardsDataServiceSiweJoinAction,
   RewardsDataServiceMobileOptinAction,
-  RewardsDataServiceValidateReferralCodeAction,
   RewardsDataServiceFetchGeoLocationAction,
   RewardsDataServiceGetSeasonMetadataAction,
   RewardsDataServiceGetDiscoverSeasonsAction,
   RewardsDataServiceGenerateChallengeAction,
+  RewardsDataServiceGetVipFeesAction,
 } from './rewards-data-service-method-action-types';
 import { RewardsControllerMethodActions } from './rewards-controller-method-action-types';
 
@@ -44,7 +44,14 @@ export type LoginResponseDto = {
   subscription: SubscriptionDto;
 };
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export type VipFeatureDto = {
+  enabled: boolean;
+};
+
+export type SubscriptionFeaturesDto = {
+  vip: VipFeatureDto;
+};
+
 export type SubscriptionDto = {
   id: string;
   referralCode: string;
@@ -54,6 +61,43 @@ export type SubscriptionDto = {
   }[];
   createdAt: string;
   candidateAt?: string;
+  /**
+   * Per-subscription feature flags (VIP, etc.). Optional for backward
+   * compatibility with subscriptions persisted before this field was added —
+   * callers must treat `features?.vip?.enabled !== true` as non-VIP.
+   */
+  features?: SubscriptionFeaturesDto;
+};
+
+// Backend wire format for GET /vip/fees — mirrors va-mmcx-rewards
+// src/main/vip/dto/vip-fees.dto.ts (PR #546). Fee bips are returned as
+// strings; the controller parses them as needed.
+export type HyperliquidVipFeesDto = {
+  builderCode: string;
+  builderFeeBips: string;
+};
+
+export type SwapsVipFeesDto = {
+  feeBips: string;
+};
+
+export type VipFeesGroupDto = {
+  hyperliquid: HyperliquidVipFeesDto;
+  swaps: SwapsVipFeesDto;
+};
+
+export type VipFeesResponseDto = {
+  vipTier: number;
+  fees: VipFeesGroupDto | null;
+  updatedAt: string | null;
+};
+
+// Per-subscription cache for VIP perps builder fee.
+// We store the raw bips string from the backend rather than a derived
+// discount so the cache stays valid if the perps base fee constant changes.
+export type VipPerpsFeesState = {
+  hyperliquidBuilderFeeBips: string;
+  lastFetched: number;
 };
 
 export type MobileLoginDto = {
@@ -290,7 +334,6 @@ export type PointsEventDto = BasePointsEventDto &
       }
   );
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type SeasonTierDto = {
   id: string;
   name: string;
@@ -582,14 +625,12 @@ export type RewardClaimData =
   | AlphaFoxInviteRewardData
   | null;
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type PointsBoostRewardData = {
   seasonPointsBonusId: string;
   activeUntil: string; // reward expiration date
   activeFrom: string; // claim date
 };
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type AlphaFoxInviteRewardData = {
   telegramHandle: string;
 };
@@ -611,7 +652,6 @@ export type ThemeImage = {
   darkModeUrl: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type RewardsAccountState = {
   account: CaipAccountId;
   hasOptedIn?: boolean;
@@ -753,7 +793,6 @@ export type PointsEstimateHistoryEntry = {
   responseBonusBips: number;
 };
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type RewardsControllerState = {
   rewardsActiveAccount: RewardsAccountState | null;
   rewardsAccounts: { [account: CaipAccountId]: RewardsAccountState };
@@ -761,6 +800,12 @@ export type RewardsControllerState = {
   rewardsSeasons: { [seasonId: string]: SeasonDtoState };
   rewardsSeasonStatuses: { [compositeId: string]: SeasonStatusState };
   rewardsSubscriptionTokens: { [subscriptionId: string]: string };
+  /**
+   * Per-subscription cache of the latest VIP fees response (raw bips string)
+   * with a `lastFetched` timestamp. The discount is re-derived at read time
+   * so callers can pass a different base fee without invalidating the cache.
+   */
+  rewardsVipPerpsFees: { [subscriptionId: string]: VipPerpsFeesState };
   /**
    * History of points estimates for Customer Support diagnostics.
    * Stores the last N successful estimates to verify user-reported discrepancies.
@@ -854,13 +899,13 @@ type AllowedActions =
   | RewardsDataServiceGetSeasonStatusAction
   | RewardsDataServiceFetchGeoLocationAction
   | RewardsDataServiceMobileOptinAction
-  | RewardsDataServiceValidateReferralCodeAction
   | RewardsDataServiceMobileJoinAction
   | RewardsDataServiceSiweJoinAction
   | RewardsDataServiceGetOptInStatusAction
   | RewardsDataServiceGetSeasonMetadataAction
   | RewardsDataServiceGetDiscoverSeasonsAction
   | RewardsDataServiceGenerateChallengeAction
+  | RewardsDataServiceGetVipFeesAction
   | AccountTreeControllerGetAccountsFromSelectedAccountGroupAction
   | SnapControllerHandleRequestAction;
 

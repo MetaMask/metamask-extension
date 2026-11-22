@@ -6,6 +6,11 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { mockPositions } from '../mocks';
 import {
+  formatPerpsFiatUniversal,
+  formatPerpsLiquidationPrice,
+  PERPS_LIQUIDATION_PRICE_FALLBACK,
+} from '../utils/formatPerpsDisplayPrice';
+import {
   UpdateTPSLModalContent,
   type UpdateTPSLSubmitState,
 } from './update-tpsl-modal-content';
@@ -13,6 +18,35 @@ import {
 const mockSubmitRequestToBackground = jest.fn();
 const mockGetPerpsStreamManager = jest.fn();
 const mockReplacePerpsToastByKey = jest.fn();
+
+// Mobile test convention: mock the Compliance barrel so the gate hook never runs
+// (and never reaches the now-strict AccessRestrictedProvider context throw). The
+// gate is a passthrough here; real gating behavior is covered in
+// useComplianceGate.test.tsx.
+jest.mock('../../compliance', () => {
+  // Stable references so components that put `gate` in effect/callback deps
+  // don't re-run on every render.
+  const gate = async (action: () => unknown) => action();
+  const value = {
+    gate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  };
+  return {
+    useComplianceGate: () => value,
+    useSelectedAccountComplianceGate: () => value,
+  };
+});
+
+jest.mock('../../../../hooks/perps/usePerpsAttribution', () => {
+  const buildTpslTrackingData = (input: Record<string, unknown>) => input;
+  return {
+    usePerpsAttribution: () => ({
+      buildTpslTrackingData,
+    }),
+  };
+});
 
 jest.mock('../../../../providers/perps', () => ({
   getPerpsStreamManager: () => mockGetPerpsStreamManager(),
@@ -28,15 +62,20 @@ jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
 }));
 
+const mockUsePerpsOrderFees = jest.fn();
 jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
-  usePerpsOrderFees: () => ({
-    feeRate: 0.00145,
-    isLoading: false,
-    hasError: false,
-  }),
+  usePerpsOrderFees: (options: Record<string, unknown>) => {
+    mockUsePerpsOrderFees(options);
+    return {
+      feeRate: 0.00145,
+      isLoading: false,
+      hasError: false,
+    };
+  },
 }));
 
 jest.mock('../perps-toast', () => ({
+  ...jest.requireActual('../perps-toast'),
   usePerpsToast: () => ({
     replacePerpsToastByKey: mockReplacePerpsToastByKey,
   }),
@@ -61,9 +100,9 @@ const defaultProps = {
  * Mirrors UpdateTPSLModal footer so unit tests can reach the primary action
  * @param props
  */
-const TpslContentWithTestFooter: React.FC<
-  React.ComponentProps<typeof UpdateTPSLModalContent>
-> = (props) => {
+const TpslContentWithTestFooter = (
+  props: React.ComponentProps<typeof UpdateTPSLModalContent>,
+) => {
   const [submitState, setSubmitState] =
     React.useState<UpdateTPSLSubmitState | null>(null);
   return (
@@ -119,7 +158,41 @@ describe('UpdateTPSLModalContent', () => {
     });
   });
 
+  // A successful save deliberately schedules a 2.5s reconciliation that outlives
+  // the modal. Under real timers it also outlives the test and fires a stray
+  // `perpsGetPositions` inside a later one, making this suite order-dependent.
+  // `advanceTimers: true` keeps the fake clock tracking real time so existing
+  // `waitFor`/`findBy` calls behave unchanged; the drain in afterEach means no
+  // pending timer ever crosses a test boundary.
+  beforeEach(() => {
+    jest.useFakeTimers({ advanceTimers: true });
+  });
+
+  afterEach(() => {
+    // Tests that manage their own clock may already have restored real timers,
+    // in which case there is nothing left to drain.
+    if (jest.isMockFunction(setTimeout)) {
+      jest.runOnlyPendingTimers();
+    }
+    jest.useRealTimers();
+  });
+
   describe('rendering', () => {
+    it('quotes both triggers using the largest batch notional', () => {
+      renderWithProvider(
+        <UpdateTPSLModalContent {...defaultProps} />,
+        mockStore,
+      );
+      expect(mockUsePerpsOrderFees).toHaveBeenCalledWith({
+        symbol: 'ETH',
+        orderType: 'market',
+        amount: '8000',
+      });
+      expect(mockUsePerpsOrderFees).not.toHaveBeenCalledWith(
+        expect.objectContaining({ amount: '6500' }),
+      );
+    });
+
     it('renders Take Profit and Stop Loss sections', () => {
       renderTpslModalContent();
 
@@ -228,6 +301,82 @@ describe('UpdateTPSLModalContent', () => {
     });
   });
 
+  describe('price context block', () => {
+    it('renders entry, current, and liquidation price rows above the take profit section', () => {
+      renderTpslModalContent();
+
+      expect(
+        screen.getByTestId('perps-update-tpsl-price-info'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsEntryPrice.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsCurrentPrice.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsLiquidationPrice.message),
+      ).toBeInTheDocument();
+    });
+
+    it('formats the entry price with the adaptive perps formatter', () => {
+      renderTpslModalContent();
+
+      expect(
+        screen.getByTestId('perps-update-tpsl-entry-price-value'),
+      ).toHaveTextContent(
+        formatPerpsFiatUniversal(positionWithTPSL.entryPrice),
+      );
+    });
+
+    it('formats the liquidation price with the adaptive perps formatter', () => {
+      renderTpslModalContent();
+
+      expect(
+        screen.getByTestId('perps-update-tpsl-liquidation-price-value'),
+      ).toHaveTextContent(
+        formatPerpsLiquidationPrice(positionWithTPSL.liquidationPrice),
+      );
+    });
+
+    it('shows the current price from the live currentPrice prop', () => {
+      renderTpslModalContent({ currentPrice: 2900 });
+
+      expect(
+        screen.getByTestId('perps-update-tpsl-current-price-value'),
+      ).toHaveTextContent(formatPerpsFiatUniversal(2900));
+    });
+
+    it('updates the current price when the live currentPrice prop changes', () => {
+      const { rerender } = renderWithProvider(
+        <TpslContentWithTestFooter {...defaultProps} currentPrice={2900} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-update-tpsl-current-price-value'),
+      ).toHaveTextContent(formatPerpsFiatUniversal(2900));
+
+      rerender(
+        <TpslContentWithTestFooter {...defaultProps} currentPrice={3000} />,
+      );
+
+      expect(
+        screen.getByTestId('perps-update-tpsl-current-price-value'),
+      ).toHaveTextContent(formatPerpsFiatUniversal(3000));
+    });
+
+    it('falls back to the placeholder when the liquidation price is invalid', () => {
+      renderTpslModalContent({
+        position: { ...positionWithTPSL, liquidationPrice: '0.00' },
+      });
+
+      expect(
+        screen.getByTestId('perps-update-tpsl-liquidation-price-value'),
+      ).toHaveTextContent(PERPS_LIQUIDATION_PRICE_FALLBACK);
+    });
+  });
+
   describe('initialization', () => {
     it('initializes TP/SL prices from position data', () => {
       renderTpslModalContent();
@@ -315,6 +464,69 @@ describe('UpdateTPSLModalContent', () => {
       expect(
         screen.queryByTestId('perps-update-tpsl-estimated-sl-pnl-row'),
       ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('privacy mode', () => {
+    const privacyStore = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        preferences: {
+          ...mockState.metamask.preferences,
+          privacyMode: true,
+        },
+      },
+    });
+
+    it('masks entry price, liquidation price, and estimated P&L when privacy mode is enabled', () => {
+      renderWithProvider(
+        <TpslContentWithTestFooter {...defaultProps} />,
+        privacyStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-update-tpsl-entry-price-value'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-update-tpsl-liquidation-price-value'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-update-tpsl-estimated-tp-pnl-value'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-update-tpsl-estimated-sl-pnl-value'),
+      ).toHaveTextContent('••••••');
+    });
+
+    it('does not mask the current price, which is public market data', () => {
+      renderWithProvider(
+        <TpslContentWithTestFooter {...defaultProps} currentPrice={2900} />,
+        privacyStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-update-tpsl-current-price-value'),
+      ).toHaveTextContent(formatPerpsFiatUniversal(2900));
+    });
+
+    it('uses the default text color instead of green/red for estimated P&L when privacy mode is enabled', () => {
+      renderWithProvider(
+        <TpslContentWithTestFooter {...defaultProps} />,
+        privacyStore,
+      );
+
+      const tpPnl = screen.getByTestId(
+        'perps-update-tpsl-estimated-tp-pnl-value',
+      );
+      const slPnl = screen.getByTestId(
+        'perps-update-tpsl-estimated-sl-pnl-value',
+      );
+      expect(tpPnl).toHaveClass('text-default');
+      expect(tpPnl).not.toHaveClass('text-success-default');
+      expect(tpPnl).not.toHaveClass('text-error-default');
+      expect(slPnl).toHaveClass('text-default');
+      expect(slPnl).not.toHaveClass('text-success-default');
+      expect(slPnl).not.toHaveClass('text-error-default');
     });
   });
 
@@ -526,6 +738,42 @@ describe('UpdateTPSLModalContent', () => {
       )[1] as HTMLInputElement;
       const numValue = parseFloat(slPriceInput.value.replace(/,/gu, ''));
       expect(numValue).toBeCloseTo(96.425, 0);
+    });
+
+    it("caps a stop-loss RoE beyond the venue's limit with Core's 99% per 1x", () => {
+      // SOL long entered at 95 at 10x: -5000% is past -990%, so the stop
+      // sits at the cap, 95 * (1 - 0.99) = 0.95.
+      renderTpslModalContent({ position: positionWithoutTPSL });
+
+      const slPercentInput = screen.getByTestId(
+        'perps-update-tpsl-sl-percent-input',
+      ) as HTMLInputElement;
+
+      fireEvent.focus(slPercentInput);
+      fireEvent.change(slPercentInput, { target: { value: '-5000' } });
+
+      const slPriceInput = screen.getAllByPlaceholderText(
+        '0.00',
+      )[1] as HTMLInputElement;
+
+      expect(slPriceInput.value).toBe('0.95');
+    });
+
+    it('shows no RoE instead of assuming 1x when the leverage is unknown', () => {
+      renderTpslModalContent({
+        position: {
+          ...positionWithTPSL,
+          leverage: { ...positionWithTPSL.leverage, value: Number.NaN },
+        },
+      });
+
+      expect(
+        (
+          screen.getByTestId(
+            'perps-update-tpsl-tp-percent-input',
+          ) as HTMLInputElement
+        ).value,
+      ).toBe('');
     });
 
     it('preserves the positive sign after blurring an explicit positive SL RoE%', () => {
@@ -745,17 +993,65 @@ describe('UpdateTPSLModalContent', () => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsUpdatePositionTPSL',
           [
-            {
+            expect.objectContaining({
               symbol: positionWithTPSL.symbol,
               takeProfitPrice: '3200.00',
               stopLossPrice: '2600.00',
-            },
+              trackingData: expect.objectContaining({
+                direction: 'long',
+                source: 'asset_detail_screen',
+                positionSize: 2.5,
+                isEditingExistingPosition: true,
+              }),
+            }),
           ],
         );
       });
       await waitFor(() => {
         expect(onClose).toHaveBeenCalled();
       });
+    });
+
+    it('keeps the exact trigger price through blur and save', async () => {
+      renderTpslModalContent({ position: positionWithoutTPSL });
+      const tpInput = screen.getAllByPlaceholderText(
+        '0.00',
+      )[0] as HTMLInputElement;
+
+      fireEvent.change(tpInput, { target: { value: '28624.98' } });
+      fireEvent.blur(tpInput);
+
+      expect(tpInput.value).toBe('28624.98');
+
+      fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsUpdatePositionTPSL',
+          [expect.objectContaining({ takeProfitPrice: '28624.98' })],
+        );
+      });
+    });
+
+    it('keeps a Core-derived trigger price unchanged when its price field blurs', () => {
+      renderTpslModalContent({ position: positionWithoutTPSL });
+      const tpPercentInput = screen.getByTestId(
+        'perps-update-tpsl-tp-percent-input',
+      );
+      const tpPriceInput = screen.getAllByPlaceholderText(
+        '0.00',
+      )[0] as HTMLInputElement;
+
+      fireEvent.focus(tpPercentInput);
+      fireEvent.change(tpPercentInput, { target: { value: '12.345' } });
+      fireEvent.blur(tpPercentInput);
+
+      const corePrice = tpPriceInput.value;
+
+      fireEvent.focus(tpPriceInput);
+      fireEvent.blur(tpPriceInput);
+
+      expect(tpPriceInput.value).toBe(corePrice);
     });
 
     it('sends undefined for empty TP/SL prices (clearing them)', async () => {
@@ -768,11 +1064,16 @@ describe('UpdateTPSLModalContent', () => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsUpdatePositionTPSL',
           [
-            {
+            expect.objectContaining({
               symbol: positionWithoutTPSL.symbol,
               takeProfitPrice: undefined,
               stopLossPrice: undefined,
-            },
+              trackingData: expect.objectContaining({
+                direction: 'long',
+                source: 'asset_detail_screen',
+                isEditingExistingPosition: false,
+              }),
+            }),
           ],
         );
       });
@@ -864,11 +1165,15 @@ describe('UpdateTPSLModalContent', () => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsUpdatePositionTPSL',
           [
-            {
+            expect.objectContaining({
               symbol: positionWithTPSL.symbol,
               takeProfitPrice: '3200.00',
               stopLossPrice: '2600.00',
-            },
+              trackingData: expect.objectContaining({
+                direction: 'long',
+                source: 'asset_detail_screen',
+              }),
+            }),
           ],
         );
       });
@@ -897,6 +1202,31 @@ describe('UpdateTPSLModalContent', () => {
   });
 
   describe('error handling', () => {
+    it('reports an already-closed position and refreshes positions', async () => {
+      const refreshPositions = jest.fn().mockResolvedValue(undefined);
+      mockGetPerpsStreamManager.mockReturnValue({ refreshPositions });
+      mockSubmitRequestToBackground.mockResolvedValue({
+        success: false,
+        error: 'POSITION_NOT_FOUND',
+      });
+      const onClose = jest.fn();
+
+      renderTpslModalContent({ onClose });
+
+      fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastPositionAlreadyClosed',
+        });
+      });
+      expect(refreshPositions).toHaveBeenCalledTimes(1);
+      expect(onClose).toHaveBeenCalledTimes(1);
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({ key: 'perpsToastUpdateFailed' }),
+      );
+    });
+
     it('shows toast error when perpsUpdatePositionTPSL fails', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsUpdatePositionTPSL') {

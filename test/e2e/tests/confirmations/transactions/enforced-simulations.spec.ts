@@ -9,18 +9,39 @@ import { WINDOW_TITLES } from '../../../constants';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
-import { createDappTransaction } from '../../../page-objects/flows/transaction';
+import { createDappTransaction } from '../../../page-objects/flows/transaction.flow';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
-import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import ConfirmAlertModal from '../../../page-objects/pages/dialog/confirm-alert';
+import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import TestDappIndividualRequest from '../../../page-objects/pages/test-dapp-individual-request';
 import { MockedEndpoint } from '../../../mock-e2e';
 import { mockEip7702FeatureFlag } from '../helpers';
 import { getTransactionDetails } from '../helpers/anvil-transaction';
-import { mockSimulationApi } from '../mocks/simulation';
+import {
+  mockSimulationApi,
+  mockSimulationApiReverted,
+} from '../mocks/simulation';
 import { mockTrustSignal } from '../mocks/trust-signals';
 import { SENDER_ADDRESS_MOCK } from '../../simulation-details/types';
+import { getMockAssetsPrice, mockSpotPrices } from '../../tokens/utils/mocks';
 
 const USDC_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+const USDC_ASSET_ID = `eip155:1/erc20:${USDC_ADDRESS}`;
+// Matches mock-e2e's `DEFAULT_ETH_USD_PRICE`. Gas fiat ($15.05) is
+// 0.005 ETH × this rate; CurrencyRateController no longer supplies it.
+const ETH_USD_CONVERSION_RATE = 3010;
+const ENFORCED_SIMULATIONS_SPOT_PRICES = {
+  'eip155:1/slip44:60': {
+    price: ETH_USD_CONVERSION_RATE,
+    marketCap: 382623505141,
+    pricePercentChange1d: 0,
+  },
+  [USDC_ASSET_ID]: {
+    price: 1,
+    marketCap: 0,
+    pricePercentChange1d: 0,
+  },
+};
 const RECIPIENT_ADDRESS = '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc';
 const ERC20_TRANSFER_SELECTOR = '0xa9059cbb';
 const REDEEM_DELEGATIONS_SELECTOR = '0xcef6d209';
@@ -74,6 +95,7 @@ describe('Enforced Simulations', function (this: Suite) {
           confirmation,
           localNodes[0],
           'confirmed',
+          true,
         );
 
         assert.strictEqual(
@@ -193,6 +215,7 @@ describe('Enforced Simulations', function (this: Suite) {
           confirmation,
           localNodes[0],
           'confirmed',
+          true,
         );
 
         assert.strictEqual(
@@ -234,7 +257,7 @@ describe('Enforced Simulations', function (this: Suite) {
     await withFixtures(
       enforcedSimulationsFixtureOptions(
         this.test?.fullTitle(),
-        setupMocks(ResultType.Benign),
+        setupMocks(ResultType.Malicious),
       ),
       async ({ driver, localNodes }) => {
         await login(driver, { expectedBalance: '10' });
@@ -243,6 +266,12 @@ describe('Enforced Simulations', function (this: Suite) {
 
         const confirmation = new TransactionConfirmation(driver);
         await confirmation.checkPageIsLoaded();
+
+        // Ensure the confirmation values are populated before toggling to prevent re-renders
+        await confirmation.checkGasFeeEstimate('$15.05');
+        await confirmation.checkEstimatedSimulationDetails('- <0.000001');
+
+        // Disable enforced simulations
         await confirmation.checkEnforcedSimulationsRowIsDisplayed();
         await confirmation.clickEnforcedSimulationsToggle();
         await confirmation.checkEnforcedSimulationsToggleUnchecked();
@@ -252,6 +281,7 @@ describe('Enforced Simulations', function (this: Suite) {
           confirmation,
           localNodes[0],
           'confirmed',
+          true,
         );
 
         assert.strictEqual(
@@ -280,6 +310,46 @@ describe('Enforced Simulations', function (this: Suite) {
     );
   });
 
+  it('does not offer or enforce simulations when the simulation fails', async function () {
+    await withFixtures(
+      enforcedSimulationsFixtureOptions(
+        this.test?.fullTitle(),
+        setupMocks(ResultType.Malicious, { simulationReverted: true }),
+      ),
+      async ({ driver, localNodes }) => {
+        await login(driver, { expectedBalance: '10' });
+        await createDappTransaction(driver, TRANSACTION_MOCK);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const confirmation = new TransactionConfirmation(driver);
+        await confirmation.checkPageIsLoaded();
+        await confirmation.checkEstimatedSimulationDetails(
+          'This transaction is likely to fail',
+        );
+        await confirmation.checkEnforcedSimulationsRowIsNotDisplayed();
+
+        const { receipt, tx } = await confirmAndGetTransaction(
+          driver,
+          confirmation,
+          localNodes[0],
+          'confirmed',
+          true,
+        );
+
+        assert.strictEqual(
+          receipt.to?.toLowerCase(),
+          USDC_ADDRESS.toLowerCase(),
+          `Expected receipt.to to be USDC, got ${receipt.to}`,
+        );
+        assert.strictEqual(
+          (tx.input ?? '0x').toLowerCase(),
+          USDC_TRANSFER_CALLDATA.toLowerCase(),
+          `Expected tx.input to be original USDC transfer calldata`,
+        );
+      },
+    );
+  });
+
   it('reverts on-chain when the actual balance change exceeds the simulation', async function () {
     await withFixtures(
       enforcedSimulationsFixtureOptions(
@@ -303,6 +373,7 @@ describe('Enforced Simulations', function (this: Suite) {
           confirmation,
           localNodes[0],
           'failed',
+          true,
         );
 
         assert.strictEqual(
@@ -319,10 +390,20 @@ describe('Enforced Simulations', function (this: Suite) {
   });
 });
 
-function setupMocks(trustResultType: ResultType) {
+function setupMocks(
+  trustResultType: ResultType,
+  { simulationReverted = false }: { simulationReverted?: boolean } = {},
+) {
   return async (mockServer: MockttpServer): Promise<MockedEndpoint[]> => {
     const eip7702Mocks = await mockEip7702FeatureFlag(mockServer);
     const trustMocks = await mockTrustSignal(mockServer, trustResultType);
+    await mockSpotPrices(mockServer, ENFORCED_SIMULATIONS_SPOT_PRICES);
+
+    if (simulationReverted) {
+      await mockSimulationApiReverted(mockServer);
+      return [...eip7702Mocks, ...trustMocks];
+    }
+
     await mockSimulationApi(mockServer, {
       sender: SENDER_ADDRESS_MOCK,
       recipient: RECIPIENT_ADDRESS,
@@ -345,6 +426,11 @@ function enforcedSimulationsFixtureOptions(
       .withEnabledNetworks({ eip155: { '0x1': true } })
       .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
       .withSmartTransactionsOptedOut()
+      // CurrencyRateController is deprecated under assets-unify in E2E; gas fiat
+      // (e.g. $15.05) is derived from AssetsController prices instead.
+      .withAssetsController({
+        assetsPrice: getMockAssetsPrice(ETH_USD_CONVERSION_RATE),
+      })
       .build(),
     localNodeOptions: {
       chainId: 1,
@@ -361,18 +447,26 @@ async function confirmAndGetTransaction(
   confirmation: TransactionConfirmation,
   anvil: Anvil,
   expectedStatus: 'confirmed' | 'failed',
+  acknowledgeDangerAlert = false,
 ) {
-  await confirmation.clickFooterConfirmButton();
+  await confirmation.clickFooterButton({ button: 'confirm' });
+
+  if (acknowledgeDangerAlert) {
+    const alertModal = new ConfirmAlertModal(driver);
+    await alertModal.acknowledgeAlert();
+    await alertModal.confirmFromAlertModal();
+    await confirmation.clickFooterButton({ button: 'confirm' });
+  }
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
-  const activityList = new ActivityListPage(driver);
-  await activityList.openActivityTab();
+  const activityTab = new ActivityTab(driver);
+  await activityTab.goToActivityList();
 
   if (expectedStatus === 'confirmed') {
-    await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+    await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
   } else {
-    await activityList.checkFailedTxNumberDisplayedInActivity(1);
+    await activityTab.checkFailedTxNumberDisplayedInActivity(1);
   }
 
   await driver.switchToWindowWithTitle(

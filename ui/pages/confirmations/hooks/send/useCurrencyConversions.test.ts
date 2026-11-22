@@ -1,5 +1,3 @@
-import { DefaultRootState } from 'react-redux';
-
 import mockState from '../../../../../test/data/mock-state.json';
 import {
   EVM_ASSET,
@@ -11,7 +9,7 @@ import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-n
 import * as SendContext from '../../context/send';
 import { useCurrencyConversions } from './useCurrencyConversions';
 
-function renderHook(args: DefaultRootState = {}) {
+function renderHook(args: Record<string, unknown> = {}) {
   const { result } = renderHookWithProvider(useCurrencyConversions, {
     ...mockState,
     metamask: { ...mockState.metamask, ...args },
@@ -79,5 +77,37 @@ describe('useCurrencyConversions', () => {
     const result = renderHook();
 
     expect(result.conversionSupportedForAsset).toBeFalsy();
+  });
+
+  it('conversionSupportedForAsset is false when the currency rate check is off', () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: {
+        ...EVM_NATIVE_ASSET,
+        fiat: {
+          conversionRate: 2,
+        },
+      },
+      chainId: '0x5',
+    } as unknown as SendContext.SendContextType);
+
+    const result = renderHook({ useCurrencyRateCheck: false });
+
+    expect(result.conversionSupportedForAsset).toBe(false);
+  });
+
+  it('conversionSupportedForAsset is true when the currency rate check is on and a rate is available', () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: {
+        ...EVM_NATIVE_ASSET,
+        fiat: {
+          conversionRate: 2,
+        },
+      },
+      chainId: '0x5',
+    } as unknown as SendContext.SendContextType);
+
+    const result = renderHook({ useCurrencyRateCheck: true });
+
+    expect(result.conversionSupportedForAsset).toBe(true);
   });
 });

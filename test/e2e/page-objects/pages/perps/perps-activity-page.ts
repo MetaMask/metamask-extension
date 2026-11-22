@@ -1,22 +1,45 @@
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * Page object for the Perps Activity page (full history).
+ * The Perps Activity page: full trade / order / funding / deposit history.
+ *
+ * Screen: `#/perps/activity`, reached from `PerpsTab.clickRecentActivitySeeAll`.
+ * Owns: the activity page shell, filter button and type options, transaction
+ * cards, waiting for trade-title fragments, and the header back control.
+ * Boundaries: the activity list only. Opening a card leaves this screen;
+ * asserting transaction details, or Perps home or market detail after back,
+ * belongs to those objects.
+ * Related: `PerpsTab` (how tests get here), `PerpsTransactionDetailsPage`
+ * (opened from a card),
+ * `flows/perps-activity-close-fill.flow.ts` for close-fill assertions that
+ * span market detail and activity.
  *
  * @see ui/pages/perps/perps-activity-page.tsx
  */
 export class PerpsActivityPage {
-  private readonly driver: Driver;
-
-  private readonly activityPage = { testId: 'perps-activity-page' };
-
   private readonly activityBackButton = {
     testId: 'perps-activity-back-button',
   };
 
+  private readonly activityFilterOption = (
+    type: 'trade' | 'order' | 'funding' | 'deposit',
+  ) => {
+    return {
+      xpath: `//*[@data-testid='perps-activity-filter-option-${type}']`,
+    };
+  };
+
   private readonly anyTransactionCard = {
     xpath:
-      "//*[@data-testid='perps-activity-page']//*[starts-with(@data-testid,'transaction-card-')]",
+      "//*[@data-testid='parent-selector-perps-activity']//*[starts-with(@data-testid,'transaction-card-')]",
+  };
+
+  private readonly driver: Driver;
+
+  private readonly filterButton = { testId: 'perps-activity-filter-button' };
+
+  private readonly parentSelector = {
+    testId: 'parent-selector-perps-activity',
   };
 
   constructor(driver: Driver) {
@@ -27,7 +50,22 @@ export class PerpsActivityPage {
    * Waits for the Perps Activity page to be loaded.
    */
   async checkPageIsLoaded(): Promise<void> {
-    await this.driver.waitForSelector(this.activityPage);
+    await this.driver.waitForSelector(this.parentSelector);
+  }
+
+  /**
+   * Opens the activity filter dropdown by clicking the filter button.
+   */
+  async clickFilterButton(): Promise<void> {
+    await this.driver.clickElement(this.filterButton);
+  }
+
+  /**
+   * Clicks the first visible transaction card on the activity page.
+   * Use after ensuring at least one transaction card is visible.
+   */
+  async clickFirstTransactionCard(): Promise<void> {
+    await this.driver.clickElement(this.anyTransactionCard);
   }
 
   /**
@@ -35,6 +73,29 @@ export class PerpsActivityPage {
    */
   async clickHeaderBack(): Promise<void> {
     await this.driver.clickElement(this.activityBackButton);
+  }
+
+  /**
+   * Selects a filter option from the open dropdown.
+   * Call `clickFilterButton()` first to open the dropdown.
+   *
+   * @param type - Filter type: 'trade' | 'order' | 'funding' | 'deposit'.
+   */
+  async selectFilter(
+    type: 'trade' | 'order' | 'funding' | 'deposit',
+  ): Promise<void> {
+    await this.driver.clickElement(this.activityFilterOption(type));
+  }
+
+  /**
+   * Waits for a trade row title fragment (e.g. `"Closed long"`, `"Closed short"`)
+   * as produced by `transformFillsToTransactions`.
+   * @param fragment
+   */
+  async waitForActivityTradeTitleContaining(fragment: string): Promise<void> {
+    await this.driver.waitForSelector({
+      xpath: `//*[@data-testid='parent-selector-perps-activity']//*[contains(normalize-space(.), "${fragment}")]`,
+    });
   }
 
   /**
@@ -46,13 +107,13 @@ export class PerpsActivityPage {
   }
 
   /**
-   * Waits for a trade row title fragment (e.g. `"Closed long"`, `"Closed short"`)
-   * as produced by `transformFillsToTransactions`.
-   * @param fragment
+   * Waits for a specific filter option to be visible inside the open dropdown.
+   *
+   * @param type - Filter type: 'trade' | 'order' | 'funding' | 'deposit'.
    */
-  async waitForActivityTradeTitleContaining(fragment: string): Promise<void> {
-    await this.driver.waitForSelector({
-      xpath: `//*[@data-testid='perps-activity-page']//*[contains(normalize-space(.), "${fragment}")]`,
-    });
+  async waitForFilterOption(
+    type: 'trade' | 'order' | 'funding' | 'deposit',
+  ): Promise<void> {
+    await this.driver.waitForSelector(this.activityFilterOption(type));
   }
 }

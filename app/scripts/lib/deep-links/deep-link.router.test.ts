@@ -1,10 +1,7 @@
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import MetaMaskController from '../../metamask-controller';
-import {
-  DEEP_LINK_HOST,
-  SIG_PARAM,
-} from '../../../../shared/lib/deep-links/constants';
+import { SIG_PARAM } from '../../../../shared/lib/deep-links/common';
 import { ParsedDeepLink, parse } from '../../../../shared/lib/deep-links/parse';
 import ExtensionPlatform from '../../platforms/extension';
 import { DeepLinkRouter } from './deep-link-router';
@@ -49,6 +46,30 @@ const getState = jest.fn(() => ({
   preferences: { skipDeepLinkInterstitial: false },
 })) as unknown as jest.MockedFunction<MetaMaskController['getState']>;
 
+const routesProtectedByInterstitial = [
+  '/buy',
+  '/sell',
+  '/batch-sell',
+  '/card-onboarding',
+  '/swap',
+  '/money',
+  '/earn-musd',
+  '/perps',
+  '/perps-markets',
+  '/perps-asset',
+  '/rewards',
+  '/predict',
+  '/trending',
+  '/shield',
+] as const;
+
+const protectedRouteTestCases = routesProtectedByInterstitial.flatMap((route) =>
+  (['missing', 'invalid'] as const).map((signature) => ({
+    route,
+    signature,
+  })),
+);
+
 describe('DeepLinkRouter', () => {
   let router: DeepLinkRouter;
 
@@ -77,7 +98,10 @@ describe('DeepLinkRouter', () => {
           browser.webRequest.onBeforeRequest.addListener,
         ).toHaveBeenCalledWith(
           expect.any(Function),
-          { urls: [`*://*.${DEEP_LINK_HOST}/*`], types: ['main_frame'] },
+          {
+            urls: ['*://link.metamask.io/*', '*://link.metamask.com/*'],
+            types: ['main_frame'],
+          },
           mockIsManifestV3() ? [] : ['blocking'],
         );
       },
@@ -97,6 +121,71 @@ describe('DeepLinkRouter', () => {
     beforeEach(() => {
       router.install();
     });
+
+    it.each([
+      {
+        initiator: 'https://metamask.io',
+        expectedUrl:
+          'chrome-extension://extension-id/home.html?ref=ABC123#/money?asset=ETH',
+      },
+      {
+        initiator: undefined,
+        expectedUrl:
+          'chrome-extension://extension-id/home.html#link?u=%2Fmoney%3Fref%3Dabc123%26unsigned%3Dignored',
+      },
+    ])(
+      'uses the existing security policy for referral links from $initiator',
+      async ({ initiator, expectedUrl }) => {
+        parseMock.mockResolvedValue({
+          signature: 'missing',
+          destination: {
+            path: '/money',
+            query: new URLSearchParams('asset=ETH'),
+          },
+        } as ParsedDeepLink);
+
+        await onBeforeRequest?.({
+          tabId: 1,
+          url: 'https://link.metamask.io/money?ref=abc123&unsigned=ignored',
+          initiator,
+        } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+        expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+          url: expectedUrl,
+        });
+      },
+    );
+
+    it.each([false, true, undefined])(
+      'handles a signed direct destination when onboarding completion is %s',
+      async (completedOnboarding) => {
+        getState.mockReturnValueOnce({
+          completedOnboarding,
+          preferences: { skipDeepLinkInterstitial: false },
+        } as unknown as ReturnType<MetaMaskController['getState']>);
+        parseMock.mockResolvedValue({
+          signature: 'valid',
+          destination: {
+            path: 'settings/privacy',
+            query: new URLSearchParams([['a', 'v']]),
+          },
+        } as ParsedDeepLink);
+
+        await onBeforeRequest?.({
+          tabId: 1,
+          url: 'https://link.metamask.io/privacy?a=v',
+          initiator: 'https://example.com',
+        } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+        expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+          url:
+            completedOnboarding === false
+              ? 'chrome-extension://extension-id/home.html#settings/privacy?a=v'
+              : 'chrome-extension://extension-id/home.html#link?u=%2Fprivacy%3Fa%3Dv',
+        });
+        expect(getState).toHaveBeenCalledTimes(1);
+      },
+    );
 
     // test return values for MV2 and MV3 behavior
     it.each(['mv2', 'mv3'])(
@@ -134,6 +223,111 @@ describe('DeepLinkRouter', () => {
         } as browser.WebRequest.OnBeforeRequestDetailsType);
         expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
           url: 'chrome-extension://extension-id/home.html#link?u=%2Fexternal-route%3Fquery%3Dparam',
+        });
+      },
+    );
+
+    it('routes metamask.com through the canonical-host interstitial', async () => {
+      parseMock.mockResolvedValue({
+        signature: 'missing',
+        destination: {
+          path: 'internal-route',
+          query: new URLSearchParams(),
+        },
+      } as ParsedDeepLink);
+
+      await onBeforeRequest?.({
+        tabId: 1,
+        url: 'https://link.metamask.com/home',
+      } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+      expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+        url: 'chrome-extension://extension-id/home.html#link?u=%2Fhome',
+      });
+    });
+
+    it.each(protectedRouteTestCases)(
+      'shows the interstitial for $route when the signature is $signature',
+      async ({ route, signature }) => {
+        const tabId = 1;
+        const url = `https://example.com${route}`;
+        parseMock.mockResolvedValue({
+          signature,
+          route: {
+            pathname: route,
+          },
+          destination: {
+            path: 'internal-route',
+            query: new URLSearchParams(),
+          },
+        } as ParsedDeepLink);
+
+        await onBeforeRequest?.({
+          tabId,
+          url,
+        } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+        expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
+          url: `chrome-extension://extension-id/home.html#link?${new URLSearchParams(
+            { u: route },
+          ).toString()}`,
+        });
+      },
+    );
+
+    it.each(['mv2', 'mv3'])(
+      'opens the mobile QR fallback directly for an unmatched share link in %s',
+      async (manifestVersion) => {
+        mockIsManifestV3.mockReturnValue(manifestVersion === 'mv3');
+        const url =
+          'https://link.metamask.com/mobile-only?share=1&value=%2f#details';
+
+        const response = await onBeforeRequest?.({
+          tabId: 1,
+          url,
+          initiator: 'https://third-party.example',
+        } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+        expect(parseMock).not.toHaveBeenCalled();
+        expect(getState).not.toHaveBeenCalled();
+        expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+          url: `chrome-extension://extension-id/home.html#link?${new URLSearchParams({ mobileShare: '/mobile-only?share=1&value=%2f' })}`,
+        });
+        expect(response).toEqual(
+          manifestVersion === 'mv3' ? {} : { cancel: true },
+        );
+      },
+    );
+
+    it('keeps a matched share link on the security interstitial', async () => {
+      parseMock.mockResolvedValue({
+        signature: 'missing',
+        destination: { path: '/', query: new URLSearchParams() },
+      } as ParsedDeepLink);
+
+      await onBeforeRequest?.({
+        tabId: 1,
+        url: 'https://link.metamask.io/home?share=1',
+      } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+      expect(parseMock).toHaveBeenCalledTimes(1);
+      expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+        url: 'chrome-extension://extension-id/home.html#link?u=%2Fhome%3Fshare%3D1',
+      });
+    });
+
+    it.each(['/mobile-only?share=0', '/home?share=1'])(
+      'keeps the 404 for %s when parsing fails',
+      async (path) => {
+        parseMock.mockResolvedValue(false);
+
+        await onBeforeRequest?.({
+          tabId: 1,
+          url: `https://link.metamask.io${path}`,
+        } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+        expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+          url: `chrome-extension://extension-id/home.html#link?${new URLSearchParams({ errorCode: '404', u: path })}`,
         });
       },
     );
@@ -274,6 +468,65 @@ describe('DeepLinkRouter', () => {
       });
     });
 
+    describe('unsigned asset routes', () => {
+      const EXTENSION_HOME = 'chrome-extension://extension-id/home.html';
+      const WARB_ASSET_ID =
+        'eip155:1/erc20:0xb047c8032b99841713b8e3872f06cf32beb27b82';
+      const DAI_ASSET_ID =
+        'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f';
+
+      const buildAssetInterstitialTestCase = (assetId: string) => {
+        const encodedAssetId = encodeURIComponent(assetId);
+        const chainId = assetId.split('/')[0];
+
+        return {
+          url: `https://link.metamask.io/asset?assetId=${encodedAssetId}`,
+          parsed: {
+            signature: 'missing',
+            destination: {
+              path: `asset/${chainId}/${encodedAssetId}`,
+              query: new URLSearchParams(),
+            },
+            route: { pathname: '/asset' },
+          } as ParsedDeepLink,
+          expectedUrl: `${EXTENSION_HOME}#link?u=%2Fasset%3FassetId%3D${encodeURIComponent(encodedAssetId)}`,
+        };
+      };
+
+      type AssetRouteTestCase = {
+        description: string;
+        url: string;
+        parsed: ParsedDeepLink;
+        expectedUrl: string;
+      };
+
+      const assetRouteCases: AssetRouteTestCase[] = [
+        {
+          description:
+            'shows interstitial for unsigned unknown/scam asset links',
+          ...buildAssetInterstitialTestCase(WARB_ASSET_ID),
+        },
+        {
+          description: 'shows interstitial for unsigned known-safe asset links',
+          ...buildAssetInterstitialTestCase(DAI_ASSET_ID),
+        },
+      ];
+
+      it.each(assetRouteCases)(
+        '$description',
+        async (testCase: AssetRouteTestCase) => {
+          parseMock.mockResolvedValue(testCase.parsed);
+          await onBeforeRequest?.({
+            tabId: 1,
+            url: testCase.url,
+          } as browser.WebRequest.OnBeforeRequestDetailsType);
+          expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+            url: testCase.expectedUrl,
+          });
+        },
+      );
+    });
+
     it('should handle TAB_ID_NONE and not attempt to parse or navigate', async () => {
       const url = `about:blank`;
       const tabId = browser.tabs.TAB_ID_NONE;
@@ -338,10 +591,14 @@ describe('DeepLinkRouter', () => {
       expect(mockErrorCallback).toHaveBeenCalledWith(error);
     });
 
-    it('should handle redirecting routes', async function () {
+    it('handles redirecting routes from trusted origins', async function () {
       const tabId = 1;
-      const url = `https://example.com/redirect-route`;
+      const url = `https://example.com/buy`;
       parseMock.mockResolvedValue({
+        signature: 'missing',
+        route: {
+          pathname: '/buy',
+        },
         destination: {
           redirectTo: new URL('https://example.com/internal-route'),
         },
@@ -349,9 +606,33 @@ describe('DeepLinkRouter', () => {
       await onBeforeRequest?.({
         tabId,
         url,
+        initiator: 'https://metamask.io',
       } as browser.WebRequest.OnBeforeRequestDetailsType);
       expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
         url: 'https://example.com/internal-route',
+      });
+    });
+
+    it('shows the interstitial for unsigned redirecting routes from third-party origins', async function () {
+      const tabId = 1;
+      const url = `https://example.com/buy`;
+      parseMock.mockResolvedValue({
+        signature: 'missing',
+        route: {
+          pathname: '/buy',
+        },
+        destination: {
+          redirectTo: new URL('https://example.com/internal-route'),
+        },
+      } as ParsedDeepLink);
+
+      await onBeforeRequest?.({
+        tabId,
+        url,
+      } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+      expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
+        url: 'chrome-extension://extension-id/home.html#link?u=%2Fbuy',
       });
     });
 

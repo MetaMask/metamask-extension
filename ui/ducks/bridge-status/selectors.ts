@@ -13,8 +13,6 @@ import {
   getSelectedAccountGroup,
 } from '../../selectors/multichain-accounts/account-tree';
 import { EMPTY_OBJECT } from '../../selectors/shared';
-import { selectCurrentAccountNonEvmTransactions } from '../../selectors/multichain-transactions';
-import { selectTransactionIds } from '../../selectors/toast';
 
 type BridgeStatusAppState = {
   metamask: BridgeStatusControllerState & TransactionControllerState;
@@ -76,42 +74,6 @@ export const selectBridgeHistoryForAccountGroup = createSelector(
   },
 );
 
-export const selectBridgeHistoryForToast = createSelector(
-  [
-    selectBridgeHistoryForAccountGroup,
-    selectCurrentAccountNonEvmTransactions,
-    selectTransactionIds,
-  ],
-  (bridgeHistory, nonEvmTxs, evmTxIds) => {
-    if (!bridgeHistory) {
-      return EMPTY_OBJECT as Record<string, BridgeHistoryItem>;
-    }
-
-    const nonEvmTxIds = new Set(nonEvmTxs.map((tx) => tx.id));
-
-    return Object.entries(bridgeHistory).reduce<
-      Record<string, BridgeHistoryItem>
-    >((acc, [key, item]) => {
-      if (!item.quote) {
-        return acc;
-      }
-      // Same-chain swaps are handled by their respective transaction watchers
-      if (item.quote.srcChainId === item.quote.destChainId) {
-        return acc;
-      }
-      // Only include items whose source transaction exists in transactions
-      const hasMatchingTx = isNonEvmChainId(item.quote.srcChainId)
-        ? nonEvmTxIds.has(key)
-        : evmTxIds.has(key);
-
-      if (hasMatchingTx) {
-        acc[key] = item;
-      }
-      return acc;
-    }, {});
-  },
-);
-
 export const selectNonEvmBridgeSourceTxIds = createSelector(
   [selectBridgeHistoryForAccountGroup],
   (bridgeHistory) => {
@@ -142,7 +104,6 @@ export const selectNonEvmBridgeSourceTxIds = createSelector(
   },
 );
 
-// eslint-disable-next-line jsdoc/require-param
 /**
  * @deprecated use selectBridgeHistoryItemForTransactionHash instead
  */
@@ -184,7 +145,6 @@ const selectBridgeHistoryByApprovalTxId = createSelector(
     ),
 );
 
-// eslint-disable-next-line jsdoc/require-param
 /**
  * Returns a bridge history item for a given original tx meta id.
  * Used by intent flows where txHistory key is orderUid and tx meta id is stored separately.
@@ -200,7 +160,6 @@ export const selectBridgeHistoryForOriginalTxMetaId = (
   return selectBridgeHistoryByOriginalTransactionId(state)[originalTxMetaId];
 };
 
-// eslint-disable-next-line jsdoc/require-param
 /**
  * Returns a bridge history item for a given approval tx id
  */
@@ -242,7 +201,7 @@ export const selectLocalTxForTxHash = (
  * @param txHash - the tx hash
  * @returns the bridge history item for the given tx hash
  */
-const selectBridgeHistoryItemForTxHash = createSelector(
+export const selectBridgeHistoryItemForTxHash = createSelector(
   [
     selectBridgeHistory,
     selectLocalTxForTxHash,

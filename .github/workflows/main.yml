@@ -35,13 +35,14 @@ env:
   RUN_ID: ${{ github.run_id }}
 
 permissions:
-  contents: write # required for releases
-  id-token: write # required for s3 uploads
-  statuses: write # required for build-source-hash and ci-status-gate
+  contents: read
 
 jobs:
   get-requirements:
     name: Get workflow and job requirements
+    permissions:
+      contents: read
+      statuses: write # Posts build-source-hash and builds-from-run.
     uses: ./.github/workflows/get-requirements.yml
 
   locales-changed-only:
@@ -82,14 +83,6 @@ jobs:
           is-high-risk-environment: ${{ github.ref_name == 'main' || github.ref_name == 'stable' || startsWith(github.ref_name, 'release/') }}
           cache-node-modules: true
           skip-allow-scripts: true
-
-      # Need to cache `.metamask` folder for the anvil binary
-      - name: Cache .metamask folder
-        if: ${{ steps.checkout-and-setup.outputs.node-modules-cache-hit != 'true' }}
-        uses: actions/cache/save@v5
-        with:
-          path: .metamask
-          key: .metamask-${{ hashFiles('yarn.lock') }}
 
   lint-workflows:
     name: Lint workflows
@@ -163,124 +156,17 @@ jobs:
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
     uses: ./.github/workflows/validate-lavamoat-policies.yml
 
-  build-dist-browserify:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-dist-browserify
-      build-command: yarn build dist
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-    secrets: inherit
-
-  build-dist-mv2-browserify:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-dist-mv2-browserify
-      build-command: yarn build dist
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-    secrets: inherit
-
-  build-beta-browserify:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-beta-browserify
-      build-command: yarn build --build-type beta dist
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-    secrets: inherit
-
-  build-beta-mv2-browserify:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-beta-mv2-browserify
-      build-command: yarn build --build-type beta dist
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-    secrets: inherit
-
-  build-flask-browserify:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-flask-browserify
-      build-command: yarn build --build-type flask dist
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-    secrets: inherit
-
-  build-flask-mv2-browserify:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-flask-mv2-browserify
-      build-command: yarn build --build-type flask dist
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-    secrets: inherit
-
-  build-test-browserify:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-test-browserify
-      build-command: yarn build:test
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-    secrets: inherit
-
-  build-test-mv2-browserify:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-test-mv2-browserify
-      build-command: yarn build:test:mv2
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-    secrets: inherit
-
-  build-test-flask-browserify:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-test-flask-browserify
-      build-command: yarn build:test:flask
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-    secrets: inherit
-
-  build-test-flask-mv2-browserify:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-test-flask-mv2-browserify
-      build-command: yarn build:test:flask:mv2
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-    secrets: inherit
-
   build-dist-webpack:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-webpack
-      build-command: yarn webpack:lavamoat:build --zip
+      build-command: yarn webpack:lavamoat:build --zip --stats
       bundle-analyzer: true
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
@@ -289,6 +175,9 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-mv2-webpack
@@ -300,6 +189,9 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-beta-webpack
@@ -311,6 +203,9 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-beta-mv2-webpack
@@ -322,6 +217,9 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-webpack
@@ -333,6 +231,9 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-mv2-webpack
@@ -344,10 +245,13 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-webpack
-      build-command: yarn build:test:webpack --zip
+      build-command: yarn build:test --zip
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -355,10 +259,13 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-mv2-webpack
-      build-command: yarn build:test:webpack:mv2 --zip
+      build-command: yarn build:test:mv2 --zip
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -366,10 +273,13 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-flask-webpack
-      build-command: yarn build:test:flask:webpack --zip
+      build-command: yarn build:test:flask --zip
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -377,10 +287,13 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-flask-mv2-webpack
-      build-command: yarn build:test:flask:webpack:mv2 --zip
+      build-command: yarn build:test:flask:mv2 --zip
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -446,13 +359,15 @@ jobs:
   bundle-size:
     needs:
       - get-requirements
-      - build-dist-browserify
+      - build-dist-webpack
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
+    permissions:
+      contents: read
+      id-token: write
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
     env:
-      EXTENSION_BUNDLESIZE_STATS_TOKEN: ${{ secrets.EXTENSION_BUNDLESIZE_STATS_TOKEN }}
       SELENIUM_BROWSER: chrome
     steps:
       - name: Checkout and setup environment
@@ -461,19 +376,31 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      - name: Download artifact 'build-dist-browserify'
+      - name: Download artifact 'build-dist-webpack'
         uses: actions/download-artifact@v7
         with:
-          name: build-dist-browserify
+          name: build-dist-webpack
           github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
           run-id: ${{ needs.get-requirements.outputs.builds-from-run }} # Download from the run that produced the builds.
 
-      - name: Measure bundle size
-        run: yarn tsx test/e2e/mv3-perf-stats/bundle-size.ts --out test-artifacts/chrome
+      - name: Copy bundle size summary
+        run: mkdir -p test-artifacts && mv dist/bundle-size test-artifacts/chrome
+
+      - name: Get token
+        id: token
+        if: ${{ env.BRANCH == 'main' && !github.event.repository.fork }}
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          target-repository: MetaMask/extension_bundlesize_stats
+          permissions: |
+            contents: write
 
       - name: Record bundle size at commit
         # Skip on fork repos — only record stats on the canonical repository.
         if: ${{ env.BRANCH == 'main' && !github.event.repository.fork }}
+        env:
+          EXTENSION_BUNDLESIZE_STATS_TOKEN: ${{ steps.token.outputs.token }}
         run: ./.github/scripts/bundle-stats-commit.sh
 
       - name: Upload 'bundle-size' to S3
@@ -495,13 +422,46 @@ jobs:
     if: ${{ needs.get-requirements.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/prep-e2e.yml
 
+  ai-pr-risk-analysis:
+    name: AI PR risk analysis
+    needs:
+      - get-requirements
+    # PRs to main require the auto-merge label; PRs to release/* always run.
+    if: >-
+      ${{
+        !cancelled()
+        && needs.get-requirements.result == 'success'
+        && needs.get-requirements.outputs.changed-files != '[]'
+        && github.event_name == 'pull_request'
+        && !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
+        && github.event.pull_request.draft == false
+        && (
+          (
+            github.event.pull_request.base.ref == 'main'
+            && contains(github.event.pull_request.labels.*.name, 'auto-merge')
+          )
+          || (
+            startsWith(github.event.pull_request.base.ref, 'release/')
+          )
+        )
+      }}
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+      checks: write
+    uses: ./.github/workflows/ai-pr-risk-analysis.yml
+    with:
+      changed-files: ${{ join(fromJSON(needs.get-requirements.outputs.changed-files), ' ') }}
+    secrets:
+      AI_ANALYZER_LITELLM_KEY: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
+      AI_ANALYZER_LANGFUSE_PUBLIC_KEY: ${{ secrets.AI_ANALYZER_LANGFUSE_PUBLIC_KEY }}
+      AI_ANALYZER_LANGFUSE_SECRET_KEY: ${{ secrets.AI_ANALYZER_LANGFUSE_SECRET_KEY }}
+
   e2e-chrome:
     needs:
       - get-requirements
       - prep-e2e
-      - build-test-browserify
-      - build-dist-browserify
-      - build-test-flask-browserify
       - build-test-webpack
       - build-dist-webpack
       - build-test-flask-webpack
@@ -517,9 +477,6 @@ jobs:
     needs:
       - get-requirements
       - prep-e2e
-      - build-dist-mv2-browserify
-      - build-test-mv2-browserify
-      - build-test-flask-mv2-browserify
       - build-dist-mv2-webpack
       - build-test-mv2-webpack
       - build-test-flask-mv2-webpack
@@ -537,6 +494,9 @@ jobs:
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
     needs:
       - get-requirements
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/build-storybook.yml
     secrets: inherit
 
@@ -545,9 +505,10 @@ jobs:
     if: ${{ github.event_name != 'merge_group' && needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
     needs:
       - get-requirements
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/build-ts-migration-dashboard.yml
-    secrets:
-      TS_MIGRATION_DASHBOARD_TOKEN: ${{ secrets.TS_MIGRATION_DASHBOARD_TOKEN }}
 
   publish-prerelease:
     name: Publish prerelease
@@ -562,16 +523,6 @@ jobs:
       ${{
         !cancelled() &&
         needs.get-requirements.outputs.needs-releases == 'true' &&
-        contains(fromJson('["success","skipped"]'), needs.build-dist-browserify.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-dist-mv2-browserify.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-beta-browserify.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-beta-mv2-browserify.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-flask-browserify.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-flask-mv2-browserify.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-test-browserify.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-test-mv2-browserify.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-test-flask-browserify.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-test-flask-mv2-browserify.result) &&
         contains(fromJson('["success","skipped"]'), needs.build-dist-webpack.result) &&
         contains(fromJson('["success","skipped"]'), needs.build-dist-mv2-webpack.result) &&
         contains(fromJson('["success","skipped"]'), needs.build-beta-webpack.result) &&
@@ -588,16 +539,6 @@ jobs:
       }}
     needs:
       - get-requirements
-      - build-dist-browserify
-      - build-dist-mv2-browserify
-      - build-beta-browserify
-      - build-beta-mv2-browserify
-      - build-flask-browserify
-      - build-flask-mv2-browserify
-      - build-test-browserify
-      - build-test-mv2-browserify
-      - build-test-flask-browserify
-      - build-test-flask-mv2-browserify
       - build-dist-webpack
       - build-dist-mv2-webpack
       - build-beta-webpack
@@ -612,74 +553,24 @@ jobs:
       - bundle-size
       - build-storybook
       - build-ts-migration-dashboard
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/publish-prerelease.yml
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
       builds-from-sha: ${{ needs.get-requirements.outputs.builds-from-sha }}
     secrets:
-      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       E2E_OPENAI_API_KEY: ${{ secrets.E2E_OPENAI_API_KEY }}
       E2E_CLAUDE_API_KEY: ${{ secrets.E2E_CLAUDE_API_KEY }}
       E2E_GEMINI_API_KEY: ${{ secrets.E2E_GEMINI_API_KEY }}
 
-  trigger-regression-validation:
-    name: Trigger Regression Validation
-    # Guard: three conditions must all be true.
-    #  1. Release branch — only release/* branches need regression validation.
-    #  2. Not a fork repo — fork repos don't have the release-ci environment
-    #     or its METAMASK_REGRESSION_TRIGGER_TEST secret.
-    #  3. Not a cross-repo PR — GitHub withholds environment secrets from PRs
-    #     whose head branch lives in a different repository, so the job would
-    #     fail trying to read the dispatch token.
-    # Build reuse is banned on release/* branches (in get-requirements.yml),
-    # so build-dist-browserify always runs here — no !cancelled() needed.
-    if: >-
-      ${{
-        startsWith(github.head_ref || github.ref_name, 'release/')
-        && !github.event.repository.fork
-        && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
-      }}
-    needs:
-      - get-requirements
-      - build-dist-webpack
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    environment: release-ci
-    steps:
-      - name: Trigger regression validation in external repo
-        env:
-          DISPATCH_TOKEN: ${{ secrets.METAMASK_REGRESSION_TRIGGER_TEST }}
-          BUILDS_FROM_RUN: ${{ needs.get-requirements.outputs.builds-from-run }}
-        run: |
-          # Extract version from branch name (e.g., release/12.5.0 -> 12.5.0)
-          # Use BRANCH env var which correctly handles both push and pull_request events
-          VERSION="${BRANCH#release/}"
-
-          echo "Triggering regression validation..."
-          echo "Run ID (builds): $BUILDS_FROM_RUN"
-          echo "Branch: $BRANCH"
-          echo "Version: $VERSION"
-          echo "Commit SHA: $HEAD_COMMIT_HASH"
-
-          curl -X POST \
-            -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: token $DISPATCH_TOKEN" \
-            https://api.github.com/repos/MetaMask/extension-regression-validation-poc/dispatches \
-            -d '{
-              "event_type": "release_pr_updated",
-              "client_payload": {
-                "run_id": "'"$BUILDS_FROM_RUN"'",
-                "version": "'"$VERSION"'",
-                "branch": "'"$BRANCH"'",
-                "commit_sha": "'"$HEAD_COMMIT_HASH"'"
-              }
-            }'
-
-          echo "Regression validation triggered successfully"
-
   ci-status-gate:
     if: ${{ !cancelled() }}
     permissions:
+      # The reusable gate reads current-run jobs to find E2E quality-gate
+      # annotations, then posts both aggregate and terminal status contexts.
+      actions: read
       pull-requests: read
       statuses: write
       checks: read
@@ -692,6 +583,8 @@ jobs:
     # Jobs intentionally excluded:
     # - Publish jobs (not required for CI pass)
     # - Jobs that depend on ci-status-gate (e.g., log-merge-group-failure) cannot be included here
+    # E2E workflows remain direct dependencies so their failed annotations are
+    # available to the reusable gate even when another dependency is skipped.
     needs:
       - get-requirements
       - locales-changed-only
@@ -701,16 +594,6 @@ jobs:
       - repository-health-checks
       - test-storybook
       - validate-lavamoat-policies
-      - build-dist-browserify
-      - build-dist-mv2-browserify
-      - build-beta-browserify
-      - build-beta-mv2-browserify
-      - build-flask-browserify
-      - build-flask-mv2-browserify
-      - build-test-browserify
-      - build-test-mv2-browserify
-      - build-test-flask-browserify
-      - build-test-flask-mv2-browserify
       - build-dist-webpack
       - build-dist-mv2-webpack
       - build-beta-webpack
@@ -729,9 +612,17 @@ jobs:
       - e2e-firefox
       - build-storybook
       - build-ts-migration-dashboard
-      - trigger-regression-validation
     uses: ./.github/workflows/ci-status-gate.yml
     with:
       needs-json: ${{ toJson(needs) }}
       skip-builds: ${{ needs.get-requirements.outputs.skip-builds }}
     secrets: inherit
+
+  deploy-platform-api-docs:
+    name: Deploy Platform API Docs
+    needs: lint-workflows
+    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/deploy-platform-api-docs.yml

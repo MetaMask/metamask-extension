@@ -75,17 +75,15 @@ describe('PerpsWithdrawButton', () => {
   it('renders the Perps Withdraw developer button', () => {
     renderButton();
 
-    expect(screen.getByText('Perps Withdraw')).toBeInTheDocument();
     expect(
-      screen.getByText('Triggers a Perps withdraw confirmation.'),
+      screen.getByRole('button', { name: 'Perps Withdraw' }),
     ).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Trigger' })).toBeInTheDocument();
   });
 
   it('creates a perpsWithdraw transaction on Arbitrum and navigates to it', async () => {
     renderButton();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Trigger' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Perps Withdraw' }));
 
     await waitFor(() => {
       expect(createPerpsWithdrawTransactionMock).toHaveBeenCalledTimes(1);
@@ -108,7 +106,7 @@ describe('PerpsWithdrawButton', () => {
 
     renderButton();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Trigger' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Perps Withdraw' }));
 
     expect(createPerpsWithdrawTransactionMock).not.toHaveBeenCalled();
     expect(navigateToTransactionMock).not.toHaveBeenCalled();

@@ -442,6 +442,13 @@ describe('ExtensionLazyListener', () => {
       },
     ) as unknown as Browser;
 
+    type TypeTestBrowser = {
+      typeTest: {
+        onVoid: Events.Event<() => void>;
+        onNonVoid: Events.Event<() => string>;
+      };
+    };
+
     it('constructor enforces types for tracked namespaces and events', () => {
       let instance = new ExtensionLazyListener(everyThingBrowser, {
         // valid namespace and event
@@ -458,24 +465,24 @@ describe('ExtensionLazyListener', () => {
         ],
       });
 
-      instance = new ExtensionLazyListener(everyThingBrowser, {
-        urlbar: [
-          'onResultPicked',
-          // @ts-expect-error - `onResultsRequested` doesn't have a listener
-          // with a return type of `void`, and so it is not permitted by the
-          // type system.
-          'onResultsRequested',
-        ],
-      });
+      const typeTestInstance = new ExtensionLazyListener(
+        everyThingBrowser as unknown as TypeTestBrowser,
+        {
+          typeTest: [
+            'onVoid',
+            // @ts-expect-error - events without a void return type are not permitted
+            'onNonVoid',
+          ],
+        },
+      );
+      expect(typeTestInstance).toBeDefined();
       expect(instance).toBeDefined();
     });
 
     it('`once` enforces types for tracked namespaces and events', () => {
       const instance = new ExtensionLazyListener(everyThingBrowser);
 
-      function onMessageGood(
-        _args: [unknown, Runtime.MessageSender, () => void],
-      ) {
+      function onMessageGood(_args: Parameters<Runtime.OnMessageListener>) {
         // intentionally empty
       }
       // this is valid
@@ -494,20 +501,12 @@ describe('ExtensionLazyListener', () => {
     it('`addListener` enforces types for tracked namespaces and events', () => {
       const instance = new ExtensionLazyListener(everyThingBrowser);
 
-      function onMessageGood(
-        _msg: unknown,
-        _sender: Runtime.MessageSender,
-        _sendResponse: () => void,
-      ) {
+      function onMessageGood(_msg: unknown, _sender: Runtime.MessageSender) {
         // intentionally empty
       }
       // this is valid
       instance.addListener('runtime', 'onMessage', onMessageGood);
-      function onMessageBad(
-        _msg: unknown,
-        _sender: 'not the right type',
-        _sendResponse: () => void,
-      ) {
+      function onMessageBad(_msg: unknown, _sender: 'not the right type') {
         // intentionally empty
       }
 

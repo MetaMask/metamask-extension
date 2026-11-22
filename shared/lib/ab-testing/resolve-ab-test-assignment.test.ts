@@ -30,6 +30,36 @@ describe('resolveABTestAssignment', () => {
     });
   });
 
+  it('resolves the variant from threshold groups when the flag value carries no name', () => {
+    expect(
+      resolveABTestAssignment(
+        { [flagKey]: undefined },
+        flagKey,
+        validVariants,
+        {
+          [flagKey]: 'treatment',
+        },
+      ),
+    ).toStrictEqual({
+      variantName: 'treatment',
+      isActive: true,
+    });
+  });
+
+  it('prefers the flag value name over the threshold group', () => {
+    expect(
+      resolveABTestAssignment(
+        { [flagKey]: { name: 'control' } },
+        flagKey,
+        validVariants,
+        { [flagKey]: 'treatment' },
+      ),
+    ).toStrictEqual({
+      variantName: 'control',
+      isActive: true,
+    });
+  });
+
   it('falls back to control when the flag is missing', () => {
     expect(resolveABTestAssignment({}, flagKey, validVariants)).toStrictEqual({
       variantName: 'control',

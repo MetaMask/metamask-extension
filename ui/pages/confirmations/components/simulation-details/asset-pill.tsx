@@ -22,7 +22,7 @@ import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/sel
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../shared/constants/network';
 import { AssetIdentifier } from './types';
 
-const NativeAssetPill: React.FC<{ chainId: Hex }> = ({ chainId }) => {
+const NativeAssetPill = ({ chainId }: { chainId: Hex }) => {
   const imgSrc =
     CHAIN_ID_TOKEN_IMAGE_MAP[chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP];
 
@@ -60,9 +60,7 @@ const NativeAssetPill: React.FC<{ chainId: Hex }> = ({ chainId }) => {
  * @param props
  * @param props.asset
  */
-export const AssetPill: React.FC<{
-  asset: AssetIdentifier;
-}> = ({ asset }) => {
+export const AssetPill = ({ asset }: { asset: AssetIdentifier }) => {
   const { chainId } = asset;
 
   return (

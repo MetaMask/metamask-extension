@@ -1,7 +1,8 @@
-import React, { ReactChildren, ReactElement } from 'react';
-import { Provider } from 'react-redux';
+import React, { ReactElement } from 'react';
 import { render } from '@testing-library/react';
 import type { Store } from 'redux';
+
+import { MetaMaskTestReduxProvider } from '../redux-test-provider';
 
 import {
   ConfirmContext,
@@ -10,10 +11,10 @@ import {
 } from '../../../ui/pages/confirmations/context/confirm';
 import { DappSwapContextProvider } from '../../../ui/pages/confirmations/context/dapp-swap';
 import {
+  createProviderWrapper,
   I18nProvider,
   en,
   renderHookWithProvider,
-  renderWithProvider,
 } from '../render-helpers-navigate';
 import { DEFAULT_ROUTE } from '../../../ui/helpers/constants/routes';
 import { GasFeeModalContextProvider } from '../../../ui/pages/confirmations/context/gas-fee-modal';
@@ -25,20 +26,43 @@ export function renderWithConfirmContextProvider(
   pathname = DEFAULT_ROUTE,
   confirmationId?: string,
   getMockTrackEvent?: () => jest.Mock,
+  initialIsAmountPending = false,
 ) {
-  return renderWithProvider(
+  const ConfirmContextContainer = ({
+    children,
+  }: {
+    children: React.ReactNode;
+  }) => (
     <HardwareWalletErrorProvider>
-      <ConfirmContextProvider confirmationId={confirmationId}>
+      <ConfirmContextProvider
+        confirmationId={confirmationId}
+        initialIsAmountPending={initialIsAmountPending}
+      >
         <DappSwapContextProvider>
-          <GasFeeModalContextProvider>{component}</GasFeeModalContextProvider>
+          <GasFeeModalContextProvider>{children}</GasFeeModalContextProvider>
         </DappSwapContextProvider>
       </ConfirmContextProvider>
-    </HardwareWalletErrorProvider>,
+    </HardwareWalletErrorProvider>
+  );
+
+  const ProviderWrapper = createProviderWrapper(
     store,
     pathname,
-    render,
-    getMockTrackEvent,
+    getMockTrackEvent ?? (() => jest.fn().mockResolvedValue(undefined)),
   );
+
+  const wrapper = ({ children }: { children: React.ReactNode }) => {
+    const confirmContext = (
+      <ConfirmContextContainer>{children}</ConfirmContextContainer>
+    );
+
+    return (
+      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
+      <ProviderWrapper>{confirmContext}</ProviderWrapper>
+    );
+  };
+
+  return render(component, { wrapper });
 }
 
 function renderWithContext(
@@ -46,8 +70,8 @@ function renderWithContext(
   store: Store,
   contextValue: ConfirmContextType,
 ) {
-  const wrapper = ({ children }: { children: ReactElement }) => (
-    <Provider store={store}>
+  const wrapper = ({ children }: { children: React.ReactNode }) => (
+    <MetaMaskTestReduxProvider store={store}>
       <I18nProvider currentLocale="en" current={en} en={en}>
         <ConfirmContext.Provider value={contextValue}>
           <DappSwapContextProvider>
@@ -55,7 +79,7 @@ function renderWithContext(
           </DappSwapContextProvider>
         </ConfirmContext.Provider>
       </I18nProvider>
-    </Provider>
+    </MetaMaskTestReduxProvider>
   );
 
   return render(component, { wrapper });
@@ -83,6 +107,9 @@ export function renderWithConfirmContext(
     isScrollToBottomCompleted: true,
     setIsScrollToBottomCompleted: () => undefined,
     goBackTo: undefined,
+    suppressAutoExit: () => undefined,
+    isAmountPending: false,
+    setIsAmountPending: () => undefined,
   });
 }
 
@@ -97,7 +124,7 @@ export function renderHookWithConfirmContextProvider(
   confirmationId?: string,
 ) {
   const contextContainer = Container
-    ? ({ children }: { children: ReactChildren }) => (
+    ? ({ children }: { children: React.ReactNode }) => (
         <HardwareWalletErrorProvider>
           <ConfirmContextProvider confirmationId={confirmationId}>
             <DappSwapContextProvider>
@@ -108,12 +135,12 @@ export function renderHookWithConfirmContextProvider(
           </ConfirmContextProvider>
         </HardwareWalletErrorProvider>
       )
-    : ({ children }: { children: ReactElement }) => (
+    : ({ children }: { children: React.ReactNode }) => (
         <HardwareWalletErrorProvider>
           <ConfirmContextProvider confirmationId={confirmationId}>
             <DappSwapContextProvider>
               <GasFeeModalContextProvider>
-                {children as ReactElement}
+                {children}
               </GasFeeModalContextProvider>
             </DappSwapContextProvider>
           </ConfirmContextProvider>

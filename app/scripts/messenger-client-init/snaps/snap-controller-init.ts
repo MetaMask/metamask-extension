@@ -2,7 +2,11 @@ import {
   SnapController,
   SnapControllerMessenger,
 } from '@metamask/snaps-controllers';
-import { createDeferredPromise, Json } from '@metamask/utils';
+import {
+  createDeferredPromise,
+  Duration,
+  inMilliseconds,
+} from '@metamask/utils';
 import { MessengerClientInitFunction } from '../types';
 import {
   EndowmentPermissions,
@@ -15,15 +19,7 @@ import { getBooleanFlag } from '../../lib/util';
 import { OnboardingControllerState } from '../../controllers/onboarding';
 import { getMnemonicSeed } from '../../controllers/permissions/snaps/utils';
 import { isFlask } from '../../../../shared/lib/build-types';
-
-// Copied from `@metamask/snaps-controllers`, since it is not exported.
-type TrackingEventPayload = {
-  event: string;
-  category: string;
-  properties: Record<string, Json | undefined>;
-};
-
-type TrackEventHook = (event: TrackingEventPayload) => void;
+import { getClientConfig } from './utils';
 
 /**
  * Initialize the Snap controller.
@@ -112,6 +108,7 @@ export const SnapControllerInit: MessengerClientInitFunction<
     state: persistedState.SnapController,
 
     messenger: controllerMessenger,
+    maxIdleTime: inMilliseconds(2, Duration.Minute),
     featureFlags: {
       allowLocalSnaps,
       requireAllowlist,
@@ -119,6 +116,8 @@ export const SnapControllerInit: MessengerClientInitFunction<
       autoUpdatePreinstalledSnaps,
       forcePreinstalledSnaps,
     },
+
+    clientConfig: getClientConfig(),
 
     // @ts-expect-error: `encryptorFactory` is not compatible with the expected
     // type.
@@ -131,15 +130,16 @@ export const SnapControllerInit: MessengerClientInitFunction<
     getFeatureFlags,
 
     ensureOnboardingComplete,
-
-    // `TrackEventHook` from `snaps-controllers` uses `Json | undefined` for
-    // properties, but `MetaMetricsEventPayload` uses `Json`, even though
-    // `undefined` is supported.
-    trackEvent: initMessenger.call.bind(
-      initMessenger,
-      'MetaMetricsController:trackEvent',
-    ) as unknown as TrackEventHook,
   });
+
+  // SnapController lists `clearState` in MESSENGER_EXPOSED_METHODS but still uses
+  // a legacy manual registration list that omits it. Register so vault wipe /
+  // restore can call `SnapController:clearState` via messenger.
+  // TODO: Remove once @metamask/snaps-controllers registers clearState itself.
+  controllerMessenger.registerActionHandler(
+    'SnapController:clearState',
+    messengerClient.clearState.bind(messengerClient),
+  );
 
   initMessenger.subscribe('KeyringController:lock', () => {
     initMessenger.call('SnapController:setClientActive', false);
@@ -148,6 +148,44 @@ export const SnapControllerInit: MessengerClientInitFunction<
   initMessenger.subscribe('KeyringController:unlock', () => {
     initMessenger.call('SnapController:setClientActive', true);
   });
+
+  // The platform gate only rejects new requests, so running Snaps and their
+  // WebSockets must be torn down to stop in-flight network activity.
+  initMessenger.subscribe(
+    'PreferencesController:stateChange',
+    (useExternalServices) => {
+      if (useExternalServices) {
+        return;
+      }
+      // Sockets are closed only once every Snap is terminated, otherwise a
+      // still-running Snap could open a new one that is never closed.
+      messengerClient
+        .stopAllSnaps()
+        .then(() => {
+          // Basic functionality may have been re-enabled while Snaps were
+          // stopping, in which case sockets are kept and their next message
+          // restarts the Snap.
+          if (
+            initMessenger.call('PreferencesController:getState')
+              .useExternalServices
+          ) {
+            return;
+          }
+          for (const { id: snapId } of Object.values(
+            messengerClient.state.snaps,
+          )) {
+            for (const { id } of initMessenger.call(
+              'WebSocketService:getAll',
+              snapId,
+            )) {
+              initMessenger.call('WebSocketService:close', snapId, id);
+            }
+          }
+        })
+        .catch(console.error);
+    },
+    (state) => state.useExternalServices,
+  );
 
   return {
     messengerClient,

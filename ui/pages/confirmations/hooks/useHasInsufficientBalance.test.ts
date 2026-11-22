@@ -3,13 +3,12 @@ import {
   TransactionParams,
   TransactionType,
 } from '@metamask/transaction-controller';
-import {
-  ApprovalType,
-  toChecksumHexAddress,
-  toHex,
-} from '@metamask/controller-utils';
+import { ApprovalType } from '@metamask/controller-utils';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
-import { getMockConfirmState } from '../../../../test/data/confirmations/helper';
+import {
+  buildNativeEvmBalancePatch,
+  getMockConfirmState,
+} from '../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
 import { useHasInsufficientBalance } from './useHasInsufficientBalance';
 
@@ -35,6 +34,7 @@ function buildState({
   selectedNetworkClientId,
   chainId,
   excludeNativeTokenForFee,
+  omitNativeBalance,
 }: {
   balance?: number;
   currentConfirmation?: Partial<TransactionMeta>;
@@ -42,9 +42,8 @@ function buildState({
   selectedNetworkClientId?: string;
   chainId?: string;
   excludeNativeTokenForFee?: boolean;
+  omitNativeBalance?: boolean;
 } = {}) {
-  const accountAddress = transaction?.txParams?.from as string;
-
   let pendingApprovals = {};
   if (currentConfirmation) {
     pendingApprovals = {
@@ -55,17 +54,19 @@ function buildState({
     };
   }
 
+  const resolvedChainId = chainId ?? '0x5';
+  const nativeBalancePatch = omitNativeBalance
+    ? { assetsBalance: {}, assetsInfo: {} }
+    : buildNativeEvmBalancePatch({
+        hexChainId: resolvedChainId,
+        amountWei: balance ?? 0,
+      });
+
   return getMockConfirmState({
     metamask: {
       selectedNetworkClientId: selectedNetworkClientId ?? 'goerli',
       pendingApprovals,
-      accountsByChainId: {
-        [chainId ?? '0x5']: {
-          [toChecksumHexAddress(accountAddress)]: {
-            balance: toHex(balance ?? 0),
-          },
-        },
-      },
+      ...nativeBalancePatch,
       transactions: transaction
         ? [
             {
@@ -93,11 +94,35 @@ describe('useHasInsufficientBalance', () => {
   it('returns false if balance sufficient for value + fee', () => {
     const result = runHook({ balance: 900000000000 });
     expect(result.hasInsufficientBalance).toBe(false);
+    expect(result.isNativeBalanceKnown).toBe(true);
     expect(result.nativeCurrency).toBe('ETH');
   });
 
   it('returns true if balance insufficient for value + fee', () => {
     const result = runHook({ balance: 0 });
+    expect(result.hasInsufficientBalance).toBe(true);
+    expect(result.isNativeBalanceKnown).toBe(true);
+  });
+
+  it('uses submitted gas limit instead of simulation gas for balance check', () => {
+    const transaction = {
+      ...TRANSACTION_MOCK,
+      gasUsed: '0xe429',
+      gasLimitNoBuffer: '0xf807',
+      txParams: {
+        ...TRANSACTION_MOCK.txParams,
+        value: '0x0',
+        gas: '0x1740a',
+        maxFeePerGas: '0x83fdd112',
+      },
+    } as TransactionMeta;
+
+    const result = runHook({
+      balance: 167208508861377,
+      currentConfirmation: transaction,
+      transaction,
+    });
+
     expect(result.hasInsufficientBalance).toBe(true);
   });
 
@@ -130,9 +155,10 @@ describe('useHasInsufficientBalance', () => {
     expect(result.nativeCurrency).toBe('ETH');
   });
 
-  it('returns 0x0 if balance missing', () => {
-    const result = runHook({ balance: undefined });
+  it('returns whether native balance is missing from state', () => {
+    const result = runHook({ omitNativeBalance: true });
     expect(result.hasInsufficientBalance).toBe(true);
+    expect(result.isNativeBalanceKnown).toBe(false);
   });
 
   it('always return true for Tempo if `excludeNativeTokenForFee` is true', () => {
@@ -142,7 +168,8 @@ describe('useHasInsufficientBalance', () => {
       excludeNativeTokenForFee: true,
     });
     expect(result.hasInsufficientBalance).toBe(true);
-    expect(result.nativeCurrency).toBe('pathUSD');
+    expect(result.isNativeBalanceKnown).toBe(true);
+    expect(result.nativeCurrency).toBe('OUSD');
   });
 
   it('always return true for Tempo Testnet if `excludeNativeTokenForFee` is true', () => {
@@ -152,6 +179,7 @@ describe('useHasInsufficientBalance', () => {
       excludeNativeTokenForFee: true,
     });
     expect(result.hasInsufficientBalance).toBe(true);
+    expect(result.isNativeBalanceKnown).toBe(true);
     expect(result.nativeCurrency).toBe('pathUSD');
   });
 
@@ -161,7 +189,8 @@ describe('useHasInsufficientBalance', () => {
       chainId: '0x1079',
     });
     expect(result.hasInsufficientBalance).toBe(false);
-    expect(result.nativeCurrency).toBe('pathUSD');
+    expect(result.isNativeBalanceKnown).toBe(true);
+    expect(result.nativeCurrency).toBe('OUSD');
   });
 
   it('always return false for Tempo Testnet if `excludeNativeTokenForFee` is unset', () => {
@@ -170,6 +199,7 @@ describe('useHasInsufficientBalance', () => {
       chainId: '0xa5bf',
     });
     expect(result.hasInsufficientBalance).toBe(false);
+    expect(result.isNativeBalanceKnown).toBe(true);
     expect(result.nativeCurrency).toBe('pathUSD');
   });
 });

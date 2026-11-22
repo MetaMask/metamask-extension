@@ -47,9 +47,11 @@ const getMetaMaskStateWithUnapprovedContractDeployment = ({
 }) => {
   return {
     ...mockMetaMaskState,
-    participateInMetaMetrics: true,
-    dataCollectionForMarketing: false,
-    metaMetricsId: 'test-metametrics-id',
+    analyticsId: 'test-metametrics-id',
+    consentDecisionMade: true,
+    optedIn: true,
+    optedInToMarketing: false,
+    marketingConsentDecisionMade: true,
     preferences: {
       ...mockMetaMaskState.preferences,
       showConfirmationAdvancedDetails,
@@ -103,12 +105,12 @@ const getMetaMaskStateWithUnapprovedContractDeployment = ({
 };
 
 const advancedDetailsMockedRequests = {
-  getGasFeeTimeEstimate: {
+  'GasFeeController:getTimeEstimate': {
     lowerTimeBound: new Date().getTime(),
     upperTimeBound: new Date().getTime(),
   },
-  getNextNonce: '9',
-  decodeTransactionData: {
+  'LegacyBackgroundApiService:getNextNonce': '9',
+  'LegacyBackgroundApiService:decodeTransactionData': {
     data: [
       {
         name: 'Deposit',
@@ -123,7 +125,7 @@ const advancedDetailsMockedRequests = {
     ],
     source: 'Sourcify',
   },
-  setPreference: {},
+  'PreferencesController:setPreference': {},
 };
 
 const setupSubmitRequestToBackgroundMocks = (
@@ -195,21 +197,22 @@ describe('Contract Deployment Confirmation', () => {
       confirmAccountDetailsModalMetricsEvent =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) =>
-            call[0] === 'trackMetaMetricsEvent' &&
-            call[1]?.[0].category === MetaMetricsEventCategory.Confirmations,
+            call[0] === 'trackAnalyticsEvent' &&
+            call[1]?.[0]?.properties?.category ===
+              MetaMetricsEventCategory.Confirmations,
         );
 
       expect(confirmAccountDetailsModalMetricsEvent?.[0]).toBe(
-        'trackMetaMetricsEvent',
+        'trackAnalyticsEvent',
       );
     });
 
     expect(confirmAccountDetailsModalMetricsEvent?.[1]).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          category: MetaMetricsEventCategory.Confirmations,
-          event: MetaMetricsEventName.AccountDetailsOpened,
-          properties: {
+          name: MetaMetricsEventName.AccountDetailsOpened,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Confirmations,
             action: 'Confirm Screen',
             location: MetaMetricsEventLocation.Transaction,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -218,8 +221,9 @@ describe('Contract Deployment Confirmation', () => {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             hd_entropy_index: 0,
-          },
+          }),
         }),
+        expect.anything(),
       ]),
     );
 
@@ -293,7 +297,7 @@ describe('Contract Deployment Confirmation', () => {
 
     const firstGasField =
       await within(editGasFeesRow).findByTestId('first-gas-field');
-    expect(firstGasField).toHaveTextContent('0.0001');
+    expect(firstGasField).toHaveTextContent('0.0023');
     expect(editGasFeesRow).toContainElement(
       await screen.findByTestId('edit-gas-fee-icon'),
     );
@@ -335,7 +339,7 @@ describe('Contract Deployment Confirmation', () => {
     await waitFor(() => {
       expect(
         mockedBackgroundConnection.submitRequestToBackground,
-      ).toHaveBeenCalledWith('setPreference', [
+      ).toHaveBeenCalledWith('PreferencesController:setPreference', [
         'showConfirmationAdvancedDetails',
         true,
       ]);
@@ -365,7 +369,10 @@ describe('Contract Deployment Confirmation', () => {
     await waitFor(() => {
       expect(
         mockedBackgroundConnection.submitRequestToBackground,
-      ).toHaveBeenCalledWith('getNextNonce', expect.anything());
+      ).toHaveBeenCalledWith(
+        'LegacyBackgroundApiService:getNextNonce',
+        expect.anything(),
+      );
     });
 
     const gasFeesSection = await screen.findByTestId('gas-fee-section');

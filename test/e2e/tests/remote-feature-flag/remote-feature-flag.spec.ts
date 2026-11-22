@@ -1,15 +1,16 @@
 import { strict as assert } from 'assert';
+import { isDeepStrictEqual } from 'util';
 import { Suite } from 'mocha';
 import { getCleanAppState, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
 import { login } from '../../page-objects/flows/login.flow';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import DeveloperOptionsPage from '../../page-objects/pages/debug-page';
+import DeveloperOptionsPage from '../../page-objects/pages/settings/debug-page';
 import {
   MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS,
-  MOCK_META_METRICS_ID,
+  MOCK_ANALYTICS_ID,
   MOCK_REMOTE_FEATURE_FLAGS_RESPONSE,
 } from '../../constants';
 import { type MockedEndpoint, Mockttp } from '../../mock-e2e';
@@ -59,9 +60,10 @@ describe('Remote feature flag', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+          .withAnalyticsController({
+            analyticsId: MOCK_ANALYTICS_ID,
+            consentDecisionMade: true,
+            optedIn: true,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -69,9 +71,25 @@ describe('Remote feature flag', function (this: Suite) {
       },
       async ({ driver }: TestSuiteArguments) => {
         await login(driver);
-        const uiState = await getCleanAppState(driver);
+
+        // Thresholds are first computed from the analytics ID and recomputed
+        // from the canonical profile ID once profile sign-in completes.
+        let remoteFeatureFlags: unknown;
+        await driver
+          .waitUntil(
+            async () => {
+              const uiState = await getCleanAppState(driver);
+              remoteFeatureFlags = uiState.metamask.remoteFeatureFlags;
+              return isDeepStrictEqual(
+                remoteFeatureFlags,
+                MOCK_REMOTE_FEATURE_FLAGS_RESPONSE,
+              );
+            },
+            { interval: 500, timeout: 10_000 },
+          )
+          .catch(() => undefined);
         assert.deepStrictEqual(
-          uiState.metamask.remoteFeatureFlags,
+          remoteFeatureFlags,
           MOCK_REMOTE_FEATURE_FLAGS_RESPONSE,
         );
       },
@@ -89,7 +107,7 @@ describe('Remote feature flag', function (this: Suite) {
       },
 
       async ({ driver, mockedEndpoint }: TestSuiteArguments) => {
-        await login(driver, { waitForNonEvmAccounts: false });
+        await login(driver);
 
         // Intended delay to wait for any potential requests to be made
         await driver.delay(5_000);
@@ -109,9 +127,10 @@ describe('Remote feature flag', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+          .withAnalyticsController({
+            analyticsId: MOCK_ANALYTICS_ID,
+            consentDecisionMade: true,
+            optedIn: true,
           })
           .build(),
         manifestFlags: {

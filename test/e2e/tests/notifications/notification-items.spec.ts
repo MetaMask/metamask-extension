@@ -6,7 +6,7 @@ import { withFixtures } from '../../helpers';
 import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import {
-  enableNotificationsThroughGlobalMenu,
+  goToNotificationsList,
   clickNotificationItemAndDetailsPage,
   navigateToNotificationSettingsAndClickDisable,
 } from '../../page-objects/flows/notifications.flow';
@@ -14,6 +14,7 @@ import NotificationsSettingsPage from '../../page-objects/pages/settings/notific
 import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
 import {
   getMockFeatureAnnouncementItemId,
+  getMockNotificationPreferences,
   getMockWalletNotificationItemId,
   mockNotificationServices,
 } from './mocks';
@@ -53,19 +54,24 @@ describe('Notification List - View Items and Details', function () {
     }
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilderV2()
+          .withAuthenticationController({ isSignedIn: true })
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (server: Mockttp) => {
-          await mockNotificationServices(
-            server,
-            new MockttpNotificationTriggerServer(),
+          const triggerServer = new MockttpNotificationTriggerServer();
+          triggerServer.setNotificationPreferences(
+            getMockNotificationPreferences(),
           );
+          await mockNotificationServices(server, triggerServer);
           await mockFeatureFlagsWithoutAutoEnableNotifications(server);
         },
       },
       async ({ driver }) => {
-        await login(driver, { validateBalance: false });
-        await enableNotificationsThroughGlobalMenu(driver, false);
+        await login(driver);
+        // Notifications are enabled by default in the fixture, so we navigate
+        // straight to the notifications list.
+        await goToNotificationsList(driver);
         await visitEachWalletNotificationItemAndDetailsPage(driver);
         await visitEachFeatureAnnouncementNotificationItemAndDetailsPage(
           driver,

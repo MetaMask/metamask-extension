@@ -10,28 +10,24 @@ import { withFixtures } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
-import EditConnectedAccountsModal from '../../../page-objects/pages/dialog/edit-connected-accounts-modal';
+import EditConnectedAccountsPage from '../../../page-objects/pages/permission/edit-connected-accounts-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import PermissionListPage from '../../../page-objects/pages/permission/permission-list-page';
-import SitePermissionPage from '../../../page-objects/pages/permission/site-permission-page';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { login } from '../../../page-objects/flows/login.flow';
-import { openPermissionsPageFlow } from '../../../page-objects/flows/permissions.flow';
+import { getEditConnectedAccountsPageForHost } from '../../../page-objects/flows/permissions.flow';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   getExpectedSessionScope,
 } from '../testHelpers';
 
-describe('Call `wallet_createSession`, then update the accounts and/or scopes in the permissions page of the wallet for that dapp', function () {
+describe('Call `wallet_createSession`, then update the accounts in the permissions page of the wallet for that dapp', function () {
   const INITIAL_SCOPES = ['eip155:1337', 'eip155:1338'];
-  const REMOVED_SCOPE = INITIAL_SCOPES[0];
-  const UPDATED_SCOPE = INITIAL_SCOPES[1];
 
   const CAIP_ACCOUNT_IDS = [
     toEvmCaipAccountId(ACCOUNT_1),
     toEvmCaipAccountId(ACCOUNT_2),
   ];
-  const UPDATED_ACCOUNT = ACCOUNT_2;
+  const RETAINED_ACCOUNT = ACCOUNT_2;
   it('should receive a `wallet_sessionChanged` event with the full new session scopes', async function () {
     await withFixtures(
       {
@@ -64,11 +60,9 @@ describe('Call `wallet_createSession`, then update the accounts and/or scopes in
         await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.openEditAccountsModal();
 
-        const editConnectedAccountsModal = new EditConnectedAccountsModal(
-          driver,
-        );
-        await editConnectedAccountsModal.checkPageIsLoaded();
-        await editConnectedAccountsModal.addNewAccount();
+        const editConnectedAccountsPage = new EditConnectedAccountsPage(driver);
+        await editConnectedAccountsPage.checkPageIsLoaded();
+        await editConnectedAccountsPage.addNewAccount();
         await connectAccountConfirmation.confirmConnect();
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -79,24 +73,14 @@ describe('Call `wallet_createSession`, then update the accounts and/or scopes in
         /**
          * We make sure to update selected accounts via wallet extension UI
          */
-        await openPermissionsPageFlow(driver);
-        const permissionListPage = new PermissionListPage(driver);
-        await permissionListPage.checkPageIsLoaded();
-        await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
-        const sitePermissionPage = new SitePermissionPage(driver);
-        await sitePermissionPage.checkPageIsLoaded(DAPP_HOST_ADDRESS);
-        await sitePermissionPage.editPermissionsForAccount(['Account 1']);
-        await sitePermissionPage.editPermissionsForNetwork(['Localhost 8545']);
+        const sitePermissionsEditor = await getEditConnectedAccountsPageForHost(
+          driver,
+          DAPP_HOST_ADDRESS,
+        );
+        await sitePermissionsEditor.editPermissionsForAccount(['Account 1']);
 
-        /**
-         * And also update selected scope to {@link UPDATED_SCOPE}
-         */
         await driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
         await testDapp.checkPageIsLoaded();
-
-        const expectedScope = getExpectedSessionScope(UPDATED_SCOPE, [
-          UPDATED_ACCOUNT,
-        ]);
 
         const parsedNotificationResult = JSON.parse(
           await testDapp.getWalletSessionChangedResult(0),
@@ -104,19 +88,17 @@ describe('Call `wallet_createSession`, then update the accounts and/or scopes in
         const sessionChangedScope =
           parsedNotificationResult.params.sessionScopes;
 
-        const currentScope = sessionChangedScope[UPDATED_SCOPE];
+        for (const scope of INITIAL_SCOPES) {
+          const expectedScope = getExpectedSessionScope(scope, [
+            RETAINED_ACCOUNT,
+          ]);
 
-        assert.deepEqual(
-          currentScope,
-          expectedScope,
-          `scope ${UPDATED_SCOPE} should be present in 'wallet_sessionChanged' event data`,
-        );
-
-        assert.deepEqual(
-          sessionChangedScope[REMOVED_SCOPE],
-          undefined,
-          `scope ${REMOVED_SCOPE} should NOT be present in 'wallet_sessionChanged' event data`,
-        );
+          assert.deepEqual(
+            sessionChangedScope[scope],
+            expectedScope,
+            `scope ${scope} should be present in 'wallet_sessionChanged' event data with only the retained account`,
+          );
+        }
       },
     );
   });

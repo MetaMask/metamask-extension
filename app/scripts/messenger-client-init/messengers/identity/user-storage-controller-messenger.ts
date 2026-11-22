@@ -4,7 +4,6 @@ import {
   MessengerActions,
   MessengerEvents,
 } from '@metamask/messenger';
-import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../../lib/messenger';
 
 type AllowedActions = MessengerActions<UserStorageControllerMessenger>;
@@ -35,8 +34,7 @@ export function getUserStorageControllerMessenger(
     actions: [
       // Keyring Controller Requests
       'KeyringController:getState',
-      // Snap Controller Requests
-      'SnapController:handleRequest',
+      'KeyringController:withKeyringV2Unsafe',
       // Auth Controller Requests
       'AuthenticationController:getBearerToken',
       'AuthenticationController:getSessionProfile',
@@ -59,8 +57,7 @@ export function getUserStorageControllerMessenger(
   return controllerMessenger;
 }
 
-export type AllowedInitializationActions =
-  MetaMetricsControllerTrackEventAction;
+export type AllowedInitializationActions = never;
 
 export type UserStorageControllerInitMessenger = ReturnType<
   typeof getUserStorageControllerInitMessenger
@@ -88,7 +85,7 @@ export function getUserStorageControllerInitMessenger(
   });
   messenger.delegate({
     messenger: controllerInitMessenger,
-    actions: ['MetaMetricsController:trackEvent'],
+    actions: [],
   });
   return controllerInitMessenger;
 }

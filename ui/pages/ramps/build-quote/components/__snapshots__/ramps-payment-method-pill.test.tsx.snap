@@ -1,0 +1,56 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RampsPaymentMethodPill matches snapshot 1`] = `
+<div>
+  <button
+    class="justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+    data-testid="ramps-payment-method-pill"
+    role="button"
+  >
+    <div
+      class="flex-row inline-flex items-center gap-2"
+    >
+      <svg
+        class="inline-block w-4 h-4 text-icon-default"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M21 4.5H3A1.5 1.5 0 0 0 1.5 6v12A1.5 1.5 0 0 0 3 19.5h18a1.5 1.5 0 0 0 1.5-1.5V6A1.5 1.5 0 0 0 21 4.5M21 6v2.25H3V6Zm0 12H3V9.75h18zm-1.5-2.25a.75.75 0 0 1-.75.75h-3a.75.75 0 0 1 0-1.5h3a.75.75 0 0 1 .75.75m-6 0a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5a.75.75 0 0 1 .75.75"
+        />
+      </svg>
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+      >
+        Debit card
+      </p>
+      <svg
+        class="inline-block w-4 h-4 text-icon-default"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="m20.03 9.53-7.5 7.5a.75.75 0 0 1-1.06 0l-7.5-7.5a.75.75 0 0 1 1.06-1.06L12 15.44l6.97-6.97a.75.75 0 0 1 1.06 1.06"
+        />
+      </svg>
+    </div>
+  </button>
+</div>
+`;
+
+exports[`RampsPaymentMethodPill matches snapshot while loading 1`] = `
+<div>
+  <div
+    aria-hidden="true"
+    class="relative overflow-hidden min-h-9 min-w-[140px] rounded-full"
+    data-testid="ramps-payment-method-pill-loading"
+  >
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+    />
+  </div>
+</div>
+`;

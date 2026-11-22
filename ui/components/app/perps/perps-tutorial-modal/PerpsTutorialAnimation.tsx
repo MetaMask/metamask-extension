@@ -13,8 +13,7 @@ import {
 } from '../../../../contexts/rive-wasm';
 import { useTheme } from '../../../../hooks/useTheme';
 import { ThemeType } from '../../../../../shared/constants/preferences';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -73,12 +72,12 @@ const getContainerStyle = (
   };
 };
 
-const PerpsTutorialAnimation: React.FC<PerpsTutorialAnimationProps> = ({
+const PerpsTutorialAnimation = ({
   artboardName,
   className,
   fit: fitProp,
   alignment = Alignment.Center,
-}) => {
+}: PerpsTutorialAnimationProps) => {
   const theme = useTheme();
   const isDarkTheme = theme === ThemeType.dark;
   const environmentType = getEnvironmentType();
@@ -142,15 +141,6 @@ const PerpsTutorialAnimation: React.FC<PerpsTutorialAnimationProps> = ({
       rive.play();
     }
   }, [rive, isWasmReady, bufferLoading, buffer]);
-
-  // Cleanup Rive animation resources on unmount to prevent memory leaks
-  useEffect(() => {
-    return () => {
-      if (rive) {
-        rive.cleanup();
-      }
-    };
-  }, [rive]);
 
   if (
     !isWasmReady ||

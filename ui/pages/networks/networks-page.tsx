@@ -3,7 +3,14 @@ import {
   RpcEndpointType,
   UpdateNetworkFields,
 } from '@metamask/network-controller';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -16,10 +23,14 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import * as URI from 'uri-js';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import {
+  transitionBack,
+  transitionForward,
+} from '../../components/ui/transition';
 import { useNetworkFormState } from '../../components/multichain/networks-form/networks-form-state';
 import { setActiveNetwork, setEditedNetwork } from '../../store/actions';
 import AddBlockExplorerModal from '../../components/multichain/network-list-menu/add-block-explorer-modal/add-block-explorer-modal';
@@ -27,13 +38,41 @@ import { SelectRpcUrlModal } from '../../components/multichain/network-list-menu
 import { AddNetwork } from '../../components/multichain/network-manager/components/add-network';
 import { Header } from '../../components/multichain/pages/page';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  NetworkManagementEntryPoint,
+  NetworkManagementSource,
+} from '../../../shared/constants/metametrics';
+import {
+  trackRpcAdded,
+  useTrackNetworkManagementStep,
+  getNetworkManagementStep,
+  type NetworkManagementStep,
+} from '../../helpers/utils/network-management-metrics';
+import { getNetworkSectionKey } from '../../helpers/utils/network-sections';
 import {
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
 } from '../../selectors/multichain/networks';
+import {
+  getIsChainlistEnabled,
+  getIsChainlistV2Enabled,
+} from '../../selectors/multichain/feature-flags';
 import { getEditedNetwork } from '../../selectors/selectors';
-import { SettingsHeader } from '../settings/shared/settings-header';
-import { AddRpcUrlPageForm } from './add-rpc-url-page-form';
+import { PageHeaderWithSearch } from '../../components/app/page-header-with-search/page-header-with-search';
+import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
+import { useAnalytics } from '../../hooks/useAnalytics';
+import { useDispatch } from '../../store/hooks';
+import { AddRpcUrlPageForm, type RpcUrlSource } from './add-rpc-url-page-form';
+import { getRpcNickname } from './chainlist-rpc';
+import {
+  ChainlistNetworkPicker,
+  getHexChainId,
+  getUsableUrls,
+  type ChainlistNetwork,
+} from './chainlist-network-picker';
 import { NetworksPageList } from './networks-page-list';
 
 const getViewAfterRpcAdd = (view: string) =>
@@ -43,6 +82,18 @@ const getViewAfterExplorerAdd = (view: string) =>
   view === 'edit-explorer-url' ? 'edit' : 'add';
 
 const NETWORKS_PAGE_TOAST_DURATION_MS = 5000;
+
+const NETWORKS_PAGE_VIEW_DEPTH: Record<string, number> = {
+  '': 0,
+  add: 1,
+  edit: 1,
+  'add-from-chainlist': 2,
+  'add-rpc': 2,
+  'edit-rpc': 2,
+  'add-explorer-url': 2,
+  'edit-explorer-url': 2,
+  'select-rpc': 2,
+};
 
 const NetworksPageFormHeader = ({
   title,
@@ -91,7 +142,9 @@ const NetworksPageFormBody = ({ children }: { children: React.ReactNode }) => (
 export const NetworksPage = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const navigate = useNavigate();
+  const runCloseTransition = useGlobalMenuRouteTransition();
   const [searchParams, setSearchParams] = useSearchParams();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -103,11 +156,20 @@ export const NetworksPage = () => {
   const currentMultichainChainId = useSelector(
     getSelectedMultichainNetworkChainId,
   );
+  const isChainlistEnabled = useSelector(getIsChainlistEnabled);
+  const isChainlistV2Enabled = useSelector(getIsChainlistV2Enabled);
   const rawEditedNetwork = useSelector(getEditedNetwork);
   const { chainId: editingChainId, editCompleted } = rawEditedNetwork ?? {};
 
   const editedNetwork = useMemo((): UpdateNetworkFields | undefined => {
-    if (view === 'add') {
+    // Add RPC and add explorer stay on the in-progress network. A previously
+    // edited network (often Ethereum) must not reset those fields.
+    if (
+      view === 'add' ||
+      view === 'add-from-chainlist' ||
+      view === 'add-rpc' ||
+      view === 'add-explorer-url'
+    ) {
       return undefined;
     }
 
@@ -125,24 +187,157 @@ export const NetworksPage = () => {
   }, [editingChainId, editCompleted, evmNetworks, view]);
 
   const networkFormState = useNetworkFormState(editedNetwork);
+  const networkStep: NetworkManagementStep = getNetworkManagementStep(view);
+  const stepChainId = networkFormState.chainId
+    ? getHexChainId(networkFormState.chainId)
+    : undefined;
+
+  useTrackNetworkManagementStep({
+    step: networkStep,
+    entryPoint: NetworkManagementEntryPoint.SettingsNetworks,
+    chainId: stepChainId,
+    rpcCount: networkFormState.rpcUrls.rpcEndpoints.length,
+    networkType: stepChainId ? getNetworkSectionKey(stepChainId) : undefined,
+  });
+  const existingRpcUrls = useMemo(
+    () => networkFormState.rpcUrls.rpcEndpoints.map((endpoint) => endpoint.url),
+    [networkFormState.rpcUrls.rpcEndpoints],
+  );
+  const existingNetworkChainIds = useMemo(
+    () =>
+      new Set(
+        Object.values(evmNetworks).map((network) =>
+          network.chainId.toLowerCase(),
+        ),
+      ),
+    [evmNetworks],
+  );
+  const existingNetworkNamesByChainId = useMemo(
+    () =>
+      Object.fromEntries(
+        Object.values(evmNetworks).map((network) => [
+          network.chainId.toLowerCase(),
+          network.name,
+        ]),
+      ),
+    [evmNetworks],
+  );
 
   const setView = useCallback(
     (nextView?: string) => {
-      if (nextView) {
-        setSearchParams({ view: nextView });
-      } else {
-        setSearchParams({});
+      const updateView = () => {
+        if (nextView) {
+          setSearchParams({ view: nextView });
+        } else {
+          setSearchParams({});
+        }
+      };
+      const currentDepth = NETWORKS_PAGE_VIEW_DEPTH[view] ?? 0;
+      const nextDepth = NETWORKS_PAGE_VIEW_DEPTH[nextView ?? ''] ?? 0;
+
+      if (nextDepth > currentDepth) {
+        transitionForward(updateView);
+        return;
       }
+
+      transitionBack(updateView);
     },
-    [setSearchParams],
+    [setSearchParams, view],
   );
 
   const handleNewNetwork = useCallback(() => {
     setView('add');
   }, [setView]);
 
+  const handleAddCustomNetworkClick = useCallback(() => {
+    dispatch(setEditedNetwork());
+    handleNewNetwork();
+  }, [dispatch, handleNewNetwork]);
+
+  const handleAddFromChainlist = useCallback(() => {
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ChainlistAddClicked)
+        .addCategory(MetaMetricsEventCategory.Network)
+        .build(),
+    );
+    setView('add-from-chainlist');
+  }, [createEventBuilder, setView, trackEvent]);
+
+  const handleChainlistNetworkSelect = useCallback(
+    (network: ChainlistNetwork, searchQuery?: string) => {
+      const chainIdHex = getHexChainId(network.chainId);
+      const existingNetwork =
+        evmNetworks[chainIdHex as keyof typeof evmNetworks];
+      const networkName = existingNetwork?.name ?? network.name;
+      /* eslint-disable @typescript-eslint/naming-convention */
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.ChainlistNetworkSelected)
+          .addCategory(MetaMetricsEventCategory.Network)
+          .addProperties({
+            chain_id: chainIdHex,
+            network_name: networkName,
+            already_added: Boolean(existingNetwork),
+            entry_point: NetworkManagementEntryPoint.AddNetworkForm,
+            ...(searchQuery ? { search_query: searchQuery } : {}),
+          })
+          .build(),
+      );
+      /* eslint-enable @typescript-eslint/naming-convention */
+
+      if (existingNetwork) {
+        dispatch(
+          setEditedNetwork({
+            chainId: chainIdHex,
+            nickname: existingNetwork.name,
+          }),
+        );
+        setView('edit');
+        return;
+      }
+
+      const primaryRpcUrl = getUsableUrls(network.rpc)[0];
+      const rpcEndpoints = primaryRpcUrl
+        ? [{ url: primaryRpcUrl, type: RpcEndpointType.Custom }]
+        : [];
+      const blockExplorerUrls = getUsableUrls(
+        network.explorers?.map((explorer) => explorer.url ?? '') ?? [],
+      );
+      const canonicalNetworkName =
+        NETWORK_TO_NAME_MAP[chainIdHex as keyof typeof NETWORK_TO_NAME_MAP] ??
+        NETWORKS_BYPASSING_VALIDATION[
+          chainIdHex as keyof typeof NETWORKS_BYPASSING_VALIDATION
+        ]?.name ??
+        network.name;
+
+      networkFormState.setName(canonicalNetworkName);
+      networkFormState.setSource('chainlist');
+      networkFormState.setChainId(String(network.chainId));
+      networkFormState.setTicker(network.nativeCurrency.symbol);
+      networkFormState.setRpcUrls({
+        rpcEndpoints,
+        defaultRpcEndpointIndex: rpcEndpoints.length ? 0 : undefined,
+      });
+      networkFormState.setBlockExplorers({
+        blockExplorerUrls,
+        defaultBlockExplorerUrlIndex: blockExplorerUrls.length ? 0 : undefined,
+      });
+      if (view !== 'add') {
+        setView('add');
+      }
+    },
+    [
+      createEventBuilder,
+      dispatch,
+      evmNetworks,
+      networkFormState,
+      setView,
+      trackEvent,
+      view,
+    ],
+  );
+
   const handleAddRPC = useCallback(
-    (url: string, name?: string) => {
+    (url: string, name: string | undefined, source: RpcUrlSource) => {
       if (
         networkFormState.rpcUrls.rpcEndpoints?.every(
           (endpoint) => !URI.equal(endpoint.url, url),
@@ -156,10 +351,67 @@ export const NetworksPage = () => {
           defaultRpcEndpointIndex: networkFormState.rpcUrls.rpcEndpoints.length,
         });
 
+        // An empty chain id becomes 0x0. Leave it off the event instead.
+        const reportedChainId = networkFormState.chainId?.trim()
+          ? getHexChainId(networkFormState.chainId)
+          : undefined;
+
+        if (source === 'chainlist') {
+          const rpcDomain = getRpcNickname(url);
+          const chainIdHex = reportedChainId;
+          /* eslint-disable @typescript-eslint/naming-convention */
+          trackEvent(
+            createEventBuilder(MetaMetricsEventName.ChainlistRpcSelected)
+              .addCategory(MetaMetricsEventCategory.Network)
+              .addProperties({
+                chain_id: chainIdHex,
+                network_name: networkFormState.name,
+                ...(rpcDomain ? { rpc_domain: rpcDomain } : {}),
+              })
+              .build(),
+          );
+          Promise.resolve(
+            trackEvent(
+              createEventBuilder(MetaMetricsEventName.ChainlistNetworkSelected)
+                .addCategory(MetaMetricsEventCategory.Network)
+                .addProperties({
+                  chain_id: chainIdHex,
+                  network_name: networkFormState.name,
+                  already_added: Boolean(
+                    evmNetworks[chainIdHex as keyof typeof evmNetworks],
+                  ),
+                  entry_point: NetworkManagementEntryPoint.AddRpcForm,
+                })
+                .build(),
+            ),
+          ).catch(() => undefined);
+          /* eslint-enable @typescript-eslint/naming-convention */
+        }
+
+        trackRpcAdded(
+          { trackEvent, createEventBuilder },
+          {
+            chainId: reportedChainId,
+            rpcCount: networkFormState.rpcUrls.rpcEndpoints.length + 1,
+            source:
+              source === 'chainlist'
+                ? NetworkManagementSource.Chainlist
+                : NetworkManagementSource.Manual,
+            entryPoint: NetworkManagementEntryPoint.SettingsNetworks,
+          },
+        );
+
         setView(getViewAfterRpcAdd(view));
       }
     },
-    [networkFormState, setView, view],
+    [
+      createEventBuilder,
+      evmNetworks,
+      networkFormState,
+      setView,
+      trackEvent,
+      view,
+    ],
   );
 
   const handleAddExplorerUrl = useCallback(
@@ -188,8 +440,8 @@ export const NetworksPage = () => {
 
   const handleClose = useCallback(() => {
     dispatch(setEditedNetwork());
-    navigate(DEFAULT_ROUTE);
-  }, [dispatch, navigate]);
+    runCloseTransition(() => navigate(DEFAULT_ROUTE));
+  }, [dispatch, navigate, runCloseTransition]);
 
   const [pageToast, setPageToast] = useState<{
     chainId: string;
@@ -210,17 +462,45 @@ export const NetworksPage = () => {
     return () => clearTimeout(timeoutId);
   }, [dismissPageToast, pageToast]);
 
+  const editCompletedToastKey =
+    view === '' && rawEditedNetwork?.editCompleted
+      ? `${rawEditedNetwork.chainId}:${rawEditedNetwork.nickname ?? ''}:${Boolean(rawEditedNetwork.newNetwork)}`
+      : null;
+  const consumedEditCompletedToastKeyRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!editCompletedToastKey) {
+      consumedEditCompletedToastKeyRef.current = null;
+      return;
+    }
+    if (
+      editCompletedToastKey === consumedEditCompletedToastKeyRef.current ||
+      !rawEditedNetwork
+    ) {
+      return;
+    }
+    consumedEditCompletedToastKeyRef.current = editCompletedToastKey;
+    queueMicrotask(() => {
+      setPageToast({
+        chainId: rawEditedNetwork.chainId,
+        nickname: rawEditedNetwork.nickname ?? '',
+        newNetwork: Boolean(rawEditedNetwork.newNetwork),
+      });
+    });
+  }, [editCompletedToastKey, rawEditedNetwork]);
+
   useEffect(() => {
     if (view !== '' || !rawEditedNetwork?.editCompleted) {
       return;
     }
-    setPageToast({
-      chainId: rawEditedNetwork.chainId,
-      nickname: rawEditedNetwork.nickname ?? '',
-      newNetwork: Boolean(rawEditedNetwork.newNetwork),
-    });
     dispatch(setEditedNetwork());
   }, [dispatch, rawEditedNetwork, view]);
+
+  useEffect(() => {
+    if (view === 'add-from-chainlist' && !isChainlistEnabled) {
+      setView('add');
+    }
+  }, [isChainlistEnabled, setView, view]);
 
   const handleSelectRpc = useCallback(
     (caipChainId: string, networkClientId: string) => {
@@ -253,20 +533,21 @@ export const NetworksPage = () => {
 
   const handleRootBack = useCallback(() => {
     dispatch(setEditedNetwork());
-    navigate(
+    const route =
       searchParams.get('drawerOpen') === 'true'
         ? `${DEFAULT_ROUTE}?drawerOpen=true`
-        : DEFAULT_ROUTE,
-    );
-  }, [dispatch, navigate, searchParams]);
+        : DEFAULT_ROUTE;
+
+    runCloseTransition(() => navigate(route));
+  }, [dispatch, navigate, runCloseTransition, searchParams]);
 
   return (
     <Box className="flex h-full min-h-0 w-full flex-col overflow-hidden bg-background-default">
       {view === '' ? (
         <>
-          <SettingsHeader
-            title={t('networks')}
-            onClose={handleRootBack}
+          <PageHeaderWithSearch
+            title={t('manageNetworksMenuHeading')}
+            onBack={handleRootBack}
             isSearchOpen={isSearchOpen}
             onOpenSearch={() => setIsSearchOpen(true)}
             onCloseSearch={() => setIsSearchOpen(false)}
@@ -277,6 +558,7 @@ export const NetworksPage = () => {
           />
           <NetworksPageList
             searchQuery={searchValue}
+            onAddCustomNetwork={handleAddCustomNetworkClick}
             footerContent={
               pageToast ? (
                 <Box
@@ -315,7 +597,37 @@ export const NetworksPage = () => {
           <AddNetwork
             networkFormState={networkFormState}
             network={editedNetwork as UpdateNetworkFields}
+            chainlist={
+              isChainlistV2Enabled
+                ? {
+                    existingNetworkChainIds,
+                    existingNetworkNamesByChainId,
+                    onSelect: handleChainlistNetworkSelect,
+                  }
+                : undefined
+            }
+            onAddFromChainlist={
+              isChainlistEnabled && !isChainlistV2Enabled
+                ? handleAddFromChainlist
+                : undefined
+            }
           />
+        </>
+      ) : null}
+      {view === 'add-from-chainlist' && isChainlistEnabled ? (
+        <>
+          <NetworksPageFormHeader
+            title={t('addFromChainlist')}
+            onBack={handleNewNetwork}
+            onClose={handleClose}
+          />
+          <NetworksPageFormBody>
+            <ChainlistNetworkPicker
+              existingNetworkChainIds={existingNetworkChainIds}
+              existingNetworkNamesByChainId={existingNetworkNamesByChainId}
+              onSelect={handleChainlistNetworkSelect}
+            />
+          </NetworksPageFormBody>
         </>
       ) : null}
       {view === 'add-rpc' ? (
@@ -327,7 +639,10 @@ export const NetworksPage = () => {
           />
           <NetworksPageFormBody>
             <AddRpcUrlPageForm
-              onCancel={handleNewNetwork}
+              chainId={networkFormState.chainId}
+              chainlistEnabled={isChainlistV2Enabled}
+              networkName={networkFormState.name}
+              existingRpcUrls={existingRpcUrls}
               onAdded={handleAddRPC}
             />
           </NetworksPageFormBody>
@@ -342,7 +657,10 @@ export const NetworksPage = () => {
           />
           <NetworksPageFormBody>
             <AddRpcUrlPageForm
-              onCancel={handleEditOnComplete}
+              chainId={networkFormState.chainId}
+              chainlistEnabled={isChainlistV2Enabled}
+              networkName={networkFormState.name}
+              existingRpcUrls={existingRpcUrls}
               onAdded={handleAddRPC}
             />
           </NetworksPageFormBody>
@@ -366,7 +684,7 @@ export const NetworksPage = () => {
         <>
           <NetworksPageFormHeader
             title={t('addBlockExplorerUrl')}
-            onBack={handleNewNetwork}
+            onBack={handleEditOnComplete}
             onClose={handleClose}
           />
           <NetworksPageFormBody>
@@ -400,6 +718,7 @@ export const NetworksPage = () => {
           <NetworksPageFormBody>
             <SelectRpcUrlModal
               networkConfiguration={editedNetwork as NetworkConfiguration}
+              entryPoint={NetworkManagementEntryPoint.SettingsNetworks}
               onNetworkChange={handleSelectRpc}
             />
           </NetworksPageFormBody>

@@ -12,7 +12,23 @@ import { IconName } from '../icon';
 import { HeaderBase } from '../header-base';
 import { ModalHeaderProps } from './modal-header.types';
 
-export const ModalHeader: React.FC<ModalHeaderProps> = ({
+/**
+ * @param options0
+ * @param options0.children
+ * @param options0.className
+ * @param options0.startAccessory
+ * @param options0.endAccessory
+ * @param options0.onClose
+ * @param options0.closeButtonProps
+ * @param options0.onBack
+ * @param options0.backButtonProps
+ * @deprecated This component is deprecated and will be removed in a future release.
+ * Please use the ModalHeader component from @metamask/design-system-react instead.
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#modalheader-component | Migration Guide}
+ * @see {@link https://metamask.github.io/metamask-design-system/?path=/docs/react-components-modalheader--docs | Storybook Documentation}
+ * @see {@link https://github.com/MetaMask/metamask-design-system/tree/main/packages/design-system-react/src/components/ModalHeader | Component Source}
+ */
+export const ModalHeader = ({
   children,
   className = '',
   startAccessory,
@@ -22,7 +38,7 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
   onBack,
   backButtonProps,
   ...props
-}) => {
+}: React.PropsWithChildren<ModalHeaderProps>) => {
   const t = useI18nContext();
   return (
     <HeaderBase
@@ -35,8 +51,6 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
         width: BlockSize.Full,
       }}
       startAccessory={
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         startAccessory ||
         (onBack && (
           <ButtonIcon
@@ -49,8 +63,6 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
         ))
       }
       endAccessory={
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         endAccessory ||
         (onClose && (
           <ButtonIcon

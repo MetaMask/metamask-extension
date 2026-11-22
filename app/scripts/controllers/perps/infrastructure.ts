@@ -5,7 +5,7 @@
  * Several dependencies are stubbed pending integration with extension services.
  */
 
-import { createProjectLogger } from '@metamask/utils';
+import { CaipAccountId, createProjectLogger } from '@metamask/utils';
 import type * as Sentry from '@sentry/browser';
 import type {
   PerpsPlatformDependencies,
@@ -20,7 +20,6 @@ import type {
   PerpsAnalyticsEvent,
   PerpsAnalyticsProperties,
   PerpsTraceName,
-  PerpsTraceValue,
   InvalidateCacheParams,
   FiatRangeConfig,
 } from '@metamask/perps-controller';
@@ -31,19 +30,48 @@ import {
   PRICE_RANGES_UNIVERSAL,
 } from '../../../../shared/lib/perps-formatters';
 import { PERPS_EVENT_PROPERTY } from '../../../../shared/constants/perps-events';
-import {
-  MetaMetricsEventCategory,
-  type MetaMetricsEventPayload,
-} from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { createEventBuilder, trackEvent } from '../analytics';
 import { captureException } from '../../../../shared/lib/sentry';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
+import { isBeta } from '../../../../shared/lib/build-types';
 import { validatedVersionGatedFeatureFlag } from '../../../../shared/lib/feature-flags/version-gating';
+import { trace, endTrace, TraceName } from '../../../../shared/lib/trace';
 import { isBenignDisconnectError } from './perps-error-utils';
+
+const TERMINAL_API_URLS = {
+  dev: 'https://terminal.dev-api.cx.metamask.io/v1/perpetuals',
+  uat: 'https://terminal.uat-api.cx.metamask.io/v1/perpetuals',
+  prd: 'https://terminal.api.cx.metamask.io/v1/perpetuals',
+} as const;
+
+function getTerminalApiUrl(): string {
+  if (
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT ||
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING
+  ) {
+    return TERMINAL_API_URLS.dev;
+  }
+
+  // Beta builds target UAT for all non-dev/testing environments.
+  if (isBeta()) {
+    return TERMINAL_API_URLS.uat;
+  }
+
+  if (
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.PRODUCTION ||
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.RELEASE_CANDIDATE
+  ) {
+    return TERMINAL_API_URLS.prd;
+  }
+
+  return TERMINAL_API_URLS.uat;
+}
 
 /**
  * Dependencies required to wire {@link createPerpsInfrastructure} to extension services.
  */
 export type InfrastructureDeps = {
-  trackEvent: (payload: MetaMetricsEventPayload) => void;
   getStorageItem: (key: string) => Promise<{
     result?: unknown;
     error?: Error;
@@ -57,6 +85,26 @@ export type InfrastructureDeps = {
    * failures.
    */
   isDisconnecting?: () => boolean;
+  /**
+   * Bridge to {@link RewardsController.getPerpsDiscountForAccount}. The
+   * rewards controller owns the fee-discount logic; perps just supplies the
+   * account and its own base fee in bips. The controller returns null when
+   * the discount is currently unknowable (unhydrated cache, fetch error, no
+   * subscription); this adapter collapses null to 0 before returning to the
+   * core perps-controller, which expects a numeric discount.
+   */
+  getPerpsDiscountForAccount: (
+    caipAccountId: `${string}:${string}:${string}`,
+    baseFeeBips: number,
+  ) => Promise<number | null>;
+  /**
+   * Merges controller-stored UTM attribution into event properties before
+   * MetaMetrics emission. Optional so unit tests can omit it;
+   * production wiring supplies PerpsController.mergeAttributionContext.
+   */
+  mergeAttributionContext?: (
+    properties?: PerpsAnalyticsProperties,
+  ) => PerpsAnalyticsProperties;
 };
 
 const debugLog = createProjectLogger('perps');
@@ -126,25 +174,45 @@ function createDebugLogger(): PerpsDebugLogger {
   return { log: debugLog };
 }
 
-function createMetrics(deps: InfrastructureDeps): PerpsMetrics {
+function createMetrics(
+  mergeAttributionContext?: InfrastructureDeps['mergeAttributionContext'],
+): PerpsMetrics {
   return {
-    // isEnabled always true: the MetaMetricsController.trackEvent messenger action is a
-    // no-op when the user has not opted into analytics, so consent filtering is
-    // enforced at that layer rather than here. Mobile delegates this check to
+    // isEnabled always true: AnalyticsController.trackEvent is a no-op when the
+    // user has not opted into analytics, so consent filtering is enforced at
+    // that layer rather than here. Mobile delegates this check to
     // analytics.isEnabled() directly because it uses a different analytics stack.
     isEnabled: () => true,
     trackPerpsEvent: (
       event: PerpsAnalyticsEvent,
       properties: PerpsAnalyticsProperties,
     ) => {
-      deps.trackEvent({
-        event,
-        category: MetaMetricsEventCategory.Perps,
-        properties: {
-          ...properties,
-          [PERPS_EVENT_PROPERTY.TIMESTAMP]: Date.now(),
-        },
-      });
+      // Merge stored UTM context into every controller-emitted event so AC3
+      // attribution reaches MetaMetrics (TradingService only attaches
+      // entry/discovery/hlFeeRate from trackingData, not UTM).
+      const attributedProperties = mergeAttributionContext
+        ? mergeAttributionContext(properties)
+        : properties;
+      // NOTE: controller-emitted events (transaction events) are
+      // fired from the background PerpsController singleton, which has no
+      // knowledge of which UI surface (sidepanel/popup/fullscreen) initiated
+      // them. Stamping the real environment_type here is intentionally NOT
+      // done: it cannot be scoped per-request without controller support
+      // (TradingService forwards only entry/discovery/perpDiscovery/hlFeeRate
+      // from trackingData, and a shared background mutable would misattribute
+      // concurrent surfaces). It is deferred to the controller (9.2.2). Note
+      // client-emitted perps events (ScreenViewed, UiInteraction, PerpsError,
+      // TransactionConsidered) already carry the correct environment_type via
+      // useAnalytics, so only background transaction events are affected.
+      trackEvent(
+        createEventBuilder(event)
+          .addCategory(MetaMetricsEventCategory.Perps)
+          .addProperties({
+            ...attributedProperties,
+            [PERPS_EVENT_PROPERTY.TIMESTAMP]: Date.now(),
+          })
+          .build(),
+      );
     },
   };
 }
@@ -157,77 +225,91 @@ function createPerformance(): PerpsPerformance {
 
 const MAX_PENDING_SPANS = 50;
 
+const PERPS_TRACE_NAMES = {
+  'Perps Open Position': TraceName.PerpsOpenPosition,
+  'Perps Close Position': TraceName.PerpsClosePosition,
+  'Perps Deposit': TraceName.PerpsDeposit,
+  'Perps Withdraw': TraceName.PerpsWithdraw,
+  'Perps Place Order': TraceName.PerpsPlaceOrder,
+  'Perps Edit Order': TraceName.PerpsEditOrder,
+  'Perps Cancel Order': TraceName.PerpsCancelOrder,
+  'Perps Update TP/SL': TraceName.PerpsUpdateTPSL,
+  'Perps Update Margin': TraceName.PerpsUpdateMargin,
+  'Perps Flip Position': TraceName.PerpsFlipPosition,
+  'Perps Market Data Update': TraceName.PerpsMarketDataUpdate,
+  'Perps Order View': TraceName.PerpsOrderView,
+  'Perps Tab View': TraceName.PerpsTabView,
+  'Perps Market List View': TraceName.PerpsMarketListView,
+  'Perps Position Details View': TraceName.PerpsPositionDetailsView,
+  'Perps Adjust Margin View': TraceName.PerpsAdjustMarginView,
+  'Perps Order Details View': TraceName.PerpsOrderDetailsView,
+  'Perps Order Book View': TraceName.PerpsOrderBookView,
+  'Perps Flip Position Sheet': TraceName.PerpsFlipPositionSheet,
+  'Perps Transactions View': TraceName.PerpsTransactionsView,
+  'Perps Order Fills Fetch': TraceName.PerpsOrderFillsFetch,
+  'Perps Orders Fetch': TraceName.PerpsOrdersFetch,
+  'Perps Funding Fetch': TraceName.PerpsFundingFetch,
+  'Perps Get Positions': TraceName.PerpsGetPositions,
+  'Perps Get Account State': TraceName.PerpsGetAccountState,
+  'Perps Get Historical Portfolio': TraceName.PerpsGetHistoricalPortfolio,
+  'Perps Get Markets': TraceName.PerpsGetMarkets,
+  'Perps Get Market Data With Prices': TraceName.PerpsGetMarketDataWithPrices,
+  'Perps Fetch Historical Candles': TraceName.PerpsFetchHistoricalCandles,
+  'Perps WebSocket Connected': TraceName.PerpsWebSocketConnected,
+  'Perps WebSocket Disconnected': TraceName.PerpsWebSocketDisconnected,
+  'Perps WebSocket First Positions': TraceName.PerpsWebSocketFirstPositions,
+  'Perps WebSocket First Orders': TraceName.PerpsWebSocketFirstOrders,
+  'Perps WebSocket First Account': TraceName.PerpsWebSocketFirstAccount,
+  'Perps Data Lake Report': TraceName.PerpsDataLakeReport,
+  'Perps Rewards API Call': TraceName.PerpsRewardsAPICall,
+  'Perps Close Position View': TraceName.PerpsClosePositionView,
+  'Perps Withdraw View': TraceName.PerpsWithdrawView,
+  'Perps Connection Establishment': TraceName.PerpsConnectionEstablishment,
+  'Perps Account Switch Reconnection': TraceName.PerpsAccountSwitchReconnection,
+  'Perps Market Data Preload': TraceName.PerpsMarketDataPreload,
+  'Perps User Data Preload': TraceName.PerpsUserDataPreload,
+} as const satisfies Record<PerpsTraceName, TraceName>;
+
 function createTracer(): PerpsTracer {
   const pendingSpans = new Map<
-    string,
-    {
-      setAttribute: (key: string, value: PerpsTraceValue) => void;
-      end: () => void;
-    }
+    `${PerpsTraceName}:${string}`,
+    { name: TraceName; id: string }
   >();
 
   return {
-    trace: (params: {
-      name: PerpsTraceName;
-      id: string;
-      op: string;
-      tags?: Record<string, PerpsTraceValue>;
-      data?: Record<string, PerpsTraceValue>;
-    }) => {
-      const startSpanManual = globalThis.sentry?.startSpanManual;
-      if (!startSpanManual) {
-        return;
-      }
-
-      const key = `${params.name}:${params.id}`;
-
-      // End any existing span with the same key before overwriting to avoid
-      // leaking the old span reference when trace() is called twice with the
-      // same name/id pair.
+    trace: (params) => {
+      const request = { ...params, name: PERPS_TRACE_NAMES[params.name] };
+      const key = `${params.name}:${params.id}` as const;
       const existing = pendingSpans.get(key);
       if (existing) {
-        existing.end();
+        endTrace({
+          ...existing,
+          data: { success: false, reason: 'superseded' },
+        });
         pendingSpans.delete(key);
       }
-
-      // Evict the oldest pending span when the map is at capacity so the map
-      // cannot grow unboundedly over long browser sessions.
       if (pendingSpans.size >= MAX_PENDING_SPANS) {
-        const oldestKey = pendingSpans.keys().next().value;
-        if (oldestKey !== undefined) {
-          pendingSpans.get(oldestKey)?.end();
-          pendingSpans.delete(oldestKey);
+        const oldest = pendingSpans.entries().next().value;
+        if (oldest) {
+          endTrace({
+            ...oldest[1],
+            data: { success: false, reason: 'capacity' },
+          });
+          pendingSpans.delete(oldest[0]);
         }
       }
-
-      startSpanManual(
-        {
-          name: params.name,
-          op: params.op,
-          attributes: { ...params.tags, ...params.data },
-        },
-        (span: {
-          setAttribute: (key: string, value: PerpsTraceValue) => void;
-          end: () => void;
-        }) => {
-          pendingSpans.set(key, span);
-        },
-      );
+      trace(request);
+      pendingSpans.set(key, { name: request.name, id: request.id });
     },
-    endTrace: (params: {
-      name: PerpsTraceName;
-      id: string;
-      data?: Record<string, PerpsTraceValue>;
-    }) => {
-      const key = `${params.name}:${params.id}`;
+    endTrace: (params) => {
+      const key = `${params.name}:${params.id}` as const;
       const pending = pendingSpans.get(key);
       if (pending) {
-        if (params.data) {
-          for (const [attrKey, attrValue] of Object.entries(params.data)) {
-            pending.setAttribute(attrKey, attrValue);
-          }
-        }
-        pending.end();
+        endTrace({
+          ...pending,
+          status: params.status,
+          data: params.data,
+        });
         pendingSpans.delete(key);
       }
     },
@@ -336,7 +418,7 @@ function createDiskCache(
 /**
  * Create the complete PerpsPlatformDependencies for the extension.
  *
- * @param deps - Platform hooks (e.g. MetaMetrics `trackEvent`).
+ * @param deps - Platform hooks (storage, rewards, Sentry).
  * @returns PerpsPlatformDependencies object ready for PerpsController
  */
 export function createPerpsInfrastructure(
@@ -345,7 +427,7 @@ export function createPerpsInfrastructure(
   return {
     logger: createLogger(deps),
     debugLogger: createDebugLogger(),
-    metrics: createMetrics(deps),
+    metrics: createMetrics(deps.mergeAttributionContext),
     performance: createPerformance(),
     tracer: createTracer(),
     streamManager: createStreamManager(),
@@ -353,13 +435,31 @@ export function createPerpsInfrastructure(
     marketDataFormatters: createMarketDataFormatters(),
     cacheInvalidator: createCacheInvalidator(),
     diskCache: createDiskCache(deps),
+    terminalApiUrl: getTerminalApiUrl(),
     rewards: {
+      // The perps package only passes `caipAccountId`; the rewards controller
+      // additionally needs the perps MetaMask builder base fee in bips so it
+      // can convert the absolute reward fee into a discount fraction. We
+      // source the base fee from the perps package's own constants here so
+      // the rewards controller stays a pure transformer.
       getPerpsDiscountForAccount: async (
-        _caipAccountId: `${string}:${string}:${string}`,
-        _baseFeeBips: number,
+        caipAccountId: `${string}:${string}:${string}`,
+        baseFeeBips: number,
       ) => {
-        // TODO: Wire to RewardsController when available
-        return 0;
+        try {
+          const result = await deps.getPerpsDiscountForAccount(
+            caipAccountId,
+            baseFeeBips,
+          );
+          // The rewards controller returns null when the discount is
+          // currently unknowable; treat it the same as a thrown error so
+          // the core perps-controller (which expects a number) sees a
+          // safe "no discount" fallback.
+          return result ?? 0;
+        } catch {
+          // Never let a discount lookup failure block a trade — return 0.
+          return 0;
+        }
       },
     },
   };

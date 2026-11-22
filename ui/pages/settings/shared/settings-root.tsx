@@ -14,6 +14,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { transitionForward } from '../../../components/ui/transition';
 import { SETTINGS_ROOT_SECTIONS, SETTINGS_TABS } from '../settings-registry';
 
 type RootListItem = {
@@ -50,7 +51,7 @@ export const SettingsRoot = ({ onBeforeNavigate }: SettingsRootProps) => {
     if (onBeforeNavigate?.(item.path) === true) {
       return;
     }
-    navigate(item.path);
+    transitionForward(() => navigate(item.path));
   };
 
   return (

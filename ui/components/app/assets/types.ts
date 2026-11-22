@@ -1,11 +1,12 @@
 import { KeyringAccountType } from '@metamask/keyring-api';
 import { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
-import { type TokenListToken } from '@metamask/assets-controllers';
+import type { Asset, TokenListToken } from '@metamask/assets-controllers';
 
 // Common mixin for primary and secondary display values
 export type TokenDisplayValues = {
   secondary: number | null;
   string?: string;
+  isFiatLoading?: boolean;
 };
 
 export type TokenBalanceValues = {
@@ -21,6 +22,10 @@ export type BaseToken = {
   decimals: number;
   chainId: Hex;
   isNative?: boolean;
+  /**
+   * `selectAssetsBySelectedAccountGroup` in `@metamask/assets-controllers` stores a hex address here for EVM tokens
+   * That selector should emit CAIP-19 for EVM the same way it already does for non-EVM.
+   */
   assetId?: CaipAssetType | Hex;
 };
 
@@ -47,15 +52,19 @@ export type TokenDisplayInfo = TokenDisplayValues & {
   tokenImage: string;
   isStakeable?: boolean;
   tokenChainImage: string;
+  /** True when a Stellar classic asset still needs trustline activation. */
+  tokenRequireActivate?: boolean;
 };
 
 // Token type that includes fiat amount, balance, and display values
 export type TokenWithFiatAmount = Token &
   TokenDisplayValues &
   TokenBalanceValues & {
+    caipAssetId?: CaipAssetType;
     isStakeable?: boolean;
     title: string;
     rwaData?: TokenListToken['rwaData'];
+    safetyResult?: string;
     // TODO BIP44: This will not need to be optional once BIP44 is enabled
     accountType?: KeyringAccountType;
   };

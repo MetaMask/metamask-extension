@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { sumAmounts } from '@metamask/bridge-controller';
 import { Text } from '../../../components/component-library';
 import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -9,6 +10,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Row } from '../layout';
+import { readMmFee } from '../utils/quote';
 
 export const BridgeNoFeeMessage = () => {
   const t = useI18nContext();
@@ -18,7 +20,16 @@ export const BridgeNoFeeMessage = () => {
     return null;
   }
 
-  const hasNoMMFee = Number(activeQuote.quote.feeData.metabridge.amount) === 0;
+  const { isDiscounted } = readMmFee(activeQuote);
+
+  if (isDiscounted) {
+    return null;
+  }
+
+  const hasNoMMFee =
+    Number(
+      sumAmounts(activeQuote.quote.feeData.metabridge)?.normalizedAmount ?? 0,
+    ) === 0;
 
   if (!hasNoMMFee) {
     return null;

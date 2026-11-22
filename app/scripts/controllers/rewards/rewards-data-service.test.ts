@@ -5,7 +5,7 @@ import {
   MessengerEvents,
   MockAnyNamespace,
 } from '@metamask/messenger';
-import { ENVIRONMENT } from '../../../../development/build/constants';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { REWARDS_API_URL } from '../../../../shared/constants/rewards';
 import {
   EstimatePointsDto,
@@ -35,6 +35,10 @@ jest.mock('../../platforms/extension', () => {
     getVersion: jest.fn().mockReturnValue('7.50.1'),
   }));
 });
+
+const ExtensionPlatformMock = jest.requireMock(
+  '../../platforms/extension',
+) as jest.Mock;
 
 // Mock loglevel
 jest.mock('loglevel', () => ({
@@ -151,10 +155,6 @@ describe('RewardsDataService', () => {
         expect.any(Function),
       );
       expect(registerSpy).toHaveBeenCalledWith(
-        'RewardsDataService:validateReferralCode',
-        expect.any(Function),
-      );
-      expect(registerSpy).toHaveBeenCalledWith(
         'RewardsDataService:mobileJoin',
         expect.any(Function),
       );
@@ -191,7 +191,7 @@ describe('RewardsDataService', () => {
 
       mockFetch.mockResolvedValue(mockResponse);
 
-      await service.validateReferralCode('TEST');
+      await service.getDiscoverSeasons();
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.any(String),
@@ -240,7 +240,7 @@ describe('RewardsDataService', () => {
 
       mockFetch.mockResolvedValue(mockResponse);
 
-      await customService.validateReferralCode('TEST');
+      await customService.getDiscoverSeasons();
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.any(String),
@@ -289,7 +289,7 @@ describe('RewardsDataService', () => {
 
       mockFetch.mockResolvedValue(mockResponse);
 
-      await customService.validateReferralCode('TEST');
+      await customService.getDiscoverSeasons();
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.any(String),
@@ -338,7 +338,7 @@ describe('RewardsDataService', () => {
 
       mockFetch.mockResolvedValue(mockResponse);
 
-      await customService.validateReferralCode('TEST');
+      await customService.getDiscoverSeasons();
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.any(String),
@@ -394,7 +394,7 @@ describe('RewardsDataService', () => {
 
       mockFetch.mockResolvedValue(mockResponse);
 
-      await customService.validateReferralCode('TEST');
+      await customService.getDiscoverSeasons();
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.any(String),
@@ -448,7 +448,7 @@ describe('RewardsDataService', () => {
 
       mockFetch.mockResolvedValue(mockResponse);
 
-      await customService.validateReferralCode('TEST');
+      await customService.getDiscoverSeasons();
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.any(String),
@@ -498,7 +498,7 @@ describe('RewardsDataService', () => {
 
       mockFetch.mockResolvedValue(mockResponse);
 
-      await customService.validateReferralCode('TEST');
+      await customService.getDiscoverSeasons();
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.any(String),
@@ -814,6 +814,26 @@ describe('RewardsDataService', () => {
       mockFetch.mockResolvedValue(mockResponse);
     });
 
+    it('uses METAMASK_VERSION when the extension manifest is unavailable', async () => {
+      ExtensionPlatformMock.mockImplementationOnce(() => ({
+        getVersion: () => {
+          throw new Error('manifest unavailable');
+        },
+      }));
+
+      await service.getSeasonStatus(mockSeasonId, mockSubscriptionId);
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        `${REWARDS_API_URL.UAT}/seasons/${mockSeasonId}/state`,
+        expect.objectContaining({
+          headers: expect.objectContaining({
+            'rewards-client-id': `extension-${process.env.METAMASK_VERSION}`,
+          }),
+        }),
+      );
+      expect(mockConsoleWarn).not.toHaveBeenCalled();
+    });
+
     it('should successfully get season state', async () => {
       const result = await service.getSeasonStatus(
         mockSeasonId,
@@ -979,79 +999,6 @@ describe('RewardsDataService', () => {
       const result = await service.fetchGeoLocation();
 
       expect(result).toBe('CA-ON');
-    });
-  });
-
-  describe('validateReferralCode', () => {
-    const mockCode = 'REF123';
-
-    beforeEach(() => {
-      service = createService();
-    });
-
-    it('successfully validates referral code', async () => {
-      const mockResponse = {
-        ok: true,
-        json: jest.fn().mockResolvedValue({ valid: true }),
-      } as unknown as Response;
-
-      mockFetch.mockResolvedValue(mockResponse);
-
-      const result = await service.validateReferralCode(mockCode);
-
-      expect(result).toEqual({ valid: true });
-      expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining(`/referral/validate?code=${mockCode}`),
-        expect.objectContaining({
-          method: 'GET',
-        }),
-      );
-    });
-
-    it('returns invalid for invalid code', async () => {
-      const mockResponse = {
-        ok: true,
-        json: jest.fn().mockResolvedValue({ valid: false }),
-      } as unknown as Response;
-
-      mockFetch.mockResolvedValue(mockResponse);
-
-      const result = await service.validateReferralCode(mockCode);
-
-      expect(result).toEqual({ valid: false });
-    });
-
-    it('throws error for failed validation', async () => {
-      const mockResponse = {
-        ok: false,
-        status: 500,
-        json: jest.fn().mockResolvedValue({}),
-      } as unknown as Response;
-
-      mockFetch.mockResolvedValue(mockResponse);
-
-      await expect(service.validateReferralCode(mockCode)).rejects.toThrow(
-        'Failed to validate referral code. Please try again shortly.',
-      );
-    });
-
-    it('encodes special characters in referral code', async () => {
-      const codeWithSpecialChars = 'REF#123&test';
-      const encodedCode = encodeURIComponent(codeWithSpecialChars);
-
-      const mockResponse = {
-        ok: true,
-        json: jest.fn().mockResolvedValue({ valid: true }),
-      } as unknown as Response;
-
-      mockFetch.mockResolvedValue(mockResponse);
-
-      await service.validateReferralCode(codeWithSpecialChars);
-
-      expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining(`/referral/validate?code=${encodedCode}`),
-        expect.any(Object),
-      );
     });
   });
 
@@ -1370,14 +1317,14 @@ describe('RewardsDataService', () => {
       } as unknown as Response;
       mockFetch.mockResolvedValue(mockResponse);
 
-      await service.validateReferralCode('TEST');
+      await service.getDiscoverSeasons();
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining(REWARDS_API_URL.PRD),
         expect.any(Object),
       );
       expect(mockFetch).toHaveBeenCalledWith(
-        `${REWARDS_API_URL.PRD}/referral/validate?code=TEST`,
+        `${REWARDS_API_URL.PRD}/public/seasons/status`,
         expect.any(Object),
       );
     });
@@ -1392,14 +1339,14 @@ describe('RewardsDataService', () => {
       } as unknown as Response;
       mockFetch.mockResolvedValue(mockResponse);
 
-      await service.validateReferralCode('TEST');
+      await service.getDiscoverSeasons();
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining(REWARDS_API_URL.PRD),
         expect.any(Object),
       );
       expect(mockFetch).toHaveBeenCalledWith(
-        `${REWARDS_API_URL.PRD}/referral/validate?code=TEST`,
+        `${REWARDS_API_URL.PRD}/public/seasons/status`,
         expect.any(Object),
       );
     });
@@ -1414,14 +1361,14 @@ describe('RewardsDataService', () => {
       } as unknown as Response;
       mockFetch.mockResolvedValue(mockResponse);
 
-      await service.validateReferralCode('TEST');
+      await service.getDiscoverSeasons();
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining(REWARDS_API_URL.UAT),
         expect.any(Object),
       );
       expect(mockFetch).toHaveBeenCalledWith(
-        `${REWARDS_API_URL.UAT}/referral/validate?code=TEST`,
+        `${REWARDS_API_URL.UAT}/public/seasons/status`,
         expect.any(Object),
       );
     });
@@ -1473,7 +1420,7 @@ describe('RewardsDataService', () => {
 
       mockFetch.mockResolvedValue(mockResponse);
 
-      await service.validateReferralCode('TEST');
+      await service.getDiscoverSeasons();
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.any(String),
@@ -1516,7 +1463,7 @@ describe('RewardsDataService', () => {
 
       mockFetch.mockResolvedValue(mockResponse);
 
-      await service.validateReferralCode('TEST');
+      await service.getDiscoverSeasons();
 
       const callArgs = mockFetch.mock.calls[0];
       const headers = callArgs[1]?.headers as Record<string, string>;
@@ -2223,6 +2170,67 @@ describe('RewardsDataService', () => {
       const result = await service.fetchGeoLocation();
 
       expect(result).toBe('UNKNOWN');
+    });
+  });
+
+  describe('getVipFees', () => {
+    const mockSubscriptionToken = 'token-vip-fees';
+    const mockVipFees = {
+      vipTier: 1,
+      fees: {
+        hyperliquid: { builderCode: '0xbuilder', builderFeeBips: '5' },
+        swaps: { feeBips: '50' },
+      },
+      updatedAt: '2026-05-01T00:00:00.000Z',
+    };
+
+    beforeEach(() => {
+      service = createService();
+      mockFetch.mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: jest.fn().mockResolvedValue(mockVipFees),
+      } as unknown as Response);
+    });
+
+    it('fetches VIP fees using the expected endpoint and auth headers', async () => {
+      const result = await service.getVipFees(mockSubscriptionToken);
+
+      expect(result).toEqual(mockVipFees);
+      expect(mockFetch).toHaveBeenCalledWith(
+        `${REWARDS_API_URL.UAT}/vip/fees`,
+        expect.objectContaining({
+          method: 'GET',
+          credentials: 'omit',
+          headers: expect.objectContaining({
+            'Content-Type': 'application/json',
+            'rewards-access-token': mockSubscriptionToken,
+          }),
+        }),
+      );
+    });
+
+    it('throws when the VIP fees response is not ok', async () => {
+      mockFetch.mockResolvedValue({
+        ok: false,
+        status: 500,
+      } as Response);
+
+      await expect(service.getVipFees(mockSubscriptionToken)).rejects.toThrow(
+        'Get VIP fees failed: 500',
+      );
+    });
+
+    it('throws AuthorizationFailedError when response status is 403', async () => {
+      mockFetch.mockResolvedValue({
+        ok: false,
+        status: 403,
+        json: jest.fn().mockResolvedValue({}),
+      } as unknown as Response);
+
+      await expect(service.getVipFees(mockSubscriptionToken)).rejects.toThrow(
+        AuthorizationFailedError,
+      );
     });
   });
 });

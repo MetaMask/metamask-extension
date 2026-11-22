@@ -4,7 +4,7 @@ import {
   type TransactionControllerState,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import { EMPTY_ARRAY } from './shared';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 
 export type TransactionState = {
   metamask: TransactionControllerState;
@@ -13,6 +13,11 @@ export type TransactionState = {
 export const selectTransactions = (
   state: TransactionState,
 ): TransactionMeta[] => state.metamask?.transactions ?? EMPTY_ARRAY;
+
+export const selectBatchTransactionCounts = (
+  state: TransactionState,
+): TransactionControllerState['batchTransactionCounts'] =>
+  state.metamask?.batchTransactionCounts ?? EMPTY_OBJECT;
 
 export const selectOrderedTransactions = createSelector(
   selectTransactions,
@@ -58,4 +63,29 @@ export const selectUnapprovedTransactionById = createSelector(
           (tx) => tx.id === id && tx.status === TransactionStatus.unapproved,
         )
       : undefined,
+);
+
+/**
+ * A transaction is "replaced" once its speed-up/cancel replacement has fully
+ * committed: the controller sets `replacedBy` (replacement hash) and
+ * `replacedById` (replacement id) while the original keeps its own `hash`.
+ *
+ * @param transaction - Transaction metadata to inspect.
+ * @returns Whether the original speed-up/cancel row should be dropped.
+ */
+function isReplacedTransaction(
+  transaction: Pick<TransactionMeta, 'replacedBy' | 'replacedById' | 'hash'>,
+): boolean {
+  const { replacedBy, replacedById, hash } = transaction;
+  return Boolean(replacedBy && replacedById && hash);
+}
+
+/**
+ * Transactions that have not been fully replaced by a speed-up or cancel.
+ * Partial replacement metadata is not enough to drop the original row.
+ */
+export const selectNonReplacedTransactions = createSelector(
+  selectTransactions,
+  (transactions) =>
+    transactions.filter((transaction) => !isReplacedTransaction(transaction)),
 );

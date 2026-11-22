@@ -20,9 +20,6 @@
   "accountSelectionRequired": {
     "message": "መለያ መምረጥ ይኖርብዎታል!"
   },
-  "addAcquiredTokens": {
-    "message": "MetaMask በመጠቀም የገዟቸውን ተለዋጭ ስሞች ያክሉ"
-  },
   "addAlias": {
     "message": "ተለዋጭ ስም አክል"
   },
@@ -77,9 +74,6 @@
   },
   "back": {
     "message": "ተመለስ"
-  },
-  "backupApprovalInfo": {
-    "message": "መሳሪያዎ ቢጠፋ፣ የይለፍ ቃልዎን ቢረሱ፣ MetaMask እንደገና መጫን ቢያስፈልግዎ ወይም በሌላ መሳሪያ ወደ ቋትዎ ለመድረስ ቢፈልጉ ይህ ሚስጥራዊ ኮድ ቋትዎን መልሶ ለማግኘት ያስፈልጋል።"
   },
   "backupApprovalNotice": {
     "message": "የቋትዎንና የገነዘብዎን ደህንነት ለማስጠበቅ ሚስጥራዊ የማስመለሻ ኮድዎን መጠባበቂያ ይያዙ።"
@@ -172,14 +166,8 @@
   "createPassword": {
     "message": "የይለፍ ቃል ፍጠር"
   },
-  "customToken": {
-    "message": "ብጁ ተለዋጭ ስም"
-  },
   "decimal": {
     "message": "የትክክለኛነት አስርዮሽ"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "አስርዮሽ ቢያንስ 0 ቢበዛ ደግሞ 36 መሆን አለባቸው።"
   },
   "delete": {
     "message": "ሰርዝ"
@@ -189,9 +177,6 @@
   },
   "done": {
     "message": "ተጠናቅቋል"
-  },
-  "downloadGoogleChrome": {
-    "message": "Google Chrome አውርድ"
   },
   "downloadStateLogs": {
     "message": "የስቴት መዛግብትን አውርድ"
@@ -217,10 +202,6 @@
   "fast": {
     "message": "ፈጣን"
   },
-  "fileImportFail": {
-    "message": "ፋይል ማስመጣት እየሰራ አይደለም? እዚህ ላይ ጠቅ ያድርጉ!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "ይህን መሣሪያ እርሳ"
   },
@@ -229,9 +210,6 @@
   },
   "gasLimit": {
     "message": "የነዳጅ ገደብ"
-  },
-  "gasLimitTooLow": {
-    "message": "የነዳጅ ገደብ ቢያንስ 21000 መሆን አለበት"
   },
   "gasUsed": {
     "message": "ጥቅም ላይ የዋለ ነዳጅ"
@@ -250,9 +228,6 @@
   },
   "hardwareWallets": {
     "message": "ከሃርድዌር ቋት ጋር ይገናኙ"
-  },
-  "hardwareWalletsMsg": {
-    "message": "ከ MetaMask ጋር ሊጠቀሙበት የሚፈልጉትን የሃርድዌር ቋት ይምረጡ"
   },
   "here": {
     "message": "እዚህ",
@@ -339,9 +314,6 @@
   "metamaskVersion": {
     "message": "የ MetaMask ስሪት"
   },
-  "mustSelectOne": {
-    "message": "ቢያንስ 1 ተለዋጭ ስም መምረጥ አለብዎ።"
-  },
   "needImportFile": {
     "message": "የሚያስመጡትን ፋይል መምረጥ አለብዎት።",
     "description": "User is important an account and needs to add a file to continue"
@@ -351,9 +323,6 @@
   },
   "networks": {
     "message": "አውታረ መረቦች"
-  },
-  "nevermind": {
-    "message": "ምንም አይደል"
   },
   "newAccountNumberName": {
     "message": "መለያ $1",
@@ -373,9 +342,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Webcam አልተገኘም"
-  },
-  "notEnoughGas": {
-    "message": "በቂ ነዳጅ የለም"
   },
   "ofTextNofM": {
     "message": "ከ"
@@ -407,10 +373,6 @@
   "passwordsDontMatch": {
     "message": "የይለፍ ቃላት ተመሳሳይ አይደሉም"
   },
-  "pastePrivateKey": {
-    "message": "የግል ቁልፍዎን ሕብረ ቁምፊ እዚህ ለጥፍ፡",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "በእንጥልጥል ላይ ያለ"
   },
@@ -426,9 +388,6 @@
   "privateKey": {
     "message": "የግል ቁልፍ",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "ማስጠንቀቂያ፡ ይህን ቁልፍ በጭራሽ ለሌላ ሰው አይግለጹ። የግል ቁልፍዎን የያዘ ማንኛውም ሰው በመለያዎ ውስጥ የሚገኙ ማናቸውንም ሐብቶች ሊሰርቅ ይችላል።"
   },
   "privateNetwork": {
     "message": "የግል አውታረ መረብ"
@@ -514,9 +473,6 @@
   },
   "sign": {
     "message": "ፈርም"
-  },
-  "signatureRequest": {
-    "message": "የፊርማ ጥያቄ"
   },
   "signed": {
     "message": "ተፈርሟል"
@@ -604,9 +560,6 @@
   },
   "urlErrorMsg": {
     "message": "URIs አግባብነት ያለው የ HTTP/HTTPS ቅድመ ቅጥያ ይፈልጋል።"
-  },
-  "usedByClients": {
-    "message": "በተለያዩ ደንበኞች ጥቅም ላይ የዋለ ነው"
   },
   "visitWebSite": {
     "message": "ድረ ገጻችንን ይጎብኙ"

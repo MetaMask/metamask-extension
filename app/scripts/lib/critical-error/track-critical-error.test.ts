@@ -1,5 +1,8 @@
 import { segment } from '../segment';
-import { CriticalErrorType } from '../../../../shared/constants/state-corruption';
+import {
+  CriticalErrorRepairAction,
+  CriticalErrorType,
+} from '../../../../shared/constants/critical-error';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -25,9 +28,10 @@ describe('trackCriticalErrorEvent', () => {
     const backup: Backup = {
       KeyringController: { vault: 'encrypted-vault-data' },
       AppMetadataController: {},
-      MetaMetricsController: {
-        participateInMetaMetrics: true,
-        metaMetricsId: 'test-metrics-id-123',
+      AnalyticsController: {
+        optedIn: true,
+        analyticsId: 'test-metrics-id-123',
+        consentDecisionMade: true,
       },
     };
 
@@ -50,6 +54,7 @@ describe('trackCriticalErrorEvent', () => {
           name: 'MetaMask Extension',
           version: process.env.METAMASK_VERSION,
         },
+        userAgent: window.navigator.userAgent,
       },
     });
     expect(mockSegment.flush).toHaveBeenCalledTimes(1);
@@ -59,9 +64,10 @@ describe('trackCriticalErrorEvent', () => {
     const backup: Backup = {
       KeyringController: { vault: 'encrypted-vault-data' },
       AppMetadataController: {},
-      MetaMetricsController: {
-        participateInMetaMetrics: true,
-        metaMetricsId: 'test-metrics-id-456',
+      AnalyticsController: {
+        optedIn: true,
+        analyticsId: 'test-metrics-id-456',
+        consentDecisionMade: true,
       },
     };
 
@@ -70,7 +76,7 @@ describe('trackCriticalErrorEvent', () => {
       MetaMetricsEventName.CriticalErrorRestoreWalletButtonPressed,
       CriticalErrorType.BackgroundStateSyncTimeout,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      { restore_accounts_enabled: true },
+      { repair_action: CriticalErrorRepairAction.Recover },
     );
 
     expect(mockSegment.track).toHaveBeenCalledWith({
@@ -80,7 +86,7 @@ describe('trackCriticalErrorEvent', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         error_type: CriticalErrorType.BackgroundStateSyncTimeout,
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        restore_accounts_enabled: true,
+        repair_action: CriticalErrorRepairAction.Recover,
         category: MetaMetricsEventCategory.Error,
       },
       context: {
@@ -88,6 +94,7 @@ describe('trackCriticalErrorEvent', () => {
           name: 'MetaMask Extension',
           version: process.env.METAMASK_VERSION,
         },
+        userAgent: window.navigator.userAgent,
       },
     });
     expect(mockSegment.flush).toHaveBeenCalledTimes(1);
@@ -96,28 +103,21 @@ describe('trackCriticalErrorEvent', () => {
   // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     ['backup is null', null],
-    ['MetaMetricsController is missing', { KeyringController: {} }],
+    ['AnalyticsController is missing', { KeyringController: {} }],
     [
-      'participateInMetaMetrics is false',
+      'optedIn is false',
       {
-        MetaMetricsController: {
-          participateInMetaMetrics: false,
-          metaMetricsId: 'id',
+        AnalyticsController: {
+          optedIn: false,
+          analyticsId: 'id',
         },
       },
     ],
     [
-      'participateInMetaMetrics is null',
+      'analyticsId is missing',
       {
-        MetaMetricsController: {
-          participateInMetaMetrics: null,
-          metaMetricsId: 'id',
-        },
+        AnalyticsController: { optedIn: true },
       },
-    ],
-    [
-      'metaMetricsId is missing',
-      { MetaMetricsController: { participateInMetaMetrics: true } },
     ],
   ])('does not track when %s', (_: string, backup: Backup | null) => {
     trackCriticalErrorEvent(

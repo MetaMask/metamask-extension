@@ -105,12 +105,12 @@ const getMetaMaskStateWithUnapprovedContractInteraction = ({
 };
 
 const advancedDetailsMockedRequests = {
-  getGasFeeTimeEstimate: {
+  'GasFeeController:getTimeEstimate': {
     lowerTimeBound: new Date().getTime(),
     upperTimeBound: new Date().getTime(),
   },
-  getNextNonce: '9',
-  decodeTransactionData: {
+  'LegacyBackgroundApiService:getNextNonce': '9',
+  'LegacyBackgroundApiService:decodeTransactionData': {
     data: [
       {
         name: 'mintNFTs',
@@ -125,7 +125,7 @@ const advancedDetailsMockedRequests = {
     ],
     source: 'Sourcify',
   },
-  setPreference: {},
+  'PreferencesController:setPreference': {},
 };
 
 const setupSubmitRequestToBackgroundMocks = (
@@ -178,9 +178,11 @@ describe('Contract Interaction Confirmation', () => {
       await integrationTestRender({
         preloadedState: {
           ...mockedMetaMaskState,
-          participateInMetaMetrics: true,
-          dataCollectionForMarketing: false,
-          metaMetricsId: 'test-metametrics-id',
+          analyticsId: 'test-metametrics-id',
+          consentDecisionMade: true,
+          optedIn: true,
+          optedInToMarketing: false,
+          marketingConsentDecisionMade: true,
         },
         backgroundConnection: backgroundConnectionMocked,
       });
@@ -218,20 +220,21 @@ describe('Contract Interaction Confirmation', () => {
       confirmAccountDetailsModalMetricsEvent =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) =>
-            call[0] === 'trackMetaMetricsEvent' &&
-            call[1]?.[0].category === MetaMetricsEventCategory.Confirmations,
+            call[0] === 'trackAnalyticsEvent' &&
+            call[1]?.[0]?.properties?.category ===
+              MetaMetricsEventCategory.Confirmations,
         );
 
       expect(confirmAccountDetailsModalMetricsEvent?.[0]).toBe(
-        'trackMetaMetricsEvent',
+        'trackAnalyticsEvent',
       );
 
       expect(confirmAccountDetailsModalMetricsEvent?.[1]).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            category: MetaMetricsEventCategory.Confirmations,
-            event: MetaMetricsEventName.AccountDetailsOpened,
-            properties: {
+            name: MetaMetricsEventName.AccountDetailsOpened,
+            properties: expect.objectContaining({
+              category: MetaMetricsEventCategory.Confirmations,
               action: 'Confirm Screen',
               location: MetaMetricsEventLocation.Transaction,
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -240,8 +243,9 @@ describe('Contract Interaction Confirmation', () => {
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
               hd_entropy_index: 0,
-            },
+            }),
           }),
+          expect.anything(),
         ]),
       );
     });
@@ -314,7 +318,7 @@ describe('Contract Interaction Confirmation', () => {
 
     const firstGasField =
       await within(editGasFeesRow).findByTestId('first-gas-field');
-    expect(firstGasField).toHaveTextContent('0.0001');
+    expect(firstGasField).toHaveTextContent('0.0023');
     expect(editGasFeesRow).toContainElement(
       await screen.findByTestId('edit-gas-fee-icon'),
     );
@@ -356,7 +360,7 @@ describe('Contract Interaction Confirmation', () => {
     await waitFor(() => {
       expect(
         mockedBackgroundConnection.submitRequestToBackground,
-      ).toHaveBeenCalledWith('setPreference', [
+      ).toHaveBeenCalledWith('PreferencesController:setPreference', [
         'showConfirmationAdvancedDetails',
         true,
       ]);
@@ -386,20 +390,26 @@ describe('Contract Interaction Confirmation', () => {
     await waitFor(() => {
       expect(
         mockedBackgroundConnection.submitRequestToBackground,
-      ).toHaveBeenCalledWith('getNextNonce', expect.anything());
+      ).toHaveBeenCalledWith(
+        'LegacyBackgroundApiService:getNextNonce',
+        expect.anything(),
+      );
     });
 
     await waitFor(() => {
       expect(
         mockedBackgroundConnection.submitRequestToBackground,
-      ).toHaveBeenCalledWith('decodeTransactionData', [
-        {
-          transactionData:
-            '0x3b4b13810000000000000000000000000000000000000000000000000000000000000001',
-          contractAddress: '0x076146c765189d51be3160a2140cf80bfc73ad68',
-          chainId: '0xaa36a7',
-        },
-      ]);
+      ).toHaveBeenCalledWith(
+        'LegacyBackgroundApiService:decodeTransactionData',
+        [
+          {
+            transactionData:
+              '0x3b4b13810000000000000000000000000000000000000000000000000000000000000001',
+            contractAddress: '0x076146c765189d51be3160a2140cf80bfc73ad68',
+            chainId: '0xaa36a7',
+          },
+        ],
+      );
     });
 
     const gasFeesSection = await screen.findByTestId('gas-fee-section');
@@ -461,7 +471,7 @@ describe('Contract Interaction Confirmation', () => {
       });
     });
 
-    const headingText = tEn('blockaidTitleDeceptive');
+    const headingText = tEn('blockaidTitleHighRiskTransfer');
     const bodyText = tEn('blockaidDescriptionTransferFarming');
     expect(await screen.findByText(headingText)).toBeInTheDocument();
     expect(await screen.findByText(bodyText)).toBeInTheDocument();
@@ -499,7 +509,7 @@ describe('Contract Interaction Confirmation', () => {
       expect(
         mockedBackgroundConnection.submitRequestToBackground,
       ).toHaveBeenCalledWith(
-        'upsertTransactionUIMetricsFragment',
+        'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
         expect.arrayContaining([
           expect.any(String),
           expect.objectContaining({

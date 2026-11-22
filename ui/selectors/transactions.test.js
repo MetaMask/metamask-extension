@@ -6,13 +6,10 @@ import {
 } from '@metamask/transaction-controller';
 import {
   SmartTransactionStatuses,
-  SmartTransactionMinedTx,
+  SentinelMinedTxStatus,
 } from '@metamask/smart-transactions-controller';
 import { CHAIN_IDS } from '../../shared/constants/network';
-import {
-  ETH_4337_METHODS,
-  ETH_EOA_METHODS,
-} from '../../shared/constants/eth-methods';
+import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../test/stub/networks';
 import {
   unapprovedMessagesSelector,
@@ -27,7 +24,9 @@ import {
   getTransactions,
   getUnapprovedTransactions,
   getTransactionsByChainId,
+  getCurrentNetworkTransactions,
   incomingTxListSelectorAllChains,
+  incomingTxListSelector,
   selectedAddressTxListSelectorAllChain,
   selectedAddressTxListSelector,
   transactionSubSelectorAllChains,
@@ -163,7 +162,7 @@ describe('Transaction Selectors', () => {
       const smartTransaction = createSmartTransaction({
         minedHash:
           '0x55ad39634ee10d417b6e190cfd3736098957e958879cffe78f1f00f4fd2654d6',
-        minedTx: SmartTransactionMinedTx.SUCCESS,
+        minedTx: SentinelMinedTxStatus.Success,
         confirmed: true,
       });
       const state = createState(smartTransaction);
@@ -176,7 +175,7 @@ describe('Transaction Selectors', () => {
 
     it('does not return a confirmed transaction with status "reverted"', () => {
       const smartTransaction = createSmartTransaction({
-        minedTx: SmartTransactionMinedTx.REVERTED,
+        minedTx: SentinelMinedTxStatus.Reverted,
         confirmed: true,
       });
       const state = createState(smartTransaction);
@@ -603,7 +602,7 @@ describe('Transaction Selectors', () => {
                 },
               },
               options: {},
-              methods: ETH_4337_METHODS,
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
           },
@@ -946,6 +945,45 @@ describe('Transaction Selectors', () => {
       const result = incomingTxListSelectorAllChains(state);
 
       expect(result).toStrictEqual([]);
+    });
+  });
+
+  describe('incomingTxListSelector', () => {
+    it('returns an empty array when provider configuration is missing', () => {
+      const state = {
+        metamask: {
+          transactions: [
+            {
+              id: 1,
+              chainId: '0x1',
+              type: TransactionType.incoming,
+              txParams: { to: '0xSelectedAddress' },
+            },
+          ],
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xSelectedAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: ETH_EOA_METHODS,
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+          selectedNetworkClientId: 'missingNetworkClientId',
+          networkConfigurationsByChainId: {},
+        },
+      };
+
+      expect(incomingTxListSelector(state)).toStrictEqual([]);
     });
   });
 
@@ -1367,6 +1405,46 @@ describe('Transaction Selectors', () => {
       const result = selectedAddressTxListSelector(state);
 
       expect(result).toStrictEqual([state.metamask.transactions[1]]);
+    });
+
+    it('returns an empty array when provider configuration is missing', () => {
+      const state = {
+        metamask: {
+          transactions: [
+            {
+              id: 1,
+              chainId: '0x1',
+              type: TransactionType.simpleSend,
+              txParams: { from: '0xSelectedAddress', to: '0xAnotherAddress' },
+            },
+          ],
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xSelectedAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: ETH_EOA_METHODS,
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+          smartTransactionsState: {
+            smartTransactions: [],
+          },
+          selectedNetworkClientId: 'missingNetworkClientId',
+          networkConfigurationsByChainId: {},
+        },
+      };
+
+      expect(selectedAddressTxListSelector(state)).toStrictEqual([]);
     });
   });
 
@@ -2056,6 +2134,71 @@ describe('Transaction Selectors', () => {
 
       // Should return same reference (memoized)
       expect(result1).toBe(result2);
+    });
+  });
+
+  describe('getCurrentNetworkTransactions', () => {
+    it('returns transactions for the current network', () => {
+      const mainnetTx = {
+        id: 1,
+        chainId: CHAIN_IDS.MAINNET,
+        time: 100,
+        status: TransactionStatus.confirmed,
+      };
+      const goerliTx = {
+        id: 2,
+        chainId: CHAIN_IDS.GOERLI,
+        time: 200,
+        status: TransactionStatus.confirmed,
+      };
+
+      const state = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          transactions: [mainnetTx, goerliTx],
+        },
+      };
+
+      expect(getCurrentNetworkTransactions(state)).toStrictEqual([mainnetTx]);
+    });
+
+    it('returns cached reference when non-current-network transactions change', () => {
+      const mainnetTx = {
+        id: 1,
+        chainId: CHAIN_IDS.MAINNET,
+        time: 100,
+        status: TransactionStatus.confirmed,
+      };
+
+      const state1 = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          transactions: [mainnetTx],
+        },
+      };
+
+      const result1 = getCurrentNetworkTransactions(state1);
+
+      const state2 = {
+        ...state1,
+        metamask: {
+          ...state1.metamask,
+          transactions: [
+            mainnetTx,
+            {
+              id: 2,
+              chainId: CHAIN_IDS.GOERLI,
+              time: 200,
+              status: TransactionStatus.confirmed,
+            },
+          ],
+        },
+      };
+
+      const result2 = getCurrentNetworkTransactions(state2);
+
+      expect(result2).toBe(result1);
+      expect(result2).toStrictEqual([mainnetTx]);
     });
   });
 });

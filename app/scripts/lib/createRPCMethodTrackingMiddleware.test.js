@@ -2,7 +2,6 @@ import { errorCodes } from '@metamask/rpc-errors';
 import { detectSIWE } from '@metamask/controller-utils';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 
-import { MetaMetricsController } from '../controllers/metametrics-controller';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -21,7 +20,11 @@ import {
   orderSignatureMsg,
 } from '../../../test/data/confirmations/typed_sign';
 import { getDefaultPreferencesControllerState } from '../controllers/preferences-controller';
-import { createSegmentMock } from './segment';
+import {
+  configureAnalytics,
+  setParticipateInMetaMetrics,
+} from '../controllers/analytics';
+import { getAnalyticsControllerInitMessenger } from '../wallet-init/messengers/analytics-controller-messenger';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
 import * as snapKeyringMetrics from './snap-keyring/metrics';
 
@@ -33,17 +36,6 @@ jest.mock('./snap-keyring/metrics', () => {
 const MockSnapKeyringMetrics = jest.mocked(snapKeyringMetrics);
 
 const MOCK_ID = '123';
-const expectedUniqueIdentifier = `signature-${MOCK_ID}`;
-
-const expectedMetametricsEventUndefinedProps = {
-  actionId: undefined,
-  currency: undefined,
-  environmentType: undefined,
-  page: undefined,
-  revenue: undefined,
-  sensitiveProperties: undefined,
-  value: undefined,
-};
 
 const appStateController = {
   state: {
@@ -66,58 +58,211 @@ messenger.registerActionHandler('PreferencesController:getState', () => ({
   currentLocale: 'en_US',
 }));
 
-messenger.registerActionHandler(
-  'NetworkController:getState',
-  jest.fn().mockReturnValue({
-    selectedNetworkClientId: 'selectedNetworkClientId',
-  }),
-);
+messenger.registerActionHandler('NetworkController:getState', () => ({
+  selectedNetworkClientId: 'selectedNetworkClientId',
+}));
 
 messenger.registerActionHandler(
   'NetworkController:getNetworkClientById',
-  jest.fn().mockReturnValue({
+  () => ({
     configuration: {
       chainId: '0x1338',
     },
   }),
 );
 
-const controllerMessenger = new Messenger({
-  namespace: 'MetaMetricsController',
-  parent: messenger,
+const analyticsControllerState = {
+  analyticsId: '00000000-0000-4000-8000-000000000001',
+  optedIn: false,
+  consentDecisionMade: false,
+};
+
+messenger.registerActionHandler('AnalyticsController:getState', () => ({
+  ...analyticsControllerState,
+}));
+
+messenger.registerActionHandler('AnalyticsController:optIn', () => {
+  analyticsControllerState.optedIn = true;
+  analyticsControllerState.consentDecisionMade = true;
 });
 
-messenger.delegate({
-  messenger: controllerMessenger,
-  actions: [
-    'PreferencesController:getState',
-    'NetworkController:getState',
-    'NetworkController:getNetworkClientById',
-  ],
-  events: [
-    'PreferencesController:stateChange',
-    'NetworkController:networkDidChange',
-  ],
+messenger.registerActionHandler('AnalyticsController:optOut', () => {
+  analyticsControllerState.optedIn = false;
+  analyticsControllerState.consentDecisionMade = true;
 });
 
-const metaMetricsController = new MetaMetricsController({
-  state: {
-    participateInMetaMetrics: null,
-    metaMetricsId: '0xabc',
-    fragments: {},
-    events: {},
+messenger.registerActionHandler(
+  'AnalyticsController:resetConsentDecision',
+  () => {
+    analyticsControllerState.optedIn = false;
+    analyticsControllerState.consentDecisionMade = false;
   },
-  messenger: controllerMessenger,
-  segment: createSegmentMock(2),
-  version: '0.0.1',
-  environment: 'test',
-  extension: {
-    runtime: {
-      id: 'testid',
-      setUninstallURL: () => undefined,
+);
+
+const trackEventSpy = jest.fn();
+messenger.registerActionHandler(
+  'AnalyticsController:trackEvent',
+  trackEventSpy,
+);
+messenger.registerActionHandler('AnalyticsController:identify', jest.fn());
+messenger.registerActionHandler('AnalyticsController:trackView', jest.fn());
+
+// Stands in for the event fragment store owned by the AnalyticsController, so
+// that the events the signature funnel emits through its fragment can be
+// asserted on alongside the events tracked directly.
+const eventFragments = new Map();
+
+function mergeFragmentContext(base, override) {
+  if (base === undefined && override === undefined) {
+    return undefined;
+  }
+  return { ...base, ...override };
+}
+
+function emitFragmentEvent(fragment, name, context) {
+  const properties = { ...(fragment.properties ?? {}) };
+  const sensitiveProperties = { ...(fragment.sensitiveProperties ?? {}) };
+
+  messenger.call(
+    'AnalyticsController:trackEvent',
+    {
+      name,
+      properties,
+      sensitiveProperties,
+      saveDataRecording: false,
+      hasProperties:
+        Object.keys(properties).length > 0 ||
+        Object.keys(sensitiveProperties).length > 0,
     },
+    context,
+  );
+}
+
+messenger.registerActionHandler(
+  'AnalyticsController:createEventFragment',
+  (options = {}) => {
+    const fragment = {
+      ...options,
+      properties: { ...(options.properties ?? {}) },
+      sensitiveProperties: { ...(options.sensitiveProperties ?? {}) },
+    };
+
+    eventFragments.set(fragment.id, fragment);
+
+    if (fragment.initialEvent) {
+      emitFragmentEvent(fragment, fragment.initialEvent, fragment.context);
+    }
+
+    return fragment;
   },
+);
+
+messenger.registerActionHandler(
+  'AnalyticsController:updateEventFragment',
+  (id, payload = {}) => {
+    const fragment = eventFragments.get(id);
+
+    if (!fragment) {
+      throw new Error(`Event fragment with id ${id} does not exist.`);
+    }
+
+    eventFragments.set(id, {
+      ...fragment,
+      properties: {
+        ...(fragment.properties ?? {}),
+        ...(payload.properties ?? {}),
+      },
+      sensitiveProperties: {
+        ...(fragment.sensitiveProperties ?? {}),
+        ...(payload.sensitiveProperties ?? {}),
+      },
+      context: mergeFragmentContext(fragment.context, payload.context),
+    });
+  },
+);
+
+messenger.registerActionHandler(
+  'AnalyticsController:finalizeEventFragment',
+  (id, { abandoned = false, context } = {}) => {
+    const fragment = eventFragments.get(id);
+
+    if (!fragment) {
+      throw new Error(`Event fragment with id ${id} does not exist.`);
+    }
+
+    const name = abandoned ? fragment.failureEvent : fragment.successEvent;
+
+    if (name) {
+      emitFragmentEvent(
+        fragment,
+        name,
+        mergeFragmentContext(fragment.context, context),
+      );
+    }
+
+    eventFragments.delete(id);
+  },
+);
+
+const analyticsController = {
+  get state() {
+    return analyticsControllerState;
+  },
+};
+
+messenger.registerActionHandler(
+  'SentryTracingService:trackTracesAfterMetricsOptIn',
+  () => undefined,
+);
+messenger.registerActionHandler(
+  'SentryTracingService:clearTracesAfterMetricsOptIn',
+  () => undefined,
+);
+
+messenger.registerActionHandler('MultichainNetworkController:getState', () => ({
+  isEvmSelected: true,
+  selectedMultichainNetworkChainId: 'eip155:1',
+}));
+
+messenger.registerActionHandler('RemoteFeatureFlagController:getState', () => ({
+  remoteFeatureFlags: {},
+}));
+
+// This is a straight copy of the actual implementation of this action.
+messenger.registerActionHandler(
+  'LegacyBackgroundApiService:setParticipateInMetaMetrics',
+  async (participateInMetaMetrics) => {
+    const { analyticsId } = messenger.call('AnalyticsController:getState');
+
+    if (participateInMetaMetrics === true) {
+      await messenger.call('AnalyticsController:optIn');
+      messenger.call('SentryTracingService:trackTracesAfterMetricsOptIn');
+      messenger.call('SentryTracingService:clearTracesAfterMetricsOptIn');
+    } else if (participateInMetaMetrics === false) {
+      messenger.call('AnalyticsController:optOut');
+      messenger.call('SentryTracingService:clearTracesAfterMetricsOptIn');
+    } else {
+      messenger.call('AnalyticsController:resetConsentDecision');
+    }
+
+    return analyticsId;
+  },
+);
+
+configureAnalytics({
+  messenger: getAnalyticsControllerInitMessenger(messenger),
 });
+
+function getTrackedEventCall(callIndex) {
+  const [trackingEvent, context] = trackEventSpy.mock.calls[callIndex];
+  return {
+    event: trackingEvent.name,
+    category: trackingEvent.properties?.category,
+    properties: trackingEvent.properties,
+    sensitiveProperties: trackingEvent.sensitiveProperties,
+    referrer: context?.referrer,
+  };
+}
 
 const createHandler = (opts) =>
   createRPCMethodTrackingMiddleware({
@@ -126,7 +271,7 @@ const createHandler = (opts) =>
     globalRateLimitTimeout: 0,
     globalRateLimitMaxAmount: 0,
     appStateController,
-    metaMetricsController,
+    analyticsController,
     getHDEntropyIndex: jest.fn(),
     ...opts,
   });
@@ -172,16 +317,13 @@ jest.mock('@metamask/controller-utils', () => {
 });
 
 describe('createRPCMethodTrackingMiddleware', () => {
-  let trackEventSpy;
-
   beforeEach(() => {
-    trackEventSpy = jest
-      .spyOn(MetaMetricsController.prototype, 'trackEvent')
-      .mockImplementation(() => undefined);
+    trackEventSpy.mockClear();
+    eventFragments.clear();
   });
-  afterEach(() => {
+  afterEach(async () => {
     jest.resetAllMocks();
-    metaMetricsController.setParticipateInMetaMetrics(null);
+    await setParticipateInMetaMetrics(null);
   });
 
   describe('before participateInMetaMetrics is set', () => {
@@ -204,8 +346,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
   });
 
   describe('participateInMetaMetrics is set to false', () => {
-    beforeEach(() => {
-      metaMetricsController.setParticipateInMetaMetrics(false);
+    beforeEach(async () => {
+      await setParticipateInMetaMetrics(false);
     });
 
     it('should not track an event for a signature request', async () => {
@@ -227,8 +369,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
   });
 
   describe('participateInMetaMetrics is set to true', () => {
-    beforeEach(() => {
-      metaMetricsController.setParticipateInMetaMetrics(true);
+    beforeEach(async () => {
+      await setParticipateInMetaMetrics(true);
     });
 
     it(`should immediately track a ${MetaMetricsEventName.SignatureRequested} event`, async () => {
@@ -252,7 +394,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       await handler(req, res, next);
 
       expect(trackEventSpy).toHaveBeenCalledTimes(1);
-      expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
+      expect(getTrackedEventCall(0)).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureRequested,
         properties: {
@@ -317,7 +459,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       await handler(req, res, next);
 
       expect(trackEventSpy).toHaveBeenCalledTimes(1);
-      expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
+      expect(getTrackedEventCall(0)).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureRequested,
         properties: {
@@ -354,12 +496,10 @@ describe('createRPCMethodTrackingMiddleware', () => {
       const handler = createHandler();
       await handler(req, res, next);
       expect(trackEventSpy).toHaveBeenCalledTimes(1);
-      expect(trackEventSpy.mock.calls[0][0]).toStrictEqual({
-        ...expectedMetametricsEventUndefinedProps,
+      expect(getTrackedEventCall(0)).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureRequested,
         properties: {
-          hd_entropy_index: undefined,
           signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
           security_alert_response: BlockaidResultType.Malicious,
           security_alert_reason: BlockaidReason.maliciousDomain,
@@ -373,7 +513,6 @@ describe('createRPCMethodTrackingMiddleware', () => {
           top_level_origin: null,
         },
         referrer: { url: 'some.dapp' },
-        uniqueIdentifier: expectedUniqueIdentifier,
       });
     });
 
@@ -393,7 +532,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       await handler(req, res, next);
       await executeMiddlewareStack();
       expect(trackEventSpy).toHaveBeenCalledTimes(2);
-      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+      expect(getTrackedEventCall(1)).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
@@ -429,7 +568,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       await handler(req, res, next);
       await executeMiddlewareStack();
       expect(trackEventSpy).toHaveBeenCalledTimes(2);
-      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+      expect(getTrackedEventCall(1)).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureRejected,
         properties: {
@@ -464,13 +603,50 @@ describe('createRPCMethodTrackingMiddleware', () => {
       await handler(req, res, next);
       await executeMiddlewareStack();
       expect(trackEventSpy).toHaveBeenCalledTimes(2);
-      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+      expect(getTrackedEventCall(1)).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureRejected,
         properties: {
           api_source: MetaMetricsRequestedThrough.EthereumProvider,
           signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
           location: 'some_location',
+        },
+        referrer: { url: 'some.dapp' },
+      });
+    });
+
+    it(`should track a ${MetaMetricsEventName.EncryptionPublicKeyRejected} event if the user rejects`, async () => {
+      const req = {
+        id: MOCK_ID,
+        method: MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY,
+        origin: 'some.dapp',
+      };
+
+      const res = {
+        error: {
+          code: errorCodes.provider.userRejectedRequest,
+        },
+      };
+      const { next, executeMiddlewareStack } = getNext();
+      const handler = createHandler();
+      await handler(req, res, next);
+      await executeMiddlewareStack();
+      expect(trackEventSpy).toHaveBeenCalledTimes(2);
+      expect(getTrackedEventCall(0)).toMatchObject({
+        category: MetaMetricsEventCategory.InpageProvider,
+        event: MetaMetricsEventName.EncryptionPublicKeyRequested,
+        properties: {
+          method: MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY,
+          api_source: MetaMetricsRequestedThrough.EthereumProvider,
+        },
+        referrer: { url: 'some.dapp' },
+      });
+      expect(getTrackedEventCall(1)).toMatchObject({
+        category: MetaMetricsEventCategory.InpageProvider,
+        event: MetaMetricsEventName.EncryptionPublicKeyRejected,
+        properties: {
+          method: MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY,
+          api_source: MetaMetricsRequestedThrough.EthereumProvider,
         },
         referrer: { url: 'some.dapp' },
       });
@@ -489,7 +665,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       await handler(req, res, next);
       await executeMiddlewareStack();
       expect(trackEventSpy).toHaveBeenCalledTimes(2);
-      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+      expect(getTrackedEventCall(1)).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.PermissionsApproved,
         properties: {
@@ -592,8 +768,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
           const expectedNumberOfCalls = 2 * eventsTrackedPerRequest;
           expect(trackEventSpy).toHaveBeenCalledTimes(expectedNumberOfCalls);
-          trackEventSpy.mock.calls.forEach((call) => {
-            expect(call[0].properties.method).toBe(method);
+          trackEventSpy.mock.calls.forEach((_, index) => {
+            expect(getTrackedEventCall(index).properties.method).toBe(method);
           });
         },
       );
@@ -640,8 +816,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
           const expectedNumberOfCalls = 2 * eventsTrackedPerRequest;
           expect(trackEventSpy).toHaveBeenCalledTimes(expectedNumberOfCalls);
-          trackEventSpy.mock.calls.forEach((call) => {
-            expect(call[0].properties.method).toBe(method);
+          trackEventSpy.mock.calls.forEach((_, index) => {
+            expect(getTrackedEventCall(index).properties.method).toBe(method);
           });
         },
       );
@@ -677,8 +853,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
         }
 
         expect(trackEventSpy).toHaveBeenCalledTimes(3);
-        trackEventSpy.mock.calls.forEach((call) => {
-          expect(call[0].properties.method).toBe(
+        trackEventSpy.mock.calls.forEach((_, index) => {
+          expect(getTrackedEventCall(index).properties.method).toBe(
             'some_method_rate_limited_by_sample',
           );
         });
@@ -702,7 +878,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
       expect(trackEventSpy).toHaveBeenCalledTimes(2);
 
-      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+      expect(getTrackedEventCall(1)).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
@@ -733,7 +909,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
       expect(trackEventSpy).toHaveBeenCalledTimes(2);
 
-      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+      expect(getTrackedEventCall(1)).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
@@ -765,7 +941,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
       expect(trackEventSpy).toHaveBeenCalledTimes(2);
 
-      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+      expect(getTrackedEventCall(1)).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
@@ -794,7 +970,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
       expect(trackEventSpy).toHaveBeenCalledTimes(2);
 
-      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+      expect(getTrackedEventCall(1)).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
@@ -823,7 +999,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
       expect(trackEventSpy).toHaveBeenCalledTimes(2);
 
-      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+      expect(getTrackedEventCall(1)).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
@@ -849,7 +1025,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       await handler(req, res, next);
       await executeMiddlewareStack();
       expect(trackEventSpy).toHaveBeenCalledTimes(2);
-      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+      expect(getTrackedEventCall(1)).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
@@ -881,7 +1057,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       await executeMiddlewareStack();
 
       expect(trackEventSpy).toHaveBeenCalledTimes(2);
-      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+      expect(getTrackedEventCall(1)).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
@@ -910,7 +1086,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await handler(req, res, next);
 
         expect(trackEventSpy).toHaveBeenCalledTimes(1);
-        expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
+        expect(getTrackedEventCall(0)).toMatchObject({
           category: MetaMetricsEventCategory.InpageProvider,
           event: MetaMetricsEventName.SignatureRequested,
           properties: {
@@ -1023,7 +1199,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await handler(req, res, next);
 
         expect(trackEventSpy).toHaveBeenCalledTimes(1);
-        expect(trackEventSpy.mock.calls[0][0].properties.params).toStrictEqual(
+        expect(getTrackedEventCall(0).properties.params).toStrictEqual(
           expected,
         );
       },
@@ -1103,12 +1279,98 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await handler(req, res, next);
 
         expect(trackEventSpy).toHaveBeenCalledTimes(1);
-        expect(trackEventSpy.mock.calls[0][0].event).toBe(event);
-        expect(trackEventSpy.mock.calls[0][0].properties).toStrictEqual(
-          properties,
-        );
+        expect(getTrackedEventCall(0).event).toBe(event);
+        expect(getTrackedEventCall(0).properties).toMatchObject(properties);
       },
     );
+    describe('wallet_pay', () => {
+      const WALLET_PAY_PARAMS = [
+        { type: 'perpsDeposit', from: '0x1', amount: '10' },
+      ];
+
+      const runWalletPay = async ({ params = WALLET_PAY_PARAMS, error }) => {
+        const req = {
+          id: MOCK_ID,
+          method: MESSAGE_TYPE.WALLET_PAY,
+          origin: 'some.dapp',
+          params,
+        };
+        const res = { error };
+        const { next, executeMiddlewareStack } = getNext();
+        // A sample rate of 0 proves wallet_pay is never sampled out.
+        const handler = createHandler({ rateLimitSamplePercent: 0 });
+
+        await handler(req, res, next);
+        await executeMiddlewareStack();
+      };
+
+      it('tracks the request with the dapp, type and amount', async () => {
+        await runWalletPay({});
+
+        expect(getTrackedEventCall(0)).toMatchObject({
+          event: MetaMetricsEventName.WalletPayRequested,
+          properties: {
+            method: MESSAGE_TYPE.WALLET_PAY,
+            transaction_type: 'perpsDeposit',
+            has_amount: true,
+          },
+          referrer: { url: 'some.dapp' },
+        });
+        expect(getTrackedEventCall(0).properties.status).toBeUndefined();
+      });
+
+      it('reports a request without an amount', async () => {
+        await runWalletPay({
+          params: [{ type: 'perpsWithdraw', from: '0x1' }],
+        });
+
+        expect(getTrackedEventCall(0).properties).toMatchObject({
+          transaction_type: 'perpsWithdraw',
+          has_amount: false,
+        });
+      });
+
+      it.each([
+        ['confirmed', undefined],
+        ['rejected', { code: errorCodes.provider.userRejectedRequest }],
+        ['blocked_by_flags', { code: errorCodes.rpc.methodNotFound }],
+        ['invalid', { code: errorCodes.rpc.invalidParams }],
+        ['unauthorized', { code: errorCodes.provider.unauthorized }],
+        ['ineligible', { code: errorCodes.rpc.methodNotSupported }],
+        ['failed', { code: errorCodes.rpc.internal }],
+        ['failed', { code: -32000 }],
+      ])('tracks a %s status', async (status, error) => {
+        await runWalletPay({ error });
+
+        expect(trackEventSpy).toHaveBeenCalledTimes(2);
+        expect(getTrackedEventCall(1)).toMatchObject({
+          event: MetaMetricsEventName.WalletPayCompleted,
+          properties: {
+            method: MESSAGE_TYPE.WALLET_PAY,
+            transaction_type: 'perpsDeposit',
+            has_amount: true,
+            status,
+          },
+          referrer: { url: 'some.dapp' },
+        });
+      });
+
+      it('omits the type when the params are malformed', async () => {
+        await runWalletPay({
+          params: ['not-an-object'],
+          error: { code: errorCodes.rpc.invalidParams },
+        });
+
+        expect(getTrackedEventCall(1).properties).toMatchObject({
+          has_amount: false,
+          status: 'invalid',
+        });
+        expect(
+          getTrackedEventCall(1).properties.transaction_type,
+        ).toBeUndefined();
+      });
+    });
+
     describe('iframe detection properties', () => {
       it('should include is_iframe=false when frameId is 0 (top-level frame)', async () => {
         const req = {
@@ -1125,7 +1387,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await handler(req, res, next);
 
         expect(trackEventSpy).toHaveBeenCalledTimes(1);
-        expect(trackEventSpy.mock.calls[0][0].properties).toMatchObject({
+        expect(getTrackedEventCall(0).properties).toMatchObject({
           is_iframe: false,
           is_cross_origin_iframe: false,
           iframe_origin: null,
@@ -1148,7 +1410,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await handler(req, res, next);
 
         expect(trackEventSpy).toHaveBeenCalledTimes(1);
-        expect(trackEventSpy.mock.calls[0][0].properties).toMatchObject({
+        expect(getTrackedEventCall(0).properties).toMatchObject({
           is_iframe: true,
           is_cross_origin_iframe: true,
           iframe_origin: 'https://iframe.malicious.com',
@@ -1171,7 +1433,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await handler(req, res, next);
 
         expect(trackEventSpy).toHaveBeenCalledTimes(1);
-        expect(trackEventSpy.mock.calls[0][0].properties).toMatchObject({
+        expect(getTrackedEventCall(0).properties).toMatchObject({
           is_iframe: true,
           is_cross_origin_iframe: false,
           iframe_origin: null,
@@ -1192,7 +1454,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await handler(req, res, next);
 
         expect(trackEventSpy).toHaveBeenCalledTimes(1);
-        expect(trackEventSpy.mock.calls[0][0].properties).toMatchObject({
+        expect(getTrackedEventCall(0).properties).toMatchObject({
           is_iframe: false,
           is_cross_origin_iframe: false,
           iframe_origin: null,
@@ -1224,7 +1486,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await executeMiddlewareStack();
 
         expect(trackEventSpy).toHaveBeenCalledTimes(2);
-        expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
+        expect(getTrackedEventCall(0)).toMatchObject({
           event: MetaMetricsEventName.PermissionsRequested,
           properties: {
             is_iframe: true,
@@ -1232,7 +1494,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
             top_level_origin: 'https://top-level.dapp.com',
           },
         });
-        expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+        expect(getTrackedEventCall(1)).toMatchObject({
           event: MetaMetricsEventName.PermissionsApproved,
           properties: {
             is_iframe: true,
@@ -1264,7 +1526,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await executeMiddlewareStack();
 
         expect(trackEventSpy).toHaveBeenCalledTimes(2);
-        expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+        expect(getTrackedEventCall(1)).toMatchObject({
           event: MetaMetricsEventName.PermissionsRejected,
           properties: {
             is_iframe: true,
@@ -1289,7 +1551,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await handler(req, res, next);
 
         expect(trackEventSpy).toHaveBeenCalledTimes(1);
-        expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
+        expect(getTrackedEventCall(0)).toMatchObject({
           event: MetaMetricsEventName.SignatureRequested,
           properties: {
             is_iframe: true,
@@ -1301,8 +1563,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
     });
 
     describe('Multichain API requests', () => {
-      beforeEach(() => {
-        metaMetricsController.setParticipateInMetaMetrics(true);
+      beforeEach(async () => {
+        await setParticipateInMetaMetrics(true);
       });
 
       it('should track `wallet_createSession` events with multichain category and properties', async () => {
@@ -1334,7 +1596,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await handler(req, res, next);
         expect(trackEventSpy).toHaveBeenCalledTimes(1);
 
-        expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
+        expect(getTrackedEventCall(0)).toMatchObject({
           category: MetaMetricsEventCategory.MultichainApi,
           event: MetaMetricsEventName.PermissionsRequested,
           properties: {
@@ -1351,7 +1613,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await executeMiddlewareStack();
         expect(trackEventSpy).toHaveBeenCalledTimes(2);
 
-        expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+        expect(getTrackedEventCall(1)).toMatchObject({
           category: MetaMetricsEventCategory.MultichainApi,
           event: MetaMetricsEventName.PermissionsApproved,
           properties: {
@@ -1363,7 +1625,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         });
       });
 
-      it('should track wallet_invokeMethod events with multichain_api category, api_source, and chain_id_caip properties', async () => {
+      it('tracks nested EIP-712 properties on requested and approved wallet_invokeMethod events', async () => {
         const req = {
           id: MOCK_ID,
           method: MESSAGE_TYPE.WALLET_INVOKE_METHOD,
@@ -1371,7 +1633,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           params: {
             request: {
               method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-              params: [],
+              params: [undefined, permitSignatureMsg.msgParams.data],
             },
             scope: 'eip155:10',
           },
@@ -1384,7 +1646,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await executeMiddlewareStack();
 
         expect(trackEventSpy).toHaveBeenCalledTimes(2);
-        expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
+        expect(getTrackedEventCall(0)).toMatchObject({
           category: MetaMetricsEventCategory.MultichainApi,
           event: MetaMetricsEventName.SignatureRequested,
           properties: {
@@ -1392,23 +1654,39 @@ describe('createRPCMethodTrackingMiddleware', () => {
             api_source: MetaMetricsRequestedThrough.MultichainApi,
             chain_id_caip: 'eip155:10',
             address_alert_response: ResultType.Loading,
+            eip712_primary_type: 'Permit',
+            ui_customizations: [MetaMetricsEventUiCustomization.Permit],
+          },
+          sensitiveProperties: {
+            eip712_verifyingContract:
+              '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+            eip712_domain_version: '1',
+            eip712_domain_name: 'MyToken',
           },
           referrer: { url: 'multichain.dapp' },
         });
 
-        expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+        expect(getTrackedEventCall(1)).toMatchObject({
           category: MetaMetricsEventCategory.MultichainApi,
           event: MetaMetricsEventName.SignatureApproved,
           properties: {
             signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
             api_source: MetaMetricsRequestedThrough.MultichainApi,
             chain_id_caip: 'eip155:10',
+            eip712_primary_type: 'Permit',
+            ui_customizations: [MetaMetricsEventUiCustomization.Permit],
+          },
+          sensitiveProperties: {
+            eip712_verifyingContract:
+              '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+            eip712_domain_version: '1',
+            eip712_domain_name: 'MyToken',
           },
           referrer: { url: 'multichain.dapp' },
         });
       });
 
-      it('should track wallet_invokeMethod rejections with multichain_api category, api_source, and chain_id_caip properties', async () => {
+      it('tracks nested EIP-712 properties on requested and rejected wallet_invokeMethod events', async () => {
         const req = {
           id: MOCK_ID,
           method: MESSAGE_TYPE.WALLET_INVOKE_METHOD,
@@ -1416,7 +1694,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           params: {
             request: {
               method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-              params: [],
+              params: [undefined, permitSignatureMsg.msgParams.data],
             },
             scope: 'eip155:137',
           },
@@ -1434,7 +1712,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await executeMiddlewareStack();
 
         expect(trackEventSpy).toHaveBeenCalledTimes(2);
-        expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
+        expect(getTrackedEventCall(0)).toMatchObject({
           category: MetaMetricsEventCategory.MultichainApi,
           event: MetaMetricsEventName.SignatureRequested,
           properties: {
@@ -1442,17 +1720,33 @@ describe('createRPCMethodTrackingMiddleware', () => {
             api_source: MetaMetricsRequestedThrough.MultichainApi,
             chain_id_caip: 'eip155:137',
             address_alert_response: ResultType.Loading,
+            eip712_primary_type: 'Permit',
+            ui_customizations: [MetaMetricsEventUiCustomization.Permit],
+          },
+          sensitiveProperties: {
+            eip712_verifyingContract:
+              '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+            eip712_domain_version: '1',
+            eip712_domain_name: 'MyToken',
           },
           referrer: { url: 'multichain.dapp' },
         });
 
-        expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+        expect(getTrackedEventCall(1)).toMatchObject({
           category: MetaMetricsEventCategory.MultichainApi,
           event: MetaMetricsEventName.SignatureRejected,
           properties: {
             signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
             api_source: MetaMetricsRequestedThrough.MultichainApi,
             chain_id_caip: 'eip155:137',
+            eip712_primary_type: 'Permit',
+            ui_customizations: [MetaMetricsEventUiCustomization.Permit],
+          },
+          sensitiveProperties: {
+            eip712_verifyingContract:
+              '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+            eip712_domain_version: '1',
+            eip712_domain_name: 'MyToken',
           },
           referrer: { url: 'multichain.dapp' },
         });

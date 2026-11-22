@@ -8,10 +8,12 @@ import { createTestProviderTools } from '../../test/stub/provider';
 import {
   buildApproveTransactionData,
   buildIncreaseAllowanceTransactionData,
+  buildIncreaseApprovalTransactionData,
   buildPermit2ApproveTransactionData,
 } from '../../test/data/confirmations/token-approve';
 import { buildSetApproveForAllTransactionData } from '../../test/data/confirmations/set-approval-for-all';
 import {
+  determineTransactionAssetType,
   determineTransactionType,
   getMarketFeeFromEstimates,
   getTransactionDataRecipient,
@@ -63,6 +65,21 @@ describe('Transaction.utils', function () {
       expect(result.args.spender).toBe(ADDRESS_2_MOCK);
       expect(result.args.expiration).toBe(EXPIRATION_MOCK);
       expect(result.args.amount.toString()).toBe(AMOUNT_MOCK.toString());
+    });
+
+    it('decodes legacy increaseApproval function with no external fallback', () => {
+      const data = buildIncreaseApprovalTransactionData(
+        ADDRESS_MOCK,
+        AMOUNT_MOCK,
+      );
+
+      expect(data.startsWith('0xd73dd623')).toBe(true);
+
+      const result = parseStandardTokenTransactionData(data);
+
+      expect(result.name).toBe('increaseApproval');
+      expect(result.args._spender).toBe(ADDRESS_MOCK);
+      expect(result.args._addedValue.toString()).toBe(AMOUNT_MOCK.toString());
     });
   });
 
@@ -627,6 +644,57 @@ describe('Transaction.utils', function () {
     });
   });
 
+  describe('determineTransactionAssetType', () => {
+    it('looks up the calldata token for a Permit2 approve', async () => {
+      const getTokenStandardAndDetails = jest
+        .fn()
+        .mockResolvedValue({ standard: 'ERC20' });
+
+      const result = await determineTransactionAssetType(
+        {
+          type: TransactionType.tokenMethodApprove,
+          txParams: {
+            to: '0x000000000022D473030F116dDEE9F6B43aC78BA3',
+            data: buildPermit2ApproveTransactionData(
+              ADDRESS_MOCK,
+              ADDRESS_2_MOCK,
+              AMOUNT_MOCK,
+              EXPIRATION_MOCK,
+            ),
+          },
+        },
+        undefined,
+        getTokenStandardAndDetails,
+      );
+
+      expect(getTokenStandardAndDetails).toHaveBeenCalledWith(ADDRESS_MOCK);
+      expect(result).toStrictEqual({
+        assetType: 'TOKEN',
+        tokenStandard: 'ERC20',
+      });
+    });
+
+    it('looks up txParams.to for an ERC-20 approve', async () => {
+      const getTokenStandardAndDetails = jest
+        .fn()
+        .mockResolvedValue({ standard: 'ERC20' });
+
+      await determineTransactionAssetType(
+        {
+          type: TransactionType.tokenMethodApprove,
+          txParams: {
+            to: ADDRESS_MOCK,
+            data: buildApproveTransactionData(ADDRESS_2_MOCK, AMOUNT_MOCK),
+          },
+        },
+        undefined,
+        getTokenStandardAndDetails,
+      );
+
+      expect(getTokenStandardAndDetails).toHaveBeenCalledWith(ADDRESS_MOCK);
+    });
+  });
+
   describe('hasTransactionData', () => {
     it.each([
       ['has prefix', '0x1234'],
@@ -673,6 +741,21 @@ describe('Transaction.utils', function () {
         isApproveAll: false,
         isRevokeAll: false,
         name: 'increaseAllowance',
+        spender: ADDRESS_MOCK,
+        tokenAddress: undefined,
+      });
+    });
+
+    it('returns parsed data with spender if legacy increaseApproval', () => {
+      expect(
+        parseApprovalTransactionData(
+          buildIncreaseApprovalTransactionData(ADDRESS_MOCK, AMOUNT_MOCK),
+        ),
+      ).toStrictEqual({
+        amountOrTokenId: undefined,
+        isApproveAll: false,
+        isRevokeAll: false,
+        name: 'increaseApproval',
         spender: ADDRESS_MOCK,
         tokenAddress: undefined,
       });

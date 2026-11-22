@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Jums reikia pasirinkti paskyrą!"
   },
-  "addAcquiredTokens": {
-    "message": "Pridėkite žetonus, kuriuos gavote naudodamiesi „MetaMask“"
-  },
   "addAlias": {
     "message": "Pridėti alternatyvųjį vardą"
   },
@@ -83,9 +80,6 @@
   },
   "back": {
     "message": "Grįžti"
-  },
-  "backupApprovalInfo": {
-    "message": "Šis slaptas kodas reikalingas norint atkurti jūsų slaptažodinę, jeigu pamestumėte savo įrenginį, pamirštumėte savo slaptažodį, iš naujo įdiegtumėte „MetaMask“, taip pat norint pasiekti slaptažodinę iš kito įrenginio."
   },
   "backupApprovalNotice": {
     "message": "Pasidarykite atsarginę savo slapto atkūrimo kodo kopiją, kad jūsų slaptažodinė ir fondai būtų saugūs."
@@ -181,14 +175,8 @@
   "custom": {
     "message": "Išplėstiniai"
   },
-  "customToken": {
-    "message": "Pritaikytas žetonas"
-  },
   "decimal": {
     "message": "Skaičiai po kablelio"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Turi būti bent 0 skaitmenų po kablelio, bet ne daugiau kaip 36."
   },
   "delete": {
     "message": "Ištrinti"
@@ -198,9 +186,6 @@
   },
   "done": {
     "message": "Atlikta"
-  },
-  "downloadGoogleChrome": {
-    "message": "Atsiunčiama „Google Chrome“"
   },
   "downloadStateLogs": {
     "message": "Atsisiųsti būsenos žurnalus"
@@ -226,10 +211,6 @@
   "fast": {
     "message": "Greitas"
   },
-  "fileImportFail": {
-    "message": "Failo importavimas neveikia? Spustelėkite čia!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "Pamiršti šį įrenginį"
   },
@@ -238,9 +219,6 @@
   },
   "gasLimit": {
     "message": "Dujų apribojimas"
-  },
-  "gasLimitTooLow": {
-    "message": "Dujų apribojimas turi būti bent 21000"
   },
   "gasUsed": {
     "message": "Sunaudotos dujos"
@@ -259,9 +237,6 @@
   },
   "hardwareWallets": {
     "message": "Susieti aparatinės įrangos slaptažodinę"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Pasirinkite aparatinės įrangos slaptažodinę, kurią pageidaujate naudoti su „MetaTask“"
   },
   "here": {
     "message": "čia",
@@ -354,9 +329,6 @@
   "metamaskVersion": {
     "message": "„MetaMask“ versija"
   },
-  "mustSelectOne": {
-    "message": "Turite pasirinkti bent 1 žetoną."
-  },
   "needImportFile": {
     "message": "Turite pasirinkti failą, kurį pageidaujate importuoti.",
     "description": "User is important an account and needs to add a file to continue"
@@ -366,9 +338,6 @@
   },
   "networks": {
     "message": "Tinklai"
-  },
-  "nevermind": {
-    "message": "Nekreipti dėmesio"
   },
   "newAccountNumberName": {
     "message": "Paskyra $1",
@@ -388,9 +357,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Internetinė vaizdo kamera nerasta"
-  },
-  "notEnoughGas": {
-    "message": "Nepakanka dujų"
   },
   "ofTextNofM": {
     "message": "nuo"
@@ -422,10 +388,6 @@
   "passwordsDontMatch": {
     "message": "Slaptažodžiai nesutampa"
   },
-  "pastePrivateKey": {
-    "message": "Čia įklijuokite asmeninio rakto eilutę:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "laukiama patvirtinimo"
   },
@@ -441,9 +403,6 @@
   "privateKey": {
     "message": "Asmeninis raktas",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Dėmesio. Niekada neatskleiskite šio rakto kitiems. Bet kuris jūsų asmeninius raktus turintis asmuo gali pavogti bet kokį jūsų paskyroje laikomą turtą."
   },
   "privateNetwork": {
     "message": "Privatus tinklas"
@@ -529,9 +488,6 @@
   },
   "sign": {
     "message": "Prisijunkite"
-  },
-  "signatureRequest": {
-    "message": "Parašo užklausa"
   },
   "signed": {
     "message": "Pasirašyta"
@@ -619,9 +575,6 @@
   },
   "urlErrorMsg": {
     "message": "URI reikia atitinkamo HTTP/HTTPS priešdėlio."
-  },
-  "usedByClients": {
-    "message": "Naudojama daugelio skirtingų klientų"
   },
   "visitWebSite": {
     "message": "Apsilankykite mūsų svetainėje"

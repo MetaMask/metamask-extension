@@ -18,7 +18,46 @@ import {
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import AwaitingSwap from '.';
 
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
+
 const middleware = [thunk];
+
+const createStoreState = () => {
+  const base = createSwapsMockStore();
+  return {
+    ...base,
+    metamask: {
+      ...base.metamask,
+      selectedCurrency: 'usd',
+      assetsInfo: {
+        'eip155:1/slip44:60': {
+          type: 'native',
+          decimals: 18,
+          symbol: 'ETH',
+        },
+      },
+      assetsPrice: {
+        'eip155:1/slip44:60': {
+          assetPriceType: 'fungible',
+          price: 1,
+          usdPrice: 1,
+          lastUpdated: Date.now(),
+        },
+      },
+    },
+  };
+};
 
 const createProps = (customProps = {}) => {
   return {
@@ -41,7 +80,7 @@ describe('AwaitingSwap', () => {
   process.env.METAMASK_BUILD_TYPE = 'main';
 
   it('renders the component with initial props', () => {
-    const store = configureMockStore()(createSwapsMockStore());
+    const store = configureMockStore()(createStoreState());
     const { getByText, getByTestId } = renderWithProvider(
       <AwaitingSwap {...createProps()} />,
       store,
@@ -57,7 +96,7 @@ describe('AwaitingSwap', () => {
   });
 
   it('renders the component with for completed swap', () => {
-    const store = configureMockStore()(createSwapsMockStore());
+    const store = configureMockStore()(createStoreState());
     const { getByText } = renderWithProvider(
       <AwaitingSwap {...createProps({ swapComplete: true })} />,
       store,
@@ -77,7 +116,7 @@ describe('AwaitingSwap', () => {
   });
 
   it('renders the component with the "OFFLINE_FOR_MAINTENANCE" error', () => {
-    const store = configureMockStore(middleware)(createSwapsMockStore());
+    const store = configureMockStore(middleware)(createStoreState());
     const props = createProps({
       errorKey: OFFLINE_FOR_MAINTENANCE,
     });
@@ -95,7 +134,7 @@ describe('AwaitingSwap', () => {
   });
 
   it('renders the component with the "SWAP_FAILED_ERROR" error', () => {
-    const store = configureMockStore(middleware)(createSwapsMockStore());
+    const store = configureMockStore(middleware)(createStoreState());
     const props = createProps({
       errorKey: SWAP_FAILED_ERROR,
     });
@@ -106,12 +145,12 @@ describe('AwaitingSwap', () => {
     expect(
       getByText(messages.swapFailedErrorTitle.message),
     ).toBeInTheDocument();
-    fireEvent.click(getByText('support.metamask.io'));
+    fireEvent.click(getByText('support.metamask.com'));
     expect(getByText(messages.tryAgain.message)).toBeInTheDocument();
   });
 
   it('renders the component with the "QUOTES_EXPIRED_ERROR" error', () => {
-    const store = configureMockStore(middleware)(createSwapsMockStore());
+    const store = configureMockStore(middleware)(createStoreState());
     const props = createProps({
       errorKey: QUOTES_EXPIRED_ERROR,
     });
@@ -129,7 +168,7 @@ describe('AwaitingSwap', () => {
   });
 
   it('renders the component with the "ERROR_FETCHING_QUOTES" error', () => {
-    const store = configureMockStore(middleware)(createSwapsMockStore());
+    const store = configureMockStore(middleware)(createStoreState());
     const props = createProps({
       errorKey: ERROR_FETCHING_QUOTES,
     });
@@ -147,7 +186,7 @@ describe('AwaitingSwap', () => {
   });
 
   it('renders the component with the "QUOTES_NOT_AVAILABLE_ERROR" error', () => {
-    const store = configureMockStore(middleware)(createSwapsMockStore());
+    const store = configureMockStore(middleware)(createStoreState());
     const props = createProps({
       errorKey: QUOTES_NOT_AVAILABLE_ERROR,
     });
@@ -165,7 +204,7 @@ describe('AwaitingSwap', () => {
   });
 
   it('renders the component with the "CONTRACT_DATA_DISABLED_ERROR" error', () => {
-    const store = configureMockStore(middleware)(createSwapsMockStore());
+    const store = configureMockStore(middleware)(createStoreState());
     const props = createProps({
       errorKey: CONTRACT_DATA_DISABLED_ERROR,
     });

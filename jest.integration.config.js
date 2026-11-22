@@ -1,4 +1,5 @@
 const consoleReporterRules = require('./test/jest/console-reporter-rules-integration');
+const { ESM_DEPENDENCIES_TO_TRANSPILE } = require('./test/jest/constants');
 
 module.exports = {
   collectCoverageFrom: [
@@ -9,7 +10,13 @@ module.exports = {
   coveragePathIgnorePatterns: ['.stories.*', '.snap', '.test.(js|ts|tsx)'],
   coverageReporters: ['html', 'json'],
   maxWorkers: '50%',
-  moduleNameMapper: {},
+  moduleNameMapper: {
+    // Stub @metamask/perps-controller so integration suites can resolve it
+    // without transforming its ESM-only transitive deps (@nktkas/hyperliquid →
+    // @noble/hashes). Mirrors the unit jest config mapping.
+    '^@metamask/perps-controller$':
+      '<rootDir>/test/mocks/metamask-perps-controller.js',
+  },
   // The path to the Prettier executable used to format snapshots
   // Jest doesn't support Prettier 3 yet, so we use Prettier 2
   prettierPath: require.resolve('prettier-2'),
@@ -68,7 +75,9 @@ module.exports = {
     '^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)':
       'jest-preview/transforms/file',
   },
-  transformIgnorePatterns: ['/node_modules/'],
+  transformIgnorePatterns: [
+    `/node_modules/(?!(${ESM_DEPENDENCIES_TO_TRANSPILE.join('|')})/)`,
+  ],
   // Ensure console output is buffered (not streamed) so reporters can access testResult.console
   // Without this, Jest uses verbose mode for single-file runs which bypasses buffering
   verbose: false,

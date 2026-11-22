@@ -1,12 +1,65 @@
-import { ENVIRONMENT } from '../../development/build/constants';
+import { ENVIRONMENT } from '../constants/build';
 import {
   getIsPerpsIncludedInBuild,
   getIsPasskeyFeatureEnabled,
-  getIsAssetsUnifiedStateIncludedInBuild,
   getIsNewHardwareWalletOnboardingEnabled,
+  getIsSeedlessOnboardingFeatureEnabled,
+  getIsBasicFunctionalityConsolidationEnabledInBuild,
+  getIsMpcMoneyKeyringIncludedInBuild,
+  isInE2eTest,
   isProduction,
   isGatorPermissionsRevocationFeatureEnabled,
 } from './environment';
+
+describe('isInE2eTest', () => {
+  let originalInTest: string | undefined;
+  let originalJestWorkerId: string | undefined;
+
+  beforeAll(() => {
+    originalInTest = process.env.IN_TEST;
+    originalJestWorkerId = process.env.JEST_WORKER_ID;
+  });
+
+  afterAll(() => {
+    if (originalInTest === undefined) {
+      delete process.env.IN_TEST;
+    } else {
+      process.env.IN_TEST = originalInTest;
+    }
+
+    if (originalJestWorkerId === undefined) {
+      delete process.env.JEST_WORKER_ID;
+    } else {
+      process.env.JEST_WORKER_ID = originalJestWorkerId;
+    }
+  });
+
+  (
+    [
+      ['test extension build', 'undefined', true],
+      ['test build without a worker ID', undefined, false],
+      ['Jest worker', '1', false],
+    ] as const
+  ).forEach(([_description, jestWorkerId, expected]) => {
+    it(`returns ${expected} for ${_description}`, () => {
+      process.env.IN_TEST = 'true';
+      if (jestWorkerId === undefined) {
+        delete process.env.JEST_WORKER_ID;
+      } else {
+        process.env.JEST_WORKER_ID = jestWorkerId;
+      }
+
+      expect(isInE2eTest()).toBe(expected);
+    });
+  });
+
+  it('returns false outside a test build', () => {
+    delete process.env.IN_TEST;
+    process.env.JEST_WORKER_ID = 'undefined';
+
+    expect(isInE2eTest()).toBe(false);
+  });
+});
 
 describe('isProduction', () => {
   let originalMetaMaskEnvironment: string | undefined;
@@ -35,6 +88,33 @@ describe('isProduction', () => {
   });
 });
 
+describe('getIsSeedlessOnboardingFeatureEnabled', () => {
+  let originalValue: string | undefined;
+
+  beforeAll(() => {
+    originalValue = process.env.SEEDLESS_ONBOARDING_ENABLED;
+  });
+
+  afterAll(() => {
+    process.env.SEEDLESS_ONBOARDING_ENABLED = originalValue;
+  });
+
+  it('returns true when SEEDLESS_ONBOARDING_ENABLED is "true"', () => {
+    process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
+    expect(getIsSeedlessOnboardingFeatureEnabled()).toBe(true);
+  });
+
+  it('returns false when SEEDLESS_ONBOARDING_ENABLED is "false"', () => {
+    process.env.SEEDLESS_ONBOARDING_ENABLED = 'false';
+    expect(getIsSeedlessOnboardingFeatureEnabled()).toBe(false);
+  });
+
+  it('returns false when SEEDLESS_ONBOARDING_ENABLED is undefined', () => {
+    delete process.env.SEEDLESS_ONBOARDING_ENABLED;
+    expect(getIsSeedlessOnboardingFeatureEnabled()).toBe(false);
+  });
+});
+
 describe('isGatorPermissionsRevocationFeatureEnabled', () => {
   it('should return true when GATOR_PERMISSIONS_REVOCATION_ENABLED is "true"', () => {
     process.env.GATOR_PERMISSIONS_REVOCATION_ENABLED = 'true';
@@ -52,30 +132,30 @@ describe('isGatorPermissionsRevocationFeatureEnabled', () => {
   });
 });
 
-describe('getIsAssetsUnifiedStateIncludedInBuild', () => {
+describe('getIsBasicFunctionalityConsolidationEnabledInBuild', () => {
   let originalValue: string | undefined;
 
   beforeAll(() => {
-    originalValue = process.env.ASSETS_UNIFIED_STATE_ENABLED;
+    originalValue = process.env.BFT_CONSOLIDATION_ENABLED;
   });
 
   afterAll(() => {
-    process.env.ASSETS_UNIFIED_STATE_ENABLED = originalValue;
+    process.env.BFT_CONSOLIDATION_ENABLED = originalValue;
   });
 
-  it('returns true when ASSETS_UNIFIED_STATE_ENABLED is "true"', () => {
-    process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';
-    expect(getIsAssetsUnifiedStateIncludedInBuild()).toBe(true);
+  it('returns true when BFT_CONSOLIDATION_ENABLED is "true"', () => {
+    process.env.BFT_CONSOLIDATION_ENABLED = 'true';
+    expect(getIsBasicFunctionalityConsolidationEnabledInBuild()).toBe(true);
   });
 
-  it('returns false when ASSETS_UNIFIED_STATE_ENABLED is "false"', () => {
-    process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
-    expect(getIsAssetsUnifiedStateIncludedInBuild()).toBe(false);
+  it('returns false when BFT_CONSOLIDATION_ENABLED is "false"', () => {
+    process.env.BFT_CONSOLIDATION_ENABLED = 'false';
+    expect(getIsBasicFunctionalityConsolidationEnabledInBuild()).toBe(false);
   });
 
-  it('returns false when ASSETS_UNIFIED_STATE_ENABLED is undefined', () => {
-    delete process.env.ASSETS_UNIFIED_STATE_ENABLED;
-    expect(getIsAssetsUnifiedStateIncludedInBuild()).toBe(false);
+  it('returns false when BFT_CONSOLIDATION_ENABLED is undefined', () => {
+    delete process.env.BFT_CONSOLIDATION_ENABLED;
+    expect(getIsBasicFunctionalityConsolidationEnabledInBuild()).toBe(false);
   });
 });
 
@@ -130,6 +210,33 @@ describe('getIsNewHardwareWalletOnboardingEnabled', () => {
   it('returns false when NEW_HARDWARE_WALLET_ONBOARDING is undefined', () => {
     delete process.env.NEW_HARDWARE_WALLET_ONBOARDING;
     expect(getIsNewHardwareWalletOnboardingEnabled()).toBe(false);
+  });
+});
+
+describe('getIsMpcMoneyKeyringIncludedInBuild', () => {
+  let originalValue: string | undefined;
+
+  beforeAll(() => {
+    originalValue = process.env.MM_MONEY_MPC_KEYRING_ENABLED;
+  });
+
+  afterAll(() => {
+    process.env.MM_MONEY_MPC_KEYRING_ENABLED = originalValue;
+  });
+
+  it('returns true when MM_MONEY_MPC_KEYRING_ENABLED is "true"', () => {
+    process.env.MM_MONEY_MPC_KEYRING_ENABLED = 'true';
+    expect(getIsMpcMoneyKeyringIncludedInBuild()).toBe(true);
+  });
+
+  it('returns false when MM_MONEY_MPC_KEYRING_ENABLED is "false"', () => {
+    process.env.MM_MONEY_MPC_KEYRING_ENABLED = 'false';
+    expect(getIsMpcMoneyKeyringIncludedInBuild()).toBe(false);
+  });
+
+  it('returns false when MM_MONEY_MPC_KEYRING_ENABLED is undefined', () => {
+    delete process.env.MM_MONEY_MPC_KEYRING_ENABLED;
+    expect(getIsMpcMoneyKeyringIncludedInBuild()).toBe(false);
   });
 });
 

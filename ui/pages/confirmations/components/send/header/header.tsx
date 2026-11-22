@@ -37,7 +37,7 @@ export const Header = () => {
         className="send-header__previous-btn"
         iconName={IconName.ArrowLeft}
         onClick={handleBack}
-        size={ButtonIconSize.Sm}
+        size={ButtonIconSize.Md}
       />
       <Text variant={TextVariant.headingSm}>{t('send')}</Text>
     </Box>

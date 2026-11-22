@@ -20,6 +20,19 @@ import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { MultichainTriggeredAddressRowsList } from './multichain-triggered-address-rows-list';
 
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockStore = configureStore([]);
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
@@ -66,7 +79,7 @@ jest.mock('../../../hooks/useCopyToClipboard', () => ({
 const TEST_STRINGS = {
   VIEW_ALL_TEXT: 'multichainAddressViewAll',
   EVM_NETWORKS: 'networkNameEthereum',
-  BITCOIN_NETWORK: 'networkNameBitcoinSegwit',
+  BITCOIN_NETWORK: 'Bitcoin',
   SOLANA_NETWORK: 'Solana',
   TRON_NETWORK: 'Tron',
 } as const;

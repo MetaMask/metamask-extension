@@ -1,6 +1,7 @@
 import React from 'react';
+import { act, fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
-import { QuoteResponse } from '@metamask/bridge-controller';
+import { QuoteResponseV1 } from '@metamask/bridge-controller';
 
 import {
   CHAIN_IDS,
@@ -20,6 +21,7 @@ import { EditGasFeesRow } from './edit-gas-fees-row';
 
 jest.mock('../../../../../hooks/gas/useEstimationFailed');
 jest.mock('../../../../../hooks/gas/useIsGaslessSupported');
+jest.mock('../../../../../../../hooks/usePolling', () => jest.fn());
 
 jest.mock('../../../../simulation-details/useBalanceChanges', () => ({
   useBalanceChanges: jest.fn(() => ({ pending: false, value: [] })),
@@ -41,19 +43,29 @@ function render({
   chainId = CHAIN_IDS.GOERLI,
   gasFeeTokens,
   selectedGasFeeToken,
+  addedProtectionFeeFiat,
+  showAddedProtectionFee,
   fiatFee = '$1',
   nativeFee = '0.001 ETH',
   estimationFailed = false,
+  gasFeeSponsor,
   isGaslessSupported = false,
+  isSponsorshipOptedOut = false,
+  showFiatInTestnets = false,
   transactionType,
 }: {
+  addedProtectionFeeFiat?: string;
+  showAddedProtectionFee?: boolean;
   chainId?: Hex;
   gasFeeTokens?: GasFeeToken[];
   selectedGasFeeToken?: Hex;
   fiatFee?: string;
   nativeFee?: string;
   estimationFailed?: boolean;
+  gasFeeSponsor?: string;
   isGaslessSupported?: boolean;
+  isSponsorshipOptedOut?: boolean;
+  showFiatInTestnets?: boolean;
   transactionType?: TransactionType;
 } = {}) {
   mockUseEstimationFailed.mockReturnValue(estimationFailed);
@@ -63,23 +75,35 @@ function render({
     pending: false,
   });
 
-  const confirmation = genUnapprovedContractInteractionConfirmation({
-    chainId,
-    gasFeeTokens,
-    selectedGasFeeToken,
-    isGasFeeSponsored: isGaslessSupported,
-  });
+  const confirmation = {
+    ...genUnapprovedContractInteractionConfirmation({
+      chainId,
+      gasFeeTokens,
+      selectedGasFeeToken,
+      isGasFeeSponsored: isGaslessSupported,
+    }),
+    gasFeeSponsor,
+  };
 
   if (transactionType) {
     confirmation.type = transactionType;
   }
 
-  const state = getMockConfirmStateForTransaction(confirmation);
+  const state = getMockConfirmStateForTransaction(confirmation, {
+    metamask: {
+      preferences: {
+        showFiatInTestnets,
+        gasSponsorshipOptOutByChainId: { [chainId]: isSponsorshipOptedOut },
+      },
+    },
+  });
 
   const mockStore = configureMockStore()(state);
 
   return renderWithConfirmContextProvider(
     <EditGasFeesRow
+      addedProtectionFeeFiat={addedProtectionFeeFiat}
+      showAddedProtectionFee={showAddedProtectionFee}
       fiatFee={fiatFee}
       nativeFee={nativeFee}
       fiatFeeWith18SignificantDigits="0.001234"
@@ -89,8 +113,14 @@ function render({
 }
 
 describe('<EditGasFeesRow />', () => {
-  it('renders component', () => {
-    const { container } = render();
+  it('does not render added protection network fee when fiat is hidden on testnets', () => {
+    const { container, queryByTestId } = render({
+      chainId: CHAIN_IDS.SEPOLIA,
+      addedProtectionFeeFiat: '$0.07',
+      showAddedProtectionFee: true,
+    });
+
+    expect(queryByTestId('added-protection-network-fee')).toBeNull();
     expect(container).toMatchSnapshot();
   });
 
@@ -100,29 +130,58 @@ describe('<EditGasFeesRow />', () => {
       amountFiat: '',
     };
 
-    const { getByTestId } = render({
+    const { getByTestId, getByText } = render({
       chainId: CHAIN_IDS.MAINNET,
       gasFeeTokens: [gasFeeTokenWithoutFiat],
       selectedGasFeeToken: gasFeeTokenWithoutFiat.tokenAddress,
+      addedProtectionFeeFiat: '$0.07',
+      showAddedProtectionFee: true,
     });
 
     expect(getByTestId('gas-fee-token-fee')).toBeInTheDocument();
     expect(getByTestId('native-currency')).toHaveTextContent('$1');
+    expect(
+      getByText(
+        messages.addedProtectionIncludesNetworkFee.message.replace(
+          '$1',
+          '$0.07',
+        ),
+      ),
+    ).toBeInTheDocument();
   });
 
   it('renders edit gas fee button', () => {
-    const { getByTestId } = render({
+    const { getByTestId, getByText } = render({
       gasFeeTokens: undefined,
       selectedGasFeeToken: undefined,
+      fiatFee: '$12.34',
+      showAddedProtectionFee: true,
+      showFiatInTestnets: true,
     });
 
     expect(getByTestId('edit-gas-fee-icon')).toBeInTheDocument();
+    expect(
+      getByText(
+        messages.addedProtectionIncludesNetworkFee.message.replace(
+          '$1',
+          '$0.00',
+        ),
+      ),
+    ).toBeInTheDocument();
+    expect(() =>
+      getByText(
+        messages.addedProtectionIncludesNetworkFee.message.replace(
+          '$1',
+          '$12.34',
+        ),
+      ),
+    ).toThrow();
   });
 
   it('does not renders edit gas fee button for quote suggested swap', () => {
     jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
       isQuotedSwapDisplayedInInfo: true,
-      selectedQuote: {} as unknown as QuoteResponse,
+      selectedQuote: {} as unknown as QuoteResponseV1,
       setSelectedQuote: jest.fn(),
       setQuotedSwapDisplayedInInfo: jest.fn(),
     } as unknown as ReturnType<typeof DappSwapContext.useDappSwapContext>);
@@ -161,6 +220,97 @@ describe('<EditGasFeesRow />', () => {
 
       expect(queryByText(messages.unavailable.message)).toBeNull();
       expect(getByTestId('paid-by-meta-mask')).toBeInTheDocument();
+    });
+  });
+
+  describe('sponsor', () => {
+    it('renders the sponsor name and tooltip when gas fee is sponsored by a third party', () => {
+      const { container, getByTestId } = render({
+        gasFeeSponsor: 'Uniswap',
+        gasFeeTokens: [],
+        isGaslessSupported: true,
+      });
+
+      expect(getByTestId('paid-by-meta-mask')).toHaveTextContent(
+        'Paid by Uniswap',
+      );
+      expect(
+        container.querySelector(
+          `[data-original-title="${messages.gasSponsorshipSponsorTooltip.message.replace(
+            '$1',
+            'Uniswap',
+          )}"]`,
+        ),
+      ).toBeInTheDocument();
+    });
+
+    it('passes the sponsor to the gas sponsorship modal', async () => {
+      const { getAllByText, getByTestId } = render({
+        gasFeeSponsor: 'Uniswap',
+        isGaslessSupported: true,
+      });
+
+      await act(async () => {
+        fireEvent.click(getByTestId('paid-by-meta-mask'));
+      });
+
+      expect(getAllByText('Paid by Uniswap')).toHaveLength(2);
+    });
+
+    it('renders "Paid by MetaMask" and the MetaMask tooltip when the sponsor is MetaMask', () => {
+      const { container, getByTestId } = render({
+        gasFeeSponsor: 'MetaMask',
+        isGaslessSupported: true,
+      });
+
+      expect(getByTestId('paid-by-meta-mask')).toHaveTextContent(
+        messages.paidByMetaMask.message,
+      );
+      expect(
+        container.querySelector(
+          `[data-original-title="${messages.gasSponsorshipOptOutTooltip.message}"]`,
+        ),
+      ).toBeInTheDocument();
+    });
+
+    it('renders "Paid by MetaMask" when the transaction has no sponsor, ignoring the gas fee token sponsor', () => {
+      const sponsoredGasFeeToken = {
+        ...GAS_FEE_TOKEN_MOCK,
+        sponsor: 'Uniswap',
+      };
+
+      const { getByTestId } = render({
+        gasFeeTokens: [sponsoredGasFeeToken],
+        isGaslessSupported: true,
+      });
+
+      expect(getByTestId('paid-by-meta-mask')).toHaveTextContent(
+        messages.paidByMetaMask.message,
+      );
+    });
+
+    it('does not render the sponsor when gas fee is not sponsored', () => {
+      const { queryByText } = render({
+        gasFeeSponsor: 'Uniswap',
+        isGaslessSupported: false,
+      });
+
+      expect(queryByText('Paid by Uniswap')).toBeNull();
+    });
+
+    it('does not render the sponsor when the user opted out of sponsorship', () => {
+      const { container, queryByTestId } = render({
+        gasFeeSponsor: 'Uniswap',
+        isGaslessSupported: true,
+        isSponsorshipOptedOut: true,
+      });
+
+      expect(queryByTestId('paid-by-meta-mask')).toBeNull();
+      expect(
+        container.querySelector(
+          `[data-original-title="${messages.estimatedFeeTooltip.message}"]`,
+        ),
+      ).toBeInTheDocument();
     });
   });
 

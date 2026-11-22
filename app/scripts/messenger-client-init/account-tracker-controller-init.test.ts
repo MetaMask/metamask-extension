@@ -5,7 +5,10 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
-import { AccountTrackerController } from '@metamask/assets-controllers';
+import {
+  AccountTrackerController,
+  AccountTrackerControllerMessenger,
+} from '@metamask/assets-controllers';
 import {
   AutoManagedNetworkClient,
   CustomNetworkClientConfiguration,
@@ -21,7 +24,6 @@ import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getAccountTrackerControllerMessenger,
-  AccountTrackerControllerMessenger,
   getAccountTrackerControllerInitMessenger,
   AccountTrackerControllerInitMessenger,
 } from './messengers';
@@ -107,6 +109,7 @@ describe('AccountTrackerControllerInit', () => {
       accountsApiChainIds: expect.any(Function),
       fetchingEnabled: expect.any(Function),
       isOnboarded: expect.any(Function),
+      isDeprecated: expect.any(Function),
     });
   });
 

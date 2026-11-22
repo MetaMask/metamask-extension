@@ -30,7 +30,6 @@ export type UsePerpsLiveAccountReturn = {
  * @returns Object containing account state and loading state
  */
 export function usePerpsLiveAccount(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _options: UsePerpsLiveAccountOptions = {},
 ): UsePerpsLiveAccountReturn {
   const { data: account, isInitialLoading } = usePerpsChannel(

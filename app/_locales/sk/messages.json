@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Musíte si vybrať účet!"
   },
-  "addAcquiredTokens": {
-    "message": "Pridajte tokeny, ktoré ste získali pomocou MetaMask"
-  },
   "addAlias": {
     "message": "Pridať alias"
   },
@@ -80,9 +77,6 @@
   },
   "back": {
     "message": "Zpět"
-  },
-  "backupApprovalInfo": {
-    "message": "Tento tajný kód je potrebný na obnovenie peňaženky v prípade straty zariadenia, zabudnutia hesla, preinštalovania MetaMask alebo prístupu k peňaženke na inom zariadení."
   },
   "backupApprovalNotice": {
     "message": "Zálohujte si svoj tajný kód na obnovenie, aby bola vaša peňaženka a prostriedky bezpečné."
@@ -175,14 +169,8 @@
   "custom": {
     "message": "Rozšírené"
   },
-  "customToken": {
-    "message": "Vlastní token"
-  },
   "decimal": {
     "message": "Počet desetinných míst přesnosti"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Desetinných míst musí být od 0 do 36."
   },
   "delete": {
     "message": "Odstrániť"
@@ -192,9 +180,6 @@
   },
   "done": {
     "message": "Hotovo"
-  },
-  "downloadGoogleChrome": {
-    "message": "Stiahnuť Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Stáhnout stavové protokoly"
@@ -220,10 +205,6 @@
   "fast": {
     "message": "Rýchle"
   },
-  "fileImportFail": {
-    "message": "Import souboru nefunguje? Klikněte sem!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "Zabudnúť toto zariadenie"
   },
@@ -232,9 +213,6 @@
   },
   "gasLimit": {
     "message": "Limit paliva"
-  },
-  "gasLimitTooLow": {
-    "message": "Limit paliva musí být alespoň 21000"
   },
   "gasUsed": {
     "message": "GAS použitý"
@@ -253,9 +231,6 @@
   },
   "hardwareWallets": {
     "message": "Pripojiť hardvérovú peňaženku"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Vyberte hardvérovú peňaženku, ktorú chcete používať s MetaMask"
   },
   "here": {
     "message": "zde",
@@ -329,9 +304,6 @@
   "metamaskVersion": {
     "message": "Verzia MetaMask"
   },
-  "mustSelectOne": {
-    "message": "Musíte zvolit aspoň 1 token."
-  },
   "needImportFile": {
     "message": "Musíte zvolit soubor k importu.",
     "description": "User is important an account and needs to add a file to continue"
@@ -341,9 +313,6 @@
   },
   "networks": {
     "message": "Sítě"
-  },
-  "nevermind": {
-    "message": "Nevadí"
   },
   "newAccountNumberName": {
     "message": "Účet $1",
@@ -363,9 +332,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Webová kamera sa nenašla"
-  },
-  "notEnoughGas": {
-    "message": "Nedostatok GAS"
   },
   "ofTextNofM": {
     "message": "z"
@@ -394,10 +360,6 @@
   "passwordsDontMatch": {
     "message": "Hesla nejsou stejná"
   },
-  "pastePrivateKey": {
-    "message": "Vložte zde svůj privátní klíč:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "prebieha"
   },
@@ -413,9 +375,6 @@
   "privateKey": {
     "message": "Privátní klíč",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Upozornění: Nikdy nezveřejněte tento klíč. Kdokoli může s vaším privátním klíčem odcizit vaše aktiva z účtu."
   },
   "privateNetwork": {
     "message": "Soukromá síť"
@@ -502,9 +461,6 @@
   "sign": {
     "message": "Podepsat"
   },
-  "signatureRequest": {
-    "message": "Požadavek podpisu"
-  },
   "signed": {
     "message": "Podepsáno"
   },
@@ -585,9 +541,6 @@
   },
   "urlErrorMsg": {
     "message": "URI vyžadují korektní HTTP/HTTPS prefix."
-  },
-  "usedByClients": {
-    "message": "Používána různými klienty"
   },
   "visitWebSite": {
     "message": "Navštivte naši stránku"

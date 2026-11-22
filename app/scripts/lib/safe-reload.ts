@@ -1,8 +1,15 @@
 import browser from 'webextension-polyfill';
 import { captureException } from '../../../shared/lib/sentry';
 import { createSentryError } from '../../../shared/lib/error';
-import { PersistenceManager } from '../../../shared/lib/stores/persistence-manager';
+import {
+  PersistenceManager,
+  PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS,
+} from '../../../shared/lib/stores/persistence-manager';
 import { MetaMaskStateType } from '../../../shared/lib/stores/base-store';
+import {
+  setStartupPhase,
+  StartupPhase,
+} from '../../../shared/lib/telemetry/startup-phase';
 import { OperationSafener } from './operation-safener';
 
 /** Time before `runtime.reload()` so popup/notification UIs can `window.close()` first (issue #29151). */
@@ -36,7 +43,7 @@ export function getRequestSafeReload<Type extends PersistenceManager>(
         );
       }
     },
-    wait: 1000,
+    wait: PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS,
   });
 
   return {
@@ -63,6 +70,7 @@ export function getRequestSafeReload<Type extends PersistenceManager>(
      * content inside that window (see GitHub issue #29151).
      */
     requestSafeReload: async () => {
+      await setStartupPhase(StartupPhase.ShuttingDown);
       await operationSafener.evacuate();
       globalThis.setTimeout(() => {
         browser.runtime.reload();

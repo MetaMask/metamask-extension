@@ -1,17 +1,14 @@
-/* eslint-disable react/prop-types -- TODO: upgrade to TypeScript */
-
-import React, { useContext, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { memo, useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-} from '@metamask/design-system-react';
-import { PRODUCT_TYPES } from '@metamask/subscription-controller';
+  CRYPTO_PAYMENT_METHOD_ERRORS,
+  PRODUCT_TYPES,
+} from '@metamask/subscription-controller';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { SECOND } from '../../../../shared/constants/time';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { PRIVACY_POLICY_LINK } from '../../../../shared/lib/ui-utils';
 import {
   BorderRadius,
@@ -22,25 +19,18 @@ import {
   DEFAULT_ROUTE,
   PERPS_ROUTE,
   REVEAL_SEED_ROUTE,
-  REVIEW_PERMISSIONS,
   SETTINGS_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../../helpers/constants/routes';
-import { getURLHost } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentNetwork, getOriginOfCurrentTab } from '../../../selectors';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
-import {
-  hidePermittedNetworkToast,
-  toggleDefaultView,
-} from '../../../store/actions';
+import { toggleDefaultView } from '../../../store/actions';
 import { Icon, IconName, IconSize } from '../../component-library';
 import { Toast, ToastContainer } from '../../multichain';
-import { SurveyToast } from '../../ui/survey-toast';
+import { SurveyToast } from '../../ui/survey-toast/survey-toast';
 import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
-import { MerklClaimToast, MusdConversionToast } from '../musd';
+import { BasicFunctionalityMigrationToast } from '../basic-functionality-migration-toast';
 import { PerpsWithdrawToast } from '../perps/perps-withdraw-toast';
-import { getDappActiveNetwork } from '../../../selectors/dapp';
+import { ArcUsageNoticeToast } from '../arc-usage-notice-toast';
 import {
   useUserSubscriptionByProduct,
   useUserSubscriptions,
@@ -56,18 +46,21 @@ import {
   isCryptoPaymentMethod,
 } from '../../../pages/shield/transaction-shield/types';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useDispatch } from '../../../store/hooks';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
   ShieldErrorStateActionClickedEnum,
+  ShieldErrorStateClickedTypeEnum,
   ShieldErrorStateLocationEnum,
   ShieldErrorStateViewEnum,
 } from '../../../../shared/constants/subscriptions';
 import {
   selectShowPrivacyPolicyToast,
+  selectNewPrivacyPolicyToastShownDate,
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
   selectShowStorageErrorToast,
@@ -84,6 +77,20 @@ import {
   dismissSidePanelMigrationToast,
 } from './utils';
 
+// Memoized to prevent re-renders when ToastMaster re-renders due to location changes.
+const MemoizedSurveyToast = memo(SurveyToast);
+const MemoizedPrivacyPolicyToast = memo(PrivacyPolicyToast);
+const MemoizedInfuraSwitchToast = memo(InfuraSwitchToast);
+const MemoizedPerpsWithdrawToast = memo(PerpsWithdrawToast);
+const MemoizedShieldPausedToast = memo(ShieldPausedToast);
+const MemoizedShieldEndingToast = memo(ShieldEndingToast);
+const MemoizedSidePanelMigrationToast = memo(SidePanelMigrationToast);
+const MemoizedBasicFunctionalityMigrationToast = memo(
+  BasicFunctionalityMigrationToast,
+);
+const MemoizedStorageErrorToast = memo(StorageErrorToast);
+const MemoizedArcUsageNoticeToast = memo(ArcUsageNoticeToast);
+
 export function ToastMaster() {
   const location = useLocation();
 
@@ -97,23 +104,25 @@ export function ToastMaster() {
   const onPerpsScreen = currentPathname.startsWith(PERPS_ROUTE);
   const onSettingsScreen = currentPathname.startsWith(SETTINGS_ROUTE);
 
-  // Storage error toast should show on ALL screens
-  const storageErrorToast = <StorageErrorToast />;
+  // BFT migration toast must appear on any screen (including confirmation /
+  // notification) so users cannot complete a tx before seeing it.
+  const basicFunctionalityMigrationToast = (
+    <MemoizedBasicFunctionalityMigrationToast key="basic-functionality-migration" />
+  );
 
   if (onHomeScreen) {
     return (
       <ToastContainer>
-        {storageErrorToast}
-        <SurveyToast />
-        <PrivacyPolicyToast />
-        <PermittedNetworkToast />
-        <InfuraSwitchToast />
-        <MerklClaimToast />
-        <MusdConversionToast />
-        <PerpsWithdrawToast />
-        <ShieldPausedToast />
-        <ShieldEndingToast />
-        <SidePanelMigrationToast />
+        <MemoizedStorageErrorToast />
+        <MemoizedSurveyToast />
+        <MemoizedPrivacyPolicyToast />
+        <MemoizedArcUsageNoticeToast />
+        <MemoizedInfuraSwitchToast />
+        <MemoizedPerpsWithdrawToast />
+        <MemoizedShieldPausedToast />
+        <MemoizedShieldEndingToast />
+        <MemoizedSidePanelMigrationToast />
+        {basicFunctionalityMigrationToast}
       </ToastContainer>
     );
   }
@@ -121,30 +130,39 @@ export function ToastMaster() {
   if (onPerpsScreen) {
     return (
       <ToastContainer>
-        {storageErrorToast}
-        <PerpsWithdrawToast />
+        <MemoizedStorageErrorToast />
+        <MemoizedPerpsWithdrawToast />
+        {basicFunctionalityMigrationToast}
       </ToastContainer>
     );
   }
 
   if (onSettingsScreen) {
-    return <ToastContainer>{storageErrorToast}</ToastContainer>;
+    return (
+      <ToastContainer>
+        <MemoizedStorageErrorToast />
+        {basicFunctionalityMigrationToast}
+      </ToastContainer>
+    );
   }
 
-  // On other screens, only render ToastContainer if storage error toast should show
-  // ToastContainer provides essential CSS styling (position: fixed, z-index, etc.)
-  if (shouldShowStorageErrorToast) {
-    return <ToastContainer>{storageErrorToast}</ToastContainer>;
-  }
-
-  return null;
+  // On other screens, always mount a container so the BFT migration toast can
+  // show (e.g. confirmation / notification). Storage-error toast stays optional.
+  return (
+    <ToastContainer>
+      {shouldShowStorageErrorToast ? <MemoizedStorageErrorToast /> : null}
+      {basicFunctionalityMigrationToast}
+    </ToastContainer>
+  );
 }
 
 function PrivacyPolicyToast() {
   const t = useI18nContext();
 
-  const { showPrivacyPolicyToast, newPrivacyPolicyToastShownDate } =
-    useSelector(selectShowPrivacyPolicyToast);
+  const showPrivacyPolicyToast = useSelector(selectShowPrivacyPolicyToast);
+  const newPrivacyPolicyToastShownDate = useSelector(
+    selectNewPrivacyPolicyToastShownDate,
+  );
 
   // If the privacy policy toast is shown, and there is no date set, set it
   if (showPrivacyPolicyToast && !newPrivacyPolicyToastShownDate) {
@@ -167,64 +185,6 @@ function PrivacyPolicyToast() {
           setNewPrivacyPolicyToastClickedOrClosed();
         }}
         onClose={setNewPrivacyPolicyToastClickedOrClosed}
-      />
-    )
-  );
-}
-
-function PermittedNetworkToast() {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const isPermittedNetworkToastOpen = useSelector(
-    (state) => state.appState.showPermittedNetworkToastOpen,
-  );
-
-  const currentNetwork = useSelector(getCurrentNetwork);
-  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
-  const dappActiveNetwork = useSelector(getDappActiveNetwork);
-  const safeEncodedHost = encodeURIComponent(activeTabOrigin);
-  const navigate = useNavigate();
-
-  // Use dapp's active network if available, otherwise fall back to global network
-  const displayNetwork = dappActiveNetwork || currentNetwork;
-
-  // Get the correct image URL - dapp network structure is different
-  const getNetworkImageUrl = () => {
-    if (dappActiveNetwork) {
-      // For dapp networks, check rpcPrefs.imageUrl first, then fallback to CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-      return (
-        dappActiveNetwork.rpcPrefs?.imageUrl ||
-        (dappActiveNetwork.chainId &&
-          CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[dappActiveNetwork.chainId])
-      );
-    }
-    // For global network, use existing logic
-    return currentNetwork?.rpcPrefs?.imageUrl || '';
-  };
-
-  return (
-    isPermittedNetworkToastOpen && (
-      <Toast
-        key="switched-permitted-network-toast"
-        startAdornment={
-          <AvatarNetwork
-            size={AvatarNetworkSize.Md}
-            className="border-transparent"
-            src={getNetworkImageUrl()}
-            name={displayNetwork?.name || displayNetwork?.nickname}
-          />
-        }
-        text={t('permittedChainToastUpdate', [
-          getURLHost(activeTabOrigin),
-          displayNetwork?.name || displayNetwork?.nickname,
-        ])}
-        actionText={t('editPermissions')}
-        onActionClick={() => {
-          dispatch(hidePermittedNetworkToast());
-          navigate(`${REVIEW_PERMISSIONS}?origin=${safeEncodedHost}`);
-        }}
-        onClose={() => dispatch(hidePermittedNetworkToast())}
       />
     )
   );
@@ -276,6 +236,11 @@ function ShieldPausedToast() {
     shieldSubscription &&
     isCryptoPaymentMethod(shieldSubscription.paymentMethod) &&
     Boolean(shieldSubscription.paymentMethod.crypto.error);
+  const isInsufficientFundsCrypto =
+    shieldSubscription &&
+    isCryptoPaymentMethod(shieldSubscription.paymentMethod) &&
+    shieldSubscription.paymentMethod.crypto.error ===
+      CRYPTO_PAYMENT_METHOD_ERRORS.INSUFFICIENT_BALANCE;
 
   // default text to unexpected error case
   let descriptionText = 'shieldPaymentPausedDescriptionUnexpectedError';
@@ -292,6 +257,11 @@ function ShieldPausedToast() {
   const trackShieldErrorStateClickedEvent = (actionClicked) => {
     const { cryptoPaymentChain, cryptoPaymentCurrency } =
       getSubscriptionPaymentData(shieldSubscription);
+    const type =
+      isInsufficientFundsCrypto || isCryptoPaymentWithError
+        ? ShieldErrorStateClickedTypeEnum.AddFunds
+        : ShieldErrorStateClickedTypeEnum.UpdateCard;
+
     // capture error state clicked event
     captureShieldErrorStateClickedEvent({
       subscriptionStatus: shieldSubscription.status,
@@ -303,6 +273,7 @@ function ShieldPausedToast() {
       actionClicked,
       location: ShieldErrorStateLocationEnum.Homepage,
       view: ShieldErrorStateViewEnum.Toast,
+      type,
     });
   };
 
@@ -389,9 +360,9 @@ function ShieldEndingToast() {
 function StorageErrorToast() {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const [isDismissed, setIsDismissed] = useState(false);
-  const [hasTrackedView, setHasTrackedView] = useState(false);
+  const hasTrackedViewRef = useRef(false);
 
   // Selector includes all conditions: flag is true, onboarding complete, and unlocked
   const showStorageErrorToast = useSelector(selectShowStorageErrorToast);
@@ -409,29 +380,34 @@ function StorageErrorToast() {
 
   // Track "Viewed" event when toast becomes visible
   useEffect(() => {
-    if (shouldShow && !hasTrackedView) {
-      trackEvent({
-        event: MetaMetricsEventName.StorageErrorToastViewed,
-        category: MetaMetricsEventCategory.Error,
-      });
-      setHasTrackedView(true);
+    if (shouldShow && !hasTrackedViewRef.current) {
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.StorageErrorToastViewed)
+          .addCategory(MetaMetricsEventCategory.Error)
+          .build(),
+      );
+      hasTrackedViewRef.current = true;
     }
-  }, [shouldShow, hasTrackedView, trackEvent]);
+  }, [shouldShow, trackEvent, createEventBuilder]);
 
   const handleRevealSrpClick = () => {
-    trackEvent({
-      event: MetaMetricsEventName.StorageErrorToastBackupSrpButtonPressed,
-      category: MetaMetricsEventCategory.Error,
-    });
+    trackEvent(
+      createEventBuilder(
+        MetaMetricsEventName.StorageErrorToastBackupSrpButtonPressed,
+      )
+        .addCategory(MetaMetricsEventCategory.Error)
+        .build(),
+    );
     setIsDismissed(true);
     navigate(REVEAL_SEED_ROUTE, { state: { skipQuiz: true } });
   };
 
   const handleClose = () => {
-    trackEvent({
-      event: MetaMetricsEventName.StorageErrorToastDismissed,
-      category: MetaMetricsEventCategory.Error,
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.StorageErrorToastDismissed)
+        .addCategory(MetaMetricsEventCategory.Error)
+        .build(),
+    );
     setIsDismissed(true);
   };
 

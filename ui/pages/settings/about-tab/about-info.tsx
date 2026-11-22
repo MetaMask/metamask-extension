@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useMemo } from 'react';
+import React from 'react';
 import {
   Box,
   Text,
@@ -8,51 +8,33 @@ import {
   TextColor,
   BoxFlexDirection,
   BoxAlignItems,
+  Tag,
 } from '@metamask/design-system-react';
 
-import { Tag } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { SUPPORT_LINK } from '../../../helpers/constants/common';
 import { isBeta } from '../../../../shared/lib/build-types';
-import {
-  MetaMetricsContextProp,
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import VisitSupportDataConsentModal from '../../../components/app/modals/visit-support-data-consent-modal';
+import VisitSupportDataConsentModal, {
+  useOpenSupport,
+} from '../../../components/app/modals/visit-support-data-consent-modal';
 import { Divider } from '../shared';
 import { useBoolean } from '../../../hooks/useBoolean';
 
 export default function AboutInfo(): React.ReactElement {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
 
   const {
     value: isVisitSupportDataConsentModalOpen,
     toggle: toggleVisitSupportDataConsentModal,
   } = useBoolean();
+  // Both "Visit our support center" and "Contact us" open the same support
+  // site, so both go through the data sharing consent flow (as on mobile).
+  const openSupport = useOpenSupport(toggleVisitSupportDataConsentModal);
 
   const version = process.env.METAMASK_VERSION ?? '';
 
-  const handleContactUsClick = useCallback(() => {
-    trackEvent(
-      {
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.SupportLinkClicked,
-        properties: {
-          url: SUPPORT_LINK,
-        },
-      },
-      {
-        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
-      },
-    );
-  }, [trackEvent]);
-
   function renderInfoLinks(): React.ReactElement {
-    const privacyUrl = 'https://metamask.io/privacy.html';
-    const siteUrl = 'https://metamask.io/';
+    const privacyUrl = 'https://metamask.com/privacy.html';
+    const siteUrl = 'https://metamask.com/';
 
     const linkProps = {
       size: TextButtonSize.BodyMd,
@@ -82,7 +64,7 @@ export default function AboutInfo(): React.ReactElement {
         <Box {...linkItemProps}>
           <TextButton asChild {...linkProps}>
             <a
-              href="https://metamask.io/terms.html"
+              href="https://metamask.com/terms.html"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -94,11 +76,11 @@ export default function AboutInfo(): React.ReactElement {
           <Box {...linkItemProps}>
             <TextButton asChild {...linkProps}>
               <a
-                href="https://metamask.io/beta-terms"
+                href="https://metamask.com/beta-terms"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {t('betaTerms')} <Tag label={t('new')} />
+                {t('betaTerms')} <Tag>{t('new')}</Tag>
               </a>
             </TextButton>
           </Box>
@@ -116,10 +98,7 @@ export default function AboutInfo(): React.ReactElement {
         </Box>
         <Divider />
         <Box {...linkItemProps}>
-          <TextButton
-            onClick={toggleVisitSupportDataConsentModal}
-            {...linkProps}
-          >
+          <TextButton onClick={openSupport} {...linkProps}>
             {t('supportCenter')}
           </TextButton>
         </Box>
@@ -131,15 +110,8 @@ export default function AboutInfo(): React.ReactElement {
           </TextButton>
         </Box>
         <Box {...linkItemProps}>
-          <TextButton asChild {...linkProps}>
-            <a
-              href={SUPPORT_LINK}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={handleContactUsClick}
-            >
-              {t('contactUs')}
-            </a>
+          <TextButton onClick={openSupport} {...linkProps}>
+            {t('contactUs')}
           </TextButton>
         </Box>
       </Box>

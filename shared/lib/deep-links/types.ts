@@ -39,8 +39,18 @@ export enum DeferredDeepLinkRouteType {
  * Represents the result of parsing a deferred deep link.
  */
 export type DeferredDeepLinkRoute =
-  | { type: DeferredDeepLinkRouteType.Redirect; url: string }
   | {
+      /**
+       * External URL that can be opened without showing the interstitial.
+       */
+      type: DeferredDeepLinkRouteType.Redirect;
+      url: string;
+      signature: SignatureStatus;
+    }
+  | {
+      /**
+       * Internal app route that can be opened without showing the interstitial.
+       */
       type: DeferredDeepLinkRouteType.Navigate;
       route: string;
       signature: SignatureStatus;
@@ -52,5 +62,6 @@ export type DeferredDeepLinkRoute =
        * Format: /path?query (e.g., /buy?address=0x...)
        */
       urlPathAndQuery: string;
+      signature: SignatureStatus;
     }
   | null;

@@ -1,4 +1,9 @@
-import React, { useCallback } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useDeferredValue,
+  useMemo,
+} from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 
 import {
@@ -20,9 +25,11 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { type Asset } from '../../../types/send';
 import { useNavigateSendPage } from '../../../hooks/send/useNavigateSendPage';
 import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
-import { useSendContext } from '../../../context/send';
-import { Asset as AssetComponent } from '../../UI/asset';
+import { SendContext } from '../../../context/send';
+import { Asset as AssetComponent, type TokenTagRenderer } from '../../UI/asset';
 import { useScrollContainer } from '../../../../../contexts/scroll-container';
+import { toNormalizedCaipAssetId } from '../../../../../../shared/lib/asset-utils';
+import { useTokenAssetSecurityResults } from '../../../../../hooks/token-asset/useTokenAssetSecurityResults';
 
 type AssetListProps = {
   tokens: Asset[];
@@ -31,16 +38,22 @@ type AssetListProps = {
   allNfts: Asset[];
   onClearFilters?: () => void;
   hideNfts?: boolean;
+  hideBalances?: boolean;
   onAssetSelect?: (asset: Asset) => void;
+  emptyStateMessage?: string;
+  disableMetrics?: boolean;
+  tagRenderers?: TokenTagRenderer[];
+  endRenderers?: TokenTagRenderer[];
 };
 
 type ListItem =
-  | { type: 'token'; asset: Asset }
+  | { type: 'token'; asset: Asset; safetyResult?: string }
   | { type: 'nft-header' }
   | { type: 'nft'; asset: Asset };
 
 const ITEM_HEIGHT = 70;
 const HEADER_HEIGHT = 40;
+const noop = () => undefined;
 
 export const AssetList = ({
   tokens,
@@ -49,38 +62,84 @@ export const AssetList = ({
   allNfts,
   onClearFilters,
   hideNfts = false,
+  hideBalances = false,
   onAssetSelect,
+  emptyStateMessage,
+  disableMetrics = false,
+  tagRenderers,
+  endRenderers,
 }: AssetListProps) => {
   const t = useI18nContext();
   const scrollContainerRef = useScrollContainer();
   const { goToAmountRecipientPage } = useNavigateSendPage();
-  const { updateAsset } = useSendContext();
-  const { captureAssetSelected } = useAssetSelectionMetrics();
+  // Use context directly so catalog pickers (e.g. ramps) can reuse this list
+  // outside SendContextProvider when `onAssetSelect` is provided.
+  const sendContext = useContext(SendContext);
+  const { captureAssetSelected: captureAssetSelectedFromMetrics } =
+    useAssetSelectionMetrics();
+  const captureAssetSelected = disableMetrics
+    ? noop
+    : captureAssetSelectedFromMetrics;
 
   const effectiveNfts = hideNfts ? [] : nfts;
   const effectiveAllNfts = hideNfts ? [] : allNfts;
+
+  const tokenRows = useMemo(
+    () =>
+      tokens.map((asset) => ({
+        asset,
+        caipAssetId: toNormalizedCaipAssetId(
+          asset.assetId ?? asset.address,
+          asset.chainId,
+        ),
+      })),
+    [tokens],
+  );
+
+  const displayedAssetIds = useMemo(
+    () =>
+      tokenRows
+        .map(({ caipAssetId }) => caipAssetId)
+        .filter((caipAssetId) => caipAssetId !== undefined),
+    [tokenRows],
+  );
+
+  const deferredDisplayedAssetIds = useDeferredValue(displayedAssetIds);
+  const securityResultByAssetId = useTokenAssetSecurityResults({
+    assetIds: deferredDisplayedAssetIds,
+  });
 
   const hasFilteredResults = tokens.length > 0 || effectiveNfts.length > 0;
   const hasAnyAssets = allTokens.length > 0 || effectiveAllNfts.length > 0;
 
   const handleAssetClick = useCallback(
     (asset: Asset) => {
+      if (asset.disabled) {
+        return;
+      }
+
       if (onAssetSelect) {
         onAssetSelect(asset);
         return;
       }
 
-      updateAsset(asset);
+      sendContext.updateAsset(asset);
       goToAmountRecipientPage();
       captureAssetSelected(asset);
     },
-    [updateAsset, goToAmountRecipientPage, captureAssetSelected, onAssetSelect],
+    [captureAssetSelected, goToAmountRecipientPage, onAssetSelect, sendContext],
   );
 
   const items: ListItem[] = [];
 
-  tokens.forEach((token) => {
-    items.push({ type: 'token', asset: token });
+  tokenRows.forEach(({ asset, caipAssetId }) => {
+    items.push({
+      type: 'token',
+      asset,
+      safetyResult: caipAssetId
+        ? securityResultByAssetId[caipAssetId]
+        : undefined,
+    });
   });
 
   if (effectiveNfts.length > 0) {
@@ -113,7 +172,7 @@ export const AssetList = ({
           variant={TextVariant.bodyMdMedium}
           color={TextColor.textAlternative}
         >
-          {t('noTokensMatchingYourFilters')}
+          {emptyStateMessage ?? t('noTokensMatchingYourFilters')}
         </Text>
         {onClearFilters && (
           <Button
@@ -130,7 +189,28 @@ export const AssetList = ({
   }
 
   if (items.length === 0) {
-    return null;
+    if (!emptyStateMessage) {
+      return null;
+    }
+
+    return (
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.center}
+        margin={4}
+        gap={3}
+        data-testid="asset-list-empty"
+      >
+        <Text
+          variant={TextVariant.bodyMdMedium}
+          color={TextColor.textAlternative}
+        >
+          {emptyStateMessage}
+        </Text>
+      </Box>
+    );
   }
 
   const virtualItems = virtualizer.getVirtualItems();
@@ -171,6 +251,12 @@ export const AssetList = ({
               <AssetComponent
                 asset={item.asset}
                 onClick={() => handleAssetClick(item.asset)}
+                hideBalances={hideBalances}
+                safetyResult={
+                  item.type === 'token' ? item.safetyResult : undefined
+                }
+                tagRenderers={tagRenderers}
+                endRenderers={endRenderers}
               />
             )}
           </div>

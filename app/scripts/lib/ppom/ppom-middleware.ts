@@ -1,10 +1,10 @@
 import { AccountsController } from '@metamask/accounts-controller';
-import { PPOMController } from '@metamask/ppom-validator';
 import {
   NetworkClientId,
   NetworkController,
 } from '@metamask/network-controller';
 import {
+  getChecksumAddress,
   Hex,
   Json,
   JsonRpcParams,
@@ -23,6 +23,7 @@ import {
   generateSecurityAlertId,
   handlePPOMError,
   validateRequestWithPPOM,
+  type PPOMMessenger,
 } from './ppom-util';
 import {
   SecurityAlertResponse,
@@ -53,7 +54,7 @@ export type PPOMMiddlewareRequest<
  * after the user has confirmed or rejected the request,
  * the request will be forwarded to the next middleware, together with the PPOM response.
  *
- * @param ppomController - Instance of PPOMController.
+ * @param messenger - Messenger able to run the PPOM security validation flow.
  * @param preferencesController - Instance of PreferenceController.
  * @param networkController - Instance of NetworkController.
  * @param appStateController
@@ -66,7 +67,7 @@ export function createPPOMMiddleware<
   Params extends (string | { to: string })[],
   Result extends Json,
 >(
-  ppomController: PPOMController,
+  messenger: PPOMMessenger,
   preferencesController: PreferencesController,
   networkController: NetworkController,
   appStateController: AppStateController,
@@ -100,8 +101,16 @@ export function createPPOMMiddleware<
 
       const data = req.params[0];
       if (typeof data === 'string') {
-        const { isSIWEMessage } = detectSIWE({ data });
-        if (isSIWEMessage) {
+        const siwe = detectSIWE({ data });
+        // Only exempt SIWE messages whose address is already EIP-55
+        // checksummed. Comparing the address (rather than relying on parser
+        // warnings) keeps single-case addresses that equal their checksum
+        // exempt.
+        if (
+          siwe.isSIWEMessage &&
+          getChecksumAddress(siwe.parsedMessage.address as Hex) ===
+            siwe.parsedMessage.address
+        ) {
           return;
         }
       } else if (req.method === MESSAGE_TYPE.ETH_SEND_TRANSACTION) {
@@ -121,7 +130,7 @@ export function createPPOMMiddleware<
         { name: TraceName.PPOMValidation, parentContext: req.traceContext },
         () =>
           validateRequestWithPPOM({
-            ppomController,
+            messenger,
             request: req,
             securityAlertId,
             chainId: chainId as Hex,

@@ -12,6 +12,7 @@ import {
   getNonTestNetworks,
   getNetworksByScopes,
   MultichainNetworkConfigurationsByChainIdState,
+  selectNetworkConfigurationByChainId,
 } from './networks';
 
 const typedMockState =
@@ -73,6 +74,29 @@ const extendedMockState = {
 };
 
 describe('Network Selectors', () => {
+  describe('selectNetworkConfigurationByChainId', () => {
+    it('caches results per chain ID', () => {
+      selectNetworkConfigurationByChainId.resetRecomputations();
+
+      const mainnetNetwork = selectNetworkConfigurationByChainId(
+        extendedMockState,
+        '0x1',
+      );
+      const goerliNetwork = selectNetworkConfigurationByChainId(
+        extendedMockState,
+        '0x5',
+      );
+
+      expect(
+        selectNetworkConfigurationByChainId(extendedMockState, '0x1'),
+      ).toBe(mainnetNetwork);
+      expect(
+        selectNetworkConfigurationByChainId(extendedMockState, '0x5'),
+      ).toBe(goerliNetwork);
+      expect(selectNetworkConfigurationByChainId.recomputations()).toBe(2);
+    });
+  });
+
   describe('getNonTestNetworks', () => {
     it('returns non-test networks from the state', () => {
       const result = getNonTestNetworks(extendedMockState);

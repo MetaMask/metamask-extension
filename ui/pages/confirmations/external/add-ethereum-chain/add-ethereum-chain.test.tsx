@@ -22,6 +22,20 @@ jest.mock('../../hooks/useCurrentConfirmation', () =>
   jest.fn(() => ({ currentConfirmation: mockConfirmation })),
 );
 
+// Analytics reads the router and store; the component only needs the tracker.
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      createEventBuilder,
+      trackEvent: jest.fn(),
+    }),
+  };
+});
+
 function render(component: ReactNode, mockState: Record<string, unknown> = {}) {
   const mockMetrics = {
     trackAlertActionClicked: jest.fn(),
@@ -62,6 +76,35 @@ describe('AddEthereumChain', () => {
     expect(screen.getByText('Test Network')).toBeInTheDocument();
     expect(screen.getByText('example.com')).toBeInTheDocument();
     expect(screen.getByText('rpc.example.com')).toBeInTheDocument();
+  });
+
+  it('renders punycode RPC hostname for IDN homograph URLs', () => {
+    const spoofedRpcUrl = 'https://iոfura.io/v3/abc';
+
+    jest.requireMock('../../hooks/useCurrentConfirmation').mockReturnValue({
+      currentConfirmation: {
+        ...mockConfirmation,
+        requestData: {
+          ...mockConfirmation.requestData,
+          rpcUrl: spoofedRpcUrl,
+        },
+      },
+    });
+
+    const mockState = {
+      confirmAlerts: {
+        alerts: {},
+      },
+      metamask: {
+        networkConfigurationsByChainId: {},
+        subjectMetadata: {},
+      },
+    };
+
+    render(<AddEthereumChain />, mockState);
+
+    expect(screen.getByText('xn--ifura-dig.io/v3/abc')).toBeInTheDocument();
+    expect(screen.queryByText(/iոfura/iu)).not.toBeInTheDocument();
   });
 
   it('renders update network title when network exists', () => {

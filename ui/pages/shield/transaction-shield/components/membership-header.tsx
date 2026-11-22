@@ -7,11 +7,11 @@ import {
   Text,
   TextColor,
   TextVariant,
+  Skeleton,
 } from '@metamask/design-system-react';
 import classnames from 'clsx';
 import { ThemeType } from '../../../../../shared/constants/preferences';
 import { useTheme } from '../../../../hooks/useTheme';
-import { Skeleton } from '../../../../components/component-library/skeleton';
 import {
   BackgroundColor,
   BorderRadius,
@@ -20,6 +20,7 @@ import {
 import { Tag } from '../../../../components/component-library';
 import ShieldBannerAnimation from '../shield-banner-animation';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { getShortDateFormatterV2 } from '../../../asset/util';
 
 type MembershipHeaderProps = {

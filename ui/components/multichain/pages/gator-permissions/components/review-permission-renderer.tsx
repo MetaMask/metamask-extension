@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
-import type { Rule } from '@metamask/7715-permission-types';
+import type {
+  Rule,
+  AmountField,
+  ExpiryField,
+  I18nFunction,
+  PermissionRenderContext,
+  ReviewFieldView,
+  SchemaElement,
+  SchemaSection,
+  TranslationKeys,
+} from '@metamask/7715-permission-types';
 import type { Hex } from '@metamask/utils';
 import {
   BoxFlexDirection,
@@ -13,27 +23,17 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
 } from '@metamask/design-system-react';
+import { useSelector } from 'react-redux';
 import {
   isPermissionDataWithTotalExposure,
   computeTotalExposureForPermission,
 } from '../../../../../../shared/lib/gator-permissions/compute-total-exposure';
-import {
-  PERMISSION_SCHEMAS,
-  assertPermissionSchemaEntry,
-} from '../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
+import { getPermissionSchemaEntry } from '../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
 import { throwUnhandledPermissionSchemaElement } from '../../../../../../shared/lib/gator-permissions/throw-unhandled-permission-schema-element';
 import { translateI18nValue } from '../../../../../../shared/lib/gator-permissions/translate-i18n-value';
-import type {
-  AmountField,
-  ExpiryField,
-  I18nFunction,
-  PermissionRenderContext,
-  ReviewFieldView,
-  SchemaElement,
-  SchemaSection,
-} from '../../../../../../shared/lib/gator-permissions/permission-detail-schema.types';
 
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useAdvancedPermissionTranslationsMap } from '../../../../../hooks/gator-permissions/useAdvancedPermissionTranslationsMap';
 import type { GatorTokenInfo } from '../../../../../hooks/gator-permissions/useGatorPermissionTokenInfo';
 import {
   convertTimestampToReadableDate,
@@ -42,9 +42,14 @@ import {
   formatDecimalShiftedValue,
 } from '../../../../../../shared/lib/gator-permissions';
 import { getImageForChainId } from '../../../../../selectors/multichain';
+import { getChainIdToNetworkImageUrlMap } from '../../../../../selectors/config-registry/config-registry';
 import { PreferredAvatar } from '../../../../app/preferred-avatar';
 import { CopyIcon } from '../../../../app/confirm/info/row/copy-icon';
-import { useFallbackDisplayName } from '../../../../app/confirm/info/row/hook';
+import {
+  shortenDisplayAddress,
+  useGetDisplayName,
+} from '../../../../../hooks/useGetDisplayName';
+import { toChecksumHexAddress } from '../../../../../../shared/lib/hexstring-utils';
 import NicknamePopovers from '../../../../app/modals/nickname-popovers';
 import {
   GatorPermissionDetailRow,
@@ -68,7 +73,7 @@ function formatHexAmount(
 }
 
 function formatRawAmount(
-  rawValue: import('bignumber.js').BigNumber,
+  rawValue: bigint,
   decimals: number | undefined,
   symbol: string,
   isRatePerSecond = false,
@@ -94,12 +99,16 @@ function schemaElementDomKey(
 // Custom field components (use hooks, so must be React components)
 // ---------------------------------------------------------------------------
 
-const ReviewAddressDisplay: React.FC<{
+const ReviewAddressDisplay = ({
+  address,
+  testId,
+  style,
+}: {
   address: string;
   testId: string;
   style?: React.CSSProperties;
-}> = ({ address, testId, style }) => {
-  const { displayName, hexAddress } = useFallbackDisplayName(address);
+}) => {
+  const getDisplayName = useGetDisplayName();
   const [isNicknamePopoverShown, setIsNicknamePopoverShown] = useState(false);
   const handleDisplayNameClick = () => setIsNicknamePopoverShown(true);
 
@@ -119,7 +128,7 @@ const ReviewAddressDisplay: React.FC<{
           color={TextColor.TextAlternative}
           data-testid={testId}
         >
-          {displayName}
+          {getDisplayName(address) || shortenDisplayAddress(address)}
         </Text>
         <CopyIcon
           copyText={address}
@@ -130,15 +139,15 @@ const ReviewAddressDisplay: React.FC<{
       {isNicknamePopoverShown ? (
         <NicknamePopovers
           onClose={() => setIsNicknamePopoverShown(false)}
-          address={hexAddress}
+          address={toChecksumHexAddress(address)}
         />
       ) : null}
     </>
   );
 };
 
-const ReviewAccountRow: React.FC<{ address: string }> = ({ address }) => {
-  const t = useI18nContext() as I18nFunction;
+const ReviewAccountRow = ({ address }: { address: string }) => {
+  const i18nMap = useAdvancedPermissionTranslationsMap();
 
   return (
     <Box
@@ -153,7 +162,7 @@ const ReviewAccountRow: React.FC<{ address: string }> = ({ address }) => {
         color={TextColor.TextAlternative}
         variant={TextVariant.BodyMd}
       >
-        {t('account')}
+        {i18nMap.account}
       </Text>
       <ReviewAddressDisplay
         address={address}
@@ -164,11 +173,15 @@ const ReviewAccountRow: React.FC<{ address: string }> = ({ address }) => {
   );
 };
 
-const ReviewNetworkRow: React.FC<{
+const ReviewNetworkRow = ({
+  chainId,
+  networkName,
+}: {
   chainId: Hex;
   networkName: string;
-}> = ({ chainId, networkName }) => {
+}) => {
   const t = useI18nContext() as I18nFunction;
+  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
 
   return (
     <Box
@@ -193,7 +206,7 @@ const ReviewNetworkRow: React.FC<{
         gap={2}
       >
         <AvatarNetwork
-          src={getImageForChainId(chainId)}
+          src={getImageForChainId(chainId, networkImageUrls)}
           name={chainId}
           size={AvatarNetworkSize.Xs}
         />
@@ -210,10 +223,13 @@ const ReviewNetworkRow: React.FC<{
   );
 };
 
-const ReviewRuleAddressRow: React.FC<{
+const ReviewRuleAddressRow = ({
+  addresses,
+  label,
+}: {
   addresses: string[];
   label: string;
-}> = ({ addresses, label }) => {
+}) => {
   return (
     <Box
       flexDirection={BoxFlexDirection.Row}
@@ -256,6 +272,7 @@ type RenderElementOptions = {
   element: SchemaElement;
   ctx: PermissionRenderContext;
   t: I18nFunction;
+  i18nMap: Record<TranslationKeys, string>;
   tokenSymbol: string;
   tokenDecimals: number | undefined;
   isLoading: boolean;
@@ -272,6 +289,7 @@ function renderElement({
   element,
   ctx,
   t,
+  i18nMap,
   tokenSymbol,
   tokenDecimals,
   isLoading: loading,
@@ -296,7 +314,7 @@ function renderElement({
         rowKey,
         element,
         ctx,
-        t,
+        i18nMap,
         tokenSymbol,
         tokenDecimals,
         loading,
@@ -306,8 +324,35 @@ function renderElement({
       return (
         <GatorPermissionDetailRow
           key={rowKey}
-          label={t(element.labelKey)}
+          label={i18nMap[element.labelKey]}
           value={translateI18nValue(t, element.getValue(ctx))}
+          testId={element.testId}
+          tooltip={element.tooltip ? t(element.tooltip) : undefined}
+        />
+      );
+
+    case 'raw-text':
+      return (
+        <GatorPermissionDetailRow
+          key={rowKey}
+          label={i18nMap[element.labelKey]}
+          value={element.getValue(ctx)}
+          testId={element.testId}
+        />
+      );
+
+    case 'list':
+      return (
+        <GatorPermissionDetailRow
+          key={rowKey}
+          label={i18nMap[element.labelKey]}
+          value={
+            <ul style={{ listStyle: 'disc', paddingLeft: 20 }}>
+              {element.getValue(ctx).map((value, valueIndex) => (
+                <li key={`${value}-${valueIndex}`}>{t(value)}</li>
+              ))}
+            </ul>
+          }
           testId={element.testId}
         />
       );
@@ -316,14 +361,14 @@ function renderElement({
       return (
         <GatorPermissionDetailRow
           key={rowKey}
-          label={t(element.labelKey)}
+          label={i18nMap[element.labelKey]}
           value={convertTimestampToReadableDate(element.getValue(ctx) ?? 0)}
           testId={element.testId}
         />
       );
 
     case 'expiry':
-      return renderExpiryElement(rowKey, element, ctx, t);
+      return renderExpiryElement(rowKey, element, ctx, t, i18nMap);
 
     case 'justification': {
       const justificationValue = element.getValue(ctx);
@@ -334,7 +379,7 @@ function renderElement({
       return (
         <GatorPermissionDetailRow
           key={rowKey}
-          label={t(element.labelKey)}
+          label={i18nMap[element.labelKey]}
           value={justificationText}
           testId={element.testId}
         />
@@ -363,7 +408,7 @@ function renderElement({
         <ReviewRuleAddressRow
           key={rowKey}
           addresses={addresses}
-          label={t(element.labelKey)}
+          label={i18nMap[element.labelKey]}
         />
       );
     }
@@ -371,8 +416,13 @@ function renderElement({
     case 'divider':
     case 'origin':
     case 'address':
-    default:
-      return throwUnhandledPermissionSchemaElement(element as never);
+      throw new Error(
+        `Unexpected schema element type in review renderer: ${element.type}`,
+      );
+    default: {
+      const neverElement: never = element;
+      return throwUnhandledPermissionSchemaElement(neverElement);
+    }
   }
 }
 
@@ -380,7 +430,7 @@ function renderAmountElement(
   rowKey: string,
   element: AmountField,
   ctx: PermissionRenderContext,
-  t: I18nFunction,
+  i18nMap: Record<TranslationKeys, string>,
   tokenSymbol: string,
   tokenDecimals: number | undefined,
   loading: boolean,
@@ -396,7 +446,7 @@ function renderAmountElement(
   return (
     <GatorPermissionDetailRow
       key={rowKey}
-      label={t(element.labelKey)}
+      label={i18nMap[element.labelKey]}
       value={displayValue}
       testId={element.testId}
       isLoading={loading}
@@ -409,6 +459,7 @@ function renderExpiryElement(
   element: ExpiryField,
   ctx: PermissionRenderContext,
   t: I18nFunction,
+  i18nMap: Record<TranslationKeys, string>,
 ): React.ReactNode {
   const expiry = element.getValue(ctx);
   const displayValue =
@@ -419,7 +470,7 @@ function renderExpiryElement(
   return (
     <GatorPermissionDetailRow
       key={rowKey}
-      label={t(element.labelKey)}
+      label={i18nMap[element.labelKey]}
       value={displayValue}
       testId={element.testId}
     />
@@ -434,6 +485,7 @@ type RenderSectionOptions = {
   section: SchemaSection;
   ctx: PermissionRenderContext;
   t: I18nFunction;
+  i18nMap: Record<TranslationKeys, string>;
   tokenSymbol: string;
   tokenDecimals: number | undefined;
   isLoading: boolean;
@@ -448,6 +500,7 @@ function renderSection({
   section,
   ctx,
   t,
+  i18nMap,
   tokenSymbol,
   tokenDecimals,
   isLoading,
@@ -462,6 +515,7 @@ function renderSection({
           element,
           ctx,
           t,
+          i18nMap,
           tokenSymbol,
           tokenDecimals,
           isLoading,
@@ -512,9 +566,7 @@ export type ReviewPermissionRendererProps = {
  * @param options0.permissionAccount
  * @param options0.networkName
  */
-export const ReviewPermissionRenderer: React.FC<
-  ReviewPermissionRendererProps
-> = ({
+export const ReviewPermissionRenderer = ({
   permissionType,
   permissionData,
   chainId,
@@ -525,11 +577,11 @@ export const ReviewPermissionRenderer: React.FC<
   origin,
   permissionAccount,
   networkName,
-}) => {
+}: ReviewPermissionRendererProps) => {
   const t = useI18nContext() as I18nFunction;
+  const i18nMap = useAdvancedPermissionTranslationsMap();
 
-  const schemaEntry = PERMISSION_SCHEMAS[permissionType];
-  assertPermissionSchemaEntry(permissionType, schemaEntry);
+  const schemaEntry = getPermissionSchemaEntry(permissionType);
 
   const effectiveExpiry = extractExpiryTimestampFromRules(rules ?? []);
   const redeemerAddresses = extractAddressesFromRuleByType(
@@ -572,6 +624,7 @@ export const ReviewPermissionRenderer: React.FC<
           section,
           ctx,
           t,
+          i18nMap,
           tokenSymbol: tokenInfo.symbol,
           tokenDecimals: tokenInfo.decimals,
           isLoading: loading,

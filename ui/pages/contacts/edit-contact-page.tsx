@@ -11,12 +11,14 @@ import { Content, Header, Page } from '../../components/multichain/pages/page';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   CONTACTS_ROUTE,
-  CONTACTS_VIEW_ROUTE,
   DEFAULT_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 import { getInternalAccountByAddress } from '../../selectors';
-import { getAddressBookEntryByNetwork } from '../../selectors/snaps/address-book';
+import {
+  AddressBookMetaMaskState,
+  getAddressBookEntryByNetwork,
+} from '../../selectors/snaps/address-book';
 import { EditContactForm } from './components/edit-contact-form';
 
 export function EditContactPage() {
@@ -28,7 +30,11 @@ export function EditContactPage() {
   }>();
   const contact = useSelector((state) =>
     address && chainId
-      ? getAddressBookEntryByNetwork(state, address, chainId as `0x${string}`)
+      ? getAddressBookEntryByNetwork(
+          state as AddressBookMetaMaskState,
+          address,
+          chainId as Hex,
+        )
       : null,
   );
   const internalAccount = useSelector((state) =>
@@ -86,9 +92,6 @@ export function EditContactPage() {
           initialName={name}
           initialMemo={memo}
           contactChainId={contactChainId}
-          onCancel={() =>
-            navigate(`${CONTACTS_VIEW_ROUTE}/${chainId}/${address}`)
-          }
           onSuccess={() =>
             navigate(CONTACTS_ROUTE, {
               state: { showContactUpdatedToast: true },

@@ -4,6 +4,7 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import { PPOMController } from '@metamask/ppom-validator';
+import { Wallet } from '@metamask/wallet';
 
 import { buildControllerInitRequestMock } from './test/utils';
 import { MessengerClientApi, MessengerClientName } from './types';
@@ -14,7 +15,7 @@ type InitFunctions = Parameters<
 >[0]['initFunctions'];
 
 const CONTROLLER_NAME_MOCK = 'PPOMController';
-const CONTROLLER_NAME_2_MOCK = 'TransactionController';
+const CONTROLLER_NAME_2_MOCK = 'TransactionPayController';
 
 function buildControllerMock(name?: string) {
   return { name: name ?? CONTROLLER_NAME_MOCK } as unknown as PPOMController;
@@ -53,6 +54,10 @@ function buildBaseControllerMessenger() {
   });
 }
 
+function buildWalletMock() {
+  return { getInstance: jest.fn() } as unknown as Wallet;
+}
+
 describe('Messenger Client Init Utils', () => {
   describe('initMessengerClients', () => {
     it('returns messenger clients by name', () => {
@@ -65,6 +70,7 @@ describe('Messenger Client Init Utils', () => {
       );
 
       const { messengerClientsByName } = initMessengerClients({
+        wallet: buildWalletMock(),
         baseControllerMessenger: buildBaseControllerMessenger(),
         initFunctions: {
           [CONTROLLER_NAME_MOCK]: init1Mock,
@@ -89,6 +95,7 @@ describe('Messenger Client Init Utils', () => {
       );
 
       initMessengerClients({
+        wallet: buildWalletMock(),
         baseControllerMessenger: buildBaseControllerMessenger(),
         initFunctions: {
           [CONTROLLER_NAME_MOCK]: init1Mock,
@@ -107,6 +114,7 @@ describe('Messenger Client Init Utils', () => {
         const initMock = buildControllerFunctionMock();
 
         initMessengerClients({
+          wallet: buildWalletMock(),
           baseControllerMessenger: buildBaseControllerMessenger(),
           initFunctions: {
             [CONTROLLER_NAME_MOCK]: initMock,
@@ -126,6 +134,7 @@ describe('Messenger Client Init Utils', () => {
         const initMock = buildControllerFunctionMock();
 
         initMessengerClients({
+          wallet: buildWalletMock(),
           baseControllerMessenger: buildBaseControllerMessenger(),
           initFunctions: {
             [CONTROLLER_NAME_MOCK]: initMock,
@@ -159,6 +168,7 @@ describe('Messenger Client Init Utils', () => {
       );
 
       const { messengerClientApi } = initMessengerClients({
+        wallet: buildWalletMock(),
         baseControllerMessenger: buildBaseControllerMessenger(),
         initFunctions: {
           [CONTROLLER_NAME_MOCK]: initMock,
@@ -190,6 +200,7 @@ describe('Messenger Client Init Utils', () => {
       );
 
       const { messengerClientApi } = initMessengerClients({
+        wallet: buildWalletMock(),
         baseControllerMessenger: buildBaseControllerMessenger(),
         initFunctions: {
           [CONTROLLER_NAME_MOCK]: initMock,
@@ -234,6 +245,7 @@ describe('Messenger Client Init Utils', () => {
       );
 
       const { controllerPersistedState } = initMessengerClients({
+        wallet: buildWalletMock(),
         baseControllerMessenger: buildBaseControllerMessenger(),
         initFunctions: {
           [CONTROLLER_NAME_MOCK]: initMock,
@@ -274,6 +286,7 @@ describe('Messenger Client Init Utils', () => {
       );
 
       const { controllerMemState } = initMessengerClients({
+        wallet: buildWalletMock(),
         baseControllerMessenger: buildBaseControllerMessenger(),
         initFunctions: {
           [CONTROLLER_NAME_MOCK]: initMock,
@@ -294,6 +307,7 @@ describe('Messenger Client Init Utils', () => {
       const initMock = buildControllerFunctionMock();
 
       initMessengerClients({
+        wallet: buildWalletMock(),
         baseControllerMessenger: buildBaseControllerMessenger(),
         initFunctions: {
           [CONTROLLER_NAME_MOCK]: initMock,
@@ -311,6 +325,7 @@ describe('Messenger Client Init Utils', () => {
       const initMock = buildControllerFunctionMock();
 
       initMessengerClients({
+        wallet: buildWalletMock(),
         baseControllerMessenger: buildBaseControllerMessenger(),
         initFunctions: {
           TestName: initMock,
@@ -328,6 +343,7 @@ describe('Messenger Client Init Utils', () => {
       const initMock = buildControllerFunctionMock();
 
       initMessengerClients({
+        wallet: buildWalletMock(),
         baseControllerMessenger: buildBaseControllerMessenger(),
         initFunctions: {
           [CONTROLLER_NAME_MOCK]: initMock,
@@ -345,6 +361,7 @@ describe('Messenger Client Init Utils', () => {
       const initMock = buildControllerFunctionMock();
 
       initMessengerClients({
+        wallet: buildWalletMock(),
         baseControllerMessenger: buildBaseControllerMessenger(),
         initFunctions: {
           TestName: initMock,

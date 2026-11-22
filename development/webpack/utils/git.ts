@@ -29,15 +29,15 @@ export function getLatestCommit(
   if (cached) return cached;
 
   // execute the `git` command to get the latest commit's 8 character hash
-  // (`%h` and `--abbrev=8`) and authorship timestamp (seconds since the Unix
-  // epoch)
+  // (`%h` and `--abbrev=8`) and committer timestamp (seconds since the Unix
+  // epoch). This matches the timestamp used by `git archive`.
   const hashLength = 8;
   const args = [
     `--git-dir`,
     normalize(gitDir),
     'log',
     '-1',
-    '--format=%h%at',
+    '--format=%h%ct',
     `--abbrev=${hashLength}`,
   ] as const;
   const { stdout } = spawnSync('git', args, {

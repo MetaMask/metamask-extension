@@ -1,9 +1,11 @@
-import { MultichainNetworkController } from '@metamask/multichain-network-controller';
+import {
+  MultichainNetworkController,
+  MultichainNetworkControllerMessenger,
+} from '@metamask/multichain-network-controller';
 import {
   MessengerClientInitFunction,
   MessengerClientInitRequest,
 } from '../types';
-import { MultichainNetworkControllerMessenger } from '../messengers/multichain';
 import { MultichainNetworkServiceInit } from './multichain-network-service-init';
 
 /**

@@ -1,14 +1,4 @@
-/**
- * Hardware wallet types normalized for the hardware wallet context
- */
-export enum HardwareWalletType {
-  Ledger = 'ledger',
-  Trezor = 'trezor',
-  OneKey = 'oneKey',
-  Lattice = 'lattice',
-  Qr = 'qr',
-  Unknown = 'unknown', // use for connection errors when wallet type is unknown
-}
+export { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
 
 /**
  * Hardware wallet connection status

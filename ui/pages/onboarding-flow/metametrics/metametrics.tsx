@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import log from 'loglevel';
 import {
@@ -18,15 +18,16 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   setParticipateInMetaMetrics,
-  setDataCollectionForMarketing,
+  optInToMarketing,
+  optOutOfMarketing,
   setPna25Acknowledged,
 } from '../../../store/actions';
 import {
   getDataCollectionForMarketing,
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
-  getIsParticipateInMetaMetricsSet,
-  getParticipateInMetaMetrics,
+  getConsentDecisionMade,
+  getOptedIn,
 } from '../../../selectors';
 import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 
@@ -35,30 +36,24 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../../../shared/constants/metametrics';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
+import { useIsFirefox } from '../../../hooks/useIsFirefox';
+import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useDispatch } from '../../../store/hooks';
 
 type MetametricsCheckboxOptionProps = Readonly<{
   id: string;
   testId: string;
   isSelected: boolean;
-  isDisabled?: boolean;
   onChange: () => void;
-  checkboxRef: React.RefObject<{ toggle: () => void }>;
   label: React.ReactNode;
   description: React.ReactNode;
-  containerClassName: string;
-  isInteractive?: boolean;
 }>;
-
-const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
 const stopClickPropagation = (e: React.MouseEvent) => {
   e.stopPropagation();
@@ -69,13 +64,9 @@ function MetametricsCheckboxOption({
   id,
   testId,
   isSelected,
-  isDisabled,
   onChange,
-  checkboxRef,
   label,
   description,
-  containerClassName,
-  isInteractive = true,
 }: Readonly<MetametricsCheckboxOptionProps>) {
   return (
     <Box
@@ -83,25 +74,23 @@ function MetametricsCheckboxOption({
       gap={2}
       padding={3}
       backgroundColor={BoxBackgroundColor.BackgroundMuted}
-      className={`${containerClassName} rounded-lg`}
+      className="onboarding-metametrics__checkbox rounded-lg"
       data-testid={testId}
       data-checked={String(isSelected)}
-      role={isInteractive ? 'button' : undefined}
-      tabIndex={isInteractive ? 0 : undefined}
-      onClick={isInteractive ? () => checkboxRef.current?.toggle() : undefined}
+      role="button"
+      tabIndex={0}
+      onClick={onChange}
       onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
-        if ((e.key === ' ' || e.key === 'Enter') && isInteractive) {
+        if (e.key === ' ' || e.key === 'Enter') {
           e.preventDefault();
-          checkboxRef.current?.toggle();
+          onChange();
         }
       }}
     >
       <Checkbox
         id={id}
         isSelected={isSelected}
-        isDisabled={isDisabled}
         onChange={onChange}
-        ref={checkboxRef}
         onClick={stopClickPropagation}
         inputProps={{ onClick: stopClickPropagation }}
         label={label}
@@ -117,48 +106,44 @@ function MetametricsCheckboxOption({
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function OnboardingMetametrics() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const isFirefox = useIsFirefox();
 
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
-  const participateInMetaMetricsSet = useSelector(
-    getIsParticipateInMetaMetricsSet,
-  );
-  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
+  const isOptedIn = useSelector(getOptedIn);
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
-  const [
-    isParticipateInMetaMetricsChecked,
-    setIsParticipateInMetaMetricsChecked,
-  ] = useState(true);
-  const [
-    isDataCollectionForMarketingChecked,
-    setIsDataCollectionForMarketingChecked,
-  ] = useState(false);
 
-  const participateCheckboxRef = useRef<{ toggle: () => void } | null>(null);
-  const marketingCheckboxRef = useRef<{ toggle: () => void } | null>(null);
+  const [checkboxDraft, setCheckboxDraft] = useState({
+    participateTouched: false,
+    marketingTouched: false,
+    participateLocal: true,
+    marketingLocal: false,
+  });
+  const {
+    participateTouched,
+    marketingTouched,
+    participateLocal,
+    marketingLocal,
+  } = checkboxDraft;
 
-  useEffect(() => {
-    if (participateInMetaMetricsSet) {
-      setIsParticipateInMetaMetricsChecked(participateInMetaMetrics);
-    }
-    if (dataCollectionForMarketing) {
-      setIsDataCollectionForMarketingChecked(dataCollectionForMarketing);
-    }
-  }, [
-    participateInMetaMetricsSet,
-    participateInMetaMetrics,
-    dataCollectionForMarketing,
-  ]);
+  let isParticipateInMetaMetricsChecked = true;
+  if (participateTouched) {
+    isParticipateInMetaMetricsChecked = participateLocal;
+  } else if (consentDecisionMade) {
+    isParticipateInMetaMetricsChecked = isOptedIn;
+  }
+  const isDataCollectionForMarketingChecked = marketingTouched
+    ? marketingLocal
+    : Boolean(dataCollectionForMarketing);
 
   const currentKeyring = useSelector(getCurrentKeyring);
 
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   let nextRouteByBrowser = useSelector(
     getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
@@ -187,30 +172,31 @@ export default function OnboardingMetametrics() {
       }
 
       if (isParticipateInMetaMetricsChecked) {
-        await trackEvent({
-          category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.AppInstalled,
-        });
-
-        await trackEvent({
-          category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-          properties: {
-            [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
-            [MetaMetricsUserTrait.HasMarketingConsent]:
-              isDataCollectionForMarketingChecked,
-            location: 'onboarding_metametrics',
-          },
-        });
-
-        dispatch(
-          setDataCollectionForMarketing(isDataCollectionForMarketingChecked),
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.AppInstalled)
+            .addCategory(MetaMetricsEventCategory.Onboarding)
+            .build(),
         );
-        dispatch(setParticipateInMetaMetrics(true));
-      } else {
-        dispatch(setParticipateInMetaMetrics(false));
-        dispatch(setDataCollectionForMarketing(false));
+
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
+            .addCategory(MetaMetricsEventCategory.Onboarding)
+            .addProperties({
+              [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
+              [MetaMetricsUserTrait.HasMarketingConsent]:
+                isDataCollectionForMarketingChecked,
+              location: 'onboarding_metametrics',
+            })
+            .build(),
+        );
       }
+
+      dispatch(
+        isDataCollectionForMarketingChecked
+          ? optInToMarketing()
+          : optOutOfMarketing(),
+      );
+      dispatch(setParticipateInMetaMetrics(isParticipateInMetaMetricsChecked));
     } catch (error) {
       log.error('onConfirm::error', error);
     } finally {
@@ -219,19 +205,25 @@ export default function OnboardingMetametrics() {
   };
 
   const handleParticipateInMetaMetricsChange = () => {
-    setIsParticipateInMetaMetricsChecked((prev) => {
-      const next = !prev;
-      if (!next) {
-        setIsDataCollectionForMarketingChecked(false);
-      }
-      return next;
-    });
+    setCheckboxDraft((prev) => ({
+      ...prev,
+      participateTouched: true,
+      participateLocal: !isParticipateInMetaMetricsChecked,
+    }));
+  };
+
+  const handleMarketingChange = () => {
+    setCheckboxDraft((prev) => ({
+      ...prev,
+      marketingTouched: true,
+      marketingLocal: !isDataCollectionForMarketingChecked,
+    }));
   };
 
   return (
     <Box
       className="onboarding-metametrics"
-      data-testid="onboarding-metametrics"
+      data-testid="parent-selector-onboarding-metrics"
       flexDirection={BoxFlexDirection.Column}
       gap={4}
     >
@@ -267,8 +259,6 @@ export default function OnboardingMetametrics() {
         testId="metametrics-checkbox"
         isSelected={isParticipateInMetaMetricsChecked}
         onChange={handleParticipateInMetaMetricsChange}
-        checkboxRef={participateCheckboxRef}
-        containerClassName="onboarding-metametrics__checkbox"
         label={
           <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
             {t('onboardingMetametricCheckboxTitleOne')}
@@ -280,21 +270,8 @@ export default function OnboardingMetametrics() {
       <MetametricsCheckboxOption
         id="metametrics-datacollection-opt-in"
         testId="metametrics-data-collection-checkbox"
-        isSelected={
-          isParticipateInMetaMetricsChecked &&
-          isDataCollectionForMarketingChecked
-        }
-        isDisabled={!isParticipateInMetaMetricsChecked}
-        onChange={() => {
-          setIsDataCollectionForMarketingChecked((prev) => !prev);
-        }}
-        checkboxRef={marketingCheckboxRef}
-        containerClassName={
-          isParticipateInMetaMetricsChecked
-            ? 'onboarding-metametrics__checkbox'
-            : 'onboarding-metametrics__checkbox-disabled'
-        }
-        isInteractive={isParticipateInMetaMetricsChecked}
+        isSelected={isDataCollectionForMarketingChecked}
+        onChange={handleMarketingChange}
         label={
           <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
             {t('onboardingMetametricCheckboxTitleTwo')}

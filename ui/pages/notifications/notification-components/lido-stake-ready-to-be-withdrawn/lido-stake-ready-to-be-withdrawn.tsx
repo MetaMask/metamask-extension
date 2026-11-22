@@ -1,6 +1,9 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+import { AvatarIconSeverity, IconName } from '@metamask/design-system-react';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
+import { getChainIdToNetworkImageUrlMap } from '../../../../selectors/config-registry/config-registry';
 import {
   NotificationComponentType,
   type NotificationComponent,
@@ -8,7 +11,6 @@ import {
 import {
   NotificationListItem,
   NotificationDetailInfo,
-  NotificationDetailTitle,
   NotificationDetailAsset,
   NotificationDetailBlockExplorerButton,
   NotificationDetailAddress,
@@ -17,19 +19,12 @@ import { t } from '../../../../../shared/lib/translate';
 import {
   createTextItems,
   formatAmount,
-  formatIsoDateString,
   getNativeCurrencyLogoByChainId,
 } from '../../../../helpers/utils/notification.util';
-import {
-  TextVariant,
-  BackgroundColor,
-  TextColor,
-} from '../../../../helpers/constants/design-system';
+import { TextVariant } from '../../../../helpers/constants/design-system';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
-import {
-  BadgeWrapperPosition,
-  IconName,
-} from '../../../../components/component-library';
+import { BadgeWrapperPosition } from '../../../../components/component-library';
+import { OnChainNotificationDetailsTitle } from '../notification-details-title';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -40,23 +35,12 @@ const isLidoReadyWithDrawnNotification = isOfTypeNodeGuard([
 ]);
 
 const getDescription = (n: LidoReadyWithDrawnNotification) => {
-  const amount = formatAmount(parseFloat(n.payload.data.staked_eth.amount), {
-    shouldEllipse: true,
-  });
-  const description =
-    t(
-      'notificationItemLidoStakeReadyToBeWithdrawnMessage',
-      `${amount} ${n.payload.data.staked_eth.symbol}`,
-    ) ?? '';
-  const items = createTextItems([description], TextVariant.bodyMd);
+  const items = createTextItems([n.template?.body ?? ''], TextVariant.bodyMd);
   return items;
 };
 
-const getTitle = () => {
-  const items = createTextItems(
-    [t('notificationItemLidoStakeReadyToBeWithdrawn') ?? ''],
-    TextVariant.bodySm,
-  );
+const getTitle = (n: LidoReadyWithDrawnNotification) => {
+  const items = createTextItems([n.template?.title ?? ''], TextVariant.bodySm);
   return items;
 };
 
@@ -76,7 +60,7 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
               position: BadgeWrapperPosition.bottomRight,
             },
           }}
-          title={getTitle()}
+          title={getTitle(notification)}
           description={getDescription(notification)}
           createdAt={new Date(notification.createdAt)}
           onClick={onClick}
@@ -84,12 +68,7 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
       );
     },
     details: {
-      title: ({ notification }) => (
-        <NotificationDetailTitle
-          title={t('notificationItemLidoStakeReadyToBeWithdrawn') ?? ''}
-          date={formatIsoDateString(notification.createdAt)}
-        />
-      ),
+      title: OnChainNotificationDetailsTitle,
       body: {
         type: NotificationComponentType.OnChainBody,
         Account: ({ notification }) => {
@@ -107,16 +86,17 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
           <NotificationDetailInfo
             icon={{
               iconName: IconName.Check,
-              color: TextColor.successDefault,
-              backgroundColor: BackgroundColor.successMuted,
+              severity: AvatarIconSeverity.Success,
             }}
             label={t('notificationItemStatus') ?? ''}
             detail={t('notificationItemConfirmed') ?? ''}
           />
         ),
         Asset: ({ notification }) => {
+          const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
           const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
             notification.payload.chain_id,
+            networkImageUrls,
           );
           return (
             <NotificationDetailAsset
@@ -141,8 +121,10 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
           );
         },
         AssetReceived: ({ notification }) => {
+          const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
           const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
             notification.payload.chain_id,
+            networkImageUrls,
           );
           return (
             <NotificationDetailAsset

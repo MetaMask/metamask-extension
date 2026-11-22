@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import {
   Box,
   Text,
@@ -18,12 +18,14 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
 
 type SrpInputFormProps = {
   error?: string;
   setSecretRecoveryPhrase: (secretRecoveryPhrase: string) => void;
   onClearCallback: () => void;
+  onClearClipboardRetry?: () => void;
+  onClipboardClearFailed?: () => void;
   /**
    * Whether to show the default description
    */
@@ -42,28 +44,33 @@ const SrpInputForm = ({
   error,
   setSecretRecoveryPhrase,
   onClearCallback,
+  onClearClipboardRetry,
+  onClipboardClearFailed,
   showDescription = true,
   toggleSrpDetailsModal = false,
   onSrpDetailsModalClose,
 }: SrpInputFormProps) => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const [showSrpDetailsModal, setShowSrpDetailsModal] = useState(false);
 
   useEffect(() => {
+    // Sync modal open state from parent prop (restore-vault custom description).
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional controlled sync from prop
     setShowSrpDetailsModal(toggleSrpDetailsModal);
   }, [toggleSrpDetailsModal]);
 
   const onShowSrpDetailsModal = useCallback(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.SrpDefinitionClicked,
-      properties: {
-        location: 'import_srp',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.SrpDefinitionClicked)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          location: 'import_srp',
+        })
+        .build(),
+    );
     setShowSrpDetailsModal(true);
-  }, [trackEvent]);
+  }, [createEventBuilder, trackEvent]);
 
   return (
     <>
@@ -102,6 +109,8 @@ const SrpInputForm = ({
             <SrpInputImport
               onChange={setSecretRecoveryPhrase}
               onClearCallback={onClearCallback}
+              onClearClipboardRetry={onClearClipboardRetry}
+              onClipboardClearFailed={onClipboardClearFailed}
             />
             {error && (
               <Box marginTop={2}>

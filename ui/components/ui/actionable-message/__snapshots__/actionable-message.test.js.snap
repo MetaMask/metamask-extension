@@ -5,7 +5,6 @@ exports[`ActionableMessage renders the component with initial props 1`] = `
   <div
     class="actionable-message"
   >
-    
     <div
       class="actionable-message__message"
     >

@@ -17,12 +17,12 @@ import { mockEthPrices } from '../tokens/utils/mocks';
 import { Driver } from '../../webdriver/driver';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { Anvil } from '../../seeder/anvil';
-import { createInternalTransaction } from '../../page-objects/flows/transaction';
+import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 const ETH_USD_PRICE = 1700;
@@ -61,21 +61,24 @@ describe('Send ETH - Advanced', function () {
 
           const homePage = new HomePage(driver);
           const transactionConfirmation = new TransactionConfirmation(driver);
-          const activityListPage = new ActivityListPage(driver);
+          const activityTab = new ActivityTab(driver);
 
           await createInternalTransaction({
             driver,
             recipientAddress: contractAddress,
             amount: '1',
           });
-          await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
+          await transactionConfirmation.clickFooterButton({
+            button: 'confirm',
+            waitUntil: 'disappear',
+          });
 
           // Verify balance is displayed correctly (format: "X.XX ETH")
           await homePage.checkBalanceIsDisplayed();
 
-          await activityListPage.openActivityTab();
-          await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
-          await activityListPage.checkNoFailedTransactions();
+          await activityTab.goToActivityList();
+          await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
+          await activityTab.checkNoFailedTransactions();
         },
       );
     });
@@ -107,7 +110,7 @@ describe('Send ETH - Advanced', function () {
           const testDapp = new TestDapp(driver);
           const transactionConfirmation = new TransactionConfirmation(driver);
           const gasFeeModal = new GasFeeModal(driver);
-          const activityListPage = new ActivityListPage(driver);
+          const activityTab = new ActivityTab(driver);
 
           // Initiate a send from the dapp
           await testDapp.openTestDappPage();
@@ -124,19 +127,20 @@ describe('Send ETH - Advanced', function () {
           await transactionConfirmation.checkGasFee('0.0021');
           await transactionConfirmation.checkGasFeeFiat('$3.57');
 
-          await transactionConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+          await transactionConfirmation.clickFooterButton({
+            button: 'confirm',
+            waitUntil: 'windowClose',
+          });
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
 
           // Find the transaction in the transactions list
-          await activityListPage.openActivityTab();
-          await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
-          await activityListPage.checkTxAmountInActivity('-0 ETH');
+          await activityTab.goToActivityList();
+          await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
+          await activityTab.checkTxAmountInActivity('-0 ETH');
 
-          // Verify the transaction has the expected gas price
-          await activityListPage.clickOnActivity(1);
-          await activityListPage.checkGasPrice('100');
+          await activityTab.clickOnActivity(1);
         },
       );
     });
@@ -163,7 +167,7 @@ describe('Send ETH - Advanced', function () {
           const testDapp = new TestDapp(driver);
           const transactionConfirmation = new TransactionConfirmation(driver);
           const gasFeeModal = new GasFeeModal(driver);
-          const activityListPage = new ActivityListPage(driver);
+          const activityTab = new ActivityTab(driver);
           const homePage = new HomePage(driver);
 
           // Initiate a transaction from the dapp
@@ -181,7 +185,10 @@ describe('Send ETH - Advanced', function () {
           await transactionConfirmation.checkGasFee('0.045');
           await transactionConfirmation.checkGasFeeFiat('$76.59');
 
-          await transactionConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+          await transactionConfirmation.clickFooterButton({
+            button: 'confirm',
+            waitUntil: 'windowClose',
+          });
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
@@ -190,13 +197,13 @@ describe('Send ETH - Advanced', function () {
           await homePage.checkBalanceIsDisplayed();
 
           // Find the transaction in the transactions list
-          await activityListPage.openActivityTab();
-          await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
-          await activityListPage.checkTxAmountInActivity('-0 ETH');
+          await activityTab.goToActivityList();
+          await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
+          await activityTab.checkTxAction({
+            action: 'Contract interaction',
+          });
 
-          // Verify the transaction has the expected gas values
-          await activityListPage.clickOnActivity(1);
-          await activityListPage.checkFeeValuesAreDisplayed();
+          await activityTab.clickOnActivity(1);
         },
       );
     });
@@ -227,9 +234,9 @@ describe('Send ETH - Advanced', function () {
 
           await sendPage.selectToken('0x539', 'ETH');
 
-          await sendPage.fillRecipient(
-            '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
-          );
+          await sendPage.fillRecipient({
+            recipientAddress: '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
+          });
 
           await sendPage.fillHexData(
             '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',

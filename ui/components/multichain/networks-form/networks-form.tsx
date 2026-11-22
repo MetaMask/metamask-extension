@@ -1,10 +1,33 @@
 import log from 'loglevel';
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { useSelector } from 'react-redux';
 import {
-  Button as DSButton,
-  ButtonSize as DSButtonSize,
-  ButtonVariant as DSButtonVariant,
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  HelpText,
+  HelpTextSeverity,
+  IconName,
+  Label,
+  Tag,
+  Text,
+  TextButton,
+  TextButtonSize,
+  TextColor,
+  TextField,
+  TextFieldSize,
+  TextVariant,
 } from '@metamask/design-system-react';
 import {
   type UpdateNetworkFields,
@@ -12,17 +35,31 @@ import {
 } from '@metamask/network-controller';
 import { Hex, isStrictHexString, hexToNumber } from '@metamask/utils';
 import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsNetworkEventSource,
+  NetworkManagementAction,
+  NetworkManagementEntryPoint,
+  NetworkManagementInteractionType,
+  NetworkManagementSource,
 } from '../../../../shared/constants/metametrics';
+import {
+  getChangedNetworkFields,
+  trackNetworkAdded,
+  trackNetworkEdited,
+  trackNetworkManagementInteracted,
+  trackRpcRemoved,
+} from '../../../helpers/utils/network-management-metrics';
+import { getNetworkSectionKey } from '../../../helpers/utils/network-sections';
 import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_IDS,
   infuraProjectId,
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
+import { getFailoverUrlsForEndpoint } from '../../../../shared/constants/network-failover';
 import {
   decimalToHex,
   hexToDecimal,
@@ -31,11 +68,16 @@ import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../shared/lib/network.utils';
-import { jsonRpcRequest } from '../../../../shared/lib/rpc.utils';
+import {
+  isRpcRateLimitError,
+  jsonRpcRequest,
+} from '../../../../shared/lib/rpc.utils';
 import { submitRequestToBackground } from '../../../store/background-connection';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
+import {
+  getNetworkConfigurationsByChainId,
+  getSelectedNetworkClientId,
+} from '../../../../shared/lib/selectors/networks';
 import {
   addNetwork,
   setEditedNetwork,
@@ -46,29 +88,6 @@ import {
   updateNetwork,
 } from '../../../store/actions';
 import {
-  Box,
-  ButtonLink,
-  ButtonPrimary,
-  ButtonPrimarySize,
-  FormTextField,
-  FormTextFieldSize,
-  HelpText,
-  HelpTextSeverity,
-  Tag,
-  Text,
-} from '../../component-library';
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  JustifyContent,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
-import RpcListItem, {
   stripKeyFromInfuraUrl,
   stripProtocol,
 } from '../network-list-menu/rpc-list-item';
@@ -81,8 +100,20 @@ import {
   getTokenNetworkFilter,
 } from '../../../selectors';
 import { onlyKeepHost } from '../../../../shared/lib/only-keep-host';
+import { useDispatch } from '../../../store/hooks';
+import {
+  ChainlistNetworkPicker,
+  type ChainlistNetwork,
+  getUsableUrls,
+} from '../../../pages/networks/chainlist-network-picker';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
+
+export type NetworksFormChainlist = {
+  existingNetworkChainIds: Set<string>;
+  existingNetworkNamesByChainId: Record<string, string>;
+  onSelect: (network: ChainlistNetwork, searchQuery?: string) => void;
+};
 
 export const NetworksForm = ({
   networkFormState,
@@ -94,6 +125,8 @@ export const NetworksForm = ({
   usePageFooterStyle = false,
   onComplete,
   onEdit,
+  onAddFromChainlist,
+  chainlist,
 }: {
   networkFormState: ReturnType<typeof useNetworkFormState>;
   existingNetwork?: UpdateNetworkFields;
@@ -104,15 +137,162 @@ export const NetworksForm = ({
   usePageFooterStyle?: boolean;
   onComplete?: () => void;
   onEdit?: () => void;
+  onAddFromChainlist?: () => void;
+  chainlist?: NetworksFormChainlist;
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const scrollableRef = useRef<HTMLDivElement>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
+  const nameFieldRef = useRef<HTMLDivElement>(null);
+  const chainIdFieldRef = useRef<HTMLDivElement>(null);
+  const chainlistPanelRef = useRef<HTMLDivElement>(null);
+  const didTrackChainlistOpen = useRef(false);
+  const showChainlist = Boolean(chainlist) && !existingNetwork;
+  // Returning from add RPC or add block explorer remounts this form. Keep the
+  // list closed when the user already entered a network, so those fields stay
+  // visible.
+  const formAlreadyStarted = Boolean(
+    networkFormState.name ||
+    networkFormState.chainId ||
+    networkFormState.ticker ||
+    networkFormState.rpcUrls.rpcEndpoints.length ||
+    networkFormState.blockExplorers.blockExplorerUrls.length,
+  );
+  const [hasDismissedChainlist, setHasDismissedChainlist] = useState(false);
+  const [isChainlistOpen, setIsChainlistOpen] = useState(
+    showChainlist && !formAlreadyStarted,
+  );
+  const [chainlistAnchor, setChainlistAnchor] = useState<'name' | 'chainId'>(
+    'name',
+  );
+  const chainlistFillsForm = isChainlistOpen && chainlistAnchor === 'name';
+  const [chainlistMaxHeight, setChainlistMaxHeight] = useState<number>();
+
+  useLayoutEffect(() => {
+    if (!isChainlistOpen) {
+      return undefined;
+    }
+    const panel = chainlistPanelRef.current;
+    if (!panel) {
+      return undefined;
+    }
+
+    const updateMaxHeight = () => {
+      const { top } = panel.getBoundingClientRect();
+      const footerTop =
+        footerRef.current?.getBoundingClientRect().top ?? window.innerHeight;
+      // Stop above the sticky Save bar. A short list still hugs its rows.
+      const nextHeight = Math.max(0, Math.floor(footerTop - top - 8));
+      setChainlistMaxHeight((currentHeight) =>
+        currentHeight === nextHeight ? currentHeight : nextHeight,
+      );
+    };
+
+    updateMaxHeight();
+    // The page enter animation scales the form. Measure again when it finishes
+    // so the cap matches the settled layout.
+    const handleTransitionEnd = () => updateMaxHeight();
+    const scrollParent = scrollableRef.current;
+    scrollParent?.addEventListener('scroll', updateMaxHeight);
+    window.addEventListener('resize', updateMaxHeight);
+    document.addEventListener('transitionend', handleTransitionEnd);
+    return () => {
+      scrollParent?.removeEventListener('scroll', updateMaxHeight);
+      window.removeEventListener('resize', updateMaxHeight);
+      document.removeEventListener('transitionend', handleTransitionEnd);
+    };
+  }, [chainlistAnchor, isChainlistOpen]);
+
+  // Open on the first render that has Chainlist, including when the flag
+  // arrives after mount. Later closes stay closed.
+  if (
+    showChainlist &&
+    !formAlreadyStarted &&
+    !hasDismissedChainlist &&
+    !isChainlistOpen
+  ) {
+    setIsChainlistOpen(true);
+  }
+
+  const trackChainlistOpened = () => {
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ChainlistAddClicked)
+        .addCategory(MetaMetricsEventCategory.Network)
+        .build(),
+    );
+  };
+
+  const openChainlist = (anchor: 'name' | 'chainId') => {
+    if (!showChainlist) {
+      return;
+    }
+    setChainlistAnchor(anchor);
+    if (isChainlistOpen) {
+      return;
+    }
+    // Mark this open before the list state updates, so the effect below does
+    // not record the same ChainlistAddClicked again.
+    didTrackChainlistOpen.current = true;
+    trackChainlistOpened();
+    setIsChainlistOpen(true);
+  };
+
+  const closeChainlist = () => {
+    setHasDismissedChainlist(true);
+    setIsChainlistOpen(false);
+  };
+
+  useEffect(() => {
+    if (!isChainlistOpen || didTrackChainlistOpen.current) {
+      return;
+    }
+    didTrackChainlistOpen.current = true;
+    trackChainlistOpened();
+    // Records the list that is already open on arrival. A later manual open is
+    // recorded in openChainlist.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isChainlistOpen]);
+
+  useEffect(() => {
+    if (!isChainlistOpen) {
+      return undefined;
+    }
+
+    const handlePointerDown = (event: MouseEvent) => {
+      const { target } = event;
+      if (!(target instanceof Node)) {
+        return;
+      }
+      if (
+        chainlistPanelRef.current?.contains(target) ||
+        nameFieldRef.current?.contains(target) ||
+        chainIdFieldRef.current?.contains(target)
+      ) {
+        return;
+      }
+      closeChainlist();
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        closeChainlist();
+      }
+    };
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isChainlistOpen]);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
   const isRpcFailoverEnabled = useSelector(getIsRpcFailoverEnabled);
 
   const {
+    source,
+    setSource,
     name,
     setName,
     chainId,
@@ -130,19 +310,30 @@ export const NetworksForm = ({
       ? undefined
       : rpcUrls.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex];
 
+  const networkChainIdHex = chainId === '' ? undefined : toHex(chainId);
+
+  // Failover only applies to Infura RPC endpoints (see
+  // `getFailoverUrlsForEndpoint`), so the UI matches the actual behaviour.
+  const failoverUrlsForEndpoint = (endpoint?: { url: string }) =>
+    networkChainIdHex
+      ? getFailoverUrlsForEndpoint(networkChainIdHex, endpoint?.url)
+      : [];
+
+  const defaultFailoverUrls = failoverUrlsForEndpoint(defaultRpcEndpoint);
+
   const { safeChains } = useSafeChains();
 
-  const [errors, setErrors] = useState<
-    Record<string, { key: string; msg: string } | undefined>
-  >({});
-
-  const [warnings, setWarnings] = useState<
-    Record<string, { key: string; msg: string } | undefined>
-  >({});
-
-  const [suggestedName, setSuggestedName] = useState<string>();
-  const [suggestedTicker, setSuggestedTicker] = useState<string>();
+  const [rpcFetchError, setRpcFetchError] = useState<
+    { key: string; msg: string } | undefined
+  >();
   const [fetchedChainId, setFetchedChainId] = useState<string>();
+  const failedChainlistRpcUrlsRef = useRef(new Set<string>());
+  // Save writes this chain into network configurations before the form closes.
+  // Skip the duplicate warning for that chain so the network just added is not
+  // reported as already saved.
+  const [submittedChainId, setSubmittedChainId] = useState<string | undefined>(
+    undefined,
+  );
 
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
 
@@ -151,9 +342,54 @@ export const NetworksForm = ({
       ? endpoint.replace('{infuraProjectId}', infuraProjectId ?? '')
       : endpoint;
 
-  // Validate the network name when it changes
+  const chainIdHex = chainId ? toHex(chainId) : undefined;
+  let metricsEntryPoint = NetworkManagementEntryPoint.NetworkPicker;
+  if (usePageFooterStyle) {
+    metricsEntryPoint = NetworkManagementEntryPoint.SettingsNetworks;
+  } else if (existingNetwork) {
+    metricsEntryPoint = NetworkManagementEntryPoint.EditNetworkModal;
+  }
+  const didTrackFormOpen = useRef(false);
+
   useEffect(() => {
-    const chainIdHex = chainId ? toHex(chainId) : undefined;
+    if (didTrackFormOpen.current) {
+      return;
+    }
+    didTrackFormOpen.current = true;
+
+    trackNetworkManagementInteracted(
+      { trackEvent, createEventBuilder },
+      {
+        interactionType: NetworkManagementInteractionType.NetworkFormOpened,
+        action: existingNetwork
+          ? NetworkManagementAction.Edit
+          : NetworkManagementAction.Add,
+        entryPoint: metricsEntryPoint,
+        chainId: chainIdHex,
+        networkType: chainIdHex ? getNetworkSectionKey(chainIdHex) : undefined,
+        rpcCount: rpcUrls.rpcEndpoints?.length ?? 0,
+      },
+    );
+
+    if (!existingNetwork) {
+      Promise.resolve(
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.CustomNetworkFormViewed)
+            .addCategory(MetaMetricsEventCategory.Network)
+            .addProperties({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              source_connection_method:
+                MetaMetricsNetworkEventSource.CustomNetworkForm,
+            })
+            .build(),
+        ),
+      ).catch(() => undefined);
+    }
+    // Fire once when the form opens. Later field edits are not new views.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const { suggestedName, nameWarning } = useMemo(() => {
     const expectedName = chainIdHex
       ? (NETWORK_TO_NAME_MAP[chainIdHex as keyof typeof NETWORK_TO_NAME_MAP] ??
         NETWORKS_BYPASSING_VALIDATION[
@@ -162,22 +398,19 @@ export const NetworksForm = ({
         safeChains?.find((chain) => toHex(chain.chainId) === chainIdHex)?.name)
       : undefined;
 
-    const mismatch = expectedName && expectedName !== name;
-    setSuggestedName(mismatch ? expectedName : undefined);
-    setWarnings((state) => ({
-      ...state,
-      name: mismatch
+    const mismatch = Boolean(expectedName && expectedName !== name);
+    return {
+      suggestedName: mismatch ? expectedName : undefined,
+      nameWarning: mismatch
         ? {
             key: 'wrongNetworkName',
             msg: t('wrongNetworkName'),
           }
         : undefined,
-    }));
-  }, [chainId, name, safeChains]);
+    };
+  }, [chainIdHex, name, safeChains, t]);
 
-  // Validate the ticker when it changes
-  useEffect(() => {
-    const chainIdHex = chainId ? toHex(chainId) : undefined;
+  const { suggestedTicker, tickerWarning } = useMemo(() => {
     const expectedSymbol = chainIdHex
       ? (CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
           chainIdHex as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
@@ -192,23 +425,22 @@ export const NetworksForm = ({
         ]?.symbol?.toLowerCase() === ticker?.toLowerCase()
       : false;
 
-    const mismatch =
-      expectedSymbol && expectedSymbol !== ticker && !isWhitelistedSymbol;
+    const mismatch = Boolean(
+      expectedSymbol && expectedSymbol !== ticker && !isWhitelistedSymbol,
+    );
 
-    setSuggestedTicker(mismatch ? expectedSymbol : undefined);
-    setWarnings((state) => ({
-      ...state,
-      ticker: mismatch
+    return {
+      suggestedTicker: mismatch ? expectedSymbol : undefined,
+      tickerWarning: mismatch
         ? {
             key: 'chainListReturnedDifferentTickerSymbol',
             msg: t('chainListReturnedDifferentTickerSymbol'),
           }
         : undefined,
-    }));
-  }, [chainId, ticker, safeChains]);
+    };
+  }, [chainIdHex, ticker, safeChains, t]);
 
-  // Validate the chain ID when it changes
-  useEffect(() => {
+  const chainIdError = useMemo(() => {
     let error: [string, string] | undefined;
 
     if (chainId === undefined || chainId === '') {
@@ -233,9 +465,7 @@ export const NetworksForm = ({
       error = ['invalidChainIdTooBig', t('invalidChainIdTooBig')];
     }
 
-    const chainIdHex = toHex(chainId);
-
-    if (!error && !existingNetwork) {
+    if (!error && !existingNetwork && chainIdHex !== submittedChainId) {
       const matchingNetwork = chainIdHex
         ? networkConfigurations[chainIdHex]
         : undefined;
@@ -247,48 +477,134 @@ export const NetworksForm = ({
       }
     }
 
-    let rpcError: [string, string] | undefined;
+    return error ? { key: error[0], msg: error[1] } : undefined;
+  }, [
+    chainId,
+    chainIdHex,
+    existingNetwork,
+    networkConfigurations,
+    submittedChainId,
+    t,
+  ]);
+
+  const rpcMismatchError = useMemo(() => {
     if (fetchedChainId && chainIdHex && fetchedChainId !== chainIdHex) {
-      rpcError = [
-        'endpointReturnedDifferentChainId',
-        t('endpointReturnedDifferentChainId', [hexToDecimal(fetchedChainId)]),
-      ];
+      return {
+        key: 'endpointReturnedDifferentChainId',
+        msg: t('endpointReturnedDifferentChainId', [
+          hexToDecimal(fetchedChainId),
+        ]),
+      };
     }
+    return undefined;
+  }, [fetchedChainId, chainIdHex, t]);
 
-    setErrors((state) => ({
-      ...state,
-      chainId: error ? { key: error[0], msg: error[1] } : undefined,
-      rpcUrl: rpcError ? { key: rpcError[0], msg: rpcError[1] } : undefined,
-    }));
-  }, [chainId, fetchedChainId, existingNetwork?.chainId]);
+  const warnings = useMemo(
+    () => ({
+      name: nameWarning,
+      ticker: tickerWarning,
+    }),
+    [nameWarning, tickerWarning],
+  );
 
-  // Fetch the chain ID from the RPC endpoint when it changes
+  const errors = useMemo(
+    () => ({
+      chainId: chainIdError,
+      rpcUrl: rpcFetchError ?? rpcMismatchError,
+    }),
+    [chainIdError, rpcFetchError, rpcMismatchError],
+  );
+
+  const selectedRpcUrl =
+    rpcUrls?.rpcEndpoints?.[rpcUrls?.defaultRpcEndpointIndex ?? -1]?.url;
+  const [prevSelectedRpcUrl, setPrevSelectedRpcUrl] = useState(selectedRpcUrl);
+
+  if (selectedRpcUrl !== prevSelectedRpcUrl) {
+    setPrevSelectedRpcUrl(selectedRpcUrl);
+    setRpcFetchError(undefined);
+    setFetchedChainId(undefined);
+  }
+
+  const rpcEndpointCount = rpcUrls.rpcEndpoints?.length ?? 0;
+
   useEffect(() => {
-    const rpcUrl =
-      rpcUrls?.rpcEndpoints?.[rpcUrls?.defaultRpcEndpointIndex ?? -1]?.url;
+    failedChainlistRpcUrlsRef.current.clear();
+  }, [chainId]);
 
-    if (rpcUrl) {
-      jsonRpcRequest(templateInfuraRpc(rpcUrl), 'eth_chainId')
-        .then((response) => {
-          setFetchedChainId(response as string);
-        })
-        .catch((err) => {
-          setFetchedChainId(undefined);
-          log.warn('Failed to fetch the chainId from the endpoint.', err);
-          setErrors((state) => ({
-            ...state,
-            rpcUrl: {
-              key: 'failedToFetchChainId',
-              msg: t('failedToFetchChainId'),
-            },
-          }));
-        });
+  // Fetch the chain ID from the RPC endpoint when it changes. A Chainlist
+  // pick tries the next public URL before surfacing a fetch error.
+  useEffect(() => {
+    if (!selectedRpcUrl) {
+      return undefined;
     }
-  }, [chainId, rpcUrls]);
+
+    let cancelled = false;
+    const replaceWithNextChainlistRpc = () => {
+      if (source !== 'chainlist' || !chainIdHex || rpcEndpointCount !== 1) {
+        return false;
+      }
+
+      const chain = safeChains?.find(
+        (candidate) => toHex(candidate.chainId) === chainIdHex,
+      );
+      const chainlistUrls = getUsableUrls(chain?.rpc);
+      // A URL the user added after the Chainlist pick is not swapped out.
+      if (!chainlistUrls.includes(selectedRpcUrl)) {
+        return false;
+      }
+
+      failedChainlistRpcUrlsRef.current.add(selectedRpcUrl);
+      const nextUrl = chainlistUrls.find(
+        (url) => !failedChainlistRpcUrlsRef.current.has(url),
+      );
+      if (!nextUrl) {
+        return false;
+      }
+
+      setRpcUrls({
+        rpcEndpoints: [{ url: nextUrl, type: RpcEndpointType.Custom }],
+        defaultRpcEndpointIndex: 0,
+      });
+      return true;
+    };
+
+    jsonRpcRequest(templateInfuraRpc(selectedRpcUrl), 'eth_chainId')
+      .then((response) => {
+        if (!cancelled) {
+          setFetchedChainId(response as string);
+        }
+      })
+      .catch((err) => {
+        if (cancelled || replaceWithNextChainlistRpc()) {
+          return;
+        }
+
+        setFetchedChainId(undefined);
+        log.warn('Failed to fetch the chainId from the endpoint.', err);
+        const errorKey = isRpcRateLimitError(err)
+          ? 'rpcUrlRateLimited'
+          : 'failedToFetchChainId';
+        setRpcFetchError({
+          key: errorKey,
+          msg: t(errorKey),
+        });
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    chainIdHex,
+    rpcEndpointCount,
+    safeChains,
+    selectedRpcUrl,
+    setRpcUrls,
+    source,
+    t,
+  ]);
 
   const onSubmit = async () => {
     try {
-      const chainIdHex = chainId ? toHex(chainId) : undefined;
       if (chainIdHex === CHAIN_IDS.GOERLI) {
         dispatch(showDeprecatedNetworkModal());
       } else if (chainIdHex) {
@@ -304,14 +620,17 @@ export const NetworksForm = ({
         };
 
         if (existingNetwork) {
-          const options = toggleNetworkMenuAfterSubmit
-            ? {
-                replacementSelectedRpcEndpointIndex:
-                  chainIdHex === existingNetwork.chainId
-                    ? rpcUrls?.defaultRpcEndpointIndex
-                    : undefined,
-              }
-            : {};
+          // Passing a replacement index makes NetworkController switch to that
+          // RPC. Only do that for the network that is already selected.
+          const isEditingSelectedNetwork = existingNetwork.rpcEndpoints?.some(
+            (endpoint) => endpoint.networkClientId === selectedNetworkClientId,
+          );
+          const options = {
+            replacementSelectedRpcEndpointIndex:
+              chainIdHex === existingNetwork.chainId && isEditingSelectedNetwork
+                ? rpcUrls?.defaultRpcEndpointIndex
+                : undefined,
+          };
           await dispatch(updateNetwork(networkPayload, options));
           if (
             toggleNetworkMenuAfterSubmit &&
@@ -342,8 +661,8 @@ export const NetworksForm = ({
               const chainIdAsDecimal = hexToNumber(chainIdHex);
 
               const sanitizeRpcUrl = async (url: string) => {
-                const isPublic = await submitRequestToBackground<boolean>(
-                  'isPublicEndpointUrl',
+                const isPublic = await submitRequestToBackground(
+                  'LegacyBackgroundApiService:isPublicEndpointUrl',
                   [url],
                 );
                 return isPublic ? onlyKeepHost(url) : 'custom';
@@ -356,18 +675,21 @@ export const NetworksForm = ({
                 sanitizeRpcUrl(newRpcEndpoint.url),
               ]);
 
-              trackEvent({
-                category: MetaMetricsEventCategory.Network,
-                event: MetaMetricsEventName.NetworkConnectionBannerRpcUpdated,
-                // The names of Segment properties have a particular case.
-                /* eslint-disable @typescript-eslint/naming-convention */
-                properties: {
-                  chain_id_caip: `eip155:${chainIdAsDecimal}`,
-                  from_rpc_domain: fromRpcDomain,
-                  to_rpc_domain: toRpcDomain,
-                },
-                /* eslint-enable @typescript-eslint/naming-convention */
-              });
+              trackEvent(
+                createEventBuilder(
+                  MetaMetricsEventName.NetworkConnectionBannerRpcUpdated,
+                )
+                  .addCategory(MetaMetricsEventCategory.Network)
+                  .addProperties({
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    chain_id_caip: `eip155:${chainIdAsDecimal}`,
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    from_rpc_domain: fromRpcDomain,
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    to_rpc_domain: toRpcDomain,
+                  })
+                  .build(),
+              );
             } catch (error) {
               // Analytics tracking failed, but network update succeeded - don't surface this error
               console.error('Failed to track RPC update analytics:', error);
@@ -379,6 +701,7 @@ export const NetworksForm = ({
           // network from the Networks page should only persist the
           // configuration; switching is reserved for the homepage network
           // modal (`toggleNetworkMenuAfterSubmit=true`).
+          setSubmittedChainId(chainIdHex);
           await dispatch(
             addNetwork(networkPayload, {
               setActive: toggleNetworkMenuAfterSubmit,
@@ -389,37 +712,73 @@ export const NetworksForm = ({
           }
         }
 
-        trackEvent({
-          event: MetaMetricsEventName.CustomNetworkAdded,
-          category: MetaMetricsEventCategory.Network,
-          properties: {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            block_explorer_url:
-              blockExplorers?.blockExplorerUrls?.[
-                blockExplorers?.defaultBlockExplorerUrlIndex ?? -1
-              ],
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            chain_id: chainIdHex,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            network_name: name,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            source_connection_method:
-              MetaMetricsNetworkEventSource.CustomNetworkForm,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            token_symbol: ticker,
-          },
-          sensitiveProperties: {
-            rpcUrl: rpcIdentifierUtility(
-              rpcUrls?.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex ?? -1]?.url,
-              safeChains ?? [],
-            ),
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.CustomNetworkAdded)
+            .addCategory(MetaMetricsEventCategory.Network)
+            .addProperties({
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              block_explorer_url:
+                blockExplorers?.blockExplorerUrls?.[
+                  blockExplorers?.defaultBlockExplorerUrlIndex ?? -1
+                ],
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              chain_id: chainIdHex,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              network_name: name,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              source_connection_method:
+                MetaMetricsNetworkEventSource.CustomNetworkForm,
+              source,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              token_symbol: ticker,
+            })
+            .addSensitiveProperties({
+              rpcUrl: rpcIdentifierUtility(
+                rpcUrls?.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex ?? -1]
+                  ?.url,
+                safeChains ?? [],
+              ),
+            })
+            .build(),
+        );
+
+        if (chainIdHex) {
+          const analytics = { trackEvent, createEventBuilder };
+          const rpcCount = rpcUrls?.rpcEndpoints?.length ?? 0;
+          if (existingNetwork) {
+            trackNetworkEdited(analytics, {
+              chainId: chainIdHex,
+              entryPoint: metricsEntryPoint,
+              changedFields: getChangedNetworkFields(existingNetwork, {
+                name,
+                chainId: chainIdHex,
+                nativeCurrency: ticker,
+                rpcEndpoints: rpcUrls?.rpcEndpoints,
+                defaultRpcEndpointIndex: rpcUrls?.defaultRpcEndpointIndex,
+                blockExplorerUrls: blockExplorers?.blockExplorerUrls,
+              }),
+              rpcCount,
+            });
+          } else {
+            trackNetworkAdded(analytics, {
+              chainId: chainIdHex,
+              source:
+                source === 'chainlist'
+                  ? NetworkManagementSource.Chainlist
+                  : NetworkManagementSource.Manual,
+              entryPoint: metricsEntryPoint,
+              rpcCount,
+              blockExplorerSet: Boolean(
+                blockExplorers?.blockExplorerUrls?.length,
+              ),
+            });
+          }
+        }
 
         dispatch(
           setEditedNetwork({
@@ -447,380 +806,440 @@ export const NetworksForm = ({
 
   return (
     <Box
-      height={BlockSize.Full}
-      display={Display.Flex}
-      justifyContent={JustifyContent.spaceBetween}
-      flexDirection={FlexDirection.Column}
-      alignItems={AlignItems.center}
+      flexDirection={BoxFlexDirection.Column}
+      justifyContent={BoxJustifyContent.Between}
+      alignItems={BoxAlignItems.Center}
       ref={scrollableRef}
-      className="networks-form__scrollable"
+      className="networks-form__scrollable h-full min-h-0"
     >
-      <Box
-        width={BlockSize.Full}
-        paddingLeft={4}
-        paddingRight={4}
-        paddingBottom={2}
-      >
-        <FormTextField
-          id="networkName"
-          size={FormTextFieldSize.Lg}
-          placeholder={t('enterNetworkName')}
-          data-testid="network-form-name-input"
-          autoFocus
-          helpText={
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            ((name && warnings?.name?.msg) || suggestedName) && (
-              <>
-                {name && warnings?.name?.msg && (
-                  <HelpText
-                    variant={TextVariant.bodySm}
-                    severity={HelpTextSeverity.Warning}
-                  >
-                    {warnings.name.msg}
-                  </HelpText>
-                )}
+      <Box paddingHorizontal={4} paddingBottom={2} className="w-full">
+        {onAddFromChainlist && !existingNetwork && !showChainlist ? (
+          <Button
+            variant={ButtonVariant.Secondary}
+            size={ButtonSize.Lg}
+            startIconName={IconName.FlashFilled}
+            isFullWidth
+            onClick={onAddFromChainlist}
+            className="mb-4"
+            data-testid="network-form-add-from-chainlist"
+          >
+            {t('addFromChainlist')}
+          </Button>
+        ) : null}
+        <Label htmlFor="networkName" className="mb-1 shrink-0">
+          {t('networkName')}
+        </Label>
+        <div className="relative">
+          <TextField
+            ref={nameFieldRef}
+            id="networkName"
+            size={TextFieldSize.Lg}
+            placeholder={t('enterNetworkName')}
+            data-testid="network-form-name-input"
+            autoFocus
+            className="w-full shrink-0"
+            onClick={() => openChainlist('name')}
+            onFocus={(event) => {
+              // Mount auto-focus has no relatedTarget. Skip it once the form
+              // already has a network so returning from RPC or block explorer
+              // does not cover those fields.
+              if (formAlreadyStarted && !event.relatedTarget) {
+                return;
+              }
+              openChainlist('name');
+            }}
+            onChange={(event) => {
+              setName(event.target.value);
+              openChainlist('name');
+            }}
+            inputProps={
+              {
+                'data-testid': 'network-form-network-name',
+              } as React.ComponentPropsWithoutRef<'input'>
+            }
+            value={name}
+          />
+          {showChainlist && chainlist && chainlistFillsForm ? (
+            <Box
+              ref={chainlistPanelRef}
+              flexDirection={BoxFlexDirection.Column}
+              className="absolute inset-x-0 top-full z-10 mt-1 flex min-h-0 flex-col overflow-hidden rounded-xl border border-border-muted bg-background-default"
+              data-testid="networks-page-chainlist-dropdown"
+              data-anchor="name"
+            >
+              <ChainlistNetworkPicker
+                existingNetworkChainIds={chainlist.existingNetworkChainIds}
+                existingNetworkNamesByChainId={
+                  chainlist.existingNetworkNamesByChainId
+                }
+                layout="dropdown"
+                maxHeight={chainlistMaxHeight}
+                searchValue={name}
+                showSearchField={false}
+                onSelect={(network, searchQuery) => {
+                  setSource('chainlist');
+                  closeChainlist();
+                  chainlist.onSelect(network, searchQuery);
+                }}
+                onUseTypedName={(typedName) => {
+                  setSource('manual');
+                  setName(typedName);
+                  closeChainlist();
+                }}
+              />
+            </Box>
+          ) : null}
+        </div>
+        <Box>
+          {name && warnings?.name?.msg ? (
+            <HelpText severity={HelpTextSeverity.Warning}>
+              {warnings.name.msg}
+            </HelpText>
+          ) : null}
+          {suggestedName ? (
+            <Text
+              asChild
+              variant={TextVariant.BodySm}
+              color={TextColor.TextDefault}
+              data-testid="network-form-name-suggestion"
+            >
+              <span>
+                {t('suggestedTokenName')}
+                <TextButton
+                  size={TextButtonSize.BodySm}
+                  onClick={() => {
+                    setName(suggestedName);
+                  }}
+                  className="px-1 align-baseline"
+                >
+                  {suggestedName}
+                </TextButton>
+              </span>
+            </Text>
+          ) : null}
+          <DropdownEditor
+            title={t('defaultRpcUrl')}
+            placeholder={t('addAUrl')}
+            style={DropdownEditorStyle.PopoverStyle}
+            items={rpcUrls.rpcEndpoints}
+            itemKey={(endpoint) => endpoint.url}
+            itemDataTestId={(endpoint, index) =>
+              `network-form-rpc-option-${endpoint.name ?? String(index)}`
+            }
+            selectedItemIndex={rpcUrls.defaultRpcEndpointIndex}
+            error={Boolean(errors.rpcUrl)}
+            buttonDataTestId="test-add-rpc-drop-down"
+            renderItem={(item, isList) => {
+              const failoverUrls = failoverUrlsForEndpoint(item);
+              const urlLabel = stripProtocol(stripKeyFromInfuraUrl(item.url));
+              const rpcName =
+                item.type === RpcEndpointType.Infura ? 'Infura' : item.name;
+              const urlHost = urlLabel.split('/')[0];
+              // Chainlist stores the hostname as the RPC name. Skip it when it
+              // matches the host so the label does not repeat it.
+              const label =
+                rpcName && rpcName.toLowerCase() !== urlHost.toLowerCase()
+                  ? `${rpcName} ${urlLabel}`
+                  : urlLabel;
+              const showFailover =
+                isRpcFailoverEnabled && failoverUrls.length > 0;
+              const urlText = (
+                <Text
+                  ellipsis
+                  variant={TextVariant.BodyMd}
+                  className={isList && !showFailover ? 'py-4' : undefined}
+                >
+                  {label}
+                </Text>
+              );
 
-                {suggestedName && (
-                  <Text
-                    as="span"
-                    variant={TextVariant.bodySm}
-                    color={TextColor.textDefault}
-                    data-testid="network-form-name-suggestion"
-                  >
-                    {t('suggestedTokenName')}
-                    <ButtonLink
-                      as="button"
-                      variant={TextVariant.bodySm}
-                      color={TextColor.primaryDefault}
-                      onClick={() => {
-                        setName(suggestedName);
-                      }}
-                      paddingLeft={1}
-                      paddingRight={1}
-                      style={{ verticalAlign: 'baseline' }}
-                    >
-                      {suggestedName}
-                    </ButtonLink>
-                  </Text>
-                )}
-              </>
-            )
-          }
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          onChange={(e: any) => {
-            setName(e.target?.value);
-          }}
-          label={t('networkName')}
-          labelProps={{
-            children: undefined,
-            variant: TextVariant.bodyMdMedium,
-          }}
-          textFieldProps={{
-            borderRadius: BorderRadius.LG,
-          }}
-          inputProps={{
-            'data-testid': 'network-form-network-name',
-          }}
-          value={name}
-        />
-        <DropdownEditor
-          title={t('defaultRpcUrl')}
-          placeholder={t('addAUrl')}
-          style={DropdownEditorStyle.PopoverStyle}
-          items={rpcUrls.rpcEndpoints}
-          itemKey={(endpoint) => endpoint.url}
-          selectedItemIndex={rpcUrls.defaultRpcEndpointIndex}
-          error={Boolean(errors.rpcUrl)}
-          buttonDataTestId="test-add-rpc-drop-down"
-          renderItem={(item, isList) =>
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            isList || item?.name || item?.type === RpcEndpointType.Infura ? (
-              <RpcListItem rpcEndpoint={item} />
-            ) : (
-              <Text
-                ellipsis
-                variant={TextVariant.bodyMd}
-                paddingTop={3}
-                paddingBottom={3}
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                gap={1}
-              >
-                {stripProtocol(stripKeyFromInfuraUrl(item.url))}
-                {isRpcFailoverEnabled &&
-                item.failoverUrls &&
-                item.failoverUrls.length > 0 ? (
-                  <Tag label={t('failover')} display={Display.Inline} />
-                ) : null}
-              </Text>
-            )
-          }
-          renderTooltip={(item, isList) => {
-            const url = stripKeyFromInfuraUrl(item.url);
-            return url.length > (isList ? 37 : 35) ? url : undefined;
-          }}
-          addButtonText={t('addRpcUrl')}
-          itemIsDeletable={(item) => item.type !== RpcEndpointType.Infura}
-          onItemAdd={onRpcAdd}
-          onItemSelected={(index) =>
-            setRpcUrls((state) => ({
-              ...state,
-              defaultRpcEndpointIndex: index,
-            }))
-          }
-          onItemDeleted={(deletedIndex, newSelectedIndex) => {
-            setRpcUrls({
-              rpcEndpoints: rpcUrls.rpcEndpoints
-                ?.slice(0, deletedIndex)
-                .concat(rpcUrls.rpcEndpoints.slice(deletedIndex + 1)),
-              defaultRpcEndpointIndex: newSelectedIndex,
-            });
-          }}
-        />
+              if (!showFailover) {
+                return urlText;
+              }
 
-        {errors.rpcUrl?.msg && (
-          <Box>
+              return (
+                <Box
+                  className={
+                    isList
+                      ? 'flex min-w-0 items-center gap-1 py-4'
+                      : 'flex min-w-0 items-center gap-1'
+                  }
+                >
+                  {urlText}
+                  <Tag className="shrink-0">{t('failover')}</Tag>
+                </Box>
+              );
+            }}
+            renderTooltip={(item, isList) => {
+              const url = stripKeyFromInfuraUrl(item.url);
+              return url.length > (isList ? 37 : 35) ? url : undefined;
+            }}
+            addButtonText={t('addRpcUrl')}
+            itemIsDeletable={(item) => item.type !== RpcEndpointType.Infura}
+            onItemAdd={onRpcAdd}
+            onItemSelected={(index) =>
+              setRpcUrls((state) => ({
+                ...state,
+                defaultRpcEndpointIndex: index,
+              }))
+            }
+            onItemDeleted={(deletedIndex, newSelectedIndex) => {
+              trackRpcRemoved(
+                { trackEvent, createEventBuilder },
+                {
+                  chainId: chainIdHex,
+                  rpcCount: Math.max(
+                    (rpcUrls.rpcEndpoints?.length ?? 1) - 1,
+                    0,
+                  ),
+                  wasActive:
+                    deletedIndex === (rpcUrls.defaultRpcEndpointIndex ?? 0),
+                  entryPoint: metricsEntryPoint,
+                },
+              );
+              setRpcUrls({
+                rpcEndpoints: rpcUrls.rpcEndpoints
+                  ?.slice(0, deletedIndex)
+                  .concat(rpcUrls.rpcEndpoints.slice(deletedIndex + 1)),
+                defaultRpcEndpointIndex: newSelectedIndex,
+              });
+            }}
+          />
+
+          {errors.rpcUrl?.msg && (
             <HelpText
-              variant={TextVariant.bodySm}
               severity={HelpTextSeverity.Danger}
               data-testid="network-form-chain-id-error"
             >
               {errors.rpcUrl?.msg}
             </HelpText>
-          </Box>
-        )}
+          )}
 
-        {isRpcFailoverEnabled &&
-        // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
-        defaultRpcEndpoint &&
-        defaultRpcEndpoint.failoverUrls &&
-        defaultRpcEndpoint.failoverUrls.length > 0 ? (
-          <FormTextField
-            id="failoverRpcUrl"
-            size={FormTextFieldSize.Lg}
-            paddingTop={4}
-            label={t('failoverRpcUrl')}
-            labelProps={{
-              children: undefined,
-              variant: TextVariant.bodyMdMedium,
-            }}
-            textFieldProps={{
-              borderRadius: BorderRadius.LG,
-            }}
-            value={onlyKeepHost(defaultRpcEndpoint.failoverUrls[0])}
-            disabled={true}
-          />
-        ) : null}
+          {isRpcFailoverEnabled && defaultFailoverUrls.length > 0 ? (
+            <div className="mt-4">
+              <Label htmlFor="failoverRpcUrl" className="mb-1">
+                {t('failoverRpcUrl')}
+              </Label>
+              <TextField
+                id="failoverRpcUrl"
+                size={TextFieldSize.Lg}
+                className="w-full"
+                value={onlyKeepHost(defaultFailoverUrls[0])}
+                isDisabled
+              />
+            </div>
+          ) : null}
 
-        <FormTextField
-          id="chainId"
-          size={FormTextFieldSize.Lg}
-          placeholder={t('enterChainId')}
-          paddingTop={4}
-          data-testid="network-form-chain-id-input"
-          onChange={(e) => {
-            setChainId(e.target?.value.trim());
-          }}
-          error={Boolean(errors?.chainId)}
-          label={t('chainId')}
-          labelProps={{
-            children: undefined,
-            variant: TextVariant.bodyMdMedium,
-          }}
-          textFieldProps={{
-            borderRadius: BorderRadius.LG,
-          }}
-          inputProps={{
-            'data-testid': 'network-form-chain-id',
-          }}
-          value={chainId}
-          disabled={Boolean(existingNetwork)}
-        />
+          <div className="relative mt-4">
+            <Label htmlFor="chainId" className="mb-1">
+              {t('chainId')}
+            </Label>
+            <TextField
+              ref={chainIdFieldRef}
+              id="chainId"
+              size={TextFieldSize.Lg}
+              placeholder={t('enterChainId')}
+              data-testid="network-form-chain-id-input"
+              className="w-full"
+              onClick={() => openChainlist('chainId')}
+              onFocus={() => openChainlist('chainId')}
+              onChange={(event) => {
+                setChainId(event.target.value.trim());
+                openChainlist('chainId');
+              }}
+              isError={Boolean(errors?.chainId)}
+              inputProps={
+                {
+                  'data-testid': 'network-form-chain-id',
+                } as React.ComponentPropsWithoutRef<'input'>
+              }
+              value={chainId}
+              isDisabled={Boolean(existingNetwork)}
+            />
+            {showChainlist &&
+            chainlist &&
+            isChainlistOpen &&
+            chainlistAnchor === 'chainId' ? (
+              <Box
+                ref={chainlistPanelRef}
+                flexDirection={BoxFlexDirection.Column}
+                className="absolute inset-x-0 top-full z-10 mt-1 flex min-h-0 flex-col overflow-hidden rounded-xl border border-border-muted bg-background-default"
+                data-testid="networks-page-chainlist-dropdown"
+                data-anchor="chainId"
+              >
+                <ChainlistNetworkPicker
+                  existingNetworkChainIds={chainlist.existingNetworkChainIds}
+                  existingNetworkNamesByChainId={
+                    chainlist.existingNetworkNamesByChainId
+                  }
+                  layout="dropdown"
+                  maxHeight={chainlistMaxHeight}
+                  searchValue={chainId}
+                  showSearchField={false}
+                  onSelect={(network, searchQuery) => {
+                    setSource('chainlist');
+                    closeChainlist();
+                    chainlist.onSelect(network, searchQuery);
+                  }}
+                />
+              </Box>
+            ) : null}
+          </div>
 
-        {errors.chainId?.msg ? (
-          <HelpText
-            variant={TextVariant.bodySm}
-            severity={HelpTextSeverity.Danger}
-            data-testid="network-form-chain-id-error"
-          >
-            {errors.chainId.msg}
-          </HelpText>
-        ) : null}
-        {errors.chainId?.key === 'existingChainId' ? (
-          <Box>
+          {errors.chainId?.msg ? (
             <HelpText
-              variant={TextVariant.bodySm}
               severity={HelpTextSeverity.Danger}
               data-testid="network-form-chain-id-error"
             >
-              {t('updateOrEditNetworkInformations')}{' '}
-              <ButtonLink
-                as="button"
-                variant={TextVariant.bodySm}
-                color={TextColor.primaryDefault}
-                onClick={() => {
-                  const chainIdHex = toHex(chainId);
-                  if (chainIdHex) {
-                    dispatch(
-                      setEditedNetwork({
-                        chainId: chainIdHex,
-                      }),
-                    );
-                    onEdit?.();
-                  }
-                }}
-              >
-                {t('editNetworkLink')}
-              </ButtonLink>
+              {errors.chainId.msg}
             </HelpText>
-          </Box>
-        ) : null}
-        <FormTextField
-          id="nativeCurrency"
-          size={FormTextFieldSize.Lg}
-          placeholder={t('enterSymbol')}
-          paddingTop={4}
-          data-testid="network-form-ticker"
-          helpText={
-            suggestedTicker ? (
+          ) : null}
+          {errors.chainId?.key === 'existingChainId' ? (
+            <HelpText
+              asChild
+              severity={HelpTextSeverity.Danger}
+              data-testid="network-form-chain-id-error"
+            >
+              <div>
+                {t('updateOrEditNetworkInformations')}{' '}
+                <TextButton
+                  size={TextButtonSize.BodySm}
+                  onClick={() => {
+                    if (chainIdHex) {
+                      dispatch(
+                        setEditedNetwork({
+                          chainId: chainIdHex,
+                        }),
+                      );
+                      onEdit?.();
+                    }
+                  }}
+                >
+                  {t('editNetworkLink')}
+                </TextButton>
+              </div>
+            </HelpText>
+          ) : null}
+          <div className="mt-4">
+            <Label htmlFor="nativeCurrency" className="mb-1">
+              {t('currencySymbol')}
+            </Label>
+            <TextField
+              id="nativeCurrency"
+              size={TextFieldSize.Lg}
+              placeholder={t('enterSymbol')}
+              data-testid="network-form-ticker"
+              className="w-full"
+              onChange={(event) => {
+                setTicker(event.target.value);
+              }}
+              inputProps={
+                {
+                  'data-testid': 'network-form-ticker-input',
+                } as React.ComponentPropsWithoutRef<'input'>
+              }
+              value={ticker}
+            />
+            {suggestedTicker ? (
               <Text
-                as="span"
-                variant={TextVariant.bodySm}
-                color={TextColor.textDefault}
+                asChild
+                variant={TextVariant.BodySm}
+                color={TextColor.TextDefault}
                 data-testid="network-form-ticker-suggestion"
               >
-                {t('suggestedCurrencySymbol')}
-                <ButtonLink
-                  as="button"
-                  variant={TextVariant.bodySm}
-                  color={TextColor.primaryDefault}
-                  onClick={() => {
-                    setTicker(suggestedTicker);
-                  }}
-                  paddingLeft={1}
-                  paddingRight={1}
-                  style={{ verticalAlign: 'baseline' }}
-                >
-                  {suggestedTicker}
-                </ButtonLink>
+                <span>
+                  {t('suggestedCurrencySymbol')}
+                  <TextButton
+                    size={TextButtonSize.BodySm}
+                    onClick={() => {
+                      setTicker(suggestedTicker);
+                    }}
+                    className="px-1 align-baseline"
+                  >
+                    {suggestedTicker}
+                  </TextButton>
+                </span>
               </Text>
-            ) : null
-          }
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          onChange={(e: any) => {
-            setTicker(e.target?.value);
-          }}
-          label={t('currencySymbol')}
-          labelProps={{
-            children: undefined,
-            variant: TextVariant.bodyMdMedium,
-          }}
-          textFieldProps={{
-            borderRadius: BorderRadius.LG,
-          }}
-          inputProps={{
-            'data-testid': 'network-form-ticker-input',
-          }}
-          value={ticker}
-        />
-        {ticker && warnings.ticker?.msg ? (
-          <HelpText
-            variant={TextVariant.bodySm}
-            severity={HelpTextSeverity.Warning}
-            data-testid="network-form-ticker-warning"
-          >
-            {warnings.ticker.msg}
-          </HelpText>
-        ) : null}
-
-        <DropdownEditor
-          title={t('blockExplorerUrl')}
-          placeholder={t('addAUrl')}
-          style={DropdownEditorStyle.BoxStyle}
-          items={blockExplorers.blockExplorerUrls}
-          itemKey={(item) => `${item}`}
-          selectedItemIndex={blockExplorers.defaultBlockExplorerUrlIndex}
-          addButtonText={t('addBlockExplorerUrl')}
-          onItemAdd={onBlockExplorerAdd}
-          buttonDataTestId="test-explorer-drop-down"
-          onItemSelected={(index) =>
-            setBlockExplorers((state) => ({
-              ...state,
-              defaultBlockExplorerUrlIndex: index,
-            }))
-          }
-          onItemDeleted={(deletedIndex, newSelectedIndex) => {
-            setBlockExplorers({
-              blockExplorerUrls: blockExplorers.blockExplorerUrls
-                ?.slice(0, deletedIndex)
-                .concat(
-                  blockExplorers.blockExplorerUrls.slice(deletedIndex + 1),
-                ),
-              defaultBlockExplorerUrlIndex: newSelectedIndex,
-            });
-          }}
-          // Scroll to bottom so all URLs are visible
-          onDropdownOpened={() => {
-            if (scrollableRef.current) {
-              scrollableRef.current.scrollTop =
-                scrollableRef.current.scrollHeight;
-            }
-          }}
-          renderItem={(item) => (
-            <Text
-              as="button"
-              paddingLeft={0}
-              paddingRight={0}
-              paddingTop={3}
-              paddingBottom={3}
-              color={TextColor.textDefault}
-              variant={TextVariant.bodyMd}
-              backgroundColor={BackgroundColor.transparent}
-              ellipsis
+            ) : null}
+          </div>
+          {ticker && warnings.ticker?.msg ? (
+            <HelpText
+              severity={HelpTextSeverity.Warning}
+              data-testid="network-form-ticker-warning"
             >
-              {stripProtocol(item)}
-            </Text>
-          )}
-          renderTooltip={(item) => (item.length > 36 ? item : undefined)}
-        />
+              {warnings.ticker.msg}
+            </HelpText>
+          ) : null}
+
+          <DropdownEditor
+            title={t('blockExplorerUrl')}
+            placeholder={t('addAUrl')}
+            style={DropdownEditorStyle.PopoverStyle}
+            items={blockExplorers.blockExplorerUrls}
+            itemKey={(item) => `${item}`}
+            selectedItemIndex={blockExplorers.defaultBlockExplorerUrlIndex}
+            addButtonText={t('addBlockExplorerUrl')}
+            onItemAdd={onBlockExplorerAdd}
+            buttonDataTestId="test-explorer-drop-down"
+            onItemSelected={(index) =>
+              setBlockExplorers((state) => ({
+                ...state,
+                defaultBlockExplorerUrlIndex: index,
+              }))
+            }
+            onItemDeleted={(deletedIndex, newSelectedIndex) => {
+              setBlockExplorers({
+                blockExplorerUrls: blockExplorers.blockExplorerUrls
+                  ?.slice(0, deletedIndex)
+                  .concat(
+                    blockExplorers.blockExplorerUrls.slice(deletedIndex + 1),
+                  ),
+                defaultBlockExplorerUrlIndex: newSelectedIndex,
+              });
+            }}
+            renderItem={(item, isList) => (
+              <Text
+                ellipsis
+                variant={TextVariant.BodyMd}
+                className={isList ? 'flex items-center py-4' : undefined}
+              >
+                {stripProtocol(item)}
+              </Text>
+            )}
+            renderTooltip={(item) => (item.length > 36 ? item : undefined)}
+          />
+        </Box>
       </Box>
       <Box
-        className={`networks-form__footer${
+        ref={footerRef}
+        className={`networks-form__footer w-full${
           usePageFooterStyle ? ' networks-form__footer--page' : ''
         }`}
-        backgroundColor={BackgroundColor.backgroundDefault}
+        backgroundColor={BoxBackgroundColor.BackgroundDefault}
         padding={4}
-        width={BlockSize.Full}
       >
         {usePageFooterStyle ? (
-          <DSButton
-            variant={DSButtonVariant.Primary}
-            size={DSButtonSize.Lg}
+          <Button
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
             isDisabled={isSaveDisabled}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={onSubmit}
-            className="w-full rounded-xl"
+            className="w-full"
             data-testid="page-container-footer-next"
           >
             {t('save')}
-          </DSButton>
+          </Button>
         ) : (
-          <ButtonPrimary
-            disabled={isSaveDisabled}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          <Button
+            variant={ButtonVariant.Primary}
+            isDisabled={isSaveDisabled}
             onClick={onSubmit}
-            size={ButtonPrimarySize.Lg}
-            width={BlockSize.Full}
+            size={ButtonSize.Lg}
+            isFullWidth
             data-testid="page-container-footer-next"
           >
             {t('save')}
-          </ButtonPrimary>
+          </Button>
         )}
       </Box>
     </Box>

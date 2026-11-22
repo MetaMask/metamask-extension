@@ -18,7 +18,6 @@ import { TransactionDetailsSummary } from '../transaction-details-summary';
 import { useTransactionDetails } from '../transaction-details-context';
 import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function TransactionDetails() {
   const { transactionMeta } = useTransactionDetails();
   const hasPaymentDetails = Boolean(transactionMeta.metamaskPay);

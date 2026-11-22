@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`mapRampsTokensToSendAssets maps a single token with provided network details 1`] = `
+{
+  "address": undefined,
+  "assetId": "eip155:1/slip44:60",
+  "chainId": "0x1",
+  "decimals": 18,
+  "disabled": false,
+  "image": "./images/eth_logo.svg",
+  "isNative": true,
+  "name": "Ethereum",
+  "networkImage": "eth.png",
+  "networkName": "Ethereum",
+  "standard": "native",
+  "symbol": "ETH",
+}
+`;
+
+exports[`mapRampsTokensToSendAssets maps ramps tokens into send assets 1`] = `
+[
+  {
+    "address": undefined,
+    "assetId": "eip155:1/slip44:60",
+    "chainId": "0x1",
+    "decimals": 18,
+    "disabled": false,
+    "image": "./images/eth_logo.svg",
+    "isNative": true,
+    "name": "Ethereum",
+    "networkImage": "./images/eth_logo.svg",
+    "networkName": "Ethereum",
+    "standard": "native",
+    "symbol": "ETH",
+  },
+  {
+    "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    "assetId": "eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    "chainId": "0x1",
+    "decimals": 6,
+    "disabled": true,
+    "image": "https://example.com/usdc.png",
+    "isNative": false,
+    "name": "USD Coin",
+    "networkImage": "./images/eth_logo.svg",
+    "networkName": "Ethereum",
+    "standard": "ERC20",
+    "symbol": "USDC",
+  },
+]
+`;

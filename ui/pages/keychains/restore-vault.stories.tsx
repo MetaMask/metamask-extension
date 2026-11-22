@@ -1,11 +1,14 @@
 import React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import RestoreVaultPage from './restore-vault';
 
 const mockStore = configureStore([]);
 const store = mockStore({
+  confirmTransaction: {
+    txData: {},
+  },
   appState: {
     isLoading: false,
   },

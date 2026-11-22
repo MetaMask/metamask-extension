@@ -1,14 +1,19 @@
 import React from 'react';
-import { SettingItemConfig } from '../types';
+import { useSelector } from 'react-redux';
+import type { SettingItemConfig, SettingItemProps } from '../types';
 import { SettingsTab, createSelectItem, createToggleItem } from '../shared';
 import { getUsePhishDetect } from '../../../selectors';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { setUsePhishDetect } from '../../../store/actions';
+import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/feature-flags';
 import {
   AUTO_LOCK_ROUTE,
   MANAGE_WALLET_RECOVERY_ROUTE,
+  MFA_SETTINGS_ROUTE,
   SECURITY_PASSWORD_CHANGE_V2_ROUTE,
 } from '../../../helpers/constants/routes';
+import { getIsMfaUiKitEnabled } from '../../../selectors/identity/mfa-ui-kit';
+import { MfaSettingsTestIds } from '../mfa-settings/test-ids';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
 import { SECURITY_ITEMS } from '../search-config';
 import ManageWalletRecoveryItem from './manage-wallet-recovery-item';
@@ -49,6 +54,18 @@ export const AutoLockItem = createSelectItem({
   dataTestId: 'auto-lock-button',
 });
 
+const MfaSelectItem = createSelectItem({
+  name: 'MfaItem',
+  titleKey: SECURITY_ITEMS.mfa,
+  valueSelector: () => '',
+  route: MFA_SETTINGS_ROUTE,
+  dataTestId: MfaSettingsTestIds.ENTRY,
+});
+
+// Settings items are listed when the module loads, before flags arrive.
+const MfaItem = (props: SettingItemProps) =>
+  useSelector(getIsMfaUiKitEnabled) ? <MfaSelectItem {...props} /> : null;
+
 const SECURITY_AND_PASSWORD_SETTING_ITEMS: SettingItemConfig[] = [
   {
     id: 'manage-wallet-recovery',
@@ -58,12 +75,25 @@ const SECURITY_AND_PASSWORD_SETTING_ITEMS: SettingItemConfig[] = [
   },
   { id: 'password', component: PasswordItem },
   { id: 'passkey', component: PasskeyItem },
+  { id: 'mfa', component: MfaItem },
   { id: 'auto-lock', component: AutoLockItem },
   { id: 'phishing-detection', component: PhishingDetectionItem },
 ];
 
-const SecurityAndPasswordTab = () => (
-  <SettingsTab items={SECURITY_AND_PASSWORD_SETTING_ITEMS} />
-);
+const CONSOLIDATED_BASIC_FUNCTIONALITY_SECURITY_AND_PASSWORD_ITEMS =
+  SECURITY_AND_PASSWORD_SETTING_ITEMS.filter(
+    ({ id }) => id !== 'phishing-detection',
+  );
+
+const SecurityAndPasswordTab = () => {
+  const isBasicFunctionalityConsolidationEnabled = useSelector(
+    getIsBasicFunctionalityConsolidationEnabled,
+  );
+  const items = isBasicFunctionalityConsolidationEnabled
+    ? CONSOLIDATED_BASIC_FUNCTIONALITY_SECURITY_AND_PASSWORD_ITEMS
+    : SECURITY_AND_PASSWORD_SETTING_ITEMS;
+
+  return <SettingsTab items={items} />;
+};
 
 export default SecurityAndPasswordTab;

@@ -4,6 +4,7 @@ permissions:
   pull-requests: write
   contents: write
   issues: write
+  id-token: write
 
 on:
   create:
@@ -30,9 +31,20 @@ jobs:
             echo "is-valid=true" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Get token
+        id: token
+        if: steps.validate.outputs.is-valid == 'true'
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            pull_requests: write
+            contents: write
+            members: read
+
       - name: Merge previous releases
         if: steps.validate.outputs.is-valid == 'true'
         uses: metamask/github-tools/.github/actions/merge-previous-releases@v1
         with:
           new-release-branch: ${{ github.event.ref }}
-          github-token: ${{ secrets.METAMASK_EXTENSION_BRANCH_SYNC_TOKEN }}
+          github-token: ${{ steps.token.outputs.token }}

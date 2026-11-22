@@ -1,0 +1,211 @@
+import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../shared/constants/app';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import * as environmentType from '../../../shared/lib/environment-type';
+import type { MetaMaskReduxState } from '../../store/types';
+import {
+  OnboardingState,
+  getIsBasicFunctionalitySocialLoginUser,
+  getIsSocialLoginUserAuthenticated,
+  getOnboardingTabId,
+  getSocialLoginEmail,
+  getSocialLoginType,
+} from './onboarding';
+
+const MOCK_NODE_AUTH_TOKENS = [
+  {
+    authToken: 'authToken',
+    nodeIndex: 1,
+    nodePubKey: 'nodePubKey',
+  },
+  {
+    authToken: 'authToken2',
+    nodeIndex: 2,
+    nodePubKey: 'nodePubKey2',
+  },
+  {
+    authToken: 'authToken3',
+    nodeIndex: 3,
+    nodePubKey: 'nodePubKey3',
+  },
+];
+
+const MOCK_STATE: OnboardingState = {
+  metamask: {
+    userId: 'mock-user-id',
+    accessToken: 'mock-access-token',
+    refreshToken: 'mock-refresh-token',
+    nodeAuthTokens: MOCK_NODE_AUTH_TOKENS,
+    socialBackupsMetadata: [],
+    socialLoginEmail: 'mock-social-login-email',
+    authConnection: AuthConnection.Google,
+    isSeedlessOnboardingUserAuthenticated: true,
+    migrationVersion: 0,
+    seedPhraseBackedUp: true,
+    firstTimeFlowType: FirstTimeFlowType.import,
+    completedOnboarding: true,
+    hasSeenOnboardingCompletionPage: true,
+    onboardingJourneyEnded: false,
+    onboardingTabs: {
+      welcome: 'welcome',
+      createPassword: 'createPassword',
+      downloadApp: 'downloadApp',
+    },
+  },
+};
+
+function createTabState(
+  activeTabId?: number | string,
+  appActiveTabId?: number,
+): MetaMaskReduxState {
+  return {
+    activeTab: { id: activeTabId, origin: '' },
+    metamask: {
+      appActiveTab:
+        appActiveTabId === undefined ? undefined : { id: appActiveTabId },
+    },
+  } as unknown as MetaMaskReduxState;
+}
+
+describe('social-sync selectors', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  describe('#getOnboardingTabId', () => {
+    it('returns the active tab ID outside of the sidepanel', () => {
+      jest
+        .spyOn(environmentType, 'getEnvironmentType')
+        .mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+
+      expect(getOnboardingTabId(createTabState(42, 7))).toBe('42');
+    });
+
+    it('returns the app active tab ID in the sidepanel', () => {
+      jest
+        .spyOn(environmentType, 'getEnvironmentType')
+        .mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+
+      expect(getOnboardingTabId(createTabState(42, 7))).toBe('7');
+    });
+
+    it('returns a string active tab ID outside of the sidepanel', () => {
+      jest
+        .spyOn(environmentType, 'getEnvironmentType')
+        .mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+
+      expect(getOnboardingTabId(createTabState('mock-site'))).toBe('mock-site');
+    });
+  });
+
+  describe('#getIsBasicFunctionalitySocialLoginUser', () => {
+    it('returns true for a social first-time flow without an auth connection', () => {
+      expect(
+        getIsBasicFunctionalitySocialLoginUser({
+          ...MOCK_STATE,
+          metamask: {
+            ...MOCK_STATE.metamask,
+            authConnection: undefined,
+            firstTimeFlowType: FirstTimeFlowType.socialCreate,
+          },
+        }),
+      ).toBe(true);
+    });
+
+    it('returns true when an auth connection is present', () => {
+      expect(getIsBasicFunctionalitySocialLoginUser(MOCK_STATE)).toBe(true);
+    });
+
+    it('returns true for an SRP import of a socially paired profile', () => {
+      expect(
+        getIsBasicFunctionalitySocialLoginUser({
+          ...MOCK_STATE,
+          metamask: {
+            ...MOCK_STATE.metamask,
+            authConnection: undefined,
+            firstTimeFlowType: FirstTimeFlowType.import,
+            preferences: { hasLinkedSocialLoginProfile: true },
+          },
+        }),
+      ).toBe(true);
+    });
+
+    it('returns false for a non-social flow without an auth connection', () => {
+      expect(
+        getIsBasicFunctionalitySocialLoginUser({
+          ...MOCK_STATE,
+          metamask: {
+            ...MOCK_STATE.metamask,
+            authConnection: undefined,
+            firstTimeFlowType: FirstTimeFlowType.import,
+          },
+        }),
+      ).toBe(false);
+    });
+  });
+
+  describe('#getSocialLoginType', () => {
+    it('returns the social login type', () => {
+      expect(getSocialLoginType(MOCK_STATE)).toBe(AuthConnection.Google);
+    });
+  });
+
+  describe('#getSocialLoginEmail', () => {
+    it('returns the social login email', () => {
+      expect(getSocialLoginEmail(MOCK_STATE)).toBe('mock-social-login-email');
+    });
+
+    it('returns undefined if the social login email is not set', () => {
+      const state = {
+        ...MOCK_STATE,
+        metamask: {
+          ...MOCK_STATE.metamask,
+          socialLoginEmail: undefined,
+        },
+      };
+      expect(getSocialLoginEmail(state)).toBeUndefined();
+    });
+  });
+
+  describe('#getIsSocialLoginFlowInitialized', () => {
+    it('returns true if the social login flow has been initialized and the user is authenticated', () => {
+      expect(getIsSocialLoginUserAuthenticated(MOCK_STATE)).toBe(true);
+    });
+
+    it('returns false if user has not authenticated with social login', () => {
+      const state = {
+        ...MOCK_STATE,
+        metamask: {
+          ...MOCK_STATE.metamask,
+          isSeedlessOnboardingUserAuthenticated: false,
+        },
+      };
+      expect(getIsSocialLoginUserAuthenticated(state)).toBe(false);
+    });
+
+    it('returns false if the social login type is not set', () => {
+      const state = {
+        ...MOCK_STATE,
+        metamask: {
+          ...MOCK_STATE.metamask,
+          authConnection: undefined,
+        },
+      };
+      expect(getIsSocialLoginUserAuthenticated(state)).toBe(false);
+    });
+
+    it('returns false if the social login email is not set', () => {
+      const state = {
+        ...MOCK_STATE,
+        metamask: {
+          ...MOCK_STATE.metamask,
+          socialLoginEmail: undefined,
+        },
+      };
+      expect(getIsSocialLoginUserAuthenticated(state)).toBe(false);
+    });
+  });
+});

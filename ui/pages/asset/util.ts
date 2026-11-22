@@ -1,7 +1,13 @@
 import { SUPPORTED_CHAIN_IDS } from '@metamask/assets-controllers';
 import { Hex, assert } from '@metamask/utils';
 import { Duration } from 'luxon';
+import {
+  processAssetParams,
+  resolveAssetRouteLookup,
+} from '../../../shared/lib/asset-route';
 import { PriceApiTimePeriod } from './types/PriceApiTimePeriod';
+
+export { processAssetParams, resolveAssetRouteLookup };
 
 /** Formats a datetime in a short human readable format like 'Feb 8, 12:11 PM' */
 export const getShortDateFormatter = () =>
@@ -65,6 +71,11 @@ export const chainSupportsPricing = (chainId: Hex) =>
 /** The opacity components should set during transition */
 export const loadingOpacity = 0.2;
 
+export const finiteFallback = <TFallback>(
+  value: number,
+  fallback: TFallback,
+): number | TFallback => (Number.isFinite(value) ? value : fallback);
+
 export const findAssetByAddress = <TItem extends { address: string }>(
   data: Record<string, TItem[]>,
   address?: string,
@@ -107,6 +118,7 @@ export const fromIso8601DurationToPriceApiTimePeriod = (
   );
 
   const SUPPORTED_MAPPINGS: Record<string, PriceApiTimePeriod> = {
+    PT1H: '1H',
     P1D: '1D',
     P7D: '7D',
     P1W: '7D',

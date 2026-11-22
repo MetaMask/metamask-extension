@@ -66,9 +66,6 @@
   "decimal": {
     "message": "Decimalen van precisie"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Decimalen moeten minimaal 0 en niet meer dan 36 zijn."
-  },
   "done": {
     "message": "Gedaan"
   },
@@ -84,18 +81,11 @@
   "failed": {
     "message": "mislukt"
   },
-  "fileImportFail": {
-    "message": "Bestandsimport werkt niet? Klik hier!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "from": {
     "message": "Van"
   },
   "gasLimit": {
     "message": "Gaslimiet"
-  },
-  "gasLimitTooLow": {
-    "message": "De gaslimiet moet minstens 21000 zijn"
   },
   "here": {
     "message": "hier",
@@ -152,9 +142,6 @@
   "message": {
     "message": "Bericht"
   },
-  "mustSelectOne": {
-    "message": "Moet ten minste één token selecteren."
-  },
   "needImportFile": {
     "message": "U moet een bestand selecteren om te importeren.",
     "description": "User is important an account and needs to add a file to continue"
@@ -171,10 +158,6 @@
   "next": {
     "message": "volgende"
   },
-  "pastePrivateKey": {
-    "message": "Plak hier uw privésleutelstring:",
-    "description": "For importing an account from a private key"
-  },
   "personalAddressDetected": {
     "message": "Persoonlijk adres gedetecteerd. Voer het tokencontractadres in."
   },
@@ -184,9 +167,6 @@
   "privateKey": {
     "message": "Prive sleutel",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Waarschuwing: open deze sleutel nooit. Iedereen met uw privésleutels kan stelen van alle items in uw account."
   },
   "privateNetwork": {
     "message": "Prive netwerk"
@@ -228,9 +208,6 @@
   "sign": {
     "message": "Teken"
   },
-  "signatureRequest": {
-    "message": "Ondertekeningsverzoek"
-  },
   "stateLogs": {
     "message": "Staatslogboeken"
   },
@@ -260,9 +237,6 @@
   },
   "urlErrorMsg": {
     "message": "Voor URI's is het juiste HTTP / HTTPS-voorvoegsel vereist."
-  },
-  "usedByClients": {
-    "message": "Gebruikt door verschillende klanten"
   },
   "visitWebSite": {
     "message": "Bezoek onze website"

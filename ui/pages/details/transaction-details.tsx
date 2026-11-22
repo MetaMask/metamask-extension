@@ -1,0 +1,103 @@
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { mapV5ApiTransaction } from '@metamask/client-utils';
+import { isValidTransactionHash } from '../../../shared/lib/transactions.utils';
+import {
+  selectEvmAddress,
+  selectLocalActivityItemsByIdentifier,
+  selectNonEvmActivityItemsById,
+} from '../../selectors/activity';
+import ErrorBoundary from '../../components/app/error-boundary/error-boundary';
+import { useApiTransaction } from '../../hooks/activity/useApiTransaction';
+import { Header } from './components/header';
+import { TemplateLoader } from './templates/template-loader';
+import { useRampsDetailsItem } from './templates/ramps/hooks';
+
+type Props = {
+  chainId: string | undefined;
+  txIdentifier: string | undefined;
+  onBack: () => void;
+};
+
+export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
+  const selectedAddress = useSelector(selectEvmAddress);
+  const isEvm = chainId?.startsWith('eip155:');
+
+  const localActivityItems = useSelector(selectLocalActivityItemsByIdentifier);
+  const localActivityItem = txIdentifier
+    ? localActivityItems.get(txIdentifier.toLowerCase())
+    : undefined;
+
+  const nonEvmActivityItems = useSelector(selectNonEvmActivityItemsById);
+  const nonEvmActivityItem =
+    !isEvm && txIdentifier
+      ? nonEvmActivityItems.get(txIdentifier.toLowerCase())
+      : undefined;
+
+  const rampsActivityItem = useRampsDetailsItem(txIdentifier);
+
+  const apiTransaction = useApiTransaction({
+    chainId,
+    txHash:
+      isEvm &&
+      selectedAddress &&
+      txIdentifier &&
+      isValidTransactionHash(txIdentifier)
+        ? txIdentifier
+        : undefined,
+  });
+
+  const transaction = useMemo(() => {
+    // Ramps first so settled orders keep the ramp classification over the
+    // generic transaction that shares their settlement hash.
+    if (rampsActivityItem) {
+      return rampsActivityItem;
+    }
+
+    const apiActivityItem = apiTransaction
+      ? mapV5ApiTransaction({ transaction: apiTransaction })
+      : undefined;
+
+    if (localActivityItem) {
+      // More categorized items take precedence, unless it's a generic interaction
+      const hasMatchingActivityType =
+        apiActivityItem?.type === localActivityItem.type;
+      const isLocalUncategorized =
+        localActivityItem.type === 'contractInteraction';
+
+      if (
+        apiActivityItem &&
+        (hasMatchingActivityType || isLocalUncategorized)
+      ) {
+        return apiActivityItem;
+      }
+
+      return localActivityItem;
+    }
+
+    if (nonEvmActivityItem) {
+      return nonEvmActivityItem;
+    }
+
+    if (apiActivityItem) {
+      return apiActivityItem;
+    }
+
+    return undefined;
+  }, [
+    apiTransaction,
+    localActivityItem,
+    nonEvmActivityItem,
+    rampsActivityItem,
+  ]);
+
+  return (
+    <div className="flex h-full flex-col py-4 [container-name:list-item] [container-type:inline-size]">
+      <Header item={transaction} onBack={onBack} />
+
+      <ErrorBoundary>
+        <TemplateLoader item={transaction} />
+      </ErrorBoundary>
+    </div>
+  );
+}

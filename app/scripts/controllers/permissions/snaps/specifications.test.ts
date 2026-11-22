@@ -1,20 +1,6 @@
-import { ASSETS_UNIFY_STATE_FLAG } from '../../../../../shared/lib/assets-unify-state/remote-feature-flag';
-import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../../shared/lib/environment';
+import { SnapMessage } from '@metamask/eth-snap-keyring';
+import { SnapId } from '@metamask/snaps-sdk';
 import { getSnapPermissionSpecifications } from './specifications';
-
-// Use the real implementation instead of the global mock in test/jest/setup.js
-jest.mock(
-  '../../../../../shared/lib/assets-unify-state/remote-feature-flag',
-  () =>
-    jest.requireActual(
-      '../../../../../shared/lib/assets-unify-state/remote-feature-flag',
-    ),
-);
-
-jest.mock('../../../../../shared/lib/environment', () => ({
-  ...jest.requireActual('../../../../../shared/lib/environment'),
-  getIsAssetsUnifiedStateIncludedInBuild: jest.fn(),
-}));
 
 // Capture the hooks passed to buildSnapRestrictedMethodSpecifications so we
 // can call getPreferences() directly without spinning up a full messenger.
@@ -44,11 +30,7 @@ function buildMessenger(
   overrides: Partial<Record<string, () => unknown>> = {},
 ) {
   const defaults: Record<string, () => unknown> = {
-    'RemoteFeatureFlagController:getState': () => ({
-      remoteFeatureFlags: {},
-    }),
     'AssetsController:getState': () => ({ selectedCurrency: 'eur' }),
-    'CurrencyRateController:getState': () => ({ currentCurrency: 'usd' }),
     'PreferencesController:getState': () => BASE_PREFERENCES_STATE,
     ...overrides,
   };
@@ -60,15 +42,8 @@ function buildMessenger(
 
 describe('getSnapPermissionSpecifications', () => {
   describe('getPreferences – currency source', () => {
-    it('uses AssetsController selectedCurrency when assetsUnifyState is enabled', () => {
-      jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(true);
-
+    it('uses AssetsController selectedCurrency', () => {
       const messenger = buildMessenger({
-        'RemoteFeatureFlagController:getState': () => ({
-          remoteFeatureFlags: {
-            [ASSETS_UNIFY_STATE_FLAG]: { enabled: true, featureVersion: '1' },
-          },
-        }),
         'AssetsController:getState': () => ({ selectedCurrency: 'eur' }),
       });
 
@@ -77,43 +52,35 @@ describe('getSnapPermissionSpecifications', () => {
 
       expect(result).toMatchObject({ currency: 'eur' });
     });
+  });
 
-    it('uses CurrencyRateController currentCurrency when assetsUnifyState is disabled', () => {
-      jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(true);
-
-      const messenger = buildMessenger({
-        'RemoteFeatureFlagController:getState': () => ({
-          remoteFeatureFlags: {
-            [ASSETS_UNIFY_STATE_FLAG]: { enabled: false, featureVersion: null },
-          },
-        }),
-        'CurrencyRateController:getState': () => ({ currentCurrency: 'gbp' }),
-      });
-
+  describe('getSnapKeyring', () => {
+    it('returns a keyring whose handleKeyringSnapMessage delegates to the messenger', async () => {
+      const messenger = buildMessenger();
       getSnapPermissionSpecifications(messenger as never);
-      const result = capturedHooks.getPreferences();
 
-      expect(result).toMatchObject({ currency: 'gbp' });
-    });
+      const keyring = await (
+        capturedHooks.getSnapKeyring as () => Promise<{
+          handleKeyringSnapMessage: (
+            snapId: SnapId,
+            message: SnapMessage,
+          ) => unknown;
+        }>
+      )();
 
-    it('uses CurrencyRateController currentCurrency when assetsUnifyState build flag is off', () => {
-      jest
-        .mocked(getIsAssetsUnifiedStateIncludedInBuild)
-        .mockReturnValue(false);
+      const snapId = 'npm:@metamask/test-snap' as SnapId;
+      const message = {
+        method: 'keyring_createAccount',
+        params: {},
+      } as SnapMessage;
 
-      const messenger = buildMessenger({
-        'RemoteFeatureFlagController:getState': () => ({
-          remoteFeatureFlags: {
-            [ASSETS_UNIFY_STATE_FLAG]: { enabled: true, featureVersion: '1' },
-          },
-        }),
-        'CurrencyRateController:getState': () => ({ currentCurrency: 'usd' }),
-      });
+      keyring.handleKeyringSnapMessage(snapId, message);
 
-      getSnapPermissionSpecifications(messenger as never);
-      const result = capturedHooks.getPreferences();
-
-      expect(result).toMatchObject({ currency: 'usd' });
+      expect(messenger.call).toHaveBeenCalledWith(
+        'SnapAccountService:handleKeyringSnapMessage',
+        snapId,
+        message,
+      );
     });
   });
 });

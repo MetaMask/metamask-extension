@@ -59,7 +59,7 @@ describe('Request Queueing chainId proxy sync', function () {
         );
 
         // Network Selector
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
+        await switchToNetworkFromNetworkSelect(driver, 'Ethereum');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // Get chain ID after manual network switch
@@ -126,11 +126,7 @@ describe('Request Queueing chainId proxy sync', function () {
         );
 
         // Network Selector
-        await switchToNetworkFromNetworkSelect(
-          driver,
-          'Custom',
-          'Localhost 8546',
-        );
+        await switchToNetworkFromNetworkSelect(driver, 'Localhost 8546');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 

@@ -16,6 +16,7 @@ import {
 import ToggleButton from '../../ui/toggle-button';
 import { ASSET_CELL_HEIGHT } from '../../app/assets/constants';
 import { AssetCellBadge } from '../../app/assets/asset-list/cells/asset-cell-badge';
+import { SecurityBadge } from '../../app/security-trust/security-trust-inline-badge';
 
 export type TokenManagementCellProps = {
   /** Token symbol used as the avatar fallback text and aria-label. */
@@ -32,6 +33,8 @@ export type TokenManagementCellProps = {
   primaryLabel: string;
   /** Optional secondary label (e.g. balance / network). */
   secondaryLabel?: string;
+  /** Token security result type used to render the trust badge. */
+  safetyResult?: string;
   /** Whether the toggle is currently in the ON state. */
   isOn: boolean;
   /**
@@ -42,6 +45,8 @@ export type TokenManagementCellProps = {
   onToggle: (nextValue: boolean) => void;
   /** Disables the toggle interaction (e.g. while a request is in flight). */
   disabled?: boolean;
+  /** Adds a loading state for smooth transition */
+  isLoading?: boolean;
   /** Whether to show the toggle control. Native tokens cannot be hidden here. */
   showToggle?: boolean;
   /** Optional data-testid suffix (`token-management-cell-${testIdSuffix}`). */
@@ -65,9 +70,11 @@ export type TokenManagementCellProps = {
  * @param props.assetId - Token asset id used by the home-page badge image fallback logic.
  * @param props.primaryLabel - Title rendered as the row's primary text.
  * @param props.secondaryLabel - Optional secondary text (e.g. balance).
+ * @param props.safetyResult - Token security result type used for the trust badge.
  * @param props.isOn - Whether the toggle is currently in the ON state.
  * @param props.onToggle - Called with the next desired toggle value.
  * @param props.disabled - Disables the toggle interaction when true.
+ * @param props.isLoading - Handles a loading state.
  * @param props.showToggle - Whether the toggle is rendered.
  * @param props.testIdSuffix - Optional suffix appended to the row test id.
  */
@@ -79,9 +86,11 @@ export const TokenManagementCell = ({
   assetId,
   primaryLabel,
   secondaryLabel,
+  safetyResult,
   isOn,
   onToggle,
   disabled = false,
+  isLoading = false,
   showToggle = true,
   testIdSuffix,
 }: TokenManagementCellProps) => {
@@ -129,20 +138,30 @@ export const TokenManagementCell = ({
         <Box
           flexDirection={BoxFlexDirection.Column}
           justifyContent={BoxJustifyContent.Center}
-          className="min-w-0 flex-1"
+          className="min-w-0 flex-1 overflow-hidden"
         >
-          <Text
-            variant={TextVariant.BodyMd}
-            fontWeight={FontWeight.Medium}
-            color={TextColor.TextDefault}
-            ellipsis
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            gap={1}
+            className="min-w-0 max-w-full"
           >
-            {primaryLabel}
-          </Text>
+            <Text
+              variant={TextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.TextDefault}
+              className="min-w-0"
+              ellipsis
+            >
+              {primaryLabel}
+            </Text>
+            <SecurityBadge value={safetyResult} />
+          </Box>
           {secondaryLabel ? (
             <Text
               variant={TextVariant.BodySm}
               color={TextColor.TextAlternative}
+              className="block max-w-full"
               ellipsis
             >
               {secondaryLabel}
@@ -150,18 +169,24 @@ export const TokenManagementCell = ({
           ) : null}
         </Box>
         {showToggle ? (
-          <ToggleButton
-            value={isOn}
-            disabled={disabled}
-            onToggle={(currentValue: boolean) => {
-              if (!disabled) {
-                onToggle(!currentValue);
-              }
-            }}
-            offLabel=""
-            onLabel=""
-            dataTestId={`${dataTestId}-toggle`}
-          />
+          <span
+            aria-busy={isLoading}
+            className="relative ml-4 inline-flex h-6 w-10 shrink-0 items-center justify-center"
+            data-testid={`${dataTestId}-toggle-control`}
+          >
+            <ToggleButton
+              value={isOn}
+              disabled={disabled || isLoading}
+              onToggle={(currentValue: boolean) => {
+                if (!disabled && !isLoading) {
+                  onToggle(!currentValue);
+                }
+              }}
+              offLabel=""
+              onLabel=""
+              dataTestId={`${dataTestId}-toggle`}
+            />
+          </span>
         ) : null}
       </Box>
     </Box>

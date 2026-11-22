@@ -2,7 +2,6 @@
  * OpenAI GPT API integration for analyzing PR changes and generating testing scenarios
  */
 
-// eslint-disable-next-line import-x/no-named-as-default
 import OpenAI from 'openai';
 import type {
   PullRequestInfo,

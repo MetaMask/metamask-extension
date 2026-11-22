@@ -1,21 +1,21 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
 import { useMusdConversionToastStatus } from './useMusdConversionToastStatus';
 
-jest.mock('../../contexts/metametrics', () => {
-  const React = jest.requireActual('react');
-  const trackEvent = jest.fn().mockResolvedValue(undefined);
+const mockTrackEvent = jest.fn();
+
+jest.mock('../useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
   return {
-    MetaMetricsContext: React.createContext({
-      trackEvent,
-      bufferedTrace: jest.fn().mockResolvedValue(undefined),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
     }),
-    mockTrackEvent: trackEvent,
   };
 });
 
@@ -24,7 +24,6 @@ jest.mock('react-redux', () => ({
 }));
 
 const { useSelector } = jest.requireMock('react-redux');
-const { mockTrackEvent } = jest.requireMock('../../contexts/metametrics');
 
 const MOCK_PAYMENT_TOKEN = {
   address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
@@ -396,6 +395,50 @@ describe('useMusdConversionToastStatus', () => {
     rerender();
 
     expect(result.current.toastState).toBe('in-progress');
+  });
+
+  it('preserves sourceTokenSymbol when a follow-up conversion uses the same payment token symbol', () => {
+    setupMock(
+      [createMusdConversionTx('tx-1', TransactionStatus.submitted)],
+      MOCK_PAYMENT_TOKEN,
+    );
+
+    const { result, rerender } = renderHook(() =>
+      useMusdConversionToastStatus(),
+    );
+
+    expect(result.current.sourceTokenSymbol).toBe('USDC');
+
+    updateMock(
+      [createMusdConversionTx('tx-1', TransactionStatus.confirmed)],
+      undefined,
+    );
+    rerender();
+    expect(result.current.toastState).toBe('success');
+    expect(result.current.sourceTokenSymbol).toBe('USDC');
+
+    updateMock(
+      [
+        createMusdConversionTx('tx-1', TransactionStatus.confirmed),
+        createMusdConversionTx('tx-2', TransactionStatus.submitted),
+      ],
+      MOCK_PAYMENT_TOKEN,
+    );
+    rerender();
+    expect(result.current.toastState).toBe('in-progress');
+    expect(result.current.sourceTokenSymbol).toBe('USDC');
+
+    updateMock(
+      [
+        createMusdConversionTx('tx-1', TransactionStatus.confirmed),
+        createMusdConversionTx('tx-2', TransactionStatus.confirmed),
+      ],
+      undefined,
+    );
+    rerender();
+
+    expect(result.current.toastState).toBe('success');
+    expect(result.current.sourceTokenSymbol).toBe('USDC');
   });
 
   it('does not leak previous conversion symbol to a new conversion whose payment token has not populated yet', () => {

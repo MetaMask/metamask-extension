@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   ButtonIcon,
@@ -12,13 +12,15 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  hideWarning,
   checkIsSeedlessPasswordOutdated,
   importMnemonicToVault,
 } from '../../../store/actions';
 import { SECOND } from '../../../../shared/constants/time';
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../../helpers/constants/routes';
 import { Header, Page } from '../../../components/multichain/pages/page';
 import {
   getIsSocialLoginFlow,
@@ -26,10 +28,11 @@ import {
 } from '../../../selectors';
 import { getIsSeedlessPasswordOutdated } from '../../../ducks/metamask/metamask';
 import PasswordOutdatedModal from '../../../components/app/password-outdated-modal';
-import { MetaMaskReduxDispatch } from '../../../store/store';
+import { useDispatch } from '../../../store/hooks';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import SrpInputForm from '../../srp-input-form';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 
 const toastId = 'new-srp-added-toast';
 const autoHideToastDelay = 5 * SECOND;
@@ -37,26 +40,25 @@ const autoHideToastDelay = 5 * SECOND;
 export const ImportSrp = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const [srpError, setSrpError] = useState('');
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
+  const [shouldClearClipboard, setShouldClearClipboard] = useState(false);
   const isSocialLoginEnabled = useSelector(getIsSocialLoginFlow);
   const isSeedlessPasswordOutdated = useSelector(getIsSeedlessPasswordOutdated);
   const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
-  const { trackEvent } = useContext(MetaMetricsContext);
-
-  // Providing duplicate SRP throws an error in metamask-controller, which results in a warning in the UI
-  // We want to hide the warning when the component unmounts
-  useEffect(() => {
-    return () => {
-      dispatch(hideWarning());
-    };
-  }, [dispatch]);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   async function importWallet() {
     try {
       if (!secretRecoveryPhrase) {
         return;
+      }
+
+      if (shouldClearClipboard) {
+        navigator.clipboard.writeText('').catch(() => {
+          // Do not block SRP import if clipboard access remains unavailable.
+        });
       }
 
       if (isSocialLoginEnabled) {
@@ -68,13 +70,14 @@ export const ImportSrp = () => {
         }
       }
 
-      trackEvent({
-        event: MetaMetricsEventName.ImportSecretRecoveryPhrase,
-        properties: {
-          status: 'continue_button_clicked',
-          location: 'Multi SRP Import',
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.ImportSecretRecoveryPhrase)
+          .addProperties({
+            status: 'continue_button_clicked',
+            location: 'Multi SRP Import',
+          })
+          .build(),
+      );
 
       await dispatch(importMnemonicToVault(secretRecoveryPhrase));
 
@@ -107,15 +110,17 @@ export const ImportSrp = () => {
         startAccessory={
           <ButtonIcon
             ariaLabel="back"
+            data-testid="import-srp-back-button"
             iconName={IconName.ArrowLeft}
             onClick={() => {
-              navigate(DEFAULT_ROUTE);
+              navigate(PREVIOUS_ROUTE);
             }}
           />
         }
         endAccessory={
           <ButtonIcon
             ariaLabel="close"
+            data-testid="import-srp-close-button"
             iconName={IconName.Close}
             onClick={() => {
               navigate(DEFAULT_ROUTE);
@@ -135,6 +140,8 @@ export const ImportSrp = () => {
         error={srpError}
         setSecretRecoveryPhrase={setSecretRecoveryPhrase}
         onClearCallback={() => setSrpError('')}
+        onClearClipboardRetry={() => setShouldClearClipboard(false)}
+        onClipboardClearFailed={() => setShouldClearClipboard(true)}
       />
       <Box className="w-full cta-footer">
         <Button

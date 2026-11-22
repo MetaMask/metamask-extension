@@ -1,6 +1,7 @@
 import { mockBackgroundEventsSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { login } from '../page-objects/flows/login.flow';
+import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
@@ -24,15 +25,13 @@ describe('Test Snap Background Events', function () {
         await login(driver);
 
         const testSnaps = new TestSnaps(driver);
+        const snapInstall = new SnapInstall(driver);
 
         // Navigate to test snaps page, connect to background events Snap, complete installation and validate
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectBackgroundEventsButton',
-        );
-        await testSnaps.checkInstallationComplete(
-          'connectBackgroundEventsButton',
-          'Reconnect to Background Events Snap',
+          { expectedMessage: 'Reconnect to Background Events Snap' },
         );
 
         // ISO 8601 date string
@@ -42,17 +41,9 @@ describe('Test Snap Background Events', function () {
 
         await testSnaps.clickButton('scheduleBackgroundEventWithDateButton');
 
-        const scheduleResult = await driver.findElement(
-          '#scheduleBackgroundEventResult',
-        );
-        await driver.waitForNonEmptyElement(scheduleResult);
+        await testSnaps.waitForNonEmptyResult('backgroundEventResultSpan');
 
         await testSnaps.clickButton('getBackgroundEventResultButton');
-
-        const eventsResult = await driver.findElement(
-          '#getBackgroundEventsResult',
-        );
-        await driver.waitForNonEmptyElement(eventsResult);
 
         await testSnaps.checkMessageResultSpanIncludes(
           'getBackgroundEventResultSpan',
@@ -62,16 +53,13 @@ describe('Test Snap Background Events', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // look for the dialog popup to verify background event fired
-        await driver.waitForSelector({
-          css: '.snap-ui-renderer__content',
-          text: 'This dialog was triggered by a background event',
-        });
+        await testSnaps.checkMessageResultSpan(
+          'snapUIRenderer',
+          'This dialog was triggered by a background event',
+        );
 
-        // try to click on the Ok button and pass test if window closes
-        await driver.clickElementAndWaitForWindowToClose({
-          text: 'Close',
-          tag: 'span',
-        });
+        // try to click on the Close button and pass test if window closes
+        await snapInstall.clickCloseButton();
       },
     );
   });
@@ -89,19 +77,16 @@ describe('Test Snap Background Events', function () {
         testSpecificMock: mockBackgroundEventsSnap,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
+        const snapInstall = new SnapInstall(driver);
 
         // Navigate to test snaps page, connect to background events Snap, complete installation and validate
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectBackgroundEventsButton',
-        );
-
-        await testSnaps.checkInstallationComplete(
-          'connectBackgroundEventsButton',
-          'Reconnect to Background Events Snap',
+          { expectedMessage: 'Reconnect to Background Events Snap' },
         );
 
         // ISO 8601 duration string
@@ -116,17 +101,9 @@ describe('Test Snap Background Events', function () {
           'scheduleBackgroundEventWithDurationButton',
         );
 
-        const scheduleResult = await driver.findElement(
-          '#scheduleBackgroundEventResult',
-        );
-        await driver.waitForNonEmptyElement(scheduleResult);
+        await testSnaps.waitForNonEmptyResult('backgroundEventResultSpan');
 
         await testSnaps.clickButton('getBackgroundEventResultButton');
-
-        const eventsResult = await driver.findElement(
-          '#getBackgroundEventsResult',
-        );
-        await driver.waitForNonEmptyElement(eventsResult);
 
         await testSnaps.checkMessageResultSpanIncludes(
           'getBackgroundEventResultSpan',
@@ -136,16 +113,13 @@ describe('Test Snap Background Events', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // look for the dialog popup to verify background event fired
-        await driver.waitForSelector({
-          css: '.snap-ui-renderer__content',
-          text: 'This dialog was triggered by a background event',
-        });
+        await testSnaps.checkMessageResultSpan(
+          'snapUIRenderer',
+          'This dialog was triggered by a background event',
+        );
 
-        // try to click on the Ok button and pass test if window closes
-        await driver.clickElementAndWaitForWindowToClose({
-          text: 'Close',
-          tag: 'span',
-        });
+        // try to click on the Close button and pass test if window closes
+        await snapInstall.clickCloseButton();
       },
     );
   });
@@ -163,43 +137,34 @@ describe('Test Snap Background Events', function () {
         testSpecificMock: mockBackgroundEventsSnap,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
 
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectBackgroundEventsButton',
-        );
-        await testSnaps.checkInstallationComplete(
-          'connectBackgroundEventsButton',
-          'Reconnect to Background Events Snap',
+          { expectedMessage: 'Reconnect to Background Events Snap' },
         );
 
-        const futureDate = new Date(Date.now() + 5000).toISOString();
+        const futureDate = new Date(Date.now() + 30000).toISOString();
 
         await testSnaps.fillMessage('backgroundEventDateInput', futureDate);
 
         await testSnaps.clickButton('scheduleBackgroundEventWithDateButton');
 
-        const scheduleResult = await driver.findElement(
-          '#scheduleBackgroundEventResult',
+        const scheduleResult = await testSnaps.waitForNonEmptyResult(
+          'backgroundEventResultSpan',
         );
-        await driver.waitForNonEmptyElement(scheduleResult);
 
         await testSnaps.clickButton('getBackgroundEventResultButton');
-
-        const eventsResult = await driver.findElement(
-          '#getBackgroundEventsResult',
-        );
-        await driver.waitForNonEmptyElement(eventsResult);
 
         await testSnaps.checkMessageResultSpanIncludes(
           'getBackgroundEventResultSpan',
           'fireDialog',
         );
 
-        const eventIdText = JSON.parse(await scheduleResult.getText());
+        const eventIdText = JSON.parse(scheduleResult);
         await testSnaps.fillMessage('cancelBackgroundEventInput', eventIdText);
 
         await testSnaps.clickButton('cancelBackgroundEventButton');

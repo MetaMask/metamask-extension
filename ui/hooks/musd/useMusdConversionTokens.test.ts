@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import React from 'react';
@@ -132,8 +132,10 @@ const createWrapper = () => {
     },
   });
 
-  const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) =>
-    React.createElement(Provider, { store }, children);
+  const Wrapper = ({
+    children,
+  }: React.PropsWithChildren<{ children: React.ReactNode }>) =>
+    React.createElement(Provider, { store, children });
 
   return Wrapper;
 };

@@ -7,6 +7,8 @@ import {
 } from '@metamask/utils';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
+  AssetBalance,
+  AssetMetadata,
   AssetsControllerState,
   FungibleAssetPrice,
 } from '@metamask/assets-controller';
@@ -37,6 +39,7 @@ import {
 } from '../assets-unify-state/remote-feature-flag';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../environment';
 import { AssetType } from '../../constants/transaction';
+import { augmentTempoCurrencyRates } from '../assets/enablement/tempo';
 import { createDeepEqualSelector } from './selector-creators';
 
 // Old state controllers and fields status
@@ -50,14 +53,14 @@ import { createDeepEqualSelector } from './selector-creators';
 // allDetectedTokens: DONE (Not being used)
 //
 // TokenBalancesController
-// tokenBalances: DONE
+// tokenBalances: DONE (via AssetsController when unify enabled; controller removed)
 //
 // CurrencyRateController
-// currencyRates: DONE
-// currentCurrency: DONE
+// currencyRates: DONE (via AssetsController.assetsPrice when unify enabled; controller removed)
+// currentCurrency: DONE (via AssetsController.selectedCurrency when unify enabled; controller removed)
 //
 // TokenRatesController
-// marketData: DONE
+// marketData: DONE (via AssetsController.assetsPrice when unify enabled; controller removed)
 //
 // MultichainAssetsController
 // accountsAssets: DONE
@@ -65,17 +68,20 @@ import { createDeepEqualSelector } from './selector-creators';
 // allIgnoredAssets: DONE
 //
 // MultichainBalancesController
-// balances: DONE
+// balances: unused (controller removed)
 //
 // MultichainAssetsRatesController
-// conversionRates: DONE
-// historicalPrices: TODO (This state should be removed)
+// conversionRates: DONE (via AssetsController.assetsPrice when unify enabled)
+// historicalPrices: unused (controller removed; charts use Price API)
 //
 // RatesController
 // rates: DONE
 //
 // TokenListController
-// tokensChainsCache: TODO (There are no plans to port this state)
+// tokensChainsCache: unused (controller removed)
+//
+// TokenDetectionController
+// (no persisted state; controller removed — detection via AssetsController)
 
 // This utility type makes the selector forceably require just the state that was originally required
 // For selectors with custom state input, this prevents their input type from requiring additional state that will not be needed after the migration
@@ -86,7 +92,13 @@ type ControllerStateSelector<
   metamask: Pick<InputState, ResultField>;
 }) => InputState[ResultField];
 
-const getIsAssetsUnifyStateEnabled = createDeepEqualSelector(
+// Dual-path selectors that also read AssetsController fields. Input is intentionally
+// loose so migrated fixtures (which omit legacy controller slices) type-check.
+type MigratingControllerStateSelector<Result> = (state: {
+  metamask: Record<string, unknown>;
+}) => Result;
+
+export const getIsAssetsUnifyStateEnabled = createDeepEqualSelector(
   [
     (state: { metamask: RemoteFeatureFlagControllerState }) =>
       state.metamask?.remoteFeatureFlags ?? {},
@@ -147,17 +159,20 @@ export const getAccountTrackerControllerAccountsByChainId =
           internalAccount.address,
         );
 
-        for (const [assetId, balanceData] of Object.entries(accountBalances)) {
+        for (const [assetId, balanceData] of Object.entries(
+          accountBalances,
+        ) as [CaipAssetType, AssetBalance][]) {
           const metadata = assetsInfo[assetId];
           if (metadata?.type !== 'native') {
             continue;
           }
 
-          const { chain: parsedChain } = parseCaipAssetType(
-            assetId as CaipAssetType,
-          );
+          const { chain: parsedChain } = parseCaipAssetType(assetId);
 
-          // No need to check if the chain is EVM, we already filtered out non-EVM accounts
+          if (parsedChain.namespace !== KnownCaipNamespace.Eip155) {
+            continue;
+          }
+
           const hexChainId = decimalToPrefixedHex(parsedChain.reference);
           const amount = balanceData?.amount ?? '0';
 
@@ -236,7 +251,10 @@ export const getTokensControllerAllTokens = createDeepEqualSelector(
 
         const assetType = parseCaipAssetType(assetId);
 
-        // No need to check if the chain is EVM, we already filtered out non-EVM accounts
+        if (assetType.chain.namespace !== KnownCaipNamespace.Eip155) {
+          continue;
+        }
+
         const hexChainId = decimalToPrefixedHex(assetType.chain.reference);
         const assetAddress = toChecksumHexAddress(assetType.assetReference);
 
@@ -352,18 +370,26 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
       const accountAddress = internalAccount.address as Hex;
       result[accountAddress] ??= {};
 
-      for (const [assetId, assetBalance] of Object.entries(chainIdBalances)) {
+      for (const [assetId, assetBalance] of Object.entries(chainIdBalances) as [
+        CaipAssetType,
+        AssetBalance,
+      ][]) {
         const metadata = assetsInfo[assetId];
         if (!metadata) {
           continue;
         }
 
-        const assetType = parseCaipAssetType(assetId as CaipAssetType);
+        const assetType = parseCaipAssetType(assetId);
+
+        if (assetType.chain.namespace !== KnownCaipNamespace.Eip155) {
+          continue;
+        }
 
         const hexChainId = decimalToPrefixedHex(assetType.chain.reference);
         const assetAddress = toChecksumHexAddress(
           metadata.type === 'native'
-            ? getNativeTokenAddress(hexChainId)
+            ? // TokenBalancesController always uses zero address for native tokens
+              '0x0000000000000000000000000000000000000000'
             : assetType.assetReference,
         ) as Hex;
 
@@ -536,9 +562,8 @@ export const getMultiChainAssetsControllerAssetsMetadata =
 
       return result;
     },
-  ) as unknown as ControllerStateSelector<
-    MultichainAssetsControllerState,
-    'assetsMetadata'
+  ) as unknown as MigratingControllerStateSelector<
+    MultichainAssetsControllerState['assetsMetadata']
   >;
 
 // AccountId -> Array of AssetIds
@@ -631,8 +656,11 @@ export const getMultiChainBalancesControllerBalances = createDeepEqualSelector(
 
       result[accountId] = {};
 
-      for (const [assetId, balance] of Object.entries(chainIdBalances)) {
-        const assetType = parseCaipAssetType(assetId as CaipAssetType);
+      for (const [assetId, balance] of Object.entries(chainIdBalances) as [
+        CaipAssetType,
+        AssetBalance,
+      ][]) {
+        const assetType = parseCaipAssetType(assetId);
         const metadata = assetsInfo[assetId];
 
         if (
@@ -664,13 +692,17 @@ export const getCurrencyRateControllerCurrentCurrency = createDeepEqualSelector(
       state.metamask?.selectedCurrency,
   ],
   (isAssetsUnifyStateEnabled, currentCurrency, selectedCurrency) => {
-    if (!isAssetsUnifyStateEnabled) {
-      return currentCurrency;
-    }
+    // CurrencyRateController no longer seeds currentCurrency. Callers such as
+    // Settings assume this is a string.
+    const currency = isAssetsUnifyStateEnabled
+      ? selectedCurrency
+      : currentCurrency;
 
-    return selectedCurrency;
+    return currency ?? 'usd';
   },
-) as unknown as ControllerStateSelector<CurrencyRateState, 'currentCurrency'>;
+) as unknown as MigratingControllerStateSelector<
+  CurrencyRateState['currentCurrency']
+>;
 
 // Native Symbol -> Rates (conversionRate, usdConversionRate, conversionDate)
 export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
@@ -691,15 +723,15 @@ export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
     const result: CurrencyRateState['currencyRates'] = {};
 
     // Sorting just to ensure that we process mainnet (eip155:1) first
-    for (const [assetId, metadata] of Object.entries(assetsInfo).toSorted(
-      (a, b) => a[0].localeCompare(b[0]),
-    )) {
+    for (const [assetId, metadata] of (
+      Object.entries(assetsInfo) as [CaipAssetType, AssetMetadata][]
+    ).toSorted((a, b) => a[0].localeCompare(b[0]))) {
       // Skip if we already have an entry for this symbol
       if (result[metadata.symbol]) {
         continue;
       }
 
-      const assetType = parseCaipAssetType(assetId as CaipAssetType);
+      const assetType = parseCaipAssetType(assetId);
 
       // Skip if not a native asset or not evm
       if (
@@ -722,7 +754,7 @@ export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
       };
     }
 
-    return result;
+    return augmentTempoCurrencyRates(result, assetsPrice);
   },
 ) as unknown as ControllerStateSelector<CurrencyRateState, 'currencyRates'>;
 
@@ -820,9 +852,8 @@ export const getTokenRatesControllerMarketData = createDeepEqualSelector(
 
     return result;
   },
-) as unknown as ControllerStateSelector<
-  TokenRatesControllerState,
-  'marketData'
+) as unknown as MigratingControllerStateSelector<
+  TokenRatesControllerState['marketData']
 >;
 
 export const getMultichainAssetsRatesControllerConversionRates =
@@ -857,11 +888,21 @@ export const getMultichainAssetsRatesControllerConversionRates =
           expirationTime: undefined,
           marketData: {
             fungible: true,
-            allTimeHigh: `${assetPrice.allTimeHigh}`,
-            allTimeLow: `${assetPrice.allTimeLow}`,
-            circulatingSupply: `${assetPrice.circulatingSupply}`,
-            marketCap: `${assetPrice.marketCap}`,
-            totalVolume: `${assetPrice.totalVolume}`,
+            allTimeHigh: Number.isFinite(assetPrice.allTimeHigh)
+              ? `${assetPrice.allTimeHigh}`
+              : undefined,
+            allTimeLow: Number.isFinite(assetPrice.allTimeLow)
+              ? `${assetPrice.allTimeLow}`
+              : undefined,
+            circulatingSupply: Number.isFinite(assetPrice.circulatingSupply)
+              ? `${assetPrice.circulatingSupply}`
+              : undefined,
+            marketCap: Number.isFinite(assetPrice.marketCap)
+              ? `${assetPrice.marketCap}`
+              : undefined,
+            totalVolume: Number.isFinite(assetPrice.totalVolume)
+              ? `${assetPrice.totalVolume}`
+              : undefined,
             pricePercentChange: {
               PT1H: assetPrice.pricePercentChange1h as number,
               P1D: assetPrice.pricePercentChange1d as number,
@@ -877,9 +918,8 @@ export const getMultichainAssetsRatesControllerConversionRates =
 
       return result;
     },
-  ) as unknown as ControllerStateSelector<
-    MultichainAssetsRatesControllerState,
-    'conversionRates'
+  ) as unknown as MigratingControllerStateSelector<
+    MultichainAssetsRatesControllerState['conversionRates']
   >;
 
 export const getRatesControllerRates = createDeepEqualSelector(
@@ -898,15 +938,18 @@ export const getRatesControllerRates = createDeepEqualSelector(
 
     const result: RatesControllerState['rates'] = {};
 
-    for (const [assetId, metadata] of Object.entries(assetsInfo)) {
-      const symbol = metadata.symbol.toLowerCase();
+    for (const [assetId, metadata] of Object.entries(assetsInfo) as [
+      CaipAssetType,
+      AssetMetadata,
+    ][]) {
+      const symbol = metadata.symbol?.toLowerCase();
 
       // Skip if we already have an entry for this symbol
       if (result[symbol]) {
         continue;
       }
 
-      const assetType = parseCaipAssetType(assetId as CaipAssetType);
+      const assetType = parseCaipAssetType(assetId);
       const price = assetsPrice[assetId];
 
       // Skip if not a native asset, if evm or if not fungible
@@ -945,10 +988,56 @@ export const getRatesControllerFiatCurrency = createDeepEqualSelector(
   },
 ) as unknown as ControllerStateSelector<RatesControllerState, 'fiatCurrency'>;
 
+/**
+ * Converts a scientific notation balance string (e.g. "1e-18") to its raw
+ * base-unit bigint representation given the token's decimal precision.
+ * Sub-unit values are truncated toward zero (e.g. "1e-19" with 18 decimals
+ * yields 0n). Returns 0n for any string that is not valid scientific notation.
+ *
+ * @param balanceString - The balance in scientific notation (e.g. "1e-18").
+ * @param decimals - The token's decimal precision.
+ * @returns The raw base-unit value as a bigint.
+ */
+function parseScientificNotationBalance(
+  balanceString: string,
+  decimals: number,
+): bigint {
+  const match = balanceString.match(/^([+-]?\d+(?:\.\d+)?)[eE]([+-]?\d+)$/u);
+  if (!match) {
+    return 0n;
+  }
+
+  const [, coefficient, rawExponent] = match;
+  const exponent = parseInt(rawExponent, 10);
+  const isNegative = coefficient.startsWith('-');
+  const absCoefficient = coefficient.replace(/^[+-]/u, '');
+  const [coefInt, coefFrac = ''] = absCoefficient.split('.');
+  const coefDigits = coefInt + coefFrac;
+  const finalExponent = exponent + decimals - coefFrac.length;
+
+  let result: bigint;
+  if (finalExponent >= 0) {
+    result = BigInt(coefDigits) * 10n ** BigInt(finalExponent);
+  } else {
+    // Fractional base units are truncated by keeping only the leading digits.
+    const digitsToKeep = coefDigits.length + finalExponent;
+    result = digitsToKeep <= 0 ? 0n : BigInt(coefDigits.slice(0, digitsToKeep));
+  }
+
+  return isNegative ? -result : result;
+}
+
 function parseBalanceWithDecimals(
   balanceString: string,
   decimals: number,
 ): Hex {
+  // Scientific notation (e.g. "1e-18") cannot be split on "." correctly —
+  // handle it separately before the normal fixed-point path.
+  if (balanceString.includes('e') || balanceString.includes('E')) {
+    const raw = parseScientificNotationBalance(balanceString, decimals);
+    return bigIntToHex(raw < 0n ? 0n : raw);
+  }
+
   const [integerPart, fractionalPart = ''] = balanceString.split('.');
 
   if (decimals === 0) {
@@ -963,9 +1052,7 @@ function parseBalanceWithDecimals(
 
   return bigIntToHex(
     BigInt(
-      `${integerPart}${fractionalPart}${'0'.repeat(
-        decimals - fractionalPart.length,
-      )}`,
+      `${integerPart}${fractionalPart}${'0'.repeat(decimals - fractionalPart.length)}`,
     ),
   );
 }

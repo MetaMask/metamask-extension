@@ -1,24 +1,25 @@
-import React, { useCallback, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useCallback, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
 import {
-  Box,
-  ButtonSecondary,
+  ButtonIcon,
+  ButtonIconSize,
+  ButtonsAlignment,
   FormTextField,
+  IconColor,
+  IconName,
+  TextFieldSize,
   Modal,
   ModalBody,
   ModalContent,
+  ModalFooter,
   ModalHeader,
   ModalOverlay,
-} from '../../component-library';
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setAccountGroupName } from '../../../store/actions';
-import {
-  Display,
-  FlexDirection,
-  FontWeight,
-} from '../../../helpers/constants/design-system';
 import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
+import { useDispatch } from '../../../store/hooks';
 
 export type MultichainAccountEditModalProps = {
   isOpen: boolean;
@@ -37,74 +38,107 @@ export const MultichainAccountEditModal = ({
     getMultichainAccountGroupById(state, accountGroupId),
   );
   const currentAccountName = accountGroup?.metadata.name || '';
-  const [accountName, setAccountName] = useState('');
-  const [helpText, setHelpText] = useState('');
+  const [accountName, setAccountName] = useState(currentAccountName);
   const [showErrorMessage, setShowErrorMessage] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const normalizedAccountName = accountName.trim();
+  const isSaveDisabled =
+    !normalizedAccountName || normalizedAccountName === currentAccountName;
 
   const handleSave = useCallback(async () => {
-    const normalizedAccountName = accountName.trim();
-    if (normalizedAccountName && normalizedAccountName !== currentAccountName) {
-      const result = (await dispatch(
-        setAccountGroupName(accountGroupId, normalizedAccountName),
-      )) as unknown as boolean;
-
-      if (result) {
-        onClose();
-      } else {
-        setHelpText(t('accountNameAlreadyInUse'));
-        setShowErrorMessage(true);
-      }
+    if (isSaveDisabled) {
+      return;
     }
-  }, [accountName, currentAccountName, accountGroupId, dispatch, onClose, t]);
+
+    const result = (await dispatch(
+      setAccountGroupName(accountGroupId, normalizedAccountName),
+    )) as unknown as boolean;
+
+    if (result) {
+      onClose();
+    } else {
+      setShowErrorMessage(true);
+    }
+  }, [
+    isSaveDisabled,
+    normalizedAccountName,
+    accountGroupId,
+    dispatch,
+    onClose,
+  ]);
 
   const handleKeyDown = useCallback(
     async (e: React.KeyboardEvent) => {
-      if (e.key === 'Enter' && accountName.trim()) {
+      if (e.key === 'Enter') {
         await handleSave();
       }
     },
-    [accountName, handleSave],
+    [handleSave],
   );
+
+  const handleClear = useCallback(() => {
+    setAccountName('');
+    setShowErrorMessage(false);
+    inputRef.current?.focus();
+  }, []);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={onClose} onBack={onClose}>
-          {t('rename')}
+        <ModalHeader
+          data-testid="account-edit-modal-header"
+          onClose={onClose}
+          closeButtonProps={{ ariaLabel: t('close') }}
+        >
+          {t('renameAccount')}
         </ModalHeader>
         <ModalBody>
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            gap={4}
-          >
-            <Box>
-              <FormTextField
-                label={t('accountName')}
-                aria-label={t('accountName')}
-                data-testid="account-name-input"
-                value={accountName}
-                onChange={(e) => setAccountName(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder={currentAccountName}
-                error={showErrorMessage}
-                helpText={helpText}
-                helpTextProps={{ fontWeight: FontWeight.Medium }}
-                autoFocus
-              />
-            </Box>
-            <ButtonSecondary
-              onClick={handleSave}
-              disabled={!accountName.trim()}
-              aria-label={t('confirm')}
-              block
-              marginTop={4}
-            >
-              {t('confirm')}
-            </ButtonSecondary>
-          </Box>
+          <FormTextField
+            id="account-name-input"
+            data-testid="account-name-input"
+            value={accountName}
+            onChange={(e) => {
+              setAccountName(e.target.value);
+              setShowErrorMessage(false);
+            }}
+            onKeyDown={handleKeyDown}
+            placeholder={currentAccountName}
+            inputRef={inputRef}
+            inputProps={{
+              'aria-label': t('accountName'),
+              'aria-invalid': showErrorMessage,
+            }}
+            autoFocus
+            size={TextFieldSize.Lg}
+            isError={showErrorMessage}
+            endAccessory={
+              accountName ? (
+                <ButtonIcon
+                  data-testid="account-name-clear-button"
+                  ariaLabel={t('clear')}
+                  iconName={IconName.CircleX}
+                  size={ButtonIconSize.Md}
+                  iconProps={{ color: IconColor.IconAlternative }}
+                  onClick={handleClear}
+                />
+              ) : null
+            }
+            helpText={
+              showErrorMessage ? t('accountNameAlreadyInUse') : undefined
+            }
+          />
         </ModalBody>
+        <ModalFooter
+          buttonsAlignment={ButtonsAlignment.Vertical}
+          primaryButtonProps={{
+            'data-testid': 'account-name-confirm-button',
+            isDisabled: isSaveDisabled,
+            children: t('save'),
+            onClick: handleSave,
+          }}
+        />
       </ModalContent>
     </Modal>
   );

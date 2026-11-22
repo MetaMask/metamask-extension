@@ -54,11 +54,14 @@
  *   }
  */
 
-import { collectE2EMetaMetricsEventCoverage } from './collect-qa-stats-metametrics.mts';
-import { PATTERN_E2E_SPEC_FILE, walkFiles } from './collect-qa-stats-walk-files.mts';
 import { readFile, writeFile, mkdir } from 'fs/promises';
 import { execFileSync } from 'child_process';
 import { join } from 'path';
+import {
+  PATTERN_E2E_SPEC_FILE,
+  walkFiles,
+} from './collect-qa-stats-walk-files.mts';
+import { collectE2EMetaMetricsEventCoverage } from './collect-qa-stats-metametrics.mts';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -107,7 +110,9 @@ type Collector = {
 // ---------------------------------------------------------------------------
 
 const rawToken = process.env.GITHUB_TOKEN;
-if (!rawToken) throw new Error('Missing required GITHUB_TOKEN env var');
+if (!rawToken) {
+  throw new Error('Missing required GITHUB_TOKEN env var');
+}
 const GITHUB_TOKEN: string = rawToken;
 
 const GITHUB_REPOSITORY =
@@ -170,7 +175,9 @@ async function getLatestMainRunId(): Promise<string> {
 }
 
 async function getRunId(): Promise<string> {
-  if (_runId) return _runId;
+  if (_runId) {
+    return _runId;
+  }
   _runId = process.env.RUN_ID_TO_COLLECT ?? (await getLatestMainRunId());
   return _runId;
 }
@@ -180,7 +187,9 @@ async function getRunId(): Promise<string> {
  * First call fetches and stores, every subsequent call returns the cached value.
  */
 async function getArtifactList(): Promise<GitHubArtifact[]> {
-  if (_artifactList) return _artifactList;
+  if (_artifactList) {
+    return _artifactList;
+  }
 
   const runId = await getRunId();
   const artifacts: GitHubArtifact[] = [];
@@ -204,7 +213,9 @@ async function getArtifactList(): Promise<GitHubArtifact[]> {
     const data = (await res.json()) as { artifacts: GitHubArtifact[] };
     artifacts.push(...data.artifacts);
 
-    if (data.artifacts.length < 100) break;
+    if (data.artifacts.length < 100) {
+      break;
+    }
     page++;
   }
 
@@ -334,7 +345,9 @@ function parseJUnitXml(rawXml: string): JUnitParseResult {
     total++;
 
     const filePath = getStringAttribute(attrs, 'file');
-    if (!filePath) continue;
+    if (!filePath) {
+      continue;
+    }
 
     perFile[filePath] = (perFile[filePath] ?? 0) + 1;
   }
@@ -411,19 +424,29 @@ function getFeatureFolder(testFilePath: string): string {
   // Files placed directly under a scanned root (e.g. app/scripts/foo.test.ts)
   // would otherwise produce keys containing the filename and extension.
   const uiComponentsMatch = p.match(/\bui\/components\/([^/]+)\//u);
-  if (uiComponentsMatch) return normalize(uiComponentsMatch[1]);
+  if (uiComponentsMatch) {
+    return normalize(uiComponentsMatch[1]);
+  }
 
   const uiMatch = p.match(/\bui\/([^/]+)\//u);
-  if (uiMatch) return normalize(uiMatch[1]);
+  if (uiMatch) {
+    return normalize(uiMatch[1]);
+  }
 
   const appScriptsMatch = p.match(/\bapp\/scripts\/([^/]+)\//u);
-  if (appScriptsMatch) return normalize(appScriptsMatch[1]);
+  if (appScriptsMatch) {
+    return normalize(appScriptsMatch[1]);
+  }
 
   const appMatch = p.match(/\bapp\/([^/]+)\//u);
-  if (appMatch) return normalize(appMatch[1]);
+  if (appMatch) {
+    return normalize(appMatch[1]);
+  }
 
   const sharedMatch = p.match(/\bshared\/([^/]+)\//u);
-  if (sharedMatch) return `shared_${normalize(sharedMatch[1])}`;
+  if (sharedMatch) {
+    return `shared_${normalize(sharedMatch[1])}`;
+  }
 
   return 'other';
 }
@@ -459,10 +482,14 @@ function getE2eFeatureFolder(filePath: string): string {
   // Files placed directly under test/e2e/tests/ or test/e2e/flask/ (with no
   // subdirectory) would otherwise produce keys containing ".spec.ts".
   const m = p.match(/\btest\/e2e\/(?:tests|flask)\/([^/]+)\//u);
-  if (m) return normalize(m[1]);
+  if (m) {
+    return normalize(m[1]);
+  }
 
   const m2 = p.match(/\btest\/e2e\/([^/]+)\//u);
-  if (m2) return normalize(m2[1]);
+  if (m2) {
+    return normalize(m2[1]);
+  }
 
   return 'other';
 }
@@ -491,7 +518,9 @@ async function collectUnitTestCount(
   );
   console.log(`[unit] found ${shardArtifacts.length} shard artifact(s)`);
 
-  if (shardArtifacts.length === 0) return {};
+  if (shardArtifacts.length === 0) {
+    return {};
+  }
 
   const folderCounts: Record<string, number> = {};
   let total = 0;
@@ -600,7 +629,9 @@ let _e2eReportCache: TestRun[] | null = null;
  * the parsed `TestRun[]` array from `test-runs-chrome.json`.
  */
 async function getE2eReport(): Promise<TestRun[]> {
-  if (_e2eReportCache) return _e2eReportCache;
+  if (_e2eReportCache) {
+    return _e2eReportCache;
+  }
 
   const artifactName = 'test-e2e-chrome-report';
   console.log(`[e2e] downloading ${artifactName}...`);
@@ -630,7 +661,9 @@ let _e2eFirefoxReportCache: TestRun[] | null = null;
  * the parsed `TestRun[]` array from `test-runs-firefox.json`.
  */
 async function getE2eFirefoxReport(): Promise<TestRun[]> {
-  if (_e2eFirefoxReportCache) return _e2eFirefoxReportCache;
+  if (_e2eFirefoxReportCache) {
+    return _e2eFirefoxReportCache;
+  }
 
   const artifactName = 'test-e2e-firefox-report';
   console.log(`[e2e] downloading ${artifactName}...`);
@@ -667,7 +700,7 @@ function parseMochaSkipped(rawXml: string): number {
 }
 
 /**
- * Downloads all Chrome E2E shard artifacts except the explicit browserify run,
+ * Downloads all Chrome E2E shard artifacts,
  * reads the `skipped` attribute from each JUnit XML file's `<testsuites>` root
  * element, and returns the total skipped count.
  *
@@ -679,7 +712,6 @@ async function getE2eSkippedFromXml(): Promise<number> {
   const shardArtifacts = artifacts.filter(
     (a) =>
       a.name.startsWith('test-e2e-chrome-') &&
-      !a.name.startsWith('test-e2e-chrome-browserify') &&
       a.name !== 'test-e2e-chrome-report',
   );
 
@@ -712,19 +744,13 @@ async function collectE2eTestCount(): Promise<Record<string, number>> {
 
   const chromeRuns = await getE2eReport();
 
-  // Explicitly excluded run: the browserify build is superseded by webpack.
-  // All other Chrome runs (webpack, flask, rpc, dist, multiple-providers, etc.)
-  // contribute to the totals.
-  const EXCLUDED_CHROME_RUN = 'test-e2e-chrome-browserify';
-
   // --- Main channel (Chrome, canonical) ---
-  // Counts every Chrome run except the explicit browserify job and flask
-  // (flask is tracked separately below).
+  // Counts every Chrome run except flask (flask is tracked separately below).
   let mainChromeTotal = 0;
   const folderCounts: Record<string, number> = {};
 
   for (const run of chromeRuns.filter(
-    (r) => r.name !== EXCLUDED_CHROME_RUN && r.name !== 'test-e2e-chrome-flask',
+    (r) => r.name !== 'test-e2e-chrome-flask-webpack',
   )) {
     for (const file of run.testFiles ?? []) {
       const ran = (file.tests ?? 0) - (file.skipped ?? 0);
@@ -739,7 +765,7 @@ async function collectE2eTestCount(): Promise<Record<string, number>> {
   let flaskChromeTotal = 0;
 
   for (const run of chromeRuns.filter(
-    (r) => r.name === 'test-e2e-chrome-flask',
+    (r) => r.name === 'test-e2e-chrome-flask-webpack',
   )) {
     for (const file of run.testFiles ?? []) {
       flaskChromeTotal += (file.tests ?? 0) - (file.skipped ?? 0);
@@ -754,7 +780,7 @@ async function collectE2eTestCount(): Promise<Record<string, number>> {
     const firefoxRuns = await getE2eFirefoxReport();
 
     for (const run of firefoxRuns.filter(
-      (r) => r.name === 'test-e2e-firefox-browserify',
+      (r) => r.name === 'test-e2e-firefox-webpack',
     )) {
       for (const file of run.testFiles ?? []) {
         mainFirefoxTotal += (file.tests ?? 0) - (file.skipped ?? 0);
@@ -763,7 +789,7 @@ async function collectE2eTestCount(): Promise<Record<string, number>> {
     console.log(`[e2e/main/firefox] total: ${mainFirefoxTotal}`);
 
     for (const run of firefoxRuns.filter(
-      (r) => r.name === 'test-e2e-firefox-flask',
+      (r) => r.name === 'test-e2e-firefox-flask-webpack',
     )) {
       for (const file of run.testFiles ?? []) {
         flaskFirefoxTotal += (file.tests ?? 0) - (file.skipped ?? 0);
@@ -794,15 +820,18 @@ async function collectE2eTestCount(): Promise<Record<string, number>> {
   if (mainChromeTotal > 0 || mainFirefoxTotal > 0) {
     result.main_tests_run = mainChromeTotal;
     result.main_chrome_tests_run = mainChromeTotal;
-    if (mainFirefoxTotal > 0) result.main_firefox_tests_run = mainFirefoxTotal;
+    if (mainFirefoxTotal > 0) {
+      result.main_firefox_tests_run = mainFirefoxTotal;
+    }
   }
 
   // Flask channel counts (omit if flask tests did not run)
   if (flaskChromeTotal > 0 || flaskFirefoxTotal > 0) {
     result.flask_tests_run = flaskChromeTotal;
     result.flask_chrome_tests_run = flaskChromeTotal;
-    if (flaskFirefoxTotal > 0)
+    if (flaskFirefoxTotal > 0) {
       result.flask_firefox_tests_run = flaskFirefoxTotal;
+    }
   }
 
   // Per-feature breakdown from Chrome main only (canonical, like Android in mobile).
@@ -881,12 +910,16 @@ async function collectBenchmarkScenarioCount(): Promise<
 /**
  * Static scan of E2E MetaMetrics assertions (no GitHub artifacts). On failure, returns {}.
  */
-async function collectMetametricsQaStats(): Promise<Record<string, number | string>> {
+async function collectMetametricsQaStats(): Promise<
+  Record<string, number | string>
+> {
   try {
     return await collectE2EMetaMetricsEventCoverage();
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    console.warn(`[metametrics] static scan failed, skipping namespace: ${message}`);
+    console.warn(
+      `[metametrics] static scan failed, skipping namespace: ${message}`,
+    );
     return {};
   }
 }
@@ -905,9 +938,8 @@ async function collectMetametricsQaStats(): Promise<Record<string, number | stri
 async function collectFeatureFlagCoverage(): Promise<Record<string, number>> {
   console.log('[e2e_feature_flags] running static coverage analysis...');
 
-  const { generateReport } = await import(
-    '../../test/e2e/scripts/feature-flag-coverage-report'
-  );
+  const { generateReport } =
+    await import('../../test/e2e/scripts/feature-flag-coverage-report');
 
   const report = generateReport(process.cwd());
   const { summary } = report;
@@ -929,6 +961,40 @@ async function collectFeatureFlagCoverage(): Promise<Record<string, number>> {
 }
 
 // ---------------------------------------------------------------------------
+// Route page object coverage collector
+// ---------------------------------------------------------------------------
+
+/**
+ * Reports how many extension routes have an E2E page object, using the
+ * shared report generator in test/e2e/scripts/route-coverage-report.ts.
+ *
+ * No artifact download required — the analysis compares `ROUTES` with the
+ * route page object registry in test/e2e/route-registry.
+ */
+async function collectRouteCoverage(): Promise<Record<string, number>> {
+  console.log('[e2e_routes] running static route coverage analysis...');
+
+  const { generateReport } =
+    await import('../../test/e2e/scripts/route-coverage-report');
+
+  const { summary } = generateReport();
+
+  console.log(
+    `[e2e_routes] total: ${summary.totalRoutes}, with page object: ${summary.withPageObject}, not a screen: ${summary.notAScreen}, coverage: ${summary.coveragePercentage}%`,
+  );
+
+  return {
+    total_routes: summary.totalRoutes,
+    routes_with_page_object: summary.withPageObject,
+    routes_without_page_object: summary.withoutPageObject,
+    routes_not_a_screen: summary.notAScreen,
+    unregistered_routes: summary.unregistered,
+    stale_registry_entries: summary.staleEntries,
+    coverage_percentage: summary.coveragePercentage,
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 
@@ -942,12 +1008,15 @@ async function main(): Promise<void> {
     { namespace: 'benchmark', collect: collectBenchmarkScenarioCount },
     { namespace: 'metametrics', collect: collectMetametricsQaStats },
     { namespace: 'e2e_feature_flags', collect: collectFeatureFlagCoverage },
+    { namespace: 'e2e_routes', collect: collectRouteCoverage },
   ];
 
   for (const { namespace, collect } of collectors) {
     try {
       const nested = await collect();
-      if (Object.keys(nested).length === 0) continue;
+      if (Object.keys(nested).length === 0) {
+        continue;
+      }
       stats[namespace] = nested;
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);

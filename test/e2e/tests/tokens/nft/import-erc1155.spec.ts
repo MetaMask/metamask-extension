@@ -2,7 +2,8 @@ import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import Homepage from '../../../page-objects/pages/home/homepage';
-import NftListPage from '../../../page-objects/pages/home/nft-list';
+import ImportNftPage from '../../../page-objects/pages/asset/import-nft-page';
+import NftsTab from '../../../page-objects/pages/home/nfts-tab';
 import { login } from '../../../page-objects/flows/login.flow';
 
 describe('Import ERC1155 NFT', function () {
@@ -26,12 +27,15 @@ describe('Import ERC1155 NFT', function () {
         // Go to NFTs tab, import a valid ERC1155 token address and token id that belongs to user
         const homepage = new Homepage(driver);
         await homepage.goToNftTab();
-        const nftList = new NftListPage(driver);
-        await nftList.importNft(contractAddress, '1');
+        const nftsTab = new NftsTab(driver);
+        await nftsTab.openImportNft();
+        const importNftPage = new ImportNftPage(driver);
+        await importNftPage.checkPageIsLoaded();
+        await importNftPage.importNft(contractAddress, '1');
 
         // Check the ERC1155 token is successfully imported and its image is displayed
-        await nftList.checkSuccessImportNftMessageIsDisplayed();
-        await nftList.checkNftImageIsDisplayed();
+        await nftsTab.checkSuccessImportNftMessageIsDisplayed();
+        await nftsTab.checkNftImageIsDisplayed();
       },
     );
   });
@@ -53,7 +57,11 @@ describe('Import ERC1155 NFT', function () {
 
         // Import a valid ERC1155 token address and a token id that does not belong to user and check error message appears
         await new Homepage(driver).goToNftTab();
-        await new NftListPage(driver).importNft(
+        const nftsTab = new NftsTab(driver);
+        await nftsTab.openImportNft();
+        const importNftPage = new ImportNftPage(driver);
+        await importNftPage.checkPageIsLoaded();
+        await importNftPage.importNft(
           contractAddress,
           '4',
           'NFT can’t be added as the ownership details do not match. Make sure you have entered correct information.',

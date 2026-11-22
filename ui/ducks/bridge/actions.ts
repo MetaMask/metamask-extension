@@ -1,11 +1,14 @@
 import {
-  BridgeBackgroundAction,
   type BridgeController,
-  BridgeUserAction,
+  type InputPrimaryDenomination,
   type RequiredEventContextFromClient,
   UnifiedSwapBridgeEventName,
   isCrossChain,
   isNonEvmChainId,
+  assetIdsMatch,
+  MetaMetricsSwapsEventSource,
+  BridgeControllerMetricsLocation,
+  SwapFeatureTag,
 } from '@metamask/bridge-controller';
 import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import { selectDefaultNetworkClientIdsByChainId } from '../../../shared/lib/selectors/networks';
@@ -16,7 +19,10 @@ import {
   setEnabledAllPopularNetworks,
 } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
-import type { MetaMaskReduxDispatch } from '../../store/store';
+import type {
+  MetaMaskReduxDispatch,
+  MetaMaskReduxState,
+} from '../../store/store';
 import {
   getMultichainNetworkConfigurationsByChainId,
   getMultichainProviderConfig,
@@ -33,7 +39,7 @@ import {
 } from './bridge';
 import type { TokenPayload } from './types';
 import {
-  type BridgeAppState,
+  getBridgeAppState,
   getFromAccount,
   getFromAmount,
   getFromChains,
@@ -51,6 +57,7 @@ import { BridgeMissingNetworkConfigError } from './errors';
 const {
   setFromToken: setFromTokenAction,
   setToToken: setToTokenAction,
+  setToTokenSecurityData,
   setFromTokenInputValue,
   resetInputFields,
   rehydrateBridgeStore,
@@ -58,6 +65,7 @@ const {
   setSelectedQuote,
   setWasTxDeclined,
   setSlippage,
+  setSlippageUserOverride,
   restoreQuoteRequestFromState,
   setIsSrcAssetPickerOpen,
   setIsDestAssetPickerOpen,
@@ -67,34 +75,47 @@ export {
   resetInputFields,
   rehydrateBridgeStore,
   setFromTokenInputValue,
+  setToTokenSecurityData,
   setSrcTokenExchangeRates,
   setSortOrder,
   setSelectedQuote,
   setWasTxDeclined,
   setSlippage,
+  setSlippageUserOverride,
   setTxAlerts,
   restoreQuoteRequestFromState,
   setIsSrcAssetPickerOpen,
   setIsDestAssetPickerOpen,
 };
 
-const callBridgeControllerMethod = (
-  bridgeAction: BridgeUserAction | BridgeBackgroundAction,
-  ...args: unknown[]
-) => {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground(bridgeAction, args);
-    await forceUpdateMetamaskState(dispatch);
-  };
-};
-
 // Background actions
 export const resetBridgeController = () => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(callBridgeControllerMethod(BridgeBackgroundAction.RESET_STATE));
+    await submitRequestToBackground('BridgeController:resetState');
+    await forceUpdateMetamaskState(dispatch);
     await clearAllBridgeCacheItems();
   };
 };
+
+export const setBridgeLocation =
+  (location: MetaMetricsSwapsEventSource) =>
+  async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('BridgeController:setLocation', [location]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+
+export const getBridgeLocation = (): Promise<BridgeControllerMetricsLocation> =>
+  submitRequestToBackground('BridgeController:getLocation');
+
+export const setInputPrimaryDenomination =
+  (denomination: InputPrimaryDenomination) =>
+  async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground(
+      'BridgeController:setInputPrimaryDenomination',
+      [denomination],
+    );
+    await forceUpdateMetamaskState(dispatch);
+  };
 
 export const trackUnifiedSwapBridgeEvent = <
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -106,13 +127,11 @@ export const trackUnifiedSwapBridgeEvent = <
   propertiesFromClient: Pick<RequiredEventContextFromClient, T>[T],
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await dispatch(
-      callBridgeControllerMethod(
-        BridgeBackgroundAction.TRACK_METAMETRICS_EVENT,
-        eventName,
-        propertiesFromClient,
-      ),
+    await submitRequestToBackground(
+      'BridgeController:trackUnifiedSwapBridgeEvent',
+      [eventName, propertiesFromClient],
     );
+    await forceUpdateMetamaskState(dispatch);
   };
 };
 
@@ -126,24 +145,21 @@ export const updateQuoteRequestParams = (
   ]: Parameters<BridgeController['updateBridgeQuoteRequestParams']>
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await dispatch(
-      callBridgeControllerMethod(
-        BridgeUserAction.UPDATE_QUOTE_PARAMS,
-        params,
-        context,
-        quoteRequestIndex,
-        quoteRequestCount,
-      ),
+    await submitRequestToBackground(
+      'BridgeController:updateBridgeQuoteRequestParams',
+      [params, context, quoteRequestIndex, quoteRequestCount],
     );
+    await forceUpdateMetamaskState(dispatch);
   };
 };
 
 export const setEvmBalances = (assetId: CaipAssetType) => {
   return async (
     dispatch: MetaMaskReduxDispatch,
-    getState: () => BridgeAppState,
+    getState: () => MetaMaskReduxState,
   ) => {
-    const selectedAddress = getFromAccount(getState())?.address;
+    const bridgeState = getBridgeAppState(getState());
+    const selectedAddress = getFromAccount(bridgeState)?.address;
     if (!selectedAddress) {
       return;
     }
@@ -168,7 +184,7 @@ export const setEvmBalances = (assetId: CaipAssetType) => {
 export const setFromToken = (token: TokenPayload) => {
   return async (
     dispatch: MetaMaskReduxDispatch,
-    getState: () => BridgeAppState,
+    getState: () => MetaMaskReduxState,
   ) => {
     const { assetId } = token;
     const { chainId } = parseCaipAssetType(assetId);
@@ -181,6 +197,9 @@ export const setFromToken = (token: TokenPayload) => {
     if (!isSupportedBridgeChain(chainId)) {
       return;
     }
+
+    const reduxState = getState();
+    const bridgeState = getBridgeAppState(reduxState);
 
     if (maybeHexChainId) {
       const networkConfigs =
@@ -200,6 +219,7 @@ export const setFromToken = (token: TokenPayload) => {
           // this is a configuration bug that must be fixed in FEATURED_RPCS.
           captureException(
             new BridgeMissingNetworkConfigError(chainId, maybeHexChainId),
+            { tags: { feature: SwapFeatureTag.SWAP } },
           );
           return;
         }
@@ -215,7 +235,7 @@ export const setFromToken = (token: TokenPayload) => {
     if (!currentNetworkMatchesToken) {
       // If the source chain changes, enable All Networks view so the user
       // can see their bridging activity on the new chain
-      const lastSelectedChainId = getLastSelectedChainId(getState());
+      const lastSelectedChainId = getLastSelectedChainId(bridgeState);
       if (isCrossChain(chainId, lastSelectedChainId)) {
         dispatch(setEnabledAllPopularNetworks());
       }
@@ -237,16 +257,16 @@ export const setFromToken = (token: TokenPayload) => {
 export const setToToken = (newToToken: TokenPayload) => {
   return async (
     dispatch: MetaMaskReduxDispatch,
-    getState: () => BridgeAppState,
+    getState: () => MetaMaskReduxState,
   ) => {
-    const state = getState();
-    const currentFromAmount = getFromAmount(state);
-    const fromToken = getFromToken(state);
-    const toToken = getToToken(state);
-    const fromChains = getFromChains(state);
+    const bridgeState = getBridgeAppState(getState());
+    const currentFromAmount = getFromAmount(bridgeState);
+    const fromToken = getFromToken(bridgeState);
+    const toToken = getToToken(bridgeState);
+    const fromChains = getFromChains(bridgeState);
     // If the new toToken is the same as the current fromToken
     // try to set the fromToken to the old toToken
-    if (fromToken?.assetId.toLowerCase() === newToToken.assetId.toLowerCase()) {
+    if (assetIdsMatch(fromToken?.assetId, newToToken.assetId)) {
       let fromTokenToUse = toToken;
 
       // If the old toToken's chain is disabled, it can't be set as the fromToken
@@ -261,11 +281,15 @@ export const setToToken = (newToToken: TokenPayload) => {
           fromToken.assetId,
         );
       }
-      // @ts-expect-error - GasFeeState's nested union type is causing a type mismatch
-      dispatch(setFromToken(fromTokenToUse));
+
+      await dispatch(
+        setFromToken(fromTokenToUse) as unknown as Parameters<
+          typeof dispatch
+        >[0],
+      );
+      dispatch(setFromTokenInputValue(currentFromAmount));
     }
 
     dispatch(setToTokenAction(newToToken));
-    dispatch(setFromTokenInputValue(currentFromAmount));
   };
 };

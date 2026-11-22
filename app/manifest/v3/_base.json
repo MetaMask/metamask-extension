@@ -9,10 +9,9 @@
       "128": "images/icon-128.png",
       "512": "images/icon-512.png"
     },
-    "default_title": "MetaMask",
-    "default_popup": "popup-init.html"
+    "default_title": "MetaMask"
   },
-  "author": "https://metamask.io",
+  "author": "https://metamask.com",
   "background": {
     "service_worker": "service-worker.ts"
   },
@@ -50,6 +49,14 @@
       "all_frames": true
     },
     {
+      "matches": ["https://x.com/*", "https://www.x.com/*"],
+      "css": [
+        "scripts/cashtag/pill/page.css",
+        "scripts/cashtag/widget/page.css"
+      ],
+      "run_at": "document_start"
+    },
+    {
       "matches": ["*://connect.trezor.io/*/popup.html*"],
       "js": ["vendor/trezor/content-script.js"]
     }
@@ -80,7 +87,6 @@
   "permissions": [
     "activeTab",
     "alarms",
-    "clipboardWrite",
     "notifications",
     "scripting",
     "storage",
@@ -94,5 +100,11 @@
   "sandbox": {
     "pages": ["snaps/index.html"]
   },
-  "short_name": "__MSG_appName__"
+  "short_name": "__MSG_appName__",
+  "web_accessible_resources": [
+    {
+      "resources": ["cashtag-widget.html"],
+      "matches": ["https://x.com/*", "https://www.x.com/*"]
+    }
+  ]
 }

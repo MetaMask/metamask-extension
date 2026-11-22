@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Du skal vælge en konto!"
   },
-  "addAcquiredTokens": {
-    "message": "Tilføj de tokens du har erhvervet ved hjælp af MetaMask"
-  },
   "addAlias": {
     "message": "Tilføj alias"
   },
@@ -83,9 +80,6 @@
   },
   "back": {
     "message": "Tilbage"
-  },
-  "backupApprovalInfo": {
-    "message": "Den hemmelige kode er påkrævet for at gendanne din pung, hvis du mister din enhed, glemmer dit kodeord, er nødt til at geninstallere MetaMask eller ønsker adgang til din pung fra en anden enhed."
   },
   "backupApprovalNotice": {
     "message": "Sikkerhedskopiér din Hemmelige Gendannelseskode for at holde din tegnebog og dine penge sikre."
@@ -181,14 +175,8 @@
   "custom": {
     "message": "Avanceret"
   },
-  "customToken": {
-    "message": "Brugerdefineret Token"
-  },
   "decimal": {
     "message": "Decimalpræcision"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Decimaler skal være mindst 0 og højst 36."
   },
   "delete": {
     "message": "Slet"
@@ -198,9 +186,6 @@
   },
   "done": {
     "message": "Færdig"
-  },
-  "downloadGoogleChrome": {
-    "message": "Hent Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Download tilstandslogs"
@@ -226,10 +211,6 @@
   "fast": {
     "message": "Hurtig"
   },
-  "fileImportFail": {
-    "message": "Virker filimportering ikke? Klik her!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "Glem denne enhed"
   },
@@ -238,9 +219,6 @@
   },
   "gasLimit": {
     "message": "Gas-grænse"
-  },
-  "gasLimitTooLow": {
-    "message": "Brændstofgrænsen skal være mindst 21000"
   },
   "gasUsed": {
     "message": "Gas brugt"
@@ -256,9 +234,6 @@
   },
   "hardwareWallets": {
     "message": "Tilslut en hardware-tegnebog"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Vælg en hardware-pung du vil bruge med MetaMask"
   },
   "here": {
     "message": "her",
@@ -345,9 +320,6 @@
   "message": {
     "message": "Besked"
   },
-  "mustSelectOne": {
-    "message": "Skal vælge mindst 1 token."
-  },
   "needImportFile": {
     "message": "Du skal vælge en fil, der skal importeres.",
     "description": "User is important an account and needs to add a file to continue"
@@ -357,9 +329,6 @@
   },
   "networks": {
     "message": "Netværk"
-  },
-  "nevermind": {
-    "message": "Lige meget"
   },
   "newAccountNumberName": {
     "message": "Konto $1",
@@ -379,9 +348,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Webcam ikke fundet"
-  },
-  "notEnoughGas": {
-    "message": "Ikke nok gas"
   },
   "ofTextNofM": {
     "message": "af"
@@ -410,10 +376,6 @@
   "passwordsDontMatch": {
     "message": "Adgangskoder stemmer ikke ovenens"
   },
-  "pastePrivateKey": {
-    "message": "Indsæt din private nøglestreng her:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "afventer"
   },
@@ -429,9 +391,6 @@
   "privateKey": {
     "message": "Privat nøgle",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Advarsel: afslør aldrig denne nøgle. Enhver med dine private nøgler kan stjæle alle aktiver i din konto."
   },
   "privateNetwork": {
     "message": "Privat netværk"
@@ -515,9 +474,6 @@
   "sign": {
     "message": "Underskriv"
   },
-  "signatureRequest": {
-    "message": "Signaturforespørgsel"
-  },
   "signed": {
     "message": "Underskrevet"
   },
@@ -595,9 +551,6 @@
   },
   "urlErrorMsg": {
     "message": "Links kræver det rette HTTP/HTTPS-præfix."
-  },
-  "usedByClients": {
-    "message": "Brugt af forskellige kunder"
   },
   "visitWebSite": {
     "message": "Besøg vores webside"

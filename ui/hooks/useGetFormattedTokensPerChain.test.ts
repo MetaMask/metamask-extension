@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import { getAllTokens } from '../selectors';
 import { getCurrentChainId } from '../../shared/lib/selectors/networks';

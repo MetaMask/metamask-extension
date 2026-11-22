@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/consistent-type-definitions */
 // TODO: find similar functionality in extession
 // import { getSubscriptionToken } from '../utils/multi-subscription-token-vault';
 import log from 'loglevel';
-import { ENVIRONMENT } from '../../../../development/build/constants';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 import ExtensionPlatform from '../../platforms/extension';
 import {
   REWARDS_API_URL,
@@ -26,6 +25,7 @@ import type {
   ChallengeDto,
   SiweLoginDto,
   SiweJoinDto,
+  VipFeesResponseDto,
 } from './rewards-controller.types';
 import { RewardsDataServiceMethodActions } from './rewards-data-service-method-action-types';
 import { RewardsDataServiceMessenger } from './rewards-data-service-types';
@@ -74,13 +74,13 @@ const MESSENGER_EXPOSED_METHODS = [
   'mobileOptin',
   'getSeasonStatus',
   'fetchGeoLocation',
-  'validateReferralCode',
   'mobileJoin',
   'siweJoin',
   'getOptInStatus',
   'getSeasonMetadata',
   'getDiscoverSeasons',
   'generateChallenge',
+  'getVipFees',
 ] as const;
 
 export type RewardsDataServiceActions = RewardsDataServiceMethodActions;
@@ -200,8 +200,17 @@ export class RewardsDataService {
       const version = extensionPlatform.getVersion();
       headers['rewards-client-id'] = `extension-${version}`;
     } catch (error) {
-      // Continue without client header if version retrieval fails
-      console.warn('Failed to retrieve app version for client header:', error);
+      // Unit tests and other non-extension runtimes have no browser manifest.
+      // The build-time version is set in those environments.
+      const fallbackVersion = process.env.METAMASK_VERSION;
+      if (fallbackVersion) {
+        headers['rewards-client-id'] = `extension-${fallbackVersion}`;
+      } else {
+        console.warn(
+          'Failed to retrieve app version for client header:',
+          error,
+        );
+      }
     }
 
     // Add bearer token for authenticated requests
@@ -457,29 +466,6 @@ export class RewardsDataService {
   }
 
   /**
-   * Validate a referral code.
-   *
-   * @param code - The referral code to validate.
-   * @returns Promise<{valid: boolean}> - Object indicating if the code is valid.
-   */
-  async validateReferralCode(code: string): Promise<{ valid: boolean }> {
-    const response = await this.makeRequest(
-      `/referral/validate?code=${encodeURIComponent(code)}`,
-      {
-        method: 'GET',
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error(
-        `Failed to validate referral code. Please try again shortly.`,
-      );
-    }
-
-    return (await response.json()) as { valid: boolean };
-  }
-
-  /**
    * Join an account to a subscription via mobile login.
    *
    * @param body - The mobile login request body containing account, timestamp, and signature.
@@ -667,6 +653,28 @@ export class RewardsDataService {
     }
 
     return data as SeasonMetadataDto;
+  }
+
+  /**
+   * Get the VIP fee table for the current subscription.
+   *
+   * @param subscriptionToken - The subscription token used for authentication.
+   * @returns The VIP fee response (tier 0 will have `fees=null`).
+   */
+  async getVipFees(subscriptionToken: string): Promise<VipFeesResponseDto> {
+    const response = await this.makeRequest(
+      '/vip/fees',
+      {
+        method: 'GET',
+      },
+      subscriptionToken,
+    );
+
+    if (!response.ok) {
+      throw new Error(`Get VIP fees failed: ${response.status}`);
+    }
+
+    return (await response.json()) as VipFeesResponseDto;
   }
 
   /**

@@ -1,8 +1,6 @@
 import { TransactionType } from '@metamask/transaction-controller';
-import { renderHook } from '@testing-library/react-hooks';
-import { useDispatch } from 'react-redux';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { renderHook } from '@testing-library/react';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -11,11 +9,15 @@ import { useWindowFocus } from '../../../hooks/useWindowFocus';
 import { setTransactionActive } from '../../../store/actions';
 import { useConfirmContext } from '../context/confirm';
 import { type Confirmation } from '../types/confirm';
+import { useDispatch } from '../../../store/hooks';
 import { useTransactionFocusEffect } from './useTransactionFocusEffect';
+
+jest.mock('../../../store/hooks', () => ({
+  useDispatch: jest.fn(),
+}));
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
 }));
 
 jest.mock('../context/confirm', () => ({
@@ -30,7 +32,8 @@ jest.mock('../../../store/actions', () => ({
   setTransactionActive: jest.fn(),
 }));
 
-jest.mock('../../../../app/scripts/lib/util', () => ({
+jest.mock('../../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../../shared/lib/environment-type'),
   getEnvironmentType: jest.fn(),
 }));
 

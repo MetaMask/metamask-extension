@@ -24,14 +24,15 @@ exports[`NativeTransferInfo renders correctly 1`] = `
           class="pb-1"
         >
           <h2
-            class="text-inherit text-s-heading-lg leading-s-heading-lg tracking-s-heading-lg md:text-l-heading-lg md:leading-l-heading-lg md:tracking-l-heading-lg font-bold font-default"
+            class="text-inherit text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero"
+            data-testid="confirm-send-amount"
           >
             0 ETH
           </h2>
         </div>
       </div>
       <div
-        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-12 w-12"
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-12 w-12"
       >
         <span
           class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
@@ -82,7 +83,7 @@ exports[`NativeTransferInfo renders correctly 1`] = `
                 class="flex flex-row gap-2 items-center"
               >
                 <p
-                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate"
                   data-testid="confirm-info-row-display-name"
                 >
                   Account 1
@@ -92,7 +93,7 @@ exports[`NativeTransferInfo renders correctly 1`] = `
           </div>
         </div>
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-8 w-8"
           style="flex-shrink: 0;"
         >
           <div
@@ -173,17 +174,17 @@ exports[`NativeTransferInfo renders correctly 1`] = `
                 class="flex flex-row gap-2 items-center"
               >
                 <span
-                  class="address-display-clickable"
+                  class="address-display-clickable min-w-0 flex-1"
                 >
                   <button
-                    class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed hover:bg-transparent active:bg-transparent whitespace-nowrap"
+                    class="inline-flex items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed flex-1 hover:bg-transparent active:bg-transparent whitespace-nowrap"
                     data-testid="confirm-info-row-display-name"
                     role="button"
                   >
                     <span
-                      class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                      class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default flex-1 overflow-hidden text-start"
                     >
-                      0x2e0D7E8c4522…097035d09B
+                      0x2e0D7E8c45221FcA00d74a3609A0f7097035d09B
                     </span>
                   </button>
                 </span>
@@ -192,7 +193,7 @@ exports[`NativeTransferInfo renders correctly 1`] = `
           </div>
         </div>
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-8 w-8"
           style="flex-shrink: 0;"
         >
           <div
@@ -376,6 +377,7 @@ exports[`NativeTransferInfo renders correctly 1`] = `
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          data-testid="confirmation__details-origin"
         >
           metamask.github.io
         </p>
@@ -423,22 +425,22 @@ exports[`NativeTransferInfo renders correctly 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        class="mm-box ml-2 min-w-0 flex-1 mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
+          class="mm-box flex-1 overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="name name__clickable name__missing"
+            class="name justify-end name__clickable name__missing"
           >
             <span
               class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default name__value"
             >
-              0x07614...3ad68
+              0x076146c765189d51bE3160A2140cF80BFC73ad68
             </p>
           </div>
         </div>
@@ -450,7 +452,7 @@ exports[`NativeTransferInfo renders correctly 1`] = `
     data-testid="gas-fee-section"
   >
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+      class="flex flex-col"
     >
       <div
         class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -489,38 +491,42 @@ exports[`NativeTransferInfo renders correctly 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--text-align-center"
+          class="flex flex-col items-end"
         >
-          <button
-            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-            data-testid="edit-gas-fee-icon"
-            style="text-decoration: none;"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/edit.svg');"
-            />
-            <span
-              class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
-            />
-          </button>
-          <p
-            class="mm-box mm-text mm-text--body-md"
-            data-testid="native-currency"
-          >
-            $0.08
-          </p>
           <div
-            class="mm-box mm-box--margin-left-1 mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill"
-            data-testid="selected-gas-fee-token"
-            style="cursor: default; padding-inline-end: 6px; padding: 0px;"
+            class="flex flex-row gap-1 items-center justify-between text-center"
+            style="cursor: default;"
           >
+            <button
+              aria-label="Edit"
+              class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-6 w-6 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+              data-testid="edit-gas-fee-icon"
+            >
+              <svg
+                class="inline-block w-5 h-5 text-inherit"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="m21.31 6.878-4.188-4.19a1.5 1.5 0 0 0-2.122 0L3.44 14.25A1.49 1.49 0 0 0 3 15.31v4.19A1.5 1.5 0 0 0 4.5 21h4.19a1.49 1.49 0 0 0 1.06-.44L21.31 9a1.5 1.5 0 0 0 0-2.122M8.69 19.5H4.5v-4.19l8.25-8.25 4.19 4.19ZM18 10.189 13.81 6l2.25-2.25 4.19 4.189Z"
+                />
+              </svg>
+            </button>
+            <p
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              data-testid="native-currency"
+            >
+              $1.26
+            </p>
             <div
-              class=""
-              data-testid="native-icon"
+              class="gap-1 items-center inline-flex"
+              data-testid="selected-gas-fee-token"
+              style="cursor: default;"
             >
               <div
-                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
+                data-testid="native-icon"
               >
                 <span
                   class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
@@ -528,24 +534,24 @@ exports[`NativeTransferInfo renders correctly 1`] = `
                   E
                 </span>
               </div>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                ETH
+              </p>
             </div>
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-            >
-              ETH
-            </p>
           </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--padding-inline-2 mm-box--display-flex mm-box--justify-content-space-between"
+        class="flex flex-row justify-between px-2"
       >
         <div
-          class="mm-box"
+          class=""
           style="margin-top: 0px;"
         >
           <p
-            class="mm-box mm-text mm-text--body-sm mm-box--padding-bottom-0 mm-box--color-text-alternative"
+            class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
             data-testid="gas-fee-token-fee"
           >
              
@@ -574,7 +580,7 @@ exports[`NativeTransferInfo renders correctly 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center"
+        class="flex flex-row items-center"
       >
         <div
           class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--flex-wrap-wrap"

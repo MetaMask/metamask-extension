@@ -98,26 +98,30 @@ describe('Import Wallet Events', () => {
       // Check for completeOnboarding call
       completeOnboardingCall =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'completeOnboarding',
+          (call) => call[0] === 'OnboardingController:completeOnboarding',
         );
 
       // Check for ExtensionPinned tracking event
       extensionPinnedEvent =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'trackMetaMetricsEvent',
+          (call) =>
+            call[0] === 'trackAnalyticsEvent' &&
+            call[1]?.[0]?.name === MetaMetricsEventName.OnboardingCompleted,
         );
 
-      expect(completeOnboardingCall?.[0]).toBe('completeOnboarding');
-      expect(extensionPinnedEvent?.[0]).toBe('trackMetaMetricsEvent');
+      expect(completeOnboardingCall?.[0]).toBe(
+        'OnboardingController:completeOnboarding',
+      );
+      expect(extensionPinnedEvent?.[0]).toBe('trackAnalyticsEvent');
     });
 
     // Verify ExtensionPinned event has correct properties for import flow
     expect(extensionPinnedEvent?.[1]).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.OnboardingCompleted,
-          properties: {
+          name: MetaMetricsEventName.OnboardingCompleted,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Onboarding,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             wallet_setup_type: 'import',
@@ -127,8 +131,9 @@ describe('Import Wallet Events', () => {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             is_basic_functionality_enabled: true,
-          },
+          }),
         }),
+        expect.anything(),
       ]),
     );
   });

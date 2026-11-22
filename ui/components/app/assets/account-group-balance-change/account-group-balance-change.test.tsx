@@ -18,6 +18,7 @@ describe('AccountGroupBalanceChange', () => {
     portfolioChange: null,
     amountChange: 200,
     percentChange: 0.1,
+    isLoading: false,
   });
 
   const arrange = () => {
@@ -31,10 +32,7 @@ describe('AccountGroupBalanceChange', () => {
   };
 
   const renderComponent = () =>
-    renderWithProvider(
-      <AccountGroupBalanceChange period="1d" trailingChild={() => null} />,
-      mockStore,
-    );
+    renderWithProvider(<AccountGroupBalanceChange period="1d" />, mockStore);
 
   const actAssertTextContent = (props: { value: string; percent: string }) => {
     const { getByTestId } = renderComponent();

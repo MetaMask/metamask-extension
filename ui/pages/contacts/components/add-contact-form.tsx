@@ -4,9 +4,8 @@ import React, {
   useCallback,
   useMemo,
   useRef,
-  useContext,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { debounce } from 'lodash';
 import {
   Box,
@@ -22,6 +21,7 @@ import {
 } from '@metamask/design-system-react';
 import { addHexPrefix } from 'ethereumjs-util';
 import { isHexString } from '@metamask/utils';
+import { useDispatch } from '../../../store/hooks';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   FormTextField,
@@ -37,6 +37,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { DomainInputResolutionCell } from '../../../components/multichain/domain-input-resolution-cell';
 import { getImageForChainId } from '../../../selectors/multichain';
+import { getChainIdToNetworkImageUrlMap } from '../../../selectors/config-registry/config-registry';
 import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
@@ -63,24 +64,26 @@ import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../../../shared/lib/hexstring-utils';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { INVALID_RECIPIENT_ADDRESS_ERROR } from '../../confirmations/send-utils/send.constants';
 import { isValidDomainName } from '../../../helpers/utils/util';
 import type { AddContactFormProps } from '../contacts.types';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { ContactNetworks } from './contact-networks';
 
-export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
+export function AddContactForm({ onSuccess }: AddContactFormProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const addressBook = useSelector(getCompleteAddressBook);
   const internalAccounts = useSelector(getInternalAccounts);
   const qrCodeData = useSelector(getQrCodeData);
   const domainError = useSelector(getDomainError);
+  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
   const domainResolutions = useSelector(getDomainResolutions);
   const currentChainId = useSelector(getCurrentChainId);
   const networks = useSelector(getNetworkConfigurationsByChainId);
@@ -136,21 +139,26 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
   }, [selectedChainId, enteredDomainName, input, dispatch]);
 
   useEffect(() => {
-    if (qrCodeData?.type === 'address' && qrCodeData?.values?.address) {
-      const scannedAddress = qrCodeData.values.address.toLowerCase();
-      const addresses = [
-        ...(domainResolutions?.map(
-          (r: { resolvedAddress: string }) => r.resolvedAddress,
-        ) ?? []),
-        selectedAddress,
-      ]
-        .filter(Boolean)
-        .map((addr: string) => addr.toLowerCase());
-      if (!addresses.includes(scannedAddress)) {
+    if (qrCodeData?.type !== 'address' || !qrCodeData?.values?.address) {
+      return;
+    }
+
+    const scannedAddress = qrCodeData.values.address.toLowerCase();
+    const addresses = [
+      ...(domainResolutions?.map(
+        (r: { resolvedAddress: string }) => r.resolvedAddress,
+      ) ?? []),
+      selectedAddress,
+    ]
+      .filter(Boolean)
+      .map((addr: string) => addr.toLowerCase());
+
+    if (!addresses.includes(scannedAddress)) {
+      queueMicrotask(() => {
         setInput(scannedAddress);
         validate(scannedAddress);
-        dispatch(qrCodeDetected(null as never));
-      }
+      });
+      dispatch(qrCodeDetected(null as never));
     }
   }, [qrCodeData, domainResolutions, selectedAddress, validate, dispatch]);
 
@@ -198,11 +206,12 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
       setSelectedAddress('');
       setEnteredDomainName('');
     } else {
-      trackEvent({
-        category: MetaMetricsEventCategory.Contacts,
-        event: MetaMetricsEventName.ContactAddQrScannerClicked,
-        properties: { location: 'add_contact_form' },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.ContactAddQrScannerClicked)
+          .addCategory(MetaMetricsEventCategory.Contacts)
+          .addProperties({ location: 'add_contact_form' })
+          .build(),
+      );
       dispatch(showQrScanner());
     }
   };
@@ -225,18 +234,19 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
         typeof selectedChainId === 'string' ? selectedChainId : '',
       ),
     );
-    trackEvent({
-      category: MetaMetricsEventCategory.Contacts,
-      event: MetaMetricsEventName.ContactAdded,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: typeof selectedChainId === 'string' ? selectedChainId : '',
-      },
-      sensitiveProperties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        contact_address: newAddress,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ContactAdded)
+        .addCategory(MetaMetricsEventCategory.Contacts)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: typeof selectedChainId === 'string' ? selectedChainId : '',
+        })
+        .addSensitiveProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          contact_address: newAddress,
+        })
+        .build(),
+    );
     onSuccess();
   };
 
@@ -359,7 +369,7 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
             size={SelectButtonSize.Lg}
             isBlock
             backgroundColor={BackgroundColor.backgroundMuted}
-            borderColor={BorderColor.borderDefault}
+            borderColor={BorderColor.borderMuted}
             borderRadius={BorderRadius.XL}
             startAccessory={
               <AvatarNetwork
@@ -367,7 +377,7 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
                 className="rounded-md"
                 src={
                   typeof selectedChainId === 'string'
-                    ? getImageForChainId(selectedChainId) || undefined
+                    ? getImageForChainId(selectedChainId, networkImageUrls)
                     : undefined
                 }
                 name={String(selectedNetworkName)}
@@ -390,28 +400,13 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
         )}
       </Box>
 
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        gap={4}
-        padding={4}
-        paddingBottom={6}
-        className="bg-background-default"
-      >
-        <Button
-          variant={ButtonVariant.Secondary}
-          size={ButtonSize.Lg}
-          onClick={onCancel}
-          className="flex-1 rounded-xl border border-border-default"
-          data-testid="page-container-footer-cancel"
-        >
-          {t('cancel')}
-        </Button>
+      <Box padding={4} paddingBottom={6} className="bg-background-default">
         <Button
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
           isDisabled={isSaveDisabled}
           onClick={handleSubmit}
-          className="flex-1 rounded-xl"
+          isFullWidth
           data-testid="page-container-footer-next"
         >
           {t('save')}

@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Należy wybrać konto!"
   },
-  "addAcquiredTokens": {
-    "message": "Dodaj tokeny pozyskane przy pomocy MetaMask"
-  },
   "addAlias": {
     "message": "Dodaj alias"
   },
@@ -83,9 +80,6 @@
   },
   "back": {
     "message": "Wstecz"
-  },
-  "backupApprovalInfo": {
-    "message": "Ten tajny kod jest wymagany do odzyskania portfela w przypadku zgubienia urządzenia, zapomnienia hasła, ponownego zainstalowania MetaMask lub potrzeby uzyskania dostępu do portfela na innym urządzeniu."
   },
   "backupApprovalNotice": {
     "message": "Utwórz kopię zapasową tajnego kodu odzyskiwania, aby zapewnić bezpieczeństwo swojego portfela i środków."
@@ -181,14 +175,8 @@
   "custom": {
     "message": "Zaawansowane"
   },
-  "customToken": {
-    "message": "Własny token"
-  },
   "decimal": {
     "message": "Dokładność liczb po przecinku"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Liczb po przecinku musi być co najmniej 0 i nie więcej niż 36."
   },
   "delete": {
     "message": "Usuń"
@@ -198,9 +186,6 @@
   },
   "done": {
     "message": "Gotowe"
-  },
-  "downloadGoogleChrome": {
-    "message": "Ściągnij Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Załaduj logi stanów"
@@ -226,10 +211,6 @@
   "fast": {
     "message": "Szybko"
   },
-  "fileImportFail": {
-    "message": "Importowanie pliku nie działa? Kliknij tutaj!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "Usuń to urządzenie."
   },
@@ -238,9 +219,6 @@
   },
   "gasLimit": {
     "message": "Limit gazu"
-  },
-  "gasLimitTooLow": {
-    "message": "Limit gazu musi wynosić co najmniej 21000"
   },
   "gasUsed": {
     "message": "Użyty gaz"
@@ -259,9 +237,6 @@
   },
   "hardwareWallets": {
     "message": "Podłącz sprzętowy portfel"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Wybierz portfel sprzętowy, którego chcesz użyć z MetaMaskiem"
   },
   "here": {
     "message": "tutaj",
@@ -351,9 +326,6 @@
   "metamaskVersion": {
     "message": "Wersja MetaMask"
   },
-  "mustSelectOne": {
-    "message": "Należy wybrać co najmniej 1 token."
-  },
   "needImportFile": {
     "message": "Musisz wybrać plik do zaimportowania.",
     "description": "User is important an account and needs to add a file to continue"
@@ -363,9 +335,6 @@
   },
   "networks": {
     "message": "Sieci"
-  },
-  "nevermind": {
-    "message": "Nie ważne"
   },
   "newAccountNumberName": {
     "message": "Konto $1",
@@ -385,9 +354,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Nie znaleziono kamery"
-  },
-  "notEnoughGas": {
-    "message": "Za mało gazu"
   },
   "ofTextNofM": {
     "message": "z"
@@ -416,10 +382,6 @@
   "passwordsDontMatch": {
     "message": "Hasła są niezgodne"
   },
-  "pastePrivateKey": {
-    "message": "Tutaj wklej swój prywatny klucz:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "oczekiwanie"
   },
@@ -435,9 +397,6 @@
   "privateKey": {
     "message": "Klucz prywatny",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Uwaga: Nie ujawniaj nikomu tego klucza. Ktokolwiek posiadający Twoje prywatne klucze może użyć środków znajdujących się na Twoim koncie."
   },
   "privateNetwork": {
     "message": "Sieć prywatna"
@@ -524,9 +483,6 @@
   "sign": {
     "message": "Podpisz"
   },
-  "signatureRequest": {
-    "message": "Prośba o podpis"
-  },
   "signed": {
     "message": "Podpisane"
   },
@@ -607,9 +563,6 @@
   },
   "urlErrorMsg": {
     "message": "URI wymaga prawidłowego prefiksu HTTP/HTTPS."
-  },
-  "usedByClients": {
-    "message": "Używany przez różnych klientów"
   },
   "visitWebSite": {
     "message": "Odwiedź naszą stronę"

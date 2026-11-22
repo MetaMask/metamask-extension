@@ -3,14 +3,13 @@ import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { type CaipChainId } from '@metamask/utils';
 import classnames from 'clsx';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
-  Box,
-  Text,
-} from '../../../component-library';
+} from '@metamask/design-system-react';
+import { Box, Text } from '../../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -21,17 +20,24 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import { setEditedNetwork, updateNetwork } from '../../../../store/actions';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
+import { NetworkManagementEntryPoint } from '../../../../../shared/constants/metametrics';
+import { trackRpcSwitched } from '../../../../helpers/utils/network-management-metrics';
 import RpcListItem from '../rpc-list-item';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../../selectors';
+import { useDispatch } from '../../../../store/hooks';
 
 export const SelectRpcUrlModal = ({
   networkConfiguration,
   onNetworkChange,
+  entryPoint = NetworkManagementEntryPoint.NetworkPicker,
 }: {
   networkConfiguration?: NetworkConfiguration;
   onNetworkChange: (chainId: CaipChainId, networkClientId: string) => void;
+  entryPoint?: NetworkManagementEntryPoint;
 }) => {
   const dispatch = useDispatch();
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const location = useLocation();
   const chainId = location.state?.chainId;
 
@@ -66,7 +72,7 @@ export const SelectRpcUrlModal = ({
               src={image}
               name={networkConfigurationToUse.name}
               size={AvatarNetworkSize.Sm}
-              marginRight={1}
+              className="mr-1"
             />
           )}
           <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
@@ -76,13 +82,22 @@ export const SelectRpcUrlModal = ({
       </Box>
 
       {networkConfigurationToUse.rpcEndpoints.map((rpcEndpoint, index) => (
-        <Box
-          alignItems={AlignItems.center}
-          paddingLeft={4}
-          paddingRight={4}
-          display={Display.Flex}
+        <button
+          type="button"
           key={rpcEndpoint.url}
+          data-testid={`network-rpc-option-${rpcEndpoint.name ?? String(index)}`}
           onClick={() => {
+            if (index !== networkConfigurationToUse.defaultRpcEndpointIndex) {
+              trackRpcSwitched(
+                { trackEvent, createEventBuilder },
+                {
+                  chainId: networkConfigurationToUse.chainId,
+                  rpcUrlIndex: index,
+                  rpcCount: networkConfigurationToUse.rpcEndpoints.length,
+                  entryPoint,
+                },
+              );
+            }
             const network = {
               ...networkConfigurationToUse,
               defaultRpcEndpointIndex: index,
@@ -94,10 +109,13 @@ export const SelectRpcUrlModal = ({
               rpcEndpoint.networkClientId,
             );
           }}
-          className={classnames('select-rpc-url__item', {
-            'select-rpc-url__item--selected':
-              index === networkConfigurationToUse.defaultRpcEndpointIndex,
-          })}
+          className={classnames(
+            'select-rpc-url__item flex w-full items-center px-4 text-left',
+            {
+              'select-rpc-url__item--selected':
+                index === networkConfigurationToUse.defaultRpcEndpointIndex,
+            },
+          )}
         >
           {index === networkConfigurationToUse.defaultRpcEndpointIndex && (
             <Box
@@ -106,8 +124,11 @@ export const SelectRpcUrlModal = ({
               backgroundColor={BackgroundColor.primaryDefault}
             />
           )}
-          <RpcListItem rpcEndpoint={rpcEndpoint} />
-        </Box>
+          <RpcListItem
+            chainId={networkConfigurationToUse.chainId}
+            rpcEndpoint={rpcEndpoint}
+          />
+        </button>
       ))}
     </Box>
   );

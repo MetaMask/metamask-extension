@@ -2,15 +2,33 @@ name: Triage Agent Forwarder
 
 on:
   issues:
-    types: [labeled]
+    types: [labeled, opened]
+
+concurrency:
+  group: triage-forwarder-${{ github.event.issue.number }}
+  cancel-in-progress: true
 
 jobs:
   forward:
     runs-on: ubuntu-latest
-    if: github.event.label.name == 'ta-needs-triage'
+    if: >-
+      (github.event.action == 'opened') ||
+      (github.event.action == 'labeled' && github.event.label.name == 'ta-needs-triage')
     permissions:
       id-token: write
     steps:
+      - name: Determine trigger mode
+        id: trigger
+        env:
+          GITHUB_EVENT_ACTION: ${{ github.event.action }}
+        run: |
+          if [ "${GITHUB_EVENT_ACTION}" = "opened" ]; then
+            TRIGGER_MODE="on_create"
+          else
+            TRIGGER_MODE="label"
+          fi
+          echo "trigger_mode=$TRIGGER_MODE" >> "$GITHUB_OUTPUT"
+
       - name: Get OIDC Token
         id: oidc
         run: |
@@ -37,6 +55,9 @@ jobs:
       - name: Dispatch to triage-agent
         env:
           TOKEN: ${{ steps.exchange.outputs.token }}
+          GITHUB_EVENT_REPOSITORY_NAME: ${{ github.event.repository.name }}
+          GITHUB_EVENT_ACTION: ${{ github.event.action }}
+          GITHUB_EVENT_LABEL_NAME: ${{ github.event.label.name }}
         run: |
           curl -sSf -X POST \
             -H "Authorization: token $TOKEN" \
@@ -44,8 +65,9 @@ jobs:
             "https://api.github.com/repos/MetaMask/triage-agent/dispatches" \
             -d "$(jq -cn \
               --arg owner "${{ github.repository_owner }}" \
-              --arg name "${{ github.event.repository.name }}" \
+              --arg name "${GITHUB_EVENT_REPOSITORY_NAME}" \
               --arg number "${{ github.event.issue.number }}" \
-              --arg action "${{ github.event.action }}" \
-              --arg label "${{ github.event.label.name }}" \
-              '{event_type: "triage-issue", client_payload: {repo_owner: $owner, repo_name: $name, issue_number: $number, event_action: $action, event_label_name: $label, trigger_mode: "label"}}')"
+              --arg action "${GITHUB_EVENT_ACTION}" \
+              --arg label "${GITHUB_EVENT_LABEL_NAME}" \
+              --arg trigger_mode "${{ steps.trigger.outputs.trigger_mode }}" \
+              '{event_type: "triage-issue", client_payload: {repo_owner: $owner, repo_name: $name, issue_number: $number, event_action: $action, event_label_name: $label, trigger_mode: $trigger_mode}}')"

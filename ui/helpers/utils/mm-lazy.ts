@@ -9,7 +9,7 @@ import {
 import type { IsNever, IsUnion } from '../../../shared/types/type-level-utils';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- required due to contravariant parameter bound
-export type AnyComponent = React.ComponentType<any>;
+export type AnyComponent = React.ComponentType<React.PropsWithChildren<any>>;
 
 /**
  * Structural type for a module with a default export.

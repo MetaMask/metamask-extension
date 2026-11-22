@@ -6,6 +6,10 @@ import {
 
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 
+import type {
+  OnboardingControllerGetStateAction,
+  OnboardingControllerStateChangeEvent,
+} from '../../controllers/onboarding';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 
 import { RootMessenger } from '../../lib/messenger';
@@ -34,13 +38,13 @@ export function getRewardsControllerMessenger(
       'RewardsDataService:getSeasonStatus',
       'RewardsDataService:fetchGeoLocation',
       'RewardsDataService:mobileOptin',
-      'RewardsDataService:validateReferralCode',
       'RewardsDataService:mobileJoin',
       'RewardsDataService:siweJoin',
       'RewardsDataService:getOptInStatus',
       'RewardsDataService:getSeasonMetadata',
       'RewardsDataService:getDiscoverSeasons',
       'RewardsDataService:generateChallenge',
+      'RewardsDataService:getVipFees',
       'SnapController:handleRequest',
     ],
     events: [
@@ -52,20 +56,26 @@ export function getRewardsControllerMessenger(
 }
 
 type AllowedInitializationActions =
+  | OnboardingControllerGetStateAction
   | RemoteFeatureFlagControllerGetStateAction
   | PreferencesControllerGetStateAction;
+
+type AllowedInitializationEvents = OnboardingControllerStateChangeEvent;
 
 export type RewardsControllerInitMessenger = ReturnType<
   typeof getRewardsControllerInitMessenger
 >;
 
 export function getRewardsControllerInitMessenger(
-  messenger: RootMessenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<
+    AllowedInitializationActions,
+    AllowedInitializationEvents
+  >,
 ) {
   const controllerInitMessenger = new Messenger<
     'RewardsControllerInit',
     AllowedInitializationActions,
-    never,
+    AllowedInitializationEvents,
     typeof messenger
   >({
     namespace: 'RewardsControllerInit',
@@ -74,9 +84,11 @@ export function getRewardsControllerInitMessenger(
   messenger.delegate({
     messenger: controllerInitMessenger,
     actions: [
+      'OnboardingController:getState',
       'RemoteFeatureFlagController:getState',
       'PreferencesController:getState',
     ],
+    events: ['OnboardingController:stateChange'],
   });
   return controllerInitMessenger;
 }

@@ -1,15 +1,41 @@
 import { Driver } from '../../../webdriver/driver';
 import { veryLargeDelayMs } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
 
+/**
+ * Snap install / connect / update confirmation dialog window.
+ *
+ * Screen: notification/dialog window opened when a dapp or test snap requests
+ * install, connection, or update (permissions-connect snap flow).
+ * Owns: connect / confirm / approve / close footers, install and update scroll
+ * areas, permission connect surface, and common snap UI prompt inputs.
+ * Boundaries: stops at this dialog. Warning acknowledge step belongs to
+ * `SnapInstallWarning`; interactive snap UI dialogs belong to
+ * `SnapInteractiveDialog`; post-install snaps list belongs to snap settings pages.
+ * Related: `SnapInstallWarning`, `flows/install-test-snap.flow.ts`,
+ * `flows/snap-permission.flow.ts`.
+ *
+ * @see ui/pages/permissions-connect/snaps/snap-install/snap-install.js
+ */
 class SnapInstall {
-  private driver: Driver;
-
   private readonly addToMetaMaskHeader = {
     tag: 'h3',
     text: 'Add to MetaMask',
   };
 
   private readonly approveButton = '[data-testid="confirmation-submit-button"]';
+
+  private readonly closeButton = {
+    tag: 'button',
+    text: 'Close',
+  };
+
+  private readonly confirmationDialogBoldUrl = {
+    text: 'snaps.metamask.io',
+    tag: 'b',
+  };
+
+  private readonly confirmationDialogLinkText = { text: 'That', tag: 'span' };
 
   private readonly confirmButton = {
     tag: 'button',
@@ -18,13 +44,6 @@ class SnapInstall {
 
   private readonly confirmFooterButton =
     '[data-testid="confirm-footer-button"]';
-
-  private readonly confirmationDialogBoldUrl = {
-    text: 'snaps.metamask.io',
-    tag: 'b',
-  };
-
-  private readonly confirmationDialogLinkText = { text: 'That', tag: 'span' };
 
   private readonly connectButton = {
     tag: 'button',
@@ -39,6 +58,8 @@ class SnapInstall {
   private readonly customDialogInput = '#custom-input';
 
   private readonly dialogApproveButton = { text: 'Approve', tag: 'button' };
+
+  private driver: Driver;
 
   public readonly lifeCycleHookMessageElement = '.snap-ui-renderer__panel';
 
@@ -61,9 +82,9 @@ class SnapInstall {
   private readonly snapInstallScrollArea =
     '[data-testid="snap-install-scroll"]';
 
-  private readonly snapUpdateScrollArea = '[data-testid="snap-update-scroll"]';
-
   private readonly snapsUiImage = '[data-testid="snaps-ui-image"]';
+
+  private readonly snapUpdateScrollArea = '[data-testid="snap-update-scroll"]';
 
   private readonly visitSiteLink = { text: 'Visit site', tag: 'a' };
 
@@ -112,6 +133,15 @@ class SnapInstall {
     await this.driver.clickElement(this.permissionConnect);
   }
 
+  async clickCloseButton() {
+    console.log('Clicking Close button and wait for dialog to close');
+    await this.driver.clickElementAndWaitForWindowToClose(this.closeButton);
+  }
+
+  async clickConfirmationDialogLinkText(): Promise<void> {
+    await this.driver.clickElement(this.confirmationDialogLinkText);
+  }
+
   async clickConfirmButton() {
     console.log(
       'Clicking on the scroll button and then clicking the confirm button',
@@ -125,10 +155,6 @@ class SnapInstall {
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmFooterButton,
     );
-  }
-
-  async clickConfirmationDialogLinkText(): Promise<void> {
-    await this.driver.clickElement(this.confirmationDialogLinkText);
   }
 
   async clickConnectButton() {
@@ -204,6 +230,7 @@ class SnapInstall {
    */
   async waitForAddToMetaMaskInstallHeader(): Promise<void> {
     try {
+      await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
       await this.driver.waitForSelector(this.addToMetaMaskHeader);
     } catch (error) {
       const original = error instanceof Error ? error.message : String(error);

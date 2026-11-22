@@ -7,6 +7,7 @@ import {
 import { SnapKeyringBuilderMessenger } from '../../../app/scripts/lib/snap-keyring/types';
 import { SOLANA_WALLET_SNAP_ID } from './solana-wallet-snap';
 import { BITCOIN_WALLET_SNAP_ID } from './bitcoin-wallet-snap';
+import { STELLAR_WALLET_SNAP_ID } from './stellar-wallet-snap';
 import { TRON_WALLET_SNAP_ID } from './tron-wallet-snap';
 
 /**
@@ -21,6 +22,7 @@ const WHITELISTED_SNAPS = [
   BITCOIN_WALLET_SNAP_ID,
   SOLANA_WALLET_SNAP_ID,
   TRON_WALLET_SNAP_ID,
+  STELLAR_WALLET_SNAP_ID,
 ];
 
 /**

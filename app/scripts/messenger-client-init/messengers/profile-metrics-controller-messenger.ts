@@ -4,11 +4,8 @@ import {
   MessengerActions,
   MessengerEvents,
 } from '@metamask/messenger';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { RootMessenger } from '../../lib/messenger';
-
-type AllowedActions = MessengerActions<ProfileMetricsControllerMessenger>;
-
-type AllowedEvents = MessengerEvents<ProfileMetricsControllerMessenger>;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -18,14 +15,12 @@ type AllowedEvents = MessengerEvents<ProfileMetricsControllerMessenger>;
  * messenger.
  */
 export function getProfileMetricsControllerMessenger(
-  messenger: RootMessenger<AllowedActions, AllowedEvents>,
+  messenger: RootMessenger<
+    MessengerActions<ProfileMetricsControllerMessenger>,
+    MessengerEvents<ProfileMetricsControllerMessenger>
+  >,
 ) {
-  const controllerMessenger = new Messenger<
-    'ProfileMetricsController',
-    AllowedActions,
-    AllowedEvents,
-    typeof messenger
-  >({
+  const controllerMessenger: ProfileMetricsControllerMessenger = new Messenger({
     namespace: 'ProfileMetricsController',
     parent: messenger,
   });
@@ -34,6 +29,8 @@ export function getProfileMetricsControllerMessenger(
     actions: [
       'AccountsController:getState',
       'ProfileMetricsService:submitMetrics',
+      'ProfileMetricsService:fetchNonces',
+      'ProofOfOwnershipService:sign',
     ],
     events: [
       'AccountsController:accountAdded',
@@ -44,4 +41,36 @@ export function getProfileMetricsControllerMessenger(
     ],
   });
   return controllerMessenger;
+}
+
+type AllowedInitializationActions = RemoteFeatureFlagControllerGetStateAction;
+
+export type ProfileMetricsControllerInitMessenger = ReturnType<
+  typeof getProfileMetricsControllerInitMessenger
+>;
+
+/**
+ * Create a messenger restricted to the allowed actions needed to initialize
+ * the profile metrics controller.
+ *
+ * @param messenger - The base messenger used to create the restricted
+ * messenger.
+ */
+export function getProfileMetricsControllerInitMessenger(
+  messenger: RootMessenger<AllowedInitializationActions, never>,
+) {
+  const controllerInitMessenger = new Messenger<
+    'ProfileMetricsControllerInit',
+    AllowedInitializationActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'ProfileMetricsControllerInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: ['RemoteFeatureFlagController:getState'],
+  });
+  return controllerInitMessenger;
 }

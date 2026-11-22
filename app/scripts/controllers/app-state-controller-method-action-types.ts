@@ -55,6 +55,26 @@ export type AppStateControllerSetLastViewedUserSurveyAction = {
   handler: AppStateController['setLastViewedUserSurvey'];
 };
 
+/**
+ * Sets whether the unlock screen should suppress automatic passkey WebAuthn.
+ *
+ * @param suppressed - When true, auto passkey unlock is suppressed.
+ */
+export type AppStateControllerSetPasskeyAutoUnlockSuppressedAction = {
+  type: `AppStateController:setPasskeyAutoUnlockSuppressed`;
+  handler: AppStateController['setPasskeyAutoUnlockSuppressed'];
+};
+
+/**
+ * Records when the legacy passkey PRF migration reminder was last shown.
+ *
+ * @param lastShown - Timestamp when the reminder was shown.
+ */
+export type AppStateControllerSetLastShownPrfMigrationReminderAtAction = {
+  type: `AppStateController:setLastShownPrfMigrationReminderAt`;
+  handler: AppStateController['setLastShownPrfMigrationReminderAt'];
+};
+
 export type AppStateControllerSetNewPrivacyPolicyToastClickedOrClosedAction = {
   type: `AppStateController:setNewPrivacyPolicyToastClickedOrClosed`;
   handler: AppStateController['setNewPrivacyPolicyToastClickedOrClosed'];
@@ -63,6 +83,11 @@ export type AppStateControllerSetNewPrivacyPolicyToastClickedOrClosedAction = {
 export type AppStateControllerSetNewPrivacyPolicyToastShownDateAction = {
   type: `AppStateController:setNewPrivacyPolicyToastShownDate`;
   handler: AppStateController['setNewPrivacyPolicyToastShownDate'];
+};
+
+export type AppStateControllerSetArcUsageNoticeShownAction = {
+  type: `AppStateController:setArcUsageNoticeShown`;
+  handler: AppStateController['setArcUsageNoticeShown'];
 };
 
 export type AppStateControllerSetPna25AcknowledgedAction = {
@@ -175,6 +200,14 @@ export type AppStateControllerSetLastActiveTimeAction = {
 };
 
 /**
+ * Records a click or keypress inside a MetaMask UI for state-write telemetry.
+ */
+export type AppStateControllerRecordUiInteractionAction = {
+  type: `AppStateController:recordUiInteraction`;
+  handler: AppStateController['recordUiInteraction'];
+};
+
+/**
  * Set the version of the pending extension update, or null when no update is available or after update is applied.
  *
  * @param version - Version string of the available update, or null to clear.
@@ -266,6 +299,28 @@ export type AppStateControllerSetHasShownMultichainAccountsIntroModalAction = {
 };
 
 /**
+ * Sets whether the user has seen (and therefore dismissed) the Perps tab
+ * "New" badge.
+ *
+ * @param value - Whether the Perps tab badge has been seen
+ */
+export type AppStateControllerSetPerpsTabBadgeSeenAction = {
+  type: `AppStateController:setPerpsTabBadgeSeen`;
+  handler: AppStateController['setPerpsTabBadgeSeen'];
+};
+
+/**
+ * Sets whether the Money account first-time-user-experience (FTUE) splash
+ * has been seen.
+ *
+ * @param value - Whether the Money FTUE splash has been seen
+ */
+export type AppStateControllerSetMoneyFtueSeenAction = {
+  type: `AppStateController:setMoneyFtueSeen`;
+  handler: AppStateController['setMoneyFtueSeen'];
+};
+
+/**
  * Sets whether the mUSD conversion education screen has been seen.
  *
  * @param value - Whether the education screen has been seen
@@ -287,6 +342,18 @@ export type AppStateControllerAddMusdConversionDismissedCtaKeyAction = {
 };
 
 /**
+ * Adds a token whose Money earn banner on token details was dismissed, so
+ * the banner stays hidden for it.
+ *
+ * @param key - Key in `chainId:address` format, both lowercased (e.g.
+ * "0x1:0xa0b86991...").
+ */
+export type AppStateControllerAddMoneyEarnBannerDismissedTokenKeyAction = {
+  type: `AppStateController:addMoneyEarnBannerDismissedTokenKey`;
+  handler: AppStateController['addMoneyEarnBannerDismissedTokenKey'];
+};
+
+/**
  * Sets the product tour to be shown to the user
  *
  * @param productTour - Tour name to show (e.g., 'accountIcon') or empty string to hide
@@ -294,16 +361,6 @@ export type AppStateControllerAddMusdConversionDismissedCtaKeyAction = {
 export type AppStateControllerSetProductTourAction = {
   type: `AppStateController:setProductTour`;
   handler: AppStateController['setProductTour'];
-};
-
-/**
- * Updates the network connection banner state
- *
- * @param networkConnectionBanner - The new banner state
- */
-export type AppStateControllerUpdateNetworkConnectionBannerAction = {
-  type: `AppStateController:updateNetworkConnectionBanner`;
-  handler: AppStateController['updateNetworkConnectionBanner'];
 };
 
 /**
@@ -347,7 +404,8 @@ export type AppStateControllerAddSignatureSecurityAlertResponseAction = {
 };
 
 /**
- * A setter for the currentPopupId which indicates the id of popup window that's currently active
+ * A setter for the currentPopupId which indicates the id of popup window that's currently active.
+ * Pass `undefined` to clear when the popup is closed.
  *
  * @param currentPopupId
  */
@@ -372,6 +430,16 @@ export type AppStateControllerGetLastInteractedConfirmationInfoAction = {
 export type AppStateControllerSetLastInteractedConfirmationInfoAction = {
   type: `AppStateController:setLastInteractedConfirmationInfo`;
   handler: AppStateController['setLastInteractedConfirmationInfo'];
+};
+
+/**
+ * Sets the entry point that initiated the last Perps deposit flow.
+ *
+ * @param entryPoint - The entry point identifier, or undefined to clear.
+ */
+export type AppStateControllerSetLastPerpsDepositEntryPointAction = {
+  type: `AppStateController:setLastPerpsDepositEntryPoint`;
+  handler: AppStateController['setLastPerpsDepositEntryPoint'];
 };
 
 /**
@@ -407,7 +475,11 @@ export type AppStateControllerCompleteQrCodeScanAction = {
  * Cancels the current QR code scan, if one is in progress.
  * This will reject the promise with an error.
  *
- * @param error - The error to reject the promise with.
+ * @param error - The error (or serialized form) to reject the promise with.
+ * Callers across the extension-port boundary may pass a plain string or a
+ * serialized `HardwareWalletError` JSON shape because `Error` instances do
+ * not survive port serialization. Missing payloads default to
+ * `ErrorCode.UserCancelled`.
  * @throws If no QR code scan is in progress.
  */
 export type AppStateControllerCancelQrCodeScanAction = {
@@ -476,11 +548,6 @@ export type AppStateControllerSetLastVisitedRouteAction = {
 export type AppStateControllerSetPendingShieldCohortAction = {
   type: `AppStateController:setPendingShieldCohort`;
   handler: AppStateController['setPendingShieldCohort'];
-};
-
-export type AppStateControllerSetCanTrackWalletFundsObtainedAction = {
-  type: `AppStateController:setCanTrackWalletFundsObtained`;
-  handler: AppStateController['setCanTrackWalletFundsObtained'];
 };
 
 export type AppStateControllerSetIsWalletResetInProgressAction = {
@@ -561,8 +628,11 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetRecoveryPhraseReminderHasBeenShownAction
   | AppStateControllerSetOnboardingDateAction
   | AppStateControllerSetLastViewedUserSurveyAction
+  | AppStateControllerSetPasskeyAutoUnlockSuppressedAction
+  | AppStateControllerSetLastShownPrfMigrationReminderAtAction
   | AppStateControllerSetNewPrivacyPolicyToastClickedOrClosedAction
   | AppStateControllerSetNewPrivacyPolicyToastShownDateAction
+  | AppStateControllerSetArcUsageNoticeShownAction
   | AppStateControllerSetPna25AcknowledgedAction
   | AppStateControllerSetShieldPausedToastLastClickedOrClosedAction
   | AppStateControllerSetShieldEndingToastLastClickedOrClosedAction
@@ -575,6 +645,7 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetSnapsInstallPrivacyWarningShownStatusAction
   | AppStateControllerSetOutdatedBrowserWarningLastShownAction
   | AppStateControllerSetLastActiveTimeAction
+  | AppStateControllerRecordUiInteractionAction
   | AppStateControllerSetPendingExtensionVersionAction
   | AppStateControllerSetUpdateModalLastDismissedAtAction
   | AppStateControllerSetLastUpdatedAtAction
@@ -584,10 +655,12 @@ export type AppStateControllerMethodActions =
   | AppStateControllerRemovePollingTokenAction
   | AppStateControllerClearPollingTokensAction
   | AppStateControllerSetHasShownMultichainAccountsIntroModalAction
+  | AppStateControllerSetPerpsTabBadgeSeenAction
+  | AppStateControllerSetMoneyFtueSeenAction
   | AppStateControllerSetMusdConversionEducationSeenAction
   | AppStateControllerAddMusdConversionDismissedCtaKeyAction
+  | AppStateControllerAddMoneyEarnBannerDismissedTokenKeyAction
   | AppStateControllerSetProductTourAction
-  | AppStateControllerUpdateNetworkConnectionBannerAction
   | AppStateControllerSetCurrentExtensionPopupIdAction
   | AppStateControllerSetTrezorModelAction
   | AppStateControllerUpdateNftDropDownStateAction
@@ -596,6 +669,7 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetCurrentPopupIdAction
   | AppStateControllerGetLastInteractedConfirmationInfoAction
   | AppStateControllerSetLastInteractedConfirmationInfoAction
+  | AppStateControllerSetLastPerpsDepositEntryPointAction
   | AppStateControllerGetCurrentPopupIdAction
   | AppStateControllerGetThrottledOriginStateAction
   | AppStateControllerUpdateThrottledOriginStateAction
@@ -608,7 +682,6 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetPendingRedirectRouteAction
   | AppStateControllerSetLastVisitedRouteAction
   | AppStateControllerSetPendingShieldCohortAction
-  | AppStateControllerSetCanTrackWalletFundsObtainedAction
   | AppStateControllerSetIsWalletResetInProgressAction
   | AppStateControllerGetIsWalletResetInProgressAction
   | AppStateControllerSetDefaultSubscriptionPaymentOptionsAction

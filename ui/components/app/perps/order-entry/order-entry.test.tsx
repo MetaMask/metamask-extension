@@ -1,4 +1,6 @@
-import { screen, fireEvent } from '@testing-library/react';
+import { it } from '@jest/globals';
+import { act, screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import mockState from '../../../../../test/data/mock-state.json';
@@ -7,6 +9,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import configureStore from '../../../../store/store';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { OrderEntry } from './order-entry';
+import { resetSizeDenominations } from './components/amount-input/size-denomination-store';
 
 jest.mock('../../../../hooks/perps/useUserHistory', () => ({
   useUserHistory: () => ({
@@ -27,11 +30,16 @@ jest.mock('../../../../hooks/perps/usePerpsTransactionHistory', () => ({
 }));
 
 jest.mock('../../../../hooks/perps/usePerpsMarketInfo', () => ({
-  usePerpsMarketInfo: () => undefined,
+  usePerpsMarketInfo: () => ({ market: undefined, isLoading: false }),
 }));
 
+const mockUsePerpsOrderFees = jest.fn();
 jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
-  usePerpsOrderFees: () => ({ feeRate: 0.00145, isLoading: false }),
+  ...jest.requireActual('../../../../hooks/perps/usePerpsOrderFees'),
+  usePerpsOrderFees: (options: Record<string, unknown>) => {
+    mockUsePerpsOrderFees(options);
+    return { feeRate: 0.00145, isLoading: false };
+  },
 }));
 
 jest.mock('../../../../store/background-connection', () => ({
@@ -55,6 +63,7 @@ describe('OrderEntry', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    resetSizeDenominations();
     jest.mocked(submitRequestToBackground).mockImplementation((method) => {
       function immediate<ResolvedValue>(
         value: ResolvedValue,
@@ -81,6 +90,78 @@ describe('OrderEntry', () => {
       return immediate(undefined) as Promise<never>;
     });
   });
+
+  for (const [label, type, size, amount] of [
+    ['new market', 'market', undefined, '100000'],
+    ['attached limit', 'limit', undefined, '90000'],
+    ['market adding to a long', 'market', '1', '90000'],
+    ['market flipping a short', 'market', '-1', '50000'],
+    ['market route with leverage', 'market', '-3', '50000'],
+  ] as const) {
+    it(`matches the ${label} TP/SL fee-resolution notional`, () => {
+      renderWithProvider(
+        <OrderEntry
+          {...defaultProps}
+          currentPrice={45000}
+          orderType={type}
+          existingPosition={
+            size ? { size, leverage: 3, entryPrice: '45000' } : undefined
+          }
+          initialDraft={{
+            type,
+            direction: 'long',
+            amount: '90000',
+            leverage: 3,
+            limitPrice: '45000',
+            takeProfitPrice: '50000',
+            stopLossPrice: '40000',
+          }}
+        />,
+        mockStore,
+      );
+      expect(mockUsePerpsOrderFees).toHaveBeenLastCalledWith({
+        symbol: 'BTC',
+        orderType: 'market',
+        amount,
+      });
+    });
+  }
+
+  it.each([NaN, Infinity])(
+    'keeps order entry mounted until price %s becomes available',
+    (currentPrice) => {
+      const props = {
+        ...defaultProps,
+        initialDraft: {
+          type: 'market' as const,
+          direction: 'long' as const,
+          amount: '90000',
+          takeProfitPrice: '50000',
+          stopLossPrice: '40000',
+        },
+      };
+      const { rerender } = renderWithProvider(
+        <OrderEntry {...props} currentPrice={currentPrice} />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('order-entry')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('auto-close-estimated-tp-pnl-row'),
+      ).not.toHaveTextContent(messages.perpsEstimatedPnlAtTakeProfit.message);
+
+      rerender(<OrderEntry {...props} currentPrice={45000} />);
+
+      expect(mockUsePerpsOrderFees).toHaveBeenLastCalledWith({
+        symbol: 'BTC',
+        orderType: 'market',
+        amount: '100000',
+      });
+      expect(
+        screen.getByTestId('auto-close-estimated-tp-pnl-row'),
+      ).toHaveTextContent(messages.perpsEstimatedPnlAtTakeProfit.message);
+    },
+  );
 
   describe('rendering', () => {
     it('renders the component with all sections', () => {
@@ -171,7 +252,7 @@ describe('OrderEntry', () => {
       expect(input).toHaveValue('1000.00');
     });
 
-    it('shows token conversion when amount is entered', () => {
+    it('shows token conversion when the denomination is toggled to the asset', () => {
       renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
 
       const container = screen.getByTestId('amount-input-field');
@@ -181,10 +262,11 @@ describe('OrderEntry', () => {
         target: { value: '45250' },
       });
 
-      const tokenContainer = screen.getByTestId('amount-input-token-field');
-      const tokenInput = tokenContainer.querySelector('input');
+      // Toggle the single field into asset denomination to view the equivalent.
+      fireEvent.click(screen.getByTestId('toggle-denomination'));
+
       // Amount is treated as position size (TAT-2684 fix), so token = size / price = $45250 / $45250 = 1 BTC
-      expect(tokenInput).toHaveValue('1');
+      expect(input).toHaveValue('1');
     });
   });
 
@@ -201,6 +283,13 @@ describe('OrderEntry', () => {
   describe('order summary', () => {
     it('shows dash when no amount entered', () => {
       renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
+
+      const container = screen.getByTestId('amount-input-field');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '' },
+      });
 
       const dashElements = screen.getAllByText('-');
       expect(dashElements.length).toBeGreaterThanOrEqual(3);
@@ -312,6 +401,21 @@ describe('OrderEntry', () => {
       expect(screen.getByTestId('amount-input-field')).toBeInTheDocument();
     });
 
+    it('shows current position size in modify mode', () => {
+      renderWithProvider(
+        <OrderEntry
+          {...defaultProps}
+          mode="modify"
+          existingPosition={existingPosition}
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-current-position-size-value'),
+      ).toHaveTextContent('2.5 BTC');
+    });
+
     it('shows leverage slider in modify mode', () => {
       renderWithProvider(
         <OrderEntry
@@ -379,6 +483,35 @@ describe('OrderEntry', () => {
       expect(screen.getByTestId('order-entry-submit-button')).toHaveTextContent(
         'Close short',
       );
+    });
+
+    it('reports the input method the trader used to size the close', async () => {
+      const user = userEvent.setup();
+      const onInputMethodChange = jest.fn();
+      renderWithProvider(
+        <OrderEntry
+          {...defaultProps}
+          mode="close"
+          existingPosition={existingPosition}
+          onInputMethodChange={onInputMethodChange}
+        />,
+        mockStore,
+      );
+
+      await act(async () => {
+        await user.click(screen.getByTestId('close-amount-mode-percent'));
+      });
+      const percentInput = screen
+        .getByTestId('close-amount-percent')
+        .querySelector('input') as HTMLInputElement;
+      await act(async () => {
+        await user.clear(percentInput);
+        await user.type(percentInput, '50');
+      });
+
+      // Without the forward in the close branch this route reports nothing and
+      // every close from it is attributed to 'default'.
+      expect(onInputMethodChange).toHaveBeenCalledWith('percentage');
     });
 
     it('shows CloseAmountSection in close mode', () => {
@@ -494,6 +627,40 @@ describe('OrderEntry', () => {
   });
 
   describe('limit order mode', () => {
+    it('uses the shared order type toggle to select Limit', () => {
+      const onOrderTypeChange = jest.fn();
+      renderWithProvider(
+        <OrderEntry
+          {...defaultProps}
+          orderType="market"
+          onOrderTypeChange={onOrderTypeChange}
+        />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('order-type-limit'));
+
+      expect(onOrderTypeChange).toHaveBeenCalledWith('limit');
+      expect(screen.getByTestId('limit-price-input')).toBeInTheDocument();
+    });
+
+    it('hides the order type toggle in close mode', () => {
+      renderWithProvider(
+        <OrderEntry
+          {...defaultProps}
+          mode="close"
+          existingPosition={{
+            size: '2.5',
+            leverage: 3,
+            entryPrice: '2850.00',
+          }}
+        />,
+        mockStore,
+      );
+
+      expect(screen.queryByTestId('order-type-toggle')).not.toBeInTheDocument();
+    });
+
     it('shows limit price input when orderType is limit', () => {
       renderWithProvider(
         <OrderEntry {...defaultProps} orderType="limit" />,

@@ -1,18 +1,17 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { toHex } from '@metamask/controller-utils';
-import { Box } from '../../../../component-library';
+import { Box } from '@metamask/design-system-react';
 import { getNftImageAlt, getNftImage } from '../../../../../helpers/utils/nfts';
 import { NftItem } from '../../../../multichain/nft-item';
 import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
 import { getIpfsGateway } from '../../../../../selectors';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import { getImageForChainId } from '../../../../../selectors/multichain';
+import { getChainIdToNetworkImageUrlMap } from '../../../../../selectors/config-registry/config-registry';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { isWebUrl } from '../../../../../../app/scripts/lib/util';
+import { isWebUrl } from '../../../../../../shared/lib/url-utils';
 import {
   VirtualizedList,
   noAdjustmentsScroll,
@@ -36,14 +35,11 @@ const NFTGridItem = (props: {
     ipfsGateway,
   );
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
 
   const isImageHosted =
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     (image && isWebUrl(image)) ||
     (imageFromTokenURI && isWebUrl(imageFromTokenURI));
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const nftItemSrc = isImageHosted ? image || imageFromTokenURI : nftImageURL;
 
   const nftImageAlt = getNftImageAlt(nft);
@@ -57,7 +53,10 @@ const NFTGridItem = (props: {
       alt={nftImageAlt}
       src={nftItemSrc}
       networkName={allNetworks?.[toHex(nft?.chainId ?? '')]?.name}
-      networkSrc={getImageForChainId(toHex(nft?.chainId ?? '')) || undefined}
+      networkSrc={getImageForChainId(
+        toHex(nft?.chainId ?? ''),
+        networkImageUrls,
+      )}
       onClick={onClick}
       isIpfsURL={isIpfsURL}
       privacyMode={privacyMode}
@@ -78,8 +77,6 @@ function extractRowKey(row: NFT[], index: number) {
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NftGrid({
   nfts,
   handleNftClick,

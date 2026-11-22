@@ -1,13 +1,14 @@
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { KNOWN_QR_ACCOUNTS } from '../../../stub/keyring-bridge';
-import AccountListPage from '../../page-objects/pages/account-list-page';
+import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import ConnectHardwareWalletPage from '../../page-objects/pages/hardware-wallet/connect-hardware-wallet-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SelectHardwareWalletAccountPage from '../../page-objects/pages/hardware-wallet/select-hardware-wallet-account-page';
-import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
+import AccountDetailsPage from '../../page-objects/pages/accounts/details-page';
 import { login } from '../../page-objects/flows/login.flow';
+import { openConnectHardwareWallet } from '../../page-objects/flows/add-wallet.flow';
 import { checkAccountAddressDisplayedInAccountList } from '../../page-objects/flows/account-list.flow';
 
 // BUG: Add funds banner doesn't clear
@@ -20,7 +21,7 @@ describe.skip('QR Hardware', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver, { waitForNonEvmAccounts: false });
+        await login(driver);
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
@@ -28,7 +29,7 @@ describe.skip('QR Hardware', function () {
         // Choose connect hardware wallet from the account menu
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
-        await accountListPage.openConnectHardwareWalletModal();
+        await openConnectHardwareWallet(driver);
 
         const connectHardwareWalletPage = new ConnectHardwareWalletPage(driver);
         await connectHardwareWalletPage.checkPageIsLoaded();
@@ -70,7 +71,7 @@ describe.skip('QR Hardware', function () {
         // Choose connect hardware wallet from the account menu
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
-        await accountListPage.openConnectHardwareWalletModal();
+        await openConnectHardwareWallet(driver);
 
         const connectHardwareWalletPage = new ConnectHardwareWalletPage(driver);
         await connectHardwareWalletPage.checkPageIsLoaded();
@@ -97,7 +98,7 @@ describe.skip('QR Hardware', function () {
           accountLabel: `QR Account 1`,
         });
         await accountListPage.clickMultichainAccountMenuItem('Account details');
-        const accountDetailsPage = new MultichainAccountDetailsPage(driver);
+        const accountDetailsPage = new AccountDetailsPage(driver);
         await accountDetailsPage.checkPageIsLoaded();
         await accountDetailsPage.clickRemoveAccountButton();
         await accountDetailsPage.clickRemoveAccountConfirmButton();

@@ -84,12 +84,12 @@ export type PerpsCandlePeriodModalProps = {
   onPeriodChange?: (period: CandlePeriod) => void;
 };
 
-export const PerpsCandlePeriodModal: React.FC<PerpsCandlePeriodModalProps> = ({
+export const PerpsCandlePeriodModal = ({
   isOpen,
   selectedPeriod,
   onClose,
   onPeriodChange,
-}) => {
+}: PerpsCandlePeriodModalProps) => {
   const t = useI18nContext();
 
   const handlePeriodSelect = (period: CandlePeriod) => {
@@ -191,6 +191,7 @@ export const PerpsCandlePeriodModal: React.FC<PerpsCandlePeriodModalProps> = ({
                   return (
                     <ButtonBase
                       key={period.value}
+                      type="button"
                       className={twMerge(
                         'h-9 min-w-0 rounded-xl bg-muted px-0 py-0 transition-colors hover:bg-muted-hover active:bg-muted-pressed',
                         isSelected &&

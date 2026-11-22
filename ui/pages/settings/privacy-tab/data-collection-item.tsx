@@ -1,22 +1,24 @@
-import React, { useContext, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getDataCollectionForMarketing,
-  getParticipateInMetaMetrics,
+  getOptedIn,
 } from '../../../selectors/metametrics';
 import {
   getUseExternalServices,
   getIsSocialLoginFlow,
 } from '../../../selectors';
 import {
-  getMarketingConsent,
-  setDataCollectionForMarketing,
+  optInToMarketing,
+  optOutOfMarketing,
   setMarketingConsent,
 } from '../../../store/actions';
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { PRIVACY_ITEMS } from '../search-config';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useDispatch } from '../../../store/hooks';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -26,54 +28,36 @@ import {
 export const DataCollectionToggleItem = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
   const useExternalServices = useSelector(getUseExternalServices);
   const socialLoginEnabled = useSelector(getIsSocialLoginFlow);
-  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
-
-  // Match legacy Security tab: fetch remote marketing consent when the user is in
-  // a social login flow (firstTimeFlowType stays set after seedless import completes).
-  useEffect(() => {
-    if (!socialLoginEnabled) {
-      return;
-    }
-    let cancelled = false;
-    const fetchConsent = async () => {
-      const marketingConsentFromRemote = await getMarketingConsent();
-      if (!cancelled) {
-        dispatch(setDataCollectionForMarketing(marketingConsentFromRemote));
-      }
-    };
-    fetchConsent();
-    return () => {
-      cancelled = true;
-    };
-  }, [socialLoginEnabled, dispatch]);
-
-  const isDisabled = !useExternalServices || !participateInMetaMetrics;
+  const isOptedIn = useSelector(getOptedIn);
 
   const handleToggle = (currentValue: boolean) => {
     const newValue = !currentValue;
 
+    // Social-login wallets also store the choice server-side so the auth
+    // service can create the HubSpot contact for email marketing and learn
+    // of opt-outs. A failed sync keeps the local decision; reads that would
+    // overwrite the local choice stay removed.
     if (socialLoginEnabled) {
       dispatch(setMarketingConsent(newValue));
     }
 
-    dispatch(setDataCollectionForMarketing(newValue));
+    dispatch(newValue ? optInToMarketing() : optOutOfMarketing());
 
-    trackEvent({
-      category: MetaMetricsEventCategory.Settings,
-      event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-      properties: {
-        /* eslint-disable @typescript-eslint/naming-convention */
-        [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
-        [MetaMetricsUserTrait.HasMarketingConsent]: Boolean(newValue),
-        /* eslint-enable @typescript-eslint/naming-convention */
-        location: 'Settings',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
+        .addCategory(MetaMetricsEventCategory.Settings)
+        .addProperties({
+          [MetaMetricsUserTrait.IsMetricsOptedIn]: isOptedIn,
+          [MetaMetricsUserTrait.HasMarketingConsent]: Boolean(newValue),
+          location: 'Settings',
+        })
+        .build(),
+    );
   };
 
   const description = socialLoginEnabled
@@ -84,11 +68,11 @@ export const DataCollectionToggleItem = () => {
     <SettingsToggleItem
       title={t(PRIVACY_ITEMS['data-collection'])}
       description={description}
-      value={dataCollectionForMarketing}
+      value={dataCollectionForMarketing === true}
       onToggle={handleToggle}
       dataTestId="data-collection-for-marketing-input"
       containerDataTestId="data-collection-for-marketing-toggle"
-      disabled={isDisabled}
+      disabled={!useExternalServices}
     />
   );
 };

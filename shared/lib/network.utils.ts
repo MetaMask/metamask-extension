@@ -9,12 +9,14 @@ import {
 import { convertHexToDecimal } from '@metamask/controller-utils';
 import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import type {
+  NetworkClientId,
   NetworkConfiguration,
+  NetworkState,
   AddNetworkFields,
 } from '@metamask/network-controller';
+import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 
 import {
-  CHAIN_IDS,
   MAX_SAFE_CHAIN_ID,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
 } from '../constants/network';
@@ -51,38 +53,6 @@ export function isPrefixedFormattedHexString(value: unknown) {
     return false;
   }
   return /^0x[1-9a-f]+[0-9a-f]*$/iu.test(value);
-}
-
-/**
- * Check if token detection is enabled for certain networks
- *
- * @param chainId - ChainID of network
- * @returns Whether the current network supports token detection
- */
-export function isTokenDetectionEnabledForNetwork(chainId: string | undefined) {
-  switch (chainId) {
-    case CHAIN_IDS.MAINNET:
-    case CHAIN_IDS.BSC:
-    case CHAIN_IDS.POLYGON:
-    case CHAIN_IDS.AVALANCHE:
-    case CHAIN_IDS.LINEA_GOERLI:
-    case CHAIN_IDS.LINEA_SEPOLIA:
-    case CHAIN_IDS.LINEA_MAINNET:
-    case CHAIN_IDS.ARBITRUM:
-    case CHAIN_IDS.OPTIMISM:
-    case CHAIN_IDS.BASE:
-    case CHAIN_IDS.ZKSYNC_ERA:
-    case CHAIN_IDS.CRONOS:
-    case CHAIN_IDS.CELO:
-    case CHAIN_IDS.GNOSIS:
-    case CHAIN_IDS.FANTOM:
-    case CHAIN_IDS.POLYGON_ZKEVM:
-    case CHAIN_IDS.MOONBEAM:
-    case CHAIN_IDS.MOONRIVER:
-      return true;
-    default:
-      return false;
-  }
 }
 
 /**
@@ -134,6 +104,29 @@ export function convertCaipToHexChainId(id: CaipChainId): Hex {
 }
 
 /**
+/**
+ * Gets the network image URL for a hex or CAIP-2 chain ID.
+ *
+ * @param chainId - The chain ID to look up.
+ * @param networkImageUrls - Chain ID to image URL map.
+ * @returns The image URL, or undefined when not found.
+ */
+export function getNetworkImageUrl(
+  chainId: string,
+  networkImageUrls: Record<string, string>,
+): string | undefined {
+  const directMatch = networkImageUrls[chainId];
+  if (directMatch) {
+    return directMatch;
+  }
+  try {
+    return networkImageUrls[convertCaipToHexChainId(chainId as CaipChainId)];
+  } catch {
+    return undefined;
+  }
+}
+
+/**
  * Sorts a list of networks based on the order of their chain IDs.
  *
  * @param networks - The networks to sort.
@@ -159,20 +152,26 @@ export const sortNetworks = (
     return adjustedIndexA - adjustedIndexB;
   });
 
+export const DEFAULT_NETWORK_IMAGE_URLS: Record<string, string> = {
+  ...CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  ...MULTICHAIN_TOKEN_IMAGE_MAP,
+};
+
 /**
  * Get the network icon for the given chain ID.
  *
  * @param networkConfiguration - The network configuration to get the icon for.
+ * @param networkImageUrls - Chain ID to image URL map; defaults to the static
+ * maps, pass the config-registry-aware map to honor registry logos.
  * @returns The URL of the network icon.
  */
 export const getNetworkIcon = (
   networkConfiguration: MultichainNetworkConfiguration,
+  networkImageUrls: Record<string, string> = DEFAULT_NETWORK_IMAGE_URLS,
 ) => {
   return networkConfiguration.isEvm
-    ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-        convertCaipToHexChainId(networkConfiguration.chainId)
-      ]
-    : MULTICHAIN_TOKEN_IMAGE_MAP[networkConfiguration.chainId];
+    ? networkImageUrls[convertCaipToHexChainId(networkConfiguration.chainId)]
+    : networkImageUrls[networkConfiguration.chainId];
 };
 
 /**
@@ -245,10 +244,12 @@ export const sortNetworksByPrioity = (
  * @param baseNetworkList - The base network list to filter (defaults to FEATURED_RPCS)
  * @returns Filtered array of network configurations
  */
-export const getFilteredFeaturedNetworks = (
+export const getFilteredFeaturedNetworks = <
+  NetworkFields extends AddNetworkFields,
+>(
   blacklistedChainIds: string[],
-  baseNetworkList: AddNetworkFields[] = [],
-): AddNetworkFields[] => {
+  baseNetworkList: NetworkFields[] = [],
+): NetworkFields[] => {
   if (!Array.isArray(blacklistedChainIds) || blacklistedChainIds.length === 0) {
     return baseNetworkList;
   }
@@ -257,3 +258,30 @@ export const getFilteredFeaturedNetworks = (
     (network) => !blacklistedChainIds.includes(network.chainId),
   );
 };
+
+/**
+ * Returns default network client IDs for every enabled EIP-155 network.
+ *
+ * @param enabledNetworkMap - Map of enabled networks by CAIP namespace.
+ * @param networkConfigurationsByChainId - NetworkController configs by hex chain ID.
+ * @returns Network client IDs for enabled EVM networks.
+ */
+export function getAllEnabledNetworkClientIds(
+  enabledNetworkMap: NetworkEnablementControllerState['enabledNetworkMap'],
+  networkConfigurationsByChainId: NetworkState['networkConfigurationsByChainId'],
+): NetworkClientId[] {
+  const enabledEip155Networks =
+    enabledNetworkMap[KnownCaipNamespace.Eip155] ?? {};
+
+  const chainIds = Object.entries(enabledEip155Networks)
+    .filter(([_chainId, isEnabled]) => isEnabled)
+    .map(([chainId, _isEnabled]) => chainId) as Hex[];
+
+  return chainIds
+    .map((chainId) => networkConfigurationsByChainId[chainId])
+    .filter((config) => config !== undefined)
+    .map(
+      (config) =>
+        config.rpcEndpoints[config.defaultRpcEndpointIndex].networkClientId,
+    );
+}

@@ -13,7 +13,7 @@ import Preloader from '../../components/ui/icon/preloader/preloader-icon.compone
 import { selectIsMetamaskNotificationsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { NotificationsPlaceholder } from './notifications-list-placeholder';
-import { NotificationsListTurnOnNotifications } from './notifications-list-turn-on-notifications';
+import { NotificationsListDisabledNotifications } from './notifications-list-disabled-notifications';
 import { NotificationsListItem } from './notifications-list-item';
 import { NotificationsListReadAllButton } from './notifications-list-read-all-button';
 
@@ -86,7 +86,6 @@ const NotificationItem = (props: { notification: INotification }) => {
 };
 
 const NotificationsListStates = ({
-  activeTab,
   notifications,
   isLoading,
   isError,
@@ -95,9 +94,9 @@ const NotificationsListStates = ({
     selectIsMetamaskNotificationsEnabled,
   );
 
-  // Case when a user has not enabled wallet notifications yet
-  if (activeTab === TAB_KEYS.WALLET && !isMetamaskNotificationsEnabled) {
-    return <NotificationsListTurnOnNotifications />;
+  // Case when a user has not enabled notifications yet
+  if (!isMetamaskNotificationsEnabled) {
+    return <NotificationsListDisabledNotifications />;
   }
 
   // Loading State

@@ -7,10 +7,12 @@ export default {
   argTypes: {
     onClose: { action: 'onClose' },
     onClick: { action: 'onClick' },
+    origin: { control: 'text' },
   },
   args: {
     onClick: () => undefined,
     onClose: () => undefined,
+    origin: 'https://example.com',
   },
 };
 

@@ -1,11 +1,19 @@
 import React from 'react';
+import { screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import configureStore from '../../store/store';
 import { submitRequestToBackground } from '../../store/background-connection';
 import mockState from '../../../test/data/mock-state.json';
-import PerpsLayout from './perps-layout';
+import {
+  PERPS_ACTIVITY_ROUTE,
+  PERPS_MARKET_LIST_ROUTE,
+  PERPS_TRANSACTION_DETAILS_ROUTE,
+  PERPS_WITHDRAW_ROUTE,
+} from '../../helpers/constants/routes';
+import PerpsLayout, { isPerpsOutageBannerRoute } from './perps-layout';
 
 jest.mock('@metamask/perps-controller', () => ({
+  ...jest.requireActual('@metamask/perps-controller'),
   PROVIDER_CONFIG: { DefaultProvider: 'hyperliquid' },
   PERPS_ERROR_CODES: {
     CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',
@@ -71,13 +79,50 @@ jest.mock('../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
 }));
 
-describe('PerpsLayout', () => {
-  const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
-  const store = configureStore({
+const mockHydrateFromControllerCache = jest.fn();
+const mockSetUseTerminalApi = jest.fn();
+jest.mock('../../providers/perps/PerpsStreamManager', () => ({
+  getPerpsStreamManager: () => ({
+    hydrateFromControllerCache: mockHydrateFromControllerCache,
+    setUseTerminalApi: mockSetUseTerminalApi,
+  }),
+}));
+
+const MARKET_ENTRIES = [{ symbol: 'BTC' }, { symbol: 'ETH' }];
+
+// Seed the real `perpsTerminalBackendEnabled` remote feature flag into the
+// store so the actual `getIsPerpsTerminalBackendEnabled` selector (and its
+// manifest-merged remote-flag wiring) runs, instead of stubbing the selector
+// module.
+const makeStore = (terminalBackendEnabled: boolean) =>
+  configureStore({
     metamask: {
       ...mockState.metamask,
+      activeProvider: 'hyperliquid',
+      isTestnet: false,
+      cachedMarketDataByProvider: {
+        'hyperliquid:mainnet': { data: MARKET_ENTRIES, timestamp: 1000 },
+      },
+      remoteFeatureFlags: {
+        ...mockState.metamask.remoteFeatureFlags,
+        perpsTerminalBackendEnabled: terminalBackendEnabled,
+      },
     },
   });
+
+const outageBannerStore = configureStore({
+  metamask: {
+    ...mockState.metamask,
+    remoteFeatureFlags: {
+      ...mockState.metamask.remoteFeatureFlags,
+      perpsPerpTradingServiceInterruptionBannerEnabled: true,
+    },
+  },
+});
+
+describe('PerpsLayout', () => {
+  const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
+  const store = makeStore(false);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -107,14 +152,14 @@ describe('PerpsLayout', () => {
     );
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-      'setLastVisitedRoute',
+      'AppStateController:setLastVisitedRoute',
       ['perps', '/perps/market/BTC'],
     );
 
     unmount();
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-      'setLastVisitedRoute',
+      'AppStateController:setLastVisitedRoute',
       ['perps', null],
     );
   });
@@ -127,14 +172,14 @@ describe('PerpsLayout', () => {
     );
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-      'setLastVisitedRoute',
+      'AppStateController:setLastVisitedRoute',
       ['perps', '/perps/market/BTC?source=toast'],
     );
   });
 
   it('does not fail when the background rejects setLastVisitedRoute', () => {
     mockSubmitRequestToBackground.mockImplementation((method: string) => {
-      if (method === 'setLastVisitedRoute') {
+      if (method === 'AppStateController:setLastVisitedRoute') {
         return Promise.reject(new Error('boom'));
       }
       return Promise.resolve(undefined);
@@ -148,5 +193,62 @@ describe('PerpsLayout', () => {
       );
       unmount();
     }).not.toThrow();
+  });
+
+  it('seeds the markets channel from the controller cache when terminal backend is disabled', () => {
+    renderWithProvider(<PerpsLayout />, makeStore(false));
+
+    expect(mockSetUseTerminalApi).toHaveBeenCalledWith(false);
+    expect(mockHydrateFromControllerCache).toHaveBeenCalledWith(
+      expect.objectContaining({ markets: MARKET_ENTRIES }),
+      expect.anything(),
+    );
+  });
+
+  it('does not seed markets from the direct-provider cache when terminal backend is enabled', () => {
+    renderWithProvider(<PerpsLayout />, makeStore(true));
+
+    expect(mockSetUseTerminalApi).toHaveBeenCalledWith(true);
+    expect(mockHydrateFromControllerCache).toHaveBeenCalledWith(
+      expect.objectContaining({ markets: undefined }),
+      expect.anything(),
+    );
+  });
+
+  describe('isPerpsOutageBannerRoute', () => {
+    it('includes the market list, market detail, and trade screens', () => {
+      expect(isPerpsOutageBannerRoute(PERPS_MARKET_LIST_ROUTE)).toBe(true);
+      expect(isPerpsOutageBannerRoute('/perps/market/BTC')).toBe(true);
+      expect(isPerpsOutageBannerRoute('/perps/trade/ETH')).toBe(true);
+    });
+
+    it('excludes activity, transaction details, and withdraw', () => {
+      expect(isPerpsOutageBannerRoute(PERPS_ACTIVITY_ROUTE)).toBe(false);
+      expect(isPerpsOutageBannerRoute(PERPS_TRANSACTION_DETAILS_ROUTE)).toBe(
+        false,
+      );
+      expect(isPerpsOutageBannerRoute(PERPS_WITHDRAW_ROUTE)).toBe(false);
+      expect(isPerpsOutageBannerRoute('/perps/market')).toBe(false);
+    });
+  });
+
+  it('shows the outage banner on a covered route when the flag is on', () => {
+    renderWithProvider(<PerpsLayout />, outageBannerStore, '/perps/trade/BTC');
+
+    expect(
+      screen.getByTestId('perps-service-interruption-banner'),
+    ).toBeInTheDocument();
+  });
+
+  it('hides the outage banner on withdraw even when the flag is on', () => {
+    renderWithProvider(
+      <PerpsLayout />,
+      outageBannerStore,
+      PERPS_WITHDRAW_ROUTE,
+    );
+
+    expect(
+      screen.queryByTestId('perps-service-interruption-banner'),
+    ).not.toBeInTheDocument();
   });
 });

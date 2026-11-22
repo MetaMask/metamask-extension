@@ -36,9 +36,10 @@ jest.mock('../../../selectors/musd', () => {
   };
 });
 
+const MOCK_NETWORK_CONFIGS = {};
 jest.mock('../../../selectors/multichain', () => ({
   ...jest.requireActual('../../../selectors/multichain'),
-  getMultichainNetworkConfigurationsByChainId: () => ({}),
+  getMultichainNetworkConfigurationsByChainId: () => MOCK_NETWORK_CONFIGS,
   getImageForChainId: () => '',
 }));
 
@@ -110,7 +111,7 @@ describe('MusdConvertSection', () => {
     expect(learnMore).toBeInTheDocument();
     fireEvent.click(learnMore);
     expect(global.platform.openTab).toHaveBeenCalledWith({
-      url: 'https://support.metamask.io/manage-crypto/tokens/musd',
+      url: 'https://support.metamask.com/manage-crypto/tokens/musd',
     });
 
     expect(

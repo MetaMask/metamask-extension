@@ -1,14 +1,5 @@
 import React from 'react';
-import {
-  Box,
-  ButtonIconSize,
-  TextFieldSearch,
-  TextFieldSearchSize,
-} from '../../../../../components/component-library';
-import {
-  BlockSize,
-  BorderRadius,
-} from '../../../../../helpers/constants/design-system';
+import { TextFieldSearch } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 type RecipientFilterInputProps = {
@@ -23,27 +14,20 @@ export const RecipientFilterInput = ({
   const t = useI18nContext();
 
   return (
-    <Box paddingInline={4} paddingBottom={4}>
+    <search className="px-4 pb-4">
       <TextFieldSearch
-        borderRadius={BorderRadius.LG}
+        className="w-full"
+        clearButtonOnClick={() => onChange('')}
+        inputAriaLabel={t('searchAnAcccountOrContact')}
+        inputProps={
+          {
+            'data-testid': 'recipient-filter-search-input',
+          } as React.ComponentPropsWithoutRef<'input'>
+        }
+        onChange={(event) => onChange(event.target.value)}
         placeholder={t('searchAnAcccountOrContact')}
         value={searchQuery}
-        onChange={(e) => onChange(e.target.value)}
-        error={false}
-        autoComplete={false}
-        width={BlockSize.Full}
-        clearButtonOnClick={() => onChange('')}
-        clearButtonProps={{
-          size: ButtonIconSize.Sm,
-        }}
-        style={{ paddingInline: 12 }}
-        showClearButton
-        inputProps={{
-          'data-testid': 'recipient-filter-search-input',
-        }}
-        endAccessory={null}
-        size={TextFieldSearchSize.Lg}
       />
-    </Box>
+    </search>
   );
 };

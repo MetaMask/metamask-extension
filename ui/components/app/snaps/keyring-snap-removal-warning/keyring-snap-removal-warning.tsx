@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { Snap } from '@metamask/snaps-utils';
 import { useSelector } from 'react-redux';
@@ -28,8 +28,6 @@ import InfoTooltip from '../../../ui/info-tooltip';
 import { getCurrentChainId } from '../../../../../shared/lib/selectors/networks';
 import { KeyringAccountListItem } from './keyring-account-list-item';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function KeyringRemovalSnapWarning({
   snap,
   keyringAccounts,
@@ -48,15 +46,13 @@ export default function KeyringRemovalSnapWarning({
   isOpen: boolean;
 }) {
   const t = useI18nContext();
+  const hasNoAccounts = keyringAccounts.length === 0;
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const displayConfirmation = hasNoAccounts || showConfirmation;
   const [confirmedRemoval, setConfirmedRemoval] = useState(false);
   const [confirmationInput, setConfirmationInput] = useState('');
   const [error, setError] = useState(false);
   const chainId = useSelector(getCurrentChainId);
-
-  useEffect(() => {
-    setShowConfirmation(keyringAccounts.length === 0);
-  }, [keyringAccounts]);
 
   const validateConfirmationInput = (input: string): boolean => {
     setError(false);
@@ -80,7 +76,7 @@ export default function KeyringRemovalSnapWarning({
         >
           <ModalHeader
             onBack={() => {
-              if (showConfirmation) {
+              if (displayConfirmation) {
                 setShowConfirmation(false);
               } else {
                 onBack();
@@ -101,7 +97,7 @@ export default function KeyringRemovalSnapWarning({
             <BannerAlert severity={BannerAlertSeverity.Warning}>
               {t('backupKeyringSnapReminder')}
             </BannerAlert>
-            {showConfirmation === false ? (
+            {displayConfirmation === false ? (
               <>
                 <Box
                   display={Display.Flex}
@@ -159,10 +155,8 @@ export default function KeyringRemovalSnapWarning({
           </ModalBody>
           <ModalFooter
             onCancel={onCancel}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onSubmit={async () => {
-              if (!showConfirmation) {
+              if (!displayConfirmation) {
                 setShowConfirmation(true);
                 return;
               }
@@ -172,9 +166,9 @@ export default function KeyringRemovalSnapWarning({
             }}
             submitButtonProps={{
               id: 'popoverRemoveSnapButton',
-              danger: showConfirmation,
-              disabled: showConfirmation && !confirmedRemoval,
-              children: showConfirmation ? t('removeSnap') : t('continue'),
+              danger: displayConfirmation,
+              disabled: displayConfirmation && !confirmedRemoval,
+              children: displayConfirmation ? t('removeSnap') : t('continue'),
             }}
             cancelButtonProps={{
               variant: ButtonVariant.Secondary,

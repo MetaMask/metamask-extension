@@ -14,6 +14,21 @@ const backgroundConnectionMock = new Proxy(
 
 describe('TransactionsTab', () => {
   const mockStore = configureMockStore([thunk])(mockState);
+  const createStore = (
+    remoteFeatureFlags = {},
+    isBasicFunctionalityConsolidatedEnabled = false,
+  ) =>
+    configureMockStore([thunk])({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        remoteFeatureFlags,
+        preferences: {
+          ...mockState.metamask.preferences,
+          isBasicFunctionalityConsolidatedEnabled,
+        },
+      },
+    });
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -45,6 +60,29 @@ describe('TransactionsTab', () => {
       for (const testId of expectedTestIds) {
         expect(screen.getByTestId(testId)).toBeInTheDocument();
       }
+    });
+
+    it('hides consolidated Basic Functionality toggles when the flag is enabled', () => {
+      renderWithProvider(
+        <TransactionsTab />,
+        createStore({ extensionBasicFunctionalityToggle: true }, true),
+      );
+
+      expect(
+        screen.queryByTestId('transactions-simulations-toggle'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('transactions-security-alerts-toggle'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('transactions-proposed-nicknames-toggle'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('transactions-smart-transactions-toggle'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('transactions-show-hex-data-toggle'),
+      ).toBeInTheDocument();
     });
   });
 });

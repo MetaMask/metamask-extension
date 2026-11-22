@@ -1,4 +1,3 @@
-/* eslint-disable jest/require-top-level-describe */
 import { render } from '@testing-library/react';
 import React from 'react';
 import { TextColor } from '../../../helpers/constants/design-system';

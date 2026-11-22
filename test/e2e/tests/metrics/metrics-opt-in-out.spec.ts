@@ -3,13 +3,16 @@ import { Mockttp } from 'mockttp';
 import { Browser } from 'selenium-webdriver';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { MOCK_META_METRICS_ID, WALLET_PASSWORD } from '../../constants';
+import { MOCK_ANALYTICS_ID, WALLET_PASSWORD } from '../../constants';
 import OnboardingMetricsPage from '../../page-objects/pages/onboarding/onboarding-metrics-page';
 import OnboardingPasswordPage from '../../page-objects/pages/onboarding/onboarding-password-page';
 import SecureWalletPage from '../../page-objects/pages/onboarding/secure-wallet-page';
 import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
-import { skipPasskeySetup } from '../../page-objects/flows/onboarding.flow';
+import {
+  revealAndConfirmSrp,
+  skipPasskeySetup,
+} from '../../page-objects/flows/onboarding.flow';
 
 /**
  * Mocks the segment API multiple times for specific payloads that we expect to
@@ -71,8 +74,8 @@ describe('Metrics Opt In/Out events', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
+          .withAnalyticsController({
+            analyticsId: MOCK_ANALYTICS_ID,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -98,7 +101,7 @@ describe('Metrics Opt In/Out events', function () {
 
         const secureWalletPage = new SecureWalletPage(driver);
         await secureWalletPage.checkPageIsLoaded();
-        await secureWalletPage.revealAndConfirmSRP();
+        await revealAndConfirmSrp(driver);
 
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
@@ -122,8 +125,8 @@ describe('Metrics Opt In/Out events', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
+          .withAnalyticsController({
+            analyticsId: MOCK_ANALYTICS_ID,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -152,7 +155,7 @@ describe('Metrics Opt In/Out events', function () {
 
         const secureWalletPage = new SecureWalletPage(driver);
         await secureWalletPage.checkPageIsLoaded();
-        await secureWalletPage.revealAndConfirmSRP();
+        await revealAndConfirmSrp(driver);
 
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);

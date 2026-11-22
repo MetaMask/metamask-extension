@@ -2,18 +2,24 @@ import { Suite } from 'mocha';
 import { veryLargeDelayMs, withFixtures } from '../../helpers';
 import {
   bridgeTransaction,
+  enterBridgeQuote,
   goToAssetPage,
+  searchAndSelectToken,
 } from '../../page-objects/flows/bridge.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
-import NetworkManager from '../../page-objects/pages/network-manager';
-import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
+import SwapAssetPickerPage from '../../page-objects/pages/swap/swap-asset-picker-page';
+import SwapPage from '../../page-objects/pages/swap/swap-page';
+import SelectNetworkModal from '../../page-objects/pages/networks/select-network-modal';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
+import TokenOverviewPage from '../../page-objects/pages/asset/token-overview-page';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from './constants';
 import {
   checkQuoteRequestsAreNotMadeAfterTimestamp,
   getBridgeFixtures,
+  getExpectedQuoteTotalCosts,
 } from './bridge-test-utils';
+import MOCK_BRIDGE_ETH_TO_ETH_ROBINHOOD from './mocks/bridge-quotes-eth-robinhood.json';
 
 describe('Bridge tests', function (this: Suite) {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -22,7 +28,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver }) => {
         // the balance has been fixed now , we show native balance when currency controller is set
@@ -41,6 +46,7 @@ describe('Bridge tests', function (this: Suite) {
           },
           expectedTransactionsCount: 2,
           expectedDestAmount: '0.0157',
+          expectedActivityAmount: '+0.01567',
         });
 
         await bridgeTransaction({
@@ -54,22 +60,8 @@ describe('Bridge tests', function (this: Suite) {
           },
           expectedTransactionsCount: 3,
           expectedDestAmount: '1,642',
+          expectedActivityAmount: '+1,642.0043',
         });
-        await bridgeTransaction({
-          driver,
-          quote: {
-            amount: '1',
-            tokenFrom: 'ETH',
-            tokenTo: 'ETH',
-            fromChain: 'Ethereum',
-            toChain: 'Linea',
-          },
-          expectedTransactionsCount: 4,
-          expectedDestAmount: '0.991',
-        });
-
-        await homePage.goToTokensTab();
-        await homePage.goToActivityList();
 
         await bridgeTransaction({
           driver,
@@ -81,8 +73,27 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Linea',
             unapproved: true,
           },
-          expectedTransactionsCount: 6,
+          expectedTransactionsCount: 5,
           expectedDestAmount: '9.9',
+          expectedActivityAmount: '+9.8996',
+        });
+
+        await bridgeTransaction({
+          driver,
+          quote: {
+            amount: '1',
+            tokenFrom: 'ETH',
+            tokenTo: 'ETH',
+            fromChain: 'Ethereum',
+            toChain: 'Robinhood',
+          },
+          expectedTransactionsCount: 6,
+          expectedDestAmount: '0.991',
+          expectedActivityAmount: '+0.9911',
+          submitDelay: 1000,
+          expectedTotalCost: getExpectedQuoteTotalCosts(
+            MOCK_BRIDGE_ETH_TO_ETH_ROBINHOOD,
+          ),
         });
       },
     );
@@ -93,19 +104,19 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver, mockedEndpoint }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
-        const networkManager = new NetworkManager(driver);
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
 
         // Navigate to Bridge page
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.startSwapFlow();
 
-        const bridgePage = new BridgeQuotePage(driver);
-        await bridgePage.enterBridgeQuote({
+        const swapPage = new SwapPage(driver);
+        await enterBridgeQuote(driver, {
           amount: '25',
           tokenFrom: 'ETH',
           tokenTo: 'DAI',
@@ -114,7 +125,7 @@ describe('Bridge tests', function (this: Suite) {
         });
         const finalQuoteRequestTimestamp = Date.now();
 
-        await bridgePage.goBack();
+        await swapPage.goBack();
         await checkQuoteRequestsAreNotMadeAfterTimestamp(
           driver,
           finalQuoteRequestTimestamp,
@@ -122,10 +133,10 @@ describe('Bridge tests', function (this: Suite) {
         );
 
         // check if the Linea network is selected
-        await networkManager.openNetworkManager();
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
         await driver.delay(veryLargeDelayMs);
-
-        await networkManager.checkAllPopularNetworksIsSelected();
+        await selectNetworkModal.checkAllPopularNetworksIsSelected();
       },
     );
   });
@@ -135,7 +146,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver, mockedEndpoint }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
@@ -156,18 +166,20 @@ describe('Bridge tests', function (this: Suite) {
           },
           expectedTransactionsCount: 2,
           expectedDestAmount: '9.9',
+          expectedActivityAmount: '+9.8996',
         });
         const finalQuoteRequestTimestamp = Date.now();
-        const bridgePage = new BridgeQuotePage(driver);
+        const swapPage = new SwapPage(driver);
         await checkQuoteRequestsAreNotMadeAfterTimestamp(
           driver,
           finalQuoteRequestTimestamp,
           mockedEndpoint,
         );
 
+        await homePage.goToHomePage();
         console.log('Navigating back to Swap page');
         await homePage.startSwapFlow();
-        await bridgePage.checkAssetsAreSelected('ETH', 'mUSD');
+        await swapPage.checkAssetsAreSelected('ETH', 'mUSD');
         console.log('Checked that assets have been reset to defaults');
       },
     );
@@ -178,7 +190,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
@@ -187,7 +198,7 @@ describe('Bridge tests', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.startSwapFlow();
-        const bridgePage = new BridgeQuotePage(driver);
+        const swapPage = new SwapPage(driver);
 
         console.log('Checking that source asset is selected');
         await goToAssetPage({
@@ -200,7 +211,7 @@ describe('Bridge tests', function (this: Suite) {
         const tokenOverviewPage = new TokenOverviewPage(driver);
         await tokenOverviewPage.clickSwap();
         console.log('Clicked Swap button from source asset page');
-        await bridgePage.checkAssetsAreSelected('DAI', 'mUSD');
+        await swapPage.checkAssetsAreSelected('DAI', 'mUSD');
       },
     );
   });
@@ -210,7 +221,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
@@ -219,9 +229,9 @@ describe('Bridge tests', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.startSwapFlow();
-        const bridgePage = new BridgeQuotePage(driver);
+        const swapPage = new SwapPage(driver);
 
-        await bridgePage.searchForAssetAndSelect('DAI');
+        await searchAndSelectToken(driver, 'DAI');
         console.log('Selected source asset DAI');
 
         const tokenOverviewPage = new TokenOverviewPage(driver);
@@ -231,11 +241,11 @@ describe('Bridge tests', function (this: Suite) {
           token: 'USDC',
           chainId: '0xe708',
           address: '0x176211869cA2b568f2A7D4EE941E073a821EE1ff',
-          assetPicker: bridgePage.destinationAssetPickerButton,
+          assetPicker: 'destination',
         });
         await tokenOverviewPage.clickSwap();
         console.log('Clicked Swap button from dest asset page');
-        await bridgePage.checkAssetsAreSelected('DAI', 'USDC');
+        await swapPage.checkAssetsAreSelected('DAI', 'USDC');
       },
     );
   });
@@ -245,7 +255,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
@@ -254,11 +263,11 @@ describe('Bridge tests', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.startSwapFlow();
-        const bridgePage = new BridgeQuotePage(driver);
+        const swapPage = new SwapPage(driver);
 
         const tokenOverviewPage = new TokenOverviewPage(driver);
 
-        await bridgePage.searchForAssetAndSelect('mUSD');
+        await searchAndSelectToken(driver, 'mUSD');
         console.log('Selected source asset mUSD');
 
         console.log('Checking that asset picker is visible');
@@ -267,13 +276,14 @@ describe('Bridge tests', function (this: Suite) {
           token: 'USDC',
           chainId: '0xe708',
           address: '0x176211869cA2b568f2A7D4EE941E073a821EE1ff',
-          assetPicker: bridgePage.destinationAssetPickerButton,
+          assetPicker: 'destination',
         });
         await tokenOverviewPage.clickBack();
         console.log('Navigated back to Swap page from asset page');
 
-        await bridgePage.checkAssetPickerModalIsReopened();
-        await bridgePage.checkAssetsAreSelected('mUSD', 'ETH');
+        const swapAssetPickerPage = new SwapAssetPickerPage(driver);
+        await swapAssetPickerPage.checkAssetPickerIsReopened();
+        await swapPage.checkAssetsAreSelected('mUSD', 'ETH');
       },
     );
   });
@@ -283,7 +293,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
@@ -292,17 +301,14 @@ describe('Bridge tests', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.startSwapFlow();
-        const bridgePage = new BridgeQuotePage(driver);
+        const swapPage = new SwapPage(driver);
 
         const tokenOverviewPage = new TokenOverviewPage(driver);
 
-        await bridgePage.searchForAssetAndSelect('DAI');
+        await searchAndSelectToken(driver, 'DAI');
         console.log('Selected source asset DAI');
 
-        await bridgePage.searchForAssetAndSelect(
-          'USDC',
-          bridgePage.destinationAssetPickerButton,
-        );
+        await searchAndSelectToken(driver, 'USDC', 'destination');
         console.log('Selected dest asset USDC');
 
         await goToAssetPage({
@@ -310,19 +316,20 @@ describe('Bridge tests', function (this: Suite) {
           token: 'DAI',
           chainId: '0x1',
           address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-          assetPicker: bridgePage.destinationAssetPickerButton,
+          assetPicker: 'destination',
         });
         await tokenOverviewPage.clickBack();
 
-        await bridgePage.checkAssetPickerModalIsReopened();
-        await bridgePage.checkAssetsAreSelected('DAI', 'USDC');
+        const swapAssetPickerPage = new SwapAssetPickerPage(driver);
+        await swapAssetPickerPage.checkAssetPickerIsReopened();
+        await swapPage.checkAssetsAreSelected('DAI', 'USDC');
 
         console.log(
           'Checking that selected assets are reset after reopening Swap page',
         );
-        await bridgePage.goBack();
+        await swapPage.goBack();
         await homePage.startSwapFlow();
-        await bridgePage.checkAssetsAreSelected('ETH', 'mUSD');
+        await swapPage.checkAssetsAreSelected('ETH', 'mUSD');
       },
     );
   });

@@ -75,14 +75,8 @@
   "create": {
     "message": "Vytvořit"
   },
-  "customToken": {
-    "message": "Vlastní token"
-  },
   "decimal": {
     "message": "Počet desetinných míst přesnosti"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Desetinných míst musí být od 0 do 36."
   },
   "details": {
     "message": "Podrobnosti"
@@ -105,18 +99,11 @@
   "failed": {
     "message": "Neúspěšné"
   },
-  "fileImportFail": {
-    "message": "Import souboru nefunguje? Klikněte sem!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "from": {
     "message": "Od"
   },
   "gasLimit": {
     "message": "Limit paliva"
-  },
-  "gasLimitTooLow": {
-    "message": "Limit paliva musí být alespoň 21000"
   },
   "here": {
     "message": "zde",
@@ -172,9 +159,6 @@
   "message": {
     "message": "Zpráva"
   },
-  "mustSelectOne": {
-    "message": "Musíte zvolit aspoň 1 token."
-  },
   "needImportFile": {
     "message": "Musíte zvolit soubor k importu.",
     "description": "User is important an account and needs to add a file to continue"
@@ -201,10 +185,6 @@
   "passwordsDontMatch": {
     "message": "Hesla nejsou stejná"
   },
-  "pastePrivateKey": {
-    "message": "Vložte zde svůj privátní klíč:",
-    "description": "For importing an account from a private key"
-  },
   "personalAddressDetected": {
     "message": "Detekována osobní adresa. Zadejte adresu kontraktu tokenu."
   },
@@ -214,9 +194,6 @@
   "privateKey": {
     "message": "Privátní klíč",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Upozornění: Nikdy nezveřejněte tento klíč. Kdokoli může s vaším privátním klíčem odcizit vaše aktiva z účtu."
   },
   "privateNetwork": {
     "message": "Soukromá síť"
@@ -257,9 +234,6 @@
   },
   "sign": {
     "message": "Podepsat"
-  },
-  "signatureRequest": {
-    "message": "Požadavek podpisu"
   },
   "signed": {
     "message": "Podepsáno"
@@ -308,9 +282,6 @@
   },
   "urlErrorMsg": {
     "message": "URI vyžadují korektní HTTP/HTTPS prefix."
-  },
-  "usedByClients": {
-    "message": "Používána různými klienty"
   },
   "visitWebSite": {
     "message": "Navštivte naši stránku"

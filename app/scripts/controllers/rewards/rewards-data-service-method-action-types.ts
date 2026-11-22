@@ -79,17 +79,6 @@ export type RewardsDataServiceFetchGeoLocationAction = {
 };
 
 /**
- * Validate a referral code.
- *
- * @param code - The referral code to validate.
- * @returns Promise<{valid: boolean}> - Object indicating if the code is valid.
- */
-export type RewardsDataServiceValidateReferralCodeAction = {
-  type: `RewardsDataService:validateReferralCode`;
-  handler: RewardsDataService['validateReferralCode'];
-};
-
-/**
  * Join an account to a subscription via mobile login.
  *
  * @param body - The mobile login request body containing account, timestamp, and signature.
@@ -146,6 +135,17 @@ export type RewardsDataServiceGetSeasonMetadataAction = {
 };
 
 /**
+ * Get the VIP fee table for the current subscription.
+ *
+ * @param subscriptionToken - The subscription token used for authentication.
+ * @returns The VIP fee response (tier 0 will have `fees=null`).
+ */
+export type RewardsDataServiceGetVipFeesAction = {
+  type: `RewardsDataService:getVipFees`;
+  handler: RewardsDataService['getVipFees'];
+};
+
+/**
  * Generate a challenge for SIWE (Sign-In with Ethereum) authentication.
  *
  * @param body - The challenge generation request body containing address.
@@ -167,10 +167,10 @@ export type RewardsDataServiceMethodActions =
   | RewardsDataServiceMobileOptinAction
   | RewardsDataServiceGetSeasonStatusAction
   | RewardsDataServiceFetchGeoLocationAction
-  | RewardsDataServiceValidateReferralCodeAction
   | RewardsDataServiceMobileJoinAction
   | RewardsDataServiceSiweJoinAction
   | RewardsDataServiceGetOptInStatusAction
   | RewardsDataServiceGetDiscoverSeasonsAction
   | RewardsDataServiceGetSeasonMetadataAction
+  | RewardsDataServiceGetVipFeesAction
   | RewardsDataServiceGenerateChallengeAction;

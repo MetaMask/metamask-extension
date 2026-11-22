@@ -2,9 +2,8 @@ import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
 import { AssertionError } from 'node:assert';
 import { parse } from 'dotenv';
-import { setEnvironmentVariables } from '../../build/set-environment-variables';
-import type { Variables } from '../../lib/variables';
-import type { BuildTypesConfig, BuildType } from '../../lib/build-type';
+import { setEnvironmentVariables } from '../../build/set-environment-variables.js';
+import type { BuildTypesConfig, BuildType } from '../../lib/build-type.js';
 import { type Args } from './cli';
 import { getExtensionVersion } from './version';
 import {
@@ -68,15 +67,13 @@ export function getBuildName(
   type: string,
   build: BuildType,
   isDev: boolean,
-  args: Pick<Args, 'manifest_version' | 'lavamoat' | 'snow'>,
+  args: Pick<Args, 'manifestVersion' | 'lavamoat' | 'snow'>,
 ) {
   const buildName =
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     build.buildNameOverride ||
     `MetaMask ${type.slice(0, 1).toUpperCase()}${type.slice(1)}`;
   if (isDev) {
-    const mv3Str = args.manifest_version === 3 ? ' MV3' : '';
+    const mv3Str = args.manifestVersion === 3 ? ' MV3' : '';
     const lavamoatStr = args.lavamoat ? ' lavamoat' : '';
     const snowStr = args.snow ? ' snow' : '';
     return `${buildName}${mv3Str}${lavamoatStr}${snowStr}`;
@@ -133,7 +130,7 @@ export function getVariables(
       getMaybe(key: string): unknown {
         return variables.get(key);
       },
-    } as Variables,
+    },
   });
 
   // variables that are used in the webpack build's entry points. Our runtime

@@ -3,7 +3,11 @@ export { usePerpsEligibility } from './usePerpsEligibility';
 export { usePerpsMeasurement } from './usePerpsMeasurement';
 export { usePerpsLifecycleBreadcrumbs } from './usePerpsLifecycleBreadcrumbs';
 export { usePerpsMarketInfo } from './usePerpsMarketInfo';
+export type { UsePerpsMarketInfoReturn } from './usePerpsMarketInfo';
+export { usePerpsPositionForAsset } from './usePerpsPositionForAsset';
+export type { UsePerpsPositionForAssetReturn } from './usePerpsPositionForAsset';
 export { usePerpsOrderFees } from './usePerpsOrderFees';
+export { usePerpsMetamaskFeeDiscountBips } from './usePerpsMetamaskFeeDiscountBips';
 export type {
   UsePerpsOrderFormOptions,
   UsePerpsOrderFormReturn,
@@ -22,6 +26,7 @@ export type {
 } from './usePerpsTransactionHistory';
 
 export { usePerpsMarketFills } from './usePerpsMarketFills';
+export { usePerpsRecordedOrderFees } from './usePerpsRecordedOrderFees';
 
 export { usePerpsMarginCalculations } from './usePerpsMarginCalculations';
 export type {
@@ -30,11 +35,25 @@ export type {
   MarginRiskAssessment,
 } from './usePerpsMarginCalculations';
 
+export { usePerpsMaxSlippage } from './usePerpsMaxSlippage';
+export type { UsePerpsMaxSlippageReturn } from './usePerpsMaxSlippage';
+export { usePerpsEstimatedSlippage } from './usePerpsEstimatedSlippage';
+export type {
+  UsePerpsEstimatedSlippageOptions,
+  UsePerpsEstimatedSlippageReturn,
+} from './usePerpsEstimatedSlippage';
 export { usePerpsEventTracking } from './usePerpsEventTracking';
+export { usePerpsMarketAboutTracking } from './usePerpsMarketAboutTracking';
+export type {
+  UsePerpsMarketAboutTrackingOptions,
+  UsePerpsMarketAboutTrackingReturn,
+} from './usePerpsMarketAboutTracking';
+export { usePerpsAttribution } from './usePerpsAttribution';
 export type {
   PerpsTrackEventFn,
   UsePerpsEventTrackingDeclarativeOptions,
 } from './usePerpsEventTracking';
+export { usePerpsBottomNavSource } from './usePerpsBottomNavSource';
 export {
   estimateLiquidationPrice,
   liquidationDistancePercent,

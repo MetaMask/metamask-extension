@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
@@ -10,6 +10,19 @@ import { setBackgroundConnection } from '../../../store/background-connection';
 import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import * as environmentType from '../../../../shared/lib/environment-type';
 import PasskeyItem from './passkey-item';
+
+const mockRemovePasskeyWithPasskey = jest.fn().mockResolvedValue(undefined);
+const mockForceUpdateMetamaskState = jest.fn().mockResolvedValue(undefined);
+
+jest.mock('../../../hooks/passkey/usePasskeyRemoval', () => ({
+  useRemovePasskeyWithPasskey: () => mockRemovePasskeyWithPasskey,
+}));
+
+jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
+  forceUpdateMetamaskState: (...args: unknown[]) =>
+    mockForceUpdateMetamaskState(...args),
+}));
 
 jest.mock('../../../../shared/lib/environment', () => ({
   ...jest.requireActual('../../../../shared/lib/environment'),
@@ -33,9 +46,19 @@ const GOOGLE_PASSWORD_MANAGER_PASSKEY_AAGUID =
 
 describe('PasskeyItem', () => {
   const mockStore = configureMockStore([thunk])(mockState);
+  const mockStoreWithPasskey = configureMockStore([thunk])({
+    ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      passkeyRecord: {
+        credential: { id: 'cred-id' },
+      },
+    },
+  });
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockRemovePasskeyWithPasskey.mockResolvedValue(undefined);
     setBackgroundConnection(backgroundConnectionMock as never);
   });
 
@@ -83,5 +106,16 @@ describe('PasskeyItem', () => {
 
     delete (globalThis as { platform?: unknown }).platform;
     jest.restoreAllMocks();
+  });
+
+  it('removes the passkey and refreshes state when disabling', async () => {
+    renderWithProvider(<PasskeyItem />, mockStoreWithPasskey);
+
+    fireEvent.click(screen.getByTestId('security-passkey-settings-toggle'));
+
+    await waitFor(() => {
+      expect(mockRemovePasskeyWithPasskey).toHaveBeenCalledTimes(1);
+      expect(mockForceUpdateMetamaskState).toHaveBeenCalledTimes(1);
+    });
   });
 });

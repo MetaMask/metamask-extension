@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "ನೀವು ಖಾತೆಯನ್ನು ಆಯ್ಕೆಮಾಡುವ ಅಗತ್ಯವಿದೆ!"
   },
-  "addAcquiredTokens": {
-    "message": "MetaMask ಬಳಸಿಕೊಂಡು ನೀವು ಸ್ವಾಧೀನಪಡಿಸಿಕೊಂಡಿರುವ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
-  },
   "addAlias": {
     "message": "ಅಲಿಯಾಸ್ ಸೇರಿಸಿ"
   },
@@ -83,9 +80,6 @@
   },
   "back": {
     "message": "ಹಿಂದೆ"
-  },
-  "backupApprovalInfo": {
-    "message": "ನಿಮ್ಮ ಸಾಧನವನ್ನು ನೀವು ಕಳೆದುಕೊಂಡಾಗ, ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಮರೆತರೆ, MetaMask ಅನ್ನು ಮರು-ಸ್ಥಾಪಿಸಲು ಅಥವಾ ಬೇರೊಂದು ಸಾಧನದಲ್ಲಿ ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ ಅನ್ನು ಪ್ರವೇಶಿಸಲು ಬಯಸಿದ ಸಂದರ್ಭದಲ್ಲಿ ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ ಅನ್ನು ಮರುಪಡೆದುಕೊಳ್ಳಲು ಈ ರಹಸ್ಯ ಕೋಡ್ ಅಗತ್ಯವಿರುತ್ತದೆ."
   },
   "backupApprovalNotice": {
     "message": "ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ ಮತ್ತು ನಿಧಿಗಳನ್ನು ಭದ್ರವಾಗಿರಿಸಲು ನಿಮ್ಮ ರಹಸ್ಯ ಮರುಪಡೆದುಕೊಳ್ಳುವಿಕೆಯ ಕೋಡ್ ಅನ್ನು ಬ್ಯಾಕಪ್ ಮಾಡಿ."
@@ -181,14 +175,8 @@
   "custom": {
     "message": "ಸುಧಾರಿತ"
   },
-  "customToken": {
-    "message": "ಕಸ್ಟಮ್ ಟೋಕನ್"
-  },
   "decimal": {
     "message": "ನಿಖರತೆಯ ದಶಮಾಂಶಗಳು"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "ದಶಮಾಂಶಗಳು ಕನಿಷ್ಟ 0 ಆಗಿರಬೇಕು ಮತ್ತು 36 ಕ್ಕಿಂತ ಹೆಚ್ಚಿರಬಾರದು"
   },
   "delete": {
     "message": "ಅಳಿಸಿ"
@@ -198,9 +186,6 @@
   },
   "done": {
     "message": "ಮುಗಿದಿದೆ"
-  },
-  "downloadGoogleChrome": {
-    "message": "Google Chrome ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ"
   },
   "downloadStateLogs": {
     "message": "ರಾಜ್ಯದ ಲಾಗ್‌ಗಳನ್ನು  ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ"
@@ -226,10 +211,6 @@
   "fast": {
     "message": "ವೇಗ"
   },
-  "fileImportFail": {
-    "message": "ಫೈಲ್ ಆಮದು ಮಾಡುವಿಕೆ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತಿಲ್ಲವೇ? ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "ಈ ಸಾಧನವನ್ನು ಮರೆತುಬಿಡಿ"
   },
@@ -238,9 +219,6 @@
   },
   "gasLimit": {
     "message": "ಗ್ಯಾಸ್ ಮಿತಿ"
-  },
-  "gasLimitTooLow": {
-    "message": "ಗ್ಯಾಸ್ ಮಿತಿಯು ಕನಿಷ್ಟ 21000 ಆಗಿರಬೇಕು"
   },
   "gasUsed": {
     "message": "ಗ್ಯಾಸ್ ಬಳಸಲಾಗಿದೆ"
@@ -259,9 +237,6 @@
   },
   "hardwareWallets": {
     "message": "ಹಾರ್ಡ್‌ವೇರ್ ವ್ಯಾಲೆಟ್‌ ಸಂಪರ್ಕಿಸಿ"
-  },
-  "hardwareWalletsMsg": {
-    "message": "MetaMask ನೊಂದಿಗೆ ಬಳಸಲು ನೀವು ಇಷ್ಟಪಡುವ ಹಾರ್ಡ‌ವೇರ್ ವ್ಯಾಲೆಟ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ"
   },
   "here": {
     "message": "ಇಲ್ಲಿ",
@@ -354,9 +329,6 @@
   "metamaskVersion": {
     "message": "MetaMask ಆವೃತ್ತಿ"
   },
-  "mustSelectOne": {
-    "message": "ಕನಿಷ್ಟ 1 ಟೋಕನ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಬೇಕು."
-  },
   "needImportFile": {
     "message": "ಆಮದು ಮಾಡಲು ನೀವು ಫೈಲ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಬೇಕು.",
     "description": "User is important an account and needs to add a file to continue"
@@ -366,9 +338,6 @@
   },
   "networks": {
     "message": "ನೆಟ್‌ವರ್ಕ್‌ಗಳು"
-  },
-  "nevermind": {
-    "message": "ಪರವಾಗಿಲ್ಲ"
   },
   "newAccountNumberName": {
     "message": "ಖಾತೆ $1",
@@ -388,9 +357,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "ವೆಬ್‌ಕ್ಯಾಮ್ ಕಂಡುಬಂದಿಲ್ಲ"
-  },
-  "notEnoughGas": {
-    "message": "ಸಾಕಷ್ಟು ಗ್ಯಾಸ್ ಇಲ್ಲ"
   },
   "ofTextNofM": {
     "message": "ರಲ್ಲಿ"
@@ -422,10 +388,6 @@
   "passwordsDontMatch": {
     "message": "ಪಾಸ್‌ವರ್ಡ್‌ಗಳು ಹೊಂದಾಣಿಕೆಯಾಗುತ್ತಿಲ್ಲ"
   },
-  "pastePrivateKey": {
-    "message": "ನಿಮ್ಮ ಖಾಸಗಿ ಪ್ರಮುಖ ಸ್ಟ್ರಿಂಗ್ ಅನ್ನು ಇಲ್ಲಿ ನಕಲಿಸಿ:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "ಬಾಕಿಯಿರುವುದು"
   },
@@ -441,9 +403,6 @@
   "privateKey": {
     "message": "ಖಾಸಗಿ ಕೀ",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "ಎಚ್ಚರಿಕೆ: ಈ ಕೀಯನ್ನು ಎಂದಿಗೂ ಬಹಿರಂಗಪಡಿಸಬೇಡಿ. ನಿಮ್ಮ ಖಾಸಗಿ ಕೀಗಳನ್ನು ಹೊಂದಿರುವ ಯಾರಾದರೂ ನಿಮ್ಮ ಖಾತೆಯಲ್ಲಿರುವ ಯಾವುದೇ ಸ್ವತ್ತುಗಳನ್ನು ಕದಿಯಬಹುದು."
   },
   "privateNetwork": {
     "message": "ಖಾಸಗಿ ನೆಟ್‌ವರ್ಕ್"
@@ -529,9 +488,6 @@
   },
   "sign": {
     "message": "ಸಹಿ"
-  },
-  "signatureRequest": {
-    "message": "ಸಹಿಯ ವಿನಂತಿ"
   },
   "signed": {
     "message": "ಸಹಿ ಮಾಡಲಾಗಿದೆ"
@@ -619,9 +575,6 @@
   },
   "urlErrorMsg": {
     "message": "URI ಗಳಿಗೆ ಸೂಕ್ತವಾದ HTTP/HTTPS ಪೂರ್ವಪ್ರತ್ಯಯದ ಅಗತ್ಯವಿದೆ."
-  },
-  "usedByClients": {
-    "message": "ವಿಭಿನ್ನ ಕ್ಲೈಂಟ್‌ಗಳ ಮೂಲಕ ಬಳಸಲಾಗುತ್ತದೆ"
   },
   "visitWebSite": {
     "message": "ನಮ್ಮ ವೆಬ್ ಸೈಟ್ ಅನ್ನು ಭೇಟಿ ಮಾಡಿ"

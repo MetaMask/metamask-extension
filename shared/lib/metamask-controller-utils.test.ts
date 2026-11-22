@@ -37,6 +37,8 @@ const COMPLETED_ONBOARDING_STATE: OnboardingControllerState = {
   seedPhraseBackedUp: null,
   firstTimeFlowType: null,
   completedOnboarding: true,
+  hasSeenOnboardingCompletionPage: true,
+  onboardingJourneyEnded: false,
 };
 
 describe('createEnsureOnboardingCompleteCallback', () => {

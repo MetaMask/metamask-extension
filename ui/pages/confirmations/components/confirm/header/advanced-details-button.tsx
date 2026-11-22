@@ -3,7 +3,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { getConfirmationTransactionType } from '../../../utils/confirm';
 import {
   Box,
   ButtonIcon,
@@ -20,6 +21,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { setConfirmationAdvancedDetailsOpen } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
+import { useDispatch } from '../../../../../store/hooks';
 
 export const AdvancedDetailsButton = () => {
   const t = useI18nContext();
@@ -34,6 +36,8 @@ export const AdvancedDetailsButton = () => {
     dispatch(setConfirmationAdvancedDetailsOpen(value));
   };
 
+  const confirmationType = getConfirmationTransactionType(currentConfirmation);
+
   return (
     <Box
       backgroundColor={
@@ -45,10 +49,11 @@ export const AdvancedDetailsButton = () => {
       // hiding through visibility instead of rendering conditionally so the
       // header layout is not affected
       style={
-        currentConfirmation?.type ===
-          TransactionType.shieldSubscriptionApprove ||
-        currentConfirmation?.type === TransactionType.perpsDeposit ||
-        currentConfirmation?.type === TransactionType.perpsWithdraw
+        confirmationType === TransactionType.shieldSubscriptionApprove ||
+        confirmationType === TransactionType.moneyAccountDeposit ||
+        confirmationType === TransactionType.moneyAccountWithdraw ||
+        confirmationType === TransactionType.perpsDeposit ||
+        confirmationType === TransactionType.perpsWithdraw
           ? { visibility: 'hidden' }
           : {}
       }

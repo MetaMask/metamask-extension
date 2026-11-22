@@ -1,18 +1,10 @@
 import { join, sep } from 'node:path';
 import type { EntryObject, Stats } from 'webpack';
-import type TerserPluginType from 'terser-webpack-plugin';
 
 export type Manifest = chrome.runtime.Manifest;
 export type ManifestV2 = chrome.runtime.ManifestV2;
 export type ManifestV3 = chrome.runtime.ManifestV3;
 export type EntryDescription = Exclude<EntryObject[string], string | string[]>;
-
-// HMR (Hot Module Reloading) can't be used until all circular dependencies in
-// the codebase are removed
-// See: https://github.com/MetaMask/metamask-extension/issues/22450
-// TODO: remove this variable when HMR is ready. The env var is for tests and
-// must also be removed everywhere.
-export const __HMR_READY__ = Boolean(process.env.__HMR_READY__) || false;
 
 /**
  * Target browsers
@@ -70,12 +62,36 @@ export const UI_COMPONENT_RE = new RegExp(
   'u',
 );
 
+export const TYPESCRIPT_FILE_RE = /\.(?:ts|mts|tsx)$/u;
+
+export const JAVASCRIPT_FILE_RE = /\.(?:js|mjs|jsx)$/u;
+
 /**
  * No Operation. A function that does nothing and returns nothing.
  *
  * @returns `undefined`
  */
 export const noop = () => undefined;
+
+/**
+ * Temporarily ignores 'SIGINT' and 'SIGTERM' while webpack closes its
+ * filesystem cache.
+ *
+ * In the forked build path, the parent exits before `compiler.close()`
+ * completes so webpack can persist the cache in the background. During that
+ * handoff the parent can still forward shutdown signals to the child: Ctrl+C
+ * becomes 'SIGINT', and process managers or CI can send 'SIGTERM'. Node's
+ * default behavior would terminate the child and can leave the cache partially
+ * written.
+ *
+ * @param process - The process to install signal listeners on.
+ * @returns A cleanup function that removes the installed listeners.
+ */
+export function ignoreCacheShutdownSignal(process: NodeJS.Process) {
+  const signals = ['SIGINT', 'SIGTERM'] as const;
+  signals.forEach((signal) => process.on(signal, noop));
+  return () => signals.forEach((signal) => process.off(signal, noop));
+}
 
 /**
  * @param filename
@@ -86,14 +102,45 @@ export const extensionToJs = (filename: string) =>
 
 /**
  * It gets minimizers for the webpack build.
+ *
+ * SWC mangling can still produce different `runtime.[contenthash].js` output
+ * across Linux rebuilds (short-name swaps such as `c`/`l`), even with
+ * TerserPlugin `parallel: false`. That breaks Firefox AMO reviewer `mtree`
+ * comparisons. Disabling mangling for the runtime chunk keeps it
+ * content-stable while leaving mangling ON for all other chunks.
  */
-export function getMinimizers() {
-  const TerserPlugin: typeof TerserPluginType = require('terser-webpack-plugin');
+export async function getMinimizers() {
+  const { default: TerserPlugin } = await import('terser-webpack-plugin');
+  // Match webpack asset names like `chrome/runtime.<hash>.js` or `runtime.<hash>.js`.
+  const runtimeChunkRe = /(?:^|[/\\])runtime\./u;
   return [
     new TerserPlugin({
       // use SWC to minify (about 7x faster than Terser)
       minify: TerserPlugin.swcMinify,
-      // do not minify snow.
+      // terser-webpack-plugin defaults this to `true`, and since 5.6 it
+      // forwards it to `swc.minify()`, which our pinned `@swc/core` rejects as
+      // an unknown field. Earlier versions ignored it for `swcMinify`, so no
+      // comments were ever extracted here; `false` keeps that behavior.
+      extractComments: false,
+      parallel: false,
+      terserOptions: {
+        mangle: true,
+      },
+      // do not minify snow or the runtime chunk (handled below).
+      exclude: [/snow\.prod/u, runtimeChunkRe],
+    }),
+    new TerserPlugin({
+      // use SWC to minify (about 7x faster than Terser)
+      minify: TerserPlugin.swcMinify,
+      // see the note on the minimizer above
+      extractComments: false,
+      parallel: false,
+      terserOptions: {
+        // Disable mangling for the runtime chunk so AMO Linux rebuilds stay
+        // content-stable.
+        mangle: false,
+      },
+      include: runtimeChunkRe,
       exclude: /snow\.prod/u,
     }),
   ];

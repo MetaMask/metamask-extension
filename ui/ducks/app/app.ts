@@ -46,7 +46,6 @@ type AppState = {
     tokenId?: string;
     ignoreErc20Token?: boolean;
   };
-  showPermittedNetworkToastOpen: boolean;
   showIpfsModalOpen: boolean;
   showSupportDataConsentModal: boolean;
   keyringRemovalSnapModal: {
@@ -54,7 +53,6 @@ type AppState = {
     result: 'success' | 'failure' | 'none';
   };
   showKeyringRemovalSnapModal: boolean;
-  importTokensModalOpen: boolean;
   deprecatedNetworkModalOpen: boolean;
   accountDetail: {
     privateKey?: string;
@@ -62,7 +60,6 @@ type AppState = {
   isLoading: boolean;
   isNftStillFetchingIndication: boolean;
   loadingMessage: string | null;
-  warning: string | null | undefined;
 
   defaultHdPaths: {
     trezor: string;
@@ -82,6 +79,7 @@ type AppState = {
   ledgerTransportStatus: HardwareTransportStates;
   showBasicFunctionalityModal: boolean;
   externalServicesOnboardingToggleState: boolean;
+  backupAndSyncOnboardingToggleState: boolean;
   newNetworkAddedName: string;
   editedNetwork:
     | {
@@ -98,10 +96,9 @@ type AppState = {
   newTokensImported: string;
   newTokensImportedError: string;
   onboardedInThisUISession: boolean;
+  onboardingRedirect: string | null;
   customTokenAmount: string;
   txId: string | null;
-  showDeleteMetaMetricsDataModal: boolean;
-  showDataDeletionErrorModal: boolean;
   isAddingNewNetwork: boolean;
   isMultiRpcOnboarding: boolean;
   isAccessedFromDappConnectedSitePopover: boolean;
@@ -118,6 +115,11 @@ type AppState = {
      */
     hasUserInteractedWithModal?: boolean;
   };
+  homeDeepLinkQrCode: {
+    deeplinkUrl: string;
+    descriptionKey: string;
+    titleKey: string;
+  } | null;
 };
 
 export type AppSliceState = {
@@ -146,16 +148,15 @@ const initialState: AppState = {
   qrCodeData: null,
   networkDropdownOpen: false,
   importNftsModal: { open: false },
-  showPermittedNetworkToastOpen: false,
   showIpfsModalOpen: false,
   showBasicFunctionalityModal: false,
   externalServicesOnboardingToggleState: true,
+  backupAndSyncOnboardingToggleState: true,
   keyringRemovalSnapModal: {
     snapName: '',
     result: 'none',
   },
   showKeyringRemovalSnapModal: false,
-  importTokensModalOpen: false,
   deprecatedNetworkModalOpen: false,
   accountDetail: {
     privateKey: '',
@@ -165,8 +166,6 @@ const initialState: AppState = {
   // Used to show a spinner at the bottom of the page when we are still fetching nfts
   isNftStillFetchingIndication: false,
   loadingMessage: null,
-  // Used to display error text
-  warning: null,
   defaultHdPaths: {
     trezor: `m/44'/60'/0'/0`,
     oneKey: `m/44'/60'/0'/0`,
@@ -191,10 +190,9 @@ const initialState: AppState = {
   newTokensImported: '',
   newTokensImportedError: '',
   onboardedInThisUISession: false,
+  onboardingRedirect: null,
   customTokenAmount: '',
   txId: null,
-  showDeleteMetaMetricsDataModal: false,
-  showDataDeletionErrorModal: false,
   isAddingNewNetwork: false,
   isMultiRpcOnboarding: false,
   isAccessedFromDappConnectedSitePopover: false,
@@ -202,6 +200,7 @@ const initialState: AppState = {
   showClaimSubmitToast: null,
   showInfuraSwitchToast: false,
   showSupportDataConsentModal: false,
+  homeDeepLinkQrCode: null,
 };
 
 export default function reduceApp(
@@ -294,9 +293,26 @@ export default function reduceApp(
         externalServicesOnboardingToggleState: true,
       };
     case actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_OFF:
+      // Backup and sync requires basic functionality. Apply the cascade here
+      // rather than in BackupAndSyncToggle: that toggle mounts only on the
+      // Backup and sync category, so opting out from Privacy would leave the
+      // intent flag on and completion would keep account, contact, and ramps
+      // sync enabled.
       return {
         ...appState,
         externalServicesOnboardingToggleState: false,
+        backupAndSyncOnboardingToggleState: false,
+      };
+
+    case actionConstants.ONBOARDING_TOGGLE_BACKUP_AND_SYNC_ON:
+      return {
+        ...appState,
+        backupAndSyncOnboardingToggleState: true,
+      };
+    case actionConstants.ONBOARDING_TOGGLE_BACKUP_AND_SYNC_OFF:
+      return {
+        ...appState,
+        backupAndSyncOnboardingToggleState: false,
       };
 
     case actionConstants.SHOW_IPFS_MODAL_OPEN:
@@ -309,30 +325,6 @@ export default function reduceApp(
       return {
         ...appState,
         showIpfsModalOpen: false,
-      };
-
-    case actionConstants.SHOW_PERMITTED_NETWORK_TOAST_OPEN:
-      return {
-        ...appState,
-        showPermittedNetworkToastOpen: true,
-      };
-
-    case actionConstants.SHOW_PERMITTED_NETWORK_TOAST_CLOSE:
-      return {
-        ...appState,
-        showPermittedNetworkToastOpen: false,
-      };
-
-    case actionConstants.IMPORT_TOKENS_POPOVER_OPEN:
-      return {
-        ...appState,
-        importTokensModalOpen: true,
-      };
-
-    case actionConstants.IMPORT_TOKENS_POPOVER_CLOSE:
-      return {
-        ...appState,
-        importTokensModalOpen: false,
       };
 
     case actionConstants.DEPRECATED_NETWORK_POPOVER_OPEN:
@@ -417,17 +409,6 @@ export default function reduceApp(
           privateKey: '',
         },
       };
-    case actionConstants.SHOW_SEND_TOKEN_PAGE:
-      return {
-        ...appState,
-        warning: null,
-      };
-
-    case actionConstants.LOCK_METAMASK:
-      return {
-        ...appState,
-        warning: null,
-      };
 
     // accounts
     case actionConstants.GO_HOME:
@@ -436,41 +417,25 @@ export default function reduceApp(
         accountDetail: {
           privateKey: '',
         },
-        warning: null,
       };
 
     case actionConstants.SHOW_ACCOUNTS_PAGE:
       return {
         ...appState,
         isLoading: false,
-        warning: null,
       };
 
     case actionConstants.SHOW_CONF_TX_PAGE:
       return {
         ...appState,
         txId: action.id,
-        warning: null,
         isLoading: false,
       };
 
     case actionConstants.COMPLETED_TX:
       return {
         ...appState,
-        warning: null,
         txId: null,
-      };
-
-    case actionConstants.UNLOCK_FAILED:
-      return {
-        ...appState,
-        warning: action.value || 'Incorrect password. Try again.',
-      };
-
-    case actionConstants.UNLOCK_SUCCEEDED:
-      return {
-        ...appState,
-        warning: '',
       };
 
     case actionConstants.SET_HARDWARE_WALLET_DEFAULT_HD_PATH: {
@@ -510,19 +475,6 @@ export default function reduceApp(
       return {
         ...appState,
         isNftStillFetchingIndication: false,
-      };
-
-    case actionConstants.DISPLAY_WARNING:
-      return {
-        ...appState,
-        warning: action.payload,
-        isLoading: false,
-      };
-
-    case actionConstants.HIDE_WARNING:
-      return {
-        ...appState,
-        warning: undefined,
       };
 
     case actionConstants.SHOW_PRIVATE_KEY:
@@ -613,6 +565,11 @@ export default function reduceApp(
         ...appState,
         onboardedInThisUISession: action.payload,
       };
+    case actionConstants.SET_ONBOARDING_REDIRECT:
+      if (state && state.onboardingRedirect === action.payload) {
+        return state;
+      }
+      return { ...appState, onboardingRedirect: action.payload };
     case actionConstants.SET_CUSTOM_TOKEN_AMOUNT:
       return {
         ...appState,
@@ -632,26 +589,6 @@ export default function reduceApp(
       return {
         ...appState,
         isNetworkMenuOpen: false,
-      };
-    case actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN:
-      return {
-        ...appState,
-        showDeleteMetaMetricsDataModal: true,
-      };
-    case actionConstants.DELETE_METAMETRICS_DATA_MODAL_CLOSE:
-      return {
-        ...appState,
-        showDeleteMetaMetricsDataModal: false,
-      };
-    case actionConstants.DATA_DELETION_ERROR_MODAL_OPEN:
-      return {
-        ...appState,
-        showDataDeletionErrorModal: true,
-      };
-    case actionConstants.DATA_DELETION_ERROR_MODAL_CLOSE:
-      return {
-        ...appState,
-        showDataDeletionErrorModal: false,
       };
     case actionConstants.SHOW_SETTINGS_PAGE_ERROR:
       return {
@@ -700,6 +637,18 @@ export default function reduceApp(
         },
       };
 
+    case actionConstants.SET_HOME_DEEP_LINK_QR_CODE:
+      return {
+        ...appState,
+        homeDeepLinkQrCode: action.payload,
+      };
+
+    case actionConstants.CLEAR_HOME_DEEP_LINK_QR_CODE:
+      return {
+        ...appState,
+        homeDeepLinkQrCode: null,
+      };
+
     default:
       return appState;
   }
@@ -727,6 +676,18 @@ export function onboardingToggleBasicFunctionalityOn(): Action {
 export function onboardingToggleBasicFunctionalityOff(): Action {
   return {
     type: actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_OFF,
+  };
+}
+
+export function onboardingToggleBackupAndSyncOn(): Action {
+  return {
+    type: actionConstants.ONBOARDING_TOGGLE_BACKUP_AND_SYNC_ON,
+  };
+}
+
+export function onboardingToggleBackupAndSyncOff(): Action {
+  return {
+    type: actionConstants.ONBOARDING_TOGGLE_BACKUP_AND_SYNC_OFF,
   };
 }
 
@@ -763,12 +724,24 @@ export function setCustomTokenAmount(payload: string): PayloadAction<string> {
 }
 
 /**
+ * Retains an internal destination across onboarding steps in this UI session.
+ *
+ * @param payload - The route to resume, or null to clear it.
+ * @returns The action recording the intended destination.
+ */
+export function setOnboardingRedirect(
+  payload: string | null,
+): PayloadAction<string | null> {
+  return { type: actionConstants.SET_ONBOARDING_REDIRECT, payload };
+}
+
+/**
  * An action creator for display a error to the user in various places in the
- * UI. It will not be cleared until a new warning replaces it or `hideWarning`
+ * UI. It will not be cleared until a new error replaces it or `hideErrorInSettings`
  * is called.
  *
- * @param payload - The warning to show.
- * @returns The action to display the warning.
+ * @param payload - The error to show.
+ * @returns The action to display the error.
  */
 export function displayErrorInSettings(payload: string): PayloadAction<string> {
   return {
@@ -784,6 +757,16 @@ export function hideErrorInSettings() {
 }
 
 // Selectors
+/**
+ * Reads the internal destination retained for onboarding completion.
+ *
+ * @param state - The UI state.
+ * @returns The pending route, or null when onboarding started normally.
+ */
+export function getOnboardingRedirect(state: AppSliceState): string | null {
+  return state.appState?.onboardingRedirect ?? null;
+}
+
 export function getQrCodeData(state: AppSliceState): {
   type?: string | null;
   values?: { address?: string | null };
@@ -809,26 +792,19 @@ export function getShowSupportDataConsentModal(state: AppSliceState): boolean {
   return state.appState.showSupportDataConsentModal;
 }
 
-export function openDeleteMetaMetricsDataModal(): Action {
+export function setHomeDeepLinkQrCode(payload: {
+  deeplinkUrl: string;
+  descriptionKey: string;
+  titleKey: string;
+}): PayloadAction<typeof payload> {
   return {
-    type: actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN,
+    type: actionConstants.SET_HOME_DEEP_LINK_QR_CODE,
+    payload,
   };
 }
 
-export function hideDeleteMetaMetricsDataModal(): Action {
+export function clearHomeDeepLinkQrCode(): Action {
   return {
-    type: actionConstants.DELETE_METAMETRICS_DATA_MODAL_CLOSE,
-  };
-}
-
-export function openDataDeletionErrorModal(): Action {
-  return {
-    type: actionConstants.DATA_DELETION_ERROR_MODAL_OPEN,
-  };
-}
-
-export function hideDataDeletionErrorModal(): Action {
-  return {
-    type: actionConstants.DATA_DELETION_ERROR_MODAL_CLOSE,
+    type: actionConstants.CLEAR_HOME_DEEP_LINK_QR_CODE,
   };
 }

@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`useRampsUserRegion matches snapshot 1`] = `
+{
+  "setUserRegion": [Function],
+  "userRegion": {
+    "country": {
+      "currency": "USD",
+      "isoCode": "US",
+      "name": "United States",
+    },
+    "regionCode": "us-ca",
+  },
+}
+`;

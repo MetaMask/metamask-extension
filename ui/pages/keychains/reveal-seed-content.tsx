@@ -13,6 +13,7 @@ import {
 } from '@metamask/design-system-react';
 import { lightTheme } from '@metamask/design-tokens';
 import { Tab, Tabs } from '../../components/ui/tabs';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import RecoveryPhraseChips from '../onboarding-flow/recovery-phrase/recovery-phrase-chips';
 import { useI18nContext } from '../../hooks/useI18nContext';
 
@@ -96,6 +97,7 @@ type RevealSeedContentProps = {
   phraseRevealed: boolean;
   onRevealPhrase: () => void;
   onCopy: () => void;
+  copied: boolean;
   onTabClick?: (tabKey: 'text-seed' | 'qr-srp') => void;
 };
 
@@ -104,6 +106,7 @@ export function RevealSeedContent({
   phraseRevealed,
   onRevealPhrase,
   onCopy,
+  copied,
   onTabClick,
 }: Readonly<RevealSeedContentProps>) {
   const t = useI18nContext();
@@ -139,15 +142,21 @@ export function RevealSeedContent({
           <TextButton
             onClick={onCopy}
             data-testid="reveal-seed-copy-button"
-            className="hover:bg-transparent flex justify-center items-center w-full active:bg-transparent"
-            isDisabled={!phraseRevealed}
+            className={`flex justify-center items-center w-full ${
+              copied
+                ? 'bg-success-muted text-success-default'
+                : 'hover:bg-transparent active:bg-transparent'
+            }`}
+            isDisabled={!phraseRevealed || copied}
           >
             <Icon
-              name={IconName.Copy}
-              color={IconColor.PrimaryDefault}
+              name={copied ? IconName.CopySuccess : IconName.Copy}
+              color={
+                copied ? IconColor.SuccessDefault : IconColor.PrimaryDefault
+              }
               className="mr-2"
             />
-            {t('copyToClipboard')}
+            {copied ? t('copiedToClipboard') : t('copyToClipboard')}
           </TextButton>
         </Tab>
         <Tab name={t('revealSeedWordsQR')} tabKey="qr-srp" className="flex-1">

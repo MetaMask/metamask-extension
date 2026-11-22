@@ -1,10 +1,11 @@
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
-import type { UITrackEventMethod } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   type MetaMetricsHardwareWalletRecoveryLocation,
 } from '../../../shared/constants/metametrics';
+import { createEventBuilder } from '../../../shared/lib/analytics/create-event-builder';
+import type { AnalyticsEvent } from '../../../shared/lib/analytics/create-event-builder';
 import {
   buildHardwareWalletRecoverySegmentProperties,
   getHardwareWalletMetricDeviceModel,
@@ -34,14 +35,14 @@ import {
  * or full disconnect).
  * Swallows tracking failures so callers are not blocked.
  *
- * @param trackEvent - UI `trackEvent` from {@link MetaMetricsContext}.
+ * @param trackEvent - UI `trackEvent` from {@link useAnalytics}.
  * @param options - Connect-CTA recovery context.
  * @param options.location - Segment `location` for the current flow.
  * @param options.walletType - Active hardware wallet type key, if known.
  * @param options.connectionState - Current hardware wallet connection state from context.
  */
 export function trackHardwareWalletRecoveryConnectCtaClicked(
-  trackEvent: UITrackEventMethod,
+  trackEvent: (built: AnalyticsEvent) => void,
   options: {
     location: MetaMetricsHardwareWalletRecoveryLocation;
     walletType: HardwareWalletType | null;
@@ -73,18 +74,23 @@ export function trackHardwareWalletRecoveryConnectCtaClicked(
   const errorTypeViewCount =
     nextHardwareWalletRecoveryInlineCtaViewCount(errorIdentityKey);
 
-  trackEvent({
-    category: MetaMetricsEventCategory.Accounts,
-    event: MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
-    properties: buildHardwareWalletRecoverySegmentProperties({
-      location,
-      deviceType,
-      deviceModel: getHardwareWalletMetricDeviceModel(errorForMetrics),
-      errorType,
-      errorTypeViewCount,
-      error: errorForMetrics,
-    }),
-  }).catch(() => {
+  try {
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.HardwareWalletRecoveryCtaClicked)
+        .addCategory(MetaMetricsEventCategory.Accounts)
+        .addProperties(
+          buildHardwareWalletRecoverySegmentProperties({
+            location,
+            deviceType,
+            deviceModel: getHardwareWalletMetricDeviceModel(errorForMetrics),
+            errorType,
+            errorTypeViewCount,
+            error: errorForMetrics,
+          }),
+        )
+        .build(),
+    );
+  } catch {
     // Analytics must not block or surface errors to the user.
-  });
+  }
 }

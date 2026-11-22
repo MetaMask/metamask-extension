@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Jums jāatlasa konts!"
   },
-  "addAcquiredTokens": {
-    "message": "Pievienojiet marķierus, ko ieguvāt, izmantojot MetaMask"
-  },
   "addAlias": {
     "message": "Pievienot segvārdu"
   },
@@ -83,9 +80,6 @@
   },
   "back": {
     "message": "Atpakaļ"
-  },
-  "backupApprovalInfo": {
-    "message": "Šis slepenais kods ir nepieciešams, lai atjaunotu jūsu maku, ja pazaudējat ierīci, aizmirstat paroli, jāpārinstalē MetaMask vai vēlaties piekļūt makam no citas ierīces."
   },
   "backupApprovalNotice": {
     "message": "Dublējiet savu slepeno atgūšanas kodu, lai maks un līdzekļi atrastos drošībā."
@@ -181,14 +175,8 @@
   "custom": {
     "message": "Papildu"
   },
-  "customToken": {
-    "message": "Pielāgots marķieris"
-  },
   "decimal": {
     "message": "Decimāldaļu precizitāte"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Daļskaitļiem jābūt diapazonā no 0 līdz 36."
   },
   "delete": {
     "message": "Dzēst"
@@ -198,9 +186,6 @@
   },
   "done": {
     "message": "Pabeigts"
-  },
-  "downloadGoogleChrome": {
-    "message": "Lejupielādēt ar Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Lejupielādēt stāvokļa žurnālus"
@@ -226,10 +211,6 @@
   "fast": {
     "message": "Ātrs"
   },
-  "fileImportFail": {
-    "message": "Vai faila importēšanas iespēja nedarbojas? Klikšķiniet šeit!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "Aizmirst šo ierīci"
   },
@@ -238,9 +219,6 @@
   },
   "gasLimit": {
     "message": "Gas robežvērtība"
-  },
-  "gasLimitTooLow": {
-    "message": "Minimālajai Gas robežvērtībai jābūt vismaz 21000"
   },
   "gasUsed": {
     "message": "Izlietotie Gas"
@@ -259,9 +237,6 @@
   },
   "hardwareWallets": {
     "message": "Pieslēdziet aparatūras maku"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Atlasiet aparatūras maku lietošanai ar MetaMask"
   },
   "here": {
     "message": "šeit",
@@ -354,9 +329,6 @@
   "metamaskVersion": {
     "message": "MetaMask versija"
   },
-  "mustSelectOne": {
-    "message": "Jāatlasa vismaz 1 marķieris."
-  },
   "needImportFile": {
     "message": "Jums jāatlasa fails, ko importēt",
     "description": "User is important an account and needs to add a file to continue"
@@ -366,9 +338,6 @@
   },
   "networks": {
     "message": "Tīkli"
-  },
-  "nevermind": {
-    "message": "Nav svarīgi"
   },
   "newAccountNumberName": {
     "message": "Konts $1",
@@ -388,9 +357,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Tīmekļa kamera nav atrasta"
-  },
-  "notEnoughGas": {
-    "message": "Nepietiek Gas"
   },
   "ofTextNofM": {
     "message": "no"
@@ -422,10 +388,6 @@
   "passwordsDontMatch": {
     "message": "Paroles nesakrīt"
   },
-  "pastePrivateKey": {
-    "message": "Ielīmējiet privātās atslēgas rindu šeit:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "gaida"
   },
@@ -441,9 +403,6 @@
   "privateKey": {
     "message": "Privātā atslēga",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Brīdinājums! Nekad neizpaudiet šo atslēgu. Ikviens, kuram ir Jūsu privātās atslēgas, var nozagt jebkuru jūsu kontā esošo aktīvu."
   },
   "privateNetwork": {
     "message": "Privātais tīkls"
@@ -529,9 +488,6 @@
   },
   "sign": {
     "message": "Parakstīt"
-  },
-  "signatureRequest": {
-    "message": "Paraksta pieprasījums"
   },
   "signed": {
     "message": "Parakstīts"
@@ -619,9 +575,6 @@
   },
   "urlErrorMsg": {
     "message": "URI jāsākas ar atbilstošo HTTP/HTTPS priedēkli."
-  },
-  "usedByClients": {
-    "message": "Izmanto dažādi klienti"
   },
   "visitWebSite": {
     "message": "Apmeklējiet mūsu tīmekļa vietni"

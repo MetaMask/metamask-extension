@@ -1,13 +1,41 @@
-import { AccountTreeController } from '@metamask/account-tree-controller';
+import {
+  AccountTreeController,
+  AccountTreeControllerMessenger,
+} from '@metamask/account-tree-controller';
 import { AccountId } from '@metamask/keyring-utils';
 import { MessengerClientInitFunction } from '../types';
-import { AccountTreeControllerMessenger } from '../messengers/accounts';
-import { trace } from '../../../../shared/lib/trace';
+import {
+  TraceName,
+  trace,
+  type TraceCallback,
+  type TraceContext,
+  type TraceRequest,
+} from '../../../../shared/lib/trace';
 import { AccountTreeControllerInitMessenger } from '../messengers/accounts/account-tree-controller-messenger';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { createEventBuilder, trackEvent } from '../../controllers/analytics';
+
+const ACCOUNT_SYNC_ROOT_TRACE_NAMES = new Set<string>([
+  TraceName.AccountSyncFull,
+]);
+
+function traceWithAccountSyncRootBoundary<ResultType>(
+  request: TraceRequest,
+  fn: TraceCallback<ResultType>,
+): ResultType;
+function traceWithAccountSyncRootBoundary(request: TraceRequest): TraceContext;
+function traceWithAccountSyncRootBoundary<ResultType>(
+  request: TraceRequest,
+  fn?: TraceCallback<ResultType>,
+): ResultType | TraceContext {
+  const boundedRequest = ACCOUNT_SYNC_ROOT_TRACE_NAMES.has(request.name)
+    ? { ...request, root: true }
+    : request;
+  return fn ? trace(boundedRequest, fn) : trace(boundedRequest);
+}
 
 /**
  * Initialize the account wallet controller.
@@ -28,17 +56,17 @@ export const AccountTreeControllerInit: MessengerClientInitFunction<
     state: persistedState.AccountTreeController,
     config: {
       // @ts-expect-error Controller uses string for names rather than enum
-      trace,
+      trace: traceWithAccountSyncRootBoundary,
       backupAndSync: {
         onBackupAndSyncEvent: (event) => {
-          initMessenger.call('MetaMetricsController:trackEvent', {
-            category: MetaMetricsEventCategory.BackupAndSync,
-            event: MetaMetricsEventName.ProfileActivityUpdated,
-            // @ts-expect-error events coming from the controller are typed and this conflicts with the expected Record<string, Json> type
-            properties: {
-              ...event,
-            },
-          });
+          trackEvent(
+            createEventBuilder(MetaMetricsEventName.ProfileActivityUpdated)
+              .addCategory(MetaMetricsEventCategory.BackupAndSync)
+              .addProperties({
+                ...event,
+              })
+              .build(),
+          );
         },
       },
       accountOrderCallbacks: {

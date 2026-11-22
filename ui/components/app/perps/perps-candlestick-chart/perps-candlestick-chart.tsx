@@ -11,13 +11,15 @@ import {
   CandlestickSeries,
   HistogramSeries,
   ISeriesApi,
-  // @ts-expect-error suppress CommonJS vs ECMAScript error
 } from 'lightweight-charts';
 import { useSelector } from 'react-redux';
 import { brandColor } from '@metamask/design-tokens';
 import { Box } from '@metamask/design-system-react';
 import type { CandleData, CandleStick } from '@metamask/perps-controller';
-import { PRICE_THRESHOLD } from '../../../../../shared/lib/perps-formatters';
+import {
+  formatVolume,
+  PRICE_THRESHOLD,
+} from '../../../../../shared/lib/perps-formatters';
 import { CandlePeriod, ZOOM_CONFIG } from '../constants/chartConfig';
 import { useTheme } from '../../../../hooks/useTheme';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
@@ -74,11 +76,36 @@ export function getPriceFormatForPrice(price: number): {
   return { precision: 6, minMove: 0.000001 };
 }
 
+/**
+ * Convert a logical range into the candle count the zoom preference stores.
+ * The applied ranges leave two logical bars of right padding, which makes the
+ * range one unit wider than the requested candle count.
+ *
+ * @param from - Left edge of the logical range.
+ * @param to - Right edge of the logical range.
+ * @returns Visible candle count, clamped to the supported zoom range.
+ */
+function toVisibleCandleCount(from: number, to: number): number {
+  return Math.max(
+    ZOOM_CONFIG.MIN_CANDLES,
+    Math.min(ZOOM_CONFIG.MAX_CANDLES, Math.round(to - from - 1)),
+  );
+}
+
 /** Cooldown in ms between load-more requests to avoid spamming */
 const LOAD_MORE_COOLDOWN_MS = 2000;
 
 /** Logical range threshold: request more history when user scrolls this close to left edge */
 const EDGE_DETECTION_THRESHOLD = 5;
+
+/**
+ * Delay before applying pane heights. The panes only exist once the library has
+ * laid the chart out, which happens after the current task.
+ */
+const PANE_HEIGHT_APPLY_DELAY_MS = 50;
+
+/** Vertical split between the candlestick pane and the volume pane. */
+const PANE_HEIGHT_RATIO = { MAIN: 0.8, VOLUME: 0.2 } as const;
 
 /**
  * A horizontal price line to draw on the chart (e.g., TP, Entry, SL, current price).
@@ -117,6 +144,10 @@ type PerpsCandlestickChartProps = {
   onNeedMoreHistory?: () => void;
   /** Callback when crosshair moves over a candle (for OHLCV bar). null = crosshair left chart. */
   onCrosshairMove?: (candle: CandleStick | null) => void;
+  /** Persisted number of candles to show when data is first loaded. */
+  initialVisibleCandleCount?: number;
+  /** Called when user zoom changes the number of visible candles. */
+  onVisibleCandleCountChange?: (candleCount: number) => void;
 };
 
 export type PerpsCandlestickChartRef = {
@@ -155,6 +186,8 @@ const PerpsCandlestickChart = forwardRef<
       onPeriodDataRequest,
       onNeedMoreHistory,
       onCrosshairMove,
+      initialVisibleCandleCount = ZOOM_CONFIG.DEFAULT_CANDLES,
+      onVisibleCandleCountChange,
     },
     ref,
   ) => {
@@ -179,6 +212,7 @@ const PerpsCandlestickChart = forwardRef<
       : 'rgba(0, 0, 0, 0.4)';
 
     const containerRef = useRef<HTMLDivElement>(null);
+    const volumeLabelRef = useRef<HTMLDivElement>(null);
     const chartRef = useRef<IChartApi | null>(null);
     const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
     const volumeSeriesRef = useRef<ISeriesApi<'Histogram'> | null>(null);
@@ -213,6 +247,26 @@ const PerpsCandlestickChart = forwardRef<
     onNeedMoreHistoryRef.current = onNeedMoreHistory;
     const onCrosshairMoveRef = useRef(onCrosshairMove);
     onCrosshairMoveRef.current = onCrosshairMove;
+    const onVisibleCandleCountChangeRef = useRef(onVisibleCandleCountChange);
+    onVisibleCandleCountChangeRef.current = onVisibleCandleCountChange;
+    const lastVisibleCandleCountRef = useRef(initialVisibleCandleCount);
+    // Candle count we last applied ourselves (zoom restore, period change).
+    // lightweight-charts applies range changes on a later frame and may emit
+    // one callback or several for the same change, so echoes are recognised by
+    // the count they report rather than by counting callbacks. Cleared by the
+    // first range that reports a different count, i.e. a real zoom.
+    const programmaticVisibleCountRef = useRef<number | null>(null);
+
+    const applyProgrammaticVisibleRange = useCallback(
+      (from: number, to: number) => {
+        if (!chartRef.current) {
+          return;
+        }
+        programmaticVisibleCountRef.current = toVisibleCandleCount(from, to);
+        chartRef.current.timeScale().setVisibleLogicalRange({ from, to });
+      },
+      [],
+    );
 
     // Handle window resize
     const handleResize = useCallback(() => {
@@ -224,26 +278,31 @@ const PerpsCandlestickChart = forwardRef<
     }, []);
 
     // Apply zoom to show specific number of candles (matches mobile pattern)
-    const applyZoom = useCallback((candleCount: number, forceReset = false) => {
-      if (!chartRef.current || dataLengthRef.current === 0) {
-        return;
-      }
+    const applyZoom = useCallback(
+      (candleCount: number, forceReset = false) => {
+        if (!chartRef.current || dataLengthRef.current === 0) {
+          return;
+        }
 
-      const actualCount = Math.max(
-        ZOOM_CONFIG.MIN_CANDLES,
-        Math.min(ZOOM_CONFIG.MAX_CANDLES, candleCount),
-      );
+        const actualCount = Math.max(
+          ZOOM_CONFIG.MIN_CANDLES,
+          Math.min(ZOOM_CONFIG.MAX_CANDLES, candleCount),
+        );
 
-      const dataLength = dataLengthRef.current;
-      const from = Math.max(0, dataLength - actualCount);
-      const to = dataLength - 1 + 2; // +2 for right padding
+        const dataLength = dataLengthRef.current;
+        const from = Math.max(0, dataLength - actualCount);
+        const to = dataLength - 1 + 2; // +2 for right padding
 
-      chartRef.current.timeScale().setVisibleLogicalRange({ from, to });
+        applyProgrammaticVisibleRange(from, to);
 
-      if (forceReset) {
-        chartRef.current.timeScale().scrollToRealTime();
-      }
-    }, []);
+        // Scrolling keeps the range width, so its echo reports the count
+        // already marked as programmatic above.
+        if (forceReset) {
+          chartRef.current.timeScale().scrollToRealTime();
+        }
+      },
+      [applyProgrammaticVisibleRange],
+    );
 
     // Scroll to most recent candles
     const scrollToRealTime = useCallback(() => {
@@ -265,13 +324,14 @@ const PerpsCandlestickChart = forwardRef<
 
     // Initialize chart
     useEffect(() => {
-      if (!containerRef.current) {
+      const container = containerRef.current;
+      if (!container) {
         return;
       }
 
       // Create chart instance
-      const chart = createChart(containerRef.current, {
-        width: containerRef.current.clientWidth,
+      const chart = createChart(container, {
+        width: container.clientWidth,
         height,
         layout: {
           background: { color: 'transparent' },
@@ -375,36 +435,97 @@ const PerpsCandlestickChart = forwardRef<
 
       volumeSeriesRef.current = volumeSeries;
 
-      // Set pane heights (80/20 split)
-      setTimeout(() => {
+      // Set pane heights (80/20 split).
+      // The handle is cleared in the cleanup below: this effect re-runs on theme,
+      // locale and sizing changes, and its cleanup calls chart.remove(). A timer
+      // left armed would fire against a disposed chart and keep it reachable.
+      const paneHeightTimeoutId = setTimeout(() => {
         const panes = chart.panes();
         if (panes.length >= 2) {
-          const mainHeight = Math.floor(height * 0.8);
-          const volumeHeight = Math.floor(height * 0.2);
+          const mainHeight = Math.floor(height * PANE_HEIGHT_RATIO.MAIN);
+          const volumeHeight = Math.floor(height * PANE_HEIGHT_RATIO.VOLUME);
           panes[0].setHeight(mainHeight);
           panes[1].setHeight(volumeHeight);
         }
-      }, 50);
+      }, PANE_HEIGHT_APPLY_DELAY_MS);
 
       // Edge detection: request more history when user scrolls near left edge
       chart.timeScale().subscribeVisibleLogicalRangeChange((logicalRange) => {
-        if (!logicalRange || !onNeedMoreHistoryRef.current) {
+        if (!logicalRange) {
           return;
         }
-
-        if (logicalRange.from <= EDGE_DETECTION_THRESHOLD) {
+        if (
+          onNeedMoreHistoryRef.current &&
+          logicalRange.from <= EDGE_DETECTION_THRESHOLD
+        ) {
           const now = Date.now();
           if (now - lastLoadMoreTimeRef.current >= LOAD_MORE_COOLDOWN_MS) {
             lastLoadMoreTimeRef.current = now;
             onNeedMoreHistoryRef.current();
           }
         }
+
+        const visibleCandleCount = toVisibleCandleCount(
+          logicalRange.from,
+          logicalRange.to,
+        );
+
+        // Restoring a saved zoom must not write the on-screen count back over
+        // the saved one, but the edge detection above still has to run: a saved
+        // count wider than the loaded history pins the left edge at zero and is
+        // only fillable by fetching more candles. Panning and clicking keep the
+        // count, so they stay suppressed too; only a zoom reports a different
+        // count, and that ends the window for everything that follows.
+        if (visibleCandleCount === programmaticVisibleCountRef.current) {
+          return;
+        }
+        programmaticVisibleCountRef.current = null;
+
+        if (visibleCandleCount !== lastVisibleCandleCountRef.current) {
+          lastVisibleCandleCountRef.current = visibleCandleCount;
+          onVisibleCandleCountChangeRef.current?.(visibleCandleCount);
+        }
       });
 
-      // Crosshair move: report hovered candle for OHLCV bar
+      // Crosshair move:
+      // 1. report hovered candle to the parent OHLCV bar (existing)
+      // 2. swap the right-side y-axis label to show the bar's volume when the
+      //    cursor is inside the volume pane — without this the price scale
+      //    extrapolates pane-0 prices into pane-1 and prints the chart's low.
       chart.subscribeCrosshairMove((param) => {
         // Skip during our own data updates to prevent loop: update/setData → crosshair → setState → re-render → effect → update
-        if (isApplyingDataUpdateRef.current || !onCrosshairMoveRef.current) {
+        if (isApplyingDataUpdateRef.current) {
+          return;
+        }
+
+        const volumeData = param.seriesData.get(volumeSeries);
+        const volumeValue =
+          volumeData && 'value' in volumeData ? volumeData.value : undefined;
+
+        const labelEl = volumeLabelRef.current;
+        if (labelEl) {
+          if (
+            param.paneIndex === 1 &&
+            param.point !== undefined &&
+            typeof volumeValue === 'number' &&
+            volumeValue > 0
+          ) {
+            // param.point.y is pane-local. Translate to chart-container coords by
+            // adding the cumulative height of preceding panes + 1px separator each.
+            const panes = chart.panes();
+            let paneTop = 0;
+            for (let i = 0; i < param.paneIndex; i += 1) {
+              paneTop += panes[i].getHeight() + 1;
+            }
+            labelEl.textContent = formatVolume(volumeValue, 1);
+            labelEl.style.top = `${paneTop + param.point.y}px`;
+            labelEl.style.display = 'block';
+          } else {
+            labelEl.style.display = 'none';
+          }
+        }
+
+        if (!onCrosshairMoveRef.current) {
           return;
         }
 
@@ -425,14 +546,8 @@ const PerpsCandlestickChart = forwardRef<
             high: String(candleSeriesData.high),
             low: String(candleSeriesData.low),
             close: String(candleSeriesData.close),
-            volume: '0', // Volume from histogram series if needed
+            volume: typeof volumeValue === 'number' ? String(volumeValue) : '0',
           };
-
-          // Try to get volume from the histogram series
-          const volumeData = param.seriesData.get(volumeSeries);
-          if (volumeData && 'value' in volumeData) {
-            hoveredCandle.volume = String(volumeData.value);
-          }
 
           onCrosshairMoveRef.current(hoveredCandle);
         }
@@ -443,6 +558,7 @@ const PerpsCandlestickChart = forwardRef<
 
       // Cleanup on unmount / before effect re-runs (e.g. theme change)
       return () => {
+        clearTimeout(paneHeightTimeoutId);
         window.removeEventListener('resize', handleResize);
         if (chartRef.current) {
           chartRef.current.remove();
@@ -559,14 +675,14 @@ const PerpsCandlestickChart = forwardRef<
 
           // Apply default zoom
           const visibleCandles = Math.min(
-            ZOOM_CONFIG.DEFAULT_CANDLES,
+            initialVisibleCandleCount,
             formattedData.length,
           );
           const dataLength = formattedData.length;
           const from = Math.max(0, dataLength - visibleCandles);
           const to = dataLength - 1 + 2; // +2 for right padding
 
-          chartRef.current.timeScale().setVisibleLogicalRange({ from, to });
+          applyProgrammaticVisibleRange(from, to);
 
           // Handle period change: scroll to real time and notify parent.
           // Also scroll on symbol/interval switch so the new market renders
@@ -593,11 +709,13 @@ const PerpsCandlestickChart = forwardRef<
 
       return () => clearTimeout(timeoutId);
     }, [
+      applyProgrammaticVisibleRange,
       candleData,
-      selectedPeriod,
+      initialVisibleCandleCount,
       onPeriodDataRequest,
-      volumeUpColor,
+      selectedPeriod,
       volumeDownColor,
+      volumeUpColor,
     ]);
 
     // Update y-axis price format when the asset's price range changes.
@@ -650,16 +768,45 @@ const PerpsCandlestickChart = forwardRef<
 
     return (
       <Box
-        ref={containerRef}
-        className="perps-candlestick-chart"
         data-testid="perps-candlestick-chart"
         style={{
+          position: 'relative',
+          // Confines the chart canvas z-index so it cannot paint over the sticky footer.
+          isolation: 'isolate',
           width: '100%',
           height,
           borderRadius: '8px',
           overflow: 'hidden',
         }}
-      />
+      >
+        <Box
+          ref={containerRef}
+          className="perps-candlestick-chart"
+          style={{ width: '100%', height: '100%' }}
+        />
+        <div
+          ref={volumeLabelRef}
+          data-testid="perps-volume-axis-label"
+          style={{
+            position: 'absolute',
+            right: 0,
+            top: 0,
+            display: 'none',
+            transform: 'translateY(-50%)',
+            padding: '1px 4px',
+            fontSize: '11px',
+            lineHeight: '12px',
+            color: isDark ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.9)',
+            backgroundColor: isDark ? brandColor.grey800 : brandColor.white,
+            border: `1px solid ${crosshairColor}`,
+            borderRadius: '2px',
+            pointerEvents: 'none',
+            zIndex: 2,
+            whiteSpace: 'nowrap',
+            fontFamily: 'monospace',
+          }}
+        />
+      </Box>
     );
   },
 );

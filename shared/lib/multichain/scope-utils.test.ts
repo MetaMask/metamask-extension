@@ -9,7 +9,6 @@ import type { AccountGroupWithInternalAccounts } from '../../../ui/selectors/mul
 import {
   anyScopesMatch,
   getCaip25AccountIdsFromAccountGroupAndScope,
-  scopeMatches,
 } from './scope-utils';
 
 const createMockFactory = () => {
@@ -335,24 +334,6 @@ describe('scope-utils', () => {
         expect(anyScopesMatch(accountScopes, 'eip155')).toBe(false);
         expect(anyScopesMatch(accountScopes, '')).toBe(false);
       });
-    });
-  });
-
-  describe('scopeMatches', () => {
-    it('returns true for matching single scope', () => {
-      expect(scopeMatches('eip155:1', 'eip155:1')).toBe(true);
-      expect(scopeMatches('solana:mainnet', 'solana:mainnet')).toBe(true);
-    });
-
-    it('returns false for non-matching single scope', () => {
-      expect(scopeMatches('eip155:1', 'eip155:137')).toBe(false);
-      expect(scopeMatches('solana:mainnet', 'eip155:1')).toBe(false);
-    });
-
-    it('handles eip155:0 wildcard correctly', () => {
-      expect(scopeMatches('eip155:1', 'eip155:0')).toBe(true);
-      expect(scopeMatches('eip155:0', 'eip155:1')).toBe(true);
-      expect(scopeMatches('solana:mainnet', 'eip155:0')).toBe(false);
     });
   });
 

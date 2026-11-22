@@ -4,6 +4,7 @@ import {
   logErrorWithMessage,
   createErrorFromNetworkRequest,
   getErrorBodyMessage,
+  extractMessageFromUnknownError,
 } from './error';
 
 jest.mock('loglevel');
@@ -32,6 +33,36 @@ describe('error module', () => {
     it('calls loglevel.error with string representation of parameter passed in when parameter is not an instance of Error', () => {
       logErrorWithMessage({ test: 'test' });
       expect(log.error).toHaveBeenCalledWith({ test: 'test' });
+    });
+  });
+
+  describe('extractMessageFromUnknownError', () => {
+    it('extracts message from Error instances', () => {
+      expect(extractMessageFromUnknownError(new Error('test error'))).toBe(
+        'test error',
+      );
+    });
+
+    it('extracts message from objects with message property', () => {
+      expect(
+        extractMessageFromUnknownError({ message: 'plain object error' }),
+      ).toBe('plain object error');
+    });
+
+    it('returns string representation for primitives', () => {
+      expect(extractMessageFromUnknownError(42)).toBe('42');
+      expect(extractMessageFromUnknownError(null)).toBe('null');
+      expect(extractMessageFromUnknownError(undefined)).toBe('undefined');
+    });
+
+    it('stringifies numeric message property', () => {
+      expect(extractMessageFromUnknownError({ message: 123 })).toBe('123');
+    });
+
+    it('serializes plain objects without string message as JSON', () => {
+      expect(extractMessageFromUnknownError({ code: 'Device_NotFound' })).toBe(
+        '{"code":"Device_NotFound"}',
+      );
     });
   });
 

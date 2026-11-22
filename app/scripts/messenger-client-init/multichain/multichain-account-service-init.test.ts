@@ -1,4 +1,8 @@
-import { MultichainAccountService } from '@metamask/multichain-account-service';
+import {
+  AccountProviderWrapper,
+  MultichainAccountService,
+  MultichainAccountServiceMessenger,
+} from '@metamask/multichain-account-service';
 import {
   ActionConstraint,
   MOCK_ANY_NAMESPACE,
@@ -11,12 +15,16 @@ import {
   getMultichainAccountServiceInitMessenger,
   getMultichainAccountServiceMessenger,
   MultichainAccountServiceInitMessenger,
-  MultichainAccountServiceMessenger,
 } from '../messengers/accounts';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
+import { trace } from '../../../../shared/lib/trace';
 import { MultichainAccountServiceInit } from './multichain-account-service-init';
 
 jest.mock('@metamask/multichain-account-service');
+jest.mock('../../../../shared/lib/trace', () => ({
+  ...jest.requireActual('../../../../shared/lib/trace'),
+  trace: jest.fn((_request, fn) => fn?.()),
+}));
 
 const PREFERENCES_STATE = { useExternalServices: false };
 
@@ -81,13 +89,14 @@ describe('MultichainAccountServiceInit', () => {
 
       expect(multichainAccountServiceClassMock).toHaveBeenCalledWith({
         messenger: requestMock.controllerMessenger,
+        providers: [expect.any(AccountProviderWrapper)],
         providerConfigs: expect.any(Object),
         config: expect.any(Object),
         ensureOnboardingComplete: requestMock.ensureOnboardingComplete,
       });
     });
 
-    it('passes Solana provider config with maxConcurrency 1, discovery/createAccounts timeouts, and batched true', () => {
+    it('passes Solana, Bitcoin, and Tron provider configs with maxConcurrency 1', () => {
       const requestMock = buildInitRequestMock();
       MultichainAccountServiceInit(requestMock);
 
@@ -102,10 +111,16 @@ describe('MultichainAccountServiceInit', () => {
           },
           createAccounts: {
             timeoutMs: 3000,
-            batched: true,
           },
         },
+        Bitcoin: {
+          maxConcurrency: 1,
+        },
+        Tron: {
+          maxConcurrency: 1,
+        },
       });
+      expect(callArg.providerConfigs).not.toHaveProperty('Stellar');
     });
 
     it('passes config with trace function', () => {
@@ -116,6 +131,43 @@ describe('MultichainAccountServiceInit', () => {
       expect(callArg.config).toBeDefined();
       expect(typeof (callArg.config as { trace: unknown }).trace).toBe(
         'function',
+      );
+    });
+    for (const name of [
+      'Provider Create Accounts (v2 - batched)',
+      'Wallet Alignment',
+    ]) {
+      it(`lets ${name} nest under the active span`, () => {
+        MultichainAccountServiceInit(buildInitRequestMock());
+        const { trace: configTrace } = multichainAccountServiceClassMock.mock
+          .calls[0][0].config as {
+          trace: (request: { name: string }, fn: () => void) => void;
+        };
+
+        configTrace({ name }, () => undefined);
+
+        expect(trace).toHaveBeenCalledWith(
+          { name, allowActiveSpanFallback: true },
+          expect.any(Function),
+        );
+      });
+    }
+
+    it('roots other multichain account traces', () => {
+      MultichainAccountServiceInit(buildInitRequestMock());
+      const { trace: configTrace } = multichainAccountServiceClassMock.mock
+        .calls[0][0].config as {
+        trace: (request: { name: string }, fn: () => void) => void;
+      };
+
+      configTrace(
+        { name: 'Wallet Create Multichain Account Group' },
+        () => undefined,
+      );
+
+      expect(trace).toHaveBeenCalledWith(
+        { name: 'Wallet Create Multichain Account Group' },
+        expect.any(Function),
       );
     });
   });
@@ -132,6 +184,20 @@ describe('MultichainAccountServiceInit', () => {
 
       expect(callSpy).toHaveBeenCalledWith('PreferencesController:getState');
     });
+
+    it('does not call RemoteFeatureFlagController:getState during init', () => {
+      const requestMock = buildInitRequestMock();
+      const callSpy = jest.spyOn(
+        requestMock.initMessenger,
+        'call',
+      ) as jest.Mock;
+
+      MultichainAccountServiceInit(requestMock);
+
+      expect(callSpy).not.toHaveBeenCalledWith(
+        'RemoteFeatureFlagController:getState',
+      );
+    });
   });
 
   describe('subscriptions', () => {
@@ -143,6 +209,18 @@ describe('MultichainAccountServiceInit', () => {
 
       expect(subscribeSpy).toHaveBeenCalledWith(
         'PreferencesController:stateChange',
+        expect.any(Function),
+      );
+    });
+
+    it('does not subscribe to RemoteFeatureFlagController:stateChange', () => {
+      const requestMock = buildInitRequestMock();
+      const subscribeSpy = jest.spyOn(requestMock.initMessenger, 'subscribe');
+
+      MultichainAccountServiceInit(requestMock);
+
+      expect(subscribeSpy).not.toHaveBeenCalledWith(
+        'RemoteFeatureFlagController:stateChange',
         expect.any(Function),
       );
     });

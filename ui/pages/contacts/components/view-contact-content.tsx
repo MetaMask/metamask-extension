@@ -24,7 +24,7 @@ import { PreferredAvatar } from '../../../components/app/preferred-avatar';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
-import { getImageForChainId } from '../../../selectors/multichain';
+import { useImageForChainId } from '../../../hooks/useImageForChainId';
 import type { ViewContactContentProps } from '../contacts.types';
 
 export function ViewContactContent({
@@ -37,11 +37,11 @@ export function ViewContactContent({
   onDelete,
 }: ViewContactContentProps) {
   const t = useI18nContext();
-  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const [copied, handleCopy] = useCopyToClipboard();
   const networks = useSelector(getNetworkConfigurationsByChainId);
   const network = networks?.[chainId as Hex];
   const networkName = network?.name ?? t('networkTabCustom');
-  const networkImage = getImageForChainId(chainId);
+  const networkImage = useImageForChainId(chainId);
 
   return (
     <Box
@@ -221,7 +221,7 @@ export function ViewContactContent({
           size={ButtonSize.Lg}
           isDanger
           onClick={onDelete}
-          className="flex-1 rounded-xl"
+          className="flex-1"
           data-testid="view-contact-delete-button"
         >
           {t('delete')}
@@ -230,7 +230,7 @@ export function ViewContactContent({
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
           onClick={onEdit}
-          className="flex-1 rounded-xl"
+          className="flex-1"
           data-testid="view-contact-edit-button"
         >
           {t('edit')}

@@ -72,12 +72,12 @@ export const TransactionData = ({
     return null;
   }
 
-  if (pending) {
-    return <Container isLoading noPadding={noPadding} />;
-  }
-
   if (!hasTransactionData(transactionData)) {
     return null;
+  }
+
+  if (pending) {
+    return <Container isLoading noPadding={noPadding} />;
   }
 
   if (!value) {
@@ -150,8 +150,6 @@ export function Container({
         <ConfirmInfoRow
           label={t('advancedDetailsDataDesc')}
           copyEnabled={Boolean(transactionData)}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           copyText={transactionData || undefined}
         >
           <Box>{isLoading && <Preloader size={20} />}</Box>
@@ -319,7 +317,9 @@ function UniswapPath({
       justifyContent={JustifyContent.flexEnd}
     >
       {pathPools.map((pool, index) => (
-        <>
+        <React.Fragment
+          key={`${pool.firstAddress}-${pool.tickSpacing}-${pool.secondAddress}`}
+        >
           {index === 0 && (
             <ConfirmInfoRowAddress
               address={pool.firstAddress}
@@ -331,7 +331,7 @@ function UniswapPath({
             address={pool.secondAddress}
             chainId={chainId}
           />
-        </>
+        </React.Fragment>
       ))}
     </Box>
   );

@@ -1,33 +1,23 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import { it } from '@jest/globals';
 import mockState from '../../../../test/data/mock-state.json';
-import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { AppLayoutProvider } from '../../../contexts/app-layout';
 import { AccountOverviewTabs } from './account-overview-tabs';
 
 jest.mock('../../../store/actions', () => ({
   setDefaultHomeActiveTabName: jest.fn(),
+  detectNfts: jest.fn(() => ({ type: 'MOCK_DETECT_NFTS' })),
 }));
 
 jest.mock('../../app/assets/asset-list', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
-  default: () => null,
-}));
-
-jest.mock('../activity-v2/activity-list', () => ({
-  ActivityList: () => null,
-}));
-
-jest.mock('../activity-v2/useTransactionsQuery', () => ({
-  usePrefetchTransactions: () => jest.fn(),
+  default: ({ variant }: { variant?: string }) => (
+    <div data-testid="asset-list" data-variant={variant} />
+  ),
 }));
 
 jest.mock('../../app/assets/nfts/nfts-tab', () => ({
@@ -42,68 +32,65 @@ jest.mock('../../app/assets/defi-list/defi-tab', () => ({
   default: () => null,
 }));
 
-jest.mock('../../app/perps/perps-tab', () => ({
-  PerpsTab: () => <div data-testid="perps-tab-mock">PerpsTab</div>,
-}));
-
-describe('AccountOverviewTabs - event metrics', () => {
-  const mockTrackEvent = jest.fn();
-  const mockMetaMetricsContext = {
-    trackEvent: mockTrackEvent,
-    bufferedTrace: jest.fn(),
-    bufferedEndTrace: jest.fn(),
-    onboardingParentContext: { current: null },
-  };
-
-  beforeEach(() => {
-    jest.clearAllMocks();
+const renderTabs = ({
+  isWideLayout = false,
+  useExternalServices = true,
+}: {
+  isWideLayout?: boolean;
+  useExternalServices?: boolean;
+} = {}) => {
+  const store = configureStore({
+    metamask: {
+      ...mockState.metamask,
+      useExternalServices,
+      enabledNetworkMap: { eip155: { [CHAIN_IDS.MAINNET]: true } },
+      remoteFeatureFlags: {
+        ...mockState.metamask.remoteFeatureFlags,
+        assetsDefiPositionsEnabled: true,
+      },
+    },
   });
 
-  it('includes network_filter property with both EVM and non-EVM networks in CAIP format', () => {
-    const store = configureStore({
-      metamask: {
-        ...mockState.metamask,
-        enabledNetworkMap: {
-          eip155: {
-            [CHAIN_IDS.MAINNET]: true,
-            [CHAIN_IDS.POLYGON]: true,
-          },
-          solana: {
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
-          },
-        },
-      },
-    });
+  return renderWithProvider(
+    <AppLayoutProvider isWideLayout={isWideLayout}>
+      <AccountOverviewTabs
+        setBasicFunctionalityModalOpen={jest.fn()}
+        onSupportLinkClick={jest.fn()}
+      />
+    </AppLayoutProvider>,
+    store,
+  );
+};
 
-    const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <AccountOverviewTabs
-          showTokens={true}
-          showNfts={false}
-          showActivity={true}
-          setBasicFunctionalityModalOpen={jest.fn()}
-          onSupportLinkClick={jest.fn()}
-        />
-      </MetaMetricsContext.Provider>,
-      store,
-      '/?tab=activity',
-    );
+describe('AccountOverviewTabs', () => {
+  it('renders the token, defi, and nft tabs', () => {
+    const { getByTestId } = renderTabs();
 
-    // Click a tab to trigger event
-    fireEvent.click(getByText(messages.tokens.message));
-
-    // Verify network_filter property is included in correct format
-    expect(mockTrackEvent).toHaveBeenCalledWith({
-      category: MetaMetricsEventCategory.Home,
-      event: MetaMetricsEventName.TokenScreenOpened,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        network_filter: [
-          'eip155:1',
-          'eip155:137',
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-        ],
-      },
-    });
+    expect(getByTestId('account-overview__asset-tab')).toBeInTheDocument();
+    expect(getByTestId('account-overview__defi-tab')).toBeInTheDocument();
+    expect(getByTestId('account-overview__nfts-tab')).toBeInTheDocument();
   });
+
+  it('hides the DeFi tab when Basic Functionality is off', () => {
+    const { queryByTestId } = renderTabs({ useExternalServices: false });
+
+    expect(queryByTestId('account-overview__asset-tab')).toBeInTheDocument();
+    expect(queryByTestId('account-overview__defi-tab')).not.toBeInTheDocument();
+    expect(queryByTestId('account-overview__nfts-tab')).toBeInTheDocument();
+  });
+
+  it.each<[boolean, string]>([
+    [true, 'table'],
+    [false, 'list'],
+  ])(
+    'renders the asset list with isWideLayout %s as the %s variant',
+    (isWideLayout, variant) => {
+      const { getByTestId } = renderTabs({ isWideLayout });
+
+      expect(getByTestId('asset-list')).toHaveAttribute(
+        'data-variant',
+        variant,
+      );
+    },
+  );
 });

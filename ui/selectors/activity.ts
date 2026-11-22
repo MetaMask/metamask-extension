@@ -1,5 +1,21 @@
 import { createSelector } from 'reselect';
-import { type TransactionMeta } from '@metamask/transaction-controller';
+import type { Hex } from 'viem';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
+import { isCrossChain, StatusTypes } from '@metamask/bridge-controller';
+import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
+import {
+  EthScope,
+  isEvmAccountType,
+  type Transaction as KeyringTransaction,
+} from '@metamask/keyring-api';
+import {
+  mapKeyringTransaction,
+  mapLocalTransaction,
+} from '@metamask/client-utils';
 import { ResultType } from '../../shared/lib/trust-signals';
 import { EXCLUDED_TRANSACTION_TYPES } from '../helpers/constants/transactions';
 import {
@@ -11,7 +27,33 @@ import type { TransactionGroup } from '../../shared/lib/multichain/types';
 import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network';
 import { NATIVE_TOKEN_ADDRESS } from '../../shared/constants/transaction';
 import type { MetaMaskReduxState } from '../store/store';
-import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
+import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
+import { getTokensControllerAllTokens } from '../../shared/lib/selectors/assets-migration';
+import { getLocalTransactionFees } from '../../shared/lib/activity/adapters/helpers';
+import { getTransactionPayingAccount } from '../../shared/lib/transactions.utils';
+import {
+  getMoneyAccountTransactionType,
+  isProtectedByEnforcedSimulations,
+} from '../pages/confirmations/utils/confirm';
+import { ActivityListItem, Status } from '../../shared/lib/activity/types';
+import {
+  selectBridgeHistoryForOriginalTxMetaId,
+  selectBridgeHistoryItemByHash,
+} from '../ducks/bridge-status/selectors';
+import { isMnemonicMoneyAccount } from '../../shared/lib/money/money-accounts';
+import { getInternalAccounts, getInternalAccountsObject } from './accounts';
+import {
+  getInternalAccountBySelectedAccountGroupAndCaip,
+  getSelectedAccountGroup,
+} from './multichain-accounts/account-tree';
+import type { MultichainAccountsState } from './multichain-accounts/account-tree.types';
+import { extractWalletIdFromGroupId } from './multichain-accounts/utils';
+import { enrichLocalActivity } from './activity/enrich-local-activity';
+import {
+  selectPrimaryMoneyAccount,
+  type PrimaryMoneyAccount,
+} from './money-account';
+import { getAssetsMetadata } from './assets';
 import {
   groupAndSortTransactionsByNonce,
   smartTransactionsListSelector,
@@ -20,6 +62,7 @@ import { selectCurrentAccountNonEvmTransactions } from './multichain-transaction
 import {
   selectOrderedTransactions,
   selectRequiredTransactionHashes,
+  selectRequiredTransactionIds,
 } from './transactionController';
 import type { TokenScanCacheResults } from './token-scan';
 import {
@@ -28,6 +71,102 @@ import {
   getTokenScanCache,
 } from './selectors';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
+
+const selectTransactionPayData = (state: MetaMaskReduxState) =>
+  (state.metamask as unknown as TransactionPayControllerState)
+    .transactionData ??
+  (EMPTY_OBJECT as TransactionPayControllerState['transactionData']);
+
+/**
+ * The entropy source ID backing the primary money account. MPC-backed money
+ * accounts have no entropy source ID, so this is `undefined` for them.
+ *
+ * @param primaryMoneyAccount - Primary money account, when present.
+ * @returns The entropy source ID, or `undefined`.
+ */
+function getMoneyAccountEntropyId(
+  primaryMoneyAccount: PrimaryMoneyAccount | undefined,
+): string | undefined {
+  return primaryMoneyAccount && isMnemonicMoneyAccount(primaryMoneyAccount)
+    ? primaryMoneyAccount.options.entropy.id
+    : undefined;
+}
+
+/**
+ * Whether the selected account group belongs to the same HD entropy wallet that
+ * owns the primary money account. Money-account activity with no known payer
+ * is only surfaced for that wallet so switching to another SRP does not leak
+ * unrelated rows.
+ *
+ * @param selectedAccountGroup - Currently selected account group id.
+ * @param primaryMoneyAccount - Primary money account, when present.
+ * @returns Whether money-account batches should appear in activity.
+ */
+function isSelectedGroupOwnedByMoneyAccountEntropy(
+  selectedAccountGroup: string | null | undefined,
+  primaryMoneyAccount: PrimaryMoneyAccount | undefined,
+): boolean {
+  // MPC-backed money accounts have no entropy source ID, so no account group
+  // is ever owned by their entropy.
+  const entropyId = getMoneyAccountEntropyId(primaryMoneyAccount);
+  if (!selectedAccountGroup || !entropyId) {
+    return false;
+  }
+
+  return (
+    extractWalletIdFromGroupId(selectedAccountGroup as never) ===
+    `entropy:${entropyId}`
+  );
+}
+
+/**
+ * Money-account deposits and withdrawals execute from the Money Keyring
+ * account rather than the selected account, so the selected-address filter
+ * alone would drop them from the activity list even though the user
+ * initiated them. Mirrors mobile, which surfaces money-account transactions
+ * in activity despite their sender being the money account.
+ *
+ * @param tx - The transaction to check.
+ * @param moneyAccountAddress - Lowercased primary money account address.
+ * @returns Whether the transaction is a money-account transaction sent by
+ * the money account.
+ */
+function isMoneyAccountTransaction(
+  tx: TransactionMeta,
+  moneyAccountAddress: string | undefined,
+) {
+  return Boolean(
+    moneyAccountAddress &&
+    tx.txParams?.from?.toLowerCase() === moneyAccountAddress &&
+    getMoneyAccountTransactionType(tx),
+  );
+}
+
+/**
+ * Account that funded a money-account transaction, such as the hardware
+ * account behind a deposit. Pay clears its account override once the
+ * transaction finalizes, so this falls back to the sender of the funding
+ * transactions Pay links via `requiredTransactionIds`.
+ *
+ * @param tx - The money-account transaction.
+ * @param transactionsById - Local transactions keyed by id.
+ * @param transactionPayData - Pay data keyed by transaction id.
+ * @returns Lowercased paying account address, if known.
+ */
+function getMoneyAccountPayer(
+  tx: TransactionMeta,
+  transactionsById: Map<string, TransactionMeta>,
+  transactionPayData: TransactionPayControllerState['transactionData'],
+) {
+  const fundingFrom = tx.requiredTransactionIds
+    ?.map((id) => transactionsById.get(id)?.txParams?.from)
+    .find(Boolean) as Hex | undefined;
+
+  return getTransactionPayingAccount(
+    tx,
+    transactionPayData[tx.id]?.accountOverride ?? fundingFrom,
+  )?.toLowerCase();
+}
 
 function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {
   // Ported from selectedAddressTxListSelector
@@ -41,41 +180,164 @@ function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {
   return true;
 }
 
+// Selects the EVM address of the currently selected account group, irrespective of the currently selected network
+export const selectEvmAddress = createSelector(
+  (state: MultichainAccountsState) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, EthScope.Eoa),
+  (account) =>
+    account && isEvmAccountType(account.type) ? account.address : undefined,
+);
+
 export const selectLocalTransactions = createSelector(
   selectOrderedTransactions,
-  getSelectedInternalAccount,
+  selectEvmAddress,
   smartTransactionsListSelector,
+  selectRequiredTransactionIds,
   selectRequiredTransactionHashes,
+  selectPrimaryMoneyAccount,
+  getSelectedAccountGroup,
+  selectTransactionPayData,
+  getInternalAccounts,
   (
     transactions,
-    selectedAccount,
+    evmAddress,
     smartTransactions,
+    internalTxIds,
     internalTxHashes,
+    primaryMoneyAccount,
+    selectedAccountGroup,
+    transactionPayData,
+    internalAccounts,
   ): TransactionGroup[] => {
-    if (!selectedAccount?.address) {
+    if (!evmAddress) {
       return EMPTY_ARRAY as unknown as TransactionGroup[];
     }
 
-    const selectedAddress = selectedAccount.address.toLowerCase();
+    const selectedAddress = evmAddress.toLowerCase();
+    const moneyAccountAddress = primaryMoneyAccount?.address.toLowerCase();
+    const includeMoneyAccountTransactions =
+      isSelectedGroupOwnedByMoneyAccountEntropy(
+        selectedAccountGroup,
+        primaryMoneyAccount,
+      );
 
-    const filtered = (transactions ?? []).filter((tx) => {
-      if (!isFromSelectedAccount(tx, selectedAddress)) {
-        return false;
+    const isInternalRequiredTransaction = (
+      tx: Pick<Partial<TransactionMeta>, 'id' | 'hash'>,
+    ) => {
+      if (tx.id && internalTxIds.has(tx.id)) {
+        return true;
       }
-
       if (tx.hash && internalTxHashes.has(tx.hash.toLowerCase())) {
+        return true;
+      }
+      return false;
+    };
+
+    const transactionsById = new Map(
+      (transactions ?? []).map((tx) => [tx.id, tx]),
+    );
+
+    // Payers from the money account's own SRP keep the wallet-wide rule.
+    // MPC-backed money accounts have no entropy source ID, so every payer
+    // other than the money account itself counts as outside its wallet.
+    const moneyAccountEntropyId = getMoneyAccountEntropyId(primaryMoneyAccount);
+    const isPayerOutsideMoneyAccountWallet = (payer: string) =>
+      payer !== moneyAccountAddress &&
+      internalAccounts.some(
+        (account) =>
+          account.address.toLowerCase() === payer &&
+          account.options?.entropySource !== moneyAccountEntropyId,
+      );
+
+    const isSelectedMoneyAccountTransaction = (tx: TransactionMeta) => {
+      if (!isMoneyAccountTransaction(tx, moneyAccountAddress)) {
         return false;
       }
-      return true;
-    });
+      const payer = getMoneyAccountPayer(
+        tx,
+        transactionsById,
+        transactionPayData,
+      );
+      if (payer && isPayerOutsideMoneyAccountWallet(payer)) {
+        return payer === selectedAddress;
+      }
+      return includeMoneyAccountTransactions;
+    };
 
-    const combined = [...filtered, ...smartTransactions];
+    const filtered = (transactions ?? []).filter(
+      (tx) =>
+        (isFromSelectedAccount(tx, selectedAddress) ||
+          isSelectedMoneyAccountTransaction(tx)) &&
+        !isInternalRequiredTransaction(tx),
+    );
+
+    const filteredSmartTransactions = smartTransactions.filter(
+      (tx) =>
+        !(tx.type && EXCLUDED_TRANSACTION_TYPES.has(tx.type)) &&
+        !isInternalRequiredTransaction(tx),
+    );
+
+    const combined = [...filtered, ...filteredSmartTransactions];
 
     if (!combined.length) {
       return EMPTY_ARRAY as unknown as TransactionGroup[];
     }
 
     return groupAndSortTransactionsByNonce(combined) as TransactionGroup[];
+  },
+);
+
+export const selectProtectedLocalTransactions = createSelector(
+  selectLocalTransactions,
+  (transactionGroups) => {
+    const transactionsByHash = new Map<string, TransactionGroup>();
+
+    for (const transactionGroup of transactionGroups) {
+      const { primaryTransaction } = transactionGroup;
+      const hash = primaryTransaction.hash?.toLowerCase();
+
+      if (hash && isProtectedByEnforcedSimulations(primaryTransaction)) {
+        transactionsByHash.set(hash, transactionGroup);
+      }
+    }
+
+    return transactionsByHash;
+  },
+);
+
+export const selectLocalTransactionsByHash = createSelector(
+  selectLocalTransactions,
+  (transactionGroups) => {
+    const transactionsByHash = new Map<string, TransactionGroup>();
+
+    for (const transactionGroup of transactionGroups) {
+      for (const transaction of [
+        transactionGroup.primaryTransaction,
+        transactionGroup.initialTransaction,
+      ]) {
+        // Index by tx hash when available (confirmed/submitted transactions)
+        const hash = transaction.hash?.toLowerCase();
+        if (hash) {
+          transactionsByHash.set(hash, transactionGroup);
+        }
+
+        // Also index by id so signing/queued transactions (no hash yet) can be
+        // looked up — the activity adapter sets hash = primaryTransaction.id
+        // as a fallback when no real tx hash exists.
+        // id may be a number (legacy TransactionMeta) or string.
+        if (
+          typeof transaction.id === 'string' ||
+          typeof transaction.id === 'number'
+        ) {
+          const id = String(transaction.id).toLowerCase();
+          if (!transactionsByHash.has(id)) {
+            transactionsByHash.set(id, transactionGroup);
+          }
+        }
+      }
+    }
+
+    return transactionsByHash;
   },
 );
 
@@ -107,6 +369,309 @@ export const selectNonEvmTransactionsForActivity = createSelector(
     }
 
     return filterMaliciousTransactions(nonEvmTransactions, maliciousTokenKeys);
+  },
+);
+
+export const selectBridgeHistoryItemForTx = (
+  state: MetaMaskReduxState,
+  tx: { hash?: string; id?: string } | undefined,
+) => {
+  if (!tx) {
+    return undefined;
+  }
+
+  const byHash = selectBridgeHistoryItemByHash(state, tx.hash);
+  if (byHash) {
+    return byHash;
+  }
+
+  if (tx.id) {
+    const bridgeHistory = (state.metamask.txHistory ?? EMPTY_OBJECT) as Record<
+      string,
+      BridgeHistoryItem
+    >;
+    const directById = bridgeHistory[tx.id];
+    if (directById) {
+      return directById;
+    }
+  }
+
+  return selectBridgeHistoryForOriginalTxMetaId(state, tx.id);
+};
+
+const selectBridgeHistory = createSelector(
+  [(state: MetaMaskReduxState) => state],
+  (state) => (tx?: { hash?: string; id?: string }) =>
+    selectBridgeHistoryItemForTx(state, tx),
+);
+
+export const selectNonEvmActivityItems = createSelector(
+  [
+    selectNonEvmTransactionsForActivity,
+    getAssetsMetadata,
+    getInternalAccountsObject,
+    selectBridgeHistory,
+  ],
+  (transactions, assetsMetadata, internalAccountsById, getBridgeHistory) =>
+    transactions.map((transaction) => {
+      const subjectAddress =
+        internalAccountsById?.[transaction.account]?.address;
+      const activity = mapKeyringTransaction({
+        // Unified assets caused Snap token movements with empty or placeholder units.
+        transaction: patchKeyringTransaction(transaction, assetsMetadata),
+        subjectAddress,
+      });
+
+      const bridgeHistoryEntry = getBridgeHistory({ hash: transaction.id });
+      const { quote } = bridgeHistoryEntry ?? {};
+
+      if (quote && isCrossChain(quote.srcChainId, quote.destChainId)) {
+        const tokens = getSwapTokens(bridgeHistoryEntry);
+        const status = getBridgeActivityStatus(bridgeHistoryEntry);
+        const fees = 'fees' in activity.data ? activity.data.fees : undefined;
+
+        return {
+          ...activity,
+          type: 'bridge',
+          ...(status ? { status } : {}),
+          data: {
+            from: subjectAddress,
+            ...tokens,
+            ...(fees === undefined ? {} : { fees }),
+          },
+        } as ActivityListItem;
+      }
+
+      return activity;
+    }),
+);
+
+export const selectNonEvmActivityItemsById = createSelector(
+  selectNonEvmActivityItems,
+  (items) => {
+    const itemsById = new Map<string, (typeof items)[number]>();
+
+    for (const item of items) {
+      const id = item.hash?.toLowerCase();
+
+      if (id) {
+        itemsById.set(id, item);
+      }
+    }
+
+    return itemsById;
+  },
+);
+
+function patchKeyringTransaction(
+  transaction: KeyringTransaction,
+  assetsMetadata: ReturnType<typeof getAssetsMetadata>,
+) {
+  return {
+    ...transaction,
+    from: transaction.from.map((movement) =>
+      patchUnit(movement, assetsMetadata),
+    ),
+    to: transaction.to.map((movement) => patchUnit(movement, assetsMetadata)),
+  };
+}
+
+function patchUnit(
+  movement: KeyringTransaction['from'][number],
+  assetsMetadata: ReturnType<typeof getAssetsMetadata>,
+) {
+  if (!movement.asset?.fungible) {
+    return movement;
+  }
+
+  if (movement.asset.unit && movement.asset.unit !== 'UNKNOWN') {
+    return movement;
+  }
+
+  const metadata =
+    assetsMetadata[movement.asset.type as keyof typeof assetsMetadata];
+
+  if (!metadata?.symbol) {
+    return movement;
+  }
+
+  return {
+    ...movement,
+    asset: {
+      ...movement.asset,
+      unit: metadata.symbol,
+    },
+  };
+}
+
+function getSwapTokens(bridgeHistoryItem?: BridgeHistoryItem) {
+  if (bridgeHistoryItem === undefined) {
+    return undefined;
+  }
+
+  const { quote, status } = bridgeHistoryItem;
+
+  return {
+    sourceToken: {
+      amount: quote.srcTokenAmount,
+      assetId: quote.srcAsset.assetId,
+      decimals: quote.srcAsset.decimals,
+      direction: 'out' as const,
+      symbol: quote.srcAsset.symbol,
+    },
+    destinationToken: {
+      amount: status.destChain?.amount ?? quote.destTokenAmount,
+      assetId: quote.destAsset.assetId,
+      decimals: quote.destAsset.decimals,
+      direction: 'in' as const,
+      symbol: quote.destAsset.symbol,
+    },
+  };
+}
+
+function getBridgeActivityStatus(
+  bridgeHistoryItem?: BridgeHistoryItem,
+): Status | undefined {
+  if (!bridgeHistoryItem) {
+    return undefined;
+  }
+
+  const {
+    quote,
+    status: { status },
+  } = bridgeHistoryItem;
+
+  if (status === StatusTypes.FAILED) {
+    return 'failed';
+  }
+
+  if (status === StatusTypes.COMPLETE) {
+    return 'success';
+  }
+
+  if (
+    // Same-chain swaps can leave bridge status pending after the local tx confirms
+    isCrossChain(quote.srcChainId, quote.destChainId) &&
+    (status === StatusTypes.PENDING || status === StatusTypes.SUBMITTED)
+  ) {
+    return 'pending';
+  }
+
+  return undefined;
+}
+
+export const selectLocalActivityItems = createSelector(
+  selectLocalTransactions,
+  selectBridgeHistory,
+  getNetworkConfigurationsByChainId,
+  selectEvmAddress,
+  getTokensControllerAllTokens,
+  (
+    transactionGroups,
+    getBridgeHistory,
+    networkConfigurationsByChainId,
+    evmAddress,
+    allTokens,
+  ) => {
+    const selectedAddress = evmAddress?.toLowerCase();
+
+    // Resolves symbol/decimals for an ERC-20 contract address from the user's
+    // watched-tokens list (TokensController). The static mainnet token list
+    // used inside the mapper only covers mainnet, so anything on Sepolia,
+    // localhost, custom RPC etc. needs this fallback to render correctly.
+    const resolveContractTokenMetadata = (
+      chainId: string | undefined,
+      contractAddress: string | undefined,
+    ) => {
+      if (!chainId || !contractAddress || !selectedAddress) {
+        return undefined;
+      }
+      const userTokens = allTokens?.[chainId as Hex]?.[selectedAddress as Hex];
+      const lowered = contractAddress.toLowerCase();
+      const token = userTokens?.find(
+        (t) => t.address.toLowerCase() === lowered,
+      );
+      return token
+        ? { symbol: token.symbol, decimals: token.decimals }
+        : undefined;
+    };
+
+    return transactionGroups.map((transactionGroup) => {
+      const { type, chainId } = transactionGroup.initialTransaction;
+      const nativeAssetSymbol =
+        networkConfigurationsByChainId[chainId as Hex]?.nativeCurrency;
+      const contractTokenMetadata = resolveContractTokenMetadata(
+        chainId,
+        transactionGroup.initialTransaction.txParams.to,
+      );
+
+      if (
+        type === TransactionType.swap ||
+        type === TransactionType.swapAndSend ||
+        type === TransactionType.bridge
+      ) {
+        const bridgeHistoryItem = getBridgeHistory(
+          transactionGroup.initialTransaction,
+        );
+        const activityStatus = getBridgeActivityStatus(bridgeHistoryItem);
+        const fees = getLocalTransactionFees(transactionGroup);
+
+        const prepared = {
+          ...transactionGroup,
+          ...getSwapTokens(bridgeHistoryItem),
+          ...(activityStatus ? { activityStatus } : {}),
+          fees,
+          nativeAssetSymbol,
+          contractTokenMetadata,
+        };
+
+        return enrichLocalActivity(mapLocalTransaction(prepared), prepared);
+      }
+
+      const prepared = {
+        ...transactionGroup,
+        nativeAssetSymbol,
+        contractTokenMetadata,
+      };
+
+      return enrichLocalActivity(mapLocalTransaction(prepared), prepared);
+    });
+  },
+);
+
+export const selectLocalActivityItemsByIdentifier = createSelector(
+  selectLocalTransactions,
+  selectLocalActivityItems,
+  (transactionGroups, items) => {
+    const itemsByIdentifier = new Map<string, ActivityListItem>();
+
+    transactionGroups.forEach((transactionGroup, index) => {
+      const item = items[index];
+      if (!item) {
+        return;
+      }
+
+      for (const transaction of [
+        transactionGroup.primaryTransaction,
+        transactionGroup.initialTransaction,
+      ]) {
+        const hash = transaction.hash?.toLowerCase();
+        if (hash) {
+          itemsByIdentifier.set(hash, item);
+        }
+
+        // Also index by id so both pending transactions and toast listeners can resolve the item
+        // id may be a number (legacy TransactionMeta) or string.
+        if (
+          typeof transaction.id === 'string' ||
+          typeof transaction.id === 'number'
+        ) {
+          itemsByIdentifier.set(String(transaction.id).toLowerCase(), item);
+        }
+      }
+    });
+
+    return itemsByIdentifier;
   },
 );
 

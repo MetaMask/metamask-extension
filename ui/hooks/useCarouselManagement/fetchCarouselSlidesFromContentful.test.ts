@@ -1,12 +1,14 @@
 import { captureException } from '../../../shared/lib/sentry';
 import {
   fetchCarouselSlidesFromContentful,
-  getContentfulEnvironmentDetails,
   UnknownLocaleError,
 } from './fetchCarouselSlidesFromContentful';
 
 jest.mock('../../../shared/lib/sentry', () => ({
   captureException: jest.fn(),
+  sentryLogger: {
+    extend: jest.fn(() => jest.fn()),
+  },
 }));
 
 jest.mock('../../../shared/lib/environment', () => ({

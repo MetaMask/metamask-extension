@@ -1,10 +1,12 @@
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import ActivityList from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
+import DeveloperToolsSettings from '../../page-objects/pages/settings/developer-tools-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
 
 describe('Clear account activity', function (this: Suite) {
   // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -26,22 +28,26 @@ describe('Clear account activity', function (this: Suite) {
         // Check local "Sent" transaction history is displayed
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
-        const activityList = new ActivityList(driver);
-        await activityList.checkTxAction({
-          action: 'Sent',
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkTxAction({
+          action: 'Sent ETH',
           confirmedTx: 1,
         });
 
         // Clear activity and nonce data
+        await homePage.goToHomePage();
         await homePage.headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
         await settingsPage.goToDeveloperOptions();
-        await settingsPage.clickDeveloperOptionsDeleteActivityAndNonceData();
-        await settingsPage.confirmDeleteActivityAndNonceModal();
-        await settingsPage.clickBackButton();
+        const developerToolsSettings = new DeveloperToolsSettings(driver);
+        await developerToolsSettings.checkPageIsLoaded();
+        await developerToolsSettings.clickDeleteActivityAndNonceData();
+        await developerToolsSettings.confirmDeleteActivityAndNonceModal();
+        await closeSettings(driver);
 
-        await activityList.checkNoTxInActivity();
+        await homePage.goToActivityList();
+        await activityTab.checkNoTxInActivity();
       },
     );
   });

@@ -9,6 +9,8 @@ import thunk from 'redux-thunk';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
+import { QrScanRequestType } from '@metamask/eth-qr-keyring';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { tEn } from '../../../../test/lib/i18n-helpers';
 import {
@@ -24,11 +26,30 @@ import {
 } from '../../../../shared/constants/hardware-wallets';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { createHardwareWalletError } from '../../../contexts/hardware-wallets/errors';
+import { HardwareWalletType } from '../../../contexts/hardware-wallets/types';
+import { UPDATE_METAMASK_STATE } from '../../../store/actionConstants';
+import configureStore from '../../../store/store';
 import ConnectHardwareForm, {
   LEDGER_HD_PATHS,
   LATTICE_HD_PATHS,
   TREZOR_HD_PATHS,
 } from '.';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 const mockConnectHardware = jest.fn();
 const mockConnectHardwareAction = jest.fn();
@@ -55,8 +76,6 @@ jest.mock('../../../store/actions', () => ({
   }),
 }));
 
-const mockGetActiveQrCodeScanRequest = jest.fn().mockReturnValue(null);
-
 jest.mock('../../../selectors', () => ({
   getCurrentChainId: () => '0x1',
   getSelectedAddress: () => '0xselectedAddress',
@@ -65,8 +84,9 @@ jest.mock('../../../selectors', () => ({
   getMetaMaskAccounts: () => {
     return {};
   },
-  getActiveQrCodeScanRequest: (...args: unknown[]) =>
-    mockGetActiveQrCodeScanRequest(...args),
+  getActiveQrCodeScanRequest: (state: {
+    metamask?: { activeQrCodeScanRequest?: unknown };
+  }) => state.metamask?.activeQrCodeScanRequest ?? null,
 }));
 
 jest.mock('../../../selectors/multi-srp/multi-srp', () => ({
@@ -77,18 +97,18 @@ jest.mock('../../../ducks/bridge/selectors', () => ({
   getAllBridgeableNetworks: () => [],
 }));
 
-const MOCK_RECENT_PAGE = '/home';
-jest.mock('../../../ducks/history/history', () => ({
-  getMostRecentOverviewPage: jest
-    .fn()
-    .mockImplementation(() => MOCK_RECENT_PAGE),
-}));
-
 const mockUseNavigate = jest.fn();
+let mockLocationKey = 'default';
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockUseNavigate,
-  useLocation: () => ({ pathname: '/test' }),
+  useLocation: () => ({
+    pathname: '/test',
+    key: mockLocationKey,
+    search: '',
+    hash: '',
+    state: null,
+  }),
   useParams: () => ({}),
 }));
 
@@ -114,6 +134,7 @@ function createMockState(overrides?: Record<string, unknown>) {
         },
       ],
       ledgerTransportType: LedgerTransportTypes.webhid,
+      activeQrCodeScanRequest: null,
     },
     appState: {
       networkDropdownOpen: false,
@@ -124,7 +145,6 @@ function createMockState(overrides?: Record<string, unknown>) {
         modalState: { name: null, props: {} },
         previousModalState: { name: null },
       },
-      warning: null,
       chainId: '0x1',
       rpcPrefs: null,
       accounts: [],
@@ -134,6 +154,7 @@ function createMockState(overrides?: Record<string, unknown>) {
         [HardwareDeviceNames.ledger]: DEFAULT_HD_PATH,
         [HardwareDeviceNames.oneKey]: DEFAULT_HD_PATH,
         [HardwareDeviceNames.trezor]: DEFAULT_HD_PATH,
+        [HardwareDeviceNames.qr]: DEFAULT_HD_PATH,
       },
       mostRecentOverviewPage: '',
       ledgerTransportType: LedgerTransportTypes.webhid,
@@ -150,16 +171,75 @@ const MOCK_ACCOUNTS = [
   { address: '0xAddress5', balance: null, index: 4 },
 ];
 
+const DEVICE_LABEL_TO_TESTID: Record<string, string> = {
+  [tEn('ledger')]: 'connect-hardware-wallet-ledger',
+  [tEn('trezor')]: 'connect-hardware-wallet-trezor',
+  [tEn('lattice')]: 'connect-hardware-wallet-lattice',
+  [tEn('oneKey')]: 'connect-hardware-wallet-onekey',
+  QRCode: 'connect-hardware-wallet-keystone',
+};
+
 function connectToDevice(labelText: string) {
-  const deviceButton = screen.getByLabelText(labelText);
-  const continueButton = screen.getByText(tEn('continue'));
+  const testId = DEVICE_LABEL_TO_TESTID[labelText];
+  const deviceButton = testId
+    ? screen.getByTestId(testId)
+    : screen.getByText(labelText);
   fireEvent.click(deviceButton);
-  fireEvent.click(continueButton);
 }
 
 describe('ConnectHardwareForm', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockLocationKey = 'default';
+    mockCheckHardwareStatus.mockResolvedValue(false);
+  });
+
+  describe('QR pair scan completion', () => {
+    const pairScanRequest = {
+      type: QrScanRequestType.PAIR,
+      requestId: 'pair-request-1',
+    };
+
+    it('probes hardware status and reconnects after a QR pair scan clears', async () => {
+      mockCheckHardwareStatus.mockResolvedValue(true);
+      mockConnectHardware.mockResolvedValue([
+        {
+          address: '0x2222222222222222222222222222222222222222',
+          index: 0,
+        },
+      ]);
+
+      const base = createMockState();
+      const store = configureStore({
+        ...base,
+        metamask: {
+          ...base.metamask,
+          activeQrCodeScanRequest: pairScanRequest,
+        },
+      });
+      renderWithProvider(<ConnectHardwareForm />, store);
+
+      await act(async () => {
+        store.dispatch({
+          type: UPDATE_METAMASK_STATE,
+          value: { activeQrCodeScanRequest: null },
+        });
+      });
+
+      await waitFor(() => {
+        expect(mockCheckHardwareStatus).toHaveBeenCalled();
+      });
+
+      await waitFor(() => {
+        expect(mockConnectHardwareAction).toHaveBeenCalledWith(
+          HardwareDeviceNames.qr,
+          0,
+          DEFAULT_HD_PATH,
+          false,
+          expect.any(Function),
+        );
+      });
+    });
   });
 
   describe('exported HD path constants', () => {
@@ -357,24 +437,20 @@ describe('ConnectHardwareForm', () => {
       expect(screen.queryByText('stale ledger error')).not.toBeInTheDocument();
     });
 
-    it('detects Firefox user agent on mount', async () => {
+    it('detects Firefox user agent on mount and shows warning for Ledger', async () => {
       jest
         .spyOn(window.navigator, 'userAgent', 'get')
         .mockReturnValue(
           'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:95.0) Gecko/20100101 Firefox/95.0',
         );
 
-      mockConnectHardware.mockRejectedValue(new Error('U2F Error'));
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
       connectToDevice(tEn('ledger'));
       await waitFor(() => {
         expect(
-          screen.getByText(
-            "If you're on the latest version of Firefox, you might be experiencing an issue related to Firefox dropping U2F support. Learn how to fix this issue",
-            { exact: false },
-          ),
+          screen.getByText(tEn('ledgerFirefoxNotSupportedTitle')),
         ).toBeInTheDocument();
       });
 
@@ -382,15 +458,32 @@ describe('ConnectHardwareForm', () => {
     });
   });
 
-  describe('onCancel', () => {
-    it('navigates to the most recent overview page', () => {
+  describe('back button', () => {
+    it('navigates back when location has a non-default key', () => {
+      mockLocationKey = 'abc123';
+
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
       const closeButton = screen.getByTestId('hardware-connect-close-btn');
       fireEvent.click(closeButton);
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(MOCK_RECENT_PAGE);
+      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
+    });
+
+    it('navigates to choose wallet type page on initial page load', () => {
+      mockLocationKey = 'default';
+
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      const closeButton = screen.getByTestId('hardware-connect-close-btn');
+      fireEvent.click(closeButton);
+
+      expect(mockUseNavigate).toHaveBeenCalledWith('/choose-new-wallet-type', {
+        replace: true,
+        state: { fromFreshTab: true },
+      });
     });
   });
 
@@ -496,6 +589,23 @@ describe('ConnectHardwareForm', () => {
       });
     });
 
+    it('displays the generic timeout error for non-Ledger timeout errors', async () => {
+      mockConnectHardware.mockRejectedValue(
+        new Error('Trezor getPublicKey timed out after 120000 ms'),
+      );
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      connectToDevice(tEn('trezor'));
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(tEn('hardwareWalletConnectionTimeout')),
+        ).toBeInTheDocument();
+      });
+      expect(screen.queryByText(tEn('ledgerTimeout'))).not.toBeInTheDocument();
+    });
+
     it('displays U2F error message for non-Firefox browser', async () => {
       mockConnectHardware.mockRejectedValue(new Error('U2F Error'));
       const mockStore = configureMockStore([thunk])(createMockState());
@@ -513,14 +623,13 @@ describe('ConnectHardwareForm', () => {
       });
     });
 
-    it('displays Firefox-specific U2F error message', async () => {
+    it('displays Firefox Not Supported warning when clicking Ledger on Firefox', async () => {
       jest
         .spyOn(window.navigator, 'userAgent', 'get')
         .mockReturnValue(
           'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:95.0) Gecko/20100101 Firefox/95.0',
         );
 
-      mockConnectHardware.mockRejectedValue(new Error('U2F Error'));
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
@@ -528,10 +637,7 @@ describe('ConnectHardwareForm', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText(
-            "If you're on the latest version of Firefox, you might be experiencing an issue related to Firefox dropping U2F support. Learn how to fix this issue",
-            { exact: false },
-          ),
+          screen.getByText(tEn('ledgerFirefoxNotSupportedTitle')),
         ).toBeInTheDocument();
       });
 
@@ -564,6 +670,44 @@ describe('ConnectHardwareForm', () => {
       await waitFor(() => {
         expect(
           screen.getByText(tEn('QRHardwarePubkeyAccountOutOfRange')),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it('displays youNeedToAllowCameraAccess when QR camera permission was denied', async () => {
+      mockConnectHardware.mockRejectedValue(
+        createHardwareWalletError(
+          ErrorCode.PermissionCameraDenied,
+          HardwareWalletType.Qr,
+        ),
+      );
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      connectToDevice('QRCode');
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(tEn('youNeedToAllowCameraAccess')),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it('displays youNeedToAllowCameraAccess when QR camera permission prompt was dismissed', async () => {
+      mockConnectHardware.mockRejectedValue(
+        createHardwareWalletError(
+          ErrorCode.PermissionCameraPromptDismissed,
+          HardwareWalletType.Qr,
+        ),
+      );
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      connectToDevice('QRCode');
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(tEn('youNeedToAllowCameraAccess')),
         ).toBeInTheDocument();
       });
     });
@@ -672,7 +816,7 @@ describe('ConnectHardwareForm', () => {
         expect(unlockButton).toBeDisabled();
       });
 
-      it('navigates to overview page on successful unlock', async () => {
+      it('navigates to home page on successful unlock', async () => {
         const checkboxes = screen.getAllByTestId('hw-account-list__item');
         const firstCheckbox = checkboxes[0].querySelector(
           'input[type="checkbox"]',
@@ -689,7 +833,7 @@ describe('ConnectHardwareForm', () => {
         });
 
         await waitFor(() => {
-          expect(mockUseNavigate).toHaveBeenCalledWith(MOCK_RECENT_PAGE);
+          expect(mockUseNavigate).toHaveBeenCalledWith('/');
         });
       });
 
@@ -765,6 +909,19 @@ describe('ConnectHardwareForm', () => {
       });
     });
 
+    describe('onCancel', () => {
+      it('returns to device selection view on cancel', async () => {
+        const cancelButton = screen.getByTestId(
+          'connect-hardware-account-list-cancel-btn',
+        );
+        fireEvent.click(cancelButton);
+
+        await waitFor(() => {
+          expect(screen.getByText(tEn('hardwareWallets'))).toBeInTheDocument();
+        });
+      });
+    });
+
     describe('onForgetDevice', () => {
       it('resets state and goes back to device selection on success', async () => {
         const forgetButton = screen.getByTestId(
@@ -804,40 +961,17 @@ describe('ConnectHardwareForm', () => {
     });
   });
 
-  describe('QR Hardware Wallet Steps', () => {
-    it('renders the QR hardware wallet steps when QR is selected', async () => {
+  describe('QR Hardware Wallet', () => {
+    it('calls connectHardware when Keystone wallet option is clicked', async () => {
+      mockConnectHardware.mockResolvedValue(MOCK_ACCOUNTS);
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
-      const qrButton = screen.getByLabelText('QRCode');
-      fireEvent.click(qrButton);
+      connectToDevice('QRCode');
 
       await waitFor(() => {
-        expect(screen.getByText(tEn('keystone'))).toBeInTheDocument();
-        expect(screen.getByText(tEn('airgapVault'))).toBeInTheDocument();
-        expect(screen.getByText(tEn('coolWallet'))).toBeInTheDocument();
-        expect(screen.getByText(tEn('dcent'))).toBeInTheDocument();
-        expect(screen.getByText(tEn('imToken'))).toBeInTheDocument();
+        expect(mockConnectHardwareAction).toHaveBeenCalled();
       });
-    });
-  });
-
-  describe('Select Hardware', () => {
-    it('opens Ngrave Zero marketing links', async () => {
-      window.open = jest.fn();
-      const mockStore = configureMockStore([thunk])(createMockState());
-      renderWithProvider(<ConnectHardwareForm />, mockStore);
-
-      const qrButton = screen.getByLabelText('QRCode');
-      fireEvent.click(qrButton);
-
-      const buyNowButton = screen.getByTestId('ngrave-brand-buy-now-btn');
-      fireEvent.click(buyNowButton);
-      expect(window.open).toHaveBeenCalled();
-
-      const learnMoreButton = screen.getByTestId('ngrave-brand-learn-more-btn');
-      fireEvent.click(learnMoreButton);
-      expect(window.open).toHaveBeenCalledTimes(2);
     });
   });
 
@@ -894,8 +1028,7 @@ describe('ConnectHardwareForm', () => {
 
         renderWithProvider(<ConnectHardwareForm />, mockStore);
 
-        fireEvent.click(screen.getByLabelText(tEn('ledger')));
-        fireEvent.click(screen.getByText(tEn('continue')));
+        connectToDevice(tEn('ledger'));
 
         await waitFor(() => {
           expect(
@@ -913,8 +1046,7 @@ describe('ConnectHardwareForm', () => {
 
         renderWithProvider(<ConnectHardwareForm />, mockStore);
 
-        fireEvent.click(screen.getByLabelText(tEn('ledger')));
-        fireEvent.click(screen.getByText(tEn('continue')));
+        connectToDevice(tEn('ledger'));
 
         await waitFor(() => {
           expect(screen.getByText(appClosedMessage)).toBeInTheDocument();

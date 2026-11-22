@@ -1,7 +1,12 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   useEnableMetametrics,
   useDisableMetametrics,
@@ -12,80 +17,72 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../../../shared/constants/metametrics';
-import { Box, Text } from '../../component-library';
+import { Text } from '../../component-library';
 import ToggleButton from '../../ui/toggle-button';
 import {
-  Display,
-  FlexDirection,
-  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
-  getParticipateInMetaMetrics,
+  getDataCollectionForMarketing,
+  getOptedIn,
   getUseExternalServices,
 } from '../../../selectors';
 
 const MetametricsToggle = ({
-  dataCollectionForMarketing,
-  setDataCollectionForMarketing,
   fromDefaultSettings = false,
 }: {
-  dataCollectionForMarketing: boolean;
-  setDataCollectionForMarketing: (value: boolean) => Promise<void>;
   fromDefaultSettings?: boolean;
 }) => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const { enableMetametrics, error: enableMetametricsError } =
     useEnableMetametrics();
   const { disableMetametrics, error: disableMetametricsError } =
     useDisableMetametrics();
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const error = enableMetametricsError || disableMetametricsError;
 
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
-  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+  const isOptedIn = useSelector(getOptedIn);
   const useExternalServices = useSelector(getUseExternalServices);
+  const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
 
   const handleUseParticipateInMetaMetrics = async (isParticipated: boolean) => {
     if (isParticipated) {
       await enableMetametrics();
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.TurnOnMetaMetrics,
-        properties: {
-          isProfileSyncingEnabled: isBackupAndSyncEnabled,
-          participateInMetaMetrics,
-          location: fromDefaultSettings ? 'Default Settings' : 'Settings',
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.TurnOnMetaMetrics)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            isProfileSyncingEnabled: isBackupAndSyncEnabled,
+            participateInMetaMetrics: isOptedIn,
+            location: fromDefaultSettings ? 'Default Settings' : 'Settings',
+          })
+          .build(),
+      );
     } else {
-      // disable data collection for marketing if participate in meta metrics is set to false
-      if (dataCollectionForMarketing) {
-        await setDataCollectionForMarketing(false);
-      }
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.TurnOffMetaMetrics)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            isProfileSyncingEnabled: isBackupAndSyncEnabled,
+            participateInMetaMetrics: isOptedIn,
+          })
+          .build(),
+      );
 
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.TurnOffMetaMetrics,
-        properties: {
-          isProfileSyncingEnabled: isBackupAndSyncEnabled,
-          participateInMetaMetrics,
-        },
-      });
-
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-        properties: {
-          [MetaMetricsUserTrait.IsMetricsOptedIn]: false,
-          [MetaMetricsUserTrait.HasMarketingConsent]: false,
-          location: 'Settings',
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            [MetaMetricsUserTrait.IsMetricsOptedIn]: false,
+            [MetaMetricsUserTrait.HasMarketingConsent]:
+              dataCollectionForMarketing === true,
+            location: 'Settings',
+          })
+          .build(),
+      );
 
       await disableMetametrics();
     }
@@ -94,10 +91,9 @@ const MetametricsToggle = ({
   return (
     <Box>
       <Box
-        className="settings-page__content-row"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
+        className="flex settings-page__content-row"
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
         gap={4}
         data-testid="participate-in-meta-metrics-container"
       >
@@ -113,7 +109,7 @@ const MetametricsToggle = ({
           data-testid="participate-in-meta-metrics-toggle"
         >
           <ToggleButton
-            value={participateInMetaMetrics}
+            value={isOptedIn}
             disabled={!useExternalServices}
             onToggle={(value) => handleUseParticipateInMetaMetrics(!value)}
             offLabel={t('off')}

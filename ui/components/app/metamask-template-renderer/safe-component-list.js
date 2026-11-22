@@ -1,5 +1,4 @@
 import ConfirmationNetworkSwitch from '../../../pages/confirmations/confirmation/components/confirmation-network-switch';
-import { SmartTransactionStatusPage } from '../../../pages/smart-transactions/smart-transaction-status-page';
 import {
   AvatarIcon,
   BannerAlert,
@@ -63,6 +62,7 @@ import SnapAuthorshipHeader from '../snaps/snap-authorship-header';
 import MetaMaskTranslation from '../metamask-translation/metamask-translation';
 import { Skeleton } from '../../component-library/skeleton';
 import { DefiReferralConsent } from '../../../pages/core/defi-referral-consent';
+import { HyperliquidDepositPrompt } from '../hyperliquid-deposit-prompt/hyperliquid-deposit-prompt';
 import { Delineator } from '../../ui/delineator';
 
 export const safeComponentList = {
@@ -84,6 +84,7 @@ export const safeComponentList = {
   DefinitionList,
   div: 'div',
   FormTextField,
+  HyperliquidDepositPrompt,
   i: 'i',
   OriginPill,
   p: 'p',
@@ -121,7 +122,6 @@ export const safeComponentList = {
   Tooltip,
   TruncatedDefinitionList,
   Typography,
-  SmartTransactionStatusPage,
   UrlIcon,
   CreateSnapAccount,
   RemoveSnapAccount,

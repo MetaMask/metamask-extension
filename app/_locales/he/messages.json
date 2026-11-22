@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "עליך לבחור חשבון!"
   },
-  "addAcquiredTokens": {
-    "message": "הוספת הטוקנים שהשגת באמצעות MetaMask"
-  },
   "addAlias": {
     "message": "הוסף כינוי"
   },
@@ -83,9 +80,6 @@
   },
   "back": {
     "message": "חזור"
-  },
-  "backupApprovalInfo": {
-    "message": "קוד סודי זה נדרש כדי לשחזר את הארנק שלך במקרה שתאבד/י את מכשירך, תשכח/י את הססמה, תצטרכ/י להתקין מחדש את MetaMask או שתרצה/י לגשת לארנק שלך במכשיר אחר."
   },
   "backupApprovalNotice": {
     "message": "גבה/י את קוד השחזור הסודי שלך כדי לשמור את בטיחות הארנק והכספים שלך."
@@ -181,14 +175,8 @@
   "custom": {
     "message": "מתקדם"
   },
-  "customToken": {
-    "message": "אסימון מותאם אישית"
-  },
   "decimal": {
     "message": "רמת דיוק עשרוני"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "מספרים עשרוניים חייבים להיות לפחות 0 ולא מעל 36."
   },
   "delete": {
     "message": "מחיקה"
@@ -198,9 +186,6 @@
   },
   "done": {
     "message": "סיום"
-  },
-  "downloadGoogleChrome": {
-    "message": "הורד/י את גוגל כרום"
   },
   "downloadStateLogs": {
     "message": "הורדת יומני מצב"
@@ -226,10 +211,6 @@
   "fast": {
     "message": "מהיר"
   },
-  "fileImportFail": {
-    "message": "ייבוא הקובץ לא עובד? לחצ/י כאן!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "מחיקת המכשיר הזה"
   },
@@ -238,9 +219,6 @@
   },
   "gasLimit": {
     "message": "הגבלת דלק"
-  },
-  "gasLimitTooLow": {
-    "message": "הגבלת הדלק חייבת להיות לפחות 21000"
   },
   "gasUsed": {
     "message": "דלק שנעשה בו שימוש"
@@ -259,9 +237,6 @@
   },
   "hardwareWallets": {
     "message": "חבר ארנק חומרה"
-  },
-  "hardwareWalletsMsg": {
-    "message": "בחר/י ארנק חומרה שבו תרצה להשתמש עם MetaMask"
   },
   "here": {
     "message": "כאן",
@@ -351,9 +326,6 @@
   "metamaskVersion": {
     "message": "גרסת MetaMask"
   },
-  "mustSelectOne": {
-    "message": "חובה לבחור לפחות אסימון אחד."
-  },
   "needImportFile": {
     "message": "יש לבחור קובץ לייצוא.",
     "description": "User is important an account and needs to add a file to continue"
@@ -363,9 +335,6 @@
   },
   "networks": {
     "message": "רשתות"
-  },
-  "nevermind": {
-    "message": "לא משנה"
   },
   "newAccountNumberName": {
     "message": "חשבון $1",
@@ -385,9 +354,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "מצלמת הרשת לא נמצאה"
-  },
-  "notEnoughGas": {
-    "message": "אין מספיק דלק"
   },
   "ofTextNofM": {
     "message": "של"
@@ -419,10 +385,6 @@
   "passwordsDontMatch": {
     "message": "ססמאות אינן תואמות"
   },
-  "pastePrivateKey": {
-    "message": "הדבק/י את מחרוזת המפתח הפרטי שלך כאן:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "בהמתנה"
   },
@@ -438,9 +400,6 @@
   "privateKey": {
     "message": "מפתח פרטי",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "אזהרה: לעולם אין למסור מפתח זה. מי שיקבל את המפתחות הפרטיים שלך יוכל לגנוב את כל הנכסים השמורים בחשבון שלך."
   },
   "privateNetwork": {
     "message": "רשת פרטית"
@@ -526,9 +485,6 @@
   },
   "sign": {
     "message": "חתימה"
-  },
-  "signatureRequest": {
-    "message": "בקשת חתימה"
   },
   "signed": {
     "message": "חתום"
@@ -616,9 +572,6 @@
   },
   "urlErrorMsg": {
     "message": "כתובות URI דורשות את קידומת HTTP/HTTPS המתאימה."
-  },
-  "usedByClients": {
-    "message": "בשימוש על ידי מגוון לקוחות שונים"
   },
   "visitWebSite": {
     "message": "בקר/י באתר שלנו"

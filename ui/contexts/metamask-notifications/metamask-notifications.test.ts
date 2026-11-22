@@ -1,10 +1,10 @@
-import { waitFor } from '@testing-library/react';
-import * as ReactRedux from 'react-redux';
+import { waitFor, act } from '@testing-library/react';
 import * as NotificationHooks from '../../hooks/metamask-notifications/useNotifications';
 import * as NotificationsSelectors from '../../selectors/metamask-notifications/metamask-notifications';
 import * as Selectors from '../../selectors/selectors';
 import * as MetamaskBaseSelectors from '../../ducks/metamask/base-selectors';
 import * as AuthenticationSelectors from '../../selectors/identity/authentication';
+import * as Actions from '../../store/actions';
 import * as StorageHelpers from '../../../shared/lib/storage-helpers';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import {
@@ -132,19 +132,11 @@ describe('useBasicFunctionalityDisableEffect', () => {
   it('should re-run effect when dependencies change', async () => {
     const mocks = arrange();
 
-    // Mocking useSelector so it does not memoize the selectors passed in.
-    const originalUseSelector = ReactRedux.useSelector;
-    jest.spyOn(ReactRedux, 'useSelector').mockImplementation((selector) => {
-      // Ensure the selector input is a new reference
-      const wrappedSelector = (state: unknown) => selector(state);
-      return originalUseSelector(wrappedSelector);
-    });
-
     // First render - conditions not met
     mocks.selectors.mockGetUseExternalServices.mockReturnValue(true);
     mocks.selectors.mockIsNotifsEnabled.mockReturnValue(true);
 
-    const { rerender } = renderHookWithProvider(
+    const { store } = renderHookWithProvider(
       () => useBasicFunctionalityDisableEffect(),
       {},
     );
@@ -153,7 +145,9 @@ describe('useBasicFunctionalityDisableEffect', () => {
     mocks.selectors.mockGetUseExternalServices.mockReturnValue(false);
     mocks.selectors.mockIsNotifsEnabled.mockReturnValue(true);
 
-    rerender();
+    act(() => {
+      store.dispatch({ type: 'FORCE_UPDATE' });
+    });
 
     await waitFor(() => {
       expect(mocks.hooks.disableNotifications).toHaveBeenCalled();
@@ -226,6 +220,11 @@ describe('useFetchInitialNotificationsEffect', () => {
       .spyOn(StorageHelpers, 'getStorageItem')
       .mockResolvedValue(undefined);
     const mockSetStorageItem = jest.spyOn(StorageHelpers, 'setStorageItem');
+    const mockGetNotificationPreferences = jest
+      .spyOn(Actions, 'getNotificationPreferences')
+      .mockImplementation(() => async () => ({
+        marketing: { inAppNotificationsEnabled: true },
+      }));
 
     return {
       hooks: arrangeHooks(),
@@ -233,6 +232,7 @@ describe('useFetchInitialNotificationsEffect', () => {
       helpers: {
         mockGetStorageItem,
         mockSetStorageItem,
+        mockGetNotificationPreferences,
       },
     };
   };
@@ -275,6 +275,27 @@ describe('useFetchInitialNotificationsEffect', () => {
 
     await waitFor(() => {
       expect(mocks.hooks.enableNotifications).not.toHaveBeenCalled();
+      expect(mocks.hooks.listNotifications).toHaveBeenCalled();
+    });
+  });
+
+  it('should enable notifications if AUS preferences are missing even when resubscription has not expired', async () => {
+    const mocks = arrange();
+    mocks.selectors.mockIsNotifsEnabled.mockReturnValue(true);
+    mocks.selectors.mockGetUseExternalServices.mockReturnValue(true);
+    mocks.selectors.mockGetIsUnlocked.mockReturnValue(true);
+    mocks.selectors.mockSelectIsSignedIn.mockReturnValue(true);
+
+    // Has not expired
+    mocks.helpers.mockGetStorageItem.mockResolvedValue(Date.now() + 1000);
+    mocks.helpers.mockGetNotificationPreferences.mockImplementation(
+      () => async () => null,
+    );
+
+    renderHookWithProvider(() => useFetchInitialNotificationsEffect(), {});
+
+    await waitFor(() => {
+      expect(mocks.hooks.enableNotifications).toHaveBeenCalled();
       expect(mocks.hooks.listNotifications).toHaveBeenCalled();
     });
   });
@@ -379,21 +400,13 @@ describe('useFetchInitialNotificationsEffect', () => {
   it('should re-run effect when dependencies change', async () => {
     const mocks = arrange();
 
-    // Mocking useSelector so it does not memoize the selectors passed in.
-    const originalUseSelector = ReactRedux.useSelector;
-    jest.spyOn(ReactRedux, 'useSelector').mockImplementation((selector) => {
-      // Ensure the selector input is a new reference
-      const wrappedSelector = (state: unknown) => selector(state);
-      return originalUseSelector(wrappedSelector);
-    });
-
     // First render - conditions not met
     mocks.selectors.mockIsNotifsEnabled.mockReturnValue(false);
     mocks.selectors.mockGetUseExternalServices.mockReturnValue(true);
     mocks.selectors.mockGetIsUnlocked.mockReturnValue(true);
     mocks.selectors.mockSelectIsSignedIn.mockReturnValue(true);
 
-    const { rerender } = renderHookWithProvider(
+    const { store } = renderHookWithProvider(
       () => useFetchInitialNotificationsEffect(),
       {},
     );
@@ -404,7 +417,9 @@ describe('useFetchInitialNotificationsEffect', () => {
     mocks.selectors.mockGetIsUnlocked.mockReturnValue(true);
     mocks.selectors.mockSelectIsSignedIn.mockReturnValue(true);
 
-    rerender();
+    act(() => {
+      store.dispatch({ type: 'FORCE_UPDATE' });
+    });
 
     await waitFor(() => {
       expect(mocks.hooks.enableNotifications).toHaveBeenCalled();
@@ -587,25 +602,20 @@ describe('useEnableNotificationsByDefaultEffect', () => {
   it('should re-run effect when dependencies change', async () => {
     const mocks = arrange();
 
-    // Mocking useSelector so it does not memoize the selectors passed in.
-    const originalUseSelector = ReactRedux.useSelector;
-    jest.spyOn(ReactRedux, 'useSelector').mockImplementation((selector) => {
-      // Ensure the selector input is a new reference
-      const wrappedSelector = (state: unknown) => selector(state);
-      return originalUseSelector(wrappedSelector);
-    });
-
     // First render - conditions not met (wallet locked)
     mocks.selectors.mockGetIsUnlocked.mockReturnValue(false);
 
-    const { rerender } = renderHookWithProvider(
+    const { store } = renderHookWithProvider(
       () => useEnableNotificationsByDefaultEffect(),
       {},
     );
 
     // Second render - conditions met (notifications disabled and wallet is unlocked)
     mocks.selectors.mockGetIsUnlocked.mockReturnValue(true);
-    rerender();
+
+    act(() => {
+      store.dispatch({ type: 'FORCE_UPDATE' });
+    });
 
     await waitFor(() => {
       expect(mocks.hooks.enableNotifications).toHaveBeenCalled();

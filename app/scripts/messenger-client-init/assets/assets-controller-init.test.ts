@@ -1,4 +1,8 @@
-import { AssetsController } from '@metamask/assets-controller';
+import {
+  AssetsController,
+  type AssetsControllerMessenger,
+} from '@metamask/assets-controller';
+import { ClientController } from '@metamask/client-controller';
 import { createApiPlatformClient } from '@metamask/core-backend';
 import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
@@ -6,13 +10,19 @@ import { getRootMessenger } from '../../lib/messenger';
 import {
   getAssetsControllerMessenger,
   getAssetsControllerInitMessenger,
-  AssetsControllerMessenger,
   AssetsControllerInitMessenger,
 } from '../messengers/assets/assets-controller-messenger';
+import { ASSETS_UNIFY_STATE_FLAG } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
+import { traceAsControllerCallback } from '../../../../shared/lib/trace';
 import { AssetsControllerInit } from './assets-controller-init';
 
+jest.mock('../../../../shared/lib/trace', () => ({
+  traceAsControllerCallback: jest.fn((_req, fn) =>
+    Promise.resolve(fn?.('traced-context')),
+  ),
+}));
+
 jest.mock('@metamask/assets-controller', () => ({
-  ...jest.requireActual('@metamask/assets-controller'),
   AssetsController: jest.fn().mockImplementation(() => ({
     state: {},
   })),
@@ -21,6 +31,10 @@ jest.mock('@metamask/assets-controller', () => ({
 jest.mock('@metamask/core-backend', () => ({
   createApiPlatformClient: jest.fn().mockReturnValue({ mockApiClient: true }),
 }));
+
+function buildClientControllerMock(isUiOpen = true): ClientController {
+  return { state: { isUiOpen } } as ClientController;
+}
 
 function getInitRequestMock(
   options: {
@@ -53,8 +67,13 @@ function getInitRequestMock(
     if (action === 'AuthenticationController:getBearerToken') {
       return Promise.resolve('mock-bearer-token');
     }
+    if (action === 'RemoteFeatureFlagController:getState') {
+      return { remoteFeatureFlags: {} };
+    }
     throw new Error(`Unexpected action: ${action}`);
   });
+
+  requestMock.getMessengerClient.mockReturnValue(buildClientControllerMock());
 
   return requestMock;
 }
@@ -95,6 +114,9 @@ function buildSubscribeTestSetup(
     if (action === 'AuthenticationController:getBearerToken') {
       return Promise.resolve('mock-bearer-token');
     }
+    if (action === 'RemoteFeatureFlagController:getState') {
+      return { remoteFeatureFlags: {} };
+    }
     throw new Error(`Unexpected action: ${action}`);
   });
 
@@ -127,13 +149,17 @@ describe('AssetsControllerInit', () => {
         balanceInterval: 30_000,
         detectionInterval: 180_000,
       },
+      accountsApiDataSourceConfig: {
+        tokenDetectionEnabled: expect.any(Function),
+      },
       priceDataSourceConfig: { pollInterval: 180_000 },
       stakedBalanceDataSourceConfig: {
         pollInterval: 30_000,
         enabled: false,
       },
-      trace: expect.any(Function),
       isOnboarded: expect.any(Function),
+      tempMigrateAssetsInfoMetadataAssets3346: expect.any(Function),
+      trace: expect.any(Function),
     });
   });
 
@@ -163,13 +189,17 @@ describe('AssetsControllerInit', () => {
         balanceInterval: 30_000,
         detectionInterval: 180_000,
       },
+      accountsApiDataSourceConfig: {
+        tokenDetectionEnabled: expect.any(Function),
+      },
       priceDataSourceConfig: { pollInterval: 180_000 },
       stakedBalanceDataSourceConfig: {
         pollInterval: 30_000,
         enabled: false,
       },
-      trace: expect.any(Function),
       isOnboarded: expect.any(Function),
+      tempMigrateAssetsInfoMetadataAssets3346: expect.any(Function),
+      trace: expect.any(Function),
     });
   });
 
@@ -186,6 +216,84 @@ describe('AssetsControllerInit', () => {
 
     expect(typeof tokenDetectionEnabledGetter).toBe('function');
     expect(tokenDetectionEnabledGetter()).toBe(false);
+  });
+
+  it('reads tokenDetectionEnabled live when useTokenDetection changes', () => {
+    const preferences: { useTokenDetection?: boolean } = {
+      useTokenDetection: false,
+    };
+    const requestMock = getInitRequestMock();
+    requestMock.initMessenger.call = jest.fn().mockImplementation((action) => {
+      if (action === 'OnboardingController:getState') {
+        return { completedOnboarding: true };
+      }
+      if (action === 'PreferencesController:getState') {
+        return preferences;
+      }
+      if (action === 'AuthenticationController:getBearerToken') {
+        return Promise.resolve('mock-bearer-token');
+      }
+      if (action === 'RemoteFeatureFlagController:getState') {
+        return { remoteFeatureFlags: {} };
+      }
+      throw new Error(`Unexpected action: ${action}`);
+    });
+
+    AssetsControllerInit(requestMock);
+
+    const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
+    const config = constructorCall.rpcDataSourceConfig;
+    if (!config?.tokenDetectionEnabled) {
+      throw new Error('Expected rpcDataSourceConfig.tokenDetectionEnabled');
+    }
+
+    expect(config.tokenDetectionEnabled()).toBe(false);
+
+    preferences.useTokenDetection = true;
+    expect(config.tokenDetectionEnabled()).toBe(true);
+
+    preferences.useTokenDetection = false;
+    expect(config.tokenDetectionEnabled()).toBe(false);
+  });
+
+  it('reads accountsApiDataSourceConfig.tokenDetectionEnabled live when useTokenDetection changes', () => {
+    const preferences: { useTokenDetection?: boolean } = {
+      useTokenDetection: false,
+    };
+    const requestMock = getInitRequestMock();
+    requestMock.initMessenger.call = jest.fn().mockImplementation((action) => {
+      if (action === 'OnboardingController:getState') {
+        return { completedOnboarding: true };
+      }
+      if (action === 'PreferencesController:getState') {
+        return preferences;
+      }
+      if (action === 'AuthenticationController:getBearerToken') {
+        return Promise.resolve('mock-bearer-token');
+      }
+      if (action === 'RemoteFeatureFlagController:getState') {
+        return { remoteFeatureFlags: {} };
+      }
+      throw new Error(`Unexpected action: ${action}`);
+    });
+
+    AssetsControllerInit(requestMock);
+
+    const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
+    const config = constructorCall.accountsApiDataSourceConfig;
+    if (!config?.tokenDetectionEnabled) {
+      throw new Error(
+        'Expected accountsApiDataSourceConfig.tokenDetectionEnabled',
+      );
+    }
+
+    expect(config.tokenDetectionEnabled()).toBe(false);
+
+    preferences.useTokenDetection = true;
+    expect(config.tokenDetectionEnabled()).toBe(true);
+
+    preferences.useTokenDetection = false;
+    expect(config.tokenDetectionEnabled()).toBe(false);
   });
 
   it('defaults tokenDetectionEnabled to true when useTokenDetection is absent from preferences state', () => {
@@ -244,13 +352,32 @@ describe('AssetsControllerInit', () => {
   });
 
   describe('isEnabled', () => {
-    it('always returns true', () => {
-      AssetsControllerInit(getInitRequestMock());
+    it('returns ClientController isUiOpen state when UI is open', () => {
+      const requestMock = getInitRequestMock();
+
+      AssetsControllerInit(requestMock);
 
       const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
       const isEnabled = constructorCall.isEnabled as () => boolean;
 
       expect(isEnabled()).toBe(true);
+      expect(requestMock.getMessengerClient).toHaveBeenCalledWith(
+        'ClientController',
+      );
+    });
+
+    it('returns false when ClientController isUiOpen is false', () => {
+      const requestMock = getInitRequestMock();
+      requestMock.getMessengerClient.mockReturnValue(
+        buildClientControllerMock(false),
+      );
+
+      AssetsControllerInit(requestMock);
+
+      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
+      const isEnabled = constructorCall.isEnabled as () => boolean;
+
+      expect(isEnabled()).toBe(false);
     });
   });
 
@@ -419,6 +546,122 @@ describe('AssetsControllerInit', () => {
     });
   });
 
+  describe('trace feature flag (assetsUnifyState.tracesEnabled)', () => {
+    it('skips Sentry tracing when tracesEnabled is absent / off', async () => {
+      const requestMock = getInitRequestMock();
+      AssetsControllerInit(requestMock);
+
+      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
+      const { trace } = constructorCall;
+      if (!trace) {
+        throw new Error('Expected trace callback to be defined');
+      }
+
+      const fn = jest.fn(() => 'result');
+      await expect(
+        trace({ name: 'AssetsControllerFirstInitFetch' }, fn),
+      ).resolves.toBe('result');
+
+      expect(fn).toHaveBeenCalledWith();
+      expect(traceAsControllerCallback).not.toHaveBeenCalled();
+    });
+
+    it('forwards to traceAsControllerCallback when assetsUnifyState.tracesEnabled is on', async () => {
+      const requestMock = getInitRequestMock();
+      requestMock.initMessenger.call = jest
+        .fn()
+        .mockImplementation((action) => {
+          if (action === 'OnboardingController:getState') {
+            return { completedOnboarding: true };
+          }
+          if (action === 'PreferencesController:getState') {
+            return { useTokenDetection: true };
+          }
+          if (action === 'AuthenticationController:getBearerToken') {
+            return Promise.resolve('mock-bearer-token');
+          }
+          if (action === 'RemoteFeatureFlagController:getState') {
+            return {
+              remoteFeatureFlags: {
+                [ASSETS_UNIFY_STATE_FLAG]: {
+                  tracesEnabled: true,
+                },
+              },
+            };
+          }
+          throw new Error(`Unexpected action: ${action}`);
+        });
+
+      AssetsControllerInit(requestMock);
+
+      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
+      const { trace } = constructorCall;
+      if (!trace) {
+        throw new Error('Expected trace callback to be defined');
+      }
+
+      const fn = jest.fn(() => 'result');
+      const request = { name: 'AssetsControllerFirstInitFetch' };
+      await expect(trace(request, fn)).resolves.toBe('result');
+
+      expect(traceAsControllerCallback).toHaveBeenCalledWith(request, fn);
+    });
+  });
+
+  describe('tempMigrateAssetsInfoMetadataAssets3346', () => {
+    it('returns the TokensController and AccountsController persisted state slices for the healing migration', () => {
+      const persistedState = {
+        TokensController: {
+          allTokens: {
+            '0xe': {
+              '0x0000000000000000000000000000000000000001': [
+                {
+                  address: '0x0000000000000000000000000000000000000002',
+                  symbol: 'NICHE',
+                  decimals: 18,
+                },
+              ],
+            },
+          },
+        },
+        AccountsController: {
+          internalAccounts: {
+            accounts: {
+              'account-id-1': {
+                address: '0x0000000000000000000000000000000000000001',
+              },
+            },
+          },
+        },
+      };
+
+      const requestMock = getInitRequestMock();
+      // The healing migration treats the persisted state as untrusted and
+      // re-validates every shape, so a partial fixture is intentional here.
+      requestMock.persistedState =
+        persistedState as unknown as typeof requestMock.persistedState;
+
+      AssetsControllerInit(requestMock);
+
+      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
+      const getMigrationState =
+        constructorCall.tempMigrateAssetsInfoMetadataAssets3346;
+      if (!getMigrationState) {
+        throw new Error(
+          'Expected tempMigrateAssetsInfoMetadataAssets3346 to be defined',
+        );
+      }
+
+      const migrationState = getMigrationState();
+      expect(migrationState.TokensController).toBe(
+        persistedState.TokensController,
+      );
+      expect(migrationState.AccountsController).toBe(
+        persistedState.AccountsController,
+      );
+    });
+  });
+
   describe('queryApiClient', () => {
     it('creates the API client with correct clientProduct', () => {
       // Use jest.isolateModules so assets-controller-init gets a fresh module
@@ -431,6 +674,7 @@ describe('AssetsControllerInit', () => {
 
       expect(createApiPlatformClient).toHaveBeenCalledWith({
         clientProduct: 'metamask-extension',
+        clientVersion: process.env.METAMASK_VERSION,
         getBearerToken: expect.any(Function),
       });
     });
@@ -496,6 +740,86 @@ describe('AssetsControllerInit', () => {
         throw new Error('Expected getBearerToken to be defined');
       }
       expect(await getBearerToken()).toBeUndefined();
+    });
+
+    it('getBearerToken returns undefined without signing in before onboarding completes', async () => {
+      const requestMock = getInitRequestMock({ completedOnboarding: false });
+
+      jest.isolateModules(() => {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
+        const freshModule = require('./assets-controller-init') as any;
+        freshModule.AssetsControllerInit(requestMock);
+      });
+
+      const callArgs = jest.mocked(createApiPlatformClient).mock.calls[0];
+      if (!callArgs) {
+        throw new Error('Expected createApiPlatformClient to have been called');
+      }
+      const { getBearerToken } = callArgs[0];
+      if (!getBearerToken) {
+        throw new Error('Expected getBearerToken to be defined');
+      }
+      expect(await getBearerToken()).toBeUndefined();
+      expect(requestMock.initMessenger.call).not.toHaveBeenCalledWith(
+        'AuthenticationController:getBearerToken',
+      );
+    });
+
+    it('getBearerToken returns undefined without signing in when basic functionality is off', async () => {
+      const { requestMock } = buildSubscribeTestSetup({
+        useExternalServices: false,
+      });
+
+      jest.isolateModules(() => {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
+        const freshModule = require('./assets-controller-init') as any;
+        freshModule.AssetsControllerInit(requestMock);
+      });
+
+      const callArgs = jest.mocked(createApiPlatformClient).mock.calls[0];
+      if (!callArgs) {
+        throw new Error('Expected createApiPlatformClient to have been called');
+      }
+      const { getBearerToken } = callArgs[0];
+      if (!getBearerToken) {
+        throw new Error('Expected getBearerToken to be defined');
+      }
+      expect(await getBearerToken()).toBeUndefined();
+      expect(requestMock.initMessenger.call).not.toHaveBeenCalledWith(
+        'AuthenticationController:getBearerToken',
+      );
+    });
+
+    it('getBearerToken returns undefined when backend auth is disabled', async () => {
+      process.env.MM_BACKEND_DISABLE_AUTH = 'true';
+
+      try {
+        const requestMock = getInitRequestMock();
+
+        jest.isolateModules(() => {
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
+          const freshModule = require('./assets-controller-init') as any;
+          freshModule.AssetsControllerInit(requestMock);
+        });
+
+        const callArgs = jest.mocked(createApiPlatformClient).mock.calls[0];
+        if (!callArgs) {
+          throw new Error(
+            'Expected createApiPlatformClient to have been called',
+          );
+        }
+        const { getBearerToken } = callArgs[0];
+        if (!getBearerToken) {
+          throw new Error('Expected getBearerToken to be defined');
+        }
+
+        expect(await getBearerToken()).toBeUndefined();
+        expect(requestMock.initMessenger.call).not.toHaveBeenCalledWith(
+          'AuthenticationController:getBearerToken',
+        );
+      } finally {
+        delete process.env.MM_BACKEND_DISABLE_AUTH;
+      }
     });
   });
 
@@ -603,6 +927,81 @@ describe('AssetsControllerInit', () => {
       listeners['OnboardingController:stateChange'](false);
 
       expect(onChange).not.toHaveBeenCalled();
+    });
+
+    it('refreshes subscriptions when useTokenDetection changes and ignores unrelated preference changes', () => {
+      const { requestMock } = buildSubscribeTestSetup({
+        completedOnboarding: true,
+        useExternalServices: true,
+      });
+
+      const subscriptions: {
+        event: string;
+        listener: (selectedValue: unknown) => void;
+        selector?: (state: {
+          useExternalServices?: boolean;
+          useTokenDetection?: boolean;
+          theme?: string;
+        }) => unknown;
+      }[] = [];
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (requestMock.controllerMessenger as any).subscribe = jest
+        .fn()
+        .mockImplementation(
+          (
+            event: string,
+            listener: (selectedValue: unknown) => void,
+            selector?: (state: {
+              useExternalServices?: boolean;
+              useTokenDetection?: boolean;
+              theme?: string;
+            }) => unknown,
+          ) => {
+            subscriptions.push({ event, listener, selector });
+          },
+        );
+
+      AssetsControllerInit(requestMock);
+
+      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
+      const subscribeToBasicFunctionalityChange =
+        constructorCall.subscribeToBasicFunctionalityChange as (
+          onChange: (value: boolean) => void,
+        ) => void;
+
+      const onChange = jest.fn();
+      subscribeToBasicFunctionalityChange(onChange);
+
+      const preferencesSubscription = subscriptions.find(
+        (subscription) =>
+          subscription.event === 'PreferencesController:stateChange',
+      );
+      if (!preferencesSubscription?.selector) {
+        throw new Error(
+          'Expected a PreferencesController:stateChange selector',
+        );
+      }
+
+      const enabled = preferencesSubscription.selector({
+        useExternalServices: true,
+        useTokenDetection: true,
+      });
+      const detectionDisabled = preferencesSubscription.selector({
+        useExternalServices: true,
+        useTokenDetection: false,
+      });
+      const unrelatedPreference = preferencesSubscription.selector({
+        useExternalServices: true,
+        useTokenDetection: true,
+        theme: 'dark',
+      });
+
+      expect(detectionDisabled).not.toBe(enabled);
+      expect(unrelatedPreference).toBe(enabled);
+
+      preferencesSubscription.listener(detectionDisabled);
+      expect(onChange).toHaveBeenCalledWith(true);
     });
   });
 });

@@ -1,13 +1,7 @@
-import React, {
-  memo,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { Box, Text } from '../../component-library';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -60,6 +54,11 @@ export type NameProps = {
    * Whether to disable the onClick handler.
    */
   disableNameClick?: boolean;
+
+  /**
+   * Whether to fill the available width on one line. See `NameDisplay`.
+   */
+  fillWidth?: boolean;
 };
 
 const Name = memo(
@@ -70,10 +69,11 @@ const Name = memo(
     variation,
     className,
     disableNameClick = false,
+    fillWidth,
     ...props
   }: NameProps) => {
     const [modalOpen, setModalOpen] = useState(false);
-    const { trackEvent } = useContext(MetaMetricsContext);
+    const { trackEvent, createEventBuilder } = useAnalytics();
 
     const { name, subtitle, isAccount } = useDisplayName({
       value,
@@ -83,19 +83,20 @@ const Name = memo(
     });
 
     useEffect(() => {
-      trackEvent({
-        event: MetaMetricsEventName.PetnameDisplayed,
-        category: MetaMetricsEventCategory.Petnames,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          petname_category: type,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          has_petname: Boolean(name?.length),
-        },
-      });
-      // eslint-disable-next-line react-compiler/react-compiler,react-hooks/exhaustive-deps -- only want to call `trackEvent` on the initial render
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.PetnameDisplayed)
+          .addCategory(MetaMetricsEventCategory.Petnames)
+          .addProperties({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            petname_category: type,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            has_petname: Boolean(name?.length),
+          })
+          .build(),
+      );
+      // eslint-disable-next-line react-hooks/exhaustive-deps -- only want to call `trackEvent` on the initial render
     }, []);
 
     const handleClick = useCallback(() => {
@@ -130,6 +131,7 @@ const Name = memo(
           variation={variation}
           handleClick={handleClick}
           disableNameClick={disableNameClick}
+          fillWidth={fillWidth}
           {...props}
         />
         {subtitle && (

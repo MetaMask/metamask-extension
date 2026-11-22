@@ -648,4 +648,23 @@ describe('PerpsToastProvider', () => {
       screen.queryByText(messages.perpsToastMarginAdjustmentFailed.message),
     ).not.toBeInTheDocument();
   });
+
+  it('renders the toast via portal to document.body, not inside the provider subtree', () => {
+    const { container } = renderWithProvider(
+      <PerpsToastProvider>
+        <ToastHarness />
+      </PerpsToastProvider>,
+      getStore(),
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Show Info' }));
+
+    expect(screen.getByText('Submitting order...')).toBeInTheDocument();
+    expect(
+      container.querySelector('[data-testid="perps-toast"]'),
+    ).not.toBeInTheDocument();
+    expect(
+      document.body.querySelector('[data-testid="perps-toast"]'),
+    ).toBeInTheDocument();
+  });
 });

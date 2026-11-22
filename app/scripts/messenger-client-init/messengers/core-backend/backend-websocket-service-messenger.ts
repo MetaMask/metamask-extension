@@ -6,14 +6,18 @@ import {
 } from '@metamask/messenger';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
+import {
+  OnboardingControllerGetStateAction,
+  OnboardingControllerStateChangeEvent,
+} from '../../../controllers/onboarding';
+import {
+  PreferencesControllerGetStateAction,
+  PreferencesControllerStateChangeEvent,
+} from '../../../controllers/preferences-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
 export type BackendWebSocketServiceMessenger =
   BackendPlatformWebSocketServiceMessenger;
-
-type Actions = MessengerActions<BackendWebSocketServiceMessenger>;
-
-type Events = MessengerEvents<BackendWebSocketServiceMessenger>;
 
 /**
  * Get a restricted messenger for the Backend Platform WebSocket service.
@@ -23,14 +27,12 @@ type Events = MessengerEvents<BackendWebSocketServiceMessenger>;
  * @returns The restricted messenger.
  */
 export function getBackendWebSocketServiceMessenger(
-  messenger: RootMessenger<Actions, Events>,
+  messenger: RootMessenger<
+    MessengerActions<BackendWebSocketServiceMessenger>,
+    MessengerEvents<BackendWebSocketServiceMessenger>
+  >,
 ): BackendPlatformWebSocketServiceMessenger {
-  const serviceMessenger = new Messenger<
-    'BackendWebSocketService',
-    Actions,
-    Events,
-    typeof messenger
-  >({
+  const serviceMessenger: BackendWebSocketServiceMessenger = new Messenger({
     namespace: 'BackendWebSocketService',
     parent: messenger,
   });
@@ -48,21 +50,30 @@ export function getBackendWebSocketServiceMessenger(
   return serviceMessenger;
 }
 
+type AllowedInitializationActions =
+  | RemoteFeatureFlagControllerGetStateAction
+  | AuthenticationControllerGetBearerTokenAction
+  | PreferencesControllerGetStateAction
+  | OnboardingControllerGetStateAction;
+
+type AllowedInitializationEvents =
+  | PreferencesControllerStateChangeEvent
+  | OnboardingControllerStateChangeEvent;
+
 export type BackendWebSocketServiceInitMessenger = ReturnType<
   typeof getBackendWebSocketServiceInitMessenger
 >;
 
-type AllowedInitializationActions =
-  | RemoteFeatureFlagControllerGetStateAction
-  | AuthenticationControllerGetBearerTokenAction;
-
 export function getBackendWebSocketServiceInitMessenger(
-  messenger: RootMessenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<
+    AllowedInitializationActions,
+    AllowedInitializationEvents
+  >,
 ) {
   const controllerInitMessenger = new Messenger<
     'BackendWebSocketServiceInit',
     AllowedInitializationActions,
-    never,
+    AllowedInitializationEvents,
     typeof messenger
   >({
     namespace: 'BackendWebSocketServiceInit',
@@ -73,6 +84,12 @@ export function getBackendWebSocketServiceInitMessenger(
     actions: [
       'RemoteFeatureFlagController:getState',
       'AuthenticationController:getBearerToken',
+      'PreferencesController:getState',
+      'OnboardingController:getState',
+    ],
+    events: [
+      'PreferencesController:stateChange',
+      'OnboardingController:stateChange',
     ],
   });
   return controllerInitMessenger;

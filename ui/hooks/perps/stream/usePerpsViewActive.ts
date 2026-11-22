@@ -4,7 +4,7 @@ import { submitRequestToBackground } from '../../../store/background-connection'
 /**
  * Signals whether a Perps view is currently active for this UI connection.
  *
- * The background Perps stream bridge only emits while `perpsViewActive` is true.
+ * Owns foreground streams; wallet-level preload has independent ownership.
  * Use this in Perps entry boundaries (route layout, tab boundary), not leaf views.
  *
  * @param source - Identifier used in debug logs

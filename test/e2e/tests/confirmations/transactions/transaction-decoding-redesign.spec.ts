@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockttpServer } from 'mockttp';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { DAPP_URL, NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../../constants';
@@ -134,6 +133,14 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
           })
           .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
           .build(),
+        // On mainnet `confirmations_enforced_simulations` would auto-wrap the tx as redeemDelegations and hide the Uniswap decode UI.
+        // So we disable enforced_simulations to keep decoding assertions on the original Uniswap calldata.
+        manifestFlags: {
+          remoteFeatureFlags: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            confirmations_enforced_simulations: { enabled: false },
+          },
+        },
         testSpecificMock: mockTokensAndInfura,
         title: this.test?.fullTitle(),
       },

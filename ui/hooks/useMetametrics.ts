@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import log from 'loglevel';
 import {
   setParticipateInMetaMetrics,
@@ -8,6 +8,7 @@ import {
   hideLoadingIndication,
 } from '../store/actions';
 import { getPna25Acknowledged } from '../selectors/metametrics';
+import { useDispatch } from '../store/hooks';
 
 /**
  * Provides a hook to enable MetaMetrics tracking.

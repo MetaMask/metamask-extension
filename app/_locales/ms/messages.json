@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Anda perlu memilih akaun!"
   },
-  "addAcquiredTokens": {
-    "message": "Tambah token yang anda peroleh menggunakan MetaMask"
-  },
   "addAlias": {
     "message": "Tambah alias"
   },
@@ -83,9 +80,6 @@
   },
   "back": {
     "message": "Kembali"
-  },
-  "backupApprovalInfo": {
-    "message": "Kod rahsia ini diperlukan untuk memulihkan dompet anda sekiranya anda kehilangan peranti anda, terlupa kata laluan anda, perlu memasang semua MetaMask, atau mahu mengakses dompet anda menggunakan peranti lain."
   },
   "backupApprovalNotice": {
     "message": "Sandarkan kod Pemulihan Rahsia anda untuk memastikan dompet dan dana anda sentiasa selamat."
@@ -181,14 +175,8 @@
   "custom": {
     "message": "Lanjutan"
   },
-  "customToken": {
-    "message": "Token Tersuai"
-  },
   "decimal": {
     "message": "Bilangan Perpuluhan Kejituan"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Perpuluhan mestilah sekurang-kurangnya 0, dan tidak melebihi 36."
   },
   "delete": {
     "message": "Padam"
@@ -198,9 +186,6 @@
   },
   "done": {
     "message": "Selesai"
-  },
-  "downloadGoogleChrome": {
-    "message": "Muat Turun Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Muat Turun Log Keadaan"
@@ -223,10 +208,6 @@
   "fast": {
     "message": "Cepat"
   },
-  "fileImportFail": {
-    "message": "Pengimportan fail tidak berfungsi? Klik di sini!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "Lupakan peranti ini"
   },
@@ -235,9 +216,6 @@
   },
   "gasLimit": {
     "message": "Had Gas"
-  },
-  "gasLimitTooLow": {
-    "message": "Had gas mestilah sekurang-kurangnya 21000"
   },
   "gasUsed": {
     "message": "Gas Digunakan"
@@ -256,9 +234,6 @@
   },
   "hardwareWallets": {
     "message": "Sambungkan dompet perkakasan"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Pilih dompet perkakasan yang anda ingin gunakan dengan MetaMask"
   },
   "here": {
     "message": "di sini",
@@ -341,9 +316,6 @@
   "metamaskVersion": {
     "message": "Versi MetaMask"
   },
-  "mustSelectOne": {
-    "message": "Mesti memilih sekurang-kurangnya 1 token."
-  },
   "needImportFile": {
     "message": "Anda mesti pilih fail untuk diimport.",
     "description": "User is important an account and needs to add a file to continue"
@@ -353,9 +325,6 @@
   },
   "networks": {
     "message": "Rangkaian"
-  },
-  "nevermind": {
-    "message": "Tidak mengapa"
   },
   "newAccountNumberName": {
     "message": "Akaun $1",
@@ -375,9 +344,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Kamera web tidak ditemui"
-  },
-  "notEnoughGas": {
-    "message": "Tidak Cukup Gas"
   },
   "ofTextNofM": {
     "message": "daripada"
@@ -406,10 +372,6 @@
   "passwordsDontMatch": {
     "message": "Kata Laluan Tidak Sepadan"
   },
-  "pastePrivateKey": {
-    "message": "Tampal rentetan kekunci persendirian anda di sini:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "menunggu"
   },
@@ -425,9 +387,6 @@
   "privateKey": {
     "message": "Kekunci Persendirian",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Amaran: Jangan sekali-kali dedahkan kunci ini. Sesiapa sahaja dengan kunci persendirian anda boleh mencuri sebarang aset yang tersimpan di dalam akaun anda."
   },
   "privateNetwork": {
     "message": "Rangkaian Persendirian"
@@ -514,9 +473,6 @@
   "sign": {
     "message": "Tandatangan"
   },
-  "signatureRequest": {
-    "message": "Permintaan Tandatangan"
-  },
   "signed": {
     "message": "Ditandatangani"
   },
@@ -600,9 +556,6 @@
   },
   "urlErrorMsg": {
     "message": "URI memerlukan awalan HTTP/HTTPS yang sesuai."
-  },
-  "usedByClients": {
-    "message": "Digunakan oleh pelbagai klien berbeza"
   },
   "visitWebSite": {
     "message": "Kunjungi laman web kami"

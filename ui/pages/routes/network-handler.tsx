@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 
 import {
   getNetworkToAutomaticallySwitchTo,
@@ -7,7 +6,7 @@ import {
 } from '../../selectors';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { automaticallySwitchNetwork } from '../../store/actions';
-import { useAppSelector } from '../../store/store';
+import { useAppSelector, useDispatch } from '../../store/hooks';
 
 export const NetworkHandler = () => {
   const dispatch = useDispatch();

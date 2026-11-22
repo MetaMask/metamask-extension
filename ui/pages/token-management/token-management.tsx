@@ -1,5 +1,13 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { useDispatch, useSelector, useStore } from 'react-redux';
+import React, {
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { useSelector, useStore } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -12,10 +20,14 @@ import {
   ButtonIcon,
   ButtonIconSize,
   FontWeight,
+  Icon,
+  IconColor,
   IconName,
+  IconSize,
   Text,
   TextAlign,
   TextColor,
+  TextFieldSearch,
   TextVariant,
 } from '@metamask/design-system-react';
 import {
@@ -23,8 +35,8 @@ import {
   type CaipChainId,
   type Hex,
 } from '@metamask/utils';
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
-
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import { ERC20 } from '@metamask/controller-utils';
 import { TokenManagementCell } from '../../components/multichain/token-management-cell';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
@@ -37,19 +49,21 @@ import {
 import {
   getAllEnabledNetworksForAllNamespaces,
   getAllMultichainNetworkConfigurations,
-  getEnabledNetworksByNamespace,
   getIsEvmMultichainNetworkSelected,
   getSelectedMultichainNetworkConfiguration,
+  selectEnabledNetworksAsCaipChainIds,
 } from '../../selectors/multichain/networks';
+import { useNetworkFilterButtonLabel } from '../../components/app/assets/hooks/useNetworkFilterButtonLabel';
 import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
 import {
+  addNetwork,
   addCustomAsset,
   addImportedTokens,
   hideAsset,
   ignoreTokens as ignoreTokensAction,
+  importCustomAssetsBatch,
   multichainAddAssets,
   multichainIgnoreAssets,
-  showModal,
 } from '../../store/actions';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import {
@@ -58,55 +72,350 @@ import {
 } from '../../helpers/constants/routes';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
 import { getAssetsBySelectedAccountGroup } from '../../selectors/assets';
-import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
+import {
+  getMultiChainAssetsControllerAllIgnoredAssets,
+  getTokensControllerAllIgnoredTokens,
+  getTokensControllerAllTokens,
+} from '../../../shared/lib/selectors/assets-migration';
 import {
   getAssetImageUrl,
   isEvmChainId,
   isTronSpecialAsset,
   toAssetId,
+  toNormalizedCaipAssetId,
 } from '../../../shared/lib/asset-utils';
 import { sortAssetsWithPriority } from '../../components/app/assets/util/sortAssetsWithPriority';
 import { ScrollContainer } from '../../contexts/scroll-container';
 import { Header } from '../../components/multichain/pages/page';
 import { ASSET_CELL_HEIGHT } from '../../components/app/assets/constants';
-import { useDebouncedValue } from '../../hooks/useDebouncedValue';
+import { HomeNetworkFilterModal } from '../../components/app/assets/asset-list/asset-list-control-bar/home-network-filter-modal';
 import { useTokenSearch } from '../../hooks/useTokenSearch';
+import { useTokenAssetSecurityResults } from '../../hooks/token-asset/useTokenAssetSecurityResults';
+import { useEnableFeaturedEvmNetwork } from '../../hooks/useEnableFeaturedEvmNetwork';
 import { type TokenSearchResult } from '../../../shared/lib/token-search/token-search-api';
 import {
   convertSearchResultToImportPayload,
   type SearchResultImportPayload,
 } from '../../../shared/lib/token-search/convert-search-result';
-import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
+import { useAnalytics } from '../../hooks/useAnalytics';
+import { useDispatch } from '../../store/hooks';
+
 import {
-  TextFieldSearch,
-  TextFieldSearchSize,
-} from '../../components/component-library';
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsTokenEventSource,
+} from '../../../shared/constants/metametrics';
+import {
+  AssetType,
+  TokenStandard,
+} from '../../../shared/constants/transaction';
+import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
+import { filterExcludedAssetList } from '../../components/app/assets/enablement/networks-customization';
+import { getFeaturedEvmNetworks } from '../../selectors/config-registry/config-registry';
+import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../selectors/network-blacklist/network-blacklist';
+import { getFilteredFeaturedNetworks } from '../../../shared/lib/network.utils';
+import { toast, ToastContent } from '../../components/ui/toast/toast';
 
 type ManagedAsset = Parameters<typeof sortAssetsWithPriority>[0][number];
 
-/**
- * Debounce window applied to the search input before it reaches the Token API.
- * Keeps the request rate sane while still feeling instant.
- */
-const SEARCH_DEBOUNCE_MS = 300;
+type EvmToken = {
+  address: string;
+  symbol?: string;
+  decimals?: number;
+  name?: string;
+  image?: string;
+};
 
-/**
- * Full-screen Token Management page.
- *
- * Replaces the legacy import-tokens modal flow when the
- * `extensionUxTokenManagementFilter` feature flag is enabled. The token list
- * mirrors the home-page asset list for the current network filter, and lets
- * users hide manageable EVM tokens from that list.
- *
- */
+const TOKEN_LIST_PAGINATION_THRESHOLD_PX = ASSET_CELL_HEIGHT * 4;
+const EMPTY_TOKEN_SEARCH_RESULTS: TokenSearchResult[] = [];
+const TOKEN_MANAGEMENT_SCREEN = 'manage_tokens';
+const TOKEN_MANAGEMENT_DEFAULT_VIEW_STATE = 'default';
+const TOKEN_MANAGEMENT_NO_RESULTS_VIEW_STATE = 'no_results';
+const TOKEN_MANAGEMENT_LOCATION = 'MANAGE_TOKENS';
+const TOKEN_MANAGEMENT_CUSTOM_CTA_LOCATION = 'MANAGE_TOKENS_CUSTOM_CTA';
+const METRICS_PROPERTIES = {
+  assetType: 'asset_type',
+  chainId: 'chain_id',
+  sourceConnectionMethod: 'source_connection_method',
+  tokenContractAddress: 'token_contract_address',
+  tokenDecimalPrecision: 'token_decimal_precision',
+  tokenStandard: 'token_standard',
+  tokenSymbol: 'token_symbol',
+  viewState: 'view_state',
+} as const;
+
+type WithSafetyResult<TItem> = TItem & { safetyResult?: string };
+
+type TokenManagementListItem =
+  | {
+      type: 'managed';
+      token: WithSafetyResult<ManagedAsset>;
+    }
+  | {
+      type: 'api-result';
+      result: WithSafetyResult<TokenSearchResult>;
+    };
+
+const getAssetReferenceFromAssetId = (assetId: unknown): string | undefined => {
+  if (!assetId || typeof assetId !== 'string') {
+    return undefined;
+  }
+
+  const assetType = assetId.split('/').pop();
+  const assetReference = assetType?.split(':').pop();
+  return assetReference || assetId;
+};
+
+const hasValidAssetId = (
+  result: TokenSearchResult,
+): result is TokenSearchResult & { assetId: CaipAssetType } =>
+  typeof result.assetId === 'string';
+
+const getManagedTokenMetricsProperties = (token: ManagedAsset) => {
+  const isEvmToken = isEvmChainId(token.chainId as Hex | CaipChainId);
+  const address =
+    'address' in token && token.address
+      ? token.address
+      : getAssetReferenceFromAssetId(token.assetId);
+  const properties: Record<string, string | number> = {
+    [METRICS_PROPERTIES.chainId]: String(token.chainId),
+    [METRICS_PROPERTIES.tokenStandard]: isEvmToken ? ERC20 : TokenStandard.none,
+    [METRICS_PROPERTIES.assetType]: AssetType.token,
+  };
+
+  if (token.symbol) {
+    properties[METRICS_PROPERTIES.tokenSymbol] = token.symbol;
+  }
+  if (address) {
+    properties[METRICS_PROPERTIES.tokenContractAddress] = address;
+  }
+  if (typeof token.decimals === 'number') {
+    properties[METRICS_PROPERTIES.tokenDecimalPrecision] = token.decimals;
+  }
+
+  return properties;
+};
+
+const importEvmSearchResultToUnifiedAssets = (
+  accountId: string,
+  payload: SearchResultImportPayload,
+) =>
+  importCustomAssetsBatch(
+    accountId,
+    [{ assetId: payload.assetId, isHidden: false }],
+    {
+      [payload.assetId]: {
+        address: payload.assetReference,
+        symbol: payload.symbol,
+        name: payload.name,
+        decimals: payload.decimals,
+      },
+    },
+  );
+
+const normalizeToHexChainId = (chainId: string): string => {
+  if (!chainId.startsWith('eip155:')) {
+    return chainId.toLowerCase();
+  }
+
+  const decimalChainId = Number(chainId.split(':')[1]);
+  return Number.isFinite(decimalChainId)
+    ? `0x${decimalChainId.toString(16)}`.toLowerCase()
+    : chainId.toLowerCase();
+};
+
+const isEvmAddress = (query: string) => /^0x[a-fA-F0-9]{40}$/u.test(query);
+
+const convertHexChainIdToCaipChainId = (chainId: string) => {
+  const decimalChainId = Number.parseInt(chainId, 16);
+  return Number.isFinite(decimalChainId)
+    ? `eip155:${decimalChainId}`
+    : undefined;
+};
+
+const getTokenAddressKey = (chainId: string, address: string) =>
+  `${normalizeToHexChainId(chainId)}:${address.toLowerCase()}`;
+
+const getManagedTokenListOrderKey = (token: ManagedAsset) => {
+  if ('address' in token && token.address && token.chainId) {
+    return getTokenAddressKey(String(token.chainId), token.address);
+  }
+
+  return String(token.assetId).toLowerCase();
+};
+
+const getSearchResultListOrderKey = (result: TokenSearchResult) => {
+  const payload = convertSearchResultToImportPayload(result);
+  if (payload?.hexChainId) {
+    // The API references native assets by slip44 coin type, the wallet by
+    // the chain's native address.
+    const address = payload.isNative
+      ? getNativeTokenAddress(payload.hexChainId)
+      : payload.assetReference;
+    return getTokenAddressKey(payload.hexChainId, address);
+  }
+
+  return result.assetId.toLowerCase();
+};
+
+const getTokenManagementListItemOrderKey = (item: TokenManagementListItem) =>
+  item.type === 'managed'
+    ? getManagedTokenListOrderKey(item.token)
+    : getSearchResultListOrderKey(item.result);
+
+const getTokenManagementListItemCaipAssetId = (item: TokenManagementListItem) =>
+  item.type === 'managed'
+    ? toNormalizedCaipAssetId(item.token.assetId, item.token.chainId)
+    : toNormalizedCaipAssetId(item.result.assetId);
+
+const withSafetyResult = (
+  item: TokenManagementListItem,
+  safetyResult?: string,
+): TokenManagementListItem =>
+  item.type === 'managed'
+    ? { ...item, token: { ...item.token, safetyResult } }
+    : { ...item, result: { ...item.result, safetyResult } };
+
+const getIgnoredTokenAddressesByChain = (
+  allIgnoredTokensByChain: Record<string, Record<string, string[]>>,
+  selectedAddress?: string,
+) => {
+  const ignoredTokenAddressesByChain = new Map<string, Set<string>>();
+
+  if (!selectedAddress) {
+    return ignoredTokenAddressesByChain;
+  }
+
+  const lowercasedSelectedAddress = selectedAddress.toLowerCase();
+  Object.entries(allIgnoredTokensByChain ?? {}).forEach(
+    ([chainId, tokensByAddress]) => {
+      const hexChainId = normalizeToHexChainId(chainId);
+      Object.entries(tokensByAddress ?? {}).forEach(
+        ([accountAddress, tokenAddresses]) => {
+          if (accountAddress.toLowerCase() !== lowercasedSelectedAddress) {
+            return;
+          }
+
+          const ignoredAddresses =
+            ignoredTokenAddressesByChain.get(hexChainId) ?? new Set<string>();
+          tokenAddresses.forEach((tokenAddress) =>
+            ignoredAddresses.add(tokenAddress.toLowerCase()),
+          );
+          ignoredTokenAddressesByChain.set(hexChainId, ignoredAddresses);
+        },
+      );
+    },
+  );
+
+  return ignoredTokenAddressesByChain;
+};
+
+const toManagedEvmToken = (token: EvmToken, hexChainId: string): ManagedAsset =>
+  ({
+    accountId: '',
+    accountType: 'eip155:eoa',
+    assetId:
+      toAssetId(token.address as Hex, hexChainId as Hex) ?? token.address,
+    address: token.address,
+    chainId: hexChainId,
+    image: token.image ?? '',
+    name: token.name ?? token.symbol ?? token.address,
+    symbol: token.symbol ?? '',
+    decimals: token.decimals ?? 0,
+    isNative: false,
+    rawBalance: '0x0',
+    balance: '0',
+    fiat: {
+      balance: 0,
+      currency: 'usd',
+      conversionRate: 0,
+    },
+  }) as ManagedAsset;
+
+const getImportedTokensWithoutBalances = ({
+  allTokensByChain,
+  allIgnoredTokensByChain,
+  enabledChainIds,
+  selectedAddress,
+  seenKeys,
+}: {
+  allTokensByChain: Record<string, Record<string, EvmToken[]>>;
+  allIgnoredTokensByChain: Record<string, Record<string, string[]>>;
+  enabledChainIds: string[];
+  selectedAddress?: string;
+  seenKeys: Set<string>;
+}): ManagedAsset[] => {
+  if (!selectedAddress) {
+    return [];
+  }
+
+  const ignoredAddressesByChain = getIgnoredTokenAddressesByChain(
+    allIgnoredTokensByChain,
+    selectedAddress,
+  );
+  const lowercasedSelectedAddress = selectedAddress.toLowerCase();
+
+  return Object.entries(allTokensByChain ?? {}).flatMap(
+    ([chainId, tokensByAddress]) => {
+      const hexChainId = normalizeToHexChainId(chainId);
+      if (!enabledChainIds.includes(hexChainId)) {
+        return [];
+      }
+
+      return Object.entries(tokensByAddress ?? {}).flatMap(
+        ([accountAddress, tokens]) => {
+          if (accountAddress.toLowerCase() !== lowercasedSelectedAddress) {
+            return [];
+          }
+
+          return tokens.flatMap((token) => {
+            if (!token?.address) {
+              return [];
+            }
+
+            const lowercasedAddress = token.address.toLowerCase();
+            const key = getTokenAddressKey(hexChainId, lowercasedAddress);
+            if (
+              seenKeys.has(key) ||
+              ignoredAddressesByChain.get(hexChainId)?.has(lowercasedAddress)
+            ) {
+              return [];
+            }
+
+            seenKeys.add(key);
+            return [toManagedEvmToken(token, hexChainId)];
+          });
+        },
+      );
+    },
+  );
+};
+
 export const TokenManagementPage = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const runCloseTransition = useGlobalMenuRouteTransition();
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const enableFeaturedEvmNetwork = useEnableFeaturedEvmNetwork();
 
   const [searchQuery, setSearchQuery] = useState('');
+  const [isNetworkFilterModalOpen, setIsNetworkFilterModalOpen] =
+    useState(false);
   const [pendingKeys, setPendingKeys] = useState<ReadonlySet<string>>(
     () => new Set<string>(),
+  );
+
+  const showNetworkAddedToast = useCallback(
+    (networkName: string) => {
+      toast.success(
+        <ToastContent
+          title={t('newNetworkAdded', [networkName])}
+          dataTestId="token-management-network-added-success-toast"
+        />,
+      );
+    },
+    [t],
   );
 
   const addPendingKey = useCallback((key: string) => {
@@ -128,10 +437,92 @@ export const TokenManagementPage = () => {
     });
   }, []);
 
-  const isAssetsUnifiedStateInBuild = useMemo(
-    () => getIsAssetsUnifiedStateIncludedInBuild(),
-    [],
+  type StagedHidePayload =
+    | {
+        kind: 'evm';
+        hexChainId: Hex;
+        address: string;
+        caipAssetId?: CaipAssetType;
+      }
+    | {
+        kind: 'multichain';
+        assetId: CaipAssetType;
+        accountId: string;
+      };
+
+  const [stagedHideKeys, setStagedHideKeys] = useState<ReadonlySet<string>>(
+    () => new Set<string>(),
   );
+  const [committedHideKeys, setCommittedHideKeys] = useState<
+    ReadonlySet<string>
+  >(() => new Set<string>());
+  const stagedHidesRef = useRef<Map<string, StagedHidePayload>>(new Map());
+  const hasTrackedScreenOpenedRef = useRef(false);
+  const [tokenListOrder, setTokenListOrder] = useState<Map<string, number>>(
+    () => new Map(),
+  );
+
+  const stageHide = useCallback((key: string, payload: StagedHidePayload) => {
+    stagedHidesRef.current.set(key, payload);
+    setStagedHideKeys(new Set(stagedHidesRef.current.keys()));
+  }, []);
+
+  const unstageHide = useCallback((key: string) => {
+    if (!stagedHidesRef.current.has(key)) {
+      return false;
+    }
+    stagedHidesRef.current.delete(key);
+    setStagedHideKeys(new Set(stagedHidesRef.current.keys()));
+    return true;
+  }, []);
+
+  const addCommittedHideKeys = useCallback((keys: string[]) => {
+    if (keys.length === 0) {
+      return;
+    }
+
+    setCommittedHideKeys((previousKeys) => {
+      const nextKeys = new Set(previousKeys);
+      keys.forEach((key) => nextKeys.add(key));
+      return nextKeys;
+    });
+  }, []);
+
+  const removeCommittedHideKey = useCallback((key: string) => {
+    setCommittedHideKeys((previousKeys) => {
+      if (!previousKeys.has(key)) {
+        return previousKeys;
+      }
+
+      const nextKeys = new Set(previousKeys);
+      nextKeys.delete(key);
+      return nextKeys;
+    });
+  }, []);
+
+  const getStagedHideKey = useCallback((token: ManagedAsset): string | null => {
+    if (isEvmChainId(token.chainId as Hex | CaipChainId)) {
+      if (!('address' in token) || !token.address) {
+        return null;
+      }
+      const caip = toAssetId(token.address as Hex, token.chainId as Hex);
+      return caip ? caip.toLowerCase() : null;
+    }
+    return token.assetId ? String(token.assetId).toLowerCase() : null;
+  }, []);
+
+  const commitStagedHidesRef = useRef<() => Promise<void>>(
+    async () => undefined,
+  );
+
+  const isMountedRef = useRef(true);
+
+  const commitStagedHides = useCallback(async () => {
+    if (stagedHidesRef.current.size === 0) {
+      return;
+    }
+    await commitStagedHidesRef.current();
+  }, []);
 
   const accountGroupIdAssets = useSelector(
     getAssetsBySelectedAccountGroup,
@@ -146,44 +537,37 @@ export const TokenManagementPage = () => {
   const allEnabledNetworksForAllNamespaces = useSelector(
     getAllEnabledNetworksForAllNamespaces,
   );
-  // Wrapped in a safe selector so a partially hydrated multichain state
-  // (which can throw in `parseCaipChainId`) cannot blank the entire page.
-  const enabledNetworksByNamespace = useSelector((state: unknown) => {
-    try {
-      return getEnabledNetworksByNamespace(
-        state as Parameters<typeof getEnabledNetworksByNamespace>[0],
-      );
-    } catch {
-      return {} as Record<string, boolean>;
-    }
-  });
+  const enabledCaipChainIds = useSelector(selectEnabledNetworksAsCaipChainIds);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
-  // Includes non-EVM (Solana, Bitcoin, ...) networks keyed by CAIP-2 chain id.
-  // Used to resolve a display name when the active enabled network is non-EVM,
-  // which is missing from the EVM-only `networkConfigurations` map above.
   const allMultichainNetworkConfigurations = useSelector(
     getAllMultichainNetworkConfigurations,
   );
-  // Raw TokensController state. `accountGroupIdAssets` (via
-  // `selectAssetsBySelectedAccountGroup`) filters out tokens that don't yet
-  // have a balance entry, which is exactly the case right after the user
-  // imports a token from a search result. Reading `allTokens` directly lets
-  // the toggle (and the home list) reflect the import immediately.
+  const featuredEvmNetworks = useSelector(getFeaturedEvmNetworks);
+  const blacklistedChainIds = useSelector(
+    selectAdditionalNetworksBlacklistFeatureFlag,
+  );
+  const restorableFeaturedEvmChainIds = useMemo(
+    () =>
+      new Set(
+        getFilteredFeaturedNetworks(
+          blacklistedChainIds,
+          featuredEvmNetworks,
+        ).map((network) => normalizeToHexChainId(network.chainId)),
+      ),
+    [blacklistedChainIds, featuredEvmNetworks],
+  );
   const allTokensByChain = useSelector(getTokensControllerAllTokens) as Record<
     string,
-    Record<string, { address: string }[]>
+    Record<string, EvmToken[]>
   >;
+  const allIgnoredTokensByChain = useSelector(
+    getTokensControllerAllIgnoredTokens,
+  ) as Record<string, Record<string, string[]>>;
+  const allIgnoredAssetsByAccount = useSelector(
+    getMultiChainAssetsControllerAllIgnoredAssets,
+  ) as Record<string, CaipAssetType[]>;
   const selectedAddress = useSelector(getSelectedAddress) as string | undefined;
 
-  // Looks up the internal account in the selected account group that maps to
-  // a given CAIP chain id. Used when importing a search result so the unified
-  // AssetsController has an account to associate the asset with.
-  //
-  // Backed by `useStore` (not `useSelector`) because we only need the current
-  // state at the moment the user toggles a row — subscribing here would
-  // produce a fresh function on every dispatch, breaking memoization
-  // downstream and forcing the whole page to re-render on unrelated state
-  // changes.
   const store = useStore();
   const getAccountForChain = useCallback(
     (caipChainId: CaipChainId) =>
@@ -196,25 +580,23 @@ export const TokenManagementPage = () => {
     [store],
   );
 
-  const enabledChainIds = useMemo(
-    () =>
-      Object.entries(enabledNetworksByNamespace ?? {})
-        .filter(([, enabled]) => Boolean(enabled))
-        .map(([chainId]) => chainId as Hex),
-    [enabledNetworksByNamespace],
-  );
-
   const getNetworkMeta = useCallback(
     (chainId: Hex) => {
-      const config = networkConfigurations?.[chainId];
+      const updatedNetworkConfigurations = getNetworkConfigurationsByChainId(
+        store.getState() as Parameters<
+          typeof getNetworkConfigurationsByChainId
+        >[0],
+      );
+      const config =
+        networkConfigurations?.[chainId] ??
+        updatedNetworkConfigurations?.[chainId];
       const endpoint =
         config?.rpcEndpoints?.[config.defaultRpcEndpointIndex ?? 0];
       return {
-        name: config?.name,
         networkClientId: endpoint?.networkClientId,
       };
     },
-    [networkConfigurations],
+    [networkConfigurations, store],
   );
 
   const visibleTokens: ManagedAsset[] = useMemo(() => {
@@ -241,7 +623,7 @@ export const TokenManagementPage = () => {
     accountAssetsPreSort.forEach((asset) => {
       const id =
         'address' in asset && asset.address ? asset.address : asset.assetId;
-      const key = `${asset.chainId}:${String(id).toLowerCase()}`;
+      const key = getTokenAddressKey(String(asset.chainId), String(id));
       if (seen.has(key)) {
         return;
       }
@@ -249,8 +631,20 @@ export const TokenManagementPage = () => {
       dedupedAssets.push(asset);
     });
 
+    dedupedAssets.push(
+      ...getImportedTokensWithoutBalances({
+        allTokensByChain,
+        allIgnoredTokensByChain,
+        enabledChainIds: allEnabledNetworksForAllNamespaces,
+        selectedAddress,
+        seenKeys: seen,
+      }),
+    );
+
+    const visibleAssets = filterExcludedAssetList(dedupedAssets);
+
     const accountAssets = sortAssetsWithPriority(
-      dedupedAssets,
+      visibleAssets,
       tokenSortConfig,
     ) as ManagedAsset[];
 
@@ -266,62 +660,205 @@ export const TokenManagementPage = () => {
   }, [
     accountGroupIdAssets,
     allEnabledNetworksForAllNamespaces,
+    allIgnoredTokensByChain,
+    allTokensByChain,
     currentNetwork?.chainId,
     isEvm,
+    selectedAddress,
     shouldHideZeroBalanceTokens,
     tokenSortConfig,
     useExternalServices,
   ]);
 
-  const normalizedSearchQuery = searchQuery.trim();
-  const debouncedSearchQuery = useDebouncedValue(
-    normalizedSearchQuery,
-    SEARCH_DEBOUNCE_MS,
-  );
+  const managedAssetsByKey = useMemo(() => {
+    const assetsByKey = new Map<string, ManagedAsset>();
+
+    visibleTokens.forEach((token) => {
+      assetsByKey.set(getManagedTokenListOrderKey(token), token);
+    });
+
+    return assetsByKey;
+  }, [visibleTokens]);
+
+  const deferredSearchQuery = useDeferredValue(searchQuery);
+  const immediateNormalizedQuery = searchQuery.trim();
+  const deferredNormalizedQuery = deferredSearchQuery.trim();
+  const hasQuery = immediateNormalizedQuery.length > 0;
+  const tokenSearchQuery = hasQuery ? deferredNormalizedQuery : '';
 
   const searchNetworks = useMemo(() => {
-    if (enabledChainIds.length === 0) {
+    if (isEvmAddress(tokenSearchQuery)) {
+      const featuredEvmChainIds = getFilteredFeaturedNetworks(
+        blacklistedChainIds,
+        featuredEvmNetworks,
+      )
+        .map((network) => convertHexChainIdToCaipChainId(network.chainId))
+        .filter((chainId): chainId is string => Boolean(chainId));
+      return Array.from(
+        new Set([...enabledCaipChainIds, ...featuredEvmChainIds]),
+      );
+    }
+
+    if (enabledCaipChainIds.length === 0) {
       return undefined;
     }
-    return enabledChainIds.map((chainId) =>
-      formatChainIdToCaip(chainId as Hex | CaipChainId),
-    );
-  }, [enabledChainIds]);
+    return enabledCaipChainIds;
+  }, [
+    blacklistedChainIds,
+    enabledCaipChainIds,
+    featuredEvmNetworks,
+    tokenSearchQuery,
+  ]);
 
   const {
     data: searchResponse,
     isFetching: isSearchFetching,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
     error: searchQueryError,
   } = useTokenSearch({
-    query: debouncedSearchQuery,
+    query: tokenSearchQuery,
     networks: searchNetworks,
+    enableTokenBrowse: !hasQuery,
   });
 
-  const hasQuery = normalizedSearchQuery.length > 0;
-  const isWaitingForDebounce =
-    hasQuery && normalizedSearchQuery !== debouncedSearchQuery;
+  const isSearchPending = searchQuery !== deferredSearchQuery;
 
-  const searchResults = hasQuery ? (searchResponse?.data ?? []) : [];
+  const apiTokenResults = useMemo(() => {
+    if (hasQuery && deferredNormalizedQuery.length === 0) {
+      return EMPTY_TOKEN_SEARCH_RESULTS;
+    }
+
+    const results = (searchResponse?.data ?? EMPTY_TOKEN_SEARCH_RESULTS).filter(
+      hasValidAssetId,
+    );
+
+    // On Arc the native gas token IS USDC, so the USDC ERC20 (0x3600…) is a
+    // display duplicate. Drop it from search/browse results too.
+    return filterExcludedAssetList(results);
+  }, [deferredNormalizedQuery.length, hasQuery, searchResponse?.data]);
+  const searchResults = useMemo(
+    () => (hasQuery ? apiTokenResults : EMPTY_TOKEN_SEARCH_RESULTS),
+    [apiTokenResults, hasQuery],
+  );
   const hasResults = searchResults.length > 0;
   const isSearching =
-    isWaitingForDebounce ||
-    (hasQuery && debouncedSearchQuery.length > 0 && isSearchFetching);
-  const searchError = hasQuery ? searchQueryError : null;
+    isSearchPending ||
+    (hasQuery && deferredNormalizedQuery.length > 0 && isSearchFetching);
+  const searchError = searchQueryError;
 
-  const chainToHex = useCallback((chainId: string): string => {
-    if (chainId.startsWith('eip155:')) {
-      const dec = Number(chainId.split(':')[1]);
-      return Number.isFinite(dec)
-        ? `0x${dec.toString(16)}`.toLowerCase()
-        : chainId.toLowerCase();
+  const visibleTokenAssetIds = useMemo(() => {
+    const set = new Set<string>();
+
+    visibleTokens.forEach((token) => {
+      if (token.assetId) {
+        set.add(String(token.assetId).toLowerCase());
+      }
+
+      if ('address' in token && token.address && token.chainId) {
+        const hexChainId = normalizeToHexChainId(String(token.chainId));
+        const address = String(token.address).toLowerCase();
+        set.add(`${hexChainId}:${address}`);
+
+        const caipAssetId = toAssetId(token.address as Hex, hexChainId as Hex);
+        if (caipAssetId) {
+          set.add(caipAssetId.toLowerCase());
+        }
+      }
+    });
+
+    return set;
+  }, [visibleTokens]);
+
+  const getSearchResultAssetKeys = useCallback((result: TokenSearchResult) => {
+    const keys = [result.assetId.toLowerCase()];
+    const payload = convertSearchResultToImportPayload(result);
+
+    if (payload?.hexChainId) {
+      keys.push(
+        `${payload.hexChainId}:${payload.assetReference.toLowerCase()}`,
+      );
     }
-    return chainId.toLowerCase();
+
+    return keys;
   }, []);
 
-  // Pull every imported EVM token address for the current account out of
-  // TokensController directly. This bypasses the balance-gated filter inside
-  // `selectAssetsBySelectedAccountGroup`, which would otherwise hide a token
-  // for the few seconds between import and the first balance fetch.
+  const browseApiResults = useMemo(() => {
+    if (hasQuery) {
+      return [];
+    }
+
+    // The wallet always lists the chain's native asset as its own locked row,
+    // so a native browse result is a duplicate on every chain.
+    return apiTokenResults.filter(
+      (result) =>
+        !convertSearchResultToImportPayload(result)?.isNative &&
+        getSearchResultAssetKeys(result).every(
+          (key) => !visibleTokenAssetIds.has(key),
+        ),
+    );
+  }, [
+    apiTokenResults,
+    getSearchResultAssetKeys,
+    hasQuery,
+    visibleTokenAssetIds,
+  ]);
+
+  const unsortedTokenListItems = useMemo<TokenManagementListItem[]>(() => {
+    if (hasQuery) {
+      return searchResults.map((result) => ({
+        type: 'api-result' as const,
+        result,
+      }));
+    }
+
+    return [
+      ...visibleTokens.map((token) => ({
+        type: 'managed' as const,
+        token,
+      })),
+      ...browseApiResults.map((result) => ({
+        type: 'api-result' as const,
+        result,
+      })),
+    ];
+  }, [browseApiResults, hasQuery, searchResults, visibleTokens]);
+
+  const tokenListRows = useMemo(
+    () =>
+      unsortedTokenListItems.map((item) => ({
+        item,
+        caipAssetId: getTokenManagementListItemCaipAssetId(item),
+      })),
+    [unsortedTokenListItems],
+  );
+
+  const displayedAssetIds = useMemo(
+    () =>
+      tokenListRows
+        .map(({ caipAssetId }) => caipAssetId)
+        .filter((assetId) => assetId !== undefined),
+    [tokenListRows],
+  );
+
+  const deferredDisplayedAssetIds = useDeferredValue(displayedAssetIds);
+
+  const securityResultByAssetId = useTokenAssetSecurityResults({
+    assetIds: deferredDisplayedAssetIds,
+  });
+
+  const tokenListItemsWithSafetyResult = useMemo<TokenManagementListItem[]>(
+    () =>
+      tokenListRows.map(({ item, caipAssetId }) =>
+        withSafetyResult(
+          item,
+          caipAssetId ? securityResultByAssetId[caipAssetId] : undefined,
+        ),
+      ),
+    [securityResultByAssetId, tokenListRows],
+  );
+
   const importedEvmTokensByChain = useMemo(() => {
     const map = new Map<string, Set<string>>();
     if (!selectedAddress) {
@@ -330,7 +867,7 @@ export const TokenManagementPage = () => {
     const lowercasedSelected = selectedAddress.toLowerCase();
     Object.entries(allTokensByChain ?? {}).forEach(
       ([chainId, tokensByAddress]) => {
-        const hexChainId = chainToHex(chainId);
+        const hexChainId = normalizeToHexChainId(chainId);
         Object.entries(tokensByAddress ?? {}).forEach(
           ([accountAddress, tokens]) => {
             if (accountAddress.toLowerCase() !== lowercasedSelected) {
@@ -348,7 +885,7 @@ export const TokenManagementPage = () => {
       },
     );
     return map;
-  }, [allTokensByChain, chainToHex, selectedAddress]);
+  }, [allTokensByChain, selectedAddress]);
 
   const importedAssetIds = useMemo(() => {
     const set = new Set<string>();
@@ -358,7 +895,7 @@ export const TokenManagementPage = () => {
       }
       if ('address' in token && token.address && token.chainId) {
         set.add(
-          `${chainToHex(String(token.chainId))}:${String(
+          `${normalizeToHexChainId(String(token.chainId))}:${String(
             token.address,
           ).toLowerCase()}`,
         );
@@ -370,132 +907,236 @@ export const TokenManagementPage = () => {
       });
     });
     return set;
-  }, [chainToHex, importedEvmTokensByChain, visibleTokens]);
+  }, [importedEvmTokensByChain, visibleTokens]);
+
+  const ignoredEvmAssetIds = useMemo(() => {
+    const set = new Set<string>();
+    if (!selectedAddress) {
+      return set;
+    }
+
+    const lowercasedSelectedAddress = selectedAddress.toLowerCase();
+    Object.entries(allIgnoredTokensByChain ?? {}).forEach(
+      ([chainId, tokensByAddress]) => {
+        const hexChainId = normalizeToHexChainId(chainId);
+        Object.entries(tokensByAddress ?? {}).forEach(
+          ([accountAddress, tokenAddresses]) => {
+            if (accountAddress.toLowerCase() !== lowercasedSelectedAddress) {
+              return;
+            }
+
+            tokenAddresses.forEach((tokenAddress) => {
+              const lowercasedTokenAddress = tokenAddress.toLowerCase();
+              set.add(`${hexChainId}:${lowercasedTokenAddress}`);
+              const caipAssetId = toAssetId(
+                tokenAddress as Hex,
+                hexChainId as Hex,
+              );
+              if (caipAssetId) {
+                set.add(caipAssetId.toLowerCase());
+              }
+            });
+          },
+        );
+      },
+    );
+    return set;
+  }, [allIgnoredTokensByChain, selectedAddress]);
 
   const handleOpenNetworkFilter = useCallback(() => {
-    dispatch(showModal({ name: 'NETWORK_MANAGER' }));
-  }, [dispatch]);
+    commitStagedHides().catch(() => undefined);
+    setIsNetworkFilterModalOpen(true);
+  }, [commitStagedHides]);
+
+  const handleCloseNetworkFilter = useCallback(() => {
+    setIsNetworkFilterModalOpen(false);
+  }, []);
 
   const handleAddCustomToken = useCallback(() => {
+    commitStagedHides().catch(() => undefined);
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.TokenImportButtonClicked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location: TOKEN_MANAGEMENT_CUSTOM_CTA_LOCATION,
+        })
+        .build(),
+    );
     navigate(CUSTOM_TOKEN_IMPORT_ROUTE);
-  }, [navigate]);
+  }, [commitStagedHides, createEventBuilder, navigate, trackEvent]);
 
-  const networkFilterLabel = useMemo(() => {
-    const enabledCount = enabledChainIds.length;
-    if (enabledCount === 0) {
-      return t('noNetworksSelected');
-    }
-    if (enabledCount === 1) {
-      const onlyChain = enabledChainIds[0];
-      const evmName = networkConfigurations?.[onlyChain]?.name;
-      const multichainName =
-        allMultichainNetworkConfigurations?.[onlyChain as CaipChainId]?.name;
-      return (
-        evmName ?? multichainName ?? currentNetwork?.name ?? t('currentNetwork')
-      );
-    }
-    return t('allDefaultNetworks');
-  }, [
-    allMultichainNetworkConfigurations,
-    currentNetwork?.name,
-    enabledChainIds,
-    networkConfigurations,
-    t,
-  ]);
+  const handleSearchChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      commitStagedHides().catch(() => undefined);
+      setSearchQuery(event.target.value);
+    },
+    [commitStagedHides],
+  );
+
+  const handleSearchClear = useCallback(() => {
+    commitStagedHides().catch(() => undefined);
+    setSearchQuery('');
+  }, [commitStagedHides]);
+
+  const networkFilterLabel = useNetworkFilterButtonLabel();
+  const isSingleNetworkFilterSelected =
+    allEnabledNetworksForAllNamespaces.length === 1;
 
   const getTokenKey = useCallback((token: ManagedAsset) => {
     const address = 'address' in token ? token.address : token.assetId;
     return `${token.chainId}:${address.toLowerCase()}`;
   }, []);
 
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    commitStagedHidesRef.current = async () => {
+      if (stagedHidesRef.current.size === 0) {
+        return;
+      }
+      const entries = Array.from(stagedHidesRef.current.entries());
+      stagedHidesRef.current.clear();
+      if (isMountedRef.current) {
+        setStagedHideKeys(new Set());
+        addCommittedHideKeys(entries.map(([key]) => key));
+      }
+
+      await Promise.allSettled(
+        entries.map(async ([, entry]) => {
+          if (entry.kind === 'evm') {
+            const { networkClientId } = getNetworkMeta(entry.hexChainId);
+            if (!networkClientId) {
+              return;
+            }
+            await dispatch(
+              ignoreTokensAction({
+                tokensToIgnore: [entry.address],
+                dontShowLoadingIndicator: true,
+                networkClientId,
+              }),
+            );
+            if (entry.caipAssetId) {
+              await dispatch(hideAsset(entry.caipAssetId));
+            }
+            return;
+          }
+          await dispatch(
+            multichainIgnoreAssets([entry.assetId], entry.accountId),
+          );
+          await dispatch(hideAsset(entry.assetId));
+        }),
+      );
+    };
+  }, [addCommittedHideKeys, dispatch, getNetworkMeta]);
+
+  useEffect(() => {
+    return () => {
+      commitStagedHidesRef.current().catch(() => undefined);
+    };
+  }, []);
+
   const handleToggle = useCallback(
-    async (token: ManagedAsset, nextValue: boolean) => {
+    (token: ManagedAsset, nextValue: boolean) => {
       const isNativeToken = Boolean(token.isNative);
+      if (isNativeToken) {
+        return;
+      }
+
       const isEvmToken = isEvmChainId(token.chainId as Hex | CaipChainId);
       const canIgnoreEvmToken = isEvmToken && 'address' in token;
       const canIgnoreMultichainToken =
         !isEvmToken && Boolean(token.assetId) && Boolean(token.accountId);
-
-      if (
-        nextValue ||
-        isNativeToken ||
-        (!canIgnoreEvmToken && !canIgnoreMultichainToken)
-      ) {
+      if (!canIgnoreEvmToken && !canIgnoreMultichainToken) {
         return;
       }
 
-      const key = getTokenKey(token);
-      addPendingKey(key);
-      try {
-        if (canIgnoreEvmToken) {
-          const { networkClientId } = getNetworkMeta(token.chainId as Hex);
-          if (!networkClientId) {
-            return;
-          }
-          await dispatch(
-            ignoreTokensAction({
-              tokensToIgnore: [token.address],
-              dontShowLoadingIndicator: true,
-              networkClientId,
-            }),
-          );
-          if (isAssetsUnifiedStateInBuild) {
-            const caipAssetId = toAssetId(
-              token.address as Hex,
-              token.chainId as Hex,
-            );
-            if (caipAssetId) {
-              await dispatch(hideAsset(caipAssetId));
-            }
-          }
+      const stagedKey = getStagedHideKey(token);
+      if (!stagedKey) {
+        return;
+      }
+      const tokenMetricsProperties = getManagedTokenMetricsProperties(token);
+
+      if (nextValue) {
+        unstageHide(stagedKey);
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.TokenAdded)
+            .addCategory(MetaMetricsEventCategory.Wallet)
+            .addSensitiveProperties({
+              ...tokenMetricsProperties,
+              [METRICS_PROPERTIES.sourceConnectionMethod]:
+                MetaMetricsTokenEventSource.ManageTokens,
+            })
+            .build(),
+        );
+        return;
+      }
+
+      if (canIgnoreEvmToken) {
+        const { networkClientId } = getNetworkMeta(token.chainId as Hex);
+        if (!networkClientId) {
           return;
         }
-
-        await dispatch(
-          multichainIgnoreAssets([token.assetId], token.accountId),
+        const caipAssetId = toAssetId(
+          token.address as Hex,
+          token.chainId as Hex,
         );
-        if (isAssetsUnifiedStateInBuild) {
-          await dispatch(hideAsset(token.assetId as CaipAssetType));
-        }
-      } finally {
-        removePendingKey(key);
+        stageHide(stagedKey, {
+          kind: 'evm',
+          hexChainId: token.chainId as Hex,
+          address: token.address,
+          caipAssetId: caipAssetId ?? undefined,
+        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.TokenHidden)
+            .addCategory(MetaMetricsEventCategory.Wallet)
+            .addSensitiveProperties({
+              ...tokenMetricsProperties,
+              location: TOKEN_MANAGEMENT_LOCATION,
+            })
+            .build(),
+        );
+        return;
       }
+
+      stageHide(stagedKey, {
+        kind: 'multichain',
+        assetId: token.assetId as CaipAssetType,
+        accountId: token.accountId,
+      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.TokenHidden)
+          .addCategory(MetaMetricsEventCategory.Wallet)
+          .addSensitiveProperties({
+            ...tokenMetricsProperties,
+            location: TOKEN_MANAGEMENT_LOCATION,
+          })
+          .build(),
+      );
     },
     [
-      addPendingKey,
-      dispatch,
+      createEventBuilder,
       getNetworkMeta,
-      getTokenKey,
-      isAssetsUnifiedStateInBuild,
-      removePendingKey,
+      getStagedHideKey,
+      stageHide,
+      trackEvent,
+      unstageHide,
     ],
   );
 
-  /**
-   * Search-result-specific toggle. Mirrors the mobile import flow
-   * (`metamask-mobile#26108`):
-   *
-   * - EVM result, toggle ON → `addImportedTokens` + `addCustomAsset`.
-   * - EVM result, toggle OFF → `ignoreTokens` + `hideAsset`.
-   * - Non-EVM result, toggle ON → `multichainAddAssets` + `addCustomAsset`.
-   * - Non-EVM result, toggle OFF → `multichainIgnoreAssets` + `hideAsset`.
-   *
-   * `addCustomAsset` / `hideAsset` only fire when the unified AssetsController
-   * is included in the build (`ASSETS_UNIFIED_STATE_ENABLED`).
-   *
-   * Native assets (slip44 namespace or EVM zero-address) are not importable —
-   * the toggle never reaches this handler for them, but we guard here too so
-   * a buggy API response can't dispatch a malformed payload.
-   */
   const handleSearchResultToggle = useCallback(
     async (payload: SearchResultImportPayload, nextValue: boolean) => {
       if (payload.isNative) {
         return;
       }
 
-      const importedKey = payload.assetId.toLowerCase();
-      addPendingKey(importedKey);
-      try {
+      const stagedKey = payload.assetId.toLowerCase();
+
+      if (!nextValue) {
         if (payload.isEvm) {
           if (!payload.hexChainId) {
             return;
@@ -504,13 +1145,103 @@ export const TokenManagementPage = () => {
           if (!networkClientId) {
             return;
           }
-          const evmAccount = getAccountForChain(payload.caipChainId);
+          stageHide(stagedKey, {
+            kind: 'evm',
+            hexChainId: payload.hexChainId,
+            address: payload.assetReference,
+            caipAssetId: payload.assetId,
+          });
+          return;
+        }
 
-          if (nextValue) {
-            if (!evmAccount?.id) {
+        const account = getAccountForChain(payload.caipChainId);
+        if (!account?.id) {
+          return;
+        }
+        stageHide(stagedKey, {
+          kind: 'multichain',
+          assetId: payload.assetId,
+          accountId: account.id,
+        });
+        return;
+      }
+
+      const tokenAddedEvent = createEventBuilder(
+        MetaMetricsEventName.TokenAdded,
+      )
+        .addCategory(MetaMetricsEventCategory.Wallet)
+        .addSensitiveProperties({
+          [METRICS_PROPERTIES.chainId]:
+            payload.hexChainId ?? payload.caipChainId,
+          [METRICS_PROPERTIES.tokenStandard]: payload.isEvm
+            ? ERC20
+            : TokenStandard.none,
+          [METRICS_PROPERTIES.assetType]: AssetType.token,
+          [METRICS_PROPERTIES.tokenContractAddress]: payload.assetReference,
+          [METRICS_PROPERTIES.tokenDecimalPrecision]: payload.decimals,
+          [METRICS_PROPERTIES.tokenSymbol]: payload.symbol,
+          [METRICS_PROPERTIES.sourceConnectionMethod]:
+            MetaMetricsTokenEventSource.ManageTokens,
+        })
+        .build();
+
+      if (unstageHide(stagedKey)) {
+        trackEvent(tokenAddedEvent);
+        return;
+      }
+      removeCommittedHideKey(stagedKey);
+
+      addPendingKey(stagedKey);
+      try {
+        if (payload.isEvm) {
+          if (!payload.hexChainId) {
+            return;
+          }
+          const evmImportedKey = `${normalizeToHexChainId(
+            payload.hexChainId,
+          )}:${payload.assetReference.toLowerCase()}`;
+          const isImported =
+            importedAssetIds.has(stagedKey) ||
+            importedAssetIds.has(evmImportedKey);
+          const isIgnored =
+            ignoredEvmAssetIds.has(stagedKey) ||
+            ignoredEvmAssetIds.has(evmImportedKey);
+          const isNetworkConfigured = Boolean(
+            networkConfigurations?.[payload.hexChainId],
+          );
+          if (isImported && !isIgnored && !isNetworkConfigured) {
+            const featuredNetwork = getFilteredFeaturedNetworks(
+              blacklistedChainIds,
+              featuredEvmNetworks,
+            ).find((network) => network.chainId === payload.hexChainId);
+            if (!featuredNetwork) {
               return;
             }
-            await dispatch(
+
+            const addedNetwork = await dispatch(
+              addNetwork(featuredNetwork, { setActive: false }),
+            );
+            if (!addedNetwork) {
+              return;
+            }
+
+            showNetworkAddedToast(featuredNetwork.name);
+            return;
+          }
+          const addedNetwork = await enableFeaturedEvmNetwork(payload.assetId);
+          const { networkClientId } = getNetworkMeta(payload.hexChainId);
+          const networkClientIdForImport =
+            addedNetwork?.networkClientId ?? networkClientId;
+          if (!networkClientIdForImport) {
+            toast.error(<ToastContent title={t('importTokensError')} />);
+            return;
+          }
+          const evmAccount = getAccountForChain(payload.caipChainId);
+          if (!evmAccount?.id) {
+            return;
+          }
+          await Promise.all([
+            dispatch(
               addImportedTokens(
                 [
                   {
@@ -522,23 +1253,17 @@ export const TokenManagementPage = () => {
                     ...(payload.iconUrl ? { image: payload.iconUrl } : {}),
                   },
                 ],
-                networkClientId,
+                networkClientIdForImport,
               ),
-            );
-            if (isAssetsUnifiedStateInBuild) {
-              await dispatch(addCustomAsset(evmAccount.id, payload.assetId));
-            }
-            return;
-          }
-          await dispatch(
-            ignoreTokensAction({
-              tokensToIgnore: [payload.assetReference],
-              dontShowLoadingIndicator: true,
-              networkClientId,
-            }),
-          );
-          if (isAssetsUnifiedStateInBuild) {
-            await dispatch(hideAsset(payload.assetId));
+            ),
+            dispatch(
+              importEvmSearchResultToUnifiedAssets(evmAccount.id, payload),
+            ),
+          ]);
+
+          trackEvent(tokenAddedEvent);
+          if (addedNetwork) {
+            showNetworkAddedToast(addedNetwork.name);
           }
           return;
         }
@@ -547,29 +1272,46 @@ export const TokenManagementPage = () => {
         if (!account?.id) {
           return;
         }
-        if (nextValue) {
-          await dispatch(multichainAddAssets([payload.assetId], account.id));
-          if (isAssetsUnifiedStateInBuild) {
-            await dispatch(addCustomAsset(account.id, payload.assetId));
-          }
-          return;
-        }
-        await dispatch(multichainIgnoreAssets([payload.assetId], account.id));
-        if (isAssetsUnifiedStateInBuild) {
-          await dispatch(hideAsset(payload.assetId));
-        }
+
+        await Promise.all([
+          dispatch(multichainAddAssets([payload.assetId], account.id)),
+          dispatch(importEvmSearchResultToUnifiedAssets(account.id, payload)),
+        ]);
+        trackEvent(tokenAddedEvent);
       } finally {
-        removePendingKey(importedKey);
+        removePendingKey(stagedKey);
       }
     },
     [
       addPendingKey,
+      blacklistedChainIds,
       dispatch,
+      featuredEvmNetworks,
+      networkConfigurations,
+      enableFeaturedEvmNetwork,
       getAccountForChain,
       getNetworkMeta,
-      isAssetsUnifiedStateInBuild,
+      ignoredEvmAssetIds,
+      importedAssetIds,
+      createEventBuilder,
       removePendingKey,
+      removeCommittedHideKey,
+      stageHide,
+      showNetworkAddedToast,
+      t,
+      trackEvent,
+      unstageHide,
     ],
+  );
+
+  const handleBack = useCallback(
+    (event: React.MouseEvent<HTMLAnchorElement>) => {
+      event.preventDefault();
+      commitStagedHides()
+        .catch(() => undefined)
+        .finally(() => runCloseTransition(() => navigate(DEFAULT_ROUTE)));
+    },
+    [commitStagedHides, navigate, runCloseTransition],
   );
 
   const getTokenImage = useCallback((token: ManagedAsset) => {
@@ -585,9 +1327,13 @@ export const TokenManagementPage = () => {
   }, []);
 
   const renderToken = useCallback(
-    (info: { item: ManagedAsset }) => {
+    (info: { item: WithSafetyResult<ManagedAsset> }) => {
       const token = info.item;
       const key = getTokenKey(token);
+      const stagedKey = getStagedHideKey(token);
+      const isHidden = stagedKey
+        ? stagedHideKeys.has(stagedKey) || committedHideKeys.has(stagedKey)
+        : false;
       const isNativeToken = Boolean(token.isNative);
       const isEvmToken = isEvmChainId(token.chainId as Hex | CaipChainId);
       const isManageableToken =
@@ -603,7 +1349,8 @@ export const TokenManagementPage = () => {
           assetId={token.assetId as CaipAssetType | Hex}
           primaryLabel={token.name ?? token.symbol}
           secondaryLabel={`${token.balance} ${token.symbol}`}
-          isOn
+          safetyResult={token.safetyResult}
+          isOn={!isHidden}
           disabled={isNativeToken || pendingKeys.has(key)}
           onToggle={(nextValue) => handleToggle(token, nextValue)}
           showToggle={isManageableToken || isNativeToken}
@@ -611,15 +1358,17 @@ export const TokenManagementPage = () => {
         />
       );
     },
-    [getTokenImage, getTokenKey, handleToggle, pendingKeys],
+    [
+      committedHideKeys,
+      getStagedHideKey,
+      getTokenImage,
+      getTokenKey,
+      handleToggle,
+      pendingKeys,
+      stagedHideKeys,
+    ],
   );
 
-  /**
-   * Custom-token import is only meaningful on EVM networks today. Hide the
-   * sticky CTA when none of the enabled networks (across all namespaces)
-   * support custom tokens. Showing it for a mix that includes an EVM network
-   * preserves the existing "All networks" behavior.
-   */
   const canImportCustomTokens = useMemo(() => {
     if (allEnabledNetworksForAllNamespaces.length === 0) {
       return true;
@@ -630,7 +1379,7 @@ export const TokenManagementPage = () => {
   }, [allEnabledNetworksForAllNamespaces]);
 
   const renderSearchResult = useCallback(
-    (info: { item: TokenSearchResult }) => {
+    (info: { item: WithSafetyResult<TokenSearchResult> }) => {
       const result = info.item;
       const lowerAssetId = result.assetId.toLowerCase();
       const payload = convertSearchResultToImportPayload(result);
@@ -642,9 +1391,42 @@ export const TokenManagementPage = () => {
       const evmImportedKey = payload.hexChainId
         ? `${payload.hexChainId}:${payload.assetReference.toLowerCase()}`
         : undefined;
+      const ownedAsset = managedAssetsByKey.get(
+        getSearchResultListOrderKey(result),
+      );
       const isImported =
         importedAssetIds.has(lowerAssetId) ||
         (evmImportedKey ? importedAssetIds.has(evmImportedKey) : false);
+      const accountIdForChain = payload.isEvm
+        ? undefined
+        : getAccountForChain(payload.caipChainId)?.id;
+      const isIgnoredMultichainAsset = payload.isEvm
+        ? false
+        : Boolean(
+            accountIdForChain &&
+            allIgnoredAssetsByAccount[accountIdForChain]?.some(
+              (assetId) => String(assetId).toLowerCase() === lowerAssetId,
+            ),
+          );
+      const isUnconfiguredImportedEvmNetwork = Boolean(
+        isImported &&
+        payload.isEvm &&
+        payload.hexChainId &&
+        !networkConfigurations?.[payload.hexChainId],
+      );
+      const isRestorableUnconfiguredEvmNetwork = Boolean(
+        payload.hexChainId &&
+        restorableFeaturedEvmChainIds.has(
+          normalizeToHexChainId(payload.hexChainId),
+        ),
+      );
+      const isHidden =
+        stagedHideKeys.has(lowerAssetId) ||
+        committedHideKeys.has(lowerAssetId) ||
+        ignoredEvmAssetIds.has(lowerAssetId) ||
+        (evmImportedKey ? ignoredEvmAssetIds.has(evmImportedKey) : false) ||
+        isIgnoredMultichainAsset;
+      const isPending = pendingKeys.has(lowerAssetId);
 
       return (
         <TokenManagementCell
@@ -656,31 +1438,169 @@ export const TokenManagementPage = () => {
           isNative={payload.isNative}
           assetId={payload.assetId}
           primaryLabel={payload.name || payload.symbol}
+          safetyResult={result.safetyResult}
           secondaryLabel={
-            networkConfigurations?.[payload.hexChainId as Hex]?.name ??
-            allMultichainNetworkConfigurations?.[payload.caipChainId]?.name ??
-            payload.caipChainId
+            ownedAsset
+              ? `${ownedAsset.balance} ${ownedAsset.symbol}`
+              : (networkConfigurations?.[payload.hexChainId as Hex]?.name ??
+                allMultichainNetworkConfigurations?.[payload.caipChainId]
+                  ?.name ??
+                payload.caipChainId)
           }
-          isOn={isImported || payload.isNative}
-          disabled={payload.isNative || pendingKeys.has(lowerAssetId)}
+          isOn={
+            isPending ||
+            (!isUnconfiguredImportedEvmNetwork && isImported && !isHidden) ||
+            payload.isNative
+          }
+          disabled={
+            payload.isNative ||
+            isPending ||
+            (isUnconfiguredImportedEvmNetwork &&
+              !isRestorableUnconfiguredEvmNetwork)
+          }
+          isLoading={isPending}
           onToggle={(nextValue) => handleSearchResultToggle(payload, nextValue)}
-          showToggle={!payload.isNative}
+          showToggle
           testIdSuffix={`search-${lowerAssetId}`}
         />
       );
     },
     [
       allMultichainNetworkConfigurations,
+      allIgnoredAssetsByAccount,
+      committedHideKeys,
+      getAccountForChain,
       handleSearchResultToggle,
+      ignoredEvmAssetIds,
       importedAssetIds,
+      managedAssetsByKey,
       networkConfigurations,
       pendingKeys,
+      restorableFeaturedEvmChainIds,
+      stagedHideKeys,
     ],
   );
 
-  const getSearchResultKey = useCallback(
-    (result: TokenSearchResult) => `search-${result.assetId.toLowerCase()}`,
+  const tokenListResult = useMemo(() => {
+    const order = new Map(tokenListOrder);
+    let orderChanged = false;
+
+    for (const item of tokenListItemsWithSafetyResult) {
+      const itemKey = getTokenManagementListItemOrderKey(item);
+      if (!order.has(itemKey)) {
+        order.set(itemKey, order.size);
+        orderChanged = true;
+      }
+    }
+
+    const items = [...tokenListItemsWithSafetyResult].sort((itemA, itemB) => {
+      const itemAOrder =
+        order.get(getTokenManagementListItemOrderKey(itemA)) ??
+        Number.MAX_SAFE_INTEGER;
+      const itemBOrder =
+        order.get(getTokenManagementListItemOrderKey(itemB)) ??
+        Number.MAX_SAFE_INTEGER;
+
+      return itemAOrder - itemBOrder;
+    });
+
+    return {
+      items,
+      pendingOrder: orderChanged ? order : null,
+    };
+  }, [tokenListItemsWithSafetyResult, tokenListOrder]);
+
+  const tokenListItems = tokenListResult.items;
+  const pendingTokenListOrder = tokenListResult.pendingOrder;
+
+  useLayoutEffect(() => {
+    if (!pendingTokenListOrder) {
+      return;
+    }
+    // Persist newly discovered list item order keys after derive+sort in useMemo.
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- order map must follow list growth without render-time setState
+    setTokenListOrder(pendingTokenListOrder);
+  }, [pendingTokenListOrder]);
+
+  const tokenManagementViewState =
+    tokenListItems.length === 0
+      ? TOKEN_MANAGEMENT_NO_RESULTS_VIEW_STATE
+      : TOKEN_MANAGEMENT_DEFAULT_VIEW_STATE;
+
+  useEffect(() => {
+    if (
+      hasTrackedScreenOpenedRef.current ||
+      isSearchFetching ||
+      isSearching ||
+      isFetchingNextPage
+    ) {
+      return;
+    }
+
+    hasTrackedScreenOpenedRef.current = true;
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.TokenScreenViewed)
+        .addCategory(MetaMetricsEventCategory.Home)
+        .addProperties({
+          screen: TOKEN_MANAGEMENT_SCREEN,
+          [METRICS_PROPERTIES.viewState]: tokenManagementViewState,
+        })
+        .build(),
+    );
+  }, [
+    createEventBuilder,
+    isFetchingNextPage,
+    isSearchFetching,
+    isSearching,
+    tokenManagementViewState,
+    trackEvent,
+  ]);
+
+  const renderTokenListItem = useCallback(
+    (info: { item: TokenManagementListItem }) => {
+      if (info.item.type === 'managed') {
+        return renderToken({ item: info.item.token });
+      }
+
+      return renderSearchResult({ item: info.item.result });
+    },
+    [renderSearchResult, renderToken],
+  );
+
+  const getTokenListItemKey = useCallback(
+    (item: TokenManagementListItem) => getTokenManagementListItemOrderKey(item),
     [],
+  );
+
+  const handleListScroll = useCallback(
+    (event: React.UIEvent<HTMLDivElement>) => {
+      const { scrollTop, clientHeight, scrollHeight } = event.currentTarget;
+
+      if (
+        !hasNextPage ||
+        isSearchFetching ||
+        isFetchingNextPage ||
+        searchError
+      ) {
+        return;
+      }
+
+      const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
+
+      if (
+        scrollTop > 0 &&
+        distanceFromBottom <= TOKEN_LIST_PAGINATION_THRESHOLD_PX
+      ) {
+        fetchNextPage().catch(() => undefined);
+      }
+    },
+    [
+      fetchNextPage,
+      hasNextPage,
+      isFetchingNextPage,
+      isSearchFetching,
+      searchError,
+    ],
   );
 
   const emptyState = (
@@ -721,24 +1641,46 @@ export const TokenManagementPage = () => {
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Center}
       padding={6}
+      aria-label={t('loading')}
       data-testid="token-management-search-loading"
     >
-      <Text
-        variant={TextVariant.BodyMd}
-        textAlign={TextAlign.Center}
-        color={TextColor.TextAlternative}
-      >
-        {t('loading')}
-      </Text>
+      <Icon
+        className="animate-spin"
+        name={IconName.Loading}
+        color={IconColor.IconMuted}
+        size={IconSize.Lg}
+      />
     </Box>
   );
 
+  const paginationLoadingState = isFetchingNextPage ? (
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Center}
+      padding={4}
+      aria-label={t('loading')}
+      data-testid="token-management-pagination-loading"
+    >
+      <Icon
+        className="animate-spin"
+        name={IconName.Loading}
+        color={IconColor.IconMuted}
+        size={IconSize.Sm}
+      />
+    </Box>
+  ) : null;
+
+  const shouldShowTokenList = hasQuery
+    ? hasResults || (!isSearching && !searchError)
+    : tokenListItems.length > 0 || (!isSearchFetching && !searchError);
+
   const startAccessory = (
-    <Link to={DEFAULT_ROUTE} aria-label={t('back')}>
+    <Link to={DEFAULT_ROUTE} aria-label={t('back')} onClick={handleBack}>
       <ButtonIcon
         iconName={IconName.ArrowLeft}
         ariaLabel={t('back')}
-        size={ButtonIconSize.Sm}
+        size={ButtonIconSize.Md}
         data-testid="token-management-header-back-button"
       />
     </Link>
@@ -749,30 +1691,26 @@ export const TokenManagementPage = () => {
       flexDirection={BoxFlexDirection.Column}
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
       className="w-full h-full min-h-0"
-      data-testid="token-management-page"
+      data-testid="parent-selector-token-management-page"
     >
       <Header startAccessory={startAccessory}>{t('manageTokens')}</Header>
 
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        paddingHorizontal={4}
-        paddingTop={2}
-        paddingBottom={2}
-      >
+      <search className="px-4 py-2">
         <TextFieldSearch
-          value={searchQuery}
-          placeholder={t('enterTokenNameOrAddressManageTokens')}
-          onChange={(event) => setSearchQuery(event.target.value)}
-          clearButtonOnClick={() => setSearchQuery('')}
-          size={TextFieldSearchSize.Lg}
           className="w-full"
-          inputProps={{
-            'data-testid': 'token-management-search-input',
-            spellCheck: false,
-          }}
+          clearButtonOnClick={handleSearchClear}
+          inputAriaLabel={t('enterTokenNameOrAddressManageTokens')}
+          inputProps={
+            {
+              'data-testid': 'token-management-search-input',
+              spellCheck: false,
+            } as React.ComponentPropsWithoutRef<'input'>
+          }
+          onChange={handleSearchChange}
+          placeholder={t('enterTokenNameOrAddressManageTokens')}
+          value={searchQuery}
         />
-      </Box>
+      </search>
 
       <Box
         flexDirection={BoxFlexDirection.Row}
@@ -785,13 +1723,21 @@ export const TokenManagementPage = () => {
           data-testid="token-management-network-filter"
           size={ButtonBaseSize.Sm}
           startIconName={IconName.Filter}
-          className="bg-default text-default border border-muted"
+          className={`bg-default border border-muted ${
+            isSingleNetworkFilterSelected
+              ? 'text-primary-default'
+              : 'text-default'
+          }`}
           onClick={handleOpenNetworkFilter}
         >
           <Text
             variant={TextVariant.BodySm}
             fontWeight={FontWeight.Medium}
-            color={TextColor.TextDefault}
+            color={
+              isSingleNetworkFilterSelected
+                ? TextColor.PrimaryDefault
+                : TextColor.TextDefault
+            }
             ellipsis
           >
             {networkFilterLabel}
@@ -799,8 +1745,14 @@ export const TokenManagementPage = () => {
         </ButtonBase>
       </Box>
 
+      <HomeNetworkFilterModal
+        isOpen={isNetworkFilterModalOpen}
+        onClose={handleCloseNetworkFilter}
+      />
+
       <ScrollContainer
         data-testid="token-management-page-list"
+        onScroll={handleListScroll}
         style={{
           flex: '1 1 auto',
           minHeight: 0,
@@ -808,52 +1760,51 @@ export const TokenManagementPage = () => {
           width: '100%',
         }}
       >
-        {hasQuery ? (
-          <>
-            {isSearching && !hasResults ? loadingState : null}
-            {!isSearching && searchError && !hasResults
-              ? searchErrorState
-              : null}
-            {hasResults || (!isSearching && !searchError) ? (
-              <VirtualizedList
-                data={searchResults}
-                estimatedItemSize={ASSET_CELL_HEIGHT}
-                overscan={10}
-                keyExtractor={getSearchResultKey}
-                listEmptyComponent={emptyState}
-                renderItem={renderSearchResult}
-              />
-            ) : null}
-          </>
-        ) : (
+        {hasQuery && isSearching && !hasResults ? loadingState : null}
+        {!hasQuery &&
+        !isSearchFetching &&
+        searchError &&
+        tokenListItems.length === 0
+          ? searchErrorState
+          : null}
+        {hasQuery && !isSearching && searchError && !hasResults
+          ? searchErrorState
+          : null}
+        {!hasQuery && isSearchFetching && tokenListItems.length === 0
+          ? loadingState
+          : null}
+        {shouldShowTokenList ? (
           <VirtualizedList
-            data={visibleTokens}
+            data={tokenListItems}
             estimatedItemSize={ASSET_CELL_HEIGHT}
             overscan={10}
-            keyExtractor={getTokenKey}
+            keyExtractor={getTokenListItemKey}
             listEmptyComponent={emptyState}
-            renderItem={renderToken}
+            listFooterComponent={paginationLoadingState}
+            renderItem={renderTokenListItem}
           />
-        )}
+        ) : null}
       </ScrollContainer>
 
       {canImportCustomTokens ? (
         <Box
-          flexDirection={BoxFlexDirection.Row}
+          flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Center}
           backgroundColor={BoxBackgroundColor.BackgroundDefault}
           paddingHorizontal={4}
           paddingTop={3}
           paddingBottom={3}
-          className="sticky bottom-0 z-10"
+          className="cta-footer sticky bottom-0 z-10 gap-3"
         >
-          <ButtonBase
-            data-testid="token-management-add-custom-token-button"
-            className="w-full bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed"
-            onClick={handleAddCustomToken}
-          >
-            {t('addCustomToken')}
-          </ButtonBase>
+          {canImportCustomTokens ? (
+            <ButtonBase
+              data-testid="token-management-add-custom-token-button"
+              className="w-full bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed"
+              onClick={handleAddCustomToken}
+            >
+              {t('addCustomToken')}
+            </ButtonBase>
+          ) : null}
         </Box>
       ) : null}
     </Box>

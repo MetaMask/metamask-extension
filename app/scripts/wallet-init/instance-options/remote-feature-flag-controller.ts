@@ -1,0 +1,165 @@
+import { assert, type Json } from '@metamask/utils';
+import type { WalletOptions } from '@metamask/wallet';
+import {
+  ClientConfigApiService,
+  ClientType,
+  DistributionType,
+  EnvironmentType,
+} from '@metamask/remote-feature-flag-controller';
+import {
+  ENVIRONMENT,
+  type MetaMaskBuildEnvironment,
+} from '../../../../shared/constants/build';
+import { getBaseSemVerVersion } from '../../../../shared/lib/feature-flags/version-gating';
+import type { WalletInitMessenger } from '../types';
+
+const REMOTE_FEATURE_FLAG_FETCH_INTERVAL = 15 * 60 * 1000;
+
+type MetaMaskBuildType = 'flask' | 'main' | 'beta' | 'experimental';
+
+const BUILD_TYPE_MAPPING: Record<MetaMaskBuildType, DistributionType> = {
+  flask: DistributionType.Flask,
+  main: DistributionType.Main,
+  beta: DistributionType.Beta,
+  // Experimental builds use main distribution.
+  experimental: DistributionType.Main,
+};
+
+const ENVIRONMENT_MAPPING: Partial<
+  Record<MetaMaskBuildEnvironment, EnvironmentType>
+> = {
+  [ENVIRONMENT.DEVELOPMENT]: EnvironmentType.Development,
+  [ENVIRONMENT.RELEASE_CANDIDATE]: EnvironmentType.ReleaseCandidate,
+  [ENVIRONMENT.PRODUCTION]: EnvironmentType.Production,
+};
+
+/**
+ * Derive the distribution and environment the remote feature flag service
+ * should request for, from the build-time environment variables.
+ *
+ * @returns The distribution and environment for the client config request.
+ */
+export function getConfigForRemoteFeatureFlagRequest() {
+  assert(process.env.METAMASK_BUILD_TYPE, 'METAMASK_BUILD_TYPE is not defined');
+  assert(
+    process.env.METAMASK_ENVIRONMENT,
+    'METAMASK_ENVIRONMENT is not defined',
+  );
+  const buildType = process.env.METAMASK_BUILD_TYPE;
+
+  const distribution =
+    BUILD_TYPE_MAPPING[buildType as MetaMaskBuildType] || DistributionType.Main;
+
+  let environment =
+    ENVIRONMENT_MAPPING[
+      process.env.METAMASK_ENVIRONMENT as MetaMaskBuildEnvironment
+    ] || EnvironmentType.Development;
+
+  if (buildType === 'experimental') {
+    environment = EnvironmentType.Exp;
+  }
+
+  return { distribution, environment };
+}
+
+/**
+ * Build the extension's `ClientConfigApiService`, configured for the extension
+ * client type and the current build's distribution and environment. This is
+ * injected into the wallet-owned `RemoteFeatureFlagController` via
+ * `instanceOptions.remoteFeatureFlagController.clientConfigApiService`.
+ *
+ * @returns The configured client config API service.
+ */
+export function getRemoteFeatureFlagClientConfigApiService() {
+  const { distribution, environment } = getConfigForRemoteFeatureFlagRequest();
+
+  return new ClientConfigApiService({
+    fetch: globalThis.fetch.bind(globalThis),
+    config: {
+      client: ClientType.Extension,
+      distribution,
+      environment,
+    },
+  });
+}
+
+type RemoteFeatureFlagControllerInstanceOptions =
+  WalletOptions['instanceOptions']['remoteFeatureFlagController'];
+
+/**
+ * Build the extension's `RemoteFeatureFlagController` instance options. The
+ * `disabled` value is the initial value only (set once at construction); the
+ * dynamic enable/disable orchestration lives in `setupRemoteFeatureFlagToggle`.
+ *
+ * @param options - Options bag.
+ * @param options.messenger - Root messenger; resolves the MetaMetrics id from
+ * `AnalyticsController` and the canonical profile id from
+ * `AuthenticationController` lazily at fetch / init time. Falls back to the
+ * MetaMetrics id when no profile id is available so threshold flags still
+ * resolve for pre-auth and E2E sessions.
+ * @param options.state - Initial persisted state; `prevClientVersion` is read
+ * from `AppMetadataController` so the controller can invalidate cached flags
+ * when the client version changes between sessions, and the initial `disabled`
+ * value is derived from onboarding and the external-services preference.
+ * @returns The extension `RemoteFeatureFlagController` instance options.
+ */
+export function getRemoteFeatureFlagControllerInstanceOptions({
+  messenger,
+  state,
+}: {
+  messenger: WalletInitMessenger;
+  state: Record<string, Record<string, Json>>;
+}): RemoteFeatureFlagControllerInstanceOptions {
+  return {
+    clientConfigApiService: getRemoteFeatureFlagClientConfigApiService(),
+    // Apply default feature flag values here.
+    defaultFeatureFlags: {
+      // Example:
+      // 'feature-flag-name': true,
+    },
+    // Flags that are used in flows prior to authentication should be added here.
+    metaMetricsFlags: [
+      // Example:
+      // 'feature-flag-name',
+    ],
+    getMetaMetricsId: () => {
+      try {
+        return messenger.call('AnalyticsController:getState').analyticsId ?? '';
+      } catch {
+        // `wallet.init()` runs before AnalyticsController is registered.
+        return '';
+      }
+    },
+    getCanonicalProfileId: () => {
+      try {
+        const { srpSessionData } = messenger.call(
+          'AuthenticationController:getState',
+        );
+        const canonicalProfileId =
+          Object.entries(srpSessionData ?? {})?.[0]?.[1]?.profile
+            ?.canonicalProfileId ?? '';
+        if (canonicalProfileId) {
+          return canonicalProfileId;
+        }
+      } catch {
+        // `wallet.init()` runs before AuthenticationController is registered.
+      }
+      // RFFC 6 leaves threshold flags as raw arrays when this is ''. E2E and
+      // pre-auth users have a MetaMetrics id but no profile; fall back so
+      // those flags still resolve the way they did in RFFC 5.
+      try {
+        return messenger.call('AnalyticsController:getState').analyticsId ?? '';
+      } catch {
+        return '';
+      }
+    },
+    clientVersion: getBaseSemVerVersion(),
+    prevClientVersion: state.AppMetadataController?.currentAppVersion as
+      | string
+      | undefined,
+    fetchInterval: REMOTE_FEATURE_FLAG_FETCH_INTERVAL,
+    disabled:
+      state.OnboardingController?.completedOnboarding !== true ||
+      state.PreferencesController?.useExternalServices === false,
+  };
+}

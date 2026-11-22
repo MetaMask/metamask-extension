@@ -1,5 +1,5 @@
 import { act } from '@testing-library/react';
-import { QuoteResponse } from '@metamask/bridge-controller';
+import { QuoteResponseV1 } from '@metamask/bridge-controller';
 
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import {
@@ -42,7 +42,7 @@ describe('useDappSwapActions', () => {
   describe('updateSwapWithQuoteDetailsIfRequired', () => {
     it('updates transactionMeta with MM quote if available', async () => {
       jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
-        selectedQuote: mockBridgeQuotes[0] as unknown as QuoteResponse,
+        selectedQuote: mockBridgeQuotes[0] as unknown as QuoteResponseV1,
         setSelectedQuote: jest.fn(),
         setQuotedSwapDisplayedInInfo: jest.fn(),
         isQuotedSwapDisplayedInInfo: true,

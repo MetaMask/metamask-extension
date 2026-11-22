@@ -1,0 +1,80 @@
+# Posts the required "All jobs pass" commit status for cross-repo PRs.
+#
+# Why this workflow exists
+# ------------------------
+# Because cross-repo PRs get a read-only token, main.yml's `ci-status-gate`
+# job can compute the result but CANNOT call `createCommitStatus` — its
+# "Post commit status" step is guarded off for cross-repo PRs (it would
+# throw "Resource not accessible by integration").
+#
+# The consequence: the branch-protection-required "All jobs pass" status
+# is never posted for cross-repo PRs, so it stays pending forever and the
+# PR can never be merged.
+#
+# `workflow_run` runs in the BASE repo context with a full-access token
+# (the same reason triage-and-retry-system.yml can call `gh run rerun`),
+# so it CAN post commit statuses even for cross-repo PRs. This workflow
+# fires when "Main" completes for a cross-repo PR and mirrors main.yml's
+# conclusion into the "All jobs pass" commit status.
+#
+# Scope
+# -----
+# - Only cross-repo runs: same-repo PRs and merge_group runs already get
+#   their status posted directly by ci-status-gate.yml.
+# - Only pull_request runs: a cross-repo HEAD can't open merge_group runs.
+# - Maps the workflow_run conclusion to a commit status state:
+#     success            -> success
+#     failure / timed_out / anything else -> failure
+#     cancelled          -> failure (queue reshuffle / manual cancel)
+#   Skipped/neutral shouldn't occur for a whole workflow_run, so they are
+#   treated as failure to stay safe (never leave the check green by mistake).
+
+name: Post cross-repo commit status
+
+on:
+  workflow_run:
+    workflows: ['Main']
+    types: [completed]
+
+permissions:
+  statuses: write
+
+jobs:
+  post-status:
+    name: Post "All jobs pass" status for cross-repo PRs
+    # Only cross-repo pull_request runs need this rescue. Same-repo PRs and
+    # merge_group runs get their status from ci-status-gate.yml directly.
+    if: >-
+      ${{
+        github.event.workflow_run.event == 'pull_request'
+        && github.event.workflow_run.head_repository.full_name != github.event.workflow_run.repository.full_name
+      }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+      CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+      RUN_ID: ${{ github.event.workflow_run.id }}
+    steps:
+      - name: Post commit status
+        run: |
+          if [[ "$CONCLUSION" == "success" ]]; then
+            STATE=success
+            DESCRIPTION="All CI jobs completed successfully"
+          else
+            STATE=failure
+            DESCRIPTION="CI concluded with '$CONCLUSION'"
+          fi
+
+          TARGET_URL="$GITHUB_SERVER_URL/$REPO/actions/runs/$RUN_ID"
+
+          gh api "repos/$REPO/statuses/$HEAD_SHA" \
+            --method POST \
+            -f state="$STATE" \
+            -f context="All jobs pass" \
+            -f description="$DESCRIPTION" \
+            -f target_url="$TARGET_URL"
+
+          echo "Posted '$STATE' commit status on $HEAD_SHA (main.yml conclusion: $CONCLUSION)"

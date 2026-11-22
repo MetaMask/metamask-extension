@@ -50,10 +50,7 @@ export function AddContactPage() {
       </Header>
       <Content padding={0}>
         <Box className="flex flex-1 min-h-0 w-full flex-col">
-          <AddContactForm
-            onCancel={handleBack}
-            onSuccess={() => navigate(CONTACTS_ROUTE)}
-          />
+          <AddContactForm onSuccess={() => navigate(CONTACTS_ROUTE)} />
         </Box>
       </Content>
     </Page>

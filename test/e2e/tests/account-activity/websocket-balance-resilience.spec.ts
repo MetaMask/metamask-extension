@@ -54,20 +54,75 @@ async function waitForBalanceUpdate(
   }, timeoutMs);
 }
 
-async function mockDisabledWebsocketBalance(mockServer: Mockttp) {
-  return await mockServer
-    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
-    .always()
-    .thenCallback(() => {
-      return {
+async function mockChain1337(mockServer: Mockttp) {
+  return [
+    await mockServer
+      .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+      .always()
+      .thenCallback(() => ({
         statusCode: 200,
-        json: [
-          {
-            backendWebSocketConnection: false,
+        json: {
+          'eip155:1337/slip44:1': {
+            id: 'ethereum',
+            price: 3401,
+            marketCap: 0,
+            pricePercentChange1d: 0,
           },
-        ],
-      };
-    });
+          'eip155:1/slip44:60': {
+            id: 'ethereum',
+            price: 3401,
+            marketCap: 0,
+            pricePercentChange1d: 0,
+          },
+        },
+      })),
+    await mockServer
+      .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+      .always()
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          usd: {
+            name: 'US Dollar',
+            ticker: 'usd',
+            value: 1,
+            currencyType: 'fiat',
+          },
+          eth: {
+            name: 'Ether',
+            ticker: 'eth',
+            value: 1 / 3401,
+            currencyType: 'crypto',
+          },
+        },
+      })),
+    await mockServer
+      .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
+      .always()
+      .thenJson(200, {
+        fullSupport: [],
+        partialSupport: [],
+      }),
+    await mockServer
+      .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+      .always()
+      .thenCallback((request) => {
+        const url = new URL(request.url);
+        const assetIds = url.searchParams.getAll('assetIds').join(',');
+        const results = [];
+
+        if (assetIds.includes('eip155:1337')) {
+          results.push({
+            assetId: 'eip155:1337/slip44:1',
+            name: 'Ethereum',
+            symbol: 'ETH',
+            decimals: 18,
+          });
+        }
+
+        return { statusCode: 200, json: { data: results } };
+      }),
+  ];
 }
 
 describe('Account Activity WebSocket Balance Resilience', function (this: Suite) {
@@ -87,6 +142,7 @@ describe('Account Activity WebSocket Balance Resilience', function (this: Suite)
           fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
           unifiedEvmAccountsApiBalances: balanceOverride,
+          testSpecificMock: mockChain1337,
         },
         async ({
           driver,
@@ -136,6 +192,7 @@ describe('Account Activity WebSocket Balance Resilience', function (this: Suite)
           fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
           unifiedEvmAccountsApiBalances: balanceOverride,
+          testSpecificMock: mockChain1337,
         },
         async ({
           driver,
@@ -218,13 +275,12 @@ describe('Account Activity WebSocket Balance Resilience', function (this: Suite)
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        // At the moment, setting this flag has no effect because of this issue #42049, so we need to mock the request
         manifestFlags: {
           remoteFeatureFlags: {
             backendWebSocketConnection: { value: false },
           },
         },
-        testSpecificMock: mockDisabledWebsocketBalance,
+        testSpecificMock: mockChain1337,
       },
       async ({
         driver,

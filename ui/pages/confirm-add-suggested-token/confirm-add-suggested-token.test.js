@@ -15,6 +15,20 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import ConfirmAddSuggestedToken from '.';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockNavigate = jest.fn();
 const mockUseLocation = jest.fn();
 jest.mock('react-router-dom', () => ({
@@ -69,12 +83,6 @@ jest.mock('../../store/actions', () => ({
   rejectPendingApproval: jest.fn().mockReturnValue({ type: 'test' }),
 }));
 
-jest.mock('../../hooks/useIsOriginalTokenSymbol', () => {
-  return {
-    useIsOriginalTokenSymbol: jest.fn(),
-  };
-});
-
 const renderComponent = (tokens = []) => {
   mockNavigate.mockClear();
   mockUseLocation.mockReturnValue({
@@ -89,11 +97,22 @@ const renderComponent = (tokens = []) => {
     metamask: {
       pendingApprovals: PENDING_APPROVALS,
       tokens,
-      allTokens: {
-        '0x5': {
-          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': [...tokens],
-        },
+      customAssets: {
+        'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': tokens.map(
+          (token) => `eip155:5/erc20:${token.address}`,
+        ),
       },
+      assetsInfo: Object.fromEntries(
+        tokens.map((token) => [
+          `eip155:5/erc20:${token.address}`,
+          {
+            type: 'erc20',
+            symbol: token.symbol,
+            decimals: Number(token.decimals),
+            name: token.symbol,
+          },
+        ]),
+      ),
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
 
       internalAccounts: {
@@ -133,7 +152,7 @@ const renderComponent = (tokens = []) => {
       mostRecentOverviewPage: '/',
     },
   });
-  return renderWithProvider(<ConfirmAddSuggestedToken />, store);
+  return { ...renderWithProvider(<ConfirmAddSuggestedToken />, store), store };
 };
 
 describe('ConfirmAddSuggestedToken Component', () => {
@@ -252,5 +271,22 @@ describe('ConfirmAddSuggestedToken Component', () => {
         screen.getByText(messages.reusedTokenNameWarning.message),
       ).toBeInTheDocument();
     });
+  });
+
+  it('navigates to the overview page when suggested tokens are cleared after mount', () => {
+    const { store } = renderComponent();
+
+    mockNavigate.mockClear();
+
+    act(() => {
+      store.dispatch({
+        type: 'UPDATE_METAMASK_STATE',
+        value: {
+          pendingApprovals: {},
+        },
+      });
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 });

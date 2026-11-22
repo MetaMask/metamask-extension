@@ -16,14 +16,18 @@ import {
   getUnapprovedTransaction,
   selectPendingApprovalsForNavigation,
 } from '../../../../../selectors';
-import { selectSmartTransactions } from '../../../../../selectors/toast';
+import { useDispatch } from '../../../../../store/hooks';
 import { useNonContractAddressAlerts } from './useNonContractAddressAlerts';
 import { useContractCode } from './useContractCode';
+import { NonContractAddressAlertMessage } from './NonContractAddressAlertMessage';
+
+jest.mock('../../../../../store/hooks', () => ({
+  useDispatch: jest.fn(),
+}));
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useSelector: jest.fn(),
-  useDispatch: jest.fn(),
 }));
 
 const mockGetUnapprovedTransaction = jest.fn();
@@ -37,7 +41,9 @@ jest.mock('./useContractCode', () => ({
   useContractCode: jest.fn(),
 }));
 jest.mock('./NonContractAddressAlertMessage', () => ({
-  NonContractAddressAlertMessage: () => 'NonContractAddressAlertMessage',
+  NonContractAddressAlertMessage: jest.fn(
+    () => 'NonContractAddressAlertMessage',
+  ),
 }));
 
 jest.mock('../../../../../hooks/useI18nContext', () => ({
@@ -113,8 +119,6 @@ describe('useNonContractAddressAlerts', () => {
         };
       } else if (selector === selectPendingApprovalsForNavigation) {
         return [confirmation];
-      } else if (selector === selectSmartTransactions) {
-        return [];
       } else if (selector === getUnapprovedTransaction) {
         return mockGetUnapprovedTransaction();
       } else if (selector.name === 'getAccountHardwareInfo') {
@@ -146,8 +150,6 @@ describe('useNonContractAddressAlerts', () => {
         };
       } else if (selector === selectPendingApprovalsForNavigation) {
         return [transactionWithNoData];
-      } else if (selector === selectSmartTransactions) {
-        return [];
       } else if (selector === getUnapprovedTransaction) {
         return mockGetUnapprovedTransaction();
       } else if (selector.name === 'getAccountHardwareInfo') {
@@ -183,8 +185,6 @@ describe('useNonContractAddressAlerts', () => {
         };
       } else if (selector === selectPendingApprovalsForNavigation) {
         return [transactionWithData];
-      } else if (selector === selectSmartTransactions) {
-        return [];
       } else if (selector === getUnapprovedTransaction) {
         return mockGetUnapprovedTransaction();
       } else if (selector.name === 'getAccountHardwareInfo') {
@@ -228,8 +228,6 @@ describe('useNonContractAddressAlerts', () => {
         };
       } else if (selector === selectPendingApprovalsForNavigation) {
         return [transaction];
-      } else if (selector === selectSmartTransactions) {
-        return [];
       } else if (selector === getUnapprovedTransaction) {
         return mockGetUnapprovedTransaction();
       } else if (selector.name === 'getAccountHardwareInfo') {
@@ -269,8 +267,6 @@ describe('useNonContractAddressAlerts', () => {
         };
       } else if (selector === selectPendingApprovalsForNavigation) {
         return [transactionWithData];
-      } else if (selector === selectSmartTransactions) {
-        return [];
       } else if (selector(transactionState)?.id === transactionWithData.id) {
         return selector(transactionState);
       } else if (selector === getUnapprovedTransaction) {
@@ -298,7 +294,9 @@ describe('useNonContractAddressAlerts', () => {
           key: 'hexDataWhileInteractingWithNonContractAddress',
           reason: 'nonContractAddressAlertTitle',
           severity: Severity.Warning,
-          content: 'NonContractAddressAlertMessage',
+          content: expect.objectContaining({
+            type: NonContractAddressAlertMessage,
+          }),
         },
       ]);
     });
@@ -323,8 +321,6 @@ describe('useNonContractAddressAlerts', () => {
         };
       } else if (selector === selectPendingApprovalsForNavigation) {
         return [transactionWithData];
-      } else if (selector === selectSmartTransactions) {
-        return [];
       } else if (selector === getUnapprovedTransaction) {
         return mockGetUnapprovedTransaction();
       } else if (selector.name === 'getAccountHardwareInfo') {
@@ -363,8 +359,6 @@ describe('useNonContractAddressAlerts', () => {
         };
       } else if (selector === selectPendingApprovalsForNavigation) {
         return [transactionWithData];
-      } else if (selector === selectSmartTransactions) {
-        return [];
       } else if (selector === getUnapprovedTransaction) {
         return mockGetUnapprovedTransaction();
       } else if (selector.name === 'getAccountHardwareInfo') {

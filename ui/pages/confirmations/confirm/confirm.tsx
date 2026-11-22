@@ -21,7 +21,7 @@ import {
 } from '../context/gas-fee-modal';
 import { useHideToasts } from '../../../hooks/useHideToasts';
 
-const Confirm: React.FC<{ confirmationId?: string }> = ({ confirmationId }) => {
+const Confirm = ({ confirmationId }: { confirmationId?: string }) => {
   useHideToasts();
 
   return (
@@ -31,7 +31,10 @@ const Confirm: React.FC<{ confirmationId?: string }> = ({ confirmationId }) => {
           <TransactionModalContextProvider>
             <ConfirmAlerts>
               <>
-                <Page className="confirm_wrapper">
+                <Page
+                  className="confirm_wrapper"
+                  data-testid="parent-selector-confirmation-page"
+                >
                   <ConfirmNav />
                   <Header />
                   <SmartTransactionsBannerAlert marginType="noTop" />

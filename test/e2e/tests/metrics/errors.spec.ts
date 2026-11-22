@@ -8,10 +8,10 @@ import { isObject, Json, JsonRpcResponse } from '@metamask/utils';
 import { Mockttp, MockttpServer } from 'mockttp';
 import { SENTRY_UI_STATE } from '../../../../app/scripts/constants/sentry-state';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { withFixtures, sentryRegEx } from '../../helpers';
-import { PAGES } from '../../webdriver/driver';
-import { MOCK_META_METRICS_ID } from '../../constants';
-import LoginPage from '../../page-objects/pages/login-page';
+import { withFixtures, sentryRegEx, getCleanAppState } from '../../helpers';
+import { Driver, PAGES } from '../../webdriver/driver';
+import { MOCK_ANALYTICS_ID } from '../../constants';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import { login } from '../../page-objects/flows/login.flow';
 import { mockSpotPrices } from '../tokens/utils/mocks';
 
@@ -54,6 +54,23 @@ async function mockRemoteFeatureFlags(server: MockttpServer): Promise<void> {
 }
 
 /**
+ * Wait for the RewardsController to restore the active account. It is reset
+ * to null on unlock and only set again once silent auth has run for every
+ * account in the selected account group.
+ *
+ * @param driver - The WebDriver instance.
+ */
+async function waitForRewardsActiveAccount(driver: Driver): Promise<void> {
+  await driver.waitUntil(
+    async () => {
+      const uiState = await getCleanAppState(driver);
+      return Boolean(uiState?.metamask?.rewardsActiveAccount);
+    },
+    { interval: 500, timeout: 10000 },
+  );
+}
+
+/**
  * Derive a UI state field from a background state field.
  *
  * @param backgroundField - The path of a background field.
@@ -84,11 +101,6 @@ const maskedBackgroundFields = [
   'AppStateController.fullScreenGasPollTokens',
   'AppStateController.notificationGasPollTokens',
   'AppStateController.popupGasPollTokens',
-  'CurrencyController.currencyRates.ETH.conversionDate',
-  'CurrencyController.currencyRates.LineaETH.conversionDate',
-  'CurrencyController.currencyRates.SepoliaETH.conversionDate',
-  'CurrencyController.currencyRates.MegaETH.conversionDate',
-  'CurrencyController.currencyRates.MON.conversionDate',
   // Network metadata entries vary as networks are added/removed in the codebase
   'NetworkController.networksMetadata',
 ];
@@ -105,8 +117,13 @@ const removedBackgroundFields = [
   'BridgeController.quoteRequest.slippage',
   'PPOMController.chainStatus.0x539.lastVisited',
   'PPOMController.versionInfo',
-  // This property is timing-dependent
-  'MetaMetricsController.latestNonAnonymousEventTimestamp',
+  // Populated asynchronously during sign-in (the shield cohort-eligibility
+  // evaluation round-trips to the subscription backend), so captured as
+  // `null` or a string depending on whether that settles before the error.
+  'AppStateController.pendingShieldCohort',
+  // Present only once the SRP/account-sync session is established, so its
+  // capture is timing-dependent across runs.
+  'AuthenticationController.srpSessionData',
   // PhishingController properties (except urlScanCache which is masked)
   'PhishingController.c2DomainBlocklistLastFetched',
   'PhishingController.hotlistLastFetched',
@@ -292,9 +309,10 @@ describe('Sentry errors', function () {
         {
           fixtures: {
             ...new FixtureBuilderV2()
-              .withMetaMetricsController({
-                metaMetricsId: null,
-                participateInMetaMetrics: false,
+              .withAnalyticsController({
+                analyticsId: null,
+                consentDecisionMade: true,
+                optedIn: false,
               })
               .build(),
             // Intentionally corrupt state to trigger migration error during initialization
@@ -361,15 +379,13 @@ describe('Sentry errors', function () {
     });
 
     it('should NOT send error events in the UI', async function () {
-      if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'false') {
-        this.skip();
-      }
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
-              metaMetricsId: null,
-              participateInMetaMetrics: false,
+            .withAnalyticsController({
+              analyticsId: null,
+              consentDecisionMade: true,
+              optedIn: false,
             })
             .build(),
           title: this.test?.fullTitle(),
@@ -443,9 +459,10 @@ describe('Sentry errors', function () {
         {
           fixtures: {
             ...new FixtureBuilderV2()
-              .withMetaMetricsController({
-                metaMetricsId: MOCK_META_METRICS_ID,
-                participateInMetaMetrics: true,
+              .withAnalyticsController({
+                analyticsId: MOCK_ANALYTICS_ID,
+                consentDecisionMade: true,
+                optedIn: true,
               })
               .build(),
             // Intentionally corrupt state to trigger migration error during initialization
@@ -523,16 +540,14 @@ describe('Sentry errors', function () {
     });
 
     it('should capture background application state', async function () {
-      if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'false') {
-        this.skip();
-      }
       await withFixtures(
         {
           fixtures: {
             ...new FixtureBuilderV2()
-              .withMetaMetricsController({
-                metaMetricsId: MOCK_META_METRICS_ID,
-                participateInMetaMetrics: true,
+              .withAnalyticsController({
+                analyticsId: MOCK_ANALYTICS_ID,
+                consentDecisionMade: true,
+                optedIn: true,
               })
               .build(),
             // Intentionally corrupt state to trigger migration error during initialization
@@ -631,9 +646,10 @@ describe('Sentry errors', function () {
         {
           fixtures: {
             ...new FixtureBuilderV2()
-              .withMetaMetricsController({
-                metaMetricsId: MOCK_META_METRICS_ID,
-                participateInMetaMetrics: true,
+              .withAnalyticsController({
+                analyticsId: MOCK_ANALYTICS_ID,
+                consentDecisionMade: true,
+                optedIn: true,
               })
               .withBadPreferencesControllerState()
               .build(),
@@ -720,9 +736,10 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
-              metaMetricsId: MOCK_META_METRICS_ID,
-              participateInMetaMetrics: true,
+            .withAnalyticsController({
+              analyticsId: MOCK_ANALYTICS_ID,
+              consentDecisionMade: true,
+              optedIn: true,
             })
             .build(),
           title: this.test?.fullTitle(),
@@ -800,15 +817,13 @@ describe('Sentry errors', function () {
     });
 
     it('should capture UI application state', async function () {
-      if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'false') {
-        this.skip();
-      }
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
-              metaMetricsId: MOCK_META_METRICS_ID,
-              participateInMetaMetrics: true,
+            .withAnalyticsController({
+              analyticsId: MOCK_ANALYTICS_ID,
+              consentDecisionMade: true,
+              optedIn: true,
             })
             .build(),
           title: this.test?.fullTitle(),
@@ -912,9 +927,10 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
-              metaMetricsId: null,
-              participateInMetaMetrics: false,
+            .withAnalyticsController({
+              analyticsId: null,
+              consentDecisionMade: true,
+              optedIn: false,
             })
             .build(),
           title: this.test?.fullTitle(),
@@ -985,9 +1001,10 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
-              metaMetricsId: null,
-              participateInMetaMetrics: false,
+            .withAnalyticsController({
+              analyticsId: null,
+              consentDecisionMade: true,
+              optedIn: false,
             })
             .build(),
           title: this.test?.fullTitle(),
@@ -1058,9 +1075,10 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
-              metaMetricsId: MOCK_META_METRICS_ID,
-              participateInMetaMetrics: true,
+            .withAnalyticsController({
+              analyticsId: MOCK_ANALYTICS_ID,
+              consentDecisionMade: true,
+              optedIn: true,
             })
             .build(),
           title: this.test?.fullTitle(),
@@ -1130,13 +1148,14 @@ describe('Sentry errors', function () {
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const { level, extra } = mockJsonBody;
           const [{ type, value }] = mockJsonBody.exception.values;
-          const { participateInMetaMetrics } =
-            extra.appState.state.MetaMetricsController;
+          const { optedIn, consentDecisionMade } =
+            extra.appState.state.AnalyticsController;
           // Verify request
           assert.equal(type, 'TestError');
           assert.equal(value, 'Test Error');
           assert.equal(level, 'error');
-          assert.equal(participateInMetaMetrics, true);
+          assert.equal(optedIn, true);
+          assert.equal(consentDecisionMade, true);
         },
       );
     });
@@ -1145,9 +1164,10 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
-              metaMetricsId: MOCK_META_METRICS_ID,
-              participateInMetaMetrics: true,
+            .withAnalyticsController({
+              analyticsId: MOCK_ANALYTICS_ID,
+              consentDecisionMade: true,
+              optedIn: true,
             })
             .build(),
           title: this.test?.fullTitle(),
@@ -1196,6 +1216,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await login(driver);
+          await waitForRewardsActiveAccount(driver);
 
           // Wait for state to settle
           await driver.delay(5_000);
@@ -1246,9 +1267,10 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
-              metaMetricsId: MOCK_META_METRICS_ID,
-              participateInMetaMetrics: true,
+            .withAnalyticsController({
+              analyticsId: MOCK_ANALYTICS_ID,
+              consentDecisionMade: true,
+              optedIn: true,
             })
             .build(),
           title: this.test?.fullTitle(),
@@ -1313,26 +1335,26 @@ describe('Sentry errors', function () {
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const { level, extra } = mockJsonBody;
           const [{ type, value }] = mockJsonBody.exception.values;
-          const { participateInMetaMetrics } = extra.appState.state.metamask;
+          const { optedIn, consentDecisionMade } =
+            extra.appState.state.metamask;
           // Verify request
           assert.equal(type, 'TestError');
           assert.equal(value, 'Test Error');
           assert.equal(level, 'error');
-          assert.equal(participateInMetaMetrics, true);
+          assert.equal(optedIn, true);
+          assert.equal(consentDecisionMade, true);
         },
       );
     });
 
     it('should capture UI application state', async function () {
-      if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'false') {
-        this.skip();
-      }
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
-              metaMetricsId: MOCK_META_METRICS_ID,
-              participateInMetaMetrics: true,
+            .withAnalyticsController({
+              analyticsId: MOCK_ANALYTICS_ID,
+              consentDecisionMade: true,
+              optedIn: true,
             })
             .build(),
           title: this.test?.fullTitle(),
@@ -1382,6 +1404,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await login(driver);
+          await waitForRewardsActiveAccount(driver);
 
           // Wait for state to settle
           await driver.delay(5_000);
@@ -1458,6 +1481,7 @@ describe('Sentry errors', function () {
       accountsAssets: false,
       assetsMetadata: false,
       allIgnoredAssets: false,
+      tokenBalances: false,
       assetsRates: false,
       smartTransactionsState: {
         fees: {
@@ -1479,6 +1503,10 @@ describe('Sentry errors', function () {
       // Filtered from UI state patches (sensitive auth tokens - see state-utils.ts)
       rewardsSubscriptionTokens: false,
       storageWriteErrorType: true,
+      // AnalyticsController keeps the queue and fragments out of UI state.
+      eventFragments: false,
+      eventQueue: false,
+      preConsentEventQueue: false,
       // Optional property on AppStateController; only set after a user
       // interacts with a Snap install dialog, so absent from initial state.
       snapsInstallPrivacyWarningShown: true,

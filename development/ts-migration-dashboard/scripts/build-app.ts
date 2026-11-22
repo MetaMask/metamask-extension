@@ -6,7 +6,6 @@ import chokidar from 'chokidar';
 import browserify from 'browserify';
 import pify from 'pify';
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error @types/readable-stream does not export finished or pipeline
 import { finished, pipeline } from 'readable-stream';
 import gulp from 'gulp';

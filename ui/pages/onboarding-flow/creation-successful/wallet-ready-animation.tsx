@@ -6,7 +6,6 @@ import {
   Alignment,
   useRiveFile,
 } from '@rive-app/react-canvas';
-import { Box } from '@metamask/design-system-react';
 import { useTheme } from '../../../hooks/useTheme';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import {
@@ -14,8 +13,6 @@ import {
   useRiveWasmFile,
 } from '../../../contexts/rive-wasm';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function WalletReadyAnimation() {
   const theme = useTheme();
   const context = useRiveWasmContext();
@@ -56,7 +53,7 @@ export default function WalletReadyAnimation() {
   // Trigger the animation start when rive is loaded
   useEffect(() => {
     if (rive && isWasmReady && !bufferLoading && buffer) {
-      console.log('rive is loaded', rive);
+      console.log('rive is loaded');
       const inputs = rive.stateMachineInputs('OnboardingLoader');
       if (inputs) {
         const darkToggle = inputs.find((input) => input.name === 'Dark mode');
@@ -85,12 +82,8 @@ export default function WalletReadyAnimation() {
     status === 'loading' ||
     status === 'failed'
   ) {
-    return <Box className="riv-animation__wallet-ready-container"></Box>;
+    return null;
   }
 
-  return (
-    <Box className="riv-animation__wallet-ready-container">
-      <RiveComponent className="riv-animation__canvas" />
-    </Box>
-  );
+  return <RiveComponent className="h-full w-full" />;
 }

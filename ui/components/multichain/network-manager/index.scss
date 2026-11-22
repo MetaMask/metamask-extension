@@ -26,18 +26,7 @@
   max-height: none;
 }
 
-.network-manager__networks-button-icon {
-  justify-content: center;
-  display: flex;
-}
-
 .network-manager__additional-network-item {
-  cursor: pointer;
-
-  &:hover {
-    background: var(--color-background-default-hover);
-  }
-
   .mm-button-icon {
     --button-icon-size: 20px;
   }

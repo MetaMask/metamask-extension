@@ -8,11 +8,13 @@ import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
+import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
+import ContactsListPage from '../../../page-objects/pages/contacts/contacts-list-page';
+import { addContact } from '../../../page-objects/flows/contacts.flow';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
 import { login } from '../../../page-objects/flows/login.flow';
+import { closeSettings } from '../../../page-objects/flows/settings.flow';
 import { skipOnFirefox } from '../helpers';
 import { arrangeContactSyncingTestUtils } from './helpers';
 
@@ -123,15 +125,14 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
             );
 
           // Add a new contact via UI (like the account syncing test does)
-          await settingsPage.clickBackButton();
+          await closeSettings(driver);
           await header.openContactsPage();
-          const contactsSettings = new ContactsSettings(driver);
-          await contactsSettings.checkPageIsLoaded();
+          await new ContactsListPage(driver).checkPageIsLoaded();
 
-          await contactsSettings.addContact(
-            'New Contact Not Synced',
-            '0x9999999999999999999999999999999999999999',
-          );
+          await addContact(driver, {
+            name: 'New Contact Not Synced',
+            address: '0x9999999999999999999999999999999999999999',
+          });
 
           console.log('Added contact via UI when contact sync is disabled');
 
@@ -266,14 +267,13 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
             );
 
           // Add a new contact via UI to test that syncing works when enabled
-          await settingsPage.clickBackButton();
+          await closeSettings(driver);
           await header.openContactsPage();
-          const contactsSettings = new ContactsSettings(driver);
-          await contactsSettings.checkPageIsLoaded();
-          await contactsSettings.addContact(
-            'New Contact Synced',
-            '0x8888888888888888888888888888888888888888',
-          );
+          await new ContactsListPage(driver).checkPageIsLoaded();
+          await addContact(driver, {
+            name: 'New Contact Synced',
+            address: '0x8888888888888888888888888888888888888888',
+          });
 
           console.log('Added contact via UI when contact sync is enabled');
 

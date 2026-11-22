@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getRampsControllerApi exposes ramps background methods 1`] = `
+[
+  "watchRampsCheckoutTab",
+  "watchRampsProviderOrderTab",
+]
+`;

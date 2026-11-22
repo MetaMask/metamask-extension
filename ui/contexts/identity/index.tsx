@@ -6,7 +6,9 @@ import {
   useAutoSignOut,
 } from '../../hooks/identity/useAuthentication';
 
-export const MetamaskIdentityProvider: React.FC = ({ children }) => {
+export const MetamaskIdentityProvider = ({
+  children,
+}: React.PropsWithChildren<unknown>) => {
   const { dispatchAccountSyncing, shouldDispatchAccountSyncing } =
     useAccountSyncing();
   const { dispatchContactSyncing, shouldDispatchContactSyncing } =
@@ -36,15 +38,37 @@ export const MetamaskIdentityProvider: React.FC = ({ children }) => {
    * - Users should be signed out if basic functionality is disabled. (see `useAutoSignOut`)
    */
   useEffect(() => {
-    if (shouldAutoSignIn) {
-      autoSignIn();
-    }
+    let cancelled = false;
+
+    const run = async () => {
+      if (!shouldAutoSignIn || cancelled) {
+        return;
+      }
+      await autoSignIn();
+    };
+
+    run();
+
+    return () => {
+      cancelled = true;
+    };
   }, [shouldAutoSignIn, autoSignIn]);
 
   useEffect(() => {
-    if (shouldAutoSignOut) {
-      autoSignOut();
-    }
+    let cancelled = false;
+
+    const run = async () => {
+      if (!shouldAutoSignOut || cancelled) {
+        return;
+      }
+      await autoSignOut();
+    };
+
+    run();
+
+    return () => {
+      cancelled = true;
+    };
   }, [shouldAutoSignOut, autoSignOut]);
 
   return <>{children}</>;

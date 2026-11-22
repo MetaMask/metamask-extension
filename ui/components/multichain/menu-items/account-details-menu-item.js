@@ -1,15 +1,16 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { createSearchParams, useNavigate } from 'react-router-dom';
+import { IconName } from '@metamask/design-system-react';
 import { MenuItem } from '../../ui/menu';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { IconName, Text } from '../../component-library';
+import { Text } from '../../component-library';
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import { getHDEntropyIndex } from '../../../selectors';
 import { MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
@@ -20,7 +21,7 @@ export const AccountDetailsMenuItem = ({
   textProps,
 }) => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const accountGroupId = useSelector(getSelectedAccountGroup);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const navigate = useNavigate();
@@ -28,14 +29,15 @@ export const AccountDetailsMenuItem = ({
   const LABEL = t('accountDetails');
 
   const handleNavigation = useCallback(() => {
-    trackEvent({
-      event: MetaMetricsEventName.AccountDetailsOpened,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        location: metricsLocation,
-        hd_entropy_index: hdEntropyIndex,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.AccountDetailsOpened)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location: metricsLocation,
+          hd_entropy_index: hdEntropyIndex,
+        })
+        .build(),
+    );
 
     navigate({
       pathname: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
@@ -52,12 +54,13 @@ export const AccountDetailsMenuItem = ({
     metricsLocation,
     accountGroupId,
     trackEvent,
+    createEventBuilder,
   ]);
 
   return (
     <MenuItem
       onClick={handleNavigation}
-      iconNameLegacy={IconName.ScanBarcode}
+      iconName={IconName.ScanBarcode}
       data-testid="account-list-menu-details"
     >
       {textProps ? <Text {...textProps}>{LABEL}</Text> : LABEL}

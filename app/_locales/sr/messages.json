@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Potrebno je da izaberete nalog!"
   },
-  "addAcquiredTokens": {
-    "message": "Dodajte stečene tokene koristeći MetaMask."
-  },
   "addAlias": {
     "message": "Dodaj pseudonim"
   },
@@ -83,9 +80,6 @@
   },
   "back": {
     "message": "Назад"
-  },
-  "backupApprovalInfo": {
-    "message": "Potreban je tajni kôd za oporavak vašeg novčanika u slučaju da izgubite uređaj, zaboravite lozinku, morate ponovo da instalirate MetaMask ili želite da pristupite novčaniku sa drugog uređaja."
   },
   "backupApprovalNotice": {
     "message": "Napravite rezervnu kopiju tajnog kôda za oporavak da bi vaš novčanik i sredstva bili bezbedni."
@@ -178,14 +172,8 @@
   "custom": {
     "message": "Напредне опције"
   },
-  "customToken": {
-    "message": "Prilagođeni token"
-  },
   "decimal": {
     "message": "Decimale preciznosti"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Decimalni broj mora biti najmanje 0, a ne veći od 36."
   },
   "delete": {
     "message": "Избриши"
@@ -195,9 +183,6 @@
   },
   "done": {
     "message": "Gotovo"
-  },
-  "downloadGoogleChrome": {
-    "message": "Preuzmi Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Preuzmite dnevnike stanja"
@@ -223,10 +208,6 @@
   "fast": {
     "message": "Брзо"
   },
-  "fileImportFail": {
-    "message": "Uvoz datoteke ne radi? Kliknite ovde!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "Заборави овај уређај"
   },
@@ -235,9 +216,6 @@
   },
   "gasLimit": {
     "message": "Limit gasa"
-  },
-  "gasLimitTooLow": {
-    "message": "Limit za gas mora da bude najmanje 21 000"
   },
   "gasUsed": {
     "message": "Korišćen gas"
@@ -256,9 +234,6 @@
   },
   "hardwareWallets": {
     "message": "Povežite hardverski novčanik"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Izaberite hardverski novčanik koji biste voleli da koristite sa MetaMask-om"
   },
   "here": {
     "message": "ovde",
@@ -345,9 +320,6 @@
   "metamaskVersion": {
     "message": "MetaMask verzija"
   },
-  "mustSelectOne": {
-    "message": "Morate izabrati najmanje 1 token."
-  },
   "needImportFile": {
     "message": "Morate izabrati fajl koji ćete uvesti.",
     "description": "User is important an account and needs to add a file to continue"
@@ -357,9 +329,6 @@
   },
   "networks": {
     "message": "Mreže"
-  },
-  "nevermind": {
-    "message": "Nema veze"
   },
   "newAccountNumberName": {
     "message": "Nalog $1",
@@ -379,9 +348,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Nije nađena veb kamera"
-  },
-  "notEnoughGas": {
-    "message": "Nema dovoljno gasa"
   },
   "ofTextNofM": {
     "message": "od"
@@ -413,10 +379,6 @@
   "passwordsDontMatch": {
     "message": "Šifre se ne poklapaju"
   },
-  "pastePrivateKey": {
-    "message": "Ovde nalepite vaš niz privatnog ključa",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "u toku"
   },
@@ -432,9 +394,6 @@
   "privateKey": {
     "message": "Privatni ključ",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Upozorenje: Nikada ne otkrivajte ovaj ključ. Svako sa vašim privatnim ključevima može ukrasti bilo koju imovinu na vašem nalogu."
   },
   "privateNetwork": {
     "message": "Privatna mreža"
@@ -521,9 +480,6 @@
   "sign": {
     "message": "Potpišite"
   },
-  "signatureRequest": {
-    "message": "Zahtev za potpis"
-  },
   "signed": {
     "message": "Potpisan"
   },
@@ -607,9 +563,6 @@
   },
   "urlErrorMsg": {
     "message": "URI-ovi zahtevaju odgovarajući prefiks HTTP / HTTPS."
-  },
-  "usedByClients": {
-    "message": "Koristi ga veliki broj različitih klijenata"
   },
   "visitWebSite": {
     "message": "Posetite našu veb lokaciju"

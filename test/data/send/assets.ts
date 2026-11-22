@@ -86,6 +86,15 @@ export const MOCK_NFT721 = {
     'https://dweb.link/ipfs/QmQD4h1Dkkn75ZKSFXDtmW6kehpCkckStRazCdUgp7m9g1',
 };
 
+export const STELLAR_NATIVE_ASSET = {
+  assetId: 'stellar:pubnet/slip44:148',
+  chainId: 'stellar:pubnet',
+  decimals: 7,
+  isNative: true,
+  name: 'Stellar Lumens',
+  symbol: 'XLM',
+};
+
 export const BITCOIN_ASSET = {
   type: 'bip122:p2wpkh',
   assetId: 'bip122:000000000019d6689c085ae165831e93/slip44:0',

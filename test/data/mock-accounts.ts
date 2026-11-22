@@ -11,11 +11,11 @@ import {
   SolMethod,
   SolScope,
   TrxScope,
+  XlmAccountType,
+  XlmMethod,
+  XlmScope,
 } from '@metamask/keyring-api';
-import {
-  ETH_EOA_METHODS,
-  ETH_4337_METHODS,
-} from '../../shared/constants/eth-methods';
+import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 
 export const MOCK_ACCOUNT_EOA: InternalAccount = {
   id: '4974fc00-c0fb-4a18-8535-8407ec6d1952',
@@ -112,7 +112,7 @@ export const MOCK_ACCOUNT_ERC4337: InternalAccount = {
   id: '4d5921f2-2022-44ce-a84f-9f6a0f142a5c',
   address: '0xd8da6bf26964af9d7eed9e03e53415d37aa96045',
   options: {},
-  methods: ETH_EOA_METHODS.concat(ETH_4337_METHODS),
+  methods: ETH_EOA_METHODS,
   // Smart accounts might not be available on every EVM chains, but that's ok for mock purposes.
   scopes: [EthScope.Testnet],
   type: EthAccountType.Erc4337,
@@ -214,6 +214,21 @@ export const MOCK_ACCOUNT_TRON_SHASTA: InternalAccount = {
   },
 };
 
+export const MOCK_ACCOUNT_STELLAR_PUBNET: InternalAccount = {
+  id: 'stellar-pubnet-account-id',
+  address: 'GA5ZSEJYB37JRC5AVCIA5MOP4RHNMDQEQJKUY2C3D2U7HN3I4LJLQYGX',
+  options: {},
+  methods: [XlmMethod.SignTransaction, XlmMethod.SignMessage],
+  scopes: [XlmScope.Pubnet],
+  type: XlmAccountType.Account,
+  metadata: {
+    name: 'Stellar Account',
+    keyring: { type: KeyringTypes.snap },
+    importTime: 1691565967600,
+    lastSelected: 1955565967656,
+  },
+};
+
 export const MOCK_ACCOUNTS = {
   [MOCK_ACCOUNT_EOA.id]: MOCK_ACCOUNT_EOA,
   [MOCK_ACCOUNT_ERC4337.id]: MOCK_ACCOUNT_ERC4337,
@@ -223,6 +238,7 @@ export const MOCK_ACCOUNTS = {
   [MOCK_ACCOUNT_TRON_MAINNET.id]: MOCK_ACCOUNT_TRON_MAINNET,
   [MOCK_ACCOUNT_TRON_NILE.id]: MOCK_ACCOUNT_TRON_NILE,
   [MOCK_ACCOUNT_TRON_SHASTA.id]: MOCK_ACCOUNT_TRON_SHASTA,
+  [MOCK_ACCOUNT_STELLAR_PUBNET.id]: MOCK_ACCOUNT_STELLAR_PUBNET,
   [MOCK_ACCOUNT_HARDWARE.id]: MOCK_ACCOUNT_HARDWARE,
   [MOCK_ACCOUNT_PRIVATE_KEY.id]: MOCK_ACCOUNT_PRIVATE_KEY,
 };
@@ -237,6 +253,7 @@ export const MOCK_ACCOUNT_ID_BY_ADDRESS = {
   [MOCK_ACCOUNT_TRON_MAINNET.address]: MOCK_ACCOUNT_TRON_MAINNET.id,
   [MOCK_ACCOUNT_TRON_NILE.address]: MOCK_ACCOUNT_TRON_NILE.id,
   [MOCK_ACCOUNT_TRON_SHASTA.address]: MOCK_ACCOUNT_TRON_SHASTA.id,
+  [MOCK_ACCOUNT_STELLAR_PUBNET.address]: MOCK_ACCOUNT_STELLAR_PUBNET.id,
   [MOCK_ACCOUNT_HARDWARE.address]: MOCK_ACCOUNT_HARDWARE.id,
   [MOCK_ACCOUNT_PRIVATE_KEY.address]: MOCK_ACCOUNT_PRIVATE_KEY.id,
 };

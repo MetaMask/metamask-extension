@@ -7,6 +7,7 @@ import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   CONNECT_HARDWARE_ROUTE,
+  DEFAULT_ROUTE,
   IMPORT_SRP_ROUTE,
   ADD_WALLET_PAGE_ROUTE,
   PREVIOUS_ROUTE,
@@ -18,10 +19,19 @@ import {
 import { ChooseNewWalletTypePage } from './choose-new-wallet-type-page';
 
 const mockUseNavigate = jest.fn();
+let mockLocationKey = 'default';
+let mockLocationState: Record<string, unknown> | null = null;
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockUseNavigate,
+  useLocation: () => ({
+    key: mockLocationKey,
+    pathname: '/',
+    search: '',
+    hash: '',
+    state: mockLocationState,
+  }),
 }));
 
 const mockGetEnvironmentType = jest.fn();
@@ -56,6 +66,8 @@ describe('ChooseNewWalletTypePage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetEnvironmentType.mockReturnValue('fullscreen');
+    mockLocationKey = 'default';
+    mockLocationState = null;
   });
 
   const renderComponent = (storeOverrides = {}) => {
@@ -67,7 +79,7 @@ describe('ChooseNewWalletTypePage', () => {
     it('renders the page with header title', () => {
       renderComponent();
 
-      expect(screen.getByText(messages.addAWallet.message)).toBeInTheDocument();
+      expect(screen.getByText(messages.addWallet.message)).toBeInTheDocument();
     });
 
     it('renders the back button', () => {
@@ -152,12 +164,36 @@ describe('ChooseNewWalletTypePage', () => {
   });
 
   describe('navigation', () => {
-    it('navigates to account list when back button is clicked', () => {
-      renderComponent();
+    it('navigates back when arrived via in-app navigation', () => {
+      mockLocationKey = 'abc123';
 
+      renderComponent();
       fireEvent.click(screen.getByTestId('back-button'));
 
       expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+    });
+
+    it('navigates to account list when location.key is default', () => {
+      renderComponent();
+      fireEvent.click(screen.getByTestId('back-button'));
+
+      expect(mockUseNavigate).toHaveBeenCalledWith('/account-list', {
+        replace: true,
+        state: { fromFreshTab: true },
+      });
+    });
+
+    it('navigates to account list when arrived from fresh tab via state', () => {
+      mockLocationKey = 'abc123';
+      mockLocationState = { fromFreshTab: true };
+
+      renderComponent();
+      fireEvent.click(screen.getByTestId('back-button'));
+
+      expect(mockUseNavigate).toHaveBeenCalledWith('/account-list', {
+        replace: true,
+        state: { fromFreshTab: true },
+      });
     });
 
     it('navigates to import SRP route when import wallet is clicked', () => {
@@ -197,6 +233,7 @@ describe('ChooseNewWalletTypePage', () => {
         false,
       );
       expect(mockUseNavigate).not.toHaveBeenCalledWith(CONNECT_HARDWARE_ROUTE);
+      expect(mockUseNavigate).not.toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
 
     it('opens extension in browser with keep-open for hardware wallet in sidepanel mode', () => {
@@ -210,6 +247,15 @@ describe('ChooseNewWalletTypePage', () => {
         null,
         true,
       );
+    });
+
+    it('navigates sidepanel to home screen after handing off hardware wallet flow', () => {
+      mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+      renderComponent();
+
+      fireEvent.click(screen.getByTestId('choose-wallet-type-hardware-wallet'));
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
   });
 

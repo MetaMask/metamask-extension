@@ -1,31 +1,11 @@
-import { Messenger } from '@metamask/messenger';
-import type { AccountsControllerGetStateAction } from '@metamask/accounts-controller';
-import type { ApprovalControllerAddRequestAction } from '@metamask/approval-controller';
-import type { LoggingControllerAddAction } from '@metamask/logging-controller';
-import type { GatorPermissionsControllerDecodePermissionFromPermissionContextForOriginAction } from '@metamask/gator-permissions-controller';
-import { NetworkControllerGetNetworkClientByIdAction } from '@metamask/network-controller';
-import type {
-  KeyringControllerSignMessageAction,
-  KeyringControllerSignPersonalMessageAction,
-  KeyringControllerSignTypedMessageAction,
-} from '@metamask/keyring-controller';
+import {
+  Messenger,
+  MessengerActions,
+  type MessengerEvents,
+} from '@metamask/messenger';
+import { SignatureControllerMessenger } from '@metamask/signature-controller';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
-import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../lib/messenger';
-
-type AllowedActions =
-  | AccountsControllerGetStateAction
-  | ApprovalControllerAddRequestAction
-  | LoggingControllerAddAction
-  | GatorPermissionsControllerDecodePermissionFromPermissionContextForOriginAction
-  | NetworkControllerGetNetworkClientByIdAction
-  | KeyringControllerSignMessageAction
-  | KeyringControllerSignPersonalMessageAction
-  | KeyringControllerSignTypedMessageAction;
-
-export type SignatureControllerMessenger = ReturnType<
-  typeof getSignatureControllerMessenger
->;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -35,14 +15,12 @@ export type SignatureControllerMessenger = ReturnType<
  * messenger.
  */
 export function getSignatureControllerMessenger(
-  messenger: RootMessenger<AllowedActions, never>,
+  messenger: RootMessenger<
+    MessengerActions<SignatureControllerMessenger>,
+    MessengerEvents<SignatureControllerMessenger>
+  >,
 ) {
-  const controllerMessenger = new Messenger<
-    'SignatureController',
-    AllowedActions,
-    never,
-    typeof messenger
-  >({
+  const controllerMessenger: SignatureControllerMessenger = new Messenger({
     namespace: 'SignatureController',
     parent: messenger,
   });
@@ -62,9 +40,7 @@ export function getSignatureControllerMessenger(
   return controllerMessenger;
 }
 
-type AllowedInitializationActions =
-  | MetaMetricsControllerTrackEventAction
-  | PreferencesControllerGetStateAction;
+type AllowedInitializationActions = PreferencesControllerGetStateAction;
 
 export type SignatureControllerInitMessenger = ReturnType<
   typeof getSignatureControllerInitMessenger
@@ -91,10 +67,7 @@ export function getSignatureControllerInitMessenger(
   });
   messenger.delegate({
     messenger: controllerInitMessenger,
-    actions: [
-      'MetaMetricsController:trackEvent',
-      'PreferencesController:getState',
-    ],
+    actions: ['PreferencesController:getState'],
   });
   return controllerInitMessenger;
 }

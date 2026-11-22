@@ -1,27 +1,29 @@
-import React, { ReactNode, useCallback, useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { ReactNode, useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import classnames from 'clsx';
-import { Box, Text } from '../../../../component-library';
+import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
+import { Text } from '../../../../component-library';
 import { SortOrder, SortingCallbacksT } from '../../util/sort';
 import {
   AlignItems,
-  BackgroundColor,
   BlockSize,
-  BorderRadius,
   Display,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { setTokenSortConfig } from '../../../../../store/actions';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import { useAnalytics } from '../../../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsTokenSortLocation,
+  MetaMetricsTokenSortPreference,
   MetaMetricsUserTrait,
 } from '../../../../../../shared/constants/metametrics';
 import { getTokenSortConfig } from '../../../../../selectors';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getCurrencySymbol } from '../../../../../helpers/utils/common.util';
+import { useDispatch } from '../../../../../store/hooks';
 
 // intentionally used generic naming convention for styled selectable list item
 // inspired from ui/components/multichain/network-list-item
@@ -30,6 +32,7 @@ type SelectableListItemProps = {
   isSelected?: boolean;
   onClick?: React.MouseEventHandler<HTMLSpanElement>;
   testId?: string;
+  className?: string;
   children: ReactNode;
 };
 
@@ -37,20 +40,24 @@ export const SelectableListItem = ({
   isSelected,
   onClick,
   testId,
+  className,
   children,
 }: SelectableListItemProps) => {
   return (
     <Box className="selectable-list-item-wrapper" data-testid={testId}>
       <Text
         data-testid={`${testId}__button`}
-        className={classnames('selectable-list-item', {
-          'selectable-list-item--selected': Boolean(isSelected),
-        })}
+        className={classnames(
+          'selectable-list-item',
+          {
+            'selectable-list-item--selected': Boolean(isSelected),
+          },
+          className,
+        )}
         onClick={onClick}
         variant={TextVariant.bodySmMedium}
         as="button"
         width={BlockSize.Full}
-        backgroundColor={BackgroundColor.backgroundDefault}
         display={Display.Flex}
         alignItems={AlignItems.center}
       >
@@ -58,9 +65,8 @@ export const SelectableListItem = ({
       </Text>
       {isSelected && (
         <Box
-          className="selectable-list-item__selected-indicator"
-          borderRadius={BorderRadius.pill}
-          backgroundColor={BackgroundColor.primaryDefault}
+          className="selectable-list-item__selected-indicator rounded-full"
+          backgroundColor={BoxBackgroundColor.PrimaryDefault}
         />
       )}
     </Box>
@@ -71,21 +77,26 @@ type SortControlProps = {
   handleClose: () => void;
 };
 
+type SortKey = 'title' | 'tokenFiatAmount';
+
+const TOKEN_SORT_PREFERENCE_BY_KEY: Record<
+  SortKey,
+  MetaMetricsTokenSortPreference
+> = {
+  title: MetaMetricsTokenSortPreference.Title,
+  tokenFiatAmount: MetaMetricsTokenSortPreference.TokenFiatAmount,
+};
+
 const SortControl = ({ handleClose }: SortControlProps) => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const tokenSortConfig = useSelector(getTokenSortConfig);
   const currentCurrency = useSelector(getCurrentCurrency);
 
   const dispatch = useDispatch();
 
-  type SortKeys = 'title' | 'tokenFiatAmount';
   const handleSort = useCallback(
-    (
-      key: SortKeys,
-      sortCallback: keyof SortingCallbacksT,
-      order: SortOrder,
-    ) => {
+    (key: SortKey, sortCallback: keyof SortingCallbacksT, order: SortOrder) => {
       dispatch(
         setTokenSortConfig({
           key,
@@ -93,16 +104,19 @@ const SortControl = ({ handleClose }: SortControlProps) => {
           order,
         }),
       );
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.TokenSortPreference,
-        properties: {
-          [MetaMetricsUserTrait.TokenSortPreference]: key,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.TokenSortPreference)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            [MetaMetricsUserTrait.TokenSortPreference]:
+              TOKEN_SORT_PREFERENCE_BY_KEY[key],
+            location: MetaMetricsTokenSortLocation.SortMenu,
+          })
+          .build(),
+      );
       handleClose();
     },
-    [dispatch, handleClose, trackEvent],
+    [createEventBuilder, dispatch, handleClose, trackEvent],
   );
 
   return (

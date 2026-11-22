@@ -1,12 +1,11 @@
 import {
   TransactionContainerType,
-  TransactionController,
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import { cloneDeep } from 'lodash';
 import { createProjectLogger } from '@metamask/utils';
 import type { Hex } from 'viem';
-import { TransactionControllerInitMessenger } from '../../../messenger-client-init/messengers/transaction-controller-messenger';
+import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';
 import { enforceSimulations } from './enforced-simulations';
 
 const log = createProjectLogger('transaction-containers');
@@ -22,48 +21,52 @@ export async function applyTransactionContainers({
   transactionMeta: TransactionMeta;
   types: TransactionContainerType[];
 }): Promise<{
+  enforcedSimulationsSlippage?: number;
   updateTransaction: (transaction: TransactionMeta) => void;
 }> {
   const { txParamsOriginal } = transactionMeta;
+  const hasEnforcedSimulations = types.includes(
+    TransactionContainerType.EnforcedSimulations,
+  );
   const finalMetadata = cloneDeep(transactionMeta);
+  let enforcedSimulationsSlippage: number | undefined;
 
   if (txParamsOriginal) {
     finalMetadata.txParams = cloneDeep(txParamsOriginal);
   }
 
-  if (types.includes(TransactionContainerType.EnforcedSimulations)) {
-    const { updateTransaction } = await enforceSimulations({
+  if (hasEnforcedSimulations) {
+    const { slippage, updateTransaction } = await enforceSimulations({
       messenger,
       transactionMeta: finalMetadata,
       useRealSignature: isApproved,
     });
 
+    enforcedSimulationsSlippage = slippage;
     updateTransaction(finalMetadata);
   }
 
-  let newGas: Hex | undefined;
+  const originalGas = finalMetadata.txParams.gas as Hex | undefined;
 
-  if (!isApproved) {
-    const { gas } = await messenger.call(
-      'TransactionController:estimateGas',
-      finalMetadata.txParams,
-      finalMetadata.networkClientId,
-      {
-        ignoreDelegationSignatures: true,
-      },
-    );
-
-    log('Estimated gas', gas);
-
-    newGas = gas as Hex;
-  }
+  // Without containers the restored parameters are the original transaction,
+  // so keep its gas (dapp-provided or buffered by the controller) instead of
+  // replacing it with an unbuffered re-estimate.
+  const newGas = hasEnforcedSimulations
+    ? await estimateContainerGas({
+        isApproved,
+        messenger,
+        originalGas,
+        transactionMeta: finalMetadata,
+      })
+    : originalGas;
 
   return {
+    enforcedSimulationsSlippage,
     updateTransaction: (transaction: TransactionMeta) => {
       transaction.containerTypes = types;
 
       // Only update the fields modified by container wrapping.
-      // Preserves gas fees, nonce, gasLimit, chainId,
+      // Preserves gas fees, nonce, chainId,
       // and other fields set by the approval flow.
       transaction.txParams.data = finalMetadata.txParams.data;
       transaction.txParams.to = finalMetadata.txParams.to;
@@ -80,54 +83,56 @@ export async function applyTransactionContainers({
 
       if (newGas) {
         transaction.txParams.gas = newGas;
+
+        if (isApproved) {
+          transaction.txParams.gasLimit = newGas;
+        }
       }
     },
   };
 }
 
-export async function applyTransactionContainersExisting({
-  containerTypes,
-  transactionId,
+async function estimateContainerGas({
+  isApproved,
   messenger,
-  updateEditableParams,
+  originalGas,
+  transactionMeta,
 }: {
-  containerTypes: TransactionContainerType[];
-  transactionId: string;
+  isApproved: boolean;
   messenger: TransactionControllerInitMessenger;
-  updateEditableParams: TransactionController['updateEditableParams'];
-}) {
-  const transactionControllerState = await messenger.call(
-    'TransactionController:getState',
-  );
+  originalGas: Hex | undefined;
+  transactionMeta: TransactionMeta;
+}): Promise<Hex | undefined> {
+  const estimationParams = cloneDeep(transactionMeta.txParams);
+  delete estimationParams.gas;
+  delete estimationParams.gasLimit;
 
-  const transactionMeta = transactionControllerState.transactions.find(
-    (tx) => tx.id === transactionId,
-  );
+  const { gas, simulationFails } = isApproved
+    ? await messenger.call(
+        'TransactionController:estimateGas',
+        estimationParams,
+        transactionMeta.networkClientId,
+      )
+    : await messenger.call(
+        'TransactionController:estimateGas',
+        estimationParams,
+        transactionMeta.networkClientId,
+        {
+          ignoreDelegationSignatures: true,
+        },
+      );
 
-  if (!transactionMeta) {
-    throw new Error(`Transaction with ID ${transactionId} not found.`);
+  log('Estimated gas', gas);
+
+  if (!simulationFails) {
+    return gas as Hex;
   }
 
-  const { updateTransaction } = await applyTransactionContainers({
-    isApproved: false,
-    messenger,
-    transactionMeta,
-    types: containerTypes,
-  });
+  if (!isApproved) {
+    throw new Error(
+      `Failed to estimate gas for transaction containers: ${simulationFails.reason}`,
+    );
+  }
 
-  const newTransactionMeta = cloneDeep(transactionMeta);
-
-  updateTransaction(newTransactionMeta);
-
-  updateEditableParams(transactionId, {
-    containerTypes,
-    data: newTransactionMeta.txParams.data ?? '0x',
-    gas: newTransactionMeta.txParams.gas,
-    gasPrice: transactionMeta.txParams.gasPrice,
-    maxFeePerGas: transactionMeta.txParams.maxFeePerGas,
-    maxPriorityFeePerGas: transactionMeta.txParams.maxPriorityFeePerGas,
-    to: newTransactionMeta.txParams.to,
-    updateType: false,
-    value: newTransactionMeta.txParams.value,
-  });
+  return originalGas;
 }

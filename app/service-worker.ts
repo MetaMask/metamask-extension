@@ -6,6 +6,19 @@ import { ExtensionLazyListener } from './scripts/lib/extension-lazy-listener/ext
 
 const { chrome } = globalThis;
 
+const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
+
+function saveTimestamp() {
+  const timestamp = new Date().toISOString();
+
+  chrome.storage.session.set({ timestamp });
+}
+
+// Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL_MS`.
+// This keeps the service worker alive.
+saveTimestamp();
+setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
+
 // this needs to be run early so we can begin listening to these browser events
 // as soon as possible
 const lazyListener = new ExtensionLazyListener(chrome, {
@@ -27,8 +40,7 @@ async function runImportScripts() {
 
   const startImportScriptsTime = performance.now();
 
-  // eslint-disable-next-line import-x/extensions
-  await import('./scripts/background.js');
+  await import('./scripts/background');
 
   const endImportScriptsTime = performance.now();
 
@@ -41,7 +53,6 @@ async function runImportScripts() {
 }
 
 // Ref: https://stackoverflow.com/questions/66406672/chrome-extension-mv3-modularize-service-worker-js-file
-// eslint-disable-next-line no-undef
 self.addEventListener('install', runImportScripts);
 
 // listen for connection events from other contexts, and respond to liveness
@@ -80,7 +91,6 @@ chrome.runtime.onConnect.addListener((port) => {
  * is 'activated'.
  */
 // @ts-expect-error - typescript doesn't know about this
-// eslint-disable-next-line no-undef
 if (self.serviceWorker.state === 'activated') {
   runImportScripts();
 }

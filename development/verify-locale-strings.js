@@ -262,6 +262,7 @@ async function verifyEnglishLocale() {
       'app/scripts/constants/**/*.js',
       'app/scripts/constants/**/*.ts',
       'app/scripts/platforms/**/*.js',
+      'app/scripts/platforms/**/*.ts',
       'app/scripts/controllers/**/*.ts',
     ],
     {
@@ -314,15 +315,23 @@ async function verifyEnglishLocale() {
     'appDescription',
     'rejected',
     'signed',
+    'unexpectedError',
     // used via CSS
     'CSS_loadingTakingTooLongMessageText',
     'CSS_loadingTakingTooLongActionText',
   ];
 
+  const messageExceptionPatterns = [
+    /^activity_[a-zA-Z0-9]+_(failed|pending|success)_(description|title)$/u,
+    /^activity_fallback_(description|title)$/u,
+  ];
+
   const englishMessages = Object.keys(englishLocale);
   const unusedMessages = englishMessages.filter(
     (message) =>
-      !messageExceptions.includes(message) && !usedMessages.has(message),
+      !messageExceptions.includes(message) &&
+      !messageExceptionPatterns.some((pattern) => pattern.test(message)) &&
+      !usedMessages.has(message),
   );
 
   if (unusedMessages.length) {

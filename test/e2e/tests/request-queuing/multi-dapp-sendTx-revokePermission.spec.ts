@@ -57,7 +57,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks revok
         );
 
         // Network Selector
-        await switchToNetworkFromNetworkSelect(driver, 'Custom', hostname);
+        await switchToNetworkFromNetworkSelect(driver, hostname);
 
         // Wait for the first dapp's connect confirmation to disappear
         await driver.waitUntilXWindowHandles(2);

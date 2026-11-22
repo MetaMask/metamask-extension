@@ -8,7 +8,7 @@ import { useTypesSignSimulationEnabledInfo } from '../../../../../hooks/useTypes
 import { DecodedSimulation } from './decoded-simulation';
 import { PermitSimulation } from './permit-simulation';
 
-const TypedSignV4Simulation: React.FC<object> = () => {
+const TypedSignV4Simulation = () => {
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
   const isPermit = isPermitSignatureRequest(currentConfirmation);
   const isSimulationSupported = useTypesSignSimulationEnabledInfo();

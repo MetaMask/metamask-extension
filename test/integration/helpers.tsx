@@ -27,8 +27,14 @@ type WidenDeep<Type> = Type extends string
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const createMockImplementation = <T,>(requests: Record<string, T>) => {
   return (method: string): Promise<T | undefined | string> => {
-    if (method === 'getBearerToken') {
+    if (method === 'AuthenticationController:getBearerToken') {
       return Promise.resolve('mock-bearer-token-for-tests');
+    }
+    if (
+      method === 'trackAnalyticsEvent' ||
+      method === 'addEventBeforeMetricsOptIn'
+    ) {
+      return Promise.resolve(undefined);
     }
     if (method in requests) {
       return Promise.resolve(requests[method]);

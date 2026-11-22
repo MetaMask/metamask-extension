@@ -1,6 +1,5 @@
 import React, { ReactNode, useCallback } from 'react';
-import type { TransactionMeta } from '@metamask/transaction-controller';
-import { TransactionType } from '@metamask/transaction-controller';
+import { type TransactionMeta } from '@metamask/transaction-controller';
 import { Box, Text } from '../../../../../components/component-library';
 import {
   Display,
@@ -19,37 +18,55 @@ import {
   PayTokenAmount,
   PayTokenAmountSkeleton,
 } from '../../pay-token-amount/pay-token-amount';
-import {
-  PayWithRow,
-  PayWithRowSkeleton,
-} from '../../rows/pay-with-row/pay-with-row';
+import { PayWithRow } from '../../rows/pay-with-row/pay-with-row';
+import { FromAccountRow } from '../../rows/from-account-row';
 import { BridgeFeeRow } from '../../rows/bridge-fee-row/bridge-fee-row';
 import { BridgeTimeRow } from '../../rows/bridge-time-row/bridge-time-row';
 import { TotalRow } from '../../rows/total-row/total-row';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
+import { ReceiveRow } from '../../rows/receive-row/receive-row';
+import { PerpsAccountPickerRow } from '../../rows/perps-account-picker-row';
 import {
   PercentageButtons,
   PercentageButtonsSkeleton,
 } from '../../percentage-buttons';
-import { ReceiveRow } from '../../rows/receive-row/receive-row';
 import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { useTransactionCustomAmount } from '../../../hooks/transactions/useTransactionCustomAmount';
 import { useTransactionCustomAmountAlerts } from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
 import { useAutomaticTransactionPayToken } from '../../../hooks/pay/useAutomaticTransactionPayToken';
+import { useDefaultPaySelectedSection } from '../../../hooks/pay/useDefaultPaySelectedSection';
+import { useIsMoneyAccountFlagDefault } from '../../../hooks/pay/useIsMoneyAccountFlagDefault';
+import { useTransactionPayPostQuote } from '../../../hooks/pay/useTransactionPayPostQuote';
+import { useTransactionPayWithdraw } from '../../../hooks/pay/useTransactionPayWithdraw';
 import type { SetPayTokenRequest } from '../../../hooks/pay/types';
 import {
-  useIsTransactionPayLoading,
+  useIsTransactionPayQuotePending,
+  useTransactionPayHasExecutableQuote,
+  useTransactionPayHasPositiveRequiredAmount,
   useTransactionPayPrimaryRequiredToken,
   useTransactionPayQuotes,
+  useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useTransactionPayMetrics } from '../../../hooks/pay/useTransactionPayMetrics';
 import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
+import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
+import { useAccountNoFundsAlert } from '../../../hooks/alerts/transactions/useAccountNoFundsAlert';
 import { useConfirmContext } from '../../../context/confirm';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 
 export type CustomAmountInfoProps = {
+  /**
+   * Optional subtitle rendered directly under the amount input (e.g. APY
+   * pitch / projected balance on Money Account deposit). Receives the current
+   * fiat amount string from the input.
+   */
+  amountDetails?: (amountFiat: string) => ReactNode;
+  /**
+   * When true, focuses the input on mount and selects the value so typing replaces it
+   */
+  autoFocusAmount?: boolean;
   /**
    * Optional caller-provided balance (USD) used as the source for the
    * percentage buttons. Takes precedence over the default `payToken.balanceUsd`.
@@ -58,10 +75,6 @@ export type CustomAmountInfoProps = {
    */
   balanceUsdOverride?: number;
   children?: ReactNode;
-  /**
-   * When true, focuses the input on mount and selects the value so typing replaces it
-   */
-  autoFocusAmount?: boolean;
   currency?: string;
   /**
    * When true, it prevents automatic selection of payment token based on balance and feature flags
@@ -71,51 +84,137 @@ export type CustomAmountInfoProps = {
    * When true, it disables MetaMask Pay for transactions that just need custom amount input
    */
   disablePay?: boolean;
+  /**
+   * When true, disables the percentage shortcut buttons. Used when the
+   * balance source for those buttons is not yet known (e.g. Money Account
+   * vault withdrawable balance still loading).
+   */
+  disablePercentageButtons?: boolean;
+  /**
+   * When true, renders a "From account" selector row above the "Pay with" row,
+   * letting the user choose which account funds the transaction.
+   */
+  displayAccountRow?: boolean;
+  /**
+   * When true, renders the percentage shortcut buttons (10% / 25% / 50% and
+   * 90% or Max) under the amount input. Set by the money-account flows; other
+   * flows sharing this component keep the plain amount input.
+   */
+  displayPercentageButtons?: boolean;
+  /**
+   * When true, the flow opts into the Max (100%) shortcut in place of 90%.
+   * Max is still withheld for a native pay token outside withdraw, so a gas
+   * reserve remains. Mirrors mobile `CustomAmountInfo` `hasMax`.
+   */
   hasMax?: boolean;
   hidePayTokenAmount?: boolean;
+  overrideBottomContent?: (hasAmount: boolean) => ReactNode;
+  overrideCenterContent?: (amountHuman: string, hasInput: boolean) => ReactNode;
+  /**
+   * When true, pre-fills the amount field with the max balance on load.
+   */
+  prefillMaxOnLoad?: boolean;
   preferredToken?: SetPayTokenRequest;
-  overrideBottomContent?: ReactNode;
-  overrideCenterContent?: (amountHuman: string) => ReactNode;
 };
 
-export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
+export const CustomAmountInfo = React.memo(
   ({
+    amountDetails,
+    autoFocusAmount = false,
     balanceUsdOverride,
     children,
-    autoFocusAmount = false,
     currency,
     disableAutomaticToken,
     disablePay,
+    disablePercentageButtons,
+    displayAccountRow,
+    displayPercentageButtons,
     hasMax,
     hidePayTokenAmount,
     overrideBottomContent,
     overrideCenterContent,
+    prefillMaxOnLoad,
     preferredToken,
-  }) => {
+  }: CustomAmountInfoProps) => {
+    const isDefaultMoneyAccount = useIsMoneyAccountFlagDefault();
+    useDefaultPaySelectedSection();
     useAutomaticTransactionPayToken({
-      disable: Boolean(disablePay) || Boolean(disableAutomaticToken),
+      disable:
+        Boolean(disablePay) ||
+        Boolean(disableAutomaticToken) ||
+        isDefaultMoneyAccount,
       preferredToken,
     });
+    // Configures post-quote mode for withdraw flows; no-op for other flows.
+    useTransactionPayPostQuote();
     useTransactionPayMetrics();
 
     const { currentConfirmation } = useConfirmContext<TransactionMeta>();
     const availableTokens = useTransactionPayAvailableTokens();
-    const hasTokens = availableTokens.length > 0;
+    const accountNoFundsAlert = useAccountNoFundsAlert();
+    const hasAccountNoFunds = accountNoFundsAlert.length > 0;
+    // Input enablement keys off the transaction type, not the post-quote flag:
+    // withdrawals source funds off-chain (Perps HyperCore, money-account vault)
+    // regardless of whether token selection is enabled, so the amount input
+    // must stay usable with an empty wallet in both flag states.
+    const { isWithdraw } = useTransactionPayWithdraw();
+    const hasTokens = availableTokens.length > 0 || isWithdraw;
     const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
-    const isAwaitingRequiredToken = !disablePay && !primaryRequiredToken;
+    // Withdraws source funds off-chain (vault / HyperCore) and money-account
+    // withdraw batches have no `requiredAssets`, so Pay never populates a
+    // primary required token. Waiting on it leaves the amount UI on the
+    // skeleton indefinitely.
+    const isAwaitingRequiredToken =
+      !disablePay && !primaryRequiredToken && !isWithdraw;
 
+    // disableUpdate only depends on account/hardware/signing alerts, not the
+    // typed amount — evaluate without pending fiat so amount state can load.
     const { disableUpdate } = useTransactionCustomAmountAlerts();
 
     const {
       amountFiat,
       amountHuman,
+      hasAmount,
+      hasInput,
+      isDepositPrefillLoading,
+      isQuoteDerivedAmountLoading,
       updatePendingAmount,
       updatePendingAmountPercentage,
     } = useTransactionCustomAmount({
       balanceUsdOverride,
       currency,
       disableUpdate,
+      prefillMaxOnLoad,
     });
+
+    // Show amount skeleton while deposit prefill recomputes (e.g. token or
+    // account change) so the field does not briefly flash "0", and while a
+    // quote the displayed amount comes from is still loading.
+    // `isDepositPrefillLoading` is already false once prefill settles as
+    // skipped (no funded pay token), so an unfundable deposit shows $0 and a
+    // usable keypad instead of an indefinite skeleton.
+    const showAmountLoader =
+      (isDepositPrefillLoading && !hasAccountNoFunds) ||
+      isQuoteDerivedAmountLoading;
+
+    // While the field is recomputing, `amountFiat` still holds the amount for
+    // the previously selected token / account. Comparing it against the newly
+    // selected one's balance briefly reports "Insufficient funds" for an
+    // amount that is about to be replaced, so withhold it until the field
+    // settles. Amount-independent alerts (no funds, hardware, signing) are
+    // unaffected — they come from the argument-less call above.
+    const { alertContent, alertMessage, hasAlert, hideResults } =
+      useTransactionCustomAmountAlerts({
+        pendingFiatAmount: showAmountLoader ? undefined : amountFiat,
+      });
+
+    const { isNative: isNativePayToken } = useTransactionPayToken();
+    // Withdraw always offers Max: in post-quote mode the picker token is the
+    // destination, so the native gas reserve below does not apply.
+    // Otherwise Max needs the flow to opt in (`hasMax`) and a non-native pay
+    // token — spending a whole native balance would leave nothing for gas, so
+    // those keep 90%. Matches mobile `custom-amount-info`.
+    const showMax = isWithdraw || (Boolean(hasMax) && !isNativePayToken);
 
     const handleAmountChange = useCallback(
       (value: string) => {
@@ -124,15 +223,12 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
       [updatePendingAmount],
     );
 
-    const handlePercentageClick = useCallback(
-      (percentage: number) => {
-        updatePendingAmountPercentage(percentage);
-      },
-      [updatePendingAmountPercentage],
-    );
-
     if (!currentConfirmation || isAwaitingRequiredToken) {
-      return <CustomAmountInfoSkeleton />;
+      return (
+        <CustomAmountInfoSkeleton
+          displayPercentageButtons={displayPercentageButtons}
+        />
+      );
     }
 
     return (
@@ -143,27 +239,49 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
         data-testid="custom-amount-info"
       >
         <CenterContainer
+          amountDetails={amountDetails}
           autoFocusAmount={autoFocusAmount}
           amountFiat={amountFiat}
           amountHuman={amountHuman}
           currency={currency}
           disablePay={disablePay}
-          hasMax={hasMax}
+          hasAlert={hasAlert}
+          hasInput={hasInput}
           hasTokens={hasTokens}
           hidePayTokenAmount={hidePayTokenAmount}
+          isAmountLoading={showAmountLoader}
           onAmountChange={handleAmountChange}
-          onPercentageClick={handlePercentageClick}
           overrideCenterContent={overrideCenterContent}
         >
           {children}
         </CenterContainer>
-        {overrideBottomContent ?? <BottomContainer amountFiat={amountFiat} />}
+        <AlertMessage alertContent={alertContent} alertMessage={alertMessage} />
+        {displayPercentageButtons && (
+          <PercentageButtons
+            disabled={!hasTokens || Boolean(disablePercentageButtons)}
+            hasMax={showMax}
+            onPercentageClick={updatePendingAmountPercentage}
+          />
+        )}
+        {overrideBottomContent?.(hasAmount) ?? (
+          <BottomContainer
+            amountFiat={amountFiat}
+            disablePay={disablePay}
+            displayAccountRow={displayAccountRow}
+            hasAmount={hasAmount}
+            hideResults={hideResults}
+          />
+        )}
       </Box>
     );
   },
 );
 
-export function CustomAmountInfoSkeleton() {
+export function CustomAmountInfoSkeleton({
+  displayPercentageButtons,
+}: {
+  displayPercentageButtons?: boolean;
+} = {}) {
   return (
     <Box
       display={Display.Flex}
@@ -171,38 +289,44 @@ export function CustomAmountInfoSkeleton() {
       style={{ flex: 1 }}
       data-testid="custom-amount-info-skeleton"
     >
-      <CenterContainerSkeleton />
+      <CenterContainerSkeleton
+        displayPercentageButtons={displayPercentageButtons}
+      />
     </Box>
   );
 }
 
 type CenterContainerProps = {
+  amountDetails?: (amountFiat: string) => ReactNode;
   autoFocusAmount: boolean;
   amountFiat: string;
   amountHuman: string;
   children?: ReactNode;
   currency?: string;
   disablePay?: boolean;
-  hasMax?: boolean;
+  hasAlert?: boolean;
+  hasInput: boolean;
   hasTokens: boolean;
   hidePayTokenAmount?: boolean;
+  isAmountLoading?: boolean;
   onAmountChange: (value: string) => void;
-  onPercentageClick: (percentage: number) => void;
-  overrideCenterContent?: (amountHuman: string) => ReactNode;
+  overrideCenterContent?: (amountHuman: string, hasInput: boolean) => ReactNode;
 };
 
 function CenterContainer({
+  amountDetails,
   autoFocusAmount,
   amountFiat,
   amountHuman,
   children,
   currency,
   disablePay,
-  hasMax,
+  hasAlert = false,
+  hasInput,
   hasTokens,
   hidePayTokenAmount,
+  isAmountLoading = false,
   onAmountChange,
-  onPercentageClick,
   overrideCenterContent,
 }: CenterContainerProps) {
   return (
@@ -219,11 +343,15 @@ function CenterContainer({
         autoFocus={autoFocusAmount}
         currency={currency}
         disabled={!hasTokens}
+        hasAlert={hasAlert}
+        isLoading={isAmountLoading}
         onChange={onAmountChange}
       />
 
+      {amountDetails?.(amountFiat)}
+
       {overrideCenterContent ? (
-        overrideCenterContent(amountHuman)
+        overrideCenterContent(amountHuman, hasInput)
       ) : (
         <Box
           display={Display.Flex}
@@ -235,21 +363,17 @@ function CenterContainer({
             <PayTokenAmount amountHuman={amountHuman} disabled={!hasTokens} />
           )}
           {children}
-          {disablePay !== true && hasTokens && (
-            <PayWithRow variant={ConfirmInfoRowSize.Small} />
-          )}
         </Box>
       )}
-
-      {hasTokens && hasMax && (
-        <PercentageButtons onPercentageClick={onPercentageClick} />
-      )}
-      <AlertMessage />
     </Box>
   );
 }
 
-function CenterContainerSkeleton() {
+function CenterContainerSkeleton({
+  displayPercentageButtons,
+}: {
+  displayPercentageButtons?: boolean;
+}) {
   return (
     <Box
       display={Display.Flex}
@@ -260,31 +384,35 @@ function CenterContainerSkeleton() {
       style={{ flex: 1 }}
     >
       <CustomAmountSkeleton />
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.center}
-        gap={2}
-      >
-        <PayTokenAmountSkeleton />
-        <PayWithRowSkeleton />
-      </Box>
-      <PercentageButtonsSkeleton />
+      <PayTokenAmountSkeleton />
+      {displayPercentageButtons && <PercentageButtonsSkeleton />}
     </Box>
   );
 }
 
-function BottomContainer({ amountFiat }: { amountFiat: string }) {
+function BottomContainer({
+  amountFiat,
+  disablePay,
+  displayAccountRow,
+  hasAmount,
+  hideResults,
+}: {
+  amountFiat: string;
+  disablePay?: boolean;
+  displayAccountRow?: boolean;
+  hasAmount: boolean;
+  hideResults: boolean;
+}) {
   const t = useI18nContext();
-  const isResultReady = useIsResultReady();
-  const { hideResults } = useTransactionCustomAmountAlerts();
+  const isResultReady = useIsResultReady(hasAmount, disablePay);
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
-
-  if (!isResultReady || hideResults) {
-    return null;
-  }
+  // Withdrawals show Receive only when post-quote token selection is enabled;
+  // otherwise the direct transfer keeps its regular Total. Input-based quotes
+  // show Receive according to the controller-owned totals semantics.
+  const { canSelectWithdrawToken } = useTransactionPayWithdraw();
+  const isInputBased = useTransactionPayTotals()?.isInputBased === true;
 
   return (
     <Box
@@ -293,34 +421,85 @@ function BottomContainer({ amountFiat }: { amountFiat: string }) {
       gap={2}
       paddingBottom={4}
     >
-      <BridgeFeeRow
-        variant={ConfirmInfoRowSize.Small}
-        tooltipDescription={
-          isPerpsWithdraw ? t('perpsWithdrawTooltip') : undefined
-        }
-      />
-      <BridgeTimeRow rowVariant={ConfirmInfoRowSize.Small} />
-      {isPerpsWithdraw ? (
-        <ReceiveRow
-          inputAmountUsd={amountFiat}
-          variant={ConfirmInfoRowSize.Small}
-        />
-      ) : (
-        <TotalRow variant={ConfirmInfoRowSize.Small} />
+      {displayAccountRow && <FromAccountRow showDivider />}
+      <PerpsAccountPickerRow />
+      {/* Keep mounted while funding tokens load after account override so the
+          selector does not unmount for the reselect wait, then remount. */}
+      {disablePay !== true && <PayWithRow />}
+      {isResultReady && !hideResults && (
+        <>
+          {disablePay !== true && (
+            <>
+              <BridgeFeeRow
+                variant={ConfirmInfoRowSize.Small}
+                tooltipDescription={
+                  isPerpsWithdraw ? t('perpsWithdrawTooltip') : undefined
+                }
+              />
+              <BridgeTimeRow rowVariant={ConfirmInfoRowSize.Small} />
+            </>
+          )}
+          {(canSelectWithdrawToken || isInputBased) && disablePay !== true ? (
+            <ReceiveRow
+              inputAmountUsd={amountFiat}
+              variant={ConfirmInfoRowSize.Small}
+            />
+          ) : (
+            <TotalRow variant={ConfirmInfoRowSize.Small} />
+          )}
+        </>
       )}
     </Box>
   );
 }
 
-function useIsResultReady() {
+/**
+ * Whether the quote-derived rows (transaction fee, estimated time, total /
+ * you'll receive) should be shown.
+ *
+ * These rows are meaningless until the user has entered an amount, so they stay
+ * hidden while the field is empty or zero. Gating on `hasAmount` (which tracks
+ * the field directly) rather than the quote state also means clearing the
+ * amount hides them immediately, instead of leaving the previous quote's
+ * numbers on screen until a new quote resolves.
+ *
+ * @param hasAmount - Whether the amount field holds a value greater than zero.
+ * @param disablePay - Whether the confirmation skips the pay/quote pipeline
+ * (direct withdraws), in which case no quote will ever arrive.
+ */
+function useIsResultReady(hasAmount: boolean, disablePay?: boolean) {
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const quotes = useTransactionPayQuotes();
-  const isQuotesLoading = useIsTransactionPayLoading();
+  const isQuotePending = useIsTransactionPayQuotePending();
+  const hasExecutableQuote = useTransactionPayHasExecutableQuote();
+  const hasPositiveRequiredAmount =
+    useTransactionPayHasPositiveRequiredAmount();
 
-  return isQuotesLoading || Boolean(quotes?.length);
+  // Selecting a destination token still stores a no-op quote and gas totals.
+  // A $0 withdraw must not show those as a real quote.
+  if (!hasAmount) {
+    return false;
+  }
+
+  if (isPerpsWithdrawTransaction(currentConfirmation)) {
+    return hasPositiveRequiredAmount && (isQuotePending || hasExecutableQuote);
+  }
+
+  // Direct withdraws never fetch quotes. Show the total once an amount is
+  // typed; do not wait on a quote that will never arrive.
+  return Boolean(disablePay) || isQuotePending || Boolean(quotes?.length);
 }
 
-function AlertMessage() {
-  const { alertMessage } = useTransactionCustomAmountAlerts();
+function AlertMessage({
+  alertContent,
+  alertMessage,
+}: {
+  alertContent?: ReactNode;
+  alertMessage?: string;
+}) {
+  if (alertContent) {
+    return <>{alertContent}</>;
+  }
 
   if (!alertMessage) {
     return null;

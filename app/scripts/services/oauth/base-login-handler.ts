@@ -1,9 +1,13 @@
-import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import {
   createErrorFromNetworkRequest,
   OAuthErrorMessages,
 } from '../../../../shared/lib/error';
-import { LoginHandlerOptions, AuthTokenResponse, OAuthUserInfo } from './types';
+import { AuthConnection } from '../../../../shared/constants/onboarding';
+import {
+  type LoginHandlerOptions,
+  type AuthTokenResponse,
+  type OAuthUserInfo,
+} from './types';
 
 export abstract class BaseLoginHandler {
   public options: LoginHandlerOptions;
@@ -54,7 +58,7 @@ export abstract class BaseLoginHandler {
    * @param code - The authorization code from the social login provider.
    * @returns The JWT Token from the Web3Auth Authentication Server.
    */
-  abstract getAuthIdToken(code?: string | null): Promise<AuthTokenResponse>;
+  abstract getAuthIdToken(code?: string): Promise<AuthTokenResponse>;
 
   /**
    * Generate the request body data to get the JWT Token from the Web3Auth Authentication Server.

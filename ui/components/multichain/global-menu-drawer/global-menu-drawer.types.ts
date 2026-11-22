@@ -32,26 +32,7 @@ export type GlobalMenuDrawerProps = {
   showCloseButton?: boolean;
 
   /**
-   * Width of the drawer
-   *
-   * @default '400px'
-   */
-  width?: string;
-
-  /**
-   * Whether clicking outside the drawer closes it
-   *
-   * @default true
-   */
-  onClickOutside?: boolean;
-
-  /**
    * Optional data-testid for testing
    */
   'data-testid'?: string;
-
-  /**
-   * Optional anchor element to help find the correct container in fullscreen mode
-   */
-  anchorElement?: HTMLElement | null;
 };

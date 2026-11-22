@@ -3,8 +3,8 @@ import { BigNumber } from 'bignumber.js';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
+import { Skeleton } from '@metamask/design-system-react';
 import { Box, Text } from '../../../../components/component-library';
-import { Skeleton } from '../../../../components/component-library/skeleton';
 import {
   TextColor,
   TextVariant,
@@ -15,7 +15,7 @@ import {
   useTransactionPayIsMaxAmount,
 } from '../../hooks/pay/useTransactionPayData';
 import { useConfirmContext } from '../../context/confirm';
-import { formatAmount } from '../simulation-details/formatAmount';
+import { formatAmount } from '../../../../../shared/lib/format-amount';
 import { getTokenAddress } from '../../utils/transaction-pay';
 import { useTokenFiatRates } from '../../hooks/tokens/useTokenFiatRates';
 import { getCurrentLocale } from '../../../../ducks/locale/locale';
@@ -25,7 +25,6 @@ export type PayTokenAmountProps = {
   disabled?: boolean;
 };
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function PayTokenAmount({ amountHuman, disabled }: PayTokenAmountProps) {
   const locale = useSelector(getCurrentLocale) ?? 'en';
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -94,7 +93,6 @@ export function PayTokenAmount({ amountHuman, disabled }: PayTokenAmountProps) {
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function PayTokenAmountSkeleton() {
   return (
     <Box data-testid="pay-token-amount-skeleton">

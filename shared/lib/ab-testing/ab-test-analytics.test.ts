@@ -1,6 +1,6 @@
 import type { Json } from '@metamask/utils';
 import * as ManifestFlags from '../manifestFlags';
-import type { MetaMetricsEventPayload } from '../../constants/metametrics';
+import type { AnalyticsEvent } from '../analytics/create-event-builder';
 import {
   enrichWithABTests,
   getRemoteFeatureFlagsWithManifestOverrides,
@@ -30,12 +30,12 @@ const TEST_ANALYTICS_MAPPINGS = [
 ] as const;
 
 const createEvent = (
-  event: string,
+  name: string,
   properties: Record<string, Json> = {},
-): MetaMetricsEventPayload => ({
-  event,
-  category: 'Unit Test',
+): AnalyticsEvent => ({
+  name,
   properties,
+  sensitiveProperties: {},
 });
 
 describe('ab-test-analytics', () => {
@@ -185,9 +185,8 @@ describe('ab-test-analytics', () => {
     });
 
     it('leaves non-a-b properties and sensitive properties unchanged', () => {
-      const event: MetaMetricsEventPayload = {
-        event: 'Card Button Viewed',
-        category: 'Unit Test',
+      const event: AnalyticsEvent = {
+        name: 'Card Button Viewed',
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           button_type: 'card',

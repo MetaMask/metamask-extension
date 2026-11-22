@@ -4,6 +4,8 @@
 // from Redux state rather than calling the API directly.
 import { useState, useEffect } from 'react';
 import { handleFetch } from '@metamask/controller-utils';
+import { isCaipAssetType, parseCaipAssetType } from '@metamask/utils';
+import { getAssetImageUrl } from '../../shared/lib/asset-utils';
 
 export type TokenAsset = {
   assetId: string;
@@ -23,6 +25,35 @@ export const MAX_BATCH_SIZE = 25;
 // share a single HTTP request for the same batch of asset IDs.
 const tokenCache: Record<string, TokenAsset> = {};
 const inFlight = new Map<string, Promise<TokenAsset[]>>();
+
+/**
+ * The tokens API omits `iconUrl` for some recognized tokens (e.g. mUSD)
+ * even though the canonical icon exists on the static CDN, so fall back to
+ * {@link getAssetImageUrl} when the API response has no icon.
+ *
+ * @param token - Token metadata returned by the tokens API.
+ * @returns Token with a resolved icon URL when possible.
+ */
+function withIconUrlFallback(token: TokenAsset): TokenAsset {
+  if (token.iconUrl) {
+    return token;
+  }
+
+  if (!isCaipAssetType(token.assetId)) {
+    return token;
+  }
+
+  try {
+    const { chainId } = parseCaipAssetType(token.assetId);
+    return {
+      ...token,
+      iconUrl: getAssetImageUrl(token.assetId, chainId) ?? '',
+    };
+  } catch {
+    // Unexpected malformed CAIP asset id — keep the API token as-is.
+    return token;
+  }
+}
 
 function fetchTokenBatch(assetIds: string[]): Promise<TokenAsset[]> {
   const normalizedIds = assetIds.map((id) => id.toLowerCase());
@@ -51,10 +82,12 @@ function fetchTokenBatch(assetIds: string[]): Promise<TokenAsset[]> {
       // asset IDs (addresses are lowercased before building the CAIP-19 ID).
       // The API may return EIP-55 checksummed addresses (e.g. 0xABc…) which
       // would otherwise cause every cache lookup and state lookup to miss.
-      data.forEach((t) => {
-        tokenCache[t.assetId.toLowerCase()] = t;
+      // Also fill missing icon URLs from the static token-icons CDN.
+      return data.map((token) => {
+        const normalized = withIconUrlFallback(token);
+        tokenCache[token.assetId.toLowerCase()] = normalized;
+        return normalized;
       });
-      return data;
     } finally {
       inFlight.delete(key);
     }

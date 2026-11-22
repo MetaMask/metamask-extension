@@ -6,11 +6,12 @@
 import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import { withFixtures } from '../../../helpers';
-import AccountListPage from '../../../page-objects/pages/account-list-page';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import AssetListPage from '../../../page-objects/pages/home/asset-list';
+import { importWalletWithSrp } from '../../../page-objects/flows/add-wallet.flow';
+import AccountListPage from '../../../page-objects/pages/accounts/list-page';
+import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
+import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import LoginPage from '../../../page-objects/pages/login-page';
+import LoginPage from '../../../page-objects/pages/onboarding/login-page';
 import { Driver } from '../../../webdriver/driver';
 import { collectTimerResults } from '../../utils/timer-helper';
 import {
@@ -94,8 +95,7 @@ export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
         );
 
         // Measure: Import SRP and return to home
-        const accountListPage = new AccountListPage(driver);
-        await accountListPage.startImportSecretPhrase(SECOND_SRP);
+        await importWalletWithSrp(driver, SECOND_SRP);
         steps.push(
           await measureStepWithLongTasks(
             driver,
@@ -103,10 +103,10 @@ export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
             async () => {
               const homePage = new HomePage(driver);
               await homePage.checkPageIsLoaded();
-              const assetListPage = new AssetListPage(driver);
-              await assetListPage.checkTokenListIsDisplayed();
-              await assetListPage.checkTokenExistsInList('Ethereum');
-              await assetListPage.waitForTokenToBeDisplayed('Solana', 60000);
+              const tokensTab = new TokensTab(driver);
+              await tokensTab.checkTokenListIsDisplayed();
+              await tokensTab.checkTokenExistsInList('Ethereum');
+              await tokensTab.waitForTokenToBeDisplayed('Solana', 60000);
             },
           ),
         );

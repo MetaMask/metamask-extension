@@ -1,9 +1,8 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { normalizeSafeAddress } from '../../../../../../../../app/scripts/lib/multichain/address';
+import { normalizeSafeAddress } from '../../../../../../../../shared/lib/multichain/address';
+import { resolveApprovalTokenContractAddress } from '../../../../../../../../shared/lib/transaction.utils';
 import { useAccountTotalFiatBalance } from '../../../../../../../hooks/useAccountTotalFiatBalance';
 import { getSelectedAccount } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
@@ -30,9 +29,11 @@ export const useReceivedToken = () => {
     true,
   ) as { tokensWithBalances: TokenWithBalance[] };
 
+  const tokenAddress = resolveApprovalTokenContractAddress(transactionMeta);
+
   const receivedToken = tokensWithBalances.find(
     (token) =>
-      normalizeSafeAddress(transactionMeta.txParams.to as string) ===
+      normalizeSafeAddress(tokenAddress as string) ===
       normalizeSafeAddress(token.address),
   );
 

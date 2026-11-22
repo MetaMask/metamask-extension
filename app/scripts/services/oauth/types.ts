@@ -1,22 +1,33 @@
 import {
   Web3AuthNetwork,
-  AuthConnection,
   SeedlessOnboardingControllerGetStateAction,
   SeedlessOnboardingControllerGetAccessTokenAction,
 } from '@metamask/seedless-onboarding-controller';
+import type { Env as ProfileSyncEnv } from '@metamask/profile-sync-controller/sdk';
 import { Messenger } from '@metamask/messenger';
+import { GeolocationControllerGetGeolocationAction } from '@metamask/geolocation-controller';
 import type {
-  MetaMetricsEventPayload,
-  MetaMetricsEventOptions,
-} from '../../../../shared/constants/metametrics';
-import type {
-  TraceRequest,
-  EndTraceRequest,
-} from '../../../../shared/lib/trace';
+  AnalyticsEvent,
+  AnalyticsEventBuildOptions,
+} from '../../../../shared/lib/analytics/create-event-builder';
 import type { OnboardingControllerGetStateAction } from '../../controllers/onboarding';
+import type {
+  SentryTracingServiceBufferedEndTraceAction,
+  SentryTracingServiceBufferedTraceAction,
+} from '../sentry/sentry-tracing-service-method-action-types';
+import ExtensionPlatform from '../../platforms/extension';
+import { AuthConnection } from '../../../../shared/constants/onboarding';
 import { OAuthServiceMethodActions } from './oauth-service-method-action-types';
 
 export const SERVICE_NAME = 'OAuthService';
+
+export type OAuthTraceRehydrationValue = 'true' | 'false' | 'unknown';
+
+export type OAuthTraceTags = {
+  provider: AuthConnection;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  is_rehydration: OAuthTraceRehydrationValue;
+};
 
 export type ServiceName = typeof SERVICE_NAME;
 
@@ -36,7 +47,10 @@ export type OAuthServiceAction =
   | OAuthServiceMethodActions
   | SeedlessOnboardingControllerGetStateAction
   | SeedlessOnboardingControllerGetAccessTokenAction
-  | OnboardingControllerGetStateAction;
+  | OnboardingControllerGetStateAction
+  | GeolocationControllerGetGeolocationAction
+  | SentryTracingServiceBufferedTraceAction
+  | SentryTracingServiceBufferedEndTraceAction;
 
 /**
  * All possible events that the OAuthService can emit.
@@ -107,25 +121,23 @@ export type LoginHandlerOptions = {
   scopes?: string[];
 };
 
-export type OAuthLoginEnv = {
-  /**
-   * The Google Client ID for the OAuth login.
-   */
-  googleClientId: string;
-
-  /**
-   * The Apple Client ID for the OAuth login.
-   */
-  appleClientId: string;
-};
-
 export type OAuthConfig = {
+  googleClientId: string;
+  appleClientId: string;
+  telegramClientId: string;
   googleAuthConnectionId: string;
   googleGroupedAuthConnectionId: string;
   appleAuthConnectionId: string;
   appleGroupedAuthConnectionId: string;
+  telegramAuthConnectionId: string;
+  telegramGroupedAuthConnectionId: string;
   authServerUrl: string;
   web3AuthNetwork: Web3AuthNetwork;
+  /**
+   * The profile-sync environment used by the Telegram login flow to derive its
+   * auth and OIDC endpoints.
+   */
+  profileSyncEnv: ProfileSyncEnv;
 };
 
 export type OAuthServiceMessenger = Messenger<
@@ -141,41 +153,39 @@ export type OAuthServiceOptions = {
   messenger: OAuthServiceMessenger;
 
   /**
-   * The environment variables required for the OAuth login and get JWT Token.
-   */
-  env: OAuthLoginEnv;
-
-  /**
    * The WebAuthenticator to use for the OAuth login.
    */
   webAuthenticator: WebAuthenticator;
 
   /**
-   * Buffered trace methods that handle consent checking
+   * The extension platform abstraction for browser tab lifecycle handling.
    */
-  bufferedTrace: (
-    request: TraceRequest,
-    fn?: (context?: unknown) => unknown,
-  ) => void;
-  bufferedEndTrace: (request: EndTraceRequest) => void;
+  platform: ExtensionPlatform;
 
   /**
-   * Track a MetaMetrics event
+   * Track an analytics event built with createEventBuilder.
    */
   trackEvent: (
-    payload: MetaMetricsEventPayload,
-    options?: MetaMetricsEventOptions,
+    built: AnalyticsEvent,
+    options?: AnalyticsEventBuildOptions,
   ) => void;
 
   /**
-   * Add an event before metrics opt-in (for buffering before user consent)
+   * Persist the temporary Telegram profile-sync JWT until the SRP profile is
+   * ready to pair with it.
    */
-  addEventBeforeMetricsOptIn: (event: MetaMetricsEventPayload) => void;
+  storePendingSocialLoginProfileJwt?: (jwt: string) => Promise<void>;
 
   /**
-   * Get whether the user has opted into MetaMetrics
+   * Read the pending Telegram profile-sync JWT from session storage.
    */
-  getParticipateInMetaMetrics: () => boolean | null;
+  getPendingSocialLoginProfileJwt?: () => Promise<string[]>;
+
+  /**
+   * Clear the pending Telegram profile-sync JWT from session storage after a
+   * successful pair.
+   */
+  clearPendingSocialLoginProfileJwt?: () => Promise<void>;
 };
 
 /**
@@ -223,6 +233,14 @@ export type AuthTokenResponse = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   metadata_access_token: string;
 
+  /**
+   * Hydra token which used to mint auth-service tokens
+   * This profileToken can be use for authentication profile/pair
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  profile_pairing_token?: string;
+
   indexes: number[];
   endpoints: Record<string, string>;
 };
@@ -238,7 +256,7 @@ export type AuthTokenResponse = {
  * - groupedAuthConnectionId: string - the ID of the grouped social login type
  * - userId: string - the user's ID
  * - idTokens: string[] - the JWT Tokens issued from the Web3Auth Authentication Server
- * - socialLoginEmail: string - the email of the user
+ * - socialLoginEmail?: string - the email of the user, when available
  */
 export type OAuthLoginResult = {
   authConnection: AuthConnection;
@@ -246,11 +264,12 @@ export type OAuthLoginResult = {
   groupedAuthConnectionId: string;
   userId: string;
   idTokens: string[];
-  socialLoginEmail: string;
+  socialLoginEmail?: string;
   refreshToken: string;
   revokeToken: string;
   accessToken: string;
   metadataAccessToken: string;
+  profilePairingToken?: string;
 };
 
 /**
@@ -268,6 +287,6 @@ export type OAuthRefreshTokenResult = Pick<
  * The user's information extracted from the JWT Token.
  */
 export type OAuthUserInfo = {
-  email: string;
+  email?: string;
   sub: string;
 };

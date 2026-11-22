@@ -8,20 +8,16 @@ import {
   TextVariant,
   TextColor,
   FontWeight,
-  ButtonBase,
-  Icon,
-  IconName,
-  IconSize,
-  IconColor,
+  Skeleton,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TransactionCard } from '../transaction-card';
 import { PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS } from '../../../../../shared/constants/perps';
+import { PERPS_EVENT_VALUE } from '../../../../../shared/constants/perps-events';
 import { PERPS_ACTIVITY_ROUTE } from '../../../../helpers/constants/routes';
-import { BorderRadius } from '../../../../helpers/constants/design-system';
-import { Skeleton } from '../../../component-library/skeleton';
 import { PerpsCardSkeleton } from '../perps-skeletons/perps-card-skeleton';
+import { PerpsSectionHeader } from '../perps-section-header';
 import type { PerpsTransaction } from '../types';
 
 export type PerpsRecentActivityProps = {
@@ -44,13 +40,13 @@ export type PerpsRecentActivityProps = {
  * @param options0.isLoading - Loading state for initial fetch (skeleton when no rows yet)
  * @param options0.error - Error message when fetch failed and there are no rows
  */
-export const PerpsRecentActivity: React.FC<PerpsRecentActivityProps> = ({
+export const PerpsRecentActivity = ({
   transactions = [],
   maxTransactions = PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS,
   onTransactionClick,
   isLoading = false,
   error = null,
-}) => {
+}: PerpsRecentActivityProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
 
@@ -80,11 +76,11 @@ export const PerpsRecentActivity: React.FC<PerpsRecentActivityProps> = ({
           alignItems={BoxAlignItems.Center}
           paddingLeft={4}
           paddingRight={4}
-          paddingTop={4}
-          marginBottom={2}
+          paddingTop={3}
+          paddingBottom={3}
         >
-          <Skeleton className="h-5 w-36" borderRadius={BorderRadius.SM} />
-          <Skeleton className="h-4 w-14" borderRadius={BorderRadius.SM} />
+          <Skeleton className="h-5 w-36 rounded" />
+          <Skeleton className="h-4 w-14 rounded" />
         </Box>
         <Box flexDirection={BoxFlexDirection.Column}>
           {[1, 2, 3].map((cardIndex) => (
@@ -108,8 +104,8 @@ export const PerpsRecentActivity: React.FC<PerpsRecentActivityProps> = ({
           alignItems={BoxAlignItems.Center}
           paddingLeft={4}
           paddingRight={4}
-          paddingTop={4}
-          marginBottom={2}
+          paddingTop={3}
+          paddingBottom={3}
         >
           <Text fontWeight={FontWeight.Medium}>{t('perpsRecentActivity')}</Text>
         </Box>
@@ -132,29 +128,12 @@ export const PerpsRecentActivity: React.FC<PerpsRecentActivityProps> = ({
       data-testid="perps-recent-activity"
     >
       {/* Section Header */}
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.Between}
-        alignItems={BoxAlignItems.Center}
-        paddingLeft={4}
-        paddingRight={4}
-        paddingTop={4}
-        marginBottom={2}
-      >
-        <Text fontWeight={FontWeight.Medium}>{t('perpsRecentActivity')}</Text>
-        <ButtonBase
-          onClick={handleSeeAll}
-          className="bg-transparent hover:bg-transparent active:bg-transparent p-0 min-w-0 h-auto"
-          data-testid="perps-recent-activity-see-all"
-          aria-label={t('perpsSeeAll')}
-        >
-          <Icon
-            name={IconName.ArrowRight}
-            size={IconSize.Sm}
-            color={IconColor.IconAlternative}
-          />
-        </ButtonBase>
-      </Box>
+      <PerpsSectionHeader
+        label={t('perpsRecentActivity')}
+        onClick={handleSeeAll}
+        data-testid="perps-recent-activity-see-all"
+        aria-label={`${t('perpsRecentActivity')}, ${t('perpsSeeAll')}`}
+      />
 
       {/* Transaction List */}
       <Box flexDirection={BoxFlexDirection.Column}>
@@ -163,6 +142,7 @@ export const PerpsRecentActivity: React.FC<PerpsRecentActivityProps> = ({
             key={transaction.id}
             transaction={transaction}
             onClick={handleRowClick}
+            screenName={PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_HOME}
           />
         ))}
       </Box>

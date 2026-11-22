@@ -21,12 +21,18 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
+/**
+ * @deprecated Use the toast notification system in `ui/components/ui/toast/toast`
+ */
 export const ToastContainer = ({
   children,
 }: {
   children: React.ReactNode | string;
 }) => <Box className="toasts-container">{children}</Box>;
 
+/**
+ * @deprecated Use the toast notification system in `ui/components/ui/toast/toast`
+ */
 export const Toast = ({
   startAdornment,
   text,
@@ -47,7 +53,8 @@ export const Toast = ({
   startAdornment: React.ReactNode | React.ReactNode[];
   /** Plain string or rich content (e.g. inline `TextButton` via `t(key, [nodes])`). */
   text: React.ReactNode;
-  description?: string;
+  /** Plain string or rich content (e.g. inline link via `t(key, [nodes])`). */
+  description?: React.ReactNode;
   descriptionVariant?: TextVariant;
   actionText?: string;
   onActionClick?: () => void;
@@ -139,7 +146,7 @@ export const Toast = ({
                 variant: DsTextVariant.BodySm,
               }}
               onClick={onActionClick}
-              className="mt-2 rounded-lg"
+              className="mt-2"
             >
               {actionText}
             </Button>

@@ -4,6 +4,7 @@ import configureStore from '../../../../../../store/store';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import { useAddToken } from '../../../../hooks/tokens/useAddToken';
+import { useDefaultPaySelectedSection } from '../../../../hooks/pay/useDefaultPaySelectedSection';
 import { usePerpsWithdrawDefaultToken } from '../../../../hooks/pay/usePerpsWithdrawDefaultToken';
 import { usePerpsLiveAccount } from '../../../../../../hooks/perps/stream';
 import { CustomAmountInfo } from '../../../info/custom-amount-info';
@@ -14,12 +15,8 @@ jest.mock('../../../../hooks/tokens/useAddToken', () => ({
   useAddToken: jest.fn(),
 }));
 
-// `useTransactionPayPostQuote` reads the current confirmation via
-// `useConfirmContext`, which throws without a `ConfirmContextProvider`.
-// The hook itself is exercised in its own unit tests; mock it out here so
-// `PerpsWithdrawInfo` can render under the lighter `renderWithProvider`.
-jest.mock('../../../../hooks/pay/useTransactionPayPostQuote', () => ({
-  useTransactionPayPostQuote: jest.fn(),
+jest.mock('../../../../hooks/pay/useDefaultPaySelectedSection', () => ({
+  useDefaultPaySelectedSection: jest.fn(),
 }));
 
 jest.mock('../../../../hooks/pay/usePerpsWithdrawDefaultToken', () => ({
@@ -47,6 +44,9 @@ jest.mock('../../../perps-confirmations/perps-withdraw-balance', () => ({
 
 const useAddTokenMock = jest.mocked(useAddToken);
 const customAmountInfoMock = jest.mocked(CustomAmountInfo);
+const useDefaultPaySelectedSectionMock = jest.mocked(
+  useDefaultPaySelectedSection,
+);
 const usePerpsWithdrawDefaultTokenMock = jest.mocked(
   usePerpsWithdrawDefaultToken,
 );
@@ -61,11 +61,18 @@ describe('PerpsWithdrawInfo', () => {
   beforeEach(() => {
     useAddTokenMock.mockReset();
     customAmountInfoMock.mockClear();
+    useDefaultPaySelectedSectionMock.mockClear();
     usePerpsWithdrawDefaultTokenMock.mockReturnValue(DEFAULT_PREFERRED_TOKEN);
     usePerpsLiveAccountMock.mockReturnValue({
       account: null,
       isInitialLoading: false,
     });
+  });
+
+  it('applies the default pay selected section', () => {
+    renderWithProvider(<PerpsWithdrawInfo />, configureStore(mockState));
+
+    expect(useDefaultPaySelectedSectionMock).toHaveBeenCalled();
   });
 
   it('registers Arbitrum USDC via useAddToken', () => {
@@ -95,7 +102,7 @@ describe('PerpsWithdrawInfo', () => {
     usePerpsLiveAccountMock.mockReturnValue({
       account: {
         spendableBalance: '0',
-        withdrawableBalance: '321.09',
+        withdrawableBalance: '321.098765',
       } as never,
       isInitialLoading: false,
     });
@@ -104,7 +111,7 @@ describe('PerpsWithdrawInfo', () => {
 
     expect(customAmountInfoMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        balanceUsdOverride: 321.09,
+        balanceUsdOverride: 321.098765,
       }),
       expect.anything(),
     );
@@ -116,15 +123,6 @@ describe('PerpsWithdrawInfo', () => {
     expect(
       screen.getByTestId('perps-withdraw-balance-mock'),
     ).toBeInTheDocument();
-  });
-
-  it('does not pass hasMax (percentage buttons hidden for MVP)', () => {
-    renderWithProvider(<PerpsWithdrawInfo />, configureStore(mockState));
-
-    expect(customAmountInfoMock).toHaveBeenCalledWith(
-      expect.not.objectContaining({ hasMax: true }),
-      expect.anything(),
-    );
   });
 
   it('passes the default destination token from `usePerpsWithdrawDefaultToken` as `preferredToken`', () => {
@@ -144,8 +142,7 @@ describe('PerpsWithdrawInfo', () => {
 
   it('uses `withdrawableBalance` for the percentage-button balance override', () => {
     // HyperLiquid Unified Account mode: `spendableBalance` is $0 because USDC
-    // sits in the spot clearinghouse. `withdrawableBalance` is the unified
-    // value — must take precedence. Mirrors metamask-mobile#29492.
+    // sits in the spot clearinghouse. `withdrawableBalance` is the unified value.
     usePerpsLiveAccountMock.mockReturnValue({
       account: {
         spendableBalance: '0',

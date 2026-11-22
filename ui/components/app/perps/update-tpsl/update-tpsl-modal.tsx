@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Modal,
   ModalContent,
@@ -37,12 +37,12 @@ export type UpdateTPSLModalProps = {
  * @param options0.position
  * @param options0.currentPrice
  */
-export const UpdateTPSLModal: React.FC<UpdateTPSLModalProps> = ({
+export const UpdateTPSLModal = ({
   isOpen,
   onClose,
   position,
   currentPrice,
-}) => {
+}: UpdateTPSLModalProps) => {
   const t = useI18nContext();
   const [submitState, setSubmitState] = useState<UpdateTPSLSubmitState | null>(
     null,
@@ -71,11 +71,13 @@ export const UpdateTPSLModal: React.FC<UpdateTPSLModalProps> = ({
     [],
   );
 
-  useEffect(() => {
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  if (isOpen !== prevIsOpen) {
+    setPrevIsOpen(isOpen);
     if (!isOpen) {
       setSubmitState(null);
     }
-  }, [isOpen]);
+  }
 
   return (
     <Modal

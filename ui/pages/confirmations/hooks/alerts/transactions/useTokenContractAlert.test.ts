@@ -1,3 +1,4 @@
+import { act, waitFor } from '@testing-library/react';
 import { ApprovalType } from '@metamask/controller-utils';
 import {
   TransactionMeta,
@@ -14,6 +15,12 @@ import {
   TokenStandAndDetails,
 } from '../../../../../store/actions';
 import { useTokenContractAlert } from './useTokenContractAlert';
+
+async function flushAsyncUpdates() {
+  await act(async () => {
+    await Promise.resolve();
+  });
+}
 
 jest.mock('../../../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(),
@@ -81,9 +88,11 @@ describe('useTokenContractAlert', () => {
   });
 
   describe('when no confirmation exists', () => {
-    it('returns no alerts', () => {
+    it('returns no alerts', async () => {
       const { result } = runHook();
       expect(result.current).toEqual([]);
+      // Confirm-context providers can settle async work after the sync assert.
+      await flushAsyncUpdates();
     });
   });
 
@@ -103,9 +112,11 @@ describe('useTokenContractAlert', () => {
         },
       });
 
-      await new Promise((resolve) => setTimeout(resolve, 0));
-
-      expect(result.current).toEqual([]);
+      // Approvals skip the token-contract lookup path.
+      await waitFor(() => {
+        expect(result.current).toEqual([]);
+      });
+      expect(mockGetTokenStandardAndDetailsByChain).not.toHaveBeenCalled();
     });
   });
 
@@ -125,8 +136,10 @@ describe('useTokenContractAlert', () => {
         },
       });
 
-      // Wait for async resolution
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await waitFor(() => {
+        expect(mockGetTokenStandardAndDetailsByChain).toHaveBeenCalled();
+      });
+      await flushAsyncUpdates();
 
       expect(result.current).toEqual([]);
     });
@@ -148,10 +161,9 @@ describe('useTokenContractAlert', () => {
         },
       });
 
-      // Wait for async resolution
-      await new Promise((resolve) => setTimeout(resolve, 0));
-
-      expect(result.current).toHaveLength(1);
+      await waitFor(() => {
+        expect(result.current).toHaveLength(1);
+      });
       expect(result.current[0]).toEqual(
         expect.objectContaining({
           key: 'tokenContractAddress',
@@ -177,10 +189,9 @@ describe('useTokenContractAlert', () => {
         },
       });
 
-      // Wait for async resolution
-      await new Promise((resolve) => setTimeout(resolve, 0));
-
-      expect(result.current).toHaveLength(1);
+      await waitFor(() => {
+        expect(result.current).toHaveLength(1);
+      });
       expect(result.current[0]).toEqual(
         expect.objectContaining({
           key: 'tokenContractAddress',
@@ -204,10 +215,9 @@ describe('useTokenContractAlert', () => {
         },
       });
 
-      // Wait for async resolution
-      await new Promise((resolve) => setTimeout(resolve, 0));
-
-      expect(result.current[0].message).toBe('smartContractAddressWarning');
+      await waitFor(() => {
+        expect(result.current[0]?.message).toBe('smartContractAddressWarning');
+      });
     });
 
     it('calls getTokenStandardAndDetailsByChain with correct params', async () => {
@@ -226,15 +236,15 @@ describe('useTokenContractAlert', () => {
         },
       });
 
-      // Wait for async resolution
-      await new Promise((resolve) => setTimeout(resolve, 0));
-
-      expect(mockGetTokenStandardAndDetailsByChain).toHaveBeenCalledWith(
-        TOKEN_CONTRACT_ADDRESS,
-        undefined,
-        undefined,
-        '0x5',
-      );
+      await waitFor(() => {
+        expect(mockGetTokenStandardAndDetailsByChain).toHaveBeenCalledWith(
+          TOKEN_CONTRACT_ADDRESS,
+          undefined,
+          undefined,
+          '0x5',
+        );
+      });
+      await flushAsyncUpdates();
     });
   });
 });

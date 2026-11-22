@@ -1,11 +1,23 @@
-import { WINDOW_TITLES } from '../../constants';
+import {
+  DAPP_URL,
+  DEFAULT_FIXTURE_ACCOUNT,
+  LOCALHOST_NETWORK_CLIENT_ID,
+  SECOND_NODE_NETWORK_CLIENT_ID,
+  WINDOW_TITLES,
+} from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import AddTokenConfirmation from '../../page-objects/pages/confirmations/add-token-confirmations';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { login } from '../../page-objects/flows/login.flow';
+import {
+  deployErc20AtMainnetListedAddress,
+  MAINNET_LISTED_TOKEN_ADDRESS,
+  MAINNET_LISTED_TOKEN_MINTED_AMOUNT,
+  MAINNET_LISTED_TOKEN_SYMBOL,
+} from './mainnet-listed-token.helpers';
 
 describe('Add token using wallet_watchAsset', function () {
   const smartContract = SMART_CONTRACTS.HST;
@@ -28,19 +40,11 @@ describe('Add token using wallet_watchAsset', function () {
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
 
-        await driver.executeScript(`
-          window.ethereum.request({
-            method: 'wallet_watchAsset',
-            params: {
-              type: 'ERC20',
-              options: {
-                address: '${contractAddress}',
-                symbol: 'TST',
-                decimals: 4
-              },
-            }
-          })
-        `);
+        await testDapp.requestWatchErc20Asset({
+          address: contractAddress,
+          decimals: 4,
+          symbol: 'TST',
+        });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const addTokenConfirmation = new AddTokenConfirmation(driver);
@@ -50,7 +54,7 @@ describe('Add token using wallet_watchAsset', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await new AssetListPage(driver).checkTokenAmountIsDisplayed('0 TST');
+        await new TokensTab(driver).checkTokenAmountIsDisplayed('0 TST');
       },
     );
   });
@@ -73,19 +77,11 @@ describe('Add token using wallet_watchAsset', function () {
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
 
-        await driver.executeScript(`
-          window.ethereum.request({
-            method: 'wallet_watchAsset',
-            params: {
-              type: 'ERC20',
-              options: {
-                address: '${contractAddress}',
-                symbol: 'TST',
-                decimals: 4
-              },
-            }
-          })
-        `);
+        await testDapp.requestWatchErc20Asset({
+          address: contractAddress,
+          decimals: 4,
+          symbol: 'TST',
+        });
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const addTokenConfirmation = new AddTokenConfirmation(driver);
@@ -95,7 +91,104 @@ describe('Add token using wallet_watchAsset', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await new AssetListPage(driver).checkTokenItemNumber(1);
+        await new TokensTab(driver).checkTokenItemNumber(1);
+      },
+    );
+  });
+
+  it('shows the balance from the network the dapp requested the token on', async function () {
+    await withFixtures(
+      {
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withNetworkControllerDoubleNode()
+          // The wallet is on the second node (0x53a), where the token contract
+          // does not exist, ...
+          .withNetworkController({
+            selectedNetworkClientId: SECOND_NODE_NETWORK_CLIENT_ID,
+          })
+          .withEnabledNetworks({ eip155: { '0x539': true, '0x53a': true } })
+          // ... while the dapp stays on the first node (0x539), where the token
+          // is deployed and the account holds a balance.
+          .withPermissionControllerConnectedToTestDapp()
+          .withSelectedNetworkController({
+            domains: { [DAPP_URL]: LOCALHOST_NETWORK_CLIENT_ID },
+          })
+          .build(),
+        localNodeOptions: [
+          { type: 'anvil' },
+          { type: 'anvil', options: { port: 8546, chainId: 1338 } },
+        ],
+        smartContract,
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver, contractRegistry }) => {
+        const contractAddress =
+          await contractRegistry.getContractAddress(smartContract);
+        await login(driver, { validateBalance: false });
+
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.checkPageIsLoaded();
+        await testDapp.requestWatchErc20Asset({
+          address: contractAddress,
+          decimals: 4,
+          symbol: 'TST',
+        });
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const addTokenConfirmation = new AddTokenConfirmation(driver);
+        await addTokenConfirmation.checkPageIsLoaded();
+        await addTokenConfirmation.checkSuggestedTokenBalanceIsDisplayed(
+          '10 TST',
+        );
+      },
+    );
+  });
+
+  it('adds a token at a Mainnet-listed address when the dapp is on a non-Mainnet network', async function () {
+    await withFixtures(
+      {
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver, localNodes }) => {
+        // Put a real DAI ERC-20 at the Mainnet DAI address on the local chain
+        // (0x539), mirroring fork chains like PulseChain where every Mainnet
+        // token lives at its Mainnet address.
+        await deployErc20AtMainnetListedAddress(
+          localNodes[0],
+          DEFAULT_FIXTURE_ACCOUNT,
+        );
+
+        // The deployment spends gas from the Anvil account the wallet uses,
+        // so its native balance no longer matches the fixture's.
+        await login(driver, { validateBalance: false });
+
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.checkPageIsLoaded();
+
+        await testDapp.requestWatchErc20Asset({
+          address: MAINNET_LISTED_TOKEN_ADDRESS,
+          decimals: 18,
+          symbol: MAINNET_LISTED_TOKEN_SYMBOL,
+        });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const addTokenConfirmation = new AddTokenConfirmation(driver);
+        await addTokenConfirmation.checkPageIsLoaded();
+        await addTokenConfirmation.confirmAddToken();
+
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        await new TokensTab(driver).checkTokenAmountIsDisplayed(
+          `${MAINNET_LISTED_TOKEN_MINTED_AMOUNT} ${MAINNET_LISTED_TOKEN_SYMBOL}`,
+        );
       },
     );
   });

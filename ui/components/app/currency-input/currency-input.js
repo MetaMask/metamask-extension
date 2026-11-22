@@ -2,8 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
-import { Box } from '../../component-library';
-import { BlockSize } from '../../../helpers/constants/design-system';
+import { Box } from '@metamask/design-system-react';
 import UnitInput from '../../ui/unit-input';
 import CurrencyDisplay from '../../ui/currency-display';
 import {
@@ -77,12 +76,11 @@ export default function CurrencyInput({
   const [fiatDecimalValue, setFiatDecimalValue] = useState('0');
 
   const chainId = useSelector(getCurrentChainId);
-  const { ticker, type, rpcUrl } = useSelector(getProviderConfig);
+  const { ticker, rpcUrl } = useSelector(getProviderConfig);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     chainId,
     ticker,
-    type,
-    rpcUrl,
+    { rpcUrl },
   );
 
   const inputRef = useRef();
@@ -130,7 +128,8 @@ export default function CurrencyInput({
   };
 
   const timeoutRef = useRef(null);
-  // align input to upstream value
+
+  // Align input to upstream value when deps change.
   useEffect(() => {
     const decimalizedHexValue = new Numeric(hexValue, 16)
       .toBase(10)
@@ -154,15 +153,6 @@ export default function CurrencyInput({
     setTokenDecimalValue(newTokenDecimalValue);
     setFiatDecimalValue(newFiatDecimalValue);
 
-    // timeout intentionally not cleared after render so this always runs
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    timeoutRef.current = setTimeout(
-      () => inputRef.current?.updateIsOverflowing?.(),
-      500,
-    );
-
     // tokenDecimalValue does not need to be in here, since this side effect is only for upstream updates
   }, [
     hexValue,
@@ -171,6 +161,25 @@ export default function CurrencyInput({
     isTokenPrimary,
     assetDecimals,
     isDisabled,
+  ]);
+
+  useEffect(() => {
+    // timeout intentionally not cleared after render so this always runs
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(
+      () => inputRef.current?.updateIsOverflowing?.(),
+      500,
+    );
+  }, [
+    hexValue,
+    asset?.address,
+    isTokenPrimary,
+    assetDecimals,
+    isDisabled,
+    tokenDecimalValue,
+    fiatDecimalValue,
   ]);
 
   const renderSwapButton = () => {
@@ -237,8 +246,8 @@ export default function CurrencyInput({
 
   return isSkeleton ? (
     <Box paddingRight={4} className="currency-input__skeleton-container">
-      <Box width={BlockSize.Half} className="currency-input__pulsing-bar" />
-      <Box width={BlockSize.OneThird} className="currency-input__pulsing-bar" />
+      <Box className="w-1/2 currency-input__pulsing-bar" />
+      <Box className="w-1/3 currency-input__pulsing-bar" />
     </Box>
   ) : (
     <UnitInput

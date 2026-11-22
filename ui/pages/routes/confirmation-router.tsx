@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { type TransactionMeta } from '@metamask/transaction-controller';
@@ -14,28 +14,28 @@ import {
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   SHIELD_PLAN_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
+  BATCH_SELL_ROOT_ROUTE,
+  DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
 import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavigation';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
-  ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
 import {
   getTransactions,
   selectHasApprovalFlows,
+  selectHasBatchSellQuotes,
   selectHasBridgeQuotes,
   selectPendingApprovalsForNavigation,
 } from '../../selectors';
 import { useModalState } from '../../hooks/useModalState';
-import {
-  isMerklClaimTransaction,
-  isMusdConversionTransaction,
-} from '../../components/app/musd/utils';
-import { useSuppressNavigation } from '../../hooks/useSuppressConfirmNavigate';
+import { isMusdConversionTransaction } from '../../components/app/musd/utils';
+import { resetBridgeController } from '../../ducks/bridge/actions';
+import { useDispatch } from '../../store/hooks';
+import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 
 const EXEMPTED_ROUTES = [
   CROSS_CHAIN_SWAP_ROUTE,
@@ -48,6 +48,7 @@ const EXEMPTED_ROUTES = [
   // shield approval transaction back to shield plan and transaction shield settings page on cancel/confirm, need to be exempted otherwise it will redirect to home page
   SHIELD_PLAN_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
+  BATCH_SELL_ROOT_ROUTE,
 ];
 
 const SNAP_APPROVAL_TYPES = [
@@ -59,36 +60,35 @@ const SNAP_APPROVAL_TYPES = [
 
 export const ConfirmationRouter = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const location = useLocation();
   const { pathname } = location;
   const { closeModals } = useModalState();
 
   const envType = getEnvironmentType();
   const isFullscreen = envType === ENVIRONMENT_TYPE_FULLSCREEN;
-  const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
 
   const hasBridgeQuotes = useSelector(selectHasBridgeQuotes);
+  const hasBatchSellQuotes = useSelector(selectHasBatchSellQuotes);
   const pendingApprovals = useSelector(selectPendingApprovalsForNavigation);
   const hasApprovalFlows = useSelector(selectHasApprovalFlows);
-  const suppressNavigation = useSuppressNavigation();
-  const stayOnHomePage = Boolean(location.state?.stayOnHomePage);
+  const isUnlocked = useSelector(getIsUnlocked);
 
-  const canRedirect = !isNotification && !stayOnHomePage;
+  // Only resume a leftover swap or batch sell on the first screen we check
+  const hasCheckedResumeRef = useRef(false);
   const transactions = useSelector(getTransactions) as TransactionMeta[];
-
-  const merklClaims = useMemo(
-    () => transactions.filter(isMerklClaimTransaction),
-    [transactions],
-  );
 
   // Ported from home.component - checkStatusAndNavigate()
   const checkStatusAndNavigate = useCallback(() => {
-    if (suppressNavigation(pendingApprovals?.[0]?.id, pendingApprovals)) {
-      return;
-    }
+    const canResume = isPopup && !hasCheckedResumeRef.current;
+    hasCheckedResumeRef.current = true;
 
-    if (canRedirect && hasBridgeQuotes && isPopup) {
+    if (canResume && hasBatchSellQuotes) {
+      closeModals();
+      navigate(DEFAULT_ROUTE, { replace: true });
+      dispatch(resetBridgeController());
+    } else if (canResume && hasBridgeQuotes) {
       closeModals();
       navigate(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
     } else if (pendingApprovals.length || hasApprovalFlows) {
@@ -105,13 +105,13 @@ export const ConfirmationRouter = () => {
       }
     }
   }, [
-    canRedirect,
     closeModals,
+    dispatch,
     hasApprovalFlows,
+    hasBatchSellQuotes,
     hasBridgeQuotes,
     navigate,
     pendingApprovals,
-    suppressNavigation,
     isPopup,
   ]);
 
@@ -127,10 +127,6 @@ export const ConfirmationRouter = () => {
 
   const hasSwapRelatedNavigation = hasBridgeQuotes;
 
-  const isMerklTransaction = pendingApprovals.some((approval) =>
-    merklClaims.some((mc) => mc.id === approval?.requestData?.txId),
-  );
-
   const isMUSDConversionTransaction = pendingApprovals.some(
     (approval) =>
       transactions.find(
@@ -145,12 +141,11 @@ export const ConfirmationRouter = () => {
     isFullscreen &&
     !hasAllowedPopupRedirectApprovals &&
     !hasSwapRelatedNavigation &&
-    !isMerklTransaction &&
     !isMUSDConversionTransaction;
 
   // Ported from home.component - componentDidUpdate()
   useEffect(() => {
-    if (isExemptedRoute) {
+    if (!isUnlocked || isExemptedRoute) {
       return;
     }
 
@@ -159,7 +154,12 @@ export const ConfirmationRouter = () => {
     }
 
     checkStatusAndNavigate();
-  }, [checkStatusAndNavigate, isExemptedRoute, isFullscreenExemption]);
+  }, [
+    checkStatusAndNavigate,
+    isExemptedRoute,
+    isFullscreenExemption,
+    isUnlocked,
+  ]);
 
   return null;
 };

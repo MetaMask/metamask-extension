@@ -5,6 +5,7 @@ import type {
   MetaMaskStorageStructure,
   BaseStore,
   MetaData,
+  SplitStateReadDiagnostics,
 } from './base-store';
 
 const { sentry } = globalThis;
@@ -36,41 +37,43 @@ export default class ExtensionStore implements BaseStore {
       return null;
     }
     const { local } = browser.storage;
-    console.time('[ExtensionStore]: Reading from local store');
-    // don't fetch more than we need, in case extra stuff was put in the db
-    // by testing or users playing with the db
-    const response = await local.get(['manifest']);
-    if (
-      isObject(response) &&
-      hasProperty(response, 'manifest') &&
-      Array.isArray(response.manifest)
-    ) {
-      const keys = response.manifest;
+    try {
+      console.time('[ExtensionStore]: Reading from local store');
+      // don't fetch more than we need, in case extra stuff was put in the db
+      // by testing or users playing with the db
+      const response = await local.get(['manifest']);
+      if (
+        isObject(response) &&
+        hasProperty(response, 'manifest') &&
+        Array.isArray(response.manifest)
+      ) {
+        const keys = response.manifest;
 
-      // get all keys from the manifest, and load those keys
-      const data = await local.get(keys);
-      this.#manifest = new Set(keys);
-      const { meta } = data;
-      delete data.meta;
-      console.timeEnd('[ExtensionStore]: Reading from local store');
-      return {
-        data,
-        meta: meta as unknown as MetaData,
-      };
-    }
-
-    // don't fetch more than we need, in case extra stuff was put in the db
-    // by testing or users playing with the db
-    const solidResponse = await local.get(['data', 'meta']);
-    if (isObject(solidResponse)) {
-      for (const key of Object.keys(solidResponse)) {
-        // we loop because we don't always have all the keys (like on a brand new
-        // install and sometimes due to apparent state corruption)
-        this.#manifest.add(key);
+        // get all keys from the manifest, and load those keys
+        const data = await local.get(keys);
+        this.#manifest = new Set(keys);
+        const { meta } = data;
+        delete data.meta;
+        return {
+          data,
+          meta: meta as unknown as MetaData,
+        };
       }
+
+      // don't fetch more than we need, in case extra stuff was put in the db
+      // by testing or users playing with the db
+      const solidResponse = await local.get(['data', 'meta']);
+      if (isObject(solidResponse)) {
+        for (const key of Object.keys(solidResponse)) {
+          // we loop because we don't always have all the keys (like on a brand new
+          // install and sometimes due to apparent state corruption)
+          this.#manifest.add(key);
+        }
+      }
+      return solidResponse;
+    } finally {
+      console.timeEnd('[ExtensionStore]: Reading from local store');
     }
-    console.timeEnd('[ExtensionStore]: Reading from local store');
-    return solidResponse;
   }
 
   async setKeyValues(pairs: Map<string, unknown>): Promise<void> {
@@ -116,38 +119,167 @@ export default class ExtensionStore implements BaseStore {
       toSet.manifest = Array.from(newManifest);
     }
 
-    console.time('[ExtensionStore]: Writing to local store');
-    log.info(
-      `[ExtensionStore]: Writing ${Object.keys(toSet).length} keys to local store`,
-    );
-    await local.set(toSet);
-
-    if (newManifest) {
-      // once we know the set was successful, update our in-memory manifest
-      this.#manifest = newManifest;
-    }
-    log.info(
-      `[ExtensionStore]: Removing ${toRemove.length} keys from local store`,
-    );
-    // we cannot set and remove keys in one operation, so we do two operations.
-    // This helps clear out old data and save space, but if it fails we can
-    // still function.
     try {
-      await local.remove(toRemove);
-    } catch (error) {
-      if (sentry) {
-        const sentryError = new AggregateError(
-          [error],
-          'Error removing keys from local store',
-        );
-        sentry.captureException(sentryError);
+      console.time('[ExtensionStore]: Writing to local store');
+      log.info(
+        `[ExtensionStore]: Writing ${Object.keys(toSet).length} keys to local store`,
+      );
+      await local.set(toSet);
+
+      if (newManifest) {
+        // once we know the set was successful, update our in-memory manifest
+        this.#manifest = newManifest;
       }
-      log.error(
-        '[ExtensionStore]: Error removing keys from local store:',
-        error,
+      log.info(
+        `[ExtensionStore]: Removing ${toRemove.length} keys from local store`,
+      );
+      // we cannot set and remove keys in one operation, so we do two operations.
+      // This helps clear out old data and save space, but if it fails we can
+      // still function.
+      try {
+        await local.remove(toRemove);
+      } catch (error) {
+        if (sentry) {
+          const sentryError = new AggregateError(
+            [error],
+            'Error removing keys from local store',
+          );
+          sentry.captureException(sentryError);
+        }
+        log.error(
+          '[ExtensionStore]: Error removing keys from local store:',
+          error,
+        );
+      }
+    } finally {
+      console.timeEnd('[ExtensionStore]: Writing to local store');
+    }
+  }
+
+  /**
+   * Reports which split-state keys can be read, without retaining their values.
+   *
+   * Unsupported storage and a failed manifest read both use
+   * `manifestStatus: 'failed'`, with different `manifestErrorName` values.
+   * A present but non-array manifest is `missing` (legacy `data`/`meta`).
+   * Each listed key is then read on its own so one failure does not hide the
+   * others.
+   *
+   * @returns The key outcomes for the current local store.
+   */
+  async getSplitStateReadDiagnostics(): Promise<SplitStateReadDiagnostics> {
+    const emptyDiagnostics = {
+      readableKeys: [] as string[],
+      missingKeys: [] as string[],
+      failedKeys: [] as SplitStateReadDiagnostics['failedKeys'],
+    };
+
+    if (!this.isSupported) {
+      return {
+        manifestStatus: 'failed',
+        ...emptyDiagnostics,
+        manifestErrorName: 'UnsupportedStorage',
+      };
+    }
+
+    const { local } = browser.storage;
+    let manifest: unknown;
+    try {
+      const manifestResponse = await local.get(['manifest']);
+      manifest = isObject(manifestResponse)
+        ? manifestResponse.manifest
+        : undefined;
+    } catch (error) {
+      return {
+        manifestStatus: 'failed',
+        ...emptyDiagnostics,
+        manifestErrorName: error instanceof Error ? error.name : typeof error,
+      };
+    }
+
+    if (!Array.isArray(manifest)) {
+      return {
+        manifestStatus: 'missing',
+        ...emptyDiagnostics,
+      };
+    }
+
+    const keys = manifest.filter((key) => typeof key === 'string');
+    const diagnostics: SplitStateReadDiagnostics = {
+      manifestStatus: 'readable',
+      manifestKeyCount: keys.length,
+      ...emptyDiagnostics,
+    };
+
+    for (const key of keys) {
+      try {
+        const response = await local.get([key]);
+        if (isObject(response) && hasProperty(response, key)) {
+          diagnostics.readableKeys.push(key);
+        } else {
+          diagnostics.missingKeys.push(key);
+        }
+      } catch (error) {
+        diagnostics.failedKeys.push({
+          key,
+          errorName: error instanceof Error ? error.name : typeof error,
+        });
+      }
+    }
+
+    return diagnostics;
+  }
+
+  /**
+   * Returns the number of bytes each key occupies in local extension storage.
+   *
+   * @param keys - The storage keys to measure.
+   * @returns A Map from key to byte count.
+   * @throws If local storage is unsupported or `getBytesInUse` is unavailable.
+   */
+  async getBytesInUseByKey(keys: string[]): Promise<Map<string, number>> {
+    if (!this.isSupported) {
+      throw new Error(
+        'MetaMask - cannot measure state size in local store as this browser does not support this action',
       );
     }
-    console.timeEnd('[ExtensionStore]: Writing to local store');
+
+    const { local } = browser.storage;
+    if (typeof local.getBytesInUse !== 'function') {
+      throw new Error(
+        'MetaMask - cannot measure state size because getBytesInUse is not available',
+      );
+    }
+
+    const entries = await Promise.all(
+      keys.map(async (key) => [key, await local.getBytesInUse(key)] as const),
+    );
+    return new Map(entries);
+  }
+
+  /**
+   * Returns the total number of bytes the given keys occupy in local
+   * extension storage, using a single `getBytesInUse` call.
+   *
+   * @param keys - The storage keys to measure.
+   * @returns The combined byte count.
+   * @throws If local storage is unsupported or `getBytesInUse` is unavailable.
+   */
+  async getTotalBytesInUse(keys: string[]): Promise<number> {
+    if (!this.isSupported) {
+      throw new Error(
+        'MetaMask - cannot measure state size in local store as this browser does not support this action',
+      );
+    }
+
+    const { local } = browser.storage;
+    if (typeof local.getBytesInUse !== 'function') {
+      throw new Error(
+        'MetaMask - cannot measure state size because getBytesInUse is not available',
+      );
+    }
+
+    return await local.getBytesInUse(keys);
   }
 
   /**
@@ -178,8 +310,11 @@ export default class ExtensionStore implements BaseStore {
   }
 
   /**
-   * Removes all keys contained in the manifest from the `local` extension
-   * storage area.
+   * Removes all keys contained in the persisted or in-memory manifest from the
+   * `local` extension storage area.
+   *
+   * Reset is destructive, so a stale or partial persisted manifest must not
+   * hide keys this process already knows about.
    */
   async reset(): Promise<void> {
     if (!this.isSupported) {
@@ -188,6 +323,27 @@ export default class ExtensionStore implements BaseStore {
       );
     }
     const { local } = browser.storage;
-    return await local.remove(['manifest', ...this.#manifest]);
+    const keysToRemove = new Set(this.#manifest);
+    try {
+      const response = await local.get(['manifest']);
+      if (
+        isObject(response) &&
+        hasProperty(response, 'manifest') &&
+        Array.isArray(response.manifest)
+      ) {
+        for (const key of response.manifest) {
+          if (typeof key === 'string') {
+            keysToRemove.add(key);
+          }
+        }
+      }
+    } catch (error) {
+      log.warn(
+        '[ExtensionStore]: Failed to read manifest before reset:',
+        error,
+      );
+    }
+    await local.remove(['manifest', ...keysToRemove]);
+    this.#manifest.clear();
   }
 }

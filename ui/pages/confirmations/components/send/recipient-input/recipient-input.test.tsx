@@ -56,6 +56,7 @@ describe('RecipientInput', () => {
           {
             recipientConfusableCharacters: [],
             recipientError: null,
+            hasUnacknowledgedAlerts: false,
             recipientWarning: null,
             recipientResolvedLookup: undefined,
           } as unknown as ReturnType<typeof useRecipientValidation>
@@ -162,6 +163,40 @@ describe('RecipientInput', () => {
     expect(mockUpdateTo).toHaveBeenCalledWith('');
   });
 
+  it('shows the full address when it has no name', () => {
+    const address = '0x36dB199F0a1cD131ad0b5Cf4Fe7FE522839a1B2C';
+    mockUseSendContext.mockReturnValue({
+      to: address,
+      updateTo: mockUpdateTo,
+      updateToResolved: jest.fn(),
+    } as unknown as ReturnType<typeof useSendContext>);
+
+    const { getByText } = renderComponent({
+      recipientValidationResult: { toAddressValidated: address },
+    });
+
+    expect(getByText(address)).toBeInTheDocument();
+  });
+
+  it('shows the address under a contact name', () => {
+    const address = '0x36dB199F0a1cD131ad0b5Cf4Fe7FE522839a1B2C';
+    mockUseRecipients.mockReturnValue([
+      { address, contactName: 'Alice' },
+    ] as unknown as ReturnType<typeof useRecipients>);
+    mockUseSendContext.mockReturnValue({
+      to: address,
+      updateTo: mockUpdateTo,
+      updateToResolved: jest.fn(),
+    } as unknown as ReturnType<typeof useSendContext>);
+
+    const { getByText } = renderComponent({
+      recipientValidationResult: { toAddressValidated: address },
+    });
+
+    expect(getByText('Alice')).toBeInTheDocument();
+    expect(getByText(address)).toBeInTheDocument();
+  });
+
   it('display confusable characters when they exist', () => {
     mockUseSendContext.mockReturnValue({
       to: '0x1234567890abcdefghijkl',
@@ -183,6 +218,62 @@ describe('RecipientInput', () => {
 
     expect(getByText('0x1234567890abcdefghijk')).toBeInTheDocument();
     expect(queryByText('0x1234567890abcdefghijkl')).toBeNull();
+  });
+
+  describe('error and warning styling', () => {
+    const renderWithValidation = (
+      overrides: Partial<ReturnType<typeof useRecipientValidation>>,
+    ) => {
+      mockUseSendContext.mockReturnValue({
+        to: '0x1234567890abcdef',
+        updateTo: mockUpdateTo,
+        updateToResolved: jest.fn(),
+      } as unknown as ReturnType<typeof useSendContext>);
+
+      return renderComponent({
+        recipientValidationResult: {
+          recipientConfusableCharacters: [],
+          recipientError: null,
+          hasUnacknowledgedAlerts: false,
+          recipientWarning: null,
+          recipientResolvedLookup: undefined,
+          ...overrides,
+        } as unknown as ReturnType<typeof useRecipientValidation>,
+      });
+    };
+
+    it('marks the input as invalid when a recipient error is present', () => {
+      const { getByTestId } = renderWithValidation({
+        recipientError: 'Invalid address',
+        hasUnacknowledgedAlerts: false,
+      });
+
+      const input = getByTestId('recipient-address-input');
+      expect(input).toHaveAttribute('aria-invalid', 'true');
+      expect(input.parentElement).not.toHaveClass('!border-warning-default');
+    });
+
+    it('keeps error styling when a recipient error coexists with unacknowledged send alerts', () => {
+      const { getByTestId } = renderWithValidation({
+        recipientError: 'Invalid address',
+        hasUnacknowledgedAlerts: true,
+      });
+
+      const input = getByTestId('recipient-address-input');
+      expect(input).toHaveAttribute('aria-invalid', 'true');
+      expect(input.parentElement).not.toHaveClass('!border-warning-default');
+    });
+
+    it('applies warning styling when only unacknowledged send alerts are present', () => {
+      const { getByTestId } = renderWithValidation({
+        recipientError: null,
+        hasUnacknowledgedAlerts: true,
+      });
+
+      const input = getByTestId('recipient-address-input');
+      expect(input).not.toHaveAttribute('aria-invalid');
+      expect(input.parentElement).toHaveClass('!border-warning-default');
+    });
   });
 
   describe('metrics', () => {

@@ -1,10 +1,11 @@
 import { toHex } from '@metamask/controller-utils';
 import { merge } from 'lodash';
 import type { Mockttp } from 'mockttp';
+import { v6AccountsApiBalancesJson } from '../../helpers/accounts-api-v6-balances';
 import { withFixtures } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import {
   DEFAULT_FIXTURE_ACCOUNT_ID,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
@@ -18,6 +19,11 @@ import WebSocketRegistry from '../../websocket/registry';
 import { WEBSOCKET_SERVICES } from '../../websocket/constants';
 
 function mockCommonApis(mockServer: Mockttp) {
+  const supportedNetworks = {
+    fullSupport: ['eip155:1', 'eip155:1337'],
+    partialSupport: [],
+  };
+
   return Promise.all([
     mockServer
       .forGet(
@@ -25,16 +31,26 @@ function mockCommonApis(mockServer: Mockttp) {
       )
       .always()
       .thenJson(200, {
-        fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 1337],
-        partialSupport: { balances: [] },
-      }),
-    mockServer
-      .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
-      .always()
-      .thenJson(200, {
-        fullSupport: ['eip155:1', 'eip155:1337'],
+        fullSupport: [
+          'eip155:1',
+          'eip155:137',
+          'eip155:56',
+          'eip155:59144',
+          'eip155:8453',
+          'eip155:10',
+          'eip155:42161',
+          'eip155:1337',
+        ],
         partialSupport: [],
       }),
+    mockServer
+      .forGet('https://token.api.cx.metamask.io/v2/supportedNetworks')
+      .always()
+      .thenJson(200, supportedNetworks),
+    mockServer
+      .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
+      .always()
+      .thenJson(200, supportedNetworks),
     mockServer
       .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
       .always()
@@ -59,31 +75,44 @@ function mockV5Balances(mockServer: Mockttp, tstBalance: { value: string }) {
   const account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
   const chainId = 1337;
   const tokenAddress = '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947';
+  const rows = () => [
+    {
+      accountId: `eip155:${chainId}:${account}`,
+      assetId: `eip155:${chainId}/slip44:60`,
+      balance: '25',
+    },
+    {
+      accountId: `eip155:${chainId}:${account}`,
+      assetId: `eip155:${chainId}/erc20:${tokenAddress}`,
+      balance: tstBalance.value,
+    },
+  ];
 
-  return mockServer
-    .forGet(
-      /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
-    )
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        count: 2,
-        unprocessedNetworks: [],
-        balances: [
-          {
-            accountId: `eip155:${chainId}:${account}`,
-            assetId: `eip155:${chainId}/slip44:60`,
-            balance: '25',
+  return Promise.all([
+    mockServer
+      .forGet(
+        /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
+      )
+      .always()
+      .thenCallback(() => {
+        const balances = rows();
+        return {
+          statusCode: 200,
+          json: {
+            count: balances.length,
+            unprocessedNetworks: [],
+            balances,
           },
-          {
-            accountId: `eip155:${chainId}:${account}`,
-            assetId: `eip155:${chainId}/erc20:${tokenAddress}`,
-            balance: tstBalance.value,
-          },
-        ],
-      },
-    }));
+        };
+      }),
+    mockServer
+      .forGet('https://accounts.api.cx.metamask.io/v6/multiaccount/balances')
+      .always()
+      .thenCallback((request) => ({
+        statusCode: 200,
+        json: v6AccountsApiBalancesJson(request.url, rows()),
+      })),
+  ]);
 }
 
 describe('Add hide token', function () {
@@ -91,7 +120,6 @@ describe('Add hide token', function () {
   const tokenAddress = '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947';
   const chainId = 1337;
   const chainIdHex = toHex(chainId);
-  const rawBalance = '0x186a0'; // 100000 raw = 10 TST (4 decimals)
 
   it('hides the token when clicked', async function () {
     const account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
@@ -151,15 +179,6 @@ describe('Add hide token', function () {
           },
         },
       },
-      TokenBalancesController: {
-        tokenBalances: {
-          [account]: {
-            [chainIdHex]: {
-              [tokenAddress]: rawBalance,
-            },
-          },
-        },
-      },
     });
     await withFixtures(
       {
@@ -173,22 +192,16 @@ describe('Add hide token', function () {
       },
       async ({ driver }) => {
         await login(driver, { validateBalance: false });
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.checkTokenItemNumber(2);
-        await assetListPage.checkTokenAmountIsDisplayed('10 TST');
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkTokenItemNumber(2);
+        await tokensTab.checkTokenAmountIsDisplayed('10 TST');
 
-        await assetListPage.hideToken('TST');
-        await assetListPage.checkTokenItemNumber(1);
+        await tokensTab.hideToken('TST');
+        await tokensTab.checkTokenItemNumber(1);
       },
     );
   });
-
-  // Under unified state (assetsUnifyState), the UI reads token balances from
-  // AssetsController.assetsBalance, but the WebSocket balance update only
-  // reaches TokenBalancesController. Until AssetsController subscribes to
-  // AccountActivityService:balanceUpdated, this test cannot pass.
-  // eslint-disable-next-line mocha/no-skipped-tests -- blocked until unified balance path receives WS updates
-  it.skip('updates token balance when a WebSocket balance update is received', async function () {
+  it('updates token balance when a WebSocket balance update is received', async function () {
     const account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
     const tstBalanceHolder = { value: '10' };
     const fixture = new FixtureBuilderV2()
@@ -228,17 +241,6 @@ describe('Add hide token', function () {
         },
       })
       .build();
-    merge(fixture.data, {
-      TokenBalancesController: {
-        tokenBalances: {
-          [account]: {
-            [chainIdHex]: {
-              [tokenAddress]: rawBalance,
-            },
-          },
-        },
-      },
-    });
     await withFixtures(
       {
         fixtures: fixture,
@@ -260,8 +262,8 @@ describe('Add hide token', function () {
 
         await login(driver, { validateBalance: false });
 
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.checkTokenAmountIsDisplayed('10 TST');
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkTokenAmountIsDisplayed('10 TST');
 
         const subscriptionId = await subscriptionPromise;
         console.log(`Subscription established: ${subscriptionId}`);
@@ -294,7 +296,7 @@ describe('Add hide token', function () {
         wsServer.sendMessage(JSON.stringify(notification));
 
         // Verify the UI updates to reflect the new balance
-        await assetListPage.checkTokenAmountIsDisplayed('20 TST');
+        await tokensTab.checkTokenAmountIsDisplayed('20 TST');
       },
     );
   });

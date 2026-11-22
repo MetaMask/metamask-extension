@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-import { renderHook } from '@testing-library/react-hooks';
-import { waitFor } from '@testing-library/react';
-import { useDispatch, useSelector } from 'react-redux';
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { useSelector, useStore } from 'react-redux';
 import {
   getSelectedAccountCachedBalance,
   getSlides,
@@ -13,16 +11,21 @@ import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accoun
 import { getCurrentLocale } from '../../ducks/locale/locale';
 import { updateSlides } from '../../store/actions';
 import type { CarouselSlide } from '../../../shared/constants/app-state';
+import { useDispatch } from '../../store/hooks';
 import { useCarouselManagement } from './useCarouselManagement';
 import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromContentful';
+
+jest.mock('../../store/hooks', () => ({
+  useDispatch: jest.fn(),
+}));
 
 jest.mock('./fetchCarouselSlidesFromContentful');
 jest.mock('../../ducks/locale/locale', () => ({
   getCurrentLocale: jest.fn(),
 }));
 jest.mock('react-redux', () => ({
-  useDispatch: jest.fn(),
   useSelector: jest.fn((selector) => selector()),
+  useStore: jest.fn(),
 }));
 jest.mock('../../store/actions', () => ({
   updateSlides: jest.fn(),
@@ -34,7 +37,8 @@ jest.mock('../../store/actions', () => ({
 const mockFetch = jest.mocked(fetchCarouselSlidesFromContentful);
 const mockUpdateSlides = jest.mocked(updateSlides);
 const mockUseSelector = jest.mocked(useSelector);
-const mockUseDispatch = jest.mocked(useDispatch);
+const mockUseStore = jest.mocked(useStore);
+const mockUseAppDispatch = jest.mocked(useDispatch);
 
 const slide = (
   variableName: string,
@@ -63,6 +67,8 @@ const mockGetCurrentLocale = jest.fn().mockReturnValue('en-US');
 
 describe('useCarouselManagement (simple Contentful tests)', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
+
     mockFetch.mockResolvedValue({
       prioritySlides: [],
       regularSlides: [slide('fund'), slide('downloadMobileApp')],
@@ -70,7 +76,15 @@ describe('useCarouselManagement (simple Contentful tests)', () => {
 
     type MockSelector = (state: unknown) => unknown;
 
-    mockUseDispatch.mockReturnValue(jest.fn());
+    mockUseAppDispatch.mockReturnValue(jest.fn());
+    mockUseStore.mockReturnValue({
+      getState: jest.fn(() => ({
+        metamask: { slides: mockGetSlides() },
+      })),
+      dispatch: jest.fn(),
+      subscribe: jest.fn(),
+      replaceReducer: jest.fn(),
+    } as unknown as ReturnType<typeof useStore>);
     mockUseSelector.mockImplementation(
       <TSelected>(selector: (state: unknown) => TSelected): TSelected => {
         if (selector === getSlides) {
@@ -79,7 +93,7 @@ describe('useCarouselManagement (simple Contentful tests)', () => {
         if (selector === getSelectedAccountCachedBalance) {
           return mockGetSelectedAccountCachedBalance() as TSelected;
         }
-        if (selector === getSelectedInternalAccount) {
+        if (selector === (getSelectedInternalAccount as MockSelector)) {
           return mockGetSelectedInternalAccount() as TSelected;
         }
         if (selector === getUseExternalServices) {
@@ -106,8 +120,6 @@ describe('useCarouselManagement (simple Contentful tests)', () => {
       contentfulCarouselEnabled: true,
     });
     mockGetCurrentLocale.mockReturnValue('en');
-
-    jest.clearAllMocks();
   });
 
   const getDispatchedSlides = (): CarouselSlide[] => {
@@ -149,7 +161,14 @@ describe('useCarouselManagement (simple Contentful tests)', () => {
 
     const { rerender } = renderHook(() => useCarouselManagement());
 
-    await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
+    // Flush async state updates from getUserProfileLineageAction() (React 18 requires act()).
+    await act(async () => {
+      await mockGetUserProfileLineage.mock.results[0]?.value;
+    });
+    await act(async () => {
+      await mockFetch.mock.results[0]?.value;
+    });
+    expect(mockUpdateSlides).toHaveBeenCalled();
 
     mockGetUserProfileLineage.mockClear();
     mockUpdateSlides.mockClear();

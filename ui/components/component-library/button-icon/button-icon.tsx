@@ -19,9 +19,9 @@ import {
 } from './button-icon.types';
 
 const buttonIconSizeToIconSize: Record<ButtonIconSize, IconSize> = {
-  [ButtonIconSize.Sm]: IconSize.Sm,
-  [ButtonIconSize.Md]: IconSize.Md,
-  [ButtonIconSize.Lg]: IconSize.Lg,
+  [ButtonIconSize.Sm]: IconSize.Md,
+  [ButtonIconSize.Md]: IconSize.Lg,
+  [ButtonIconSize.Lg]: IconSize.Xl,
 };
 
 /**
@@ -47,8 +47,6 @@ export const ButtonIcon: ButtonIconComponent = React.forwardRef(
     }: ButtonIconProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const tag = href ? 'a' : as || 'button';
     const isDisabled = disabled && tag === 'button';
     return (
@@ -68,7 +66,7 @@ export const ButtonIcon: ButtonIconComponent = React.forwardRef(
         display={Display.InlineFlex}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
-        borderRadius={BorderRadius.LG}
+        borderRadius={BorderRadius.pill}
         backgroundColor={BackgroundColor.transparent}
         {...(href ? { href } : {})}
         ref={ref}

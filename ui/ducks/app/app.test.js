@@ -1,6 +1,6 @@
 import * as actionConstants from '../../store/actionConstants';
 import { HardwareDeviceNames } from '../../../shared/constants/hardware-wallets';
-import reduceApp from './app';
+import reduceApp, { setOnboardingRedirect } from './app';
 
 const actions = actionConstants;
 
@@ -11,6 +11,21 @@ describe('App State', () => {
     const initState = reduceApp(metamaskState, {});
 
     expect.anything(initState);
+  });
+
+  it('preserves unchanged onboarding redirect state and clears a saved destination', () => {
+    const state = reduceApp(metamaskState, {});
+    expect(reduceApp(state, setOnboardingRedirect(null))).toBe(state);
+
+    const route = '/settings/privacy';
+    const pending = reduceApp(state, setOnboardingRedirect(route));
+    expect(pending.onboardingRedirect).toBe(route);
+    expect(reduceApp(pending, setOnboardingRedirect(route))).toBe(pending);
+
+    expect(reduceApp(pending, setOnboardingRedirect(null))).toMatchObject({
+      onboardingRedirect: null,
+    });
+    expect(pending.onboardingRedirect).toBe(route);
   });
 
   it('sets networkDropdownOpen dropdown to true', () => {
@@ -92,29 +107,12 @@ describe('App State', () => {
     expect(newState.modal.modalState.name).toBeNull();
   });
 
-  it('shows send token page', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.SHOW_SEND_TOKEN_PAGE,
-    });
-
-    expect(state.warning).toBeNull();
-  });
-
-  it('locks Metamask', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.LOCK_METAMASK,
-    });
-
-    expect(state.warning).toBeNull();
-  });
-
   it('goes home', () => {
     const state = reduceApp(metamaskState, {
       type: actions.GO_HOME,
     });
 
     expect(state.accountDetail.privateKey).toStrictEqual('');
-    expect(state.warning).toBeNull();
   });
 
   it('clears account details', () => {
@@ -138,7 +136,6 @@ describe('App State', () => {
     });
 
     expect(state.isLoading).toStrictEqual(false);
-    expect(state.warning).toBeNull();
   });
 
   it('shows confirm tx page', () => {
@@ -159,7 +156,6 @@ describe('App State', () => {
     });
 
     expect(state.txId).toStrictEqual(2);
-    expect(state.warning).toBeNull();
     expect(state.isLoading).toStrictEqual(false);
   });
 
@@ -185,45 +181,6 @@ describe('App State', () => {
     });
 
     expect(state.txId).toBeNull();
-    expect(state.warning).toBeNull();
-  });
-
-  it('returns to account detail page when no unconf actions completed tx', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.COMPLETED_TX,
-      value: {
-        unconfirmedActionsCount: 0,
-      },
-    });
-
-    expect(state.warning).toBeNull();
-  });
-
-  it('sets default warning when unlock fails', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.UNLOCK_FAILED,
-    });
-
-    expect(state.warning).toStrictEqual('Incorrect password. Try again.');
-  });
-
-  it('sets errors when unlock fails', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.UNLOCK_FAILED,
-      value: 'errors',
-    });
-
-    expect(state.warning).toStrictEqual('errors');
-  });
-
-  it('sets warning to empty string when unlock succeeds', () => {
-    const errorState = { warning: 'errors' };
-    const oldState = { ...metamaskState, ...errorState };
-    const state = reduceApp(oldState, {
-      type: actions.UNLOCK_SUCCEEDED,
-    });
-
-    expect(state.warning).toStrictEqual('');
   });
 
   it('sets hardware wallet default hd path', () => {
@@ -265,26 +222,6 @@ describe('App State', () => {
     expect(state.isLoading).toStrictEqual(false);
   });
 
-  it('displays warning', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.DISPLAY_WARNING,
-      payload: 'warning',
-    });
-
-    expect(state.isLoading).toStrictEqual(false);
-    expect(state.warning).toStrictEqual('warning');
-  });
-
-  it('hides warning', () => {
-    const displayWarningState = { warning: 'warning' };
-    const oldState = { ...metamaskState, ...displayWarningState };
-    const state = reduceApp(oldState, {
-      type: actions.HIDE_WARNING,
-    });
-
-    expect(state.warning).toBeUndefined();
-  });
-
   it('shows private key', () => {
     const state = reduceApp(metamaskState, {
       type: actions.SHOW_PRIVATE_KEY,
@@ -301,45 +238,6 @@ describe('App State', () => {
     });
     expect(state.smartTransactionsError).toStrictEqual('Server Side Error');
   });
-  it('shows delete metametrics modal', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.DELETE_METAMETRICS_DATA_MODAL_OPEN,
-    });
-
-    expect(state.showDeleteMetaMetricsDataModal).toStrictEqual(true);
-  });
-  it('hides delete metametrics modal', () => {
-    const deleteMetaMetricsDataModalState = {
-      showDeleteMetaMetricsDataModal: true,
-    };
-    const oldState = { ...metamaskState, ...deleteMetaMetricsDataModalState };
-
-    const state = reduceApp(oldState, {
-      type: actions.DELETE_METAMETRICS_DATA_MODAL_CLOSE,
-    });
-
-    expect(state.showDeleteMetaMetricsDataModal).toStrictEqual(false);
-  });
-  it('shows delete metametrics error modal', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.DATA_DELETION_ERROR_MODAL_OPEN,
-    });
-
-    expect(state.showDataDeletionErrorModal).toStrictEqual(true);
-  });
-  it('hides delete metametrics error modal', () => {
-    const deleteMetaMetricsErrorModalState = {
-      showDataDeletionErrorModal: true,
-    };
-    const oldState = { ...metamaskState, ...deleteMetaMetricsErrorModalState };
-
-    const state = reduceApp(oldState, {
-      type: actions.DATA_DELETION_ERROR_MODAL_CLOSE,
-    });
-
-    expect(state.showDataDeletionErrorModal).toStrictEqual(false);
-  });
-
   it('displays error in settings', () => {
     const state = reduceApp(metamaskState, {
       type: actions.SHOW_SETTINGS_PAGE_ERROR,
@@ -386,6 +284,36 @@ describe('App State', () => {
     );
 
     expect(pendingTokensState.pendingTokens).toStrictEqual(payload);
+  });
+
+  it('turns off backup and sync intent when basic functionality is turned off during onboarding', () => {
+    const state = reduceApp(
+      {
+        externalServicesOnboardingToggleState: true,
+        backupAndSyncOnboardingToggleState: true,
+      },
+      {
+        type: actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_OFF,
+      },
+    );
+
+    expect(state.externalServicesOnboardingToggleState).toStrictEqual(false);
+    expect(state.backupAndSyncOnboardingToggleState).toStrictEqual(false);
+  });
+
+  it('keeps backup and sync intent unchanged when basic functionality is turned on during onboarding', () => {
+    const state = reduceApp(
+      {
+        externalServicesOnboardingToggleState: false,
+        backupAndSyncOnboardingToggleState: false,
+      },
+      {
+        type: actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_ON,
+      },
+    );
+
+    expect(state.externalServicesOnboardingToggleState).toStrictEqual(true);
+    expect(state.backupAndSyncOnboardingToggleState).toStrictEqual(false);
   });
 
   it('clears pending tokens', () => {

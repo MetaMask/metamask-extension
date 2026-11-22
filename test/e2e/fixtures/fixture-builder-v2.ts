@@ -1,18 +1,16 @@
 import { merge, cloneDeep } from 'lodash';
 import { toHex } from '@metamask/controller-utils';
-import type { Hex, Json } from '@metamask/utils';
+import type { CaipAssetType, Hex, Json } from '@metamask/utils';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { AccountTreeControllerState } from '@metamask/account-tree-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type { AnnouncementControllerState } from '@metamask/announcement-controller';
+import type { BridgeStatusControllerState } from '@metamask/bridge-status-controller';
+import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import type {
-  CurrencyRateState,
-  MultichainAssetsRatesControllerState,
+  AccountTrackerControllerState,
   NftControllerState,
   RatesControllerState,
-  TokenBalancesControllerState,
-  TokenListMap,
-  TokenListState,
   TokensControllerState,
 } from '@metamask/assets-controllers';
 import type { KeyringControllerState } from '@metamask/keyring-controller';
@@ -20,11 +18,14 @@ import { type NameControllerState, NameType } from '@metamask/name-controller';
 import type { PersistedSnapControllerState } from '@metamask/snaps-controllers';
 import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
+import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import type { SelectedNetworkControllerState } from '@metamask/selected-network-controller';
 import type {
   PermissionConstraint,
   PermissionControllerState,
+  SubjectMetadataControllerState,
 } from '@metamask/permission-controller';
+import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import type { UserStorageControllerState } from '@metamask/profile-sync-controller/user-storage';
 import {
   type NetworkMetadata,
@@ -40,8 +41,8 @@ import {
 } from '@metamask/transaction-controller';
 import type { AssetsControllerState } from '@metamask/assets-controller';
 import type { PerpsControllerState } from '@metamask/perps-controller';
+import type { PasskeyControllerState } from '@metamask/passkey-controller';
 import type { AppStateControllerState } from '../../../app/scripts/controllers/app-state-controller';
-import type { MetaMetricsControllerState } from '../../../app/scripts/controllers/metametrics-controller';
 import type { OnboardingControllerState } from '../../../app/scripts/controllers/onboarding';
 import type { Preferences } from '../../../shared/types/preferences';
 import type { PreferencesControllerState } from '../../../app/scripts/controllers/preferences-controller';
@@ -53,6 +54,7 @@ import {
   DAPP_TWO_URL,
   DAPP_URL,
   DAPP_URL_LOCALHOST,
+  DEFAULT_FIXTURE_ACCOUNT_ID,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   HARDWARE_WALLET_ACCOUNT_ID,
   IMPORTED_ACCOUNT_FIXTURE_VAULT,
@@ -64,6 +66,7 @@ import {
   SECOND_NODE_NETWORK_CLIENT_ID,
   THIRD_NODE_NETWORK_CLIENT_ID,
   TREZOR_ADDRESS,
+  HARDWARE_WALLET_LOCALHOST_NATIVE_ETH_HUMAN,
   TREZOR_VAULT,
 } from '../constants';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../stub/keyring-bridge';
@@ -73,7 +76,6 @@ import onboardingFixtureJson from './onboarding-fixture.json';
 
 const STORAGE_SERVICE_NAMESPACE = Object.freeze({
   SNAP_CONTROLLER: 'SnapController',
-  TOKEN_LIST_CONTROLLER: 'TokenListController',
 } as const);
 
 const LIFECYCLE_HOOKS_EXAMPLE_SNAP_ID =
@@ -122,14 +124,17 @@ type TransactionControllerFixtureInput = Partial<
   transactions?: TransactionMeta[];
 };
 
+type AnalyticsControllerFixturePatch = {
+  analyticsId?: string | null;
+  optedIn?: boolean;
+  consentDecisionMade?: boolean;
+  dataCollectionForMarketing?: boolean;
+};
+
 type StorageServiceNamespaceMap = {
   [STORAGE_SERVICE_NAMESPACE.SNAP_CONTROLLER]: {
     key: string;
     value: { sourceCode: string };
-  };
-  [STORAGE_SERVICE_NAMESPACE.TOKEN_LIST_CONTROLLER]: {
-    key: `tokensChainsCache:${Hex}`;
-    value: { timestamp: number; data: TokenListMap };
   };
 };
 
@@ -137,18 +142,6 @@ type StorageServiceNamespace = keyof StorageServiceNamespaceMap;
 
 type FixtureBuildResult = FixtureType & {
   storageServiceData?: Record<string, unknown>;
-};
-
-/**
- * Like `Partial<MultichainAssetsRatesControllerState>`, but `conversionRates` may be a
- * partial map (lodash `merge` fills the rest).
- */
-type MultichainAssetsRatesControllerFixturePatch = Partial<
-  Omit<MultichainAssetsRatesControllerState, 'conversionRates'>
-> & {
-  conversionRates?: Partial<
-    MultichainAssetsRatesControllerState['conversionRates']
-  >;
 };
 
 /**
@@ -187,6 +180,15 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withAccountTracker(data: Partial<AccountTrackerControllerState>): this {
+    const fixtureData = this.fixture.data as Record<string, unknown>;
+    if (!fixtureData.AccountTracker) {
+      fixtureData.AccountTracker = { accountsByChainId: {} };
+    }
+    merge(fixtureData.AccountTracker as AccountTrackerControllerState, data);
+    return this;
+  }
+
   withAddressBookController(data: Partial<AddressBookControllerState>): this {
     if (!this.fixture.data.AddressBookController) {
       (this.fixture.data as Record<string, unknown>).AddressBookController = {
@@ -202,14 +204,20 @@ class FixtureBuilderV2 {
    * `AssetsControllerState` from `@metamask/assets-controller`.
    *
    * @param patch - Subset of `AssetsControllerState` to deep-merge; see {@link AssetsControllerFixturePatch}.
+   * @param opts - Options for the AssetsController state.
+   * @param opts.overwrite - Whether to overwrite the partial AssetsController state.
    */
-  withAssetsController(patch: AssetsControllerFixturePatch = {}): this {
+  withAssetsController(
+    patch: AssetsControllerFixturePatch = {},
+    opts = { overwrite: false },
+  ): this {
+    const { overwrite } = opts;
     const {
-      assetsBalance = {},
-      assetsPrice = {},
-      assetsInfo = {},
-      customAssets = {},
-      assetPreferences = {},
+      assetsBalance,
+      assetsPrice,
+      assetsInfo,
+      customAssets,
+      assetPreferences,
       selectedCurrency,
     } = patch;
     if (!(this.fixture.data as Record<string, unknown>).AssetsController) {
@@ -222,13 +230,26 @@ class FixtureBuilderV2 {
     ac.assetsInfo ??= {};
     ac.customAssets ??= {};
     ac.assetPreferences ??= {};
-    merge(ac.assetsBalance, assetsBalance);
-    if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true') {
-      merge(ac.assetsPrice, assetsPrice);
-    }
-    merge(ac.assetsInfo, assetsInfo);
-    merge(ac.customAssets, customAssets);
-    merge(ac.assetPreferences, assetPreferences);
+
+    const applyOverwriteOrMerge = <
+      AssetsControllerStateKey extends keyof AssetsControllerState,
+    >(
+      key: AssetsControllerStateKey,
+      value: AssetsControllerState[AssetsControllerStateKey] | undefined,
+    ): void => {
+      if (overwrite && value) {
+        ac[key] = value;
+      } else {
+        ac[key] = merge(ac[key], value);
+      }
+    };
+
+    applyOverwriteOrMerge('assetsBalance', assetsBalance);
+    applyOverwriteOrMerge('assetsPrice', assetsPrice);
+    applyOverwriteOrMerge('assetsInfo', assetsInfo);
+    applyOverwriteOrMerge('customAssets', customAssets);
+    applyOverwriteOrMerge('assetPreferences', assetPreferences);
+
     if (selectedCurrency !== undefined) {
       ac.selectedCurrency = selectedCurrency;
     }
@@ -240,13 +261,20 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withAuthenticationController(
+    data: Partial<AuthenticationControllerState>,
+  ): this {
+    merge(this.fixture.data.AuthenticationController, data);
+    return this;
+  }
+
   withAppStateController(data: Partial<AppStateControllerState>): this {
     merge(this.fixture.data.AppStateController, data);
     return this;
   }
 
-  withCurrencyController(data: Partial<CurrencyRateState>): this {
-    merge(this.fixture.data.CurrencyController, data);
+  withBridgeStatusController(data: Partial<BridgeStatusControllerState>): this {
+    merge(this.fixture.data.BridgeStatusController, data);
     return this;
   }
 
@@ -255,20 +283,61 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withMetaMetricsController(data: Partial<MetaMetricsControllerState>): this {
-    merge(this.fixture.data.MetaMetricsController, data);
-    return this;
-  }
+  withAnalyticsController(data: AnalyticsControllerFixturePatch): this {
+    const {
+      analyticsId,
+      optedIn,
+      consentDecisionMade,
+      dataCollectionForMarketing,
+    } = data;
 
-  withMultichainAssetsRatesController(
-    data: MultichainAssetsRatesControllerFixturePatch,
-  ): this {
-    merge(this.fixture.data.MultichainAssetsRatesController, data);
+    if (
+      analyticsId !== undefined ||
+      optedIn !== undefined ||
+      consentDecisionMade !== undefined ||
+      dataCollectionForMarketing !== undefined
+    ) {
+      const fixtureData = this.fixture.data as Record<string, unknown>;
+      if (!fixtureData.AnalyticsController) {
+        fixtureData.AnalyticsController = {};
+      }
+      const analyticsController = fixtureData.AnalyticsController as Record<
+        string,
+        unknown
+      >;
+      const analyticsPatch: Record<string, unknown> = {};
+      if (analyticsId !== undefined) {
+        analyticsPatch.analyticsId = analyticsId;
+      }
+      if (optedIn !== undefined) {
+        analyticsPatch.optedIn = optedIn;
+      }
+      if (consentDecisionMade !== undefined) {
+        analyticsPatch.consentDecisionMade = consentDecisionMade;
+      }
+      if (dataCollectionForMarketing !== undefined) {
+        analyticsPatch.optedInToMarketing = dataCollectionForMarketing;
+        analyticsPatch.marketingConsentDecisionMade = true;
+      }
+      merge(analyticsController, analyticsPatch);
+    }
+
     return this;
   }
 
   withMultichainRatesController(data: Partial<RatesControllerState>): this {
     merge(this.fixture.data.MultichainRatesController, data);
+    return this;
+  }
+
+  withMultichainTransactionsController(
+    data: Partial<MultichainTransactionsControllerState>,
+  ): this {
+    merge(
+      (this.fixture.data as Record<string, unknown>)
+        .MultichainTransactionsController,
+      data,
+    );
     return this;
   }
 
@@ -306,10 +375,25 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withPasskeyController(data: Partial<PasskeyControllerState>): this {
+    merge(this.fixture.data.PasskeyController, data);
+    return this;
+  }
+
   withPermissionController(
     data: Partial<PermissionControllerState<PermissionConstraint>>,
   ): this {
     merge(this.fixture.data.PermissionController, data);
+    return this;
+  }
+
+  withSubjectMetadataController(
+    data: Partial<SubjectMetadataControllerState>,
+  ): this {
+    merge(
+      (this.fixture.data as Record<string, unknown>).SubjectMetadataController,
+      data,
+    );
     return this;
   }
 
@@ -321,6 +405,13 @@ class FixtureBuilderV2 {
       (this.fixture.data as Record<string, unknown>).PerpsController,
       data as Record<string, unknown>,
     );
+    return this;
+  }
+
+  withRemoteFeatureFlagController(
+    data: Partial<RemoteFeatureFlagControllerState>,
+  ): this {
+    merge(this.fixture.data.RemoteFeatureFlagController, data);
     return this;
   }
 
@@ -343,22 +434,6 @@ class FixtureBuilderV2 {
   withSnapController(data: Partial<PersistedSnapControllerState>): this {
     (this.fixture.data as Record<string, unknown>).SnapController ??= {};
     merge(this.fixture.data.SnapController, data);
-    return this;
-  }
-
-  withTokenBalancesController(
-    data: Partial<TokenBalancesControllerState>,
-  ): this {
-    merge(this.fixture.data.TokenBalancesController, data);
-    return this;
-  }
-
-  withTokenListController(data: Partial<TokenListState>): this {
-    (this.fixture.data as Record<string, unknown>).TokenListController ??= {};
-    merge(
-      (this.fixture.data as Record<string, unknown>).TokenListController,
-      data,
-    );
     return this;
   }
 
@@ -625,22 +700,6 @@ class FixtureBuilderV2 {
     });
   }
 
-  withConversionRates(
-    conversionRates: Partial<
-      MultichainAssetsRatesControllerState['conversionRates']
-    > = {},
-  ): this {
-    return this.withMultichainAssetsRatesController({ conversionRates });
-  }
-
-  withCurrencyRates(
-    currencyRates: CurrencyRateState['currencyRates'] = {},
-  ): this {
-    return this.withCurrencyController({
-      currencyRates: { ...currencyRates },
-    });
-  }
-
   // NOTE: consider this when using this fixture:
   //   - Multiple chains enabled → homepage shows "Popular networks" filter.
   //   - Single chain enabled → homepage shows "Current network" single-chain filter.
@@ -684,55 +743,68 @@ class FixtureBuilderV2 {
 
     this.withKeyringController({
       vault: LEDGER_FIXTURE_VAULT,
-    }).withAccountsController({
-      internalAccounts: {
-        accounts: {
-          'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-            id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
-            address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-            options: {
-              entropySource: '01JWZDDDB45SRHTRE5KYWZJK9W',
-              derivationPath: "m/44'/60'/0'/0/0",
-              groupIndex: 0,
-              entropy: {
-                type: 'mnemonic',
-                id: '01JWZDDDB45SRHTRE5KYWZJK9W',
+    })
+      .withAccountsController({
+        internalAccounts: {
+          accounts: {
+            'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+              id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+              address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+              options: {
+                entropySource: '01JWZDDDB45SRHTRE5KYWZJK9W',
                 derivationPath: "m/44'/60'/0'/0/0",
                 groupIndex: 0,
+                entropy: {
+                  type: 'mnemonic',
+                  id: '01JWZDDDB45SRHTRE5KYWZJK9W',
+                  derivationPath: "m/44'/60'/0'/0/0",
+                  groupIndex: 0,
+                },
+              },
+              methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
+              type: 'eip155:eoa',
+              scopes: ['eip155:0'],
+              metadata: {
+                name: 'Account 1',
+                importTime: 1724486724986,
+                lastSelected: 1665507600000,
+                keyring: {
+                  type: 'HD Key Tree',
+                },
               },
             },
-            methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
-            type: 'eip155:eoa',
-            scopes: ['eip155:0'],
-            metadata: {
-              name: 'Account 1',
-              importTime: 1724486724986,
-              lastSelected: 1665507600000,
-              keyring: {
-                type: 'HD Key Tree',
+            [HARDWARE_WALLET_ACCOUNT_ID]: {
+              id: HARDWARE_WALLET_ACCOUNT_ID,
+              address: ledgerAddressLower,
+              options: {},
+              methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
+              type: 'eip155:eoa',
+              scopes: ['eip155:0'],
+              metadata: {
+                name: 'Ledger 1',
+                importTime: 1724486729079,
+                keyring: {
+                  type: 'Ledger Hardware',
+                },
+                lastSelected: 1724486729083,
               },
             },
           },
+          selectedAccount: HARDWARE_WALLET_ACCOUNT_ID,
+        },
+      })
+      .withAssetsController({
+        assetsBalance: {
+          'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+            'eip155:1337/slip44:1': { amount: '25' },
+          },
           [HARDWARE_WALLET_ACCOUNT_ID]: {
-            id: HARDWARE_WALLET_ACCOUNT_ID,
-            address: ledgerAddressLower,
-            options: {},
-            methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
-            type: 'eip155:eoa',
-            scopes: ['eip155:0'],
-            metadata: {
-              name: 'Ledger 1',
-              importTime: 1724486729079,
-              keyring: {
-                type: 'Ledger Hardware',
-              },
-              lastSelected: 1724486729083,
+            'eip155:1337/slip44:1': {
+              amount: HARDWARE_WALLET_LOCALHOST_NATIVE_ETH_HUMAN,
             },
           },
         },
-        selectedAccount: HARDWARE_WALLET_ACCOUNT_ID,
-      },
-    });
+      });
     return this;
   }
 
@@ -806,6 +878,38 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withNetworkControllerOnPulseChain(): this {
+    const pulseChainId = '0x171';
+    const pulseChainClientId = 'pulsechain';
+
+    return this.withNetworkController({
+      selectedNetworkClientId: pulseChainClientId,
+      networkConfigurationsByChainId: {
+        [pulseChainId]: {
+          blockExplorerUrls: ['https://scan.pulsechain.com'],
+          chainId: pulseChainId,
+          defaultBlockExplorerUrlIndex: 0,
+          defaultRpcEndpointIndex: 0,
+          name: 'PulseChain',
+          nativeCurrency: 'PLS',
+          rpcEndpoints: [
+            {
+              networkClientId: pulseChainClientId,
+              type: RpcEndpointType.Custom,
+              url: 'https://rpc.pulsechain.com',
+            },
+          ],
+        },
+      },
+      networksMetadata: {
+        [pulseChainClientId]: {
+          EIPS: {},
+          status: NetworkStatus.Available,
+        },
+      },
+    }).withEnabledNetworks({ eip155: { [pulseChainId]: true } });
+  }
+
   // We cannot simply use withSelectedNetwork because Sei is not enabled by default
   withNetworkControllerOnSei(): this {
     const seiChainId = '0x531';
@@ -832,6 +936,60 @@ class FixtureBuilderV2 {
       },
       networksMetadata: {
         [seiClientId]: {
+          EIPS: {},
+          status: NetworkStatus.Available,
+        },
+      },
+    });
+  }
+
+  /**
+   * Injects and selects a custom EVM network that is absent from the default
+   * fixture, pointing its RPC endpoint at the local Anvil node on port 8545.
+   *
+   * Chains that ship in the default fixture should use
+   * {@link withNetworkRpcUrlOnLocalhost} instead; this method throws nothing
+   * when the chain is missing — it injects the config. Prefer
+   * `prepareCustomNetwork` from `test/e2e/helpers/custom-network-harness.ts`
+   * for custom-network E2E specs so enablement, native asset ids, and Token/Price
+   * mocks stay behind one interface.
+   *
+   * @param config - Custom network configuration.
+   * @param config.chainId - Hex chain id (e.g. `0x6f0` for Injective).
+   * @param config.clientId - Network client id used as the rpc endpoint key.
+   * @param config.name - Display name shown in the network picker.
+   * @param config.nativeCurrency - Native currency ticker (e.g. `INJ`).
+   * @param config.blockExplorerUrl - Block explorer URL for the chain.
+   * @returns The builder for further chaining.
+   */
+  withNetworkControllerOnCustomNetwork(config: {
+    chainId: Hex;
+    clientId: string;
+    name: string;
+    nativeCurrency: string;
+    blockExplorerUrl: string;
+  }): this {
+    return this.withNetworkController({
+      selectedNetworkClientId: config.clientId,
+      networkConfigurationsByChainId: {
+        [config.chainId]: {
+          blockExplorerUrls: [config.blockExplorerUrl],
+          chainId: config.chainId,
+          defaultBlockExplorerUrlIndex: 0,
+          defaultRpcEndpointIndex: 0,
+          name: config.name,
+          nativeCurrency: config.nativeCurrency,
+          rpcEndpoints: [
+            {
+              networkClientId: config.clientId,
+              type: RpcEndpointType.Custom,
+              url: 'http://localhost:8545',
+            },
+          ],
+        },
+      },
+      networksMetadata: {
+        [config.clientId]: {
           EIPS: {},
           status: NetworkStatus.Available,
         },
@@ -1237,28 +1395,37 @@ class FixtureBuilderV2 {
       isAccountSyncingEnabled: false,
       isBackupAndSyncEnabled: false,
       isContactSyncingEnabled: false,
+      isRampsSyncingEnabled: false,
     });
   }
 
   withTokensControllerERC20({ chainId = 1337 } = {}): this {
-    return this.withTokensController({
-      allTokens: {
-        [toHex(chainId)]: {
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
-            {
-              address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.HST}`,
-              symbol: 'TST',
-              image: `https://static.cx.metamask.io/api/v1/tokenIcons/${chainId}/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947.png`,
-              isERC721: false,
-              decimals: 4,
-              aggregators: ['Metamask', 'Aave'],
-              name: 'test',
+    const tokenAddress: Hex = '0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947';
+    const assetId: CaipAssetType = `eip155:${chainId}/erc20:${tokenAddress}`;
+    return (
+      this
+        // When `assetsUnifyState` is enabled the asset list is derived from the
+        // AssetsController (`customAssets` + `assetsInfo` + `assetsBalance`),
+        // not from TokensController.
+        .withAssetsController({
+          customAssets: { [DEFAULT_FIXTURE_ACCOUNT_ID]: [assetId] },
+          assetsBalance: {
+            [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+              [assetId]: { amount: '10' },
             },
-          ],
-        },
-      },
-      allIgnoredTokens: {},
-    });
+          },
+          assetsInfo: {
+            [assetId]: {
+              aggregators: ['Metamask', 'Aave'],
+              decimals: 4,
+              image: `https://static.cx.metamask.io/api/v1/tokenIcons/${chainId}/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947.png`,
+              name: 'TST',
+              symbol: 'TST',
+              type: 'erc20',
+            },
+          },
+        })
+    );
   }
 
   withTrezorAccount(): this {
@@ -1268,7 +1435,9 @@ class FixtureBuilderV2 {
           'eip155:1337/slip44:1': { amount: '25' },
         },
         [HARDWARE_WALLET_ACCOUNT_ID]: {
-          'eip155:1337/slip44:1': { amount: '100' },
+          'eip155:1337/slip44:1': {
+            amount: HARDWARE_WALLET_LOCALHOST_NATIVE_ETH_HUMAN,
+          },
         },
       },
     })
@@ -1436,33 +1605,7 @@ class FixtureBuilderV2 {
     });
   }
 
-  withTokenListControllerStorageServiceData(
-    entries: { chainId: Hex; data: TokenListMap }[],
-  ): this {
-    for (const { chainId, data } of entries) {
-      this.withStorageServiceData({
-        namespace: STORAGE_SERVICE_NAMESPACE.TOKEN_LIST_CONTROLLER,
-        key: `tokensChainsCache:${chainId}`,
-        value: { timestamp: Date.now(), data },
-      });
-    }
-    return this;
-  }
-
   build(): FixtureBuildResult {
-    if (process.env.ASSETS_UNIFIED_STATE_ENABLED !== 'true') {
-      const ac = (this.fixture.data as Record<string, unknown>)
-        .AssetsController as
-        | {
-            assetsPrice?: Record<string, unknown>;
-            assetsInfo?: Record<string, unknown>;
-          }
-        | undefined;
-      if (ac) {
-        ac.assetsPrice = {};
-        ac.assetsInfo = {};
-      }
-    }
     return {
       ...this.fixture,
       storageServiceData: this.storageServiceData,

@@ -3,3 +3,5 @@ export * from './time-utils';
 export * from './numbers-utils';
 export * from './address-rule-utils';
 export * from './feature-flags';
+export * from './facilitator-addresses';
+export * from './permission-i18n-map';

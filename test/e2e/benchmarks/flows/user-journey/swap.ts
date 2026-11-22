@@ -8,8 +8,9 @@ import { generateWalletState } from '../../../../../app/scripts/fixtures/generat
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import { withFixtures } from '../../../helpers';
 import type { MockedEndpoint } from '../../../mock-e2e';
+import { createSwap } from '../../../page-objects/flows/bridge.flow';
 import { login } from '../../../page-objects/flows/login.flow';
-import AssetListPage from '../../../page-objects/pages/home/asset-list';
+import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import SwapPage from '../../../page-objects/pages/swap/swap-page';
 import { Driver } from '../../../webdriver/driver';
@@ -77,15 +78,15 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
         // Login flow
         await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.checkTokenListIsDisplayed();
-        await assetListPage.waitForTokenToBeDisplayed('Ethereum');
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkTokenListIsDisplayed();
+        await tokensTab.waitForTokenToBeDisplayed('Ethereum');
 
         // Wait for Solana balance to load before starting the swap flow
         if (shouldUseMockedRequests()) {
-          await assetListPage.checkTokenAmountIsDisplayed('50 SOL');
+          await tokensTab.checkTokenAmountIsDisplayed('50 SOL');
         } else {
-          await assetListPage.waitForTokenToBeDisplayed('SOL');
+          await tokensTab.waitForTokenToBeDisplayed('SOL');
         }
 
         // Measure: Open swap page
@@ -103,7 +104,7 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
 
         // Measure: Fetch quotes
         const swapPage = new SwapPage(driver);
-        await swapPage.createSwap({
+        await createSwap(driver, {
           amount: 0.01,
           swapTo: 'USDC',
           swapToContractAddress: SOLANA_USDC_CONTRACT_ADDRESS,

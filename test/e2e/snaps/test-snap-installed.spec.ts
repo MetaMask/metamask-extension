@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-require-imports */
 import { MockedEndpoint, Mockttp } from 'mockttp';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { Driver } from '../webdriver/driver';
@@ -10,7 +10,10 @@ import {
   mockDialogSnap,
   mockErrorSnap,
 } from '../mock-response-data/snaps/snap-binary-mocks';
-import { DAPP_PATH } from '../constants';
+import {
+  DAPP_PATH,
+  MOCK_DOWNSTREAM_EVENT_ENRICHMENT_PROPERTIES,
+} from '../constants';
 
 const { strict: assert } = require('assert');
 const { withFixtures, getEventPayloads } = require('../helpers');
@@ -59,9 +62,10 @@ describe('Test Snap installed', function () {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
-            participateInMetaMetrics: true,
+          .withAnalyticsController({
+            analyticsId: 'fake-metrics-id',
+            consentDecisionMade: true,
+            optedIn: true,
           })
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
@@ -76,31 +80,25 @@ describe('Test Snap installed', function () {
 
         // Open a new tab and navigate to test snaps page and click dialog snap
         const testSnaps = new TestSnaps(driver);
-        await openTestSnapClickButtonAndInstall(driver, 'connectDialogsButton');
-
-        // Check installation success
-        await testSnaps.checkInstallationComplete(
+        await openTestSnapClickButtonAndInstall(
+          driver,
           'connectDialogsButton',
-          'Reconnect to Dialogs Snap',
+          {
+            expectedMessage: 'Reconnect to Dialogs Snap',
+          },
         );
 
         // Check that snap installed event metrics have been sent
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.deepStrictEqual(events[0].event, 'Snap Installed');
         assert.deepStrictEqual(events[0].properties, {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
+          ...MOCK_DOWNSTREAM_EVENT_ENRICHMENT_PROPERTIES,
+          /* eslint-disable @typescript-eslint/naming-convention */
           snap_id: 'npm:@metamask/dialog-example-snap',
+          snap_category: null,
+          /* eslint-enable @typescript-eslint/naming-convention */
           origin: 'http://127.0.0.1:8080',
           version: '2.3.1',
-          category: 'Snaps',
-          locale: 'en',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: '0x539',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: 'background',
         });
 
         // Click to connect to errors snap and validate the install snaps result

@@ -6,14 +6,18 @@ import {
 import {
   SnapControllerMessenger,
   SnapControllerSetClientActiveAction,
+  WebSocketServiceCloseAction,
+  WebSocketServiceGetAllAction,
 } from '@metamask/snaps-controllers';
 import {
   KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,
-  KeyringControllerWithKeyringAction,
+  KeyringControllerWithKeyringV2UnsafeAction,
 } from '@metamask/keyring-controller';
-import { PreferencesControllerGetStateAction } from '../../../controllers/preferences-controller';
-import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller-method-action-types';
+import {
+  PreferencesControllerGetStateAction,
+  PreferencesControllerStateChangeEvent,
+} from '../../../controllers/preferences-controller';
 import { RootMessenger } from '../../../lib/messenger';
 import {
   OnboardingControllerGetStateAction,
@@ -47,6 +51,7 @@ export function getSnapControllerMessenger(
       'SnapRegistryController:registryUpdated',
     ],
     actions: [
+      'AnalyticsController:trackEvent',
       'PermissionController:getEndowments',
       'PermissionController:getPermissions',
       'PermissionController:hasPermission',
@@ -81,16 +86,18 @@ export function getSnapControllerMessenger(
 }
 
 type InitActions =
-  | KeyringControllerWithKeyringAction
+  | KeyringControllerWithKeyringV2UnsafeAction
   | PreferencesControllerGetStateAction
-  | MetaMetricsControllerTrackEventAction
   | SnapControllerSetClientActiveAction
-  | OnboardingControllerGetStateAction;
+  | OnboardingControllerGetStateAction
+  | WebSocketServiceGetAllAction
+  | WebSocketServiceCloseAction;
 
 type InitEvents =
   | KeyringControllerUnlockEvent
   | KeyringControllerLockEvent
-  | OnboardingControllerStateChangeEvent;
+  | OnboardingControllerStateChangeEvent
+  | PreferencesControllerStateChangeEvent;
 
 export type SnapControllerInitMessenger = ReturnType<
   typeof getSnapControllerInitMessenger
@@ -118,16 +125,18 @@ export function getSnapControllerInitMessenger(
   messenger.delegate({
     messenger: controllerInitMessenger,
     actions: [
-      'KeyringController:withKeyring',
+      'KeyringController:withKeyringV2Unsafe',
       'PreferencesController:getState',
-      'MetaMetricsController:trackEvent',
       'SnapController:setClientActive',
       'OnboardingController:getState',
+      'WebSocketService:getAll',
+      'WebSocketService:close',
     ],
     events: [
       'KeyringController:lock',
       'KeyringController:unlock',
       'OnboardingController:stateChange',
+      'PreferencesController:stateChange',
     ],
   });
   return controllerInitMessenger;

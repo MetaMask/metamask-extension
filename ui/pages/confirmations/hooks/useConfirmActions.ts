@@ -1,24 +1,25 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { MetaMetricsEventLocation } from '../../../../shared/constants/metametrics';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
   rejectPendingApproval,
   setNextNonce,
   updateCustomNonce,
 } from '../../../store/actions';
 import { useConfirmContext } from '../context/confirm';
+import { useDispatch } from '../../../store/hooks';
+import { navigateConfirmationExit } from './useConfirmationNavigation';
 import { useConfirmSendNavigation } from './useConfirmSendNavigation';
 
 export const useConfirmActions = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { currentConfirmation, goBackTo } =
+  const { key: locationKey } = useLocation();
+  const { currentConfirmation, goBackTo, goBackAction, suppressAutoExit } =
     useConfirmContext<TransactionMeta>();
   const { navigateBackIfSend } = useConfirmSendNavigation();
   const { id: currentConfirmationId } = currentConfirmation || {};
@@ -60,12 +61,27 @@ export const useConfirmActions = () => {
         return;
       }
       if (navigateBackForSend) {
+        suppressAutoExit();
         navigateBackIfSend();
+      }
+      if (navigateBackToPreviousPage) {
+        // The auto-exit effect navigates again once the confirmation is
+        // rejected. Suppress it first so only this navigation runs.
+        suppressAutoExit();
       }
       await rejectApproval({ location });
       resetTransactionState();
       if (navigateBackToPreviousPage) {
-        navigate(goBackTo ?? DEFAULT_ROUTE);
+        // Perps deposit and mUSD conversion open the confirmation with
+        // replace, so back replaces this entry with goBackTo (TAT-3131).
+        // Money deposit and withdraw push it, so back pops. Replacing a
+        // pushed confirmation with goBackTo duplicates that page and the
+        // next in-app back press does nothing.
+        navigateConfirmationExit(navigate, {
+          goBackTo,
+          goBackAction,
+          locationKey,
+        });
       }
     },
     [
@@ -75,6 +91,9 @@ export const useConfirmActions = () => {
       rejectApproval,
       resetTransactionState,
       goBackTo,
+      goBackAction,
+      locationKey,
+      suppressAutoExit,
     ],
   );
 
