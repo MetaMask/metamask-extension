@@ -294,22 +294,13 @@ export const OrderEntry = ({
   const existingSignedSize =
     Number.parseFloat(existingPosition?.size.replaceAll(',', '') ?? '0') || 0;
   const orderSignedSize = estimatedSize ?? 0;
-  // The page classifies flips using its legacy leverage-based sizing before
-  // the provider recalculates the actual size from usdAmount.
-  const sizeForSubmitRoute =
-    currentPrice > 0
-      ? ((Number.parseFloat(formState.amount) || 0) * formState.leverage) /
-        currentPrice
-      : 0;
-  const signedSizeForSubmitRoute =
-    formState.direction === 'long' ? sizeForSubmitRoute : -sizeForSubmitRoute;
   // Match the page's new/flip market flow: attach after placement using the
   // resulting position size. Other orders share their order's fee resolution.
   const submitsTpslSeparately =
     formState.type === 'market' &&
     (existingSignedSize === 0 ||
-      (existingSignedSize * signedSizeForSubmitRoute < 0 &&
-        Math.abs(signedSizeForSubmitRoute) > Math.abs(existingSignedSize)));
+      (existingSignedSize * orderSignedSize < 0 &&
+        Math.abs(orderSignedSize) > Math.abs(existingSignedSize)));
   const tpslFeeNotionalUsd = submitsTpslSeparately
     ? getPerpsNotionalUsd({
         size: existingSignedSize + orderSignedSize,

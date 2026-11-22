@@ -96,7 +96,8 @@ describe('OrderEntry', () => {
     ['attached limit', 'limit', undefined, '90000'],
     ['market adding to a long', 'market', '1', '90000'],
     ['market flipping a short', 'market', '-1', '50000'],
-    ['market route with leverage', 'market', '-3', '50000'],
+    // $90,000 at $45,000 is 2 BTC: it reduces the 3 BTC short, not a flip.
+    ['market reducing a larger short', 'market', '-3', '90000'],
   ] as const) {
     it(`matches the ${label} TP/SL fee-resolution notional`, () => {
       renderWithProvider(

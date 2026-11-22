@@ -33,6 +33,7 @@ import {
   Skeleton,
 } from '@metamask/design-system-react';
 import {
+  calculatePositionSize as calculateUsdPositionSize,
   ORDER_SLIPPAGE_CONFIG,
   PERPS_CONSTANTS,
   PERPS_ERROR_CODES,
@@ -236,29 +237,55 @@ function createPerpsBackgroundError(
 }
 
 /**
+ * Size, in asset units, of the order the form describes. The amount field is
+ * the USD notional (leverage is already applied), so the size is that notional
+ * divided by the price the order fills at: the limit price for a limit order,
+ * the current price otherwise.
+ *
+ * @param formState - Current order form state
+ * @param currentPrice - Current asset price in USD
+ * @param szDecimals - The asset's size decimal precision
+ * @returns Position size in asset units, rounded to the asset's precision
+ */
+export function getOrderFormPositionSize(
+  formState: OrderFormState,
+  currentPrice: number,
+  szDecimals: number,
+): string {
+  const limitPrice =
+    formState.type === 'limit'
+      ? Number.parseFloat(formState.limitPrice.replaceAll(/[$,]/gu, ''))
+      : Number.NaN;
+  return calculateUsdPositionSize({
+    amount: formState.amount.replaceAll(',', ''),
+    price: limitPrice > 0 ? limitPrice : currentPrice,
+    szDecimals,
+  });
+}
+
+/**
  * Convert UI OrderFormState to PerpsController OrderParams
  *
  * @param formState - Current order form state
  * @param currentPrice - Current asset price in USD
  * @param mode - Order mode (new, modify, close)
+ * @param szDecimals - The asset's size decimal precision
  * @param existingPositionSize - Size of existing position when closing
  * @param maxSlippageBps
  */
-function formStateToOrderParams(
+export function formStateToOrderParams(
   formState: OrderFormState,
   currentPrice: number,
   mode: OrderMode,
+  szDecimals: number,
   existingPositionSize?: string,
   maxSlippageBps?: number,
 ): OrderParams {
   const isBuy = formState.direction === 'long';
-  const marginAmount = Number.parseFloat(formState.amount) || 0;
-  const positionSize =
-    currentPrice > 0 ? (marginAmount * formState.leverage) / currentPrice : 0;
   const size =
     mode === 'close' && existingPositionSize
       ? Math.abs(Number.parseFloat(existingPositionSize)).toString()
-      : positionSize.toString();
+      : getOrderFormPositionSize(formState, currentPrice, szDecimals);
   const cleanAmount = formState.amount.replaceAll(',', '');
 
   const params: OrderParams = {
@@ -799,6 +826,7 @@ const PerpsOrderEntryPage = () => {
   const positionSizeAbs = position
     ? Math.abs(Number.parseFloat(position.size.replaceAll(',', '')))
     : null;
+  const orderSzDecimals = marketInfo?.szDecimals;
 
   // Reset the considered-event gating refs when the market or order context
   // changes, so a prior edit doesn't make the next market's seeded default fire
@@ -851,23 +879,30 @@ const PerpsOrderEntryPage = () => {
     if (!(orderSize > 0)) {
       return undefined;
     }
-    // `orderSize` is the USD margin the user typed; the position is in asset
-    // units. Convert with the same maths submission uses
-    // (`formStateToOrderParams`) before comparing, or a $100 order against
+    // `orderSize` is the USD notional the user typed; the position is in asset
+    // units. Convert with the same sizing submission uses
+    // (`getOrderFormPositionSize`) before comparing, or a $100 order against
     // 2.5 ETH reads as a flip here while the executed event calls it a
     // reduction.
-    const priceForSizing = currentPriceRef.current;
     const orderAssetSize =
-      priceForSizing > 0
-        ? (orderSize * orderFormState.leverage) / priceForSizing
-        : 0;
+      orderSzDecimals === undefined
+        ? undefined
+        : Number.parseFloat(
+            getOrderFormPositionSize(
+              orderFormState,
+              currentPriceRef.current,
+              orderSzDecimals,
+            ),
+          );
     // Derive from the existing position direction + order direction so an
     // opposite-side order against an open position reports a flip, and so this
     // matches the executed-tx `action` (both use derivePerpsTradeAction).
     const action = derivePerpsTradeAction(
       positionDirection,
       orderFormState.direction,
-      positionSizeAbs === null || !(orderAssetSize > 0)
+      positionSizeAbs === null ||
+        orderAssetSize === undefined ||
+        !(orderAssetSize > 0)
         ? undefined
         : { orderSize: orderAssetSize, positionSize: positionSizeAbs },
     );
@@ -910,6 +945,7 @@ const PerpsOrderEntryPage = () => {
     orderFormState,
     positionDirection,
     positionSizeAbs,
+    orderSzDecimals,
     isSlippageConfigEnabled,
   ]);
 
@@ -1416,6 +1452,8 @@ const PerpsOrderEntryPage = () => {
     !selectedAddress ||
     feeNotional === undefined ||
     (orderMode === 'new' && isLoadingAccount) ||
+    // Order size needs the asset's size precision from market info.
+    (orderMode !== 'close' && orderSzDecimals === undefined) ||
     // Modify and close act on the position: wait until live data confirms it.
     (orderMode !== 'new' && (isLoadingPositions || isPositionSeeded)) ||
     isDepositLoading ||
@@ -2049,10 +2087,16 @@ const PerpsOrderEntryPage = () => {
 
     // Modify (add size) and new orders attach the same tracking payload.
     const buildSubmittedOrderParams = (): OrderParams => {
+      const szDecimals = marketInfo?.szDecimals;
+      if (szDecimals === undefined) {
+        // Submit stays disabled until market info supplies size precision.
+        throw new Error('Perps market size precision is not loaded');
+      }
       const orderParams = formStateToOrderParams(
         orderFormState,
         currentPrice,
         orderMode,
+        szDecimals,
         position?.size,
         submittedMaxSlippageBps,
       );
