@@ -171,6 +171,43 @@ describe('OrderEntry', () => {
     });
   });
 
+  it('uses the page precision for the TP/SL fee once its lookup recovers', () => {
+    // The form's own market lookup failed and stays empty; the page retried
+    // and now passes the recovered precision down.
+    mockMarketInfo = undefined;
+    const props = {
+      ...defaultProps,
+      currentPrice: 60000,
+      orderType: 'market' as const,
+      initialDraft: {
+        type: 'market' as const,
+        direction: 'long' as const,
+        amount: '100',
+        leverage: 10,
+        limitPrice: '',
+        takeProfitPrice: '50000',
+        stopLossPrice: '40000',
+      },
+    };
+    const { rerender } = renderWithProvider(
+      <OrderEntry {...props} sizeDecimals={undefined} />,
+      mockStore,
+    );
+    expect(mockUsePerpsOrderFees).toHaveBeenLastCalledWith({
+      symbol: 'BTC',
+      orderType: 'market',
+      amount: '100',
+    });
+
+    rerender(<OrderEntry {...props} sizeDecimals={5} />);
+
+    expect(mockUsePerpsOrderFees).toHaveBeenLastCalledWith({
+      symbol: 'BTC',
+      orderType: 'market',
+      amount: '83.5',
+    });
+  });
+
   it.each([NaN, Infinity])(
     'keeps order entry mounted until price %s becomes available',
     (currentPrice) => {

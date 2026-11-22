@@ -306,7 +306,7 @@ const FIXED_CTA_CLEARANCE_PX = 96;
  * How long the order form must be idle before PERPS_TRANSACTION_CONSIDERED is
  * emitted, so a burst of keystrokes reports one considered event.
  */
-const TRANSACTION_CONSIDERED_DEBOUNCE_MS = 1000;
+export const TRANSACTION_CONSIDERED_DEBOUNCE_MS = 1000;
 
 function buildClosePositionParams(
   formState: OrderFormState,
@@ -842,6 +842,15 @@ const PerpsOrderEntryPage = () => {
   // extension has no async pay-with-token relay quote to time (its fee/margin
   // quote is synchronous), and `order_execution_latency_ms` on submitted tx
   // events is controller-owned (deferred to controller 9.2.2).
+  // Size precision only matters for an opposite-side order (reduction vs
+  // flip). Elsewhere it stays out of the effect's inputs, so its late arrival
+  // does not re-emit an unchanged considered event.
+  const consideredSzDecimals =
+    positionDirection !== null &&
+    orderFormState !== null &&
+    positionDirection !== orderFormState.direction
+      ? orderSzDecimals
+      : undefined;
   useEffect(() => {
     if (
       orderMode !== 'new' ||
@@ -862,12 +871,12 @@ const PerpsOrderEntryPage = () => {
     // 2.5 ETH reads as a flip here while the executed event calls it a
     // reduction.
     const orderAssetSizeText =
-      orderSzDecimals === undefined
+      consideredSzDecimals === undefined
         ? undefined
         : getOrderFormPositionSize(
             orderFormState,
             currentPriceRef.current,
-            orderSzDecimals,
+            consideredSzDecimals,
           );
     const orderAssetSize =
       orderAssetSizeText === undefined
@@ -933,7 +942,7 @@ const PerpsOrderEntryPage = () => {
     orderFormState,
     positionDirection,
     positionSizeAbs,
-    orderSzDecimals,
+    consideredSzDecimals,
     isSlippageConfigEnabled,
   ]);
 

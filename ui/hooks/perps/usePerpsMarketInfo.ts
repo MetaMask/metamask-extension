@@ -4,12 +4,17 @@ import type { MarketInfo } from '@metamask/perps-controller';
 import {
   clearPerpsMarketInfoModuleCache,
   fetchMarketInfos,
+  invalidateCachedMarketInfos,
   peekCachedMarketInfos,
 } from '../../providers/perps/perps-cache';
 import { getIsPerpsTerminalBackendEnabled } from '../../selectors/perps';
 import { usePerpsCacheKey } from './usePerpsCacheKey';
 
 export { clearPerpsMarketInfoModuleCache };
+
+function isSymbolMatch(candidate: MarketInfo, symbol: string): boolean {
+  return candidate.name.toLowerCase() === symbol.toLowerCase();
+}
 
 export type UsePerpsMarketInfoReturn = {
   /** Matching market metadata, when the list has resolved and the symbol exists */
@@ -92,8 +97,10 @@ export function usePerpsMarketInfo(
       return undefined;
     }
 
+    // State was seeded from a warm cache. After a retry, read through
+    // fetchMarketInfos even if the list is warm again, so loading settles.
     const cached = peekCachedMarketInfos(marketInfoCacheKey, useTerminalApi);
-    if (cached) {
+    if (cached && retryCount === 0) {
       return undefined;
     }
 
@@ -111,25 +118,30 @@ export function usePerpsMarketInfo(
     };
   }, [marketInfoCacheKey, useTerminalApi, enabled, retryCount]);
 
-  // A failed fetch is not cached, so re-running the fetch effect retries it.
-  // A settled list is cached and has nothing to retry.
+  // Reuse a cached list that has the symbol (another consumer may have
+  // fetched it after this one failed); otherwise refetch the scope, since a
+  // cached empty or incomplete list would never contain it.
   const retry = useCallback(() => {
-    if (
-      !enabled ||
-      peekCachedMarketInfos(marketInfoCacheKey, useTerminalApi) !== undefined
-    ) {
+    if (!enabled) {
       return;
     }
+    const cached = peekCachedMarketInfos(marketInfoCacheKey, useTerminalApi);
+    if (cached?.some((candidate) => isSymbolMatch(candidate, symbol))) {
+      setMarketInfos(cached);
+      setIsLoading(false);
+      return;
+    }
+    invalidateCachedMarketInfos(marketInfoCacheKey, useTerminalApi);
     setIsLoading(true);
     setRetryCount((count) => count + 1);
-  }, [enabled, marketInfoCacheKey, useTerminalApi]);
+  }, [enabled, marketInfoCacheKey, useTerminalApi, symbol]);
 
   if (!enabled) {
     return { market: undefined, isLoading: false, retry };
   }
 
-  const market = marketInfos?.find(
-    (candidate) => candidate.name.toLowerCase() === symbol.toLowerCase(),
+  const market = marketInfos?.find((candidate) =>
+    isSymbolMatch(candidate, symbol),
   );
 
   return { market, isLoading, retry };

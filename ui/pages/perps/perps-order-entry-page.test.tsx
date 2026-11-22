@@ -51,7 +51,12 @@ import {
 import type { UsePerpsMaxSlippageReturn } from '../../hooks/perps/usePerpsMaxSlippage';
 import PerpsOrderEntryPage, {
   shouldShowPerpsOrderSubmissionToasts,
+  TRANSACTION_CONSIDERED_DEBOUNCE_MS,
 } from './perps-order-entry-page';
+
+// Long enough for a pending considered event to fire: a check that sees none
+// after this wait proves the page held it back, not that the debounce was slow.
+const PAST_CONSIDERED_DEBOUNCE_MS = TRANSACTION_CONSIDERED_DEBOUNCE_MS + 500;
 
 /** The account `test/data/mock-state.json` has selected. */
 const MOCK_SELECTED_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
@@ -3487,7 +3492,7 @@ describe('PerpsOrderEntryPage', () => {
 
         enterAmount('100');
         await act(async () => {
-          jest.advanceTimersByTime(1500);
+          jest.advanceTimersByTime(PAST_CONSIDERED_DEBOUNCE_MS);
         });
         expect(consideredCalls()).toHaveLength(0);
 
@@ -3498,12 +3503,59 @@ describe('PerpsOrderEntryPage', () => {
         });
         view.rerender(<PerpsOrderEntryPage />);
         await act(async () => {
-          jest.advanceTimersByTime(1500);
+          jest.advanceTimersByTime(PAST_CONSIDERED_DEBOUNCE_MS);
         });
 
         expect(consideredCalls()).toHaveLength(1);
         expect(consideredCalls()[0][0].properties).not.toHaveProperty(
           PERPS_EVENT_PROPERTY.ACTION,
+        );
+      } finally {
+        await act(async () => {
+          jest.runOnlyPendingTimers();
+        });
+        jest.useRealTimers();
+      }
+    });
+
+    it('does not re-emit a same-side order when size precision arrives', async () => {
+      // Precision does not change a same-side classification, so its late
+      // arrival must not schedule a second event for the same edit.
+      jest.useFakeTimers();
+      try {
+        mockLivePositions.mockReturnValue({
+          positions: mockPositions,
+          isInitialLoading: false,
+        });
+        mockSearchParams.set('direction', 'long');
+        mockUsePerpsMarketInfo.mockReturnValue({
+          market: undefined,
+          isLoading: true,
+          retry: mockRetryMarketInfo,
+        });
+        const store = mockStore(createMockState());
+        const view = renderWithProvider(<PerpsOrderEntryPage />, store);
+
+        enterAmount('100');
+        await act(async () => {
+          jest.advanceTimersByTime(PAST_CONSIDERED_DEBOUNCE_MS);
+        });
+        expect(consideredCalls()).toHaveLength(1);
+
+        mockUsePerpsMarketInfo.mockReturnValue({
+          market: mockMarketInfo,
+          isLoading: false,
+          retry: mockRetryMarketInfo,
+        });
+        view.rerender(<PerpsOrderEntryPage />);
+        await act(async () => {
+          jest.advanceTimersByTime(PAST_CONSIDERED_DEBOUNCE_MS);
+        });
+
+        expect(consideredCalls()).toHaveLength(1);
+        expect(consideredCalls()[0][0].properties).toHaveProperty(
+          PERPS_EVENT_PROPERTY.ACTION,
+          PERPS_EVENT_VALUE.ACTION.INCREASE_EXPOSURE,
         );
       } finally {
         await act(async () => {

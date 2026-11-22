@@ -143,6 +143,59 @@ describe('usePerpsMarketInfo', () => {
     expect(result.current.isLoading).toBe(false);
   });
 
+  it('refetches on retry when the cached list settled without the symbol', async () => {
+    mockSubmitRequestToBackground.mockResolvedValueOnce([]);
+    const { result } = renderHookWithProvider(() => usePerpsMarketInfo('BTC'), {
+      metamask: defaultPerpsMetamask,
+    });
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+    expect(result.current.market).toBeUndefined();
+
+    mockSubmitRequestToBackground.mockResolvedValueOnce([makeMarketInfo()]);
+    act(() => {
+      result.current.retry();
+    });
+
+    await waitFor(() => {
+      expect(result.current.market).toEqual(makeMarketInfo());
+    });
+    expect(result.current.isLoading).toBe(false);
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
+  });
+
+  it('reuses a list another consumer cached after this lookup failed', async () => {
+    mockSubmitRequestToBackground.mockRejectedValueOnce(
+      new Error('network error'),
+    );
+    const failed = renderHookWithProvider(() => usePerpsMarketInfo('BTC'), {
+      metamask: defaultPerpsMetamask,
+    });
+    await waitFor(() => {
+      expect(failed.result.current.isLoading).toBe(false);
+    });
+
+    mockSubmitRequestToBackground.mockResolvedValueOnce([makeMarketInfo()]);
+    const sibling = renderHookWithProvider(() => usePerpsMarketInfo('BTC'), {
+      metamask: defaultPerpsMetamask,
+    });
+    await waitFor(() => {
+      expect(sibling.result.current.market).toEqual(makeMarketInfo());
+    });
+    expect(failed.result.current.market).toBeUndefined();
+
+    act(() => {
+      failed.result.current.retry();
+    });
+
+    expect(failed.result.current).toMatchObject({
+      market: makeMarketInfo(),
+      isLoading: false,
+    });
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
+  });
+
   it('skips the fetch and does not report loading when disabled', () => {
     mockSubmitRequestToBackground.mockReturnValue(new Promise(() => undefined));
 
