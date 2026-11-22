@@ -174,7 +174,6 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
-    "@metamask/design-system-react": "0.53.0",
     "@metamask/network-controller": "^38.0.1",
     "@metamask/transaction-controller": "^74.2.0",
     "reselect@npm:^5.1.1": "5.1.1",
@@ -328,7 +327,6 @@
     "@metamask/snaps-controllers": "^23.0.1",
     "@metamask/permission-controller@npm:^13.1.1": "^14.0.0",
     "@ecies/ciphers@npm:^0.2.6": "patch:@ecies/ciphers@npm%3A0.2.6#~/.yarn/patches/@ecies-ciphers-npm-0.2.6-9a4b96d70b.patch",
-    "@metamask/keyring-internal-api": "^12.1.0",
     "@metamask/keyring-api": "^24.3.0",
     "@metamask/accounts-controller": "^40.2.0",
     "@metamask/keyring-controller": "^28.2.2",
