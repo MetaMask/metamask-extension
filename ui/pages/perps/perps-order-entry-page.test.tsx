@@ -17,6 +17,7 @@ import {
   waitFor,
   within,
 } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -48,10 +49,7 @@ import {
   mockHip3Markets,
 } from '../../components/app/perps/mocks';
 import type { UsePerpsMaxSlippageReturn } from '../../hooks/perps/usePerpsMaxSlippage';
-import type { OrderFormState } from '../../components/app/perps/order-entry';
 import PerpsOrderEntryPage, {
-  formStateToOrderParams,
-  getOrderFormPositionSize,
   shouldShowPerpsOrderSubmissionToasts,
 } from './perps-order-entry-page';
 
@@ -99,10 +97,16 @@ const mockMarketInfo: MarketInfo = {
   marginTableId: 0,
 };
 
+const mockRetryMarketInfo = jest.fn();
 const mockUsePerpsMarketInfo = jest.fn(
-  (): { market: MarketInfo | undefined; isLoading: boolean } => ({
+  (): {
+    market: MarketInfo | undefined;
+    isLoading: boolean;
+    retry: () => void;
+  } => ({
     market: mockMarketInfo,
     isLoading: false,
+    retry: mockRetryMarketInfo,
   }),
 );
 
@@ -532,6 +536,7 @@ describe('PerpsOrderEntryPage', () => {
     mockUsePerpsMarketInfo.mockReturnValue({
       market: mockMarketInfo,
       isLoading: false,
+      retry: mockRetryMarketInfo,
     });
     mockLiveAccount.mockReturnValue({
       account: mockAccountState,
@@ -1162,16 +1167,95 @@ describe('PerpsOrderEntryPage', () => {
       expect(submitButton).not.toBeDisabled();
     });
 
-    it('disables submit until market info supplies the size precision', () => {
-      mockUsePerpsMarketInfo.mockReturnValue({
-        market: undefined,
-        isLoading: true,
+    describe('when market info has no size precision', () => {
+      const withoutMarketInfo = (isLoading: boolean) =>
+        mockUsePerpsMarketInfo.mockReturnValue({
+          market: undefined,
+          isLoading,
+          retry: mockRetryMarketInfo,
+        });
+
+      it('disables order placement while market info is loading', () => {
+        withoutMarketInfo(true);
+        renderWithProvider(
+          <PerpsOrderEntryPage />,
+          mockStore(createMockState()),
+        );
+
+        enterAmount('100');
+
+        expect(screen.getByTestId('submit-order-button')).toBeDisabled();
       });
-      renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
 
-      enterAmount('100');
+      it('offers a retry instead of placing once the lookup settles without the market', async () => {
+        const user = userEvent.setup();
+        withoutMarketInfo(false);
+        mockSubmitRequestToBackground.mockResolvedValue({ success: true });
+        renderWithProvider(
+          <PerpsOrderEntryPage />,
+          mockStore(createMockState()),
+        );
 
-      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+        enterAmount('100');
+        const submitButton = screen.getByTestId('submit-order-button');
+        expect(submitButton).toHaveTextContent(messages.tryAgain.message);
+
+        await act(async () => {
+          await user.click(submitButton);
+        });
+
+        expect(mockRetryMarketInfo).toHaveBeenCalledTimes(1);
+        expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+          'perpsPlaceOrder',
+          expect.anything(),
+        );
+      });
+
+      it('keeps Add Funds available', () => {
+        withoutMarketInfo(true);
+        mockLiveAccount.mockReturnValue({
+          account: {
+            ...mockAccountState,
+            spendableBalance: '0',
+            withdrawableBalance: '0',
+            totalBalance: '0',
+          },
+          isInitialLoading: false,
+        });
+        renderWithProvider(
+          <PerpsOrderEntryPage />,
+          mockStore(createMockState()),
+        );
+
+        const submitButton = screen.getByTestId('submit-order-button');
+        expect(submitButton).not.toBeDisabled();
+        expect(submitButton).toHaveTextContent(
+          messages.perpsAddFundsToTrade.message,
+        );
+      });
+
+      it('keeps a TP/SL-only modify available', () => {
+        withoutMarketInfo(true);
+        mockSearchParams.set('mode', 'modify');
+        mockSearchParams.set('orderType', 'limit');
+        mockLivePositions.mockReturnValue({
+          positions: mockPositions,
+          isInitialLoading: false,
+        });
+        renderWithProvider(
+          <PerpsOrderEntryPage />,
+          mockStore(createMockState()),
+        );
+
+        enterLimitPrice('1000');
+        enterAmount('');
+
+        const submitButton = screen.getByTestId('submit-order-button');
+        expect(submitButton).not.toBeDisabled();
+        expect(submitButton).toHaveTextContent(
+          messages.perpsModifyPosition.message,
+        );
+      });
     });
 
     it('disables submit when the user enters an amount below the $10 minimum', () => {
@@ -3383,6 +3467,52 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
+    it('waits for the order size before classifying an opposite-side order', async () => {
+      // ETH long 2.5; a $100 short is a reduction. Without size precision the
+      // direction alone would read as a flip, so nothing fires until it lands.
+      jest.useFakeTimers();
+      try {
+        mockLivePositions.mockReturnValue({
+          positions: mockPositions,
+          isInitialLoading: false,
+        });
+        mockSearchParams.set('direction', 'short');
+        mockUsePerpsMarketInfo.mockReturnValue({
+          market: undefined,
+          isLoading: true,
+          retry: mockRetryMarketInfo,
+        });
+        const store = mockStore(createMockState());
+        const view = renderWithProvider(<PerpsOrderEntryPage />, store);
+
+        enterAmount('100');
+        await act(async () => {
+          jest.advanceTimersByTime(1500);
+        });
+        expect(consideredCalls()).toHaveLength(0);
+
+        mockUsePerpsMarketInfo.mockReturnValue({
+          market: mockMarketInfo,
+          isLoading: false,
+          retry: mockRetryMarketInfo,
+        });
+        view.rerender(<PerpsOrderEntryPage />);
+        await act(async () => {
+          jest.advanceTimersByTime(1500);
+        });
+
+        expect(consideredCalls()).toHaveLength(1);
+        expect(consideredCalls()[0][0].properties).not.toHaveProperty(
+          PERPS_EVENT_PROPERTY.ACTION,
+        );
+      } finally {
+        await act(async () => {
+          jest.runOnlyPendingTimers();
+        });
+        jest.useRealTimers();
+      }
+    });
+
     it('emits CONSIDERED with flip_long_to_short for a short order on a long position', async () => {
       // ETH position is long (size 2.5) at ~3025; a $15,000 notional is
       // ~4.96 ETH, which overshoots it — a real flip.
@@ -4600,101 +4730,107 @@ describe('PerpsOrderEntryPage', () => {
     });
   });
 
-  describe('getOrderFormPositionSize', () => {
-    const baseFormState: OrderFormState = {
-      asset: 'BTC',
-      direction: 'long',
-      closePercent: 100,
-      amount: '100',
-      leverage: 10,
-      balancePercent: 0,
-      takeProfitPrice: '',
-      stopLossPrice: '',
-      limitPrice: '',
-      type: 'market',
-      autoCloseEnabled: false,
+  describe('order sizing on submit', () => {
+    const placeOrderParams = () =>
+      mockSubmitRequestToBackground.mock.calls.find(
+        ([method]) => method === 'perpsPlaceOrder',
+      )?.[1][0];
+
+    const restoreDraft = (pendingConfig: Record<string, unknown>) => {
+      const state = createMockState();
+      (state.metamask as Record<string, unknown>).tradeConfigurations = {
+        mainnet: {
+          ETH: { pendingConfig: { ...pendingConfig, timestamp: Date.now() } },
+        },
+        testnet: {},
+      };
+      return state;
     };
 
-    it('sizes from the USD notional without applying leverage', () => {
-      expect(getOrderFormPositionSize(baseFormState, 50000, 5)).toBe('0.00200');
+    beforeEach(() => {
+      mockSubmitRequestToBackground.mockResolvedValue({ success: true });
     });
 
-    it('reads a comma-grouped amount as the full number', () => {
-      expect(
-        getOrderFormPositionSize(
-          { ...baseFormState, amount: '1,000' },
-          50000,
-          5,
+    // user-event dispatches through a newer @testing-library/dom than RTL's,
+    // so its focus/blur updates need an explicit act here.
+    const submit = async (user: ReturnType<typeof userEvent.setup>) => {
+      await act(async () => {
+        await user.click(screen.getByTestId('submit-order-button'));
+      });
+    };
+
+    it('sends a comma-grouped amount as the full USD notional on the size grid', async () => {
+      const user = userEvent.setup();
+      renderWithProvider(
+        <PerpsOrderEntryPage />,
+        mockStore(
+          restoreDraft({
+            amount: '1,000',
+            leverage: 3,
+            orderType: 'market',
+            direction: 'long',
+          }),
         ),
-      ).toBe('0.02000');
-    });
-
-    it('sizes a limit order from the limit price', () => {
-      expect(
-        getOrderFormPositionSize(
-          { ...baseFormState, type: 'limit', limitPrice: '$40,000' },
-          50000,
-          5,
-        ),
-      ).toBe('0.00250');
-    });
-
-    it('falls back to the current price when the limit price is empty', () => {
-      expect(
-        getOrderFormPositionSize({ ...baseFormState, type: 'limit' }, 50000, 5),
-      ).toBe('0.00200');
-    });
-  });
-
-  describe('formStateToOrderParams', () => {
-    it('sends the notional-based size and the cleaned USD amount', () => {
-      const params = formStateToOrderParams(
-        {
-          asset: 'BTC',
-          direction: 'long',
-          closePercent: 100,
-          amount: '1,000',
-          leverage: 10,
-          balancePercent: 0,
-          takeProfitPrice: '',
-          stopLossPrice: '',
-          limitPrice: '',
-          type: 'market',
-          autoCloseEnabled: false,
-        },
-        50000,
-        'new',
-        5,
       );
-      expect(params).toEqual(
-        expect.objectContaining({ size: '0.02000', usdAmount: '1000' }),
+
+      await submit(user);
+
+      // $1,000 / $3,025.50 = 0.33052 ETH, rounded up to 4 decimals.
+      expect(placeOrderParams()).toEqual(
+        expect.objectContaining({ usdAmount: '1000', size: '0.3306' }),
+      );
+    });
+
+    it('sizes a limit order from the limit price', async () => {
+      const user = userEvent.setup();
+      mockSearchParams.set('orderType', 'limit');
+      renderWithProvider(
+        <PerpsOrderEntryPage />,
+        mockStore(
+          restoreDraft({
+            amount: '100',
+            leverage: 3,
+            orderType: 'limit',
+            limitPrice: '3000',
+            direction: 'long',
+          }),
+        ),
+      );
+
+      await submit(user);
+
+      // $100 / $3,000 limit = 0.03333 ETH, rounded up to 4 decimals.
+      expect(placeOrderParams()).toEqual(
+        expect.objectContaining({ price: '3000', size: '0.0334' }),
       );
     });
 
     it('does not classify an opposite-side order that only reduces the position as a flip', async () => {
       // ETH position is long 2.5. A $5,000 short is ~1.65 ETH: a reduction.
       // Applying leverage on top of the notional used to size it past 2.5.
+      const user = userEvent.setup();
       mockLivePositions.mockReturnValue({
         positions: mockPositions,
         isInitialLoading: false,
       });
       mockSearchParams.set('direction', 'short');
-      mockSubmitRequestToBackground.mockResolvedValue({ success: true });
       renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
 
       enterAmount('5000');
-      await act(async () => {
-        fireEvent.click(screen.getByTestId('submit-order-button'));
-      });
+      await submit(user);
 
-      const orderCall = mockSubmitRequestToBackground.mock.calls.find(
-        ([method]) => method === 'perpsPlaceOrder',
+      // $5,000 / $3,025.50 = 1.65262 ETH, rounded up to 4 decimals.
+      expect(placeOrderParams()).toEqual(
+        expect.objectContaining({
+          isBuy: false,
+          size: '1.6527',
+          trackingData: expect.objectContaining({ tradeAction: undefined }),
+        }),
       );
-      const orderParams = orderCall?.[1][0];
-      expect(Number.parseFloat(orderParams.size)).toBeLessThan(2.5);
-      expect(orderParams.trackingData.tradeAction).toBeUndefined();
     });
+  });
 
+  describe('formStateToOrderParams', () => {
     it('sets reduceOnly and isFullClose for close mode', async () => {
       mockSearchParams.set('mode', 'close');
       mockLivePositions.mockReturnValue({

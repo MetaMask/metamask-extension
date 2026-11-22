@@ -51,7 +51,10 @@ describe('usePerpsMarketInfo', () => {
     const { result } = renderHookWithProvider(() => usePerpsMarketInfo('BTC'), {
       metamask: defaultPerpsMetamask,
     });
-    expect(result.current).toEqual({ market: undefined, isLoading: true });
+    expect(result.current).toMatchObject({
+      market: undefined,
+      isLoading: true,
+    });
   });
 
   it('returns the matching market after the fetch resolves', async () => {
@@ -95,7 +98,10 @@ describe('usePerpsMarketInfo', () => {
     });
 
     await waitFor(() => {
-      expect(result.current).toEqual({ market: undefined, isLoading: false });
+      expect(result.current).toMatchObject({
+        market: undefined,
+        isLoading: false,
+      });
     });
   });
 
@@ -107,8 +113,34 @@ describe('usePerpsMarketInfo', () => {
     });
 
     await waitFor(() => {
-      expect(result.current).toEqual({ market: undefined, isLoading: false });
+      expect(result.current).toMatchObject({
+        market: undefined,
+        isLoading: false,
+      });
     });
+  });
+
+  it('refetches the market list on retry after a failed fetch', async () => {
+    mockSubmitRequestToBackground.mockRejectedValueOnce(
+      new Error('network error'),
+    );
+    const { result } = renderHookWithProvider(() => usePerpsMarketInfo('BTC'), {
+      metamask: defaultPerpsMetamask,
+    });
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+    expect(result.current.market).toBeUndefined();
+
+    mockSubmitRequestToBackground.mockResolvedValueOnce([makeMarketInfo()]);
+    act(() => {
+      result.current.retry();
+    });
+
+    await waitFor(() => {
+      expect(result.current.market).toEqual(makeMarketInfo());
+    });
+    expect(result.current.isLoading).toBe(false);
   });
 
   it('skips the fetch and does not report loading when disabled', () => {
@@ -119,7 +151,10 @@ describe('usePerpsMarketInfo', () => {
       { metamask: defaultPerpsMetamask },
     );
 
-    expect(result.current).toEqual({ market: undefined, isLoading: false });
+    expect(result.current).toMatchObject({
+      market: undefined,
+      isLoading: false,
+    });
     expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
   });
 
@@ -143,7 +178,10 @@ describe('usePerpsMarketInfo', () => {
       await Promise.resolve();
     });
 
-    expect(result.current).toEqual({ market: undefined, isLoading: true });
+    expect(result.current).toMatchObject({
+      market: undefined,
+      isLoading: true,
+    });
   });
 
   it('refetches when perps environment (testnet) changes', async () => {

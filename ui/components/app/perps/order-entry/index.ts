@@ -1,6 +1,8 @@
 // Main component export
 export { OrderEntry } from './order-entry';
 
+export { getOrderFormPositionSize } from './utils';
+
 // Type exports
 export type {
   OrderEntryProps,

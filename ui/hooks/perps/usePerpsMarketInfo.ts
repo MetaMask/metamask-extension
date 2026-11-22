@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { MarketInfo } from '@metamask/perps-controller';
 import {
@@ -16,6 +16,8 @@ export type UsePerpsMarketInfoReturn = {
   market: MarketInfo | undefined;
   /** True until the market list fetch has settled for the current scope */
   isLoading: boolean;
+  /** Fetches the market list again, e.g. after a failed lookup */
+  retry: () => void;
 };
 
 /**
@@ -54,6 +56,7 @@ export function usePerpsMarketInfo(
 
   const lookupKey = `${enabled}|${marketInfoCacheKey}|${useTerminalApi}`;
   const [prevLookupKey, setPrevLookupKey] = useState(lookupKey);
+  const [retryCount, setRetryCount] = useState(0);
 
   const [marketInfos, setMarketInfos] = useState<MarketInfo[] | undefined>(
     () => {
@@ -106,15 +109,28 @@ export function usePerpsMarketInfo(
     return () => {
       cancelled = true;
     };
-  }, [marketInfoCacheKey, useTerminalApi, enabled]);
+  }, [marketInfoCacheKey, useTerminalApi, enabled, retryCount]);
+
+  // A failed fetch is not cached, so re-running the fetch effect retries it.
+  // A settled list is cached and has nothing to retry.
+  const retry = useCallback(() => {
+    if (
+      !enabled ||
+      peekCachedMarketInfos(marketInfoCacheKey, useTerminalApi) !== undefined
+    ) {
+      return;
+    }
+    setIsLoading(true);
+    setRetryCount((count) => count + 1);
+  }, [enabled, marketInfoCacheKey, useTerminalApi]);
 
   if (!enabled) {
-    return { market: undefined, isLoading: false };
+    return { market: undefined, isLoading: false, retry };
   }
 
   const market = marketInfos?.find(
     (candidate) => candidate.name.toLowerCase() === symbol.toLowerCase(),
   );
 
-  return { market, isLoading };
+  return { market, isLoading, retry };
 }
