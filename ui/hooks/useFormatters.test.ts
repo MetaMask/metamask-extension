@@ -34,4 +34,22 @@ describe('useFormatters', () => {
       result.current.formatMediumDate(timestamp, { timeZone: 'UTC' }),
     ).toBe('15 Mar 2024');
   });
+
+  it('marks USD when the browser region uses its own $ currency', () => {
+    mockUseSelector.mockReturnValue('en');
+    languagesSpy.mockReturnValue(['en-CA']);
+
+    const { result } = renderHook(() => useFormatters());
+
+    expect(result.current.formatCurrency(100, 'USD')).toBe('US$100.00');
+  });
+
+  it('does not mark USD outside $ regions', () => {
+    mockUseSelector.mockReturnValue('en');
+    languagesSpy.mockReturnValue(['en-GB']);
+
+    const { result } = renderHook(() => useFormatters());
+
+    expect(result.current.formatCurrency(100, 'USD')).toBe('$100.00');
+  });
 });

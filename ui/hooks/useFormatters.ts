@@ -37,11 +37,12 @@ function formatMediumDate(
 
 export function useFormatters() {
   const appLocale = useSelector(getIntlLocale);
+  const deviceLocales = navigator.languages;
 
   return useMemo(() => {
     const locale = resolveFormattingLocale({
       appLanguage: appLocale,
-      deviceLocales: navigator.languages,
+      deviceLocales,
     });
     const currencyDisplay = getCurrencyDisplay(locale);
     const base = createFormatters({ locale, currencyDisplay });
@@ -53,5 +54,5 @@ export function useFormatters() {
        */
       formatMediumDate: formatMediumDate.bind(null, locale),
     };
-  }, [appLocale]);
+  }, [appLocale, deviceLocales]);
 }
