@@ -24,7 +24,11 @@ describe('loadInterestForPolyfill', () => {
       return;
     }
 
-    delete HTMLButtonElement.prototype.interestForElement;
+    delete (
+      HTMLButtonElement.prototype as typeof HTMLButtonElement.prototype & {
+        interestForElement?: unknown;
+      }
+    ).interestForElement;
   });
 
   it('skips the polyfill when interestForElement is native', async () => {
@@ -39,7 +43,11 @@ describe('loadInterestForPolyfill', () => {
   });
 
   it('loads the polyfill when interestForElement is missing', async () => {
-    delete HTMLButtonElement.prototype.interestForElement;
+    delete (
+      HTMLButtonElement.prototype as typeof HTMLButtonElement.prototype & {
+        interestForElement?: unknown;
+      }
+    ).interestForElement;
 
     await loadInterestForPolyfill();
 
