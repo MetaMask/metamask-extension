@@ -6,7 +6,6 @@ import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import type { useNotificationPreferences } from '../../../hooks/metamask-notifications/useNotificationPreferences';
-import { getIsSocialLoginFlow } from '../../../selectors/first-time-flow';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import {
   MetaMetricsEventName,
@@ -40,16 +39,6 @@ jest.mock('../../../hooks/useAnalytics', () => {
       trackEvent: mockTrackAnalyticsEvent,
       createEventBuilder,
     }),
-  };
-});
-
-jest.mock('../../../selectors/first-time-flow', () => {
-  const actual = jest.requireActual<
-    typeof import('../../../selectors/first-time-flow')
-  >('../../../selectors/first-time-flow');
-  return {
-    ...actual,
-    getIsSocialLoginFlow: jest.fn().mockReturnValue(false),
   };
 });
 
@@ -130,7 +119,6 @@ describe('DataCollectionToggleItem', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     setBackgroundConnection(backgroundConnectionMock as never);
-    (getIsSocialLoginFlow as jest.Mock).mockReturnValue(false);
     mockMarketingPreferences = {
       pushNotificationsEnabled: false,
       inAppNotificationsEnabled: false,
@@ -451,26 +439,7 @@ describe('DataCollectionToggleItem', () => {
     );
   });
 
-  it('writes marketing consent through OAuth without reading it when social login flow is active', () => {
-    (getIsSocialLoginFlow as jest.Mock).mockReturnValue(true);
-    const mockStore = createMockStore({ optedInToMarketing: false });
-    renderWithProvider(<DataCollectionToggleItem />, mockStore);
-
-    expect(mockOptInToMarketing).not.toHaveBeenCalled();
-    expect(mockOptOutOfMarketing).not.toHaveBeenCalled();
-
-    fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
-
-    expect(mockOptInToMarketing).toHaveBeenCalledTimes(1);
-    const messengerActions = mockMessengerCall.mock.calls.map(
-      ([method]) => method,
-    );
-    expect(messengerActions).toContain('OAuthService:setMarketingConsent');
-    expect(messengerActions).not.toContain('OAuthService:getMarketingConsent');
-  });
-
-  it('writes the confirmed opt-out through OAuth without reading consent for social login', async () => {
-    (getIsSocialLoginFlow as jest.Mock).mockReturnValue(true);
+  it('writes the confirmed opt-out through AUS without touching OAuth consent', async () => {
     mockMarketingPreferences = {
       pushNotificationsEnabled: true,
       inAppNotificationsEnabled: false,
@@ -485,27 +454,35 @@ describe('DataCollectionToggleItem', () => {
 
     await waitFor(() => {
       expect(mockSaveMarketingConsent).toHaveBeenCalledWith(false);
-      expect(mockMessengerCall).toHaveBeenCalledWith(
-        'OAuthService:setMarketingConsent',
-        [false],
-      );
     });
+    expect(mockMessengerCall).not.toHaveBeenCalledWith(
+      'OAuthService:setMarketingConsent',
+      [false],
+    );
     expect(mockMessengerCall).not.toHaveBeenCalledWith(
       'OAuthService:getMarketingConsent',
     );
   });
 
-  it('does not write marketing consent through OAuth when social login flow is inactive', () => {
+  it('opts out without calling the OAuth consent API', async () => {
+    const mockStore = createMockStore({ optedInToMarketing: true });
+    renderWithProvider(<DataCollectionToggleItem />, mockStore);
+
+    fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
+
+    await waitFor(() => {
+      expect(mockOptOutOfMarketing).toHaveBeenCalledTimes(1);
+    });
+    expect(mockMessengerCall).not.toHaveBeenCalled();
+  });
+
+  it('opts in without calling the OAuth consent API', () => {
     const mockStore = createMockStore({ optedInToMarketing: false });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
     fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
 
     expect(mockOptInToMarketing).toHaveBeenCalledTimes(1);
-    const messengerActions = mockMessengerCall.mock.calls.map(
-      ([method]) => method,
-    );
-    expect(messengerActions).not.toContain('OAuthService:setMarketingConsent');
-    expect(messengerActions).not.toContain('OAuthService:getMarketingConsent');
+    expect(mockMessengerCall).not.toHaveBeenCalled();
   });
 });

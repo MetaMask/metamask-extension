@@ -5,16 +5,8 @@ import {
   getDataCollectionForMarketing,
   getOptedIn,
 } from '../../../selectors/metametrics';
-import {
-  getUseExternalServices,
-  getIsSocialLoginFlow,
-} from '../../../selectors';
-import {
-  optInToMarketing,
-  optOutOfMarketing,
-  setDataCollectionForMarketing,
-  setMarketingConsent,
-} from '../../../store/actions';
+import { getUseExternalServices } from '../../../selectors';
+import { optInToMarketing, optOutOfMarketing } from '../../../store/actions';
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { PRIVACY_ITEMS } from '../search-config';
 import { useAnalytics } from '../../../hooks/useAnalytics';
@@ -36,7 +28,6 @@ export const DataCollectionToggleItem = () => {
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
   const useExternalServices = useSelector(getUseExternalServices);
   const isOptedIn = useSelector(getOptedIn);
-  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
 
   const trackPreference = useCallback(
     (enabled: boolean) => {
@@ -56,9 +47,6 @@ export const DataCollectionToggleItem = () => {
 
   const { requestOptOut, sheetProps } = useMarketingOptOut({
     onOptedOut: () => {
-      if (isSocialLoginFlow) {
-        dispatch(setMarketingConsent(false));
-      }
       trackPreference(false);
     },
   });
@@ -68,14 +56,6 @@ export const DataCollectionToggleItem = () => {
 
     if (!newValue && (await requestOptOut())) {
       return;
-    }
-
-    // Social-login wallets also store the choice server-side so the auth
-    // service can create the HubSpot contact for email marketing and learn
-    // of opt-outs. A failed sync keeps the local decision; reads that would
-    // overwrite the local choice stay removed.
-    if (isSocialLoginFlow) {
-      dispatch(setMarketingConsent(newValue));
     }
 
     dispatch(newValue ? optInToMarketing() : optOutOfMarketing());
