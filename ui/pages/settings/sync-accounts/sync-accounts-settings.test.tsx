@@ -321,13 +321,12 @@ describe('SyncAccountsSettings', () => {
         onClick={() =>
           onAddWallets({
             selectedAccountGroupIds: ['entropy:wallet/0'],
-            selectedAccountGroupCounts: { 'entropy:wallet/0': 3 },
             importSummary: {
               wallets: [
                 {
-                  id: 'demo-wallet-1',
+                  id: 'entropy:wallet',
                   name: 'Wallet 1',
-                  accounts: [{ id: 'demo-wallet-1/0', name: 'Account 1' }],
+                  accounts: [{ id: 'entropy:wallet/0', name: 'Account 1' }],
                 },
               ],
             },
@@ -357,13 +356,12 @@ describe('SyncAccountsSettings', () => {
         [
           'test-password',
           ['entropy:wallet/0'],
-          { 'entropy:wallet/0': 3 },
           {
             wallets: [
               {
-                id: 'demo-wallet-1',
+                id: 'entropy:wallet',
                 name: 'Wallet 1',
-                accounts: [{ id: 'demo-wallet-1/0', name: 'Account 1' }],
+                accounts: [{ id: 'entropy:wallet/0', name: 'Account 1' }],
               },
             ],
           },

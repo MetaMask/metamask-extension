@@ -189,7 +189,6 @@ export class QrSyncController extends BaseController<
   async syncAccounts(
     password: string,
     selectedAccountGroupIds: AccountGroupId[],
-    selectedAccountGroupCounts?: Partial<Record<AccountGroupId, number>>,
     importSummary?: QrSyncImportSummary,
   ): Promise<void> {
     assertQrSyncPhase(this.state.qrSyncPhase, [
@@ -210,47 +209,11 @@ export class QrSyncController extends BaseController<
       const selectedPayloadIds = new Set(
         selectedAccountGroupIds.map((groupId) => snapshot.toPayloadId(groupId)),
       );
-      const selectedPayloadGroupCounts = new Map(
-        selectedAccountGroupIds.map((groupId) => [
-          snapshot.toPayloadId(groupId),
-          selectedAccountGroupCounts?.[groupId] ?? 1,
-        ]),
-      );
       snapshot = snapshot.filterAllGroups((payloadGroup) =>
         selectedPayloadIds.has(payloadGroup.id),
       );
       exportData = snapshot.serialize();
 
-      if (selectedAccountGroupCounts) {
-        exportData = {
-          ...exportData,
-          wallets: exportData.wallets.map((wallet) => {
-            let nextGroupIndex = 0;
-            return {
-              ...wallet,
-              groups: wallet.groups.flatMap((group) => {
-                const groupCount =
-                  selectedPayloadGroupCounts.get(group.id) ?? 1;
-                return Array.from({ length: groupCount }, () => {
-                  const groupIndex = nextGroupIndex;
-                  nextGroupIndex += 1;
-                  return {
-                    ...group,
-                    id: `${wallet.id}/${groupIndex}`,
-                    groupIndex,
-                    metadata: {
-                      ...group.metadata,
-                      name: `Account ${groupIndex + 1}`,
-                      pinned: group.metadata?.pinned ?? false,
-                      hidden: group.metadata?.hidden ?? false,
-                    },
-                  };
-                });
-              }),
-            };
-          }),
-        };
-      }
       if (importSummary) {
         exportData.qrSyncImportSummary = importSummary;
       }
