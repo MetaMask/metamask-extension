@@ -403,23 +403,6 @@ describe('MultichainAccountCell', () => {
         expectedSeedAddress,
       );
     });
-
-    it('uses avatarSeedAddress as the avatar seed when provided', () => {
-      const avatarSeedAddress = '0x1234567890123456789012345678901234567890';
-
-      renderWithProvider(
-        <MultichainAccountCell
-          {...defaultProps}
-          avatarSeedAddress={avatarSeedAddress}
-        />,
-        store,
-      );
-
-      expect(screen.getByTestId('preferred-avatar')).toHaveAttribute(
-        'data-address',
-        avatarSeedAddress,
-      );
-    });
   });
 
   describe('Mode defaults', () => {

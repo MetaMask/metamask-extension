@@ -156,7 +156,6 @@ export type MultichainAccountCellProps = {
   accountId: AccountGroupId;
   accountName: string | React.ReactNode;
   accountNameAccessory?: React.ReactNode;
-  avatarSeedAddress?: string;
   accountNameString?: string; // Optional string version for accessibility labels
   onClick?: (accountGroupId: AccountGroupId) => void;
   /**
@@ -212,7 +211,6 @@ export const MultichainAccountCell = ({
   accountId,
   accountName,
   accountNameAccessory,
-  avatarSeedAddress,
   accountNameString,
   onClick,
   balance,
@@ -261,10 +259,9 @@ export const MultichainAccountCell = ({
   const ariaLabelName =
     accountNameString ||
     (typeof accountName === 'string' ? accountName : 'Account');
-  const accountTreeSeedAddress = useSelector((state) =>
+  const seedAddressIcon = useSelector((state) =>
     getIconSeedAddressByAccountGroupId(state, accountId),
   );
-  const seedAddressIcon = avatarSeedAddress ?? accountTreeSeedAddress;
 
   const shouldDisableHoverEffect = disableHoverEffect || isEditMode;
 
