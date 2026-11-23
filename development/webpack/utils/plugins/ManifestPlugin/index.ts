@@ -45,6 +45,11 @@ type CollectedBundleSizeStats = {
 
 const NAME = 'ManifestPlugin';
 const SOURCEMAPS_DIRECTORY = 'sourcemaps';
+const WORKERS_DIRECTORY = 'workers';
+
+function isWorkerAsset(assetName: string): boolean {
+  return assetName.startsWith(`${WORKERS_DIRECTORY}/`);
+}
 
 function isJavaScriptAsset(assetName: string): boolean {
   return (
@@ -423,21 +428,25 @@ export class ManifestPlugin<Z extends boolean> {
     const compressionOptions: ZipCompressionOptions = { level };
     const moveSourceMapsToDedicatedDirectory =
       compilation.options.devtool === 'hidden-source-map';
-    const hasAdditionalBrowsers = browsers.length > 1;
+    const workerBrowsers = this.getWorkerBrowsers(browsers);
     const assetNames = Object.keys(assets);
-    const zipEligibleAssetCount = assetNames.filter(
-      (assetName) => !excludeExtensions.includes(path.extname(assetName)),
-    ).length;
+    const assetWork = assetNames.reduce((total, assetName) => {
+      if (excludeExtensions.includes(path.extname(assetName))) {
+        return total;
+      }
+      return (
+        total + (isWorkerAsset(assetName) ? workerBrowsers : browsers).length
+      );
+    }, 0);
 
     let filesProcessed = 0;
     const totalWork = browsers.reduce(
       (total, browser) =>
         total +
-        zipEligibleAssetCount +
         Object.keys(
           this.browserAssets.get(browser) as Record<string, sources.RawSource>,
         ).length,
-      0,
+      assetWork,
     );
     const reportProgress =
       ProgressPlugin.getReporter(compilation.compiler) ?? noop;
@@ -467,13 +476,17 @@ export class ManifestPlugin<Z extends boolean> {
     });
 
     for (const assetName of assetNames) {
+      const targetBrowsers = isWorkerAsset(assetName)
+        ? workerBrowsers
+        : browsers;
       const assetDetails = compilation.getAsset(assetName) as Readonly<Asset>;
       const extName = path.extname(assetName);
       const isSourceMapAsset =
         moveSourceMapsToDedicatedDirectory && assetName.endsWith('.map');
-      const shouldZip = !excludeExtensions.includes(extName);
+      const shouldZip =
+        targetBrowsers.length > 0 && !excludeExtensions.includes(extName);
       const shouldCache =
-        shouldZip || (hasAdditionalBrowsers && !isSourceMapAsset);
+        shouldZip || (targetBrowsers.length > 1 && !isSourceMapAsset);
       let { source } = assetDetails;
 
       if (shouldCache && !(source instanceof CachedSource)) {
@@ -487,12 +500,19 @@ export class ManifestPlugin<Z extends boolean> {
       }
 
       if (shouldZip) {
-        zipBuilders.forEach(({ builder }) =>
-          builder.addAsset(assetName, source),
-        );
+        for (const { browser, builder } of zipBuilders) {
+          if (targetBrowsers.includes(browser)) {
+            builder.addAsset(assetName, source);
+          }
+        }
       }
 
-      this.moveAssetToBrowsers(compilation, assetDetails, source, browsers);
+      this.moveAssetToBrowsers(
+        compilation,
+        assetDetails,
+        source,
+        targetBrowsers,
+      );
     }
 
     this.emitBrowserAssets(compilation, browsers);
@@ -507,6 +527,12 @@ export class ManifestPlugin<Z extends boolean> {
         development: true,
       });
     }
+  }
+
+  private getWorkerBrowsers(browsers: readonly Browser[]): Browser[] {
+    return browsers.filter(
+      (browser) => this.manifests.get(browser)?.manifest_version === 3,
+    );
   }
 
   /**
@@ -525,6 +551,10 @@ export class ManifestPlugin<Z extends boolean> {
     browsers: readonly Browser[],
   ): void {
     const { name, info } = asset;
+    if (browsers.length === 0) {
+      compilation.deleteAsset(name);
+      return;
+    }
     if (
       compilation.options.devtool === 'hidden-source-map' &&
       name.endsWith('.map')
@@ -571,9 +601,12 @@ export class ManifestPlugin<Z extends boolean> {
     const moveSourceMapsToDedicatedDirectory =
       compilation.options.devtool === 'hidden-source-map';
     const { browsers } = options;
-    const hasAdditionalBrowsers = browsers.length > 1;
+    const workerBrowsers = this.getWorkerBrowsers(browsers);
 
     for (const assetName of Object.keys(assets)) {
+      const targetBrowsers = isWorkerAsset(assetName)
+        ? workerBrowsers
+        : browsers;
       const assetDetails = compilation.getAsset(assetName) as Readonly<Asset>;
 
       const isSourceMapAsset =
@@ -581,7 +614,7 @@ export class ManifestPlugin<Z extends boolean> {
       let { source } = assetDetails;
 
       if (
-        hasAdditionalBrowsers &&
+        targetBrowsers.length > 1 &&
         !isSourceMapAsset &&
         !(source instanceof CachedSource)
       ) {
@@ -594,7 +627,12 @@ export class ManifestPlugin<Z extends boolean> {
         });
       }
 
-      this.moveAssetToBrowsers(compilation, assetDetails, source, browsers);
+      this.moveAssetToBrowsers(
+        compilation,
+        assetDetails,
+        source,
+        targetBrowsers,
+      );
     }
 
     this.emitBrowserAssets(compilation, browsers);
@@ -908,7 +946,7 @@ export class ManifestPlugin<Z extends boolean> {
       return;
     }
 
-    const directory = path.resolve(compiler.context, 'workers');
+    const directory = path.resolve(compiler.context, WORKERS_DIRECTORY);
     let workerFiles: Dirent[];
     try {
       workerFiles = readdirSync(directory, { withFileTypes: true });
@@ -924,17 +962,19 @@ export class ManifestPlugin<Z extends boolean> {
     }
 
     for (const file of workerFiles) {
-      if (file.isFile() && /\.ts$/u.test(file.name)) {
-        const filename = path.posix.join('workers', file.name);
-        this.isolatedEntries.add(filename);
-        this.addSelfContainedScript({
-          compiler,
-          entries,
-          filename,
-          category: 'other',
-          opts: { runtime: false, asyncChunks: false },
-        });
+      if (!file.isFile() || !file.name.endsWith('.worker.ts')) {
+        continue;
       }
+
+      const filename = path.posix.join(WORKERS_DIRECTORY, file.name);
+      this.isolatedEntries.add(filename);
+      this.addSelfContainedScript({
+        compiler,
+        entries,
+        filename,
+        category: 'other',
+        opts: { runtime: false, asyncChunks: false },
+      });
     }
   }
 

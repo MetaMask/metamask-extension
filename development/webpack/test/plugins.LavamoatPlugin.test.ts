@@ -190,14 +190,14 @@ describe('LavamoatPlugin', () => {
       const isolatedWorkerPlugin = lavamoatPlugin(mockArgs, {
         isolates,
       }) as unknown as typeof plugin;
-      isolates.add('workers/example.ts');
+      isolates.add('workers/example.worker.ts');
       const {
         inlineLockdown,
         runtimeConfigurationPerChunk_experimental: workerRuntimeConfig,
       } = isolatedWorkerPlugin.options;
       const files = new Set<string>();
       assert.deepStrictEqual(
-        workerRuntimeConfig(mockChunk('workers/example.ts', files)),
+        workerRuntimeConfig(mockChunk('workers/example.worker.ts', files)),
         {
           mode: 'safe',
           embeddedOptions: {
@@ -206,20 +206,23 @@ describe('LavamoatPlugin', () => {
         },
       );
 
-      const filename = 'workers/example.emitted.js';
+      const filename = 'workers/example.worker.emitted.js';
       assert.ok(!inlineLockdown.test(filename));
       files.add(filename);
       files.add(`${filename}.map`);
       assert.ok(inlineLockdown.test(filename));
       assert.ok(!inlineLockdown.test(`${filename}.map`));
-      assert.ok(!inlineLockdown.test('workers/example.js'));
+      assert.ok(!inlineLockdown.test('workers/example.worker.js'));
       assert.deepStrictEqual(
         workerRuntimeConfig(
-          mockChunk('workers/unlisted.ts', new Set(['workers/unlisted.js'])),
+          mockChunk(
+            'workers/unlisted.worker.ts',
+            new Set(['workers/unlisted.worker.js']),
+          ),
         ),
         { mode: 'safe' },
       );
-      assert.ok(!inlineLockdown.test('workers/unlisted.js'));
+      assert.ok(!inlineLockdown.test('workers/unlisted.worker.js'));
     });
 
     it('inlines lockdown and keeps browser exceptions for isolated HTML scripts', () => {
