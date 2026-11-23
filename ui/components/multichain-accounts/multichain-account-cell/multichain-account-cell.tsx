@@ -155,6 +155,8 @@ const EditModeDeleteIcon = ({
 export type MultichainAccountCellProps = {
   accountId: AccountGroupId;
   accountName: string | React.ReactNode;
+  accountNameAccessory?: React.ReactNode;
+  avatarSeedAddress?: string;
   accountNameString?: string; // Optional string version for accessibility labels
   onClick?: (accountGroupId: AccountGroupId) => void;
   /**
@@ -209,6 +211,8 @@ export type MultichainAccountCellProps = {
 export const MultichainAccountCell = ({
   accountId,
   accountName,
+  accountNameAccessory,
+  avatarSeedAddress,
   accountNameString,
   onClick,
   balance,
@@ -257,9 +261,10 @@ export const MultichainAccountCell = ({
   const ariaLabelName =
     accountNameString ||
     (typeof accountName === 'string' ? accountName : 'Account');
-  const seedAddressIcon = useSelector((state) =>
+  const accountTreeSeedAddress = useSelector((state) =>
     getIconSeedAddressByAccountGroupId(state, accountId),
   );
+  const seedAddressIcon = avatarSeedAddress ?? accountTreeSeedAddress;
 
   const shouldDisableHoverEffect = disableHoverEffect || isEditMode;
 
@@ -322,16 +327,24 @@ export const MultichainAccountCell = ({
         />
         <Box marginLeft={3} style={{ overflow: 'hidden' }}>
           {/* Prevent overflow of account name by long account names */}
-          <Text
-            className="multichain-account-cell__account-name"
-            variant={TextVariant.BodyMd}
-            fontWeight={FontWeight.Medium}
-            color={effectiveIsHidden ? TextColor.TextAlternative : undefined}
-            ellipsis
-            data-testid={`multichain-account-cell-name-${ariaLabelName}`}
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            gap={2}
+            className="min-w-0"
           >
-            {accountName}
-          </Text>
+            <Text
+              className="multichain-account-cell__account-name"
+              variant={TextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
+              color={effectiveIsHidden ? TextColor.TextAlternative : undefined}
+              ellipsis
+              data-testid={`multichain-account-cell-name-${ariaLabelName}`}
+            >
+              {accountName}
+            </Text>
+            {accountNameAccessory}
+          </Box>
           {balancePosition === 'subtitle' && (
             <BalanceDisplay
               balance={balance}

@@ -45,6 +45,7 @@ import {
   type QrSyncControllerInitOptions,
   type QrSyncControllerMessenger,
   type QrSyncControllerState,
+  type QrSyncImportSummary,
   type QrSyncReadyData,
   type QrSyncOffer,
 } from './types';
@@ -89,6 +90,8 @@ export class QrSyncController extends BaseController<
 
   #otpTimeoutId: NodeJS.Timeout | null = null;
 
+  #sessionCreationPromise: Promise<void> | null = null;
+
   #cleanupPromise: Promise<void> | null = null;
 
   #clientEventHandlers: {
@@ -126,20 +129,64 @@ export class QrSyncController extends BaseController<
   }
 
   async createSession(): Promise<void> {
+    if (this.#cleanupPromise) {
+      await this.#cleanupPromise;
+    }
+
+    if (this.#sessionCreationPromise) {
+      await this.#sessionCreationPromise;
+      return;
+    }
+
+    // Multiple extension surfaces can render this flow at the same time. Reuse
+    // the active session so one surface cannot invalidate the QR shown by
+    // another.
+    if (this.#mwpDappClient) {
+      return;
+    }
+
+    this.#sessionCreationPromise = this.#createSession();
+    try {
+      await this.#sessionCreationPromise;
+    } finally {
+      this.#sessionCreationPromise = null;
+    }
+  }
+
+  async #createSession(): Promise<void> {
     await this.#initialize();
     this.#assertDappClientInitialized(this.#mwpDappClient);
 
-    try {
-      await this.#mwpDappClient.connect({
-        initialPayload: createInitSyncSessionMessage(),
-        mode: 'untrusted',
+    const mwpDappClient = this.#mwpDappClient;
+    const connectionPromise = mwpDappClient.connect({
+      initialPayload: createInitSyncSessionMessage(),
+      mode: 'untrusted',
+    });
+
+    // `connect` emits the session request synchronously, before waiting for the
+    // phone to complete the handshake. Do not keep the messenger action open
+    // for that handshake: it blocks controller state updates from reaching the
+    // UI, leaving the QR skeleton visible until the request times out.
+    connectionPromise
+      .catch(async (error) => {
+        if (this.#cleanupPromise || this.#mwpDappClient !== mwpDappClient) {
+          return;
+        }
+
+        await this.#setError({ error });
+        log.error('QrSyncController: failed to create session', error);
+      })
+      .finally(() => {
+        if (!this.#cleanupPromise && this.#mwpDappClient === mwpDappClient) {
+          this.#finishSubmission();
+        }
+      })
+      .catch((error) => {
+        log.error(
+          'QrSyncController: failed to handle session connection result',
+          error,
+        );
       });
-    } catch (error) {
-      await this.#setError({ error });
-      log.error('QrSyncController: failed to create session', error);
-    } finally {
-      this.#finishSubmission();
-    }
   }
 
   async submitOtp(otp: string): Promise<void> {
@@ -188,6 +235,8 @@ export class QrSyncController extends BaseController<
   async syncAccounts(
     password: string,
     selectedAccountGroupIds: AccountGroupId[],
+    selectedAccountGroupCounts?: Partial<Record<AccountGroupId, number>>,
+    importSummary?: QrSyncImportSummary,
   ): Promise<void> {
     assertQrSyncPhase(this.state.qrSyncPhase, [
       QR_SYNC_PHASES.REVIEWING_SYNC_OFFER,
@@ -207,10 +256,50 @@ export class QrSyncController extends BaseController<
       const selectedPayloadIds = new Set(
         selectedAccountGroupIds.map((groupId) => snapshot.toPayloadId(groupId)),
       );
+      const selectedPayloadGroupCounts = new Map(
+        selectedAccountGroupIds.map((groupId) => [
+          snapshot.toPayloadId(groupId),
+          selectedAccountGroupCounts?.[groupId] ?? 1,
+        ]),
+      );
       snapshot = snapshot.filterAllGroups((payloadGroup) =>
         selectedPayloadIds.has(payloadGroup.id),
       );
       exportData = snapshot.serialize();
+
+      if (selectedAccountGroupCounts) {
+        exportData = {
+          ...exportData,
+          wallets: exportData.wallets.map((wallet) => {
+            let nextGroupIndex = 0;
+            return {
+              ...wallet,
+              groups: wallet.groups.flatMap((group) => {
+                const groupCount =
+                  selectedPayloadGroupCounts.get(group.id) ?? 1;
+                return Array.from({ length: groupCount }, () => {
+                  const groupIndex = nextGroupIndex;
+                  nextGroupIndex += 1;
+                  return {
+                    ...group,
+                    id: `${wallet.id}/${groupIndex}`,
+                    groupIndex,
+                    metadata: {
+                      ...group.metadata,
+                      name: `Account ${groupIndex + 1}`,
+                      pinned: group.metadata.pinned ?? false,
+                      hidden: group.metadata.hidden ?? false,
+                    },
+                  };
+                });
+              }),
+            };
+          }),
+        };
+      }
+      if (importSummary) {
+        exportData.qrSyncImportSummary = importSummary;
+      }
     } catch (error) {
       this.#reportToSentry('Failed to export account tree for QR sync', error);
       throw error;
