@@ -1,11 +1,11 @@
-import { Env } from '@metamask/subscription-controller';
-import { Env as ClaimsEnv } from '@metamask/claims-controller';
-import { Env as ShieldEnv } from '@metamask/shield-controller';
-
+/**
+ * API base URLs for one Shield backend environment. URLs have no trailing
+ * slash, and `subscriptionApiUrl` omits the `/v1` API version.
+ */
 export type ShieldEnvConfig = {
-  subscriptionEnv: Env;
-  claimsEnv: ClaimsEnv;
-  shieldEnv: ShieldEnv;
+  subscriptionApiUrl: string;
+  claimsApiUrl: string;
+  shieldApiUrl: string;
   gatewayUrl: string;
 };
 

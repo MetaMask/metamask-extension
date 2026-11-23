@@ -1,4 +1,4 @@
-import { Env, parseSignatureRequestMethod } from '@metamask/shield-controller';
+import { parseSignatureRequestMethod } from '@metamask/shield-controller';
 import { SignTypedDataVersion } from '@metamask/keyring-controller';
 import type { SignatureRequest } from '@metamask/signature-controller';
 import { loadShieldConfig } from '../../../../shared/lib/shield';
@@ -142,29 +142,31 @@ describe('getShieldApiServiceInstanceOptions', () => {
     jest.resetAllMocks();
   });
 
-  it('returns the configured environment and service dependencies', () => {
+  it('returns the configured API base URL and service dependencies', () => {
     loadShieldConfigMock.mockReturnValue({
-      shieldEnv: Env.UAT,
+      shieldApiUrl: 'https://ruleset-engine.uat-api.cx.metamask.io',
     } as ReturnType<typeof loadShieldConfig>);
 
     expect(getShieldApiServiceInstanceOptions()).toStrictEqual({
-      env: Env.UAT,
+      baseUrl: 'https://ruleset-engine.uat-api.cx.metamask.io',
       captureException: expect.any(Function),
     });
   });
 
-  it('reads the shield environment from loadShieldConfig', () => {
+  it('reads the shield API base URL from loadShieldConfig', () => {
     loadShieldConfigMock.mockReturnValue({
-      shieldEnv: Env.PRD,
+      shieldApiUrl: 'https://ruleset-engine.api.cx.metamask.io',
     } as ReturnType<typeof loadShieldConfig>);
 
-    expect(getShieldApiServiceInstanceOptions().env).toBe(Env.PRD);
+    expect(getShieldApiServiceInstanceOptions().baseUrl).toBe(
+      'https://ruleset-engine.api.cx.metamask.io',
+    );
     expect(loadShieldConfigMock).toHaveBeenCalledTimes(1);
   });
 
   it('uses the shared sentry captureException helper', () => {
     loadShieldConfigMock.mockReturnValue({
-      shieldEnv: Env.UAT,
+      shieldApiUrl: 'https://ruleset-engine.uat-api.cx.metamask.io',
     } as ReturnType<typeof loadShieldConfig>);
 
     expect(getShieldApiServiceInstanceOptions().captureException).toBe(

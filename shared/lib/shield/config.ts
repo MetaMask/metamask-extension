@@ -1,14 +1,29 @@
-import { Env as SubscriptionEnv } from '@metamask/subscription-controller';
-import { Env as ClaimsEnv } from '@metamask/claims-controller';
-import { Env as ShieldEnv } from '@metamask/shield-controller';
 import { ENVIRONMENT } from '../../constants/build';
 import { ShieldEnvConfig } from './type';
 
-const SHIELD_GATEWAY_URL = {
-  [ShieldEnv.DEV]: 'https://shield-gateway.dev-api.cx.metamask.io',
-  [ShieldEnv.UAT]: 'https://shield-gateway.uat-api.cx.metamask.io',
-  [ShieldEnv.PRD]: 'https://shield-gateway.api.cx.metamask.io',
-} as const;
+/**
+ * Shield backend API URLs for each environment.
+ */
+const SHIELD_ENV_CONFIG = {
+  dev: {
+    subscriptionApiUrl: 'https://subscription.dev-api.cx.metamask.io',
+    claimsApiUrl: 'https://claims.dev-api.cx.metamask.io',
+    shieldApiUrl: 'https://ruleset-engine.dev-api.cx.metamask.io',
+    gatewayUrl: 'https://shield-gateway.dev-api.cx.metamask.io',
+  },
+  uat: {
+    subscriptionApiUrl: 'https://subscription.uat-api.cx.metamask.io',
+    claimsApiUrl: 'https://claims.uat-api.cx.metamask.io',
+    shieldApiUrl: 'https://ruleset-engine.uat-api.cx.metamask.io',
+    gatewayUrl: 'https://shield-gateway.uat-api.cx.metamask.io',
+  },
+  prd: {
+    subscriptionApiUrl: 'https://subscription.api.cx.metamask.io',
+    claimsApiUrl: 'https://claims.api.cx.metamask.io',
+    shieldApiUrl: 'https://ruleset-engine.api.cx.metamask.io',
+    gatewayUrl: 'https://shield-gateway.api.cx.metamask.io',
+  },
+} as const satisfies Record<string, ShieldEnvConfig>;
 
 const BUILD_TYPE = {
   experimental: 'experimental',
@@ -22,42 +37,12 @@ const BUILD_TYPE = {
 export type BuildType = (typeof BUILD_TYPE)[keyof typeof BUILD_TYPE];
 
 export const ShieldConfigMap: Record<BuildType, ShieldEnvConfig> = {
-  [BUILD_TYPE.main]: {
-    subscriptionEnv: SubscriptionEnv.PRD,
-    claimsEnv: ClaimsEnv.PRD,
-    shieldEnv: ShieldEnv.PRD,
-    gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.PRD],
-  },
-  [BUILD_TYPE.flask]: {
-    subscriptionEnv: SubscriptionEnv.PRD,
-    claimsEnv: ClaimsEnv.PRD,
-    shieldEnv: ShieldEnv.PRD,
-    gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.PRD],
-  },
-  [BUILD_TYPE.beta]: {
-    subscriptionEnv: SubscriptionEnv.UAT,
-    claimsEnv: ClaimsEnv.UAT,
-    shieldEnv: ShieldEnv.UAT,
-    gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.UAT],
-  },
-  [BUILD_TYPE.experimental]: {
-    subscriptionEnv: SubscriptionEnv.PRD,
-    claimsEnv: ClaimsEnv.PRD,
-    shieldEnv: ShieldEnv.PRD,
-    gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.PRD],
-  },
-  [BUILD_TYPE.dev]: {
-    subscriptionEnv: SubscriptionEnv.DEV,
-    claimsEnv: ClaimsEnv.DEV,
-    shieldEnv: ShieldEnv.DEV,
-    gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.DEV],
-  },
-  [BUILD_TYPE.uat]: {
-    subscriptionEnv: SubscriptionEnv.UAT,
-    claimsEnv: ClaimsEnv.UAT,
-    shieldEnv: ShieldEnv.UAT,
-    gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.UAT],
-  },
+  [BUILD_TYPE.main]: SHIELD_ENV_CONFIG.prd,
+  [BUILD_TYPE.flask]: SHIELD_ENV_CONFIG.prd,
+  [BUILD_TYPE.beta]: SHIELD_ENV_CONFIG.uat,
+  [BUILD_TYPE.experimental]: SHIELD_ENV_CONFIG.prd,
+  [BUILD_TYPE.dev]: SHIELD_ENV_CONFIG.dev,
+  [BUILD_TYPE.uat]: SHIELD_ENV_CONFIG.uat,
 };
 
 /**

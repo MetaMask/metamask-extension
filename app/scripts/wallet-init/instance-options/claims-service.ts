@@ -11,9 +11,9 @@ type ClaimsServiceInstanceOptions = NonNullable<
  * @returns The ClaimsService instance options.
  */
 export function getClaimsServiceInstanceOptions(): ClaimsServiceInstanceOptions {
-  const { claimsEnv } = loadShieldConfig();
+  const { claimsApiUrl } = loadShieldConfig();
 
   return {
-    env: claimsEnv,
+    baseUrl: claimsApiUrl,
   };
 }

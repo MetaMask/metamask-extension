@@ -12,10 +12,10 @@ type SubscriptionServiceInstanceOptions = NonNullable<
  * @returns The SubscriptionService instance options.
  */
 export function getSubscriptionServiceInstanceOptions(): SubscriptionServiceInstanceOptions {
-  const { subscriptionEnv } = loadShieldConfig();
+  const { subscriptionApiUrl } = loadShieldConfig();
 
   return {
-    env: subscriptionEnv,
+    baseUrl: subscriptionApiUrl,
     captureException,
     fetchFunction: globalThis.fetch.bind(globalThis),
   };
