@@ -39,7 +39,7 @@ export function stopServiceWorkerSentry(): void {
 }
 
 /**
- * The span active when called, as a request sees it when it starts.
+ * The span a request starting now would see.
  *
  * @returns The active span's trace id and its root span's name, if any.
  */
