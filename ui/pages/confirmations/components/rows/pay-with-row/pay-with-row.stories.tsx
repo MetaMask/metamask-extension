@@ -42,8 +42,7 @@ const createMockState = (hasPaymentToken = true) => {
           isLoading: false,
           paymentToken: hasPaymentToken
             ? {
-                address: TOKEN_ADDRESS_MOCK,
-                chainId: CHAIN_ID_MOCK,
+                assetId: `eip155:5/erc20:${TOKEN_ADDRESS_MOCK}`,
                 symbol: 'DAI',
                 decimals: 18,
                 balanceUsd: '123.45',

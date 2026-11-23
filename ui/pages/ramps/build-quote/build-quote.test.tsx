@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import React from 'react';
-import { act, fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
@@ -140,7 +140,16 @@ const mockControllerState = ({
   providersLoading: false,
   providersError: null,
   setSelectedProvider: jest.fn().mockResolvedValue(undefined),
-  selectedProvider: { id: 'transak', name: 'Transak' },
+  selectProviderForAsset: jest.fn().mockResolvedValue(null),
+  controllerProviders: [],
+  previouslyUsedProviderIds: [],
+  selectedProvider: {
+    id: 'transak',
+    name: 'Transak',
+    supportedCryptoCurrencies: selectedToken?.assetId
+      ? { [selectedToken.assetId]: true }
+      : {},
+  },
   selectedPaymentMethod: { id: 'debit-credit-card', name: 'Debit card' },
   paymentMethods: [{ id: 'debit-credit-card', name: 'Debit card' }],
   paymentMethodsStatus: 'success',
@@ -814,6 +823,88 @@ describe('RampsBuildQuoteScreen', () => {
     });
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('picks the provider for the token once the controller lists providers', async () => {
+    const selectProviderForAsset = jest.fn().mockResolvedValue('transak');
+    useRampsController.mockReturnValue({
+      ...mockControllerState(),
+      selectProviderForAsset,
+      controllerProviders: [{ id: 'transak', name: 'Transak' }],
+    });
+
+    renderWithProvider(<RampsBuildQuoteScreen />, createStore());
+
+    await waitFor(() =>
+      expect(selectProviderForAsset).toHaveBeenCalledWith(
+        mockSelectedToken.assetId,
+      ),
+    );
+  });
+
+  it('waits for the controller provider list before picking', () => {
+    const selectProviderForAsset = jest.fn().mockResolvedValue(null);
+    useRampsController.mockReturnValue({
+      ...mockControllerState(),
+      selectProviderForAsset,
+    });
+
+    renderWithProvider(<RampsBuildQuoteScreen />, createStore());
+
+    expect(selectProviderForAsset).not.toHaveBeenCalled();
+  });
+
+  it('waits for a provider that offers the token before fetching quotes', () => {
+    useRampsController.mockReturnValue({
+      ...mockControllerState(),
+      selectedProvider: {
+        id: 'moonpay',
+        name: 'MoonPay',
+        supportedCryptoCurrencies: { 'eip155:1/slip44:60': true },
+      },
+    });
+
+    const { queryByText } = renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+    );
+
+    expect(useRampsQuotes).toHaveBeenLastCalledWith(null);
+    expect(queryByText(/MoonPay/u)).not.toBeInTheDocument();
+  });
+
+  it('fetches quotes when no provider offers the token', async () => {
+    useRampsController.mockReturnValue({
+      ...mockControllerState(),
+      selectProviderForAsset: jest.fn().mockResolvedValue(null),
+      controllerProviders: [{ id: 'moonpay', name: 'MoonPay' }],
+      selectedProvider: { id: 'moonpay', name: 'MoonPay' },
+    });
+
+    renderWithProvider(<RampsBuildQuoteScreen />, createStore());
+
+    await waitFor(() =>
+      expect(useRampsQuotes).toHaveBeenLastCalledWith(
+        expect.objectContaining({ providers: ['moonpay'] }),
+      ),
+    );
+  });
+
+  it('fetches quotes with the selected provider when the pick fails', async () => {
+    useRampsController.mockReturnValue({
+      ...mockControllerState(),
+      selectProviderForAsset: jest.fn().mockRejectedValue(new Error('failed')),
+      controllerProviders: [{ id: 'moonpay', name: 'MoonPay' }],
+      selectedProvider: { id: 'moonpay', name: 'MoonPay' },
+    });
+
+    renderWithProvider(<RampsBuildQuoteScreen />, createStore());
+
+    await waitFor(() =>
+      expect(useRampsQuotes).toHaveBeenLastCalledWith(
+        expect.objectContaining({ providers: ['moonpay'] }),
+      ),
+    );
   });
 
   it('navigates to payment method selection when the pill is clicked', () => {

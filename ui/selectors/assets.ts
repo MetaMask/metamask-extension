@@ -19,8 +19,10 @@ import {
   AssetsControllerState,
   calculateBalanceChangeForAccountGroup as calculateBalanceChangeForAccountGroupFromUnified,
   calculateBalanceForAllWallets as calculateBalanceForAllWalletsFromUnified,
+  getAccountGroupLoadingStatus,
   getAggregatedBalanceForAccount,
   getDefaultAssetsControllerState,
+  getIsAssetsBackgroundLoadingForSelectedAccountGroup,
   getIsAssetsLoadingForSelectedAccountGroup,
   type AccountGroupBalance,
   type EnabledNetworkMap,
@@ -276,6 +278,19 @@ export function getAssetsLoadingStatus(state: {
   metamask?: Pick<AssetsControllerState, 'assetsLoadingStatus'>;
 }) {
   return state.metamask?.assetsLoadingStatus;
+}
+
+/**
+ * Returns the per-account background-load status from AssetsController state.
+ *
+ * @param state - Redux state object.
+ * @param state.metamask - MetaMask slice.
+ * @returns Background loading status by account id, or undefined when no fetch has started.
+ */
+export function getAssetsBackgroundLoadingStatus(state: {
+  metamask?: Pick<AssetsControllerState, 'assetsBackgroundLoadingStatus'>;
+}) {
+  return state.metamask?.assetsBackgroundLoadingStatus;
 }
 
 /**
@@ -1366,6 +1381,55 @@ export const selectIsAssetsLoadingForSelectedAccountGroup = createSelector(
       { assetsLoadingStatus },
       accountTreeState,
     ),
+);
+
+/**
+ * Whether the selected account group's complete asset load has settled.
+ *
+ * An absent status means the first load has not started yet. Treating that as
+ * loaded briefly exposes placeholder zero balances before the controller marks
+ * the accounts as loading. The account tree and background phase must also
+ * settle because SRP import discovers accounts asynchronously and the
+ * background phase supplies the remaining RPC/Snap assets, metadata, prices,
+ * and warnings.
+ *
+ * @param state - Redux state containing the account tree and AssetsController state.
+ * @returns True once the initial and background loads have settled.
+ */
+export const selectAssetsHaveLoadedForSelectedAccountGroup = createSelector(
+  [
+    getAssetsLoadingStatus,
+    getAssetsBackgroundLoadingStatus,
+    selectAccountTreeStateForBalances,
+  ],
+  (
+    assetsLoadingStatus,
+    assetsBackgroundLoadingStatus,
+    accountTreeState,
+  ): boolean => {
+    const selectedGroupId = accountTreeState.selectedAccountGroup;
+    if (!selectedGroupId || accountTreeState.isAccountTreeSyncingInProgress) {
+      return false;
+    }
+
+    const statuses = Object.values(
+      getAccountGroupLoadingStatus(
+        { assetsLoadingStatus },
+        accountTreeState,
+        selectedGroupId,
+      ),
+    );
+
+    const initialLoadHasSettled =
+      statuses.length > 0 && statuses.every((status) => status === 'loaded');
+    const backgroundLoadIsRunning =
+      getIsAssetsBackgroundLoadingForSelectedAccountGroup(
+        { assetsBackgroundLoadingStatus },
+        accountTreeState,
+      );
+
+    return initialLoadHasSettled && !backgroundLoadIsRunning;
+  },
 );
 
 /**

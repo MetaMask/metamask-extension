@@ -477,7 +477,6 @@
   "useSafeChainsListValidation": true,
   "useTokenDetection": true,
   "useTransactionSimulations": true,
-  "userOperations": {},
   "versionFileETag": "",
   "versionInfo": [],
   "web3ShimUsageOrigins": {}

@@ -4,10 +4,6 @@ import {
 } from '@metamask/accounts-controller';
 import { ApprovalControllerActions } from '@metamask/approval-controller';
 import {
-  AccountTrackerControllerGetStateAction,
-  CurrencyRateControllerGetStateAction,
-} from '@metamask/assets-controllers';
-import {
   BridgeStatusControllerActions,
   BridgeStatusControllerStateChangeEvent,
 } from '@metamask/bridge-status-controller';
@@ -56,7 +52,7 @@ import {
   TransactionControllerUpdateTransactionAction,
 } from '@metamask/transaction-controller';
 import { TransactionPayControllerActions } from '@metamask/transaction-pay-controller';
-import { RootMessenger } from '../../lib/messenger';
+import type { RootMessenger } from '../../lib/messenger';
 import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
 import { AppStateControllerSetDefaultHomeActiveTabNameAction } from '../../controllers/app-state-controller-method-action-types';
 import { ShieldSubscriptionServiceSubmitSubscriptionSponsorshipIntentAction } from '../../services/subscription/types';
@@ -65,8 +61,6 @@ import {
   InstitutionalSnapControllerPublishHookAction,
 } from '../../controllers/institutional-snap/InstitutionalSnapController-method-action-types';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
-import { registerAccountTrackerGetStateCompat } from '../../messenger-client-init/messengers/account-tracker-controller-compat';
-import { registerCurrencyRateGetStateCompat } from '../../messenger-client-init/messengers/currency-rate-controller-compat';
 
 export type TransactionControllerInitMessenger = ReturnType<
   typeof getTransactionControllerInitMessenger
@@ -75,15 +69,11 @@ export type TransactionControllerInitMessenger = ReturnType<
 export type TransactionControllerInitMessengerActions =
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerGetStateAction
-  | AccountTrackerControllerGetStateAction
   | ApprovalControllerActions
   | AppStateControllerGetStateAction
   | AppStateControllerSetDefaultHomeActiveTabNameAction
   | AuthenticationController.AuthenticationControllerGetBearerTokenAction
   | BridgeStatusControllerActions
-  // Compat shim only exposes getState. The rest of CurrencyRateControllerActions
-  // (polling, setCurrentCurrency, updateExchangeRate) are not on the root messenger.
-  | CurrencyRateControllerGetStateAction
   | DelegationControllerSignDelegationAction
   | GasFeeControllerFetchGasFeeEstimatesAction
   | InstitutionalSnapControllerPublishHookAction
@@ -133,11 +123,6 @@ export function getTransactionControllerInitMessenger(
     TransactionControllerInitMessengerEvents
   >,
 ) {
-  // Compat shims: wallet-init TransactionController may still request
-  // AccountTrackerController:getState / CurrencyRateController:getState.
-  registerAccountTrackerGetStateCompat(messenger as RootMessenger);
-  registerCurrencyRateGetStateCompat(messenger as RootMessenger);
-
   const controllerInitMessenger = new Messenger<
     'TransactionControllerInit',
     TransactionControllerInitMessengerActions,
@@ -166,8 +151,6 @@ export function getTransactionControllerInitMessenger(
       'TransactionController:unapprovedTransactionAdded',
     ],
     actions: [
-      // Compat shim: derives accountsByChainId from AssetsController.
-      'AccountTrackerController:getState',
       'AccountsController:getState',
       'ApprovalController:acceptRequest',
       'ApprovalController:addRequest',
@@ -178,8 +161,6 @@ export function getTransactionControllerInitMessenger(
       'AuthenticationController:getBearerToken',
       'BridgeStatusController:getState',
       'BridgeStatusController:submitTx',
-      // Compat shim: derives currentCurrency from AssetsController.
-      'CurrencyRateController:getState',
       'DelegationController:signDelegation',
       'InstitutionalSnapController:beforeCheckPendingTransactionHook',
       'InstitutionalSnapController:publishHook',

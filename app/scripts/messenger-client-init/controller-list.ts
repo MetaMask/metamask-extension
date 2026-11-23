@@ -70,7 +70,6 @@ import {
   EncryptionPublicKeyManager,
 } from '@metamask/message-manager';
 import { SignatureController } from '@metamask/signature-controller';
-import { UserOperationController } from '@metamask/user-operation-controller';
 import {
   AccountActivityService,
   BackendWebSocketService,
@@ -228,7 +227,6 @@ export type MessengerClient =
   | TransactionController
   | TransactionPayController
   | InstitutionalSnapController
-  | UserOperationController
   | UserStorageController
   | NftController
   | NftDetectionController
@@ -322,7 +320,6 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   StaticAssetsController['state'] &
   TransactionController['state'] &
   TransactionPayController['state'] &
-  UserOperationController['state'] &
   UserStorageController['state'] &
   NftController['state'] &
   NftDetectionController['state'] &

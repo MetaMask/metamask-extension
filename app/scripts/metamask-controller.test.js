@@ -30,7 +30,11 @@ import {
   KnownSessionProperties,
   getEthAccounts,
 } from '@metamask/chain-agnostic-permission';
-import { PermissionDoesNotExistError } from '@metamask/permission-controller';
+import {
+  PermissionDoesNotExistError,
+  SubjectType,
+} from '@metamask/permission-controller';
+import { createSnapsMethodMiddleware } from '@metamask/snaps-rpc-methods';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
@@ -260,6 +264,16 @@ jest.mock('./controllers/permissions/specifications', () => ({
 }));
 
 jest.mock('./lib/createLoggerMiddleware', () => createLoggerMiddlewareMock);
+
+// Wraps the real snaps middleware so tests can read the hooks the controller
+// passes to it, such as `trackError`.
+jest.mock('@metamask/snaps-rpc-methods', () => {
+  const actual = jest.requireActual('@metamask/snaps-rpc-methods');
+  return {
+    ...actual,
+    createSnapsMethodMiddleware: jest.fn(actual.createSnapsMethodMiddleware),
+  };
+});
 
 jest.mock('./lib/rpc-method-middleware', () => ({
   ...jest.requireActual('./lib/rpc-method-middleware'),
@@ -2502,6 +2516,61 @@ describe('MetaMaskController', () => {
         await promise;
         streamTest.end();
         await promiseStream;
+      });
+    });
+
+    describe('snaps trackError', () => {
+      const SNAP_ID = 'npm:@metamask/tron-wallet-snap';
+      const WEBSITE_ORIGIN = 'https://dapp.example';
+      const WEBSITE_URL = `${WEBSITE_ORIGIN}/path?token=abc123`;
+      const SENTRY_EVENT_ID = 'sentry-event-id';
+
+      // Sets up the provider engine for a subject and returns the `trackError`
+      // hook the controller passed to the snaps method middleware.
+      const getTrackErrorHook = ({ origin, subjectType, sender }) => {
+        metamaskController.setupProviderEngineEip1193({
+          origin,
+          subjectType,
+          sender,
+        });
+        const [, hooks] = createSnapsMethodMiddleware.mock.calls.at(-1);
+        return hooks.trackError;
+      };
+
+      beforeEach(() => {
+        createSnapsMethodMiddleware.mockClear();
+        globalThis.sentry = {
+          ...globalThis.sentry,
+          captureException: jest.fn().mockReturnValue(SENTRY_EVENT_ID),
+        };
+      });
+
+      it('reports snap errors with feature and snap_id tags', () => {
+        const trackError = getTrackErrorHook({
+          origin: SNAP_ID,
+          subjectType: SubjectType.Snap,
+          sender: { snapId: SNAP_ID },
+        });
+        const error = new Error('Snap error');
+
+        expect(trackError(error)).toBe(SENTRY_EVENT_ID);
+        expect(globalThis.sentry.captureException).toHaveBeenCalledTimes(1);
+        expect(globalThis.sentry.captureException).toHaveBeenCalledWith(error, {
+          tags: { feature: 'snaps', snap_id: SNAP_ID },
+        });
+      });
+
+      it('reports website errors without tags', () => {
+        const trackError = getTrackErrorHook({
+          origin: WEBSITE_ORIGIN,
+          subjectType: SubjectType.Website,
+          sender: { url: WEBSITE_URL, tab: { id: 1 } },
+        });
+        const error = new Error('Website error');
+
+        expect(trackError(error)).toBe(SENTRY_EVENT_ID);
+        expect(globalThis.sentry.captureException).toHaveBeenCalledTimes(1);
+        expect(globalThis.sentry.captureException).toHaveBeenCalledWith(error);
       });
     });
 
@@ -4884,6 +4953,42 @@ describe('MetaMaskController', () => {
       await completeOnboarding();
 
       expect(getAssets).not.toHaveBeenCalled();
+    });
+
+    it('refreshes the account selected after discovery when none was selected before', async () => {
+      const accountAfterDiscovery =
+        metamaskController.accountsController.getSelectedAccount();
+      let discovered = false;
+      const previousCall = messengerCallSpy.getMockImplementation();
+      messengerCallSpy.mockImplementation((actionType, ...args) => {
+        if (
+          actionType === 'LegacyBackgroundApiService:discoverAndCreateAccounts'
+        ) {
+          discovered = true;
+        }
+        return previousCall(actionType, ...args);
+      });
+      const selectedAccountReads = [];
+      jest
+        .spyOn(metamaskController.accountsController, 'getSelectedAccount')
+        .mockImplementation(() => {
+          const account = discovered ? accountAfterDiscovery : undefined;
+          selectedAccountReads.push(account);
+          return account;
+        });
+      const getAssets = jest
+        .spyOn(metamaskController.assetsController, 'getAssets')
+        .mockResolvedValue({});
+
+      await completeOnboarding();
+
+      expect(selectedAccountReads).toContain(undefined);
+      expect(selectedAccountReads.at(-1)).toBe(accountAfterDiscovery);
+      expect(getAssets).toHaveBeenCalledTimes(1);
+      expect(getAssets).toHaveBeenCalledWith([accountAfterDiscovery], {
+        assetTypes: ['token', 'metadata'],
+        forceUpdate: true,
+      });
     });
 
     it('skips the asset refresh when the assets controller is missing', async () => {

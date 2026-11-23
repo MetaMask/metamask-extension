@@ -302,6 +302,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     nativeProviders: false,
     orders: false,
     providerAutoSelected: false,
+    userSelectedProviderId: false,
   },
   RewardsController: {
     rewardsActiveAccount: false,
@@ -370,9 +371,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   TxController: {
     transactions: false,
     batchTransactionCounts: false,
-  },
-  UserOperationController: {
-    userOperations: false,
   },
   UserStorageController: {
     isBackupAndSyncEnabled: true,

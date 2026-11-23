@@ -1,5 +1,8 @@
 import { Web3Provider, type ExternalProvider } from '@ethersproject/providers';
-import type { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
+import type {
+  AccountsControllerGetSelectedAccountAction,
+  AccountsControllerGetStateAction,
+} from '@metamask/accounts-controller';
 import type { MoneyAccountControllerGetMoneyAccountAction } from '@metamask/money-account-controller';
 import type { Messenger } from '@metamask/messenger';
 import type {
@@ -18,10 +21,12 @@ import {
   getMoneyAccountVaultConfig,
   type MoneyAccountVaultConfig,
 } from '../../../../../shared/lib/money/vault-config';
+import { getEvmAccountOverride } from '../../../../../shared/lib/transaction/pay-token';
 import type { DelegationMessengerActions } from '../../transaction/delegation';
 
 export type MoneyPayActions =
   | AccountsControllerGetSelectedAccountAction
+  | AccountsControllerGetStateAction
   | RemoteFeatureFlagControllerGetStateAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetNetworkClientByIdAction
@@ -61,6 +66,25 @@ export type MoneyPayContext = {
   networkClientId: string;
   provider: Web3Provider;
 };
+
+/**
+ * Address of the EVM account selected by a MetaMask Pay `accountOverride`
+ * account ID.
+ *
+ * @param messenger - The messenger to read the accounts through.
+ * @param accountOverride - Account override of the transaction, if any.
+ * @returns The EVM address of the override account, or `undefined` for none or
+ * a non-EVM account.
+ */
+export function getPayEvmAccountOverride(
+  messenger: MoneyPayMessenger,
+  accountOverride: string | undefined,
+): Hex | undefined {
+  return getEvmAccountOverride(
+    accountOverride,
+    messenger.call('AccountsController:getState').internalAccounts.accounts,
+  );
+}
 
 /**
  * Reads and parses the Money Account vault config from remote feature flags.
