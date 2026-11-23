@@ -9,13 +9,6 @@
 # follows all policies or without full understanding of the impact of
 # those changes on build, release and publishing outcomes.
 
-# Assets team fallback: catch any unclaimed "asset" directories.
-# NOTE: Kept near the top because later, more specific rules take precedence
-# over these globs (last-match-wins). New team-specific ownership of an
-# asset directory should be added further down in this file.
-app/**/asset/**                      @MetaMask/metamask-assets
-ui/**/asset/**                       @MetaMask/metamask-assets
-
 # LavaMoat policy changes can highlight security risks. Teams are encouraged to
 # audit these changes on their own, and leave their analysis in a comment.
 # These codeowners will review this analysis, and review the policy changes in
