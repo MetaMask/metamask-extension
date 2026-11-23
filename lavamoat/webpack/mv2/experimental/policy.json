@@ -2017,29 +2017,6 @@
         "@metamask/providers>readable-stream": true
       }
     },
-    "@metamask/profile-sync-controller>@metamask/key-tree": {
-      "globals": {
-        "crypto.subtle": true,
-        "ed25519": true,
-        "ed25519Bip32": true,
-        "secp256k1": true
-      },
-      "meta": {
-        "webpack-optimization": [
-          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import.",
-          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/byte-utils' and webpack collapsed that to a direct import."
-        ]
-      },
-      "packages": {
-        "@metamask/utils>@metamask/byte-utils": true,
-        "@metamask/scure-bip39": true,
-        "@metamask/utils>@metamask/type-utils": true,
-        "@metamask/utils": true,
-        "@noble/curves": true,
-        "@noble/hashes": true,
-        "@scure/base": true
-      }
-    },
     "@metamask/snaps-sdk>@metamask/key-tree": {
       "packages": {
         "@metamask/utils>@metamask/byte-utils": true,
@@ -2546,7 +2523,7 @@
         "@metamask/notification-services-controller>firebase": true,
         "@metamask/controller-utils>lodash-es": true,
         "loglevel": true,
-        "@metamask/notification-services-controller>semver": true,
+        "semver": true,
         "@metamask/notification-services-controller>uuid": true
       }
     },
@@ -2791,7 +2768,7 @@
         "@metamask/utils>@metamask/byte-utils": true,
         "@metamask/snaps-utils>@metamask/cryptography": true,
         "@metamask/utils>@metamask/error-utils": true,
-        "@metamask/profile-sync-controller>@metamask/key-tree": true,
+        "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/keyring-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils>@metamask/type-utils": true,
@@ -7129,15 +7106,6 @@
       }
     },
     "semver": {
-      "globals": {
-        "console.error": true,
-        "process": true
-      },
-      "packages": {
-        "process": true
-      }
-    },
-    "@metamask/notification-services-controller>semver": {
       "globals": {
         "console.error": true,
         "process": true
