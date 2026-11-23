@@ -3,10 +3,10 @@ import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
-  Icon,
+  ButtonIcon,
+  ButtonIconSize,
   IconColor,
   IconName,
-  IconSize,
   Text,
   TextColor,
   TextVariant,
@@ -179,29 +179,25 @@ export const RebateBanner = ({
       >
         {t('rebateBanner', [rebatePercent])}
       </Text>
-      <button
-        type="button"
+      <ButtonIcon
         ref={setTriggerElement}
-        className="border-0 bg-transparent p-0"
+        type="button"
+        iconName={IconName.Info}
+        size={ButtonIconSize.Xs}
+        iconProps={{ color: IconColor.IconAlternative }}
+        ariaLabel={t('rebateTooltipTitle')}
         onClick={(event) => event.stopPropagation()}
         onFocus={isNativeTooltip ? undefined : handleTriggerFocus}
         onBlur={isNativeTooltip ? undefined : handleTriggerBlur}
-        aria-label={t('rebateTooltipTitle')}
         aria-describedby={
           !isNativeTooltip && isFallbackTooltipOpen
             ? fallbackPopoverId
             : undefined
         }
         // @ts-expect-error React types do not include interestfor yet.
-        interestfor={isNativeTooltip ? nativePopoverId : undefined} // eslint-disable-line react/no-unknown-property
+        interestfor={isNativeTooltip ? nativePopoverId : undefined}
         data-testid={`${testId}-tooltip-trigger`}
-      >
-        <Icon
-          name={IconName.Info}
-          size={IconSize.Sm}
-          color={IconColor.IconAlternative}
-        />
-      </button>
+      />
       {isNativeTooltip ? (
         <div
           id={nativePopoverId}
