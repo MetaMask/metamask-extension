@@ -1,4 +1,4 @@
-import { useMemo, useSyncExternalStore } from 'react';
+import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { createFormatters } from '@metamask/client-utils';
 import { getIntlLocale } from '../ducks/locale/locale';
@@ -6,17 +6,9 @@ import {
   resolveFormattingLocale,
   getCurrencyDisplay,
 } from '../helpers/utils/locale';
+import { useEventListener } from './useEventListener';
 
 const dateTimeFormatCache: Record<string, Intl.DateTimeFormat> = {};
-
-function subscribeToLanguageChange(callback: () => void) {
-  window.addEventListener('languagechange', callback);
-  return () => window.removeEventListener('languagechange', callback);
-}
-
-function getBrowserLanguages() {
-  return navigator.languages;
-}
 
 function getCachedDateTimeFormat(
   locale: string,
@@ -46,9 +38,9 @@ function formatMediumDate(
 
 export function useFormatters() {
   const appLocale = useSelector(getIntlLocale);
-  const deviceLocales = useSyncExternalStore(
-    subscribeToLanguageChange,
-    getBrowserLanguages,
+  const [deviceLocales, setDeviceLocales] = useState(() => navigator.languages);
+  useEventListener('languagechange', () =>
+    setDeviceLocales(navigator.languages),
   );
 
   return useMemo(() => {
