@@ -17,6 +17,7 @@ import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
 import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
+import { useIsMoneyAccountPerpsNavigation } from './useIsMoneyAccountPerpsNavigation';
 import { usePayTokenAccountBalance } from './usePayTokenAccountBalance';
 import { usePayWithToken } from './usePayWithToken';
 
@@ -47,6 +48,9 @@ jest.mock('../../../../selectors/transactionPayController', () => ({
 }));
 jest.mock('./useIsMoneyAccountFlagDefault', () => ({
   useIsMoneyAccountFlagDefault: jest.fn(),
+}));
+jest.mock('./useIsMoneyAccountPerpsNavigation', () => ({
+  useIsMoneyAccountPerpsNavigation: jest.fn(),
 }));
 jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => {
@@ -108,6 +112,9 @@ describe('usePayWithToken', () => {
   const useIsMoneyAccountFlagDefaultMock = jest.mocked(
     useIsMoneyAccountFlagDefault,
   );
+  const useIsMoneyAccountPerpsNavigationMock = jest.mocked(
+    useIsMoneyAccountPerpsNavigation,
+  );
   const useMoneyAccountWithdrawableFiatMock = jest.mocked(
     useMoneyAccountWithdrawableFiat,
   );
@@ -139,6 +146,7 @@ describe('usePayWithToken', () => {
     getInternalAccountByAddressMock.mockReturnValue(ACCOUNT as never);
     selectPaymentOverrideByTransactionIdMock.mockReturnValue(undefined);
     useIsMoneyAccountFlagDefaultMock.mockReturnValue(false);
+    useIsMoneyAccountPerpsNavigationMock.mockReturnValue(false);
     useMoneyAccountWithdrawableFiatMock.mockReturnValue({
       isLoading: false,
       withdrawableFiatFormatted: '$12.34',
@@ -233,6 +241,7 @@ describe('usePayWithToken', () => {
     const { result } = renderHook(() => usePayWithToken());
 
     expect(result.current.isMoneyAccountSelected).toBe(true);
+    expect(result.current.label).toBe('Pay with');
     expect(result.current.displayToken).toMatchObject({
       address: '',
       symbol: 'Money account',
@@ -253,10 +262,19 @@ describe('usePayWithToken', () => {
     const { result } = renderHook(() => usePayWithToken());
 
     expect(result.current.isMoneyAccountSelected).toBe(true);
+    expect(result.current.label).toBe('Pay with');
     expect(result.current.displayToken).toMatchObject({
       address: '',
       symbol: 'Money account',
     });
+  });
+
+  it('keeps the Pay with label for Money Account-navigated perps deposits', () => {
+    useIsMoneyAccountPerpsNavigationMock.mockReturnValue(true);
+
+    const { result } = renderHook(() => usePayWithToken());
+
+    expect(result.current.label).toBe('Pay with');
   });
 
   it('keeps a user-selected crypto token when the flag default is set', () => {
@@ -265,6 +283,7 @@ describe('usePayWithToken', () => {
     const { result } = renderHook(() => usePayWithToken());
 
     expect(result.current.isMoneyAccountSelected).toBe(false);
+    expect(result.current.label).toBe('Convert');
     expect(result.current.displayToken).toMatchObject({
       symbol: 'USDC',
     });

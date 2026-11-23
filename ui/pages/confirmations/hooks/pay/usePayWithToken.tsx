@@ -21,6 +21,7 @@ import { useConfirmContext } from '../../context/confirm';
 import { PayWithModal } from '../../components/modals/pay-with-modal';
 import { useMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useMoneyAccountWithdrawableFiat';
 import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
+import { useIsMoneyAccountPerpsNavigation } from './useIsMoneyAccountPerpsNavigation';
 import { usePayTokenAccountBalance } from './usePayTokenAccountBalance';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
@@ -80,6 +81,7 @@ export function usePayWithToken(): PayWithToken {
     selectPaymentOverrideByTransactionId(state, transactionId),
   );
   const isDefaultMoneyAccount = useIsMoneyAccountFlagDefault();
+  const isMoneyAccountPerpsDeposit = useIsMoneyAccountPerpsNavigation();
   const isMoneyAccountSelected =
     paymentOverride === PaymentOverride.MoneyAccount ||
     (isDefaultMoneyAccount && !payToken);
@@ -93,10 +95,13 @@ export function usePayWithToken(): PayWithToken {
 
   const isPostQuoteWithdraw =
     isPostQuoteWithdrawTransaction(currentConfirmation);
-  const isConvertDeposit = hasTransactionType(
-    currentConfirmation,
-    CONVERT_ROW_LABEL_TRANSACTION_TYPES,
-  );
+  const isConvertDeposit =
+    !isMoneyAccountSelected &&
+    !isMoneyAccountPerpsDeposit &&
+    hasTransactionType(
+      currentConfirmation,
+      CONVERT_ROW_LABEL_TRANSACTION_TYPES,
+    );
   // Avoid flashing the destination/required token (e.g. mUSD on Monad) while
   // payToken is cleared during account switches or initial auto-select.
   // Also wait when Money Account is the flag default so deposits do not flash
