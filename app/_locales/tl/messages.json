@@ -1323,12 +1323,6 @@
   "add_device_try_again": {
     "message": "Subukang muli"
   },
-  "add_device_validating_desc": {
-    "message": "Nagtatatag ng ligtas at naka-encrypt na koneksyon sa iyong telepono."
-  },
-  "add_device_validating_title": {
-    "message": "Pinagpapares ang mga device"
-  },
   "add_wallets": {
     "message": "Piliin kung ano ang isi-sync"
   },
@@ -4013,10 +4007,6 @@
   "enter_verification_code_expired": {
     "message": "Nag-expire ang code sa pag-verify"
   },
-  "enter_verification_code_expires_in": {
-    "message": "Mai-expire pagkalipas ng $1s",
-    "description": "$1 is the number of seconds remaining before the verification code expires"
-  },
   "enter_verification_code_max_attempts": {
     "message": "Masyado ng maraming maling pagtatangka. Magsimula gamit ang bagong QR code."
   },
@@ -4472,9 +4462,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Mayroong nang mali...."
-  },
-  "generateNewQrCode": {
-    "message": "Gumawa ng bagong QR code"
   },
   "genericExplorerView": {
     "message": "Tingnan ang account sa $1"
@@ -9215,13 +9202,6 @@
     "message": "Kailangan ang access sa camera",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
-  "qrCodeExpired": {
-    "message": "Na-expire ang QR code"
-  },
-  "qrCodeExpiresIn": {
-    "message": "Mai-expire pagkalipas ng $1s",
-    "description": "$1 is the number of seconds remaining before the QR code expires"
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Ang QR na ito ay para sa ibang transaksyon. Kanselahin at subukan muli, tiyaking i-scan muna ang QR code na ipinapakita sa MetaMask kasama ng iyong wallet na hardware.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -11877,9 +11857,6 @@
   },
   "standardAccountLabel": {
     "message": "Standard account"
-  },
-  "start_with_new_qr_code": {
-    "message": "Magsimula gamit ang bagong QR code"
   },
   "stateCorruptionAreYouSure": {
     "message": "Sigurado ka bang gusto mong magpatuloy?"

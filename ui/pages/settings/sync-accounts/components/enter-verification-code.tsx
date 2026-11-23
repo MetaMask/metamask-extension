@@ -28,7 +28,6 @@ import { useQrSyncCountdown } from '../hooks/use-qr-sync-countdown';
 const CODE_LENGTH = 6;
 const CELLS = Array.from({ length: CODE_LENGTH }, (_, index) => index);
 const CONNECTING_HELPER_DELAY_MS = 1200;
-const CONNECTING_HELPER_TEXT = 'Still connecting. Don’t close MetaMask mobile.';
 
 const getCodeDigits = (text: string) =>
   text.replace(/\D/gu, '').slice(0, CODE_LENGTH);
@@ -53,7 +52,10 @@ const EnterVerificationCode = ({
   const [showConnectingHelper, setShowConnectingHelper] = useState(false);
   const [code, setCode] = useState('');
   const [isFocused, setIsFocused] = useState(false);
-  const isExpired = secondsLeft === 0;
+  // Once the code is accepted the OTP deadline no longer applies: the controller
+  // is waiting for the phone's sync offer, and a real failure arrives as an
+  // error that routes back to the code step.
+  const isExpired = secondsLeft === 0 && !isAwaitingSyncOffer;
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -182,7 +184,7 @@ const EnterVerificationCode = ({
             role="status"
             aria-label={
               showConnectingHelper
-                ? CONNECTING_HELPER_TEXT
+                ? t('qrSyncStillConnecting')
                 : t('mfaOtpVerifying')
             }
             data-testid="qr-sync-otp-verifying"
@@ -209,7 +211,7 @@ const EnterVerificationCode = ({
                 }
               >
                 {showConnectingHelper
-                  ? CONNECTING_HELPER_TEXT
+                  ? t('qrSyncStillConnecting')
                   : t('mfaOtpVerifying')}
               </Text>
             </Box>

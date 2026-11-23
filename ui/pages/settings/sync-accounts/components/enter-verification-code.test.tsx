@@ -135,16 +135,44 @@ describe('EnterVerificationCode', () => {
       jest.advanceTimersByTime(1199);
     });
     expect(
-      screen.queryByText('Still connecting. Don’t close MetaMask mobile.'),
+      screen.queryByText(messages.qrSyncStillConnecting.message),
     ).not.toBeInTheDocument();
 
     act(() => {
       jest.advanceTimersByTime(1);
     });
     expect(
-      screen.getByText('Still connecting. Don’t close MetaMask mobile.'),
+      screen.getByText(messages.qrSyncStillConnecting.message),
     ).toBeInTheDocument();
     expect(screen.getByTestId('qr-sync-otp-verifying')).toHaveClass('w-full');
+    expect(screen.getByTestId('qr-sync-otp-verifying')).toHaveAttribute(
+      'aria-label',
+      messages.qrSyncStillConnecting.message,
+    );
+  });
+
+  it('keeps the connecting state when the code deadline passes while awaiting the sync offer', () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(SESSION_NOW);
+    const { onRestart } = renderComponent(
+      null,
+      jest.fn(),
+      true,
+      SESSION_NOW + QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT,
+    );
+
+    act(() => {
+      jest.advanceTimersByTime(QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT);
+    });
+
+    expect(screen.getByTestId('qr-sync-otp-verifying')).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.enter_verification_code_expired.message),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('qr-sync-otp-try-again'),
+    ).not.toBeInTheDocument();
+    expect(onRestart).not.toHaveBeenCalled();
   });
 
   it('shows an error message when OTP submission fails', async () => {

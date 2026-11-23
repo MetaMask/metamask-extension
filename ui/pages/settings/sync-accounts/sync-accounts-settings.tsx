@@ -163,13 +163,16 @@ const SyncAccountsSettings = () => {
           />
         );
       case QR_SYNC_PHASES.COMPLETED:
-        return syncSummary ? (
+        // Another open surface may not have submitted the import itself, so it
+        // has no local summary. It still needs the Done action because the back
+        // button is hidden once the import has been submitted.
+        return (
           <Success
-            importedAccountCount={syncSummary.syncedAccountCount}
-            walletCount={syncSummary.syncedWalletCount}
+            importedAccountCount={syncSummary?.syncedAccountCount ?? 0}
+            walletCount={syncSummary?.syncedWalletCount ?? 0}
             onDone={() => handleExit().catch(() => undefined)}
           />
-        ) : null;
+        );
       case QR_SYNC_PHASES.CANCELLED:
       case QR_SYNC_PHASES.FAILED:
         return (

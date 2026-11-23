@@ -63,7 +63,25 @@ jest.mock('./components', () => {
     ),
     AddWallets: jest.fn(() => <div data-testid="add-wallets" />),
     LoadingStep: () => <div data-testid="loading-step" />,
-    Success: () => <div data-testid="success" />,
+    Success: ({
+      onDone,
+      walletCount,
+      importedAccountCount,
+    }: {
+      onDone: () => void;
+      walletCount: number;
+      importedAccountCount: number;
+    }) => (
+      <button
+        type="button"
+        data-testid="success"
+        data-wallet-count={walletCount}
+        data-imported-account-count={importedAccountCount}
+        onClick={onDone}
+      >
+        done
+      </button>
+    ),
     SyncError: ({
       onRetry,
       onCancel,
@@ -188,6 +206,30 @@ describe('SyncAccountsSettings', () => {
     });
     renderWithProvider(<SyncAccountsSettings />, store);
     expect(screen.getByTestId('loading-step')).toBeInTheDocument();
+  });
+
+  it('renders a usable Success step when sync completed on another surface', async () => {
+    const store = configureMockStore([thunk])({
+      ...qrSyncState,
+      metamask: {
+        ...qrSyncState.metamask,
+        qrSyncPhase: QR_SYNC_PHASES.COMPLETED,
+      },
+    });
+    renderWithProvider(<SyncAccountsSettings />, store);
+
+    const success = screen.getByTestId('success');
+    expect(success).toHaveAttribute('data-wallet-count', '0');
+    expect(success).toHaveAttribute('data-imported-account-count', '0');
+
+    fireEvent.click(success);
+
+    await waitFor(() => {
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'QrSyncController:cancelSync',
+        [],
+      );
+    });
   });
 
   it('creates a QR sync session without cancelling another surface when mounted', async () => {

@@ -1380,12 +1380,6 @@
   "add_device_try_again": {
     "message": "Get new code"
   },
-  "add_device_validating_desc": {
-    "message": "Establishing a secure, encrypted connection with your phone."
-  },
-  "add_device_validating_title": {
-    "message": "Pairing devices"
-  },
   "add_wallets": {
     "message": "Choose what to sync"
   },
@@ -4073,10 +4067,6 @@
   "enter_verification_code_expired": {
     "message": "This code expired. Get a new QR code to try again."
   },
-  "enter_verification_code_expires_in": {
-    "message": "Expires in $1s",
-    "description": "$1 is the number of seconds remaining before the verification code expires"
-  },
   "enter_verification_code_max_attempts": {
     "message": "Too many incorrect attempts. Start with a new QR code."
   },
@@ -4552,9 +4542,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Something went wrong...."
-  },
-  "generateNewQrCode": {
-    "message": "Generate new QR code"
   },
   "genericExplorerView": {
     "message": "View account on $1"
@@ -9308,13 +9295,6 @@
     "message": "Camera access needed",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
-  "qrCodeExpired": {
-    "message": "QR code expired"
-  },
-  "qrCodeExpiresIn": {
-    "message": "Expires in $1s",
-    "description": "$1 is the number of seconds remaining before the QR code expires"
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "This QR code is for a different transaction. Cancel and try again, making sure to scan the QR code shown in MetaMask with your hardware wallet first.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -9370,6 +9350,10 @@
   "qrHardwareScanSignatureNext": {
     "message": "Scan next QR code",
     "description": "Button label for scanning a non-final QR hardware-wallet signature after the user signs on their device."
+  },
+  "qrSyncStillConnecting": {
+    "message": "Still connecting. Don’t close MetaMask mobile.",
+    "description": "Shown while waiting for MetaMask mobile to respond after the verification code is entered"
   },
   "queued": {
     "message": "Queued"
@@ -11976,9 +11960,6 @@
   },
   "standardAccountLabel": {
     "message": "Standard account"
-  },
-  "start_with_new_qr_code": {
-    "message": "Start with a new QR code"
   },
   "stateCorruptionAreYouSure": {
     "message": "Are you sure you want to proceed?"

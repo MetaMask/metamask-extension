@@ -1323,12 +1323,6 @@
   "add_device_try_again": {
     "message": "फिर से प्रयास करें"
   },
-  "add_device_validating_desc": {
-    "message": "आपके फ़ोन के साथ एक सुरक्षित, एन्क्रिप्टेड कनेक्शन बनाया जा रहा है।"
-  },
-  "add_device_validating_title": {
-    "message": "डिवाइस जोड़े जा रहे हैं"
-  },
   "add_wallets": {
     "message": "चुनें कि क्या सिंक करना है"
   },
@@ -4013,10 +4007,6 @@
   "enter_verification_code_expired": {
     "message": "वेरिफिकेशन कोड एक्सपायर हो गया है"
   },
-  "enter_verification_code_expires_in": {
-    "message": "$1सेकंड में एक्स्पायर होगा",
-    "description": "$1 is the number of seconds remaining before the verification code expires"
-  },
   "enter_verification_code_max_attempts": {
     "message": "बहुत अधिक गलत प्रयास हुए। नए QR कोड के साथ शुरू करें।"
   },
@@ -4472,9 +4462,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "कुछ गलत हो गया..."
-  },
-  "generateNewQrCode": {
-    "message": "नया QR कोड जेनरेट करें"
   },
   "genericExplorerView": {
     "message": "$1 पर अकाउंट देखें"
@@ -9215,13 +9202,6 @@
     "message": "कैमरा एक्सेस की आवश्यकता है",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
-  "qrCodeExpired": {
-    "message": "QR कोड एक्सपायर हो गया"
-  },
-  "qrCodeExpiresIn": {
-    "message": "$1सेकंड में एक्स्पायर होगा",
-    "description": "$1 is the number of seconds remaining before the QR code expires"
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "यह QR कोड किसी दूसरे ट्रांसेक्शन के लिए है। इसे कैंसिल करें और दोबारा कोशिश करें, और दोबारा कोशिश करने से पहले सुनिश्चित करें कि आप अपने हार्डवेयर वॉलेट से MetaMask में दिखाए गए QR कोड को पहले स्कैन करें।",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -11877,9 +11857,6 @@
   },
   "standardAccountLabel": {
     "message": "मानक अकाउंट"
-  },
-  "start_with_new_qr_code": {
-    "message": "नए QR कोड से शुरू करें"
   },
   "stateCorruptionAreYouSure": {
     "message": "क्या आप वाकई आगे बढ़ना चाहते हैं?"

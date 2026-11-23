@@ -1378,13 +1378,7 @@
     "message": "Importing accounts"
   },
   "add_device_try_again": {
-    "message": "Try again"
-  },
-  "add_device_validating_desc": {
-    "message": "Establishing a secure, encrypted connection with your phone."
-  },
-  "add_device_validating_title": {
-    "message": "Pairing devices"
+    "message": "Get new code"
   },
   "add_wallets": {
     "message": "Choose what to sync"
@@ -2684,6 +2678,9 @@
   },
   "cancelled": {
     "message": "Cancelled"
+  },
+  "cantScanQrCode": {
+    "message": "Can’t scan? (For testing only)"
   },
   "carouselAllCaughtUp": {
     "message": "You're all caught up!",
@@ -4062,17 +4059,13 @@
     "message": "Enter verification code"
   },
   "enter_verification_code_desc": {
-    "message": "For security, enter the code shown in the MetaMask app on your device."
+    "message": "For your security, enter the code shown in MetaMask mobile."
   },
   "enter_verification_code_error": {
-    "message": "Incorrect code. Try again."
+    "message": "That code is incorrect. Try again."
   },
   "enter_verification_code_expired": {
-    "message": "Verification code expired"
-  },
-  "enter_verification_code_expires_in": {
-    "message": "Expires in $1s",
-    "description": "$1 is the number of seconds remaining before the verification code expires"
+    "message": "This code expired. Get a new QR code to try again."
   },
   "enter_verification_code_max_attempts": {
     "message": "Too many incorrect attempts. Start with a new QR code."
@@ -4550,9 +4543,6 @@
   "generalCameraErrorTitle": {
     "message": "Something went wrong...."
   },
-  "generateNewQrCode": {
-    "message": "Generate new QR code"
-  },
   "genericExplorerView": {
     "message": "View account on $1"
   },
@@ -4815,6 +4805,9 @@
   },
   "hideAdvancedDetails": {
     "message": "Hide advanced details"
+  },
+  "hideQrData": {
+    "message": "Hide QR data (For testing only)"
   },
   "hideSentitiveInfo": {
     "message": "Hide sensitive information"
@@ -9302,13 +9295,6 @@
     "message": "Camera access needed",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
-  "qrCodeExpired": {
-    "message": "QR code expired"
-  },
-  "qrCodeExpiresIn": {
-    "message": "Expires in $1s",
-    "description": "$1 is the number of seconds remaining before the QR code expires"
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "This QR code is for a different transaction. Cancel and try again, making sure to scan the QR code shown in MetaMask with your hardware wallet first.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -9364,6 +9350,10 @@
   "qrHardwareScanSignatureNext": {
     "message": "Scan next QR code",
     "description": "Button label for scanning a non-final QR hardware-wallet signature after the user signs on their device."
+  },
+  "qrSyncStillConnecting": {
+    "message": "Still connecting. Don’t close MetaMask mobile.",
+    "description": "Shown while waiting for MetaMask mobile to respond after the verification code is entered"
   },
   "queued": {
     "message": "Queued"
@@ -10156,7 +10146,7 @@
     "message": "Scan QR code"
   },
   "scan_qr_code_desc": {
-    "message": "Scan this with the MetaMask app on the device you want to add."
+    "message": "Scan this QR code with MetaMask mobile."
   },
   "scrollDown": {
     "message": "Scroll down"
@@ -11971,9 +11961,6 @@
   "standardAccountLabel": {
     "message": "Standard account"
   },
-  "start_with_new_qr_code": {
-    "message": "Start with a new QR code"
-  },
   "stateCorruptionAreYouSure": {
     "message": "Are you sure you want to proceed?"
   },
@@ -12445,7 +12432,7 @@
     "message": "Symbol must be 11 characters or fewer."
   },
   "syncAccounts": {
-    "message": "Sync with mobile"
+    "message": "Add to mobile"
   },
   "syncing": {
     "message": "Syncing..."
