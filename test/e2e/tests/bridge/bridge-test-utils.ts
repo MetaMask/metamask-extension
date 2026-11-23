@@ -1983,7 +1983,9 @@ async function mockSentinelNetworks(
   mockServer: Mockttp,
   sendBundle: boolean = true,
 ) {
-  const overrides = {
+  // A partial body on purpose: the full fixture adds gasless and sponsorship
+  // fields that can change the smart-transaction path.
+  const network = {
     network: 'ethereum-mainnet',
     explorer: 'https://etherscan.io',
     confirmations: true,
@@ -1993,9 +1995,8 @@ async function mockSentinelNetworks(
     hidden: false,
     sendBundle,
   };
-  const network = txSentinelNetwork.response(overrides);
 
-  await txSentinelNetwork.mock(mockServer, overrides, {
+  await txSentinelNetwork.mockRaw(mockServer, network, {
     baseUrl: STX_MAINNET_SENTINEL_URL,
   });
 
