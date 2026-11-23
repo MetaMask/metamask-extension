@@ -53,24 +53,14 @@ export function ExtensionUpdateTakeover({
     }
     viewedPromptType.current = promptType;
 
-    const trackView = async () => {
-      try {
-        await trackEvent(
-          createEventBuilder(
-            MetaMetricsEventName.ForceUpgradeUpdateNeededPromptViewed,
-          )
-            .addCategory(MetaMetricsEventCategory.App)
-            .build(),
-        );
-      } catch (error) {
-        log.error('[ExtensionUpdateTakeover] view tracking failed', error);
-      }
-    };
-
-    // The effect cannot await this. The rejection is handled inside trackView.
-    trackView().catch((error: unknown) => {
-      log.error('[ExtensionUpdateTakeover] view tracking failed', error);
-    });
+    // useAnalytics swallows send failures, so this promise does not reject.
+    void trackEvent(
+      createEventBuilder(
+        MetaMetricsEventName.ForceUpgradeUpdateNeededPromptViewed,
+      )
+        .addCategory(MetaMetricsEventCategory.App)
+        .build(),
+    );
   }, [createEventBuilder, promptType, trackEvent]);
 
   const handleUpdate = useCallback(async () => {
