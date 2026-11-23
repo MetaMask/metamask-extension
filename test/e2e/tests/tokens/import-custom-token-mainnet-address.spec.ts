@@ -57,6 +57,7 @@ describe('Import a Mainnet-listed token address on a non-Mainnet network', funct
 
         await tokenManagementPage.checkPageIsLoaded();
         await tokenManagementPage.checkSuccessToastIsDisplayed();
+        await tokenManagementPage.closeSuccessToast();
         await tokenManagementPage.goBackToHomepage();
 
         await homePage.checkPageIsLoaded();
