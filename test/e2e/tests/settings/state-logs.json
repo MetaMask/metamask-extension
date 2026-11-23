@@ -161,13 +161,6 @@
       "*": "array"
     },
     "accountState": "null",
-    "accountsByChainId": {
-      "*": {
-        "*": {
-          "balance": "string"
-        }
-      }
-    },
     "accountTree": {
       "wallets": {
         "entropy:01K98E0QDS4HYMTRJ5WHZ73ZWJ": {
@@ -1312,6 +1305,7 @@
     "useNftDetection": "boolean",
     "usePhishDetect": "boolean",
     "userRegion": "null",
+    "userSelectedProviderId": "null",
     "vbaAutorampListFetchedAt": "null",
     "vbaCustomerAbilities": "null",
     "walletComplianceStatusMap": {},
