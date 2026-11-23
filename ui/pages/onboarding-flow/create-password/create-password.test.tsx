@@ -469,9 +469,8 @@ describe('Onboarding Create Password', () => {
       });
     });
 
-    it('should opt in locally and write marketing consent to OAuth when marketing is checked in social login flow', async () => {
+    it('should opt in locally when marketing is checked in social login flow', async () => {
       const optInToMarketingSpy = jest.spyOn(Actions, 'optInToMarketing');
-      const setMarketingConsentSpy = jest.spyOn(Actions, 'setMarketingConsent');
       const mockStore = configureMockStore([thunk])({
         ...mockState,
         metamask: {
@@ -505,7 +504,6 @@ describe('Onboarding Create Password', () => {
         expect(mockCreateNewAccount).toHaveBeenCalled();
         expect(optInToMarketingSpy).toHaveBeenCalled();
       });
-      expect(setMarketingConsentSpy).toHaveBeenCalledWith(true);
     });
   });
 

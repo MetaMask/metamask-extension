@@ -449,7 +449,7 @@ describe('Actions', () => {
       sinon.restore();
     });
 
-    it('returns the seed phrase without reading marketing consent from OAuth', async () => {
+    it('returns the seed phrase without changing marketing consent', async () => {
       const store = mockStore();
       const mnemonic = 'seed phrase';
       const messengerCallStub = sinon.stub();
@@ -476,9 +476,6 @@ describe('Actions', () => {
           ['password'],
         ),
       ).toBe(true);
-      expect(
-        messengerCallStub.calledWith('OAuthService:getMarketingConsent'),
-      ).toBe(false);
       expect(
         messengerCallStub.calledWith('AnalyticsController:optInToMarketing'),
       ).toBe(false);

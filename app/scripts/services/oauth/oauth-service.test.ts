@@ -59,7 +59,6 @@ const mockGetOnboardingControllerState = jest.fn().mockReturnValue({
   firstTimeFlowType: undefined,
   completedOnboarding: false,
 });
-const mockGetAccessToken = jest.fn().mockResolvedValue('mock-access-token');
 
 function getMessenger(): OAuthServiceTestMessenger {
   const rootMessenger: RootMessenger = new Messenger({
@@ -73,10 +72,6 @@ function getMessenger(): OAuthServiceTestMessenger {
   rootMessenger.registerActionHandler(
     'OnboardingController:getState',
     mockGetOnboardingControllerState,
-  );
-  rootMessenger.registerActionHandler(
-    'SeedlessOnboardingController:getAccessToken',
-    mockGetAccessToken,
   );
   rootMessenger.registerActionHandler(
     'SentryTracingService:bufferedTrace',
@@ -97,7 +92,6 @@ function getMessenger(): OAuthServiceTestMessenger {
     actions: [
       'GeolocationController:getGeolocation',
       'OnboardingController:getState',
-      'SeedlessOnboardingController:getAccessToken',
       'SentryTracingService:bufferedTrace',
       'SentryTracingService:bufferedEndTrace',
     ],

@@ -36,7 +36,6 @@ import {
   getIsSeedlessOnboardingUserAuthenticated,
   optInToMarketing,
   optOutOfMarketing,
-  setMarketingConsent,
 } from '../../../store/actions';
 import { useOnboardingReset } from '../hooks/useOnboardingReset';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
@@ -329,9 +328,6 @@ export default function CreatePassword({
           .build(),
       );
 
-      if (termsChecked) {
-        dispatch(setMarketingConsent(true));
-      }
       dispatch(termsChecked ? optInToMarketing() : optOutOfMarketing());
       navigate(ONBOARDING_DOWNLOAD_APP_ROUTE, { replace: true });
     } else if (isPasskeyFeatureAvailable) {
