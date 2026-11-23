@@ -27,8 +27,12 @@ export const useDefaultAddress = (
   const defaultAddressScope = useSelector(
     getDefaultAddressScope,
   ) as DefaultAddressScope;
-  const { defaultAddress } = useSelector((state) =>
-    getDefaultScopeAndAddressByAccountGroupId(state, groupId),
+  // Select the string rather than the result object: the selector's bounded
+  // LRU cache can return a new, equal object on every store update when many
+  // account rows are rendered, which would re-render every row.
+  const defaultAddress = useSelector(
+    (state) =>
+      getDefaultScopeAndAddressByAccountGroupId(state, groupId).defaultAddress,
   );
 
   const displayDefaultAddress = showDefaultAddressPreference && defaultAddress;
