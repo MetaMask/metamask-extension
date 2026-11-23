@@ -106,7 +106,12 @@ export const SETTINGS_ROOT_SECTIONS: readonly {
   },
   {
     titleKeys: ['securityAndPrivacy'],
-    paths: [SECURITY_AND_PASSWORD_ROUTE, PRIVACY_ROUTE, BACKUPANDSYNC_ROUTE],
+    paths: [
+      SECURITY_AND_PASSWORD_ROUTE,
+      PRIVACY_ROUTE,
+      BACKUPANDSYNC_ROUTE,
+      ...(getIsQrSyncEnabled() ? [SYNC_ACCOUNTS_ROUTE] : []),
+    ],
   },
   {
     titleKeys: ['transactionsAndAssets'],
@@ -119,7 +124,6 @@ export const SETTINGS_ROOT_SECTIONS: readonly {
       DEVELOPER_OPTIONS_ROUTE,
       DEVELOPER_TOOLS_ROUTE,
       ABOUT_US_ROUTE,
-      ...(getIsQrSyncEnabled() ? [SYNC_ACCOUNTS_ROUTE] : []),
     ],
   },
 ] as const;

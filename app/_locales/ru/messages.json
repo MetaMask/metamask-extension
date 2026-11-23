@@ -2838,9 +2838,6 @@
   "confirmFieldNeverExpires": {
     "message": "Срок действия не истекает"
   },
-  "confirmFieldPaymaster": {
-    "message": "Комиссия оплачена"
-  },
   "confirmFieldPeriodDurationBiWeekly": {
     "message": "Раз в две недели"
   },
@@ -2865,9 +2862,6 @@
   },
   "confirmFieldTooltipJustification": {
     "message": "Обоснование запроса, предоставленное веб-сайтом"
-  },
-  "confirmFieldTooltipPaymaster": {
-    "message": "Комиссия за эту транзакцию будет оплачена смарт-контрактом paymaster."
   },
   "confirmFieldTotalExposure": {
     "message": "Общая экспозиция"
