@@ -14,7 +14,11 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getAccountTree } from '../../../../selectors/multichain-accounts/account-tree';
 import { ScrollContainer } from '../../../../contexts/scroll-container';
 import type { AddDeviceSyncRequest } from '../types';
-import { filterSyncableWallets, getSyncSummaryCounts } from '../utils';
+import {
+  filterSyncableWallets,
+  getImportSummary,
+  getSyncSummaryCounts,
+} from '../utils';
 import { WalletSelectionList } from './wallet-selection-list';
 
 type AddWalletsProps = {
@@ -58,6 +62,7 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
 
     await onAddWallets({
       selectedAccountGroupIds: selectedAccountGroups,
+      importSummary: getImportSummary(sortedWallets, selectedAccountGroups),
       syncedAccountCount,
       syncedWalletCount,
     });
