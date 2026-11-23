@@ -104,6 +104,14 @@ export function createFixturePresets(options: FixtureBuildOptions = {}) {
         .build();
     },
 
+    withMultipleWallets: (): FixtureData => {
+      const builder = createFixtureBuilder();
+      if (options.anvilPort) {
+        applyAnvilPort(builder, options.anvilPort);
+      }
+      return builder.withKeyringControllerMultiSRP().build();
+    },
+
     withERC20Tokens: (chainId = 1337): FixtureData => {
       const builder = createFixtureBuilder();
       if (options.anvilPort) {
