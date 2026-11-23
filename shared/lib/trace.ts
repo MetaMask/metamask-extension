@@ -1258,7 +1258,8 @@ export function setMeasurement(
 }
 
 /**
- * Records a tag-like value as an attribute on the active trace's root span.
+ * Records a tag-like value as an attribute on the active trace's root span:
+ * scope tags reach error events only.
  *
  * @param key - The attribute name.
  * @param value - The attribute value.
@@ -1286,7 +1287,7 @@ export function sentryGetActiveSpan(): Sentry.Span | null {
 /**
  * Baggage for a continued trace. Sentry rejects span envelopes whose `trace`
  * header lacks `public_key`, so it carries the DSN key, environment and
- * release.
+ * release. Backends route spans to Sentry on its `sentry-sampled`.
  *
  * @param sentryTrace - A `{traceId}-{spanId}-{sampled}` header.
  * @returns A `baggage` string, or undefined when the header is malformed.

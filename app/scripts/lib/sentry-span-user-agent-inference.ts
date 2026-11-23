@@ -28,9 +28,9 @@ function getOsName(userAgent: unknown): string | undefined {
 
 /**
  * Lets Relay derive `browser.name` and `user.geo.*` for streamed spans, which
- * the SDK otherwise disables while `sendDefaultPii` is off. Also sets
- * `sentry.os.name` on the segment span: Sentry reads `os.name` from that key,
- * not from a bare `os.name` attribute.
+ * the SDK otherwise disables while `sendDefaultPii` is off. Relay derives the
+ * geo before IP scrubbing, so no address is stored. Sets `sentry.os.name`
+ * because Sentry reads `os.name` from that key, not a bare `os.name`.
  *
  * @returns The integration.
  */
