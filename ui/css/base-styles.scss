@@ -37,7 +37,7 @@ html[data-theme] {
 
 /* Border for pinned bars (bottom nav bar, dapp connection control bar) */
 html[data-theme='light'] {
-  --bar-border-color: rgba(183, 187, 200, 0.2);
+  --bar-border-color: var(--color-border-muted);
 }
 
 html[data-theme='dark'] {

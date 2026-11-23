@@ -44,7 +44,6 @@ import {
   getDappActiveNetwork,
   getIsEip1193CompatibleConnection,
 } from '../../../selectors/dapp';
-import { getIsPerpsExperienceAvailable } from '../../../selectors/perps';
 import {
   addPermittedAccounts,
   removePermissionsFor,
@@ -80,7 +79,6 @@ export const DappConnectionControlBar = memo(() => {
     useState<HTMLButtonElement | null>(null);
 
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
-  const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const subjectMetadata = useSelector(getSubjectMetadata);
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
   const subjects = useSelector(getPermissionSubjects) as Record<
@@ -105,8 +103,6 @@ export const DappConnectionControlBar = memo(() => {
   const existingPermissions = useSelector((state) =>
     activeTabOrigin ? getPermissions(state, activeTabOrigin) : undefined,
   );
-
-  const isConnected = permittedAccounts.length > 0;
 
   const isActiveAccountConnected = useMemo(() => {
     if (
@@ -140,20 +136,18 @@ export const DappConnectionControlBar = memo(() => {
       .map((account) => account.address);
   }, [accountGroupInternalAccounts, existingChainIds]);
 
-  const connectedSubjectsMetadata = activeTabOrigin
-    ? subjectMetadata[activeTabOrigin]
-    : undefined;
+  // PROTOTYPE: fall back to Hyperliquid so the connection bar remains visible
+  // while reviewing the sheet without a connected browser tab.
+  const displayedOrigin = activeTabOrigin || HYPERLIQUID_ORIGIN;
+  const connectedSubjectsMetadata = subjectMetadata[displayedOrigin];
 
   const siteName = useMemo(() => {
-    if (!activeTabOrigin) {
-      return '';
-    }
     const isWebOrigin =
-      activeTabOrigin.startsWith('http://') ||
-      activeTabOrigin.startsWith('https://');
-    const siteHost = isWebOrigin ? getURLHost(activeTabOrigin) : '';
-    return siteHost || connectedSubjectsMetadata?.name || activeTabOrigin;
-  }, [activeTabOrigin, connectedSubjectsMetadata?.name]);
+      displayedOrigin.startsWith('http://') ||
+      displayedOrigin.startsWith('https://');
+    const siteHost = isWebOrigin ? getURLHost(displayedOrigin) : '';
+    return siteHost || connectedSubjectsMetadata?.name || displayedOrigin;
+  }, [displayedOrigin, connectedSubjectsMetadata?.name]);
 
   const networkImageSrc = dappActiveNetwork?.chainId
     ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
@@ -211,16 +205,13 @@ export const DappConnectionControlBar = memo(() => {
     dispatch(addPermittedAccounts(activeTabOrigin, addressesToPermit));
   }, [dispatch, activeTabOrigin, addressesToPermit]);
 
-  const isHyperliquidOrigin = activeTabOrigin === HYPERLIQUID_ORIGIN;
-
-  if (!isConnected || !activeTabOrigin) {
-    return null;
-  }
-
-  const showNotConnectedState = !isActiveAccountConnected;
+  // PROTOTYPE: show the connected treatment even when no dapp is connected.
+  const showNotConnectedState = activeTabOrigin
+    ? !isActiveAccountConnected
+    : false;
   const canConnect = showNotConnectedState && addressesToPermit.length > 0;
-  const showHyperliquidDepositSheet =
-    isHyperliquidOrigin && isPerpsExperienceAvailable && !showNotConnectedState;
+  // PROTOTYPE: always show the deposit sheet on any site.
+  const showHyperliquidDepositSheet = true;
 
   const connectionBar = (
     <Box
@@ -236,7 +227,7 @@ export const DappConnectionControlBar = memo(() => {
       {/* Left side: Favicon with green dot + Identity */}
       <Box
         flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.End}
+        alignItems={BoxAlignItems.Center}
         gap={2}
         className="dapp-connection-control-bar__left-group"
       >
@@ -413,7 +404,7 @@ export const DappConnectionControlBar = memo(() => {
         <DisconnectAllModal
           onClose={handleCloseDisconnectModal}
           onClick={handleDisconnect}
-          origin={activeTabOrigin}
+          origin={displayedOrigin}
         />
       )}
 

@@ -150,9 +150,9 @@ describe('PerpsMarketBalanceActions', () => {
     expect(summary).toContainElement(
       screen.getByTestId('perps-balance-actions-total'),
     );
-    expect(summary).toContainElement(
-      screen.getByTestId('perps-balance-actions-available'),
-    );
+    expect(
+      screen.queryByTestId('perps-balance-actions-available'),
+    ).not.toBeInTheDocument();
     expect(summary).not.toContainElement(fund);
     expect(buttonRow).toContainElement(withdraw);
     expect(buttonRow).toContainElement(fund);
@@ -168,6 +168,42 @@ describe('PerpsMarketBalanceActions', () => {
     expect(fund).toHaveTextContent('Fund');
     expect(withdraw).toHaveTextContent('Withdraw');
     expect(fund).toHaveClass('h-8');
+  });
+
+  it('shows how much is available to withdraw when the sheet balance is hovered', () => {
+    renderWithProvider(
+      <PerpsMarketBalanceActions showActionButtons actionsPlacement="beside" />,
+      mockStore,
+    );
+
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+
+    fireEvent.mouseEnter(
+      screen.getByTestId('perps-balance-actions-total-trigger'),
+    );
+
+    expect(screen.getByRole('tooltip')).toHaveTextContent(
+      '$10,125.00 available to withdraw',
+    );
+
+    fireEvent.mouseLeave(
+      screen.getByTestId('perps-balance-actions-total-trigger'),
+    );
+
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+  });
+
+  it('masks the withdrawable amount in the sheet balance tooltip when privacy mode is on', () => {
+    renderWithProvider(
+      <PerpsMarketBalanceActions showActionButtons actionsPlacement="beside" />,
+      privacyModeStore,
+    );
+
+    fireEvent.focus(screen.getByTestId('perps-balance-actions-total-trigger'));
+
+    const tooltip = screen.getByRole('tooltip');
+    expect(tooltip).toHaveTextContent(/•+ available to withdraw/u);
+    expect(tooltip).not.toHaveTextContent('$');
   });
 
   it.each<['column' | 'row', string]>([
@@ -397,7 +433,7 @@ describe('PerpsMarketBalanceActions', () => {
     ).not.toBeNull();
   });
 
-  it('uses a beside-row skeleton that matches the sheet layout', () => {
+  it('renders the prototype balance in the sheet while the account loads', () => {
     mockUsePerpsLiveAccount.mockReturnValueOnce({
       account: null,
       isInitialLoading: true,
@@ -412,14 +448,15 @@ describe('PerpsMarketBalanceActions', () => {
       mockStore,
     );
 
-    const skeleton = screen.getByTestId('perps-balance-actions-skeleton');
-    expect(skeleton).toHaveClass('justify-between');
-    expect(skeleton.querySelector('.h-7.w-24')).not.toBeNull();
-    expect(skeleton.querySelector('.h-4.w-20')).not.toBeNull();
-    expect(skeleton.querySelector('.ml-auto')).not.toBeNull();
-    expect(skeleton.querySelectorAll('.h-8.rounded-full')).toHaveLength(2);
-    expect(skeleton.querySelector('.h-14')).toBeNull();
-    expect(skeleton.querySelector('.h-12')).toBeNull();
+    expect(
+      screen.queryByTestId('perps-balance-actions-skeleton'),
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId('perps-balance-actions-total')).toHaveTextContent(
+      '$12,345.67',
+    );
+    expect(
+      screen.getByTestId('perps-balance-actions-withdraw'),
+    ).toBeInTheDocument();
   });
 
   it('calls onAddFunds when eligible', () => {
