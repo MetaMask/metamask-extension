@@ -116,6 +116,9 @@ const defaultControllerState = {
   providersLoading: false,
   providersError: null,
   setSelectedProvider: jest.fn().mockResolvedValue(undefined),
+  selectProviderForAsset: jest.fn().mockResolvedValue(null),
+  controllerProviders: [],
+  previouslyUsedProviderIds: [],
   selectedProvider,
   selectedToken,
   userRegion: {

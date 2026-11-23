@@ -36,6 +36,7 @@ const mockRecordWrite = jest.fn();
 const mockStoreSet = jest.fn();
 const mockStoreSetKeyValues = jest.fn();
 const mockStoreGetBytesInUseByKey = jest.fn();
+const mockStoreGetTotalBytesInUse = jest.fn();
 const mockStoreGet = jest.fn();
 const mockStoreGetReadDiagnostics = jest.fn();
 const mockStoreReset = jest.fn();
@@ -52,6 +53,7 @@ jest.mock('./extension-store', () => {
       set: mockStoreSet,
       setKeyValues: mockStoreSetKeyValues,
       getBytesInUseByKey: mockStoreGetBytesInUseByKey,
+      getTotalBytesInUse: mockStoreGetTotalBytesInUse,
       getSplitStateReadDiagnostics: mockStoreGetReadDiagnostics,
       get: mockStoreGet,
       reset: mockStoreReset,
@@ -933,6 +935,79 @@ describe('PersistenceManager', () => {
           corruptionType: StateCorruptionErrorType.InaccessibleDatabase,
         });
       });
+    });
+  });
+
+  describe('getStoredBytes', () => {
+    it('returns exact bytes from the local store when available', async () => {
+      mockStoreGetTotalBytesInUse.mockResolvedValueOnce(1234);
+
+      const result = await manager.getStoredBytes(['FooController', 'meta'], {
+        FooController: { a: 1 },
+        meta: { version: 1 },
+      });
+
+      expect(result).toStrictEqual({
+        bytes: 1234,
+        source: 'storage_get_bytes_in_use',
+      });
+      expect(mockStoreGetTotalBytesInUse).toHaveBeenCalledWith([
+        'FooController',
+        'meta',
+      ]);
+    });
+
+    it('falls back to a JSON length estimate when the local store fails', async () => {
+      mockStoreGetTotalBytesInUse.mockRejectedValueOnce(
+        new Error('getBytesInUse is not available'),
+      );
+      const valuesByKey = {
+        FooController: { a: 1 },
+        meta: { version: 1 },
+      };
+
+      expect(
+        await manager.getStoredBytes(['FooController', 'meta'], valuesByKey),
+      ).toStrictEqual({
+        bytes:
+          JSON.stringify(valuesByKey.FooController).length +
+          JSON.stringify(valuesByKey.meta).length,
+        source: 'json_string_length_estimate',
+      });
+    });
+
+    it('falls back to a JSON length estimate when getBytesInUse is missing', async () => {
+      const storeWithoutBytes = {
+        set: jest.fn(),
+        setKeyValues: jest.fn(),
+        get: jest.fn(),
+        reset: jest.fn(),
+      };
+      const managerWithoutBytes = new PersistenceManager({
+        getPersistenceWriteSampleRate: () => 0,
+        localStore: storeWithoutBytes,
+      });
+      const valuesByKey = {
+        FooController: { hello: 'world' },
+      };
+
+      expect(
+        await managerWithoutBytes.getStoredBytes(
+          ['FooController'],
+          valuesByKey,
+        ),
+      ).toStrictEqual({
+        bytes: JSON.stringify(valuesByKey.FooController).length,
+        source: 'json_string_length_estimate',
+      });
+    });
+
+    it('returns undefined when exact bytes fail and no values are provided', async () => {
+      mockStoreGetTotalBytesInUse.mockRejectedValueOnce(
+        new Error('getBytesInUse is not available'),
+      );
+
+      expect(await manager.getStoredBytes(['FooController'])).toBeUndefined();
     });
   });
 

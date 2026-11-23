@@ -2895,9 +2895,6 @@
   "confirmFieldNeverExpires": {
     "message": "Never expires"
   },
-  "confirmFieldPaymaster": {
-    "message": "Fee paid by"
-  },
   "confirmFieldPeriodDurationBiWeekly": {
     "message": "Bi-Weekly"
   },
@@ -2922,9 +2919,6 @@
   },
   "confirmFieldTooltipJustification": {
     "message": "Justification for the request provided by the website"
-  },
-  "confirmFieldTooltipPaymaster": {
-    "message": "The fee for this transaction will be paid by the paymaster smart contract."
   },
   "confirmFieldTotalExposure": {
     "message": "Total exposure"
@@ -6176,7 +6170,7 @@
     "message": "Explore your benefits"
   },
   "moneyFtueBenefitConvertDescription": {
-    "message": "Funds you add convert 1:1 to MetaMask USD, with no fees."
+    "message": "Funds you add convert 1:1 to MetaMask USD, a dollar-backed stablecoin."
   },
   "moneyFtueBenefitConvertTitle": {
     "message": "Converts to MetaMask USD, 1:1"
@@ -6188,7 +6182,7 @@
     "message": "Earn automatically"
   },
   "moneyFtueBenefitSpendDescription": {
-    "message": "Send to any wallet or bank, or spend with MetaMask Card for up to 3% back."
+    "message": "Send to any wallet or bank, or spend globally with MetaMask Card."
   },
   "moneyFtueBenefitSpendTitle": {
     "message": "Send or spend anywhere"
@@ -6200,10 +6194,10 @@
     "message": "Trade from the same balance"
   },
   "moneyFtueBenefitWithdrawDescription": {
-    "message": "No lockups, notice periods, or penalties. Your money is always yours to take out."
+    "message": "There are no notice periods or penalties to swap or send your funds."
   },
   "moneyFtueBenefitWithdrawTitle": {
-    "message": "Withdraw anytime"
+    "message": "No lockups"
   },
   "moneyFtueDescription": {
     "message": "MetaMask Money is a stablecoin account that earns up to $1 APY - with trading, sending, and spending built in.",
@@ -9683,6 +9677,12 @@
   "relayerFee": {
     "message": "Relayer fee"
   },
+  "rememberSupportPreference": {
+    "message": "Remember my support preference"
+  },
+  "rememberSupportPreferenceDescription": {
+    "message": "When enabled, MetaMask remembers whether you want to share your User ID and app version with our Support Center. Sharing this information will help us better solve your problem."
+  },
   "remindMeLater": {
     "message": "Remind me later",
     "description": "Secondary action to postpone replacing a legacy passkey."
@@ -13041,16 +13041,19 @@
     "message": "Visit site"
   },
   "visitSupportDataConsentModalAccept": {
-    "message": "Confirm"
+    "message": "Continue"
   },
   "visitSupportDataConsentModalDescription": {
-    "message": "Do you want to share your MetaMask Identifier and app version with our Support Center? This can help us better solve your problem, but is optional."
+    "message": "By continuing, you agree to share your User ID and app version with our Support Center. This will help us better solve your problem."
   },
   "visitSupportDataConsentModalReject": {
     "message": "Don’t share"
   },
+  "visitSupportDataConsentModalSavePreference": {
+    "message": "Save my preference"
+  },
   "visitSupportDataConsentModalTitle": {
-    "message": "Share device details with support"
+    "message": "Share your User ID with Support"
   },
   "visitWebSite": {
     "message": "Visit our website"

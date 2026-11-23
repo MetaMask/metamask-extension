@@ -130,8 +130,6 @@ import {
 } from '@metamask/signature-controller';
 import {
   AssetsContractControllerGetTokenStandardAndDetailsAction,
-  TokenDetectionControllerDisableAction,
-  TokenDetectionControllerEnableAction,
   TokensControllerAddTokenAction,
   TokensControllerGetStateAction,
 } from '@metamask/assets-controllers';
@@ -764,8 +762,6 @@ type AllowedActions =
   | SubscriptionControllerGetStateAction
   | SubscriptionControllerGetSubscriptionByProductAction
   | SubscriptionControllerStopAllPollingAction
-  | TokenDetectionControllerDisableAction
-  | TokenDetectionControllerEnableAction
   | TokensControllerAddTokenAction
   | TokensControllerGetStateAction
   | TransactionControllerAddTransactionAction
@@ -3108,13 +3104,11 @@ export class LegacyBackgroundApiService {
     );
 
     if (useExternal) {
-      this.#messenger.call('TokenDetectionController:enable');
       this.#messenger.call('GasFeeController:enableNonRPCGasFeeApis');
       if (hasActiveShieldSubscription) {
         this.#messenger.call('ShieldController:start');
       }
     } else {
-      this.#messenger.call('TokenDetectionController:disable');
       this.#messenger.call('GasFeeController:disableNonRPCGasFeeApis');
       // stop polling for the subscriptions if external services are disabled
       this.#messenger.call('SubscriptionController:stopAllPolling');
@@ -4515,10 +4509,6 @@ export class LegacyBackgroundApiService {
       );
 
       this.#messenger.call('TransactionController:clearUnapprovedTransactions');
-
-      if (completedOnboarding) {
-        this.#messenger.call('TokenDetectionController:enable');
-      }
 
       // create new vault
       const seedPhraseAsUint8Array =
