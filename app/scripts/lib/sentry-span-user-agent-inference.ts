@@ -7,9 +7,8 @@ type SpanContainer = {
   ingest_settings?: { infer_ip?: string; infer_user_agent?: string };
 };
 
-// First match wins: an Android user agent also says `Linux`, an iOS one also
-// says `Mac OS X`, and a Firefox-on-Ubuntu one also says `Linux`. The names are
-// the `os.name` values transaction events carried.
+// First match wins: Android, iOS and Ubuntu user agents also say `Linux` or
+// `Mac OS X`.
 const OS_PATTERNS: [RegExp, string][] = [
   [/Android/u, 'Android'],
   [/iPhone|iPad|iPod/u, 'iOS'],
@@ -28,19 +27,10 @@ function getOsName(userAgent: unknown): string | undefined {
 }
 
 /**
- * Lets Relay derive `browser.name` and `user.geo.*` for streamed spans, as it
- * did for transaction events. The SDK sets `infer_ip` and `infer_user_agent`
- * to `never` while `sendDefaultPii` is off, which leaves every dashboard and
- * detector filtering on those fields empty.
- *
- * The client sends no address: Relay takes the browser from the request's
- * user agent and the geo from the connection IP. It derives the geo before the
- * org's IP scrubbing removes the address, so no `client.address` is stored.
- *
- * Relay derives no OS for a span, so the segment span also carries
- * `sentry.os.name`, parsed from the user agent the SDK already puts on it.
- * Sentry reads the `os.name` field from that key; a bare `os.name` attribute
- * is stored as a tag the field does not read.
+ * Lets Relay derive `browser.name` and `user.geo.*` for streamed spans, which
+ * the SDK otherwise disables while `sendDefaultPii` is off. Also sets
+ * `sentry.os.name` on the segment span: Sentry reads `os.name` from that key,
+ * not from a bare `os.name` attribute.
  *
  * @returns The integration.
  */

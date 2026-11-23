@@ -133,11 +133,7 @@ export const IGNORED_ERROR_MESSAGES = [
 // `op: 'mark'` span names with no Sentry-side consumer, never recorded.
 const LOW_VALUE_TRACE_MARKS = ['sentry-tracing-init', 'mm-hero-painted'];
 
-/**
- * `ignoreSpans` filters for the {@link LOW_VALUE_TRACE_MARKS} `op: 'mark'`
- * spans. Names are anchored so a longer mark that merely contains one is kept;
- * measures and all other spans are kept.
- */
+/** `ignoreSpans` filters for {@link LOW_VALUE_TRACE_MARKS}, matched exactly. */
 export const LOW_VALUE_MARK_SPAN_FILTERS = LOW_VALUE_TRACE_MARKS.map(
   (name) => ({
     op: 'mark',
@@ -186,7 +182,7 @@ function safeCloneReport<Report>(report: Report): Report {
 }
 
 /**
- * Builds the `Sentry.init` options; exported so tests run the shipped options.
+ * Builds the `Sentry.init` options.
  *
  * @returns The Sentry client options.
  */
@@ -209,10 +205,8 @@ export function getClientOptions(): SentryClientOptions {
     dist: isManifestV3 ? 'mv3' : 'mv2',
     dsn: sentryTarget,
     environment,
-    // Each span is sent when it ends instead of with its trace root's
-    // transaction, so a child still running when the root ends is no longer
-    // dropped. No transaction event is built, which retires
-    // `beforeSendTransaction`: the mark-span drop moved to `ignoreSpans`.
+    // No transaction event is built, so `beforeSendTransaction` never runs:
+    // `ignoreSpans` drops the mark spans instead.
     ignoreSpans: LOW_VALUE_MARK_SPAN_FILTERS,
     traceLifecycle: 'stream',
     integrations: [
@@ -486,8 +480,8 @@ export function shouldCreateSpanForRequest(url: string): boolean {
 }
 
 /**
- * {@link shouldCreateSpanForRequest}, and only under an active span: stream
- * mode would otherwise record a one-span trace per parentless fetch.
+ * {@link shouldCreateSpanForRequest}, and only under an active span, so
+ * parentless fetches do not each become a one-span trace.
  *
  * @param url - The request URL.
  * @returns Whether to create a span for the request.

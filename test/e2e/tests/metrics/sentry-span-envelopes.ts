@@ -21,9 +21,8 @@ type SpanItemPayload = {
 /* eslint-enable @typescript-eslint/naming-convention */
 
 /**
- * Reads the spans of a Sentry envelope body. With `traceLifecycle: 'stream'`
- * spans travel in `span` items (one JSON header line, one JSON payload line per
- * item) and no `transaction` event is sent.
+ * Reads the spans of a Sentry envelope body. Streamed spans travel in `span`
+ * items, not a `transaction` event.
  *
  * @param body - The envelope request body.
  * @returns The spans in the envelope's `span` items.
@@ -76,8 +75,8 @@ export async function getStreamedSpans(
 }
 
 /**
- * Matches a Sentry envelope request carrying a segment span (the streaming
- * counterpart of a transaction) with the given name.
+ * Matches a Sentry envelope request carrying a segment span with the given
+ * name.
  *
  * @param name - The segment span name.
  * @returns A mockttp request matcher.

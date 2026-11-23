@@ -1238,9 +1238,8 @@ function getActiveRootSpan(): Sentry.Span | undefined {
 }
 
 /**
- * Records a measurement on the root span of the active trace, as an attribute
- * carrying its unit. `Sentry.setMeasurement` adds a span event, which streamed
- * spans do not serialize.
+ * Records a measurement as a `{ value, unit }` attribute on the active trace's
+ * root span, since streamed spans do not serialize span events.
  *
  * @param key - The measurement name.
  * @param value - The measurement value.
@@ -1259,8 +1258,7 @@ export function setMeasurement(
 }
 
 /**
- * Records a tag-like value on the root span of the active trace. Scope tags
- * reach error events only; streamed spans carry no tags.
+ * Records a tag-like value as an attribute on the active trace's root span.
  *
  * @param key - The attribute name.
  * @param value - The attribute value.
@@ -1286,11 +1284,9 @@ export function sentryGetActiveSpan(): Sentry.Span | null {
 }
 
 /**
- * Baggage for a continued trace. The SDK freezes it as the segment's dynamic
- * sampling context, and Sentry rejects span envelopes whose `trace` header has
- * no `public_key`, so it carries the client's DSN key, environment and release
- * beside the trace id. `sentry-sampled` is what backends route spans to Sentry
- * on.
+ * Baggage for a continued trace. Sentry rejects span envelopes whose `trace`
+ * header lacks `public_key`, so it carries the DSN key, environment and
+ * release.
  *
  * @param sentryTrace - A `{traceId}-{spanId}-{sampled}` header.
  * @returns A `baggage` string, or undefined when the header is malformed.
