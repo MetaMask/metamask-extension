@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed regional Google search pages such as google.com.hk being replaced by the phishing warning (#47692)
+
 ## [13.57.0]
 
 ### Added
