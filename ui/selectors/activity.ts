@@ -184,6 +184,7 @@ function getMoneyAccountPayer(
  * @param tx - The money-account transaction.
  * @param transactionPayData - Pay data keyed by transaction id.
  * @param internalAccounts - Accounts in the wallet.
+ * @param internalAccountsById - Accounts in the wallet keyed by id.
  * @returns Lowercased recipient address, if the transaction is a withdrawal
  * to a wallet account.
  */
@@ -191,6 +192,7 @@ function getMoneyAccountWithdrawRecipient(
   tx: TransactionMeta,
   transactionPayData: TransactionPayControllerState['transactionData'],
   internalAccounts: InternalAccount[],
+  internalAccountsById: Record<string, InternalAccount>,
 ) {
   if (
     getMoneyAccountTransactionType(tx) !== TransactionType.moneyAccountWithdraw
@@ -198,19 +200,24 @@ function getMoneyAccountWithdrawRecipient(
     return undefined;
   }
 
-  const accountId =
+  const overrideAddress = getEvmAccountOverride(
     transactionPayData[tx.id]?.accountOverride ??
-    tx.metamaskPay?.accountOverride;
+      tx.metamaskPay?.accountOverride,
+    internalAccountsById,
+  );
+  if (overrideAddress) {
+    return overrideAddress.toLowerCase();
+  }
+
   const transferRecipient =
     getMoneyAccountWithdrawTransferDetails(tx).recipient?.toLowerCase();
+  if (!transferRecipient) {
+    return undefined;
+  }
 
-  const account =
-    internalAccounts.find(({ id }) => id === accountId) ??
-    internalAccounts.find(
-      ({ address }) => address.toLowerCase() === transferRecipient,
-    );
-
-  return account?.address.toLowerCase();
+  return internalAccounts
+    .find(({ address }) => address.toLowerCase() === transferRecipient)
+    ?.address.toLowerCase();
 }
 
 function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {
@@ -304,6 +311,7 @@ export const selectLocalTransactions = createSelector(
         tx,
         transactionPayData,
         internalAccounts,
+        internalAccountsById,
       );
       if (recipient && recipient !== moneyAccountAddress) {
         return recipient === selectedAddress;
