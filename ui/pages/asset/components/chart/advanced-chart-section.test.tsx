@@ -715,6 +715,39 @@ describe('AdvancedChartSection', () => {
       expect(screen.getByText(messages.today.message)).toBeInTheDocument();
     });
 
+    it('falls back to the live price when candle data succeeds but returns no bars', () => {
+      // OHLCV API succeeds (no error) but returns 0 bars (e.g. WBTC on 4h).
+      // The header must still show the live price, not be blank.
+      setupData({
+        ohlcvData: [],
+        price: undefined,
+        realtimePrice: 175,
+        isLoading: false,
+        error: null,
+      });
+      render();
+
+      expect(screen.getByTestId('chart-error-state')).toBeInTheDocument();
+      expect(screen.getByTestId('asset-hovered-price')).toHaveTextContent(
+        '175',
+      );
+    });
+
+    it('falls back to the wallet-wide current price when candle data is empty and there is no live price', () => {
+      setupData({
+        ohlcvData: [],
+        price: undefined,
+        realtimePrice: undefined,
+        isLoading: false,
+        error: null,
+      });
+      render({ currentPrice: 200 });
+
+      expect(screen.getByTestId('asset-hovered-price')).toHaveTextContent(
+        '200',
+      );
+    });
+
     it('keeps the P1D historical series for the 24H change when the candle API fails', () => {
       setupData({ error: 'OHLCV API error: 500' });
       render();
