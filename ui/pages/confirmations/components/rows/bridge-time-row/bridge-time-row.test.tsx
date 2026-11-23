@@ -99,8 +99,7 @@ describe('BridgeTimeRow', () => {
     } as TransactionPayTotals);
     useTransactionPayTokenMock.mockReturnValue({
       payToken: {
-        chainId: '0x1' as Hex,
-        address: '0x123' as Hex,
+        assetId: 'eip155:1/erc20:0x0000000000000000000000000000000000000123',
         symbol: 'TST',
         decimals: 18,
         balanceFiat: '100',
