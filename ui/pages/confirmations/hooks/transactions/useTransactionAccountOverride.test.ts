@@ -1,15 +1,17 @@
 import { renderHook } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 
-import { selectTransactionPayAccountOverrideByTransactionId } from '../../../../selectors/transactionPayController';
+import { selectTransactionPayEvmAccountOverrideByTransactionId } from '../../../../selectors/transactionPayController';
 import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 import { useTransactionMetadataRequest } from './useTransactionMetadataRequest';
 
 jest.mock('react-redux', () => ({ useSelector: jest.fn() }));
 jest.mock('./useTransactionMetadataRequest');
 jest.mock('../../../../selectors/transactionPayController', () => ({
-  selectTransactionPayAccountOverrideByTransactionId: jest.fn(),
+  selectTransactionPayEvmAccountOverrideByTransactionId: jest.fn(),
 }));
+
+const OVERRIDE_ADDRESS_MOCK = '0xabcdef1234567890abcdef1234567890abcdef12';
 
 const mockUseSelector = jest.mocked(useSelector);
 const mockUseTransactionMetadataRequest = jest.mocked(
@@ -21,18 +23,18 @@ describe('useTransactionAccountOverride', () => {
     jest.clearAllMocks();
   });
 
-  it('returns accountOverride from transaction config', () => {
+  it('returns the EVM address of the account override', () => {
     mockUseTransactionMetadataRequest.mockReturnValue({
       id: 'tx-1',
     } as never);
-    mockUseSelector.mockReturnValue('0xOverrideAddress' as never);
+    mockUseSelector.mockReturnValue(OVERRIDE_ADDRESS_MOCK as never);
 
     const { result } = renderHook(() => useTransactionAccountOverride());
 
-    expect(result.current).toBe('0xOverrideAddress');
+    expect(result.current).toBe(OVERRIDE_ADDRESS_MOCK);
   });
 
-  it('returns undefined when no accountOverride is set', () => {
+  it('returns undefined when no EVM account override is set', () => {
     mockUseTransactionMetadataRequest.mockReturnValue({
       id: 'tx-1',
     } as never);
@@ -54,7 +56,7 @@ describe('useTransactionAccountOverride', () => {
     renderHook(() => useTransactionAccountOverride());
 
     expect(
-      selectTransactionPayAccountOverrideByTransactionId,
+      selectTransactionPayEvmAccountOverrideByTransactionId,
     ).toHaveBeenCalledWith({}, 'tx-42');
   });
 });

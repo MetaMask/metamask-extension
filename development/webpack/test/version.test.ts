@@ -1,6 +1,9 @@
+import { createRequire } from 'node:module';
 import { describe, it, before } from 'node:test';
 import assert from 'node:assert';
-import { getExtensionVersion } from '../utils/version';
+import { getExtensionVersion } from '../utils/version.ts';
+
+const nodeRequire = createRequire(import.meta.url);
 
 describe('getMetaMaskVersion', () => {
   const MIN_ID = 10;
@@ -76,7 +79,7 @@ describe('getMetaMaskVersion', () => {
   describe('success', () => {
     let pVersion: string;
     before(() => {
-      pVersion = require('../../../package.json').version;
+      pVersion = nodeRequire('../../../package.json').version;
     });
 
     it(`for build with prerelease disallowed, id: ${MIN_ID}, release version: ${MIN_RELEASE}`, () => {

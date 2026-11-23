@@ -10,6 +10,7 @@ import {
   type Hex,
 } from '@metamask/utils';
 import { useSendTokens } from '../send/useSendTokens';
+import { decodePaymentTokenAssetId } from '../../../../../shared/lib/transaction/pay-token';
 import { useTokenFiatRate } from '../tokens/useTokenFiatRates';
 import type { Asset } from '../../types/send';
 import { useTransactionPayToken } from './useTransactionPayToken';
@@ -122,14 +123,18 @@ export function usePayTokenAccountBalance(): {
 } {
   const { payToken } = useTransactionPayToken();
   const accountTokens = useSendTokens({ includeNoBalance: true });
+  const payTokenAsset = useMemo(
+    () => decodePaymentTokenAssetId(payToken),
+    [payToken],
+  );
   const usdRate = useTokenFiatRate(
-    (payToken?.address ?? ZERO_ADDRESS) as Hex,
-    (payToken?.chainId ?? ABSENT_CHAIN_ID) as Hex,
+    payTokenAsset?.address ?? ZERO_ADDRESS,
+    payTokenAsset?.chainId ?? ABSENT_CHAIN_ID,
     'usd',
   );
 
   return useMemo(() => {
-    if (!payToken) {
+    if (!payToken || !payTokenAsset) {
       return {
         balanceUsd: '0',
         balanceRaw: '0',
@@ -138,14 +143,16 @@ export function usePayTokenAccountBalance(): {
       };
     }
 
-    const payTokenChainId = toHexChainId(payToken.chainId);
+    const payTokenChainId = toHexChainId(payTokenAsset.chainId);
     const matchingToken = accountTokens.find((token) => {
       if (toHexChainId(token.chainId) !== payTokenChainId) {
         return false;
       }
 
-      const tokenAddress = tokenAddressForMatch(token, payToken.chainId);
-      return tokenAddress?.toLowerCase() === payToken.address.toLowerCase();
+      const tokenAddress = tokenAddressForMatch(token, payTokenAsset.chainId);
+      return (
+        tokenAddress?.toLowerCase() === payTokenAsset.address.toLowerCase()
+      );
     });
 
     if (!matchingToken?.rawBalance) {
@@ -204,5 +211,5 @@ export function usePayTokenAccountBalance(): {
       isLiveBalance: true,
       isBalanceUsdKnown: new BigNumber(balanceUsd).gt(0),
     };
-  }, [accountTokens, payToken, usdRate]);
+  }, [accountTokens, payToken, payTokenAsset, usdRate]);
 }

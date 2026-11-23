@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
-import { SelfInjectPlugin } from '../utils/plugins/SelfInjectPlugin';
-import { generateCases, type Combination, mockWebpack } from './helpers';
+import { SelfInjectPlugin } from '../utils/plugins/SelfInjectPlugin/index.ts';
+import { generateCases, type Combination, mockWebpack } from './helpers.ts';
 
 describe('SelfInjectPlugin', () => {
   const matrix = {

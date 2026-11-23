@@ -10,6 +10,7 @@ import {
   hasTransactionType,
   isPostQuoteWithdrawTransaction,
 } from '../../../../../shared/lib/transactions.utils';
+import { decodePaymentTokenAssetId } from '../../../../../shared/lib/transaction/pay-token';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
 import {
@@ -98,8 +99,15 @@ export function usePayWithToken(): PayWithToken {
   }, []);
 
   const firstRequiredToken = requiredTokens?.[0];
+  const payTokenAsset = decodePaymentTokenAssetId(payToken);
   const resolvedToken =
-    payToken ?? (shouldWaitForPayToken ? undefined : firstRequiredToken);
+    (payToken &&
+      payTokenAsset && {
+        ...payTokenAsset,
+        balanceUsd: payToken.balanceUsd,
+        symbol: payToken.symbol,
+      }) ||
+    (shouldWaitForPayToken ? undefined : firstRequiredToken);
 
   const hasAvailableTokens = useMemo(
     () => (availableTokens ?? []).some((token) => !token.disabled),

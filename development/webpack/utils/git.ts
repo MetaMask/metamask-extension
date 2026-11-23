@@ -1,5 +1,6 @@
 import { spawnSync } from 'node:child_process';
 import { join, normalize } from 'node:path';
+import { projectRoot } from '../../lib/build-paths.ts';
 
 type Commit = {
   hash: () => string;
@@ -23,7 +24,7 @@ const cache: Map<string, Commit> = new Map();
  * @returns The latest commit's hash and timestamp.
  */
 export function getLatestCommit(
-  gitDir: string = join(__dirname, '../../../.git'),
+  gitDir: string = join(projectRoot, '.git'),
 ): Commit {
   const cached = cache.get(gitDir);
   if (cached) return cached;
