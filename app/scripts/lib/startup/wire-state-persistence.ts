@@ -105,18 +105,6 @@ export function wireStatePersistence({
   }
 
   if (persistenceManager.storageKind === 'split') {
-    // `MarketingConsentController` was replaced by `MarketingConsentSyncService`
-    // before reaching a release. Remove state persisted by preview builds; the
-    // consent value itself lives in `AnalyticsController`. Best effort only.
-    if ('MarketingConsentController' in initState) {
-      try {
-        persistenceManager.update('MarketingConsentController', undefined);
-        safePersist().catch(() => undefined);
-      } catch {
-        // Orphaned state is unread once the controller is gone.
-      }
-    }
-
     if (changedControllerKeys.length > 0) {
       log.info(
         `MetaMaskController state changed during configuration for controllers: ${changedControllerKeys.join(', ')}. Persisting updated state.`,
