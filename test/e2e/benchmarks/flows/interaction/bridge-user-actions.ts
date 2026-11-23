@@ -7,7 +7,8 @@ import { Mockttp } from 'mockttp';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
-import BridgeQuotePage from '../../../page-objects/pages/bridge/quote-page';
+import SwapAssetPickerPage from '../../../page-objects/pages/swap/swap-asset-picker-page';
+import SwapPage from '../../../page-objects/pages/swap/swap-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import {
   DEFAULT_BRIDGE_FEATURE_FLAGS,
@@ -71,7 +72,8 @@ export async function run(): Promise<BenchmarkRunResult> {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        const quotePage = new BridgeQuotePage(driver);
+        const swapPage = new SwapPage(driver);
+        const assetPickerPage = new SwapAssetPickerPage(driver);
 
         await driver.resetLongTaskMetrics();
         const timestampBeforeLoadPage = new Date();
@@ -91,7 +93,7 @@ export async function run(): Promise<BenchmarkRunResult> {
 
         await driver.resetLongTaskMetrics();
         const timestampBeforeClickAssetPicker = new Date();
-        await driver.clickElement(quotePage.sourceAssetPickerButton);
+        await swapPage.openAssetPicker('source');
         const timestampAfterClickAssetPicker = new Date();
         loadAssetPicker =
           timestampAfterClickAssetPicker.getTime() -
@@ -109,10 +111,10 @@ export async function run(): Promise<BenchmarkRunResult> {
         const tokenToSearch = 'FXS';
         await driver.resetLongTaskMetrics();
         const timestampBeforeTokenSearch = new Date();
-        await driver.fill(quotePage.assetPrickerSearchInput, tokenToSearch);
+        await driver.fill(assetPickerPage.searchInput, tokenToSearch);
         await driver.waitForSelector({
           text: tokenToSearch,
-          css: quotePage.tokenButton,
+          css: assetPickerPage.tokenButton,
         });
         const timestampAfterTokenSearch = new Date();
         searchToken =

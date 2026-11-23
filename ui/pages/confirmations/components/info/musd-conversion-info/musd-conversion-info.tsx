@@ -8,7 +8,7 @@ import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import {
-  selectTransactionPaymentTokenByTransactionId,
+  selectPaymentTokenEvmAssetByTransactionId,
   type TransactionPayState,
 } from '../../../../../selectors/transactionPayController';
 import { selectIsPayAmountPrefillEnabled } from '../../../selectors/feature-flags';
@@ -82,7 +82,7 @@ export const MusdConversionInfo = () => {
   const hasEndedNavigationTraceRef = useRef(false);
 
   const existingPayToken = useSelector((state: TransactionPayState) =>
-    selectTransactionPaymentTokenByTransactionId(state, transactionId),
+    selectPaymentTokenEvmAssetByTransactionId(state, transactionId),
   );
 
   // Treatment (max pre-filled) vs control (empty field) is configured under

@@ -2838,9 +2838,6 @@
   "confirmFieldNeverExpires": {
     "message": "永不过期"
   },
-  "confirmFieldPaymaster": {
-    "message": "费用支付方"
-  },
   "confirmFieldPeriodDurationBiWeekly": {
     "message": "每两周"
   },
@@ -2865,9 +2862,6 @@
   },
   "confirmFieldTooltipJustification": {
     "message": "网站提供的请求依据"
-  },
-  "confirmFieldTooltipPaymaster": {
-    "message": "此交易的费用将由 paymaster 智能合约支付。"
   },
   "confirmFieldTotalExposure": {
     "message": "总风险敞口"
@@ -3466,7 +3460,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "更新至 MetaMask 最新版本",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "未提供可导航的 URL。"
@@ -3479,6 +3473,12 @@
   },
   "deepLink_GoToTheHomePageButton": {
     "message": "返回主页"
+  },
+  "deepLink_MobileShareDescription": {
+    "message": "使用您的移动设备扫描此二维码，以在 MetaMask 移动端打开此链接。"
+  },
+  "deepLink_MobileShareTitle": {
+    "message": "在 MetaMask 移动端继续"
   },
   "deepLink_RedirectingToMetaMask": {
     "message": "重定向至 MetaMask"
@@ -3607,10 +3607,6 @@
   "deleteMetaMetricsData": {
     "message": "删除MetaMetrics数据"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "这将删除与您在此设备上的使用相关的 MetaMetrics 历史数据。删除此数据后，您的钱包和账户将保持原样。此过程可能需要最多 30 天。查看我们的 $1。",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "这将删除与您的钱包关联的历史 MetaMetrics 数据。MetaMetrics 包含匿名使用数据和诊断数据。您的钱包和账户将完全保持现状。此过程最多可能需要 30 天。查看我们的 $1。",
     "description": "$1 will have text saying Privacy Policy "
@@ -3618,17 +3614,14 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "由于分析系统服务器问题，此请求目前无法完成。请稍后再试。"
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "我们现在无法删除此数据"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "无法删除"
   },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "我们即将删除您所有的MetaMetrics数据。您确定吗？"
-  },
   "deleteMetaMetricsDataModalTitle": {
     "message": "要删除MetaMetrics数据吗？"
+  },
+  "deleteMetaMetricsDataPrivacyNotice": {
+    "message": "隐私声明"
   },
   "deleteMetaMetricsDataRequestedDescription": {
     "message": "您在 $1 发起了删除操作。此过程最长可能需要 30 天。查看 $2。",
@@ -5500,9 +5493,6 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "连接状态按钮显示所访问的网站是否与您当前选择的账户连接。"
   },
-  "metaMetricsIdNotAvailableError": {
-    "message": "由于您从未选择过 MetaMetrics，因此此处没有要删除的数据。"
-  },
   "metadataModalSourceTooltip": {
     "message": "$1 托管于 npm 上，$2 是此 Snap 的唯一标识符。",
     "description": "$1 is the snap name and $2 is the snap NPM id."
@@ -5657,6 +5647,13 @@
   "mfaOtpDescriptionTotp": {
     "message": "打开您的身份验证应用，输入 6 位验证码。"
   },
+  "mfaOtpDescriptionUnsent": {
+    "message": "我们将向您的电子邮件发送 6 位验证码。请在下方输入以验证您的电子邮件。"
+  },
+  "mfaOtpDescriptionUnsentWithEmail": {
+    "message": "我们将向 $1 发送 6 位验证码。请在下方输入以验证您的电子邮件。",
+    "description": "$1 is the user's masked email address"
+  },
   "mfaOtpDescriptionWithEmail": {
     "message": "我们已向 $1 发送 6 位验证码。请在下方输入以验证您的电子邮件。",
     "description": "$1 is the email address the code was sent to"
@@ -5683,6 +5680,9 @@
   },
   "mfaOtpRetryIn": {
     "message": "$1 秒后重试"
+  },
+  "mfaOtpSend": {
+    "message": "发送验证码"
   },
   "mfaOtpSendIn": {
     "message": "$1 秒后发送验证码",
@@ -5748,6 +5748,9 @@
   "mfaSettingsNotice": {
     "message": "这些方式可为 Money Account 交易提供更多保障。它们无法恢复您的钱包。"
   },
+  "mfaSettingsNoticeSocialLogin": {
+    "message": "这些方式为 Money Account 交易和恢复钱包提供更多保障。"
+  },
   "mfaSettingsRemoveElsewhereDescription": {
     "message": "您的其他方式仅在 MetaMask 移动应用中有效。请从那里移除您的电子邮件。"
   },
@@ -5786,6 +5789,9 @@
   },
   "mfaSettingsUsedForMoney": {
     "message": "正在验证 Money 交易"
+  },
+  "mfaSettingsUsedForWalletRecovery": {
+    "message": "钱包恢复"
   },
   "mfaTotpSetupContinue": {
     "message": "继续"
@@ -5881,6 +5887,10 @@
   },
   "moneyActivity": {
     "message": "活动"
+  },
+  "moneyActivityAmountUnavailable": {
+    "message": "金额不可用",
+    "description": "Shown in place of a Money card activity amount when the historical mUSD value cannot be calculated"
   },
   "moneyActivityCard": {
     "message": "卡"
@@ -7179,8 +7189,7 @@
     "message": "其他相关宣传材料"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "我们希望使用数据（例如来自 Cookie 的信息）来了解您如何与我们的营销传播互动。",
-    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
+    "message": "我们希望使用数据（例如来自 Cookie 的信息）来了解您如何与我们的营销传播互动。"
   },
   "onboardedMetametricsParagraph2": {
     "message": "这可以帮助我们个性化与您分享的内容，例如："
@@ -9722,9 +9731,6 @@
   "restore": {
     "message": "恢复"
   },
-  "restoreUserData": {
-    "message": "恢复用户数据"
-  },
   "restoreWalletDescription": {
     "message": "请输入您的$1。导入钱包将清除此设备上当前的钱包数据。此操作无法撤销。",
     "description": "$1 is the Secret Recovery Phrase"
@@ -11952,7 +11958,7 @@
   },
   "stxFailureDescription": {
     "message": "突然的市场变化可能导致失败。如果问题仍然存在，请联系$1。",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxOptInDescriptionV2": {
     "message": "开启智能交易，以获得更加安全可靠的交易体验。$1"
@@ -12096,7 +12102,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "交易有时会失败，我们随时为您提供帮助。如果此问题仍然存在，您可以在 $1 联系我们的客服，以获得进一步的帮助。",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "交换失败"
@@ -12408,6 +12414,9 @@
   },
   "to": {
     "message": "至"
+  },
+  "today": {
+    "message": "今天"
   },
   "toggleDecodeDescription": {
     "message": "我们使用 4byte.directory 和 Sourcify 服务来解码和显示更易读的交易数据。这可以帮助您了解待定交易和过去交易的结果，但可能会导致您的 IP 地址共享。"

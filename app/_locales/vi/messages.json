@@ -2838,9 +2838,6 @@
   "confirmFieldNeverExpires": {
     "message": "Không bao giờ hết hạn"
   },
-  "confirmFieldPaymaster": {
-    "message": "Phí được thanh toán bởi"
-  },
   "confirmFieldPeriodDurationBiWeekly": {
     "message": "Hai tuần một lần"
   },
@@ -2865,9 +2862,6 @@
   },
   "confirmFieldTooltipJustification": {
     "message": "Lý do chính đáng cho yêu cầu được trang web cung cấp"
-  },
-  "confirmFieldTooltipPaymaster": {
-    "message": "Phí cho giao dịch này sẽ được thanh toán bởi hợp đồng thông minh Paymaster."
   },
   "confirmFieldTotalExposure": {
     "message": "Tổng mức tiếp xúc"
@@ -3466,7 +3460,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "Cập nhật lên phiên bản MetaMask mới nhất",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "Không có URL nào được cung cấp để điều hướng."
@@ -3479,6 +3473,12 @@
   },
   "deepLink_GoToTheHomePageButton": {
     "message": "Đến trang chủ"
+  },
+  "deepLink_MobileShareDescription": {
+    "message": "Quét mã QR này bằng thiết bị di động để mở liên kết này trong MetaMask Mobile."
+  },
+  "deepLink_MobileShareTitle": {
+    "message": "Tiếp tục trên MetaMask Mobile"
   },
   "deepLink_RedirectingToMetaMask": {
     "message": "Đang chuyển hướng đến MetaMask"
@@ -3607,10 +3607,6 @@
   "deleteMetaMetricsData": {
     "message": "Xóa dữ liệu MetaMetrics"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "Thao tác này sẽ xóa dữ liệu MetaMetrics trước đây liên quan đến quá trình sử dụng của bạn trên thiết bị này. Ví và tài khoản của bạn sẽ vẫn như hiện tại sau khi dữ liệu này bị xóa. Quá trình này có thể mất đến 30 ngày. Xem $1 của chúng tôi.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Thao tác này sẽ xóa dữ liệu MetaMetrics trước đây liên quan đến ví của bạn. MetaMetrics bao gồm dữ liệu sử dụng và dữ liệu chẩn đoán đã được ẩn danh. Ví và các tài khoản của bạn sẽ giữ nguyên như hiện tại. Quá trình này có thể mất đến 30 ngày. Xem $1 của chúng tôi.",
     "description": "$1 will have text saying Privacy Policy "
@@ -3618,17 +3614,14 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Hiện không thể hoàn tất yêu cầu này do sự cố máy chủ của hệ thống phân tích. Hãy thử lại sau."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "Chúng tôi không thể xóa dữ liệu này bây giờ"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "Không thể xóa"
   },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "Chúng tôi sắp xóa tất cả dữ liệu MetaMetrics của bạn. Bạn có chắc không?"
-  },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Xóa dữ liệu MetaMetrics?"
+  },
+  "deleteMetaMetricsDataPrivacyNotice": {
+    "message": "Thông báo về quyền riêng tư"
   },
   "deleteMetaMetricsDataRequestedDescription": {
     "message": "Bạn đã bắt đầu quá trình xóa vào $1. Quá trình này có thể mất tới 30 ngày. Xem $2.",
@@ -5504,9 +5497,6 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Nút trạng thái kết nối sẽ hiển thị nếu trang web mà bạn đang truy cập được kết nối với tài khoản bạn đang chọn."
   },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Vì bạn chưa bao giờ chọn tham gia MetaMetrics, nên ở đây không có dữ liệu nào để xóa."
-  },
   "metadataModalSourceTooltip": {
     "message": "$1 được lưu trữ trên npm và $2 là mã định danh duy nhất của Snap này.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
@@ -5661,6 +5651,13 @@
   "mfaOtpDescriptionTotp": {
     "message": "Mở ứng dụng xác thực và nhập mã gồm 6 chữ số."
   },
+  "mfaOtpDescriptionUnsent": {
+    "message": "Chúng tôi sẽ gửi mã gồm 6 chữ số đến email của bạn. Hãy nhập mã bên dưới để xác minh email."
+  },
+  "mfaOtpDescriptionUnsentWithEmail": {
+    "message": "Chúng tôi sẽ gửi mã gồm 6 chữ số đến $1. Hãy nhập mã bên dưới để xác minh email.",
+    "description": "$1 is the user's masked email address"
+  },
   "mfaOtpDescriptionWithEmail": {
     "message": "Chúng tôi đã gửi mã gồm 6 chữ số đến $1. Nhập mã bên dưới để xác minh email.",
     "description": "$1 is the email address the code was sent to"
@@ -5687,6 +5684,9 @@
   },
   "mfaOtpRetryIn": {
     "message": "Thử lại sau $1 giây"
+  },
+  "mfaOtpSend": {
+    "message": "Gửi mã"
   },
   "mfaOtpSendIn": {
     "message": "Gửi mã sau $1 giây",
@@ -5752,6 +5752,9 @@
   "mfaSettingsNotice": {
     "message": "Các phương thức này giúp tăng cường bảo vệ cho giao dịch trong Money Account. Bạn không thể dùng chúng để khôi phục ví."
   },
+  "mfaSettingsNoticeSocialLogin": {
+    "message": "Các phương thức này tăng cường bảo vệ cho các giao dịch trên Money Account và quá trình khôi phục ví của bạn."
+  },
   "mfaSettingsRemoveElsewhereDescription": {
     "message": "Các phương thức khác của bạn chỉ hoạt động trong ứng dụng di động MetaMask. Hãy gỡ bỏ email từ ứng dụng đó."
   },
@@ -5790,6 +5793,9 @@
   },
   "mfaSettingsUsedForMoney": {
     "message": "Xác minh giao dịch trong Money Account"
+  },
+  "mfaSettingsUsedForWalletRecovery": {
+    "message": "Khôi phục ví"
   },
   "mfaTotpSetupContinue": {
     "message": "Tiếp tục"
@@ -5885,6 +5891,10 @@
   },
   "moneyActivity": {
     "message": "Hoạt động"
+  },
+  "moneyActivityAmountUnavailable": {
+    "message": "Không có thông tin về số tiền",
+    "description": "Shown in place of a Money card activity amount when the historical mUSD value cannot be calculated"
   },
   "moneyActivityCard": {
     "message": "Thẻ"
@@ -7183,8 +7193,7 @@
     "message": "Các tài liệu khuyến mại liên quan khác"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "Chúng tôi muốn sử dụng dữ liệu (chẳng hạn như thông tin từ cookie) để tìm hiểu cách bạn tương tác với các thông tin tiếp thị của Chúng tôi.",
-    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
+    "message": "Chúng tôi muốn sử dụng dữ liệu (chẳng hạn như thông tin từ cookie) để tìm hiểu cách bạn tương tác với các thông tin tiếp thị của Chúng tôi."
   },
   "onboardedMetametricsParagraph2": {
     "message": "Điều này sẽ giúp chúng tôi cá nhân hóa nội dung mà chúng tôi chia sẻ với bạn, chẳng hạn như:"
@@ -9730,9 +9739,6 @@
   "restore": {
     "message": "Khôi phục"
   },
-  "restoreUserData": {
-    "message": "Khôi phục dữ liệu người dùng"
-  },
   "restoreWalletDescription": {
     "message": "Nhập $1 của bạn. Khi nhập ví, bạn sẽ xóa dữ liệu ví hiện tại khỏi thiết bị này. Hành động này không thể hoàn tác.",
     "description": "$1 is the Secret Recovery Phrase"
@@ -11960,7 +11966,7 @@
   },
   "stxFailureDescription": {
     "message": "Thị trường thay đổi đột ngột có thể gây thất bại. Nếu sự cố vẫn tiếp diễn, vui lòng liên hệ $1.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxOptInDescriptionV2": {
     "message": "Bật Giao dịch thông minh để có giao dịch đáng tin cậy và an toàn hơn. $1"
@@ -12104,7 +12110,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Đã xảy ra lỗi giao dịch và chúng tôi sẵn sàng trợ giúp bạn. Nếu vấn đề này tiếp diễn, bạn có thể liên hệ với bộ phận hỗ trợ khách hàng tại $1 để được hỗ trợ thêm.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "Hoán đổi không thành công"
@@ -12416,6 +12422,9 @@
   },
   "to": {
     "message": "Đến"
+  },
+  "today": {
+    "message": "Hôm nay"
   },
   "toggleDecodeDescription": {
     "message": "Chúng tôi sử dụng các dịch vụ 4byte.directory và Sourcify để giải mã và hiển thị dữ liệu giao dịch dễ đọc hơn. Điều này giúp bạn hiểu rõ kết quả của các giao dịch đang chờ xử lý và đã thực hiện, nhưng có thể dẫn đến việc địa chỉ IP của bạn được chia sẻ."

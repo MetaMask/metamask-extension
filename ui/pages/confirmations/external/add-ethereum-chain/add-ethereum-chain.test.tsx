@@ -22,6 +22,20 @@ jest.mock('../../hooks/useCurrentConfirmation', () =>
   jest.fn(() => ({ currentConfirmation: mockConfirmation })),
 );
 
+// Analytics reads the router and store; the component only needs the tracker.
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      createEventBuilder,
+      trackEvent: jest.fn(),
+    }),
+  };
+});
+
 function render(component: ReactNode, mockState: Record<string, unknown> = {}) {
   const mockMetrics = {
     trackAlertActionClicked: jest.fn(),

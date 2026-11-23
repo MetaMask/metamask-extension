@@ -41,12 +41,13 @@ export async function setManifestFlags(flags: ManifestFlags = {}) {
     const additionalManifestFlags = await fetchManifestFlagsFromPRAndGit();
     merge(flags, additionalManifestFlags);
 
-    // Set `flags.sentry.forceEnable` to true by default
+    // Forks might not receive `SENTRY_DSN_PERFORMANCE`, so skip
+    // performance tracing unless the CI DSN is actually present.
     if (flags.sentry === undefined) {
       flags.sentry = {};
     }
     if (flags.sentry.forceEnable === undefined) {
-      flags.sentry.forceEnable = true;
+      flags.sentry.forceEnable = Boolean(process.env.SENTRY_DSN_PERFORMANCE);
     }
   }
 

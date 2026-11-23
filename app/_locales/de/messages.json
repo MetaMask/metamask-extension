@@ -2838,9 +2838,6 @@
   "confirmFieldNeverExpires": {
     "message": "Keine Gültigkeitsdauer"
   },
-  "confirmFieldPaymaster": {
-    "message": "Gebühr bezahlt von"
-  },
   "confirmFieldPeriodDurationBiWeekly": {
     "message": "Zweiwöchentlich"
   },
@@ -2865,9 +2862,6 @@
   },
   "confirmFieldTooltipJustification": {
     "message": "Begründung für die Anfrage auf der Website"
-  },
-  "confirmFieldTooltipPaymaster": {
-    "message": "Die Gebühr für diese Transaktion wird durch den Paymaster Smart Contract bezahlt."
   },
   "confirmFieldTotalExposure": {
     "message": "Exposure insgesamt"
@@ -3466,7 +3460,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "Aktualisieren Sie auf die neueste Version von MetaMask",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "Es wurde keine URL zum Navigieren angegeben."
@@ -3479,6 +3473,12 @@
   },
   "deepLink_GoToTheHomePageButton": {
     "message": "Zur Startseite gehen"
+  },
+  "deepLink_MobileShareDescription": {
+    "message": "Scannen Sie diesen QR-Code mit Ihrem Mobilgerät, um diesen Link in MetaMask Mobile zu öffnen."
+  },
+  "deepLink_MobileShareTitle": {
+    "message": "Auf MetaMask Mobile fortfahren"
   },
   "deepLink_RedirectingToMetaMask": {
     "message": "Weiterleitung zu MetaMask"
@@ -3607,10 +3607,6 @@
   "deleteMetaMetricsData": {
     "message": "MetaMetrics-Daten löschen"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "Dadurch werden historische, mit Ihrer Nutzung auf diesem Gerät verbundene MetaMetrics-Daten gelöscht. Ihre Wallet und Ihre Konten bleiben nach dem Löschen dieser Daten unverändert. Dieser Vorgang kann bis zu 30 Tage dauern. Lesen Sie unsere $1.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Hierdurch werden historische MetaMetrics-Daten in Verbindung mit Ihrer Wallet gelöscht. MetaMetrics enthält anonymisierte Nutzungs- und Diagnosedaten. Ihre Wallet und Ihre Konten bleiben unverändert. Dieser Vorgang kann bis zu 30 Tage dauern. Siehe unsere $1.",
     "description": "$1 will have text saying Privacy Policy "
@@ -3618,17 +3614,14 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Die Anfrage kann aktuell nicht abgeschlossen werden, da ein Problem mit dem Analytik-System des Servers vorliegt. Versuchen Sie es später erneut."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "Wir können diese Daten im Moment nicht löschen"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "Löschen nicht möglich"
   },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "Wir löschen all Ihre MetaMetrics-Daten. Sind Sie sicher?"
-  },
   "deleteMetaMetricsDataModalTitle": {
     "message": "MetaMetrics-Daten löschen?"
+  },
+  "deleteMetaMetricsDataPrivacyNotice": {
+    "message": "Datenschutzerklärung"
   },
   "deleteMetaMetricsDataRequestedDescription": {
     "message": "Sie haben die Löschung von $1 eingeleitet. Dieser Vorgang kann bis zu 30 Tage dauern. Sehen Sie die $2 ein.",
@@ -5500,9 +5493,6 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Die Schaltfläche „Verbindungsstatus“ zeigt an, ob die Seite, die Sie besuchen, mit Ihrem aktuell ausgewählten Konto verbunden ist."
   },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Da Sie sich noch nie für MetaMetrics angemeldet haben, gibt es hier keine Daten zu löschen."
-  },
   "metadataModalSourceTooltip": {
     "message": "$1 wird auf npm gehostet und $2 ist die einzige Kennung dieses Snaps.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
@@ -5657,6 +5647,13 @@
   "mfaOtpDescriptionTotp": {
     "message": "Öffnen Sie Ihre Authentifizierungs-App und geben Sie den 6-stelligen Code ein."
   },
+  "mfaOtpDescriptionUnsent": {
+    "message": "Wir werden einen 6-stelligen Code an Ihre E-Mail-Adresse senden. Geben Sie diesen zur Bestätigung Ihrer E-Mail-Adresse unten ein."
+  },
+  "mfaOtpDescriptionUnsentWithEmail": {
+    "message": "Wir werden einen 6-stelligen Code an $1 senden. Geben Sie diesen zur Bestätigung Ihrer E-Mail-Adresse bitte unten ein.",
+    "description": "$1 is the user's masked email address"
+  },
   "mfaOtpDescriptionWithEmail": {
     "message": "Wir haben einen 6-stelligen Code an $1 gesendet. Geben Sie diesen zur Bestätigung Ihrer E-Mail-Adresse bitte unten ein.",
     "description": "$1 is the email address the code was sent to"
@@ -5683,6 +5680,9 @@
   },
   "mfaOtpRetryIn": {
     "message": "Versuchen Sie es in $1 Sek. erneut"
+  },
+  "mfaOtpSend": {
+    "message": "Code senden"
   },
   "mfaOtpSendIn": {
     "message": "Code in $1 Sek. senden",
@@ -5748,6 +5748,9 @@
   "mfaSettingsNotice": {
     "message": "Diese Methoden bieten zusätzlichen Schutz bei Transaktionen über Ihren Money Account. Sie können Ihre Wallet jedoch nicht wiederherstellen."
   },
+  "mfaSettingsNoticeSocialLogin": {
+    "message": "Diese Methoden bieten zusätzlichen Schutz bei Transaktionen über Ihren Money Account und bei der Wiederherstellung Ihrer Wallet."
+  },
   "mfaSettingsRemoveElsewhereDescription": {
     "message": "Ihre anderen Methoden funktionieren nur in der MetaMask-Mobil-App. Löschen Sie dort Ihre E-Mail-Adresse."
   },
@@ -5786,6 +5789,9 @@
   },
   "mfaSettingsUsedForMoney": {
     "message": "Geldtransaktionen werden verifiziert"
+  },
+  "mfaSettingsUsedForWalletRecovery": {
+    "message": "Wallet-Wiederherstellung"
   },
   "mfaTotpSetupContinue": {
     "message": "Fortfahren"
@@ -5881,6 +5887,10 @@
   },
   "moneyActivity": {
     "message": "Aktivität"
+  },
+  "moneyActivityAmountUnavailable": {
+    "message": "Betrag nicht verfügbar",
+    "description": "Shown in place of a Money card activity amount when the historical mUSD value cannot be calculated"
   },
   "moneyActivityCard": {
     "message": "Karte"
@@ -7179,8 +7189,7 @@
     "message": "Andere relevante Werbematerialien"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "Möchten wir Daten (z. B. Informationen aus Cookies) verwenden, um zu erfahren, wie Sie mit unserer Marketingkommunikation interagieren.",
-    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
+    "message": "Möchten wir Daten (z. B. Informationen aus Cookies) verwenden, um zu erfahren, wie Sie mit unserer Marketingkommunikation interagieren."
   },
   "onboardedMetametricsParagraph2": {
     "message": "Dies hilft uns, das, was wir mit Ihnen teilen, zu personalisieren, wie z. B.:"
@@ -9716,9 +9725,6 @@
   "restore": {
     "message": "Wiederherstellen"
   },
-  "restoreUserData": {
-    "message": "Benutzerdaten wiederherstellen"
-  },
   "restoreWalletDescription": {
     "message": "Geben Sie Ihre $1 ein. Durch das Importieren der Wallet werden Ihre aktuellen Wallet-Daten von diesem Gerät gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden.",
     "description": "$1 is the Secret Recovery Phrase"
@@ -11946,7 +11952,7 @@
   },
   "stxFailureDescription": {
     "message": "Plötzliche Marktschwankungen können Fehlschläge verursachen. Sollte das Problem weiterhin bestehen, kontaktieren Sie $1.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxOptInDescriptionV2": {
     "message": "Schalten Sie Smart Transactions für zuverlässigere und sicherere Transaktionen ein. $1"
@@ -12090,7 +12096,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Transaktionsfehler kommen vor und wir sind hier, um zu helfen. Wenn das Problem weiterhin besteht, können Sie unseren Kundensupport unter $1 erreichen, um weitere Hilfe zu erhalten.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "Swap fehlgeschlagen"
@@ -12402,6 +12408,9 @@
   },
   "to": {
     "message": "An"
+  },
+  "today": {
+    "message": "Heute"
   },
   "toggleDecodeDescription": {
     "message": "Wir nutzen die Dienste von 4byte.directory und Sourcify, um Transaktionsdaten zu dekodieren und lesbarer anzuzeigen. Dadurch können Sie das Ergebnis ausstehender und vergangener Transaktionen leichter einsehen, allerdings kann dies zur Weitergabe Ihrer IP-Adresse führen."

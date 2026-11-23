@@ -4,10 +4,6 @@ import {
 } from '@metamask/accounts-controller';
 import { ApprovalControllerActions } from '@metamask/approval-controller';
 import {
-  AccountTrackerControllerGetStateAction,
-  CurrencyRateControllerActions,
-} from '@metamask/assets-controllers';
-import {
   BridgeStatusControllerActions,
   BridgeStatusControllerStateChangeEvent,
 } from '@metamask/bridge-status-controller';
@@ -56,7 +52,7 @@ import {
   TransactionControllerUpdateTransactionAction,
 } from '@metamask/transaction-controller';
 import { TransactionPayControllerActions } from '@metamask/transaction-pay-controller';
-import { RootMessenger } from '../../lib/messenger';
+import type { RootMessenger } from '../../lib/messenger';
 import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
 import { AppStateControllerSetDefaultHomeActiveTabNameAction } from '../../controllers/app-state-controller-method-action-types';
 import { ShieldSubscriptionServiceSubmitSubscriptionSponsorshipIntentAction } from '../../services/subscription/types';
@@ -73,13 +69,11 @@ export type TransactionControllerInitMessenger = ReturnType<
 export type TransactionControllerInitMessengerActions =
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerGetStateAction
-  | AccountTrackerControllerGetStateAction
   | ApprovalControllerActions
   | AppStateControllerGetStateAction
   | AppStateControllerSetDefaultHomeActiveTabNameAction
   | AuthenticationController.AuthenticationControllerGetBearerTokenAction
   | BridgeStatusControllerActions
-  | CurrencyRateControllerActions
   | DelegationControllerSignDelegationAction
   | GasFeeControllerFetchGasFeeEstimatesAction
   | InstitutionalSnapControllerPublishHookAction
@@ -157,7 +151,6 @@ export function getTransactionControllerInitMessenger(
       'TransactionController:unapprovedTransactionAdded',
     ],
     actions: [
-      'AccountTrackerController:getState',
       'AccountsController:getState',
       'ApprovalController:acceptRequest',
       'ApprovalController:addRequest',
@@ -168,7 +161,6 @@ export function getTransactionControllerInitMessenger(
       'AuthenticationController:getBearerToken',
       'BridgeStatusController:getState',
       'BridgeStatusController:submitTx',
-      'CurrencyRateController:getState',
       'DelegationController:signDelegation',
       'InstitutionalSnapController:beforeCheckPendingTransactionHook',
       'InstitutionalSnapController:publishHook',
