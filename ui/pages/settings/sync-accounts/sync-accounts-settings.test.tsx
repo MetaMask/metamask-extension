@@ -13,6 +13,8 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import {
   QR_SYNC_PHASES,
   QrSyncErrorCodes,
+  type QrSyncErrorCode,
+  type QrSyncPhase,
 } from '../../../../shared/constants/qr-sync';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { submitRequestToBackground } from '../../../store/background-connection';
@@ -95,6 +97,17 @@ const qrSyncState = {
     qrSyncQrPayload: 'metamask://connect/mwp?p=test',
     qrSyncError: null,
   },
+};
+
+type QrSyncTestState = Omit<typeof qrSyncState, 'metamask'> & {
+  metamask: Omit<
+    typeof qrSyncState.metamask,
+    'qrSyncPhase' | 'qrSyncQrPayload' | 'qrSyncError'
+  > & {
+    qrSyncPhase: QrSyncPhase;
+    qrSyncQrPayload: string | null;
+    qrSyncError: { code: QrSyncErrorCode; message: string } | null;
+  };
 };
 
 describe('SyncAccountsSettings', () => {
@@ -277,7 +290,7 @@ describe('SyncAccountsSettings', () => {
   });
 
   it('starts a new session when the displayed QR code expires', async () => {
-    let currentState = qrSyncState;
+    let currentState: QrSyncTestState = qrSyncState;
     const store = configureMockStore([thunk])(() => currentState);
     renderWithProvider(<SyncAccountsSettings />, store);
 

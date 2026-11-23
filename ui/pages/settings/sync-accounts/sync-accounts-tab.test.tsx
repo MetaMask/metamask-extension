@@ -3,11 +3,14 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { SETTINGS_ROUTE } from '../../../helpers/constants/routes';
 import { submitRequestToBackground } from '../../../store/background-connection';
-import { QR_SYNC_PHASES } from '../../../../shared/constants/qr-sync';
+import {
+  QR_SYNC_PHASES,
+  type QrSyncPhase,
+} from '../../../../shared/constants/qr-sync';
 import SyncAccountsTab from './sync-accounts-tab';
 
 const mockNavigate = jest.fn();
-let mockQrSyncPhase = QR_SYNC_PHASES.IDLE;
+let mockQrSyncPhase: QrSyncPhase = QR_SYNC_PHASES.IDLE;
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),

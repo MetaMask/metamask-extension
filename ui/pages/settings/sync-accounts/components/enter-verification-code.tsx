@@ -18,23 +18,20 @@ import {
 import { useSelector } from 'react-redux';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { QrSyncErrorCodes } from '../../../../../shared/constants/qr-sync';
 import {
-  QR_SYNC_TIMEOUT_MS,
-  QrSyncErrorCodes,
-} from '../../../../../shared/constants/qr-sync';
-import { selectQrSyncError } from '../../../../selectors/qr-sync/qr-sync';
+  selectQrSyncError,
+  selectQrSyncExpiresAt,
+} from '../../../../selectors/qr-sync/qr-sync';
+import { useQrSyncCountdown } from '../hooks/use-qr-sync-countdown';
 
 const CODE_LENGTH = 6;
 const CELLS = Array.from({ length: CODE_LENGTH }, (_, index) => index);
 const CONNECTING_HELPER_DELAY_MS = 1200;
 const CONNECTING_HELPER_TEXT = 'Still connecting. Don’t close MetaMask mobile.';
-// TODO: source this from the controller
 
 const getCodeDigits = (text: string) =>
   text.replace(/\D/gu, '').slice(0, CODE_LENGTH);
-
-const MWP_SESSION_REQUEST_EXPIRY_SECONDS =
-  QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT / 1000;
 
 type EnterVerificationCodeProps = {
   onRestart: () => void;
@@ -47,6 +44,8 @@ const EnterVerificationCode = ({
 }: EnterVerificationCodeProps) => {
   const t = useI18nContext();
   const qrSyncError = useSelector(selectQrSyncError);
+  const expiresAt = useSelector(selectQrSyncExpiresAt);
+  const secondsLeft = useQrSyncCountdown(expiresAt);
   const hasMaxedOutAttempts =
     qrSyncError?.code === QrSyncErrorCodes.OTP_ATTEMPTS_EXCEEDED;
   const [isError, setIsError] = useState(false);
@@ -54,10 +53,7 @@ const EnterVerificationCode = ({
   const [showConnectingHelper, setShowConnectingHelper] = useState(false);
   const [code, setCode] = useState('');
   const [isFocused, setIsFocused] = useState(false);
-  const [secondsLeft, setSecondsLeft] = useState(
-    MWP_SESSION_REQUEST_EXPIRY_SECONDS,
-  );
-  const isExpired = secondsLeft <= 0;
+  const isExpired = secondsLeft === 0;
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -71,18 +67,6 @@ const EnterVerificationCode = ({
 
     return () => clearTimeout(timeoutId);
   }, [isAwaitingSyncOffer]);
-
-  useEffect(() => {
-    if (isExpired) {
-      return undefined;
-    }
-
-    const intervalId = setInterval(() => {
-      setSecondsLeft((prev) => Math.max(prev - 1, 0));
-    }, 1000);
-
-    return () => clearInterval(intervalId);
-  }, [isExpired]);
 
   const handleChange = useCallback(async (rawValue: string) => {
     const nextCode = getCodeDigits(rawValue);

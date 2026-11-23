@@ -1,5 +1,11 @@
 import React from 'react';
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -25,16 +31,20 @@ type QrSyncError = {
   message: string;
 };
 
+const SESSION_NOW = 1_000_000;
+
 const renderComponent = (
   qrSyncError: QrSyncError | null = null,
   onRestart: () => void = jest.fn(),
   isAwaitingSyncOffer = false,
+  qrSyncExpiresAt: number | null = null,
 ) => {
   const store = configureMockStore([thunk])({
     ...mockState,
     metamask: {
       ...mockState.metamask,
       qrSyncError,
+      qrSyncExpiresAt,
     },
   });
   return {
@@ -62,6 +72,7 @@ describe('EnterVerificationCode', () => {
   });
 
   afterEach(() => {
+    cleanup();
     jest.useRealTimers();
   });
 
@@ -189,7 +200,13 @@ describe('EnterVerificationCode', () => {
 
   it('shows the expired message and restarts the flow on request', () => {
     jest.useFakeTimers();
-    const { onRestart } = renderComponent();
+    jest.setSystemTime(SESSION_NOW);
+    const { onRestart } = renderComponent(
+      null,
+      jest.fn(),
+      false,
+      SESSION_NOW + QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT,
+    );
 
     act(() => {
       jest.advanceTimersByTime(QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT);
