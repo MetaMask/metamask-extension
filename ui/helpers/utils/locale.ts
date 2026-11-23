@@ -67,7 +67,11 @@ export function resolveFormattingLocale({
 export function getCurrencyDisplay(locale: string) {
   try {
     const { region } = new Intl.Locale(locale);
-    return region && dollarRegions.has(region) ? 'symbol' : 'narrowSymbol';
+    // A 3-digit region is an area (e.g. 419 Latin America), not a country, so
+    // its local currency is unknown; keep USD marked.
+    return region && (dollarRegions.has(region) || /^\d{3}$/u.test(region))
+      ? 'symbol'
+      : 'narrowSymbol';
   } catch {
     return 'narrowSymbol';
   }

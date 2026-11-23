@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { useFormatters } from './useFormatters';
 
@@ -51,5 +51,30 @@ describe('useFormatters', () => {
     const { result } = renderHook(() => useFormatters());
 
     expect(result.current.formatCurrency(100, 'USD')).toBe('$100.00');
+  });
+
+  it('marks USD in area regions with unknown currencies', () => {
+    mockUseSelector.mockReturnValue('es-419');
+    languagesSpy.mockReturnValue(['es-419']);
+
+    const { result } = renderHook(() => useFormatters());
+
+    expect(result.current.formatCurrency(35.92, 'USD')).toBe('USD\u00a035.92');
+  });
+
+  it('updates formatters when browser languages change', () => {
+    mockUseSelector.mockReturnValue('en');
+    languagesSpy.mockReturnValue(['en-US']);
+
+    const { result } = renderHook(() => useFormatters());
+
+    expect(result.current.formatNumber(1234.5)).toBe('1,234.5');
+
+    act(() => {
+      languagesSpy.mockReturnValue(['de-DE']);
+      window.dispatchEvent(new Event('languagechange'));
+    });
+
+    expect(result.current.formatNumber(1234.5)).toBe('1.234,5');
   });
 });
