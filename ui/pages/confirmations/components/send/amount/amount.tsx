@@ -49,7 +49,7 @@ export const Amount = ({
     getNativeValue,
   } = useCurrencyConversions();
   const { getMaxAmount } = useMaxAmount();
-  const { isNonEvmNativeSendType } = useSendType();
+  const { isNonEvmSendType, isTronSendType } = useSendType();
   const {
     setAmountInputMethodManual,
     setAmountInputMethodPasted,
@@ -112,8 +112,8 @@ export const Amount = ({
     value,
   ]);
 
-  const updateToMax = useCallback(() => {
-    const maxValue = getMaxAmount() ?? '0';
+  const updateToMax = useCallback(async () => {
+    const maxValue = (await getMaxAmount()) ?? '0';
     setAmount(fiatMode ? getFiatValue(maxValue) : maxValue);
     updateValue(maxValue, true);
     setAmountInputMethodPressedMax();
@@ -209,7 +209,7 @@ export const Amount = ({
           >
             {balanceDisplayValue}
           </Text>
-          {!isNonEvmNativeSendType && (
+          {(!isNonEvmSendType || isTronSendType) && (
             <ButtonLink
               marginLeft={2}
               onClick={updateToMax}

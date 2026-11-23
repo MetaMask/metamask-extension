@@ -9,11 +9,12 @@ import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import SendPage from '../../../page-objects/pages/send/send-page';
+import { TRON_CHAIN_ID } from '../../tron/mocks/common-tron';
 import {
-  TRON_CHAIN_ID,
-  TRON_RECIPIENT_ADDRESS,
-} from '../../tron/mocks/common-tron';
-import { TRON_PORTFOLIO_ACCOUNT } from '../../tron/fixtures/environments';
+  TRON_ACTIVE_RECIPIENT_ACCOUNT,
+  TRON_ACTIVE_RECIPIENT_ADDRESS,
+  TRON_PORTFOLIO_ACCOUNT,
+} from '../../tron/fixtures/environments';
 import { withTronFixtures } from '../../tron/fixtures/with-tron-fixtures';
 
 describe('Tron Send', function (this: Suite) {
@@ -22,7 +23,7 @@ describe('Tron Send', function (this: Suite) {
   it('sends total USDT balance via manual full-amount entry', async function () {
     await withTronFixtures(
       {
-        accounts: [TRON_PORTFOLIO_ACCOUNT],
+        accounts: [TRON_PORTFOLIO_ACCOUNT, TRON_ACTIVE_RECIPIENT_ACCOUNT],
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
@@ -44,7 +45,7 @@ describe('Tron Send', function (this: Suite) {
         await sendPage.checkSendFormIsLoaded();
 
         await sendPage.fillRecipient({
-          recipientAddress: TRON_RECIPIENT_ADDRESS,
+          recipientAddress: TRON_ACTIVE_RECIPIENT_ADDRESS,
         });
         // Seeded USDT balance is 2_804_595 raw = 2.804595 USDT.
         // TRC20 has no fee buffer (fee paid in TRX).
