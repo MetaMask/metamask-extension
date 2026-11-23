@@ -461,6 +461,7 @@
     "useTokenDetection": true,
     "useTransactionSimulations": true,
     "userRegion": null,
+    "userSelectedProviderId": null,
     "vbaAutorampListFetchedAt": null,
     "vbaCustomerAbilities": null,
     "version": "0",

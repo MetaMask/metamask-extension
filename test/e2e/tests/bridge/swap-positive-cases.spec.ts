@@ -4,6 +4,7 @@ import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import {
   bridgeTransaction,
+  enterBridgeQuote,
   verifySubmittedSwapTransaction,
 } from '../../page-objects/flows/bridge.flow';
 import { login } from '../../page-objects/flows/login.flow';
@@ -239,7 +240,7 @@ describe('Swap tests', function (this: Suite) {
         console.log('Requesting swap quote');
         const swapPage = new SwapPage(driver);
         // Explicitly select MUSD so the token comes from the API with securityData
-        await swapPage.enterBridgeQuote({
+        await enterBridgeQuote(driver, {
           amount: '1',
           tokenTo: 'mUSD',
         });
@@ -330,7 +331,7 @@ describe('Swap tests', function (this: Suite) {
         const swapPage = new SwapPage(driver);
 
         console.log('Requesting swap quote');
-        await swapPage.enterBridgeQuote({
+        await enterBridgeQuote(driver, {
           amount: '1',
           tokenTo: 'mUSD',
         });
@@ -413,7 +414,7 @@ describe('Swap tests', function (this: Suite) {
         const swapPage = new SwapPage(driver);
 
         console.log('Requesting swap quote');
-        await swapPage.enterBridgeQuote({
+        await enterBridgeQuote(driver, {
           amount: '1',
           tokenTo: 'mUSD',
         });
