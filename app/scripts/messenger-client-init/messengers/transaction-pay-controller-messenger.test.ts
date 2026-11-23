@@ -29,6 +29,22 @@ describe('getTransactionPayControllerMessenger', () => {
     );
   });
 
+  it('delegates the AccountTreeController actions that resolve the payment token account', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getTransactionPayControllerMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        actions: expect.arrayContaining([
+          'AccountTreeController:getAccountContext',
+          'AccountTreeController:getAccountGroupObject',
+        ]),
+      }),
+    );
+  });
+
   it('delegates SentinelApiService:simulateTransactions', () => {
     const messenger = getRootMessenger<never, never>();
     const delegateSpy = jest.spyOn(messenger, 'delegate');
@@ -64,6 +80,7 @@ describe('getTransactionPayControllerInitMessenger', () => {
       expect.objectContaining({
         actions: expect.arrayContaining([
           'AccountsController:getSelectedAccount',
+          'AccountsController:getState',
           'NetworkController:getNetworkClientById',
           'TransactionController:getState',
           'TransactionController:updateTransactionMetadata',

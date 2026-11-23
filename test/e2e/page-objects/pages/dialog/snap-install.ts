@@ -25,6 +25,11 @@ class SnapInstall {
 
   private readonly approveButton = '[data-testid="confirmation-submit-button"]';
 
+  private readonly cancelButton = {
+    tag: 'button',
+    text: 'Cancel',
+  };
+
   private readonly closeButton = {
     tag: 'button',
     text: 'Close',
@@ -126,6 +131,16 @@ class SnapInstall {
 
   async clickApproveButtonAndWaitForWindowToClose(): Promise<void> {
     await this.driver.clickElementAndWaitForWindowToClose(this.approveButton);
+  }
+
+  /**
+   * Waits for the install confirmation ("Add to MetaMask") to load, then
+   * rejects it and waits for the dialog to close.
+   */
+  async clickCancelInstallAndWaitForClose(): Promise<void> {
+    console.log('Clicking Cancel on snap install and wait for dialog to close');
+    await this.waitForAddToMetaMaskInstallHeader();
+    await this.driver.clickElementAndWaitForWindowToClose(this.cancelButton);
   }
 
   async clickCheckboxPermission() {

@@ -73,19 +73,24 @@ const FROM_ADDRESS_MOCK = '0xabcdef1234567890abcdef1234567890abcdef12';
 
 const mockStore = configureStore([thunk]);
 
-const MOCK_PAY_TOKEN = {
-  address: ADDRESS_MOCK,
+const MOCK_TOKEN_DATA = {
   balanceHuman: '1.5',
   balanceFiat: '$150.00',
   balanceRaw: '1500000000000000000',
   balanceUsd: '150',
-  chainId: CHAIN_ID_MOCK,
   decimals: 18,
   symbol: 'ETH',
 } as const;
 
+const MOCK_PAY_TOKEN = {
+  ...MOCK_TOKEN_DATA,
+  assetId: `eip155:1/erc20:${ADDRESS_MOCK}`,
+} as const;
+
 const MOCK_REQUIRED_TOKEN = {
-  ...MOCK_PAY_TOKEN,
+  ...MOCK_TOKEN_DATA,
+  address: ADDRESS_MOCK,
+  chainId: CHAIN_ID_MOCK,
   allowUnderMinimum: false,
   amountFiat: '$50.00',
   amountHuman: '0.5',

@@ -9,7 +9,7 @@ import type {
   AssignmentPatternProperty,
   KeyValuePatternProperty,
 } from '@swc/types';
-import { TYPESCRIPT_FILE_RE } from '../helpers';
+import { TYPESCRIPT_FILE_RE } from '../helpers.ts';
 
 // Options are serialized to a JSON array for thread-loader compatibility
 export type EnvValidationLoaderOptions = {

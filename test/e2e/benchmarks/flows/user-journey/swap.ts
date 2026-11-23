@@ -8,6 +8,7 @@ import { generateWalletState } from '../../../../../app/scripts/fixtures/generat
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import { withFixtures } from '../../../helpers';
 import type { MockedEndpoint } from '../../../mock-e2e';
+import { createSwap } from '../../../page-objects/flows/bridge.flow';
 import { login } from '../../../page-objects/flows/login.flow';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -103,7 +104,7 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
 
         // Measure: Fetch quotes
         const swapPage = new SwapPage(driver);
-        await swapPage.createSwap({
+        await createSwap(driver, {
           amount: 0.01,
           swapTo: 'USDC',
           swapToContractAddress: SOLANA_USDC_CONTRACT_ADDRESS,

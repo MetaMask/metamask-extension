@@ -27,8 +27,9 @@ export const useDefaultAddress = (
   const defaultAddressScope = useSelector(
     getDefaultAddressScope,
   ) as DefaultAddressScope;
-  const { defaultAddress } = useSelector((state) =>
-    getDefaultScopeAndAddressByAccountGroupId(state, groupId),
+  const defaultAddress = useSelector(
+    (state) =>
+      getDefaultScopeAndAddressByAccountGroupId(state, groupId).defaultAddress,
   );
 
   const displayDefaultAddress = showDefaultAddressPreference && defaultAddress;

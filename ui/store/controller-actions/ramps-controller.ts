@@ -7,6 +7,7 @@ import type {
   Quote,
   QuotesResponse,
   RampsOrder,
+  SelectProviderForAssetOptions,
   TokensResponse,
   UserRegion,
 } from '@metamask/ramps-controller';
@@ -30,10 +31,20 @@ export async function setRampsSelectedToken(assetId: string): Promise<void> {
 
 export async function setRampsSelectedProvider(
   provider: Provider | string | null,
-  options?: { autoSelected?: boolean },
+  options?: { autoSelected?: boolean; userSelected?: boolean },
 ): Promise<void> {
   return submitRequestToBackground('RampsController:setSelectedProvider', [
     provider,
+    options,
+  ]);
+}
+
+export async function selectRampsProviderForAsset(
+  assetId: string | null,
+  options?: SelectProviderForAssetOptions,
+): Promise<string | null> {
+  return submitRequestToBackground('RampsController:selectProviderForAsset', [
+    assetId,
     options,
   ]);
 }

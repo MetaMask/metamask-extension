@@ -1,8 +1,8 @@
 import { describe, it, afterEach, mock } from 'node:test';
 import assert from 'node:assert';
-import { loadBuildTypesConfig } from '../../lib/build-type';
-import { getDryRunMessage, parseArgv } from '../utils/cli';
-import { Browsers, noop } from '../utils/helpers';
+import { loadBuildTypesConfig } from '../../lib/build-type.ts';
+import { getDryRunMessage, parseArgv } from '../utils/cli.ts';
+import { Browsers, noop } from '../utils/helpers.ts';
 
 describe('./utils/cli.ts', () => {
   afterEach(() => {
