@@ -7274,22 +7274,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/analytics-controller@npm:^4.3.1":
-  version: 4.3.1
-  resolution: "@metamask/analytics-controller@npm:4.3.1"
-  dependencies:
-    "@metamask/base-controller": "npm:^10.1.0"
-    "@metamask/config-registry-controller": "npm:^6.0.0"
-    "@metamask/geolocation-controller": "npm:^2.0.0"
-    "@metamask/messenger": "npm:^3.0.0"
-    "@metamask/utils": "npm:^12.0.1"
-    lodash-es: "npm:^4.18.1"
-    uuid: "npm:^14.0.2"
-  checksum: 10/6b41e8601dddc918072e5bdfe578a19847b0e944a6d5757d99373555ad635d9898f1673bfac6fb7b540a0e7e4500d560f893dc589cce64ed1b5078ffc6393456
-  languageName: node
-  linkType: hard
-
-"@metamask/analytics-controller@npm:^4.4.0":
+"@metamask/analytics-controller@npm:^4.3.1, @metamask/analytics-controller@npm:^4.4.0":
   version: 4.4.0
   resolution: "@metamask/analytics-controller@npm:4.4.0"
   dependencies:
@@ -42689,16 +42674,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.0.0, semver@npm:^7.1.1, semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0, semver@npm:^7.6.2, semver@npm:^7.6.3, semver@npm:^7.7.1, semver@npm:^7.7.2, semver@npm:^7.7.3, semver@npm:^7.8.5":
-  version: 7.8.5
-  resolution: "semver@npm:7.8.5"
-  bin:
-    semver: bin/semver.js
-  checksum: 10/9b01d2ff11e6e4a4539b7ca3c5f280c8704cb397a28504469f2ed4f00ad2194748d756647362a9712fff30984d15772ab7f083108c2fb508e2096ae9e708f22c
-  languageName: node
-  linkType: hard
-
-"semver@npm:^7.8.6":
+"semver@npm:^7.0.0, semver@npm:^7.1.1, semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0, semver@npm:^7.6.2, semver@npm:^7.6.3, semver@npm:^7.7.1, semver@npm:^7.7.2, semver@npm:^7.7.3, semver@npm:^7.8.5, semver@npm:^7.8.6":
   version: 7.8.6
   resolution: "semver@npm:7.8.6"
   bin:
