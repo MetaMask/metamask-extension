@@ -51,9 +51,11 @@ type RebateBannerProps = {
  *
  * The tooltip opens on hover, focus and (on Chromium 141+) touch via native
  * Interest Invokers, and its `popover="hint"` panel renders in the top layer,
- * so it stays readable above modal overlays. Browsers without Interest
- * Invokers fall back to a hover/focus-triggered `Popover` whose z-index sits
- * above the modal layer (1050).
+ * so it stays readable above modal overlays. It opens above the trigger,
+ * right-aligned to it, because every surface mounts the banner right above a
+ * CTA; `position-try-fallbacks` flips it below only when there is no room
+ * above. Browsers without Interest Invokers fall back to a hover/focus
+ * triggered `Popover` whose z-index sits above the modal layer (1050).
  */
 export const RebateBanner = ({
   rebatePercent,
@@ -206,7 +208,7 @@ export const RebateBanner = ({
           onClick={(event) => event.stopPropagation()}
           onKeyDown={(event) => event.stopPropagation()}
           data-testid={`${testId}-tooltip`}
-          className="m-0 max-w-[264px] rounded-lg border border-border-muted bg-background-default p-4 text-start text-text-default shadow-md [position-area:bottom]"
+          className="m-0 mb-2 max-w-[264px] rounded-lg border border-border-muted bg-background-default p-4 text-start text-text-default shadow-md [position-area:top_span-x-start] [justify-self:end] [position-try-fallbacks:flip-block]"
         >
           {tooltipContent}
         </div>
