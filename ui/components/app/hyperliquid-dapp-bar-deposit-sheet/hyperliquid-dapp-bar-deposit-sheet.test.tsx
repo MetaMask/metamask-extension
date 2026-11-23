@@ -93,6 +93,7 @@ describe('HyperliquidDappBarDepositSheet', () => {
     const header = getByTestId('hyperliquid-dapp-bar-deposit-sheet__header');
     expect(header).toHaveTextContent(/^Perps balance$/u);
     const row = getByTestId('hyperliquid-dapp-bar-deposit-sheet__row');
+    const content = getByTestId('hyperliquid-dapp-bar-deposit-sheet__content');
     const body = row.querySelector('.hyperliquid-dapp-bar-deposit-sheet__body');
     const controls = headerRow.querySelector(
       '.hyperliquid-dapp-bar-deposit-sheet__controls',
@@ -108,7 +109,8 @@ describe('HyperliquidDappBarDepositSheet', () => {
     ).not.toBeInTheDocument();
     expect(headerRow).toHaveAttribute('aria-expanded', 'true');
     // Header row sits above the balance row.
-    expect(headerRow.nextElementSibling).toBe(row);
+    expect(headerRow.nextElementSibling).toBe(content);
+    expect(content).toContainElement(row);
     expect(
       queryByTestId('hyperliquid-dapp-bar-deposit-sheet__title'),
     ).not.toBeInTheDocument();
@@ -153,24 +155,32 @@ describe('HyperliquidDappBarDepositSheet', () => {
   });
 
   it('toggles the balance details by clicking anywhere on the header row', () => {
-    const { getByTestId, queryByTestId } = renderSheet();
+    const { getByTestId } = renderSheet();
     const headerRow = getByTestId(
       'hyperliquid-dapp-bar-deposit-sheet__header-row',
     );
+    const content = getByTestId('hyperliquid-dapp-bar-deposit-sheet__content');
 
     fireEvent.click(getByTestId('hyperliquid-dapp-bar-deposit-sheet__header'));
 
     expect(headerRow).toHaveAttribute('aria-expanded', 'false');
+    expect(content).toHaveAttribute('aria-hidden', 'true');
+    expect(content).toHaveAttribute('inert');
+    expect(content).not.toHaveClass(
+      'hyperliquid-dapp-bar-deposit-sheet__content--expanded',
+    );
     expect(
-      queryByTestId('hyperliquid-dapp-bar-deposit-sheet__row'),
-    ).not.toBeInTheDocument();
+      getByTestId('hyperliquid-dapp-bar-deposit-sheet__row'),
+    ).toBeInTheDocument();
 
     fireEvent.click(headerRow);
 
     expect(headerRow).toHaveAttribute('aria-expanded', 'true');
-    expect(
-      getByTestId('hyperliquid-dapp-bar-deposit-sheet__row'),
-    ).toBeInTheDocument();
+    expect(content).toHaveAttribute('aria-hidden', 'false');
+    expect(content).not.toHaveAttribute('inert');
+    expect(content).toHaveClass(
+      'hyperliquid-dapp-bar-deposit-sheet__content--expanded',
+    );
   });
 
   it('wires Add funds and Withdraw to the Perps deposit and withdraw triggers', () => {

@@ -154,6 +154,10 @@
   }
 }
 
+$hyperliquid-dapp-bar-motion-duration: 800ms;
+$hyperliquid-dapp-bar-motion-easing: cubic-bezier(0.22, 1, 0.36, 1);
+$hyperliquid-dapp-bar-toggle-duration: 240ms;
+
 @keyframes hyperliquid-dapp-bar-deposit-sheet-slide-up {
   from {
     transform: translateY(100%);
@@ -180,8 +184,9 @@
   background-color: var(--color-background-default);
   border-radius: 24px 24px 0 0;
   box-shadow: 0 -8px 16px -6px var(--color-shadow-default);
-  animation: hyperliquid-dapp-bar-deposit-sheet-slide-up 800ms
-    cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation: hyperliquid-dapp-bar-deposit-sheet-slide-up
+    $hyperliquid-dapp-bar-motion-duration $hyperliquid-dapp-bar-motion-easing
+    backwards;
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;
@@ -205,12 +210,47 @@
     min-width: 0;
   }
 
+  &__content {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      grid-template-rows $hyperliquid-dapp-bar-toggle-duration
+        $hyperliquid-dapp-bar-motion-easing,
+      opacity 100ms ease-out,
+      visibility 0s linear $hyperliquid-dapp-bar-toggle-duration;
+
+    &--expanded {
+      grid-template-rows: 1fr;
+      opacity: 1;
+      visibility: visible;
+      transition:
+        grid-template-rows $hyperliquid-dapp-bar-toggle-duration
+          $hyperliquid-dapp-bar-motion-easing,
+        opacity 140ms ease-out 40ms,
+        visibility 0s;
+
+      .hyperliquid-dapp-bar-deposit-sheet__row {
+        transform: translateY(0);
+      }
+    }
+  }
+
+  &__content-inner {
+    min-height: 0;
+    overflow: hidden;
+  }
+
   &__row {
     display: flex;
     align-items: flex-start;
     width: 100%;
-    margin-top: 8px;
+    padding-top: 8px;
     gap: 16px;
+    transform: translateY(-6px);
+    transition: transform $hyperliquid-dapp-bar-toggle-duration
+      $hyperliquid-dapp-bar-motion-easing;
   }
 
   &__controls {
@@ -219,6 +259,12 @@
     display: flex;
     align-items: center;
     margin-right: 4px;
+    transition: transform $hyperliquid-dapp-bar-toggle-duration
+      $hyperliquid-dapp-bar-motion-easing;
+
+    &--collapsed {
+      transform: rotate(180deg);
+    }
   }
 
   &__body {
@@ -233,6 +279,14 @@
       font-size: var(--typography-s-display-md-font-size);
       line-height: var(--typography-s-display-md-line-height);
       letter-spacing: var(--typography-s-display-md-letter-spacing);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &__content,
+    &__row,
+    &__controls {
+      transition: none;
     }
   }
 }

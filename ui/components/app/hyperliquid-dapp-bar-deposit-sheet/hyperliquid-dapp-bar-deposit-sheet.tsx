@@ -81,31 +81,48 @@ export const HyperliquidDappBarDepositSheet = memo(() => {
         >
           {t('perpsBalance')}
         </Text>
-        <div className="hyperliquid-dapp-bar-deposit-sheet__controls">
+        <div
+          className={`hyperliquid-dapp-bar-deposit-sheet__controls${
+            isExpanded
+              ? ''
+              : ' hyperliquid-dapp-bar-deposit-sheet__controls--collapsed'
+          }`}
+        >
           <Icon
-            name={isExpanded ? IconName.ArrowDown : IconName.ArrowUp}
+            name={IconName.ArrowDown}
             size={IconSize.Sm}
             data-testid="hyperliquid-dapp-bar-deposit-sheet__toggle"
           />
         </div>
       </button>
-      {/* PROTOTYPE: hide the body when collapsed. */}
-      {isExpanded ? (
-        <div
-          className="hyperliquid-dapp-bar-deposit-sheet__row"
-          data-testid="hyperliquid-dapp-bar-deposit-sheet__row"
-        >
-          <Box className="hyperliquid-dapp-bar-deposit-sheet__body">
-            <PerpsMarketBalanceActions
-              showActionButtons
-              actionButtonSize={ButtonSize.Sm}
-              actionsPlacement="beside"
-              onAddFunds={triggerDeposit}
-              onWithdraw={triggerWithdraw}
-            />
-          </Box>
+      <div
+        className={`hyperliquid-dapp-bar-deposit-sheet__content${
+          isExpanded
+            ? ' hyperliquid-dapp-bar-deposit-sheet__content--expanded'
+            : ''
+        }`}
+        aria-hidden={!isExpanded}
+        data-testid="hyperliquid-dapp-bar-deposit-sheet__content"
+        // React 18 has no `inert` prop; the empty attribute enables it.
+        {...(isExpanded ? {} : ({ inert: '' } as object))}
+      >
+        <div className="hyperliquid-dapp-bar-deposit-sheet__content-inner">
+          <div
+            className="hyperliquid-dapp-bar-deposit-sheet__row"
+            data-testid="hyperliquid-dapp-bar-deposit-sheet__row"
+          >
+            <Box className="hyperliquid-dapp-bar-deposit-sheet__body">
+              <PerpsMarketBalanceActions
+                showActionButtons
+                actionButtonSize={ButtonSize.Sm}
+                actionsPlacement="beside"
+                onAddFunds={triggerDeposit}
+                onWithdraw={triggerWithdraw}
+              />
+            </Box>
+          </div>
         </div>
-      ) : null}
+      </div>
     </Box>
   );
 });
