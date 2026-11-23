@@ -4931,10 +4931,6 @@
     "message": "Fund Hyperliquid with MetaMask",
     "description": "The title of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
   },
-  "hyperliquidDepositSheetBalanceHeader": {
-    "message": "Hyperliquid balance",
-    "description": "Header at the top of the Hyperliquid dapp-bar deposit sheet, above the Perps balance."
-  },
   "hyperliquidDepositToastSuccessDescription": {
     "message": "Funds are ready to trade on Hyperliquid and MetaMask Perps.",
     "description": "Description shown in the success toast after a perps deposit initiated from the Hyperliquid deposit prompt"
@@ -8083,6 +8079,10 @@
   "perpsAvailableToTrade": {
     "message": "Available to trade",
     "description": "Label for the available balance that can be used for trading"
+  },
+  "perpsAvailableToWithdraw": {
+    "message": "$1 available to withdraw",
+    "description": "Tooltip shown when hovering the Hyperliquid dapp-bar balance. $1 is the formatted amount that can be withdrawn."
   },
   "perpsBalance": {
     "message": "Perps balance"

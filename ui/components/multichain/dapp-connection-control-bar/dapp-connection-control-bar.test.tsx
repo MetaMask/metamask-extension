@@ -200,11 +200,11 @@ describe('DappConnectionControlBar', () => {
       expect(getByTestId('dapp-connection-control-bar')).toBeInTheDocument();
     });
 
-    it('does not show the Hyperliquid deposit sheet for non-Hyperliquid origins', () => {
-      const { queryByTestId } = renderConnected();
+    it('shows the prototype sheet for non-Hyperliquid origins', () => {
+      const { getByTestId } = renderConnected();
       expect(
-        queryByTestId('hyperliquid-dapp-bar-deposit-sheet'),
-      ).not.toBeInTheDocument();
+        getByTestId('hyperliquid-dapp-bar-deposit-sheet'),
+      ).toBeInTheDocument();
     });
 
     it('displays the site origin', () => {
@@ -715,18 +715,19 @@ describe('DappConnectionControlBar', () => {
   });
 
   describe('when not connected to a dapp', () => {
-    it('does not render the control bar', () => {
+    it('renders the prototype sheet and control bar', () => {
       const store = configureStore(disconnectedMockState);
-      const { queryByTestId } = renderWithProvider(
+      const { getByTestId } = renderWithProvider(
         <DappConnectionControlBar />,
         store,
       );
       expect(
-        queryByTestId('dapp-connection-control-bar'),
-      ).not.toBeInTheDocument();
+        getByTestId('hyperliquid-dapp-bar-deposit-sheet'),
+      ).toBeInTheDocument();
+      expect(getByTestId('dapp-connection-control-bar')).toBeInTheDocument();
     });
 
-    it('does not render when activeTabOrigin is empty', () => {
+    it('uses the prototype fallback when activeTabOrigin is empty', () => {
       const state = {
         metamask: {
           ...mockState.metamask,
@@ -742,13 +743,14 @@ describe('DappConnectionControlBar', () => {
         activeTab: { ...activeTab, origin: '' },
       };
       const store = configureStore(state);
-      const { queryByTestId } = renderWithProvider(
+      const { getByTestId } = renderWithProvider(
         <DappConnectionControlBar />,
         store,
       );
       expect(
-        queryByTestId('dapp-connection-control-bar'),
-      ).not.toBeInTheDocument();
+        getByTestId('hyperliquid-dapp-bar-deposit-sheet'),
+      ).toBeInTheDocument();
+      expect(getByTestId('dapp-connection-control-bar')).toBeInTheDocument();
     });
   });
 
@@ -825,13 +827,13 @@ describe('DappConnectionControlBar', () => {
       ).toBe(getByTestId('dapp-connection-control-bar'));
     });
 
-    it('hides the Hyperliquid deposit sheet when Perps is unavailable', () => {
+    it('keeps the prototype sheet visible when Perps is unavailable', () => {
       mockGetIsPerpsExperienceAvailable.mockReturnValue(false);
-      const { queryByTestId } = renderHyperliquidConnected();
+      const { getByTestId } = renderHyperliquidConnected();
 
       expect(
-        queryByTestId('hyperliquid-dapp-bar-deposit-sheet'),
-      ).not.toBeInTheDocument();
+        getByTestId('hyperliquid-dapp-bar-deposit-sheet'),
+      ).toBeInTheDocument();
     });
   });
 });

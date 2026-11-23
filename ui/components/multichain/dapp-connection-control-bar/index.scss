@@ -134,7 +134,7 @@
 // is sliding. The bar's z-index stays above the sheet, so the sheet rises from
 // fully behind the bar. The top gutter is the upward shadow's reach: it stays
 // inside the clip box, so the shadow is visible as the sheet rises and does
-// not pop in when the clip is removed for the overflow menu.
+// not pop in when the clip is removed.
 .hyperliquid-dapp-bar-sheet-stack {
   display: flex;
   flex-direction: column;
@@ -173,11 +173,10 @@
   // over the sheet at the seam and for the whole slide.
   z-index: design-system.$dapp-connection-bar-z-index - 1;
   width: 100%;
-  // Right padding leaves the overflow control off the sheet edge. The row gap
-  // keeps Withdraw/Fund clear of that control.
   padding: 12px 12px 12px 16px;
-  // Flat fill (no gradient). The seam against the bar comes from the bar's own
-  // top border, see the sibling rule below.
+  // Flat fill (no gradient). The seam against the bar is the bar's own top
+  // border (`--bar-border-color`), the same line used between the bottom nav
+  // and the dapp connection bar.
   background-color: var(--color-background-default);
   border-radius: 24px 24px 0 0;
   box-shadow: 0 -8px 16px -6px var(--color-shadow-default);
@@ -193,8 +192,13 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    margin-bottom: 4px;
     gap: 16px;
+    padding: 0;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+    background: none;
+    border: 0;
   }
 
   &__header {
@@ -205,6 +209,7 @@
     display: flex;
     align-items: flex-start;
     width: 100%;
+    margin-top: 8px;
     gap: 16px;
   }
 
@@ -222,23 +227,25 @@
     width: auto;
     overflow: hidden;
 
+    // display-md: larger than the sheet header, and narrow enough to sit beside
+    // Withdraw and Add funds. Perps home keeps amount-display-lg.
     [data-testid='perps-balance-actions-total'] {
-      font-size: 20px;
-      line-height: 28px;
-      letter-spacing: normal;
-    }
-
-    [data-testid='perps-balance-actions-available'],
-    [data-testid='perps-balance-actions-available'] * {
-      font-size: 12px;
-      line-height: 16px;
+      font-size: var(--typography-s-display-md-font-size);
+      line-height: var(--typography-s-display-md-line-height);
+      letter-spacing: var(--typography-s-display-md-letter-spacing);
     }
   }
 }
 
-// Subtle seam between the sheet and the bar. Only matches while a sheet is
-// mounted directly above the bar, so the bar keeps its normal muted border
-// while the sheet is loading or hidden.
-.hyperliquid-dapp-bar-deposit-sheet + .dapp-connection-control-bar {
-  border-top-color: var(--color-border-muted);
+html[data-theme='dark'] .dapp-connection-control-bar {
+  background-color: var(--color-background-elevated1);
+  background-image: none;
+}
+
+html[data-theme='dark'] .hyperliquid-dapp-bar-deposit-sheet {
+  background-color: var(--color-background-elevated1);
+}
+
+.hyperliquid-dapp-bar-balance-tooltip {
+  z-index: design-system.$dapp-connection-bar-popover-z-index;
 }

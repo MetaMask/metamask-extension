@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useId, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -7,6 +7,8 @@ import {
   ButtonSize,
   BoxAlignItems,
   BoxJustifyContent,
+  Popover,
+  PopoverPosition,
   SensitiveText,
   SensitiveTextLength,
   Text,
@@ -31,6 +33,9 @@ import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
 import { getTradeableBalance } from '../../../../hooks/perps/getTradeableBalance';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import { PerpsBalanceActionsSkeleton } from '../perps-skeletons';
+
+const PROTOTYPE_DAPP_BAR_TOTAL_BALANCE = '12345.67';
+const PROTOTYPE_DAPP_BAR_WITHDRAWABLE_BALANCE = '10125';
 
 /** Handler from perps triggers (e.g. deposit / withdraw); may return a Promise. */
 export type PerpsBalanceActionHandler = () => void | Promise<unknown>;
@@ -107,13 +112,34 @@ const PerpsMarketBalanceActions = ({
   // be redacted the same way the old `PerpsBalanceDropdown` masked them.
   const { privacyMode } = useSelector(getPreferences);
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
+  const [isAvailableToWithdrawOpen, setIsAvailableToWithdrawOpen] =
+    useState(false);
+  const [balanceReference, setBalanceReference] = useState<HTMLElement | null>(
+    null,
+  );
+  const availableToWithdrawTooltipId = useId();
+  const isDappBarPlacement = actionsPlacement === 'beside';
 
-  // Use account data or defaults
-  const totalBalance = account?.totalBalance ?? '0';
+  // PROTOTYPE: keep the dapp-bar sheet funded for visual review without a
+  // live Hyperliquid account. Perps home continues to use the real account.
+  const totalBalance = isDappBarPlacement
+    ? PROTOTYPE_DAPP_BAR_TOTAL_BALANCE
+    : (account?.totalBalance ?? '0');
   // "available" label on perps home reflects the order-entry (tradeable)
   // balance: for HyperLiquid unified accounts this folds unreserved spot USDC
   // on top of the withdrawable perps balance.
-  const availableBalance = getTradeableBalance(account);
+  const availableBalance = isDappBarPlacement
+    ? PROTOTYPE_DAPP_BAR_WITHDRAWABLE_BALANCE
+    : getTradeableBalance(account);
+  const formattedAvailableBalance = formatCurrency(
+    parseFloat(availableBalance),
+    'USD',
+  );
+  const availableToWithdrawLabel = t('perpsAvailableToWithdraw', [
+    privacyMode
+      ? '•'.repeat(Number(SensitiveTextLength.Short))
+      : formattedAvailableBalance,
+  ]);
 
   // totalBalance is HL accountValue (perps equity, already includes unrealizedPnl) + spot
   const accountValue = parseFloat(totalBalance);
@@ -158,6 +184,14 @@ const PerpsMarketBalanceActions = ({
     onLearnMore?.();
   }, [onLearnMore, track]);
 
+  const showAvailableToWithdraw = useCallback(() => {
+    setIsAvailableToWithdrawOpen(true);
+  }, []);
+
+  const hideAvailableToWithdraw = useCallback(() => {
+    setIsAvailableToWithdrawOpen(false);
+  }, []);
+
   const geoBlockModal = (
     <PerpsGeoBlockModal
       isOpen={isGeoBlockModalOpen}
@@ -167,7 +201,7 @@ const PerpsMarketBalanceActions = ({
 
   // Show a skeleton while the initial account snapshot is being fetched so we
   // don't flash the zero-balance state before real data arrives.
-  if (isInitialLoading) {
+  if (isInitialLoading && !isDappBarPlacement) {
     return (
       <PerpsBalanceActionsSkeleton
         placement={actionsPlacement === 'beside' ? 'beside' : 'stacked'}
@@ -175,13 +209,14 @@ const PerpsMarketBalanceActions = ({
     );
   }
 
-  // Sheet-only row: balance (and available, under it) on the left. Content-sized
-  // Withdraw and Fund buttons are pushed to the trailing edge. `layout` is ignored.
+  // Sheet-only row: the balance sits on the left. Hovering it reveals how much
+  // is available to withdraw. Content-sized Withdraw and Fund buttons are
+  // pushed to the trailing edge. `layout` is ignored.
   if (actionsPlacement === 'beside') {
     return (
       <Box
         flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Start}
+        alignItems={BoxAlignItems.End}
         justifyContent={BoxJustifyContent.Between}
         className="w-full"
         data-testid="perps-balance-actions"
@@ -191,39 +226,47 @@ const PerpsMarketBalanceActions = ({
           className="min-w-0 flex-1"
           data-testid="perps-balance-actions-summary"
         >
-          <SensitiveText
-            variant={TextVariant.AmountDisplayLg}
-            fontFamily={FontFamily.Hero}
-            isHidden={privacyMode}
-            length={SensitiveTextLength.Medium}
-            data-testid="perps-balance-actions-total"
+          <span
+            ref={setBalanceReference}
+            className="inline-flex w-fit max-w-full"
+            tabIndex={0}
+            onMouseEnter={showAvailableToWithdraw}
+            onMouseLeave={hideAvailableToWithdraw}
+            onFocus={showAvailableToWithdraw}
+            onBlur={hideAvailableToWithdraw}
+            aria-describedby={
+              isAvailableToWithdrawOpen
+                ? availableToWithdrawTooltipId
+                : undefined
+            }
+            data-testid="perps-balance-actions-total-trigger"
           >
-            {formatCurrency(accountValue, 'USD')}
-          </SensitiveText>
-          {accountValue > 0 && (
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              gap={1}
-              marginTop={1}
-              data-testid="perps-balance-actions-available"
+            <SensitiveText
+              variant={TextVariant.AmountDisplayLg}
+              fontFamily={FontFamily.Hero}
+              isHidden={privacyMode}
+              length={SensitiveTextLength.Medium}
+              data-testid="perps-balance-actions-total"
             >
-              <SensitiveText
-                variant={TextVariant.BodyMd}
-                color={TextColor.TextAlternative}
-                isHidden={privacyMode}
-                length={SensitiveTextLength.Short}
-                data-testid="perps-balance-actions-available-value"
-              >
-                {formatCurrency(parseFloat(availableBalance), 'USD')}
-              </SensitiveText>
-              <Text
-                variant={TextVariant.BodyMd}
-                color={TextColor.TextAlternative}
-              >
-                {t('perpsAvailable').toLowerCase()}
-              </Text>
-            </Box>
-          )}
+              {formatCurrency(accountValue, 'USD')}
+            </SensitiveText>
+          </span>
+          <Popover
+            id={availableToWithdrawTooltipId}
+            isOpen={isAvailableToWithdrawOpen}
+            position={PopoverPosition.TopStart}
+            referenceElement={balanceReference}
+            isPortal
+            preventOverflow
+            flip
+            onPressEscKey={hideAvailableToWithdraw}
+            className="hyperliquid-dapp-bar-balance-tooltip"
+            data-testid="perps-balance-actions-withdraw-tooltip"
+          >
+            <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
+              {availableToWithdrawLabel}
+            </Text>
+          </Popover>
         </Box>
         {showActionButtons && (
           <Box

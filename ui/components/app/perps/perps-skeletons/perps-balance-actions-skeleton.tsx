@@ -10,8 +10,8 @@ import {
 type PerpsBalanceActionsSkeletonProps = {
   /**
    * `stacked` matches the Perps home header. `beside` matches the dapp-bar
-   * sheet: a 28px balance line, a 16px available line, and two 32px buttons
-   * on the right, so the sheet does not change height when data arrives.
+   * sheet: a display-md balance line and two 32px buttons on the right, so
+   * the sheet does not change height when data arrives.
    */
   placement?: 'stacked' | 'beside';
 };
@@ -30,16 +30,13 @@ export const PerpsBalanceActionsSkeleton = ({
     return (
       <Box
         flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Start}
+        alignItems={BoxAlignItems.Center}
         justifyContent={BoxJustifyContent.Between}
         className="w-full"
         data-testid="perps-balance-actions-skeleton"
       >
         <Box flexDirection={BoxFlexDirection.Column} className="min-w-0 flex-1">
-          <Skeleton className="h-7 w-24" />
-          <Box marginTop={1}>
-            <Skeleton className="h-4 w-20" />
-          </Box>
+          <Skeleton className="h-10 w-24" />
         </Box>
         <Box
           flexDirection={BoxFlexDirection.Row}

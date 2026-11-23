@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, fireEvent } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 import { ButtonSize } from '@metamask/design-system-react';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -8,41 +8,6 @@ import { HyperliquidDappBarDepositSheet } from './hyperliquid-dapp-bar-deposit-s
 
 const mockTriggerDeposit = jest.fn();
 const mockTriggerWithdraw = jest.fn();
-
-const mockAccountLoading: {
-  isInitialLoading: boolean;
-  subscribers: Set<() => void>;
-} = {
-  isInitialLoading: false,
-  subscribers: new Set(),
-};
-
-const setAccountLoading = (isInitialLoading: boolean) => {
-  mockAccountLoading.isInitialLoading = isInitialLoading;
-  act(() => {
-    mockAccountLoading.subscribers.forEach((notify) => notify());
-  });
-};
-
-jest.mock('../../../hooks/perps/stream', () => {
-  const ReactActual = jest.requireActual<typeof import('react')>('react');
-  return {
-    usePerpsLiveAccount: () => {
-      const [, setVersion] = ReactActual.useState(0);
-      ReactActual.useEffect(() => {
-        const notify = () => setVersion((version) => version + 1);
-        mockAccountLoading.subscribers.add(notify);
-        return () => {
-          mockAccountLoading.subscribers.delete(notify);
-        };
-      }, []);
-      return {
-        account: null,
-        isInitialLoading: mockAccountLoading.isInitialLoading,
-      };
-    },
-  };
-});
 
 jest.mock('../perps/hooks/usePerpsDepositConfirmation', () => ({
   usePerpsDepositConfirmation: () => ({
@@ -76,7 +41,6 @@ jest.mock('../perps/perps-market-balance-actions', () => ({
   }) => (
     <div data-testid="perps-balance-actions" data-placement={actionsPlacement}>
       <div data-testid="perps-balance-actions-total">$1.00</div>
-      <div data-testid="perps-balance-actions-available">$1.00 available</div>
       {showActionButtons ? (
         <div data-testid="perps-balance-actions-buttons">
           <button
@@ -107,7 +71,6 @@ jest.mock('../perps/perps-market-balance-actions', () => ({
 describe('HyperliquidDappBarDepositSheet', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockAccountLoading.isInitialLoading = false;
   });
 
   const renderSheet = () => {
@@ -128,8 +91,7 @@ describe('HyperliquidDappBarDepositSheet', () => {
       'hyperliquid-dapp-bar-deposit-sheet__header-row',
     );
     const header = getByTestId('hyperliquid-dapp-bar-deposit-sheet__header');
-    expect(header).toHaveTextContent(/^Hyperliquid balance$/u);
-    expect(header).not.toHaveTextContent(/perps/iu);
+    expect(header).toHaveTextContent(/^Perps balance$/u);
     const row = getByTestId('hyperliquid-dapp-bar-deposit-sheet__row');
     const body = row.querySelector('.hyperliquid-dapp-bar-deposit-sheet__body');
     const controls = headerRow.querySelector(
@@ -137,13 +99,14 @@ describe('HyperliquidDappBarDepositSheet', () => {
     );
     expect(body).toContainElement(getByTestId('perps-balance-actions'));
     expect(controls).toContainElement(
-      getByTestId('hyperliquid-dapp-bar-deposit-sheet__overflow'),
+      getByTestId('hyperliquid-dapp-bar-deposit-sheet__toggle'),
     );
     expect(Array.from(headerRow.children)).toEqual([header, controls]);
     expect(Array.from(row.children)).toEqual([body]);
-    expect(row).not.toContainElement(
-      getByTestId('hyperliquid-dapp-bar-deposit-sheet__overflow'),
-    );
+    expect(
+      queryByTestId('hyperliquid-dapp-bar-deposit-sheet__overflow'),
+    ).not.toBeInTheDocument();
+    expect(headerRow).toHaveAttribute('aria-expanded', 'true');
     // Header row sits above the balance row.
     expect(headerRow.nextElementSibling).toBe(row);
     expect(
@@ -171,66 +134,42 @@ describe('HyperliquidDappBarDepositSheet', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('shows the sheet immediately while loading and fills the balance in without remounting', () => {
-    mockAccountLoading.isInitialLoading = true;
-    const { queryByTestId, getByTestId } = renderSheet();
+  it('shows the balance and action buttons at the same time', () => {
+    const { getByTestId, queryByTestId } = renderSheet();
 
-    const sheet = getByTestId('hyperliquid-dapp-bar-deposit-sheet');
     expect(
       getByTestId('hyperliquid-dapp-bar-deposit-sheet__header'),
-    ).toHaveTextContent('Hyperliquid balance');
+    ).toHaveTextContent('Perps balance');
     expect(
-      getByTestId('hyperliquid-dapp-bar-deposit-sheet__overflow'),
-    ).toBeInTheDocument();
+      queryByTestId('hyperliquid-dapp-bar-deposit-sheet__overflow'),
+    ).not.toBeInTheDocument();
     expect(
       getByTestId('hyperliquid-dapp-bar-deposit-sheet__row'),
-    ).toContainElement(getByTestId('perps-balance-actions-skeleton'));
-    expect(getByTestId('perps-balance-actions-skeleton')).toHaveAttribute(
-      'data-placement',
-      'beside',
-    );
-    expect(
-      queryByTestId('perps-balance-actions-withdraw'),
-    ).not.toBeInTheDocument();
-
-    setAccountLoading(false);
-
-    expect(getByTestId('hyperliquid-dapp-bar-deposit-sheet')).toBe(sheet);
+    ).toContainElement(getByTestId('perps-balance-actions'));
     expect(getByTestId('perps-balance-actions-add-funds')).toHaveTextContent(
       'Add funds',
     );
     expect(getByTestId('perps-balance-actions-withdraw')).toBeInTheDocument();
   });
 
-  it('opens a disable confirmation and closes it from cancel or confirm', () => {
-    const { getByTestId, getByRole, queryByRole } = renderSheet();
-
-    fireEvent.click(
-      getByTestId('hyperliquid-dapp-bar-deposit-sheet__overflow'),
+  it('toggles the balance details by clicking anywhere on the header row', () => {
+    const { getByTestId, queryByTestId } = renderSheet();
+    const headerRow = getByTestId(
+      'hyperliquid-dapp-bar-deposit-sheet__header-row',
     );
 
-    expect(getByRole('menuitem')).toHaveTextContent('Disable this feature');
+    fireEvent.click(getByTestId('hyperliquid-dapp-bar-deposit-sheet__header'));
 
-    fireEvent.click(getByRole('menuitem'));
-
-    const dialog = getByRole('dialog');
-    expect(dialog).toHaveTextContent('Hide Hyperliquid balance?');
-    expect(dialog).toHaveTextContent(
-      "You won't see your balance on the connection bar when connected to Hyperliquid anymore. Turn it back on any time in Settings > Preferences.",
-    );
-
-    fireEvent.click(getByRole('button', { name: 'Cancel' }));
-    expect(queryByRole('dialog')).not.toBeInTheDocument();
-
-    fireEvent.click(
-      getByTestId('hyperliquid-dapp-bar-deposit-sheet__overflow'),
-    );
-    fireEvent.click(getByRole('menuitem'));
-    fireEvent.click(getByRole('button', { name: 'Disable' }));
-
-    expect(queryByRole('dialog')).not.toBeInTheDocument();
+    expect(headerRow).toHaveAttribute('aria-expanded', 'false');
     expect(
-      getByTestId('hyperliquid-dapp-bar-deposit-sheet'),
+      queryByTestId('hyperliquid-dapp-bar-deposit-sheet__row'),
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(headerRow);
+
+    expect(headerRow).toHaveAttribute('aria-expanded', 'true');
+    expect(
+      getByTestId('hyperliquid-dapp-bar-deposit-sheet__row'),
     ).toBeInTheDocument();
   });
 
