@@ -51,6 +51,7 @@ describe('Ledger Swap', function (this: Suite) {
         await hardwareWalletSignaturesPage.checkPageIsLoaded();
         await hardwareWalletSignaturesPage.waitForPageToClose();
 
+        await bridgePage.goBackAfterSubmit();
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
 

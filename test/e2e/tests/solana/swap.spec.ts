@@ -596,6 +596,7 @@ describe('Swap on Solana', function () {
           swapFromAmount: '1',
         });
 
+        await swapPage.goBackAfterSubmit();
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkCompletedBridgeTransactionActivity(1);
@@ -645,6 +646,7 @@ describe('Swap on Solana', function () {
           swapFromAmount: '1',
         });
 
+        await swapPage.goBackAfterSubmit();
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkWaitForTransactionStatus('confirmed');
@@ -694,6 +696,7 @@ describe('Swap on Solana', function () {
           swapFromAmount: '0.00005',
         });
 
+        await swapPage.goBackAfterSubmit();
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkWaitForTransactionStatus('confirmed');
@@ -789,7 +792,7 @@ describe('Swap on Solana', function () {
           swapFromAmount: '1',
         });
 
-        // After failure, the bridge navigates to home/activity with the failed tx
+        await swapPage.goBackAfterSubmit();
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkFailedTxNumberDisplayedInActivity(1);

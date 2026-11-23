@@ -30,7 +30,7 @@ const SEARCH_TOKEN_ASSET_IDS: Record<string, string> = {
  * `SelectNetworkModal`. Full `#/asset/...` journeys beyond open checks are
  * outside this object.
  * Related: `HomePage` (`goToTokensTab`), `NetworkFilter`,
- * `flows/multi-srp.flow.ts` / `flows/bitcoin-send.flow.ts`.
+ * `flows/multi-srp.flow.ts`.
  *
  * @see ui/components/app/assets/asset-list/asset-list.tsx
  */
@@ -115,6 +115,8 @@ class TokensTab extends HomePage {
   private readonly manageTokensButton = '[data-testid="manageTokens__button"]';
 
   private readonly modalWarningBanner = '[data-testid="custom-token-warning"]';
+
+  private readonly moneyTokenListCta = '[data-testid^="money-token-list-cta-"]';
 
   private readonly noPriceAvailableMessage = {
     css: '[data-testid="multichain-token-list-item-secondary-value"]',
@@ -218,12 +220,6 @@ class TokensTab extends HomePage {
     css: '.mm-label',
     text: 'Token symbol',
   };
-
-  private readonly transactionToast =
-    '[data-testid="transaction-submitted-toast"], [data-testid="transaction-confirmed-toast"], [data-testid="transaction-failed-toast"]';
-
-  private readonly transactionToastCloseButton =
-    '[data-testid="toast-close-button"]';
 
   async checkAssetIsAbsent(symbol: string): Promise<void> {
     console.log(`Checking asset is absent: ${symbol}`);
@@ -710,6 +706,12 @@ class TokensTab extends HomePage {
     await this.driver.clickElement(this.manageTokensButton);
   }
 
+  async clickMoneyTokenListCta(): Promise<void> {
+    console.log('Click the Money deposit CTA on the first eligible token row');
+    await this.expandLowValueAssetsIfPresent();
+    await this.driver.clickElement(this.moneyTokenListCta);
+  }
+
   async clickMultichainTokenListButton(): Promise<void> {
     console.log('Clicking on multichain token list button');
     await this.driver.clickElement(this.tokenListItem);
@@ -764,24 +766,6 @@ class TokensTab extends HomePage {
   }
 
   /**
-   * Closes a transaction toast when it is covering the token list.
-   * No-op when the toast has already disappeared.
-   */
-  private async dismissTransactionToastIfPresent(): Promise<void> {
-    const toastPresent = await this.driver.isElementPresentAndVisible(
-      this.transactionToast,
-      500,
-    );
-    if (!toastPresent) {
-      return;
-    }
-
-    console.log('Dismiss transaction toast');
-    await this.driver.clickElementSafe(this.transactionToastCloseButton);
-    await this.driver.assertElementNotPresent(this.transactionToast);
-  }
-
-  /**
    * Expands the collapsed low-value assets section when the toggle is present.
    */
   async expandLowValueAssets(): Promise<void> {
@@ -806,7 +790,6 @@ class TokensTab extends HomePage {
       return;
     }
 
-    await this.dismissTransactionToastIfPresent();
     await this.driver.clickElement(this.lowValueAssetsToggle);
     await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded);
   }

@@ -4,6 +4,8 @@ import { createRoot } from 'react-dom/client';
 import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 
+import { consumeReferralCode } from '#ui/helpers/utils/consume-referral-code';
+import { setPendingReferralCode } from '#ui/ducks/rewards-money';
 import { captureException } from '../shared/lib/sentry';
 import { withResolvers } from '../shared/lib/promise-with-resolvers';
 import { getEnvironmentType } from '../shared/lib/environment-type';
@@ -49,6 +51,7 @@ import {
 import { getIsUnlocked } from './ducks/metamask/base-selectors';
 import Root, { router } from './pages';
 import { registerInitialTransactionConfirmationMeasurement } from './pages/confirmations/confirmation-performance';
+import { registerHomeMeasurement } from './pages/home/home-performance';
 import { registerUnlockMeasurement } from './pages/unlock-page/unlock-performance';
 import txHelper from './helpers/utils/tx-helper';
 import {
@@ -144,6 +147,7 @@ export async function launchMetamaskUi(opts) {
  * @returns redux store
  */
 export async function setupInitialStore(metamaskState, activeTab) {
+  const referralCode = consumeReferralCode();
   // parse opts
   if (!metamaskState.featureFlags) {
     metamaskState.featureFlags = {};
@@ -209,6 +213,7 @@ export async function setupInitialStore(metamaskState, activeTab) {
   }
 
   const store = configureStore(draftInitialState);
+  store.dispatch(setPendingReferralCode(referralCode));
   reduxStore.resolve(store);
 
   const unapprovedTxs = getUnapprovedTransactions(metamaskState);
@@ -242,6 +247,7 @@ async function startApp(metamaskState, opts) {
   initWebVitals();
 
   const tags = getStartupTraceTags({ metamask: metamaskState });
+  registerHomeMeasurement(metamaskState, router);
   registerInitialTransactionConfirmationMeasurement(metamaskState, router);
   registerUnlockMeasurement(metamaskState, router);
 

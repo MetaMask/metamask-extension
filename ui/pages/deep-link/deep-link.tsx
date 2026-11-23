@@ -17,6 +17,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { withReferralCode } from '#shared/lib/deep-links/referral';
 import { parse } from '../../../shared/lib/deep-links/parse';
 import { CANONICAL_DEEP_LINK_HOST } from '../../../shared/lib/deep-links/common';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -82,9 +83,12 @@ async function updateStateFromUrl(
       const href =
         'redirectTo' in destination
           ? destination.redirectTo.toString()
-          : getExtensionURL(
-              destination.path,
-              destination.query.toString() ?? null,
+          : withReferralCode(
+              getExtensionURL(
+                destination.path,
+                destination.query.toString() ?? null,
+              ),
+              url.searchParams,
             );
       const title = parsed.route.getTitle(url.searchParams);
 

@@ -48,19 +48,11 @@ class BottomNavBar {
   /**
    * Click the Money tab. Only rendered once the Money Account availability
    * query resolves, so wait for it rather than failing on first paint.
-   *
-   * @param options - Click options.
-   * @param [options.assertRoute] - Whether to assert the Money home route. Set
-   * to `false` when the first-visit FTUE splash is expected instead.
    */
-  async clickMoney({
-    assertRoute = true,
-  }: { assertRoute?: boolean } = {}): Promise<void> {
+  async clickMoney(): Promise<void> {
     console.log('Click bottom nav money tab');
     await this.driver.clickElement(this.moneyTab);
-    if (assertRoute) {
-      await this.assertOnRoute('/money-home');
-    }
+    await this.assertOnRoute('/money-home');
   }
 }
 

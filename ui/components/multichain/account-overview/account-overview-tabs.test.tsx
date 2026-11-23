@@ -1,8 +1,10 @@
 import React from 'react';
+import { it } from '@jest/globals';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { AppLayoutProvider } from '../../../contexts/app-layout';
 import { AccountOverviewTabs } from './account-overview-tabs';
 
 jest.mock('../../../store/actions', () => ({
@@ -13,7 +15,9 @@ jest.mock('../../../store/actions', () => ({
 jest.mock('../../app/assets/asset-list', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
-  default: () => null,
+  default: ({ variant }: { variant?: string }) => (
+    <div data-testid="asset-list" data-variant={variant} />
+  ),
 }));
 
 jest.mock('../../app/assets/nfts/nfts-tab', () => ({
@@ -28,7 +32,11 @@ jest.mock('../../app/assets/defi-list/defi-tab', () => ({
   default: () => null,
 }));
 
-const renderTabs = () => {
+const renderTabs = ({
+  isWideLayout = false,
+}: {
+  isWideLayout?: boolean;
+} = {}) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
@@ -41,10 +49,12 @@ const renderTabs = () => {
   });
 
   return renderWithProvider(
-    <AccountOverviewTabs
-      setBasicFunctionalityModalOpen={jest.fn()}
-      onSupportLinkClick={jest.fn()}
-    />,
+    <AppLayoutProvider isWideLayout={isWideLayout}>
+      <AccountOverviewTabs
+        setBasicFunctionalityModalOpen={jest.fn()}
+        onSupportLinkClick={jest.fn()}
+      />
+    </AppLayoutProvider>,
     store,
   );
 };
@@ -57,4 +67,19 @@ describe('AccountOverviewTabs', () => {
     expect(getByTestId('account-overview__defi-tab')).toBeInTheDocument();
     expect(getByTestId('account-overview__nfts-tab')).toBeInTheDocument();
   });
+
+  it.each<[boolean, string]>([
+    [true, 'table'],
+    [false, 'list'],
+  ])(
+    'renders the asset list with isWideLayout %s as the %s variant',
+    (isWideLayout, variant) => {
+      const { getByTestId } = renderTabs({ isWideLayout });
+
+      expect(getByTestId('asset-list')).toHaveAttribute(
+        'data-variant',
+        variant,
+      );
+    },
+  );
 });

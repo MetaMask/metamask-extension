@@ -13,6 +13,7 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { SubscriptionUserEvent } from '@metamask/subscription-controller';
+import * as Sentry from '@sentry/browser';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import enLocale from '../../app/_locales/en/messages.json';
@@ -24,7 +25,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsNetworkEventSource,
-  MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
 import { TraceName, TraceOperation } from '../../shared/lib/trace';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
@@ -142,7 +142,6 @@ describe('Actions', () => {
     background = {
       messengerCall: sinon.stub().resolves(),
       getStatePatches: sinon.stub().resolves([]),
-      setDataCollectionForMarketing: sinon.stub().resolves(),
     };
 
     // Make sure navigator.hid is defined for WebHID tests
@@ -218,7 +217,7 @@ describe('Actions', () => {
       sinon.restore();
     });
 
-    it('returns the seed phrase and syncs marketing consent', async () => {
+    it('returns the seed phrase without reading marketing consent from OAuth', async () => {
       const store = mockStore();
       const mnemonic = 'seed phrase';
       const messengerCallStub = sinon.stub();
@@ -228,15 +227,9 @@ describe('Actions', () => {
           ['password'],
         )
         .resolves(mnemonic);
-      messengerCallStub
-        .withArgs('OAuthService:getMarketingConsent', [])
-        .resolves(true);
-      background.setDataCollectionForMarketing = sinon.stub().resolves();
-
       setBackgroundConnection({
         ...background,
         getStatePatches: background.getStatePatches,
-        setDataCollectionForMarketing: background.setDataCollectionForMarketing,
         messengerCall: messengerCallStub,
       });
 
@@ -252,73 +245,16 @@ describe('Actions', () => {
         ),
       ).toBe(true);
       expect(
-        messengerCallStub.calledWithExactly(
-          'OAuthService:getMarketingConsent',
-          [],
-        ),
-      ).toBe(true);
+        messengerCallStub.calledWith('OAuthService:getMarketingConsent'),
+      ).toBe(false);
       expect(
-        background.setDataCollectionForMarketing.calledOnceWith(true),
-      ).toStrictEqual(true);
+        messengerCallStub.calledWith('AnalyticsController:optInToMarketing'),
+      ).toBe(false);
+      expect(
+        messengerCallStub.calledWith('AnalyticsController:optOutOfMarketing'),
+      ).toBe(false);
       expect(background.getStatePatches.calledOnce).toStrictEqual(true);
-      expect(store.getActions()).toStrictEqual([
-        {
-          type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
-          value: true,
-        },
-      ]);
-    });
-
-    it('tracks the onboarding analytics preference event when a tracking function is provided', async () => {
-      const store = mockStore();
-      const trackEventStub = sinon.stub().resolves();
-      const messengerCallStub = sinon.stub();
-      messengerCallStub
-        .withArgs(
-          'LegacyBackgroundApiService:restoreSocialBackupAndGetSeedPhrase',
-          ['password'],
-        )
-        .resolves('seed phrase');
-      messengerCallStub
-        .withArgs('OAuthService:getMarketingConsent', [])
-        .resolves(false);
-
-      background.setDataCollectionForMarketing = sinon.stub().resolves();
-
-      setBackgroundConnection({
-        ...background,
-        getStatePatches: background.getStatePatches,
-        setDataCollectionForMarketing: background.setDataCollectionForMarketing,
-        messengerCall: messengerCallStub,
-      });
-
-      await store.dispatch(
-        actions.restoreSocialBackupAndGetSeedPhrase('password', trackEventStub),
-      );
-
-      expect(
-        messengerCallStub.calledWithExactly(
-          'LegacyBackgroundApiService:restoreSocialBackupAndGetSeedPhrase',
-          ['password'],
-        ),
-      ).toBe(true);
-      expect(
-        messengerCallStub.calledWithExactly(
-          'OAuthService:getMarketingConsent',
-          [],
-        ),
-      ).toBe(true);
-      expect(
-        trackEventStub.calledOnceWith({
-          category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-          properties: {
-            [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
-            [MetaMetricsUserTrait.HasMarketingConsent]: false,
-            location: 'onboarding_social_login_rehydration',
-          },
-        }),
-      ).toStrictEqual(true);
+      expect(store.getActions()).toStrictEqual([]);
     });
 
     it('throws an error when restoring the social backup fails', async () => {
@@ -3423,16 +3359,72 @@ describe('Actions', () => {
   describe('#setParticipateInMetaMetrics', () => {
     it('calls background with true when opting in', async () => {
       const store = mockStore();
-      const setParticipateInMetaMetricsStub = jest.fn().mockResolvedValue();
+      const messengerCallStub = jest.fn().mockResolvedValue('analytics-id');
 
-      Object.assign(background, {
-        setParticipateInMetaMetrics: setParticipateInMetaMetricsStub,
+      setBackgroundConnection({
+        ...background,
+        messengerCall: messengerCallStub,
       });
 
-      setBackgroundConnection(background);
+      await expect(
+        store.dispatch(actions.setParticipateInMetaMetrics(true)),
+      ).resolves.toStrictEqual([true, 'analytics-id']);
+      expect(messengerCallStub).toHaveBeenCalledWith(
+        'LegacyBackgroundApiService:setParticipateInMetaMetrics',
+        [true],
+      );
+    });
+  });
 
-      await store.dispatch(actions.setParticipateInMetaMetrics(true));
-      expect(setParticipateInMetaMetricsStub).toHaveBeenCalledWith(true);
+  describe('#optInToMarketing', () => {
+    it('calls the analytics controller directly to opt in to marketing', async () => {
+      const store = mockStore();
+      const messengerCallStub = sinon.stub().resolves();
+      setBackgroundConnection({
+        ...background,
+        messengerCall: messengerCallStub,
+      });
+
+      await store.dispatch(actions.optInToMarketing());
+
+      expect(
+        messengerCallStub.calledOnceWithExactly(
+          'AnalyticsController:optInToMarketing',
+          [],
+        ),
+      ).toBe(true);
+      expect(store.getActions()).toStrictEqual([
+        {
+          type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
+          value: true,
+        },
+      ]);
+    });
+  });
+
+  describe('#optOutOfMarketing', () => {
+    it('calls the analytics controller directly to opt out of marketing', async () => {
+      const store = mockStore();
+      const messengerCallStub = sinon.stub().resolves();
+      setBackgroundConnection({
+        ...background,
+        messengerCall: messengerCallStub,
+      });
+
+      await store.dispatch(actions.optOutOfMarketing());
+
+      expect(
+        messengerCallStub.calledOnceWithExactly(
+          'AnalyticsController:optOutOfMarketing',
+          [],
+        ),
+      ).toBe(true);
+      expect(store.getActions()).toStrictEqual([
+        {
+          type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
+          value: false,
+        },
+      ]);
     });
   });
 
@@ -6605,6 +6597,84 @@ describe('Actions', () => {
           [true, true],
         ),
       ).toBe(true);
+    });
+  });
+
+  describe('#recordUiInteraction', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls AppStateController:recordUiInteraction', async () => {
+      const store = mockStore();
+      const messengerCallStub = sinon.stub().resolves();
+      setBackgroundConnection({ messengerCall: messengerCallStub });
+
+      await store.dispatch(actions.recordUiInteraction());
+
+      expect(
+        messengerCallStub.calledOnceWithExactly(
+          'AppStateController:recordUiInteraction',
+          [],
+        ),
+      ).toBe(true);
+    });
+
+    it('swallows background errors', async () => {
+      const store = mockStore();
+      const messengerCallStub = sinon
+        .stub()
+        .rejects(new Error('background down'));
+      setBackgroundConnection({ messengerCall: messengerCallStub });
+
+      await expect(
+        store.dispatch(actions.recordUiInteraction()),
+      ).resolves.toBeUndefined();
+    });
+
+    describe('while a UI span is active', () => {
+      beforeEach(() => {
+        globalThis.sentry = { ...Sentry };
+      });
+
+      afterEach(() => {
+        globalThis.sentry = undefined;
+      });
+
+      it('sends no trace context', async () => {
+        const store = mockStore();
+        const messengerCallStub = sinon.stub().resolves();
+        setBackgroundConnection({ messengerCall: messengerCallStub });
+
+        await Sentry.startSpan({ name: 'ui' }, () =>
+          store.dispatch(actions.recordUiInteraction()),
+        );
+
+        expect(
+          messengerCallStub.calledOnceWithExactly(
+            'AppStateController:recordUiInteraction',
+            [],
+          ),
+        ).toBe(true);
+      });
+
+      it('keeps the span active while the call is pending', async () => {
+        const store = mockStore();
+        let resolveCall;
+        setBackgroundConnection({
+          messengerCall: () =>
+            new Promise((resolve) => {
+              resolveCall = resolve;
+            }),
+        });
+
+        await Sentry.startSpan({ name: 'ui' }, async (span) => {
+          const pending = store.dispatch(actions.recordUiInteraction());
+          expect(Sentry.getActiveSpan()).toBe(span);
+          resolveCall();
+          await pending;
+        });
+      });
     });
   });
 });

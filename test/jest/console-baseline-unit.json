@@ -172,10 +172,6 @@
       "error: StorageService: Failed to remove item:": 1,
       "error: StorageService: Failed to set item:": 1
     },
-    "ui/components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar.test.tsx": {
-      "MetaMask: Background connection not initialized": 9,
-      "React: PropTypes validation failures": 1
-    },
     "ui/components/app/assets/nfts/nft-details/nft-details.test.js": {
       "MetaMask: Background connection not initialized": 1,
       "React: Act warnings (component updates not wrapped)": 5,

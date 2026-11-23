@@ -9,6 +9,7 @@ import {
 } from '../../../../shared/constants/app-state';
 import { endTrace, trace } from '../../../../shared/lib/trace';
 import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
+import { useAppLayout } from '../../../contexts/app-layout';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTabState } from '../../../hooks/useTabState';
 import { useSafeChains } from '../networks-form/use-safe-chains';
@@ -31,14 +32,12 @@ import { ScreenViewedEntryPoint } from '../../../../shared/constants/metametrics
 import { AccountOverviewCommonProps } from './common';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
-  showTokensLinks?: boolean;
   showTokens?: boolean;
   showNfts?: boolean;
   showDefi?: boolean;
 };
 
 export const AccountOverviewTabs = ({
-  showTokensLinks,
   showTokens = true,
   showNfts = true,
   showDefi = true,
@@ -64,6 +63,7 @@ export const AccountOverviewTabs = ({
   const dispatch = useDispatch();
   const selectedChainIds = useSelector(getEnabledChainIds);
   const defiPositionsEnabled = useSelector(getIsDefiPositionsEnabled);
+  const { isWideLayout } = useAppLayout();
 
   useEffect(() => {
     if (activeTabKey in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
@@ -115,11 +115,13 @@ export const AccountOverviewTabs = ({
     <>
       <Tabs<AccountOverviewTab>
         animated
+        hasTabEndSlot
         activeTab={activeTabKey}
         onTabClick={handleTabClick}
+        tabRowClassName="border-b border-b-transparent transition-[border-color] duration-200 ease-out stuck-top-border"
         tabListProps={{
           className:
-            'px-4 overflow-x-auto overscroll-x-contain [scrollbar-width:none] tablist-fade border-b border-b-transparent transition-[border-color] duration-200 ease-out stuck-top-border',
+            'px-4 overflow-x-auto overscroll-x-contain [scrollbar-width:none] tablist-fade',
         }}
         tabListWrapperProps={{
           className:
@@ -134,10 +136,10 @@ export const AccountOverviewTabs = ({
           >
             <ErrorBoundary key="tokens">
               <AssetList
-                showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickAsset}
                 safeChains={safeChains}
                 entryPoint={tabEntryPoint}
+                variant={isWideLayout ? 'table' : 'list'}
               />
             </ErrorBoundary>
           </Tab>
@@ -151,7 +153,6 @@ export const AccountOverviewTabs = ({
           >
             <ErrorBoundary key="defi">
               <DeFiTab
-                showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickDeFi}
                 safeChains={safeChains}
                 entryPoint={tabEntryPoint}

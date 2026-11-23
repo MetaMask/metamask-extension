@@ -1280,12 +1280,16 @@ export const getNetworkConfigurationIdByChainId = createResultEqualSelector(
 );
 
 /**
+ * Mirrors the NetworkController: RPC failover is on unless the
+ * `corePlatformRpcFailoverMode` flag is `disabled`. An absent or unrecognized
+ * value falls back to the controller default (`enabled`).
+ *
  * @type (state: RemoteFeatureFlagsState) => boolean
  */
 export const getIsRpcFailoverEnabled = createSelector(
   getRemoteFeatureFlags,
   (remoteFeatureFlags) =>
-    remoteFeatureFlags.walletFrameworkRpcFailoverEnabled ?? false,
+    remoteFeatureFlags.corePlatformRpcFailoverMode !== 'disabled',
 );
 
 /**

@@ -8,6 +8,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import SelectHardwareWalletAccountPage from '../../page-objects/pages/hardware-wallet/select-hardware-wallet-account-page';
 import AccountDetailsPage from '../../page-objects/pages/accounts/details-page';
 import { login } from '../../page-objects/flows/login.flow';
+import { openConnectHardwareWallet } from '../../page-objects/flows/add-wallet.flow';
 import { checkAccountAddressDisplayedInAccountList } from '../../page-objects/flows/account-list.flow';
 
 // BUG: Add funds banner doesn't clear
@@ -28,7 +29,7 @@ describe.skip('QR Hardware', function () {
         // Choose connect hardware wallet from the account menu
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
-        await accountListPage.openConnectHardwareWalletModal();
+        await openConnectHardwareWallet(driver);
 
         const connectHardwareWalletPage = new ConnectHardwareWalletPage(driver);
         await connectHardwareWalletPage.checkPageIsLoaded();
@@ -70,7 +71,7 @@ describe.skip('QR Hardware', function () {
         // Choose connect hardware wallet from the account menu
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
-        await accountListPage.openConnectHardwareWalletModal();
+        await openConnectHardwareWallet(driver);
 
         const connectHardwareWalletPage = new ConnectHardwareWalletPage(driver);
         await connectHardwareWalletPage.checkPageIsLoaded();

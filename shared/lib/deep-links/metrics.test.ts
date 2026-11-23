@@ -29,6 +29,15 @@ describe('shouldTrackDeepLinkNavigation', () => {
 });
 
 describe('createEvent', () => {
+  it('omits malformed referrals from analytics', () => {
+    const result = createEvent({
+      signature: MISSING,
+      url: new URL('https://link.metamask.io/money?ref=ABC&ref=DEF'),
+    });
+
+    expect(result.properties).not.toHaveProperty('referral_code');
+    expect(result.sensitiveProperties).not.toHaveProperty('ref');
+  });
   describe('basic functionality', () => {
     it('should create event with minimal required properties', () => {
       const url = new URL('https://example.com/test-route');
@@ -127,15 +136,16 @@ describe('createEvent', () => {
       expect(result.properties.utm_term).toBe('crypto-wallet');
     });
 
-    it('should handle referral as a standard attribution property', () => {
+    it('handles referral codes as standard attribution properties', () => {
       const url = new URL(
-        'https://example.com/test?referral=ABC123&customParam=secret-value',
+        'https://example.com/test?referral=ABC123&ref=%20def456%20&customParam=secret-value',
       );
       const signature = MISSING;
 
       const result = createEvent({ signature, url });
 
       expect(result.properties.referral).toBe('ABC123');
+      expect(result.properties.referral_code).toBe('DEF456');
       expect(result.sensitiveProperties).toStrictEqual({
         customParam: 'secret-value',
       });

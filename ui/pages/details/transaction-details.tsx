@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { mapApiTransaction } from '@metamask/client-utils';
+import { mapApiTransaction, mapV5ApiTransaction } from '@metamask/client-utils';
 import { isValidTransactionHash } from '../../../shared/lib/transactions.utils';
 import {
   selectEvmAddress,
@@ -54,13 +54,17 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
       return rampsActivityItem;
     }
 
-    const apiActivityItem =
-      apiTransaction && selectedAddress
-        ? mapApiTransaction({
-            subjectAddress: selectedAddress,
-            transaction: apiTransaction,
-          })
-        : undefined;
+    let apiActivityItem;
+    if (!apiTransaction) {
+      apiActivityItem = undefined;
+    } else if ('tx' in apiTransaction) {
+      apiActivityItem = mapV5ApiTransaction({ transaction: apiTransaction });
+    } else if (selectedAddress) {
+      apiActivityItem = mapApiTransaction({
+        subjectAddress: selectedAddress,
+        transaction: apiTransaction,
+      });
+    }
 
     if (localActivityItem) {
       // More categorized items take precedence, unless it's a generic interaction
@@ -97,16 +101,12 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
   ]);
 
   return (
-    <div className="flex h-full flex-col bg-background-default [container-name:list-item] [container-type:inline-size]">
-      <div className="shrink-0 px-4 py-4">
-        <Header item={transaction} onBack={onBack} />
-      </div>
+    <div className="flex h-full flex-col py-4 [container-name:list-item] [container-type:inline-size]">
+      <Header item={transaction} onBack={onBack} />
 
-      <div className="flex flex-col flex-1 overflow-y-auto px-4 pb-4">
-        <ErrorBoundary>
-          <TemplateLoader item={transaction} />
-        </ErrorBoundary>
-      </div>
+      <ErrorBoundary>
+        <TemplateLoader item={transaction} />
+      </ErrorBoundary>
     </div>
   );
 }

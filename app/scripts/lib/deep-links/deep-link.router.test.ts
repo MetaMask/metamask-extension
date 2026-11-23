@@ -122,6 +122,71 @@ describe('DeepLinkRouter', () => {
       router.install();
     });
 
+    it.each([
+      {
+        initiator: 'https://metamask.io',
+        expectedUrl:
+          'chrome-extension://extension-id/home.html?ref=ABC123#/money?asset=ETH',
+      },
+      {
+        initiator: undefined,
+        expectedUrl:
+          'chrome-extension://extension-id/home.html#link?u=%2Fmoney%3Fref%3Dabc123%26unsigned%3Dignored',
+      },
+    ])(
+      'uses the existing security policy for referral links from $initiator',
+      async ({ initiator, expectedUrl }) => {
+        parseMock.mockResolvedValue({
+          signature: 'missing',
+          destination: {
+            path: '/money',
+            query: new URLSearchParams('asset=ETH'),
+          },
+        } as ParsedDeepLink);
+
+        await onBeforeRequest?.({
+          tabId: 1,
+          url: 'https://link.metamask.io/money?ref=abc123&unsigned=ignored',
+          initiator,
+        } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+        expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+          url: expectedUrl,
+        });
+      },
+    );
+
+    it.each([false, true, undefined])(
+      'handles a signed direct destination when onboarding completion is %s',
+      async (completedOnboarding) => {
+        getState.mockReturnValueOnce({
+          completedOnboarding,
+          preferences: { skipDeepLinkInterstitial: false },
+        } as unknown as ReturnType<MetaMaskController['getState']>);
+        parseMock.mockResolvedValue({
+          signature: 'valid',
+          destination: {
+            path: 'settings/privacy',
+            query: new URLSearchParams([['a', 'v']]),
+          },
+        } as ParsedDeepLink);
+
+        await onBeforeRequest?.({
+          tabId: 1,
+          url: 'https://link.metamask.io/privacy?a=v',
+          initiator: 'https://example.com',
+        } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+        expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+          url:
+            completedOnboarding === false
+              ? 'chrome-extension://extension-id/home.html#settings/privacy?a=v'
+              : 'chrome-extension://extension-id/home.html#link?u=%2Fprivacy%3Fa%3Dv',
+        });
+        expect(getState).toHaveBeenCalledTimes(1);
+      },
+    );
+
     // test return values for MV2 and MV3 behavior
     it.each(['mv2', 'mv3'])(
       'should return blocking or non-blocking response based on manifest version',

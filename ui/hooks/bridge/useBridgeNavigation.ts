@@ -199,32 +199,6 @@ export const useBridgeNavigation = () => {
   );
 
   /**
-   * Clears the search params for the given parameters.
-   * @param paramsToRemove - The parameters to clear.
-   */
-  const resetSearchParams = useCallback(
-    (paramsToRemove: BridgeQueryParams[]) => {
-      const updatedSearchParams = new URLSearchParams(search);
-      paramsToRemove.forEach((param) => {
-        if (updatedSearchParams.get(param)) {
-          updatedSearchParams.delete(param);
-        }
-      });
-      navigate(
-        {
-          pathname,
-          search: updatedSearchParams.toString(),
-        },
-        {
-          replace: true,
-          state,
-        },
-      );
-    },
-    [navigate, search, pathname, state],
-  );
-
-  /**
    * Navigates to the bridge page.
    * @param token - The token to set after loading the bridge page.
    * @param isEntrypoint - Whether the bridge page is being loaded for the first time.
@@ -349,20 +323,29 @@ export const useBridgeNavigation = () => {
   const navigateToHwSigningPage = useCallback(
     (nextState: Partial<BridgeNavigationOptions['state']> = {}) => {
       const hasSendBundleState = Object.hasOwn(nextState, 'sendBundle');
-      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`, {
-        // For the sendBundle (send) flow, the signing page replaces the
-        // /confirm-transaction entry so that cancelling returns the user
-        // cleanly to the send flow (and back-button -> home) instead of
-        // leaving a stale confirmation entry in the history stack.
-        ...(hasSendBundleState ? { replace: true } : {}),
-        state: {
-          ...state,
-          ...clearSendBundleIfPresent(state),
-          ...nextState,
+      // Carried over so post-signing navigation can return to Transaction Shield.
+      const shieldSearch = new URLSearchParams(search).get(
+        BridgeQueryParams.IsFromTransactionShield,
+      )
+        ? `?${BridgeQueryParams.IsFromTransactionShield}=true`
+        : '';
+      navigate(
+        `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}${shieldSearch}`,
+        {
+          // For the sendBundle (send) flow, the signing page replaces the
+          // /confirm-transaction entry so that cancelling returns the user
+          // cleanly to the send flow (and back-button -> home) instead of
+          // leaving a stale confirmation entry in the history stack.
+          ...(hasSendBundleState ? { replace: true } : {}),
+          state: {
+            ...state,
+            ...clearSendBundleIfPresent(state),
+            ...nextState,
+          },
         },
-      });
+      );
     },
-    [navigate, state],
+    [navigate, search, state],
   );
 
   /**
@@ -407,7 +390,6 @@ export const useBridgeNavigation = () => {
     swapViewPrefilledAmount: state.swapViewPrefilledAmount,
     search,
     resetLocationState,
-    resetSearchParams,
     navigateToAssetPage,
     navigateToBridgePage,
     navigateToBridgeAssetPickerPage,
