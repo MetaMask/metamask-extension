@@ -3,31 +3,28 @@ import {
   type MessengerActions,
   type MessengerEvents,
 } from '@metamask/messenger';
-import type { MarketingConsentControllerMessenger } from '@metamask/marketing-consent-controller';
+import type { MarketingConsentSyncServiceMessenger } from '@metamask/marketing-consent-sync-service';
 import { RootMessenger } from '../../lib/messenger';
 
-export type {
-  MarketingConsentControllerActions,
-  MarketingConsentControllerEvents,
-} from '@metamask/marketing-consent-controller';
+export type { MarketingConsentSyncServiceActions } from '@metamask/marketing-consent-sync-service';
 
 /**
- * Get the messenger for the MarketingConsentController. Delegates the
+ * Get the messenger for the MarketingConsentSyncService. Delegates the
  * Authenticated User Storage, analytics, authentication and keyring access it
  * needs to keep marketing consent in sync with AUS.
  *
  * @param messenger - The root messenger.
- * @returns The MarketingConsentControllerMessenger.
+ * @returns The MarketingConsentSyncServiceMessenger.
  */
-export function getMarketingConsentControllerMessenger(
+export function getMarketingConsentSyncServiceMessenger(
   messenger: RootMessenger<
-    MessengerActions<MarketingConsentControllerMessenger>,
-    MessengerEvents<MarketingConsentControllerMessenger>
+    MessengerActions<MarketingConsentSyncServiceMessenger>,
+    MessengerEvents<MarketingConsentSyncServiceMessenger>
   >,
-): MarketingConsentControllerMessenger {
-  const controllerMessenger: MarketingConsentControllerMessenger =
+): MarketingConsentSyncServiceMessenger {
+  const controllerMessenger: MarketingConsentSyncServiceMessenger =
     new Messenger({
-      namespace: 'MarketingConsentController',
+      namespace: 'MarketingConsentSyncService',
       parent: messenger,
     });
 
@@ -42,6 +39,8 @@ export function getMarketingConsentControllerMessenger(
       'AnalyticsController:getState',
       'AnalyticsController:optInToMarketing',
       'AnalyticsController:optOutOfMarketing',
+      'AnalyticsController:applyRemoteMarketingConsent',
+      'AnalyticsController:clearMarketingConsentSyncPending',
       'AuthenticationController:getState',
       'KeyringController:getState',
     ],
