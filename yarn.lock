@@ -7274,21 +7274,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/analytics-controller@npm:^4.1.0, @metamask/analytics-controller@npm:^4.4.0":
-  version: 4.4.0
-  resolution: "@metamask/analytics-controller@npm:4.4.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^10.1.0"
-    "@metamask/config-registry-controller": "npm:^6.0.0"
-    "@metamask/geolocation-controller": "npm:^2.0.0"
-    "@metamask/messenger": "npm:^3.0.0"
-    "@metamask/utils": "npm:^12.0.2"
-    lodash-es: "npm:^4.18.1"
-    uuid: "npm:^14.0.3"
-  checksum: 10/ac5901e15fe1c8105dc50b67f12e7d392b2edd7a00bc3211877889a219924e1f235c4e4dffbd562be59bb95812c1f4d60020b93b2d4b37e44916a00b1bab7597
-  languageName: node
-  linkType: hard
-
 "@metamask/analytics-controller@npm:^4.3.1":
   version: 4.3.1
   resolution: "@metamask/analytics-controller@npm:4.3.1"
@@ -7301,6 +7286,21 @@ __metadata:
     lodash-es: "npm:^4.18.1"
     uuid: "npm:^14.0.2"
   checksum: 10/6b41e8601dddc918072e5bdfe578a19847b0e944a6d5757d99373555ad635d9898f1673bfac6fb7b540a0e7e4500d560f893dc589cce64ed1b5078ffc6393456
+  languageName: node
+  linkType: hard
+
+"@metamask/analytics-controller@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "@metamask/analytics-controller@npm:4.4.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^10.1.0"
+    "@metamask/config-registry-controller": "npm:^6.0.0"
+    "@metamask/geolocation-controller": "npm:^2.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/utils": "npm:^12.0.2"
+    lodash-es: "npm:^4.18.1"
+    uuid: "npm:^14.0.3"
+  checksum: 10/ac5901e15fe1c8105dc50b67f12e7d392b2edd7a00bc3211877889a219924e1f235c4e4dffbd562be59bb95812c1f4d60020b93b2d4b37e44916a00b1bab7597
   languageName: node
   linkType: hard
 
@@ -8971,17 +8971,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/marketing-consent-controller@npm:^1.0.1":
-  version: 1.1.0
-  resolution: "@metamask/marketing-consent-controller@npm:1.1.0"
+"@metamask/marketing-consent-sync-service@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/marketing-consent-sync-service@npm:1.0.0"
   dependencies:
-    "@metamask/analytics-controller": "npm:^4.1.0"
-    "@metamask/authenticated-user-storage": "npm:^4.1.0"
+    "@metamask/analytics-controller": "npm:^4.4.0"
+    "@metamask/authenticated-user-storage": "npm:^4.2.0"
     "@metamask/base-controller": "npm:^10.1.0"
-    "@metamask/keyring-controller": "npm:^28.2.0"
+    "@metamask/keyring-controller": "npm:^28.2.2"
     "@metamask/messenger": "npm:^3.0.0"
-    "@metamask/profile-sync-controller": "npm:^36.0.0"
-  checksum: 10/1b604040848093ce5f92924fe1ecb420f317fe905fd9ff87339bf92d114563d684e972e1865f328d9dfa919f664c57f3eadfef9fb9f8f236afb844bc88b8d70a
+    "@metamask/profile-sync-controller": "npm:^36.1.2"
+  checksum: 10/b5e01376a7ef36d2b04d03d33827c2fd4ed0296c86ffba64882d36c46e9030433e4cc699e8acff38c6947359cc7c9bb2706a6cfc76fefc4e20e7367eeb581da6
   languageName: node
   linkType: hard
 
@@ -9450,7 +9450,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/notification-services-controller@npm:^30.0.0":
+"@metamask/notification-services-controller@npm:^30.1.1":
   version: 30.1.1
   resolution: "@metamask/notification-services-controller@npm:30.1.1"
   dependencies:
@@ -9747,20 +9747,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:^36.1.1":
-  version: 36.1.1
-  resolution: "@metamask/profile-sync-controller@npm:36.1.1"
+"@metamask/profile-sync-controller@npm:^36.1.2":
+  version: 36.1.2
+  resolution: "@metamask/profile-sync-controller@npm:36.1.2"
   dependencies:
     "@metamask/address-book-controller": "npm:^8.0.0"
     "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/controller-utils": "npm:^13.0.0"
     "@metamask/cryptography": "npm:^1.1.2"
-    "@metamask/key-tree": "npm:^10.1.1"
-    "@metamask/keyring-controller": "npm:^28.2.0"
+    "@metamask/key-tree": "npm:^11.0.0"
+    "@metamask/keyring-controller": "npm:^28.2.1"
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/seedless-onboarding-controller": "npm:^12.0.0"
     "@metamask/superstruct": "npm:^3.4.1"
-    "@metamask/utils": "npm:^12.0.1"
+    "@metamask/utils": "npm:^12.0.2"
     "@noble/curves": "npm:^1.9.7"
     "@noble/hashes": "npm:^1.8.0"
     "@signinwithethereum/siwe": "npm:^4.2.1"
@@ -9769,7 +9769,7 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/26d5227624c3ea54ceb8f163e8db71e9b7953026990373ebd00c1917c8cde45adea67020014c83c77bb759943844ea452977dbbd02ce18af641e07fe2dc3f1c7
+  checksum: 10/8ab88337bc1efa77e6d2c3b22e72111f621bbe05b5797d1b14e129511b50fa4c90aa08fa71c367523451c2c002a1ed61041827ab40a48b0efdf92677f8ad774f
   languageName: node
   linkType: hard
 
@@ -34675,7 +34675,7 @@ __metadata:
     "@metamask/account-watcher": "npm:^4.1.3"
     "@metamask/accounts-controller": "npm:^40.2.0"
     "@metamask/address-book-controller": "npm:^8.0.0"
-    "@metamask/analytics-controller": "npm:^4.3.1"
+    "@metamask/analytics-controller": "npm:^4.4.0"
     "@metamask/announcement-controller": "npm:^9.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^10.0.0"
@@ -34754,7 +34754,7 @@ __metadata:
     "@metamask/keyring-utils": "npm:^5.0.0"
     "@metamask/logging-controller": "npm:^10.0.0"
     "@metamask/logo": "npm:^4.0.0"
-    "@metamask/marketing-consent-controller": "npm:^1.0.1"
+    "@metamask/marketing-consent-sync-service": "npm:^1.0.0"
     "@metamask/message-manager": "npm:^15.0.1"
     "@metamask/message-signing-snap": "npm:1.1.4"
     "@metamask/messenger": "npm:^3.0.0"
@@ -34776,7 +34776,7 @@ __metadata:
     "@metamask/network-connection-banner-controller": "npm:^1.1.0"
     "@metamask/network-controller": "npm:^38.0.1"
     "@metamask/network-enablement-controller": "npm:^7.1.1"
-    "@metamask/notification-services-controller": "npm:^30.0.0"
+    "@metamask/notification-services-controller": "npm:^30.1.1"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/passkey-controller": "npm:^4.1.0"

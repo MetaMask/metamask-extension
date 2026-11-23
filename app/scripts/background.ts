@@ -756,6 +756,18 @@ export function setupController(
     sentry,
   });
 
+  // `MarketingConsentController` was replaced by `MarketingConsentSyncService`
+  // before reaching a release. Remove state persisted by preview builds; the
+  // consent value itself lives in `AnalyticsController`. Best effort only.
+  if ('MarketingConsentController' in initState) {
+    try {
+      persistenceManager.update('MarketingConsentController', undefined);
+      persistenceManager.persist().catch(() => undefined);
+    } catch {
+      // Orphaned state is unread once the controller is gone.
+    }
+  }
+
   setupEnsIpfsResolver({
     getCurrentChainId: () =>
       getCurrentChainId({

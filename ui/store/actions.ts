@@ -4522,7 +4522,7 @@ export function setDataCollectionForMarketing(
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setDataCollectionForMarketing`);
-    // MarketingConsentController picks up the change and saves it to AUS.
+    // MarketingConsentSyncService picks up the change and saves it to AUS.
     await submitRequestToBackground('setDataCollectionForMarketing', [
       dataCollectionPreference,
     ]);
@@ -4544,10 +4544,10 @@ export function saveMarketingConsent(
   consent: boolean,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.MarketingConsentController:setMarketingConsent`);
+    log.debug(`background.MarketingConsentSyncService:setMarketingConsent`);
     try {
       await submitRequestToBackground('messengerCall', [
-        'MarketingConsentController:setMarketingConsent',
+        'MarketingConsentSyncService:setMarketingConsent',
         [consent],
       ]);
     } finally {

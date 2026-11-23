@@ -2176,12 +2176,12 @@
         "@metamask/logo>gl-vec3": true
       }
     },
-    "@metamask/marketing-consent-controller": {
+    "@metamask/marketing-consent-sync-service": {
       "globals": {
         "console.error": true
       },
       "packages": {
-        "@metamask/base-controller": true
+        "@metamask/analytics-controller": true
       }
     },
     "@metamask/message-manager": {

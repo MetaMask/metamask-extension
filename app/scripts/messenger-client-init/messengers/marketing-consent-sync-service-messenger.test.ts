@@ -1,21 +1,21 @@
 import { Messenger } from '@metamask/messenger';
 import { getRootMessenger } from '../../lib/messenger';
-import { getMarketingConsentControllerMessenger } from './marketing-consent-controller-messenger';
+import { getMarketingConsentSyncServiceMessenger } from './marketing-consent-sync-service-messenger';
 
-describe('getMarketingConsentControllerMessenger', () => {
+describe('getMarketingConsentSyncServiceMessenger', () => {
   it('returns a restricted messenger', () => {
     const messenger = getRootMessenger<never, never>();
 
-    expect(getMarketingConsentControllerMessenger(messenger)).toBeInstanceOf(
+    expect(getMarketingConsentSyncServiceMessenger(messenger)).toBeInstanceOf(
       Messenger,
     );
   });
 
-  it('delegates the AUS, analytics, auth and keyring access the controller needs', () => {
+  it('delegates the AUS, analytics, auth and keyring access the service needs', () => {
     const messenger = getRootMessenger<never, never>();
     const delegateSpy = jest.spyOn(messenger, 'delegate');
 
-    getMarketingConsentControllerMessenger(messenger);
+    getMarketingConsentSyncServiceMessenger(messenger);
 
     expect(delegateSpy).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -28,6 +28,8 @@ describe('getMarketingConsentControllerMessenger', () => {
           'AnalyticsController:getState',
           'AnalyticsController:optInToMarketing',
           'AnalyticsController:optOutOfMarketing',
+          'AnalyticsController:applyRemoteMarketingConsent',
+          'AnalyticsController:clearMarketingConsentSyncPending',
           'AuthenticationController:getState',
           'KeyringController:getState',
         ],
