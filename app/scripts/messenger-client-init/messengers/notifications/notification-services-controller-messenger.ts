@@ -29,6 +29,9 @@ export function getNotificationServicesControllerMessenger(
       // Authenticated User Storage Actions
       'AuthenticatedUserStorageService:getNotificationPreferences',
       'AuthenticatedUserStorageService:putNotificationPreferences',
+      'AuthenticatedUserStorageService:invalidateQueries',
+      // Analytics Actions
+      'AnalyticsController:getState',
       // Push Actions
       'NotificationServicesPushController:addPushNotificationLinks',
       'NotificationServicesPushController:enablePushNotifications',
