@@ -91,7 +91,7 @@ function buildState({
       ...(payerKeyringType && transactionId
         ? {
             transactionData: {
-              [transactionId]: { accountOverride: PAYER_ADDRESS },
+              [transactionId]: { accountOverride: PAYER_ACCOUNT_ID },
             },
           }
         : {}),
