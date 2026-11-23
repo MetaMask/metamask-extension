@@ -5,6 +5,7 @@ import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/select
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { getImageForChainId } from '../../../selectors/multichain';
+import { getChainIdToNetworkImageUrlMap } from '../../../selectors/config-registry/config-registry';
 import { getNetworkSections } from '../../../helpers/utils/network-sections';
 import {
   NetworkSelectionModal,
@@ -25,6 +26,7 @@ export const ContactNetworks = ({
   const t = useI18nContext();
 
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
   const networkSections = useMemo(
     () =>
       getNetworkSections(
@@ -48,7 +50,7 @@ export const ContactNetworks = ({
             key: chainId,
             chainId,
             name: displayName,
-            iconSrc: getImageForChainId(chainId),
+            iconSrc: getImageForChainId(chainId, networkImageUrls),
             selected: selectedChainId === chainId,
             onClick: () => {
               onSelect?.(chainId);
@@ -58,7 +60,7 @@ export const ContactNetworks = ({
           };
         }),
       })),
-    [networkSections, onClose, onSelect, selectedChainId, t],
+    [networkSections, networkImageUrls, onClose, onSelect, selectedChainId, t],
   );
 
   return (
