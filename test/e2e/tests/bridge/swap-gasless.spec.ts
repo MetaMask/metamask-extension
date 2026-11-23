@@ -1,5 +1,9 @@
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
+import {
+  searchAndSelectToken,
+  selectDestinationToken,
+} from '../../page-objects/flows/bridge.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
@@ -26,7 +30,7 @@ describe('Gasless swap tests', function (this: Suite) {
         const swapPage = new SwapPage(driver);
         await swapPage.checkPageIsLoaded();
 
-        await swapPage.selectDestToken('USDC');
+        await selectDestinationToken(driver, 'USDC');
 
         await swapPage.clickMaxButton();
 
@@ -61,8 +65,8 @@ describe('Gasless swap tests', function (this: Suite) {
         const swapPage = new SwapPage(driver);
         await swapPage.checkPageIsLoaded();
 
-        await swapPage.selectSrcToken('USDC');
-        await swapPage.selectDestToken('DAI');
+        await searchAndSelectToken(driver, 'USDC');
+        await selectDestinationToken(driver, 'DAI');
 
         await swapPage.clickMaxButton();
 
@@ -103,7 +107,7 @@ describe('Gasless swap tests', function (this: Suite) {
         const swapPage = new SwapPage(driver);
         await swapPage.checkPageIsLoaded();
 
-        await swapPage.selectDestToken('USDC');
+        await selectDestinationToken(driver, 'USDC');
 
         await swapPage.clickMaxButton();
 

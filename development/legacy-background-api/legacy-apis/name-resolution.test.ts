@@ -154,6 +154,7 @@ describe('resolveDeclarations', () => {
 function parseUsage(source: string) {
   const context = {
     sourceFilesByPath: new Map<string, ts.SourceFile>(),
+    nodesBeingResolved: new Set<ts.Node>(),
   } satisfies ResolutionContext;
   const sourceFile = addSource(context, 'controller.ts', source);
   const identifier = findUsedIdentifier(sourceFile);

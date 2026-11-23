@@ -1,4 +1,5 @@
 import { Controller as NotificationServicesController } from '@metamask/notification-services-controller/notification-services';
+import { loadAuthenticationConfig } from '../../../../shared/lib/authentication';
 import { MessengerClientInitFunction } from '../types';
 import { type NotificationServicesControllerMessenger } from '../messengers/notifications';
 import packageJson from '../../../../package.json';
@@ -26,6 +27,7 @@ export const NotificationServicesControllerInit: MessengerClientInitFunction<
         getNormalisedLocale(
           getMessengerClient('PreferencesController').state.currentLocale,
         ),
+      env: loadAuthenticationConfig(),
     },
   });
 
