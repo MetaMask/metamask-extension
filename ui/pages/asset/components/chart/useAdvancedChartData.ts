@@ -32,7 +32,6 @@ export type UseAdvancedChartDataResult = {
   realtimeTimestamp?: number;
   /** Header figures derived from the candle history. Candle mode only. */
   price?: number;
-  percentChange?: number;
   timestamp?: number;
   isLoading: boolean;
   error: string | null;
@@ -92,8 +91,7 @@ export function useAdvancedChartData({
       : ohlcvData;
   }, [ohlcvData, latestBar]);
 
-  const { price, percentChange, timestamp } =
-    useOHLCVPriceData(mergedOhlcvData);
+  const { price, timestamp } = useOHLCVPriceData(mergedOhlcvData);
 
   return {
     ohlcvData,
@@ -101,7 +99,6 @@ export function useAdvancedChartData({
     realtimePrice: latestBar?.close,
     realtimeTimestamp: latestBar?.time,
     price,
-    percentChange,
     timestamp,
     isLoading,
     error,

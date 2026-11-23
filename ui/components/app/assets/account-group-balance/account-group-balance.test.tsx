@@ -15,7 +15,7 @@ import {
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import {
   getMultichainNativeTokenBalance,
-  selectIsAssetsLoadingForSelectedAccountGroup,
+  selectAssetsHaveLoadedForSelectedAccountGroup,
   selectUnifiedBalanceBySelectedAccountGroup,
 } from '../../../../selectors/assets';
 import * as useMultichainSelectorHook from '../../../../hooks/useMultichainSelector';
@@ -51,7 +51,7 @@ describe('AccountGroupBalance', () => {
     anyEnabledNetworksAreAvailable?: boolean;
     showFiatInTestnets?: boolean;
     privacyMode?: boolean;
-    isAssetsLoading?: boolean;
+    assetsHaveLoaded?: boolean;
   };
 
   const arrange = ({
@@ -61,15 +61,15 @@ describe('AccountGroupBalance', () => {
     anyEnabledNetworksAreAvailable = true,
     showFiatInTestnets = false,
     privacyMode = false,
-    isAssetsLoading = false,
+    assetsHaveLoaded = true,
   }: ArrangeOptions = {}) => {
     jest
       .mocked(selectUnifiedBalanceBySelectedAccountGroup)
       .mockReturnValue(selectedGroupBalance);
 
     jest
-      .mocked(selectIsAssetsLoadingForSelectedAccountGroup)
-      .mockReturnValue(isAssetsLoading);
+      .mocked(selectAssetsHaveLoadedForSelectedAccountGroup)
+      .mockReturnValue(assetsHaveLoaded);
 
     jest
       .mocked(selectAnyEnabledNetworksAreAvailable)
@@ -245,9 +245,9 @@ describe('AccountGroupBalance', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders a skeleton instead of a zero balance while assets are first loading', () => {
+  it('renders a skeleton instead of a zero balance before assets finish loading', () => {
     arrange({
-      isAssetsLoading: true,
+      assetsHaveLoaded: false,
       selectedGroupBalance: {
         ...createMockBalance(),
         totalBalanceInUserCurrency: 0,
@@ -259,9 +259,9 @@ describe('AccountGroupBalance', () => {
     expect(getByTestId('account-group-balance-skeleton')).toBeInTheDocument();
   });
 
-  it('renders a non-zero balance while assets are first loading', () => {
+  it('renders a non-zero balance before assets finish loading', () => {
     arrange({
-      isAssetsLoading: true,
+      assetsHaveLoaded: false,
       selectedGroupBalance: createMockBalance(),
     });
 

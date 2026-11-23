@@ -10,8 +10,6 @@ import {
 } from '../../../tests/identity/account-syncing/helpers';
 import HeaderNavbar from './header-navbar';
 
-type ReceiveButton = 'default' | 'row';
-
 export type CheckExpectedBalanceOptions = {
   expectedBalance?: string;
   symbol?: string;
@@ -54,13 +52,6 @@ class HomePage {
   protected readonly balance: string =
     '[data-testid$="overview__primary-currency"]';
 
-  protected readonly bottomNavActivityButton =
-    '[data-testid="bottom-nav-activity"]';
-
-  private readonly bottomNavHomeButton = '[data-testid="bottom-nav-home"]';
-
-  protected readonly bottomNavPerpsButton = '[data-testid="bottom-nav-perps"]';
-
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
 
@@ -101,6 +92,13 @@ class HomePage {
     text: 'Connecting to Localhost 8545',
   };
 
+  protected readonly mainNavActivityButton =
+    '[data-testid="main-nav-activity"]';
+
+  private readonly mainNavHomeButton = '[data-testid="main-nav-home"]';
+
+  protected readonly mainNavPerpsButton = '[data-testid="main-nav-perps"]';
+
   protected readonly nftTab = {
     testId: 'account-overview__nfts-tab',
   };
@@ -115,7 +113,11 @@ class HomePage {
     testId: 'account-value-and-suffix',
   };
 
-  private readonly receiveOnRow = '[data-testid$="-overview-receive"]';
+  // Narrow layout: Receive is the only action left in the "More" group, which
+  // renders as `-overview-default`. Wide layout: actions are pills and Receive
+  // is its own `-overview-receive` pill.
+  private readonly receiveButton =
+    '[data-testid$="-overview-default"], [data-testid$="-overview-receive"]';
 
   private readonly revealSrpPasswordInput = '[data-testid="input-password"]';
 
@@ -128,8 +130,6 @@ class HomePage {
 
   private readonly shieldEntryModalSkip =
     '[data-testid="shield-entry-modal-close-button"]';
-
-  private readonly singleActionButton = '[data-testid$="-overview-default"]';
 
   private readonly srpAddedToast = '[data-testid="new-srp-added-toast"]';
 
@@ -470,10 +470,8 @@ class HomePage {
     );
   }
 
-  async clickOnReceiveButton(receiveButton: ReceiveButton): Promise<void> {
-    const selector =
-      receiveButton === 'default' ? this.singleActionButton : this.receiveOnRow;
-    await this.driver.clickElement(selector);
+  async clickOnReceiveButton(): Promise<void> {
+    await this.driver.clickElement(this.receiveButton);
   }
 
   async clickOnSendButton(): Promise<void> {
@@ -569,8 +567,8 @@ class HomePage {
   }
 
   async goToActivityList(): Promise<void> {
-    console.log('Open the activity page from the bottom navigation bar');
-    await this.driver.clickElement(this.bottomNavActivityButton);
+    console.log('Open the activity page from the main navigation');
+    await this.driver.clickElement(this.mainNavActivityButton);
     await this.driver.waitForSelector({
       testId: 'parent-selector-activity-tab',
     });
@@ -598,7 +596,7 @@ class HomePage {
     if (alreadyOnHome) {
       return;
     }
-    await this.driver.clickElement(this.bottomNavHomeButton);
+    await this.driver.clickElement(this.mainNavHomeButton);
     await this.checkPageIsLoaded();
   }
 

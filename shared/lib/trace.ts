@@ -122,6 +122,7 @@ export enum TraceName {
   MusdConversionQuote = 'mUSD Conversion Quote',
   MusdConversionConfirm = 'mUSD Conversion Confirm',
   BatchSellModal = 'Batch Sell Modal',
+  StateLoad = 'State Load',
   StatePersist = 'State Persist',
   // Money
   MoneyActivityVaultShareValuationsFetch = 'Money Activity Vault Share Valuations Fetch',
@@ -190,6 +191,7 @@ export enum TraceOperation {
   // mUSD Conversion
   MusdConversionOperation = 'musd.conversion.operation',
   MusdConversionDataFetch = 'musd.conversion.data_fetch',
+  StateRead = 'state.read',
   StateWrite = 'state.write',
   BridgeScreenPerformance = 'bridge.screen.performance',
   BridgeDataFetch = 'bridge.data_fetch',

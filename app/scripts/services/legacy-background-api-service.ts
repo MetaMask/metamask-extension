@@ -130,9 +130,6 @@ import {
 } from '@metamask/signature-controller';
 import {
   AssetsContractControllerGetTokenStandardAndDetailsAction,
-  CurrencyRateControllerSetCurrentCurrencyAction,
-  TokenDetectionControllerDisableAction,
-  TokenDetectionControllerEnableAction,
   TokensControllerAddTokenAction,
   TokensControllerGetStateAction,
 } from '@metamask/assets-controllers';
@@ -650,7 +647,6 @@ type AllowedActions =
   | AuthenticationControllerPerformSignOutAction
   | BridgeStatusControllerWipeBridgeStatusAction
   | ClaimsControllerClearStateAction
-  | CurrencyRateControllerSetCurrentCurrencyAction
   | DelegationControllerSignDelegationAction
   | GasFeeControllerDisableNonRPCGasFeeApisAction
   | GasFeeControllerEnableNonRPCGasFeeApisAction
@@ -766,8 +762,6 @@ type AllowedActions =
   | SubscriptionControllerGetStateAction
   | SubscriptionControllerGetSubscriptionByProductAction
   | SubscriptionControllerStopAllPollingAction
-  | TokenDetectionControllerDisableAction
-  | TokenDetectionControllerEnableAction
   | TokensControllerAddTokenAction
   | TokensControllerGetStateAction
   | TransactionControllerAddTransactionAction
@@ -942,16 +936,11 @@ export class LegacyBackgroundApiService {
   }
 
   /**
-   * Sets the current currency for the CurrencyRateController and AssetsController.
+   * Sets the selected currency on the AssetsController.
    *
    * @param currencyCode - The currency code to set as the current currency.
    */
   async setCurrentCurrency(currencyCode: SupportedCurrency): Promise<void> {
-    await this.#messenger.call(
-      'CurrencyRateController:setCurrentCurrency',
-      currencyCode,
-    );
-
     this.#messenger.call('AssetsController:setSelectedCurrency', currencyCode);
   }
 
@@ -3115,13 +3104,11 @@ export class LegacyBackgroundApiService {
     );
 
     if (useExternal) {
-      this.#messenger.call('TokenDetectionController:enable');
       this.#messenger.call('GasFeeController:enableNonRPCGasFeeApis');
       if (hasActiveShieldSubscription) {
         this.#messenger.call('ShieldController:start');
       }
     } else {
-      this.#messenger.call('TokenDetectionController:disable');
       this.#messenger.call('GasFeeController:disableNonRPCGasFeeApis');
       // stop polling for the subscriptions if external services are disabled
       this.#messenger.call('SubscriptionController:stopAllPolling');
@@ -4522,10 +4509,6 @@ export class LegacyBackgroundApiService {
       );
 
       this.#messenger.call('TransactionController:clearUnapprovedTransactions');
-
-      if (completedOnboarding) {
-        this.#messenger.call('TokenDetectionController:enable');
-      }
 
       // create new vault
       const seedPhraseAsUint8Array =

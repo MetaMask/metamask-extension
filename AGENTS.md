@@ -231,9 +231,7 @@ yarn dapp-solana           # Solana test dapp
 yarn dapp-chain            # Dapp with local Anvil
 
 # DevTools
-yarn devtools:react        # React DevTools
 yarn devtools:redux        # Redux DevTools
-yarn start:dev             # Start with both DevTools
 
 # Local Blockchain
 yarn anvil                 # Start Anvil (Foundry) on port 8545

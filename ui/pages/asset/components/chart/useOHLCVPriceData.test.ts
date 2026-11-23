@@ -2,6 +2,10 @@ import { renderHook } from '@testing-library/react';
 import { useOHLCVPriceData } from './useOHLCVPriceData';
 import type { OHLCVBar } from './useOHLCVChart';
 
+const HOUR_MS = 60 * 60 * 1000;
+// Arbitrary base time in milliseconds (OHLCV bar `time` is ms).
+const BASE_TIME = 1_700_000_000_000;
+
 describe('useOHLCVPriceData', () => {
   const createBar = (
     time: number,
@@ -12,113 +16,53 @@ describe('useOHLCVPriceData', () => {
     volume = 100,
   ): OHLCVBar => ({ time, open, high, low, close, volume });
 
-  describe('price calculation', () => {
+  describe('price', () => {
     it('returns undefined values when ohlcvData is empty', () => {
       const { result } = renderHook(() => useOHLCVPriceData([]));
 
       expect(result.current.price).toBeUndefined();
-      expect(result.current.percentChange).toBeUndefined();
       expect(result.current.timestamp).toBeUndefined();
     });
 
-    it('returns latest close price as price', () => {
+    it('returns the latest close as price', () => {
       const bars = [
-        createBar(1700000000, 100, 105),
-        createBar(1700003600, 105, 110),
-        createBar(1700007200, 110, 120),
+        createBar(BASE_TIME, 100, 105),
+        createBar(BASE_TIME + HOUR_MS, 105, 110),
+        createBar(BASE_TIME + 2 * HOUR_MS, 110, 120),
       ];
 
       const { result } = renderHook(() => useOHLCVPriceData(bars));
 
-      expect(result.current.price).toBe(120); // Latest bar's close
+      expect(result.current.price).toBe(120);
     });
 
-    it('returns latest bar timestamp', () => {
+    it('returns the latest bar timestamp', () => {
       const bars = [
-        createBar(1700000000, 100, 105),
-        createBar(1700003600, 105, 110),
-        createBar(1700007200, 110, 120),
+        createBar(BASE_TIME, 100, 105),
+        createBar(BASE_TIME + HOUR_MS, 105, 110),
+        createBar(BASE_TIME + 2 * HOUR_MS, 110, 120),
       ];
 
       const { result } = renderHook(() => useOHLCVPriceData(bars));
 
-      expect(result.current.timestamp).toBe(1700007200);
-    });
-  });
-
-  describe('percentChange calculation', () => {
-    it('calculates positive percent change correctly', () => {
-      // First bar open: 100, Latest bar close: 120
-      // Expected: ((120 - 100) / 100) * 100 = 20%
-      const bars = [
-        createBar(1700000000, 100, 105),
-        createBar(1700003600, 105, 110),
-        createBar(1700007200, 110, 120),
-      ];
-
-      const { result } = renderHook(() => useOHLCVPriceData(bars));
-
-      expect(result.current.percentChange).toBe(20);
+      expect(result.current.timestamp).toBe(BASE_TIME + 2 * HOUR_MS);
     });
 
-    it('calculates negative percent change correctly', () => {
-      // First bar open: 100, Latest bar close: 80
-      // Expected: ((80 - 100) / 100) * 100 = -20%
-      const bars = [
-        createBar(1700000000, 100, 95),
-        createBar(1700003600, 95, 90),
-        createBar(1700007200, 90, 80),
-      ];
-
-      const { result } = renderHook(() => useOHLCVPriceData(bars));
-
-      expect(result.current.percentChange).toBe(-20);
-    });
-
-    it('returns 0 percent change when price unchanged', () => {
-      // First bar open: 100, Latest bar close: 100
-      const bars = [
-        createBar(1700000000, 100, 105),
-        createBar(1700003600, 105, 100),
-      ];
-
-      const { result } = renderHook(() => useOHLCVPriceData(bars));
-
-      expect(result.current.percentChange).toBe(0);
-    });
-
-    it('returns undefined percent change when first bar open is 0', () => {
-      // Guard against division by zero
-      const bars = [
-        createBar(1700000000, 0, 100),
-        createBar(1700003600, 100, 150),
-      ];
-
-      const { result } = renderHook(() => useOHLCVPriceData(bars));
-
-      expect(result.current.percentChange).toBeUndefined();
-    });
-  });
-
-  describe('single bar', () => {
     it('handles single bar data', () => {
-      // First bar open: 100, Same bar close: 105
-      // Expected: ((105 - 100) / 100) * 100 = 5%
-      const bars = [createBar(1700000000, 100, 105)];
+      const bars = [createBar(BASE_TIME, 100, 105)];
 
       const { result } = renderHook(() => useOHLCVPriceData(bars));
 
       expect(result.current.price).toBe(105);
-      expect(result.current.percentChange).toBe(5);
-      expect(result.current.timestamp).toBe(1700000000);
+      expect(result.current.timestamp).toBe(BASE_TIME);
     });
   });
 
   describe('memoization', () => {
     it('returns same reference when data unchanged', () => {
       const bars = [
-        createBar(1700000000, 100, 105),
-        createBar(1700003600, 105, 110),
+        createBar(BASE_TIME, 100, 105),
+        createBar(BASE_TIME + HOUR_MS, 105, 110),
       ];
 
       const { result, rerender } = renderHook(() => useOHLCVPriceData(bars));
@@ -130,8 +74,8 @@ describe('useOHLCVPriceData', () => {
     });
 
     it('returns new reference when data changes', () => {
-      const bars1 = [createBar(1700000000, 100, 105)];
-      const bars2 = [createBar(1700000000, 100, 110)];
+      const bars1 = [createBar(BASE_TIME, 100, 105)];
+      const bars2 = [createBar(BASE_TIME, 100, 110)];
 
       const { result, rerender } = renderHook(
         ({ data }) => useOHLCVPriceData(data),

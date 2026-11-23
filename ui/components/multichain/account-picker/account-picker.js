@@ -105,6 +105,7 @@ export const AccountPicker = ({
             as="span"
             ellipsis
             variant={TextVariant.bodyMdMedium}
+            data-testid="app-header-account-name"
             {...labelProps}
             className={classnames(
               'multichain-account-picker__label w-full',

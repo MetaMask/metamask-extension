@@ -7,8 +7,6 @@ import type { OHLCVBar } from './useOHLCVChart';
 export type OHLCVPriceData = {
   /** Current/latest price (close of the most recent bar) */
   price: number | undefined;
-  /** Percentage change from first bar's open to latest bar's close */
-  percentChange: number | undefined;
   /** Timestamp of the latest bar */
   timestamp: number | undefined;
 };
@@ -18,11 +16,13 @@ export type OHLCVPriceData = {
  *
  * This hook derives:
  * - `price`: The close price of the most recent candle
- * - `percentChange`: The percentage change from the first candle's open to the latest close
  * - `timestamp`: The timestamp of the most recent candle
  *
- * This allows the TokenPriceHeader to display OHLCV-based prices without
- * needing to know the underlying data format.
+ * The 24H percentage change is intentionally NOT derived here. Candles are
+ * interval-bucketed, so a candle-based 24H baseline drifts as the interval
+ * changes and breaks down on coarse intervals (e.g. 1w). The candle header
+ * sources its 24H change from the interval-independent historical-prices (P1D)
+ * series instead — see `advanced-chart-section.tsx`.
  *
  * @param ohlcvData - Array of OHLCV bars from useOHLCVChart
  * @returns Computed price display data
@@ -30,53 +30,22 @@ export type OHLCVPriceData = {
  * @example
  * ```tsx
  * const { ohlcvData } = useOHLCVChart({ assetId, interval });
- * const { price, percentChange, timestamp } = useOHLCVPriceData(ohlcvData);
- *
- * return (
- *   <TokenPriceHeader
- *     price={price}
- *     percentChange={percentChange}
- *     timestamp={timestamp}
- *     currency={currency}
- *   />
- * );
+ * const { price, timestamp } = useOHLCVPriceData(ohlcvData);
  * ```
  */
 export function useOHLCVPriceData(ohlcvData: OHLCVBar[]): OHLCVPriceData {
   return useMemo(() => {
-    if (!ohlcvData || ohlcvData.length === 0) {
-      return {
-        price: undefined,
-        percentChange: undefined,
-        timestamp: undefined,
-      };
-    }
-
-    const firstBar = ohlcvData[0];
-    const latestBar = ohlcvData.at(-1);
+    const latestBar = ohlcvData?.at(-1);
     if (!latestBar) {
       return {
         price: undefined,
-        percentChange: undefined,
         timestamp: undefined,
       };
     }
 
-    const price = latestBar.close;
-    const comparePrice = firstBar.open;
-    const timestamp = latestBar.time;
-
-    // Calculate percentage change: ((current - compare) / compare) * 100
-    // Guard against division by zero
-    const percentChange =
-      comparePrice === 0
-        ? undefined
-        : ((price - comparePrice) / comparePrice) * 100;
-
     return {
-      price,
-      percentChange,
-      timestamp,
+      price: latestBar.close,
+      timestamp: latestBar.time,
     };
   }, [ohlcvData]);
 }
