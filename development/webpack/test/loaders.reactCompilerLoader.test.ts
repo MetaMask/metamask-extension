@@ -86,7 +86,7 @@ describe('getReactCompilerLoader', () => {
 describe('reactCompilerLoaderWrapper', () => {
   it('names the input file relative to the build context in the source map', async () => {
     const { default: wrapper } =
-      await import('../utils/loaders/reactCompilerLoaderWrapper');
+      await import('../utils/loaders/reactCompilerLoaderWrapper.ts');
     const rootContext = '/project/app';
     const resourcePath = '/project/ui/component.tsx';
 
