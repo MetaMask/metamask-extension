@@ -4978,7 +4978,7 @@ describe('Actions', () => {
   });
 
   describe('#saveMarketingConsent', () => {
-    it('saves consent through MarketingConsentController and refreshes local state', async () => {
+    it('saves consent through MarketingConsentSyncService and refreshes local state', async () => {
       const store = mockStore();
       const messengerCall = sinon.stub().resolves();
       const getStatePatches = sinon.stub().resolves([]);
@@ -4988,7 +4988,7 @@ describe('Actions', () => {
 
       expect(
         messengerCall.calledOnceWith(
-          'MarketingConsentController:setMarketingConsent',
+          'MarketingConsentSyncService:setMarketingConsent',
           [true],
         ),
       ).toBe(true);

@@ -199,7 +199,7 @@ describe('Notifications Toggle', () => {
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) =>
             call[0] === 'messengerCall' &&
-            call[1]?.[0] === 'MarketingConsentController:setMarketingConsent',
+            call[1]?.[0] === 'MarketingConsentSyncService:setMarketingConsent',
         );
 
       const updateNotificationPreferencesCall =
@@ -218,7 +218,7 @@ describe('Notifications Toggle', () => {
         );
 
       expect(setMarketingConsentCall?.[1]).toStrictEqual([
-        'MarketingConsentController:setMarketingConsent',
+        'MarketingConsentSyncService:setMarketingConsent',
         [true],
       ]);
 
