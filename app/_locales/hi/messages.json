@@ -12299,15 +12299,6 @@
   "swapsMaxSlippage": {
     "message": "स्लिपेज (slippage) टॉलरेंस"
   },
-  "swapsRebateBanner": {
-    "message": "आपको फ़ीस पर $1% वापस मिल रहा है"
-  },
-  "swapsRebateTooltipContent": {
-    "message": "इस ट्रेड पर MetaMask फ़ीस का $1% रिवॉर्ड के तौर पर वापस पाएं, जो आपके Money अकाउंट में mUSD में पेमेंट किया जाएगा। नेटवर्क फ़ीस शामिल नहीं है। ज़्यादा जानकारी के लिए रिवॉर्ड टैब देखें।"
-  },
-  "swapsRebateTooltipTitle": {
-    "message": "ट्रेडिंग रिवॉर्ड"
-  },
   "swapsViewInActivity": {
     "message": "एक्टिविटी में देखें"
   },

@@ -12305,15 +12305,6 @@
   "swapsMaxSlippage": {
     "message": "滑点容差"
   },
-  "swapsRebateBanner": {
-    "message": "您将获得 $1% 的手续费返还"
-  },
-  "swapsRebateTooltipContent": {
-    "message": "将本次交易中 MetaMask 手续费的 $1% 作为奖励返还给您，以 mUSD 形式支付到您的 Money Account。不包含网络费用。详情请查看“奖励”标签页。"
-  },
-  "swapsRebateTooltipTitle": {
-    "message": "交易奖励"
-  },
   "swapsViewInActivity": {
     "message": "在活动中查看"
   },

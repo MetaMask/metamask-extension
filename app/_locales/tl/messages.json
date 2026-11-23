@@ -12299,15 +12299,6 @@
   "swapsMaxSlippage": {
     "message": "Slippage tolerance"
   },
-  "swapsRebateBanner": {
-    "message": "Makakakuha ka ng $1% balik sa mga bayarin"
-  },
-  "swapsRebateTooltipContent": {
-    "message": "Makakakuha ng balik na $1% mula sa bayad sa MetaMask sa trade na ito bilang reward, ibinibigay na mUSD sa iyong Money account. Hindi kasama ang bayarin sa network. Tingnan ang tab ng Mga Reward para sa detalye."
-  },
-  "swapsRebateTooltipTitle": {
-    "message": "Mga Reward sa Pagti-trade"
-  },
   "swapsViewInActivity": {
     "message": "Tingnan sa aktibidad"
   },

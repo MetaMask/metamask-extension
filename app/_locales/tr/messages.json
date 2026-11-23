@@ -12313,15 +12313,6 @@
   "swapsMaxSlippage": {
     "message": "Kayma toleransı"
   },
-  "swapsRebateBanner": {
-    "message": "Ücretlerde %$1 iade alıyorsunuz"
-  },
-  "swapsRebateTooltipContent": {
-    "message": "Bu yatırımda ödül olarak, MetaMask ücretinde Money account hesabınıza mUSD olarak yatırılacak %$1 indirim alın. Ağ ücretleri dahil değildir. Ayrıntılar için Ödüller sekmesine bakabilirsiniz."
-  },
-  "swapsRebateTooltipTitle": {
-    "message": "Yatırım Ödülleri"
-  },
   "swapsViewInActivity": {
     "message": "Aktivitede görüntüle"
   },

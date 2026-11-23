@@ -12299,15 +12299,6 @@
   "swapsMaxSlippage": {
     "message": "Slippage-Toleranz"
   },
-  "swapsRebateBanner": {
-    "message": "Sie erhalten $1 % der Gebühren zurück"
-  },
-  "swapsRebateTooltipContent": {
-    "message": "Erhalten Sie $1 % der MetaMask-Gebühr für diesen Trade als Prämie, ausgezahlt in mUSD, auf Ihr Money account zurück. Netzwerkgebühren sind nicht enthalten. Weitere Informationen finden Sie auf der Registerkarte „Prämien“."
-  },
-  "swapsRebateTooltipTitle": {
-    "message": "Tradingsprämien"
-  },
   "swapsViewInActivity": {
     "message": "In Aktivität anzeigen"
   },

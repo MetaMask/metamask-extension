@@ -12299,15 +12299,6 @@
   "swapsMaxSlippage": {
     "message": "Tolérance au slippage"
   },
-  "swapsRebateBanner": {
-    "message": "Vous récupérez $1 % sur les frais"
-  },
-  "swapsRebateTooltipContent": {
-    "message": "Récupérez $1 % des frais MetaMask liés à ce trade sous forme de récompense, versée en mUSD sur votre Money Account. Les frais de réseau ne sont pas inclus. Consultez l’onglet « Récompenses » pour plus de détails."
-  },
-  "swapsRebateTooltipTitle": {
-    "message": "Récompenses de trading"
-  },
   "swapsViewInActivity": {
     "message": "Afficher dans l’activité"
   },

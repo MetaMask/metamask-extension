@@ -12313,15 +12313,6 @@
   "swapsMaxSlippage": {
     "message": "Giới hạn trượt giá"
   },
-  "swapsRebateBanner": {
-    "message": "Bạn được hoàn $1% phí"
-  },
-  "swapsRebateTooltipContent": {
-    "message": "Bạn được hoàn $1% phí MetaMask của giao dịch này dưới dạng phần thưởng, được trả bằng mUSD vào Money Account của bạn. Không bao gồm phí mạng. Xem tab Phần thưởng để biết chi tiết."
-  },
-  "swapsRebateTooltipTitle": {
-    "message": "Phần thưởng giao dịch"
-  },
   "swapsViewInActivity": {
     "message": "Xem hoạt động"
   },

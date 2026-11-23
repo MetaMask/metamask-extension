@@ -12303,15 +12303,6 @@
   "swapsMaxSlippage": {
     "message": "最大スリッページ"
   },
-  "swapsRebateBanner": {
-    "message": "手数料の$1%が還元されます"
-  },
-  "swapsRebateTooltipContent": {
-    "message": "この取引にかかるMetaMask手数料の$1%が報酬として還元され、Money AccountにmUSDで支払われます。ネットワーク手数料は含まれていません。詳細は「報酬」タブでご確認ください。"
-  },
-  "swapsRebateTooltipTitle": {
-    "message": "取引リワード"
-  },
   "swapsViewInActivity": {
     "message": "アクティビティに表示"
   },

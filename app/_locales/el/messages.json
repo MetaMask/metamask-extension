@@ -12299,15 +12299,6 @@
   "swapsMaxSlippage": {
     "message": "Ανοχή απόκλισης"
   },
-  "swapsRebateBanner": {
-    "message": "Κερδίζετε πίσω $1% από τις χρεώσεις"
-  },
-  "swapsRebateTooltipContent": {
-    "message": "Λάβετε ως ανταμοιβή το $1% των χρεώσεων στο MetaMask για αυτήν τη συναλλαγή, σε mUSD στον Money account σας. Δεν περιλαμβάνονται τα τέλη δικτύου. Δείτε την καρτέλα \"Ανταμοιβές\" για λεπτομέρειες."
-  },
-  "swapsRebateTooltipTitle": {
-    "message": "Ανταμοιβές συναλλαγών"
-  },
   "swapsViewInActivity": {
     "message": "Προβολή σε δραστηριότητα"
   },
