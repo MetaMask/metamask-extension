@@ -244,6 +244,25 @@ class SendPage {
     await this.driver.waitForSelector(this.invalidValueError);
   }
 
+  /**
+   * Clicks Max and asserts the resulting amount, treating an empty input as
+   * zero (the UI may render a zero Max as an empty value).
+   *
+   * @param expectedAmount - The expected amount in display units.
+   */
+  async checkMaxAmount(expectedAmount: string): Promise<void> {
+    await this.clickMaxButton();
+    await this.driver.waitUntil(
+      async () => {
+        const inputElement = await this.driver.findElement(this.amountInput);
+        const value = await inputElement.getAttribute('value');
+        const normalizedValue = value || '0';
+        return parseFloat(normalizedValue) === parseFloat(expectedAmount);
+      },
+      { timeout: 10000, interval: 200 },
+    );
+  }
+
   async checkNetworkFilterToggleIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.networkPicker);
   }

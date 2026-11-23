@@ -75,9 +75,22 @@ export type TronTrc20FixtureAsset = {
   type: 'trc20';
 };
 
+export type TronAccountResource = {
+  freeNetLimit?: number;
+  freeNetUsed?: number;
+  NetLimit?: number;
+  NetUsed?: number;
+  EnergyLimit?: number;
+  EnergyUsed?: number;
+};
+
 export type TronFixtureAccount = {
   address: string;
+  /** Marks the account as activated on `/v1/accounts/{address}`. */
+  active?: boolean;
   assets?: TronFixtureAsset[];
+  /** Overrides the account resources returned by the node and Accounts API. */
+  resources?: TronAccountResource;
   transactions?: {
     raw?: unknown[];
     trc20?: unknown[];
@@ -254,6 +267,14 @@ async function mockTronFixtureApis(
     mockServer,
     accounts,
   );
+  const inactiveAccountEndpoints = await mockTronInactiveAccountApis(
+    mockServer,
+    accounts,
+  );
+  const resourceEndpoints = await mockTronFixtureAccountResources(
+    mockServer,
+    accounts,
+  );
 
   return [
     await mockTronPriceSupportedNetworks(mockServer),
@@ -270,6 +291,8 @@ async function mockTronFixtureApis(
     // 'Unexpected end of JSON input' during the Tron network switch.
     ...(await mockBridgeGetTronTokens(mockServer)),
     await mockTronGetReward(mockServer),
+    ...inactiveAccountEndpoints,
+    ...resourceEndpoints,
     // NOTE: in local-node mode, do not register static getblock/getnowblock/
     // getblockbynum or broadcasttransaction mocks. mockttp serves the first
     // matching `.always()` rule, so a static block mock makes the snap sign
@@ -371,6 +394,45 @@ async function mockFixtureTransactionHistory(
   return endpoints;
 }
 
+async function mockTronInactiveAccountApis(
+  mockServer: Mockttp,
+  accounts: TronFixtureAccount[],
+): Promise<MockedEndpoint[]> {
+  return Promise.all(
+    accounts
+      .filter(({ active }) => active === false)
+      .map(({ address }) =>
+        mockServer
+          .forGet(tronProviderUrl(`/v1/accounts/${address}`))
+          .always()
+          .thenJson(200, {
+            data: [],
+            success: true,
+            meta: { at: Date.now(), page_size: 0 },
+          }),
+      ),
+  );
+}
+
+async function mockTronFixtureAccountResources(
+  mockServer: Mockttp,
+  accounts: TronFixtureAccount[],
+): Promise<MockedEndpoint[]> {
+  return Promise.all(
+    accounts.flatMap(({ address, resources }) =>
+      resources
+        ? [
+            mockServer
+              .forPost(tronProviderUrl('/wallet/getaccountresource'))
+              .withJsonBody({ address, visible: true })
+              .always()
+              .thenJson(200, resources),
+          ]
+        : [],
+    ),
+  );
+}
+
 async function mockWildcardTronAccountApis(
   mockServer: Mockttp,
   tronNode: TronNode | undefined,
@@ -393,6 +455,17 @@ async function mockWildcardTronAccountApis(
       }
 
       if (account) {
+        if (account.active === false) {
+          return {
+            statusCode: 200,
+            json: {
+              data: [],
+              success: true,
+              meta: { at: Date.now(), page_size: 0 },
+            },
+          };
+        }
+
         return {
           statusCode: 200,
           json: tronNode
@@ -489,15 +562,6 @@ function buildFixtureTokenMetadata(
   return [...assetsById.values()];
 }
 
-type TronAccountResource = {
-  freeNetLimit?: number;
-  freeNetUsed?: number;
-  NetLimit?: number;
-  NetUsed?: number;
-  EnergyLimit?: number;
-  EnergyUsed?: number;
-};
-
 type TronFixtureAccountsApiBalanceRow = {
   accountId: string;
   assetId: string;
@@ -520,7 +584,13 @@ function buildTronFixtureAccountsApiBalances(
 async function getTronAccountResource(
   address: string,
   tronNode: TronNode | undefined,
+  resourcesByAddress: Map<string, TronAccountResource>,
 ): Promise<TronAccountResource> {
+  const override = resourcesByAddress.get(address);
+  if (override) {
+    return override;
+  }
+
   if (!tronNode) {
     return TRON_ACCOUNT_RESOURCE_RESPONSE;
   }
@@ -536,9 +606,18 @@ async function buildTronFixtureResourceBalances(
   accounts: TronFixtureAccount[],
   tronNode: TronNode | undefined,
 ): Promise<TronFixtureAccountsApiBalanceRow[]> {
+  const resourcesByAddress = new Map(
+    accounts.flatMap(({ address, resources }) =>
+      resources ? ([[address, resources]] as const) : [],
+    ),
+  );
   const rowsPerAccount = await Promise.all(
     accounts.map(async ({ address }) => {
-      const resource = await getTronAccountResource(address, tronNode);
+      const resource = await getTronAccountResource(
+        address,
+        tronNode,
+        resourcesByAddress,
+      );
       const maximumBandwidth =
         (resource.freeNetLimit ?? 0) + (resource.NetLimit ?? 0);
       const bandwidth = Math.max(
