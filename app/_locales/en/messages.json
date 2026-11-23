@@ -1378,7 +1378,7 @@
     "message": "Importing accounts"
   },
   "add_device_try_again": {
-    "message": "Try again"
+    "message": "Get new code"
   },
   "add_device_validating_desc": {
     "message": "Establishing a secure, encrypted connection with your phone."
@@ -2684,6 +2684,9 @@
   },
   "cancelled": {
     "message": "Cancelled"
+  },
+  "cantScanQrCode": {
+    "message": "Can’t scan? (For testing only)"
   },
   "carouselAllCaughtUp": {
     "message": "You're all caught up!",
@@ -4062,13 +4065,13 @@
     "message": "Enter verification code"
   },
   "enter_verification_code_desc": {
-    "message": "For security, enter the code shown in the MetaMask app on your device."
+    "message": "For your security, enter the code shown in MetaMask mobile."
   },
   "enter_verification_code_error": {
-    "message": "Incorrect code. Try again."
+    "message": "That code is incorrect. Try again."
   },
   "enter_verification_code_expired": {
-    "message": "Verification code expired"
+    "message": "This code expired. Get a new QR code to try again."
   },
   "enter_verification_code_expires_in": {
     "message": "Expires in $1s",
@@ -4815,6 +4818,9 @@
   },
   "hideAdvancedDetails": {
     "message": "Hide advanced details"
+  },
+  "hideQrData": {
+    "message": "Hide QR data (For testing only)"
   },
   "hideSentitiveInfo": {
     "message": "Hide sensitive information"
@@ -10156,7 +10162,7 @@
     "message": "Scan QR code"
   },
   "scan_qr_code_desc": {
-    "message": "Scan this with the MetaMask app on the device you want to add."
+    "message": "Scan this QR code with MetaMask mobile."
   },
   "scrollDown": {
     "message": "Scroll down"
@@ -12445,7 +12451,7 @@
     "message": "Symbol must be 11 characters or fewer."
   },
   "syncAccounts": {
-    "message": "Sync with mobile"
+    "message": "Add to mobile"
   },
   "syncing": {
     "message": "Syncing..."

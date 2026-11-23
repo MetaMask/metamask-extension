@@ -38,7 +38,16 @@ jest.mock('./components', () => {
   return {
     ...actual,
     QrCodeScan: () => <div data-testid="qr-code-scan" />,
-    EnterVerificationCode: () => <div data-testid="enter-verification-code" />,
+    EnterVerificationCode: ({
+      isAwaitingSyncOffer,
+    }: {
+      isAwaitingSyncOffer?: boolean;
+    }) => (
+      <div
+        data-testid="enter-verification-code"
+        data-awaiting-sync-offer={isAwaitingSyncOffer}
+      />
+    ),
     EnterPassword: ({
       onPasswordChange,
     }: {
@@ -141,7 +150,7 @@ describe('SyncAccountsSettings', () => {
     expect(screen.getByTestId('enter-verification-code')).toBeInTheDocument();
   });
 
-  it('renders LoadingStep when the phase is awaiting a sync offer', () => {
+  it('keeps EnterVerificationCode visible while awaiting a sync offer', () => {
     const store = configureMockStore([thunk])({
       ...qrSyncState,
       metamask: {
@@ -150,7 +159,11 @@ describe('SyncAccountsSettings', () => {
       },
     });
     renderWithProvider(<SyncAccountsSettings />, store);
-    expect(screen.getByTestId('loading-step')).toBeInTheDocument();
+    expect(screen.getByTestId('enter-verification-code')).toHaveAttribute(
+      'data-awaiting-sync-offer',
+      'true',
+    );
+    expect(screen.queryByTestId('loading-step')).not.toBeInTheDocument();
   });
 
   it('renders EnterPassword when the phase is reviewing the sync offer', () => {
