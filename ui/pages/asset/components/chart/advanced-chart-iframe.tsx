@@ -184,7 +184,9 @@ const AdvancedChartIframe = ({
   // The message listener is attached once, but the pagination callback is a
   // prop that can change, so read it from a ref kept current each render.
   const fetchOlderBarsRef = useRef(fetchOlderBars);
-  fetchOlderBarsRef.current = fetchOlderBars;
+  useEffect(() => {
+    fetchOlderBarsRef.current = fetchOlderBars;
+  }, [fetchOlderBars]);
   const theme = useTheme();
   const isDark = theme === 'dark';
   const chartUrl = `${CHART_ORIGIN}/index.html?theme=${isDark ? 'dark' : 'light'}`;
@@ -194,9 +196,20 @@ const AdvancedChartIframe = ({
   // core switches resolution in place on the persistent widget.) Reset the
   // bookkeeping that describes the old instance, otherwise we keep believing its
   // indicators and data are still applied and never re-send them.
-  useEffect(() => {
+  //
+  // State resets use the render-time "adjust state from props" pattern (setState
+  // during render, guarded by a comparison) so they are synchronous with the URL
+  // change and avoid the cascading-update lint violation of calling setState
+  // inside useEffect.  prevChartUrl is tracked as state rather than a ref so the
+  // comparison itself doesn't violate react-hooks/refs.  Ref resets go into a
+  // separate effect because that rule also forbids writing refs during render.
+  const [prevChartUrl, setPrevChartUrl] = useState(chartUrl);
+  if (prevChartUrl !== chartUrl) {
+    setPrevChartUrl(chartUrl);
     setChartReady(false);
     setIframeLoaded(false);
+  }
+  useEffect(() => {
     appliedStudiesRef.current = new Set();
     prevOhlcvDataRef.current = [];
   }, [chartUrl]);
