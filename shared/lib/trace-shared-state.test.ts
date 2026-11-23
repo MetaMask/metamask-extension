@@ -14,7 +14,7 @@ type TraceModule = typeof import('./trace');
 // another. Each instance has its own module-level variables. Jest normally
 // loads one instance, so these tests load two, as the build does.
 describe('trace state shared across module instances', () => {
-  const testGlobal = globalThis as typeof globalThis & {
+  const testGlobal = globalThis as {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     ServiceWorkerGlobalScope?: unknown;
     stateHooks?: unknown;
@@ -31,7 +31,7 @@ describe('trace state shared across module instances', () => {
   }
 
   beforeAll(() => {
-    const perf = testGlobal.performance as unknown as Record<string, unknown>;
+    const perf = globalThis.performance as unknown as Record<string, unknown>;
     perf.getEntriesByType ??= () => [];
     perf.getEntries ??= () => [];
     testGlobal.sentry = Sentry;
