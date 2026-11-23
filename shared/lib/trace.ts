@@ -376,14 +376,10 @@ export type TraceRequest = {
 
   /**
    * Start the span as the root of a new trace, ignoring the active span. A
-   * `parentContext` that resolves still takes precedence.
+   * resolved `parentContext` still takes precedence.
    *
-   * In the background (service worker or persistent background page), a trace
-   * whose parent is undeclared or does not resolve, that would not nest under
-   * the active span, also starts a new trace, as if `root` were set. The SDK
-   * keeps the pageload's trace id and sampling decision on the scope for the
-   * background's whole life, so such work would otherwise join that trace and
-   * be kept or dropped with it.
+   * In the background, work with no resolved parent and no active span to nest
+   * under is a root too: the pageload's trace id stays on the scope there.
    */
   root?: boolean;
 };
@@ -601,13 +597,8 @@ export const traceAsControllerCallback: ControllerTraceCallback = <Result>(
       : trace({ ...req, name: req.name as TraceName }),
   ) as Promise<Result>;
 
-// The build bundles this module into the self-contained `service-worker.js`
-// entry (through `setupSentry`) and into the chunk the rest of the background
-// loads from, and each copy has its own module-level variables. State written
-// by one copy and read by another therefore lives on `globalThis.stateHooks`,
-// which every copy sees and LavaMoat scuttling excepts, as in
-// `sentry-remote-rates.ts`. State a single copy both writes and reads stays at
-// module level.
+// The background bundles this module twice, so state one copy writes and the
+// other reads lives on `globalThis.stateHooks`, which LavaMoat leaves in place.
 const localSharedState: SharedTraceState = {};
 
 function getSharedState(): SharedTraceState {
@@ -620,15 +611,9 @@ function getSharedState(): SharedTraceState {
 }
 
 /**
- * In the background (the service worker, or Firefox's persistent background
- * page), record the pageload span when it starts. Neither context navigates
- * again, so its trace id stays on the scope for the background's whole life: a
- * trace with no parent started there gets its own trace (see
- * {@link TraceRequest.root}), and the pageload span never counts as an active
- * span to nest under (see {@link sentryGetActiveSpan}). The idle pageload stays
- * open and active while background fetches keep it busy, and a transaction
- * forced out of it is not counted in its recorded end. Does nothing in a UI
- * document, where the pageload trace belongs to the document.
+ * Record the background's pageload span, so work with no parent starts its own
+ * trace instead of joining it (see {@link TraceRequest.root} and
+ * {@link sentryGetActiveSpan}). Does nothing in a UI document.
  *
  * @param client - The Sentry client that emits the pageload's `spanStart`.
  */
@@ -657,9 +642,8 @@ export function trackBackgroundPageload(client?: Client): void {
 }
 
 /**
- * Whether the scope carries the background pageload's trace id, which a span
- * starting without a parent would take. An active span is not considered:
- * callers ask this only for work that would not nest under it.
+ * Whether the scope still carries the background pageload's trace id. Ignores
+ * the active span.
  *
  * @returns True when such work should start its own trace.
  */
@@ -1109,11 +1093,8 @@ function startSpan<T>(
   // has no span. `resolveParentSpan` returns `null` for both, so read the input.
   const parentDeclared = parentContext !== undefined;
 
-  // A parent that did not resolve leaves the scope's ambient trace id, which
-  // in the background is the pageload's. `traceparent` data
-  // and an active span are handled below and are not roots.
-  // An active span that the fallback or the unresolved-parent nesting below
-  // adopts keeps the work out of the pageload's trace.
+  // With no parent and nothing to nest under, work takes the scope's trace id,
+  // which in the background is the pageload's.
   const root =
     request.root ||
     (!parentSpan &&
