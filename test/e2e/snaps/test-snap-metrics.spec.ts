@@ -254,10 +254,7 @@ describe('Test Snap Metrics', function () {
         const snapInstall = new SnapInstall(driver);
         await snapInstall.checkPageIsLoaded();
         await snapInstall.clickConnectButton();
-        await driver.clickElement({
-          text: 'Cancel',
-          tag: 'button',
-        });
+        await snapInstall.clickCancelInstallAndWaitForClose();
 
         const events = await getEventPayloads(
           driver,
