@@ -699,9 +699,11 @@ class AccountListPage {
   /**
    * Waits for the account list screen to be shown, without waiting for its
    * content or for account syncing. Use `checkPageIsLoaded` to wait for those.
+   *
+   * @param timeout - How long to wait for the screen, in milliseconds.
    */
-  async checkPageIsDisplayed(): Promise<void> {
-    await this.driver.waitForSelector(this.parentSelector);
+  async checkPageIsDisplayed(timeout?: number): Promise<void> {
+    await this.driver.waitForSelector(this.parentSelector, { timeout });
   }
 
   async checkPageIsLoaded(

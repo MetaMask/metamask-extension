@@ -53,11 +53,7 @@ class SideNavAccounts {
     this.driver = driver;
   }
 
-  /**
-   * Verifies that an account is listed in the side nav.
-   *
-   * @param accountName - The name of the account.
-   */
+  // Verifies that an account is listed in the side nav
   async checkAccountIsListed(accountName: string): Promise<void> {
     console.log(`Check account "${accountName}" is listed in side nav`);
     await this.driver.waitForSelector({
@@ -66,11 +62,7 @@ class SideNavAccounts {
     });
   }
 
-  /**
-   * Verifies that an account is not listed in the side nav.
-   *
-   * @param accountName - The name of the account.
-   */
+  // Verifies that an account is not listed in the side nav
   async checkAccountIsNotListed(accountName: string): Promise<void> {
     console.log(`Check account "${accountName}" is not listed in side nav`);
     await this.driver.assertElementNotPresent({
@@ -79,27 +71,19 @@ class SideNavAccounts {
     });
   }
 
-  /**
-   * Verifies that the side nav reports that no account matches the search.
-   */
+  // Verifies that the side nav reports that no account matches the search
   async checkNoAccountsFound(): Promise<void> {
     console.log('Check side nav shows no accounts found');
     await this.driver.waitForSelector(this.noResultsMessage);
   }
 
-  /**
-   * Clicks the add wallet button. The screen it navigates to is not waited for
-   * here.
-   */
+  // Clicks the add wallet button
   async clickAddWallet(): Promise<void> {
     console.log('Click add wallet in side nav');
     await this.revealAndClick(this.addWalletButton);
   }
 
-  /**
-   * Clicks the manage accounts button. The screen it navigates to is not
-   * waited for here.
-   */
+  // Clicks the manage accounts button
   async clickManageAccounts(): Promise<void> {
     console.log('Click manage accounts in side nav');
     await this.revealAndClick(this.manageAccountsButton);
@@ -117,16 +101,14 @@ class SideNavAccounts {
 
   /**
    * Hovers the section until the given header action is revealed.
+   * Each hover attempt moves the pointer to the section and then its header:
+   * Firefox drops its hover state when the page re-renders, and WebDriver skips
+   * a move to the position it believes the pointer is already at, so a single
+   * repeated hover would never re-trigger it.
    *
    * @param actionButton - Selector of the header action to reveal.
    */
   private async revealActions(actionButton: string): Promise<void> {
-    // The side nav hides its account actions until it is is hovered, so
-    // hover it before looking for the button. Each attempt moves the pointer
-    // to the section and then its header: Firefox drops its hover state when the
-    // page re-renders, and WebDriver skips a move to the position it believes
-    // the pointer is already at, so a single repeated hover would never
-    // re-trigger it.
     await this.driver.waitUntil(
       async () => {
         await this.driver.hoverElement(
@@ -151,8 +133,6 @@ class SideNavAccounts {
    * page can re-render in between and drop it. Revealing and clicking are
    * therefore one attempt, with a short click timeout so a button that has
    * hidden again fails fast, and the next attempt hovers the section again.
-   * The click moves the pointer onto the button and clicks in a single action,
-   * so it does not rely on the earlier hover still being in place.
    *
    * @param actionButton - Selector of the header action to click.
    */
@@ -163,11 +143,10 @@ class SideNavAccounts {
         async () => {
           try {
             await this.revealActions(actionButton);
-            await this.driver.clickElementUsingMouseMove(
-              actionButton,
-              1,
-              CLICK_ATTEMPT_TIMEOUT,
-            );
+            await this.driver.clickElement(actionButton, {
+              retries: 1,
+              timeout: CLICK_ATTEMPT_TIMEOUT,
+            });
             return true;
           } catch (error) {
             lastFailure = String(error);
@@ -185,11 +164,7 @@ class SideNavAccounts {
     }
   }
 
-  /**
-   * Filters the side nav account list by the given text.
-   *
-   * @param searchText - The text to search accounts for.
-   */
+  // Filters the side nav account list by the given text
   async searchAccounts(searchText: string): Promise<void> {
     console.log(`Search side nav accounts for "${searchText}"`);
     // The search button toggles the search box, so only press it when closed.
@@ -201,11 +176,7 @@ class SideNavAccounts {
     await this.driver.fill(this.searchInput, searchText);
   }
 
-  /**
-   * Selects an account by clicking its row in the side nav list.
-   *
-   * @param accountName - The name of the account to select.
-   */
+  // Selects an account by clicking its row in the side nav list
   async selectAccount(accountName: string): Promise<void> {
     console.log(`Select account "${accountName}" in side nav`);
     await this.driver.clickElement(this.accountCellSelectButton(accountName));
