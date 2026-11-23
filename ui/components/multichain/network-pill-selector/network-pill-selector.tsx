@@ -34,7 +34,7 @@ import { getHiddenPillCount } from './get-hidden-pill-count';
 import { useNetworkPillBalances } from './use-network-pill-balances';
 
 const PILL_CLASS_NAME =
-  'flex h-10 shrink-0 cursor-pointer items-center gap-2 rounded-full border-0 px-4 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-default transition-opacity disabled:cursor-default disabled:opacity-60 disabled:delay-50 motion-reduce:transition-none';
+  'flex h-10 shrink-0 cursor-pointer items-center gap-2 rounded-full border-0 px-4 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-default transition-opacity disabled:cursor-default disabled:opacity-60 disabled:delay-75 motion-reduce:transition-none';
 
 const PILL_UNSELECTED_CLASS_NAME = 'bg-muted text-default hover:bg-muted-hover';
 
