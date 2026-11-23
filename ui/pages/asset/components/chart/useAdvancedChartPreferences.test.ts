@@ -284,4 +284,60 @@ describe('useAdvancedChartPreferences', () => {
       expect(mockSubmit).not.toHaveBeenCalled();
     });
   });
+
+  describe('display interval', () => {
+    it('mirrors the saved interval by default', () => {
+      setupPreferences({ interval: '4h' });
+      const { result } = renderHook(() => useAdvancedChartPreferences());
+
+      expect(result.current.displayInterval).toBe('4h');
+    });
+
+    it('applies a toggle interval without persisting', () => {
+      const { result } = renderHook(() => useAdvancedChartPreferences());
+
+      act(() => {
+        result.current.applyToggleCandle('1d');
+      });
+
+      expect(result.current.displayInterval).toBe('1d');
+      // The saved interval is untouched and nothing is written.
+      expect(result.current.interval).toBe('15m');
+      expect(mockSubmit).not.toHaveBeenCalled();
+    });
+
+    it('shows and persists the chosen interval on an explicit pick', () => {
+      const { result } = renderHook(() => useAdvancedChartPreferences());
+
+      act(() => {
+        result.current.applyToggleCandle('1d');
+      });
+      act(() => {
+        result.current.setCandleInterval('1h');
+      });
+
+      expect(result.current.displayInterval).toBe('1h');
+      expect(mockSubmit).toHaveBeenCalledWith(SET_PREFERENCE, [
+        'tdpChartInterval',
+        '1h',
+      ]);
+    });
+
+    it('re-syncs the display interval when the saved interval changes', () => {
+      const { result, rerender } = renderHook(() =>
+        useAdvancedChartPreferences(),
+      );
+
+      act(() => {
+        result.current.applyToggleCandle('1d');
+      });
+      expect(result.current.displayInterval).toBe('1d');
+
+      // The persisted interval changes from elsewhere (e.g. another surface).
+      preferences.interval = '5m';
+      rerender();
+
+      expect(result.current.displayInterval).toBe('5m');
+    });
+  });
 });

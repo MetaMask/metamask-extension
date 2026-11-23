@@ -1,9 +1,20 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useChartAnalytics } from './useChartAnalytics';
+import { CHART_TYPE_LINE } from './advanced-chart-interval-bar';
+import {
+  mapCandleIntervalToLineRange,
+  resolveCandleForLineRange,
+} from './chart-window-mapping';
 
 type UseAdvancedChartInteractionsParams = {
   /** Active chart type, as the numeric `CHART_TYPE_*` value. */
   chartType: number;
+  /** Saved (persisted) candle interval, used as the toggle's starting point. */
+  interval: string;
+  /** Candle interval currently on screen (may be a toggle override). */
+  displayInterval: string;
+  /** Active line time range, used to seed the candle window on line -> candle. */
+  lineTimeRange: string;
   /** Currently active indicator names. */
   indicators: Set<string>;
   /** Whether the chart is in line mode. */
@@ -19,6 +30,8 @@ type UseAdvancedChartInteractionsParams = {
   setChartType: (type: number) => void;
   setLineTimeRange: (range: string) => void;
   setCandleInterval: (interval: string) => void;
+  /** Seeds the candle interval from a toggle, without persisting. */
+  applyToggleCandle: (interval: string) => void;
   toggleIndicator: (name: string) => void;
 };
 
@@ -30,6 +43,9 @@ type UseAdvancedChartInteractionsParams = {
  *
  * @param params - Current chart state and the preference setters to drive.
  * @param params.chartType - Active chart type, as the numeric `CHART_TYPE_*` value.
+ * @param params.interval - Saved (persisted) candle interval.
+ * @param params.displayInterval - Candle interval currently on screen.
+ * @param params.lineTimeRange - Active line time range.
  * @param params.indicators - Currently active indicator names.
  * @param params.isLineChart - Whether the chart is in line mode.
  * @param params.caipAssetId - CAIP asset id, absent for unidentifiable assets.
@@ -39,11 +55,15 @@ type UseAdvancedChartInteractionsParams = {
  * @param params.setChartType - Sets the active chart type.
  * @param params.setLineTimeRange - Sets the line-mode time range.
  * @param params.setCandleInterval - Sets the candle-mode interval.
+ * @param params.applyToggleCandle - Seeds candle interval + window on toggle.
  * @param params.toggleIndicator - Toggles an indicator on or off.
  * @returns The handlers the section wires into its toolbar, iframe, and bars.
  */
 export function useAdvancedChartInteractions({
   chartType,
+  interval,
+  displayInterval,
+  lineTimeRange,
   indicators,
   isLineChart,
   caipAssetId,
@@ -53,6 +73,7 @@ export function useAdvancedChartInteractions({
   setChartType,
   setLineTimeRange,
   setCandleInterval,
+  applyToggleCandle,
   toggleIndicator,
 }: UseAdvancedChartInteractionsParams) {
   const { trackChartInteraction, trackChartEmptyDisplayed } = useChartAnalytics(
@@ -72,9 +93,31 @@ export function useAdvancedChartInteractions({
         interactionType: 'chart_type_changed',
         chartType: next,
       });
+      // Seed the destination so the visible window stays roughly the same
+      // across the toggle, in both directions.
+      if (next === CHART_TYPE_LINE) {
+        // candle -> line: land on the line range nearest the candle window
+        // instead of the hardcoded default.
+        setLineTimeRange(mapCandleIntervalToLineRange(displayInterval));
+      } else {
+        // line -> candle: keep the saved interval when it is a sensible fit for
+        // the line span; otherwise step to the interval whose natural window is
+        // nearest that span. Never persisted, so the saved interval survives the
+        // round-trip; the candle renders the interval's own natural window.
+        applyToggleCandle(resolveCandleForLineRange(lineTimeRange, interval));
+      }
       setChartType(next);
     },
-    [chartType, setChartType, trackChartInteraction],
+    [
+      chartType,
+      interval,
+      displayInterval,
+      lineTimeRange,
+      applyToggleCandle,
+      setLineTimeRange,
+      setChartType,
+      trackChartInteraction,
+    ],
   );
 
   const handleLineTimeRangeSelect = useCallback(

@@ -50,11 +50,14 @@ function persistPreference<Key extends keyof Preferences>(
  *
  * @returns Object containing chart preferences and setter functions:
  * - chartType: Current chart type (1 = Candle, 2 = Line)
- * - interval: Current interval ('15m', '1h', etc.) for candle mode
+ * - interval: Saved (persisted) candle interval ('15m', '1h', etc.)
+ * - displayInterval: Candle interval actually rendered; equals `interval` unless
+ *   a chart-type toggle temporarily stepped it to keep the tendency readable
  * - lineTimeRange: Current time range ('1H', '1D', etc.) for line mode
  * - indicators: Set of active indicator names
  * - setChartType: Update chart type
- * - setCandleInterval: Update interval (candle mode)
+ * - setCandleInterval: Update interval (candle mode); persists
+ * - applyToggleCandle: Seed candle interval from a toggle (no persist)
  * - setLineTimeRange: Update time range (line mode)
  * - toggleIndicator: Toggle indicator on/off
  * - isLineChart: Convenience flag for line chart
@@ -67,6 +70,23 @@ export function useAdvancedChartPreferences() {
   const [lineTimeRange, setLineTimeRange] = useState<string>(
     DEFAULT_LINE_TIME_RANGE,
   );
+
+  // The interval the candle chart actually renders. Normally the saved
+  // `interval`, but a chart-type toggle can override it (see `applyToggleCandle`)
+  // to preserve the visible tendency when the saved interval would be too fine
+  // for the span just viewed on the line chart. The override is display-only and
+  // is never persisted, so the user's saved interval survives round-trips.
+  const [displayInterval, setDisplayInterval] = useState<string>(interval);
+
+  // When the persisted interval changes (an explicit pick, or a change from
+  // elsewhere), fall back to showing the saved interval. Done during render
+  // rather than in an effect so the stale display interval is never painted.
+  // https://react.dev/reference/react/useState#storing-information-from-previous-renders
+  const [lastPersistedInterval, setLastPersistedInterval] = useState(interval);
+  if (lastPersistedInterval !== interval) {
+    setLastPersistedInterval(interval);
+    setDisplayInterval(interval);
+  }
 
   // Memoized so consumers can use the set as an effect dependency.
   const indicators = useMemo(
@@ -88,8 +108,18 @@ export function useAdvancedChartPreferences() {
     persistPreference('tdpChartType', next);
   }, []);
 
+  // An explicit interval pick: show it immediately and persist it as the saved
+  // preference.
   const setCandleInterval = useCallback((next: string) => {
+    setDisplayInterval(next);
     persistPreference('tdpChartInterval', next);
+  }, []);
+
+  // A chart-type toggle (line -> candle) seeding the candle view: show the
+  // resolved interval without persisting, so a cap-triggered step never
+  // overwrites the user's saved interval.
+  const applyToggleCandle = useCallback((next: string) => {
+    setDisplayInterval(next);
   }, []);
 
   // `next` is built from the synchronous ref (not the Redux-derived `indicators`
@@ -110,10 +140,12 @@ export function useAdvancedChartPreferences() {
   return {
     chartType,
     interval,
+    displayInterval,
     lineTimeRange,
     indicators,
     setChartType,
     setCandleInterval,
+    applyToggleCandle,
     setLineTimeRange,
     toggleIndicator,
     /** Convenience: whether the current chart type is line (hides indicators). */

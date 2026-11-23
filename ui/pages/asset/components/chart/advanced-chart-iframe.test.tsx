@@ -7,6 +7,36 @@ import AdvancedChartIframe, {
   getChartOrigin,
   LOAD_TIMEOUT_MS,
 } from './advanced-chart-iframe';
+import { VISIBLE_WINDOW_MS_BY_INTERVAL } from './chart-window-mapping';
+
+type Bar = { time: number };
+
+/**
+ * Builds the expected `SET_OHLCV_DATA` payload for a full (re)build, matching
+ * the iframe's own field order so an exact JSON string comparison succeeds.
+ * The visible window is anchored to the last bar using the per-interval default.
+ *
+ * @param data - The bars the payload carries.
+ * @param interval - The candle interval the window defaults to.
+ * @returns The expected payload object.
+ */
+function setOhlcvPayload(
+  data: Bar[],
+  interval = '15m',
+): Record<string, unknown> {
+  const lastBarTime = data[data.length - 1]?.time;
+  const windowMs = VISIBLE_WINDOW_MS_BY_INTERVAL[interval];
+  const visibleFromMs =
+    lastBarTime !== undefined && windowMs !== undefined
+      ? lastBarTime - windowMs
+      : undefined;
+  return {
+    data,
+    rnBackedPagination: { enabled: true },
+    atomicIntervalWindow: true,
+    ...(visibleFromMs === undefined ? {} : { visibleFromMs }),
+  };
+}
 
 // Mock dependencies
 jest.mock('../../../../hooks/useTheme', () => ({
@@ -212,17 +242,14 @@ describe('AdvancedChartIframe', () => {
         expect(postMessageSpy).toHaveBeenCalledWith(
           JSON.stringify({
             type: 'SET_OHLCV_DATA',
-            payload: {
-              data: mockOHLCVData,
-              rnBackedPagination: { enabled: true },
-            },
+            payload: setOhlcvPayload(mockOHLCVData),
           }),
           CHART_ORIGIN,
         );
       });
     });
 
-    it('sends chart type to iframe when chartReady is true', async () => {
+    it('always drives the engine to candle, even when chartType is line', async () => {
       const { container } = render(
         <AdvancedChartIframe {...defaultProps} chartType={2} />,
       );
@@ -244,18 +271,28 @@ describe('AdvancedChartIframe', () => {
         );
       });
 
+      // The engine only ever renders candles, so candle (1) is sent regardless
+      // of the line (2) prop.
       await waitFor(() => {
         expect(postMessageSpy).toHaveBeenCalledWith(
           JSON.stringify({
             type: 'SET_CHART_TYPE',
-            payload: { type: 2 },
+            payload: { type: 1 },
           }),
           CHART_ORIGIN,
         );
       });
+      // The line type is never forwarded to the engine.
+      expect(postMessageSpy).not.toHaveBeenCalledWith(
+        JSON.stringify({
+          type: 'SET_CHART_TYPE',
+          payload: { type: 2 },
+        }),
+        CHART_ORIGIN,
+      );
     });
 
-    it('updates chart type when chartType prop changes', async () => {
+    it('does not send a line type to the engine when the chartType prop changes', async () => {
       const { container, rerender } = render(
         <AdvancedChartIframe {...defaultProps} chartType={1} />,
       );
@@ -278,18 +315,13 @@ describe('AdvancedChartIframe', () => {
 
       postMessageSpy.mockClear();
 
-      // Change chart type
+      // Switching the preference to line must not mutate the engine's series.
       rerender(<AdvancedChartIframe {...defaultProps} chartType={2} />);
 
-      await waitFor(() => {
-        expect(postMessageSpy).toHaveBeenCalledWith(
-          JSON.stringify({
-            type: 'SET_CHART_TYPE',
-            payload: { type: 2 },
-          }),
-          CHART_ORIGIN,
-        );
-      });
+      expect(postMessageSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('SET_CHART_TYPE'),
+        CHART_ORIGIN,
+      );
     });
 
     it('does not send chart type before chartReady', () => {
@@ -299,44 +331,6 @@ describe('AdvancedChartIframe', () => {
         expect.stringContaining('SET_CHART_TYPE'),
         expect.any(String),
       );
-    });
-
-    it('exposes postMessage via ref', () => {
-      const ref = React.createRef<{
-        postMessage: (msg: Record<string, unknown>) => void;
-      }>();
-
-      render(<AdvancedChartIframe {...defaultProps} ref={ref} />);
-
-      expect(ref.current).toBeDefined();
-      expect(ref.current?.postMessage).toBeInstanceOf(Function);
-    });
-
-    it('allows parent to send messages via ref', async () => {
-      const ref = React.createRef<{
-        postMessage: (msg: Record<string, unknown>) => void;
-      }>();
-      const { container } = render(
-        <AdvancedChartIframe {...defaultProps} ref={ref} />,
-      );
-
-      const iframe = container.querySelector('iframe');
-      act(() => {
-        iframe?.dispatchEvent(new Event('load'));
-      });
-
-      const testMessage = { type: 'TEST_MESSAGE', payload: { foo: 'bar' } };
-
-      act(() => {
-        ref.current?.postMessage(testMessage);
-      });
-
-      await waitFor(() => {
-        expect(postMessageSpy).toHaveBeenCalledWith(
-          JSON.stringify(testMessage),
-          CHART_ORIGIN,
-        );
-      });
     });
   });
 
@@ -766,10 +760,7 @@ describe('AdvancedChartIframe', () => {
         expect(postMessageSpy).toHaveBeenCalledWith(
           JSON.stringify({
             type: 'SET_OHLCV_DATA',
-            payload: {
-              data: sameLengthOtherValues,
-              rnBackedPagination: { enabled: true },
-            },
+            payload: setOhlcvPayload(sameLengthOtherValues),
           }),
           CHART_ORIGIN,
         );
@@ -791,10 +782,7 @@ describe('AdvancedChartIframe', () => {
         expect(postMessageSpy).toHaveBeenCalledWith(
           JSON.stringify({
             type: 'SET_OHLCV_DATA',
-            payload: {
-              data: sameLengthOtherValues,
-              rnBackedPagination: { enabled: true },
-            },
+            payload: setOhlcvPayload(sameLengthOtherValues, '1d'),
           }),
           CHART_ORIGIN,
         );
@@ -853,10 +841,7 @@ describe('AdvancedChartIframe', () => {
         expect(postMessageSpy).toHaveBeenCalledWith(
           JSON.stringify({
             type: 'SET_OHLCV_DATA',
-            payload: {
-              data: sameLengthOtherValues,
-              rnBackedPagination: { enabled: true },
-            },
+            payload: setOhlcvPayload(sameLengthOtherValues),
           }),
           CHART_ORIGIN,
         );
@@ -884,10 +869,7 @@ describe('AdvancedChartIframe', () => {
         expect(postMessageSpy).toHaveBeenCalledWith(
           JSON.stringify({
             type: 'SET_OHLCV_DATA',
-            payload: {
-              data: sameLengthOtherValues,
-              rnBackedPagination: { enabled: true },
-            },
+            payload: setOhlcvPayload(sameLengthOtherValues),
           }),
           CHART_ORIGIN,
         );
@@ -1025,10 +1007,7 @@ describe('AdvancedChartIframe', () => {
         expect(postMessageSpy).toHaveBeenCalledWith(
           JSON.stringify({
             type: 'SET_OHLCV_DATA',
-            payload: {
-              data: mockOHLCVData,
-              rnBackedPagination: { enabled: true },
-            },
+            payload: setOhlcvPayload(mockOHLCVData),
           }),
           CHART_ORIGIN,
         );
@@ -1078,10 +1057,7 @@ describe('AdvancedChartIframe', () => {
         expect(postMessageSpy).toHaveBeenCalledWith(
           JSON.stringify({
             type: 'SET_OHLCV_DATA',
-            payload: {
-              data: newData,
-              rnBackedPagination: { enabled: true },
-            },
+            payload: setOhlcvPayload(newData),
           }),
           CHART_ORIGIN,
         );
@@ -1113,21 +1089,21 @@ describe('AdvancedChartIframe', () => {
   });
 
   describe('Edge Cases', () => {
-    it('handles missing contentWindow', async () => {
+    it('handles missing contentWindow', () => {
       Object.defineProperty(HTMLIFrameElement.prototype, 'contentWindow', {
         writable: true,
         value: null,
       });
 
-      const ref = React.createRef<{
-        postMessage: (msg: Record<string, unknown>) => void;
-      }>();
+      const { container } = render(<AdvancedChartIframe {...defaultProps} />);
+      const iframe = container.querySelector('iframe');
 
-      render(<AdvancedChartIframe {...defaultProps} ref={ref} />);
-
-      // Should not crash
+      // An iframe load drives a SET_OHLCV_DATA post; with no contentWindow the
+      // postMessage bridge must no-op rather than throw.
       expect(() => {
-        ref.current?.postMessage({ type: 'TEST' });
+        act(() => {
+          iframe?.dispatchEvent(new Event('load'));
+        });
       }).not.toThrow();
     });
 
@@ -1236,10 +1212,7 @@ describe('AdvancedChartIframe', () => {
         expect(postMessageSpy).toHaveBeenCalledWith(
           JSON.stringify({
             type: 'SET_OHLCV_DATA',
-            payload: {
-              data: mockOHLCVData,
-              rnBackedPagination: { enabled: true },
-            },
+            payload: setOhlcvPayload(mockOHLCVData),
           }),
           CHART_ORIGIN,
         );
@@ -1259,7 +1232,8 @@ describe('AdvancedChartIframe', () => {
 
       postMessageSpy.mockClear();
 
-      // 3. Chart type changes
+      // 3. Chart type preference changes to line — the engine is only ever
+      // candle (line is the legacy chart), so its series type is NOT mutated.
       rerender(
         <AdvancedChartIframe
           {...defaultProps}
@@ -1269,15 +1243,10 @@ describe('AdvancedChartIframe', () => {
         />,
       );
 
-      await waitFor(() => {
-        expect(postMessageSpy).toHaveBeenCalledWith(
-          JSON.stringify({
-            type: 'SET_CHART_TYPE',
-            payload: { type: 2 },
-          }),
-          CHART_ORIGIN,
-        );
-      });
+      expect(postMessageSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('SET_CHART_TYPE'),
+        CHART_ORIGIN,
+      );
 
       expect(mockOnError).not.toHaveBeenCalled();
     });
@@ -1329,10 +1298,7 @@ describe('AdvancedChartIframe', () => {
         expect(postMessageSpy).toHaveBeenCalledWith(
           JSON.stringify({
             type: 'SET_OHLCV_DATA',
-            payload: {
-              data: mockOHLCVData,
-              rnBackedPagination: { enabled: true },
-            },
+            payload: setOhlcvPayload(mockOHLCVData),
           }),
           CHART_ORIGIN,
         );

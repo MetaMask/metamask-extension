@@ -1,8 +1,6 @@
 import React, {
-  forwardRef,
   useCallback,
   useEffect,
-  useImperativeHandle,
   useMemo,
   useRef,
   useState,
@@ -12,6 +10,7 @@ import { ENVIRONMENT } from '../../../../../shared/constants/build';
 import { useTheme } from '../../../../hooks/useTheme';
 import { isMovingAverage } from './advanced-chart-indicator-bar';
 import { CHART_TYPE_CANDLE } from './advanced-chart-interval-bar';
+import { VISIBLE_WINDOW_MS_BY_INTERVAL } from './chart-window-mapping';
 import type { FetchOlderBarsResult, OHLCVBar } from './useOHLCVChart';
 import type { OHLCVRealtimeBar } from './useOHLCVRealtime';
 
@@ -93,11 +92,6 @@ function toTradingViewUrl(raw?: unknown): string {
   return TRADINGVIEW_URL;
 }
 
-/** Imperative handle so the parent can send messages to the chart engine. */
-export type AdvancedChartIframeRef = {
-  postMessage: (message: Record<string, unknown>) => void;
-};
-
 type AdvancedChartIframeProps = {
   /**
    * Identifies the series currently plotted. Together with `selectedInterval`
@@ -135,408 +129,453 @@ type AdvancedChartIframeProps = {
    * loaded bar. Host-backed ("RN-backed") pagination: the engine asks us for
    * older bars rather than fetching them itself, keeping all network egress in
    * the extension where there is no iframe-CSP restriction. Omit to disable.
+   *
+   * `countBack` is the number of bars the engine is still short by (forwarded
+   * from the datafeed request). When provided, the callback accumulates cursor
+   * pages until it has at least that many bars and replies once, so the engine
+   * is satisfied in a single round-trip instead of re-asking per page.
    */
-  fetchOlderBars?: () => Promise<FetchOlderBarsResult>;
+  fetchOlderBars?: (countBack?: number) => Promise<FetchOlderBarsResult>;
 };
 
-const AdvancedChartIframe = forwardRef<
-  AdvancedChartIframeRef,
-  AdvancedChartIframeProps
->(
-  (
-    {
-      assetId,
-      chartType,
-      selectedInterval,
-      currency,
-      activeIndicators,
-      ohlcvData,
-      onError,
-      onReady,
-      onChartInteracted,
-      onTradingViewClicked,
-      realtimeBar,
-      fetchOlderBars,
-    },
-    ref,
-  ) => {
-    const iframeRef = useRef<HTMLIFrameElement>(null);
-    const [chartReady, setChartReady] = useState(false);
-    const [iframeLoaded, setIframeLoaded] = useState(false);
-    // Which studies the engine currently has applied, so each sync posts only
-    // a diff. Cleared on CHART_READY, since a (re)built chart starts bare.
-    const appliedStudiesRef = useRef<Set<string>>(new Set());
-    // The bars the engine was last given, so a newer arrival can be sent as a
-    // cheap REALTIME_UPDATE instead of a full rebuild.
-    const prevOhlcvDataRef = useRef<OHLCVBar[]>([]);
-    // The message listener is attached once, but the pagination callback is a
-    // prop that can change, so read it from a ref kept current each render.
-    const fetchOlderBarsRef = useRef(fetchOlderBars);
-    fetchOlderBarsRef.current = fetchOlderBars;
-    const theme = useTheme();
-    const isDark = theme === 'dark';
-    const chartUrl = `${CHART_ORIGIN}/index.html?theme=${isDark ? 'dark' : 'light'}`;
+/**
+ * Pure chart embed — one persistent iframe plus its postMessage bridge.
+ *
+ * A bare TradingView resolution switch inherits the previous interval's visible
+ * TIME range and sizes the new series' first `getBars` from it — a coarse→fine
+ * switch (e.g. 1W→1m) then asks for hundreds of thousands of bars (the
+ * ASSETS-4400 pagination storm). The fix lives in the chart core: on an
+ * interval change it switches resolution in place on the same persistent
+ * widget, first releasing the visible-range pin so TradingView preserves the
+ * visible bar count (a bounded first request) instead of the inherited span.
+ *
+ * The host therefore keeps the iframe mounted across interval changes (no
+ * remount, no ~20 MB library reload) and simply re-sends the new interval's
+ * data. Because the widget persists, the chart type, studies, MAs and volume
+ * survive a switch; they are applied once, on the first CHART_READY.
+ */
+const AdvancedChartIframe = ({
+  assetId,
+  chartType,
+  selectedInterval,
+  currency,
+  activeIndicators,
+  ohlcvData,
+  onError,
+  onReady,
+  onChartInteracted,
+  onTradingViewClicked,
+  realtimeBar,
+  fetchOlderBars,
+}: AdvancedChartIframeProps) => {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [iframeLoaded, setIframeLoaded] = useState(false);
+  // The engine reports CHART_READY once, on the first build (interval switches
+  // happen in place on the persistent widget, so they never re-emit it). This
+  // latches ready so the study/MA/volume/chart-type sync effects run once the
+  // chart exists, and gates the one-time skeleton.
+  const [chartReady, setChartReady] = useState(false);
+  // Which studies the engine currently has applied, so each sync posts only
+  // a diff. Cleared on CHART_READY (the first, bare build).
+  const appliedStudiesRef = useRef<Set<string>>(new Set());
+  // The bars the engine was last given, so a newer arrival can be sent as a
+  // cheap REALTIME_UPDATE instead of a full rebuild.
+  const prevOhlcvDataRef = useRef<OHLCVBar[]>([]);
+  // The message listener is attached once, but the pagination callback is a
+  // prop that can change, so read it from a ref kept current each render.
+  const fetchOlderBarsRef = useRef(fetchOlderBars);
+  fetchOlderBarsRef.current = fetchOlderBars;
+  const theme = useTheme();
+  const isDark = theme === 'dark';
+  const chartUrl = `${CHART_ORIGIN}/index.html?theme=${isDark ? 'dark' : 'light'}`;
 
-    // The theme is baked into the iframe src, so switching it reloads the
-    // engine and the replacement comes up bare. Reset the bookkeeping that
-    // describes the old instance, otherwise we keep believing its indicators
-    // and data are still applied and never re-send them.
-    useEffect(() => {
-      setChartReady(false);
-      setIframeLoaded(false);
-      appliedStudiesRef.current = new Set();
-      prevOhlcvDataRef.current = [];
-    }, [chartUrl]);
+  // The theme is baked into the iframe src, so switching it reloads the engine
+  // and the replacement comes up bare. (Interval changes do NOT reload — the
+  // core switches resolution in place on the persistent widget.) Reset the
+  // bookkeeping that describes the old instance, otherwise we keep believing its
+  // indicators and data are still applied and never re-send them.
+  useEffect(() => {
+    setChartReady(false);
+    setIframeLoaded(false);
+    appliedStudiesRef.current = new Set();
+    prevOhlcvDataRef.current = [];
+  }, [chartUrl]);
 
-    const postToChart = useCallback((message: Record<string, unknown>) => {
-      iframeRef.current?.contentWindow?.postMessage(
-        JSON.stringify(message),
-        CHART_ORIGIN,
-      );
-    }, []);
+  const postToChart = useCallback((message: Record<string, unknown>) => {
+    iframeRef.current?.contentWindow?.postMessage(
+      JSON.stringify(message),
+      CHART_ORIGIN,
+    );
+  }, []);
 
-    // Expose postMessage to parent via ref
-    useImperativeHandle(ref, () => ({ postMessage: postToChart }), [
-      postToChart,
-    ]);
-
-    // Listen for messages from the chart engine
-    useEffect(() => {
-      const handleMessage = (event: MessageEvent) => {
-        if (event.origin !== CHART_ORIGIN) {
-          return;
+  // Listen for messages from the chart engine
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== CHART_ORIGIN) {
+        return;
+      }
+      try {
+        const msg =
+          typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+        if (msg?.type === 'CHART_READY') {
+          // Every (re)build starts bare, so forget what the previous series had
+          // applied and latch ready to run the sync effects.
+          appliedStudiesRef.current = new Set();
+          setChartReady(true);
+          onReady?.();
         }
-        try {
-          const msg =
-            typeof event.data === 'string'
-              ? JSON.parse(event.data)
-              : event.data;
-          if (msg?.type === 'CHART_READY') {
-            appliedStudiesRef.current = new Set();
-            setChartReady(true);
-            onReady?.();
-          }
-          if (msg?.type === 'ERROR' && msg?.payload?.message) {
-            onError?.(msg.payload.message);
-          }
-          // Zoom, pan, and tooltip gestures. The chart bundle debounces these
-          // and sends tooltip once per crosshair session, so they arrive
-          // pre-throttled and are forwarded straight up.
-          if (
-            msg?.type === 'CHART_INTERACTED' &&
-            msg?.payload?.interaction_type
-          ) {
-            onChartInteracted?.(msg.payload.interaction_type);
-          }
-          // The TradingView attribution link must stay reachable (license
-          // clause 3.2), but the iframe is sandboxed without allow-popups or
-          // allow-top-navigation. The engine cancels the click and hands us
-          // the url so the host opens it instead.
-          if (msg?.type === 'CHART_TRADINGVIEW_CLICKED') {
-            global.platform.openTab({
-              url: toTradingViewUrl(msg?.payload?.url),
+        if (msg?.type === 'ERROR' && msg?.payload?.message) {
+          onError?.(msg.payload.message);
+        }
+        // Zoom, pan, and tooltip gestures. The chart bundle debounces these
+        // and sends tooltip once per crosshair session, so they arrive
+        // pre-throttled and are forwarded straight up.
+        if (
+          msg?.type === 'CHART_INTERACTED' &&
+          msg?.payload?.interaction_type
+        ) {
+          onChartInteracted?.(msg.payload.interaction_type);
+        }
+        // The TradingView attribution link must stay reachable (license
+        // clause 3.2), but the iframe is sandboxed without allow-popups or
+        // allow-top-navigation. The engine cancels the click and hands us
+        // the url so the host opens it instead.
+        if (msg?.type === 'CHART_TRADINGVIEW_CLICKED') {
+          global.platform.openTab({
+            url: toTradingViewUrl(msg?.payload?.url),
+          });
+          onTradingViewClicked?.();
+        }
+        // Host-backed pagination: the engine scrolled past its oldest loaded
+        // bar and is asking us for an older page. Fetch it and reply with the
+        // same requestId/seriesGeneration so the engine can match the
+        // response and reject it if the series has since changed.
+        if (msg?.type === 'FETCH_OLDER_BARS_REQUEST') {
+          const { requestId, seriesGeneration, countBack } = msg.payload ?? {};
+          const respond = (
+            bars: OHLCVBar[],
+            noData: boolean,
+            error?: string,
+          ) => {
+            postToChart({
+              type: 'FETCH_OLDER_BARS_RESPONSE',
+              payload: {
+                requestId,
+                seriesGeneration,
+                bars,
+                noData,
+                ...(error ? { error } : {}),
+              },
             });
-            onTradingViewClicked?.();
+          };
+          const fetchOlder = fetchOlderBarsRef.current;
+          if (fetchOlder) {
+            // eslint-disable-next-line no-void -- fire-and-forget reply
+            void fetchOlder(countBack)
+              .then(({ bars, noData }) => respond(bars, noData))
+              .catch((e) =>
+                respond(
+                  [],
+                  true,
+                  e instanceof Error ? e.message : 'pagination error',
+                ),
+              );
+          } else {
+            respond([], true);
           }
-          // Host-backed pagination: the engine scrolled past its oldest loaded
-          // bar and is asking us for an older page. Fetch it and reply with the
-          // same requestId/seriesGeneration so the engine can match the
-          // response and reject it if the series has since changed.
-          if (msg?.type === 'FETCH_OLDER_BARS_REQUEST') {
-            const { requestId, seriesGeneration } = msg.payload ?? {};
-            const respond = (
-              bars: OHLCVBar[],
-              noData: boolean,
-              error?: string,
-            ) => {
-              postToChart({
-                type: 'FETCH_OLDER_BARS_RESPONSE',
-                payload: {
-                  requestId,
-                  seriesGeneration,
-                  bars,
-                  noData,
-                  ...(error ? { error } : {}),
-                },
-              });
-            };
-            const fetchOlder = fetchOlderBarsRef.current;
-            if (fetchOlder) {
-              // eslint-disable-next-line no-void -- fire-and-forget reply
-              void fetchOlder()
-                .then(({ bars, noData }) => respond(bars, noData))
-                .catch((e) =>
-                  respond(
-                    [],
-                    true,
-                    e instanceof Error ? e.message : 'pagination error',
-                  ),
-                );
-            } else {
-              respond([], true);
-            }
-          }
-        } catch {
-          // ignore non-JSON
         }
-      };
-      window.addEventListener('message', handleMessage);
-      return () => window.removeEventListener('message', handleMessage);
-    }, [
-      onChartInteracted,
-      onError,
-      onReady,
-      onTradingViewClicked,
-      postToChart,
-    ]);
-
-    // Fall back to legacy chart if chartReady isn't set within LOAD_TIMEOUT_MS.
-    useEffect(() => {
-      if (chartReady) {
-        return;
+      } catch {
+        // ignore non-JSON
       }
-      const timer = setTimeout(() => {
-        onError?.('Chart load timeout');
-      }, LOAD_TIMEOUT_MS);
-      return () => clearTimeout(timer);
-    }, [chartReady, onError]);
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [onChartInteracted, onError, onReady, onTradingViewClicked, postToChart]);
 
-    // Send initial data on iframe load — just mark loaded; data flows via
-    // the ohlcvData-gated useEffect below.
-    const handleIframeLoad = useCallback(() => {
-      setIframeLoaded(true);
-    }, []);
+  // Fall back to legacy chart if chartReady isn't set within LOAD_TIMEOUT_MS.
+  useEffect(() => {
+    if (chartReady) {
+      return;
+    }
+    const timer = setTimeout(() => {
+      onError?.('Chart load timeout');
+    }, LOAD_TIMEOUT_MS);
+    return () => clearTimeout(timer);
+  }, [chartReady, onError]);
 
-    // Re-send chart type when it changes
-    useEffect(() => {
-      if (chartReady) {
-        postToChart({ type: 'SET_CHART_TYPE', payload: { type: chartType } });
-      }
-    }, [chartType, chartReady, postToChart]);
+  // Send initial data on iframe load — just mark loaded; data flows via
+  // the ohlcvData-gated useEffect below.
+  const handleIframeLoad = useCallback(() => {
+    setIframeLoaded(true);
+  }, []);
 
-    // Studies are candlestick-only: the selection stays in preferences but
-    // nothing is drawn on a line chart. Gating here rather than in the parent
-    // means no caller can accidentally draw studies on a line chart.
-    const showIndicators = chartType === CHART_TYPE_CANDLE;
-
-    // Volume and moving averages have their own messages, so they're split out
-    // of the generic add/remove list.
-    const studies = useMemo(
-      () =>
-        showIndicators
-          ? [...(activeIndicators ?? [])].filter(
-              (name) => name !== 'Volume' && !isMovingAverage(name),
-            )
-          : [],
-      [showIndicators, activeIndicators],
-    );
-
-    const movingAverages = useMemo(
-      () =>
-        showIndicators
-          ? [...(activeIndicators ?? [])].filter(isMovingAverage)
-          : [],
-      [showIndicators, activeIndicators],
-    );
-
-    const showVolume =
-      showIndicators && (activeIndicators?.has('Volume') ?? false);
-
-    // Sync studies. Also re-applies the full selection to a newly loaded chart
-    // (after navigating to another token, or reopening the extension), where
-    // the engine has none applied yet.
-    useEffect(() => {
-      if (!chartReady) {
-        return;
-      }
-      const applied = appliedStudiesRef.current;
-      const desired = new Set(studies);
-
-      for (const name of desired) {
-        if (!applied.has(name)) {
-          applied.add(name);
-          postToChart({ type: 'ADD_INDICATOR', payload: { name } });
-        }
-      }
-      for (const name of applied) {
-        if (!desired.has(name)) {
-          applied.delete(name);
-          postToChart({ type: 'REMOVE_INDICATOR', payload: { name } });
-        }
-      }
-    }, [studies, chartReady, postToChart]);
-
-    // Moving averages are driven as a single batch rather than per-indicator.
-    useEffect(() => {
-      if (!chartReady) {
-        return;
-      }
+  // The TradingView engine only ever renders candles. Line mode is served by
+  // the legacy chart; the engine is kept mounted and merely hidden in place
+  // (see `advanced-chart-section`). So we always drive the engine to candle
+  // and NEVER forward the line type to it.
+  //
+  // Forwarding `SET_CHART_TYPE(line)` would switch the engine's main series
+  // from OHLC to single-value (a full series rebuild) while it is hidden.
+  // That rebuild blanks TradingView's time-axis labels, and because the
+  // engine is only revealed (not re-laid-out) on the toggle back, nothing
+  // recomputes the time scale — so the axis stays blank until the next data
+  // cycle. Pinning the engine to candle removes that mutation entirely.
+  //
+  // The user's line/candle preference is still persisted upstream (it drives
+  // which chart is shown); it just no longer changes the engine's series type.
+  useEffect(() => {
+    if (chartReady) {
       postToChart({
-        type: 'SET_MA_VISIBILITY',
-        payload: { visible: movingAverages },
+        type: 'SET_CHART_TYPE',
+        payload: { type: CHART_TYPE_CANDLE },
       });
-    }, [movingAverages, chartReady, postToChart]);
+    }
+    // Sets the chart type once the first (bare candle) build is ready.
+  }, [chartReady, postToChart]);
 
-    useEffect(() => {
-      if (!chartReady) {
-        return;
+  // Studies are candlestick-only: the selection stays in preferences but
+  // nothing is drawn on a line chart. Gating here rather than in the parent
+  // means no caller can accidentally draw studies on a line chart.
+  const showIndicators = chartType === CHART_TYPE_CANDLE;
+
+  // Volume and moving averages have their own messages, so they're split out
+  // of the generic add/remove list.
+  const studies = useMemo(
+    () =>
+      showIndicators
+        ? [...(activeIndicators ?? [])].filter(
+            (name) => name !== 'Volume' && !isMovingAverage(name),
+          )
+        : [],
+    [showIndicators, activeIndicators],
+  );
+
+  const movingAverages = useMemo(
+    () =>
+      showIndicators
+        ? [...(activeIndicators ?? [])].filter(isMovingAverage)
+        : [],
+    [showIndicators, activeIndicators],
+  );
+
+  const showVolume =
+    showIndicators && (activeIndicators?.has('Volume') ?? false);
+
+  // Sync studies. Also re-applies the full selection to a newly loaded chart
+  // (after navigating to another token, or reopening the extension), where
+  // the engine has none applied yet.
+  useEffect(() => {
+    if (!chartReady) {
+      return;
+    }
+    const applied = appliedStudiesRef.current;
+    const desired = new Set(studies);
+
+    for (const name of desired) {
+      if (!applied.has(name)) {
+        applied.add(name);
+        postToChart({ type: 'ADD_INDICATOR', payload: { name } });
       }
-      postToChart({
-        type: 'TOGGLE_VOLUME',
-        payload: { visible: showVolume, volumeOverlay: true },
-      });
-    }, [showVolume, chartReady, postToChart]);
-
-    // Forward realtime bar updates to the chart engine
-    useEffect(() => {
-      if (!chartReady || !realtimeBar) {
-        return;
+    }
+    for (const name of applied) {
+      if (!desired.has(name)) {
+        applied.delete(name);
+        postToChart({ type: 'REMOVE_INDICATOR', payload: { name } });
       }
-      postToChart({
-        type: 'REALTIME_UPDATE',
-        payload: { bar: realtimeBar },
-      });
-    }, [realtimeBar, chartReady, postToChart]);
+    }
+    // Applies the full study selection once the first build is ready (it
+    // starts bare, with `appliedStudiesRef` cleared).
+  }, [studies, chartReady, postToChart]);
 
-    // Identifies which series `ohlcvData` belongs to. Bar counts alone cannot
-    // distinguish "one more candle on the same series" from "a different token
-    // that happens to return the same number of candles". Currency is part of
-    // the identity because a fiat change re-prices every bar.
-    const seriesKey = `${assetId}|${selectedInterval}|${currency ?? ''}`;
-    const seriesKeyRef = useRef(seriesKey);
+  // Moving averages are driven as a single batch rather than per-indicator.
+  useEffect(() => {
+    if (!chartReady) {
+      return;
+    }
+    postToChart({
+      type: 'SET_MA_VISIBILITY',
+      payload: { visible: movingAverages },
+    });
+  }, [movingAverages, chartReady, postToChart]);
 
-    // Smart diffing: avoid full SET_OHLCV_DATA on every WS tick so the chart
-    // engine can show a smooth real-time pulse via REALTIME_UPDATE instead of
-    // a full resetData() rebuild. Matches mobile's AdvancedChart.tsx pattern.
-    useEffect(() => {
-      if (!iframeLoaded) {
-        return;
-      }
+  useEffect(() => {
+    if (!chartReady) {
+      return;
+    }
+    postToChart({
+      type: 'TOGGLE_VOLUME',
+      payload: { visible: showVolume, volumeOverlay: true },
+    });
+  }, [showVolume, chartReady, postToChart]);
 
-      // A different token or interval is never an incremental update, however
-      // similar the two bar sets look.
-      const seriesChanged = seriesKeyRef.current !== seriesKey;
-      const hadData = prevOhlcvDataRef.current.length > 0;
-      if (seriesChanged) {
-        seriesKeyRef.current = seriesKey;
+  // Forward realtime bar updates to the chart engine
+  useEffect(() => {
+    if (!chartReady || !realtimeBar) {
+      return;
+    }
+    postToChart({
+      type: 'REALTIME_UPDATE',
+      payload: { bar: realtimeBar },
+    });
+  }, [realtimeBar, chartReady, postToChart]);
+
+  // Identifies which series `ohlcvData` belongs to. Bar counts alone cannot
+  // distinguish "one more candle on the same series" from "a different token
+  // that happens to return the same number of candles". Currency is part of
+  // the identity because a fiat change re-prices every bar.
+  const seriesKey = `${assetId}|${selectedInterval}|${currency ?? ''}`;
+  const seriesKeyRef = useRef(seriesKey);
+
+  // Smart diffing: avoid full SET_OHLCV_DATA on every WS tick so the chart
+  // engine can show a smooth real-time pulse via REALTIME_UPDATE instead of
+  // a full resetData() rebuild. Matches mobile's AdvancedChart.tsx pattern.
+  useEffect(() => {
+    if (!iframeLoaded) {
+      return;
+    }
+
+    // A different token or interval is never an incremental update, however
+    // similar the two bar sets look.
+    const seriesChanged = seriesKeyRef.current !== seriesKey;
+    const hadData = prevOhlcvDataRef.current.length > 0;
+    if (seriesChanged) {
+      seriesKeyRef.current = seriesKey;
+      prevOhlcvDataRef.current = [];
+    }
+
+    // A successful fetch that returns no candles is not an error, so nothing
+    // else clears the chart. Without this, the previous asset's/interval's
+    // candles stay stamped under the new series key. Only post the clear when
+    // the engine could actually be holding stale bars.
+    if (!ohlcvData?.length) {
+      if (seriesChanged || hadData) {
+        postToChart({ type: 'SET_OHLCV_DATA', payload: { data: [] } });
         prevOhlcvDataRef.current = [];
       }
+      return;
+    }
 
-      // A successful fetch that returns no candles is not an error, so nothing
-      // else clears the chart. Without this, the previous asset's/interval's
-      // candles stay stamped under the new series key. Only post the clear when
-      // the engine could actually be holding stale bars.
-      if (!ohlcvData?.length) {
-        if (seriesChanged || hadData) {
-          postToChart({ type: 'SET_OHLCV_DATA', payload: { data: [] } });
-          prevOhlcvDataRef.current = [];
-        }
-        return;
-      }
+    const prevData = prevOhlcvDataRef.current;
 
-      const prevData = prevOhlcvDataRef.current;
+    // `useOHLCVChart` keeps the previous series' bars until the next fetch
+    // lands, so when a token/interval/currency switch returns a similar bar
+    // count the `seriesKey` reset alone cannot be trusted — the stale bars
+    // can be stamped under the new key for one render. The leading bar is
+    // the reliable tell: its time and price only stay identical within one
+    // continuous series, so a change there means a wholesale replacement.
+    const first = ohlcvData[0];
+    const prevFirst = prevData[0];
+    const sameSeries =
+      prevData.length > 0 &&
+      Boolean(first) &&
+      Boolean(prevFirst) &&
+      first.time === prevFirst.time &&
+      first.open === prevFirst.open &&
+      first.high === prevFirst.high &&
+      first.low === prevFirst.low &&
+      first.close === prevFirst.close;
 
-      // `useOHLCVChart` keeps the previous series' bars until the next fetch
-      // lands, so when a token/interval/currency switch returns a similar bar
-      // count the `seriesKey` reset alone cannot be trusted — the stale bars
-      // can be stamped under the new key for one render. The leading bar is
-      // the reliable tell: its time and price only stay identical within one
-      // continuous series, so a change there means a wholesale replacement.
-      const first = ohlcvData[0];
-      const prevFirst = prevData[0];
-      const sameSeries =
-        prevData.length > 0 &&
-        Boolean(first) &&
-        Boolean(prevFirst) &&
-        first.time === prevFirst.time &&
-        first.open === prevFirst.open &&
-        first.high === prevFirst.high &&
-        first.low === prevFirst.low &&
-        first.close === prevFirst.close;
+    // First load, a different series, or a bulk change (interval change,
+    // pagination) → full SET_OHLCV_DATA.
+    if (!sameSeries || Math.abs(ohlcvData.length - prevData.length) > 1) {
+      // Anchor the initial visible window to the latest loaded bar so the
+      // engine frames a recent span instead of auto-fitting all history
+      // (which makes candle mode reach much further back than the line).
+      const lastBarTime = ohlcvData[ohlcvData.length - 1]?.time;
+      const windowMs = VISIBLE_WINDOW_MS_BY_INTERVAL[selectedInterval];
+      const visibleFromMs =
+        lastBarTime !== undefined && windowMs !== undefined
+          ? lastBarTime - windowMs
+          : undefined;
 
-      // First load, a different series, or a bulk change (interval change,
-      // pagination) → full SET_OHLCV_DATA.
-      if (!sameSeries || Math.abs(ohlcvData.length - prevData.length) > 1) {
-        postToChart({
-          type: 'SET_OHLCV_DATA',
-          // Strategy B (host-backed): the engine asks us for older bars via
-          // FETCH_OLDER_BARS_REQUEST instead of fetching them itself. Must NOT
-          // set `pagination` — that would switch on the in-iframe fetch path,
-          // which the chart origin's strict CSP (connect-src 'none') blocks.
-          payload: { data: ohlcvData, rnBackedPagination: { enabled: true } },
-        });
-        prevOhlcvDataRef.current = ohlcvData;
-        return;
-      }
-
-      // If only the last candle changed → lightweight REALTIME_UPDATE
-      // (matches mobile's AdvancedChart.tsx diffing logic)
-      const last = ohlcvData[ohlcvData.length - 1];
-      const prevLast = prevData[prevData.length - 1];
-      if (
-        last &&
-        prevLast &&
-        (last.time !== prevLast.time ||
-          last.close !== prevLast.close ||
-          last.high !== prevLast.high ||
-          last.low !== prevLast.low ||
-          last.volume !== prevLast.volume)
-      ) {
-        postToChart({ type: 'REALTIME_UPDATE', payload: { bar: last } });
-        prevOhlcvDataRef.current = ohlcvData;
-        return;
-      }
-
+      postToChart({
+        type: 'SET_OHLCV_DATA',
+        // Strategy B (host-backed): the engine asks us for older bars via
+        // FETCH_OLDER_BARS_REQUEST instead of fetching them itself. Must NOT
+        // set `pagination` — that would switch on the in-iframe fetch path,
+        // which the chart origin's strict CSP (connect-src 'none') blocks.
+        payload: {
+          data: ohlcvData,
+          rnBackedPagination: { enabled: true },
+          // Opt into the core interval-window fix: clamps the pinned visible
+          // window to the loaded bars so an interval switch never frames an
+          // interval older than what is in memory.
+          atomicIntervalWindow: true,
+          ...(visibleFromMs === undefined ? {} : { visibleFromMs }),
+        },
+      });
       prevOhlcvDataRef.current = ohlcvData;
-    }, [iframeLoaded, ohlcvData, seriesKey, postToChart]);
+      return;
+    }
 
-    return (
-      <div
-        data-testid="advanced-chart-iframe"
-        style={{
-          width: '100%',
-          height: '100%',
-          overflow: 'hidden',
-          position: 'relative',
-          background: 'var(--color-background-default)',
-        }}
-      >
-        {/* Covers the iframe until the engine reports ready, so a failing
-            chart origin shows a skeleton rather than the browser's own
-            "refused to connect" page. */}
-        {!chartReady && (
-          <div
-            data-testid="advanced-chart-loading"
-            style={{
-              position: 'absolute',
-              inset: 0,
-              zIndex: 1,
-              background: 'var(--color-background-default)',
-            }}
-          >
-            <Skeleton
-              style={{ width: '100%', height: '100%', borderRadius: '1rem' }}
-            />
-          </div>
-        )}
-        <iframe
-          ref={iframeRef}
-          src={chartUrl}
-          title="Advanced Chart"
-          // Threat-model §Gap-1: sandbox the chart iframe so a compromised
-          // remote page cannot navigate the top window or open popups.
-          // allow-scripts: TradingView needs JS execution.
-          // allow-same-origin: chart-origin scripts need same-origin access
-          //   to their own localStorage / fetch. Deliberately omit
-          //   allow-top-navigation and allow-popups.
-          sandbox="allow-scripts allow-same-origin"
-          onLoad={handleIframeLoad}
-          style={{ width: '100%', height: '100%', border: 'none' }}
-        />
-      </div>
-    );
-  },
-);
+    // If only the last candle changed → lightweight REALTIME_UPDATE
+    // (matches mobile's AdvancedChart.tsx diffing logic)
+    const last = ohlcvData[ohlcvData.length - 1];
+    const prevLast = prevData[prevData.length - 1];
+    if (
+      last &&
+      prevLast &&
+      (last.time !== prevLast.time ||
+        last.close !== prevLast.close ||
+        last.high !== prevLast.high ||
+        last.low !== prevLast.low ||
+        last.volume !== prevLast.volume)
+    ) {
+      postToChart({ type: 'REALTIME_UPDATE', payload: { bar: last } });
+      prevOhlcvDataRef.current = ohlcvData;
+      return;
+    }
 
-AdvancedChartIframe.displayName = 'AdvancedChartIframe';
+    prevOhlcvDataRef.current = ohlcvData;
+  }, [iframeLoaded, ohlcvData, seriesKey, selectedInterval, postToChart]);
+
+  return (
+    <div
+      data-testid="advanced-chart-iframe"
+      style={{
+        width: '100%',
+        height: '100%',
+        overflow: 'hidden',
+        position: 'relative',
+        background: 'var(--color-background-default)',
+      }}
+    >
+      {/* The skeleton shows only until the first CHART_READY. Interval switches
+            are handled in place on the persistent widget, so they never blank
+            to this skeleton. It also covers a failing chart origin so a load error
+            shows a skeleton rather than the browser's "refused to connect"
+            page. */}
+      {!chartReady && (
+        <div
+          data-testid="advanced-chart-loading"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            zIndex: 1,
+            background: 'var(--color-background-default)',
+          }}
+        >
+          <Skeleton
+            style={{ width: '100%', height: '100%', borderRadius: '1rem' }}
+          />
+        </div>
+      )}
+      <iframe
+        ref={iframeRef}
+        src={chartUrl}
+        title="Advanced Chart"
+        // Threat-model §Gap-1: sandbox the chart iframe so a compromised
+        // remote page cannot navigate the top window or open popups.
+        // allow-scripts: TradingView needs JS execution.
+        // allow-same-origin: chart-origin scripts need same-origin access
+        //   to their own localStorage / fetch. Deliberately omit
+        //   allow-top-navigation and allow-popups.
+        sandbox="allow-scripts allow-same-origin"
+        onLoad={handleIframeLoad}
+        style={{ width: '100%', height: '100%', border: 'none' }}
+      />
+    </div>
+  );
+};
+
 export default AdvancedChartIframe;

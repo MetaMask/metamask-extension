@@ -99,10 +99,12 @@ export const AdvancedChartSection = ({
   const {
     chartType,
     interval,
+    displayInterval,
     lineTimeRange,
     indicators,
     setChartType,
     setCandleInterval,
+    applyToggleCandle,
     setLineTimeRange,
     toggleIndicator,
     isLineChart,
@@ -136,7 +138,7 @@ export const AdvancedChartSection = ({
   // actual reload. Resetting it would hide the indicator bar on every interval
   // switch with nothing to turn it back on. Instead it is a one-way "has been
   // ready" latch, mirroring mobile's `hasChartBeenRevealed`.
-  const seriesKey = `${caipAssetId ?? ''}|${interval}|${chartType}`;
+  const seriesKey = `${caipAssetId ?? ''}|${displayInterval}|${chartType}`;
   const [renderedSeriesKey, setRenderedSeriesKey] = useState(seriesKey);
   if (renderedSeriesKey !== seriesKey) {
     setRenderedSeriesKey(seriesKey);
@@ -162,7 +164,7 @@ export const AdvancedChartSection = ({
     fetchOlderBars,
   } = useAdvancedChartData({
     assetId: caipAssetId,
-    interval,
+    interval: displayInterval,
     currency,
     needsHistory: !isLineChart,
   });
@@ -212,7 +214,9 @@ export const AdvancedChartSection = ({
     price: ohlcvPrice,
     percentChange: ohlcvPercentChange,
     timestamp: ohlcvTimestamp,
-    loading: isOhlcvLoading,
+    // Only skeleton when there is no price yet, so a warm line->candle toggle
+    // (candles kept in memory) refreshes silently instead of flashing loading.
+    loading: isOhlcvLoading && ohlcvPrice === undefined,
     // The price API does not quote every fiat, so label whatever came back.
     currency: resolvedCurrency,
   };
@@ -247,6 +251,9 @@ export const AdvancedChartSection = ({
     handleTradingViewClicked,
   } = useAdvancedChartInteractions({
     chartType,
+    interval,
+    displayInterval,
+    lineTimeRange,
     indicators,
     isLineChart,
     caipAssetId,
@@ -256,6 +263,7 @@ export const AdvancedChartSection = ({
     setChartType,
     setLineTimeRange,
     setCandleInterval,
+    applyToggleCandle,
     toggleIndicator,
   });
 
@@ -267,7 +275,7 @@ export const AdvancedChartSection = ({
       <AdvancedChartIframe
         assetId={caipAssetId}
         chartType={chartType}
-        selectedInterval={interval}
+        selectedInterval={displayInterval}
         currency={resolvedCurrency}
         activeIndicators={indicators}
         ohlcvData={ohlcvData}
@@ -299,7 +307,7 @@ export const AdvancedChartSection = ({
 
       <IntervalBar
         intervals={isLineChart ? LINE_CHART_TIME_RANGES : undefined}
-        selectedInterval={isLineChart ? lineTimeRange : interval}
+        selectedInterval={isLineChart ? lineTimeRange : displayInterval}
         onIntervalSelect={
           isLineChart ? handleLineTimeRangeSelect : handleCandleIntervalSelect
         }
