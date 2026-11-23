@@ -28,14 +28,6 @@
   }
 }
 
-.chart-up {
-  stroke: var(--color-success-default);
-}
-
-.chart-down {
-  stroke: var(--color-error-default);
-}
-
 .asset-page__balance-heading {
   padding: 4px 0 4px 16px;
 }
@@ -87,11 +79,5 @@
 .asset-chart__empty-state-content {
   margin-top: -16px;
   align-self: flex-start;
-}
-
-.asset-chart__skeleton {
-  width: 100%;
-  height: 100%;
-  border-radius: 1rem;
 }
 
