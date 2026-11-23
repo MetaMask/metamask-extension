@@ -4,7 +4,7 @@ import type { AssetData } from '../../lib/types';
 import { TokenResults } from './token-results';
 
 jest.mock('./token-avatar', () => ({
-  TokenAvatar: ({ asset }: { asset: AssetData }) => <span>{asset.name}</span>,
+  TokenAvatar: () => <span data-testid="token-avatar" />,
 }));
 
 const primary: AssetData = {
@@ -48,8 +48,10 @@ describe('TokenResults', () => {
     expect(screen.getByText('Liquidity')).toBeInTheDocument();
     expect(screen.getByLabelText('Verified')).toBeInTheDocument();
     expect(screen.getByLabelText('Risky')).toBeInTheDocument();
+    expect(screen.getByText('Wrapped Ether')).toBeInTheDocument();
+    expect(screen.getByText('Ethereum')).toBeInTheDocument();
 
-    const similarRow = screen.getByText('Wrapped Ether').closest('tr');
+    const similarRow = screen.getByText('WETH').closest('tr');
     if (!similarRow) {
       throw new Error('Expected the similar token row');
     }

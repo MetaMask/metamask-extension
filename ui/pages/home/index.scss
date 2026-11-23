@@ -89,22 +89,6 @@
     }
   }
 
-  &__connected-status-popover-bg {
-    height: 55px;
-    width: 120px;
-    border-radius: 34px;
-    position: absolute;
-    top: 73px;
-    opacity: 1;
-    box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
-    background: none;
-  }
-
-  &__connected-status-popover-bg-container {
-    height: 100%;
-    width: 100%;
-  }
-
   &__support {
     padding: 10px 0 20px 0;
     text-align: center;
@@ -122,24 +106,6 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-
-    &-icon {
-      display: flex;
-      align-items: center;
-      font-size: 16px;
-      margin-right: 8px;
-      color: var(--color-success-default);
-    }
-
-    &-close {
-      color: var(--color-icon-default);
-      background: none;
-      margin-left: 20px;
-    }
-  }
-
-  &__error-message {
-    left: 8px;
   }
 
   &__new-tokens-imported-notification {
@@ -166,78 +132,6 @@
       font-size: 24px;
       margin-inline-end: 12px;
       color: var(--color-success-default);
-    }
-
-    &-close {
-      color: var(--color-icon-default);
-      background: none;
-      margin-inline-start: 32px;
-    }
-  }
-
-  &__new-network-added {
-    border-radius: 10px;
-    text-align: center;
-
-    &__check-circle {
-      color: var(--color-success-default);
-      margin-top: 20px;
-    }
-
-    &__switch-to-button {
-      margin-bottom: 16px;
-    }
-  }
-
-  &__subheader-link {
-    display: flex;
-    padding: 12px 0;
-    justify-content: center;
-    color: var(--color-primary-default);
-    align-items: center;
-    cursor: pointer;
-
-    &--tooltip-content {
-      &-header {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 8px;
-
-        &-text {
-          font-size: 18px;
-          line-height: 22.82px;
-          font-weight: 700;
-        }
-
-        &-button {
-          background-color: var(--color-primary-default);
-          color: var(--color-primary-inverse);
-          border: 0;
-        }
-      }
-
-      &-text-bold {
-        font-weight: 700;
-      }
-    }
-
-    &--tooltip-theme {
-      background-color: var(--color-primary-default) !important;
-
-      & .tippy-tooltip-content {
-        color: var(--color-primary-inverse) !important;
-      }
-
-      & .arrow-regular {
-        border-bottom-color: var(--color-primary-default) !important;
-      }
-    }
-
-    &--text {
-      margin-left: 8px;
-      font-weight: 400;
-      font-size: 12px;
-      line-height: 140.62%;
     }
   }
 }

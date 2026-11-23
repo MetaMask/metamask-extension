@@ -268,7 +268,10 @@ export function useHwSignTracker(
     await Promise.all(
       txIds.map(async (txId) => {
         try {
-          await submitRequestToBackground('abortTransactionSigning', [txId]);
+          await submitRequestToBackground(
+            'TransactionController:abortTransactionSigning',
+            [txId],
+          );
         } catch {
           if (cancelGeneration === subscriptionGenerationRef.current) {
             pendingAbortTxIdsRef.current.delete(txId);

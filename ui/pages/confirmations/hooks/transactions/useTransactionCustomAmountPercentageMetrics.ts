@@ -3,17 +3,20 @@ import { upsertTransactionUIMetricsFragment } from '../../../../store/actions';
 
 export type PercentageAmountMetricsRequest = {
   amountFiat: string;
+  /** Overrides the metric value for a non-prefill amount. */
+  inputType?: string;
   isPrefill?: boolean;
   /** Undefined for a fixed prefill amount, such as a deposit-limit cap. */
   percentage?: number;
 };
 
 function getAmountInputType({
+  inputType,
   isPrefill,
   percentage,
 }: PercentageAmountMetricsRequest): string {
   if (!isPrefill) {
-    return `${percentage}%`;
+    return inputType ?? `${percentage}%`;
   }
 
   return percentage === undefined || percentage === 100

@@ -13,6 +13,10 @@ const firefox = require('selenium-webdriver/firefox');
 const { retry } = require('../../../development/lib/retry');
 const { isHeadless } = require('../../helpers/env');
 const { getOrBuildXpi } = require('../helpers/xpi');
+const {
+  CONSTRAINED_WINDOW_SIZE,
+  DEFAULT_WINDOW_SIZE,
+} = require('./window-size');
 
 // geckodriver 0.37.0 breaks some e2e tests as the dapp can't detect the wallet.
 // We pin the version as a temporary patch until migration to Playwright (in progress)
@@ -166,10 +170,18 @@ class FirefoxDriver {
     // `about:` pages, `chrome://`, `resource://`) unless system access is
     // allowed. `getInternalId` reads the extension UUID from
     // `about:debugging#addons`, so without this the session cannot start.
-    // Newer geckodriver rejects `--remote-allow-system-access` via Firefox
-    // capabilities; pass `--allow-system-access` to geckodriver instead.
+    // - Firefox 153-158: geckodriver's `--allow-system-access` enables it by
+    //   forwarding `--remote-allow-system-access` to Firefox (geckodriver
+    //   rejects that flag when set via Firefox capabilities).
+    // - Firefox 159+: that flag was removed; Firefox only reads the
+    //   `MOZ_REMOTE_ALLOW_SYSTEM_ACCESS` env var, inherited from geckodriver.
     // See https://bugzilla.mozilla.org/show_bug.cgi?id=1579790
+    // See https://bugzilla.mozilla.org/show_bug.cgi?id=2054896
     service.addArguments('--allow-system-access');
+    service.setEnvironment({
+      ...process.env,
+      MOZ_REMOTE_ALLOW_SYSTEM_ACCESS: '1',
+    });
 
     if (port) {
       service.setPort(port);
@@ -192,7 +204,17 @@ class FirefoxDriver {
       const internalExtensionId = await fxDriver.getInternalId();
 
       if (responsive || constrainWindowSize) {
-        await driver.manage().window().setRect({ width: 320, height: 600 });
+        await driver.manage().window().setRect({
+          width: CONSTRAINED_WINDOW_SIZE.width,
+          height: CONSTRAINED_WINDOW_SIZE.height,
+        });
+      } else if (!isHeadless('SELENIUM')) {
+        // A headed window uses the browser default; set the size explicitly
+        // so the wide screen design applies whenever its feature flag is on.
+        await driver.manage().window().setRect({
+          width: DEFAULT_WINDOW_SIZE.width,
+          height: DEFAULT_WINDOW_SIZE.height,
+        });
       }
 
       return {

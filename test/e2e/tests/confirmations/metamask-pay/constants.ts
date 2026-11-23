@@ -1,6 +1,5 @@
 import type { CaipAssetType, Hex, Json } from '@metamask/utils';
 import { parseAbi } from 'viem';
-import { BOTTOM_NAV_AB_TEST_KEY } from '../../../../../shared/lib/ab-testing/configs/bottom-nav-bar';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import {
   MONEY_ACCOUNT_GEO_BLOCKED_COUNTRIES_FLAG_NAME,
@@ -131,14 +130,12 @@ export type MoneyDepositSourceToken = 'usdc' | 'eth';
  * Remote flags the Money Account deposit flow needs on top of production
  * defaults. The geolocation mock returns `US-TX` and production blocks `US`,
  * so the block list is cleared. Activity details are enabled so the Money
- * home activity rows open the transaction details page. The bottom nav
- * treatment exposes the Money tab.
+ * home activity rows open the transaction details page.
  */
 export const MONEY_ACCOUNT_DEPOSIT_REMOTE_FLAGS: Record<string, Json> = {
   [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: MONEY_ACCOUNT_FLAG_VALUE,
   [MONEY_ACCOUNT_GEO_BLOCKED_COUNTRIES_FLAG_NAME]: { blockedRegions: [] },
   [MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME]: true,
-  [BOTTOM_NAV_AB_TEST_KEY]: 'treatment',
 };
 
 /**

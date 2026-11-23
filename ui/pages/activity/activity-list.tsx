@@ -6,9 +6,11 @@ import React, {
   useState,
 } from 'react';
 import { PendingTransactionCancelSpeedUpProvider } from '../../components/app/pending-transaction-action-buttons/pending-transaction-cancel-speed-up-provider';
-import AssetListControlBar from '../../components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar';
+import { AssetControls } from '../../components/app/assets/asset-list/asset-list-control-bar/asset-controls';
+import { NetworkFilter } from '../../components/app/assets/asset-list/asset-list-control-bar/network-filter';
 import { TransactionActivityEmptyState } from '../../components/app/transaction-activity-empty-state';
 import { SectionHeader } from '../../components/ui/section-header';
+import { ResponsiveDialog } from '../../components/ui/responsive-dialog/responsive-dialog';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
 import { useScrollContainer } from '../../contexts/scroll-container';
 import { useRelativeMediumDate } from '../../hooks/useRelativeMediumDate';
@@ -44,6 +46,12 @@ import { useTransactionsQuery } from './useTransactionsQuery';
 const itemHeight = 62;
 const headerHeight = 40;
 
+const ACTIVITY_STATUS_TO_TRANSACTION_STATUS = {
+  success: 'confirmed',
+  pending: 'submitted',
+  cancelled: 'dropped',
+} as const;
+
 export function ActivityList({
   filter,
   entryPoint,
@@ -56,7 +64,7 @@ export function ActivityList({
   const formatRelativeMediumDate = useRelativeMediumDate();
   const scrollContainerRef = useScrollContainer();
   const dialogRef = useRef<HTMLDialogElement>(null);
-  // null = not yet initialised by AssetListControlBar; [] = no filter applied
+  // null = not yet initialised by NetworkFilter; [] = no filter applied
   const [networks, setNetworks] = useState<string[] | null>(null);
   const deferredNetworks = useDeferredValue(networks);
   const [selectedItem, setSelectedItem] = useState<ActivityListItem | null>(
@@ -120,15 +128,23 @@ export function ActivityList({
       return;
     }
 
+    /* eslint-disable @typescript-eslint/naming-convention -- Segment event properties use snake_case */
     trackEvent(
       createEventBuilder(MetaMetricsEventName.ActivityDetailsOpened)
         .addCategory(MetaMetricsEventCategory.Navigation)
         .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           activity_type: item.type,
+          transaction_status:
+            ACTIVITY_STATUS_TO_TRANSACTION_STATUS[
+              item.status as keyof typeof ACTIVITY_STATUS_TO_TRANSACTION_STATUS
+            ] ?? item.status,
+          location: filter && 'assetId' in filter ? 'asset_details' : 'home',
+          chain_id_source: item.chainId,
+          chain_id_destination: item.chainId,
         })
         .build(),
     );
+    /* eslint-enable @typescript-eslint/naming-convention */
 
     setSelectedItem(item);
 
@@ -175,12 +191,9 @@ export function ActivityList({
   return (
     <PendingTransactionCancelSpeedUpProvider>
       {!filter && (
-        <AssetListControlBar
-          showSortControl={false}
-          showImportTokenButton={false}
-          onNetworkSelect={setNetworks}
-          data-testid="parent-selector-activity-tab"
-        />
+        <AssetControls data-testid="parent-selector-activity-tab">
+          <NetworkFilter onNetworkSelect={setNetworks} />
+        </AssetControls>
       )}
 
       <VirtualizedList
@@ -219,17 +232,13 @@ export function ActivityList({
         }}
       />
 
-      <dialog
-        ref={dialogRef}
-        className="dialog-modal w-full h-dvh max-h-dvh mx-auto p-0 border-0 bg-background-default text-default"
-        onClose={handleClose}
-      >
+      <ResponsiveDialog dialogRef={dialogRef} onClose={handleClose}>
         <TransactionDetails
           chainId={selectedItem?.chainId}
           txIdentifier={getActivityItemIdentifier(selectedItem)}
           onBack={handleDialogBack}
         />
-      </dialog>
+      </ResponsiveDialog>
     </PendingTransactionCancelSpeedUpProvider>
   );
 }

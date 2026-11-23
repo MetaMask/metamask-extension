@@ -34,7 +34,7 @@ describe('SwapsFooter', () => {
     expect(getByText(props.submitText)).toBeInTheDocument();
     fireEvent.click(getByText(messages.termsOfService.message));
     expect(global.platform.openTab).toHaveBeenCalledWith({
-      url: 'https://metamask.io/terms.html',
+      url: 'https://metamask.com/terms.html',
     });
   });
 });

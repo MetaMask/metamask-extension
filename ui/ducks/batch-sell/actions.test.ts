@@ -51,7 +51,7 @@ describe('Ducks - Batch Sell actions', () => {
       );
       expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'updateBatchSellTrades',
+        'BridgeController:updateBatchSellTrades',
         [MOCK_QUOTES, true],
       );
       expect(mockForceUpdateMetamaskState).toHaveBeenCalledTimes(1);
@@ -72,7 +72,7 @@ describe('Ducks - Batch Sell actions', () => {
         '0x1',
       );
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'updateBatchSellTrades',
+        'BridgeController:updateBatchSellTrades',
         [MOCK_QUOTES, false],
       );
     });
@@ -86,7 +86,7 @@ describe('Ducks - Batch Sell actions', () => {
 
       expect(mockGetIsSmartTransaction).not.toHaveBeenCalled();
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'updateBatchSellTrades',
+        'BridgeController:updateBatchSellTrades',
         [MOCK_QUOTES, false],
       );
     });
@@ -98,7 +98,7 @@ describe('Ducks - Batch Sell actions', () => {
 
       expect(mockGetIsSmartTransaction).not.toHaveBeenCalled();
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'updateBatchSellTrades',
+        'BridgeController:updateBatchSellTrades',
         [MOCK_QUOTES, false],
       );
     });

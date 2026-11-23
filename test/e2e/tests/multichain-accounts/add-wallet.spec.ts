@@ -8,6 +8,11 @@ import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { login } from '../../page-objects/flows/login.flow';
+import {
+  importAccountWithJsonFile,
+  importAccountWithPrivateKey,
+  importWalletWithSrp,
+} from '../../page-objects/flows/add-wallet.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
 import {
@@ -113,7 +118,7 @@ describe('Add wallet', function () {
         // Extended timeout: AccountTreeController sync (triggered by the
         // multi-SRP vault) can take longer than the default 10s on Firefox CI.
         await accountListPage.checkPageIsLoaded(30000);
-        await accountListPage.startImportSecretPhrase(E2E_SRP);
+        await importWalletWithSrp(driver, E2E_SRP);
         await headerNavbar.openAccountMenu();
         await accountListPage.checkPageIsLoaded(30000);
         await accountListPage.checkNumberOfAvailableAccounts(3);
@@ -161,10 +166,10 @@ describe('Add wallet', function () {
           'import-utc-json',
           'test-json-import-account-file.json',
         );
-        await accountListPage.importAccountWithJsonFile(
-          jsonFile,
-          'foobarbazqux',
-        );
+        await importAccountWithJsonFile(driver, {
+          jsonFilePath: jsonFile,
+          password: 'foobarbazqux',
+        });
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -218,7 +223,8 @@ describe('Add wallet', function () {
         await accountListPage.checkPageIsLoaded();
 
         // import active account with private key from the account menu and check error message
-        await accountListPage.addNewImportedAccount(
+        await importAccountWithPrivateKey(
+          driver,
           testPrivateKey,
           'The account you are trying to import is a duplicate',
         );

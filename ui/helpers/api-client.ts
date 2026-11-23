@@ -18,7 +18,7 @@ export const apiClient = createApiPlatformClient({
     if (isBackendAuthDisabled()) {
       return undefined;
     }
-    return submitRequestToBackground<string | undefined>('getBearerToken');
+    return submitRequestToBackground('AuthenticationController:getBearerToken');
   },
   ...getBackendApiUrlsOption(),
 });

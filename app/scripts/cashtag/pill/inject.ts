@@ -1,7 +1,5 @@
 import { findCashtagAnchors, formatUsd } from '../lib/helpers';
 import type { AssetData } from '../lib/types';
-import { injectPageStyles, removePageStyles } from '../lib/ui';
-import pillPageStyles from './page.css';
 
 function buildPillContents(data: AssetData, displayTicker: string) {
   const icon = document.createElement('img');
@@ -54,8 +52,6 @@ function buildPillContents(data: AssetData, displayTicker: string) {
 export function injectPills(
   resolvePrimary: (symbol: string) => Promise<AssetData | null>,
 ) {
-  injectPageStyles(pillPageStyles, 'data-mm-cashtag-pill-css');
-
   const painted = new WeakSet<HTMLAnchorElement>();
   const resolving = new WeakSet<HTMLAnchorElement>();
 
@@ -124,7 +120,6 @@ export function injectPills(
   return {
     stop() {
       observer.disconnect();
-      removePageStyles('data-mm-cashtag-pill-css');
       for (const element of document.querySelectorAll<HTMLAnchorElement>(
         '[data-mm-cashtag]',
       )) {

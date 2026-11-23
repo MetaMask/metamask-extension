@@ -1,8 +1,12 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { useMemo } from 'react';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { MONAD_RESERVE_BALANCE_MON } from '../../../../../../shared/lib/monad-reserve-balance';
+import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import {
   AlertActionKey,
   RowAlertKey,
@@ -46,7 +50,8 @@ const GAS_SPONSORSHIP_WARNING_RULES: Partial<
  * `"reserve balance violation"`
  * - Proactive check: `balance - value < 10 MON` (gas may come from the reserve)
  *
- * Shown whenever the reserve would fail, including when gas is sponsored.
+ * Shown whenever the reserve would fail, including when gas is sponsored,
+ * except for Money Account transactions — see the inline note below.
  *
  * @returns An array containing a blocking danger alert if reserve would fail
  */
@@ -56,8 +61,18 @@ export function useGasSponsorshipWarningAlerts(): Alert[] {
   const chainId = currentConfirmation?.chainId;
   const hasWarning = useIsMonadReserveViolation();
 
+  // Money-account batches execute from the money account and are gas-sponsored.
+  // Before Pay delivers the mUSD, the simulated vault `transferFrom` reverts,
+  // and Monad masks any sufficiently gas-hungry revert as a reserve balance
+  // violation. Blocking on that would reject a deposit that succeeds once Relay
+  // funds it.
+  const isMoneyAccountTransaction = hasTransactionType(currentConfirmation, [
+    TransactionType.moneyAccountDeposit,
+    TransactionType.moneyAccountWithdraw,
+  ]);
+
   return useMemo(() => {
-    if (!hasWarning || !chainId) {
+    if (!hasWarning || !chainId || isMoneyAccountTransaction) {
       return [];
     }
 
@@ -87,5 +102,5 @@ export function useGasSponsorshipWarningAlerts(): Alert[] {
         showArrow: false,
       },
     ];
-  }, [hasWarning, chainId, t]);
+  }, [hasWarning, chainId, isMoneyAccountTransaction, t]);
 }

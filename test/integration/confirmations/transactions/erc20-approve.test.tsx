@@ -76,12 +76,12 @@ const getMetaMaskStateWithUnapprovedApproveTransaction = (opts?: {
 };
 
 const advancedDetailsMockedRequests = {
-  getGasFeeTimeEstimate: {
+  'GasFeeController:getTimeEstimate': {
     lowerTimeBound: new Date().getTime(),
     upperTimeBound: new Date().getTime(),
   },
-  getNextNonce: '9',
-  decodeTransactionData: {
+  'LegacyBackgroundApiService:getNextNonce': '9',
+  'LegacyBackgroundApiService:decodeTransactionData': {
     data: [
       {
         name: 'Approve',
@@ -99,7 +99,7 @@ const advancedDetailsMockedRequests = {
     ],
     source: 'FourByte',
   },
-  addKnownMethodData: {},
+  'PreferencesController:addKnownMethodData': {},
 };
 
 const setupSubmitRequestToBackgroundMocks = (
@@ -126,7 +126,7 @@ describe('ERC20 Approve Confirmation', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks({
-      getTokenStandardAndDetailsByChain: {
+      'LegacyBackgroundApiService:getTokenStandardAndDetailsByChain': {
         standard: ERC20,
         decimals: '4',
       },
@@ -216,7 +216,9 @@ describe('ERC20 Approve Confirmation', () => {
 
     expect(approveDetails).toContainElement(approveDetailsSpender);
     expect(approveDetailsSpender).toHaveTextContent(tEn('spender'));
-    expect(approveDetailsSpender).toHaveTextContent('0x2e0D7...5d09B');
+    expect(approveDetailsSpender).toHaveTextContent(
+      '0x2e0D7E8c45221FcA00d74a3609A0f7097035d09B',
+    );
     const spenderTooltip = await screen.findByTestId(
       'confirmation__approve-spender-tooltip',
     );
@@ -275,7 +277,9 @@ describe('ERC20 Approve Confirmation', () => {
     );
     expect(approveDetails).toContainElement(approveDetailsRecipient);
     expect(approveDetailsRecipient).toHaveTextContent(tEn('interactingWith'));
-    expect(approveDetailsRecipient).toHaveTextContent('0x07614...3ad68');
+    expect(approveDetailsRecipient).toHaveTextContent(
+      '0x076146c765189d51bE3160A2140cF80BFC73ad68',
+    );
 
     const approveDetailsRecipientTooltip = await screen.findByTestId(
       'transaction-details-recipient-row-tooltip',

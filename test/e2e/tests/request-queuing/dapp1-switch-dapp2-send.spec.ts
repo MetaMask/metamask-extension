@@ -10,6 +10,7 @@ import {
 } from '../../constants';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
+import TransactionDetailsPage from '../../page-objects/pages/transaction-details-page';
 import SelectNetworkModal from '../../page-objects/pages/networks/select-network-modal';
 import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
@@ -298,6 +299,8 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+
+        await new TransactionDetailsPage(driver).clickBackButtonIfPresent();
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

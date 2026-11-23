@@ -39,6 +39,26 @@ describe('useTransactionCustomAmountPercentageMetrics', () => {
     );
   });
 
+  it('records the provided input type for a non-prefill amount', () => {
+    const trackPercentageAmount = runHook(TRANSACTION_ID);
+
+    trackPercentageAmount({
+      amountFiat: '2.28',
+      inputType: 'manual_snapped_max',
+      percentage: 100,
+    });
+
+    expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+      TRANSACTION_ID,
+      {
+        properties: {
+          mm_pay_amount_input_type: 'manual_snapped_max',
+          mm_pay_quote_requested: true,
+        },
+      },
+    );
+  });
+
   it('records a 50% prefill with the prefilled amount', () => {
     const trackPercentageAmount = runHook(TRANSACTION_ID);
 
