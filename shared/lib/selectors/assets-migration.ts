@@ -48,8 +48,8 @@ import { createDeepEqualSelector } from './selector-creators';
 // accountsByChainId: DONE (via AssetsController when unify enabled; controller removed)
 //
 // TokensController
-// allTokens: DONE (via AssetsController when unify enabled; controller removed)
-// allIgnoredTokens: DONE (via AssetsController when unify enabled; controller removed)
+// allTokens: DONE (via AssetsController; controller removed)
+// allIgnoredTokens: DONE (via AssetsController; controller removed)
 // allDetectedTokens: DONE (Not being used; controller removed)
 //
 // TokenBalancesController
@@ -202,6 +202,22 @@ export const getAccountTrackerControllerAccountsByChainId =
     AccountTrackerControllerState['accountsByChainId']
   >;
 
+/**
+ * TokensController no longer writes these maps. A non-empty slice is leftover
+ * legacy state and is kept when unify is off. An empty slice is not filled by
+ * any controller, so callers derive it from AssetsController instead.
+ *
+ * @param isAssetsUnifyStateEnabled - Whether unified asset state is active.
+ * @param slice - Legacy controller map keyed by chain id.
+ * @returns Whether the legacy slice should be returned as-is.
+ */
+function shouldUseLegacyTokenSlice(
+  isAssetsUnifyStateEnabled: boolean,
+  slice: object,
+): boolean {
+  return !isAssetsUnifyStateEnabled && Object.keys(slice).length > 0;
+}
+
 // ChainId (hex) -> AccountAddress (hex lowercase) -> Array of Tokens
 export const getTokensControllerAllTokens = createDeepEqualSelector(
   [
@@ -225,7 +241,7 @@ export const getTokensControllerAllTokens = createDeepEqualSelector(
     customAssets,
     internalAccountsById,
   ) => {
-    if (!isAssetsUnifyStateEnabled) {
+    if (shouldUseLegacyTokenSlice(isAssetsUnifyStateEnabled, allTokens)) {
       return allTokens;
     }
 
@@ -304,7 +320,9 @@ export const getTokensControllerAllIgnoredTokens = createDeepEqualSelector(
     assetPreferences,
     internalAccountsById,
   ) => {
-    if (!isAssetsUnifyStateEnabled) {
+    if (
+      shouldUseLegacyTokenSlice(isAssetsUnifyStateEnabled, allIgnoredTokens)
+    ) {
       return allIgnoredTokens;
     }
 

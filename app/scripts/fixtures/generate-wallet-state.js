@@ -11,6 +11,7 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import { withAddressBook } from './with-address-book';
 import { FIXTURES_APP_STATE } from './with-app-state';
 import { withConfirmedTransactions } from './with-confirmed-transactions';
+import { buildFixtureErc20AssetsState } from './with-erc20-tokens';
 import { ALL_POPULAR_NETWORKS, FIXTURES_NETWORKS } from './with-networks';
 import { FIXTURES_PREFERENCES } from './with-preferences';
 import { withUnreadNotifications } from './with-unread-notifications';
@@ -50,6 +51,13 @@ export async function generateWalletState(withState, fromTest) {
     .withTransactionController(generateTransactionControllerState(accounts[0]))
     .withEnabledNetworks(ALL_POPULAR_NETWORKS)
     .withNftController(generateNftControllerState(accounts));
+
+  if (FIXTURES_CONFIG.withErc20Tokens) {
+    // `account-id-0` is the first account from generateAccountsControllerState.
+    fixtureBuilder.withAssetsController(
+      buildFixtureErc20AssetsState('account-id-0'),
+    );
+  }
 
   return fixtureBuilder;
 }
