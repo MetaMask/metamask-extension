@@ -38,11 +38,8 @@ import {
   getCompleteAddressBook,
   getInternalAccounts,
 } from '../../../selectors';
-import { isDuplicateContact } from '../utils';
-import {
-  isBurnAddress,
-  isValidHexAddress,
-} from '../../../../shared/lib/hexstring-utils';
+import { isDuplicateContact, isContactBurnAddress } from '../utils';
+import { isValidHexAddress } from '../../../../shared/lib/hexstring-utils';
 import type { EditContactFormProps } from '../contacts.types';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
@@ -107,7 +104,7 @@ export function EditContactForm({
 
   const hasValidAddress =
     newAddress.trim() &&
-    !isBurnAddress(newAddress) &&
+    !isContactBurnAddress(newAddress) &&
     isValidHexAddress(newAddress, { mixedCaseUseChecksum: true });
   const addressChanged = newAddress !== address;
   const isSaveDisabled =
@@ -134,7 +131,7 @@ export function EditContactForm({
       );
     } else {
       const valid =
-        !isBurnAddress(newAddress) &&
+        !isContactBurnAddress(newAddress) &&
         isValidHexAddress(newAddress, { mixedCaseUseChecksum: true });
       if (valid) {
         await dispatch(removeFromAddressBook(contactChainId, address));

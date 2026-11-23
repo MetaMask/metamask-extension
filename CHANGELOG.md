@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed burn addresses being accepted when adding or editing a contact (#37544)
+
 ## [13.57.0]
 
 ### Added
