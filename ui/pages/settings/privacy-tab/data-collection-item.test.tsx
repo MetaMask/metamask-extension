@@ -491,14 +491,16 @@ describe('DataCollectionToggleItem', () => {
     );
   });
 
-  it('opts out locally for social login users without calling the OAuth consent API', () => {
+  it('opts out locally for social login users without calling the OAuth consent API', async () => {
     (getIsSocialLoginFlow as jest.Mock).mockReturnValue(true);
     const mockStore = createMockStore({ optedInToMarketing: true });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
     fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
 
-    expect(mockOptOutOfMarketing).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(mockOptOutOfMarketing).toHaveBeenCalledTimes(1);
+    });
     expect(mockMessengerCall).not.toHaveBeenCalled();
   });
 
