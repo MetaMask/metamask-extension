@@ -598,7 +598,8 @@ export const traceAsControllerCallback: ControllerTraceCallback = <Result>(
   ) as Promise<Result>;
 
 // The background bundles this module twice, so state one copy writes and the
-// other reads lives on `globalThis.stateHooks`, which LavaMoat leaves in place.
+// other reads lives on `globalThis.stateHooks`, which LavaMoat leaves in place
+// (as in `sentry-remote-rates.ts`).
 const localSharedState: SharedTraceState = {};
 
 function getSharedState(): SharedTraceState {
