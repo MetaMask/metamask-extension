@@ -381,6 +381,20 @@ describe('QrSyncController', () => {
       );
       expect(decodedSessionRequest.id).toBe(TEST_SESSION_ID);
       expect(controller.state.qrSyncConnectionStatus).toBe('connecting');
+      expect(controller.state.qrSyncExpiresAt).toEqual(expect.any(Number));
+    });
+
+    it('records the session expiry so every surface shares one countdown', async () => {
+      const { controller } = setupController();
+      const expiresAt = 1_700_000_000_000;
+      const createSessionPromise = controller.createSession();
+      await new Promise((resolve) => {
+        setImmediate(resolve);
+      });
+      mockEmitSessionRequest({ expiresAt });
+      await createSessionPromise;
+
+      expect(controller.state.qrSyncExpiresAt).toBe(expiresAt);
     });
 
     it('returns after exposing the QR without waiting for the mobile handshake', async () => {
@@ -408,11 +422,13 @@ describe('QrSyncController', () => {
 
       await mockStartSession(controller);
       const qrPayload = controller.state.qrSyncQrPayload;
+      const expiresAt = controller.state.qrSyncExpiresAt;
 
       await controller.createSession();
 
       expect(mockMwp.connect).toHaveBeenCalledTimes(1);
       expect(controller.state.qrSyncQrPayload).toBe(qrPayload);
+      expect(controller.state.qrSyncExpiresAt).toBe(expiresAt);
       expect(controller.state.qrSyncSessionId).toBe(TEST_SESSION_ID);
     });
 
@@ -527,8 +543,13 @@ describe('QrSyncController', () => {
       await mockStartSession(controller);
 
       jest.useFakeTimers();
+      jest.setSystemTime(5_000_000);
       try {
         mockEmitOtpRequired(jest.fn(), cancelOtp);
+
+        expect(controller.state.qrSyncExpiresAt).toBe(
+          5_000_000 + QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT,
+        );
 
         await jest.advanceTimersByTimeAsync(
           QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT,
