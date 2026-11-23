@@ -6900,9 +6900,6 @@
   "noHardwareWalletOrSnapsSupport": {
     "message": "Τα Snaps και τα περισσότερα πορτοφόλια υλικού δεν θα λειτουργούν με την τρέχουσα έκδοση του προγράμματος περιήγησής σας."
   },
-  "noMMFeeSwapping": {
-    "message": "Χωρίς τέλη στο MetaMask"
-  },
   "noNetworkFee": {
     "message": "Χωρίς τέλη δικτύου"
   },

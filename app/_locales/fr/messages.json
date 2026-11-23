@@ -6900,9 +6900,6 @@
   "noHardwareWalletOrSnapsSupport": {
     "message": "Les Snaps et la plupart des portefeuilles matériels ne fonctionneront pas avec la version actuelle de votre navigateur."
   },
-  "noMMFeeSwapping": {
-    "message": "Pas de frais MetaMask"
-  },
   "noNetworkFee": {
     "message": "Pas de frais de réseau"
   },
