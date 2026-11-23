@@ -240,6 +240,10 @@ describe('CustomTokenImportPage', () => {
 
     fireEvent.click(screen.getByTestId('custom-token-import-submit-button'));
 
+    await waitFor(() =>
+      expect(mockNavigate).toHaveBeenCalledWith(TOKEN_MANAGEMENT_ROUTE),
+    );
+
     return { ...rendered };
   };
 
@@ -659,18 +663,25 @@ describe('CustomTokenImportPage', () => {
     fireEvent.click(submit);
 
     await waitFor(() =>
-      expect(actions.addImportedTokens).toHaveBeenCalledWith(
-        [
-          expect.objectContaining({
-            address: daiAddress,
-            symbol: 'DAI',
-            decimals: 18,
-            isERC721: false,
-          }),
-        ],
-        'pulsechain',
-      ),
+      expect(actions.importCustomAssetsBatch).toHaveBeenCalledTimes(1),
     );
+    const [accountId, assets, metadata] =
+      actions.importCustomAssetsBatch.mock.calls[0];
+    expect(accountId).toBe('cf8dace4-9439-4bd4-b3a8-88c821c8fcb3');
+    expect(assets).toStrictEqual([
+      {
+        assetId: expect.stringMatching(/^eip155:369\/erc20:/u),
+        isHidden: false,
+      },
+    ]);
+    expect(metadata[assets[0].assetId]).toStrictEqual(
+      expect.objectContaining({
+        address: daiAddress,
+        symbol: 'DAI',
+        decimals: 18,
+      }),
+    );
+    expect(actions.addImportedTokens).not.toHaveBeenCalled();
   });
 
   it('does not show the mainnet token warning when importing a mainnet token address on mainnet', async () => {
