@@ -181,7 +181,6 @@
   "ui/components/app/app-loading-spinner/app-loading-spinner.test.js",
   "ui/components/app/app-loading-spinner/index.js",
   "ui/components/app/assets/asset-list/asset-list.stories.js",
-  "ui/components/app/assets/nfts/nft-default-image/index.js",
   "ui/components/app/assets/nfts/nft-default-image/nft-default-image.stories.js",
   "ui/components/app/assets/nfts/nft-default-image/nft-default-image.test.js",
   "ui/components/app/assets/nfts/nft-default-image/toggle-ipfs-modal.js",
