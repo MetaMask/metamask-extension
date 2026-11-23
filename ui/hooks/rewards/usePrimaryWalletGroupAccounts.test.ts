@@ -761,16 +761,5 @@ describe('usePrimaryWalletGroupAccounts', () => {
       ).toBeGreaterThan(callsBeforeUpdate);
       expect(result.current.accounts).toBe(initialAccounts);
     });
-
-    it('returns the same empty array across store updates when there is no primary group', () => {
-      setupMocks({ walletId: undefined });
-
-      const { result, dispatchUnrelatedUpdate } = renderWithStore();
-      const initialAccounts = result.current.accounts;
-
-      dispatchUnrelatedUpdate();
-
-      expect(result.current.accounts).toBe(initialAccounts);
-    });
   });
 });

@@ -39,9 +39,7 @@ export const usePrimaryWalletGroupAccounts = (): {
     [accountGroupsByWallet],
   );
 
-  // Shallow-compared because the selector's bounded LRU cache can return a new,
-  // equal array on every store update when many groups are rendered, and
-  // consumers (e.g. `useCandidateSubscriptionId`) use it as an effect dependency.
+  // Get accounts for the primary account group
   const primaryWalletGroupAccounts = useSelector(
     (state) =>
       primaryAccountGroupId
