@@ -4034,6 +4034,18 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  rampsProvidersAheadOfHistory: {
+    inProd: false,
+    name: 'rampsProvidersAheadOfHistory',
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '13.60.0',
+      providerIds: [],
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   rampsServiceDisruption: {
     inProd: true,
     name: 'rampsServiceDisruption',

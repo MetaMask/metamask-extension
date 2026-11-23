@@ -27,10 +27,14 @@ export function getSmartTransactionsControllerMessenger(
   messenger.delegate({
     messenger: controllerMessenger,
     actions: [
-      'AuthenticationController:getBearerToken',
       'NetworkController:getNetworkClientById',
       'NetworkController:getState',
       'RemoteFeatureFlagController:getState',
+      'SentinelApiService:cancel',
+      'SentinelApiService:getBatchStatus',
+      'SentinelApiService:getFees',
+      'SentinelApiService:getNetwork',
+      'SentinelApiService:submitTransactions',
       'TransactionController:getNonceLock',
       'TransactionController:getTransactions',
       'TransactionController:failTransaction',
