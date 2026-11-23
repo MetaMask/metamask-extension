@@ -64,7 +64,7 @@ describe('API endpoint definitions', () => {
     it('registers fixture defaults only for the endpoints that have one', () => {
       expect(
         endpoints
-          .filter(([, endpoint]) => endpoint.hasDefault)
+          .filter(([, endpoint]) => endpoint.hasFixtureDefault)
           .map(([key]) => key)
           .sort(),
       ).toStrictEqual(['accounts-supported-networks-v2', 'gas-prices']);
@@ -85,6 +85,10 @@ describe('API endpoint definitions', () => {
       bridgeGetTokensSearch.response([{ symbol: 'USDC' }]);
       // @ts-expect-error: a balance row needs its accountId and assetId.
       accountsBalancesV5.response([{ balance: '1' }]);
+      accountsBalancesV5.response([
+        // @ts-expect-error: a balance row needs its balance.
+        { accountId: 'eip155:1:0xabc', assetId: USDC_ASSET_ID },
+      ]);
       // @ts-expect-error: a 4byte result needs its signature.
       fourByteSignatures.response({ id: 1 });
       priceV3Spot.response({
@@ -196,9 +200,9 @@ describe('API endpoint definitions', () => {
   });
 
   describe('accountsBalancesV5', () => {
-    it('counts the rows and fills unset row fields from the fixture shape', () => {
+    it('counts the rows and keeps the unprocessed networks from the fixture', () => {
       const response = accountsBalancesV5.response([
-        { accountId: 'eip155:1:0xabc', assetId: USDC_ASSET_ID },
+        { accountId: 'eip155:1:0xabc', assetId: USDC_ASSET_ID, balance: '3' },
         { accountId: 'eip155:1:0xdef', assetId: USDC_ASSET_ID, balance: '7' },
       ]);
 
@@ -206,7 +210,7 @@ describe('API endpoint definitions', () => {
       expect(response.unprocessedNetworks).toStrictEqual(
         accountsBalancesV5.body.unprocessedNetworks,
       );
-      expect(response.balances[0].balance).toBe('');
+      expect(response.balances[0].balance).toBe('3');
       expect(response.balances[1].balance).toBe('7');
     });
   });

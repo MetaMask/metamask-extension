@@ -225,14 +225,21 @@ export const mockSpotPrices = async (
 /**
  * Mocks Price API v3 spot-prices (native ETH for the given chain) and v1 exchange-rates.
  *
+ * The spot-prices mock is a single `.always()` rule, and the first one registered
+ * for that URL answers every request. A test that needs more assets in the
+ * response passes them as `additionalSpotPrices` instead of registering a
+ * second spot-prices mock.
+ *
  * @param mockServer - Mockttp instance.
  * @param ethPrice - Spot price for native ETH on that chain (USD). Defaults to `MOCK_ETH_CONVERSION_RATE` when assets-unify is enabled, `1` otherwise.
  * @param chainId - EVM chain id in hex (e.g. `0x1`, `0x539`); used to build `eip155:<n>/slip44:60`.
+ * @param additionalSpotPrices - Extra spot entries, keyed by CAIP asset id, served by the same rule.
  */
 export async function mockPriceApi(
   mockServer: Mockttp,
   ethPrice?: number,
   chainId: `0x${string}` = '0x1',
+  additionalSpotPrices: Record<string, SpotPriceInput> = {},
 ) {
   const resolvedEthPrice = ethPrice ?? MOCK_ETH_CONVERSION_RATE;
   const chainIdDecimal = Number.parseInt(chainId, 16);
@@ -247,6 +254,7 @@ export async function mockPriceApi(
       dilutedMarketCap: 120000000,
       pricePercentChange1d: 0,
     },
+    ...additionalSpotPrices,
   });
   const mockExchangeRates = await priceV1ExchangeRates.mock(mockServer, {
     eth: 1 / MOCK_ETH_CONVERSION_RATE,

@@ -145,7 +145,7 @@ describe('defineApiMock', () => {
         body: BODY,
       });
 
-      expect(noDefault.hasDefault).toBe(false);
+      expect(noDefault.hasFixtureDefault).toBe(false);
       expect(await noDefault.mockDefault(server, { chainId: 1 })).toBe(
         undefined,
       );
@@ -242,6 +242,60 @@ describe('defineApiMock', () => {
 
       expect((await proxyGet(server, 'http://api.test/post')).status).toBe(503);
     });
+  });
+});
+
+describe('defineApiMock freeze', () => {
+  const frozen = defineApiMock({
+    id: 'frozen',
+    method: 'GET',
+    url: 'http://api.test/frozen',
+    syncUrl: 'http://api.test/frozen',
+    body: { value: 'fixture', nested: { a: 1 }, list: [1, 2] },
+    variants: { failed: { error: { code: 1 } } },
+  });
+
+  it('rejects edits to the body, at any depth', () => {
+    const body = frozen.body as {
+      value: string;
+      nested: { a: number };
+      list: number[];
+    };
+
+    expect(() => {
+      body.value = 'changed';
+    }).toThrow(TypeError);
+    expect(() => {
+      body.nested.a = 2;
+    }).toThrow(TypeError);
+    expect(() => {
+      body.list.push(3);
+    }).toThrow(TypeError);
+    expect(frozen.body).toStrictEqual({
+      value: 'fixture',
+      nested: { a: 1 },
+      list: [1, 2],
+    });
+  });
+
+  it('rejects edits to the variants, at any depth', () => {
+    const variants = frozen.variants as { failed: { error: { code: number } } };
+
+    expect(() => {
+      variants.failed.error.code = 2;
+    }).toThrow(TypeError);
+    expect(() => {
+      (variants as Record<string, unknown>).other = {};
+    }).toThrow(TypeError);
+  });
+
+  it('still returns a new, editable object from response()', () => {
+    const response = frozen.response({ value: 'changed' });
+
+    response.value = 'edited';
+
+    expect(response.value).toBe('edited');
+    expect(frozen.body.value).toBe('fixture');
   });
 });
 

@@ -35,6 +35,21 @@ export function withOverrides<Fixture extends object>(
   return merged as Fixture;
 }
 
+/**
+ * Freezes a value and everything reachable from it, so a test that edits a
+ * fixture cannot change the default for later tests in the same process.
+ *
+ * @param value - The value to freeze.
+ * @returns The same value, frozen.
+ */
+function deepFreeze<Value>(value: Value): Value {
+  if (value !== null && typeof value === 'object' && !Object.isFrozen(value)) {
+    Object.freeze(value);
+    Object.values(value).forEach(deepFreeze);
+  }
+  return value;
+}
+
 const PRIMITIVE_PLACEHOLDERS: Record<string, unknown> = {
   number: 0,
   string: '',
@@ -117,9 +132,12 @@ export type ApiMock<Body, Input, Response, Params, Variant extends string> = {
   readonly method: 'GET' | 'POST';
   readonly url: string | RegExp;
   readonly syncUrl: string;
+  /** The fixture. Deep-frozen: build a new object to change a value. */
   readonly body: Body;
+  /** Deep-frozen, like `body`. */
   readonly variants: Readonly<Record<Variant, unknown>>;
-  readonly hasDefault: boolean;
+  /** True when `mock-e2e.js` serves the fixture `body` as this endpoint's default. */
+  readonly hasFixtureDefault: boolean;
   /**
    * Escape hatch: the endpoint's rule builder, for handlers that match on a
    * query or answer from a callback. The URL still comes from the definition.
@@ -132,7 +150,9 @@ export type ApiMock<Body, Input, Response, Params, Variant extends string> = {
   response: (...args: OptionalInput<Input, Params>) => Response;
   /**
    * Replaces the default for this endpoint. `.always()` keeps it ahead of
-   * the default, which `mock-e2e.js` registers after the test's mocks.
+   * the default, which `mock-e2e.js` registers after the test's mocks. For
+   * the same reason, the first `mock()` for a matcher answers every request
+   * and a later `mock()` for the same matcher is never served.
    */
   mock: (
     server: Mockttp,
@@ -173,9 +193,11 @@ export function defineApiMock<
 >(
   definition: ApiMockDefinition<Body, Input, Response, Params, Variant>,
 ): ApiMock<Body, Input, Response, Params, Variant> {
-  const { id, method, url, urlFor, syncUrl, body, build, defaultMock } =
-    definition;
-  const variants = (definition.variants ?? {}) as Record<Variant, unknown>;
+  const { id, method, url, urlFor, syncUrl, build, defaultMock } = definition;
+  const body = deepFreeze(definition.body);
+  const variants = deepFreeze(
+    (definition.variants ?? {}) as Record<Variant, unknown>,
+  );
 
   const rule = (server: Mockttp, params?: Params) => {
     const matcher = params !== undefined && urlFor ? urlFor(params) : url;
@@ -202,7 +224,7 @@ export function defineApiMock<
     syncUrl,
     body,
     variants,
-    hasDefault: Boolean(defaultMock),
+    hasFixtureDefault: Boolean(defaultMock),
     rule,
     response: (...args) => response(args[0]),
     mock: (server, ...args) =>

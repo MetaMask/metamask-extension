@@ -68,7 +68,10 @@ export type BridgeTokenInput = Pick<BridgeToken, 'address' | 'assetId'> &
     securityData?: Record<string, unknown>;
   };
 
-export type BalanceRowInput = Pick<BalanceRow, 'accountId' | 'assetId'> &
+export type BalanceRowInput = Pick<
+  BalanceRow,
+  'accountId' | 'assetId' | 'balance'
+> &
   Overrides<BalanceRow>;
 
 export type FourByteSignatureInput = Pick<
