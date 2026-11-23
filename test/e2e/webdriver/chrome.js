@@ -5,6 +5,10 @@ const { Builder } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 const { ThenableWebDriver } = require('selenium-webdriver'); // eslint-disable-line no-unused-vars -- this is imported for JSDoc
 const { isHeadless } = require('../../helpers/env');
+const {
+  CONSTRAINED_WINDOW_SIZE,
+  DEFAULT_WINDOW_SIZE,
+} = require('./window-size');
 
 /**
  * Determine the appropriate proxy server value to use
@@ -31,7 +35,6 @@ class ChromeDriver {
     constrainWindowSize,
     port,
     proxyPort,
-    isBenchmark = false,
   }) {
     const args = [
       `--proxy-server=${getProxyServer(proxyPort)}`, // Set proxy in the way that doesn't interfere with Selenium Manager
@@ -42,10 +45,6 @@ class ChromeDriver {
       '--no-sandbox',
       '--enable-unsafe-extension-debugging', // Allow reloading extensions at runtime without developer mode
     ];
-
-    if (isBenchmark) {
-      args.push('--js-flags=--expose-gc');
-    }
 
     if (process.env.MULTIPROVIDER) {
       args.push(
@@ -61,8 +60,11 @@ class ChromeDriver {
       args.push('--auto-open-devtools-for-tabs');
     }
 
-    if (constrainWindowSize && !isHeadless('SELENIUM')) {
-      args.push('--window-size=320,600');
+    if (!isHeadless('SELENIUM') && !responsive) {
+      const { width, height } = constrainWindowSize
+        ? CONSTRAINED_WINDOW_SIZE
+        : DEFAULT_WINDOW_SIZE;
+      args.push(`--window-size=${width},${height}`);
     }
 
     args.push('--log-level=3');
@@ -127,12 +129,19 @@ class ChromeDriver {
     // lookup, etc.).  Without this, a partial failure orphans the browser.
     try {
       // The default window size in headless mode is tiny.
-      // We increase it to reduce the chance of buttons being hidden behind toasts.
+      // We increase it to reduce the chance of buttons being hidden behind toasts,
+      // and so the viewport is wide enough for the wide screen design to apply
+      // whenever its feature flag is on.
       if (isHeadless('SELENIUM')) {
         await driver
           .manage()
           .window()
-          .setRect({ width: constrainWindowSize ? 320 : 800, height: 1080 });
+          .setRect({
+            width: constrainWindowSize
+              ? CONSTRAINED_WINDOW_SIZE.width
+              : DEFAULT_WINDOW_SIZE.width,
+            height: DEFAULT_WINDOW_SIZE.height,
+          });
       }
 
       // When the manifest has a `key`, the extension ID is deterministic and can

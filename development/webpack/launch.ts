@@ -13,8 +13,11 @@
  */
 
 // Note: minimize non-`type` imports to decrease load time.
+import { totalmem } from 'node:os';
 import { join } from 'node:path';
+import { isatty } from 'node:tty';
 import { spawn, type StdioOptions } from 'node:child_process';
+import { open } from '@lydell/node-pty';
 import parser from 'yargs-parser';
 import type { Child, PTY, Stdio, StdName } from './types.ts';
 
@@ -24,13 +27,22 @@ const alias = { cache: 'c', help: 'h', watch: 'w' };
 type Args = { [x in keyof typeof alias]?: boolean };
 const args = parser(rawArgv, { alias, boolean: Object.keys(alias) }) as Args;
 
-if (args.cache === false || args.help === true || args.watch === true) {
-  // there are no time savings to running the build in a child process if: the
-  // cache is disabled, we need to output "help", or we're in watch mode.
-  require('./build').build();
-} else {
-  fork(process, join(__dirname, 'fork'), rawArgv);
+// TODO: Replace this wrapper with top-level await once the tooling runs
+// as ESM under LavaMoat.
+async function main() {
+  if (args.cache === false || args.help === true || args.watch === true) {
+    // there are no time savings to running the build in a child process if: the
+    // cache is disabled, we need to output "help", or we're in watch mode.
+    const { build } = await import('./build');
+    await build();
+  } else {
+    fork(process, join(__dirname, 'fork'), rawArgv);
+  }
 }
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
 
 /**
  * Runs the `file` in a child process. This allows the parent process to
@@ -45,7 +57,7 @@ function fork(process: NodeJS.Process, file: string, argv: string[]) {
   const env = { NODE_OPTIONS: '', ...process.env, PPID: `${process.pid}` };
   // node recommends using 75% of the available memory for `max-old-space-size`
   // https://github.com/nodejs/node/blob/dd67bf08cb1ab039b4060d381cc68179ee78701a/doc/api/cli.md#--max-old-space-sizesize-in-megabytes
-  const maxOldSpaceMB = ~~((require('node:os').totalmem() * 0.75) / (1 << 20));
+  const maxOldSpaceMB = ~~((totalmem() * 0.75) / (1 << 20));
   // `--max-semi-space-size=128` reduces garbage collection pauses; 128MB provided max benefit in perf testing.
   const nodeOptions = [
     `--max-old-space-size=${maxOldSpaceMB}`,
@@ -72,7 +84,6 @@ function fork(process: NodeJS.Process, file: string, argv: string[]) {
  * @returns The stdio streams for the child process to use
  */
 function createOutputStreams(process: NodeJS.Process) {
-  const { isatty } = require('node:tty');
   const isWindows = process.platform === 'win32';
   // use IPC for communication on Windows, as it doesn't support POSIX signals
   const ipc = isWindows ? 'ipc' : 'ignore';
@@ -141,7 +152,7 @@ function createNonTTYStream(stream: NodeJS.WriteStream, name: StdName): Stdio {
 function createTTYStream(stream: NodeJS.WriteStream): Stdio {
   // create a PTY (Pseudo TTY) so the child stream behaves like a TTY
   const options = { cols: stream.columns, encoding: null, rows: stream.rows };
-  const pty: PTY = require('@lydell/node-pty').open(options);
+  const pty: PTY = open(options);
 
   return {
     destroy: () => {

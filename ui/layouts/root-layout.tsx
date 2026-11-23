@@ -1,8 +1,9 @@
 import React from 'react';
 import classnames from 'clsx';
 import { Outlet } from 'react-router-dom';
+import { ReferralInvite } from '#ui/components/app/rewards/money-referral/ReferralInvite';
 import { AppLayoutProvider, useAppLayout } from '../contexts/app-layout';
-import { useFullScreenDesign } from '../hooks/useFullScreenDesign';
+import { useWideLayoutDesign } from '../hooks/useWideLayoutDesign';
 
 const RootLayoutFrame = () => {
   const { isWideLayout } = useAppLayout();
@@ -17,12 +18,13 @@ const RootLayoutFrame = () => {
       data-wide-layout={isWideLayout ? true : undefined}
     >
       <Outlet />
+      <ReferralInvite />
     </div>
   );
 };
 
 export const RootLayout = () => {
-  const isWideLayout = useFullScreenDesign();
+  const isWideLayout = useWideLayoutDesign();
 
   return (
     <AppLayoutProvider isWideLayout={isWideLayout}>

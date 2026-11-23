@@ -1,6 +1,10 @@
 import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
 import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import {
+  MOCK_ACCOUNT_EOA,
+  MOCK_ACCOUNT_BIP122_P2WPKH,
+} from '../../test/data/mock-accounts';
+import {
   selectTransactionDataByTransactionId,
   selectTransactionPayTotalsByTransactionId,
   selectIsTransactionPayLoadingByTransactionId,
@@ -11,7 +15,10 @@ import {
   selectTransactionPayIsMaxAmountByTransactionId,
   selectTransactionPayIsPostQuoteByTransactionId,
   selectTransactionPayAccountOverrideByTransactionId,
+  selectTransactionPayEvmAccountOverrideByTransactionId,
+  selectTransactionPayFiatPaymentByTransactionId,
   selectPaymentOverrideByTransactionId,
+  TransactionPayAccountsState,
   TransactionPayState,
 } from './transactionPayController';
 
@@ -287,8 +294,7 @@ describe('transactionPayController selectors', () => {
   });
 
   describe('selectTransactionPayAccountOverrideByTransactionId', () => {
-    const ACCOUNT_OVERRIDE =
-      '0xabcdef1234567890abcdef1234567890abcdef12' as const;
+    const ACCOUNT_OVERRIDE = MOCK_ACCOUNT_EOA.id;
 
     it('returns accountOverride when present', () => {
       const state = createMockState({ accountOverride: ACCOUNT_OVERRIDE });
@@ -324,6 +330,53 @@ describe('transactionPayController selectors', () => {
     });
   });
 
+  describe('selectTransactionPayEvmAccountOverrideByTransactionId', () => {
+    function createAccountsState(
+      accountOverride?: string,
+    ): TransactionPayAccountsState {
+      return {
+        metamask: {
+          ...createMockState({ accountOverride }).metamask,
+          internalAccounts: {
+            accounts: {
+              [MOCK_ACCOUNT_EOA.id]: MOCK_ACCOUNT_EOA,
+              [MOCK_ACCOUNT_BIP122_P2WPKH.id]: MOCK_ACCOUNT_BIP122_P2WPKH,
+            },
+            selectedAccount: MOCK_ACCOUNT_EOA.id,
+          },
+          accountIdByAddress: {},
+        },
+      };
+    }
+
+    it('returns the address of an EVM account override', () => {
+      const result = selectTransactionPayEvmAccountOverrideByTransactionId(
+        createAccountsState(MOCK_ACCOUNT_EOA.id),
+        TRANSACTION_ID,
+      );
+
+      expect(result).toBe(MOCK_ACCOUNT_EOA.address);
+    });
+
+    it('returns undefined for a non-EVM account override', () => {
+      const result = selectTransactionPayEvmAccountOverrideByTransactionId(
+        createAccountsState(MOCK_ACCOUNT_BIP122_P2WPKH.id),
+        TRANSACTION_ID,
+      );
+
+      expect(result).toBeUndefined();
+    });
+
+    it('returns undefined when accountOverride is absent', () => {
+      const result = selectTransactionPayEvmAccountOverrideByTransactionId(
+        createAccountsState(),
+        TRANSACTION_ID,
+      );
+
+      expect(result).toBeUndefined();
+    });
+  });
+
   describe('selectPaymentOverrideByTransactionId', () => {
     it('returns paymentOverride when present', () => {
       const state = createMockState({
@@ -342,6 +395,31 @@ describe('transactionPayController selectors', () => {
       const state = createMockState({ isLoading: false });
 
       const result = selectPaymentOverrideByTransactionId(
+        state,
+        TRANSACTION_ID,
+      );
+
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe('selectTransactionPayFiatPaymentByTransactionId', () => {
+    it('returns the selected fiat payment method', () => {
+      const fiatPayment = { selectedPaymentMethodId: 'apple-pay' };
+      const state = createMockState({ fiatPayment });
+
+      const result = selectTransactionPayFiatPaymentByTransactionId(
+        state,
+        TRANSACTION_ID,
+      );
+
+      expect(result).toStrictEqual(fiatPayment);
+    });
+
+    it('returns undefined when no fiat payment is selected', () => {
+      const state = createMockState({ isLoading: false });
+
+      const result = selectTransactionPayFiatPaymentByTransactionId(
         state,
         TRANSACTION_ID,
       );

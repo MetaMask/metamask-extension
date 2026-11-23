@@ -1,12 +1,14 @@
 import React from 'react';
 import { it } from '@jest/globals';
-import { act, fireEvent } from '@testing-library/react';
+import { act, fireEvent, within } from '@testing-library/react';
 import type { Asset } from '@metamask/assets-controllers';
 import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { useTokenListData } from '../hooks/useTokenListData';
 import type { TokenWithFiatAmount } from '../types';
+import { useMoneyTokenListCta } from '../../../../hooks/money/useMoneyTokenListCta';
+import { MONEY_TOKEN_LIST_CTA_TEST_ID } from '../../money/money-token-list-cta';
 import { sortTokenAssets } from '../util/sortAssetsWithPriority';
 import {
   MetaMetricsEventCategory,
@@ -34,6 +36,10 @@ jest.mock('../../../../hooks/useAnalytics', () => {
 const getMockTrackEvent = () =>
   jest.requireMock('../../../../hooks/useAnalytics')
     .mockTrackEvent as jest.Mock;
+
+jest.mock('../../../../hooks/money/useMoneyTokenListCta', () => ({
+  useMoneyTokenListCta: jest.fn(() => undefined),
+}));
 
 jest.mock('../hooks/useTokenListData', () => ({
   ...jest.requireActual('../hooks/useTokenListData'),
@@ -109,6 +115,10 @@ const getSortIndicator = (header: HTMLElement) =>
   header.querySelector('[data-testid="token-table-sort-indicator"]');
 
 describe('TokenTable', () => {
+  beforeEach(() => {
+    jest.mocked(useMoneyTokenListCta).mockReturnValue(undefined);
+  });
+
   it('renders the column headers and a row for each token', () => {
     mockTokenListData({
       tokenListItems: [
@@ -125,6 +135,62 @@ describe('TokenTable', () => {
     expect(getAllByTestId('token-percent-change')).toHaveLength(2);
     expect(getByText('ETH')).toBeInTheDocument();
     expect(getByText('USDC')).toBeInTheDocument();
+  });
+
+  it('resolves the Money CTA once for the displayed tokens', () => {
+    const displayedTokens = [createToken('USDC'), createToken('ETH')];
+    mockTokenListData({
+      tokenListItems: displayedTokens.map((token) => ({
+        type: 'token',
+        token,
+      })),
+      displayedTokens,
+    });
+
+    renderTable();
+
+    expect(useMoneyTokenListCta).toHaveBeenCalledWith(displayedTokens);
+  });
+
+  it('shows the Money CTA under the token name for an eligible token', () => {
+    const eligible = createToken('USDC');
+    const other = createToken('ETH');
+    const onCtaClick = jest.fn();
+    const onRowClick = jest.fn();
+    jest.mocked(useMoneyTokenListCta).mockReturnValue({
+      label: 'Get 5% APY',
+      isLoading: false,
+      shouldShow: (token) => token.symbol === eligible.symbol,
+      onClick: onCtaClick,
+    });
+    mockTokenListData({
+      tokenListItems: [
+        { type: 'token', token: eligible },
+        { type: 'token', token: other },
+      ],
+      displayedTokens: [eligible, other],
+      getTokenClickHandler: () => onRowClick,
+    });
+
+    const { getAllByTestId } = renderTable();
+    const [eligibleRow] = getAllByTestId('multichain-token-list-button');
+    const eligibleTokenColumn = eligibleRow.firstElementChild as HTMLElement;
+    const cta = within(eligibleTokenColumn).getByRole('button', {
+      name: 'Get 5% APY',
+    });
+
+    expect(
+      within(eligibleTokenColumn).getByText(eligible.title),
+    ).toBeInTheDocument();
+    expect(cta).toHaveAttribute(
+      'data-testid',
+      `${MONEY_TOKEN_LIST_CTA_TEST_ID}-${eligible.chainId}-${eligible.address}`,
+    );
+
+    fireEvent.click(cta);
+
+    expect(onCtaClick).toHaveBeenCalledWith(eligible);
+    expect(onRowClick).not.toHaveBeenCalled();
   });
 
   it('renders the loading skeleton instead of the table while loading', () => {

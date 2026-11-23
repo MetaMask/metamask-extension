@@ -122,7 +122,7 @@ export const MUSD_CONVERSION_BONUS_TERMS_OF_USE =
  * Linked from the asset details bonus and convert sections
  */
 export const MUSD_SUPPORT_ARTICLE_URL =
-  'https://support.metamask.io/manage-crypto/tokens/musd';
+  'https://support.metamask.com/manage-crypto/tokens/musd';
 
 /**
  * Minimum asset balance required in USD for a token to be eligible for conversion

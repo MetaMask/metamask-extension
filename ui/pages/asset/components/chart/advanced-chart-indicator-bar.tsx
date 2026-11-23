@@ -49,12 +49,15 @@ type IndicatorBarProps = {
   activeIndicators: Set<string>;
   onIndicatorToggle: (name: string) => void;
   onMAToggle: (ma: string) => void;
+  /** Called when the moving-average dropdown is opened, but not when closed. */
+  onMASelectorOpen?: () => void;
 };
 
 const IndicatorBar = ({
   activeIndicators,
   onIndicatorToggle,
   onMAToggle,
+  onMASelectorOpen,
 }: IndicatorBarProps) => {
   const [showMADropdown, setShowMADropdown] = useState(false);
   const maTriggerRef = useRef<HTMLButtonElement | null>(null);
@@ -138,7 +141,14 @@ const IndicatorBar = ({
           type="button"
           aria-haspopup="true"
           aria-expanded={showMADropdown}
-          onClick={() => setShowMADropdown((v) => !v)}
+          onClick={() => {
+            // Read state outside the updater: updaters must stay pure, and
+            // React may invoke them twice in development.
+            if (!showMADropdown) {
+              onMASelectorOpen?.();
+            }
+            setShowMADropdown((v) => !v);
+          }}
           className={twMerge(PILL_CLASS, 'flex items-center gap-1')}
           data-testid="advanced-chart-ma-trigger"
         >

@@ -48,6 +48,7 @@ import {
   selectAccountGroupBalanceForEmptyState,
   selectUnifiedBalanceGetterBySelectedAccountGroup,
   selectAccountGroupBalanceIsLoadedForEmptyState,
+  selectAssetsHaveLoadedForSelectedAccountGroup,
   selectIsAssetsLoadingForSelectedAccountGroup,
   getAssetsByAccountGroupId,
   getAssetsBySelectedAccountGroup,
@@ -104,6 +105,12 @@ jest.mock('@metamask/assets-controller', () => ({
     mockCalculateBalanceForAllWalletsFromUnified(...args),
   calculateBalanceChangeForAccountGroup: (...args: unknown[]) =>
     mockCalculateBalanceChangeForAccountGroupFromUnified(...args),
+  getAccountGroupLoadingStatus: jest.requireActual(
+    '@metamask/assets-controller',
+  ).getAccountGroupLoadingStatus,
+  getIsAssetsBackgroundLoadingForSelectedAccountGroup: jest.requireActual(
+    '@metamask/assets-controller',
+  ).getIsAssetsBackgroundLoadingForSelectedAccountGroup,
   getIsAssetsLoadingForSelectedAccountGroup: jest.requireActual(
     '@metamask/assets-controller',
   ).getIsAssetsLoadingForSelectedAccountGroup,
@@ -1806,6 +1813,82 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     expect(selectIsAssetsLoadingForSelectedAccountGroup(state)).toBe(false);
   });
 
+  describe('selectAssetsHaveLoadedForSelectedAccountGroup', () => {
+    it('returns false before the first asset load starts', () => {
+      const state = createMockStateWithEVMNetworks();
+
+      expect(selectAssetsHaveLoadedForSelectedAccountGroup(state)).toBe(false);
+    });
+
+    it('returns false while the account tree is syncing after an SRP import', () => {
+      const state = createMockStateWithEVMNetworks();
+      state.metamask.isAccountTreeSyncingInProgress = true;
+      state.metamask.assetsLoadingStatus = {
+        account1: 'loaded',
+      };
+      state.metamask.assetsBackgroundLoadingStatus = {
+        account1: 'loaded',
+      };
+
+      expect(selectAssetsHaveLoadedForSelectedAccountGroup(state)).toBe(false);
+    });
+
+    it('returns false while the first asset load is in progress', () => {
+      const state = createMockStateWithEVMNetworks();
+      state.metamask.assetsLoadingStatus = {
+        account1: 'loading',
+      };
+
+      expect(selectAssetsHaveLoadedForSelectedAccountGroup(state)).toBe(false);
+    });
+
+    it('returns true after the first asset load settles', () => {
+      const state = createMockStateWithEVMNetworks();
+      state.metamask.assetsLoadingStatus = {
+        account1: 'loaded',
+      };
+
+      expect(selectAssetsHaveLoadedForSelectedAccountGroup(state)).toBe(true);
+    });
+
+    it('returns false when any selected group account is still loading', () => {
+      const state = createMockStateWithEVMNetworks();
+      state.metamask.accountTree.wallets['entropy:wallet1'].groups[
+        'entropy:wallet1/group1'
+      ].accounts.push('account2');
+      state.metamask.assetsLoadingStatus = {
+        account1: 'loaded',
+        account2: 'loading',
+      };
+
+      expect(selectAssetsHaveLoadedForSelectedAccountGroup(state)).toBe(false);
+    });
+
+    it('returns false while the background asset load is in progress', () => {
+      const state = createMockStateWithEVMNetworks();
+      state.metamask.assetsLoadingStatus = {
+        account1: 'loaded',
+      };
+      state.metamask.assetsBackgroundLoadingStatus = {
+        account1: 'loading',
+      };
+
+      expect(selectAssetsHaveLoadedForSelectedAccountGroup(state)).toBe(false);
+    });
+
+    it('returns true after the background asset load settles', () => {
+      const state = createMockStateWithEVMNetworks();
+      state.metamask.assetsLoadingStatus = {
+        account1: 'loaded',
+      };
+      state.metamask.assetsBackgroundLoadingStatus = {
+        account1: 'loaded',
+      };
+
+      expect(selectAssetsHaveLoadedForSelectedAccountGroup(state)).toBe(true);
+    });
+  });
+
   it('should return true for loaded state when a non-EVM mainnet zero balance record exists', () => {
     const state = createMockStateWithNonEVMNetworks();
 
@@ -2299,7 +2382,7 @@ const emptyPreparedAssetListState = {
   tokenBalances: {},
   marketData: {},
   currencyRates: {},
-  currentCurrency: undefined,
+  currentCurrency: 'usd',
   networkConfigurationsByChainId: 'mockNetworkConfigurationsByChainId',
   accountsByChainId: {},
   accountsAssets: {},

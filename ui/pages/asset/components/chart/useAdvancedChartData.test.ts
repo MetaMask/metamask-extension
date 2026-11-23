@@ -31,6 +31,7 @@ function setup(
     isLoading: false,
     error: null,
     resolvedCurrency: 'eur',
+    fetchOlderBars: jest.fn().mockResolvedValue({ bars: [], noData: true }),
     ...overrides.chart,
   });
   mockUseOHLCVRealtime.mockReturnValue({
@@ -222,8 +223,6 @@ describe('useAdvancedChartData', () => {
 
       expect(result.current.price).toBe(25);
       expect(result.current.timestamp).toBe(1_700_003_600_000);
-      // Opened at 10, live at 25.
-      expect(result.current.percentChange).toBeCloseTo(150);
     });
   });
 

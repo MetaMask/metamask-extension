@@ -105,7 +105,7 @@ export enum MoneyRedirectTargetType {
 export const MONEY_URLS = {
   MONEY_LANDING: MONEY_LANDING_URL,
   MUSD_PRICE: MUSD_PRICE_URL,
-  METAMASK_SUPPORT: SUPPORT_LINK ?? 'https://support.metamask.io',
+  METAMASK_SUPPORT: SUPPORT_LINK ?? 'https://support.metamask.com',
 } as const;
 
 export type MoneyUrl = (typeof MONEY_URLS)[keyof typeof MONEY_URLS];

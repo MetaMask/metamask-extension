@@ -1,5 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import type { Hex } from '@metamask/utils';
+import { hexToNumber, toCaipAssetType, type Hex } from '@metamask/utils';
 import type {
   TransactionPayRequiredToken,
   TransactionPaymentToken,
@@ -39,19 +39,23 @@ function createMockAsset(overrides: Partial<Asset> = {}): Asset {
   };
 }
 
-function createMockPaymentToken(
-  overrides: Partial<TransactionPaymentToken> = {},
-): TransactionPaymentToken {
+function createMockPaymentToken({
+  address = TOKEN_ADDRESS_MOCK,
+  chainId = CHAIN_ID_MOCK,
+}: { address?: Hex; chainId?: Hex } = {}): TransactionPaymentToken {
   return {
-    address: TOKEN_ADDRESS_MOCK,
+    assetId: toCaipAssetType(
+      'eip155',
+      String(hexToNumber(chainId)),
+      'erc20',
+      address,
+    ),
     balanceFiat: '100.00',
     balanceHuman: '50',
     balanceRaw: '50000000000000000000',
     balanceUsd: '100.00',
-    chainId: CHAIN_ID_MOCK,
     decimals: 18,
     symbol: 'TST',
-    ...overrides,
   };
 }
 
