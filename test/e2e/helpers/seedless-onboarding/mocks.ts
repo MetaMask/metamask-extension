@@ -586,6 +586,18 @@ export class OAuthMockttpService {
         }),
 
       await server
+        .forPost(AuthServer.MarketingOptInStatus)
+        .always()
+        .thenCallback(() => {
+          return {
+            statusCode: 200,
+            json: {
+              is_opt_in: true,
+            },
+          };
+        }),
+
+      await server
         .forPost(AuthServer.RenewRefreshToken)
         .always()
         .thenCallback(() => {

@@ -139,7 +139,6 @@ export type RewardsControllerGetSeasonStatusAction = {
  * Perform the complete opt-in process for rewards
  *
  * @param accounts - The accounts to opt in
- * @param referralCode - Optional referral code
  */
 export type RewardsControllerOptInAction = {
   type: `RewardsController:optIn`;
@@ -154,20 +153,6 @@ export type RewardsControllerOptInAction = {
 export type RewardsControllerGetGeoRewardsMetadataAction = {
   type: `RewardsController:getGeoRewardsMetadata`;
   handler: RewardsController['getGeoRewardsMetadata'];
-};
-
-/**
- * Validate a referral code
- *
- * @param code - The referral code to validate
- * @returns Promise<{ valid: boolean; isVipCode: boolean }> - Whether the code
- * is valid and whether it is a VIP code. A code is only treated as a VIP code
- * when the backend says so AND the VIP feature is enabled locally (rewards on
- * and VIP not disabled).
- */
-export type RewardsControllerValidateReferralCodeAction = {
-  type: `RewardsController:validateReferralCode`;
-  handler: RewardsController['validateReferralCode'];
 };
 
 /**
@@ -222,7 +207,6 @@ export type RewardsControllerMethodActions =
   | RewardsControllerGetSeasonStatusAction
   | RewardsControllerOptInAction
   | RewardsControllerGetGeoRewardsMetadataAction
-  | RewardsControllerValidateReferralCodeAction
   | RewardsControllerGetCandidateSubscriptionIdAction
   | RewardsControllerLinkAccountToSubscriptionCandidateAction
   | RewardsControllerLinkAccountsToSubscriptionCandidateAction;

@@ -18,9 +18,6 @@ export const AVAILABLE_CONTRACTS: SmartContractName[] = [
   'piggybank',
   'failing',
   'multisig',
-  'entrypoint',
-  'simpleAccountFactory',
-  'verifyingPaymaster',
 ];
 
 export type MetaMaskContractSeedingCapabilityOptions = {

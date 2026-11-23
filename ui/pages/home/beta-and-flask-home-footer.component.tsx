@@ -39,7 +39,7 @@ export default function BetaAndFlaskHomeFooter() {
         <>
           {' | '}
           <a
-            href="https://community.metamask.io/c/developer-discussion/11"
+            href="https://community.metamask.com/c/developer-discussion/11"
             target="_blank"
             rel="noopener noreferrer"
           >

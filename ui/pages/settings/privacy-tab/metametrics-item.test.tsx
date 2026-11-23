@@ -29,7 +29,6 @@ jest.mock('../../../hooks/useAnalytics', () => {
 
 const mockEnableMetametrics = jest.fn().mockResolvedValue(undefined);
 const mockDisableMetametrics = jest.fn().mockResolvedValue(undefined);
-const mockSetDataCollectionForMarketing = jest.fn();
 
 jest.mock('../../../hooks/useMetametrics', () => ({
   useEnableMetametrics: () => ({
@@ -44,10 +43,6 @@ jest.mock('../../../hooks/useMetametrics', () => ({
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
-  setDataCollectionForMarketing: (val: boolean) => {
-    mockSetDataCollectionForMarketing(val);
-    return { type: 'MOCK_ACTION' };
-  },
 }));
 
 const backgroundConnectionMock = new Proxy(
@@ -137,6 +132,7 @@ describe('MetametricsToggleItem', () => {
     const mockStore = createMockStore({
       optedIn: true,
       optedInToMarketing: true,
+      isSignedIn: true,
     });
     renderWithProvider(<MetametricsToggleItem />, mockStore);
 
@@ -145,7 +141,6 @@ describe('MetametricsToggleItem', () => {
     await waitFor(() => {
       expect(mockDisableMetametrics).toHaveBeenCalled();
     });
-    expect(mockSetDataCollectionForMarketing).not.toHaveBeenCalled();
     expect(mockTrackAnalyticsEvent).toHaveBeenCalledWith(
       expect.objectContaining({
         name: MetaMetricsEventName.AnalyticsPreferenceSelected,
@@ -154,6 +149,7 @@ describe('MetametricsToggleItem', () => {
         }),
       }),
     );
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
   it('is disabled when useExternalServices is false', () => {

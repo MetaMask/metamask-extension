@@ -1,8 +1,13 @@
+import { it } from '@jest/globals';
 import { renderHook } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { useSettingsSearch } from './useSettingsSearch';
+
+jest.mock('#shared/lib/mv3.utils', () => ({
+  isManifestV3: true,
+}));
 
 jest.mock('../../../shared/lib/passkey', () => ({
   getPasskeyAuthMethodKey: () => 'passkeyAuthMethodBiometrics',
@@ -23,6 +28,7 @@ jest.mock('../../hooks/useI18nContext', () => ({
       localCurrency: 'Local currency',
       showTickerWidget: 'Show web widget on X',
       autoDetectTokens: 'Auto-detect tokens',
+      mfaSettingsTitle: '2-step verification',
     };
 
     if (substitutions?.length) {
@@ -108,6 +114,7 @@ jest.mock('./search-config', () => ({
       items: [
         { id: 'third-party-apis', titleKey: 'thirdPartyApis' },
         { id: 'ipfs-gateway', titleKey: 'ipfsGateway' },
+        { id: 'mfa', titleKey: 'mfaSettingsTitle' },
         {
           id: 'batch-account-balance-requests',
           titleKey: 'useMultiAccountBalanceChecker',
@@ -210,6 +217,19 @@ describe('useSettingsSearch', () => {
         tabRoute: '/settings/preferences-and-display',
       }),
     );
+  });
+
+  it.each<[boolean, number]>([
+    [true, 1],
+    [false, 0],
+  ])('finds 2-step verification only when mfaUiKit is %s', (enabled, count) => {
+    const { result } = renderHook(() => useSettingsSearch('2-step'), {
+      wrapper: createWrapper({
+        mfaUiKit: { enabled, minimumVersion: '1.0.0' },
+      }),
+    });
+
+    expect(result.current).toHaveLength(count);
   });
 
   it('keeps IPFS searchable on the Privacy page when the flag is enabled', () => {

@@ -24,6 +24,20 @@ const DEPOSIT_DATA = '0xbbb2' as Hex;
 const APPROVE_DATA_2 = '0xccc3' as Hex;
 const DEPOSIT_DATA_2 = '0xddd4' as Hex;
 
+type UpdateTransactionMetadataOptions = {
+  transactionId: string;
+  callback: (transaction: TransactionMeta) => void;
+};
+
+function getUpdateCallback(
+  updateTransactionMetadata: jest.Mock,
+): UpdateTransactionMetadataOptions['callback'] {
+  const [options] = updateTransactionMetadata.mock.calls[0] as [
+    UpdateTransactionMetadataOptions,
+  ];
+  return options.callback;
+}
+
 function createDepositTransaction(): TransactionMeta {
   return {
     id: TRANSACTION_ID,
@@ -55,14 +69,24 @@ function createDepositTransaction(): TransactionMeta {
 }
 
 function setup(transactions: TransactionMeta[] = [createDepositTransaction()]) {
-  const updateTransaction = jest.fn();
+  const updateTransactionMetadata = jest.fn((options: unknown) => {
+    const { transactionId, callback } =
+      options as UpdateTransactionMetadataOptions;
+    const transaction = transactions.find(({ id }) => id === transactionId);
+    if (!transaction) {
+      throw new Error(`Transaction not found: ${transactionId}`);
+    }
+    callback(transaction);
+    return transaction;
+  });
   const mock = createMoneyPayMessengerMock({
     handlers: {
       'TransactionController:getState': () => ({ transactions }),
-      'TransactionController:updateTransaction': updateTransaction,
+      'TransactionController:updateTransactionMetadata':
+        updateTransactionMetadata,
     },
   });
-  return { ...mock, updateTransaction };
+  return { ...mock, updateTransactionMetadata };
 }
 
 describe('updateMoneyAccountDepositAmount', () => {
@@ -89,7 +113,7 @@ describe('updateMoneyAccountDepositAmount', () => {
   });
 
   it('encodes approve + deposit calldata and writes requiredAssets so Pay can quote', async () => {
-    const { messenger, updateTransaction } = setup();
+    const { messenger, updateTransactionMetadata } = setup();
 
     const didCommit = await updateMoneyAccountDepositAmount(
       messenger,
@@ -109,20 +133,39 @@ describe('updateMoneyAccountDepositAmount', () => {
       }),
     );
 
-    expect(updateTransaction).toHaveBeenCalledTimes(2);
-    const [assetsOnly] = updateTransaction.mock.calls[0];
-    expect(assetsOnly.requiredAssets[0].amount).toBe('0xf4240');
-    expect(assetsOnly.nestedTransactions[0].data).toBeUndefined();
-
-    const [withCalldata] = updateTransaction.mock.calls[1];
-    expect(withCalldata.nestedTransactions[0].data).toBe(APPROVE_DATA);
-    expect(withCalldata.nestedTransactions[1].data).toBe(DEPOSIT_DATA);
+    expect(updateTransactionMetadata).toHaveBeenCalledTimes(1);
+    expect(updateTransactionMetadata).toHaveBeenCalledWith({
+      transactionId: TRANSACTION_ID,
+      skipResimulate: true,
+      callback: expect.any(Function),
+    });
+    const withCalldata = createDepositTransaction();
+    getUpdateCallback(updateTransactionMetadata)(withCalldata);
+    expect(withCalldata.nestedTransactions?.[0].data).toBe(APPROVE_DATA);
+    expect(withCalldata.nestedTransactions?.[1].data).toBe(DEPOSIT_DATA);
     expect(withCalldata.txParams.data).not.toBe('0x');
-    expect(withCalldata.requiredAssets[0].amount).toBe('0xf4240');
+    expect(withCalldata.requiredAssets?.[0].amount).toBe('0xf4240');
   });
 
-  it('writes requiredAssets before vault encoding so quotes do not wait on RPC', async () => {
-    const { messenger, updateTransaction } = setup();
+  it('rounds fractional mUSD down before encoding', async () => {
+    const { messenger, updateTransactionMetadata } = setup();
+
+    await updateMoneyAccountDepositAmount(
+      messenger,
+      TRANSACTION_ID,
+      '1.0000005',
+    );
+
+    expect(buildDepositBatchMock).toHaveBeenCalledWith(
+      expect.objectContaining({ amount: 1_000_000n }),
+    );
+    const committed = createDepositTransaction();
+    getUpdateCallback(updateTransactionMetadata)(committed);
+    expect(committed.requiredAssets?.[0].amount).toBe('0xf4240');
+  });
+
+  it('waits for calldata encoding before publishing the new amount', async () => {
+    const { messenger, updateTransactionMetadata } = setup();
     let resolveEncode: (value: unknown) => void = () => undefined;
     buildDepositBatchMock.mockImplementationOnce(
       async () =>
@@ -137,10 +180,7 @@ describe('updateMoneyAccountDepositAmount', () => {
       '1',
     );
 
-    expect(updateTransaction).toHaveBeenCalledTimes(1);
-    expect(updateTransaction.mock.calls[0][0].requiredAssets[0].amount).toBe(
-      '0xf4240',
-    );
+    expect(updateTransactionMetadata).not.toHaveBeenCalled();
 
     resolveEncode({
       approveTx: {
@@ -161,10 +201,17 @@ describe('updateMoneyAccountDepositAmount', () => {
       },
     });
     await expect(commit).resolves.toBe(true);
+
+    expect(updateTransactionMetadata).toHaveBeenCalledTimes(1);
+    const committed = createDepositTransaction();
+    getUpdateCallback(updateTransactionMetadata)(committed);
+    expect(committed.requiredAssets?.[0].amount).toBe('0xf4240');
+    expect(committed.nestedTransactions?.[0].data).toBe(APPROVE_DATA);
+    expect(committed.nestedTransactions?.[1].data).toBe(DEPOSIT_DATA);
   });
 
   it('returns false for a zero amount without encoding', async () => {
-    const { messenger, updateTransaction } = setup();
+    const { messenger, updateTransactionMetadata } = setup();
 
     const didCommit = await updateMoneyAccountDepositAmount(
       messenger,
@@ -174,11 +221,11 @@ describe('updateMoneyAccountDepositAmount', () => {
 
     expect(didCommit).toBe(false);
     expect(buildDepositBatchMock).not.toHaveBeenCalled();
-    expect(updateTransaction).not.toHaveBeenCalled();
+    expect(updateTransactionMetadata).not.toHaveBeenCalled();
   });
 
   it('returns false when the transaction is gone', async () => {
-    const { messenger, updateTransaction } = setup([]);
+    const { messenger, updateTransactionMetadata } = setup([]);
 
     const didCommit = await updateMoneyAccountDepositAmount(
       messenger,
@@ -187,32 +234,30 @@ describe('updateMoneyAccountDepositAmount', () => {
     );
 
     expect(didCommit).toBe(false);
-    expect(updateTransaction).not.toHaveBeenCalled();
+    expect(updateTransactionMetadata).not.toHaveBeenCalled();
   });
 
   it('throws when the money account is unavailable', async () => {
-    const updateTransaction = jest.fn();
+    const updateTransactionMetadata = jest.fn();
     const { messenger } = createMoneyPayMessengerMock({
       moneyAccountAddress: undefined,
       handlers: {
         'TransactionController:getState': () => ({
           transactions: [createDepositTransaction()],
         }),
-        'TransactionController:updateTransaction': updateTransaction,
+        'TransactionController:updateTransactionMetadata':
+          updateTransactionMetadata,
       },
     });
 
     await expect(
       updateMoneyAccountDepositAmount(messenger, TRANSACTION_ID, '1'),
     ).rejects.toThrow('Money account deposit is not available');
-    expect(updateTransaction).toHaveBeenCalledTimes(1);
-    expect(updateTransaction.mock.calls[0][0].requiredAssets[0].amount).toBe(
-      '0xf4240',
-    );
+    expect(updateTransactionMetadata).not.toHaveBeenCalled();
   });
 
   it('lets a later typed amount supersede an in-flight encode', async () => {
-    const { messenger, updateTransaction } = setup();
+    const { messenger, updateTransactionMetadata } = setup();
     let resolveFirst: (value: unknown) => void = () => undefined;
 
     buildDepositBatchMock
@@ -273,18 +318,11 @@ describe('updateMoneyAccountDepositAmount', () => {
     });
     await expect(first).resolves.toBe(false);
 
-    // Immediate requiredAssets writes for both intents, plus nested calldata
-    // for the later one only.
-    expect(updateTransaction).toHaveBeenCalledTimes(3);
-    expect(updateTransaction.mock.calls[0][0].requiredAssets[0].amount).toBe(
-      '0xf4240',
-    );
-    expect(updateTransaction.mock.calls[1][0].requiredAssets[0].amount).toBe(
-      '0x1e8480',
-    );
-    expect(updateTransaction.mock.calls[2][0].nestedTransactions[0].data).toBe(
-      APPROVE_DATA_2,
-    );
+    expect(updateTransactionMetadata).toHaveBeenCalledTimes(1);
+    const committed = createDepositTransaction();
+    getUpdateCallback(updateTransactionMetadata)(committed);
+    expect(committed.requiredAssets?.[0].amount).toBe('0x1e8480');
+    expect(committed.nestedTransactions?.[0].data).toBe(APPROVE_DATA_2);
   });
 });
 

@@ -10,6 +10,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { SECOND } from '../../../../shared/constants/time';
 import { PasskeyPRFRequiredError } from '../../../../shared/lib/passkey';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { toast } from '../../../components/ui/toast/toast';
 import PasskeyRegisterSubPage from './passkey-register-sub-page';
 import { PASSKEY_REGISTRATION_ROUTE_CAPABILITIES } from './messenger';
@@ -243,7 +244,7 @@ describe('PasskeyRegisterSubPage', () => {
   it('shows passkey not supported when enrollment requires PRF', async () => {
     mockEnrollWithPasskey.mockRejectedValueOnce(new PasskeyPRFRequiredError());
 
-    const { getByTestId, getByText } = renderWithProvider(
+    const { getByRole, getByTestId, getByText } = renderWithProvider(
       <PasskeyRegisterSubPage />,
       mockStore,
     );
@@ -258,6 +259,11 @@ describe('PasskeyRegisterSubPage', () => {
         getByText(messages.passkeyErrorNotSupported.message),
       ).toBeInTheDocument();
     });
+    expect(
+      getByRole('link', {
+        name: messages.passkeyMigrationSupportedProviders.message,
+      }),
+    ).toHaveAttribute('href', ZENDESK_URLS.SUPPORTED_PASSKEYS);
     expect(mockForceUpdateMetamaskState).not.toHaveBeenCalled();
   });
 

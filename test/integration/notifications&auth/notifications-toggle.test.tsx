@@ -25,7 +25,8 @@ const setupSubmitRequestToBackgroundMocks = (
 ) => {
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
-      getNotificationPreferences: createMockNotificationPreferences(),
+      'AuthenticatedUserStorageService:getNotificationPreferences':
+        createMockNotificationPreferences(),
       ...mockRequests,
     }),
   );
@@ -117,20 +118,24 @@ describe('Notifications Toggle', () => {
     await waitFor(() => {
       const disableNotificationsCall =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'disableMetamaskNotifications',
+          (call) =>
+            call[0] ===
+            'NotificationServicesController:disableNotificationServices',
         );
 
       const fetchAndUpdateMetamaskNotificationsCall =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'fetchAndUpdateMetamaskNotifications',
+          (call) =>
+            call[0] ===
+            'NotificationServicesController:fetchAndUpdateMetamaskNotifications',
         );
 
       expect(disableNotificationsCall?.[0]).toBe(
-        'disableMetamaskNotifications',
+        'NotificationServicesController:disableNotificationServices',
       );
 
       expect(fetchAndUpdateMetamaskNotificationsCall?.[0]).toBe(
-        'fetchAndUpdateMetamaskNotifications',
+        'NotificationServicesController:fetchAndUpdateMetamaskNotifications',
       );
     });
 
@@ -150,12 +155,13 @@ describe('Notifications Toggle', () => {
   it('enables marketing in-app notifications from settings', async () => {
     const mockedState = getMockedNotificationsState();
     setupSubmitRequestToBackgroundMocks({
-      getNotificationPreferences: createMockNotificationPreferences({
-        marketing: {
-          pushNotificationsEnabled: false,
-          inAppNotificationsEnabled: false,
-        },
-      }),
+      'AuthenticatedUserStorageService:getNotificationPreferences':
+        createMockNotificationPreferences({
+          marketing: {
+            pushNotificationsEnabled: false,
+            inAppNotificationsEnabled: false,
+          },
+        }),
     });
 
     await integrationTestRender({
@@ -206,7 +212,9 @@ describe('Notifications Toggle', () => {
 
       const fetchAndUpdateMetamaskNotificationsCall =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'fetchAndUpdateMetamaskNotifications',
+          (call) =>
+            call[0] ===
+            'NotificationServicesController:fetchAndUpdateMetamaskNotifications',
         );
 
       expect(setMarketingConsentCall?.[1]).toStrictEqual([
@@ -222,7 +230,7 @@ describe('Notifications Toggle', () => {
       ]);
 
       expect(fetchAndUpdateMetamaskNotificationsCall?.[0]).toBe(
-        'fetchAndUpdateMetamaskNotifications',
+        'NotificationServicesController:fetchAndUpdateMetamaskNotifications',
       );
     });
 

@@ -4,7 +4,6 @@ import '@testing-library/jest-dom';
 import { useSelector } from 'react-redux';
 import {
   setRewardsModalOpen,
-  setOnboardingReferralCode,
   setRewardsDeeplinkUrl,
 } from '../../../ducks/rewards';
 import { selectRewardsDeeplinkUrl } from '../../../ducks/rewards/selectors';
@@ -92,7 +91,7 @@ describe('RewardsQRCode', () => {
   });
 
   it('encodes the stored deeplink URL in the QR code when present', () => {
-    const deeplink = 'https://link.metamask.io/rewards?referral=ABC123';
+    const deeplink = 'https://link.metamask.io/rewards';
     mockUseSelector.mockImplementation((selector) => {
       if (selector === selectRewardsDeeplinkUrl) {
         return deeplink;
@@ -141,7 +140,6 @@ describe('RewardsQRCode', () => {
     fireEvent.click(closeButton);
 
     expect(dispatchMock).toHaveBeenCalledWith(setRewardsModalOpen(false));
-    expect(dispatchMock).toHaveBeenCalledWith(setOnboardingReferralCode(null));
     expect(dispatchMock).toHaveBeenCalledWith(setRewardsDeeplinkUrl(null));
   });
 });

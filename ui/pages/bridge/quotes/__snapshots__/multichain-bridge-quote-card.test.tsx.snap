@@ -766,6 +766,37 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <p
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        >
+          Minimum received
+        </p>
+        <div
+          class=""
+        >
+          <div
+            class="flex"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
+              style="mask-image: url('./images/icons/info.svg');"
+            />
+          </div>
+        </div>
+      </div>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        data-testid="minimum-received"
+      >
+        14.44 USDC
+      </p>
+    </div>
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+    >
+      <div
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+      >
+        <p
           class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
         >
           Price impact
@@ -792,37 +823,6 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
           2.0%
         </p>
       </div>
-    </div>
-    <div
-      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-    >
-      <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-      >
-        <p
-          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
-        >
-          Minimum received
-        </p>
-        <div
-          class=""
-        >
-          <div
-            class="flex"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
-              style="mask-image: url('./images/icons/info.svg');"
-            />
-          </div>
-        </div>
-      </div>
-      <p
-        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
-        data-testid="minimum-received"
-      >
-        14.44 USDC
-      </p>
     </div>
   </div>
 </div>

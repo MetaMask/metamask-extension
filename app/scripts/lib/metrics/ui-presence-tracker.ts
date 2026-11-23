@@ -5,9 +5,17 @@ export type UiPresenceTrackerDeps = {
   getNotificationIsOpen: () => boolean;
 };
 
+export type OpenUiCounts = {
+  popupCount: number;
+  notificationIsOpen: boolean;
+  fullscreenCount: number;
+  sidePanelCount: number;
+};
+
 export type UiPresenceTracker = {
   isAnyUiOpen: () => boolean;
   isClientOpen: () => boolean;
+  getOpenUiCounts: () => OpenUiCounts;
 };
 
 export function createUiPresenceTracker(
@@ -35,5 +43,16 @@ export function createUiPresenceTracker(
     );
   };
 
-  return { isAnyUiOpen, isClientOpen };
+  const getOpenUiCounts = (): OpenUiCounts => {
+    const openMetamaskTabsIDs = deps.getOpenMetamaskTabsIDs();
+    return {
+      popupCount: deps.getOpenPopupCount(),
+      notificationIsOpen: deps.getNotificationIsOpen(),
+      fullscreenCount:
+        Object.values(openMetamaskTabsIDs).filter(Boolean).length,
+      sidePanelCount: deps.getOpenSidePanelCount(),
+    };
+  };
+
+  return { isAnyUiOpen, isClientOpen, getOpenUiCounts };
 }

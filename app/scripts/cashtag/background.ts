@@ -1,6 +1,6 @@
 import { isCaipAssetType, type CaipAssetType } from '@metamask/utils';
+import type { BridgeControllerMetricsLocation } from '@metamask/bridge-controller';
 import browser from 'webextension-polyfill';
-import { POPUP_FILE, SIDEPANEL_FILE } from '#shared/constants/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -9,6 +9,7 @@ import { EXTENSION_MESSAGES } from '#shared/constants/messages';
 import { buildAssetRoutePath } from '#shared/lib/asset-route';
 import type { ManifestFlags } from '#shared/lib/manifestFlags';
 import { getBooleanFeatureFlag } from '#shared/lib/remote-feature-flag-utils';
+import { openRoute } from '../sidepanel/background';
 import { createEventBuilder, trackEvent } from '../controllers/analytics';
 import { fetchPriceHistory, resolveTicker } from './lib/data';
 import type { Controller } from './lib/types';
@@ -17,11 +18,6 @@ const swapRoute = '/cross-chain/swaps/prepare-bridge-page';
 const xTabUrlPatterns = ['*://x.com/*', '*://www.x.com/*'];
 const xHosts = new Set(['x.com', 'www.x.com']);
 const widgetFramePath = 'cashtag-widget.html';
-const fullscreenFile = 'home.html';
-const popupResetDelayMs = 1000;
-// Retry delays for broadcasting OPEN_ROUTE after a cold open,
-// since the panel document may not have mounted
-const openRouteRetryDelaysMs = [0, 150, 400];
 
 let registered = false;
 
@@ -123,17 +119,6 @@ function assetRoutePath(caipAssetId: string) {
   return buildAssetRoutePath(caipAssetId as CaipAssetType);
 }
 
-function routeHash(path: string, search?: `?${string}`) {
-  return `#${path}${search ?? ''}`;
-}
-
-function shouldUseSidePanel(controller: Controller | undefined) {
-  const preferred =
-    controller?.preferencesController?.state?.preferences
-      ?.useSidePanelAsDefault ?? true;
-  return preferred && Boolean(globalThis.chrome?.sidePanel?.open);
-}
-
 // Scoped to this module rather than shared/lib/manifestFlags, whose
 // getManifestFlags() bails out in non-Jest environments and would need a
 // global behaviour change to read _flags in a real build.
@@ -164,140 +149,6 @@ function isTickerWidgetEnabled(controller: Controller | undefined) {
   return isTickerWidgetFeatureEnabled(controller) && preferenceEnabled;
 }
 
-function broadcastOpenRoute(path: string, search?: `?${string}`) {
-  return browser.runtime
-    .sendMessage({
-      type: EXTENSION_MESSAGES.OPEN_ROUTE,
-      body: {
-        path,
-        ...(search ? { search } : {}),
-      },
-    })
-    .catch(() => undefined);
-}
-
-function delay(ms: number) {
-  return new Promise((resolve) => {
-    globalThis.setTimeout(resolve, ms);
-  });
-}
-
-async function broadcastOpenRouteWithRetries(
-  path: string,
-  search?: `?${string}`,
-) {
-  for (const delayMs of openRouteRetryDelaysMs) {
-    if (delayMs > 0) {
-      await delay(delayMs);
-    }
-    await broadcastOpenRoute(path, search);
-  }
-}
-
-function resetSidePanelPath(tabId?: number) {
-  const sidePanel = globalThis.chrome?.sidePanel;
-  if (!sidePanel?.setOptions) {
-    return Promise.resolve();
-  }
-
-  // Tab-scoped options override the global default, so reset both to ensure
-  // the panel opens at SIDEPANEL_FILE rather than a path set by a prior open.
-  const updates = [
-    sidePanel.setOptions({ path: SIDEPANEL_FILE, enabled: true }),
-  ];
-  if (typeof tabId === 'number') {
-    updates.push(
-      sidePanel.setOptions({ tabId, path: SIDEPANEL_FILE, enabled: true }),
-    );
-  }
-  return Promise.all(updates);
-}
-
-function openSidePanel(sender: { tab?: { windowId?: number; id?: number } }) {
-  const sidePanel = globalThis.chrome?.sidePanel;
-  if (!sidePanel?.open || !sidePanel?.setOptions) {
-    throw new Error('sidepanel-unavailable');
-  }
-
-  const tabId = sender?.tab?.id;
-  const windowId = sender?.tab?.windowId;
-
-  let openOptions: { windowId: number } | { tabId: number } | null = null;
-  if (typeof windowId === 'number') {
-    openOptions = { windowId };
-  } else if (typeof tabId === 'number') {
-    openOptions = { tabId };
-  }
-  if (!openOptions) {
-    throw new Error('sidepanel-no-window');
-  }
-
-  // Chrome only honours open() while the click that produced this message is
-  // still the current user gesture, so issue it before awaiting the reset.
-  const pathReset = resetSidePanelPath(tabId);
-  const opened = sidePanel.open(openOptions);
-  return Promise.all([pathReset, opened]);
-}
-
-function openPopupWithRoute(hash: string) {
-  const action = globalThis.chrome?.action;
-  if (!action?.setPopup || typeof action.openPopup !== 'function') {
-    throw new Error('popup-unavailable');
-  }
-
-  // Same user-gesture constraint as sidePanel.open().
-  const popupSet = action.setPopup({ popup: `${POPUP_FILE}${hash}` });
-  const opened = action.openPopup();
-
-  // Delay reset so the popup document can start loading the hash URL.
-  globalThis.setTimeout(() => {
-    action.setPopup({ popup: POPUP_FILE }).catch(() => undefined);
-  }, popupResetDelayMs);
-
-  return Promise.all([popupSet, opened]);
-}
-
-function openFullscreenTab(hash: string) {
-  return browser.tabs.create({
-    url: browser.runtime.getURL(`${fullscreenFile}${hash}`),
-  });
-}
-
-async function openExtensionSurface({
-  controller,
-  sender,
-  hash,
-  path,
-  search,
-}: {
-  controller: Controller | undefined;
-  sender: { tab?: { windowId?: number; id?: number } };
-  hash: string;
-  path: string;
-  search?: `?${string}`;
-}) {
-  if (shouldUseSidePanel(controller)) {
-    try {
-      // Sidepanel: default path only + OPEN_ROUTE (retries cover cold mount).
-      await openSidePanel(sender);
-      await broadcastOpenRouteWithRetries(path, search);
-      return;
-    } catch {
-      // Fall through to the popup, then a tab.
-    }
-  }
-
-  try {
-    // Popup is destroyed on close, so a one-shot hash deep link is safe.
-    await openPopupWithRoute(hash);
-    await broadcastOpenRoute(path, search);
-  } catch {
-    // Firefox has neither sidePanel.open nor action.openPopup, and both reject
-    // once the user gesture is gone, so open a tab, which needs no gesture.
-    await openFullscreenTab(hash);
-  }
-}
-
 async function openExtensionPage({
   controller,
   sender,
@@ -306,14 +157,17 @@ async function openExtensionPage({
   caipAssetId,
 }: {
   controller: Controller | undefined;
-  sender: { tab?: { windowId?: number; id?: number } };
+  sender: { tab?: { windowId?: number } };
   path: string;
   search?: `?${string}`;
   caipAssetId: string | null;
 }) {
-  const hash = routeHash(path, search);
-
-  await openExtensionSurface({ controller, sender, hash, path, search });
+  await openRoute({
+    controller,
+    windowId: sender.tab?.windowId,
+    path,
+    search,
+  });
 
   return {
     type: EXTENSION_MESSAGES.OPEN_EXTENSION,
@@ -541,8 +395,12 @@ function handleOpenExtension(
   }
 
   if (page === 'swap') {
+    const controller = getController();
+    controller?.bridgeController?.setLocation(
+      'x_widget' as BridgeControllerMetricsLocation,
+    );
     return openExtensionPage({
-      controller: getController(),
+      controller,
       sender,
       path: swapRoute,
       search: swapRouteSearchForDest(caipAssetId),

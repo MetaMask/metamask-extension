@@ -22,8 +22,8 @@ const TEMPO_CONFIG: TempoConfig = {
   perChainConfig: {
     '0x1079': {
       defaultFeeToken: {
-        address: '0x20c0000000000000000000000000000000000000',
-        symbol: 'pathUSD',
+        address: '0x20c0000000000000000000006a37da5c996874be',
+        symbol: 'OUSD',
       },
     },
   },

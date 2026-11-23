@@ -12,7 +12,7 @@ import { ENVIRONMENT } from '../../constants/build';
  * reads the same source independently.
  *
  * Disclaimer: Enabling DEV will break authenticated services that have not
- * adopted DEV backends (notifications, shield, money-account, bridge, perps).
+ * adopted DEV backends (shield, money-account, bridge, perps).
  */
 export type DevApiEnv = 'dev' | 'prod';
 

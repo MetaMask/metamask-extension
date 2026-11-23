@@ -163,6 +163,40 @@ describe('RecipientInput', () => {
     expect(mockUpdateTo).toHaveBeenCalledWith('');
   });
 
+  it('shows the full address when it has no name', () => {
+    const address = '0x36dB199F0a1cD131ad0b5Cf4Fe7FE522839a1B2C';
+    mockUseSendContext.mockReturnValue({
+      to: address,
+      updateTo: mockUpdateTo,
+      updateToResolved: jest.fn(),
+    } as unknown as ReturnType<typeof useSendContext>);
+
+    const { getByText } = renderComponent({
+      recipientValidationResult: { toAddressValidated: address },
+    });
+
+    expect(getByText(address)).toBeInTheDocument();
+  });
+
+  it('shows the address under a contact name', () => {
+    const address = '0x36dB199F0a1cD131ad0b5Cf4Fe7FE522839a1B2C';
+    mockUseRecipients.mockReturnValue([
+      { address, contactName: 'Alice' },
+    ] as unknown as ReturnType<typeof useRecipients>);
+    mockUseSendContext.mockReturnValue({
+      to: address,
+      updateTo: mockUpdateTo,
+      updateToResolved: jest.fn(),
+    } as unknown as ReturnType<typeof useSendContext>);
+
+    const { getByText } = renderComponent({
+      recipientValidationResult: { toAddressValidated: address },
+    });
+
+    expect(getByText('Alice')).toBeInTheDocument();
+    expect(getByText(address)).toBeInTheDocument();
+  });
+
   it('display confusable characters when they exist', () => {
     mockUseSendContext.mockReturnValue({
       to: '0x1234567890abcdefghijkl',

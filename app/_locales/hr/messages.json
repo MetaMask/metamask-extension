@@ -211,10 +211,6 @@
   "fast": {
     "message": "Brzo"
   },
-  "fileImportFail": {
-    "message": "Uvoženje datoteke ne radi? Kliknite ovdje.",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "Zaboravi ovaj uređaj"
   },
@@ -388,10 +384,6 @@
   },
   "passwordsDontMatch": {
     "message": "Lozinke se ne podudaraju"
-  },
-  "pastePrivateKey": {
-    "message": "Ovdje zalijepite svoj privatni niz ključa:",
-    "description": "For importing an account from a private key"
   },
   "pending": {
     "message": "na čekanju"
@@ -577,9 +569,6 @@
   },
   "urlErrorMsg": {
     "message": "URI-jevima se zahtijeva prikladan prefiks HTTP/HTTPS."
-  },
-  "usedByClients": {
-    "message": "Upotrebljavaju brojni klijenti"
   },
   "visitWebSite": {
     "message": "Posjetite naše mrežno mjesto"

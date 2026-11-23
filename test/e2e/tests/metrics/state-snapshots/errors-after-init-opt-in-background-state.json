@@ -3,7 +3,6 @@
     "hiddenAccountList": "object",
     "pinnedAccountList": "object"
   },
-  "AccountTracker": { "accountsByChainId": "object" },
   "AccountTreeController": {
     "accountGroupsMetadata": "object",
     "accountTree": "object",
@@ -65,6 +64,7 @@
     "lastViewedUserSurvey": null,
     "lastVisitedRoute": null,
     "moneyEarnBannerDismissedTokenKeys": "object",
+    "moneyFtueSeen": "boolean",
     "musdConversionDismissedCtaKeys": "object",
     "musdConversionEducationSeen": "boolean",
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
@@ -146,10 +146,6 @@
   },
   "ConnectivityController": { "connectivityStatus": "online" },
   "CronjobController": { "events": "object" },
-  "CurrencyController": {
-    "currencyRates": {},
-    "currentCurrency": "usd"
-  },
   "DeFiPositionsController": "object",
   "DeFiPositionsControllerV2": "object",
   "DecryptMessageController": {
@@ -185,6 +181,7 @@
     "metaMetricsDataDeletionTimestamp": 0
   },
   "MoneyAccountController": {
+    "defaultMoneyAccountId": null,
     "moneyAccounts": "object"
   },
   "MoneyAccountUpgradeController": {
@@ -293,6 +290,7 @@
       "hideZeroBalanceTokens": false,
       "isBasicFunctionalityConsolidatedEnabled": "boolean",
       "privacyMode": "boolean",
+      "shouldShowSupportConsent": "boolean",
       "showConfirmationAdvancedDetails": false,
       "showDefaultAddress": "boolean",
       "showExtensionInFullSizeView": false,
@@ -304,6 +302,10 @@
       "skipDeepLinkInterstitial": "boolean",
       "smartTransactionsMigrationApplied": "boolean",
       "smartTransactionsOptInStatus": true,
+      "supportDataSharingPreference": null,
+      "tdpChartIndicators": "object",
+      "tdpChartInterval": "string",
+      "tdpChartType": "number",
       "tokenNetworkFilter": { "0x539": "boolean" },
       "tokenSortConfig": "object",
       "useNativeCurrencyAsPrimaryCurrency": "boolean",
@@ -338,8 +340,10 @@
   },
   "QrSyncController": "object",
   "RampsController": {
+    "autorampTransactionRecords": "object",
     "autoramps": "object",
     "countries": "object",
+    "moneyAccountWalletRegistrations": "object",
     "nativeProviders": "object",
     "orders": "object",
     "paymentMethods": "object",
@@ -347,7 +351,10 @@
     "providers": "object",
     "requests": "object",
     "tokens": "object",
-    "userRegion": null
+    "userRegion": null,
+    "userSelectedProviderId": null,
+    "vbaAutorampListFetchedAt": null,
+    "vbaCustomerAbilities": null
   },
   "RemoteFeatureFlagController": {
     "cacheTimestamp": "number",
@@ -363,7 +370,7 @@
   },
   "RewardsController": {
     "rewardsAccounts": "object",
-    "rewardsActiveAccount": null,
+    "rewardsActiveAccount": "object",
     "rewardsPointsEstimateHistory": "object",
     "rewardsSeasonStatuses": "object",
     "rewardsSeasons": "object",
@@ -372,6 +379,7 @@
     "rewardsVipPerpsFees": "object"
   },
   "RewardsDataService": "undefined",
+  "RewardsMoneyController": "object",
   "SeedlessOnboardingController": "object",
   "SelectedNetworkController": { "domains": "object" },
   "ShieldController": "object",
@@ -410,8 +418,6 @@
   "StaticAssetsController": {},
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SubscriptionController": "object",
-  "TokenBalancesController": { "tokenBalances": "object" },
-  "TokenRatesController": { "marketData": "object" },
   "TokensController": {
     "allDetectedTokens": {},
     "allIgnoredTokens": {},
@@ -426,7 +432,6 @@
     "transactionBatches": "object",
     "transactions": "object"
   },
-  "UserOperationController": { "userOperations": "object" },
   "UserStorageController": {
     "isAccountSyncingEnabled": true,
     "isBackupAndSyncEnabled": true,

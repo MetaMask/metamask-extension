@@ -244,13 +244,7 @@ export function selectTransactionAvailableBalance(
 
   if (chainId && sender) {
     const checksummedSender = toChecksumHexAddress(sender);
-    // Raw accountsByChainId contains balances for all chains regardless of
-    // Network Manager enablement, preventing stale/zero balances on cross-chain sends.
-    // When assets-unify is fully enabled raw state may be empty, so fall back to
-    // the unified selector which derives balances from AssetsController.
     const chainBalance =
-      state.metamask.accountsByChainId?.[chainId]?.[checksummedSender]
-        ?.balance ??
       getAccountTrackerControllerAccountsByChainId(state)?.[chainId]?.[
         checksummedSender
       ]?.balance;

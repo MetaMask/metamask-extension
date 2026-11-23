@@ -1,10 +1,15 @@
-export type FailureCategory = "alwaysRetryable" | "retryableOnTransientError" | "optional";
+export type FailureCategory =
+  | 'alwaysRetryable'
+  | 'retryableOnTransientError'
+  | 'optional';
 
 export type FailureJob = {
   name: string;
 };
 
-export function partitionRetryableBlockerCascadeJobs<JobType extends FailureJob>({
+export function partitionRetryableBlockerCascadeJobs<
+  JobType extends FailureJob,
+>({
   jobs,
   getCategory,
 }: {
@@ -22,7 +27,7 @@ export function partitionRetryableBlockerCascadeJobs<JobType extends FailureJob>
       // E2E jobs normally retry after a transient blocker, but a structured
       // quality-gate annotation can veto that retry. Keep them inspectable;
       // cascade-classify only jobs that cannot contain that terminal signal.
-      if (getCategory(job.name) === "alwaysRetryable") {
+      if (getCategory(job.name) === 'alwaysRetryable') {
         partition.jobsToClassify.push(job);
       } else {
         partition.jobsToCascade.push(job);

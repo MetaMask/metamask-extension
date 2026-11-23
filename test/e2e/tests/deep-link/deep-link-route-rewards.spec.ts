@@ -26,20 +26,6 @@ describe('Deep Link - Rewards Route', function () {
       await getConfig({
         title: this.test?.fullTitle(),
         deepLinkPublicKey,
-        manifestFlags: {
-          remoteFeatureFlags: {
-            rewardsEnabled: {
-              enabled: true,
-              minimumVersion: '0.0.0',
-            },
-            rewardsOnboardingEnabled: {
-              enabled: true,
-              minimumVersion: '0.0.0',
-            },
-            rewardsBitcoinEnabledExtension: true,
-            rewardsTronEnabledExtension: true,
-          },
-        },
         additionalMocks: async (server: Mockttp) => {
           await mockRewardsApi(server);
         },
