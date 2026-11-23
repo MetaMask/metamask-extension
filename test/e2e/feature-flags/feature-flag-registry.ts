@@ -2849,6 +2849,29 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  coreCEUX1492AbtestWideScreenRedesign: {
+    inProd: true,
+    name: 'coreCEUX1492AbtestWideScreenRedesign',
+    productionDefault: [
+      {
+        name: 'control',
+        scope: {
+          type: 'threshold',
+          value: 1,
+        },
+      },
+      {
+        name: 'treatment',
+        scope: {
+          type: 'threshold',
+          value: 0,
+        },
+      },
+    ],
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   coreExtensionUxCeux1024AbtestReferralUi: {
     inProd: true,
     name: 'coreExtensionUxCeux1024AbtestReferralUi',
@@ -3401,17 +3424,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       gmx: true,
       hyperliquid: true,
       variational: true,
-    },
-    status: FeatureFlagStatus.Active,
-    type: FeatureFlagType.Remote,
-  },
-
-  extensionUxFullscreenRedesign: {
-    inProd: true,
-    name: 'extensionUxFullscreenRedesign',
-    productionDefault: {
-      enabled: false,
-      minimumVersion: '13.50.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -4017,6 +4029,18 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     productionDefault: {
       enabled: true,
       minimumVersion: '13.48.0',
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  rampsProvidersAheadOfHistory: {
+    inProd: false,
+    name: 'rampsProvidersAheadOfHistory',
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '13.60.0',
+      providerIds: [],
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,

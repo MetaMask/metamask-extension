@@ -16,6 +16,19 @@ import { createMoneyAnalyticsMock } from '../../../hooks/money/useMoneyAnalytics
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { SideNav } from './side-nav';
 
+class PointerEventPolyfill extends MouseEvent {
+  pointerId: number;
+
+  constructor(
+    type: string,
+    props: MouseEventInit & { pointerId?: number } = {},
+  ) {
+    super(type, props);
+    this.pointerId = props.pointerId ?? 0;
+  }
+}
+
+const widthStorageKey = 'metamask-side-nav-width';
 const mockNavigate = jest.fn();
 const moneyAccountAvailable: { availability: MoneyAccountAvailability } = {
   availability: {
@@ -82,7 +95,16 @@ function renderSideNav(state = baseState, pathname = DEFAULT_ROUTE) {
 }
 
 describe('SideNav', () => {
+  beforeAll(() => {
+    Object.defineProperty(window, 'PointerEvent', {
+      configurable: true,
+      writable: true,
+      value: PointerEventPolyfill,
+    });
+  });
+
   beforeEach(() => {
+    localStorage.removeItem(widthStorageKey);
     jest.clearAllMocks();
     setBackgroundConnection(backgroundConnectionMock as never);
     mockUseMoneyAccountAvailability.mockReturnValue(moneyAccountAvailable);
@@ -92,11 +114,11 @@ describe('SideNav', () => {
   it('renders the logo, the nav items and the accounts section', () => {
     const { getByTestId } = renderSideNav();
 
-    expect(getByTestId('side-nav')).toBeInTheDocument();
-    expect(getByTestId('side-nav-home')).toBeInTheDocument();
-    expect(getByTestId('side-nav-perps')).toBeInTheDocument();
-    expect(getByTestId('side-nav-money')).toBeInTheDocument();
-    expect(getByTestId('side-nav-activity')).toBeInTheDocument();
+    expect(getByTestId('parent-selector-main-nav')).toBeInTheDocument();
+    expect(getByTestId('main-nav-home')).toBeInTheDocument();
+    expect(getByTestId('main-nav-perps')).toBeInTheDocument();
+    expect(getByTestId('main-nav-money')).toBeInTheDocument();
+    expect(getByTestId('main-nav-activity')).toBeInTheDocument();
     expect(getByTestId('side-nav-accounts')).toBeInTheDocument();
   });
 
@@ -110,18 +132,18 @@ describe('SideNav', () => {
         button.getAttribute('data-testid'),
       ),
     ).toStrictEqual([
-      'side-nav-home',
-      'side-nav-perps',
-      'side-nav-money',
-      'side-nav-activity',
+      'main-nav-home',
+      'main-nav-perps',
+      'main-nav-money',
+      'main-nav-activity',
     ]);
   });
 
   it('hides Perps when it is unavailable', () => {
     const { queryByTestId } = renderSideNav(stateWithPerpsDisabled);
 
-    expect(queryByTestId('side-nav-perps')).not.toBeInTheDocument();
-    expect(queryByTestId('side-nav-home')).toBeInTheDocument();
+    expect(queryByTestId('main-nav-perps')).not.toBeInTheDocument();
+    expect(queryByTestId('main-nav-home')).toBeInTheDocument();
   });
 
   it('hides Money when the Money Account is unavailable', () => {
@@ -131,26 +153,77 @@ describe('SideNav', () => {
 
     const { queryByTestId } = renderSideNav();
 
-    expect(queryByTestId('side-nav-money')).not.toBeInTheDocument();
+    expect(queryByTestId('main-nav-money')).not.toBeInTheDocument();
+  });
+
+  it('opens at the stored width', () => {
+    localStorage.setItem(widthStorageKey, '420');
+
+    const { getByTestId } = renderSideNav();
+
+    expect(
+      getByTestId('parent-selector-main-nav').style.getPropertyValue(
+        '--side-nav-width',
+      ),
+    ).toBe('420px');
+  });
+
+  it('opens at the default width when the stored value is unusable', () => {
+    localStorage.setItem(widthStorageKey, 'nope');
+
+    const { getByTestId } = renderSideNav();
+
+    expect(
+      getByTestId('parent-selector-main-nav').style.getPropertyValue(
+        '--side-nav-width',
+      ),
+    ).toBe('360px');
+  });
+
+  it('clamps a stored width to the supported range', () => {
+    localStorage.setItem(widthStorageKey, '20');
+
+    const { getByTestId } = renderSideNav();
+
+    expect(
+      getByTestId('parent-selector-main-nav').style.getPropertyValue(
+        '--side-nav-width',
+      ),
+    ).toBe('240px');
+  });
+
+  it('stores the width after a resize', () => {
+    const { getByRole, getByTestId } = renderSideNav();
+    const nav = getByTestId('parent-selector-main-nav');
+    const separator = getByRole('separator');
+
+    jest
+      .spyOn(nav, 'getBoundingClientRect')
+      .mockReturnValue({ left: 0 } as DOMRect);
+
+    fireEvent.pointerDown(separator, { pointerId: 1, clientX: 360 });
+    fireEvent.pointerMove(separator, { pointerId: 1, clientX: 400 });
+
+    expect(localStorage.getItem(widthStorageKey)).toBe('400');
   });
 
   it('marks only the item for the current route as active', () => {
     const { getByTestId } = renderSideNav(baseState, ACTIVITY_ROUTE);
 
-    expect(getByTestId('side-nav-activity')).toHaveAttribute(
+    expect(getByTestId('main-nav-activity')).toHaveAttribute(
       'aria-current',
       'page',
     );
-    expect(getByTestId('side-nav-home')).not.toHaveAttribute('aria-current');
-    expect(getByTestId('side-nav-perps')).not.toHaveAttribute('aria-current');
-    expect(getByTestId('side-nav-money')).not.toHaveAttribute('aria-current');
+    expect(getByTestId('main-nav-home')).not.toHaveAttribute('aria-current');
+    expect(getByTestId('main-nav-perps')).not.toHaveAttribute('aria-current');
+    expect(getByTestId('main-nav-money')).not.toHaveAttribute('aria-current');
   });
 
   describe('navigation', () => {
     it('navigates to the root route when Home is clicked', () => {
       const { getByTestId } = renderSideNav(baseState, ACTIVITY_ROUTE);
 
-      fireEvent.click(getByTestId('side-nav-home'));
+      fireEvent.click(getByTestId('main-nav-home'));
 
       expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
         state: {
@@ -162,7 +235,7 @@ describe('SideNav', () => {
     it('navigates to the perps page when Perps is clicked', () => {
       const { getByTestId } = renderSideNav();
 
-      fireEvent.click(getByTestId('side-nav-perps'));
+      fireEvent.click(getByTestId('main-nav-perps'));
 
       expect(mockNavigate).toHaveBeenCalledWith(PERPS_HOME_PAGE_ROUTE);
     });
@@ -170,7 +243,7 @@ describe('SideNav', () => {
     it('navigates to Money Home when Money is clicked', () => {
       const { getByTestId } = renderSideNav();
 
-      fireEvent.click(getByTestId('side-nav-money'));
+      fireEvent.click(getByTestId('main-nav-money'));
 
       expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE);
     });
@@ -178,7 +251,7 @@ describe('SideNav', () => {
     it('navigates to the activity route when Activity is clicked', () => {
       const { getByTestId } = renderSideNav();
 
-      fireEvent.click(getByTestId('side-nav-activity'));
+      fireEvent.click(getByTestId('main-nav-activity'));
 
       expect(mockNavigate).toHaveBeenCalledWith(ACTIVITY_ROUTE, {
         state: {

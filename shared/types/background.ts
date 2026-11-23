@@ -47,7 +47,6 @@ import type { SignatureControllerState } from '@metamask/signature-controller';
 import type { PPOMState } from '@metamask/ppom-validator';
 import type { PasskeyControllerState } from '@metamask/passkey-controller';
 import type { NameControllerState } from '@metamask/name-controller';
-import type { UserOperationControllerState } from '@metamask/user-operation-controller';
 import type { TransactionControllerState } from '@metamask/transaction-controller';
 import type {
   AuthenticationController,
@@ -325,7 +324,6 @@ export type ControllerStatePropertiesEnumerated = {
   transactionBatches: TransactionControllerState['transactionBatches'];
   batchTransactionCounts: TransactionControllerState['batchTransactionCounts'];
   submitHistory: TransactionControllerState['submitHistory'];
-  userOperations: UserOperationControllerState['userOperations'];
   isBackupAndSyncEnabled: UserStorageController.UserStorageControllerState['isBackupAndSyncEnabled'];
   isBackupAndSyncUpdateLoading: UserStorageController.UserStorageControllerState['isBackupAndSyncUpdateLoading'];
   isAccountSyncingEnabled: UserStorageController.UserStorageControllerState['isAccountSyncingEnabled'];
@@ -350,7 +348,7 @@ export type ControllerStatePropertiesEnumerated = {
 };
 
 export type ControllerStateTypesMerged = AccountsControllerState &
-  AccountTrackerControllerState &
+  Pick<AccountTrackerControllerState, 'accountsByChainId'> &
   AddressBookControllerState &
   AssetsControllerState &
   AlertControllerState &
@@ -364,7 +362,7 @@ export type ControllerStateTypesMerged = AccountsControllerState &
   BridgeStatusControllerState &
   ClaimsControllerState &
   CronjobControllerState &
-  CurrencyRateState &
+  Pick<CurrencyRateState, 'currentCurrency' | 'currencyRates'> &
   DecryptMessageControllerState &
   DeFiPositionsControllerState &
   DeFiPositionsControllerV2State &
@@ -407,7 +405,6 @@ export type ControllerStateTypesMerged = AccountsControllerState &
   TokensControllerState &
   TokenListState &
   TransactionControllerState &
-  UserOperationControllerState &
   UserStorageController.UserStorageControllerState &
   RewardsControllerState &
   RewardsMoneyControllerState &

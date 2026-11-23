@@ -1,8 +1,11 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { getRampsTokens } from '../../store/controller-actions/ramps-controller';
+import {
+  getRampsTokens,
+  syncRampsOrdersWithUserStorage,
+} from '../../store/controller-actions/ramps-controller';
 import RampsBootstrap from './RampsBootstrap';
-import { createRampsTestWrapper } from './test-utils';
+import { createRampsMockStore, createRampsTestWrapper } from './test-utils';
 
 jest.mock('../../store/controller-actions/ramps-controller', () => ({
   getRampsTokens: jest.fn().mockResolvedValue(undefined),
@@ -10,6 +13,7 @@ jest.mock('../../store/controller-actions/ramps-controller', () => ({
   setRampsSelectedPaymentMethod: jest.fn().mockResolvedValue(undefined),
   getRampsProviders: jest.fn().mockResolvedValue({ providers: [] }),
   getRampsPaymentMethods: jest.fn().mockResolvedValue({ payments: [] }),
+  syncRampsOrdersWithUserStorage: jest.fn().mockResolvedValue(undefined),
 }));
 
 jest.mock('@tanstack/react-query', () => {
@@ -37,5 +41,22 @@ describe('RampsBootstrap', () => {
     });
 
     expect(getRampsTokens).toHaveBeenCalledWith('us-ca', 'buy');
+  });
+
+  it('syncs ramps orders when the sync gates pass', () => {
+    render(<RampsBootstrap />, {
+      wrapper: createRampsTestWrapper(
+        createRampsMockStore({
+          isSignedIn: true,
+          isBackupAndSyncEnabled: true,
+          isRampsSyncingEnabled: true,
+          isUnlocked: true,
+          useExternalServices: true,
+          completedOnboarding: true,
+        }),
+      ),
+    });
+
+    expect(syncRampsOrdersWithUserStorage).toHaveBeenCalled();
   });
 });
