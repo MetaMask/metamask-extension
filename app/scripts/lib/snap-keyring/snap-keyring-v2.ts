@@ -1,8 +1,9 @@
 import {
-  SnapKeyringV1Adapter,
+  createAtomicSnapKeyringBuilder,
   SnapKeyring as SnapKeyringV2,
 } from '@metamask/eth-snap-keyring/v2';
 import { KeyringV1Adapter } from '@metamask/keyring-sdk/v2';
+import type { KeyringBuilder } from '@metamask/keyring-controller';
 import { KeyringType } from '@metamask/keyring-api/v2';
 import { KeyringAccount } from '@metamask/keyring-api';
 import { Keyring } from '@metamask/keyring-utils';
@@ -20,12 +21,10 @@ import { SnapKeyringImpl } from './snap-keyring';
 /**
  * Builder type for the Snap keyring v2 (adapted as v1).
  */
-export type SnapKeyringV2AdaptedAsV1Builder = {
-  (): Keyring;
-  // We use the same keyring type (v2 type here) even for the v1 adapter. Otherwise, that would conflict with
-  // the existing legacy Snap keyring.
-  type: KeyringType.Snap;
-};
+export type SnapKeyringV2AdaptedAsV1Builder = Extract<
+  KeyringBuilder,
+  { atomic: true }
+>;
 
 /**
  * Builder type for the Snap keyring v2.
@@ -64,24 +63,22 @@ export function getSnapKeyringV2BuilderMessenger(
 export function snapKeyringV2AdaptedAsV1Builder(
   messenger: SnapKeyringV2BuilderMessenger,
 ): SnapKeyringV2AdaptedAsV1Builder {
-  const SnapKeyringV2AdaptedAsV1Builder = () => {
-    const v2 = new SnapKeyringV2({
-      messenger,
-      callbacks: new SnapKeyringV2Impl(messenger),
-      // Enables generic account creation for new chain integration. It's
-      // Flask-only since production should use defined account types.
-      isAnyAccountTypeAllowed: isFlask(),
-    });
-
-    // NOTE: This adapter cannot really be used as a true v1 keyring, but here
-    // we only need it to satisfy the type requirements of the existing keyring controller
-    // so it can be used for the usual keyrings lifecycles, it MUST NOT be used it with
-    // the other v1 methods!
-    return new SnapKeyringV1Adapter(v2) as unknown as Keyring;
-  };
-  SnapKeyringV2AdaptedAsV1Builder.type = KeyringType.Snap as const;
-
-  return SnapKeyringV2AdaptedAsV1Builder;
+  // The helper creates the existing adapter once and forwards atomic updates
+  // through its controller-registered identity. The V2 builder still unwraps
+  // that same inner instance below; there is no second adapter or keyring.
+  // Core's legacy Keyring type requires addAccounts, which is not part of
+  // this V2-only adapter. Keep that compatibility cast at the builder boundary.
+  return createAtomicSnapKeyringBuilder(
+    (updater) =>
+      new SnapKeyringV2({
+        updater,
+        messenger,
+        callbacks: new SnapKeyringV2Impl(messenger),
+        // Enables generic account creation for new chain integration. It's
+        // Flask-only since production should use defined account types.
+        isAnyAccountTypeAllowed: isFlask(),
+      }),
+  ) as unknown as SnapKeyringV2AdaptedAsV1Builder;
 }
 
 /**

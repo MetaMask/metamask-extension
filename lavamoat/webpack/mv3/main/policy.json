@@ -1044,7 +1044,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/utils>@metamask/byte-utils": true,
-        "@metamask/eth-snap-keyring": true,
+        "@metamask/accounts-controller>@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "@metamask/keyring-sdk": true,
@@ -1979,6 +1979,96 @@
         "@metamask/eth-snap-keyring>uuid": true
       }
     },
+    "@metamask/accounts-controller>@metamask/eth-snap-keyring": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "console.info": true,
+        "console.warn": true
+      },
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/byte-utils' and webpack collapsed that to a direct import.",
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import."
+        ]
+      },
+      "packages": {
+        "@ethereumjs/tx": true,
+        "@metamask/utils>@metamask/byte-utils": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-internal-api": true,
+        "@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client": true,
+        "@metamask/keyring-sdk": true,
+        "@metamask/eth-snap-keyring>@metamask/keyring-snap-sdk": true,
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils>@metamask/type-utils": true,
+        "@metamask/utils": true,
+        "async-mutex": true,
+        "@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": true
+      }
+    },
+    "@metamask/multichain-account-service>@metamask/eth-snap-keyring": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "console.info": true,
+        "console.warn": true
+      },
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/byte-utils' and webpack collapsed that to a direct import.",
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import."
+        ]
+      },
+      "packages": {
+        "@ethereumjs/tx": true,
+        "@metamask/utils>@metamask/byte-utils": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-internal-api": true,
+        "@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client": true,
+        "@metamask/keyring-sdk": true,
+        "@metamask/eth-snap-keyring>@metamask/keyring-snap-sdk": true,
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils>@metamask/type-utils": true,
+        "@metamask/utils": true,
+        "async-mutex": true,
+        "@metamask/multichain-account-service>@metamask/eth-snap-keyring>uuid": true
+      }
+    },
+    "@metamask/snap-account-service>@metamask/eth-snap-keyring": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "console.info": true,
+        "console.warn": true
+      },
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/byte-utils' and webpack collapsed that to a direct import.",
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import."
+        ]
+      },
+      "packages": {
+        "@ethereumjs/tx": true,
+        "@metamask/utils>@metamask/byte-utils": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-internal-api": true,
+        "@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client": true,
+        "@metamask/keyring-sdk": true,
+        "@metamask/eth-snap-keyring>@metamask/keyring-snap-sdk": true,
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils>@metamask/type-utils": true,
+        "@metamask/utils": true,
+        "async-mutex": true,
+        "@metamask/snap-account-service>@metamask/eth-snap-keyring>uuid": true
+      }
+    },
     "@metamask/eth-token-tracker": {
       "globals": {
         "console.warn": true
@@ -2268,7 +2358,8 @@
     },
     "@metamask/keyring-controller": {
       "globals": {
-        "console.error": true
+        "console.error": true,
+        "performance.now": true
       },
       "meta": {
         "webpack-optimization": [
@@ -2283,6 +2374,7 @@
         "@metamask/eth-hd-keyring": true,
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
+        "@metamask/keyring-sdk": true,
         "@metamask/utils>@metamask/type-utils": true,
         "@metamask/utils": true,
         "async-mutex": true,
@@ -2554,7 +2646,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/account-api": true,
         "@metamask/utils>@metamask/byte-utils": true,
-        "@metamask/eth-snap-keyring": true,
+        "@metamask/multichain-account-service>@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "@metamask/keyring-snap-client": true,
@@ -3236,7 +3328,7 @@
         "console.error": true
       },
       "packages": {
-        "@metamask/eth-snap-keyring": true,
+        "@metamask/snap-account-service>@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client": true,
@@ -7869,6 +7961,21 @@
       }
     },
     "@metamask/eth-snap-keyring>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/multichain-account-service>@metamask/eth-snap-keyring>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/snap-account-service>@metamask/eth-snap-keyring>uuid": {
       "globals": {
         "crypto": true
       }
