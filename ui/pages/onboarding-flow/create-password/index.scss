@@ -1,18 +1,6 @@
 @use "design-system";
 
 .create-password {
-  &__weak {
-    color: var(--color-error-default);
-  }
-
-  &__average {
-    color: var(--color-warning-default);
-  }
-
-  &__strong {
-    color: var(--color-success-default);
-  }
-
   &__link-text {
     color: var(--color-primary-default);
   }

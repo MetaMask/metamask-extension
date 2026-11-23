@@ -34,7 +34,9 @@ import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { useIsFirefox } from '../../../hooks/useIsFirefox';
 import {
   getIsSeedlessOnboardingUserAuthenticated,
-  setDataCollectionForMarketing,
+  optInToMarketing,
+  optOutOfMarketing,
+  setMarketingConsent,
 } from '../../../store/actions';
 import { useOnboardingReset } from '../hooks/useOnboardingReset';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
@@ -327,7 +329,10 @@ export default function CreatePassword({
           .build(),
       );
 
-      dispatch(setDataCollectionForMarketing(termsChecked));
+      if (termsChecked) {
+        dispatch(setMarketingConsent(true));
+      }
+      dispatch(termsChecked ? optInToMarketing() : optOutOfMarketing());
       navigate(ONBOARDING_DOWNLOAD_APP_ROUTE, { replace: true });
     } else if (isPasskeyFeatureAvailable) {
       navigate(ONBOARDING_SETUP_PASSKEY_ROUTE, { replace: true });

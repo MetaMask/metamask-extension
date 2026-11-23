@@ -1545,6 +1545,37 @@ describe('trust signals middleware', () => {
     });
   });
 
+  describe('personal_sign', () => {
+    it('scans the origin', async () => {
+      const { middleware, phishingController } = createMiddleware();
+      const req = createMockRequest(MESSAGE_TYPE.PERSONAL_SIGN, [
+        '0x48656c6c6f',
+        TEST_ADDRESSES.FROM,
+      ]);
+      const next = jest.fn();
+
+      await middleware(req, createMockResponse(), next);
+
+      expect(phishingController.scanUrl).toHaveBeenCalledWith(
+        req.origin,
+        RequestSourceFlow.Confirmations,
+      );
+      expect(next).toHaveBeenCalled();
+    });
+
+    it('does not scan any address', async () => {
+      const { middleware } = createMiddleware();
+      const req = createMockRequest(MESSAGE_TYPE.PERSONAL_SIGN, [
+        '0x48656c6c6f',
+        TEST_ADDRESSES.FROM,
+      ]);
+
+      await middleware(req, createMockResponse(), jest.fn());
+
+      expect(scanAddressMockAndAddToCache).not.toHaveBeenCalled();
+    });
+  });
+
   describe('eth_request_accounts', () => {
     it('scans full URL when url with path is present', async () => {
       const fullUrl = 'https://example.com/swap/review?token=eth';
@@ -1875,6 +1906,7 @@ describe('trust signals middleware', () => {
       MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
       MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3,
       MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+      MESSAGE_TYPE.PERSONAL_SIGN,
       MESSAGE_TYPE.WALLET_SEND_CALLS,
     ].forEach((innerMethod) => {
       it(`scans the origin for wallet_invokeMethod wrapping ${innerMethod}`, async () => {

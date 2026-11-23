@@ -17,14 +17,14 @@
 import { execFileSync } from 'child_process';
 import { context } from '@actions/github';
 
-export interface GetPrDiffOptions {
+export type GetPrDiffOptions = {
   /** Base branch name (default: 'main'). Used only in the branch-based fallback. */
   baseBranch?: string;
   /** Directories to scope the git diff to (e.g. ['app/', 'ui/']). Omit for full diff. */
   directories?: string[];
   /** Maximum buffer size in bytes (default: 50 MB). */
   maxBuffer?: number;
-}
+};
 
 /**
  * Filters a unified diff to only include hunks whose file paths start with one
@@ -49,8 +49,9 @@ function filterDiffByDirectories(diff: string, dirs: string[]): string {
       const match = / b\/(.+)$/.exec(line);
       if (match) {
         const filePath = match[1];
-        include = normalizedDirs.some((dir) =>
-          filePath.startsWith(dir) || filePath === dir.replace(/\/$/, ''),
+        include = normalizedDirs.some(
+          (dir) =>
+            filePath.startsWith(dir) || filePath === dir.replace(/\/$/, ''),
         );
       } else {
         include = false;

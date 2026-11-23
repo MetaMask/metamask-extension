@@ -3,6 +3,7 @@ import {
   addRampsOrder,
   addRampsPrecreatedOrder,
   getRampsBuyWidgetData,
+  getRampsCountries,
   getRampsOrderFromCallback,
   getRampsPaymentMethods,
   getRampsProviders,
@@ -10,6 +11,7 @@ import {
   getRampsTokens,
   refreshRampsOrder,
   removeRampsOrder,
+  selectRampsProviderForAsset,
   setRampsSelectedPaymentMethod,
   setRampsSelectedProvider,
   setRampsSelectedToken,
@@ -49,6 +51,7 @@ describe('ramps-controller actions', () => {
     await setRampsSelectedToken('eip155:1/erc20:0x0');
     await setRampsSelectedProvider('transak', { autoSelected: true });
     await setRampsSelectedPaymentMethod('credit_debit_card');
+    await getRampsCountries();
     await getRampsTokens('us-ca');
     await getRampsTokens('us-ca', 'sell');
     await getRampsProviders('us-ca');
@@ -67,5 +70,29 @@ describe('ramps-controller actions', () => {
     await syncRampsOrdersWithUserStorage();
 
     expect(mockSubmitRequestToBackground.mock.calls).toMatchSnapshot();
+  });
+
+  describe('setRampsSelectedProvider', () => {
+    it('passes the user-pick option to the background', async () => {
+      await setRampsSelectedProvider('transak', { userSelected: true });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'RampsController:setSelectedProvider',
+        ['transak', { userSelected: true }],
+      );
+    });
+  });
+
+  describe('selectRampsProviderForAsset', () => {
+    it('requests a pick for the asset with the picker options', async () => {
+      await selectRampsProviderForAsset('eip155:1/slip44:60', {
+        aheadOfHistory: ['crossmint'],
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'RampsController:selectProviderForAsset',
+        ['eip155:1/slip44:60', { aheadOfHistory: ['crossmint'] }],
+      );
+    });
   });
 });

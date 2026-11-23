@@ -496,6 +496,7 @@ describe('ManifestPlugin', () => {
       'offscreen.css': 15,
       'scripts/contentscript.js': 400,
       'scripts/inpage.js': 500,
+      'ignored.js.map': 800,
     } as const;
     const debugStatsAssets = {
       'runtime.js': 100,
@@ -645,15 +646,25 @@ describe('ManifestPlugin', () => {
         compilation,
         chromeSummaryAssetPath,
       );
+      const zipEntries = await readZipEntries(
+        compilation.assets['chrome/extension.zip'],
+      );
+      const unzipped = [...zipEntries.values()].reduce(
+        (total, asset) => total + asset.length,
+        0,
+      );
+
       assert.deepStrictEqual(summary, {
         background: 650,
         ui: 550,
         common: 150,
         other: 140,
         contentScripts: 400,
+        unzipped,
         zip: compilation.assets['chrome/extension.zip'].size(),
         timestamp: summary.timestamp,
       });
+      assert.strictEqual(zipEntries.has('ignored.js.map'), false);
       assert.strictEqual(
         compilation.getAsset(chromeDebugAssetPath),
         undefined,
@@ -879,29 +890,37 @@ describe('ManifestPlugin', () => {
       }
     });
 
-    it('skips excluded extensions when adding assets to a browser zip', async () => {
+    it('keeps required browser assets while skipping excluded generated assets', async () => {
       const addedAssets: string[] = [];
       const builder = createBrowserZipBuilder({
         compressionOptions: { level: 0 },
-        excludeExtensions: ['.map'],
-        manifest: new RawSource('{"name":"test"}'),
+        excludeExtensions: ['.map', '.json'],
+        assets: {
+          'manifest.json': new RawSource('{"name":"test"}'),
+          'metadata.json': new RawSource('{"browser":"chrome"}'),
+        },
         mtime: 1711141205825,
         onAssetAdded: (assetName) => addedAssets.push(assetName),
       });
 
       builder.addAsset('ignored.js.map', new RawSource('{}'));
+      builder.addAsset('ignored.json', new RawSource('{}'));
       const zipSource = await builder.finalize();
       const zipEntries = await readZipEntries(zipSource);
 
-      assert.deepStrictEqual(addedAssets, ['manifest.json']);
-      assert.deepStrictEqual([...zipEntries.keys()], ['manifest.json']);
+      assert.deepStrictEqual(addedAssets, ['manifest.json', 'metadata.json']);
+      assert.deepStrictEqual([...zipEntries.keys()], addedAssets);
+      assert.strictEqual(
+        zipEntries.get('metadata.json')?.toString(),
+        '{"browser":"chrome"}',
+      );
     });
 
     it('compresses javascript assets and reuses the finalized zip source', async () => {
       const builder = createBrowserZipBuilder({
         compressionOptions: { level: 9 },
         excludeExtensions: ['.map'],
-        manifest: new RawSource('{"name":"test"}'),
+        assets: { 'manifest.json': new RawSource('{"name":"test"}') },
         mtime: 1711141205825,
         onAssetAdded: () => undefined,
       });
@@ -933,7 +952,7 @@ describe('ManifestPlugin', () => {
       const builder = createBrowserZipBuilder({
         compressionOptions: { level: 0 },
         excludeExtensions: ['.map'],
-        manifest: new RawSource('{"name":"test"}'),
+        assets: { 'manifest.json': new RawSource('{"name":"test"}') },
         mtime: 1711141205825,
         onAssetAdded: () => undefined,
       });

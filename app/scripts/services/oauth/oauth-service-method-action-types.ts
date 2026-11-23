@@ -48,6 +48,16 @@ export type OAuthServiceRevokeRefreshTokenAction = {
   handler: OAuthService['revokeRefreshToken'];
 };
 
+export type OAuthServiceSetMarketingConsentAction = {
+  type: `OAuthService:setMarketingConsent`;
+  handler: OAuthService['setMarketingConsent'];
+};
+
+export type OAuthServiceGetMarketingConsentAction = {
+  type: `OAuthService:getMarketingConsent`;
+  handler: OAuthService['getMarketingConsent'];
+};
+
 /**
  * Union of all OAuthService action types.
  */
@@ -55,4 +65,6 @@ export type OAuthServiceMethodActions =
   | OAuthServiceStartOAuthLoginAction
   | OAuthServiceGetNewRefreshTokenAction
   | OAuthServiceRenewRefreshTokenAction
-  | OAuthServiceRevokeRefreshTokenAction;
+  | OAuthServiceRevokeRefreshTokenAction
+  | OAuthServiceSetMarketingConsentAction
+  | OAuthServiceGetMarketingConsentAction;

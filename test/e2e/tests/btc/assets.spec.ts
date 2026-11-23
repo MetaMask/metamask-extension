@@ -1,10 +1,16 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
-import { DEFAULT_BTC_BALANCE } from '../../constants';
+import {
+  DEFAULT_BTC_BALANCE,
+  HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+} from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
-import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import {
+  selectAllNetworksFromNetworkSelect,
+  switchToNetworkFromNetworkSelect,
+} from '../../page-objects/flows/network.flow';
 import AssetDetailsPage from '../../page-objects/pages/asset/asset-details';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -115,5 +121,54 @@ describe('BTC Account - Assets', function (this: Suite) {
         await details.checkStakedBalanceIsAbsent();
       },
     );
+  });
+
+  describe('Networks filter', function () {
+    it('All networks filter shows other chains alongside Bitcoin', async function () {
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilderV2().build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: mockBtcAssetsFunded,
+        },
+        async ({ driver }) => {
+          await login(driver);
+          const homePage = new HomePage(driver);
+          await switchToNetworkFromNetworkSelect(driver, 'Bitcoin');
+          await homePage.checkPageIsLoaded();
+
+          const tokensTab = new TokensTab(driver);
+          await tokensTab.checkTokenNameVisible('Bitcoin', {
+            timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+          });
+          await selectAllNetworksFromNetworkSelect(driver);
+          await tokensTab.checkTokenExistsInList('Bitcoin');
+          await tokensTab.checkTokenExistsInList('Ethereum');
+        },
+      );
+    });
+
+    it('Current network filter shows only Bitcoin assets', async function () {
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilderV2().build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: mockBtcAssetsFunded,
+        },
+        async ({ driver }) => {
+          await login(driver);
+          const homePage = new HomePage(driver);
+          await switchToNetworkFromNetworkSelect(driver, 'Bitcoin');
+          await homePage.checkPageIsLoaded();
+
+          const tokensTab = new TokensTab(driver);
+          await tokensTab.checkTokenNameVisible('Bitcoin', {
+            timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+          });
+          await tokensTab.checkOnlyAssetsArePresent(['Bitcoin']);
+          await tokensTab.checkAssetIsAbsent('Ethereum');
+        },
+      );
+    });
   });
 });

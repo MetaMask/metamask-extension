@@ -146,6 +146,7 @@ function withRequest<ReturnValue>(
     .mockResolvedValue({
       uuid,
       txHash,
+      txHashes: [],
     });
 
   const request: SubmitSmartTransactionRequest = {
@@ -312,11 +313,13 @@ describe('submitSmartTransactionHook', () => {
 
   it('throws an error if there is no uuid', async () => {
     await withRequest(async ({ request }) => {
-      request.smartTransactionsController.submitSignedTransactions = jest.fn(
-        async (_) => {
-          return { uuid: undefined };
-        },
-      );
+      (
+        request.smartTransactionsController as {
+          submitSignedTransactions: unknown;
+        }
+      ).submitSignedTransactions = jest.fn(async (_) => {
+        return { uuid: undefined };
+      });
       await expect(submitSmartTransactionHook(request)).rejects.toThrow(
         'No smart transaction UUID',
       );
@@ -452,11 +455,13 @@ describe('submitBatchSmartTransactionHook', () => {
 
   it('throws an error if there is no uuid', async () => {
     await withRequest(async ({ request }) => {
-      request.smartTransactionsController.submitSignedTransactions = jest.fn(
-        async (_) => {
-          return { uuid: undefined };
-        },
-      );
+      (
+        request.smartTransactionsController as {
+          submitSignedTransactions: unknown;
+        }
+      ).submitSignedTransactions = jest.fn(async (_) => {
+        return { uuid: undefined };
+      });
       await expect(submitBatchSmartTransactionHook(request)).rejects.toThrow(
         'No smart transaction UUID',
       );
@@ -511,8 +516,11 @@ describe('submitBatchSmartTransactionHook', () => {
             txHashes: ['hash1', 'hash2'],
           };
         });
-        request.smartTransactionsController.submitSignedTransactions =
-          submitSignedTransactionsMock;
+        (
+          request.smartTransactionsController as {
+            submitSignedTransactions: unknown;
+          }
+        ).submitSignedTransactions = submitSignedTransactionsMock;
 
         setImmediate(() => {
           messenger.publish('SmartTransactionsController:smartTransaction', {
@@ -557,14 +565,16 @@ describe('submitBatchSmartTransactionHook', () => {
 
   it('returns empty results array when no txHashes are returned', async () => {
     await withRequest(async ({ request, messenger }) => {
-      request.smartTransactionsController.submitSignedTransactions = jest.fn(
-        async (_) => {
-          return {
-            uuid,
-            txHashes: undefined,
-          };
-        },
-      );
+      (
+        request.smartTransactionsController as {
+          submitSignedTransactions: unknown;
+        }
+      ).submitSignedTransactions = jest.fn(async (_) => {
+        return {
+          uuid,
+          txHashes: undefined,
+        };
+      });
 
       setImmediate(() => {
         messenger.publish('SmartTransactionsController:smartTransaction', {
@@ -586,11 +596,13 @@ describe('submitBatchSmartTransactionHook', () => {
 
   it('handles error during transaction submission', async () => {
     await withRequest(async ({ request }) => {
-      request.smartTransactionsController.submitSignedTransactions = jest.fn(
-        async (_) => {
-          throw new Error('Submission error');
-        },
-      );
+      (
+        request.smartTransactionsController as {
+          submitSignedTransactions: unknown;
+        }
+      ).submitSignedTransactions = jest.fn(async (_) => {
+        throw new Error('Submission error');
+      });
 
       await expect(submitBatchSmartTransactionHook(request)).rejects.toThrow(
         'Submission error',
@@ -601,14 +613,16 @@ describe('submitBatchSmartTransactionHook', () => {
   it('returns txHashes asap if extensionReturnTxHashAsapBatch feature flag is enabled', async () => {
     await withRequest(async ({ request }) => {
       request.featureFlags.extensionReturnTxHashAsapBatch = true;
-      request.smartTransactionsController.submitSignedTransactions = jest.fn(
-        async (_) => {
-          return {
-            uuid,
-            txHashes: ['hash1', 'hash2'],
-          };
-        },
-      );
+      (
+        request.smartTransactionsController as {
+          submitSignedTransactions: unknown;
+        }
+      ).submitSignedTransactions = jest.fn(async (_) => {
+        return {
+          uuid,
+          txHashes: ['hash1', 'hash2'],
+        };
+      });
 
       const result = await submitBatchSmartTransactionHook(request);
 
@@ -621,14 +635,16 @@ describe('submitBatchSmartTransactionHook', () => {
   it('waits for transaction hash if extensionReturnTxHashAsapBatch is false', async () => {
     await withRequest(async ({ request, messenger }) => {
       request.featureFlags.extensionReturnTxHashAsapBatch = false;
-      request.smartTransactionsController.submitSignedTransactions = jest.fn(
-        async (_) => {
-          return {
-            uuid,
-            txHashes: ['hash1', 'hash2'],
-          };
-        },
-      );
+      (
+        request.smartTransactionsController as {
+          submitSignedTransactions: unknown;
+        }
+      ).submitSignedTransactions = jest.fn(async (_) => {
+        return {
+          uuid,
+          txHashes: ['hash1', 'hash2'],
+        };
+      });
 
       setImmediate(() => {
         messenger.publish('SmartTransactionsController:smartTransaction', {

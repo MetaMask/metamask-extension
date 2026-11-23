@@ -5,7 +5,10 @@
 
 import { access, readFile } from 'fs/promises';
 import { constants as fsConstants } from 'fs';
-import { PATTERN_E2E_SPEC_FILE, walkFiles } from './collect-qa-stats-walk-files.mts';
+import {
+  PATTERN_E2E_SPEC_FILE,
+  walkFiles,
+} from './collect-qa-stats-walk-files.mts';
 
 /** Constants files whose string enums are resolved in E2E (imported by specs). */
 const METRICS_ENUM_SOURCE_FILES = [
@@ -39,10 +42,13 @@ export function parseEnumStringMembers(source: string): EnumMap {
     let i = start;
     for (; i < source.length; i += 1) {
       const c = source[i];
-      if (c === '{') depth += 1;
-      else if (c === '}') {
+      if (c === '{') {
+        depth += 1;
+      } else if (c === '}') {
         depth -= 1;
-        if (depth === 0) break;
+        if (depth === 0) {
+          break;
+        }
       }
     }
     const inner = source.slice(start + 1, i);
@@ -60,9 +66,13 @@ export function parseEnumStringMembers(source: string): EnumMap {
 /**
  * Parses `const foo = 'bar';` at statement level.
  */
-export function parseConstStringLiterals(source: string): Record<string, string> {
+export function parseConstStringLiterals(
+  source: string,
+): Record<string, string> {
   const out: Record<string, string> = {};
-  for (const m of source.matchAll(/\bconst\s+(\w+)\s*=\s*['"]([^'"]+)['"]\s*;/gu)) {
+  for (const m of source.matchAll(
+    /\bconst\s+(\w+)\s*=\s*['"]([^'"]+)['"]\s*;/gu,
+  )) {
     out[m[1]] = m[2];
   }
   return out;
@@ -79,10 +89,13 @@ export function parseConstObjectStringValues(source: string): EnumMap {
     let i = start;
     for (; i < source.length; i += 1) {
       const c = source[i];
-      if (c === '{') depth += 1;
-      else if (c === '}') {
+      if (c === '{') {
+        depth += 1;
+      } else if (c === '}') {
         depth -= 1;
-        if (depth === 0) break;
+        if (depth === 0) {
+          break;
+        }
       }
     }
     const inner = source.slice(start + 1, i);
@@ -119,18 +132,30 @@ function resolveMetaMetricsToken(
   strConsts: Record<string, string>,
 ): string | null {
   const t = token.replace(/^\s+|\s+$/gu, '');
-  if (!t) return null;
+  if (!t) {
+    return null;
+  }
   const lit = t.match(/^['"]([^'"]+)['"]$/u);
-  if (lit) return lit[1];
+  if (lit) {
+    return lit[1];
+  }
   const onb = t.match(/^onboardingEvents\.(\w+)$/u);
-  if (onb && onboardingMap[onb[1]]) return onboardingMap[onb[1]];
+  if (onb && onboardingMap[onb[1]]) {
+    return onboardingMap[onb[1]];
+  }
   const qual = t.match(/^(\w+)\.(\w+)$/u);
   if (qual) {
     const [, base, mem] = qual;
-    if (enums[base]?.[mem]) return enums[base][mem];
-    if (objectMaps[base]?.[mem]) return objectMaps[base][mem];
+    if (enums[base]?.[mem]) {
+      return enums[base][mem];
+    }
+    if (objectMaps[base]?.[mem]) {
+      return objectMaps[base][mem];
+    }
   }
-  if (strConsts[t]) return strConsts[t];
+  if (strConsts[t]) {
+    return strConsts[t];
+  }
   return null;
 }
 
@@ -153,7 +178,9 @@ export function collectMetametricsFromSource(
 
   for (const m of source.matchAll(/\bonboardingEvents\.(\w+)/gu)) {
     const v = onboardingMap[m[1]];
-    if (v) out.add(v);
+    if (v) {
+      out.add(v);
+    }
   }
 
   for (const m of source.matchAll(/event\.event\s*===\s*['"]([^'"]+)['"]/gu)) {
@@ -168,7 +195,9 @@ export function collectMetametricsFromSource(
       objectMaps,
       strConsts,
     );
-    if (v) out.add(v);
+    if (v) {
+      out.add(v);
+    }
   }
 
   // Segment / MetaMetrics track payloads use `type: 'track'` near `event: '...'`.
@@ -192,29 +221,41 @@ export function collectMetametricsFromSource(
       objectMaps,
       strConsts,
     );
-    if (v) out.add(v);
+    if (v) {
+      out.add(v);
+    }
   }
 
   for (const m of source.matchAll(/findEvent\([^,]+,\s*['"]([^'"]+)['"]/gu)) {
     out.add(m[1]);
   }
-  for (const m of source.matchAll(/findEvent\([^,]+,\s*onboardingEvents\.(\w+)/gu)) {
+  for (const m of source.matchAll(
+    /findEvent\([^,]+,\s*onboardingEvents\.(\w+)/gu,
+  )) {
     const v = onboardingMap[m[1]];
-    if (v) out.add(v);
+    if (v) {
+      out.add(v);
+    }
   }
-  for (const m of source.matchAll(/filterEvents\(\s*[^,]+,\s*['"]([^'"]+)['"]/gu)) {
+  for (const m of source.matchAll(
+    /filterEvents\(\s*[^,]+,\s*['"]([^'"]+)['"]/gu,
+  )) {
     out.add(m[1]);
   }
   for (const m of source.matchAll(
     /filterEvents\(\s*[^,]+,\s*onboardingEvents\.(\w+)/gu,
   )) {
     const v = onboardingMap[m[1]];
-    if (v) out.add(v);
+    if (v) {
+      out.add(v);
+    }
   }
 
   for (const m of source.matchAll(/\bevent:\s*([A-Za-z_]\w*)\s*[,}]/gu)) {
     const v = strConsts[m[1]];
-    if (v) out.add(v);
+    if (v) {
+      out.add(v);
+    }
   }
 
   for (const m of source.matchAll(
@@ -226,7 +267,9 @@ export function collectMetametricsFromSource(
     }
     for (const sm of inner.matchAll(/\bonboardingEvents\.(\w+)/gu)) {
       const v = onboardingMap[sm[1]];
-      if (v) out.add(v);
+      if (v) {
+        out.add(v);
+      }
     }
     for (const part of inner.split(',')) {
       const v = resolveMetaMetricsToken(
@@ -236,7 +279,9 @@ export function collectMetametricsFromSource(
         objectMaps,
         strConsts,
       );
-      if (v) out.add(v);
+      if (v) {
+        out.add(v);
+      }
     }
   }
 
@@ -253,7 +298,9 @@ export function collectMetametricsFromSource(
       /(?:event|Event|Expected|expectation|analytics)/u.test(varName) ||
       /\bNames\b/u.test(varName) ||
       /\bonboardingEvents\b|\bexpectedEvents\b/u.test(inner);
-    if (!looksLikeEventList) continue;
+    if (!looksLikeEventList) {
+      continue;
+    }
     for (const part of inner.split(',')) {
       const v = resolveMetaMetricsToken(
         part,
@@ -262,7 +309,9 @@ export function collectMetametricsFromSource(
         objectMaps,
         strConsts,
       );
-      if (v) out.add(v);
+      if (v) {
+        out.add(v);
+      }
     }
   }
 
@@ -282,7 +331,9 @@ export function collectMetametricsFromSource(
       objectMaps,
       strConsts,
     );
-    if (v) out.add(v);
+    if (v) {
+      out.add(v);
+    }
   }
 
   for (const m of source.matchAll(
@@ -295,7 +346,9 @@ export function collectMetametricsFromSource(
       objectMaps,
       strConsts,
     );
-    if (v) out.add(v);
+    if (v) {
+      out.add(v);
+    }
   }
 }
 
@@ -306,7 +359,9 @@ async function loadGlobalMetricsEnumMap(): Promise<EnumMap> {
       const raw = await readFile(rel, 'utf8');
       parts.push(parseEnumStringMembers(raw));
     } catch {
-      console.warn(`[metametrics] could not read ${rel}, skipping enum definitions`);
+      console.warn(
+        `[metametrics] could not read ${rel}, skipping enum definitions`,
+      );
     }
   }
   return mergeEnumMaps(parts);
@@ -347,7 +402,9 @@ export async function collectE2EMetaMetricsEventCoverage(): Promise<
   const names = new Set<string>();
   const files = await gatherMetametricsE2eFilePaths();
 
-  console.log(`[metametrics] scanning ${files.length} file(s) for referenced event names`);
+  console.log(
+    `[metametrics] scanning ${files.length} file(s) for referenced event names`,
+  );
 
   for (const filePath of files) {
     const source = await readFile(filePath, 'utf8');

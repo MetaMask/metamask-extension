@@ -20,8 +20,16 @@ export function updateTransactionGasFees(
     let updatedTransaction: TransactionMeta;
     try {
       updatedTransaction = await submitRequestToBackground(
-        'updateTransactionGasFees',
-        [txId, txGasFees],
+        'TransactionController:updateTransactionGasFees',
+        [
+          txId,
+          // TODO: `userEditedGasLimit` in `TxGasFees` is a string, but the same
+          // argument in `TransactionController.updateTransactionGasFees` wants
+          // a boolean.
+          txGasFees as Omit<Partial<TxGasFees>, 'userEditedGasLimit'> & {
+            userEditedGasLimit?: boolean;
+          },
+        ],
       );
     } catch (error) {
       logErrorWithMessage(error);

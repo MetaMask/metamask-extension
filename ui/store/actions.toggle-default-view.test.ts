@@ -50,25 +50,29 @@ const middleware = [thunk];
 const mockStore = configureStore<any>(middleware);
 
 /**
- * Reads the `(preference, value)` pairs passed to the background `setPreference`
- * RPC, ignoring the trailing trace-context argument that may be appended.
+ * Reads the `(preference, value)` pairs passed to the preferences messenger
+ * action.
  *
- * @param setPreferenceMock - The mocked background `setPreference` method.
+ * @param messengerCallMock - The mocked root messenger call.
  */
-function setPreferenceCalls(setPreferenceMock: jest.Mock) {
-  return setPreferenceMock.mock.calls.map((args) => [args[0], args[1]]);
+function setPreferenceCalls(messengerCallMock: jest.Mock) {
+  return messengerCallMock.mock.calls
+    .filter(
+      ([actionType]) => actionType === 'PreferencesController:setPreference',
+    )
+    .map(([, args]) => args);
 }
 
 describe('toggleDefaultView', () => {
-  let setPreferenceBackground: jest.Mock;
+  let messengerCallMock: jest.Mock;
   let closeSpy: jest.SpyInstance;
 
   beforeEach(() => {
     jest.clearAllMocks();
 
-    setPreferenceBackground = jest.fn().mockResolvedValue({});
+    messengerCallMock = jest.fn().mockResolvedValue({});
     setBackgroundConnection({
-      setPreference: setPreferenceBackground,
+      messengerCall: messengerCallMock,
     } as never);
 
     closeSpy = jest.spyOn(window, 'close').mockImplementation(() => undefined);
@@ -90,7 +94,7 @@ describe('toggleDefaultView', () => {
     await store.dispatch(toggleDefaultView() as never);
 
     expect(browserMock.sidePanel.open).not.toHaveBeenCalled();
-    expect(setPreferenceBackground).not.toHaveBeenCalled();
+    expect(messengerCallMock).not.toHaveBeenCalled();
     expect(closeSpy).not.toHaveBeenCalled();
   });
 
@@ -101,7 +105,7 @@ describe('toggleDefaultView', () => {
 
       await store.dispatch(toggleDefaultView() as never);
 
-      expect(setPreferenceCalls(setPreferenceBackground)).toContainEqual([
+      expect(setPreferenceCalls(messengerCallMock)).toContainEqual([
         'useSidePanelAsDefault',
         false,
       ]);
@@ -118,7 +122,7 @@ describe('toggleDefaultView', () => {
       await store.dispatch(toggleDefaultView() as never);
 
       expect(browserMock.sidePanel.open).toHaveBeenCalledWith({ windowId: 1 });
-      expect(setPreferenceCalls(setPreferenceBackground)).toContainEqual([
+      expect(setPreferenceCalls(messengerCallMock)).toContainEqual([
         'useSidePanelAsDefault',
         true,
       ]);
@@ -144,7 +148,7 @@ describe('toggleDefaultView', () => {
       await store.dispatch(toggleDefaultView() as never);
 
       expect(getContextsSpy).not.toHaveBeenCalled();
-      expect(setPreferenceCalls(setPreferenceBackground)).toContainEqual([
+      expect(setPreferenceCalls(messengerCallMock)).toContainEqual([
         'useSidePanelAsDefault',
         true,
       ]);
@@ -172,7 +176,7 @@ describe('toggleDefaultView', () => {
       await store.dispatch(toggleDefaultView() as never);
 
       expect(browserMock.sidePanel.open).not.toHaveBeenCalled();
-      expect(setPreferenceBackground).not.toHaveBeenCalled();
+      expect(messengerCallMock).not.toHaveBeenCalled();
       expect(closeSpy).not.toHaveBeenCalled();
     });
   });

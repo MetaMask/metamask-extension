@@ -16,7 +16,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { BaseUrl } from '../../../../shared/constants/urls';
+import { SupportedPasskeyProvidersLink } from '../../../components/app/passkey-setup/supported-passkey-providers-link';
 import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getRedirectAfterUnlock } from '../../../helpers/utils/redirect-after-unlock';
@@ -26,9 +26,6 @@ import {
   UNLOCK_ROUTE,
 } from '../../../helpers/constants/routes';
 import SetupPasskeyContent from '../../../components/app/passkey-setup/setup-passkey-content';
-
-const supportedProvidersLinkClassName =
-  'underline underline-offset-2 hover:underline';
 
 /**
  * Runs the passkey userHandle-to-PRF migration after the wallet is unlocked.
@@ -143,21 +140,7 @@ function PasskeyMigrationPrompt({
           data-testid="passkey-migration-description-2"
         >
           {t('passkeyMigrationDescription2', [
-            <TextButton
-              asChild
-              key="passkey-migration-supported-providers"
-              color={TextColor.PrimaryDefault}
-              className={supportedProvidersLinkClassName}
-            >
-              <a
-                href={BaseUrl.MetaMask}
-                target="_blank"
-                rel="noopener noreferrer"
-                data-testid="passkey-migration-supported-providers-link"
-              >
-                {t('passkeyMigrationSupportedProviders')}
-              </a>
-            </TextButton>,
+            <SupportedPasskeyProvidersLink key="passkey-migration-supported-providers" />,
           ])}
         </Text>
         <Text

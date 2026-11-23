@@ -1,15 +1,17 @@
-import type { V1TransactionByHashResponse } from '@metamask/core-backend';
+import type { V5TransactionRecord } from '@metamask/core-backend';
 import { isEqualCaseInsensitive as equalsIgnoreCase } from '../../../../shared/lib/string-utils';
 
 export function isZeroValueSelfSend(
-  transaction: V1TransactionByHashResponse,
+  transaction: V5TransactionRecord,
   subjectAddress: string,
 ) {
+  const { tx, valueTransfers } = transaction;
+
   return (
-    equalsIgnoreCase(transaction.from, subjectAddress) &&
-    equalsIgnoreCase(transaction.to, subjectAddress) &&
-    transaction.value === '0' &&
-    !transaction.valueTransfers?.length &&
-    (!transaction.methodId || transaction.methodId === '0x')
+    equalsIgnoreCase(tx.from, subjectAddress) &&
+    equalsIgnoreCase(tx.to ?? '', subjectAddress) &&
+    tx.value === '0' &&
+    !valueTransfers.length &&
+    (!tx.methodId || tx.methodId === '0x')
   );
 }

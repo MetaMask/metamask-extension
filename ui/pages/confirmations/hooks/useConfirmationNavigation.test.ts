@@ -423,6 +423,24 @@ describe('useConfirmationNavigation', () => {
       });
     });
 
+    it('replaces the current entry and returns to goBackTo when replace is set', () => {
+      const result = renderHook(ApprovalType.Transaction);
+
+      result.navigateToTransaction('tx-300', {
+        goBackTo: '/money-home',
+        replace: true,
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        {
+          pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-300`,
+          search: 'goBackTo=%2Fmoney-home',
+        },
+        { replace: true },
+      );
+    });
+
     it('navigates with both loader and goBackTo params', () => {
       const result = renderHook(ApprovalType.Transaction);
 

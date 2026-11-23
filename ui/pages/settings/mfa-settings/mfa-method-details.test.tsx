@@ -11,7 +11,6 @@ import { MFA_SETTINGS_ROUTE } from '../../../helpers/constants/routes';
 import { toast } from '../../../components/ui/toast/toast';
 import { MfaFlowError } from '../../../hooks/identity/mfa/engine/errors';
 import { startMfaFlow } from '../../../hooks/identity/mfa/engine/activeFlow';
-import { extensionMfaControllerAdapter } from '../../../hooks/identity/mfa/bindings';
 import { isMethodSupported } from '../../../hooks/identity/mfa/engine/planner';
 import { removeMfaCredential } from '../../../hooks/identity/mfa/removeMfaCredential';
 import { MfaSettingsTestIds } from './test-ids';
@@ -32,10 +31,6 @@ jest.mock('../../../hooks/identity/mfa/engine/activeFlow', () => ({
   startMfaFlow: jest.fn(),
 }));
 
-jest.mock('../../../hooks/identity/mfa/bindings', () => ({
-  extensionMfaControllerAdapter: { refreshEnrolledCredentials: jest.fn() },
-}));
-
 jest.mock('../../../hooks/identity/mfa/engine/planner', () => ({
   ...jest.requireActual('../../../hooks/identity/mfa/engine/planner'),
   isMethodSupported: jest.fn(),
@@ -46,9 +41,6 @@ jest.mock('../../../hooks/identity/mfa/removeMfaCredential', () => ({
 }));
 
 const mockStartMfaFlow = jest.mocked(startMfaFlow);
-const mockRefresh = jest.mocked(
-  extensionMfaControllerAdapter.refreshEnrolledCredentials,
-);
 const mockRemove = jest.mocked(removeMfaCredential);
 
 const token = {
@@ -58,15 +50,21 @@ const token = {
   claims: { sub: 'profile', amr: ['passkey'], exp: 0 },
 };
 const email: EnrolledCredential = {
+  id: 'email_otp',
   type: 'email_otp',
   status: 'active',
   email: 'a@b.co',
   verified: true,
   enrolledAt: new Date(2026, 8, 17, 11, 23).getTime(),
 };
-const passkey: EnrolledCredential = { type: 'passkey', status: 'active' };
+const passkey: EnrolledCredential = {
+  id: 'passkey-id',
+  type: 'passkey',
+  status: 'active',
+};
 
 const authenticatorApp: EnrolledCredential = {
+  id: 'totp',
   type: 'totp',
   status: 'active',
 };
@@ -94,7 +92,6 @@ describe('MfaEmailDetails', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockStartMfaFlow.mockResolvedValue({ credentials: [], token });
-    mockRefresh.mockResolvedValue([]);
     mockRemove.mockResolvedValue();
     // Passkeys don't run on the extension yet; most tests assume they do.
     jest.mocked(isMethodSupported).mockReturnValue(true);
@@ -113,7 +110,9 @@ describe('MfaEmailDetails', () => {
   });
 
   it('names an email listed without its address', () => {
-    renderDetails([{ type: 'email_otp', status: 'active', verified: true }]);
+    renderDetails([
+      { id: 'email_otp', type: 'email_otp', status: 'active', verified: true },
+    ]);
 
     expect(
       screen.getByText(messages.mfaMethodEmail.message),
@@ -184,8 +183,9 @@ describe('MfaEmailDetails', () => {
         reason: { operation: 'settings.removeEmail' },
       }),
     );
-    expect(mockRemove).toHaveBeenCalledWith(email, token);
-    expect(mockRefresh).toHaveBeenCalledTimes(1);
+    expect(mockRemove).toHaveBeenCalledWith(email, {
+      operation: 'settings.removeEmail',
+    });
     expect(toast.success).toHaveBeenCalledWith(
       messages.mfaSettingsEmailRemoved.message,
     );
@@ -225,7 +225,6 @@ describe('MfaTotpDetails', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockStartMfaFlow.mockResolvedValue({ credentials: [], token });
-    mockRefresh.mockResolvedValue([]);
     mockRemove.mockResolvedValue();
     jest.mocked(isMethodSupported).mockReturnValue(true);
   });
@@ -265,7 +264,9 @@ describe('MfaTotpDetails', () => {
         reason: { operation: 'settings.removeAuthenticatorApp' },
       }),
     );
-    expect(mockRemove).toHaveBeenCalledWith(authenticatorApp, token);
+    expect(mockRemove).toHaveBeenCalledWith(authenticatorApp, {
+      operation: 'settings.removeAuthenticatorApp',
+    });
     expect(toast.success).toHaveBeenCalledWith(
       messages.mfaSettingsTotpRemoved.message,
     );

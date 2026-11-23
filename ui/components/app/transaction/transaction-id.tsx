@@ -7,7 +7,6 @@ import {
   IconSize,
   Text,
   TextColor,
-  TextVariant,
   FontWeight,
 } from '@metamask/design-system-react';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';

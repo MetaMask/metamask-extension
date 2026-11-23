@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import React from 'react';
-import { act, fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen, within } from '@testing-library/react';
 import type {
   PaymentMethod,
   Provider,
@@ -10,6 +10,7 @@ import type {
 } from '@metamask/ramps-controller';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { RampsProviderSelectionModal } from './provider-selection';
 
 const mockSetSelectedProvider = jest.fn().mockResolvedValue(undefined);
@@ -22,6 +23,16 @@ jest.mock('../../../hooks/ramps/useRampsController', () => ({
 
 jest.mock('../../../hooks/ramps/useRampsQuotes', () => ({
   useRampsQuotes: (...args: unknown[]) => mockUseRampsQuotes(...args),
+}));
+
+// Analytics events go through the background connection, which this UI test
+// does not initialize.
+jest.mock('../../../hooks/ramps/useRampsAnalytics', () => ({
+  useRampsAnalytics: () => ({
+    trackTokenSelected: jest.fn(),
+    trackScreenViewed: jest.fn(),
+    trackProviderSelected: jest.fn(),
+  }),
 }));
 
 jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
@@ -99,6 +110,9 @@ const defaultControllerState = {
   providersError: null,
   selectedProvider: transak,
   setSelectedProvider: mockSetSelectedProvider,
+  selectProviderForAsset: jest.fn().mockResolvedValue(null),
+  controllerProviders: [],
+  previouslyUsedProviderIds: [],
   selectedPaymentMethod: debitCard,
   selectedToken,
   userRegion: {
@@ -231,6 +245,40 @@ describe('RampsProviderSelectionModal', () => {
     expect(baseElement).toMatchSnapshot();
   });
 
+  it('tags only the previously used provider', () => {
+    useRampsController.mockReturnValue({
+      ...defaultControllerState,
+      previouslyUsedProviderIds: [moonpay.id],
+    });
+    mockUseRampsQuotes.mockReturnValue({
+      data: {
+        success: [transakQuote, { ...transakQuote, provider: moonpay.id }],
+        sorted: [{ sortBy: 'reliability', ids: [transak.id, moonpay.id] }],
+        error: [],
+        customActions: [],
+      },
+      loading: false,
+      status: 'success',
+      isSuccess: true,
+      error: null,
+      getQuotes: jest.fn(),
+      getBuyWidgetData: jest.fn(),
+    });
+
+    renderModal({ amount: 100 });
+
+    expect(
+      within(
+        screen.getByTestId('ramps-provider-item-/providers/moonpay'),
+      ).getByText(messages.rampsPreviouslyUsed.message),
+    ).toBeInTheDocument();
+    expect(
+      within(
+        screen.getByTestId('ramps-provider-item-/providers/transak'),
+      ).queryByText(messages.rampsPreviouslyUsed.message),
+    ).not.toBeInTheDocument();
+  });
+
   it('matches snapshot when no providers return quotes', () => {
     mockUseRampsQuotes.mockReturnValue({
       data: {
@@ -270,7 +318,9 @@ describe('RampsProviderSelectionModal', () => {
       );
     });
 
-    expect(mockSetSelectedProvider).toHaveBeenCalledWith(moonpay);
+    expect(mockSetSelectedProvider).toHaveBeenCalledWith(moonpay, {
+      userSelected: true,
+    });
     expect(mockOnClose).toHaveBeenCalled();
   });
 

@@ -19,7 +19,7 @@ import {
 import { MultichainNetworks } from '../../constants/multichain/networks';
 import { decimalToPrefixedHex } from '../conversion.utils';
 
-const DOMAIN = 'https://metamask.io';
+const DOMAIN = 'https://metamask.com';
 
 export function isSecurityAlertsAPIEnabled() {
   const isEnabled = process.env.SECURITY_ALERTS_API_ENABLED;

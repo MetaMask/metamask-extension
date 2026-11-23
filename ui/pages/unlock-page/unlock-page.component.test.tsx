@@ -1,17 +1,26 @@
 import React from 'react';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { it as jestIt } from '@jest/globals';
+import { act, fireEvent, waitFor } from '@testing-library/react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { createDeferredPromise } from '@metamask/utils';
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import * as passkeyCeremony from '../../../shared/lib/passkey/passkey-ceremony';
 import { ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE } from '../../helpers/constants/routes';
+import { discardUnlockMeasurement, UnlockReady } from './unlock-performance';
 import UnlockPage from './unlock-page.component';
 
 const mockTrackEvent = jest.fn();
 const mockUnlockWithPasskey = jest.fn();
+
+jest.mock('./unlock-performance', () => ({
+  discardUnlockMeasurement: jest.fn(),
+  UnlockReady: jest.fn(() => null),
+}));
 
 jest.mock('../../hooks/passkey/usePasskeyUnlock', () => ({
   usePasskeyUnlock: () => mockUnlockWithPasskey,
@@ -126,6 +135,58 @@ describe('UnlockPage component (passkey UI)', () => {
 
   afterEach(() => {
     jest.restoreAllMocks();
+  });
+
+  describe('useful screen readiness', () => {
+    beforeEach(() => {
+      jest.mocked(discardUnlockMeasurement).mockClear();
+    });
+
+    it('excludes successful automatic passkey authentication with real navigation', async () => {
+      const unlock = createDeferredPromise<void>();
+      mockUnlockWithPasskey.mockReturnValueOnce(unlock.promise);
+
+      const UnlockRoute = () => {
+        const navigate = useNavigate();
+        const { pathname } = useLocation();
+        return pathname === '/unlock' ? (
+          <UnlockPage
+            {...buildProps({
+              passkeyAutoUnlockSuppressed: false,
+              navigateAfterUnlock: async () => navigate('/', { replace: true }),
+            })}
+          />
+        ) : (
+          <div data-testid="unlocked-home" />
+        );
+      };
+
+      const { getByTestId } = renderWithProvider(
+        <UnlockRoute />,
+        mockStore,
+        '/unlock',
+      );
+      expect(mockUnlockWithPasskey).toHaveBeenCalledTimes(1);
+      expect(discardUnlockMeasurement).toHaveBeenCalledTimes(1);
+      expect(jest.mocked(UnlockReady).mock.lastCall?.[0].ready).toBe(false);
+
+      await act(async () => unlock.resolve());
+      expect(getByTestId('unlocked-home')).toBeInTheDocument();
+    });
+
+    jestIt.each([false, true])(
+      'reports an idle form with passkeys enabled: %s',
+      (isPasskeyActive) => {
+        renderWithProvider(
+          <UnlockPage {...buildProps({ isPasskeyActive })} />,
+          mockStore,
+          '/unlock',
+        );
+
+        expect(jest.mocked(UnlockReady).mock.lastCall?.[0].ready).toBe(true);
+        expect(discardUnlockMeasurement).not.toHaveBeenCalled();
+      },
+    );
   });
 
   it('completes passkey unlock when user clicks passkey', async () => {

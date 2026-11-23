@@ -7,7 +7,10 @@ import { Json, JsonRpcNotification } from '@metamask/utils';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { type MetaRpcClientFactory } from '../../app/scripts/lib/metaRPCClientFactory';
 import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../../shared/constants/messages';
-import { getSerializedTraceContext } from '../../shared/lib/trace';
+import {
+  getSerializedTraceContext,
+  type SerializedTraceMetadata,
+} from '../../shared/lib/trace';
 import type { UIMessengerActions } from '../messengers/ui-messenger';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
@@ -67,11 +70,6 @@ export function submitRequestToBackground(
   actionOrMethod: string,
   args: unknown[] = [],
 ): Promise<unknown> {
-  if (actionOrMethod.includes(':')) {
-    // Assume that `actionOrMethod` is an action on the root messenger.
-    return submitRequestToBackground('messengerCall', [actionOrMethod, args]);
-  }
-
   if (process.env.IN_TEST) {
     // tests don't always set the `background` property for convenience, as
     // the return values for various RPC calls aren't always used. In production
@@ -82,13 +80,43 @@ export function submitRequestToBackground(
     }
   }
 
-  const traceContext = getSerializedTraceContext();
-  const argsWithTraceContext = traceContext
-    ? // eslint-disable-next-line @typescript-eslint/naming-convention
-      [...args, { _traceContext: traceContext }]
-    : args;
+  const traceparent = getSerializedTraceContext();
 
-  return background[actionOrMethod](...argsWithTraceContext);
+  const isMessengerAction = actionOrMethod.includes(':');
+  const method = isMessengerAction ? 'messengerCall' : actionOrMethod;
+  const params = isMessengerAction ? [actionOrMethod, args] : args;
+  let messengerAction;
+  if (isMessengerAction) {
+    messengerAction = actionOrMethod;
+  } else if (
+    method === 'messengerCall' &&
+    // `messengerCall` could be called explicitly, so we need to make sure it's
+    // a valid call.
+    typeof args[0] === 'string'
+  ) {
+    messengerAction = args[0];
+  }
+
+  // A messenger call carries its action even with no active span, so the
+  // background can name its root span after the action, not `messengerCall`.
+  const paramsWithTrace =
+    globalThis.sentry?.startSpan &&
+    !process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED &&
+    (traceparent || messengerAction)
+      ? [
+          ...params,
+          {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            _trace: {
+              ...(traceparent && { traceparent }),
+              ...(messengerAction && { messengerAction }),
+              spanName: `Background RPC: ${messengerAction ?? method}`,
+            } satisfies SerializedTraceMetadata,
+          },
+        ]
+      : params;
+
+  return background[method](...paramsWithTrace);
 }
 
 type MessengerEventSubscription = {
