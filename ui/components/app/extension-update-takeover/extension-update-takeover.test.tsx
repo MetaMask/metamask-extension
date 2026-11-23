@@ -126,29 +126,41 @@ describe('ExtensionUpdateTakeover', () => {
   });
 
   it('disables both buttons while updating and allows retry after rejection', async () => {
-    openUpdateTabAndReload.mockRejectedValueOnce(new Error('reload failed'));
+    let rejectReload: (error: Error) => void = () => undefined;
+    openUpdateTabAndReload.mockImplementationOnce(
+      () =>
+        new Promise((_resolve, reject) => {
+          rejectReload = reject;
+        }),
+    );
     const logError = jest
       .spyOn(log, 'error')
       .mockImplementation(() => undefined);
 
     render(<ExtensionUpdateTakeover promptType="versionUpdate" />);
-    fireEvent.click(
-      screen.getByTestId('extension-update-takeover-update-button'),
+    const updateButton = screen.getByTestId(
+      'extension-update-takeover-update-button',
     );
+    const dismissButton = screen.getByTestId(
+      'extension-update-takeover-dismiss-button',
+    );
+    fireEvent.click(updateButton);
 
     await waitFor(() => {
-      expect(openUpdateTabAndReload).toHaveBeenCalledTimes(1);
-      expect(
-        screen.getByTestId('extension-update-takeover-update-button'),
-      ).toBeEnabled();
-      expect(
-        screen.getByTestId('extension-update-takeover-dismiss-button'),
-      ).toBeEnabled();
+      expect(updateButton).toBeDisabled();
+      expect(dismissButton).toBeDisabled();
+    });
+    fireEvent.click(updateButton);
+    expect(openUpdateTabAndReload).toHaveBeenCalledTimes(1);
+
+    rejectReload(new Error('reload failed'));
+
+    await waitFor(() => {
+      expect(updateButton).toBeEnabled();
+      expect(dismissButton).toBeEnabled();
     });
 
-    fireEvent.click(
-      screen.getByTestId('extension-update-takeover-update-button'),
-    );
+    fireEvent.click(updateButton);
     await waitFor(() => {
       expect(openUpdateTabAndReload).toHaveBeenCalledTimes(2);
     });
@@ -169,12 +181,17 @@ describe('ExtensionUpdateTakeover', () => {
     const dismissButton = screen.getByTestId(
       'extension-update-takeover-dismiss-button',
     );
-    fireEvent.click(dismissButton);
+    const updateButton = screen.getByTestId(
+      'extension-update-takeover-update-button',
+    );
     fireEvent.click(dismissButton);
 
     await waitFor(() => {
-      expect(setUpdateModalLastDismissedAt).toHaveBeenCalledTimes(1);
+      expect(dismissButton).toBeDisabled();
+      expect(updateButton).toBeDisabled();
     });
+    fireEvent.click(dismissButton);
+    expect(setUpdateModalLastDismissedAt).toHaveBeenCalledTimes(1);
     rejectDismissal(new Error('persist failed'));
 
     await waitFor(() => {
