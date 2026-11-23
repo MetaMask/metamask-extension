@@ -4,7 +4,7 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { describe, it } from 'node:test';
 import { join } from 'node:path';
-import { getLatestCommit } from '../utils/git';
+import { getLatestCommit } from '../utils/git.ts';
 
 function runGit(
   args: string[],
@@ -20,7 +20,7 @@ function runGit(
 }
 
 describe('getLatestCommit', () => {
-  const gitDir = join(__dirname, '.', 'fixtures', 'git');
+  const gitDir = join(import.meta.dirname, '.', 'fixtures', 'git');
   it('should return some values by default', () => {
     const { hash, timestamp } = getLatestCommit();
 

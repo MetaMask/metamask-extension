@@ -1,9 +1,14 @@
+import { createRequire } from 'node:module';
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
-import { LoaderContext } from 'webpack';
-import swcLoader, { type SwcLoaderOptions } from '../utils/loaders/swcLoader';
-import { getSwcLoader, type SwcConfig } from '../utils/loaders/getSwcLoader';
-import { Combination, generateCases } from './helpers';
+import type { LoaderContext } from 'webpack';
+import swcLoader, {
+  type SwcLoaderOptions,
+} from '../utils/loaders/swcLoader.ts';
+import { getSwcLoader, type SwcConfig } from '../utils/loaders/getSwcLoader.ts';
+import { type Combination, generateCases } from './helpers.ts';
+
+const nodeRequire = createRequire(import.meta.url);
 
 describe('swcLoader', () => {
   type CallbackArgs = Parameters<LoaderContext<SwcLoaderOptions>['callback']>;
@@ -115,7 +120,7 @@ describe('swcLoader', () => {
         const loader = getSwcLoader(syntax, enableJsx, {}, swcConfig);
         assert.strictEqual(
           loader.loader,
-          require.resolve('../utils/loaders/swcLoader'),
+          nodeRequire.resolve('../utils/loaders/swcLoader.ts'),
         );
         assert.deepStrictEqual(loader.options.jsc.parser, {
           syntax,

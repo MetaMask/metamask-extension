@@ -1,6 +1,7 @@
 import { resolve } from 'node:path';
 import type { Compiler } from 'webpack';
 import type WebpackDevServer from 'webpack-dev-server';
+import { webpackDirectory } from '../../../lib/build-paths.ts';
 
 /**
  * @param devServer - The running webpack dev server.
@@ -28,7 +29,7 @@ export function getClientRequest(
   filename: string,
 ): string {
   const webSocketUrl = getWebSocketUrl(devServer);
-  return `${resolve(__dirname, filename)}?url=${encodeURIComponent(webSocketUrl)}`;
+  return `${resolve(webpackDirectory, 'utils/dev-server', filename)}?url=${encodeURIComponent(webSocketUrl)}`;
 }
 
 /**
