@@ -7,6 +7,7 @@ import { Mockttp } from 'mockttp';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
+import SwapAssetPickerPage from '../../../page-objects/pages/swap/swap-asset-picker-page';
 import SwapPage from '../../../page-objects/pages/swap/swap-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import {
@@ -72,6 +73,7 @@ export async function run(): Promise<BenchmarkRunResult> {
         await login(driver);
         const homePage = new HomePage(driver);
         const swapPage = new SwapPage(driver);
+        const assetPickerPage = new SwapAssetPickerPage(driver);
 
         await driver.resetLongTaskMetrics();
         const timestampBeforeLoadPage = new Date();
@@ -91,7 +93,7 @@ export async function run(): Promise<BenchmarkRunResult> {
 
         await driver.resetLongTaskMetrics();
         const timestampBeforeClickAssetPicker = new Date();
-        await driver.clickElement(swapPage.sourceAssetPickerButton);
+        await swapPage.openAssetPicker('source');
         const timestampAfterClickAssetPicker = new Date();
         loadAssetPicker =
           timestampAfterClickAssetPicker.getTime() -
@@ -109,10 +111,10 @@ export async function run(): Promise<BenchmarkRunResult> {
         const tokenToSearch = 'FXS';
         await driver.resetLongTaskMetrics();
         const timestampBeforeTokenSearch = new Date();
-        await driver.fill(swapPage.assetPrickerSearchInput, tokenToSearch);
+        await driver.fill(assetPickerPage.searchInput, tokenToSearch);
         await driver.waitForSelector({
           text: tokenToSearch,
-          css: swapPage.tokenButton,
+          css: assetPickerPage.tokenButton,
         });
         const timestampAfterTokenSearch = new Date();
         searchToken =

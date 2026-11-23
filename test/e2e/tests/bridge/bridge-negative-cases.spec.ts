@@ -1,11 +1,12 @@
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
+import { enterBridgeQuote } from '../../page-objects/flows/bridge.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import {
-  enterBridgeQuote,
+  enterEthToLineaBridgeQuote,
   getBridgeNegativeCasesFixtures,
   getInsufficientFundsFixtures,
   getQuoteNegativeCasesFixtures,
@@ -39,7 +40,7 @@ describe('Bridge functionality', function (this: Suite) {
         await homePage.startSwapFlow();
 
         const swapPage = new SwapPage(driver);
-        await swapPage.enterBridgeQuote({
+        await enterBridgeQuote(driver, {
           amount: '24.9950',
           tokenFrom: 'ETH',
           tokenTo: 'WETH',
@@ -74,7 +75,7 @@ describe('Bridge functionality', function (this: Suite) {
         );
         await homePage.startSwapFlow();
 
-        const swapPage = await enterBridgeQuote(driver);
+        const swapPage = await enterEthToLineaBridgeQuote(driver);
         await swapPage.checkNoTradeRouteMessageIsDisplayed();
       },
     );
@@ -101,7 +102,7 @@ describe('Bridge functionality', function (this: Suite) {
         );
         await homePage.startSwapFlow();
 
-        const swapPage = await enterBridgeQuote(driver);
+        const swapPage = await enterEthToLineaBridgeQuote(driver);
         await swapPage.checkNoTradeRouteMessageIsDisplayed();
       },
     );
@@ -130,7 +131,7 @@ describe('Bridge functionality', function (this: Suite) {
 
         await homePage.startSwapFlow();
 
-        const swapPage = await enterBridgeQuote(driver);
+        const swapPage = await enterEthToLineaBridgeQuote(driver);
         await swapPage.checkNoTradeRouteMessageIsDisplayed();
       },
     );
@@ -160,7 +161,7 @@ describe('Bridge functionality', function (this: Suite) {
         );
         await homePage.startSwapFlow();
 
-        const swapPage = await enterBridgeQuote(driver);
+        const swapPage = await enterEthToLineaBridgeQuote(driver);
 
         await swapPage.submitQuote();
         await swapPage.approveModalIfPresent();
@@ -204,7 +205,7 @@ describe('Bridge functionality', function (this: Suite) {
         );
         await homePage.startSwapFlow();
 
-        const swapPage = await enterBridgeQuote(driver);
+        const swapPage = await enterEthToLineaBridgeQuote(driver);
         await swapPage.submitQuoteAndDismiss();
         await swapPage.goBackAfterSubmit();
         await homePage.goToActivityList();
@@ -246,7 +247,7 @@ describe('Bridge functionality', function (this: Suite) {
         );
         await homePage.startSwapFlow();
 
-        const swapPage = await enterBridgeQuote(driver);
+        const swapPage = await enterEthToLineaBridgeQuote(driver);
         await swapPage.submitQuoteAndDismiss();
         await swapPage.goBackAfterSubmit();
         await homePage.goToActivityList();

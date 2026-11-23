@@ -13,6 +13,7 @@
  */
 
 import { withFixtures } from '../../helpers';
+import { selectSourceTokenIfNeeded } from '../../page-objects/flows/bridge.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
@@ -38,7 +39,7 @@ describe('Swap max amount', function () {
 
           const swapPage = new SwapPage(driver);
           await swapPage.checkPageIsLoaded();
-          await swapPage.selectSrcTokenIfNeeded(network.symbol);
+          await selectSourceTokenIfNeeded(driver, network.symbol);
           await swapPage.clickMaxButton();
 
           const swapMax = await swapPage.getSourceAmount();

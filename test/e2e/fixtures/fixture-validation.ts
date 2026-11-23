@@ -85,7 +85,6 @@ const getFixtureIgnoredKeys = (): string[] => [
   // (which is also ignored below).
   'data.MoneyAccountController.moneyAccounts',
   'data.MoneyAccountController.defaultMoneyAccountId',
-  'data.AccountTracker',
   'data.AssetsController',
   'data.AuthenticationController',
   'data.MetaMetricsController',

@@ -23,6 +23,7 @@ import type {
 } from '../../../components/modals/pay-with-modal/pay-with-modal.types';
 import { useTransactionPayToken } from '../useTransactionPayToken';
 import { useClearPaymentOverride } from '../useClearPaymentOverride';
+import { decodePaymentTokenAssetId } from '../../../../../../shared/lib/transaction/pay-token';
 
 export const PAY_WITH_CRYPTO_SECTION_TEST_ID = 'pay-with-section-crypto';
 export const PAY_WITH_CRYPTO_SELECTED_TOKEN_ROW_TEST_ID =
@@ -61,12 +62,11 @@ export function usePayWithCryptoSection({
       return;
     }
     clearOverride();
-    setPayToken({
-      address: payToken.address,
-      chainId: payToken.chainId,
+    setPayToken({ assetId: payToken.assetId }).catch((error) => {
+      console.error('Failed to set the pay token', error);
     });
     onClose();
-  }, [clearOverride, isMoneyAccountSelected, onClose, payToken, setPayToken]);
+  }, [clearOverride, isMoneyAccountSelected, payToken, onClose, setPayToken]);
 
   const handleOtherAssetsPress = useCallback(() => {
     onOtherAssetsPress();
@@ -80,13 +80,15 @@ export function usePayWithCryptoSection({
   return useMemo((): PayWithSectionConfig => {
     const rows: PayWithRowConfig[] = [];
 
-    if (payToken) {
+    const payTokenAsset = decodePaymentTokenAssetId(payToken);
+
+    if (payToken && payTokenAsset) {
       rows.push({
         id: 'crypto-selected-token',
         icon: (
           <TokenIcon
-            chainId={payToken.chainId}
-            tokenAddress={payToken.address}
+            chainId={payTokenAsset.chainId}
+            tokenAddress={payTokenAsset.address}
             symbol={payToken.symbol}
             size="sm"
           />

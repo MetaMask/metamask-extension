@@ -7,6 +7,7 @@ import {
 } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
+import { selectDestinationToken } from '../../page-objects/flows/bridge.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import {
   createDappTransaction,
@@ -156,7 +157,7 @@ describe('Smart Transactions', function () {
         const swapPage = new SwapPage(driver);
         await swapPage.checkPageIsLoaded();
         await swapPage.enterSwapAmount('2');
-        await swapPage.selectDestToken('DAI');
+        await selectDestinationToken(driver, 'DAI');
         await swapPage.checkGasIncludedIsDisplayed();
         await swapPage.submitSwap();
         await swapPage.goBackAfterSubmit();

@@ -4,6 +4,7 @@ import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
 import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { createSwap } from '../../page-objects/flows/bridge.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import SelectNetworkModal from '../../page-objects/pages/networks/select-network-modal';
@@ -543,7 +544,7 @@ describe('Swap on Solana', function () {
         // Create swap
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSwap({
+        await createSwap(driver, {
           amount: 1,
           swapTo: 'USDC',
           swapFrom: 'SOL',
@@ -612,7 +613,7 @@ describe('Swap on Solana', function () {
         // Create swap USDC → SOL
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSwap({
+        await createSwap(driver, {
           amount: 1,
           swapTo: 'SOL',
           swapFrom: 'USDC',
@@ -662,7 +663,7 @@ describe('Swap on Solana', function () {
 
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSwap({
+        await createSwap(driver, {
           amount: 0.00005,
           swapTo: 'SOL',
           swapFrom: 'USDC',
@@ -714,7 +715,7 @@ describe('Swap on Solana', function () {
         // Create swap and verify no quotes message
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSwap({
+        await createSwap(driver, {
           amount: 1,
           swapTo: 'USDC',
           swapFrom: 'SOL',
@@ -754,7 +755,7 @@ describe('Swap on Solana', function () {
         // Create swap SOL → USDC
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSwap({
+        await createSwap(driver, {
           amount: 1,
           swapTo: 'USDC',
           swapFrom: 'SOL',

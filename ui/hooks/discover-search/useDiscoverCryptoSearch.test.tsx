@@ -366,7 +366,7 @@ describe('useDiscoverCryptoSearch', () => {
     ]);
   });
 
-  it('drops Warning, Spam, and Malicious tokens from search, keeping Verified, Benign, and unscanned', async () => {
+  it('keeps Warning, Spam, and Malicious tokens in search results', async () => {
     mockSearchTokens.mockResolvedValue({
       count: 6,
       totalCount: 6,
@@ -429,6 +429,9 @@ describe('useDiscoverCryptoSearch', () => {
       'VER',
       'BNG',
       'UNS',
+      'WRN',
+      'SPM',
+      'MAL',
     ]);
   });
 });

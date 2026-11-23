@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import React from 'react';
@@ -18,6 +18,7 @@ import { selectMinimumRequiredTokenBalance } from '../../selectors/feature-flags
 import { ARBITRUM_USDC } from '../../constants/perps';
 import { MUSD_TOKEN_ADDRESS } from '../../constants/musd';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { encodeEvmAssetId } from '../../../../../shared/lib/transaction/pay-token';
 import {
   ACCOUNT_RESELECT_EMPTY_TIMEOUT_MS,
   useAutomaticTransactionPayToken,
@@ -260,8 +261,10 @@ describe('useAutomaticTransactionPayToken', () => {
     renderHookWithProvider();
 
     expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: TOKEN_ADDRESS_2_MOCK,
-      chainId: CHAIN_ID_2_MOCK,
+      assetId: encodeEvmAssetId({
+        address: TOKEN_ADDRESS_2_MOCK,
+        chainId: CHAIN_ID_2_MOCK,
+      }),
     });
   });
 
@@ -322,8 +325,10 @@ describe('useAutomaticTransactionPayToken', () => {
     });
 
     expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: MUSD_TOKEN_ADDRESS,
-      chainId: CHAIN_IDS.MONAD,
+      assetId: encodeEvmAssetId({
+        address: MUSD_TOKEN_ADDRESS,
+        chainId: CHAIN_IDS.MONAD,
+      }),
     });
   });
 
@@ -336,8 +341,7 @@ describe('useAutomaticTransactionPayToken', () => {
     ] as Asset[]);
     useTransactionPayTokenMock.mockReturnValue({
       payToken: {
-        address: TOKEN_ADDRESS_2_MOCK,
-        chainId: CHAIN_ID_2_MOCK,
+        assetId: `eip155:2/erc20:${TOKEN_ADDRESS_2_MOCK}`,
       } as never,
       setPayToken: setPayTokenMock,
     });
@@ -347,9 +351,44 @@ describe('useAutomaticTransactionPayToken', () => {
     });
 
     expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: MUSD_TOKEN_ADDRESS,
-      chainId: CHAIN_IDS.MONAD,
+      assetId: encodeEvmAssetId({
+        address: MUSD_TOKEN_ADDRESS,
+        chainId: CHAIN_IDS.MONAD,
+      }),
     });
+  });
+
+  it('logs an error when re-selecting the Money Account pay token fails', async () => {
+    const consoleSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+    const error = new Error('Update failed');
+    setPayTokenMock.mockRejectedValue(error);
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        address: TOKEN_ADDRESS_2_MOCK,
+        chainId: CHAIN_ID_2_MOCK,
+      },
+    ] as Asset[]);
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: {
+        assetId: `eip155:2/erc20:${TOKEN_ADDRESS_2_MOCK}`,
+      } as never,
+      setPayToken: setPayTokenMock,
+    });
+
+    renderHookWithProvider({
+      paymentOverride: PaymentOverride.MoneyAccount,
+    });
+
+    await waitFor(() =>
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Failed to set automatic pay token',
+        error,
+      ),
+    );
+
+    consoleSpy.mockRestore();
   });
 
   it('selects preferred payment token when provided with available tokens', () => {
@@ -376,8 +415,10 @@ describe('useAutomaticTransactionPayToken', () => {
     });
 
     expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: PREFERRED_TOKEN_ADDRESS_MOCK,
-      chainId: PREFERRED_CHAIN_ID_MOCK,
+      assetId: encodeEvmAssetId({
+        address: PREFERRED_TOKEN_ADDRESS_MOCK,
+        chainId: PREFERRED_CHAIN_ID_MOCK,
+      }),
     });
   });
 
@@ -414,8 +455,10 @@ describe('useAutomaticTransactionPayToken', () => {
     });
 
     expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: TOKEN_ADDRESS_1_MOCK,
-      chainId: CHAIN_ID_1_MOCK,
+      assetId: encodeEvmAssetId({
+        address: TOKEN_ADDRESS_1_MOCK,
+        chainId: CHAIN_ID_1_MOCK,
+      }),
     });
   });
 
@@ -443,8 +486,10 @@ describe('useAutomaticTransactionPayToken', () => {
     });
 
     expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: PREFERRED_TOKEN_ADDRESS_MOCK,
-      chainId: PREFERRED_CHAIN_ID_MOCK,
+      assetId: encodeEvmAssetId({
+        address: PREFERRED_TOKEN_ADDRESS_MOCK,
+        chainId: PREFERRED_CHAIN_ID_MOCK,
+      }),
     });
   });
 
@@ -476,8 +521,10 @@ describe('useAutomaticTransactionPayToken', () => {
     });
 
     expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: TOKEN_ADDRESS_2_MOCK,
-      chainId: CHAIN_ID_2_MOCK,
+      assetId: encodeEvmAssetId({
+        address: TOKEN_ADDRESS_2_MOCK,
+        chainId: CHAIN_ID_2_MOCK,
+      }),
     });
   });
 
@@ -515,8 +562,10 @@ describe('useAutomaticTransactionPayToken', () => {
     });
 
     expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: PREFERRED_TOKEN_ADDRESS_MOCK,
-      chainId: PREFERRED_CHAIN_ID_MOCK,
+      assetId: encodeEvmAssetId({
+        address: PREFERRED_TOKEN_ADDRESS_MOCK,
+        chainId: PREFERRED_CHAIN_ID_MOCK,
+      }),
     });
   });
 
@@ -584,16 +633,17 @@ describe('useAutomaticTransactionPayToken', () => {
     });
 
     expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: ARBITRUM_USDC.address,
-      chainId: ARBITRUM_USDC.chainId,
+      assetId: encodeEvmAssetId({
+        address: ARBITRUM_USDC.address,
+        chainId: ARBITRUM_USDC.chainId,
+      }),
     });
   });
 
   it('does nothing when payToken is already set', () => {
     useTransactionPayTokenMock.mockReturnValue({
       payToken: {
-        address: TOKEN_ADDRESS_2_MOCK as Hex,
-        chainId: CHAIN_ID_2_MOCK as Hex,
+        assetId: `eip155:2/erc20:${TOKEN_ADDRESS_2_MOCK}`,
       } as never,
       setPayToken: setPayTokenMock,
     });
@@ -623,8 +673,7 @@ describe('useAutomaticTransactionPayToken', () => {
   it('re-selects the pay token when the account override changes', () => {
     useTransactionPayTokenMock.mockReturnValue({
       payToken: {
-        address: TOKEN_ADDRESS_2_MOCK as Hex,
-        chainId: CHAIN_ID_2_MOCK as Hex,
+        assetId: `eip155:2/erc20:${TOKEN_ADDRESS_2_MOCK}`,
       } as never,
       setPayToken: setPayTokenMock,
     });
@@ -647,8 +696,10 @@ describe('useAutomaticTransactionPayToken', () => {
     rerender();
 
     expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: TOKEN_ADDRESS_3_MOCK,
-      chainId: CHAIN_ID_2_MOCK,
+      assetId: encodeEvmAssetId({
+        address: TOKEN_ADDRESS_3_MOCK,
+        chainId: CHAIN_ID_2_MOCK,
+      }),
     });
   });
 
@@ -704,8 +755,10 @@ describe('useAutomaticTransactionPayToken', () => {
     rerender();
 
     expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: TOKEN_ADDRESS_3_MOCK,
-      chainId: CHAIN_ID_2_MOCK,
+      assetId: encodeEvmAssetId({
+        address: TOKEN_ADDRESS_3_MOCK,
+        chainId: CHAIN_ID_2_MOCK,
+      }),
     });
   });
 
@@ -742,8 +795,10 @@ describe('useAutomaticTransactionPayToken', () => {
     });
 
     expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: TOKEN_ADDRESS_1_MOCK,
-      chainId: CHAIN_ID_1_MOCK,
+      assetId: encodeEvmAssetId({
+        address: TOKEN_ADDRESS_1_MOCK,
+        chainId: CHAIN_ID_1_MOCK,
+      }),
     });
   });
 
@@ -769,8 +824,10 @@ describe('useAutomaticTransactionPayToken', () => {
       });
 
       expect(setPayTokenMock).toHaveBeenCalledWith({
-        address: TOKEN_ADDRESS_2_MOCK,
-        chainId: CHAIN_ID_2_MOCK,
+        assetId: encodeEvmAssetId({
+          address: TOKEN_ADDRESS_2_MOCK,
+          chainId: CHAIN_ID_2_MOCK,
+        }),
       });
     });
 
@@ -799,8 +856,10 @@ describe('useAutomaticTransactionPayToken', () => {
       });
 
       expect(setPayTokenMock).toHaveBeenCalledWith({
-        address: TOKEN_ADDRESS_2_MOCK,
-        chainId: CHAIN_ID_2_MOCK,
+        assetId: encodeEvmAssetId({
+          address: TOKEN_ADDRESS_2_MOCK,
+          chainId: CHAIN_ID_2_MOCK,
+        }),
       });
       expect(useIsHardwareWalletAccountMock).toHaveBeenCalledWith(
         PAYING_ACCOUNT_MOCK,
@@ -822,8 +881,10 @@ describe('useAutomaticTransactionPayToken', () => {
       });
 
       expect(setPayTokenMock).toHaveBeenCalledWith({
-        address: TOKEN_ADDRESS_1_MOCK,
-        chainId: CHAIN_ID_1_MOCK,
+        assetId: encodeEvmAssetId({
+          address: TOKEN_ADDRESS_1_MOCK,
+          chainId: CHAIN_ID_1_MOCK,
+        }),
       });
     });
 
@@ -842,8 +903,10 @@ describe('useAutomaticTransactionPayToken', () => {
       });
 
       expect(setPayTokenMock).toHaveBeenCalledWith({
-        address: TOKEN_ADDRESS_2_MOCK,
-        chainId: CHAIN_ID_2_MOCK,
+        assetId: encodeEvmAssetId({
+          address: TOKEN_ADDRESS_2_MOCK,
+          chainId: CHAIN_ID_2_MOCK,
+        }),
       });
     });
 
@@ -883,8 +946,10 @@ describe('useAutomaticTransactionPayToken', () => {
       });
 
       expect(setPayTokenMock).toHaveBeenCalledWith({
-        address: TOKEN_ADDRESS_2_MOCK,
-        chainId: CHAIN_ID_2_MOCK,
+        assetId: encodeEvmAssetId({
+          address: TOKEN_ADDRESS_2_MOCK,
+          chainId: CHAIN_ID_2_MOCK,
+        }),
       });
     });
 
@@ -911,8 +976,10 @@ describe('useAutomaticTransactionPayToken', () => {
       });
 
       expect(setPayTokenMock).toHaveBeenCalledWith({
-        address: TOKEN_ADDRESS_2_MOCK,
-        chainId: CHAIN_ID_2_MOCK,
+        assetId: encodeEvmAssetId({
+          address: TOKEN_ADDRESS_2_MOCK,
+          chainId: CHAIN_ID_2_MOCK,
+        }),
       });
     });
 
@@ -939,8 +1006,10 @@ describe('useAutomaticTransactionPayToken', () => {
       });
 
       expect(setPayTokenMock).toHaveBeenCalledWith({
-        address: PREFERRED_TOKEN_ADDRESS_MOCK,
-        chainId: PREFERRED_CHAIN_ID_MOCK,
+        assetId: encodeEvmAssetId({
+          address: PREFERRED_TOKEN_ADDRESS_MOCK,
+          chainId: PREFERRED_CHAIN_ID_MOCK,
+        }),
       });
     });
 
@@ -988,8 +1057,10 @@ describe('useAutomaticTransactionPayToken', () => {
       });
 
       expect(setPayTokenMock).toHaveBeenCalledWith({
-        address: PREFERRED_TOKEN_ADDRESS_MOCK,
-        chainId: PREFERRED_CHAIN_ID_MOCK,
+        assetId: encodeEvmAssetId({
+          address: PREFERRED_TOKEN_ADDRESS_MOCK,
+          chainId: PREFERRED_CHAIN_ID_MOCK,
+        }),
       });
     });
   });
@@ -1023,8 +1094,10 @@ describe('useAutomaticTransactionPayToken', () => {
     });
 
     expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: TOKEN_ADDRESS_2_MOCK,
-      chainId: CHAIN_ID_2_MOCK,
+      assetId: encodeEvmAssetId({
+        address: TOKEN_ADDRESS_2_MOCK,
+        chainId: CHAIN_ID_2_MOCK,
+      }),
     });
   });
 
@@ -1060,8 +1133,10 @@ describe('useAutomaticTransactionPayToken', () => {
     });
 
     expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: TOKEN_ADDRESS_1_MOCK,
-      chainId: CHAIN_ID_1_MOCK,
+      assetId: encodeEvmAssetId({
+        address: TOKEN_ADDRESS_1_MOCK,
+        chainId: CHAIN_ID_1_MOCK,
+      }),
     });
   });
 
@@ -1130,8 +1205,10 @@ describe('useAutomaticTransactionPayToken', () => {
     rerender();
 
     expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: TOKEN_ADDRESS_3_MOCK,
-      chainId: CHAIN_ID_2_MOCK,
+      assetId: encodeEvmAssetId({
+        address: TOKEN_ADDRESS_3_MOCK,
+        chainId: CHAIN_ID_2_MOCK,
+      }),
     });
   });
 
@@ -1172,8 +1249,10 @@ describe('useAutomaticTransactionPayToken', () => {
     });
 
     expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: TOKEN_ADDRESS_1_MOCK,
-      chainId: CHAIN_ID_1_MOCK,
+      assetId: encodeEvmAssetId({
+        address: TOKEN_ADDRESS_1_MOCK,
+        chainId: CHAIN_ID_1_MOCK,
+      }),
     });
   });
 
@@ -1214,8 +1293,10 @@ describe('useAutomaticTransactionPayToken', () => {
     });
 
     expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: TOKEN_ADDRESS_2_MOCK,
-      chainId: CHAIN_ID_2_MOCK,
+      assetId: encodeEvmAssetId({
+        address: TOKEN_ADDRESS_2_MOCK,
+        chainId: CHAIN_ID_2_MOCK,
+      }),
     });
   });
 
@@ -1262,8 +1343,10 @@ describe('useAutomaticTransactionPayToken', () => {
     });
 
     expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: TOKEN_ADDRESS_1_MOCK,
-      chainId: CHAIN_ID_1_MOCK,
+      assetId: encodeEvmAssetId({
+        address: TOKEN_ADDRESS_1_MOCK,
+        chainId: CHAIN_ID_1_MOCK,
+      }),
     });
   });
 

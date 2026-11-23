@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { getSelectedAccount } from '../../selectors';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from '../../selectors/shared';
 import {
   getMultichainAccountsByWalletId,
   getWalletIdAndNameByAccountAddress,
@@ -28,7 +29,7 @@ export const usePrimaryWalletGroupAccounts = (): {
   const accountGroupsByWallet = useSelector((state: MultichainAccountsState) =>
     walletId
       ? getMultichainAccountsByWalletId(state, walletId as AccountWalletId)
-      : {},
+      : EMPTY_OBJECT,
   );
 
   // Get the first account group ID from the wallet (primary account group)
@@ -39,13 +40,15 @@ export const usePrimaryWalletGroupAccounts = (): {
   );
 
   // Get accounts for the primary account group
-  const primaryWalletGroupAccounts = useSelector((state) =>
-    primaryAccountGroupId
-      ? getInternalAccountsFromGroupById(
-          state,
-          primaryAccountGroupId as AccountGroupId,
-        )
-      : [],
+  const primaryWalletGroupAccounts = useSelector(
+    (state) =>
+      primaryAccountGroupId
+        ? getInternalAccountsFromGroupById(
+            state,
+            primaryAccountGroupId as AccountGroupId,
+          )
+        : EMPTY_ARRAY,
+    shallowEqual,
   );
 
   return {
