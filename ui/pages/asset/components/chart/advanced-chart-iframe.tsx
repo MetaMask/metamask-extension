@@ -93,6 +93,22 @@ function toTradingViewUrl(raw?: unknown): string {
   return TRADINGVIEW_URL;
 }
 
+/**
+ * Maps extension candle-interval keys to TradingView resolution strings.
+ * Sent in SET_OHLCV_DATA so the chart engine uses the correct resolution
+ * directly, avoiding timestamp-gap detection which fails on low-liquidity
+ * tokens with irregular bar spacing.
+ */
+const INTERVAL_TO_TV_RESOLUTION: Record<string, string> = {
+  '1m': '1',
+  '5m': '5',
+  '15m': '15',
+  '1h': '60',
+  '4h': '240',
+  '1d': '1D',
+  '1w': '1W',
+};
+
 /** Imperative handle so the parent can send messages to the chart engine. */
 export type AdvancedChartIframeRef = {
   postMessage: (message: Record<string, unknown>) => void;
@@ -457,13 +473,19 @@ const AdvancedChartIframe = forwardRef<
       // First load, a different series, or a bulk change (interval change,
       // pagination) → full SET_OHLCV_DATA.
       if (!sameSeries || Math.abs(ohlcvData.length - prevData.length) > 1) {
+        const resolution =
+          INTERVAL_TO_TV_RESOLUTION[selectedInterval.toLowerCase()];
         postToChart({
           type: 'SET_OHLCV_DATA',
           // Strategy B (host-backed): the engine asks us for older bars via
           // FETCH_OLDER_BARS_REQUEST instead of fetching them itself. Must NOT
           // set `pagination` — that would switch on the in-iframe fetch path,
           // which the chart origin's strict CSP (connect-src 'none') blocks.
-          payload: { data: ohlcvData, rnBackedPagination: { enabled: true } },
+          payload: {
+            data: ohlcvData,
+            rnBackedPagination: { enabled: true },
+            ...(resolution && { resolution }),
+          },
         });
         prevOhlcvDataRef.current = ohlcvData;
         return;
@@ -488,7 +510,7 @@ const AdvancedChartIframe = forwardRef<
       }
 
       prevOhlcvDataRef.current = ohlcvData;
-    }, [iframeLoaded, ohlcvData, seriesKey, postToChart]);
+    }, [iframeLoaded, ohlcvData, seriesKey, selectedInterval, postToChart]);
 
     return (
       <div

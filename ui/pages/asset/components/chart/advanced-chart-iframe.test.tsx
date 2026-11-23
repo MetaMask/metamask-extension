@@ -215,6 +215,7 @@ describe('AdvancedChartIframe', () => {
             payload: {
               data: mockOHLCVData,
               rnBackedPagination: { enabled: true },
+              resolution: '15',
             },
           }),
           CHART_ORIGIN,
@@ -769,6 +770,7 @@ describe('AdvancedChartIframe', () => {
             payload: {
               data: sameLengthOtherValues,
               rnBackedPagination: { enabled: true },
+              resolution: '15',
             },
           }),
           CHART_ORIGIN,
@@ -794,6 +796,7 @@ describe('AdvancedChartIframe', () => {
             payload: {
               data: sameLengthOtherValues,
               rnBackedPagination: { enabled: true },
+              resolution: '1D',
             },
           }),
           CHART_ORIGIN,
@@ -856,6 +859,7 @@ describe('AdvancedChartIframe', () => {
             payload: {
               data: sameLengthOtherValues,
               rnBackedPagination: { enabled: true },
+              resolution: '15',
             },
           }),
           CHART_ORIGIN,
@@ -887,6 +891,7 @@ describe('AdvancedChartIframe', () => {
             payload: {
               data: sameLengthOtherValues,
               rnBackedPagination: { enabled: true },
+              resolution: '15',
             },
           }),
           CHART_ORIGIN,
@@ -1028,6 +1033,7 @@ describe('AdvancedChartIframe', () => {
             payload: {
               data: mockOHLCVData,
               rnBackedPagination: { enabled: true },
+              resolution: '15',
             },
           }),
           CHART_ORIGIN,
@@ -1081,6 +1087,7 @@ describe('AdvancedChartIframe', () => {
             payload: {
               data: newData,
               rnBackedPagination: { enabled: true },
+              resolution: '15',
             },
           }),
           CHART_ORIGIN,
@@ -1239,6 +1246,7 @@ describe('AdvancedChartIframe', () => {
             payload: {
               data: mockOHLCVData,
               rnBackedPagination: { enabled: true },
+              resolution: '15',
             },
           }),
           CHART_ORIGIN,
@@ -1332,6 +1340,7 @@ describe('AdvancedChartIframe', () => {
             payload: {
               data: mockOHLCVData,
               rnBackedPagination: { enabled: true },
+              resolution: '15',
             },
           }),
           CHART_ORIGIN,
