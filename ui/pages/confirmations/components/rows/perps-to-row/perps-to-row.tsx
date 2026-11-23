@@ -18,20 +18,26 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useIsMoneyAccountPerpsNavigation } from '../../../hooks/pay/useIsMoneyAccountPerpsNavigation';
 
-export type PerpsToRowProps = {
-  variant?: ConfirmInfoRowSize;
-};
-
-const PerpsToRowContent = ({
-  variant = ConfirmInfoRowSize.Small,
-}: PerpsToRowProps) => {
+/**
+ * Destination row shown on token-funded Perps deposits:
+ * `To: [Infinity icon] Perps balance`.
+ *
+ * Hidden on Money Account → Perps deposits, which use `PerpsAccountPickerRow`
+ * as their `To` row.
+ */
+export function PerpsToRow() {
   const t = useI18nContext();
+  const isMoneyAccountPerpsDeposit = useIsMoneyAccountPerpsNavigation();
+
+  if (isMoneyAccountPerpsDeposit) {
+    return null;
+  }
 
   return (
     <ConfirmInfoRow
       data-testid="perps-to-row"
       label={t('to')}
-      rowVariant={variant}
+      rowVariant={ConfirmInfoRowSize.Small}
     >
       <Box
         flexDirection={BoxFlexDirection.Row}
@@ -55,21 +61,4 @@ const PerpsToRowContent = ({
       </Box>
     </ConfirmInfoRow>
   );
-};
-
-/**
- * Destination row shown on token-funded Perps deposits:
- * `To: [Infinity icon] Perps balance`.
- *
- * Hidden on Money Account → Perps deposits, which use `PerpsAccountPickerRow`
- * as their `To` row.
- */
-export function PerpsToRow(props: PerpsToRowProps = {}) {
-  const isMoneyAccountPerpsDeposit = useIsMoneyAccountPerpsNavigation();
-
-  if (isMoneyAccountPerpsDeposit) {
-    return null;
-  }
-
-  return <PerpsToRowContent {...props} />;
 }

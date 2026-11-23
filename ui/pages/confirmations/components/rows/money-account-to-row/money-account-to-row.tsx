@@ -82,64 +82,6 @@ const INTRO_HERO_IMAGES = {
   foregroundSrc: './images/money-ftue-hero-coins.png',
 } as const;
 
-const MoneyIntroContentDialog = ({
-  apyPercentFormatted,
-  isOpen,
-  onClose,
-  onOpenApyDialog,
-}: Readonly<{
-  apyPercentFormatted?: string;
-  isOpen: boolean;
-  onClose: () => void;
-  onOpenApyDialog?: () => void;
-}>) => {
-  const t = useI18nContext();
-  const apyDisplay = apyPercentFormatted ?? '—';
-
-  const apyNode =
-    apyPercentFormatted && onOpenApyDialog ? (
-      <DottedTrigger
-        key="apy"
-        color={TextColor.SuccessDefault}
-        data-testid="money-intro-dialog-apy-trigger"
-        onClick={onOpenApyDialog}
-        text={apyPercentFormatted}
-        variant={TextVariant.BodyMd}
-      />
-    ) : (
-      <span key="apy" className="text-success-default">
-        {apyDisplay}
-      </span>
-    );
-
-  const items = INTRO_BENEFIT_KEYS.map(({ bodyKey, id, titleKey }) => ({
-    body: t(bodyKey),
-    id,
-    itemTestId: `money-intro-dialog-benefit-${id}`,
-    title: t(titleKey),
-  }));
-
-  return (
-    <PayChecklistDialog
-      data-testid={MONEY_INTRO_DIALOG_TEST_ID}
-      headerTitle={t('moneyFtueTitle')}
-      headerTitleTestId="money-intro-dialog-title"
-      heroImages={INTRO_HERO_IMAGES}
-      isOpen={isOpen}
-      items={items}
-      lead={t('moneyFtueDescription', [apyNode])}
-      leadTestId="money-intro-dialog-description"
-      onClose={onClose}
-      title={t('moneyFtueHeadline')}
-      titleTestId="money-intro-dialog-headline"
-    />
-  );
-};
-
-export type MoneyAccountToRowProps = {
-  variant?: ConfirmInfoRowSize;
-};
-
 /**
  * Destination row shown on Money Account deposits:
  * `To: [Money icon] MetaMask Money • 6.2% APY`.
@@ -147,9 +89,7 @@ export type MoneyAccountToRowProps = {
  * Activating `MetaMask Money` opens the read-only Money intro dialog, and
  * activating the APY opens the APY info dialog.
  */
-export function MoneyAccountToRow({
-  variant = ConfirmInfoRowSize.Small,
-}: MoneyAccountToRowProps = {}) {
+export function MoneyAccountToRow() {
   const t = useI18nContext();
   const { apyPercentFormatted } = useMoneyVaultApy({ enabled: true });
   const { trackTooltipClicked } = useMoneyAnalytics({
@@ -184,7 +124,7 @@ export function MoneyAccountToRow({
       <ConfirmInfoRow
         data-testid="money-account-to-row"
         label={t('to')}
-        rowVariant={variant}
+        rowVariant={ConfirmInfoRowSize.Small}
       >
         <Box
           flexDirection={BoxFlexDirection.Row}
@@ -249,5 +189,60 @@ export function MoneyAccountToRow({
         />
       ) : null}
     </>
+  );
+}
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function MoneyIntroContentDialog({
+  apyPercentFormatted,
+  isOpen,
+  onClose,
+  onOpenApyDialog,
+}: Readonly<{
+  apyPercentFormatted?: string;
+  isOpen: boolean;
+  onClose: () => void;
+  onOpenApyDialog?: () => void;
+}>) {
+  const t = useI18nContext();
+  const apyDisplay = apyPercentFormatted ?? '—';
+
+  const apyNode =
+    apyPercentFormatted && onOpenApyDialog ? (
+      <DottedTrigger
+        key="apy"
+        color={TextColor.SuccessDefault}
+        data-testid="money-intro-dialog-apy-trigger"
+        onClick={onOpenApyDialog}
+        text={apyPercentFormatted}
+        variant={TextVariant.BodyMd}
+      />
+    ) : (
+      <span key="apy" className="text-success-default">
+        {apyDisplay}
+      </span>
+    );
+
+  const items = INTRO_BENEFIT_KEYS.map(({ bodyKey, id, titleKey }) => ({
+    body: t(bodyKey),
+    id,
+    itemTestId: `money-intro-dialog-benefit-${id}`,
+    title: t(titleKey),
+  }));
+
+  return (
+    <PayChecklistDialog
+      data-testid={MONEY_INTRO_DIALOG_TEST_ID}
+      headerTitle={t('moneyFtueTitle')}
+      headerTitleTestId="money-intro-dialog-title"
+      heroImages={INTRO_HERO_IMAGES}
+      isOpen={isOpen}
+      items={items}
+      lead={t('moneyFtueDescription', [apyNode])}
+      leadTestId="money-intro-dialog-description"
+      onClose={onClose}
+      title={t('moneyFtueHeadline')}
+      titleTestId="money-intro-dialog-headline"
+    />
   );
 }
