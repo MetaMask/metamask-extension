@@ -171,6 +171,20 @@ export const CustomAmountInfo = React.memo(
     // typed amount — evaluate without pending fiat so amount state can load.
     const { disableUpdate } = useTransactionCustomAmountAlerts();
 
+    const { isNative: isNativePayToken } = useTransactionPayToken();
+    // Withdraw always offers Max: in post-quote mode the picker token is the
+    // destination, so the native gas reserve below does not apply.
+    // Otherwise Max needs the flow to opt in (`hasMax`) and a non-native pay
+    // token — spending a whole native balance would leave nothing for gas, so
+    // those keep 90%. Matches mobile `custom-amount-info`.
+    const showMax = isWithdraw || (Boolean(hasMax) && !isNativePayToken);
+    const isPercentageButtonsEnabled =
+      Boolean(displayPercentageButtons) &&
+      hasTokens &&
+      !disablePercentageButtons;
+    // Typing the displayed balance commits Max only where Max is offered.
+    const isMaxAvailable = isPercentageButtonsEnabled && showMax;
+
     const {
       amountFiat,
       amountHuman,
@@ -178,12 +192,14 @@ export const CustomAmountInfo = React.memo(
       hasInput,
       isDepositPrefillLoading,
       isQuoteDerivedAmountLoading,
+      resolveAmountFiat,
       updatePendingAmount,
       updatePendingAmountPercentage,
     } = useTransactionCustomAmount({
       balanceUsdOverride,
       currency,
       disableUpdate,
+      isMaxAvailable,
       prefillMaxOnLoad,
     });
 
@@ -203,18 +219,15 @@ export const CustomAmountInfo = React.memo(
     // amount that is about to be replaced, so withhold it until the field
     // settles. Amount-independent alerts (no funds, hardware, signing) are
     // unaffected — they come from the argument-less call above.
+    // A typed amount that will snap to Max is judged as the full balance it
+    // commits, so the insufficient-balance alert does not fire on the rounded
+    // display value.
     const { alertContent, alertMessage, hasAlert, hideResults } =
       useTransactionCustomAmountAlerts({
-        pendingFiatAmount: showAmountLoader ? undefined : amountFiat,
+        pendingFiatAmount: showAmountLoader
+          ? undefined
+          : resolveAmountFiat(amountFiat),
       });
-
-    const { isNative: isNativePayToken } = useTransactionPayToken();
-    // Withdraw always offers Max: in post-quote mode the picker token is the
-    // destination, so the native gas reserve below does not apply.
-    // Otherwise Max needs the flow to opt in (`hasMax`) and a non-native pay
-    // token — spending a whole native balance would leave nothing for gas, so
-    // those keep 90%. Matches mobile `custom-amount-info`.
-    const showMax = isWithdraw || (Boolean(hasMax) && !isNativePayToken);
 
     const handleAmountChange = useCallback(
       (value: string) => {
@@ -258,7 +271,7 @@ export const CustomAmountInfo = React.memo(
         <AlertMessage alertContent={alertContent} alertMessage={alertMessage} />
         {displayPercentageButtons && (
           <PercentageButtons
-            disabled={!hasTokens || Boolean(disablePercentageButtons)}
+            disabled={!isPercentageButtonsEnabled}
             hasMax={showMax}
             onPercentageClick={updatePendingAmountPercentage}
           />

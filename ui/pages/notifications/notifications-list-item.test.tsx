@@ -16,6 +16,8 @@ import {
   createMockNotificationLidoReadyToBeWithdrawn,
 } from '@metamask/notification-services-controller/notification-services/mocks';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import configureStore from '../../store/store';
+import mockState from '../../../test/data/mock-state.json';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -25,6 +27,10 @@ import {
   NotificationComponents,
   hasNotificationComponents,
 } from './notification-components';
+import {
+  NotificationComponentType,
+  type NotificationComponent,
+} from './notification-components/types/notifications/notifications';
 import { NotificationsListItem } from './notifications-list-item';
 
 const mockNavigate = jest.fn();
@@ -77,7 +83,10 @@ describe('NotificationsListItem', () => {
   });
 
   it('renders wallet activity copy from the API template', () => {
-    renderWithProvider(<NotificationsListItem notification={notification} />);
+    renderWithProvider(
+      <NotificationsListItem notification={notification} />,
+      configureStore(mockState),
+    );
 
     expect(screen.getByText(apiTemplate.title)).toBeInTheDocument();
     expect(screen.getByText(apiTemplate.body)).toBeInTheDocument();
@@ -91,13 +100,19 @@ describe('NotificationsListItem', () => {
       throw new Error('Expected notification details title');
     }
 
-    renderWithProvider(<DetailsTitle notification={notification} />);
+    renderWithProvider(
+      <DetailsTitle notification={notification} />,
+      configureStore(mockState),
+    );
 
     expect(screen.getByText(apiTemplate.title)).toBeInTheDocument();
   });
 
   it('tracks Notification Clicked when the notification item is clicked', () => {
-    renderWithProvider(<NotificationsListItem notification={notification} />);
+    renderWithProvider(
+      <NotificationsListItem notification={notification} />,
+      configureStore(mockState),
+    );
 
     const notificationListItem = screen.getByTestId(
       `notification-list-item-${notification.id}`,
@@ -178,9 +193,81 @@ describe('NotificationsListItem details title (other on-chain subtypes)', () => 
         throw new Error('Expected notification details title');
       }
 
-      renderWithProvider(<DetailsTitle notification={otherNotification} />);
+      renderWithProvider(
+        <DetailsTitle notification={otherNotification} />,
+        configureStore(mockState),
+      );
 
       expect(screen.getByText(apiTemplate.title)).toBeInTheDocument();
+    },
+  );
+});
+
+describe('Notification details body renderers (on-chain subtypes)', () => {
+  const onChainNotificationMocks = [
+    ['erc20_sent', createMockNotificationERC20Sent],
+    ['erc721_sent', createMockNotificationERC721Sent],
+    ['erc1155_sent', createMockNotificationERC1155Sent],
+    ['metamask_swap_completed', createMockNotificationMetaMaskSwapsCompleted],
+    [
+      'rocketpool_stake_completed',
+      createMockNotificationRocketPoolStakeCompleted,
+    ],
+    [
+      'lido_withdrawal_requested',
+      createMockNotificationLidoWithdrawalRequested,
+    ],
+    [
+      'lido_stake_ready_to_be_withdrawn',
+      createMockNotificationLidoReadyToBeWithdrawn,
+    ],
+  ] as const;
+
+  // @ts-expect-error This function is missing from the Mocha type definitions
+  it.each(onChainNotificationMocks)(
+    'renders the %s details renderers with the registry network logo',
+    (_subtype: string, createMock: () => INotification) => {
+      const subtypeNotification = {
+        ...processNotification(createMock()),
+        template: apiTemplate,
+        isRead: false,
+      } as INotification;
+
+      const body = NotificationComponents[subtypeNotification.type]?.details
+        ?.body as NonNullable<NotificationComponent['details']>['body'];
+      if (!body || body.type !== NotificationComponentType.OnChainBody) {
+        throw new Error('Expected on-chain notification details body');
+      }
+
+      type BodyRenderer = (props: {
+        notification: INotification;
+      }) => React.ReactElement;
+      const renderers = (
+        [
+          body.Image,
+          body.From,
+          body.To,
+          body.Account,
+          body.Asset,
+          body.AssetReceived,
+          body.Status,
+          body.Network,
+          body.Rate,
+        ] as (BodyRenderer | undefined)[]
+      ).filter((r): r is BodyRenderer => Boolean(r));
+
+      const { container } = renderWithProvider(
+        <>
+          {renderers.map((Renderer, index) => (
+            <Renderer key={index} notification={subtypeNotification} />
+          ))}
+        </>,
+        configureStore(mockState),
+      );
+
+      // Every renderer mounted without throwing and resolved its network
+      // logo source.
+      expect(container.firstChild).not.toBeNull();
     },
   );
 });

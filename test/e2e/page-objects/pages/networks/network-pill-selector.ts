@@ -17,8 +17,8 @@ function toPillChainId(chainId: string): string {
 
 /**
  * The network pills above the token table in the wide layout
- * (`extensionUxFullscreenRedesign`). They filter the asset list by network the
- * same way the network filter modal does.
+ * (`coreCEUX1492AbtestWideScreenRedesign` treatment). They filter the asset
+ * list by network the same way the network filter modal does.
  *
  * Screen: home, wide layout only. The narrow layout has no pills; use
  * `NetworkFilter` and `SelectNetworkModal` there.

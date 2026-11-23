@@ -29,7 +29,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.3.3/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.3.4/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
       - PERPS_ENABLED: true
     # Main build uses the default browser manifest
@@ -55,7 +55,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.3.3/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.3.4/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
     # Modifies how the version is displayed.
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
@@ -80,7 +80,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.3.3/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.3.4/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
       - ENABLE_SETTINGS_PAGE_DEV_OPTIONS: true
       - PERPS_ENABLED: true
@@ -105,12 +105,11 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.3.3/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.3.4/index.html
       - SUPPORT_LINK: https://support.metamask.com/?utm_source=extension
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
-      - EIP_4337_ENTRYPOINT: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789'
       - GATOR_ENABLED_PERMISSION_TYPES: 'native-token-allowance,native-token-stream,native-token-periodic,erc20-token-allowance,erc20-token-stream,erc20-token-periodic,token-approval-revocation'
       - GATOR_PERMISSIONS_REVOCATION_ENABLED: true
       - PERPS_ENABLED: true
@@ -424,11 +423,6 @@ env:
   - METAMASK_BUILD_TYPE_DEFAULT: *default
   # Path to a JSON file that will be used to override the default manifest values.
   - MANIFEST_OVERRIDES: null
-
-  ###
-  # Account Abstraction (EIP-4337)
-  ###
-  - EIP_4337_ENTRYPOINT: null
 
   ###
   # Enable/disable why did you render debug tool: https://github.com/welldone-software/why-did-you-render

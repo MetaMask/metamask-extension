@@ -277,6 +277,9 @@ export class ScreencastRecorder {
       if (await this.skipSensitive(entry)) {
         return;
       }
+      // Read the URL before writing: the page can navigate while the write is
+      // pending, and the frame must describe the screen that was captured.
+      const url = entry.page.isClosed() ? null : entry.page.url();
       const buffer = Buffer.from(data, 'base64');
       if (entry.lastBuffer?.equals(buffer)) {
         return;
@@ -294,7 +297,7 @@ export class ScreencastRecorder {
           path.join(this.options.dir, 'frames.jsonl'),
           `${JSON.stringify({
             page: entry.index,
-            url: entry.page.isClosed() ? null : entry.page.url(),
+            url,
             ts,
             deviceWidth: viewport.width,
             deviceHeight: viewport.height,
