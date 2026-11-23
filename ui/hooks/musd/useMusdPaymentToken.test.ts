@@ -7,7 +7,9 @@ import { replaceMusdConversionTransactionForPayToken } from '../../components/ap
 import { useConfirmContext } from '../../pages/confirmations/context/confirm';
 import { useTransactionPayToken } from '../../pages/confirmations/hooks/pay/useTransactionPayToken';
 import { rejectPendingApproval } from '../../store/actions';
+import { updateTransactionPaymentToken } from '../../store/controller-actions/transaction-pay-controller';
 import { useDispatch } from '../../store/hooks';
+import { encodeEvmAssetId } from '../../../shared/lib/transaction/pay-token';
 import { useMusdPaymentToken } from './useMusdPaymentToken';
 
 jest.mock('../../store/hooks', () => ({
@@ -24,6 +26,7 @@ jest.mock('react-router-dom', () => ({
 }));
 
 jest.mock('@metamask/rpc-errors', () => ({
+  ...jest.requireActual('@metamask/rpc-errors'),
   providerErrors: {
     userRejectedRequest: jest.fn(() => ({
       code: 4001,
@@ -52,7 +55,7 @@ jest.mock('../../store/actions', () => ({
 }));
 
 jest.mock('../../store/controller-actions/transaction-pay-controller', () => ({
-  updateTransactionPaymentToken: jest.fn(),
+  updateTransactionPaymentToken: jest.fn().mockResolvedValue(undefined),
 }));
 
 const mockUseAppDispatch = useDispatch as jest.MockedFunction<
@@ -87,6 +90,7 @@ describe('useMusdPaymentToken', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
+    mockSetPayToken.mockResolvedValue(undefined);
     mockUseAppDispatch.mockReturnValue(mockDispatch);
 
     mockUseConfirmContext.mockReturnValue({
@@ -115,7 +119,9 @@ describe('useMusdPaymentToken', () => {
         await result.current.onPaymentTokenChange(sameChainToken);
       });
 
-      expect(mockSetPayToken).toHaveBeenCalledWith(sameChainToken);
+      expect(mockSetPayToken).toHaveBeenCalledWith({
+        assetId: encodeEvmAssetId(sameChainToken),
+      });
       expect(mockReplaceTransaction).not.toHaveBeenCalled();
       expect(mockNavigate).not.toHaveBeenCalled();
     });
@@ -139,7 +145,9 @@ describe('useMusdPaymentToken', () => {
         await result.current.onPaymentTokenChange(sameChainToken);
       });
 
-      expect(mockSetPayToken).toHaveBeenCalledWith(sameChainToken);
+      expect(mockSetPayToken).toHaveBeenCalledWith({
+        assetId: encodeEvmAssetId(sameChainToken),
+      });
       expect(mockReplaceTransaction).not.toHaveBeenCalled();
     });
   });
@@ -171,6 +179,30 @@ describe('useMusdPaymentToken', () => {
           rejectApproval: expect.any(Function),
         }),
       );
+    });
+
+    it('selects the replacement payment token by its asset ID', async () => {
+      const { result } = renderHook(() => useMusdPaymentToken());
+
+      await act(async () => {
+        await result.current.onPaymentTokenChange({
+          address: '0x176211869ca2b568f2a7d4ee941e073a821ee1ff',
+          chainId: '0xe708',
+        });
+      });
+
+      const { updatePaymentToken } = mockReplaceTransaction.mock.calls[0][2];
+      updatePaymentToken({
+        transactionId: 'new-tx',
+        tokenAddress: '0x176211869ca2b568f2a7d4ee941e073a821ee1ff',
+        chainId: '0xe708',
+      });
+
+      expect(updateTransactionPaymentToken).toHaveBeenCalledWith({
+        transactionId: 'new-tx',
+        assetId:
+          'eip155:59144/erc20:0x176211869cA2b568f2A7D4EE941E073a821EE1ff',
+      });
     });
 
     it('navigates to new transaction after successful replacement', async () => {
@@ -250,6 +282,30 @@ describe('useMusdPaymentToken', () => {
   });
 
   describe('error handling', () => {
+    it('logs an error when setting a same-chain payment token fails', async () => {
+      const consoleSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      const error = new Error('Update failed');
+      mockSetPayToken.mockRejectedValue(error);
+
+      const { result } = renderHook(() => useMusdPaymentToken());
+
+      await act(async () => {
+        await result.current.onPaymentTokenChange({
+          address: '0xnewtoken' as Hex,
+          chainId: '0x1' as Hex,
+        });
+      });
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Failed to update the mUSD payment token',
+        error,
+      );
+
+      consoleSpy.mockRestore();
+    });
+
     it('logs error and does not navigate when replacement fails', async () => {
       const consoleSpy = jest
         .spyOn(console, 'error')
@@ -391,7 +447,9 @@ describe('useMusdPaymentToken', () => {
         await result.current.onPaymentTokenChange(token);
       });
 
-      expect(mockSetPayToken).toHaveBeenCalledWith(token);
+      expect(mockSetPayToken).toHaveBeenCalledWith({
+        assetId: encodeEvmAssetId(token),
+      });
       expect(mockReplaceTransaction).not.toHaveBeenCalled();
     });
 
@@ -414,7 +472,9 @@ describe('useMusdPaymentToken', () => {
         await result.current.onPaymentTokenChange(token);
       });
 
-      expect(mockSetPayToken).toHaveBeenCalledWith(token);
+      expect(mockSetPayToken).toHaveBeenCalledWith({
+        assetId: encodeEvmAssetId(token),
+      });
       expect(mockReplaceTransaction).not.toHaveBeenCalled();
     });
   });
