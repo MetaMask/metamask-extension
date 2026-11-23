@@ -6,6 +6,8 @@ import type { ConsolidatedWallets } from '../../../selectors/multichain-accounts
 
 export type EvmAccountGroupedByWallet = {
   id: AccountGroupId;
+  /** ID of the group's EVM `InternalAccount`. */
+  accountId: string;
   name: string;
   address: string;
   type: string;
@@ -84,6 +86,7 @@ export function getEvmAccountsGroupedByWallet(
         if (evmAccount) {
           accounts.push({
             id: group.id,
+            accountId: evmAccount.id,
             name: group.metadata.name,
             address: evmAccount.address,
             type: evmAccount.type,
