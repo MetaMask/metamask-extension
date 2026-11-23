@@ -1,9 +1,12 @@
+import { createRequire } from 'node:module';
 import { describe, it, mock } from 'node:test';
 import assert from 'node:assert';
 import type { LoaderContext } from 'webpack';
 import reactRefreshLoader, {
   type ReactRefreshLoaderOptions,
-} from '../utils/loaders/reactRefreshLoader';
+} from '../utils/loaders/reactRefreshLoader.ts';
+
+const nodeRequire = createRequire(import.meta.url);
 
 describe('reactRefreshLoader', () => {
   it('prepends the React Refresh runtime and UI client imports', () => {
@@ -18,8 +21,9 @@ describe('reactRefreshLoader', () => {
       getOptions: () => ({ clientRequest }),
       utils: { contextify },
     } as unknown as LoaderContext<ReactRefreshLoaderOptions>;
-    const reactRefreshEntryPath =
-      require.resolve('@pmmmwh/react-refresh-webpack-plugin/client/ReactRefreshEntry');
+    const reactRefreshEntryPath = nodeRequire.resolve(
+      '@pmmmwh/react-refresh-webpack-plugin/client/ReactRefreshEntry',
+    );
 
     const result = reactRefreshLoader.call(context, 'bootstrapUi();');
 

@@ -822,8 +822,8 @@
       },
       "meta": {
         "webpack-optimization": [
-          "Dependency '@ledgerhq/device-management-kit>inversify' reexports from '@ledgerhq/device-management-kit>inversify>@inversifyjs/core' and webpack collapsed that to a direct import.",
-          "Dependency '@ledgerhq/device-management-kit>inversify' reexports from '@ledgerhq/device-management-kit>inversify>@inversifyjs/container' and webpack collapsed that to a direct import."
+          "Dependency '@ledgerhq/device-management-kit>inversify' reexports from '@ledgerhq/device-management-kit>inversify>@inversifyjs/container' and webpack collapsed that to a direct import.",
+          "Dependency '@ledgerhq/device-management-kit>inversify' reexports from '@ledgerhq/device-management-kit>inversify>@inversifyjs/core' and webpack collapsed that to a direct import."
         ]
       },
       "packages": {
@@ -1153,7 +1153,6 @@
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/core-backend": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,
@@ -1533,9 +1532,9 @@
       },
       "meta": {
         "webpack-optimization": [
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import.",
           "Dependency '@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import.",
-          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/error-utils' and webpack collapsed that to a direct import.",
-          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import."
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/error-utils' and webpack collapsed that to a direct import."
         ]
       },
       "packages": {
@@ -1799,6 +1798,7 @@
         "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/context-module": true,
         "@ledgerhq/device-management-kit": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/device-signer-kit-ethereum": true,
         "@ledgerhq/hw-transport": true,
@@ -2208,8 +2208,8 @@
       },
       "meta": {
         "webpack-optimization": [
-          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import.",
-          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/byte-utils' and webpack collapsed that to a direct import."
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/byte-utils' and webpack collapsed that to a direct import.",
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import."
         ]
       },
       "packages": {
@@ -2838,8 +2838,8 @@
     "@metamask/transaction-pay-middleware>@metamask/perps-controller": {
       "meta": {
         "webpack-optimization": [
-          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/byte-utils' and webpack collapsed that to a direct import.",
-          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import."
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import.",
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/byte-utils' and webpack collapsed that to a direct import."
         ]
       },
       "packages": {
