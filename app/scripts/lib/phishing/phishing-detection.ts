@@ -145,7 +145,7 @@ export function maybeDetectPhishing(
         return {};
       }
 
-      updatePhishingLists(controller.phishingController);
+      void updatePhishingLists(controller.phishingController);
 
       const blockedRequestResponse: PhishingDetectorResult =
         controller.phishingController.isBlockedRequest(details.url);
