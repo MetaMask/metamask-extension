@@ -2,7 +2,6 @@ import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
-import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import {
   mockPriceApi,
@@ -26,7 +25,6 @@ describe('Privacy Mode', function () {
         await homePage.togglePrivacyBalance();
         await homePage.checkExpectedBalanceIsDisplayed('••••••', '••••••');
 
-        const headerNavbar = new HeaderNavbar(driver);
         await openAccountMenu(driver);
 
         const accountList = new AccountListPage(driver);
@@ -60,7 +58,6 @@ describe('Privacy Mode', function () {
         await homePage.togglePrivacyBalance();
         await homePage.checkExpectedBalanceIsDisplayed('$85,025');
 
-        const headerNavbar = new HeaderNavbar(driver);
         await openAccountMenu(driver);
 
         const accountList = new AccountListPage(driver);

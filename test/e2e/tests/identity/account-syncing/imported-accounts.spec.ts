@@ -13,7 +13,6 @@ import {
 import { login } from '../../../page-objects/flows/login.flow';
 import { importAccountWithPrivateKey } from '../../../page-objects/flows/add-wallet.flow';
 import AccountListPage from '../../../page-objects/pages/accounts/list-page';
-import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import { skipOnFirefox } from '../helpers';
@@ -67,8 +66,6 @@ describe('Account syncing - Unsupported Account types', function () {
         const tokensTab = new TokensTab(driver);
         await tokensTab.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
-        const header = new HeaderNavbar(driver);
-        await header.checkPageIsLoaded();
         await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);
@@ -130,8 +127,6 @@ describe('Account syncing - Unsupported Account types', function () {
         const tokensTab = new TokensTab(driver);
         await tokensTab.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
-        const header = new HeaderNavbar(driver);
-        await header.checkPageIsLoaded();
         await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);

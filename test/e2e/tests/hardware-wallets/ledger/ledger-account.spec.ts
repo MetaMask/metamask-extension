@@ -4,7 +4,6 @@ import { withFixtures } from '../../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
 import AccountListPage from '../../../page-objects/pages/accounts/list-page';
 import ConnectHardwareWalletPage from '../../../page-objects/pages/hardware-wallet/connect-hardware-wallet-page';
-import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import SelectHardwareWalletAccountPage from '../../../page-objects/pages/hardware-wallet/select-hardware-wallet-account-page';
 import AccountDetailsPage from '../../../page-objects/pages/accounts/details-page';
@@ -23,7 +22,6 @@ describe('Ledger Hardware', function () {
       async ({ driver }) => {
         await login(driver);
 
-        const headerNavbar = new HeaderNavbar(driver);
         await openAccountMenu(driver);
 
         // Choose connect hardware wallet from the account menu
@@ -85,7 +83,6 @@ describe('Ledger Hardware', function () {
       },
       async ({ driver }) => {
         await login(driver);
-        const headerNavbar = new HeaderNavbar(driver);
         await openAccountMenu(driver);
 
         // Choose connect hardware wallet from the account menu

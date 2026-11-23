@@ -11,7 +11,6 @@ import {
 import DownloadAppPage from '../../page-objects/pages/onboarding/download-app-page';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import AccountAddressListPage from '../../page-objects/pages/accounts/address-list-page';
-import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import {
@@ -237,7 +236,6 @@ describe('Metamask onboarding (with social login)', function () {
           symbol: 'ETH',
           timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
-        const headerNavbar = new HeaderNavbar(driver);
         await openAccountMenu(driver);
         const accountListPage = new AccountListPage(driver);
 
@@ -284,7 +282,6 @@ describe('Metamask onboarding (with social login)', function () {
           symbol: 'ETH',
           timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
-        const headerNavbar = new HeaderNavbar(driver);
         await openAccountMenu(driver);
         const accountListPage = new AccountListPage(driver);
 

@@ -143,7 +143,6 @@ describe('Add account', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { expectedBalance: '$75,250.00' });
-        const headerNavbar = new HeaderNavbar(driver);
         await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);
@@ -191,7 +190,6 @@ describe('Add account', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { expectedBalance: '$85,025.00' });
-        const headerNavbar = new HeaderNavbar(driver);
         await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);

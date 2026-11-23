@@ -11,7 +11,6 @@ import {
   SECOND_TEST_E2E_SRP,
   verifyAccountBelongsToSrp,
 } from '../../page-objects/flows/multi-srp.flow';
-import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import ChooseWalletTypePage from '../../page-objects/pages/accounts/add-wallet/choose-wallet-type-page';
 import ImportSrpPage from '../../page-objects/pages/accounts/add-wallet/import-srp-page';
@@ -65,7 +64,6 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         await importAdditionalSecretRecoveryPhrase(driver);
-        const headerNavbar = new HeaderNavbar(driver);
         await openAccountMenu(driver);
         const accountListPage = new AccountListPage(driver);
         await accountListPage.openMultichainAccountMenu({
@@ -97,7 +95,6 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        const headerNavbar = new HeaderNavbar(driver);
         await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);

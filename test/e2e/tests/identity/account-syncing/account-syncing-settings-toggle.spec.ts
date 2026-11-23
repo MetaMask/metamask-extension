@@ -66,7 +66,6 @@ describe('Account syncing - Settings Toggle', function () {
         await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
         const header = new HeaderNavbar(driver);
-        await header.checkPageIsLoaded();
         await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);
@@ -113,7 +112,6 @@ describe('Account syncing - Settings Toggle', function () {
 
         // Navigate back to wallet to create third account
         await driver.navigate(PAGES.HOME);
-        await header.checkPageIsLoaded();
         await openAccountMenu(driver);
         await accountListPage.checkPageIsLoaded();
 
@@ -144,8 +142,6 @@ describe('Account syncing - Settings Toggle', function () {
         const homePage = new HomePage(driver);
         await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
-        const header = new HeaderNavbar(driver);
-        await header.checkPageIsLoaded();
         await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);

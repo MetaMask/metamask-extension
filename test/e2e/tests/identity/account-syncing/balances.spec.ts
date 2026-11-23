@@ -9,7 +9,6 @@ import {
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
 import AccountListPage from '../../../page-objects/pages/accounts/list-page';
-import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { skipOnFirefox } from '../helpers';
 import { mockInfuraAndAccountSync } from '../mocks';
@@ -52,8 +51,6 @@ describe('Account syncing - Accounts with Balances', function () {
       async ({ driver }) => {
         await login(driver);
 
-        const header = new HeaderNavbar(driver);
-        await header.checkPageIsLoaded();
         await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);
@@ -108,8 +105,6 @@ describe('Account syncing - Accounts with Balances', function () {
           password: WALLET_PASSWORD,
         });
 
-        const header = new HeaderNavbar(driver);
-        await header.checkPageIsLoaded();
         await openAccountMenu(driver);
 
         const homePage = new HomePage(driver);

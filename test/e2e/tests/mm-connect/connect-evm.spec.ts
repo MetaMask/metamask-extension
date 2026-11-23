@@ -81,7 +81,6 @@ describe('MM Connect-EVM', function (this: Suite) {
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
-          const headerNavbar = new HeaderNavbar(driver);
           await openAccountMenu(driver);
           const accountListPage = new AccountListPage(driver);
           await accountListPage.switchToAccount('Account 2');
@@ -276,7 +275,6 @@ describe('MM Connect-EVM', function (this: Suite) {
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
-          const headerNavbar = new HeaderNavbar(driver);
           await openAccountMenu(driver);
           const accountListPage = new AccountListPage(driver);
           await accountListPage.switchToAccount('Account 2');

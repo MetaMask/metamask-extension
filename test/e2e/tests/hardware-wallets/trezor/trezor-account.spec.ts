@@ -68,7 +68,6 @@ describe('Trezor Hardware', function () {
       },
       async ({ driver }) => {
         await login(driver);
-        const headerNavbar = new HeaderNavbar(driver);
         await openAccountMenu(driver);
 
         // Choose connect hardware wallet from the account menu

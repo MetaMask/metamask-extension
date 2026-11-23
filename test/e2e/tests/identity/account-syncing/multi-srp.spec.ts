@@ -65,8 +65,6 @@ describe('Account syncing - Multiple SRPs', function () {
         const tokensTab = new TokensTab(driver);
         await tokensTab.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
-        const header = new HeaderNavbar(driver);
-        await header.checkPageIsLoaded();
         await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);

@@ -13,7 +13,6 @@ import {
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import AccountListPage from '../../../page-objects/pages/accounts/list-page';
-import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
 import { skipOnFirefox } from '../helpers';
@@ -67,8 +66,6 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
         const homePage = new HomePage(driver);
         await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
-        const header = new HeaderNavbar(driver);
-        await header.checkPageIsLoaded();
         await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);
@@ -122,8 +119,6 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
         const homePage = new HomePage(driver);
         await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
-        const header = new HeaderNavbar(driver);
-        await header.checkPageIsLoaded();
         await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);
@@ -196,8 +191,6 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
         await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
         // await driver.delay(2000);
 
-        const header = new HeaderNavbar(driver);
-        await header.checkPageIsLoaded();
         await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);

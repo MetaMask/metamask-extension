@@ -82,7 +82,6 @@ describe('Add wallet', function () {
         await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
         // Open account details modal and check displayed account address
-        const headerNavbar = new HeaderNavbar(driver);
         await openAccountMenu(driver);
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
@@ -112,7 +111,6 @@ describe('Add wallet', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        const headerNavbar = new HeaderNavbar(driver);
         await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);
