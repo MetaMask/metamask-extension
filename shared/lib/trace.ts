@@ -264,8 +264,8 @@ export type SharedTraceState = {
    */
   backgroundPageloadSpanId?: string;
   /**
-   * The trace id of the UI document's latest pageload or navigation, which the
-   * SDK keeps on the scope until the next navigation. Unset in the background.
+   * The trace id of the UI document's latest pageload or navigation. Unset in
+   * the background.
    */
   documentRouteTraceId?: string;
 };
@@ -391,9 +391,8 @@ export type TraceRequest = {
    * background's whole life, so such work would otherwise join that trace and
    * be kept or dropped with it.
    *
-   * In a UI document, so does a trace started on the current route's trace id,
-   * which the SDK keeps on the scope until the next navigation. While a span is
-   * active, a declared parent that does not resolve nests under it instead.
+   * In a UI document, work on the current route's trace id is a root too,
+   * unless an active span adopts it.
    */
   root?: boolean;
 };
@@ -682,7 +681,8 @@ function isOnBackgroundPageload(): boolean {
 const ROUTE_OPS = new Set(['pageload', 'navigation']);
 
 /**
- * Records UI route trace ids for {@link TraceRequest.root}; call right after `Sentry.init`.
+ * Records UI route trace ids for {@link TraceRequest.root}. Call right after
+ * `Sentry.init`.
  *
  * @param client - The Sentry client that emits each navigation's `spanStart`.
  */
@@ -706,7 +706,7 @@ export function trackDocumentRouteTrace(client?: Client): void {
 }
 
 /**
- * Whether the scope still holds the latest route's trace id, running or ended.
+ * Whether the scope still holds the latest route's trace id.
  *
  * @returns True when such work should start its own trace.
  */
@@ -1164,12 +1164,8 @@ function startSpan<T>(
   // has no span. `resolveParentSpan` returns `null` for both, so read the input.
   const parentDeclared = parentContext !== undefined;
 
-  // Work without a resolved parent leaves the scope's ambient trace id, which
-  // is the background pageload's, or the UI document's latest route's. In
-  // either case it starts its own trace, declared parent or not. `traceparent`
-  // data is handled below and is not a root. In the background, an active span
-  // that the fallback or the unresolved-parent nesting below adopts keeps the
-  // work out of the pageload's trace.
+  // With no parent and nothing to nest under, work takes the scope's trace id:
+  // the background pageload's, or the UI document's latest route's.
   const root =
     request.root ||
     (!parentSpan &&
