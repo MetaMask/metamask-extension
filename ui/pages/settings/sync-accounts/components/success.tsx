@@ -17,21 +17,27 @@ type SuccessProps = {
   onDone: () => void;
   walletCount?: number;
   importedAccountCount?: number;
+  /** Total number of accounts that were sent to MetaMask Mobile. */
+  accountCount?: number;
 };
 
 const Success = ({
   onDone,
-  walletCount = 2,
-  importedAccountCount = 5,
+  walletCount = 0,
+  importedAccountCount = 0,
+  accountCount = 0,
 }: SuccessProps) => {
   const t = useI18nContext();
 
-  const description = t(
-    importedAccountCount === 1
-      ? 'qrSyncAccountImportedDescription'
-      : 'qrSyncAccountsImportedDescription',
-    [importedAccountCount],
-  );
+  let description: string | null = null;
+  if (accountCount > 0) {
+    description = t(
+      accountCount === 1
+        ? 'qrSyncAccountImportedDescription'
+        : 'qrSyncAccountsImportedDescription',
+      [accountCount],
+    );
+  }
 
   return (
     <Box
@@ -63,14 +69,16 @@ const Success = ({
           >
             {t('add_device_success_title')}
           </Text>
-          <Text
-            variant={TextVariant.BodyMd}
-            color={TextColor.TextAlternative}
-            textAlign={TextAlign.Center}
-            className="max-w-80"
-          >
-            {description}
-          </Text>
+          {description ? (
+            <Text
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+              textAlign={TextAlign.Center}
+              className="max-w-80"
+            >
+              {description}
+            </Text>
+          ) : null}
         </Box>
       </Box>
       <Button

@@ -12,7 +12,12 @@ jest.mock('./success-check-animation', () => () => (
 describe('Success', () => {
   it('renders the title, imported account count, and animated check', () => {
     renderWithLocalization(
-      <Success onDone={jest.fn()} walletCount={2} importedAccountCount={18} />,
+      <Success
+        onDone={jest.fn()}
+        walletCount={2}
+        importedAccountCount={0}
+        accountCount={18}
+      />,
     );
 
     expect(
@@ -35,12 +40,45 @@ describe('Success', () => {
 
   it('renders singular copy for one imported account', () => {
     renderWithLocalization(
-      <Success onDone={jest.fn()} walletCount={1} importedAccountCount={1} />,
+      <Success onDone={jest.fn()} walletCount={1} accountCount={1} />,
     );
 
     expect(
       screen.getByText('1 account imported to MetaMask mobile'),
     ).toBeInTheDocument();
+  });
+
+  it('describes all synced accounts, not only imported private-key accounts', () => {
+    renderWithLocalization(
+      <Success
+        onDone={jest.fn()}
+        walletCount={1}
+        importedAccountCount={0}
+        accountCount={3}
+      />,
+    );
+
+    expect(
+      screen.getByText('3 accounts imported to MetaMask mobile'),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('qr-sync-success')).toHaveAttribute(
+      'data-synced-account-count',
+      '0',
+    );
+  });
+
+  it('does not show a made-up count when none is provided', () => {
+    renderWithLocalization(<Success onDone={jest.fn()} />);
+
+    expect(screen.queryByText(/imported to MetaMask mobile/u)).toBeNull();
+    expect(screen.getByTestId('qr-sync-success')).toHaveAttribute(
+      'data-synced-wallet-count',
+      '0',
+    );
+    expect(screen.getByTestId('qr-sync-success')).toHaveAttribute(
+      'data-synced-account-count',
+      '0',
+    );
   });
 
   it('anchors the done button to the bottom of the screen', () => {

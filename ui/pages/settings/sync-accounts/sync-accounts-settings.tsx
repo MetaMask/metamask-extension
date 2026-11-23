@@ -44,10 +44,13 @@ const SyncAccountsSettings = () => {
     },
     [qrSyncPhase],
   );
-  const [syncSummary, setSyncSummary] = useState<Pick<
-    AddDeviceSyncRequest,
-    'syncedAccountCount' | 'syncedWalletCount'
-  > | null>(null);
+  const [syncSummary, setSyncSummary] = useState<
+    | (Pick<
+        AddDeviceSyncRequest,
+        'syncedAccountCount' | 'syncedWalletCount'
+      > & { selectedAccountCount: number })
+    | null
+  >(null);
 
   const cancelQrSyncSession = useCallback(async () => {
     await submitRequestToBackground('QrSyncController:cancelSync', []).catch(
@@ -110,7 +113,11 @@ const SyncAccountsSettings = () => {
         throw new Error('Password is required before syncing accounts.');
       }
 
-      setSyncSummary({ syncedAccountCount, syncedWalletCount });
+      setSyncSummary({
+        syncedAccountCount,
+        syncedWalletCount,
+        selectedAccountCount: selectedAccountGroupIds.length,
+      });
 
       await submitRequestToBackground('QrSyncController:syncAccounts', [
         password,
@@ -157,6 +164,7 @@ const SyncAccountsSettings = () => {
           <Success
             importedAccountCount={syncSummary.syncedAccountCount}
             walletCount={syncSummary.syncedWalletCount}
+            accountCount={syncSummary.selectedAccountCount}
             onDone={() => handleExit().catch(() => undefined)}
           />
         ) : null;
