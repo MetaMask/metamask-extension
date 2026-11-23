@@ -7,7 +7,10 @@ import AdvancedChartIframe, {
   getChartOrigin,
   LOAD_TIMEOUT_MS,
 } from './advanced-chart-iframe';
-import { VISIBLE_WINDOW_MS_BY_INTERVAL } from './chart-window-mapping';
+import {
+  INTERVAL_TO_TV_RESOLUTION,
+  VISIBLE_WINDOW_MS_BY_INTERVAL,
+} from './chart-window-mapping';
 
 type Bar = { time: number };
 
@@ -30,11 +33,13 @@ function setOhlcvPayload(
     lastBarTime !== undefined && windowMs !== undefined
       ? lastBarTime - windowMs
       : undefined;
+  const resolution = INTERVAL_TO_TV_RESOLUTION[interval.toLowerCase()];
   return {
     data,
     rnBackedPagination: { enabled: true },
     atomicIntervalWindow: true,
     ...(visibleFromMs === undefined ? {} : { visibleFromMs }),
+    ...(resolution && { resolution }),
   };
 }
 

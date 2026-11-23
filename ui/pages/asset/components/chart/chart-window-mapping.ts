@@ -33,6 +33,22 @@ export const VISIBLE_WINDOW_MS_BY_INTERVAL: Record<string, number> = {
   '1w': 365 * DAY_MS, // 1y = 1Y range -> ~52 candles
 };
 
+/**
+ * Maps extension candle-interval keys to TradingView resolution strings.
+ * Sent in SET_OHLCV_DATA so the chart engine uses the correct resolution
+ * directly, avoiding timestamp-gap detection which fails on low-liquidity
+ * tokens with irregular bar spacing.
+ */
+export const INTERVAL_TO_TV_RESOLUTION: Record<string, string> = {
+  '1m': '1',
+  '5m': '5',
+  '15m': '15',
+  '1h': '60',
+  '4h': '240',
+  '1d': '1D',
+  '1w': '1W',
+};
+
 /** Duration of a single candle at each interval, used for bar-count math. */
 export const INTERVAL_DURATION_MS: Record<string, number> = {
   '1m': 60 * 1000,

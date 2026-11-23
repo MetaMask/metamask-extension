@@ -10,7 +10,10 @@ import { ENVIRONMENT } from '../../../../../shared/constants/build';
 import { useTheme } from '../../../../hooks/useTheme';
 import { isMovingAverage } from './advanced-chart-indicator-bar';
 import { CHART_TYPE_CANDLE } from './advanced-chart-interval-bar';
-import { VISIBLE_WINDOW_MS_BY_INTERVAL } from './chart-window-mapping';
+import {
+  INTERVAL_TO_TV_RESOLUTION,
+  VISIBLE_WINDOW_MS_BY_INTERVAL,
+} from './chart-window-mapping';
 import type { FetchOlderBarsResult, OHLCVBar } from './useOHLCVChart';
 import type { OHLCVRealtimeBar } from './useOHLCVRealtime';
 
@@ -487,6 +490,8 @@ const AdvancedChartIframe = ({
         lastBarTime !== undefined && windowMs !== undefined
           ? lastBarTime - windowMs
           : undefined;
+      const resolution =
+        INTERVAL_TO_TV_RESOLUTION[selectedInterval.toLowerCase()];
 
       postToChart({
         type: 'SET_OHLCV_DATA',
@@ -502,6 +507,7 @@ const AdvancedChartIframe = ({
           // interval older than what is in memory.
           atomicIntervalWindow: true,
           ...(visibleFromMs === undefined ? {} : { visibleFromMs }),
+          ...(resolution && { resolution }),
         },
       });
       prevOhlcvDataRef.current = ohlcvData;
