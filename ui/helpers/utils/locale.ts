@@ -1,4 +1,4 @@
-// Regions with local $ currencies
+// Regions whose own currency is written as $, so USD needs marking (US$).
 const dollarRegions = new Set(['CA', 'AU', 'NZ', 'SG', 'HK', 'MX', 'AR']);
 
 // Combines the app language with the browser's region for number/date formatting.
