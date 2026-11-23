@@ -199,7 +199,7 @@ export default function LoginOptions({
             asChild
           >
             <a
-              href="https://consensys.io/terms-of-use"
+              href="https://metamask.com/terms-of-use"
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`${t('onboardingLoginFooterTermsOfUse')} (${t(
@@ -216,7 +216,7 @@ export default function LoginOptions({
             asChild
           >
             <a
-              href="https://consensys.io/privacy-notice"
+              href="https://metamask.com/privacy-notice"
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`${t('onboardingLoginFooterPrivacyNotice')} (${t(

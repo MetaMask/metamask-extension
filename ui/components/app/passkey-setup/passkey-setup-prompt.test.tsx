@@ -3,7 +3,7 @@ import {
   en as messages,
   renderWithProvider,
 } from '../../../../test/lib/render-helpers-navigate';
-import { BaseUrl } from '../../../../shared/constants/urls';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { PasskeySetupPrompt } from './passkey-setup-prompt';
 
 const PASSKEY_METHOD_LABEL = 'Biometrics';
@@ -61,7 +61,9 @@ describe('PasskeySetupPrompt', () => {
 
   it('keeps the enrollment copy and shows the ceremony error', () => {
     const enrollmentError = 'Biometrics setup failed. Try again';
-    const { getByTestId, getByText } = renderPrompt({ enrollmentError });
+    const { getByTestId, getByText, queryByRole } = renderPrompt({
+      enrollmentError,
+    });
 
     expect(
       getByText(
@@ -79,6 +81,26 @@ describe('PasskeySetupPrompt', () => {
     expect(getByTestId('passkey-enrollment-error')).toHaveTextContent(
       enrollmentError,
     );
+    expect(
+      queryByRole('link', {
+        name: messages.passkeyMigrationSupportedProviders.message,
+      }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('appends the supported-providers link to the PRF not supported error', () => {
+    const { getByRole, getByTestId } = renderPrompt({
+      enrollmentError: messages.passkeyErrorNotSupported.message,
+    });
+
+    expect(getByTestId('passkey-enrollment-error')).toHaveTextContent(
+      messages.passkeyErrorNotSupported.message,
+    );
+    expect(
+      getByRole('link', {
+        name: messages.passkeyMigrationSupportedProviders.message,
+      }),
+    ).toHaveAttribute('href', ZENDESK_URLS.SUPPORTED_PASSKEYS);
   });
 
   it('renders the PRF migration failure title and description', () => {
@@ -99,7 +121,7 @@ describe('PasskeySetupPrompt', () => {
       getByRole('link', {
         name: messages.passkeyMigrationSupportedProviders.message,
       }),
-    ).toHaveAttribute('href', BaseUrl.MetaMask);
+    ).toHaveAttribute('href', ZENDESK_URLS.SUPPORTED_PASSKEYS);
     expect(
       getByRole('button', {
         name: messages.passkeyMigrationReplacementTryAgain.message,

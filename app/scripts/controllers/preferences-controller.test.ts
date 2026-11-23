@@ -594,6 +594,8 @@ describe('preferences controller', () => {
         basicFunctionalityMigrationNotification: null,
         basicFunctionalityMigrationNotificationDismissed: false,
         skipDeepLinkInterstitial: false,
+        shouldShowSupportConsent: true,
+        supportDataSharingPreference: null,
         dismissSmartAccountSuggestionEnabled: false,
         featureNotificationsEnabled: false,
         showConfirmationAdvancedDetails: false,
@@ -605,6 +607,9 @@ describe('preferences controller', () => {
           sortCallback: 'stringNumeric',
         },
         tokenNetworkFilter: {},
+        tdpChartType: 2,
+        tdpChartInterval: '15m',
+        tdpChartIndicators: [],
         gasSponsorshipOptOutByChainId: {},
       });
     });
@@ -631,6 +636,8 @@ describe('preferences controller', () => {
         basicFunctionalityMigrationNotification: null,
         basicFunctionalityMigrationNotificationDismissed: false,
         skipDeepLinkInterstitial: false,
+        shouldShowSupportConsent: true,
+        supportDataSharingPreference: null,
         privacyMode: false,
         dismissSmartAccountSuggestionEnabled: false,
         featureNotificationsEnabled: false,
@@ -643,6 +650,9 @@ describe('preferences controller', () => {
           sortCallback: 'stringNumeric',
         },
         tokenNetworkFilter: {},
+        tdpChartType: 2,
+        tdpChartInterval: '15m',
+        tdpChartIndicators: [],
         gasSponsorshipOptOutByChainId: {},
       });
     });
@@ -974,6 +984,28 @@ describe('preferences controller', () => {
     });
   });
 
+  describe('dismissSidePanelMigrationToast', () => {
+    it('sets showSidePanelMigrationToast to false', () => {
+      const { controller } = setupController({
+        state: { showSidePanelMigrationToast: true },
+      });
+
+      controller.dismissSidePanelMigrationToast();
+
+      expect(controller.state.showSidePanelMigrationToast).toBe(false);
+    });
+
+    it('can be called through the controller messenger', () => {
+      const { controller, messenger } = setupController({
+        state: { showSidePanelMigrationToast: true },
+      });
+
+      messenger.call('PreferencesController:dismissSidePanelMigrationToast');
+
+      expect(controller.state.showSidePanelMigrationToast).toBe(false);
+    });
+  });
+
   describe('manageInstitutionalWallets', () => {
     it('defaults manageInstitutionalWallets to false', () => {
       const { controller } = setupController({});
@@ -1026,6 +1058,7 @@ describe('preferences controller', () => {
             "hideZeroBalanceTokens": false,
             "isBasicFunctionalityConsolidatedEnabled": false,
             "privacyMode": false,
+            "shouldShowSupportConsent": true,
             "showConfirmationAdvancedDetails": false,
             "showDefaultAddress": true,
             "showExtensionInFullSizeView": false,
@@ -1037,6 +1070,10 @@ describe('preferences controller', () => {
             "skipDeepLinkInterstitial": false,
             "smartTransactionsMigrationApplied": false,
             "smartTransactionsOptInStatus": true,
+            "supportDataSharingPreference": null,
+            "tdpChartIndicators": [],
+            "tdpChartInterval": "15m",
+            "tdpChartType": 2,
             "tokenNetworkFilter": {},
             "tokenSortConfig": {
               "key": "tokenFiatAmount",
@@ -1100,6 +1137,7 @@ describe('preferences controller', () => {
             "hideZeroBalanceTokens": false,
             "isBasicFunctionalityConsolidatedEnabled": false,
             "privacyMode": false,
+            "shouldShowSupportConsent": true,
             "showConfirmationAdvancedDetails": false,
             "showDefaultAddress": true,
             "showExtensionInFullSizeView": false,
@@ -1111,6 +1149,10 @@ describe('preferences controller', () => {
             "skipDeepLinkInterstitial": false,
             "smartTransactionsMigrationApplied": false,
             "smartTransactionsOptInStatus": true,
+            "supportDataSharingPreference": null,
+            "tdpChartIndicators": [],
+            "tdpChartInterval": "15m",
+            "tdpChartType": 2,
             "tokenNetworkFilter": {},
             "tokenSortConfig": {
               "key": "tokenFiatAmount",
@@ -1188,6 +1230,7 @@ describe('preferences controller', () => {
             "hideZeroBalanceTokens": false,
             "isBasicFunctionalityConsolidatedEnabled": false,
             "privacyMode": false,
+            "shouldShowSupportConsent": true,
             "showConfirmationAdvancedDetails": false,
             "showDefaultAddress": true,
             "showExtensionInFullSizeView": false,
@@ -1199,6 +1242,10 @@ describe('preferences controller', () => {
             "skipDeepLinkInterstitial": false,
             "smartTransactionsMigrationApplied": false,
             "smartTransactionsOptInStatus": true,
+            "supportDataSharingPreference": null,
+            "tdpChartIndicators": [],
+            "tdpChartInterval": "15m",
+            "tdpChartType": 2,
             "tokenNetworkFilter": {},
             "tokenSortConfig": {
               "key": "tokenFiatAmount",
@@ -1277,6 +1324,7 @@ describe('preferences controller', () => {
             "hideZeroBalanceTokens": false,
             "isBasicFunctionalityConsolidatedEnabled": false,
             "privacyMode": false,
+            "shouldShowSupportConsent": true,
             "showConfirmationAdvancedDetails": false,
             "showDefaultAddress": true,
             "showExtensionInFullSizeView": false,
@@ -1288,6 +1336,10 @@ describe('preferences controller', () => {
             "skipDeepLinkInterstitial": false,
             "smartTransactionsMigrationApplied": false,
             "smartTransactionsOptInStatus": true,
+            "supportDataSharingPreference": null,
+            "tdpChartIndicators": [],
+            "tdpChartInterval": "15m",
+            "tdpChartType": 2,
             "tokenNetworkFilter": {},
             "tokenSortConfig": {
               "key": "tokenFiatAmount",
@@ -1622,6 +1674,8 @@ describe('preferences controller', () => {
             basicFunctionalityMigrationNotification: null,
             basicFunctionalityMigrationNotificationDismissed: false,
             skipDeepLinkInterstitial: false,
+            shouldShowSupportConsent: true,
+            supportDataSharingPreference: null,
             dismissSmartAccountSuggestionEnabled: false,
             featureNotificationsEnabled: true,
             showConfirmationAdvancedDetails: true,

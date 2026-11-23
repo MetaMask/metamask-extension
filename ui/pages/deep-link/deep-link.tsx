@@ -17,6 +17,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { withReferralCode } from '#shared/lib/deep-links/referral';
 import { parse } from '../../../shared/lib/deep-links/parse';
 import { CANONICAL_DEEP_LINK_HOST } from '../../../shared/lib/deep-links/common';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -28,6 +29,8 @@ import { VALID, verify } from '../../../shared/lib/deep-links/verify';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { PageNotFound } from '../../components/app/page-not-found/page-not-found';
 import { FullPageCard } from '../../components/app/full-page-card/full-page-card';
+import { getMobileShareUrl } from '../../../shared/lib/deep-links/mobile-share';
+import { DeepLinkMobileShare } from './deep-link-mobile-share';
 
 type TranslateFunction = (
   key: string,
@@ -82,9 +85,12 @@ async function updateStateFromUrl(
       const href =
         'redirectTo' in destination
           ? destination.redirectTo.toString()
-          : getExtensionURL(
-              destination.path,
-              destination.query.toString() ?? null,
+          : withReferralCode(
+              getExtensionURL(
+                destination.path,
+                destination.query.toString() ?? null,
+              ),
+              url.searchParams,
             );
       const title = parsed.route.getTitle(url.searchParams);
 
@@ -134,7 +140,7 @@ async function updateStateFromUrl(
   }
 }
 
-export const DeepLink = () => {
+const DeepLinkInterstitial = () => {
   const location = useLocation();
   const t = useI18nContext() as TranslateFunction;
   const dispatch = useDispatch();
@@ -348,4 +354,23 @@ export const DeepLink = () => {
       )}
     </FullPageCard>
   );
+};
+
+/** Displays the mobile QR fallback or the usual deep-link interstitial. */
+export const DeepLink = () => {
+  const location = useLocation();
+  const urlPathAndQuery = new URLSearchParams(location.search).get(
+    'mobileShare',
+  );
+  const mobileShareUrl = urlPathAndQuery?.startsWith('/')
+    ? getMobileShareUrl(
+        new URL(`https://${CANONICAL_DEEP_LINK_HOST}${urlPathAndQuery}`),
+      )
+    : null;
+
+  if (!mobileShareUrl) {
+    return <DeepLinkInterstitial />;
+  }
+
+  return <DeepLinkMobileShare url={mobileShareUrl} />;
 };

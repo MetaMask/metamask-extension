@@ -1,4 +1,5 @@
 import React from 'react';
+import { it } from '@jest/globals';
 import { screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -6,6 +7,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import { MfaSettingsTestIds } from '../mfa-settings/test-ids';
 import SecurityAndPasswordTab from './security-and-password-tab';
 
 jest.mock('../../../hooks/passkey/usePasskeyRemoval', () => ({
@@ -39,6 +41,20 @@ describe('SecurityAndPasswordTab', () => {
     jest.clearAllMocks();
     setBackgroundConnection(backgroundConnectionMock as never);
   });
+
+  it.each([true, false])(
+    'shows 2-step verification only when mfaUiKit is %s',
+    (enabled: boolean) => {
+      renderWithProvider(
+        <SecurityAndPasswordTab />,
+        createStore({ mfaUiKit: { enabled, minimumVersion: '1.0.0' } }),
+      );
+
+      expect(Boolean(screen.queryByTestId(MfaSettingsTestIds.ENTRY))).toBe(
+        enabled,
+      );
+    },
+  );
 
   it('renders all expected items', () => {
     renderWithProvider(<SecurityAndPasswordTab />, mockStore);

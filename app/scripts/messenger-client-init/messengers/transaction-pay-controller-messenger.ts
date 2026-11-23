@@ -20,6 +20,7 @@ import type {
   TransactionControllerIsAtomicBatchSupportedAction,
   TransactionControllerUnapprovedTransactionAddedEvent,
   TransactionControllerUpdateTransactionAction,
+  TransactionControllerUpdateTransactionMetadataAction,
 } from '@metamask/transaction-controller';
 import type { RootMessenger } from '../../lib/messenger';
 
@@ -73,6 +74,7 @@ type InitMessengerActions =
   | TransactionControllerGetStateAction
   | TransactionControllerIsAtomicBatchSupportedAction
   | TransactionControllerUpdateTransactionAction
+  | TransactionControllerUpdateTransactionMetadataAction
   | MoneyAccountControllerGetMoneyAccountAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetNetworkClientByIdAction
@@ -113,6 +115,7 @@ export function getTransactionPayControllerInitMessenger(
       'TransactionController:getState',
       'TransactionController:isAtomicBatchSupported',
       'TransactionController:updateTransaction',
+      'TransactionController:updateTransactionMetadata',
     ],
     events: ['TransactionController:unapprovedTransactionAdded'],
   });

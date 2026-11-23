@@ -51,11 +51,11 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Release version (e.g. 13.12.0) — must match GitHub Release tag v{version}"
+        description: 'Release version (e.g. 13.12.0) — must match GitHub Release tag v{version}'
         required: true
         type: string
       target:
-        description: "AMO target — production (PRD, release-team) or dev (UAT smoke). Flask is orchestrator-only."
+        description: 'AMO target — production (PRD, release-team) or dev (UAT smoke). Flask is orchestrator-only.'
         required: true
         type: choice
         default: production
@@ -63,11 +63,11 @@ on:
           - production
           - dev
       expected_sha256:
-        description: "Optional SHA-256 of the release asset (64 lowercase hex). Default asset depends on target."
+        description: 'Optional SHA-256 of the release asset (64 lowercase hex). Default asset depends on target.'
         required: false
         type: string
       asset_name:
-        description: "Optional release asset override (default: main zip for dev/production, *-flask.0.zip for flask)"
+        description: 'Optional release asset override (default: main zip for dev/production, *-flask.0.zip for flask)'
         required: false
         type: string
   workflow_call:
@@ -75,19 +75,19 @@ on:
       version:
         required: true
         type: string
-        description: "Release version — must match GitHub Release tag v{version}"
+        description: 'Release version — must match GitHub Release tag v{version}'
       target:
         required: true
         type: string
-        description: "AMO target — flask (orchestrator); production/dev also allowed via workflow_call"
+        description: 'AMO target — flask (orchestrator); production/dev also allowed via workflow_call'
       expected_sha256:
         required: false
         type: string
-        description: "Optional SHA-256 of the release asset (64 lowercase hex)"
+        description: 'Optional SHA-256 of the release asset (64 lowercase hex)'
       asset_name:
         required: false
         type: string
-        description: "Optional release asset override"
+        description: 'Optional release asset override'
 
 permissions:
   contents: read

@@ -305,7 +305,11 @@ function createTracer(): PerpsTracer {
       const key = `${params.name}:${params.id}` as const;
       const pending = pendingSpans.get(key);
       if (pending) {
-        endTrace({ ...pending, data: params.data });
+        endTrace({
+          ...pending,
+          status: params.status,
+          data: params.data,
+        });
         pendingSpans.delete(key);
       }
     },

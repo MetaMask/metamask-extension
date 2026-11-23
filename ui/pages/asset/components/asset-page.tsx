@@ -68,18 +68,19 @@ import {
   getPrivacyMode,
   getShowFiatInTestnets,
 } from '../../../selectors';
+import { getIsAdvancedChartsEnabled } from '../../../selectors/multichain/feature-flags';
 import {
   getAsset,
   getAssetsBySelectedAccountGroup,
   getMultichainNativeAssetType,
 } from '../../../selectors/assets';
 import {
-  getImageForChainId,
   getMultichainIsTestnet,
   getMultichainNetworkConfigurationsByChainId,
   getMultichainShouldShowFiat,
   getMultichainIsTron,
 } from '../../../selectors/multichain';
+import { useImageForChainId } from '../../../hooks/useImageForChainId';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { selectIsMusdConversionFlowEnabled } from '../../../selectors/musd';
 import { useSafeChains } from '../../../components/multichain/networks-form/use-safe-chains';
@@ -111,6 +112,7 @@ import { AssetPageHeader } from './asset-page-header';
 import { AssetPerpsPositionSection } from './asset-perps-position-section';
 import { AssetStickyActions } from './asset-sticky-actions';
 import AssetChart from './chart/asset-chart';
+import AdvancedChartSection from './chart/advanced-chart-section';
 import { MarketClosedActionButton } from './market-closed-action-button';
 import TokenButtons from './token-buttons';
 import { AssetActivateCard } from './asset-activation-card';
@@ -157,6 +159,7 @@ const AssetPage = ({
   const t = useI18nContext();
   const { decodedAsset } = processAssetParams(useParams());
   const currency = useSelector(getCurrentCurrency);
+  const isAdvancedChartsEnabled = useSelector(getIsAdvancedChartsEnabled);
   const isEvm = isEvmChainId(asset.chainId);
   // TODO BIP44 Refactor: This selector does not work with BIP44 enabled, pass the information in the asset object
   const nativeAssetType = useSelector(getMultichainNativeAssetType);
@@ -312,7 +315,7 @@ const AssetPage = ({
   );
 
   const networkName = networkConfigurationsByChainId[chainId]?.name;
-  const tokenChainImage = getImageForChainId(chainId);
+  const tokenChainImage = useImageForChainId(chainId);
 
   const selectBip44Asset = useMemo(
     () => (state: Parameters<typeof getAsset>[0]) =>
@@ -451,6 +454,7 @@ const AssetPage = ({
         data-testid="parent-selector-asset-details"
       >
         <AssetPageHeader
+          name={name}
           symbol={symbol}
           image={image}
           networkImage={tokenChainImage}
@@ -467,12 +471,22 @@ const AssetPage = ({
           />
         )}
         <AssetPageSecurityTrustBanner />
-        <AssetChart
-          chainId={chainId}
-          address={address}
-          currentPrice={currentPrice}
-          currency={currency}
-        />
+        {isAdvancedChartsEnabled ? (
+          <AdvancedChartSection
+            chainId={chainId}
+            address={address}
+            caipAssetId={caipAssetId}
+            currentPrice={currentPrice}
+            currency={currency}
+          />
+        ) : (
+          <AssetChart
+            chainId={chainId}
+            address={address}
+            currentPrice={currentPrice}
+            currency={currency}
+          />
+        )}
         <MaybePerpsViewStreamBoundary
           enabled={Boolean(isPerpsMarketLoading || perpsMarket)}
         >

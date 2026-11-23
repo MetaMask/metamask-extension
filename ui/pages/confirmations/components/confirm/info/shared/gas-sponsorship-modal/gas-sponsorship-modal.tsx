@@ -1,6 +1,8 @@
 import React, { useCallback } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import {
+  AvatarFavicon,
+  AvatarFaviconSize,
   AvatarToken,
   AvatarTokenSize,
   Box,
@@ -29,7 +31,13 @@ import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../../../../shared/constan
 import { useNativeCurrencySymbol } from '../../hooks/useNativeCurrencySymbol';
 import { useFeeCalculations } from '../../hooks/useFeeCalculations';
 
-export function GasSponsorshipModal({ onClose }: { onClose: () => void }) {
+export function GasSponsorshipModal({
+  onClose,
+  sponsor,
+}: {
+  onClose: () => void;
+  sponsor?: string;
+}) {
   const t = useI18nContext();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
@@ -72,14 +80,20 @@ export function GasSponsorshipModal({ onClose }: { onClose: () => void }) {
             onClick={handleSelectSponsored}
             icon={
               <CircularIconWrapper>
-                <img
-                  src="./images/logo/metamask-fox.svg"
-                  width={20}
-                  height={20}
-                />
+                {sponsor ? (
+                  <AvatarFavicon name={sponsor} size={AvatarFaviconSize.Sm} />
+                ) : (
+                  <img
+                    src="./images/logo/metamask-fox.svg"
+                    width={20}
+                    height={20}
+                  />
+                )}
               </CircularIconWrapper>
             }
-            primaryText={t('paidByMetaMask')}
+            primaryText={
+              sponsor ? t('paidBySponsor', [sponsor]) : t('paidByMetaMask')
+            }
             secondaryText={t('includesSmartAccountActivation')}
           />
           <SponsorshipOption

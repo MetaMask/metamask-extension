@@ -26,7 +26,6 @@ export const useNetworkFormState = (existingNetwork?: UpdateNetworkFields) => {
     rpcEndpoints: {
       name?: string;
       url: string;
-      failoverUrls?: string[];
       type: RpcEndpointType;
     }[];
     defaultRpcEndpointIndex?: number;

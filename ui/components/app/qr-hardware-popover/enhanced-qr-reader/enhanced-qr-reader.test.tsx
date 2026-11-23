@@ -21,23 +21,50 @@ const MockBrowserQRCodeReader = BrowserQRCodeReader as jest.MockedClass<
   typeof BrowserQRCodeReader
 >;
 
+const flushPromises = () =>
+  act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  });
+
+const createMockStream = () => {
+  const track = { stop: jest.fn() };
+  return {
+    track,
+    stream: { getTracks: () => [track] } as unknown as MediaStream,
+  };
+};
+
 describe('EnhancedQrReader', () => {
-  let mockDecodeFromConstraints: jest.Mock;
+  let mockDecodeFromStream: jest.Mock;
+  let mockGetUserMedia: jest.Mock;
   let mockControls: { stop: jest.Mock };
+  let mockStream: ReturnType<typeof createMockStream>;
+  const originalMediaDevices = globalThis.navigator.mediaDevices;
 
   beforeEach(() => {
     mockControls = { stop: jest.fn() };
-    mockDecodeFromConstraints = jest.fn().mockResolvedValue(mockControls);
+    mockStream = createMockStream();
+    mockDecodeFromStream = jest.fn().mockResolvedValue(mockControls);
+    mockGetUserMedia = jest.fn().mockResolvedValue(mockStream.stream);
+
+    Object.defineProperty(globalThis.navigator, 'mediaDevices', {
+      configurable: true,
+      value: { getUserMedia: mockGetUserMedia },
+    });
 
     MockBrowserQRCodeReader.mockImplementation(
       () =>
         ({
-          decodeFromConstraints: mockDecodeFromConstraints,
+          decodeFromStream: mockDecodeFromStream,
         }) as unknown as BrowserQRCodeReader,
     );
   });
 
   afterEach(() => {
+    Object.defineProperty(globalThis.navigator, 'mediaDevices', {
+      configurable: true,
+      value: originalMediaDevices,
+    });
     jest.restoreAllMocks();
   });
 
@@ -87,10 +114,10 @@ describe('EnhancedQrReader', () => {
       expect(hints.get('CHARACTER_SET')).toBe('UTF-8');
     });
 
-    it('starts decoding with HD video constraints', () => {
+    it('requests the camera stream with HD video constraints', () => {
       render(<EnhancedQrReader onFrame={jest.fn()} />);
 
-      expect(mockDecodeFromConstraints).toHaveBeenCalledWith(
+      expect(mockGetUserMedia).toHaveBeenCalledWith(
         expect.objectContaining({
           audio: false,
           video: expect.objectContaining({
@@ -98,6 +125,16 @@ describe('EnhancedQrReader', () => {
             height: { ideal: 720 },
           }),
         }),
+      );
+    });
+
+    it('starts decoding from the acquired stream', async () => {
+      render(<EnhancedQrReader onFrame={jest.fn()} />);
+
+      await flushPromises();
+
+      expect(mockDecodeFromStream).toHaveBeenCalledWith(
+        mockStream.stream,
         expect.any(HTMLVideoElement),
         expect.any(Function),
       );
@@ -105,75 +142,141 @@ describe('EnhancedQrReader', () => {
   });
 
   describe('onFrame callback', () => {
-    it('invokes onFrame with decoded text on successful scan', () => {
+    it('invokes onFrame with decoded text on successful scan', async () => {
       const onFrame = jest.fn();
-      mockDecodeFromConstraints.mockImplementation(
-        (_constraints, _elem, callback) => {
-          callback({ getText: () => 'decoded-payload' });
-          return Promise.resolve(mockControls);
-        },
-      );
+      mockDecodeFromStream.mockImplementation((_stream, _elem, callback) => {
+        callback({ getText: () => 'decoded-payload' });
+        return Promise.resolve(mockControls);
+      });
 
       render(<EnhancedQrReader onFrame={onFrame} />);
+      await flushPromises();
 
       expect(onFrame).toHaveBeenCalledWith('decoded-payload');
     });
 
-    it('does not invoke onFrame when result is undefined', () => {
+    it('does not invoke onFrame when result is undefined', async () => {
       const onFrame = jest.fn();
-      mockDecodeFromConstraints.mockImplementation(
-        (_constraints, _elem, callback) => {
-          callback(undefined);
-          return Promise.resolve(mockControls);
-        },
-      );
+      mockDecodeFromStream.mockImplementation((_stream, _elem, callback) => {
+        callback(undefined);
+        return Promise.resolve(mockControls);
+      });
 
       render(<EnhancedQrReader onFrame={onFrame} />);
+      await flushPromises();
 
       expect(onFrame).not.toHaveBeenCalled();
+    });
+
+    it('uses the latest onFrame without restarting the camera', async () => {
+      const firstOnFrame = jest.fn();
+      const secondOnFrame = jest.fn();
+
+      const { rerender } = render(<EnhancedQrReader onFrame={firstOnFrame} />);
+      await flushPromises();
+      rerender(<EnhancedQrReader onFrame={secondOnFrame} />);
+      await flushPromises();
+
+      const [, , scanCallback] = mockDecodeFromStream.mock.calls[0];
+      scanCallback({ getText: () => 'decoded-payload' });
+
+      expect(mockGetUserMedia).toHaveBeenCalledTimes(1);
+      expect(mockControls.stop).not.toHaveBeenCalled();
+      expect(firstOnFrame).not.toHaveBeenCalled();
+      expect(secondOnFrame).toHaveBeenCalledWith('decoded-payload');
+    });
+  });
+
+  describe('camera start failures', () => {
+    it('releases the stream and logs when decoding fails to start', async () => {
+      const logDebugSpy = jest.spyOn(log, 'debug');
+      const error = new Error('play failed');
+      mockDecodeFromStream.mockRejectedValue(error);
+
+      render(<EnhancedQrReader onFrame={jest.fn()} />);
+      await flushPromises();
+
+      expect(mockStream.track.stop).toHaveBeenCalledTimes(1);
+      expect(logDebugSpy).toHaveBeenCalledWith(error);
+    });
+
+    it('logs rejection instead of throwing when the camera fails to start', async () => {
+      const logDebugSpy = jest.spyOn(log, 'debug');
+      const error = new Error('camera unavailable');
+      mockGetUserMedia.mockRejectedValue(error);
+
+      render(<EnhancedQrReader onFrame={jest.fn()} />);
+      await flushPromises();
+
+      expect(logDebugSpy).toHaveBeenCalledWith(error);
+      expect(mockDecodeFromStream).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('StrictMode', () => {
+    it('attaches only one stream under StrictMode double mount', async () => {
+      const staleStream = createMockStream();
+      mockGetUserMedia
+        .mockResolvedValueOnce(staleStream.stream)
+        .mockResolvedValueOnce(mockStream.stream);
+
+      render(
+        <React.StrictMode>
+          <EnhancedQrReader onFrame={jest.fn()} />
+        </React.StrictMode>,
+      );
+      await flushPromises();
+
+      expect(mockGetUserMedia).toHaveBeenCalledTimes(2);
+      expect(staleStream.track.stop).toHaveBeenCalledTimes(1);
+      expect(mockDecodeFromStream).toHaveBeenCalledTimes(1);
+      expect(mockDecodeFromStream).toHaveBeenCalledWith(
+        mockStream.stream,
+        expect.any(HTMLVideoElement),
+        expect.any(Function),
+      );
+      expect(mockControls.stop).not.toHaveBeenCalled();
+      expect(mockStream.track.stop).not.toHaveBeenCalled();
     });
   });
 
   describe('cleanup on unmount', () => {
     it('stops scanner controls when component unmounts', async () => {
       const { unmount } = render(<EnhancedQrReader onFrame={jest.fn()} />);
+      await flushPromises();
 
       unmount();
-
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
-      });
 
       expect(mockControls.stop).toHaveBeenCalledTimes(1);
     });
 
-    it('handles gracefully when controls resolve to undefined', async () => {
-      mockDecodeFromConstraints.mockResolvedValue(undefined);
-
+    it('releases the stream without attaching it when unmounted before the camera resolves', async () => {
       const { unmount } = render(<EnhancedQrReader onFrame={jest.fn()} />);
 
       unmount();
+      await flushPromises();
 
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
-      });
-
-      expect(mockControls.stop).not.toHaveBeenCalled();
+      expect(mockStream.track.stop).toHaveBeenCalledTimes(1);
+      expect(mockDecodeFromStream).not.toHaveBeenCalled();
     });
 
-    it('logs rejection instead of throwing when cleanup fails', async () => {
-      const logDebugSpy = jest.spyOn(log, 'debug');
-      mockDecodeFromConstraints.mockRejectedValue(new Error('cleanup failed'));
+    it('stops scanner controls when unmounted while decoding is starting', async () => {
+      let resolveDecode: (controls: typeof mockControls) => void = jest.fn();
+      mockDecodeFromStream.mockReturnValue(
+        new Promise((resolve) => {
+          resolveDecode = resolve;
+        }),
+      );
 
       const { unmount } = render(<EnhancedQrReader onFrame={jest.fn()} />);
+      await flushPromises();
 
       unmount();
-
       await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        resolveDecode(mockControls);
       });
 
-      expect(logDebugSpy).toHaveBeenCalled();
+      expect(mockControls.stop).toHaveBeenCalledTimes(1);
     });
 
     it('removes canplay listener on unmount', () => {

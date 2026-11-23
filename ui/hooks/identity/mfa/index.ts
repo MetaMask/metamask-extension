@@ -1,5 +1,5 @@
 export { useMfa } from './useMfa';
-export { isMfaKitEnabled } from './isMfaKitEnabled';
+export { isMfaDevBuild } from './isMfaDevBuild';
 export type {
   EnrollOptions,
   MfaFlowErrorCode,

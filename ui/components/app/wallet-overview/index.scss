@@ -1,82 +1,5 @@
 @use "design-system";
 
-$wallet-overview-sidepanel-max-width: 490px;
-
-@mixin sidepanel-start-before-max-width($property) {
-  .wallet-overview-sidepanel & {
-    @media (max-width: $wallet-overview-sidepanel-max-width) {
-      #{$property}: start;
-    }
-  }
-}
-
-.wallet-overview {
-  display: flex;
-  justify-content: space-between;
-  align-items: start;
-  flex: 1;
-  min-width: 0;
-  flex-direction: column;
-  width: 100%;
-  gap: 16px;
-
-  &-fullscreen {
-    align-items: center;
-  }
-
-  &__balance {
-    flex: 1;
-    display: flex;
-    gap: 4px;
-    flex-direction: column;
-    align-items: start;
-    width: 100%;
-
-    .wallet-overview-fullscreen > & {
-      align-items: center;
-    }
-
-    @include sidepanel-start-before-max-width(align-items);
-  }
-
-  &__buttons {
-    display: flex;
-    flex-direction: row;
-    height: 100%;
-    width: 100%;
-    max-width: calc(#{$wallet-overview-sidepanel-max-width} - 32px);
-
-    .wallet-overview-fullscreen > & {
-      align-self: center;
-    }
-  }
-
-  &__currency-wrapper {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  &__balance-skeleton {
-    align-self: start;
-
-    .wallet-overview-fullscreen & {
-      align-self: center;
-    }
-
-    @include sidepanel-start-before-max-width(align-self);
-  }
-
-  &__balance-skeleton-lines {
-    .wallet-overview-fullscreen & {
-      align-items: center;
-    }
-
-    @include sidepanel-start-before-max-width(align-items);
-  }
-}
-
 %asset-buttons {
   min-width: initial;
   width: 100px;
@@ -106,13 +29,6 @@ $wallet-overview-sidepanel-max-width: 490px;
     flex-direction: column;
     min-width: 0;
     position: relative;
-    align-items: start;
-
-    .wallet-overview-fullscreen & {
-      align-items: center;
-    }
-
-    @include sidepanel-start-before-max-width(align-items);
   }
 
   &__primary-container {
@@ -121,13 +37,6 @@ $wallet-overview-sidepanel-max-width: 490px;
     justify-content: center;
     align-items: center;
     flex-wrap: nowrap;
-  }
-
-  &__primary-balance {
-    @include design-system.H2;
-
-    color: var(--color-text-default);
-    font-weight: 500;
   }
 
   &__cached-star {

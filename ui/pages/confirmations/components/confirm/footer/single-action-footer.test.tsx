@@ -1,10 +1,14 @@
 import React from 'react';
 import { act, fireEvent } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
+import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
-import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
+import {
+  enLocale as messages,
+  tEn,
+} from '../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../store/store';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import {
@@ -13,10 +17,12 @@ import {
   useTransactionPayPrimaryRequiredToken,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
+import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useLastMoneyAccountWithdrawAmount } from '../../../hooks/transactions/useLastMoneyAccountWithdrawAmount';
 import { SingleActionFooter } from './single-action-footer';
 
 jest.mock('../../../hooks/pay/useTransactionPayData');
+jest.mock('../../../hooks/pay/useTransactionPayToken');
 jest.mock('../../../hooks/transactions/useLastMoneyAccountWithdrawAmount');
 
 jest.mock('react-router-dom', () => ({
@@ -163,6 +169,10 @@ describe('<SingleActionFooter />', () => {
     jest.mocked(useTransactionPayHasExecutableQuote).mockReturnValue(true);
     jest.mocked(useTransactionPayTotals).mockReturnValue(undefined);
     jest.mocked(useLastMoneyAccountWithdrawAmount).mockReturnValue(undefined);
+    jest.mocked(useTransactionPayToken).mockReturnValue({
+      payToken: undefined,
+      setPayToken: jest.fn(),
+    } as ReturnType<typeof useTransactionPayToken>);
     jest.mocked(useTransactionPayPrimaryRequiredToken).mockReturnValue({
       amountUsd: '10.00',
       skipIfBalance: false,
@@ -407,7 +417,7 @@ describe('<SingleActionFooter />', () => {
     );
   });
 
-  it('shows Add funds label for moneyAccountDeposit transaction type', () => {
+  it('keeps Add funds for moneyAccountDeposit until a pay token is selected', () => {
     const { getByTestId } = render({ confirmation: genMoneyAccountDeposit() });
 
     expect(getByTestId('confirm-footer-button')).toHaveTextContent(
@@ -415,13 +425,31 @@ describe('<SingleActionFooter />', () => {
     );
   });
 
-  it('shows Add funds label for moneyAccountDeposit nested in a batch', () => {
+  it('shows Convert [symbol] for moneyAccountDeposit when a pay token is selected', () => {
+    jest.mocked(useTransactionPayToken).mockReturnValue({
+      payToken: { symbol: 'USDC' } as TransactionPaymentToken,
+      setPayToken: jest.fn(),
+    });
+
+    const { getByTestId } = render({ confirmation: genMoneyAccountDeposit() });
+
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      tEn('moneyAccountDepositConvert', ['USDC']),
+    );
+  });
+
+  it('shows Convert [symbol] for moneyAccountDeposit nested in a batch', () => {
+    jest.mocked(useTransactionPayToken).mockReturnValue({
+      payToken: { symbol: 'ETH' } as TransactionPaymentToken,
+      setPayToken: jest.fn(),
+    });
+
     const { getByTestId } = render({
       confirmation: genMoneyAccountDepositBatch(),
     });
 
     expect(getByTestId('confirm-footer-button')).toHaveTextContent(
-      messages.addFunds.message,
+      tEn('moneyAccountDepositConvert', ['ETH']),
     );
   });
 

@@ -66,8 +66,8 @@ export const useNetworkConnectionBanner =
 
         try {
           const chainIdAsDecimal = hexToNumber(chainId);
-          const isPublic = await submitRequestToBackground<boolean>(
-            'isPublicEndpointUrl',
+          const isPublic = await submitRequestToBackground(
+            'LegacyBackgroundApiService:isPublicEndpointUrl',
             [rpcUrl],
           );
           const sanitizedRpcUrl = isPublic ? onlyKeepHost(rpcUrl) : 'custom';
