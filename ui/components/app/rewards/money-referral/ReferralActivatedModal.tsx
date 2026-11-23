@@ -56,8 +56,7 @@ function formatCashbackEarningDate(
  * Activated body copy. A usable cashback window fills `{date}` in the
  * localized `inviteAcceptedBody` as `from <start> through <end>`. Without
  * both dates, the whole body is `fallback` (`inviteMessageBody`) so we do
- * not inject English. The percent in the sentence is already the server's,
- * from `earn_rates.cashback_rate_bps`.
+ * not inject English. The percent in the sentence is already the server's.
  *
  * @param acceptedBody - `localized_text.inviteAcceptedBody`.
  * @param fallback - Copy used when either date is missing or invalid.

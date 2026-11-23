@@ -934,8 +934,8 @@
       },
       "meta": {
         "webpack-optimization": [
-          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import.",
-          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/byte-utils' and webpack collapsed that to a direct import."
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/byte-utils' and webpack collapsed that to a direct import.",
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import."
         ]
       },
       "packages": {
@@ -949,7 +949,6 @@
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/core-backend": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,
@@ -2996,11 +2995,9 @@
     },
     "@metamask/smart-transactions-controller": {
       "globals": {
-        "URLSearchParams": true,
         "clearInterval": true,
         "console.error": true,
         "console.log": true,
-        "fetch": true,
         "setInterval": true
       },
       "meta": {
@@ -3017,6 +3014,7 @@
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/polling-controller": true,
+        "@metamask/sentinel-api-service": true,
         "@metamask/superstruct": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils>@metamask/type-utils": true,
@@ -3329,32 +3327,6 @@
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/transaction-pay-middleware>bignumber.js": true
-      }
-    },
-    "@metamask/user-operation-controller": {
-      "globals": {
-        "fetch": true
-      },
-      "meta": {
-        "webpack-optimization": [
-          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/byte-utils' and webpack collapsed that to a direct import."
-        ]
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/utils>@metamask/byte-utils": true,
-        "@metamask/controller-utils": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/gas-fee-controller": true,
-        "@metamask/polling-controller": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/superstruct": true,
-        "@metamask/transaction-controller": true,
-        "@metamask/utils": true,
-        "ethereumjs-util>bn.js": true,
-        "webpack>events": true,
-        "@metamask/controller-utils>lodash-es": true,
-        "@metamask/user-operation-controller>uuid": true
       }
     },
     "@metamask/utils": {
@@ -7623,11 +7595,6 @@
       "globals": {
         "crypto.getRandomValues": true,
         "crypto.randomUUID": true
-      }
-    },
-    "@metamask/user-operation-controller>uuid": {
-      "globals": {
-        "crypto.getRandomValues": true
       }
     },
     "remote-redux-devtools>socketcluster-client>uuid": {

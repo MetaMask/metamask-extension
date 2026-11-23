@@ -27,7 +27,8 @@ import {
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
-import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import { enterBridgeQuote } from '../../page-objects/flows/bridge.flow';
+import SwapPage from '../../page-objects/pages/swap/swap-page';
 
 import {
   MOCK_ANALYTICS_ID,
@@ -1352,12 +1353,29 @@ async function mockSmartTransactionsForBridge(
   // Track the latest mined hash(es) so batchStatus can return them
   let latestMinedHash = STX_TRANSACTION_HASH; // fallback if Anvil submission fails
 
+  const sentinelSubdomain =
+    sentinelUrl.match(/tx-sentinel-(.+?)\.api/u)?.[1] ?? 'ethereum-mainnet';
+  const sentinelNetwork = {
+    network: sentinelSubdomain,
+    confirmations: true,
+    smartTransactions: true,
+  };
+
+  // Registry lookup. getNetworks always hits the ethereum-mainnet host, then
+  // getNetwork follows `network` to this chain's sentinel URL.
+  await mockServer
+    .forGet(`${STX_MAINNET_SENTINEL_URL}/networks`)
+    .always()
+    .thenCallback(() => ({
+      ok: true,
+      statusCode: 200,
+      json: { [String(chainId)]: sentinelNetwork },
+    }));
+
   // Sentinel /network: called by fetchLiveness to set livenessByChainId
-  await txSentinelNetwork.mockRaw(
-    mockServer,
-    { smartTransactions: true },
-    { baseUrl: sentinelUrl },
-  );
+  await txSentinelNetwork.mockRaw(mockServer, sentinelNetwork, {
+    baseUrl: sentinelUrl,
+  });
 
   // getFees: queried before submitting each STX
   await txSentinelGetFees.mock(
@@ -2280,11 +2298,10 @@ export const checkQuoteRequestsAreNotMadeAfterTimestamp = async (
   }
 };
 
-export async function enterBridgeQuote(
+export async function enterEthToLineaBridgeQuote(
   driver: Driver,
-): Promise<BridgeQuotePage> {
-  const bridgePage = new BridgeQuotePage(driver);
-  await bridgePage.enterBridgeQuote({
+): Promise<SwapPage> {
+  await enterBridgeQuote(driver, {
     amount: '1',
     tokenFrom: 'ETH',
     tokenTo: 'ETH',
@@ -2292,7 +2309,7 @@ export async function enterBridgeQuote(
     toChain: 'Linea',
   });
 
-  return bridgePage;
+  return new SwapPage(driver);
 }
 
 /**

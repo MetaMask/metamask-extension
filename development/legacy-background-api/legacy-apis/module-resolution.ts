@@ -13,16 +13,27 @@ import ts from 'typescript';
 const MISSING_FILE_ERROR_CODES = new Set(['ENOENT', 'ENOTDIR', 'EISDIR']);
 
 /**
- * A cache of parsed source files.
+ * State shared by every step of one resolver run.
  *
- * Resolution follows imports on demand, so the same file may be requested
- * many times. Sharing parsed files keeps each run fast enough for the CLI.
+ * Every resolution function receives this, so state that a whole run needs
+ * lives here rather than being passed around separately.
  */
 export type ResolutionContext = {
   /**
    * Source files keyed by their absolute path.
+   *
+   * Resolution follows imports on demand, so the same file may be requested
+   * many times. Sharing parsed files keeps each run fast enough for the CLI.
    */
   sourceFilesByPath: Map<string, ts.SourceFile>;
+  /**
+   * The nodes currently being resolved, used to detect code that refers back
+   * to itself, which would otherwise recurse until the stack overflows.
+   *
+   * Nodes are removed again once they have been resolved, so a node that is
+   * reached through two different paths is not mistaken for a cycle.
+   */
+  nodesBeingResolved: Set<ts.Node>;
 };
 
 /**
