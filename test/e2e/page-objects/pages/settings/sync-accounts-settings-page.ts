@@ -2,12 +2,14 @@ import { Driver } from '../../../webdriver/driver';
 
 const OTP_LENGTH = 6;
 
+const QR_PAYLOAD_REFRESH_TIMEOUT_MS = 10_000;
+
 /**
  * Sync accounts (QrSync): password, QR, OTP, wallet selection, success.
  *
  * Screen: `#/sync-accounts`, reached from
  * `SettingsPage.goToSyncAccountsSettings`.
- * Owns: sync page shell, password continue, QR code / regenerate, OTP entry,
+ * Owns: sync page shell, password continue, QR code and payload, OTP entry,
  * wallet rows, sync/done/back, and success / expiry assertions.
  * Boundaries: QR sync flow only. Backup-and-sync toggles belong to
  * `BackupAndSyncSettings`.
@@ -23,14 +25,15 @@ class SyncAccountsSettingsPage {
 
   private readonly driver: Driver;
 
-  private readonly generateNewQrCodeButton =
-    '[data-testid="qr-sync-generate-new-qr-code"]';
-
   private readonly loading = '[data-testid="qr-sync-loading"]';
 
-  private readonly otpExpiredMessage = { text: 'Verification code expired' };
+  private readonly otpExpiredMessage = {
+    text: 'This code expired. Get a new QR code to try again.',
+  };
 
-  private readonly otpFirstInput = '[data-testid="qr-sync-otp-input-0"]';
+  private readonly otpInput = '[data-testid="qr-sync-otp-input"]';
+
+  private readonly otpTryAgainButton = '[data-testid="qr-sync-otp-try-again"]';
 
   private readonly page = '[data-testid="parent-selector-sync-accounts-page"]';
 
@@ -41,7 +44,10 @@ class SyncAccountsSettingsPage {
 
   private readonly qrCode = '[data-testid="qr-sync-qr-code"]';
 
-  private readonly qrExpiredMessage = { text: 'QR code expired' };
+  private readonly qrPayload = '[data-testid="qr-sync-qr-payload"]';
+
+  private readonly qrPayloadToggle =
+    '[data-testid="qr-sync-toggle-qr-payload"]';
 
   private readonly qrSyncWalletRowId = (walletId: string) =>
     `[data-testid="qr-sync-wallet-row-${walletId}"]`;
@@ -49,9 +55,6 @@ class SyncAccountsSettingsPage {
   private readonly sessionExpiredErrorMessage = {
     text: 'This sync session expired. Start again to generate a new QR code.',
   };
-
-  private readonly startWithNewQrCodeButton =
-    '[data-testid="qr-sync-start-with-new-qr-code"]';
 
   private readonly success = '[data-testid="qr-sync-success"]';
 
@@ -88,16 +91,11 @@ class SyncAccountsSettingsPage {
     await this.driver.clickElement(this.doneButton);
   }
 
-  async clickGenerateNewQrCode(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(
-      this.generateNewQrCodeButton,
-    );
-  }
-
-  async clickStartWithNewQrCode(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(
-      this.startWithNewQrCodeButton,
-    );
+  /**
+   * Clicks the "Get new code" button shown once the verification code expired.
+   */
+  async clickGetNewCode(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(this.otpTryAgainButton);
   }
 
   async confirmSync(): Promise<void> {
@@ -111,17 +109,28 @@ class SyncAccountsSettingsPage {
       );
     }
 
-    await this.driver.waitForSelector(this.otpFirstInput);
+    await this.driver.waitForSelector(this.otpInput);
 
-    // Paste the full code into the first box so `handlePaste` → `writeDigits`
-    // updates all digits in one React commit and triggers `submitOtp`.
-    // Per-box `fill()` does not reliably fire controlled `onChange` events.
-    await this.driver.pasteIntoField(this.otpFirstInput, otp);
+    // Paste the full code into the single input so one `onChange` carries all
+    // digits and triggers `submitOtp`. Per-digit typing is slower and flakier.
+    await this.driver.pasteIntoField(this.otpInput, otp);
   }
 
   async enterPassword(password: string): Promise<void> {
     await this.driver.fill(this.passwordInput, password, { retries: 3 });
     await this.driver.clickElement(this.passwordContinue);
+  }
+
+  /**
+   * Reveals and returns the raw QR payload. Only available in development and
+   * test builds.
+   *
+   * @returns The text encoded in the QR code.
+   */
+  async getQrPayload(): Promise<string> {
+    await this.driver.clickElement(this.qrPayloadToggle);
+    const payload = await this.driver.findElement(this.qrPayload);
+    return payload.getText();
   }
 
   async selectWalletRow(walletId: string): Promise<void> {
@@ -137,7 +146,7 @@ class SyncAccountsSettingsPage {
   }
 
   async waitForOtpScreen(): Promise<void> {
-    await this.driver.waitForSelector(this.otpFirstInput);
+    await this.driver.waitForSelector(this.otpInput);
   }
 
   async waitForPasswordScreen(): Promise<void> {
@@ -148,8 +157,20 @@ class SyncAccountsSettingsPage {
     await this.driver.waitForSelector(this.qrCode);
   }
 
-  async waitForQrExpiredMessage(): Promise<void> {
-    await this.driver.waitForSelector(this.qrExpiredMessage);
+  /**
+   * Waits until the displayed QR payload differs from `previousPayload`, which
+   * means the expired session was replaced by a new one.
+   *
+   * @param previousPayload - The payload read before the session expired.
+   */
+  async waitForQrPayloadToChange(previousPayload: string): Promise<void> {
+    await this.driver.waitUntil(
+      async () => {
+        const payload = await this.driver.findElement(this.qrPayload);
+        return (await payload.getText()) !== previousPayload;
+      },
+      { interval: 250, timeout: QR_PAYLOAD_REFRESH_TIMEOUT_MS },
+    );
   }
 
   async waitForSessionExpiredError(): Promise<void> {
