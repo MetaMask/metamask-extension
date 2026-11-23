@@ -43,30 +43,6 @@
     max-width: var(--width-md);
     margin: 0 auto;
   }
-
-  &__top-bar {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 16px 16px 0 16px;
-    align-items: center;
-  }
-
-  &__back {
-    @include design-system.H7;
-
-    color: var(--color-icon-default);
-    font-weight: bold;
-    cursor: pointer;
-  }
-
-  &__page-count {
-    @include design-system.H7;
-
-    color: var(--color-text-default);
-    grid-column: 2;
-    justify-self: flex-end;
-    font-weight: bold;
-  }
 }
 
 .permission-approval-container {

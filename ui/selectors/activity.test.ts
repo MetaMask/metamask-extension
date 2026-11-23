@@ -557,7 +557,7 @@ describe('selectLocalTransactions', () => {
           transactionData: Record<string, { accountOverride: string }>;
         }
       ).transactionData = {
-        'money-account-tx': { accountOverride: LEDGER_ADDRESS },
+        'money-account-tx': { accountOverride: LEDGER_ACCOUNT_ID },
       };
 
       const ledgerState = structuredClone(state);
@@ -595,7 +595,7 @@ describe('selectLocalTransactions', () => {
           transactionData: Record<string, { accountOverride: string }>;
         }
       ).transactionData = {
-        'money-account-tx': { accountOverride: LEDGER_ADDRESS },
+        'money-account-tx': { accountOverride: LEDGER_ACCOUNT_ID },
       };
       const ledgerState = structuredClone(state);
       selectLedger(ledgerState);
