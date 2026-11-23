@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "13.59.0",
+  "version": "13.60.0",
   "private": true,
   "imports": {
     "#ui/*": [
@@ -174,7 +174,6 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
-    "@metamask/design-system-react": "0.53.0",
     "@metamask/network-controller": "^38.0.1",
     "@metamask/transaction-controller": "^74.3.0",
     "reselect@npm:^5.1.1": "5.1.1",
@@ -328,7 +327,6 @@
     "@metamask/snaps-controllers": "^23.0.1",
     "@metamask/permission-controller@npm:^13.1.1": "^14.0.0",
     "@ecies/ciphers@npm:^0.2.6": "patch:@ecies/ciphers@npm%3A0.2.6#~/.yarn/patches/@ecies-ciphers-npm-0.2.6-9a4b96d70b.patch",
-    "@metamask/keyring-internal-api": "^12.1.0",
     "@metamask/keyring-api": "^24.3.0",
     "@metamask/accounts-controller": "^40.2.0",
     "@metamask/keyring-controller": "^28.2.2",
@@ -350,6 +348,7 @@
     "@opentelemetry/instrumentation-pg@npm:0.63.0": "0.73.0",
     "@opentelemetry/instrumentation-tedious@npm:0.30.0": "0.40.0",
     "@opentelemetry/instrumentation@npm:^0.221.0": "0.222.0",
+    "@solana/buffer-layout-utils/bigint-buffer": "npm:@exodus/bigint-buffer@1.1.5-exodus.1",
     "ses": "2.2.0",
     "@metamask/utils": "^12.0.2"
   },
@@ -485,7 +484,7 @@
     "@metamask/profile-metrics-controller": "^5.2.2",
     "@metamask/profile-sync-controller": "^36.1.2",
     "@metamask/providers": "^22.1.1",
-    "@metamask/ramps-controller": "^30.0.0",
+    "@metamask/ramps-controller": "^30.1.0",
     "@metamask/rate-limit-controller": "^8.0.0",
     "@metamask/react-data-query": "^2.0.0",
     "@metamask/remote-feature-flag-controller": "^7.0.0",
@@ -494,10 +493,10 @@
     "@metamask/scure-bip39": "^2.0.3",
     "@metamask/seedless-onboarding-controller": "^12.0.0",
     "@metamask/selected-network-controller": "^27.1.0",
-    "@metamask/sentinel-api-service": "^2.1.0",
+    "@metamask/sentinel-api-service": "^2.3.0",
     "@metamask/shield-controller": "^7.1.1",
     "@metamask/signature-controller": "^40.1.1",
-    "@metamask/smart-transactions-controller": "^27.3.0",
+    "@metamask/smart-transactions-controller": "^28.0.0",
     "@metamask/snap-account-service": "^4.0.0",
     "@metamask/snaps-controllers": "^23.0.1",
     "@metamask/snaps-execution-environments": "^11.3.4",
@@ -510,7 +509,7 @@
     "@metamask/storage-service": "^2.0.0",
     "@metamask/subscription-controller": "^15.2.0",
     "@metamask/transaction-controller": "^74.3.0",
-    "@metamask/transaction-pay-controller": "^31.3.0",
+    "@metamask/transaction-pay-controller": "^32.0.0",
     "@metamask/transaction-pay-middleware": "^2.0.4",
     "@metamask/tron-wallet-snap": "^4.4.0",
     "@metamask/user-operation-controller": "^42.1.2",
@@ -646,12 +645,10 @@
     "@metamask/platform-api-docs": "^0.2.1",
     "@metamask/preferences-controller": "^24.0.0",
     "@metamask/skills": "^0.4.0",
-    "@metamask/snap-account-abstraction-keyring-site": "^1.0.0",
     "@metamask/snap-simple-keyring-site": "^2.1.1",
     "@metamask/snaps-registry": "^4.0.0",
     "@metamask/solana-test-validator-up": "^2.0.0",
     "@metamask/superstruct": "^3.2.1",
-    "@metamask/test-bundler": "^1.0.0",
     "@metamask/test-dapp": "9.3.0",
     "@metamask/test-dapp-bitcoin": "^0.2.0",
     "@metamask/test-dapp-multichain": "^0.17.0",
@@ -874,7 +871,6 @@
     "allowScripts": {
       "$root$": true,
       "@lavamoat/lavadome-react>@lavamoat/preinstall-always-fail#2.0.0": false,
-      "@metamask/test-dapp-solana>@solana/spl-token>@solana/buffer-layout-utils>bigint-buffer": false,
       "@google/genai>protobufjs": false,
       "@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false,
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-hash": false,

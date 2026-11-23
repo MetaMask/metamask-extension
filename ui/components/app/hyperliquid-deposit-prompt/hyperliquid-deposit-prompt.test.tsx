@@ -298,8 +298,7 @@ describe('HyperliquidDepositPrompt', () => {
     expect(mockStartPerpsDeposit).toHaveBeenCalledTimes(1);
     expect(mockUpdateTransactionPaymentToken).toHaveBeenCalledWith({
       transactionId: 'transaction-id-mock',
-      tokenAddress: ETH_TOKEN.address,
-      chainId: ETH_TOKEN.chainId,
+      assetId: 'eip155:1/slip44:60',
     });
     expect(mockNavigate).toHaveBeenCalledWith(
       {

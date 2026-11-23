@@ -24,6 +24,12 @@ import { shortenAddress } from '../../../../helpers/utils/util';
 import { getEvmAccountsGroupedByWallet } from '../../utils/evm-accounts-grouped-by-wallet';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
+/** Account chosen in the modal: its `InternalAccount` ID and address. */
+export type SelectedAccount = {
+  id: string;
+  address: string;
+};
+
 export type AccountSelectModalProps = {
   /**
    * When true, hardware wallet accounts are omitted from the list. Used by
@@ -43,10 +49,10 @@ export type AccountSelectModalProps = {
    */
   onClose: () => void;
   /**
-   * Invoked with the chosen account address when the user picks an account.
-   * The consumer is responsible for closing the modal after selection.
+   * Invoked with the chosen account when the user picks an account. The
+   * consumer is responsible for closing the modal after selection.
    */
-  onSelect: (address: string) => void;
+  onSelect: (account: SelectedAccount) => void;
   /**
    * The address of the currently selected account, highlighted in the list.
    */
@@ -68,7 +74,7 @@ export type AccountSelectModalProps = {
  * @param props.restrictHardwareAccountsToSelected - Whether to omit
  * non-selected hardware accounts.
  * @param props.onClose - Called when the modal should close.
- * @param props.onSelect - Called with the chosen account address. The consumer
+ * @param props.onSelect - Called with the chosen account. The consumer
  * must close the modal after handling selection.
  * @param props.selectedAddress - Address of the currently selected account.
  * @param props.title - Optional modal title.
@@ -140,7 +146,12 @@ export function AccountSelectModal({
                     <button
                       type="button"
                       data-testid={`account-select-item-${account.address.toLowerCase()}`}
-                      onClick={() => onSelect(account.address)}
+                      onClick={() =>
+                        onSelect({
+                          id: account.accountId,
+                          address: account.address,
+                        })
+                      }
                       className="flex w-full cursor-pointer border-0 bg-transparent px-4 py-3 text-left"
                     >
                       <PreferredAvatar

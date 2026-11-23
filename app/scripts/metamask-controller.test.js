@@ -59,7 +59,6 @@ import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { flushPromises } from '../../test/lib/timer-helpers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
-import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import { toAssetId } from '../../shared/lib/asset-utils';
 import * as gatorPermissionFeatureFlags from '../../shared/lib/gator-permissions/feature-flags';
 import * as environment from '../../shared/lib/environment';
@@ -1332,7 +1331,35 @@ describe('MetaMaskController', () => {
     });
 
     describe('#getBalance', () => {
-      it('should ask the network for a balance when not known by accountTrackerController', async () => {
+      it('should return the balance from AssetsController-derived AccountTracker state', async () => {
+        const balance = '0x14ced5122ce0a000';
+        const accountId = 'test-account-id';
+        const nativeAssetId = 'eip155:1/slip44:60';
+
+        jest.spyOn(metamaskController, '_getMetaMaskState').mockReturnValue({
+          metamask: {
+            assetsInfo: {
+              [nativeAssetId]: { type: 'native', decimals: 18 },
+            },
+            assetsBalance: {
+              [accountId]: {
+                [nativeAssetId]: { amount: '1.49937' },
+              },
+            },
+            internalAccounts: {
+              accounts: {
+                [accountId]: { address: TEST_ADDRESS, type: 'eip155:eoa' },
+              },
+            },
+          },
+        });
+
+        const gotten = await metamaskController.getBalance(TEST_ADDRESS);
+
+        expect(balance).toStrictEqual(gotten);
+      });
+
+      it('should ask the network for a balance when not known in derived AccountTracker state', async () => {
         const balance = '0x14ced5122ce0a000';
         const { provider } = createTestProviderTools({
           scaffold: {
@@ -1340,15 +1367,11 @@ describe('MetaMaskController', () => {
           },
         });
 
-        jest
-          .spyOn(metamaskController.accountTrackerController, 'state', 'get')
-          .mockReturnValue({
-            accountsByChainId: {
-              '0x1': {
-                [toChecksumHexAddress(TEST_ADDRESS)]: { balance },
-              },
-            },
-          });
+        jest.spyOn(metamaskController, '_getMetaMaskState').mockReturnValue({
+          metamask: {
+            accountsByChainId: {},
+          },
+        });
 
         const gotten = await metamaskController.getBalance(
           TEST_ADDRESS,
