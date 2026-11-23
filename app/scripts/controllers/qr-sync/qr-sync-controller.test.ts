@@ -185,7 +185,7 @@ function setupController(
   });
 
   const mockSnapshot = {
-    toPayloadId: jest.fn((groupId: AccountGroupId) => groupId),
+    toPayloadId: jest.fn((groupId: AccountGroupId): string => groupId),
     filterAllGroups: jest.fn().mockReturnThis(),
     serialize: jest.fn().mockReturnValue({
       version: 1,
@@ -868,6 +868,72 @@ describe('QrSyncController', () => {
       );
       expect(controller.state.qrSyncSelectedAccountGroupIds).toStrictEqual([
         primaryGroupId,
+      ]);
+
+      mockEmitSyncCompleted();
+    });
+
+    it('expands prototype account selections and includes the import summary', async () => {
+      const { controller, mockSnapshot, primaryGroupId } = setupController();
+      mockSnapshot.toPayloadId.mockReturnValue('wallet:primary-entropy-id/0');
+
+      await mockStartSession(controller);
+      await mockSetReviewingSyncOffer(controller);
+
+      await controller.syncAccounts(
+        TEST_PASSWORD,
+        [primaryGroupId],
+        {
+          [primaryGroupId]: 3,
+        },
+        {
+          wallets: [
+            {
+              id: 'demo-wallet-1',
+              name: 'Wallet 1',
+              accounts: [
+                { id: 'demo-wallet-1/0', name: 'Account 1' },
+                { id: 'demo-wallet-1/1', name: 'Account 2' },
+              ],
+            },
+            {
+              id: 'demo-wallet-2',
+              name: 'Wallet 2',
+              accounts: [{ id: 'demo-wallet-2/0', name: 'Account 3' }],
+            },
+          ],
+        },
+      );
+
+      const syncReadyPayload = mockMwp.dappClient?.sendRequest.mock.calls.find(
+        ([message]) => message.type === QrSyncActionTypes.SYNC_READY,
+      )?.[0];
+
+      expect(syncReadyPayload?.data?.wallets[0].groups).toEqual([
+        expect.objectContaining({
+          id: 'wallet:primary-entropy-id/0',
+          groupIndex: 0,
+        }),
+        expect.objectContaining({
+          id: 'wallet:primary-entropy-id/1',
+          groupIndex: 1,
+        }),
+        expect.objectContaining({
+          id: 'wallet:primary-entropy-id/2',
+          groupIndex: 2,
+        }),
+      ]);
+      expect(syncReadyPayload?.data?.qrSyncImportSummary.wallets).toEqual([
+        expect.objectContaining({
+          name: 'Wallet 1',
+          accounts: expect.arrayContaining([
+            expect.objectContaining({ name: 'Account 1' }),
+          ]),
+        }),
+        expect.objectContaining({
+          name: 'Wallet 2',
+          accounts: [expect.objectContaining({ name: 'Account 3' })],
+        }),
       ]);
 
       mockEmitSyncCompleted();

@@ -116,6 +116,8 @@ const SyncAccountsSettings = () => {
   const handleAddWallets = useCallback(
     async ({
       selectedAccountGroupIds,
+      selectedAccountGroupCounts,
+      importSummary,
       syncedAccountCount,
       syncedWalletCount,
     }: AddDeviceSyncRequest) => {
@@ -128,6 +130,8 @@ const SyncAccountsSettings = () => {
       await submitRequestToBackground('QrSyncController:syncAccounts', [
         password,
         selectedAccountGroupIds,
+        selectedAccountGroupCounts,
+        importSummary,
       ]);
     },
     [password],

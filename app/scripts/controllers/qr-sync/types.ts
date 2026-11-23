@@ -79,7 +79,20 @@ export type QrSyncError = {
  * The MWP envelope is
  * `{ type: 'sync-ready', version: '1.0.0', deadline, data: QrSyncReadyData }`.
  */
-export type QrSyncReadyData = AccountTreePayload;
+export type QrSyncImportSummary = {
+  wallets: {
+    id: string;
+    name: string;
+    accounts: {
+      id: string;
+      name: string;
+    }[];
+  }[];
+};
+
+export type QrSyncReadyData = AccountTreePayload & {
+  qrSyncImportSummary?: QrSyncImportSummary;
+};
 
 export type QrSyncControllerState = {
   /**
