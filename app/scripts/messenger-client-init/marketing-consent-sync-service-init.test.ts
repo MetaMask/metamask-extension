@@ -1,37 +1,36 @@
 import {
-  MarketingConsentController,
-  type MarketingConsentControllerMessenger,
-} from '@metamask/marketing-consent-controller';
+  MarketingConsentSyncService,
+  type MarketingConsentSyncServiceMessenger,
+} from '@metamask/marketing-consent-sync-service';
 import type { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
-import { MarketingConsentControllerInit } from './marketing-consent-controller-init';
+import { MarketingConsentSyncServiceInit } from './marketing-consent-sync-service-init';
 
-jest.mock('@metamask/marketing-consent-controller');
+jest.mock('@metamask/marketing-consent-sync-service');
 
 function getInitRequestMock(): jest.Mocked<
-  MessengerClientInitRequest<MarketingConsentControllerMessenger>
+  MessengerClientInitRequest<MarketingConsentSyncServiceMessenger>
 > {
   return {
     ...buildControllerInitRequestMock(),
-    controllerMessenger: {} as MarketingConsentControllerMessenger,
+    controllerMessenger: {} as MarketingConsentSyncServiceMessenger,
     initMessenger: undefined,
   };
 }
 
-describe('MarketingConsentControllerInit', () => {
-  it('creates the controller for the extension client with persisted state', () => {
+describe('MarketingConsentSyncServiceInit', () => {
+  it('creates the service for the extension client without persisted state', () => {
     const request = getInitRequestMock();
-    request.persistedState = {
-      MarketingConsentController: { pendingMarketingConsent: false },
-    };
 
-    const { messengerClient } = MarketingConsentControllerInit(request);
+    const { messengerClient, persistedStateKey, memStateKey } =
+      MarketingConsentSyncServiceInit(request);
 
-    expect(messengerClient).toBeInstanceOf(MarketingConsentController);
-    expect(MarketingConsentController).toHaveBeenCalledWith({
+    expect(messengerClient).toBeInstanceOf(MarketingConsentSyncService);
+    expect(MarketingConsentSyncService).toHaveBeenCalledWith({
       messenger: request.controllerMessenger,
-      state: { pendingMarketingConsent: false },
       clientType: 'extension',
     });
+    expect(persistedStateKey).toBeNull();
+    expect(memStateKey).toBeNull();
   });
 });

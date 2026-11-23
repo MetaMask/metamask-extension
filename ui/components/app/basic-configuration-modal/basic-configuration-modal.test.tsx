@@ -138,7 +138,7 @@ const arrangeMocks = <T extends boolean>({
 /**
  * Turning Basic Functionality off must not call `setDataCollectionForMarketing`.
  * That action calls `AnalyticsController:optOutOfMarketing`, and
- * MarketingConsentController writes the change to Authenticated User Storage.
+ * MarketingConsentSyncService writes the change to Authenticated User Storage.
  *
  * @param store - The store rendered with marketing consent already on.
  */

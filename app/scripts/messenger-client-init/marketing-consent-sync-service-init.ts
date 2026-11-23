@@ -1,11 +1,11 @@
 import {
-  MarketingConsentController,
-  type MarketingConsentControllerMessenger,
-} from '@metamask/marketing-consent-controller';
+  MarketingConsentSyncService,
+  type MarketingConsentSyncServiceMessenger,
+} from '@metamask/marketing-consent-sync-service';
 import type { MessengerClientInitFunction } from './types';
 
 /**
- * Initialize the MarketingConsentController, which keeps marketing consent
+ * Initialize the MarketingConsentSyncService, which keeps marketing consent
  * (held by AnalyticsController) in sync with Authenticated User Storage.
  *
  * Construction doesn't call other controllers. `MetamaskController` calls
@@ -14,19 +14,17 @@ import type { MessengerClientInitFunction } from './types';
  * and starts syncing.
  *
  * @param request - The request object.
- * @param request.controllerMessenger - The messenger to use for the controller.
- * @param request.persistedState - The persisted state to hydrate from.
- * @returns The initialized controller.
+ * @param request.controllerMessenger - The messenger to use for the service.
+ * @returns The initialized service.
  */
-export const MarketingConsentControllerInit: MessengerClientInitFunction<
-  MarketingConsentController,
-  MarketingConsentControllerMessenger
-> = ({ controllerMessenger, persistedState }) => {
-  const messengerClient = new MarketingConsentController({
+export const MarketingConsentSyncServiceInit: MessengerClientInitFunction<
+  MarketingConsentSyncService,
+  MarketingConsentSyncServiceMessenger
+> = ({ controllerMessenger }) => {
+  const messengerClient = new MarketingConsentSyncService({
     messenger: controllerMessenger,
-    state: persistedState.MarketingConsentController,
     clientType: 'extension',
   });
 
-  return { messengerClient };
+  return { messengerClient, persistedStateKey: null, memStateKey: null };
 };
