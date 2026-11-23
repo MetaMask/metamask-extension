@@ -9,10 +9,9 @@ import { Driver } from '../../../webdriver/driver';
  * specs but kept for that confirmation overlay.
  * Owns: network-name heading check and Approve dismiss.
  * Boundaries: stops at this warning overlay. The parent add-network
- * confirmation belongs to `NetworkSwitchModalConfirmation` /
- * `add-ethereum-chain` template. In-app RPC URL forms belong to
- * `pages/networks/*` / add-RPC URL modals.
- * Related: `NetworkSwitchModalConfirmation`, add-ethereum-chain confirmation
+ * confirmation belongs to `NetworkSwitchModalConfirmation`. In-app RPC URL
+ * forms belong to `pages/networks/*` / add-RPC URL modals.
+ * Related: `NetworkSwitchModalConfirmation`, the add-network confirmation
  * host in `confirmation.js`.
  *
  * @see ui/pages/confirmations/components/confirmation-warning-modal/confirmation-warning-modal.js

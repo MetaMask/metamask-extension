@@ -401,9 +401,6 @@
     "message": "מפתח פרטי",
     "description": "select this type of file to use to import an account"
   },
-  "privateNetwork": {
-    "message": "רשת פרטית"
-  },
   "readdToken": {
     "message": "באפשרותך להוסיף טוקן זה בחזרה בעתיד על ידי מעבר אל \"הוסף טוקן\" בתפריט אפשרויות החשבונות שלך."
   },

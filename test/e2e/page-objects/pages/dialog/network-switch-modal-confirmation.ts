@@ -17,7 +17,7 @@ import { Driver } from '../../../webdriver/driver';
  * `NetworkSwitchAlertModal`. Prefer `pages/networks/*` page objects for the
  * in-app network manager UX.
  *
- * @see ui/pages/confirmations/confirmation/templates/add-ethereum-chain.js
+ * @see ui/pages/confirmations/external/add-ethereum-chain/add-ethereum-chain.tsx
  */
 class NetworkSwitchModalConfirmation {
   private readonly addNetworkMessage = {
