@@ -243,7 +243,10 @@ describe('wireStatePersistence', () => {
       safePersist,
     });
 
-    expect(update).toHaveBeenCalledWith('MarketingConsentController', undefined);
+    expect(update).toHaveBeenCalledWith(
+      'MarketingConsentController',
+      undefined,
+    );
     expect(safePersist).toHaveBeenCalledWith();
   });
 
