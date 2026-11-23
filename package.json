@@ -422,7 +422,7 @@
     "@metamask/eth-hd-keyring": "^16.0.0",
     "@metamask/eth-json-rpc-filters": "^9.0.0",
     "@metamask/eth-json-rpc-middleware": "^26.0.1",
-    "@metamask/eth-ledger-bridge-keyring": "^13.1.2",
+    "@metamask/eth-ledger-bridge-keyring": "^13.2.0",
     "@metamask/eth-money-keyring": "^5.0.0",
     "@metamask/eth-money-mpc-keyring": "^0.3.1",
     "@metamask/eth-qr-keyring": "^3.0.2",
