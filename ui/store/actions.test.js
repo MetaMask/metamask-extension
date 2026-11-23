@@ -3655,6 +3655,24 @@ describe('Actions', () => {
     });
   });
 
+  describe('#setDataCollectionForMarketing', () => {
+    it('saves the preference in the background and updates local state', async () => {
+      const store = mockStore();
+      const setDataCollectionForMarketing = sinon.stub().resolves();
+      setBackgroundConnection({ ...background, setDataCollectionForMarketing });
+
+      await store.dispatch(actions.setDataCollectionForMarketing(true));
+
+      expect(setDataCollectionForMarketing.calledOnceWith(true)).toBe(true);
+      expect(store.getActions()).toStrictEqual([
+        {
+          type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
+          value: true,
+        },
+      ]);
+    });
+  });
+
   describe('#optOutOfMarketing', () => {
     it('calls the analytics controller directly to opt out of marketing', async () => {
       const store = mockStore();
