@@ -1,5 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
+import { createRequire } from 'node:module';
+import { resolve } from 'node:path';
 import type { Chunk } from 'webpack';
 import type { Args } from '../utils/cli';
 import {
@@ -22,6 +24,13 @@ const mockChunk = (
   name: string | undefined,
   files = new Set<string>(),
 ): Chunk => ({ name, files }) as unknown as Chunk;
+
+type ResourcePolicy = {
+  globals?: Record<string, boolean | 'write'>;
+  packages?: Record<string, boolean>;
+  builtin?: Record<string, boolean>;
+};
+type Policy = { resources: Record<string, ResourcePolicy> };
 
 describe('LavamoatPlugin', () => {
   describe('lavamoatUnsafeLayerRule', () => {
@@ -258,6 +267,65 @@ describe('LavamoatPlugin', () => {
       };
       assert.strictEqual(result.mode, 'safe');
     });
+  });
+
+  describe('Braze SDK grants', () => {
+    const requireFromLavaMoat = createRequire(
+      require.resolve('@lavamoat/webpack'),
+    );
+    const { mergePolicy } = requireFromLavaMoat('lavamoat-core') as {
+      mergePolicy: (base: Policy, override: Policy) => Policy;
+    };
+
+    for (const variant of ['main', 'beta', 'flask', 'experimental']) {
+      it(`limits Braze in ${variant} to worker shims and harmless built-ins`, () => {
+        const policyDir = resolve(
+          __dirname,
+          '../../../lavamoat/webpack/mv3',
+          variant,
+        );
+        const { resources } = mergePolicy(
+          requireFromLavaMoat(resolve(policyDir, 'policy.json')),
+          requireFromLavaMoat(resolve(policyDir, 'policy-override.json')),
+        );
+        const sdk = resources['@braze/web-sdk'];
+        const grants = Object.entries(sdk.globals ?? {}).filter(
+          ([, value]) => value !== false,
+        );
+        assert.ok(
+          grants.every(([, value]) => value === true),
+          'globals are read-only',
+        );
+        assert.deepStrictEqual(grants.map(([name]) => name).sort(), [
+          'CustomEvent',
+          'Intl',
+          'XMLHttpRequest',
+          'addEventListener',
+          'atob',
+          'btoa',
+          'clearInterval',
+          'clearTimeout',
+          'crypto.getRandomValues',
+          'dispatchEvent',
+          'document',
+          'innerHeight',
+          'innerWidth',
+          'localStorage',
+          'location',
+          'navigator',
+          'orientation',
+          'removeEventListener',
+          'screen.height',
+          'screen.mozOrientation',
+          'screen.msOrientation',
+          'screen.width',
+          'setInterval',
+          'setTimeout',
+        ]);
+        assert.deepStrictEqual(sdk.packages ?? {}, {});
+        assert.deepStrictEqual(sdk.builtin ?? {}, {});
+      });
+    }
   });
 
   describe('lavamoatUnsafeLayerPlugin', () => {

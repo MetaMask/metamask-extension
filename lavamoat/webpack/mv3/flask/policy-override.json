@@ -1,5 +1,20 @@
 {
   "resources": {
+    "@braze/web-sdk": {
+      "globals": {
+        "EventSource": false,
+        "Notification": false,
+        "ServiceWorkerRegistration": false,
+        "console.error": false,
+        "console.log": false,
+        "console.warn": false,
+        "crypto": false,
+        "crypto.getRandomValues": true,
+        "location": true,
+        "open": false,
+        "safari": false
+      }
+    },
     "@ethersproject/wallet>@ethersproject/random": {
       "globals": {
         "crypto": true

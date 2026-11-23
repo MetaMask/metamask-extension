@@ -190,6 +190,7 @@ import {
 } from '../../shared/lib/selectors/assets-migration';
 import { isPerpsRemoteConfigSatisfied } from '../../shared/lib/perps-feature-flags';
 import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
+import { createBrazeIdentitySync } from './services/braze-identity';
 import { accountSupports7702 } from './lib/account-supports-7702';
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 
@@ -1494,6 +1495,28 @@ export default class MetamaskController extends EventEmitter {
       },
       controllerMessenger: this.controllerMessenger,
     });
+
+    const syncBraze = createBrazeIdentitySync(
+      () => ({
+        completedOnboarding:
+          this.onboardingController.state.completedOnboarding,
+        useExternalServices:
+          this.preferencesController.state.useExternalServices,
+        isUiOpen: this.clientController.state.isUiOpen,
+        keyring: this.keyringController.state,
+        authentication: this.authenticationController.state,
+      }),
+      this.offscreenPromise,
+    );
+    for (const name of [
+      'OnboardingController',
+      'PreferencesController',
+      'ClientController',
+      'KeyringController',
+      'AuthenticationController',
+    ]) {
+      this.controllerMessenger.subscribe(`${name}:stateChange`, syncBraze);
+    }
 
     // if this is the first time, clear the state of by calling these methods
     const resetMethods = [
