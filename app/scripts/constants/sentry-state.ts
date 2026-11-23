@@ -300,6 +300,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     nativeProviders: false,
     orders: false,
     providerAutoSelected: false,
+    userSelectedProviderId: false,
   },
   RewardsController: {
     rewardsActiveAccount: false,
