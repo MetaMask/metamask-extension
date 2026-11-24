@@ -430,6 +430,55 @@ export function applyStartupPageSignals(
 }
 
 /**
+ * Samples of every `ALL_METRICS` key; a key no result defines is left out.
+ *
+ * @param measuredResults - Page loads after the warm-up sessions.
+ * @param warmupSize - Page loads dropped as warm-up, so retained values keep
+ * their original iteration numbers.
+ */
+export function collectPageLoadMetricSamples(
+  measuredResults: Metrics[],
+  warmupSize = 0,
+): {
+  result: Record<string, number[]>;
+  trimmedCounts: StatisticalResult;
+  missingCounts: StatisticalResult;
+  values: MetricSamples;
+} {
+  const result: Record<string, number[]> = {};
+  const trimmedCounts: StatisticalResult = {};
+  const missingCounts: StatisticalResult = {};
+  const values: MetricSamples = {};
+  for (const [key, tracePath] of Object.entries(ALL_METRICS)) {
+    const rawSamples = measuredResults.map((m) => get(m, tracePath) as number);
+    if (rawSamples.every((sample) => sample === undefined)) {
+      continue;
+    }
+    missingCounts[key] = rawSamples.filter(
+      (value) => !Number.isFinite(value),
+    ).length;
+    // A page load that set no hero mark has no `heroPainted` value: it stays in
+    // `values` and in `missingCount`, and is left out of the statistics. Any other
+    // metric that failed to read stays in them as NaN.
+    const { filtered, outlierCount } = detectOutliersIQR(
+      key === 'heroPainted'
+        ? rawSamples.filter((value) => Number.isFinite(value))
+        : rawSamples,
+    );
+    result[key] = [...filtered].sort((a, b) => a - b);
+    trimmedCounts[key] = outlierCount;
+    // `result[key]` is filtered and sorted, so neither the discarded samples nor
+    // the order survives it. The iteration numbering matches `WebVitalsRun`'s:
+    // warm-up sessions are dropped, and the remainder keep their original index.
+    values[key] = rawSamples.map((value, index) => ({
+      iteration: warmupSize + index,
+      value,
+    }));
+  }
+  return { result, trimmedCounts, missingCounts, values };
+}
+
+/**
  * Run the dApp page-load benchmark and aggregate results.
  *
  * Uses IQR-only outlier trimming (`trimmedCount`). Z-score is intentionally
@@ -530,33 +579,8 @@ export async function runPageLoadBenchmark(
     );
   }
 
-  const result: Record<string, number[]> = {};
-  const trimmedCounts: StatisticalResult = {};
-  const missingCounts: StatisticalResult = {};
-  const values: MetricSamples = {};
-  for (const [key, tracePath] of Object.entries(ALL_METRICS)) {
-    const rawSamples = measuredResults.map((m) => get(m, tracePath) as number);
-    missingCounts[key] = rawSamples.filter(
-      (value) => !Number.isFinite(value),
-    ).length;
-    // A page load that set no hero mark has no `heroPainted` value: it stays in
-    // `values` and in `missingCount`, and is left out of the statistics. Any other
-    // metric that failed to read stays in them as NaN.
-    const { filtered, outlierCount } = detectOutliersIQR(
-      key === 'heroPainted'
-        ? rawSamples.filter((value) => Number.isFinite(value))
-        : rawSamples,
-    );
-    result[key] = [...filtered].sort((a, b) => a - b);
-    trimmedCounts[key] = outlierCount;
-    // `result[key]` is filtered and sorted, so neither the discarded samples nor
-    // the order survives it. The iteration numbering matches `WebVitalsRun`'s:
-    // warm-up sessions are dropped, and the remainder keep their original index.
-    values[key] = rawSamples.map((value, index) => ({
-      iteration: warmupSize + index,
-      value,
-    }));
-  }
+  const { result, trimmedCounts, missingCounts, values } =
+    collectPageLoadMetricSamples(measuredResults, warmupSize);
 
   let webVitals: WebVitalsSummary | undefined;
   if (measuredWebVitalsRuns.length > 0) {

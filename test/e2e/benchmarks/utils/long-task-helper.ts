@@ -37,6 +37,10 @@ export async function measureStepWithLongTasks(
     longTaskTotalDuration: longTaskData?.totalDuration ?? 0,
     longTaskMaxDuration: longTaskData?.maxDuration ?? 0,
     tbt: longTaskData?.tbt ?? 0,
+    // `?? false` covers the hook being absent entirely; `observed` covers the
+    // hook being present while `observe({ type: 'longtask' })` was rejected.
+    // Both are absences and neither is a zero.
+    longTasksObserved: longTaskData?.observed ?? false,
   };
 }
 
@@ -52,6 +56,12 @@ export async function measureStepWithLongTasks(
 export function buildLongTaskTimerResults(
   steps: LongTaskStepResult[],
 ): TimerResult[] {
+  // Absent, not zero: with no step observed, omit these four metrics rather
+  // than report zeros, as `cls` is omitted where it is absent.
+  if (steps.length > 0 && !steps.some((step) => step.longTasksObserved)) {
+    return [];
+  }
+
   let totalCount = 0;
   let totalDuration = 0;
   let maxDuration = 0;
