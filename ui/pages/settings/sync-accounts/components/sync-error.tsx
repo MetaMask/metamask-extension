@@ -63,7 +63,7 @@ const SyncError = ({ onRetry, onCancel }: SyncErrorProps) => {
         gap={2}
       >
         <Icon
-          name={IconName.Danger}
+          name={IconName.CircleX}
           size={IconSize.Xl}
           color={IconColor.ErrorDefault}
           className="mx-auto"
