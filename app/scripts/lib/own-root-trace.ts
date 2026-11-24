@@ -1,5 +1,4 @@
 import {
-  spanToJSON,
   startInactiveSpan,
   startNewTrace,
   withActiveSpan,
@@ -12,10 +11,6 @@ import { claimBackendRequests } from './sentry-trace-propagation';
 // pops it when a callback settles, so a span left as the active span across an
 // `await` parents whatever starts meanwhile. A root here is therefore the
 // active span only while its own code runs synchronously.
-
-function isRunning(span: Span): boolean {
-  return spanToJSON(span).timestamp === undefined;
-}
 
 function runWithActiveSpan<Result>(span: Span, fn: () => Result): Result {
   // Boxed so the scope is popped on return, not when a returned promise settles.
@@ -115,12 +110,30 @@ export function createOwnRoot(name: TraceName) {
     run<Result>(fn: () => Result): Result {
       return runAsOwnRoot(name, (span) => {
         current = span;
-        return fn();
+        // Released on settle rather than read off the span, because a span
+        // with tracing disabled is a non-recording span that never ends.
+        const release = () => {
+          if (current === span) {
+            current = undefined;
+          }
+        };
+        let result: Result;
+        try {
+          result = fn();
+        } catch (error) {
+          release();
+          throw error;
+        }
+        if (result instanceof Promise) {
+          return result.finally(release) as Result;
+        }
+        release();
+        return result;
       });
     },
     bindFetch(fetchFn: typeof fetch): typeof fetch {
       return (...args) =>
-        current && isRunning(current)
+        current
           ? runWithActiveSpan(current, () => fetchFn(...args))
           : fetchFn(...args);
     },

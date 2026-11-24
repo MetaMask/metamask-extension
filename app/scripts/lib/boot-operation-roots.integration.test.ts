@@ -275,6 +275,62 @@ describe('boot-time operation roots (real SDK)', () => {
     expect(requests[1].headers.traceparent).toBeUndefined();
   });
 
+  it('lets a ramps request join a later parent once a sampled-out Ramps Init settles', async () => {
+    const options = Sentry.getClient()?.getOptions() as {
+      tracesSampleRate?: number;
+    };
+    const rampsFetch = rampsInitTrace.bindFetch(fetch);
+
+    options.tracesSampleRate = 0;
+    try {
+      await rampsInitTrace.run(async () => {
+        await Promise.resolve();
+      });
+    } finally {
+      options.tracesSampleRate = 1;
+    }
+    const laterTraceId = await Sentry.startSpan(
+      { name: 'later parent', forceTransaction: true },
+      async (span) => {
+        await rampsFetch(COUNTRIES_URL);
+        return span.spanContext().traceId;
+      },
+    );
+
+    expect(requests).toHaveLength(1);
+    expect(traceparentIds(requests[0].headers.traceparent).traceId).toBe(
+      laterTraceId,
+    );
+  });
+
+  it('lets a ramps request join a later parent once Ramps Init settles with tracing disabled', async () => {
+    const options = Sentry.getClient()?.getOptions() as {
+      tracesSampleRate?: number;
+    };
+    const rampsFetch = rampsInitTrace.bindFetch(fetch);
+
+    options.tracesSampleRate = undefined;
+    try {
+      await rampsInitTrace.run(async () => {
+        await Promise.resolve();
+      });
+    } finally {
+      options.tracesSampleRate = 1;
+    }
+    const laterTraceId = await Sentry.startSpan(
+      { name: 'later parent', forceTransaction: true },
+      async (span) => {
+        await rampsFetch(COUNTRIES_URL);
+        return span.spanContext().traceId;
+      },
+    );
+
+    expect(requests).toHaveLength(1);
+    expect(traceparentIds(requests[0].headers.traceparent).traceId).toBe(
+      laterTraceId,
+    );
+  });
+
   it('keeps an explicit parent while an operation runs', async () => {
     const phishing = startPhishingRefresh();
     await Promise.resolve();
