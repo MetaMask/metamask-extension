@@ -1,11 +1,12 @@
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
+import { enterBridgeQuote } from '../../page-objects/flows/bridge.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import SwapPage from '../../page-objects/pages/swap/swap-page';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import {
-  enterBridgeQuote,
+  enterEthToLineaBridgeQuote,
   getBridgeNegativeCasesFixtures,
   getInsufficientFundsFixtures,
   getQuoteNegativeCasesFixtures,
@@ -38,16 +39,16 @@ describe('Bridge functionality', function (this: Suite) {
         );
         await homePage.startSwapFlow();
 
-        const bridgePage = new BridgeQuotePage(driver);
-        await bridgePage.enterBridgeQuote({
+        const swapPage = new SwapPage(driver);
+        await enterBridgeQuote(driver, {
           amount: '24.9950',
           tokenFrom: 'ETH',
           tokenTo: 'WETH',
           fromChain: 'Ethereum',
           toChain: 'Linea',
         });
-        await bridgePage.checkInsufficientFundsButtonIsDisplayed();
-        await bridgePage.checkMoreETHneededIsDisplayed();
+        await swapPage.checkInsufficientFundsButtonIsDisplayed();
+        await swapPage.checkMoreETHneededIsDisplayed();
       },
     );
   });
@@ -74,8 +75,8 @@ describe('Bridge functionality', function (this: Suite) {
         );
         await homePage.startSwapFlow();
 
-        const bridgePage = await enterBridgeQuote(driver);
-        await bridgePage.checkNoTradeRouteMessageIsDisplayed();
+        const swapPage = await enterEthToLineaBridgeQuote(driver);
+        await swapPage.checkNoTradeRouteMessageIsDisplayed();
       },
     );
   });
@@ -101,8 +102,8 @@ describe('Bridge functionality', function (this: Suite) {
         );
         await homePage.startSwapFlow();
 
-        const bridgePage = await enterBridgeQuote(driver);
-        await bridgePage.checkNoTradeRouteMessageIsDisplayed();
+        const swapPage = await enterEthToLineaBridgeQuote(driver);
+        await swapPage.checkNoTradeRouteMessageIsDisplayed();
       },
     );
   });
@@ -130,8 +131,8 @@ describe('Bridge functionality', function (this: Suite) {
 
         await homePage.startSwapFlow();
 
-        const bridgePage = await enterBridgeQuote(driver);
-        await bridgePage.checkNoTradeRouteMessageIsDisplayed();
+        const swapPage = await enterEthToLineaBridgeQuote(driver);
+        await swapPage.checkNoTradeRouteMessageIsDisplayed();
       },
     );
   });
@@ -160,11 +161,11 @@ describe('Bridge functionality', function (this: Suite) {
         );
         await homePage.startSwapFlow();
 
-        const bridgePage = await enterBridgeQuote(driver);
+        const swapPage = await enterEthToLineaBridgeQuote(driver);
 
-        await bridgePage.submitQuote();
-        await bridgePage.approveModalIfPresent();
-        await bridgePage.goBackAfterSubmit();
+        await swapPage.submitQuote();
+        await swapPage.approveModalIfPresent();
+        await swapPage.goBackAfterSubmit();
         await homePage.goToActivityList();
 
         const activityTab = new ActivityTab(driver);
@@ -204,9 +205,9 @@ describe('Bridge functionality', function (this: Suite) {
         );
         await homePage.startSwapFlow();
 
-        const bridgePage = await enterBridgeQuote(driver);
-        await bridgePage.submitQuoteAndDismiss();
-        await bridgePage.goBackAfterSubmit();
+        const swapPage = await enterEthToLineaBridgeQuote(driver);
+        await swapPage.submitQuoteAndDismiss();
+        await swapPage.goBackAfterSubmit();
         await homePage.goToActivityList();
 
         const activityTab = new ActivityTab(driver);
@@ -246,9 +247,9 @@ describe('Bridge functionality', function (this: Suite) {
         );
         await homePage.startSwapFlow();
 
-        const bridgePage = await enterBridgeQuote(driver);
-        await bridgePage.submitQuoteAndDismiss();
-        await bridgePage.goBackAfterSubmit();
+        const swapPage = await enterEthToLineaBridgeQuote(driver);
+        await swapPage.submitQuoteAndDismiss();
+        await swapPage.goBackAfterSubmit();
         await homePage.goToActivityList();
 
         const activityTab = new ActivityTab(driver);

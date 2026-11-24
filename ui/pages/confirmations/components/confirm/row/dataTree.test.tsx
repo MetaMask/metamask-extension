@@ -1,5 +1,7 @@
+import { waitFor } from '@testing-library/react';
 import React from 'react';
 
+import { PrimaryType } from '../../../../../../shared/constants/signatures';
 import {
   orderSignatureMsg,
   permitSignatureMsg,
@@ -97,6 +99,30 @@ describe('DataTree', () => {
       store,
     );
     expect(container).toMatchSnapshot();
+  });
+
+  it('shows Never expires for a Permit2 expiration of the max uint48', async () => {
+    const data = {
+      details: {
+        type: 'PermitDetails',
+        value: { expiration: { type: 'uint48', value: '281474976710655' } },
+      },
+    };
+
+    const { getByTestId } = renderWithProvider(
+      <DataTree
+        data={data}
+        primaryType={PrimaryType.PermitSingle}
+        chainId={CHAIN_ID_MOCK}
+      />,
+      store,
+    );
+
+    await waitFor(() => {
+      expect(
+        getByTestId('confirmation_data-expiration-index-0'),
+      ).toHaveTextContent('Expiration:Never expires');
+    });
   });
 
   it('should match snapshot for order signature type', () => {

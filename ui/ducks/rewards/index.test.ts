@@ -203,7 +203,7 @@ describe('Ducks - Rewards', () => {
     });
 
     it('setRewardsDeepLinkUrl stores the deep link URL', () => {
-      const url = 'https://link.metamask.io/rewards?referral=ABC123';
+      const url = 'https://link.metamask.io/rewards';
       store.dispatch(setRewardsDeepLinkUrl(url));
       const actions = store.getActions();
       expect(actions[0].type).toBe('rewards/setRewardsDeepLinkUrl');

@@ -118,7 +118,9 @@ function findCatalogToken(
 // failed selection does not leave build-quote waiting on an unmet intent.
 async function preselectToken(assetId: CaipAssetType): Promise<boolean> {
   try {
-    await submitRequestToBackground('setRampsSelectedToken', [assetId]);
+    await submitRequestToBackground('RampsController:setSelectedToken', [
+      assetId,
+    ]);
     return true;
   } catch {
     return false;

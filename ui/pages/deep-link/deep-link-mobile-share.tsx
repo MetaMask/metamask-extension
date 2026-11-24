@@ -20,7 +20,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { useTheme } from '../../hooks/useTheme';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import { ThemeType } from '../../../shared/constants/preferences';
-import { QRCodeImage } from '../../components/app/deeplink-qr-code';
+import { QRCodeImage } from '../../components/app/deep-link-qr-code';
 import { MarketingMomentTitle } from '../../components/ui/marketing-moment-title/marketing-moment-title';
 
 const { getExtensionURL } = globalThis.platform;

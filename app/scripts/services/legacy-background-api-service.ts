@@ -104,6 +104,7 @@ import { QrKeyring as QrKeyringV2 } from '@metamask/eth-qr-keyring/v2';
 import { KeyringType } from '@metamask/keyring-api/v2';
 import { normalize } from '@metamask/eth-sig-util';
 import {
+  getAccountAddressRelationship,
   TransactionContainerType,
   TransactionControllerAddTransactionAction,
   TransactionControllerAddTransactionBatchAction,
@@ -129,9 +130,6 @@ import {
 } from '@metamask/signature-controller';
 import {
   AssetsContractControllerGetTokenStandardAndDetailsAction,
-  CurrencyRateControllerSetCurrentCurrencyAction,
-  TokenDetectionControllerDisableAction,
-  TokenDetectionControllerEnableAction,
   TokensControllerAddTokenAction,
   TokensControllerGetStateAction,
 } from '@metamask/assets-controllers';
@@ -276,7 +274,10 @@ import {
   ShieldControllerStopAction,
 } from '@metamask/shield-controller';
 import { ClaimsControllerClearStateAction } from '@metamask/claims-controller';
-import { AddressBookControllerClearAction } from '@metamask/address-book-controller';
+import {
+  AddressBookControllerClearAction,
+  AddressBookControllerGetStateAction,
+} from '@metamask/address-book-controller';
 import {
   GasFeeControllerDisableNonRPCGasFeeApisAction,
   GasFeeControllerEnableNonRPCGasFeeApisAction,
@@ -323,7 +324,6 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { restrictKeyringForDeviceRead } from '../lib/hardware-device-read-keyring';
-import type { UsePPOMAction } from '../lib/ppom/ppom-util';
 import {
   OnboardingControllerGetIsSocialLoginFlowAction,
   OnboardingControllerResetOnboardingAction,
@@ -414,6 +414,7 @@ import {
   LatticeKeyringV2,
   LatticeCreateAccountOptions,
 } from '../lib/offscreen-bridge/lattice-keyring-v2';
+import { prependZero } from '../../../shared/lib/string-utils';
 import type {
   SentryTracingServiceBufferedEndTraceAction,
   SentryTracingServiceBufferedTraceAction,
@@ -499,10 +500,12 @@ const MESSENGER_EXPOSED_METHODS = [
   'addTransactionAndWaitForPublish',
   'applyTransactionContainersExisting',
   'attemptLedgerTransportCreation',
+  'backupUserData',
   'captureTestError',
   'changePassword',
   'changePasswordWithPasskeyVerification',
   'checkDelegationDisabled',
+  'checkFirstTimeInteraction',
   'checkHardwareStatus',
   'checkIsSeedlessPasswordOutdated',
   'connectHardware',
@@ -617,6 +620,7 @@ type AllowedActions =
   | AccountsControllerSetSelectedAccountAction
   | AccountsControllerUpdateAccountsAction
   | AddressBookControllerClearAction
+  | AddressBookControllerGetStateAction
   | ApprovalControllerAcceptRequestAction
   | ApprovalControllerAddAction
   | ApprovalControllerAddAndShowApprovalRequestAction
@@ -642,7 +646,6 @@ type AllowedActions =
   | AuthenticationControllerPerformSignOutAction
   | BridgeStatusControllerWipeBridgeStatusAction
   | ClaimsControllerClearStateAction
-  | CurrencyRateControllerSetCurrentCurrencyAction
   | DelegationControllerSignDelegationAction
   | GasFeeControllerDisableNonRPCGasFeeApisAction
   | GasFeeControllerEnableNonRPCGasFeeApisAction
@@ -758,8 +761,6 @@ type AllowedActions =
   | SubscriptionControllerGetStateAction
   | SubscriptionControllerGetSubscriptionByProductAction
   | SubscriptionControllerStopAllPollingAction
-  | TokenDetectionControllerDisableAction
-  | TokenDetectionControllerEnableAction
   | TokensControllerAddTokenAction
   | TokensControllerGetStateAction
   | TransactionControllerAddTransactionAction
@@ -772,7 +773,6 @@ type AllowedActions =
   | TransactionControllerUpdateEditableParamsAction
   | TransactionControllerUpdateSecurityAlertResponseAction
   | TransactionControllerWipeTransactionsAction
-  | UsePPOMAction
   | UserOperationControllerAddUserOperationFromTransactionAction
   | UserOperationControllerStartPollingByNetworkClientIdAction;
 
@@ -934,16 +934,11 @@ export class LegacyBackgroundApiService {
   }
 
   /**
-   * Sets the current currency for the CurrencyRateController and AssetsController.
+   * Sets the selected currency on the AssetsController.
    *
    * @param currencyCode - The currency code to set as the current currency.
    */
   async setCurrentCurrency(currencyCode: SupportedCurrency): Promise<void> {
-    await this.#messenger.call(
-      'CurrencyRateController:setCurrentCurrency',
-      currencyCode,
-    );
-
     this.#messenger.call('AssetsController:setSelectedCurrency', currencyCode);
   }
 
@@ -3107,13 +3102,11 @@ export class LegacyBackgroundApiService {
     );
 
     if (useExternal) {
-      this.#messenger.call('TokenDetectionController:enable');
       this.#messenger.call('GasFeeController:enableNonRPCGasFeeApis');
       if (hasActiveShieldSubscription) {
         this.#messenger.call('ShieldController:start');
       }
     } else {
-      this.#messenger.call('TokenDetectionController:disable');
       this.#messenger.call('GasFeeController:disableNonRPCGasFeeApis');
       // stop polling for the subscriptions if external services are disabled
       this.#messenger.call('SubscriptionController:stopAllPolling');
@@ -4194,10 +4187,13 @@ export class LegacyBackgroundApiService {
 
       // Only emit a span when discovery actually created accounts.
       if (result.length > 0) {
+        // Discovery runs after onboarding or an SRP import, often detached from
+        // the request that triggered it, and no caller context reaches here.
         trace({
           name: TraceName.DiscoverAccounts,
           op: TraceOperation.AccountDiscover,
           startTime,
+          root: true,
         });
         endTrace({
           name: TraceName.DiscoverAccounts,
@@ -4514,10 +4510,6 @@ export class LegacyBackgroundApiService {
       );
 
       this.#messenger.call('TransactionController:clearUnapprovedTransactions');
-
-      if (completedOnboarding) {
-        this.#messenger.call('TokenDetectionController:enable');
-      }
 
       // create new vault
       const seedPhraseAsUint8Array =
@@ -5513,5 +5505,67 @@ export class LegacyBackgroundApiService {
     }
 
     return analyticsId;
+  }
+
+  /**
+   * Determines whether the sender has no prior interaction with an address.
+   *
+   * Missing relationship data and request failures remain unknown so callers
+   * can distinguish them from a confirmed first interaction.
+   *
+   * @param request - The chain, sender, and recipient to check.
+   * @param request.chainId - The numeric chain ID.
+   * @param request.from - The sender address.
+   * @param request.to - The recipient address.
+   * @returns Whether this is the first interaction, or undefined if unknown.
+   */
+  // TODO: Move this to `transaction-controller` and expose as a messenger
+  // action.
+  async checkFirstTimeInteraction(request: {
+    chainId: number;
+    from: string;
+    to: string;
+  }): Promise<boolean | undefined> {
+    try {
+      const result = await getAccountAddressRelationship(request);
+      return result.count === undefined ? undefined : result.count === 0;
+    } catch {
+      return undefined;
+    }
+  }
+
+  /**
+   * Creates a JSON backup of the user's preferences, accounts, address book,
+   * and network configurations for download from the UI.
+   *
+   * @returns The backup filename and serialized data.
+   */
+  backupUserData(): { fileName: string; data: string } {
+    const preferences = this.#messenger.call('PreferencesController:getState');
+    const { internalAccounts } = this.#messenger.call(
+      'AccountsController:getState',
+    );
+    const addressBook = this.#messenger.call('AddressBookController:getState');
+    const { networkConfigurationsByChainId } = this.#messenger.call(
+      'NetworkController:getState',
+    );
+
+    const data = JSON.stringify({
+      preferences: { ...preferences },
+      internalAccounts: { internalAccounts },
+      addressBook: { ...addressBook },
+      network: { networkConfigurationsByChainId },
+    });
+
+    const date = new Date();
+    const prefixZero = (num: number): string => prependZero(num, 2);
+
+    const userDataFileName = `MetaMaskUserData.${date.getFullYear()}_${prefixZero(
+      date.getMonth() + 1,
+    )}_${prefixZero(date.getDay())}_${prefixZero(date.getHours())}_${prefixZero(
+      date.getMinutes(),
+    )}_${prefixZero(date.getDay())}.json`;
+
+    return { fileName: userDataFileName, data };
   }
 }

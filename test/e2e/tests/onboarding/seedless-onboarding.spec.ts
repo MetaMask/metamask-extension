@@ -8,9 +8,9 @@ import {
   importWalletWithSocialLoginOnboardingFlow,
   handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
+import DownloadAppPage from '../../page-objects/pages/onboarding/download-app-page';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import AccountAddressListPage from '../../page-objects/pages/accounts/address-list-page';
-import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import {
@@ -23,6 +23,7 @@ import {
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import { normalizeSafeAddress } from '../../../../shared/lib/multichain/address';
 import { AuthConnection } from '../../../../shared/constants/onboarding';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 
 const ETH_MAINNET_ASSET_ID = 'eip155:1/slip44:60';
 const MUSD_MAINNET_ASSET_ID =
@@ -152,8 +153,11 @@ describe('Metamask onboarding (with social login)', function () {
           driver,
         });
 
+        const downloadAppPage = new DownloadAppPage(driver);
+        await downloadAppPage.checkPageIsLoaded();
+        await downloadAppPage.clickContinue();
+
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.displayDownloadAppPageAndContinue();
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
         await onboardingCompletePage.completeOnboarding();
@@ -185,8 +189,11 @@ describe('Metamask onboarding (with social login)', function () {
           authConnection: AuthConnection.Telegram,
         });
 
+        const downloadAppPage = new DownloadAppPage(driver);
+        await downloadAppPage.checkPageIsLoaded();
+        await downloadAppPage.clickContinue();
+
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.displayDownloadAppPageAndContinue();
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
         await onboardingCompletePage.completeOnboarding();
@@ -229,8 +236,7 @@ describe('Metamask onboarding (with social login)', function () {
           symbol: 'ETH',
           timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         const accountListPage = new AccountListPage(driver);
 
         await accountListPage.openMultichainAccountMenu({
@@ -276,8 +282,7 @@ describe('Metamask onboarding (with social login)', function () {
           symbol: 'ETH',
           timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         const accountListPage = new AccountListPage(driver);
 
         await accountListPage.openMultichainAccountMenu({

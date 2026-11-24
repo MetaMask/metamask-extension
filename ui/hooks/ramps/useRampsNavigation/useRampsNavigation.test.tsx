@@ -50,9 +50,9 @@ jest.mock('react-router-dom', () => ({
 
 const mockBackground = submitRequestToBackground as jest.Mock;
 // `submitRequestToBackground` backs both the geolocation lookup and
-// `setRampsSelectedToken`; the geolocation result is what the gate reads.
+// `RampsController:setSelectedToken`; the geolocation result is what the gate reads.
 const mockGetGeolocation = mockBackground;
-// Per-method responses; unlisted methods (e.g. `getRampsTokens`) resolve to
+// Per-method responses; unlisted methods resolve to
 // undefined, like a controller with nothing to return.
 const backgroundHandlers: Record<string, () => unknown> = {};
 const openTab = jest.fn();
@@ -563,11 +563,11 @@ describe('useRampsNavigation goToBuy', () => {
       replace: false,
     });
     expect(mockBackground).not.toHaveBeenCalledWith(
-      'getRampsTokens',
+      'RampsController:getTokens',
       expect.anything(),
     );
     expect(mockBackground).not.toHaveBeenCalledWith(
-      'setRampsUserRegion',
+      'RampsController:setUserRegion',
       expect.anything(),
     );
   });
@@ -589,9 +589,10 @@ describe('useRampsNavigation goToBuy', () => {
     );
     const opened = await goToBuy(result, { assetId });
     expect(opened).toBe('native');
-    expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
-      assetId,
-    ]);
+    expect(mockBackground).toHaveBeenCalledWith(
+      'RampsController:setSelectedToken',
+      [assetId],
+    );
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId },
       replace: false,
@@ -601,7 +602,7 @@ describe('useRampsNavigation goToBuy', () => {
 
   it('intent with assetId when pre-select fails → shows RAMPS_UNSUPPORTED and does not navigate', async () => {
     const assetId = 'eip155:1/erc20:0xabc';
-    backgroundHandlers.setRampsSelectedToken = () => {
+    backgroundHandlers['RampsController:setSelectedToken'] = () => {
       throw new Error('Token not found');
     };
     const { result, getModalName } = run(
@@ -675,9 +676,10 @@ describe('useRampsNavigation goToBuy', () => {
     });
 
     expect(opened).toBe('native');
-    expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
-      catalogAssetId,
-    ]);
+    expect(mockBackground).toHaveBeenCalledWith(
+      'RampsController:setSelectedToken',
+      [catalogAssetId],
+    );
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId: catalogAssetId },
       replace: false,
@@ -798,7 +800,7 @@ describe('useRampsNavigation goToBuy', () => {
     // catalog before pre-selecting the intent.
     const assetId = 'eip155:1/erc20:0xabc';
     const catalogAssetId = 'eip155:1/erc20:0xABC';
-    backgroundHandlers.getRampsTokens = () => ({
+    backgroundHandlers['RampsController:getTokens'] = () => ({
       topTokens: [],
       allTokens: [
         { assetId: catalogAssetId, tokenSupported: true } as RampsToken,
@@ -813,13 +815,14 @@ describe('useRampsNavigation goToBuy', () => {
     const opened = await goToBuy(result, { assetId });
 
     expect(opened).toBe('native');
-    expect(mockBackground).toHaveBeenCalledWith('getRampsTokens', [
+    expect(mockBackground).toHaveBeenCalledWith('RampsController:getTokens', [
       'us',
       'buy',
     ]);
-    expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
-      catalogAssetId,
-    ]);
+    expect(mockBackground).toHaveBeenCalledWith(
+      'RampsController:setSelectedToken',
+      [catalogAssetId],
+    );
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId: catalogAssetId },
       replace: false,
@@ -830,11 +833,11 @@ describe('useRampsNavigation goToBuy', () => {
   it('resolves the cold-start fetch region through the controller when the persisted region is unavailable', async () => {
     // Use the controller-resolved region, not a lowercased geolocation string.
     const assetId = 'eip155:1/erc20:0xabc';
-    backgroundHandlers.getRampsTokens = () => ({
+    backgroundHandlers['RampsController:getTokens'] = () => ({
       topTokens: [],
       allTokens: [{ assetId, tokenSupported: true } as RampsToken],
     });
-    backgroundHandlers.setRampsUserRegion = () => region;
+    backgroundHandlers['RampsController:setUserRegion'] = () => region;
     const { result } = run(
       buildState({
         userRegion: null,
@@ -844,10 +847,11 @@ describe('useRampsNavigation goToBuy', () => {
 
     await goToBuy(result, { assetId });
 
-    expect(mockBackground).toHaveBeenCalledWith('setRampsUserRegion', [
-      'US-CA',
-    ]);
-    expect(mockBackground).toHaveBeenCalledWith('getRampsTokens', [
+    expect(mockBackground).toHaveBeenCalledWith(
+      'RampsController:setUserRegion',
+      ['US-CA', undefined],
+    );
+    expect(mockBackground).toHaveBeenCalledWith('RampsController:getTokens', [
       'us',
       'buy',
     ]);
@@ -876,16 +880,17 @@ describe('useRampsNavigation goToBuy', () => {
 
     expect(opened).toBe('native');
     expect(mockBackground).not.toHaveBeenCalledWith(
-      'setRampsUserRegion',
+      'RampsController:setUserRegion',
       expect.anything(),
     );
     expect(mockBackground).not.toHaveBeenCalledWith(
-      'getRampsTokens',
+      'RampsController:getTokens',
       expect.anything(),
     );
-    expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
-      assetId,
-    ]);
+    expect(mockBackground).toHaveBeenCalledWith(
+      'RampsController:setSelectedToken',
+      [assetId],
+    );
     expect(getModalName()).toBeNull();
   });
 
@@ -893,9 +898,9 @@ describe('useRampsNavigation goToBuy', () => {
     // Countries are not persisted, so a first buy can land before the
     // controller has anything to resolve the geolocation against.
     const assetId = 'eip155:1/erc20:0xabc';
-    backgroundHandlers.getRampsCountries = () => [region.country];
-    backgroundHandlers.setRampsUserRegion = () => region;
-    backgroundHandlers.getRampsTokens = () => ({
+    backgroundHandlers['RampsController:getCountries'] = () => [region.country];
+    backgroundHandlers['RampsController:setUserRegion'] = () => region;
+    backgroundHandlers['RampsController:getTokens'] = () => ({
       topTokens: [],
       allTokens: [{ assetId, tokenSupported: true } as RampsToken],
     });
@@ -912,10 +917,10 @@ describe('useRampsNavigation goToBuy', () => {
     expect(opened).toBe('native');
     expect(mockBackground.mock.calls.map(([method]) => method)).toStrictEqual([
       'GeolocationController:getGeolocation',
-      'getRampsCountries',
-      'setRampsUserRegion',
-      'getRampsTokens',
-      'setRampsSelectedToken',
+      'RampsController:getCountries',
+      'RampsController:setUserRegion',
+      'RampsController:getTokens',
+      'RampsController:setSelectedToken',
     ]);
     expect(getModalName()).toBeNull();
   });
@@ -929,8 +934,10 @@ describe('useRampsNavigation goToBuy', () => {
       isoCode: 'FR',
       supported: { buy: false },
     } as Country;
-    backgroundHandlers.getRampsCountries = () => [unsupportedCountry];
-    backgroundHandlers.setRampsUserRegion = () => ({
+    backgroundHandlers['RampsController:getCountries'] = () => [
+      unsupportedCountry,
+    ];
+    backgroundHandlers['RampsController:setUserRegion'] = () => ({
       country: unsupportedCountry,
       state: null,
       regionCode: 'fr',
@@ -948,11 +955,11 @@ describe('useRampsNavigation goToBuy', () => {
     expect(opened).toBe(false);
     expect(getModalName()).toBe('RAMPS_UNSUPPORTED');
     expect(mockBackground).not.toHaveBeenCalledWith(
-      'getRampsTokens',
+      'RampsController:getTokens',
       expect.anything(),
     );
     expect(mockBackground).not.toHaveBeenCalledWith(
-      'setRampsSelectedToken',
+      'RampsController:setSelectedToken',
       expect.anything(),
     );
     expect(mockNavigate).not.toHaveBeenCalled();
@@ -961,10 +968,10 @@ describe('useRampsNavigation goToBuy', () => {
   it('cold fetch whose countries fetch fails → skips the fetch and shows RAMPS_UNSUPPORTED', async () => {
     // Without countries, seeding fails; preselect fails closed.
     const assetId = 'eip155:1/erc20:0xabc';
-    backgroundHandlers.getRampsCountries = () => {
+    backgroundHandlers['RampsController:getCountries'] = () => {
       throw new Error('network down');
     };
-    backgroundHandlers.setRampsSelectedToken = () => {
+    backgroundHandlers['RampsController:setSelectedToken'] = () => {
       throw new Error(
         'Tokens not loaded. Cannot set selected token before tokens are fetched.',
       );
@@ -982,7 +989,7 @@ describe('useRampsNavigation goToBuy', () => {
     expect(opened).toBe(false);
     expect(getModalName()).toBe('RAMPS_UNSUPPORTED');
     expect(mockBackground).not.toHaveBeenCalledWith(
-      'getRampsTokens',
+      'RampsController:getTokens',
       expect.anything(),
     );
   });
@@ -990,12 +997,12 @@ describe('useRampsNavigation goToBuy', () => {
   it('skips the fetch when seeding the region fails', async () => {
     // An unresolvable region ends at the unsupported modal.
     const assetId = 'eip155:1/erc20:0xabc';
-    backgroundHandlers.setRampsSelectedToken = () => {
+    backgroundHandlers['RampsController:setSelectedToken'] = () => {
       throw new Error(
         'Tokens not loaded. Cannot set selected token before tokens are fetched.',
       );
     };
-    backgroundHandlers.setRampsUserRegion = () => {
+    backgroundHandlers['RampsController:setUserRegion'] = () => {
       throw new Error('No countries found');
     };
     const { result, getModalName } = run(
@@ -1010,7 +1017,7 @@ describe('useRampsNavigation goToBuy', () => {
     expect(opened).toBe(false);
     expect(getModalName()).toBe('RAMPS_UNSUPPORTED');
     expect(mockBackground).not.toHaveBeenCalledWith(
-      'getRampsTokens',
+      'RampsController:getTokens',
       expect.anything(),
     );
   });
@@ -1018,10 +1025,10 @@ describe('useRampsNavigation goToBuy', () => {
   it('cold catalog fetch that fails and a controller that cannot pre-select → shows RAMPS_UNSUPPORTED', async () => {
     // Without a fetched catalog, preselect fails closed.
     const assetId = 'eip155:1/erc20:0xabc';
-    backgroundHandlers.getRampsTokens = () => {
+    backgroundHandlers['RampsController:getTokens'] = () => {
       throw new Error('network down');
     };
-    backgroundHandlers.setRampsSelectedToken = () => {
+    backgroundHandlers['RampsController:setSelectedToken'] = () => {
       throw new Error(
         'Tokens not loaded. Cannot set selected token before tokens are fetched.',
       );
@@ -1043,7 +1050,7 @@ describe('useRampsNavigation goToBuy', () => {
     // A stale providers snapshot must not mark a freshly fetched catalog as
     // empty.
     const assetId = 'eip155:1/erc20:0xabc';
-    backgroundHandlers.getRampsTokens = () => ({
+    backgroundHandlers['RampsController:getTokens'] = () => ({
       topTokens: [],
       allTokens: [{ assetId, tokenSupported: true } as RampsToken],
     });
@@ -1057,9 +1064,10 @@ describe('useRampsNavigation goToBuy', () => {
     const opened = await goToBuy(result, { assetId });
 
     expect(opened).toBe('native');
-    expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
-      assetId,
-    ]);
+    expect(mockBackground).toHaveBeenCalledWith(
+      'RampsController:setSelectedToken',
+      [assetId],
+    );
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId },
       replace: false,
@@ -1070,7 +1078,7 @@ describe('useRampsNavigation goToBuy', () => {
   it('freshly fetched catalog that lacks the token → shows RAMPS_UNSUPPORTED', async () => {
     // A freshly fetched catalog is authoritative when it lacks the token.
     const assetId = 'eip155:1/erc20:0xmissing';
-    backgroundHandlers.getRampsTokens = () => ({
+    backgroundHandlers['RampsController:getTokens'] = () => ({
       topTokens: [],
       allTokens: [
         {
@@ -1101,9 +1109,10 @@ describe('useRampsNavigation goToBuy', () => {
     );
     const opened = await goToBuy(result, { assetId });
     expect(opened).toBe('native');
-    expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
-      assetId,
-    ]);
+    expect(mockBackground).toHaveBeenCalledWith(
+      'RampsController:setSelectedToken',
+      [assetId],
+    );
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId },
       replace: false,
@@ -1137,9 +1146,10 @@ describe('useRampsNavigation goToBuy', () => {
     });
 
     expect(opened).toBe('native');
-    expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
-      catalogAssetId,
-    ]);
+    expect(mockBackground).toHaveBeenCalledWith(
+      'RampsController:setSelectedToken',
+      [catalogAssetId],
+    );
   });
 
   it('intent with assetId and incomplete settled catalog → fails open to build quote', async () => {
@@ -1161,9 +1171,10 @@ describe('useRampsNavigation goToBuy', () => {
     const opened = await goToBuy(result, { assetId });
 
     expect(opened).toBe('native');
-    expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
-      assetId,
-    ]);
+    expect(mockBackground).toHaveBeenCalledWith(
+      'RampsController:setSelectedToken',
+      [assetId],
+    );
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId },
       replace: false,

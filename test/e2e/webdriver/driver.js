@@ -15,6 +15,9 @@ const { sprintf } = require('sprintf-js');
 const lodash = require('lodash');
 const { retry } = require('../../../development/lib/retry');
 const { quoteXPathText } = require('../../helpers/quoteXPathText');
+const {
+  WIDE_SCREEN_DESIGN_MIN_WIDTH,
+} = require('../../../shared/constants/layout');
 const { isManifestV3 } = require('../../../shared/lib/mv3.utils');
 const { WindowHandles } = require('../background-socket/window-handles');
 const {
@@ -201,6 +204,19 @@ class Driver {
       }
     }
     return this.driver.executeScript(script, args);
+  }
+
+  /**
+   * Asserts the viewport is wide enough for the wide screen design to apply.
+   * Fails with a clear message instead of a missing-element timeout when
+   * the browser window is too narrow, e.g. a headed run on a small screen.
+   */
+  async checkWideLayoutViewport() {
+    const viewportWidth = await this.executeScript('return window.innerWidth');
+    assert.ok(
+      viewportWidth >= WIDE_SCREEN_DESIGN_MIN_WIDTH,
+      `Expected the wide layout but the viewport is ${viewportWidth}px, below the ${WIDE_SCREEN_DESIGN_MIN_WIDTH}px breakpoint. Use a larger browser window or run headless.`,
+    );
   }
 
   /**
@@ -1570,15 +1586,24 @@ class Driver {
 
     while (timeElapsed <= this.timeout) {
       for (const handle of windowHandles) {
-        // Wait 25 x 200ms = 5 seconds for the title to match the target title
+        // Wait 25 x 200ms = 5 seconds for the title to match the target title.
+        // A window that reload already closed will never recover, so skip it
+        // and keep polling the remaining handles.
         const handleTitle = await retry(
           {
             retries: 25,
             delay: 200,
           },
           async () => {
-            await this.driver.switchTo().window(handle);
-            return await this.driver.getTitle();
+            try {
+              await this.driver.switchTo().window(handle);
+              return await this.driver.getTitle();
+            } catch (error) {
+              if (error?.name === 'NoSuchWindowError') {
+                return undefined;
+              }
+              throw error;
+            }
           },
         );
 

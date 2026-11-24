@@ -17,7 +17,10 @@ import TestDappIndividualRequest from '../../../page-objects/pages/test-dapp-ind
 import { MockedEndpoint } from '../../../mock-e2e';
 import { mockEip7702FeatureFlag } from '../helpers';
 import { getTransactionDetails } from '../helpers/anvil-transaction';
-import { mockSimulationApi } from '../mocks/simulation';
+import {
+  mockSimulationApi,
+  mockSimulationApiReverted,
+} from '../mocks/simulation';
 import { mockTrustSignal } from '../mocks/trust-signals';
 import { SENDER_ADDRESS_MOCK } from '../../simulation-details/types';
 import { getMockAssetsPrice, mockSpotPrices } from '../../tokens/utils/mocks';
@@ -307,6 +310,46 @@ describe('Enforced Simulations', function (this: Suite) {
     );
   });
 
+  it('does not offer or enforce simulations when the simulation fails', async function () {
+    await withFixtures(
+      enforcedSimulationsFixtureOptions(
+        this.test?.fullTitle(),
+        setupMocks(ResultType.Malicious, { simulationReverted: true }),
+      ),
+      async ({ driver, localNodes }) => {
+        await login(driver, { expectedBalance: '10' });
+        await createDappTransaction(driver, TRANSACTION_MOCK);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const confirmation = new TransactionConfirmation(driver);
+        await confirmation.checkPageIsLoaded();
+        await confirmation.checkEstimatedSimulationDetails(
+          'This transaction is likely to fail',
+        );
+        await confirmation.checkEnforcedSimulationsRowIsNotDisplayed();
+
+        const { receipt, tx } = await confirmAndGetTransaction(
+          driver,
+          confirmation,
+          localNodes[0],
+          'confirmed',
+          true,
+        );
+
+        assert.strictEqual(
+          receipt.to?.toLowerCase(),
+          USDC_ADDRESS.toLowerCase(),
+          `Expected receipt.to to be USDC, got ${receipt.to}`,
+        );
+        assert.strictEqual(
+          (tx.input ?? '0x').toLowerCase(),
+          USDC_TRANSFER_CALLDATA.toLowerCase(),
+          `Expected tx.input to be original USDC transfer calldata`,
+        );
+      },
+    );
+  });
+
   it('reverts on-chain when the actual balance change exceeds the simulation', async function () {
     await withFixtures(
       enforcedSimulationsFixtureOptions(
@@ -347,11 +390,20 @@ describe('Enforced Simulations', function (this: Suite) {
   });
 });
 
-function setupMocks(trustResultType: ResultType) {
+function setupMocks(
+  trustResultType: ResultType,
+  { simulationReverted = false }: { simulationReverted?: boolean } = {},
+) {
   return async (mockServer: MockttpServer): Promise<MockedEndpoint[]> => {
     const eip7702Mocks = await mockEip7702FeatureFlag(mockServer);
     const trustMocks = await mockTrustSignal(mockServer, trustResultType);
     await mockSpotPrices(mockServer, ENFORCED_SIMULATIONS_SPOT_PRICES);
+
+    if (simulationReverted) {
+      await mockSimulationApiReverted(mockServer);
+      return [...eip7702Mocks, ...trustMocks];
+    }
+
     await mockSimulationApi(mockServer, {
       sender: SENDER_ADDRESS_MOCK,
       recipient: RECIPIENT_ADDRESS,

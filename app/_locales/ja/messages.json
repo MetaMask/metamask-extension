@@ -1,4 +1,8 @@
 {
+  "24hChange": {
+    "message": "24時間の価格変動",
+    "description": "Title for the 24 hour change of the token price"
+  },
   "CSS_loadingTakingTooLongActionText": {
     "message": "問題が解決しない場合は、MetaMaskを再起動してください。",
     "description": "Second line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
@@ -6,6 +10,9 @@
   "CSS_loadingTakingTooLongMessageText": {
     "message": "読み込みに通常より時間がかかっています。",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
+  "QRHardwarePubkeyAccountOutOfRange": {
+    "message": "他にアカウントはありません。以下のリストにない別のアカウントにアクセスするには、ハードウェアウォレットを接続しなおして選択してください。"
   },
   "QRHardwareScanInstructions": {
     "message": "カメラをQRコードに向けてください。画面がぼやけていますが、読み取りには影響しません。"
@@ -1257,11 +1264,17 @@
   "add_device_error_expired": {
     "message": "この同期セッションは期限切れになりました。もう一度やり直して、新しいQRコードを生成してください。"
   },
+  "add_device_error_generic": {
+    "message": "スマートフォンとの同期中に問題が発生しました。再試行してください。"
+  },
   "add_device_error_invalid_code": {
     "message": "確認コードが正しくありませんでした。もう一度やり直して、スマートフォンを同期してみてください。"
   },
   "add_device_error_rejected": {
     "message": "お使いのスマートフォンで同期がキャンセルされました。もう一度同期してみてください。"
+  },
+  "add_device_error_sync_failed": {
+    "message": "アカウントとスマートフォンの同期を完了できませんでした。再試行してください。"
   },
   "add_device_error_title": {
     "message": "同期を完了できませんでした"
@@ -1309,12 +1322,6 @@
   },
   "add_device_try_again": {
     "message": "もう一度お試しください"
-  },
-  "add_device_validating_desc": {
-    "message": "お使いの携帯電話との暗号化された安全な接続を確立します。"
-  },
-  "add_device_validating_title": {
-    "message": "デバイスのペアリング"
   },
   "add_wallets": {
     "message": "同期する項目を選択"
@@ -1495,6 +1502,12 @@
   "alertMessageAddressTrustSignalMalicious": {
     "message": "このアドレスは、セキュリティパートナーによって悪意のある活動であると判断されました。"
   },
+  "alertMessageAddressTrustSignalMaliciousWithAddress": {
+    "message": "このアドレス$1は、セキュリティパートナーによって悪意のある活動であると判断されました。"
+  },
+  "alertMessageAddressTrustSignalWarningWithAddress": {
+    "message": "セキュリティパートナーは、このアドレス$1を検証するための信頼できる履歴を十分に保持していません。"
+  },
   "alertMessageBurnAddress": {
     "message": "資産をバーンアドレスに送金しようとしています。続行すると、資産が失われます。"
   },
@@ -1512,6 +1525,12 @@
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "アカウントにネットワーク手数料を支払うのに十分な$1がありません。"
+  },
+  "alertMessageNestedAddressTrustSignalMaliciousWithAddress": {
+    "message": "ネストされたトランザクションアドレス$1が、セキュリティパートナーによって悪意のある活動であると判断されました。"
+  },
+  "alertMessageNestedAddressTrustSignalWarningWithAddress": {
+    "message": "セキュリティパートナーは、ネストされたこのトランザクション$1を検証するための信頼できる履歴を十分に保持していません。"
   },
   "alertMessageNoGasPrice": {
     "message": "手数料を手動で更新するまでこのトランザクションを進めることができません。"
@@ -1587,6 +1606,12 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "不要なアクセス許可"
+  },
+  "alertReasonNestedAddressTrustSignalMalicious": {
+    "message": "ネストされたアドレスが高リスクと判断されました"
+  },
+  "alertReasonNestedAddressTrustSignalWarning": {
+    "message": "ネストされたアドレスのシグナルが限定的です"
   },
   "alertReasonNoGasPrice": {
     "message": "手数料の見積もりが利用できません"
@@ -2308,7 +2333,7 @@
     "message": "取引サイズと流動性の関係で、受取額が市場価格よりも約$1少なくなります。これはすでにクォートに反映されています。"
   },
   "bridgePriceImpactNormalDescription": {
-    "message": "これは、お客様の取引でトークンの市場価格がどのように変化するかを示します。プライスインパクトは、取引サイズ、流動性、プロバイダーの手数料によって変わります。MetaMaskはプライスインパクトをコントロールできません。"
+    "message": "これは、取引によってトークンの市場価格がどのように変動するかを示しています。取引量、利用可能な流動性、プロバイダー手数料によって異なります。MetaMaskは価格への影響を制御することはできません。"
   },
   "bridgePriceImpactTooltipTitle": {
     "message": "プライスインパクト"
@@ -2472,6 +2497,9 @@
   },
   "bridgeSelectDestinationAccount": {
     "message": "送金先アカウントを選択します"
+  },
+  "bridgeSelectDifferentQuote": {
+    "message": "別のクォートを選択してください。"
   },
   "bridgeSelectNetwork": {
     "message": "ネットワークを選択"
@@ -2664,12 +2692,32 @@
   "changePasswordWarningDescription": {
     "message": "ここでパスワードを変更すると、現在ご使用中の他のデバイスでMetaMaskがロックされます。新しいパスワードで再度ログインする必要があります。"
   },
+  "chartNoData": {
+    "message": "チャートデータがありません",
+    "description": "Title shown when advanced chart fails to load"
+  },
+  "chartNoDataDescription": {
+    "message": "チャートを読み込めませんでした。ラインモードに切り替えてみてください。",
+    "description": "Description shown when advanced chart fails to load, suggesting user switch to line chart"
+  },
+  "chartTypeCandlestick": {
+    "message": "ローソク足チャート",
+    "description": "Accessible label for the candlestick chart type toggle button on the token details page chart"
+  },
+  "chartTypeLine": {
+    "message": "ラインチャート",
+    "description": "Accessible label for the line chart type toggle button on the token details page chart"
+  },
   "checkNetworkConnectivity": {
     "message": "ネットワーク接続を確認してください。"
   },
   "checkNetworkConnectivityOr": {
     "message": "ネットワーク接続を確認してください。またはこちらへ：$1。",
     "description": "$1 is a link to update the network."
+  },
+  "chooseJsonFile": {
+    "message": "JSONファイルを選択",
+    "description": "Button to select a JSON file when importing an account"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "ハードウェアウォレットに接続するには、MetaMaskをGoogle Chromeで使用する必要があります。"
@@ -2691,6 +2739,10 @@
   },
   "click": {
     "message": "クリックして"
+  },
+  "clickHere": {
+    "message": "こちらをクリック",
+    "description": "Link to help when a JSON account import is not working"
   },
   "clickToConnectLedgerViaWebHID": {
     "message": "ここをクリックして、WebHIDでLedgerを接続します",
@@ -2780,9 +2832,6 @@
   "confirmFieldNeverExpires": {
     "message": "有効期限なし"
   },
-  "confirmFieldPaymaster": {
-    "message": "手数料の支払元"
-  },
   "confirmFieldPeriodDurationBiWeekly": {
     "message": "隔週"
   },
@@ -2807,9 +2856,6 @@
   },
   "confirmFieldTooltipJustification": {
     "message": "このウェブサイトが提供するリクエストの正当性"
-  },
-  "confirmFieldTooltipPaymaster": {
-    "message": "このトランザクションの手数料は、ペイマスターのスマートコントラクトにより支払われます。"
   },
   "confirmFieldTotalExposure": {
     "message": "合計エクスポージャー"
@@ -3313,7 +3359,7 @@
     "message": "マーケティング目的のデータ収集"
   },
   "dataCollectionForMarketingDescription": {
-    "message": "当社は、関連ニュース (製品の機能、その他資料など) をお伝えできるように、ユーザーによる当社のマーケティングコミュニケーションとのインタラクションに関するデータを収集します。"
+    "message": "当社は、お一人ひとりに合った情報をお送りするため、当社のマーケティングコミュニケーションに対するお客様の反応に関するデータを収集します。"
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "製品の最新情報やヒント、ニュースをメールでお届けします。最適な情報をお届けするため、お客様のやり取りに関するデータを利用する場合があります。"
@@ -3422,6 +3468,12 @@
   "deepLink_GoToTheHomePageButton": {
     "message": "ホームページに移動"
   },
+  "deepLink_MobileShareDescription": {
+    "message": "MetaMask Mobileでこのリンクを開くには、モバイルデバイスでこのQRコードをスキャンしてください。"
+  },
+  "deepLink_MobileShareTitle": {
+    "message": "MetaMask Mobileで続ける"
+  },
   "deepLink_RedirectingToMetaMask": {
     "message": "MetaMaskにリダイレクトしています"
   },
@@ -3443,6 +3495,9 @@
   },
   "deepLink_theHomePage": {
     "message": "ホームページ"
+  },
+  "deepLink_theMoneyDepositPage": {
+    "message": "Moneyのデポジットページ"
   },
   "deepLink_theMoneyPage": {
     "message": "マネーページ"
@@ -3547,7 +3602,7 @@
     "message": "MetaMetricsデータを削除"
   },
   "deleteMetaMetricsDataDescriptionV2": {
-    "message": "これにより、ウォレットに関連する過去のMetaMetricsデータが削除されます。MetaMetricsには匿名化された使用状況および診断データが含まれます。ウォレットとアカウントに変化はありません。このプロセスには最長30日間かかる場合があります。当社の$1をご覧ください。",
+    "message": "これにより、ウォレットに関連する過去のMetaMetricsデータが削除されます。MetaMetricsには匿名化された使用状況および診断データが含まれます。ウォレットとアカウントは今とまったく同じ状態に保たれます。このプロセスには最長30日間かかる場合があります。当社の$1をご覧ください。",
     "description": "$1 will have text saying Privacy Policy "
   },
   "deleteMetaMetricsDataErrorDesc": {
@@ -3558,6 +3613,9 @@
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "MetaMetricsデータを削除しますか？"
+  },
+  "deleteMetaMetricsDataPrivacyNotice": {
+    "message": "プライバシー通知"
   },
   "deleteMetaMetricsDataRequestedDescription": {
     "message": "$1で削除を開始しました。このプロセスには最長30日間かかる場合があります。$2をご覧ください。",
@@ -3631,6 +3689,9 @@
   },
   "disconnectAllSitesDescriptionText": {
     "message": "これにより、全アカウントのすべてのDAppへの接続が解除されます。再び使用するには再度接続する必要があります。"
+  },
+  "disconnectAllSitesError": {
+    "message": "一部のDAppの接続を解除できませんでした。再試行してください。"
   },
   "disconnectAllSitesQuestion": {
     "message": "すべて接続解除?"
@@ -3930,18 +3991,21 @@
   "enterYourPasswordSocialLoginFlow": {
     "message": "MetaMaskのパスワードを入力してください"
   },
+  "enterYourPrivateKey": {
+    "message": "秘密鍵を入力してください",
+    "description": "Placeholder for the private key field when importing an account"
+  },
   "enter_verification_code": {
     "message": "確認コードを入力"
   },
   "enter_verification_code_desc": {
     "message": "セキュリティ確保のため、デバイスのMetaMaskアプリ内に表示されているコードを入力してください。"
   },
+  "enter_verification_code_error": {
+    "message": "コードが正しくありません。もう一度お試しください。"
+  },
   "enter_verification_code_expired": {
     "message": "認証コードの有効期限が切れました"
-  },
-  "enter_verification_code_expires_in": {
-    "message": "期限切れまであと$1秒",
-    "description": "$1 is the number of seconds remaining before the verification code expires"
   },
   "enter_verification_code_max_attempts": {
     "message": "間違った試行が多すぎます。新しいQRコードを使ってやり直してください。"
@@ -3958,6 +4022,9 @@
   "errorCode": {
     "message": "コード: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
+  },
+  "errorGettingSafeChainList": {
+    "message": "安全なチェーンリストの取得中にエラーが発生しました。慎重に続けてください。"
   },
   "errorLegalTextFirstInfo": {
     "message": "技術的な診断情報です。"
@@ -4121,8 +4188,19 @@
   "fieldRequired": {
     "message": "$1は必須項目です"
   },
+  "fileImportNotWorking": {
+    "message": "ファイルをうまくインポートできませんか？",
+    "description": "Prompt shown above the JSON import help link"
+  },
   "fileUploaderDescription": {
     "message": "クリックしてアップロードまたはドラッグ＆ドロップ"
+  },
+  "fileUploaderInvalidFileTypeError": {
+    "message": "無効なファイル形式です。サポートされているファイル形式でアップロードしてください。"
+  },
+  "fileUploaderMaxFileSizeError": {
+    "message": "ファイルサイズが$1MBを超えています。ファイルのサイズを小さくしてアップロードしてください。",
+    "description": "$1 is the maximum file size in MB"
   },
   "flaskWelcomeUninstall": {
     "message": "この拡張機能をアンインストールしてください",
@@ -4150,6 +4228,9 @@
   },
   "floatAmountToken": {
     "message": "トークンの金額は整数で入力する必要があります"
+  },
+  "forbiddenIpfsGateway": {
+    "message": "IPFSゲートウェイの使用は禁止されています。CIDゲートウェイを指定してください。"
   },
   "forgetDevice": {
     "message": "このデバイスの登録を解除"
@@ -4380,11 +4461,11 @@
   "general": {
     "message": "一般"
   },
+  "generalCameraError": {
+    "message": "カメラにアクセスできませんでした。もう一度お試しください。"
+  },
   "generalCameraErrorTitle": {
     "message": "問題が発生しました...."
-  },
-  "generateNewQrCode": {
-    "message": "新しいQRコードを生成"
   },
   "genericExplorerView": {
     "message": "$1でアカウントを表示"
@@ -4574,6 +4655,9 @@
   },
   "hardwareWalletRepairDetecting": {
     "message": "デバイスを検出中..."
+  },
+  "hardwareWalletRepairDeviceNotDetected": {
+    "message": "デバイスが検出されませんでした。これまでの手順を確認して、もう一度お試しください。"
   },
   "hardwareWalletRepairLink": {
     "message": "接続を最初からやり直す"
@@ -4783,7 +4867,7 @@
     "message": "ウォレットをインポート"
   },
   "importAWalletDescription": {
-    "message": "12、18、または24単語のシードフレーズを使用"
+    "message": "シークレットリカバリーフレーズを使用"
   },
   "importAccountError": {
     "message": "アカウントのインポート中にエラーが発生しました。"
@@ -4804,7 +4888,7 @@
     "message": "申し訳ございません。今後高速化できるよう取り組みます。"
   },
   "importAccountMsg": {
-    "message": "インポートされたアカウントは、MetaMaskアカウントのシークレットリカバリーフレーズと関連付けられません。インポートされたアカウントの詳細を表示"
+    "message": "インポートされたアカウントは、MetaMaskシークレットリカバリーフレーズとは関連付けられません。"
   },
   "importAccountWithSocialMsg": {
     "message": "インポートした秘密鍵はアカウントにバックアップされ、同じGoogleまたはAppleのログイン情報でサインインすると自動的に同期されます。"
@@ -4833,6 +4917,9 @@
   },
   "importSecretRecoveryPhrase": {
     "message": "シークレットリカバリーフレーズをインポート"
+  },
+  "importTokensError": {
+    "message": "トークンをインポートできませんでした。後ほど再試行してください。"
   },
   "importWalletSuccess": {
     "message": "$1ウォレットがインポートされました",
@@ -4996,6 +5083,18 @@
     "message": "JSONファイル",
     "description": "format for importing an account"
   },
+  "jsonImportPasswordIncorrect": {
+    "message": "パスワードが正しくありません。",
+    "description": "Shown under the JSON import password field when a password was entered after a blank attempt already failed"
+  },
+  "jsonImportPasswordIncorrectOrOptional": {
+    "message": "パスワードが正しくありません。ファイルにパスワードが設定されていない場合は、空欄のままにしてください。",
+    "description": "Shown under the JSON import password field when a password was entered and no blank attempt has failed yet"
+  },
+  "jsonImportPasswordRequired": {
+    "message": "このファイルにはパスワードが必要です。",
+    "description": "Shown under the JSON import password field when importing with the password left blank fails"
+  },
   "keyringAccountName": {
     "message": "アカウント名"
   },
@@ -5131,6 +5230,9 @@
   "ledgerConnectionStatusSearchingTitle": {
     "message": "デバイスを検索中"
   },
+  "ledgerDeviceOpenFailureMessage": {
+    "message": "Ledgerデバイスを開けませんでした。Ledgerが他のソフトウェアに接続されている可能性があります。Ledger LiveまたはLedgerデバイスに接続されている他のアプリケーションを閉じて、もう一度接続してみてください。"
+  },
   "ledgerErrorConnectionIssue": {
     "message": "Ledgerを接続し直し、ETHアプリを開いてもう一度お試しください。"
   },
@@ -5161,8 +5263,15 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "Firefoxはサポートされていません"
   },
+  "ledgerLocked": {
+    "message": "Ledgerデバイスに接続できません。デバイスのロックが解除され、Ethereumアプリが開かれていることを確認してください。"
+  },
   "ledgerTimeout": {
     "message": "Ledger Liveが応答に時間がかかりすぎているか、接続がタイムアウトしました。Ledger Liveのアプリが開かれていて、デバイスのロックが解除されていることを確認してください。"
+  },
+  "ledgerWebHIDNotConnectedErrorMessage": {
+    "message": "Ledgerデバイスが接続されていません。Ledgerに接続する場合は、もう一度「続行」をクリックして、HID接続を承認してください。",
+    "description": "An error message shown to the user during the hardware connect flow."
   },
   "lightTheme": {
     "message": "ライト"
@@ -5229,11 +5338,17 @@
   "loginErrorSessionExpiredButton": {
     "message": "ログイン"
   },
+  "loginErrorSessionExpiredDescription": {
+    "message": "セッションの期限が切れました。続行するには再度ログインしてください。"
+  },
   "loginErrorSessionExpiredTitle": {
     "message": "セッションの期限が切れました"
   },
   "loginErrorTelegramOutdatedButton": {
     "message": "Telegramをアップデート"
+  },
+  "loginErrorTelegramOutdatedDescription": {
+    "message": "Telegramに接続できませんでした。これは通常Telegramアプリが古い場合に起こります。Telegramをアップデートしてもう一度お試しください。"
   },
   "loginErrorTelegramOutdatedTitle": {
     "message": "Telegramでサインインできませんでした"
@@ -5382,6 +5497,9 @@
   "metamaskSwap": {
     "message": "MetaMaskスワップ"
   },
+  "metamaskSwapsOfflineDescription": {
+    "message": "MetaMask Swapsはメンテナンス中です。後ほどご確認ください。"
+  },
   "metamaskVersion": {
     "message": "MetaMaskのバージョン"
   },
@@ -5427,8 +5545,14 @@
   "mfaErrorGeneric": {
     "message": "問題が発生しました。もう一度お試しください。"
   },
+  "mfaErrorInvalidCode": {
+    "message": "このコードは正しくありません。もう一度やり直してください"
+  },
   "mfaErrorInvalidPasskey": {
     "message": "パスキーを認証できませんでした。もう一度お試しください。"
+  },
+  "mfaErrorInvalidTotpCode": {
+    "message": "このコードは正しくありません。もう一度やり直してください"
   },
   "mfaErrorLimitReached": {
     "message": "この認証方法の上限回数に達しました。"
@@ -5440,7 +5564,7 @@
     "message": "続行するにはサインインしてください。"
   },
   "mfaErrorTooManyAttempts": {
-    "message": "試行回数が多すぎます。新しいコードをリクエストしてください。"
+    "message": "コードの入力回数の上限に達しました。新しいコードを取得してください。"
   },
   "mfaErrorTotpExpired": {
     "message": "時間がかかりすぎています。アプリから最新のコードを入力してください。"
@@ -5465,6 +5589,12 @@
   },
   "mfaFailureRetry": {
     "message": "もう一度お試しください"
+  },
+  "mfaFailureSupportDescription": {
+    "message": "続行するには、サポートまでお問い合わせください。"
+  },
+  "mfaFailureSupportTitle": {
+    "message": "お客様の情報を確認できませんでした"
   },
   "mfaFailureTitle": {
     "message": "問題が発生しました"
@@ -5508,12 +5638,23 @@
   "mfaOtpDescriptionTotp": {
     "message": "認証アプリを開き、6桁のコードを入力してください。"
   },
+  "mfaOtpDescriptionUnsent": {
+    "message": "6桁のコードをメールで送信します。コードをこの下に入力して、メールアドレスを認証してください。"
+  },
+  "mfaOtpDescriptionUnsentWithEmail": {
+    "message": "6桁のコードを$1宛に送信します。コードをこの下に入力して、メールアドレスを認証してください。",
+    "description": "$1 is the user's masked email address"
+  },
   "mfaOtpDescriptionWithEmail": {
     "message": "6桁のコードを$1宛に送信しました。コードをこの下に入力して、メールアドレスを認証してください。",
     "description": "$1 is the email address the code was sent to"
   },
   "mfaOtpGetNewCode": {
     "message": "新しいコードを取得"
+  },
+  "mfaOtpGetNewCodeIn": {
+    "message": "$1秒後に新しいコードを取得できます",
+    "description": "$1 is a number of seconds"
   },
   "mfaOtpResend": {
     "message": "コードを再送する"
@@ -5531,8 +5672,11 @@
   "mfaOtpRetryIn": {
     "message": "$1秒後にもう一度お試しください"
   },
+  "mfaOtpSend": {
+    "message": "コードを送信"
+  },
   "mfaOtpSendIn": {
-    "message": "$1秒後に新しいコードを送信します",
+    "message": "$1秒後にコードを送信できます",
     "description": "$1 is a number of seconds"
   },
   "mfaOtpSending": {
@@ -5571,8 +5715,14 @@
   "mfaSettingsAddedOn": {
     "message": "$1に追加"
   },
+  "mfaSettingsAuthenticatorAppAdded": {
+    "message": "認証アプリが追加されました"
+  },
   "mfaSettingsEmailRemoved": {
     "message": "メール認証が削除されました"
+  },
+  "mfaSettingsEmailVerified": {
+    "message": "メールが認証されました"
   },
   "mfaSettingsLastEmailDescription": {
     "message": "このメールアドレスは、このアカウントの唯一の認証方法です。削除する前に別の方法を追加してください。"
@@ -5588,6 +5738,9 @@
   },
   "mfaSettingsNotice": {
     "message": "これらの認証方法により、Money Accountのトランザクションに対する保護が強化されます。これらを使ってウォレットを復元することはできません。"
+  },
+  "mfaSettingsNoticeSocialLogin": {
+    "message": "これらの認証方法により、Money Accountのトランザクションとウォレットの復元をより安全に行えます。"
   },
   "mfaSettingsRemoveElsewhereDescription": {
     "message": "設定したその他の認証方法は、MetaMask Mobileアプリでのみ機能します。そちらからメールアドレスを削除してください。"
@@ -5628,11 +5781,23 @@
   "mfaSettingsUsedForMoney": {
     "message": "Moneyのトランザクションの検証"
   },
+  "mfaSettingsUsedForWalletRecovery": {
+    "message": "ウォレットの復元"
+  },
   "mfaTotpSetupContinue": {
     "message": "続行"
   },
+  "mfaTotpSetupCopied": {
+    "message": "セットアップキーがコピーされました"
+  },
+  "mfaTotpSetupDescription": {
+    "message": "認証アプリでQRコードをスキャンするか、セットアップキーを入力してください。"
+  },
   "mfaTotpSetupKey": {
     "message": "セットアップキー"
+  },
+  "mfaTotpSetupManual": {
+    "message": "または手動で入力"
   },
   "mfaTotpSetupQrAlt": {
     "message": "MetaMaskを認証アプリに追加するためのQRコード"
@@ -5696,6 +5861,14 @@
     "message": "利用可能残高：$1",
     "description": "$1 is the formatted Money Account vault withdrawable balance"
   },
+  "moneyAccountDepositConvert": {
+    "message": "$1を交換",
+    "description": "Confirm button on a MetaMask Money deposit. $1 is the pay token symbol, for example USDC."
+  },
+  "moneyAccountDepositHeader": {
+    "message": "MetaMask Moneyに追加",
+    "description": "Header on the MetaMask Money deposit confirmation"
+  },
   "moneyAccountProjectedBalance": {
     "message": "1年後の予想残高:"
   },
@@ -5705,6 +5878,10 @@
   },
   "moneyActivity": {
     "message": "アクティビティ"
+  },
+  "moneyActivityAmountUnavailable": {
+    "message": "金額を取得できません",
+    "description": "Shown in place of a Money card activity amount when the historical mUSD value cannot be calculated"
   },
   "moneyActivityCard": {
     "message": "カード"
@@ -5906,6 +6083,49 @@
   "moneyExploreBenefits": {
     "message": "特典を確認"
   },
+  "moneyFtueBenefitConvertDescription": {
+    "message": "追加した資金は1対1の比率でMetaMask USDに交換され、手数料はかかりません。"
+  },
+  "moneyFtueBenefitConvertTitle": {
+    "message": "1対1の比率でMetaMask USDに交換"
+  },
+  "moneyFtueBenefitEarnDescription": {
+    "message": "報酬はリアルタイムでアカウントに入金され、請求作業は不要です。"
+  },
+  "moneyFtueBenefitEarnTitle": {
+    "message": "自動で報酬がもらえる"
+  },
+  "moneyFtueBenefitSpendDescription": {
+    "message": "お好きなウォレットや銀行に送金できるほか、MetaMask Cardで支払いに利用すれば、最大3%の還元を受けられます。"
+  },
+  "moneyFtueBenefitSpendTitle": {
+    "message": "どこでも送金や支払いが可能"
+  },
+  "moneyFtueBenefitTradeDescription": {
+    "message": "Money残高から直接スワップ、パーペチュアル、予測市場の取引が可能です。"
+  },
+  "moneyFtueBenefitTradeTitle": {
+    "message": "同じ残高を多様な取引に使える"
+  },
+  "moneyFtueBenefitWithdrawDescription": {
+    "message": "ロックアップ、通知期間、ペナルティは一切なし。自分のお金をいつでも自由に取り出せます。"
+  },
+  "moneyFtueBenefitWithdrawTitle": {
+    "message": "いつでも出金可能"
+  },
+  "moneyFtueDescription": {
+    "message": "MetaMask Moneyは最大$1のAPYを獲得できるステーブルコインアカウントで、取引・送金・支払いの機能が組み込まれています。",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyFtueHeadline": {
+    "message": "1つの残高で収益化、取引、支払いが可能"
+  },
+  "moneyFtueStartEarning": {
+    "message": "収益化を開始"
+  },
+  "moneyFtueTitle": {
+    "message": "MetaMaskマネー"
+  },
   "moneyFundDescription": {
     "message": "Money Accountに入金して、残高が増えていく様子を眺めましょう。"
   },
@@ -5953,6 +6173,12 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "MetaMask Money Accountでどの程度の収益を得られますか？"
   },
+  "moneyHowItWorksFaqControlsAnswer": {
+    "message": "ユーザー自身です。MetaMaskはセルフカストディウォレットであるため、アカウント所有者の秘密鍵でのみ管理できます。MetaMaskがユーザーの資金にアクセスしたり、凍結したり、移動させたりすることはできません。これが、第三者がユーザーの資金を保管する従来の銀行口座やカストディ型暗号資産プラットフォームとの違いです。"
+  },
+  "moneyHowItWorksFaqControlsQuestion": {
+    "message": "私のMetaMask Money Accountは誰が管理しますか？"
+  },
   "moneyHowItWorksFaqCountriesAnswer": {
     "message": "ほとんどの国でご利用いただけます。英国内、および米国の制裁対象国内では現在ご利用いただけません。"
   },
@@ -5983,6 +6209,12 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "MetaMask Money Accountとは何ですか？"
+  },
+  "moneyHowItWorksFaqSafeAnswer": {
+    "message": "はい、安全です。ただし、すべてのDeFiプロダクト同様、リスクが存在します。Money Accountはセルフカストディウォレットで、ユーザー自身が秘密鍵を使ってアカウントを完全に管理します。\n\n具体的なリスクとしては、スマートコントラクトの欠陥、プロトコルの悪用、流動性不足、サードパーティの不具合、法令上の制限が挙げられます。Money Accountは、FDICをはじめ、いかなる政府機関の保険制度によっても保護されていません。損失発生のリスクが存在します。"
+  },
+  "moneyHowItWorksFaqSafeQuestion": {
+    "message": "MetaMask Money Accountは安全ですか？"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "FAQ"
@@ -6285,6 +6517,10 @@
   "musdEducationGetStarted": {
     "message": "利用を開始する"
   },
+  "musdEducationHeadline": {
+    "message": "ステーブルコインで\n$1をゲット",
+    "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
+  },
   "musdEducationNotNow": {
     "message": "後で"
   },
@@ -6388,6 +6624,10 @@
   },
   "nativeTokenScamWarningConversion": {
     "message": "ネットワークの詳細を編集"
+  },
+  "nativeTokenScamWarningDescription": {
+    "message": "ネイティブトークンシンボルが、関連付けられているチェーンIDのネットワークで想定されるネイティブトークンのシンボルと一致していません。想定されるトークンシンボルは$2ですが、$1と入力されました。正しいチェーンに接続されていることを確認してください。",
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningDescriptionExpectedTokenFallback": {
     "message": "別のシンボル",
@@ -6636,6 +6876,10 @@
   "noDefaultAddress": {
     "message": "$1アドレスがありません",
     "description": "$1 is the default address scope"
+  },
+  "noDepositFee": {
+    "message": "入金手数料はかかりません",
+    "description": "Label shown next to Money account when depositing into Perps incurs no deposit fee"
   },
   "noDomainResolution": {
     "message": "指定されたドメインの名前解決ができません。"
@@ -6935,18 +7179,14 @@
   "onboardedMetametricsKey3": {
     "message": "その他関連プロモーション資料"
   },
-  "onboardedMetametricsLink": {
-    "message": "MetaMetrics"
-  },
   "onboardedMetametricsParagraph1": {
-    "message": "$1に加え、マーケティングコミュニケーションとのインタラクションについて把握するためにもデータを使用します。",
-    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
+    "message": "当社のマーケティングコミュニケーションに対するお客様の反応を把握するために、データ (Cookieからの情報など) を使用できればと思います。"
   },
   "onboardedMetametricsParagraph2": {
     "message": "これは、次のようなお伝えする情報のカスタマイズに役立ちます:"
   },
   "onboardedMetametricsParagraph3": {
-    "message": "ユーザーから提供されたデータが販売されることは一切なく、いつでもオプトアウトできます。"
+    "message": "ご提供いただいたデータを販売、共有することは絶対にありません。いつでもオプトアウトが可能です。"
   },
   "onboardedMetametricsTitle": {
     "message": "エクスペリエンスの改善にご協力ください"
@@ -6992,19 +7232,19 @@
     "message": "当社は製品の基本的な使用状況データを収集します。この情報はオンチェーンデータと関連付けられる場合があります。"
   },
   "onboardingMetametricCheckboxDescriptionTwo": {
-    "message": "このデータは、当社の各種マーケティング活動に対するユーザーの反応を把握するために使用されます。また、関連ニュースをお伝えする場合もあります (製品の機能など)。"
+    "message": "このデータは、当社のマーケティングコミュニケーションに対するお客様の反応を把握するために収集されます。このデータを使用して、関連ニュースをお伝えする場合もあります (製品に関する最新情報など)。"
   },
   "onboardingMetametricCheckboxTitleOne": {
-    "message": "基本的な使用状況データの収集"
+    "message": "基本的な使用状況データ"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "マーケティング関連の最新情報"
+    "message": "マーケティングデータ"
   },
   "onboardingMetametricsContinue": {
     "message": "続行"
   },
   "onboardingMetametricsDescription": {
-    "message": "次の項目について許可をお願いします。使用状況データはいつでもオプトアウトまたは削除できます。"
+    "message": "以下のデータを収集する許可をお願いします。使用状況データの共有の停止や削除はいつでも可能です。"
   },
   "onboardingMetametricsTitle": {
     "message": "MetaMaskの改善にご協力ください"
@@ -7116,6 +7356,10 @@
   },
   "paidByMetaMask": {
     "message": "MetaMaskが負担"
+  },
+  "paidBySponsor": {
+    "message": "$1が負担",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
   },
   "paidWith": {
     "message": "支払方法:"
@@ -8598,6 +8842,10 @@
     "message": "一部クローズ注文に失敗しました",
     "description": "Error toast text shown when placing a partial perps limit close order fails"
   },
+  "perpsToastPositionAlreadyClosed": {
+    "message": "このポジションはすでにクローズされています",
+    "description": "Toast text shown when a perps TP/SL update or close targets a position that closed before the request reached the provider"
+  },
   "perpsToastPositionStillActive": {
     "message": "ポジションは引き続き有効です",
     "description": "Subtitle shown in perps close failure toasts when the position remains open"
@@ -8793,7 +9041,7 @@
     "message": "出金が送信されました"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMaskがユーザーに代わって希望のトークンをスワップします。",
+    "message": "MetaMaskがユーザーに代わってご希望のトークンに交換します。",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -8957,13 +9205,6 @@
   "qrCameraAccessNeededTitle": {
     "message": "カメラへのアクセスが必要です",
     "description": "Title when the camera permission dialog was dismissed without a choice."
-  },
-  "qrCodeExpired": {
-    "message": "QRコードが期限切れです"
-  },
-  "qrCodeExpiresIn": {
-    "message": "期限切れまであと$1秒",
-    "description": "$1 is the number of seconds remaining before the QR code expires"
   },
   "qrErrorMismatchedTransactionBody": {
     "message": "このQRコードは別の取引用です。一度キャンセルし、まずMetaMaskに表示されているQRコードをハードウェアウォレットでスキャンしてからもう一度お試しください。",
@@ -9397,6 +9638,10 @@
     "message": "名前の変更",
     "description": "Multichain account menu item for triggering account rename action modal"
   },
+  "renameAccount": {
+    "message": "アカウント名を変更",
+    "description": "Title of the modal for renaming a multichain account"
+  },
   "replace": {
     "message": "代わって適用"
   },
@@ -9463,9 +9708,6 @@
   },
   "restore": {
     "message": "復元"
-  },
-  "restoreUserData": {
-    "message": "ユーザーデータの復元"
   },
   "restoreWalletDescription": {
     "message": "$1を入力してください。ウォレットをインポートすると、現在のウォレットデータがこのデバイスから消去されます。この操作は元に戻せません。",
@@ -9574,7 +9816,7 @@
     "message": "アカウントの追加に失敗しました"
   },
   "rewardsMoneyReferralActiveTrader": {
-    "message": "最近取引を行われているため、招待を受けることはできません。"
+    "message": "この紹介コードは新規トレーダーに対してのみ有効です。"
   },
   "rewardsMoneyReferralAlreadyReferred": {
     "message": "お客様はすでに別のユーザーにより招待されています。"
@@ -10965,6 +11207,10 @@
   "showAdvancedDetails": {
     "message": "高度な詳細を表示"
   },
+  "showAllNetworks": {
+    "message": "すべて表示 ($1)",
+    "description": "$1 is the number of network pills, including all networks"
+  },
   "showDefaultAddress": {
     "message": "デフォルトのアドレスを表示"
   },
@@ -10976,6 +11222,9 @@
   },
   "showExtensionInFullSizeViewDescription": {
     "message": "この機能をオンにすると、拡張機能アイコンをクリックした時にフルサイズ表示がデフォルトになります。"
+  },
+  "showFewer": {
+    "message": "表示数を減らす"
   },
   "showFiatConversionInTestnets": {
     "message": "テストネット上に換算レートを表示"
@@ -11385,6 +11634,14 @@
     "message": "残高の多い順 ($1 高～低)",
     "description": "Indicates a descending order based on token fiat balance. $1 is the preferred currency symbol"
   },
+  "sortedAscending": {
+    "message": "昇順で並んでいます",
+    "description": "Accessible name for a column sorted with the lowest value, or A to Z, first."
+  },
+  "sortedDescending": {
+    "message": "降順で並んでいます",
+    "description": "Accessible name for a column sorted with the highest value, or Z to A, first."
+  },
   "source": {
     "message": "ソース"
   },
@@ -11605,9 +11862,6 @@
   "standardAccountLabel": {
     "message": "スタンダードアカウント"
   },
-  "start_with_new_qr_code": {
-    "message": "新しいQRコードで始める"
-  },
   "stateCorruptionAreYouSure": {
     "message": "続行してよろしいですか？"
   },
@@ -11763,28 +12017,12 @@
   "swapAggregator": {
     "message": "アグリゲーター"
   },
-  "swapAllowSwappingOf": {
-    "message": "$1のスワップを許可",
-    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
-  },
-  "swapAmountReceived": {
-    "message": "保証額"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "これは受け取る最低額です。スリッページによりそれ以上の額を受け取ることもあります。"
-  },
   "swapAndSend": {
     "message": "スワップして送金"
   },
   "swapApproval": {
     "message": "$1のスワップを承認",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
-  },
-  "swapAreYouStillThere": {
-    "message": "まだご利用中ですか？"
-  },
-  "swapAreYouStillThereDescription": {
-    "message": "続ける際には、最新のクォートを表示する準備ができています"
   },
   "swapConfirmWithHwWallet": {
     "message": "ハードウェアウォレットで確定"
@@ -11815,16 +12053,6 @@
     "message": "これはスワップ用に$1",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
-  "swapEstimatedNetworkFees": {
-    "message": "推定ネットワーク手数料"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "これは、スワップを完了させるために使用されるネットワーク手数料の見積もりです。実際の額はネットワークの状態によって変化する可能性があります。"
-  },
-  "swapFailedErrorDescriptionWithSupportLink": {
-    "message": "トランザクション障害が発生した場合は、いつでもお手伝いいたします。この問題が解決しない場合は、$1でカスタマーサポートにお問い合わせください。",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
-  },
   "swapFailedErrorTitle": {
     "message": "スワップに失敗しました"
   },
@@ -11841,10 +12069,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "見積もり取得エラー"
   },
-  "swapFromTo": {
-    "message": "$1から$2へのスワップ",
-    "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
   "swapGasFeesExplanation": {
     "message": "MetaMaskはネットワーク手数料から収益を得ません。これらの手数料は見積もりであり、ネットワークの混雑状況やトランザクションの複雑さによって変わる可能性があります。詳細は$1をご覧ください。",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -11852,9 +12076,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "こちら",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesSplit": {
-    "message": "前の画面のネットワーク手数料は、この2つのトランザクションに分けられています。"
   },
   "swapGasFeesSponsored": {
     "message": "MetaMaskが負担"
@@ -11869,15 +12090,6 @@
   "swapLearnMore": {
     "message": "Swapsの詳細"
   },
-  "swapLiquiditySourceInfo": {
-    "message": "弊社は、為替レートとネットワーク手数料を比較するために、複数の流動性供給源 (取引所、アグリゲーター、専門のマーケットメーカー) を検索します。"
-  },
-  "swapMaxSlippage": {
-    "message": "最大スリッページ"
-  },
-  "swapMetaMaskFee": {
-    "message": "MetaMaskの手数料"
-  },
   "swapMetaMaskFeeDescription": {
     "message": "このクォートには、$1%の手数料が自動的に含まれています。この手数料は、MetaMaskの流動性プロバイダーの情報集積ソフトウェアの使用ライセンスの代金として支払うものです。",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
@@ -11885,19 +12097,6 @@
   "swapNQuotesWithDot": {
     "message": "$1 の見積もり.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapOnceTransactionHasProcess": {
-    "message": "このトランザクションの処理が完了すると、$1がアカウントに追加されます。",
-    "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
-  },
-  "swapProcessing": {
-    "message": "処理中"
-  },
-  "swapQuoteDetails": {
-    "message": "クォートの詳細"
-  },
-  "swapQuoteSource": {
-    "message": "見積もり提供元"
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "最新のレートを取得するには、新しい見積もりをリクエストしてください。"
@@ -11908,41 +12107,14 @@
   "swapQuotesNotAvailableDescription": {
     "message": "トレードのサイズを減らすか、別のトークンを使用してください。"
   },
-  "swapQuotesNotAvailableErrorDescription": {
-    "message": "額の調整またはスリッページの設定を試してから、もう一度実行してください。"
-  },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "見積もりを取得できません"
-  },
-  "swapRate": {
-    "message": "レート"
-  },
-  "swapReceiving": {
-    "message": "受信中"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "これは推定値です。正確な額はスリッページによって異なります。"
   },
   "swapRequestForQuotation": {
     "message": "見積もりのリクエスト"
   },
-  "swapSelect": {
-    "message": "選択"
-  },
-  "swapSelectAQuote": {
-    "message": "見積もりを選択"
-  },
-  "swapSelectAToken": {
-    "message": "トークンを選択"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "以下は複数の流動性供給源から収集したすべての見積もりです。"
-  },
   "swapSelectToken": {
     "message": "トークンを選択"
-  },
-  "swapShowLatestQuotes": {
-    "message": "最新のクォートを表示"
   },
   "swapSlippageAutoDescription": {
     "message": "自動"
@@ -11989,18 +12161,8 @@
   "swapSlippageZeroTitle": {
     "message": "スリッページがゼロのプロバイダーを使用中"
   },
-  "swapSource": {
-    "message": "流動性の供給源"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "スワップは複雑で急を要するトランザクションです。コストとスワップの確実な成功のバランスが取れたこのネットワーク手数料をお勧めします。"
-  },
-  "swapToConfirmWithHwWallet": {
-    "message": "ハードウェアウォレットで確定"
-  },
-  "swapTokenAvailable": {
-    "message": "$1がアカウントに追加されました。",
-    "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
   },
   "swapTokenNotAvailable": {
     "message": "この地域ではトークンのスワップが行えません"
@@ -12008,26 +12170,23 @@
   "swapTokens": {
     "message": "トークンをスワップ"
   },
-  "swapTransactionComplete": {
-    "message": "トランザクションが完了しました"
-  },
-  "swapTwoTransactions": {
-    "message": "2つのトランザクション"
-  },
   "swapUnknown": {
     "message": "不明"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "このスワップのネットワーク手数料を支払うのに十分な$1がありません。金額を下げるか、$1を買い足してください。"
   },
-  "swapZeroSlippage": {
-    "message": "0%スリッページ"
-  },
   "swapsMaxSlippage": {
     "message": "最大スリッページ"
   },
-  "swapsViewInActivity": {
-    "message": "アクティビティに表示"
+  "swapsRebateBanner": {
+    "message": "手数料の$1%が還元されます"
+  },
+  "swapsRebateTooltipContent": {
+    "message": "この取引にかかるMetaMask手数料の$1%が報酬として還元され、Money AccountにmUSDで支払われます。ネットワーク手数料は含まれていません。詳細は「報酬」タブでご確認ください。"
+  },
+  "swapsRebateTooltipTitle": {
+    "message": "取引リワード"
   },
   "switch": {
     "message": "切り替える"
@@ -12127,6 +12286,9 @@
   "to": {
     "message": "送り先"
   },
+  "today": {
+    "message": "今日"
+  },
   "toggleDecodeDescription": {
     "message": "当社は4byte.directoryとSourcifyサービスを使用してトランザクションデータを解読し、より読みやすい形で表示しています。これにより、保留中および過去のトランザクションの結果を理解しやすくなりますが、IPアドレスが共有される可能性があります。"
   },
@@ -12144,6 +12306,9 @@
   },
   "tokenContractAddress": {
     "message": "トークンコントラクトアドレス"
+  },
+  "tokenContractAddressCopied": {
+    "message": "トークンアドレスがコピーされました"
   },
   "tokenContractWarning": {
     "message": "トークンコントラクトに関する警告"

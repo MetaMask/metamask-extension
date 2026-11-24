@@ -14,6 +14,7 @@ import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import * as URI from 'uri-js';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useNetworkFormState } from '../networks-form/networks-form-state';
 import {
   getEditedNetwork,
@@ -24,6 +25,17 @@ import AddBlockExplorerModal from '../network-list-menu/add-block-explorer-modal
 import AddRpcUrlModal from '../network-list-menu/add-rpc-url-modal/add-rpc-url-modal';
 import { SelectRpcUrlModal } from '../network-list-menu/select-rpc-url-modal/select-rpc-url-modal';
 import { useDispatch } from '../../../store/hooks';
+import {
+  NetworkManagementEntryPoint,
+  NetworkManagementSource,
+} from '../../../../shared/constants/metametrics';
+import {
+  trackRpcAdded,
+  useTrackNetworkManagementStep,
+  getNetworkManagementStep,
+} from '../../../helpers/utils/network-management-metrics';
+import { getNetworkSectionKey } from '../../../helpers/utils/network-sections';
+import { getHexChainId } from '../../../pages/networks/chainlist-network-picker';
 import { AddNetwork } from './components/add-network';
 import { NetworkTabs } from './network-tabs';
 import { useNetworkManagerInitialTab } from './hooks/useNetworkManagerState';
@@ -31,6 +43,7 @@ import { useNetworkManagerInitialTab } from './hooks/useNetworkManagerState';
 export const NetworkManager = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const [searchParams, setSearchParams] = useSearchParams();
   const view = searchParams.get('view') ?? '';
 
@@ -62,6 +75,18 @@ export const NetworkManager = () => {
   }, [editingChainId, editCompleted, evmNetworks, view]);
 
   const networkFormState = useNetworkFormState(editedNetwork);
+  const managerStep = getNetworkManagementStep(view);
+  const stepChainId = networkFormState.chainId
+    ? getHexChainId(networkFormState.chainId)
+    : undefined;
+
+  useTrackNetworkManagementStep({
+    step: managerStep,
+    entryPoint: NetworkManagementEntryPoint.SettingsNetworks,
+    chainId: stepChainId,
+    rpcCount: networkFormState.rpcUrls.rpcEndpoints.length,
+    networkType: stepChainId ? getNetworkSectionKey(stepChainId) : undefined,
+  });
 
   const handleAddRPC = useCallback(
     (url: string, name?: string) => {
@@ -77,6 +102,17 @@ export const NetworkManager = () => {
           ],
           defaultRpcEndpointIndex: networkFormState.rpcUrls.rpcEndpoints.length,
         });
+        trackRpcAdded(
+          { trackEvent, createEventBuilder },
+          {
+            chainId: networkFormState.chainId
+              ? getHexChainId(networkFormState.chainId)
+              : undefined,
+            rpcCount: networkFormState.rpcUrls.rpcEndpoints.length + 1,
+            source: NetworkManagementSource.Manual,
+            entryPoint: NetworkManagementEntryPoint.SettingsNetworks,
+          },
+        );
 
         if (view === 'edit-rpc') {
           setSearchParams({ view: 'edit' });
@@ -85,7 +121,7 @@ export const NetworkManager = () => {
         }
       }
     },
-    [setSearchParams, networkFormState, view],
+    [createEventBuilder, networkFormState, setSearchParams, trackEvent, view],
   );
 
   const handleAddExplorerUrl = useCallback(
@@ -267,6 +303,7 @@ export const NetworkManager = () => {
             </ModalHeader>
             <SelectRpcUrlModal
               networkConfiguration={editedNetwork as NetworkConfiguration}
+              entryPoint={NetworkManagementEntryPoint.SettingsNetworks}
               onNetworkChange={handleClose}
             />
           </>

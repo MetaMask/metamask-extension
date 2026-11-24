@@ -24,6 +24,8 @@ import {
   BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
 } from '../../../../shared/constants/bridge';
+import { getChainIdToNetworkImageUrlMap } from '../../../selectors/config-registry/config-registry';
+import { getNetworkImageUrl } from '../../../../shared/lib/network.utils';
 import {
   AlignItems,
   BackgroundColor,
@@ -54,6 +56,7 @@ export const BridgeAsset = React.forwardRef(
     ref?: PolymorphicRef<Element>,
   ) => {
     const currency = useSelector(getCurrentCurrency);
+    const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
     const locale = useSelector(getIntlLocale);
     const t = useI18nContext();
     const { navigateToAssetPage } = useBridgeNavigation();
@@ -100,6 +103,7 @@ export const BridgeAsset = React.forwardRef(
                 ]
               }
               src={
+                getNetworkImageUrl(asset.chainId, networkImageUrls) ??
                 BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP[
                   formatChainIdToCaip(asset.chainId)
                 ]

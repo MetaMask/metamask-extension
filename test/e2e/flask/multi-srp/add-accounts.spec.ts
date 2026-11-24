@@ -7,13 +7,12 @@ import {
   importAdditionalSecretRecoveryPhrase,
   verifyAccountBelongsToSrp,
 } from '../../page-objects/flows/multi-srp.flow';
-import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 import { mockActiveNetworks } from './common-multi-srp';
 
 const addAccountToSrp = async (driver: Driver, srpIndex: number) => {
-  const headerNavbar = new HeaderNavbar(driver);
-  await headerNavbar.openAccountMenu();
+  await openAccountMenu(driver);
 
   const accountListPage = new AccountListPage(driver);
   await accountListPage.checkPageIsLoaded();

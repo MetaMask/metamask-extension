@@ -109,6 +109,8 @@ const mockNavigateNext = jest.fn();
 const mockNavigateToId = jest.fn();
 const HARDWARE_CONFIRMATION_SENDER =
   '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
+const HARDWARE_CONFIRMATION_SENDER_ACCOUNT_ID =
+  '15e69915-2a1a-4019-93b3-916e11fd432f';
 
 const mockTrackHardwareWalletRecoveryConnectCtaClicked = jest.mocked(
   trackHardwareWalletRecoveryConnectCtaClicked,
@@ -205,6 +207,7 @@ jest.mock('../../../../../contexts/hardware-wallets', () => ({
 jest.mock('../../../hooks/useAddEthereumChain', () => ({
   useAddEthereumChain: jest.fn(() => ({
     onSubmit: jest.fn().mockResolvedValue(undefined),
+    onReject: jest.fn(),
   })),
   isAddEthereumChainType: jest.fn(
     (confirmation) => confirmation?.type === 'wallet_addEthereumChain',
@@ -884,7 +887,7 @@ describe('ConfirmFooter', () => {
           metamask: {
             transactionData: {
               [transaction.id]: {
-                accountOverride: HARDWARE_CONFIRMATION_SENDER,
+                accountOverride: HARDWARE_CONFIRMATION_SENDER_ACCOUNT_ID,
               },
             },
           },
@@ -1007,6 +1010,7 @@ describe('ConfirmFooter', () => {
       const addEthereumChainSubmitMock = jest.fn().mockResolvedValue(undefined);
       useAddEthereumChainMock.mockReturnValue({
         onSubmit: addEthereumChainSubmitMock,
+        onReject: jest.fn(),
       });
       jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
         currentConfirmation: addEthereumChainApproval,

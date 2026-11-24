@@ -179,6 +179,7 @@ describe('RampsCompleteBuyScreen', () => {
     expect(container).toMatchSnapshot();
     expect(getImageForChainId).toHaveBeenCalledWith(
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      expect.anything(),
     );
   });
 

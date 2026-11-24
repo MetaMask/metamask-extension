@@ -36,6 +36,10 @@ import { getConfirmationTransactionType } from '../../../utils/confirm';
 import { useDispatch } from '../../../../../store/hooks';
 import { selectIsMoneyAccountTransactionEnabled } from '../../../selectors/feature-flags';
 import { usePayWithSections } from '../../../hooks/pay/usePayWithSections';
+import {
+  encodeEvmAssetId,
+  isSameAssetId,
+} from '../../../../../../shared/lib/transaction/pay-token';
 import { PayWithSection } from './pay-with-section';
 
 export type PayWithModalProps = {
@@ -104,20 +108,16 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
         return;
       }
 
-      if (
-        payToken &&
-        payToken.address.toLowerCase() === token.address?.toLowerCase() &&
-        payToken.chainId.toLowerCase() ===
-          (token.chainId as string)?.toLowerCase()
-      ) {
-        handleClose();
-        return;
-      }
-
       const tokenSelection = {
         address: token.address as Hex,
         chainId: token.chainId as Hex,
       };
+      const assetId = encodeEvmAssetId(tokenSelection);
+
+      if (isSameAssetId(payToken?.assetId, assetId)) {
+        handleClose();
+        return;
+      }
 
       // For mUSD conversions, use the specialized handler that enforces same-chain
       if (currentConfirmation?.type === TransactionType.musdConversion) {
@@ -164,7 +164,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
       }
 
       clearOverride();
-      setPayToken(tokenSelection);
+      setPayToken({ assetId });
       handleClose();
     },
     [

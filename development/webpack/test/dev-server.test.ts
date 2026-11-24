@@ -6,23 +6,23 @@ import {
   injectEntryScripts,
   logWatchBuildStats,
   suppressDevServerInfoLogs,
-} from '../utils/dev-server';
-import { setupUiClient } from '../utils/dev-server/setup-ui-client';
-import { setupBackgroundClient } from '../utils/dev-server/setup-background-client';
+} from '../utils/dev-server/index.ts';
+import { setupUiClient } from '../utils/dev-server/setup-ui-client.ts';
+import { setupBackgroundClient } from '../utils/dev-server/setup-background-client.ts';
 import {
   closeSocket,
   connectToDevServer,
-} from '../utils/dev-server/connect-to-dev-server';
+} from '../utils/dev-server/connect-to-dev-server.ts';
 import {
   BACKGROUND_CLIENT_ENTRY_NAME,
   BACKGROUND_UPDATE_MESSAGE_TYPE,
   UI_UPDATE_MESSAGE_TYPE,
-} from '../utils/dev-server/protocol';
+} from '../utils/dev-server/protocol.ts';
 import {
   createAnnouncer,
   getClientRequest,
-} from '../utils/dev-server/websocket';
-import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
+} from '../utils/dev-server/websocket.ts';
+import { ManifestPlugin } from '../utils/plugins/ManifestPlugin/index.ts';
 
 type EntryPluginCall = {
   context: string;

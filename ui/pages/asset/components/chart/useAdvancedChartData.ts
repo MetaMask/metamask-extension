@@ -32,7 +32,6 @@ export type UseAdvancedChartDataResult = {
   realtimeTimestamp?: number;
   /** Header figures derived from the candle history. Candle mode only. */
   price?: number;
-  percentChange?: number;
   timestamp?: number;
   isLoading: boolean;
   error: string | null;
@@ -40,6 +39,8 @@ export type UseAdvancedChartDataResult = {
   resolvedCurrency: string;
   /** Fetches an older page of candles for the chart engine to prepend. */
   fetchOlderBars: () => Promise<FetchOlderBarsResult>;
+  /** Resets pagination; call only on a full engine reload. */
+  resetPagination: () => void;
 };
 
 /**
@@ -56,13 +57,19 @@ export function useAdvancedChartData({
   currency,
   needsHistory,
 }: UseAdvancedChartDataOptions): UseAdvancedChartDataResult {
-  const { ohlcvData, isLoading, error, resolvedCurrency, fetchOlderBars } =
-    useOHLCVChart({
-      assetId,
-      interval,
-      currency,
-      enabled: needsHistory,
-    });
+  const {
+    ohlcvData,
+    isLoading,
+    error,
+    resolvedCurrency,
+    fetchOlderBars,
+    resetPagination,
+  } = useOHLCVChart({
+    assetId,
+    interval,
+    currency,
+    enabled: needsHistory,
+  });
 
   // In candle mode realtime must follow the currency the history actually
   // resolved to: the price API does not quote every fiat for OHLCV, so a
@@ -92,8 +99,7 @@ export function useAdvancedChartData({
       : ohlcvData;
   }, [ohlcvData, latestBar]);
 
-  const { price, percentChange, timestamp } =
-    useOHLCVPriceData(mergedOhlcvData);
+  const { price, timestamp } = useOHLCVPriceData(mergedOhlcvData);
 
   return {
     ohlcvData,
@@ -101,11 +107,11 @@ export function useAdvancedChartData({
     realtimePrice: latestBar?.close,
     realtimeTimestamp: latestBar?.time,
     price,
-    percentChange,
     timestamp,
     isLoading,
     error,
     resolvedCurrency,
     fetchOlderBars,
+    resetPagination,
   };
 }
