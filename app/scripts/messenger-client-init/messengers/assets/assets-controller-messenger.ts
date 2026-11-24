@@ -13,7 +13,6 @@ import {
 } from '../../../controllers/onboarding';
 import { RootMessenger } from '../../../lib/messenger';
 import type { PreferencesControllerGetStateAction } from '../../../controllers/preferences-controller';
-import { registerTokensControllerGetStateCompat } from '../tokens-controller-compat';
 
 /**
  * Messenger type for AssetsController initialization.
@@ -104,10 +103,6 @@ export function getAssetsControllerMessenger(
     MessengerEvents<AssetsControllerMessenger>
   >,
 ): AssetsControllerMessenger {
-  // Publish TokensController:getState as soon as the assets messenger exists,
-  // before later clients (including Transaction Pay) are constructed.
-  registerTokensControllerGetStateCompat(messenger as RootMessenger);
-
   const controllerMessenger: AssetsControllerMessenger = new Messenger({
     namespace: 'AssetsController',
     parent: messenger,

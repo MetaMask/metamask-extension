@@ -26,7 +26,6 @@ import type {
   TransactionControllerUpdateTransactionMetadataAction,
 } from '@metamask/transaction-controller';
 import type { RootMessenger } from '../../lib/messenger';
-import { registerTokensControllerGetStateCompat } from './tokens-controller-compat';
 
 export function getTransactionPayControllerMessenger(
   messenger: RootMessenger<
@@ -34,10 +33,6 @@ export function getTransactionPayControllerMessenger(
     MessengerEvents<TransactionPayControllerMessenger>
   >,
 ): TransactionPayControllerMessenger {
-  // Transaction Pay and other leftover callers still request
-  // TokensController:getState. The handler is backed by AssetsController.
-  registerTokensControllerGetStateCompat(messenger as RootMessenger);
-
   const controllerMessenger: TransactionPayControllerMessenger = new Messenger({
     namespace: 'TransactionPayController',
     parent: messenger,

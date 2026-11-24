@@ -16,22 +16,6 @@ describe('getAssetsControllerMessenger', () => {
     expect(assetsControllerMessenger).toBeInstanceOf(Messenger);
   });
 
-  it('registers TokensController:getState on the root messenger', () => {
-    const messenger = getRootMessenger<never, never>();
-
-    getAssetsControllerMessenger(messenger);
-
-    expect(
-      // Compat action is registered on the root messenger.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (messenger as any).call('TokensController:getState'),
-    ).toMatchObject({
-      allTokens: {},
-      allIgnoredTokens: {},
-      allDetectedTokens: {},
-    });
-  });
-
   it('creates messenger with AssetsController namespace', () => {
     const messenger = getRootMessenger<never, never>();
     const assetsControllerMessenger = getAssetsControllerMessenger(messenger);

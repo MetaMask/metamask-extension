@@ -45,40 +45,6 @@ describe('getTransactionPayControllerMessenger', () => {
     );
   });
 
-  it('registers TokensController:getState for leftover callers', () => {
-    const messenger = getRootMessenger<never, never>();
-    const assetsControllerMessenger = new Messenger({
-      namespace: 'AssetsController',
-      parent: messenger,
-    });
-    const allTokens = {
-      '0x1': {
-        '': [
-          {
-            address: '0x0000000000000000000000000000000000000001',
-            symbol: 'TST',
-            decimals: 18,
-          },
-        ],
-      },
-    };
-
-    // Registered by AssetsController in production.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (assetsControllerMessenger as any).registerActionHandler(
-      'AssetsController:getStateForTransactionPay',
-      () => ({ allTokens }),
-    );
-
-    getTransactionPayControllerMessenger(messenger);
-
-    expect(
-      // Compat action is registered on the root messenger.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (messenger as any).call('TokensController:getState'),
-    ).toMatchObject({ allTokens });
-  });
-
   it('delegates SentinelApiService:simulateTransactions', () => {
     const messenger = getRootMessenger<never, never>();
     const delegateSpy = jest.spyOn(messenger, 'delegate');
