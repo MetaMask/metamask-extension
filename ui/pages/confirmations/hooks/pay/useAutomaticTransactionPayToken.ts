@@ -33,6 +33,7 @@ import {
 import { useIsHardwareWalletAccount } from '../../../../hooks/useIsHardwareWalletAccount';
 import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
 import { useTransactionPayingAccount } from '../transactions/useTransactionPayingAccount';
+import { encodeEvmAssetId } from '../../../../../shared/lib/transaction/pay-token';
 import { useImportPayToken } from './useImportPayToken';
 import { useIsPayHardwareBlocked } from './useIsPayHardwareBlocked';
 import { useAutomaticMoneyAccountPayToken } from './useAutomaticMoneyAccountPayToken';
@@ -247,15 +248,14 @@ export function useAutomaticTransactionPayToken({
     }
 
     isUpdated.current = transactionId;
-    setPayToken({
-      address: automaticToken.address,
-      chainId: automaticToken.chainId,
-    }).catch((error) => {
-      console.error('Failed to set automatic pay token', error);
-      if (isUpdated.current === transactionId) {
-        isUpdated.current = undefined;
-      }
-    });
+    setPayToken({ assetId: encodeEvmAssetId(automaticToken) }).catch(
+      (error) => {
+        console.error('Failed to set automatic pay token', error);
+        if (isUpdated.current === transactionId) {
+          isUpdated.current = undefined;
+        }
+      },
+    );
   }, [
     automaticToken,
     disable,
@@ -314,10 +314,7 @@ export function useAutomaticTransactionPayToken({
       return;
     }
 
-    setPayToken({
-      address: automaticToken.address,
-      chainId: automaticToken.chainId,
-    });
+    setPayToken({ assetId: encodeEvmAssetId(automaticToken) });
     pendingAccountReselectRef.current = false;
   }, [
     accountOverride,
@@ -382,10 +379,11 @@ export function useAutomaticTransactionPayToken({
     }
 
     if (automaticToken) {
-      setPayToken({
-        address: automaticToken.address,
-        chainId: automaticToken.chainId,
-      });
+      setPayToken({ assetId: encodeEvmAssetId(automaticToken) }).catch(
+        (error) => {
+          console.error('Failed to set automatic pay token', error);
+        },
+      );
     }
   }, [automaticToken, disable, from, isMoneyPaymentOverride, setPayToken]);
 }

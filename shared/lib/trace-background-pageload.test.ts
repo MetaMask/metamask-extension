@@ -17,8 +17,12 @@ jest.mock('./wrapper-sampling', () => ({
 // and leaves its trace id and sampling decision on the scope, as it does in the
 // background.
 describe('trace with no caller after the background pageload ends (real SDK)', () => {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  const globals = globalThis as { ServiceWorkerGlobalScope?: unknown };
+  const testGlobal = globalThis as {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    ServiceWorkerGlobalScope?: unknown;
+    stateHooks?: unknown;
+    sentry?: unknown;
+  };
   const NO_CALLER = TraceName.ContactSyncUpdateRemote;
 
   let tracesSampler: jest.Mock;
@@ -29,29 +33,29 @@ describe('trace with no caller after the background pageload ends (real SDK)', (
     const perf = globalThis.performance as unknown as Record<string, unknown>;
     perf.getEntriesByType ??= () => [];
     perf.getEntries ??= () => [];
-    (globalThis as { sentry?: unknown }).sentry = Sentry;
+    testGlobal.sentry = Sentry;
   });
 
   beforeEach(() => {
     // `bootstrap.ts` creates this object before any copy of the module runs; a
     // fresh one keeps one test's pageload out of the next.
-    (globalThis as { stateHooks?: unknown }).stateHooks = {};
+    testGlobal.stateHooks = {};
   });
 
   afterEach(() => {
     runningPageload?.end();
     runningPageload = undefined;
-    delete (globalThis as { stateHooks?: unknown }).stateHooks;
-    delete globals.ServiceWorkerGlobalScope;
+    delete testGlobal.stateHooks;
+    delete testGlobal.ServiceWorkerGlobalScope;
   });
 
   // The service worker (`/service-worker.js`) and Firefox's persistent
   // background page (`/background.html`) both resolve to the background.
   function inContext(pathname: string) {
     if (pathname === '/service-worker.js') {
-      globals.ServiceWorkerGlobalScope = class {
+      testGlobal.ServiceWorkerGlobalScope = class {
         static [Symbol.hasInstance](instance: unknown) {
-          return instance === globalThis;
+          return instance === testGlobal;
         }
       };
     }
@@ -96,10 +100,10 @@ describe('trace with no caller after the background pageload ends (real SDK)', (
     client.init();
     // `setupSentry` calls this right after `Sentry.init`, before the global
     // `sentry` that `trace.ts` reads is assigned.
-    const assigned = (globalThis as { sentry?: unknown }).sentry;
-    delete (globalThis as { sentry?: unknown }).sentry;
+    const assigned = testGlobal.sentry;
+    delete testGlobal.sentry;
     trackBackgroundPageload(client);
-    (globalThis as { sentry?: unknown }).sentry = assigned;
+    testGlobal.sentry = assigned;
 
     const pageload = Sentry.getActiveSpan() as Sentry.Span;
     expect(Sentry.spanToJSON(pageload).op).toBe('pageload');

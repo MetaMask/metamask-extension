@@ -1,8 +1,10 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { AvatarIconSeverity, IconName } from '@metamask/design-system-react';
 import { t } from '../../../../../shared/lib/translate';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
+import { getChainIdToNetworkImageUrlMap } from '../../../../selectors/config-registry/config-registry';
 import {
   NotificationComponentType,
   type NotificationComponent,
@@ -82,8 +84,10 @@ export const components: NotificationComponent<ERC1155Notification> = {
     body: {
       type: NotificationComponentType.OnChainBody,
       Image: ({ notification }) => {
+        const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
         const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
           notification.payload.chain_id,
+          networkImageUrls,
         );
         const { networkName } = getNetworkDetailsFromNotifPayload(
           notification.payload.network,
@@ -124,8 +128,10 @@ export const components: NotificationComponent<ERC1155Notification> = {
         />
       ),
       Asset: ({ notification }) => {
+        const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
         const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
           notification.payload.chain_id,
+          networkImageUrls,
         );
         return (
           <NotificationDetailCollection
@@ -139,8 +145,10 @@ export const components: NotificationComponent<ERC1155Notification> = {
         );
       },
       Network: ({ notification }) => {
+        const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
         const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
           notification.payload.chain_id,
+          networkImageUrls,
         );
         const { networkName } = getNetworkDetailsFromNotifPayload(
           notification.payload.network,

@@ -9,22 +9,18 @@ import {
   PermissionSpecificationConstraint,
   SubjectMetadataController,
 } from '@metamask/permission-controller';
-import { PPOMController } from '@metamask/ppom-validator';
 import { SmartTransactionsController } from '@metamask/smart-transactions-controller';
 import { TransactionController } from '@metamask/transaction-controller';
 import { TransactionPayController } from '@metamask/transaction-pay-controller';
 import { AccountsController } from '@metamask/accounts-controller';
 import {
-  AccountTrackerController,
   AssetsContractController,
-  CurrencyRateController,
   DeFiPositionsController,
   DeFiPositionsControllerV2,
   MultichainAssetsController,
   NftController,
   NftDetectionController,
   RatesController,
-  TokenDetectionController,
   TokensController,
 } from '@metamask/assets-controllers';
 import { AssetsController } from '@metamask/assets-controller';
@@ -74,7 +70,6 @@ import {
   EncryptionPublicKeyManager,
 } from '@metamask/message-manager';
 import { SignatureController } from '@metamask/signature-controller';
-import { UserOperationController } from '@metamask/user-operation-controller';
 import {
   AccountActivityService,
   BackendWebSocketService,
@@ -143,7 +138,6 @@ import { SentryTracingService } from '../services/sentry/sentry-tracing-service'
  */
 export type MessengerClient =
   | AccountOrderController
-  | AccountTrackerController
   | AccountsController
   | AddressBookController
   | AlertController
@@ -160,7 +154,6 @@ export type MessengerClient =
   | ChompApiService
   | ClaimsController
   | CronjobController
-  | CurrencyRateController
   | DataDeletionService
   | UserTraitsService
   | DecryptMessageController
@@ -204,7 +197,6 @@ export type MessengerClient =
   | PermissionLogController
   | PerpsController
   | PhishingController
-  | PPOMController
   | PreferencesController
   | QrSyncController
   | RampsController
@@ -231,12 +223,10 @@ export type MessengerClient =
   | SnapsNameProvider
   | SubjectMetadataController
   | ShieldSubscriptionService
-  | TokenDetectionController
   | TokensController
   | TransactionController
   | TransactionPayController
   | InstitutionalSnapController
-  | UserOperationController
   | UserStorageController
   | NftController
   | NftDetectionController
@@ -285,7 +275,6 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   ComplianceController['state'] &
   ConfigRegistryController['state'] &
   CronjobController['state'] &
-  CurrencyRateController['state'] &
   DeFiPositionsController['state'] &
   DeFiPositionsControllerV2['state'] &
   DelegationController['state'] &
@@ -310,7 +299,6 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   PermissionLogController['state'] &
   PerpsController['state'] &
   PhishingController['state'] &
-  PPOMController['state'] &
   PreferencesController['state'] &
   QrSyncController['state'] &
   RampsController['state'] &
@@ -328,15 +316,12 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   SnapInterfaceController['state'] &
   SnapRegistryController['state'] &
   SubscriptionController['state'] &
-  TokenDetectionController['state'] &
   TokensController['state'] &
   StaticAssetsController['state'] &
   TransactionController['state'] &
   TransactionPayController['state'] &
-  UserOperationController['state'] &
   UserStorageController['state'] &
   NftController['state'] &
   NftDetectionController['state'] &
   NetworkEnablementController['state'] &
-  AccountTrackerController['state'] &
   ProfileMetricsController['state'];

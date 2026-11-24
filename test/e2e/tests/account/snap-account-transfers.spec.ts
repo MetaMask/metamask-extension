@@ -19,6 +19,7 @@ import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-k
 import { login } from '../../page-objects/flows/login.flow';
 import { sendTransactionWithSnapAccount } from '../../page-objects/flows/transaction.flow';
 import { mockPriceApi } from '../tokens/utils/mocks';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
 
 async function mockSnapSimpleKeyringAndSiteWithSpotPrices(
@@ -87,7 +88,7 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
         await activityTab.waitPendingTxToNotBeVisible();
 
         await headerNavbar.checkPageIsLoaded();
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         const accountList = new AccountListPage(driver);
         await accountList.checkPageIsLoaded();
 
@@ -160,7 +161,7 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
         await activityTab.waitPendingTxToNotBeVisible();
 
         await headerNavbar.checkPageIsLoaded();
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         const accountList = new AccountListPage(driver);
         await accountList.checkPageIsLoaded();
 
