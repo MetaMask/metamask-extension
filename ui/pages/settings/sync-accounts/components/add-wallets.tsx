@@ -99,7 +99,7 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
           isDisabled={selectedAccountGroups.length === 0}
           data-testid="qr-sync-sync-button"
         >
-          {t('continue')}
+          {t('add_device_import_accounts')}
         </Button>
       </Box>
     </Box>

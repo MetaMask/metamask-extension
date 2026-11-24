@@ -14,7 +14,7 @@ import {
   useMarketInsightsTracking,
 } from './useMarketInsightsTracking';
 
-const mockTrackEvent = jest.fn();
+const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
 const mockCardRef = jest.fn();
 let mockIsCardVisible = false;
 let latestIntersectionThreshold: number | undefined;
