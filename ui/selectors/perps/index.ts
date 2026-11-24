@@ -8,6 +8,7 @@
 
 export {
   getIsPerpsExperienceAvailable,
+  getIsHyperliquidConnectionBarAvailable,
   getIsPerpsTerminalBackendEnabled,
   getHip3AllowedSources,
   getHip3AllowedSourcesSet,

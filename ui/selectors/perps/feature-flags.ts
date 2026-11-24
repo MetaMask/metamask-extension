@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
 import { isPerpsRemoteConfigSatisfied } from '../../../shared/lib/perps-feature-flags';
+import { validatedVersionGatedFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 
 /**
@@ -182,6 +183,28 @@ export const getIsPerpsTerminalBackendEnabled = createSelector(
     isPerpsRemoteConfigSatisfied(
       remoteFeatureFlags.perpsTerminalBackendEnabled,
     ),
+);
+
+/**
+ * Whether the Hyperliquid Connection Bar feature is enabled.
+ */
+const getIsHyperliquidConnectionBarFlagEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags): boolean =>
+    validatedVersionGatedFeatureFlag(
+      remoteFeatureFlags.coreUxHyperliquidConnectionBar,
+    ) ?? false,
+);
+
+/**
+ * Whether the Hyperliquid Connection Bar feature is available to the user:
+ * the remote flag is on and the Perps experience is available.
+ */
+export const getIsHyperliquidConnectionBarAvailable = createSelector(
+  getIsHyperliquidConnectionBarFlagEnabled,
+  getIsPerpsExperienceAvailable,
+  (isFlagEnabled, isPerpsAvailable): boolean =>
+    isFlagEnabled && isPerpsAvailable,
 );
 
 // Re-export the VIP program flag so perps consumers can import from this
