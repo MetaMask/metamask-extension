@@ -1,9 +1,8 @@
 import {
-  startInactiveSpan,
-  startNewTrace,
-  withActiveSpan,
-} from '@sentry/browser';
-import { SPAN_STATUS_ERROR, type Span } from '@sentry/core';
+  SentryNonRecordingSpan,
+  SPAN_STATUS_ERROR,
+  type Span,
+} from '@sentry/core';
 import type { TraceName } from '../../../shared/lib/trace';
 import { claimBackendRequests } from './sentry-trace-propagation';
 
@@ -12,7 +11,27 @@ import { claimBackendRequests } from './sentry-trace-propagation';
 // `await` parents whatever starts meanwhile. A root here is therefore the
 // active span only while its own code runs synchronously.
 
+// The background bundles its own copy of the SDK, which has no client:
+// `Sentry.init` runs in `sentry-install`. Spans therefore start on the
+// initialized instance at `globalThis.sentry`, as in `shared/lib/trace.ts`.
+// Without it, a root is a non-recording span and `fn` runs as if untraced.
+
+function startRoot(name: TraceName): Span {
+  const startNewTrace = globalThis.sentry?.startNewTrace;
+  const startInactiveSpan = globalThis.sentry?.startInactiveSpan;
+  if (!startNewTrace || !startInactiveSpan) {
+    return new SentryNonRecordingSpan();
+  }
+  return startNewTrace(() =>
+    startInactiveSpan({ name, op: 'custom', parentSpan: null }),
+  );
+}
+
 function runWithActiveSpan<Result>(span: Span, fn: () => Result): Result {
+  const withActiveSpan = globalThis.sentry?.withActiveSpan;
+  if (!withActiveSpan) {
+    return fn();
+  }
   // Boxed so the scope is popped on return, not when a returned promise settles.
   return withActiveSpan(span, () => ({ result: fn() })).result;
 }
@@ -35,9 +54,7 @@ export function runAsOwnRoot<Result>(
   name: TraceName,
   fn: (span: Span) => Result,
 ): Result {
-  const span = startNewTrace(() =>
-    startInactiveSpan({ name, op: 'custom', parentSpan: null }),
-  );
+  const span = startRoot(name);
   let result: Result;
   try {
     result = runWithActiveSpan(span, () => fn(span));
