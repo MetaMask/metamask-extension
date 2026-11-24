@@ -1323,12 +1323,6 @@
   "add_device_try_again": {
     "message": "Inténtalo de nuevo"
   },
-  "add_device_validating_desc": {
-    "message": "Estableciendo una conexión segura y cifrada con tu teléfono."
-  },
-  "add_device_validating_title": {
-    "message": "Vinculando dispositivos"
-  },
   "add_wallets": {
     "message": "Elige qué sincronizar"
   },
@@ -4013,10 +4007,6 @@
   "enter_verification_code_expired": {
     "message": "Código de verificación expirado"
   },
-  "enter_verification_code_expires_in": {
-    "message": "Expira en $1 s",
-    "description": "$1 is the number of seconds remaining before the verification code expires"
-  },
   "enter_verification_code_max_attempts": {
     "message": "Demasiados intentos incorrectos. Comienza con un nuevo código QR."
   },
@@ -4476,9 +4466,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Algo salió mal..."
-  },
-  "generateNewQrCode": {
-    "message": "Generar nuevo código QR"
   },
   "genericExplorerView": {
     "message": "Ver cuenta en $1"
@@ -6448,42 +6435,6 @@
   "multipleSnapConnectionWarning": {
     "message": "$1 quiere conectarse a $2",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
-  },
-  "musdAssetConvertBenefitDailyBonus": {
-    "message": "Bono diario",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertBenefitDollarBacked": {
-    "message": "Respaldado por dólares",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertBenefitNoLockups": {
-    "message": "Sin bloqueos",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertBenefitNoMetaMaskFee": {
-    "message": "Sin tarifa de MetaMask",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertDescriptionHighlight": {
-    "message": "Bono anualizado del $1 %",
-    "description": "Shown in Figma accent lime (#baf24a) inside the mUSD asset details convert section description. $1 is the APY percentage."
-  },
-  "musdAssetConvertDescriptionLead": {
-    "message": "Obtén un ",
-    "description": "Text before the green APY phrase on the mUSD asset details convert section"
-  },
-  "musdAssetConvertDescriptionTail": {
-    "message": " al convertir USDC, USDT y DAI a mUSD.",
-    "description": "Text after the green APY phrase on the mUSD asset details convert section"
-  },
-  "musdAssetConvertLearnMore": {
-    "message": "Conozca más",
-    "description": "Button to open the mUSD support article from the asset details convert section"
-  },
-  "musdAssetConvertTitle": {
-    "message": "Convierte tus monedas estables",
-    "description": "Title of the convert section on the mUSD asset details page"
   },
   "musdAssetPositionBalance": {
     "message": "Saldo",
@@ -9229,13 +9180,6 @@
     "message": "Se necesita acceso a la cámara",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
-  "qrCodeExpired": {
-    "message": "Código QR expirado"
-  },
-  "qrCodeExpiresIn": {
-    "message": "Expira en $1 s",
-    "description": "$1 is the number of seconds remaining before the QR code expires"
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Este código QR corresponde a otra transacción. Cancélala e inténtalo de nuevo, asegurándote de escanear primero el código QR que aparece en MetaMask con tu billetera física.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -11891,9 +11835,6 @@
   },
   "standardAccountLabel": {
     "message": "Cuenta estándar"
-  },
-  "start_with_new_qr_code": {
-    "message": "Comenzar con un nuevo código QR"
   },
   "stateCorruptionAreYouSure": {
     "message": "¿Estás seguro de que deseas continuar?"

@@ -28,9 +28,19 @@ class SyncAccountsSettingsPage {
 
   private readonly loading = '[data-testid="qr-sync-loading"]';
 
-  private readonly otpExpiredMessage = { text: 'Verification code expired' };
+  private readonly otpExpiredMessage = {
+    text: 'This code expired. Get a new QR code to try again.',
+  };
 
-  private readonly otpFirstInput = '[data-testid="qr-sync-otp-input-0"]';
+  private readonly otpInput = '[data-testid="qr-sync-otp-input"]';
+
+  private readonly otpTryAgainButton = '[data-testid="qr-sync-otp-try-again"]';
+
+  // Only matches once the controller accepted the code and is waiting for the
+  // wallet's sync offer. The bare `qr-sync-otp-verifying` element also shows
+  // while `submitOtp` is still in flight, when an offer would be dropped.
+  private readonly otpVerifying =
+    '[data-testid="qr-sync-otp-verifying"][data-awaiting-sync-offer="true"]';
 
   private readonly page = '[data-testid="parent-selector-sync-accounts-page"]';
 
@@ -41,17 +51,14 @@ class SyncAccountsSettingsPage {
 
   private readonly qrCode = '[data-testid="qr-sync-qr-code"]';
 
-  private readonly qrExpiredMessage = { text: 'QR code expired' };
+  private readonly qrExpiredMessage = '[data-testid="qr-sync-qr-expired"]';
 
   private readonly qrSyncWalletRowId = (walletId: string) =>
     `[data-testid="qr-sync-wallet-row-${walletId}"]`;
 
   private readonly sessionExpiredErrorMessage = {
-    text: 'This sync session expired. Start again to generate a new QR code.',
+    text: 'This session expired. Start with a new QR code.',
   };
-
-  private readonly startWithNewQrCodeButton =
-    '[data-testid="qr-sync-start-with-new-qr-code"]';
 
   private readonly success = '[data-testid="qr-sync-success"]';
 
@@ -88,16 +95,20 @@ class SyncAccountsSettingsPage {
     await this.driver.clickElement(this.doneButton);
   }
 
+  /**
+   * Clicks the "Get new code" button shown once the QR code expired.
+   */
   async clickGenerateNewQrCode(): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(
       this.generateNewQrCodeButton,
     );
   }
 
-  async clickStartWithNewQrCode(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(
-      this.startWithNewQrCodeButton,
-    );
+  /**
+   * Clicks the "Get new code" button shown once the verification code expired.
+   */
+  async clickGetNewCode(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(this.otpTryAgainButton);
   }
 
   async confirmSync(): Promise<void> {
@@ -111,12 +122,12 @@ class SyncAccountsSettingsPage {
       );
     }
 
-    await this.driver.waitForSelector(this.otpFirstInput);
-
-    // Paste the full code into the first box so `handlePaste` → `writeDigits`
-    // updates all digits in one React commit and triggers `submitOtp`.
-    // Per-box `fill()` does not reliably fire controlled `onChange` events.
-    await this.driver.pasteIntoField(this.otpFirstInput, otp);
+    // The input is a transparent overlay above the digit cells, so Selenium
+    // never treats it as visible. Send keys to it directly instead of using
+    // helpers (`clickElement`, `fill`, `pasteIntoField`) that wait for
+    // visibility.
+    const input = await this.driver.findElement(this.otpInput);
+    await input.sendKeys(otp);
   }
 
   async enterPassword(password: string): Promise<void> {
@@ -137,7 +148,15 @@ class SyncAccountsSettingsPage {
   }
 
   async waitForOtpScreen(): Promise<void> {
-    await this.driver.waitForSelector(this.otpFirstInput);
+    await this.driver.waitForSelector(this.otpInput);
+  }
+
+  /**
+   * Waits for the verifying status shown once the code was accepted and the
+   * wallet's sync offer is pending, so a sync offer can be delivered safely.
+   */
+  async waitForOtpVerifying(): Promise<void> {
+    await this.driver.waitForSelector(this.otpVerifying);
   }
 
   async waitForPasswordScreen(): Promise<void> {
