@@ -13,6 +13,7 @@ import { shortenAddress } from '../../../../../ui/helpers/utils/util';
 import { Driver } from '../../../webdriver/driver';
 import { withStellarFixtures } from '../../stellar/fixtures/with-stellar-fixtures';
 import { buildStellarFixture } from '../../stellar/mocks/common-stellar';
+import { openAccountMenu } from '../../../page-objects/flows/account-menu.flow';
 import {
   STELLAR_NETWORK_NAME,
   XLM_FIAT_DISPLAY,
@@ -37,10 +38,9 @@ describe('Stellar account derivation', function () {
         await login(driver, { validateBalance: false });
         await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
 
-        const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
 
-        await homepage.headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await accountList.checkPageIsLoaded();
 
         await assertAddressAtIndex(driver, {
@@ -104,7 +104,7 @@ describe('Stellar account derivation', function () {
         });
 
         const accountList = new AccountListPage(driver);
-        await homepage.headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await accountList.checkPageIsLoaded();
 
         await assertAddressAtIndex(driver, {

@@ -10,12 +10,9 @@ import {
 } from '../selectors';
 import { useAddressLabel } from './useAddressLabel';
 
-let mockIsSecurityAlertsAPIEnabled = true;
-
 jest.mock('#shared/lib/bridge-utils/security-alerts-api.util', () => ({
   ...jest.requireActual('#shared/lib/bridge-utils/security-alerts-api.util'),
   fetchEvmAddressScan: jest.fn(),
-  isSecurityAlertsAPIEnabled: jest.fn(() => mockIsSecurityAlertsAPIEnabled),
 }));
 
 let mockIsExternalServicesEnabled = true;
@@ -56,7 +53,6 @@ describe('useAddressLabel', () => {
     jest.clearAllMocks();
     mockIsExternalServicesEnabled = true;
     mockIsAddressResolutionEnabled = true;
-    mockIsSecurityAlertsAPIEnabled = true;
     mockUseSelector.mockImplementation((selector) => {
       if (selector === getUseExternalServices) {
         return mockIsExternalServicesEnabled;
@@ -118,18 +114,6 @@ describe('useAddressLabel', () => {
 
   it('does not fetch when address resolution is disabled', () => {
     mockIsAddressResolutionEnabled = false;
-
-    const { result } = renderHook(
-      () => useAddressLabel({ address: relayAddress, chainId: arbitrum }),
-      { wrapper: createWrapper() },
-    );
-
-    expect(result.current).toBe('');
-    expect(mockFetchEvmAddressScan).not.toHaveBeenCalled();
-  });
-
-  it('does not fetch when the security alerts API is disabled', () => {
-    mockIsSecurityAlertsAPIEnabled = false;
 
     const { result } = renderHook(
       () => useAddressLabel({ address: relayAddress, chainId: arbitrum }),

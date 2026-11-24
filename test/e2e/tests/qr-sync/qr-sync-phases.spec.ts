@@ -44,7 +44,7 @@ describe('QR Sync Phases', function () {
     );
   });
 
-  it('should display the QR sync sessiontimeout error when QR Code is not scanned within the timeout', async function () {
+  it('should display the QR expired state when QR Code is not scanned within the timeout', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -56,7 +56,7 @@ describe('QR Sync Phases', function () {
         const syncAccountsPage = await navigateToSyncAccountsSettings(driver);
 
         // Do not scan the QR code. Wait out the MWP session timeout so the QR
-        // expired screen is shown.
+        // expired state is shown.
         await driver.delay(
           QR_SYNC_TIMEOUT_MS_E2E.MWP_SESSION_TIMEOUT +
             TIMEOUT_ASSERTION_BUFFER_MS,
@@ -81,7 +81,7 @@ describe('QR Sync Phases', function () {
         await syncAccountsPage.waitForOtpScreen();
 
         // Do not enter the OTP. Wait out the MWP session timeout so the OTP
-        // expired screen is shown.
+        // expired message is shown.
         await driver.delay(
           QR_SYNC_TIMEOUT_MS_E2E.MWP_SESSION_TIMEOUT +
             TIMEOUT_ASSERTION_BUFFER_MS,
@@ -105,7 +105,7 @@ describe('QR Sync Phases', function () {
         qrSyncSimulate('mobileScanned');
         await syncAccountsPage.waitForOtpScreen();
         await syncAccountsPage.enterOtp(QR_SYNC_E2E_OTP);
-        await syncAccountsPage.waitForLoadingStep();
+        await syncAccountsPage.waitForOtpVerifying();
 
         // Do not accept the mobile sync offer. Wait out the sync-offer timeout
         // so the session-expired error is shown.
@@ -118,7 +118,7 @@ describe('QR Sync Phases', function () {
     );
   });
 
-  it('should restart the Qr Sync session from the QR Expired screen', async function () {
+  it('should restart the QR sync session from the expired QR code state', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -130,7 +130,7 @@ describe('QR Sync Phases', function () {
         const syncAccountsPage = await navigateToSyncAccountsSettings(driver);
 
         // Do not scan the QR code. Wait out the MWP session timeout so the QR
-        // expired screen is shown.
+        // expired state is shown.
         await driver.delay(
           QR_SYNC_TIMEOUT_MS_E2E.MWP_SESSION_TIMEOUT +
             TIMEOUT_ASSERTION_BUFFER_MS,
@@ -150,7 +150,7 @@ describe('QR Sync Phases', function () {
     );
   });
 
-  it('should restart the Qr Sync session from the OTP Timeout screen', async function () {
+  it('should restart the QR sync session from the expired verification code step', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -165,14 +165,14 @@ describe('QR Sync Phases', function () {
         await syncAccountsPage.waitForOtpScreen();
 
         // Do not enter the OTP. Wait out the MWP session timeout so we can
-        // restart from the OTP expired screen.
+        // restart from the expired verification code step.
         await driver.delay(
           QR_SYNC_TIMEOUT_MS_E2E.MWP_SESSION_TIMEOUT +
             TIMEOUT_ASSERTION_BUFFER_MS,
         );
         await syncAccountsPage.waitForOtpExpired();
 
-        await syncAccountsPage.clickStartWithNewQrCode();
+        await syncAccountsPage.clickGetNewCode();
         await syncAccountsPage.waitForQrCode();
 
         await completeQrSyncFromSyncPage({

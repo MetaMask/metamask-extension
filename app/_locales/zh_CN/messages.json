@@ -1323,12 +1323,6 @@
   "add_device_try_again": {
     "message": "请重试"
   },
-  "add_device_validating_desc": {
-    "message": "正在与您的手机建立安全的加密连接。"
-  },
-  "add_device_validating_title": {
-    "message": "正在配对设备"
-  },
   "add_wallets": {
     "message": "选择要同步的内容"
   },
@@ -4013,10 +4007,6 @@
   "enter_verification_code_expired": {
     "message": "验证码已过期"
   },
-  "enter_verification_code_expires_in": {
-    "message": "$1 秒后过期",
-    "description": "$1 is the number of seconds remaining before the verification code expires"
-  },
   "enter_verification_code_max_attempts": {
     "message": "错误次数过多。请使用新的二维码重新开始。"
   },
@@ -4472,9 +4462,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "出错了...."
-  },
-  "generateNewQrCode": {
-    "message": "生成新的二维码"
   },
   "genericExplorerView": {
     "message": "在$1查看账户"
@@ -9221,13 +9208,6 @@
     "message": "需要访问相机",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
-  "qrCodeExpired": {
-    "message": "二维码已过期"
-  },
-  "qrCodeExpiresIn": {
-    "message": "$1 秒后过期",
-    "description": "$1 is the number of seconds remaining before the QR code expires"
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "此二维码对应另一笔交易。请取消并重试，确保先用您的硬件钱包扫描 MetaMask 中显示的二维码。",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -11883,9 +11863,6 @@
   },
   "standardAccountLabel": {
     "message": "标准账户"
-  },
-  "start_with_new_qr_code": {
-    "message": "使用新的二维码开始"
   },
   "stateCorruptionAreYouSure": {
     "message": "您确定要继续吗？"
