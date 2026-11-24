@@ -1623,7 +1623,9 @@ export default class MetamaskController extends EventEmitter {
     const { usePhishDetect } = this.preferencesController.state;
 
     if (usePhishDetect) {
-      void updatePhishingLists(this.phishingController);
+      updatePhishingLists(this.phishingController).catch((error) => {
+        log.error('Failed to update phishing lists', error);
+      });
     }
 
     if (
@@ -3146,7 +3148,9 @@ export default class MetamaskController extends EventEmitter {
       if (this.onboardingController.state.completedOnboarding) {
         if (this.preferencesController.state.usePhishDetect) {
           const { hostname } = new URL(sender.url);
-          void updatePhishingLists(this.phishingController);
+          updatePhishingLists(this.phishingController).catch((error) => {
+            log.error('Failed to update phishing lists', error);
+          });
           // Check if new connection is blocked if phishing detection is on
           const phishingTestResponse = this.phishingController.test(sender.url);
           if (phishingTestResponse?.result) {

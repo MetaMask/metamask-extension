@@ -1,4 +1,5 @@
 import browser from 'webextension-polyfill';
+import log from 'loglevel';
 import type { PhishingDetectorResult } from '@metamask/phishing-controller';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import {
@@ -145,7 +146,9 @@ export function maybeDetectPhishing(
         return {};
       }
 
-      void updatePhishingLists(controller.phishingController);
+      updatePhishingLists(controller.phishingController).catch((error) => {
+        log.error('Failed to update phishing lists', error);
+      });
 
       const blockedRequestResponse: PhishingDetectorResult =
         controller.phishingController.isBlockedRequest(details.url);
