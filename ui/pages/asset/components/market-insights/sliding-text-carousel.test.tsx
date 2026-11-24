@@ -1,5 +1,6 @@
 import React from 'react';
-import { act, render, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
+import { renderWithProvider as render } from '../../../../../test/lib/render-helpers-navigate';
 import { SlidingTextCarousel } from './sliding-text-carousel';
 
 describe('SlidingTextCarousel', () => {
@@ -8,14 +9,10 @@ describe('SlidingTextCarousel', () => {
   });
 
   it('renders a single text statically without slots', () => {
-    const { container } = render(
-      <SlidingTextCarousel texts={['Only one headline']} />,
-    );
+    render(<SlidingTextCarousel texts={['Only one headline']} />);
 
     expect(screen.getByText('Only one headline')).toBeInTheDocument();
-    expect(
-      container.querySelector('.market-insights-carousel'),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
 
   it('renders the first text initially', () => {
@@ -77,6 +74,94 @@ describe('SlidingTextCarousel', () => {
       jest.advanceTimersByTime(5000 + 350);
     });
     expect(screen.getByText('Second')).toBeInTheDocument();
+  });
+
+  it('slides the incoming headline in without exposing the offscreen headline', () => {
+    jest.useFakeTimers();
+    render(<SlidingTextCarousel texts={['First', 'Second']} />);
+    const firstSlot = screen.getByText('First').parentElement;
+    const secondSlot = screen.getByText('Second').parentElement;
+    expect(secondSlot).toHaveAttribute('aria-hidden', 'true');
+    expect(secondSlot).toHaveClass('translate-x-full');
+
+    act(() => jest.advanceTimersByTime(5000));
+    expect(secondSlot).toHaveClass('translate-x-0');
+    act(() => jest.advanceTimersByTime(350));
+    expect(firstSlot).toHaveAttribute('aria-hidden', 'true');
+    expect(secondSlot).toHaveAttribute('aria-hidden', 'false');
+  });
+
+  it('keeps the rotation schedule when the same headlines are passed again', () => {
+    jest.useFakeTimers();
+    const { rerender } = render(
+      <SlidingTextCarousel texts={['First', 'Second']} />,
+    );
+    act(() => jest.advanceTimersByTime(4000));
+    const onSlideStart = jest.fn();
+    rerender(
+      <SlidingTextCarousel
+        texts={['First', 'Second']}
+        onSlideStart={onSlideStart}
+      />,
+    );
+    act(() => jest.advanceTimersByTime(1000));
+    expect(onSlideStart).toHaveBeenCalledTimes(1);
+  });
+
+  it('cancels a pending slide when unmounted', () => {
+    jest.useFakeTimers();
+    const onSlideComplete = jest.fn();
+    const { unmount } = render(
+      <SlidingTextCarousel
+        texts={['First', 'Second']}
+        onSlideComplete={onSlideComplete}
+      />,
+    );
+    act(() => jest.advanceTimersByTime(5000));
+    unmount();
+    act(() => jest.advanceTimersByTime(350));
+    expect(onSlideComplete).not.toHaveBeenCalled();
+  });
+
+  it('pauses and resumes rotation on demand', () => {
+    jest.useFakeTimers();
+    const onSlideStart = jest.fn();
+    render(
+      <SlidingTextCarousel
+        texts={['First', 'Second']}
+        onSlideStart={onSlideStart}
+      />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Pause headlines' }));
+    act(() => jest.advanceTimersByTime(10_000));
+    expect(onSlideStart).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: 'Resume headlines' }));
+    act(() => jest.advanceTimersByTime(5000));
+    expect(onSlideStart).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows only the first headline when reduced motion is requested', () => {
+    jest.useFakeTimers();
+    const matchMedia = jest.spyOn(window, 'matchMedia').mockReturnValue({
+      matches: true,
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+    } as unknown as MediaQueryList);
+    try {
+      const onSlideStart = jest.fn();
+      render(
+        <SlidingTextCarousel
+          texts={['First', 'Second']}
+          onSlideStart={onSlideStart}
+        />,
+      );
+      act(() => jest.advanceTimersByTime(10_000));
+      expect(screen.getByText('First')).toBeInTheDocument();
+      expect(screen.queryByText('Second')).not.toBeInTheDocument();
+      expect(onSlideStart).not.toHaveBeenCalled();
+    } finally {
+      matchMedia.mockRestore();
+    }
   });
 
   it('applies the optional test id to the container', () => {

@@ -1,13 +1,16 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
   Box,
   Text,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 /** Duration of the slide transition between texts in ms. */
 export const SLIDE_DURATION_MS = 350;
+
+const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
 
 /** Interval between text rotations in ms. */
 export const ROTATE_INTERVAL_MS = 5000;
@@ -44,93 +47,103 @@ const CarouselInner = ({
   onSlideComplete,
   testId,
 }: CarouselInnerProps) => {
+  const t = useI18nContext();
+  const [isPaused, setIsPaused] = useState(false);
   const [slotAText, setSlotAText] = useState(texts[0] ?? '');
   const [slotBText, setSlotBText] = useState(texts[1] ?? texts[0] ?? '');
   const [frontIsA, setFrontIsA] = useState(true);
   const [isSliding, setIsSliding] = useState(false);
-  const isSlidingRef = useRef(false);
-  const upcomingIndexRef = useRef(2);
+  const nextIndex = useRef(2);
+  const frontSlot = useRef(true);
+  const slideTimeout = useRef<ReturnType<typeof setTimeout> | undefined>();
+  const latest = useRef({ texts, onSlideStart, onSlideComplete });
+  useLayoutEffect(() => {
+    latest.current = { texts, onSlideStart, onSlideComplete };
+  }, [texts, onSlideStart, onSlideComplete]);
 
-  const onSlideEnd = useCallback(
-    (wasAFront: boolean, capturedIndex: number) => {
-      const currentTexts = texts;
-      setFrontIsA(!wasAFront);
-      const nextText = currentTexts[capturedIndex % currentTexts.length];
-      if (wasAFront) {
-        setSlotAText(nextText);
-      } else {
-        setSlotBText(nextText);
-      }
-      upcomingIndexRef.current =
-        (capturedIndex + 1) % Math.max(currentTexts.length, 1);
-      onSlideComplete?.();
-      isSlidingRef.current = false;
-    },
-    [texts, onSlideComplete],
-  );
-
-  const advanceSlide = useCallback(() => {
-    if (texts.length <= 1 || isSlidingRef.current) {
-      return;
-    }
-    isSlidingRef.current = true;
-    onSlideStart?.();
-    const wasAFront = frontIsA;
-    const capturedIndex = upcomingIndexRef.current;
-    setIsSliding(true);
-    setTimeout(() => {
-      setIsSliding(false);
-      onSlideEnd(wasAFront, capturedIndex);
-    }, SLIDE_DURATION_MS);
-  }, [texts.length, frontIsA, onSlideStart, onSlideEnd]);
+  useEffect(() => () => clearTimeout(slideTimeout.current), []);
 
   useEffect(() => {
-    if (texts.length <= 1) {
+    if (isPaused) {
       return undefined;
     }
-    const interval = setInterval(advanceSlide, ROTATE_INTERVAL_MS);
+    const interval = setInterval(() => {
+      latest.current.onSlideStart?.();
+      setIsSliding(true);
+      slideTimeout.current = setTimeout(() => {
+        const { texts: currentTexts, onSlideComplete: complete } =
+          latest.current;
+        const text = currentTexts[nextIndex.current % currentTexts.length];
+        const wasAFront = frontSlot.current;
+        if (wasAFront) {
+          setSlotAText(text);
+        } else {
+          setSlotBText(text);
+        }
+        nextIndex.current = (nextIndex.current + 1) % currentTexts.length;
+        frontSlot.current = !wasAFront;
+        setFrontIsA(!wasAFront);
+        setIsSliding(false);
+        complete?.();
+      }, SLIDE_DURATION_MS);
+    }, ROTATE_INTERVAL_MS);
     return () => clearInterval(interval);
-  }, [texts.length, advanceSlide]);
+  }, [isPaused]);
 
   const getPosition = (isFront: boolean): string => {
     if (isFront) {
       return isSliding ? '-translate-x-full' : 'translate-x-0';
     }
-    return 'translate-x-full';
+    return isSliding ? 'translate-x-0' : 'translate-x-full';
   };
 
   const slotClassName = (isFront: boolean): string =>
-    `market-insights-carousel__slot w-full ${
-      isSliding ? 'market-insights-carousel__slot--transition' : ''
+    `absolute inset-x-0 top-0 w-full ${
+      isSliding
+        ? 'transition-transform duration-[350ms] ease-in-out motion-reduce:transition-none'
+        : ''
     } ${getPosition(isFront)}`;
 
   return (
-    <Box className="market-insights-carousel" data-testid={testId}>
-      <Text
-        variant={TextVariant.BodySm}
-        className="market-insights-carousel__sizer line-clamp-2"
-        aria-hidden
+    <Box data-testid={testId}>
+      <Box className="relative overflow-hidden">
+        <Text
+          variant={TextVariant.BodySm}
+          className="invisible line-clamp-2 whitespace-pre-line"
+          aria-hidden
+        >
+          {'Mg\nMg'}
+        </Text>
+        <Box className={slotClassName(frontIsA)} aria-hidden={!frontIsA}>
+          <Text
+            variant={TextVariant.BodySm}
+            color={TextColor.TextDefault}
+            className="line-clamp-2"
+          >
+            {slotAText}
+          </Text>
+        </Box>
+        <Box className={slotClassName(!frontIsA)} aria-hidden={frontIsA}>
+          <Text
+            variant={TextVariant.BodySm}
+            color={TextColor.TextDefault}
+            className="line-clamp-2"
+          >
+            {slotBText}
+          </Text>
+        </Box>
+      </Box>
+      <button
+        type="button"
+        className="pointer-events-auto relative z-10 cursor-pointer text-xs text-alternative underline"
+        onClick={() => setIsPaused((paused) => !paused)}
       >
-        {'Mg\nMg'}
-      </Text>
-      <Box className={slotClassName(frontIsA)}>
-        <Text
-          variant={TextVariant.BodySm}
-          color={TextColor.TextDefault}
-          className="line-clamp-2"
-        >
-          {slotAText}
-        </Text>
-      </Box>
-      <Box className={slotClassName(!frontIsA)}>
-        <Text
-          variant={TextVariant.BodySm}
-          color={TextColor.TextDefault}
-          className="line-clamp-2"
-        >
-          {slotBText}
-        </Text>
-      </Box>
+        {t(
+          isPaused
+            ? 'marketInsightsCarouselResume'
+            : 'marketInsightsCarouselPause',
+        )}
+      </button>
     </Box>
   );
 };
@@ -150,13 +163,28 @@ export const SlidingTextCarousel = ({
   testId,
 }: SlidingTextCarouselProps) => {
   const textsKey = texts.join('\0');
+  const [reducedMotion, setReducedMotion] = useState(
+    () => window.matchMedia?.(REDUCED_MOTION_QUERY).matches ?? false,
+  );
 
-  if (texts.length <= 1) {
+  useEffect(() => {
+    const query = window.matchMedia?.(REDUCED_MOTION_QUERY);
+    if (!query) {
+      return undefined;
+    }
+    const handleChange = (event: MediaQueryListEvent) =>
+      setReducedMotion(event.matches);
+    query.addEventListener('change', handleChange);
+    return () => query.removeEventListener('change', handleChange);
+  }, []);
+
+  if (texts.length <= 1 || reducedMotion) {
     return (
       <Text
         variant={TextVariant.BodySm}
         color={TextColor.TextDefault}
         className="line-clamp-2"
+        data-testid={testId}
       >
         {texts[0] ?? ''}
       </Text>
