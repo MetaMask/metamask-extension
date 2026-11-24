@@ -190,6 +190,7 @@ describe('Index Tests', () => {
         qrSyncSelectedAccountGroupIds: ['entropy-1/0'],
         qrSyncError: { code: 'SYNC_FAILED', message: 'failed' },
         qrSyncCreatedAt: 1,
+        qrSyncExpiresAt: 3,
         qrSyncUpdatedAt: 2,
       },
     };

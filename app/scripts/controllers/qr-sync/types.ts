@@ -129,6 +129,15 @@ export type QrSyncControllerState = {
    */
   qrSyncCreatedAt: number | null;
   /**
+   * Absolute expiry for the QR or OTP step currently on screen.
+   *
+   * Every extension surface reads this so countdowns for the same session stay
+   * in step.
+   *
+   * @type {number | null}
+   */
+  qrSyncExpiresAt: number | null;
+  /**
    * Timestamp when the sync session state was last updated.
    *
    * @type {number | null}
