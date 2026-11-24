@@ -2535,15 +2535,22 @@ describe('LegacyBackgroundApiService', () => {
      * Registers no-op handlers for every action `resetWallet` invokes.
      *
      * @param rootMessenger - The root messenger to register the handlers on.
+     * @param seedlessClearState - Optional handler for
+     * `SeedlessOnboardingController:clearState`.
      */
-    function registerResetWalletHandlers(rootMessenger: RootMessenger): void {
+    function registerResetWalletHandlers(
+      rootMessenger: RootMessenger,
+      seedlessClearState: () => Promise<void> = jest
+        .fn()
+        .mockResolvedValue(undefined),
+    ): void {
       rootMessenger.registerActionHandler(
         'AuthenticationController:clearState',
         jest.fn(),
       );
       rootMessenger.registerActionHandler(
         'SeedlessOnboardingController:clearState',
-        jest.fn(),
+        seedlessClearState,
       );
       rootMessenger.registerActionHandler(
         'PasskeyController:clearState',
@@ -2614,6 +2621,56 @@ describe('LegacyBackgroundApiService', () => {
         expect(callSpy).toHaveBeenCalledWith('AddressBookController:clear');
         expect(callSpy).toHaveBeenCalledWith(
           'PreferencesController:resetState',
+        );
+      });
+    });
+
+    it('waits for the Seedless state to be cleared before clearing the rest of the state', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        let finishSeedlessClearState: () => void = () => undefined;
+        const seedlessClearState = jest.fn(
+          () =>
+            new Promise<void>((resolve) => {
+              finishSeedlessClearState = resolve;
+            }),
+        );
+        registerResetWalletHandlers(rootMessenger, seedlessClearState);
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        const resetPromise = rootMessenger.call(
+          'LegacyBackgroundApiService:resetWallet',
+          false,
+        );
+        await flushPromises();
+
+        expect(seedlessClearState).toHaveBeenCalledTimes(1);
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'PasskeyController:clearState',
+        );
+
+        finishSeedlessClearState();
+        await resetPromise;
+
+        expect(callSpy).toHaveBeenCalledWith('PasskeyController:clearState');
+      });
+    });
+
+    it('rejects and skips the remaining reset when clearing the Seedless state fails', async () => {
+      const error = new Error('clearState failed');
+
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        registerResetWalletHandlers(
+          rootMessenger,
+          jest.fn().mockRejectedValue(error),
+        );
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call('LegacyBackgroundApiService:resetWallet', false),
+        ).rejects.toThrow(error);
+
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'PasskeyController:clearState',
         );
       });
     });

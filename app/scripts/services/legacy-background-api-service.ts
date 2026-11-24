@@ -188,7 +188,6 @@ import {
   SeedlessOnboardingControllerSubmitPasswordAction,
   SeedlessOnboardingControllerUpdateBackupMetadataStateAction,
   SeedlessOnboardingControllerIdentifyIncompleteMetadataBackupAction,
-  SeedlessOnboardingCheckpoint,
 } from '@metamask/seedless-onboarding-controller';
 import {
   CaveatSpecificationConstraint,
@@ -1540,8 +1539,10 @@ export class LegacyBackgroundApiService {
     // Sign out and re-arm profile/social pairing for the next wallet.
     this.#messenger.call('AuthenticationController:clearState');
 
-    // clear SeedlessOnboardingController state
-    this.#messenger.call('SeedlessOnboardingController:clearState');
+    // clear SeedlessOnboardingController state. `clearState` is async and waits
+    // for any in-flight Seedless operation, so it must complete before the rest
+    // of the reset continues.
+    await this.#messenger.call('SeedlessOnboardingController:clearState');
 
     // clear passkey early (vault-bound unlock material; runs for restoreOnly too)
     this.#messenger.call('PasskeyController:clearState');
