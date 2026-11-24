@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { Key } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 
 /**
@@ -37,6 +38,9 @@ class AddEditNetworkPage {
   private readonly chainIdInputField = {
     testId: 'network-form-chain-id',
   };
+
+  private readonly chainlistDropdown =
+    '[data-testid="networks-page-chainlist-dropdown"]';
 
   private readonly currencySymbolInputField = '#nativeCurrency';
 
@@ -220,6 +224,15 @@ class AddEditNetworkPage {
    */
   async openAddRpcUrlPage(): Promise<void> {
     console.log('Open the add RPC URL page');
+    const chainlistSuggestionsOpen =
+      await this.driver.isElementPresentAndVisible(
+        this.chainlistDropdown,
+        1000,
+      );
+    if (chainlistSuggestionsOpen) {
+      await this.driver.press(this.networkNameInputField, Key.ESCAPE);
+      await this.driver.assertElementNotPresent(this.chainlistDropdown);
+    }
     await this.driver.clickElement(this.rpcDropDownButton);
     await this.driver.clickElementAndWaitToDisappear(this.addRpcUrlButton);
   }

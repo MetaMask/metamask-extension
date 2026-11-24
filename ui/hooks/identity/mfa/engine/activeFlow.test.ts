@@ -4,11 +4,11 @@ import {
   startMfaFlow,
   subscribeToActiveMfaFlow,
 } from './activeFlow';
-import type { MfaControllerAdapter, MfaFlowOptions } from './types';
+import type { MfaControllerAdapter, MfaFlowOptions, MfaReason } from './types';
 
 const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
 
-const buildOptions = (operation: string): MfaFlowOptions => {
+const buildOptions = (operation: MfaReason['operation']): MfaFlowOptions => {
   const controller: MfaControllerAdapter = {
     refreshEnrolledCredentials: jest.fn(async () => []),
     beginCredentialEnrollment: jest.fn(async () => ({
@@ -64,7 +64,7 @@ describe('startMfaFlow', () => {
     startMfaFlow(buildOptions('vba.activate')).catch(() => undefined);
 
     await expect(
-      startMfaFlow(buildOptions('kalshi.deposit')).catch(getMfaErrorCode),
+      startMfaFlow(buildOptions('settings.addEmail')).catch(getMfaErrorCode),
     ).resolves.toBe('flow_in_progress');
   });
 

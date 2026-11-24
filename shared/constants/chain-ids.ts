@@ -125,6 +125,6 @@ export const CHAIN_IDS = {
   ROBINHOOD_CHAIN: '0x1237',
   STABLE: '0x3dc',
   SOMNIA: '0x13a7',
-  ZERO_G: '0x4115',
   MOBILENODE: '0x3a01511b',
+  ZERO_G: '0x4115',
 } as const;

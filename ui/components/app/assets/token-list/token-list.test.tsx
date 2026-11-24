@@ -32,10 +32,16 @@ import { getIsSecurityTrustTdpEnabled } from '../../../../selectors/multichain/f
 import {
   getAssetsBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
+  selectAssetsHaveLoadedForSelectedAccountGroup,
 } from '../../../../selectors/assets';
 import { MUSD_TOKEN_ADDRESS } from '../../musd/constants';
 import { useMoneyTokenListCta } from '../../../../hooks/money/useMoneyTokenListCta';
+import { useHomeReady } from '../../../../pages/home/home-performance';
 import TokenList from './token-list';
+
+jest.mock('../../../../pages/home/home-performance', () => ({
+  useHomeReady: jest.fn(),
+}));
 
 jest.mock('../../../../hooks/money/useMoneyTokenListCta', () => ({
   useMoneyTokenListCta: jest.fn(),
@@ -83,6 +89,7 @@ jest.mock('../token-cell', () => {
 
 jest.mock('../util/sortAssetsWithPriority', () => ({
   sortAssetsWithPriority: jest.fn((assets) => assets),
+  sortTokenAssets: jest.fn((assets) => assets),
 }));
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
@@ -123,9 +130,14 @@ jest.mock('../../../../selectors/multichain/feature-flags', () => ({
   getIsSecurityTrustTdpEnabled: jest.fn(),
 }));
 
+jest.mock('../../../../selectors/multichain-accounts/account-tree', () => ({
+  getSelectedAccountGroup: jest.fn(() => 'group-a'),
+}));
+
 jest.mock('../../../../selectors/assets', () => ({
   getAssetsBySelectedAccountGroup: jest.fn(),
   selectAccountGroupBalanceForEmptyState: jest.fn(),
+  selectAssetsHaveLoadedForSelectedAccountGroup: jest.fn(),
 }));
 
 jest.mock('#ui/hooks/token-asset/useTokenAssetSecurityResults', () => ({
@@ -246,6 +258,117 @@ describe('TokenList', () => {
         typeof getSelectedMultichainNetworkConfiguration
       >);
     jest.mocked(selectAccountGroupBalanceForEmptyState).mockReturnValue(true);
+    jest
+      .mocked(selectAssetsHaveLoadedForSelectedAccountGroup)
+      .mockReturnValue(true);
+  });
+
+  it('shows five token row skeletons while assets are loading', () => {
+    jest
+      .mocked(selectAssetsHaveLoadedForSelectedAccountGroup)
+      .mockReturnValue(false);
+    jest.mocked(getAssetsBySelectedAccountGroup).mockReturnValue(
+      createAccountGroupAssets([
+        createAsset({
+          symbol: 'ETH',
+          isNative: true,
+          fiatBalance: 0,
+          balance: '0',
+        }),
+        createAsset({
+          symbol: 'mUSD',
+          address: MUSD_TOKEN_ADDRESS,
+          fiatBalance: 0,
+          balance: '0',
+        }),
+      ]),
+    );
+
+    render();
+
+    expect(useHomeReady).toHaveBeenLastCalledWith(false);
+    expect(screen.getAllByTestId('token-list-loading-row')).toHaveLength(5);
+    expect(screen.getByTestId('token-list-loading')).toHaveAttribute(
+      'aria-busy',
+      'true',
+    );
+    expect(screen.getByTestId('token-list-loading')).not.toHaveAttribute(
+      'aria-label',
+    );
+    expect(screen.getByText(messages.loading.message)).toHaveClass('sr-only');
+    expect(screen.queryByTestId('token-cell-ETH')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('token-cell-mUSD')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('scam-warning')).not.toBeInTheDocument();
+  });
+
+  it('shows token row skeletons before the first asset load starts', () => {
+    jest
+      .mocked(selectAssetsHaveLoadedForSelectedAccountGroup)
+      .mockReturnValue(false);
+    jest.mocked(getAssetsBySelectedAccountGroup).mockReturnValue(
+      createAccountGroupAssets([
+        createAsset({
+          symbol: 'ETH',
+          isNative: true,
+          fiatBalance: 0,
+          balance: '0',
+        }),
+      ]),
+    );
+
+    render();
+
+    expect(screen.getAllByTestId('token-list-loading-row')).toHaveLength(5);
+    expect(screen.queryByTestId('token-cell-ETH')).not.toBeInTheDocument();
+  });
+
+  it('shows a non-zero native token before background loading settles', () => {
+    jest
+      .mocked(selectAssetsHaveLoadedForSelectedAccountGroup)
+      .mockReturnValue(false);
+    jest.mocked(getAssetsBySelectedAccountGroup).mockReturnValue(
+      createAccountGroupAssets([
+        createAsset({ symbol: 'POL', isNative: true, fiatBalance: 0.08 }),
+        createAsset({
+          symbol: 'SOL',
+          isNative: true,
+          balance: '0',
+        }),
+      ]),
+    );
+
+    render();
+
+    expect(useHomeReady).toHaveBeenLastCalledWith(true);
+    expect(screen.getByTestId('token-cell-POL')).toBeInTheDocument();
+    expect(screen.getByTestId('token-cell-SOL')).toBeInTheDocument();
+    expect(screen.queryByTestId('token-list-loading')).not.toBeInTheDocument();
+  });
+
+  it('keeps a populated token list visible during background refreshes', () => {
+    jest
+      .mocked(selectAssetsHaveLoadedForSelectedAccountGroup)
+      .mockReturnValue(false);
+    jest.mocked(getAssetsBySelectedAccountGroup).mockReturnValue(
+      createAccountGroupAssets([
+        createAsset({ symbol: 'ETH', isNative: true, fiatBalance: 10 }),
+        createAsset({
+          symbol: 'mUSD',
+          address: MUSD_TOKEN_ADDRESS,
+          fiatBalance: 0,
+          balance: '0',
+        }),
+        createAsset({ symbol: 'KickToken', fiatBalance: 1 }),
+      ]),
+    );
+
+    render();
+
+    expect(useHomeReady).toHaveBeenLastCalledWith(true);
+    expect(screen.getByTestId('token-cell-ETH')).toBeInTheDocument();
+    expect(screen.getByTestId('token-cell-mUSD')).toBeInTheDocument();
+    expect(screen.getByTestId('token-cell-KickToken')).toBeInTheDocument();
+    expect(screen.queryByTestId('token-list-loading')).not.toBeInTheDocument();
   });
 
   it('resolves the Money CTA once for the displayed tokens in order', () => {

@@ -9,8 +9,6 @@ import {
   isSolanaChainId,
 } from '@metamask/bridge-controller';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
-// eslint-disable-next-line import-x/no-restricted-paths
-import * as sentinelApi from '../../../../app/scripts/lib/transaction/sentinel-api';
 import * as smartTransactionsSelectors from '../../../../shared/lib/selectors/smart-transactions';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import * as sharedKeyringSelectors from '../../../../shared/lib/selectors/keyring';
@@ -156,8 +154,6 @@ describe.each([
       `[${actionType}] useGasIncludedSupport returns the correct gasless request params` +
         '$description.',
       ({ fromToken }: { fromToken: BridgeToken; description: string }) => {
-        let getSentinelNetworkFlagsSpy: jest.SpyInstance;
-
         beforeEach(() => {
           jest.clearAllMocks();
         });
@@ -201,13 +197,6 @@ describe.each([
                             'getGaslessBridgeWith7702EnabledForChain',
                           )
                           .mockReturnValue(gasless7702Bridge);
-                        getSentinelNetworkFlagsSpy = jest
-                          .spyOn(sentinelApi, 'getSentinelNetworkFlags')
-                          .mockResolvedValue(
-                            MOCK_NETWORK_FLAGS[
-                              fromChainId as unknown as keyof typeof MOCK_NETWORK_FLAGS
-                            ],
-                          );
                         jest
                           .spyOn(bridgeSelectors, 'getToChain')
                           .mockReturnValue({
@@ -220,8 +209,22 @@ describe.each([
                         jest
                           .spyOn(sharedKeyringSelectors, 'isHardwareWallet')
                           .mockReturnValue(isUsingHardwareWallet);
+                        const messengerCallMock = jest.fn(
+                          async (messengerActionType: string) => {
+                            if (
+                              messengerActionType ===
+                              'LegacyBackgroundApiService:getSentinelNetworkFlags'
+                            ) {
+                              return MOCK_NETWORK_FLAGS[
+                                fromChainId as unknown as keyof typeof MOCK_NETWORK_FLAGS
+                              ];
+                            }
+
+                            return undefined;
+                          },
+                        );
                         setBackgroundConnection({
-                          getSentinelNetworkFlags: getSentinelNetworkFlagsSpy,
+                          messengerCall: messengerCallMock,
                         } as never);
 
                         // Render the hook

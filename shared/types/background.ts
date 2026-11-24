@@ -7,7 +7,6 @@ import type {
   TokenBalancesControllerState,
   NftControllerState,
   RatesControllerState,
-  TokenRatesControllerState,
   MultichainBalancesControllerState,
   MultichainAssetsRatesControllerState,
   MultichainAssetsControllerState,
@@ -48,7 +47,6 @@ import type { SignatureControllerState } from '@metamask/signature-controller';
 import type { PPOMState } from '@metamask/ppom-validator';
 import type { PasskeyControllerState } from '@metamask/passkey-controller';
 import type { NameControllerState } from '@metamask/name-controller';
-import type { UserOperationControllerState } from '@metamask/user-operation-controller';
 import type { TransactionControllerState } from '@metamask/transaction-controller';
 import type {
   AuthenticationController,
@@ -75,6 +73,7 @@ import type { DecryptMessageControllerState } from '../../app/scripts/controller
 import type { OnboardingControllerState } from '../../app/scripts/controllers/onboarding';
 import type { AppMetadataControllerState } from '../../app/scripts/controllers/app-metadata';
 import type { RewardsControllerState } from '../../app/scripts/controllers/rewards/rewards-controller.types';
+import type { RewardsMoneyControllerState } from '../../app/scripts/controllers/rewards-money/rewards-money-controller-types';
 
 export type ControllerStatePropertiesEnumerated = {
   assetsInfo: AssetsControllerState['assetsInfo'];
@@ -84,6 +83,7 @@ export type ControllerStatePropertiesEnumerated = {
   assetPreferences: AssetsControllerState['assetPreferences'];
   selectedCurrency: AssetsControllerState['selectedCurrency'];
   assetsLoadingStatus?: AssetsControllerState['assetsLoadingStatus'];
+  assetsBackgroundLoadingStatus?: AssetsControllerState['assetsBackgroundLoadingStatus'];
   internalAccounts: AccountsControllerState['internalAccounts'];
   accountIdByAddress: AccountsControllerState['accountIdByAddress'];
   accountsByChainId: AccountTrackerControllerState['accountsByChainId'];
@@ -143,6 +143,7 @@ export type ControllerStatePropertiesEnumerated = {
   musdConversionEducationSeen: AppStateControllerState['musdConversionEducationSeen'];
   musdConversionDismissedCtaKeys: AppStateControllerState['musdConversionDismissedCtaKeys'];
   moneyEarnBannerDismissedTokenKeys: AppStateControllerState['moneyEarnBannerDismissedTokenKeys'];
+  moneyFtueSeen: AppStateControllerState['moneyFtueSeen'];
   lastInteractedConfirmationInfo?: AppStateControllerState['lastInteractedConfirmationInfo'];
   termsOfUseLastAgreed?: AppStateControllerState['termsOfUseLastAgreed'];
   snapsInstallPrivacyWarningShown?: AppStateControllerState['snapsInstallPrivacyWarningShown'];
@@ -213,7 +214,6 @@ export type ControllerStatePropertiesEnumerated = {
   balances: MultichainBalancesControllerState['balances'];
   nonEvmTransactions: MultichainTransactionsControllerState['nonEvmTransactions'];
   conversionRates: MultichainAssetsRatesControllerState['conversionRates'];
-  historicalPrices: MultichainAssetsRatesControllerState['historicalPrices'];
   assetsMetadata: MultichainAssetsControllerState['assetsMetadata'];
   accountsAssets: MultichainAssetsControllerState['accountsAssets'];
   allIgnoredAssets: MultichainAssetsControllerState['allIgnoredAssets'];
@@ -318,14 +318,12 @@ export type ControllerStatePropertiesEnumerated = {
   allIgnoredTokens: TokensControllerState['allIgnoredTokens'];
   allTokens: TokensControllerState['allTokens'];
   tokensChainsCache: TokenListState['tokensChainsCache'];
-  marketData: TokenRatesControllerState['marketData'];
   lastFetchedBlockNumbers: TransactionControllerState['lastFetchedBlockNumbers'];
   methodData: TransactionControllerState['methodData'];
   transactions: TransactionControllerState['transactions'];
   transactionBatches: TransactionControllerState['transactionBatches'];
   batchTransactionCounts: TransactionControllerState['batchTransactionCounts'];
   submitHistory: TransactionControllerState['submitHistory'];
-  userOperations: UserOperationControllerState['userOperations'];
   isBackupAndSyncEnabled: UserStorageController.UserStorageControllerState['isBackupAndSyncEnabled'];
   isBackupAndSyncUpdateLoading: UserStorageController.UserStorageControllerState['isBackupAndSyncUpdateLoading'];
   isAccountSyncingEnabled: UserStorageController.UserStorageControllerState['isAccountSyncingEnabled'];
@@ -340,6 +338,7 @@ export type ControllerStatePropertiesEnumerated = {
   rewardsSubscriptionTokens: RewardsControllerState['rewardsSubscriptionTokens'];
   rewardsPointsEstimateHistory: RewardsControllerState['rewardsPointsEstimateHistory'];
   rewardsVipPerpsFees: RewardsControllerState['rewardsVipPerpsFees'];
+  excludedRegions: RewardsMoneyControllerState['excludedRegions'];
   claims: ClaimsControllerState['claims'];
   claimsConfigurations: ClaimsControllerState['claimsConfigurations'];
   drafts: ClaimsControllerState['drafts'];
@@ -363,7 +362,7 @@ export type ControllerStateTypesMerged = AccountsControllerState &
   BridgeStatusControllerState &
   ClaimsControllerState &
   CronjobControllerState &
-  CurrencyRateState &
+  Pick<CurrencyRateState, 'currentCurrency' | 'currencyRates'> &
   DecryptMessageControllerState &
   DeFiPositionsControllerState &
   DeFiPositionsControllerV2State &
@@ -376,7 +375,7 @@ export type ControllerStateTypesMerged = AccountsControllerState &
   MetaMetricsDataDeletionState &
   MultichainBalancesControllerState &
   MultichainTransactionsControllerState &
-  MultichainAssetsRatesControllerState &
+  Pick<MultichainAssetsRatesControllerState, 'conversionRates'> &
   MultichainAssetsControllerState &
   MultichainNetworkControllerState &
   NameControllerState &
@@ -402,14 +401,13 @@ export type ControllerStateTypesMerged = AccountsControllerState &
   SnapInsightsControllerState &
   SnapRegistryControllerState &
   SubjectMetadataControllerState &
-  TokenBalancesControllerState &
+  Pick<TokenBalancesControllerState, 'tokenBalances'> &
   TokensControllerState &
   TokenListState &
-  TokenRatesControllerState &
   TransactionControllerState &
-  UserOperationControllerState &
   UserStorageController.UserStorageControllerState &
   RewardsControllerState &
+  RewardsMoneyControllerState &
   ConnectivityControllerState &
   NetworkConnectionBannerControllerState;
 

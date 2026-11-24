@@ -1,5 +1,9 @@
 import BigNumber from 'bignumber.js';
-import { DUST_THRESHOLD, moneyFormatUsd } from './format';
+import {
+  DUST_THRESHOLD,
+  moneyFormatUsd,
+  moneyFormatUsdSpendable,
+} from './format';
 
 describe('moneyFormatUsd', () => {
   // Vectors derived from mobile's `moneyFormatUsd`
@@ -57,5 +61,61 @@ describe('moneyFormatUsd', () => {
 
   it('exposes the dust threshold as one cent', () => {
     expect(DUST_THRESHOLD).toBe(0.01);
+  });
+});
+
+describe('moneyFormatUsdSpendable', () => {
+  it('never rounds a spendable balance up', () => {
+    // Regression: CONF-2196. A $0.50 deposit credits 499,999 micro-units, and
+    // half-up rounding advertised `$0.50` — a cent more than held. The amount
+    // field only accepts two decimals, so `0.50` was the smallest typable
+    // match and it failed the balance check, blocking the withdraw entirely.
+    const vectors: [string, string][] = [
+      ['0.499999', '$0.49'],
+      ['0.495', '$0.49'],
+      ['1.009', '$1.00'],
+      ['1.005', '$1.00'],
+      ['0.015', '$0.01'],
+      ['12.349999', '$12.34'],
+    ];
+
+    for (const [input, expected] of vectors) {
+      expect(moneyFormatUsdSpendable(new BigNumber(input))).toBe(expected);
+    }
+  });
+
+  it('leaves an exact-cent balance untouched', () => {
+    const vectors: [string, string][] = [
+      ['0', '$0.00'],
+      ['0.49', '$0.49'],
+      ['0.5', '$0.50'],
+      ['12.34', '$12.34'],
+      ['1234.56', '$1,234.56'],
+    ];
+
+    for (const [input, expected] of vectors) {
+      expect(moneyFormatUsdSpendable(new BigNumber(input))).toBe(expected);
+    }
+  });
+
+  it('still collapses sub-cent dust to zero rather than rounding it up', () => {
+    expect(moneyFormatUsdSpendable(new BigNumber('0.009999999'))).toBe('$0.00');
+    expect(moneyFormatUsdSpendable(new BigNumber('0.004'))).toBe('$0.00');
+  });
+
+  it('formats a NaN value as an empty string', () => {
+    expect(moneyFormatUsdSpendable(new BigNumber(0).dividedBy(0))).toBe('');
+  });
+
+  it('is always less than or equal to the half-up formatting', () => {
+    // The two formatters may only disagree downwards.
+    for (const input of ['0.499999', '1.005', '0.015', '7.06', '0']) {
+      const spendable = moneyFormatUsdSpendable(new BigNumber(input));
+      const display = moneyFormatUsd(new BigNumber(input));
+
+      expect(Number(spendable.replace(/[$,]/gu, ''))).toBeLessThanOrEqual(
+        Number(display.replace(/[$,]/gu, '')),
+      );
+    }
   });
 });

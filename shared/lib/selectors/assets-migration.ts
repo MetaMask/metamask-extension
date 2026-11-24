@@ -53,14 +53,14 @@ import { createDeepEqualSelector } from './selector-creators';
 // allDetectedTokens: DONE (Not being used)
 //
 // TokenBalancesController
-// tokenBalances: DONE
+// tokenBalances: DONE (via AssetsController when unify enabled; controller removed)
 //
 // CurrencyRateController
-// currencyRates: DONE
-// currentCurrency: DONE
+// currencyRates: DONE (via AssetsController.assetsPrice when unify enabled; controller removed)
+// currentCurrency: DONE (via AssetsController.selectedCurrency when unify enabled; controller removed)
 //
 // TokenRatesController
-// marketData: DONE
+// marketData: DONE (via AssetsController.assetsPrice when unify enabled; controller removed)
 //
 // MultichainAssetsController
 // accountsAssets: DONE
@@ -68,17 +68,20 @@ import { createDeepEqualSelector } from './selector-creators';
 // allIgnoredAssets: DONE
 //
 // MultichainBalancesController
-// balances: DONE
+// balances: unused (controller removed)
 //
 // MultichainAssetsRatesController
-// conversionRates: DONE
-// historicalPrices: TODO (This state should be removed)
+// conversionRates: DONE (via AssetsController.assetsPrice when unify enabled)
+// historicalPrices: unused (controller removed; charts use Price API)
 //
 // RatesController
 // rates: DONE
 //
 // TokenListController
 // tokensChainsCache: unused (controller removed)
+//
+// TokenDetectionController
+// (no persisted state; controller removed — detection via AssetsController)
 
 // This utility type makes the selector forceably require just the state that was originally required
 // For selectors with custom state input, this prevents their input type from requiring additional state that will not be needed after the migration
@@ -88,6 +91,12 @@ type ControllerStateSelector<
 > = (state: {
   metamask: Pick<InputState, ResultField>;
 }) => InputState[ResultField];
+
+// Dual-path selectors that also read AssetsController fields. Input is intentionally
+// loose so migrated fixtures (which omit legacy controller slices) type-check.
+type MigratingControllerStateSelector<Result> = (state: {
+  metamask: Record<string, unknown>;
+}) => Result;
 
 export const getIsAssetsUnifyStateEnabled = createDeepEqualSelector(
   [
@@ -553,9 +562,8 @@ export const getMultiChainAssetsControllerAssetsMetadata =
 
       return result;
     },
-  ) as unknown as ControllerStateSelector<
-    MultichainAssetsControllerState,
-    'assetsMetadata'
+  ) as unknown as MigratingControllerStateSelector<
+    MultichainAssetsControllerState['assetsMetadata']
   >;
 
 // AccountId -> Array of AssetIds
@@ -684,18 +692,17 @@ export const getCurrencyRateControllerCurrentCurrency = createDeepEqualSelector(
       state.metamask?.selectedCurrency,
   ],
   (isAssetsUnifyStateEnabled, currentCurrency, selectedCurrency) => {
-    if (!isAssetsUnifyStateEnabled) {
-      return currentCurrency;
-    }
+    // CurrencyRateController no longer seeds currentCurrency. Callers such as
+    // Settings assume this is a string.
+    const currency = isAssetsUnifyStateEnabled
+      ? selectedCurrency
+      : currentCurrency;
 
-    return selectedCurrency;
+    return currency ?? 'usd';
   },
-  // Dual-path during migration: legacy `currentCurrency` or unified `selectedCurrency`.
-) as unknown as (state: {
-  metamask: Partial<Pick<CurrencyRateState, 'currentCurrency'>> &
-    Partial<Pick<AssetsControllerState, 'selectedCurrency'>> &
-    Partial<Pick<RemoteFeatureFlagControllerState, 'remoteFeatureFlags'>>;
-}) => CurrencyRateState['currentCurrency'];
+) as unknown as MigratingControllerStateSelector<
+  CurrencyRateState['currentCurrency']
+>;
 
 // Native Symbol -> Rates (conversionRate, usdConversionRate, conversionDate)
 export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
@@ -845,9 +852,8 @@ export const getTokenRatesControllerMarketData = createDeepEqualSelector(
 
     return result;
   },
-) as unknown as ControllerStateSelector<
-  TokenRatesControllerState,
-  'marketData'
+) as unknown as MigratingControllerStateSelector<
+  TokenRatesControllerState['marketData']
 >;
 
 export const getMultichainAssetsRatesControllerConversionRates =
@@ -912,14 +918,9 @@ export const getMultichainAssetsRatesControllerConversionRates =
 
       return result;
     },
-    // Dual-path during migration: legacy `conversionRates` or unified `assetsPrice`.
-  ) as unknown as (state: {
-    metamask: Partial<
-      Pick<MultichainAssetsRatesControllerState, 'conversionRates'>
-    > &
-      Partial<Pick<AssetsControllerState, 'assetsPrice'>> &
-      Partial<Pick<RemoteFeatureFlagControllerState, 'remoteFeatureFlags'>>;
-  }) => MultichainAssetsRatesControllerState['conversionRates'];
+  ) as unknown as MigratingControllerStateSelector<
+    MultichainAssetsRatesControllerState['conversionRates']
+  >;
 
 export const getRatesControllerRates = createDeepEqualSelector(
   [

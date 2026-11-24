@@ -2,7 +2,12 @@ import React from 'react';
 import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AddressScanResultType } from '@metamask/phishing-controller';
+import { useSelector } from 'react-redux';
 import { fetchEvmAddressScan } from '#shared/lib/bridge-utils/security-alerts-api.util';
+import {
+  getIsAddressResolutionEnabled,
+  getUseExternalServices,
+} from '../selectors';
 import { useAddressLabel } from './useAddressLabel';
 
 let mockIsSecurityAlertsAPIEnabled = true;
@@ -14,14 +19,18 @@ jest.mock('#shared/lib/bridge-utils/security-alerts-api.util', () => ({
 }));
 
 let mockIsExternalServicesEnabled = true;
+let mockIsAddressResolutionEnabled = true;
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useSelector: () => mockIsExternalServicesEnabled,
+  useSelector: jest.fn(),
 }));
+
+const mockUseSelector = jest.mocked(useSelector);
 
 jest.mock('../selectors', () => ({
   getUseExternalServices: jest.fn(),
+  getIsAddressResolutionEnabled: jest.fn(),
 }));
 
 const mockFetchEvmAddressScan = jest.mocked(fetchEvmAddressScan);
@@ -46,7 +55,17 @@ describe('useAddressLabel', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsExternalServicesEnabled = true;
+    mockIsAddressResolutionEnabled = true;
     mockIsSecurityAlertsAPIEnabled = true;
+    mockUseSelector.mockImplementation((selector) => {
+      if (selector === getUseExternalServices) {
+        return mockIsExternalServicesEnabled;
+      }
+      if (selector === getIsAddressResolutionEnabled) {
+        return mockIsAddressResolutionEnabled;
+      }
+      throw new Error(`Unexpected selector: ${String(selector)}`);
+    });
   });
 
   it('returns an empty string until the scan resolves, then the label', async () => {
@@ -87,6 +106,18 @@ describe('useAddressLabel', () => {
 
   it('does not fetch when external services are disabled', () => {
     mockIsExternalServicesEnabled = false;
+
+    const { result } = renderHook(
+      () => useAddressLabel({ address: relayAddress, chainId: arbitrum }),
+      { wrapper: createWrapper() },
+    );
+
+    expect(result.current).toBe('');
+    expect(mockFetchEvmAddressScan).not.toHaveBeenCalled();
+  });
+
+  it('does not fetch when address resolution is disabled', () => {
+    mockIsAddressResolutionEnabled = false;
 
     const { result } = renderHook(
       () => useAddressLabel({ address: relayAddress, chainId: arbitrum }),

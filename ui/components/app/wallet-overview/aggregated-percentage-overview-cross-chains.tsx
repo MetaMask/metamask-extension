@@ -123,7 +123,6 @@ export const AggregatedPercentageOverviewCrossChains = ({
   }, [tokenFiatBalancesCrossChains, crossChainMarketData]);
 
   const {
-    amountChangeCrossChains,
     formattedPercentChangeCrossChains,
     formattedAmountChangeCrossChains,
     color,

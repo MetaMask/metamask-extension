@@ -20,6 +20,7 @@ import StepLayout, { MfaShield, type StepProps } from './step-layout';
 const PICKER_LABEL_KEYS: Record<MfaMethod, string> = {
   email_otp: 'mfaPickerEmailOtp',
   passkey: 'mfaPickerPasskey',
+  totp: 'mfaPickerTotp',
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 
@@ -54,6 +55,7 @@ const PickerStep = ({ step, state, reason, onAction }: StepProps<'picker'>) => {
 
   return (
     <StepLayout
+      onAction={onAction}
       top={<MfaShield />}
       title={t('mfaPickerTitle')}
       description={

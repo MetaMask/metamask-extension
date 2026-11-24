@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import {
   formatChainIdToCaip,
+  SwapFeatureTag,
   type GenericQuoteRequest,
   type QuoteStreamCompleteReason,
 } from '@metamask/bridge-controller';
@@ -86,6 +87,7 @@ export const swapQuoteFetchTrace = {
         ...(destChainIdInCaip && { dest_chain_id: destChainIdInCaip }),
         /* eslint-enable @typescript-eslint/naming-convention */
       },
+      tags: { feature: SwapFeatureTag.SWAP },
       startTime: Date.now(),
     });
     activeTraceId = id;

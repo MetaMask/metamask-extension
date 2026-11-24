@@ -480,7 +480,7 @@ describe('transaction-pay utils', () => {
 
     beforeEach(() => {
       updateAtomicBatchDataMock.mockReset();
-      updateAtomicBatchDataMock.mockResolvedValue(undefined);
+      updateAtomicBatchDataMock.mockResolvedValue('0x1');
     });
 
     it('replaces the old address word in nested transaction data', async () => {

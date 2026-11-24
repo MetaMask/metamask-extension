@@ -113,18 +113,6 @@ describe('Header', () => {
 
       expect(screen.getByText('12345')).toBeInTheDocument();
     });
-
-    it('uses DisplayMd variant for long formatted values (> 10 chars)', () => {
-      render(
-        <Header
-          {...baseProps}
-          totalReceivedFiat={1234567890.12}
-          selectedAsset={{ symbol: 'USDC' }}
-        />,
-      );
-
-      expect(screen.getByText(/1,234,567,890/u)).toBeInTheDocument();
-    });
   });
 
   describe('Skeleton loading state', () => {

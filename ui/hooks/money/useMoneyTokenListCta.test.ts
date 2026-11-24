@@ -15,6 +15,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyScreenName,
 } from '../../pages/money/constants/money-events';
 import { useMoneyAccountDeposit } from './useMoneyAccountDeposit';
@@ -297,6 +298,10 @@ describe('useMoneyTokenListCta', () => {
       });
       expect(mockInitiateDeposit).toHaveBeenCalledWith({
         preferredPaymentToken: { address: USDC_ADDRESS, chainId: '0x1' },
+        ftueOrigin: {
+          entryPoint: MoneyFtueEntryPoint.WalletHome,
+          componentName: MoneyComponentName.TokenListItemCta,
+        },
       });
     });
   });

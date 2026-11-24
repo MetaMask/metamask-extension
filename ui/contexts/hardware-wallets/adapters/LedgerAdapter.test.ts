@@ -131,7 +131,7 @@ describe('LedgerAdapter', () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
-      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(true);
 
       await adapter.connect();
 
@@ -300,7 +300,7 @@ describe('LedgerAdapter', () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
-      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(true);
 
       await adapter.connect();
       expect(adapter.isConnected()).toBe(true);
@@ -320,8 +320,8 @@ describe('LedgerAdapter', () => {
       let resolveTransport: () => void = () => {
         // no-op
       };
-      const slowTransportPromise = new Promise<void>((resolve) => {
-        resolveTransport = resolve;
+      const slowTransportPromise = new Promise<boolean>((resolve) => {
+        resolveTransport = () => resolve(true);
       });
       mockAttemptLedgerTransportCreation.mockReturnValue(slowTransportPromise);
 
@@ -350,13 +350,13 @@ describe('LedgerAdapter', () => {
       let resolveTransport: () => void = () => {
         // no-op
       };
-      const slowTransportPromise = new Promise<void>((resolve) => {
-        resolveTransport = resolve;
+      const slowTransportPromise = new Promise<boolean>((resolve) => {
+        resolveTransport = () => resolve(true);
       });
       mockAttemptLedgerTransportCreation.mockReturnValueOnce(
         slowTransportPromise,
       );
-      mockAttemptLedgerTransportCreation.mockResolvedValueOnce(undefined);
+      mockAttemptLedgerTransportCreation.mockResolvedValueOnce(true);
 
       // Start first connection (will be pending)
       const firstConnect = adapter.connect();
@@ -412,7 +412,7 @@ describe('LedgerAdapter', () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
-      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(true);
 
       await adapter.connect();
 
@@ -425,7 +425,7 @@ describe('LedgerAdapter', () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
-      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(true);
       await adapter.connect();
 
       await adapter.disconnect();
@@ -441,7 +441,7 @@ describe('LedgerAdapter', () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
-      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(true);
       await adapter.connect();
 
       adapter.destroy();
@@ -464,8 +464,8 @@ describe('LedgerAdapter', () => {
       let resolveTransport: () => void = () => {
         // no-op
       };
-      const slowTransportPromise = new Promise<void>((resolve) => {
-        resolveTransport = resolve;
+      const slowTransportPromise = new Promise<boolean>((resolve) => {
+        resolveTransport = () => resolve(true);
       });
       mockAttemptLedgerTransportCreation.mockReturnValue(slowTransportPromise);
 
@@ -480,7 +480,7 @@ describe('LedgerAdapter', () => {
       await connectPromise;
 
       // Reset mock and try new connection - should work
-      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(true);
       await adapter.connect();
 
       expect(adapter.isConnected()).toBe(true);
@@ -495,8 +495,8 @@ describe('LedgerAdapter', () => {
       let resolveFirstTransport: () => void = () => {
         // no-op
       };
-      const slowTransportPromise = new Promise<void>((resolve) => {
-        resolveFirstTransport = resolve;
+      const slowTransportPromise = new Promise<boolean>((resolve) => {
+        resolveFirstTransport = () => resolve(true);
       });
       mockAttemptLedgerTransportCreation.mockReturnValueOnce(
         slowTransportPromise,
@@ -511,7 +511,7 @@ describe('LedgerAdapter', () => {
       adapter.destroy();
 
       // Set up second transport that resolves immediately
-      mockAttemptLedgerTransportCreation.mockResolvedValueOnce(undefined);
+      mockAttemptLedgerTransportCreation.mockResolvedValueOnce(true);
 
       // Start a new connection before the first one settles
       const secondConnectPromise = adapter.connect();
@@ -537,7 +537,7 @@ describe('LedgerAdapter', () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
-      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(true);
       mockGetAppNameAndVersion.mockResolvedValue({
         appName: 'Ethereum',
         version: '1.0.0',
@@ -554,7 +554,7 @@ describe('LedgerAdapter', () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
-      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(true);
       await adapter.connect();
 
       mockGetAppNameAndVersion.mockResolvedValue({
@@ -572,7 +572,7 @@ describe('LedgerAdapter', () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
-      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(true);
       await adapter.connect();
 
       mockGetAppNameAndVersion.mockResolvedValue({
@@ -598,7 +598,7 @@ describe('LedgerAdapter', () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
-      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(true);
       await adapter.connect();
 
       mockGetAppNameAndVersion.mockResolvedValue({
@@ -626,7 +626,7 @@ describe('LedgerAdapter', () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
-      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(true);
       await adapter.connect();
 
       mockGetAppNameAndVersion.mockResolvedValue({
@@ -650,7 +650,7 @@ describe('LedgerAdapter', () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
-      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(true);
       await adapter.connect();
 
       mockGetAppNameAndVersion.mockResolvedValue({
@@ -673,7 +673,7 @@ describe('LedgerAdapter', () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
-      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(true);
       await adapter.connect();
 
       const lockError = new HardwareWalletError('Device is locked', {
@@ -700,7 +700,7 @@ describe('LedgerAdapter', () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
-      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(true);
       await adapter.connect();
 
       const appError = new HardwareWalletError('Ethereum app not open', {
@@ -727,7 +727,7 @@ describe('LedgerAdapter', () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
-      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(true);
       await adapter.connect();
 
       const disconnectError = new HardwareWalletError('Device disconnected', {
@@ -754,7 +754,7 @@ describe('LedgerAdapter', () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
-      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(true);
       await adapter.connect();
 
       // Verify adapter is initially connected
@@ -780,7 +780,7 @@ describe('LedgerAdapter', () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
-      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(true);
       await adapter.connect();
 
       // Verify adapter is initially connected
@@ -809,7 +809,7 @@ describe('LedgerAdapter', () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
-      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(true);
       await adapter.connect();
 
       const unknownError = createMockError('Unknown error');
@@ -831,7 +831,7 @@ describe('LedgerAdapter', () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
-      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(true);
       await adapter.connect();
 
       // Verify adapter is initially connected
@@ -881,7 +881,7 @@ describe('LedgerAdapter', () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
-      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(true);
       await adapter.connect();
 
       const verificationError = createMockError('Verification failed');
@@ -1038,7 +1038,7 @@ describe('LedgerAdapter', () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
-      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(true);
       await adapter.connect();
 
       const lockError = new HardwareWalletError('Device is blocked', {

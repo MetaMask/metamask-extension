@@ -275,7 +275,7 @@ describe('Contract Interaction Confirmation Alerts', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks({
-      getTokenStandardAndDetailsByChain: {
+      'LegacyBackgroundApiService:getTokenStandardAndDetailsByChain': {
         decimals: '4',
       },
     });

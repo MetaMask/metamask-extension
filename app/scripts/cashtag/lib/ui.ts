@@ -36,17 +36,3 @@ export function bindHostColorScheme(
     media.removeEventListener('change', sync);
   };
 }
-
-export function injectPageStyles(css: string, markerAttr: string) {
-  if (document.querySelector(`[${markerAttr}]`)) {
-    return;
-  }
-  const style = document.createElement('style');
-  style.textContent = css;
-  style.setAttribute(markerAttr, '');
-  (document.head ?? document.documentElement).appendChild(style);
-}
-
-export function removePageStyles(markerAttr: string) {
-  document.querySelector(`[${markerAttr}]`)?.remove();
-}

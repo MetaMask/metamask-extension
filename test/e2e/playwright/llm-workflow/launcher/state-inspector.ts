@@ -1,26 +1,13 @@
 import type { Page } from '@playwright/test';
 import {
-  CONFIRM_TRANSACTION_ROUTE,
-  CONFIRMATION_V_NEXT_ROUTE,
-  CONNECT_ROUTE,
-  CROSS_CHAIN_SWAP_ROUTE,
+  BASIC_FUNCTIONALITY_OFF_ROUTE,
+  DEEP_LINK_ROUTE,
   DEFAULT_ROUTE,
+  LOCK_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
-  ONBOARDING_CONFIRM_SRP_ROUTE,
-  ONBOARDING_CREATE_PASSWORD_ROUTE,
-  ONBOARDING_HELP_US_IMPROVE_ROUTE,
-  ONBOARDING_IMPORT_WITH_SRP_ROUTE,
-  ONBOARDING_METAMETRICS,
-  ONBOARDING_PRIVACY_SETTINGS_ROUTE,
-  ONBOARDING_REVEAL_SRP_ROUTE,
-  ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_ROUTE,
-  ONBOARDING_UNLOCK_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
-  PREPARE_SWAP_ROUTE,
-  SEND_ROUTE,
-  SETTINGS_ROUTE,
-  SIGNATURE_REQUEST_PATH,
+  RESTORE_VAULT_ROUTE,
   UNLOCK_ROUTE,
 } from '../../../../../ui/helpers/constants/routes';
 import {
@@ -36,12 +23,11 @@ import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import LoginPage from '../../../page-objects/pages/onboarding/login-page';
 import OnboardingCompletePage from '../../../page-objects/pages/onboarding/onboarding-complete-page';
-import OnboardingMetricsPage from '../../../page-objects/pages/onboarding/onboarding-metrics-page';
-import OnboardingPasswordPage from '../../../page-objects/pages/onboarding/onboarding-password-page';
-import OnboardingPrivacySettingsPage from '../../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
-import OnboardingSrpPage from '../../../page-objects/pages/onboarding/onboarding-srp-page';
 import StartOnboardingPage from '../../../page-objects/pages/onboarding/start-onboarding-page';
-import SettingsPage from '../../../page-objects/pages/settings/settings-page';
+import {
+  ROUTE_PAGE_OBJECT_REGISTRY,
+  matchRoute,
+} from '../../../route-registry';
 import type { Driver } from '../../../webdriver/driver';
 import { getE2EDriver, withTimeout } from '../e2e-driver';
 import type { ExtensionState, ScreenName } from '../launcher-types';
@@ -50,69 +36,50 @@ const SCREEN_PROBE_TIMEOUT_MS = 2_000;
 const BALANCE_TIMEOUT_MS = 2_000;
 
 export type ScreenCheck = {
+  /** Route path pattern of the screen, as keyed in the route registry. */
+  route: string;
   screen: ScreenName;
   description: string;
   check: (driver: Driver) => Promise<void>;
 };
 
+function createScreenCheck(
+  route: string,
+  description: string,
+  check: ScreenCheck['check'],
+): ScreenCheck {
+  return { route, screen: getScreenName(route), description, check };
+}
+
 /**
- * Screens recognised from the DOM, each by its e2e page object's own load
- * assertion, so a UI change that breaks one also fails the e2e suite.
+ * Screens waited for from the DOM while launching and self-onboarding, each by
+ * its e2e page object's own load assertion, so a UI change that breaks one
+ * also fails the e2e suite.
  */
 export const SCREEN_CHECKS: ScreenCheck[] = [
-  {
-    screen: 'unlock',
-    description: 'unlock page',
-    check: (driver) => new LoginPage(driver).checkPageIsLoaded(),
-  },
-  {
-    screen: 'onboarding-welcome',
-    description: 'onboarding welcome page',
-    check: (driver) => new StartOnboardingPage(driver).checkLoginPageIsLoaded(),
-  },
-  {
-    screen: 'home',
-    description: 'home page',
-    check: (driver) => new HomePage(driver).checkPageIsLoaded(),
-  },
-  {
-    screen: 'onboarding-srp',
-    description: 'secret recovery phrase page',
-    check: (driver) => new OnboardingSrpPage(driver).checkPageIsLoaded(),
-  },
-  {
-    screen: 'onboarding-password',
-    description: 'create password page',
-    check: (driver) => new OnboardingPasswordPage(driver).checkPageIsLoaded(),
-  },
-  {
-    screen: 'onboarding-complete',
-    description: 'onboarding complete page',
-    check: (driver) => new OnboardingCompletePage(driver).checkPageIsLoaded(),
-  },
-  {
-    screen: 'onboarding-metametrics',
-    description: 'metametrics page',
-    check: (driver) => new OnboardingMetricsPage(driver).checkPageIsLoaded(),
-  },
-  {
-    screen: 'onboarding-privacy',
-    description: 'privacy settings page',
-    check: (driver) =>
-      new OnboardingPrivacySettingsPage(driver).checkPageIsLoaded(),
-  },
-  {
-    screen: 'settings',
-    description: 'settings page',
-    check: (driver) => new SettingsPage(driver).checkPageIsLoaded(),
-  },
+  createScreenCheck(UNLOCK_ROUTE, 'unlock page', (driver) =>
+    new LoginPage(driver).checkPageIsLoaded(),
+  ),
+  createScreenCheck(
+    ONBOARDING_WELCOME_ROUTE,
+    'onboarding welcome page',
+    (driver) => new StartOnboardingPage(driver).checkLoginPageIsLoaded(),
+  ),
+  createScreenCheck(DEFAULT_ROUTE, 'home page', (driver) =>
+    new HomePage(driver).checkPageIsLoaded(),
+  ),
+  createScreenCheck(
+    ONBOARDING_COMPLETION_ROUTE,
+    'onboarding complete page',
+    (driver) => new OnboardingCompletePage(driver).checkPageIsLoaded(),
+  ),
 ];
 
-const LAUNCH_SCREENS: ScreenName[] = ['unlock', 'onboarding-welcome', 'home'];
+const LAUNCH_ROUTES = [UNLOCK_ROUTE, ONBOARDING_WELCOME_ROUTE, DEFAULT_ROUTE];
 
 /** Screens the extension can open on after launch. */
 export const LAUNCH_SCREEN_CHECKS: ScreenCheck[] = SCREEN_CHECKS.filter(
-  ({ screen }) => LAUNCH_SCREENS.includes(screen),
+  ({ route }) => LAUNCH_ROUTES.includes(route),
 );
 
 /**
@@ -163,29 +130,49 @@ async function detectScreenFromPageObjects(
   }
 }
 
-const UNLOCKED_SCREENS: Set<ExtensionState['currentScreen']> = new Set([
-  'home',
-  'send',
-  'swap',
-  'settings',
-  'confirm-transaction',
-  'confirm-signature',
-  'confirmation',
-  'connect',
-  'bridge',
-  'notification',
-]);
+/**
+ * Names a screen after its route path pattern without the dynamic segments,
+ * e.g. `/account-list` is `account-list` and `/send/:page?` is `send`.
+ *
+ * @param routePath - A route path pattern from the route registry.
+ * @returns The screen name.
+ */
+export function getScreenName(routePath: string): ScreenName {
+  const segments = routePath
+    .split('/')
+    .filter((segment) => segment && !segment.startsWith(':'));
+  return segments.length > 0 ? segments.join('-') : 'home';
+}
 
-const LOCKED_SCREENS: Set<ExtensionState['currentScreen']> = new Set([
-  'unlock',
-  'onboarding-welcome',
-  'onboarding-import',
-  'onboarding-create',
-  'onboarding-srp',
-  'onboarding-password',
-  'onboarding-complete',
-  'onboarding-metametrics',
-  'onboarding-privacy',
+function hasRoutePrefix(path: string, route: string): boolean {
+  return path === route || path.startsWith(`${route}/`);
+}
+
+// Must match the routes rendered outside `RequireAuthenticated` in
+// ui/pages/routes/routes.component.tsx.
+const LOCKED_ROUTES = [
+  ONBOARDING_ROUTE,
+  UNLOCK_ROUTE,
+  LOCK_ROUTE,
+  RESTORE_VAULT_ROUTE,
+];
+const UNAUTHENTICATED_ROUTES = [DEEP_LINK_ROUTE, BASIC_FUNCTIONALITY_OFF_ROUTE];
+
+const REGISTRY_ROUTES = Object.keys(ROUTE_PAGE_OBJECT_REGISTRY);
+
+const LOCKED_SCREENS = new Set(
+  REGISTRY_ROUTES.filter((route) =>
+    LOCKED_ROUTES.some((locked) => hasRoutePrefix(route, locked)),
+  ).map(getScreenName),
+);
+
+const UNLOCKED_SCREENS = new Set([
+  'notification',
+  ...REGISTRY_ROUTES.filter(
+    (route) =>
+      !LOCKED_SCREENS.has(getScreenName(route)) &&
+      !UNAUTHENTICATED_ROUTES.includes(route),
+  ).map(getScreenName),
 ]);
 
 export async function detectCurrentScreen(
@@ -204,110 +191,45 @@ export async function detectCurrentScreen(
   return await detectScreenFromPageObjects(page);
 }
 
+/**
+ * Finds the route for a hash path. A path that is not a route itself (e.g. a
+ * nested step missing from `ROUTES`) gets its closest parent route, but never
+ * the home route.
+ *
+ * @param hashPath - The URL hash without `#` and query string.
+ * @returns The route path pattern, or `undefined`.
+ */
+function findRoute(hashPath: string): string | undefined {
+  if (hashPath === '' || hashPath === DEFAULT_ROUTE) {
+    return DEFAULT_ROUTE;
+  }
+  for (
+    let path = hashPath;
+    path.startsWith('/') && path.length > 1;
+    path = path.slice(0, path.lastIndexOf('/'))
+  ) {
+    const route = matchRoute(path);
+    if (route) {
+      return route.path;
+    }
+  }
+  return undefined;
+}
+
 export function detectScreenFromUrl(
   url: string,
 ): ExtensionState['currentScreen'] {
   const hash = url.split('#')[1] ?? '';
   const hashPath = hash.split(/[?#]/u)[0] || hash;
+  const route = findRoute(hashPath);
 
-  const routeMatchers: {
-    matcher: (path: string) => boolean;
-    screen: ExtensionState['currentScreen'];
-  }[] = [
-    { matcher: (path) => hasRoutePrefix(path, SEND_ROUTE), screen: 'send' },
-    {
-      matcher: (path) =>
-        hasRoutePrefix(path, CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE),
-      screen: 'swap',
-    },
-    {
-      matcher: (path) =>
-        hasRoutePrefix(
-          path,
-          `${CONFIRM_TRANSACTION_ROUTE}${SIGNATURE_REQUEST_PATH}`,
-        ) || path.includes(SIGNATURE_REQUEST_PATH),
-      screen: 'confirm-signature',
-    },
-    {
-      matcher: (path) => hasRoutePrefix(path, CONFIRM_TRANSACTION_ROUTE),
-      screen: 'confirm-transaction',
-    },
-    {
-      matcher: (path) => hasRoutePrefix(path, CONFIRMATION_V_NEXT_ROUTE),
-      screen: 'confirmation',
-    },
-    {
-      matcher: (path) => hasRoutePrefix(path, CONNECT_ROUTE),
-      screen: 'connect',
-    },
-    {
-      matcher: (path) => hasRoutePrefix(path, SETTINGS_ROUTE),
-      screen: 'settings',
-    },
-    { matcher: (path) => hasRoutePrefix(path, UNLOCK_ROUTE), screen: 'unlock' },
-    {
-      matcher: (path) => hasRoutePrefix(path, ONBOARDING_WELCOME_ROUTE),
-      screen: 'onboarding-welcome',
-    },
-    {
-      matcher: (path) => hasRoutePrefix(path, ONBOARDING_CREATE_PASSWORD_ROUTE),
-      screen: 'onboarding-password',
-    },
-    {
-      matcher: (path) => hasRoutePrefix(path, ONBOARDING_IMPORT_WITH_SRP_ROUTE),
-      screen: 'onboarding-import',
-    },
-    {
-      matcher: (path) =>
-        hasRoutePrefix(path, ONBOARDING_REVEAL_SRP_ROUTE) ||
-        hasRoutePrefix(path, ONBOARDING_REVIEW_SRP_ROUTE) ||
-        hasRoutePrefix(path, ONBOARDING_CONFIRM_SRP_ROUTE),
-      screen: 'onboarding-srp',
-    },
-    {
-      matcher: (path) => hasRoutePrefix(path, ONBOARDING_COMPLETION_ROUTE),
-      screen: 'onboarding-complete',
-    },
-    {
-      matcher: (path) =>
-        hasRoutePrefix(path, ONBOARDING_METAMETRICS) ||
-        hasRoutePrefix(path, ONBOARDING_HELP_US_IMPROVE_ROUTE),
-      screen: 'onboarding-metametrics',
-    },
-    {
-      matcher: (path) =>
-        hasRoutePrefix(path, ONBOARDING_PRIVACY_SETTINGS_ROUTE),
-      screen: 'onboarding-privacy',
-    },
-    {
-      matcher: (path) => hasRoutePrefix(path, ONBOARDING_UNLOCK_ROUTE),
-      screen: 'unlock',
-    },
-    {
-      matcher: (path) => hasRoutePrefix(path, ONBOARDING_ROUTE),
-      screen: 'onboarding-welcome',
-    },
-    {
-      matcher: (path) => /notification\.html/u.test(path),
-      screen: 'notification',
-    },
-    {
-      matcher: (path) => path === DEFAULT_ROUTE || path === '',
-      screen: 'home',
-    },
-  ];
-
-  for (const { matcher, screen } of routeMatchers) {
-    if (matcher(hashPath) || matcher(url)) {
-      return screen;
-    }
+  if (
+    /notification\.html/u.test(url) &&
+    (route === undefined || route === DEFAULT_ROUTE)
+  ) {
+    return 'notification';
   }
-
-  return 'unknown';
-}
-
-function hasRoutePrefix(path: string, route: string): boolean {
-  return path === route || path.startsWith(`${route}/`);
+  return route === undefined ? 'unknown' : getScreenName(route);
 }
 
 export async function detectUnlockState(

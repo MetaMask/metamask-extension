@@ -268,6 +268,47 @@ describe('PerpsDataChannel', () => {
     });
   });
 
+  describe('seedData / isSeeded', () => {
+    it('caches seeded data and flags it before notifying subscribers', () => {
+      const channel = createChannel();
+      const seenFlags: boolean[] = [];
+      channel.subscribe(() => seenFlags.push(channel.isSeeded()));
+
+      channel.seedData({ value: 5 });
+
+      expect(channel.getCachedData()).toEqual({ value: 5 });
+      expect(channel.hasCachedData()).toBe(true);
+      expect(channel.isSeeded()).toBe(true);
+      expect(seenFlags).toEqual([true]);
+    });
+
+    it('clears the flag when the source pushes live data', () => {
+      let sourceCallback: SourceCallback | null = null;
+      const channel = createChannel((cb) => {
+        sourceCallback = cb;
+        return () => undefined;
+      });
+      channel.seedData({ value: 5 });
+      channel.subscribe(jest.fn());
+
+      emitSource(sourceCallback, { value: 6 });
+
+      expect(channel.isSeeded()).toBe(false);
+    });
+
+    it('clears the flag on pushData and clearCache', () => {
+      const channel = createChannel();
+
+      channel.seedData({ value: 5 });
+      channel.pushData({ value: 6 });
+      expect(channel.isSeeded()).toBe(false);
+
+      channel.seedData({ value: 7 });
+      channel.clearCache();
+      expect(channel.isSeeded()).toBe(false);
+    });
+  });
+
   describe('refresh', () => {
     it('reconnects an active channel and keeps subscribers attached', () => {
       const firstUnsubscribe = jest.fn();

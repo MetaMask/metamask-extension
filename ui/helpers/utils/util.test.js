@@ -238,56 +238,56 @@ describe('util', () => {
     });
     it('should return false when given a modern chrome browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.6312.122 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.7151.68 Safari/537.36',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated chrome browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.6261.128 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.7103.113 Safari/537.36',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
     });
     it('should return false when given a modern firefox browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:140.0) Gecko/20100101 Firefox/140.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated firefox browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:127.0) Gecko/20100101 Firefox/127.0',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
     });
     it('should return false when given a modern opera browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.6312.122 Safari/537.36 OPR/109.0.0.0',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.7151.68 Safari/537.36 OPR/121.0.0.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated opera browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.6261.128 Safari/537.36 OPR/108.0.0.0',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.7103.113 Safari/537.36 OPR/120.0.0.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
     });
     it('should return false when given a modern edge browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.2420.81 Safari/537.36 Edg/123.0.2420.81',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.3296.52 Safari/537.36 Edg/137.0.3296.52',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated edge browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.2365.92 Safari/537.36 Edg/122.0.2365.92',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.3240.76 Safari/537.36 Edg/136.0.3240.76',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);

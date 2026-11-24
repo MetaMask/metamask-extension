@@ -3,7 +3,6 @@ import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { useSelector } from 'react-redux';
 import classnames from 'clsx';
 import {
-  Box,
   IconName,
   BannerBase,
   ButtonIcon,
@@ -223,16 +222,17 @@ export const MultichainEditAccountsPage = ({
           {title ?? t('editAccounts')}
         </Header>
       )}
-      <Box paddingTop={1} paddingBottom={2} paddingHorizontal={4}>
+      <search className="px-4 pt-1 pb-2">
         <TextFieldSearch
           className="w-full"
           clearButtonOnClick={clearSearch}
           data-testid="multichain-edit-account-list-search"
+          inputAriaLabel={t('searchYourAccounts')}
           onChange={onSearchBarChange}
           placeholder={t('searchYourAccounts')}
           value={searchPattern}
         />
-      </Box>
+      </search>
       <ScrollContainer className="flex-1 overflow-y-auto">
         {siteMetadata && (
           <BannerBase

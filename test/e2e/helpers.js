@@ -8,6 +8,7 @@ const { difference } = require('lodash');
 // eslint-disable-next-line no-redeclare
 const WebSocket = require('ws');
 const createStaticServer = require('../../development/create-static-server');
+const { isManifestV3 } = require('../../shared/lib/mv3.utils');
 const { setupMocking } = require('./mock-e2e');
 const { setupMockingPassThrough } = require('./mock-e2e-pass-through');
 const FixtureServer = require('./fixtures/fixture-server');
@@ -236,8 +237,6 @@ async function withFixtures(options, testSuite) {
     useMockingPassThrough,
     useBundler,
     usePaymaster,
-    ethConversionInUsd,
-    monConversionInUsd,
     manifestFlags,
     solanaWebSocketSpecificMocks = [],
     accountActivityWebSocketSpecificMocks = [],
@@ -245,7 +244,6 @@ async function withFixtures(options, testSuite) {
     extendedTimeoutMultiplier = 1,
     unifiedEvmAccountsApiBalances,
     virtualAuthenticator,
-    isBenchmark = false,
     testTimeout = parseInt(process.env.MOCHA_TIMEOUT, 10) || 0,
   } = options;
 
@@ -509,8 +507,6 @@ async function withFixtures(options, testSuite) {
       clearNetworkReport,
     } = await mockingSetupFunction(mockServer, testSpecificMock, {
       chainId: localNodeOptsNormalized[0]?.options.chainId || 1337,
-      ethConversionInUsd,
-      monConversionInUsd,
       unifiedEvmAccountsApiBalances: effectiveUnifiedEvmAccountsApiBalances,
     });
 
@@ -579,7 +575,6 @@ async function withFixtures(options, testSuite) {
       const wd = await buildWebDriver({
         ...driverOptions,
         disableServerMochaToBackground,
-        isBenchmark,
       });
 
       driver = wd.driver;
@@ -730,7 +725,10 @@ async function withFixtures(options, testSuite) {
       } catch (verboseReportError) {
         console.error(verboseReportError);
       }
+      // MV3 has no background page (it is a service worker), so there is
+      // nothing to navigate to and the controller-loaded wait would time out.
       if (
+        !isManifestV3 &&
         process.env.E2E_LEAVE_RUNNING !== 'true' &&
         (driver.errors.length > 0 || driver.exceptions.length > 0)
       ) {
@@ -739,7 +737,14 @@ async function withFixtures(options, testSuite) {
          * forcing background exceptions to be captured
          * proving more helpful context
          */
-        await driver.navigate(PAGES.BACKGROUND);
+        try {
+          await driver.navigate(PAGES.BACKGROUND);
+        } catch (navigateError) {
+          console.error(
+            'Failed to navigate to the background page',
+            navigateError,
+          );
+        }
       }
     }
 

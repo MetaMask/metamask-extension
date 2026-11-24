@@ -11,7 +11,6 @@ import {
   CONNECT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
-  CONFIRM_IMPORT_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
 } from '../../../../ui/helpers/constants/routes';
@@ -31,6 +30,11 @@ import {
   LAUNCH_SCREEN_CHECKS,
   waitForAnyScreen,
 } from './launcher/state-inspector';
+import {
+  ScreencastRecorder,
+  isOnboardingUrl,
+  resolveScreencastDir,
+} from './launcher/screencast-recorder';
 
 const DEFAULT_PASSWORD = 'correct horse battery staple';
 const DEFAULT_CHAIN_ID = 1337;
@@ -42,7 +46,6 @@ const SIDEPANEL_CONFIRMATION_ROUTE_PREFIXES: string[] = [
   CONNECT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
-  CONFIRM_IMPORT_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
 ];
@@ -60,6 +63,8 @@ type ResolvedOptions = {
   manifestFlags?: Partial<ManifestFlags>;
   selfOnboarding: boolean;
   srp?: string;
+  password?: string;
+  screencastDir?: string;
 };
 
 export function buildChromiumLaunchArgs(
@@ -104,6 +109,8 @@ export class MetaMaskExtensionLauncher {
 
   private consoleErrorBuffer = new ConsoleErrorBuffer(100);
 
+  private screencast: ScreencastRecorder | undefined;
+
   constructor(options: LauncherLaunchOptions = {}) {
     this.options = {
       extensionPath:
@@ -125,6 +132,8 @@ export class MetaMaskExtensionLauncher {
       manifestFlags: options.manifestFlags,
       selfOnboarding: options.selfOnboarding === true,
       srp: options.srp,
+      password: options.password,
+      screencastDir: options.screencastDir,
     };
     this.userDataDir = '';
 
@@ -266,6 +275,17 @@ export class MetaMaskExtensionLauncher {
         'clipboard-write',
       ]);
 
+      if (this.options.headless) {
+        // Playwright sizes the headless window to the viewport, but the tab
+        // strip and toolbar still take 87 px. Chrome resizes a tab to that
+        // shorter area when it is brought to the front again, so set the
+        // contents size of every page to the viewport as well.
+        const fitWindow = (page: Page) =>
+          this.fitWindowToViewport(page).catch(() => undefined);
+        this.context.on('page', fitWindow);
+        await Promise.all(this.context.pages().map(fitWindow));
+      }
+
       await this.waitForExtensionReady();
 
       this.ensureExtensionInitialized();
@@ -273,27 +293,34 @@ export class MetaMaskExtensionLauncher {
       if (this.options.selfOnboarding) {
         let phrase = this.options.srp ?? '';
         this.options.srp = undefined;
+        let password = this.options.password ?? DEFAULT_PASSWORD;
+        this.options.password = undefined;
         try {
           await runSelfOnboarding(
             getE2EDriver(this.extensionPage as Page),
             phrase,
-            DEFAULT_PASSWORD,
+            password,
           );
+          phrase = '';
+          const driver = withTimeout(
+            getE2EDriver(this.extensionPage as Page),
+            UI_READY_TIMEOUT_MS,
+          );
+          // Reloading lets the UI route to unlock or the completion page from
+          // the real wallet state; Done never navigates the tab when it opens
+          // the side panel, so home is loaded again afterwards.
+          await this.navigateToHome();
+          await finishOnboarding(driver, password);
+          password = '';
+          await this.navigateToHome();
+          await new HomePage(driver).checkPageIsLoaded();
         } finally {
           phrase = '';
+          password = '';
         }
-        const driver = withTimeout(
-          getE2EDriver(this.extensionPage as Page),
-          UI_READY_TIMEOUT_MS,
-        );
-        // Reloading lets the UI route to unlock or the completion page from
-        // the real wallet state; Done never navigates the tab when it opens
-        // the side panel, so home is loaded again afterwards.
-        await this.navigateToHome();
-        await finishOnboarding(driver, DEFAULT_PASSWORD);
-        await this.navigateToHome();
-        await new HomePage(driver).checkPageIsLoaded();
       }
+
+      await this.startScreencast();
 
       return {
         context: this.context as BrowserContext,
@@ -304,6 +331,20 @@ export class MetaMaskExtensionLauncher {
       console.error('Launch failed, cleaning up services...');
       await this.cleanup();
       throw error;
+    }
+  }
+
+  private async fitWindowToViewport(page: Page): Promise<void> {
+    const session = await this.getContext().newCDPSession(page);
+    try {
+      const { windowId } = await session.send('Browser.getWindowForTarget');
+      await session.send('Browser.setContentsSize', {
+        windowId,
+        width: this.options.viewportWidth,
+        height: this.options.viewportHeight,
+      });
+    } finally {
+      await session.detach().catch(() => undefined);
     }
   }
 
@@ -318,17 +359,12 @@ export class MetaMaskExtensionLauncher {
 
   private async waitForExtensionReady(): Promise<void> {
     // Extension initialization flow:
-    // 1. Get an existing page or create a new one (browser may have blank tab)
-    // 2. Resolve the extension ID from Chrome's extension management API
-    // 3. Navigate to home.html and wait for the UI to fully render
+    // 1. Resolve the extension ID from Chrome's extension management API
+    // 2. Check if an extension page already exists (dist builds auto-open one)
+    // 3. If not, get an existing blank page or create a new one
+    // 4. Navigate to home.html and wait for the UI to fully render
     if (!this.context) {
       throw new Error('Browser context not initialized');
-    }
-
-    const pages = (this.context as BrowserContext).pages();
-    let page = pages[0];
-    if (!page) {
-      page = await this.context.newPage();
     }
 
     this.extensionId = await resolveExtensionId({
@@ -344,7 +380,34 @@ export class MetaMaskExtensionLauncher {
       throw new Error('Could not find MetaMask extension ID');
     }
 
-    await page.goto(`chrome-extension://${this.extensionId}/home.html`);
+    const extensionPrefix = `chrome-extension://${this.extensionId}/`;
+
+    // Wait for the extension to open its own page (dist builds).
+    // Poll for up to 3 seconds to give the extension time to auto-open.
+    let page: Page | undefined;
+    const pollStart = Date.now();
+    const pollTimeout = 3000;
+
+    while (Date.now() - pollStart < pollTimeout) {
+      const pages = (this.context as BrowserContext).pages();
+      page = pages.find((p) => p.url().startsWith(extensionPrefix));
+      if (page) {
+        console.log('Reusing existing extension page:', page.url());
+        break;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 200));
+    }
+
+    // If no extension page appeared, create one
+    if (!page) {
+      const pages = (this.context as BrowserContext).pages();
+      page = pages.find((p) => p.url() === 'about:blank') ?? pages[0];
+      if (!page) {
+        page = await this.context.newPage();
+      }
+      await page.goto(`${extensionPrefix}home.html`);
+    }
+
     await page.waitForLoadState('domcontentloaded');
 
     this.attachConsoleListeners(page);
@@ -598,8 +661,46 @@ export class MetaMaskExtensionLauncher {
     await sidepanelPage.waitForLoadState('domcontentloaded');
   }
 
+  /** Starts recording after onboarding; failures only log a warning. */
+  private async startScreencast(): Promise<void> {
+    const dir = resolveScreencastDir(this.options.screencastDir, process.env);
+    if (!dir || !this.context) {
+      return;
+    }
+
+    if (!this.extensionPage || isOnboardingUrl(this.extensionPage.url())) {
+      console.warn(
+        'Screencast recording skipped: the extension is still on an onboarding screen, which may contain secrets.',
+      );
+      return;
+    }
+
+    const recorder = new ScreencastRecorder({
+      dir,
+      context: this.context,
+      extensionPage: this.extensionPage,
+    });
+
+    try {
+      await recorder.start();
+      this.screencast = recorder;
+    } catch (error) {
+      console.warn('Failed to start screencast recording:', error);
+    }
+  }
+
+  /** Stops first in `cleanup()`, so pending frames are flushed. */
+  private async stopScreencast(): Promise<void> {
+    const recorder = this.screencast;
+    this.screencast = undefined;
+    await recorder?.stop().catch((error) => {
+      console.warn('Failed to stop screencast recording:', error);
+    });
+  }
+
   async cleanup(): Promise<void> {
     try {
+      await this.stopScreencast();
       if (this.context) {
         try {
           await this.context.close();

@@ -13,11 +13,11 @@ exports[`BridgeAsset should render ERC20 asset 1`] = `
       class="inline-flex"
     >
       <div
-        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-8 w-8"
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-8 w-8 bg-white"
       >
         <img
           alt="mUSD"
-          class="size-full object-contain"
+          class="size-full object-cover"
           src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png"
         />
       </div>
@@ -28,12 +28,12 @@ exports[`BridgeAsset should render ERC20 asset 1`] = `
       style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
     >
       <div
-        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[34px] w-[34px] border-background-default border rounded-md"
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden h-[34px] w-[34px] border-background-default border bg-white rounded-md"
         style="width: 15px; height: 15px; border-width: 1px;"
       >
         <img
           alt="Ethereum"
-          class="size-full object-contain"
+          class="size-full object-cover"
           src="./images/eth_logo.svg"
         />
       </div>
@@ -108,11 +108,11 @@ exports[`BridgeAsset should render asset with balance 1`] = `
       class="inline-flex"
     >
       <div
-        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-8 w-8"
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-8 w-8 bg-white"
       >
         <img
           alt="mUSD"
-          class="size-full object-contain"
+          class="size-full object-cover"
           src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png"
         />
       </div>
@@ -123,12 +123,12 @@ exports[`BridgeAsset should render asset with balance 1`] = `
       style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
     >
       <div
-        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[34px] w-[34px] border-background-default border rounded-md"
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden h-[34px] w-[34px] border-background-default border bg-white rounded-md"
         style="width: 15px; height: 15px; border-width: 1px;"
       >
         <img
           alt="Ethereum"
-          class="size-full object-contain"
+          class="size-full object-cover"
           src="./images/eth_logo.svg"
         />
       </div>
@@ -211,11 +211,11 @@ exports[`BridgeAsset should render native asset 1`] = `
       class="inline-flex"
     >
       <div
-        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-8 w-8"
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-8 w-8 bg-white"
       >
         <img
           alt="ETH"
-          class="size-full object-contain"
+          class="size-full object-cover"
           src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png"
         />
       </div>
@@ -226,12 +226,12 @@ exports[`BridgeAsset should render native asset 1`] = `
       style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
     >
       <div
-        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[34px] w-[34px] border-background-default border rounded-md"
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden h-[34px] w-[34px] border-background-default border bg-white rounded-md"
         style="width: 15px; height: 15px; border-width: 1px;"
       >
         <img
           alt="Ethereum"
-          class="size-full object-contain"
+          class="size-full object-cover"
           src="./images/eth_logo.svg"
         />
       </div>

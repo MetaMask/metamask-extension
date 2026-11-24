@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { debounce } from 'lodash';
-import { CaipAssetType } from '@metamask/utils';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   resetBridgeController,

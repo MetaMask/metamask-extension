@@ -157,14 +157,13 @@ export type BridgeAppState = {
     GasFeeState &
     NetworkState &
     AccountsControllerState &
-    AssetsControllerState &
     AccountTreeControllerState &
     AccountTrackerControllerState &
-    TokenBalancesControllerState &
+    Pick<TokenBalancesControllerState, 'tokenBalances'> &
     NetworkEnablementControllerState &
     TokensControllerState &
     MultichainAccountsState['metamask'] &
-    MultichainAssetsRatesControllerState &
+    Pick<MultichainAssetsRatesControllerState, 'conversionRates'> &
     TokenRatesControllerState &
     RatesControllerState &
     MultichainBalancesControllerState &

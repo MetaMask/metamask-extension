@@ -1,11 +1,16 @@
 import browser from 'webextension-polyfill';
 import { EXTENSION_MESSAGES } from '#shared/constants/messages';
+import { openRoute } from '../sidepanel/background';
 import {
   createCashtagResponse,
   isAllowedCashtagSender,
   bindTickerWidgetEnabledBroadcasts,
 } from './background';
 import type { Controller } from './lib/types';
+
+jest.mock('../sidepanel/background', () => ({
+  openRoute: jest.fn().mockResolvedValue(undefined),
+}));
 
 jest.mock('webextension-polyfill', () => ({
   runtime: {
@@ -129,8 +134,6 @@ describe('isAllowedCashtagSender', () => {
 
 describe('createCashtagResponse', () => {
   const caipAssetId = 'eip155:1/slip44:60';
-  const swapHash =
-    '#/cross-chain/swaps/prepare-bridge-page?to=eip155%3A1%2Fslip44%3A60';
   const widgetSender = sender({
     frameId: 1,
     tab: { ...xTab, windowId: 7 } as chrome.tabs.Tab,
@@ -152,13 +155,10 @@ describe('createCashtagResponse', () => {
       remoteFeatureFlagController: {
         state: { remoteFeatureFlags: { cashtagInjection: true } },
       },
+      bridgeController: {
+        setLocation: jest.fn(),
+      },
     } satisfies Controller;
-  }
-
-  // A promise that never settles, standing in for a slow API call. Anything
-  // awaited before the privileged open would leave the open uncalled.
-  function pending() {
-    return new Promise<void>(() => undefined);
   }
 
   beforeEach(() => {
@@ -168,22 +168,6 @@ describe('createCashtagResponse', () => {
       getURL: (path: string) => `chrome-extension://${extensionId}/${path}`,
       getManifest: () => ({}),
     });
-  });
-
-  afterEach(() => {
-    delete (globalThis.chrome as { sidePanel?: unknown }).sidePanel;
-    delete (globalThis.chrome as { action?: unknown }).action;
-  });
-
-  it('opens the side panel without awaiting the path reset first', () => {
-    const open = jest.fn().mockResolvedValue(undefined);
-    Object.assign(globalThis.chrome, {
-      sidePanel: { open, setOptions: jest.fn(pending) },
-    });
-
-    createCashtagResponse(openSwapMessage, widgetSender, getController);
-
-    expect(open).toHaveBeenCalledWith({ windowId: 7 });
   });
 
   it('does not enable the widget when Basic Functionality is disabled', async () => {
@@ -219,22 +203,22 @@ describe('createCashtagResponse', () => {
     });
   });
 
-  it('opens the popup without awaiting setPopup first', () => {
-    const openPopup = jest.fn().mockResolvedValue(undefined);
-    Object.assign(globalThis.chrome, {
-      action: { openPopup, setPopup: jest.fn(pending) },
-    });
+  it('sets bridge location to x_widget and opens the swap route', async () => {
+    const controller = getController();
+    await createCashtagResponse(
+      openSwapMessage,
+      widgetSender,
+      () => controller,
+    );
 
-    createCashtagResponse(openSwapMessage, widgetSender, getController);
-
-    expect(openPopup).toHaveBeenCalledTimes(1);
-  });
-
-  it('opens a tab when neither the side panel nor the popup API exists', async () => {
-    await createCashtagResponse(openSwapMessage, widgetSender, getController);
-
-    expect(browser.tabs.create).toHaveBeenCalledWith({
-      url: `chrome-extension://${extensionId}/home.html${swapHash}`,
+    expect(controller.bridgeController?.setLocation).toHaveBeenCalledWith(
+      'x_widget',
+    );
+    expect(openRoute).toHaveBeenCalledWith({
+      controller,
+      windowId: 7,
+      path: '/cross-chain/swaps/prepare-bridge-page',
+      search: '?to=eip155%3A1%2Fslip44%3A60',
     });
   });
 });

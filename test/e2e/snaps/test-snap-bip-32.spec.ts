@@ -46,13 +46,8 @@ describe('Test Snap bip-32', function () {
         // Navigate to `test-snaps` page, click bip32, connect and approve
         await openTestSnapClickButtonAndInstall(driver, 'connectBip32Button', {
           withWarning: true,
+          expectedMessage: 'Reconnect to BIP-32 Snap',
         });
-
-        // check the installation status
-        await testSnaps.checkInstallationComplete(
-          'connectBip32Button',
-          'Reconnect to BIP-32 Snap',
-        );
 
         // Click bip32 button to get private key and validate the result
         await testSnaps.scrollAndClickButton('getBip32PublicKeyButton');

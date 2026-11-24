@@ -1,6 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { selectPrimaryMoneyAccount } from '../../../../selectors/money-account';
+import { selectMoneyAccountVaultConfig } from '../../../../selectors/money/money-account-feature-flags';
+import { updateTransactionPaymentToken } from '../../../../store/controller-actions/transaction-pay-controller';
+import { getMoneyAccountPayToken } from '../../utils/money-account-pay-token';
 import { applyMoneyAccountOverride } from '../../utils/transaction-pay';
 import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
 import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
@@ -18,6 +21,7 @@ import { useIsMoneyAccountPerpsNavigation } from './useIsMoneyAccountPerpsNaviga
 export function useDefaultPaySelectedSection(): void {
   const transactionMeta = useTransactionMetadataRequestOptional();
   const moneyAccount = useSelector(selectPrimaryMoneyAccount);
+  const vaultConfig = useSelector(selectMoneyAccountVaultConfig);
   const isDefaultMoneyAccount = useIsMoneyAccountFlagDefault();
   const isMoneyAccountNavigation = useIsMoneyAccountPerpsNavigation();
   const appliedRef = useRef<string | undefined>(undefined);
@@ -39,11 +43,24 @@ export function useDefaultPaySelectedSection(): void {
       moneyAccount?.address,
       transactionMeta,
     );
+
+    if (isDefaultMoneyAccount) {
+      const moneyAccountPayToken = getMoneyAccountPayToken(vaultConfig);
+
+      updateTransactionPaymentToken({
+        transactionId,
+        tokenAddress: moneyAccountPayToken.address,
+        chainId: moneyAccountPayToken.chainId,
+      }).catch((error) => {
+        console.error('Failed to set the Money Account pay token', error);
+      });
+    }
   }, [
     isDefaultMoneyAccount,
     isMoneyAccountNavigation,
     moneyAccount?.address,
     transactionId,
     transactionMeta,
+    vaultConfig,
   ]);
 }

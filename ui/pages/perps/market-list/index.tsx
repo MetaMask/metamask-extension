@@ -883,10 +883,8 @@ export const MarketListView = () => {
 
       {/* Search Row — revealed by the header's search icon, not always on */}
       {isSearchOpen && (
-        <Box
+        <search
           className="border-b border-border-muted px-4 py-3"
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
           data-testid="market-list-search-row"
         >
           <SearchInput
@@ -896,7 +894,7 @@ export const MarketListView = () => {
             onInputClick={handleSearchClick}
             autoFocus
           />
-        </Box>
+        </search>
       )}
 
       {/* Category rail and Sort Row - Hidden when searching */}

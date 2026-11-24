@@ -1,23 +1,10 @@
 import React from 'react';
-import {
-  ENVIRONMENT_TYPE_FULLSCREEN,
-  ENVIRONMENT_TYPE_SIDEPANEL,
-} from '../../../../../../shared/constants/app';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../store/store';
 import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
 import { ConfirmInfoRowAddressDisplay } from './address-display';
 import { TEST_ADDRESS } from './constants';
-
-const getEnvironmentType = jest.requireMock(
-  '../../../../../../shared/lib/environment-type',
-).getEnvironmentType as jest.Mock;
-
-jest.mock('../../../../../../shared/lib/environment-type', () => ({
-  ...jest.requireActual('../../../../../../shared/lib/environment-type'),
-  getEnvironmentType: jest.fn(),
-}));
 
 const defaultProps = {
   address: TEST_ADDRESS,
@@ -72,30 +59,10 @@ describe('ConfirmInfoRowAddressDisplay', () => {
     );
   });
 
-  it('renders full address in fullscreen mode', () => {
-    getEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
-
+  it('renders the full address when it fits', () => {
     const { getByTestId } = render();
     expect(getByTestId('confirm-info-row-display-name')).toHaveTextContent(
       TEST_ADDRESS,
     );
-  });
-
-  it('renders partially truncated address in side panel mode', () => {
-    getEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
-
-    const { getByTestId } = render();
-    const textContent = getByTestId('confirm-info-row-display-name')
-      .textContent as string;
-    expect(textContent).toBe('0x5CfE73b6021E…474086a7e1');
-  });
-
-  it('renders truncated address in popup mode', () => {
-    getEnvironmentType.mockReturnValue('popup');
-
-    const { getByTestId } = render();
-    const textContent = getByTestId('confirm-info-row-display-name')
-      .textContent as string;
-    expect(textContent).toBe('0x5CfE73b6021E…474086a7e1');
   });
 });

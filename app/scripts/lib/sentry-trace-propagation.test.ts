@@ -13,6 +13,7 @@ import {
   matchesBackendTarget,
   resetConsensysRequestIdProvider,
   setConsensysRequestIdProvider,
+  stripTraceHeaders,
 } from './sentry-trace-propagation';
 
 jest.mock('@sentry/core', () => ({
@@ -32,6 +33,12 @@ const SPAN_ID = '00f067aa0ba902b7';
 const TRACEPARENT = `00-${TRACE_ID}-${SPAN_ID}-01`;
 const BACKEND_URL = 'https://accounts.api.cx.metamask.io/v1/accounts';
 const CONSENSYS_BAGGAGE = `consensys-request-id=uuid-fixed,consensys-application=metamask-extension`;
+// What the SDK's fetch instrumentation attaches to a `tracePropagationTargets`
+// match while no span is active: the ids come from the scope propagation
+// context, so the advertised parent belongs to no span.
+const SDK_SENTRY_TRACE_NO_SPAN = `${TRACE_ID}-${SPAN_ID}-0`;
+const SDK_TRACEPARENT_NO_SPAN = `00-${TRACE_ID}-${SPAN_ID}-00`;
+const SDK_BAGGAGE_NO_SPAN = `sentry-trace_id=${TRACE_ID},sentry-sample_rate=0.005`;
 
 const getActiveSpanMock = jest.mocked(getActiveSpan);
 const getCurrentScopeMock = jest.mocked(getCurrentScope);
@@ -183,6 +190,62 @@ describe('buildAugmentedHeaders', () => {
   });
 });
 
+describe('stripTraceHeaders', () => {
+  it('removes sentry-trace, traceparent and the Sentry baggage entries', () => {
+    const headers = stripTraceHeaders([
+      BACKEND_URL,
+      {
+        headers: {
+          'sentry-trace': SDK_SENTRY_TRACE_NO_SPAN,
+          traceparent: SDK_TRACEPARENT_NO_SPAN,
+          baggage: SDK_BAGGAGE_NO_SPAN,
+          'x-caller': 'kept',
+        },
+      },
+    ]) as Headers;
+
+    expect(headers.get('sentry-trace')).toBeNull();
+    expect(headers.get('traceparent')).toBeNull();
+    expect(headers.get('baggage')).toBeNull();
+    expect(headers.get('x-caller')).toBe('kept');
+  });
+
+  it('keeps non-Sentry baggage entries', () => {
+    const headers = stripTraceHeaders([
+      BACKEND_URL,
+      {
+        headers: {
+          'sentry-trace': SDK_SENTRY_TRACE_NO_SPAN,
+          baggage: `${SDK_BAGGAGE_NO_SPAN},vendor-key=vendor-value`,
+        },
+      },
+    ]) as Headers;
+
+    expect(headers.get('baggage')).toBe('vendor-key=vendor-value');
+  });
+
+  it('strips headers seeded from a Request', () => {
+    const request = new Request(BACKEND_URL, {
+      headers: {
+        traceparent: SDK_TRACEPARENT_NO_SPAN,
+        'x-from-request': 'yes',
+      },
+    });
+
+    const headers = stripTraceHeaders([request]) as Headers;
+
+    expect(headers.get('traceparent')).toBeNull();
+    expect(headers.get('x-from-request')).toBe('yes');
+  });
+
+  it('returns undefined when the request carries no trace headers', () => {
+    expect(
+      stripTraceHeaders([BACKEND_URL, { headers: { 'x-caller': 'kept' } }]),
+    ).toBeUndefined();
+    expect(stripTraceHeaders([BACKEND_URL])).toBeUndefined();
+  });
+});
+
 describe('consensysTracePropagationIntegration', () => {
   const log = jest.fn();
 
@@ -207,6 +270,99 @@ describe('consensysTracePropagationIntegration', () => {
     expect(init.headers.get('traceparent')).toBeNull();
     expect(init.headers.get('baggage')).toBe(CONSENSYS_BAGGAGE);
     expect(getCurrentConsensysRequestId()).toBe('uuid-fixed');
+  });
+
+  describe('no active span (outbound invariant)', () => {
+    // `beforeEach` leaves `getActiveSpan` returning undefined, so these cases
+    // exercise a matched backend host with no span — the combination that must
+    // never emit a trace header.
+
+    it('attaches nothing to a matched backend request that carries no headers', () => {
+      const handler = getFetchHandler();
+      const handlerData = {
+        fetchData: { url: BACKEND_URL, method: 'GET' },
+        args: [BACKEND_URL, undefined],
+      } as unknown as Parameters<typeof handler>[0];
+
+      handler(handlerData);
+
+      expect(handlerData.args[1]).toBeUndefined();
+      expect(getCurrentConsensysRequestId()).toBeUndefined();
+    });
+
+    it('strips the SDK trace headers and withholds the Consensys baggage', () => {
+      const handler = getFetchHandler();
+      const handlerData = {
+        fetchData: { url: BACKEND_URL, method: 'GET' },
+        args: [
+          BACKEND_URL,
+          {
+            headers: {
+              'sentry-trace': SDK_SENTRY_TRACE_NO_SPAN,
+              traceparent: SDK_TRACEPARENT_NO_SPAN,
+              baggage: SDK_BAGGAGE_NO_SPAN,
+              'x-caller': 'kept',
+            },
+          },
+        ],
+      } as unknown as Parameters<typeof handler>[0];
+
+      handler(handlerData);
+
+      const init = handlerData.args[1] as { headers: Headers };
+      expect(init.headers.get('sentry-trace')).toBeNull();
+      expect(init.headers.get('traceparent')).toBeNull();
+      expect(init.headers.get('baggage')).toBeNull();
+      expect(init.headers.get('x-caller')).toBe('kept');
+      expect(getCurrentConsensysRequestId()).toBeUndefined();
+    });
+
+    it('leaves non-Sentry baggage on the stripped request', () => {
+      const handler = getFetchHandler();
+      const handlerData = {
+        fetchData: { url: BACKEND_URL, method: 'GET' },
+        args: [
+          BACKEND_URL,
+          {
+            headers: {
+              traceparent: SDK_TRACEPARENT_NO_SPAN,
+              baggage: `${SDK_BAGGAGE_NO_SPAN},vendor-key=vendor-value`,
+            },
+          },
+        ],
+      } as unknown as Parameters<typeof handler>[0];
+
+      handler(handlerData);
+
+      const init = handlerData.args[1] as { headers: Headers };
+      expect(init.headers.get('traceparent')).toBeNull();
+      expect(init.headers.get('baggage')).toBe('vendor-key=vendor-value');
+      expect(init.headers.get('baggage')).not.toContain(CONSENSYS_BAGGAGE);
+    });
+
+    it('records no request id for the trace, so events are not tagged', () => {
+      // A scope propagation context is present, so without the gate the handler
+      // would mint a request id and bind it to this trace id.
+      getCurrentScopeMock.mockReturnValue({
+        getPropagationContext: () => ({ traceId: TRACE_ID }),
+      } as unknown as ReturnType<typeof getCurrentScope>);
+      const handler = getFetchHandler();
+      handler({
+        fetchData: { url: BACKEND_URL, method: 'GET' },
+        args: [BACKEND_URL, undefined],
+      } as unknown as Parameters<typeof handler>[0]);
+
+      const integration = consensysTracePropagationIntegration({ log });
+      const event = integration.processEvent?.(
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry event-payload key.
+        { contexts: { trace: { trace_id: TRACE_ID } } } as SentryEvent,
+        {} as EventHint,
+        {} as Client,
+      ) as SentryEvent;
+
+      expect(event.tags?.otelTraceId).toBe(TRACE_ID);
+      expect(event.tags?.consensysRequestId).toBeUndefined();
+    });
   });
 
   it('does not touch requests to non-backend hosts', () => {

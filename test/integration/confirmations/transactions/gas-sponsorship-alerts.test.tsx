@@ -132,9 +132,9 @@ function getMetaMaskStateWithMonadSponsorshipTransaction({
 function setupSubmitRequestToBackgroundMocks() {
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
-      isRelaySupported: true,
-      isSendBundleSupported: false,
-      getTokenStandardAndDetailsByChain: {
+      'LegacyBackgroundApiService:isRelaySupported': true,
+      'LegacyBackgroundApiService:isSendBundleSupported': false,
+      'LegacyBackgroundApiService:getTokenStandardAndDetailsByChain': {
         decimals: '4',
       },
     }),

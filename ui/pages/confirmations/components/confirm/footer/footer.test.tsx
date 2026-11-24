@@ -28,7 +28,10 @@ import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
+import {
+  ACTIVITY_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../../../../helpers/constants/routes';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -202,6 +205,7 @@ jest.mock('../../../../../contexts/hardware-wallets', () => ({
 jest.mock('../../../hooks/useAddEthereumChain', () => ({
   useAddEthereumChain: jest.fn(() => ({
     onSubmit: jest.fn().mockResolvedValue(undefined),
+    onReject: jest.fn(),
   })),
   isAddEthereumChainType: jest.fn(
     (confirmation) => confirmation?.type === 'wallet_addEthereumChain',
@@ -559,10 +563,9 @@ describe('ConfirmFooter', () => {
     });
 
     expect(mockNavigateNext).toHaveBeenCalledWith(expect.any(String));
-    expect(mockUseNavigate).not.toHaveBeenCalledWith(
-      `${DEFAULT_ROUTE}?tab=activity`,
-      { replace: true },
-    );
+    expect(mockUseNavigate).not.toHaveBeenCalledWith(ACTIVITY_ROUTE, {
+      replace: true,
+    });
   });
 
   it('displays a danger "Confirm" button there are danger alerts', async () => {
@@ -1005,6 +1008,7 @@ describe('ConfirmFooter', () => {
       const addEthereumChainSubmitMock = jest.fn().mockResolvedValue(undefined);
       useAddEthereumChainMock.mockReturnValue({
         onSubmit: addEthereumChainSubmitMock,
+        onReject: jest.fn(),
       });
       jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
         currentConfirmation: addEthereumChainApproval,
@@ -1110,10 +1114,9 @@ describe('ConfirmFooter', () => {
       });
 
       expect(mockNavigateNext).toHaveBeenCalledWith(expect.any(String));
-      expect(mockUseNavigate).not.toHaveBeenCalledWith(
-        `${DEFAULT_ROUTE}?tab=activity`,
-        { replace: true },
-      );
+      expect(mockUseNavigate).not.toHaveBeenCalledWith(ACTIVITY_ROUTE, {
+        replace: true,
+      });
       expect(showHardwareWalletErrorModalMock).not.toHaveBeenCalled();
       expect(dismissHardwareWalletErrorModalMock).toHaveBeenCalledTimes(1);
     });

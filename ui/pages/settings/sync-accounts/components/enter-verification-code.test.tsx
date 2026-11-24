@@ -84,8 +84,8 @@ describe('EnterVerificationCode', () => {
 
     await waitFor(() => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'messengerCall',
-        ['QrSyncController:submitOtp', ['123456']],
+        'QrSyncController:submitOtp',
+        ['123456'],
       );
     });
   });

@@ -8,7 +8,6 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { getNativeCurrencyForChain } from '../../../selectors';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import {
-  getProviderConfig,
   selectNetworkConfigurationByChainId,
   type NetworkConfigurationsByChainIdState,
 } from '../../../../shared/lib/selectors/networks';
@@ -28,7 +27,6 @@ import AssetPage from './asset-page';
 const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
   const { symbol } = token;
   const image = getNativeCurrencyForChain(chainId);
-  const { type } = useSelector(getProviderConfig) ?? {};
   const { address } = useSelector(getSelectedInternalAccount);
   const networkConfig = useSelector(
     (state: NetworkConfigurationsByChainIdState) =>
@@ -67,7 +65,6 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     chainId,
     symbol,
-    type,
   );
 
   return (
@@ -76,9 +73,10 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
         chainId,
         type: AssetType.native,
         symbol,
+        name: token.name,
         image,
         decimals: token.decimals,
-        isOriginalNativeSymbol: isOriginalNativeSymbol === true,
+        isOriginalNativeSymbol: isOriginalNativeSymbol !== false,
       }}
       optionsButton={
         <AssetOptions

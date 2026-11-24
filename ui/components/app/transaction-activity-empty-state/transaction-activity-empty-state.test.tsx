@@ -72,29 +72,6 @@ const createStateWithoutExternalServices = (): ReturnType<
     useExternalServices: false,
   });
 
-const createTestnetState = (): ReturnType<typeof createStateOverrides> =>
-  createStateOverrides({
-    useExternalServices: true,
-    selectedNetworkClientId: 'sepolia',
-    networkConfigurationsByChainId: {
-      ...mockState.metamask.networkConfigurationsByChainId,
-      '0xaa36a7': {
-        chainId: '0xaa36a7',
-        name: 'Sepolia',
-        nativeCurrency: 'ETH',
-        defaultRpcEndpointIndex: 0,
-        rpcEndpoints: [
-          {
-            type: 'infura',
-            url: 'https://sepolia.infura.io/v3/test',
-            networkClientId: 'sepolia',
-          },
-        ],
-        blockExplorerUrls: [],
-      },
-    },
-  });
-
 const createValidSwapState = (): ReturnType<typeof createStateOverrides> =>
   createStateOverrides({
     useExternalServices: true,

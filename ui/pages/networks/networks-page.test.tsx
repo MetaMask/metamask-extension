@@ -1,7 +1,17 @@
 import React from 'react';
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { RpcEndpointType } from '@metamask/network-controller';
+import type {
+  ConfigRegistryControllerState,
+  RegistryNetworkConfig,
+} from '@metamask/config-registry-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import configureStore from '../../store/store';
@@ -21,6 +31,35 @@ jest.mock('../../hooks/useAnalytics', () => {
       trackEvent: mockTrackEvent,
       createEventBuilder,
     }),
+  };
+});
+
+jest.mock('../../store/actions', () => {
+  const actual = jest.requireActual('../../store/actions');
+
+  return {
+    ...actual,
+    // The real action writes through the background, which then pushes state
+    // back. Unit tests have no background, so apply the preference locally.
+    setShowTestNetworksPreference: (value: boolean) => {
+      return (
+        dispatch: (action: { type: string; value: unknown }) => void,
+        getState: () => {
+          metamask: { preferences: Record<string, unknown> };
+        },
+      ) => {
+        const { preferences } = getState().metamask;
+        dispatch({
+          type: 'UPDATE_METAMASK_STATE',
+          value: {
+            preferences: {
+              ...preferences,
+              showTestNetworks: value,
+            },
+          },
+        });
+      };
+    },
   };
 });
 
@@ -222,6 +261,7 @@ describe('NetworksPage', () => {
     },
     editedNetwork,
     remoteFeatureFlags = {},
+    configs,
     showTestNetworks = false,
   }: {
     pathname?: string;
@@ -231,6 +271,7 @@ describe('NetworksPage', () => {
     enabledNetworkMap?: Record<string, Record<string, boolean>>;
     editedNetwork?: { chainId: string; nickname?: string };
     remoteFeatureFlags?: Record<string, unknown>;
+    configs?: ConfigRegistryControllerState['configs'];
     showTestNetworks?: boolean;
   } = {}) => {
     const store = configureStore({
@@ -247,6 +288,7 @@ describe('NetworksPage', () => {
           ...mockState.metamask.remoteFeatureFlags,
           ...remoteFeatureFlags,
         },
+        ...(configs ? { configs } : {}),
         providerConfig: {
           chainId: selectedProviderChainId,
           rpcUrl: 'https://mainnet.infura.io/v3/123',
@@ -335,6 +377,42 @@ describe('NetworksPage', () => {
     expect(screen.queryByText('Sepolia')).not.toBeInTheDocument();
   });
 
+  it('uses the config registry logo for a featured network not yet enabled', () => {
+    // Only the fields consumed by the featured-network conversion and the
+    // logo lookups are populated.
+    const registryNetwork = {
+      chainId: 'eip155:1329',
+      name: 'Sei Network',
+      imageUrl: 'https://example.com/sei.png',
+      assets: { native: { symbol: 'SEI' } },
+      rpcProviders: {
+        default: {
+          url: 'https://evm-rpc.sei.network',
+          type: 'custom',
+          networkClientId: 'evm-sei-1329',
+        },
+      },
+      blockExplorerUrls: { default: 'https://seitrace.com' },
+      config: {
+        isActive: true,
+        isTestnet: false,
+        isFeatured: true,
+      },
+    } as unknown as RegistryNetworkConfig;
+
+    renderNetworksPage({
+      remoteFeatureFlags: { configRegistryApiEnabled: true },
+      configs: { networks: { 'eip155:1329': registryNetwork } },
+    });
+
+    const row = screen.getByTestId('popular-network-0x531');
+    expect(within(row).getByText('Sei Network')).toBeInTheDocument();
+    expect(within(row).getByRole('img')).toHaveAttribute(
+      'src',
+      'https://example.com/sei.png',
+    );
+  });
+
   it('renders the add network flow from the query param', () => {
     renderNetworksPage({ pathname: `${NETWORKS_ROUTE}?view=add` });
 
@@ -395,6 +473,40 @@ describe('NetworksPage', () => {
     expect(screen.getByText('Gnosis')).toBeInTheDocument();
     const nameDropdown = screen.getByTestId('networks-page-chainlist-dropdown');
     expect(nameDropdown).toHaveAttribute('data-anchor', 'name');
+  });
+
+  it('lists Chainlist dropdown networks with logos before networks without logos', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add`,
+      remoteFeatureFlags: {
+        extensionUxChainlist: true,
+        extensionUxChainlistV2: true,
+      },
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('network-form-network-name'));
+    });
+
+    const networkNames = screen
+      .getAllByTestId('networks-page-chainlist-network')
+      .map((network) => network.querySelector('.truncate')?.textContent);
+
+    const gnosisIndex = networkNames.indexOf('Gnosis');
+    const cronosIndex = networkNames.indexOf('Cronos Mainnet');
+    const confluxIndex = networkNames.indexOf('Chainlist Network 31');
+    const plainNetworkIndex = networkNames.indexOf('Chainlist Network 1');
+
+    const sepoliaIndex = networkNames.indexOf('Sepolia');
+
+    expect(gnosisIndex).toBeGreaterThanOrEqual(0);
+    expect(cronosIndex).toBeGreaterThan(gnosisIndex);
+    expect(confluxIndex).toBeGreaterThan(cronosIndex);
+    expect(plainNetworkIndex).toBeGreaterThan(confluxIndex);
+    expect(sepoliaIndex).toBeGreaterThan(plainNetworkIndex);
+    expect(
+      screen.queryByTestId('networks-page-chainlist-show-test-networks'),
+    ).not.toBeInTheDocument();
   });
 
   it('caps the Chainlist list above the Save button', () => {
@@ -592,7 +704,7 @@ describe('NetworksPage', () => {
     expect(screen.getByTestId('network-form-ticker-input')).toHaveValue('xDAI');
   });
 
-  it('hides built-in test networks from Chainlist when test networks are hidden', async () => {
+  it('keeps default testnets under the Chainlist toggle when test networks are hidden', async () => {
     renderNetworksPage({
       pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
       networkConfigurationsByChainId: {
@@ -609,12 +721,65 @@ describe('NetworksPage', () => {
       ),
       { target: { value: 'Sepolia' } },
     );
-    await waitFor(() => {
-      expect(screen.queryByText('Sepolia')).not.toBeInTheDocument();
+
+    expect(await screen.findByText('Sepolia')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('networks-page-chainlist-show-test-networks'),
+    ).not.toBeChecked();
+    expect(
+      screen.getByTestId('networks-page-chainlist-added-pill'),
+    ).toHaveTextContent(messages.added.message);
+
+    fireEvent.click(
+      screen.getByText('Sepolia').closest('button') as HTMLButtonElement,
+    );
+
+    expect(
+      await screen.findByText(messages.editNetwork.message),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('network-form-network-name')).toHaveValue(
+      'Sepolia',
+    );
+
+    fireEvent.click(screen.getByTestId('networks-page-form-back-button'));
+
+    expect(
+      await screen.findByTestId('networks-page-show-test-networks'),
+    ).toBeChecked();
+    expect(screen.getByText('Sepolia')).toBeInTheDocument();
+  });
+
+  it('selects a default testnet that is not added yet', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
+      remoteFeatureFlags: { extensionUxChainlist: true },
+      showTestNetworks: false,
     });
+
+    fireEvent.change(
+      await screen.findByPlaceholderText(
+        messages.searchNetworkNameOrChainId.message,
+      ),
+      { target: { value: 'Sepolia' } },
+    );
+
     expect(
       screen.queryByTestId('networks-page-chainlist-added-pill'),
     ).not.toBeInTheDocument();
+
+    fireEvent.click(
+      (await screen.findByText('Sepolia')).closest(
+        'button',
+      ) as HTMLButtonElement,
+    );
+
+    expect(
+      await screen.findByText(messages.addNetwork.message),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('network-form-network-name')).toHaveValue(
+      'Sepolia',
+    );
+    expect(screen.getByTestId('network-form-chain-id')).toHaveValue('11155111');
   });
 
   it('shows built-in test networks in Chainlist when test networks are shown', async () => {

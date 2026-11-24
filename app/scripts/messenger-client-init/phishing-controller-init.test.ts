@@ -1,6 +1,7 @@
 import {
   PhishingController,
   PhishingControllerMessenger,
+  RequestSourcePlatform,
 } from '@metamask/phishing-controller';
 import { getRootMessenger } from '../lib/messenger';
 import { MessengerClientInitRequest } from './types';
@@ -39,6 +40,7 @@ describe('PhishingControllerInit', () => {
       state: undefined,
       hotlistRefreshInterval: 5_000,
       stalelistRefreshInterval: 30_000,
+      platform: RequestSourcePlatform.Extension,
     });
   });
 });

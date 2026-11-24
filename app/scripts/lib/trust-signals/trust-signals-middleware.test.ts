@@ -1,4 +1,5 @@
 import { Hex, JsonRpcResponse, Json, JsonRpcRequest } from '@metamask/utils';
+import { RequestSourceFlow } from '@metamask/phishing-controller';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { mockNetworkState } from '../../../../test/stub/networks';
@@ -13,8 +14,8 @@ import {
   type TrustSignalsMiddlewareRequest,
 } from './trust-signals-middleware';
 import {
-  createCaipOriginScanGate,
-  createEip1193OriginScanGate,
+  getCaipOriginScanFlow,
+  getEip1193OriginScanFlow,
 } from './trust-signals-util';
 import { scanAddressAndAddToCache } from './security-alerts-api';
 
@@ -126,7 +127,7 @@ const createMiddleware = (
   const originScan = createOriginScanMiddleware(
     phishingController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
     preferencesController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
-    createEip1193OriginScanGate(getPermittedAccounts),
+    getEip1193OriginScanFlow(getPermittedAccounts),
     requestUrl,
   );
 
@@ -180,7 +181,7 @@ const createCaipOriginScanMiddleware = (
     middleware: createOriginScanMiddleware(
       phishingController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
       preferencesController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
-      createCaipOriginScanGate(() => hasCaip25Permission),
+      getCaipOriginScanFlow(() => hasCaip25Permission),
       requestUrl,
     ),
     phishingController,
@@ -274,7 +275,10 @@ describe('trust signals middleware', () => {
         CHAIN_IDS.MAINNET,
         phishingController,
       );
-      expect(phishingController.scanUrl).toHaveBeenCalledWith(req.origin);
+      expect(phishingController.scanUrl).toHaveBeenCalledWith(
+        req.origin,
+        RequestSourceFlow.Confirmations,
+      );
       expect(next).toHaveBeenCalled();
     });
 
@@ -923,7 +927,10 @@ describe('trust signals middleware', () => {
 
       await middleware(req, createMockResponse(), next);
 
-      expect(phishingController.scanUrl).toHaveBeenCalledWith(req.origin);
+      expect(phishingController.scanUrl).toHaveBeenCalledWith(
+        req.origin,
+        RequestSourceFlow.Confirmations,
+      );
     });
 
     it('logs an error and continues when a scan fails', async () => {
@@ -1538,6 +1545,37 @@ describe('trust signals middleware', () => {
     });
   });
 
+  describe('personal_sign', () => {
+    it('scans the origin', async () => {
+      const { middleware, phishingController } = createMiddleware();
+      const req = createMockRequest(MESSAGE_TYPE.PERSONAL_SIGN, [
+        '0x48656c6c6f',
+        TEST_ADDRESSES.FROM,
+      ]);
+      const next = jest.fn();
+
+      await middleware(req, createMockResponse(), next);
+
+      expect(phishingController.scanUrl).toHaveBeenCalledWith(
+        req.origin,
+        RequestSourceFlow.Confirmations,
+      );
+      expect(next).toHaveBeenCalled();
+    });
+
+    it('does not scan any address', async () => {
+      const { middleware } = createMiddleware();
+      const req = createMockRequest(MESSAGE_TYPE.PERSONAL_SIGN, [
+        '0x48656c6c6f',
+        TEST_ADDRESSES.FROM,
+      ]);
+
+      await middleware(req, createMockResponse(), jest.fn());
+
+      expect(scanAddressMockAndAddToCache).not.toHaveBeenCalled();
+    });
+  });
+
   describe('eth_request_accounts', () => {
     it('scans full URL when url with path is present', async () => {
       const fullUrl = 'https://example.com/swap/review?token=eth';
@@ -1555,7 +1593,10 @@ describe('trust signals middleware', () => {
 
       await middleware(req, res, next);
 
-      expect(phishingController.scanUrl).toHaveBeenCalledWith(fullUrl);
+      expect(phishingController.scanUrl).toHaveBeenCalledWith(
+        fullUrl,
+        RequestSourceFlow.DappConnection,
+      );
       expect(next).toHaveBeenCalled();
     });
 
@@ -1572,7 +1613,10 @@ describe('trust signals middleware', () => {
 
       await middleware(req, res, next);
 
-      expect(phishingController.scanUrl).toHaveBeenCalledWith(origin);
+      expect(phishingController.scanUrl).toHaveBeenCalledWith(
+        origin,
+        RequestSourceFlow.DappConnection,
+      );
       expect(next).toHaveBeenCalled();
     });
 
@@ -1604,7 +1648,10 @@ describe('trust signals middleware', () => {
 
       await middleware(req, res, next);
 
-      expect(phishingController.scanUrl).toHaveBeenCalledWith(origin);
+      expect(phishingController.scanUrl).toHaveBeenCalledWith(
+        origin,
+        RequestSourceFlow.DappConnection,
+      );
       expect(next).toHaveBeenCalled();
     });
 
@@ -1673,7 +1720,10 @@ describe('trust signals middleware', () => {
 
         await new Promise((resolve) => setTimeout(resolve, 0));
 
-        expect(phishingController.scanUrl).toHaveBeenCalledWith(origin);
+        expect(phishingController.scanUrl).toHaveBeenCalledWith(
+          origin,
+          RequestSourceFlow.RpcTrustSignals,
+        );
         expect(next).toHaveBeenCalled();
 
         expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -1699,12 +1749,21 @@ describe('trust signals middleware', () => {
 
   describe('EIP-7715 advanced permissions', () => {
     const eip7715Methods = [
-      MESSAGE_TYPE.WALLET_REQUEST_EXECUTION_PERMISSIONS,
-      MESSAGE_TYPE.WALLET_GET_SUPPORTED_EXECUTION_PERMISSIONS,
-      MESSAGE_TYPE.WALLET_GET_GRANTED_EXECUTION_PERMISSIONS,
+      [
+        MESSAGE_TYPE.WALLET_REQUEST_EXECUTION_PERMISSIONS,
+        RequestSourceFlow.Confirmations,
+      ],
+      [
+        MESSAGE_TYPE.WALLET_GET_SUPPORTED_EXECUTION_PERMISSIONS,
+        RequestSourceFlow.RpcTrustSignals,
+      ],
+      [
+        MESSAGE_TYPE.WALLET_GET_GRANTED_EXECUTION_PERMISSIONS,
+        RequestSourceFlow.RpcTrustSignals,
+      ],
     ] as const;
 
-    eip7715Methods.forEach((method) => {
+    eip7715Methods.forEach(([method, flow]) => {
       describe(method, () => {
         it('scans URL when origin is present', async () => {
           const { middleware, phishingController } = createMiddleware();
@@ -1715,7 +1774,7 @@ describe('trust signals middleware', () => {
 
           await middleware(req, res, next);
 
-          expect(phishingController.scanUrl).toHaveBeenCalledWith(origin);
+          expect(phishingController.scanUrl).toHaveBeenCalledWith(origin, flow);
           expect(next).toHaveBeenCalled();
         });
 
@@ -1801,7 +1860,10 @@ describe('trust signals middleware', () => {
 
       await middleware(req, createMockResponse(), next);
 
-      expect(phishingController.scanUrl).toHaveBeenCalledWith(req.origin);
+      expect(phishingController.scanUrl).toHaveBeenCalledWith(
+        req.origin,
+        RequestSourceFlow.DappConnection,
+      );
       expect(next).toHaveBeenCalled();
     });
 
@@ -1815,7 +1877,10 @@ describe('trust signals middleware', () => {
 
       await middleware(req, createMockResponse(), jest.fn());
 
-      expect(phishingController.scanUrl).toHaveBeenCalledWith(req.origin);
+      expect(phishingController.scanUrl).toHaveBeenCalledWith(
+        req.origin,
+        RequestSourceFlow.RpcTrustSignals,
+      );
     });
 
     // Mirrors the EIP-1193 `eth_accounts` gate, which only scans once the
@@ -1841,6 +1906,7 @@ describe('trust signals middleware', () => {
       MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
       MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3,
       MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+      MESSAGE_TYPE.PERSONAL_SIGN,
       MESSAGE_TYPE.WALLET_SEND_CALLS,
     ].forEach((innerMethod) => {
       it(`scans the origin for wallet_invokeMethod wrapping ${innerMethod}`, async () => {
@@ -1850,7 +1916,10 @@ describe('trust signals middleware', () => {
 
         await middleware(req, createMockResponse(), jest.fn());
 
-        expect(phishingController.scanUrl).toHaveBeenCalledWith(req.origin);
+        expect(phishingController.scanUrl).toHaveBeenCalledWith(
+          req.origin,
+          RequestSourceFlow.Confirmations,
+        );
       });
     });
 

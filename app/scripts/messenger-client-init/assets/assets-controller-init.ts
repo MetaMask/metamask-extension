@@ -59,7 +59,38 @@ async function safeGetBearerToken(
 }
 
 /**
+ * Preference fields that should refresh AssetsController subscriptions.
+ * `useExternalServices` is extension-only. `useTokenDetection` lives on the
+ * core preferences state and is read again on each detection pass.
+ */
+type AssetsSubscriptionPreferences = PreferencesState & {
+  useExternalServices?: boolean;
+  useTokenDetection?: boolean;
+};
+
+/**
+ * Selector key for `PreferencesController:stateChange`.
+ *
+ * Messenger notifies a selector subscriber only when the selected value
+ * changes by reference (`!==`). A primitive changes when either preference
+ * that affects asset subscriptions flips, and stays stable for unrelated
+ * preference updates.
+ *
+ * @param state - The published preferences state.
+ * @returns A primitive key of the two subscription-relevant preferences.
+ */
+function getAssetsSubscriptionPreferenceKey(state: PreferencesState): string {
+  const preferencesState = state as AssetsSubscriptionPreferences;
+  const useExternalServices = preferencesState.useExternalServices ?? true;
+  const useTokenDetection = preferencesState.useTokenDetection ?? true;
+  return `${useExternalServices}:${useTokenDetection}`;
+}
+
+/**
  * Safely retrieves the token detection preference.
+ *
+ * Called on each detection poll and whenever subscriptions restart, so it
+ * must read the current preference rather than a value captured at init.
  *
  * @param initMessenger - The initialization messenger.
  * @returns Whether token detection is enabled (defaults to true on error).
@@ -81,7 +112,7 @@ function safeGetTokenDetectionEnabled(
  * Returns a getter for basic functionality (use external services) from preferences.
  * When true, token/price APIs are used; when false, only RPC is used.
  * Also returns false during onboarding (before the user has completed setup),
- * matching the behavior of the UI polling hooks (useCurrencyRatePolling, useTokenRatesPolling).
+ * matching the behavior of the UI polling hooks (legacy assets polling).
  *
  * @param initMessenger - The initialization messenger.
  * @returns Getter that returns whether basic functionality is enabled (defaults to true on error).
@@ -246,30 +277,30 @@ export const AssetsControllerInit: MessengerClientInitFunction<
 }) => {
   const clientController = () => getMessengerClient('ClientController');
 
-  // Get token detection preference
-  const tokenDetectionEnabled = safeGetTokenDetectionEnabled(initMessenger);
-
   // Basic functionality: when true (useExternalServices), token/price APIs are used; when false, RPC only.
   const isBasicFunctionality = getIsBasicFunctionality(initMessenger);
 
-  // Extension: subscribe to PreferencesController:stateChange and notify the controller only when useExternalServices changes.
-  // Also subscribe to OnboardingController:stateChange so that when onboarding completes, subscriptions are re-evaluated.
+  // Extension: subscribe to PreferencesController:stateChange and refresh
+  // subscriptions when useExternalServices or useTokenDetection changes.
+  // Detection polling starts only inside subscribe, so a live getter is not
+  // enough to pick up a runtime toggle. The removed TokenDetectionController
+  // restarted detection when this preference changed.
+  // Also subscribe to OnboardingController:stateChange so that when onboarding
+  // completes, subscriptions are re-evaluated.
   // Mobile can pass a different implementation (e.g. Redux or app-specific listener).
   const subscribeToBasicFunctionalityChange = (
     onChange: (isBasic: boolean) => void,
   ): void => {
     controllerMessenger.subscribe(
       'PreferencesController:stateChange',
-      (_useExternalServices: boolean) => {
+      () => {
         onChange(isBasicFunctionality());
       },
-      (state: PreferencesState) =>
-        (state as PreferencesState & { useExternalServices?: boolean })
-          .useExternalServices ?? true,
+      getAssetsSubscriptionPreferenceKey,
     );
     // When onboarding completes, re-evaluate basic functionality so price
     // subscriptions start (or stay stopped) based on the current preference.
-    // This mirrors how useCurrencyRatePolling and useTokenRatesPolling gate on completedOnboarding.
+    // This mirrors how legacy assets polling gates on completedOnboarding.
     initMessenger.subscribe(
       'OnboardingController:stateChange',
       (completedOnboarding: boolean) => {
@@ -291,9 +322,14 @@ export const AssetsControllerInit: MessengerClientInitFunction<
     subscribeToBasicFunctionalityChange,
     queryApiClient: getApiClient(initMessenger),
     rpcDataSourceConfig: {
-      tokenDetectionEnabled: () => tokenDetectionEnabled,
+      tokenDetectionEnabled: () => safeGetTokenDetectionEnabled(initMessenger),
       balanceInterval: 30_000,
       detectionInterval: 180_000,
+    },
+    // Accounts API defaults this to () => true. When detection is off, it
+    // returns balances only for tokens already in state.
+    accountsApiDataSourceConfig: {
+      tokenDetectionEnabled: () => safeGetTokenDetectionEnabled(initMessenger),
     },
     priceDataSourceConfig: {
       pollInterval: 180_000,

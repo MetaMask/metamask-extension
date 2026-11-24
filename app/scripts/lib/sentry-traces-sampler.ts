@@ -35,6 +35,7 @@ export const DEFAULT_TRANSACTION_SAMPLE_RATES: Readonly<
   'Swap Quote Fetch': SWAP_QUOTE_FETCH_SAMPLE_RATE,
   'Homepage Ready': 0.001,
   'Homepage Section Time To Content': 0.001,
+  'Useful Screen Ready': 0.001,
 });
 
 /**

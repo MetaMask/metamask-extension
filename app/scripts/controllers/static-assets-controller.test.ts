@@ -86,6 +86,7 @@ const setupController = ({ supportedChains }: { supportedChains: Hex[] }) => {
   return {
     controller,
     messenger,
+    staticAssetsControllerMessenger,
     spies: {
       fetchWithCacheSpy,
       networkControllerFindNetworkClientIdByChainIdSpy,
@@ -99,6 +100,31 @@ describe('StaticAssetsController', () => {
   afterEach(() => {
     jest.restoreAllMocks();
     jest.clearAllMocks();
+  });
+
+  describe('polling messenger actions', () => {
+    it('starts and stops polling through the controller messenger', () => {
+      const { staticAssetsControllerMessenger } = setupController({
+        supportedChains: [CHAIN_IDS.MAINNET],
+      });
+      const input = {
+        chainIds: [CHAIN_IDS.MAINNET],
+        selectedAccountAddress: '0x123',
+        selectedAccountId: 'mock-account-id',
+      };
+
+      const pollingToken = staticAssetsControllerMessenger.call(
+        'StaticAssetsController:startPolling',
+        input,
+      );
+      const stopResult = staticAssetsControllerMessenger.call(
+        'StaticAssetsController:stopPollingByPollingToken',
+        pollingToken,
+      );
+
+      expect(typeof pollingToken).toBe('string');
+      expect(stopResult).toBeUndefined();
+    });
   });
 
   describe('_executePoll', () => {

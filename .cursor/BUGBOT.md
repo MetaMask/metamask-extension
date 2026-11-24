@@ -39,7 +39,7 @@ Use `mms-extension-testing` unit reference for unit-test quality and bug detecti
 - Check for proper imports from the E2E framework
 - Verify Page Object Model pattern is used
 - Ensure tests are written in TypeScript (.spec.ts)
-- **ALWAYS** apply the Page Object Model rules in sections **3.3–3.9** to every changed file under `test/e2e/`. These sections are written for **local review** (CODEBOT / `/review` / local Bugbot run) and for agent self-check while writing tests — see `mms-extension-testing` → `references/e2e/pom-antipatterns.md`.
+- **ALWAYS** apply the Page Object Model rules in sections **3.3–3.10** to every changed file under `test/e2e/`. These sections are written for **local review** (CODEBOT / `/review` / local Bugbot run) and for agent self-check while writing tests — see `mms-extension-testing` → `references/e2e/pom-antipatterns.md`.
 
 Use `mms-extension-testing` E2E references for test quality and POM enforcement.
 
@@ -156,6 +156,13 @@ When both conditions hold, inspect the fixture builder chain in the same `withFi
 - Detect: `/\btry\s*\{/` or `/\}\s*catch\s*\(/`.
 - Do not report `try`/`catch` inside a `driver.wait` polling callback that returns `false`, or framework helpers under `test/e2e/webdriver/`.
 - Severity: **MEDIUM**. Comment: "Do not swallow failures in page objects or flows. Let the error surface, and use driver wait helpers and `check*` methods with clear error messages."
+
+#### 3.10 New page object and the route registry (Non-Blocking)
+
+- Scope: new files under `test/e2e/page-objects/pages/**/*.{ts,js}`.
+- Detect: the diff adds a page object class and does not change `test/e2e/route-registry/route-registry.ts`.
+- Do not report page objects for modals, components, navbars, headers or any other part of a screen that no route renders on its own. Only full screens with their own route belong in the registry.
+- Severity: **LOW** (suggestion), non-blocking. Comment: "Does this page object cover a full screen with its own route? If so, consider mapping it in `test/e2e/route-registry/route-registry.ts` (replacing `null`) so route coverage and `mm describe-screen` pick it up. Ignore this if it is a modal or component."
 
 ### 4. Controller Guidelines
 

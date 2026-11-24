@@ -75,7 +75,7 @@ import {
   isWebUrl,
 } from '../../../../../../shared/lib/url-utils';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
-import { getImageForChainId } from '../../../../../selectors/multichain';
+import { useImageForChainId } from '../../../../../hooks/useImageForChainId';
 import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
 import { navigateToSendRoute } from '../../../../../pages/confirmations/utils/send';
 import { useDispatch } from '../../../../../store/hooks';
@@ -126,7 +126,7 @@ export function NftDetailsComponent({
   const { defaultRpcEndpointIndex } = nftChainNetwork;
   const { networkClientId: nftNetworkClientId } =
     nftChainNetwork.rpcEndpoints[defaultRpcEndpointIndex];
-  const nftChainImage = getImageForChainId(nftChainId as string);
+  const nftChainImage = useImageForChainId(nftChainId as string);
   const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
     string,
     string

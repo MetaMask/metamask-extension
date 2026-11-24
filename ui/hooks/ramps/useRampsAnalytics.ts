@@ -6,7 +6,6 @@
  */
 /* eslint-disable @typescript-eslint/naming-convention */
 import { useCallback, useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -15,7 +14,6 @@ import {
   RAMPS_RAMP_ROUTING,
   RAMPS_RAMP_TYPE,
 } from '../../../shared/lib/ramps/analytics';
-import { getIsRampsEnabled } from '../../selectors/ramps-feature-flags';
 import { useAnalytics } from '../useAnalytics';
 import { useRampsUserRegion } from './useRampsUserRegion';
 
@@ -38,14 +36,9 @@ export type RampsProviderSelectedArgs = {
  * Analytics for the in-app ramps buy flow. Wraps `useAnalytics` and injects the
  * shared context (region, currency source, ramp type) every `ramps-*` event
  * needs, so call sites only pass event-specific properties.
- *
- * All tracking is a no-op when the `rampsEnabled` flag is off — the flow is
- * already unreachable in that case, this is belt-and-suspenders for the AC
- * "no events fire when the flag is off".
  */
 export function useRampsAnalytics() {
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const isRampsEnabled = useSelector(getIsRampsEnabled);
   const { userRegion } = useRampsUserRegion();
 
   // Region/currency load asynchronously. Read them through refs so the track
@@ -62,9 +55,6 @@ export function useRampsAnalytics() {
 
   const track = useCallback(
     (name: MetaMetricsEventName, properties: Record<string, unknown>) => {
-      if (!isRampsEnabled) {
-        return;
-      }
       trackEvent(
         createEventBuilder(name)
           .addCategory(MetaMetricsEventCategory.Ramps)
@@ -76,7 +66,7 @@ export function useRampsAnalytics() {
           .build(),
       );
     },
-    [createEventBuilder, isRampsEnabled, trackEvent],
+    [createEventBuilder, trackEvent],
   );
 
   const trackScreenViewed = useCallback(

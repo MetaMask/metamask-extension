@@ -6,14 +6,11 @@ import type { AccountTreeControllerState } from '@metamask/account-tree-controll
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type { AnnouncementControllerState } from '@metamask/announcement-controller';
 import type { BridgeStatusControllerState } from '@metamask/bridge-status-controller';
+import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import type {
   AccountTrackerControllerState,
-  CurrencyRateState,
-  MultichainAssetsRatesControllerState,
   NftControllerState,
   RatesControllerState,
-  TokenRatesControllerState,
-  TokenBalancesControllerState,
   TokensControllerState,
 } from '@metamask/assets-controllers';
 import type { KeyringControllerState } from '@metamask/keyring-controller';
@@ -145,18 +142,6 @@ type StorageServiceNamespace = keyof StorageServiceNamespaceMap;
 
 type FixtureBuildResult = FixtureType & {
   storageServiceData?: Record<string, unknown>;
-};
-
-/**
- * Like `Partial<MultichainAssetsRatesControllerState>`, but `conversionRates` may be a
- * partial map (lodash `merge` fills the rest).
- */
-type MultichainAssetsRatesControllerFixturePatch = Partial<
-  Omit<MultichainAssetsRatesControllerState, 'conversionRates'>
-> & {
-  conversionRates?: Partial<
-    MultichainAssetsRatesControllerState['conversionRates']
-  >;
 };
 
 /**
@@ -293,17 +278,6 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  /**
-   * @deprecated Assets-unify reads fiat from `AssetsController`. Set a displayed
-   * rate with {@link FixtureBuilderV2.withAssetsController} `assetsPrice`, and
-   * the selected currency with `selectedCurrency`.
-   * @param data - Legacy CurrencyController state to merge.
-   */
-  withCurrencyController(data: Partial<CurrencyRateState>): this {
-    merge(this.fixture.data.CurrencyController, data);
-    return this;
-  }
-
   withKeyringController(data: Partial<KeyringControllerState>): this {
     merge(this.fixture.data.KeyringController, data);
     return this;
@@ -351,20 +325,19 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  /**
-   * @deprecated Assets-unify reads non-EVM fiat from `AssetsController.assetsPrice`.
-   * Set that price with {@link FixtureBuilderV2.withAssetsController}.
-   * @param data - Legacy MultichainAssetsRatesController state to merge.
-   */
-  withMultichainAssetsRatesController(
-    data: MultichainAssetsRatesControllerFixturePatch,
-  ): this {
-    merge(this.fixture.data.MultichainAssetsRatesController, data);
+  withMultichainRatesController(data: Partial<RatesControllerState>): this {
+    merge(this.fixture.data.MultichainRatesController, data);
     return this;
   }
 
-  withMultichainRatesController(data: Partial<RatesControllerState>): this {
-    merge(this.fixture.data.MultichainRatesController, data);
+  withMultichainTransactionsController(
+    data: Partial<MultichainTransactionsControllerState>,
+  ): this {
+    merge(
+      (this.fixture.data as Record<string, unknown>)
+        .MultichainTransactionsController,
+      data,
+    );
     return this;
   }
 
@@ -461,18 +434,6 @@ class FixtureBuilderV2 {
   withSnapController(data: Partial<PersistedSnapControllerState>): this {
     (this.fixture.data as Record<string, unknown>).SnapController ??= {};
     merge(this.fixture.data.SnapController, data);
-    return this;
-  }
-
-  withTokenBalancesController(
-    data: Partial<TokenBalancesControllerState>,
-  ): this {
-    merge(this.fixture.data.TokenBalancesController, data);
-    return this;
-  }
-
-  withTokenRatesController(data: Partial<TokenRatesControllerState>): this {
-    merge(this.fixture.data.TokenRatesController, data);
     return this;
   }
 
@@ -736,30 +697,6 @@ class FixtureBuilderV2 {
   withConversionRateDisabled(): this {
     return this.withPreferencesController({
       useCurrencyRateCheck: false,
-    });
-  }
-
-  /**
-   * @deprecated Set the non-EVM price with {@link FixtureBuilderV2.withAssetsController}.
-   * @param conversionRates - Legacy conversion rates to merge.
-   */
-  withConversionRates(
-    conversionRates: Partial<
-      MultichainAssetsRatesControllerState['conversionRates']
-    > = {},
-  ): this {
-    return this.withMultichainAssetsRatesController({ conversionRates });
-  }
-
-  /**
-   * @deprecated Set the displayed native price with {@link FixtureBuilderV2.withAssetsController}.
-   * @param currencyRates - Legacy currency rates to merge.
-   */
-  withCurrencyRates(
-    currencyRates: CurrencyRateState['currencyRates'] = {},
-  ): this {
-    return this.withCurrencyController({
-      currencyRates: { ...currencyRates },
     });
   }
 
@@ -1469,7 +1406,7 @@ class FixtureBuilderV2 {
       this
         // When `assetsUnifyState` is enabled the asset list is derived from the
         // AssetsController (`customAssets` + `assetsInfo` + `assetsBalance`),
-        // not from TokensController/TokenBalancesController.
+        // not from TokensController.
         .withAssetsController({
           customAssets: { [DEFAULT_FIXTURE_ACCOUNT_ID]: [assetId] },
           assetsBalance: {

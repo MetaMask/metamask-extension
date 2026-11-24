@@ -5,7 +5,7 @@ import { AssetConversion, FungibleAssetMarketData } from '@metamask/snaps-sdk';
 import { isNativeCaipAssetId } from './asset-utils';
 
 type AssetsRatesState = {
-  metamask: MultichainAssetsRatesControllerState;
+  metamask: Pick<MultichainAssetsRatesControllerState, 'conversionRates'>;
 };
 
 export function getConversionRatesForNativeAsset({

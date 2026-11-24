@@ -256,15 +256,25 @@ describe('NFT Items', () => {
   const checkAndUpdateAllNftsOwnershipStatusStub = jest.fn();
   const updateNftDropDownStateStub = jest.fn();
   setBackgroundConnection({
-    detectNfts: detectNftsStub,
     getState: getStateStub,
     getStatePatches: jest.fn().mockResolvedValue([]),
-    checkAndUpdateAllNftsOwnershipStatus:
-      checkAndUpdateAllNftsOwnershipStatusStub,
     updateNftDropDownState: updateNftDropDownStateStub,
-    setUseNftDetection: setUseNftDetectionStub,
-    setOpenSeaEnabled: setDisplayNftMediaStub,
-    setPreference: setPreferenceStub,
+    messengerCall: (actionType, args = []) => {
+      switch (actionType) {
+        case 'NftDetectionController:detectNfts':
+          return detectNftsStub(...args);
+        case 'NftController:checkAndUpdateAllNftsOwnershipStatus':
+          return checkAndUpdateAllNftsOwnershipStatusStub(...args);
+        case 'PreferencesController:setUseNftDetection':
+          return setUseNftDetectionStub(...args);
+        case 'PreferencesController:setOpenSeaEnabled':
+          return setDisplayNftMediaStub(...args);
+        case 'PreferencesController:setPreference':
+          return setPreferenceStub(...args);
+        default:
+          throw new Error(`Unknown action type '${actionType}'`);
+      }
+    },
   });
 
   beforeEach(() => {

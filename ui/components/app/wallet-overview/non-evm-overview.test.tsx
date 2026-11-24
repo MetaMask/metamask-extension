@@ -58,8 +58,6 @@ jest.mock(
 
 jest.mock('../../../store/actions', () => ({
   handleSnapRequest: jest.fn(),
-  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
-  tokenBalancesStopPollingByPollingToken: jest.fn(),
 }));
 
 jest.mock('../../../hooks/useMultiPolling', () => ({
@@ -84,6 +82,16 @@ jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
     ActivityBanner: 'ext_buy_banner_activity',
     BtcBanner: 'ext_buy_banner_btc',
   },
+}));
+
+const mockGoToBuy = jest.fn().mockResolvedValue('native');
+jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  default: jest.fn(() => ({
+    goToBuy: mockGoToBuy,
+  })),
 }));
 
 const BUY_BUTTON = 'coin-overview-buy';
@@ -325,7 +333,7 @@ describe('NonEvmOverview', () => {
     expect(buyButton).not.toBeDisabled();
   });
 
-  it('calls openBuyInPdapp when clicking on "Buy & Sell" button', async () => {
+  it('calls the in-app buy flow when clicking on "Buy & Sell" button', async () => {
     const { queryByTestId } = renderWithProvider(
       <NonEvmOverview />,
       getStore(),
@@ -334,9 +342,7 @@ describe('NonEvmOverview', () => {
     const buyButton = queryByTestId(BUY_BUTTON);
     expect(buyButton).toBeInTheDocument();
     fireEvent.click(buyButton as HTMLElement);
-    await waitFor(() =>
-      expect(mockOpenBuyCryptoInPdapp).toHaveBeenCalledTimes(1),
-    );
+    await waitFor(() => expect(mockGoToBuy).toHaveBeenCalledTimes(1));
   });
 
   it('sends an event when clicking the Buy button', async () => {

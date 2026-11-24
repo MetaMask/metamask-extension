@@ -5,9 +5,11 @@ import type { CaipChainId, Hex } from '@metamask/utils';
 import { type Asset } from '../../types/send';
 import { getUseExternalServices } from '../../../../selectors';
 import { getAllMultichainNetworkConfigurations } from '../../../../selectors/multichain/networks';
+import { getSelectedAccountGroup } from '../../../../selectors/multichain-accounts/account-tree';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { useSendTokens } from './useSendTokens';
 import { useSendNfts } from './useSendNfts';
+import { useEnsureAccountGroupAssets } from './useEnsureAccountGroupAssets';
 
 type SendAssets = {
   nfts: Asset[];
@@ -22,6 +24,8 @@ export const useSendAssets = (
   options: UseSendAssetsOptions = {},
 ): SendAssets => {
   const { includeNoBalance = false } = options;
+  const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
+  useEnsureAccountGroupAssets(selectedAccountGroupId);
   const tokens = useSendTokens({ includeNoBalance });
   const nfts = useSendNfts();
   const useExternalServices = useSelector(getUseExternalServices);

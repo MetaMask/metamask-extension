@@ -182,7 +182,7 @@ describe('SelectedGasFeeToken', () => {
         },
       }),
     );
-    expect(result.getByText('pathUSD')).toBeInTheDocument();
+    expect(result.getByText('OUSD')).toBeInTheDocument();
   });
 
   it('does not render arrow icon if gasless not supported', () => {

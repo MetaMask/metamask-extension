@@ -56,7 +56,10 @@ import { isSwapsDefaultTokenSymbol } from '../../../../shared/lib/swaps.utils';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import { isFlask, isBeta } from '../../../../shared/lib/build-types';
 
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ACTIVITY_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../../helpers/constants/routes';
 import { stopPollingForQuotes } from '../../../store/actions';
 
 import { getRenderableNetworkFeesForQuote } from '../swaps.util';
@@ -369,7 +372,7 @@ export default function AwaitingSwap({
             isSwapsDefaultTokenSymbol(destinationTokenSymbol, chainId) ||
             swapComplete
           ) {
-            navigate(`${DEFAULT_ROUTE}?tab=activity`);
+            navigate(ACTIVITY_ROUTE);
           } else {
             navigate(DEFAULT_ROUTE);
           }

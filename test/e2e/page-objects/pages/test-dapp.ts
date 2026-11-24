@@ -984,6 +984,9 @@ class TestDapp {
   async disconnectAccount(publicAddress: string) {
     console.log('Disconnect account from test dapp');
     await this.driver.clickElement(this.revokePermissionButton);
+    await this.driver.waitForSelector(this.connectAccountButton, {
+      state: 'enabled',
+    });
     await this.driver.refresh();
     await this.checkPageIsLoaded();
     await this.checkConnectedAccounts(publicAddress, false);

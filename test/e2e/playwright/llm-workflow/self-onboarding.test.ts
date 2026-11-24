@@ -1,6 +1,11 @@
 import { importSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
+import {
+  DEFAULT_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
+  UNLOCK_ROUTE,
+} from '../../../../ui/helpers/constants/routes';
 import type { Driver } from '../../webdriver/driver';
 import { waitForAnyScreen } from './launcher/state-inspector';
 import {
@@ -13,15 +18,18 @@ jest.mock('../../page-objects/flows/onboarding.flow', () => ({
   importSRPOnboardingFlow: jest.fn(),
 }));
 
-jest.mock('./launcher/state-inspector', () => ({
-  SCREEN_CHECKS: [
-    { screen: 'unlock' },
-    { screen: 'onboarding-welcome' },
-    { screen: 'home' },
-    { screen: 'onboarding-complete' },
-  ],
-  waitForAnyScreen: jest.fn(),
-}));
+jest.mock('./launcher/state-inspector', () => {
+  const routes = jest.requireActual('../../../../ui/helpers/constants/routes');
+  return {
+    SCREEN_CHECKS: [
+      routes.UNLOCK_ROUTE,
+      routes.ONBOARDING_WELCOME_ROUTE,
+      routes.DEFAULT_ROUTE,
+      routes.ONBOARDING_COMPLETION_ROUTE,
+    ].map((route) => ({ route })),
+    waitForAnyScreen: jest.fn(),
+  };
+});
 
 const mockCompleteOnboarding = jest.fn();
 const mockLogin = jest.fn();
@@ -55,9 +63,9 @@ const PASSWORD = 'correct horse battery staple';
 
 const driver = { timeout: 30_000 } as unknown as Driver;
 
-function showScreens(...screens: string[]) {
-  for (const screen of screens) {
-    mockWaitForAnyScreen.mockResolvedValueOnce({ screen } as never);
+function showScreens(...routes: string[]) {
+  for (const route of routes) {
+    mockWaitForAnyScreen.mockResolvedValueOnce({ route } as never);
   }
 }
 
@@ -89,20 +97,20 @@ describe('finishOnboarding', () => {
   });
 
   it('only waits on the completion, unlock and home screens', async () => {
-    showScreens('home');
+    showScreens(DEFAULT_ROUTE);
 
     await finishOnboarding(driver, PASSWORD);
 
     const [, checks] = mockWaitForAnyScreen.mock.calls[0];
-    expect(checks.map(({ screen }) => screen)).toStrictEqual([
-      'unlock',
-      'home',
-      'onboarding-complete',
+    expect(checks.map(({ route }) => route)).toStrictEqual([
+      UNLOCK_ROUTE,
+      DEFAULT_ROUTE,
+      ONBOARDING_COMPLETION_ROUTE,
     ]);
   });
 
   it('confirms the completion page', async () => {
-    showScreens('onboarding-complete');
+    showScreens(ONBOARDING_COMPLETION_ROUTE);
 
     await finishOnboarding(driver, PASSWORD);
 
@@ -112,7 +120,7 @@ describe('finishOnboarding', () => {
   });
 
   it('unlocks with the password, then confirms the completion page', async () => {
-    showScreens('unlock', 'onboarding-complete');
+    showScreens(UNLOCK_ROUTE, ONBOARDING_COMPLETION_ROUTE);
 
     await finishOnboarding(driver, PASSWORD);
 
@@ -122,7 +130,7 @@ describe('finishOnboarding', () => {
   });
 
   it('stops once home is shown after unlocking', async () => {
-    showScreens('unlock', 'home');
+    showScreens(UNLOCK_ROUTE, DEFAULT_ROUTE);
 
     await finishOnboarding(driver, PASSWORD);
 
@@ -131,19 +139,19 @@ describe('finishOnboarding', () => {
   });
 
   it('does not accept the unlock page again after unlocking', async () => {
-    showScreens('unlock', 'home');
+    showScreens(UNLOCK_ROUTE, DEFAULT_ROUTE);
 
     await finishOnboarding(driver, PASSWORD);
 
     const [, checks] = mockWaitForAnyScreen.mock.calls[1];
-    expect(checks.map(({ screen }) => screen)).toStrictEqual([
-      'home',
-      'onboarding-complete',
+    expect(checks.map(({ route }) => route)).toStrictEqual([
+      DEFAULT_ROUTE,
+      ONBOARDING_COMPLETION_ROUTE,
     ]);
   });
 
   it('fails when unlocking does not leave the unlock page', async () => {
-    showScreens('unlock');
+    showScreens(UNLOCK_ROUTE);
     mockWaitForAnyScreen.mockRejectedValueOnce(new Error('timed out'));
 
     await expect(finishOnboarding(driver, PASSWORD)).rejects.toThrow(

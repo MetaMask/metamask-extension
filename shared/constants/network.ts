@@ -11,7 +11,6 @@ import {
 } from '@metamask/utils';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import { CHAIN_IDS } from './chain-ids';
-import { getFailoverUrlsForChainId } from './network-failover';
 import { MultichainNetworks } from './multichain/networks';
 
 /**
@@ -646,6 +645,7 @@ export const ROBINHOOD_CHAIN_IMAGE_URL = './images/robinhood.svg';
 export const ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL = './images/rootstock-native.svg';
 export const ZERO_G_IMAGE_URL = './images/0g.svg';
 export const ZERO_G_NATIVE_TOKEN_IMAGE_URL = './images/0g-native.svg';
+export const ELYSIUM_NETWORK_IMAGE_URL = './images/elysium-network.png';
 export const TEMPO_TESTNET_IMAGE_URL = './images/tempo.svg';
 export const TEMPO_MAINNET_IMAGE_URL = './images/tempo.svg';
 export const CHILIZ_IMAGE_URL = './images/chiliz.svg';
@@ -1222,9 +1222,11 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.ARC]: ARC_NETWORK_IMAGE_URL,
   [CHAIN_IDS.GRAVITY]: GRAVITY_IMAGE_URL,
   [CHAIN_IDS.SOMNIA]: SOMNIA_IMAGE_URL,
+  [CHAIN_IDS.MOBILENODE]: MOBILENODE_IMAGE_URL,
   [CHAIN_IDS.ROBINHOOD_CHAIN]: ROBINHOOD_CHAIN_IMAGE_URL,
   [CHAIN_IDS.ZERO_G]: ZERO_G_IMAGE_URL,
-  [CHAIN_IDS.MOBILENODE]: MOBILENODE_IMAGE_URL,
+  // Kinetiq Elysium (chain 99901). Not in CHAIN_IDS, since that list is used for validation.
+  '0x1863d': ELYSIUM_NETWORK_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1287,7 +1289,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.PLUME]: PLUME_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.MATCHAIN]: BNB_TOKEN_IMAGE_URL,
   [CHAIN_IDS.FLOW]: FLOW_IMAGE_URL,
-  [CHAIN_IDS.KATANA]: KATANA_IMAGE_URL,
+  [CHAIN_IDS.KATANA]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_IMAGE_URL,
   [CHAIN_IDS.SOPHON]: SOPHON_IMAGE_URL,
   [CHAIN_IDS.SOPHON_TESTNET]: SOPHON_TESTNET_IMAGE_URL,
@@ -1325,6 +1327,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.ARC]: ARC_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.GRAVITY]: GRAVITY_IMAGE_URL,
   [CHAIN_IDS.SOMNIA]: SOMNIA_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.MOBILENODE]: MOBILENODE_IMAGE_URL,
   [CHAIN_IDS.KONET]: KONET_IMAGE_URL,
   [CHAIN_IDS.ROBINHOOD_CHAIN]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ZERO_G]: ZERO_G_NATIVE_TOKEN_IMAGE_URL,
@@ -1338,7 +1341,6 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [MultichainNetworks.TRON_NILE]: TRON_NILE_IMAGE_URL,
   [MultichainNetworks.TRON_SHASTA]: TRON_SHASTA_IMAGE_URL,
   [MultichainNetworks.STELLAR]: STELLAR_IMAGE_URL,
-  [CHAIN_IDS.MOBILENODE]: MOBILENODE_IMAGE_URL,
 } as const;
 
 /**
@@ -1486,7 +1488,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://linea-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.LINEA_MAINNET),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1501,7 +1502,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://arbitrum-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.ARBITRUM),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1516,7 +1516,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://avalanche-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.AVALANCHE),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1531,7 +1530,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://bsc-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.BSC),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1546,7 +1544,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://optimism-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.OPTIMISM),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1561,7 +1558,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://polygon-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.POLYGON),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1576,7 +1572,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://zksync-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.ZKSYNC_ERA),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1591,7 +1586,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://sei-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.SEI),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1606,7 +1600,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://monad-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.MONAD),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1621,7 +1614,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://hyperevm-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.HYPE),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1636,7 +1628,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://base-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.BASE),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1651,7 +1642,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://megaeth-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.MEGAETH_MAINNET),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1666,7 +1656,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://rpc.tempo.xyz/`,
-        failoverUrls: [],
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1681,7 +1670,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://arc-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.ARC),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1696,7 +1684,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://robinhood-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.ROBINHOOD_CHAIN),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1711,7 +1698,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://xdc-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.XDC),
         type: RpcEndpointType.Custom,
       },
     ],

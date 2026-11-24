@@ -35,6 +35,7 @@ import { useTransactionAccountOverride } from '../transactions/useTransactionAcc
 import { useTransactionPayingAccount } from '../transactions/useTransactionPayingAccount';
 import { useImportPayToken } from './useImportPayToken';
 import { useIsPayHardwareBlocked } from './useIsPayHardwareBlocked';
+import { useAutomaticMoneyAccountPayToken } from './useAutomaticMoneyAccountPayToken';
 import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
@@ -115,6 +116,15 @@ export function useAutomaticTransactionPayToken({
     () => tokens.filter((t) => !t.disabled),
     [tokens],
   );
+
+  const {
+    isPending: isMoneyAccountPayPending,
+    shouldSelect: shouldSelectMoneyAccount,
+  } = useAutomaticMoneyAccountPayToken({
+    availableTokens: tokensWithBalance,
+    disable,
+    payTokenSelected: Boolean(payToken),
+  });
 
   const [emptyAccountReselectTimedOut, setEmptyAccountReselectTimedOut] =
     useState(false);
@@ -200,6 +210,16 @@ export function useAutomaticTransactionPayToken({
       return;
     }
 
+    // Money Account owns the default when it is the better funding source.
+    // Selecting a token first latches payToken, so the balance default never
+    // runs. Wait while its balance is still loading.
+    if (isMoneyAccountPayPending || shouldSelectMoneyAccount) {
+      if (shouldSelectMoneyAccount) {
+        isUpdated.current = transactionId;
+      }
+      return;
+    }
+
     if (!automaticToken) {
       return;
     }
@@ -240,10 +260,12 @@ export function useAutomaticTransactionPayToken({
     automaticToken,
     disable,
     isDefaultMoneyAccount,
+    isMoneyAccountPayPending,
     isPostQuoteWithdraw,
     payToken,
     preferredToken,
     setPayToken,
+    shouldSelectMoneyAccount,
     tokens,
     transactionId,
   ]);
@@ -279,6 +301,12 @@ export function useAutomaticTransactionPayToken({
       return;
     }
 
+    // Initial selection already yielded to Money Account. Once a pay token
+    // exists, an account change still needs a token for the new account.
+    if (!payToken && (isMoneyAccountPayPending || shouldSelectMoneyAccount)) {
+      return;
+    }
+
     if (!automaticToken) {
       // Keep pending after the empty-account timeout. Funding tokens can still
       // arrive later; clearing pending here would leave payToken unset forever
@@ -298,8 +326,11 @@ export function useAutomaticTransactionPayToken({
     emptyAccountReselectTimedOut,
     from,
     isDefaultMoneyAccount,
+    isMoneyAccountPayPending,
     isPostQuoteWithdraw,
+    payToken,
     setPayToken,
+    shouldSelectMoneyAccount,
     tokensWithBalance.length,
   ]);
 
@@ -483,8 +514,9 @@ function getBestToken({
 
   // Same as mobile / Pay-with picker: prefer a no-fee source (subsidized
   // route or same-token Monad mUSD) that meets the fiat minimum before
-  // falling through to the first funding token.
-  if (selectableTokens.length && !isPostQuoteWithdraw) {
+  // falling through to the first funding token. Hardware payers get no
+  // no-fee routes, so there is nothing to prefer.
+  if (selectableTokens.length && !isPostQuoteWithdraw && !isHardwareWallet) {
     const noFeeCandidates = selectableTokens
       .filter((token) => {
         if (!token.chainId || !token.address) {

@@ -6,6 +6,8 @@ const DEFAULT_PRECISION = new BigNumber(MIN_AMOUNT).decimalPlaces();
 // The number of significant decimals places to show for amounts less than 1.
 const MAX_SIGNIFICANT_DECIMAL_PLACES = 3;
 
+const MAX_DECIMAL_PLACES = 8;
+
 const ZERO_DISPLAY = '0';
 
 export function formatAmountMaxPrecision(
@@ -27,9 +29,10 @@ export function formatAmountMaxPrecision(
 }
 
 /**
- * Formats a token amount with variable precision and significant digits.
+ * Formats a token amount with up to 8 decimal places, without trailing zeros.
+ * Non-zero amounts below 0.000001 display as `<0.000001`.
  *
- * For |amount| < 1, displays up to 3 significant digits, rounded according to `roundingMode`.
+ * With `compact`, for |amount| < 1, displays up to 3 significant digits, rounded according to `roundingMode`.
  * For |amount| >= 1, displays all integer digits and reduces decimal
  * precision as the integer grows (rounded per `roundingMode`), until only whole numbers are shown.
  *
@@ -38,7 +41,7 @@ export function formatAmountMaxPrecision(
  * ROUND_DOWN to truncate — useful for balance display where the shown
  * value must never exceed what the user actually holds.
  *
- * | Amount               | ROUND_HALF_UP (default) | ROUND_DOWN |
+ * | Amount               | compact (ROUND_HALF_UP) | compact + ROUND_DOWN |
  * |----------------------|-------------------------|------------|
  * | 0                    | 0                       | 0          |
  * | 0.0000009            | <0.000001               | <0.000001  |
@@ -60,11 +63,14 @@ export function formatAmountMaxPrecision(
  * @param roundingMode - BigNumber rounding mode (0–8). Defaults to
  * BigNumber.ROUND_HALF_UP. Pass BigNumber.ROUND_DOWN to truncate, e.g.
  * for balance display so values never appear larger than the user holds.
+ * @param options - Formatting options.
+ * @param options.compact - Show up to 3 significant digits instead of 8 decimal places.
  */
 export function formatAmount(
   locale: string,
   amount: BigNumber,
   roundingMode?: number,
+  { compact = false }: { compact?: boolean } = {},
 ): string {
   if (amount.isZero()) {
     return ZERO_DISPLAY;
@@ -72,6 +78,14 @@ export function formatAmount(
 
   if (amount.abs().lessThan(MIN_AMOUNT)) {
     return `<${formatAmountMaxPrecision(locale, MIN_AMOUNT)}`;
+  }
+
+  if (!compact) {
+    return new Intl.NumberFormat(locale, {
+      maximumFractionDigits: MAX_DECIMAL_PLACES,
+    } as Intl.NumberFormatOptions).format(
+      amount.toFixed(MAX_DECIMAL_PLACES, roundingMode) as unknown as number,
+    );
   }
 
   if (amount.abs().lessThan(1)) {

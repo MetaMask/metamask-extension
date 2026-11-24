@@ -84,7 +84,6 @@ export function buildSolanaPositiveBalanceFixture(
   if (options.showNativeTokenAsMainBalanceDisabled) {
     builder = builder.withShowNativeTokenAsMainBalanceDisabled();
   }
-
   return merge(
     builder
       .withAssetsController(SOLANA_POSITIVE_BALANCE_ASSETS_CONTROLLER)

@@ -6,6 +6,10 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import {
+  genUnapprovedPermit2ApproveConfirmation,
+  PERMIT2_TOKEN_ADDRESS,
+} from '../../../../../../test/data/confirmations/token-approve';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import {
   enLocale as messages,
@@ -18,6 +22,7 @@ import { TransactionDetailsSummary } from './transaction-details-summary';
 jest.mock('../../../hooks/tokens/useTokenWithBalance');
 
 const CHAIN_ID = '0x1';
+const TOKEN_ADDRESS = '0x4560000000000000000000000000000000000456';
 
 const mockStore = configureMockStore([]);
 
@@ -57,7 +62,7 @@ function createMockTransactionMeta(
     type,
     txParams: {
       from: '0x123',
-      to: '0x456',
+      to: TOKEN_ADDRESS,
     },
     ...overrides,
   };
@@ -220,7 +225,31 @@ describe('TransactionDetailsSummary', () => {
 
   it('uses txParams.to as token address for tokenMethodApprove lookup', () => {
     render(TransactionType.tokenMethodApprove);
-    expect(useTokenWithBalanceMock).toHaveBeenCalledWith('0x456', CHAIN_ID);
+    expect(useTokenWithBalanceMock).toHaveBeenCalledWith(
+      TOKEN_ADDRESS,
+      CHAIN_ID,
+    );
+  });
+
+  it('uses the calldata token for a Permit2 tokenMethodApprove lookup', () => {
+    renderWithProvider(
+      <TransactionDetailsProvider
+        transactionMeta={
+          {
+            ...genUnapprovedPermit2ApproveConfirmation(),
+            chainId: CHAIN_ID,
+          } as never
+        }
+      >
+        <TransactionDetailsSummary />
+      </TransactionDetailsProvider>,
+      mockStore(createMockState()),
+    );
+
+    expect(useTokenWithBalanceMock).toHaveBeenCalledWith(
+      PERMIT2_TOKEN_ADDRESS,
+      CHAIN_ID,
+    );
   });
 
   it('renders a ReceiveSummaryLine for perpsWithdraw transactions', () => {

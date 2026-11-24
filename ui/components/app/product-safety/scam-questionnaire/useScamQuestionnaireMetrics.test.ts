@@ -63,7 +63,11 @@ function buildBalanceChange(amount: number, usdAmount: FiatAmount) {
 function setup(balanceChanges: BalanceChange[] = []) {
   const trackEvent = jest.fn();
 
-  useAnalyticsMock.mockReturnValue({ createEventBuilder, trackEvent });
+  useAnalyticsMock.mockReturnValue({
+    createEventBuilder,
+    trackEvent,
+    trackErrorAsAnalytics: jest.fn(),
+  });
   useBalanceChangesMock.mockReturnValue({
     pending: false,
     value: balanceChanges,

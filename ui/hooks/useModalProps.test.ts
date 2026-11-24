@@ -1,5 +1,4 @@
 import { renderHook } from '@testing-library/react';
-import { useDispatch } from '../store/hooks';
 import { useModalProps } from './useModalProps';
 
 jest.mock('../store/hooks', () => ({

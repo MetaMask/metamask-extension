@@ -149,22 +149,22 @@ exports[`Info renders info section for approve request 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        class="mm-box ml-2 min-w-0 flex-1 mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
+          class="mm-box flex-1 overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="name name__clickable name__missing"
+            class="name justify-end name__clickable name__missing"
           >
             <span
               class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default name__value"
             >
-              0x2e0D7...5d09B
+              0x2e0D7E8c45221FcA00d74a3609A0f7097035d09B
             </p>
           </div>
         </div>
@@ -297,22 +297,22 @@ exports[`Info renders info section for approve request 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        class="mm-box ml-2 min-w-0 flex-1 mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
+          class="mm-box flex-1 overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="name name__clickable name__missing"
+            class="name justify-end name__clickable name__missing"
           >
             <span
               class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default name__value"
             >
-              0x07614...3ad68
+              0x076146c765189d51bE3160A2140cF80BFC73ad68
             </p>
           </div>
         </div>
@@ -661,22 +661,22 @@ exports[`Info renders info section for contract interaction request 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        class="mm-box ml-2 min-w-0 flex-1 mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
+          class="mm-box flex-1 overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="name name__clickable name__missing"
+            class="name justify-end name__clickable name__missing"
           >
             <span
               class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default name__value"
             >
-              0x88AA6...A5125
+              0x88AA6343307EC9a652CCddDa3646E62b2f1A5125
             </p>
           </div>
         </div>
@@ -1136,22 +1136,22 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        class="mm-box ml-2 min-w-0 flex-1 mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
+          class="mm-box flex-1 overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="name name__clickable name__missing"
+            class="name justify-end name__clickable name__missing"
           >
             <span
               class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default name__value"
             >
-              0x2e0D7...5d09B
+              0x2e0D7E8c45221FcA00d74a3609A0f7097035d09B
             </p>
           </div>
         </div>
@@ -1284,22 +1284,22 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        class="mm-box ml-2 min-w-0 flex-1 mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
+          class="mm-box flex-1 overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="name name__clickable name__missing"
+            class="name justify-end name__clickable name__missing"
           >
             <span
               class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default name__value"
             >
-              0x07614...3ad68
+              0x076146c765189d51bE3160A2140cF80BFC73ad68
             </p>
           </div>
         </div>
@@ -1587,22 +1587,22 @@ exports[`Info renders info section for typed sign request 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        class="mm-box ml-2 min-w-0 flex-1 mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
+          class="mm-box flex-1 overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="name name__clickable name__missing"
+            class="name justify-end name__clickable name__missing"
           >
             <span
               class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default name__value"
             >
-              0xCcCCc...ccccC
+              0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC
             </p>
           </div>
         </div>
@@ -2385,11 +2385,11 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </div>
         </div>
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-4 w-4 bg-white"
         >
           <img
             alt="ETH"
-            class="size-full object-contain"
+            class="size-full object-cover"
             src="./images/eth_logo.svg"
           />
         </div>
@@ -2446,11 +2446,11 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </div>
         </div>
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-4 w-4 bg-white"
         >
           <img
             alt="ETH"
-            class="size-full object-contain"
+            class="size-full object-cover"
             src="./images/eth_logo.svg"
           />
         </div>
@@ -2577,11 +2577,11 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </div>
         </div>
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-4 w-4 bg-white"
         >
           <img
             alt="ETH"
-            class="size-full object-contain"
+            class="size-full object-cover"
             src="./images/eth_logo.svg"
           />
         </div>
@@ -2638,11 +2638,11 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </div>
         </div>
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-4 w-4 bg-white"
         >
           <img
             alt="ETH"
-            class="size-full object-contain"
+            class="size-full object-cover"
             src="./images/eth_logo.svg"
           />
         </div>
@@ -2699,11 +2699,11 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </div>
         </div>
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-4 w-4 bg-white"
         >
           <img
             alt="ETH"
-            class="size-full object-contain"
+            class="size-full object-cover"
             src="./images/eth_logo.svg"
           />
         </div>

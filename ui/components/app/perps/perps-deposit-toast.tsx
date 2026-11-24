@@ -30,12 +30,13 @@ const id = 'perps-deposit-toast';
 const duration = 5 * SECOND;
 
 const clearDepositResult = () => {
-  submitRequestToBackground('perpsClearDepositResult', []).catch(
+  submitRequestToBackground('PerpsController:clearDepositResult', []).catch(
     () => undefined,
   );
-  submitRequestToBackground('setLastPerpsDepositEntryPoint', [null]).catch(
-    () => undefined,
-  );
+  submitRequestToBackground(
+    'AppStateController:setLastPerpsDepositEntryPoint',
+    [null],
+  ).catch(() => undefined);
 };
 
 export function PerpsDepositToast() {

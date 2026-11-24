@@ -104,7 +104,7 @@ export const WalletInitiatedHeader = () => {
       return t('shieldConfirmMembership');
     }
     if (confirmationType === TransactionType.moneyAccountDeposit) {
-      return t('addFunds');
+      return t('moneyAccountDepositHeader');
     }
     if (confirmationType === TransactionType.moneyAccountWithdraw) {
       return t('send');

@@ -17,9 +17,12 @@ export function buildControllerInitRequestMock(): jest.Mocked<
 > {
   return {
     currentMigrationVersion: 0,
+    appBuildType: 'main',
+    appEnvironment: 'testing',
+    appVersion: '13.0.0',
     ensureOnboardingComplete: jest.fn().mockResolvedValue(undefined),
     // @ts-expect-error: Partial mock.
-    extension: {},
+    extension: { runtime: { setUninstallURL: jest.fn() } },
     platform: new ExtensionPlatform(),
     getCronjobControllerStorageManager: jest.fn(),
     getMessengerClient: jest.fn(),

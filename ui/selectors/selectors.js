@@ -37,6 +37,7 @@ import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { KeyringType as KeyringTypeV2 } from '@metamask/keyring-api/v2';
 
 import log from 'loglevel';
+import { isManifestV3 } from '#shared/lib/mv3.utils';
 import { generateTokenCacheKey } from '../helpers/utils/token-scan';
 import {
   getCurrentChainId,
@@ -319,14 +320,6 @@ export function getExternalServicesOnboardingToggleState(state) {
 
 export function getBackupAndSyncOnboardingToggleState(state) {
   return state.appState.backupAndSyncOnboardingToggleState;
-}
-
-export function getShowDeleteMetaMetricsDataModal(state) {
-  return state.appState.showDeleteMetaMetricsDataModal;
-}
-
-export function getShowDataDeletionErrorModal(state) {
-  return state.appState.showDataDeletionErrorModal;
 }
 
 export function getKeyringSnapRemovalResult(state) {
@@ -1279,12 +1272,16 @@ export const getNetworkConfigurationIdByChainId = createResultEqualSelector(
 );
 
 /**
+ * Mirrors the NetworkController: RPC failover is on unless the
+ * `corePlatformRpcFailoverMode` flag is `disabled`. An absent or unrecognized
+ * value falls back to the controller default (`enabled`).
+ *
  * @type (state: RemoteFeatureFlagsState) => boolean
  */
 export const getIsRpcFailoverEnabled = createSelector(
   getRemoteFeatureFlags,
   (remoteFeatureFlags) =>
-    remoteFeatureFlags.walletFrameworkRpcFailoverEnabled ?? false,
+    remoteFeatureFlags.corePlatformRpcFailoverMode !== 'disabled',
 );
 
 /**
@@ -1556,6 +1553,7 @@ export function selectShowTickerWidget(state) {
 export function selectIsTickerWidgetFeatureEnabled(state) {
   const remoteFeatureFlags = getRemoteFeatureFlags(state);
   return (
+    isManifestV3 &&
     state.metamask.useExternalServices !== false &&
     getBooleanFeatureFlag(remoteFeatureFlags?.cashtagInjection, false)
   );
@@ -1888,6 +1886,12 @@ export function getIpfsGateway(state) {
 export function getUseExternalServices(state) {
   return state.metamask.useExternalServices;
 }
+
+export const getIsAddressResolutionEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    getBooleanFeatureFlag(remoteFeatureFlags?.addressResolution, false),
+);
 
 export function getUSDConversionRate(state) {
   return getCurrencyRateControllerCurrencyRates(state)[

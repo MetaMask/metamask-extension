@@ -14,7 +14,6 @@ import {
 } from '@metamask/transaction-pay-controller';
 import { Hex } from '@metamask/utils';
 
-import { AccountOverviewTabKey } from '../../../../../shared/constants/app-state';
 import { getEip7702SupportedChains } from '../../../../../shared/lib/eip7702-support-utils';
 import {
   getInternalEvmAddresses,
@@ -164,8 +163,6 @@ function publishHook({
 
     const isSwapGasIncluded7702 = transactionMeta.isGasFeeIncluded;
 
-    let attemptedHook = false;
-
     if (
       keyringSupports7702 &&
       !isRevokeDelegation &&
@@ -174,7 +171,6 @@ function publishHook({
         !sendBundleSupport ||
         isExternalSign)
     ) {
-      attemptedHook = true;
       const hook = new Delegation7702PublishHook({
         messenger,
       }).getHook();
@@ -202,8 +198,6 @@ function publishHook({
       isSmartTransaction &&
       (sendBundleSupport || transactionMeta.selectedGasFeeToken === undefined)
     ) {
-      attemptedHook = true;
-
       const result = await submitSmartTransactionHook({
         transactionMeta,
         signedTransactionInHex: signedTx as Hex,
@@ -247,20 +241,6 @@ function publishHook({
           console.error('Failed to record sentinel_stx metrics fragment', e);
         }
         return result;
-      }
-    }
-
-    if (attemptedHook) {
-      try {
-        await messenger.call(
-          'AppStateController:setDefaultHomeActiveTabName',
-          AccountOverviewTabKey.Activity,
-        );
-      } catch (error) {
-        console.error(
-          'Failed to set default home active tab for fallback transaction',
-          error,
-        );
       }
     }
 

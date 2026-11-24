@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useAccountSyncing } from '../../hooks/identity/useAccountSyncing';
 import { useContactSyncing } from '../../hooks/identity/useContactSyncing';
-import { useRampsOrderSyncing } from '../../hooks/identity/useRampsOrderSyncing/useRampsOrderSyncing';
 import {
   useAutoSignIn,
   useAutoSignOut,
@@ -14,8 +13,6 @@ export const MetamaskIdentityProvider = ({
     useAccountSyncing();
   const { dispatchContactSyncing, shouldDispatchContactSyncing } =
     useContactSyncing();
-  const { dispatchRampsOrderSyncing, shouldDispatchRampsOrderSyncing } =
-    useRampsOrderSyncing();
   const { autoSignIn, shouldAutoSignIn } = useAutoSignIn();
   const { autoSignOut, shouldAutoSignOut } = useAutoSignOut();
 
@@ -33,12 +30,6 @@ export const MetamaskIdentityProvider = ({
       dispatchContactSyncing();
     }
   }, [shouldDispatchContactSyncing, dispatchContactSyncing]);
-
-  useEffect(() => {
-    if (shouldDispatchRampsOrderSyncing) {
-      dispatchRampsOrderSyncing();
-    }
-  }, [shouldDispatchRampsOrderSyncing, dispatchRampsOrderSyncing]);
 
   /**
    * Authentication effects

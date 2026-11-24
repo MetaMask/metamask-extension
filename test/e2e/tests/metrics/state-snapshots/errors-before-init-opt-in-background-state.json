@@ -54,6 +54,7 @@
       "lastUpdatedAt": null,
       "lastViewedUserSurvey": null,
       "moneyEarnBannerDismissedTokenKeys": "object",
+      "moneyFtueSeen": "boolean",
       "musdConversionDismissedCtaKeys": "object",
       "musdConversionEducationSeen": "boolean",
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
@@ -92,16 +93,6 @@
       "lastFetched": null,
       "version": "0"
     },
-    "CurrencyController": {
-      "currencyRates": {
-        "ETH": {
-          "conversionDate": "object",
-          "conversionRate": 1700,
-          "usdConversionRate": null
-        }
-      },
-      "currentCurrency": "usd"
-    },
     "DeFiPositionsControllerV2": "object",
     "GasFeeController": {
       "estimatedGasFeeTimeBounds": {},
@@ -117,15 +108,16 @@
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
     },
-    "MoneyAccountController": { "moneyAccounts": "object" },
+    "MoneyAccountController": {
+      "defaultMoneyAccountId": null,
+      "moneyAccounts": "object"
+    },
     "MoneyAccountUpgradeController": { "upgradedAccounts": "object" },
     "MultichainAssetsController": {
       "accountsAssets": "object",
       "allIgnoredAssets": "object",
       "assetsMetadata": "object"
     },
-    "MultichainAssetsRatesController": { "conversionRates": "object" },
-    "MultichainBalancesController": { "balances": "object" },
     "MultichainNetworkController": "object",
     "MultichainRatesController": {
       "cryptocurrencies": ["btc", "sol"],
@@ -213,6 +205,7 @@
         "hideZeroBalanceTokens": false,
         "isBasicFunctionalityConsolidatedEnabled": "boolean",
         "privacyMode": "boolean",
+        "shouldShowSupportConsent": "boolean",
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": "boolean",
         "showExtensionInFullSizeView": false,
@@ -224,6 +217,10 @@
         "skipDeepLinkInterstitial": "boolean",
         "smartTransactionsMigrationApplied": "boolean",
         "smartTransactionsOptInStatus": true,
+        "supportDataSharingPreference": null,
+        "tdpChartIndicators": "object",
+        "tdpChartInterval": "string",
+        "tdpChartType": "number",
         "tokenNetworkFilter": { "0x539": "boolean" },
         "tokenSortConfig": "object",
         "useNativeCurrencyAsPrimaryCurrency": "boolean",
@@ -257,10 +254,13 @@
       "syncQueue": "object"
     },
     "RampsController": {
+      "autorampTransactionRecords": "object",
       "autoramps": "object",
+      "moneyAccountWalletRegistrations": "object",
       "orders": "object",
       "providerAutoSelected": "boolean",
-      "userRegion": null
+      "userRegion": null,
+      "vbaAutorampListFetchedAt": null
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": "number",
@@ -301,12 +301,13 @@
     "SeedlessOnboardingController": "object",
     "SelectedNetworkController": { "domains": "object" },
     "ShieldController": "object",
-    "SnapController": { "unencryptedSnapStates": "object" },
+    "SnapController": {
+      "snapStates": "object",
+      "unencryptedSnapStates": "object"
+    },
     "SnapInterfaceController": { "interfaces": "object" },
     "SubjectMetadataController": {},
     "SubscriptionController": "object",
-    "TokenBalancesController": { "tokenBalances": "object" },
-    "TokenRatesController": { "marketData": "object" },
     "TokensController": {
       "allDetectedTokens": {},
       "allIgnoredTokens": {},
@@ -319,7 +320,6 @@
       "transactionBatches": "object",
       "transactions": "object"
     },
-    "UserOperationController": { "userOperations": "object" },
     "UserStorageController": {
       "isAccountSyncingEnabled": true,
       "isBackupAndSyncEnabled": true,

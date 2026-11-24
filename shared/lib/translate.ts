@@ -25,10 +25,6 @@ export async function updateCurrentLocale(locale: string): Promise<void> {
   currentLocale = locale;
 }
 
-export function getCurrentLocale(): string {
-  return currentLocale;
-}
-
 export function t(key: string, ...substitutions: string[]): string | null {
   return (
     getMessage(currentLocale, translations, key, substitutions) ||

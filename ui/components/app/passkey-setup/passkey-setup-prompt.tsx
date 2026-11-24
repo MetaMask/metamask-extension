@@ -14,7 +14,10 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { BaseUrl } from '../../../../shared/constants/urls';
+import {
+  PasskeyEnrollmentError,
+  SupportedPasskeyProvidersLink,
+} from './supported-passkey-providers-link';
 
 type PasskeySetupPromptProps = Readonly<{
   enrollmentError: string | null;
@@ -69,21 +72,7 @@ export function PasskeySetupPrompt({
       <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
         {isPrfMigrationError
           ? tWithRichSubstitutions('passkeyMigrationReplacementDescription', [
-              <TextButton
-                asChild
-                key="passkey-migration-supported-providers"
-                color={TextColor.PrimaryDefault}
-                className="underline underline-offset-2 hover:underline"
-              >
-                <a
-                  href={BaseUrl.MetaMask}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  data-testid="passkey-migration-supported-providers-link"
-                >
-                  {t('passkeyMigrationSupportedProviders')}
-                </a>
-              </TextButton>,
+              <SupportedPasskeyProvidersLink key="passkey-migration-supported-providers" />,
             ])
           : t('passkeyDescription', [passkeyMethodSpecificLabel])}
       </Text>
@@ -91,7 +80,12 @@ export function PasskeySetupPrompt({
       {enrollmentError ? (
         <BannerAlert
           severity={BannerAlertSeverity.Danger}
-          description={enrollmentError}
+          description={
+            <PasskeyEnrollmentError
+              message={enrollmentError}
+              passkeyMethodLabel={passkeyMethodLabel}
+            />
+          }
           data-testid="passkey-enrollment-error"
         />
       ) : null}

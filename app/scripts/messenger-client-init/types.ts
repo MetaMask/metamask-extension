@@ -138,6 +138,21 @@ export type MessengerClientInitRequest<
   infuraProjectId: string;
 
   /**
+   * The extension build type.
+   */
+  appBuildType: string;
+
+  /**
+   * The extension environment.
+   */
+  appEnvironment: string;
+
+  /**
+   * The extension version.
+   */
+  appVersion: string;
+
+  /**
    * A promise that resolves when the offscreen document is ready.
    */
   offscreenPromise: Promise<void>;

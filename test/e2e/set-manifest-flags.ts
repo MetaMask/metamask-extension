@@ -50,6 +50,11 @@ export async function setManifestFlags(flags: ManifestFlags = {}) {
     }
   }
 
+  flags.testing = {
+    disableTransactionToasts: true,
+    ...flags.testing,
+  };
+
   readManifest();
 
   manifest._flags = flags;

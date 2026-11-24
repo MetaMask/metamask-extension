@@ -2,8 +2,8 @@ import { Mockttp } from 'mockttp';
 import { Browser } from 'selenium-webdriver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import ChangePasswordPage from '../../page-objects/pages/settings/change-password-page';
-import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import ChangePasswordPage from '../../page-objects/pages/settings/security-and-password/change-password-page';
+import SecurityAndPasswordSettings from '../../page-objects/pages/settings/security-and-password/security-and-password-settings';
 import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import {
@@ -80,7 +80,6 @@ describe('Change wallet password', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.waitForNonEvmAccountsLoaded();
 
         await changePasswordAndLockWallet(
           driver,
@@ -157,8 +156,7 @@ describe('Change wallet password', function () {
 
         await navigateToSecurityAndPassword(driver);
 
-        const privacySettings = new PrivacySettings(driver);
-        await privacySettings.openChangePassword();
+        await new SecurityAndPasswordSettings(driver).openChangePassword();
 
         const changePasswordPage = new ChangePasswordPage(driver);
         await changePasswordPage.waitForPasskeyVerificationToComplete();

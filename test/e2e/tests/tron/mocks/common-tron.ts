@@ -96,24 +96,6 @@ function tronInfuraUrl(path: string): RegExp {
   return new RegExp(`^${TRON_INFURA_BASE_URL}${path}($|\\?)`, 'u');
 }
 
-// BIP44 Stage 2 feature flags - enables automatic multichain account creation
-export const BIP44_STAGE_TWO = {
-  enableMultichainAccountsState2: {
-    enabled: true,
-    featureVersion: '2',
-    minimumVersion: '12.19.0',
-  },
-  bitcoinAccounts: {
-    enabled: true,
-    minimumVersion: '13.6.0',
-  },
-  tronAccounts: {
-    enabled: true,
-    minimumVersion: '13.6.0',
-  },
-  tronTestnetsEnabled: true,
-};
-
 export const TRON_SWAP_TOKEN_REGISTRY = {
   TRX: {
     address: '0x0000000000000000000000000000000000000000',
@@ -177,8 +159,10 @@ function buildTronAsset(symbol: TronSwapSymbol) {
 }
 
 /**
- * Mocks the feature flags endpoint with BIP44 Stage 2 configuration
- * This enables automatic Tron account creation
+ * Mocks the feature flags endpoint with the production flag defaults.
+ *
+ * The overrides below only neutralize unrelated behaviors (bridge quoting
+ * and RPC failover).
  *
  * @param mockServer
  */
@@ -196,7 +180,6 @@ export async function mockTronFeatureFlags(
       statusCode: 200,
       json: [
         ...getProductionRemoteFlagApiResponse(),
-        BIP44_STAGE_TWO,
         // The Tron mocks answer `getQuote`, not the SSE `getQuoteStream` that
         // the production bridge config turns on. An unparseable `bridgeConfig`
         // resolves to the bridge controller's built-in default, which is what
@@ -206,6 +189,9 @@ export async function mockTronFeatureFlags(
         // only mock the Infura endpoint, which are not mocked/redirected as Anvil is off.
         // Disabling the failover feature to avoid new privacy hosts
         { corePlatformRpcFailoverMode: 'disabled' },
+        // Not part of the production defaults, but required by the network
+        // spec that asserts the Tron testnets are listed.
+        { tronTestnetsEnabled: true },
       ],
     }));
 }
@@ -495,6 +481,28 @@ export async function createStatefulTronAccountMock(
   return [broadcastEndpoint, accountEndpoint];
 }
 
+export const TRON_ACCOUNT_RESOURCE_RESPONSE = {
+  freeNetLimit: 600,
+  assetNetUsed: [
+    {
+      key: '1005074',
+      value: 0,
+    },
+  ],
+  assetNetLimit: [
+    {
+      key: '1005074',
+      value: 0,
+    },
+  ],
+  TotalNetLimit: 43200000000,
+  TotalNetWeight: 26681367161,
+  tronPowerLimit: 20,
+  EnergyLimit: 189,
+  TotalEnergyLimit: 180000000000,
+  TotalEnergyWeight: 19018684711,
+};
+
 export async function mockTronGetAccountResource(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
@@ -507,27 +515,7 @@ export async function mockTronGetAccountResource(
     .always()
     .thenCallback(() => ({
       statusCode: 200,
-      json: {
-        freeNetLimit: 600,
-        assetNetUsed: [
-          {
-            key: '1005074',
-            value: 0,
-          },
-        ],
-        assetNetLimit: [
-          {
-            key: '1005074',
-            value: 0,
-          },
-        ],
-        TotalNetLimit: 43200000000,
-        TotalNetWeight: 26681367161,
-        tronPowerLimit: 20,
-        EnergyLimit: 189,
-        TotalEnergyLimit: 180000000000,
-        TotalEnergyWeight: 19018684711,
-      },
+      json: TRON_ACCOUNT_RESOURCE_RESPONSE,
     }));
 }
 
@@ -1600,10 +1588,10 @@ export async function mockTronGetContract(
 }
 
 /**
- * Mocks the accounts API v2 supportedNetworks (**EVM only**).
+ * Mocks the accounts API v2 supportedNetworks (EVM chains plus Tron).
  *
- * Tron balances in these E2E flows come from mocked Tron RPC
- * (`mockTronGetAccount` and related mocks in this file), not Accounts API v5.
+ * Tron is listed so the core AssetsController accounts data source requests
+ * Tron balances, which the Tron snap reads once its migration stage is on.
  *
  * @param mockServer
  */
@@ -1624,6 +1612,7 @@ export async function mockAccountsApiV2WithTron(
         'eip155:42161',
         'eip155:534352',
         'eip155:1337',
+        TRON_CHAIN_ID,
       ],
       partialSupport: ['eip155:42220', 'eip155:43114'],
     });

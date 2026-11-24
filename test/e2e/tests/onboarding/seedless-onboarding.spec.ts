@@ -8,6 +8,7 @@ import {
   importWalletWithSocialLoginOnboardingFlow,
   handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
+import DownloadAppPage from '../../page-objects/pages/onboarding/download-app-page';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import AccountAddressListPage from '../../page-objects/pages/accounts/address-list-page';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
@@ -152,8 +153,11 @@ describe('Metamask onboarding (with social login)', function () {
           driver,
         });
 
+        const downloadAppPage = new DownloadAppPage(driver);
+        await downloadAppPage.checkPageIsLoaded();
+        await downloadAppPage.clickContinue();
+
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.displayDownloadAppPageAndContinue();
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
         await onboardingCompletePage.completeOnboarding();
@@ -185,8 +189,11 @@ describe('Metamask onboarding (with social login)', function () {
           authConnection: AuthConnection.Telegram,
         });
 
+        const downloadAppPage = new DownloadAppPage(driver);
+        await downloadAppPage.checkPageIsLoaded();
+        await downloadAppPage.clickContinue();
+
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.displayDownloadAppPageAndContinue();
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
         await onboardingCompletePage.completeOnboarding();

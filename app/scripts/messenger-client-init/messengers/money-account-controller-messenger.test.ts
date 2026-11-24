@@ -24,8 +24,8 @@ describe('getMoneyAccountControllerMessenger', () => {
       expect.objectContaining({
         actions: [
           'KeyringController:getState',
-          'KeyringController:addNewKeyring',
-          'KeyringController:withKeyring',
+          'KeyringController:withController',
+          'KeyringController:withKeyringV2',
         ],
         events: [],
       }),

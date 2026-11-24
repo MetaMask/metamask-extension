@@ -145,7 +145,7 @@ describe('AwaitingSwap', () => {
     expect(
       getByText(messages.swapFailedErrorTitle.message),
     ).toBeInTheDocument();
-    fireEvent.click(getByText('support.metamask.io'));
+    fireEvent.click(getByText('support.metamask.com'));
     expect(getByText(messages.tryAgain.message)).toBeInTheDocument();
   });
 

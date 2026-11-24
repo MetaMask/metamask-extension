@@ -84,7 +84,11 @@ export function getResponsePayload(mock: WebSocketMessageMock): object | null {
  *
  * The @nktkas/hyperliquid SDK's WebSocketSubscriptionManager awaits a `subscriptionResponse`
  * event and checks isSubset(subscriptionPayload, responseData). Sending back the original
- * message as `data` satisfies that check regardless of subscription type.
+ * message as `data` satisfies that check regardless of subscription type (and also confirms
+ * `unsubscribe` requests, which reach the generic fallback mock).
+ *
+ * Without a matching confirmation the SDK times the subscribe request out after 10 s and
+ * removes the channel listener, so every later push on that channel is silently dropped.
  *
  * @param message - The raw WebSocket message string to echo back.
  * @returns The subscription confirmation object, or a fallback with empty data.
@@ -92,9 +96,9 @@ export function getResponsePayload(mock: WebSocketMessageMock): object | null {
 export function buildSubscribedConfirmation(message: string): object | null {
   try {
     const parsed = JSON.parse(message);
-    return { channel: 'subscribed', data: parsed };
+    return { channel: 'subscriptionResponse', data: parsed };
   } catch {
-    return { channel: 'subscribed', data: {} };
+    return { channel: 'subscriptionResponse', data: {} };
   }
 }
 
@@ -713,22 +717,28 @@ export const DEFAULT_HYPERLIQUID_WS_MOCKS: WebSocketMessageMock[] = [
     // Candle subscription — return a single candle so `chartCurrentPrice` is > 0
     // in the market detail page. Without this the close-position modal submit
     // stays disabled (isPriceValid = false).
+    //
+    // Stamp the time when the subscription arrives. A module-load timestamp is
+    // older than the snapshot history, and lightweight-charts rejects the update.
     messageIncludes: ['"method":"subscribe"', '"type":"candle"'],
     dynamicResponse: buildSubscribedConfirmation,
-    followUpResponse: {
-      channel: 'candle',
-      data: {
-        t: Date.now() - 300000,
-        T: Date.now() - 1,
-        s: 'AVAX',
-        i: '5m',
-        o: '25',
-        c: '25',
-        h: '25',
-        l: '25',
-        v: '1000.0',
-        n: 10,
-      },
+    dynamicFollowUp: () => {
+      const now = Date.now();
+      return {
+        channel: 'candle',
+        data: {
+          t: now,
+          T: now + 300000 - 1,
+          s: 'AVAX',
+          i: '5m',
+          o: '25',
+          c: '25',
+          h: '25',
+          l: '25',
+          v: '1000.0',
+          n: 10,
+        },
+      };
     },
     followUpDelay: 50,
     delay: 50,

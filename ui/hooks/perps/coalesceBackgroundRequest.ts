@@ -15,7 +15,9 @@
  * home; callers that need a tighter window pass their own TTL, as the Perps
  * withdraw confirmation alert does at 5 s. Top-level consumers
  * (`PerpsActivityPage`) pass `forceFreshOnMount` and bypass the cache
- * entirely.
+ * entirely. A forced read also replaces an in-flight request for the same
+ * key: that request was started without `forceRefresh`, so joining it would
+ * return the controller's cached snapshot.
  *
  * Explicit refetch paths (pull-to-refresh) bypass the cache via invalidate().
  * Scope-level teardown (account switch, testnet toggle, wallet lock,
@@ -28,6 +30,18 @@ const DEFAULT_TTL_MS = 10_000;
 
 type CacheEntry<TValue> = { at: number; value: TValue };
 
+/**
+ * Options for {@link coalesceBackgroundRequest}.
+ */
+export type CoalesceBackgroundRequestOptions = {
+  /**
+   * Issue `fn` even when this key has a cached or in-flight result, and take
+   * the in-flight slot. The replaced request still resolves for its own
+   * caller, but it no longer writes the cache.
+   */
+  replaceInFlight?: boolean;
+};
+
 const cache = new Map<string, CacheEntry<unknown>>();
 const inFlight = new Map<string, Promise<unknown>>();
 
@@ -37,23 +51,29 @@ const inFlight = new Map<string, Promise<unknown>>();
  * value.
  *
  * @param key - Stable key derived from the request method and its params.
- * @param fn - Thunk that issues the underlying request. Only called on miss.
+ * @param fn - Thunk that issues the underlying request. Only called on miss,
+ * or when `options.replaceInFlight` is set.
  * @param ttlMs - Optional override for the short-cache TTL.
+ * @param options - Optional call modifiers.
+ * @param options.replaceInFlight - Issue a new request and take the in-flight
+ * slot instead of joining one that is already running.
  * @returns Resolved value from the request (fresh or cached).
  */
 export async function coalesceBackgroundRequest<TResult>(
   key: string,
   fn: () => Promise<TResult>,
   ttlMs: number = DEFAULT_TTL_MS,
+  options?: CoalesceBackgroundRequestOptions,
 ): Promise<TResult> {
+  const replaceInFlight = options?.replaceInFlight === true;
   const now = Date.now();
   const cached = cache.get(key) as CacheEntry<TResult> | undefined;
-  if (cached && now - cached.at < ttlMs) {
+  if (!replaceInFlight && cached && now - cached.at < ttlMs) {
     return cached.value;
   }
 
   const existing = inFlight.get(key) as Promise<TResult> | undefined;
-  if (existing !== undefined) {
+  if (!replaceInFlight && existing !== undefined) {
     return existing;
   }
 
@@ -67,8 +87,8 @@ export async function coalesceBackgroundRequest<TResult>(
   const promise: Promise<TResult> = Promise.resolve().then(async () => {
     try {
       const value = await fn();
-      // Only persist if this promise still owns the slot; invalidate() may
-      // have evicted us mid-flight in favor of a newer request.
+      // Only persist if this promise still owns the slot. A newer request may
+      // have taken it via replaceInFlight.
       if (inFlight.get(key) === promise) {
         cache.set(key, { at: Date.now(), value });
       }
@@ -89,12 +109,11 @@ export async function coalesceBackgroundRequest<TResult>(
  * the next coalesceBackgroundRequest() to hit the backend instead of serving
  * the previous cached value.
  *
- * Intentionally leaves any in-flight promise alone: an in-flight request is
- * by definition the freshest server snapshot being computed right now, so
- * concurrent callers (e.g. a `refetch()` racing with a sibling hook's mount
- * fetch) should coalesce into the same request rather than fire a duplicate
- * HL call. Dropping the in-flight entry here was the root cause of duplicate
- * request bursts during rapid navigation.
+ * Intentionally leaves any in-flight promise alone. Callers that can share
+ * that request join it, which avoids the duplicate HyperLiquid calls that
+ * dropping the slot caused during rapid navigation. A caller that must not
+ * share it, because the in-flight request was sent with different controller
+ * options, passes `replaceInFlight` on its own call.
  *
  * @param key - Key previously used with coalesceBackgroundRequest.
  */

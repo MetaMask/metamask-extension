@@ -1,6 +1,7 @@
 import { toHex } from '@metamask/controller-utils';
 import { merge } from 'lodash';
 import type { Mockttp } from 'mockttp';
+import { v6AccountsApiBalancesJson } from '../../helpers/accounts-api-v6-balances';
 import { withFixtures } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
@@ -74,31 +75,44 @@ function mockV5Balances(mockServer: Mockttp, tstBalance: { value: string }) {
   const account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
   const chainId = 1337;
   const tokenAddress = '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947';
+  const rows = () => [
+    {
+      accountId: `eip155:${chainId}:${account}`,
+      assetId: `eip155:${chainId}/slip44:60`,
+      balance: '25',
+    },
+    {
+      accountId: `eip155:${chainId}:${account}`,
+      assetId: `eip155:${chainId}/erc20:${tokenAddress}`,
+      balance: tstBalance.value,
+    },
+  ];
 
-  return mockServer
-    .forGet(
-      /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
-    )
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        count: 2,
-        unprocessedNetworks: [],
-        balances: [
-          {
-            accountId: `eip155:${chainId}:${account}`,
-            assetId: `eip155:${chainId}/slip44:60`,
-            balance: '25',
+  return Promise.all([
+    mockServer
+      .forGet(
+        /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
+      )
+      .always()
+      .thenCallback(() => {
+        const balances = rows();
+        return {
+          statusCode: 200,
+          json: {
+            count: balances.length,
+            unprocessedNetworks: [],
+            balances,
           },
-          {
-            accountId: `eip155:${chainId}:${account}`,
-            assetId: `eip155:${chainId}/erc20:${tokenAddress}`,
-            balance: tstBalance.value,
-          },
-        ],
-      },
-    }));
+        };
+      }),
+    mockServer
+      .forGet('https://accounts.api.cx.metamask.io/v6/multiaccount/balances')
+      .always()
+      .thenCallback((request) => ({
+        statusCode: 200,
+        json: v6AccountsApiBalancesJson(request.url, rows()),
+      })),
+  ]);
 }
 
 describe('Add hide token', function () {
@@ -106,7 +120,6 @@ describe('Add hide token', function () {
   const tokenAddress = '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947';
   const chainId = 1337;
   const chainIdHex = toHex(chainId);
-  const rawBalance = '0x186a0'; // 100000 raw = 10 TST (4 decimals)
 
   it('hides the token when clicked', async function () {
     const account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
@@ -162,15 +175,6 @@ describe('Add hide token', function () {
           [chainIdHex]: {
             [account]: {
               balance: '0x15af1d78b58c400000', // 25 ETH
-            },
-          },
-        },
-      },
-      TokenBalancesController: {
-        tokenBalances: {
-          [account]: {
-            [chainIdHex]: {
-              [tokenAddress]: rawBalance,
             },
           },
         },
@@ -237,17 +241,6 @@ describe('Add hide token', function () {
         },
       })
       .build();
-    merge(fixture.data, {
-      TokenBalancesController: {
-        tokenBalances: {
-          [account]: {
-            [chainIdHex]: {
-              [tokenAddress]: rawBalance,
-            },
-          },
-        },
-      },
-    });
     await withFixtures(
       {
         fixtures: fixture,

@@ -3,9 +3,14 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { PerpsTutorialStep } from '../../../../ducks/perps';
+import { submitRequestToBackground } from '../../../../store/background-connection';
 import PerpsTutorialModal from './PerpsTutorialModal';
 
 const mockDispatch = jest.fn();
+
+jest.mock('../../../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
+}));
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -188,6 +193,10 @@ describe('PerpsTutorialModal', () => {
 
       fireEvent.click(screen.getByTestId('perps-tutorial-lets-go-button'));
 
+      expect(submitRequestToBackground).toHaveBeenCalledWith(
+        'PerpsController:markTutorialCompleted',
+        [],
+      );
       expect(mockDispatch).toHaveBeenCalledWith({
         type: 'perpsTutorial/markTutorialCompleted',
       });
@@ -199,6 +208,10 @@ describe('PerpsTutorialModal', () => {
 
       fireEvent.click(screen.getByTestId('perps-tutorial-skip-button'));
 
+      expect(submitRequestToBackground).toHaveBeenCalledWith(
+        'PerpsController:markTutorialCompleted',
+        [],
+      );
       expect(mockDispatch).toHaveBeenCalledWith({
         type: 'perpsTutorial/markTutorialCompleted',
       });
@@ -263,6 +276,10 @@ describe('PerpsTutorialModal', () => {
       expect(closeButton).toBeInTheDocument();
       fireEvent.click(closeButton as HTMLElement);
 
+      expect(submitRequestToBackground).toHaveBeenCalledWith(
+        'PerpsController:markTutorialCompleted',
+        [],
+      );
       expect(mockDispatch).toHaveBeenCalledWith({
         type: 'perpsTutorial/markTutorialCompleted',
       });

@@ -16,7 +16,8 @@ import { emptyHtmlPage, MOCK_SUGGESTED_GAS_FEES } from '../../mock-e2e';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
-import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import { enterBridgeQuote } from '../../page-objects/flows/bridge.flow';
+import SwapPage from '../../page-objects/pages/swap/swap-page';
 
 import {
   MOCK_ANALYTICS_ID,
@@ -1115,6 +1116,7 @@ async function mockPriceSpotPricesV3(
 
   return await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+    .always()
     .thenCallback((request) => {
       const url = new URL(request.url);
       const vsCurrency =
@@ -1676,6 +1678,7 @@ export const getQuoteNegativeCasesFixtures = (
         await mockTokensLinea(mockServer),
         await mockGetPopularTokens(mockServer),
         await mockPriceSpotPrices(mockServer),
+        await mockPriceSpotPricesV3(mockServer),
         await mockFeatureFlags(
           mockServer,
           featureFlags,
@@ -1733,6 +1736,7 @@ export const getBridgeNegativeCasesFixtures = (
         await mockETHtoETH(mockServer, featureFlags.sse?.enabled),
         await mockGetTxStatusInvalid(mockServer, options),
         await mockPriceSpotPrices(mockServer),
+        await mockPriceSpotPricesV3(mockServer),
         await mockFeatureFlags(
           mockServer,
           featureFlags,
@@ -1792,6 +1796,7 @@ export const getInsufficientFundsFixtures = (
         await mockGetPopularTokens(mockServer),
         await mockETHtoWETH(mockServer, featureFlags.sse?.enabled),
         await mockPriceSpotPrices(mockServer),
+        await mockPriceSpotPricesV3(mockServer),
         await mockFeatureFlags(
           mockServer,
           featureFlags,
@@ -2352,11 +2357,10 @@ export const checkQuoteRequestsAreNotMadeAfterTimestamp = async (
   }
 };
 
-export async function enterBridgeQuote(
+export async function enterEthToLineaBridgeQuote(
   driver: Driver,
-): Promise<BridgeQuotePage> {
-  const bridgePage = new BridgeQuotePage(driver);
-  await bridgePage.enterBridgeQuote({
+): Promise<SwapPage> {
+  await enterBridgeQuote(driver, {
     amount: '1',
     tokenFrom: 'ETH',
     tokenTo: 'ETH',
@@ -2364,7 +2368,7 @@ export async function enterBridgeQuote(
     toChain: 'Linea',
   });
 
-  return bridgePage;
+  return new SwapPage(driver);
 }
 
 /**

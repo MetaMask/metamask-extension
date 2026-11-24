@@ -111,6 +111,11 @@ export type ConfirmationNavigationOptions = {
    * Token the confirmation should select as the source of funds.
    */
   preferredPaymentToken?: SetPayTokenRequest;
+  /**
+   * Replace the current history entry instead of pushing. Back then replaces
+   * the confirmation with `goBackTo` rather than popping to the current page.
+   */
+  replace?: boolean;
 };
 
 /**
@@ -237,14 +242,18 @@ export function useConfirmationNavigation() {
         );
       }
 
-      // This helper always pushes. Back must pop, or `goBackTo` is written
-      // on top of the page that is already the previous entry.
+      const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`;
+
+      if (options.replace) {
+        navigate({ pathname, search: params.toString() }, { replace: true });
+        return;
+      }
+
+      // A pushed confirmation must pop on back, or `goBackTo` is written on
+      // top of the page that is already the previous entry.
       params.set('goBackAction', ConfirmationGoBackAction.Pop);
 
-      navigate({
-        pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
-        search: params.toString(),
-      });
+      navigate({ pathname, search: params.toString() });
     },
     [navigate],
   );

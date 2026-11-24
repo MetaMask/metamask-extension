@@ -18,15 +18,27 @@ jobs:
   refresh-changelog:
     name: Update changelog
     runs-on: ubuntu-latest
+    environment: release-ci
     permissions:
       contents: write
+      id-token: write
       pull-requests: write
     steps:
+      - name: Get token
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            contents: write
+            pull_requests: write
+
       - name: Update Release Changelog
         uses: MetaMask/github-tools/.github/actions/update-release-changelog@v1
+        env:
+          AI_ANALYZER_LITELLM_KEY: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
         with:
           release-branch: ${{ github.ref_name }}
           repository-url: ${{ github.server_url }}/${{ github.repository }}
           platform: extension
-          previous-version-ref: 'null'
-          github-token: ${{ secrets.PR_TOKEN }}
+          github-token: ${{ steps.token.outputs.token }}

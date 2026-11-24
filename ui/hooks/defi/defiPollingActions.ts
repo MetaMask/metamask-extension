@@ -10,8 +10,8 @@ import { submitRequestToBackground } from '../../store/background-connection';
  * @returns polling token that can be used to stop polling.
  */
 export async function deFiStartPolling(): Promise<string> {
-  const pollingToken = await submitRequestToBackground<string>(
-    'deFiStartPolling',
+  const pollingToken = await submitRequestToBackground(
+    'DeFiPositionsController:startPolling',
     [null],
   );
 
@@ -25,6 +25,9 @@ export async function deFiStartPolling(): Promise<string> {
  * @param pollingToken - Poll token received from calling deFiStartPolling
  */
 export async function deFiStopPolling(pollingToken: string) {
-  await submitRequestToBackground('deFiStopPolling', [pollingToken]);
+  await submitRequestToBackground(
+    'DeFiPositionsController:stopPollingByPollingToken',
+    [pollingToken],
+  );
   await removePollingTokenFromAppState(pollingToken);
 }

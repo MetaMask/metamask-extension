@@ -33,6 +33,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyScreenName,
   MoneyTooltipName,
   MoneyTooltipType,
@@ -73,10 +74,10 @@ const Balance = ({
   return (
     <>
       {isLoading ? (
-        // 22px matches the bodyMd line-height of the balance text so
+        // 24px matches the HeadingMd line-height of the balance text so
         // the row doesn't shift when the figure arrives.
         <Skeleton
-          height={22}
+          height={24}
           width={100}
           data-testid={MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID}
         />
@@ -131,7 +132,7 @@ const Add = ({
         // If the user has no balance this is a primary CTA
         moneyAccountEmpty ? ButtonVariant.Primary : ButtonVariant.Secondary
       }
-      className="shrink-0"
+      className="w-full"
       isLoading={isDepositLoading}
       data-testid={MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID}
       onClick={onAddClick}
@@ -234,7 +235,8 @@ export const MoneyAccountBalance = () => {
     hasMoneyAccount &&
     (fiatBalance !== undefined || isLoading);
   const moneyAccountEmpty =
-    tokenTotal !== undefined && !isMoneyBalanceFunded(tokenTotal);
+    isLoading ||
+    (tokenTotal !== undefined && !isMoneyBalanceFunded(tokenTotal));
 
   useTrackOnce(isVisible, trackComponentViewed);
 
@@ -246,9 +248,7 @@ export const MoneyAccountBalance = () => {
     trackSurfaceClicked({
       redirectTarget: MoneyScreenName.MoneyHome,
     });
-    transitionForward(() =>
-      navigate(MONEY_HOME_ROUTE, { state: { stayOnHomePage: true } }),
-    );
+    transitionForward(() => navigate(MONEY_HOME_ROUTE));
   };
 
   const handleSummaryClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -276,7 +276,12 @@ export const MoneyAccountBalance = () => {
       labelKey: 'moneyAdd',
       redirectTarget: MoneyScreenName.MoneyDeposit,
     });
-    initiateDeposit();
+    initiateDeposit({
+      ftueOrigin: {
+        entryPoint: MoneyFtueEntryPoint.WalletHome,
+        componentName: MoneyComponentName.BalanceCard,
+      },
+    });
   };
 
   const handleAddClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -297,9 +302,9 @@ export const MoneyAccountBalance = () => {
       alignItems={BoxAlignItems.Stretch}
       justifyContent={BoxJustifyContent.Between}
       backgroundColor={BoxBackgroundColor.BackgroundSection}
-      // 458px matches .wallet-overview__buttons ($wallet-overview-sidepanel-max-width - 32px)
+      // 458px matches the max width of the WalletOverview action buttons (490px - 32px)
       // so this row lines up with the action buttons above it.
-      className="w-full max-w-[458px] self-center rounded-2xl"
+      className="w-full max-w-[458px] self-center rounded-2xl wide-layout:max-w-none"
       data-testid={MONEY_ACCOUNT_BALANCE_TEST_ID}
     >
       <Box
