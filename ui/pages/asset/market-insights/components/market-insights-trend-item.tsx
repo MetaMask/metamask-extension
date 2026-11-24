@@ -80,7 +80,6 @@ export const MarketInsightsTrendItem = ({
       onClick={() => onPress?.(trend)}
       disabled={!isPressable}
       data-testid={MARKET_INSIGHTS_TREND_ITEM_TEST_ID}
-      aria-label={trend.title}
     >
       <Text variant={TextVariant.HeadingSm} className="mb-2">
         {trend.title}

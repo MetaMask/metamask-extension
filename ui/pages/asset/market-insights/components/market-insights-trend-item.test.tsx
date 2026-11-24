@@ -34,13 +34,18 @@ const makeTrend = (
 
 describe('MarketInsightsTrendItem', () => {
   it('renders the trend title and description', () => {
-    const { getByText, getByTestId } = renderWithProvider(
+    const { getByText, getByTestId, getByRole } = renderWithProvider(
       <MarketInsightsTrendItem trend={makeTrend()} />,
     );
 
     expect(getByTestId(MARKET_INSIGHTS_TREND_ITEM_TEST_ID)).toBeInTheDocument();
     expect(getByText('Bullish momentum')).toBeInTheDocument();
     expect(getByText('Bullish momentum continues')).toBeInTheDocument();
+    expect(
+      getByRole('button', {
+        name: 'Bullish momentum Bullish momentum continues Example +1',
+      }),
+    ).toBeInTheDocument();
   });
 
   it('renders a source label with the remaining source count', () => {
