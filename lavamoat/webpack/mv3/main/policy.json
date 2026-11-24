@@ -770,7 +770,7 @@
         "@ledgerhq/device-management-kit>inversify>@inversifyjs/core": true,
         "@ledgerhq/device-management-kit": true,
         "bs58": true,
-        "@metamask/ppom-validator>crypto-js": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>crypto-js": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/context-module>ethers": true,
         "@ledgerhq/device-management-kit>inversify": true,
         "@ledgerhq/device-management-kit>purify-ts": true,
@@ -885,7 +885,7 @@
         "@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
         "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": true,
         "wait-on>axios": true,
-        "@metamask/ppom-validator>crypto-js": true
+        "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>crypto-js": true
       }
     },
     "@ledgerhq/hw-app-eth": {
@@ -1328,10 +1328,30 @@
         "@metamask/utils>@metamask/byte-utils": true,
         "@metamask/controller-utils": true,
         "@metamask/permission-controller": true,
-        "@metamask/rpc-errors": true,
         "@metamask/utils>@metamask/type-utils": true,
         "@metamask/utils": true,
         "@metamask/controller-utils>lodash-es": true
+      }
+    },
+    "@metamask/multichain-api-middleware>@metamask/chain-agnostic-permission": {
+      "globals": {
+        "console.error": true
+      },
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/byte-utils' and webpack collapsed that to a direct import.",
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import."
+        ]
+      },
+      "packages": {
+        "@metamask/multichain-api-middleware>@metamask/api-specs": true,
+        "@metamask/utils>@metamask/byte-utils": true,
+        "@metamask/multichain-api-middleware>@metamask/controller-utils": true,
+        "@metamask/permission-controller": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/utils>@metamask/type-utils": true,
+        "@metamask/utils": true,
+        "lodash": true
       }
     },
     "@metamask/chomp-api-service": {
@@ -1478,21 +1498,24 @@
         "lodash": true
       }
     },
-    "@metamask/ppom-validator>@metamask/controller-utils": {
+    "@metamask/multichain-api-middleware>@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
-        "URL": true,
         "console.error": true,
         "fetch": true,
         "setTimeout": true
       },
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/byte-utils' and webpack collapsed that to a direct import."
+        ]
+      },
       "packages": {
+        "@metamask/utils>@metamask/byte-utils": true,
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
-        "@metamask/ppom-validator>@metamask/controller-utils>@spruceid/siwe-parser": true,
         "ethereumjs-util>bn.js": true,
         "buffer": true,
-        "cockatiel": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
         "lodash": true
@@ -1646,7 +1669,7 @@
       "packages": {
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true,
-        "@metamask/ppom-validator>json-rpc-random-id": true
+        "@metamask/controller-utils>@metamask/eth-query>json-rpc-random-id": true
       }
     },
     "@metamask/network-controller>@metamask/eth-block-tracker": {
@@ -1664,7 +1687,7 @@
         "@metamask/utils>@metamask/error-utils": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true,
-        "@metamask/ppom-validator>json-rpc-random-id": true
+        "@metamask/controller-utils>@metamask/eth-query>json-rpc-random-id": true
       }
     },
     "@metamask/eth-hd-keyring": {
@@ -1840,7 +1863,7 @@
     },
     "@metamask/controller-utils>@metamask/eth-query": {
       "packages": {
-        "@metamask/ppom-validator>json-rpc-random-id": true,
+        "@metamask/controller-utils>@metamask/eth-query>json-rpc-random-id": true,
         "browserify>xtend": true
       }
     },
@@ -2535,10 +2558,10 @@
       "packages": {
         "@metamask/multichain-api-middleware>@metamask/api-specs": true,
         "@metamask/utils>@metamask/byte-utils": true,
-        "@metamask/chain-agnostic-permission": true,
-        "@metamask/controller-utils": true,
+        "@metamask/multichain-api-middleware>@metamask/chain-agnostic-permission": true,
+        "@metamask/multichain-api-middleware>@metamask/controller-utils": true,
         "@metamask/eth-json-rpc-filters": true,
-        "@metamask/json-rpc-engine": true,
+        "@metamask/multichain-api-middleware>@metamask/json-rpc-engine": true,
         "@metamask/permission-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
@@ -2876,23 +2899,6 @@
         "@metamask/utils>@metamask/type-utils": true,
         "@metamask/utils": true,
         "@metamask/post-message-stream>readable-stream": true
-      }
-    },
-    "@metamask/ppom-validator": {
-      "globals": {
-        "Buffer.from": true,
-        "URL": true,
-        "console.error": true,
-        "crypto": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/ppom-validator>@metamask/controller-utils": true,
-        "@metamask/ppom-validator>await-semaphore": true,
-        "buffer": true,
-        "@metamask/ppom-validator>crypto-js": true,
-        "@toruslabs/eccrypto>elliptic": true,
-        "@metamask/ppom-validator>json-rpc-random-id": true
       }
     },
     "@metamask/profile-metrics-controller": {
@@ -3937,20 +3943,10 @@
         "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": true,
         "@open-rpc/schema-utils-js>@json-schema-tools/meta-schema": true,
         "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": true,
-        "@open-rpc/schema-utils-js>@open-rpc/spec-types": true,
-        "@open-rpc/schema-utils-js>@open-rpc/specification-extension-spec": true,
+        "@open-rpc/meta-schema": true,
         "eslint>ajv": true,
         "@metamask/rpc-errors>fast-safe-stringify": true,
-        "@open-rpc/schema-utils-js>is-url": true,
-        "@open-rpc/test-coverage>isomorphic-fetch": true
-      }
-    },
-    "@open-rpc/schema-utils-js>@open-rpc/spec-types": {
-      "globals": {
-        "spec": true
-      },
-      "packages": {
-        "@open-rpc/schema-utils-js>@open-rpc/spec-types>@open-rpc/spec": true
+        "@open-rpc/schema-utils-js>is-url": true
       }
     },
     "@popperjs/core": {
@@ -4401,16 +4397,6 @@
         "btoa": true
       }
     },
-    "@metamask/ppom-validator>@metamask/controller-utils>@spruceid/siwe-parser": {
-      "globals": {
-        "console.error": true,
-        "console.log": true
-      },
-      "packages": {
-        "@noble/hashes": true,
-        "@metamask/controller-utils>@signinwithethereum/siwe-parser>apg-js": true
-      }
-    },
     "@tanstack/react-query>@tanstack/query-core": {
       "globals": {
         "AbortController": true,
@@ -4763,16 +4749,6 @@
     "string.prototype.matchall>es-abstract>available-typed-arrays": {
       "packages": {
         "string.prototype.matchall>es-abstract>typed-array-length>possible-typed-array-names": true
-      }
-    },
-    "@metamask/ppom-validator>await-semaphore": {
-      "globals": {
-        "process": true,
-        "setImmediate": true
-      },
-      "packages": {
-        "core-js-pure": true,
-        "process": true
       }
     },
     "wait-on>axios": {
@@ -5309,10 +5285,8 @@
         "crypto-browserify>randomfill": true
       }
     },
-    "@metamask/ppom-validator>crypto-js": {
+    "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>crypto-js": {
       "globals": {
-        "Float32Array": true,
-        "Float64Array": true,
         "crypto": true,
         "define": true,
         "msCrypto": true

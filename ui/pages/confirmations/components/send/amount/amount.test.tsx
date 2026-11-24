@@ -20,10 +20,7 @@ import * as SendType from '../../../hooks/send/useSendType';
 import * as SendContext from '../../../context/send';
 import { Amount } from './amount';
 
-const render = (
-  args?: Record<string, unknown>,
-  mockAmountError = undefined,
-) => {
+const render = (args?: Record<string, unknown>, mockAmountError?: string) => {
   const store = configureStore(args ?? mockState);
 
   return renderWithProvider(<Amount amountError={mockAmountError} />, store);
@@ -437,5 +434,26 @@ describe('Amount', () => {
         expect(mockUpdateValue).not.toHaveBeenCalled();
       });
     });
+  });
+
+  it('hides the fiat toggle when an amount error is shown', () => {
+    jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
+      conversionSupportedForAsset: true,
+      fiatCurrencySymbol: '$',
+      fiatCurrencyName: 'usd',
+      getFiatValue: () => '20',
+      getFiatDisplayValue: () => '$ 20.00',
+      getNativeValue: () => '20',
+    });
+
+    const { getByText, queryByTestId } = render(
+      undefined,
+      messages.insufficientFundsSend.message,
+    );
+
+    expect(
+      getByText(messages.insufficientFundsSend.message),
+    ).toBeInTheDocument();
+    expect(queryByTestId('toggle-fiat-mode')).not.toBeInTheDocument();
   });
 });
