@@ -1,6 +1,6 @@
 import { it } from '@jest/globals';
 import { act, renderHook } from '@testing-library/react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   PRODUCT_TYPES,
   RECURRING_INTERVALS,
@@ -11,7 +11,6 @@ import {
   isDevOrUatBuild,
 } from '../../../shared/lib/shield/config';
 import { selectPrimaryMoneyAccount } from '../../selectors/money-account';
-import { getSubscriptions } from '../../store/actions';
 import {
   checkMoneyAccountPlusBalance,
   startMoneyAccountPlusSubscription,
@@ -19,13 +18,11 @@ import {
 import { useStartMoneyAccountPlusSubscription } from './useStartMoneyAccountPlusSubscription';
 
 jest.mock('react-redux', () => ({
-  useDispatch: jest.fn(),
   useSelector: jest.fn(),
 }));
 jest.mock('../../../shared/lib/shield/config');
 jest.mock('../../selectors/money-account');
 jest.mock('../../selectors/money/money-account-feature-flags');
-jest.mock('../../store/actions');
 jest.mock('../../store/controller-actions/subscription-delegation-service');
 
 const payerAddress = '0x1111111111111111111111111111111111111111';
@@ -39,7 +36,6 @@ const request = {
 };
 const mockStart = jest.mocked(startMoneyAccountPlusSubscription);
 const mockCheck = jest.mocked(checkMoneyAccountPlusBalance);
-const dispatch = jest.fn();
 
 function mockPayment(address?: string, chain?: string) {
   jest
@@ -52,7 +48,6 @@ function mockPayment(address?: string, chain?: string) {
 describe('useStartMoneyAccountPlusSubscription', () => {
   beforeEach(() => {
     jest.resetAllMocks();
-    jest.mocked(useDispatch).mockReturnValue(dispatch);
     mockPayment(payerAddress, chainId);
   });
 
@@ -133,19 +128,16 @@ describe('useStartMoneyAccountPlusSubscription', () => {
     expect(result.current.isSubmitting).toBe(false);
   });
 
-  it('reloads subscriptions when the background reports an existing subscription', async () => {
+  it('returns alreadySubscribed when the background reports an existing subscription', async () => {
     mockStart.mockRejectedValue(
       new Error(SubscriptionControllerErrorMessage.UserAlreadySubscribed),
     );
-    const reload = jest.fn();
-    jest.mocked(getSubscriptions).mockReturnValue(reload);
     const { result } = renderHook(useStartMoneyAccountPlusSubscription);
     await act(async () => {
       await expect(result.current.startSubscription(interval)).resolves.toBe(
         'alreadySubscribed',
       );
     });
-    expect(dispatch).toHaveBeenCalledWith(reload);
     expect(result.current.error).toBeUndefined();
   });
 

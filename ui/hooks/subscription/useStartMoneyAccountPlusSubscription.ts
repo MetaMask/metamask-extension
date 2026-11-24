@@ -11,16 +11,13 @@ import {
 } from '../../../shared/lib/shield/config';
 import { selectPrimaryMoneyAccount } from '../../selectors/money-account';
 import { selectMoneyAccountVaultConfig } from '../../selectors/money/money-account-feature-flags';
-import { getSubscriptions } from '../../store/actions';
 import {
   checkMoneyAccountPlusBalance,
   startMoneyAccountPlusSubscription,
 } from '../../store/controller-actions/subscription-delegation-service';
-import { useDispatch } from '../../store/hooks';
 
 /** Separates the read-only funding check from the consented subscription start. */
 export function useStartMoneyAccountPlusSubscription() {
-  const dispatch = useDispatch();
   const payerAddress = useSelector(selectPrimaryMoneyAccount)?.address;
   const chainId = useSelector(selectMoneyAccountVaultConfig)?.chainId;
   const canUseTestClock = isDevOrUatBuild() || isDevOrTestEnvironment();
@@ -78,7 +75,6 @@ export function useStartMoneyAccountPlusSubscription() {
           startError.message ===
             SubscriptionControllerErrorMessage.UserAlreadySubscribed
         ) {
-          await dispatch(getSubscriptions());
           return 'alreadySubscribed';
         }
         setError(startError);
@@ -88,7 +84,7 @@ export function useStartMoneyAccountPlusSubscription() {
         setIsSubmitting(false);
       }
     },
-    [canUseTestClock, dispatch, getPayment],
+    [canUseTestClock, getPayment],
   );
 
   return {
