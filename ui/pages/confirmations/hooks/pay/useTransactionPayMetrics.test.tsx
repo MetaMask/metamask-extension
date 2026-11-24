@@ -40,12 +40,11 @@ const CHAIN_ID_MOCK = '0x1';
 const TOKEN_ADDRESS_MOCK = '0x1234567890abcdef1234567890abcdef12345678';
 
 const PAY_TOKEN_MOCK = {
-  address: TOKEN_ADDRESS_MOCK,
+  assetId: `eip155:1/erc20:${TOKEN_ADDRESS_MOCK}` as const,
   balanceFiat: '100.00',
   balanceHuman: '50',
   balanceRaw: '50000000000000000000',
   balanceUsd: '100.00',
-  chainId: CHAIN_ID_MOCK,
   decimals: 18,
   symbol: 'TST',
 };

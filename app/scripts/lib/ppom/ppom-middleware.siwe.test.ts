@@ -34,7 +34,6 @@ const buildSiwePersonalSignRequest = (address: string) => {
 
 const runMiddleware = async (address: string) => {
   const middleware = createPPOMMiddleware(
-    {} as never,
     { state: { securityAlertsEnabled: true } } as never,
     {
       getNetworkConfigurationByNetworkClientId: () => ({

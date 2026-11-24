@@ -2,10 +2,13 @@ import { Suite } from 'mocha';
 import { veryLargeDelayMs, withFixtures } from '../../helpers';
 import {
   bridgeTransaction,
+  enterBridgeQuote,
   goToAssetPage,
+  searchAndSelectToken,
 } from '../../page-objects/flows/bridge.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
+import SwapAssetPickerPage from '../../page-objects/pages/swap/swap-asset-picker-page';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import SelectNetworkModal from '../../page-objects/pages/networks/select-network-modal';
 import NetworkFilter from '../../page-objects/pages/networks/network-filter';
@@ -113,7 +116,7 @@ describe('Bridge tests', function (this: Suite) {
         await homePage.startSwapFlow();
 
         const swapPage = new SwapPage(driver);
-        await swapPage.enterBridgeQuote({
+        await enterBridgeQuote(driver, {
           amount: '25',
           tokenFrom: 'ETH',
           tokenTo: 'DAI',
@@ -228,7 +231,7 @@ describe('Bridge tests', function (this: Suite) {
         await homePage.startSwapFlow();
         const swapPage = new SwapPage(driver);
 
-        await swapPage.searchForAssetAndSelect('DAI');
+        await searchAndSelectToken(driver, 'DAI');
         console.log('Selected source asset DAI');
 
         const tokenOverviewPage = new TokenOverviewPage(driver);
@@ -238,7 +241,7 @@ describe('Bridge tests', function (this: Suite) {
           token: 'USDC',
           chainId: '0xe708',
           address: '0x176211869cA2b568f2A7D4EE941E073a821EE1ff',
-          assetPicker: swapPage.destinationAssetPickerButton,
+          assetPicker: 'destination',
         });
         await tokenOverviewPage.clickSwap();
         console.log('Clicked Swap button from dest asset page');
@@ -264,7 +267,7 @@ describe('Bridge tests', function (this: Suite) {
 
         const tokenOverviewPage = new TokenOverviewPage(driver);
 
-        await swapPage.searchForAssetAndSelect('mUSD');
+        await searchAndSelectToken(driver, 'mUSD');
         console.log('Selected source asset mUSD');
 
         console.log('Checking that asset picker is visible');
@@ -273,12 +276,13 @@ describe('Bridge tests', function (this: Suite) {
           token: 'USDC',
           chainId: '0xe708',
           address: '0x176211869cA2b568f2A7D4EE941E073a821EE1ff',
-          assetPicker: swapPage.destinationAssetPickerButton,
+          assetPicker: 'destination',
         });
         await tokenOverviewPage.clickBack();
         console.log('Navigated back to Swap page from asset page');
 
-        await swapPage.checkAssetPickerIsReopened();
+        const swapAssetPickerPage = new SwapAssetPickerPage(driver);
+        await swapAssetPickerPage.checkAssetPickerIsReopened();
         await swapPage.checkAssetsAreSelected('mUSD', 'ETH');
       },
     );
@@ -301,13 +305,10 @@ describe('Bridge tests', function (this: Suite) {
 
         const tokenOverviewPage = new TokenOverviewPage(driver);
 
-        await swapPage.searchForAssetAndSelect('DAI');
+        await searchAndSelectToken(driver, 'DAI');
         console.log('Selected source asset DAI');
 
-        await swapPage.searchForAssetAndSelect(
-          'USDC',
-          swapPage.destinationAssetPickerButton,
-        );
+        await searchAndSelectToken(driver, 'USDC', 'destination');
         console.log('Selected dest asset USDC');
 
         await goToAssetPage({
@@ -315,11 +316,12 @@ describe('Bridge tests', function (this: Suite) {
           token: 'DAI',
           chainId: '0x1',
           address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-          assetPicker: swapPage.destinationAssetPickerButton,
+          assetPicker: 'destination',
         });
         await tokenOverviewPage.clickBack();
 
-        await swapPage.checkAssetPickerIsReopened();
+        const swapAssetPickerPage = new SwapAssetPickerPage(driver);
+        await swapAssetPickerPage.checkAssetPickerIsReopened();
         await swapPage.checkAssetsAreSelected('DAI', 'USDC');
 
         console.log(

@@ -1,10 +1,12 @@
 import { dirname, relative } from 'node:path';
-import { ModuleFilenameHelpers, Compilation, sources } from 'webpack';
+import webpackApi from 'webpack';
 import { validate } from 'schema-utils';
-import { schema } from './schema';
+import { schema } from './schema.ts';
 import type { SelfInjectPluginOptions, Source, Compiler } from './types';
 
-export { type SelfInjectPluginOptions } from './types';
+const { ModuleFilenameHelpers, Compilation, sources } = webpackApi;
+
+export { type SelfInjectPluginOptions } from './types.ts';
 
 /**
  * Generates a runtime URL expression for a given path.
@@ -75,10 +77,10 @@ export class SelfInjectPlugin {
    *
    * @param compilation
    */
-  processAssets(compilation: Compilation): void {
+  processAssets(compilation: webpackApi.Compilation): void {
     const opts = {
       name: SelfInjectPlugin.name,
-      stage: Compilation.PROCESS_ASSETS_STAGE_DEV_TOOLING,
+      stage: webpackApi.Compilation.PROCESS_ASSETS_STAGE_DEV_TOOLING,
     };
     compilation.hooks.processAssets.tap(opts, () => this.process(compilation));
   }
@@ -89,7 +91,7 @@ export class SelfInjectPlugin {
    *
    * @param compilation
    */
-  process(compilation: Compilation): void {
+  process(compilation: webpackApi.Compilation): void {
     const { test } = this.options;
     const match = ModuleFilenameHelpers.matchObject.bind(null, { test });
 
@@ -112,7 +114,11 @@ export class SelfInjectPlugin {
    * @param file
    * @param asset
    */
-  updateAsset(compilation: Compilation, file: string, asset: Source): Source {
+  updateAsset(
+    compilation: webpackApi.Compilation,
+    file: string,
+    asset: Source,
+  ): Source {
     const { ConcatSource, RawSource } = sources;
     const { map, source: rawSource } = asset.sourceAndMap();
     // `source` from `sourceAndMap()` is `string | Buffer`; normalize to a

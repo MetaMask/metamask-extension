@@ -11,17 +11,20 @@ jest.mock('./useTransactionPayToken');
 jest.mock('../send/useSendTokens');
 jest.mock('../tokens/useTokenFiatRates');
 
-const PAY_TOKEN_MOCK = {
-  address: '0xabc' as Hex,
-  chainId: '0x1' as Hex,
+const TOKEN_ADDRESS_MOCK = '0x0000000000000000000000000000000000000abc';
+
+const PAY_TOKEN_MOCK: TransactionPaymentToken = {
+  assetId: `eip155:1/erc20:${TOKEN_ADDRESS_MOCK}`,
+  balanceFiat: '5.00',
+  balanceHuman: '5',
   balanceUsd: '5.00',
   balanceRaw: '5000000000000000000',
   decimals: 18,
   symbol: 'ETH',
-} as TransactionPaymentToken;
+};
 
 const ACCOUNT_TOKEN_MOCK = {
-  address: '0xabc',
+  address: TOKEN_ADDRESS_MOCK,
   chainId: '0x1',
   decimals: 18,
   rawBalance: '0x1bc16d674ec80000' as Hex, // 2e18
@@ -99,10 +102,9 @@ describe('usePayTokenAccountBalance', () => {
     });
   });
 
-  it('matches a native account token to the native pay-token address', () => {
-    const nativeAddress = '0x0000000000000000000000000000000000000000' as Hex;
+  it('matches a native account token to the native pay-token asset', () => {
     useTransactionPayTokenMock.mockReturnValue({
-      payToken: { ...PAY_TOKEN_MOCK, address: nativeAddress },
+      payToken: { ...PAY_TOKEN_MOCK, assetId: 'eip155:1/slip44:60' },
       setPayToken: jest.fn(),
     });
     useSendTokensMock.mockReturnValue([
@@ -120,7 +122,10 @@ describe('usePayTokenAccountBalance', () => {
 
   it('matches token by address case-insensitively', () => {
     useTransactionPayTokenMock.mockReturnValue({
-      payToken: { ...PAY_TOKEN_MOCK, address: '0xABC' as Hex },
+      payToken: {
+        ...PAY_TOKEN_MOCK,
+        assetId: 'eip155:1/erc20:0x0000000000000000000000000000000000000ABC',
+      },
       setPayToken: jest.fn(),
     });
 

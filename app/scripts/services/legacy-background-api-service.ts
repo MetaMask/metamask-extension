@@ -324,7 +324,6 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { restrictKeyringForDeviceRead } from '../lib/hardware-device-read-keyring';
-import type { UsePPOMAction } from '../lib/ppom/ppom-util';
 import {
   OnboardingControllerGetIsSocialLoginFlowAction,
   OnboardingControllerResetOnboardingAction,
@@ -774,7 +773,6 @@ type AllowedActions =
   | TransactionControllerUpdateEditableParamsAction
   | TransactionControllerUpdateSecurityAlertResponseAction
   | TransactionControllerWipeTransactionsAction
-  | UsePPOMAction
   | UserOperationControllerAddUserOperationFromTransactionAction
   | UserOperationControllerStartPollingByNetworkClientIdAction;
 
