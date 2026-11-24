@@ -7241,6 +7241,9 @@
   "off": {
     "message": "Off"
   },
+  "offlineToast": {
+    "message": "You're offline. Check your internet connection."
+  },
   "offlineForMaintenance": {
     "message": "Offline for maintenance"
   },

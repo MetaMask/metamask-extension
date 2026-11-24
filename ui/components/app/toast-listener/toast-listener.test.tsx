@@ -44,6 +44,14 @@ jest.mock('../money/money-account-toast/money-account-toast-listener', () => ({
   MoneyAccountToastListener: () => null,
 }));
 
+jest.mock('../../../hooks/useI18nContext', () => ({
+  useI18nContext: jest.fn(() => (key: string) => key),
+}));
+
+jest.mock('../../ui/toast/toast', () => ({
+  toast: Object.assign(jest.fn(), { dismiss: jest.fn() }),
+}));
+
 describe('ToastListener', () => {
   beforeEach(() => {
     jest.clearAllMocks();
