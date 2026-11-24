@@ -12,6 +12,7 @@ import {
   type BundleSizeSummary,
 } from '../utils/plugins/ManifestPlugin/stats.ts';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin/index.ts';
+import { createNetworkRequestRules } from '../utils/plugins/ManifestPlugin/network-request-policy.ts';
 import { createBrowserZipBuilder } from '../utils/plugins/ManifestPlugin/zip.ts';
 import type { ZipOptions } from '../utils/plugins/ManifestPlugin/types.ts';
 import {
@@ -2265,5 +2266,46 @@ describe('ManifestPlugin', () => {
         'should not watch non-existent build type manifest files',
       );
     });
+  });
+});
+
+describe('packaged network request rules', () => {
+  it('packages only extension initiator conditions supported by Chrome 123', () => {
+    const rules = createNetworkRequestRules(
+      { manifest_version: 3 } as Manifest,
+      'main',
+      false,
+    );
+    assert.deepStrictEqual(rules, [
+      {
+        id: 1000000,
+        priority: 1,
+        action: { type: 'block' },
+        condition: {
+          regexFilter: '^(https?|wss?)://',
+          initiatorDomains: ['nkbihfbeogaeaoehlefnkodbefgpgknn'],
+        },
+      },
+    ]);
+  });
+
+  it('adds localhost infrastructure access only in test builds', () => {
+    const rules = createNetworkRequestRules(
+      { manifest_version: 3 } as Manifest,
+      'main',
+      true,
+    );
+    assert.deepStrictEqual(
+      rules.map(({ action }) => action.type),
+      ['block', 'allow'],
+    );
+    assert.deepStrictEqual(rules[1].condition.requestDomains, ['localhost']);
+    assert.throws(() =>
+      createNetworkRequestRules(
+        { manifest_version: 3 } as Manifest,
+        'unknown-store',
+        false,
+      ),
+    );
   });
 });

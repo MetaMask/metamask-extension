@@ -100,6 +100,7 @@ import {
   getTokenNetworkFilter,
 } from '../../../selectors';
 import { onlyKeepHost } from '../../../../shared/lib/only-keep-host';
+import { withTemporaryAllowance } from '../../../../shared/lib/network-request-policy';
 import { useDispatch } from '../../../store/hooks';
 import {
   ChainlistNetworkPicker,
@@ -568,7 +569,11 @@ export const NetworksForm = ({
       return true;
     };
 
-    jsonRpcRequest(templateInfuraRpc(selectedRpcUrl), 'eth_chainId')
+    const rpcUrl = templateInfuraRpc(selectedRpcUrl);
+    const { origin, pathname, search } = new URL(rpcUrl);
+    withTemporaryAllowance(`${origin}${pathname}${search}`, () =>
+      jsonRpcRequest(rpcUrl, 'eth_chainId'),
+    )
       .then((response) => {
         if (!cancelled) {
           setFetchedChainId(response as string);

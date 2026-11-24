@@ -235,6 +235,7 @@ import {
 } from './controllers/analytics';
 import { handleRampsOrderStatusChanged } from './lib/ramps/handleRampsOrderStatusChanged';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
+import { dispatchWithNetworkRequestPolicy } from './lib/network-request-policy';
 import {
   addHexPrefix,
   getMethodDataName,
@@ -3463,7 +3464,9 @@ export default class MetamaskController extends EventEmitter {
         messengerSubscriptions,
       ),
       messengerCall: (method, params = []) =>
-        this.controllerMessenger.call(method, ...params),
+        dispatchWithNetworkRequestPolicy(method, () =>
+          this.controllerMessenger.call(method, ...params),
+        ),
     };
 
     this.on('update', handleUpdate);

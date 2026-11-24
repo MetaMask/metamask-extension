@@ -21,6 +21,7 @@ import {
 } from './stats.ts';
 import { schema } from './schema.ts';
 import type { BundleSizeCategory, ManifestPluginOptions } from './types';
+import { createNetworkRequestRules } from './network-request-policy.ts';
 import { createBrowserZipBuilder, type ZipCompressionOptions } from './zip.ts';
 
 const { sources, ProgressPlugin } = webpackApi;
@@ -988,6 +989,23 @@ export class ManifestPlugin<Z extends boolean> {
           JSON.stringify(manifestForEmit, null, 2),
         ),
       };
+      if (
+        browser === 'chrome' &&
+        manifest.manifest_version === 3 &&
+        manifest.declarative_net_request?.rule_resources?.some(
+          ({ id }) => id === 'network_request_policy',
+        )
+      ) {
+        browserAssets['network-request-rules.json'] = new RawSource(
+          JSON.stringify(
+            createNetworkRequestRules(
+              manifest,
+              this.options.buildType,
+              this.options.test ?? false,
+            ),
+          ),
+        );
+      }
       this.browserAssets.set(browser, browserAssets);
     }
   }

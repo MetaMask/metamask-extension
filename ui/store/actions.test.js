@@ -4184,6 +4184,8 @@ describe('Actions', () => {
       Object.assign(background, {
         messengerCall: (actionType, args = []) => {
           switch (actionType) {
+            case 'OAuthService:waitForOnboardingNetworkPolicy':
+              return Promise.resolve();
             case 'SeedlessOnboardingController:preloadToprfNodeDetails':
               return preloadToprfNodeDetailsStub(...args);
             case 'SeedlessOnboardingController:authenticate':
@@ -4694,7 +4696,7 @@ describe('Actions', () => {
 
       await store.dispatch(actions.fetchAndUpdateMetamaskNotifications());
       expect(
-        messengerCallStub.calledOnceWithExactly(
+        messengerCallStub.calledWithExactly(
           'NotificationServicesController:fetchAndUpdateMetamaskNotifications',
           [undefined],
         ),
@@ -4949,7 +4951,12 @@ describe('Actions', () => {
 
       const result = await store.dispatch(actions.getNotificationPreferences());
 
-      expect(messengerCallStub.calledOnce).toBe(true);
+      expect(
+        messengerCallStub.calledWithExactly(
+          'AuthenticatedUserStorageService:getNotificationPreferences',
+          [],
+        ),
+      ).toBe(true);
       expect(result).toBe(preferences);
     });
   });
@@ -4991,7 +4998,11 @@ describe('Actions', () => {
 
       await store.dispatch(actions.enableMetamaskNotifications(options));
 
-      expect(messengerCallStub.calledOnce).toBe(true);
+      expect(
+        messengerCallStub.calledWith(
+          'NotificationServicesController:enableMetamaskNotifications',
+        ),
+      ).toBe(true);
     });
 
     it('calls enableMetamaskNotifications in the background without args when options are omitted', async () => {
@@ -5007,7 +5018,11 @@ describe('Actions', () => {
 
       await store.dispatch(actions.enableMetamaskNotifications());
 
-      expect(messengerCallStub.calledOnce).toBe(true);
+      expect(
+        messengerCallStub.calledWith(
+          'NotificationServicesController:enableMetamaskNotifications',
+        ),
+      ).toBe(true);
     });
   });
 

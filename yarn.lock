@@ -9366,7 +9366,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-enablement-controller@npm:^7.1.1, @metamask/network-enablement-controller@npm:^7.1.3":
+"@metamask/network-enablement-controller@npm:7.1.3":
   version: 7.1.3
   resolution: "@metamask/network-enablement-controller@npm:7.1.3"
   dependencies:
@@ -9382,6 +9382,25 @@ __metadata:
     "@metamask/utils": "npm:^12.0.1"
     reselect: "npm:^5.3.0"
   checksum: 10/13786940d2bbefa56aad522165124a4371127b27a36e492d01027557fac03cb32c699946a05d404ea731213fd691b8168ab2753f78aaa6ebb4c094fd9fd06eda
+  languageName: node
+  linkType: hard
+
+"@metamask/network-enablement-controller@patch:@metamask/network-enablement-controller@npm%3A7.1.3#~/.yarn/patches/@metamask-network-enablement-controller-npm-7.1.3-network-access.patch":
+  version: 7.1.3
+  resolution: "@metamask/network-enablement-controller@patch:@metamask/network-enablement-controller@npm%3A7.1.3#~/.yarn/patches/@metamask-network-enablement-controller-npm-7.1.3-network-access.patch::version=7.1.3&hash=06e86f"
+  dependencies:
+    "@metamask/base-controller": "npm:^10.1.0"
+    "@metamask/config-registry-controller": "npm:^6.0.0"
+    "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/keyring-api": "npm:^24.3.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/multichain-network-controller": "npm:^4.1.1"
+    "@metamask/network-controller": "npm:^38.0.1"
+    "@metamask/slip44": "npm:^4.5.0"
+    "@metamask/transaction-controller": "npm:^74.0.0"
+    "@metamask/utils": "npm:^12.0.1"
+    reselect: "npm:^5.3.0"
+  checksum: 10/cc930600d362c667f3068238611b51ef2d66e08c93f771c4ab35d7d6258ea00438935d14d79a6c107564420295e6c7fa35943ed99d17643436cf7362bcb8c527
   languageName: node
   linkType: hard
 

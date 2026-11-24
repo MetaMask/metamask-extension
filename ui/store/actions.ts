@@ -304,9 +304,14 @@ export function startOAuthLogin(
           authConnection,
           ...(parentTraceContext ? [parentTraceContext] : []),
         ]),
-        submitRequestToBackground(
-          'SeedlessOnboardingController:preloadToprfNodeDetails',
-        ), // fetch the toprf node details for seedless authentication in parallel
+        (async () => {
+          await submitRequestToBackground(
+            'OAuthService:waitForOnboardingNetworkPolicy',
+          );
+          return submitRequestToBackground(
+            'SeedlessOnboardingController:preloadToprfNodeDetails',
+          );
+        })(), // fetch the toprf node details for seedless authentication in parallel
       ]);
 
       let seedlessAuthSuccess = false;

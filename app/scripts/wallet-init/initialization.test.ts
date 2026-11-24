@@ -165,6 +165,9 @@ describe('initializeWallet', () => {
     });
 
     expect(MockWallet).toHaveBeenCalledWith({
+      initializationConfigurations: [
+        expect.objectContaining({ name: 'NetworkEnablementController' }),
+      ],
       instanceOptions: {
         analyticsController: 'analytics-options',
         approvalController: 'approval-options',

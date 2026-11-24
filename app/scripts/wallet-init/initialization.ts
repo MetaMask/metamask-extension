@@ -1,5 +1,6 @@
 import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import { Wallet } from '@metamask/wallet';
+import { getPrivateNetworkEnablementConfiguration } from './network-metadata-privacy';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { isObject } from '@metamask/utils';
 import { isInE2eTest } from '../../../shared/lib/environment';
@@ -77,6 +78,9 @@ export function initializeWallet(request: InitializeWalletRequest) {
   });
 
   const wallet = new Wallet({
+    initializationConfigurations: [
+      getPrivateNetworkEnablementConfiguration(messenger),
+    ],
     instanceOptions: {
       analyticsController: getAnalyticsControllerInstanceOptions({
         initMessenger: getAnalyticsControllerInitMessenger(messenger),
@@ -114,7 +118,10 @@ export function initializeWallet(request: InitializeWalletRequest) {
       shieldApiService: getShieldApiServiceInstanceOptions(),
       shieldController: getShieldControllerInstanceOptions(),
       remoteFeatureFlagController:
-        getRemoteFeatureFlagControllerInstanceOptions({ messenger, state }),
+        getRemoteFeatureFlagControllerInstanceOptions({
+          messenger,
+          state,
+        }),
       selectedNetworkController: {
         domainProxyMap: new WeakRefObjectMap(),
       },

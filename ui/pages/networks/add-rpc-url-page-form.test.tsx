@@ -6,10 +6,12 @@ import {
   screen,
   waitFor,
 } from '@testing-library/react';
+import { createDeferredPromise } from '@metamask/utils';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { JsonRpcRequestError } from '../../../shared/lib/rpc.utils';
 import { useSafeChains } from '../../components/multichain/networks-form/use-safe-chains';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
+import { withTemporaryAllowance } from '../../../shared/lib/network-request-policy';
 import { AddRpcUrlPageForm } from './add-rpc-url-page-form';
 
 const mockJsonRpcRequest = jest.fn();
@@ -17,6 +19,10 @@ const mockJsonRpcRequest = jest.fn();
 jest.mock('../../../shared/lib/rpc.utils', () => ({
   ...jest.requireActual('../../../shared/lib/rpc.utils'),
   jsonRpcRequest: (...args: unknown[]) => mockJsonRpcRequest(...args),
+}));
+
+jest.mock('../../../shared/lib/network-request-policy', () => ({
+  withTemporaryAllowance: jest.fn(),
 }));
 
 jest.mock('../../hooks/useI18nContext', () => ({
@@ -36,6 +42,10 @@ describe('AddRpcUrlPageForm', () => {
     jest.useFakeTimers();
     jest.clearAllMocks();
     mockJsonRpcRequest.mockResolvedValue('0x1');
+    jest
+      .mocked(withTemporaryAllowance)
+      .mockReset()
+      .mockImplementation(async (_url, callback) => await callback());
     useI18nContextMock.mockReturnValue((key: string) => key);
     mockUseSafeChains.mockReturnValue({ safeChains: [] });
   });
@@ -53,6 +63,39 @@ describe('AddRpcUrlPageForm', () => {
     });
 
     expect(screen.getByTestId('page-container-footer-next')).toBeDisabled();
+  });
+
+  it('waits for an allowance before validating the user-entered RPC URL', async () => {
+    const installed = createDeferredPromise();
+    jest
+      .mocked(withTemporaryAllowance)
+      .mockImplementationOnce(async (_url, callback) => {
+        await installed.promise;
+        return await callback();
+      });
+    render(<AddRpcUrlPageForm onAdded={() => undefined} />);
+    fireEvent.change(screen.getByTestId('rpc-url-input-test'), {
+      target: { value: 'https://user:pass@rpc.example.com/path?key=one' },
+    });
+
+    await act(async () => {
+      jest.advanceTimersByTime(500);
+    });
+
+    expect(withTemporaryAllowance).toHaveBeenCalledWith(
+      'https://rpc.example.com/path?key=one',
+      expect.any(Function),
+    );
+    expect(mockJsonRpcRequest).not.toHaveBeenCalled();
+    expect(screen.getByTestId('page-container-footer-next')).toBeDisabled();
+
+    await act(async () => installed.resolve());
+
+    expect(mockJsonRpcRequest).toHaveBeenCalledWith(
+      'https://user:pass@rpc.example.com/path?key=one',
+      'eth_chainId',
+    );
+    expect(screen.getByTestId('page-container-footer-next')).toBeEnabled();
   });
 
   it('disables Add URL when RPC validation fails', async () => {
