@@ -262,7 +262,7 @@ describe('claimBackendRequests', () => {
     globalThis.stateHooks = {} as typeof globalThis.stateHooks;
     let otherCopy: typeof import('./sentry-trace-propagation') | undefined;
     jest.isolateModules(() => {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports, n/global-require
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       otherCopy = require('./sentry-trace-propagation');
     });
     const span = {} as Span;
