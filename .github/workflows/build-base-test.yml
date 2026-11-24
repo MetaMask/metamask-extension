@@ -15,6 +15,9 @@ on:
 
 jobs:
   build-base-test-webpack:
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: base-build-test-webpack
