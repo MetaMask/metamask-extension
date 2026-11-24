@@ -1,9 +1,9 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
-import { LoaderContext } from 'webpack';
+import type { LoaderContext } from 'webpack';
 import envValidationLoader, {
-  EnvValidationLoaderOptions,
-} from '../utils/loaders/envValidationLoader';
+  type EnvValidationLoaderOptions,
+} from '../utils/loaders/envValidationLoader.ts';
 
 describe('envValidationLoader', () => {
   function createMockContext(

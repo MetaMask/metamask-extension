@@ -35,7 +35,7 @@ describe('useMusdConversionQuoteTrace', () => {
       currentConfirmation: { id: 'tx-1' },
     });
     mockUseTransactionPayToken.mockReturnValue({
-      payToken: { address: '0xUsdc', chainId: '0x1' },
+      payToken: { assetId: 'eip155:1/erc20:0xUsdc' },
     });
     mockUseTransactionPayQuotes.mockReturnValue(undefined);
     mockUseIsTransactionPayLoading.mockReturnValue(false);

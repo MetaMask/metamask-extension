@@ -1,7 +1,6 @@
 import { isCaipAssetType, type CaipAssetType } from '@metamask/utils';
 import type { BridgeControllerMetricsLocation } from '@metamask/bridge-controller';
 import browser from 'webextension-polyfill';
-import { POPUP_FILE } from '#shared/constants/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -10,6 +9,7 @@ import { EXTENSION_MESSAGES } from '#shared/constants/messages';
 import { buildAssetRoutePath } from '#shared/lib/asset-route';
 import type { ManifestFlags } from '#shared/lib/manifestFlags';
 import { getBooleanFeatureFlag } from '#shared/lib/remote-feature-flag-utils';
+import { openRoute } from '../sidepanel/background';
 import { createEventBuilder, trackEvent } from '../controllers/analytics';
 import { fetchPriceHistory, resolveTicker } from './lib/data';
 import type { Controller } from './lib/types';
@@ -18,17 +18,8 @@ const swapRoute = '/cross-chain/swaps/prepare-bridge-page';
 const xTabUrlPatterns = ['*://x.com/*', '*://www.x.com/*'];
 const xHosts = new Set(['x.com', 'www.x.com']);
 const widgetFramePath = 'cashtag-widget.html';
-const fullscreenFile = 'home.html';
-const popupResetDelayMs = 1000;
 
 let registered = false;
-// Routes saved before panel open, consumed on mount. Cleaned up when consumed,
-// when the window closes (windows.onRemoved), or when open() fails (identity
-// check). Not cleaned up on panel close to avoid races with late close events.
-const pendingRoutes = new Map<
-  number,
-  { path: string; search?: `?${string}` }
->();
 
 function parsedUrl(value: string | undefined) {
   if (!value) {
@@ -88,17 +79,6 @@ export function isAllowedCashtagSender(
   ) {
     return isWidgetFrameSender(sender);
   }
-  if (messageType === EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE) {
-    if (sender.id !== chrome.runtime.id || sender.tab) {
-      return false;
-    }
-    const url = parsedUrl(sender.url);
-    if (!url) {
-      return false;
-    }
-    const extensionOrigin = chrome.runtime.getURL('');
-    return url.href.startsWith(extensionOrigin);
-  }
   return false;
 }
 
@@ -139,17 +119,6 @@ function assetRoutePath(caipAssetId: string) {
   return buildAssetRoutePath(caipAssetId as CaipAssetType);
 }
 
-function routeHash(path: string, search?: `?${string}`) {
-  return `#${path}${search ?? ''}`;
-}
-
-function shouldUseSidePanel(controller: Controller | undefined) {
-  const preferred =
-    controller?.preferencesController?.state?.preferences
-      ?.useSidePanelAsDefault ?? true;
-  return preferred && Boolean(globalThis.chrome?.sidePanel?.open);
-}
-
 // Scoped to this module rather than shared/lib/manifestFlags, whose
 // getManifestFlags() bails out in non-Jest environments and would need a
 // global behaviour change to read _flags in a real build.
@@ -180,98 +149,6 @@ function isTickerWidgetEnabled(controller: Controller | undefined) {
   return isTickerWidgetFeatureEnabled(controller) && preferenceEnabled;
 }
 
-async function openSidePanel(
-  sender: { tab?: { windowId?: number } },
-  path: string,
-  search?: `?${string}`,
-) {
-  const sidePanel = globalThis.chrome?.sidePanel;
-  if (!sidePanel?.open) {
-    throw new Error('sidepanel-unavailable');
-  }
-
-  const windowId = sender?.tab?.windowId;
-
-  if (typeof windowId !== 'number') {
-    throw new TypeError('sidepanel-no-window');
-  }
-
-  const entry = { path, search };
-  pendingRoutes.set(windowId, entry);
-
-  try {
-    await sidePanel.open({ windowId });
-  } catch (error: unknown) {
-    if (pendingRoutes.get(windowId) === entry) {
-      pendingRoutes.delete(windowId);
-    }
-    throw error;
-  }
-
-  await browser.runtime
-    .sendMessage({
-      type: EXTENSION_MESSAGES.OPEN_ROUTE,
-      body: { windowId },
-    })
-    .catch(() => undefined);
-}
-
-function openPopupWithRoute(hash: string) {
-  const action = globalThis.chrome?.action;
-  if (!action?.setPopup || typeof action.openPopup !== 'function') {
-    throw new Error('popup-unavailable');
-  }
-
-  // Same user-gesture constraint as sidePanel.open().
-  const popupSet = action.setPopup({ popup: `${POPUP_FILE}${hash}` });
-  const opened = action.openPopup();
-
-  // Delay reset so the popup document can start loading the hash URL.
-  globalThis.setTimeout(() => {
-    action.setPopup({ popup: POPUP_FILE }).catch(() => undefined);
-  }, popupResetDelayMs);
-
-  return Promise.all([popupSet, opened]);
-}
-
-function openFullscreenTab(hash: string) {
-  return browser.tabs.create({
-    url: browser.runtime.getURL(`${fullscreenFile}${hash}`),
-  });
-}
-
-async function openExtensionSurface({
-  controller,
-  sender,
-  hash,
-  path,
-  search,
-}: {
-  controller: Controller | undefined;
-  sender: { tab?: { windowId?: number } };
-  hash: string;
-  path: string;
-  search?: `?${string}`;
-}) {
-  if (shouldUseSidePanel(controller)) {
-    try {
-      await openSidePanel(sender, path, search);
-      return;
-    } catch {
-      // Fall through to the popup, then a tab.
-    }
-  }
-
-  try {
-    // Popup is destroyed on close, so a one-shot hash deep link is safe.
-    await openPopupWithRoute(hash);
-  } catch {
-    // Firefox has neither sidePanel.open nor action.openPopup, and both reject
-    // once the user gesture is gone, so open a tab, which needs no gesture.
-    await openFullscreenTab(hash);
-  }
-}
-
 async function openExtensionPage({
   controller,
   sender,
@@ -285,12 +162,9 @@ async function openExtensionPage({
   search?: `?${string}`;
   caipAssetId: string | null;
 }) {
-  const hash = routeHash(path, search);
-
-  await openExtensionSurface({
+  await openRoute({
     controller,
-    sender,
-    hash,
+    windowId: sender.tab?.windowId,
     path,
     search,
   });
@@ -550,25 +424,6 @@ function handleOpenExtension(
   return Promise.resolve(openExtensionFailure('invalid-page'));
 }
 
-function handleConsumePendingRoute(message: CashtagMessage) {
-  const windowId = message.body?.windowId;
-  const entry =
-    typeof windowId === 'number' ? pendingRoutes.get(windowId) : undefined;
-
-  if (typeof windowId === 'number') {
-    pendingRoutes.delete(windowId);
-  }
-
-  const body = entry
-    ? { path: entry.path, search: entry.search ?? null }
-    : { path: null, search: null };
-
-  return Promise.resolve({
-    type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
-    body,
-  });
-}
-
 export function createCashtagResponse(
   message: CashtagMessage,
   sender: chrome.runtime.MessageSender,
@@ -583,8 +438,6 @@ export function createCashtagResponse(
       return handleGetData(message, getController);
     case EXTENSION_MESSAGES.OPEN_EXTENSION:
       return handleOpenExtension(message, sender, getController);
-    case EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE:
-      return handleConsumePendingRoute(message);
     case EXTENSION_MESSAGES.TRACK_EVENT:
       return handleTrackEvent(message);
     default:
@@ -625,10 +478,6 @@ export function registerCashtagBackgroundBridge({
   registered = true;
 
   bindTickerWidgetEnabledBroadcasts(getController);
-
-  chrome.windows.onRemoved.addListener((windowId) => {
-    pendingRoutes.delete(windowId);
-  });
 
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (!isAllowedCashtagSender(message?.type, sender)) {

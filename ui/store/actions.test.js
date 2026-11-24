@@ -360,38 +360,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('token detection polling messenger actions', () => {
-    it('starts polling through the token detection controller', async () => {
-      background.messengerCall.resolves('token-detection-token');
-      setBackgroundConnection(background);
-
-      const pollingToken = await actions.tokenDetectionStartPolling(['0x1']);
-
-      expect(pollingToken).toBe('token-detection-token');
-      expect(
-        background.messengerCall.calledWithExactly(
-          'TokenDetectionController:startPolling',
-          [{ chainIds: ['0x1'] }],
-        ),
-      ).toBe(true);
-    });
-
-    it('stops polling through the token detection controller', async () => {
-      setBackgroundConnection(background);
-
-      await actions.tokenDetectionStopPollingByPollingToken(
-        'token-detection-token',
-      );
-
-      expect(
-        background.messengerCall.calledWithExactly(
-          'TokenDetectionController:stopPollingByPollingToken',
-          ['token-detection-token'],
-        ),
-      ).toBe(true);
-    });
-  });
-
   describe('subscription polling messenger actions', () => {
     it('starts polling through the subscription controller from the Redux action', async () => {
       background.messengerCall.resolves('subscription-token');

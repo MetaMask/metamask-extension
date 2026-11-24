@@ -44,10 +44,8 @@ import type {
 } from '@metamask/snaps-controllers';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { SignatureControllerState } from '@metamask/signature-controller';
-import type { PPOMState } from '@metamask/ppom-validator';
 import type { PasskeyControllerState } from '@metamask/passkey-controller';
 import type { NameControllerState } from '@metamask/name-controller';
-import type { UserOperationControllerState } from '@metamask/user-operation-controller';
 import type { TransactionControllerState } from '@metamask/transaction-controller';
 import type {
   AuthenticationController,
@@ -255,8 +253,6 @@ export type ControllerStatePropertiesEnumerated = {
   subjects: PermissionControllerState<PermissionConstraint>['subjects'];
   permissionActivityLog: PermissionLogControllerState['permissionActivityLog'];
   permissionHistory: PermissionLogControllerState['permissionHistory'];
-  storageMetadata: PPOMState['storageMetadata'];
-  versionInfo: PPOMState['versionInfo'];
   featureFlags: PreferencesControllerState['featureFlags'];
   ipfsGateway: PreferencesControllerState['ipfsGateway'];
   isIpfsGatewayEnabled: PreferencesControllerState['isIpfsGatewayEnabled'];
@@ -325,7 +321,6 @@ export type ControllerStatePropertiesEnumerated = {
   transactionBatches: TransactionControllerState['transactionBatches'];
   batchTransactionCounts: TransactionControllerState['batchTransactionCounts'];
   submitHistory: TransactionControllerState['submitHistory'];
-  userOperations: UserOperationControllerState['userOperations'];
   isBackupAndSyncEnabled: UserStorageController.UserStorageControllerState['isBackupAndSyncEnabled'];
   isBackupAndSyncUpdateLoading: UserStorageController.UserStorageControllerState['isBackupAndSyncUpdateLoading'];
   isAccountSyncingEnabled: UserStorageController.UserStorageControllerState['isAccountSyncingEnabled'];
@@ -350,7 +345,7 @@ export type ControllerStatePropertiesEnumerated = {
 };
 
 export type ControllerStateTypesMerged = AccountsControllerState &
-  AccountTrackerControllerState &
+  Pick<AccountTrackerControllerState, 'accountsByChainId'> &
   AddressBookControllerState &
   AssetsControllerState &
   AlertControllerState &
@@ -391,7 +386,6 @@ export type ControllerStateTypesMerged = AccountsControllerState &
   PasskeyControllerState &
   PermissionControllerState<PermissionConstraint> &
   PermissionLogControllerState &
-  PPOMState &
   PreferencesControllerState &
   RemoteFeatureFlagControllerState &
   RatesControllerState &
@@ -407,7 +401,6 @@ export type ControllerStateTypesMerged = AccountsControllerState &
   TokensControllerState &
   TokenListState &
   TransactionControllerState &
-  UserOperationControllerState &
   UserStorageController.UserStorageControllerState &
   RewardsControllerState &
   RewardsMoneyControllerState &

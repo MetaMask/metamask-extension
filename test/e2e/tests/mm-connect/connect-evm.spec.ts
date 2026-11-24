@@ -19,6 +19,7 @@ import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import { TestDappMmConnect as TestDapp } from '../../page-objects/pages/test-dapp-mm-connect';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 
 const OPTIMISM_CHAIN_ID = parseInt(CHAIN_IDS.OPTIMISM, 16);
 
@@ -80,8 +81,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
-          const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.openAccountMenu();
+          await openAccountMenu(driver);
           const accountListPage = new AccountListPage(driver);
           await accountListPage.switchToAccount('Account 2');
 
@@ -275,8 +275,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
-          const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.openAccountMenu();
+          await openAccountMenu(driver);
           const accountListPage = new AccountListPage(driver);
           await accountListPage.switchToAccount('Account 2');
 

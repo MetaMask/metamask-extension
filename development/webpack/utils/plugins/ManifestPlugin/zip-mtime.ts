@@ -1,4 +1,4 @@
-import { getLatestCommit } from '../../git';
+import { getLatestCommit } from '../../git.ts';
 
 /**
  * Zip file entries use FAT timestamps. Standard zip timestamps must be in the
