@@ -32,7 +32,7 @@
 name: Post cross-repo commit status
 
 on:
-  workflow_run:
+  workflow_run: # zizmor: ignore[dangerous-triggers] Posts a status using run metadata only; never checks out or runs PR code.
     workflows: ['Main']
     types: [completed]
 
