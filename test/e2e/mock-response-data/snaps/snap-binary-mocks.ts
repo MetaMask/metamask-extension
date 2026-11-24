@@ -78,7 +78,6 @@ async function createSnapMock(options: {
 }
 
 const snapConfigurations: Record<string, string> = {
-  mockAccountAbstractionKeyringSnap: 'snap-account-abstraction-keyring',
   mockBip32Snap: 'bip32-example-snap',
   mockBip44Snap: 'bip44-example-snap',
   mockClientStatusSnap: 'client-status-example-snap',
@@ -110,13 +109,6 @@ const snapConfigurations: Record<string, string> = {
   mockBackgroundEventsSnap: 'background-events-example-snap',
   mockMultichainProviderSnap: 'multichain-provider-example-snap',
 };
-
-export async function mockAccountAbstractionKeyringSnap(mockServer: Mockttp) {
-  return createSnapMock({
-    mockServer,
-    snapNamePrefix: snapConfigurations.mockAccountAbstractionKeyringSnap,
-  });
-}
 
 export async function mockBip32Snap(mockServer: Mockttp) {
   return createSnapMock({

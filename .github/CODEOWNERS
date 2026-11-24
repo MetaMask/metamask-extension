@@ -245,7 +245,7 @@ app/scripts/lib/smart-transaction                 @MetaMask/transactions
 shared/lib/multichain/addresses/* @MetaMask/networks @MetaMask/emerging-opportunities
 shared/constants/network.ts                        @MetaMask/networks
 shared/constants/multichain/networks.ts            @MetaMask/networks
-ui/pages/asset                                     @MetaMask/networks
+ui/pages/asset                                     @MetaMask/networks @MetaMask/metamask-assets
 ui/selectors/multichain/networks.ts                @MetaMask/networks
 ui/selectors/multichain/networks.test.ts           @MetaMask/networks
 ui/selectors/config-registry/                      @MetaMask/networks
@@ -277,6 +277,7 @@ test/e2e/playwright/benchmark                                         @MetaMask/
 app/scripts/lib/rpc-method-middleware                                 @MetaMask/core-platform
 shared/lib/caip25-caveat-merger.ts                                    @MetaMask/core-platform
 test/e2e/flask/multichain-api                                         @MetaMask/core-platform
+test/e2e/json-rpc                                                     @MetaMask/core-platform
 # TODO CONSOLIDATE THE MIDDLEWARE BELOW INTO THE RPC-METHOD-MIDDLEWARE FOLDER
 app/scripts/lib/createRPCMethodTrackingMiddleware.js                  @MetaMask/core-platform
 app/scripts/lib/createMetamaskMiddleware.ts                           @MetaMask/core-platform

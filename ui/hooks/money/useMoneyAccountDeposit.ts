@@ -1,5 +1,5 @@
 import { TransactionType } from '@metamask/transaction-controller';
-import { bytesToHex, type Hex } from '@metamask/utils';
+import { bytesToHex } from '@metamask/utils';
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
@@ -116,7 +116,7 @@ let isDepositInitiationInFlight = false;
  * `confirmations_pay_hardware` enables Money Account deposits; otherwise a
  * user on a hardware wallet funds from their first eligible account rather
  * than being blocked at the confirmation. Fails fast only when no eligible
- * account exists. That address is passed as Pay's `accountOverride` so
+ * account exists. Its account ID is passed as Pay's `accountOverride` so
  * the confirmation defaults the From row — and quotes — to that account instead of
  * the money account that executes the batch.
  *
@@ -183,7 +183,7 @@ export function useMoneyAccountDeposit() {
 
         const { transactionId } = await createMoneyAccountDepositTransaction(
           batchId,
-          fundingAccount.address as Hex,
+          fundingAccount.id,
         );
 
         navigateToTransaction(transactionId, {

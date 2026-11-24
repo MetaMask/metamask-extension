@@ -15,7 +15,6 @@ import {
   IconSize,
   Text,
 } from '@metamask/design-system-react';
-import type { Hex } from '@metamask/utils';
 import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { ConfirmInfoAlertRow } from '../../../../../components/app/confirm/info/row/alert-row/alert-row';
@@ -25,8 +24,8 @@ import { hasTransactionType } from '../../../../../../shared/lib/transactions.ut
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import { setAccountOverride } from '../../../../../store/controller-actions/transaction-pay-controller';
 import {
-  selectTransactionPayAccountOverrideByTransactionId,
-  type TransactionPayState,
+  selectTransactionPayEvmAccountOverrideByTransactionId,
+  type TransactionPayAccountsState,
 } from '../../../../../selectors/transactionPayController';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useDisplayName } from '../../../../../hooks/useDisplayName';
@@ -34,7 +33,10 @@ import { useConfirmContext } from '../../../context/confirm';
 import { PAY_QR_HARDWARE_BLOCKED_TRANSACTION_TYPES } from '../../../constants/pay';
 import { useIsPayHardwareBlocked } from '../../../hooks/pay/useIsPayHardwareBlocked';
 import { replaceAccountInNestedTransactions } from '../../../utils/transaction-pay';
-import { AccountSelectModal } from '../../account-select-modal';
+import {
+  AccountSelectModal,
+  type SelectedAccount,
+} from '../../account-select-modal';
 
 export { ConfirmInfoRowSize };
 
@@ -65,10 +67,10 @@ const RECIPIENT_ACCOUNT_ROW_TRANSACTION_TYPES = [
  * "From <wallet>" / "To <wallet>" account selector row.
  *
  * Displays the account on the other end of the transfer and lets the user
- * switch to another EVM account via a modal. Selecting an account updates the
- * TransactionPayController's `accountOverride`. The displayed account is
- * `accountOverride ?? txParams.from`, matching how the pay controller resolves
- * the funding account.
+ * switch to another EVM account via a modal. Selecting an account sets the
+ * TransactionPayController's `accountOverride` to its account ID. The
+ * displayed account is the override account address, or `txParams.from`,
+ * matching how the pay controller resolves the funding account.
  *
  * The label direction follows the flow: funding flows (e.g. money-account
  * deposit) read "From", whereas withdraws read "To" because the selected
@@ -105,8 +107,8 @@ export function FromAccountRow({
   const txFrom = currentConfirmation?.txParams?.from ?? '';
   const { chainId, id: ownerId } = currentConfirmation ?? {};
 
-  const accountOverride = useSelector((state: TransactionPayState) =>
-    selectTransactionPayAccountOverrideByTransactionId(state, transactionId),
+  const accountOverride = useSelector((state: TransactionPayAccountsState) =>
+    selectTransactionPayEvmAccountOverrideByTransactionId(state, transactionId),
   );
 
   // Prefer the pay-controller override so the pill updates when the user picks
@@ -124,12 +126,12 @@ export function FromAccountRow({
   const closeModal = useCallback(() => setIsModalOpen(false), []);
 
   const handleSelect = useCallback(
-    async (address: string) => {
+    async (account: SelectedAccount) => {
       closeModal();
 
       if (
         !currentConfirmation?.id ||
-        address.toLowerCase() === from.toLowerCase()
+        account.address.toLowerCase() === from.toLowerCase()
       ) {
         return;
       }
@@ -142,10 +144,10 @@ export function FromAccountRow({
             transactionId: currentConfirmation.id,
             nestedTransactions: currentConfirmation.nestedTransactions,
             oldAddress: accountOverride ?? txFrom,
-            newAddress: address,
+            newAddress: account.address,
           });
         }
-        await setAccountOverride(currentConfirmation.id, address as Hex);
+        await setAccountOverride(currentConfirmation.id, account.id);
       } catch (error) {
         console.error('Failed to update pay account override', error);
       }

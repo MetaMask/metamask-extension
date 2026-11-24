@@ -7,7 +7,10 @@ import {
 } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { DEFAULT_BRIDGE_FEATURE_FLAGS } from '../bridge/constants';
-import { bridgeTransaction } from '../../page-objects/flows/bridge.flow';
+import {
+  bridgeTransaction,
+  enterBridgeQuote,
+} from '../../page-objects/flows/bridge.flow';
 import {
   getBridgeFixtures,
   EventTypes,
@@ -71,7 +74,7 @@ describe('Bridge tests', function (this: Suite) {
         );
 
         console.log('Entering 2nd Swap quote');
-        await swapPage.enterBridgeQuote(quote, {
+        await enterBridgeQuote(driver, quote, {
           openPickersWithDebounce: true,
         });
         await swapPage.waitForQuote();

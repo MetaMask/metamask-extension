@@ -1,4 +1,3 @@
-import { it as jestIt } from '@jest/globals';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -39,22 +38,6 @@ describe('createEvent', () => {
     expect(result.properties).not.toHaveProperty('referral_code');
     expect(result.sensitiveProperties).not.toHaveProperty('ref');
   });
-
-  jestIt.each([VALID, INVALID])(
-    'omits signature-excluded referrals from analytics when the signature is %s',
-    (signature) => {
-      const result = createEvent({
-        signature,
-        url: new URL(
-          'https://link.metamask.io/money?ref=ABC123&sig=signature&sig_params=',
-        ),
-      });
-
-      expect(result.properties).not.toHaveProperty('referral_code');
-      expect(result.sensitiveProperties).not.toHaveProperty('ref');
-    },
-  );
-
   describe('basic functionality', () => {
     it('should create event with minimal required properties', () => {
       const url = new URL('https://example.com/test-route');

@@ -12,22 +12,8 @@ const QUOTE_PARAMS_DEBOUNCE_MS = 500;
 /** Prefix the Select quote dialog renders before each quote's cost. */
 const TOTAL_COST_LABEL = 'Total cost:';
 
-export type BridgeQuote = {
-  amount: string;
-  tokenFrom?: string;
-  tokenTo?: string;
-  fromChain?: string;
-  toChain?: string;
-  unapproved?: boolean;
-};
-
-export type SwapOptions = {
-  amount: number;
-  swapFrom: string;
-  swapTo: string;
-  network: string;
-  swapToContractAddress?: string;
-};
+/** Which of the Swap screen's two asset pickers to open. */
+export type AssetPickerSide = 'source' | 'destination';
 
 export type SwapReviewOptions = {
   exchangeRate?: string;
@@ -49,35 +35,25 @@ export type SwapQuote = {
  * The Swap screen, where users swap on the same chain or across chains
  * (bridge): source/destination assets, amount, quotes and submit.
  *
- * Screen: `#/cross-chain/swaps/prepare-bridge-page` (and the nested assets
- * picker at `#/cross-chain/swaps/prepare-bridge-page/assets`).
- * Owns: source/destination asset pickers and search, network selection in the
- * picker, amount entry (including Max), building a same-chain swap
- * (`createSwap`), quote fetch/ready checks, quote review, the Select quote
- * dialog, fee and price-impact messaging, insufficient-funds / no-quotes /
- * geo-block states, slippage controls and their warning banner, and the
- * bridge CTA / snap confirm footer used after submit.
- * Boundaries: the prepare and quote surface. Post-submit redesigned
- * confirmations and activity belong elsewhere.
- * Related: `flows/bridge.flow.ts` for end-to-end bridge journeys,
- * `flows/swap.flow.ts` for building a swap quote from the home page.
+ * Screen: `#/cross-chain/swaps/prepare-bridge-page`.
+ * Owns: the source/destination asset picker buttons and the tokens they show,
+ * amount entry (including Max), quote fetch/ready checks, quote review, the
+ * Select quote dialog, fee and price-impact messaging, insufficient-funds /
+ * no-quotes / geo-block states, slippage controls and their warning banner,
+ * and the bridge CTA / snap confirm footer used after submit.
+ * Boundaries: the prepare and quote surface. The asset picker
+ * (`#/cross-chain/swaps/prepare-bridge-page/assets`) is `SwapAssetPickerPage`.
+ * Post-submit redesigned confirmations and activity belong elsewhere.
+ * Related: `flows/bridge.flow.ts` for selecting tokens through the asset
+ * picker and end-to-end bridge journeys, `flows/swap.flow.ts` for building a
+ * swap quote from the home page.
  *
  * @see ui/pages/bridge/index.tsx
  * @see ui/pages/bridge/prepare/prepare-bridge-page.tsx
  * @see test/e2e/page-objects/flows/bridge.flow.ts
+ * @see test/e2e/page-objects/pages/swap/swap-asset-picker-page.ts
  */
 class SwapPage {
-  public assetInfoIcon = (assetId: string) => ({
-    tag: 'button' as const,
-    testId: `bridge-asset-info-icon-${assetId}`,
-  });
-
-  private readonly assetLoadingSkeleton =
-    '[data-testid="bridge-asset-loading-skeleton"]';
-
-  public assetPrickerSearchInput =
-    '[data-testid="bridge-asset-picker-search-input"]';
-
   private backButton = '[aria-label="Back"]';
 
   private closeButton = '[aria-label="Close"]';
@@ -92,7 +68,7 @@ class SwapPage {
 
   private destinationAmountInput = '[data-testid="to-amount"]';
 
-  public destinationAssetPickerButton =
+  private destinationAssetPickerButton =
     '[data-testid="bridge-destination-button"]';
 
   protected driver: Driver;
@@ -105,8 +81,6 @@ class SwapPage {
   private gasIncludedIndicator = '[data-testid="network-fees-included"]';
 
   private gasSponsoredIndicator = '[data-testid="network-fees-sponsored"]';
-
-  private importTokensButton = '[data-testid="import-tokens-import-button"]';
 
   private insufficientFundsButton = {
     text: 'Insufficient funds',
@@ -127,11 +101,6 @@ class SwapPage {
     css: this.networkFees,
     text: '$',
   };
-
-  private networkNameSelector = (network: string) =>
-    `[data-testid="${network}"]`;
-
-  private networkSelector = '[data-testid="multichain-asset-picker__network"]';
 
   private noOptionAvailable = '[data-testid="bridge-no-quotes"]';
 
@@ -180,7 +149,7 @@ class SwapPage {
 
   private sourceAmount = '[data-testid="from-amount"]';
 
-  public sourceAssetPickerButton = '[data-testid="bridge-source-button"]';
+  private sourceAssetPickerButton = '[data-testid="bridge-source-button"]';
 
   private submitButton = '[data-testid="bridge-cta-button"]';
 
@@ -192,13 +161,6 @@ class SwapPage {
   private swapsBannerTitle = '[data-testid="swaps-banner-title"]';
 
   private switchTokensButton = '[data-testid="switch-tokens"]';
-
-  public tokenButton = '[data-testid^="bridge-asset--"]';
-
-  private readonly tokenButtonByText = (token: string) => ({
-    text: token,
-    css: this.tokenButton,
-  });
 
   private tokenWarningAlert =
     '[data-testid="bridge-banner-alerts"] > [data-testid^="bridge-"]';
@@ -246,20 +208,6 @@ class SwapPage {
       await this.checkSingleQuoteTotalCost(index + 1, expectedTotalCost);
     }
   }
-
-  /**
-   * Checks that the asset picker is shown again after navigating back from an
-   * asset page, then leaves it to return to the swap form.
-   */
-  checkAssetPickerIsReopened = async () => {
-    await this.driver.waitForSelector(this.assetPrickerSearchInput);
-    console.log('Asset picker is visible');
-    // The swap form has a back button with the same label as the picker's, so
-    // wait for the picker to go away instead of for the button itself.
-    await this.driver.clickElement(this.backButton);
-    await this.driver.assertElementNotPresent(this.assetPrickerSearchInput);
-    console.log('Asset picker closed');
-  };
 
   checkAssetsAreSelected = async (sourceToken: string, destToken: string) => {
     await this.driver.waitForSelector({
@@ -526,14 +474,6 @@ class SwapPage {
     }, this.driver.timeout);
   }
 
-  async checkTokenIsDisabled() {
-    const [tkn] = await this.driver.findElements(this.tokenButton);
-
-    await tkn.click();
-    const isSelected = await tkn.isSelected();
-    assert.equal(isSelected, false);
-  }
-
   /**
    * Asserts the destination-token security banner is shown (malicious or suspicious).
    * The banner title is localized with the token symbol (e.g. "MUSD is a malicious token."),
@@ -583,54 +523,6 @@ class SwapPage {
     await this.driver.clickElement(this.confirmButton);
   };
 
-  /**
-   * Builds a same-chain swap: picks the source and destination tokens on the
-   * given network, then enters the amount.
-   *
-   * @param options - The swap to build.
-   */
-  async createSwap(options: SwapOptions): Promise<void> {
-    await this.driver.clickElement(this.sourceAssetPickerButton);
-    await this.selectNetwork(options.network);
-    await this.driver.waitForSelector(this.assetPrickerSearchInput, {
-      timeout: 30000,
-    });
-    await this.driver.fill(this.assetPrickerSearchInput, options.swapFrom);
-    await this.driver.waitForSelector(
-      this.tokenButtonByText(options.swapFrom),
-      {
-        timeout: 30000,
-      },
-    );
-    await this.driver.clickElement(this.tokenButtonByText(options.swapFrom));
-
-    await this.driver.clickElement(this.destinationAssetPickerButton);
-    await this.selectNetwork(options.network);
-    if (options.swapToContractAddress) {
-      await this.selectDestinationTokenByContract(
-        options.swapToContractAddress,
-        {
-          pickerAlreadyOpen: true,
-        },
-      );
-    } else {
-      await this.driver.waitForSelector(this.assetPrickerSearchInput, {
-        timeout: 30000,
-      });
-      await this.driver.fill(this.assetPrickerSearchInput, options.swapTo);
-      await this.driver.waitForSelector(
-        this.tokenButtonByText(options.swapTo),
-        {
-          timeout: 30000,
-        },
-      );
-      await this.driver.clickElement(this.tokenButtonByText(options.swapTo));
-    }
-
-    await this.driver.waitForSelector(this.sourceAmount);
-    await this.driver.fill(this.sourceAmount, options.amount.toString());
-  }
-
   dismissTokenAlert = async (expectedNumberOfAlerts?: number) => {
     await this.closeModal();
     if (expectedNumberOfAlerts) {
@@ -642,83 +534,19 @@ class SwapPage {
   };
 
   /**
-   * Fills in the swap/bridge form.
+   * Pastes the source amount and waits until quotes are no longer being
+   * fetched.
    *
-   * @param quote - The quote inputs to enter.
-   * @param options - Options.
-   * @param options.openPickersWithDebounce - Opens the asset pickers via
-   * `openAssetPickerWithDebounce`. Set this only when the test asserts on
-   * `Input Changed` metrics events.
+   * @param amount - The source amount.
    */
-  enterBridgeQuote = async (
-    quote: BridgeQuote,
-    {
-      openPickersWithDebounce = false,
-    }: { openPickersWithDebounce?: boolean } = {},
-  ) => {
-    const openAssetPicker = async (pickerButton: string) => {
-      if (openPickersWithDebounce) {
-        await this.openAssetPickerWithDebounce(pickerButton);
-        return;
-      }
-      await this.driver.clickElement(pickerButton);
-    };
-
-    // Source
-    if (quote.tokenFrom || quote.fromChain) {
-      await openAssetPicker(this.sourceAssetPickerButton);
-      if (quote.fromChain) {
-        await this.driver.clickElement(this.networkSelector);
-        await this.driver.clickElement(`[data-testid="${quote.fromChain}"]`);
-      }
-      if (quote.tokenFrom) {
-        await this.driver.pasteIntoField(
-          this.assetPrickerSearchInput,
-          quote.tokenFrom,
-        );
-        await this.driver.clickElement({
-          text: quote.tokenFrom,
-          css: this.tokenButton,
-        });
-      }
-    }
-
-    // Destination
-    if (quote.tokenTo || quote.toChain) {
-      await this.driver.waitForSelector(this.destinationAssetPickerButton);
-      await openAssetPicker(this.destinationAssetPickerButton);
-
-      // After clicking destination, we might see either:
-      // 1. Network selection modal (if destination is pre-populated and different from desired network)
-      // 2. Token picker with network badge (if destination is empty or on the correct network)
-
-      if (quote.toChain) {
-        // We're in token picker, need to click network badge first
-        await this.driver.waitForSelector(this.networkSelector);
-        await this.driver.clickElement(this.networkSelector);
-
-        // Now select the destination network
-        await this.driver.clickElementAndWaitToDisappear(
-          this.networkNameSelector(quote.toChain),
-        );
-      }
-      if (quote.tokenTo) {
-        await this.driver.pasteIntoField(
-          this.assetPrickerSearchInput,
-          quote.tokenTo,
-        );
-        await this.selectAssetFromPicker(quote.tokenTo);
-      }
-    }
-
-    // QTY
+  async enterBridgeAmount(amount: string): Promise<void> {
     // This controlled input filters keyboard events. Paste through its
     // dedicated handler so decimal values update bridge state reliably.
-    await this.driver.pasteIntoField(this.sourceAmount, quote.amount);
+    await this.driver.pasteIntoField(this.sourceAmount, amount);
     await this.driver.assertElementNotPresent(this.fetchingQuotesLabel, {
       waitAtLeastGuard: 500,
     });
-  };
+  }
 
   async enterSwapAmount(amount: string): Promise<void> {
     console.log('Entering swap amount');
@@ -785,19 +613,43 @@ class SwapPage {
   };
 
   /**
-   * Opens an asset picker, giving the prepare page time to send its pending
-   * quote parameter update first. Only needed by tests that assert on
-   * `Input Changed` metrics events: when the network management feature flag is
-   * on, the picker is a separate route, so opening it unmounts the prepare page
-   * and cancels that debounced update, folding the input changes made before it
-   * into a later event.
+   * Returns whether the source asset picker button already shows the token.
    *
-   * @param pickerButton - Selector of the asset picker button to click.
+   * @param token - Token symbol, such as ETH or MON.
    */
-  openAssetPickerWithDebounce = async (pickerButton: string) => {
-    await this.driver.delay(QUOTE_PARAMS_DEBOUNCE_MS);
+  async isSourceTokenSelected(token: string): Promise<boolean> {
+    const sourceButton = await this.driver.findElement(
+      this.sourceAssetPickerButton,
+    );
+    const label = await sourceButton.getText();
+    return label.includes(token);
+  }
+
+  /**
+   * Opens the source or destination asset picker.
+   *
+   * @param side - Which asset picker to open.
+   * @param options - Options.
+   * @param options.waitForQuoteParamsDebounce - Gives the prepare page time to
+   * send its pending quote parameter update first. Only needed by tests that
+   * assert on `Input Changed` metrics events: the picker is a separate route,
+   * so opening it unmounts the prepare page and cancels that debounced update,
+   * folding the input changes made before it into a later event.
+   */
+  async openAssetPicker(
+    side: AssetPickerSide,
+    { waitForQuoteParamsDebounce = false } = {},
+  ): Promise<void> {
+    console.log(`Opening ${side} asset picker`);
+    const pickerButton =
+      side === 'source'
+        ? this.sourceAssetPickerButton
+        : this.destinationAssetPickerButton;
+    if (waitForQuoteParamsDebounce) {
+      await this.driver.delay(QUOTE_PARAMS_DEBOUNCE_MS);
+    }
     await this.driver.clickElement(pickerButton);
-  };
+  }
 
   rejectModal = async () => {
     await this.driver.clickElement(this.warningModalCancelButton);
@@ -827,189 +679,6 @@ class SwapPage {
     await this.driver.waitForSelector(this.moreQuotesButton);
 
     await this.driver.clickElementAndWaitToDisappear(this.submitButton);
-  }
-
-  /**
-   * Opens an asset picker if needed, optionally filters to a network, searches
-   * for a token, and clicks its info icon. Matches the icon for either
-   * lowercase or checksummed `assetId` casing.
-   *
-   * Prefer filtering by `network` when the token lives on a specific chain —
-   * searching under "All networks" can miss cross-chain results in CI.
-   *
-   * @param params - Search and click parameters.
-   * @param params.token - Token symbol to type into the picker search field.
-   * @param params.assetId - CAIP-19 asset id.
-   * @param params.assetPicker - Picker button to open when the picker is closed.
-   * @param params.network - Optional network display name (e.g. 'Linea') to
-   * filter the picker before searching.
-   */
-  async searchAndClickAssetInfo({
-    token,
-    assetId,
-    assetPicker = this.sourceAssetPickerButton,
-    network,
-  }: {
-    token: string;
-    assetId: string;
-    assetPicker?: string;
-    network?: string;
-  }) {
-    console.log(
-      `Opening asset info icon for asset ${token}${
-        network ? ` on ${network}` : ''
-      }`,
-    );
-    const pickerAlreadyOpen = await this.driver.isElementPresentAndVisible(
-      this.assetPrickerSearchInput,
-      1000,
-    );
-    if (!pickerAlreadyOpen) {
-      await this.driver.clickElement(assetPicker);
-    }
-
-    if (network) {
-      await this.driver.clickElement(this.networkSelector);
-      await this.driver.clickElementAndWaitToDisappear(
-        this.networkNameSelector(network),
-      );
-    }
-
-    await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
-
-    const lowercaseIcon = this.assetInfoIcon(assetId.toLowerCase());
-    const checksummedIcon = this.assetInfoIcon(assetId);
-    await this.driver.waitUntil(
-      async () => {
-        return (
-          (await this.driver.isElementPresentAndVisible(lowercaseIcon, 1000)) ||
-          (await this.driver.isElementPresentAndVisible(checksummedIcon, 1000))
-        );
-      },
-      { timeout: this.driver.timeout, interval: 200 },
-    );
-    const useLowercase = await this.driver.isElementPresentAndVisible(
-      lowercaseIcon,
-      1000,
-    );
-    await this.driver.clickElement(
-      useLowercase ? lowercaseIcon : checksummedIcon,
-    );
-  }
-
-  async searchAssetAndVerifyCount(
-    searchInput: string,
-    count: number,
-  ): Promise<void> {
-    console.log(`Fill search input with ${searchInput}`);
-    await this.driver.pasteIntoField(this.assetPrickerSearchInput, searchInput);
-    await this.driver.elementCountBecomesN(this.tokenButton, count);
-  }
-
-  searchForAssetAndSelect = async (
-    token: string,
-    assetPicker = this.sourceAssetPickerButton,
-  ) => {
-    console.log(`Opening asset picker`);
-    await this.driver.clickElement(assetPicker);
-    await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
-    console.log(`Filled search input with ${token}`);
-    await this.selectAssetFromPicker(token);
-  };
-
-  /**
-   * Clicks a token row in the open asset picker and waits until the picker closes.
-   *
-   * @param token - Token symbol shown on the row.
-   */
-  private async selectAssetFromPicker(token: string): Promise<void> {
-    const tokenSelector = this.tokenButtonByText(token);
-    await this.driver.waitForSelector(tokenSelector);
-    await this.driver.assertElementNotPresent(this.assetLoadingSkeleton, {
-      waitAtLeastGuard: QUOTE_PARAMS_DEBOUNCE_MS,
-    });
-    await this.driver.clickElement(tokenSelector);
-    await this.driver.assertElementNotPresent(this.assetPrickerSearchInput);
-  }
-
-  /**
-   * Searches the destination picker by contract address and selects the
-   * token, importing it first when it is not listed.
-   *
-   * @param contractAddress - The token contract address.
-   * @param options - Options.
-   * @param options.pickerAlreadyOpen - Skips opening the destination picker.
-   */
-  async selectDestinationTokenByContract(
-    contractAddress: string,
-    options: { pickerAlreadyOpen?: boolean } = {},
-  ): Promise<void> {
-    const { pickerAlreadyOpen = false } = options;
-    if (!pickerAlreadyOpen) {
-      await this.driver.clickElement(this.destinationAssetPickerButton);
-    }
-    await this.driver.waitForSelector(this.assetPrickerSearchInput);
-    await this.driver.fill(this.assetPrickerSearchInput, contractAddress);
-
-    const result = await Promise.any([
-      this.driver
-        .waitForSelector(this.importTokensButton)
-        .then(() => 'import' as const),
-      this.driver
-        .waitForSelector(this.tokenButton)
-        .then(() => 'asset' as const),
-    ]);
-
-    if (result === 'import') {
-      await this.driver.clickElement(this.importTokensButton);
-      await this.driver.waitForSelector(this.tokenButton);
-    }
-    await this.driver.clickElement(this.tokenButton);
-  }
-
-  async selectDestToken(token: string): Promise<void> {
-    await this.driver.waitForSelector(this.destinationAssetPickerButton);
-    await this.driver.clickElement(this.destinationAssetPickerButton);
-    await this.driver.waitForSelector(this.assetPrickerSearchInput);
-    const tokenIsVisible = await this.driver.isElementPresentAndVisible(
-      this.tokenButtonByText(token),
-      1000,
-    );
-    if (!tokenIsVisible) {
-      await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
-    }
-    await this.selectAssetFromPicker(token);
-  }
-
-  async selectNetwork(network: string): Promise<void> {
-    await this.driver.clickElement(this.networkSelector);
-    await this.driver.clickElement(this.networkNameSelector(network));
-  }
-
-  async selectSrcToken(token: string): Promise<void> {
-    console.log(`Selecting source token ${token}`);
-    await this.driver.waitForSelector(this.sourceAssetPickerButton);
-    await this.driver.clickElement(this.sourceAssetPickerButton);
-    await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
-    await this.selectAssetFromPicker(token);
-  }
-
-  /**
-   * Selects the source token when it is not already selected.
-   * Re-selecting the current token clears the balance and hides Max.
-   *
-   * @param token - Token symbol, such as ETH or MON.
-   */
-  async selectSrcTokenIfNeeded(token: string): Promise<void> {
-    console.log(`Selecting source token ${token} if needed`);
-    const sourceButton = await this.driver.findElement(
-      this.sourceAssetPickerButton,
-    );
-    const label = await sourceButton.getText();
-    if (label.includes(token)) {
-      return;
-    }
-    await this.selectSrcToken(token);
   }
 
   async setCustomSlippage(value: string): Promise<void> {

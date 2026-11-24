@@ -3,9 +3,14 @@ import { renderHook } from '@testing-library/react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { RampsOrderStatus } from '@metamask/ramps-controller';
 import {
+  selectRampsProviderForAsset,
   setRampsSelectedPaymentMethod,
   setRampsSelectedProvider,
 } from '../../store/controller-actions/ramps-controller';
+import {
+  isBuyScreenOwningProviderPick,
+  useBuyScreenOwnsProviderPick,
+} from './providerPickCoordination';
 import { useRampsProviders } from './useRampsProviders';
 import { createRampsMockStore, createRampsTestWrapper } from './test-utils';
 
@@ -21,6 +26,7 @@ jest.mock('@tanstack/react-query', () => {
 jest.mock('../../store/controller-actions/ramps-controller', () => ({
   setRampsSelectedProvider: jest.fn().mockResolvedValue(undefined),
   setRampsSelectedPaymentMethod: jest.fn().mockResolvedValue(undefined),
+  selectRampsProviderForAsset: jest.fn().mockResolvedValue(null),
   getRampsProviders: jest.fn().mockResolvedValue({ providers: [] }),
 }));
 
@@ -132,27 +138,64 @@ describe('useRampsProviders', () => {
     expect(setRampsSelectedPaymentMethod).toHaveBeenCalledWith(null);
   });
 
-  it('auto-selects a provider when none is selected', () => {
+  it('picks a provider for the selected token when none is selected', () => {
     mockedUseQuery.mockReturnValue({
       data: [transakProvider],
       isLoading: false,
     } as never);
 
     renderHook(() => useRampsProviders({ enableSideEffects: true }), {
-      wrapper: createRampsTestWrapper(),
+      wrapper: createRampsTestWrapper(
+        createRampsMockStore({
+          providers: {
+            data: [transakProvider],
+            selected: null,
+            isLoading: false,
+            error: null,
+          },
+          tokens: {
+            data: null,
+            selected: { assetId: 'eip155:1/slip44:60' },
+            isLoading: false,
+            error: null,
+          },
+        }),
+      ),
     });
 
-    expect(setRampsSelectedProvider).toHaveBeenCalledWith('transak', {
-      autoSelected: true,
+    expect(selectRampsProviderForAsset).toHaveBeenCalledWith(
+      'eip155:1/slip44:60',
+      { aheadOfHistory: [] },
+    );
+  });
+
+  it('passes the ahead-of-history flag list to the picker', () => {
+    renderHook(() => useRampsProviders({ enableSideEffects: true }), {
+      wrapper: createRampsTestWrapper(
+        createRampsMockStore({
+          providers: {
+            data: [transakProvider],
+            selected: null,
+            isLoading: false,
+            error: null,
+          },
+          remoteFeatureFlags: {
+            rampsProvidersAheadOfHistory: {
+              enabled: true,
+              minimumVersion: '0.0.0',
+              providerIds: ['crossmint'],
+            },
+          },
+        }),
+      ),
+    });
+
+    expect(selectRampsProviderForAsset).toHaveBeenCalledWith(null, {
+      aheadOfHistory: ['crossmint'],
     });
   });
 
-  it('replaces an auto-selected provider when completed order history arrives', () => {
-    mockedUseQuery.mockReturnValue({
-      data: [transakProvider, moonpayProvider],
-      isLoading: false,
-    } as never);
-
+  it('re-picks an auto-selected provider', () => {
     renderHook(() => useRampsProviders({ enableSideEffects: true }), {
       wrapper: createRampsTestWrapper(
         createRampsMockStore({
@@ -163,80 +206,14 @@ describe('useRampsProviders', () => {
             error: null,
           },
           providerAutoSelected: true,
-          orders: [
-            {
-              id: '/providers/moonpay/orders/order-1',
-              provider: moonpayProvider,
-              status: RampsOrderStatus.Completed,
-              createdAt: 1,
-              walletAddress: '0xabc123',
-            },
-          ],
         }),
       ),
     });
 
-    expect(jest.mocked(setRampsSelectedProvider).mock.calls)
-      .toMatchInlineSnapshot(`
-        [
-          [
-            "/providers/moonpay",
-            {
-              "autoSelected": false,
-            },
-          ],
-        ]
-      `);
+    expect(selectRampsProviderForAsset).toHaveBeenCalledTimes(1);
   });
 
-  it('locks an auto-selected provider when completed history matches it', () => {
-    mockedUseQuery.mockReturnValue({
-      data: [transakProvider, moonpayProvider],
-      isLoading: false,
-    } as never);
-
-    renderHook(() => useRampsProviders({ enableSideEffects: true }), {
-      wrapper: createRampsTestWrapper(
-        createRampsMockStore({
-          providers: {
-            data: [transakProvider, moonpayProvider],
-            selected: transakProvider,
-            isLoading: false,
-            error: null,
-          },
-          providerAutoSelected: true,
-          orders: [
-            {
-              id: '/providers/transak/orders/order-1',
-              provider: transakProvider,
-              status: RampsOrderStatus.Completed,
-              createdAt: 1,
-              walletAddress: '0xabc123',
-            },
-          ],
-        }),
-      ),
-    });
-
-    expect(jest.mocked(setRampsSelectedProvider).mock.calls)
-      .toMatchInlineSnapshot(`
-      [
-        [
-          "transak",
-          {
-            "autoSelected": false,
-          },
-        ],
-      ]
-    `);
-  });
-
-  it('preserves an explicitly selected provider when history arrives', () => {
-    mockedUseQuery.mockReturnValue({
-      data: [transakProvider, moonpayProvider],
-      isLoading: false,
-    } as never);
-
+  it('leaves a provider the user picked alone', () => {
     renderHook(() => useRampsProviders({ enableSideEffects: true }), {
       wrapper: createRampsTestWrapper(
         createRampsMockStore({
@@ -260,9 +237,71 @@ describe('useRampsProviders', () => {
       ),
     });
 
-    expect(
-      jest.mocked(setRampsSelectedProvider).mock.calls,
-    ).toMatchInlineSnapshot(`[]`);
+    expect(selectRampsProviderForAsset).not.toHaveBeenCalled();
+  });
+
+  it('leaves the pick to a mounted Buy screen', () => {
+    const { unmount } = renderHook(() => useBuyScreenOwnsProviderPick());
+    expect(isBuyScreenOwningProviderPick()).toBe(true);
+
+    renderHook(() => useRampsProviders({ enableSideEffects: true }), {
+      wrapper: createRampsTestWrapper(
+        createRampsMockStore({
+          providers: {
+            data: [transakProvider],
+            selected: null,
+            isLoading: false,
+            error: null,
+          },
+        }),
+      ),
+    });
+
+    expect(selectRampsProviderForAsset).not.toHaveBeenCalled();
+    unmount();
+    expect(isBuyScreenOwningProviderPick()).toBe(false);
+  });
+
+  it('lists previously used providers from every account, most recent first', () => {
+    mockedUseQuery.mockReturnValue({
+      data: [transakProvider, moonpayProvider],
+      isLoading: false,
+    } as never);
+
+    const { result } = renderHook(() => useRampsProviders(), {
+      wrapper: createRampsTestWrapper(
+        createRampsMockStore({
+          orders: [
+            {
+              id: '/providers/transak/orders/order-1',
+              provider: transakProvider,
+              status: RampsOrderStatus.Completed,
+              createdAt: 1,
+              walletAddress: '0xother',
+            },
+            {
+              id: '/providers/moonpay/orders/order-2',
+              provider: moonpayProvider,
+              status: RampsOrderStatus.Completed,
+              createdAt: 2,
+              walletAddress: '0xabc123',
+            },
+            {
+              id: '/providers/transak/orders/order-3',
+              provider: transakProvider,
+              status: RampsOrderStatus.Pending,
+              createdAt: 3,
+              walletAddress: '0xabc123',
+            },
+          ],
+        }),
+      ),
+    });
+
+    expect(result.current.previouslyUsedProviderIds).toStrictEqual([
+      '/providers/moonpay',
+      'transak',
+    ]);
   });
 
   it('returns a providers state error when the query is unavailable', () => {

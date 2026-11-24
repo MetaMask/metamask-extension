@@ -174,6 +174,82 @@ describe('getAccountTrackerControllerAccountsByChainId', () => {
     });
   });
 
+  describe('when assetsUnifyState is disabled', () => {
+    const assetsControllerState = {
+      remoteFeatureFlags: {},
+      assetsInfo: {
+        [nativeEthAssetId]: { type: 'native', decimals: 18 },
+      },
+      assetsBalance: {
+        [mockAccountId]: {
+          [nativeEthAssetId]: { amount: '0' },
+        },
+      },
+      internalAccounts: {
+        accounts: {
+          [mockAccountId]: {
+            id: mockAccountId,
+            address: mockAccountAddressLowercase,
+            type: 'eip155:eoa',
+          },
+        },
+      },
+    };
+
+    it('derives zero native balances from AssetsController when legacy accountsByChainId is absent', () => {
+      const state = { metamask: assetsControllerState };
+
+      const result = getAccountTrackerControllerAccountsByChainId(state);
+
+      expect(result).toStrictEqual({
+        '0x1': {
+          [mockAccountAddressChecksummed]: { balance: '0x0' },
+        },
+      });
+    });
+
+    it('derives native balances from AssetsController when legacy accountsByChainId is empty', () => {
+      const state = {
+        metamask: {
+          ...assetsControllerState,
+          accountsByChainId: {},
+          assetsBalance: {
+            [mockAccountId]: {
+              [nativeEthAssetId]: { amount: '1' },
+            },
+          },
+        },
+      };
+
+      const result = getAccountTrackerControllerAccountsByChainId(state);
+
+      expect(result).toStrictEqual({
+        '0x1': {
+          // 1 native unit at 18 decimals
+          [mockAccountAddressChecksummed]: { balance: '0xde0b6b3a7640000' },
+        },
+      });
+    });
+
+    it('returns non-empty legacy accountsByChainId', () => {
+      const legacyAccountsByChainId = {
+        '0x1': {
+          [mockAccountAddressChecksummed]: { balance: '0x5' },
+        },
+      };
+      const state = {
+        metamask: {
+          ...assetsControllerState,
+          accountsByChainId: legacyAccountsByChainId,
+        },
+      };
+
+      const result = getAccountTrackerControllerAccountsByChainId(state);
+
+      expect(result).toStrictEqual(legacyAccountsByChainId);
+    });
+  });
+
   describe('edge cases', () => {
     it('handles multiple chains for the same EVM account', () => {
       const state = {
