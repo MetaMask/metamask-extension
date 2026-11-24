@@ -783,7 +783,9 @@ export class ShieldSubscriptionService {
 
     const trackingProps = getSubscriptionRequestTrackingProps(
       subscriptionControllerState,
-      currentShieldSubscription || subscriptionControllerState.lastSubscription,
+      currentShieldSubscription ||
+        (subscriptionControllerState.lastSubscription &&
+          getShieldSubscription(subscriptionControllerState.lastSubscription)),
       defaultSubscriptionPaymentOptions,
       shieldSubscriptionMetricsProps,
       transactionMeta,

@@ -350,6 +350,35 @@ describe('ShieldSubscriptionService - startSubscriptionWithCard', () => {
     expect(mockSetPendingRedirectRoute).toHaveBeenNthCalledWith(2, null);
   });
 
+  it('reports a new subscription when the last subscription is not Shield', async () => {
+    mockGetSubscriptions
+      .mockResolvedValueOnce([])
+      .mockResolvedValue([MOCK_ACTIVE_SHIELD_SUBSCRIPTION]);
+    mockGetSubscriptionControllerState.mockReturnValue({
+      ...mockGetSubscriptionControllerState(),
+      lastSubscription: {
+        ...MOCK_ACTIVE_SHIELD_SUBSCRIPTION,
+        products: [{ name: PRODUCT_TYPES.MONEY_ACCOUNT_PLUS }],
+      },
+    });
+
+    await subscriptionService.startSubscriptionWithCard({
+      products: [PRODUCT_TYPES.SHIELD],
+      isTrialRequested: false,
+      recurringInterval: RECURRING_INTERVALS.month,
+    });
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.ShieldSubscriptionRequest,
+        properties: expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          subscription_state: 'new',
+        }),
+      }),
+    );
+  });
+
   it('should include the reward account id if the primary account is opted in to rewards and the season is active', async () => {
     mockGetAccountsState.mockRestore();
     mockGetHasAccountOptedIn.mockRestore();
