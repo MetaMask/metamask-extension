@@ -14,7 +14,7 @@ describe('market-insights-formatting', () => {
   describe('getFaviconUrl', () => {
     it('builds a favicon URL from a full URL', () => {
       expect(getFaviconUrl('https://www.coindesk.com/article')).toBe(
-        'https://www.google.com/s2/favicons?domain=www.coindesk.com&sz=32',
+        'https://www.google.com/s2/favicons?domain=coindesk.com&sz=32',
       );
     });
 
@@ -130,7 +130,11 @@ describe('market-insights-formatting', () => {
       const sources: MarketInsightsSource[] = [
         { name: 'CoinDesk', type: 'news', url: 'https://coindesk.com/a' },
         { name: 'The Block', type: 'news', url: 'theblock.co' },
-        { name: 'CoinDesk again', type: 'news', url: 'coindesk.com/b' },
+        {
+          name: 'CoinDesk again',
+          type: 'news',
+          url: 'https://www.coindesk.com/b',
+        },
       ];
 
       expect(getUniqueSourcesByFavicon(sources)).toEqual([
