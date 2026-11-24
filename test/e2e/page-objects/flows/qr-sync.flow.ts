@@ -84,7 +84,7 @@ export async function completeQrSyncFromSyncPage({
   qrSyncSimulate('mobileScanned');
   await syncAccountsPage.waitForOtpScreen();
   await syncAccountsPage.enterOtp(QR_SYNC_E2E_OTP);
-  await syncAccountsPage.waitForLoadingStep();
+  await syncAccountsPage.waitForOtpVerifying();
 
   qrSyncSimulate('deliverSyncOffer');
   await syncAccountsPage.waitForPasswordScreen();

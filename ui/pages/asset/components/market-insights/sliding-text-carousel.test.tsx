@@ -1,5 +1,6 @@
 import React from 'react';
 import { act, fireEvent, screen } from '@testing-library/react';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { renderWithProvider as render } from '../../../../../test/lib/render-helpers-navigate';
 import { SlidingTextCarousel } from './sliding-text-carousel';
 
@@ -132,10 +133,18 @@ describe('SlidingTextCarousel', () => {
         onSlideStart={onSlideStart}
       />,
     );
-    fireEvent.click(screen.getByRole('button', { name: 'Pause headlines' }));
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: messages.marketInsightsCarouselPause.message,
+      }),
+    );
     act(() => jest.advanceTimersByTime(10_000));
     expect(onSlideStart).not.toHaveBeenCalled();
-    fireEvent.click(screen.getByRole('button', { name: 'Resume headlines' }));
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: messages.marketInsightsCarouselResume.message,
+      }),
+    );
     act(() => jest.advanceTimersByTime(5000));
     expect(onSlideStart).toHaveBeenCalledTimes(1);
   });

@@ -662,6 +662,98 @@ function isOnBackgroundPageload(): boolean {
 }
 
 /**
+ * Children of a segment root that were still running when the root ended and
+ * were handed to the standalone-span path, so they are sent when they end.
+ */
+export const IN_FLIGHT_STANDALONE_ATTRIBUTE =
+  'trace.in_flight_children.standalone';
+
+/**
+ * Children of a segment root that were still running when the root ended and
+ * could not be handed off, so the SDK will never send them.
+ */
+export const IN_FLIGHT_LOST_ATTRIBUTE = 'trace.in_flight_children.lost';
+
+/**
+ * Finished children past the SDK's per-transaction cap, which it cuts without
+ * reporting.
+ */
+export const OVER_SPAN_LIMIT_ATTRIBUTE = 'trace.children_over_span_limit';
+
+/**
+ * `MAX_SPAN_COUNT` in `@sentry/core`'s `SentrySpan`, which is not exported.
+ */
+const MAX_CHILD_SPANS_PER_TRANSACTION = 1000;
+
+type StandaloneCapableSpan = Span & {
+  // Private `SentrySpan` field read by its `_onSpanEnded`.
+  _isStandaloneSpan?: boolean;
+  isStandaloneSpan?: () => boolean;
+};
+
+function isStandaloneSpan(span: Span): boolean {
+  const { isStandaloneSpan: check } = span as StandaloneCapableSpan;
+  return typeof check === 'function' && check.call(span);
+}
+
+/**
+ * Mark a span standalone. False means an SDK rename broke the private write.
+ *
+ * @param span - A running child span.
+ */
+function markStandalone(span: Span): boolean {
+  const candidate = span as StandaloneCapableSpan;
+  if (typeof candidate.isStandaloneSpan !== 'function') {
+    return false;
+  }
+  candidate._isStandaloneSpan = true;
+  return candidate.isStandaloneSpan();
+}
+
+/**
+ * Send a root's still-running children standalone and count them on the root.
+ *
+ * @param span - The span about to end.
+ */
+function preserveInFlightChildren(span: Span | null | undefined): void {
+  const globalGetRootSpan = globalThis.sentry?.getRootSpan;
+  const getSpanDescendants = globalThis.sentry?.getSpanDescendants;
+
+  if (!span || !globalGetRootSpan || !getSpanDescendants) {
+    return;
+  }
+
+  if (globalGetRootSpan(span) !== span) {
+    return;
+  }
+
+  let standalone = 0;
+  let lost = 0;
+  let finished = 0;
+
+  // Only sampled spans are returned, so a non-recording one has ended.
+  for (const child of getSpanDescendants(span)) {
+    if (child === span || isStandaloneSpan(child)) {
+      continue;
+    }
+    if (!child.isRecording()) {
+      finished += 1;
+    } else if (markStandalone(child)) {
+      standalone += 1;
+    } else {
+      lost += 1;
+    }
+  }
+
+  span.setAttribute(IN_FLIGHT_STANDALONE_ATTRIBUTE, standalone);
+  span.setAttribute(IN_FLIGHT_LOST_ATTRIBUTE, lost);
+  span.setAttribute(
+    OVER_SPAN_LIMIT_ATTRIBUTE,
+    Math.max(0, finished - MAX_CHILD_SPANS_PER_TRANSACTION),
+  );
+}
+
+/**
  * End a pending trace that was started without a callback.
  * Does nothing if the pending trace cannot be found.
  *
@@ -698,6 +790,7 @@ export function endTrace(request: EndTraceRequest): void {
     finalizeOnboardingMachineTime(pendingTrace.span);
   }
 
+  preserveInFlightChildren(pendingTrace.span);
   pendingTrace.end(endTime);
 
   tracesByKey.delete(key);
@@ -893,6 +986,8 @@ function traceCallback<ResultType>(
         throw currentError;
       },
       () => {
+        // Runs before the SDK ends the span on return or settlement.
+        preserveInFlightChildren(span);
         const end = Date.now();
         logTrace(request, start, end, error);
       },
@@ -1395,7 +1490,8 @@ export function sentryGetActiveSpan(): Sentry.Span | null {
 
 /**
  * Baggage for a continued trace. It must carry `sentry-sampled`, which backends
- * route spans to Sentry on.
+ * route spans to Sentry on, and `public_key`: a root's frozen DSC without it
+ * leaves a standalone child's envelope with no `trace` header, so it is rejected.
  *
  * @param sentryTrace - A `{traceId}-{spanId}-{sampled}` header.
  * @returns A `baggage` string, or undefined when the header is malformed.
@@ -1405,7 +1501,19 @@ function sentryTraceToBaggage(sentryTrace: string): string | undefined {
   if (!traceId || (sampled !== '0' && sampled !== '1')) {
     return undefined;
   }
-  return `sentry-trace_id=${traceId},sentry-sampled=${sampled === '1'}`;
+  const client = globalThis.sentry?.getClient?.();
+  const options = client?.getOptions();
+  const entries: Record<string, string | undefined> = {
+    'sentry-trace_id': traceId,
+    'sentry-public_key': client?.getDsn()?.publicKey,
+    'sentry-environment': options?.environment,
+    'sentry-release': options?.release,
+    'sentry-sampled': String(sampled === '1'),
+  };
+  return Object.entries(entries)
+    .filter(([, value]) => value !== undefined)
+    .map(([key, value]) => `${key}=${encodeURIComponent(value as string)}`)
+    .join(',');
 }
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
