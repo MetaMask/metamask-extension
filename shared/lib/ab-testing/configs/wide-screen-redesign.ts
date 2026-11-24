@@ -3,6 +3,23 @@ import { ABTestVariant, type ABTestVariantName } from '../variants';
 export const WIDE_SCREEN_REDESIGN_AB_KEY =
   'coreCEUX1492AbtestWideScreenRedesign';
 
+export const WIDE_SCREEN_REDESIGN_MIN_VERSION = '13.60.0';
+
+export const WIDE_SCREEN_REDESIGN_REMOTE_FLAG = {
+  versions: {
+    [WIDE_SCREEN_REDESIGN_MIN_VERSION]: [
+      {
+        name: ABTestVariant.Control,
+        scope: { type: 'threshold', value: 1 },
+      },
+      {
+        name: ABTestVariant.Treatment,
+        scope: { type: 'threshold', value: 0 },
+      },
+    ],
+  },
+};
+
 type WideScreenRedesignVariantConfig = {
   useWideLayout: boolean;
 };
