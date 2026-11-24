@@ -1,4 +1,8 @@
 import * as Sentry from '@sentry/browser';
+import {
+  _INTERNAL_setSpanForScope as setSpanForScope,
+  getDefaultCurrentScope,
+} from '@sentry/core';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import { shouldCreateSpanForRequest } from './setupSentry';
 import {
@@ -95,6 +99,30 @@ describe('work under an ended active span (real SDK)', () => {
     expect(requestHeaders).toHaveLength(1);
     expect(requestHeaders[0].traceparent ?? '').not.toContain(endedTraceId);
     expect(requestHeaders[0]['sentry-trace']).toBeUndefined();
+  });
+
+  it('names the running pageload when the active span has ended', async () => {
+    // The pageload sits on the base scope, below every operation's scope.
+    const pageload = Sentry.startInactiveSpan({
+      name: '/service-worker.js',
+      forceTransaction: true,
+    });
+    setSpanForScope(getDefaultCurrentScope(), pageload);
+    const endedTraceId = await endEarlierRootFirst();
+
+    try {
+      await fetch(BACKEND_URL);
+    } finally {
+      setSpanForScope(getDefaultCurrentScope(), undefined);
+      pageload.end();
+    }
+
+    const pageloadTraceId = pageload.spanContext().traceId;
+    expect(pageloadTraceId).not.toBe(endedTraceId);
+    expect(requestHeaders).toHaveLength(1);
+    expect(requestHeaders[0].traceparent).toContain(pageloadTraceId);
+    expect(requestHeaders[0]['sentry-trace']).toContain(pageloadTraceId);
+    expect(requestHeaders[0].baggage).toContain('consensys-request-id=');
   });
 
   it('starts a no-caller operation as its own root', async () => {

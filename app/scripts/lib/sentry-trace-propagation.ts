@@ -2,6 +2,7 @@ import {
   getActiveSpan,
   getCurrentScope,
   getIsolationScope,
+  getTraceData,
   spanToJSON,
 } from '@sentry/browser';
 import type {
@@ -9,8 +10,12 @@ import type {
   Event as SentryEvent,
   EventHint,
   Integration,
+  Span,
 } from '@sentry/core';
-import { addFetchInstrumentationHandler } from '@sentry/core';
+import {
+  addFetchInstrumentationHandler,
+  getDefaultCurrentScope,
+} from '@sentry/core';
 import { v4 as uuidv4 } from 'uuid';
 
 const NAME = 'ConsensysTracePropagation';
@@ -83,11 +88,11 @@ export function matchesBackendTarget(url: string): boolean {
  * the W3C `traceparent` header itself is injected natively by the SDK
  * (`propagateTraceparent`).
  *
+ * @param activeSpan - The span the request runs under, if any.
  * @returns The current trace id, or undefined when none is known.
  */
-function getCurrentTraceId(): string | undefined {
+function getCurrentTraceId(activeSpan: Span | undefined): string | undefined {
   try {
-    const activeSpan = getActiveSpan();
     if (activeSpan) {
       return activeSpan.spanContext().traceId || undefined;
     }
@@ -240,6 +245,55 @@ export function stripTraceHeaders(args: unknown[]): Headers | undefined {
   return removed ? headers : undefined;
 }
 
+function isRunning(span: Span): boolean {
+  return spanToJSON(span).timestamp === undefined;
+}
+
+/**
+ * The span a request should run under: the active span while it runs. An ended
+ * span can stay active after concurrent async spans pop the scope stack out of
+ * order, and then the base scope's span (the pageload) is the running one.
+ *
+ * @param activeSpan - The active span, if any.
+ * @returns A running span, or `undefined` when there is none.
+ */
+function getRunningSpan(activeSpan: Span | undefined): Span | undefined {
+  if (!activeSpan) {
+    return undefined;
+  }
+  if (isRunning(activeSpan)) {
+    return activeSpan;
+  }
+  const baseSpan = getDefaultCurrentScope().getScopeData().span;
+  return baseSpan && isRunning(baseSpan) ? baseSpan : undefined;
+}
+
+/**
+ * Point a fetch's trace headers at `span`, replacing the ones the SDK attached
+ * for the ended active span.
+ *
+ * @param args - The fetch arguments (`[input, init]`), whose `init.headers` is replaced.
+ * @param span - The running span to name as the parent.
+ * @returns False when the span yields no trace data and the headers were left alone.
+ */
+function retargetTraceHeaders(args: unknown[], span: Span): boolean {
+  const traceData = getTraceData({ span, propagateTraceparent: true });
+  if (!traceData['sentry-trace']) {
+    return false;
+  }
+  const headers = stripTraceHeaders(args) ?? mergeFetchHeaders(args);
+  headers.set('sentry-trace', traceData['sentry-trace']);
+  if (traceData.traceparent) {
+    headers.set('traceparent', traceData.traceparent);
+  }
+  if (traceData.baggage) {
+    headers.append('baggage', traceData.baggage);
+  }
+  const init = (args[1] = args[1] || {}) as { headers?: Headers };
+  init.headers = headers;
+  return true;
+}
+
 function setRequestIdForTraceId(traceId: string, requestId: string): void {
   if (requestIdByTraceId.has(traceId)) {
     // A trace can fan out to multiple outbound requests, each with its own id.
@@ -269,7 +323,7 @@ function setRequestIdForTraceId(traceId: string, requestId: string): void {
  * `consensysRequestId`). The W3C `traceparent` / `sentry-trace` headers are
  * injected natively by the SDK (`propagateTraceparent` + `tracePropagationTargets`).
  *
- * With no active span, a matched request goes out with no trace headers and no
+ * With no running span, a matched request goes out with no trace headers and no
  * Consensys `baggage`.
  *
  * Must be registered after `browserTracingIntegration` so the SDK's
@@ -301,10 +355,17 @@ export function consensysTracePropagationIntegration({
         try {
           // The SDK attaches trace headers to matched URLs even with no active
           // span, or under one that has ended, naming a span that is never
-          // sent: strip them. A span can stay active after it ends because
-          // concurrent async spans pop the scope stack out of order.
+          // sent: strip them, or point them at a running span.
           const activeSpan = getActiveSpan();
-          if (!activeSpan || spanToJSON(activeSpan).timestamp !== undefined) {
+          let runningSpan = getRunningSpan(activeSpan);
+          if (
+            runningSpan &&
+            runningSpan !== activeSpan &&
+            !retargetTraceHeaders(handlerData.args, runningSpan)
+          ) {
+            runningSpan = undefined;
+          }
+          if (!runningSpan) {
             const strippedHeaders = stripTraceHeaders(handlerData.args);
             if (strippedHeaders) {
               handlerData.args[1] = handlerData.args[1] || {};
@@ -316,7 +377,7 @@ export function consensysTracePropagationIntegration({
           const requestId = requestIdProvider();
           currentConsensysRequestId = requestId;
 
-          const traceId = getCurrentTraceId();
+          const traceId = getCurrentTraceId(runningSpan);
           if (traceId) {
             setRequestIdForTraceId(traceId, requestId);
           }
