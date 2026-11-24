@@ -69,6 +69,8 @@ export type InPageProbeConfig = {
   boundMs: number;
   /** Hold the main thread this long at the trigger: the known answer. */
   holdMs: number;
+  /** Reset the app's long-task metrics at the trigger. */
+  resetLongTasks: boolean;
 };
 
 /**
@@ -89,6 +91,8 @@ export type InPageProbeReading = {
   timedOut: boolean;
   /** The destination is in the DOM, but no observer callback recorded it. */
   unobserved: boolean;
+  /** The app's long-task metrics were reset at the trigger. */
+  longTasksReset: boolean;
 };
 
 type InPageProbe = {
@@ -98,6 +102,7 @@ type InPageProbe = {
   preexisting: boolean;
   extraInputs: number;
   timedOut: boolean;
+  longTasksReset: boolean;
   matches: () => boolean;
   stop: () => void;
 };
@@ -106,6 +111,13 @@ type ProbeHost = {
   // A page global the harness owns, named apart from the app's own.
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __benchSteps?: Record<string, InPageProbe>;
+  stateHooks?: {
+    resetLongTaskMetrics?: () => void;
+    getLongTaskMetricsWithTBT?: (reset?: boolean) => {
+      count: number;
+      totalDuration: number;
+    };
+  };
 };
 
 /**
@@ -179,6 +191,7 @@ export function installInPageStepProbe([config]: [InPageProbeConfig]):
     preexisting: false,
     extraInputs: 0,
     timedOut: false,
+    longTasksReset: false,
     matches,
     stop: () => undefined,
   };
@@ -205,6 +218,16 @@ export function installInPageStepProbe([config]: [InPageProbeConfig]):
     if (probe.start === null) {
       if (!startsRegion(event)) {
         return;
+      }
+      // Before the start is read, so the reset is not inside the value. It runs
+      // ahead of the app's own handlers for the event, so long tasks the click
+      // causes fall inside the window.
+      if (config.resetLongTasks) {
+        const hooks = host.stateHooks;
+        if (typeof hooks?.resetLongTaskMetrics === 'function') {
+          hooks.resetLongTaskMetrics();
+          probe.longTasksReset = true;
+        }
       }
       probe.start = performance.now();
       probe.startEvent = event.type;
@@ -291,6 +314,30 @@ export function readInPageStepProbe([stepId]: [
       probe.end === null &&
       !probe.preexisting &&
       probe.matches(),
+    longTasksReset: probe.longTasksReset,
+  };
+}
+
+/** What {@link readLongTasksAtTrigger} reads. */
+export type LongTasksAtTrigger = {
+  /** The step's probe reset the app's long-task metrics at the trigger. */
+  reset: boolean;
+  /** The app's long tasks so far, or null where its metrics hook is absent. */
+  metrics: { count: number; totalDuration: number } | null;
+};
+
+/**
+ * Whether a step's probe reset the app's long-task metrics at the trigger, and
+ * the long tasks since, read without resetting them. Runs in the page.
+ */
+export function readLongTasksAtTrigger([stepId]: [string]): LongTasksAtTrigger {
+  const host = window as unknown as ProbeHost;
+  const metrics = host.stateHooks?.getLongTaskMetricsWithTBT?.(false);
+  return {
+    reset: host.__benchSteps?.[stepId]?.longTasksReset === true,
+    metrics: metrics
+      ? { count: metrics.count, totalDuration: metrics.totalDuration }
+      : null,
   };
 }
 
@@ -363,6 +410,11 @@ export type InPageStepOptions = {
    * chord `driver.fill` sends first, and the 200 ms it then waits, stay out.
    */
   typedOnly?: boolean;
+  /**
+   * Reset the app's long-task metrics at the trigger, so the window opens with
+   * the in-page value; `windowOpensAtTrigger` reads whether it did.
+   */
+  resetLongTasksAtStart?: boolean;
 };
 
 /**
@@ -382,6 +434,7 @@ export async function startInPageStep(
     typedOnly: options.typedOnly ?? false,
     boundMs: IN_PAGE_BOUND_MS,
     holdMs: getInPageKnownAnswerMs(stepId),
+    resetLongTasks: options.resetLongTasksAtStart ?? false,
   };
   if (config.holdMs > 0) {
     console.log(
