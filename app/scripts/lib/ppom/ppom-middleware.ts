@@ -60,7 +60,8 @@ export type PPOMMiddlewareRequest<
  * @param appStateController
  * @param accountsController - Instance of AccountsController.
  * @param updateSecurityAlertResponse
- * @param getSecurityAlertsConfig - Optional method to get transaction security alerts parameters.
+ * @param options - Optional configuration.
+ * @param options.getSecurityAlertsConfig - Optional method to get transaction security alerts parameters.
  * @returns PPOMMiddleware function.
  */
 export function createPPOMMiddleware<
@@ -73,8 +74,12 @@ export function createPPOMMiddleware<
   appStateController: AppStateController,
   accountsController: AccountsController,
   updateSecurityAlertResponse: UpdateSecurityAlertResponse,
-  getSecurityAlertsConfig?: GetSecurityAlertsConfig,
+  options?: {
+    getSecurityAlertsConfig?: GetSecurityAlertsConfig;
+  },
 ) {
+  const { getSecurityAlertsConfig } = options ?? {};
+
   return async (
     req: PPOMMiddlewareRequest<Params>,
     _res: JsonRpcResponse<Result>,
