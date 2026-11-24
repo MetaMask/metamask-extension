@@ -128,3 +128,117 @@
   width: 280px;
   z-index: design-system.$dapp-connection-bar-popover-z-index;
 }
+
+// Sheet attached above the dapp connection bar (Hyperliquid deposit prompt).
+// The stack clips anything that hangs below the bar, and only while the sheet
+// is sliding. The bar's z-index stays above the sheet, so the sheet rises from
+// fully behind the bar. The top gutter is the upward shadow's reach: it stays
+// inside the clip box, so the shadow is visible as the sheet rises and does
+// not pop in when the clip is removed for the overflow menu.
+.hyperliquid-dapp-bar-sheet-stack {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  // Matches `0 -8px 16px -6px`: about 18px of shadow above the sheet, plus a
+  // little room. Negative margin keeps the bar from shifting down.
+  margin-top: -24px;
+  padding-top: 24px;
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
+  }
+
+  &--clip {
+    overflow: hidden;
+  }
+}
+
+@keyframes hyperliquid-dapp-bar-deposit-sheet-slide-up {
+  from {
+    transform: translateY(100%);
+    box-shadow: 0 -8px 16px -6px transparent;
+  }
+
+  to {
+    transform: translateY(0);
+    box-shadow: 0 -8px 16px -6px var(--color-shadow-default);
+  }
+}
+
+.hyperliquid-dapp-bar-deposit-sheet {
+  position: relative;
+  flex-shrink: 0;
+  // One below the bar ($dapp-connection-bar-z-index: 100) so the bar paints
+  // over the sheet at the seam and for the whole slide.
+  z-index: design-system.$dapp-connection-bar-z-index - 1;
+  width: 100%;
+  // Right padding leaves the overflow control off the sheet edge. The row gap
+  // keeps Withdraw/Fund clear of that control.
+  padding: 12px 12px 12px 16px;
+  // Flat fill (no gradient). The seam against the bar comes from the bar's own
+  // top border, see the sibling rule below.
+  background-color: var(--color-background-default);
+  border-radius: 24px 24px 0 0;
+  box-shadow: 0 -8px 16px -6px var(--color-shadow-default);
+  animation: hyperliquid-dapp-bar-deposit-sheet-slide-up 800ms
+    cubic-bezier(0.22, 1, 0.36, 1) backwards;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+
+  &__header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 4px;
+    gap: 16px;
+  }
+
+  &__header {
+    min-width: 0;
+  }
+
+  &__row {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    gap: 16px;
+  }
+
+  &__controls {
+    position: static;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    margin-right: 4px;
+  }
+
+  &__body {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto;
+    overflow: hidden;
+
+    [data-testid='perps-balance-actions-total'] {
+      font-size: 20px;
+      line-height: 28px;
+      letter-spacing: normal;
+    }
+
+    [data-testid='perps-balance-actions-available'],
+    [data-testid='perps-balance-actions-available'] * {
+      font-size: 12px;
+      line-height: 16px;
+    }
+  }
+}
+
+// Subtle seam between the sheet and the bar. Only matches while a sheet is
+// mounted directly above the bar, so the bar keeps its normal muted border
+// while the sheet is loading or hidden.
+.hyperliquid-dapp-bar-deposit-sheet + .dapp-connection-control-bar {
+  border-top-color: var(--color-border-muted);
+}
