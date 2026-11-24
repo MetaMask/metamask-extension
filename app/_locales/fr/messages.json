@@ -1323,12 +1323,6 @@
   "add_device_try_again": {
     "message": "Réessayer"
   },
-  "add_device_validating_desc": {
-    "message": "Établissement d'une connexion sécurisée et chiffrée avec votre téléphone."
-  },
-  "add_device_validating_title": {
-    "message": "Appairage des appareils"
-  },
   "add_wallets": {
     "message": "Choisissez ce que vous souhaitez synchroniser"
   },
@@ -4013,10 +4007,6 @@
   "enter_verification_code_expired": {
     "message": "Le code de vérification a expiré"
   },
-  "enter_verification_code_expires_in": {
-    "message": "Expire dans $1 s",
-    "description": "$1 is the number of seconds remaining before the verification code expires"
-  },
   "enter_verification_code_max_attempts": {
     "message": "Trop de tentatives infructueuses. Commencez avec un nouveau code QR."
   },
@@ -4472,9 +4462,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Une erreur s’est produite...."
-  },
-  "generateNewQrCode": {
-    "message": "Générer un nouveau code QR"
   },
   "genericExplorerView": {
     "message": "Voir le compte sur $1"
@@ -9215,13 +9202,6 @@
     "message": "L’accès à l’appareil photo est requis",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
-  "qrCodeExpired": {
-    "message": "Le code QR a expiré"
-  },
-  "qrCodeExpiresIn": {
-    "message": "Expire dans $1 s",
-    "description": "$1 is the number of seconds remaining before the QR code expires"
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Ce code QR concerne une autre transaction. Annulez l’opération et réessayez, en veillant à scanner d’abord le code QR affiché dans MetaMask avec votre portefeuille matériel.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -11877,9 +11857,6 @@
   },
   "standardAccountLabel": {
     "message": "Compte standard"
-  },
-  "start_with_new_qr_code": {
-    "message": "Commencer avec un nouveau code QR"
   },
   "stateCorruptionAreYouSure": {
     "message": "Voulez-vous vraiment continuer ?"
