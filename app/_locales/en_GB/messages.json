@@ -5512,6 +5512,10 @@
   "marketDetails": {
     "message": "Market details"
   },
+  "marketInsightsSourcesTitle": {
+    "message": "News sources",
+    "description": "Title of the trend sources section in the market insights sources modal"
+  },
   "marketInsightsTimeAgoDays": {
     "message": "$1d ago",
     "description": "Relative age of a market insights report in days. $1 is the number of days"
