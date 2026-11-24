@@ -49,7 +49,8 @@ jest.mock('../../../hooks/useI18nContext', () => ({
 }));
 
 jest.mock('../../ui/toast/toast', () => ({
-  toast: Object.assign(jest.fn(), { dismiss: jest.fn() }),
+  toast: Object.assign(jest.fn(), { dismiss: jest.fn(), error: jest.fn() }),
+  ToastContent: () => null,
 }));
 
 describe('ToastListener', () => {

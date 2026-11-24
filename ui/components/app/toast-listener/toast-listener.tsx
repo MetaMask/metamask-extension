@@ -1,6 +1,5 @@
 import React, { useEffect, useSyncExternalStore } from 'react';
 import { useSelector } from 'react-redux';
-
 import { isInteractiveUI } from '../../../../shared/lib/environment-type';
 import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -8,7 +7,7 @@ import {
   useMusdConversionConfirmTrace,
   useMusdConversionToastStatus,
 } from '../../../hooks/musd';
-import { toast } from '../../ui/toast/toast';
+import { toast, ToastContent } from '../../ui/toast/toast';
 import { MoneyAccountToastListener } from '../money/money-account-toast/money-account-toast-listener';
 import { PerpsDepositToast } from '../perps/perps-deposit-toast';
 import { RampsOrderToastListener } from '../ramps/ramps-order-toast-listener';
@@ -44,7 +43,10 @@ const OfflineToastListener = () => {
     if (isOnline) {
       toast.dismiss('offline-toast');
     } else {
-      toast(t('offlineToast'), { id: 'offline-toast', duration: Infinity });
+      toast.error(<ToastContent title={t('offlineToast')} />, {
+        id: 'offline-toast',
+        duration: Infinity,
+      });
     }
   }, [isOnline, t]);
 
