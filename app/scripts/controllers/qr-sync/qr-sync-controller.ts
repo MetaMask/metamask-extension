@@ -45,7 +45,6 @@ import {
   type QrSyncControllerInitOptions,
   type QrSyncControllerMessenger,
   type QrSyncControllerState,
-  type QrSyncImportSummary,
   type QrSyncReadyData,
   type QrSyncOffer,
 } from './types';
@@ -189,7 +188,6 @@ export class QrSyncController extends BaseController<
   async syncAccounts(
     password: string,
     selectedAccountGroupIds: AccountGroupId[],
-    importSummary?: QrSyncImportSummary,
   ): Promise<void> {
     assertQrSyncPhase(this.state.qrSyncPhase, [
       QR_SYNC_PHASES.REVIEWING_SYNC_OFFER,
@@ -213,10 +211,6 @@ export class QrSyncController extends BaseController<
         selectedPayloadIds.has(payloadGroup.id),
       );
       exportData = snapshot.serialize();
-
-      if (importSummary) {
-        exportData.qrSyncImportSummary = importSummary;
-      }
     } catch (error) {
       this.#reportToSentry('Failed to export account tree for QR sync', error);
       throw error;

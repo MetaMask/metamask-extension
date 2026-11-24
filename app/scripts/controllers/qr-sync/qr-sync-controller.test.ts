@@ -837,60 +837,6 @@ describe('QrSyncController', () => {
       mockEmitSyncCompleted();
     });
 
-    it('includes the import summary in the sync-ready payload without altering the exported accounts', async () => {
-      const { controller, primaryGroupId } = setupController();
-
-      await mockStartSession(controller);
-      await mockSetReviewingSyncOffer(controller);
-
-      const importSummary = {
-        wallets: [
-          {
-            id: 'wallet:primary-entropy-id',
-            name: 'Wallet 1',
-            accounts: [
-              { id: primaryGroupId, name: 'Account 1' },
-              { id: 'wallet:primary-entropy-id/1', name: 'Account 2' },
-            ],
-          },
-        ],
-      };
-
-      await controller.syncAccounts(
-        TEST_PASSWORD,
-        [primaryGroupId],
-        importSummary,
-      );
-
-      const syncReadyPayload = mockMwp.dappClient?.sendRequest.mock.calls.find(
-        ([message]) => message.type === QrSyncActionTypes.SYNC_READY,
-      )?.[0];
-
-      expect(syncReadyPayload?.data?.qrSyncImportSummary).toStrictEqual(
-        importSummary,
-      );
-      expect(syncReadyPayload?.data?.wallets[0].groups).toHaveLength(1);
-
-      mockEmitSyncCompleted();
-    });
-
-    it('omits the import summary when none is provided', async () => {
-      const { controller, primaryGroupId } = setupController();
-
-      await mockStartSession(controller);
-      await mockSetReviewingSyncOffer(controller);
-
-      await controller.syncAccounts(TEST_PASSWORD, [primaryGroupId]);
-
-      const syncReadyPayload = mockMwp.dappClient?.sendRequest.mock.calls.find(
-        ([message]) => message.type === QrSyncActionTypes.SYNC_READY,
-      )?.[0];
-
-      expect(syncReadyPayload?.data).not.toHaveProperty('qrSyncImportSummary');
-
-      mockEmitSyncCompleted();
-    });
-
     it('sends multiple mnemonic wallets with primary first when exporting multiple entropy sources', async () => {
       const { controller, mockSnapshot } = setupController({
         entropyFixtures: [primaryEntropyFixture, secondaryEntropyFixture],

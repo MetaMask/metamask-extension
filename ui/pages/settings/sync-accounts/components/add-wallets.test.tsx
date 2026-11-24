@@ -69,15 +69,6 @@ describe('AddWallets', () => {
 
     expect(onAddWallets).toHaveBeenCalledWith({
       selectedAccountGroupIds: [mockGroupId],
-      importSummary: {
-        wallets: [
-          {
-            id: mockWalletId,
-            name: 'My Wallet',
-            accounts: [{ id: mockGroupId, name: 'Account 1' }],
-          },
-        ],
-      },
       syncedAccountCount: 0,
       syncedWalletCount: 1,
     });

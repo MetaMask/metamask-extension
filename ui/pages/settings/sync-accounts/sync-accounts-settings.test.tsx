@@ -321,15 +321,6 @@ describe('SyncAccountsSettings', () => {
         onClick={() =>
           onAddWallets({
             selectedAccountGroupIds: ['entropy:wallet/0'],
-            importSummary: {
-              wallets: [
-                {
-                  id: 'entropy:wallet',
-                  name: 'Wallet 1',
-                  accounts: [{ id: 'entropy:wallet/0', name: 'Account 1' }],
-                },
-              ],
-            },
             syncedAccountCount: 1,
             syncedWalletCount: 1,
           })
@@ -353,19 +344,7 @@ describe('SyncAccountsSettings', () => {
     await waitFor(() => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'QrSyncController:syncAccounts',
-        [
-          'test-password',
-          ['entropy:wallet/0'],
-          {
-            wallets: [
-              {
-                id: 'entropy:wallet',
-                name: 'Wallet 1',
-                accounts: [{ id: 'entropy:wallet/0', name: 'Account 1' }],
-              },
-            ],
-          },
-        ],
+        ['test-password', ['entropy:wallet/0']],
       );
     });
   });

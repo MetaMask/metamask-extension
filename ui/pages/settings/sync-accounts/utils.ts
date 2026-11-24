@@ -4,7 +4,7 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 
 import type { AccountTreeWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 import { extractWalletIdFromGroupId } from '../../../selectors/multichain-accounts/utils';
-import type { AddDeviceSyncRequest, SyncImportSummary } from './types';
+import type { AddDeviceSyncRequest } from './types';
 
 /**
  * Whether a wallet can be synced to MetaMask Mobile via QR sync.
@@ -91,32 +91,4 @@ export function getSyncSummaryCounts(
   }
 
   return { syncedWalletCount, syncedAccountCount };
-}
-
-/**
- * Builds the wallet and account names the mobile app shows while importing.
- * Only wallets with at least one selected account group are included, and only
- * the selected groups are listed, in the order they appear in the picker.
- *
- * @param wallets - Syncable wallets shown in the wallet picker.
- * @param selectedAccountGroupIds - Selected account group IDs.
- * @returns The names of the selected wallets and their selected accounts.
- */
-export function getImportSummary(
-  wallets: AccountTreeWallets,
-  selectedAccountGroupIds: AccountGroupId[],
-): SyncImportSummary {
-  const selectedIds = new Set<string>(selectedAccountGroupIds);
-
-  return {
-    wallets: Object.values(wallets).flatMap((wallet) => {
-      const accounts = Object.values(wallet.groups)
-        .filter((group) => selectedIds.has(group.id))
-        .map((group) => ({ id: group.id, name: group.metadata.name }));
-
-      return accounts.length > 0
-        ? [{ id: wallet.id, name: wallet.metadata.name, accounts }]
-        : [];
-    }),
-  };
 }

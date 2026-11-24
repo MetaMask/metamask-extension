@@ -4,7 +4,6 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 import type { AccountTreeWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 import {
   filterSyncableWallets,
-  getImportSummary,
   getSyncSummaryCounts,
   isSyncableWallet,
 } from './utils';
@@ -187,109 +186,6 @@ describe('add-device-tab utils', () => {
         syncedWalletCount: 2,
         syncedAccountCount: 1,
       });
-    });
-  });
-
-  describe('getImportSummary', () => {
-    const secondEntropyWalletId = toAccountWalletId(
-      AccountWalletType.Entropy,
-      'entropy2',
-    );
-    const entropyGroupIds = [
-      `${entropyWalletId}/0`,
-      `${entropyWalletId}/1`,
-    ] as const;
-    const secondEntropyGroupId = `${secondEntropyWalletId}/0` as const;
-    const importedGroupId = `${importedWalletId}/0` as const;
-
-    const wallets = {
-      [entropyWalletId]: {
-        ...mockWallets[entropyWalletId],
-        groups: {
-          [entropyGroupIds[0]]: {
-            id: entropyGroupIds[0],
-            metadata: { name: 'Account 1' },
-          },
-          [entropyGroupIds[1]]: {
-            id: entropyGroupIds[1],
-            metadata: { name: 'Account 2' },
-          },
-        },
-      },
-      [secondEntropyWalletId]: {
-        id: secondEntropyWalletId,
-        type: AccountWalletType.Entropy,
-        metadata: { name: 'Wallet 2', entropy: { id: 'entropy2' } },
-        groups: {
-          [secondEntropyGroupId]: {
-            id: secondEntropyGroupId,
-            metadata: { name: 'Savings' },
-          },
-        },
-      },
-      [importedWalletId]: {
-        ...mockWallets[importedWalletId],
-        groups: {
-          [importedGroupId]: {
-            id: importedGroupId,
-            metadata: { name: 'Imported Account 1' },
-          },
-        },
-      },
-    } as unknown as AccountTreeWallets;
-
-    it('lists the selected accounts under their wallets', () => {
-      expect(
-        getImportSummary(wallets, [
-          entropyGroupIds[0],
-          entropyGroupIds[1],
-          importedGroupId,
-        ]),
-      ).toEqual({
-        wallets: [
-          {
-            id: entropyWalletId,
-            name: 'SRP Wallet',
-            accounts: [
-              { id: entropyGroupIds[0], name: 'Account 1' },
-              { id: entropyGroupIds[1], name: 'Account 2' },
-            ],
-          },
-          {
-            id: importedWalletId,
-            name: 'Imported',
-            accounts: [{ id: importedGroupId, name: 'Imported Account 1' }],
-          },
-        ],
-      });
-    });
-
-    it('omits accounts that are not selected and wallets without a selection', () => {
-      expect(getImportSummary(wallets, [entropyGroupIds[1]])).toEqual({
-        wallets: [
-          {
-            id: entropyWalletId,
-            name: 'SRP Wallet',
-            accounts: [{ id: entropyGroupIds[1], name: 'Account 2' }],
-          },
-        ],
-      });
-    });
-
-    it('follows the wallet order of the picker', () => {
-      const summary = getImportSummary(wallets, [
-        importedGroupId,
-        secondEntropyGroupId,
-      ]);
-
-      expect(summary.wallets.map(({ id }) => id)).toStrictEqual([
-        secondEntropyWalletId,
-        importedWalletId,
-      ]);
-    });
-
-    it('returns no wallets when nothing is selected', () => {
-      expect(getImportSummary(wallets, [])).toEqual({ wallets: [] });
     });
   });
 });
