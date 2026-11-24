@@ -206,7 +206,7 @@ class HeaderNavbar {
   }
 
   async clickAddressCopyButton(): Promise<void> {
-    await this.driver.clickElement(this.networkAddressesLink);
+    await this.clickNetworkAddresses();
     await this.driver.clickElement(this.copyAddressButton);
   }
 
