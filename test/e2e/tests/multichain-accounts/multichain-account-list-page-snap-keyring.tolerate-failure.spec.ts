@@ -6,7 +6,6 @@ import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
-import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snaps/simple-keyring-page';
 import { Driver } from '../../webdriver/driver';
 import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
@@ -16,6 +15,7 @@ import {
   MOCK_ETH_CONVERSION_RATE,
   mockPriceApi,
 } from '../tokens/utils/mocks';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 
 const MUSD_ADDRESS = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
 
@@ -98,8 +98,7 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);
 
