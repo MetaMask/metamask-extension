@@ -10,6 +10,7 @@ import { bootstrapLedger } from './hardware-wallets/ledger-router';
 import initTrezor from './hardware-wallets/trezor';
 import initLattice from './hardware-wallets/lattice';
 import initConnectivityDetection from './connectivity';
+import initBraze from './braze';
 
 /**
  * Initialize a post message stream with the parent window that is initialized
@@ -27,13 +28,14 @@ function initializePostMessageStream() {
 }
 
 /**
- * Initialize the ledger, trezor, and lattice keyring connections, and the
- * post message stream for the Snaps environment.
+ * Initialize the ledger, trezor, and lattice keyring connections, the post
+ * message stream for the Snaps environment, and the Braze host.
  */
 async function init(): Promise<void> {
   initializePostMessageStream();
   initTrezor();
   initLattice();
+  initBraze();
 
   try {
     const ledgerInitTimeout = new Promise((_, reject) => {

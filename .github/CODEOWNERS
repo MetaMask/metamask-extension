@@ -79,6 +79,14 @@ ui/pages/notification-details/**                                  @MetaMask/enga
 ui/pages/notifications-settings/**                                @MetaMask/engagement
 ui/helpers/utils/notification.util.ts                             @MetaMask/engagement
 
+# Braze - identity and in-product messaging
+app/braze/**                                                      @MetaMask/engagement
+app/offscreen/braze*.ts                                           @MetaMask/engagement
+app/scripts/messenger-client-init/braze-service*                  @MetaMask/engagement
+app/scripts/messenger-client-init/messengers/braze-service*       @MetaMask/engagement
+app/scripts/services/braze-service*                               @MetaMask/engagement
+shared/lib/braze*                                                 @MetaMask/engagement
+
 # Accounts team is responsible for code related with: Snap accounts,
 # Multichain accounts, Authentication, Backup and sync, Hardware Wallets
 # Slack handle: @accounts-team-devs | Slack channel: #metamask-accounts-team
