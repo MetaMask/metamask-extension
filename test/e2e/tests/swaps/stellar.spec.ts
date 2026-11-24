@@ -1,4 +1,3 @@
-import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
@@ -20,11 +19,8 @@ import {
 } from '../stellar/mocks/stellar-swap-mocks';
 import { HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS } from '../../constants';
 
-describe('Swap on Stellar', function (this: Suite) {
-  // Same budget as Tron swap E2E — quote + Snap console paths are slow in CI.
-  this.timeout(180_000);
-
-  it('Quote displayed between XLM and issued asset', async function () {
+describe('Swap on Stellar', function () {
+  it('Quote displayed between XLM and USDC', async function () {
     await withStellarFixtures(
       {
         horizonOptions: {
@@ -213,7 +209,7 @@ describe('Swap on Stellar', function (this: Suite) {
     );
   });
 
-  it('Quote updates when selecting different destination token', async function () {
+  it('Quote updates when selecting EURC as destination', async function () {
     await withStellarFixtures(
       {
         horizonOptions: {
