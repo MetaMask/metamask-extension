@@ -72,6 +72,10 @@ type AssetStickyActionsProps = {
   isMarketClosed?: boolean;
   /** Native assets cannot swap from accounts that cannot sign */
   isSigningEnabled?: boolean;
+  /** Notified when Swap is pressed, before any CTA gating */
+  onSwapPress?: () => void;
+  /** Notified when Buy is pressed, before any CTA gating */
+  onBuyPress?: () => void;
 };
 
 /**
@@ -83,12 +87,16 @@ type AssetStickyActionsProps = {
  * @param props.buyAssetId - CAIP-19 asset to pre-select when buying a native asset.
  * @param props.isMarketClosed - Whether the asset's stock market is closed.
  * @param props.isSigningEnabled - Whether the selected account can sign.
+ * @param props.onSwapPress - Notified when Swap is pressed, before any CTA gating.
+ * @param props.onBuyPress - Notified when Buy is pressed, before any CTA gating.
  */
 export const AssetStickyActions = ({
   asset,
   buyAssetId,
   isMarketClosed = false,
   isSigningEnabled = true,
+  onSwapPress,
+  onBuyPress,
 }: AssetStickyActionsProps) => {
   const t = useContext(I18nContext);
   const { trackEvent, createEventBuilder } = useAnalytics();
@@ -157,6 +165,7 @@ export const AssetStickyActions = ({
 
   const handleBuyClick = useCallback(async () => {
     trackStickyCtaClick('buy');
+    onBuyPress?.();
 
     const runBuy = async () => {
       const assetId = isNativeAsset(asset)
@@ -207,6 +216,7 @@ export const AssetStickyActions = ({
     createEventBuilder,
     gateCtaAction,
     goToBuy,
+    onBuyPress,
     symbol,
     t,
     trackEvent,
@@ -215,6 +225,7 @@ export const AssetStickyActions = ({
 
   const handleSwapClick = useCallback(() => {
     trackStickyCtaClick('swap');
+    onSwapPress?.();
 
     const runSwap = () => {
       if (isNative) {
@@ -245,6 +256,7 @@ export const AssetStickyActions = ({
     destTokenAssetId,
     gateCtaAction,
     isNative,
+    onSwapPress,
     openBridgeExperience,
     sourceToken,
     trackStickyCtaClick,
