@@ -14,7 +14,7 @@ import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import { NetworkId } from '../../helpers/network-constants';
 
 describe('Update Network:', function (this: Suite) {
-  it('update network details and validate the ui elements', async function () {
+  it('update network details and validate the ui elements TEST', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
