@@ -16,7 +16,7 @@ describe('Success', () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        '2 wallets and 5 imported accounts were synced to your phone.',
+        '2 wallets and 5 imported accounts were synced to MetaMask mobile.',
       ),
     ).toBeInTheDocument();
   });
@@ -40,7 +40,7 @@ describe('Success', () => {
     );
 
     expect(
-      screen.getByText('3 wallets were synced to your phone.'),
+      screen.getByText('3 wallets were synced to MetaMask mobile.'),
     ).toBeInTheDocument();
   });
 
@@ -62,7 +62,7 @@ describe('Success', () => {
     );
 
     expect(
-      screen.getByText('4 imported accounts were synced to your phone.'),
+      screen.getByText('4 imported accounts were synced to MetaMask mobile.'),
     ).toBeInTheDocument();
   });
 
@@ -86,7 +86,9 @@ describe('Success', () => {
     expect(
       screen.getByText(messages.add_device_success_title.message),
     ).toBeInTheDocument();
-    expect(screen.queryByText(/synced to your phone/u)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/synced to MetaMask mobile/u),
+    ).not.toBeInTheDocument();
   });
 
   it('calls onDone when the done button is clicked', () => {

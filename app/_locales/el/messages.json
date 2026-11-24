@@ -1323,12 +1323,6 @@
   "add_device_try_again": {
     "message": "Προσπαθήστε ξανά"
   },
-  "add_device_validating_desc": {
-    "message": "Δημιουργία ασφαλούς, κρυπτογραφημένης σύνδεσης με το τηλέφωνό σας."
-  },
-  "add_device_validating_title": {
-    "message": "Σύζευξη συσκευών"
-  },
   "add_wallets": {
     "message": "Επιλέξτε τι θέλετε να συγχρονίσετε"
   },
@@ -4013,10 +4007,6 @@
   "enter_verification_code_expired": {
     "message": "Ο κωδικός επαλήθευσης έληξε"
   },
-  "enter_verification_code_expires_in": {
-    "message": "Λήγει σε $1δ",
-    "description": "$1 is the number of seconds remaining before the verification code expires"
-  },
   "enter_verification_code_max_attempts": {
     "message": "Πάρα πολλές λανθασμένες προσπάθειες. Ξεκινήστε με νέο κωδικό QR."
   },
@@ -4472,9 +4462,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Κάτι πήγε στραβά...."
-  },
-  "generateNewQrCode": {
-    "message": "Δημιουργία νέου κωδικού QR"
   },
   "genericExplorerView": {
     "message": "Προβολή λογαριασμού σε $1"
@@ -6444,42 +6431,6 @@
   "multipleSnapConnectionWarning": {
     "message": "Το $1 θέλει να χρησιμοποιήσει $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
-  },
-  "musdAssetConvertBenefitDailyBonus": {
-    "message": "Καθημερινό μπόνους",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertBenefitDollarBacked": {
-    "message": "Με στήριξη από το δολάριο",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertBenefitNoLockups": {
-    "message": "Χωρίς δεσμεύσεις",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertBenefitNoMetaMaskFee": {
-    "message": "Χωρίς χρεώσεις από το MetaMask",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertDescriptionHighlight": {
-    "message": "$1% ετήσιο μπόνους",
-    "description": "Shown in Figma accent lime (#baf24a) inside the mUSD asset details convert section description. $1 is the APY percentage."
-  },
-  "musdAssetConvertDescriptionLead": {
-    "message": "Αποκτήστε ",
-    "description": "Text before the green APY phrase on the mUSD asset details convert section"
-  },
-  "musdAssetConvertDescriptionTail": {
-    "message": " μετατρέποντας USDC, USDT και DAI σε mUSD.",
-    "description": "Text after the green APY phrase on the mUSD asset details convert section"
-  },
-  "musdAssetConvertLearnMore": {
-    "message": "Μάθε περισσότερα",
-    "description": "Button to open the mUSD support article from the asset details convert section"
-  },
-  "musdAssetConvertTitle": {
-    "message": "Μετατρέψτε τα stablecoins σας",
-    "description": "Title of the convert section on the mUSD asset details page"
   },
   "musdAssetPositionBalance": {
     "message": "Υπόλοιπο",
@@ -9215,13 +9166,6 @@
     "message": "Απαιτείται πρόσβαση στην κάμερα",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
-  "qrCodeExpired": {
-    "message": "Ο κωδικός QR έληξε"
-  },
-  "qrCodeExpiresIn": {
-    "message": "Λήγει σε $1δ",
-    "description": "$1 is the number of seconds remaining before the QR code expires"
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Αυτός ο κωδικός QR αφορά διαφορετική συναλλαγή. Ακυρώστε και προσπαθήστε ξανά, διασφαλίζοντας ότι πρώτα θα σαρώσετε τον κωδικό QR στο MetaMask με το πορτοφόλι υλικού σας.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -11877,9 +11821,6 @@
   },
   "standardAccountLabel": {
     "message": "Βασικός λογαριασμός"
-  },
-  "start_with_new_qr_code": {
-    "message": "Ξεκινήστε με νέο κωδικό QR"
   },
   "stateCorruptionAreYouSure": {
     "message": "Είστε σίγουροι ότι θέλετε να συνεχίσετε;"
