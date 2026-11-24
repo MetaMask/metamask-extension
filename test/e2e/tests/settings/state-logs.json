@@ -218,12 +218,9 @@
     },
     "allDeFiPositionsCount": {},
     "allDeFiPositionsV2": {},
-    "allDetectedTokens": {},
     "allIgnoredAssets": {},
-    "allIgnoredTokens": {},
     "allNftContracts": {},
     "allNfts": {},
-    "allTokens": {},
     "analyticsId": "string",
     "announcements": {},
     "appActiveTab": {
