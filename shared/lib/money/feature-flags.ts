@@ -1,6 +1,9 @@
 import { isHexAddress, isObject, isStrictHexString } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
-import { validatedVersionGatedFeatureFlag } from '../remote-feature-flag-utils';
+import {
+  getBooleanFeatureFlag,
+  validatedVersionGatedFeatureFlag,
+} from '../remote-feature-flag-utils';
 
 /**
  * The LaunchDarkly flag that gates the Money Account surface. The same flag
@@ -215,13 +218,10 @@ export function isMoneyHomeScreenCardEnabled(
 export function isProSubscriptionEnabled(
   remoteFeatureFlags: Record<string, unknown> | undefined,
 ): boolean {
-  const remote =
-    remoteFeatureFlags?.[SUBSCRIPTION_MONEY_ACCOUNT_ORANGE_ENABLED_FLAG_NAME];
-  if (typeof remote === 'boolean') {
-    return remote;
-  }
-
-  return validatedVersionGatedFeatureFlag(remote) ?? false;
+  return getBooleanFeatureFlag(
+    remoteFeatureFlags?.[SUBSCRIPTION_MONEY_ACCOUNT_ORANGE_ENABLED_FLAG_NAME],
+    false,
+  );
 }
 
 /**
