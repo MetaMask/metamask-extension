@@ -80,7 +80,7 @@ export const useMarketInsightsTracking = ({
         [MARKET_INSIGHTS_EVENT_PROPERTY.SOURCE]: source,
         [MARKET_INSIGHTS_EVENT_PROPERTY.DIGEST_ID]: report.digestId,
       }),
-    );
+    ).catch(() => undefined);
   }, [isCardVisible, assetId, report, source, trackEvent, buildEvent]);
 
   const trackOpened = useCallback(() => {
@@ -96,7 +96,7 @@ export const useMarketInsightsTracking = ({
           [MARKET_INSIGHTS_EVENT_PROPERTY.DIGEST_ID]: report.digestId,
         }),
       }),
-    );
+    ).catch(() => undefined);
   }, [assetId, report, source, trackEvent, buildEvent]);
 
   return { cardRef, trackOpened };
