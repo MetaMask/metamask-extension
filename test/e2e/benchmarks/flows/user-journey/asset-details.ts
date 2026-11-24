@@ -5,12 +5,19 @@
 
 import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
 import { withFixtures } from '../../../helpers';
+import type { MockedEndpoint } from '../../../mock-e2e';
 import { login } from '../../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../../page-objects/flows/network.flow';
 import AccountListPage from '../../../page-objects/pages/accounts/list-page';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import { Driver } from '../../../webdriver/driver';
 import { collectTimerResults } from '../../utils/timer-helper';
+import {
+  sentryCountResult,
+  sentryTimerResult,
+  waitForSentryTransactions,
+} from '../../utils/sentry-transactions';
+import { TraceName } from '../../../../../shared/lib/trace';
 import {
   measureStepWithLongTasks,
   buildLongTaskTimerResults,
@@ -26,7 +33,11 @@ import {
 } from '../../../../../shared/constants/benchmarks';
 import { WITH_STATE_POWER_USER } from '../../utils/constants';
 import { collectWebVitals } from '../../utils';
-import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
+import type {
+  BenchmarkRunResult,
+  LongTaskStepResult,
+  TimerResult,
+} from '../../utils/types';
 import { openAccountMenu } from '../../../page-objects/flows/account-menu.flow';
 
 const ETH_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -35,6 +46,7 @@ export const persona = BENCHMARK_PERSONA.POWER_USER;
 
 export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
   const steps: LongTaskStepResult[] = [];
+  const traceTimers: TimerResult[] = [];
   let webVitals: WebVitalsMetrics | undefined;
   try {
     await withFixtures(
@@ -47,13 +59,23 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
           testing: {
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
+          // Sample every trace, so the `Asset Details` span reaches the mocked
+          // Sentry endpoint this benchmark reads it from. CI builds otherwise
+          // send only a small fraction of traces.
+          sentry: { tracesSampleRate: 1 },
         },
         useMockingPassThrough: !shouldUseMockedRequests(),
         disableServerMochaToBackground: true,
         extendedTimeoutMultiplier: 3,
         testSpecificMock: getTestSpecificMock(),
       },
-      async ({ driver }: { driver: Driver }) => {
+      async ({
+        driver,
+        mockedEndpoint,
+      }: {
+        driver: Driver;
+        mockedEndpoint: MockedEndpoint[];
+      }) => {
         // Login flow
         await login(driver, { validateBalance: false });
 
@@ -95,6 +117,27 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
           ),
         );
 
+        // `Asset Details` ends at the asset page's mount, before the chart data
+        // where `assetClickToPriceChart` ends, so it is reported under its own
+        // id and has no threshold.
+        const transactions = await waitForSentryTransactions(
+          driver,
+          mockedEndpoint,
+          [TraceName.AssetDetails],
+        );
+        traceTimers.push(
+          sentryTimerResult(
+            transactions,
+            TraceName.AssetDetails,
+            'assetDetails',
+          ),
+          sentryCountResult(
+            transactions,
+            TraceName.AssetDetails,
+            'assetDetailsCount',
+          ),
+        );
+
         try {
           webVitals = await collectWebVitals(driver);
         } catch (error) {
@@ -104,14 +147,22 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
     );
 
     return {
-      timers: [...collectTimerResults(), ...buildLongTaskTimerResults(steps)],
+      timers: [
+        ...collectTimerResults(),
+        ...buildLongTaskTimerResults(steps),
+        ...traceTimers,
+      ],
       webVitals,
       success: true,
       benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
     };
   } catch (error) {
     return {
-      timers: [...collectTimerResults(), ...buildLongTaskTimerResults(steps)],
+      timers: [
+        ...collectTimerResults(),
+        ...buildLongTaskTimerResults(steps),
+        ...traceTimers,
+      ],
       webVitals,
       success: false,
       error: error instanceof Error ? error.message : String(error),

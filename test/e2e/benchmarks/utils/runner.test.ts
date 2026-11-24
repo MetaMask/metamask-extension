@@ -1,11 +1,14 @@
-import type { TimerStatistics } from '../../../../shared/constants/benchmarks';
+import type {
+  TimerStatistics,
+  WebVitalsMetrics,
+} from '../../../../shared/constants/benchmarks';
 import { WARMUP_RUNS } from './constants';
 import {
   convertTimerStatisticsToBenchmarkResults,
   runBenchmarkWithIterations,
   runPageLoadBenchmark,
 } from './runner';
-import type { BenchmarkRunResult, Metrics } from './types';
+import type { BenchmarkRunResult, MeasurePageResult, Metrics } from './types';
 
 function createTimerStats(
   id: string,
@@ -157,5 +160,80 @@ describe('runPageLoadBenchmark', () => {
       { iteration: warmupSize, value: 100 },
       { iteration: warmupSize + 1, value: 120 },
     ]);
+  });
+});
+
+describe('runBenchmarkWithIterations', () => {
+  const warmUpVitals = { inp: null, fcp: 9999, lcp: null, cls: null };
+  const scoredVitals = { inp: null, fcp: 100, lcp: null, cls: null };
+
+  const runFlow = async (iterations: number, warmupRuns?: number) => {
+    let call = 0;
+    const benchmarkFn = async (): Promise<BenchmarkRunResult> => {
+      call += 1;
+      const isFirst = call === 1;
+      return {
+        success: true,
+        timers: [
+          { id: 'step', value: isFirst ? 9000 : 1000 + call },
+          // Only the first run reports this one.
+          ...(isFirst ? [{ id: 'firstRunOnly', value: 5000 }] : []),
+          {
+            id: 'longTaskCount',
+            value: isFirst ? 40 : 2,
+            unit: 'count' as const,
+          },
+        ],
+        webVitals: (isFirst ? warmUpVitals : scoredVitals) as WebVitalsMetrics,
+      };
+    };
+    return runBenchmarkWithIterations(
+      'flow',
+      benchmarkFn,
+      iterations,
+      0,
+      {},
+      warmupRuns,
+    );
+  };
+
+  it('scores every run when no warm-up is named', async () => {
+    const summary = await runFlow(3);
+
+    expect(summary.iterations).toBe(3);
+    expect(summary.successfulRuns).toBe(3);
+    expect(summary.timers.map(({ id }) => id)).toContain('firstRunOnly');
+  });
+
+  it('drops the warm-up runs from the timers, the long-task results and the web vitals', async () => {
+    const summary = await runFlow(4, 1);
+
+    const ids = summary.timers.map(({ id }) => id);
+    expect(ids).not.toContain('firstRunOnly');
+    expect(ids).toStrictEqual(
+      expect.arrayContaining(['step', 'longTaskCount', 'total']),
+    );
+    expect(summary.timers.find(({ id }) => id === 'step')?.samples).toBe(3);
+    expect(summary.timers.find(({ id }) => id === 'longTaskCount')?.mean).toBe(
+      2,
+    );
+    expect(summary.webVitals?.runs.map(({ iteration }) => iteration)).toEqual([
+      1, 2, 3,
+    ]);
+    expect(summary.webVitals?.runs.every(({ fcp }) => fcp === 100)).toBe(true);
+  });
+
+  it('counts only the scored runs', async () => {
+    const summary = await runFlow(4, 1);
+
+    expect(summary.iterations).toBe(3);
+    expect(summary.successfulRuns).toBe(3);
+    expect(summary.failedRuns).toBe(0);
+  });
+
+  it('refuses a run with no run left to score', async () => {
+    await expect(runFlow(1, 1)).rejects.toThrow(
+      'iterations (1) must be greater than the warm-up runs (1)',
+    );
   });
 });

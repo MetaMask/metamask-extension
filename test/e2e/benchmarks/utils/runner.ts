@@ -101,13 +101,24 @@ async function runWithRetries(
   }
 }
 
+/**
+ * Runs `iterations` times and aggregates the runs after discarding the first
+ * `warmupRuns`, all their results alike, as the startup path does.
+ */
 export async function runBenchmarkWithIterations(
   name: string,
   benchmarkFn: BenchmarkFunction,
   iterations: number,
   retries: number,
   thresholdConfig: ThresholdConfig,
+  warmupRuns: number = 0,
 ): Promise<BenchmarkSummary> {
+  if (warmupRuns > 0 && iterations <= warmupRuns) {
+    throw new Error(
+      `iterations (${iterations}) must be greater than the warm-up runs (${warmupRuns})`,
+    );
+  }
+
   const allResults: BenchmarkRunResult[] = [];
   let successfulRuns = 0;
   let failedRuns = 0;
@@ -117,24 +128,33 @@ export async function runBenchmarkWithIterations(
     allResults.push(result);
 
     if (result.success) {
-      successfulRuns += 1;
       // Generate report after each successful run (like Mocha's afterEach)
       const timerCount = performanceTracker.getTimerCount();
       if (timerCount > 0) {
         performanceTracker.generateReport(`${name} - iteration ${i + 1}`, name);
       }
-    } else {
-      failedRuns += 1;
+    }
+
+    if (i >= warmupRuns) {
+      if (result.success) {
+        successfulRuns += 1;
+      } else {
+        failedRuns += 1;
+      }
     }
   }
+
+  // Discard the warm-up runs, failed or not, before any statistic.
+  const scoredResults = allResults.slice(warmupRuns);
+  const scoredIterations = iterations - warmupRuns;
 
   // Aggregate timer results and collect per-run web vitals
   const timerMap = new Map<string, MetricSample[]>();
   const zeroAllowedTimers = new Set<string>();
   const webVitalsRuns: WebVitalsRun[] = [];
 
-  for (let idx = 0; idx < allResults.length; idx++) {
-    const result = allResults[idx];
+  for (let idx = 0; idx < scoredResults.length; idx++) {
+    const result = scoredResults[idx];
     if (result.success) {
       for (const timer of result.timers) {
         if (!timerMap.has(timer.id)) {
@@ -150,7 +170,10 @@ export async function runBenchmarkWithIterations(
       }
 
       if (result.webVitals) {
-        webVitalsRuns.push({ ...result.webVitals, iteration: idx });
+        webVitalsRuns.push({
+          ...result.webVitals,
+          iteration: warmupRuns + idx,
+        });
       }
     }
   }
@@ -187,8 +210,8 @@ export async function runBenchmarkWithIterations(
   // Compute per-run total durations and derive total statistics from them
   // (min/max/percentiles are not additive across timers from different runs)
   const perRunTotals: MetricSample[] = [];
-  for (let idx = 0; idx < allResults.length; idx++) {
-    const result = allResults[idx];
+  for (let idx = 0; idx < scoredResults.length; idx++) {
+    const result = scoredResults[idx];
     if (result.success && result.timers.length > 0) {
       // Exclude long task diagnostic metrics (tagged with unit) from the
       // per-run total. They represent blocking time already captured within
@@ -213,7 +236,7 @@ export async function runBenchmarkWithIterations(
 
   // Check overall run exclusion rate
   const overallExclusionCheck = checkExclusionRate(
-    iterations,
+    scoredIterations,
     failedRuns,
     MAX_EXCLUSION_RATE,
   );
@@ -230,11 +253,13 @@ export async function runBenchmarkWithIterations(
 
   const thresholdResult = validateThresholds(timerStats, thresholdConfig);
   // Extract benchmarkType from the first result (same across all iterations)
-  const benchmarkType = allResults.find((r) => r.benchmarkType)?.benchmarkType;
+  const benchmarkType = scoredResults.find(
+    (r) => r.benchmarkType,
+  )?.benchmarkType;
 
   return {
     name,
-    iterations,
+    iterations: scoredIterations,
     successfulRuns,
     failedRuns,
     timers: timerStats,
