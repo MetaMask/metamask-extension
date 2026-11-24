@@ -125,10 +125,8 @@ describe('createTracesSampler (integration with Sentry.init)', () => {
 
   it('caps a per-name override above the remote ceiling, through the real SDK', async () => {
     // Isolating the ceiling needs a case where the default rate would ALLOW and
-    // the ceiling BLOCKS. A per-name override of 1 under a ceiling of 0 is one
-    // such case (a positive parent decision under a ceiling of 0 is another,
-    // covered in the unit file), and it is needed because `createTracesSampler`
-    // feeds
+    // the ceiling BLOCKS. A per-name override of 1 under a ceiling of 0 is the
+    // only such case, and it is needed because `createTracesSampler` feeds
     // the remote rate in as BOTH the default and the ceiling — so any assertion
     // resting on the default being 0 passes with the ceiling removed entirely,
     // and tests nothing. Verified by mutation: neutralising the ceiling turns
@@ -147,6 +145,31 @@ describe('createTracesSampler (integration with Sentry.init)', () => {
     // min(1, 0) = 0. Without the ceiling the per-name 1 would be honoured and
     // this transaction would be sent.
     expect(sentTransactions).not.toContain('Boosted Transaction');
+  });
+
+  it('keeps a span continuing a sampled UI trace under a remote throttle, and sheds an unsampled one, through the real SDK', async () => {
+    // A remote rate of 0 sheds the UI's root, and the background spans that
+    // continue it inherit that negative decision. A UI root that was sampled
+    // keeps its background half: re-sampling the continuation at the remote
+    // rate would split the trace.
+    await seedRemoteRates({ tracesSampleRate: 0 });
+
+    const uiRoot = Sentry.startInactiveSpan({ name: 'UI Root' });
+    const continueFrom = (sentryTrace: string, name: string) =>
+      Sentry.continueTrace({ sentryTrace, baggage: undefined }, () =>
+        Sentry.startSpan({ name }, () => undefined),
+      );
+    continueFrom(Sentry.spanToTraceHeader(uiRoot), 'Unsampled Continuation');
+    continueFrom(
+      '12312012123120121231201212312012-1121201211212012-1',
+      'Sampled Continuation',
+    );
+    uiRoot.end();
+    await Sentry.flush(2000);
+
+    expect(sentTransactions).not.toContain('UI Root');
+    expect(sentTransactions).not.toContain('Unsampled Continuation');
+    expect(sentTransactions).toContain('Sampled Continuation');
   });
 
   it('lets a remote per-name override un-pin a build-time zero through the real SDK', async () => {
