@@ -35,7 +35,7 @@ export const DEFAULT_TRANSACTION_SAMPLE_RATES: Readonly<
   'Swap Quote Fetch': SWAP_QUOTE_FETCH_SAMPLE_RATE,
   'Homepage Ready': 0.001,
   'Homepage Section Time To Content': 0.001,
-  'Useful Screen Ready': 0.001,
+  'Useful Screen Ready': 0.01,
   // Boot-time operations: up to four roots per worker cold start, so each is
   // sampled at a fifth of the default rate.
   'Accounts API Supported Networks Fetch': 0.001,

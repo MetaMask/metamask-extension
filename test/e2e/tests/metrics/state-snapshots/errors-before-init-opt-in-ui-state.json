@@ -4,7 +4,6 @@
       "hiddenAccountList": "object",
       "pinnedAccountList": "object"
     },
-    "AccountTracker": {},
     "AccountTreeController": {
       "accountGroupsMetadata": "object",
       "accountTree": "object",
@@ -200,9 +199,6 @@
       "onboardingJourneyEnded": true,
       "seedPhraseBackedUp": null
     },
-    "PPOMController": {
-      "storageMetadata": "object"
-    },
     "PasskeyController": {
       "passkeyRecord": null
     },
@@ -356,9 +352,6 @@
       "transactionBatches": "object",
       "transactions": "object"
     },
-    "UserOperationController": {
-      "userOperations": "object"
-    },
     "UserStorageController": {
       "isAccountSyncingEnabled": true,
       "isBackupAndSyncEnabled": true,
@@ -369,6 +362,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 235
+    "version": 237
   }
 }

@@ -1323,12 +1323,6 @@
   "add_device_try_again": {
     "message": "Tekrar deneyin"
   },
-  "add_device_validating_desc": {
-    "message": "Telefonunuzla güvenli, şifrelenmiş bağlantı kuruluyor."
-  },
-  "add_device_validating_title": {
-    "message": "Cihazlar eşleştiriliyor"
-  },
   "add_wallets": {
     "message": "Nelerin senkronize edileceğini seçin"
   },
@@ -2838,9 +2832,6 @@
   "confirmFieldNeverExpires": {
     "message": "Asla süresi dolmaz"
   },
-  "confirmFieldPaymaster": {
-    "message": "Ücreti ödeyen taraf"
-  },
   "confirmFieldPeriodDurationBiWeekly": {
     "message": "İki Haftada Bir"
   },
@@ -2865,9 +2856,6 @@
   },
   "confirmFieldTooltipJustification": {
     "message": "Web sitesi tarafından taleple ilgili sağlanan gerekçe"
-  },
-  "confirmFieldTooltipPaymaster": {
-    "message": "Bu işlemin ücreti paymaster akıllı sözleşmesi tarafından ödenecektir."
   },
   "confirmFieldTotalExposure": {
     "message": "Toplam risk"
@@ -4019,10 +4007,6 @@
   "enter_verification_code_expired": {
     "message": "Doğrulama kodunun süresi doldu"
   },
-  "enter_verification_code_expires_in": {
-    "message": "Süresinin dolmasına kalan: $1sn",
-    "description": "$1 is the number of seconds remaining before the verification code expires"
-  },
   "enter_verification_code_max_attempts": {
     "message": "Çok sayıda yanlış deneme yapıldı. Yeni bir QR kodu ile başlayın."
   },
@@ -4482,9 +4466,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Bir şeyler ters gitti...."
-  },
-  "generateNewQrCode": {
-    "message": "Yeni bir QR kodu oluştur"
   },
   "genericExplorerView": {
     "message": "Hesabı $1 üzerinde görüntüleyin"
@@ -9235,13 +9216,6 @@
     "message": "Kamera erişimine ihtiyaç var",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
-  "qrCodeExpired": {
-    "message": "QR kodunun süresi doldu"
-  },
-  "qrCodeExpiresIn": {
-    "message": "Süresinin dolmasına kalan: $1sn",
-    "description": "$1 is the number of seconds remaining before the QR code expires"
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Bu QR kodu farklı bir işlem içindir. İptal edip tekrar deneyin ve önce donanım cüzdanınızla MetaMask'te gösterilen QR kodunu taradığınızdan emin olun.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -11898,9 +11872,6 @@
   "standardAccountLabel": {
     "message": "Standart hesap"
   },
-  "start_with_new_qr_code": {
-    "message": "Yeni bir QR kodu ile başlayın"
-  },
   "stateCorruptionAreYouSure": {
     "message": "İlerlemek istediğinizden emin misiniz?"
   },
@@ -12056,28 +12027,12 @@
   "swapAggregator": {
     "message": "Toplayıcı"
   },
-  "swapAllowSwappingOf": {
-    "message": "$1 takasına izin verin",
-    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
-  },
-  "swapAmountReceived": {
-    "message": "Garantili tutar"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "Bu, alacağınız minimum tutardır. Kaymaya bağlı olarak daha fazla alabilirsiniz."
-  },
   "swapAndSend": {
     "message": "Swap Gerçekleştir ve Gönder"
   },
   "swapApproval": {
     "message": "Takas işlemleri için $1 onayla",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
-  },
-  "swapAreYouStillThere": {
-    "message": "Hala orada mısınız?"
-  },
-  "swapAreYouStillThereDescription": {
-    "message": "Devam etmek istediğinizde size en yeni kotaları göstermeye hazırız"
   },
   "swapConfirmWithHwWallet": {
     "message": "Donanım cüzdanınızla onaylayın"
@@ -12108,16 +12063,6 @@
     "message": "Bu, takas için $1 kullanacak",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
-  "swapEstimatedNetworkFees": {
-    "message": "Tahmini ağ ücretleri"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "Bu, takas işleminizi tamamlamak için kullanılacak ağ ücretinin bir tahminidir. Gerçek miktar ağ koşullarına göre değişebilir."
-  },
-  "swapFailedErrorDescriptionWithSupportLink": {
-    "message": "İşlemler başarısız olabilir ve size yardımcı olmak için buradayız. Bu sorun devam ederse daha fazla destek için $1 adresinden müşteri hizmetleri destek bölümü ile iletişime geçebilirsiniz.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
-  },
   "swapFailedErrorTitle": {
     "message": "Takas başarısız oldu"
   },
@@ -12134,10 +12079,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "Teklifler alınırken hata"
   },
-  "swapFromTo": {
-    "message": "$1 ile $2 takası",
-    "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
   "swapGasFeesExplanation": {
     "message": "MetaMask, ağ ücretlerinden kazanç sağlamaz. Bu ücretler tahmini değerlerdir ve ağın yoğunluğuna ve işlemin karmaşıklığına bağlı olarak değişiklik gösterebilir. Daha fazla bilgi edinin $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -12145,9 +12086,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "Buradan",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesSplit": {
-    "message": "Önceki ekrandaki ağ ücretleri bu iki işlem arasında bölünmüştür."
   },
   "swapGasFeesSponsored": {
     "message": "MetaMask tarafından ödenir"
@@ -12162,15 +12100,6 @@
   "swapLearnMore": {
     "message": "Swap işlemleri hakkında daha fazla bilgi edinin"
   },
-  "swapLiquiditySourceInfo": {
-    "message": "Dönüştürme oranlarını ve ağ ücretlerini karşılaştırmak için birden fazla likidite kaynağında (borsalar, toplayıcılar ve profesyonel piyasa yapıcıları) arama yaparız."
-  },
-  "swapMaxSlippage": {
-    "message": "Maks. kayma"
-  },
-  "swapMetaMaskFee": {
-    "message": "MetaMask ücreti"
-  },
   "swapMetaMaskFeeDescription": {
     "message": "%$1 oranında bir ücret otomatik olarak bu teklife dahil edilmiştir. MetaMask'in likidite sağlayıcı bilgilerinin toplandığı yazılımı kullanma lisansı karşılığında ödersiniz.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
@@ -12178,19 +12107,6 @@
   "swapNQuotesWithDot": {
     "message": "$1 teklif.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapOnceTransactionHasProcess": {
-    "message": "Bu işlem gerçekleştikten sonra $1 hesabınıza eklenecek.",
-    "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
-  },
-  "swapProcessing": {
-    "message": "Gerçekleştiriliyor"
-  },
-  "swapQuoteDetails": {
-    "message": "Teklif ayrıntıları"
-  },
-  "swapQuoteSource": {
-    "message": "Teklif kaynağı"
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "En son oranları almak için lütfen yeni teklifler isteyin."
@@ -12201,41 +12117,14 @@
   "swapQuotesNotAvailableDescription": {
     "message": "Bu işlem yolu şu anda mevcut değil. Tutarı, ağı veya token'ı değiştirmeyi deneyin ve en iyi seçeneği bulalım."
   },
-  "swapQuotesNotAvailableErrorDescription": {
-    "message": "Lütfen tutarı veya kayma ayarlarını düzenlemeyi deneyin ve tekrar deneyin."
-  },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "Teklif mevcut değil"
-  },
-  "swapRate": {
-    "message": "Oran"
-  },
-  "swapReceiving": {
-    "message": "Alınıyor"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "Bu bir tahmindir. Gerçek miktar kaymaya göre belirlenecektir."
   },
   "swapRequestForQuotation": {
     "message": "Teklif talebi"
   },
-  "swapSelect": {
-    "message": "Seç"
-  },
-  "swapSelectAQuote": {
-    "message": "Teklif seç"
-  },
-  "swapSelectAToken": {
-    "message": "Token seç"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "Birden fazla likidite kaynağından alınmış tüm teklifler aşağıdadır."
-  },
   "swapSelectToken": {
     "message": "Token seçin"
-  },
-  "swapShowLatestQuotes": {
-    "message": "En yeni kotaları göster"
   },
   "swapSlippageAutoDescription": {
     "message": "Otomatik"
@@ -12282,18 +12171,8 @@
   "swapSlippageZeroTitle": {
     "message": "Sıfır kayma sunan sağlayıcılar getiriliyor"
   },
-  "swapSource": {
-    "message": "Likidite kaynağı"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Takas işlemleri karmaşıktır ve zaman hassasiyeti taşır. Başarılı bir Takas işleminin maliyeti ile gerçekleşme güvenliği arasında iyi bir denge kurulması için bu ağ ücretini öneriyoruz."
-  },
-  "swapToConfirmWithHwWallet": {
-    "message": "donanım cüzdanınızla onaylamak için"
-  },
-  "swapTokenAvailable": {
-    "message": "$1 hesabınıza eklendi.",
-    "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
   },
   "swapTokenNotAvailable": {
     "message": "Token bu bölgede swap işlemine uygun değildir"
@@ -12301,20 +12180,11 @@
   "swapTokens": {
     "message": "Token swap işlemi yapın"
   },
-  "swapTransactionComplete": {
-    "message": "İşlem tamamlandı"
-  },
-  "swapTwoTransactions": {
-    "message": "2 işlem"
-  },
   "swapUnknown": {
     "message": "Bilinmeyen"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "Bu takas işlemi için ağ ücretini ödemeye yetecek $1 yok. Daha küçük bir tutar girin veya daha fazla $1 satın alın."
-  },
-  "swapZeroSlippage": {
-    "message": "%0 Kayma"
   },
   "swapsMaxSlippage": {
     "message": "Kayma toleransı"
@@ -12327,9 +12197,6 @@
   },
   "swapsRebateTooltipTitle": {
     "message": "Yatırım Ödülleri"
-  },
-  "swapsViewInActivity": {
-    "message": "Aktivitede görüntüle"
   },
   "switch": {
     "message": "Değiştir"

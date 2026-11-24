@@ -8,7 +8,6 @@ import {
 } from '@metamask/transaction-controller';
 import { Hex, JsonRpcRequest, createProjectLogger } from '@metamask/utils';
 import { v4 as uuid } from 'uuid';
-import { PPOM } from '@blockaid/ppom_release';
 import {
   GetSignatureState,
   SignatureControllerState,
@@ -37,41 +36,23 @@ import {
   UpdateSecurityAlertResponse,
 } from './types';
 import {
-  isSecurityAlertsAPIEnabled,
   SecurityAlertsAPIRequest,
   validateWithSecurityAlertsAPI,
 } from './security-alerts-api';
 
 const log = createProjectLogger('ppom-util');
 
-const { sentry } = global;
-
 /**
- * Messenger able to run the PPOM security validation flow: validate via the
- * PPOM controller, and read/write the loading + final security alert response
+ * Messenger able to read/write the loading + final security alert response
  * onto the pending transaction or signature request.
  */
 export type PPOMMessenger = RootMessenger<
-  | UsePPOMAction
   | TransactionControllerGetStateAction
   | TransactionControllerUpdateSecurityAlertResponseAction
   | GetSignatureState
   | AppStateControllerAddSignatureSecurityAlertResponseAction,
   TransactionControllerUnapprovedTransactionAddedEvent | SignatureStateChange
 >;
-
-/**
- * The `PPOMController:usePPOM` action. The published `UsePPOM` type omits the
- * controller method's optional `chainId` argument, so it is redeclared here
- * with the real runtime signature to forward the confirmation's chain id.
- */
-export type UsePPOMAction = {
-  type: 'PPOMController:usePPOM';
-  handler: (
-    callback: (ppom: PPOM) => Promise<unknown>,
-    chainId?: string,
-  ) => Promise<unknown>;
-};
 
 const SECURITY_ALERT_RESPONSE_ERROR = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -86,14 +67,12 @@ type PPOMRequest = JsonRpcRequest & {
 };
 
 export async function validateRequestWithPPOM({
-  messenger,
   request,
   securityAlertId,
   chainId,
   updateSecurityAlertResponse: updateSecurityResponse,
   getSecurityAlertsConfig,
 }: {
-  messenger: PPOMMessenger;
   request: PPOMRequest;
   securityAlertId: string;
   chainId: Hex;
@@ -111,14 +90,11 @@ export async function validateRequestWithPPOM({
 
     log('Normalized request', normalizedRequest);
 
-    const ppomResponse = isSecurityAlertsAPIEnabled()
-      ? await validateWithAPI(
-          messenger,
-          chainId,
-          normalizedRequest,
-          getSecurityAlertsConfig,
-        )
-      : await validateWithController(messenger, normalizedRequest, chainId);
+    const ppomResponse = await validateWithAPI(
+      chainId,
+      normalizedRequest,
+      getSecurityAlertsConfig,
+    );
 
     await updateSecurityResponse(request.method, securityAlertId, ppomResponse);
   } catch (error: unknown) {
@@ -183,20 +159,16 @@ export async function updateSecurityAlertResponse({
 export function handlePPOMError(
   error: unknown,
   logMessage: string,
-  source: SecurityAlertSource = SecurityAlertSource.API,
 ): SecurityAlertResponse {
   const errorData = getErrorData(error);
   const description = getErrorMessage(error);
 
-  if (source === SecurityAlertSource.Local) {
-    sentry?.captureException(error);
-  }
   console.error(logMessage, errorData);
 
   return {
     ...SECURITY_ALERT_RESPONSE_ERROR,
     description,
-    source,
+    source: SecurityAlertSource.API,
   };
 }
 
@@ -332,52 +304,21 @@ function getErrorData(error: unknown) {
   return JSON.stringify(error);
 }
 
-async function validateWithController(
-  messenger: PPOMMessenger,
-  request: SecurityAlertsAPIRequest | PPOMRequest,
-  chainId: string,
-): Promise<SecurityAlertResponse> {
-  try {
-    const response = (await messenger.call(
-      'PPOMController:usePPOM',
-      (ppom: PPOM) => ppom.validateJsonRpc(request),
-      chainId,
-    )) as SecurityAlertResponse;
-
-    return {
-      ...response,
-      source: SecurityAlertSource.Local,
-    };
-  } catch (error: unknown) {
-    return handlePPOMError(
-      error,
-      `Error validating request with PPOM controller`,
-      SecurityAlertSource.Local,
-    );
-  }
-}
-
 async function validateWithAPI(
-  messenger: PPOMMessenger,
   chainId: string,
   request: SecurityAlertsAPIRequest | PPOMRequest,
   getSecurityAlertsConfig?: GetSecurityAlertsConfig,
 ): Promise<SecurityAlertResponse> {
-  try {
-    const response = await validateWithSecurityAlertsAPI(
-      chainId,
-      request,
-      getSecurityAlertsConfig,
-    );
+  const response = await validateWithSecurityAlertsAPI(
+    chainId,
+    request,
+    getSecurityAlertsConfig,
+  );
 
-    return {
-      ...response,
-      source: SecurityAlertSource.API,
-    };
-  } catch (error: unknown) {
-    handlePPOMError(error, `Error validating request with security alerts API`);
-    return await validateWithController(messenger, request, chainId);
-  }
+  return {
+    ...response,
+    source: SecurityAlertSource.API,
+  };
 }
 
 async function waitForTransactionMetadata(

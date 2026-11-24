@@ -2,10 +2,7 @@ import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
-import {
-  buildQuote,
-  waitForTransactionToComplete,
-} from '../page-objects/flows/swap.flow';
+import { buildQuote } from '../page-objects/flows/swap.flow';
 import SwapPage from '../page-objects/pages/swap/swap-page';
 import ActivityTab from '../page-objects/pages/home/activity-tab';
 import { TRADES_API_MOCK_RESULT } from '../../data/mock-data';
@@ -65,8 +62,8 @@ describe('Snap Account - Swap', function () {
           swapFrom: TEST_ETH,
           swapTo: DAI,
         });
-        await driver.clickElement({ text: 'Swap', tag: 'button' });
-        await waitForTransactionToComplete(driver, { tokenName: 'DAI' });
+        await swapPage.submitSwap();
+        await swapPage.goBackAfterSubmit();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkSwapActivityTransaction({
           amount: '2',
