@@ -202,28 +202,9 @@ export const getAccountTrackerControllerAccountsByChainId =
     AccountTrackerControllerState['accountsByChainId']
   >;
 
-/**
- * TokensController no longer writes these maps. A non-empty slice is leftover
- * legacy state and is kept when unify is off. An empty slice is not filled by
- * any controller, so callers derive it from AssetsController instead.
- *
- * @param isAssetsUnifyStateEnabled - Whether unified asset state is active.
- * @param slice - Legacy controller map keyed by chain id.
- * @returns Whether the legacy slice should be returned as-is.
- */
-function shouldUseLegacyTokenSlice(
-  isAssetsUnifyStateEnabled: boolean,
-  slice: object,
-): boolean {
-  return !isAssetsUnifyStateEnabled && Object.keys(slice).length > 0;
-}
-
 // ChainId (hex) -> AccountAddress (hex lowercase) -> Array of Tokens
 export const getTokensControllerAllTokens = createDeepEqualSelector(
   [
-    getIsAssetsUnifyStateEnabled,
-    (state: { metamask: Pick<TokensControllerState, 'allTokens'> }) =>
-      state.metamask?.allTokens ?? {},
     (state: { metamask: Pick<AssetsControllerState, 'assetsInfo'> }) =>
       state.metamask?.assetsInfo ?? {},
     (state: { metamask: Pick<AssetsControllerState, 'assetsBalance'> }) =>
@@ -233,18 +214,7 @@ export const getTokensControllerAllTokens = createDeepEqualSelector(
     (state: { metamask: Pick<AccountsControllerState, 'internalAccounts'> }) =>
       state.metamask?.internalAccounts?.accounts ?? {},
   ],
-  (
-    isAssetsUnifyStateEnabled,
-    allTokens,
-    assetsInfo,
-    assetsBalance,
-    customAssets,
-    internalAccountsById,
-  ) => {
-    if (shouldUseLegacyTokenSlice(isAssetsUnifyStateEnabled, allTokens)) {
-      return allTokens;
-    }
-
+  (assetsInfo, assetsBalance, customAssets, internalAccountsById) => {
     const result: TokensControllerState['allTokens'] = {};
 
     // Merge assetsBalance and customAssets: accountId -> assetId[]
@@ -306,26 +276,12 @@ export const getTokensControllerAllTokens = createDeepEqualSelector(
 // ChainId (hex) -> AccountAddress (hex lowercase) -> Array of TokenAddress (hex lowercase)
 export const getTokensControllerAllIgnoredTokens = createDeepEqualSelector(
   [
-    getIsAssetsUnifyStateEnabled,
-    (state: { metamask: Pick<TokensControllerState, 'allIgnoredTokens'> }) =>
-      state.metamask?.allIgnoredTokens ?? {},
     (state: { metamask: Pick<AssetsControllerState, 'assetPreferences'> }) =>
       state.metamask?.assetPreferences ?? {},
     (state: { metamask: Pick<AccountsControllerState, 'internalAccounts'> }) =>
       state.metamask?.internalAccounts?.accounts ?? {},
   ],
-  (
-    isAssetsUnifyStateEnabled,
-    allIgnoredTokens,
-    assetPreferences,
-    internalAccountsById,
-  ) => {
-    if (
-      shouldUseLegacyTokenSlice(isAssetsUnifyStateEnabled, allIgnoredTokens)
-    ) {
-      return allIgnoredTokens;
-    }
-
+  (assetPreferences, internalAccountsById) => {
     const result: TokensControllerState['allIgnoredTokens'] = {};
 
     for (const [assetId, { hidden }] of Object.entries(assetPreferences)) {

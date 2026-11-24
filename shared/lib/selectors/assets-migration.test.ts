@@ -609,73 +609,6 @@ describe('getTokensControllerAllTokens', () => {
     });
   });
 
-  describe('when assetsUnifyState is disabled', () => {
-    const assetsControllerState = {
-      remoteFeatureFlags: {},
-      allTokens: {},
-      assetsInfo: {
-        [erc20AssetId]: {
-          type: 'erc20',
-          decimals: 6,
-          symbol: 'USDC',
-          name: 'USD Coin',
-        },
-      },
-      assetsBalance: {},
-      customAssets: {
-        [mockAccountId]: [erc20AssetId as CaipAssetType],
-      },
-      internalAccounts: {
-        accounts: {
-          [mockAccountId]: {
-            id: mockAccountId,
-            address: mockAccountAddressLowercase,
-            type: 'eip155:eoa',
-          },
-        },
-      },
-    };
-
-    it('derives allTokens from AssetsController when the legacy slice is empty', () => {
-      const result = getTokensControllerAllTokens({
-        metamask: assetsControllerState,
-      });
-
-      expect(result['0x1'][mockAccountAddressLowercase]).toStrictEqual([
-        {
-          address: erc20AssetAddressChecksummed,
-          symbol: 'USDC',
-          decimals: 6,
-          name: 'USD Coin',
-          image: undefined,
-        },
-      ]);
-    });
-
-    it('returns a populated legacy allTokens map', () => {
-      const legacyAllTokens = {
-        '0x1': {
-          [mockAccountAddressLowercase]: [
-            {
-              address: erc20AssetAddressChecksummed,
-              symbol: 'LEGACY',
-              decimals: 6,
-            },
-          ],
-        },
-      };
-
-      const result = getTokensControllerAllTokens({
-        metamask: {
-          ...assetsControllerState,
-          allTokens: legacyAllTokens,
-        },
-      });
-
-      expect(result).toStrictEqual(legacyAllTokens);
-    });
-  });
-
   describe('edge cases', () => {
     it('includes tokens from customAssets not present in assetsBalance', () => {
       const state = {
@@ -915,54 +848,6 @@ describe('getTokensControllerAllIgnoredTokens', () => {
       '0x1': {
         [mockAccountAddressLowercase]: [erc20AssetAddressLowercase],
       },
-    });
-  });
-
-  describe('when assetsUnifyState is disabled', () => {
-    const assetsControllerState = {
-      remoteFeatureFlags: {},
-      allIgnoredTokens: {},
-      assetPreferences: {
-        [erc20AssetId]: { hidden: true },
-      },
-      internalAccounts: {
-        accounts: {
-          [mockAccountId]: {
-            id: mockAccountId,
-            address: mockAccountAddressLowercase,
-            type: 'eip155:eoa',
-          },
-        },
-      },
-    };
-
-    it('derives allIgnoredTokens from AssetsController when the legacy slice is empty', () => {
-      const result = getTokensControllerAllIgnoredTokens({
-        metamask: assetsControllerState,
-      });
-
-      expect(result).toStrictEqual({
-        '0x1': {
-          [mockAccountAddressLowercase]: [erc20AssetAddressLowercase],
-        },
-      });
-    });
-
-    it('returns a populated legacy allIgnoredTokens map', () => {
-      const legacyAllIgnoredTokens = {
-        '0x1': {
-          [mockAccountAddressLowercase]: [erc20AssetAddressLowercase],
-        },
-      };
-
-      const result = getTokensControllerAllIgnoredTokens({
-        metamask: {
-          ...assetsControllerState,
-          allIgnoredTokens: legacyAllIgnoredTokens,
-        },
-      });
-
-      expect(result).toStrictEqual(legacyAllIgnoredTokens);
     });
   });
 
