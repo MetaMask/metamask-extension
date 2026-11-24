@@ -13,6 +13,7 @@ import {
   isMoneyTokenListItemCtaEnabled,
   isMoneyEarnBannerEnabled,
   isMoneyAssetOverviewBalanceCtaEnabled,
+  isProSubscriptionEnabled,
 } from '../../../shared/lib/money/feature-flags';
 import {
   getMoneyAccountPremiumVaultConfig,
@@ -82,6 +83,17 @@ export const selectMoneyAccountFeatureEnabled = createSelector(
 export const selectMoneyHomeScreenCardEnabled = createSelector(
   getRemoteFeatureFlags,
   isMoneyHomeScreenCardEnabled,
+);
+
+/**
+ * Selects whether the `subscriptionMoneyAccountOrangeEnabled` flag is on.
+ *
+ * @param state - The MetaMask state object.
+ * @returns Whether the Pro subscription flag is enabled.
+ */
+export const selectProSubscriptionEnabled = createSelector(
+  getRemoteFeatureFlags,
+  isProSubscriptionEnabled,
 );
 
 /**

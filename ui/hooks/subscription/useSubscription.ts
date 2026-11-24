@@ -29,6 +29,7 @@ import { Hex } from '@metamask/utils';
 import { addHexPrefix } from 'ethereumjs-util';
 import { type GasFeeEstimates } from '@metamask/gas-fee-controller';
 import {
+  getLastShieldSubscription,
   getShieldSubscriptionError,
   getUserSubscriptions,
 } from '../../selectors/subscription';
@@ -597,7 +598,7 @@ export const useHandleSubscription = ({
   const { search } = useLocation();
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
     useSubscriptionCryptoApprovalTransaction(selectedToken);
-  const { lastSubscription } = useUserSubscriptions();
+  const lastSubscription = useSelector(getLastShieldSubscription);
   const {
     captureShieldSubscriptionRequestEvent,
     setShieldSubscriptionMetricsPropsToBackground,

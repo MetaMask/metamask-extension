@@ -17,6 +17,7 @@ import {
 } from '../../../../helpers/constants/routes';
 import { getModalTypeForShieldEntryModal } from '../../../../selectors';
 import {
+  getLastShieldSubscription,
   getLastUsedShieldSubscriptionPaymentDetails,
   getUserSubscriptions,
 } from '../../../../selectors/subscription';
@@ -38,8 +39,8 @@ export const useShieldConfirm = () => {
   const lastSelectedPaymentDetails = useSelector(
     getLastUsedShieldSubscriptionPaymentDetails,
   );
-  const { trialedProducts, lastSubscription } =
-    useSelector(getUserSubscriptions);
+  const { trialedProducts } = useSelector(getUserSubscriptions);
+  const lastSubscription = useSelector(getLastShieldSubscription);
   const modalType = useSelector(getModalTypeForShieldEntryModal) as ModalType;
   const getCryptoConfirmationEventParams = useCallback(
     (

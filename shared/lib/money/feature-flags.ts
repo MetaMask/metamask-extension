@@ -35,6 +35,10 @@ const UNKNOWN_LOCATION = 'UNKNOWN';
 export const MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME =
   'moneyHomeScreenCardEnabled';
 
+/** The LaunchDarkly flag that gates the Pro subscription for Money Account. */
+export const SUBSCRIPTION_MONEY_ACCOUNT_ORANGE_ENABLED_FLAG_NAME =
+  'subscriptionMoneyAccountOrangeEnabled';
+
 /**
  * The LaunchDarkly flag that gates the realized Earnings section on Money
  * Home.
@@ -197,6 +201,27 @@ export function isMoneyHomeScreenCardEnabled(
       remoteFeatureFlags?.[MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME],
     ) ?? false
   );
+}
+
+/**
+ * Whether the Pro subscription for Money Account is enabled.
+ *
+ * Boolean flags are used as-is. Other values are validated as version-gated
+ * flags and default to false when missing or invalid.
+ *
+ * @param remoteFeatureFlags - The remote feature flags.
+ * @returns Whether the Pro subscription flag is enabled.
+ */
+export function isProSubscriptionEnabled(
+  remoteFeatureFlags: Record<string, unknown> | undefined,
+): boolean {
+  const remote =
+    remoteFeatureFlags?.[SUBSCRIPTION_MONEY_ACCOUNT_ORANGE_ENABLED_FLAG_NAME];
+  if (typeof remote === 'boolean') {
+    return remote;
+  }
+
+  return validatedVersionGatedFeatureFlag(remote) ?? false;
 }
 
 /**

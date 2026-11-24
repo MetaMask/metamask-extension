@@ -1,7 +1,10 @@
+import { it } from '@jest/globals';
 import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { PRODUCT_TYPES } from '@metamask/subscription-controller';
+import { ShieldSubscriptionRequestSubscriptionStateEnum } from '../../../../../shared/constants/subscriptions';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { PREVIOUS_ROUTE } from '../../../../helpers/constants/routes';
 import { useShieldConfirm } from './useShieldConfirm';
@@ -92,6 +95,32 @@ describe('useShieldConfirm', () => {
   });
 
   describe('crypto confirmation metrics', () => {
+    it.each([
+      [
+        PRODUCT_TYPES.MONEY_ACCOUNT_PLUS,
+        ShieldSubscriptionRequestSubscriptionStateEnum.New,
+      ],
+      [
+        PRODUCT_TYPES.SHIELD,
+        ShieldSubscriptionRequestSubscriptionStateEnum.Renew,
+      ],
+    ])(
+      'tracks the Shield subscription state when the last product is %s',
+      (name, subscriptionState) => {
+        const { result } = renderHookWithProvider(() => useShieldConfirm(), {
+          metamask: { lastSubscription: { products: [{ name }] } },
+        });
+
+        result.current.handleShieldSubscriptionApprovalTransactionRejected({
+          type: TransactionType.shieldSubscriptionApprove,
+          chainId: '0x1',
+        } as unknown as TransactionMeta);
+
+        expect(mockCaptureShieldCryptoConfirmationEvent).toHaveBeenCalledWith(
+          expect.objectContaining({ subscriptionState }),
+        );
+      },
+    );
     it('tracks when the user rejects the Shield crypto confirmation', () => {
       const txMeta = {
         id: 'shield-approval-transaction',

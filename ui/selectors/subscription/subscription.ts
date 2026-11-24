@@ -1,11 +1,15 @@
 import {
   CachedLastSelectedPaymentMethod,
   PricingResponse,
+  MoneyAccountFeature,
   PRODUCT_TYPES,
+  selectHasEntitlement,
+  type ProductType,
   Subscription,
   SubscriptionControllerState,
 } from '@metamask/subscription-controller';
 import { createSelector } from 'reselect';
+import { ActiveSubscriptionStatuses } from '../../../shared/constants/subscriptions';
 import {
   getIsShieldSubscriptionActive,
   getShieldSubscription,
@@ -39,6 +43,68 @@ export const getUserSubscriptions = createSelector(
     lastSubscription,
   }),
 );
+
+const hasProduct = (subscription: Subscription, product: ProductType) =>
+  subscription.products.some(({ name }) => name === product);
+
+export const getSubscriptionByProduct = (
+  state: SubscriptionState,
+  product: ProductType,
+) =>
+  state.metamask.subscriptions?.find((subscription) =>
+    hasProduct(subscription, product),
+  );
+
+export const getLastSubscriptionByProduct = (
+  state: SubscriptionState,
+  product: ProductType,
+) => {
+  const { lastSubscription } = state.metamask;
+  return lastSubscription && hasProduct(lastSubscription, product)
+    ? lastSubscription
+    : undefined;
+};
+
+export function getLastShieldSubscription(
+  state: SubscriptionState,
+): Subscription | undefined {
+  return getLastSubscriptionByProduct(state, PRODUCT_TYPES.SHIELD);
+}
+
+export const getLastSelectedPaymentMethodByProduct = (
+  state: SubscriptionState,
+  product: ProductType,
+) => state.metamask.lastSelectedPaymentMethod?.[product];
+
+export const getIsMoneyAccountPlusSubscriber = (state: SubscriptionState) =>
+  state.metamask.subscriptions?.some(
+    (subscription) =>
+      hasProduct(subscription, PRODUCT_TYPES.MONEY_ACCOUNT_PLUS) &&
+      ActiveSubscriptionStatuses.includes(subscription.status),
+  ) ?? false;
+
+export const getHasAnyMoneyAccountPlusEntitlement = (
+  state: SubscriptionState,
+) =>
+  Object.values(MoneyAccountFeature).some((feature) =>
+    selectHasEntitlement(
+      state.metamask,
+      PRODUCT_TYPES.MONEY_ACCOUNT_PLUS,
+      feature,
+    ),
+  );
+
+export const getHasMoneyAccountPremiumApyEntitlement = (
+  state: SubscriptionState,
+) =>
+  selectHasEntitlement(
+    state.metamask,
+    PRODUCT_TYPES.MONEY_ACCOUNT_PLUS,
+    MoneyAccountFeature.PremiumApy,
+  );
+
+export const getSubscriptionBenefits = (state: SubscriptionState) =>
+  state.metamask.benefits;
 
 export function getIsActiveShieldSubscription(
   state: SubscriptionState,
