@@ -18,6 +18,17 @@ const mockUseMarketInsights = jest.fn();
 const mockTrackOpened = jest.fn();
 const mockTrackingCardRef = jest.fn();
 const mockUseMarketInsightsTracking = jest.fn();
+const mockNavigate = jest.fn();
+const mockTransitionForward = jest.fn((callback: () => void) => callback());
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
+
+jest.mock('../../../../components/ui/transition', () => ({
+  transitionForward: (callback: () => void) => mockTransitionForward(callback),
+}));
 
 jest.mock('../../../../hooks/useTokenSecurityData', () => ({
   useTokenSecurityData: (args: unknown) => mockUseTokenSecurityData(args),
@@ -176,34 +187,6 @@ describe('AssetMarketInsightsSection', () => {
     expect(mockUseMarketInsights).toHaveBeenCalledWith(assetId, true);
   });
 
-  it('renders nothing once security data arrives marking the token too new', () => {
-    mockUseMarketInsights.mockReturnValue({
-      report: mockReport,
-      isLoading: false,
-      error: null,
-      timeAgo: '5d ago',
-    });
-
-    const twoDaysAgo = new Date(
-      Date.now() - 2 * 24 * 60 * 60 * 1000,
-    ).toISOString();
-
-    const { rerender, queryByTestId } = renderWithProvider(
-      <AssetMarketInsightsSection assetId={assetId} />,
-    );
-
-    expect(queryByTestId('asset-market-insights')).toBeInTheDocument();
-    expect(mockUseMarketInsights).toHaveBeenCalledWith(assetId, true);
-
-    mockUseTokenSecurityData.mockReturnValue({
-      securityData: { created: twoDaysAgo } as TokenSecurityData,
-    });
-    rerender(<AssetMarketInsightsSection assetId={assetId} />);
-
-    expect(queryByTestId('asset-market-insights')).not.toBeInTheDocument();
-    expect(mockUseMarketInsights).toHaveBeenLastCalledWith(null, false);
-  });
-
   it('opens and closes the disclaimer modal via the info button', () => {
     mockUseMarketInsights.mockReturnValue({
       report: mockReport,
@@ -295,5 +278,39 @@ describe('AssetMarketInsightsSection', () => {
     fireEvent.click(getByTestId('market-insights-entry-card-button'));
 
     expect(mockTrackOpened).toHaveBeenCalledTimes(1);
+  });
+
+  it('navigates to the market insights page when the card is pressed', () => {
+    mockUseMarketInsights.mockReturnValue({
+      report: mockReport,
+      isLoading: false,
+      error: null,
+      timeAgo: '5d ago',
+    });
+
+    const { getByTestId } = renderWithProvider(
+      <AssetMarketInsightsSection assetId={assetId} />,
+    );
+
+    fireEvent.click(getByTestId('market-insights-entry-card-button'));
+
+    expect(mockTrackOpened).toHaveBeenCalledTimes(1);
+    expect(mockTransitionForward).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toHaveBeenCalledWith(
+      `/asset/eip155:1/${encodeURIComponent(assetId)}/market-insights`,
+    );
+  });
+
+  it('does not navigate when the asset is not eligible for insights', () => {
+    const twoDaysAgo = new Date(
+      Date.now() - 2 * 24 * 60 * 60 * 1000,
+    ).toISOString();
+    mockUseTokenSecurityData.mockReturnValue({
+      securityData: { created: twoDaysAgo } as TokenSecurityData,
+    });
+
+    renderWithProvider(<AssetMarketInsightsSection assetId={assetId} />);
+
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 });

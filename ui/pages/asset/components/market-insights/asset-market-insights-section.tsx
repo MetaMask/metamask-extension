@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { CaipAssetType } from '@metamask/utils';
+import { buildAssetMarketInsightsRoutePath } from '../../../../../shared/lib/asset-route';
 import { MARKET_INSIGHTS_EVENT_VALUE } from '../../../../../shared/constants/market-insights-events';
+import { transitionForward } from '../../../../components/ui/transition';
 import { useTokenSecurityData } from '../../../../hooks/useTokenSecurityData';
 import { useMarketInsights } from '../../hooks/useMarketInsights';
 import { MarketInsightsDisclaimerModal } from './market-insights-disclaimer-modal';
@@ -47,16 +50,11 @@ export type AssetMarketInsightsSectionProps = {
  * pending fetch) exists for the asset and the token passes the minimum-age
  * gate. Renders nothing when the asset is ineligible, the report is missing,
  * or the fetch fails.
- *
- * The minimum-age gate is advisory: `useTokenSecurityData` resolves
- * asynchronously and returns no creation date for assets without security
- * metadata (e.g. native assets), so a single digest request may already be
- * in flight before the gate settles. Assets without security metadata are
- * treated as eligible on purpose so native assets stay covered.
  */
 export const AssetMarketInsightsSection = ({
   assetId,
 }: AssetMarketInsightsSectionProps) => {
+  const navigate = useNavigate();
   const [isDisclaimerVisible, setIsDisclaimerVisible] = useState(false);
 
   const { securityData } = useTokenSecurityData({ assetId: assetId ?? null });
@@ -84,6 +82,16 @@ export const AssetMarketInsightsSection = ({
     Boolean(marketInsightsAssetId) &&
     (Boolean(report) || isLoading);
 
+  const handleCardPress = useCallback(() => {
+    if (!marketInsightsAssetId) {
+      return;
+    }
+    trackOpened();
+    transitionForward(() =>
+      navigate(buildAssetMarketInsightsRoutePath(marketInsightsAssetId)),
+    );
+  }, [marketInsightsAssetId, navigate, trackOpened]);
+
   if (!shouldShowCard) {
     return null;
   }
@@ -98,7 +106,7 @@ export const AssetMarketInsightsSection = ({
         <MarketInsightsEntryCard
           report={report}
           timeAgo={timeAgo}
-          onPress={trackOpened}
+          onPress={handleCardPress}
           onDisclaimerPress={() => setIsDisclaimerVisible(true)}
         />
       ) : (

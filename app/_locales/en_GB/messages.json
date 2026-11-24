@@ -5560,6 +5560,10 @@
     "message": "Submit",
     "description": "Submit button in the market insights feedback modal"
   },
+  "marketInsightsFeedbackSubmitted": {
+    "message": "Feedback submitted",
+    "description": "Toast shown after market insights feedback is submitted"
+  },
   "marketInsightsFeedbackTitle": {
     "message": "Feedback",
     "description": "Title of the market insights feedback modal"
@@ -5568,9 +5572,21 @@
     "message": "AI generated",
     "description": "Footer disclaimer on the market insights entry card"
   },
+  "marketInsightsHelpfulPrompt": {
+    "message": "Was this helpful?",
+    "description": "Prompt above the feedback buttons at the bottom of the market insights page"
+  },
   "marketInsightsSourcesTitle": {
     "message": "News sources",
     "description": "Title of the trend sources section in the market insights sources modal"
+  },
+  "marketInsightsThumbsDownAriaLabel": {
+    "message": "Rate as not helpful",
+    "description": "Accessibility label for the thumbs down button on the market insights page"
+  },
+  "marketInsightsThumbsUpAriaLabel": {
+    "message": "Rate as helpful",
+    "description": "Accessibility label for the thumbs up button on the market insights page"
   },
   "marketInsightsTimeAgoDays": {
     "message": "$1d ago",
@@ -5591,6 +5607,10 @@
   "marketInsightsTitle": {
     "message": "Market insights",
     "description": "Title of the AI market insights entry card on the asset page"
+  },
+  "marketInsightsWhatsBeingSaid": {
+    "message": "What's being said",
+    "description": "Heading for the social posts section on the market insights page"
   },
   "marketRate": {
     "message": "Market rate"

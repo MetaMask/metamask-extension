@@ -19,6 +19,7 @@ import Alerts from '../../components/app/alerts';
 import {
   ASSET_ACTIVATION_LOADER_ROUTE,
   ASSET_DETAILS_ROUTE,
+  ASSET_MARKET_INSIGHTS_ROUTE,
   ASSET_SECURITY_TRUST_ROUTE,
   ASSET_IMAGE_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
@@ -242,6 +243,9 @@ const AssetActivationLoader = mmLazy(
 );
 const SecurityTrustPage = mmLazy(
   () => import('../asset/security-trust/index.ts'),
+);
+const MarketInsightsPage = mmLazy(
+  () => import('../asset/market-insights/index.ts'),
 );
 const DeFiPage = mmLazy(
   () => import('../defi/components/defi-details-page.tsx'),
@@ -513,6 +517,10 @@ export const routeConfig = [
       {
         path: ASSET_SECURITY_TRUST_ROUTE,
         element: <SecurityTrustPage />,
+      },
+      {
+        path: ASSET_MARKET_INSIGHTS_ROUTE,
+        element: <MarketInsightsPage />,
       },
       {
         // Static path must be registered before ASSET_DETAILS_ROUTE so

@@ -32,6 +32,10 @@ export const buildAssetSecurityTrustRoutePath = (
   assetId: CaipAssetType,
 ): string => `${buildAssetRoutePath(assetId)}/security-trust`;
 
+export const buildAssetMarketInsightsRoutePath = (
+  assetId: CaipAssetType,
+): string => `${buildAssetRoutePath(assetId)}/market-insights`;
+
 const decodeRouteParam = (value: string): string => {
   try {
     return decodeURIComponent(value);
