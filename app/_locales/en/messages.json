@@ -5512,6 +5512,18 @@
   "marketDetails": {
     "message": "Market details"
   },
+  "marketInsightsDisclaimerTitle": {
+    "message": "AI-generated content",
+    "description": "Title of the market insights disclaimer modal"
+  },
+  "marketInsightsFooterDisclaimer": {
+    "message": "AI generated",
+    "description": "Footer disclaimer on the market insights entry card"
+  },
+  "marketInsightsTitle": {
+    "message": "Market insights",
+    "description": "Title of the AI market insights entry card on the asset page"
+  },
   "marketRate": {
     "message": "Market rate"
   },
