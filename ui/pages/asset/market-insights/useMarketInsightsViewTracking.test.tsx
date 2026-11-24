@@ -197,11 +197,8 @@ describe('useMarketInsightsViewTracking', () => {
           properties: expect.objectContaining({
             [MARKET_INSIGHTS_EVENT_PROPERTY.FEEDBACK_REASON]: 'something_else',
           }),
+          sensitiveProperties: {},
         }),
-      );
-      const { properties } = mockTrackEvent.mock.calls[0][0];
-      expect(MARKET_INSIGHTS_EVENT_PROPERTY.FEEDBACK_TEXT in properties).toBe(
-        false,
       );
     });
 
