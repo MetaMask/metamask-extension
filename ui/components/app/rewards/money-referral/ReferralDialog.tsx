@@ -75,6 +75,8 @@ export function ReferralDialog({
       justifyContent={BoxJustifyContent.Start}
       paddingTop={4}
       paddingBottom={4}
+      // Remove these temporary viewport gutters and custom sizing when the MMDS
+      // modal shell supports priority overlays: https://github.com/MetaMask/metamask-design-system/issues/1685
       className="fixed inset-0 m-auto hidden max-h-[calc(100%-2rem)] w-[calc(100%-2rem)] max-w-[480px] rounded-4xl px-0 text-default shadow-lg open:flex motion-safe:animate-slide-up sm:max-h-[calc(100%-4rem)] md:max-h-[calc(100%-6rem)] [@media(max-height:475px)]:max-h-[calc(100%-1rem)] [@media(max-height:475px)]:w-[calc(100%-1rem)] backdrop:bg-overlay-default"
     >
       <dialog
