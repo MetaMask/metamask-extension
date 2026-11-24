@@ -2468,17 +2468,26 @@ export class LegacyBackgroundApiService {
           name: TraceName.OnboardingSocialLoginPasswordSync,
           data: { success: passwordSyncSuccess },
         });
+        // A wrong password surfaces differently depending on the recovery
+        // path: as a `RecoveryError` when the TOPRF password-sync flow runs
+        // (`PasswordOutdated`), or as the encryptor's plain error when the
+        // already-rewritten local Seedless vault is decrypted
+        // (`ReconcileKeyring`, i.e. `LOCAL_PASSWORD_PENDING`).
+        const isIncorrectPasswordError =
+          error?.message === 'Incorrect password' ||
+          (error instanceof RecoveryError &&
+            error.message ===
+              SeedlessOnboardingControllerErrorMessage.IncorrectPassword);
+
+        // Keyring controller password verification succeeds and seedless
+        // controller failed, so the submitted password is the previous one.
+        if (isIncorrectPasswordError && isKeyringPasswordValid) {
+          throw new Error(
+            SeedlessOnboardingControllerErrorMessage.OutdatedPassword,
+          );
+        }
+
         if (error instanceof RecoveryError) {
-          // Keyring controller password verification succeeds and seedless controller failed.
-          if (
-            error?.message ===
-              SeedlessOnboardingControllerErrorMessage.IncorrectPassword &&
-            isKeyringPasswordValid
-          ) {
-            throw new Error(
-              SeedlessOnboardingControllerErrorMessage.OutdatedPassword,
-            );
-          }
           throw new JsonRpcError(-32603, error.message, error.data);
         }
         log.error('error while reconciling password', error);

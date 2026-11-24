@@ -350,7 +350,7 @@
     "@solana/buffer-layout-utils/bigint-buffer": "npm:@exodus/bigint-buffer@1.1.5-exodus.1",
     "ses": "2.2.0",
     "@metamask/utils": "^12.0.2",
-    "@metamask/seedless-onboarding-controller": "npm:@metamask-previews/seedless-onboarding-controller@12.0.0-preview-64cf2e401"
+    "@metamask/seedless-onboarding-controller": "npm:@metamask-previews/seedless-onboarding-controller@12.1.0-preview-2f5f4e394"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",

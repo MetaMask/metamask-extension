@@ -5249,6 +5249,165 @@ describe('LegacyBackgroundApiService', () => {
         expect(callSpy).not.toHaveBeenCalledWith('KeyringController:setLocked');
       });
     });
+
+    /**
+     * Registers the handlers for a recovery attempt where
+     * `SeedlessOnboardingController:reconcilePassword` rejects.
+     *
+     * @param options - The options.
+     * @param options.rootMessenger - The root messenger.
+     * @param options.instruction - The instruction reported by the controller.
+     * @param options.isKeyringPasswordValid - Whether the submitted password
+     * unlocks the Keyring.
+     * @param options.reconcilePasswordError - The error `reconcilePassword`
+     * rejects with.
+     */
+    const registerRecoveryHandlers = ({
+      rootMessenger,
+      instruction,
+      isKeyringPasswordValid,
+      reconcilePasswordError,
+    }: {
+      rootMessenger: RootMessenger;
+      instruction: PasswordSyncInstruction;
+      isKeyringPasswordValid: boolean;
+      reconcilePasswordError: Error;
+    }) => {
+      rootMessenger.registerActionHandler(
+        'OnboardingController:getIsSocialLoginFlow',
+        jest.fn().mockReturnValue(true),
+      );
+      rootMessenger.registerActionHandler(
+        'OnboardingController:getState',
+        jest.fn().mockReturnValue({ completedOnboarding: true }),
+      );
+      rootMessenger.registerActionHandler(
+        'SeedlessOnboardingController:resolvePasswordSyncState',
+        jest.fn().mockResolvedValue(instruction),
+      );
+      rootMessenger.registerActionHandler(
+        'KeyringController:verifyPassword',
+        isKeyringPasswordValid
+          ? jest.fn().mockResolvedValue(undefined)
+          : jest.fn().mockRejectedValue(new Error('Incorrect password')),
+      );
+      rootMessenger.registerActionHandler(
+        'SeedlessOnboardingController:reconcilePassword',
+        jest.fn().mockRejectedValue(reconcilePasswordError),
+      );
+      rootMessenger.registerActionHandler(
+        'KeyringController:getState',
+        jest.fn().mockReturnValue({ isUnlocked: false }),
+      );
+      registerUnlockSideEffectHandlers(rootMessenger);
+    };
+
+    // Scenario E of the Seedless password-change test cases: the password
+    // change was interrupted at `LOCAL_PASSWORD_PENDING`. The Seedless vault
+    // is already on the new global password, but the Keyring still uses the
+    // previous one.
+    describe('when the password change was interrupted at LOCAL_PASSWORD_PENDING', () => {
+      it('throws an outdated password error when the previous password is submitted', async () => {
+        await withService(async ({ rootMessenger, serviceMessenger }) => {
+          // The previous password still unlocks the Keyring, but the Seedless
+          // vault (already on the new password) rejects it.
+          registerRecoveryHandlers({
+            rootMessenger,
+            instruction: PasswordSyncInstruction.ReconcileKeyring,
+            isKeyringPasswordValid: true,
+            reconcilePasswordError: new Error('Incorrect password'),
+          });
+
+          const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:syncPasswordAndUnlockWallet',
+              'previous-password',
+            ),
+          ).rejects.toThrow(
+            SeedlessOnboardingControllerErrorMessage.OutdatedPassword,
+          );
+
+          expect(callSpy).toHaveBeenCalledWith(
+            'SentryTracingService:bufferedEndTrace',
+            {
+              name: TraceName.OnboardingSocialLoginPasswordSync,
+              data: { success: false },
+            },
+          );
+          expect(callSpy).not.toHaveBeenCalledWith(
+            'SeedlessOnboardingController:loadKeyringEncryptionKey',
+          );
+        });
+      });
+
+      it('rethrows the incorrect password error when the submitted password does not unlock the Keyring either', async () => {
+        const error = new Error('Incorrect password');
+
+        await withService(async ({ rootMessenger }) => {
+          registerRecoveryHandlers({
+            rootMessenger,
+            instruction: PasswordSyncInstruction.ReconcileKeyring,
+            isKeyringPasswordValid: false,
+            reconcilePasswordError: error,
+          });
+
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:syncPasswordAndUnlockWallet',
+              'wrong-password',
+            ),
+          ).rejects.toBe(error);
+        });
+      });
+
+      it('rethrows unrelated errors without mapping them to an outdated password', async () => {
+        const error = new Error('Something else went wrong');
+
+        await withService(async ({ rootMessenger }) => {
+          registerRecoveryHandlers({
+            rootMessenger,
+            instruction: PasswordSyncInstruction.ReconcileKeyring,
+            isKeyringPasswordValid: true,
+            reconcilePasswordError: error,
+          });
+
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:syncPasswordAndUnlockWallet',
+              'global-password',
+            ),
+          ).rejects.toBe(error);
+        });
+      });
+    });
+
+    // Scenario F of the Seedless password-change test cases: the password
+    // change was interrupted at `KEY_SYNC_PENDING`. The Seedless vault and the
+    // Keyring are both on the new global password, so the previous password is
+    // indistinguishable from a mistyped one.
+    describe('when the password change was interrupted at KEY_SYNC_PENDING', () => {
+      it('rethrows the incorrect password error instead of reporting an outdated password', async () => {
+        const error = new Error('Incorrect password');
+
+        await withService(async ({ rootMessenger }) => {
+          registerRecoveryHandlers({
+            rootMessenger,
+            instruction: PasswordSyncInstruction.SyncKey,
+            isKeyringPasswordValid: false,
+            reconcilePasswordError: error,
+          });
+
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:syncPasswordAndUnlockWallet',
+              'previous-password',
+            ),
+          ).rejects.toBe(error);
+        });
+      });
+    });
   });
 
   describe('applyTransactionContainersExisting', () => {

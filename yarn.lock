@@ -7267,6 +7267,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/analytics-controller@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "@metamask/analytics-controller@npm:4.4.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^10.1.0"
+    "@metamask/config-registry-controller": "npm:^6.0.0"
+    "@metamask/geolocation-controller": "npm:^2.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/utils": "npm:^12.0.2"
+    lodash-es: "npm:^4.18.1"
+    uuid: "npm:^14.0.3"
+  checksum: 10/ac5901e15fe1c8105dc50b67f12e7d392b2edd7a00bc3211877889a219924e1f235c4e4dffbd562be59bb95812c1f4d60020b93b2d4b37e44916a00b1bab7597
+  languageName: node
+  linkType: hard
+
 "@metamask/announcement-controller@npm:^9.0.0":
   version: 9.0.0
   resolution: "@metamask/announcement-controller@npm:9.0.0"
@@ -9828,11 +9843,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/seedless-onboarding-controller@npm:^12.0.0, @metamask/seedless-onboarding-controller@npm:^12.1.0":
-  version: 12.1.0
-  resolution: "@metamask/seedless-onboarding-controller@npm:12.1.0"
+"@metamask/seedless-onboarding-controller@npm:@metamask-previews/seedless-onboarding-controller@12.1.0-preview-2f5f4e394":
+  version: 12.1.0-preview-2f5f4e394
+  resolution: "@metamask-previews/seedless-onboarding-controller@npm:12.1.0-preview-2f5f4e394"
   dependencies:
-    "@metamask/analytics-controller": "npm:^4.3.1"
+    "@metamask/analytics-controller": "npm:^4.4.0"
     "@metamask/auth-network-utils": "npm:^0.4.0"
     "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/browser-passworder": "npm:^6.0.0"
@@ -9844,7 +9859,7 @@ __metadata:
     "@noble/curves": "npm:^1.9.7"
     "@noble/hashes": "npm:^1.8.0"
     async-mutex: "npm:^0.5.0"
-  checksum: 10/ff01fd8fda8814d96da82a3c53916710f13d9254ee656fc207329d854f188653814411a1f7bb530d56a628d2782abb14d23084e0c63ad360caf1d3409a94934d
+  checksum: 10/8234555a9d3dddabe2f61598d1066a8aff76089364c3549ebc9cb9b541543fca349546b236520f52c56875818d882a8d5d1c74cc8df835b8c46be38d8236d5cb
   languageName: node
   linkType: hard
 
@@ -46525,7 +46540,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:^14.0.2":
+"uuid@npm:^14.0.2, uuid@npm:^14.0.3":
   version: 14.0.3
   resolution: "uuid@npm:14.0.3"
   bin:

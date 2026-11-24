@@ -12,8 +12,8 @@ import { Driver } from '../../webdriver/driver';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import { importWalletWithSocialLoginOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { navigateToSecurityAndPassword } from '../../page-objects/flows/settings.flow';
-import ChangePasswordPage from '../../page-objects/pages/settings/change-password-page';
-import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import ChangePasswordPage from '../../page-objects/pages/settings/security-and-password/change-password-page';
+import SecurityAndPasswordSettings from '../../page-objects/pages/settings/security-and-password/security-and-password-settings';
 import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import { lockAndWaitForLoginPage } from '../../page-objects/flows/login.flow';
 import { SeedlessGlobalPassword } from '../../helpers/seedless-onboarding/data';
@@ -49,12 +49,13 @@ describe('Seedless Onboarding (Social Login) password sync and recovery', functi
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.waitForNonEvmAccountsLoaded();
 
         await navigateToSecurityAndPassword(driver);
 
-        const privacySettings = new PrivacySettings(driver);
-        await privacySettings.openChangePassword();
+        const securityAndPasswordSettings = new SecurityAndPasswordSettings(
+          driver,
+        );
+        await securityAndPasswordSettings.openChangePassword();
 
         const changePasswordPage = new ChangePasswordPage(driver);
         await changePasswordPage.checkPageIsLoaded();
@@ -102,8 +103,6 @@ describe('Seedless Onboarding (Social Login) password sync and recovery', functi
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.waitForNonEvmAccountsLoaded();
-
         await lockAndWaitForLoginPage(driver);
         const loginPage = new LoginPage(driver);
 
@@ -111,7 +110,6 @@ describe('Seedless Onboarding (Social Login) password sync and recovery', functi
         // Sync the latest global password to the local wallet.
         await loginPage.loginToHomepage(NEW_PASSWORD);
         await homePage.checkPageIsLoaded();
-        await homePage.waitForNonEvmAccountsLoaded();
       },
     );
   });
@@ -162,15 +160,12 @@ describe('Seedless Onboarding (Social Login) password sync and recovery', functi
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.waitForNonEvmAccountsLoaded();
-
         // The first unlock should complete the pending password-change
         // lifecycle. A second unlock verifies the wallet now uses the new
         // password normally.
         await lockAndWaitForLoginPage(driver);
         await loginPage.loginToHomepage(NEW_PASSWORD);
         await homePage.checkPageIsLoaded();
-        await homePage.waitForNonEvmAccountsLoaded();
       },
     );
   });
@@ -226,14 +221,11 @@ describe('Seedless Onboarding (Social Login) password sync and recovery', functi
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.waitForNonEvmAccountsLoaded();
-
         // The first unlock should sync the current Keyring encryption key and
         // complete the pending password-change lifecycle.
         await lockAndWaitForLoginPage(driver);
         await loginPage.loginToHomepage(NEW_PASSWORD);
         await homePage.checkPageIsLoaded();
-        await homePage.waitForNonEvmAccountsLoaded();
       },
     );
   });
