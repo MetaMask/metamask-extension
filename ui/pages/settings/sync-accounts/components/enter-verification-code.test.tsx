@@ -120,6 +120,19 @@ describe('EnterVerificationCode', () => {
       await screen.findByTestId('qr-sync-otp-verifying'),
     ).toHaveTextContent(messages.mfaOtpVerifying.message);
     expect(getInput()).toBeDisabled();
+    expect(screen.getByTestId('qr-sync-otp-verifying')).toHaveAttribute(
+      'data-awaiting-sync-offer',
+      'false',
+    );
+  });
+
+  it('marks the verifying indicator once the wallet sync offer is awaited', () => {
+    renderComponent(null, jest.fn(), true);
+
+    expect(screen.getByTestId('qr-sync-otp-verifying')).toHaveAttribute(
+      'data-awaiting-sync-offer',
+      'true',
+    );
   });
 
   it('shows connecting guidance when the phone reply takes longer than the delay', () => {
@@ -222,7 +235,7 @@ describe('EnterVerificationCode', () => {
       'mt-auto',
     );
     expect(screen.getByTestId('qr-sync-otp-try-again')).toHaveTextContent(
-      messages.add_device_try_again.message,
+      messages.enter_verification_code_try_again.message,
     );
   });
 

@@ -188,6 +188,7 @@ const EnterVerificationCode = ({
                 : t('mfaOtpVerifying')
             }
             data-testid="qr-sync-otp-verifying"
+            data-awaiting-sync-offer={isAwaitingSyncOffer}
           >
             <Box
               flexDirection={BoxFlexDirection.Row}
@@ -235,7 +236,9 @@ const EnterVerificationCode = ({
           onClick={onRestart}
           data-testid="qr-sync-otp-try-again"
         >
-          {t('add_device_try_again')}
+          {isExpired
+            ? t('add_device_try_again')
+            : t('enter_verification_code_try_again')}
         </Button>
       ) : null}
     </Box>

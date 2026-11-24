@@ -36,7 +36,11 @@ class SyncAccountsSettingsPage {
 
   private readonly otpTryAgainButton = '[data-testid="qr-sync-otp-try-again"]';
 
-  private readonly otpVerifying = '[data-testid="qr-sync-otp-verifying"]';
+  // Only matches once the controller accepted the code and is waiting for the
+  // wallet's sync offer. The bare `qr-sync-otp-verifying` element also shows
+  // while `submitOtp` is still in flight, when an offer would be dropped.
+  private readonly otpVerifying =
+    '[data-testid="qr-sync-otp-verifying"][data-awaiting-sync-offer="true"]';
 
   private readonly page = '[data-testid="parent-selector-sync-accounts-page"]';
 
@@ -53,7 +57,7 @@ class SyncAccountsSettingsPage {
     `[data-testid="qr-sync-wallet-row-${walletId}"]`;
 
   private readonly sessionExpiredErrorMessage = {
-    text: 'This sync session expired. Start again to generate a new QR code.',
+    text: 'This session expired. Start with a new QR code.',
   };
 
   private readonly success = '[data-testid="qr-sync-success"]';
@@ -148,8 +152,8 @@ class SyncAccountsSettingsPage {
   }
 
   /**
-   * Waits for the verifying status shown on the verification code step after
-   * the code is submitted, while the wallet's sync offer is pending.
+   * Waits for the verifying status shown once the code was accepted and the
+   * wallet's sync offer is pending, so a sync offer can be delivered safely.
    */
   async waitForOtpVerifying(): Promise<void> {
     await this.driver.waitForSelector(this.otpVerifying);

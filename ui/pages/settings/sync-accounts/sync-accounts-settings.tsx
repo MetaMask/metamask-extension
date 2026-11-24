@@ -143,7 +143,7 @@ const SyncAccountsSettings = () => {
       case QR_SYNC_PHASES.AWAITING_SYNC_COMPLETION:
         return (
           <LoadingStep
-            title={`${t('add_device_syncing_title')}...`}
+            title={t('add_device_syncing_title')}
             message={t('add_device_syncing_desc')}
           />
         );
