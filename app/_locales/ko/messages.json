@@ -1323,12 +1323,6 @@
   "add_device_try_again": {
     "message": "다시 시도"
   },
-  "add_device_validating_desc": {
-    "message": "휴대전화와 안전한 암호화 연결을 설정하고 있습니다."
-  },
-  "add_device_validating_title": {
-    "message": "장치 페어링"
-  },
   "add_wallets": {
     "message": "동기화할 항목 선택"
   },
@@ -4000,10 +3994,6 @@
   "enter_verification_code_expired": {
     "message": "인증 코드 만료됨"
   },
-  "enter_verification_code_expires_in": {
-    "message": "$1초 후 만료",
-    "description": "$1 is the number of seconds remaining before the verification code expires"
-  },
   "enter_verification_code_max_attempts": {
     "message": "입력 가능 횟수를 초과했습니다. 새 QR 코드로 다시 시작하세요."
   },
@@ -4460,9 +4450,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "문제가 발생했습니다...."
-  },
-  "generateNewQrCode": {
-    "message": "새 QR 코드 생성"
   },
   "genericExplorerView": {
     "message": "$1에서 계정 보기"
@@ -9137,13 +9124,6 @@
     "message": "카메라 접근 권한 필요",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
-  "qrCodeExpired": {
-    "message": "QR 코드 만료됨"
-  },
-  "qrCodeExpiresIn": {
-    "message": "$1초 후 만료",
-    "description": "$1 is the number of seconds remaining before the QR code expires"
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "다른 거래를 위한 QR 코드입니다. 취소한 후 다시 시도해 주세요. 하드웨어 지갑으로 MetaMask에 표시된 QR 코드를 스캔했는지 먼저 확인해 주세요.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -11779,9 +11759,6 @@
   },
   "stakingWithdrawal": {
     "message": "스테이킹 출금"
-  },
-  "start_with_new_qr_code": {
-    "message": "새 QR 코드로 시작하기"
   },
   "stateCorruptionAreYouSure": {
     "message": "계속 진행하시겠습니까?"

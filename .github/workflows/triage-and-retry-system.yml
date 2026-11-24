@@ -66,7 +66,7 @@
 name: Triage and Retry System
 
 on:
-  workflow_run:
+  workflow_run: # zizmor: ignore[dangerous-triggers] Runs only default-branch scripts; uses upstream logs and version data to decide API reruns.
     workflows: ['Main']
     types: [completed]
 

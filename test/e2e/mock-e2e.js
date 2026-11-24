@@ -37,19 +37,6 @@ const {
 
 const DEFAULT_ETH_USD_PRICE = 3010;
 
-const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
-const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
-const CDN_STALE_PATH = 'test/e2e/mock-cdn/cdn-stale.txt';
-const PPOM_VERSION_PATH = 'test/e2e/mock-cdn/ppom-version.json';
-const PPOM_VERSION_HEADERS_PATH = 'test/e2e/mock-cdn/ppom-version-headers.json';
-
-const CDN_CONFIG_RES_HEADERS_PATH =
-  'test/e2e/mock-cdn/cdn-config-res-headers.json';
-const CDN_STALE_DIFF_RES_HEADERS_PATH =
-  'test/e2e/mock-cdn/cdn-stale-diff-res-headers.json';
-const CDN_STALE_RES_HEADERS_PATH =
-  'test/e2e/mock-cdn/cdn-stale-res-headers.json';
-
 const ACCOUNTS_API_TOKENS_PATH =
   'test/e2e/mock-response-data/accounts-api-tokens.json';
 const AGGREGATOR_METADATA_PATH =
@@ -1903,75 +1890,6 @@ async function setupMocking(
       },
     }));
 
-  const PPOM_VERSION = fs.readFileSync(PPOM_VERSION_PATH);
-  const PPOM_VERSION_HEADERS = fs.readFileSync(PPOM_VERSION_HEADERS_PATH);
-  const CDN_CONFIG = fs.readFileSync(CDN_CONFIG_PATH);
-  const CDN_STALE = fs.readFileSync(CDN_STALE_PATH);
-  const CDN_STALE_DIFF = fs.readFileSync(CDN_STALE_DIFF_PATH);
-  const CDN_CONFIG_RES_HEADERS = fs.readFileSync(CDN_CONFIG_RES_HEADERS_PATH);
-  const CDN_STALE_RES_HEADERS = fs.readFileSync(CDN_STALE_RES_HEADERS_PATH);
-  const CDN_STALE_DIFF_RES_HEADERS = fs.readFileSync(
-    CDN_STALE_DIFF_RES_HEADERS_PATH,
-  );
-
-  await server
-    .forHead(
-      'https://static.cx.metamask.io/api/v1/confirmations/ppom/ppom_version.json',
-    )
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-      };
-    });
-
-  await server
-    .forGet(
-      'https://static.cx.metamask.io/api/v1/confirmations/ppom/ppom_version.json',
-    )
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: JSON.parse(PPOM_VERSION),
-        headers: JSON.parse(PPOM_VERSION_HEADERS),
-      };
-    });
-
-  await server
-    .forGet(
-      /^https:\/\/static.cx.metamask.io\/api\/v1\/confirmations\/ppom\/config\/0x1\/(.*)/u,
-    )
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        rawBody: CDN_CONFIG,
-        headers: JSON.parse(CDN_CONFIG_RES_HEADERS),
-      };
-    });
-
-  await server
-    .forGet(
-      /^https:\/\/static.cx.metamask.io\/api\/v1\/confirmations\/ppom\/stale_diff\/0x1\/(.*)/u,
-    )
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        rawBody: CDN_STALE_DIFF,
-        headers: JSON.parse(CDN_STALE_DIFF_RES_HEADERS),
-      };
-    });
-
-  await server
-    .forGet(
-      /^https:\/\/static.cx.metamask.io\/api\/v1\/confirmations\/ppom\/stale\/0x1\/(.*)/u,
-    )
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        rawBody: CDN_STALE,
-        headers: JSON.parse(CDN_STALE_RES_HEADERS),
-      };
-    });
-
   await mockEmptyStalelistAndHotlist(server);
 
   await server
@@ -2186,19 +2104,31 @@ async function setupMocking(
       };
     });
 
-  // Veda performance API: vault APY, fetched by MoneyAccountBalanceService
-  // whenever a Money Account surface renders. A minimal valid response stops
-  // TanStack Query from retrying against the catch-all.
+  // MoneyAccountApiDataService.fetchVaults (useMoneyVaultApy): a valid catalog
+  // stops TanStack Query retrying against the catch-all.
   await server
-    .forGet(/^https:\/\/api\.sevenseas\.capital\/performance\/[^/]+\/[^/]+$/u)
+    .forGet('https://money.api.cx.metamask.io/v1/vaults')
     .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
-        Response: {
-          apy: 0.045,
-          timestamp: '2026-01-01T00:00:00Z',
-        },
+        vaults: [
+          {
+            chain_id: 143,
+            vault_address: '0x1C8a336051D2024E318A229d01F9F6CF96efD316',
+            vault_key: 'standard',
+            name: 'Money Account mUSD Vault',
+            asset_symbol: 'mUSD',
+            asset_decimals: 6,
+            asset_contract_address:
+              '0xaca92e438df0b2401ff60da7e4337b687a2435da',
+            current_apy: '0.045',
+            as_of_block: 1,
+            as_of_timestamp: '2026-01-01T00:00:00Z',
+            data_freshness: 'live',
+            indexer_lag_seconds: 0,
+          },
+        ],
       },
     }));
 
@@ -2314,10 +2244,15 @@ async function setupMocking(
     });
 
   // Nft API: tokens
+  // Matches any address, not just the default fixture account.
+  // Has fallback priority like the other broad defaults so
+  // specs that mock a specific address take precedence.
   await server
     .forGet(
-      `https://nft.api.cx.metamask.io/users/${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}/tokens`,
+      /^https:\/\/nft\.api\.cx\.metamask\.io\/users\/0x[0-9a-fA-F]{40}\/tokens/u,
     )
+    .asPriority(RulePriority.FALLBACK)
+    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,

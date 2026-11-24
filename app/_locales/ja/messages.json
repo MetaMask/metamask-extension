@@ -1323,12 +1323,6 @@
   "add_device_try_again": {
     "message": "もう一度お試しください"
   },
-  "add_device_validating_desc": {
-    "message": "お使いの携帯電話との暗号化された安全な接続を確立します。"
-  },
-  "add_device_validating_title": {
-    "message": "デバイスのペアリング"
-  },
   "add_wallets": {
     "message": "同期する項目を選択"
   },
@@ -4000,10 +3994,6 @@
   "enter_verification_code_expired": {
     "message": "認証コードの有効期限が切れました"
   },
-  "enter_verification_code_expires_in": {
-    "message": "期限切れまであと$1秒",
-    "description": "$1 is the number of seconds remaining before the verification code expires"
-  },
   "enter_verification_code_max_attempts": {
     "message": "間違った試行が多すぎます。新しいQRコードを使ってやり直してください。"
   },
@@ -4460,9 +4450,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "問題が発生しました...."
-  },
-  "generateNewQrCode": {
-    "message": "新しいQRコードを生成"
   },
   "genericExplorerView": {
     "message": "$1でアカウントを表示"
@@ -9133,13 +9120,6 @@
     "message": "カメラへのアクセスが必要です",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
-  "qrCodeExpired": {
-    "message": "QRコードが期限切れです"
-  },
-  "qrCodeExpiresIn": {
-    "message": "期限切れまであと$1秒",
-    "description": "$1 is the number of seconds remaining before the QR code expires"
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "このQRコードは別の取引用です。一度キャンセルし、まずMetaMaskに表示されているQRコードをハードウェアウォレットでスキャンしてからもう一度お試しください。",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -11775,9 +11755,6 @@
   },
   "stakingWithdrawal": {
     "message": "ステーキングの引き出し"
-  },
-  "start_with_new_qr_code": {
-    "message": "新しいQRコードで始める"
   },
   "stateCorruptionAreYouSure": {
     "message": "続行してよろしいですか？"

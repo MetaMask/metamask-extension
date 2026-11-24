@@ -27,6 +27,10 @@ export const selectQrSyncQrPayload = createSelector(
   (qrSyncState) => qrSyncState.qrSyncQrPayload,
 );
 
+export function selectQrSyncExpiresAt(state: AppState): number | null {
+  return state.metamask.qrSyncExpiresAt ?? null;
+}
+
 export const selectQrSyncError = createSelector(
   [selectQrSyncState],
   (qrSyncState) => qrSyncState.qrSyncError,

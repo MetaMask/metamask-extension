@@ -1323,12 +1323,6 @@
   "add_device_try_again": {
     "message": "Προσπαθήστε ξανά"
   },
-  "add_device_validating_desc": {
-    "message": "Δημιουργία ασφαλούς, κρυπτογραφημένης σύνδεσης με το τηλέφωνό σας."
-  },
-  "add_device_validating_title": {
-    "message": "Σύζευξη συσκευών"
-  },
   "add_wallets": {
     "message": "Επιλέξτε τι θέλετε να συγχρονίσετε"
   },
@@ -4000,10 +3994,6 @@
   "enter_verification_code_expired": {
     "message": "Ο κωδικός επαλήθευσης έληξε"
   },
-  "enter_verification_code_expires_in": {
-    "message": "Λήγει σε $1δ",
-    "description": "$1 is the number of seconds remaining before the verification code expires"
-  },
   "enter_verification_code_max_attempts": {
     "message": "Πάρα πολλές λανθασμένες προσπάθειες. Ξεκινήστε με νέο κωδικό QR."
   },
@@ -4456,9 +4446,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Κάτι πήγε στραβά...."
-  },
-  "generateNewQrCode": {
-    "message": "Δημιουργία νέου κωδικού QR"
   },
   "genericExplorerView": {
     "message": "Προβολή λογαριασμού σε $1"
@@ -9129,13 +9116,6 @@
     "message": "Απαιτείται πρόσβαση στην κάμερα",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
-  "qrCodeExpired": {
-    "message": "Ο κωδικός QR έληξε"
-  },
-  "qrCodeExpiresIn": {
-    "message": "Λήγει σε $1δ",
-    "description": "$1 is the number of seconds remaining before the QR code expires"
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Αυτός ο κωδικός QR αφορά διαφορετική συναλλαγή. Ακυρώστε και προσπαθήστε ξανά, διασφαλίζοντας ότι πρώτα θα σαρώσετε τον κωδικό QR στο MetaMask με το πορτοφόλι υλικού σας.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -11771,9 +11751,6 @@
   },
   "stakingWithdrawal": {
     "message": "Ανάληψη από δέσμευση κρυπτονομισμάτων"
-  },
-  "start_with_new_qr_code": {
-    "message": "Ξεκινήστε με νέο κωδικό QR"
   },
   "stateCorruptionAreYouSure": {
     "message": "Είστε σίγουροι ότι θέλετε να συνεχίσετε;"

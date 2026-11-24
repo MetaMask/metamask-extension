@@ -199,9 +199,6 @@
       "onboardingJourneyEnded": true,
       "seedPhraseBackedUp": null
     },
-    "PPOMController": {
-      "storageMetadata": "object"
-    },
     "PasskeyController": {
       "passkeyRecord": null
     },
@@ -365,6 +362,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 235
+    "version": 237
   }
 }

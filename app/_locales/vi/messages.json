@@ -1323,12 +1323,6 @@
   "add_device_try_again": {
     "message": "Thử lại"
   },
-  "add_device_validating_desc": {
-    "message": "Đang thiết lập kết nối an toàn, được mã hóa với điện thoại của bạn."
-  },
-  "add_device_validating_title": {
-    "message": "Đang ghép nối thiết bị"
-  },
   "add_wallets": {
     "message": "Chọn những gì cần đồng bộ"
   },
@@ -4000,10 +3994,6 @@
   "enter_verification_code_expired": {
     "message": "Mã xác minh đã hết hạn"
   },
-  "enter_verification_code_expires_in": {
-    "message": "Hết hạn sau $1 giây",
-    "description": "$1 is the number of seconds remaining before the verification code expires"
-  },
   "enter_verification_code_max_attempts": {
     "message": "Đã nhập sai quá nhiều lần. Hãy bắt đầu với mã QR mới."
   },
@@ -4460,9 +4450,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Đã xảy ra sự cố..."
-  },
-  "generateNewQrCode": {
-    "message": "Tạo mã QR mới"
   },
   "genericExplorerView": {
     "message": "Xem tài khoản trên $1"
@@ -9143,13 +9130,6 @@
     "message": "Cần quyền truy cập camera",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
-  "qrCodeExpired": {
-    "message": "Mã QR đã hết hạn"
-  },
-  "qrCodeExpiresIn": {
-    "message": "Hết hạn sau $1 giây",
-    "description": "$1 is the number of seconds remaining before the QR code expires"
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Mã QR này dành cho một giao dịch khác. Vui lòng hủy và thử lại, đảm bảo quét mã QR được hiển thị trong MetaMask bằng ví cứng của bạn trước.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -11785,9 +11765,6 @@
   },
   "stakingWithdrawal": {
     "message": "Rút tài sản ký gửi"
-  },
-  "start_with_new_qr_code": {
-    "message": "Bắt đầu với một mã QR mới"
   },
   "stateCorruptionAreYouSure": {
     "message": "Bạn có chắc chắn muốn tiếp tục không?"

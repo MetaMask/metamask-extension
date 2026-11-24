@@ -1323,12 +1323,6 @@
   "add_device_try_again": {
     "message": "Tekrar deneyin"
   },
-  "add_device_validating_desc": {
-    "message": "Telefonunuzla güvenli, şifrelenmiş bağlantı kuruluyor."
-  },
-  "add_device_validating_title": {
-    "message": "Cihazlar eşleştiriliyor"
-  },
   "add_wallets": {
     "message": "Nelerin senkronize edileceğini seçin"
   },
@@ -4000,10 +3994,6 @@
   "enter_verification_code_expired": {
     "message": "Doğrulama kodunun süresi doldu"
   },
-  "enter_verification_code_expires_in": {
-    "message": "Süresinin dolmasına kalan: $1sn",
-    "description": "$1 is the number of seconds remaining before the verification code expires"
-  },
   "enter_verification_code_max_attempts": {
     "message": "Çok sayıda yanlış deneme yapıldı. Yeni bir QR kodu ile başlayın."
   },
@@ -4460,9 +4450,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Bir şeyler ters gitti...."
-  },
-  "generateNewQrCode": {
-    "message": "Yeni bir QR kodu oluştur"
   },
   "genericExplorerView": {
     "message": "Hesabı $1 üzerinde görüntüleyin"
@@ -9143,13 +9130,6 @@
     "message": "Kamera erişimine ihtiyaç var",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
-  "qrCodeExpired": {
-    "message": "QR kodunun süresi doldu"
-  },
-  "qrCodeExpiresIn": {
-    "message": "Süresinin dolmasına kalan: $1sn",
-    "description": "$1 is the number of seconds remaining before the QR code expires"
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Bu QR kodu farklı bir işlem içindir. İptal edip tekrar deneyin ve önce donanım cüzdanınızla MetaMask'te gösterilen QR kodunu taradığınızdan emin olun.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -11785,9 +11765,6 @@
   },
   "stakingWithdrawal": {
     "message": "Stake para yatırma işlemi"
-  },
-  "start_with_new_qr_code": {
-    "message": "Yeni bir QR kodu ile başlayın"
   },
   "stateCorruptionAreYouSure": {
     "message": "İlerlemek istediğinizden emin misiniz?"

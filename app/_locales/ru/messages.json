@@ -1323,12 +1323,6 @@
   "add_device_try_again": {
     "message": "Повторить попытку"
   },
-  "add_device_validating_desc": {
-    "message": "Установление безопасного зашифрованного соединения с вашим телефоном."
-  },
-  "add_device_validating_title": {
-    "message": "Сопряжение устройств"
-  },
   "add_wallets": {
     "message": "Выберите, что синхронизировать"
   },
@@ -4000,10 +3994,6 @@
   "enter_verification_code_expired": {
     "message": "Срок действия проверочного кода истек"
   },
-  "enter_verification_code_expires_in": {
-    "message": "Истекает через $1 с",
-    "description": "$1 is the number of seconds remaining before the verification code expires"
-  },
   "enter_verification_code_max_attempts": {
     "message": "Слишком много неверных попыток. Начните с новым QR-кодом."
   },
@@ -4456,9 +4446,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Что-то пошло не так...."
-  },
-  "generateNewQrCode": {
-    "message": "Сгенерировать новый QR-код"
   },
   "genericExplorerView": {
     "message": "Посмотреть счет на $1"
@@ -9129,13 +9116,6 @@
     "message": "Необходим доступ к камере",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
-  "qrCodeExpired": {
-    "message": "Срок действия QR-кода истек"
-  },
-  "qrCodeExpiresIn": {
-    "message": "Истекает через $1 с",
-    "description": "$1 is the number of seconds remaining before the QR code expires"
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Этот QR-код предназначен для другой транзакции. Отмените и повторите попытку, предварительно отсканировав QR-код, показанный в MetaMask, с помощью своего аппаратного кошелька.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -11771,9 +11751,6 @@
   },
   "stakingWithdrawal": {
     "message": "Вывод средств из стейкинга"
-  },
-  "start_with_new_qr_code": {
-    "message": "Начать с нового QR-кода"
   },
   "stateCorruptionAreYouSure": {
     "message": "Уверены, что хотите продолжить?"

@@ -1323,12 +1323,6 @@
   "add_device_try_again": {
     "message": "Coba lagi"
   },
-  "add_device_validating_desc": {
-    "message": "Membangun koneksi yang aman dan terenkripsi dengan ponsel Anda."
-  },
-  "add_device_validating_title": {
-    "message": "Memasangkan perangkat"
-  },
   "add_wallets": {
     "message": "Pilih yang ingin disinkronkan"
   },
@@ -4000,10 +3994,6 @@
   "enter_verification_code_expired": {
     "message": "Kode verifikasi telah kedaluwarsa"
   },
-  "enter_verification_code_expires_in": {
-    "message": "Berakhir dalam $1 dtk",
-    "description": "$1 is the number of seconds remaining before the verification code expires"
-  },
   "enter_verification_code_max_attempts": {
     "message": "Terlalu banyak percobaan yang salah. Mulailah dengan kode QR baru."
   },
@@ -4460,9 +4450,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Terjadi kesalahan...."
-  },
-  "generateNewQrCode": {
-    "message": "Buat kode QR baru"
   },
   "genericExplorerView": {
     "message": "Lihat akun di $1"
@@ -9137,13 +9124,6 @@
     "message": "Akses kamera diperlukan",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
-  "qrCodeExpired": {
-    "message": "Kode QR telah kedaluwarsa"
-  },
-  "qrCodeExpiresIn": {
-    "message": "Berakhir dalam $1 dtk",
-    "description": "$1 is the number of seconds remaining before the QR code expires"
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Kode QR ini untuk transaksi yang berbeda. Batalkan dan coba lagi, pastikan untuk memindai kode QR yang ditampilkan di MetaMask dengan dompet perangkat keras Anda terlebih dahulu.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -11779,9 +11759,6 @@
   },
   "stakingWithdrawal": {
     "message": "Penarikan stake"
-  },
-  "start_with_new_qr_code": {
-    "message": "Mulailah dengan kode QR baru"
   },
   "stateCorruptionAreYouSure": {
     "message": "Yakin ingin melanjutkan?"
