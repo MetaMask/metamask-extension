@@ -83,7 +83,7 @@ describe('QR Sync Phases', function () {
         qrSyncSimulate('mobileScanned');
         await syncAccountsPage.waitForOtpScreen();
         await syncAccountsPage.enterOtp(QR_SYNC_E2E_OTP);
-        await syncAccountsPage.waitForLoadingStep();
+        await syncAccountsPage.waitForOtpVerifying();
 
         // Do not accept the mobile sync offer. Wait out the sync-offer timeout
         // so the session-expired error is shown.

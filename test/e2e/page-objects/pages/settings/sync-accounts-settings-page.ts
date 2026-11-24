@@ -35,6 +35,8 @@ class SyncAccountsSettingsPage {
 
   private readonly otpTryAgainButton = '[data-testid="qr-sync-otp-try-again"]';
 
+  private readonly otpVerifying = '[data-testid="qr-sync-otp-verifying"]';
+
   private readonly page = '[data-testid="parent-selector-sync-accounts-page"]';
 
   private readonly passwordContinue =
@@ -148,6 +150,14 @@ class SyncAccountsSettingsPage {
 
   async waitForOtpScreen(): Promise<void> {
     await this.driver.waitForSelector(this.otpInput);
+  }
+
+  /**
+   * Waits for the verifying status shown on the verification code step after
+   * the code is submitted, while the wallet's sync offer is pending.
+   */
+  async waitForOtpVerifying(): Promise<void> {
+    await this.driver.waitForSelector(this.otpVerifying);
   }
 
   async waitForPasswordScreen(): Promise<void> {
