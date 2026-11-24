@@ -54,6 +54,14 @@ class AccountListPage {
   }) =>
     `${anchor}/following-sibling::*[preceding-sibling::*[.//*[@data-testid='multichain-account-tree-wallet-header']][1]//*[@data-testid='multichain-account-tree-wallet-header' and contains(., ${quoteXPathText(wallet)})]]//*[contains(@class, 'multichain-account-cell') and .//*[contains(@class, 'multichain-account-cell__account-name') and contains(text(), ${quoteXPathText(account)})]]`;
 
+  /**
+   * The selector of an account cell's name, e.g. for `Account 2`.
+   *
+   * @param accountLabel - The account's name.
+   */
+  readonly accountCellName = (accountLabel: string): string =>
+    `[data-testid="multichain-account-cell-name-${accountLabel}"]`;
+
   private readonly accountDeleteConfirmCancelButton =
     '[data-testid="account-delete-confirm-modal-cancel-button"]';
 
@@ -111,7 +119,7 @@ class AccountListPage {
     tag: 'p',
   };
 
-  private readonly addMultichainAccountButton =
+  readonly addMultichainAccountButton =
     '[data-testid="add-multichain-account-button"]';
 
   private readonly addMultichainAccountButtonByIndex = (
