@@ -219,12 +219,13 @@ export const AdvancedChartSection = ({
       : '--color-success-default';
 
   // The live/spot price the candle header falls back to when the OHLCV API
-  // fails, so the header is never blank.
+  // fails or returns empty data, so the header is never blank.
   const candleFallbackPrice = realtimePrice ?? currentPrice;
-  // On an /ohlcv-chart failure there is no candle price, so fall back to the
-  // live/spot price rather than render a blank header.
+  // When loading is done and there is no OHLCV price (error OR empty data),
+  // fall back to the live/spot price rather than render a blank header.
+  // While loading, leave `candlePrice` undefined so the skeleton shows.
   const candlePrice =
-    ohlcvPrice ?? (ohlcvError ? candleFallbackPrice : undefined);
+    ohlcvPrice ?? (isOhlcvLoading ? undefined : candleFallbackPrice);
 
   // The 24H change is owned by a dedicated hook so its source can change (e.g.
   // a future `percentChange1D` WebSocket stream) without touching this
