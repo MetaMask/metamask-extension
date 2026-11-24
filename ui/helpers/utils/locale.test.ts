@@ -1,4 +1,4 @@
-import { resolveFormattingLocale, getCurrencyDisplay } from './locale';
+import { resolveFormattingLocale } from './locale';
 
 describe('locale helpers', () => {
   describe('resolveFormattingLocale', () => {
@@ -68,42 +68,6 @@ describe('locale helpers', () => {
           deviceLocales,
         });
         expect(result).toBe(expected);
-      },
-    );
-  });
-
-  describe('getCurrencyDisplay', () => {
-    // @ts-expect-error This is missing from the Mocha type definitions
-    it.each([
-      {
-        name: 'CA gives symbol',
-        locale: 'en-CA',
-        expected: 'symbol',
-      },
-      {
-        name: 'AR gives symbol',
-        locale: 'es-AR',
-        expected: 'symbol',
-      },
-      {
-        name: 'US gives narrowSymbol',
-        locale: 'en-US',
-        expected: 'narrowSymbol',
-      },
-      {
-        name: 'DE gives narrowSymbol',
-        locale: 'en-DE',
-        expected: 'narrowSymbol',
-      },
-      {
-        name: 'invalid tag gives narrowSymbol',
-        locale: 'invalid!!!',
-        expected: 'narrowSymbol',
-      },
-    ])(
-      '$name',
-      ({ locale, expected }: { locale: string; expected: string }) => {
-        expect(getCurrencyDisplay(locale)).toBe(expected);
       },
     );
   });

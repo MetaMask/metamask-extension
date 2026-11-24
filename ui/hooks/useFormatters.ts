@@ -2,10 +2,7 @@ import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { createFormatters } from '@metamask/client-utils';
 import { getIntlLocale } from '../ducks/locale/locale';
-import {
-  resolveFormattingLocale,
-  getCurrencyDisplay,
-} from '../helpers/utils/locale';
+import { resolveFormattingLocale } from '../helpers/utils/locale';
 import { useEventListener } from './useEventListener';
 
 const dateTimeFormatCache: Record<string, Intl.DateTimeFormat> = {};
@@ -48,8 +45,7 @@ export function useFormatters() {
       appLanguage: appLocale,
       deviceLocales,
     });
-    const currencyDisplay = getCurrencyDisplay(locale);
-    const base = createFormatters({ locale, currencyDisplay });
+    const base = createFormatters({ locale });
 
     return {
       ...base,

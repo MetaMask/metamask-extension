@@ -35,33 +35,6 @@ describe('useFormatters', () => {
     ).toBe('15 Mar 2024');
   });
 
-  it('marks USD when the browser region uses its own $ currency', () => {
-    mockUseSelector.mockReturnValue('en');
-    languagesSpy.mockReturnValue(['en-CA']);
-
-    const { result } = renderHook(() => useFormatters());
-
-    expect(result.current.formatCurrency(100, 'USD')).toBe('US$100.00');
-  });
-
-  it('does not mark USD outside $ regions', () => {
-    mockUseSelector.mockReturnValue('en');
-    languagesSpy.mockReturnValue(['en-GB']);
-
-    const { result } = renderHook(() => useFormatters());
-
-    expect(result.current.formatCurrency(100, 'USD')).toBe('$100.00');
-  });
-
-  it('marks USD in area regions with unknown currencies', () => {
-    mockUseSelector.mockReturnValue('es-419');
-    languagesSpy.mockReturnValue(['es-419']);
-
-    const { result } = renderHook(() => useFormatters());
-
-    expect(result.current.formatCurrency(35.92, 'USD')).toBe('USD\u00a035.92');
-  });
-
   it('updates formatters when browser languages change', () => {
     mockUseSelector.mockReturnValue('en');
     languagesSpy.mockReturnValue(['en-US']);

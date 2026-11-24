@@ -1,6 +1,3 @@
-// Regions whose own currency is written as $, so USD needs marking (US$).
-const dollarRegions = new Set(['CA', 'AU', 'NZ', 'SG', 'HK', 'MX', 'AR']);
-
 // Combines the app language with the browser's region for number/date formatting.
 export function resolveFormattingLocale({
   appLanguage,
@@ -61,18 +58,5 @@ export function resolveFormattingLocale({
     return new Intl.Locale(combined).toString();
   } catch {
     return 'en';
-  }
-}
-
-export function getCurrencyDisplay(locale: string) {
-  try {
-    const { region } = new Intl.Locale(locale);
-    // A 3-digit region is an area (e.g. 419 Latin America), not a country, so
-    // its local currency is unknown; keep USD marked.
-    return region && (dollarRegions.has(region) || /^\d{3}$/u.test(region))
-      ? 'symbol'
-      : 'narrowSymbol';
-  } catch {
-    return 'narrowSymbol';
   }
 }
