@@ -1,6 +1,8 @@
 import { Driver } from '../../webdriver/driver';
 import TimerHelper from './timer-helper';
 import { performanceTracker } from './performance-tracker';
+import { readLongTasksAtTrigger } from './in-page-step-timer';
+import type { LongTasksAtTrigger } from './in-page-step-timer';
 import type { LongTaskStepResult, TimerResult } from './types';
 
 /**
@@ -18,31 +20,73 @@ export type MeasureStepWithLongTasksOptions = {
    * the bare step id to the step's in-page timer.
    */
   legacyTimerId?: boolean;
+  /**
+   * The step's probe was asked to open the long-task window at the trigger
+   * (`resetLongTasksAtStart`); the step reads whether it did, and logs when not.
+   */
+  windowOpensAtTrigger?: boolean;
 };
 
 /**
- * Measure a benchmark step while collecting Long Task metrics delta.
- *
- * Resets long task metrics before the action, times the action with
- * TimerHelper, then collects the delta. The TimerHelper is also
- * registered with performanceTracker for report generation.
- *
- * @param driver - Selenium driver instance
- * @param stepId - Unique identifier for this step (used as timer ID)
- * @param action - Async function to measure
- * @returns Step result with duration and long task metrics
+ * Open a step's long-task window where its probe did not already, and log
+ * which of the two happened.
+ */
+async function openLongTaskWindow(
+  driver: Driver,
+  stepId: string,
+  timerId: string,
+): Promise<void> {
+  let atTrigger: LongTasksAtTrigger | null = null;
+  let why = 'the app has no reset hook, or the probe did not see the trigger';
+  try {
+    atTrigger = (await driver.executeScript(
+      readLongTasksAtTrigger,
+      stepId,
+    )) as LongTasksAtTrigger;
+  } catch (error) {
+    why = `the page could not be read: ${(error as Error).message}`;
+  }
+
+  if (atTrigger?.reset) {
+    const { metrics } = atTrigger;
+    console.log(
+      `[benchmark] ${timerId}: ${
+        metrics
+          ? `${metrics.count} long task(s), ${metrics.totalDuration} ms`
+          : 'long-task hook absent'
+      }, between the trigger and the step timer's start`,
+    );
+    return;
+  }
+
+  console.log(
+    `[benchmark] ${timerId}: the long-task window did not open at the trigger (${why}); opening it after the click, so this run's long tasks cover a different span`,
+  );
+  await driver.resetLongTaskMetrics();
+}
+
+/**
+ * Measure a benchmark step with its Long Task metrics delta: reset before the
+ * action unless the probe opened the window at the trigger, collected after it.
  */
 export async function measureStepWithLongTasks(
   driver: Driver,
   stepId: string,
   action: () => Promise<void>,
-  { legacyTimerId = false }: MeasureStepWithLongTasksOptions = {},
+  {
+    legacyTimerId = false,
+    windowOpensAtTrigger = false,
+  }: MeasureStepWithLongTasksOptions = {},
 ): Promise<LongTaskStepResult> {
   const timer = new TimerHelper(
     legacyTimerId ? legacyStepTimerId(stepId) : stepId,
   );
 
-  await driver.resetLongTaskMetrics();
+  if (windowOpensAtTrigger) {
+    await openLongTaskWindow(driver, stepId, timer.id);
+  } else {
+    await driver.resetLongTaskMetrics();
+  }
 
   await timer.measure(action);
   performanceTracker.addTimer(timer);
