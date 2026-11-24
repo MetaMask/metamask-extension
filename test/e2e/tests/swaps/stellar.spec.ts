@@ -35,8 +35,8 @@ describe('Swap on Stellar', function () {
         },
         title: this.test?.fullTitle(),
         testSpecificMock: (mockServer) => mockStellarSwapApis(mockServer),
-        // reviewQuote clicks Swap; snap confirmation / submit may still
-        // surface console noise after a successful quote (mirrors Tron).
+        // reviewQuote clicks Swap → snap signAndSendTransaction; background
+        // track/getTransaction may still surface console noise (mirrors Tron).
         ignoredConsoleErrors: ['SnapError', '-32602', '-32603'],
       },
       async ({ driver }: { driver: Driver }) => {
@@ -130,7 +130,7 @@ describe('Swap on Stellar', function () {
           network: 'Stellar',
         });
 
-        await swapPage.checkNoQuotesAvailable();
+        await swapPage.checkNoTradeRouteMessageIsDisplayed();
       },
     );
   });

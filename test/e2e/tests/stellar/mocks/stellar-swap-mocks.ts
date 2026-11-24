@@ -56,8 +56,11 @@ export function buildStellarE2eBridgeConfig(): Record<string, unknown> {
 }
 
 /**
- * Swap-only feature-flag override. Registered ahead of `mockStellarApis` so
- * mockttp's first `.always()` rule wins (SSE off + Stellar swap button on).
+ * Swap-only feature-flag override. Must use `.always()` and be registered
+ * ahead of `mockStellarApis` / mock-e2e FALLBACK: production `bridgeConfig`
+ * enables SSE (`getQuoteStream`), which these tests do not mock. Without
+ * `.always()`, a later one-shot `mockStellarFeatureFlags` (or FALLBACK)
+ * re-enables SSE and the UI shows "no trade route".
  *
  * @param mockServer - Mockttp server.
  */
@@ -71,6 +74,7 @@ export async function mockStellarSwapFeatureFlags(
       distribution: 'main',
       environment: 'dev',
     })
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: [
@@ -86,6 +90,18 @@ const BRIDGE_GET_QUOTE_RE =
 
 const HORIZON_FEE_STATS_RE =
   /(?:^https:\/\/(?:horizon\.stellar\.org|stellar-(?:mainnet|testnet)\.infura\.io\/v3\/[^/?#]+\/horizon)|(?:^|\/)horizon)\/fee_stats\/?(?:[?#].*)?$/iu;
+
+/**
+ * Stellar Soroban RPC (Infura) used by stellar-wallet-snap `sendTransaction`.
+ * Without this, mock-e2e FALLBACK returns an empty 200 and the snap wraps the
+ * failure as `Failed to send transaction: … reference: unknown`.
+ */
+const STELLAR_RPC_URL_RE =
+  /^https:\/\/stellar-(?:mainnet|testnet)\.infura\.io\/v3\/[^/?#]+\/?$/iu;
+
+/** Fixed hash returned by the swap submit mock (64 hex chars). */
+export const MOCK_STELLAR_SWAP_TX_HASH =
+  'a1b2c3d4e5f60718293a4b5c6d7e8f90123456789abcdef0123456789abcdef0';
 
 export type StellarSwapSymbol = 'XLM' | 'USDC' | 'EURC';
 
@@ -347,6 +363,40 @@ export async function mockHorizonFeeStatsForSwap(
 }
 
 /**
+ * Mocks Soroban RPC `sendTransaction` so Swap submit can complete (Tron
+ * parity: broadcast mock). Returns PENDING + a fixed hash; snap does not poll
+ * on the swap path (`pollTransaction: false`).
+ *
+ * @param mockServer - Mockttp server.
+ */
+export async function mockStellarRpcSendTransaction(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forPost(STELLAR_RPC_URL_RE)
+    .withJsonBodyIncluding({ method: 'sendTransaction' })
+    .always()
+    .thenCallback(async (request) => {
+      const body = (await request.body.getJson()) as
+        | { id?: string | number }
+        | undefined;
+      return {
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: body?.id ?? 1,
+          result: {
+            status: 'PENDING',
+            hash: MOCK_STELLAR_SWAP_TX_HASH,
+            latestLedger: 50_000_000,
+            latestLedgerCloseTime: '1700000000',
+          },
+        },
+      };
+    });
+}
+
+/**
  * Mocks a successful Stellar same-chain quote for the given pair.
  *
  * @param mockServer - Mockttp server.
@@ -356,10 +406,13 @@ export async function mockBridgeGetStellarQuoteFor(
   mockServer: Mockttp,
   fixture: StellarQuoteFixture,
 ): Promise<MockedEndpoint> {
-  return mockServer.forGet(BRIDGE_GET_QUOTE_RE).thenCallback(() => ({
-    statusCode: 200,
-    json: [buildStellarQuoteResponse(fixture)],
-  }));
+  return mockServer
+    .forGet(BRIDGE_GET_QUOTE_RE)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [buildStellarQuoteResponse(fixture)],
+    }));
 }
 
 /**
@@ -388,10 +441,13 @@ export async function mockBridgeGetStellarQuote(
 export async function mockBridgeGetStellarQuoteEmpty(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
-  return mockServer.forGet(BRIDGE_GET_QUOTE_RE).thenCallback(() => ({
-    statusCode: 200,
-    json: [],
-  }));
+  return mockServer
+    .forGet(BRIDGE_GET_QUOTE_RE)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [],
+    }));
 }
 
 /**
@@ -407,6 +463,7 @@ export async function mockStellarSwapApis(
     ...(await mockBridgeGetStellarTokens(mockServer)),
     await mockBridgeGetStellarQuote(mockServer),
     await mockHorizonFeeStatsForSwap(mockServer),
+    await mockStellarRpcSendTransaction(mockServer),
   ];
 }
 
