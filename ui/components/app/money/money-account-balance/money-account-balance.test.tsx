@@ -133,7 +133,7 @@ const arrange = ({
     lastKnownTotalFiatFormatted,
     isBalanceLoading,
     apyPercentFormatted,
-    vaultApyQuery: { isLoading: isVaultApyLoading },
+    isApyLoading: isVaultApyLoading,
   } as UseMoneyAccountBalanceResult);
 };
 

@@ -18,6 +18,7 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import { IDENTITY_TEAM_SEED_PHRASE_2 } from '../constants';
 import { skipOnFirefox } from '../helpers';
+import { openAccountMenu } from '../../../page-objects/flows/account-menu.flow';
 import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Multiple SRPs', function () {
@@ -64,9 +65,7 @@ describe('Account syncing - Multiple SRPs', function () {
         const tokensTab = new TokensTab(driver);
         await tokensTab.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
-        const header = new HeaderNavbar(driver);
-        await header.checkPageIsLoaded();
-        await header.openAccountMenu();
+        await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
@@ -116,7 +115,7 @@ describe('Account syncing - Multiple SRPs', function () {
         await homePage.dismissSrpAddedToast();
 
         // Add a fourth account with custom name to the second SRP
-        await header.openAccountMenu();
+        await openAccountMenu(driver);
         await accountListPage.checkPageIsLoaded();
 
         // Add account with custom name to specific SRP
@@ -166,7 +165,7 @@ describe('Account syncing - Multiple SRPs', function () {
         // await driver.delay(2000); // Wait for potential sync to complete
 
         // Import the second SRP to get access to all accounts
-        await header.openAccountMenu();
+        await openAccountMenu(driver);
         const accountListPage = new AccountListPage(driver);
         await importWalletWithSrp(driver, IDENTITY_TEAM_SEED_PHRASE_2);
 
@@ -174,7 +173,7 @@ describe('Account syncing - Multiple SRPs', function () {
         await driver.delay(10000);
 
         // Verify all accounts from both SRPs are visible
-        await header.openAccountMenu();
+        await openAccountMenu(driver);
         const visibleAccounts = [
           DEFAULT_ACCOUNT_NAME,
           SECOND_ACCOUNT_NAME,

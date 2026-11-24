@@ -1,9 +1,5 @@
 import { noop } from 'lodash';
 import {
-  getPPOMControllerMessenger,
-  getPPOMControllerInitMessenger,
-} from './ppom-controller-messenger';
-import {
   getCronjobControllerMessenger,
   getExecutionServiceMessenger,
   getMultichainRoutingServiceInitMessenger,
@@ -90,10 +86,6 @@ import {
   getNameControllerInitMessenger,
   getNameControllerMessenger,
 } from './name-controller-messenger';
-import {
-  getAccountTrackerControllerInitMessenger,
-  getAccountTrackerControllerMessenger,
-} from './account-tracker-controller-messenger';
 import { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
 import { getQrSyncControllerMessenger } from './qr-sync';
 import {
@@ -139,10 +131,6 @@ import {
   getSignatureControllerInitMessenger,
   getSignatureControllerMessenger,
 } from './signature-controller-messenger';
-import {
-  getUserOperationControllerInitMessenger,
-  getUserOperationControllerMessenger,
-} from './user-operation-controller-messenger';
 import { getRewardsDataServiceMessenger } from './reward-data-service-messenger';
 import { getAuthenticatedUserStorageServiceMessenger } from './authenticated-user-storage-service-messenger';
 import {
@@ -180,11 +168,6 @@ import {
 } from './money-account-lifecycle-controller-messenger';
 
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
-export type { AccountTrackerControllerInitMessenger } from './account-tracker-controller-messenger';
-export {
-  getAccountTrackerControllerMessenger,
-  getAccountTrackerControllerInitMessenger,
-} from './account-tracker-controller-messenger';
 export { getAlertControllerMessenger } from './alert-controller-messenger';
 export { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
 export { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
@@ -279,11 +262,6 @@ export {
   getTransactionPayControllerMessenger,
   getTransactionPayControllerInitMessenger,
 } from './transaction-pay-controller-messenger';
-export type { UserOperationControllerInitMessenger } from './user-operation-controller-messenger';
-export {
-  getUserOperationControllerMessenger,
-  getUserOperationControllerInitMessenger,
-} from './user-operation-controller-messenger';
 export type { ProfileMetricsControllerInitMessenger } from './profile-metrics-controller-messenger';
 export {
   getProfileMetricsControllerMessenger,
@@ -296,10 +274,6 @@ export const MESSENGER_FACTORIES = {
   AccountOrderController: {
     getMessenger: getAccountOrderControllerMessenger,
     getInitMessenger: noop,
-  },
-  AccountTrackerController: {
-    getMessenger: getAccountTrackerControllerMessenger,
-    getInitMessenger: getAccountTrackerControllerInitMessenger,
   },
   AlertController: {
     getMessenger: getAlertControllerMessenger,
@@ -549,10 +523,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getRewardsMoneyControllerMessenger,
     getInitMessenger: getRewardsMoneyControllerInitMessenger,
   },
-  PPOMController: {
-    getMessenger: getPPOMControllerMessenger,
-    getInitMessenger: getPPOMControllerInitMessenger,
-  },
   PreferencesController: {
     getMessenger: getPreferencesControllerMessenger,
     getInitMessenger: noop,
@@ -576,10 +546,6 @@ export const MESSENGER_FACTORIES = {
   TransactionPayController: {
     getMessenger: getTransactionPayControllerMessenger,
     getInitMessenger: getTransactionPayControllerInitMessenger,
-  },
-  UserOperationController: {
-    getMessenger: getUserOperationControllerMessenger,
-    getInitMessenger: getUserOperationControllerInitMessenger,
   },
   UserStorageController: {
     getMessenger: getUserStorageControllerMessenger,

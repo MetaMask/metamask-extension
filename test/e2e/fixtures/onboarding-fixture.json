@@ -52,7 +52,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 235,
+      "currentMigrationVersion": 236,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -553,10 +553,6 @@
       "hasSeenOnboardingCompletionPage": false,
       "onboardingJourneyEnded": false,
       "seedPhraseBackedUp": null
-    },
-    "PPOMController": {
-      "storageMetadata": [],
-      "versionInfo": []
     },
     "PasskeyController": {
       "passkeyRecord": null
@@ -2079,6 +2075,8 @@
         "https://app-gamma.signer.cubist.dev": "mainnet",
         "https://app.metamask.io": "mainnet",
         "https://app.signer.cubist.dev": "mainnet",
+        "https://console.dev.mpcvault.com": "mainnet",
+        "https://console.mpcvault.com": "mainnet",
         "https://developer.metamask.io": "mainnet",
         "https://docs.metamask.io": "mainnet",
         "https://localhost:3000": "mainnet",
@@ -2207,9 +2205,6 @@
       "transactionBatches": [],
       "transactions": []
     },
-    "UserOperationController": {
-      "userOperations": {}
-    },
     "UserStorageController": {
       "isAccountSyncingEnabled": true,
       "isBackupAndSyncEnabled": true,
@@ -2220,6 +2215,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 235
+    "version": 236
   }
 }

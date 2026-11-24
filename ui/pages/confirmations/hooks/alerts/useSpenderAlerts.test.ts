@@ -42,10 +42,6 @@ jest.mock('../../../../hooks/useTrustSignals', () => ({
   },
 }));
 
-jest.mock('../../../../../app/scripts/lib/ppom/security-alerts-api', () => ({
-  isSecurityAlertsAPIEnabled: jest.fn(),
-}));
-
 jest.mock('../../components/confirm/info/approve/hooks/use-is-nft', () => ({
   useIsNFT: jest.fn(),
 }));
@@ -57,10 +53,6 @@ jest.mock('../../../../hooks/useAsync', () => ({
 jest.mock('../../../../store/actions', () => ({
   getTokenStandardAndDetailsByChain: jest.fn(),
 }));
-
-const mockIsSecurityAlertsAPIEnabled = jest.requireMock(
-  '../../../../../app/scripts/lib/ppom/security-alerts-api',
-).isSecurityAlertsAPIEnabled;
 
 const mockUseIsNFT = useIsNFT as jest.MockedFunction<typeof useIsNFT>;
 const mockUseAsyncResult = useAsyncResult as jest.MockedFunction<
@@ -88,7 +80,6 @@ function setupDefaultMocks() {
       label: null,
     },
   ]);
-  mockIsSecurityAlertsAPIEnabled.mockReturnValue(true);
   mockUseIsNFT.mockReturnValue({ isNFT: false, pending: false });
   mockUseAsyncResult.mockReturnValue({
     value: null,

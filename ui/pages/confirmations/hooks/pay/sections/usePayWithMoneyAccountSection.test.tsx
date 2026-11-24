@@ -57,10 +57,7 @@ function mockVaultApy(apyPercent?: number) {
     apyPercent,
     apyPercentFormatted:
       apyPercent === undefined ? undefined : `${apyPercent}%`,
-    vaultApyQuery: {
-      isError: false,
-      isLoading: false,
-    },
+    isApyLoading: false,
   } as ReturnType<typeof useMoneyVaultApy>);
 }
 

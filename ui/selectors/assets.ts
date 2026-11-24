@@ -153,7 +153,7 @@ export type BalanceCalculationState = {
     TokensControllerState &
     CurrencyRateState &
     MultichainAssetsControllerState &
-    AccountTrackerControllerState &
+    Pick<AccountTrackerControllerState, 'accountsByChainId'> &
     NetworkEnablementControllerState &
     RemoteFeatureFlagControllerState &
     AssetsControllerState &

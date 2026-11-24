@@ -192,7 +192,7 @@ export function MoneyHomePage() {
     tokenTotal,
     totalFiatFormatted,
     totalFiatRaw,
-    vaultApyQuery,
+    isApyLoading,
   } = useMoneyAccountBalance({ enabled: availability.isAvailable });
   const isMoneyEarningSectionEnabled = useSelector(
     selectMoneyEarningSectionEnabled,
@@ -227,7 +227,7 @@ export function MoneyHomePage() {
     last30DaysQuery.isLoading ||
     (formatInterestEarned(last30DaysQuery.data?.interest_earned_usd) ===
       undefined &&
-      (vaultApyQuery.isLoading || isBalanceLoading));
+      (isApyLoading || isBalanceLoading));
   const isLifetimeEarningsLoading =
     !sinceInceptionQuery.isError && sinceInceptionQuery.isLoading;
   const { tokens: depositTokens, isNoFeeToken } = useMoneyDepositTokens();
@@ -541,7 +541,7 @@ export function MoneyHomePage() {
               </Text>
             ) : null}
             <div className="flex h-6 items-center gap-1">
-              {vaultApyQuery.isLoading && !apyDisplay ? (
+              {isApyLoading && !apyDisplay ? (
                 <Skeleton className="h-4 w-24" />
               ) : (
                 <>

@@ -7,7 +7,7 @@ import { BASE_ACCOUNT_SYNC_TIMEOUT } from '../../../tests/identity/account-synci
 /**
  * Multichain account list: wallets, accounts, add/hide/pin, and related menus.
  *
- * Screen: `#/account-list`, usually opened from `HeaderNavbar.openAccountMenu`.
+ * Screen: `#/account-list`, usually opened with the `openAccountMenu` flow.
  * Owns: listing and selecting accounts/wallets, the add account and add wallet
  * buttons, pin/hide/remove account actions, manage-mode delete for imported
  * private-key accounts, SRP export entry, search, and balance assertions on
@@ -17,7 +17,7 @@ import { BASE_ACCOUNT_SYNC_TIMEOUT } from '../../../tests/identity/account-synci
  * `ImportSrpPage`, `ImportAccountPage` and `WatchAccountPage` (see
  * `add-wallet.flow.ts`). Account details, wallet details, hardware connect,
  * and confirmation dialogs belong to their own page objects.
- * Related: `HeaderNavbar` (how tests open this), `WalletDetailsPage`,
+ * Related: `openAccountMenu` flow (how tests open this), `WalletDetailsPage`,
  * `AccountDetailsPage`, `ChooseWalletTypePage`.
  *
  * @see ui/pages/multichain-accounts/account-list/account-list.tsx
@@ -694,6 +694,16 @@ class AccountListPage {
       );
       return isValid;
     });
+  }
+
+  /**
+   * Waits for the account list screen to be shown, without waiting for its
+   * content or for account syncing. Use `checkPageIsLoaded` to wait for those.
+   *
+   * @param timeout - How long to wait for the screen, in milliseconds.
+   */
+  async checkPageIsDisplayed(timeout?: number): Promise<void> {
+    await this.driver.waitForSelector(this.parentSelector, { timeout });
   }
 
   async checkPageIsLoaded(
