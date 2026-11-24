@@ -811,19 +811,19 @@ describe('AdvancedChartIframe', () => {
       });
     });
 
-    // The data lags the prop: `useOHLCVChart` keeps the previous series' bars
-    // until the new fetch lands, so the asset changes a render before its bars
-    // do. The stale bars get stamped under the new series for that render; the
-    // real bars must still rebuild the chart, not tick a single candle.
+    // `useOHLCVChart` returns no bars the instant the series key changes (its
+    // own test covers this), so the new series arrives as: empty render (chart
+    // cleared) → real bars a render later. Those bars must rebuild the chart,
+    // not be merged onto the previous series.
     it('rebuilds when the new series bars arrive a render after the asset changes', async () => {
       const { rerender } = renderLoaded();
 
-      // Render 1: asset switched, but the old asset's bars are still in hand.
+      // Render 1: asset switched, new series still loading.
       rerender(
         <AdvancedChartIframe
           {...defaultProps}
           assetId="bitcoin"
-          ohlcvData={mockOHLCVData}
+          ohlcvData={[]}
         />,
       );
       postMessageSpy.mockClear();
@@ -878,6 +878,177 @@ describe('AdvancedChartIframe', () => {
         expect.stringContaining('REALTIME_UPDATE'),
         CHART_ORIGIN,
       );
+    });
+
+    describe('same-series refetch merge', () => {
+      const HOUR = 3_600_000;
+      const mk = (i: number, close = 10 + i) => ({
+        time: 1_700_000_000_000 + i * HOUR,
+        open: 10,
+        high: 20,
+        low: 5,
+        close,
+        volume: 1,
+      });
+      const page1 = [mk(0), mk(1), mk(2), mk(3)];
+
+      it('merges a forward-shifted refetch as REALTIME_UPDATEs without reloading or resetting the cursor', async () => {
+        const resetPagination = jest.fn();
+        const { rerender } = renderLoaded({
+          ohlcvData: page1,
+          resetPagination,
+        });
+        expect(resetPagination).toHaveBeenCalledTimes(1);
+        resetPagination.mockClear();
+
+        // Sliding window: oldest bar dropped, live bar settled, one new bar.
+        const refetched = [mk(1), mk(2), mk(3, 99), mk(4)];
+        rerender(
+          <AdvancedChartIframe
+            {...defaultProps}
+            ohlcvData={refetched}
+            resetPagination={resetPagination}
+          />,
+        );
+
+        await waitFor(() => {
+          expect(postMessageSpy).toHaveBeenCalledWith(
+            JSON.stringify({
+              type: 'REALTIME_UPDATE',
+              payload: { bar: refetched[3] },
+            }),
+            CHART_ORIGIN,
+          );
+        });
+        expect(postMessageSpy).toHaveBeenCalledWith(
+          JSON.stringify({
+            type: 'REALTIME_UPDATE',
+            payload: { bar: refetched[2] },
+          }),
+          CHART_ORIGIN,
+        );
+        expect(postMessageSpy).not.toHaveBeenCalledWith(
+          expect.stringContaining('SET_OHLCV_DATA'),
+          CHART_ORIGIN,
+        );
+        expect(resetPagination).not.toHaveBeenCalled();
+      });
+
+      it('posts nothing older than the live bar when a refetch lags the stream', async () => {
+        const { rerender } = renderLoaded({ ohlcvData: page1 });
+        const live = { ...mk(5), close: 42 };
+        rerender(
+          <AdvancedChartIframe
+            {...defaultProps}
+            ohlcvData={page1}
+            realtimeBar={live}
+          />,
+        );
+        // Mark chart ready so the realtime effect posts.
+        act(() => {
+          window.dispatchEvent(
+            new MessageEvent('message', {
+              origin: CHART_ORIGIN,
+              data: JSON.stringify({ type: 'CHART_READY' }),
+            }),
+          );
+        });
+        postMessageSpy.mockClear();
+
+        // REST refetch ends at mk(4): older than the live mk(5) bar.
+        rerender(
+          <AdvancedChartIframe
+            {...defaultProps}
+            ohlcvData={[mk(1), mk(2), mk(3), mk(4)]}
+            realtimeBar={live}
+          />,
+        );
+
+        expect(postMessageSpy).not.toHaveBeenCalledWith(
+          expect.stringContaining('SET_OHLCV_DATA'),
+          CHART_ORIGIN,
+        );
+        expect(postMessageSpy).not.toHaveBeenCalledWith(
+          expect.stringContaining('"type":"REALTIME_UPDATE"'),
+          CHART_ORIGIN,
+        );
+      });
+
+      it('still merges when the refetch re-prices older candles (no price matching)', async () => {
+        const resetPagination = jest.fn();
+        const { rerender } = renderLoaded({
+          ohlcvData: page1,
+          resetPagination,
+        });
+        resetPagination.mockClear();
+
+        const repriced = [mk(1, 1), mk(2, 2), mk(3, 3), mk(4, 4)];
+        rerender(
+          <AdvancedChartIframe
+            {...defaultProps}
+            ohlcvData={repriced}
+            resetPagination={resetPagination}
+          />,
+        );
+
+        expect(postMessageSpy).not.toHaveBeenCalledWith(
+          expect.stringContaining('SET_OHLCV_DATA'),
+          CHART_ORIGIN,
+        );
+        expect(resetPagination).not.toHaveBeenCalled();
+      });
+
+      it('reloads fully when the refetch starts after the engine newest bar (gap)', async () => {
+        const resetPagination = jest.fn();
+        const { rerender } = renderLoaded({
+          ohlcvData: page1,
+          resetPagination,
+        });
+        resetPagination.mockClear();
+
+        const afterGap = [mk(10), mk(11), mk(12)];
+        rerender(
+          <AdvancedChartIframe
+            {...defaultProps}
+            ohlcvData={afterGap}
+            resetPagination={resetPagination}
+          />,
+        );
+
+        await waitFor(() => {
+          expect(postMessageSpy).toHaveBeenCalledWith(
+            expect.stringContaining('SET_OHLCV_DATA'),
+            CHART_ORIGIN,
+          );
+        });
+        expect(resetPagination).toHaveBeenCalledTimes(1);
+      });
+
+      it('resets pagination when the engine history is replaced by a series change', async () => {
+        const resetPagination = jest.fn();
+        const { rerender } = renderLoaded({
+          ohlcvData: page1,
+          resetPagination,
+        });
+        resetPagination.mockClear();
+
+        rerender(
+          <AdvancedChartIframe
+            {...defaultProps}
+            selectedInterval="1d"
+            ohlcvData={page1}
+            resetPagination={resetPagination}
+          />,
+        );
+
+        await waitFor(() => {
+          expect(postMessageSpy).toHaveBeenCalledWith(
+            expect.stringContaining('SET_OHLCV_DATA'),
+            CHART_ORIGIN,
+          );
+        });
+        expect(resetPagination).toHaveBeenCalledTimes(1);
+      });
     });
 
     it('clears the chart when a new series returns an empty (successful) history', async () => {

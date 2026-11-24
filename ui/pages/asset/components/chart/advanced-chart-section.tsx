@@ -163,6 +163,7 @@ export const AdvancedChartSection = ({
     error: ohlcvError,
     resolvedCurrency,
     fetchOlderBars,
+    resetPagination,
   } = useAdvancedChartData({
     assetId: caipAssetId,
     interval: displayInterval,
@@ -317,6 +318,7 @@ export const AdvancedChartSection = ({
         onTradingViewClicked={handleTradingViewClicked}
         realtimeBar={realtimeBar}
         fetchOlderBars={fetchOlderBars}
+        resetPagination={resetPagination}
       />
     );
   } else {

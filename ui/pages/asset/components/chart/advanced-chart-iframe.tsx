@@ -136,6 +136,8 @@ type AdvancedChartIframeProps = {
    * is satisfied in a single round-trip instead of re-asking per page.
    */
   fetchOlderBars?: (countBack?: number) => Promise<FetchOlderBarsResult>;
+  /** Resets the host pagination cursor; called on every full `SET_OHLCV_DATA`. */
+  resetPagination?: () => void;
 };
 
 /**
@@ -167,6 +169,7 @@ const AdvancedChartIframe = ({
   onTradingViewClicked,
   realtimeBar,
   fetchOlderBars,
+  resetPagination,
 }: AdvancedChartIframeProps) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [iframeLoaded, setIframeLoaded] = useState(false);
@@ -181,6 +184,9 @@ const AdvancedChartIframe = ({
   // The bars the engine was last given, so a newer arrival can be sent as a
   // cheap REALTIME_UPDATE instead of a full rebuild.
   const prevOhlcvDataRef = useRef<OHLCVBar[]>([]);
+  // Newest bar time the engine holds (REST or live tick). Merges never post
+  // older bars: the engine only appends/replaces at the tail.
+  const engineLastTimeRef = useRef<number | null>(null);
   // The message listener is attached once, but the pagination callback is a
   // prop that can change, so read it from a ref kept current each render.
   const fetchOlderBarsRef = useRef(fetchOlderBars);
@@ -212,6 +218,7 @@ const AdvancedChartIframe = ({
   useEffect(() => {
     appliedStudiesRef.current = new Set();
     prevOhlcvDataRef.current = [];
+    engineLastTimeRef.current = null;
   }, [chartUrl]);
 
   const postToChart = useCallback((message: Record<string, unknown>) => {
@@ -430,6 +437,12 @@ const AdvancedChartIframe = ({
       type: 'REALTIME_UPDATE',
       payload: { bar: realtimeBar },
     });
+    if (
+      engineLastTimeRef.current === null ||
+      realtimeBar.time >= engineLastTimeRef.current
+    ) {
+      engineLastTimeRef.current = realtimeBar.time;
+    }
   }, [realtimeBar, chartReady, postToChart]);
 
   // Identifies which series `ohlcvData` belongs to. Bar counts alone cannot
@@ -439,9 +452,8 @@ const AdvancedChartIframe = ({
   const seriesKey = `${assetId}|${selectedInterval}|${currency ?? ''}`;
   const seriesKeyRef = useRef(seriesKey);
 
-  // Smart diffing: avoid full SET_OHLCV_DATA on every WS tick so the chart
-  // engine can show a smooth real-time pulse via REALTIME_UPDATE instead of
-  // a full resetData() rebuild. Matches mobile's AdvancedChart.tsx pattern.
+  // Smart diffing: same-series refetches are merged as REALTIME_UPDATEs so the
+  // user's scroll and older pages survive; anything else is a full reload.
   useEffect(() => {
     if (!iframeLoaded) {
       return;
@@ -462,85 +474,81 @@ const AdvancedChartIframe = ({
     // the engine could actually be holding stale bars.
     if (!ohlcvData?.length) {
       if (seriesChanged || hadData) {
+        resetPagination?.();
         postToChart({ type: 'SET_OHLCV_DATA', payload: { data: [] } });
         prevOhlcvDataRef.current = [];
+        engineLastTimeRef.current = null;
       }
       return;
     }
 
     const prevData = prevOhlcvDataRef.current;
 
-    // `useOHLCVChart` keeps the previous series' bars until the next fetch
-    // lands, so when a token/interval/currency switch returns a similar bar
-    // count the `seriesKey` reset alone cannot be trusted — the stale bars
-    // can be stamped under the new key for one render. The leading bar is
-    // the reliable tell: its time and price only stay identical within one
-    // continuous series, so a change there means a wholesale replacement.
-    const first = ohlcvData[0];
-    const prevFirst = prevData[0];
-    const sameSeries =
-      prevData.length > 0 &&
-      Boolean(first) &&
-      Boolean(prevFirst) &&
-      first.time === prevFirst.time &&
-      first.open === prevFirst.open &&
-      first.high === prevFirst.high &&
-      first.low === prevFirst.low &&
-      first.close === prevFirst.close;
+    // Same array as last time (effect re-ran for an unrelated dep): no-op.
+    if (!seriesChanged && ohlcvData === prevData) {
+      return;
+    }
 
-    // First load, a different series, or a bulk change (interval change,
-    // pagination) → full SET_OHLCV_DATA.
-    if (!sameSeries || Math.abs(ohlcvData.length - prevData.length) > 1) {
-      // Anchor the initial visible window to the latest loaded bar so the
-      // engine frames a recent span instead of auto-fitting all history
-      // (which makes candle mode reach much further back than the line).
-      const lastBarTime = ohlcvData[ohlcvData.length - 1]?.time;
-      const windowMs = VISIBLE_WINDOW_MS_BY_INTERVAL[selectedInterval];
-      const visibleFromMs =
-        lastBarTime !== undefined && windowMs !== undefined
-          ? lastBarTime - windowMs
-          : undefined;
+    // Merge when the series is unchanged and the refetch overlaps the engine
+    // (its first bar <= engine's newest). New series, empty engine, or a gap
+    // → full reload.
+    const engineLast = engineLastTimeRef.current;
+    const canMerge =
+      !seriesChanged && engineLast !== null && ohlcvData[0].time <= engineLast;
 
-      postToChart({
-        type: 'SET_OHLCV_DATA',
-        // Strategy B (host-backed): the engine asks us for older bars via
-        // FETCH_OLDER_BARS_REQUEST instead of fetching them itself. Must NOT
-        // set `pagination` — that would switch on the in-iframe fetch path,
-        // which the chart origin's strict CSP (connect-src 'none') blocks.
-        payload: {
-          data: ohlcvData,
-          rnBackedPagination: { enabled: true },
-          // Opt into the core interval-window fix: clamps the pinned visible
-          // window to the loaded bars so an interval switch never frames an
-          // interval older than what is in memory.
-          atomicIntervalWindow: true,
-          ...(visibleFromMs === undefined ? {} : { visibleFromMs }),
-        },
-      });
+    if (canMerge) {
+      for (const bar of ohlcvData) {
+        if (bar.time >= engineLast) {
+          postToChart({ type: 'REALTIME_UPDATE', payload: { bar } });
+        }
+      }
+      engineLastTimeRef.current = Math.max(
+        engineLast,
+        ohlcvData[ohlcvData.length - 1].time,
+      );
       prevOhlcvDataRef.current = ohlcvData;
       return;
     }
 
-    // If only the last candle changed → lightweight REALTIME_UPDATE
-    // (matches mobile's AdvancedChart.tsx diffing logic)
-    const last = ohlcvData[ohlcvData.length - 1];
-    const prevLast = prevData[prevData.length - 1];
-    if (
-      last &&
-      prevLast &&
-      (last.time !== prevLast.time ||
-        last.close !== prevLast.close ||
-        last.high !== prevLast.high ||
-        last.low !== prevLast.low ||
-        last.volume !== prevLast.volume)
-    ) {
-      postToChart({ type: 'REALTIME_UPDATE', payload: { bar: last } });
-      prevOhlcvDataRef.current = ohlcvData;
-      return;
-    }
+    // Anchor the initial visible window to the latest loaded bar so the
+    // engine frames a recent span instead of auto-fitting all history
+    // (which makes candle mode reach much further back than the line).
+    const lastBarTime = ohlcvData[ohlcvData.length - 1]?.time;
+    const windowMs = VISIBLE_WINDOW_MS_BY_INTERVAL[selectedInterval];
+    const visibleFromMs =
+      lastBarTime !== undefined && windowMs !== undefined
+        ? lastBarTime - windowMs
+        : undefined;
 
+    // Engine history is replaced by page 1, so pagination restarts from it.
+    resetPagination?.();
+
+    postToChart({
+      type: 'SET_OHLCV_DATA',
+      // Strategy B (host-backed): the engine asks us for older bars via
+      // FETCH_OLDER_BARS_REQUEST instead of fetching them itself. Must NOT
+      // set `pagination` — that would switch on the in-iframe fetch path,
+      // which the chart origin's strict CSP (connect-src 'none') blocks.
+      payload: {
+        data: ohlcvData,
+        rnBackedPagination: { enabled: true },
+        // Opt into the core interval-window fix: clamps the pinned visible
+        // window to the loaded bars so an interval switch never frames an
+        // interval older than what is in memory.
+        atomicIntervalWindow: true,
+        ...(visibleFromMs === undefined ? {} : { visibleFromMs }),
+      },
+    });
     prevOhlcvDataRef.current = ohlcvData;
-  }, [iframeLoaded, ohlcvData, seriesKey, selectedInterval, postToChart]);
+    engineLastTimeRef.current = lastBarTime ?? null;
+  }, [
+    iframeLoaded,
+    ohlcvData,
+    seriesKey,
+    selectedInterval,
+    postToChart,
+    resetPagination,
+  ]);
 
   return (
     <div

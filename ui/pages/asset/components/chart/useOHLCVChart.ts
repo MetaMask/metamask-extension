@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { priceApiBaseUrl } from '../../../../../shared/constants/price-api';
 
@@ -62,6 +62,11 @@ export type UseOHLCVChartResult = {
    * `countBack`, it fetches a single page (legacy behaviour).
    */
   fetchOlderBars: (countBack?: number) => Promise<FetchOlderBarsResult>;
+  /**
+   * Resets the cursor to the cached first page and drops in-flight
+   * {@link fetchOlderBars} calls. Call only on a full `SET_OHLCV_DATA`.
+   */
+  resetPagination: () => void;
 };
 
 /**
@@ -339,50 +344,51 @@ export const useOHLCVChart = ({
   // These live in refs, not state, because advancing the cursor must not
   // re-render — only the chart engine consumes the older bars, and it does
   // so through a stable callback.
+  //
+  // The cursor tracks the engine's oldest bar, so refetches never move it;
+  // only `resetPagination` (on a full engine reload) does.
 
-  const seriesKey = `${assetId ?? ''}|${interval}|${requestedCurrency}`;
   const nextCursorRef = useRef<string | null>(null);
   const hasMoreRef = useRef(false);
-  const seriesKeyRef = useRef('');
   const assetIdRef = useRef<string | undefined>(assetId);
   const intervalRef = useRef(interval);
   const pageCurrencyRef = useRef(requestedCurrency);
-  const olderBarsInFlightRef = useRef(false);
+  // Bumped on reset; older-bars calls from a previous generation are dropped.
+  const generationRef = useRef(0);
+  // Generation of the running older-bars call, so a stale call's `finally`
+  // can't release a newer call's lock.
+  const inFlightGenRef = useRef<number | null>(null);
 
-  // Reset pagination state when the data series changes.
-  useEffect(() => {
-    // Switching series: reset cursor. The data-sync effect below will
-    // populate it once React Query delivers (cached or fresh) data.
-    nextCursorRef.current = null;
-    hasMoreRef.current = false;
-    olderBarsInFlightRef.current = false;
-    seriesKeyRef.current = seriesKey;
+  const resetPagination = useCallback(() => {
+    // Read the cache directly: the iframe calls this from its own effect,
+    // before any effect in this hook could sync `data`.
+    const cached = queryClient.getQueryData<OHLCVQueryData>([
+      'ohlcv',
+      assetId,
+      interval,
+      requestedCurrency,
+    ]);
+    generationRef.current += 1;
+    inFlightGenRef.current = null;
+    nextCursorRef.current = cached?.page.nextCursor ?? null;
+    hasMoreRef.current = cached?.page.hasMore ?? false;
+    pageCurrencyRef.current = cached?.usedCurrency ?? requestedCurrency;
     assetIdRef.current = assetId;
     intervalRef.current = interval;
-  }, [seriesKey, assetId, interval]);
-
-  // Sync cursor refs when query data arrives (fresh fetch or cache hit).
-  useEffect(() => {
-    if (!data) {
-      return;
-    }
-    nextCursorRef.current = data.page.nextCursor;
-    hasMoreRef.current = data.page.hasMore;
-    pageCurrencyRef.current = data.usedCurrency;
-  }, [data]);
+  }, [queryClient, assetId, interval, requestedCurrency]);
 
   // ── Older-bars pagination callback ──────────────────────────────────────
 
   const fetchOlderBars = useCallback(
     async (countBack?: number): Promise<FetchOlderBarsResult> => {
       const assetIdAtCall = assetIdRef.current;
-      const seriesKeyAtCall = seriesKeyRef.current;
+      const gen = generationRef.current;
 
       if (
         !assetIdAtCall ||
         !nextCursorRef.current ||
         !hasMoreRef.current ||
-        olderBarsInFlightRef.current
+        inFlightGenRef.current === gen
       ) {
         return { bars: [], noData: true };
       }
@@ -394,7 +400,7 @@ export const useOHLCVChart = ({
       const targetBars =
         typeof countBack === 'number' && countBack > 0 ? countBack : 1;
 
-      olderBarsInFlightRef.current = true;
+      inFlightGenRef.current = gen;
       let pagesFetched = 0;
 
       try {
@@ -413,11 +419,8 @@ export const useOHLCVChart = ({
             { nextCursor: nextCursorRef.current },
           );
           pagesFetched += 1;
-
-          // A new series started while this was in flight: drop everything so
-          // stale bars cannot land on the wrong chart, and leave the (new
-          // series') cursor untouched.
-          if (seriesKeyRef.current !== seriesKeyAtCall) {
+          // Reset happened mid-flight: drop the bars, keep the new cursor.
+          if (generationRef.current !== gen) {
             return { bars: [], noData: true };
           }
 
@@ -441,7 +444,9 @@ export const useOHLCVChart = ({
       } catch {
         return { bars: [], noData: true };
       } finally {
-        olderBarsInFlightRef.current = false;
+        if (inFlightGenRef.current === gen) {
+          inFlightGenRef.current = null;
+        }
       }
     },
     [],
@@ -464,5 +469,6 @@ export const useOHLCVChart = ({
     error: errorMessage,
     resolvedCurrency,
     fetchOlderBars,
+    resetPagination,
   };
 };

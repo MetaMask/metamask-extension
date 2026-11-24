@@ -159,6 +159,7 @@ function setupData(
     error: null,
     resolvedCurrency: 'eur',
     fetchOlderBars: jest.fn().mockResolvedValue({ bars: [], noData: true }),
+    resetPagination: jest.fn(),
     ...overrides,
   });
 }

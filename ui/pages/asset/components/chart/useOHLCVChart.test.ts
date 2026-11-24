@@ -494,6 +494,8 @@ describe('useOHLCVChart – fetchOlderBars', () => {
       { wrapper: createWrapper() },
     );
     await waitFor(() => expect(result.current.ohlcvData).toHaveLength(2));
+    // The iframe anchors the cursor when it posts the full SET_OHLCV_DATA.
+    act(() => result.current.resetPagination());
 
     let older;
     await act(async () => {
@@ -526,6 +528,8 @@ describe('useOHLCVChart – fetchOlderBars', () => {
       { wrapper: createWrapper() },
     );
     await waitFor(() => expect(result.current.ohlcvData).toHaveLength(2));
+    // The iframe anchors the cursor when it posts the full SET_OHLCV_DATA.
+    act(() => result.current.resetPagination());
 
     let older;
     await act(async () => {
@@ -558,6 +562,8 @@ describe('useOHLCVChart – fetchOlderBars', () => {
       { wrapper: createWrapper() },
     );
     await waitFor(() => expect(result.current.ohlcvData).toHaveLength(2));
+    // The iframe anchors the cursor when it posts the full SET_OHLCV_DATA.
+    act(() => result.current.resetPagination());
 
     let older;
     await act(async () => {
@@ -590,6 +596,8 @@ describe('useOHLCVChart – fetchOlderBars', () => {
       { wrapper: createWrapper() },
     );
     await waitFor(() => expect(result.current.ohlcvData).toHaveLength(2));
+    // The iframe anchors the cursor when it posts the full SET_OHLCV_DATA.
+    act(() => result.current.resetPagination());
 
     let older;
     await act(async () => {
@@ -601,6 +609,120 @@ describe('useOHLCVChart – fetchOlderBars', () => {
     expect(fetchMock).toHaveBeenCalledTimes(2);
     expect((older as unknown as FetchOlderBarsResult).bars).toHaveLength(2);
     expect((older as unknown as FetchOlderBarsResult).noData).toBe(false);
+  });
+
+  it('keeps the advanced cursor when a refetch delivers new data (no rewind)', async () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    const wrapper = ({ children }: { children: React.ReactNode }) =>
+      React.createElement(
+        QueryClientProvider,
+        { client: queryClient },
+        children,
+      );
+    const fetchMock = jest
+      .fn()
+      .mockResolvedValueOnce(mockPage(MOCK_API_CANDLES, 'page-2', true))
+      .mockResolvedValueOnce(mockPage(MOCK_API_CANDLES, 'page-3', true))
+      // background refetch of page 1
+      .mockResolvedValueOnce(mockPage(MOCK_API_CANDLES, 'page-2-fresh', true))
+      .mockResolvedValueOnce(mockPage(MOCK_API_CANDLES, 'page-4', true));
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    const { result } = renderHook(
+      () =>
+        useOHLCVChart({ assetId: 'ethereum', interval: '1h', currency: 'usd' }),
+      { wrapper },
+    );
+    await waitFor(() => expect(result.current.ohlcvData).toHaveLength(2));
+    act(() => result.current.resetPagination());
+
+    await act(async () => {
+      await result.current.fetchOlderBars();
+    });
+
+    await act(async () => {
+      await queryClient.refetchQueries({ queryKey: ['ohlcv'] });
+    });
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+
+    await act(async () => {
+      await result.current.fetchOlderBars();
+    });
+    const url = new URL(fetchMock.mock.calls[3][0] as string);
+    expect(url.searchParams.get('nextCursor')).toBe('page-3');
+  });
+
+  it('re-anchors to the cached page cursor on resetPagination', async () => {
+    const fetchMock = jest
+      .fn()
+      .mockResolvedValueOnce(mockPage(MOCK_API_CANDLES, 'page-2', true))
+      .mockResolvedValueOnce(mockPage(MOCK_API_CANDLES, 'page-3', true))
+      .mockResolvedValueOnce(mockPage(MOCK_API_CANDLES, 'page-3', true));
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    const { result } = renderHook(
+      () =>
+        useOHLCVChart({ assetId: 'ethereum', interval: '1h', currency: 'usd' }),
+      { wrapper: createWrapper() },
+    );
+    await waitFor(() => expect(result.current.ohlcvData).toHaveLength(2));
+    act(() => result.current.resetPagination());
+    await act(async () => {
+      await result.current.fetchOlderBars();
+    });
+
+    act(() => result.current.resetPagination());
+    await act(async () => {
+      await result.current.fetchOlderBars();
+    });
+    const url = new URL(fetchMock.mock.calls[2][0] as string);
+    expect(url.searchParams.get('nextCursor')).toBe('page-2');
+  });
+
+  it('drops an in-flight page and keeps the new cursor when a reset lands mid-flight', async () => {
+    let resolveOlder: (r: Response) => void = () => undefined;
+    const fetchMock = jest
+      .fn()
+      .mockResolvedValueOnce(mockPage(MOCK_API_CANDLES, 'page-2', true))
+      .mockImplementationOnce(
+        () =>
+          new Promise<Response>((resolve) => {
+            resolveOlder = resolve;
+          }),
+      )
+      .mockResolvedValueOnce(mockPage(MOCK_API_CANDLES, 'page-3', true));
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    const { result } = renderHook(
+      () =>
+        useOHLCVChart({ assetId: 'ethereum', interval: '1h', currency: 'usd' }),
+      { wrapper: createWrapper() },
+    );
+    await waitFor(() => expect(result.current.ohlcvData).toHaveLength(2));
+    act(() => result.current.resetPagination());
+
+    let pending: Promise<FetchOlderBarsResult> | undefined;
+    act(() => {
+      pending = result.current.fetchOlderBars();
+    });
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+
+    act(() => result.current.resetPagination());
+    let stale: FetchOlderBarsResult | undefined;
+    await act(async () => {
+      resolveOlder(mockPage(MOCK_API_CANDLES, 'stale-cursor', true));
+      stale = await pending;
+    });
+    expect(stale).toEqual({ bars: [], noData: true });
+
+    // The stale call neither advanced the cursor nor kept the lock.
+    await act(async () => {
+      await result.current.fetchOlderBars();
+    });
+    const url = new URL(fetchMock.mock.calls[2][0] as string);
+    expect(url.searchParams.get('nextCursor')).toBe('page-2');
   });
 });
 
