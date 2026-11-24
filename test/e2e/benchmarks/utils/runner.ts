@@ -162,7 +162,10 @@ export async function runBenchmarkWithIterations(
         }
         const timerSamples = timerMap.get(timer.id);
         if (timerSamples) {
-          timerSamples.push({ iteration: warmupRuns + idx, value: timer.value });
+          timerSamples.push({
+            iteration: warmupRuns + idx,
+            value: timer.value,
+          });
         }
         if (timer.unit) {
           zeroAllowedTimers.add(timer.id);
