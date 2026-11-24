@@ -127,6 +127,27 @@ describe('useMarketInsights', () => {
       expect(result.current.timeAgo).toBe('5d ago');
     });
 
+    it('updates the relative age while the same report stays mounted', async () => {
+      jest.useFakeTimers();
+      try {
+        mockSubmitRequestToBackground.mockResolvedValue({
+          ...mockReport,
+          generatedAt: new Date().toISOString(),
+        });
+        const { result } = renderHookWithProvider(() =>
+          useMarketInsights('eip155:1/slip44:60', true),
+        );
+        await waitFor(() => expect(result.current.timeAgo).toBe('just now'));
+
+        await act(async () => jest.advanceTimersByTimeAsync(60_000));
+
+        expect(result.current.timeAgo).toBe('1m ago');
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+      } finally {
+        jest.useRealTimers();
+      }
+    });
+
     it('does not fetch when disabled', async () => {
       const { result } = renderHookWithProvider(() =>
         useMarketInsights('eip155:1/slip44:60', false),
