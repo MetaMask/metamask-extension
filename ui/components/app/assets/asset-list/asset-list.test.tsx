@@ -91,7 +91,6 @@ jest.mock('../../../../store/actions', () => {
     setTokenNetworkFilter: jest.fn(() => ({
       type: 'TOKEN_NETWORK_FILTER',
     })),
-    addImportedTokens: jest.fn(),
   };
 });
 

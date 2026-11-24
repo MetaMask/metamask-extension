@@ -2896,30 +2896,6 @@ export function addToken(
 }
 
 /**
- * To add the tokens user selected to state
- *
- * @param tokensToImport
- * @param networkClientId
- */
-export function addImportedTokens(
-  tokensToImport: Token[],
-  networkClientId?: NetworkClientId,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    try {
-      await submitRequestToBackground(
-        'LegacyBackgroundApiService:addImportedTokens',
-        [tokensToImport, networkClientId],
-      );
-    } catch (error) {
-      logErrorWithMessage(error);
-    } finally {
-      await forceUpdateMetamaskState(dispatch);
-    }
-  };
-}
-
-/**
  * To add multichain assets (non-EVM tokens like Solana, Bitcoin)
  *
  * @param assetIds - The CAIP asset IDs (includes chain information)

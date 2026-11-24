@@ -91,7 +91,6 @@ jest.mock('../../store/actions', () => {
   const actual = jest.requireActual('../../store/actions');
   return {
     ...actual,
-    addImportedTokens: jest.fn(() => () => Promise.resolve()),
     importCustomAssetsBatch: jest.fn(() => () => Promise.resolve()),
     getTokenStandardAndDetailsByChain: jest.fn().mockResolvedValue({
       standard: 'ERC20',
@@ -104,7 +103,6 @@ jest.mock('../../store/actions', () => {
 
 const getMockedActions = () =>
   jest.requireMock('../../store/actions') as {
-    addImportedTokens: jest.Mock;
     importCustomAssetsBatch: jest.Mock;
     getTokenStandardAndDetailsByChain: jest.Mock;
   };
@@ -171,7 +169,6 @@ describe('CustomTokenImportPage', () => {
     mockNavigate.mockClear();
     mockToastSuccess.mockClear();
     const actions = getMockedActions();
-    actions.addImportedTokens.mockClear();
     actions.importCustomAssetsBatch.mockClear();
     actions.getTokenStandardAndDetailsByChain.mockClear();
     actions.getTokenStandardAndDetailsByChain.mockResolvedValue({
@@ -385,7 +382,6 @@ describe('CustomTokenImportPage', () => {
         },
       ),
     );
-    expect(actions.addImportedTokens).not.toHaveBeenCalled();
     await waitFor(() =>
       expect(mockToastSuccess).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -453,7 +449,6 @@ describe('CustomTokenImportPage', () => {
         ),
       );
 
-      expect(actions.addImportedTokens).not.toHaveBeenCalled();
     });
 
     it('passes the full token name (not the symbol) as the name field in metadata', async () => {
@@ -681,7 +676,6 @@ describe('CustomTokenImportPage', () => {
         decimals: 18,
       }),
     );
-    expect(actions.addImportedTokens).not.toHaveBeenCalled();
   });
 
   it('does not show the mainnet token warning when importing a mainnet token address on mainnet', async () => {

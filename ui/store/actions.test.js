@@ -6731,28 +6731,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('addImportedTokens', () => {
-    it('forwards imported tokens through the messenger', async () => {
-      const store = mockStore();
-      const messengerCallStub = sinon.stub().resolves();
-      setBackgroundConnection({
-        messengerCall: messengerCallStub,
-        getStatePatches: sinon.stub().resolves([]),
-      });
-
-      await store.dispatch(
-        actions.addImportedTokens([{ address: '0x123' }], 'mainnet'),
-      );
-
-      expect(
-        messengerCallStub.calledOnceWithExactly(
-          'LegacyBackgroundApiService:addImportedTokens',
-          [[{ address: '0x123' }], 'mainnet'],
-        ),
-      ).toBe(true);
-    });
-  });
-
   describe('multichainAddAssets', () => {
     it('forwards asset IDs and the account through the messenger', async () => {
       const store = mockStore();

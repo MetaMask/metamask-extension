@@ -123,7 +123,6 @@ jest.mock('../../store/actions', () => {
         }),
     ),
     addCustomAsset: jest.fn(() => () => Promise.resolve()),
-    addImportedTokens: jest.fn(() => () => Promise.resolve()),
     hideAsset: jest.fn(() => () => Promise.resolve()),
     ignoreTokens: jest.fn(() => () => Promise.resolve()),
     importCustomAssetsBatch: jest.fn(() => () => Promise.resolve()),
@@ -135,7 +134,6 @@ jest.mock('../../store/actions', () => {
 type MockedTokenManagementActions = {
   addNetwork: jest.Mock;
   addCustomAsset: jest.Mock;
-  addImportedTokens: jest.Mock;
   hideAsset: jest.Mock;
   ignoreTokens: jest.Mock;
   importCustomAssetsBatch: jest.Mock;
@@ -256,7 +254,6 @@ const expectEvmApiResultImport = async ({
       },
     ),
   );
-  expect(actions.addImportedTokens).not.toHaveBeenCalled();
 };
 
 const expectNonEvmApiResultImport = async ({
@@ -394,7 +391,6 @@ describe('TokenManagementPage', () => {
     const actions = getMockedActions();
     actions.addNetwork.mockClear();
     actions.addCustomAsset.mockClear();
-    actions.addImportedTokens.mockClear();
     actions.hideAsset.mockClear();
     actions.ignoreTokens.mockClear();
     actions.importCustomAssetsBatch.mockClear();
@@ -1349,7 +1345,6 @@ describe('TokenManagementPage', () => {
         }),
       ),
     );
-    expect(actions.addImportedTokens).not.toHaveBeenCalled();
   });
 
   it('toggling ON a not-yet-imported browse result imports the token and seeds unified assets', async () => {

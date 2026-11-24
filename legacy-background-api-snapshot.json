@@ -33,7 +33,6 @@
   ],
   "legacyBackgroundApiServiceMethods": [
     "acceptPermissionsRequest",
-    "addImportedTokens",
     "addNetwork",
     "addNewSeedPhraseBackup",
     "addPermittedAccount",

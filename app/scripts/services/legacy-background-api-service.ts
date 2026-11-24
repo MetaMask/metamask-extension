@@ -491,7 +491,6 @@ type TokenStandardAndDetails = {
  */
 const MESSENGER_EXPOSED_METHODS = [
   'acceptPermissionsRequest',
-  'addImportedTokens',
   'addNetwork',
   'addPermittedAccount',
   'addPermittedAccounts',
@@ -1015,47 +1014,6 @@ export class LegacyBackgroundApiService {
         chainId,
         ...(image ? { iconUrl: image } : {}),
       },
-    );
-  }
-
-  /**
-   * Imports tokens as custom assets on the AssetsController for the currently
-   * selected account.
-   *
-   * @param tokensToImport - The tokens to import.
-   * @param networkClientId - The ID of the network client the tokens are on.
-   * Defaults to the selected network client.
-   */
-  async addImportedTokens(
-    tokensToImport: Token[],
-    networkClientId?: string | null,
-  ): Promise<void> {
-    const selectedAccount = this.#messenger.call(
-      'AccountsController:getSelectedAccount',
-    );
-    const chainId = this.#getChainIdForNetworkClient(networkClientId);
-
-    await Promise.all(
-      (tokensToImport ?? []).map(async (token) => {
-        const assetId = toAssetId(token.address, chainId);
-        if (!assetId) {
-          return;
-        }
-        await this.#messenger.call(
-          'AssetsController:addCustomAsset',
-          selectedAccount.id,
-          assetId,
-          {
-            address: token.address,
-            symbol: token.symbol,
-            name: token.name ?? token.symbol,
-            decimals: token.decimals,
-            chainId,
-            ...(token.image ? { iconUrl: token.image } : {}),
-            ...(token.aggregators ? { aggregators: token.aggregators } : {}),
-          },
-        );
-      }),
     );
   }
 

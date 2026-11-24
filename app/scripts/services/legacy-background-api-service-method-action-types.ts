@@ -46,19 +46,6 @@ export type LegacyBackgroundApiServiceAddTokenAction = {
 };
 
 /**
- * Imports tokens as custom assets on the AssetsController for the currently
- * selected account.
- *
- * @param tokensToImport - The tokens to import.
- * @param networkClientId - The ID of the network client the tokens are on.
- * Defaults to the selected network client.
- */
-export type LegacyBackgroundApiServiceAddImportedTokensAction = {
-  type: `LegacyBackgroundApiService:addImportedTokens`;
-  handler: LegacyBackgroundApiService['addImportedTokens'];
-};
-
-/**
  * Hides tokens on the AssetsController.
  *
  * @param tokensToIgnore - The token contract addresses to hide.
@@ -1215,7 +1202,6 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceSetCurrentCurrencyAction
   | LegacyBackgroundApiServiceGetAssetsAction
   | LegacyBackgroundApiServiceAddTokenAction
-  | LegacyBackgroundApiServiceAddImportedTokensAction
   | LegacyBackgroundApiServiceIgnoreTokensAction
   | LegacyBackgroundApiServiceIsPublicEndpointUrlAction
   | LegacyBackgroundApiServiceIsSendBundleSupportedAction
