@@ -107,14 +107,6 @@ export type AccountSelectorWallet = {
   accounts: AccountSelectorAccount[];
 };
 
-export const SHIELD_ICON_ARTBOARD_NAMES = {
-  PROTECTION: 'Protection',
-  PRIORITY: 'Priority',
-} as const;
-
-export type ShieldIconArtboardName =
-  (typeof SHIELD_ICON_ARTBOARD_NAMES)[keyof typeof SHIELD_ICON_ARTBOARD_NAMES];
-
 export const CLAIMS_TAB_KEYS = {
   PENDING: 'pending',
   HISTORY: 'history',

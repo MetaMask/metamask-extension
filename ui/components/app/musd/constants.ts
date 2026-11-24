@@ -130,14 +130,6 @@ export const MUSD_SUPPORT_ARTICLE_URL =
  */
 export const FALLBACK_MIN_ASSET_BALANCE_REQUIRED = 0.01;
 
-/**
- * Relay API endpoints for mUSD conversion
- */
-export const RELAY_API_ENDPOINTS = {
-  QUOTE: 'https://api.relay.link/quote',
-  STATUS: 'https://api.relay.link/intents/status',
-} as const;
-
 // ============================================================================
 // Utility Functions
 // ============================================================================
