@@ -4,7 +4,6 @@
       "hiddenAccountList": "object",
       "pinnedAccountList": "object"
     },
-    "AccountTracker": { "accountsByChainId": "object" },
     "AccountTreeController": {
       "accountGroupsMetadata": "object",
       "accountTree": "object",
@@ -169,7 +168,6 @@
       "onboardingJourneyEnded": true,
       "seedPhraseBackedUp": null
     },
-    "PPOMController": { "storageMetadata": "object" },
     "PasskeyController": { "passkeyRecord": null },
     "PermissionController": {},
     "PermissionLogController": { "permissionHistory": "object" },
@@ -205,6 +203,7 @@
         "hideZeroBalanceTokens": false,
         "isBasicFunctionalityConsolidatedEnabled": "boolean",
         "privacyMode": "boolean",
+        "shouldShowSupportConsent": "boolean",
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": "boolean",
         "showExtensionInFullSizeView": false,
@@ -216,6 +215,7 @@
         "skipDeepLinkInterstitial": "boolean",
         "smartTransactionsMigrationApplied": "boolean",
         "smartTransactionsOptInStatus": true,
+        "supportDataSharingPreference": null,
         "tdpChartIndicators": "object",
         "tdpChartInterval": "string",
         "tdpChartType": "number",
@@ -318,7 +318,6 @@
       "transactionBatches": "object",
       "transactions": "object"
     },
-    "UserOperationController": { "userOperations": "object" },
     "UserStorageController": {
       "isAccountSyncingEnabled": true,
       "isBackupAndSyncEnabled": true,

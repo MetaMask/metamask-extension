@@ -185,6 +185,7 @@ export const getDefaultPreferencesControllerState =
       basicFunctionalityMigrationNotification: null,
       basicFunctionalityMigrationNotificationDismissed: false,
       privacyMode: false,
+      shouldShowSupportConsent: true,
       showConfirmationAdvancedDetails: false,
       showDefaultAddress: true,
       defaultAddressScope: 'eip155',
@@ -197,6 +198,7 @@ export const getDefaultPreferencesControllerState =
       skipDeepLinkInterstitial: false,
       smartTransactionsOptInStatus: true,
       smartTransactionsMigrationApplied: false,
+      supportDataSharingPreference: null,
       tokenNetworkFilter: {},
       tokenSortConfig: {
         key: 'tokenFiatAmount',

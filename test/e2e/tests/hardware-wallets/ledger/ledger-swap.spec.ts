@@ -1,9 +1,10 @@
 import { Suite } from 'mocha';
 import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
+import { enterBridgeQuote } from '../../../page-objects/flows/bridge.flow';
 import { login } from '../../../page-objects/flows/login.flow';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import BridgeQuotePage from '../../../page-objects/pages/bridge/quote-page';
+import SwapPage from '../../../page-objects/pages/swap/swap-page';
 import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import HardwareWalletSignaturesPage from '../../../page-objects/pages/hardware-wallet/hardware-wallet-signatures-page';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
@@ -34,15 +35,15 @@ describe('Ledger Swap', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        const bridgePage = new BridgeQuotePage(driver);
-        await bridgePage.enterBridgeQuote({
+        const swapPage = new SwapPage(driver);
+        await enterBridgeQuote(driver, {
           amount: '2',
           tokenTo: 'DAI',
         });
-        await bridgePage.waitForQuote();
+        await swapPage.waitForQuote();
         // Plain submit: the signing page appears immediately, so any wait for a
         // confirmation modal here would miss it.
-        await bridgePage.submitQuote();
+        await swapPage.submitQuote();
 
         const hardwareWalletSignaturesPage = new HardwareWalletSignaturesPage(
           driver,
@@ -50,7 +51,7 @@ describe('Ledger Swap', function (this: Suite) {
         await hardwareWalletSignaturesPage.checkPageIsLoaded();
         await hardwareWalletSignaturesPage.waitForPageToClose();
 
-        await bridgePage.goBackAfterSubmit();
+        await swapPage.goBackAfterSubmit();
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
 

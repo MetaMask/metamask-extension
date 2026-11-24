@@ -68,7 +68,7 @@ import { createSentryError } from '../../../shared/lib/error';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { captureException } from '../../../shared/lib/sentry';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
-import { TraceName, TraceOperation } from '../../../shared/lib/trace';
+import { trace, TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../../shared/constants/passkey';
 import { DecodedTransactionDataSource } from '../../../shared/types/transaction-decode';
 import { enforceSimulations } from '../lib/transaction/containers/enforced-simulations';
@@ -6063,8 +6063,6 @@ describe('LegacyBackgroundApiService', () => {
       const handlers = {
         toggleExternalServices: jest.fn(),
         getState: jest.fn().mockReturnValue({ subscriptions: [] }),
-        enableTokenDetection: jest.fn(),
-        disableTokenDetection: jest.fn(),
         enableGasFeeApis: jest.fn(),
         disableGasFeeApis: jest.fn(),
         stopAllPolling: jest.fn(),
@@ -6078,14 +6076,6 @@ describe('LegacyBackgroundApiService', () => {
       rootMessenger.registerActionHandler(
         'SubscriptionController:getState',
         handlers.getState,
-      );
-      rootMessenger.registerActionHandler(
-        'TokenDetectionController:enable',
-        handlers.enableTokenDetection,
-      );
-      rootMessenger.registerActionHandler(
-        'TokenDetectionController:disable',
-        handlers.disableTokenDetection,
       );
       rootMessenger.registerActionHandler(
         'GasFeeController:enableNonRPCGasFeeApis',
@@ -6125,10 +6115,8 @@ describe('LegacyBackgroundApiService', () => {
           true,
           undefined,
         );
-        expect(handlers.enableTokenDetection).toHaveBeenCalledTimes(1);
         expect(handlers.enableGasFeeApis).toHaveBeenCalledTimes(1);
         expect(handlers.startShield).toHaveBeenCalledTimes(1);
-        expect(handlers.disableTokenDetection).not.toHaveBeenCalled();
         expect(handlers.stopAllPolling).not.toHaveBeenCalled();
         expect(handlers.stopShield).not.toHaveBeenCalled();
       });
@@ -6145,7 +6133,6 @@ describe('LegacyBackgroundApiService', () => {
           true,
         );
 
-        expect(handlers.enableTokenDetection).toHaveBeenCalledTimes(1);
         expect(handlers.enableGasFeeApis).toHaveBeenCalledTimes(1);
         expect(handlers.startShield).not.toHaveBeenCalled();
       });
@@ -6168,7 +6155,6 @@ describe('LegacyBackgroundApiService', () => {
           true,
           ownedPreferences,
         );
-        expect(handlers.enableTokenDetection).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -6187,11 +6173,9 @@ describe('LegacyBackgroundApiService', () => {
           false,
           undefined,
         );
-        expect(handlers.disableTokenDetection).toHaveBeenCalledTimes(1);
         expect(handlers.disableGasFeeApis).toHaveBeenCalledTimes(1);
         expect(handlers.stopAllPolling).toHaveBeenCalledTimes(1);
         expect(handlers.stopShield).toHaveBeenCalledTimes(1);
-        expect(handlers.enableTokenDetection).not.toHaveBeenCalled();
         expect(handlers.startShield).not.toHaveBeenCalled();
       });
     });
@@ -6207,7 +6191,6 @@ describe('LegacyBackgroundApiService', () => {
           false,
         );
 
-        expect(handlers.disableTokenDetection).toHaveBeenCalledTimes(1);
         expect(handlers.disableGasFeeApis).toHaveBeenCalledTimes(1);
         expect(handlers.stopAllPolling).toHaveBeenCalledTimes(1);
         expect(handlers.stopShield).not.toHaveBeenCalled();
@@ -6529,6 +6512,34 @@ describe('LegacyBackgroundApiService', () => {
         const counts = await service.discoverAndCreateAccounts();
 
         expect(counts).toStrictEqual({ Bitcoin: 1, Solana: 1, Tron: 1 });
+      });
+    });
+
+    it('roots the Discover Accounts trace when accounts are discovered', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        rootMessenger.registerActionHandler(
+          'KeyringController:getState',
+          jest.fn().mockReturnValue({
+            keyrings: [{ metadata: { id: 'kr1' } }],
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'MultichainAccountService:getMultichainAccountWallet',
+          jest.fn().mockReturnValue({
+            discoverAccounts: jest
+              .fn()
+              .mockResolvedValue([{ type: SolAccountType.DataAccount }]),
+          }),
+        );
+
+        await service.discoverAndCreateAccounts();
+
+        expect(jest.mocked(trace)).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: TraceName.DiscoverAccounts,
+            root: true,
+          }),
+        );
       });
     });
   });
@@ -9065,8 +9076,6 @@ function getMessenger(
       'PhishingController:testOrigin',
       'PreferencesController:toggleExternalServices',
       'SubscriptionController:getState',
-      'TokenDetectionController:enable',
-      'TokenDetectionController:disable',
       'GasFeeController:enableNonRPCGasFeeApis',
       'GasFeeController:disableNonRPCGasFeeApis',
       'ShieldController:start',
@@ -9076,7 +9085,6 @@ function getMessenger(
       'TransactionController:updateSecurityAlertResponse',
       'UserOperationController:addUserOperationFromTransaction',
       'UserOperationController:startPollingByNetworkClientId',
-      'PPOMController:usePPOM',
       'KeyringController:getKeyringForAccount',
       'SignatureController:getState',
       'AppStateController:getAddressSecurityAlertResponse',

@@ -201,7 +201,8 @@ export const NetworkFilter = ({ onNetworkSelect }: NetworkFilterProps) => {
       <ButtonBase
         data-testid="sort-by-networks"
         className={twMerge(
-          'w-auto min-w-[auto] justify-between gap-1 border border-muted bg-background-default px-2 py-0 hover:bg-hover',
+          'w-auto min-w-[auto] gap-1 border border-muted bg-background-default px-2 py-0 hover:bg-hover',
+          isNetworkSwitchPending ? 'justify-center' : 'justify-between',
           isFullScreen && 'mr-2',
           isOpen && 'bg-pressed',
           isSingleNetworkFilterSelected && 'text-primary-default',

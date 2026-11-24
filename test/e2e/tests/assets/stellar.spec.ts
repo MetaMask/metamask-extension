@@ -42,7 +42,6 @@ describe('Stellar - Assets', function () {
           const tokensTab = new TokensTab(driver);
           await tokensTab.checkTokenExistsInList('Stellar', '0 XLM', {
             timeout: STELLAR_ASSET_LIST_TIMEOUT_MS,
-            amountTimeout: STELLAR_ASSET_LIST_TIMEOUT_MS,
           });
           await tokensTab.checkOnlyAssetsArePresent(['Stellar']);
           await tokensTab.checkSendAndSwapButtonsArePresentAndEnabled();
@@ -67,7 +66,6 @@ describe('Stellar - Assets', function () {
             XLM_BALANCE_DISPLAY,
             {
               timeout: STELLAR_ASSET_LIST_TIMEOUT_MS,
-              amountTimeout: STELLAR_ASSET_LIST_TIMEOUT_MS,
             },
           );
         },
@@ -156,7 +154,6 @@ describe('Stellar - Assets', function () {
           const tokensTab = new TokensTab(driver);
           await tokensTab.checkTokenExistsInList('USD Coin', '25 USDC', {
             timeout: STELLAR_ASSET_LIST_TIMEOUT_MS,
-            amountTimeout: STELLAR_ASSET_LIST_TIMEOUT_MS,
           });
           await tokensTab.clickOnAsset('USD Coin');
 

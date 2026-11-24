@@ -11,14 +11,18 @@ import {
   login,
 } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import ResetPasswordPage from '../../page-objects/pages/onboarding/reset-password-page';
 import SetupPasskeyPage from '../../page-objects/pages/onboarding/setup-passkey-page';
 import { Driver } from '../../webdriver/driver';
 import { TEST_SEED_PHRASE } from '../../constants';
+import {
+  BASE_ACCOUNT_SYNC_INTERVAL,
+  BASE_ACCOUNT_SYNC_TIMEOUT,
+} from '../identity/account-syncing/helpers';
 import { MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME } from '../../../../shared/lib/money/feature-flags';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 
 /**
  * The money account address derived from `E2E_SRP` at the fixed money
@@ -107,6 +111,29 @@ async function waitForMoneyAccounts(
   return uiState!.metamask;
 }
 
+/**
+ * Wait until the account tree's first backup-and-sync run after unlock has
+ * finished. Locking while that run is still in flight leaves it to collide
+ * with the sync the vault restore awaits, and the restore never resolves.
+ *
+ * @param driver - The webdriver instance.
+ */
+async function waitForAccountTreeSyncToFinish(driver: Driver): Promise<void> {
+  await driver.waitUntil(
+    async () => {
+      const uiState = await getCleanAppState(driver);
+      return (
+        uiState?.metamask?.hasAccountTreeSyncingSyncedAtLeastOnce === true &&
+        uiState?.metamask?.isAccountTreeSyncingInProgress === false
+      );
+    },
+    {
+      interval: BASE_ACCOUNT_SYNC_INTERVAL,
+      timeout: BASE_ACCOUNT_SYNC_TIMEOUT,
+    },
+  );
+}
+
 describe('Money account', function (this: Suite) {
   it('is created on vault restore into a fresh profile and stays out of the account list', async function () {
     await withFixtures(
@@ -191,7 +218,7 @@ describe('Money account', function (this: Suite) {
         );
 
         // And the account list UI shows only the restored account.
-        await new HeaderNavbar(driver).openAccountMenu();
+        await openAccountMenu(driver);
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountDisplayedInAccountList('Account 1');
@@ -208,6 +235,9 @@ describe('Money account', function (this: Suite) {
             remoteFeatureFlags: {
               [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: MONEY_ACCOUNT_FLAG_VALUE,
             },
+          })
+          .withAccountTreeController({
+            hasAccountTreeSyncingSyncedAtLeastOnce: false,
           })
           .build(),
         testSpecificMock: mockMoneyAccountFlag,
@@ -236,6 +266,7 @@ describe('Money account', function (this: Suite) {
         // Restore a different SRP over the wallet via the forgot-password
         // flow. This replaces every keyring, orphaning the recorded money
         // account's entropy source.
+        await waitForAccountTreeSyncToFinish(driver);
         await lockAndWaitForLoginPage(driver);
         await new LoginPage(driver).gotoResetPasswordPage();
 

@@ -6,7 +6,6 @@
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
-import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import AccountListPage from '../../../page-objects/pages/accounts/list-page';
 import { Driver } from '../../../webdriver/driver';
 import { buildLongTaskTimerResults } from '../../utils/long-task-helper';
@@ -16,6 +15,7 @@ import {
 } from '../../../../../shared/constants/benchmarks';
 import { runUserActionBenchmark, collectWebVitals } from '../../utils';
 import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
+import { openAccountMenu } from '../../../page-objects/flows/account-menu.flow';
 
 export const testTitle = 'benchmark-user-actions-load-new-account';
 export const persona = BENCHMARK_PERSONA.STANDARD;
@@ -38,8 +38,7 @@ export async function run(): Promise<BenchmarkRunResult> {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
 

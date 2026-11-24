@@ -1,6 +1,12 @@
 import type * as Sentry from '@sentry/browser';
-import { SPAN_STATUS_ERROR, SPAN_STATUS_OK } from '@sentry/core';
+import {
+  getActiveSpan,
+  SPAN_STATUS_ERROR,
+  SPAN_STATUS_OK,
+  spanToJSON,
+} from '@sentry/core';
 import type {
+  Client,
   MeasurementUnit,
   Span,
   StartSpanOptions,
@@ -16,6 +22,8 @@ import type {
   SwapTraceRequest,
   SwapRelatedTraceName,
 } from '@metamask/bridge-controller';
+import { ENVIRONMENT_TYPE_BACKGROUND } from '../constants/app';
+import { getEnvironmentType } from './environment-type';
 import { sentryLogger } from './sentry';
 
 /**
@@ -242,6 +250,22 @@ if (process.env.IN_TEST && globalThis.stateHooks) {
   globalThis.stateHooks.getCustomTraces = () => durationsByName;
 }
 
+/**
+ * Trace state that one copy of this module writes and another reads.
+ */
+export type SharedTraceState = {
+  /**
+   * The background's pageload trace id, from the moment the pageload starts.
+   * Unset outside the background.
+   */
+  backgroundPageloadTraceId?: string;
+  /**
+   * The background's pageload span id, from the moment the pageload starts.
+   * Unset outside the background.
+   */
+  backgroundPageloadSpanId?: string;
+};
+
 type PendingTrace = {
   end: (timestamp?: number) => void;
   request: TraceRequest;
@@ -354,7 +378,10 @@ export type TraceRequest = {
 
   /**
    * Start the span as the root of a new trace, ignoring the active span. A
-   * `parentContext` that resolves still takes precedence.
+   * resolved `parentContext` still takes precedence.
+   *
+   * In the background, work with no resolved parent and no active span to nest
+   * under is a root too: the pageload's trace id stays on the scope there.
    */
   root?: boolean;
 };
@@ -571,6 +598,68 @@ export const traceAsControllerCallback: ControllerTraceCallback = <Result>(
       ? trace({ ...req, name: req.name as TraceName }, fn)
       : trace({ ...req, name: req.name as TraceName }),
   ) as Promise<Result>;
+
+// The background bundles this module twice, so state one copy writes and the
+// other reads lives on `globalThis.stateHooks`, which LavaMoat leaves in place
+// (as in `sentry-remote-rates.ts`).
+const localSharedState: SharedTraceState = {};
+
+function getSharedState(): SharedTraceState {
+  const hooks = globalThis.stateHooks;
+  if (!hooks) {
+    return localSharedState;
+  }
+  hooks.traceSharedState ??= {};
+  return hooks.traceSharedState;
+}
+
+/**
+ * Record the background's pageload span, so work with no parent starts its own
+ * trace instead of joining it (see {@link TraceRequest.root} and
+ * {@link sentryGetActiveSpan}). Does nothing in a UI document.
+ *
+ * @param client - The Sentry client that emits the pageload's `spanStart`.
+ */
+export function trackBackgroundPageload(client?: Client): void {
+  if (
+    getEnvironmentType(globalThis.location.href) !== ENVIRONMENT_TYPE_BACKGROUND
+  ) {
+    return;
+  }
+
+  const record = (span: Span) => {
+    if (spanToJSON(span).op === 'pageload') {
+      const { traceId, spanId } = span.spanContext();
+      const state = getSharedState();
+      state.backgroundPageloadTraceId = traceId;
+      state.backgroundPageloadSpanId = spanId;
+    }
+  };
+  // `Sentry.init` has started the pageload by now, and `setupSentry` calls this
+  // before the global `sentry` is assigned, so read the span from `@sentry/core`.
+  const running = getActiveSpan();
+  if (running) {
+    record(running);
+  }
+  client?.on('spanStart', record);
+}
+
+/**
+ * Whether the scope still carries the background pageload's trace id. Ignores
+ * the active span.
+ *
+ * @returns True when such work should start its own trace.
+ */
+function isOnBackgroundPageload(): boolean {
+  const { backgroundPageloadTraceId } = getSharedState();
+  if (!backgroundPageloadTraceId) {
+    return false;
+  }
+  const scopeTraceId = globalThis.sentry
+    ?.getCurrentScope?.()
+    ?.getPropagationContext?.()?.traceId;
+  return scopeTraceId === backgroundPageloadTraceId;
+}
 
 /**
  * End a pending trace that was started without a callback.
@@ -1000,13 +1089,20 @@ function startSpan<T>(
     startTime,
     op,
     allowActiveSpanFallback,
-    root,
   } = request;
   let parentSpan = resolveParentSpan(parentContext);
 
   // `undefined` means no parent was declared; `null` means one was intended but
   // has no span. `resolveParentSpan` returns `null` for both, so read the input.
   const parentDeclared = parentContext !== undefined;
+
+  // With no parent and nothing to nest under, work takes the scope's trace id,
+  // which in the background is the pageload's.
+  const root =
+    request.root ||
+    (!parentSpan &&
+      !((parentDeclared || allowActiveSpanFallback) && sentryGetActiveSpan()) &&
+      isOnBackgroundPageload());
 
   // Read the active span before `withScope` forks the scope. `forceTransaction`
   // keeps an inherited span in transaction-level dashboards.
@@ -1273,6 +1369,9 @@ function sentrySetMeasurement(
  * Get the currently active Sentry span, if any.
  * Used by wrappers to avoid trace overhead when no span is active.
  *
+ * The background's pageload span counts as no span, running or ended: it is the
+ * scope's ambient span rather than a parent a caller chose.
+ *
  * @returns The active span or null.
  */
 export function sentryGetActiveSpan(): Sentry.Span | null {
@@ -1282,7 +1381,16 @@ export function sentryGetActiveSpan(): Sentry.Span | null {
     return null;
   }
 
-  return actual() ?? null;
+  const activeSpan = actual() ?? null;
+  const { backgroundPageloadSpanId } = getSharedState();
+  if (
+    activeSpan &&
+    backgroundPageloadSpanId &&
+    activeSpan.spanContext().spanId === backgroundPageloadSpanId
+  ) {
+    return null;
+  }
+  return activeSpan;
 }
 
 /**

@@ -114,6 +114,7 @@ const DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN = {
   isDepositPrefillSkipped: false,
   isInputChanged: false,
   isQuoteDerivedAmountLoading: false,
+  resolveAmountFiat: (amountFiat: string) => amountFiat,
   updatePendingAmount: jest.fn(),
   updatePendingAmountPercentage: jest.fn(),
 };
@@ -751,6 +752,79 @@ describe('CustomAmountInfo', () => {
       expect(getByTestId('percentage-button-50')).toBeDisabled();
       getByTestId('percentage-button-50').click();
       expect(updatePendingAmountPercentage).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('snap typed amount to Max', () => {
+    const useTransactionCustomAmountMock = jest.mocked(
+      useTransactionCustomAmountModule.useTransactionCustomAmount,
+    );
+
+    function getIsMaxAvailable() {
+      return useTransactionCustomAmountMock.mock.lastCall?.[0]?.isMaxAvailable;
+    }
+
+    it('enables snapping when Max is offered', () => {
+      render({ displayPercentageButtons: true, hasMax: true });
+
+      expect(getIsMaxAvailable()).toBe(true);
+    });
+
+    it('enables snapping on withdraws', () => {
+      render({
+        displayPercentageButtons: true,
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: false },
+      });
+
+      expect(getIsMaxAvailable()).toBe(true);
+    });
+
+    it('disables snapping when Max is not offered', () => {
+      render({ displayPercentageButtons: true });
+
+      expect(getIsMaxAvailable()).toBe(false);
+    });
+
+    it('disables snapping when percentage buttons are hidden', () => {
+      render({ hasMax: true });
+
+      expect(getIsMaxAvailable()).toBe(false);
+    });
+
+    it('disables snapping when percentage buttons are disabled', () => {
+      render({
+        disablePercentageButtons: true,
+        displayPercentageButtons: true,
+        hasMax: true,
+      });
+
+      expect(getIsMaxAvailable()).toBe(false);
+    });
+
+    it('disables snapping for a native pay token on deposits', () => {
+      render({
+        displayPercentageButtons: true,
+        hasMax: true,
+        isNativePayToken: true,
+      });
+
+      expect(getIsMaxAvailable()).toBe(false);
+    });
+
+    it('evaluates pending amount alerts against the resolved amount', () => {
+      render({
+        customAmountHookReturn: {
+          ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+          amountFiat: '2.28',
+          resolveAmountFiat: () => '2.2895',
+        },
+        displayPercentageButtons: true,
+        hasMax: true,
+      });
+
+      expect(
+        useTransactionCustomAmountAlertsModule.useTransactionCustomAmountAlerts,
+      ).toHaveBeenCalledWith({ pendingFiatAmount: '2.2895' });
     });
   });
 
