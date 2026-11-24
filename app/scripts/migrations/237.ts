@@ -31,7 +31,7 @@ export const migrate = (async (versionedData, changedKeys) => {
     return;
   }
 
-  const {customAssets} = state.AssetsController;
+  const { customAssets } = state.AssetsController;
   let changed = false;
 
   for (const [accountId, assetIds] of Object.entries(customAssets)) {
