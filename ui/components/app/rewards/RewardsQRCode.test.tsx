@@ -91,7 +91,7 @@ describe('RewardsQRCode', () => {
   });
 
   it('encodes the stored deeplink URL in the QR code when present', () => {
-    const deeplink = 'https://link.metamask.io/rewards?referral=ABC123';
+    const deeplink = 'https://link.metamask.io/rewards';
     mockUseSelector.mockImplementation((selector) => {
       if (selector === selectRewardsDeeplinkUrl) {
         return deeplink;
