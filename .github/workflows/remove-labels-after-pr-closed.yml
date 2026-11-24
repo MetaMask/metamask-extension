@@ -6,7 +6,7 @@ on:
   # Use pull_request_target so closed-PR cleanup always runs with the
   # workflow definition from the default branch (not the PR head SHA).
   # This ensures newly added cleanup labels are applied consistently.
-  pull_request_target:
+  pull_request_target: # zizmor: ignore[dangerous-triggers] Only removes labels via the GitHub API; never checks out or runs PR code.
     types: [closed]
 
 jobs:
