@@ -8,8 +8,8 @@ import { BottomNavBar } from '#ui/components/app/bottom-nav-bar/bottom-nav-bar';
 import { SideNav } from '#ui/components/app/side-nav/side-nav';
 import { ScrollContainer } from '#ui/contexts/scroll-container';
 import { ScrollToTop } from '#ui/contexts/scroll-to-top';
-import { useI18nContext } from '#ui/hooks/useI18nContext.js';
 import { useAppLayout } from '../contexts/app-layout';
+import { useI18nContext } from '../hooks/useI18nContext';
 import { AppHeader } from '../components/multichain/app-header';
 
 const useIsOnline = () => {
