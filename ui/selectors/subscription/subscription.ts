@@ -5,8 +5,10 @@ import {
   PRODUCT_TYPES,
   selectHasEntitlement,
   selectIsActiveSubscriber,
+  SUBSCRIPTION_STATUSES,
   type ProductType,
   Subscription,
+  type SubscriptionStatus,
   SubscriptionControllerState,
 } from '@metamask/subscription-controller';
 import { createSelector } from 'reselect';
@@ -78,6 +80,44 @@ export const getLastSelectedPaymentMethodByProduct = (
 
 export const getIsMoneyAccountPlusSubscriber = (state: SubscriptionState) =>
   selectIsActiveSubscriber(state.metamask, PRODUCT_TYPES.MONEY_ACCOUNT_PLUS);
+
+const MONEY_ACCOUNT_PLUS_HUB_STATUSES = new Set<SubscriptionStatus>([
+  SUBSCRIPTION_STATUSES.active,
+  SUBSCRIPTION_STATUSES.trialing,
+  SUBSCRIPTION_STATUSES.provisional,
+  SUBSCRIPTION_STATUSES.paused,
+  SUBSCRIPTION_STATUSES.unpaid,
+  SUBSCRIPTION_STATUSES.pastDue,
+  SUBSCRIPTION_STATUSES.awaitingFunds,
+]);
+
+/**
+ * Selects the current subscription the Money Plus hub can render.
+ *
+ * @param state - The Redux state.
+ * @returns The matching current subscription, if any.
+ */
+export function getMoneyAccountPlusHubSubscription(
+  state: SubscriptionState,
+): Subscription | undefined {
+  return state.metamask.subscriptions?.find(
+    (subscription) =>
+      MONEY_ACCOUNT_PLUS_HUB_STATUSES.has(subscription.status) &&
+      hasProduct(subscription, PRODUCT_TYPES.MONEY_ACCOUNT_PLUS),
+  );
+}
+
+/**
+ * Checks for a stored Money Plus subscription the hub can render.
+ *
+ * @param state - The Redux state.
+ * @returns Whether a matching current subscription exists.
+ */
+export function getHasMoneyAccountPlusHubMembership(
+  state: SubscriptionState,
+): boolean {
+  return Boolean(getMoneyAccountPlusHubSubscription(state));
+}
 
 export const getHasAnyMoneyAccountPlusEntitlement = (
   state: SubscriptionState,

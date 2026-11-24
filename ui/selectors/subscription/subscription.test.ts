@@ -9,6 +9,8 @@ import {
 import {
   getHasAnyMoneyAccountPlusEntitlement,
   getHasMoneyAccountPremiumApyEntitlement,
+  getHasMoneyAccountPlusHubMembership,
+  getMoneyAccountPlusHubSubscription,
   getIsMoneyAccountPlusSubscriber,
   getLastSubscriptionByProduct,
   getLatestShieldSubscription,
@@ -87,6 +89,63 @@ describe('product subscription selectors', () => {
     expect(getHasAnyMoneyAccountPlusEntitlement(state)).toBe(true);
     expect(getHasMoneyAccountPremiumApyEntitlement(state)).toBe(true);
     expect(getIsMoneyAccountPlusSubscriber(state)).toBe(false);
+  });
+});
+
+describe('Money Plus hub selectors', () => {
+  it.each([
+    SUBSCRIPTION_STATUSES.active,
+    SUBSCRIPTION_STATUSES.trialing,
+    SUBSCRIPTION_STATUSES.provisional,
+    SUBSCRIPTION_STATUSES.paused,
+    SUBSCRIPTION_STATUSES.unpaid,
+    SUBSCRIPTION_STATUSES.pastDue,
+    SUBSCRIPTION_STATUSES.awaitingFunds,
+  ])('selects a Money Plus membership with status %s', (status) => {
+    const subscription = { ...money, status };
+    const state = makeState({ subscriptions: [subscription] });
+
+    expect(getMoneyAccountPlusHubSubscription(state)).toBe(subscription);
+    expect(getHasMoneyAccountPlusHubMembership(state)).toBe(true);
+  });
+
+  it.each([
+    SUBSCRIPTION_STATUSES.canceled,
+    SUBSCRIPTION_STATUSES.incomplete,
+    SUBSCRIPTION_STATUSES.incompleteExpired,
+  ])('does not grant Money Plus membership for status %s', (status) => {
+    const state = makeState({ subscriptions: [{ ...money, status }, shield] });
+
+    expect(getMoneyAccountPlusHubSubscription(state)).toBeUndefined();
+    expect(getHasMoneyAccountPlusHubMembership(state)).toBe(false);
+  });
+
+  it('skips an earlier canceled Money Plus subscription in favor of a hub subscription', () => {
+    const subscription = { ...money, status: SUBSCRIPTION_STATUSES.pastDue };
+    const state = makeState({
+      subscriptions: [
+        { ...money, status: SUBSCRIPTION_STATUSES.canceled },
+        shield,
+        subscription,
+      ],
+    });
+
+    expect(getMoneyAccountPlusHubSubscription(state)).toBe(subscription);
+    expect(getHasMoneyAccountPlusHubMembership(state)).toBe(true);
+  });
+
+  it('ignores entitlements and historical subscriptions without a current subscription', () => {
+    const state = makeState({
+      lastSubscription: money,
+      productEntitlements: {
+        [PRODUCT_TYPES.MONEY_ACCOUNT_PLUS]: {
+          entitlements: { [MoneyAccountFeature.PremiumApy]: true },
+        },
+      },
+    });
+
+    expect(getMoneyAccountPlusHubSubscription(state)).toBeUndefined();
+    expect(getHasMoneyAccountPlusHubMembership(state)).toBe(false);
   });
 });
 
