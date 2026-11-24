@@ -120,10 +120,10 @@ jobs:
         timeout-minutes: 35
         run: >-
           yarn test:e2e:benchmark
-          --preset startupStandardHome
+          --preset startupPowerUserHome
           --browserLoads 10 --pageLoads 10
           --retries 2
-          --out test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-webpack-startupStandardHome-s${{ matrix.shard }}.json
+          --out test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-webpack-startupPowerUserHome-s${{ matrix.shard }}.json
 
       - name: Upload batch result
         if: ${{ always() }}
