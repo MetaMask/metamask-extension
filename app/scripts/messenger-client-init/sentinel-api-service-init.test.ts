@@ -2,6 +2,7 @@ import {
   SentinelApiService,
   type SentinelApiServiceMessenger,
 } from '@metamask/sentinel-api-service';
+import { traceAsControllerCallback } from '../../../shared/lib/trace';
 import { getRootMessenger } from '../lib/messenger';
 import { setSentinelApiMessenger } from '../lib/transaction/sentinel-api';
 import type { MessengerClientInitRequest } from './types';
@@ -43,6 +44,7 @@ describe('SentinelApiServiceInit', () => {
       fetch: expect.any(Function),
       clientId: 'extension',
       clientVersion: process.env.METAMASK_VERSION,
+      trace: traceAsControllerCallback,
     });
   });
 
