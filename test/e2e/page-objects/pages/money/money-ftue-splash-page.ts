@@ -7,7 +7,7 @@ import { Driver } from '../../../webdriver/driver';
  * Screen: modal/page overlay shown on the first Money interaction.
  * Owns: waiting for the splash and its primary/close actions.
  * Boundaries: the Money home behind it belongs to `MoneyHomePage`.
- * Related: `MoneyHomePage`, `BottomNavBar`.
+ * Related: `MoneyHomePage`, `MainNav`.
  *
  * @see ui/components/app/money/money-ftue-splash/money-ftue-splash.tsx
  */

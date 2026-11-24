@@ -2895,9 +2895,6 @@
   "confirmFieldNeverExpires": {
     "message": "Never expires"
   },
-  "confirmFieldPaymaster": {
-    "message": "Fee paid by"
-  },
   "confirmFieldPeriodDurationBiWeekly": {
     "message": "Bi-Weekly"
   },
@@ -2922,9 +2919,6 @@
   },
   "confirmFieldTooltipJustification": {
     "message": "Justification for the request provided by the website"
-  },
-  "confirmFieldTooltipPaymaster": {
-    "message": "The fee for this transaction will be paid by the paymaster smart contract."
   },
   "confirmFieldTotalExposure": {
     "message": "Total exposure"
@@ -5656,7 +5650,7 @@
     "message": "Sign in to continue."
   },
   "mfaErrorTooManyAttempts": {
-    "message": "Too many incorrect codes. Get a new code when it's available."
+    "message": "Too many incorrect codes. Get a new code."
   },
   "mfaErrorTotpExpired": {
     "message": "That took too long. Enter the current code from your app."
@@ -5730,6 +5724,13 @@
   "mfaOtpDescriptionTotp": {
     "message": "Open your authenticator app and enter the 6-digit code."
   },
+  "mfaOtpDescriptionUnsent": {
+    "message": "We'll send a 6-digit code to your email. Enter it below to verify your email."
+  },
+  "mfaOtpDescriptionUnsentWithEmail": {
+    "message": "We'll send a 6-digit code to $1. Enter it below to verify your email.",
+    "description": "$1 is the user's masked email address"
+  },
   "mfaOtpDescriptionWithEmail": {
     "message": "We sent a 6-digit code to $1. Enter it below to verify your email.",
     "description": "$1 is the email address the code was sent to"
@@ -5757,8 +5758,11 @@
   "mfaOtpRetryIn": {
     "message": "Try again in $1s"
   },
+  "mfaOtpSend": {
+    "message": "Send code"
+  },
   "mfaOtpSendIn": {
-    "message": "Sending a new code in $1s",
+    "message": "Send code in $1s",
     "description": "$1 is a number of seconds"
   },
   "mfaOtpSending": {
@@ -6166,7 +6170,7 @@
     "message": "Explore your benefits"
   },
   "moneyFtueBenefitConvertDescription": {
-    "message": "Funds you add convert 1:1 to MetaMask USD, with no fees."
+    "message": "Funds you add convert 1:1 to MetaMask USD, a dollar-backed stablecoin."
   },
   "moneyFtueBenefitConvertTitle": {
     "message": "Converts to MetaMask USD, 1:1"
@@ -6178,7 +6182,7 @@
     "message": "Earn automatically"
   },
   "moneyFtueBenefitSpendDescription": {
-    "message": "Send to any wallet or bank, or spend with MetaMask Card for up to 3% back."
+    "message": "Send to any wallet or bank, or spend globally with MetaMask Card."
   },
   "moneyFtueBenefitSpendTitle": {
     "message": "Send or spend anywhere"
@@ -6190,10 +6194,10 @@
     "message": "Trade from the same balance"
   },
   "moneyFtueBenefitWithdrawDescription": {
-    "message": "No lockups, notice periods, or penalties. Your money is always yours to take out."
+    "message": "There are no notice periods or penalties to swap or send your funds."
   },
   "moneyFtueBenefitWithdrawTitle": {
-    "message": "Withdraw anytime"
+    "message": "No lockups"
   },
   "moneyFtueDescription": {
     "message": "MetaMask Money is a stablecoin account that earns up to $1 APY - with trading, sending, and spending built in.",
@@ -9673,6 +9677,12 @@
   "relayerFee": {
     "message": "Relayer fee"
   },
+  "rememberSupportPreference": {
+    "message": "Remember my support preference"
+  },
+  "rememberSupportPreferenceDescription": {
+    "message": "When enabled, MetaMask remembers whether you want to share your User ID and app version with our Support Center. Sharing this information will help us better solve your problem."
+  },
   "remindMeLater": {
     "message": "Remind me later",
     "description": "Secondary action to postpone replacing a legacy passkey."
@@ -12119,28 +12129,12 @@
   "swapAggregator": {
     "message": "Aggregator"
   },
-  "swapAllowSwappingOf": {
-    "message": "Allow swapping of $1",
-    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
-  },
-  "swapAmountReceived": {
-    "message": "Guaranteed amount"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "This is the minimum amount you will receive. You may receive more depending on slippage."
-  },
   "swapAndSend": {
     "message": "Swap & Send"
   },
   "swapApproval": {
     "message": "Approve $1 for swaps",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
-  },
-  "swapAreYouStillThere": {
-    "message": "Are you still there?"
-  },
-  "swapAreYouStillThereDescription": {
-    "message": "We’re ready to show you the latest quotes when you want to continue"
   },
   "swapConfirmWithHwWallet": {
     "message": "Confirm with your hardware wallet"
@@ -12171,16 +12165,6 @@
     "message": "This will $1 for swapping",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
-  "swapEstimatedNetworkFees": {
-    "message": "Estimated network fees"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "This is an estimate of the network fee that will be used to complete your swap. The actual amount may change according to network conditions."
-  },
-  "swapFailedErrorDescriptionWithSupportLink": {
-    "message": "Transaction failures happen and we are here to help. If this issue persists, you can reach our customer support at $1 for further assistance.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
-  },
   "swapFailedErrorTitle": {
     "message": "Swap failed"
   },
@@ -12197,10 +12181,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "Error fetching quotes"
   },
-  "swapFromTo": {
-    "message": "The swap of $1 to $2",
-    "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
   "swapGasFeesExplanation": {
     "message": "MetaMask doesn't make money from network fees. These fees are estimates and can change based on how busy the network is and how complex a transaction is. Learn more $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -12208,9 +12188,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "here",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesSplit": {
-    "message": "Network fees on the previous screen are split between these two transactions."
   },
   "swapGasFeesSponsored": {
     "message": "Paid by MetaMask"
@@ -12225,15 +12202,6 @@
   "swapLearnMore": {
     "message": "Learn more about Swaps"
   },
-  "swapLiquiditySourceInfo": {
-    "message": "We search multiple liquidity sources (exchanges, aggregators and professional market makers) to compare exchange rates and network fees."
-  },
-  "swapMaxSlippage": {
-    "message": "Max slippage"
-  },
-  "swapMetaMaskFee": {
-    "message": "MetaMask fee"
-  },
   "swapMetaMaskFeeDescription": {
     "message": "The fee of $1% is automatically factored into this quote. You pay it in exchange for a license to use MetaMask's liquidity provider information aggregation software.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
@@ -12241,19 +12209,6 @@
   "swapNQuotesWithDot": {
     "message": "$1 quotes.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapOnceTransactionHasProcess": {
-    "message": "Your $1 will be added to your account once this transaction has processed.",
-    "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
-  },
-  "swapProcessing": {
-    "message": "Processing"
-  },
-  "swapQuoteDetails": {
-    "message": "Quote details"
-  },
-  "swapQuoteSource": {
-    "message": "Quote source"
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "Please request new quotes to get the latest rates."
@@ -12264,41 +12219,14 @@
   "swapQuotesNotAvailableDescription": {
     "message": "This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option."
   },
-  "swapQuotesNotAvailableErrorDescription": {
-    "message": "Try adjusting the amount or slippage settings and try again."
-  },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "No quotes available"
-  },
-  "swapRate": {
-    "message": "Rate"
-  },
-  "swapReceiving": {
-    "message": "Receiving"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "This is an estimate. The exact amount depends on slippage."
   },
   "swapRequestForQuotation": {
     "message": "Request for quotation"
   },
-  "swapSelect": {
-    "message": "Select"
-  },
-  "swapSelectAQuote": {
-    "message": "Select a quote"
-  },
-  "swapSelectAToken": {
-    "message": "Select token"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "Below are all the quotes gathered from multiple liquidity sources."
-  },
   "swapSelectToken": {
     "message": "Select token"
-  },
-  "swapShowLatestQuotes": {
-    "message": "Show latest quotes"
   },
   "swapSlippageAutoDescription": {
     "message": "Auto"
@@ -12345,18 +12273,8 @@
   "swapSlippageZeroTitle": {
     "message": "Sourcing zero-slippage providers"
   },
-  "swapSource": {
-    "message": "Liquidity source"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Swaps are complex and time sensitive transactions. We recommend this network fee for a good balance between cost and confidence of a successful Swap."
-  },
-  "swapToConfirmWithHwWallet": {
-    "message": "to confirm with your hardware wallet"
-  },
-  "swapTokenAvailable": {
-    "message": "Your $1 has been added to your account.",
-    "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
   },
   "swapTokenNotAvailable": {
     "message": "Token is not available to swap in this region"
@@ -12364,20 +12282,11 @@
   "swapTokens": {
     "message": "Swap tokens"
   },
-  "swapTransactionComplete": {
-    "message": "Transaction complete"
-  },
-  "swapTwoTransactions": {
-    "message": "2 transactions"
-  },
   "swapUnknown": {
     "message": "Unknown"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "You don't have enough $1 to pay the network fee for this swap. Enter a smaller amount or buy more $1."
-  },
-  "swapZeroSlippage": {
-    "message": "0% Slippage"
   },
   "swapsMaxSlippage": {
     "message": "Slippage tolerance"
@@ -12390,9 +12299,6 @@
   },
   "swapsRebateTooltipTitle": {
     "message": "Trading Rewards"
-  },
-  "swapsViewInActivity": {
-    "message": "View in activity"
   },
   "switch": {
     "message": "Switch"
@@ -13031,16 +12937,19 @@
     "message": "Visit site"
   },
   "visitSupportDataConsentModalAccept": {
-    "message": "Confirm"
+    "message": "Continue"
   },
   "visitSupportDataConsentModalDescription": {
-    "message": "Do you want to share your MetaMask Identifier and app version with our Support Center? This can help us better solve your problem, but is optional."
+    "message": "By continuing, you agree to share your User ID and app version with our Support Center. This will help us better solve your problem."
   },
   "visitSupportDataConsentModalReject": {
     "message": "Don’t share"
   },
+  "visitSupportDataConsentModalSavePreference": {
+    "message": "Save my preference"
+  },
   "visitSupportDataConsentModalTitle": {
-    "message": "Share device details with support"
+    "message": "Share your User ID with Support"
   },
   "visitWebSite": {
     "message": "Visit our website"

@@ -7,6 +7,7 @@ import Homepage from '../../page-objects/pages/home/homepage';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { DAPP_PATH } from '../../constants';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 import { mockTronFeatureFlag } from './mocks/feature-flag';
 import {
   type AccountResourcesRequestOptions,
@@ -121,7 +122,7 @@ export const withTronAccountSnap = async (
       for (let i = 0; i < numberOfAccounts; i++) {
         // For the first iteration open the account menu
         if (i === 0) {
-          await homepage.headerNavbar.openAccountMenu();
+          await openAccountMenu(driver);
         }
 
         await accountListPage.checkPageIsLoaded();

@@ -39,15 +39,7 @@ interface CurrentStep {
   purpose: MfaPurpose;
   flowId?: string;
   email?: string;
-  /** When the server accepts another email code. */
-  resendAvailableAt?: number;
 }
-
-/**
- * The server's minimum gap between two email codes. A sent code starts it, so
- * the resend button waits rather than failing with the cooldown error.
- */
-const EMAIL_RESEND_COOLDOWN_MS = 60_000;
 
 export const createMfaFlow = ({
   request,
@@ -214,16 +206,12 @@ export const createMfaFlow = ({
             reason: tokenReason,
           });
     current.flowId = challenge.flowId;
-    current.resendAvailableAt =
-      current.method === 'email_otp'
-        ? now() + EMAIL_RESEND_COOLDOWN_MS
-        : undefined;
     if (state.step.name === 'otp') {
       setState({
         step: { ...state.step, codeSent: true },
         busy: false,
         error: undefined,
-        resendAvailableAt: current.resendAvailableAt,
+        resendAvailableAt: undefined,
       });
     }
   };
@@ -446,15 +434,15 @@ export const createMfaFlow = ({
   };
 
   /**
-   * Starts a new challenge when the one on screen expired, otherwise shows
-   * the error: a new email code, a new authenticator app verification (the
-   * user enters the app's current code), or a new app setup, whose new secret
-   * replaces the one the user may have added. Only a started challenge can
-   * expire; a start failing with these codes would otherwise restart forever.
+   * Starts a new authenticator app challenge when the one on screen expired,
+   * otherwise shows the error: a new verification (the user enters the app's
+   * current code), or a new app setup, whose new secret replaces the one the
+   * user may have added. Only a started challenge can expire; a start failing
+   * with these codes would otherwise restart forever.
    *
-   * There is no `resendAvailableAt` check here: a resend that comes too early
-   * fails with a cooldown code, which the `cooldown` branch handles, and a
-   * successful send restarts it in `beginCodeChallenge`.
+   * An expired email code only shows its error: the user asks for a new one,
+   * so no email is sent without them asking, and the server's resend limit
+   * decides when they can.
    *
    * @param code - The error's code.
    * @param isRecovery - Whether the failed operation was itself a recovery.
@@ -465,22 +453,6 @@ export const createMfaFlow = ({
     isRecovery: boolean,
   ): (() => Promise<void>) | undefined => {
     if (!isRecovery && current?.flowId && state.step.name === 'otp') {
-      // Too many wrong codes: the user gets the new code themselves, once the
-      // resend limit allows it, rather than a silent send that may be refused.
-      if (current.method === 'email_otp' && code !== 'too_many_attempts') {
-        return async () => {
-          // Clear the previous notice first: the code screen empties the
-          // boxes when `codeResent` changes, so a second expiry must change it
-          // again.
-          setState({ codeResent: undefined });
-          await beginCodeChallenge();
-          setState({ codeResent: true });
-          // The user may have closed the flow while the code was being sent.
-          if (!settled && state.step.name === 'otp') {
-            tracker.codeResent('auto', state.step);
-          }
-        };
-      }
       if (current.method === 'totp') {
         return current.purpose === 'setup'
           ? () => startTotpSetup(true)
@@ -635,16 +607,13 @@ export const createMfaFlow = ({
       current.email === email &&
       current.flowId
     ) {
-      show(
-        {
-          name: 'otp',
-          purpose: 'setup',
-          method: 'email_otp',
-          email,
-          codeSent: true,
-        },
-        { resendAvailableAt: current.resendAvailableAt },
-      );
+      show({
+        name: 'otp',
+        purpose: 'setup',
+        method: 'email_otp',
+        email,
+        codeSent: true,
+      });
       return;
     }
     current = { method: 'email_otp', purpose: 'setup', email };
@@ -652,16 +621,13 @@ export const createMfaFlow = ({
     // first tells the user a code went out when enrollment still failed.
     await run(async () => {
       await beginCodeChallenge();
-      show(
-        {
-          name: 'otp',
-          purpose: 'setup',
-          method: 'email_otp',
-          email,
-          codeSent: true,
-        },
-        { resendAvailableAt: current?.resendAvailableAt },
-      );
+      show({
+        name: 'otp',
+        purpose: 'setup',
+        method: 'email_otp',
+        email,
+        codeSent: true,
+      });
     });
   };
 
@@ -742,9 +708,19 @@ export const createMfaFlow = ({
           (step.method === 'email_otp' || !step.codeSent)
         ) {
           if (step.method === 'email_otp') {
-            tracker.codeResent(action.trigger ?? 'user', step);
+            tracker.codeResent('user', step);
           }
-          await run(beginCodeChallenge);
+          const isResend = step.method === 'email_otp' && step.codeSent;
+          // Clear the previous notice so each new code changes it again: the
+          // code screen empties the boxes when it changes.
+          setState({ codeResent: undefined });
+          await run(async () => {
+            await beginCodeChallenge();
+            // Only once sent: a failed send may recover onto another step.
+            if (isResend) {
+              setState({ codeResent: true });
+            }
+          });
         }
         return;
       case 'retry':
@@ -775,6 +751,10 @@ export const createMfaFlow = ({
           step.method === 'email_otp' &&
           current?.email
         ) {
+          // A dead code can't be entered again: continuing sends a new one.
+          if (state.error && getErrorHandling(state.error) === 'restart') {
+            current = { ...current, flowId: undefined };
+          }
           show({ name: 'emailEntry', prefillEmail: current.email });
         }
         return;

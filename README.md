@@ -135,11 +135,9 @@ You can start a development build with a preloaded wallet state, by adding `TEST
 
 `yarn start:lavamoat` is not currently supported because Webpack watch mode does not support LavaMoat. For production-like LavaMoat verification, use `yarn webpack:lavamoat:build` or `yarn build:test`.
 
-#### React and Redux DevTools
+#### Redux DevTools
 
-To use React or Redux DevTools you'll first need to set `METAMASK_REACT_REDUX_DEVTOOLS` to `true` in `.metamaskrc`.
-
-To start the [React DevTools](https://github.com/facebook/react-devtools), run `yarn devtools:react` with a development build installed in a browser. This will open in a separate window; no browser extension is required.
+To use Redux DevTools you'll first need to set `METAMASK_REACT_REDUX_DEVTOOLS` to `true` in `.metamaskrc`.
 
 To start the [Redux DevTools Extension](https://github.com/reduxjs/redux-devtools/tree/main/extension):
 
@@ -148,8 +146,6 @@ To start the [Redux DevTools Extension](https://github.com/reduxjs/redux-devtool
 - Open the Redux DevTools extension and check the "Use custom (local) server" checkbox in the Remote DevTools Settings, using the default server configuration (host `localhost`, port `8000`, secure connection checkbox unchecked).
 
 Then run the command `yarn devtools:redux` with a development build installed in a browser. This will enable you to use the Redux DevTools extension to inspect MetaMask.
-
-To create a development build and run both of these tools simultaneously, run `yarn start:dev`.
 
 #### Test Dapp
 
