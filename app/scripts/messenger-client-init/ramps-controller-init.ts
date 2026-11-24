@@ -7,6 +7,7 @@ import {
 } from '@metamask/ramps-controller';
 import type { OnboardingControllerState } from '../controllers/onboarding';
 import type { PreferencesControllerState } from '../controllers/preferences-controller';
+import { rampsInitTrace } from '../lib/ramps/ramps-init-trace';
 import { removeStalePrecreatedOrders } from '../lib/ramps-stale-order-cleanup';
 import {
   MetaMetricsEventCategory,
@@ -18,7 +19,7 @@ import {
   isRampsNetworkAllowed,
   type RampsNetworkAccessState,
 } from '../../../shared/lib/ramps/network-access';
-import { trace, TraceName } from '../../../shared/lib/trace';
+import { trace } from '../../../shared/lib/trace';
 import { captureException } from '../../../shared/lib/sentry';
 import { trackEvent } from '../controllers/analytics';
 import type { MessengerClientInitFunction } from './types';
@@ -82,11 +83,8 @@ function createRampsLifecycleManager(
     lifecycleStarted = true;
     const runId = lifecycleRunId;
 
-    // Starts at worker start and on connection, with no caller; its own trace
-    // lets its countries and geolocation requests join the backend's spans.
-    trace({ name: TraceName.RampsInit, root: true }, () =>
-      messengerClient.init(),
-    )
+    rampsInitTrace
+      .run(() => messengerClient.init())
       .then(() => {
         if (runId !== lifecycleRunId || !isPollingAllowed()) {
           return;

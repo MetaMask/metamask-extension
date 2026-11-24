@@ -2,7 +2,7 @@ import { Env } from '@metamask/geolocation-controller';
 import type { WalletOptions } from '@metamask/wallet';
 import { isProduction } from '../../../../shared/lib/environment';
 import { TraceName } from '../../../../shared/lib/trace';
-import { withOwnTraceWithoutCaller } from '../../lib/trace-without-caller';
+import { withOwnRootTrace } from '../../lib/own-root-trace';
 
 type GeolocationApiServiceInstanceOptions = NonNullable<
   WalletOptions['instanceOptions']['geolocationApiService']
@@ -16,10 +16,6 @@ type GeolocationApiServiceInstanceOptions = NonNullable<
 export function getGeolocationApiServiceInstanceOptions(): GeolocationApiServiceInstanceOptions {
   return {
     env: isProduction() ? Env.PRD : Env.DEV,
-    // Perps eligibility asks for the location at worker start, with no caller.
-    fetch: withOwnTraceWithoutCaller(
-      TraceName.GeolocationFetch,
-      fetch.bind(globalThis),
-    ),
+    fetch: withOwnRootTrace(TraceName.GeolocationFetch, fetch.bind(globalThis)),
   };
 }

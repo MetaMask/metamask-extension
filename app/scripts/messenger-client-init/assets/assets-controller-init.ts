@@ -20,7 +20,7 @@ import {
   traceAsControllerCallback,
   TraceName,
 } from '../../../../shared/lib/trace';
-import { withOwnTraceWithoutCaller } from '../../lib/trace-without-caller';
+import { runAsOwnRootClaiming } from '../../lib/own-root-trace';
 import {
   getBackendApiUrlsOption,
   isBackendAuthDisabled,
@@ -188,6 +188,34 @@ function createAssetsControllerTrace(
   };
 }
 
+function isSupportedNetworksUrl(url: string): boolean {
+  const { hostname, pathname } = new URL(url);
+  return (
+    hostname.startsWith('accounts.') && pathname === '/v2/supportedNetworks'
+  );
+}
+
+/**
+ * Run each supported-networks fetch of the Accounts API client as the root of
+ * a trace of its own. The client sends the request with the global `fetch`,
+ * after awaiting its bearer token, so the request is claimed by URL.
+ *
+ * @param accounts - The Accounts API client, whose method is replaced.
+ * @param accounts.fetchV2SupportedNetworks - The method to trace.
+ */
+export function traceSupportedNetworksFetches(accounts: {
+  fetchV2SupportedNetworks: (...args: never[]) => Promise<unknown>;
+}): void {
+  const fetchV2SupportedNetworks =
+    accounts.fetchV2SupportedNetworks.bind(accounts);
+  accounts.fetchV2SupportedNetworks = (...args) =>
+    runAsOwnRootClaiming(
+      TraceName.AccountsApiSupportedNetworksFetch,
+      isSupportedNetworksUrl,
+      () => fetchV2SupportedNetworks(...args),
+    );
+}
+
 /**
  * Gets or creates the API platform client.
  *
@@ -204,13 +232,7 @@ function getApiClient(
       getBearerToken: () => safeGetBearerToken(initMessenger),
       ...getBackendApiUrlsOption(),
     });
-    // The Accounts API data source fetches supported networks from its
-    // constructor and on a timer, with no caller.
-    const { accounts } = client;
-    accounts.fetchV2SupportedNetworks = withOwnTraceWithoutCaller(
-      TraceName.AccountsApiSupportedNetworksFetch,
-      accounts.fetchV2SupportedNetworks.bind(accounts),
-    );
+    traceSupportedNetworksFetches(client.accounts);
     apiClient = client as unknown as AssetsControllerOptions['queryApiClient'];
   }
   return apiClient;

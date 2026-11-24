@@ -1,4 +1,5 @@
 import { Env } from '@metamask/geolocation-controller';
+import type { Span } from '@sentry/browser';
 import { isProduction } from '../../../../shared/lib/environment';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import {
@@ -58,20 +59,23 @@ describe('getGeolocationApiServiceInstanceOptions fetch (real SDK)', () => {
     expect(seen?.traceId).not.toBe(ambientTraceId);
   });
 
-  it("keeps a request made on a caller's behalf in the caller's trace", async () => {
+  it('sends a request made under another span under its own root trace', async () => {
     startServiceWorkerSentry();
     let seen: ReturnType<typeof readActiveSpan>;
+    let pollTraceId = '';
     jest.spyOn(globalThis, 'fetch').mockImplementation(async () => {
       seen = readActiveSpan();
       return new Response('{}');
     });
 
-    await trace({ name: TraceName.BackgroundPoll, root: true }, () =>
-      getGeolocationApiServiceInstanceOptions().fetch?.(
+    await trace({ name: TraceName.BackgroundPoll, root: true }, (span) => {
+      pollTraceId = (span as Span).spanContext().traceId;
+      return getGeolocationApiServiceInstanceOptions().fetch?.(
         'https://on-ramp.api.cx.metamask.io/geolocation',
-      ),
-    );
+      );
+    });
 
-    expect(seen?.rootName).toBe(TraceName.BackgroundPoll);
+    expect(seen?.rootName).toBe(TraceName.GeolocationFetch);
+    expect(seen?.traceId).not.toBe(pollTraceId);
   });
 });

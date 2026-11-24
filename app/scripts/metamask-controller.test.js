@@ -299,26 +299,16 @@ jest.mock('./lib/rpc-method-middleware', () => ({
   },
 }));
 
-jest.mock('../../shared/lib/trace', () => {
-  const actual = jest.requireActual('../../shared/lib/trace');
-  return {
-    ...actual,
-    getPerformanceTimestamp: jest.fn(() => 1_000),
-    // Run the callback for the RPC-dispatch path and the traces that wrap a
-    // call whose caller needs its result; other instrumentation traces stay
-    // no-ops, as the rest of the suite assumes.
-    trace: jest.fn((request, fn) =>
-      request?.op === 'rpc.handler' ||
-      [
-        actual.TraceName.PhishingListsUpdate,
-        actual.TraceName.RemoteFeatureFlagsFetch,
-      ].includes(request?.name)
-        ? fn?.()
-        : undefined,
-    ),
-    endTrace: jest.fn(),
-  };
-});
+jest.mock('../../shared/lib/trace', () => ({
+  ...jest.requireActual('../../shared/lib/trace'),
+  getPerformanceTimestamp: jest.fn(() => 1_000),
+  // Run the callback only for the RPC-dispatch path; other instrumentation
+  // traces stay no-ops, as the rest of the suite assumes.
+  trace: jest.fn((request, fn) =>
+    request?.op === 'rpc.handler' ? fn?.() : undefined,
+  ),
+  endTrace: jest.fn(),
+}));
 
 // Records the options the controller wires the bridge with, so the callbacks it
 // passes can be exercised without standing up the Hyperliquid SDK.

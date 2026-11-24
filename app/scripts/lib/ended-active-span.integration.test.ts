@@ -9,7 +9,7 @@ import {
   BACKEND_TRACE_PROPAGATION_TARGETS,
   consensysTracePropagationIntegration,
 } from './sentry-trace-propagation';
-import { withOwnTraceWithoutCaller } from './trace-without-caller';
+import { withOwnRootTrace } from './own-root-trace';
 
 const BACKEND_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
@@ -125,11 +125,11 @@ describe('work under an ended active span (real SDK)', () => {
     expect(requestHeaders[0].baggage).toContain('consensys-request-id=');
   });
 
-  it('starts a no-caller operation as its own root', async () => {
+  it('starts an operation as its own root', async () => {
     const endedTraceId = await endEarlierRootFirst();
     let rootName: string | undefined;
 
-    await withOwnTraceWithoutCaller(TraceName.GeolocationFetch, async () => {
+    await withOwnRootTrace(TraceName.GeolocationFetch, async () => {
       const span = Sentry.getActiveSpan() as Sentry.Span;
       rootName = Sentry.spanToJSON(Sentry.getRootSpan(span)).description;
       await fetch(BACKEND_URL);
