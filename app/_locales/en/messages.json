@@ -1319,7 +1319,7 @@
     "message": "We couldn't keep a secure connection with your phone. Check your internet connection and try again."
   },
   "add_device_error_expired": {
-    "message": "This sync session expired. Start again to generate a new QR code."
+    "message": "This session expired. Start with a new QR code."
   },
   "add_device_error_generic": {
     "message": "Something went wrong while syncing with your phone. Try again."
@@ -1334,57 +1334,51 @@
     "message": "We couldn't finish syncing your accounts to your phone. Try again."
   },
   "add_device_error_title": {
-    "message": "Sync couldn't be completed"
+    "message": "Couldn't add to mobile"
   },
   "add_device_success_desc_imported_plural": {
-    "message": "$1 imported accounts were synced to your phone.",
+    "message": "$1 imported accounts were synced to MetaMask mobile.",
     "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
   },
   "add_device_success_desc_imported_singular": {
-    "message": "1 imported account was synced to your phone.",
+    "message": "1 imported account was synced to MetaMask mobile.",
     "description": "Used when a single imported account was synced"
   },
   "add_device_success_desc_wallet_plural": {
-    "message": "$1 wallets were synced to your phone.",
+    "message": "$1 wallets were synced to MetaMask mobile.",
     "description": "$1 is the number of wallets. Used when only wallets were synced"
   },
   "add_device_success_desc_wallet_plural_imported_plural": {
-    "message": "$1 wallets and $2 imported accounts were synced to your phone.",
+    "message": "$1 wallets and $2 imported accounts were synced to MetaMask mobile.",
     "description": "$1 is the number of wallets, $2 is the number of imported accounts"
   },
   "add_device_success_desc_wallet_plural_imported_singular": {
-    "message": "$1 wallets and 1 imported account were synced to your phone.",
+    "message": "$1 wallets and 1 imported account were synced to MetaMask mobile.",
     "description": "$1 is the number of wallets. Used when multiple wallets and a single imported account were synced"
   },
   "add_device_success_desc_wallet_singular": {
-    "message": "1 wallet was synced to your phone.",
+    "message": "1 wallet was synced to MetaMask mobile.",
     "description": "Used when a single wallet was synced"
   },
   "add_device_success_desc_wallet_singular_imported_plural": {
-    "message": "1 wallet and $1 imported accounts were synced to your phone.",
+    "message": "1 wallet and $1 imported accounts were synced to MetaMask mobile.",
     "description": "$1 is the number of imported accounts. Used when a single wallet and multiple imported accounts were synced"
   },
   "add_device_success_desc_wallet_singular_imported_singular": {
-    "message": "1 wallet and 1 imported account were synced to your phone.",
+    "message": "1 wallet and 1 imported account were synced to MetaMask mobile.",
     "description": "Used when a single wallet and a single imported account were synced"
   },
   "add_device_success_title": {
-    "message": "Device paired"
+    "message": "Continue in MetaMask mobile"
   },
   "add_device_syncing_desc": {
-    "message": "Sending your selected accounts to your phone."
+    "message": "Sending your selected accounts to MetaMask mobile."
   },
   "add_device_syncing_title": {
     "message": "Importing accounts"
   },
   "add_device_try_again": {
-    "message": "Try again"
-  },
-  "add_device_validating_desc": {
-    "message": "Establishing a secure, encrypted connection with your phone."
-  },
-  "add_device_validating_title": {
-    "message": "Pairing devices"
+    "message": "Get new code"
   },
   "add_wallets": {
     "message": "Choose what to import"
@@ -2684,6 +2678,9 @@
   },
   "cancelled": {
     "message": "Cancelled"
+  },
+  "cantScanQrCode": {
+    "message": "Can’t scan? (For testing only)"
   },
   "carouselAllCaughtUp": {
     "message": "You're all caught up!",
@@ -4062,20 +4059,19 @@
     "message": "Enter verification code"
   },
   "enter_verification_code_desc": {
-    "message": "For security, enter the code shown in the MetaMask app on your device."
+    "message": "For your security, enter the code shown in MetaMask mobile."
   },
   "enter_verification_code_error": {
-    "message": "Incorrect code. Try again."
+    "message": "That code is incorrect. Try again."
   },
   "enter_verification_code_expired": {
-    "message": "Verification code expired"
-  },
-  "enter_verification_code_expires_in": {
-    "message": "Expires in $1s",
-    "description": "$1 is the number of seconds remaining before the verification code expires"
+    "message": "This code expired. Get a new QR code to try again."
   },
   "enter_verification_code_max_attempts": {
-    "message": "Too many incorrect attempts. Start with a new QR code."
+    "message": "You made too many incorrect attempts. Start with a new QR code."
+  },
+  "enter_verification_code_try_again": {
+    "message": "Try again"
   },
   "enter_your_password": {
     "message": "Enter your password"
@@ -4550,9 +4546,6 @@
   "generalCameraErrorTitle": {
     "message": "Something went wrong...."
   },
-  "generateNewQrCode": {
-    "message": "Generate new QR code"
-  },
   "genericExplorerView": {
     "message": "View account on $1"
   },
@@ -4815,6 +4808,9 @@
   },
   "hideAdvancedDetails": {
     "message": "Hide advanced details"
+  },
+  "hideQrData": {
+    "message": "Hide QR data (For testing only)"
   },
   "hideSentitiveInfo": {
     "message": "Hide sensitive information"
@@ -9302,13 +9298,6 @@
     "message": "Camera access needed",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
-  "qrCodeExpired": {
-    "message": "QR code expired"
-  },
-  "qrCodeExpiresIn": {
-    "message": "Expires in $1s",
-    "description": "$1 is the number of seconds remaining before the QR code expires"
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "This QR code is for a different transaction. Cancel and try again, making sure to scan the QR code shown in MetaMask with your hardware wallet first.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -9392,6 +9381,10 @@
   "qrSyncSelectionSummaryOneWalletOneAccount": {
     "message": "$1 wallet · $2 account selected",
     "description": "$1 is the selected wallet count and $2 is the selected account count"
+  },
+  "qrSyncStillConnecting": {
+    "message": "Still connecting. Don’t close MetaMask mobile.",
+    "description": "Shown while waiting for MetaMask mobile to respond after the verification code is entered"
   },
   "queued": {
     "message": "Queued"
@@ -10184,7 +10177,7 @@
     "message": "Scan QR code"
   },
   "scan_qr_code_desc": {
-    "message": "Scan this with the MetaMask app on the device you want to add."
+    "message": "Scan this QR code with MetaMask mobile."
   },
   "scrollDown": {
     "message": "Scroll down"
@@ -11999,9 +11992,6 @@
   "standardAccountLabel": {
     "message": "Standard account"
   },
-  "start_with_new_qr_code": {
-    "message": "Start with a new QR code"
-  },
   "stateCorruptionAreYouSure": {
     "message": "Are you sure you want to proceed?"
   },
@@ -12369,7 +12359,7 @@
     "message": "Symbol must be 11 characters or fewer."
   },
   "syncAccounts": {
-    "message": "Sync with mobile"
+    "message": "Add to mobile"
   },
   "syncing": {
     "message": "Syncing..."
