@@ -59,11 +59,14 @@ describe('MarketInsightsFeedbackModal', () => {
 
   it('groups the native radios under the same name', () => {
     const { getAllByRole } = renderFeedbackModal();
-    const radios = getAllByRole<HTMLInputElement>('radio');
+    const radios = getAllByRole('radio');
 
     expect(radios).toHaveLength(5);
-    expect(radios[0].name).not.toBe('');
-    expect(new Set(radios.map((radio) => radio.name)).size).toBe(1);
+    const group = radios[0].getAttribute('name');
+    expect(group).toBeTruthy();
+    expect(new Set(radios.map((radio) => radio.getAttribute('name')))).toEqual(
+      new Set([group]),
+    );
   });
 
   it('disables submit until a reason is selected', () => {
