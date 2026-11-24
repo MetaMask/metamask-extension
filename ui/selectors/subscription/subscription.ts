@@ -4,12 +4,12 @@ import {
   MoneyAccountFeature,
   PRODUCT_TYPES,
   selectHasEntitlement,
+  selectIsActiveSubscriber,
   type ProductType,
   Subscription,
   SubscriptionControllerState,
 } from '@metamask/subscription-controller';
 import { createSelector } from 'reselect';
-import { ActiveSubscriptionStatuses } from '../../../shared/constants/subscriptions';
 import {
   getIsShieldSubscriptionActive,
   getShieldSubscription,
@@ -77,11 +77,7 @@ export const getLastSelectedPaymentMethodByProduct = (
 ) => state.metamask.lastSelectedPaymentMethod?.[product];
 
 export const getIsMoneyAccountPlusSubscriber = (state: SubscriptionState) =>
-  state.metamask.subscriptions?.some(
-    (subscription) =>
-      hasProduct(subscription, PRODUCT_TYPES.MONEY_ACCOUNT_PLUS) &&
-      ActiveSubscriptionStatuses.includes(subscription.status),
-  ) ?? false;
+  selectIsActiveSubscriber(state.metamask, PRODUCT_TYPES.MONEY_ACCOUNT_PLUS);
 
 export const getHasAnyMoneyAccountPlusEntitlement = (
   state: SubscriptionState,
