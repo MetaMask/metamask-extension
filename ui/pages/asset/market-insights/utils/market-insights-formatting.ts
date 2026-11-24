@@ -18,7 +18,7 @@ export const getFaviconUrl = (source: string): string => {
     const normalizedSource = trimmedSource.includes('://')
       ? trimmedSource
       : `https://${trimmedSource}`;
-    const domain = new URL(normalizedSource).hostname;
+    const domain = new URL(normalizedSource).hostname.replace(/^www\./u, '');
     return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(
       domain,
     )}&sz=32`;
