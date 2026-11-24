@@ -57,6 +57,15 @@ describe('MarketInsightsFeedbackModal', () => {
     });
   });
 
+  it('groups the native radios under the same name', () => {
+    const { getAllByRole } = renderFeedbackModal();
+    const radios = getAllByRole<HTMLInputElement>('radio');
+
+    expect(radios).toHaveLength(5);
+    expect(radios[0].name).not.toBe('');
+    expect(new Set(radios.map((radio) => radio.name)).size).toBe(1);
+  });
+
   it('disables submit until a reason is selected', () => {
     const onSubmit = jest.fn();
     const { getByTestId } = renderFeedbackModal({ onSubmit });
@@ -78,6 +87,9 @@ describe('MarketInsightsFeedbackModal', () => {
     fireEvent.click(getByTestId(FEEDBACK_OPTION_TEST_IDS.SomethingElse));
 
     const additionalInput = getByTestId(ADDITIONAL_INPUT_TEST_ID);
+    expect(additionalInput).toHaveAccessibleName(
+      en.marketInsightsFeedbackAdditionalLabel.message,
+    );
     const submitButton = getByTestId(SUBMIT_BUTTON_TEST_ID);
 
     expect(submitButton).toBeDisabled();
@@ -133,11 +145,11 @@ describe('MarketInsightsFeedbackModal', () => {
     const { getByTestId } = renderFeedbackModal();
 
     const option = getByTestId(FEEDBACK_OPTION_TEST_IDS.HardToUnderstand);
-    expect(option).toHaveAttribute('aria-checked', 'false');
+    expect(option).not.toBeChecked();
 
     fireEvent.click(option);
 
-    expect(option).toHaveAttribute('aria-checked', 'true');
+    expect(option).toBeChecked();
   });
 
   it('calls onClose when the modal close button is pressed', () => {

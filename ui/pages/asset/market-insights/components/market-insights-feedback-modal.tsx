@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useId, useMemo, useState } from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -85,6 +85,8 @@ export const MarketInsightsFeedbackModal = ({
   onSubmit,
 }: MarketInsightsFeedbackModalProps) => {
   const t = useI18nContext();
+  const reasonGroupName = useId();
+  const feedbackLabelId = useId();
   const [selectedReason, setSelectedReason] =
     useState<MarketInsightsFeedbackReason | null>(null);
   const [additionalFeedback, setAdditionalFeedback] = useState('');
@@ -156,19 +158,19 @@ export const MarketInsightsFeedbackModal = ({
               const isSelected = option.reason === selectedReason;
 
               return (
-                <button
-                  key={option.reason}
-                  type="button"
-                  className="cursor-pointer border-0 bg-transparent p-0"
-                  onClick={() => handleReasonPress(option.reason)}
-                  data-testid={option.testId}
-                  role="radio"
-                  aria-checked={isSelected}
-                >
+                <label key={option.reason} className="cursor-pointer">
+                  <input
+                    type="radio"
+                    name={reasonGroupName}
+                    className="peer sr-only"
+                    checked={isSelected}
+                    onChange={() => handleReasonPress(option.reason)}
+                    data-testid={option.testId}
+                  />
                   <Box
                     flexDirection={BoxFlexDirection.Row}
                     alignItems={BoxAlignItems.Center}
-                    className="gap-3 py-1"
+                    className="gap-3 rounded-sm py-1 peer-focus-visible:ring-2 peer-focus-visible:ring-primary-default"
                   >
                     <Box
                       className={`flex h-6 w-6 items-center justify-center rounded-full border ${
@@ -183,7 +185,7 @@ export const MarketInsightsFeedbackModal = ({
                       {t(option.labelKey)}
                     </Text>
                   </Box>
-                </button>
+                </label>
               );
             })}
           </Box>
@@ -194,10 +196,12 @@ export const MarketInsightsFeedbackModal = ({
                 variant={TextVariant.BodyMd}
                 color={TextColor.TextDefault}
                 className="mb-2"
+                id={feedbackLabelId}
               >
                 {t('marketInsightsFeedbackAdditionalLabel')}
               </Text>
               <TextArea
+                aria-labelledby={feedbackLabelId}
                 value={additionalFeedback}
                 onChange={(event) => setAdditionalFeedback(event.target.value)}
                 maxLength={MAX_FEEDBACK_LENGTH}
