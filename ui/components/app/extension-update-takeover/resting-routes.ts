@@ -8,6 +8,8 @@ import {
   ASSET_SECURITY_TRUST_ROUTE,
   DEFAULT_ROUTE,
   LEGACY_SETTINGS_V2_ROUTE,
+  MFA_SETTINGS_EMAIL_ROUTE,
+  MFA_SETTINGS_TOTP_ROUTE,
   MONEY_ACTIVITY_ROUTE,
   MONEY_EARN_ROUTE,
   MONEY_HOME_ROUTE,
@@ -18,7 +20,10 @@ import {
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
   PERPS_TRANSACTION_DETAILS_ROUTE,
+  SECURITY_PASSWORD_CHANGE_V2_ROUTE,
+  SECURITY_REGISTER_PASSKEY_ROUTE,
   SETTINGS_ROUTE,
+  TRANSACTION_SHIELD_CLAIM_ROUTES,
   TX_DETAILS_ROUTE,
 } from '../../../helpers/constants/routes';
 
@@ -51,16 +56,28 @@ const RESTING_ROUTE_PATTERNS: { path: string; end: boolean }[] = [
 ];
 
 /**
+ * Routes that match a resting pattern above but hold a flow in progress: the
+ * asset-activation loader shares the asset path shape, and these settings
+ * screens are forms.
+ */
+const NON_RESTING_ROUTES = [
+  ASSET_ACTIVATION_LOADER_ROUTE,
+  SECURITY_PASSWORD_CHANGE_V2_ROUTE,
+  SECURITY_REGISTER_PASSKEY_ROUTE,
+  MFA_SETTINGS_EMAIL_ROUTE,
+  MFA_SETTINGS_TOTP_ROUTE,
+  TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL,
+  TRANSACTION_SHIELD_CLAIM_ROUTES.EDIT_DRAFT.FULL,
+];
+
+/**
  * Returns whether the takeover may cover this pathname.
- *
- * The asset-activation loader shares the asset path shape, so it is excluded
- * even though it would otherwise match asset details.
  *
  * @param pathname - Location pathname, without the hash or search.
  * @returns Whether the pathname is a resting screen.
  */
 export function isExtensionUpdateRestingPathname(pathname: string): boolean {
-  if (matchPath(ASSET_ACTIVATION_LOADER_ROUTE, pathname)) {
+  if (NON_RESTING_ROUTES.some((route) => matchPath(route, pathname) !== null)) {
     return false;
   }
 
