@@ -959,7 +959,6 @@ describe('getTokensControllerAllIgnoredTokens', () => {
         metamask: {
           ...assetsControllerState,
           allIgnoredTokens: legacyAllIgnoredTokens,
-          assetPreferences: {},
         },
       });
 

@@ -1700,6 +1700,7 @@ export class LegacyBackgroundApiService {
     );
 
     const metamask = {
+      allTokens: {},
       internalAccounts,
       remoteFeatureFlags,
       assetsInfo,
