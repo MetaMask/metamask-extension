@@ -1,4 +1,8 @@
 import { Driver } from '../../webdriver/driver';
+import {
+  createSwap,
+  selectDestinationToken,
+} from '../../page-objects/flows/bridge.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -43,7 +47,7 @@ describe('Swap on Stellar', function () {
         await homePage.checkPageIsLoaded();
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSwap({
+        await createSwap(driver, {
           amount: 1,
           swapTo: 'USDC',
           swapFrom: 'XLM',
@@ -82,7 +86,7 @@ describe('Swap on Stellar', function () {
         await homePage.checkPageIsLoaded();
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSwap({
+        await createSwap(driver, {
           amount: 1,
           swapTo: 'USDC',
           swapFrom: 'XLM',
@@ -119,7 +123,7 @@ describe('Swap on Stellar', function () {
         await homePage.checkPageIsLoaded();
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSwap({
+        await createSwap(driver, {
           amount: 1,
           swapTo: 'USDC',
           swapFrom: 'XLM',
@@ -161,7 +165,7 @@ describe('Swap on Stellar', function () {
         await homePage.checkPageIsLoaded();
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSwap({
+        await createSwap(driver, {
           amount: 1,
           swapTo: 'XLM',
           swapFrom: 'USDC',
@@ -197,7 +201,7 @@ describe('Swap on Stellar', function () {
         await homePage.checkPageIsLoaded();
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSwap({
+        await createSwap(driver, {
           amount: 999999,
           swapTo: 'USDC',
           swapFrom: 'XLM',
@@ -229,7 +233,7 @@ describe('Swap on Stellar', function () {
         await homePage.checkPageIsLoaded();
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSwap({
+        await createSwap(driver, {
           amount: 10,
           swapTo: 'USDC',
           swapFrom: 'XLM',
@@ -239,7 +243,7 @@ describe('Swap on Stellar', function () {
         await swapPage.waitForQuote();
         await swapPage.checkQuoteIsDisplayed();
 
-        await swapPage.selectDestinationToken('EURC');
+        await selectDestinationToken(driver, 'EURC');
         await swapPage.waitForQuote();
         await swapPage.checkQuoteIsDisplayed();
         await swapPage.checkDestinationToken('EURC');
