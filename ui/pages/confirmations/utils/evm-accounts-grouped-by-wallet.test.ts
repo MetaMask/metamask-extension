@@ -10,6 +10,7 @@ const QR_ADDRESS = '0x2468ace02468ace02468ace02468ace02468ace0';
 const NON_EVM_ADDRESS = 'bc1qexampleexampleexampleexampleexampleex';
 
 const hardwareAccount = (address: string, keyringType: KeyringTypes) => ({
+  id: `account-${address}`,
   address,
   type: 'eip155:eoa',
   metadata: { keyring: { type: keyringType } },
@@ -23,7 +24,13 @@ const HARDWARE_WALLETS_MOCK = {
       'group-1': {
         id: 'group-1',
         metadata: { name: 'Account 1' },
-        accounts: [{ address: ACCOUNT_1_ADDRESS, type: 'eip155:eoa' }],
+        accounts: [
+          {
+            id: `account-${ACCOUNT_1_ADDRESS}`,
+            address: ACCOUNT_1_ADDRESS,
+            type: 'eip155:eoa',
+          },
+        ],
       },
       'group-2': {
         id: 'group-2',
@@ -58,17 +65,35 @@ const WALLETS_MOCK = {
       'group-1': {
         id: 'group-1',
         metadata: { name: 'Account 1' },
-        accounts: [{ address: ACCOUNT_1_ADDRESS, type: 'eip155:eoa' }],
+        accounts: [
+          {
+            id: `account-${ACCOUNT_1_ADDRESS}`,
+            address: ACCOUNT_1_ADDRESS,
+            type: 'eip155:eoa',
+          },
+        ],
       },
       'group-2': {
         id: 'group-2',
         metadata: { name: 'Account 2' },
-        accounts: [{ address: ACCOUNT_2_ADDRESS, type: 'eip155:eoa' }],
+        accounts: [
+          {
+            id: `account-${ACCOUNT_2_ADDRESS}`,
+            address: ACCOUNT_2_ADDRESS,
+            type: 'eip155:eoa',
+          },
+        ],
       },
       'group-3': {
         id: 'group-3',
         metadata: { name: 'Bitcoin Account' },
-        accounts: [{ address: NON_EVM_ADDRESS, type: 'bip122:p2wpkh' }],
+        accounts: [
+          {
+            id: `account-${NON_EVM_ADDRESS}`,
+            address: NON_EVM_ADDRESS,
+            type: 'bip122:p2wpkh',
+          },
+        ],
       },
     },
   },
@@ -79,7 +104,13 @@ const WALLETS_MOCK = {
       'group-4': {
         id: 'group-4',
         metadata: { name: 'Only Bitcoin' },
-        accounts: [{ address: NON_EVM_ADDRESS, type: 'bip122:p2wpkh' }],
+        accounts: [
+          {
+            id: `account-${NON_EVM_ADDRESS}`,
+            address: NON_EVM_ADDRESS,
+            type: 'bip122:p2wpkh',
+          },
+        ],
       },
     },
   },
@@ -94,13 +125,21 @@ describe('getEvmAccountsGroupedByWallet', () => {
         accounts: [
           {
             id: 'group-1',
+
+            accountId: `account-${ACCOUNT_1_ADDRESS}`,
+
             name: 'Account 1',
+
             address: ACCOUNT_1_ADDRESS,
             type: 'eip155:eoa',
           },
           {
             id: 'group-2',
+
+            accountId: `account-${ACCOUNT_2_ADDRESS}`,
+
             name: 'Account 2',
+
             address: ACCOUNT_2_ADDRESS,
             type: 'eip155:eoa',
           },
@@ -133,19 +172,31 @@ describe('getEvmAccountsGroupedByWallet', () => {
           accounts: [
             {
               id: 'group-1',
+
+              accountId: `account-${ACCOUNT_1_ADDRESS}`,
+
               name: 'Account 1',
+
               address: ACCOUNT_1_ADDRESS,
               type: 'eip155:eoa',
             },
             {
               id: 'group-2',
+
+              accountId: `account-${LEDGER_ADDRESS}`,
+
               name: 'Ledger Account',
+
               address: LEDGER_ADDRESS,
               type: 'eip155:eoa',
             },
             {
               id: 'group-4',
+
+              accountId: `account-${QR_ADDRESS}`,
+
               name: 'QR Account',
+
               address: QR_ADDRESS,
               type: 'eip155:eoa',
             },
@@ -157,7 +208,11 @@ describe('getEvmAccountsGroupedByWallet', () => {
           accounts: [
             {
               id: 'group-3',
+
+              accountId: `account-${TREZOR_ADDRESS}`,
+
               name: 'Trezor Account',
+
               address: TREZOR_ADDRESS,
               type: 'eip155:eoa',
             },
@@ -178,7 +233,11 @@ describe('getEvmAccountsGroupedByWallet', () => {
           accounts: [
             {
               id: 'group-1',
+
+              accountId: `account-${ACCOUNT_1_ADDRESS}`,
+
               name: 'Account 1',
+
               address: ACCOUNT_1_ADDRESS,
               type: 'eip155:eoa',
             },

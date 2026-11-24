@@ -3,7 +3,7 @@ import assert from 'node:assert';
 import {
   getReactCompilerLoader,
   type ReactCompilerLoaderConfig,
-} from '../utils/loaders/reactCompilerLoader';
+} from '../utils/loaders/reactCompilerLoader.ts';
 
 describe('getReactCompilerLoader', () => {
   const baseConfig: ReactCompilerLoaderConfig = {

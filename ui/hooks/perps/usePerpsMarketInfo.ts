@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { MarketInfo } from '@metamask/perps-controller';
 import {
   clearPerpsMarketInfoModuleCache,
   fetchMarketInfos,
+  invalidateCachedMarketInfos,
   peekCachedMarketInfos,
 } from '../../providers/perps/perps-cache';
 import { getIsPerpsTerminalBackendEnabled } from '../../selectors/perps';
@@ -11,11 +12,17 @@ import { usePerpsCacheKey } from './usePerpsCacheKey';
 
 export { clearPerpsMarketInfoModuleCache };
 
+function isSymbolMatch(candidate: MarketInfo, symbol: string): boolean {
+  return candidate.name.toLowerCase() === symbol.toLowerCase();
+}
+
 export type UsePerpsMarketInfoReturn = {
   /** Matching market metadata, when the list has resolved and the symbol exists */
   market: MarketInfo | undefined;
   /** True until the market list fetch has settled for the current scope */
   isLoading: boolean;
+  /** Fetches the market list again, e.g. after a failed lookup */
+  retry: () => void;
 };
 
 /**
@@ -54,6 +61,7 @@ export function usePerpsMarketInfo(
 
   const lookupKey = `${enabled}|${marketInfoCacheKey}|${useTerminalApi}`;
   const [prevLookupKey, setPrevLookupKey] = useState(lookupKey);
+  const [retryCount, setRetryCount] = useState(0);
 
   const [marketInfos, setMarketInfos] = useState<MarketInfo[] | undefined>(
     () => {
@@ -89,8 +97,10 @@ export function usePerpsMarketInfo(
       return undefined;
     }
 
+    // State was seeded from a warm cache. After a retry, read through
+    // fetchMarketInfos even if the list is warm again, so loading settles.
     const cached = peekCachedMarketInfos(marketInfoCacheKey, useTerminalApi);
-    if (cached) {
+    if (cached && retryCount === 0) {
       return undefined;
     }
 
@@ -106,15 +116,33 @@ export function usePerpsMarketInfo(
     return () => {
       cancelled = true;
     };
-  }, [marketInfoCacheKey, useTerminalApi, enabled]);
+  }, [marketInfoCacheKey, useTerminalApi, enabled, retryCount]);
+
+  // Reuse a cached list that has the symbol (another consumer may have
+  // fetched it after this one failed); otherwise refetch the scope, since a
+  // cached empty or incomplete list would never contain it.
+  const retry = useCallback(() => {
+    if (!enabled) {
+      return;
+    }
+    const cached = peekCachedMarketInfos(marketInfoCacheKey, useTerminalApi);
+    if (cached?.some((candidate) => isSymbolMatch(candidate, symbol))) {
+      setMarketInfos(cached);
+      setIsLoading(false);
+      return;
+    }
+    invalidateCachedMarketInfos(marketInfoCacheKey, useTerminalApi);
+    setIsLoading(true);
+    setRetryCount((count) => count + 1);
+  }, [enabled, marketInfoCacheKey, useTerminalApi, symbol]);
 
   if (!enabled) {
-    return { market: undefined, isLoading: false };
+    return { market: undefined, isLoading: false, retry };
   }
 
-  const market = marketInfos?.find(
-    (candidate) => candidate.name.toLowerCase() === symbol.toLowerCase(),
+  const market = marketInfos?.find((candidate) =>
+    isSymbolMatch(candidate, symbol),
   );
 
-  return { market, isLoading };
+  return { market, isLoading, retry };
 }
