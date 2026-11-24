@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { submitRequestToBackground } from '../../../store/background-connection';
@@ -66,27 +66,17 @@ const SyncAccountsSettings = () => {
     await createQrSyncSession();
   }, [cancelQrSyncSession, createQrSyncSession]);
 
+  const isIdle = qrSyncPhase === QR_SYNC_PHASES.IDLE;
+  const hasRequestedSessionRef = useRef(false);
+
   useEffect(() => {
-    if (isExiting) {
-      return undefined;
+    if (isExiting || (hasRequestedSessionRef.current && !isIdle)) {
+      return;
     }
 
-    let isActive = true;
-
-    const initializeSession = async () => {
-      if (!isActive || isExiting) {
-        return;
-      }
-
-      await createQrSyncSession();
-    };
-
-    initializeSession();
-
-    return () => {
-      isActive = false;
-    };
-  }, [createQrSyncSession, isExiting]);
+    hasRequestedSessionRef.current = true;
+    createQrSyncSession();
+  }, [createQrSyncSession, isExiting, isIdle]);
 
   const handleExit = useCallback(async () => {
     setIsExiting(true);
