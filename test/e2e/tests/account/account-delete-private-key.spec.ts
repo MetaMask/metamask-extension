@@ -5,7 +5,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import { importPrivateKeyAccount } from '../../page-objects/flows/add-account.flow';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
-import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 
 const DEFAULT_ACCOUNT_NAME = 'Account 1';
 const IMPORTED_ACCOUNT_NAME = 'Imported Account 1';
@@ -23,8 +23,7 @@ describe('Account list - delete private key account', function (this: Suite) {
         await login(driver);
         await importPrivateKeyAccount(driver, TEST_PRIVATE_KEY);
 
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();

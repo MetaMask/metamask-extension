@@ -68,7 +68,7 @@ import { createSentryError } from '../../../shared/lib/error';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { captureException } from '../../../shared/lib/sentry';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
-import { TraceName, TraceOperation } from '../../../shared/lib/trace';
+import { trace, TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../../shared/constants/passkey';
 import { DecodedTransactionDataSource } from '../../../shared/types/transaction-decode';
 import { enforceSimulations } from '../lib/transaction/containers/enforced-simulations';
@@ -6514,6 +6514,34 @@ describe('LegacyBackgroundApiService', () => {
         expect(counts).toStrictEqual({ Bitcoin: 1, Solana: 1, Tron: 1 });
       });
     });
+
+    it('roots the Discover Accounts trace when accounts are discovered', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        rootMessenger.registerActionHandler(
+          'KeyringController:getState',
+          jest.fn().mockReturnValue({
+            keyrings: [{ metadata: { id: 'kr1' } }],
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'MultichainAccountService:getMultichainAccountWallet',
+          jest.fn().mockReturnValue({
+            discoverAccounts: jest
+              .fn()
+              .mockResolvedValue([{ type: SolAccountType.DataAccount }]),
+          }),
+        );
+
+        await service.discoverAndCreateAccounts();
+
+        expect(jest.mocked(trace)).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: TraceName.DiscoverAccounts,
+            root: true,
+          }),
+        );
+      });
+    });
   });
 
   describe('isRelaySupported', () => {
@@ -9057,7 +9085,6 @@ function getMessenger(
       'TransactionController:updateSecurityAlertResponse',
       'UserOperationController:addUserOperationFromTransaction',
       'UserOperationController:startPollingByNetworkClientId',
-      'PPOMController:usePPOM',
       'KeyringController:getKeyringForAccount',
       'SignatureController:getState',
       'AppStateController:getAddressSecurityAlertResponse',

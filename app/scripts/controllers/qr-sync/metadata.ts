@@ -28,6 +28,12 @@ export const controllerMetadata: StateMetadata<QrSyncControllerState> = {
     usedInUi: false,
     includeInStateLogs: false,
   },
+  qrSyncExpiresAt: {
+    persist: false,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
+    includeInStateLogs: false,
+  },
   qrSyncUpdatedAt: {
     persist: false,
     includeInDebugSnapshot: false,
@@ -75,6 +81,7 @@ export function getDefaultQrSyncControllerState(): QrSyncControllerState {
     qrSyncConnectionStatus: QrSyncConnectionStatus.DISCONNECTED,
     qrSyncSessionId: null,
     qrSyncCreatedAt: null,
+    qrSyncExpiresAt: null,
     qrSyncUpdatedAt: null,
     qrSyncQrPayload: null,
     syncOffer: null,

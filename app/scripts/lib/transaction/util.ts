@@ -449,7 +449,6 @@ async function validateSecurity(request: AddTransactionRequest) {
 
     // Intentionally not awaited to avoid blocking the confirmation process while the validation occurs.
     validateRequestWithPPOM({
-      messenger,
       request: ppomRequest,
       securityAlertId,
       chainId,
