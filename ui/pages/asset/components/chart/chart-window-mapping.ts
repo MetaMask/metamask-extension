@@ -2,26 +2,10 @@ const HOUR_MS = 60 * 60 * 1000;
 const DAY_MS = 24 * HOUR_MS;
 
 /**
- * Initial visible window ("time back") per candle interval. When the host
- * sends no visible range, the chart engine auto-fits every loaded bar, so
- * candle mode reaches much further back than the line chart (and, for sparse
- * tokens, stretches a handful of candles across days). Pinning a per-interval
- * window via `visibleFromMs` keeps the default candle view focused on a recent
- * span comparable to the line chart.
- *
- * The window is anchored to the latest loaded bar (not `Date.now()`), so
- * illiquid/stale tokens still open on their most recent candles instead of an
- * empty "now" window. Older bars remain reachable by scrolling (pagination).
- *
- * Each window is sized close to a line-chart range so a candle<->line toggle
- * shows a similar span in both directions. Most intervals land in a readable
- * candle band (~30-168 on screen). Two notes on the deliberate exceptions:
- * - `5m` opens on 12h (~144 candles) — a readability-first choice. It still
- *   maps to the `1D` line range (12h is the nearest line span), so toggling
- *   5m->line widens the view from 12h to 1d: a mild, accepted zoom rather than
- *   an exact span match.
- * - `1h` (1w -> ~168) stays matched to the `1W` line range exactly; it is dense
- *   but kept span-consistent so its toggle does not jump.
+ * Initial visible window per interval, anchored to the latest bar (not now) so
+ * illiquid tokens still open on candles. E.g. 15m opens on the last 1d (~96
+ * candles). Sized to a line range so candle↔line toggles keep a similar span;
+ * exception: 5m opens on 12h for readability, so 5m → line widens to 1D.
  */
 export const VISIBLE_WINDOW_MS_BY_INTERVAL: Record<string, number> = {
   '1m': HOUR_MS, // 1h = 1H range -> ~60 candles
@@ -54,11 +38,8 @@ export const LINE_RANGE_MS: Record<string, number> = {
 };
 
 /**
- * Upper bound on how many candles a single visible window may contain. Beyond
- * this the engine's first `countBack` balloons (e.g. a year of 1m candles is
- * ~525k bars), which is exactly the pagination storm the atomic interval-window
- * fix guards against. Sized to the healthy ~300-bar countBack seen after that
- * fix, with headroom. Tunable.
+ * Max candles per window. E.g. 1Y of 1m is ~525k bars (the pagination storm),
+ * so line 1Y → candle steps to 1w instead.
  */
 export const MAX_BARS_PER_WINDOW = 500;
 

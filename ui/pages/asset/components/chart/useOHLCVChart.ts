@@ -49,17 +49,10 @@ export type UseOHLCVChartResult = {
    */
   resolvedCurrency: string;
   /**
-   * Fetches older candles for the chart engine to prepend when the user scrolls
-   * past the oldest loaded bar (host-backed pagination). Stable across renders.
-   * Returns `noData: true` when the cursor is exhausted, the series changed
-   * mid-flight, or the request failed.
-   *
-   * When `countBack` is provided (the number of bars the engine is still short
-   * by), the function accumulates successive cursor pages until it has gathered
-   * at least that many — or history runs out — and returns them as one batch.
-   * This lets the engine satisfy a large request in a single round-trip instead
-   * of re-asking once per page (the coarse→fine pagination cascade). With no
-   * `countBack`, it fetches a single page (legacy behaviour).
+   * Fetches older bars when the user scrolls past the oldest one. Stable.
+   * With `countBack` (e.g. 300) it walks cursor pages until it has ≥300 bars,
+   * then replies once; without it, one page. Returns `noData: true` when
+   * history runs out, after a reset mid-flight, or on error.
    */
   fetchOlderBars: (countBack?: number) => Promise<FetchOlderBarsResult>;
   /**
@@ -70,11 +63,8 @@ export type UseOHLCVChartResult = {
 };
 
 /**
- * Upper bound on how many cursor pages a single {@link fetchOlderBars} call will
- * walk while trying to satisfy `countBack`. A safety cap so a large request (or
- * an unexpectedly small server page size) can never spin into an unbounded
- * fetch loop; whatever is gathered by the cap is returned and the engine may
- * ask again for the remainder.
+ * Safety cap on pages per {@link fetchOlderBars} call, e.g. countBack 10k with
+ * 100-bar pages stops at 20 pages; the engine asks again for the rest.
  */
 const MAX_OLDER_BARS_PAGES_PER_REQUEST = 20;
 
@@ -151,9 +141,8 @@ export async function fetchOHLCVPage(
   }
   url.searchParams.set('vsCurrency', vsCurrency);
 
-  // Timeout-only abort: we no longer abort on interval change (to avoid
-  // HTTP/2 RST_STREAM degradation on the Price API). Only a truly hung
-  // request gets aborted.
+  // Abort only on timeout, not on interval change: aborts (HTTP/2
+  // RST_STREAM) degrade the Price API's responses.
   const controller = new AbortController();
   if (signal) {
     signal.addEventListener('abort', () => controller.abort());
@@ -221,17 +210,15 @@ export async function fetchOHLCV(
 // ─── React Query configuration ──────────────────────────────────────────────
 
 /**
- * How long a cached OHLCV page is considered fresh. Within this window a
- * revisited interval is served from cache with **zero** network requests,
- * which completely avoids the API's volume-based response degradation
- * (truncated pages under rapid switching).
+ * Cache is fresh for 60s, e.g. 1h → 4h → 1h within a minute makes no request
+ * for the second 1h. Fewer requests also avoids the API's truncated pages
+ * under rapid switching.
  */
 export const OHLCV_STALE_TIME_MS = 60_000;
 
 /**
- * Quality gate: if a background refetch returns fewer than this fraction of the
- * cached bar count, the response is treated as truncated and rejected so React
- * Query keeps the richer cached data. 0.5 = reject if < 50 % of cached bars.
+ * Reject a refetch with < 50% of the cached bars as truncated, e.g. 120
+ * cached and 40 returned → keep the cache.
  */
 const TRUNCATION_THRESHOLD = 0.5;
 
@@ -244,13 +231,8 @@ type OHLCVQueryData = {
 // ─── React hook ─────────────────────────────────────────────────────────────
 
 /**
- * Fetches OHLCV chart data reactively via React Query.
- *
- * Each `(assetId, interval, currency)` tuple is cached independently. Revisiting
- * an interval within {@link OHLCV_STALE_TIME_MS} is an instant cache hit — no
- * network request, no chance for the API to return truncated data. After the
- * stale window the cached bars are shown immediately while a background refetch
- * runs (up to React Query's default 5-minute `gcTime`).
+ * Fetches OHLCV chart data via React Query, cached per
+ * `(assetId, interval, currency)` (see {@link OHLCV_STALE_TIME_MS}).
  *
  * The price API does not quote every fiat the extension can display, so a
  * rejected currency is retried once in USD rather than surfaced as an error.
@@ -393,10 +375,6 @@ export const useOHLCVChart = ({
         return { bars: [], noData: true };
       }
 
-      // How many bars this reply should aim to cover. The engine computes
-      // `countBack` to fill its drawing buffer; gathering that many in one
-      // reply means it is satisfied in a single round-trip instead of
-      // re-requesting the remainder one page at a time.
       const targetBars =
         typeof countBack === 'number' && countBack > 0 ? countBack : 1;
 
@@ -453,9 +431,6 @@ export const useOHLCVChart = ({
   );
 
   // ── Return ──────────────────────────────────────────────────────────────
-  // `rqIsLoading` is true only when there is no cached data AND a fetch is
-  // in-flight (first visit to this interval). On cache hits it is false
-  // from the first render, so the chart paints instantly.
 
   let errorMessage: string | null = null;
   if (queryError) {
@@ -465,6 +440,7 @@ export const useOHLCVChart = ({
 
   return {
     ohlcvData,
+    // True only on a first visit with no cache; cache hits paint instantly.
     isLoading: rqIsLoading,
     error: errorMessage,
     resolvedCurrency,

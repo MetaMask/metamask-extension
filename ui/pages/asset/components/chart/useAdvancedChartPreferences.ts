@@ -71,11 +71,8 @@ export function useAdvancedChartPreferences() {
     DEFAULT_LINE_TIME_RANGE,
   );
 
-  // The interval the candle chart actually renders. Normally the saved
-  // `interval`, but a chart-type toggle can override it (see `applyToggleCandle`)
-  // to preserve the visible tendency when the saved interval would be too fine
-  // for the span just viewed on the line chart. The override is display-only and
-  // is never persisted, so the user's saved interval survives round-trips.
+  // Rendered interval. Equals the saved `interval` unless a toggle stepped it
+  // (e.g. line 1Y → candle 1w while saved 1m is kept). Never persisted.
   const [displayInterval, setDisplayInterval] = useState<string>(interval);
 
   // When the persisted interval changes (an explicit pick, or a change from

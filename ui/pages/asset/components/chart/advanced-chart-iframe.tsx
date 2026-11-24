@@ -15,13 +15,12 @@ import type { FetchOlderBarsResult, OHLCVBar } from './useOHLCVChart';
 import type { OHLCVRealtimeBar } from './useOHLCVRealtime';
 
 /**
- * Pure chart embed — the cross-origin iframe plus the postMessage bridge, and
- * nothing else. Mirrors mobile's AdvancedChart.tsx (the WebView component
- * only).
+ * Pure chart embed: one persistent iframe plus its postMessage bridge. Toolbar
+ * UI (IntervalBar, IndicatorBar) is rendered by the parent, as on mobile.
  *
- * All toolbar UI (IntervalBar, IndicatorBar) lives in separate components
- * rendered by the parent, matching mobile's architecture where
- * Price.advanced.tsx composes IntervalBar + AdvancedChart + IndicatorBar.
+ * Interval switches happen in place (no remount), e.g. 1W → 1m keeps the
+ * widget, studies and MAs and only re-sends the new bars. This avoids the
+ * ASSETS-4400 storm, where a 1W → 1m switch asked for ~500k bars.
  */
 
 export const CHART_ORIGIN_UAT = 'https://chart.uat.metamask-charts.com';
@@ -129,33 +128,14 @@ type AdvancedChartIframeProps = {
    * loaded bar. Host-backed ("RN-backed") pagination: the engine asks us for
    * older bars rather than fetching them itself, keeping all network egress in
    * the extension where there is no iframe-CSP restriction. Omit to disable.
-   *
-   * `countBack` is the number of bars the engine is still short by (forwarded
-   * from the datafeed request). When provided, the callback accumulates cursor
-   * pages until it has at least that many bars and replies once, so the engine
-   * is satisfied in a single round-trip instead of re-asking per page.
+   * `countBack` = bars the engine still needs, e.g. 300 → walk pages until
+   * ≥300, then reply once.
    */
   fetchOlderBars?: (countBack?: number) => Promise<FetchOlderBarsResult>;
   /** Resets the host pagination cursor; called on every full `SET_OHLCV_DATA`. */
   resetPagination?: () => void;
 };
 
-/**
- * Pure chart embed — one persistent iframe plus its postMessage bridge.
- *
- * A bare TradingView resolution switch inherits the previous interval's visible
- * TIME range and sizes the new series' first `getBars` from it — a coarse→fine
- * switch (e.g. 1W→1m) then asks for hundreds of thousands of bars (the
- * ASSETS-4400 pagination storm). The fix lives in the chart core: on an
- * interval change it switches resolution in place on the same persistent
- * widget, first releasing the visible-range pin so TradingView preserves the
- * visible bar count (a bounded first request) instead of the inherited span.
- *
- * The host therefore keeps the iframe mounted across interval changes (no
- * remount, no ~20 MB library reload) and simply re-sends the new interval's
- * data. Because the widget persists, the chart type, studies, MAs and volume
- * survive a switch; they are applied once, on the first CHART_READY.
- */
 const AdvancedChartIframe = ({
   assetId,
   chartType,
@@ -173,10 +153,8 @@ const AdvancedChartIframe = ({
 }: AdvancedChartIframeProps) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [iframeLoaded, setIframeLoaded] = useState(false);
-  // The engine reports CHART_READY once, on the first build (interval switches
-  // happen in place on the persistent widget, so they never re-emit it). This
-  // latches ready so the study/MA/volume/chart-type sync effects run once the
-  // chart exists, and gates the one-time skeleton.
+  // Set on the first CHART_READY (interval switches never re-emit it). Gates
+  // the study/MA/volume/chart-type sync effects and the one-time skeleton.
   const [chartReady, setChartReady] = useState(false);
   // Which studies the engine currently has applied, so each sync posts only
   // a diff. Cleared on CHART_READY (the first, bare build).
@@ -197,18 +175,10 @@ const AdvancedChartIframe = ({
   const isDark = theme === 'dark';
   const chartUrl = `${CHART_ORIGIN}/index.html?theme=${isDark ? 'dark' : 'light'}`;
 
-  // The theme is baked into the iframe src, so switching it reloads the engine
-  // and the replacement comes up bare. (Interval changes do NOT reload — the
-  // core switches resolution in place on the persistent widget.) Reset the
-  // bookkeeping that describes the old instance, otherwise we keep believing its
-  // indicators and data are still applied and never re-send them.
-  //
-  // State resets use the render-time "adjust state from props" pattern (setState
-  // during render, guarded by a comparison) so they are synchronous with the URL
-  // change and avoid the cascading-update lint violation of calling setState
-  // inside useEffect.  prevChartUrl is tracked as state rather than a ref so the
-  // comparison itself doesn't violate react-hooks/refs.  Ref resets go into a
-  // separate effect because that rule also forbids writing refs during render.
+  // Theme is in the iframe src, so a theme change (e.g. dark → light) reloads a
+  // bare engine: forget what the old one had applied. State resets run during
+  // render (avoids setState-in-effect); ref resets run in an effect because
+  // refs can't be written during render.
   const [prevChartUrl, setPrevChartUrl] = useState(chartUrl);
   if (prevChartUrl !== chartUrl) {
     setPrevChartUrl(chartUrl);
@@ -329,20 +299,10 @@ const AdvancedChartIframe = ({
     setIframeLoaded(true);
   }, []);
 
-  // The TradingView engine only ever renders candles. Line mode is served by
-  // the legacy chart; the engine is kept mounted and merely hidden in place
-  // (see `advanced-chart-section`). So we always drive the engine to candle
-  // and NEVER forward the line type to it.
-  //
-  // Forwarding `SET_CHART_TYPE(line)` would switch the engine's main series
-  // from OHLC to single-value (a full series rebuild) while it is hidden.
-  // That rebuild blanks TradingView's time-axis labels, and because the
-  // engine is only revealed (not re-laid-out) on the toggle back, nothing
-  // recomputes the time scale — so the axis stays blank until the next data
-  // cycle. Pinning the engine to candle removes that mutation entirely.
-  //
-  // The user's line/candle preference is still persisted upstream (it drives
-  // which chart is shown); it just no longer changes the engine's series type.
+  // The engine only ever draws candles; line mode uses the legacy chart while
+  // the engine stays hidden. Sending SET_CHART_TYPE(line) would rebuild the
+  // hidden series and leave the time axis blank on toggle back, so the engine
+  // is pinned to candle. The line/candle preference is still persisted upstream.
   useEffect(() => {
     if (chartReady) {
       postToChart({
@@ -489,9 +449,9 @@ const AdvancedChartIframe = ({
       return;
     }
 
-    // Merge when the series is unchanged and the refetch overlaps the engine
-    // (its first bar <= engine's newest). New series, empty engine, or a gap
-    // → full reload.
+    // Merge if same series and the refetch overlaps the engine. E.g. engine
+    // newest = 10:00, refetch = 08:00–10:05 → post only 10:00 and 10:05.
+    // New series, empty engine, or a gap (refetch starts 10:10) → full reload.
     const engineLast = engineLastTimeRef.current;
     const canMerge =
       !seriesChanged && engineLast !== null && ohlcvData[0].time <= engineLast;
