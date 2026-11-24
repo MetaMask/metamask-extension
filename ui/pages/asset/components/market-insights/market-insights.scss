@@ -20,10 +20,6 @@ $market-insights-chrome-gradient-tail: #d86fcf;
   color: transparent;
 }
 
-.market-insights-chrome-icon {
-  fill: url('#market-insights-chrome-gradient');
-}
-
 // One-shot gradient sweep that travels around the card border. The rect uses
 // `pathLength={100}`, so a dash array of `50 50` shows half the perimeter and
 // animating the dash offset from 140 to 40 moves that trail forward exactly
@@ -49,32 +45,9 @@ $market-insights-chrome-gradient-tail: #d86fcf;
   }
 }
 
-.market-insights-carousel {
-  position: relative;
-  overflow: hidden;
-
-  &__sizer {
-    visibility: hidden;
-  }
-
-  &__slot {
-    position: absolute;
-    inset-inline: 0;
-    top: 0;
-  }
-
-  &__slot--transition {
-    transition: transform 350ms ease-in-out;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .market-insights-border-sweep {
     animation: none;
     display: none;
-  }
-
-  .market-insights-carousel__slot--transition {
-    transition: none;
   }
 }

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import type { MarketInsightsReport } from '@metamask/ai-controllers';
 import { submitRequestToBackground } from '../../../store/background-connection';
@@ -70,17 +70,19 @@ export type UseMarketInsightsResult = {
  *
  * @param dateString - ISO date string to format.
  * @param t - Translation function.
+ * @param now - Current timestamp in milliseconds.
  * @returns The formatted relative time, or an empty string if the date is invalid.
  */
 export const formatRelativeTime = (
   dateString: string,
   t: ReturnType<typeof useI18nContext>,
+  now = Date.now(),
 ): string => {
   const date = new Date(dateString);
   if (Number.isNaN(date.getTime())) {
     return '';
   }
-  const diffMs = Date.now() - date.getTime();
+  const diffMs = now - date.getTime();
   const diffMins = Math.floor(diffMs / 60000);
   const diffHours = Math.floor(diffMins / 60);
   const diffDays = Math.floor(diffHours / 24);
@@ -147,10 +149,17 @@ export const useMarketInsights = (
   // until that first fetch settles so the skeleton does not flash off and on.
   const isLoading = isQueryEnabled && !report && !query.isFetchedAfterMount;
 
-  const timeAgo = useMemo(
-    () => (report ? formatRelativeTime(report.generatedAt, t) : ''),
-    [report, t],
-  );
+  const hasReport = report !== null;
+  const [now, setNow] = useState(Date.now);
+  useEffect(() => {
+    if (!hasReport) {
+      return undefined;
+    }
+    const timer = setInterval(() => setNow(Date.now()), 60_000);
+    return () => clearInterval(timer);
+  }, [hasReport]);
+
+  const timeAgo = report ? formatRelativeTime(report.generatedAt, t, now) : '';
 
   return { report, isLoading, error, timeAgo };
 };
