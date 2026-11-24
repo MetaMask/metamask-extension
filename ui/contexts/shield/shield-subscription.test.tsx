@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import React, { useEffect, useLayoutEffect, useRef } from 'react';
 import { render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
@@ -7,6 +8,8 @@ import * as useSubscriptionMetrics from '../../hooks/shield/metrics/useSubscript
 import * as selectors from '../../selectors';
 import * as authSelectors from '../../selectors/identity/authentication';
 import * as subscriptionSelectors from '../../selectors/subscription';
+import { selectProSubscriptionEnabled } from '../../selectors/money/money-account-feature-flags';
+import usePolling from '../../hooks/usePolling';
 import * as metamaskBaseSelectors from '../../ducks/metamask/base-selectors';
 import * as environment from '../../../shared/lib/environment';
 import { useDispatch } from '../../store/hooks';
@@ -89,6 +92,27 @@ describe('ShieldSubscriptionProvider', () => {
         typeof useSubscriptionMetrics.useSubscriptionMetrics
       >);
   });
+
+  it.each([true, false])(
+    'uses the Pro flag (%s) to gate polling when Shield is disabled',
+    (isProEnabled) => {
+      jest
+        .mocked(environment.getIsMetaMaskShieldFeatureEnabled)
+        .mockReturnValue(false);
+      const select = mockUseSelector.getMockImplementation();
+      mockUseSelector.mockImplementation((selector) =>
+        selector === selectProSubscriptionEnabled
+          ? isProEnabled
+          : select?.(selector),
+      );
+
+      render(<ShieldSubscriptionProvider>Child</ShieldSubscriptionProvider>);
+
+      expect(usePolling).toHaveBeenCalledWith(
+        expect.objectContaining({ enabled: isProEnabled }),
+      );
+    },
+  );
 
   it('renders children correctly', () => {
     const { getByTestId } = render(

@@ -17,6 +17,7 @@ import {
   selectMoneyEarnBannerEnabled,
   selectMoneyAssetOverviewBalanceCtaEnabled,
   selectMoneyVaultApyRemoteConfig,
+  selectProSubscriptionEnabled,
 } from './money-account-feature-flags';
 
 const mockState = (
@@ -121,6 +122,41 @@ describe('selectMoneyHomeScreenCardEnabled', () => {
         }),
       ),
     ).toBe(false);
+  });
+});
+
+describe('selectProSubscriptionEnabled', () => {
+  it('is true for a true boolean flag', () => {
+    expect(
+      selectProSubscriptionEnabled(
+        mockState({ subscriptionMoneyAccountOrangeEnabled: true }),
+      ),
+    ).toBe(true);
+  });
+
+  it('is false for a false boolean flag', () => {
+    expect(
+      selectProSubscriptionEnabled(
+        mockState({ subscriptionMoneyAccountOrangeEnabled: false }),
+      ),
+    ).toBe(false);
+  });
+
+  it('is true for an enabled, version-satisfied flag', () => {
+    expect(
+      selectProSubscriptionEnabled(
+        mockState({
+          subscriptionMoneyAccountOrangeEnabled: {
+            enabled: true,
+            minimumVersion: '0.0.1',
+          },
+        }),
+      ),
+    ).toBe(true);
+  });
+
+  it('is false when the flag is missing', () => {
+    expect(selectProSubscriptionEnabled(mockState())).toBe(false);
   });
 });
 

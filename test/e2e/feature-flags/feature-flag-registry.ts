@@ -4379,6 +4379,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  subscriptionMoneyAccountOrangeEnabled: {
+    inProd: false,
+    name: 'subscriptionMoneyAccountOrangeEnabled',
+    productionDefault: false,
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   swapsChainValueOrderOverride: {
     inProd: true,
     name: 'swapsChainValueOrderOverride',

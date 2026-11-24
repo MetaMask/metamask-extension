@@ -16,6 +16,7 @@ import {
 } from '../../store/actions';
 import { getUseExternalServices } from '../../selectors';
 import { selectIsSignedIn } from '../../selectors/identity/authentication';
+import { selectProSubscriptionEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/lib/environment';
 import { SUBSCRIPTIONS_POLLING_INPUT } from '../../../shared/constants/subscriptions';
 import {
@@ -82,6 +83,7 @@ export const ShieldSubscriptionProvider = ({
     useSelector(getUseExternalServices),
   );
   const isMetaMaskShieldFeatureEnabled = getIsMetaMaskShieldFeatureEnabled();
+  const isProSubscriptionEnabled = useSelector(selectProSubscriptionEnabled);
   const isUnlocked = useSelector(getIsUnlocked);
   const isSignedIn = useSelector(selectIsSignedIn);
   const isShieldSubscriptionActive = useSelector(getIsActiveShieldSubscription);
@@ -312,7 +314,7 @@ export const ShieldSubscriptionProvider = ({
   );
 
   const shouldPoll =
-    isMetaMaskShieldFeatureEnabled &&
+    (isMetaMaskShieldFeatureEnabled || isProSubscriptionEnabled) &&
     isBasicFunctionalityEnabled &&
     isSignedIn &&
     isUnlocked;

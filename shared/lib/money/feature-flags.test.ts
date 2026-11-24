@@ -24,6 +24,7 @@ import {
   isMoneyTokenListItemCtaEnabled,
   isMoneyEarnBannerEnabled,
   isMoneyAssetOverviewBalanceCtaEnabled,
+  isProSubscriptionEnabled,
 } from './feature-flags';
 
 const CURRENT_VERSION = packageJson.version;
@@ -319,6 +320,48 @@ describe('isMoneyHomeScreenCardEnabled', () => {
         enabled: isMoneyHomeScreenCardEnabled(flags),
       }).toStrictEqual({ name, enabled: false });
     }
+  });
+});
+
+describe('isProSubscriptionEnabled', () => {
+  it('returns true for a true boolean flag', () => {
+    expect(
+      isProSubscriptionEnabled({ subscriptionMoneyAccountOrangeEnabled: true }),
+    ).toBe(true);
+  });
+
+  it('returns false for a false boolean flag', () => {
+    expect(
+      isProSubscriptionEnabled({
+        subscriptionMoneyAccountOrangeEnabled: false,
+      }),
+    ).toBe(false);
+  });
+
+  it('returns true for an enabled flag the current version satisfies', () => {
+    expect(
+      isProSubscriptionEnabled({
+        subscriptionMoneyAccountOrangeEnabled: {
+          enabled: true,
+          minimumVersion: CURRENT_VERSION,
+        },
+      }),
+    ).toBe(true);
+  });
+
+  it('returns false when the current version is below the minimum', () => {
+    expect(
+      isProSubscriptionEnabled({
+        subscriptionMoneyAccountOrangeEnabled: {
+          enabled: true,
+          minimumVersion: '9999.0.0',
+        },
+      }),
+    ).toBe(false);
+  });
+
+  it('returns false when the flag is missing', () => {
+    expect(isProSubscriptionEnabled({})).toBe(false);
   });
 });
 

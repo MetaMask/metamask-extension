@@ -10237,7 +10237,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/subscription-controller@npm:^15.2.0, @metamask/subscription-controller@npm:^15.3.0":
+"@metamask/subscription-controller@npm:^15.3.0":
   version: 15.3.0
   resolution: "@metamask/subscription-controller@npm:15.3.0"
   dependencies:
@@ -34851,7 +34851,7 @@ __metadata:
     "@metamask/solana-wallet-standard": "npm:^1.0.0"
     "@metamask/stellar-wallet-snap": "npm:^2.1.0"
     "@metamask/storage-service": "npm:^2.0.0"
-    "@metamask/subscription-controller": "npm:^15.2.0"
+    "@metamask/subscription-controller": "npm:^15.3.0"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/test-dapp": "npm:9.3.0"
     "@metamask/test-dapp-bitcoin": "npm:^0.2.0"
