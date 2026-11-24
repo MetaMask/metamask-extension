@@ -4,7 +4,6 @@
       "hiddenAccountList": "object",
       "pinnedAccountList": "object"
     },
-    "AccountTracker": {},
     "AccountTreeController": {
       "accountGroupsMetadata": "object",
       "accountTree": "object",
@@ -200,9 +199,6 @@
       "onboardingJourneyEnded": true,
       "seedPhraseBackedUp": null
     },
-    "PPOMController": {
-      "storageMetadata": "object"
-    },
     "PasskeyController": {
       "passkeyRecord": null
     },
@@ -366,6 +362,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 236
+    "version": 237
   }
 }

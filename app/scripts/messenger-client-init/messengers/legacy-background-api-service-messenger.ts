@@ -178,7 +178,6 @@ export function getLegacyBackgroundApiServiceMessenger(
       'TransactionController:updateSecurityAlertResponse',
       'UserOperationController:addUserOperationFromTransaction',
       'UserOperationController:startPollingByNetworkClientId',
-      'PPOMController:usePPOM',
       'KeyringController:getKeyringForAccount',
       'SignatureController:getState',
       'AppStateController:getAddressSecurityAlertResponse',

@@ -799,7 +799,13 @@ export class PlaywrightDriver {
     return element;
   }
 
-  async clickElement(rawLocator: RawLocator, retries = 3): Promise<void> {
+  async clickElement(
+    rawLocator: RawLocator,
+    {
+      retries = 3,
+      timeout = this.timeout,
+    }: { retries?: number; timeout?: number } = {},
+  ): Promise<void> {
     // Direct `locator.click()` — Playwright's built-in auto-wait already
     // checks attached + visible + stable + enabled + receives-pointer-events
     // before dispatching, so the `findClickableElement` pre-flight round
@@ -816,7 +822,7 @@ export class PlaywrightDriver {
     let lastError: unknown;
     for (let attempt = 0; attempt < retries; attempt += 1) {
       try {
-        await locator.click({ timeout: this.timeout });
+        await locator.click({ timeout });
         return;
       } catch (error) {
         lastError = error;

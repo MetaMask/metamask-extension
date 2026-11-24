@@ -4,7 +4,6 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
-import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { Driver } from '../../webdriver/driver';
 import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../../constants';
@@ -16,6 +15,7 @@ import {
   MOCK_ETH_CONVERSION_RATE,
   mockPriceApi,
 } from '../tokens/utils/mocks';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 
 describe('Multichain Accounts - Account tree', function (this: Suite) {
   it('should display basic wallets and accounts', async function () {
@@ -37,8 +37,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { expectedBalance: '$85,025.00' });
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
@@ -105,8 +104,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
 

@@ -1,31 +1,65 @@
-import { hasProperty, isObject } from '@metamask/utils';
+import { hasProperty } from '@metamask/utils';
 import type { Migrate } from './types';
 
 export const version = 236;
 
+const PPOM_DB_NAME = 'PPOMDB';
+
 /**
- * Renames the persisted deferred deep-link URL without discarding pending links.
+ * Migration 236: Clean up PPOMController persisted state and its IndexedDB
+ * database after the PPOM Controller was removed.
  *
- * @param versionedData - The persisted state to migrate.
- * @param changedKeys - The controllers whose changes must be persisted.
+ * - Removes the `PPOMController` key from persisted state.
+ * - Deletes the `PPOMDB` IndexedDB database that stored PPOM model data.
+ *
+ * @param versionedData - Versioned MetaMask extension state; what we persist
+ * to disk.
+ * @param changedKeys - `Set` to track which controller keys were modified.
  */
 export const migrate = (async (versionedData, changedKeys) => {
   versionedData.meta.version = version;
 
-  const data = versionedData.data as Record<string, unknown>;
-  const appState = data.AppStateController;
-  if (!isObject(appState) || !isObject(appState.deferredDeepLink)) {
-    return;
+  const state = versionedData.data as Record<string, unknown>;
+
+  if (hasProperty(state, 'PPOMController')) {
+    delete state.PPOMController;
+    changedKeys.add('PPOMController');
   }
 
-  const { deferredDeepLink } = appState;
-  if (!hasProperty(deferredDeepLink, 'referringLink')) {
-    return;
-  }
-
-  if (!hasProperty(deferredDeepLink, 'originalUrl')) {
-    deferredDeepLink.originalUrl = deferredDeepLink.referringLink;
-  }
-  delete deferredDeepLink.referringLink;
-  changedKeys.add('AppStateController');
+  await deletePPOMDatabase();
 }) satisfies Migrate;
+
+export default migrate;
+
+/**
+ * Deletes the PPOMDB IndexedDB database. Resolves even on failure so the
+ * migration is never blocked by IndexedDB issues.
+ */
+async function deletePPOMDatabase(): Promise<void> {
+  return new Promise<void>((resolve) => {
+    try {
+      const request = indexedDB.deleteDatabase(PPOM_DB_NAME);
+
+      request.onsuccess = () => {
+        resolve();
+      };
+
+      request.onerror = () => {
+        console.warn(
+          `Migration #${version}: Failed to delete ${PPOM_DB_NAME} IndexedDB database`,
+        );
+        resolve();
+      };
+
+      request.onblocked = () => {
+        console.warn(
+          `Migration #${version}: Deletion of ${PPOM_DB_NAME} IndexedDB database was blocked`,
+        );
+        resolve();
+      };
+    } catch {
+      // indexedDB may not be available in all contexts
+      resolve();
+    }
+  });
+}

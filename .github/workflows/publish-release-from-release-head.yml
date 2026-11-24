@@ -89,7 +89,7 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-webpack
-      build-command: yarn webpack:lavamoat:build --zip --env production
+      build-command: webpack:lavamoat:build --zip --env production
       builds-from-run: ${{ github.run_id }}
     secrets: inherit
 
@@ -101,7 +101,7 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-mv2-webpack
-      build-command: yarn webpack:lavamoat:build:mv2 --zip --env production
+      build-command: webpack:lavamoat:build:mv2 --zip --env production
       builds-from-run: ${{ github.run_id }}
     secrets: inherit
 
@@ -113,7 +113,7 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-webpack
-      build-command: yarn webpack:lavamoat:build --type flask --zip --env production
+      build-command: webpack:lavamoat:build --type flask --zip --env production
       builds-from-run: ${{ github.run_id }}
     secrets: inherit
 
@@ -125,7 +125,7 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-mv2-webpack
-      build-command: yarn webpack:lavamoat:build:mv2 --type flask --zip --env production
+      build-command: webpack:lavamoat:build:mv2 --type flask --zip --env production
       builds-from-run: ${{ github.run_id }}
     secrets: inherit
 

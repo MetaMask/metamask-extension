@@ -1,112 +1,124 @@
-import { it as jestIt } from '@jest/globals';
-import { cloneDeep } from 'lodash';
-import { migrate, version } from './236';
+import migrate, { version } from './236';
 
-type VersionedData = {
-  meta: { version: number };
-  data: Record<string, unknown>;
-};
+/*eslint accessor-pairs: ["error", { "setWithoutGet": false }]*/
+/*eslint no-empty-function: ["error", { "allow": ["setters"] }]*/
 
-const createState = (appState: unknown): VersionedData => ({
-  meta: { version: version - 1 },
-  data: {
-    AppStateController: appState,
-    OtherController: { preserved: true },
-  },
-});
+const PPOM_DB_NAME = 'PPOMDB';
 
 describe(`migration #${version}`, () => {
-  jestIt(
-    'renames the URL while preserving the pending link and unrelated state',
-    async () => {
-      const state = createState({
-        deferredDeepLink: {
-          createdAt: 1234567890,
-          referringLink:
-            'https://link.metamask.io/privacy?attributionId=install',
+  let deleteDbMock: jest.Mock;
+
+  beforeEach(() => {
+    deleteDbMock = jest.fn().mockReturnValue({
+      set onsuccess(handler: () => void) {
+        handler();
+      },
+      set onerror(_handler: () => void) {},
+      set onblocked(_handler: () => void) {},
+    });
+
+    Object.defineProperty(globalThis, 'indexedDB', {
+      value: { deleteDatabase: deleteDbMock },
+      writable: true,
+      configurable: true,
+    });
+  });
+
+  afterEach(() => {
+    // @ts-expect-error Cleaning up global mock
+    delete globalThis.indexedDB;
+  });
+
+  it('bumps the state version', async () => {
+    const state = { meta: { version: version - 1 }, data: {} };
+    await migrate(state, new Set());
+    expect(state.meta.version).toBe(version);
+  });
+
+  it('removes PPOMController from state', async () => {
+    const state = {
+      meta: { version: version - 1 },
+      data: {
+        PPOMController: {
+          versionInfo: [{ name: 'blob', chainId: '0x1' }],
+          storageMetadata: [],
         },
-        otherSetting: true,
-      });
-      const changedKeys = new Set<string>();
-
-      await migrate(state, changedKeys);
-
-      expect(state.meta.version).toBe(version);
-      expect(state.data).toStrictEqual({
-        AppStateController: {
-          deferredDeepLink: {
-            createdAt: 1234567890,
-            originalUrl:
-              'https://link.metamask.io/privacy?attributionId=install',
-          },
-          otherSetting: true,
-        },
-        OtherController: { preserved: true },
-      });
-      expect(changedKeys).toStrictEqual(new Set(['AppStateController']));
-
-      const repeatedChanges = new Set<string>();
-      await migrate(state, repeatedChanges);
-      expect(repeatedChanges.size).toBe(0);
-    },
-  );
-
-  jestIt(
-    'preserves an existing originalUrl when both fields are present',
-    async () => {
-      const state = createState({
-        deferredDeepLink: {
-          createdAt: 1234567890,
-          referringLink: 'https://link.metamask.io/old',
-          originalUrl: 'https://link.metamask.io/current',
-        },
-      });
-      const changedKeys = new Set<string>();
-
-      await migrate(state, changedKeys);
-
-      expect(state.data.AppStateController).toStrictEqual({
-        deferredDeepLink: {
-          createdAt: 1234567890,
-          originalUrl: 'https://link.metamask.io/current',
-        },
-      });
-      expect(changedKeys).toStrictEqual(new Set(['AppStateController']));
-    },
-  );
-
-  jestIt('updates the version when AppStateController is absent', async () => {
-    const state: VersionedData = { meta: { version: version - 1 }, data: {} };
+        OtherController: { kept: true },
+      },
+    };
     const changedKeys = new Set<string>();
-
     await migrate(state, changedKeys);
 
-    expect(state.meta.version).toBe(version);
-    expect(state.data).toStrictEqual({});
+    expect(state.data.PPOMController).toBeUndefined();
+    expect(state.data.OtherController).toStrictEqual({ kept: true });
+    expect(changedKeys).toStrictEqual(new Set(['PPOMController']));
+  });
+
+  it('is a no-op for state when PPOMController is absent', async () => {
+    const state = {
+      meta: { version: version - 1 },
+      data: { OtherController: { kept: true } },
+    };
+    const changedKeys = new Set<string>();
+    await migrate(state, changedKeys);
+
+    expect(state.data).toStrictEqual({ OtherController: { kept: true } });
     expect(changedKeys.size).toBe(0);
   });
 
-  jestIt.each([
-    null,
-    'invalid',
-    {},
-    { deferredDeepLink: null },
-    { deferredDeepLink: 'invalid' },
-    { deferredDeepLink: { createdAt: 1234567890 } },
-    {
-      deferredDeepLink: {
-        createdAt: 1234567890,
-        originalUrl: 'https://link.metamask.io/privacy',
+  it('deletes the PPOMDB IndexedDB database', async () => {
+    const state = { meta: { version: version - 1 }, data: {} };
+    await migrate(state, new Set());
+
+    expect(deleteDbMock).toHaveBeenCalledWith(PPOM_DB_NAME);
+  });
+
+  it('does not throw when IndexedDB deletion fails', async () => {
+    deleteDbMock.mockReturnValue({
+      set onsuccess(_handler: () => void) {},
+      set onerror(handler: () => void) {
+        handler();
       },
-    },
-  ])('leaves state without a legacy URL unchanged: %p', async (appState) => {
-    const state = createState(appState);
-    const before = cloneDeep(state.data);
+      set onblocked(_handler: () => void) {},
+    });
+
+    const state = {
+      meta: { version: version - 1 },
+      data: { PPOMController: {} },
+    };
     const changedKeys = new Set<string>();
 
-    await migrate(state, changedKeys);
+    await expect(migrate(state, changedKeys)).resolves.toBeUndefined();
+    expect(state.data.PPOMController).toBeUndefined();
+    expect(changedKeys).toStrictEqual(new Set(['PPOMController']));
+  });
 
-    expect(state.data).toStrictEqual(before);
-    expect(changedKeys.size).toBe(0);
+  it('does not throw when IndexedDB deletion is blocked', async () => {
+    deleteDbMock.mockReturnValue({
+      set onsuccess(_handler: () => void) {},
+      set onerror(_handler: () => void) {},
+      set onblocked(handler: () => void) {
+        handler();
+      },
+    });
+
+    const state = { meta: { version: version - 1 }, data: {} };
+
+    await expect(migrate(state, new Set())).resolves.toBeUndefined();
+  });
+
+  it('does not throw when indexedDB is unavailable', async () => {
+    // @ts-expect-error Simulating missing indexedDB
+    delete globalThis.indexedDB;
+
+    const state = {
+      meta: { version: version - 1 },
+      data: { PPOMController: { storageMetadata: [] } },
+    };
+    const changedKeys = new Set<string>();
+
+    await expect(migrate(state, changedKeys)).resolves.toBeUndefined();
+    expect(state.data.PPOMController).toBeUndefined();
+    expect(changedKeys).toStrictEqual(new Set(['PPOMController']));
   });
 });

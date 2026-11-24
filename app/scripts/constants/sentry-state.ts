@@ -30,9 +30,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
       selectedAccount: false,
     },
   },
-  AccountTracker: {
-    accountsByChainId: false,
-  },
   AddressBookController: {
     addressBook: false,
   },
@@ -231,11 +228,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     onboardingJourneyEnded: true,
     onboardingTabs: false,
     seedPhraseBackedUp: true,
-  },
-  PPOMController: {
-    securityAlertsEnabled: false,
-    storageMetadata: [],
-    versionInfo: [],
   },
   PasskeyController: {
     passkeyRecord: false,
