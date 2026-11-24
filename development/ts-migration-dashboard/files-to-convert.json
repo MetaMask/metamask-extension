@@ -826,8 +826,6 @@
   "ui/hooks/useUserPreferencedCurrency.test.js",
   "ui/index.js",
   "ui/index.test.js",
-  "ui/pages/asset/components/asset-breadcrumb.js",
-  "ui/pages/asset/components/asset-navigation.js",
   "ui/pages/asset/components/asset-options.js",
   "ui/pages/asset/index.js",
   "ui/pages/confirm-add-suggested-nft/confirm-add-suggested-nft.js",
