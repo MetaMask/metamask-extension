@@ -40,13 +40,14 @@ export const getAvatarTokenSrc = (
 ): string => {
   try {
     const isEvm = isEvmChainId(opts.chainId);
-    if (isEvm && opts.isNative) {
-      return (
-        opts.nativeTokenImageUrls?.[opts.chainId] ??
-        getNativeCurrencyForChain(opts.chainId) ??
-        opts.tokenImage ??
-        ''
-      );
+    if (opts.isNative) {
+      const registryImage = opts.nativeTokenImageUrls?.[opts.chainId];
+      if (registryImage) {
+        return registryImage;
+      }
+      if (isEvm) {
+        return getNativeCurrencyForChain(opts.chainId) ?? opts.tokenImage ?? '';
+      }
     }
 
     // Fall back to the static CDN icon for any asset (including non-EVM natives

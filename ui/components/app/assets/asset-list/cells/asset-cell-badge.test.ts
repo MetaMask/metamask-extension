@@ -67,6 +67,21 @@ describe('getAvatarTokenSrc', () => {
     ).toBe('https://example.com/native.png');
   });
 
+  it('prefers the registry map for native non-EVM tokens', () => {
+    expect(
+      getAvatarTokenSrc({
+        chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        isNative: true,
+        tokenImage: 'https://example.com/payload.png',
+        assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        nativeTokenImageUrls: {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp':
+            'https://example.com/registry-sol.png',
+        },
+      }),
+    ).toBe('https://example.com/registry-sol.png');
+  });
+
   it('falls back to the static CDN icon for native non-EVM tokens without an image', () => {
     expect(
       getAvatarTokenSrc({

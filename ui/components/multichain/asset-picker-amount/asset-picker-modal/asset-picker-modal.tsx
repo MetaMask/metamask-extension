@@ -267,7 +267,8 @@ export function AssetPickerModal({
         address: '',
         symbol: nativeCurrency,
         decimals: 18,
-        image: nativeCurrencyImage,
+        image: (nativeTokenImageUrls[selectedNetwork.chainId] ??
+          nativeCurrencyImage) as AssetWithDisplayData<NativeAsset>['image'],
         balance: balanceValue,
         string: undefined,
         chainId: selectedNetwork.chainId,
