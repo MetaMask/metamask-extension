@@ -5,6 +5,7 @@
  */
 import { spawn } from 'child_process';
 import { promises as fs } from 'fs';
+import os from 'os';
 import path from 'path';
 import { pathToFileURL } from 'url';
 import { hideBin } from 'yargs/helpers';
@@ -39,6 +40,15 @@ import {
   validateResultThresholds,
   logThresholdResult,
 } from './utils/statistics';
+import {
+  PAIRED,
+  mergePairedRuns,
+  pairedIterationsPerRun,
+  pairedRunArguments,
+  readPairedConfig,
+  runPairedRuns,
+} from './utils/paired';
+import type { PairedRunPlan } from './utils/paired';
 
 /**
  * Startup benchmarks handle their own iteration internally (browserLoads x pageLoads).
@@ -174,6 +184,10 @@ async function runBenchmarkFile(
   preset?: string,
   outputFilename?: string,
 ): Promise<unknown> {
+  if (process.env[PAIRED] === '1') {
+    return runPairedBenchmarkFile(filePath, options, preset, outputFilename);
+  }
+
   const absolutePath = pathToFileURL(path.resolve(filePath)).href;
   const fileName = path.basename(filePath, path.extname(filePath));
 
@@ -245,6 +259,127 @@ async function runBenchmarkFile(
   logThresholdResult(violations);
 
   return result;
+}
+
+/**
+ * Under `BENCHMARK_PAIRED=1` each run is this runner again, unpaired, in a child process with
+ * `dist` at the run's build; the runs' results merge into one entry (`utils/paired.ts`).
+ */
+async function runPairedBenchmarkFile(
+  filePath: string,
+  options: {
+    iterations: number;
+    retries: number;
+    browserLoads: number;
+    pageLoads: number;
+  },
+  preset?: string,
+  outputFilename?: string,
+): Promise<unknown> {
+  const fileName = path.basename(filePath, path.extname(filePath));
+  if (isPlaywrightBenchmarkFile(filePath)) {
+    throw new Error(
+      `${PAIRED}=1 pairs flows this runner runs; ${fileName} is a Playwright spec, which writes its own output`,
+    );
+  }
+  const config = readPairedConfig();
+
+  const benchmark = await import(pathToFileURL(path.resolve(filePath)).href);
+  const registryKey = buildRegistryKey(fileName, filePath, preset);
+  const thresholdConfig = THRESHOLD_REGISTRY[registryKey];
+  if (!thresholdConfig) {
+    throw new Error(
+      `No threshold config for "${fileName}" (registry key "${registryKey}"). Add an entry to THRESHOLD_REGISTRY in thresholds.ts.`,
+    );
+  }
+  const plan: PairedRunPlan = supportsIterations(filePath)
+    ? { kind: 'iterations', iterations: options.iterations }
+    : {
+        kind: 'startup',
+        browserLoads: options.browserLoads,
+        pageLoads: options.pageLoads,
+      };
+  const { platform, buildType } = extractPlatformBuildType(outputFilename);
+  const runsDirectory = await fs.mkdtemp(
+    path.join(os.tmpdir(), 'benchmark-paired-'),
+  );
+
+  const job = await runPairedRuns({
+    config,
+    distLink: path.resolve('dist'),
+    runOne: async (_build, position, phase, runEnv) => {
+      // Named as the job's output is, so the run records the same platform
+      // and build type.
+      const run = `paired-${phase === 'warmup' ? 'warmup' : 'run'}-${position}`;
+      const runOut = path.join(
+        runsDirectory,
+        platform && buildType
+          ? `benchmark-${platform}-${buildType}-${run}.json`
+          : `${run}.json`,
+      );
+      await runRunnerInChildProcess(
+        pairedRunArguments({
+          filePath,
+          plan,
+          retries: options.retries,
+          out: runOut,
+          preset,
+        }),
+        runEnv,
+      );
+      const runResults = JSON.parse(await fs.readFile(runOut, 'utf8'));
+      const entry = runResults[registryKey];
+      if (!entry) {
+        throw new Error(`the run's output has no "${registryKey}" entry`);
+      }
+      return entry;
+    },
+  });
+
+  const result = mergePairedRuns({
+    order: config.order,
+    iterationsPerRun: pairedIterationsPerRun(plan),
+    warmup: job.warmup,
+    runs: job.runs,
+    identity: {
+      testTitle: benchmark.testTitle || fileName,
+      persona: benchmark.persona,
+      platform,
+      buildType,
+    },
+  });
+  console.log(
+    `Completed paired job ${config.order}: ${job.runs.filter((outcome) => outcome.result && !outcome.result.error).length}/${job.runs.length} measured runs gave values, after ${job.warmup.length} warm-up runs; each run's output is in ${runsDirectory}`,
+  );
+  logThresholdResult(
+    validateResultThresholds(result, thresholdConfig).violations,
+  );
+
+  return result;
+}
+
+/** Run this runner again in a child process with the same Node flags (the `tsx` loader). */
+async function runRunnerInChildProcess(
+  args: string[],
+  env: NodeJS.ProcessEnv,
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const child = spawn(
+      process.execPath,
+      [...process.execArgv, process.argv[1], ...args],
+      { stdio: 'inherit', cwd: process.cwd(), env },
+    );
+
+    child.on('close', (code) => {
+      if (code === 0) {
+        resolve();
+      } else {
+        reject(new Error(`the run's process exited with code ${code}`));
+      }
+    });
+
+    child.on('error', reject);
+  });
 }
 
 /**
