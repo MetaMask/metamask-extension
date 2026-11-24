@@ -302,7 +302,6 @@ import { RampsServiceInit } from './messenger-client-init/ramps-service-init';
 import { RampsControllerInit } from './messenger-client-init/ramps-controller-init';
 import { PerpsControllerInit } from './messenger-client-init/perps-controller-init';
 import { PerpsStreamBridge } from './controllers/perps/perps-stream-bridge';
-import { PPOMControllerInit } from './messenger-client-init/confirmations/ppom-controller-init';
 import { SmartTransactionsControllerInit } from './messenger-client-init/smart-transactions/smart-transactions-controller-init';
 import { initMessengerClients } from './messenger-client-init/utils';
 import {
@@ -574,7 +573,6 @@ export default class MetamaskController extends EventEmitter {
       ...(getIsPerpsIncludedInBuild()
         ? { PerpsController: PerpsControllerInit }
         : {}),
-      PPOMController: PPOMControllerInit,
       PhishingController: PhishingControllerInit,
       TransactionPayController: TransactionPayControllerInit,
       SmartTransactionsController: SmartTransactionsControllerInit,
@@ -706,7 +704,6 @@ export default class MetamaskController extends EventEmitter {
     this.snapInterfaceController =
       messengerClientsByName.SnapInterfaceController;
     this.snapsRegistry = messengerClientsByName.SnapRegistryController;
-    this.ppomController = messengerClientsByName.PPOMController;
     this.phishingController = messengerClientsByName.PhishingController;
     this.onboardingController = messengerClientsByName.OnboardingController;
     this.txController = this.wallet.getInstance('TransactionController');
@@ -1061,7 +1058,6 @@ export default class MetamaskController extends EventEmitter {
               validateSecurity: (securityAlertId, request, chainId) =>
                 validateRequestWithPPOM({
                   chainId,
-                  messenger: this.controllerMessenger,
                   request,
                   securityAlertId,
                   updateSecurityAlertResponse:
@@ -3914,7 +3910,6 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(
       createPPOMMiddleware(
-        this.controllerMessenger,
         this.preferencesController,
         this.networkController,
         this.appStateController,
@@ -4523,7 +4518,6 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(
       createPPOMMiddleware(
-        this.controllerMessenger,
         this.preferencesController,
         this.networkController,
         this.appStateController,
