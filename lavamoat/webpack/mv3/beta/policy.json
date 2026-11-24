@@ -3572,6 +3572,7 @@
         "@metamask/seedless-onboarding-controller": true,
         "@metamask/selected-network-controller": true,
         "@metamask/shield-controller": true,
+        "@metamask/signature-controller": true,
         "@metamask/storage-service": true,
         "@metamask/subscription-controller": true,
         "@metamask/transaction-controller": true,
