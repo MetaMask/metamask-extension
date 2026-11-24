@@ -1,20 +1,19 @@
-import { Suite } from 'mocha';
 import { Driver } from '../../../webdriver/driver';
-import { openActivityTransactionDetails } from '../../../page-objects/flows/activity.flow';
+import {
+  closeActivityTransactionDetails,
+  openActivityTransactionDetails,
+} from '../../../page-objects/flows/activity.flow';
 import { login } from '../../../page-objects/flows/login.flow';
 import {
   selectAllNetworksFromNetworkSelect,
   switchToNetworkFromNetworkSelect,
 } from '../../../page-objects/flows/network.flow';
-import { selectStellarNetwork } from '../../../page-objects/flows/stellar-network.flow';
 import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { withStellarFixtures } from '../../stellar/fixtures/with-stellar-fixtures';
-import {
-  STELLAR_ACCOUNT_ADDRESS,
-  STELLAR_NETWORK_NAME,
-  buildStellarFixture,
-} from '../../stellar/mocks/common-stellar';
+import { DEFAULT_STELLAR_ADDRESS } from '../../../constants';
+import { buildStellarFixture } from '../../stellar/mocks/common-stellar';
+import { STELLAR_NETWORK_NAME } from '../../stellar/mocks/stellar-constants';
 import {
   STELLAR_EXTERNAL_SENDER_ADDRESS,
   STELLAR_RECIPIENT_ADDRESS,
@@ -27,28 +26,7 @@ import { mockEvmActivityApi } from '../utils/mock-evm-activity-api';
 
 const BASE_TIMESTAMP = Date.now();
 
-/**
- * Closes transaction details without relying on history.back() clearing `/tx/`
- * (Stellar CAIP chain ids in the hash make that wait flaky). Re-open Activity.
- *
- * @param driver - WebDriver instance.
- * @param activityTab - Activity tab page object.
- */
-async function closeDetailsAndReturnToActivity(
-  driver: Driver,
-  activityTab: ActivityTab,
-): Promise<void> {
-  await driver.clickElementSafe(
-    { testId: 'transaction-details-back-button' },
-    1_000,
-  );
-  await driver.clickElement({ testId: 'bottom-nav-activity' });
-  await activityTab.checkPageIsLoaded();
-}
-
-describe('Stellar - Activity types', function (this: Suite) {
-  this.timeout(180_000);
-
+describe('Stellar - Activity types', function () {
   it('renders sent, received, swapped and bridged transactions', async function () {
     // Staggered timestamps keep the activity list ordering deterministic.
     const sendTx = xlmSendTx({
@@ -84,7 +62,7 @@ describe('Stellar - Activity types', function (this: Suite) {
       {
         accounts: [
           {
-            address: STELLAR_ACCOUNT_ADDRESS,
+            address: DEFAULT_STELLAR_ADDRESS,
             horizonTransactions: [sendTx, receiveTx, swapTx, bridgeTx],
           },
         ],
@@ -96,11 +74,8 @@ describe('Stellar - Activity types', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, {
-          validateBalance: false,
-          waitForNonEvmAccounts: false,
-        });
-        await selectStellarNetwork(driver);
+        await login(driver, { validateBalance: false });
+        await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -119,8 +94,8 @@ describe('Stellar - Activity types', function (this: Suite) {
         await sendDetails.checkTitle('Sent XLM');
         await sendDetails.checkAmount('-1 XLM');
         await sendDetails.checkAddressInLog(STELLAR_RECIPIENT_ADDRESS);
-        await sendDetails.checkAddressInLog(STELLAR_ACCOUNT_ADDRESS);
-        await closeDetailsAndReturnToActivity(driver, activityTab);
+        await sendDetails.checkAddressInLog(DEFAULT_STELLAR_ADDRESS);
+        await closeActivityTransactionDetails({ driver, activityTab });
 
         // Received
         await activityTab.checkTransactionActivityByText('Received XLM');
@@ -137,7 +112,7 @@ describe('Stellar - Activity types', function (this: Suite) {
         await swapDetails.checkTitle('Swapped');
         await swapDetails.checkAmount('-1 XLM');
         await swapDetails.checkAmount('+2.5 USDC');
-        await closeDetailsAndReturnToActivity(driver, activityTab);
+        await closeActivityTransactionDetails({ driver, activityTab });
 
         // Bridged (reclassified from the seeded BridgeStatusController history)
         await activityTab.checkTransactionActivityByText('Bridged XLM');
@@ -150,7 +125,7 @@ describe('Stellar - Activity types', function (this: Suite) {
         await bridgeDetails.checkTitle('Bridged XLM');
         await bridgeDetails.checkAmount('-1.5 XLM');
         await bridgeDetails.checkAmount('+1.49 USDC');
-        await closeDetailsAndReturnToActivity(driver, activityTab);
+        await closeActivityTransactionDetails({ driver, activityTab });
       },
     );
   });
@@ -167,7 +142,7 @@ describe('Stellar - Activity types', function (this: Suite) {
       {
         accounts: [
           {
-            address: STELLAR_ACCOUNT_ADDRESS,
+            address: DEFAULT_STELLAR_ADDRESS,
             horizonTransactions: [sendTx],
           },
         ],
@@ -176,11 +151,8 @@ describe('Stellar - Activity types', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, {
-          validateBalance: false,
-          waitForNonEvmAccounts: false,
-        });
-        await selectStellarNetwork(driver);
+        await login(driver, { validateBalance: false });
+        await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

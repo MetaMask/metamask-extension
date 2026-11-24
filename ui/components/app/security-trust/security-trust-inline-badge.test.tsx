@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
+import { IconSize } from '@metamask/design-system-react';
 import type { TokenTrustConfig } from '#shared/lib/token-search/types';
 import {
   getSecurityTrustBadgeConfig,
@@ -29,6 +30,31 @@ describe('SecurityTrustInlineBadge', () => {
 
     expect(getByTestId('security-badge-verified')).toBeInTheDocument();
     expect(getByLabelText('securityTrustVerified')).toBeInTheDocument();
+  });
+
+  it('renders the verified icon at 16px by default', () => {
+    const badge = getTestBadgeConfig('Verified');
+    const { getByLabelText } = render(
+      <SecurityTrustInlineBadge
+        badge={badge}
+        testId="security-badge-verified"
+      />,
+    );
+
+    expect(getByLabelText('securityTrustVerified')).toHaveClass('w-4', 'h-4');
+  });
+
+  it('renders the verified icon at 20px when iconSize is Md', () => {
+    const badge = getTestBadgeConfig('Verified');
+    const { getByLabelText } = render(
+      <SecurityTrustInlineBadge
+        badge={badge}
+        testId="security-badge-verified"
+        iconSize={IconSize.Md}
+      />,
+    );
+
+    expect(getByLabelText('securityTrustVerified')).toHaveClass('w-5', 'h-5');
   });
 
   it('wraps verified icon in a button when onClick is provided', () => {

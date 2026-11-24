@@ -1,11 +1,14 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
-import { selectStellarNetwork } from '../../page-objects/flows/stellar-network.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import { withStellarFixtures } from '../stellar/fixtures/with-stellar-fixtures';
-import { XLM_BALANCE_DISPLAY } from '../stellar/mocks/common-stellar';
+import {
+  STELLAR_NETWORK_NAME,
+  XLM_BALANCE_DISPLAY,
+} from '../stellar/mocks/stellar-constants';
 import {
   mockBridgeGetStellarQuoteFor,
   mockBridgeGetStellarTokens,
@@ -13,10 +16,12 @@ import {
   mockStellarSwapApis,
   mockStellarSwapApisNoQuotes,
   mockStellarSwapApisWithoutFeeEstimation,
+  mockStellarSwapFeatureFlags,
 } from '../stellar/mocks/stellar-swap-mocks';
 import { HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS } from '../../constants';
 
 describe('Swap on Stellar', function (this: Suite) {
+  // Same budget as Tron swap E2E — quote + Snap console paths are slow in CI.
   this.timeout(180_000);
 
   it('Quote displayed between XLM and issued asset', async function () {
@@ -36,7 +41,7 @@ describe('Swap on Stellar', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        await selectStellarNetwork(driver);
+        await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -75,7 +80,7 @@ describe('Swap on Stellar', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        await selectStellarNetwork(driver);
+        await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -112,7 +117,7 @@ describe('Swap on Stellar', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        await selectStellarNetwork(driver);
+        await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -141,6 +146,7 @@ describe('Swap on Stellar', function (this: Suite) {
         },
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer) => [
+          await mockStellarSwapFeatureFlags(mockServer),
           ...(await mockBridgeGetStellarTokens(mockServer)),
           await mockBridgeGetStellarQuoteFor(mockServer, {
             src: 'USDC',
@@ -153,7 +159,7 @@ describe('Swap on Stellar', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        await selectStellarNetwork(driver);
+        await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -189,7 +195,7 @@ describe('Swap on Stellar', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        await selectStellarNetwork(driver);
+        await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -221,7 +227,7 @@ describe('Swap on Stellar', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        await selectStellarNetwork(driver);
+        await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -254,7 +260,7 @@ describe('Swap on Stellar', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        await selectStellarNetwork(driver);
+        await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

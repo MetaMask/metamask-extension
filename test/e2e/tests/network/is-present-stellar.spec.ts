@@ -1,7 +1,6 @@
-import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
-import { selectStellarNetwork } from '../../page-objects/flows/stellar-network.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SelectNetworkModal from '../../page-objects/pages/networks/select-network-modal';
 import NetworkFilter from '../../page-objects/pages/networks/network-filter';
@@ -11,11 +10,9 @@ import { withStellarFixtures } from '../stellar/fixtures/with-stellar-fixtures';
 import {
   STELLAR_CHAIN_ID,
   STELLAR_NETWORK_NAME,
-} from '../stellar/mocks/common-stellar';
+} from '../stellar/mocks/stellar-constants';
 
-describe('Stellar - Network', function (this: Suite) {
-  this.timeout(180_000);
-
+describe('Stellar - Network', function () {
   describe('default wallet', function () {
     it('shows Stellar across the default wallet mainnet flow', async function () {
       await withStellarFixtures(
@@ -31,7 +28,7 @@ describe('Stellar - Network', function (this: Suite) {
           const networksPage = new NetworksPage(driver);
 
           // Selecting Stellar from the home network filter switches to it.
-          await selectStellarNetwork(driver);
+          await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
           await networkFilter.checkLabelIs(STELLAR_NETWORK_NAME);
 
           // Stellar is listed in the Tokens tab network selector. Runs before

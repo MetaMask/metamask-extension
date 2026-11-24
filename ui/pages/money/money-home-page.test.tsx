@@ -67,8 +67,19 @@ const interestResponse = (value: string) => ({
 });
 
 jest.mock('react-redux', () => ({
-  useSelector: (selector: () => unknown) => selector(),
+  useSelector: (selector: (state: unknown) => unknown) =>
+    selector({ metamask: {} }),
 }));
+
+jest.mock(
+  '../../components/app/modals/visit-support-data-consent-modal',
+  () => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: () => null,
+    useOpenSupport: () => jest.fn(),
+  }),
+);
 
 jest.mock('../../selectors/money/money-account-feature-flags', () => ({
   ...jest.requireActual('../../selectors/money/money-account-feature-flags'),
@@ -192,7 +203,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber(0),
       totalFiatFormatted: '$0.00',
       totalFiatRaw: '0',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
@@ -600,7 +611,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('3475.45'),
       totalFiatFormatted: '$3,475.45',
       totalFiatRaw: '3475.45',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     renderWithLocalization(<MoneyHomePage />);
 
@@ -625,7 +636,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('3475.45'),
       totalFiatFormatted: '$3,475.45',
       totalFiatRaw: '3475.45',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     renderWithLocalization(<MoneyHomePage />);
 
@@ -712,7 +723,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('100'),
       totalFiatFormatted: '$100.00',
       totalFiatRaw: '100',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -746,7 +757,7 @@ describe('MoneyHomePage', () => {
         tokenTotal: new BigNumber('100'),
         totalFiatFormatted: '$100.00',
         totalFiatRaw: '100',
-        vaultApyQuery: { isLoading: false },
+        isApyLoading: false,
       });
       global.platform.openTab = jest.fn();
 
@@ -774,7 +785,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('100'),
       totalFiatFormatted: '$100.00',
       totalFiatRaw: '100',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -800,7 +811,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('100'),
       totalFiatFormatted: '$100.00',
       totalFiatRaw: '100',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     global.platform.openTab = jest.fn();
 
@@ -823,7 +834,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('100'),
       totalFiatFormatted: '$100.00',
       totalFiatRaw: '100',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     global.platform.openTab = jest.fn();
 
@@ -846,7 +857,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('3475.45'),
       totalFiatFormatted: '$3,475.45',
       totalFiatRaw: '3475.45',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyActivityItems.mockReturnValue({
       items: MOCK_MONEY_TRANSACTIONS.map(onchainItem),
@@ -883,7 +894,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('3475.45'),
       totalFiatFormatted: '$3,475.45',
       totalFiatRaw: '3475.45',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyActivityItems.mockReturnValue({ items });
 
@@ -903,7 +914,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('10'),
       totalFiatFormatted: '$10.00',
       totalFiatRaw: '10',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
@@ -937,7 +948,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('10'),
       totalFiatFormatted: '$10.00',
       totalFiatRaw: '10',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
@@ -971,7 +982,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('10'),
       totalFiatFormatted: '$10.00',
       totalFiatRaw: '10',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: { data: undefined, isLoading: true },
@@ -998,7 +1009,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('120'),
       totalFiatFormatted: '$120.00',
       totalFiatRaw: '120',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
@@ -1031,7 +1042,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('120'),
       totalFiatFormatted: '$120.00',
       totalFiatRaw: '120',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
@@ -1064,7 +1075,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('10'),
       totalFiatFormatted: '$10.00',
       totalFiatRaw: '10',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
@@ -1097,7 +1108,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('10'),
       totalFiatFormatted: '$10.00',
       totalFiatRaw: '10',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
@@ -1145,7 +1156,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('10'),
       totalFiatFormatted: '$10.00',
       totalFiatRaw: '10',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
@@ -1179,7 +1190,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('10'),
       totalFiatFormatted: '$10.00',
       totalFiatRaw: '10',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyDepositTokens.mockReturnValue({
       tokens: [DEPOSIT_TOKEN],
@@ -1204,7 +1215,7 @@ describe('MoneyHomePage', () => {
       isBalanceLoading: false,
       tokenTotal: new BigNumber('0.009'),
       totalFiatFormatted: '$0.01',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -1237,7 +1248,7 @@ describe('MoneyHomePage', () => {
       isBalanceLoading: true,
       tokenTotal: undefined,
       totalFiatFormatted: undefined,
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -1271,7 +1282,7 @@ describe('MoneyHomePage', () => {
       refetchBalance: jest.fn().mockResolvedValue(undefined),
       tokenTotal: undefined,
       totalFiatFormatted: undefined,
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -1303,7 +1314,7 @@ describe('MoneyHomePage', () => {
       refetchBalance,
       tokenTotal: undefined,
       totalFiatFormatted: undefined,
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -1337,7 +1348,7 @@ describe('MoneyHomePage', () => {
       refetchBalance,
       tokenTotal: undefined,
       totalFiatFormatted: undefined,
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -1358,7 +1369,7 @@ describe('MoneyHomePage', () => {
       isBalanceLoading: false,
       tokenTotal: new BigNumber(0),
       totalFiatFormatted: '$0.00',
-      vaultApyQuery: { isLoading: true },
+      isApyLoading: true,
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -1444,7 +1455,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('3475.45'),
       totalFiatFormatted: '$3,475.45',
       totalFiatRaw: '3475.45',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyDepositTokens.mockReturnValue({
       tokens: [DEPOSIT_TOKEN],

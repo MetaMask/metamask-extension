@@ -2,11 +2,7 @@
 import { createHash } from 'crypto';
 import { StatusTypes } from '@metamask/bridge-controller';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
-import {
-  TransactionStatus,
-  TransactionType,
-  type Transaction as KeyringTransaction,
-} from '@metamask/keyring-api';
+import type { CaipAssetType } from '@metamask/utils';
 import {
   Account,
   Asset,
@@ -15,20 +11,22 @@ import {
   TransactionBuilder,
   type Horizon,
 } from '@stellar/stellar-sdk';
-import {
-  DEFAULT_STELLAR_ADDRESS,
-  EXPECTED_STELLAR_ADDRESSES_BY_INDEX,
-} from '../../../constants';
+import { DEFAULT_STELLAR_ADDRESS } from '../../../constants';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import {
-  STELLAR_CHAIN_ID,
   STELLAR_NATIVE_ASSET_ID,
   STELLAR_USDC_ISSUER,
-} from './common-stellar';
+} from './stellar-constants';
 
-export const STELLAR_RECIPIENT_ADDRESS = EXPECTED_STELLAR_ADDRESSES_BY_INDEX[1];
+const ETH_MAINNET_USDC_ASSET_ID =
+  'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as const;
+
+/** Counterparty address for outbound activity / send fixture txs (not HD Account 2). */
+export const STELLAR_RECIPIENT_ADDRESS =
+  'GBIIXG2ZPGFMANK4XIF6MMWJXMX4F4BQHIIAJ5GOAB5DXBDQPJ6IRVJK';
+/** External sender for inbound activity fixture txs (not HD Account 3). */
 export const STELLAR_EXTERNAL_SENDER_ADDRESS =
-  EXPECTED_STELLAR_ADDRESSES_BY_INDEX[2];
+  'GBDJSQAXWNQF55G6QY6AF4GWKOINELOND7A7RHZPBXBPEV3YSY5M7LVU';
 
 export type StellarHorizonTxStatus = 'confirmed' | 'failed';
 
@@ -69,6 +67,8 @@ function toHorizonRecord(params: {
   pagingToken: string;
 }): Horizon.ServerApi.TransactionRecord {
   const hash = params.built.hash().toString('hex');
+  // Partial Horizon shape is enough for the snap's XDR/activity parsing; cast
+  // through unknown because ServerApi.TransactionRecord also declares methods.
   return {
     id: hash,
     hash,
@@ -88,7 +88,7 @@ function toHorizonRecord(params: {
     fee_meta_xdr: '',
     memo_type: 'none',
     signatures: [],
-  } as Horizon.ServerApi.TransactionRecord;
+  } as unknown as Horizon.ServerApi.TransactionRecord;
 }
 
 function isoFromMs(timestampMs: number): string {
@@ -215,11 +215,13 @@ export function stellarBridgeHistoryItem(opts: {
   destAmount: string;
   timestamp?: number;
 }): BridgeHistoryItem {
+  // BridgeHistoryItem still models EVM-oriented numeric chainIds in places;
+  // Stellar activity fixtures use CAIP ids at runtime, so cast the seeded item.
   const srcAsset = {
     symbol: 'XLM',
     chainId: MultichainNetworks.STELLAR,
     name: 'Stellar',
-    assetId: STELLAR_NATIVE_ASSET_ID,
+    assetId: STELLAR_NATIVE_ASSET_ID as CaipAssetType,
     decimals: 7,
     address: '',
   };
@@ -227,7 +229,7 @@ export function stellarBridgeHistoryItem(opts: {
     symbol: 'USDC',
     chainId: 1,
     name: 'USD Coin',
-    assetId: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    assetId: ETH_MAINNET_USDC_ASSET_ID,
     decimals: 6,
     address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
   };
@@ -271,65 +273,6 @@ export function stellarBridgeHistoryItem(opts: {
     startTime: opts.timestamp ?? Date.now() - 60_000,
     estimatedProcessingTimeInSeconds: 60,
     slippagePercentage: 0.5,
-  };
-}
-
-/**
- * Builds a keyring Send transaction for MultichainTransactionsController seeding
- * (used when Horizon cannot express Pending / Unconfirmed).
- *
- * @param opts - Keyring send options.
- * @param opts.accountId - Multichain account id that owns the send.
- * @param opts.amount - Human-readable XLM amount.
- * @param opts.destination - Recipient Stellar account id (G…).
- * @param opts.status - Keyring status (`Unconfirmed` or `Failed`).
- * @param opts.timestampMs - Event time in ms (converted to seconds for keyring).
- * @param opts.id - Stable transaction id used as the activity key.
- */
-export function stellarKeyringSendTx(opts: {
-  accountId: string;
-  amount: string;
-  destination: string;
-  status:
-    | typeof TransactionStatus.Unconfirmed
-    | typeof TransactionStatus.Failed;
-  timestampMs: number;
-  id: string;
-}): KeyringTransaction {
-  const timestamp = Math.floor(opts.timestampMs / 1000);
-  const asset = {
-    unit: 'XLM',
-    type: STELLAR_NATIVE_ASSET_ID,
-    amount: opts.amount,
-    fungible: true as const,
-  };
-
-  return {
-    type: TransactionType.Send,
-    id: opts.id,
-    account: opts.accountId,
-    chain: STELLAR_CHAIN_ID,
-    status: opts.status,
-    timestamp,
-    from: [
-      {
-        address: DEFAULT_STELLAR_ADDRESS,
-        asset,
-      },
-    ],
-    to: [
-      {
-        address: opts.destination,
-        asset,
-      },
-    ],
-    events: [
-      {
-        status: opts.status,
-        timestamp,
-      },
-    ],
-    fees: [],
-  };
+  } as unknown as BridgeHistoryItem;
 }
 /* eslint-enable @typescript-eslint/naming-convention */

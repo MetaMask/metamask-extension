@@ -2,9 +2,12 @@
 
 exports[`useRampsProviders matches snapshot 1`] = `
 {
+  "controllerProviders": [],
   "error": null,
   "isLoading": false,
+  "previouslyUsedProviderIds": [],
   "providers": [],
+  "selectProviderForAsset": [Function],
   "selectedProvider": null,
   "setSelectedProvider": [Function],
 }

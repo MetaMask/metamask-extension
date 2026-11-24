@@ -19,7 +19,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { getImageForChainId } from '../../../../../selectors/multichain';
+import { useImageForChainId } from '../../../../../hooks/useImageForChainId';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../../../selectors';
 import { extractNetworkName } from '../helper';
 
@@ -45,7 +45,7 @@ export const PermissionGroupListItem = ({
   onClick,
 }: PermissionGroupListItemProps) => {
   const t = useI18nContext();
-  const networkImageUrl = getImageForChainId(chainId);
+  const networkImageUrl = useImageForChainId(chainId);
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );

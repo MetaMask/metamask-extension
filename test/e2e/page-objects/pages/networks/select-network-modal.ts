@@ -186,12 +186,9 @@ class SelectNetworkModal {
       this.enabledNetworkListItemByName(networkName),
       { timeout: 45000 },
     );
-    // After onboarding the popular-network list is long; non-EVM rows (e.g.
-    // Stellar) sit below the fold and are not "visible" until scrolled.
-    const locator = this.networkListItemByName(networkName);
-    const element = await this.driver.findElement(locator);
-    await this.driver.scrollToElement(element);
-    await this.driver.clickElementAndWaitToDisappear(locator);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.networkListItemByName(networkName),
+    );
   }
 }
 

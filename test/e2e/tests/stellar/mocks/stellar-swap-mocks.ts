@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+import { cloneDeep } from 'lodash';
 import { MockedEndpoint, Mockttp } from 'mockttp';
 import {
+  getProductionRemoteFlagApiResponse,
+  getRegistryEntry,
+} from '../../../feature-flags';
+import {
+  FEATURE_FLAGS_URL,
   STELLAR_BRIDGE_CHAIN_ID,
   STELLAR_CHAIN_ID,
   STELLAR_EURC_ASSET_ID,
@@ -8,7 +14,72 @@ import {
   STELLAR_NATIVE_ASSET_ID,
   STELLAR_USDC_ASSET_ID,
   STELLAR_USDC_ISSUER,
-} from './common-stellar';
+} from './stellar-constants';
+
+/**
+ * Production bridgeConfig with Stellar swap enabled and SSE disabled so E2E
+ * can mock REST `getQuote` (same idea as Tron's invalid `{}` → default path).
+ * Kept swap-only: shared Stellar fixtures use production account flags only.
+ */
+export function buildStellarE2eBridgeConfig(): Record<string, unknown> {
+  const production =
+    (getRegistryEntry('bridgeConfig')?.productionDefault as Record<
+      string,
+      unknown
+    >) ?? {};
+  const bridgeConfig = cloneDeep(production) as {
+    sse?: { enabled?: boolean; minimumVersion?: string };
+    bip44DefaultPairs?: Record<string, unknown>;
+    chains?: Record<string, Record<string, unknown>>;
+  };
+
+  bridgeConfig.sse = { enabled: false, minimumVersion: '99.0.0' };
+  bridgeConfig.bip44DefaultPairs = {
+    ...(bridgeConfig.bip44DefaultPairs ?? {}),
+    stellar: {
+      other: {},
+      standard: {
+        [STELLAR_NATIVE_ASSET_ID]: STELLAR_USDC_ASSET_ID,
+      },
+    },
+  };
+  bridgeConfig.chains = {
+    ...(bridgeConfig.chains ?? {}),
+    [String(STELLAR_BRIDGE_CHAIN_ID)]: {
+      isActiveDest: true,
+      isActiveSrc: true,
+      isSingleSwapBridgeButtonEnabled: true,
+    },
+  };
+
+  return bridgeConfig;
+}
+
+/**
+ * Swap-only feature-flag override. Registered ahead of `mockStellarApis` so
+ * mockttp's first `.always()` rule wins (SSE off + Stellar swap button on).
+ *
+ * @param mockServer - Mockttp server.
+ */
+export async function mockStellarSwapFeatureFlags(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forGet(FEATURE_FLAGS_URL)
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'dev',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [
+        ...getProductionRemoteFlagApiResponse(),
+        { bridgeConfig: buildStellarE2eBridgeConfig() },
+        { corePlatformRpcFailoverMode: 'disabled' },
+      ],
+    }));
+}
 
 const BRIDGE_GET_QUOTE_RE =
   /^https:\/\/bridge\.(api|dev-api)\.cx\.metamask\.io\/getQuote(?!Stream)/u;
@@ -332,6 +403,7 @@ export async function mockStellarSwapApis(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint[]> {
   return [
+    await mockStellarSwapFeatureFlags(mockServer),
     ...(await mockBridgeGetStellarTokens(mockServer)),
     await mockBridgeGetStellarQuote(mockServer),
     await mockHorizonFeeStatsForSwap(mockServer),
@@ -347,6 +419,7 @@ export async function mockStellarSwapApisNoQuotes(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint[]> {
   return [
+    await mockStellarSwapFeatureFlags(mockServer),
     ...(await mockBridgeGetStellarTokens(mockServer)),
     await mockBridgeGetStellarQuoteEmpty(mockServer),
   ];
@@ -361,6 +434,7 @@ export async function mockStellarSwapApisWithoutFeeEstimation(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint[]> {
   return [
+    await mockStellarSwapFeatureFlags(mockServer),
     ...(await mockBridgeGetStellarTokens(mockServer)),
     await mockBridgeGetStellarQuote(mockServer),
     await mockServer

@@ -23,6 +23,7 @@ import {
   getMultichainIsEvm,
 } from '../../../../selectors/multichain';
 import { getProviderConfig } from '../../../../../shared/lib/selectors/networks';
+import { selectAssetsHaveLoadedForSelectedAccountGroup } from '../../../../selectors/assets';
 
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { TokenWithFiatAmount } from '../types';
@@ -178,6 +179,7 @@ describe('Token Cell', () => {
     rpcPrefs: { blockExplorerUrl: 'https://etherscan.io' },
   });
   let mockAnyEnabledNetworksAreAvailable = true;
+  let mockAssetsHaveLoaded = true;
   const useSelectorMock = useSelector;
   (useSelectorMock as jest.Mock).mockImplementation((selector) => {
     if (selector === getPreferences) {
@@ -213,6 +215,9 @@ describe('Token Cell', () => {
     if (selector === selectAnyEnabledNetworksAreAvailable) {
       return mockAnyEnabledNetworksAreAvailable;
     }
+    if (selector === selectAssetsHaveLoadedForSelectedAccountGroup) {
+      return mockAssetsHaveLoaded;
+    }
     if (selector === getEnabledNetworksByNamespace) {
       return {
         '0x1': true,
@@ -244,6 +249,7 @@ describe('Token Cell', () => {
 
   beforeEach(() => {
     mockAnyEnabledNetworksAreAvailable = true;
+    mockAssetsHaveLoaded = true;
   });
 
   it('calls onClick when clicked', () => {
@@ -315,12 +321,11 @@ describe('Token Cell', () => {
     expect(amountElement.textContent).not.toContain('11,811,649');
   });
 
-  it('shows a skeleton for native token percentage while fiat is loading', () => {
-    mockAnyEnabledNetworksAreAvailable = false;
+  it('shows skeletons for unresolved fiat values while assets are loading', () => {
+    mockAssetsHaveLoaded = false;
 
-    const nativeTokenWithoutFiatAmount = {
+    const tokenWithoutFiatAmount = {
       ...propToken,
-      isNative: true,
       tokenFiatAmount: undefined,
     };
 
@@ -328,7 +333,7 @@ describe('Token Cell', () => {
       <TokenCell
         {...({
           ...props,
-          token: nativeTokenWithoutFiatAmount,
+          token: tokenWithoutFiatAmount,
         } as TokenCellProps)}
       />,
       mockStore,
@@ -336,6 +341,9 @@ describe('Token Cell', () => {
 
     expect(
       getByTestId('multichain-token-list-item-percentage-skeleton'),
+    ).toBeInTheDocument();
+    expect(
+      getByTestId('multichain-token-list-item-secondary-value-skeleton'),
     ).toBeInTheDocument();
   });
 

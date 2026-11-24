@@ -55,8 +55,6 @@ const createMiddleware = (
   const { chainId, error, securityAlertsEnabled, updateSecurityAlertResponse } =
     options;
 
-  const messenger = {};
-
   const preferenceController = {
     state: {
       securityAlertsEnabled: securityAlertsEnabled ?? true,
@@ -86,9 +84,6 @@ const createMiddleware = (
   };
 
   const middlewareFunction = createPPOMMiddleware(
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    messenger as any,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     preferenceController as any,
@@ -253,7 +248,10 @@ describe('PPOMMiddleware', () => {
       tabId: 1048745900,
       securityAlertResponse: undefined,
     };
-    detectSIWEMock.mockReturnValue({ isSIWEMessage: true } as SIWEMessage);
+    detectSIWEMock.mockReturnValue({
+      isSIWEMessage: true,
+      parsedMessage: { address: '0x935E73EDb9fF52E23BaC7F7e043A1ecD06d05477' },
+    } as SIWEMessage);
 
     // @ts-expect-error Passing invalid input for testing purposes
     await middlewareFunction(req, undefined, () => undefined);

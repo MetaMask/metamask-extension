@@ -1,4 +1,3 @@
-import { Suite } from 'mocha';
 import {
   DEFAULT_STELLAR_ADDRESS,
   HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
@@ -6,18 +5,19 @@ import {
 import { login } from '../../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
 import { assertAddressAtIndex } from '../../../page-objects/flows/account-list.flow';
-import { selectStellarNetwork } from '../../../page-objects/flows/stellar-network.flow';
+import { switchToNetworkFromNetworkSelect } from '../../../page-objects/flows/network.flow';
 import AccountListPage from '../../../page-objects/pages/accounts/list-page';
 import AccountAddressListPage from '../../../page-objects/pages/accounts/address-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { shortenAddress } from '../../../../../ui/helpers/utils/util';
 import { Driver } from '../../../webdriver/driver';
 import { withStellarFixtures } from '../../stellar/fixtures/with-stellar-fixtures';
+import { buildStellarFixture } from '../../stellar/mocks/common-stellar';
+import { openAccountMenu } from '../../../page-objects/flows/account-menu.flow';
 import {
   STELLAR_NETWORK_NAME,
   XLM_FIAT_DISPLAY,
-  buildStellarFixture,
-} from '../../stellar/mocks/common-stellar';
+} from '../../stellar/mocks/stellar-constants';
 
 /**
  * Stellar HD address derivation E2E cluster.
@@ -27,9 +27,7 @@ import {
  * - Receive page: Account 1 Stellar address is shown
  * - Onboarding SRP import: Stellar address is derived for Account 1
  */
-describe('Stellar account derivation', function (this: Suite) {
-  this.timeout(180_000);
-
+describe('Stellar account derivation', function () {
   it("shows Account 1's Stellar address on the Addresses modal", async function () {
     await withStellarFixtures(
       {
@@ -38,12 +36,11 @@ describe('Stellar account derivation', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        await selectStellarNetwork(driver);
+        await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
 
-        const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
 
-        await homepage.headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await accountList.checkPageIsLoaded();
 
         await assertAddressAtIndex(driver, {
@@ -63,14 +60,13 @@ describe('Stellar account derivation', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        await selectStellarNetwork(driver);
+        await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
 
         const homepage = new HomePage(driver);
         const addressList = new AccountAddressListPage(driver);
 
         await homepage.checkPageIsLoaded();
-        // Homepage More collapses to a single Receive control (`*-overview-default`).
-        await homepage.clickOnReceiveButton('default');
+        await homepage.clickOnReceiveButton();
 
         await addressList.checkPageIsLoaded();
         await addressList.checkNetworkAddressIsDisplayedForNetwork({
@@ -96,20 +92,19 @@ describe('Stellar account derivation', function (this: Suite) {
         const homepage = new HomePage(driver);
         await homepage.checkPageIsLoaded();
         // Account-tree identity sync is not mocked here and is not required for
-        // Stellar derivation; selectStellarNetwork waits for the snap account.
-        await selectStellarNetwork(driver);
+        // Stellar derivation; switchToNetworkFromNetworkSelect selects Stellar after snap account is ready.
+        await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
 
         // Refresh re-hydrates UI after Snap account alignment / Horizon sync.
         // Fresh onboarding defaults the homepage primary balance to fiat.
-        await driver.refresh();
-        await homepage.checkPageIsLoaded();
+        await homepage.refreshPage();
         await homepage.checkExpectedBalanceIsDisplayed({
           expectedBalance: XLM_FIAT_DISPLAY,
           timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
 
         const accountList = new AccountListPage(driver);
-        await homepage.headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await accountList.checkPageIsLoaded();
 
         await assertAddressAtIndex(driver, {
