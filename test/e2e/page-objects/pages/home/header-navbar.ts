@@ -238,7 +238,9 @@ class HeaderNavbar {
     });
     // WebDriver's pointer move fires mouseenter. Do not synthesize a
     // MouseEvent in the page: LavaMoat scuttling blocks globalThis.MouseEvent
-    // in the test build.
+    // in the test build. Leave the trigger first: if the pointer is already
+    // over it (e.g. left there by the previous click), no mouseenter fires.
+    await this.driver.hoverElement(await this.driver.findElement('body'));
     await this.driver.hoverElement(trigger);
   }
 
