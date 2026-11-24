@@ -28,12 +28,10 @@ import { toCamelCase } from '../../../shared/lib/string-utils';
 import { runBenchmarkWithIterations, convertSummaryToResults } from './utils';
 import {
   STARTUP_PRESETS,
-  INTERACTION_PRESETS,
-  USER_JOURNEY_PRESETS,
-  DAPP_PAGE_LOAD_PRESETS,
-  DAPP_PAGE_LOAD_BENCHMARK_SPEC_PATH,
   DAPP_PAGE_LOAD_BENCHMARK_SPEC_BASENAME,
 } from './utils/constants';
+import { omitFiles } from './utils/paired-flows';
+import { PRESETS } from './utils/presets';
 import { THRESHOLD_REGISTRY } from './utils/thresholds';
 import { resolveFlowIterations } from './utils/flow-iterations';
 import {
@@ -125,53 +123,6 @@ function buildRegistryKey(
 
   return baseName;
 }
-
-const BENCHMARK_DIR = 'test/e2e/benchmarks/flows';
-
-/**
- * Preset definitions mapping preset names to benchmark files.
- * Keys reference the shared constants from ./utils/constants.ts.
- */
-const PRESETS: Record<string, string[]> = {
-  // User journey benchmarks - Onboarding
-  [USER_JOURNEY_PRESETS.ONBOARDING_IMPORT]: [
-    `${BENCHMARK_DIR}/user-journey/onboarding-import-wallet.ts`,
-  ],
-  [USER_JOURNEY_PRESETS.ONBOARDING_NEW]: [
-    `${BENCHMARK_DIR}/user-journey/onboarding-new-wallet.ts`,
-  ],
-  // User journey benchmarks - Assets
-  [USER_JOURNEY_PRESETS.ASSETS]: [
-    `${BENCHMARK_DIR}/user-journey/asset-details.ts`,
-    `${BENCHMARK_DIR}/user-journey/solana-asset-details.ts`,
-  ],
-  // User journey benchmarks - Accounts
-  [USER_JOURNEY_PRESETS.ACCOUNT_MANAGEMENT]: [
-    `${BENCHMARK_DIR}/user-journey/import-srp-home.ts`,
-  ],
-  // User journey benchmarks - Transactions
-  [USER_JOURNEY_PRESETS.TRANSACTIONS]: [
-    `${BENCHMARK_DIR}/user-journey/send-transactions.ts`,
-    `${BENCHMARK_DIR}/user-journey/swap.ts`,
-  ],
-  // Startup benchmarks
-  [STARTUP_PRESETS.STANDARD_HOME]: [
-    `${BENCHMARK_DIR}/startup/standard-home.ts`,
-  ],
-  [STARTUP_PRESETS.POWER_USER_HOME]: [
-    `${BENCHMARK_DIR}/startup/power-user-home.ts`,
-  ],
-  // Interaction benchmarks
-  [INTERACTION_PRESETS.USER_ACTIONS]: [
-    `${BENCHMARK_DIR}/interaction/load-new-account.ts`,
-    `${BENCHMARK_DIR}/interaction/confirm-tx.ts`,
-    `${BENCHMARK_DIR}/interaction/bridge-user-actions.ts`,
-  ],
-  // Dapp page-load benchmark (Playwright-based; runs separately in CI)
-  [DAPP_PAGE_LOAD_PRESETS.PAGE_LOAD]: [DAPP_PAGE_LOAD_BENCHMARK_SPEC_PATH],
-};
-
-PRESETS.all = Object.values(PRESETS).flat();
 
 async function runBenchmarkFile(
   filePath: string,
@@ -451,6 +402,12 @@ async function main(): Promise<void> {
       description: 'Number of retries per benchmark run',
       type: 'number',
     })
+    .option('skip', {
+      type: 'array',
+      string: true,
+      description:
+        'Benchmark files to leave out of the preset, run paired in another job',
+    })
     .option('out', {
       alias: 'o',
       description: 'Output filename. Output printed to STDOUT if omitted.',
@@ -468,7 +425,7 @@ async function main(): Promise<void> {
     if (!(argv.preset in PRESETS)) {
       throw new Error(`Unknown preset: ${argv.preset}`);
     }
-    filesToRun = PRESETS[argv.preset];
+    filesToRun = omitFiles(PRESETS[argv.preset], argv.skip ?? []);
     if (filesToRun.length === 0) {
       console.log(
         `⚠️Preset '${argv.preset}' is currently disabled (empty). Skipping.`,

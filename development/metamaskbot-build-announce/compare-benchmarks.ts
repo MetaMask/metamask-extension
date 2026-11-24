@@ -1,19 +1,20 @@
 /**
  * CI Comparison Script
  *
- * Compares current benchmark results against:
- *
- * 1. Constant threshold limits (THRESHOLD_REGISTRY) — primary pass/fail gate
- * 2. Historical baseline from extension_benchmark_stats — informational delta
+ * Blocks only on the series admitted under ADR 0072 (`decidePaired` against each
+ * series' `δ_block`); THRESHOLD_REGISTRY limits and the historical baseline
+ * (extension_benchmark_stats) are reported and never block.
  *
  * Usage:
  * node development/metamaskbot-build-announce/compare-benchmarks.ts \
- * --current <path-to-benchmark-json-directory>
+ * --current <path-to-benchmark-json-directory> [--leg | --paired]
+ *
+ * `--leg`: one job's results; checks values, leaves deciding to `quality-gate`.
+ * `--paired`: the jobs ran paired, so every admitted series needs all its jobs.
  *
  * Exit codes:
- * 0 — no allowlisted (GATED_METRICS) metric exceeded its fail threshold
- * 1 — at least one allowlisted metric exceeded its fail threshold;
- * non-allowlisted breaches are degraded to warnings and do not block
+ * 0 — no admitted series blocked, was inconclusive or was missing values
+ * 1 — at least one did
  * 2 — usage error or fatal crash
  */
 
@@ -27,19 +28,21 @@ import type {
   ComparisonKey,
   BenchmarkResults,
 } from '../../shared/constants/benchmarks';
-import { GATED_METRICS } from '../../test/e2e/benchmarks/utils/gated-metrics';
 import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/thresholds';
 import { fetchHistoricalPerformanceDataFromMain } from './historical-comparison';
 import type { HistoricalBaselineReference } from './historical-comparison';
 import {
-  applyGatingPolicy,
-  applyNoiseTolerance,
   compareBenchmarkEntries,
   formatDeltaPercent,
   scaleThresholdsForBrowser,
   COMPARISON_SEVERITY,
   type BenchmarkEntryComparison,
 } from './comparison-utils';
+import {
+  evaluatePairedGate,
+  formatPairedOutcome,
+  type PairedGateOutcome,
+} from './paired-gate';
 import { parseArtifactName, resolveBaselineFromArtifactName } from './utils';
 
 type LoadedBenchmark = {
@@ -76,18 +79,28 @@ async function loadBaseline(): Promise<HistoricalBaselineReference> {
   return result?.baseline ?? {};
 }
 
+export type ComparisonResult = {
+  comparisons: BenchmarkEntryComparison[];
+  /** One per admitted series with a result file; the only blocking outcomes. */
+  paired: PairedGateOutcome[];
+  anyFailed: boolean;
+};
+
 /**
  * Runs comparison for all loaded benchmarks.
  *
  * @param benchmarks - Loaded benchmark files.
  * @param baseline - Historical baseline reference.
+ * @param decide - `false` only checks the admitted series' values (`--leg`).
+ * @param requireAll - Every admitted series needs all its jobs (`--paired`).
  */
 export function runComparison(
   benchmarks: LoadedBenchmark[],
   baseline: HistoricalBaselineReference,
-): { comparisons: BenchmarkEntryComparison[]; anyFailed: boolean } {
+  decide = true,
+  requireAll = false,
+): ComparisonResult {
   const comparisons: BenchmarkEntryComparison[] = [];
-  let anyFailed = false;
 
   for (const { name, data } of benchmarks) {
     const parsed = parseArtifactName(name);
@@ -120,15 +133,11 @@ export function runComparison(
         name,
       );
 
-      const rawComparison = compareBenchmarkEntries(
+      const comparison = compareBenchmarkEntries(
         entryName,
         results,
         thresholdConfig,
         baselineMetrics,
-      );
-      const comparison = applyNoiseTolerance(
-        applyGatingPolicy(rawComparison, GATED_METRICS),
-        results,
       );
 
       if (parsed) {
@@ -136,14 +145,15 @@ export function runComparison(
       }
 
       comparisons.push(comparison);
-
-      if (comparison.absoluteFailed) {
-        anyFailed = true;
-      }
     }
   }
 
-  return { comparisons, anyFailed };
+  const paired = evaluatePairedGate(benchmarks, decide, requireAll);
+  return {
+    comparisons,
+    paired,
+    anyFailed: paired.some((outcome) => outcome.failed),
+  };
 }
 
 function violationIcon(severity: ThresholdSeverity): string {
@@ -304,17 +314,12 @@ function formatName(comparison: BenchmarkEntryComparison): string {
 /**
  * Prints a human-readable report of the comparison results.
  *
- * Output groups entries by severity (FAIL → WARN → PASS) and includes
- * browser/buildType source labels for disambiguation.
+ * Admitted series first, each with its verdict; the rest by severity
+ * (WARN → PASS), none of which blocks.
  *
  * @param result - Comparison results.
- * @param result.comparisons
- * @param result.anyFailed
  */
-export function printReport(result: {
-  comparisons: BenchmarkEntryComparison[];
-  anyFailed: boolean;
-}): void {
+export function printReport(result: ComparisonResult): void {
   console.log('\n═══════════════════════════════════════');
   console.log('  Performance Benchmark Quality Gate');
   console.log('═══════════════════════════════════════');
@@ -325,31 +330,21 @@ export function printReport(result: {
     lines: buildMetricLines(c),
   }));
 
-  const failed = withLines.filter((w) => w.comparison.absoluteFailed);
   const warned = withLines.filter(
     (w) =>
-      !w.comparison.absoluteFailed &&
-      (w.comparison.absoluteViolations.some(
+      w.comparison.absoluteViolations.some(
         (v) => v.severity === THRESHOLD_SEVERITY.Warn,
-      ) ||
-        w.lines.some((l) => l.hasIssue)),
+      ) || w.lines.some((l) => l.hasIssue),
   );
-  const passed = withLines.filter(
-    (w) =>
-      !w.comparison.absoluteFailed &&
-      !w.comparison.absoluteViolations.some(
-        (v) => v.severity === THRESHOLD_SEVERITY.Warn,
-      ) &&
-      !w.lines.some((l) => l.hasIssue),
-  );
+  const passed = withLines.filter((w) => !warned.includes(w));
 
-  // Show failed entries with details
-  for (const { comparison, lines } of failed) {
-    console.log(`\nFAIL  ${formatName(comparison)}`);
-    for (const line of lines.filter((l) => l.hasIssue)) {
-      const details = line.details ? ` | ${line.details}` : '';
-      console.log(`      ${line.icon} ${line.metric}${details}`);
-    }
+  const failedSeries = result.paired.filter((outcome) => outcome.failed);
+  for (const outcome of failedSeries) {
+    console.log(`\nFAIL  ${formatPairedOutcome(outcome)}`);
+  }
+  const clearedSeries = result.paired.filter((outcome) => !outcome.failed);
+  for (const outcome of clearedSeries) {
+    console.log(`\nPASS  ${formatPairedOutcome(outcome)}`);
   }
 
   // Show warned entries with details
@@ -378,20 +373,17 @@ export function printReport(result: {
     }
   }
 
-  const failCount = failed.length;
-  const warnCount = warned.length;
-
   console.log('\n───────────────────────────────────────');
   console.log(
-    `Total: ${result.comparisons.length} benchmarks | ${failCount} failed | ${warnCount} warnings`,
+    `Total: ${result.paired.length} admitted series | ${failedSeries.length} failed | ${result.comparisons.length} other benchmarks reported | ${warned.length} warnings`,
   );
 
   if (result.anyFailed) {
     console.log(
-      '\nRESULT: FAIL — at least one benchmark exceeds constant fail limit',
+      '\nRESULT: FAIL — an admitted series blocked, was inconclusive or had no values',
     );
   } else {
-    console.log('\nRESULT: PASS — all benchmarks within constant limits');
+    console.log('\nRESULT: PASS — no admitted series blocked');
   }
 }
 
@@ -399,12 +391,16 @@ async function main(): Promise<void> {
   const { values } = parseArgs({
     options: {
       current: { type: 'string' },
+      leg: { type: 'boolean' },
+      paired: { type: 'boolean' },
     },
     strict: true,
   });
 
   if (!values.current) {
-    console.error('Usage: --current <path-to-benchmark-json-dir>');
+    console.error(
+      'Usage: --current <path-to-benchmark-json-dir> [--leg | --paired]',
+    );
     process.exit(2);
   }
 
@@ -416,7 +412,12 @@ async function main(): Promise<void> {
 
   const baseline = await loadBaseline();
 
-  const result = runComparison(benchmarks, baseline);
+  const result = runComparison(
+    benchmarks,
+    baseline,
+    !values.leg,
+    Boolean(values.paired),
+  );
   printReport(result);
 
   process.exit(result.anyFailed ? 1 : 0);

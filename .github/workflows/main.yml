@@ -297,6 +297,84 @@ jobs:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
+  # The PR's build is of the merge commit (`github.sha`), so the base is its first
+  # parent: main's push-run `build-test-webpack`, else `build-base-test-webpack`.
+  # Pushes and the merge queue have no base, so pairing is off.
+  find-base-build:
+    name: Find the base commit's test build
+    needs:
+      - get-requirements
+    if: ${{ github.event_name == 'pull_request' && needs.get-requirements.outputs.needs-benchmarks == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      base-sha: ${{ steps.find.outputs.base-sha }}
+      run-id: ${{ steps.find.outputs.run-id }}
+    steps:
+      - name: Find the run that built the merge commit's first parent
+        id: find
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const { base, head } = context.payload.pull_request;
+            const artifactName = 'build-test-webpack';
+
+            // A failure here fails the job: with no base commit the benchmarks
+            // would run unpaired and gate nothing.
+            const { data: mergeCommit } = await github.rest.git.getCommit({
+              owner,
+              repo,
+              commit_sha: context.sha,
+            });
+            const [baseSha, headParent] = mergeCommit.parents.map(
+              (parent) => parent.sha,
+            );
+            if (mergeCommit.parents.length !== 2 || headParent !== head.sha) {
+              throw new Error(
+                `${context.sha} is not a merge of ${head.sha} into its base`,
+              );
+            }
+            core.setOutput('base-sha', baseSha);
+            core.info(`First parent of merge commit ${context.sha}: ${baseSha}`);
+
+            const { data: { workflow_runs: runs } } =
+              await github.rest.actions.listWorkflowRuns({
+                owner,
+                repo,
+                workflow_id: 'main.yml',
+                head_sha: baseSha,
+                event: 'push',
+                branch: base.ref,
+                per_page: 20,
+              });
+            for (const run of runs) {
+              if (!['completed', 'in_progress'].includes(run.status)) continue;
+              const artifacts = await github.paginate(
+                github.rest.actions.listWorkflowRunArtifacts,
+                { owner, repo, run_id: run.id, name: artifactName, per_page: 100 },
+              );
+              if (artifacts.some((artifact) => !artifact.expired)) {
+                core.info(`Run ${run.id} holds an unexpired ${artifactName}`);
+                core.setOutput('run-id', String(run.id));
+                return;
+              }
+              core.info(`Run ${run.id} holds no unexpired ${artifactName}`);
+            }
+            core.info(`No push run of ${baseSha} holds ${artifactName}; building it`);
+
+  build-base-test-webpack:
+    needs:
+      - find-base-build
+    if: ${{ needs.find-base-build.outputs.base-sha != '' && needs.find-base-build.outputs.run-id == '' }}
+    uses: ./.github/workflows/build-base-test.yml
+    with:
+      ref: ${{ needs.find-base-build.outputs.base-sha }}
+    secrets: inherit
+
   run-benchmarks:
     if: ${{ !cancelled() && needs.get-requirements.outputs.needs-benchmarks == 'true' && !contains(needs.*.result, 'failure') }}
     permissions:
@@ -309,8 +387,13 @@ jobs:
       - prep-deps
       - build-test-webpack
       - build-test-mv2-webpack
+      - find-base-build
+      - build-base-test-webpack
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      # Empty, as on a push, leaves pairing off.
+      base-builds-from-run: ${{ needs.find-base-build.outputs.run-id || (needs.build-base-test-webpack.result == 'success' && format('{0}', github.run_id)) || '' }}
+      base-build-artifact-name: ${{ needs.find-base-build.outputs.run-id && 'build-test-webpack' || 'base-build-test-webpack' }}
     secrets: inherit
 
   run-tests:
@@ -604,6 +687,8 @@ jobs:
       - build-test-mv2-webpack
       - build-test-flask-webpack
       - build-test-flask-mv2-webpack
+      - find-base-build
+      - build-base-test-webpack
       - run-benchmarks
       - run-tests
       - bundle-size

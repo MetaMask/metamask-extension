@@ -3,8 +3,8 @@
  *
  * Two-layer approach:
  *
- * 1. Absolute gate: validates p75/p95 against constant limits.
- * This is the primary pass/fail authority that prevents performance drift.
+ * 1. Absolute limits: validates p75/p95 against constant limits; a breach only
+ * warns, since the paired decision rule blocks (`paired-gate.ts`).
  * Reuses validateResultThresholds from the benchmark statistics module.
  *
  * 2. Relative context: compares current values against a historical baseline
@@ -55,7 +55,6 @@ export type BenchmarkEntryComparison = {
   absoluteViolations: ThresholdViolation[];
   hasRegression: boolean;
   hasWarning: boolean;
-  absoluteFailed: boolean;
 };
 
 const iconForSeverity = (severity: ComparisonSeverity): string =>
@@ -164,8 +163,8 @@ function collectRelativeMetrics(
 /**
  * Compares a full benchmark entry against thresholds and baseline.
  *
- * Absolute gate: validates p75/p95 via validateResultThresholds.
- * This decides pass/fail.
+ * Absolute limits: validates p75/p95 via validateResultThresholds; a breach only
+ * warns, since the paired decision rule blocks (`paired-gate.ts`).
  * Relative context: compares p75 and p95 values against historical baseline.
  * Informational only, does not block.
  *
@@ -182,9 +181,14 @@ export function compareBenchmarkEntries(
   baselineData?: Record<string, HistoricalBaselineMetrics>,
   relativeThresholds: RelativeThresholds = DEFAULT_RELATIVE_THRESHOLDS,
 ): BenchmarkEntryComparison {
-  const { violations, passed } = validateResultThresholds(
+  const violations = validateResultThresholds(
     results,
     thresholdConfig,
+  ).violations.map(
+    (violation): ThresholdViolation => ({
+      ...violation,
+      severity: THRESHOLD_SEVERITY.Warn,
+    }),
   );
 
   const relativeMetrics =
@@ -206,7 +210,6 @@ export function compareBenchmarkEntries(
       violations.some(
         (v: ThresholdViolation) => v.severity === THRESHOLD_SEVERITY.Warn,
       ),
-    absoluteFailed: !passed,
   };
 }
 
@@ -270,106 +273,4 @@ export function scaleThresholdsForBrowser(
       ];
     }),
   );
-}
-
-/**
- * Applies the GATED_METRICS allowlist policy to a comparison entry.
- *
- * THRESHOLD_REGISTRY decides what is a regression; GATED_METRICS decides
- * which regressions block PRs. For each `Fail`-severity violation whose
- * `<benchmarkName>.<metricId>` key is not in `gatedMetrics`, downgrade to
- * `Warn`. `absoluteFailed` and `hasWarning` are recomputed accordingly.
- * `Warn`-severity violations and `relativeMetrics` are never modified.
- *
- * Returns a new comparison object — does not mutate the input.
- *
- * @param comparison - Comparison entry to gate.
- * @param gatedMetrics - Allowlist of dotted gate keys.
- */
-export function applyGatingPolicy(
-  comparison: BenchmarkEntryComparison,
-  gatedMetrics: ReadonlySet<string>,
-): BenchmarkEntryComparison {
-  const downgraded = comparison.absoluteViolations.map((v) => {
-    if (v.severity !== THRESHOLD_SEVERITY.Fail) {
-      return v;
-    }
-    const key = `${comparison.benchmarkName}.${v.metricId}`;
-    if (gatedMetrics.has(key)) {
-      return v;
-    }
-    return { ...v, severity: THRESHOLD_SEVERITY.Warn };
-  });
-
-  return {
-    ...comparison,
-    absoluteViolations: downgraded,
-    absoluteFailed: downgraded.some(
-      (v) => v.severity === THRESHOLD_SEVERITY.Fail,
-    ),
-    hasWarning:
-      comparison.relativeMetrics.some(
-        (m) => m.severity === COMPARISON_SEVERITY.Warn.value,
-      ) || downgraded.some((v) => v.severity === THRESHOLD_SEVERITY.Warn),
-  };
-}
-
-/**
- * Number of standard deviations of the metric's own run-to-run noise within
- * which an absolute-gate breach is treated as data quality, not a regression.
- *
- * The absolute gate compares a percentile (e.g. p75) against a fixed ceiling.
- * When the breach margin (`value - threshold`) is smaller than the metric's
- * stdDev, which side of the ceiling a run lands on is noise, not signal — a
- * `Fail` there is a coin-flip on which samples landed.
- */
-export const WITHIN_NOISE_STDDEV_MULTIPLIER = 1;
-
-/**
- * Downgrades absolute-gate `Fail` violations to `Warn` when the breach margin
- * is within {@link WITHIN_NOISE_STDDEV_MULTIPLIER} stdDev of the metric's own
- * noise. Uses the metric's stdDev from the benchmark results; violations for
- * metrics without a usable stdDev are unchanged. Mirrors the missing-percentile
- * skip guard rather than hard-failing on noise. `Warn` violations and
- * `relativeMetrics` are never modified.
- *
- * Returns a new comparison object — does not mutate the input.
- *
- * @param comparison - Comparison entry to soften.
- * @param results - Benchmark results carrying per-metric stdDev.
- */
-export function applyNoiseTolerance(
-  comparison: BenchmarkEntryComparison,
-  results: BenchmarkResults,
-): BenchmarkEntryComparison {
-  const downgraded = comparison.absoluteViolations.map((v) => {
-    if (v.severity !== THRESHOLD_SEVERITY.Fail) {
-      return v;
-    }
-    const stdDev = results.stdDev?.[v.metricId];
-    if (stdDev === undefined || stdDev <= 0) {
-      return v;
-    }
-    const breach = v.value - v.threshold;
-    if (breach > 0 && breach < stdDev * WITHIN_NOISE_STDDEV_MULTIPLIER) {
-      console.log(
-        `Downgrading "${comparison.benchmarkName}.${v.metricId}" (${v.percentile}) to warn: ` +
-          `breach ${breach.toFixed(0)}ms is within one stdDev (${stdDev.toFixed(0)}ms) — within noise.`,
-      );
-      return { ...v, severity: THRESHOLD_SEVERITY.Warn };
-    }
-    return v;
-  });
-
-  return {
-    ...comparison,
-    absoluteViolations: downgraded,
-    absoluteFailed: downgraded.some(
-      (v) => v.severity === THRESHOLD_SEVERITY.Fail,
-    ),
-    hasWarning:
-      comparison.relativeMetrics.some(
-        (m) => m.severity === COMPARISON_SEVERITY.Warn.value,
-      ) || downgraded.some((v) => v.severity === THRESHOLD_SEVERITY.Warn),
-  };
 }

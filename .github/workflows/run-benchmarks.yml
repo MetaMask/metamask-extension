@@ -17,6 +17,13 @@ on:
           test/e2e/benchmarks/utils/paired.ts), once leading with each build
           (ADR 0072's paired comparator). Unset, every job runs the head build
           alone, as before.
+      base-build-artifact-name:
+        required: false
+        type: string
+        default: ''
+        description: >-
+          The artifact holding the base commit's build in that run. Empty is
+          `build-test-<buildType>`, the name main's runs upload it under.
 
 permissions:
   contents: read
@@ -26,7 +33,7 @@ permissions:
 jobs:
   benchmarks:
     if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
-    name: ${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pairedOrder != '' && format('{0}-{1}', matrix.pairedFlow.name, matrix.pairedOrder) || matrix.pageType }}
+    name: ${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pairedOrder != '' && format('{0}-r{1}-{2}', matrix.pairedFlow.name, matrix.pairedRepeat, matrix.pairedOrder) || matrix.pageType }}
     # We decide whether to block the PR in the `quality-gate` step
     continue-on-error: true
     strategy:
@@ -35,28 +42,10 @@ jobs:
         # Preset names are defined in test/e2e/benchmarks/utils/constants.ts
         # and must stay in sync with benchmark-command (startupPowerUserHome uses extra flags).
         #
-        # Startup + interaction + user journeys: chrome/firefox × webpack × preset (test build: build-test-webpack / build-test-mv2-webpack).
-        browser: [chrome, firefox]
-        buildType: [webpack]
-        # Unset `base-builds-from-run`: one job per preset, as before, and
-        # `pairedFlow` and `pairedOrder` are each the one empty value.
-        pageType: ${{ fromJSON(inputs.base-builds-from-run == '' && '["startupStandardHome","startupPowerUserHome","interactionUserActions","userJourneyOnboardingImport","userJourneyOnboardingNew","userJourneyAssets","userJourneyTransactions","userJourneyAccountManagement"]' || '[""]') }}
-        # Set: one job per flow file, since six runs of a preset's flows in one job would pass
-        # the 25-minute step, and `pageType` is empty. Each entry is the flow's result key and
-        # file; startupPowerUserHome and the dapp page load stay unpaired.
-        pairedFlow: ${{ fromJSON(inputs.base-builds-from-run != '' && '[{"name":"loadNewAccount","file":"test/e2e/benchmarks/flows/interaction/load-new-account.ts"},{"name":"confirmTx","file":"test/e2e/benchmarks/flows/interaction/confirm-tx.ts"},{"name":"bridgeUserActions","file":"test/e2e/benchmarks/flows/interaction/bridge-user-actions.ts"},{"name":"onboardingImportWallet","file":"test/e2e/benchmarks/flows/user-journey/onboarding-import-wallet.ts"},{"name":"onboardingNewWallet","file":"test/e2e/benchmarks/flows/user-journey/onboarding-new-wallet.ts"},{"name":"assetDetails","file":"test/e2e/benchmarks/flows/user-journey/asset-details.ts"},{"name":"solanaAssetDetails","file":"test/e2e/benchmarks/flows/user-journey/solana-asset-details.ts"},{"name":"sendTransactions","file":"test/e2e/benchmarks/flows/user-journey/send-transactions.ts"},{"name":"swap","file":"test/e2e/benchmarks/flows/user-journey/swap.ts"},{"name":"importSrpHome","file":"test/e2e/benchmarks/flows/user-journey/import-srp-home.ts"},{"name":"startupStandardHome","file":"test/e2e/benchmarks/flows/startup/standard-home.ts"}]' || '[""]') }}
-        # Paired jobs, when `base-builds-from-run` is set: each job runs the base
-        # and head builds in one of the two orders the paired comparator
-        # alternates, so every head gets one job of each. Unset, the one empty
-        # value leaves the matrix as it was.
-        pairedOrder: ${{ fromJSON(inputs.base-builds-from-run != '' && '["base-head-head-base","head-base-base-head"]' || '[""]') }}
-        # The runner pairs Chrome only (Firefox reuses a cached .xpi across
-        # builds). startupPowerUserHome is not among the paired flows above.
-        exclude:
-          - browser: firefox
-            pairedOrder: base-head-head-base
-          - browser: firefox
-            pairedOrder: head-base-base-head
+        # Unset `base-builds-from-run`: every preset on both browsers. Set: admitted
+        # flows run paired on Chrome only and the presets run the rest (see `skip`).
+        # `getBenchmarkLegs` (paired-flows.ts) lists both; a test holds it equal to these.
+        include: ${{ fromJSON(inputs.base-builds-from-run == '' && '[{"browser":"chrome","buildType":"webpack","pageType":"startupStandardHome","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""},{"browser":"chrome","buildType":"webpack","pageType":"startupPowerUserHome","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""},{"browser":"chrome","buildType":"webpack","pageType":"interactionUserActions","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""},{"browser":"chrome","buildType":"webpack","pageType":"userJourneyOnboardingImport","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""},{"browser":"chrome","buildType":"webpack","pageType":"userJourneyOnboardingNew","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""},{"browser":"chrome","buildType":"webpack","pageType":"userJourneyAssets","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""},{"browser":"chrome","buildType":"webpack","pageType":"userJourneyTransactions","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""},{"browser":"chrome","buildType":"webpack","pageType":"userJourneyAccountManagement","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""},{"browser":"firefox","buildType":"webpack","pageType":"startupStandardHome","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""},{"browser":"firefox","buildType":"webpack","pageType":"startupPowerUserHome","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""},{"browser":"firefox","buildType":"webpack","pageType":"interactionUserActions","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""},{"browser":"firefox","buildType":"webpack","pageType":"userJourneyOnboardingImport","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""},{"browser":"firefox","buildType":"webpack","pageType":"userJourneyOnboardingNew","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""},{"browser":"firefox","buildType":"webpack","pageType":"userJourneyAssets","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""},{"browser":"firefox","buildType":"webpack","pageType":"userJourneyTransactions","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""},{"browser":"firefox","buildType":"webpack","pageType":"userJourneyAccountManagement","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""}]' || '[{"browser":"chrome","buildType":"webpack","pageType":"startupPowerUserHome","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""},{"browser":"chrome","buildType":"webpack","pageType":"interactionUserActions","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":"test/e2e/benchmarks/flows/interaction/load-new-account.ts test/e2e/benchmarks/flows/interaction/bridge-user-actions.ts"},{"browser":"chrome","buildType":"webpack","pageType":"userJourneyOnboardingImport","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""},{"browser":"chrome","buildType":"webpack","pageType":"userJourneyOnboardingNew","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""},{"browser":"chrome","buildType":"webpack","pageType":"userJourneyTransactions","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""},{"browser":"chrome","buildType":"webpack","pageType":"userJourneyAccountManagement","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""},{"browser":"firefox","buildType":"webpack","pageType":"startupStandardHome","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""},{"browser":"firefox","buildType":"webpack","pageType":"startupPowerUserHome","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""},{"browser":"firefox","buildType":"webpack","pageType":"interactionUserActions","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""},{"browser":"firefox","buildType":"webpack","pageType":"userJourneyOnboardingImport","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""},{"browser":"firefox","buildType":"webpack","pageType":"userJourneyOnboardingNew","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""},{"browser":"firefox","buildType":"webpack","pageType":"userJourneyAssets","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""},{"browser":"firefox","buildType":"webpack","pageType":"userJourneyTransactions","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""},{"browser":"firefox","buildType":"webpack","pageType":"userJourneyAccountManagement","pairedFlow":"","pairedOrder":"","pairedRepeat":"","skip":""},{"browser":"chrome","buildType":"webpack","pageType":"","pairedFlow":{"name":"bridgeUserActions","file":"test/e2e/benchmarks/flows/interaction/bridge-user-actions.ts"},"pairedOrder":"base-head-head-base","pairedRepeat":1,"skip":""},{"browser":"chrome","buildType":"webpack","pageType":"","pairedFlow":{"name":"bridgeUserActions","file":"test/e2e/benchmarks/flows/interaction/bridge-user-actions.ts"},"pairedOrder":"base-head-head-base","pairedRepeat":2,"skip":""},{"browser":"chrome","buildType":"webpack","pageType":"","pairedFlow":{"name":"bridgeUserActions","file":"test/e2e/benchmarks/flows/interaction/bridge-user-actions.ts"},"pairedOrder":"head-base-base-head","pairedRepeat":1,"skip":""},{"browser":"chrome","buildType":"webpack","pageType":"","pairedFlow":{"name":"bridgeUserActions","file":"test/e2e/benchmarks/flows/interaction/bridge-user-actions.ts"},"pairedOrder":"head-base-base-head","pairedRepeat":2,"skip":""},{"browser":"chrome","buildType":"webpack","pageType":"","pairedFlow":{"name":"startupStandardHome","file":"test/e2e/benchmarks/flows/startup/standard-home.ts"},"pairedOrder":"base-head-head-base","pairedRepeat":1,"skip":""},{"browser":"chrome","buildType":"webpack","pageType":"","pairedFlow":{"name":"startupStandardHome","file":"test/e2e/benchmarks/flows/startup/standard-home.ts"},"pairedOrder":"base-head-head-base","pairedRepeat":2,"skip":""},{"browser":"chrome","buildType":"webpack","pageType":"","pairedFlow":{"name":"startupStandardHome","file":"test/e2e/benchmarks/flows/startup/standard-home.ts"},"pairedOrder":"head-base-base-head","pairedRepeat":1,"skip":""},{"browser":"chrome","buildType":"webpack","pageType":"","pairedFlow":{"name":"startupStandardHome","file":"test/e2e/benchmarks/flows/startup/standard-home.ts"},"pairedOrder":"head-base-base-head","pairedRepeat":2,"skip":""},{"browser":"chrome","buildType":"webpack","pageType":"","pairedFlow":{"name":"assetDetails","file":"test/e2e/benchmarks/flows/user-journey/asset-details.ts"},"pairedOrder":"base-head-head-base","pairedRepeat":1,"skip":""},{"browser":"chrome","buildType":"webpack","pageType":"","pairedFlow":{"name":"assetDetails","file":"test/e2e/benchmarks/flows/user-journey/asset-details.ts"},"pairedOrder":"base-head-head-base","pairedRepeat":2,"skip":""},{"browser":"chrome","buildType":"webpack","pageType":"","pairedFlow":{"name":"assetDetails","file":"test/e2e/benchmarks/flows/user-journey/asset-details.ts"},"pairedOrder":"head-base-base-head","pairedRepeat":1,"skip":""},{"browser":"chrome","buildType":"webpack","pageType":"","pairedFlow":{"name":"assetDetails","file":"test/e2e/benchmarks/flows/user-journey/asset-details.ts"},"pairedOrder":"head-base-base-head","pairedRepeat":2,"skip":""},{"browser":"chrome","buildType":"webpack","pageType":"","pairedFlow":{"name":"solanaAssetDetails","file":"test/e2e/benchmarks/flows/user-journey/solana-asset-details.ts"},"pairedOrder":"base-head-head-base","pairedRepeat":1,"skip":""},{"browser":"chrome","buildType":"webpack","pageType":"","pairedFlow":{"name":"solanaAssetDetails","file":"test/e2e/benchmarks/flows/user-journey/solana-asset-details.ts"},"pairedOrder":"base-head-head-base","pairedRepeat":2,"skip":""},{"browser":"chrome","buildType":"webpack","pageType":"","pairedFlow":{"name":"solanaAssetDetails","file":"test/e2e/benchmarks/flows/user-journey/solana-asset-details.ts"},"pairedOrder":"head-base-base-head","pairedRepeat":1,"skip":""},{"browser":"chrome","buildType":"webpack","pageType":"","pairedFlow":{"name":"solanaAssetDetails","file":"test/e2e/benchmarks/flows/user-journey/solana-asset-details.ts"},"pairedOrder":"head-base-base-head","pairedRepeat":2,"skip":""},{"browser":"chrome","buildType":"webpack","pageType":"","pairedFlow":{"name":"loadNewAccount","file":"test/e2e/benchmarks/flows/interaction/load-new-account.ts"},"pairedOrder":"base-head-head-base","pairedRepeat":1,"skip":""},{"browser":"chrome","buildType":"webpack","pageType":"","pairedFlow":{"name":"loadNewAccount","file":"test/e2e/benchmarks/flows/interaction/load-new-account.ts"},"pairedOrder":"base-head-head-base","pairedRepeat":2,"skip":""},{"browser":"chrome","buildType":"webpack","pageType":"","pairedFlow":{"name":"loadNewAccount","file":"test/e2e/benchmarks/flows/interaction/load-new-account.ts"},"pairedOrder":"head-base-base-head","pairedRepeat":1,"skip":""},{"browser":"chrome","buildType":"webpack","pageType":"","pairedFlow":{"name":"loadNewAccount","file":"test/e2e/benchmarks/flows/interaction/load-new-account.ts"},"pairedOrder":"head-base-base-head","pairedRepeat":2,"skip":""}]') }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -70,9 +59,9 @@ jobs:
       GITHUB_REF_NAME: ${{ github.head_ref || github.ref_name }}
       # main or release/* only — for S3 / AWS CLI (same ref semantics as Sentry).
       MAIN_OR_RELEASE: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') }}
-      # The job's results file. A paired job's name carries its order, so the
-      # jobs of one flow upload distinct artifacts.
-      BENCHMARK_JSON: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pairedOrder != '' && format('{0}-{1}', matrix.pairedFlow.name, matrix.pairedOrder) || matrix.pageType }}.json
+      # The job's results file. A paired job's name carries its repeat and order,
+      # so the jobs of one flow upload distinct artifacts.
+      BENCHMARK_JSON: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pairedOrder != '' && format('{0}-r{1}-{2}', matrix.pairedFlow.name, matrix.pairedRepeat, matrix.pairedOrder) || matrix.pageType }}.json
       # Paired jobs only. The head build goes to head-build/ and the base build
       # to base-build/, and `dist` is left absent: the runner points it at each
       # build in turn. Unpaired, BENCHMARK_PAIRED is empty, which is off.
@@ -112,7 +101,7 @@ jobs:
         if: ${{ matrix.pairedOrder != '' }}
         uses: actions/download-artifact@v7
         with:
-          name: build-test-${{ matrix.buildType }}
+          name: ${{ inputs.base-build-artifact-name || format('build-test-{0}', matrix.buildType) }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ inputs.base-builds-from-run }}
           path: base-build
@@ -127,7 +116,7 @@ jobs:
         timeout-minutes: 25
         id: run-benchmark
         run: >-
-          ${{ matrix.pageType == 'startupPowerUserHome' && format('yarn test:e2e:benchmark --preset startupPowerUserHome --browserLoads 15 --pageLoads 7 --out test-artifacts/benchmarks/benchmark-{0}-{1}-startupPowerUserHome.json --retries 2', matrix.browser, matrix.buildType) || matrix.pairedOrder != '' && startsWith(matrix.pairedFlow.name, 'startup') && format('yarn test:e2e:benchmark {0} --browserLoads {1} --pageLoads 10 --out test-artifacts/benchmarks/{2} --retries 2', matrix.pairedFlow.file, env.BENCHMARK_PAIRED_BROWSER_LOADS, env.BENCHMARK_JSON) || matrix.pairedOrder != '' && format('yarn test:e2e:benchmark {0} --iterations {1} --out test-artifacts/benchmarks/{2} --retries 2', matrix.pairedFlow.file, env.BENCHMARK_PAIRED_ITERATIONS, env.BENCHMARK_JSON) || format('yarn test:e2e:benchmark --preset {0} --out test-artifacts/benchmarks/{1} --retries 2', matrix.pageType, env.BENCHMARK_JSON) }}
+          ${{ matrix.pageType == 'startupPowerUserHome' && format('yarn test:e2e:benchmark --preset startupPowerUserHome --browserLoads 15 --pageLoads 7 --out test-artifacts/benchmarks/benchmark-{0}-{1}-startupPowerUserHome.json --retries 2', matrix.browser, matrix.buildType) || matrix.pairedOrder != '' && startsWith(matrix.pairedFlow.name, 'startup') && format('yarn test:e2e:benchmark {0} --browserLoads {1} --pageLoads 10 --out test-artifacts/benchmarks/{2} --retries 2', matrix.pairedFlow.file, env.BENCHMARK_PAIRED_BROWSER_LOADS, env.BENCHMARK_JSON) || matrix.pairedOrder != '' && format('yarn test:e2e:benchmark {0} --iterations {1} --out test-artifacts/benchmarks/{2} --retries 2', matrix.pairedFlow.file, env.BENCHMARK_PAIRED_ITERATIONS, env.BENCHMARK_JSON) || format('yarn test:e2e:benchmark --preset {0} --out test-artifacts/benchmarks/{1} --retries 2{2}', matrix.pageType, env.BENCHMARK_JSON, matrix.skip != '' && format(' --skip {0}', matrix.skip) || '') }}
         shell: bash
 
       - name: Send benchmark results to Sentry (main/release only)
@@ -170,9 +159,12 @@ jobs:
           retention-days: 7
           if-no-files-found: ignore
 
-      - name: Gate this benchmark leg
+      # One job's two differences per series are too few to decide, so this
+      # step checks that its results carry values and `quality-gate` decides
+      # over every job of the flow.
+      - name: Check this benchmark leg's results
         if: ${{ steps.run-benchmark.outcome == 'success' }}
-        run: yarn tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current test-artifacts/benchmarks/
+        run: yarn tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current test-artifacts/benchmarks/ --leg
         shell: bash
 
   benchmarks-page-load:
@@ -265,7 +257,8 @@ jobs:
         run: yarn tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current test-artifacts/benchmarks/
         shell: bash
 
-  # Evaluates benchmark results against constant thresholds (THRESHOLD_REGISTRY).
+  # Blocks on the series admitted under ADR 0072 (paired-decision.ts); every other
+  # series and the THRESHOLD_REGISTRY limits are reported and never block.
   # Rollout across 4 phases:
   # - Phase 2: continue-on-error: true (non-blocking, informational).
   # - Phase 3: continue-on-error: false (red X in checks, not required).
@@ -293,6 +286,7 @@ jobs:
             development/metamaskbot-build-announce
             shared/constants/benchmarks.ts
             test/e2e/benchmarks/utils/gated-metrics.ts
+            test/e2e/benchmarks/utils/paired-decision.ts
             test/e2e/benchmarks/utils/thresholds.ts
             test/e2e/benchmarks/utils/statistics.ts
           sparse-checkout-cone-mode: false
@@ -322,10 +316,10 @@ jobs:
       # added after the failure.
       # Remove when graduating to Phase 4 (required check) — at that point,
       # use admin bypass or update thresholds instead.
+      # Runs when the download failed too, so the label also covers the last step.
       - name: Check for skip label
         id: skip-check
         continue-on-error: true
-        if: ${{ steps.download-benchmarks.outcome == 'success' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           EVENT_NAME: ${{ github.event_name }}
@@ -356,7 +350,19 @@ jobs:
             steps.download-benchmarks.outcome == 'success' &&
             steps.skip-check.outputs.skip != 'true'
           }}
-        run: ./node_modules/.bin/tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current ./benchmark-results/
+        run: ./node_modules/.bin/tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current ./benchmark-results/${{ github.event_name == 'pull_request' && ' --paired' || '' }}
+        shell: bash
+
+      - name: Fail when the benchmark artifacts did not download
+        if: >-
+          ${{
+            github.event_name == 'pull_request' &&
+            steps.download-benchmarks.outcome != 'success' &&
+            steps.skip-check.outputs.skip != 'true'
+          }}
+        run: |
+          echo '::error::The benchmark artifacts did not download, so the quality gate did not run'
+          exit 1
         shell: bash
 
   # Pushes benchmark results to extension_benchmark_stats (performance_data.json) for

@@ -1,0 +1,24 @@
+name: Build the base commit's test build
+
+# Builds the base commit for the paired benchmark jobs; main.yml calls it only
+# when no push run holds that build. A workflow of its own because
+# get-requirements.yml reads the build names a reused run must hold from every
+# `build-name:` in main.yml, and this artifact exists only in runs that needed it.
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        required: true
+        type: string
+        description: The base commit to build
+
+jobs:
+  build-base-test-webpack:
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: base-build-test-webpack
+      build-command: yarn build:test --zip
+      builds-from-run: ${{ github.run_id }}
+      ref: ${{ inputs.ref }}
+    secrets: inherit
