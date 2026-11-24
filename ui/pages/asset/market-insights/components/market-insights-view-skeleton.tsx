@@ -17,12 +17,15 @@ export const MarketInsightsViewSkeleton = () => (
   >
     <Skeleton width="100%" style={{ aspectRatio: '786 / 340' }} />
 
-    <Box className="gap-2 px-4 pb-3 pt-4">
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      className="gap-2 px-4 pb-3 pt-4"
+    >
       <Skeleton height={28} width="90%" />
       <Skeleton height={28} width="62%" />
     </Box>
 
-    <Box className="gap-2 px-4 pb-6">
+    <Box flexDirection={BoxFlexDirection.Column} className="gap-2 px-4 pb-6">
       <Skeleton height={16} width="94%" />
       <Skeleton height={16} width="85%" />
       <Skeleton height={16} width="88%" />
@@ -30,7 +33,7 @@ export const MarketInsightsViewSkeleton = () => (
     </Box>
 
     <Box className="pb-6">
-      <Box className="gap-3 px-4">
+      <Box flexDirection={BoxFlexDirection.Column} className="gap-3 px-4">
         <Skeleton height={64} width="100%" className="rounded-xl" />
         <Skeleton height={64} width="100%" className="rounded-xl" />
         <Skeleton height={64} width="100%" className="rounded-xl" />
@@ -42,7 +45,7 @@ export const MarketInsightsViewSkeleton = () => (
         <Skeleton height={16} width={150} />
       </Box>
 
-      <Box className="gap-3 px-4">
+      <Box flexDirection={BoxFlexDirection.Column} className="gap-3 px-4">
         <Skeleton height={120} width="100%" className="rounded-2xl" />
         <Skeleton height={120} width="100%" className="rounded-2xl" />
       </Box>
