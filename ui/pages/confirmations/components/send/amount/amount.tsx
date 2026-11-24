@@ -7,13 +7,16 @@ import {
   ButtonIconSize,
   ButtonLink,
   IconName,
+  IconSize,
   Text,
   TextField,
   TextFieldSize,
 } from '../../../../../components/component-library';
 import {
+  AlignItems,
   BlockSize,
   Display,
+  IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -149,6 +152,8 @@ export const Amount = ({
     t,
   ]);
 
+  const showFiatToggle = conversionSupportedForAsset && !amountError;
+
   if (asset?.standard === ERC721) {
     return null;
   }
@@ -160,47 +165,54 @@ export const Amount = ({
       </Text>
       <TextField
         error={Boolean(amountError)}
+        endAccessory={
+          <Text>
+            {fiatMode ? fiatCurrencyName?.toUpperCase() : asset?.symbol}
+          </Text>
+        }
         onChange={onChange}
         onPaste={setAmountInputMethodPasted}
         onInput={setAmountInputMethodManual}
+        paddingRight={3}
         placeholder="0"
+        size={TextFieldSize.Lg}
         testId="send-amount-input"
         value={amount}
-        endAccessory={
-          <Box display={Display.Flex}>
-            <Text>
-              {fiatMode ? fiatCurrencyName?.toUpperCase() : asset?.symbol}
-            </Text>
-            {conversionSupportedForAsset && (
-              <ButtonIcon
-                ariaLabel="toggle fiat mode"
-                iconName={IconName.SwapVertical}
-                onClick={toggleFiatMode}
-                size={ButtonIconSize.Sm}
-                data-testid="toggle-fiat-mode"
-              />
-            )}
-          </Box>
-        }
         width={BlockSize.Full}
-        size={TextFieldSize.Lg}
-        paddingRight={3}
       />
       <Box
         display={Display.Flex}
         justifyContent={JustifyContent.spaceBetween}
         marginTop={1}
       >
-        <Text
-          color={
-            amountError ? TextColor.errorDefault : TextColor.textAlternative
-          }
-          variant={TextVariant.bodySm}
-          data-testid="send-amount-fiat-value"
+        <Box
+          alignItems={AlignItems.center}
+          display={Display.Flex}
+          gap={1}
+          paddingLeft={4}
         >
-          {amountError ||
-            (conversionSupportedForAsset ? alternateDisplayValue : '')}
-        </Text>
+          <Text
+            color={
+              amountError ? TextColor.errorDefault : TextColor.textAlternative
+            }
+            data-testid="send-amount-fiat-value"
+            variant={TextVariant.bodySm}
+          >
+            {amountError ||
+              (conversionSupportedForAsset ? alternateDisplayValue : '')}
+          </Text>
+          {showFiatToggle && (
+            <ButtonIcon
+              ariaLabel="toggle fiat mode"
+              color={IconColor.iconAlternative}
+              data-testid="toggle-fiat-mode"
+              iconName={IconName.SwapVertical}
+              iconProps={{ size: IconSize.Md }}
+              onClick={toggleFiatMode}
+              size={ButtonIconSize.Sm}
+            />
+          )}
+        </Box>
         <Box display={Display.Flex}>
           <Text
             color={TextColor.textAlternative}
