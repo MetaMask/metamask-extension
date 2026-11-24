@@ -352,6 +352,40 @@ export function getClaimingSpan(url: string): Span | undefined {
   return undefined;
 }
 
+// The SDK asks `shouldCreateSpanForRequest` again when a request ends, and ends
+// the request's span only if the answer is still yes. A request that started
+// unclaimed, under its operation's root, stays unclaimed until it ends, though
+// the root has stopped being the active span by then. Both checks run in the
+// `sentry-install` copy, so this state is local.
+const unclaimedRequests = new WeakSet<object>();
+const unclaimedRequestsByUrl = new Map<string, number>();
+
+function trackUnclaimedRequest(fetchData: object, url: string): void {
+  unclaimedRequests.add(fetchData);
+  unclaimedRequestsByUrl.set(url, (unclaimedRequestsByUrl.get(url) ?? 0) + 1);
+}
+
+function releaseUnclaimedRequest(fetchData: object, url: string): void {
+  if (!unclaimedRequests.delete(fetchData)) {
+    return;
+  }
+  const count = (unclaimedRequestsByUrl.get(url) ?? 1) - 1;
+  if (count > 0) {
+    unclaimedRequestsByUrl.set(url, count);
+  } else {
+    unclaimedRequestsByUrl.delete(url);
+  }
+}
+
+/**
+ * Whether a request is claimed, giving the same answer at its end as its start.
+ * @param url - The request URL.
+ * @returns True when a claimant names the request's parent.
+ */
+export function isClaimedRequest(url: string): boolean {
+  return !unclaimedRequestsByUrl.has(url) && getClaimingSpan(url) !== undefined;
+}
+
 function setRequestIdForTraceId(traceId: string, requestId: string): void {
   if (requestIdByTraceId.has(traceId)) {
     // A trace can fan out to multiple outbound requests, each with its own id.
@@ -401,13 +435,16 @@ export function consensysTracePropagationIntegration({
     name: NAME,
     afterAllSetup: () => {
       addFetchInstrumentationHandler((handlerData) => {
-        // The handler fires at request start (no `endTimestamp`) and again on
-        // response; only the start invocation can mutate the outgoing request.
-        if (handlerData.endTimestamp !== undefined) {
+        const { fetchData } = handlerData;
+        const url = fetchData?.url;
+        if (!url || !matchesBackendTarget(url)) {
           return;
         }
-        const url = handlerData.fetchData?.url;
-        if (!url || !matchesBackendTarget(url)) {
+        // The handler fires at request start (no `endTimestamp`) and again on
+        // response; only the start invocation can mutate the outgoing request.
+        // It runs after the SDK's handler, which has ended the span by then.
+        if (handlerData.endTimestamp !== undefined) {
+          releaseUnclaimedRequest(fetchData, url);
           return;
         }
         try {
@@ -416,7 +453,11 @@ export function consensysTracePropagationIntegration({
           // sent: strip them, or point them at a running span. A claimed
           // request is pointed at its claimant.
           const activeSpan = getActiveSpan();
-          let runningSpan = getClaimingSpan(url) ?? getRunningSpan(activeSpan);
+          const claimingSpan = getClaimingSpan(url);
+          if (!claimingSpan) {
+            trackUnclaimedRequest(fetchData, url);
+          }
+          let runningSpan = claimingSpan ?? getRunningSpan(activeSpan);
           if (
             runningSpan &&
             runningSpan !== activeSpan &&

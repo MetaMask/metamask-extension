@@ -12,6 +12,7 @@ import {
   claimBackendRequests,
   consensysTracePropagationIntegration,
   getCurrentConsensysRequestId,
+  isClaimedRequest,
   matchesBackendTarget,
   resetConsensysRequestIdProvider,
   setConsensysRequestIdProvider,
@@ -276,6 +277,44 @@ describe('claimBackendRequests', () => {
 
     expect(seen).toBe(span);
     expect(otherCopy?.getClaimingSpan(BACKEND_URL)).toBeUndefined();
+  });
+});
+
+describe('isClaimedRequest', () => {
+  function startHandler() {
+    consensysTracePropagationIntegration({ log: jest.fn() }).afterAllSetup?.(
+      {} as Client,
+    );
+    return addFetchInstrumentationHandlerMock.mock.calls[0][0];
+  }
+
+  it('keeps a request that started under its claimant unclaimed until it ends', () => {
+    // The SDK ends a request's span only if `shouldCreateSpanForRequest` still
+    // says yes on the end event, after the root has stopped being active.
+    mockActiveSpan();
+    const root = getActiveSpanMock() as unknown as Span;
+    const release = claimBackendRequests(root, (url) => url === BACKEND_URL);
+    const handler = startHandler();
+    const fetchData = { url: BACKEND_URL, method: 'GET' };
+    try {
+      handler({
+        fetchData,
+        args: [BACKEND_URL, undefined],
+      } as unknown as Parameters<typeof handler>[0]);
+      getActiveSpanMock.mockReturnValue(undefined);
+
+      expect(isClaimedRequest(BACKEND_URL)).toBe(false);
+
+      handler({
+        fetchData,
+        args: [BACKEND_URL, undefined],
+        endTimestamp: 1,
+      } as unknown as Parameters<typeof handler>[0]);
+
+      expect(isClaimedRequest(BACKEND_URL)).toBe(true);
+    } finally {
+      release();
+    }
   });
 });
 

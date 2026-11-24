@@ -21,7 +21,7 @@ import { metaMetricsIntegration } from './sentry-metametrics';
 import {
   BACKEND_TRACE_PROPAGATION_TARGETS,
   consensysTracePropagationIntegration,
-  getClaimingSpan,
+  isClaimedRequest,
 } from './sentry-trace-propagation';
 import {
   getAnalyticsState,
@@ -438,7 +438,7 @@ export function beforeBreadcrumb(): BeforeBreadcrumbHandler {
  */
 export function shouldCreateSpanForRequest(url: string): boolean {
   // A claimed request's trace headers name its claimant, not the active span.
-  if (getClaimingSpan(url)) {
+  if (isClaimedRequest(url)) {
     return false;
   }
   // Do not create spans for high-volume remote fetches with no per-request
