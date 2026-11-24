@@ -11,6 +11,7 @@ import {
   isDevOrUatBuild,
 } from '../../../shared/lib/shield/config';
 import { selectPrimaryMoneyAccount } from '../../selectors/money-account';
+import { getMoneyAccountPlusHubSubscription } from '../../selectors/subscription/subscription';
 import {
   checkMoneyAccountPlusBalance,
   startMoneyAccountPlusSubscription,
@@ -23,6 +24,7 @@ jest.mock('react-redux', () => ({
 jest.mock('../../../shared/lib/shield/config');
 jest.mock('../../selectors/money-account');
 jest.mock('../../selectors/money/money-account-feature-flags');
+jest.mock('../../selectors/subscription/subscription');
 jest.mock('../../store/controller-actions/subscription-delegation-service');
 
 const payerAddress = '0x1111111111111111111111111111111111111111';
@@ -37,12 +39,15 @@ const request = {
 const mockStart = jest.mocked(startMoneyAccountPlusSubscription);
 const mockCheck = jest.mocked(checkMoneyAccountPlusBalance);
 
-function mockPayment(address?: string, chain?: string) {
-  jest
-    .mocked(useSelector)
-    .mockImplementation((selector) =>
-      selector === selectPrimaryMoneyAccount ? { address } : { chainId: chain },
-    );
+function mockPayment(address?: string, chain?: string, subscription?: object) {
+  jest.mocked(useSelector).mockImplementation((selector) => {
+    if (selector === selectPrimaryMoneyAccount) {
+      return { address };
+    }
+    return selector === getMoneyAccountPlusHubSubscription
+      ? subscription
+      : { chainId: chain };
+  });
 }
 
 describe('useStartMoneyAccountPlusSubscription', () => {
@@ -139,6 +144,17 @@ describe('useStartMoneyAccountPlusSubscription', () => {
       );
     });
     expect(result.current.error).toBeUndefined();
+  });
+
+  it('returns alreadySubscribed without calling the background when a hub subscription exists', async () => {
+    mockPayment(payerAddress, chainId, { status: 'awaiting_funds' });
+    const { result } = renderHook(useStartMoneyAccountPlusSubscription);
+    await act(async () => {
+      await expect(result.current.startSubscription(interval)).resolves.toBe(
+        'alreadySubscribed',
+      );
+    });
+    expect(mockStart).not.toHaveBeenCalled();
   });
 
   it('exposes a start failure and clears the submitting state', async () => {

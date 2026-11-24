@@ -11,6 +11,7 @@ import {
 } from '../../../shared/lib/shield/config';
 import { selectPrimaryMoneyAccount } from '../../selectors/money-account';
 import { selectMoneyAccountVaultConfig } from '../../selectors/money/money-account-feature-flags';
+import { getMoneyAccountPlusHubSubscription } from '../../selectors/subscription/subscription';
 import {
   checkMoneyAccountPlusBalance,
   startMoneyAccountPlusSubscription,
@@ -20,6 +21,7 @@ import {
 export function useStartMoneyAccountPlusSubscription() {
   const payerAddress = useSelector(selectPrimaryMoneyAccount)?.address;
   const chainId = useSelector(selectMoneyAccountVaultConfig)?.chainId;
+  const existingSubscription = useSelector(getMoneyAccountPlusHubSubscription);
   const canUseTestClock = isDevOrUatBuild() || isDevOrTestEnvironment();
   const submissionInFlight = useRef(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -60,6 +62,11 @@ export function useStartMoneyAccountPlusSubscription() {
       if (submissionInFlight.current) {
         return undefined;
       }
+      // The background only blocks active/trialing/provisional, so a new
+      // awaiting_funds subscription would not stop a second start.
+      if (existingSubscription) {
+        return 'alreadySubscribed';
+      }
       submissionInFlight.current = true;
       setIsSubmitting(true);
       setError(undefined);
@@ -84,7 +91,7 @@ export function useStartMoneyAccountPlusSubscription() {
         setIsSubmitting(false);
       }
     },
-    [canUseTestClock, getPayment],
+    [canUseTestClock, existingSubscription, getPayment],
   );
 
   return {
