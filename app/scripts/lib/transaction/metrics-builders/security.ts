@@ -36,6 +36,7 @@ export const getSecurityMetricsProperties: TransactionMetricsBuilder = ({
   }
 
   let addressAlertResponse: ResultType | 'not_applicable' = 'not_applicable';
+  let addressAlertResponseFlaggedBy: number[] | undefined;
   const securityAlertsEnabled =
     transactionMetricsRequest.getSecurityAlertsEnabled();
   if (securityAlertsEnabled) {
@@ -48,6 +49,8 @@ export const getSecurityMetricsProperties: TransactionMetricsBuilder = ({
       addressAlertResponse = cachedResponse
         ? cachedResponse.result_type
         : ResultType.Loading;
+      addressAlertResponseFlaggedBy =
+        cachedResponse?.address_alert_response_flagged_by;
     }
   }
 
@@ -57,6 +60,9 @@ export const getSecurityMetricsProperties: TransactionMetricsBuilder = ({
       ...blockaidProperties,
       ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
       address_alert_response: addressAlertResponse,
+      ...(addressAlertResponseFlaggedBy && {
+        address_alert_response_flagged_by: addressAlertResponseFlaggedBy,
+      }),
       transaction_contract_verified:
         addressAlertResponse === ResultType.Trusted,
     },

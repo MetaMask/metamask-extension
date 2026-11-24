@@ -1,6 +1,7 @@
 import {
   AddressScanResultType,
   PhishingController,
+  RequestSourceFlow,
 } from '@metamask/phishing-controller';
 import { ResultType } from '../../../../shared/lib/trust-signals';
 import {
@@ -55,6 +56,34 @@ describe('mapAddressScanResult', () => {
       result_type: ResultType.Trusted,
       label: 'Uniswap',
     });
+  });
+
+  it('passes address_alert_response_flagged_by through when present', () => {
+    expect(
+      mapAddressScanResult({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        result_type: AddressScanResultType.Benign,
+        label: '',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        address_alert_response_flagged_by: [1],
+      }),
+    ).toStrictEqual({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: ResultType.Benign,
+      label: '',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      address_alert_response_flagged_by: [1],
+    });
+  });
+
+  it('omits address_alert_response_flagged_by when absent', () => {
+    expect(
+      mapAddressScanResult({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        result_type: AddressScanResultType.Benign,
+        label: '',
+      }),
+    ).not.toHaveProperty('address_alert_response_flagged_by');
   });
 });
 
@@ -154,7 +183,11 @@ describe('scanAddressAndAddToCache', () => {
       CHAIN_ID_MOCK,
       phishingControllerMock,
     );
-    expect(scanAddressMock).toHaveBeenCalledWith(CHAIN_ID_MOCK, ADDRESS_MOCK);
+    expect(scanAddressMock).toHaveBeenCalledWith(
+      CHAIN_ID_MOCK,
+      ADDRESS_MOCK,
+      RequestSourceFlow.Confirmations,
+    );
     expect(result).toEqual({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       result_type: ResultType.Malicious,

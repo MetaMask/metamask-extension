@@ -9,7 +9,10 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { KeyringControllerGetKeyringForAccountAction } from '@metamask/keyring-controller';
-import type { PhishingControllerScanAddressAction } from '@metamask/phishing-controller';
+import type {
+  PhishingControllerScanAddressAction,
+  RequestSourceFlow,
+} from '@metamask/phishing-controller';
 import { MessengerActions, MessengerEvents } from '@metamask/messenger';
 import {
   PRODUCT_TYPES,
@@ -372,8 +375,17 @@ function scanAddressForTrustSignals(request: AddTransactionRequest) {
   // parameter without holding a controller instance; the middleware caller
   // passes the real PhishingController directly.
   const phishingControllerScanAdapter = {
-    scanAddress: (scanChainId: string, address: string) =>
-      messenger.call('PhishingController:scanAddress', scanChainId, address),
+    scanAddress: (
+      scanChainId: string,
+      address: string,
+      flow?: RequestSourceFlow,
+    ) =>
+      messenger.call(
+        'PhishingController:scanAddress',
+        scanChainId,
+        address,
+        flow,
+      ),
   };
 
   scanAddressAndAddToCache(

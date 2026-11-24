@@ -16,6 +16,7 @@ import type {
 import {
   ResultType,
   createCacheKey,
+  type ScanAddressResponse,
 } from '../../../../shared/lib/trust-signals';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { useTransactionEventFragment } from '../../confirmations/hooks/useTransactionEventFragment';
@@ -29,6 +30,9 @@ export type TrustSignalMetricsProperties = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   address_label?: string;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  address_alert_response_flagged_by?: ScanAddressResponse['address_alert_response_flagged_by'];
 };
 
 // For transactions, this is the 'to' address. For signatures, this is the verifying contract.
@@ -86,6 +90,12 @@ export function useTrustSignalMetrics() {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
       address_label: addressSecurityAlertResponse.label || undefined,
+      ...(addressSecurityAlertResponse.address_alert_response_flagged_by && {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        address_alert_response_flagged_by:
+          addressSecurityAlertResponse.address_alert_response_flagged_by,
+      }),
     };
   }, [addressSecurityAlertResponse]);
 

@@ -18,6 +18,13 @@ export type ScanAddressResponse = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   result_type: ResultType;
   label: string;
+  /**
+   * Opaque attribution codes returned by the Security Alerts API, forwarded
+   * to analytics as-is.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  address_alert_response_flagged_by?: number[];
 };
 
 export type CachedScanAddressResponse = ScanAddressResponse & {

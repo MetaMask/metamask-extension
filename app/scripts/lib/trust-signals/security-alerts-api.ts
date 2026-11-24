@@ -1,6 +1,7 @@
 import {
   AddressScanResultType,
   PhishingController,
+  RequestSourceFlow,
   type AddressScanResult,
 } from '@metamask/phishing-controller';
 import type { Hex } from '@metamask/utils';
@@ -32,6 +33,10 @@ export function mapAddressScanResult(
         ? ResultType.ErrorResult
         : (result.result_type as unknown as ResultType),
     label: result.label ?? '',
+    ...(result.address_alert_response_flagged_by && {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      address_alert_response_flagged_by: result.address_alert_response_flagged_by,
+    }),
   };
 }
 
@@ -46,6 +51,9 @@ export function mapAddressScanResult(
  * @param chainId - The hex chainId of the chain the address exists on
  * @param phishingController - Controller providing scanAddress; it resolves
  * chain support internally and returns ErrorResult for unsupported chains
+ * @param flow - Product flow sent to the Security Alerts API in the
+ * `x-request-source` header. Defaults to confirmations, since all current
+ * callers scan addresses for a pending confirmation.
  * @returns Promise that resolves to the security scan response containing result type and label
  */
 export async function scanAddressAndAddToCache(
@@ -54,6 +62,7 @@ export async function scanAddressAndAddToCache(
   addAddressSecurityAlertResponse: AddAddressSecurityAlertResponse,
   chainId: Hex,
   phishingController: Pick<PhishingController, 'scanAddress'>,
+  flow: RequestSourceFlow = RequestSourceFlow.Confirmations,
 ): Promise<ScanAddressResponse> {
   const cacheKey = createCacheKey(chainId, address);
   const cachedResponse = getAddressSecurityAlertResponse(cacheKey);
@@ -76,7 +85,7 @@ export async function scanAddressAndAddToCache(
   // that callers' `.catch` handlers will not fire under normal operation.
   try {
     const result = mapAddressScanResult(
-      await phishingController.scanAddress(chainId, address),
+      await phishingController.scanAddress(chainId, address, flow),
     );
     addAddressSecurityAlertResponse(cacheKey, result);
     return result;

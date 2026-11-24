@@ -151,5 +151,48 @@ describe('security builder', () => {
 
     expect(getAddressSecurityAlertResponseMock).not.toHaveBeenCalled();
     expect(result.properties.address_alert_response).toBe('not_applicable');
+    expect(result.properties).not.toHaveProperty(
+      'address_alert_response_flagged_by',
+    );
+  });
+
+  it.each([
+    [[1], 'Benign'],
+    [[0, 1], 'Malicious'],
+    [[], 'Benign'],
+  ])(
+    'includes address_alert_response_flagged_by %j from the cached response',
+    async (flaggedBy, resultType) => {
+      const result = await getSecurityMetricsProperties(
+        buildAddressAlertRequest({
+          chainId: '0x1',
+          getAddressSecurityAlertResponse: jest.fn().mockReturnValue({
+            result_type: resultType,
+            label: '',
+            address_alert_response_flagged_by: flaggedBy,
+          }),
+        }),
+      );
+
+      expect(result.properties.address_alert_response).toBe(resultType);
+      expect(result.properties.address_alert_response_flagged_by).toStrictEqual(
+        flaggedBy,
+      );
+    },
+  );
+
+  it('omits address_alert_response_flagged_by when the cached response has none', async () => {
+    const result = await getSecurityMetricsProperties(
+      buildAddressAlertRequest({
+        chainId: '0x1',
+        getAddressSecurityAlertResponse: jest
+          .fn()
+          .mockReturnValue({ result_type: 'Malicious', label: '' }),
+      }),
+    );
+
+    expect(result.properties).not.toHaveProperty(
+      'address_alert_response_flagged_by',
+    );
   });
 });

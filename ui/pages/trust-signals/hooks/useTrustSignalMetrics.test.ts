@@ -199,4 +199,70 @@ describe('useTrustSignalMetrics', () => {
       expect(mockUpdateTransactionEventFragment).not.toHaveBeenCalled();
     });
   });
+
+  describe('address alert attribution', () => {
+    const FLAGGED_BY_RESPONSE_MOCK = {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: ResultType.Benign,
+      label: '',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      address_alert_response_flagged_by: [1],
+    };
+
+    it('adds address_alert_response_flagged_by to transaction events', () => {
+      renderHookWithConfirmContextProvider(
+        () => useTrustSignalMetrics(),
+        getMockConfirmStateForTransaction(
+          { ...contractInteraction, id: OWNER_ID_MOCK } as TransactionMeta,
+          {
+            metamask: {
+              addressSecurityAlertResponses: {
+                [`0x1:${TARGET_ADDRESS_MOCK.toLowerCase()}`]:
+                  FLAGGED_BY_RESPONSE_MOCK,
+              },
+            },
+          },
+        ),
+      );
+
+      expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(
+        {
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            address_alert_response: ResultType.Benign,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            address_label: undefined,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            address_alert_response_flagged_by: [1],
+          },
+        },
+        OWNER_ID_MOCK,
+      );
+    });
+
+    it('adds address_alert_response_flagged_by to signature events', () => {
+      renderHookWithConfirmContextProvider(
+        () => useTrustSignalMetrics(),
+        getMockTypedSignConfirmStateForRequest(signatureRequest, {
+          metamask: {
+            addressSecurityAlertResponses: {
+              [`0x1:${SIGNATURE_VERIFYING_CONTRACT_MOCK.toLowerCase()}`]:
+                FLAGGED_BY_RESPONSE_MOCK,
+            },
+          },
+        }),
+      );
+
+      expect(mockUpdateSignatureEventFragment).toHaveBeenCalledWith({
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          address_alert_response: ResultType.Benign,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          address_label: undefined,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          address_alert_response_flagged_by: [1],
+        },
+      });
+    });
+  });
 });

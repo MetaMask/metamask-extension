@@ -1,4 +1,5 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { RequestSourceFlow } from '@metamask/phishing-controller';
 import { MiddlewareContext } from '@metamask/json-rpc-engine/v2';
 import {
   TransactionControllerState,
@@ -524,12 +525,14 @@ describe('Transaction Utils', () => {
         await scanAdapter.scanAddress(
           CHAIN_IDS.MAINNET,
           '0x1234567890123456789012345678901234567890',
+          RequestSourceFlow.Confirmations,
         );
 
         expect(scanAddressActionMock).toHaveBeenCalledTimes(1);
         expect(scanAddressActionMock).toHaveBeenCalledWith(
           CHAIN_IDS.MAINNET,
           '0x1234567890123456789012345678901234567890',
+          RequestSourceFlow.Confirmations,
         );
       });
 
