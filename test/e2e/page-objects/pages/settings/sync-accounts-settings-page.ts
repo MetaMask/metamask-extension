@@ -109,11 +109,12 @@ class SyncAccountsSettingsPage {
       );
     }
 
-    await this.driver.waitForSelector(this.otpInput);
-
-    // Paste the full code into the single input so one `onChange` carries all
-    // digits and triggers `submitOtp`. Per-digit typing is slower and flakier.
-    await this.driver.pasteIntoField(this.otpInput, otp);
+    // The input is a transparent overlay above the digit cells, so Selenium
+    // never treats it as visible. Send keys to it directly instead of using
+    // helpers (`clickElement`, `fill`, `pasteIntoField`) that wait for
+    // visibility.
+    const input = await this.driver.findElement(this.otpInput);
+    await input.sendKeys(otp);
   }
 
   async enterPassword(password: string): Promise<void> {
