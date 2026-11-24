@@ -294,10 +294,25 @@ function retargetTraceHeaders(args: unknown[], span: Span): boolean {
   return true;
 }
 
-const requestClaims = new Set<{
+export type BackendRequestClaim = {
   span: Span;
   claims: (url: string) => boolean;
-}>();
+};
+
+const localRequestClaims = new Set<BackendRequestClaim>();
+
+// The background bundles this module twice: `sentry-install` reads the claims
+// and the operations write them. They share one registry on
+// `globalThis.stateHooks`, which LavaMoat leaves in place (as in
+// `shared/lib/trace.ts`).
+function getRequestClaims(): Set<BackendRequestClaim> {
+  const hooks = globalThis.stateHooks;
+  if (!hooks) {
+    return localRequestClaims;
+  }
+  hooks.backendRequestClaims ??= new Set();
+  return hooks.backendRequestClaims;
+}
 
 /**
  * Send matching backend requests under `span` while it runs, for an operation
@@ -313,6 +328,7 @@ export function claimBackendRequests(
   span: Span,
   claims: (url: string) => boolean,
 ): () => void {
+  const requestClaims = getRequestClaims();
   const claim = { span, claims };
   requestClaims.add(claim);
   return () => {
@@ -328,7 +344,7 @@ export function claimBackendRequests(
  */
 export function getClaimingSpan(url: string): Span | undefined {
   const activeSpan = getActiveSpan();
-  for (const { span, claims } of requestClaims) {
+  for (const { span, claims } of getRequestClaims()) {
     if (span !== activeSpan && isRunning(span) && claims(url)) {
       return span;
     }

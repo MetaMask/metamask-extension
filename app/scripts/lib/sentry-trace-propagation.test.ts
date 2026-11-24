@@ -5,9 +5,11 @@ import {
   getIsolationScope,
 } from '@sentry/browser';
 import { addFetchInstrumentationHandler } from '@sentry/core';
+import type { Span } from '@sentry/core';
 import {
   buildAugmentedHeaders,
   buildConsensysBaggage,
+  claimBackendRequests,
   consensysTracePropagationIntegration,
   getCurrentConsensysRequestId,
   matchesBackendTarget,
@@ -245,6 +247,35 @@ describe('stripTraceHeaders', () => {
       stripTraceHeaders([BACKEND_URL, { headers: { 'x-caller': 'kept' } }]),
     ).toBeUndefined();
     expect(stripTraceHeaders([BACKEND_URL])).toBeUndefined();
+  });
+});
+
+describe('claimBackendRequests', () => {
+  const originalStateHooks = globalThis.stateHooks;
+
+  afterEach(() => {
+    globalThis.stateHooks = originalStateHooks;
+  });
+
+  it('is seen by another copy of the module, as the background bundles it twice', () => {
+    globalThis.stateHooks = {} as typeof globalThis.stateHooks;
+    let otherCopy: typeof import('./sentry-trace-propagation') | undefined;
+    jest.isolateModules(() => {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports, n/global-require
+      otherCopy = require('./sentry-trace-propagation');
+    });
+    const span = {} as Span;
+
+    const release = claimBackendRequests(span, (url) => url === BACKEND_URL);
+    let seen: Span | undefined;
+    try {
+      seen = otherCopy?.getClaimingSpan(BACKEND_URL);
+    } finally {
+      release();
+    }
+
+    expect(seen).toBe(span);
+    expect(otherCopy?.getClaimingSpan(BACKEND_URL)).toBeUndefined();
   });
 });
 
