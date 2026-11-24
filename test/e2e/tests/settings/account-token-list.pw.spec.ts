@@ -7,7 +7,6 @@ import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import AssetsSettings from '../../page-objects/pages/settings/assets-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import {
@@ -21,6 +20,7 @@ import {
   priceV1ExchangeRates,
   priceV3Spot,
 } from '../../mock-response-data/api-responses';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 
 const SEPOLIA_NATIVE_ASSET_ID = 'eip155:11155111/slip44:60';
 
@@ -116,7 +116,7 @@ pwTest.describe('Settings', () => {
         },
         async ({ driver }) => {
           await login(driver, { expectedBalance: '$42,500.00' });
-          await new HeaderNavbar(driver).openAccountMenu();
+          await openAccountMenu(driver);
           await new AccountListPage(
             driver,
           ).checkMultichainAccountBalanceDisplayed({ balance: '$42,500.00' });

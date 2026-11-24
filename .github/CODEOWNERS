@@ -245,7 +245,7 @@ app/scripts/lib/smart-transaction                 @MetaMask/transactions
 shared/lib/multichain/addresses/* @MetaMask/networks @MetaMask/emerging-opportunities
 shared/constants/network.ts                        @MetaMask/networks
 shared/constants/multichain/networks.ts            @MetaMask/networks
-ui/pages/asset                                     @MetaMask/networks
+ui/pages/asset                                     @MetaMask/networks @MetaMask/metamask-assets
 ui/selectors/multichain/networks.ts                @MetaMask/networks
 ui/selectors/multichain/networks.test.ts           @MetaMask/networks
 ui/selectors/config-registry/                      @MetaMask/networks

@@ -475,6 +475,7 @@ const mockCloseCalculations = require('@metamask/perps-controller/utils/closeCal
 const mockTpslCalculations = require('@metamask/perps-controller/utils/tpslCalculations');
 const mockPerpsConfig = require('@metamask/perps-controller/constants/perpsConfig');
 const mockPerpsFormatters = require('@metamask/perps-controller/utils/perpsFormatters');
+const mockOrderCalculations = require('@metamask/perps-controller/utils/orderCalculations');
 
 module.exports = {
   ...mockCloseCalculations,
@@ -483,6 +484,7 @@ module.exports = {
   TP_SL_PRECISION_CONFIG: mockPerpsConfig.TP_SL_PRECISION_CONFIG,
   formatPerpsFiat: mockPerpsFormatters.formatPerpsFiat,
   formatPnl: mockPerpsFormatters.formatPnl,
+  calculatePositionSize: mockOrderCalculations.calculatePositionSize,
   DEFAULT_ORDER_BOOK_PREFERENCES: mockDefaultOrderBookPreferences,
   DEFAULT_PRO_LAYOUT_PREFERENCES: mockDefaultProLayoutPreferences,
   DEFAULT_SELECTED_ORDER_TYPE: 'market',

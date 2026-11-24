@@ -22,6 +22,7 @@ import {
   mockPriceApi,
   MOCK_ETH_CONVERSION_RATE,
 } from '../tokens/utils/mocks';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 
 const EXPECTED_BALANCE_USD = '$85,025.00';
 const NETWORK_NAME_MAINNET = NetworkName.ETHEREUM;
@@ -133,7 +134,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
           EXPECTED_BALANCE_USD,
           'usd',
         );
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await accountListPage.checkMultichainAccountBalanceDisplayed({
           balance: EXPECTED_BALANCE_USD,
         });

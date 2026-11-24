@@ -229,11 +229,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     onboardingTabs: false,
     seedPhraseBackedUp: true,
   },
-  PPOMController: {
-    securityAlertsEnabled: false,
-    storageMetadata: [],
-    versionInfo: [],
-  },
   PasskeyController: {
     passkeyRecord: false,
   },

@@ -407,6 +407,7 @@ describe('Import custom token on a custom network', function () {
 
         await tokenManagementPage.checkPageIsLoaded();
         await tokenManagementPage.checkSuccessToastIsDisplayed();
+        await tokenManagementPage.closeSuccessToast();
         await tokenManagementPage.goBackToHomepage();
 
         await homePage.checkPageIsLoaded();
