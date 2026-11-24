@@ -912,5 +912,11 @@
       }
     },
     "version": "v0.3.0"
+  },
+  "previewBuilds": {
+    "@metamask/wallet": {
+      "type": "non-breaking",
+      "previewVersion": "21.0.4-preview-02adcc6f1"
+    }
   }
 }

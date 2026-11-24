@@ -7264,18 +7264,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/analytics-controller@npm:^4.3.1":
-  version: 4.3.1
-  resolution: "@metamask/analytics-controller@npm:4.3.1"
+"@metamask/analytics-controller@npm:^4.3.1, @metamask/analytics-controller@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "@metamask/analytics-controller@npm:4.4.0"
   dependencies:
     "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/config-registry-controller": "npm:^6.0.0"
     "@metamask/geolocation-controller": "npm:^2.0.0"
     "@metamask/messenger": "npm:^3.0.0"
-    "@metamask/utils": "npm:^12.0.1"
+    "@metamask/utils": "npm:^12.0.2"
     lodash-es: "npm:^4.18.1"
-    uuid: "npm:^14.0.2"
-  checksum: 10/6b41e8601dddc918072e5bdfe578a19847b0e944a6d5757d99373555ad635d9898f1673bfac6fb7b540a0e7e4500d560f893dc589cce64ed1b5078ffc6393456
+    uuid: "npm:^14.0.3"
+  checksum: 10/ac5901e15fe1c8105dc50b67f12e7d392b2edd7a00bc3211877889a219924e1f235c4e4dffbd562be59bb95812c1f4d60020b93b2d4b37e44916a00b1bab7597
   languageName: node
   linkType: hard
 
@@ -9350,9 +9350,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-enablement-controller@npm:^7.1.1, @metamask/network-enablement-controller@npm:^7.1.3":
-  version: 7.1.3
-  resolution: "@metamask/network-enablement-controller@npm:7.1.3"
+"@metamask/network-enablement-controller@npm:^7.1.1, @metamask/network-enablement-controller@npm:^7.1.3, @metamask/network-enablement-controller@npm:^7.1.4":
+  version: 7.1.4
+  resolution: "@metamask/network-enablement-controller@npm:7.1.4"
   dependencies:
     "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/config-registry-controller": "npm:^6.0.0"
@@ -9362,10 +9362,10 @@ __metadata:
     "@metamask/multichain-network-controller": "npm:^4.1.1"
     "@metamask/network-controller": "npm:^38.0.1"
     "@metamask/slip44": "npm:^4.5.0"
-    "@metamask/transaction-controller": "npm:^74.0.0"
-    "@metamask/utils": "npm:^12.0.1"
+    "@metamask/transaction-controller": "npm:^74.3.0"
+    "@metamask/utils": "npm:^12.0.2"
     reselect: "npm:^5.3.0"
-  checksum: 10/13786940d2bbefa56aad522165124a4371127b27a36e492d01027557fac03cb32c699946a05d404ea731213fd691b8168ab2753f78aaa6ebb4c094fd9fd06eda
+  checksum: 10/9d22c25132fd57810d0d43baeebda9c53ca731999bd2bad6e215666b0da4818576dab6a2b9293d3c18ae67561026ac55aeb1becdc4c5bae6fdfc96b1b46c5255
   languageName: node
   linkType: hard
 
@@ -10484,13 +10484,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/wallet@npm:^21.0.3":
-  version: 21.0.4
-  resolution: "@metamask/wallet@npm:21.0.4"
+"@metamask/wallet@npm:@metamask-previews/wallet@21.0.4-preview-02adcc6f1":
+  version: 21.0.4-preview-02adcc6f1
+  resolution: "@metamask-previews/wallet@npm:21.0.4-preview-02adcc6f1"
   dependencies:
     "@metamask/accounts-controller": "npm:^40.2.0"
     "@metamask/address-book-controller": "npm:^8.0.0"
-    "@metamask/analytics-controller": "npm:^4.3.1"
+    "@metamask/analytics-controller": "npm:^4.4.0"
     "@metamask/approval-controller": "npm:^10.0.0"
     "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/browser-passworder": "npm:^6.0.0"
@@ -10505,7 +10505,7 @@ __metadata:
     "@metamask/logging-controller": "npm:^10.0.0"
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/network-controller": "npm:^38.0.1"
-    "@metamask/network-enablement-controller": "npm:^7.1.3"
+    "@metamask/network-enablement-controller": "npm:^7.1.4"
     "@metamask/passkey-controller": "npm:^4.1.0"
     "@metamask/permission-controller": "npm:^14.1.0"
     "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
@@ -10513,11 +10513,12 @@ __metadata:
     "@metamask/seedless-onboarding-controller": "npm:^12.1.0"
     "@metamask/selected-network-controller": "npm:^27.1.0"
     "@metamask/shield-controller": "npm:^7.1.2"
+    "@metamask/signature-controller": "npm:^40.1.1"
     "@metamask/storage-service": "npm:^2.0.0"
     "@metamask/subscription-controller": "npm:^15.3.0"
-    "@metamask/transaction-controller": "npm:^74.2.0"
+    "@metamask/transaction-controller": "npm:^74.3.0"
     "@metamask/utils": "npm:^12.0.2"
-  checksum: 10/d09fb4332568297fe60d0c70dbcdcd9a3435a3acaaa42fe39ba77c0a09595acd58ea18e488278830d626ce2656b7e96b6cb260df9674c2dffca457d6fcd07982
+  checksum: 10/8fb2267b498f21c0cbf4a1e404c941febbdb4e4d77e0713114b4113be3e8d59024368cdead163e69da9c7b5d2782604efe378423a25d29e53d4648c58fe9910d
   languageName: node
   linkType: hard
 
