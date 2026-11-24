@@ -169,6 +169,16 @@ describe('NetworkFilter', () => {
     });
   });
 
+  it('renders the label and trailing chevron without a leading icon', async () => {
+    const state = createMockState();
+
+    const { findByTestId } = renderNetworkFilter(state);
+
+    const networkFilterButton = await findByTestId('sort-by-networks');
+    // Only the trailing chevron remains as an icon.
+    expect(networkFilterButton.querySelectorAll('svg')).toHaveLength(1);
+  });
+
   it('labels selected default networks as All networks when no custom networks are visible', async () => {
     const state = createMockState();
     state.metamask.preferences.showTestNetworks = false;
