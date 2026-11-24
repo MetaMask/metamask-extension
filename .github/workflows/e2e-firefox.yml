@@ -30,8 +30,8 @@ jobs:
     with:
       test-suite-name: test-e2e-firefox-webpack
       build-artifact: build-test-mv2-webpack
-      build-command: yarn build:test:mv2
-      test-command: yarn test:e2e:firefox
+      build-command: build:test:mv2
+      test-command: test:e2e:firefox
       builds-from-run: ${{ inputs.builds-from-run }}
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
@@ -45,8 +45,8 @@ jobs:
     with:
       test-suite-name: test-e2e-firefox-flask-webpack
       build-artifact: build-test-flask-mv2-webpack
-      build-command: yarn build:test:flask:mv2
-      test-command: yarn test:e2e:firefox:flask
+      build-command: build:test:flask:mv2
+      test-command: test:e2e:firefox:flask
       builds-from-run: ${{ inputs.builds-from-run }}
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
@@ -59,7 +59,7 @@ jobs:
     with:
       test-suite-name: test-e2e-firefox-dist-webpack
       build-artifact: build-dist-mv2-webpack
-      test-command: yarn test:e2e:firefox:dist
+      test-command: test:e2e:firefox:dist
       builds-from-run: ${{ inputs.builds-from-run }}
 
   test-e2e-firefox-playwright:
@@ -73,9 +73,10 @@ jobs:
     with:
       test-suite-name: test-e2e-firefox-playwright
       build-artifact: build-test-mv2-webpack
-      build-command: yarn build:test:mv2
+      build-command: build:test:mv2
       playwright-browsers: firefox
-      test-command: E2E_DEBUG=true yarn test:e2e:playwright:firefox
+      test-command: test:e2e:playwright:firefox
+      e2e-debug: true
       builds-from-run: ${{ inputs.builds-from-run }}
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
