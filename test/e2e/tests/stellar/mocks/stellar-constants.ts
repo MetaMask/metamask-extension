@@ -16,6 +16,15 @@ export const STELLAR_USDC_ISSUER =
 export const STELLAR_USDC_ASSET_ID =
   `${STELLAR_CHAIN_ID}/asset:USDC-${STELLAR_USDC_ISSUER}` as CaipAssetType;
 
+/** EURC classic asset used as a second swap destination in Swap E2E. */
+export const STELLAR_EURC_ISSUER =
+  'GDHU6WRG4IEQXM5NZ4BMPKOXHWKG23DEZXLFYCAVTZJWN3VBFTEYHHD6';
+export const STELLAR_EURC_ASSET_ID =
+  `${STELLAR_CHAIN_ID}/asset:EURC-${STELLAR_EURC_ISSUER}` as CaipAssetType;
+
+/** Internal bridge-controller chain id for Stellar pubnet. */
+export const STELLAR_BRIDGE_CHAIN_ID = 20_000_000_000_002;
+
 /** Funded mock balance: 100 XLM. */
 export const XLM_BALANCE = '100.0000000';
 export const XLM_TO_USD_RATE = 0.4;
