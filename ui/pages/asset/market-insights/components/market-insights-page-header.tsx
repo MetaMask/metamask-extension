@@ -43,7 +43,7 @@ export const MarketInsightsPageHeader = ({
       alignItems={BoxAlignItems.Center}
       paddingBottom={3}
       paddingLeft={2}
-      paddingRight={4}
+      paddingRight={2}
       className="sticky top-0 z-10 bg-background-default pt-4"
       data-testid={MARKET_INSIGHTS_VIEW_HEADER_TEST_ID}
     >
