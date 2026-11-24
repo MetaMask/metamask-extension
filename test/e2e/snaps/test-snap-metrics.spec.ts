@@ -616,8 +616,9 @@ describe('Test Snap Metrics', function () {
         });
 
         await testSnaps.scrollAndClickButton('connectUpdateNewButton');
-        await driver.delay(1000);
-        await driver.closeAlertPopup();
+        await driver.validateAlertTextAndClose(
+          'Failed to fetch snap "npm:@metamask/webpack-plugin-example-snap": Failed to fetch tarball for package "@metamask/webpack-plugin-example-snap".',
+        );
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.waitForSelector({ text: 'Update failed' });
