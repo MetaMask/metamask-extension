@@ -1,5 +1,4 @@
 import { BackendWebSocketService } from '@metamask/core-backend';
-import { Json } from '@metamask/utils';
 import { MessengerClientInitFunction } from '../types';
 import {
   BackendWebSocketServiceMessenger,
@@ -8,8 +7,6 @@ import {
 import type { OnboardingControllerState } from '../../controllers/onboarding';
 import type { PreferencesControllerState } from '../../controllers/preferences-controller';
 import { trace, TraceRequest } from '../../../../shared/lib/trace';
-import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
-
 /**
  * Returns a getter for basic functionality (use external services).
  * When true, the backend WebSocket may connect. Also returns false during
@@ -37,23 +34,6 @@ function getIsBasicFunctionality(
       return true;
     }
   };
-}
-
-/**
- * Resolve a raw feature flag value to a boolean. The value is a boolean when
- * resolved from the remote config, or a `{ value }` object when provided by a
- * flag override or test mock. Handle both so `{ value: false }` is not misread
- * as truthy.
- *
- * @param flag - The raw feature flag value.
- * @returns Whether the flag is enabled.
- */
-function resolveFlag(flag: Json | undefined): boolean {
-  if (typeof flag === 'object' && flag !== null && 'value' in flag) {
-    return Boolean(flag.value);
-  }
-
-  return typeof flag === 'boolean' ? flag : false;
 }
 
 /**
@@ -108,30 +88,6 @@ export const BackendWebSocketServiceInit: MessengerClientInitFunction<
     traceFn: (request, fn) => {
       const rootRequest = { ...request, root: true } as TraceRequest;
       return fn ? trace(rootRequest, fn) : trace(rootRequest);
-    },
-    // Feature flag AND app lifecycle integration
-    // Service will check this callback before connecting/reconnecting
-    isEnabled: () => {
-      try {
-        // Client manifest flag
-        const manifestFlag =
-          getManifestFlags().remoteFeatureFlags?.backendWebSocketConnection;
-
-        // Remote feature flag
-        const remoteFlag = initMessenger?.call(
-          'RemoteFeatureFlagController:getState',
-        )?.remoteFeatureFlags?.backendWebSocketConnection;
-
-        const isEnabled = resolveFlag(manifestFlag ?? remoteFlag);
-        return isEnabled;
-      } catch (error) {
-        // If feature flag check fails, default to NOT connecting for safer startup
-        console.warn(
-          '[BackendWebSocketService] Could not check feature flag, defaulting to NOT connect:',
-          error,
-        );
-        return false;
-      }
     },
     isBasicFunctionality,
     subscribeToBasicFunctionalityChange,

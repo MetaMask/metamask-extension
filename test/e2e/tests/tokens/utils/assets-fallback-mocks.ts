@@ -110,21 +110,14 @@ async function mockJsonRpc(
  * @returns Client-config `/v1/flags` body.
  */
 function flagsWithAccountsApiV6(): Json[] {
-  const overridden = new Set([
-    'assetsAccountsApiV6',
-    'backendWebSocketConnection',
-  ]);
+  const overridden = new Set(['assetsAccountsApiV6']);
   const retained = getProductionRemoteFlagApiResponse().filter(
     (entry) =>
       !Object.keys(entry as Record<string, Json>).some((name) =>
         overridden.has(name),
       ),
   );
-  return [
-    ...retained,
-    { backendWebSocketConnection: true },
-    { assetsAccountsApiV6: true },
-  ];
+  return [...retained, { assetsAccountsApiV6: true }];
 }
 
 function readAccountIds(requestUrl: string): string[] {

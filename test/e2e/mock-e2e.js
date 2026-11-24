@@ -768,26 +768,11 @@ async function setupMocking(
       distribution: 'main',
     })
     .asPriority(RulePriority.FALLBACK)
-    .thenCallback(() => {
-      // E2E has no canonical profile id, so threshold flags stay unresolved
-      // arrays and BackendWebSocketService treats them as off. Pin a boolean
-      // here (not in production code). Tests can still override this mock.
-      const flags = getProductionRemoteFlagApiResponse().map((entry) => {
-        if (
-          entry &&
-          typeof entry === 'object' &&
-          'backendWebSocketConnection' in entry
-        ) {
-          return { backendWebSocketConnection: true };
-        }
-        return entry;
-      });
-      return {
-        ok: true,
-        statusCode: 200,
-        json: flags,
-      };
-    });
+    .thenCallback(() => ({
+      ok: true,
+      statusCode: 200,
+      json: getProductionRemoteFlagApiResponse(),
+    }));
 
   // Config registry: networks config (ConfigRegistryController polling) and
   // events config (AnalyticsController event-purpose classification, added in
