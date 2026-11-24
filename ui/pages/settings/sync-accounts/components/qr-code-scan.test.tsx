@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -7,6 +7,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 // eslint-disable-next-line import-x/no-restricted-paths
 import messages from '../../../../../app/_locales/en/messages.json';
 import { ENVIRONMENT } from '../../../../../shared/constants/build';
+import { QrSyncErrorCodes } from '../../../../../shared/constants/qr-sync';
 import { selectQrSyncQrPayload } from '../../../../selectors/qr-sync/qr-sync';
 import QrCodeScan from './qr-code-scan';
 
@@ -47,8 +48,10 @@ const createMockStore = (metamaskOverrides = {}) =>
     },
   });
 
+const mockOnRestart = jest.fn();
+
 const renderQrCodeScan = (mockStore = createMockStore()) =>
-  renderWithProvider(<QrCodeScan />, mockStore);
+  renderWithProvider(<QrCodeScan onRestart={mockOnRestart} />, mockStore);
 
 describe('QrCodeScan', () => {
   beforeEach(() => {
@@ -154,5 +157,68 @@ describe('QrCodeScan', () => {
 
     expect(screen.getByTestId('qr-sync-qr-loading')).toBeInTheDocument();
     expect(screen.queryByTestId('qr-code-image')).not.toBeInTheDocument();
+  });
+
+  describe('when the QR code expired', () => {
+    const expiredError = {
+      code: QrSyncErrorCodes.QR_EXPIRED,
+      message: 'QR code expired.',
+    };
+
+    it('does not show the expired state or restart button while the QR code is valid', () => {
+      renderQrCodeScan();
+
+      expect(
+        screen.queryByTestId('qr-sync-qr-expired'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('qr-sync-generate-new-qr-code'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows the expired message and a button to get a new code', () => {
+      renderQrCodeScan(createMockStore({ qrSyncError: expiredError }));
+
+      expect(screen.getByTestId('qr-sync-qr-expired')).toHaveTextContent(
+        messages.enter_verification_code_expired.message,
+      );
+      expect(
+        screen.getByTestId('qr-sync-generate-new-qr-code'),
+      ).toHaveTextContent(messages.add_device_try_again.message);
+    });
+
+    it('keeps showing the previous QR code, dimmed, after the controller clears the payload', () => {
+      let currentState = createMockStore().getState();
+      const store = configureMockStore([thunk])(() => currentState);
+      renderQrCodeScan(store);
+      expect(screen.getByTestId('qr-code-image')).toHaveAttribute(
+        'data-value',
+        'metamask://connect/mwp?p=test',
+      );
+
+      currentState = createMockStore({
+        qrSyncQrPayload: null,
+        qrSyncError: expiredError,
+      }).getState();
+      act(() => {
+        store.dispatch({ type: 'QR_SYNC_TEST_EXPIRED' });
+      });
+
+      expect(screen.getByTestId('qr-code-image')).toHaveAttribute(
+        'data-value',
+        'metamask://connect/mwp?p=test',
+      );
+      expect(screen.getByTestId('qr-sync-qr-code')).toHaveStyle({
+        opacity: '0.3',
+      });
+    });
+
+    it('calls onRestart when the button is clicked', () => {
+      renderQrCodeScan(createMockStore({ qrSyncError: expiredError }));
+
+      fireEvent.click(screen.getByTestId('qr-sync-generate-new-qr-code'));
+
+      expect(mockOnRestart).toHaveBeenCalledTimes(1);
+    });
   });
 });

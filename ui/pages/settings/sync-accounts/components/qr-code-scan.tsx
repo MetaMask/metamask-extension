@@ -11,18 +11,38 @@ import {
   BoxJustifyContent,
   TextButton,
   Skeleton,
+  Button,
+  ButtonSize,
 } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { selectQrSyncQrPayload } from '../../../../selectors/qr-sync/qr-sync';
+import {
+  selectQrSyncError,
+  selectQrSyncQrPayload,
+} from '../../../../selectors/qr-sync/qr-sync';
 import { ENVIRONMENT } from '../../../../../shared/constants/build';
+import { QrSyncErrorCodes } from '../../../../../shared/constants/qr-sync';
 
 const QR_CODE_SIZE = 184;
 const QR_CODE_INNER_SIZE = 152;
 
-const QrCodeScan = () => {
+type QrCodeScanProps = {
+  /** Starts a new session so the user can get a fresh QR code. */
+  onRestart: () => void;
+};
+
+const QrCodeScan = ({ onRestart }: QrCodeScanProps) => {
   const t = useI18nContext();
   const qrPayload = useSelector(selectQrSyncQrPayload);
+  const qrSyncError = useSelector(selectQrSyncError);
+  const isExpired = qrSyncError?.code === QrSyncErrorCodes.QR_EXPIRED;
+  // The controller clears the payload when the QR code expires. Keep showing
+  // the last one (dimmed) so the screen doesn't collapse to a skeleton.
+  const [lastQrPayload, setLastQrPayload] = useState<string | null>(null);
+  if (qrPayload && qrPayload !== lastQrPayload) {
+    setLastQrPayload(qrPayload);
+  }
+  const displayedPayload = qrPayload ?? (isExpired ? lastQrPayload : null);
   const [isPayloadVisible, setIsPayloadVisible] = useState(false);
   const canRevealQrPayload =
     process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT ||
@@ -51,13 +71,19 @@ const QrCodeScan = () => {
           className="relative inline-flex"
           justifyContent={BoxJustifyContent.Center}
           alignItems={BoxAlignItems.Center}
-          data-testid={qrPayload ? 'qr-sync-qr-code' : 'qr-sync-qr-loading'}
+          data-testid={
+            displayedPayload ? 'qr-sync-qr-code' : 'qr-sync-qr-loading'
+          }
+          style={{
+            opacity: isExpired ? 0.3 : 1,
+            filter: isExpired ? 'blur(4px)' : 'none',
+          }}
         >
-          {qrPayload ? (
+          {displayedPayload ? (
             <Box className="relative self-center overflow-hidden rounded-2xl border border-muted bg-white p-4">
               <QRCodeSVG
                 data-testid="qr-code-image"
-                value={qrPayload}
+                value={displayedPayload}
                 size={QR_CODE_INNER_SIZE}
                 level="M"
                 marginSize={0}
@@ -103,7 +129,26 @@ const QrCodeScan = () => {
             ) : null}
           </Box>
         ) : null}
+        {isExpired ? (
+          <Text
+            variant={TextVariant.BodyMd}
+            color={TextColor.ErrorDefault}
+            data-testid="qr-sync-qr-expired"
+          >
+            {t('enter_verification_code_expired')}
+          </Text>
+        ) : null}
       </Box>
+      {isExpired ? (
+        <Button
+          size={ButtonSize.Lg}
+          className="w-full mt-auto"
+          onClick={onRestart}
+          data-testid="qr-sync-generate-new-qr-code"
+        >
+          {t('add_device_try_again')}
+        </Button>
+      ) : null}
     </Box>
   );
 };

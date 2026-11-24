@@ -44,6 +44,28 @@ describe('QR Sync Phases', function () {
     );
   });
 
+  it('should display the QR expired state when QR Code is not scanned within the timeout', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver);
+
+        const syncAccountsPage = await navigateToSyncAccountsSettings(driver);
+
+        // Do not scan the QR code. Wait out the MWP session timeout so the QR
+        // expired state is shown.
+        await driver.delay(
+          QR_SYNC_TIMEOUT_MS_E2E.MWP_SESSION_TIMEOUT +
+            TIMEOUT_ASSERTION_BUFFER_MS,
+        );
+        await syncAccountsPage.waitForQrExpiredMessage();
+      },
+    );
+  });
+
   it('should display the QR sync sessiontimeout error when OTP is not entered within the timeout', async function () {
     await withFixtures(
       {
@@ -96,7 +118,7 @@ describe('QR Sync Phases', function () {
     );
   });
 
-  it('should start a new QR sync session when the QR code is not scanned within the timeout', async function () {
+  it('should restart the QR sync session from the expired QR code state', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -106,15 +128,16 @@ describe('QR Sync Phases', function () {
         await login(driver);
 
         const syncAccountsPage = await navigateToSyncAccountsSettings(driver);
-        const expiredQrPayload = await syncAccountsPage.getQrPayload();
 
-        // Do not scan the QR code. Wait out the MWP session timeout so the
-        // expired session is replaced with a new QR code.
+        // Do not scan the QR code. Wait out the MWP session timeout so the QR
+        // expired state is shown.
         await driver.delay(
           QR_SYNC_TIMEOUT_MS_E2E.MWP_SESSION_TIMEOUT +
             TIMEOUT_ASSERTION_BUFFER_MS,
         );
-        await syncAccountsPage.waitForQrPayloadToChange(expiredQrPayload);
+        await syncAccountsPage.waitForQrExpiredMessage();
+
+        await syncAccountsPage.clickGenerateNewQrCode();
         await syncAccountsPage.waitForQrCode();
 
         await completeQrSyncFromSyncPage({

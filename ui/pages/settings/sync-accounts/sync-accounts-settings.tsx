@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { submitRequestToBackground } from '../../../store/background-connection';
@@ -7,7 +7,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   QR_SYNC_ERROR_PHASE_OVERRIDES,
   QR_SYNC_PHASES,
-  QrSyncErrorCodes,
 } from '../../../../shared/constants/qr-sync';
 import {
   selectQrSyncError,
@@ -29,7 +28,6 @@ const SyncAccountsSettings = () => {
   const t = useI18nContext();
   const qrSyncPhase = useSelector(selectQrSyncPhase);
   const qrSyncError = useSelector(selectQrSyncError);
-  const previousErrorCodeRef = useRef(qrSyncError?.code);
   const [isExiting, setIsExiting] = useState(false);
   const [passwordState, setPasswordState] = useState<{
     phase: typeof qrSyncPhase;
@@ -67,19 +65,6 @@ const SyncAccountsSettings = () => {
     await cancelQrSyncSession();
     await createQrSyncSession();
   }, [cancelQrSyncSession, createQrSyncSession]);
-
-  useEffect(() => {
-    const previousErrorCode = previousErrorCodeRef.current;
-    previousErrorCodeRef.current = qrSyncError?.code;
-
-    if (
-      !isExiting &&
-      qrSyncError?.code === QrSyncErrorCodes.QR_EXPIRED &&
-      previousErrorCode !== QrSyncErrorCodes.QR_EXPIRED
-    ) {
-      startNewSession().catch(() => undefined);
-    }
-  }, [isExiting, qrSyncError?.code, startNewSession]);
 
   useEffect(() => {
     if (isExiting) {
@@ -142,7 +127,7 @@ const SyncAccountsSettings = () => {
     switch (effectivePhase) {
       case QR_SYNC_PHASES.IDLE:
       case QR_SYNC_PHASES.DISPLAYING_QR:
-        return <QrCodeScan />;
+        return <QrCodeScan onRestart={handleRetry} />;
       case QR_SYNC_PHASES.AWAITING_OTP_INPUT:
         return <EnterVerificationCode onRestart={handleRetry} />;
       case QR_SYNC_PHASES.AWAITING_SYNC_OFFER:

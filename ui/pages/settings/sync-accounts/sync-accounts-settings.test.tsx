@@ -37,7 +37,11 @@ jest.mock('./components', () => {
 
   return {
     ...actual,
-    QrCodeScan: () => <div data-testid="qr-code-scan" />,
+    QrCodeScan: ({ onRestart }: { onRestart: () => void }) => (
+      <button type="button" data-testid="qr-code-scan" onClick={onRestart}>
+        restart
+      </button>
+    ),
     EnterVerificationCode: ({
       isAwaitingSyncOffer,
     }: {
@@ -331,7 +335,7 @@ describe('SyncAccountsSettings', () => {
     expect(screen.queryByTestId('sync-error')).not.toBeInTheDocument();
   });
 
-  it('starts a new session when the displayed QR code expires', async () => {
+  it('does not start a new session on its own when the QR code expires', async () => {
     let currentState: QrSyncTestState = qrSyncState;
     const store = configureMockStore([thunk])(() => currentState);
     renderWithProvider(<SyncAccountsSettings />, store);
@@ -360,12 +364,33 @@ describe('SyncAccountsSettings', () => {
       store.dispatch({ type: 'QR_SYNC_TEST_EXPIRED' });
     });
 
+    expect(screen.getByTestId('qr-code-scan')).toBeInTheDocument();
+    expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+  });
+
+  it('starts a new session when restart is clicked on the QR step', async () => {
+    renderWithProvider(
+      <SyncAccountsSettings />,
+      configureMockStore([thunk])(qrSyncState),
+    );
     await waitFor(() => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'QrSyncController:createSession',
+        [],
+      );
+    });
+    mockSubmitRequestToBackground.mockClear();
+
+    fireEvent.click(screen.getByTestId('qr-code-scan'));
+
+    await waitFor(() => {
+      expect(mockSubmitRequestToBackground).toHaveBeenNthCalledWith(
+        1,
         'QrSyncController:cancelSync',
         [],
       );
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      expect(mockSubmitRequestToBackground).toHaveBeenNthCalledWith(
+        2,
         'QrSyncController:createSession',
         [],
       );
