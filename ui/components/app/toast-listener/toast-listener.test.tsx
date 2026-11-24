@@ -49,8 +49,13 @@ jest.mock('../../../hooks/useI18nContext', () => ({
 }));
 
 jest.mock('../../ui/toast/toast', () => ({
-  toast: Object.assign(jest.fn(), { dismiss: jest.fn(), error: jest.fn() }),
+  toast: Object.assign(jest.fn(), { dismiss: jest.fn() }),
   ToastContent: () => null,
+}));
+
+jest.mock('@metamask/design-system-react', () => ({
+  ...jest.requireActual('@metamask/design-system-react'),
+  Icon: () => null,
 }));
 
 describe('ToastListener', () => {

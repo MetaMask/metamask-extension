@@ -1,5 +1,11 @@
 import React, { useEffect, useSyncExternalStore } from 'react';
 import { useSelector } from 'react-redux';
+import {
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+} from '@metamask/design-system-react';
 import { isInteractiveUI } from '../../../../shared/lib/environment-type';
 import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -43,9 +49,17 @@ const OfflineToastListener = () => {
     if (isOnline) {
       toast.dismiss('offline-toast');
     } else {
-      toast.error(<ToastContent title={t('offlineToast')} />, {
+      toast(<ToastContent title={t('offlineToast')} />, {
         id: 'offline-toast',
         duration: Infinity,
+        icon: (
+          <Icon
+            name={IconName.Warning}
+            color={IconColor.WarningDefault}
+            size={IconSize.Md}
+            className="shrink-0"
+          />
+        ),
       });
     }
   }, [isOnline, t]);
