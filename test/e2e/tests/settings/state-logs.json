@@ -161,13 +161,6 @@
       "*": "array"
     },
     "accountState": "null",
-    "accountsByChainId": {
-      "*": {
-        "*": {
-          "balance": "string"
-        }
-      }
-    },
     "accountTree": {
       "wallets": {
         "entropy:01K98E0QDS4HYMTRJ5WHZ73ZWJ": {
@@ -1177,7 +1170,6 @@
       }
     },
     "status": "string",
-    "storageMetadata": [],
     "subjectMetadata": {
       "npm:@metamask/bitcoin-wallet-snap": {
         "extensionId": "null",
@@ -1312,6 +1304,7 @@
     "useNftDetection": "boolean",
     "usePhishDetect": "boolean",
     "userRegion": "null",
+    "userSelectedProviderId": "null",
     "vbaAutorampListFetchedAt": "null",
     "vbaCustomerAbilities": "null",
     "walletComplianceStatusMap": {},
@@ -1319,7 +1312,6 @@
     "useTokenDetection": "boolean",
     "useTransactionSimulations": "boolean",
     "version": "string",
-    "versionInfo": [],
     "visibleCandleCount": "number",
     "watchEthereumAccountEnabled": "boolean",
     "watchlistMarkets": {

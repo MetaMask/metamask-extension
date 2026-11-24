@@ -10,6 +10,7 @@ import AccountDetailsPage from '../../../page-objects/pages/accounts/details-pag
 import { login } from '../../../page-objects/flows/login.flow';
 import { openConnectHardwareWallet } from '../../../page-objects/flows/add-wallet.flow';
 import { checkAccountAddressDisplayedInAccountList } from '../../../page-objects/flows/account-list.flow';
+import { openAccountMenu } from '../../../page-objects/flows/account-menu.flow';
 
 describe('Trezor Hardware', function () {
   it('derives the correct accounts and unlocks the first account', async function () {
@@ -22,7 +23,7 @@ describe('Trezor Hardware', function () {
         await login(driver);
 
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
 
         // Choose connect hardware wallet from the account menu
         const accountListPage = new AccountListPage(driver);
@@ -53,7 +54,7 @@ describe('Trezor Hardware', function () {
         await selectTrezorAccountPage.unlockAccount(1);
         await headerNavbar.checkPageIsLoaded();
         await new HomePage(driver).checkExpectedBalanceIsDisplayed('0');
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await checkAccountAddressDisplayedInAccountList(driver, 'Trezor', 1);
       },
     );
@@ -67,8 +68,7 @@ describe('Trezor Hardware', function () {
       },
       async ({ driver }) => {
         await login(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
 
         // Choose connect hardware wallet from the account menu
         const accountListPage = new AccountListPage(driver);
@@ -94,7 +94,7 @@ describe('Trezor Hardware', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('0');
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await checkAccountAddressDisplayedInAccountList(driver, 'Trezor', 5);
 
         // Remove Trezor 1 account and check Trezor 1 account is removed

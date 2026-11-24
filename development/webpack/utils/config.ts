@@ -2,15 +2,16 @@ import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
 import { AssertionError } from 'node:assert';
 import { parse } from 'dotenv';
-import { setEnvironmentVariables } from '../../build/set-environment-variables.js';
+import { projectRoot } from '../../lib/build-paths.ts';
+import { setEnvironmentVariables } from '../../build/set-environment-variables.ts';
 import type { BuildTypesConfig, BuildType } from '../../lib/build-type.js';
-import { type Args } from './cli';
-import { getExtensionVersion } from './version';
+import type { Args } from './cli';
+import { getExtensionVersion } from './version.ts';
 import {
   ENVIRONMENTS,
   MODES,
   VARIABLES_REQUIRED_IN_PRODUCTION,
-} from './constants';
+} from './constants.ts';
 
 /**
  * Coerce `"true"`, `"false"`, and `"null"` to their respective JavaScript
@@ -170,15 +171,6 @@ export function getVariables(
     }
   });
 
-  // special location for the PPOM_URI, as we don't want to copy the wasm file
-  // to the build directory like the gulp build does
-  variables.set(
-    'PPOM_URI',
-    `new URL('@blockaid/ppom_release/ppom_bg.wasm', import.meta.url)`,
-  );
-  // the `PPOM_URI` shouldn't be JSON stringified, as it's actually code
-  safeVariables.PPOM_URI = variables.get('PPOM_URI') as string;
-
   return {
     variables,
     safeVariables,
@@ -221,8 +213,8 @@ function loadConfigVars(
     });
   }
 
-  addRc(variables, join(__dirname, '../../../.metamaskprodrc'));
-  addRc(variables, join(__dirname, '../../../.metamaskrc'));
+  addRc(variables, join(projectRoot, '.metamaskprodrc'));
+  addRc(variables, join(projectRoot, '.metamaskrc'));
   addVars(activeBuild.env);
   addVars(env);
 

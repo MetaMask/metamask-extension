@@ -66,7 +66,9 @@ describe('useIsPaidByMetaMask', () => {
     useTransactionPaySourceAmountsMock.mockReturnValue(undefined);
     useTransactionPayFiatPaymentMock.mockReturnValue(undefined);
     useTransactionPayTokenMock.mockReturnValue({
-      payToken: { chainId: '0x1', address: '0xabc' },
+      payToken: {
+        assetId: 'eip155:1/erc20:0x0000000000000000000000000000000000000abc',
+      },
       setPayToken: jest.fn(),
     } as never);
   });
@@ -257,7 +259,9 @@ describe('useIsNetworkFeePaidByMetaMask', () => {
       isGasFeeSponsored: true,
     });
     useTransactionPayTokenMock.mockReturnValue({
-      payToken: { chainId: '0x1', address: '0xabc' },
+      payToken: {
+        assetId: 'eip155:1/erc20:0x0000000000000000000000000000000000000abc',
+      },
       setPayToken: jest.fn(),
     } as never);
   });
@@ -328,7 +332,9 @@ describe('useSponsoredNetworkFeeFlags', () => {
       chainId: '0x1',
     });
     useTransactionPayTokenMock.mockReturnValue({
-      payToken: { chainId: '0x1', address: '0xabc' },
+      payToken: {
+        assetId: 'eip155:1/erc20:0x0000000000000000000000000000000000000abc',
+      },
       setPayToken: jest.fn(),
     } as never);
   });
@@ -343,7 +349,10 @@ describe('useSponsoredNetworkFeeFlags', () => {
 
   it('keeps source unsponsored on cross-chain routes', () => {
     useTransactionPayTokenMock.mockReturnValue({
-      payToken: { chainId: '0xe708', address: '0xabc' },
+      payToken: {
+        assetId:
+          'eip155:59144/erc20:0x0000000000000000000000000000000000000abc',
+      },
       setPayToken: jest.fn(),
     } as never);
 
