@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, waitFor, act } from '@testing-library/react';
 import AdvancedChartIframe, {
+  buildChartUrl,
   CHART_ORIGIN,
   CHART_ORIGIN_PRD,
   CHART_ORIGIN_UAT,
@@ -56,6 +57,54 @@ describe('getChartOrigin', () => {
       process.env.METAMASK_ENVIRONMENT = environment;
       expect(getChartOrigin()).toBe(CHART_ORIGIN_UAT);
     }
+  });
+});
+
+describe('buildChartUrl', () => {
+  it('encodes only the theme when no other config is set (vanilla defaults)', () => {
+    expect(buildChartUrl('http://localhost:8001', { theme: 'dark' })).toBe(
+      'http://localhost:8001/index.html?theme=dark',
+    );
+  });
+
+  it('encodes the full client-owned config as query params', () => {
+    const url = new URL(
+      buildChartUrl('https://chart.example', {
+        theme: 'light',
+        disabledFeatures: ['header_widget', 'control_bar'],
+        enabledFeatures: ['hide_left_toolbar_by_default'],
+        drawingTools: false,
+        builtInLegend: false,
+        legendOverlay: true,
+      }),
+    );
+
+    expect(`${url.origin}${url.pathname}`).toBe(
+      'https://chart.example/index.html',
+    );
+    expect(url.searchParams.get('theme')).toBe('light');
+    expect(url.searchParams.get('disabledFeatures')).toBe(
+      'header_widget,control_bar',
+    );
+    expect(url.searchParams.get('enabledFeatures')).toBe(
+      'hide_left_toolbar_by_default',
+    );
+    expect(url.searchParams.get('drawingTools')).toBe('off');
+    expect(url.searchParams.get('builtInLegend')).toBe('off');
+    expect(url.searchParams.get('legendOverlay')).toBe('on');
+  });
+
+  it('omits empty feature lists and unset toggles', () => {
+    const url = new URL(
+      buildChartUrl('https://chart.example', {
+        theme: 'dark',
+        disabledFeatures: [],
+      }),
+    );
+
+    expect(url.searchParams.has('disabledFeatures')).toBe(false);
+    expect(url.searchParams.has('builtInLegend')).toBe(false);
+    expect(url.searchParams.has('legendOverlay')).toBe(false);
   });
 });
 
@@ -124,7 +173,16 @@ describe('AdvancedChartIframe', () => {
 
       const iframe = container.querySelector('iframe');
       expect(iframe).toBeInTheDocument();
-      expect(iframe?.src).toBe(`${CHART_ORIGIN}/index.html?theme=light`);
+      const url = new URL(iframe?.src as string);
+      expect(`${url.origin}${url.pathname}`).toBe(`${CHART_ORIGIN}/index.html`);
+      expect(url.searchParams.get('theme')).toBe('light');
+      // The extension sends its own curated config: built-in OHLC legend off,
+      // indicator overlay on, chart chrome disabled.
+      expect(url.searchParams.get('builtInLegend')).toBe('off');
+      expect(url.searchParams.get('legendOverlay')).toBe('on');
+      expect(url.searchParams.get('disabledFeatures')).toContain(
+        'header_widget',
+      );
     });
 
     it('renders iframe with correct src for dark theme', () => {
@@ -132,7 +190,9 @@ describe('AdvancedChartIframe', () => {
       const { container } = render(<AdvancedChartIframe {...defaultProps} />);
 
       const iframe = container.querySelector('iframe');
-      expect(iframe?.src).toBe(`${CHART_ORIGIN}/index.html?theme=dark`);
+      const url = new URL(iframe?.src as string);
+      expect(`${url.origin}${url.pathname}`).toBe(`${CHART_ORIGIN}/index.html`);
+      expect(url.searchParams.get('theme')).toBe('dark');
     });
 
     it('fills its container, leaving sizing to the parent', () => {
@@ -1143,7 +1203,8 @@ describe('AdvancedChartIframe', () => {
       rerender(<AdvancedChartIframe {...defaultProps} />);
 
       const iframe = container.querySelector('iframe');
-      expect(iframe?.src).toBe(`${CHART_ORIGIN}/index.html?theme=light`);
+      const url = new URL(iframe?.src as string);
+      expect(url.searchParams.get('theme')).toBe('light');
     });
 
     it('handles simultaneous prop changes', async () => {

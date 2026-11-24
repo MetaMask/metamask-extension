@@ -60,6 +60,110 @@ export function getChartOrigin(): string {
 
 export const CHART_ORIGIN = getChartOrigin();
 
+/**
+ * Construction-time config the host selects for the chart engine. The engine
+ * applies these only when the TradingView widget is created inside the
+ * chart-origin bundle, so they are passed as URL query params — the same
+ * channel as `theme` — and cannot be changed via a later `postMessage`.
+ *
+ * The chart server applies exactly what each client sends: every field is
+ * optional and, when omitted, the server falls back to vanilla TradingView
+ * defaults (no disabled features, no custom overlay, built-in legend on). This
+ * keeps the config client-owned, so a different client can embed the same chart
+ * server with its own (or no) curation.
+ */
+export type ChartEngineConfig = {
+  theme: 'dark' | 'light';
+  /** TradingView feature names to disable at widget construction. */
+  disabledFeatures?: string[];
+  /** TradingView feature names to force-enable at widget construction. */
+  enabledFeatures?: string[];
+  /** Enable drawing tools. Server default: off. */
+  drawingTools?: boolean;
+  /**
+   * Show TradingView's built-in legend (the series OHLC hover box). The
+   * extension sets this `false` because it renders its own OHLCV header bar.
+   */
+  builtInLegend?: boolean;
+  /** Enable the engine's custom indicator legend pills. */
+  legendOverlay?: boolean;
+};
+
+/**
+ * TradingView features the extension's embedded chart turns off to keep a clean
+ * surface — its own IntervalBar/IndicatorBar provide the controls, so the chart
+ * chrome (headers, toolbars, context menus) is stripped. Owned here so the
+ * extension fully describes its own chart; the chart server applies exactly
+ * what each client sends.
+ */
+export const TDP_DISABLED_FEATURES = [
+  'use_localstorage_for_settings',
+  'header_widget',
+  'timeframes_toolbar',
+  'edit_buttons_in_legend',
+  'control_bar',
+  'border_around_the_chart',
+  'header_symbol_search',
+  'header_settings',
+  'header_compare',
+  'header_undo_redo',
+  'header_screenshot',
+  'header_fullscreen_button',
+  'legend_context_menu',
+  'symbol_search_hot_key',
+  'symbol_info',
+  'display_market_status',
+  'scales_context_menu',
+  'property_pages',
+  'show_chart_property_page',
+  'chart_property_page_background',
+  'main_series_scale_menu',
+  'popup_hints',
+  'pane_context_menu',
+  'create_volume_indicator_by_default',
+  'show_hide_button_in_legend',
+  'go_to_date',
+  'show_zoom_and_move_buttons_on_touch',
+  'shift_visible_range_on_new_bar',
+  'vert_touch_drag_scroll',
+  // Suppress TradingView's built-in floating OHLC tooltip shown on long-press
+  // (TV v30 `long_press_floating_tooltip`, default on). Separate featureset from
+  // the legend (`legend_widget`); the extension renders its own OHLCV readout.
+  'long_press_floating_tooltip',
+];
+
+/**
+ * Builds the chart-origin iframe URL with the construction-time config encoded
+ * as query params. Only the fields the client sets are appended; anything left
+ * unset is omitted so the chart server applies its vanilla default.
+ *
+ * @param origin - The resolved chart origin (see `getChartOrigin`).
+ * @param config - The construction-time engine config.
+ * @returns The full `index.html` URL including the config query string.
+ */
+export function buildChartUrl(
+  origin: string,
+  config: ChartEngineConfig,
+): string {
+  const params = new URLSearchParams({ theme: config.theme });
+  if (config.disabledFeatures?.length) {
+    params.set('disabledFeatures', config.disabledFeatures.join(','));
+  }
+  if (config.enabledFeatures?.length) {
+    params.set('enabledFeatures', config.enabledFeatures.join(','));
+  }
+  if (config.drawingTools !== undefined) {
+    params.set('drawingTools', config.drawingTools ? 'on' : 'off');
+  }
+  if (config.builtInLegend !== undefined) {
+    params.set('builtInLegend', config.builtInLegend ? 'on' : 'off');
+  }
+  if (config.legendOverlay !== undefined) {
+    params.set('legendOverlay', config.legendOverlay ? 'on' : 'off');
+  }
+  return `${origin}/index.html?${params.toString()}`;
+}
+
 // If the chart hasn't emitted CHART_READY within this window, fall back to legacy.
 // Sized for a cold CDN cache fetching the ~20 MB TradingView library, not for
 // the local chart-origin server.
@@ -175,7 +279,16 @@ const AdvancedChartIframe = forwardRef<
     fetchOlderBarsRef.current = fetchOlderBars;
     const theme = useTheme();
     const isDark = theme === 'dark';
-    const chartUrl = `${CHART_ORIGIN}/index.html?theme=${isDark ? 'dark' : 'light'}`;
+    const chartUrl = buildChartUrl(CHART_ORIGIN, {
+      theme: isDark ? 'dark' : 'light',
+      disabledFeatures: TDP_DISABLED_FEATURES,
+      // The extension renders its own OHLCV header bar, so it hides TradingView's
+      // built-in series legend (the OHLC hover box) while keeping the custom
+      // indicator legend pills. Applied at widget construction, so it travels in
+      // the URL rather than a postMessage.
+      builtInLegend: false,
+      legendOverlay: true,
+    });
 
     // The theme is baked into the iframe src, so switching it reloads the
     // engine and the replacement comes up bare. Reset the bookkeeping that
