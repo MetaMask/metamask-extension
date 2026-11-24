@@ -317,12 +317,12 @@ describe('Test Snap Metrics', function () {
         await testSnaps.openPage(DAPP_URL);
         await testSnaps.checkPageIsLoaded();
         await testSnaps.scrollAndClickButton('connectNotificationButton');
-        await driver.delay(5000);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const snapInstall = new SnapInstall(driver);
         await snapInstall.checkPageIsLoaded();
         await snapInstall.clickConnectButton();
+        await driver.delay(5000);
 
         await driver.waitForSelector({ text: 'Connection failed' });
 
