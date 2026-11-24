@@ -914,5 +914,39 @@
       }
     },
     "version": "v0.3.0"
+  },
+  "previewBuilds": {
+    "@metamask/accounts-controller": {
+      "type": "non-breaking",
+      "previewVersion": "40.2.0-preview-e1d02b2"
+    },
+    "@metamask/assets-controller": {
+      "type": "breaking",
+      "previewVersion": "21.0.0-preview-e1d02b2"
+    },
+    "@metamask/assets-controllers": {
+      "type": "non-breaking",
+      "previewVersion": "113.3.3-preview-e1d02b2"
+    },
+    "@metamask/bridge-status-controller": {
+      "type": "non-breaking",
+      "previewVersion": "78.1.0-preview-e1d02b2"
+    },
+    "@metamask/eth-sig-util": {
+      "type": "non-breaking",
+      "previewVersion": "10.0.1-preview-e1d02b2"
+    },
+    "@metamask/keyring-controller": {
+      "type": "non-breaking",
+      "previewVersion": "28.2.2-preview-e1d02b2"
+    },
+    "@metamask/multichain-account-service": {
+      "type": "non-breaking",
+      "previewVersion": "14.1.0-preview-e1d02b2"
+    },
+    "@metamask/transaction-controller": {
+      "type": "non-breaking",
+      "previewVersion": "74.3.0-preview-e1d02b2"
+    }
   }
 }

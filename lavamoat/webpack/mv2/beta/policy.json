@@ -167,6 +167,35 @@
         "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
       }
     },
+    "@metamask/assets-controller>@ethereumjs/util": {
+      "globals": {
+        "TextDecoder": true
+      },
+      "packages": {
+        "@metamask/assets-controller>@ethereumjs/util>@ethereumjs/rlp": true,
+        "@metamask/assets-controller>@ethereumjs/util>@noble/curves": true,
+        "@metamask/assets-controller>@ethereumjs/util>@noble/hashes": true
+      }
+    },
+    "@metamask/assets-controllers>@ethereumjs/util": {
+      "globals": {
+        "TextDecoder": true
+      },
+      "packages": {
+        "@metamask/assets-controllers>@ethereumjs/util>@ethereumjs/rlp": true,
+        "@metamask/assets-controllers>@ethereumjs/util>@noble/hashes": true
+      }
+    },
+    "@metamask/eth-sig-util>@ethereumjs/util": {
+      "globals": {
+        "TextDecoder": true
+      },
+      "packages": {
+        "@metamask/eth-sig-util>@ethereumjs/util>@ethereumjs/rlp": true,
+        "@metamask/eth-sig-util>@ethereumjs/util>@noble/curves": true,
+        "@metamask/eth-sig-util>@ethereumjs/util>@noble/hashes": true
+      }
+    },
     "eth-lattice-keyring>gridplus-sdk>@metamask/eth-sig-util>@ethereumjs/util": {
       "globals": {
         "Buffer.alloc": true,
@@ -183,6 +212,30 @@
         "eth-lattice-keyring>gridplus-sdk>@metamask/eth-sig-util>ethereum-cryptography": true,
         "webpack>events": true,
         "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
+      }
+    },
+    "@metamask/keyring-controller>@ethereumjs/util": {
+      "packages": {
+        "@metamask/keyring-controller>@ethereumjs/util>@ethereumjs/rlp": true,
+        "@metamask/keyring-controller>@ethereumjs/util>@noble/curves": true,
+        "@metamask/keyring-controller>@ethereumjs/util>@noble/hashes": true
+      }
+    },
+    "@metamask/multichain-account-service>@ethereumjs/util": {
+      "packages": {
+        "@metamask/multichain-account-service>@ethereumjs/util>@ethereumjs/rlp": true,
+        "@metamask/multichain-account-service>@ethereumjs/util>@noble/curves": true,
+        "@metamask/multichain-account-service>@ethereumjs/util>@noble/hashes": true
+      }
+    },
+    "@metamask/transaction-controller>@ethereumjs/util": {
+      "globals": {
+        "TextDecoder": true
+      },
+      "packages": {
+        "@metamask/transaction-controller>@ethereumjs/util>@ethereumjs/rlp": true,
+        "@metamask/transaction-controller>@ethereumjs/util>@noble/curves": true,
+        "@metamask/transaction-controller>@ethereumjs/util>@noble/hashes": true
       }
     },
     "eth-lattice-keyring>@ethereumjs/util": {
@@ -899,7 +952,7 @@
         ]
       },
       "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/assets-controller>@ethereumjs/util": true,
         "@ethersproject/abi": true,
         "@ethersproject/providers": true,
         "@metamask/assets-controllers": true,
@@ -939,7 +992,7 @@
         ]
       },
       "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/assets-controllers>@ethereumjs/util": true,
         "ethers>@ethersproject/address": true,
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
@@ -1687,18 +1740,20 @@
       "meta": {
         "webpack-optimization": [
           "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/byte-utils' and webpack collapsed that to a direct import.",
-          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import."
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import.",
+          "Dependency 'ethereum-cryptography' reexports from 'ethereum-cryptography>@noble/curves' and webpack collapsed that to a direct import."
         ]
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/rlp": true,
-        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/abi-utils": true,
         "@metamask/utils>@metamask/byte-utils": true,
         "@metamask/snaps-utils>@metamask/cryptography": true,
         "@metamask/utils>@metamask/type-utils": true,
         "@metamask/utils": true,
         "@noble/ciphers": true,
+        "ethereum-cryptography>@noble/curves": true,
         "buffer": true,
         "ethereum-cryptography": true
       }
@@ -2070,7 +2125,7 @@
         ]
       },
       "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/keyring-controller>@ethereumjs/util": true,
         "@metamask/base-controller": true,
         "@metamask/utils>@metamask/byte-utils": true,
         "@metamask/eth-hd-keyring": true,
@@ -2344,7 +2399,7 @@
         ]
       },
       "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/multichain-account-service>@ethereumjs/util": true,
         "@metamask/account-api": true,
         "@metamask/utils>@metamask/byte-utils": true,
         "@metamask/eth-snap-keyring": true,
@@ -3254,7 +3309,7 @@
         "@ethereumjs/tx>@ethereumjs/common": true,
         "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx": true,
-        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/transaction-controller>@ethereumjs/util": true,
         "@ethersproject/abi": true,
         "@ethersproject/contracts": true,
         "ethers>@ethersproject/wallet": true,
@@ -3606,6 +3661,34 @@
         "@noble/hashes": true
       }
     },
+    "@metamask/eth-sig-util>@ethereumjs/util>@noble/curves": {
+      "packages": {
+        "@metamask/eth-sig-util>@ethereumjs/util>@noble/hashes": true
+      }
+    },
+    "@metamask/keyring-controller>@ethereumjs/util>@noble/curves": {
+      "packages": {
+        "@metamask/keyring-controller>@ethereumjs/util>@noble/hashes": true
+      }
+    },
+    "@metamask/multichain-account-service>@ethereumjs/util>@noble/curves": {
+      "packages": {
+        "@metamask/multichain-account-service>@ethereumjs/util>@noble/hashes": true
+      }
+    },
+    "@metamask/transaction-controller>@ethereumjs/util>@noble/curves": {
+      "packages": {
+        "@metamask/transaction-controller>@ethereumjs/util>@noble/hashes": true
+      }
+    },
+    "ethereum-cryptography>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@noble/hashes": true
+      }
+    },
     "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/curves": {
       "globals": {
         "TextEncoder": true
@@ -3665,6 +3748,36 @@
     "@noble/hashes": {
       "globals": {
         "TextDecoder": true,
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/assets-controller>@ethereumjs/util>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/eth-sig-util>@ethereumjs/util>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/keyring-controller>@ethereumjs/util>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/multichain-account-service>@ethereumjs/util>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/transaction-controller>@ethereumjs/util>@noble/hashes": {
+      "globals": {
         "TextEncoder": true,
         "crypto": true
       }
