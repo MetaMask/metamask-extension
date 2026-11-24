@@ -2,12 +2,14 @@ import {
   HardwareWalletError,
   Severity,
   Category,
+  ErrorCode,
 } from '@metamask/hw-wallet-sdk';
 import {
   LEDGER_BRIDGE_MESSAGE_TIMEOUT_MS,
   LedgerAction,
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
+import { serializeLedgerError } from '../../../offscreen/hardware-wallets/ledger-utils';
 import {
   LedgerOffscreenBridge,
   MESSAGE_TIMEOUT_MS,
@@ -123,6 +125,23 @@ describe('LedgerOffscreenBridge', () => {
       await expect(promise).resolves.toBe(true);
     });
 
+    it('getConnectedDeviceInfo sends the query and resolves the device array', async () => {
+      const bridge = new LedgerOffscreenBridge();
+      const expected = [
+        { vendorId: 0x2c97, productId: 0x0004, productName: 'Ledger Nano X' },
+      ];
+      const promise = bridge.getConnectedDeviceInfo();
+
+      const [payload] = chromeRuntimeMock.sendMessage.mock.calls[0];
+      expect(payload).toEqual({
+        action: LedgerAction.getConnectedDeviceInfo,
+        target: OffscreenCommunicationTarget.ledgerOffscreen,
+      });
+
+      respond({ success: true, payload: expected });
+      await expect(promise).resolves.toEqual(expected);
+    });
+
     it('getPublicKey forwards the hdPath param and resolves with payload', async () => {
       const bridge = new LedgerOffscreenBridge();
       const expected = {
@@ -218,6 +237,31 @@ describe('LedgerOffscreenBridge', () => {
   });
 
   describe('error response classification', () => {
+    it('keeps code 3011 across the serialize/reconstruct round trip', async () => {
+      // Regression guard for DeviceMultipleConnected: the block path throws
+      // in the background, but a seed-check or offscreen-originated 3011 may
+      // still cross the bridge; the code must survive serialization.
+      const original = new HardwareWalletError('Ledger already connected', {
+        code: ErrorCode.DeviceMultipleConnected,
+        severity: Severity.Err,
+        category: Category.Connection,
+        userMessage: 'already connected',
+      });
+      const bridge = new LedgerOffscreenBridge();
+      const promise = bridge.getPublicKey({ hdPath: "m/44'/60'/0'/0/0" });
+
+      respond({
+        success: false,
+        payload: { error: serializeLedgerError(original) },
+      });
+
+      const rejection = await promise.catch((error: unknown) => error);
+      expect(rejection).toBeInstanceOf(HardwareWalletError);
+      expect((rejection as HardwareWalletError).code).toBe(
+        ErrorCode.DeviceMultipleConnected,
+      );
+    });
+
     it('rejects with HardwareWalletError when the shape matches', async () => {
       const bridge = new LedgerOffscreenBridge();
       const promise = bridge.getPublicKey({ hdPath: "m/44'/60'/0'/0/0" });

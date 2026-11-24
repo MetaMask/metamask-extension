@@ -4,6 +4,7 @@ import {
   getHardwareWalletErrorCode,
   HardwareWalletType,
   isTrezorDesktopConnectionMissingError,
+  LEDGER_WRONG_DEVICE_ERROR_CODE,
 } from '../../../../contexts/hardware-wallets';
 
 /** Discriminant values for {@link ErrorContent}; use for comparisons and `buildErrorContent` returns. */
@@ -143,6 +144,40 @@ export function buildErrorContent(
         title: t('hardwareWalletErrorTitleUnsupportedSignature'),
         showRepairLink,
         description: t('hardwareWalletErrorOnlyV4SupportedDescription', [
+          t(walletType),
+        ]),
+      };
+
+    // Signing-time seed mismatch: the connected Ledger does not hold the
+    // requested account. Point the user at the Ledger they added it with;
+    // retrying with this device cannot succeed.
+    case LEDGER_WRONG_DEVICE_ERROR_CODE:
+      return {
+        variant: HardwareWalletErrorContentVariant.Description,
+        icon: IconName.Danger,
+        iconColor: IconColor.WarningDefault,
+        title: t('hardwareWalletErrorTitleWrongDevice', [t(walletType)]),
+        showRepairLink: false,
+        description: t('hardwareWalletErrorWrongDeviceDescription', [
+          t(walletType),
+        ]),
+      };
+
+    // Onboarding/connect single-device gate: a different (or second) Ledger is
+    // connected. Acknowledge-only — retrying cannot succeed until the
+    // connected Ledger's accounts are removed from MetaMask.
+    case ErrorCode.DeviceMultipleConnected:
+      return {
+        variant: HardwareWalletErrorContentVariant.Description,
+        icon: IconName.Danger,
+        iconColor: IconColor.WarningDefault,
+        title: t('hardwareWalletErrorTitleDeviceAlreadyConnected', [
+          t(walletType),
+        ]),
+        showRepairLink: false,
+        description: t('hardwareWalletErrorDeviceAlreadyConnectedDescription', [
+          t(walletType),
+          t(walletType),
           t(walletType),
         ]),
       };

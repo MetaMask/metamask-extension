@@ -20,6 +20,7 @@ import {
   nextHardwareWalletRecoveryInlineCtaViewCount,
   resetHardwareWalletRecoveryInlineCtaViewCount,
 } from './hardware-wallet-recovery-metrics';
+import { LEDGER_WRONG_DEVICE_ERROR_CODE } from './hardware-wallets/errors';
 
 describe('hardware-wallet-recovery-metrics', () => {
   describe('mapHardwareWalletTypeToMetricDeviceType', () => {
@@ -112,6 +113,16 @@ describe('hardware-wallet-recovery-metrics', () => {
       );
     });
 
+    it('maps DeviceMultipleConnected to a distinct type, not GenericError', () => {
+      expect(
+        mapHardwareWalletRecoveryErrorType({
+          code: ErrorCode.DeviceMultipleConnected,
+        }),
+      ).toBe(
+        MetaMetricsHardwareWalletRecoveryErrorType.MultipleDevicesConnected,
+      );
+    });
+
     it('maps unrecognized codes to GenericError', () => {
       expect(
         mapHardwareWalletRecoveryErrorType({ code: ErrorCode.Unknown }),
@@ -192,6 +203,15 @@ describe('hardware-wallet-recovery-metrics', () => {
         extractHardwareWalletRecoveryErrorCodeAndMessage(err);
       expect(error_code).toBe(ErrorCode[ErrorCode.DeviceDisconnected]);
       expect(error_message).toContain('user facing');
+    });
+
+    it('labels the extension-local wrong-device code as LedgerWrongDevice', () => {
+      const { error_code } = extractHardwareWalletRecoveryErrorCodeAndMessage({
+        code: LEDGER_WRONG_DEVICE_ERROR_CODE,
+        message: 'different seed',
+      });
+
+      expect(error_code).toBe('LedgerWrongDevice');
     });
 
     it('uses message when userMessage is absent on HardwareWalletError', () => {

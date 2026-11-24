@@ -354,6 +354,69 @@ describe('LedgerDmkBridgeHandler', () => {
       });
     });
 
+    describe('getConnectedDeviceInfo', () => {
+      it('answers from navigator.hid without constructing the bridge', async () => {
+        const device = {
+          vendorId: Number(LEDGER_USB_VENDOR_ID),
+          productId: 0x0400,
+          productName: 'Ledger Nano X',
+        };
+        mockHidGetDevices.mockResolvedValue([device]);
+
+        const result = await handler.handleAction(
+          LedgerAction.getConnectedDeviceInfo,
+        );
+
+        expect(result).toStrictEqual([
+          { ...device, connectionId: expect.any(Number) },
+        ]);
+        expect(LedgerDmkBridge).not.toHaveBeenCalled();
+        expect(mockBridgeConnect).not.toHaveBeenCalled();
+      });
+
+      it('answers with an empty array when no Ledger device is permitted', async () => {
+        mockHidGetDevices.mockResolvedValue([]);
+
+        const result = await handler.handleAction(
+          LedgerAction.getConnectedDeviceInfo,
+        );
+
+        expect(result).toStrictEqual([]);
+      });
+
+      it('excludes non-Ledger devices', async () => {
+        mockHidGetDevices.mockResolvedValue([
+          { vendorId: 0x1234, productId: 0x1, productName: 'Other' },
+          {
+            vendorId: Number(LEDGER_USB_VENDOR_ID),
+            productId: 0x0001,
+            productName: 'Ledger Nano S',
+          },
+        ]);
+
+        const result = await handler.handleAction(
+          LedgerAction.getConnectedDeviceInfo,
+        );
+
+        expect(result).toStrictEqual([
+          {
+            vendorId: Number(LEDGER_USB_VENDOR_ID),
+            productId: 0x0001,
+            productName: 'Ledger Nano S',
+            connectionId: expect.any(Number),
+          },
+        ]);
+      });
+
+      it('rejects when getDevices() rejects (fail-open is the background gate job)', async () => {
+        mockHidGetDevices.mockRejectedValue(new Error('HID unavailable'));
+
+        await expect(
+          handler.handleAction(LedgerAction.getConnectedDeviceInfo),
+        ).rejects.toThrow('HID unavailable');
+      });
+    });
+
     describe('getPublicKey', () => {
       it('routes to bridge.getPublicKey()', async () => {
         const result = await handler.handleAction(LedgerAction.getPublicKey, {

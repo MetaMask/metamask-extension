@@ -120,7 +120,27 @@ export enum LedgerAction {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   getAppConfiguration = 'ledger-get-app-configuration',
+  // TODO: Fix in https://github.com/Metamask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  getConnectedDeviceInfo = 'ledger-get-connected-device-info',
 }
+
+/**
+ * A connected (permitted) Ledger HID device as reported by the offscreen
+ * handlers answering `LedgerAction.getConnectedDeviceInfo`. Deliberately
+ * policy-free: the background owns count/model rules.
+ */
+export type ConnectedLedgerDeviceInfo = {
+  vendorId: number;
+  productId: number;
+  productName: string;
+  /**
+   * Opaque id for this connection, assigned by the offscreen document. Stable
+   * while one device stays present; a replug gets a new id. The background
+   * uses it only to scope per-connection memoization.
+   */
+  connectionId: number;
+};
 
 /**
  * Selects which Ledger handler implementation the offscreen document should

@@ -38,6 +38,8 @@ const DEVICE_READ_METHODS = [
   'getFirstPage',
   'getNextPage',
   'getPreviousPage',
+  'getAccounts',
+  'getDeviceId', // only for Ledger — read of the persisted binding
   'isUnlocked', // only for Trezor/Ledger
   'getMode', // only for QR
   'getModel',
@@ -97,6 +99,40 @@ export function restrictKeyringForDeviceRead<
         enumerable: true,
       });
     }
+  }
+
+  // Ledger seed verification at connect derives the first stored account
+  // on-device. `unlockAccountByAddress` lives only on the inner legacy
+  // keyring (the V2 wrapper does not re-expose it) and is a pure device
+  // read (`unlock(hdPath, false)` — no keyring state mutation), so it
+  // belongs on the lock-free facade.
+  const keyringLike = keyring as {
+    inner?: { unlockAccountByAddress?: unknown };
+    unlockAccountByAddress?: unknown;
+  };
+  type UnlockAccountByAddressFn = (
+    this: unknown,
+    address: string,
+  ) => Promise<string>;
+  let unlockSource:
+    | {
+        unlockAccountByAddress: UnlockAccountByAddressFn;
+      }
+    | undefined;
+  if (typeof keyringLike.unlockAccountByAddress === 'function') {
+    unlockSource = keyringLike as {
+      unlockAccountByAddress: UnlockAccountByAddressFn;
+    };
+  } else if (typeof keyringLike.inner?.unlockAccountByAddress === 'function') {
+    unlockSource = keyringLike.inner as {
+      unlockAccountByAddress: UnlockAccountByAddressFn;
+    };
+  }
+  if (unlockSource) {
+    Object.defineProperty(facade, 'unlockAccountByAddress', {
+      value: unlockSource.unlockAccountByAddress.bind(unlockSource),
+      enumerable: true,
+    });
   }
 
   return Object.freeze(facade) as DeviceReadKeyring<Keyring>;

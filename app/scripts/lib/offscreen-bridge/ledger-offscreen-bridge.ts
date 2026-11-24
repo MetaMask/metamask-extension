@@ -13,6 +13,7 @@ import { TransportStatusError } from '@ledgerhq/errors';
 import {
   LedgerAction,
   OffscreenCommunicationTarget,
+  ConnectedLedgerDeviceInfo,
 } from '../../../../shared/constants/offscreen-communication';
 import {
   HardwareWalletType,
@@ -124,6 +125,22 @@ export class LedgerOffscreenBridge implements Omit<
     return this.#sendMessage(
       {
         action: LedgerAction.getAppNameAndVersion,
+      },
+      { timeout: MESSAGE_TIMEOUT_MS },
+    );
+  }
+
+  /**
+   * Queries the offscreen for the currently connected (permitted) Ledger
+   * devices. Used by the background single-device gate before opening a
+   * transport; answers are policy-free device descriptors.
+   *
+   * @returns The connected Ledger devices, or an empty array when none.
+   */
+  getConnectedDeviceInfo(): Promise<ConnectedLedgerDeviceInfo[]> {
+    return this.#sendMessage(
+      {
+        action: LedgerAction.getConnectedDeviceInfo,
       },
       { timeout: MESSAGE_TIMEOUT_MS },
     );

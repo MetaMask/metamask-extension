@@ -473,6 +473,60 @@ describe('Ledger Offscreen', () => {
       });
     });
 
+    describe('getConnectedDeviceInfo', () => {
+      it('answers with the connected Ledger device info', async () => {
+        const response = await sendAction(LedgerAction.getConnectedDeviceInfo);
+
+        expect(response.success).toBe(true);
+        expect(response.payload).toStrictEqual([
+          {
+            vendorId: Number(LEDGER_USB_VENDOR_ID),
+            productId: 0x0001,
+            productName: 'Ledger Nano X',
+            connectionId: expect.any(Number),
+          },
+        ]);
+      });
+
+      it('answers with an empty array when no device is permitted', async () => {
+        mockGetDevices.mockResolvedValue([]);
+
+        const response = await sendAction(LedgerAction.getConnectedDeviceInfo);
+
+        expect(response.success).toBe(true);
+        expect(response.payload).toStrictEqual([]);
+      });
+
+      it('excludes non-Ledger devices', async () => {
+        mockGetDevices.mockResolvedValue([ledgerDevice, nonLedgerDevice]);
+
+        const response = await sendAction(LedgerAction.getConnectedDeviceInfo);
+
+        expect(response.success).toBe(true);
+        expect(response.payload).toStrictEqual([
+          {
+            vendorId: Number(LEDGER_USB_VENDOR_ID),
+            productId: 0x0001,
+            productName: 'Ledger Nano X',
+            connectionId: expect.any(Number),
+          },
+        ]);
+      });
+
+      it('rejects when getDevices() rejects (fail-open is the background gate job)', async () => {
+        mockGetDevices.mockRejectedValue(new Error('HID unavailable'));
+
+        const response = await sendAction(LedgerAction.getConnectedDeviceInfo);
+
+        expect(response.success).toBe(false);
+        expect(response.payload).toEqual({
+          error: expect.objectContaining({
+            message: expect.stringContaining('HID unavailable'),
+          }),
+        });
+      });
+    });
+
     describe('getAppNameAndVersion', () => {
       it('parses the app name and version from the raw transport response', async () => {
         const name = 'Ethereum';

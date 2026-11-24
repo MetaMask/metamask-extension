@@ -294,6 +294,7 @@ import type {
   PasskeyControllerUnlockWithPasskeyAction,
 } from '@metamask/passkey-controller';
 import { cloneDeep, merge } from 'lodash';
+import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   convertEnglishWordlistIndicesToCodepoints,
   isPublicEndpointUrl,
@@ -317,8 +318,12 @@ import {
 } from '../../../shared/lib/selectors/networks';
 import { DecodedTransactionDataResponse } from '../../../shared/types/transaction-decode';
 import { captureException } from '../../../shared/lib/sentry';
+import { normalizeAddress } from '../../../shared/lib/multichain/address';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
-import { LedgerHandlerMode } from '../../../shared/constants/offscreen-communication';
+import {
+  LedgerHandlerMode,
+  ConnectedLedgerDeviceInfo,
+} from '../../../shared/constants/offscreen-communication';
 import { MINUTE } from '../../../shared/constants/time';
 import { KeyringType as KeyringTypes } from '../../../shared/constants/keyring';
 import {
@@ -408,9 +413,13 @@ import {
 } from '../../../shared/constants/hardware-wallets';
 import {
   HardwareWalletType,
+  createHardwareWalletError,
+  isLedgerAccountPathMissingError,
   isUserRejectedHardwareWalletError,
+  LEDGER_SEED_MISMATCH_MESSAGES,
   toHardwareWalletError,
 } from '../../../shared/lib/hardware-wallets';
+import { getLedgerModelKey } from '../../../shared/lib/hardware-wallets/ledger-device';
 import { isDmkFeatureEnabled } from '../../../shared/lib/hardware-wallets/feature-flags';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
@@ -3239,9 +3248,18 @@ export class LegacyBackgroundApiService {
     // entering a PIN), potentially forever if the device stays locked, so it
     // runs as a `deviceRead` outside the controller lock.
     return this.#withKeyringForDevice(
-      { name: deviceName, hdPath, create: true, deviceRead: true },
+      {
+        name: deviceName,
+        hdPath,
+        create: true,
+        deviceRead: true,
+        ledgerModelRule: true,
+      },
       async (keyring) => {
         const ledgerKeyring = keyring as LedgerKeyringV2;
+        if (deviceName === HardwareDeviceNames.ledger) {
+          await this.#verifyConnectedLedgerHoldsFirstAccount(ledgerKeyring);
+        }
         let accounts: AccountPage = [];
         switch (page) {
           case -1:
@@ -3555,6 +3573,201 @@ export class LegacyBackgroundApiService {
   }
 
   /**
+   * Throws 3011 for the single-device enforcement rules.
+   *
+   * @returns A HardwareWalletError carrying the acknowledge-only modal copy.
+   */
+  #createDeviceMultipleConnectedError(): HardwareWalletError {
+    return createHardwareWalletError(
+      ErrorCode.DeviceMultipleConnected,
+      HardwareWalletType.Ledger,
+    );
+  }
+
+  /**
+   * Queries the offscreen for the connected (permitted) Ledger devices.
+   *
+   * @param keyring - The keyring or device-read facade holding the bridge.
+   * @returns The connected devices, or `null` when the gate must fail open
+   * (no bridge method, rejection, or an empty set).
+   */
+  async #queryConnectedLedgerDevices(
+    keyring: Pick<LedgerKeyringV2, 'bridge'>,
+  ): Promise<ConnectedLedgerDeviceInfo[] | null> {
+    try {
+      const bridge = keyring.bridge as
+        | {
+            getConnectedDeviceInfo?: () => Promise<ConnectedLedgerDeviceInfo[]>;
+          }
+        | undefined;
+      if (typeof bridge?.getConnectedDeviceInfo !== 'function') {
+        return null;
+      }
+      const connected = await bridge.getConnectedDeviceInfo();
+      return connected?.length ? connected : null;
+    } catch (error) {
+      // Includes the transient "No active Ledger handler" window during
+      // offscreen recreation and the bridge's per-action timeout.
+      log.warn(
+        'Ledger single-device gate: connected-device query failed, failing open',
+        error,
+      );
+      return null;
+    }
+  }
+
+  /**
+   * Ledger single-device gate: bind-on-first-connect, then enforce the
+   * model rule against the connected device set.
+   *
+   * Runs inside the locked `withKeyringV2` callback ONLY. Binding is
+   * rollback-safe because bind and throw never co-occur in one callback — a
+   * fresh bind sets the key equal to the connected device by construction,
+   * so the model rule cannot trip in the same callback.
+   *
+   * @param keyring - The Ledger V2 keyring wrapper.
+   */
+  async #enforceSingleLedgerDevice(keyring: LedgerKeyringV2): Promise<void> {
+    const connected = await this.#queryConnectedLedgerDevices(keyring);
+    if (!connected) {
+      return;
+    }
+
+    // `deviceId` stores a normalized model key on Extension (WebHID has no
+    // stable per-device serial; Mobile treats the field as a true device id).
+    // The same-model swap hole is closed at connect time by the first-account
+    // seed check.
+    const boundModelKey = keyring.getDeviceId();
+    if (!boundModelKey) {
+      // Count rule pending the Task 0 hardware verdict: only bind when
+      // exactly one device answers; several connected fail open.
+      if (connected.length !== 1) {
+        return;
+      }
+      keyring.setDeviceId(getLedgerModelKey(connected[0].productId));
+      return;
+    }
+
+    if (getLedgerModelKey(connected[0].productId) !== boundModelKey) {
+      throw this.#createDeviceMultipleConnectedError();
+    }
+  }
+
+  /**
+   * Read-only form of the gate for the lock-free connect path: same query and
+   * model rule, no bind. The device-read facade cannot persist, and binding
+   * belongs to the first locked operation.
+   *
+   * @param keyring - The Ledger keyring as restricted for device reads.
+   */
+  async #enforceSingleLedgerDeviceReadOnly(
+    keyring: LedgerKeyringV2,
+  ): Promise<void> {
+    const connected = await this.#queryConnectedLedgerDevices(keyring);
+    if (!connected) {
+      return;
+    }
+
+    const boundModelKey = keyring.getDeviceId();
+    if (!boundModelKey) {
+      return;
+    }
+
+    if (getLedgerModelKey(connected[0].productId) !== boundModelKey) {
+      throw this.#createDeviceMultipleConnectedError();
+    }
+  }
+
+  /**
+   * The connection whose first account was already verified. `connectHardware`
+   * re-enters on every page change, so the on-device derivation would
+   * otherwise run once per navigation.
+   */
+  #ledgerSeedCheckMemo: { connectionId: number; address: string } | null = null;
+
+  /**
+   * Ledger seed check (connect flow): verify the connected device derives
+   * the first stored account at its own recorded derivation path, closing
+   * the same-model swap case no hardware identity can distinguish.
+   *
+   * Runs on the lock-free deviceRead path (the derivation is a device read
+   * that may hang on a locked device). Fails open on every outcome except a
+   * confirmed seed mismatch: no stored accounts, legacy accounts without
+   * recorded details, and transient transport errors all proceed.
+   *
+   * @param keyring - The Ledger V2 keyring wrapper (as restricted by the
+   * device-read facade, which exposes `getAccounts` and the inner keyring's
+   * `unlockAccountByAddress`).
+   */
+  async #verifyConnectedLedgerHoldsFirstAccount(
+    keyring: LedgerKeyringV2,
+  ): Promise<void> {
+    // Narrow structural access: the wrapper's `getAccounts` and the inner
+    // keyring's `unlockAccountByAddress` (derivation path resolution stays
+    // inside the keyring — this service never constructs paths).
+    const seedCheckKeyring = keyring as unknown as {
+      getAccounts?: () => Promise<{ address: string }[]>;
+      unlockAccountByAddress?: (address: string) => Promise<string>;
+    };
+
+    let firstAccount: string | undefined;
+    try {
+      const accounts = await seedCheckKeyring.getAccounts?.();
+      firstAccount = accounts?.[0]?.address;
+    } catch (error) {
+      log.warn('Ledger first-account seed check failed, failing open', error);
+      return;
+    }
+    if (!firstAccount) {
+      return;
+    }
+
+    // Scope the skip to one device connection: a different device is always a
+    // different HIDDevice, so a swap is re-derived even when the model matches.
+    const connected = await this.#queryConnectedLedgerDevices(keyring);
+    const connection = connected?.length === 1 ? connected[0] : null;
+    if (!connection) {
+      this.#ledgerSeedCheckMemo = null;
+    } else if (
+      this.#ledgerSeedCheckMemo?.connectionId === connection.connectionId &&
+      this.#ledgerSeedCheckMemo.address === firstAccount
+    ) {
+      return;
+    }
+
+    try {
+      await seedCheckKeyring.unlockAccountByAddress?.(
+        normalizeAddress(firstAccount),
+      );
+      this.#ledgerSeedCheckMemo = connection
+        ? { connectionId: connection.connectionId, address: firstAccount }
+        : null;
+    } catch (error) {
+      this.#ledgerSeedCheckMemo = null;
+      if (
+        error instanceof Error &&
+        LEDGER_SEED_MISMATCH_MESSAGES.some((shape) =>
+          error.message.includes(shape),
+        )
+      ) {
+        throw this.#createDeviceMultipleConnectedError();
+      }
+      if (isLedgerAccountPathMissingError(error)) {
+        // No recorded derivation path to compare against. Re-importing the
+        // account from the device is the fix, so fail open — the separate log
+        // keeps the frequency measurable before anyone builds that recovery.
+        log.warn(
+          'Ledger seed check skipped: no derivation path recorded for the first stored account',
+          error,
+        );
+        return;
+      }
+      // Transient device/transport errors: fail open.
+      log.warn('Ledger first-account seed check failed, failing open', error);
+    }
+  }
+
+  /**
    * Runs the given callback with the keyring for the given device.
    *
    * @param options - The options for the device.
@@ -3570,6 +3783,10 @@ export class LegacyBackgroundApiService {
    * enforce this, the callback does not receive the full keyring: it receives
    * a frozen read-only facade (see `restrictKeyringForDeviceRead`) on which
    * mutating methods do not exist.
+   * @param options.ledgerModelRule - Set by the connect flow to run the
+   * read-only Ledger model rule (query + compare, no bind) before the callback
+   * on the device-read path. Blocks a wrong-model device before the user
+   * unlocks it.
    * @param callback - The callback to execute with the keyring.
    * @returns The result of the callback.
    */
@@ -3579,6 +3796,7 @@ export class LegacyBackgroundApiService {
       hdPath?: string;
       create?: boolean;
       deviceRead?: boolean;
+      ledgerModelRule?: boolean;
     },
     callback: (keyring: HardwareKeyringV2) => Promise<CallbackResult>,
   ): Promise<CallbackResult> {
@@ -3685,6 +3903,11 @@ export class LegacyBackgroundApiService {
         { type: v2KeyringType },
         async ({ keyring }) => {
           const hardwareKeyring = keyring as unknown as HardwareKeyringV2;
+          if (options.name === HardwareDeviceNames.ledger) {
+            await this.#enforceSingleLedgerDevice(
+              hardwareKeyring as unknown as LedgerKeyringV2,
+            );
+          }
           await prepareKeyring(hardwareKeyring);
           return await callback(hardwareKeyring);
         },
@@ -3723,12 +3946,22 @@ export class LegacyBackgroundApiService {
       { type: v2KeyringType },
       // The facade structurally prevents `deviceRead` callbacks from reaching
       // mutating keyring methods on the lock-free path.
-      async ({ keyring }) =>
-        await callback(
-          restrictKeyringForDeviceRead(
-            keyring as unknown as HardwareKeyringV2,
-          ) as unknown as HardwareKeyringV2,
-        ),
+      async ({ keyring }) => {
+        const facade = restrictKeyringForDeviceRead(
+          keyring as unknown as HardwareKeyringV2,
+        ) as unknown as HardwareKeyringV2;
+
+        if (
+          options.ledgerModelRule &&
+          options.name === HardwareDeviceNames.ledger
+        ) {
+          await this.#enforceSingleLedgerDeviceReadOnly(
+            facade as unknown as LedgerKeyringV2,
+          );
+        }
+
+        return await callback(facade);
+      },
     ) as Promise<CallbackResult>;
 
     let timeoutHandle: ReturnType<typeof setTimeout> | undefined;

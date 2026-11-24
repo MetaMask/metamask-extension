@@ -1,4 +1,5 @@
 import { Mutex } from 'async-mutex';
+import log from 'loglevel';
 import nock from 'nock';
 import { it as jestIt } from '@jest/globals';
 import {
@@ -55,7 +56,7 @@ import {
   PermissionsRequestNotFoundError,
 } from '@metamask/permission-controller';
 import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
-import { ApprovalType } from '@metamask/controller-utils';
+import { ApprovalType, toChecksumHexAddress } from '@metamask/controller-utils';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { providerErrors } from '@metamask/rpc-errors';
 import { SnapId } from '@metamask/snaps-sdk';
@@ -1926,6 +1927,649 @@ describe('LegacyBackgroundApiService', () => {
           );
 
           expect(addNewKeyring).not.toHaveBeenCalled();
+        });
+      });
+    });
+
+    describe('Ledger single-device gate (#withKeyringForDevice locked path)', () => {
+      type ConnectedLedgerDeviceInfo = {
+        vendorId: number;
+        productId: number;
+        productName: string;
+        connectionId: number;
+      };
+
+      const ledgerDevice = (
+        productId: number,
+        connectionId = 1,
+      ): ConnectedLedgerDeviceInfo => ({
+        vendorId: 0x2c97,
+        productId,
+        productName: 'Ledger Nano X',
+        connectionId,
+      });
+
+      /**
+       * Builds a mock Ledger keyring whose `deviceId` binding is stateful,
+       * so a bind in one op is visible to the next op on the same keyring.
+       */
+      const buildLedgerKeyring = (
+        deviceId = '',
+        connected: ConnectedLedgerDeviceInfo[] = [],
+      ): Record<string, unknown> => {
+        const keyring: Record<string, unknown> = {
+          deviceId,
+          bridge: {
+            updateTransportMethod: jest.fn().mockResolvedValue(true),
+            getConnectedDeviceInfo: jest.fn().mockResolvedValue(connected),
+          },
+          getAccounts: jest.fn().mockResolvedValue([]),
+          forgetDevice: jest.fn().mockResolvedValue(undefined),
+          getDeviceId: jest.fn(() => keyring.deviceId),
+          setDeviceId: jest.fn((id: string) => {
+            keyring.deviceId = id;
+          }),
+        };
+        return keyring;
+      };
+
+      const forgetLedger = (rootMessenger: RootMessenger) =>
+        rootMessenger.call('LegacyBackgroundApiService:forgetDevice', 'ledger');
+
+      it('binds the normalized model key on the first op and proceeds', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const keyring = buildLedgerKeyring('', [ledgerDevice(0x0004)]);
+          registerWithKeyringV2(rootMessenger, keyring);
+          rootMessenger.registerActionHandler(
+            'PermissionController:updatePermissionsByCaveat',
+            jest.fn(),
+          );
+
+          await expect(forgetLedger(rootMessenger)).resolves.toBe(true);
+
+          expect(keyring.setDeviceId).toHaveBeenCalledWith('4');
+        });
+      });
+
+      it('does not re-bind on the next op once a binding exists', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const keyring = buildLedgerKeyring('', [ledgerDevice(0x0004)]);
+          registerWithKeyringV2(rootMessenger, keyring);
+          rootMessenger.registerActionHandler(
+            'PermissionController:updatePermissionsByCaveat',
+            jest.fn(),
+          );
+
+          await forgetLedger(rootMessenger);
+          await forgetLedger(rootMessenger);
+
+          expect(keyring.setDeviceId).toHaveBeenCalledTimes(1);
+        });
+      });
+
+      it('throws 3011 without touching the keyring when a different model connects', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const keyring = buildLedgerKeyring('4', [ledgerDevice(0x0001)]);
+          registerWithKeyringV2(rootMessenger, keyring);
+
+          await expect(forgetLedger(rootMessenger)).rejects.toMatchObject({
+            code: ErrorCode.DeviceMultipleConnected,
+          });
+
+          // Thrown before the callback: no keyring interaction happened, and
+          // the throwing op never mutated the binding (mutation and throw
+          // never co-occur in one callback, so nothing is rolled back).
+          expect(keyring.forgetDevice).not.toHaveBeenCalled();
+          expect(keyring.setDeviceId).not.toHaveBeenCalled();
+        });
+      });
+
+      it('throws 3011 for a per-interface productId of a different model', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const keyring = buildLedgerKeyring('4', [ledgerDevice(0x0101)]);
+          registerWithKeyringV2(rootMessenger, keyring);
+
+          await expect(forgetLedger(rootMessenger)).rejects.toMatchObject({
+            code: ErrorCode.DeviceMultipleConnected,
+          });
+        });
+      });
+
+      it('carries the single-device user copy on the thrown error', async () => {
+        await withService(async ({ rootMessenger }) => {
+          registerWithKeyringV2(
+            rootMessenger,
+            buildLedgerKeyring('4', [ledgerDevice(0x0001)]),
+          );
+
+          await expect(forgetLedger(rootMessenger)).rejects.toMatchObject({
+            userMessage:
+              "You can only connect one Ledger at a time. To use a different Ledger, remove the connected Ledger's accounts from MetaMask first.",
+          });
+        });
+      });
+
+      it('proceeds when the bound model reconnects (both productId conventions)', async () => {
+        for (const productId of [0x0004, 0x0400, 0x0401]) {
+          await withService(async ({ rootMessenger }) => {
+            const keyring = buildLedgerKeyring('4', [ledgerDevice(productId)]);
+            registerWithKeyringV2(rootMessenger, keyring);
+            rootMessenger.registerActionHandler(
+              'PermissionController:updatePermissionsByCaveat',
+              jest.fn(),
+            );
+
+            await expect(forgetLedger(rootMessenger)).resolves.toBe(true);
+          });
+        }
+      });
+
+      it('fails open when the query rejects (no bind, op proceeds)', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const keyring = buildLedgerKeyring('');
+          (
+            keyring.bridge as Record<string, jest.Mock>
+          ).getConnectedDeviceInfo.mockRejectedValue(
+            new Error('No active Ledger handler'),
+          );
+          registerWithKeyringV2(rootMessenger, keyring);
+          rootMessenger.registerActionHandler(
+            'PermissionController:updatePermissionsByCaveat',
+            jest.fn(),
+          );
+
+          await expect(forgetLedger(rootMessenger)).resolves.toBe(true);
+          expect(keyring.setDeviceId).not.toHaveBeenCalled();
+        });
+      });
+
+      it('fails open when the bridge predates getConnectedDeviceInfo', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const keyring = buildLedgerKeyring('');
+          delete (keyring.bridge as Record<string, unknown>)
+            .getConnectedDeviceInfo;
+          registerWithKeyringV2(rootMessenger, keyring);
+          rootMessenger.registerActionHandler(
+            'PermissionController:updatePermissionsByCaveat',
+            jest.fn(),
+          );
+
+          await expect(forgetLedger(rootMessenger)).resolves.toBe(true);
+          expect(keyring.setDeviceId).not.toHaveBeenCalled();
+        });
+      });
+
+      it('fails open on an empty connected set (no bind)', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const keyring = buildLedgerKeyring('', []);
+          registerWithKeyringV2(rootMessenger, keyring);
+          rootMessenger.registerActionHandler(
+            'PermissionController:updatePermissionsByCaveat',
+            jest.fn(),
+          );
+
+          await expect(forgetLedger(rootMessenger)).resolves.toBe(true);
+          expect(keyring.setDeviceId).not.toHaveBeenCalled();
+        });
+      });
+
+      it('does not bind or block when several devices are connected (count rule pending Task 0)', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const keyring = buildLedgerKeyring('', [
+            ledgerDevice(0x0004),
+            ledgerDevice(0x0001),
+          ]);
+          registerWithKeyringV2(rootMessenger, keyring);
+          rootMessenger.registerActionHandler(
+            'PermissionController:updatePermissionsByCaveat',
+            jest.fn(),
+          );
+
+          await expect(forgetLedger(rootMessenger)).resolves.toBe(true);
+          expect(keyring.setDeviceId).not.toHaveBeenCalled();
+        });
+      });
+
+      it('blocks the connect path for a different model (read-only: no bind)', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const getFirstPage = jest.fn().mockResolvedValue([]);
+          const keyring: Record<string, unknown> = {
+            ...buildLedgerKeyring('4', [ledgerDevice(0x0001)]),
+            getFirstPage,
+            getNextPage: jest.fn(),
+            getPreviousPage: jest.fn(),
+          };
+          registerWithKeyringV2(rootMessenger, keyring);
+          rootMessenger.registerActionHandler(
+            'KeyringController:withController',
+            jest.fn().mockImplementation(async (callback) =>
+              callback({
+                keyrings: [{ type: LedgerKeyring.type }],
+                addNewKeyring: jest.fn(),
+              }),
+            ),
+          );
+
+          // Bound model '4', a different model connected: the deviceRead path
+          // runs the read-only model rule before the callback.
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:connectHardware',
+              'ledger',
+              0,
+            ),
+          ).rejects.toMatchObject({ code: ErrorCode.DeviceMultipleConnected });
+
+          expect(getFirstPage).not.toHaveBeenCalled();
+          expect(keyring.setDeviceId).not.toHaveBeenCalled();
+        });
+      });
+
+      it('proceeds on the connect path when the bound model matches', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const keyring: Record<string, unknown> = {
+            ...buildLedgerKeyring('4', [ledgerDevice(0x0400)]),
+            getFirstPage: jest.fn().mockResolvedValue([]),
+            getNextPage: jest.fn(),
+            getPreviousPage: jest.fn(),
+          };
+          registerWithKeyringV2(rootMessenger, keyring);
+          rootMessenger.registerActionHandler(
+            'KeyringController:withController',
+            jest.fn().mockImplementation(async (callback) =>
+              callback({
+                keyrings: [{ type: LedgerKeyring.type }],
+                addNewKeyring: jest.fn(),
+              }),
+            ),
+          );
+
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:connectHardware',
+              'ledger',
+              0,
+            ),
+          ).resolves.toStrictEqual([]);
+        });
+      });
+
+      it('does not bind on the connect path when unbound', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const getFirstPage = jest.fn().mockResolvedValue([]);
+          const keyring: Record<string, unknown> = {
+            ...buildLedgerKeyring('', [ledgerDevice(0x0004)]),
+            getFirstPage,
+            getNextPage: jest.fn(),
+            getPreviousPage: jest.fn(),
+          };
+          registerWithKeyringV2(rootMessenger, keyring);
+          rootMessenger.registerActionHandler(
+            'KeyringController:withController',
+            jest.fn().mockImplementation(async (callback) =>
+              callback({
+                keyrings: [{ type: LedgerKeyring.type }],
+                addNewKeyring: jest.fn(),
+              }),
+            ),
+          );
+
+          // Binding belongs to the first locked op; the facade cannot persist.
+          await rootMessenger.call(
+            'LegacyBackgroundApiService:connectHardware',
+            'ledger',
+            0,
+          );
+
+          expect(getFirstPage).toHaveBeenCalled();
+          expect(keyring.setDeviceId).not.toHaveBeenCalled();
+        });
+      });
+
+      it('fails open on the connect path when the query rejects', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const keyring: Record<string, unknown> = {
+            ...buildLedgerKeyring('4', [ledgerDevice(0x0001)]),
+            getFirstPage: jest.fn().mockResolvedValue([]),
+            getNextPage: jest.fn(),
+            getPreviousPage: jest.fn(),
+          };
+          (
+            keyring.bridge as Record<string, jest.Mock>
+          ).getConnectedDeviceInfo.mockRejectedValue(
+            new Error('No active Ledger handler'),
+          );
+          registerWithKeyringV2(rootMessenger, keyring);
+          rootMessenger.registerActionHandler(
+            'KeyringController:withController',
+            jest.fn().mockImplementation(async (callback) =>
+              callback({
+                keyrings: [{ type: LedgerKeyring.type }],
+                addNewKeyring: jest.fn(),
+              }),
+            ),
+          );
+
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:connectHardware',
+              'ledger',
+              0,
+            ),
+          ).resolves.toStrictEqual([]);
+        });
+      });
+    });
+
+    describe('connectHardware first-account seed check', () => {
+      // EIP-55 test vector; the keyring compares lowercase, so a stored
+      // checksummed address must be normalized before the call.
+      const FIRST_ACCOUNT_LOWER = '0x5aaeb6053f3e94c9b9a09f33669435e7ef1beaed';
+      const FIRST_ACCOUNT_CHECKSUMMED =
+        '0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed';
+
+      const buildConnectKeyring = ({
+        accounts = [] as string[],
+        unlockAccountByAddress = jest
+          .fn()
+          .mockResolvedValue("m/44'/60'/0'/0/0"),
+      }: {
+        accounts?: string[];
+        unlockAccountByAddress?: jest.Mock;
+      } = {}): Record<string, unknown> => ({
+        bridge: { updateTransportMethod: jest.fn().mockResolvedValue(true) },
+        getAccounts: jest
+          .fn()
+          .mockResolvedValue(accounts.map((address) => ({ address }))),
+        inner: { unlockAccountByAddress },
+        getFirstPage: jest.fn().mockResolvedValue([]),
+        getNextPage: jest.fn().mockResolvedValue([]),
+        getPreviousPage: jest.fn().mockResolvedValue([]),
+      });
+
+      const connectLedger = async (
+        rootMessenger: RootMessenger,
+        keyring: Record<string, unknown>,
+      ) => {
+        rootMessenger.registerActionHandler(
+          'KeyringController:withController',
+          jest.fn().mockImplementation(async (callback) =>
+            callback({
+              keyrings: [{ type: LedgerKeyring.type }],
+              addNewKeyring: jest.fn(),
+            }),
+          ),
+        );
+        registerWithKeyringV2(rootMessenger, keyring);
+
+        return rootMessenger.call(
+          'LegacyBackgroundApiService:connectHardware',
+          'ledger',
+          0,
+        );
+      };
+
+      it('verifies the first stored account and passes the normalized address', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const unlockAccountByAddress = jest
+            .fn()
+            .mockResolvedValue("m/44'/60'/0'/0/0");
+          const keyring = buildConnectKeyring({
+            accounts: [FIRST_ACCOUNT_CHECKSUMMED],
+            unlockAccountByAddress,
+          });
+
+          await expect(
+            connectLedger(rootMessenger, keyring),
+          ).resolves.toStrictEqual([]);
+
+          expect(unlockAccountByAddress).toHaveBeenCalledWith(
+            FIRST_ACCOUNT_LOWER,
+          );
+        });
+      });
+
+      it('blocks with 3011 when the device derives a different address', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const unlockAccountByAddress = jest
+            .fn()
+            .mockRejectedValue(
+              new Error(
+                `Ledger: Account ${FIRST_ACCOUNT_CHECKSUMMED} does not belong to the connected device`,
+              ),
+            );
+          const keyring = buildConnectKeyring({
+            accounts: [FIRST_ACCOUNT_LOWER],
+            unlockAccountByAddress,
+          });
+          const getFirstPage = keyring.getFirstPage as jest.Mock;
+
+          await expect(
+            connectLedger(rootMessenger, keyring),
+          ).rejects.toMatchObject({ code: ErrorCode.DeviceMultipleConnected });
+          expect(getFirstPage).not.toHaveBeenCalled();
+        });
+      });
+
+      it('fails open and logs distinctly when the account has no recorded derivation path', async () => {
+        const warn = jest
+          .spyOn(log, 'warn')
+          .mockImplementation(() => undefined);
+
+        try {
+          await withService(async ({ rootMessenger }) => {
+            const unlockAccountByAddress = jest
+              .fn()
+              .mockRejectedValue(
+                new Error(
+                  `Ledger: Account for address '${FIRST_ACCOUNT_CHECKSUMMED}' not found`,
+                ),
+              );
+            const keyring = buildConnectKeyring({
+              accounts: [FIRST_ACCOUNT_LOWER],
+              unlockAccountByAddress,
+            });
+
+            await expect(
+              connectLedger(rootMessenger, keyring),
+            ).resolves.toStrictEqual([]);
+
+            // Measurable on its own: re-importing the account is the fix, not
+            // a device swap, so it must not be confused with transport noise.
+            expect(warn).toHaveBeenCalledWith(
+              'Ledger seed check skipped: no derivation path recorded for the first stored account',
+              expect.anything(),
+            );
+          });
+        } finally {
+          warn.mockRestore();
+        }
+      });
+
+      it('fails open on a transient device error', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const unlockAccountByAddress = jest
+            .fn()
+            .mockRejectedValue(new Error('TransportOpenFailed'));
+          const keyring = buildConnectKeyring({
+            accounts: [FIRST_ACCOUNT_LOWER],
+            unlockAccountByAddress,
+          });
+
+          await expect(
+            connectLedger(rootMessenger, keyring),
+          ).resolves.toStrictEqual([]);
+        });
+      });
+
+      it('skips the check when there are no stored accounts', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const unlockAccountByAddress = jest.fn();
+          const keyring = buildConnectKeyring({
+            accounts: [],
+            unlockAccountByAddress,
+          });
+
+          await expect(
+            connectLedger(rootMessenger, keyring),
+          ).resolves.toStrictEqual([]);
+
+          expect(unlockAccountByAddress).not.toHaveBeenCalled();
+        });
+      });
+    });
+
+    describe('connectHardware seed-check memoization', () => {
+      const FIRST_ACCOUNT = '0x5aaeb6053f3e94c9b9a09f33669435e7ef1beaed';
+      const SECOND_ACCOUNT = '0x0000000000000000000000000000000000000001';
+
+      const buildMemoKeyring = ({
+        accounts = [FIRST_ACCOUNT],
+        connectionId = 1,
+      }: { accounts?: string[]; connectionId?: number } = {}) => {
+        const unlockAccountByAddress = jest
+          .fn()
+          .mockResolvedValue("m/44'/60'/0'/0/0");
+        const getAccounts = jest
+          .fn()
+          .mockResolvedValue(accounts.map((address) => ({ address })));
+        const getConnectedDeviceInfo = jest.fn().mockResolvedValue([
+          {
+            vendorId: 0x2c97,
+            productId: 0x0004,
+            productName: 'Ledger Nano X',
+            connectionId,
+          },
+        ]);
+
+        const keyring = {
+          bridge: {
+            updateTransportMethod: jest.fn().mockResolvedValue(true),
+            getConnectedDeviceInfo,
+          },
+          getAccounts,
+          getDeviceId: jest.fn(() => '4'),
+          inner: { unlockAccountByAddress },
+          getFirstPage: jest.fn().mockResolvedValue([]),
+          getNextPage: jest.fn().mockResolvedValue([]),
+          getPreviousPage: jest.fn().mockResolvedValue([]),
+        };
+
+        return {
+          keyring,
+          unlockAccountByAddress,
+          getAccounts,
+          getConnectedDeviceInfo,
+        };
+      };
+
+      const connect = async (
+        rootMessenger: RootMessenger,
+        keyring: Record<string, unknown>,
+        page = 0,
+      ) =>
+        rootMessenger.call(
+          'LegacyBackgroundApiService:connectHardware',
+          'ledger',
+          page,
+        );
+
+      const setup = async (
+        rootMessenger: RootMessenger,
+        keyring: Record<string, unknown>,
+      ) => {
+        rootMessenger.registerActionHandler(
+          'KeyringController:withController',
+          jest.fn().mockImplementation(async (callback) =>
+            callback({
+              keyrings: [{ type: LedgerKeyring.type }],
+              addNewKeyring: jest.fn(),
+            }),
+          ),
+        );
+        registerWithKeyringV2(rootMessenger, keyring);
+      };
+
+      it('derives once across page navigations on the same connection', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { keyring, unlockAccountByAddress } = buildMemoKeyring();
+          await setup(rootMessenger, keyring);
+
+          await connect(rootMessenger, keyring, 0);
+          await connect(rootMessenger, keyring, 1);
+
+          expect(unlockAccountByAddress).toHaveBeenCalledTimes(1);
+        });
+      });
+
+      it('re-derives when the connection id changes (replug)', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { keyring, unlockAccountByAddress, getConnectedDeviceInfo } =
+            buildMemoKeyring();
+          await setup(rootMessenger, keyring);
+
+          await connect(rootMessenger, keyring, 0);
+          getConnectedDeviceInfo.mockResolvedValue([
+            {
+              vendorId: 0x2c97,
+              productId: 0x0004,
+              productName: 'Ledger Nano X',
+              connectionId: 2,
+            },
+          ]);
+          await connect(rootMessenger, keyring, 0);
+
+          expect(unlockAccountByAddress).toHaveBeenCalledTimes(2);
+        });
+      });
+
+      it('re-derives when the first stored account changes', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { keyring, unlockAccountByAddress, getAccounts } =
+            buildMemoKeyring();
+          await setup(rootMessenger, keyring);
+
+          await connect(rootMessenger, keyring, 0);
+          getAccounts.mockResolvedValue([{ address: SECOND_ACCOUNT }]);
+          await connect(rootMessenger, keyring, 0);
+
+          expect(unlockAccountByAddress).toHaveBeenCalledTimes(2);
+        });
+      });
+
+      it('re-derives after the device set goes empty', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { keyring, unlockAccountByAddress, getConnectedDeviceInfo } =
+            buildMemoKeyring();
+          await setup(rootMessenger, keyring);
+
+          await connect(rootMessenger, keyring, 0);
+          getConnectedDeviceInfo.mockResolvedValue([]);
+          await connect(rootMessenger, keyring, 0);
+          getConnectedDeviceInfo.mockResolvedValue([
+            {
+              vendorId: 0x2c97,
+              productId: 0x0004,
+              productName: 'Ledger Nano X',
+              connectionId: 1,
+            },
+          ]);
+          await connect(rootMessenger, keyring, 0);
+
+          expect(unlockAccountByAddress).toHaveBeenCalledTimes(3);
+        });
+      });
+
+      it('does not memoize a fail-open result', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { keyring, unlockAccountByAddress } = buildMemoKeyring();
+          unlockAccountByAddress.mockRejectedValue(new Error('TransportOpen'));
+          await setup(rootMessenger, keyring);
+
+          await connect(rootMessenger, keyring, 0);
+          await connect(rootMessenger, keyring, 0);
+
+          expect(unlockAccountByAddress).toHaveBeenCalledTimes(2);
         });
       });
     });

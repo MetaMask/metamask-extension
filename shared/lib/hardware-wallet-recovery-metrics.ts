@@ -6,6 +6,7 @@ import {
   MetaMetricsHardwareWalletRecoveryErrorType,
   MetaMetricsHardwareWalletRecoveryLocation,
 } from '../constants/metametrics';
+import { LEDGER_WRONG_DEVICE_ERROR_CODE } from './hardware-wallets/errors';
 
 const UNKNOWN_DEVICE_MODEL = 'N/A';
 const MAX_ERROR_MESSAGE_LENGTH = 500;
@@ -150,6 +151,10 @@ function sanitizeErrorMessage(message: string): string {
  * @returns String label (e.g. `DeviceDisconnected`).
  */
 function errorCodeToLabel(code: ErrorCode): string {
+  if (code === LEDGER_WRONG_DEVICE_ERROR_CODE) {
+    return 'LedgerWrongDevice';
+  }
+
   return ErrorCode[code];
 }
 
@@ -271,6 +276,8 @@ export function mapHardwareWalletRecoveryErrorType(
       return MetaMetricsHardwareWalletRecoveryErrorType.CameraPermissionDenied;
     case ErrorCode.PermissionCameraPromptDismissed:
       return MetaMetricsHardwareWalletRecoveryErrorType.CameraPermissionPromptDismissed;
+    case ErrorCode.DeviceMultipleConnected:
+      return MetaMetricsHardwareWalletRecoveryErrorType.MultipleDevicesConnected;
     default:
       return MetaMetricsHardwareWalletRecoveryErrorType.GenericError;
   }

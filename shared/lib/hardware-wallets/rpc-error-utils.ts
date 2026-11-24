@@ -31,7 +31,11 @@ import {
 import { TREZOR_DESKTOP_CONNECTION_MISSING_CODE } from '../../constants/hardware-wallets';
 import { extractMessageFromUnknownError } from '../error';
 import { HardwareWalletType } from './types';
-import { createHardwareWalletError } from './errors';
+import {
+  createHardwareWalletError,
+  LEDGER_SEED_MISMATCH_MESSAGES,
+  LEDGER_WRONG_DEVICE_ERROR_CODE,
+} from './errors';
 
 /**
  * Structs for serialized HardwareWalletError cause objects.
@@ -388,6 +392,12 @@ function convertDataToHardwareWalletError(
  * @returns The corresponding ErrorCode enum value
  */
 function mapNumericCodeToErrorCode(numericCode: number): ErrorCode {
+  // 3012 is extension-local, so it is missing from the SDK enum and would be
+  // downgraded to Unknown by the filter below.
+  if (numericCode === LEDGER_WRONG_DEVICE_ERROR_CODE) {
+    return LEDGER_WRONG_DEVICE_ERROR_CODE;
+  }
+
   const errorCodeValues = Object.values(ErrorCode).filter(
     (v): v is number => typeof v === 'number',
   );
@@ -856,6 +866,23 @@ function tryInferLedgerKeyringError(
   }
 
   const causeMessage = getErrorMessage(error.cause);
+  if (
+    LEDGER_SEED_MISMATCH_MESSAGES.some(
+      (shape) =>
+        causeMessage.toLowerCase().includes(shape) ||
+        error.message.toLowerCase().includes(shape),
+    )
+  ) {
+    return createHardwareWalletError(
+      LEDGER_WRONG_DEVICE_ERROR_CODE,
+      walletType,
+      causeMessage || error.message,
+      {
+        cause: getErrorCause(error.cause),
+      },
+    );
+  }
+
   if (isOnlyV4TypedDataErrorMessage(causeMessage)) {
     return createHardwareWalletError(
       ErrorCode.DeviceStateOnlyV4Supported,
@@ -988,6 +1015,22 @@ function tryFromLedgerErrorMessage(
   ) {
     return createHardwareWalletError(
       ErrorCode.ConnectionTransportMissing,
+      walletType,
+      errorMessage,
+      { cause: getErrorCause(error) },
+    );
+  }
+
+  // A device holding a different seed throws a plain message on every
+  // signing path. Signing uses the wrong-device code; the onboarding
+  // single-device gate keeps 3011.
+  if (
+    LEDGER_SEED_MISMATCH_MESSAGES.some((shape) =>
+      normalizedMessage.includes(shape),
+    )
+  ) {
+    return createHardwareWalletError(
+      LEDGER_WRONG_DEVICE_ERROR_CODE,
       walletType,
       errorMessage,
       { cause: getErrorCause(error) },

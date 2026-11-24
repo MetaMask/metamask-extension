@@ -6,6 +6,7 @@ import {
   Category,
 } from '@metamask/hw-wallet-sdk';
 import { KeyringControllerError } from '@metamask/keyring-controller';
+import { LEDGER_WRONG_DEVICE_ERROR_CODE } from './errors';
 import { HardwareWalletType } from './types';
 import {
   isJsonRpcHardwareWalletError,
@@ -292,6 +293,70 @@ describe('rpc-error-utils', () => {
       );
 
       expect(result.code).toBe(ErrorCode.AuthenticationDeviceLocked);
+    });
+
+    it('maps the Ledger seed-mismatch message to the wrong-device code', () => {
+      // Thrown by `unlockAccountByAddress` on every signing path when the
+      // connected device derives a different account for the same path.
+      const error = new Error(
+        'Ledger: Account 0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed does not belong to the connected device',
+      );
+
+      const result = toHardwareWalletError(error, HardwareWalletType.Ledger);
+
+      expect(result.code).toBe(LEDGER_WRONG_DEVICE_ERROR_CODE);
+      expect(result.userMessage).toContain("doesn't hold the account");
+    });
+
+    it('maps the Ledger signature-address mismatch message to the wrong-device code', () => {
+      const personalSign = toHardwareWalletError(
+        new Error('Ledger: The signature doesnt match the right address'),
+        HardwareWalletType.Ledger,
+      );
+      const eip7702 = toHardwareWalletError(
+        new Error(
+          'Ledger: The EIP-7702 authorization signature does not match the right address',
+        ),
+        HardwareWalletType.Ledger,
+      );
+
+      expect(personalSign.code).toBe(LEDGER_WRONG_DEVICE_ERROR_CODE);
+      expect(eip7702.code).toBe(LEDGER_WRONG_DEVICE_ERROR_CODE);
+    });
+
+    it('maps a KeyringControllerError wrapping a seed-mismatch message to the wrong-device code', () => {
+      const wrapped = new KeyringControllerError('sign operation failed', {
+        cause: new Error(
+          'Ledger: Account 0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed does not belong to the connected device',
+        ),
+      });
+
+      const result = toHardwareWalletError(wrapped, HardwareWalletType.Ledger);
+
+      expect(result.code).toBe(LEDGER_WRONG_DEVICE_ERROR_CODE);
+    });
+
+    it('keeps the wrong-device code across the RPC boundary', () => {
+      // 3012 is not in the SDK enum, so this only works because
+      // mapNumericCodeToErrorCode special-cases it.
+      const deserialized = {
+        code: -32603,
+        message: 'Hardware wallet error',
+        data: {
+          code: LEDGER_WRONG_DEVICE_ERROR_CODE,
+          severity: Severity.Err,
+          category: Category.DeviceState,
+          userMessage: "This Ledger doesn't hold the account",
+        },
+      };
+
+      const result = toHardwareWalletError(
+        deserialized,
+        HardwareWalletType.Ledger,
+      );
+
+      expect(result.code).toBe(LEDGER_WRONG_DEVICE_ERROR_CODE);
+      expect(result.code).toBe(3012);
     });
 
     it('preserves stack trace from JsonRpcError', () => {

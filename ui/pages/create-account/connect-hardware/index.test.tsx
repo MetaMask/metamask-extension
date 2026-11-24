@@ -37,6 +37,19 @@ import ConnectHardwareForm, {
 } from '.';
 
 const mockTrackEvent = jest.fn();
+const mockShowErrorModal = jest.fn();
+
+// The connect page triggers the acknowledge-only modal via the hardware
+// wallet error context; the page test suite renders without the provider.
+jest.mock('../../../contexts/hardware-wallets', () => ({
+  ...jest.requireActual('../../../contexts/hardware-wallets'),
+  useHardwareWalletError: () => ({
+    showErrorModal: mockShowErrorModal,
+    dismissErrorModal: jest.fn(),
+    isErrorModalVisible: false,
+    setErrorModalSuppressed: jest.fn(),
+  }),
+}));
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -537,6 +550,27 @@ describe('ConnectHardwareForm', () => {
   });
 
   describe('getPage error handling', () => {
+    it('shows the acknowledge-only modal instead of inline text for DeviceMultipleConnected', async () => {
+      const blockedError = createHardwareWalletError(
+        ErrorCode.DeviceMultipleConnected,
+        HardwareWalletType.Ledger,
+      );
+      mockConnectHardware.mockRejectedValue(blockedError);
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      connectToDevice(tEn('ledger'));
+
+      await waitFor(() => {
+        expect(mockShowErrorModal).toHaveBeenCalledWith(
+          expect.objectContaining({ code: ErrorCode.DeviceMultipleConnected }),
+        );
+      });
+      expect(
+        screen.queryByText(blockedError.userMessage),
+      ).not.toBeInTheDocument();
+    });
+
     it('displays a generic error message', async () => {
       mockConnectHardware.mockRejectedValue(new Error('Something went wrong'));
       const mockStore = configureMockStore([thunk])(createMockState());

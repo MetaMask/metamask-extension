@@ -1,5 +1,8 @@
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
-import { createHardwareWalletError } from '../../../../contexts/hardware-wallets/errors';
+import {
+  createHardwareWalletError,
+  LEDGER_WRONG_DEVICE_ERROR_CODE,
+} from '../../../../contexts/hardware-wallets/errors';
 import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
 import { buildErrorContent } from './error-content-builder';
 
@@ -84,6 +87,71 @@ describe('buildErrorContent', () => {
     });
     expect(t).toHaveBeenCalledWith(
       'hardwareWalletErrorOnlyV4SupportedDescription',
+      ['Ledger'],
+    );
+  });
+
+  it('shows an acknowledge-only description for DeviceMultipleConnected', () => {
+    const t = jest.fn((key: string, substitutions?: string[]) => {
+      if (key === HardwareWalletType.Ledger) {
+        return 'Ledger';
+      }
+
+      return substitutions ? `${key}:${substitutions.join(',')}` : key;
+    });
+
+    const error = createHardwareWalletError(
+      ErrorCode.DeviceMultipleConnected,
+      HardwareWalletType.Ledger,
+    );
+
+    const content = buildErrorContent(error, HardwareWalletType.Ledger, t);
+
+    expect(content).toMatchObject({
+      variant: 'description',
+      icon: expect.anything(),
+      showRepairLink: false,
+      title: 'hardwareWalletErrorTitleDeviceAlreadyConnected:Ledger',
+      description:
+        'hardwareWalletErrorDeviceAlreadyConnectedDescription:Ledger,Ledger,Ledger',
+    });
+    expect(t).toHaveBeenCalledWith(
+      'hardwareWalletErrorTitleDeviceAlreadyConnected',
+      ['Ledger'],
+    );
+    expect(t).toHaveBeenCalledWith(
+      'hardwareWalletErrorDeviceAlreadyConnectedDescription',
+      ['Ledger', 'Ledger', 'Ledger'],
+    );
+  });
+
+  it('shows the wrong-device copy for LEDGER_WRONG_DEVICE_ERROR_CODE', () => {
+    const t = jest.fn((key: string, substitutions?: string[]) => {
+      if (key === HardwareWalletType.Ledger) {
+        return 'Ledger';
+      }
+
+      return substitutions ? `${key}:${substitutions.join(',')}` : key;
+    });
+
+    const error = createHardwareWalletError(
+      LEDGER_WRONG_DEVICE_ERROR_CODE,
+      HardwareWalletType.Ledger,
+    );
+
+    const content = buildErrorContent(error, HardwareWalletType.Ledger, t);
+
+    expect(content).toMatchObject({
+      variant: 'description',
+      showRepairLink: false,
+      title: 'hardwareWalletErrorTitleWrongDevice:Ledger',
+      description: 'hardwareWalletErrorWrongDeviceDescription:Ledger',
+    });
+    expect(t).toHaveBeenCalledWith('hardwareWalletErrorTitleWrongDevice', [
+      'Ledger',
+    ]);
+    expect(t).toHaveBeenCalledWith(
+      'hardwareWalletErrorWrongDeviceDescription',
       ['Ledger'],
     );
   });

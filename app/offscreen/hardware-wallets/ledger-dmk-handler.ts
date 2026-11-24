@@ -42,6 +42,7 @@ import {
   OffscreenCommunicationTarget,
 } from '../../../shared/constants/offscreen-communication';
 import { LEDGER_USB_VENDOR_ID } from '../../../shared/constants/hardware-wallets';
+import { getConnectedLedgerDeviceInfo } from './ledger-hid-utils';
 
 function isWebHIDSupported(): boolean {
   return navigator?.hid !== undefined;
@@ -696,6 +697,13 @@ export class LedgerDmkBridgeHandler {
       // matching the legacy handler's immediate `return true`.
       if (action === LedgerAction.updateTransport) {
         return true;
+      }
+
+      // Answered pre-session from the permitted set. Short-circuit before
+      // ensureBridge() so the background's single-device gate query never
+      // triggers device discovery or a session.
+      if (action === LedgerAction.getConnectedDeviceInfo) {
+        return await getConnectedLedgerDeviceInfo();
       }
 
       const bridge = await this.#ensureBridge();
