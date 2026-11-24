@@ -56,6 +56,10 @@ type RebateBannerProps = {
  * CTA; `position-try-fallbacks` flips it below only when there is no room
  * above. Browsers without Interest Invokers fall back to a hover/focus
  * triggered `Popover` whose z-index sits above the modal layer (1050).
+ *
+ * It reuses the existing `swapsRebate*` message keys rather than introducing
+ * new ones, so the translations already shipped for the swaps banner keep
+ * working without any locale-file changes.
  */
 export const RebateBanner = ({
   rebatePercent,
@@ -147,10 +151,10 @@ export const RebateBanner = ({
   const tooltipContent = (
     <Box flexDirection={BoxFlexDirection.Column} gap={2}>
       <Text variant={TextVariant.HeadingSm} color={TextColor.TextDefault}>
-        {t('rebateTooltipTitle')}
+        {t('swapsRebateTooltipTitle')}
       </Text>
       <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
-        {t('rebateTooltipContent', [rebatePercent])}
+        {t('swapsRebateTooltipContent', [rebatePercent])}
       </Text>
     </Box>
   );
@@ -179,7 +183,7 @@ export const RebateBanner = ({
         color={TextColor.TextDefault}
         className="flex-1"
       >
-        {t('rebateBanner', [rebatePercent])}
+        {t('swapsRebateBanner', [rebatePercent])}
       </Text>
       <ButtonIcon
         ref={setTriggerElement}
@@ -187,7 +191,7 @@ export const RebateBanner = ({
         iconName={IconName.Info}
         size={ButtonIconSize.Xs}
         iconProps={{ color: IconColor.IconAlternative }}
-        ariaLabel={t('rebateTooltipTitle')}
+        ariaLabel={t('swapsRebateTooltipTitle')}
         onClick={(event) => event.stopPropagation()}
         onFocus={isNativeTooltip ? undefined : handleTriggerFocus}
         onBlur={isNativeTooltip ? undefined : handleTriggerBlur}
