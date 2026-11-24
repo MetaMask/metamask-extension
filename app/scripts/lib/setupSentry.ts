@@ -20,6 +20,7 @@ import { metaMetricsIntegration } from './sentry-metametrics';
 import {
   BACKEND_TRACE_PROPAGATION_TARGETS,
   consensysTracePropagationIntegration,
+  getClaimingSpan,
 } from './sentry-trace-propagation';
 import {
   getAnalyticsState,
@@ -427,12 +428,17 @@ export function beforeBreadcrumb(): BeforeBreadcrumbHandler {
  * Never filter a URL matching
  * `BACKEND_TRACE_PROPAGATION_TARGETS` — the SDK propagates the request span's
  * id as the W3C `traceparent` parent, so dropping that span client-side
- * orphans the backend's subtree of the trace.
+ * orphans the backend's subtree of the trace. A claimed request is the
+ * exception: its headers name the claimant (`claimBackendRequests`).
  *
  * @param url - The request URL.
  * @returns Whether to create a span for the request.
  */
 export function shouldCreateSpanForRequest(url: string): boolean {
+  // A claimed request's trace headers name its claimant, not the active span.
+  if (getClaimingSpan(url)) {
+    return false;
+  }
   // Do not create spans for high-volume remote fetches with no per-request
   // diagnostic value: telemetry endpoints (sentry.io, segment.io) and static
   // config files re-fetched on a constant poll cadence (chainid.network chain

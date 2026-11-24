@@ -294,6 +294,48 @@ function retargetTraceHeaders(args: unknown[], span: Span): boolean {
   return true;
 }
 
+const requestClaims = new Set<{
+  span: Span;
+  claims: (url: string) => boolean;
+}>();
+
+/**
+ * Send matching backend requests under `span` while it runs, for an operation
+ * whose later requests leave from code it cannot hand a `fetch`, after the
+ * span has stopped being the active span. Their trace headers name `span`, and
+ * no `http.client` span is recorded for them under another span.
+ *
+ * @param span - The operation's running root.
+ * @param claims - Whether a request URL belongs to the operation.
+ * @returns A function that releases the claim.
+ */
+export function claimBackendRequests(
+  span: Span,
+  claims: (url: string) => boolean,
+): () => void {
+  const claim = { span, claims };
+  requestClaims.add(claim);
+  return () => {
+    requestClaims.delete(claim);
+  };
+}
+
+/**
+ * The running span that claims a request, when it is not the active span.
+ *
+ * @param url - The request URL.
+ * @returns The claiming span, or `undefined`.
+ */
+export function getClaimingSpan(url: string): Span | undefined {
+  const activeSpan = getActiveSpan();
+  for (const { span, claims } of requestClaims) {
+    if (span !== activeSpan && isRunning(span) && claims(url)) {
+      return span;
+    }
+  }
+  return undefined;
+}
+
 function setRequestIdForTraceId(traceId: string, requestId: string): void {
   if (requestIdByTraceId.has(traceId)) {
     // A trace can fan out to multiple outbound requests, each with its own id.
@@ -355,9 +397,10 @@ export function consensysTracePropagationIntegration({
         try {
           // The SDK attaches trace headers to matched URLs even with no active
           // span, or under one that has ended, naming a span that is never
-          // sent: strip them, or point them at a running span.
+          // sent: strip them, or point them at a running span. A claimed
+          // request is pointed at its claimant.
           const activeSpan = getActiveSpan();
-          let runningSpan = getRunningSpan(activeSpan);
+          let runningSpan = getClaimingSpan(url) ?? getRunningSpan(activeSpan);
           if (
             runningSpan &&
             runningSpan !== activeSpan &&
