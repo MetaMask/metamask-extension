@@ -18,7 +18,7 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: base-build-test-webpack
-      build-command: yarn build:test --zip
+      build-command: build:test --zip
       builds-from-run: ${{ github.run_id }}
       ref: ${{ inputs.ref }}
     secrets: inherit
