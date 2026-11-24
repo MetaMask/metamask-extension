@@ -15,6 +15,7 @@ import {
   selectEnabledNetworksAsCaipChainIds,
 } from '../../../../../selectors/multichain/networks';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useBoolean } from '../../../../../hooks/useBoolean';
 import {
   CHAIN_IDS,
@@ -51,6 +52,7 @@ type NetworkFilterProps = {
  * they change. Activity uses this to filter its list.
  */
 export const NetworkFilter = ({ onNetworkSelect }: NetworkFilterProps) => {
+  const t = useI18nContext();
   const dispatch = useDispatch();
   const isFullScreen = useIsControlBarFullScreen();
   const { isOpen, toggle, close } = useAssetControl('network');
@@ -193,6 +195,9 @@ export const NetworkFilter = ({ onNetworkSelect }: NetworkFilterProps) => {
         size={SelectButtonSize.Sm}
         value={networkButtonText}
         isLoading={isNetworkSwitchPending}
+        aria-label={`${t('networkMenuHeading')}, ${networkButtonText}`}
+        aria-expanded={isOpen}
+        aria-haspopup="dialog"
       />
 
       <HomeNetworkFilterModal

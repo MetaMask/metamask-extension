@@ -39,6 +39,7 @@ export const SortByButton = () => {
           size={ButtonIconSize.Sm}
           iconName={IconName.ListArrow}
           ariaLabel={t('sortBy')}
+          aria-expanded={isOpen}
         />
       </Tooltip>
       <Popover {...popoverProps}>

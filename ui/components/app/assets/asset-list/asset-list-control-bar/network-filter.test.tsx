@@ -179,6 +179,38 @@ describe('NetworkFilter', () => {
     expect(networkFilterButton.querySelectorAll('svg')).toHaveLength(1);
   });
 
+  it('names the trigger with purpose and the current filter value', async () => {
+    const state = createMockState();
+    state.metamask.preferences.showTestNetworks = false;
+    state.metamask.enabledNetworkMap = {
+      eip155: {
+        '0x1': true,
+        '0x89': true,
+      },
+    };
+
+    const { findByTestId } = renderNetworkFilter(state);
+
+    const networkFilterButton = await findByTestId('sort-by-networks');
+    expect(networkFilterButton).toHaveAttribute(
+      'aria-label',
+      `${messages.networkMenuHeading.message}, ${messages.allNetworks.message}`,
+    );
+  });
+
+  it('tracks expanded and popup state on the trigger', async () => {
+    const state = createMockState();
+
+    const { findByTestId } = renderNetworkFilter(state);
+
+    const networkFilterButton = await findByTestId('sort-by-networks');
+    expect(networkFilterButton).toHaveAttribute('aria-expanded', 'false');
+    expect(networkFilterButton).toHaveAttribute('aria-haspopup', 'dialog');
+
+    fireEvent.click(networkFilterButton);
+    expect(networkFilterButton).toHaveAttribute('aria-expanded', 'true');
+  });
+
   it('labels selected default networks as All networks when no custom networks are visible', async () => {
     const state = createMockState();
     state.metamask.preferences.showTestNetworks = false;

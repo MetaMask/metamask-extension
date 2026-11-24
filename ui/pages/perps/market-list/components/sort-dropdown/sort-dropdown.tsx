@@ -124,6 +124,7 @@ export const SortDropdown = ({
               }`
             : t('perpsSortByTitle')
         }
+        aria-expanded={isOpen}
         endArrowDirection={
           direction === 'asc'
             ? SelectButtonEndArrow.Up

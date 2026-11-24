@@ -48,6 +48,19 @@ describe('SortDropdown', () => {
       );
     });
 
+    it('exposes expanded state that tracks the sort modal', () => {
+      renderWithProvider(<SortDropdown {...defaultProps} />, mockStore);
+
+      const button = screen.getByTestId('sort-dropdown-button');
+      expect(button).toHaveAttribute('aria-expanded', 'false');
+
+      fireEvent.click(button);
+      expect(button).toHaveAttribute('aria-expanded', 'true');
+
+      fireEvent.click(screen.getByTestId('sort-modal-cancel'));
+      expect(button).toHaveAttribute('aria-expanded', 'false');
+    });
+
     it('points the trigger arrow down for a descending sort and up for ascending', () => {
       // The SelectButton's trailing arrow reflects the direction in force
       // instead of a static dropdown chevron.
