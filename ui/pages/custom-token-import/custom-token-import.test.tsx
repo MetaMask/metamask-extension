@@ -448,7 +448,6 @@ describe('CustomTokenImportPage', () => {
           },
         ),
       );
-
     });
 
     it('passes the full token name (not the symbol) as the name field in metadata', async () => {
