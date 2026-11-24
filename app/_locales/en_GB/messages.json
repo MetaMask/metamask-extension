@@ -5512,6 +5512,14 @@
   "marketDetails": {
     "message": "Market details"
   },
+  "marketInsightsCarouselPause": {
+    "message": "Pause headlines",
+    "description": "Button to pause automatic Market Insights headline rotation"
+  },
+  "marketInsightsCarouselResume": {
+    "message": "Resume headlines",
+    "description": "Button to resume automatic Market Insights headline rotation"
+  },
   "marketRate": {
     "message": "Market rate"
   },
