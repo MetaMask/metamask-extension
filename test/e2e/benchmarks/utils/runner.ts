@@ -15,6 +15,7 @@ import type {
   WebVitalsSummary,
 } from '../../../../shared/constants/benchmarks';
 import { BENCHMARK_PERSONA } from '../../../../shared/constants/benchmarks';
+import type { Driver } from '../../webdriver/driver';
 import {
   ALL_METRICS,
   DEFAULT_NUM_BROWSER_LOADS,
@@ -375,6 +376,59 @@ export function convertSummaryToResults(
   );
 }
 
+/** Per-page-load metrics from a startup flow, with the series it adds. */
+export type StartupMetrics = Metrics & { heroPainted?: number };
+
+/** What the startup flows read from the page after each page load. */
+export type StartupPageSignals = {
+  /** `startTime` of the first `mm-hero-painted` mark; null if none was set. */
+  heroPainted: number | null;
+};
+
+/**
+ * Runs in the page. Kept free of closures: it is serialized and sent there.
+ */
+const readStartupPageSignalsInPage = (): StartupPageSignals => {
+  const marks = performance.getEntriesByName('mm-hero-painted', 'mark');
+  return { heroPainted: marks.length > 0 ? marks[0].startTime : null };
+};
+
+/**
+ * Read the hero mark, waiting for it so a late paint counts as slow.
+ * @param driver - The benchmark's driver, on the extension page.
+ * @param timeoutMs - How long to wait for the mark before reading null.
+ */
+export async function readStartupPageSignals(
+  driver: Driver,
+  timeoutMs = 10000,
+): Promise<StartupPageSignals> {
+  const pollMs = 100;
+  for (let waited = 0; ; waited += pollMs) {
+    const signals = (await driver.executeScript(
+      readStartupPageSignalsInPage,
+    )) as StartupPageSignals;
+    if (signals.heroPainted !== null || waited >= timeoutMs) {
+      return signals;
+    }
+    await driver.delay(pollMs);
+  }
+}
+
+/**
+ * Fold what `readStartupPageSignals` read into one page load's metrics.
+ * @param metrics - From `driver.collectMetrics()`.
+ * @param signals - From `readStartupPageSignals`.
+ */
+export function applyStartupPageSignals(
+  metrics: Metrics,
+  signals: StartupPageSignals,
+): StartupMetrics {
+  return {
+    ...metrics,
+    ...(signals.heroPainted !== null && { heroPainted: signals.heroPainted }),
+  };
+}
+
 /**
  * Run the dApp page-load benchmark and aggregate results.
  *
@@ -478,10 +532,21 @@ export async function runPageLoadBenchmark(
 
   const result: Record<string, number[]> = {};
   const trimmedCounts: StatisticalResult = {};
+  const missingCounts: StatisticalResult = {};
   const values: MetricSamples = {};
   for (const [key, tracePath] of Object.entries(ALL_METRICS)) {
     const rawSamples = measuredResults.map((m) => get(m, tracePath) as number);
-    const { filtered, outlierCount } = detectOutliersIQR(rawSamples);
+    missingCounts[key] = rawSamples.filter(
+      (value) => !Number.isFinite(value),
+    ).length;
+    // A page load that set no hero mark has no `heroPainted` value: it stays in
+    // `values` and in `missingCount`, and is left out of the statistics. Any other
+    // metric that failed to read stays in them as NaN.
+    const { filtered, outlierCount } = detectOutliersIQR(
+      key === 'heroPainted'
+        ? rawSamples.filter((value) => Number.isFinite(value))
+        : rawSamples,
+    );
     result[key] = [...filtered].sort((a, b) => a - b);
     trimmedCounts[key] = outlierCount;
     // `result[key]` is filtered and sorted, so neither the discarded samples nor
@@ -533,6 +598,7 @@ export async function runPageLoadBenchmark(
     p95,
     trimmedCount: trimmedCounts,
     outliers: { ...trimmedCounts },
+    missingCount: missingCounts,
     values,
     ...(webVitals && { webVitals }),
   };
