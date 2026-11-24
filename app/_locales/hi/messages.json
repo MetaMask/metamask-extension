@@ -1291,12 +1291,6 @@
   "add_device_try_again": {
     "message": "फिर से प्रयास करें"
   },
-  "add_device_validating_desc": {
-    "message": "आपके फ़ोन के साथ एक सुरक्षित, एन्क्रिप्टेड कनेक्शन बनाया जा रहा है।"
-  },
-  "add_device_validating_title": {
-    "message": "डिवाइस जोड़े जा रहे हैं"
-  },
   "add_wallets": {
     "message": "चुनें कि क्या सिंक करना है"
   },
@@ -3981,10 +3975,6 @@
   "enter_verification_code_expired": {
     "message": "वेरिफिकेशन कोड एक्सपायर हो गया है"
   },
-  "enter_verification_code_expires_in": {
-    "message": "$1सेकंड में एक्स्पायर होगा",
-    "description": "$1 is the number of seconds remaining before the verification code expires"
-  },
   "enter_verification_code_max_attempts": {
     "message": "बहुत अधिक गलत प्रयास हुए। नए QR कोड के साथ शुरू करें।"
   },
@@ -4440,9 +4430,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "कुछ गलत हो गया..."
-  },
-  "generateNewQrCode": {
-    "message": "नया QR कोड जेनरेट करें"
   },
   "genericExplorerView": {
     "message": "$1 पर अकाउंट देखें"
@@ -9183,13 +9170,6 @@
     "message": "कैमरा एक्सेस की आवश्यकता है",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
-  "qrCodeExpired": {
-    "message": "QR कोड एक्सपायर हो गया"
-  },
-  "qrCodeExpiresIn": {
-    "message": "$1सेकंड में एक्स्पायर होगा",
-    "description": "$1 is the number of seconds remaining before the QR code expires"
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "यह QR कोड किसी दूसरे ट्रांसेक्शन के लिए है। इसे कैंसिल करें और दोबारा कोशिश करें, और दोबारा कोशिश करने से पहले सुनिश्चित करें कि आप अपने हार्डवेयर वॉलेट से MetaMask में दिखाए गए QR कोड को पहले स्कैन करें।",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -11846,9 +11826,6 @@
   "standardAccountLabel": {
     "message": "मानक अकाउंट"
   },
-  "start_with_new_qr_code": {
-    "message": "नए QR कोड से शुरू करें"
-  },
   "stateCorruptionAreYouSure": {
     "message": "क्या आप वाकई आगे बढ़ना चाहते हैं?"
   },
@@ -12004,28 +11981,12 @@
   "swapAggregator": {
     "message": "एग्रीगेटर"
   },
-  "swapAllowSwappingOf": {
-    "message": "$1 स्वैप करने की अनुमति दें",
-    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
-  },
-  "swapAmountReceived": {
-    "message": "गारंटी रकम"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "यह आपको प्राप्त होने वाली कम-से-कम अमाउंट है। आप स्लिपेज के आधार पर अधिक प्राप्त कर सकते हैं।"
-  },
   "swapAndSend": {
     "message": "स्वैप करें और भेजें"
   },
   "swapApproval": {
     "message": "स्वैप के लिए $1 एप्रूव करें",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
-  },
-  "swapAreYouStillThere": {
-    "message": "क्या आप अभी भी हैं?"
-  },
-  "swapAreYouStillThereDescription": {
-    "message": "जब आप जारी रखना चाहते हैं तो हम आपको लेटेस्ट उद्धरण दिखाने के लिए तैयार हैं"
   },
   "swapConfirmWithHwWallet": {
     "message": "अपने hardware wallet से कन्फर्म करें"
@@ -12056,16 +12017,6 @@
     "message": "विनिमय के लिए यह $1 होगा",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
-  "swapEstimatedNetworkFees": {
-    "message": "अनुमानित नेटवर्क फ़ीस"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "यह नेटवर्क फ़ीस का एक अनुमान है, जिसे आपके स्वैप को पूरा करने के लिए इस्तेमाल किया जाएगा। नेटवर्क का स्टेटसयों के अनुसार वास्तविक अमाउंट बदल सकती है।"
-  },
-  "swapFailedErrorDescriptionWithSupportLink": {
-    "message": "ट्रांसेक्शन विफल हो जाता है और हम मदद करने के लिए उपलब्ध हैं। यदि यह समस्या बनी रहती है, तो आप आगे की सहायता के लिए $1 पर हमारे ग्राहक सहायता से कॉन्टेक्ट कर सकते हैं।",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
-  },
   "swapFailedErrorTitle": {
     "message": "स्वैप नहीं हो पाया"
   },
@@ -12082,10 +12033,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "उद्धरण प्राप्त करने में गड़बड़ी"
   },
-  "swapFromTo": {
-    "message": "$1 से $2 का स्वैप",
-    "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
   "swapGasFeesExplanation": {
     "message": "MetaMask नेटवर्क फीस से पैसे नहीं कमाता है। ये शुल्क अनुमानित हैं और इस आधार पर बदल सकते हैं कि नेटवर्क कितना व्यस्त है और ट्रांसेक्शन कितना जटिल है। अधिक जानें $1।",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -12093,9 +12040,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "यहाँ",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesSplit": {
-    "message": "पिछली स्क्रीन पर नेटवर्क फ़ीस इन दो ट्रांसेक्शन के बीच विभाजित हैं।"
   },
   "swapGasFeesSponsored": {
     "message": "MetaMask द्वारा भुगतान किया गया"
@@ -12110,15 +12054,6 @@
   "swapLearnMore": {
     "message": "स्वैप के बारे में ज्यादा जानें"
   },
-  "swapLiquiditySourceInfo": {
-    "message": "एक्सचेंज रेट्स और नेटवर्क फ़ीस की तुलना करने के लिए, हम कई लिक्विडिटी सोर्सेज़ (एक्सचेंज, एग्रीगेटर्स और प्रोफेशनल मार्किट मेकर्स) ढूंढते हैं।"
-  },
-  "swapMaxSlippage": {
-    "message": "अधिकतम गिरावट"
-  },
-  "swapMetaMaskFee": {
-    "message": "MetaMask फीस"
-  },
   "swapMetaMaskFeeDescription": {
     "message": "$1% का फ़ीस ऑटोमेटिक तरीके से इस उद्धरण में समाविष्ट हो जाता है। आप इसे MetaMask's के तरलता प्रोवाइडर सूचना एकत्रीकरण सॉफ़्टवेयर का इस्तेमाल करने के लिए लाइसेंस के बदले में पेमेंट करते हैं।",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
@@ -12126,19 +12061,6 @@
   "swapNQuotesWithDot": {
     "message": "$1 उद्धरण.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapOnceTransactionHasProcess": {
-    "message": "यह ट्रांसेक्शन संसाधित होने के बाद आपका $1 आपके अकाउंट में जोड़ दिया जाएगा।",
-    "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
-  },
-  "swapProcessing": {
-    "message": "प्रोसेस हो रहा है"
-  },
-  "swapQuoteDetails": {
-    "message": "विवरण का उद्धरण दें"
-  },
-  "swapQuoteSource": {
-    "message": "उद्धरण का स्रोत"
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "कृपया लेटेस्ट दरों को प्राप्त करने के लिए नए उद्धरणों का रिक्वेस्ट करें।"
@@ -12149,41 +12071,14 @@
   "swapQuotesNotAvailableDescription": {
     "message": "यह ट्रेड रूट अभी उपलब्ध नहीं है। राशि, नेटवर्क या टोकन बदलने का प्रयास करें और हम सबसे अच्छा विकल्प ढूंढ लेंगे।"
   },
-  "swapQuotesNotAvailableErrorDescription": {
-    "message": "अमाउंट या स्लिपेज सेटिंग को समायोजित करने की कोशिश करें और फिर से प्रयास करें।"
-  },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "कोई भी उद्धरण उपलब्ध नहीं हैं"
-  },
-  "swapRate": {
-    "message": "रेट"
-  },
-  "swapReceiving": {
-    "message": "प्राप्त कर रहे हैं"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "यह एक अनुमान है। सटीक अमाउंट स्लिपेज पर निर्भर करती है।"
   },
   "swapRequestForQuotation": {
     "message": "उद्धरण के लिए अनुरोध"
   },
-  "swapSelect": {
-    "message": "चयन करें"
-  },
-  "swapSelectAQuote": {
-    "message": "एक उद्धरण को चुनें"
-  },
-  "swapSelectAToken": {
-    "message": "टोकन चुनें"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "नीचे दिए गए सभी उद्धरण कई चलनिधि स्रोतों से एकत्र किए गए हैं।"
-  },
   "swapSelectToken": {
     "message": "टोकन चुनें"
-  },
-  "swapShowLatestQuotes": {
-    "message": "सबसे नया उद्धरण दिखाएं"
   },
   "swapSlippageAutoDescription": {
     "message": "ऑटो"
@@ -12230,18 +12125,8 @@
   "swapSlippageZeroTitle": {
     "message": "शून्य-स्लिपेज प्रोवाइडरों की सोर्सिंग करना"
   },
-  "swapSource": {
-    "message": "चलनिधि का स्रोत"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "विनिमय जटिल और समय के प्रति संवेदनशील ट्रांसेक्शन हैं। हम एक सफल विनिमय की लागत और विश्वास के बीच अच्छे संतुलन के लिए इस नेटवर्क फ़ीस की अनुशंसा करते हैं।"
-  },
-  "swapToConfirmWithHwWallet": {
-    "message": "अपने hardware wallet से पुष्टि करने के लिए"
-  },
-  "swapTokenAvailable": {
-    "message": "आपके अकाउंट में आपका $1 जोड़ दिया गया है।",
-    "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
   },
   "swapTokenNotAvailable": {
     "message": "इस क्षेत्र में स्वैप करने के लिए टोकन उपलब्ध नहीं है"
@@ -12249,20 +12134,11 @@
   "swapTokens": {
     "message": "टोकन स्वैप करें"
   },
-  "swapTransactionComplete": {
-    "message": "ट्रांसेक्शन पूर्ण"
-  },
-  "swapTwoTransactions": {
-    "message": "2 ट्रांसेक्शन"
-  },
   "swapUnknown": {
     "message": "अज्ञात"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "इस स्वैप के लिए नेटवर्क फीस का भुगतान करने के लिए आपके पास पर्याप्त $1 नहीं है। कम राशि दर्ज करें या अधिक $1 खरीदें।"
-  },
-  "swapZeroSlippage": {
-    "message": "0% स्लिपेज"
   },
   "swapsMaxSlippage": {
     "message": "स्लिपेज (slippage) टॉलरेंस"
@@ -12275,9 +12151,6 @@
   },
   "swapsRebateTooltipTitle": {
     "message": "ट्रेडिंग रिवॉर्ड"
-  },
-  "swapsViewInActivity": {
-    "message": "एक्टिविटी में देखें"
   },
   "switch": {
     "message": "बदलें"

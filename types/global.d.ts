@@ -20,8 +20,10 @@ import type {
   IdleStatus,
 } from '../shared/lib/telemetry/idle-status';
 import type { LastActivityContext } from '../shared/lib/telemetry/last-activity';
+import type { SharedTraceState } from '../shared/lib/trace';
 
 type StateHooks = {
+  traceSharedState?: SharedTraceState;
   getSentryRemoteRates?: () => SentryRemoteRates;
   getCustomTraces?: () => { [name: string]: number };
   getIsIdle?: (

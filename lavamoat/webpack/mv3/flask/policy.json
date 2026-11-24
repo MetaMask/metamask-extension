@@ -770,7 +770,7 @@
         "@ledgerhq/device-management-kit>inversify>@inversifyjs/core": true,
         "@ledgerhq/device-management-kit": true,
         "bs58": true,
-        "@metamask/ppom-validator>crypto-js": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>crypto-js": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/context-module>ethers": true,
         "@ledgerhq/device-management-kit>inversify": true,
         "@ledgerhq/device-management-kit>purify-ts": true,
@@ -822,8 +822,8 @@
       },
       "meta": {
         "webpack-optimization": [
-          "Dependency '@ledgerhq/device-management-kit>inversify' reexports from '@ledgerhq/device-management-kit>inversify>@inversifyjs/core' and webpack collapsed that to a direct import.",
-          "Dependency '@ledgerhq/device-management-kit>inversify' reexports from '@ledgerhq/device-management-kit>inversify>@inversifyjs/container' and webpack collapsed that to a direct import."
+          "Dependency '@ledgerhq/device-management-kit>inversify' reexports from '@ledgerhq/device-management-kit>inversify>@inversifyjs/container' and webpack collapsed that to a direct import.",
+          "Dependency '@ledgerhq/device-management-kit>inversify' reexports from '@ledgerhq/device-management-kit>inversify>@inversifyjs/core' and webpack collapsed that to a direct import."
         ]
       },
       "packages": {
@@ -885,7 +885,7 @@
         "@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
         "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": true,
         "wait-on>axios": true,
-        "@metamask/ppom-validator>crypto-js": true
+        "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>crypto-js": true
       }
     },
     "@ledgerhq/hw-app-eth": {
@@ -1521,26 +1521,6 @@
         "lodash": true
       }
     },
-    "@metamask/ppom-validator>@metamask/controller-utils": {
-      "globals": {
-        "Buffer.from": true,
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "@metamask/ppom-validator>@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "ethereumjs-util>bn.js": true,
-        "buffer": true,
-        "cockatiel": true,
-        "eth-ens-namehash": true,
-        "eslint>fast-deep-equal": true,
-        "lodash": true
-      }
-    },
     "@metamask/core-backend": {
       "globals": {
         "AbortController": true,
@@ -1552,9 +1532,9 @@
       },
       "meta": {
         "webpack-optimization": [
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import.",
           "Dependency '@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import.",
-          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/error-utils' and webpack collapsed that to a direct import.",
-          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import."
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/error-utils' and webpack collapsed that to a direct import."
         ]
       },
       "packages": {
@@ -1689,7 +1669,7 @@
       "packages": {
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true,
-        "@metamask/ppom-validator>json-rpc-random-id": true
+        "@metamask/controller-utils>@metamask/eth-query>json-rpc-random-id": true
       }
     },
     "@metamask/network-controller>@metamask/eth-block-tracker": {
@@ -1707,7 +1687,7 @@
         "@metamask/utils>@metamask/error-utils": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true,
-        "@metamask/ppom-validator>json-rpc-random-id": true
+        "@metamask/controller-utils>@metamask/eth-query>json-rpc-random-id": true
       }
     },
     "@metamask/eth-hd-keyring": {
@@ -1818,6 +1798,7 @@
         "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/context-module": true,
         "@ledgerhq/device-management-kit": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/device-signer-kit-ethereum": true,
         "@ledgerhq/hw-transport": true,
@@ -1882,7 +1863,7 @@
     },
     "@metamask/controller-utils>@metamask/eth-query": {
       "packages": {
-        "@metamask/ppom-validator>json-rpc-random-id": true,
+        "@metamask/controller-utils>@metamask/eth-query>json-rpc-random-id": true,
         "browserify>xtend": true
       }
     },
@@ -2227,8 +2208,8 @@
       },
       "meta": {
         "webpack-optimization": [
-          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import.",
-          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/byte-utils' and webpack collapsed that to a direct import."
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/byte-utils' and webpack collapsed that to a direct import.",
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import."
         ]
       },
       "packages": {
@@ -2857,8 +2838,8 @@
     "@metamask/transaction-pay-middleware>@metamask/perps-controller": {
       "meta": {
         "webpack-optimization": [
-          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/byte-utils' and webpack collapsed that to a direct import.",
-          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import."
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import.",
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/byte-utils' and webpack collapsed that to a direct import."
         ]
       },
       "packages": {
@@ -2918,23 +2899,6 @@
         "@metamask/utils>@metamask/type-utils": true,
         "@metamask/utils": true,
         "@metamask/post-message-stream>readable-stream": true
-      }
-    },
-    "@metamask/ppom-validator": {
-      "globals": {
-        "Buffer.from": true,
-        "URL": true,
-        "console.error": true,
-        "crypto": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/ppom-validator>@metamask/controller-utils": true,
-        "@metamask/ppom-validator>await-semaphore": true,
-        "buffer": true,
-        "@metamask/ppom-validator>crypto-js": true,
-        "@toruslabs/eccrypto>elliptic": true,
-        "@metamask/ppom-validator>json-rpc-random-id": true
       }
     },
     "@metamask/profile-metrics-controller": {
@@ -4433,16 +4397,6 @@
         "btoa": true
       }
     },
-    "@metamask/ppom-validator>@metamask/controller-utils>@spruceid/siwe-parser": {
-      "globals": {
-        "console.error": true,
-        "console.log": true
-      },
-      "packages": {
-        "@noble/hashes": true,
-        "@metamask/controller-utils>@signinwithethereum/siwe-parser>apg-js": true
-      }
-    },
     "@tanstack/react-query>@tanstack/query-core": {
       "globals": {
         "AbortController": true,
@@ -4795,16 +4749,6 @@
     "string.prototype.matchall>es-abstract>available-typed-arrays": {
       "packages": {
         "string.prototype.matchall>es-abstract>typed-array-length>possible-typed-array-names": true
-      }
-    },
-    "@metamask/ppom-validator>await-semaphore": {
-      "globals": {
-        "process": true,
-        "setImmediate": true
-      },
-      "packages": {
-        "core-js-pure": true,
-        "process": true
       }
     },
     "wait-on>axios": {
@@ -5341,10 +5285,8 @@
         "crypto-browserify>randomfill": true
       }
     },
-    "@metamask/ppom-validator>crypto-js": {
+    "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>crypto-js": {
       "globals": {
-        "Float32Array": true,
-        "Float64Array": true,
         "crypto": true,
         "define": true,
         "msCrypto": true

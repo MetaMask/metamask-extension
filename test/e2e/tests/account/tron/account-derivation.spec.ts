@@ -20,6 +20,7 @@ import AccountAddressModal from '../../../page-objects/pages/accounts/address-mo
 import { switchToNetworkFromNetworkSelect } from '../../../page-objects/flows/network.flow';
 import { EMPTY_TRON_ACCOUNT } from '../../tron/fixtures/environments';
 import { withTronFixtures } from '../../tron/fixtures/with-tron-fixtures';
+import { openAccountMenu } from '../../../page-objects/flows/account-menu.flow';
 import { buildDiscoveryAccountsThrough } from './utils/buildDiscoveryAccountsThrough';
 
 /**
@@ -56,7 +57,7 @@ describe('Tron account derivation', function (this: Suite) {
         const accountList = new AccountListPage(driver);
 
         // Open account menu to let the UI sync complete
-        await homepage.headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await accountList.checkPageIsLoaded();
         await accountList.waitUntilSyncingIsCompleted();
 
@@ -137,7 +138,7 @@ describe('Tron account derivation', function (this: Suite) {
         });
 
         const accountList = new AccountListPage(driver);
-        await homePage.headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await accountList.checkPageIsLoaded();
         await accountList.waitUntilSyncingIsCompleted();
         await accountList.checkMultichainAccountNameNotDisplayed('Account 6');
@@ -178,7 +179,7 @@ describe('Tron account derivation', function (this: Suite) {
           const accountLabel = `Account ${index + 1}`;
           const expected = EXPECTED_TRON_ADDRESSES_BY_INDEX[index];
 
-          await homepage.headerNavbar.openAccountMenu();
+          await openAccountMenu(driver);
           await accountList.checkPageIsLoaded();
           await accountList.selectAccount(accountLabel);
           await waitUntilAccountTreeSyncIdle(driver);
@@ -216,7 +217,7 @@ describe('Tron account derivation', function (this: Suite) {
         const accountList = new AccountListPage(driver);
         const addressList = new AccountAddressListPage(driver);
         const addressModal = new AccountAddressModal(driver);
-        await homepage.headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await accountList.checkPageIsLoaded();
 
         await accountList.openMultichainAccountMenu({
@@ -267,7 +268,7 @@ describe('Tron account derivation', function (this: Suite) {
           const accountLabel = `Account ${index + 1}`;
           const expected = EXPECTED_TRON_ADDRESSES_BY_INDEX[index];
 
-          await homepage.headerNavbar.openAccountMenu();
+          await openAccountMenu(driver);
           await accountList.checkPageIsLoaded();
           await accountList.selectAccount(accountLabel);
           await waitUntilAccountTreeSyncIdle(driver);

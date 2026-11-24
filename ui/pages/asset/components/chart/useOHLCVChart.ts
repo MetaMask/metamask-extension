@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { priceApiBaseUrl } from '../../../../../shared/constants/price-api';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -48,13 +49,24 @@ export type UseOHLCVChartResult = {
    */
   resolvedCurrency: string;
   /**
-   * Fetches the next older page of candles by cursor, for the chart engine to
-   * prepend when the user scrolls past the oldest loaded bar (host-backed
-   * pagination). Stable across renders. Returns `noData: true` when the cursor
-   * is exhausted, the series changed mid-flight, or the request failed.
+   * Fetches older bars when the user scrolls past the oldest one. Stable.
+   * With `countBack` (e.g. 300) it walks cursor pages until it has ≥300 bars,
+   * then replies once; without it, one page. Returns `noData: true` when
+   * history runs out, after a reset mid-flight, or on error.
    */
-  fetchOlderBars: () => Promise<FetchOlderBarsResult>;
+  fetchOlderBars: (countBack?: number) => Promise<FetchOlderBarsResult>;
+  /**
+   * Resets the cursor to the cached first page and drops in-flight
+   * {@link fetchOlderBars} calls. Call only on a full `SET_OHLCV_DATA`.
+   */
+  resetPagination: () => void;
 };
+
+/**
+ * Safety cap on pages per {@link fetchOlderBars} call, e.g. countBack 10k with
+ * 100-bar pages stops at 20 pages; the engine asks again for the rest.
+ */
+const MAX_OLDER_BARS_PAGES_PER_REQUEST = 20;
 
 // ─── Constants ──────────────────────────────────────────────────────────────
 
@@ -129,12 +141,12 @@ export async function fetchOHLCVPage(
   }
   url.searchParams.set('vsCurrency', vsCurrency);
 
-  // A single controller drives both the caller's cancellation and the timeout,
-  // so a request that blows the budget is actually aborted rather than left
-  // running to land late over newer state.
+  // Abort only on timeout, not on interval change: aborts (HTTP/2
+  // RST_STREAM) degrade the Price API's responses.
   const controller = new AbortController();
-  const abortFromCaller = () => controller.abort();
-  signal?.addEventListener('abort', abortFromCaller);
+  if (signal) {
+    signal.addEventListener('abort', () => controller.abort());
+  }
 
   let timedOut = false;
   const timer = setTimeout(() => {
@@ -143,7 +155,9 @@ export async function fetchOHLCVPage(
   }, FETCH_TIMEOUT_MS);
 
   try {
-    const response = await fetch(url.toString(), { signal: controller.signal });
+    const response = await fetch(url.toString(), {
+      signal: controller.signal,
+    });
 
     if (!response.ok) {
       throw new Error(`OHLCV API error: ${response.status}`);
@@ -167,7 +181,6 @@ export async function fetchOHLCVPage(
     throw timedOut ? new Error('OHLCV fetch timeout') : error;
   } finally {
     clearTimeout(timer);
-    signal?.removeEventListener('abort', abortFromCaller);
   }
 }
 
@@ -194,12 +207,32 @@ export async function fetchOHLCV(
   return bars;
 }
 
+// ─── React Query configuration ──────────────────────────────────────────────
+
+/**
+ * Cache is fresh for 60s, e.g. 1h → 4h → 1h within a minute makes no request
+ * for the second 1h. Fewer requests also avoids the API's truncated pages
+ * under rapid switching.
+ */
+export const OHLCV_STALE_TIME_MS = 60_000;
+
+/**
+ * Reject a refetch with < 50% of the cached bars as truncated, e.g. 120
+ * cached and 40 returned → keep the cache.
+ */
+const TRUNCATION_THRESHOLD = 0.5;
+
+/** Shape stored in the React Query cache for each `['ohlcv', …]` key. */
+type OHLCVQueryData = {
+  page: OHLCVPage;
+  usedCurrency: string;
+};
+
 // ─── React hook ─────────────────────────────────────────────────────────────
 
 /**
- * Fetches OHLCV chart data reactively.
- * Re-fetches whenever assetId, interval, or currency changes.
- * Aborts in-flight requests on unmount or when inputs change.
+ * Fetches OHLCV chart data via React Query, cached per
+ * `(assetId, interval, currency)` (see {@link OHLCV_STALE_TIME_MS}).
  *
  * The price API does not quote every fiat the extension can display, so a
  * rejected currency is retried once in USD rather than surfaced as an error.
@@ -218,168 +251,200 @@ export const useOHLCVChart = ({
 }: UseOHLCVChartOptions): UseOHLCVChartResult => {
   const requestedCurrency = (currency || FALLBACK_CURRENCY).toLowerCase();
   const active = enabled && Boolean(assetId);
+  const queryClient = useQueryClient();
 
-  const [ohlcvData, setOhlcvData] = useState<OHLCVBar[]>([]);
-  const [isLoading, setIsLoading] = useState(active);
-  const [error, setError] = useState<string | null>(null);
-  const [resolvedCurrency, setResolvedCurrency] = useState(requestedCurrency);
+  // ── React Query fetch ───────────────────────────────────────────────────
+  // Each (assetId, interval, currency) is cached independently. The
+  // queryFn handles the currency-fallback retry internally so both attempts
+  // land under the same cache key.
 
-  // Reset synchronously when the *data series* (asset/interval/currency)
-  // changes, before the fetch effect runs. Without this the previous series'
-  // bars linger in `ohlcvData` and `isLoading` stays false for the first render
-  // after the change, so callers either paint stale candles under the new key
-  // or flash a "no data" placeholder before loading begins. `enabled` is
-  // deliberately excluded: toggling to line mode (enabled=false) and back must
-  // keep the loaded candles so the still-mounted iframe round-trips instantly
-  // instead of blanking into a reload. Adjusting state from a changed input
-  // during render is the React-recommended pattern
-  // (https://react.dev/reference/react/useState#storing-information-from-previous-renders).
-  const seriesKey = `${assetId ?? ''}|${interval}|${requestedCurrency}`;
-  const [renderedSeriesKey, setRenderedSeriesKey] = useState(seriesKey);
-  if (renderedSeriesKey !== seriesKey) {
-    setRenderedSeriesKey(seriesKey);
-    setOhlcvData([]);
-    setError(null);
-    setIsLoading(active);
-  }
+  const ohlcvQueryKey = [
+    'ohlcv',
+    assetId,
+    interval,
+    requestedCurrency,
+  ] as const;
 
-  // Entering candle mode with no bars yet (a cold line→candle toggle) must show
-  // loading rather than an empty "no data" frame while the first fetch runs.
-  // This never clears existing bars, so a warm toggle back keeps the last
-  // candles on screen and only refreshes them in the background.
-  const [renderedEnabled, setRenderedEnabled] = useState(enabled);
-  if (renderedEnabled !== enabled) {
-    setRenderedEnabled(enabled);
-    if (active && ohlcvData.length === 0) {
-      setIsLoading(true);
-    }
-  }
-
-  // Cursor bookkeeping for host-backed pagination. These live in refs, not
-  // state, because advancing the cursor must not re-render — only the chart
-  // engine consumes the older bars, and it does so through a stable callback.
-  const nextCursorRef = useRef<string | null>(null);
-  const hasMoreRef = useRef(false);
-  // Identifies the series the cursor belongs to, so a page that resolves after
-  // the user switched token/interval/currency is dropped instead of prepended
-  // onto the wrong chart.
-  const seriesKeyRef = useRef('');
-  const assetIdRef = useRef<string | undefined>(assetId);
-  const intervalRef = useRef(interval);
-  // The currency the loaded bars are actually priced in, so older pages are
-  // fetched in the same currency rather than re-triggering the USD fallback.
-  const pageCurrencyRef = useRef(requestedCurrency);
-  // Guards against overlapping older-bar fetches corrupting the cursor.
-  const olderBarsInFlightRef = useRef(false);
-
-  useEffect(() => {
-    if (!assetId || !enabled) {
-      return undefined;
-    }
-
-    const controller = new AbortController();
-    seriesKeyRef.current = seriesKey;
-    assetIdRef.current = assetId;
-    intervalRef.current = interval;
-    // Reset the cursor for the new series; older-bar fetches before the first
-    // page lands are no-ops.
-    nextCursorRef.current = null;
-    hasMoreRef.current = false;
-
-    // eslint-disable-next-line no-void -- fire-and-forget async data fetch inside effect
-    void (async () => {
-      setIsLoading(true);
-      setError(null);
+  const {
+    data,
+    isLoading: rqIsLoading,
+    error: queryError,
+  } = useQuery<OHLCVQueryData>({
+    queryKey: ohlcvQueryKey,
+    queryFn: async (): Promise<OHLCVQueryData> => {
+      // Safe: `enabled: active` guarantees assetId is defined when queryFn runs.
+      const resolvedAssetId = assetId as string;
 
       let usedCurrency = requestedCurrency;
+      let page: OHLCVPage;
       try {
-        let page;
-        try {
-          page = await fetchOHLCVPage(assetId, interval, requestedCurrency, {
-            signal: controller.signal,
-          });
-        } catch (e) {
-          // Only a 400 (bad request) means the quote currency itself was
-          // rejected and is worth retrying in USD. Transient or server
-          // failures (404/429/5xx), timeouts and aborts must surface as an
-          // error instead of silently relabeling prices in a different fiat.
-          const unsupportedCurrency =
-            requestedCurrency !== FALLBACK_CURRENCY &&
-            e instanceof Error &&
-            e.message === 'OHLCV API error: 400';
-          if (!unsupportedCurrency || controller.signal.aborted) {
-            throw e;
-          }
-          usedCurrency = FALLBACK_CURRENCY;
-          page = await fetchOHLCVPage(assetId, interval, FALLBACK_CURRENCY, {
-            signal: controller.signal,
-          });
-        }
-
-        if (!controller.signal.aborted) {
-          setOhlcvData(page.bars);
-          setResolvedCurrency(usedCurrency);
-          nextCursorRef.current = page.nextCursor;
-          hasMoreRef.current = page.hasMore;
-          pageCurrencyRef.current = usedCurrency;
-        }
+        page = await fetchOHLCVPage(
+          resolvedAssetId,
+          interval,
+          requestedCurrency,
+        );
       } catch (e) {
-        if (!controller.signal.aborted) {
-          setOhlcvData([]);
-          setError(e instanceof Error ? e.message : 'Unknown error');
-          nextCursorRef.current = null;
-          hasMoreRef.current = false;
+        const unsupportedCurrency =
+          requestedCurrency !== FALLBACK_CURRENCY &&
+          e instanceof Error &&
+          e.message === 'OHLCV API error: 400';
+        if (!unsupportedCurrency) {
+          throw e;
         }
-      } finally {
-        if (!controller.signal.aborted) {
-          setIsLoading(false);
-        }
+        usedCurrency = FALLBACK_CURRENCY;
+        page = await fetchOHLCVPage(
+          resolvedAssetId,
+          interval,
+          FALLBACK_CURRENCY,
+        );
       }
-    })();
 
-    return () => controller.abort();
-  }, [assetId, interval, requestedCurrency, enabled, seriesKey]);
+      // Quality gate: reject truncated responses so React Query keeps the
+      // richer cached data instead of overwriting it with a degraded page.
+      const cached = queryClient.getQueryData<OHLCVQueryData>(ohlcvQueryKey);
+      if (
+        cached &&
+        cached.page.bars.length > 0 &&
+        page.bars.length < cached.page.bars.length * TRUNCATION_THRESHOLD
+      ) {
+        // Return the cached data as-is so the cache entry is not degraded.
+        return cached;
+      }
 
-  const fetchOlderBars =
-    useCallback(async (): Promise<FetchOlderBarsResult> => {
+      return { page, usedCurrency };
+    },
+    staleTime: OHLCV_STALE_TIME_MS,
+    enabled: active,
+    retry: false,
+  });
+
+  // Derived values — referentially stable when `data` hasn't changed.
+  const ohlcvData = data?.page.bars ?? [];
+  const resolvedCurrency = data?.usedCurrency ?? requestedCurrency;
+
+  // ── Cursor bookkeeping for host-backed pagination ───────────────────────
+  // These live in refs, not state, because advancing the cursor must not
+  // re-render — only the chart engine consumes the older bars, and it does
+  // so through a stable callback.
+  //
+  // The cursor tracks the engine's oldest bar, so refetches never move it;
+  // only `resetPagination` (on a full engine reload) does.
+
+  const nextCursorRef = useRef<string | null>(null);
+  const hasMoreRef = useRef(false);
+  const assetIdRef = useRef<string | undefined>(assetId);
+  const intervalRef = useRef(interval);
+  const pageCurrencyRef = useRef(requestedCurrency);
+  // Bumped on reset; older-bars calls from a previous generation are dropped.
+  const generationRef = useRef(0);
+  // Generation of the running older-bars call, so a stale call's `finally`
+  // can't release a newer call's lock.
+  const inFlightGenRef = useRef<number | null>(null);
+
+  const resetPagination = useCallback(() => {
+    // Read the cache directly: the iframe calls this from its own effect,
+    // before any effect in this hook could sync `data`.
+    const cached = queryClient.getQueryData<OHLCVQueryData>([
+      'ohlcv',
+      assetId,
+      interval,
+      requestedCurrency,
+    ]);
+    generationRef.current += 1;
+    inFlightGenRef.current = null;
+    nextCursorRef.current = cached?.page.nextCursor ?? null;
+    hasMoreRef.current = cached?.page.hasMore ?? false;
+    pageCurrencyRef.current = cached?.usedCurrency ?? requestedCurrency;
+    assetIdRef.current = assetId;
+    intervalRef.current = interval;
+  }, [queryClient, assetId, interval, requestedCurrency]);
+
+  // ── Older-bars pagination callback ──────────────────────────────────────
+
+  const fetchOlderBars = useCallback(
+    async (countBack?: number): Promise<FetchOlderBarsResult> => {
       const assetIdAtCall = assetIdRef.current;
-      const seriesKeyAtCall = seriesKeyRef.current;
-      const cursor = nextCursorRef.current;
+      const gen = generationRef.current;
 
       if (
         !assetIdAtCall ||
-        !cursor ||
+        !nextCursorRef.current ||
         !hasMoreRef.current ||
-        olderBarsInFlightRef.current
+        inFlightGenRef.current === gen
       ) {
         return { bars: [], noData: true };
       }
 
-      olderBarsInFlightRef.current = true;
-      try {
-        const page = await fetchOHLCVPage(
-          assetIdAtCall,
-          intervalRef.current,
-          pageCurrencyRef.current,
-          { nextCursor: cursor },
-        );
+      const targetBars =
+        typeof countBack === 'number' && countBack > 0 ? countBack : 1;
 
-        // A new series started while this was in flight: drop the stale page so
-        // its bars cannot land on the wrong chart, and leave the (new series')
-        // cursor untouched.
-        if (seriesKeyRef.current !== seriesKeyAtCall) {
-          return { bars: [], noData: true };
+      inFlightGenRef.current = gen;
+      let pagesFetched = 0;
+
+      try {
+        const accumulated: OHLCVBar[] = [];
+
+        while (
+          nextCursorRef.current &&
+          hasMoreRef.current &&
+          accumulated.length < targetBars &&
+          pagesFetched < MAX_OLDER_BARS_PAGES_PER_REQUEST
+        ) {
+          const page = await fetchOHLCVPage(
+            assetIdAtCall,
+            intervalRef.current,
+            pageCurrencyRef.current,
+            { nextCursor: nextCursorRef.current },
+          );
+          pagesFetched += 1;
+          // Reset happened mid-flight: drop the bars, keep the new cursor.
+          if (generationRef.current !== gen) {
+            return { bars: [], noData: true };
+          }
+
+          // Advance the cursor as each page lands so a later call (or the next
+          // loop iteration) continues from the right place.
+          nextCursorRef.current = page.nextCursor;
+          hasMoreRef.current = page.hasMore;
+          accumulated.push(...page.bars);
+
+          // A page that came back empty means history is exhausted for this
+          // cursor; stop rather than spin.
+          if (page.bars.length === 0) {
+            break;
+          }
         }
 
-        nextCursorRef.current = page.nextCursor;
-        hasMoreRef.current = page.hasMore;
-        return { bars: page.bars, noData: page.bars.length === 0 };
+        return {
+          bars: accumulated,
+          noData: accumulated.length === 0,
+        };
       } catch {
         return { bars: [], noData: true };
       } finally {
-        olderBarsInFlightRef.current = false;
+        if (inFlightGenRef.current === gen) {
+          inFlightGenRef.current = null;
+        }
       }
-    }, []);
+    },
+    [],
+  );
 
-  return { ohlcvData, isLoading, error, resolvedCurrency, fetchOlderBars };
+  // ── Return ──────────────────────────────────────────────────────────────
+
+  let errorMessage: string | null = null;
+  if (queryError) {
+    errorMessage =
+      queryError instanceof Error ? queryError.message : 'Unknown error';
+  }
+
+  return {
+    ohlcvData,
+    // True only on a first visit with no cache; cache hits paint instantly.
+    isLoading: rqIsLoading,
+    error: errorMessage,
+    resolvedCurrency,
+    fetchOlderBars,
+    resetPagination,
+  };
 };

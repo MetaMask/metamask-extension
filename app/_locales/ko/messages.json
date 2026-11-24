@@ -1291,12 +1291,6 @@
   "add_device_try_again": {
     "message": "다시 시도"
   },
-  "add_device_validating_desc": {
-    "message": "휴대전화와 안전한 암호화 연결을 설정하고 있습니다."
-  },
-  "add_device_validating_title": {
-    "message": "장치 페어링"
-  },
   "add_wallets": {
     "message": "동기화할 항목 선택"
   },
@@ -3981,10 +3975,6 @@
   "enter_verification_code_expired": {
     "message": "인증 코드 만료됨"
   },
-  "enter_verification_code_expires_in": {
-    "message": "$1초 후 만료",
-    "description": "$1 is the number of seconds remaining before the verification code expires"
-  },
   "enter_verification_code_max_attempts": {
     "message": "입력 가능 횟수를 초과했습니다. 새 QR 코드로 다시 시작하세요."
   },
@@ -4444,9 +4434,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "문제가 발생했습니다...."
-  },
-  "generateNewQrCode": {
-    "message": "새 QR 코드 생성"
   },
   "genericExplorerView": {
     "message": "$1에서 계정 보기"
@@ -9191,13 +9178,6 @@
     "message": "카메라 접근 권한 필요",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
-  "qrCodeExpired": {
-    "message": "QR 코드 만료됨"
-  },
-  "qrCodeExpiresIn": {
-    "message": "$1초 후 만료",
-    "description": "$1 is the number of seconds remaining before the QR code expires"
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "다른 거래를 위한 QR 코드입니다. 취소한 후 다시 시도해 주세요. 하드웨어 지갑으로 MetaMask에 표시된 QR 코드를 스캔했는지 먼저 확인해 주세요.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -11854,9 +11834,6 @@
   "standardAccountLabel": {
     "message": "일반 계정"
   },
-  "start_with_new_qr_code": {
-    "message": "새 QR 코드로 시작하기"
-  },
   "stateCorruptionAreYouSure": {
     "message": "계속 진행하시겠습니까?"
   },
@@ -12012,28 +11989,12 @@
   "swapAggregator": {
     "message": "애그리게이터"
   },
-  "swapAllowSwappingOf": {
-    "message": "$1 스왑 허용",
-    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
-  },
-  "swapAmountReceived": {
-    "message": "보장되는 금액"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "수신하는 최소 금액입니다. 슬리패지에 따라 추가 금액을 받을 수도 있습니다."
-  },
   "swapAndSend": {
     "message": "스왑 및 전송"
   },
   "swapApproval": {
     "message": "스왑을 위해 $1 승인",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
-  },
-  "swapAreYouStillThere": {
-    "message": "아직 이용 중인가요?"
-  },
-  "swapAreYouStillThereDescription": {
-    "message": "계속하기 원하시면 최신 견적을 보여드리겠습니다"
   },
   "swapConfirmWithHwWallet": {
     "message": "하드웨어 지갑으로 컨펌합니다."
@@ -12064,16 +12025,6 @@
     "message": "스왑하려면 $1이(가) 필요합니다.",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
-  "swapEstimatedNetworkFees": {
-    "message": "예상 네트워크 수수료"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "스왑을 완료하는 데 사용될 예상 네트워크 수수료입니다. 실제 금액은 네트워크 상태에 따라 달라질 수 있습니다."
-  },
-  "swapFailedErrorDescriptionWithSupportLink": {
-    "message": "트랜잭션이 실패할 경우 언제든 문의하세요. 오류가 해결되지 않는다면 고객 지원 $1에 문의하세요.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
-  },
   "swapFailedErrorTitle": {
     "message": "스왑 실패"
   },
@@ -12090,10 +12041,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "견적을 가져오는 중 오류 발생"
   },
-  "swapFromTo": {
-    "message": "$1을(를) $2(으)로 스왑",
-    "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
   "swapGasFeesExplanation": {
     "message": "MetaMask는 네트워크 수수료로 수익을 얻지 않습니다. 이 수수료는 추정치이며 네트워크 혼잡도와 트랜잭션 복잡성에 따라 변동될 수 있습니다. 자세히 알아보기 $1",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -12101,9 +12048,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "확인하세요",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesSplit": {
-    "message": "이전 화면에 표시된 네트워크 수수료는 이 두 건의 트랜잭션에 나뉘어 적용됩니다."
   },
   "swapGasFeesSponsored": {
     "message": "MetaMask가 지불함"
@@ -12118,15 +12062,6 @@
   "swapLearnMore": {
     "message": "스왑 자세히 알아보기"
   },
-  "swapLiquiditySourceInfo": {
-    "message": "저희는 여러 유동성 공급원(거래소, 애그리게이터, 투자전문기관)을 검색하여 환율과 네트워크 수수료를 비교해 드립니다."
-  },
-  "swapMaxSlippage": {
-    "message": "최대 슬리패지"
-  },
-  "swapMetaMaskFee": {
-    "message": "MetaMask 수수료"
-  },
   "swapMetaMaskFeeDescription": {
     "message": "$1%의 수수료는 자동으로 각 견적에 반영됩니다. 이는 MetaMask의 유동성 공급자 정보 집계용 소프트웨어 사용 라이선스 비용입니다.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
@@ -12134,19 +12069,6 @@
   "swapNQuotesWithDot": {
     "message": "$1 견적.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapOnceTransactionHasProcess": {
-    "message": "$1토큰은 이 트랜잭션이 처리되면 회원님의 계정에 추가됩니다.",
-    "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
-  },
-  "swapProcessing": {
-    "message": "처리 중"
-  },
-  "swapQuoteDetails": {
-    "message": "견적 세부 사항"
-  },
-  "swapQuoteSource": {
-    "message": "견적 소스"
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "새 견적을 요청해 최신 요율을 확인하세요."
@@ -12157,41 +12079,14 @@
   "swapQuotesNotAvailableDescription": {
     "message": "트랜잭션 규모를 줄이거나 다른 토큰을 사용하세요."
   },
-  "swapQuotesNotAvailableErrorDescription": {
-    "message": "금액 또는 슬리패지 설정을 조정한 후 다시 시도해 보세요."
-  },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "사용 가능한 견적 없음"
-  },
-  "swapRate": {
-    "message": "환율"
-  },
-  "swapReceiving": {
-    "message": "받는 중"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "이것은 예상치입니다. 정확한 금액은 슬리패지에 따라 달라집니다."
   },
   "swapRequestForQuotation": {
     "message": "견적 요청"
   },
-  "swapSelect": {
-    "message": "선택"
-  },
-  "swapSelectAQuote": {
-    "message": "견적 선택"
-  },
-  "swapSelectAToken": {
-    "message": "토큰 선택"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "다음은 여러 유동성 소스에서 수집한 전체 견적입니다."
-  },
   "swapSelectToken": {
     "message": "토큰 선택"
-  },
-  "swapShowLatestQuotes": {
-    "message": "최신 견적 표시"
   },
   "swapSlippageAutoDescription": {
     "message": "자동"
@@ -12238,18 +12133,8 @@
   "swapSlippageZeroTitle": {
     "message": "제로 슬리피지 견적 제공자 소싱"
   },
-  "swapSource": {
-    "message": "유동성 소스"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "스왑은 복잡하고 신속한 처리가 필요한 거래입니다. 비용과 스왑 성공 가능성을 균형 있게 고려하여 이 네트워크 수수료를 권장합니다."
-  },
-  "swapToConfirmWithHwWallet": {
-    "message": "하드웨어 지갑으로 컨펌하기 위해"
-  },
-  "swapTokenAvailable": {
-    "message": "$1이(가) 계정에 추가되었습니다.",
-    "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
   },
   "swapTokenNotAvailable": {
     "message": "이 지역에서는 토큰을 스왑할 수 없습니다"
@@ -12257,20 +12142,11 @@
   "swapTokens": {
     "message": "토큰 스왑"
   },
-  "swapTransactionComplete": {
-    "message": "트랜잭션 완료"
-  },
-  "swapTwoTransactions": {
-    "message": "트랜잭션 2건"
-  },
   "swapUnknown": {
     "message": "알 수 없음"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "$1(이)가 부족해 이 스왑에 대한 네트워크 수수료를 지불할 수 없습니다. 더 적은 금액을 입력하거나 더 많은 $1(을)를 구매하세요."
-  },
-  "swapZeroSlippage": {
-    "message": "0% 슬리패지"
   },
   "swapsMaxSlippage": {
     "message": "슬리피지 허용치"
@@ -12283,9 +12159,6 @@
   },
   "swapsRebateTooltipTitle": {
     "message": "트레이드 보상"
-  },
-  "swapsViewInActivity": {
-    "message": "활동에서 보기"
   },
   "switch": {
     "message": "전환"
