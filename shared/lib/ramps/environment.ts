@@ -1,4 +1,4 @@
-import { RampsEnvironment } from '@metamask/ramps-controller';
+import { RampsClientBuild, RampsEnvironment } from '@metamask/ramps-controller';
 import {
   ENVIRONMENT,
   type MetaMaskBuildEnvironment,
@@ -34,4 +34,16 @@ export function getRampsEnvironment(): RampsEnvironment {
     default:
       return RampsEnvironment.Staging;
   }
+}
+
+/**
+ * Determines the client build channel sent to the ramps API, so it can tell
+ * release-candidate builds apart from every other build of the same version.
+ *
+ * @returns `rc` for release-candidate builds, `prod` otherwise.
+ */
+export function getRampsClientBuild(): RampsClientBuild {
+  return process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.RELEASE_CANDIDATE
+    ? RampsClientBuild.ReleaseCandidate
+    : RampsClientBuild.Production;
 }

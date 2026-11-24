@@ -2,7 +2,10 @@ import {
   RampsService,
   type RampsServiceMessenger,
 } from '@metamask/ramps-controller';
-import { getRampsEnvironment } from '../../../shared/lib/ramps/environment';
+import {
+  getRampsClientBuild,
+  getRampsEnvironment,
+} from '../../../shared/lib/ramps/environment';
 import type { MessengerClientInitFunction } from './types';
 
 /**
@@ -25,6 +28,7 @@ export const RampsServiceInit: MessengerClientInitFunction<
     // can version-gate features per client. Headers are not used for gating.
     clientProduct: 'metamask-extension',
     clientVersion: process.env.METAMASK_VERSION,
+    clientBuild: getRampsClientBuild(),
   });
 
   return { messengerClient, persistedStateKey: null, memStateKey: null };

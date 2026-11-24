@@ -1,10 +1,10 @@
-import { RampsEnvironment } from '@metamask/ramps-controller';
+import { RampsClientBuild, RampsEnvironment } from '@metamask/ramps-controller';
 import {
   ENVIRONMENT,
   type MetaMaskBuildEnvironment,
 } from '../../constants/build';
 
-import { getRampsEnvironment } from './environment';
+import { getRampsClientBuild, getRampsEnvironment } from './environment';
 
 const EXPECTED_RAMPS_ENVIRONMENT_BY_METAMASK_ENVIRONMENT: Record<
   MetaMaskBuildEnvironment,
@@ -59,5 +59,41 @@ describe('getRampsEnvironment', () => {
 
       expect(getRampsEnvironment()).toBe(RampsEnvironment.Staging);
     });
+  });
+});
+
+describe('getRampsClientBuild', () => {
+  const originalEnv = process.env.METAMASK_ENVIRONMENT;
+
+  afterEach(() => {
+    process.env.METAMASK_ENVIRONMENT = originalEnv;
+  });
+
+  it('returns rc for release-candidate builds', () => {
+    process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.RELEASE_CANDIDATE;
+
+    expect(getRampsClientBuild()).toBe(RampsClientBuild.ReleaseCandidate);
+  });
+
+  [
+    ENVIRONMENT.PRODUCTION,
+    ENVIRONMENT.STAGING,
+    ENVIRONMENT.DEVELOPMENT,
+    ENVIRONMENT.OTHER,
+    ENVIRONMENT.PULL_REQUEST,
+    ENVIRONMENT.TESTING,
+    ...ENVIRONMENT_ALIASES,
+  ].forEach((metamaskEnvironment) => {
+    it(`returns prod when METAMASK_ENVIRONMENT is ${metamaskEnvironment}`, () => {
+      process.env.METAMASK_ENVIRONMENT = metamaskEnvironment;
+
+      expect(getRampsClientBuild()).toBe(RampsClientBuild.Production);
+    });
+  });
+
+  it('returns prod when METAMASK_ENVIRONMENT is unset', () => {
+    delete process.env.METAMASK_ENVIRONMENT;
+
+    expect(getRampsClientBuild()).toBe(RampsClientBuild.Production);
   });
 });
