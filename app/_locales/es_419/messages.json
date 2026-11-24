@@ -1323,12 +1323,6 @@
   "add_device_try_again": {
     "message": "Inténtalo de nuevo"
   },
-  "add_device_validating_desc": {
-    "message": "Estableciendo una conexión segura y cifrada con tu teléfono."
-  },
-  "add_device_validating_title": {
-    "message": "Vinculando dispositivos"
-  },
   "add_wallets": {
     "message": "Elige qué sincronizar"
   },
@@ -4013,10 +4007,6 @@
   "enter_verification_code_expired": {
     "message": "Código de verificación expirado"
   },
-  "enter_verification_code_expires_in": {
-    "message": "Expira en $1 s",
-    "description": "$1 is the number of seconds remaining before the verification code expires"
-  },
   "enter_verification_code_max_attempts": {
     "message": "Demasiados intentos incorrectos. Comienza con un nuevo código QR."
   },
@@ -4476,9 +4466,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Algo salió mal..."
-  },
-  "generateNewQrCode": {
-    "message": "Generar nuevo código QR"
   },
   "genericExplorerView": {
     "message": "Ver cuenta en $1"
@@ -9229,13 +9216,6 @@
     "message": "Se necesita acceso a la cámara",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
-  "qrCodeExpired": {
-    "message": "Código QR expirado"
-  },
-  "qrCodeExpiresIn": {
-    "message": "Expira en $1 s",
-    "description": "$1 is the number of seconds remaining before the QR code expires"
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Este código QR corresponde a otra transacción. Cancélala e inténtalo de nuevo, asegurándote de escanear primero el código QR que aparece en MetaMask con tu billetera física.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -11892,9 +11872,6 @@
   "standardAccountLabel": {
     "message": "Cuenta estándar"
   },
-  "start_with_new_qr_code": {
-    "message": "Comenzar con un nuevo código QR"
-  },
   "stateCorruptionAreYouSure": {
     "message": "¿Estás seguro de que deseas continuar?"
   },
@@ -12050,28 +12027,12 @@
   "swapAggregator": {
     "message": "Agregador"
   },
-  "swapAllowSwappingOf": {
-    "message": "Permitir intercambio de $1",
-    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
-  },
-  "swapAmountReceived": {
-    "message": "Monto garantizado"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "Se refiere al monto mínimo que recibirá. Puede recibir más en función del deslizamiento."
-  },
   "swapAndSend": {
     "message": "Canjear y enviar"
   },
   "swapApproval": {
     "message": "Aprobar $1 para intercambios",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
-  },
-  "swapAreYouStillThere": {
-    "message": "¿Sigue ahí?"
-  },
-  "swapAreYouStillThereDescription": {
-    "message": "Estamos listos para mostrarle las últimas cotizaciones cuando desee continuar"
   },
   "swapConfirmWithHwWallet": {
     "message": "Confirmar con su monedero físico"
@@ -12102,16 +12063,6 @@
     "message": "Esto será $1 por intercambiar",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
-  "swapEstimatedNetworkFees": {
-    "message": "Tarifas de red estimadas"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "Un estimado de la tarifa de red que se usará para realizar el intercambio. El monto real puede cambiar según las condiciones de la red."
-  },
-  "swapFailedErrorDescriptionWithSupportLink": {
-    "message": "Pueden ocurrir fallas en las transacciones, por lo que estamos aquí para ayudarlo. Si el problema persiste, comuníquese con nuestro soporte al cliente al $1 para recibir ayuda adicional.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
-  },
   "swapFailedErrorTitle": {
     "message": "Error al intercambiar"
   },
@@ -12128,10 +12079,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "Error al capturar cotizaciones"
   },
-  "swapFromTo": {
-    "message": "El intercambio de $1 por $2",
-    "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
   "swapGasFeesExplanation": {
     "message": "MetaMask no gana dinero con las tarifas de red. Estas tarifas son estimaciones y pueden cambiar según el nivel de tráfico de la red y la complejidad de la transacción. Más información $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -12139,9 +12086,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "aquí",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesSplit": {
-    "message": "Las tarifas de red de la pantalla anterior se dividen entre estas dos transacciones."
   },
   "swapGasFeesSponsored": {
     "message": "Pagado por MetaMask"
@@ -12156,15 +12100,6 @@
   "swapLearnMore": {
     "message": "Más información sobre los intercambios"
   },
-  "swapLiquiditySourceInfo": {
-    "message": "Buscamos varias fuentes de liquidez (sitios de cambio, agregadores y creadores de mercado profesionales) para comparar las mejores tasas de cambio y las tarifas de red."
-  },
-  "swapMaxSlippage": {
-    "message": "Deslizamiento máximo"
-  },
-  "swapMetaMaskFee": {
-    "message": "Tarifa de MetaMask"
-  },
   "swapMetaMaskFeeDescription": {
     "message": "La tarifa de $1% se incluye automáticamente en esta cotización. Lo paga a cambio de una licencia para usar el software de agregación de información del proveedor de liquidez de MetaMask.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
@@ -12172,19 +12107,6 @@
   "swapNQuotesWithDot": {
     "message": "$1 cotizaciones.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapOnceTransactionHasProcess": {
-    "message": "Su $1 se agregará a la cuenta una vez que se procese esta transacción.",
-    "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
-  },
-  "swapProcessing": {
-    "message": "Procesando"
-  },
-  "swapQuoteDetails": {
-    "message": "Detalles de cotización"
-  },
-  "swapQuoteSource": {
-    "message": "Fuente de la cotización"
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "Solicite cotizaciones nuevas para tener los costos más recientes."
@@ -12195,41 +12117,14 @@
   "swapQuotesNotAvailableDescription": {
     "message": "Esta ruta de operaciones no está disponible en este momento. Intente cambiar el importe, la red o el token y encontraremos la mejor opción."
   },
-  "swapQuotesNotAvailableErrorDescription": {
-    "message": "Intente ajustar la configuración de monto o deslizamiento y vuelva a intentarlo."
-  },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "No hay cotizaciones disponibles"
-  },
-  "swapRate": {
-    "message": "Tasa"
-  },
-  "swapReceiving": {
-    "message": "Recibiendo"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "Este es un valor estimado. El monto exacto depende del deslizamiento."
   },
   "swapRequestForQuotation": {
     "message": "Solicitud de cotización"
   },
-  "swapSelect": {
-    "message": "Seleccionar"
-  },
-  "swapSelectAQuote": {
-    "message": "Seleccionar una cotización"
-  },
-  "swapSelectAToken": {
-    "message": "Selecciona un token"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "A continuación se muestran todas las cotizaciones recopiladas de diversas fuentes de liquidez."
-  },
   "swapSelectToken": {
     "message": "Selecciona un token"
-  },
-  "swapShowLatestQuotes": {
-    "message": "Mostrar cotizaciones más recientes"
   },
   "swapSlippageAutoDescription": {
     "message": "Automático"
@@ -12276,18 +12171,8 @@
   "swapSlippageZeroTitle": {
     "message": "Abastecimiento de proveedores de deslizamiento cero"
   },
-  "swapSource": {
-    "message": "Fuente de liquidez"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Los canjes son transacciones complejas y sensibles al tiempo. Recomendamos esta tarifa de red para lograr un buen equilibrio entre el costo y la probabilidad de que el canje se realice correctamente."
-  },
-  "swapToConfirmWithHwWallet": {
-    "message": "para confirmar con la cartera de hardware"
-  },
-  "swapTokenAvailable": {
-    "message": "Su $1 se agregó a la cuenta.",
-    "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
   },
   "swapTokenNotAvailable": {
     "message": "El token no está disponible para intercambiar en esta región"
@@ -12295,20 +12180,11 @@
   "swapTokens": {
     "message": "Canjear tokens"
   },
-  "swapTransactionComplete": {
-    "message": "Transacción completa"
-  },
-  "swapTwoTransactions": {
-    "message": "2 transacciones"
-  },
   "swapUnknown": {
     "message": "Desconocida"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "No dispones de suficiente $1 para pagar la tarifa de red de este canje. Ingresa un monto menor o compra más $1."
-  },
-  "swapZeroSlippage": {
-    "message": "0 % de deslizamiento"
   },
   "swapsMaxSlippage": {
     "message": "Tolerancia de deslizamiento"
@@ -12321,9 +12197,6 @@
   },
   "swapsRebateTooltipTitle": {
     "message": "Recompensas por trading"
-  },
-  "swapsViewInActivity": {
-    "message": "Ver en actividad"
   },
   "switch": {
     "message": "Cambiar"

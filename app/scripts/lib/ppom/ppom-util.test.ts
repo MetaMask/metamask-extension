@@ -11,7 +11,6 @@ import {
   SignatureRequestType,
 } from '@metamask/signature-controller';
 import { Hex, JsonRpcRequest } from '@metamask/utils';
-import { PPOM } from '@blockaid/ppom_release';
 import { isSnapId } from '@metamask/snaps-utils';
 import {
   MOCK_ANY_NAMESPACE,
@@ -81,7 +80,7 @@ const SECURITY_ALERT_RESPONSE_MOCK: SecurityAlertResponse = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   result_type: 'success',
   reason: 'success',
-  source: SecurityAlertSource.Local,
+  source: SecurityAlertSource.API,
   securityAlertId: SECURITY_ALERT_ID_MOCK,
 };
 
@@ -99,12 +98,6 @@ const TRANSACTION_PARAMS_MOCK_2: TransactionParams = {
   ...TRANSACTION_PARAMS_MOCK_1,
   to: '0x456',
 };
-
-function createPPOMMock() {
-  return {
-    validateJsonRpc: jest.fn(),
-  } as unknown as jest.Mocked<PPOM>;
-}
 
 function createErrorMock() {
   const error = new Error('Test error message');
@@ -125,10 +118,7 @@ function createMessenger(): TestMessenger {
 
 describe('PPOM Utils', () => {
   const updateSecurityAlertResponseMock = jest.fn();
-  let isSecurityAlertsEnabledMock: jest.SpyInstance;
   let messenger: TestMessenger;
-  let usePPOMMock: jest.Mock;
-  let ppom: jest.Mocked<PPOM>;
 
   const normalizeTransactionParamsMock = jest.mocked(
     normalizeTransactionParams,
@@ -147,14 +137,11 @@ describe('PPOM Utils', () => {
     jest.resetAllMocks();
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
 
-    isSecurityAlertsEnabledMock = jest
-      .spyOn(securityAlertAPI, 'isSecurityAlertsAPIEnabled')
-      .mockReturnValue(false);
+    jest
+      .spyOn(securityAlertAPI, 'validateWithSecurityAlertsAPI')
+      .mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
 
-    ppom = createPPOMMock();
-    usePPOMMock = jest.fn((callback) => callback(ppom));
     messenger = createMessenger();
-    messenger.registerActionHandler('PPOMController:usePPOM', usePPOMMock);
 
     normalizeTransactionParamsMock.mockImplementation(
       (params: TransactionParams) => params,
@@ -166,30 +153,24 @@ describe('PPOM Utils', () => {
   });
 
   describe('validateRequestWithPPOM', () => {
-    it('updates response from validation with PPOM instance via controller', async () => {
-      ppom.validateJsonRpc.mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
-
+    it('updates response via security alerts API', async () => {
       await validateRequestWithPPOM({
         ...validateRequestWithPPOMOptionsBase,
-        messenger,
       });
+
       expect(updateSecurityAlertResponseMock).toHaveBeenCalledWith(
         REQUEST_MOCK.method,
         SECURITY_ALERT_ID_MOCK,
         {
           ...SECURITY_ALERT_RESPONSE_MOCK,
-          securityAlertId: SECURITY_ALERT_ID_MOCK,
+          source: SecurityAlertSource.API,
         },
       );
-
-      expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
-      expect(ppom.validateJsonRpc).toHaveBeenCalledWith(REQUEST_MOCK);
     });
 
     it('updates securityAlertResponse with loading state', async () => {
       await validateRequestWithPPOM({
         ...validateRequestWithPPOMOptionsBase,
-        messenger,
       });
 
       expect(updateSecurityAlertResponseMock).toHaveBeenCalledWith(
@@ -199,12 +180,13 @@ describe('PPOM Utils', () => {
       );
     });
 
-    it('updates error response if validation with PPOM instance throws', async () => {
-      ppom.validateJsonRpc.mockRejectedValue(createErrorMock());
+    it('updates error response if security alerts API throws', async () => {
+      jest
+        .spyOn(securityAlertAPI, 'validateWithSecurityAlertsAPI')
+        .mockRejectedValue(createErrorMock());
 
       await validateRequestWithPPOM({
         ...validateRequestWithPPOMOptionsBase,
-        messenger,
       });
 
       expect(updateSecurityAlertResponseMock).toHaveBeenCalledWith(
@@ -216,29 +198,7 @@ describe('PPOM Utils', () => {
           result_type: BlockaidResultType.Errored,
           reason: BlockaidReason.errored,
           description: 'Test Error: Test error message',
-          source: SecurityAlertSource.Local,
-        },
-      );
-    });
-
-    it('updates error response if controller throws', async () => {
-      usePPOMMock.mockRejectedValue(createErrorMock());
-
-      await validateRequestWithPPOM({
-        ...validateRequestWithPPOMOptionsBase,
-        messenger,
-      });
-
-      expect(updateSecurityAlertResponseMock).toHaveBeenCalledWith(
-        validateRequestWithPPOMOptionsBase.request.method,
-        SECURITY_ALERT_ID_MOCK,
-        {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          result_type: BlockaidResultType.Errored,
-          reason: BlockaidReason.errored,
-          description: 'Test Error: Test error message',
-          source: SecurityAlertSource.Local,
+          source: SecurityAlertSource.API,
         },
       );
     });
@@ -253,6 +213,10 @@ describe('PPOM Utils', () => {
           txParams: TRANSACTION_PARAMS_MOCK_1,
         });
 
+        const validateWithSecurityAlertsAPIMock = jest
+          .spyOn(securityAlertAPI, 'validateWithSecurityAlertsAPI')
+          .mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
+
         const request = {
           ...REQUEST_MOCK,
           method: 'eth_sendTransaction',
@@ -261,15 +225,18 @@ describe('PPOM Utils', () => {
 
         await validateRequestWithPPOM({
           ...validateRequestWithPPOMOptionsBase,
-          messenger,
           request,
         });
 
-        expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
-        expect(ppom.validateJsonRpc).toHaveBeenCalledWith({
-          ...request,
-          params: [TRANSACTION_PARAMS_MOCK_2],
-        });
+        expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledTimes(1);
+        expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledWith(
+          CHAIN_ID_MOCK,
+          {
+            ...request,
+            params: [TRANSACTION_PARAMS_MOCK_2],
+          },
+          undefined,
+        );
 
         expect(normalizeTransactionParamsMock).toHaveBeenCalledTimes(1);
         expect(normalizeTransactionParamsMock).toHaveBeenCalledWith(
@@ -286,6 +253,10 @@ describe('PPOM Utils', () => {
           },
         });
 
+        const validateWithSecurityAlertsAPIMock = jest
+          .spyOn(securityAlertAPI, 'validateWithSecurityAlertsAPI')
+          .mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
+
         const request = {
           ...REQUEST_MOCK,
           method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
@@ -294,21 +265,24 @@ describe('PPOM Utils', () => {
 
         await validateRequestWithPPOM({
           ...validateRequestWithPPOMOptionsBase,
-          messenger,
           request,
         });
 
-        expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
-        expect(ppom.validateJsonRpc).toHaveBeenCalledWith({
-          ...request,
-          params: [
-            {
-              ...TRANSACTION_PARAMS_MOCK_1,
-              gas: GAS_MOCK,
-              gasPrice: GAS_PRICE_MOCK,
-            },
-          ],
-        });
+        expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledTimes(1);
+        expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledWith(
+          CHAIN_ID_MOCK,
+          {
+            ...request,
+            params: [
+              {
+                ...TRANSACTION_PARAMS_MOCK_1,
+                gas: GAS_MOCK,
+                gasPrice: GAS_PRICE_MOCK,
+              },
+            ],
+          },
+          undefined,
+        );
       });
 
       it('includes gas properties using gas price', async () => {
@@ -320,6 +294,10 @@ describe('PPOM Utils', () => {
           },
         });
 
+        const validateWithSecurityAlertsAPIMock = jest
+          .spyOn(securityAlertAPI, 'validateWithSecurityAlertsAPI')
+          .mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
+
         const request = {
           ...REQUEST_MOCK,
           method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
@@ -328,21 +306,24 @@ describe('PPOM Utils', () => {
 
         await validateRequestWithPPOM({
           ...validateRequestWithPPOMOptionsBase,
-          messenger,
           request,
         });
 
-        expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
-        expect(ppom.validateJsonRpc).toHaveBeenCalledWith({
-          ...request,
-          params: [
-            {
-              ...TRANSACTION_PARAMS_MOCK_1,
-              gas: GAS_MOCK,
-              gasPrice: GAS_PRICE_MOCK,
-            },
-          ],
-        });
+        expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledTimes(1);
+        expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledWith(
+          CHAIN_ID_MOCK,
+          {
+            ...request,
+            params: [
+              {
+                ...TRANSACTION_PARAMS_MOCK_1,
+                gas: GAS_MOCK,
+                gasPrice: GAS_PRICE_MOCK,
+              },
+            ],
+          },
+          undefined,
+        );
       });
 
       it('removes unnecessary params', async () => {
@@ -353,6 +334,10 @@ describe('PPOM Utils', () => {
             maxFeePerGas: GAS_PRICE_MOCK,
           },
         });
+
+        const validateWithSecurityAlertsAPIMock = jest
+          .spyOn(securityAlertAPI, 'validateWithSecurityAlertsAPI')
+          .mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
 
         const request = {
           ...REQUEST_MOCK,
@@ -370,21 +355,24 @@ describe('PPOM Utils', () => {
 
         await validateRequestWithPPOM({
           ...validateRequestWithPPOMOptionsBase,
-          messenger,
           request,
         });
 
-        expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
-        expect(ppom.validateJsonRpc).toHaveBeenCalledWith({
-          ...request,
-          params: [
-            {
-              ...TRANSACTION_PARAMS_MOCK_1,
-              gas: GAS_MOCK,
-              gasPrice: GAS_PRICE_MOCK,
-            },
-          ],
-        });
+        expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledTimes(1);
+        expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledWith(
+          CHAIN_ID_MOCK,
+          {
+            ...request,
+            params: [
+              {
+                ...TRANSACTION_PARAMS_MOCK_1,
+                gas: GAS_MOCK,
+                gasPrice: GAS_PRICE_MOCK,
+              },
+            ],
+          },
+          undefined,
+        );
       });
     });
 
@@ -408,17 +396,24 @@ describe('PPOM Utils', () => {
         params,
       } as unknown as JsonRpcRequest;
 
+      const validateWithSecurityAlertsAPIMock = jest
+        .spyOn(securityAlertAPI, 'validateWithSecurityAlertsAPI')
+        .mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
+
       await validateRequestWithPPOM({
         ...validateRequestWithPPOMOptionsBase,
-        messenger,
         request,
       });
 
-      expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
-      expect(ppom.validateJsonRpc).toHaveBeenCalledWith({
-        ...request,
-        params: firstTwoParams,
-      });
+      expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledTimes(1);
+      expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledWith(
+        CHAIN_ID_MOCK,
+        {
+          ...request,
+          params: firstTwoParams,
+        },
+        undefined,
+      );
     });
 
     it('sanitizes request params if second param is an object', async () => {
@@ -433,23 +428,37 @@ describe('PPOM Utils', () => {
         params,
       } as unknown as JsonRpcRequest;
 
+      const validateWithSecurityAlertsAPIMock = jest
+        .spyOn(securityAlertAPI, 'validateWithSecurityAlertsAPI')
+        .mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
+
       await validateRequestWithPPOM({
         ...validateRequestWithPPOMOptionsBase,
-        messenger,
         request,
       });
 
-      expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
-      expect(ppom.validateJsonRpc).toHaveBeenCalledWith({
-        ...request,
-        params: [SIGN_TYPED_DATA_PARAMS_MOCK_1, SIGN_TYPED_DATA_PARAMS_MOCK_2],
-      });
+      expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledTimes(1);
+      expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledWith(
+        CHAIN_ID_MOCK,
+        {
+          ...request,
+          params: [
+            SIGN_TYPED_DATA_PARAMS_MOCK_1,
+            SIGN_TYPED_DATA_PARAMS_MOCK_2,
+          ],
+        },
+        undefined,
+      );
     });
 
     it('removes unnecessary properties from request', async () => {
       updateSecurityAlertResponseMock.mockResolvedValue({
         txParams: TRANSACTION_PARAMS_MOCK_1,
       });
+
+      const validateWithSecurityAlertsAPIMock = jest
+        .spyOn(securityAlertAPI, 'validateWithSecurityAlertsAPI')
+        .mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
 
       const request = {
         ...REQUEST_MOCK,
@@ -463,16 +472,19 @@ describe('PPOM Utils', () => {
 
       await validateRequestWithPPOM({
         ...validateRequestWithPPOMOptionsBase,
-        messenger,
         request: request as never,
       });
 
-      expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
-      expect(ppom.validateJsonRpc).toHaveBeenCalledWith({
-        ...request,
-        test1: undefined,
-        test2: undefined,
-      });
+      expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledTimes(1);
+      expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledWith(
+        CHAIN_ID_MOCK,
+        {
+          ...request,
+          test1: undefined,
+          test2: undefined,
+        },
+        undefined,
+      );
     });
 
     describe('permission origin handling', () => {
@@ -480,6 +492,10 @@ describe('PPOM Utils', () => {
         // Mock snap validation functions
         isSnapIdMock.mockReturnValue(true);
         isSnapPreinstalledMock.mockReturnValue(true);
+
+        const validateWithSecurityAlertsAPIMock = jest
+          .spyOn(securityAlertAPI, 'validateWithSecurityAlertsAPI')
+          .mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
 
         const request = {
           ...REQUEST_MOCK,
@@ -526,7 +542,6 @@ describe('PPOM Utils', () => {
 
         await validateRequestWithPPOM({
           ...validateRequestWithPPOMOptionsBase,
-          messenger,
           request,
         });
 
@@ -534,16 +549,20 @@ describe('PPOM Utils', () => {
         expect(isSnapPreinstalledMock).toHaveBeenCalledWith(
           GATOR_SNAP_ORIGIN_MOCK,
         );
-        expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
-        expect(ppom.validateJsonRpc).toHaveBeenCalledWith(
+        expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledTimes(1);
+        expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledWith(
+          CHAIN_ID_MOCK,
           expect.objectContaining({
             origin: PERMISSION_ORIGIN_MOCK, // Should use permission origin
           }),
+          undefined,
         );
-        expect(ppom.validateJsonRpc).toHaveBeenCalledWith(
-          expect.not.objectContaining({
+        expect(validateWithSecurityAlertsAPIMock).not.toHaveBeenCalledWith(
+          CHAIN_ID_MOCK,
+          expect.objectContaining({
             origin: GATOR_SNAP_ORIGIN_MOCK, // Should not use Gator snap origin
           }),
+          undefined,
         );
       });
 
@@ -553,6 +572,10 @@ describe('PPOM Utils', () => {
         isSnapPreinstalledMock.mockReturnValue(false);
 
         const nonPreinstalledSnapOrigin = 'npm:@metamask/fake-permissions-snap';
+
+        const validateWithSecurityAlertsAPIMock = jest
+          .spyOn(securityAlertAPI, 'validateWithSecurityAlertsAPI')
+          .mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
 
         const request = {
           ...REQUEST_MOCK,
@@ -599,7 +622,6 @@ describe('PPOM Utils', () => {
 
         await validateRequestWithPPOM({
           ...validateRequestWithPPOMOptionsBase,
-          messenger,
           request,
         });
 
@@ -607,22 +629,30 @@ describe('PPOM Utils', () => {
         expect(isSnapPreinstalledMock).toHaveBeenCalledWith(
           nonPreinstalledSnapOrigin,
         );
-        expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
-        expect(ppom.validateJsonRpc).toHaveBeenCalledWith(
+        expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledTimes(1);
+        expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledWith(
+          CHAIN_ID_MOCK,
           expect.objectContaining({
             origin: nonPreinstalledSnapOrigin, // Should use snap origin, not permission origin
           }),
+          undefined,
         );
-        expect(ppom.validateJsonRpc).toHaveBeenCalledWith(
-          expect.not.objectContaining({
+        expect(validateWithSecurityAlertsAPIMock).not.toHaveBeenCalledWith(
+          CHAIN_ID_MOCK,
+          expect.objectContaining({
             origin: 'https://legitimate-domain.com', // Should not use permission origin
           }),
+          undefined,
         );
       });
 
       it('rejects origin override for non-snap requests', async () => {
         // Mock snap validation functions - not a snap
         isSnapIdMock.mockReturnValue(false);
+
+        const validateWithSecurityAlertsAPIMock = jest
+          .spyOn(securityAlertAPI, 'validateWithSecurityAlertsAPI')
+          .mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
 
         const request = {
           ...REQUEST_MOCK,
@@ -669,22 +699,25 @@ describe('PPOM Utils', () => {
 
         await validateRequestWithPPOM({
           ...validateRequestWithPPOMOptionsBase,
-          messenger,
           request,
         });
 
         expect(isSnapIdMock).toHaveBeenCalledWith('https://malicious-site.com');
         expect(isSnapPreinstalledMock).not.toHaveBeenCalled();
-        expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
-        expect(ppom.validateJsonRpc).toHaveBeenCalledWith(
+        expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledTimes(1);
+        expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledWith(
+          CHAIN_ID_MOCK,
           expect.objectContaining({
             origin: 'https://malicious-site.com', // Should use request origin, not permission origin
           }),
+          undefined,
         );
-        expect(ppom.validateJsonRpc).toHaveBeenCalledWith(
-          expect.not.objectContaining({
+        expect(validateWithSecurityAlertsAPIMock).not.toHaveBeenCalledWith(
+          CHAIN_ID_MOCK,
+          expect.objectContaining({
             origin: 'https://legitimate-domain.com', // Should not use permission origin
           }),
+          undefined,
         );
       });
 
@@ -718,17 +751,22 @@ describe('PPOM Utils', () => {
           signatureRequestWithoutPermission,
         );
 
+        const validateWithSecurityAlertsAPIMock = jest
+          .spyOn(securityAlertAPI, 'validateWithSecurityAlertsAPI')
+          .mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
+
         await validateRequestWithPPOM({
           ...validateRequestWithPPOMOptionsBase,
-          messenger,
           request,
         });
 
-        expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
-        expect(ppom.validateJsonRpc).toHaveBeenCalledWith(
+        expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledTimes(1);
+        expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledWith(
+          CHAIN_ID_MOCK,
           expect.objectContaining({
             origin: requestOrigin, // Should use request origin
           }),
+          undefined,
         );
       });
 
@@ -781,9 +819,12 @@ describe('PPOM Utils', () => {
           signatureRequestWithMaliciousPermission,
         );
 
+        const validateWithSecurityAlertsAPIMock = jest
+          .spyOn(securityAlertAPI, 'validateWithSecurityAlertsAPI')
+          .mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
+
         await validateRequestWithPPOM({
           ...validateRequestWithPPOMOptionsBase,
-          messenger,
           request,
         });
 
@@ -791,11 +832,13 @@ describe('PPOM Utils', () => {
         expect(isSnapPreinstalledMock).toHaveBeenCalledWith(
           GATOR_SNAP_ORIGIN_MOCK,
         );
-        expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
-        expect(ppom.validateJsonRpc).toHaveBeenCalledWith(
+        expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledTimes(1);
+        expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledWith(
+          CHAIN_ID_MOCK,
           expect.objectContaining({
             origin: maliciousDomain, // Should validate against malicious domain
           }),
+          undefined,
         );
       });
     });
@@ -969,9 +1012,7 @@ describe('PPOM Utils', () => {
       params: [TRANSACTION_PARAMS_MOCK_1],
     };
 
-    it('uses security alerts API if enabled', async () => {
-      isSecurityAlertsEnabledMock.mockReturnValue(true);
-
+    it('always calls security alerts API', async () => {
       const validateWithSecurityAlertsAPIMock = jest
         .spyOn(securityAlertAPI, 'validateWithSecurityAlertsAPI')
         .mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
@@ -984,13 +1025,9 @@ describe('PPOM Utils', () => {
 
       await validateRequestWithPPOM({
         ...validateRequestWithPPOMOptionsBase,
-        messenger,
         request,
         getSecurityAlertsConfig: getSecurityAlertsConfigMock,
       });
-
-      expect(usePPOMMock).not.toHaveBeenCalled();
-      expect(ppom.validateJsonRpc).not.toHaveBeenCalled();
 
       expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledTimes(1);
       expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledWith(
@@ -1000,33 +1037,29 @@ describe('PPOM Utils', () => {
       );
     });
 
-    it('uses controller if security alerts API throws', async () => {
-      isSecurityAlertsEnabledMock.mockReturnValue(true);
+    it('returns errored response if security alerts API throws', async () => {
+      jest
+        .spyOn(securityAlertAPI, 'validateWithSecurityAlertsAPI')
+        .mockRejectedValue(new Error('Test Error'));
 
       updateSecurityAlertResponseMock.mockResolvedValue({
         txParams: TRANSACTION_PARAMS_MOCK_1,
       });
 
-      const validateWithSecurityAlertsAPIMock = jest
-        .spyOn(securityAlertAPI, 'validateWithSecurityAlertsAPI')
-        .mockRejectedValue(new Error('Test Error'));
-
-      const getSecurityAlertsConfigMock = jest.fn();
-
       await validateRequestWithPPOM({
         ...validateRequestWithPPOMOptionsBase,
-        messenger,
         request,
-        getSecurityAlertsConfig: getSecurityAlertsConfigMock,
       });
 
-      expect(usePPOMMock).toHaveBeenCalledTimes(1);
-
-      expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledTimes(1);
-      expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledWith(
-        CHAIN_ID_MOCK,
-        request,
-        getSecurityAlertsConfigMock,
+      expect(updateSecurityAlertResponseMock).toHaveBeenLastCalledWith(
+        request.method,
+        SECURITY_ALERT_ID_MOCK,
+        expect.objectContaining({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: BlockaidResultType.Errored,
+          reason: BlockaidReason.errored,
+        }),
       );
     });
   });

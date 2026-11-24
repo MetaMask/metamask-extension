@@ -27,6 +27,9 @@ class TokenManagementPage {
   private readonly successToast =
     '[data-testid="token-management-custom-token-success-toast"]';
 
+  private readonly successToastCloseButton =
+    '[data-testid="toast-close-button"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -44,6 +47,20 @@ class TokenManagementPage {
   async clickAddCustomToken(): Promise<void> {
     console.log('Click "Add a custom token"');
     await this.driver.clickElement(this.addCustomTokenButton);
+  }
+
+  /**
+   * Closes the custom token success toast and waits for it to be removed, so
+   * it can't intercept clicks on the next screen.
+   */
+  async closeSuccessToast(): Promise<void> {
+    console.log('Close custom token success toast');
+    // The toast slides in, so a click during the animation can miss the close
+    // button and leave the toast on screen.
+    await this.driver.waitForElementToStopMoving(this.successToastCloseButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.successToastCloseButton,
+    );
   }
 
   async goBackToHomepage(): Promise<void> {

@@ -1319,7 +1319,7 @@
     "message": "We couldn't keep a secure connection with your phone. Check your internet connection and try again."
   },
   "add_device_error_expired": {
-    "message": "This sync session expired. Start again to generate a new QR code."
+    "message": "This session expired. Start with a new QR code."
   },
   "add_device_error_generic": {
     "message": "Something went wrong while syncing with your phone. Try again."
@@ -1334,63 +1334,60 @@
     "message": "We couldn't finish syncing your accounts to your phone. Try again."
   },
   "add_device_error_title": {
-    "message": "Sync couldn't be completed"
+    "message": "Couldn't add to mobile"
+  },
+  "add_device_import_accounts": {
+    "message": "Import accounts"
   },
   "add_device_success_desc_imported_plural": {
-    "message": "$1 imported accounts were synced to your phone.",
+    "message": "$1 imported accounts were synced to MetaMask mobile.",
     "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
   },
   "add_device_success_desc_imported_singular": {
-    "message": "1 imported account was synced to your phone.",
+    "message": "1 imported account was synced to MetaMask mobile.",
     "description": "Used when a single imported account was synced"
   },
   "add_device_success_desc_wallet_plural": {
-    "message": "$1 wallets were synced to your phone.",
+    "message": "$1 wallets were synced to MetaMask mobile.",
     "description": "$1 is the number of wallets. Used when only wallets were synced"
   },
   "add_device_success_desc_wallet_plural_imported_plural": {
-    "message": "$1 wallets and $2 imported accounts were synced to your phone.",
+    "message": "$1 wallets and $2 imported accounts were synced to MetaMask mobile.",
     "description": "$1 is the number of wallets, $2 is the number of imported accounts"
   },
   "add_device_success_desc_wallet_plural_imported_singular": {
-    "message": "$1 wallets and 1 imported account were synced to your phone.",
+    "message": "$1 wallets and 1 imported account were synced to MetaMask mobile.",
     "description": "$1 is the number of wallets. Used when multiple wallets and a single imported account were synced"
   },
   "add_device_success_desc_wallet_singular": {
-    "message": "1 wallet was synced to your phone.",
+    "message": "1 wallet was synced to MetaMask mobile.",
     "description": "Used when a single wallet was synced"
   },
   "add_device_success_desc_wallet_singular_imported_plural": {
-    "message": "1 wallet and $1 imported accounts were synced to your phone.",
+    "message": "1 wallet and $1 imported accounts were synced to MetaMask mobile.",
     "description": "$1 is the number of imported accounts. Used when a single wallet and multiple imported accounts were synced"
   },
   "add_device_success_desc_wallet_singular_imported_singular": {
-    "message": "1 wallet and 1 imported account were synced to your phone.",
+    "message": "1 wallet and 1 imported account were synced to MetaMask mobile.",
     "description": "Used when a single wallet and a single imported account were synced"
   },
   "add_device_success_title": {
-    "message": "Device paired"
+    "message": "Continue in MetaMask mobile"
   },
   "add_device_syncing_desc": {
-    "message": "Sending your selected accounts to your phone."
+    "message": "Sending your selected accounts to MetaMask mobile."
   },
   "add_device_syncing_title": {
     "message": "Importing accounts"
   },
   "add_device_try_again": {
-    "message": "Try again"
-  },
-  "add_device_validating_desc": {
-    "message": "Establishing a secure, encrypted connection with your phone."
-  },
-  "add_device_validating_title": {
-    "message": "Pairing devices"
+    "message": "Get new code"
   },
   "add_wallets": {
-    "message": "Choose what to sync"
+    "message": "Choose what to import"
   },
   "add_wallets_desc": {
-    "message": "Pick the wallets and accounts to import to your phone. You can change this later."
+    "message": "Pick the wallets and accounts to import."
   },
   "added": {
     "message": "Added"
@@ -2684,6 +2681,9 @@
   },
   "cancelled": {
     "message": "Cancelled"
+  },
+  "cantScanQrCode": {
+    "message": "Can’t scan? (For testing only)"
   },
   "carouselAllCaughtUp": {
     "message": "You're all caught up!",
@@ -4062,26 +4062,25 @@
     "message": "Enter verification code"
   },
   "enter_verification_code_desc": {
-    "message": "For security, enter the code shown in the MetaMask app on your device."
+    "message": "For your security, enter the code shown in MetaMask mobile."
   },
   "enter_verification_code_error": {
-    "message": "Incorrect code. Try again."
+    "message": "That code is incorrect. Try again."
   },
   "enter_verification_code_expired": {
-    "message": "Verification code expired"
-  },
-  "enter_verification_code_expires_in": {
-    "message": "Expires in $1s",
-    "description": "$1 is the number of seconds remaining before the verification code expires"
+    "message": "This code expired. Get a new QR code to try again."
   },
   "enter_verification_code_max_attempts": {
-    "message": "Too many incorrect attempts. Start with a new QR code."
+    "message": "You made too many incorrect attempts. Start with a new QR code."
+  },
+  "enter_verification_code_try_again": {
+    "message": "Try again"
   },
   "enter_your_password": {
     "message": "Enter your password"
   },
   "enter_your_password_desc": {
-    "message": "For account security, enter your password to view the QR code."
+    "message": "For your security, enter your password to choose accounts to import."
   },
   "enteredMalicious": {
     "message": "The Address You Entered"
@@ -4550,9 +4549,6 @@
   "generalCameraErrorTitle": {
     "message": "Something went wrong...."
   },
-  "generateNewQrCode": {
-    "message": "Generate new QR code"
-  },
   "genericExplorerView": {
     "message": "View account on $1"
   },
@@ -4815,6 +4811,9 @@
   },
   "hideAdvancedDetails": {
     "message": "Hide advanced details"
+  },
+  "hideQrData": {
+    "message": "Hide QR data (For testing only)"
   },
   "hideSentitiveInfo": {
     "message": "Hide sensitive information"
@@ -9302,13 +9301,6 @@
     "message": "Camera access needed",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
-  "qrCodeExpired": {
-    "message": "QR code expired"
-  },
-  "qrCodeExpiresIn": {
-    "message": "Expires in $1s",
-    "description": "$1 is the number of seconds remaining before the QR code expires"
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "This QR code is for a different transaction. Cancel and try again, making sure to scan the QR code shown in MetaMask with your hardware wallet first.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -9364,6 +9356,10 @@
   "qrHardwareScanSignatureNext": {
     "message": "Scan next QR code",
     "description": "Button label for scanning a non-final QR hardware-wallet signature after the user signs on their device."
+  },
+  "qrSyncStillConnecting": {
+    "message": "Still connecting. Don’t close MetaMask mobile.",
+    "description": "Shown while waiting for MetaMask mobile to respond after the verification code is entered"
   },
   "queued": {
     "message": "Queued"
@@ -10156,7 +10152,7 @@
     "message": "Scan QR code"
   },
   "scan_qr_code_desc": {
-    "message": "Scan this with the MetaMask app on the device you want to add."
+    "message": "Scan this QR code with MetaMask mobile."
   },
   "scrollDown": {
     "message": "Scroll down"
@@ -11971,9 +11967,6 @@
   "standardAccountLabel": {
     "message": "Standard account"
   },
-  "start_with_new_qr_code": {
-    "message": "Start with a new QR code"
-  },
   "stateCorruptionAreYouSure": {
     "message": "Are you sure you want to proceed?"
   },
@@ -12129,28 +12122,12 @@
   "swapAggregator": {
     "message": "Aggregator"
   },
-  "swapAllowSwappingOf": {
-    "message": "Allow swapping of $1",
-    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
-  },
-  "swapAmountReceived": {
-    "message": "Guaranteed amount"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "This is the minimum amount you will receive. You may receive more depending on slippage."
-  },
   "swapAndSend": {
     "message": "Swap & Send"
   },
   "swapApproval": {
     "message": "Approve $1 for swaps",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
-  },
-  "swapAreYouStillThere": {
-    "message": "Are you still there?"
-  },
-  "swapAreYouStillThereDescription": {
-    "message": "We’re ready to show you the latest quotes when you want to continue"
   },
   "swapConfirmWithHwWallet": {
     "message": "Confirm with your hardware wallet"
@@ -12181,16 +12158,6 @@
     "message": "This will $1 for swapping",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
-  "swapEstimatedNetworkFees": {
-    "message": "Estimated network fees"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "This is an estimate of the network fee that will be used to complete your swap. The actual amount may change according to network conditions."
-  },
-  "swapFailedErrorDescriptionWithSupportLink": {
-    "message": "Transaction failures happen and we are here to help. If this issue persists, you can reach our customer support at $1 for further assistance.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
-  },
   "swapFailedErrorTitle": {
     "message": "Swap failed"
   },
@@ -12207,10 +12174,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "Error fetching quotes"
   },
-  "swapFromTo": {
-    "message": "The swap of $1 to $2",
-    "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
   "swapGasFeesExplanation": {
     "message": "MetaMask doesn't make money from network fees. These fees are estimates and can change based on how busy the network is and how complex a transaction is. Learn more $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -12218,9 +12181,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "here",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesSplit": {
-    "message": "Network fees on the previous screen are split between these two transactions."
   },
   "swapGasFeesSponsored": {
     "message": "Paid by MetaMask"
@@ -12235,15 +12195,6 @@
   "swapLearnMore": {
     "message": "Learn more about Swaps"
   },
-  "swapLiquiditySourceInfo": {
-    "message": "We search multiple liquidity sources (exchanges, aggregators and professional market makers) to compare exchange rates and network fees."
-  },
-  "swapMaxSlippage": {
-    "message": "Max slippage"
-  },
-  "swapMetaMaskFee": {
-    "message": "MetaMask fee"
-  },
   "swapMetaMaskFeeDescription": {
     "message": "The fee of $1% is automatically factored into this quote. You pay it in exchange for a license to use MetaMask's liquidity provider information aggregation software.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
@@ -12251,19 +12202,6 @@
   "swapNQuotesWithDot": {
     "message": "$1 quotes.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapOnceTransactionHasProcess": {
-    "message": "Your $1 will be added to your account once this transaction has processed.",
-    "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
-  },
-  "swapProcessing": {
-    "message": "Processing"
-  },
-  "swapQuoteDetails": {
-    "message": "Quote details"
-  },
-  "swapQuoteSource": {
-    "message": "Quote source"
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "Please request new quotes to get the latest rates."
@@ -12274,41 +12212,14 @@
   "swapQuotesNotAvailableDescription": {
     "message": "This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option."
   },
-  "swapQuotesNotAvailableErrorDescription": {
-    "message": "Try adjusting the amount or slippage settings and try again."
-  },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "No quotes available"
-  },
-  "swapRate": {
-    "message": "Rate"
-  },
-  "swapReceiving": {
-    "message": "Receiving"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "This is an estimate. The exact amount depends on slippage."
   },
   "swapRequestForQuotation": {
     "message": "Request for quotation"
   },
-  "swapSelect": {
-    "message": "Select"
-  },
-  "swapSelectAQuote": {
-    "message": "Select a quote"
-  },
-  "swapSelectAToken": {
-    "message": "Select token"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "Below are all the quotes gathered from multiple liquidity sources."
-  },
   "swapSelectToken": {
     "message": "Select token"
-  },
-  "swapShowLatestQuotes": {
-    "message": "Show latest quotes"
   },
   "swapSlippageAutoDescription": {
     "message": "Auto"
@@ -12355,18 +12266,8 @@
   "swapSlippageZeroTitle": {
     "message": "Sourcing zero-slippage providers"
   },
-  "swapSource": {
-    "message": "Liquidity source"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Swaps are complex and time sensitive transactions. We recommend this network fee for a good balance between cost and confidence of a successful Swap."
-  },
-  "swapToConfirmWithHwWallet": {
-    "message": "to confirm with your hardware wallet"
-  },
-  "swapTokenAvailable": {
-    "message": "Your $1 has been added to your account.",
-    "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
   },
   "swapTokenNotAvailable": {
     "message": "Token is not available to swap in this region"
@@ -12374,20 +12275,11 @@
   "swapTokens": {
     "message": "Swap tokens"
   },
-  "swapTransactionComplete": {
-    "message": "Transaction complete"
-  },
-  "swapTwoTransactions": {
-    "message": "2 transactions"
-  },
   "swapUnknown": {
     "message": "Unknown"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "You don't have enough $1 to pay the network fee for this swap. Enter a smaller amount or buy more $1."
-  },
-  "swapZeroSlippage": {
-    "message": "0% Slippage"
   },
   "swapsMaxSlippage": {
     "message": "Slippage tolerance"
@@ -12400,9 +12292,6 @@
   },
   "swapsRebateTooltipTitle": {
     "message": "Trading Rewards"
-  },
-  "swapsViewInActivity": {
-    "message": "View in activity"
   },
   "switch": {
     "message": "Switch"
@@ -12445,7 +12334,7 @@
     "message": "Symbol must be 11 characters or fewer."
   },
   "syncAccounts": {
-    "message": "Sync with mobile"
+    "message": "Add to mobile"
   },
   "syncing": {
     "message": "Syncing..."
