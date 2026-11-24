@@ -9,6 +9,7 @@ import type { OAuthService } from './oauth-service';
  * Start the OAuth login process for the given social login type.
  *
  * @param authConnection - The social login type to login with.
+ * @param parentTraceContext - Optional serialized parent context for OAuth traces.
  * @returns The login result.
  */
 export type OAuthServiceStartOAuthLoginAction = {

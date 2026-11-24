@@ -183,7 +183,7 @@ describe('useAutoSignIn', () => {
     });
 
     // `signIn(true)` is called: the hook passes `true` to force a fresh
-    // `performSignIn` so the controller re-runs pairing.
+    // `AuthenticationController:performSignIn` so the controller re-runs pairing.
     expect(mockPerformSignInAction).toHaveBeenCalled();
   });
 

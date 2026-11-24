@@ -8,6 +8,7 @@ describe('HeaderSearch', () => {
   const defaultSearchProps = {
     value: '',
     placeholder: messages.search.message,
+    inputAriaLabel: messages.search.message,
   };
 
   describe('Screen variant', () => {

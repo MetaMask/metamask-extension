@@ -6,9 +6,181 @@ import { buildAssetRoutePath } from '../../../../shared/lib/asset-route';
 import { Driver } from '../../webdriver/driver';
 import AccountListPage from '../pages/accounts/list-page';
 import ActivityTab from '../pages/home/activity-tab';
-import BridgeQuotePage, { type BridgeQuote } from '../pages/bridge/quote-page';
+import SwapAssetPickerPage from '../pages/swap/swap-asset-picker-page';
+import SwapPage, { type AssetPickerSide } from '../pages/swap/swap-page';
 import HomePage from '../pages/home/homepage';
 import TokenOverviewPage from '../pages/asset/token-overview-page';
+
+export type BridgeQuote = {
+  amount: string;
+  tokenFrom?: string;
+  tokenTo?: string;
+  fromChain?: string;
+  toChain?: string;
+  unapproved?: boolean;
+};
+
+export type SwapOptions = {
+  amount: number;
+  swapFrom: string;
+  swapTo: string;
+  network: string;
+  swapToContractAddress?: string;
+};
+
+/**
+ * Opens an asset picker from the Swap screen, searches for a token and
+ * selects it.
+ *
+ * @param driver - The driver instance.
+ * @param token - Token symbol to search for and select.
+ * @param assetPicker - Which asset picker to open. Defaults to the source.
+ */
+export const searchAndSelectToken = async (
+  driver: Driver,
+  token: string,
+  assetPicker: AssetPickerSide = 'source',
+): Promise<void> => {
+  console.log(`Selecting ${assetPicker} token ${token}`);
+  await new SwapPage(driver).openAssetPicker(assetPicker);
+  await new SwapAssetPickerPage(driver).searchAndSelectToken(token);
+};
+
+/**
+ * Selects the source token when it is not already selected.
+ * Re-selecting the current token clears the balance and hides Max.
+ *
+ * @param driver - The driver instance.
+ * @param token - Token symbol, such as ETH or MON.
+ */
+export const selectSourceTokenIfNeeded = async (
+  driver: Driver,
+  token: string,
+): Promise<void> => {
+  if (await new SwapPage(driver).isSourceTokenSelected(token)) {
+    return;
+  }
+  await searchAndSelectToken(driver, token);
+};
+
+/**
+ * Opens the destination asset picker from the Swap screen and selects a
+ * token, searching for it only when it is not already listed.
+ *
+ * @param driver - The driver instance.
+ * @param token - Token symbol to select.
+ */
+export const selectDestinationToken = async (
+  driver: Driver,
+  token: string,
+): Promise<void> => {
+  await new SwapPage(driver).openAssetPicker('destination');
+  const assetPickerPage = new SwapAssetPickerPage(driver);
+  await assetPickerPage.checkPageIsLoaded();
+  if (!(await assetPickerPage.isTokenListed(token))) {
+    await assetPickerPage.search(token);
+  }
+  await assetPickerPage.selectToken(token);
+};
+
+/**
+ * Opens the destination asset picker from the Swap screen and selects a token
+ * by contract address, importing it first when it is not listed.
+ *
+ * @param driver - The driver instance.
+ * @param contractAddress - The token contract address.
+ */
+export const selectDestinationTokenByContract = async (
+  driver: Driver,
+  contractAddress: string,
+): Promise<void> => {
+  await new SwapPage(driver).openAssetPicker('destination');
+  await new SwapAssetPickerPage(driver).selectTokenByContractAddress(
+    contractAddress,
+  );
+};
+
+/**
+ * Builds a same-chain swap on the Swap screen: picks the source and
+ * destination tokens on the given network, then enters the amount.
+ *
+ * @param driver - The driver instance.
+ * @param options - The swap to build.
+ */
+export const createSwap = async (
+  driver: Driver,
+  options: SwapOptions,
+): Promise<void> => {
+  const swapPage = new SwapPage(driver);
+  const assetPickerPage = new SwapAssetPickerPage(driver);
+
+  await swapPage.openAssetPicker('source');
+  await assetPickerPage.selectNetwork(options.network);
+  await assetPickerPage.checkPageIsLoaded(30000);
+  await assetPickerPage.searchAndSelectToken(options.swapFrom, {
+    timeout: 30000,
+  });
+
+  await swapPage.openAssetPicker('destination');
+  await assetPickerPage.selectNetwork(options.network);
+  if (options.swapToContractAddress) {
+    await assetPickerPage.selectTokenByContractAddress(
+      options.swapToContractAddress,
+    );
+  } else {
+    await assetPickerPage.checkPageIsLoaded(30000);
+    await assetPickerPage.searchAndSelectToken(options.swapTo, {
+      timeout: 30000,
+    });
+  }
+
+  await swapPage.enterSwapAmount(options.amount.toString());
+};
+
+/**
+ * Fills in the Swap screen: picks the source and destination networks and
+ * tokens through the asset picker, then enters the amount.
+ *
+ * @param driver - The driver instance.
+ * @param quote - The quote inputs to enter.
+ * @param options - Options.
+ * @param options.openPickersWithDebounce - Opens the asset pickers only after
+ * the Swap screen has sent its debounced quote parameter update. Set this only
+ * when the test asserts on `Input Changed` metrics events.
+ */
+export const enterBridgeQuote = async (
+  driver: Driver,
+  quote: BridgeQuote,
+  {
+    openPickersWithDebounce = false,
+  }: { openPickersWithDebounce?: boolean } = {},
+): Promise<void> => {
+  const swapPage = new SwapPage(driver);
+  const assetPickerPage = new SwapAssetPickerPage(driver);
+  const pickerOptions = { waitForQuoteParamsDebounce: openPickersWithDebounce };
+
+  if (quote.tokenFrom || quote.fromChain) {
+    await swapPage.openAssetPicker('source', pickerOptions);
+    if (quote.fromChain) {
+      await assetPickerPage.selectNetwork(quote.fromChain);
+    }
+    if (quote.tokenFrom) {
+      await assetPickerPage.searchAndSelectToken(quote.tokenFrom);
+    }
+  }
+
+  if (quote.tokenTo || quote.toChain) {
+    await swapPage.openAssetPicker('destination', pickerOptions);
+    if (quote.toChain) {
+      await assetPickerPage.selectNetwork(quote.toChain);
+    }
+    if (quote.tokenTo) {
+      await assetPickerPage.searchAndSelectToken(quote.tokenTo);
+    }
+  }
+
+  await swapPage.enterBridgeAmount(quote.amount);
+};
 
 export const verifySubmittedSwapTransaction = async ({
   driver,
@@ -31,6 +203,7 @@ export const verifySubmittedSwapTransaction = async ({
   expectedDetailsDestAmount?: string;
   expectedActivityAmount?: string;
 }) => {
+  await new SwapPage(driver).goBackAfterSubmit();
   const homePage = new HomePage(driver);
   await homePage.goToActivityList();
 
@@ -150,29 +323,29 @@ export const bridgeTransaction = async ({
   await homePage.goToHomePage();
   await homePage.startSwapFlow();
 
-  const bridgePage = new BridgeQuotePage(driver);
+  const swapPage = new SwapPage(driver);
 
-  await bridgePage.checkAssetsAreSelected(
+  await swapPage.checkAssetsAreSelected(
     expectedInitialSourceToken,
     expectedInitialDestToken,
   );
-  await bridgePage.enterBridgeQuote(quote, { openPickersWithDebounce });
-  await bridgePage.waitForQuote();
+  await enterBridgeQuote(driver, quote, { openPickersWithDebounce });
+  await swapPage.waitForQuote();
   if (!skipNetworkFeeCheck) {
-    await bridgePage.checkExpectedNetworkFeeIsDisplayed();
+    await swapPage.checkExpectedNetworkFeeIsDisplayed();
   }
   submitDelay && (await driver.delay(submitDelay));
   if (expectedDestAmount) {
-    await bridgePage.checkDestAmount(expectedDestAmount);
+    await swapPage.checkDestAmount(expectedDestAmount);
   }
   if (expectedTotalCost) {
-    await bridgePage.checkQuoteTotalCost(expectedTotalCost);
+    await swapPage.checkQuoteTotalCost(expectedTotalCost);
   }
 
   if (skipStatusPage) {
-    await bridgePage.submitQuote();
+    await swapPage.submitQuote();
   } else {
-    await bridgePage.submitQuoteAndDismiss();
+    await swapPage.submitQuoteAndDismiss();
   }
 
   await verifySubmittedSwapTransaction({
@@ -224,32 +397,31 @@ const waitForAssetPageNavigation = async (
 };
 
 /**
- * Searches for a token in the asset picker (filtering to the token's network),
- * clicks the info icon to navigate to the token's asset overview page, and
- * waits for it to load.
+ * Opens an asset picker from the Swap screen, searches for a token (filtering
+ * to the token's network), clicks the info icon to navigate to the token's
+ * asset overview page, and waits for it to load.
  *
  * @param params - The parameters for navigating to the asset page.
  * @param params.driver - The driver instance.
  * @param params.token - The token symbol to search for (e.g. 'DAI').
  * @param params.chainId - The chain ID where the token lives (e.g. '0x1').
  * @param params.address - The token contract address.
- * @param params.assetPicker - Optional CSS selector for the asset picker button.
+ * @param params.assetPicker - Which asset picker to open. Defaults to the
+ * source.
  */
 export const goToAssetPage = async ({
   driver,
   token,
   chainId,
   address,
-  assetPicker,
+  assetPicker = 'source',
 }: {
   driver: Driver;
   token: string;
   chainId: Hex;
   address: string;
-  assetPicker?: string;
+  assetPicker?: AssetPickerSide;
 }) => {
-  const bridgePage = new BridgeQuotePage(driver);
-  const picker = assetPicker ?? bridgePage.sourceAssetPickerButton;
   const assetId = toAssetId(address, chainId);
   if (!assetId) {
     throw new Error('Unable to resolve asset id for bridge flow');
@@ -260,10 +432,10 @@ export const goToAssetPage = async ({
       chainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
     ];
 
-  await bridgePage.searchAndClickAssetInfo({
+  await new SwapPage(driver).openAssetPicker(assetPicker);
+  await new SwapAssetPickerPage(driver).searchAndClickAssetInfo({
     token,
     assetId,
-    assetPicker: picker,
     network,
   });
 

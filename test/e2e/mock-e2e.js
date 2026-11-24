@@ -26,24 +26,16 @@ const { PERPS_WS_PORT } = require('./websocket/perps-mocks');
 
 const { ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
 const {
+  v6AccountsApiBalancesJson,
+} = require('./helpers/accounts-api-v6-balances');
+const {
   getProductionRemoteFlagApiResponse,
 } = require('./feature-flags/feature-flag-registry');
 const {
   setupSnapRegistryMocks,
 } = require('./mock-response-data/snaps/snap-registry-mocks');
 
-const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
-const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
-const CDN_STALE_PATH = 'test/e2e/mock-cdn/cdn-stale.txt';
-const PPOM_VERSION_PATH = 'test/e2e/mock-cdn/ppom-version.json';
-const PPOM_VERSION_HEADERS_PATH = 'test/e2e/mock-cdn/ppom-version-headers.json';
-
-const CDN_CONFIG_RES_HEADERS_PATH =
-  'test/e2e/mock-cdn/cdn-config-res-headers.json';
-const CDN_STALE_DIFF_RES_HEADERS_PATH =
-  'test/e2e/mock-cdn/cdn-stale-diff-res-headers.json';
-const CDN_STALE_RES_HEADERS_PATH =
-  'test/e2e/mock-cdn/cdn-stale-res-headers.json';
+const DEFAULT_ETH_USD_PRICE = 3010;
 
 const ACCOUNTS_API_TOKENS_PATH =
   'test/e2e/mock-response-data/accounts-api-tokens.json';
@@ -454,6 +446,13 @@ async function setupDefaultNonEvmDiscoveryMocks(server) {
  * a series of requests to various mozilla.net or mozilla.com domains. These
  * are not requests that the extension itself makes.
  */
+/**
+ * `SENTRY_DSN_PERFORMANCE` envelope endpoint. Only targeted when the `ci`
+ * manifest flag is enabled, so it is CI test infrastructure, not user traffic.
+ */
+const SENTRY_PERFORMANCE_ENVELOPE_URL =
+  'https://sentry.io/api/4510302346608640/envelope/';
+
 const browserAPIRequestDomains =
   /^.*\.(googleapis\.com|google\.com|mozilla\.net|mozilla\.com|mozilla\.org|gvt1\.com)$/iu;
 
@@ -701,18 +700,13 @@ function buildUnifiedEvmAccountsApiBalances(
  * @param {(server: Mockttp) => Promise<MockedEndpoint[]>} testSpecificMock - A function for setting up test-specific network mocks
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
- * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH. Defaults to 3010.
  * @param {object | undefined} [options.unifiedEvmAccountsApiBalances] - Overrides default Accounts API v5 balances (assets-unify-state). See UnifiedEvmAccountsApiBalances typedef in helpers.js.
  * @returns {Promise<SetupMockReturn>}
  */
 async function setupMocking(
   server,
   testSpecificMock,
-  {
-    chainId,
-    ethConversionInUsd = 3010,
-    unifiedEvmAccountsApiBalances = {},
-  } = {},
+  { chainId, unifiedEvmAccountsApiBalances = {} } = {},
 ) {
   let numNetworkReqs = 0;
   const privacyReport = new Set();
@@ -963,6 +957,18 @@ async function setupMocking(
     });
 
   await server
+    .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/address/evm/scan`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          result_type: 'Benign',
+          label: '',
+        },
+      };
+    });
+
+  await server
     .forPost(
       'https://arbitrum-mainnet.infura.io/v3/00000000000000000000000000000000',
     )
@@ -1009,19 +1015,17 @@ async function setupMocking(
   // hundreds of performance envelopes per test, and the real-network
   // round-trips starve startup, flake the non-EVM account render, and consume
   // the `metamask-performance` quota from CI.
-  await server
-    .forPost('https://sentry.io/api/4510302346608640/envelope/')
-    .thenCallback((req) => {
-      console.log(
-        'Request going to Sentry metamask-performance ============',
-        req.url,
-        false,
-      );
-      return {
-        statusCode: 200,
-        json: {},
-      };
-    });
+  await server.forPost(SENTRY_PERFORMANCE_ENVELOPE_URL).thenCallback((req) => {
+    console.log(
+      'Request going to Sentry metamask-performance ============',
+      req.url,
+      false,
+    );
+    return {
+      statusCode: 200,
+      json: {},
+    };
+  });
 
   await server
     .forGet('https://www.4byte.directory/api/v1/signatures/')
@@ -1584,7 +1588,7 @@ async function setupMocking(
         json: {
           'eip155:1/slip44:60': {
             id: 'ethereum',
-            price: ethConversionInUsd,
+            price: DEFAULT_ETH_USD_PRICE,
             marketCap: 382623505141,
             pricePercentChange1d: 0,
           },
@@ -1596,7 +1600,7 @@ async function setupMocking(
   // the zero-address ERC-20 alias. Both must return the ETH fixture rate.
   const sepoliaSpotPrice = {
     id: 'ethereum',
-    price: ethConversionInUsd,
+    price: DEFAULT_ETH_USD_PRICE,
     marketCap: 382623505141,
     pricePercentChange1d: 0,
   };
@@ -1644,7 +1648,7 @@ async function setupMocking(
       json: {
         'eip155:1337/slip44:1': {
           id: 'ethereum',
-          price: ethConversionInUsd,
+          price: DEFAULT_ETH_USD_PRICE,
           marketCap: 382623505141,
           pricePercentChange1d: 0,
         },
@@ -1664,7 +1668,7 @@ async function setupMocking(
       json: {
         'eip155:143/slip44:268435779': {
           id: 'monad',
-          price: ethConversionInUsd,
+          price: DEFAULT_ETH_USD_PRICE,
           marketCap: 382623505141,
           pricePercentChange1d: 0,
         },
@@ -1885,75 +1889,6 @@ async function setupMocking(
         pricePercentChange1y: -1.0484081200296924,
       },
     }));
-
-  const PPOM_VERSION = fs.readFileSync(PPOM_VERSION_PATH);
-  const PPOM_VERSION_HEADERS = fs.readFileSync(PPOM_VERSION_HEADERS_PATH);
-  const CDN_CONFIG = fs.readFileSync(CDN_CONFIG_PATH);
-  const CDN_STALE = fs.readFileSync(CDN_STALE_PATH);
-  const CDN_STALE_DIFF = fs.readFileSync(CDN_STALE_DIFF_PATH);
-  const CDN_CONFIG_RES_HEADERS = fs.readFileSync(CDN_CONFIG_RES_HEADERS_PATH);
-  const CDN_STALE_RES_HEADERS = fs.readFileSync(CDN_STALE_RES_HEADERS_PATH);
-  const CDN_STALE_DIFF_RES_HEADERS = fs.readFileSync(
-    CDN_STALE_DIFF_RES_HEADERS_PATH,
-  );
-
-  await server
-    .forHead(
-      'https://static.cx.metamask.io/api/v1/confirmations/ppom/ppom_version.json',
-    )
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-      };
-    });
-
-  await server
-    .forGet(
-      'https://static.cx.metamask.io/api/v1/confirmations/ppom/ppom_version.json',
-    )
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: JSON.parse(PPOM_VERSION),
-        headers: JSON.parse(PPOM_VERSION_HEADERS),
-      };
-    });
-
-  await server
-    .forGet(
-      /^https:\/\/static.cx.metamask.io\/api\/v1\/confirmations\/ppom\/config\/0x1\/(.*)/u,
-    )
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        rawBody: CDN_CONFIG,
-        headers: JSON.parse(CDN_CONFIG_RES_HEADERS),
-      };
-    });
-
-  await server
-    .forGet(
-      /^https:\/\/static.cx.metamask.io\/api\/v1\/confirmations\/ppom\/stale_diff\/0x1\/(.*)/u,
-    )
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        rawBody: CDN_STALE_DIFF,
-        headers: JSON.parse(CDN_STALE_DIFF_RES_HEADERS),
-      };
-    });
-
-  await server
-    .forGet(
-      /^https:\/\/static.cx.metamask.io\/api\/v1\/confirmations\/ppom\/stale\/0x1\/(.*)/u,
-    )
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        rawBody: CDN_STALE,
-        headers: JSON.parse(CDN_STALE_RES_HEADERS),
-      };
-    });
 
   await mockEmptyStalelistAndHotlist(server);
 
@@ -2218,13 +2153,21 @@ async function setupMocking(
   // when assetsUnifyState is enabled). Default: 25 ETH native per requested
   // chain for the default fixture account. Override via
   // withFixtures({ unifiedEvmAccountsApiBalances }) when login() asserts a
-  // custom fiat total. v6 rows include `object: 'token'` (core 15).
-  const respondWithUnifiedEvmAccountsApiBalances = (includeObjectField) => {
+  // custom fiat total. The v6 body checksums ERC-20 asset ids, honors
+  // includeAssetIds and excludeAssetIds, and sets unprocessedIncludeAssetIds.
+  const respondWithUnifiedEvmAccountsApiBalances = (useV6Contract) => {
     return (req) => {
       const balances = buildUnifiedEvmAccountsApiBalances(
         req,
         unifiedEvmAccountsApiBalances,
-      ).map((row) => (includeObjectField ? { ...row, object: 'token' } : row));
+      );
+
+      if (useV6Contract) {
+        return {
+          statusCode: 200,
+          json: v6AccountsApiBalancesJson(req.url, balances),
+        };
+      }
 
       return {
         statusCode: 200,
@@ -2260,13 +2203,14 @@ async function setupMocking(
 
   // Accounts API: transactions
   await server
-    .forGet('https://accounts.api.cx.metamask.io/v4/multiaccount/transactions')
+    .forGet('https://accounts.api.cx.metamask.io/v5/multiaccount/transactions')
     .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
         json: {
           data: [],
+          unprocessedAccounts: [],
           pageInfo: { hasNextPage: false, count: 0 },
         },
       };
@@ -2288,10 +2232,15 @@ async function setupMocking(
     });
 
   // Nft API: tokens
+  // Matches any address, not just the default fixture account.
+  // Has fallback priority like the other broad defaults so
+  // specs that mock a specific address take precedence.
   await server
     .forGet(
-      `https://nft.api.cx.metamask.io/users/${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}/tokens`,
+      /^https:\/\/nft\.api\.cx\.metamask\.io\/users\/0x[0-9a-fA-F]{40}\/tokens/u,
     )
+    .asPriority(RulePriority.FALLBACK)
+    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -2932,4 +2881,11 @@ async function mockTokenNameProvider(server) {
   }
 }
 
-module.exports = { setupMocking, emptyHtmlPage, MOCK_SUGGESTED_GAS_FEES };
+module.exports = {
+  setupMocking,
+  emptyHtmlPage,
+  MOCK_SUGGESTED_GAS_FEES,
+  browserAPIRequestDomains,
+  getWellKnownTokenAssetMetadata,
+  SENTRY_PERFORMANCE_ENVELOPE_URL,
+};

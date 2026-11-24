@@ -5,7 +5,6 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 // eslint-disable-next-line import-x/no-restricted-paths
 import messages from '../../../../app/_locales/en/messages.json';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -36,21 +35,34 @@ jest.mock('../../../hooks/useAnalytics', () => {
   };
 });
 
-const ARC_ACCOUNT = '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc';
-const NATIVE_ASSET = '0x0000000000000000000000000000000000000000';
+const ARC_ACCOUNT_ID = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
+const ARC_NATIVE_ASSET_ID = 'eip155:5042/slip44:5042';
 
 function createArcStore(overrides: {
   balance: string;
   arcUsageNoticeShown?: boolean;
 }) {
+  // Legacy hex balances used 18 decimals (0xde0b6b3a7640000 → 1).
+  const amount = overrides.balance === '0x0' ? '0' : '1';
+
   return configureStore({
     metamask: {
       ...mockState.metamask,
       isUnlocked: true,
       arcUsageNoticeShown: overrides.arcUsageNoticeShown ?? false,
-      tokenBalances: {
-        [ARC_ACCOUNT]: {
-          [CHAIN_IDS.ARC]: { [NATIVE_ASSET]: overrides.balance },
+      assetsBalance: {
+        ...mockState.metamask.assetsBalance,
+        [ARC_ACCOUNT_ID]: {
+          ...mockState.metamask.assetsBalance[ARC_ACCOUNT_ID],
+          [ARC_NATIVE_ASSET_ID]: { amount },
+        },
+      },
+      assetsInfo: {
+        ...mockState.metamask.assetsInfo,
+        [ARC_NATIVE_ASSET_ID]: {
+          type: 'native',
+          decimals: 18,
+          symbol: 'USDC',
         },
       },
     },

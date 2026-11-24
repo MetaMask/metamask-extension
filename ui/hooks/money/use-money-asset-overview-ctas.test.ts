@@ -6,6 +6,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyScreenName,
   MoneyTooltipName,
   MoneyTooltipType,
@@ -133,9 +134,13 @@ const mockDepositLoading = () =>
     isLoading: true,
   } as unknown as ReturnType<typeof useMoneyAccountDeposit>);
 
-const EXPECTED_DEPOSIT = {
+const expectedDeposit = (componentName: MoneyComponentName) => ({
   preferredPaymentToken: { address: USDC_ADDRESS as Hex, chainId: '0x1' },
-};
+  ftueOrigin: {
+    entryPoint: MoneyFtueEntryPoint.AssetDetail,
+    componentName,
+  },
+});
 
 describe('use-money-asset-overview-ctas', () => {
   const moneyAnalytics = createMoneyAnalyticsMock();
@@ -290,7 +295,9 @@ describe('use-money-asset-overview-ctas', () => {
         ...EXPECTED_TOKEN_PROPERTIES,
         redirectTarget: MoneyScreenName.MoneyDeposit,
       });
-      expect(mockInitiateDeposit).toHaveBeenCalledWith(EXPECTED_DEPOSIT);
+      expect(mockInitiateDeposit).toHaveBeenCalledWith(
+        expectedDeposit(MoneyComponentName.EarnBanner),
+      );
     });
 
     it('tracks a CTA click and deposits with the token pre-selected', () => {
@@ -304,7 +311,9 @@ describe('use-money-asset-overview-ctas', () => {
         labelSubstitutions: ['USDC'],
         redirectTarget: MoneyScreenName.MoneyDeposit,
       });
-      expect(mockInitiateDeposit).toHaveBeenCalledWith(EXPECTED_DEPOSIT);
+      expect(mockInitiateDeposit).toHaveBeenCalledWith(
+        expectedDeposit(MoneyComponentName.EarnBanner),
+      );
     });
 
     it('ignores banner and CTA clicks while a deposit is starting', () => {
@@ -421,6 +430,10 @@ describe('use-money-asset-overview-ctas', () => {
 
         expect(mockInitiateDeposit).toHaveBeenCalledWith({
           preferredPaymentToken: { address, chainId },
+          ftueOrigin: {
+            entryPoint: MoneyFtueEntryPoint.AssetDetail,
+            componentName: MoneyComponentName.EarnBanner,
+          },
         });
       },
     );
@@ -557,7 +570,9 @@ describe('use-money-asset-overview-ctas', () => {
         labelKey: 'moneyStartEarning',
         redirectTarget: MoneyScreenName.MoneyDeposit,
       });
-      expect(mockInitiateDeposit).toHaveBeenCalledWith(EXPECTED_DEPOSIT);
+      expect(mockInitiateDeposit).toHaveBeenCalledWith(
+        expectedDeposit(MoneyComponentName.AssetOverviewBalanceCta),
+      );
     });
 
     it('ignores Start earning while a deposit is starting', () => {

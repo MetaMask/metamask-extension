@@ -131,13 +131,13 @@ describe('useMultichainTransactionDisplay', () => {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        assetsMetadata: {
+        assetsInfo: {
           [USDC_ASSET_ID]: {
+            type: 'spl',
             symbol: 'USDC',
             name: 'USD Coin',
             decimals: 6,
-            fungible: true,
-            iconUrl: '',
+            image: '',
           },
         },
       },

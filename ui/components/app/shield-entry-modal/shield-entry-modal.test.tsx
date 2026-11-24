@@ -2,7 +2,10 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { SubscriptionUserEvent } from '@metamask/subscription-controller';
+import {
+  MODAL_TYPE,
+  SubscriptionUserEvent,
+} from '@metamask/subscription-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as actions from '../../../store/actions';
 import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
@@ -55,6 +58,30 @@ describe('Shield Entry Modal', () => {
     });
   });
 
+  it('renders modal type A copy', () => {
+    const customStore = configureMockStore([thunk])({
+      ...mockState,
+      appState: {
+        ...mockState.appState,
+        shieldEntryModal: {
+          ...mockState.appState.shieldEntryModal,
+          modalType: MODAL_TYPE.A,
+        },
+      },
+    });
+    const { getByRole, getByTestId } = renderWithProvider(
+      <ShieldEntryModal />,
+      customStore,
+    );
+
+    expect(getByRole('heading')).toHaveTextContent(
+      'Transact with added confidence',
+    );
+    expect(getByTestId('shield-entry-modal')).toHaveTextContent(
+      'Transaction Shield provides protection up to $10,000 and 24/7 priority support.',
+    );
+  });
+
   it('should render', () => {
     const { getByTestId } = renderWithProvider(<ShieldEntryModal />, mockStore);
 
@@ -66,11 +93,26 @@ describe('Shield Entry Modal', () => {
     const { getByTestId } = renderWithProvider(<ShieldEntryModal />, mockStore);
 
     const closeButton = getByTestId('shield-entry-modal-close-button');
+    expect(closeButton).toHaveAccessibleName('Close');
+    expect(closeButton.closest('header')).toHaveClass('z-10');
     fireEvent.click(closeButton);
     expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith({
       show: false,
       hasUserInteractedWithModal: true,
     });
+  });
+
+  it('dismisses through the local onClose callback when event submission is skipped', () => {
+    const onClose = jest.fn();
+    const { getByTestId } = renderWithProvider(
+      <ShieldEntryModal skipEventSubmission onClose={onClose} />,
+      mockStore,
+    );
+
+    fireEvent.click(getByTestId('shield-entry-modal-close-button'));
+
+    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(setShowShieldEntryModalOnceSpy).not.toHaveBeenCalled();
   });
 
   it('should call onGetStarted when the get started button is clicked', async () => {

@@ -273,6 +273,53 @@ describe('asset-utils', () => {
       expect(getAssetImageUrl(assetId, 'eip155:1')).toBe(expectedUrl);
     });
 
+    it('keeps the SLIP-44 path for a native asset on a chain missing from the bridge native asset map', () => {
+      const assetId = 'eip155:50/slip44:550' as CaipAssetType;
+      const expectedUrl = `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/eip155/50/slip44/550.png`;
+
+      expect(getAssetImageUrl(assetId, 'eip155:50')).toBe(expectedUrl);
+    });
+
+    (
+      [
+        ['Ethereum', 'eip155:1/slip44:60', 'eip155:1'],
+        ['Arc', 'eip155:5042/slip44:5042', 'eip155:5042'],
+        ['Polygon', 'eip155:137/slip44:966', 'eip155:137'],
+      ] as [string, CaipAssetType, CaipChainId][]
+    ).forEach(([name, assetId, chainId]) => {
+      it(`keeps the SLIP-44 path for ${name} native asset`, () => {
+        const expectedUrl = `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/${assetId.replaceAll(':', '/')}.png`;
+
+        expect(getAssetImageUrl(assetId, chainId)).toBe(expectedUrl);
+      });
+    });
+
+    it('keeps the SLIP-44 path for a non-EVM native asset', () => {
+      const assetId =
+        `${MultichainNetworks.SOLANA}/slip44:501` as CaipAssetType;
+      const expectedUrl = `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/${assetId.replaceAll(':', '/')}.png`;
+
+      expect(getAssetImageUrl(assetId, MultichainNetworks.SOLANA)).toBe(
+        expectedUrl,
+      );
+    });
+
+    it('still lowercases an ERC-20 address and ignores slip44 handling', () => {
+      const assetId =
+        'eip155:50/erc20:0x2A8E898b6242355c290E1f4Fc966b8788729A4D4' as CaipAssetType;
+      const expectedUrl = `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/eip155/50/erc20/0x2a8e898b6242355c290e1f4fc966b8788729a4d4.png`;
+
+      expect(getAssetImageUrl(assetId, 'eip155:50')).toBe(expectedUrl);
+    });
+
+    it('resolves a bare hex address through toAssetId', () => {
+      const address = '0x2A8E898b6242355c290E1f4Fc966b8788729A4D4';
+      const url = getAssetImageUrl(address, 'eip155:50');
+
+      expect(url).toContain('/eip155/50/erc20/0x');
+      expect(url).not.toContain('slip44');
+    });
+
     it('should return correct image URL for non-hex CAIP asset ID', () => {
       const assetId =
         `${MultichainNetworks.SOLANA}/token:aBCD` as CaipAssetType;

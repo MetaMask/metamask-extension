@@ -1,4 +1,7 @@
+import { parseCaipChainId } from '@metamask/utils';
+import { CHAIN_IDS } from '../../shared/constants/chain-ids';
 import defaultFixtureJson from './fixtures/default-fixture.json';
+import { NetworkId } from './helpers/network-constants';
 
 /** Persisted versioned-data version for fixtures. */
 export const FIXTURE_STATE_METADATA_VERSION = defaultFixtureJson.meta.version;
@@ -101,39 +104,16 @@ export const TREZOR_ADDRESS = '0xf68464152d7289d7ea9a2bec2e0035c45188223c';
  */
 export const HARDWARE_WALLET_LOCALHOST_NATIVE_ETH_HUMAN = '1208925';
 
-/* Address of the 4337 entrypoint smart contract. */
-export const ENTRYPOINT = '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b';
-
-/* Address of the generated ERC-4337 account. */
-export const ERC_4337_ACCOUNT = '0x8FCd29A7887f82463E0eA7332CB1ce431A4430F7';
-
-/* URL of the local bundler server. */
-export const BUNDLER_URL = 'http://localhost:3000/rpc';
-
-/* URL of the 4337 account snap site. */
-export const ERC_4337_ACCOUNT_SNAP_URL =
-  'https://metamask.github.io/snap-account-abstraction-keyring/0.5.0/';
-
-/* Salt used to generate the 4337 account. */
-export const ERC_4337_ACCOUNT_SALT = '0x1';
-
-/* Address of the SimpleAccountFactory smart contract deployed to the local node. */
-export const SIMPLE_ACCOUNT_FACTORY =
-  '0x4aFf835038b16dccDb1670103C4877A8F93E5219';
-
 /* URL of the Snap Simple Keyring site. */
 export const TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL =
   'https://metamask.github.io/snap-simple-keyring/1.1.6/';
-
-/* Address of the VerifyingPaymaster smart contract deployed to the local node. */
-export const VERIFYING_PAYMASTER = '0xbdbDEc38ed168331b1F7004cc9e5392A2272C1D7';
 
 /* Default local node ETH balance in decimal when first login */
 export const DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC = '25';
 /* Default local node USD balance in format for when first login */
 export const DEFAULT_LOCAL_NODE_USD_BALANCE = '85,000.00';
 
-/** Max ms to wait for asynchronously-loaded homepage balances (Snap non-EVM, Anvil local node, etc.). */
+/** Max ms to wait for asynchronously-loaded homepage balances/token rows (Snap non-EVM, Anvil local node, etc.). */
 export const HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS = 30_000;
 
 /* Dapp host addresses and URL*/
@@ -160,10 +140,6 @@ const mm = (pkg: string, ...rest: string[]): readonly string[] => [
 export const DAPP_PATHS: Readonly<Record<string, readonly string[]>> =
   Object.freeze({
     'snap-simple-keyring-site': mm('snap-simple-keyring-site', 'public'),
-    'snap-account-abstraction-keyring': mm(
-      'snap-account-abstraction-keyring-site',
-      'public',
-    ),
     'test-dapp': mm('test-dapp', 'dist'),
     'test-dapp-multichain': mm('test-dapp-multichain', 'build'),
     'test-dapp-mm-connect': mm('browser-playground', 'build'),
@@ -183,7 +159,6 @@ export const DAPP_PATH = Object.freeze({
   TEST_DAPP_BITCOIN: 'test-dapp-bitcoin',
   TEST_SNAPS: 'test-snaps',
   SNAP_SIMPLE_KEYRING_SITE: 'snap-simple-keyring-site',
-  SNAP_ACCOUNT_ABSTRACTION_KEYRING: 'snap-account-abstraction-keyring',
 } as const);
 
 /* Default BTC address created using test SRP (E2E_SRP) with BIP84 derivation */
@@ -192,6 +167,50 @@ export const DEFAULT_BTC_ADDRESS = 'bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252';
 /* Second BTC address created using test SRP */
 export const SECONDARY_BTC_ADDRESS =
   'bc1qk9u7870r6zrjr6euzkdyx5np94wkduvul0zmg7';
+
+/**
+ * Bitcoin addresses derived from `E2E_SRP` for HD accounts 1-8
+ * (`m/84'/0'/accountIndex'/0/0`).
+ */
+export const EXPECTED_BTC_ADDRESSES_BY_INDEX = [
+  DEFAULT_BTC_ADDRESS,
+  SECONDARY_BTC_ADDRESS,
+  'bc1q587h8r5vhgur5smhze893m24vws85sta828ary',
+  'bc1qt3juyvv225hevnqcq9kw9ana8e65zapl9xyl56',
+  'bc1q7eajm5mfj6m9xq78zmwkf8y3a97wjm8z56kf52',
+  'bc1qmfvnnyrgyqf2vpxkzdr6e56x9fv0z4dpca2qv2',
+  'bc1qcg5q0z0znp7kt0uhvckj88zkq6fnuftl0qfwye',
+  'bc1quy3j2zc7ans6ukmnqc90j5yt3cx4q4q528nzej',
+] as const satisfies readonly [
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+];
+
+export const EXPECTED_BTC_SCRIPT_PUBKEYS_BY_INDEX = [
+  '0014469d76e8387e11cbe9010c72ee4b748dd9152fa5',
+  '0014b179e3f9e3d08721eb3c159a4352612d5d66f19c',
+  '0014a1fd738e8cba383a4377164e58ed5563a07a417d',
+  '00145c65c2318a552f964c18016ce2f67d3e7541743f',
+  '0014f67b2dd36996b65303c716dd649c91e97ce96ce2',
+  '0014da593990682012a604d61347acd3462a58f155a1',
+  '0014c2280789e2987d65bf97662d239c5606933e257f',
+  '0014e123250b1eece1ae5b73060af9508b8e0d505414',
+] as const satisfies readonly [
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+];
 
 /* Default BTC Account name */
 export const DEFAULT_BTC_ACCOUNT_NAME = 'Bitcoin Account 1';
@@ -224,34 +243,36 @@ export const DEFAULT_FIXTURE_SOLANA_ACCOUNT =
   '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
 
 /* Solana Mainnet chain ID (genesis hash) */
-export const SOLANA_MAINNET_CHAIN_ID = '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+export const SOLANA_MAINNET_CHAIN_ID = parseCaipChainId(
+  NetworkId.SOLANA,
+).reference;
 
 /* Solana Mainnet scope in CAIP-2 format */
-export const SOLANA_MAINNET_SCOPE = `solana:${SOLANA_MAINNET_CHAIN_ID}`;
+export const SOLANA_MAINNET_SCOPE = NetworkId.SOLANA;
 
 /* CAIP-2 EVM chain scopes used in MM Connect Multichain tests.
  * On localhost the playground pre-checks eip155:1337, so we use that
  * instead of eip155:1 to avoid unchecking it (which triggers a React
  * stale-closure race in handleCheckboxChange). */
 export const MM_CONNECT_EVM_CHAINS = {
-  LOCALHOST: 'eip155:1337',
-  POLYGON: 'eip155:137',
-  LINEA: 'eip155:59144',
+  LOCALHOST: NetworkId.LOCALHOST,
+  POLYGON: NetworkId.POLYGON,
+  LINEA: NetworkId.LINEA,
 } as const;
 
 /* All featured CAIP-2 chain IDs available in the MM Connect playground */
 export const MM_CONNECT_FEATURED_CHAIN_IDS = [
-  'eip155:1337', // Localhost 8545 (pre-checked on page load in local E2E env)
-  'eip155:1', // Ethereum Mainnet
-  'eip155:59144', // Linea Mainnet
-  'eip155:42161', // Arbitrum One
-  'eip155:43114', // Avalanche C-Chain
-  'eip155:56', // BNB Chain
-  'eip155:10', // OP Mainnet
-  'eip155:137', // Polygon Mainnet
-  'eip155:324', // zkSync Era
-  'eip155:8453', // Base Mainnet
-  `solana:${SOLANA_MAINNET_CHAIN_ID}`, // Solana Mainnet
+  NetworkId.LOCALHOST, // Localhost 8545 (pre-checked on page load in local E2E env)
+  NetworkId.ETHEREUM, // Ethereum Mainnet
+  NetworkId.LINEA, // Linea Mainnet
+  NetworkId.ARBITRUM, // Arbitrum One
+  NetworkId.AVALANCHE, // Avalanche C-Chain
+  NetworkId.BSC, // BNB Chain
+  NetworkId.OPTIMISM, // OP Mainnet
+  NetworkId.POLYGON, // Polygon Mainnet
+  NetworkId.ZKSYNC_ERA, // zkSync Era
+  NetworkId.BASE, // Base Mainnet
+  NetworkId.SOLANA, // Solana Mainnet
 ] as const;
 
 /* Default (mocked) SOLANA balance used by the Solana RPC provider */
@@ -301,6 +322,27 @@ export const EXPECTED_TRON_ADDRESSES_BY_INDEX = [
   string,
 ];
 
+/**
+ * Default Stellar address created using test SRP (Account 1 / HD index 0).
+ * Path: `m/44'/148'/0'` via SLIP-0010 ed25519 (same as stellar-wallet-snap).
+ */
+export const DEFAULT_STELLAR_ADDRESS =
+  'GDEM2RN4QLPSSPGSPSKSEQ3XXFGM4X4BRH4X4EOPABHAXBVV6OQ6YE6K';
+
+/**
+ * Stellar addresses derived from `E2E_SRP` for HD Account 1 (SLIP-0010
+ * ed25519 path `m/44'/148'/0'`). Account-derivation E2E covers Account 1
+ * only; keep this list to one entry so Horizon discovery does not auto-create
+ * HD accounts 2+. Re-derive with `@metamask/key-tree` `SLIP10Node` (curve
+ * `ed25519`, `slip10:` path segments) + `@stellar/stellar-base` Keypair —
+ * not BIP-32 secp256k1 HDKey, which yields different addresses.
+ *
+ * Note: index 0 matches `DEFAULT_STELLAR_ADDRESS`.
+ */
+export const EXPECTED_STELLAR_ADDRESSES_BY_INDEX = [
+  DEFAULT_STELLAR_ADDRESS,
+] as const satisfies readonly [string];
+
 /* Account types */
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -335,11 +377,11 @@ export const MOCK_DOWNSTREAM_EVENT_ENRICHMENT_PROPERTIES = {
   locale: 'en',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  chain_id: '0x539',
+  chain_id: CHAIN_IDS.LOCALHOST,
   ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
 } as const;
 
-/* Processed remote feature flags for `MOCK_ANALYTICS_ID` (RFFC threshold group C). */
+/* Processed remote feature flags for `MOCK_CANONICAL_PROFILE_ID` (RFFC threshold group C). */
 export const MOCK_REMOTE_FEATURE_FLAGS_RESPONSE = {
   feature1: true,
   feature2: false,
@@ -407,5 +449,4 @@ export const WINDOW_TITLES = Object.freeze({
   TronTestDApp: 'Tron Test Dapp',
   TestE2EPage: 'E2E Test Page',
   TestSnaps: 'Test Snaps',
-  ERC4337Snap: 'Account Abstraction Snap',
 });

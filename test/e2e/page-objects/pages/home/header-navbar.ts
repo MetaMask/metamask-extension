@@ -5,7 +5,7 @@ import { Driver } from '../../../webdriver/driver';
  *
  * Screen: chrome component (not a full page), rendered across unlocked home
  * and related routes above page content.
- * Owns: account menu icon/open account list, global options menu (settings,
+ * Owns: account label, account menu button, global options menu (settings,
  * lock, notifications, networks, contacts, connected sites), network picker,
  * and dapp connection control bar entry points.
  * Boundaries: header/menu chrome only. Destinations (settings, notifications,
@@ -20,8 +20,7 @@ import { Driver } from '../../../webdriver/driver';
 class HeaderNavbar {
   private readonly accountDetailsTab = { text: 'Details', tag: 'button' };
 
-  private readonly accountListPage =
-    '[data-testid="parent-selector-account-list-page"]';
+  private readonly accountLabel = '[data-testid="app-header-account-name"]';
 
   private readonly accountMenuButton = '[data-testid="account-menu-icon"]';
 
@@ -109,7 +108,7 @@ class HeaderNavbar {
       `Verify the displayed account label in header is: ${expectedLabel}`,
     );
     await this.driver.waitForSelector({
-      css: this.accountMenuButton,
+      css: this.accountLabel,
       text: expectedLabel,
     });
   }
@@ -195,6 +194,17 @@ class HeaderNavbar {
     console.log('Header navbar is loaded');
   }
 
+  /**
+   * Clicks the account menu button in the app header, which opens the account
+   * list. Narrow layout only: in the wide layout the app header has no such
+   * button (the side nav has one), so tests should use the `openAccountMenu`
+   * flow, which handles both layouts.
+   */
+  async clickAccountMenuButton(): Promise<void> {
+    console.log('Click account menu button in header');
+    await this.driver.clickElement(this.accountMenuButton);
+  }
+
   async clickAddressCopyButton(): Promise<void> {
     await this.driver.clickElement(this.networkAddressesLink);
     await this.driver.clickElement(this.copyAddressButton);
@@ -241,6 +251,23 @@ class HeaderNavbar {
     await this.navigateToNotificationsPage();
   }
 
+  /**
+   * Whether the account menu button is visible. Only meaningful in the narrow
+   * layout, because the wide layout's side nav uses the same test id for its
+   * own button; callers that support both layouts check the side nav first.
+   *
+   * @param timeout - How long to wait for the button, in milliseconds.
+   * @returns True when the button is present and visible.
+   */
+  async isAccountMenuButtonPresentAndVisible(
+    timeout?: number,
+  ): Promise<boolean> {
+    return await this.driver.isElementPresentAndVisible(
+      this.accountMenuButton,
+      timeout,
+    );
+  }
+
   async lockMetaMask(): Promise<void> {
     await this.openGlobalMenu();
     await this.driver.clickElement(this.lockMetaMaskButton);
@@ -264,11 +291,6 @@ class HeaderNavbar {
     await this.openGlobalMenu();
     await this.driver.clickElement(this.openAccountDetailsButton);
     await this.driver.clickElementSafe(this.accountDetailsTab);
-  }
-
-  async openAccountMenu(): Promise<void> {
-    await this.driver.clickElement(this.accountMenuButton);
-    await this.driver.waitForSelector(this.accountListPage);
   }
 
   async openContactsPage(): Promise<void> {
@@ -299,12 +321,7 @@ class HeaderNavbar {
     } catch {
       await this.driver.clickElementUsingMouseMove(this.globalMenuButton);
     }
-    try {
-      await this.driver.findVisibleElement(this.drawerBackButton);
-    } catch {
-      await this.driver.clickElementUsingMouseMove(this.globalMenuButton);
-      await this.driver.findVisibleElement(this.drawerBackButton);
-    }
+    await this.driver.findVisibleElement(this.drawerBackButton);
   }
 
   async openGlobalNetworksMenu({

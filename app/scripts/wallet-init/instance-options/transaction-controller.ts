@@ -1,10 +1,8 @@
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import {
-  getAccountAddressRelationship,
   GasFeeEstimateLevel,
   SavedGasFees,
-  TransactionController,
   TransactionMeta,
   TransactionType,
   UserFeeLevel,
@@ -42,12 +40,6 @@ import { TransactionControllerInitMessenger } from '../messengers/transaction-co
 type TransactionControllerInstanceOptions = NonNullable<
   NonNullable<WalletOptions['instanceOptions']>['transactionController']
 >;
-
-type CheckFirstTimeInteractionRequest = {
-  chainId: number;
-  from: string;
-  to: string;
-};
 
 type GetTransactionControllerInstanceOptionsRequest = {
   initMessenger: TransactionControllerInitMessenger;
@@ -171,62 +163,6 @@ export function setupTransactionControllerListeners({
   );
 }
 
-export function getTransactionControllerApi(
-  transactionController: TransactionController,
-) {
-  return {
-    abortTransactionSigning: transactionController.abortTransactionSigning.bind(
-      transactionController,
-    ),
-    getLayer1GasFee: transactionController.getLayer1GasFee.bind(
-      transactionController,
-    ),
-    getTransactions: transactionController.getTransactions.bind(
-      transactionController,
-    ),
-    isAtomicBatchSupported: transactionController.isAtomicBatchSupported.bind(
-      transactionController,
-    ),
-    updateAtomicBatchData: transactionController.updateAtomicBatchData.bind(
-      transactionController,
-    ),
-    updateBatchTransactions: transactionController.updateBatchTransactions.bind(
-      transactionController,
-    ),
-    updateEditableParams: transactionController.updateEditableParams.bind(
-      transactionController,
-    ),
-    updatePreviousGasParams: transactionController.updatePreviousGasParams.bind(
-      transactionController,
-    ),
-    updateSelectedGasFeeToken:
-      transactionController.updateSelectedGasFeeToken.bind(
-        transactionController,
-      ),
-    updateTransactionGasFees:
-      transactionController.updateTransactionGasFees.bind(
-        transactionController,
-      ),
-    checkFirstTimeInteraction,
-  };
-}
-
-/**
- * Returns whether the sender has no prior on-chain interaction with `to` on `chainId`,
- * or `undefined` when the relationship cannot be determined.
- * @param request
- */
-async function checkFirstTimeInteraction(
-  request: CheckFirstTimeInteractionRequest,
-): Promise<boolean | undefined> {
-  try {
-    const result = await getAccountAddressRelationship(request);
-    return result.count === undefined ? undefined : result.count === 0;
-  } catch {
-    return undefined;
-  }
-}
-
 function getSavedGasFees(
   { messenger }: { messenger: TransactionControllerInitMessenger },
   transactionMeta: TransactionMeta,
@@ -285,9 +221,13 @@ async function getSimulationConfig(
       PRODUCT_TYPES.SHIELD,
     );
   const origin = opts?.txMeta?.origin;
-  return getShieldGatewayConfig(getToken, getShieldSubscription, url, {
-    origin,
-  });
+  const { newUrl } = await getShieldGatewayConfig(
+    getToken,
+    getShieldSubscription,
+    url,
+    { origin },
+  );
+  return { newUrl };
 }
 
 async function isEIP7702GasFeeTokensEnabled(

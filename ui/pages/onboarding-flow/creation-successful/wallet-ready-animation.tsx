@@ -6,7 +6,6 @@ import {
   Alignment,
   useRiveFile,
 } from '@rive-app/react-canvas';
-import { Box } from '@metamask/design-system-react';
 import { useTheme } from '../../../hooks/useTheme';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import {
@@ -83,12 +82,8 @@ export default function WalletReadyAnimation() {
     status === 'loading' ||
     status === 'failed'
   ) {
-    return <Box className="riv-animation__wallet-ready-container"></Box>;
+    return null;
   }
 
-  return (
-    <Box className="riv-animation__wallet-ready-container">
-      <RiveComponent className="riv-animation__canvas" />
-    </Box>
-  );
+  return <RiveComponent className="h-full w-full" />;
 }

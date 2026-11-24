@@ -20,9 +20,9 @@ import {
   onboardingMetricsFlow,
 } from '../../page-objects/flows/onboarding.flow';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import SecurityAndPasswordSettings from '../../page-objects/pages/settings/security-and-password/security-and-password-settings';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
-import ChangePasswordPage from '../../page-objects/pages/settings/change-password-page';
+import ChangePasswordPage from '../../page-objects/pages/settings/security-and-password/change-password-page';
 import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
 
 describe('Unlock wallet - ', function () {
@@ -30,6 +30,9 @@ describe('Unlock wallet - ', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
+        // The test locks right after login, so the notifications setup that
+        // starts on unlock can run against an already locked wallet.
+        ignoredConsoleErrors: ['Unable to enable notifications'],
         title: this.test?.fullTitle(),
       },
       async ({
@@ -80,9 +83,11 @@ describe('Unlock wallet - ', function () {
         await settingsPage.checkPageIsLoaded();
         await settingsPage.goToSecurityAndPasswordSettings();
 
-        const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkSecurityAndPasswordPageIsLoaded();
-        await privacySettings.openChangePassword();
+        const securityAndPasswordSettings = new SecurityAndPasswordSettings(
+          driver,
+        );
+        await securityAndPasswordSettings.checkPageIsLoaded();
+        await securityAndPasswordSettings.openChangePassword();
 
         const changePasswordPage = new ChangePasswordPage(driver);
         await changePasswordPage.checkPageIsLoaded();

@@ -6,10 +6,12 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import { Driver } from '../../../webdriver/driver';
 
 import { login } from '../../../page-objects/flows/login.flow';
+import { openConnectHardwareWallet } from '../../../page-objects/flows/add-wallet.flow';
 import AccountListPage from '../../../page-objects/pages/accounts/list-page';
+import ChooseWalletTypePage from '../../../page-objects/pages/accounts/add-wallet/choose-wallet-type-page';
 import ConnectHardwareWalletPage from '../../../page-objects/pages/hardware-wallet/connect-hardware-wallet-page';
 import SelectHardwareWalletAccountPage from '../../../page-objects/pages/hardware-wallet/select-hardware-wallet-account-page';
-import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
+import { openAccountMenu } from '../../../page-objects/flows/account-menu.flow';
 
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
@@ -23,15 +25,13 @@ describe('Ledger Hardware', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, {
           validateBalance: false,
-          waitForNonEvmAccounts: false,
         });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
-        await accountListPage.openConnectHardwareWalletModal();
+        await openConnectHardwareWallet(driver);
 
         const connectHardwareWalletPage = new ConnectHardwareWalletPage(driver);
         await connectHardwareWalletPage.checkPageIsLoaded();
@@ -53,7 +53,9 @@ describe('Ledger Hardware', function (this: Suite) {
         await connectHardwareWalletPage.checkPageIsLoaded();
         await connectHardwareWalletPage.clickCloseButton();
 
-        await accountListPage.closeChooseWalletTypePage();
+        const chooseWalletTypePage = new ChooseWalletTypePage(driver);
+        await chooseWalletTypePage.checkPageIsLoaded();
+        await chooseWalletTypePage.goBack();
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountIsNotDisplayedInAccountList(
           'Ledger Account 1',

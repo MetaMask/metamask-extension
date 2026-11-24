@@ -36,8 +36,6 @@ export {
 } from './formatPerpsDisplayPrice';
 
 export {
-  isValidTakeProfitPrice,
-  isValidStopLossPrice,
   getTakeProfitErrorDirection,
   getStopLossErrorDirection,
 } from './tpslValidation';

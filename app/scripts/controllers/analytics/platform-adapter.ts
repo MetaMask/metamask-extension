@@ -25,7 +25,7 @@ import {
   segment as extensionSegmentSingleton,
   type SegmentClient,
 } from '../../lib/segment';
-import type { AnalyticsControllerInitMessenger } from '../../messenger-client-init/messengers/analytics-controller-messenger';
+import type { AnalyticsControllerInitMessenger } from '../../wallet-init/messengers/analytics-controller-messenger';
 
 export const ANONYMOUS_EVENT_PROPERTY = 'anonymous' as const;
 

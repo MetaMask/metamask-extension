@@ -1,10 +1,4 @@
-import React, {
-  Suspense,
-  useEffect,
-  useState,
-  useMemo,
-  useCallback,
-} from 'react';
+import React, { Suspense, useEffect, useState, useMemo } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import classnames from 'clsx';
@@ -16,6 +10,11 @@ import {
   BoxAlignItems,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
+import {
+  getOnboardingRedirect,
+  setOnboardingRedirect,
+} from '#ui/ducks/app/app';
+import { getRedirectAfterUnlock } from '#ui/helpers/utils/redirect-after-unlock';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import Unlock from '../unlock-page';
 import {
@@ -62,9 +61,6 @@ import {
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterUnlock,
 } from '../../selectors';
-import type { UIMetricsEventPayload } from '../../contexts/metametrics';
-import { useAnalytics } from '../../hooks/useAnalytics';
-import type { MetaMetricsEventOptions } from '../../../shared/constants/metametrics';
 import { submitRequestToBackgroundAndCatch } from '../../components/app/toast-master/utils';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import {
@@ -132,6 +128,7 @@ const OnboardingFlowContent = () => {
   const theme = useTheme();
   const isSidePanelEnabled = useSidePanelEnabled();
   const completedOnboarding: boolean = useSelector(getCompletedOnboarding);
+  const onboardingRedirect = useSelector(getOnboardingRedirect);
   const hasSeenOnboardingCompletionPage = useSelector(
     getHasSeenOnboardingCompletionPage,
   );
@@ -143,28 +140,8 @@ const OnboardingFlowContent = () => {
   );
   const { isFromReminder, isFromSettingsSecurity } =
     useOnboardingSearchParams();
-  const { trackEvent, createEventBuilder } = useAnalytics();
   const { startJourney, endJourney } = useOnboardingTrace();
 
-  const trackLegacyEventForAction = useCallback(
-    async (
-      payload: UIMetricsEventPayload,
-      options?: MetaMetricsEventOptions,
-    ): Promise<void> => {
-      trackEvent(
-        createEventBuilder(payload.event)
-          .addProperties({
-            ...payload.properties,
-            ...(payload.category === undefined
-              ? {}
-              : { category: payload.category }),
-          })
-          .addSensitiveProperties(payload.sensitiveProperties)
-          .build(options),
-      );
-    },
-    [createEventBuilder, trackEvent],
-  );
   const isUnlocked = useSelector(getIsUnlocked);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSeedlessOnboardingFeatureEnabled =
@@ -189,7 +166,7 @@ const OnboardingFlowContent = () => {
   }, []);
 
   useEffect(() => {
-    // Redirect to default when onboarding is complete, except when on the completion
+    // Resume the destination when onboarding is complete, except when on the completion
     // route: CreationSuccessful handles navigation there (e.g., deferred deep links).
     // Only redirect while still in onboarding to avoid breaking deferred deep link handling.
     const isOnOnboardingRoute = pathname?.startsWith(ONBOARDING_ROUTE) ?? false;
@@ -205,14 +182,19 @@ const OnboardingFlowContent = () => {
       !isOnCompletionRoute &&
       !isOnPasskeyPrfMigrationRoute
     ) {
-      navigate(DEFAULT_ROUTE, { replace: true });
+      navigate(onboardingRedirect ?? DEFAULT_ROUTE, { replace: true });
+      if (onboardingRedirect) {
+        dispatch(setOnboardingRedirect(null));
+      }
     }
   }, [
     navigate,
+    dispatch,
     completedOnboarding,
     isFromReminder,
     openedWithSidepanel,
     pathname,
+    onboardingRedirect,
   ]);
 
   useEffect(() => {
@@ -310,10 +292,7 @@ const OnboardingFlowContent = () => {
         firstTimeFlowType === FirstTimeFlowType.socialImport
       ) {
         retrievedSecretRecoveryPhrase = await dispatch(
-          restoreSocialBackupAndGetSeedPhrase(
-            password,
-            trackLegacyEventForAction,
-          ),
+          restoreSocialBackupAndGetSeedPhrase(password),
         );
       } else {
         retrievedSecretRecoveryPhrase = await dispatch(
@@ -345,17 +324,14 @@ const OnboardingFlowContent = () => {
         if (isSidePanelEnabled) {
           await dispatch(setUseSidePanelAsDefault(true));
           await dispatch(setCompletedOnboardingWithSidepanel());
-
-          // for sidepanel, we need to navigate to the next route (i.e. Home)
-          navigate(DEFAULT_ROUTE, { replace: true });
         } else {
           await dispatch(setCompletedOnboarding());
-          let redirectTo = DEFAULT_ROUTE;
-          const fromLocation = location.state?.from;
-          if (fromLocation?.pathname) {
-            redirectTo = fromLocation.pathname + (fromLocation.search || '');
-          }
-          navigate(redirectTo, { replace: true });
+        }
+        navigate(onboardingRedirect ?? getRedirectAfterUnlock(location.state), {
+          replace: true,
+        });
+        if (onboardingRedirect) {
+          dispatch(setOnboardingRedirect(null));
         }
       } else if (
         hasSeenOnboardingCompletionPage &&
@@ -373,7 +349,7 @@ const OnboardingFlowContent = () => {
         'OnboardingFlow: failed to complete navigation after unlock',
         error,
       );
-      navigate(DEFAULT_ROUTE, { replace: true });
+      throw error;
     }
   };
 
@@ -409,12 +385,13 @@ const OnboardingFlowContent = () => {
     if (
       pathname?.startsWith(ONBOARDING_REVEAL_SRP_ROUTE) ||
       pathname?.startsWith(ONBOARDING_REVIEW_SRP_ROUTE) ||
-      pathname?.startsWith(ONBOARDING_CONFIRM_SRP_ROUTE)
+      pathname?.startsWith(ONBOARDING_CONFIRM_SRP_ROUTE) ||
+      (pathname === ONBOARDING_COMPLETION_ROUTE && Boolean(isFromReminder))
     ) {
       return 'var(--color-background-default)';
     }
     return 'var(--color-background-muted)';
-  }, [pathname, isPopup]);
+  }, [pathname, isPopup, isFromReminder]);
 
   return (
     <Box
@@ -439,7 +416,10 @@ const OnboardingFlowContent = () => {
       )}
       <Box
         className={classnames(
-          'onboarding-flow__container w-full rounded-lg mx-auto',
+          // Same radius as ModalContent's dialog. The in-repo ModalContent and
+          // @metamask/design-system-react both use `rounded-[32px]` (32px).
+          // `rounded-3xl` is 24px with this Tailwind setup, so it does not match.
+          'onboarding-flow__container w-full rounded-[32px] mx-auto',
           {
             'onboarding-flow__container--full': isFullPage,
             'onboarding-flow__container--popup': isPopup,
@@ -604,5 +584,5 @@ export default function OnboardingFlow() {
 }
 
 function setOnboardingDate() {
-  submitRequestToBackgroundAndCatch('setOnboardingDate');
+  submitRequestToBackgroundAndCatch('AppStateController:setOnboardingDate');
 }

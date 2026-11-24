@@ -8,7 +8,9 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import SelectHardwareWalletAccountPage from '../../page-objects/pages/hardware-wallet/select-hardware-wallet-account-page';
 import AccountDetailsPage from '../../page-objects/pages/accounts/details-page';
 import { login } from '../../page-objects/flows/login.flow';
+import { openConnectHardwareWallet } from '../../page-objects/flows/add-wallet.flow';
 import { checkAccountAddressDisplayedInAccountList } from '../../page-objects/flows/account-list.flow';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 
 // BUG: Add funds banner doesn't clear
 // eslint-disable-next-line
@@ -20,15 +22,15 @@ describe.skip('QR Hardware', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver, { waitForNonEvmAccounts: false });
+        await login(driver);
 
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
 
         // Choose connect hardware wallet from the account menu
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
-        await accountListPage.openConnectHardwareWalletModal();
+        await openConnectHardwareWallet(driver);
 
         const connectHardwareWalletPage = new ConnectHardwareWalletPage(driver);
         await connectHardwareWalletPage.checkPageIsLoaded();
@@ -50,7 +52,7 @@ describe.skip('QR Hardware', function () {
         await selectQRAccountPage.unlockAccount(1);
         await headerNavbar.checkPageIsLoaded();
         await new HomePage(driver).checkExpectedBalanceIsDisplayed('0');
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await checkAccountAddressDisplayedInAccountList(driver, 'QR', 1);
       },
     );
@@ -64,13 +66,12 @@ describe.skip('QR Hardware', function () {
       },
       async ({ driver }) => {
         await login(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
 
         // Choose connect hardware wallet from the account menu
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
-        await accountListPage.openConnectHardwareWalletModal();
+        await openConnectHardwareWallet(driver);
 
         const connectHardwareWalletPage = new ConnectHardwareWalletPage(driver);
         await connectHardwareWalletPage.checkPageIsLoaded();
@@ -89,7 +90,7 @@ describe.skip('QR Hardware', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('0');
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await checkAccountAddressDisplayedInAccountList(driver, 'QR', 3);
 
         // Remove Ledger 1 account and check Ledger 1 account is removed

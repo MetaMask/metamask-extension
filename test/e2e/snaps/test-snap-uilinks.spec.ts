@@ -54,10 +54,12 @@ describe('Test Snap UI Links', function () {
 
         const testSnaps = new TestSnaps(driver);
         const snapInstall = new SnapInstall(driver);
-        await openTestSnapClickButtonAndInstall(driver, 'connectDialogsButton');
-        await testSnaps.checkInstallationComplete(
+        await openTestSnapClickButtonAndInstall(
+          driver,
           'connectDialogsButton',
-          'Reconnect to Dialogs Snap',
+          {
+            expectedMessage: 'Reconnect to Dialogs Snap',
+          },
         );
 
         await testSnaps.clickButton('confirmationButton');

@@ -23,6 +23,7 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
 } from '@metamask/design-system-react';
+import { useSelector } from 'react-redux';
 import {
   isPermissionDataWithTotalExposure,
   computeTotalExposureForPermission,
@@ -41,9 +42,13 @@ import {
   formatDecimalShiftedValue,
 } from '../../../../../../shared/lib/gator-permissions';
 import { getImageForChainId } from '../../../../../selectors/multichain';
+import { getChainIdToNetworkImageUrlMap } from '../../../../../selectors/config-registry/config-registry';
 import { PreferredAvatar } from '../../../../app/preferred-avatar';
 import { CopyIcon } from '../../../../app/confirm/info/row/copy-icon';
-import { useGetDisplayName } from '../../../../../hooks/useGetDisplayName';
+import {
+  shortenDisplayAddress,
+  useGetDisplayName,
+} from '../../../../../hooks/useGetDisplayName';
 import { toChecksumHexAddress } from '../../../../../../shared/lib/hexstring-utils';
 import NicknamePopovers from '../../../../app/modals/nickname-popovers';
 import {
@@ -123,7 +128,7 @@ const ReviewAddressDisplay = ({
           color={TextColor.TextAlternative}
           data-testid={testId}
         >
-          {getDisplayName(address)}
+          {getDisplayName(address) || shortenDisplayAddress(address)}
         </Text>
         <CopyIcon
           copyText={address}
@@ -176,6 +181,7 @@ const ReviewNetworkRow = ({
   networkName: string;
 }) => {
   const t = useI18nContext() as I18nFunction;
+  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
 
   return (
     <Box
@@ -200,7 +206,7 @@ const ReviewNetworkRow = ({
         gap={2}
       >
         <AvatarNetwork
-          src={getImageForChainId(chainId)}
+          src={getImageForChainId(chainId, networkImageUrls)}
           name={chainId}
           size={AvatarNetworkSize.Xs}
         />

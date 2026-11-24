@@ -30,9 +30,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
       selectedAccount: false,
     },
   },
-  AccountTracker: {
-    accountsByChainId: false,
-  },
   AddressBookController: {
     addressBook: false,
   },
@@ -118,16 +115,10 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     isWalletResetInProgress: false,
     pna25Acknowledged: false,
   },
-  MultichainBalancesController: {
-    balances: false,
-  },
   MultichainAssetsController: {
     accountsAssets: false,
     assetsMetadata: false,
     allIgnoredAssets: false,
-  },
-  MultichainAssetsRatesController: {
-    assetsRates: false,
   },
   BridgeController: {
     assetExchangeRates: false,
@@ -170,10 +161,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   CronjobController: {
     events: false,
   },
-  CurrencyController: {
-    currentCurrency: true,
-    currencyRates: true,
-  },
   DecryptMessageController: {
     unapprovedDecryptMsgs: false,
     unapprovedDecryptMsgCount: true,
@@ -197,6 +184,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     logs: false,
   },
   MoneyAccountController: {
+    defaultMoneyAccountId: false,
     moneyAccounts: false,
   },
   MoneyAccountUpgradeController: {
@@ -240,11 +228,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     onboardingJourneyEnded: true,
     onboardingTabs: false,
     seedPhraseBackedUp: true,
-  },
-  PPOMController: {
-    securityAlertsEnabled: false,
-    storageMetadata: [],
-    versionInfo: [],
   },
   PasskeyController: {
     passkeyRecord: false,
@@ -314,6 +297,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     nativeProviders: false,
     orders: false,
     providerAutoSelected: false,
+    userSelectedProviderId: false,
   },
   RewardsController: {
     rewardsActiveAccount: false,
@@ -370,19 +354,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   SubjectMetadataController: {
     subjectMetadata: false,
   },
-  // TokenDetectionController has no public controller state.
-  TokenDetectionController: {},
-  TokenListController: {
-    tokensChainsCache: {
-      [AllProperties]: false,
-    },
-  },
-  TokenBalancesController: {
-    tokenBalances: false,
-  },
-  TokenRatesController: {
-    marketData: false,
-  },
   TokensController: {
     allDetectedTokens: {
       [AllProperties]: false,
@@ -406,9 +377,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   TxController: {
     transactions: false,
     batchTransactionCounts: false,
-  },
-  UserOperationController: {
-    userOperations: false,
   },
   UserStorageController: {
     isBackupAndSyncEnabled: true,

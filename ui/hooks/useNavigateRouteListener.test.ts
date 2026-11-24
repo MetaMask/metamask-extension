@@ -1,7 +1,10 @@
-import { renderHook, act } from '@testing-library/react';
+import { renderHook, act, waitFor } from '@testing-library/react';
 import browser from 'webextension-polyfill';
-import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
-import { getIsUnlocked } from '../ducks/metamask/base-selectors';
+
+import { EXTENSION_MESSAGES } from '#shared/constants/messages';
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '#shared/constants/app';
+import { getEnvironmentType } from '#shared/lib/environment-type';
+
 import { useNavigateRouteListener } from './useNavigateRouteListener';
 
 const mockNavigate = jest.fn();
@@ -11,16 +14,23 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-jest.mock('../ducks/metamask/base-selectors', () => ({
-  ...jest.requireActual('../ducks/metamask/base-selectors'),
-  getIsUnlocked: jest.fn(),
+jest.mock('#shared/lib/environment-type');
+
+jest.mock('webextension-polyfill', () => ({
+  runtime: {
+    onMessage: {
+      addListener: jest.fn(),
+      removeListener: jest.fn(),
+    },
+    sendMessage: jest.fn(),
+  },
+  windows: {
+    getCurrent: jest.fn(),
+  },
 }));
 
-jest.mock('../store/hooks', () => ({
-  useAppSelector: (selector: (state: unknown) => unknown) => selector({}),
-}));
-
-const mockGetIsUnlocked = jest.mocked(getIsUnlocked);
+const mockGetEnvironmentType = jest.mocked(getEnvironmentType);
+const mockBrowser = jest.mocked(browser);
 
 describe('useNavigateRouteListener', () => {
   let messageListener: ((message: unknown) => unknown) | undefined;
@@ -28,60 +38,199 @@ describe('useNavigateRouteListener', () => {
   beforeEach(() => {
     mockNavigate.mockReset();
     messageListener = undefined;
-    mockGetIsUnlocked.mockReturnValue(true);
-    jest
-      .spyOn(browser.runtime.onMessage, 'addListener')
-      .mockImplementation((listener) => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+
+    (mockBrowser.runtime.onMessage.addListener as jest.Mock).mockImplementation(
+      (listener) => {
         messageListener = listener as (message: unknown) => unknown;
-      });
-    jest
-      .spyOn(browser.runtime.onMessage, 'removeListener')
-      .mockImplementation(() => undefined);
+      },
+    );
+    (
+      mockBrowser.runtime.onMessage.removeListener as jest.Mock
+    ).mockImplementation(() => undefined);
+    (mockBrowser.runtime.sendMessage as jest.Mock).mockResolvedValue({
+      type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+      body: { path: null, search: null },
+    });
+    (mockBrowser.windows.getCurrent as jest.Mock).mockResolvedValue({
+      id: 123,
+      focused: true,
+      alwaysOnTop: false,
+      incognito: false,
+      type: 'normal' as browser.Windows.WindowType,
+    });
   });
 
   afterEach(() => {
     jest.restoreAllMocks();
   });
 
-  it('navigates when OPEN_ROUTE is received while unlocked', () => {
+  it('consumes pending route on mount', async () => {
+    (mockBrowser.runtime.sendMessage as jest.Mock).mockResolvedValue({
+      type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+      body: { path: '/asset/eth', search: '' },
+    });
+
     renderHook(() => useNavigateRouteListener());
+
+    await waitFor(() => {
+      expect(mockBrowser.runtime.sendMessage).toHaveBeenCalledWith({
+        type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+        body: { windowId: 123 },
+      });
+    });
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith({
+        pathname: '/asset/eth',
+        search: '',
+      });
+    });
+  });
+
+  it('consumes on OPEN_ROUTE nudge for its own window', async () => {
+    renderHook(() => useNavigateRouteListener());
+
+    await waitFor(() => {
+      expect(mockBrowser.windows.getCurrent).toHaveBeenCalled();
+    });
+
+    (mockBrowser.runtime.sendMessage as jest.Mock).mockResolvedValue({
+      type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+      body: { path: '/swap', search: '' },
+    });
 
     act(() => {
       messageListener?.({
         type: EXTENSION_MESSAGES.OPEN_ROUTE,
-        body: {
-          path: '/cross-chain/swaps/prepare-bridge-page',
-          search: '?to=eip155:1/slip44:60',
-        },
+        body: { windowId: 123 },
       });
     });
 
-    expect(mockNavigate).toHaveBeenCalledWith({
-      pathname: '/cross-chain/swaps/prepare-bridge-page',
-      search: '?to=eip155:1/slip44:60',
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith({
+        pathname: '/swap',
+        search: '',
+      });
     });
   });
 
-  it('ignores messages without a valid path', () => {
+  it('ignores OPEN_ROUTE nudges for other windows', async () => {
     renderHook(() => useNavigateRouteListener());
+
+    await waitFor(() => {
+      expect(mockBrowser.windows.getCurrent).toHaveBeenCalled();
+    });
+
+    const navigateCallCount = mockNavigate.mock.calls.length;
 
     act(() => {
       messageListener?.({
         type: EXTENSION_MESSAGES.OPEN_ROUTE,
-        body: { path: 'swaps' },
+        body: { windowId: 456 },
       });
     });
+
+    await act(async () => undefined);
+
+    expect(mockNavigate).toHaveBeenCalledTimes(navigateCallCount);
+  });
+
+  it('does not navigate when no pending route is consumed', async () => {
+    renderHook(() => useNavigateRouteListener());
+
+    await waitFor(() => {
+      expect(mockBrowser.runtime.sendMessage).toHaveBeenCalled();
+    });
+
+    await act(async () => undefined);
 
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 
-  it('ignores non-object messages', () => {
+  it('does nothing in non-sidepanel environment', async () => {
+    jest.clearAllMocks();
+    mockGetEnvironmentType.mockReturnValue('popup');
+
     renderHook(() => useNavigateRouteListener());
 
-    act(() => {
-      messageListener?.(null);
+    await act(async () => undefined);
+
+    expect(mockBrowser.windows.getCurrent).not.toHaveBeenCalled();
+    expect(mockBrowser.runtime.sendMessage).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('handles getCurrent rejection gracefully', async () => {
+    (mockBrowser.windows.getCurrent as jest.Mock).mockRejectedValue(
+      new Error('getCurrent failed'),
+    );
+
+    renderHook(() => useNavigateRouteListener());
+
+    await act(async () => undefined);
+
+    expect(mockBrowser.windows.getCurrent).toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('handles sendMessage rejection in nudge gracefully', async () => {
+    renderHook(() => useNavigateRouteListener());
+
+    await waitFor(() => {
+      expect(mockBrowser.windows.getCurrent).toHaveBeenCalled();
     });
 
+    (mockBrowser.runtime.sendMessage as jest.Mock).mockRejectedValue(
+      new Error('sendMessage failed'),
+    );
+
+    act(() => {
+      messageListener?.({
+        type: EXTENSION_MESSAGES.OPEN_ROUTE,
+        body: { windowId: 123 },
+      });
+    });
+
+    await act(async () => undefined);
+
     expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('pushes on both mount and nudge for correct history behavior', async () => {
+    (mockBrowser.runtime.sendMessage as jest.Mock).mockResolvedValue({
+      type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+      body: { path: '/asset/eth', search: '' },
+    });
+
+    renderHook(() => useNavigateRouteListener());
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith({
+        pathname: '/asset/eth',
+        search: '',
+      });
+    });
+
+    mockNavigate.mockClear();
+
+    (mockBrowser.runtime.sendMessage as jest.Mock).mockResolvedValue({
+      type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+      body: { path: '/swap', search: '' },
+    });
+
+    act(() => {
+      messageListener?.({
+        type: EXTENSION_MESSAGES.OPEN_ROUTE,
+        body: { windowId: 123 },
+      });
+    });
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith({
+        pathname: '/swap',
+        search: '',
+      });
+    });
   });
 });

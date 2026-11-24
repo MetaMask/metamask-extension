@@ -1,8 +1,17 @@
 import { createSelector } from 'reselect';
 import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
+import type { AccountsState } from '../../shared/lib/selectors/accounts';
+import {
+  getEvmAccountOverride,
+  decodePaymentTokenAssetId,
+} from '../../shared/lib/transaction/pay-token';
 
 export type TransactionPayState = {
   metamask: TransactionPayControllerState;
+};
+
+export type TransactionPayAccountsState = {
+  metamask: TransactionPayControllerState & AccountsState['metamask'];
 };
 
 export const selectTransactionDataByTransactionId = createSelector(
@@ -42,6 +51,15 @@ export const selectTransactionPaymentTokenByTransactionId = createSelector(
   (transactionData) => transactionData?.paymentToken,
 );
 
+/**
+ * Hex chain ID and token address of the selected payment token, decoded from
+ * its asset ID, when it is an EVM token.
+ */
+export const selectPaymentTokenEvmAssetByTransactionId = createSelector(
+  selectTransactionPaymentTokenByTransactionId,
+  (paymentToken) => decodePaymentTokenAssetId(paymentToken),
+);
+
 export const selectTransactionPaySourceAmountsByTransactionId = createSelector(
   selectTransactionDataByTransactionId,
   (transactionData) => transactionData?.sourceAmounts,
@@ -58,8 +76,9 @@ export const selectTransactionPayIsPostQuoteByTransactionId = createSelector(
 );
 
 /**
- * Funding account override for a transaction, when the user picks a different
- * "From" account on money-account deposit (or similar) confirmations.
+ * ID of the funding account override for a transaction, when the user picks a
+ * different "From" account on money-account deposit (or similar)
+ * confirmations.
  */
 export const selectTransactionPayAccountOverrideByTransactionId =
   createSelector(
@@ -68,9 +87,31 @@ export const selectTransactionPayAccountOverrideByTransactionId =
   );
 
 /**
+ * Address of the account override for a transaction when it is an EVM
+ * account. A non-EVM override does not change the EVM account.
+ */
+export const selectTransactionPayEvmAccountOverrideByTransactionId =
+  createSelector(
+    (state: TransactionPayAccountsState, transactionId: string) =>
+      selectTransactionPayAccountOverrideByTransactionId(state, transactionId),
+    (state: TransactionPayAccountsState) =>
+      state.metamask.internalAccounts.accounts,
+    (accountOverride, accounts) =>
+      getEvmAccountOverride(accountOverride, accounts),
+  );
+
+/**
  * Alternate payment strategy override (e.g. Money Account) for a transaction.
  */
 export const selectPaymentOverrideByTransactionId = createSelector(
   selectTransactionDataByTransactionId,
   (transactionData) => transactionData?.paymentOverride,
+);
+
+/**
+ * Fiat on-ramp payment state for a transaction, when the user pays by card.
+ */
+export const selectTransactionPayFiatPaymentByTransactionId = createSelector(
+  selectTransactionDataByTransactionId,
+  (transactionData) => transactionData?.fiatPayment,
 );

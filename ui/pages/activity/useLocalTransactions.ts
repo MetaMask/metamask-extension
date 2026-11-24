@@ -19,7 +19,8 @@ export function useLocalTransactions(filters: ActivityListFilter) {
   const networks = 'networks' in filters ? filters.networks : undefined;
 
   const filteredLocalItems = useMemo(() => {
-    let items = localItems;
+    // Local items are oldest-first, but Activity is newest-first and equal timestamps keep array order
+    let items = localItems.toReversed();
 
     if (assetId) {
       items = items.filter((item) => activityMatchesAssetId(item, assetId));

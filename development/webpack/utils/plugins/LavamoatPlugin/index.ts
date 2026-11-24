@@ -4,11 +4,12 @@ import {
   LavaMoatPlugin,
   exclude as LavamoatExcludeLoader,
 } from '@lavamoat/webpack';
+import { projectRoot, resolvePackage } from '../../../../lib/build-paths.ts';
 import type { Args } from '../../cli';
 
 // While ../../../../../app is the main dir for the webpack build to use as context, the project root where package.json is one level up.
 // This discrepancy needs to be explained to LavaMoat plugin as it's searching for the package.json in the compilator.context by default.
-const rootDir = join(__dirname, '../../../../../');
+const rootDir = projectRoot;
 
 // Entries that run fully outside LavaMoat and host no wrapped code, so their chunk gets no LavaMoat runtime at all.
 const nullUnsafeEntries: Set<string> = new Set([
@@ -19,6 +20,7 @@ const nullUnsafeEntries: Set<string> = new Set([
 const getScuttleGlobalThisExceptions = (args: Args) => [
   // globals used by different mm deps outside of lm compartment
   'window',
+  'Window',
   'Proxy',
   'toString',
   'getComputedStyle',
@@ -75,6 +77,8 @@ const getScuttleGlobalThisExceptions = (args: Args) => [
   'logEncryptedVault',
   'WebAssembly',
   'Request',
+  // Sentry builds fetch trace headers with it; scuttled, they are dropped.
+  'Headers',
   // needed by Sentry and react-router-dom v6 HashRouter
   'history',
   // globals used by react-dom
@@ -208,7 +212,7 @@ export const lavamoatPlugin = (
           // If snow is enabled, it needs to run before LavaMoat
           staticShims: args.snow
             ? [
-                require.resolve('@lavamoat/snow/snow.prod.js'),
+                resolvePackage('@lavamoat/snow/snow.prod.js'),
                 join(rootDir, 'app/scripts/use-snow.js'),
               ]
             : [],

@@ -1,6 +1,9 @@
 import React, { type MouseEvent as ReactMouseEvent } from 'react';
 import { useSelector } from 'react-redux';
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import type { EditGasModes } from '../../../../shared/constants/gas';
 import type { TransactionGroup } from '../../../../shared/lib/multichain/types';
 import { isIntentBridgeActivity } from '../../../helpers/transactions/pending-transaction-actions';
@@ -45,7 +48,14 @@ export const TransactionListItemPendingActions = ({
     return null;
   }
 
-  if (!showCancel && !speedUp.show) {
+  const showSpeedUp =
+    speedUp.show &&
+    initialTransaction.type !== TransactionType.swap &&
+    initialTransaction.type !== TransactionType.bridge &&
+    initialTransaction.type !== TransactionType.swapApproval &&
+    initialTransaction.type !== TransactionType.bridgeApproval;
+
+  if (!showCancel && !showSpeedUp) {
     return null;
   }
 
@@ -61,6 +71,7 @@ export const TransactionListItemPendingActions = ({
       onCancel={wrapHandler(onCancel)}
       speedUp={{
         ...speedUp,
+        show: showSpeedUp,
         onClick: wrapHandler(speedUp.onClick),
       }}
       className="px-[60px] pb-2"

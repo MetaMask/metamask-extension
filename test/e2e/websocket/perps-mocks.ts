@@ -3,6 +3,7 @@ import { WebSocket } from 'ws';
 import {
   DEFAULT_HYPERLIQUID_WS_MOCKS,
   clearPendingUserFills,
+  clearPushedClearinghouseState,
   getResponsePayload,
 } from '../tests/perps/mocks/websocketDefaultMocks';
 import type { WebSocketMessageMock } from './types';
@@ -36,6 +37,7 @@ async function setupPerpsWebsocketMocks(
   mocks: WebSocketMessageMock[] = [],
 ): Promise<void> {
   clearPendingUserFills();
+  clearPushedClearinghouseState();
   const wsServer = server.getServer();
 
   const mergedMocks = [...mocks, ...DEFAULT_HYPERLIQUID_WS_MOCKS];

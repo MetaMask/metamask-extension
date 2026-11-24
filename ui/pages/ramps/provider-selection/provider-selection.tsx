@@ -17,7 +17,6 @@ import {
 } from '@metamask/design-system-react';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
-import { selectRampsOrdersForSelectedAccount } from '../../../selectors/rampsController';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useRampsController } from '../../../hooks/ramps/useRampsController';
 import { useRampsAnalytics } from '../../../hooks/ramps/useRampsAnalytics';
@@ -25,7 +24,6 @@ import { useRampsScreenViewed } from '../../../hooks/ramps/useRampsScreenViewed'
 import { useRampsQuotes } from '../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../hooks/ramps/utils/getRampCallbackBaseUrl';
 import { normalizeAssetIdForApi } from '../../../hooks/ramps/utils/normalizeAssetIdForApi';
-import { completedOrdersFromRampsOrders } from '../../../hooks/ramps/utils/determinePreferredProvider';
 import { parseUserFacingError } from '../../../hooks/ramps/utils/parseUserFacingError';
 import { ScrollContainer } from '../../../contexts/scroll-container';
 import RampsListSkeleton from '../components/ramps-list-skeleton';
@@ -145,13 +143,13 @@ export function RampsProviderSelectionModal({
 }: RampsProviderSelectionModalProps) {
   const t = useI18nContext();
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const controllerOrders = useSelector(selectRampsOrdersForSelectedAccount);
   const {
     providers,
     providersLoading,
     providersError,
     selectedProvider,
     setSelectedProvider,
+    previouslyUsedProviderIds: ordersProviders,
     selectedPaymentMethod,
     selectedToken,
     userRegion,
@@ -178,14 +176,6 @@ export function RampsProviderSelectionModal({
   const tokenSymbol = getRampsTokenDisplaySymbol(selectedToken);
   const fiatCurrency = userRegion?.country?.currency ?? 'USD';
   const regionCode = userRegion?.regionCode ?? '';
-
-  const ordersProviders = useMemo(
-    () =>
-      completedOrdersFromRampsOrders(controllerOrders).map(
-        (order) => order.providerId,
-      ),
-    [controllerOrders],
-  );
 
   const displayProviders = useMemo(() => {
     if (!assetId) {
@@ -293,7 +283,7 @@ export function RampsProviderSelectionModal({
       setIsSelecting(true);
 
       try {
-        await setSelectedProvider(provider);
+        await setSelectedProvider(provider, { userSelected: true });
         trackProviderSelected({
           provider: provider.name,
           previousProvider: selectedProvider?.name,
@@ -307,12 +297,7 @@ export function RampsProviderSelectionModal({
         setIsSelecting(false);
       }
     },
-    [
-      onClose,
-      selectedProvider?.name,
-      setSelectedProvider,
-      trackProviderSelected,
-    ],
+    [onClose, selectedProvider, setSelectedProvider, trackProviderSelected],
   );
 
   let testId = 'ramps-provider-selection-modal';

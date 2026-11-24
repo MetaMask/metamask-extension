@@ -7,16 +7,16 @@ import {
 } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
+import { selectDestinationToken } from '../../page-objects/flows/bridge.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import {
   createDappTransaction,
   createInternalTransaction,
 } from '../../page-objects/flows/transaction.flow';
-import { TxToastNotification } from '../../page-objects/components/tx-toast-notification';
+import SwapPage from '../../page-objects/pages/swap/swap-page';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
-import SwapPage from '../../page-objects/pages/swap/swap-page';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from '../bridge/constants';
 import { mockGetTxStatus } from '../bridge/bridge-test-utils';
 import {
@@ -92,7 +92,6 @@ async function withFixturesForSmartTransactions(
     async ({ driver }) => {
       await login(driver, {
         expectedBalance,
-        waitForNonEvmAccounts: false,
       });
       await runTestWithFixtures({ driver });
     },
@@ -118,7 +117,6 @@ describe('Smart Transactions', function () {
         const transactionConfirmation = new TransactionConfirmation(driver);
         const homePage = new HomePage(driver);
         const activityTab = new ActivityTab(driver);
-        const txToastNotification = new TxToastNotification(driver);
 
         await createInternalTransaction({
           driver,
@@ -132,11 +130,6 @@ describe('Smart Transactions', function () {
           button: 'confirm',
           waitUntil: 'disappear',
         });
-
-        // 2 toast notifications appear, one for the gas payment and one for the main transaction.
-        // The 2nd toast obfuscates the Activity tab, so we need to actively close one to be able to click on the Activity tab without error.
-        await txToastNotification.checkTxConfirmedToast();
-        await txToastNotification.closeToastNotification();
 
         await homePage.goToActivityList();
         await activityTab.checkCompletedTxNumberDisplayedInActivity(1);
@@ -164,12 +157,10 @@ describe('Smart Transactions', function () {
         const swapPage = new SwapPage(driver);
         await swapPage.checkPageIsLoaded();
         await swapPage.enterSwapAmount('2');
-        await swapPage.selectDestinationToken('DAI');
-        await swapPage.checkQuoteIsGasIncluded();
+        await selectDestinationToken(driver, 'DAI');
+        await swapPage.checkGasIncludedIsDisplayed();
         await swapPage.submitSwap();
-
-        await swapPage.waitForSmartTransactionToComplete();
-        await swapPage.clickViewActivity();
+        await swapPage.goBackAfterSubmit();
 
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
@@ -197,12 +188,10 @@ describe('Smart Transactions', function () {
         const swapPage = new SwapPage(driver);
         await swapPage.checkPageIsLoaded();
         await swapPage.enterSwapAmount('20');
-        await swapPage.waitForQuote();
-        await swapPage.checkQuoteIsGasIncluded();
+        await swapPage.waitForSwapQuote();
+        await swapPage.checkGasIncludedIsDisplayed();
         await swapPage.submitSwap();
-
-        await swapPage.waitForSmartTransactionToComplete();
-        await swapPage.clickViewActivity();
+        await swapPage.goBackAfterSubmit();
 
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();

@@ -7,6 +7,7 @@ import {
   PaymentOverride,
   type TransactionPayTotals,
 } from '@metamask/transaction-pay-controller';
+import { hexToNumber, type Hex } from '@metamask/utils';
 import { act } from '@testing-library/react';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
@@ -90,6 +91,7 @@ function runHook({
   balanceUsdOverride,
   isNoFeePayToken = true,
   isMaxAmount = false,
+  isMaxAvailable = false,
   isQuotesLoading = false,
   requiredTokens = [],
   totals,
@@ -112,10 +114,11 @@ function runHook({
   livePayTokenBalanceRaw?: string;
   payTokenDecimals?: number;
   payTokenAddress?: string;
-  payTokenChainId?: string;
+  payTokenChainId?: Hex;
   balanceUsdOverride?: number;
   isNoFeePayToken?: boolean;
   isMaxAmount?: boolean;
+  isMaxAvailable?: boolean;
   isQuotesLoading?: boolean;
   requiredTokens?: { amountUsd?: string; skipIfBalance?: boolean }[];
   totals?: TransactionPayTotals;
@@ -170,11 +173,10 @@ function runHook({
     .mocked(useTransactionPayTokenModule.useTransactionPayToken)
     .mockReturnValue({
       payToken: {
-        address: payTokenAddress,
+        assetId: `eip155:${hexToNumber(payTokenChainId)}/erc20:${payTokenAddress}`,
         balanceUsd: String(payTokenBalanceUsd),
         balanceRaw: payTokenBalanceRaw,
         decimals: payTokenDecimals,
-        chainId: payTokenChainId,
       } as ReturnType<
         typeof useTransactionPayTokenModule.useTransactionPayToken
       >['payToken'],
@@ -200,6 +202,7 @@ function runHook({
   useDepositPrefillMock.mockReturnValue(depositPrefill);
   jest.mocked(useAccountTokensLoading).mockReturnValue(isAccountTokensLoading);
   jest.mocked(useMoneyAccountWithdrawableFiat).mockReturnValue({
+    isLoading: false,
     withdrawableFiatRaw: moneyAccountWithdrawableFiatRaw,
     withdrawableFiatFormatted: undefined,
   });
@@ -210,6 +213,7 @@ function runHook({
         balanceUsdOverride,
         currency,
         disableUpdate,
+        isMaxAvailable,
         prefillMaxOnLoad,
       });
       const { isAmountPending } = useConfirmContext();
@@ -702,11 +706,10 @@ describe('useTransactionCustomAmount', () => {
         .mocked(useTransactionPayTokenModule.useTransactionPayToken)
         .mockReturnValue({
           payToken: {
-            address,
+            assetId: `eip155:1/erc20:${address}`,
             balanceUsd: '100',
             balanceRaw: '100000000',
             decimals: 6,
-            chainId: '0x1',
           } as unknown as ReturnType<
             typeof useTransactionPayTokenModule.useTransactionPayToken
           >['payToken'],
@@ -1044,6 +1047,111 @@ describe('useTransactionCustomAmount', () => {
       });
 
       expect(result.current.amountFiat).toBe('50');
+    });
+  });
+
+  describe('snap typed amount to Max', () => {
+    function typeAndSettle(
+      result: { current: ReturnType<typeof useTransactionCustomAmount> },
+      value: string,
+    ) {
+      act(() => {
+        result.current.updatePendingAmount(value);
+      });
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+    }
+
+    it('commits a typed amount equal to the displayed balance as Max', () => {
+      const updateTokenAmountMock = jest.fn();
+      const { result } = runHook({
+        isMaxAvailable: true,
+        payTokenBalanceUsd: 2.2834,
+        updateTokenAmountMock,
+      });
+
+      typeAndSettle(result, '2.28');
+
+      expect(setIsMaxAmountMock).toHaveBeenLastCalledWith(
+        MOCK_TRANSACTION_META.id,
+        true,
+        { isMoneyAccountDeposit: false },
+      );
+      expect(updateTokenAmountMock).toHaveBeenCalledTimes(1);
+      expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+        MOCK_TRANSACTION_META.id,
+        {
+          properties: expect.objectContaining({
+            mm_pay_amount_input_type: 'manual_snapped_max',
+          }),
+        },
+      );
+    });
+
+    it('commits the typed amount when it is below the displayed balance', () => {
+      const updateTokenAmountMock = jest.fn();
+      const { result } = runHook({
+        isMaxAvailable: true,
+        payTokenBalanceUsd: 2.2834,
+        updateTokenAmountMock,
+      });
+
+      typeAndSettle(result, '2.27');
+
+      expect(setIsMaxAmountMock).not.toHaveBeenCalledWith(
+        expect.anything(),
+        true,
+        expect.anything(),
+      );
+      expect(updateTokenAmountMock).toHaveBeenCalledWith('2.27');
+    });
+
+    it('does not snap when Max is not available', () => {
+      const updateTokenAmountMock = jest.fn();
+      const { result } = runHook({
+        payTokenBalanceUsd: 2.2834,
+        updateTokenAmountMock,
+      });
+
+      typeAndSettle(result, '2.28');
+
+      expect(setIsMaxAmountMock).not.toHaveBeenCalledWith(
+        expect.anything(),
+        true,
+        expect.anything(),
+      );
+      expect(updateTokenAmountMock).toHaveBeenCalledWith('2.28');
+    });
+
+    it('does not snap a percentage amount', () => {
+      const { result } = runHook({
+        isMaxAvailable: true,
+        payTokenBalanceUsd: 4.56,
+      });
+
+      act(() => {
+        result.current.updatePendingAmountPercentage(50);
+      });
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      expect(setIsMaxAmountMock).not.toHaveBeenCalledWith(
+        expect.anything(),
+        true,
+        expect.anything(),
+      );
+    });
+
+    it('resolves a snapping amount to the full-precision balance', () => {
+      const { result } = runHook({
+        isMaxAvailable: true,
+        payTokenBalanceUsd: 2.2834,
+      });
+
+      expect(result.current.resolveAmountFiat('2.28')).toBe('2.2834');
+      expect(result.current.resolveAmountFiat('2.27')).toBe('2.27');
     });
   });
 
@@ -1824,9 +1932,8 @@ describe('useTransactionCustomAmount', () => {
         .mocked(useTransactionPayTokenModule.useTransactionPayToken)
         .mockReturnValue({
           payToken: {
-            address: '0xtokenb',
+            assetId: 'eip155:1/erc20:0xtokenb',
             balanceUsd: '2000',
-            chainId: '0x1',
           } as unknown as ReturnType<
             typeof useTransactionPayTokenModule.useTransactionPayToken
           >['payToken'],
@@ -2212,6 +2319,47 @@ describe('useTransactionCustomAmount', () => {
       });
 
       expect(updateTokenAmountMock).toHaveBeenCalledWith('1.123456');
+      expect(setIsMaxAmountMock).toHaveBeenCalledWith(
+        moneyAccountDepositMeta.id,
+        true,
+        {
+          isAtomicMaxAllowed: false,
+          isMoneyAccountDeposit: true,
+          sourceAccountAddress: undefined,
+          sourceBalanceRaw: '1123456',
+          sourceChainId: '0x1',
+          sourceTokenAddress: '0xpaytoken',
+        },
+      );
+    });
+
+    it('holds Max until override assets finish loading for a non-no-fee token', () => {
+      const updateTokenAmountMock = jest.fn();
+      const { result, rerender } = runHook({
+        ...depositMaxPayToken,
+        isNoFeePayToken: false,
+        isAccountTokensLoading: true,
+        updateTokenAmountMock,
+      });
+
+      act(() => {
+        result.current.updatePendingAmountPercentage(100);
+      });
+
+      // Max is offered for every non-native deposit token, so the stale-raw
+      // hold must cover them too: `setIsMax` records the source balance
+      // regardless of whether the amount comes from the raw or fiat path.
+      expect(updateTokenAmountMock).not.toHaveBeenCalled();
+      expect(setIsMaxAmountMock).not.toHaveBeenCalled();
+
+      jest.mocked(useAccountTokensLoading).mockReturnValue(false);
+      act(() => {
+        rerender();
+      });
+
+      // Non-no-fee tokens are not 1:1 with mUSD, so the amount still comes
+      // from the fiat conversion: 2.24 ÷ 2 = 1.12.
+      expect(updateTokenAmountMock).toHaveBeenCalledWith('1.12');
       expect(setIsMaxAmountMock).toHaveBeenCalledWith(
         moneyAccountDepositMeta.id,
         true,

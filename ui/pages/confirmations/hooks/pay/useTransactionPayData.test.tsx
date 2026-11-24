@@ -21,6 +21,7 @@ import {
   useTransactionPayIsPostQuote,
   useTransactionPayPrimaryRequiredToken,
   useTransactionPayQuotes,
+  useTransactionPayFiatPayment,
   useTransactionPayRequiredTokens,
   useTransactionPaySourceAmounts,
   useTransactionPayTotals,
@@ -410,6 +411,17 @@ describe('useTransactionPayData', () => {
         { wrapper: createWrapper({ tokens: [GAS_TOKEN_MOCK] }) },
       );
       expect(result.current).toBeUndefined();
+    });
+  });
+
+  describe('useTransactionPayFiatPayment', () => {
+    it('returns the fiat payment stored for the confirmation', () => {
+      const fiatPayment = { selectedPaymentMethodId: 'card' };
+      const { result } = renderHook(() => useTransactionPayFiatPayment(), {
+        wrapper: createWrapper({ fiatPayment } as never),
+      });
+
+      expect(result.current).toStrictEqual(fiatPayment);
     });
   });
 });

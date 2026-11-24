@@ -2,7 +2,7 @@ import {
   TransactionMeta,
   UserFeeLevel,
 } from '@metamask/transaction-controller';
-import { toChecksumHexAddress, toHex } from '@metamask/controller-utils';
+import { toHex } from '@metamask/controller-utils';
 import type { Hex } from '@metamask/utils';
 import { screen } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
@@ -10,6 +10,7 @@ import configureStore from 'redux-mock-store';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import {
+  buildNativeEvmBalancePatch,
   getMockConfirmState,
   getMockConfirmStateForTransaction,
 } from '../../../../../../test/data/confirmations/helper';
@@ -169,15 +170,10 @@ describe('useGasEstimateFailedAlerts', () => {
     expect(
       runHook(
         getMockConfirmStateForTransaction(transaction, {
-          metamask: {
-            accountsByChainId: {
-              [CHAIN_IDS.MONAD]: {
-                [toChecksumHexAddress(transaction.txParams.from)]: {
-                  balance: BALANCE_15_MON,
-                },
-              },
-            },
-          },
+          metamask: buildNativeEvmBalancePatch({
+            hexChainId: CHAIN_IDS.MONAD,
+            amountWei: BALANCE_15_MON,
+          }),
         }),
       ),
     ).toEqual([]);

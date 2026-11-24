@@ -141,7 +141,7 @@ describe('StartTradeCta', () => {
 
     await waitFor(() => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'complianceCheckWalletsCompliance',
+        'ComplianceController:checkWalletsCompliance',
         [[selectedAccountAddress]],
       );
     });

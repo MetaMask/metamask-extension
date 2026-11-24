@@ -8,12 +8,16 @@ import {
   isMoneyActivityDetailsEnabled,
   isMoneyActivityMockDataEnabled,
   isMoneyEarningSectionEnabled,
+  isMoneyHistoricalVaultShareValuationsEnabled,
   isMoneyHomeScreenCardEnabled,
   isMoneyTokenListItemCtaEnabled,
   isMoneyEarnBannerEnabled,
   isMoneyAssetOverviewBalanceCtaEnabled,
 } from '../../../shared/lib/money/feature-flags';
-import { getMoneyAccountVaultConfig } from '../../../shared/lib/money/vault-config';
+import {
+  getMoneyAccountPremiumVaultConfig,
+  getMoneyAccountVaultConfig,
+} from '../../../shared/lib/money/vault-config';
 
 /**
  * The APY controls from the `earnMoneyVaultApyControl` remote feature flag.
@@ -104,6 +108,18 @@ export const selectMoneyAccountVaultConfig = createSelector(
 );
 
 /**
+ * Selects the Money Account premium vault config, or `undefined` when the
+ * flag is unserved or malformed.
+ *
+ * @param state - The MetaMask state object.
+ * @returns The parsed premium vault config, or `undefined`.
+ */
+export const selectMoneyAccountPremiumVaultConfig = createSelector(
+  getRemoteFeatureFlags,
+  getMoneyAccountPremiumVaultConfig,
+);
+
+/**
  * Selects the Money vault APY fallback and override.
  *
  * @param state - The MetaMask state object.
@@ -176,6 +192,18 @@ export const selectMoneyActivityMockDataEnabled = createSelector(
 export const selectMoneyActivityDetailsEnabled = createSelector(
   getRemoteFeatureFlags,
   isMoneyActivityDetailsEnabled,
+);
+
+/**
+ * Selects whether card spend and cashback rows use historical vault-share
+ * valuations.
+ *
+ * @param state - The MetaMask state object.
+ * @returns Whether historical vault-share valuations are enabled.
+ */
+export const selectMoneyEnableHistoricalVaultShareValuations = createSelector(
+  getRemoteFeatureFlags,
+  isMoneyHistoricalVaultShareValuationsEnabled,
 );
 
 /**

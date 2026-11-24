@@ -89,23 +89,56 @@ jest.mock('../../../pages/notifications/NewFeatureTag', () => ({
 }));
 
 describe('GlobalMenuDrawer', () => {
-  beforeAll(() => {
-    if (!HTMLDialogElement.prototype.showModal) {
-      HTMLDialogElement.prototype.showModal = function showModal() {
-        this.setAttribute('open', '');
-      };
-    }
-    if (!HTMLDialogElement.prototype.close) {
-      HTMLDialogElement.prototype.close = function close() {
-        this.removeAttribute('open');
-        this.dispatchEvent(new Event('close'));
-      };
+  it('waits through native dialog handoffs before opening', () => {
+    const first = document.body.appendChild(document.createElement('dialog'));
+    const next = document.body.appendChild(document.createElement('dialog'));
+    first.showModal();
+    try {
+      const { getByTestId } = renderWithProvider(
+        <GlobalMenuDrawer isOpen onClose={jest.fn()} data-testid="drawer">
+          Content
+        </GlobalMenuDrawer>,
+        configureStore(mockState),
+        '/',
+      );
+      const drawer = getByTestId('drawer');
+      expect(drawer).not.toHaveAttribute('open');
+
+      // Native close is queued; activation can open before the invite's event fires.
+      first.open = false;
+      first.remove();
+      next.showModal();
+      fireEvent(first, new Event('close'));
+      expect(drawer).not.toHaveAttribute('open');
+      next.close();
+      expect(drawer).toHaveAttribute('open');
+    } finally {
+      first.remove();
+      next.remove();
     }
   });
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-    getEnvironmentType.mockReturnValue('popup');
+  it('cancels a deferred open when unmounted', () => {
+    const blocker = document.body.appendChild(document.createElement('dialog'));
+    blocker.showModal();
+    try {
+      const { getByTestId, unmount } = renderWithProvider(
+        <GlobalMenuDrawer isOpen onClose={jest.fn()} data-testid="drawer">
+          Content
+        </GlobalMenuDrawer>,
+        configureStore(mockState),
+        '/',
+      );
+      const show = jest.spyOn(
+        getByTestId('drawer') as HTMLDialogElement,
+        'showModal',
+      );
+      unmount();
+      blocker.close();
+      expect(show).not.toHaveBeenCalled();
+    } finally {
+      blocker.remove();
+    }
   });
 
   it('renders children when open', async () => {

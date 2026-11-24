@@ -57,6 +57,7 @@ import {
   PasskeyEnrollmentSteps,
   type PasskeyEnrollmentStepStatus,
 } from '../../../components/app/passkey-enrollment-steps';
+import { PasskeyEnrollmentError } from '../../../components/app/passkey-setup/supported-passkey-providers-link';
 
 const PASSKEY_SETTINGS_TOAST_DURATION_MS = 5 * SECOND;
 
@@ -433,7 +434,12 @@ export default function PasskeyRegisterSubPage() {
               {enrollmentError && (
                 <BannerAlert
                   severity={BannerAlertSeverity.Danger}
-                  description={enrollmentError}
+                  description={
+                    <PasskeyEnrollmentError
+                      message={enrollmentError}
+                      passkeyMethodLabel={passkeyMethodLabel}
+                    />
+                  }
                   data-testid="passkey-enrollment-error"
                 />
               )}

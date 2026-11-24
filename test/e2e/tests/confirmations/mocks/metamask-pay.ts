@@ -50,12 +50,20 @@ const ACCOUNTANT_GET_RATE_SELECTOR = '0x679aefce';
  */
 const VAULT_RATE_ONE_TO_ONE = pad(toHex(1_000_000n), { size: 32 });
 
+/** Opaque token Relay returns on execute quotes and expects back on /execute. */
+const RELAY_EXECUTE_SIGNATURE = 'money-account-withdraw-e2e-signature';
+
 type RelayQuoteRequestBody = {
   amount?: string;
   destinationCurrency?: string;
+  metamask?: { executeVersion?: number };
   originCurrency?: string;
   recipient?: string;
   user?: string;
+};
+
+type RelayExecuteRequestBody = {
+  requestId?: string;
 };
 
 function getProductionRemoteFlagApiResponseWithOverrides(
@@ -792,6 +800,9 @@ function buildRelayQuote(body: RelayQuoteRequestBody): {
     sourceSymbol = 'ETH';
   }
   const sourceChainId = isMusdSource ? MONAD_CHAIN_ID_DECIMAL : 1;
+  // The Money Account cannot sign a plain transaction, so its quotes must be
+  // Relay execute quotes. Deposits keep the plain step that Anvil mines.
+  const isExecute = isMusdSource && Boolean(body.metamask?.executeVersion);
   const user = (body.user ??
     (isMusdSource
       ? MONEY_ACCOUNT_ADDRESS
@@ -882,6 +893,9 @@ function buildRelayQuote(body: RelayQuoteRequestBody): {
     settlementHash,
     settlesOnMainnet: isMusdSource,
     quote: {
+      ...(isExecute
+        ? { metamask: { isExecute: true, signature: RELAY_EXECUTE_SIGNATURE } }
+        : {}),
       steps: [
         {
           id: 'deposit',
@@ -947,7 +961,7 @@ function buildRelayQuote(body: RelayQuoteRequestBody): {
 }
 
 /**
- * Registers the Relay quote mock. Records each served quote's request id,
+ * Registers the Relay quote and execute mocks. Records each served quote's request id,
  * settlement hash and mUSD output so the settlement mocks report the amount
  * the confirmed quote promised.
  *
@@ -986,6 +1000,16 @@ async function mockRelayQuote(
     .forPost(/intents\.(uat-)?api\.cx\.metamask\.io\/relay\/quote/u)
     .always()
     .thenCallback(handler);
+
+  // Echo the quote's request id so the status mocks resolve its settlement.
+  await server
+    .forPost(/intents\.(uat-)?api\.cx\.metamask\.io\/relay\/execute/u)
+    .always()
+    .thenCallback(async (request) => {
+      const body = ((await request.body.getJson()) ??
+        {}) as RelayExecuteRequestBody;
+      return { statusCode: 200, json: { requestId: body.requestId } };
+    });
 }
 
 /**

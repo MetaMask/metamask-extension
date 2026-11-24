@@ -68,7 +68,9 @@ describe('useMusdGeoBlocking', () => {
     renderHook(() => useMusdGeoBlocking());
 
     await waitFor(() => {
-      expect(submitRequestToBackground).toHaveBeenCalledWith('getGeolocation');
+      expect(submitRequestToBackground).toHaveBeenCalledWith(
+        'GeolocationController:getGeolocation',
+      );
     });
   });
 
@@ -159,7 +161,7 @@ describe('useMusdGeoBlocking', () => {
     await waitFor(() => {
       expect(submitRequestToBackground).toHaveBeenCalledTimes(1);
       expect(submitRequestToBackground).toHaveBeenLastCalledWith(
-        'getGeolocation',
+        'GeolocationController:getGeolocation',
       );
     });
 
@@ -171,7 +173,7 @@ describe('useMusdGeoBlocking', () => {
 
     expect(submitRequestToBackground).toHaveBeenCalledTimes(2);
     expect(submitRequestToBackground).toHaveBeenLastCalledWith(
-      'refreshGeolocation',
+      'GeolocationController:refreshGeolocation',
     );
     expect(result.current.userCountry).toBe('DE');
   });

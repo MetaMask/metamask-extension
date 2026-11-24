@@ -44,6 +44,7 @@ import {
   useTransactionPayTotals,
 } from '../pay/useTransactionPayData';
 import { getTokenAddress } from '../../utils/transaction-pay';
+import { decodePaymentTokenAssetId } from '../../../../../shared/lib/transaction/pay-token';
 import {
   MUSD_CONVERSION_DEFAULT_CHAIN_ID,
   MUSD_TOKEN_ADDRESS,
@@ -52,6 +53,10 @@ import { useAccountTokensLoading } from '../send/useAccountTokensLoading';
 import { DepositPrefillStatus, useDepositPrefill } from './useDepositPrefill';
 import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 import { useTransactionCustomAmountPercentageMetrics } from './useTransactionCustomAmountPercentageMetrics';
+import {
+  MM_PAY_AMOUNT_INPUT_TYPE_MANUAL_SNAPPED_MAX,
+  useSnapAmountToMax,
+} from './useSnapAmountToMax';
 import { useUpdateTokenAmount } from './useUpdateTokenAmount';
 
 export const MAX_LENGTH = 28;
@@ -61,10 +66,16 @@ export function useTransactionCustomAmount({
   currency,
   disableUpdate = false,
   balanceUsdOverride,
+  isMaxAvailable = false,
   prefillMaxOnLoad = false,
 }: {
   currency?: string;
   disableUpdate?: boolean;
+  /**
+   * Whether the Max shortcut is offered. When true, a typed amount equal to
+   * the displayed balance is committed as Max once the input settles.
+   */
+  isMaxAvailable?: boolean;
   /**
    * Optional caller-provided balance (USD) used as the source for
    * `updatePendingAmountPercentage`. When provided, takes precedence over the
@@ -124,16 +135,27 @@ export function useTransactionCustomAmount({
   const { balanceRaw: livePayTokenBalanceRaw } = usePayTokenAccountBalance();
 
   const { payToken } = useTransactionPayToken();
+  const payTokenAsset = useMemo(
+    () => decodePaymentTokenAssetId(payToken),
+    [payToken],
+  );
   const accountOverride = useTransactionAccountOverride();
   const isAccountTokensLoading = useAccountTokensLoading();
   const { isNoFeeToken } = usePayWithNoFeeToken();
   const isNoFeePayToken = Boolean(
-    payToken && isNoFeeToken(payToken.address, String(payToken.chainId)),
+    payTokenAsset &&
+    isNoFeeToken(payTokenAsset.address, String(payTokenAsset.chainId)),
   );
 
   const { updateTokenAmount: updateTokenAmountCallback } =
     useUpdateTokenAmount();
   const totals = useTransactionPayTotals();
+
+  const { isSnapToMax, resolveAmountFiat } = useSnapAmountToMax({
+    balanceUsd,
+    isMaxAmount,
+    isMaxAvailable,
+  });
 
   const debounceRef = useRef<DebouncedFunc<(value: string) => void> | null>(
     null,
@@ -144,6 +166,12 @@ export function useTransactionCustomAmount({
   const updateTokenAmountRef = useRef(updateTokenAmountCallback);
   const disableUpdateRef = useRef(disableUpdate);
   const transactionIdRef = useRef(transactionId);
+  // Set by the latest render. Commits the settled typed amount as Max when it
+  // matches the displayed balance; returns whether it did.
+  const snapTypedAmountToMaxRef = useRef<() => boolean>(() => false);
+  // Only amounts the user typed may snap. Percentage, prefill and restored
+  // amounts are committed as they are.
+  const isManualEntryRef = useRef(false);
 
   useEffect(() => {
     updateTokenAmountRef.current = updateTokenAmountCallback;
@@ -165,7 +193,10 @@ export function useTransactionCustomAmount({
   // the previous account's snapshot while TPC's isMaxAmount path uses live raw.
   // Records whether the hold came from prefill so applying it later keeps the
   // prefill semantics (no manual-edit guard, prefill metrics).
-  const pendingDepositMaxRef = useRef<{ isPrefill: boolean } | null>(null);
+  const pendingDepositMaxRef = useRef<{
+    inputType?: string;
+    isPrefill: boolean;
+  } | null>(null);
   // Mirrors `userEditedRef` for render-time use: the ref is needed to block
   // prefill synchronously, before the next render, while the state is what the
   // loading flag below can safely read. Stored as the edited transaction id so
@@ -201,6 +232,10 @@ export function useTransactionCustomAmount({
       // quotes. TransactionPayController skips zero required amounts, but
       // writing 0 still kicks the quote pipeline.
       if (disableUpdateRef.current || isZeroHumanAmount(value)) {
+        return;
+      }
+
+      if (snapTypedAmountToMaxRef.current()) {
         return;
       }
 
@@ -340,8 +375,8 @@ export function useTransactionCustomAmount({
     isSubsidizedRoute(
       relayFixedSpread,
       {
-        chainId: payToken?.chainId ? String(payToken.chainId) : '',
-        address: payToken?.address ?? '',
+        chainId: payTokenAsset?.chainId ? String(payTokenAsset.chainId) : '',
+        address: payTokenAsset?.address ?? '',
       },
       { chainId: chainId ?? '', address: tokenAddress ?? '' },
     );
@@ -356,10 +391,10 @@ export function useTransactionCustomAmount({
             ? {
                 isAtomicMaxAllowed,
                 sourceAccountAddress: accountOverride,
-                sourceChainId: payToken?.chainId
-                  ? String(payToken.chainId)
+                sourceChainId: payTokenAsset?.chainId
+                  ? String(payTokenAsset.chainId)
                   : undefined,
-                sourceTokenAddress: payToken?.address,
+                sourceTokenAddress: payTokenAsset?.address,
               }
             : {}),
         });
@@ -367,9 +402,9 @@ export function useTransactionCustomAmount({
     },
     [
       accountOverride,
+      payTokenAsset,
       isAtomicMaxAllowed,
       isMoneyAccountDeposit,
-      payToken,
       transactionId,
     ],
   );
@@ -385,7 +420,7 @@ export function useTransactionCustomAmount({
     setTransactionPayAtomic(transactionId, isAtomicMaxAllowed);
   }, [isAtomicMaxAllowed, isMaxAmount, isMoneyAccountDeposit, transactionId]);
 
-  const payTokenKey = `${payToken?.address ?? ''}:${payToken?.chainId ?? ''}:${accountOverride ?? ''}`;
+  const payTokenKey = `${payTokenAsset?.address ?? ''}:${payTokenAsset?.chainId ?? ''}:${accountOverride ?? ''}`;
   const prevPayTokenKeyRef = useRef(payTokenKey);
 
   // Pay-with / funding-account switches are token-specific: drop the raw Max
@@ -401,6 +436,7 @@ export function useTransactionCustomAmount({
 
     depositMaxHumanRef.current = null;
     pendingDepositMaxRef.current = null;
+    isManualEntryRef.current = false;
     userEditedRef.current = false;
     setEditedTransactionId(undefined);
     hasPendingEditRef.current = false;
@@ -441,8 +477,8 @@ export function useTransactionCustomAmount({
     amountHuman,
     isMaxAmount,
     isMoneyAccountWithdraw,
-    payToken?.address,
-    payToken?.chainId,
+    payTokenAsset?.address,
+    payTokenAsset?.chainId,
     transactionId,
   ]);
 
@@ -479,6 +515,7 @@ export function useTransactionCustomAmount({
       depositMaxHumanRef.current = null;
       pendingDepositMaxRef.current = null;
       hasPendingEditRef.current = true;
+      isManualEntryRef.current = true;
 
       if (transactionId) {
         upsertTransactionUIMetricsFragment(transactionId, {
@@ -497,15 +534,25 @@ export function useTransactionCustomAmount({
   const updatePendingAmountPercentage = useCallback(
     (
       percentage: number,
-      { isPrefill = false }: { isPrefill?: boolean } = {},
+      {
+        inputType,
+        isPrefill = false,
+      }: {
+        /** Overrides the `mm_pay_amount_input_type` metric value. */
+        inputType?: string;
+        isPrefill?: boolean;
+      } = {},
     ) => {
-      const isDepositMax =
-        percentage === 100 && isMoneyAccountDeposit && isNoFeePayToken;
+      const isDepositMax = percentage === 100 && isMoneyAccountDeposit;
+      isManualEntryRef.current = false;
 
       // Hold Max until the override-account fetch completes, matching prefill.
       // Applying now would send a stale `balanceRaw` while TPC uses live raw.
+      // Applies to every deposit pay token, not just no-fee ones: `setIsMax`
+      // records the source balance for all of them, so a stale raw is wrong
+      // regardless of whether the amount itself comes from the raw path.
       if (isDepositMax && isAccountTokensLoading) {
-        pendingDepositMaxRef.current = { isPrefill };
+        pendingDepositMaxRef.current = { inputType, isPrefill };
         if (!isPrefill) {
           userEditedRef.current = true;
           setEditedTransactionId(transactionId);
@@ -599,6 +646,7 @@ export function useTransactionCustomAmount({
 
       trackPercentageAmount({
         amountFiat: newAmountFiat,
+        inputType,
         isPrefill,
         percentage,
       });
@@ -640,12 +688,26 @@ export function useTransactionCustomAmount({
     ],
   );
 
+  useEffect(() => {
+    snapTypedAmountToMaxRef.current = () => {
+      if (!isManualEntryRef.current || !isSnapToMax(amountFiatState)) {
+        return false;
+      }
+
+      updatePendingAmountPercentage(100, {
+        inputType: MM_PAY_AMOUNT_INPUT_TYPE_MANUAL_SNAPPED_MAX,
+      });
+      return true;
+    };
+  }, [amountFiatState, isSnapToMax, updatePendingAmountPercentage]);
+
   // Reset the prefill guards when the confirmation changes so a new
   // transaction in the same UI instance can prefill again.
   useEffect(() => {
     hasPrefilledMaxRef.current = false;
     userEditedRef.current = false;
     pendingDepositMaxRef.current = null;
+    isManualEntryRef.current = false;
   }, [transactionId]);
 
   // Apply a Max (clicked or prefilled) that was held while override assets
@@ -658,6 +720,7 @@ export function useTransactionCustomAmount({
     }
     pendingDepositMaxRef.current = null;
     updatePendingAmountPercentage(100, {
+      inputType: pendingDepositMax.inputType,
       isPrefill: pendingDepositMax.isPrefill,
     });
 
@@ -672,6 +735,7 @@ export function useTransactionCustomAmount({
     (fiatAmount: string) => {
       const balanceUsdValue = new BigNumber(String(balanceUsd ?? 0));
       const prefillFiat = new BigNumber(fiatAmount);
+      isManualEntryRef.current = false;
 
       if (!balanceUsdValue.isFinite() || !prefillFiat.isFinite()) {
         return;
@@ -828,6 +892,7 @@ export function useTransactionCustomAmount({
     isDepositPrefillSkipped: isDepositPrefillEnabled && isDepositPrefillSkipped,
     isInputChanged,
     isQuoteDerivedAmountLoading: isQuoteDerivedAmount && isQuotesLoading,
+    resolveAmountFiat,
     updatePendingAmount,
     updatePendingAmountPercentage,
   };

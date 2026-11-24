@@ -33,11 +33,13 @@ describe('useGatorPermissionTokenInfo', () => {
   const mockTokenAddress = '0x1234567890123456789012345678901234567890';
   const mockChainId = '0x1' as Hex;
 
+  const mockAccountId = 'gator-test-account-id';
+  const mockAccountAddress = '0xuseraccount000000000000000000000000000001';
+
   const createMockStore = (overrides = {}) => {
     return mockStore({
       metamask: {
         tokensChainsCache: {},
-        allTokens: {},
         useExternalServices: true,
         networkConfigurationsByChainId: {},
         multichainNetworkConfigurationsByChainId: {
@@ -53,6 +55,9 @@ describe('useGatorPermissionTokenInfo', () => {
           },
         },
         internalAccounts: { accounts: {} },
+        assetsInfo: {},
+        assetsBalance: {},
+        customAssets: {},
         ...overrides,
       },
     });
@@ -208,19 +213,36 @@ describe('useGatorPermissionTokenInfo', () => {
     });
 
     it('should return imported token info', async () => {
+      const importedAssetId = `eip155:1/erc20:${mockTokenAddress.toLowerCase()}`;
       const testStore = createMockStore({
-        allTokens: {
-          [mockChainId]: {
-            '0xUserAccount': [
-              {
-                address: mockTokenAddress,
-                symbol: 'IMPORTED',
-                decimals: 6,
-                name: 'Imported Token',
-                image: 'https://example.com/imported.png',
+        internalAccounts: {
+          accounts: {
+            [mockAccountId]: {
+              id: mockAccountId,
+              address: mockAccountAddress,
+              type: 'eip155:eoa',
+              metadata: {
+                name: 'Test',
+                keyring: { type: 'HD Key Tree' },
               },
-            ],
+              methods: [],
+              scopes: ['eip155:0'],
+              options: {},
+            },
           },
+          selectedAccount: mockAccountId,
+        },
+        assetsInfo: {
+          [importedAssetId]: {
+            type: 'erc20',
+            symbol: 'IMPORTED',
+            decimals: 6,
+            name: 'Imported Token',
+            image: 'https://example.com/imported.png',
+          },
+        },
+        customAssets: {
+          [mockAccountId]: [importedAssetId],
         },
       });
 
@@ -235,6 +257,7 @@ describe('useGatorPermissionTokenInfo', () => {
     });
 
     it('should prefer cache over imported tokens', async () => {
+      const importedAssetId = `eip155:1/erc20:${mockTokenAddress.toLowerCase()}`;
       const testStore = createMockStore({
         tokensChainsCache: {
           [mockChainId]: {
@@ -247,16 +270,32 @@ describe('useGatorPermissionTokenInfo', () => {
             },
           },
         },
-        allTokens: {
-          [mockChainId]: {
-            '0xAccount': [
-              {
-                address: mockTokenAddress,
-                symbol: 'IMPORTED',
-                decimals: 6,
+        internalAccounts: {
+          accounts: {
+            [mockAccountId]: {
+              id: mockAccountId,
+              address: mockAccountAddress,
+              type: 'eip155:eoa',
+              metadata: {
+                name: 'Test',
+                keyring: { type: 'HD Key Tree' },
               },
-            ],
+              methods: [],
+              scopes: ['eip155:0'],
+              options: {},
+            },
           },
+          selectedAccount: mockAccountId,
+        },
+        assetsInfo: {
+          [importedAssetId]: {
+            type: 'erc20',
+            symbol: 'IMPORTED',
+            decimals: 6,
+          },
+        },
+        customAssets: {
+          [mockAccountId]: [importedAssetId],
         },
       });
 

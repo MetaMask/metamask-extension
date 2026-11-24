@@ -15,6 +15,10 @@ import {
   hasTransactionType,
   isPostQuoteWithdrawTransaction,
 } from '../../../../shared/lib/transactions.utils';
+import {
+  encodeEvmAssetId,
+  isSameAssetId,
+} from '../../../../shared/lib/transaction/pay-token';
 import { updateAtomicBatchData } from '../../../store/controller-actions/transaction-controller';
 import { setPaymentOverride } from '../../../store/controller-actions/transaction-pay-controller';
 import type { BlockedPayTokensListConfig } from '../selectors/feature-flags';
@@ -65,7 +69,7 @@ export async function replaceAccountInNestedTransactions({
     return;
   }
 
-  const updates: Promise<void>[] = [];
+  const updates: Promise<Hex>[] = [];
 
   nestedTransactions.forEach((nested, index) => {
     const { data } = nested;
@@ -164,6 +168,16 @@ export function getAvailableTokens({
   tokens: Asset[];
   blockedTokens?: BlockedPayTokensListConfig;
 }): Asset[] {
+  const isSelectedPayToken = (token: Asset) =>
+    Boolean(token.address && token.chainId) &&
+    isSameAssetId(
+      payToken?.assetId,
+      encodeEvmAssetId({
+        address: token.address as Hex,
+        chainId: token.chainId as Hex,
+      }),
+    );
+
   return tokens
     .filter((token) => {
       if (
@@ -181,11 +195,7 @@ export function getAvailableTokens({
         return false;
       }
 
-      const isSelected =
-        payToken?.address.toLowerCase() === token.address?.toLowerCase() &&
-        payToken?.chainId === token.chainId;
-
-      if (isSelected) {
+      if (isSelectedPayToken(token)) {
         return true;
       }
 
@@ -204,9 +214,7 @@ export function getAvailableTokens({
     })
     .map((token) => {
       const blocked = isTokenBlocked(token, blockedTokens);
-      const isSelected =
-        payToken?.address.toLowerCase() === token.address?.toLowerCase() &&
-        payToken?.chainId === token.chainId;
+      const isSelected = isSelectedPayToken(token);
 
       return {
         ...token,

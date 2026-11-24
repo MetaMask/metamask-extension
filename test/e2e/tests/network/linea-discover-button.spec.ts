@@ -8,6 +8,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import NetworksPage from '../../page-objects/pages/networks/networks-page';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
+import { NetworkId, NetworkName } from '../../helpers/network-constants';
 
 async function mockPortfolioPage(mockServer: Mockttp) {
   return await mockServer
@@ -46,8 +47,8 @@ describe('Linea Network Discover Button', function (this: Suite) {
         // Search for Linea
         const networksPage = new NetworksPage(driver);
         await networksPage.checkPageIsLoaded();
-        await networksPage.fillNetworkSearchInput('Linea');
-        await networksPage.openNetworkListOptions('eip155:59144');
+        await networksPage.fillNetworkSearchInput(NetworkName.LINEA);
+        await networksPage.openNetworkListOptions(NetworkId.LINEA);
 
         // Verify Discover button is visible
         await networksPage.checkDiscoverButtonIsVisible();

@@ -6,7 +6,6 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { ActivityList } from './activity-list';
 
 // Page shown when the Activity tab in the bottom navigation bar is clicked
-// Bottom navigation bar is shown in the A/B test coreExtensionUxCeux1141AbtestBottomNav
 export const ActivityPage = () => {
   const t = useI18nContext();
   const location = useLocation();

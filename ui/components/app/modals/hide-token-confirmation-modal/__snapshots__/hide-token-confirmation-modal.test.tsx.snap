@@ -45,7 +45,6 @@ exports[`Hide Token Confirmation Modal matches snapshot 1`] = `
           </header>
           <div
             class="px-4 relative max-h-full overflow-y-auto"
-            tabindex="0"
           >
             <div
               class="flex flex-col gap-2 items-center justify-center"

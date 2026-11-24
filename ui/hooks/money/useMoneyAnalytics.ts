@@ -26,6 +26,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyOnboardingStepAction,
   MoneyScreenName,
   MoneySurfaceType,
@@ -44,6 +45,8 @@ export type MoneyAnalyticsLocation = {
   screenName?: MoneyScreenName;
   bottomSheetName?: MoneyBottomSheetName;
   componentName?: MoneyComponentName;
+  entryPoint?: MoneyFtueEntryPoint;
+  originatingComponentName?: MoneyComponentName;
 };
 
 type MoneyButtonClickedBase = {
@@ -116,7 +119,13 @@ const asLabel = (message: unknown, fallback: string) =>
   typeof message === 'string' && message.length > 0 ? message : fallback;
 
 export const useMoneyAnalytics = (location: MoneyAnalyticsLocation = {}) => {
-  const { screenName, bottomSheetName, componentName } = location;
+  const {
+    screenName,
+    bottomSheetName,
+    componentName,
+    entryPoint,
+    originatingComponentName,
+  } = location;
   const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext();
   const { availability } = useMoneyAccountAvailability();
@@ -152,12 +161,21 @@ export const useMoneyAnalytics = (location: MoneyAnalyticsLocation = {}) => {
       screenName,
       componentName,
       bottomSheetName,
+      entryPoint,
+      originatingComponentName,
       isMoneyBalanceLoading,
       isAccountFunded: isMoneyBalanceLoading
         ? null
         : new BigNumber(settledTotal ?? '0').gt(0),
     };
-  }, [bottomSheetName, componentName, moneyAccountAddress, screenName]);
+  }, [
+    bottomSheetName,
+    componentName,
+    entryPoint,
+    moneyAccountAddress,
+    originatingComponentName,
+    screenName,
+  ]);
 
   const resolveLabel = useCallback(
     (labelKey: string, substitutions?: string[]) => ({

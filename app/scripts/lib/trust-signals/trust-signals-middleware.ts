@@ -3,7 +3,10 @@ import {
   NetworkController,
   NetworkClientId,
 } from '@metamask/network-controller';
-import { PhishingController } from '@metamask/phishing-controller';
+import {
+  PhishingController,
+  RequestSourceFlow,
+} from '@metamask/phishing-controller';
 import type { AppStateController } from '../../controllers/app-state-controller';
 import { PreferencesController } from '../../controllers/preferences-controller';
 import {
@@ -13,7 +16,6 @@ import {
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { PRIMARY_TYPES_PERMIT } from '../../../../shared/constants/signatures';
 import { PRIMARY_TYPE_DELEGATION } from '../transaction/delegation';
-import { isSecurityAlertsAPIEnabled } from '../ppom/security-alerts-api';
 import { scanAddressAndAddToCache } from './security-alerts-api';
 import {
   hasValidTypedDataParams,
@@ -39,13 +41,16 @@ export type TrustSignalsMiddlewareRequest = JsonRpcRequest & {
  *
  * @param phishingController - Owns the URL scan and its cache
  * @param preferencesController - Source of the user's security alerts setting
- * @param shouldScanOrigin - Per-transport gate, since no method name is shared
+ * @param getRequestSourceFlow - Per-transport flow classifier, since no method
+ * name is shared
  * @param requestUrl - Full sender URL, preferred over the bare origin
  */
 export function createOriginScanMiddleware(
   phishingController: PhishingController,
   preferencesController: PreferencesController,
-  shouldScanOrigin: (req: TrustSignalsMiddlewareRequest) => boolean,
+  getRequestSourceFlow: (
+    req: TrustSignalsMiddlewareRequest,
+  ) => RequestSourceFlow | undefined,
   requestUrl?: string,
 ) {
   return async (
@@ -56,15 +61,13 @@ export function createOriginScanMiddleware(
     try {
       req.requestUrl = requestUrl;
 
-      if (
-        !isSecurityAlertsEnabledByUser(preferencesController) ||
-        !isSecurityAlertsAPIEnabled()
-      ) {
+      if (!isSecurityAlertsEnabledByUser(preferencesController)) {
         return;
       }
 
-      if (shouldScanOrigin(req)) {
-        scanUrl(req, phishingController);
+      const flow = getRequestSourceFlow(req);
+      if (flow) {
+        scanUrl(req, phishingController, flow);
       }
     } catch (error) {
       console.error('[createOriginScanMiddleware] error: ', error);
@@ -96,10 +99,7 @@ export function createAddressScanMiddleware(
     next: () => void,
   ) => {
     try {
-      if (
-        !isSecurityAlertsEnabledByUser(preferencesController) ||
-        !isSecurityAlertsAPIEnabled()
-      ) {
+      if (!isSecurityAlertsEnabledByUser(preferencesController)) {
         return;
       }
 
@@ -136,11 +136,12 @@ export function createAddressScanMiddleware(
 function scanUrl(
   req: TrustSignalsMiddlewareRequest,
   phishingController: PhishingController,
+  flow: RequestSourceFlow,
 ) {
   const urlToScan = req.requestUrl ?? req.origin;
 
   if (urlToScan) {
-    phishingController.scanUrl(urlToScan).catch((error) => {
+    phishingController.scanUrl(urlToScan, flow).catch((error) => {
       console.error('[createOriginScanMiddleware] error:', error);
     });
   }

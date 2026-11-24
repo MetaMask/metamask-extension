@@ -35,13 +35,14 @@ env:
   RUN_ID: ${{ github.run_id }}
 
 permissions:
-  contents: write # required for releases
-  id-token: write # required for s3 uploads
-  statuses: write # required for build-source-hash and ci-status-gate
+  contents: read
 
 jobs:
   get-requirements:
     name: Get workflow and job requirements
+    permissions:
+      contents: read
+      statuses: write # Posts build-source-hash and builds-from-run.
     uses: ./.github/workflows/get-requirements.yml
 
   locales-changed-only:
@@ -159,6 +160,9 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-webpack
@@ -171,6 +175,9 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-mv2-webpack
@@ -182,6 +189,9 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-beta-webpack
@@ -193,6 +203,9 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-beta-mv2-webpack
@@ -204,6 +217,9 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-webpack
@@ -215,6 +231,9 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-mv2-webpack
@@ -226,6 +245,9 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-webpack
@@ -237,6 +259,9 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-mv2-webpack
@@ -248,6 +273,9 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-flask-webpack
@@ -259,6 +287,9 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-flask-mv2-webpack
@@ -330,6 +361,9 @@ jobs:
       - get-requirements
       - build-dist-webpack
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
+    permissions:
+      contents: read
+      id-token: write
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
@@ -460,6 +494,9 @@ jobs:
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
     needs:
       - get-requirements
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/build-storybook.yml
     secrets: inherit
 
@@ -468,6 +505,9 @@ jobs:
     if: ${{ github.event_name != 'merge_group' && needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
     needs:
       - get-requirements
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/build-ts-migration-dashboard.yml
 
   publish-prerelease:
@@ -513,6 +553,9 @@ jobs:
       - bundle-size
       - build-storybook
       - build-ts-migration-dashboard
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/publish-prerelease.yml
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
@@ -521,72 +564,6 @@ jobs:
       E2E_OPENAI_API_KEY: ${{ secrets.E2E_OPENAI_API_KEY }}
       E2E_CLAUDE_API_KEY: ${{ secrets.E2E_CLAUDE_API_KEY }}
       E2E_GEMINI_API_KEY: ${{ secrets.E2E_GEMINI_API_KEY }}
-
-  trigger-regression-validation:
-    name: Trigger Regression Validation
-    # Guard: three conditions must all be true.
-    #  1. Release branch — only release/* branches need regression validation.
-    #  2. Not a fork repo — fork repos don't have the release-ci environment
-    #     or its METAMASK_REGRESSION_TRIGGER_TEST secret.
-    #  3. Not a cross-repo PR — GitHub withholds environment secrets from PRs
-    #     whose head branch lives in a different repository, so the job would
-    #     fail trying to read the dispatch token.
-    # Build reuse is banned on release/* branches (in get-requirements.yml),
-    # so build-dist-webpack always runs here — no !cancelled() needed.
-    if: >-
-      ${{
-        startsWith(github.head_ref || github.ref_name, 'release/')
-        && !github.event.repository.fork
-        && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
-      }}
-    needs:
-      - get-requirements
-      - build-dist-webpack
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    environment: release-ci
-    steps:
-      - name: Get token
-        id: token
-        uses: MetaMask/github-tools/.github/actions/get-token@v1
-        with:
-          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
-          target-repository: MetaMask/extension-regression-validation-poc
-          permissions: |
-            contents: write
-
-      - name: Trigger regression validation in external repo
-        env:
-          DISPATCH_TOKEN: ${{ steps.token.outputs.token }}
-          BUILDS_FROM_RUN: ${{ needs.get-requirements.outputs.builds-from-run }}
-        run: |
-          # Extract version from branch name (e.g., release/12.5.0 -> 12.5.0)
-          # Use BRANCH env var which correctly handles both push and pull_request events
-          VERSION="${BRANCH#release/}"
-
-          echo "Triggering regression validation..."
-          echo "Run ID (builds): $BUILDS_FROM_RUN"
-          echo "Branch: $BRANCH"
-          echo "Version: $VERSION"
-          echo "Commit SHA: $HEAD_COMMIT_HASH"
-
-          curl -X POST \
-            --fail-with-body \
-            --silent \
-            --show-error \
-            -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: token $DISPATCH_TOKEN" \
-            https://api.github.com/repos/MetaMask/extension-regression-validation-poc/dispatches \
-            --data-binary "$(
-              jq -n \
-                --arg run_id "$BUILDS_FROM_RUN" \
-                --arg version "$VERSION" \
-                --arg branch "$BRANCH" \
-                --arg commit_sha "$HEAD_COMMIT_HASH" \
-                '{event_type: "release_pr_updated", client_payload: {run_id: $run_id, version: $version, branch: $branch, commit_sha: $commit_sha}}'
-            )"
-
-          echo "Regression validation triggered successfully"
 
   ci-status-gate:
     if: ${{ !cancelled() }}
@@ -635,7 +612,6 @@ jobs:
       - e2e-firefox
       - build-storybook
       - build-ts-migration-dashboard
-      - trigger-regression-validation
     uses: ./.github/workflows/ci-status-gate.yml
     with:
       needs-json: ${{ toJson(needs) }}

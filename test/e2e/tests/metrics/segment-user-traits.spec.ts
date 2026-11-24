@@ -9,7 +9,7 @@ import {
 import { MOCK_ANALYTICS_ID } from '../../constants';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import PrivacySettings from '../../page-objects/pages/settings/privacy/privacy-settings';
 import { waitForExpectedTraits } from './helpers';
 
 async function mockSegment(mockServer: Mockttp) {

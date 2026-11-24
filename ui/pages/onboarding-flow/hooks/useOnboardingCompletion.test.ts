@@ -1,10 +1,15 @@
 import { act, waitFor } from '@testing-library/react';
+import { describe, it } from '@jest/globals';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import {
   DEFAULT_ROUTE,
   DEEP_LINK_ROUTE,
 } from '../../../helpers/constants/routes';
-import { DeferredDeepLinkRouteType } from '../../../../shared/lib/deep-links/types';
+import {
+  type DeferredDeepLinkRoute,
+  DeferredDeepLinkRouteType,
+} from '../../../../shared/lib/deep-links/types';
 import * as deepLinkUtils from '../../../../shared/lib/deep-links/utils';
 import {
   INVALID,
@@ -94,31 +99,42 @@ const mockSetHasSeenOnboardingCompletionPage = jest
   .fn()
   .mockResolvedValue(undefined);
 const mockCompleteOnboarding = jest.fn().mockResolvedValue(true);
-const backgroundConnectionMock = new Proxy(
-  {
-    removeDeferredDeepLink: mockRemoveDeferredDeepLink,
-    setIsBackupAndSyncFeatureEnabled: mockSetIsBackupAndSyncFeatureEnabled,
-    toggleExternalServices: mockToggleExternalServices,
-    toggleBasicFunctionality: mockToggleBasicFunctionality,
-    setPreference: mockSetPreference,
-    setUseMultiAccountBalanceChecker: mockSetUseMultiAccountBalanceChecker,
-    setUseTokenDetection: mockSetUseTokenDetection,
-    setUseCurrencyRateCheck: mockSetUseCurrencyRateCheck,
-    setUseAddressBarEnsResolution: mockSetUseAddressBarEnsResolution,
-    setUsePhishDetect: mockSetUsePhishDetect,
-    setOpenSeaEnabled: mockSetOpenSeaEnabled,
-    setUseNftDetection: mockSetUseNftDetection,
-    setUseSafeChainsListValidation: mockSetUseSafeChainsListValidation,
-    setHasSeenOnboardingCompletionPage: mockSetHasSeenOnboardingCompletionPage,
-    completeOnboarding: mockCompleteOnboarding,
-  },
-  {
-    get: (target, prop) => {
-      if (prop in target) {
-        return target[prop as keyof typeof target];
-      }
-      return jest.fn().mockResolvedValue(undefined);
-    },
+const messengerCallMock = jest.fn(
+  (actionType: string, args: unknown[] = []) => {
+    switch (actionType) {
+      case 'AppStateController:removeDeferredDeepLink':
+        return mockRemoveDeferredDeepLink(...args);
+      case 'UserStorageController:setIsBackupAndSyncFeatureEnabled':
+        return mockSetIsBackupAndSyncFeatureEnabled(...args);
+      case 'LegacyBackgroundApiService:toggleExternalServices':
+        return mockToggleExternalServices(...args);
+      case 'PreferencesController:toggleBasicFunctionality':
+        return mockToggleBasicFunctionality(...args);
+      case 'PreferencesController:setPreference':
+        return mockSetPreference(...args);
+      case 'PreferencesController:setUseMultiAccountBalanceChecker':
+        return mockSetUseMultiAccountBalanceChecker(...args);
+      case 'PreferencesController:setUseTokenDetection':
+        return mockSetUseTokenDetection(...args);
+      case 'PreferencesController:setUseCurrencyRateCheck':
+        return mockSetUseCurrencyRateCheck(...args);
+      case 'PreferencesController:setUseAddressBarEnsResolution':
+        return mockSetUseAddressBarEnsResolution(...args);
+      case 'PreferencesController:setUsePhishDetect':
+        return mockSetUsePhishDetect(...args);
+      case 'PreferencesController:setOpenSeaEnabled':
+        return mockSetOpenSeaEnabled(...args);
+      case 'PreferencesController:setUseNftDetection':
+        return mockSetUseNftDetection(...args);
+      case 'PreferencesController:setUseSafeChainsListValidation':
+        return mockSetUseSafeChainsListValidation(...args);
+      case 'OnboardingController:setHasSeenOnboardingCompletionPage':
+        return mockSetHasSeenOnboardingCompletionPage(...args);
+      case 'OnboardingController:completeOnboarding':
+        return mockCompleteOnboarding(...args);
+      default:
+        return Promise.resolve(undefined);
+    }
   },
 );
 
@@ -174,7 +190,10 @@ describe('useOnboardingCompletion', () => {
       false,
     );
     mockUseNavigate.mockClear();
-    setBackgroundConnection(backgroundConnectionMock as never);
+    setBackgroundConnection({
+      getStatePatches: jest.fn().mockResolvedValue([]),
+      messengerCall: messengerCallMock,
+    } as never);
     (useSidePanelEnabledHook.useSidePanelEnabled as jest.Mock).mockReturnValue(
       false,
     );
@@ -233,6 +252,37 @@ describe('useOnboardingCompletion', () => {
       expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
   });
+
+  it.each([
+    [false, false],
+    [true, false],
+    [true, true],
+  ])(
+    'resumes the intended destination (side panel: %s, auto-complete: %s)',
+    async (sidePanelEnabled, autoComplete) => {
+      jest
+        .mocked(useSidePanelEnabledHook.useSidePanelEnabled)
+        .mockReturnValue(sidePanelEnabled);
+      const browserMock = jest.requireMock('webextension-polyfill');
+      browserMock.tabs.query.mockResolvedValue([{ windowId: 1, id: 1 }]);
+      const route = '/settings/privacy?a=v#metametrics';
+      const { result, store } = renderHookWithProvider(
+        () => useOnboardingCompletion(),
+        {
+          ...mockState,
+          appState: { ...mockState.appState, onboardingRedirect: route },
+        },
+      );
+
+      await act(async () => {
+        await result.current.completeOnboarding(autoComplete);
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(route, { replace: true });
+      expect(browserMock.sidePanel.open).not.toHaveBeenCalled();
+      expect(store.getState().appState.onboardingRedirect).toBeNull();
+    },
+  );
 
   it('does not complete onboarding while the wallet is locked', async () => {
     const { result } = renderHookWithProvider(() => useOnboardingCompletion(), {
@@ -460,9 +510,13 @@ describe('useOnboardingCompletion', () => {
       .mockRejectedValueOnce(new Error('completion failed'))
       .mockResolvedValueOnce(true);
 
-    const { result } = renderHookWithProvider(
+    const route = '/settings/privacy?a=v#metametrics';
+    const { result, store } = renderHookWithProvider(
       () => useOnboardingCompletion(),
-      mockState,
+      {
+        ...mockState,
+        appState: { ...mockState.appState, onboardingRedirect: route },
+      },
     );
 
     await act(async () => {
@@ -470,6 +524,7 @@ describe('useOnboardingCompletion', () => {
         'completion failed',
       );
     });
+    expect(store.getState().appState.onboardingRedirect).toBe(route);
 
     await act(async () => {
       await result.current.completeOnboarding();
@@ -477,7 +532,8 @@ describe('useOnboardingCompletion', () => {
 
     await waitFor(() => {
       expect(mockCompleteOnboarding).toHaveBeenCalledTimes(2);
-      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith(route, { replace: true });
+      expect(store.getState().appState.onboardingRedirect).toBeNull();
     });
   });
 
@@ -927,10 +983,10 @@ describe('useOnboardingCompletion', () => {
       (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
         type: DeferredDeepLinkRouteType.Navigate,
         route: '/swap',
-        signature: MISSING,
+        signature: VALID,
       });
 
-      const { result } = renderHookWithProvider(
+      const { result, store } = renderHookWithProvider(
         () => useOnboardingCompletion(),
         {
           ...mockState,
@@ -939,7 +995,7 @@ describe('useOnboardingCompletion', () => {
             completedOnboarding: true,
             deferredDeepLink: {
               createdAt: Date.now(),
-              referringLink: 'https://link.metamask.io/swap',
+              referringLink: 'https://link.metamask.io/swap?ref=abc123',
             },
           },
         },
@@ -953,6 +1009,10 @@ describe('useOnboardingCompletion', () => {
       await waitFor(() => {
         expect(mockTrackEvent).toHaveBeenCalledTimes(1);
       });
+      expect(store.getState().rewardsMoney.pendingReferralCode).toBe('ABC123');
+      const [event] = mockTrackEvent.mock.calls[0];
+      expect(event.name).toBe('Deep Link Used');
+      expect(event.properties.referral_code).toBe('ABC123');
       expect(mockUseNavigate).not.toHaveBeenCalled();
 
       await act(async () => {
@@ -1015,45 +1075,94 @@ describe('useOnboardingCompletion', () => {
         expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
       });
     });
+  });
 
-    it('navigates to interstitial page for Interstitial type (unsigned/invalid signature) when side panel is disabled', async () => {
-      const urlPathAndQuery = '/swap?amount=100';
-      (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
-        type: DeferredDeepLinkRouteType.Interstitial,
-        urlPathAndQuery,
-        signature: INVALID,
-      });
-      (deepLinkUtils.buildInterstitialRoute as jest.Mock).mockReturnValue(
-        `${DEEP_LINK_ROUTE}?u=%2Fswap%3Famount%3D100`,
-      );
-
-      const { result } = renderHookWithProvider(
-        () => useOnboardingCompletion(),
+  describe.each([
+    [false, false],
+    [true, false],
+    [true, true],
+  ])(
+    'Direct link after install (side panel: %s, auto-complete: %s)',
+    (sidePanelEnabled, autoComplete) => {
+      it.each([
         {
-          ...mockState,
-          metamask: {
-            ...mockState.metamask,
-            deferredDeepLink: {
-              createdAt: Date.now(),
-              referringLink: 'https://link.metamask.io/swap?amount=100',
+          type: DeferredDeepLinkRouteType.Navigate,
+          route: '/swap',
+          signature: VALID,
+        },
+        {
+          type: DeferredDeepLinkRouteType.Redirect,
+          url: 'https://example.com/callback',
+          signature: VALID,
+        },
+        {
+          type: DeferredDeepLinkRouteType.Interstitial,
+          urlPathAndQuery: '/swap?amount=100',
+          signature: INVALID,
+        },
+      ] satisfies NonNullable<DeferredDeepLinkRoute>[])(
+        'resumes the direct destination and retains deferred attribution for $type',
+        async (deferredRoute) => {
+          jest
+            .mocked(useSidePanelEnabledHook.useSidePanelEnabled)
+            .mockReturnValue(sidePanelEnabled);
+          jest
+            .mocked(deepLinkUtils.getDeferredDeepLinkRoute)
+            .mockResolvedValue(deferredRoute);
+          const browserMock = jest.requireMock('webextension-polyfill');
+          browserMock.tabs.query.mockResolvedValue([{ windowId: 1, id: 1 }]);
+          const directRoute = '/settings/privacy?a=v#metametrics';
+
+          const { result, store } = renderHookWithProvider(
+            () => useOnboardingCompletion(),
+            {
+              ...mockState,
+              appState: {
+                ...mockState.appState,
+                onboardingRedirect: directRoute,
+              },
+              metamask: {
+                ...mockState.metamask,
+                deferredDeepLink: {
+                  createdAt: Date.now(),
+                  referringLink:
+                    'https://link.metamask.io/swap?attributionId=install-123&utm_source=campaign',
+                },
+              },
             },
-          },
+          );
+
+          await act(async () => {
+            await result.current.completeOnboarding(autoComplete);
+          });
+
+          expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+          expect(mockUseNavigate).toHaveBeenCalledWith(directRoute, {
+            replace: true,
+          });
+          expect(windowOpenSpy).not.toHaveBeenCalled();
+          expect(deepLinkUtils.buildInterstitialRoute).not.toHaveBeenCalled();
+          expect(browserMock.sidePanel.open).not.toHaveBeenCalled();
+          expect(mockRemoveDeferredDeepLink).toHaveBeenCalledTimes(1);
+          expect(store.getState().appState.onboardingRedirect).toBeNull();
+          const deferredEvents = mockTrackEvent.mock.calls.filter(
+            ([event]) => event.name === MetaMetricsEventName.DeepLinkUsed,
+          );
+          expect(deferredEvents).toHaveLength(1);
+          expect(deferredEvents[0][0]).toEqual(
+            expect.objectContaining({
+              properties: expect.objectContaining({
+                route: '/swap',
+                signature: deferredRoute.signature,
+                // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics properties
+                attribution_id: 'install-123',
+                // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics properties
+                utm_source: 'campaign',
+              }),
+            }),
+          );
         },
       );
-
-      await act(async () => {
-        await result.current.completeOnboarding();
-      });
-
-      await waitFor(() => {
-        expect(deepLinkUtils.buildInterstitialRoute).toHaveBeenCalledWith(
-          urlPathAndQuery,
-        );
-        expect(mockUseNavigate).toHaveBeenCalledWith(
-          `${DEEP_LINK_ROUTE}?u=%2Fswap%3Famount%3D100`,
-        );
-        expect(mockRemoveDeferredDeepLink).toHaveBeenCalled();
-      });
-    });
-  });
+    },
+  );
 });

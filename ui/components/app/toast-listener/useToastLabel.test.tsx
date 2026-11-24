@@ -1,5 +1,7 @@
+import { it } from '@jest/globals';
 import { renderHook } from '@testing-library/react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
+import type { ToastStatus } from './shared';
 import { useToastLabel } from './useToastLabel';
 
 const mockT = jest.fn((key: string, args?: string[]) =>
@@ -19,17 +21,6 @@ jest.mock('../../../selectors/activity', () => ({
 jest.mock('react-redux', () => ({
   useSelector: () => mockItems,
 }));
-
-function addConvertItem(id: string, overrides: Partial<ActivityListItem> = {}) {
-  mockItems.set(id, {
-    type: 'convert',
-    chainId: 'eip155:1',
-    status: 'pending',
-    timestamp: 0,
-    data: {},
-    ...overrides,
-  } as ActivityListItem);
-}
 
 function addClaimMusdBonusItem(
   id: string,
@@ -59,6 +50,16 @@ function addPerpsWithdrawItem(
   } as ActivityListItem);
 }
 
+function addPerpsAddFundsItem(id: string) {
+  mockItems.set(id, {
+    type: 'perpsAddFunds',
+    chainId: 'eip155:42161',
+    status: 'pending',
+    timestamp: 0,
+    data: {},
+  } as unknown as ActivityListItem);
+}
+
 describe('useToastLabel', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -71,35 +72,6 @@ describe('useToastLabel', () => {
     expect(result.current).toStrictEqual({
       title: 'transactionSubmitted',
       description: undefined,
-    });
-  });
-
-  it('interpolates the source token symbol for a pending convert toast', () => {
-    addConvertItem('tx-1', {
-      data: { sourceToken: { symbol: 'USDC', direction: 'out' } },
-    } as Partial<ActivityListItem>);
-
-    const { result } = renderHook(() => useToastLabel('pending', 'tx-1'));
-
-    expect(result.current.title).toBe('musdConversionToastInProgress:USDC');
-  });
-
-  it('falls back to a generic token label when the source token symbol is unknown', () => {
-    addConvertItem('tx-1');
-
-    const { result } = renderHook(() => useToastLabel('pending', 'tx-1'));
-
-    expect(result.current.title).toBe('musdConversionToastInProgress:Token');
-  });
-
-  it('returns the success title and description for a convert toast', () => {
-    addConvertItem('tx-1', { status: 'success' } as Partial<ActivityListItem>);
-
-    const { result } = renderHook(() => useToastLabel('success', 'tx-1'));
-
-    expect(result.current).toStrictEqual({
-      title: 'musdConversionToastSuccess',
-      description: 'musdConversionToastSuccessDescription',
     });
   });
 
@@ -187,5 +159,29 @@ describe('useToastLabel', () => {
       title: 'perpsWithdrawPostQuoteToastErrorTitle',
       description: 'perpsWithdrawPostQuoteToastErrorDescription',
     });
+  });
+
+  it.each<[ToastStatus, string, string]>([
+    [
+      'pending',
+      'perpsDepositToastPendingTitle',
+      'perpsDepositToastPendingDescription',
+    ],
+    [
+      'success',
+      'perpsDepositToastSuccessTitle',
+      'perpsDepositToastSuccessDescription',
+    ],
+    [
+      'failed',
+      'perpsDepositToastErrorTitle',
+      'perpsDepositToastErrorDescription',
+    ],
+  ])('returns %s perps deposit toast content', (status, title, description) => {
+    addPerpsAddFundsItem('tx-1');
+
+    const { result } = renderHook(() => useToastLabel(status, 'tx-1'));
+
+    expect(result.current).toStrictEqual({ title, description });
   });
 });

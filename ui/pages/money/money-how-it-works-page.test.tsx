@@ -118,6 +118,8 @@ describe('MoneyHowItWorksPage', () => {
     ).toHaveTextContent(messages.moneyHowItWorksFaqTitle.message);
     [
       messages.moneyHowItWorksFaqMoneyAccountQuestion.message,
+      messages.moneyHowItWorksFaqSafeQuestion.message,
+      messages.moneyHowItWorksFaqControlsQuestion.message,
       messages.moneyHowItWorksFaqFeesQuestion.message,
       messages.moneyHowItWorksFaqApyQuestion.message,
       messages.moneyHowItWorksFaqYieldQuestion.message,
@@ -128,6 +130,9 @@ describe('MoneyHowItWorksPage', () => {
     ].forEach((question) => {
       expect(screen.getByText(question)).toBeInTheDocument();
     });
+    expect(
+      screen.getAllByTestId(/^money-how-it-works-faq-.+-details$/u),
+    ).toHaveLength(10);
     expect(
       screen.getByTestId('money-how-it-works-disclosures-title'),
     ).toHaveTextContent(messages.moneyHowItWorksDisclosuresTitle.message);

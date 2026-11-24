@@ -411,7 +411,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     stepTrackingResetKey: qrStepTrackingResetKey,
   });
 
-  useHwSwapNavigation({ signatureState });
+  useHwSwapNavigation({ signatureState, isSendBundleFlow });
 
   const { cancelCurrentBatch } = useHwSignTracker(
     fromAddress,

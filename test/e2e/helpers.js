@@ -8,6 +8,7 @@ const { difference } = require('lodash');
 // eslint-disable-next-line no-redeclare
 const WebSocket = require('ws');
 const createStaticServer = require('../../development/create-static-server');
+const { isManifestV3 } = require('../../shared/lib/mv3.utils');
 const { setupMocking } = require('./mock-e2e');
 const { setupMockingPassThrough } = require('./mock-e2e-pass-through');
 const FixtureServer = require('./fixtures/fixture-server');
@@ -17,12 +18,9 @@ const {
   buildPlaywrightDriver,
 } = require('./webdriver/build-playwright-driver');
 const { PAGES } = require('./webdriver/driver');
-const { Bundler } = require('./bundler');
-const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { setManifestFlags } = require('./set-manifest-flags');
 const {
   DAPP_PATHS,
-  ERC_4337_ACCOUNT,
   E2E_DRIVER,
   HARDWARE_WALLET_ACCOUNT_ID,
   HARDWARE_WALLET_LOCALHOST_NATIVE_ETH_HUMAN,
@@ -111,10 +109,10 @@ function normalizeLocalNodeOptions(localNodeOptions) {
 /**
  * Normalizes the smartContract option into a consistent format to handle different data structures.
  * Examples:
- * // Case 1: Single string: SMART_CONTRACTS.HST
- * // Case 2: Array of strings: [SMART_CONTRACTS.HST, SMART_CONTRACTS.NFTS]
- * // Case 3: Object with deployer options: { name: SMART_CONTRACTS.HST, deployerOptions: { fromAddress: '0x...' } }
- * // Case 4: Mixed array: [SMART_CONTRACTS.HST, { name: SMART_CONTRACTS.NFTS, deployerOptions: { fromPrivateKey: '0x...' } }]
+ * // Case 1: Single string: 'hst'
+ * // Case 2: Array of strings: ['hst', 'nfts']
+ * // Case 3: Object with deployer options: { name: 'hst', deployerOptions: { fromAddress: '0x...' } }
+ * // Case 4: Mixed array: ['hst', { name: 'nfts', deployerOptions: { fromPrivateKey: '0x...' } }]
  *
  * @param {string | {name: string, deployerOptions?: object} | Array<string | {name: string, deployerOptions?: object}>} smartContract
  * @returns {{ name: string, deployerOptions?: object }[]}
@@ -143,7 +141,6 @@ function normalizeSmartContracts(smartContract) {
  * @property {ContractAddressRegistry | undefined} contractRegistry - The contract registry.
  * @property {string | object | Array} localNodeOptions - The local node(s) and options chosen ('anvil', 'none').
  * @property {mockttp.MockedEndpoint[]} mockedEndpoint - The mocked endpoint.
- * @property {Bundler} bundlerServer - The bundler server.
  * @property {mockttp.Mockttp} mockServer - The mock server.
  * @property {object} manifestFlags - Flags to add to the manifest in order to change things at runtime.
  * @property {string} extensionId - The extension ID (useful for connecting via `externally_connectable`).
@@ -234,10 +231,6 @@ async function withFixtures(options, testSuite) {
       // do nothing.
     },
     useMockingPassThrough,
-    useBundler,
-    usePaymaster,
-    ethConversionInUsd,
-    monConversionInUsd,
     manifestFlags,
     solanaWebSocketSpecificMocks = [],
     accountActivityWebSocketSpecificMocks = [],
@@ -245,7 +238,6 @@ async function withFixtures(options, testSuite) {
     extendedTimeoutMultiplier = 1,
     unifiedEvmAccountsApiBalances,
     virtualAuthenticator,
-    isBenchmark = false,
     testTimeout = parseInt(process.env.MOCHA_TIMEOUT, 10) || 0,
   } = options;
 
@@ -256,7 +248,6 @@ async function withFixtures(options, testSuite) {
 
   const fixtureServer = new FixtureServer();
 
-  const bundlerServer = new Bundler();
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
   const dappOpts = dappOptions || {};
@@ -393,10 +384,6 @@ async function withFixtures(options, testSuite) {
     await fixtureServer.start();
     fixtureServer.loadJsonState(fixtures, contractRegistry);
 
-    if (localNodes[0] && useBundler) {
-      await initBundler(bundlerServer, localNodes[0], usePaymaster);
-    }
-
     await phishingPageServer.start();
     if (numberOfDapps > 0) {
       // Ensure the default test dapp occupies the lowest ports first (e.g., 8080),
@@ -509,8 +496,6 @@ async function withFixtures(options, testSuite) {
       clearNetworkReport,
     } = await mockingSetupFunction(mockServer, testSpecificMock, {
       chainId: localNodeOptsNormalized[0]?.options.chainId || 1337,
-      ethConversionInUsd,
-      monConversionInUsd,
       unifiedEvmAccountsApiBalances: effectiveUnifiedEvmAccountsApiBalances,
     });
 
@@ -579,7 +564,6 @@ async function withFixtures(options, testSuite) {
       const wd = await buildWebDriver({
         ...driverOptions,
         disableServerMochaToBackground,
-        isBenchmark,
       });
 
       driver = wd.driver;
@@ -628,7 +612,6 @@ async function withFixtures(options, testSuite) {
     // This lets our catch (screenshots) and finally (server cleanup) run before Mocha moves on to the next test.
     const ARTIFACT_DEADLINE_BUFFER_MS = 5_000;
     const testPromise = testSuite({
-      bundlerServer,
       contractRegistry,
       driver: effectiveDriver,
       localNodes,
@@ -730,7 +713,10 @@ async function withFixtures(options, testSuite) {
       } catch (verboseReportError) {
         console.error(verboseReportError);
       }
+      // MV3 has no background page (it is a service worker), so there is
+      // nothing to navigate to and the controller-loaded wait would time out.
       if (
+        !isManifestV3 &&
         process.env.E2E_LEAVE_RUNNING !== 'true' &&
         (driver.errors.length > 0 || driver.exceptions.length > 0)
       ) {
@@ -739,7 +725,14 @@ async function withFixtures(options, testSuite) {
          * forcing background exceptions to be captured
          * proving more helpful context
          */
-        await driver.navigate(PAGES.BACKGROUND);
+        try {
+          await driver.navigate(PAGES.BACKGROUND);
+        } catch (navigateError) {
+          console.error(
+            'Failed to navigate to the background page',
+            navigateError,
+          );
+        }
       }
     }
 
@@ -752,10 +745,6 @@ async function withFixtures(options, testSuite) {
         if (server) {
           shutdownTasks.push(server.quit());
         }
-      }
-
-      if (useBundler) {
-        shutdownTasks.push(bundlerServer.stop());
       }
 
       if (playwrightCleanup) {
@@ -962,31 +951,6 @@ async function getCleanAppState(driver) {
       window.stateHooks?.getCleanAppState &&
       window.stateHooks.getCleanAppState(),
   );
-}
-
-async function initBundler(bundlerServer, localNodeServer, usePaymaster) {
-  try {
-    // eslint-disable-next-line n/global-require -- load this module conditionally
-    const AnvilSeeder = require('./seeder/anvil-seeder');
-    const seeder = new AnvilSeeder(localNodeServer.getProvider());
-
-    await seeder.deploySmartContract(SMART_CONTRACTS.ENTRYPOINT);
-
-    await seeder.deploySmartContract(SMART_CONTRACTS.SIMPLE_ACCOUNT_FACTORY);
-
-    if (usePaymaster) {
-      await seeder.deploySmartContract(SMART_CONTRACTS.VERIFYING_PAYMASTER);
-
-      await seeder.paymasterDeposit(convertETHToHexGwei(1));
-    }
-
-    await seeder.transfer(ERC_4337_ACCOUNT, convertETHToHexGwei(10));
-
-    await bundlerServer.start();
-  } catch (error) {
-    console.log('Failed to initialize bundler', error);
-    throw error;
-  }
 }
 
 const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;

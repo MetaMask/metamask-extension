@@ -9,9 +9,8 @@ import {
 } from '../../constants';
 import { getCleanAppState, withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
-import SelectNetworkModal, {
-  NetworkId,
-} from '../../page-objects/pages/networks/select-network-modal';
+import SelectNetworkModal from '../../page-objects/pages/networks/select-network-modal';
+import { NetworkId } from '../../helpers/network-constants';
 import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import TestDapp from '../../page-objects/pages/test-dapp';
@@ -385,7 +384,7 @@ describe('Network Manager', function (this: Suite) {
         await selectNetworkModal.checkNetworkIsDeselected(
           FAKE_CONFIG_REGISTRY_CAIP_CHAIN_ID,
         );
-        await selectNetworkModal.checkNetworkIsSelected('eip155:1337');
+        await selectNetworkModal.checkNetworkIsSelected(NetworkId.LOCALHOST);
         await selectNetworkModal.close();
         await networkFilter.checkLabelIs('Network: Localhost 8545');
       },

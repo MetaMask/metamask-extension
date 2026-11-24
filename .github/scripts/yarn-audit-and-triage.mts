@@ -134,8 +134,8 @@ function isAuditLeaf(value: unknown): value is YarnAuditTreeLeaf {
 
 function extractAuditLeaves(
   records: unknown[],
-): Array<{ moduleName: string; leaf: YarnAuditTreeLeaf }> {
-  const results: Array<{ moduleName: string; leaf: YarnAuditTreeLeaf }> = [];
+): { moduleName: string; leaf: YarnAuditTreeLeaf }[] {
+  const results: { moduleName: string; leaf: YarnAuditTreeLeaf }[] = [];
 
   const visit = (node: unknown, currentModuleName: string | null) => {
     if (isAuditLeaf(node)) {

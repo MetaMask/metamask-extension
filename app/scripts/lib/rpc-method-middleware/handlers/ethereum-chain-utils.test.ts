@@ -1,5 +1,4 @@
 import type { NetworkConfiguration } from '@metamask/network-controller';
-import * as Multichain from '@metamask/chain-agnostic-permission';
 import { errorCodes, rpcErrors } from '@metamask/rpc-errors';
 import {
   Caip25CaveatType,
@@ -141,16 +140,13 @@ describe('Ethereum Chain Utils', () => {
       });
 
       it('check for user approval is user already has access on the chain', async () => {
-        jest
-          .spyOn(Multichain, 'getPermittedEthChainIds')
-          .mockReturnValue(['0x1']);
         const { mocks, switchChain } = createMockedSwitchChain();
         mocks.hasApprovalRequestsForOrigin.mockReturnValue(true);
         mocks.autoApprove = false;
         mocks.getCaveat.mockReturnValue({
           value: {
             requiredScopes: {},
-            optionalScopes: {},
+            optionalScopes: { 'eip155:1': { accounts: [] } },
             isMultichainOrigin: false,
           },
         });

@@ -16,7 +16,8 @@ import { emptyHtmlPage, MOCK_SUGGESTED_GAS_FEES } from '../../mock-e2e';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
-import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import { enterBridgeQuote } from '../../page-objects/flows/bridge.flow';
+import SwapPage from '../../page-objects/pages/swap/swap-page';
 
 import {
   MOCK_ANALYTICS_ID,
@@ -1115,6 +1116,7 @@ async function mockPriceSpotPricesV3(
 
   return await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+    .always()
     .thenCallback((request) => {
       const url = new URL(request.url);
       const vsCurrency =
@@ -1384,6 +1386,25 @@ async function mockSmartTransactionsForBridge(
   // Track the latest mined hash(es) so batchStatus can return them
   let latestMinedHash = STX_TRANSACTION_HASH; // fallback if Anvil submission fails
 
+  const sentinelSubdomain =
+    sentinelUrl.match(/tx-sentinel-(.+?)\.api/u)?.[1] ?? 'ethereum-mainnet';
+  const sentinelNetwork = {
+    network: sentinelSubdomain,
+    confirmations: true,
+    smartTransactions: true,
+  };
+
+  // Registry lookup. getNetworks always hits the ethereum-mainnet host, then
+  // getNetwork follows `network` to this chain's sentinel URL.
+  await mockServer
+    .forGet(`${STX_MAINNET_SENTINEL_URL}/networks`)
+    .always()
+    .thenCallback(() => ({
+      ok: true,
+      statusCode: 200,
+      json: { [String(chainId)]: sentinelNetwork },
+    }));
+
   // Sentinel /network: called by fetchLiveness to set livenessByChainId
   await mockServer
     .forGet(`${sentinelUrl}/network`)
@@ -1391,7 +1412,7 @@ async function mockSmartTransactionsForBridge(
     .thenCallback(() => ({
       ok: true,
       statusCode: 200,
-      json: { smartTransactions: true },
+      json: sentinelNetwork,
     }));
 
   // getFees: queried before submitting each STX
@@ -1493,12 +1514,14 @@ async function mockSmartTransactionsForBridge(
             cancellationFeeWei: 0,
             cancellationReason: 'not_cancelled',
             deadlineRatio: 0,
+            duplicated: false,
             isSettled: true,
-            minedTx: 'success',
-            wouldRevertMessage: null,
             minedHash: latestMinedHash,
-            timedOut: true,
+            minedTx: 'success',
+            originalTransactionStatus: 'VALIDATED',
             proxied: false,
+            timedOut: true,
+            wouldRevertMessage: '',
             type: 'sentinel',
             ...batchStatusOverride,
           },
@@ -1535,33 +1558,6 @@ export const getBridgeFixtures = ({
               aggregators: [],
             },
           ],
-        },
-      },
-    })
-    .withTokenListController({
-      tokensChainsCache: {
-        '0xa4b1': {
-          timestamp: Date.now(),
-          data: {
-            '0xaf88d065e77c8cC2239327C5EDb3A432268e5831': {
-              name: 'USD Coin',
-              symbol: 'USDC',
-              decimals: 6,
-              address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
-              occurrences: 1,
-              aggregators: [],
-              iconUrl: '',
-            },
-            '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1': {
-              name: 'Dai Stablecoin',
-              symbol: 'DAI',
-              decimals: 18,
-              address: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
-              occurrences: 1,
-              aggregators: [],
-              iconUrl: '',
-            },
-          },
         },
       },
     })
@@ -1703,6 +1699,7 @@ export const getQuoteNegativeCasesFixtures = (
         await mockTokensLinea(mockServer),
         await mockGetPopularTokens(mockServer),
         await mockPriceSpotPrices(mockServer),
+        await mockPriceSpotPricesV3(mockServer),
         await mockFeatureFlags(
           mockServer,
           featureFlags,
@@ -1760,6 +1757,7 @@ export const getBridgeNegativeCasesFixtures = (
         await mockETHtoETH(mockServer, featureFlags.sse?.enabled),
         await mockGetTxStatusInvalid(mockServer, options),
         await mockPriceSpotPrices(mockServer),
+        await mockPriceSpotPricesV3(mockServer),
         await mockFeatureFlags(
           mockServer,
           featureFlags,
@@ -1819,6 +1817,7 @@ export const getInsufficientFundsFixtures = (
         await mockGetPopularTokens(mockServer),
         await mockETHtoWETH(mockServer, featureFlags.sse?.enabled),
         await mockPriceSpotPrices(mockServer),
+        await mockPriceSpotPricesV3(mockServer),
         await mockFeatureFlags(
           mockServer,
           featureFlags,
@@ -1857,47 +1856,6 @@ export const getBridgeL2Fixtures = (
 ) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0xe708')
-    .withTokenListController({
-      tokensChainsCache: {
-        '0xa4b1': {
-          timestamp: Date.now(),
-          data: {
-            '0xaf88d065e77c8cc2239327c5edb3a432268e5831': {
-              name: 'USD Coin',
-              symbol: 'USDC',
-              address: '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
-              decimals: 6,
-              occurrences: 1,
-              aggregators: [],
-              iconUrl: '',
-            },
-            '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1': {
-              name: 'Dai Stablecoin',
-              symbol: 'DAI',
-              address: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
-              decimals: 18,
-              occurrences: 1,
-              aggregators: [],
-              iconUrl: '',
-            },
-          },
-        },
-        '0xe708': {
-          timestamp: Date.now(),
-          data: {
-            '0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5': {
-              name: 'Bridged Dai Stablecoin Linea',
-              symbol: 'DAI',
-              address: '0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5',
-              decimals: 18,
-              occurrences: 1,
-              aggregators: [],
-              iconUrl: '',
-            },
-          },
-        },
-      },
-    })
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -1987,38 +1945,6 @@ export const getMonadBaseBridgeFixtures = (
 ) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x8f')
-    .withTokenListController({
-      tokensChainsCache: {
-        '0x2105': {
-          timestamp: Date.now(),
-          data: {
-            '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913': {
-              name: 'USD Coin',
-              symbol: 'USDC',
-              address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-              decimals: 6,
-              occurrences: 1,
-              aggregators: [],
-              iconUrl: '',
-            },
-          },
-        },
-        '0x8f': {
-          timestamp: Date.now(),
-          data: {
-            '0x754704bc059f8c67012fed69bc8a327a5aafb603': {
-              name: 'USD Coin',
-              symbol: 'USDC',
-              address: '0x754704bc059f8c67012fed69bc8a327a5aafb603',
-              decimals: 6,
-              occurrences: 1,
-              aggregators: [],
-              iconUrl: '',
-            },
-          },
-        },
-      },
-    })
     .withEnabledNetworks({
       eip155: {
         '0x8f': true,
@@ -2452,11 +2378,10 @@ export const checkQuoteRequestsAreNotMadeAfterTimestamp = async (
   }
 };
 
-export async function enterBridgeQuote(
+export async function enterEthToLineaBridgeQuote(
   driver: Driver,
-): Promise<BridgeQuotePage> {
-  const bridgePage = new BridgeQuotePage(driver);
-  await bridgePage.enterBridgeQuote({
+): Promise<SwapPage> {
+  await enterBridgeQuote(driver, {
     amount: '1',
     tokenFrom: 'ETH',
     tokenTo: 'ETH',
@@ -2464,7 +2389,7 @@ export async function enterBridgeQuote(
     toChain: 'Linea',
   });
 
-  return bridgePage;
+  return new SwapPage(driver);
 }
 
 /**

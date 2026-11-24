@@ -19,6 +19,13 @@ import * as DappSwapContextModule from '../../../../../context/dapp-swap';
 import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import { BatchedApprovalFunction } from './batched-approval-function';
 
+jest.mock(
+  '../../../../../../../components/app/alert-system/contexts/alertMetricsContext',
+  () => ({
+    useAlertMetrics: () => ({ trackInlineAlertClicked: jest.fn() }),
+  }),
+);
+
 const DATA_MOCK = '0x123456';
 const TO_MOCK = '0x1234';
 const ADDRESS_MOCK = '0x1234567890123456789012345678901234567890';

@@ -28,7 +28,7 @@ describe('createRandomId', () => {
     jest.resetModules();
     const getRandomValuesSpy = jest
       .spyOn(globalThis.crypto, 'getRandomValues')
-      .mockImplementation((array: ArrayBufferView | null) => {
+      .mockImplementation((array) => {
         if (!array) {
           return array;
         }

@@ -4,39 +4,30 @@ export const SUPPORT_LINK = process.env.SUPPORT_LINK;
 
 export const COINGECKO_LINK = 'https://www.coingecko.com/';
 export const CRYPTOCOMPARE_LINK = 'https://www.cryptocompare.com/';
-export const PRIVACY_POLICY_LINK = 'https://consensys.io/privacy-policy/';
-export const METAMETRICS_SETTINGS_LINK =
-  'https://support.metamask.io/configure/privacy/how-to-manage-your-metametrics-settings/?utm_source=extension';
+export const PRIVACY_POLICY_LINK = 'https://metamask.com/privacy-notice';
 
 // TODO make sure these links are correct
-export const ETHERSCAN_PRIVACY_LINK = 'https://etherscan.io/privacyPolicy';
-export const CONSENSYS_PRIVACY_LINK = 'https://consensys.io/privacy-policy/';
+export const CONSENSYS_PRIVACY_LINK = 'https://metamask.com/privacy-notice';
 export const AUTO_DETECT_TOKEN_LEARN_MORE_LINK =
-  'https://consensys.io/privacy-policy/';
-export const CONSENSYS_TERMS_OF_USE = 'https://consensys.io/terms-of-use';
+  'https://metamask.com/privacy-notice';
+export const CONSENSYS_TERMS_OF_USE = 'https://metamask.com/terms-of-use';
 
 export const SECURITY_ALERTS_LEARN_MORE_LINK =
-  'https://support.metamask.io/privacy-and-security/how-to-turn-on-security-alerts/?utm_source=extension';
+  'https://support.metamask.com/privacy-and-security/how-to-turn-on-security-alerts/?utm_source=extension';
 
 export const TRANSACTION_SIMULATIONS_LEARN_MORE_LINK =
-  'https://support.metamask.io/transactions-and-gas/transactions/simulations/?utm_source=extension';
+  'https://support.metamask.com/transactions-and-gas/transactions/simulations/?utm_source=extension';
 
-export const GAS_FEES_LEARN_MORE_URL =
-  'https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172';
-
-export const SMART_ACCOUNT_INFO_LINK =
-  'https://support.metamask.io/configure/accounts/what-is-a-smart-account/?utm_source=extension#what-are-metamask-smart-accounts';
-
-export const VAULT_RECOVERY_LINK = `https://support.metamask.io/configure/wallet/how-to-recover-your-secret-recovery-phrase/?utm_source=extension#step-two-locate-your-vault`;
+export const VAULT_RECOVERY_LINK = `https://support.metamask.com/configure/wallet/how-to-recover-your-secret-recovery-phrase/?utm_source=extension#step-two-locate-your-vault`;
 
 export const REINSTALL_METAMASK_RECOVERY_LINK =
-  'https://support.metamask.io/configure/wallet/how-to-restore-your-metamask-wallet-from-secret-recovery-phrase/?utm_source=extension';
+  'https://support.metamask.com/configure/wallet/how-to-restore-your-metamask-wallet-from-secret-recovery-phrase/?utm_source=extension';
 
 export const SHIELD_TERMS_OF_USE_URL =
-  'https://consensys.io/transaction-shield-supplemental-terms-and-privacy-notice';
+  'https://metamask.com/metamask-transaction-shield-limited-supplemental-terms-of-use';
 
 export const TESTNET_ETH_SCAMS_LEARN_MORE_LINK =
-  'https://support.metamask.io/stay-safe/protect-yourself/tokens-and-transactions/testnet-eth-scams/?utm_source=extension';
+  'https://support.metamask.com/stay-safe/protect-yourself/tokens-and-transactions/testnet-eth-scams/?utm_source=extension';
 
 export const REQUEST_SETTING_URL =
-  'https://community.metamask.io/c/feature-requests-ideas/13';
+  'https://community.metamask.com/c/feature-requests-ideas/13';

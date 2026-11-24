@@ -1,6 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { useSelector } from 'react-redux';
+import { TransactionType } from '@metamask/transaction-controller';
 import type { TransactionGroup } from '../../../../shared/lib/multichain/types';
 import { usePendingTransactionActions } from '../../../hooks/usePendingTransactionActions';
 import { selectBridgeHistoryItemForTx } from '../../../selectors/activity';
@@ -24,7 +25,8 @@ const mockSelectBridgeHistoryItemForTx = jest.mocked(
 
 let capturedProps: {
   onCancel: (event: React.MouseEvent) => void;
-  speedUp: { onClick: (event: React.MouseEvent) => void };
+  speedUp: { show: boolean; onClick: (event: React.MouseEvent) => void };
+  showCancel: boolean;
 } | null = null;
 
 jest.mock(
@@ -38,12 +40,26 @@ jest.mock(
 );
 
 function buildTransactionGroup(
-  overrides: { primaryId?: string; isSmartTransaction?: boolean } = {},
+  overrides: {
+    primaryId?: string;
+    isSmartTransaction?: boolean;
+    type?: TransactionType;
+    primaryType?: TransactionType;
+  } = {},
 ): TransactionGroup {
-  const { primaryId = 'tx-1', isSmartTransaction = false } = overrides;
+  const {
+    primaryId = 'tx-1',
+    isSmartTransaction = false,
+    type = TransactionType.simpleSend,
+    primaryType = type,
+  } = overrides;
   return {
-    primaryTransaction: { id: primaryId, isSmartTransaction },
-    initialTransaction: { id: primaryId, isSmartTransaction },
+    primaryTransaction: {
+      id: primaryId,
+      isSmartTransaction,
+      type: primaryType,
+    },
+    initialTransaction: { id: primaryId, isSmartTransaction, type },
   } as unknown as TransactionGroup;
 }
 
@@ -96,6 +112,39 @@ describe('TransactionListItemPendingActions', () => {
     const { queryByTestId } = renderComponent(buildTransactionGroup());
 
     expect(queryByTestId('action-buttons')).not.toBeInTheDocument();
+  });
+
+  it('hides speed up for swaps, bridges, and their approvals', () => {
+    for (const type of [
+      TransactionType.swap,
+      TransactionType.bridge,
+      TransactionType.swapApproval,
+      TransactionType.bridgeApproval,
+    ]) {
+      mockActions();
+      const { unmount } = renderComponent(buildTransactionGroup({ type }));
+
+      expect(capturedProps?.speedUp.show).toBe(false);
+      expect(capturedProps?.showCancel).toBe(true);
+      unmount();
+
+      mockActions({ showCancel: false });
+
+      const { queryByTestId, unmount: unmountWithoutCancel } = renderComponent(
+        buildTransactionGroup({ type }),
+      );
+
+      expect(queryByTestId('action-buttons')).not.toBeInTheDocument();
+      unmountWithoutCancel();
+
+      mockActions();
+      const { unmount: unmountReplacement } = renderComponent(
+        buildTransactionGroup({ type, primaryType: TransactionType.retry }),
+      );
+
+      expect(capturedProps?.speedUp.show).toBe(false);
+      unmountReplacement();
+    }
   });
 
   it('targets the primary transaction id when delegating to the cancel handler', () => {

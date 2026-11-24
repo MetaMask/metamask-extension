@@ -34,7 +34,7 @@ describe('ShieldCoverageAlertMessage', () => {
     expect(mockCaptureShieldCtaClickedEvent).toHaveBeenCalledWith({
       source: ShieldMetricsSourceEnum.PostTransaction,
       ctaActionClicked: ShieldCtaActionClickedEnum.WhatsCovered,
-      redirectToUrl: 'https://metamask.io/transaction-shield',
+      redirectToUrl: 'https://metamask.com/transaction-shield',
     });
   });
 });

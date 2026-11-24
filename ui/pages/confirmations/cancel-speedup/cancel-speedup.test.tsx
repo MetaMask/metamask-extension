@@ -19,6 +19,11 @@ import {
 } from '../../../store/actions';
 import { MetaMaskReduxState } from '../../../selectors';
 import { tEn } from '../../../../test/lib/i18n-helpers';
+import {
+  MOCK_CONFIRMATIONS_ACCOUNT_ID,
+  nativeEvmAssetId,
+  weiToAssetAmount,
+} from '../../../../test/data/confirmations/helper';
 import { CancelSpeedup } from './cancel-speedup';
 
 jest.mock('../../../store/actions', () => ({
@@ -131,6 +136,7 @@ describe('CancelSpeedup Component', () => {
   };
 
   const BALANCE_ONE_ETH = '0xDE0B6B3A7640000';
+  const GOERLI_NATIVE_ASSET_ID = nativeEvmAssetId('0x5');
 
   const render = (
     props: Partial<React.ComponentProps<typeof CancelSpeedup>> = {},
@@ -157,17 +163,13 @@ describe('CancelSpeedup Component', () => {
       metamask: {
         ...mockState.metamask,
         isInitialized: true,
-        accounts: {
-          [mockSelectedInternalAccount.address]: {
-            address: mockSelectedInternalAccount.address,
-            balance,
-          },
-        },
-        accountsByChainId: {
-          ...mockState.metamask.accountsByChainId,
-          '0x5': {
-            ...mockState.metamask.accountsByChainId['0x5'],
-            [mockSelectedInternalAccount.address]: { balance },
+        assetsBalance: {
+          ...mockState.metamask.assetsBalance,
+          [MOCK_CONFIRMATIONS_ACCOUNT_ID]: {
+            ...mockState.metamask.assetsBalance[MOCK_CONFIRMATIONS_ACCOUNT_ID],
+            [GOERLI_NATIVE_ASSET_ID]: {
+              amount: weiToAssetAmount(balance),
+            },
           },
         },
         preferences: {

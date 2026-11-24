@@ -118,7 +118,7 @@ describe('useUpdateTokenAmount', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
-    updateAtomicBatchDataMock.mockResolvedValue(undefined);
+    updateAtomicBatchDataMock.mockResolvedValue('0x1');
     updateEditableParamsMock.mockReturnValue((() =>
       Promise.resolve()) as never);
     useTransactionAccountOverrideMock.mockReturnValue(undefined);

@@ -1,6 +1,6 @@
 import * as actionConstants from '../../store/actionConstants';
 import { HardwareDeviceNames } from '../../../shared/constants/hardware-wallets';
-import reduceApp from './app';
+import reduceApp, { setOnboardingRedirect } from './app';
 
 const actions = actionConstants;
 
@@ -11,6 +11,21 @@ describe('App State', () => {
     const initState = reduceApp(metamaskState, {});
 
     expect.anything(initState);
+  });
+
+  it('preserves unchanged onboarding redirect state and clears a saved destination', () => {
+    const state = reduceApp(metamaskState, {});
+    expect(reduceApp(state, setOnboardingRedirect(null))).toBe(state);
+
+    const route = '/settings/privacy';
+    const pending = reduceApp(state, setOnboardingRedirect(route));
+    expect(pending.onboardingRedirect).toBe(route);
+    expect(reduceApp(pending, setOnboardingRedirect(route))).toBe(pending);
+
+    expect(reduceApp(pending, setOnboardingRedirect(null))).toMatchObject({
+      onboardingRedirect: null,
+    });
+    expect(pending.onboardingRedirect).toBe(route);
   });
 
   it('sets networkDropdownOpen dropdown to true', () => {
@@ -223,45 +238,6 @@ describe('App State', () => {
     });
     expect(state.smartTransactionsError).toStrictEqual('Server Side Error');
   });
-  it('shows delete metametrics modal', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.DELETE_METAMETRICS_DATA_MODAL_OPEN,
-    });
-
-    expect(state.showDeleteMetaMetricsDataModal).toStrictEqual(true);
-  });
-  it('hides delete metametrics modal', () => {
-    const deleteMetaMetricsDataModalState = {
-      showDeleteMetaMetricsDataModal: true,
-    };
-    const oldState = { ...metamaskState, ...deleteMetaMetricsDataModalState };
-
-    const state = reduceApp(oldState, {
-      type: actions.DELETE_METAMETRICS_DATA_MODAL_CLOSE,
-    });
-
-    expect(state.showDeleteMetaMetricsDataModal).toStrictEqual(false);
-  });
-  it('shows delete metametrics error modal', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.DATA_DELETION_ERROR_MODAL_OPEN,
-    });
-
-    expect(state.showDataDeletionErrorModal).toStrictEqual(true);
-  });
-  it('hides delete metametrics error modal', () => {
-    const deleteMetaMetricsErrorModalState = {
-      showDataDeletionErrorModal: true,
-    };
-    const oldState = { ...metamaskState, ...deleteMetaMetricsErrorModalState };
-
-    const state = reduceApp(oldState, {
-      type: actions.DATA_DELETION_ERROR_MODAL_CLOSE,
-    });
-
-    expect(state.showDataDeletionErrorModal).toStrictEqual(false);
-  });
-
   it('displays error in settings', () => {
     const state = reduceApp(metamaskState, {
       type: actions.SHOW_SETTINGS_PAGE_ERROR,
@@ -308,6 +284,36 @@ describe('App State', () => {
     );
 
     expect(pendingTokensState.pendingTokens).toStrictEqual(payload);
+  });
+
+  it('turns off backup and sync intent when basic functionality is turned off during onboarding', () => {
+    const state = reduceApp(
+      {
+        externalServicesOnboardingToggleState: true,
+        backupAndSyncOnboardingToggleState: true,
+      },
+      {
+        type: actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_OFF,
+      },
+    );
+
+    expect(state.externalServicesOnboardingToggleState).toStrictEqual(false);
+    expect(state.backupAndSyncOnboardingToggleState).toStrictEqual(false);
+  });
+
+  it('keeps backup and sync intent unchanged when basic functionality is turned on during onboarding', () => {
+    const state = reduceApp(
+      {
+        externalServicesOnboardingToggleState: false,
+        backupAndSyncOnboardingToggleState: false,
+      },
+      {
+        type: actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_ON,
+      },
+    );
+
+    expect(state.externalServicesOnboardingToggleState).toStrictEqual(true);
+    expect(state.backupAndSyncOnboardingToggleState).toStrictEqual(false);
   });
 
   it('clears pending tokens', () => {

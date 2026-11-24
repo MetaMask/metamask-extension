@@ -49,13 +49,3 @@ export const isNativeAsset = (inputAsset: Asset): inputAsset is NativeAsset =>
   inputAsset.type === AssetType.native &&
   'isOriginalNativeSymbol' in inputAsset &&
   typeof inputAsset.isOriginalNativeSymbol === 'boolean';
-
-export const isTokenAsset = (inputAsset: Asset): inputAsset is TokenAsset =>
-  inputAsset.type === AssetType.token &&
-  'address' in inputAsset &&
-  typeof inputAsset.address === 'string' &&
-  ('aggregators' in inputAsset
-    ? typeof inputAsset.aggregators === 'object' &&
-      (!inputAsset.aggregators.length ||
-        typeof inputAsset.aggregators[0] === 'string')
-    : true);

@@ -1,24 +1,17 @@
 import { ApprovalRequest } from '@metamask/approval-controller';
-import { ApprovalType } from '@metamask/controller-utils';
 import { Hex, Json } from '@metamask/utils';
 import { QuoteResponseV1 } from '@metamask/bridge-controller';
 
 import { createSelector } from 'reselect';
 import { getPendingApprovals } from '../../../selectors/approvals';
 import { ConfirmMetamaskState } from '../types/confirm';
+import { CONFIRMATION_APPROVAL_TYPES } from './confirmation-approval-types';
 
-const ConfirmationApprovalTypes = [
-  ApprovalType.PersonalSign,
-  ApprovalType.EthSignTypedData,
-  ApprovalType.Transaction,
-];
 export const pendingConfirmationsSortedSelector = createSelector(
   getPendingApprovals,
   (approvals) =>
     approvals
-      .filter(({ type }) =>
-        ConfirmationApprovalTypes.includes(type as ApprovalType),
-      )
+      .filter(({ type }) => CONFIRMATION_APPROVAL_TYPES.includes(type))
       .sort((a1, a2) => a1.time - a2.time),
 );
 

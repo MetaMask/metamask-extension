@@ -1,15 +1,14 @@
-import {
-  ApprovalType,
-  toChecksumHexAddress,
-  toHex,
-} from '@metamask/controller-utils';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   GasFeeToken,
   TransactionMeta,
   TransactionParams,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
+import {
+  buildNativeEvmBalancePatch,
+  getMockConfirmState,
+} from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
@@ -84,6 +83,7 @@ function buildState({
   selectedNetworkClientId,
   chainId,
   remoteFeatureFlags,
+  gasSponsorshipOptOutByChainId,
 }: {
   balance?: number;
   currentConfirmation?: Partial<TransactionMeta>;
@@ -91,9 +91,8 @@ function buildState({
   selectedNetworkClientId?: string;
   chainId?: string;
   remoteFeatureFlags?: Record<string, unknown>;
+  gasSponsorshipOptOutByChainId?: Record<string, boolean>;
 } = {}) {
-  const accountAddress = transaction?.txParams?.from as string;
-
   let pendingApprovals = {};
   if (currentConfirmation) {
     pendingApprovals = {
@@ -104,18 +103,20 @@ function buildState({
     };
   }
 
+  const resolvedChainId = chainId ?? '0x5';
+
   return getMockConfirmState({
     metamask: {
       selectedNetworkClientId: selectedNetworkClientId ?? 'goerli',
       pendingApprovals,
       ...(remoteFeatureFlags ? { remoteFeatureFlags } : {}),
-      accountsByChainId: {
-        [chainId ?? '0x5']: {
-          [toChecksumHexAddress(accountAddress)]: {
-            balance: toHex(balance ?? 0),
-          },
-        },
-      },
+      ...(gasSponsorshipOptOutByChainId
+        ? { preferences: { gasSponsorshipOptOutByChainId } }
+        : {}),
+      ...buildNativeEvmBalancePatch({
+        hexChainId: resolvedChainId,
+        amountWei: balance ?? 0,
+      }),
       transactions: transaction ? [transaction] : [],
     },
   });
@@ -176,6 +177,52 @@ describe('useInsufficientBalanceAlerts', () => {
     expect(alerts).toEqual([]);
   });
 
+  it('returns alert if transaction is gas fee sponsored but user opted out of sponsorship on the chain', () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: false,
+      isSupported: true,
+      pending: false,
+    });
+
+    const alerts = runHook({
+      balance: 7,
+      currentConfirmation: {
+        ...TRANSACTION_MOCK,
+        isGasFeeSponsored: true,
+      },
+      transaction: {
+        ...TRANSACTION_MOCK,
+        isGasFeeSponsored: true,
+      },
+      gasSponsorshipOptOutByChainId: { '0x5': true },
+    });
+
+    expect(alerts).toEqual(ALERT);
+  });
+
+  it('returns no alerts if transaction is gas fee sponsored and user opted out of sponsorship on another chain', () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: false,
+      isSupported: true,
+      pending: false,
+    });
+
+    const alerts = runHook({
+      balance: 7,
+      currentConfirmation: {
+        ...TRANSACTION_MOCK,
+        isGasFeeSponsored: true,
+      },
+      transaction: {
+        ...TRANSACTION_MOCK,
+        isGasFeeSponsored: true,
+      },
+      gasSponsorshipOptOutByChainId: { '0x1': true },
+    });
+
+    expect(alerts).toEqual([]);
+  });
+
   it('returns no alerts if pay quote is being used', () => {
     useTransactionPayHasSourceAmountMock.mockReturnValue(true);
 
@@ -226,7 +273,7 @@ describe('useInsufficientBalanceAlerts', () => {
         chainId: '0x1079',
         excludeNativeTokenForFee: true,
         gasFeeTokens: [],
-        selectedGasFeeToken: '0x20c0000000000000000000000000000000000000',
+        selectedGasFeeToken: '0x20c0000000000000000000006a37da5c996874be',
       }),
       id: TRANSACTION_ID_MOCK,
       txParams: {
@@ -254,14 +301,14 @@ describe('useInsufficientBalanceAlerts', () => {
         actions: [
           {
             key: 'buy',
-            label: 'Buy pathUSD',
+            label: 'Buy OUSD',
           },
         ],
         field: 'estimatedFee',
         isBlocking: true,
         key: 'insufficientBalance',
         message:
-          'You do not have enough pathUSD in your account to pay for network fees.',
+          'You do not have enough OUSD in your account to pay for network fees.',
         reason: 'Insufficient funds',
         severity: 'danger',
       },

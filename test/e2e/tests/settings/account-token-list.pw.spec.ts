@@ -5,8 +5,8 @@ import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
+import AssetsSettings from '../../page-objects/pages/settings/assets-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import {
@@ -16,6 +16,7 @@ import {
 import { login } from '../../page-objects/flows/login.flow';
 import { closeSettings } from '../../page-objects/flows/settings.flow';
 import { DEFAULT_FIXTURE_ACCOUNT_ID, E2E_DRIVER } from '../../constants';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 
 const SEPOLIA_NATIVE_ASSET_ID = 'eip155:11155111/slip44:60';
 
@@ -111,7 +112,7 @@ pwTest.describe('Settings', () => {
         },
         async ({ driver }) => {
           await login(driver, { expectedBalance: '$42,500.00' });
-          await new HeaderNavbar(driver).openAccountMenu();
+          await openAccountMenu(driver);
           await new AccountListPage(
             driver,
           ).checkMultichainAccountBalanceDisplayed({ balance: '$42,500.00' });
@@ -179,7 +180,10 @@ pwTest.describe('Settings', () => {
           await homePage.headerNavbar.openSettingsPage();
           const settingsPage = new SettingsPage(driver);
           await settingsPage.checkPageIsLoaded();
-          await settingsPage.toggleBalanceSetting();
+          await settingsPage.goToAssetsSettings();
+          const assetsSettings = new AssetsSettings(driver);
+          await assetsSettings.checkPageIsLoaded();
+          await assetsSettings.toggleShowNativeTokenAsMainBalance();
           await closeSettings(driver);
           await homePage.checkExpectedBalanceIsDisplayed('25', 'SepoliaETH');
         },

@@ -21,7 +21,6 @@ import * as useTransactionPayAvailableTokensModule from '../../../hooks/pay/useT
 import * as useTransactionPayDataModule from '../../../hooks/pay/useTransactionPayData';
 import * as useTransactionPayTokenModule from '../../../hooks/pay/useTransactionPayToken';
 import * as useTransactionPayWithdrawModule from '../../../hooks/pay/useTransactionPayWithdraw';
-import * as usePayWithNoFeeTokenModule from '../../../hooks/pay/usePayWithNoFeeToken';
 import * as useAccountNoFundsAlertModule from '../../../hooks/alerts/transactions/useAccountNoFundsAlert';
 import {
   CustomAmountInfo,
@@ -39,7 +38,6 @@ jest.mock('../../../hooks/pay/useTransactionPayMetrics');
 jest.mock('../../../hooks/pay/useTransactionPayAvailableTokens');
 jest.mock('../../../hooks/pay/useTransactionPayData');
 jest.mock('../../../hooks/pay/useTransactionPayToken');
-jest.mock('../../../hooks/pay/usePayWithNoFeeToken');
 jest.mock('../../../hooks/alerts/transactions/useAccountNoFundsAlert');
 jest.mock('../../transactions/custom-amount/custom-amount', () => ({
   CustomAmount: ({
@@ -116,6 +114,7 @@ const DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN = {
   isDepositPrefillSkipped: false,
   isInputChanged: false,
   isQuoteDerivedAmountLoading: false,
+  resolveAmountFiat: (amountFiat: string) => amountFiat,
   updatePendingAmount: jest.fn(),
   updatePendingAmountPercentage: jest.fn(),
 };
@@ -168,7 +167,7 @@ function render(
     hasQuotes?: boolean;
     hasPositiveRequiredAmount?: boolean;
     isNativePayToken?: boolean;
-    isNoFeePayToken?: boolean;
+    hasMax?: boolean;
     totals?: TransactionPayTotals;
     sourceAmounts?: { targetTokenAddress: string }[];
     requiredTokens?: { address: string; skipIfBalance: boolean }[];
@@ -194,7 +193,7 @@ function render(
     hasQuotes = false,
     hasPositiveRequiredAmount = true,
     isNativePayToken = false,
-    isNoFeePayToken = false,
+    hasMax = false,
     totals,
     sourceAmounts = [],
     requiredTokens = [],
@@ -299,10 +298,6 @@ function render(
       payToken: MOCK_AVAILABLE_TOKEN as never,
       setPayToken: jest.fn(),
     });
-  jest.mocked(usePayWithNoFeeTokenModule.usePayWithNoFeeToken).mockReturnValue({
-    isNoFeeToken: () => isNoFeePayToken,
-    renderNoFeeTag: () => null,
-  });
   jest
     .mocked(useTransactionPayWithdrawModule.useTransactionPayWithdraw)
     .mockReturnValue(withdraw);
@@ -316,6 +311,7 @@ function render(
       disablePay={disablePay}
       disablePercentageButtons={disablePercentageButtons}
       displayPercentageButtons={displayPercentageButtons}
+      hasMax={hasMax}
       hidePayTokenAmount={hidePayTokenAmount}
     />,
     mockStore(state),
@@ -665,18 +661,18 @@ describe('CustomAmountInfo', () => {
       expect(queryByTestId('percentage-button-100')).not.toBeInTheDocument();
     });
 
-    it('replaces 90% with Max for no-fee (fixed-spread) tokens', () => {
+    it('replaces 90% with Max for any non-native token when the flow opts in', () => {
       const { getByTestId, queryByTestId } = renderMoneyAccount({
-        isNoFeePayToken: true,
+        hasMax: true,
       });
 
       expect(getByTestId('percentage-button-100')).toHaveTextContent('Max');
       expect(queryByTestId('percentage-button-90')).not.toBeInTheDocument();
     });
 
-    it('keeps 90% for tokens that are not no-fee', () => {
+    it('keeps 90% when the flow does not opt into Max', () => {
       const { getByTestId, queryByTestId } = renderMoneyAccount({
-        isNoFeePayToken: false,
+        hasMax: false,
       });
 
       expect(getByTestId('percentage-button-90')).toBeInTheDocument();
@@ -685,7 +681,7 @@ describe('CustomAmountInfo', () => {
 
     it('always shows Max on withdraw, irrespective of the selected token', () => {
       const { getByTestId, queryByTestId } = renderMoneyAccount({
-        isNoFeePayToken: false,
+        hasMax: false,
         withdraw: { isWithdraw: true, canSelectWithdrawToken: false },
       });
 
@@ -695,7 +691,7 @@ describe('CustomAmountInfo', () => {
 
     it('always shows Max on withdraw when the pay token is native', () => {
       const { getByTestId, queryByTestId } = renderMoneyAccount({
-        isNoFeePayToken: false,
+        hasMax: false,
         isNativePayToken: true,
         withdraw: { isWithdraw: true, canSelectWithdrawToken: false },
       });
@@ -704,9 +700,9 @@ describe('CustomAmountInfo', () => {
       expect(queryByTestId('percentage-button-90')).not.toBeInTheDocument();
     });
 
-    it('keeps 90% when the no-fee token is native', () => {
+    it('keeps 90% when the pay token is native, so gas stays funded', () => {
       const { getByTestId, queryByTestId } = renderMoneyAccount({
-        isNoFeePayToken: true,
+        hasMax: true,
         isNativePayToken: true,
       });
 
@@ -756,6 +752,79 @@ describe('CustomAmountInfo', () => {
       expect(getByTestId('percentage-button-50')).toBeDisabled();
       getByTestId('percentage-button-50').click();
       expect(updatePendingAmountPercentage).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('snap typed amount to Max', () => {
+    const useTransactionCustomAmountMock = jest.mocked(
+      useTransactionCustomAmountModule.useTransactionCustomAmount,
+    );
+
+    function getIsMaxAvailable() {
+      return useTransactionCustomAmountMock.mock.lastCall?.[0]?.isMaxAvailable;
+    }
+
+    it('enables snapping when Max is offered', () => {
+      render({ displayPercentageButtons: true, hasMax: true });
+
+      expect(getIsMaxAvailable()).toBe(true);
+    });
+
+    it('enables snapping on withdraws', () => {
+      render({
+        displayPercentageButtons: true,
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: false },
+      });
+
+      expect(getIsMaxAvailable()).toBe(true);
+    });
+
+    it('disables snapping when Max is not offered', () => {
+      render({ displayPercentageButtons: true });
+
+      expect(getIsMaxAvailable()).toBe(false);
+    });
+
+    it('disables snapping when percentage buttons are hidden', () => {
+      render({ hasMax: true });
+
+      expect(getIsMaxAvailable()).toBe(false);
+    });
+
+    it('disables snapping when percentage buttons are disabled', () => {
+      render({
+        disablePercentageButtons: true,
+        displayPercentageButtons: true,
+        hasMax: true,
+      });
+
+      expect(getIsMaxAvailable()).toBe(false);
+    });
+
+    it('disables snapping for a native pay token on deposits', () => {
+      render({
+        displayPercentageButtons: true,
+        hasMax: true,
+        isNativePayToken: true,
+      });
+
+      expect(getIsMaxAvailable()).toBe(false);
+    });
+
+    it('evaluates pending amount alerts against the resolved amount', () => {
+      render({
+        customAmountHookReturn: {
+          ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+          amountFiat: '2.28',
+          resolveAmountFiat: () => '2.2895',
+        },
+        displayPercentageButtons: true,
+        hasMax: true,
+      });
+
+      expect(
+        useTransactionCustomAmountAlertsModule.useTransactionCustomAmountAlerts,
+      ).toHaveBeenCalledWith({ pendingFiatAmount: '2.2895' });
     });
   });
 
@@ -1105,12 +1174,6 @@ describe('CustomAmountInfo', () => {
           isNative: false,
           payToken: undefined,
           setPayToken: jest.fn(),
-        });
-      jest
-        .mocked(usePayWithNoFeeTokenModule.usePayWithNoFeeToken)
-        .mockReturnValue({
-          isNoFeeToken: () => false,
-          renderNoFeeTag: () => null,
         });
       jest
         .mocked(useTransactionPayWithdrawModule.useTransactionPayWithdraw)

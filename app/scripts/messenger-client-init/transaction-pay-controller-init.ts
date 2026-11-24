@@ -1,5 +1,6 @@
 import {
   PaymentOverride,
+  TransactionPayClientId,
   TransactionPayController,
   TransactionPayControllerMessenger,
   TransactionPayStrategy,
@@ -10,6 +11,7 @@ import {
   getMoneyAccountFlow,
   MoneyAccountFlow,
 } from '../../../shared/lib/money/money-account-flow';
+import { decodeEvmAssetId } from '../../../shared/lib/transaction/pay-token';
 import {
   type DelegationMessenger,
   getDelegationTransaction,
@@ -26,11 +28,16 @@ import {
   getMoneyAccountAmountData,
   updateMoneyAccountDepositAmount,
 } from '../lib/money/pay/update-deposit-amount';
-import { updateMoneyAccountWithdrawAmount } from '../lib/money/pay/update-withdraw-amount';
+import {
+  syncMoneyAccountWithdrawTransfer,
+  updateMoneyAccountWithdrawAmount,
+  type WithdrawPaymentToken,
+} from '../lib/money/pay/update-withdraw-amount';
 import { subscribePersistPayMetadata } from '../lib/money/pay/persist-pay-metadata';
-import type {
-  MoneyPayMessenger,
-  PaymentOverrideMessenger,
+import {
+  getPayEvmAccountOverride,
+  type MoneyPayMessenger,
+  type PaymentOverrideMessenger,
 } from '../lib/money/pay/pay-context';
 import type {
   MessengerClientInitFunction,
@@ -61,12 +68,14 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
     );
 
   const messengerClient = new TransactionPayController({
+    clientId: TransactionPayClientId.Extension,
     getAmountData: (amountDataRequest) =>
       getMoneyAccountAmountData(
         initMessenger as MoneyPayMessenger,
         amountDataRequest,
       ),
-    getBalance,
+    getBalance: (balanceRequest) =>
+      getBalance(balanceRequest, initMessenger as MoneyPayMessenger),
     getDelegationTransaction: getDelegationTransactionCallback,
     getPaymentOverrideData: (paymentOverrideRequest) =>
       getPaymentOverrideData(
@@ -79,6 +88,11 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
   });
 
   subscribePersistPayMetadata(controllerMessenger);
+  subscribeWithdrawTransferSync(
+    controllerMessenger,
+    messengerClient,
+    initMessenger as MoneyPayMessenger,
+  );
 
   const api = getApi(messengerClient, initMessenger as MoneyPayMessenger);
 
@@ -92,7 +106,7 @@ function getApi(
   return {
     createMoneyAccountDepositTransaction: async (
       batchId: Hex,
-      accountOverride: Hex,
+      accountOverride: string,
     ) => {
       const result = await createMoneyAccountDepositTransaction(
         moneyPayMessenger,
@@ -105,13 +119,15 @@ function getApi(
       );
       return result;
     },
-    createMoneyAccountWithdrawTransaction: async (accountOverride: Hex) => {
+    createMoneyAccountWithdrawTransaction: async (
+      recipientAccountId: string,
+    ) => {
       const result =
         await createMoneyAccountWithdrawTransaction(moneyPayMessenger);
-      seedAccountOverride(
+      seedWithdrawPayConfig(
         messengerClient,
         result.transactionId,
-        accountOverride,
+        recipientAccountId,
       );
       return result;
     },
@@ -177,13 +193,27 @@ function getApi(
         }
       });
     },
-    setTransactionPayAccountOverride: (
+    setTransactionPayAccountOverride: async (
       transactionId: string,
-      accountOverride: Hex,
+      accountOverride: string,
     ) => {
-      messengerClient.setTransactionConfig(transactionId, (config) => {
-        config.accountOverride = accountOverride;
-      });
+      const transaction = moneyPayMessenger
+        .call('TransactionController:getState')
+        .transactions.find(({ id }) => id === transactionId);
+
+      if (getMoneyAccountFlow(transaction) !== MoneyAccountFlow.Withdraw) {
+        messengerClient.setTransactionConfig(transactionId, (config) => {
+          config.accountOverride = accountOverride;
+        });
+        return;
+      }
+
+      seedWithdrawPayConfig(messengerClient, transactionId, accountOverride);
+      await syncWithdrawTransfer(
+        messengerClient,
+        moneyPayMessenger,
+        transactionId,
+      ).catch(logWithdrawSyncError);
     },
     updateMoneyAccountDepositAmount: async (
       transactionId: string,
@@ -201,8 +231,7 @@ function getApi(
         try {
           messengerClient.updatePaymentToken({
             transactionId,
-            tokenAddress: paymentToken.address,
-            chainId: paymentToken.chainId,
+            assetId: paymentToken.assetId,
           });
         } catch {
           // Balance/rates may still be settling; amount commit below still runs.
@@ -229,15 +258,18 @@ function getApi(
       amountHuman: string,
       recipientOverride?: Hex,
     ) => {
-      const resolvedRecipient =
-        recipientOverride ??
-        messengerClient.state?.transactionData?.[transactionId]
-          ?.accountOverride;
+      const transactionData =
+        messengerClient.state?.transactionData?.[transactionId];
       return updateMoneyAccountWithdrawAmount(
         moneyPayMessenger,
         transactionId,
         amountHuman,
-        resolvedRecipient,
+        recipientOverride ??
+          getPayEvmAccountOverride(
+            moneyPayMessenger,
+            transactionData?.accountOverride,
+          ),
+        getWithdrawPaymentToken(transactionData),
       );
     },
     setTransactionPayPaymentOverride: (
@@ -278,28 +310,105 @@ function getApi(
         }
       });
     },
-    updateTransactionPaymentToken:
-      messengerClient.updatePaymentToken.bind(messengerClient),
   };
 }
 
 /**
- * Seeds Pay's funding/destination account. Money Account batches execute
- * `from` the money account, so without this override the confirmation From
- * row and Pay quotes fall back to that address instead of the user's
- * currently selected EVM account.
+ * Re-encodes a withdraw transfer whenever its payment token changes, since
+ * the target depends on whether the new token is quoted.
+ *
+ * @param controllerMessenger - Transaction Pay controller messenger.
+ * @param messengerClient - TransactionPayController to read config from.
+ * @param moneyPayMessenger - Messenger used to encode and commit.
+ */
+function subscribeWithdrawTransferSync(
+  controllerMessenger: TransactionPayControllerMessenger,
+  messengerClient: TransactionPayController,
+  moneyPayMessenger: MoneyPayMessenger,
+): void {
+  const paymentTokenKeys = new Map<string, string | undefined>();
+
+  controllerMessenger.subscribe(
+    'TransactionPayController:stateChange',
+    ({ transactionData }: TransactionPayController['state']) => {
+      for (const transactionId of paymentTokenKeys.keys()) {
+        if (!transactionData[transactionId]) {
+          paymentTokenKeys.delete(transactionId);
+        }
+      }
+
+      for (const [transactionId, { paymentToken }] of Object.entries(
+        transactionData,
+      )) {
+        const key = paymentToken?.assetId.toLowerCase();
+
+        if (
+          paymentTokenKeys.has(transactionId) &&
+          paymentTokenKeys.get(transactionId) === key
+        ) {
+          continue;
+        }
+
+        paymentTokenKeys.set(transactionId, key);
+        syncWithdrawTransfer(
+          messengerClient,
+          moneyPayMessenger,
+          transactionId,
+        ).catch(logWithdrawSyncError);
+      }
+    },
+  );
+}
+
+function getWithdrawPaymentToken(
+  transactionData:
+    | TransactionPayController['state']['transactionData'][string]
+    | undefined,
+): WithdrawPaymentToken | undefined {
+  const paymentToken = transactionData?.paymentToken;
+  return paymentToken && decodeEvmAssetId(paymentToken.assetId);
+}
+
+async function syncWithdrawTransfer(
+  messengerClient: TransactionPayController,
+  moneyPayMessenger: MoneyPayMessenger,
+  transactionId: string,
+): Promise<void> {
+  const transactionData =
+    messengerClient.state?.transactionData?.[transactionId];
+
+  await syncMoneyAccountWithdrawTransfer(
+    moneyPayMessenger,
+    transactionId,
+    getPayEvmAccountOverride(
+      moneyPayMessenger,
+      transactionData?.accountOverride,
+    ),
+    getWithdrawPaymentToken(transactionData),
+  );
+}
+
+function logWithdrawSyncError(error: unknown): void {
+  console.error('Money Account withdraw: transfer sync failed', error);
+}
+
+/**
+ * Seeds Pay's withdraw recipient. Without this override the confirmation
+ * account row falls back to the money account instead of the user's
+ * currently selected EVM account. Pay only sends the output there; quotes
+ * are requested and submitted from the money account.
  *
  * @param messengerClient - TransactionPayController to write config on.
- * @param transactionId - Created transaction id.
- * @param accountOverride - Currently selected EVM account address.
+ * @param transactionId - Withdrawal transaction id.
+ * @param recipientAccountId - ID of the account that receives the withdrawal.
  */
-function seedAccountOverride(
+function seedWithdrawPayConfig(
   messengerClient: TransactionPayController,
   transactionId: string,
-  accountOverride: Hex,
+  recipientAccountId: string,
 ): void {
   messengerClient.setTransactionConfig(transactionId, (config) => {
-    config.accountOverride = accountOverride;
+    config.accountOverride = recipientAccountId;
   });
 }
 
@@ -315,19 +424,14 @@ function seedAccountOverride(
  * on the atomic path. `atomic: false` is Max-only (exact source spend /
  * EXACT_INPUT), matching mobile `setIsMax`.
  *
- * Amount commits still write `requiredAssets` before the vault encode
- * finishes, and Pay requotes on that write, so the first quote for each
- * amount goes out against the placeholder batch and is superseded by the
- * requote carrying the encoded calldata.
- *
  * @param messengerClient - TransactionPayController to write config on.
  * @param transactionId - Created transaction id.
- * @param accountOverride - Currently selected EVM account address.
+ * @param accountOverride - ID of the funding EVM account.
  */
 function seedDepositPayConfig(
   messengerClient: TransactionPayController,
   transactionId: string,
-  accountOverride: Hex,
+  accountOverride: string,
 ): void {
   messengerClient.setTransactionConfig(transactionId, (config) => {
     config.accountOverride = accountOverride;

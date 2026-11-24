@@ -318,6 +318,7 @@ describe('NameDetails', () => {
       store,
     );
 
+    expect(document.getElementById('address')).toHaveAttribute('readonly');
     expect(baseElement).toMatchSnapshot();
   });
 

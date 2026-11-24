@@ -10,7 +10,7 @@ describe('ConfirmInfoRowTextTokenUnits', () => {
       <ConfirmInfoRowTextTokenUnits value={value} decimals={decimals} />,
     );
 
-    expect(getByText('0.0123')).toBeInTheDocument();
+    expect(getByText('0.01234568')).toBeInTheDocument();
   });
 
   it('renders the value with the correct formatted number for lengthy decimals', () => {
@@ -20,17 +20,17 @@ describe('ConfirmInfoRowTextTokenUnits', () => {
       <ConfirmInfoRowTextTokenUnits value={value} decimals={decimals} />,
     );
 
-    expect(getByText('0.3')).toBeInTheDocument();
+    expect(getByText('0.30001231')).toBeInTheDocument();
   });
 
-  it('renders the value with the correct formatted non-fractional number', () => {
+  it('renders the value with the correct formatted number with an integer part', () => {
     const value = 123456789;
     const decimals = 4;
     const { getByText } = render(
       <ConfirmInfoRowTextTokenUnits value={value} decimals={decimals} />,
     );
 
-    expect(getByText('12,346')).toBeInTheDocument();
+    expect(getByText('12,345.6789')).toBeInTheDocument();
   });
 
   it('renders the value with the correct formatted number', () => {

@@ -66,10 +66,14 @@ export const EditGasFeesRow = ({
   );
   const {
     chainId,
+    gasFeeSponsor,
     isGasFeeSponsored: doesSentinelAllowSponsorship,
     simulationData,
     type: transactionType,
   } = transactionMeta;
+
+  // A MetaMask sponsor keeps the existing copy and icon.
+  const sponsor = gasFeeSponsor === 'MetaMask' ? undefined : gasFeeSponsor;
 
   const estimationFailed = useEstimationFailed();
   const gasFeeToken = useSelectedGasFeeToken();
@@ -105,7 +109,9 @@ export const EditGasFeesRow = ({
 
   let tooltip = t('estimatedFeeTooltip');
   if (isGasFeeSponsored) {
-    tooltip = t('gasSponsorshipOptOutTooltip');
+    tooltip = sponsor
+      ? t('gasSponsorshipSponsorTooltip', [sponsor])
+      : t('gasSponsorshipOptOutTooltip');
   } else if (gasFeeToken?.metaMaskFee && gasFeeToken.metaMaskFee !== '0x0') {
     tooltip = t('confirmGasFeeTokenTooltip', [metamaskFeeFiat]);
   }
@@ -128,7 +134,10 @@ export const EditGasFeesRow = ({
   return (
     <Box flexDirection={BoxFlexDirection.Column}>
       {isSponsorshipModalOpen && (
-        <GasSponsorshipModal onClose={handleCloseSponsorshipModal} />
+        <GasSponsorshipModal
+          sponsor={sponsor}
+          onClose={handleCloseSponsorshipModal}
+        />
       )}
       <ConfirmInfoAlertRow
         alertKey={RowAlertKey.EstimatedFee}
@@ -158,7 +167,7 @@ export const EditGasFeesRow = ({
                 cursor: isSponsorshipEligible ? 'pointer' : 'default',
               }}
             >
-              {isGasFeeSponsored && <GasFeeSponsoredByMetaMask />}
+              {isGasFeeSponsored && <GasFeeSponsored sponsor={sponsor} />}
               {isGasFeeEditable && <EditGasIconButton />}
               {estimationFailed && !isGasFeeSponsored && (
                 <Text color={TextColor.TextDefault}>{t('unavailable')}</Text>
@@ -282,7 +291,7 @@ function FiatValue({
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-function GasFeeSponsoredByMetaMask() {
+function GasFeeSponsored({ sponsor }: { sponsor?: string }) {
   const t = useI18nContext();
 
   return (
@@ -297,7 +306,9 @@ function GasFeeSponsoredByMetaMask() {
         size={IconSize.Sm}
         color={IconColor.SuccessDefault}
       />
-      <Text color={TextColor.SuccessDefault}>{t('paidByMetaMask')}</Text>
+      <Text color={TextColor.SuccessDefault}>
+        {sponsor ? t('paidBySponsor', [sponsor]) : t('paidByMetaMask')}
+      </Text>
     </Box>
   );
 }

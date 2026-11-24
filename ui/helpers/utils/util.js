@@ -298,23 +298,28 @@ export function shortenString(
 }
 
 /**
- * Shortens an Ethereum address for display, preserving the beginning and end.
+ * Shortens an address for display, preserving the beginning and end.
  * Returns the given address if it is no longer than 10 characters.
- * Shortened addresses are 13 characters long.
+ * Shortened addresses are 13 characters long for EVM.
  *
  * Example output: 0xabcde...12345
+ * Example output: bc1qn...5eker
  *
  * @param {string} address - The address to shorten.
  * @returns {string} The shortened address, or the original if it was no longer
  * than 10 characters.
  */
 export function shortenAddress(address = '') {
-  return shortenString(address, {
+  const isEvmAddress = address.startsWith('0x');
+  const addressWithoutPrefix = isEvmAddress ? address.slice(2) : address;
+  const shortenedAddress = shortenString(addressWithoutPrefix, {
     truncatedCharLimit: TRUNCATED_NAME_CHAR_LIMIT,
     truncatedStartChars: TRUNCATED_ADDRESS_START_CHARS,
     truncatedEndChars: TRUNCATED_ADDRESS_END_CHARS,
     skipCharacterInEnd: false,
   });
+
+  return isEvmAddress ? `0x${shortenedAddress}` : shortenedAddress;
 }
 
 export function getAccountByAddress(accounts = [], targetAddress) {

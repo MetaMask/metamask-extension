@@ -6,7 +6,8 @@ import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import {
   setParticipateInMetaMetrics,
-  setDataCollectionForMarketing,
+  optInToMarketing,
+  optOutOfMarketing,
 } from '../../../store/actions';
 import configureStore from '../../../store/store';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
@@ -42,12 +43,19 @@ jest.mock('../../../store/actions.ts', () => {
       dispatch({ type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS, value });
       return Promise.resolve([value]);
     }),
-    setDataCollectionForMarketing: jest.fn((value) => (dispatch: Dispatch) => {
+    optInToMarketing: jest.fn(() => (dispatch: Dispatch) => {
       dispatch({
         type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
-        value,
+        value: true,
       });
-      return Promise.resolve([value]);
+      return Promise.resolve();
+    }),
+    optOutOfMarketing: jest.fn(() => (dispatch: Dispatch) => {
+      dispatch({
+        type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
+        value: false,
+      });
+      return Promise.resolve();
     }),
     setPna25Acknowledged: jest.fn(() => () => Promise.resolve()),
   };
@@ -184,7 +192,7 @@ describe('Onboarding Metametrics Component', () => {
     });
   });
 
-  it('when the participate in MetaMetrics checkbox is unchecked, setDataCollectionForMarketing should be called with false', async () => {
+  it('opts out of marketing when both checkboxes are unchecked', async () => {
     const { queryByText, getByTestId } = renderWithProvider(
       <OnboardingMetametrics />,
       store,
@@ -204,14 +212,13 @@ describe('Onboarding Metametrics Component', () => {
       'metametrics-checkbox',
     ) as HTMLElement;
 
-    // Opt out of MetaMetrics; this should clear marketing consent
     await clickElement(participateContainer);
 
     const continueButton = getByTestId('metametrics-i-agree');
     await clickElement(continueButton);
 
     await waitFor(() => {
-      expect(setDataCollectionForMarketing).toHaveBeenCalledWith(false);
+      expect(optOutOfMarketing).toHaveBeenCalled();
       expect(mockUseNavigate).toHaveBeenCalledWith(
         ONBOARDING_COMPLETION_ROUTE,
         { replace: true },
@@ -230,7 +237,7 @@ describe('Onboarding Metametrics Component', () => {
     ).toBeInTheDocument();
   });
 
-  it('on uncheking the participate meatametric, checked datacollection marketing checkbox should be unchecked', async () => {
+  it('keeps the marketing checkbox checked and enabled when metametrics is unchecked', async () => {
     const { getAllByRole, getByTestId } = renderWithProvider(
       <OnboardingMetametrics />,
       store,
@@ -256,7 +263,25 @@ describe('Onboarding Metametrics Component', () => {
     await clickElement(participateContainer);
 
     await waitFor(() => {
-      expect(marketingCheckbox).not.toBeChecked();
+      expect(getAllByRole('checkbox')[0]).not.toBeChecked();
+    });
+    expect(marketingCheckbox).toBeChecked();
+    expect(marketingCheckbox).toBeEnabled();
+  });
+
+  it('saves marketing consent independently when MetaMetrics is unchecked', async () => {
+    const { getByTestId } = renderWithProvider(
+      <OnboardingMetametrics />,
+      store,
+    );
+
+    await clickElement(getByTestId('metametrics-data-collection-checkbox'));
+    await clickElement(getByTestId('metametrics-checkbox'));
+    await clickElement(getByTestId('metametrics-i-agree'));
+
+    await waitFor(() => {
+      expect(setParticipateInMetaMetrics).toHaveBeenCalledWith(false);
+      expect(optInToMarketing).toHaveBeenCalled();
     });
   });
 

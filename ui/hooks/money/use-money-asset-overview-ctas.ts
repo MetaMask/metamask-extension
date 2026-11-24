@@ -9,6 +9,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyScreenName,
   MoneyTooltipName,
   MoneyTooltipType,
@@ -87,8 +88,12 @@ function useMoneyAssetOverviewCta(
         address: token.address as Hex,
         chainId: token.chainId as Hex,
       },
+      ftueOrigin: {
+        entryPoint: MoneyFtueEntryPoint.AssetDetail,
+        componentName,
+      },
     });
-  }, [initiateDeposit, token.address, token.chainId]);
+  }, [componentName, initiateDeposit, token.address, token.chainId]);
 
   return {
     isEligible,

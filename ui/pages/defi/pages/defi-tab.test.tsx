@@ -26,7 +26,7 @@ jest.mock('../../../hooks/useFormatters', () => ({
   }),
 }));
 
-// AssetListControlBar mounts with effects that call setTokenNetworkFilter →
+// NetworkFilter mounts with effects that call setTokenNetworkFilter →
 // setPreference → submitRequestToBackground. Without a background connection
 // that warns in unit tests.
 jest.mock('../../../store/background-connection', () => ({

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import {
   ModalFooter,
   Text,
@@ -14,8 +14,6 @@ import {
 } from '../../../../../components/component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
-import { hasAnyEnabledAsset } from '../utils/hasAnyEnabledAsset';
-import { hasAtLeastOneQuoteAvailable } from '../utils/hasAtLeastOneQuoteAvailable';
 import { AssetsReceivedSummaryList } from './assets-received-summary-list';
 import { AssetsReceivedTotalAmountsSummary } from './assets-received-total-amounts-summary';
 

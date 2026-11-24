@@ -1,8 +1,38 @@
 import {
   browseTokens,
   buildTokenSearchQueryString,
+  byMarketCap,
   searchTokens,
 } from './token-search-api';
+
+describe('byMarketCap', () => {
+  it('orders assets by market cap, highest first', () => {
+    const assets = [{ marketCap: 10 }, { marketCap: 100 }, { marketCap: 20 }];
+
+    expect(assets.toSorted(byMarketCap)).toStrictEqual([
+      { marketCap: 100 },
+      { marketCap: 20 },
+      { marketCap: 10 },
+    ]);
+  });
+
+  it('treats missing market caps as 0', () => {
+    const assets = [{ marketCap: null }, { marketCap: 5 }, {}];
+
+    expect(assets.toSorted(byMarketCap)[0]).toStrictEqual({
+      marketCap: 5,
+    });
+  });
+
+  it('keeps the original order for ties', () => {
+    const assets = [
+      { id: 'a', marketCap: 1 },
+      { id: 'b', marketCap: 1 },
+    ];
+
+    expect(assets.toSorted(byMarketCap)).toStrictEqual(assets);
+  });
+});
 
 describe('buildTokenSearchQueryString', () => {
   it('includes the trimmed query and the comma-joined CAIP-2 networks list', () => {
@@ -91,6 +121,29 @@ describe('searchTokens', () => {
     expect(url).toBe(
       'https://token.api.cx.metamask.io/tokens/search?query=usdc&networks=eip155%3A1',
     );
+  });
+
+  it('sends the X-Client-Id and x-mm-service-profile headers', async () => {
+    const fetchMock = jest.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      statusText: 'OK',
+      json: async () => ({
+        data: [],
+        count: 0,
+        totalCount: 0,
+        pageInfo: { hasNextPage: false, endCursor: '' },
+      }),
+    });
+    global.fetch = fetchMock as unknown as typeof global.fetch;
+
+    await searchTokens({ query: 'usdc' });
+
+    const [, init] = fetchMock.mock.calls[0];
+    expect(init.headers).toStrictEqual({
+      'X-Client-Id': 'extension',
+      'x-mm-service-profile': 'assets--trending-search',
+    });
   });
 
   it('short-circuits with an empty page when the query is whitespace-only', async () => {

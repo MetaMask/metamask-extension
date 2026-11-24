@@ -22,6 +22,7 @@ import {
   SensitiveText,
   TextVariant,
   TextColor,
+  FontFamily,
   FontWeight,
   Icon,
   IconName,
@@ -59,6 +60,7 @@ import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useTheme } from '../../hooks/useTheme';
 import {
   DEFAULT_ROUTE,
+  PERPS_HOME_PAGE_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
   PREVIOUS_ROUTE,
@@ -347,7 +349,10 @@ const PerpsMarketDetailPage = () => {
   ]);
 
   // Use stream hooks for real-time data
-  const { positions: allPositions } = usePerpsLivePositions();
+  // A seeded position may already be closed: keep its TP/SL and close
+  // controls disabled until a live update confirms it.
+  const { positions: allPositions, isSeeded: isPositionSeeded } =
+    usePerpsLivePositions();
   const orderFilledToastShownRef = useRef(false);
 
   useEffect(() => {
@@ -830,7 +835,7 @@ const PerpsMarketDetailPage = () => {
   const handlePeriodChange = useCallback(
     (period: CandlePeriod) => {
       setLocalPeriodOverride(period);
-      submitRequestToBackground('setPreference', [
+      submitRequestToBackground('PreferencesController:setPreference', [
         'perpsSelectedCandlePeriod',
         period,
       ]).catch(() => {
@@ -844,11 +849,11 @@ const PerpsMarketDetailPage = () => {
   );
 
   const handleVisibleCandleCountChange = useCallback((count: number) => {
-    submitRequestToBackground('perpsSetVisibleCandleCount', [count]).catch(
-      () => {
-        // The chart remains interactive if preference persistence fails.
-      },
-    );
+    submitRequestToBackground('PerpsController:setVisibleCandleCount', [
+      count,
+    ]).catch(() => {
+      // The chart remains interactive if preference persistence fails.
+    });
   }, []);
 
   const handleBackClick = useCallback(() => {
@@ -856,7 +861,7 @@ const PerpsMarketDetailPage = () => {
       navigate(PREVIOUS_ROUTE);
       return;
     }
-    navigate({ pathname: '/', search: 'tab=perps' }, { replace: true });
+    navigate(PERPS_HOME_PAGE_ROUTE, { replace: true });
   }, [navigate]);
 
   const handleMarketListClick = useCallback(() => {
@@ -1073,7 +1078,7 @@ const PerpsMarketDetailPage = () => {
       [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
         PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
     });
-    submitRequestToBackground('perpsToggleWatchlistMarket', [
+    submitRequestToBackground('PerpsController:toggleWatchlistMarket', [
       decodedSymbol,
     ]).catch((error) => {
       // The star icon renders from `isInWatchlist`, a controller-backed Redux
@@ -1357,8 +1362,8 @@ const PerpsMarketDetailPage = () => {
         data-testid="perps-market-detail-summary"
       >
         <Text
-          variant={TextVariant.HeadingLg}
-          fontWeight={FontWeight.Bold}
+          variant={TextVariant.AmountDisplayLg}
+          fontFamily={FontFamily.Hero}
           data-testid="perps-market-detail-price"
         >
           {displayPrice}
@@ -1601,11 +1606,12 @@ const PerpsMarketDetailPage = () => {
 
               {/* Third Row: Auto Close - Click to open modal */}
               <Box
-                className="rounded-xl bg-muted cursor-pointer px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed transition-colors"
+                className={`rounded-xl bg-muted px-4 py-3 transition-colors ${isPositionSeeded ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-muted-hover active:bg-muted-pressed'}`}
                 flexDirection={BoxFlexDirection.Row}
                 justifyContent={BoxJustifyContent.Between}
                 alignItems={BoxAlignItems.Center}
-                onClick={handleOpenTPSLModal}
+                onClick={isPositionSeeded ? undefined : handleOpenTPSLModal}
+                aria-disabled={isPositionSeeded}
                 data-testid="perps-auto-close-row"
               >
                 <Box flexDirection={BoxFlexDirection.Column}>
@@ -2088,6 +2094,7 @@ const PerpsMarketDetailPage = () => {
                     console.error(error);
                   });
                 }}
+                disabled={isPositionSeeded}
                 className="w-full flex items-center gap-2"
                 data-testid="perps-modify-cta-button"
               >
@@ -2160,6 +2167,7 @@ const PerpsMarketDetailPage = () => {
                 variant={ButtonVariant.Primary}
                 size={ButtonSize.Lg}
                 onClick={handleClosePosition}
+                disabled={isPositionSeeded}
                 className="w-full"
                 data-testid="perps-close-cta-button"
               >

@@ -2,10 +2,14 @@
  * @jest-environment jsdom
  */
 import React from 'react';
-import { act, fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import {
+  mockResizeObserver,
+  type ResizeObserverMock,
+} from '../../../../test/lib/mock-resize-observer';
 import { RampsBuildQuoteScreen } from './build-quote';
 
 const QUOTE_DEBOUNCE_MS = 500;
@@ -136,7 +140,16 @@ const mockControllerState = ({
   providersLoading: false,
   providersError: null,
   setSelectedProvider: jest.fn().mockResolvedValue(undefined),
-  selectedProvider: { id: 'transak', name: 'Transak' },
+  selectProviderForAsset: jest.fn().mockResolvedValue(null),
+  controllerProviders: [],
+  previouslyUsedProviderIds: [],
+  selectedProvider: {
+    id: 'transak',
+    name: 'Transak',
+    supportedCryptoCurrencies: selectedToken?.assetId
+      ? { [selectedToken.assetId]: true }
+      : {},
+  },
   selectedPaymentMethod: { id: 'debit-credit-card', name: 'Debit card' },
   paymentMethods: [{ id: 'debit-credit-card', name: 'Debit card' }],
   paymentMethodsStatus: 'success',
@@ -180,15 +193,87 @@ describe('RampsBuildQuoteScreen', () => {
     );
 
     const amountInput = screen.getByTestId('ramps-build-quote-amount-input');
-    const amountSizeContainer = amountInput.parentElement;
-    const amountSizeTwin = amountSizeContainer?.querySelector(
-      '[aria-hidden="true"]',
-    );
+    const amountValue = screen.getByTestId('ramps-build-quote-amount-value');
 
-    expect(amountSizeContainer).toHaveClass('relative', 'w-max', 'min-w-[1ch]');
-    expect(amountSizeTwin).toHaveTextContent('100');
+    expect(amountInput.parentElement).toHaveClass(
+      'relative',
+      'w-max',
+      'min-w-0',
+      'overflow-hidden',
+    );
+    expect(amountValue).toHaveTextContent('100');
     expect(amountInput).toHaveClass('absolute', 'inset-0');
     expect(amountInput).not.toHaveAttribute('size');
+  });
+
+  it('sets the symbol, text twin and input in Hero at the same size', () => {
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    const amountInput = screen.getByTestId('ramps-build-quote-amount-input');
+    const symbol = screen.getByTestId('ramps-build-quote-amount-prefix');
+    const amountValue = screen.getByTestId('ramps-build-quote-amount-value');
+
+    for (const element of [symbol, amountValue, amountInput]) {
+      expect(element).toHaveClass('font-hero');
+      expect(element).toHaveStyle({ fontSize: '88px', lineHeight: '88px' });
+    }
+  });
+
+  describe('amount font size', () => {
+    let resizeObserver: ResizeObserverMock;
+
+    beforeEach(() => {
+      resizeObserver = mockResizeObserver();
+    });
+
+    afterEach(() => {
+      resizeObserver.restore();
+    });
+
+    it('sizes a long amount from the measured width of the amount area', () => {
+      renderWithProvider(
+        <RampsBuildQuoteScreen />,
+        createStore(),
+        '/ramps/build-quote',
+      );
+      const amountInput = screen.getByTestId('ramps-build-quote-amount-input');
+      fireEvent.change(amountInput, { target: { value: '1234567890' } });
+      expect(amountInput).toHaveStyle({ fontSize: '60px' });
+
+      act(() => resizeObserver.resize(200));
+
+      expect(amountInput).toHaveStyle({ fontSize: '40px', lineHeight: '40px' });
+    });
+
+    it('does not re-run the measurement while typing', () => {
+      renderWithProvider(
+        <RampsBuildQuoteScreen />,
+        createStore(),
+        '/ramps/build-quote',
+      );
+      act(() => resizeObserver.resize(328));
+      const amountInput = screen.getByTestId('ramps-build-quote-amount-input');
+      const observersBeforeTyping =
+        resizeObserver.constructorSpy.mock.calls.length;
+      const observedBeforeTyping = resizeObserver.observe.mock.calls.length;
+
+      for (const value of ['1', '1234', '1234567', '1234567890']) {
+        fireEvent.change(amountInput, { target: { value } });
+      }
+
+      expect(amountInput).toHaveStyle({ fontSize: '60px' });
+      expect(resizeObserver.constructorSpy).toHaveBeenCalledTimes(
+        observersBeforeTyping,
+      );
+      expect(resizeObserver.observe).toHaveBeenCalledTimes(
+        observedBeforeTyping,
+      );
+      expect(resizeObserver.disconnect).not.toHaveBeenCalled();
+    });
   });
 
   it('matches snapshot while quote is loading', () => {
@@ -738,6 +823,88 @@ describe('RampsBuildQuoteScreen', () => {
     });
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('picks the provider for the token once the controller lists providers', async () => {
+    const selectProviderForAsset = jest.fn().mockResolvedValue('transak');
+    useRampsController.mockReturnValue({
+      ...mockControllerState(),
+      selectProviderForAsset,
+      controllerProviders: [{ id: 'transak', name: 'Transak' }],
+    });
+
+    renderWithProvider(<RampsBuildQuoteScreen />, createStore());
+
+    await waitFor(() =>
+      expect(selectProviderForAsset).toHaveBeenCalledWith(
+        mockSelectedToken.assetId,
+      ),
+    );
+  });
+
+  it('waits for the controller provider list before picking', () => {
+    const selectProviderForAsset = jest.fn().mockResolvedValue(null);
+    useRampsController.mockReturnValue({
+      ...mockControllerState(),
+      selectProviderForAsset,
+    });
+
+    renderWithProvider(<RampsBuildQuoteScreen />, createStore());
+
+    expect(selectProviderForAsset).not.toHaveBeenCalled();
+  });
+
+  it('waits for a provider that offers the token before fetching quotes', () => {
+    useRampsController.mockReturnValue({
+      ...mockControllerState(),
+      selectedProvider: {
+        id: 'moonpay',
+        name: 'MoonPay',
+        supportedCryptoCurrencies: { 'eip155:1/slip44:60': true },
+      },
+    });
+
+    const { queryByText } = renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+    );
+
+    expect(useRampsQuotes).toHaveBeenLastCalledWith(null);
+    expect(queryByText(/MoonPay/u)).not.toBeInTheDocument();
+  });
+
+  it('fetches quotes when no provider offers the token', async () => {
+    useRampsController.mockReturnValue({
+      ...mockControllerState(),
+      selectProviderForAsset: jest.fn().mockResolvedValue(null),
+      controllerProviders: [{ id: 'moonpay', name: 'MoonPay' }],
+      selectedProvider: { id: 'moonpay', name: 'MoonPay' },
+    });
+
+    renderWithProvider(<RampsBuildQuoteScreen />, createStore());
+
+    await waitFor(() =>
+      expect(useRampsQuotes).toHaveBeenLastCalledWith(
+        expect.objectContaining({ providers: ['moonpay'] }),
+      ),
+    );
+  });
+
+  it('fetches quotes with the selected provider when the pick fails', async () => {
+    useRampsController.mockReturnValue({
+      ...mockControllerState(),
+      selectProviderForAsset: jest.fn().mockRejectedValue(new Error('failed')),
+      controllerProviders: [{ id: 'moonpay', name: 'MoonPay' }],
+      selectedProvider: { id: 'moonpay', name: 'MoonPay' },
+    });
+
+    renderWithProvider(<RampsBuildQuoteScreen />, createStore());
+
+    await waitFor(() =>
+      expect(useRampsQuotes).toHaveBeenLastCalledWith(
+        expect.objectContaining({ providers: ['moonpay'] }),
+      ),
+    );
   });
 
   it('navigates to payment method selection when the pill is clicked', () => {

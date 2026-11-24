@@ -11,11 +11,11 @@ export const RegressionStage = {
 export type RegressionStage =
   (typeof RegressionStage)[keyof typeof RegressionStage];
 
-export interface Label {
+export type Label = {
   name: string;
   color: string;
   description: string;
-}
+};
 
 export const typeBugLabel: Label = {
   name: 'type-bug',

@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import type {
   InputMethod,
+  PerpsMaxSlippageSource,
   TPSLTrackingData,
   TrackingData,
 } from '@metamask/perps-controller';
@@ -16,6 +17,9 @@ type BuildTrackingDataInput = {
   hlFeeRate?: number;
   tradeAction?: PerpsTradeAction;
   inputMethod?: InputMethod;
+  maxSlippageBps?: number;
+  maxSlippageSource?: PerpsMaxSlippageSource;
+  estimatedSlippageBps?: number;
 };
 
 /**
@@ -36,6 +40,9 @@ export function usePerpsAttribution() {
       hlFeeRate,
       tradeAction,
       inputMethod,
+      maxSlippageBps,
+      maxSlippageSource,
+      estimatedSlippageBps,
     }: BuildTrackingDataInput): TrackingData => ({
       totalFee,
       ...(metamaskFee === undefined ? {} : { metamaskFee }),
@@ -44,6 +51,9 @@ export function usePerpsAttribution() {
       ...(vipDiscount === undefined ? {} : { vipDiscount }),
       ...(hlFeeRate === undefined ? {} : { hlFeeRate }),
       ...(inputMethod === undefined ? {} : { inputMethod }),
+      ...(maxSlippageBps === undefined ? {} : { maxSlippageBps }),
+      ...(maxSlippageSource === undefined ? {} : { maxSlippageSource }),
+      ...(estimatedSlippageBps === undefined ? {} : { estimatedSlippageBps }),
       // The controller only emits the transaction `action` property when
       // `trackingData.tradeAction` is set, and forwards the value verbatim. Its
       // `TradeAction` type currently lists only create/increase, but flips are

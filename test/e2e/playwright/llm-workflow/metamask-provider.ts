@@ -1,3 +1,4 @@
+import path from 'path';
 import type { Page, BrowserContext } from '@playwright/test';
 import {
   type ISessionManager,
@@ -18,7 +19,7 @@ import {
   type EnvironmentMode,
   ErrorCodes,
   generateSessionId,
-  knowledgeStore,
+  writeSessionMetadata,
 } from '@metamask/client-mcp-core';
 import { isHeadless, parseBoolean } from '../../../helpers/env';
 import type {
@@ -33,10 +34,12 @@ import {
   createMetaMaskE2EContext,
   createMetaMaskProdContext,
 } from './capabilities/factory';
+import { resolveRepoRoot } from './resolve-repo-root';
 import { MetaMaskExtensionLauncher } from '.';
 
 const DEFAULT_ANVIL_PORT = 8545;
 const DEFAULT_FIXTURE_SERVER_PORT = 12345;
+const DEFAULT_ARTIFACTS_DIR = 'test-artifacts';
 
 // Preserve MM_HEADLESS as the explicit mm CLI override. Otherwise, share the
 // Playwright harness convention: honor PLAYWRIGHT_HEADLESS/HEADLESS, use
@@ -368,6 +371,16 @@ export class MetaMaskSessionManager implements ISessionManager {
     const environment = this.workflowContext?.config?.environment ?? 'e2e';
     const isProdMode = environment === 'prod';
 
+    const launchRequest = input as SessionLaunchInput & {
+      selfOnboarding?: boolean;
+      srp?: string;
+      password?: string;
+    };
+    const secretRecoveryPhrase = launchRequest.srp;
+    launchRequest.srp = undefined;
+    const vaultPassword = launchRequest.password;
+    launchRequest.password = undefined;
+
     const { extensionPath } = input;
 
     // In prod mode, reject fixture-related options (no fixtures available)
@@ -412,6 +425,15 @@ export class MetaMaskSessionManager implements ISessionManager {
         : undefined;
     const resolvedFixturePort = contextPorts?.fixtureServer;
 
+    // Core sets input.artifactsDir from MM_ARTIFACTS_DIR, else from the
+    // workflow config. Relative paths resolve against the repo root.
+    const artifactsDir = path.resolve(
+      resolveRepoRoot(),
+      input.artifactsDir ??
+        workflowConfig?.artifactsDir ??
+        DEFAULT_ARTIFACTS_DIR,
+    );
+
     try {
       if (!isProdMode && fixtureCapability) {
         const fixtureState = fixtureCapability.resolveState({
@@ -442,6 +464,10 @@ export class MetaMaskSessionManager implements ISessionManager {
         stateMode,
         slowMo: input.slowMo ?? 0,
         extensionPath,
+        screenshotDir: path.join(artifactsDir, 'screenshots'),
+        selfOnboarding: launchRequest.selfOnboarding === true,
+        srp: secretRecoveryPhrase,
+        password: vaultPassword,
         manifestFlags: resolvedFixturePort
           ? {
               testing: {
@@ -499,8 +525,6 @@ export class MetaMaskSessionManager implements ISessionManager {
       schemaVersion: 1,
       sessionId,
       createdAt: startedAt,
-      goal: input.goal,
-      flowTags: input.flowTags ?? [],
       tags: input.tags ?? [],
       launch: {
         stateMode,
@@ -513,7 +537,8 @@ export class MetaMaskSessionManager implements ISessionManager {
       },
     };
 
-    await knowledgeStore.writeSessionMetadata(metadata);
+    // Writes <artifactsDir>/<sessionId>/session.json.
+    await writeSessionMetadata(artifactsDir, metadata);
     this.sessionMetadata = metadata;
 
     return {

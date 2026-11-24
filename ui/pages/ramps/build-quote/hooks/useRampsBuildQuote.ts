@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, type ChangeEvent } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { CaipChainId } from '@metamask/utils';
@@ -18,6 +18,7 @@ import { useFormatters } from '../../../../hooks/useFormatters';
 import { useDebouncedValue } from '../../../../hooks/useDebouncedValue';
 import { useRampsController } from '../../../../hooks/ramps/useRampsController';
 import { useRampsQuotes } from '../../../../hooks/ramps/useRampsQuotes';
+import { useBuyScreenOwnsProviderPick } from '../../../../hooks/ramps/providerPickCoordination';
 import { getRampCallbackBaseUrl } from '../../../../hooks/ramps/utils/getRampCallbackBaseUrl';
 import { normalizeAssetIdForApi } from '../../../../hooks/ramps/utils/normalizeAssetIdForApi';
 import { parseUserFacingError } from '../../../../hooks/ramps/utils/parseUserFacingError';
@@ -33,6 +34,7 @@ import {
 } from '../utils/build-quote';
 import { getProviderLimitMessage } from '../../utils/getProviderLimitMessage';
 import { getRampsTokenDisplaySymbol } from '../../utils/token-display';
+import { providerSupportsAsset } from '../../utils/providerSupportsAsset';
 import { useBuildQuoteAmount } from './useBuildQuoteAmount';
 
 type BuildQuoteLocationState = {
@@ -45,7 +47,7 @@ export type RampsBuildQuoteReadyViewModel = {
   pageSubtitle?: string;
   currencySymbol: string;
   amount: string;
-  amountTextClassName: string;
+  hasAmountError: boolean;
   paymentMethodLabel: string;
   showPaymentMethodSpinner: boolean;
   displayedQuoteError: string | null;
@@ -55,7 +57,7 @@ export type RampsBuildQuoteReadyViewModel = {
   canContinue: boolean;
   handleBack: () => void;
   handlePaymentMethodPress: () => void;
-  handleAmountChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  handleAmountChange: (value: string) => void;
   handleContinue: () => void;
 };
 
@@ -83,7 +85,11 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     paymentMethods,
     paymentMethodsStatus,
     getBuyWidgetData,
+    controllerProviders,
+    previouslyUsedProviderIds,
+    selectProviderForAsset,
   } = useRampsController();
+  useBuyScreenOwnsProviderPick();
 
   const chainAccount = useSelector((state) =>
     selectedToken?.chainId
@@ -100,6 +106,43 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     intentAssetId,
     selectedToken?.assetId,
   );
+
+  // Pick the provider for the token whenever the token, the provider list or
+  // the history behind the pick changes. The start-up picker stays out while
+  // this screen is mounted.
+  const pickAssetId = tokenStateIsSettled
+    ? (intentAssetId ?? selectedToken?.assetId)
+    : undefined;
+  const hasSelectedProvider = Boolean(selectedProvider);
+  const [unservedAssetId, setUnservedAssetId] = useState<string | null>(null);
+  useEffect(() => {
+    if (!pickAssetId || controllerProviders.length === 0) {
+      return undefined;
+    }
+    let isCurrent = true;
+    selectProviderForAsset(pickAssetId)
+      .then((providerId) => {
+        if (isCurrent) {
+          setUnservedAssetId(providerId ? null : pickAssetId);
+        }
+      })
+      .catch(() => {
+        // A failed pick must not leave the screen waiting: quote with the
+        // provider already selected, as when none offers the token.
+        if (isCurrent) {
+          setUnservedAssetId(pickAssetId);
+        }
+      });
+    return () => {
+      isCurrent = false;
+    };
+  }, [
+    pickAssetId,
+    controllerProviders,
+    previouslyUsedProviderIds,
+    hasSelectedProvider,
+    selectProviderForAsset,
+  ]);
 
   const { amount, amountAsNumber, debouncedAmount, handleAmountChange } =
     useBuildQuoteAmount(userRegion?.country?.defaultAmount);
@@ -122,10 +165,19 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
   const displayedAmountLimitError =
     amountLimitError === debouncedAmountLimitError ? amountLimitError : null;
 
+  // The pick runs in the background, so right after a token switch the
+  // previous token's provider can still be selected. Wait for one that offers
+  // the token, unless none does.
+  const isProviderReady = Boolean(
+    selectedProvider &&
+    (providerSupportsAsset(selectedProvider, selectedToken?.assetId) ||
+      unservedAssetId === pickAssetId),
+  );
+
   const quoteFetchEnabled = Boolean(
     walletAddress &&
     selectedPaymentMethod &&
-    selectedProvider &&
+    isProviderReady &&
     selectedToken?.assetId &&
     tokenStateIsSettled &&
     debouncedAmount > 0 &&
@@ -302,12 +354,11 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     getBuyWidgetData,
     isContinuing,
     navigate,
-    selectedProvider?.id,
-    selectedProvider?.name,
+    selectedProvider,
     selectedQuote,
     selectedToken,
     t,
-    userRegion?.regionCode,
+    userRegion,
     walletAddress,
   ]);
 
@@ -329,10 +380,13 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     ? networksByCaipChainId[selectedToken.chainId]?.name
     : undefined;
 
-  const providerLabel = selectedProvider?.name
-    ? t('rampsBuyingViaProvider', [selectedProvider.name])
-    : '';
-  const isQuoteLoading = selectedQuoteLoading && hasSettledQuoteAmount;
+  const providerLabel =
+    isProviderReady && selectedProvider?.name
+      ? t('rampsBuyingViaProvider', [selectedProvider.name])
+      : '';
+  const isQuoteLoading =
+    (selectedQuoteLoading && hasSettledQuoteAmount) ||
+    (hasAmount && Boolean(selectedProvider) && !isProviderReady);
 
   return {
     kind: 'ready',
@@ -342,9 +396,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     pageSubtitle: networkName ? t('rampsOnNetwork', [networkName]) : undefined,
     currencySymbol,
     amount,
-    amountTextClassName: `text-[56px] font-normal leading-none ${
-      (continueError ?? displayedError) ? 'text-error-default' : 'text-default'
-    }`,
+    hasAmountError: Boolean(continueError ?? displayedError),
     paymentMethodLabel,
     showPaymentMethodSpinner:
       paymentMethodsStatus === 'loading' &&

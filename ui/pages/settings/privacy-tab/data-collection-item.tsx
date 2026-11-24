@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  getConsentDecisionMade,
   getDataCollectionForMarketing,
   getOptedIn,
 } from '../../../selectors/metametrics';
@@ -11,8 +10,8 @@ import {
   getIsSocialLoginFlow,
 } from '../../../selectors';
 import {
-  getMarketingConsent,
-  setDataCollectionForMarketing,
+  optInToMarketing,
+  optOutOfMarketing,
   setMarketingConsent,
 } from '../../../store/actions';
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
@@ -34,45 +33,26 @@ export const DataCollectionToggleItem = () => {
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
   const useExternalServices = useSelector(getUseExternalServices);
   const socialLoginEnabled = useSelector(getIsSocialLoginFlow);
-  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
-
-  // Match legacy Security tab: fetch remote marketing consent when the user is in
-  // a social login flow (firstTimeFlowType stays set after seedless import completes).
-  useEffect(() => {
-    if (!socialLoginEnabled) {
-      return;
-    }
-    let cancelled = false;
-    const fetchConsent = async () => {
-      const marketingConsentFromRemote = await getMarketingConsent();
-      if (!cancelled) {
-        dispatch(setDataCollectionForMarketing(marketingConsentFromRemote));
-      }
-    };
-    fetchConsent();
-    return () => {
-      cancelled = true;
-    };
-  }, [socialLoginEnabled, dispatch]);
-
-  const isDisabled =
-    !useExternalServices || !(consentDecisionMade && isOptedIn);
 
   const handleToggle = (currentValue: boolean) => {
     const newValue = !currentValue;
 
+    // Social-login wallets also store the choice server-side so the auth
+    // service can create the HubSpot contact for email marketing and learn
+    // of opt-outs. A failed sync keeps the local decision; reads that would
+    // overwrite the local choice stay removed.
     if (socialLoginEnabled) {
       dispatch(setMarketingConsent(newValue));
     }
 
-    dispatch(setDataCollectionForMarketing(newValue));
+    dispatch(newValue ? optInToMarketing() : optOutOfMarketing());
 
     trackEvent(
       createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
         .addCategory(MetaMetricsEventCategory.Settings)
         .addProperties({
-          [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
+          [MetaMetricsUserTrait.IsMetricsOptedIn]: isOptedIn,
           [MetaMetricsUserTrait.HasMarketingConsent]: Boolean(newValue),
           location: 'Settings',
         })
@@ -92,7 +72,7 @@ export const DataCollectionToggleItem = () => {
       onToggle={handleToggle}
       dataTestId="data-collection-for-marketing-input"
       containerDataTestId="data-collection-for-marketing-toggle"
-      disabled={isDisabled}
+      disabled={!useExternalServices}
     />
   );
 };

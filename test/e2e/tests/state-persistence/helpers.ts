@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { STORAGE_KEY_PREFIX } from '@metamask/storage-service';
+import { Browser } from 'selenium-webdriver';
 import { WINDOW_TITLES } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { Driver, PAGES } from '../../webdriver/driver';
@@ -96,8 +97,15 @@ export const reloadExtension = async (driver: Driver): Promise<void> => {
   await driver.switchToWindow(extensionWindow);
   await pausePersistence(driver);
   await driver.executeScript(
-    `(globalThis.browser ?? globalThis.chrome).runtime.reload()`,
+    process.env.SELENIUM_BROWSER === Browser.CHROME
+      ? `setTimeout(() => (globalThis.browser ?? globalThis.chrome).runtime.reload(), 100)`
+      : `(globalThis.browser ?? globalThis.chrome).runtime.reload()`,
   );
+
+  // Ensure we do not race the script above.
+  if (process.env.SELENIUM_BROWSER === Browser.CHROME) {
+    await driver.delay(100);
+  }
 
   await driver.switchToWindow(blankWindow);
 

@@ -10,14 +10,16 @@ module.exports = {
     '<rootDir>/development/build/transforms/**/*.js',
     '<rootDir>/development/eslint-rules/**/*.js',
     '<rootDir>/development/metamaskbot-build-announce/**/*.(js|ts|mts)',
+    '<rootDir>/development/download-builds.ts',
+    '<rootDir>/development/lib/build-paths.ts',
+    '<rootDir>/development/webpack/{build,fork,launch}.ts',
+    '<rootDir>/development/download-builds-cli.ts',
     '<rootDir>/test/unit-global/**/*.test.(js|ts|tsx)',
   ],
   coverageDirectory: './coverage/unit',
   coveragePathIgnorePatterns: ['.stories.*', '.snap$'],
   coverageReporters: ['html', 'json'],
   moduleNameMapper: {
-    // Stylesheets are imported as text via css-loader; Jest cannot parse them.
-    '\\.css$': '<rootDir>/test/mocks/style.ts',
     // Mock lightweight-charts since it requires browser/canvas APIs not available in Jest
     '^lightweight-charts$': '<rootDir>/test/mocks/lightweight-charts.js',
     // Stub @metamask/perps-controller so every test suite can resolve it without
@@ -40,7 +42,10 @@ module.exports = {
     'json',
     'node',
   ],
-  modulePathIgnorePatterns: ['<rootDir>/.metamask/cache/java-tron-up/'],
+  modulePathIgnorePatterns: [
+    '<rootDir>/.metamask/cache/java-tron-up/',
+    '<rootDir>/development/.webpack/',
+  ],
   // The path to the Prettier executable used to format snapshots
   // Jest doesn't support Prettier 3 yet, so we use Prettier 2
   prettierPath: require.resolve('prettier-2'),
@@ -90,9 +95,11 @@ module.exports = {
     '<rootDir>/test/e2e/helpers/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/benchmarks/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/feature-flags/**/*.test.(js|ts|tsx)',
+    '<rootDir>/test/e2e/route-registry/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/playwright/llm-workflow/**/*.test.(js|ts|tsx)',
+    '<rootDir>/test/release-testing-ai-analyzer/**/*.test.ts',
   ],
-  testPathIgnorePatterns: ['<rootDir>/development/webpack/'],
+  testPathIgnorePatterns: ['<rootDir>/development/webpack/test/'],
   testTimeout: 5500,
   // We have to specify the environment we are running in, which is jsdom. The
   // default is 'node'. This can be modified *per file* using a comment at the
@@ -104,6 +111,10 @@ module.exports = {
   },
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
+    // ESM-only `@metamask` dependencies (e.g. `@metamask/eth-money-mpc-keyring`)
+    // ship only `.mjs` entry points, which Jest cannot load natively in CJS
+    // tests. Transpile them like the other transpiled ESM above.
+    '^.+\\.mjs$': 'babel-jest',
     '^.+\\.mts$': [
       'babel-jest',
       {

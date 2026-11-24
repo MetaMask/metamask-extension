@@ -346,7 +346,7 @@ exports[`BridgeAlertBannerList should render the token-security alert when token
 
 exports[`BridgeAlertBannerList should render the tx-alert alert when tx alert is present 1`] = `
 [
-  "This transaction will be revertedTx alert description Please select a different quote.",
+  "This transaction will be revertedTx alert description Select a different quote.",
 ]
 `;
 
@@ -383,7 +383,7 @@ exports[`BridgeAlertBannerList should render the tx-alert alert when tx alert is
         <p
           class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
         >
-          Tx alert description Please select a different quote.
+          Tx alert description Select a different quote.
         </p>
       </div>
     </div>

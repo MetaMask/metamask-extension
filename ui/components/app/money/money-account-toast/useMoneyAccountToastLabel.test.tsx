@@ -217,5 +217,24 @@ describe('useMoneyAccountToastLabel', () => {
         'moneyToastWithdrawSuccessDescriptionNoAmount:moneyToastWithdrawFallbackDestination',
       );
     });
+
+    it('falls back when a quoted withdrawal transfers to the money account', () => {
+      setWithdraw(RECIPIENT);
+      mockTransaction = {
+        ...mockTransaction,
+        txParams: { from: RECIPIENT },
+      } as TransactionMeta;
+      mockInternalAccounts[RECIPIENT] = {
+        metadata: { name: 'Money account' },
+      } as InternalAccount;
+
+      const { result } = renderHook(() =>
+        useMoneyAccountToastLabel('success', 'tx-1'),
+      );
+
+      expect(result.current?.description).toBe(
+        'moneyToastWithdrawSuccessDescription:$100.00,moneyToastWithdrawFallbackDestination',
+      );
+    });
   });
 });
