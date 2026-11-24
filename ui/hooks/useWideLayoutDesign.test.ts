@@ -1,13 +1,23 @@
 import { act } from '@testing-library/react';
 import { renderHookWithProviderTyped } from '../../test/lib/render-helpers-navigate';
 import { MetaMetricsEventName } from '../../shared/constants/metametrics';
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_POPUP,
+} from '../../shared/constants/app';
 import { WIDE_SCREEN_DESIGN_MIN_WIDTH } from '../../shared/constants/layout';
+import { getEnvironmentType } from '../../shared/lib/environment-type';
 import { WIDE_SCREEN_REDESIGN_AB_KEY } from '../../shared/lib/ab-testing/configs/wide-screen-redesign';
 import { DEFAULT_ROUTE, SETTINGS_ROUTE } from '../helpers/constants/routes';
 import { clearABTestExposureTrackingForTest } from './useABTest';
 import { useWideLayoutDesign } from './useWideLayoutDesign';
 
 const mockTrackEvent = jest.fn();
+
+jest.mock('../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../shared/lib/environment-type'),
+  getEnvironmentType: jest.fn(),
+}));
 
 jest.mock('./useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -74,6 +84,9 @@ describe('useWideLayoutDesign', () => {
   beforeEach(() => {
     mockTrackEvent.mockReset();
     clearABTestExposureTrackingForTest();
+    jest
+      .mocked(getEnvironmentType)
+      .mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
   });
 
   afterEach(() => {
@@ -90,6 +103,21 @@ describe('useWideLayoutDesign', () => {
     mockViewportWidth(WIDE_SCREEN_DESIGN_MIN_WIDTH - 1);
     const { result } = renderUseWideLayoutDesign();
     expect(result.current).toBe(false);
+  });
+
+  it('returns false in the popup even when treatment is assigned and the viewport is wide', () => {
+    jest.mocked(getEnvironmentType).mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+    mockViewportWidth(1280);
+    const { result } = renderUseWideLayoutDesign();
+    expect(result.current).toBe(false);
+  });
+
+  it('does not record exposure in the popup', () => {
+    jest.mocked(getEnvironmentType).mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+    mockViewportWidth(1280);
+    renderUseWideLayoutDesign();
+
+    expect(mockTrackEvent).not.toHaveBeenCalled();
   });
 
   it('returns false when control is assigned on a wide viewport', () => {

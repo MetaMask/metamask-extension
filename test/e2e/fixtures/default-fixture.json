@@ -195,7 +195,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 235,
+      "currentMigrationVersion": 236,
       "firstTimeInfo": {},
       "installAttribution": null,
       "previousAppVersion": "",
@@ -932,10 +932,6 @@
       "onboardingJourneyEnded": true,
       "seedPhraseBackedUp": null
     },
-    "PPOMController": {
-      "storageMetadata": [],
-      "versionInfo": []
-    },
     "PasskeyController": {
       "passkeyRecord": null
     },
@@ -1276,6 +1272,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 235
+    "version": 236
   }
 }

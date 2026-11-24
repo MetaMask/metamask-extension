@@ -20,6 +20,7 @@ import AccountAddressListPage from '../../page-objects/pages/accounts/address-li
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import { Driver } from '../../webdriver/driver';
 import { BitcoinNode } from '../../seeder/bitcoin/node';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 import {
   mockCurrencyExchangeRates,
   mockExchangeRates,
@@ -130,7 +131,7 @@ describe('Bitcoin account derivation', function (this: Suite) {
         const accountList = new AccountListPage(driver);
         const addressList = new AccountAddressListPage(driver);
 
-        await homepage.headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await accountList.checkPageIsLoaded();
         await accountList.waitUntilSyncingIsCompleted();
 
@@ -196,7 +197,7 @@ describe('Bitcoin account derivation', function (this: Suite) {
         const accountList = new AccountListPage(driver);
         const addressList = new AccountAddressListPage(driver);
 
-        await homepage.headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await accountList.checkPageIsLoaded();
         await accountList.waitUntilSyncingIsCompleted();
 
@@ -260,7 +261,7 @@ describe('Bitcoin account derivation', function (this: Suite) {
 
         await homepage.checkPageIsLoaded();
         await homepage.checkHasAccountSyncingSyncedAtLeastOnce();
-        await homepage.headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await accountList.checkPageIsLoaded();
         await accountList.waitUntilSyncingIsCompleted();
 
