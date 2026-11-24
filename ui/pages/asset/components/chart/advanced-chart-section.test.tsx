@@ -119,13 +119,16 @@ function setupPreferences(
   chartType: number = CHART_TYPE_LINE,
   overrides: { interval?: string } = {},
 ) {
+  const interval = overrides.interval ?? '15m';
   mockUseAdvancedChartPreferences.mockReturnValue({
     chartType,
-    interval: overrides.interval ?? '15m',
+    interval,
+    displayInterval: interval,
     lineTimeRange: '1D',
     indicators: new Set<string>(),
     setChartType,
     setCandleInterval,
+    applyToggleCandle: jest.fn(),
     setLineTimeRange,
     toggleIndicator: jest.fn(),
     isLineChart: chartType === CHART_TYPE_LINE,
@@ -156,6 +159,7 @@ function setupData(
     error: null,
     resolvedCurrency: 'eur',
     fetchOlderBars: jest.fn().mockResolvedValue({ bars: [], noData: true }),
+    resetPagination: jest.fn(),
     ...overrides,
   });
 }

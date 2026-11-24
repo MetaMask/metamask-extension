@@ -39,6 +39,8 @@ export type UseAdvancedChartDataResult = {
   resolvedCurrency: string;
   /** Fetches an older page of candles for the chart engine to prepend. */
   fetchOlderBars: () => Promise<FetchOlderBarsResult>;
+  /** Resets pagination; call only on a full engine reload. */
+  resetPagination: () => void;
 };
 
 /**
@@ -55,13 +57,19 @@ export function useAdvancedChartData({
   currency,
   needsHistory,
 }: UseAdvancedChartDataOptions): UseAdvancedChartDataResult {
-  const { ohlcvData, isLoading, error, resolvedCurrency, fetchOlderBars } =
-    useOHLCVChart({
-      assetId,
-      interval,
-      currency,
-      enabled: needsHistory,
-    });
+  const {
+    ohlcvData,
+    isLoading,
+    error,
+    resolvedCurrency,
+    fetchOlderBars,
+    resetPagination,
+  } = useOHLCVChart({
+    assetId,
+    interval,
+    currency,
+    enabled: needsHistory,
+  });
 
   // In candle mode realtime must follow the currency the history actually
   // resolved to: the price API does not quote every fiat for OHLCV, so a
@@ -104,5 +112,6 @@ export function useAdvancedChartData({
     error,
     resolvedCurrency,
     fetchOlderBars,
+    resetPagination,
   };
 }
