@@ -231,6 +231,15 @@ describe('runBenchmarkWithIterations', () => {
     expect(summary.failedRuns).toBe(0);
   });
 
+  it("numbers each retained value by its run's original iteration", async () => {
+    const summary = await runFlow(4, 1);
+    const step = summary.timers.find((timer) => timer.id === 'step');
+
+    expect(step?.values?.map((sample) => sample.iteration)).toStrictEqual([
+      1, 2, 3,
+    ]);
+  });
+
   it('refuses a run with no run left to score', async () => {
     await expect(runFlow(1, 1)).rejects.toThrow(
       'iterations (1) must be greater than the warm-up runs (1)',

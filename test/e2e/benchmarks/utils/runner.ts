@@ -162,7 +162,7 @@ export async function runBenchmarkWithIterations(
         }
         const timerSamples = timerMap.get(timer.id);
         if (timerSamples) {
-          timerSamples.push({ iteration: idx, value: timer.value });
+          timerSamples.push({ iteration: warmupRuns + idx, value: timer.value });
         }
         if (timer.unit) {
           zeroAllowedTimers.add(timer.id);
@@ -219,7 +219,7 @@ export async function runBenchmarkWithIterations(
       const runTotal = result.timers
         .filter((t) => !t.unit)
         .reduce((acc, t) => acc + t.value, 0);
-      perRunTotals.push({ iteration: idx, value: runTotal });
+      perRunTotals.push({ iteration: warmupRuns + idx, value: runTotal });
     }
   }
   if (perRunTotals.length > 0) {
