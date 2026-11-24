@@ -61,11 +61,13 @@ describe('AddWallets', () => {
     expect(screen.getByTestId('wallet-selection-list')).toBeInTheDocument();
   });
 
-  it('calls onAddWallets with the selected sync summary when continue is clicked', () => {
+  it('calls onAddWallets with the selected sync summary when import accounts is clicked', () => {
     const onAddWallets = jest.fn();
     render(onAddWallets);
 
-    fireEvent.click(screen.getByText(messages.continue.message));
+    fireEvent.click(
+      screen.getByText(messages.add_device_import_accounts.message),
+    );
 
     expect(onAddWallets).toHaveBeenCalledWith({
       selectedAccountGroupIds: [mockGroupId],
