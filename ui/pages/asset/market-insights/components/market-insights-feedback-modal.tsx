@@ -86,7 +86,7 @@ export const MarketInsightsFeedbackModal = ({
 }: MarketInsightsFeedbackModalProps) => {
   const t = useI18nContext();
   const reasonGroupName = useId();
-  const feedbackLabelId = useId();
+  const feedbackInputId = useId();
   const [selectedReason, setSelectedReason] =
     useState<MarketInsightsFeedbackReason | null>(null);
   const [additionalFeedback, setAdditionalFeedback] = useState('');
@@ -196,12 +196,13 @@ export const MarketInsightsFeedbackModal = ({
                 variant={TextVariant.BodyMd}
                 color={TextColor.TextDefault}
                 className="mb-2"
-                id={feedbackLabelId}
               >
-                {t('marketInsightsFeedbackAdditionalLabel')}
+                <label htmlFor={feedbackInputId}>
+                  {t('marketInsightsFeedbackAdditionalLabel')}
+                </label>
               </Text>
               <TextArea
-                aria-labelledby={feedbackLabelId}
+                id={feedbackInputId}
                 value={additionalFeedback}
                 onChange={(event) => setAdditionalFeedback(event.target.value)}
                 maxLength={MAX_FEEDBACK_LENGTH}
