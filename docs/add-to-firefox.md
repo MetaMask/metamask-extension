@@ -7,5 +7,5 @@
 - Select the file `metamask-extension/dist/firefox/manifest.json`.
 - You can optionally enable debugging, and click `Debug`, for a console window that logs all of Metamask's processes to a single console.
 
-If you have problems debugging, try connecting to the IRC channel `#webextensions` on `irc.mozilla.org`.
+If you have problems debugging, try the [#webextensions:mozilla.org](https://chat.mozilla.org/#/room/#webextensions:mozilla.org) room on Mozilla's Matrix server or visit the [Firefox Extension Workshop](https://extensionworkshop.com/).
 For longer questions, use the StackOverflow tag `firefox-addons`.
