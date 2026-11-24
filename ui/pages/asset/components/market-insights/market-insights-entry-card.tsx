@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useId, useMemo, useState } from 'react';
 import {
   Box,
   ButtonIcon,
@@ -41,6 +41,8 @@ export const MarketInsightsEntryCard = ({
   onDisclaimerPress,
 }: MarketInsightsEntryCardProps) => {
   const t = useI18nContext();
+  const gradientId = useId();
+  const gradient = `url(#${gradientId})`;
   const [borderAnimationKey, setBorderAnimationKey] = useState(0);
 
   // Derive a stable key from actual text content so the memo doesn't bust
@@ -63,20 +65,10 @@ export const MarketInsightsEntryCard = ({
       className="relative flex flex-col gap-1 rounded-xl bg-background-alternative p-4"
       data-testid={MARKET_INSIGHTS_ENTRY_CARD_TEST_ID}
     >
-      <Box
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        key={borderAnimationKey}
-      >
+      <Box aria-hidden className="pointer-events-none absolute inset-0">
         <svg className="h-full w-full overflow-visible">
           <defs>
-            <linearGradient
-              id="market-insights-chrome-gradient"
-              x1="0"
-              y1="0"
-              x2="1"
-              y2="0"
-            >
+            <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="0">
               {/* eslint-disable-next-line @metamask/design-tokens/color-no-hex -- AI-branding gradient chrome, not yet available as design tokens */}
               <stop offset="0%" stopColor="#ED666E" />
               {/* eslint-disable-next-line @metamask/design-tokens/color-no-hex -- AI-branding gradient chrome, not yet available as design tokens */}
@@ -84,12 +76,13 @@ export const MarketInsightsEntryCard = ({
             </linearGradient>
           </defs>
           <rect
+            key={borderAnimationKey}
             x="1.25"
             y="1.25"
             rx="10.75"
             pathLength={100}
             fill="none"
-            stroke="url(#market-insights-chrome-gradient)"
+            stroke={gradient}
             strokeWidth={2.5}
             strokeLinecap="round"
             width="calc(100% - 2.5px)"
@@ -125,7 +118,7 @@ export const MarketInsightsEntryCard = ({
           <Icon
             name={IconName.ArrowRight}
             size={IconSize.Sm}
-            className="market-insights-chrome-icon"
+            style={{ fill: gradient }}
           />
         </Box>
         <SlidingTextCarousel
@@ -136,7 +129,7 @@ export const MarketInsightsEntryCard = ({
           <Icon
             name={IconName.Ai}
             size={IconSize.Md}
-            className="market-insights-chrome-icon"
+            style={{ fill: gradient }}
           />
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             {t('marketInsightsFooterDisclaimer')} • {timeAgo}
