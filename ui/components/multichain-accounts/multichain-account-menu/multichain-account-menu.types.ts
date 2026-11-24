@@ -1,5 +1,5 @@
 import { AccountGroupId } from '@metamask/account-api';
-import { BoxBackgroundColor } from '@metamask/design-system-shared';
+import { BoxBackgroundColor } from '@metamask/design-system-react';
 
 export type MultichainAccountMenuProps = {
   /**
