@@ -304,6 +304,26 @@ describe('MoneyAccountDetails', () => {
       expect(screen.queryByText('addFunds')).toBeNull();
     });
 
+    it('opens a cross-chain withdrawal on the destination chain explorer', () => {
+      mockUseLocalTransactionMeta.mockReturnValue({
+        ...buildTransactionMeta(),
+        type: 'moneyAccountWithdraw',
+        chainId: '0x8f',
+        metamaskPay: { chainId: '0x2105', isPostQuote: true },
+      } as unknown as TransactionMeta);
+
+      render(
+        <MoneyAccountDetails
+          item={buildItem({ type: 'moneyAccountWithdraw' })}
+        />,
+      );
+
+      expect(screen.getByTestId('block-explorer-button')).toHaveAttribute(
+        'data-chain-id',
+        'eip155:8453',
+      );
+    });
+
     it('falls back to the block explorer when the user has no money account', () => {
       mockUseLocalTransactionMeta.mockReturnValue(buildTransactionMeta());
       mockUseMoneyAccountInfo.mockReturnValue({

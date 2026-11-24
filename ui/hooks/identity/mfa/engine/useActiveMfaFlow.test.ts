@@ -40,18 +40,6 @@ describe('useActiveMfaFlow', () => {
       }).catch(() => undefined);
     });
     await waitFor(() =>
-      expect(result.current?.state.step).toStrictEqual({
-        name: 'intro',
-        methods: ['email_otp'],
-        missing: ['email_otp'],
-        email: undefined,
-      }),
-    );
-
-    act(() => {
-      result.current?.flow.dispatch({ type: 'continue' });
-    });
-    await waitFor(() =>
       expect(result.current?.state.step).toMatchObject({ name: 'emailEntry' }),
     );
 

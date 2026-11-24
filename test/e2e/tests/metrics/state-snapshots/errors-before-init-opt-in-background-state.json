@@ -4,7 +4,6 @@
       "hiddenAccountList": "object",
       "pinnedAccountList": "object"
     },
-    "AccountTracker": { "accountsByChainId": "object" },
     "AccountTreeController": {
       "accountGroupsMetadata": "object",
       "accountTree": "object",
@@ -92,16 +91,6 @@
       "eventsConfigEtag": null,
       "lastFetched": null,
       "version": "0"
-    },
-    "CurrencyController": {
-      "currencyRates": {
-        "ETH": {
-          "conversionDate": "object",
-          "conversionRate": 1700,
-          "usdConversionRate": null
-        }
-      },
-      "currentCurrency": "usd"
     },
     "DeFiPositionsControllerV2": "object",
     "GasFeeController": {
@@ -215,6 +204,7 @@
         "hideZeroBalanceTokens": false,
         "isBasicFunctionalityConsolidatedEnabled": "boolean",
         "privacyMode": "boolean",
+        "shouldShowSupportConsent": "boolean",
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": "boolean",
         "showExtensionInFullSizeView": false,
@@ -226,6 +216,7 @@
         "skipDeepLinkInterstitial": "boolean",
         "smartTransactionsMigrationApplied": "boolean",
         "smartTransactionsOptInStatus": true,
+        "supportDataSharingPreference": null,
         "tdpChartIndicators": "object",
         "tdpChartInterval": "string",
         "tdpChartType": "number",
@@ -328,7 +319,6 @@
       "transactionBatches": "object",
       "transactions": "object"
     },
-    "UserOperationController": { "userOperations": "object" },
     "UserStorageController": {
       "isAccountSyncingEnabled": true,
       "isBackupAndSyncEnabled": true,

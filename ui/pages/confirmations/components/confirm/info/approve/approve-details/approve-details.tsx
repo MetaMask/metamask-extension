@@ -1,14 +1,18 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
+  ConfirmInfoRow,
   ConfirmInfoRowAddress,
+  ConfirmInfoRowDate,
   ConfirmInfoRowDivider,
+  ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { MAX_UINT48 } from '../../../../../constants';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { SigningInWithRow } from '../../shared/sign-in-with-row/sign-in-with-row';
@@ -21,6 +25,27 @@ import { getIsRevokeSetApprovalForAll } from '../../utils';
 import { useIsNFT } from '../hooks/use-is-nft';
 import { useTokenTransactionData } from '../../hooks/useTokenTransactionData';
 import { NetworkRow } from '../../shared/network-row/network-row';
+
+const Expiration = ({ expiration }: { expiration: number }) => {
+  const t = useI18nContext();
+
+  // Permit2 treats 0 as the current block time.
+  const [now] = useState(() => Math.floor(Date.now() / 1000));
+  const unixTimestamp = expiration || now;
+
+  return (
+    <ConfirmInfoRow
+      label={t('confirmFieldExpiration')}
+      data-testid="confirmation__approve-expiration"
+    >
+      {expiration === MAX_UINT48 ? (
+        <ConfirmInfoRowText text={t('confirmFieldNeverExpires')} />
+      ) : (
+        <ConfirmInfoRowDate unixTimestamp={unixTimestamp} />
+      )}
+    </ConfirmInfoRow>
+  );
+};
 
 const Spender = ({
   isSetApprovalForAll = false,
@@ -44,6 +69,8 @@ const Spender = ({
     parsedTransactionData.args?._operator ?? // ERC-721 - setApprovalForAll
     parsedTransactionData.args?.spender; //  Fiat Token V2 - increaseAllowance
 
+  const expiration = parsedTransactionData.args?.expiration; // Permit2 - approve
+
   const { chainId } = transactionMeta;
 
   if (getIsRevokeSetApprovalForAll(parsedTransactionData)) {
@@ -63,6 +90,8 @@ const Spender = ({
       >
         <ConfirmInfoRowAddress address={spender} chainId={chainId} fillWidth />
       </ConfirmInfoAlertRow>
+
+      {expiration !== undefined && <Expiration expiration={expiration} />}
 
       <ConfirmInfoRowDivider />
     </>

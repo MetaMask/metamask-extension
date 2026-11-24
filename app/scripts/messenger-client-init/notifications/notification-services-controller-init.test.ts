@@ -1,4 +1,5 @@
 import { Controller as NotificationServicesController } from '@metamask/notification-services-controller/notification-services';
+import { Env } from '@metamask/profile-sync-controller/sdk';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { MessengerClientInitRequest } from '../types';
 import {
@@ -68,7 +69,38 @@ describe('NotificationServicesControllerInit', () => {
           platformVersion: expect.any(String),
         },
         locale: expect.any(Function),
+        env: Env.PRD,
       },
     });
+  });
+
+  it('uses the authentication environment for notification API calls', () => {
+    const previousEnvironment = process.env.METAMASK_ENVIRONMENT;
+    const previousDevApiEnv = process.env.MM_DEV_API_ENV;
+    const { requestMock, NotificationServicesControllerClassMock } = arrange();
+
+    try {
+      process.env.METAMASK_ENVIRONMENT = 'development';
+      process.env.MM_DEV_API_ENV = 'dev';
+
+      NotificationServicesControllerInit(requestMock);
+
+      expect(NotificationServicesControllerClassMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          env: expect.objectContaining({ env: Env.DEV }),
+        }),
+      );
+    } finally {
+      if (previousEnvironment === undefined) {
+        delete process.env.METAMASK_ENVIRONMENT;
+      } else {
+        process.env.METAMASK_ENVIRONMENT = previousEnvironment;
+      }
+      if (previousDevApiEnv === undefined) {
+        delete process.env.MM_DEV_API_ENV;
+      } else {
+        process.env.MM_DEV_API_ENV = previousDevApiEnv;
+      }
+    }
   });
 });

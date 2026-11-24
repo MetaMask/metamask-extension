@@ -83,6 +83,7 @@ describe('Tron - Activity types', function (this: Suite) {
             },
           },
         ],
+        localNode: false,
         fixtures: new FixtureBuilderV2()
           .withBridgeStatusController({
             txHistory: { [bridge.raw.txID]: bridgeHistory },
@@ -178,6 +179,7 @@ describe('Tron - Activity types', function (this: Suite) {
             transactions: { raw: [sendTx] },
           },
         ],
+        localNode: false,
         fixtures: new FixtureBuilderV2().build(),
         testSpecificMock: mockEvmActivityApi,
         title: this.test?.fullTitle(),

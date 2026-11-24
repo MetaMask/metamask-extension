@@ -1191,6 +1191,11 @@ browser.runtime.onUpdateAvailable.addListener((details) => {
 setupSidePanelToolbarBehavior({
   getController: () => controller,
   waitUntilInitialized: async () => await isInitialized,
+  onPreferSidePanelChange: (value) => {
+    if (!value) {
+      openSidePanelCount = 0;
+    }
+  },
 });
 
 function setupSentryGetStateGlobal(store: MetaMaskControllerStore) {

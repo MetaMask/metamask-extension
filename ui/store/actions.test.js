@@ -360,70 +360,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('token detection polling messenger actions', () => {
-    it('starts polling through the token detection controller', async () => {
-      background.messengerCall.resolves('token-detection-token');
-      setBackgroundConnection(background);
-
-      const pollingToken = await actions.tokenDetectionStartPolling(['0x1']);
-
-      expect(pollingToken).toBe('token-detection-token');
-      expect(
-        background.messengerCall.calledWithExactly(
-          'TokenDetectionController:startPolling',
-          [{ chainIds: ['0x1'] }],
-        ),
-      ).toBe(true);
-    });
-
-    it('stops polling through the token detection controller', async () => {
-      setBackgroundConnection(background);
-
-      await actions.tokenDetectionStopPollingByPollingToken(
-        'token-detection-token',
-      );
-
-      expect(
-        background.messengerCall.calledWithExactly(
-          'TokenDetectionController:stopPollingByPollingToken',
-          ['token-detection-token'],
-        ),
-      ).toBe(true);
-    });
-  });
-
-  describe('currency rate polling messenger actions', () => {
-    it('starts polling through the currency rate controller', async () => {
-      background.messengerCall.resolves('currency-rate-token');
-      setBackgroundConnection(background);
-
-      const pollingToken = await actions.currencyRateStartPolling(['ETH']);
-
-      expect(pollingToken).toBe('currency-rate-token');
-      expect(
-        background.messengerCall.calledWithExactly(
-          'CurrencyRateController:startPolling',
-          [{ nativeCurrencies: ['ETH'] }],
-        ),
-      ).toBe(true);
-    });
-
-    it('stops polling through the currency rate controller', async () => {
-      setBackgroundConnection(background);
-
-      await actions.currencyRateStopPollingByPollingToken(
-        'currency-rate-token',
-      );
-
-      expect(
-        background.messengerCall.calledWithExactly(
-          'CurrencyRateController:stopPollingByPollingToken',
-          ['currency-rate-token'],
-        ),
-      ).toBe(true);
-    });
-  });
-
   describe('subscription polling messenger actions', () => {
     it('starts polling through the subscription controller from the Redux action', async () => {
       background.messengerCall.resolves('subscription-token');
@@ -439,6 +375,24 @@ describe('Actions', () => {
         background.messengerCall.calledWithExactly(
           'SubscriptionController:startPolling',
           [SUBSCRIPTIONS_POLLING_INPUT],
+        ),
+      ).toBe(true);
+    });
+  });
+
+  describe('checkFirstTimeInteraction', () => {
+    it('requests the interaction check through the legacy service messenger', async () => {
+      const request = { chainId: 1, from: '0x123', to: '0x456' };
+      background.messengerCall.resolves(true);
+      setBackgroundConnection(background);
+
+      const result = await actions.checkFirstTimeInteraction(request);
+
+      expect(result).toBe(true);
+      expect(
+        background.messengerCall.calledOnceWithExactly(
+          'LegacyBackgroundApiService:checkFirstTimeInteraction',
+          [request],
         ),
       ).toBe(true);
     });
@@ -2251,6 +2205,24 @@ describe('Actions', () => {
       );
 
       expect(listenForHardwareSigningCompletion).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('backupUserData', () => {
+    it('requests the backup from LegacyBackgroundApiService', async () => {
+      const backup = { fileName: 'MetaMaskUserData.json', data: '{}' };
+      background.messengerCall.resolves(backup);
+      setBackgroundConnection(background);
+
+      const result = await actions.backupUserData();
+
+      expect(result).toStrictEqual(backup);
+      expect(
+        background.messengerCall.calledOnceWithExactly(
+          'LegacyBackgroundApiService:backupUserData',
+          [],
+        ),
+      ).toBe(true);
     });
   });
 
@@ -4729,24 +4701,6 @@ describe('Actions', () => {
           [undefined],
         ),
       ).toBe(true);
-    });
-
-    it('does not fetch notifications if the browser policy cannot be published', async () => {
-      const store = mockStore();
-      const messengerCall = sinon.stub();
-      messengerCall
-        .withArgs('LegacyBackgroundApiService:waitForNetworkRequestPolicy')
-        .rejects(new Error('policy failed'));
-      setBackgroundConnection({ messengerCall });
-
-      await expect(
-        store.dispatch(actions.fetchAndUpdateMetamaskNotifications()),
-      ).rejects.toThrow('policy failed');
-      expect(
-        messengerCall.calledWith(
-          'NotificationServicesController:fetchAndUpdateMetamaskNotifications',
-        ),
-      ).toBe(false);
     });
 
     it('handles errors when fetchAndUpdateMetamaskNotifications fails', async () => {

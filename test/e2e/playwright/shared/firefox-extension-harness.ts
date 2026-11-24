@@ -345,7 +345,7 @@ export async function installTemporaryAddonViaRdp({
       sendMessage({ to: 'root', type: 'getRoot' });
     });
 
-    socket.on('data', (chunk) => {
+    socket.on('data', (chunk: NonSharedBuffer) => {
       let data = chunk;
       while (data.length > 0) {
         if (remainingBytes === 0) {

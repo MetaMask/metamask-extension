@@ -78,6 +78,11 @@ describe('SideNavAccounts', () => {
     expect(screen.getAllByTestId(walletHeaderTestId).length).toBeGreaterThan(0);
     expect(screen.getByText('Account 1')).toBeInTheDocument();
     expect(screen.getByText('Account 2')).toBeInTheDocument();
+    expect(
+      screen.getByTestId(
+        'side-nav-account-cell-entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+      ),
+    ).toBeInTheDocument();
   });
 
   describe('manage button', () => {
@@ -205,7 +210,7 @@ describe('SideNavAccounts', () => {
     renderSideNavAccounts();
 
     await act(async () => {
-      fireEvent.click(screen.getByText('Account 2'));
+      fireEvent.click(screen.getByRole('button', { name: 'Account 2' }));
     });
 
     expect(mockSetSelectedMultichainAccount).toHaveBeenCalledTimes(1);

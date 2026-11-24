@@ -5,14 +5,13 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { argv, exit } from 'node:process';
-import {
-  HotModuleReplacementPlugin,
-  ProvidePlugin,
-  type Chunk,
-  type Configuration,
-  type WebpackPluginInstance,
-  type MemoryCacheOptions,
-  type FileCacheOptions,
+import webpackApi from 'webpack';
+import type {
+  Chunk,
+  Configuration,
+  WebpackPluginInstance,
+  MemoryCacheOptions,
+  FileCacheOptions,
 } from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
@@ -21,8 +20,13 @@ import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
 import * as sassEmbedded from 'sass-embedded';
 import tailwindcss from 'tailwindcss';
-import { discardFontFace } from '../postcss-plugins/discard-font-face';
-import { loadBuildTypesConfig } from '../lib/build-type.js';
+import {
+  projectRoot,
+  resolvePackage,
+  webpackFile,
+} from '../lib/build-paths.ts';
+import { discardFontFace } from '../postcss-plugins/discard-font-face.js';
+import { loadBuildTypesConfig } from '../lib/build-type.ts';
 import {
   getMinimizers,
   JAVASCRIPT_FILE_RE,
@@ -31,21 +35,27 @@ import {
   UI_COMPONENT_RE,
   SNOW_MODULE_RE,
   TREZOR_MODULE_RE,
-  UI_DIR_RE,
-} from './utils/helpers';
-import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
-import { parseArgv, getDryRunMessage } from './utils/cli';
-import { getSwcLoader } from './utils/loaders/getSwcLoader';
-import { getVariables } from './utils/config';
-import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
-import { getThreadLoader } from './utils/loaders/threadLoader';
-import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
-import { getLatestCommit } from './utils/git';
-import { MODES } from './utils/constants';
-import { getDevServerOptions, injectEntryScripts } from './utils/dev-server';
-import { BACKGROUND_CLIENT_ENTRY_NAME } from './utils/dev-server/protocol';
-import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/plugins/ManifestPlugin/stats';
-import { getDefaultZipMtime } from './utils/plugins/ManifestPlugin/zip-mtime';
+  UI_DIR_PREFIXES,
+} from './utils/helpers.ts';
+import { transformManifest } from './utils/plugins/ManifestPlugin/helpers.ts';
+import { parseArgv, getDryRunMessage } from './utils/cli.ts';
+import { getSwcLoader } from './utils/loaders/getSwcLoader.ts';
+import { getVariables } from './utils/config.ts';
+import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader.ts';
+import { getThreadLoader } from './utils/loaders/threadLoader.ts';
+import { ManifestPlugin } from './utils/plugins/ManifestPlugin/index.ts';
+import { getLatestCommit } from './utils/git.ts';
+import { MODES } from './utils/constants.ts';
+import {
+  getDevServerOptions,
+  injectEntryScripts,
+} from './utils/dev-server/index.ts';
+import { BACKGROUND_CLIENT_ENTRY_NAME } from './utils/dev-server/protocol.ts';
+import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/plugins/ManifestPlugin/stats.ts';
+import { getDefaultZipMtime } from './utils/plugins/ManifestPlugin/zip-mtime.ts';
+
+const { HotModuleReplacementPlugin, ProvidePlugin, ProgressPlugin } =
+  webpackApi;
 
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
@@ -54,8 +64,8 @@ if (args.dryRun) {
   exit(0);
 }
 
-const context = join(__dirname, '../../app');
-const nodeModules = join(__dirname, '../../node_modules');
+const context = join(projectRoot, 'app');
+const nodeModules = join(projectRoot, 'node_modules');
 const root = join(context, '..');
 const isDevelopment = args.mode === MODES.DEVELOPMENT;
 const isDevelopmentWatchMode = isDevelopment && args.watch;
@@ -95,6 +105,37 @@ async function buildCashtagWidgetCss(content: Buffer | string, from: string) {
 }
 
 // #region cache
+// Invalidates the build cache when the listed files change.
+// `webpackFile` tracks this config in both the native and compiled trees
+// as `buildDependencies`.
+// Modules loaded with `await import()` are not recorded as
+// `require` children, so `getPlugins` appends the optional
+// plugins it loads to keep their own dependencies tracked.
+const cacheBuildDependencies: string[] = args.cache
+  ? [
+      webpackFile('webpack.config'),
+      ...[join(root, '.metamaskprodrc'), join(root, '.metamaskrc')].filter(
+        existsSync,
+      ),
+      join(root, 'builds.yml'),
+      browsersListPath,
+    ]
+  : [];
+/**
+ * Tracks a lazily imported module as a cache build dependency, as a `require`
+ * of the same module would have done.
+ *
+ * @param id - The module specifier passed to `import()`.
+ */
+function trackBuildDependency(id: string) {
+  if (!args.cache) {
+    return;
+  }
+  const path = resolvePackage(id);
+  if (!cacheBuildDependencies.includes(path)) {
+    cacheBuildDependencies.push(path);
+  }
+}
 const cache = args.cache
   ? ({
       type: 'filesystem',
@@ -108,18 +149,8 @@ const cache = args.cache
       // Disable allowCollectingMemory because it can slow the build by 10%!
       allowCollectingMemory: false,
       buildDependencies: {
-        defaultConfig: [__filename],
-        // Invalidates the build cache when the listed files change.
-        // `__filename` makes all `require`d dependencies of *this* file
-        // `buildDependencies`
-        config: [
-          __filename,
-          ...[join(root, '.metamaskprodrc'), join(root, '.metamaskrc')].filter(
-            existsSync,
-          ),
-          join(root, 'builds.yml'),
-          browsersListPath,
-        ],
+        defaultConfig: [webpackFile('webpack.config')],
+        config: cacheBuildDependencies,
       },
     } as const satisfies FileCacheOptions)
   : ({ type: 'memory' } as const satisfies MemoryCacheOptions);
@@ -173,7 +204,7 @@ const manifestPlugin = new ManifestPlugin({
     : false,
 });
 
-const plugins: WebpackPluginInstance[] = [
+const basePlugins: WebpackPluginInstance[] = [
   manifestPlugin,
   // HtmlBundlerPlugin treats HTML files as entry points
   new HtmlBundlerPlugin({
@@ -279,46 +310,60 @@ const plugins: WebpackPluginInstance[] = [
     ],
   }),
 ];
-// MV2 requires self-injection
-if (MANIFEST_VERSION === 2) {
-  const { SelfInjectPlugin } = require('./utils/plugins/SelfInjectPlugin');
-  plugins.push(new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }));
-}
-if (args.lavamoat) {
-  const {
-    lavamoatPlugin,
-    lavamoatUnsafeLayerPlugin,
-  } = require('./utils/plugins/LavamoatPlugin');
-  plugins.push(lavamoatPlugin(args, manifestPlugin), lavamoatUnsafeLayerPlugin);
-}
-if (args.progress) {
-  const { ProgressPlugin } = require('webpack');
-  plugins.push(new ProgressPlugin());
-}
-if (args.reactCompilerVerbose) {
-  const {
-    ReactCompilerPlugin,
-  } = require('./utils/plugins/ReactCompilerPlugin');
-  plugins.push(new ReactCompilerPlugin());
-}
+// TODO: Replace this wrapper with top-level await once the tooling runs
+// as ESM under LavaMoat.
+/** Loads optional plugins in configuration order. */
+async function getPlugins() {
+  const plugins = [...basePlugins];
+  // MV2 requires self-injection
+  if (MANIFEST_VERSION === 2) {
+    const { SelfInjectPlugin } =
+      await import('./utils/plugins/SelfInjectPlugin/index.ts');
+    trackBuildDependency(webpackFile('utils/plugins/SelfInjectPlugin/index'));
+    plugins.push(new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }));
+  }
+  if (args.lavamoat) {
+    const { lavamoatPlugin, lavamoatUnsafeLayerPlugin } =
+      await import('./utils/plugins/LavamoatPlugin/index.ts');
+    trackBuildDependency(webpackFile('utils/plugins/LavamoatPlugin/index'));
+    plugins.push(
+      lavamoatPlugin(args, manifestPlugin),
+      lavamoatUnsafeLayerPlugin,
+    );
+  }
+  if (args.progress) {
+    plugins.push(new ProgressPlugin());
+  }
+  if (args.reactCompilerVerbose) {
+    const { ReactCompilerPlugin } =
+      await import('./utils/plugins/ReactCompilerPlugin/index.ts');
+    trackBuildDependency(
+      webpackFile('utils/plugins/ReactCompilerPlugin/index'),
+    );
+    plugins.push(new ReactCompilerPlugin());
+  }
 
-if (isDevelopmentWatchMode) {
-  const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
-  plugins.push(
-    new HotModuleReplacementPlugin(),
-    new ReactRefreshWebpackPlugin({
-      include: UI_DIR_RE,
-      overlay: false,
-      runtimeEntry: false,
-    }),
-  );
-}
+  if (isDevelopmentWatchMode) {
+    const { default: ReactRefreshWebpackPlugin } =
+      await import('@pmmmwh/react-refresh-webpack-plugin');
+    plugins.push(
+      new HotModuleReplacementPlugin(),
+      new ReactRefreshWebpackPlugin({
+        include: UI_DIR_PREFIXES,
+        overlay: false,
+        runtimeEntry: false,
+      }),
+    );
+  }
 
-if (args.bundleAnalyzer) {
-  const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-  plugins.push(
-    new BundleAnalyzerPlugin({ analyzerMode: 'static', openAnalyzer: false }),
-  );
+  if (args.bundleAnalyzer) {
+    const { default: analyzer } = await import('webpack-bundle-analyzer');
+    const { BundleAnalyzerPlugin } = analyzer;
+    plugins.push(
+      new BundleAnalyzerPlugin({ analyzerMode: 'static', openAnalyzer: false }),
+    );
+  }
+  return plugins;
 }
 
 // #endregion plugins
@@ -373,7 +418,6 @@ const config = {
   // an empty entry object prevents webpack's default entry.
   entry: {},
   cache,
-  plugins,
   context,
   mode: args.mode,
   stats: 'none',
@@ -415,28 +459,29 @@ const config = {
     // Extensions added to the request when trying to find the file. The most
     // common extensions should be first to improve resolution performance.
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+    // Keep optional developer-tool grants in generated policies for builds that
+    // enable them; normal builds exclude the installed packages by alias.
+    alias: {
+      // #region conditionally remove developer tooling
+      // remove remote-redux-devtools unless METAMASK_REACT_REDUX_DEVTOOLS is enabled
+      'remote-redux-devtools':
+        args.generatePolicy || variables.get('METAMASK_REACT_REDUX_DEVTOOLS')
+          ? resolvePackage('remote-redux-devtools')
+          : false,
+      // #endregion conditionally remove developer tooling
+    },
     // use `fallback` to redirect module requests when normal resolving fails,
     // good for polyfill-ing built-in node modules that aren't available in
     // the browser. The browser will first attempt to load these modules, if
     // it fails it will load the fallback.
     fallback: {
-      // #region conditionally remove developer tooling
-      // remove react-devtools-core unless METAMASK_REACT_REDUX_DEVTOOLS is enabled
-      'react-devtools-core': variables.get('METAMASK_REACT_REDUX_DEVTOOLS')
-        ? require.resolve('react-devtools-core')
-        : false,
-      // remove remote-redux-devtools unless METAMASK_REACT_REDUX_DEVTOOLS is enabled
-      'remote-redux-devtools': variables.get('METAMASK_REACT_REDUX_DEVTOOLS')
-        ? require.resolve('remote-redux-devtools')
-        : false,
-      // #endregion conditionally remove developer tooling
       // #region node polyfills
-      crypto: require.resolve('crypto-browserify'),
+      crypto: resolvePackage('crypto-browserify'),
       fs: false,
-      http: require.resolve('stream-http'),
-      https: require.resolve('https-browserify'),
-      path: require.resolve('path-browserify'),
-      stream: require.resolve('stream-browserify'),
+      http: resolvePackage('stream-http'),
+      https: resolvePackage('https-browserify'),
+      path: resolvePackage('path-browserify'),
+      stream: resolvePackage('stream-browserify'),
       vm: false,
       zlib: false,
       // #endregion node polyfills
@@ -466,14 +511,14 @@ const config = {
         exclude: NODE_MODULES_RE,
         enforce: 'pre' as const,
         use: {
-          loader: require.resolve('./utils/loaders/envValidationLoader'),
+          loader: webpackFile('utils/loaders/envValidationLoader'),
           options: { declarations: [...buildEnvVarDeclarations] },
         },
       },
       // thread-loader pool for UI component files (must appear before SWC rules)
       threadLoader && {
         test: UI_COMPONENT_RE,
-        include: UI_DIR_RE,
+        include: UI_DIR_PREFIXES,
         use: threadLoader,
       },
       // own typescript, and own typescript with jsx
@@ -481,12 +526,12 @@ const config = {
         ? [
             {
               test: TYPESCRIPT_FILE_RE,
-              include: UI_DIR_RE,
+              include: UI_DIR_PREFIXES,
               use: reactRefreshTsLoader,
             },
             {
               test: TYPESCRIPT_FILE_RE,
-              exclude: [NODE_MODULES_RE, UI_DIR_RE],
+              exclude: [NODE_MODULES_RE, ...UI_DIR_PREFIXES],
               use: tsLoader,
             },
           ]
@@ -502,12 +547,12 @@ const config = {
         ? [
             {
               test: JAVASCRIPT_FILE_RE,
-              include: UI_DIR_RE,
+              include: UI_DIR_PREFIXES,
               use: reactRefreshJsxLoader,
             },
             {
               test: JAVASCRIPT_FILE_RE,
-              exclude: [NODE_MODULES_RE, UI_DIR_RE],
+              exclude: [NODE_MODULES_RE, ...UI_DIR_PREFIXES],
               use: jsxLoader,
             },
           ]
@@ -519,7 +564,7 @@ const config = {
             },
           ]),
       // React Compiler for UI component files (must appear after SWC rules)
-      { test: UI_COMPONENT_RE, include: UI_DIR_RE, use: reactCompiler },
+      { test: UI_COMPONENT_RE, include: UI_DIR_PREFIXES, use: reactCompiler },
       // vendor javascript. We must transform all npm modules to ensure browser
       // compatibility.
       {
@@ -632,9 +677,7 @@ const config = {
     // chunk changes, but the parent chunk does not.
     moduleIds: 'deterministic',
     chunkIds: 'deterministic',
-    ...(args.minify
-      ? { minimize: true, minimizer: getMinimizers() }
-      : { minimize: false }),
+    minimize: args.minify,
     // Make most chunks share a single runtime file, which contains the
     // webpack "runtime". The exception is @lavamoat/snow and all scripts
     // found in the extension manifest; these scripts must be self-contained
@@ -695,4 +738,16 @@ const config = {
   ],
 } as const satisfies Configuration;
 
-export default config;
+// TODO: Replace this wrapper with top-level await once the tooling runs
+// as ESM under LavaMoat.
+/** Finishes the configuration after loading optional dependencies. */
+export default async function createConfig() {
+  return {
+    ...config,
+    plugins: await getPlugins(),
+    optimization: {
+      ...config.optimization,
+      ...(args.minify ? { minimizer: await getMinimizers() } : {}),
+    },
+  };
+}

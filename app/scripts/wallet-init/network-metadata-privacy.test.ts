@@ -3,9 +3,10 @@ import {
   type NetworkEnablementController,
   type NetworkEnablementControllerMessenger,
 } from '@metamask/network-enablement-controller';
-import { Messenger, MOCK_ANY_NAMESPACE } from '@metamask/messenger';
-import { getPrivateNetworkEnablementConfiguration } from './network-metadata-privacy';
+import { it as jestIt } from '@jest/globals';
 import * as networkPolicy from '../lib/network-request-policy';
+import { getPrivateNetworkEnablementConfiguration } from './network-metadata-privacy';
+import { createMockMessenger } from './test-utils';
 
 function createController({
   onboarded,
@@ -16,7 +17,7 @@ function createController({
   enabled: boolean;
   existing?: number;
 }) {
-  const root = new Messenger({ namespace: MOCK_ANY_NAMESPACE });
+  const root = createMockMessenger();
   root.registerActionHandler(
     'OnboardingController:getState',
     () => ({ completedOnboarding: onboarded }) as never,
@@ -58,7 +59,7 @@ function createController({
 describe('network metadata privacy', () => {
   afterEach(() => jest.restoreAllMocks());
 
-  it.each([
+  jestIt.each([
     [false, true],
     [true, false],
     [false, false],
@@ -124,7 +125,7 @@ describe('network metadata refresh', () => {
   it('refreshes offline identifiers after onboarding and consent become available', async () => {
     const { setupNetworkEnablementController } =
       await import('./network-enablement-controller');
-    const root = new Messenger({ namespace: MOCK_ANY_NAMESPACE });
+    const root = createMockMessenger();
     let onboarded = false;
     let enabled = false;
     root.registerActionHandler(

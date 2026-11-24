@@ -2,6 +2,7 @@ import { it } from '@jest/globals';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import {
+  dispatchWithNetworkRequestPolicy,
   initializeNetworkRequestPolicy,
   refreshNetworkRequestPolicy,
   setOnboardingNetworkDomains,
@@ -26,6 +27,19 @@ describe('network request policy', () => {
     await initializeNetworkRequestPolicy(extensionId, modernDnr);
   });
   afterEach(() => jest.restoreAllMocks());
+
+  it('does not dispatch notification calls if the browser policy cannot be published', async () => {
+    await updateNetworkRequestDomains('*');
+    updateSessionRules.mockRejectedValueOnce(new Error('policy failed'));
+    const dispatch = jest.fn();
+    await expect(
+      dispatchWithNetworkRequestPolicy(
+        'NotificationServicesController:fetchAndUpdateMetamaskNotifications',
+        dispatch,
+      ),
+    ).rejects.toThrow('policy failed');
+    expect(dispatch).not.toHaveBeenCalled();
+  });
 
   it('clears stale grants at startup', () => {
     expect(updateSessionRules).toHaveBeenCalledWith({
@@ -128,6 +142,12 @@ describe('network request policy', () => {
       useExternalServices: false,
       preferences: { hasLinkedSocialLoginProfile: true },
     };
+    const rpcEndpoint = {
+      type: RpcEndpointType.Custom as const,
+      networkClientId: 'test-rpc',
+      url: 'https://rpc.example:8545/key',
+      failoverUrls: ['https://fallback.example', 'invalid'],
+    };
     await refreshNetworkRequestPolicy({
       OnboardingController: { completedOnboarding: true },
       PreferencesController: preferences,
@@ -139,14 +159,7 @@ describe('network request policy', () => {
             nativeCurrency: 'ETH',
             blockExplorerUrls: [],
             defaultRpcEndpointIndex: 0,
-            rpcEndpoints: [
-              {
-                type: RpcEndpointType.Custom,
-                networkClientId: 'test-rpc',
-                url: 'https://rpc.example:8545/key',
-                failoverUrls: ['https://fallback.example', 'invalid'],
-              },
-            ],
+            rpcEndpoints: [rpcEndpoint],
           },
         },
       },

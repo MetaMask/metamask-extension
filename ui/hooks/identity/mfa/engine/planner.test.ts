@@ -291,19 +291,13 @@ describe('planVerifyOrEnroll', () => {
       planVerifyOrEnroll({ methods: ['email_otp'] }, buildContext()),
     ).toStrictEqual({
       ok: true,
-      steps: [
-        { kind: 'intro', methods: ['email_otp'], missing: ['email_otp'] },
-        { kind: 'setup', method: 'email_otp', prefillEmail: undefined },
-      ],
+      steps: [{ kind: 'setup', method: 'email_otp', prefillEmail: undefined }],
     });
   });
 
-  it('does not repeat the intro once it was shown', () => {
+  it('skips the intro when the feature asks for a single method', () => {
     expect(
-      planVerifyOrEnroll(
-        { methods: ['email_otp'] },
-        buildContext({ introShown: true }),
-      ),
+      planVerifyOrEnroll({ methods: ['email_otp'] }, buildContext()),
     ).toStrictEqual({
       ok: true,
       steps: [{ kind: 'setup', method: 'email_otp', prefillEmail: undefined }],
@@ -318,7 +312,6 @@ describe('planVerifyOrEnroll', () => {
     ).toStrictEqual({
       ok: true,
       steps: [
-        { kind: 'intro', methods: ['email_otp'], missing: ['email_otp'] },
         { kind: 'setup', method: 'email_otp', prefillEmail: 'pending@b.co' },
       ],
     });
@@ -438,10 +431,7 @@ describe('planVerifyOrEnroll', () => {
       ),
     ).toStrictEqual({
       ok: true,
-      steps: [
-        { kind: 'intro', methods: ['email_otp'], missing: ['email_otp'] },
-        { kind: 'setup', method: 'email_otp', prefillEmail: undefined },
-      ],
+      steps: [{ kind: 'setup', method: 'email_otp', prefillEmail: undefined }],
     });
   });
 });

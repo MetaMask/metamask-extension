@@ -13,6 +13,7 @@ import {
 } from '../../test/data/confirmations/token-approve';
 import { buildSetApproveForAllTransactionData } from '../../test/data/confirmations/set-approval-for-all';
 import {
+  determineTransactionAssetType,
   determineTransactionType,
   getMarketFeeFromEstimates,
   getTransactionDataRecipient,
@@ -640,6 +641,57 @@ describe('Transaction.utils', function () {
           expect(result.message.details.amount).toBe(largeAmount);
         });
       });
+    });
+  });
+
+  describe('determineTransactionAssetType', () => {
+    it('looks up the calldata token for a Permit2 approve', async () => {
+      const getTokenStandardAndDetails = jest
+        .fn()
+        .mockResolvedValue({ standard: 'ERC20' });
+
+      const result = await determineTransactionAssetType(
+        {
+          type: TransactionType.tokenMethodApprove,
+          txParams: {
+            to: '0x000000000022D473030F116dDEE9F6B43aC78BA3',
+            data: buildPermit2ApproveTransactionData(
+              ADDRESS_MOCK,
+              ADDRESS_2_MOCK,
+              AMOUNT_MOCK,
+              EXPIRATION_MOCK,
+            ),
+          },
+        },
+        undefined,
+        getTokenStandardAndDetails,
+      );
+
+      expect(getTokenStandardAndDetails).toHaveBeenCalledWith(ADDRESS_MOCK);
+      expect(result).toStrictEqual({
+        assetType: 'TOKEN',
+        tokenStandard: 'ERC20',
+      });
+    });
+
+    it('looks up txParams.to for an ERC-20 approve', async () => {
+      const getTokenStandardAndDetails = jest
+        .fn()
+        .mockResolvedValue({ standard: 'ERC20' });
+
+      await determineTransactionAssetType(
+        {
+          type: TransactionType.tokenMethodApprove,
+          txParams: {
+            to: ADDRESS_MOCK,
+            data: buildApproveTransactionData(ADDRESS_2_MOCK, AMOUNT_MOCK),
+          },
+        },
+        undefined,
+        getTokenStandardAndDetails,
+      );
+
+      expect(getTokenStandardAndDetails).toHaveBeenCalledWith(ADDRESS_MOCK);
     });
   });
 

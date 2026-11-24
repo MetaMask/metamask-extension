@@ -4,10 +4,13 @@ import { selectUserRegion } from '../../selectors/rampsController';
 import { getRampsTokens } from '../../store/controller-actions/ramps-controller';
 import useRampsProviders from './useRampsProviders';
 import useRampsPaymentMethods from './useRampsPaymentMethods';
+import { useRampsOrderSyncing } from './useRampsOrderSyncing/useRampsOrderSyncing';
 
 function RampsBootstrap(): null {
   useRampsProviders({ enableSideEffects: true });
   useRampsPaymentMethods();
+  const { dispatchRampsOrderSyncing, shouldDispatchRampsOrderSyncing } =
+    useRampsOrderSyncing();
 
   const userRegion = useSelector(selectUserRegion);
   useEffect(() => {
@@ -15,6 +18,12 @@ function RampsBootstrap(): null {
       getRampsTokens(userRegion.regionCode, 'buy');
     }
   }, [userRegion?.regionCode]);
+
+  useEffect(() => {
+    if (shouldDispatchRampsOrderSyncing) {
+      dispatchRampsOrderSyncing();
+    }
+  }, [shouldDispatchRampsOrderSyncing, dispatchRampsOrderSyncing]);
 
   return null;
 }

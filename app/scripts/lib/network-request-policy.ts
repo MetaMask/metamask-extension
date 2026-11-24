@@ -138,6 +138,31 @@ export function updateNetworkRequestDomains(domains: Domains): Promise<void> {
   return publish(domains);
 }
 
+const notificationActionsRequiringPolicy = new Set([
+  'AuthenticatedUserStorageService:getNotificationPreferences',
+  'NotificationServicesController:enableMetamaskNotifications',
+  'NotificationServicesController:fetchAndUpdateMetamaskNotifications',
+]);
+
+/**
+ * Dispatch a UI action, waiting for policy publication before notification I/O.
+ *
+ * @param action - The requested messenger action.
+ * @param dispatch - The callback that dispatches the action.
+ * @returns The dispatch result, which may be deferred until policy publication.
+ */
+export function dispatchWithNetworkRequestPolicy<Result>(
+  action: string,
+  dispatch: () => Result,
+): Result | Promise<Awaited<Result>> {
+  if (notificationActionsRequiringPolicy.has(action)) {
+    return refreshNetworkRequestPolicy().then(() =>
+      Promise.resolve(dispatch()),
+    );
+  }
+  return dispatch();
+}
+
 /**
  * Reconcile existing wallet state without adding a controller or persisted state.
  * @param nextState
@@ -163,15 +188,18 @@ export function refreshNetworkRequestPolicy(nextState = state): Promise<void> {
     getDefaultNetworkControllerState().networkConfigurationsByChainId;
   const domains = Object.values(networkConfigurations).flatMap(
     ({ rpcEndpoints }) =>
-      rpcEndpoints.flatMap(({ url, failoverUrls = [] }) =>
-        [url, ...failoverUrls].flatMap((endpoint) => {
+      rpcEndpoints.flatMap((rpcEndpoint) => {
+        const { url, failoverUrls = [] } = rpcEndpoint as typeof rpcEndpoint & {
+          failoverUrls?: string[];
+        };
+        return [url, ...failoverUrls].flatMap((endpoint) => {
           try {
             return [new URL(endpoint).hostname];
           } catch {
             return [];
           }
-        }),
-      ),
+        });
+      }),
   );
   return updateNetworkRequestDomains(domains);
 }

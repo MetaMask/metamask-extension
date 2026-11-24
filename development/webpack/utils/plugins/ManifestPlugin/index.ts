@@ -2,33 +2,29 @@
 
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import path from 'node:path';
-import {
-  sources,
-  ProgressPlugin,
-  type Compilation,
-  type Compiler,
-  type Asset,
-  type EntryOptions,
-} from 'webpack';
+import webpackApi from 'webpack';
+import type { Compilation, Compiler, Asset, EntryOptions } from 'webpack';
 import { validate } from 'schema-utils';
 import {
   noop,
   extensionToJs,
   type Manifest,
   type Browser,
-} from '../../helpers';
-import { BACKGROUND_CLIENT_ENTRY_NAME } from '../../dev-server/protocol';
+} from '../../helpers.ts';
+import { BACKGROUND_CLIENT_ENTRY_NAME } from '../../dev-server/protocol.ts';
 import {
   createBundleSizeCategoryAssets,
   createBundleSizeSummary,
   getBundlePartSizes,
   type BundleSizeAssetStat,
   type BundleSizeDebugEntrypoint,
-} from './stats';
-import { schema } from './schema';
+} from './stats.ts';
+import { schema } from './schema.ts';
 import type { BundleSizeCategory, ManifestPluginOptions } from './types';
-import { createBrowserZipBuilder, type ZipCompressionOptions } from './zip';
-import { createNetworkRequestRules } from './network-request-policy';
+import { createNetworkRequestRules } from './network-request-policy.ts';
+import { createBrowserZipBuilder, type ZipCompressionOptions } from './zip.ts';
+
+const { sources, ProgressPlugin } = webpackApi;
 
 const { CachedSource, RawSource } = sources;
 
@@ -106,7 +102,10 @@ export class ManifestPlugin<Z extends boolean> {
 
   manifests: Map<Browser, Manifest> = new Map();
 
-  private browserAssets = new Map<Browser, Record<string, sources.RawSource>>();
+  private browserAssets = new Map<
+    Browser,
+    Record<string, webpackApi.sources.RawSource>
+  >();
 
   private watchedFiles: string[] = [];
 
@@ -205,7 +204,7 @@ export class ManifestPlugin<Z extends boolean> {
     browsers.forEach((browser) => {
       const assets = this.browserAssets.get(browser) as Record<
         string,
-        sources.RawSource
+        webpackApi.sources.RawSource
       >;
       for (const [filename, source] of Object.entries(assets)) {
         compilation.emitAsset(path.posix.join(browser, filename), source, {
@@ -436,7 +435,10 @@ export class ManifestPlugin<Z extends boolean> {
         total +
         zipEligibleAssetCount +
         Object.keys(
-          this.browserAssets.get(browser) as Record<string, sources.RawSource>,
+          this.browserAssets.get(browser) as Record<
+            string,
+            webpackApi.sources.RawSource
+          >,
         ).length,
       0,
     );
@@ -445,7 +447,7 @@ export class ManifestPlugin<Z extends boolean> {
     const zipBuilders = browsers.map((browser) => {
       const browserAssets = this.browserAssets.get(browser) as Record<
         string,
-        sources.RawSource
+        webpackApi.sources.RawSource
       >;
       const onAssetAdded = (assetName: string) => {
         reportProgress(
@@ -522,7 +524,7 @@ export class ManifestPlugin<Z extends boolean> {
   private moveAssetToBrowsers(
     compilation: Compilation,
     asset: Readonly<Asset>,
-    source: sources.Source,
+    source: webpackApi.sources.Source,
     browsers: readonly Browser[],
   ): void {
     const { name, info } = asset;
@@ -982,7 +984,7 @@ export class ManifestPlugin<Z extends boolean> {
         ? { ...manifest, build_id: compilation.fullHash }
         : manifest;
 
-      const browserAssets: Record<string, sources.RawSource> = {
+      const browserAssets: Record<string, webpackApi.sources.RawSource> = {
         'manifest.json': new RawSource(
           JSON.stringify(manifestForEmit, null, 2),
         ),
