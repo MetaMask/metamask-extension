@@ -53,11 +53,6 @@ jest.mock('../../ui/toast/toast', () => ({
   ToastContent: () => null,
 }));
 
-jest.mock('@metamask/design-system-react', () => ({
-  ...jest.requireActual('@metamask/design-system-react'),
-  Icon: () => null,
-}));
-
 describe('ToastListener', () => {
   beforeEach(() => {
     jest.clearAllMocks();
