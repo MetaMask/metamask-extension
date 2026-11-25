@@ -2,7 +2,7 @@ import {
   DEFAULT_CONFIG,
   classify,
   decide,
-  jobLogRatios,
+  jobShifts,
   needsConfirmation,
   scoreBatch,
   type BatchScores,
@@ -60,40 +60,53 @@ describe('stats', () => {
   });
 
   it('returns nothing for fewer than two jobs', () => {
-    expect(summarizeShifts([0.01])).toBeUndefined();
+    expect(summarizeShifts([{ logRatio: 0.01, ms: 10 }])).toBeUndefined();
   });
 
   it('summarizes equal shifts without spread', () => {
-    const summary = summarizeShifts([Math.log(1.02), Math.log(1.02)]);
+    const shift = { logRatio: Math.log(1.02), ms: 20 };
+    const summary = summarizeShifts([shift, shift]);
     expect(summary?.shiftPct).toBeCloseTo(2, 5);
     expect(summary?.lowerPct).toBeCloseTo(2, 5);
     expect(summary?.sdPct).toBeCloseTo(0, 5);
+    expect(summary?.shiftMs).toBeCloseTo(20, 5);
+    expect(summary?.lowerMs).toBeCloseTo(20, 5);
+    expect(summary?.sdMs).toBeCloseTo(0, 5);
+  });
+
+  it('bounds the ms shift with the same t value as the percent shift', () => {
+    const summary = summarizeShifts(
+      [10, 20, 30].map((ms) => ({ logRatio: ms / 1000, ms })),
+    );
+    // Mean 20, sd 10, t(2) = 2.92: margin = 2.92 * 10 / sqrt(3).
+    expect(summary?.shiftMs).toBeCloseTo(20, 10);
+    expect(summary?.lowerMs).toBeCloseTo(20 - (2.92 * 10) / Math.sqrt(3), 10);
+    expect(summary?.upperMs).toBeCloseTo(20 + (2.92 * 10) / Math.sqrt(3), 10);
   });
 });
 
-describe('jobLogRatios', () => {
+describe('jobShifts', () => {
   it('drops warm-up sessions and compares head with base', () => {
-    const ratios = jobLogRatios(makeJob(1.03), ['uiStartup'], 2);
-    expect(ratios?.uiStartup).toBeCloseTo(Math.log(1.03), 10);
+    const shifts = jobShifts(makeJob(1.03), ['uiStartup'], 2);
+    expect(shifts?.uiStartup.logRatio).toBeCloseTo(Math.log(1.03), 10);
+    expect(shifts?.uiStartup.ms).toBeCloseTo(30, 10);
   });
 
   it('rejects a job with a failed session', () => {
-    expect(
-      jobLogRatios(makeJob(1, 0, false), ['uiStartup'], 2),
-    ).toBeUndefined();
+    expect(jobShifts(makeJob(1, 0, false), ['uiStartup'], 2)).toBeUndefined();
   });
 
   it('rejects a job with too few sessions', () => {
     const job = makeJob(1);
     job.sessions = job.sessions.slice(0, 6);
-    expect(jobLogRatios(job, ['uiStartup'], 2)).toBeUndefined();
+    expect(jobShifts(job, ['uiStartup'], 2)).toBeUndefined();
   });
 
   it('ignores a missing sample instead of counting it as zero', () => {
     const job = makeJob(1.03);
     (job.samples.uiStartup as (number | null)[])[6] = null;
-    const ratios = jobLogRatios(job, ['uiStartup'], 2);
-    expect(ratios?.uiStartup).toBeCloseTo(Math.log(1.03), 10);
+    const shifts = jobShifts(job, ['uiStartup'], 2);
+    expect(shifts?.uiStartup.logRatio).toBeCloseTo(Math.log(1.03), 10);
   });
 
   it('scores a flipped job, where the head runs first, like a normal one', () => {
@@ -102,36 +115,38 @@ describe('jobLogRatios', () => {
       .map((letter) => (letter === 'A' ? 'B' : 'A'))
       .join('');
     for (const order of [sequence, flipped]) {
-      const ratios = jobLogRatios(
-        makeSequencedJob(order, 1.03),
-        ['uiStartup'],
-        2,
-      );
-      expect(ratios?.uiStartup).toBeCloseTo(Math.log(1.03), 10);
+      const shifts = jobShifts(makeSequencedJob(order, 1.03), ['uiStartup'], 2);
+      expect(shifts?.uiStartup.logRatio).toBeCloseTo(Math.log(1.03), 10);
+      expect(shifts?.uiStartup.ms).toBeCloseTo(30, 10);
     }
   });
 
   it('attributes each session to its recorded build, not to its position', () => {
     // Every even index is the head here, the opposite of makeJob.
     const job = makeSequencedJob('BABABABABA', 1.03);
-    expect(jobLogRatios(job, ['uiStartup'], 2)?.uiStartup).toBeCloseTo(
+    expect(jobShifts(job, ['uiStartup'], 2)?.uiStartup.logRatio).toBeCloseTo(
       Math.log(1.03),
       10,
     );
   });
 
   it('skips metrics a build does not record', () => {
-    expect(jobLogRatios(makeJob(1), ['firstReactRender'], 2)).toStrictEqual({});
+    expect(jobShifts(makeJob(1), ['firstReactRender'], 2)).toStrictEqual({});
   });
 });
 
 describe('classify', () => {
+  // Percent bounds, with their ms on the 902 ms median the floors were set against.
   const summary = (shiftPct: number, lowerPct: number, upperPct: number) => ({
     jobs: 5,
     shiftPct,
     lowerPct,
     upperPct,
     sdPct: 1,
+    shiftMs: shiftPct * 9.02,
+    lowerMs: lowerPct * 9.02,
+    upperMs: upperPct * 9.02,
+    sdMs: 9.02,
   });
 
   // Chrome load: 13.53 ms is 1.5% of its 902 ms median, loud is 5%.

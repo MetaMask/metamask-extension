@@ -72,8 +72,8 @@ function formatFinding(finding: Finding, scores: BatchScores[]): string {
   const { medianMs } = DEFAULT_CONFIG.floors[finding.browser][finding.metric];
   const ms = Math.abs((medianMs * finding.pooled.shiftPct) / 100).toFixed(0);
   const jobs = scores
-    .flatMap((batch) => batch[finding.browser].logRatios[finding.metric] ?? [])
-    .map((ratio) => pct(toPercent(ratio)).replace('%', ''))
+    .flatMap((batch) => batch[finding.browser].shifts[finding.metric] ?? [])
+    .map(({ logRatio }) => pct(toPercent(logRatio)).replace('%', ''))
     .join(', ');
   const { pooled, first, second } = finding;
   return (
@@ -91,10 +91,10 @@ const FLAG = ':triangular_flag_on_post:';
 
 function breakdownShifts(browser: Browser, scores: BatchScores[]) {
   return BREAKDOWN_METRICS.flatMap((metric) => {
-    const ratios = scores.flatMap(
-      (batch) => batch[browser].logRatios[metric] ?? [],
+    const shifts = scores.flatMap(
+      (batch) => batch[browser].shifts[metric] ?? [],
     );
-    const summary = summarizeShifts(ratios);
+    const summary = summarizeShifts(shifts);
     return summary ? [{ metric, shiftPct: summary.shiftPct }] : [];
   });
 }

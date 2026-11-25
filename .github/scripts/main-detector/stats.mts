@@ -27,6 +27,14 @@ export function standardDeviation(values: number[]): number {
   return Math.sqrt(squares / (values.length - 1));
 }
 
+// One job's shift of head over base on one metric.
+export type JobShift = {
+  // Natural log of the head's mean over the base's mean.
+  logRatio: number;
+  // Head's mean minus the base's mean, in ms.
+  ms: number;
+};
+
 export type ShiftSummary = {
   jobs: number;
   // Percent change of head over base, from the mean log ratio of the jobs.
@@ -36,27 +44,42 @@ export type ShiftSummary = {
   upperPct: number;
   // Spread of the per-job shifts, in percent.
   sdPct: number;
+  // Mean of the jobs' shifts in ms, with the same bounds and spread.
+  shiftMs: number;
+  lowerMs: number;
+  upperMs: number;
+  sdMs: number;
 };
 
 export const toPercent = (logRatio: number) => 100 * (Math.exp(logRatio) - 1);
 
+function boundedMean(values: number[]) {
+  const center = mean(values);
+  const sd = standardDeviation(values);
+  const margin =
+    (tCritical95(values.length - 1) * sd) / Math.sqrt(values.length);
+  return { center, lower: center - margin, upper: center + margin, sd };
+}
+
 /**
- * @param logRatios - One natural-log ratio of head to base per job.
+ * @param shifts - One shift of head over base per job.
  * @returns The mean shift with one-sided 95% bounds, or undefined with fewer than two jobs.
  */
-export function summarizeShifts(logRatios: number[]): ShiftSummary | undefined {
-  if (logRatios.length < 2) {
+export function summarizeShifts(shifts: JobShift[]): ShiftSummary | undefined {
+  if (shifts.length < 2) {
     return undefined;
   }
-  const center = mean(logRatios);
-  const sd = standardDeviation(logRatios);
-  const margin =
-    (tCritical95(logRatios.length - 1) * sd) / Math.sqrt(logRatios.length);
+  const ratio = boundedMean(shifts.map((shift) => shift.logRatio));
+  const ms = boundedMean(shifts.map((shift) => shift.ms));
   return {
-    jobs: logRatios.length,
-    shiftPct: toPercent(center),
-    lowerPct: toPercent(center - margin),
-    upperPct: toPercent(center + margin),
-    sdPct: 100 * sd,
+    jobs: shifts.length,
+    shiftPct: toPercent(ratio.center),
+    lowerPct: toPercent(ratio.lower),
+    upperPct: toPercent(ratio.upper),
+    sdPct: 100 * ratio.sd,
+    shiftMs: ms.center,
+    lowerMs: ms.lower,
+    upperMs: ms.upper,
+    sdMs: ms.sd,
   };
 }

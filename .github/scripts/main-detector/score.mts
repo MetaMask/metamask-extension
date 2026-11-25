@@ -4,7 +4,12 @@
  * one runner, so a job gives one log ratio of head to base per metric. A batch
  * is several jobs; a suspicious batch is confirmed by a second, independent one.
  */
-import { mean, summarizeShifts, type ShiftSummary } from './stats.mts';
+import {
+  mean,
+  summarizeShifts,
+  type JobShift,
+  type ShiftSummary,
+} from './stats.mts';
 
 export type Browser = 'chrome' | 'firefox';
 export const BROWSERS = ['chrome', 'firefox'] as const;
@@ -67,13 +72,13 @@ const MIN_SESSIONS = 10;
  * @param job - One benchmark job's session records and flattened page-load samples.
  * @param metrics - Metric names to score.
  * @param skipSessions - Leading sessions to drop as warm-up.
- * @returns The log ratio of head (B) to base (A) per metric, or undefined when the job is unusable.
+ * @returns The shift of head (B) over base (A) per metric, as a log ratio and in ms, or undefined when the job is unusable.
  */
-export function jobLogRatios(
+export function jobShifts(
   job: JobResult,
   metrics: readonly string[],
   skipSessions: number,
-): Record<string, number> | undefined {
+): Record<string, JobShift> | undefined {
   const { sessions, samples } = job;
   if (
     sessions.length < MIN_SESSIONS ||
@@ -81,7 +86,7 @@ export function jobLogRatios(
   ) {
     return undefined;
   }
-  const ratios: Record<string, number> = {};
+  const shifts: Record<string, JobShift> = {};
   for (const metric of metrics) {
     const values = samples[metric];
     if (!values) {
@@ -103,12 +108,12 @@ export function jobLogRatios(
     if (base.length === 0 || head.length === 0) {
       continue;
     }
-    const ratio = Math.log(mean(head) / mean(base));
-    if (Number.isFinite(ratio)) {
-      ratios[metric] = ratio;
+    const logRatio = Math.log(mean(head) / mean(base));
+    if (Number.isFinite(logRatio)) {
+      shifts[metric] = { logRatio, ms: mean(head) - mean(base) };
     }
   }
-  return ratios;
+  return shifts;
 }
 
 export type Level = 'none' | 'quiet' | 'loud';
@@ -141,7 +146,7 @@ export type BatchScore = {
   jobsTotal: number;
   jobsUsable: number;
   measurable: boolean;
-  logRatios: Record<string, number[]>;
+  shifts: Record<string, JobShift[]>;
   metrics: Record<string, MetricScore>;
 };
 
@@ -151,25 +156,25 @@ export function scoreBatch(
   config: DetectorConfig,
 ): BatchScore {
   const names = [...VERDICT_METRICS, ...BREAKDOWN_METRICS];
-  const logRatios: Record<string, number[]> = {};
+  const shifts: Record<string, JobShift[]> = {};
   let jobsUsable = 0;
   for (const job of jobs) {
-    const ratios = jobLogRatios(job, names, config.skipSessions);
-    // A job with no ratio for a verdict metric (empty or renamed samples) cannot show a change.
+    const jobShift = jobShifts(job, names, config.skipSessions);
+    // A job with no shift for a verdict metric (empty or renamed samples) cannot show a change.
     if (
-      !ratios ||
-      VERDICT_METRICS.some((metric) => ratios[metric] === undefined)
+      !jobShift ||
+      VERDICT_METRICS.some((metric) => jobShift[metric] === undefined)
     ) {
       continue;
     }
     jobsUsable += 1;
-    for (const [metric, ratio] of Object.entries(ratios)) {
-      (logRatios[metric] ??= []).push(ratio);
+    for (const [metric, shift] of Object.entries(jobShift)) {
+      (shifts[metric] ??= []).push(shift);
     }
   }
   const metrics: Record<string, MetricScore> = {};
   for (const metric of names) {
-    const summary = summarizeShifts(logRatios[metric] ?? []);
+    const summary = summarizeShifts(shifts[metric] ?? []);
     metrics[metric] = {
       summary,
       // Breakdown metrics have no floor and never raise a ping.
@@ -183,7 +188,7 @@ export function scoreBatch(
     jobsTotal: jobs.length,
     jobsUsable,
     measurable: jobsUsable >= config.minJobs,
-    logRatios,
+    shifts,
     metrics,
   };
 }
@@ -258,8 +263,8 @@ export function decide(
       const firstSummary = first[browser].metrics[metric].summary;
       const secondSummary = second[browser].metrics[metric].summary;
       const pooled = summarizeShifts([
-        ...first[browser].logRatios[metric],
-        ...(second[browser].logRatios[metric] ?? []),
+        ...first[browser].shifts[metric],
+        ...(second[browser].shifts[metric] ?? []),
       ]);
       if (!firstSummary || !secondSummary || !pooled) {
         unmeasured.push(browser);
