@@ -4,20 +4,19 @@
 
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import {
-  type Configuration,
-  type WebpackPluginInstance,
-  ProgressPlugin,
-} from 'webpack';
+import webpackApi from 'webpack';
+import type { Configuration, WebpackPluginInstance } from 'webpack';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
 import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
 import * as sassEmbedded from 'sass-embedded';
 import tailwindcss from 'tailwindcss';
+import { projectRoot } from '../lib/build-paths.ts';
 
-const context = join(__dirname, '../../app');
-const nodeModules = join(__dirname, '../../node_modules');
+const { ProgressPlugin } = webpackApi;
+const context = join(projectRoot, 'app');
+const nodeModules = join(projectRoot, 'node_modules');
 const browsersListPath = join(context, '../.browserslistrc');
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
 

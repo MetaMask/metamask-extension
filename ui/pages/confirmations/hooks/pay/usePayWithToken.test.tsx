@@ -17,6 +17,7 @@ import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
 import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
+import { useIsMoneyAccountPerpsNavigation } from './useIsMoneyAccountPerpsNavigation';
 import { usePayTokenAccountBalance } from './usePayTokenAccountBalance';
 import { usePayWithToken } from './usePayWithToken';
 
@@ -48,9 +49,13 @@ jest.mock('../../../../selectors/transactionPayController', () => ({
 jest.mock('./useIsMoneyAccountFlagDefault', () => ({
   useIsMoneyAccountFlagDefault: jest.fn(),
 }));
+jest.mock('./useIsMoneyAccountPerpsNavigation', () => ({
+  useIsMoneyAccountPerpsNavigation: jest.fn(),
+}));
 jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => {
     const messages: Record<string, string> = {
+      convert: 'Convert',
       payWith: 'Pay with',
       withdrawTo: 'Withdraw to',
       payWithMoneyAccount: 'Money account',
@@ -71,16 +76,25 @@ jest.mock('../../components/modals/pay-with-modal', () => ({
 
 const FROM_ADDRESS = '0xabcdef1234567890abcdef1234567890abcdef12';
 
-const PAY_TOKEN = {
-  address: '0x1111111111111111111111111111111111111111',
-  chainId: '0x1',
+const PAY_TOKEN_ADDRESS = '0x1111111111111111111111111111111111111111';
+const PAY_TOKEN_CHAIN_ID = '0x1';
+
+const PAY_TOKEN: TransactionPaymentToken = {
+  assetId: `eip155:1/erc20:${PAY_TOKEN_ADDRESS}`,
   symbol: 'USDC',
   balanceUsd: '25',
   balanceFiat: '$25.00',
   balanceHuman: '25',
   balanceRaw: '25000000',
   decimals: 6,
-} as TransactionPaymentToken;
+};
+
+const REQUIRED_TOKEN = {
+  address: PAY_TOKEN_ADDRESS,
+  chainId: PAY_TOKEN_CHAIN_ID,
+  symbol: 'USDC',
+  balanceUsd: '25',
+};
 
 const ACCOUNT = {
   address: FROM_ADDRESS,
@@ -106,6 +120,9 @@ describe('usePayWithToken', () => {
   );
   const useIsMoneyAccountFlagDefaultMock = jest.mocked(
     useIsMoneyAccountFlagDefault,
+  );
+  const useIsMoneyAccountPerpsNavigationMock = jest.mocked(
+    useIsMoneyAccountPerpsNavigation,
   );
   const useMoneyAccountWithdrawableFiatMock = jest.mocked(
     useMoneyAccountWithdrawableFiat,
@@ -138,6 +155,7 @@ describe('usePayWithToken', () => {
     getInternalAccountByAddressMock.mockReturnValue(ACCOUNT as never);
     selectPaymentOverrideByTransactionIdMock.mockReturnValue(undefined);
     useIsMoneyAccountFlagDefaultMock.mockReturnValue(false);
+    useIsMoneyAccountPerpsNavigationMock.mockReturnValue(false);
     useMoneyAccountWithdrawableFiatMock.mockReturnValue({
       isLoading: false,
       withdrawableFiatFormatted: '$12.34',
@@ -153,14 +171,52 @@ describe('usePayWithToken', () => {
     const { result } = renderHook(() => usePayWithToken());
 
     expect(result.current.displayToken).toMatchObject({
-      address: PAY_TOKEN.address,
-      chainId: PAY_TOKEN.chainId,
+      address: PAY_TOKEN_ADDRESS,
+      chainId: PAY_TOKEN_CHAIN_ID,
       symbol: 'USDC',
     });
     expect(result.current.balanceUsdFormatted).toBe('$25.00');
-    expect(result.current.label).toBe('Pay with');
+    expect(result.current.label).toBe('Convert');
     expect(result.current.isMoneyAccountSelected).toBe(false);
   });
+
+  for (const transactionType of [
+    TransactionType.moneyAccountDeposit,
+    TransactionType.perpsDeposit,
+  ]) {
+    it(`uses the Convert label for ${transactionType}`, () => {
+      useConfirmContextMock.mockReturnValue({
+        currentConfirmation: {
+          id: 'tx-1',
+          type: transactionType,
+          txParams: { from: FROM_ADDRESS },
+        } as TransactionMeta,
+      } as ReturnType<typeof useConfirmContext>);
+
+      const { result } = renderHook(() => usePayWithToken());
+
+      expect(result.current.label).toBe('Convert');
+    });
+  }
+
+  for (const transactionType of [
+    TransactionType.musdConversion,
+    TransactionType.contractInteraction,
+  ]) {
+    it(`keeps the Pay with label for ${transactionType}`, () => {
+      useConfirmContextMock.mockReturnValue({
+        currentConfirmation: {
+          id: 'tx-1',
+          type: transactionType,
+          txParams: { from: FROM_ADDRESS },
+        } as TransactionMeta,
+      } as ReturnType<typeof useConfirmContext>);
+
+      const { result } = renderHook(() => usePayWithToken());
+
+      expect(result.current.label).toBe('Pay with');
+    });
+  }
 
   it('uses the live account balance when the payment token snapshot is stale', () => {
     useTransactionPayTokenMock.mockReturnValue({
@@ -194,6 +250,7 @@ describe('usePayWithToken', () => {
     const { result } = renderHook(() => usePayWithToken());
 
     expect(result.current.isMoneyAccountSelected).toBe(true);
+    expect(result.current.label).toBe('Pay with');
     expect(result.current.displayToken).toMatchObject({
       address: '',
       symbol: 'Money account',
@@ -209,15 +266,26 @@ describe('usePayWithToken', () => {
       setPayToken: jest.fn(),
       isNative: false,
     });
-    useTransactionPayRequiredTokensMock.mockReturnValue([PAY_TOKEN as never]);
+    useTransactionPayRequiredTokensMock.mockReturnValue([
+      REQUIRED_TOKEN as never,
+    ]);
 
     const { result } = renderHook(() => usePayWithToken());
 
     expect(result.current.isMoneyAccountSelected).toBe(true);
+    expect(result.current.label).toBe('Pay with');
     expect(result.current.displayToken).toMatchObject({
       address: '',
       symbol: 'Money account',
     });
+  });
+
+  it('keeps the Pay with label for Money Account-navigated perps deposits', () => {
+    useIsMoneyAccountPerpsNavigationMock.mockReturnValue(true);
+
+    const { result } = renderHook(() => usePayWithToken());
+
+    expect(result.current.label).toBe('Pay with');
   });
 
   it('keeps a user-selected crypto token when the flag default is set', () => {
@@ -226,6 +294,7 @@ describe('usePayWithToken', () => {
     const { result } = renderHook(() => usePayWithToken());
 
     expect(result.current.isMoneyAccountSelected).toBe(false);
+    expect(result.current.label).toBe('Convert');
     expect(result.current.displayToken).toMatchObject({
       symbol: 'USDC',
     });
@@ -271,7 +340,9 @@ describe('usePayWithToken', () => {
       setPayToken: jest.fn(),
       isNative: false,
     });
-    useTransactionPayRequiredTokensMock.mockReturnValue([PAY_TOKEN as never]);
+    useTransactionPayRequiredTokensMock.mockReturnValue([
+      REQUIRED_TOKEN as never,
+    ]);
 
     const { result } = renderHook(() => usePayWithToken());
 
@@ -281,8 +352,8 @@ describe('usePayWithToken', () => {
   it('reports hasAvailableTokens when a selectable funding token exists', () => {
     useTransactionPayAvailableTokensMock.mockReturnValue([
       {
-        address: PAY_TOKEN.address,
-        chainId: PAY_TOKEN.chainId,
+        address: PAY_TOKEN_ADDRESS,
+        chainId: PAY_TOKEN_CHAIN_ID,
         disabled: false,
       },
     ] as never);
@@ -296,5 +367,26 @@ describe('usePayWithToken', () => {
     const { result } = renderHook(() => usePayWithToken());
 
     expect(result.current.hasAvailableTokens).toBe(false);
+  });
+
+  it('formats crypto balance with "$" and en-US separators for moneyAccountDeposit', () => {
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: {
+        id: 'tx-1',
+        type: TransactionType.moneyAccountDeposit,
+        txParams: { from: FROM_ADDRESS },
+      } as TransactionMeta,
+    } as ReturnType<typeof useConfirmContext>);
+    usePayTokenAccountBalanceMock.mockReturnValue({
+      balanceUsd: '25327.86',
+      balanceRaw: '25327860000',
+      isLiveBalance: true,
+      isBalanceUsdKnown: true,
+    });
+
+    const { result } = renderHook(() => usePayWithToken());
+
+    expect(result.current.balanceUsdFormatted).toBe('$25,327.86');
+    expect(result.current.label).toBe('Convert');
   });
 });

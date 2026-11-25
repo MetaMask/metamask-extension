@@ -8,38 +8,49 @@ on:
 
 permissions:
   contents: read
-  id-token: write # required for s3 uploads
 
 jobs:
   build-dist-webpack:
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-webpack
-      build-command: yarn webpack:lavamoat:build --zip
+      build-command: webpack:lavamoat:build --zip
       builds-from-run: ${{ github.run_id }}
     secrets: inherit
 
   build-dist-mv2-webpack:
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-mv2-webpack
-      build-command: yarn webpack:lavamoat:build:mv2 --zip
+      build-command: webpack:lavamoat:build:mv2 --zip
       builds-from-run: ${{ github.run_id }}
     secrets: inherit
 
   build-experimental-webpack:
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-experimental-webpack
-      build-command: yarn webpack:lavamoat:build --type experimental --zip
+      build-command: webpack:lavamoat:build --type experimental --zip
       builds-from-run: ${{ github.run_id }}
     secrets: inherit
 
   build-experimental-mv2-webpack:
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-experimental-mv2-webpack
-      build-command: yarn webpack:lavamoat:build:mv2 --type experimental --zip
+      build-command: webpack:lavamoat:build:mv2 --type experimental --zip
       builds-from-run: ${{ github.run_id }}
     secrets: inherit
 

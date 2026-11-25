@@ -3,7 +3,6 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import useStaticTokensPollingHook from '../hooks/useStaticTokensPolling';
 import useDeFiPolling from '../hooks/defi/useDeFiPolling';
-import { useArcDefaultTokens } from '../hooks/useArcDefaultTokens';
 import {
   AssetPollingContext,
   AssetPollingContextValue,
@@ -12,11 +11,9 @@ import {
 
 jest.mock('../hooks/useStaticTokensPolling');
 jest.mock('../hooks/defi/useDeFiPolling');
-jest.mock('../hooks/useArcDefaultTokens');
 
 const mockUseStaticTokensPollingHook = jest.mocked(useStaticTokensPollingHook);
 const mockUseDeFiPolling = jest.mocked(useDeFiPolling);
-const mockUseArcDefaultTokens = jest.mocked(useArcDefaultTokens);
 
 const renderProvider = () => {
   return render(
@@ -31,7 +28,6 @@ describe('AssetPollingProvider', () => {
     jest.clearAllMocks();
     mockUseStaticTokensPollingHook.mockReturnValue({});
     mockUseDeFiPolling.mockReturnValue({});
-    mockUseArcDefaultTokens.mockImplementation(() => undefined);
   });
 
   it('always renders children', () => {
@@ -44,7 +40,6 @@ describe('AssetPollingProvider', () => {
 
     expect(mockUseDeFiPolling).toHaveBeenCalledTimes(1);
     expect(mockUseStaticTokensPollingHook).toHaveBeenCalledTimes(1);
-    expect(mockUseArcDefaultTokens).toHaveBeenCalledTimes(1);
   });
 
   describe('context value memoization', () => {

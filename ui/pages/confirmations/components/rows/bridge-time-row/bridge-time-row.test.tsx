@@ -1,5 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { TransactionType } from '@metamask/transaction-controller';
 import type {
   TransactionPayQuote,
   TransactionPayTotals,
@@ -71,8 +72,36 @@ describe('BridgeTimeRow', () => {
       estimatedDuration: 29,
     } as TransactionPayTotals);
 
-    const { getByTestId } = render();
+    const { getByTestId, getByText } = render();
+    expect(getByText(messages.estimatedTime.message)).toBeInTheDocument();
     expect(getByTestId('bridge-time-value')).toHaveTextContent('< 1 min');
+  });
+
+  it('renders Est. time and Less than 1 min for moneyAccountDeposit transactions', () => {
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: {
+        chainId: '0x1' as Hex,
+        type: TransactionType.batch,
+        nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+      },
+      isScrollToBottomCompleted: true,
+      setIsScrollToBottomCompleted: jest.fn(),
+      goBackTo: undefined,
+      suppressAutoExit: jest.fn(),
+      isAmountPending: false,
+      setIsAmountPending: jest.fn(),
+    } as ReturnType<typeof useConfirmContext>);
+    useTransactionPayTotalsMock.mockReturnValue({
+      estimatedDuration: 29,
+    } as TransactionPayTotals);
+
+    const { getByTestId, getByText } = render();
+    expect(
+      getByText(messages.moneyAccountDepositEstTime.message),
+    ).toBeInTheDocument();
+    expect(getByTestId('bridge-time-value')).toHaveTextContent(
+      messages.moneyAccountDepositLessThanOneMinute.message,
+    );
   });
 
   it('renders 1 min for durations between 30 and 60 seconds', () => {
@@ -99,8 +128,7 @@ describe('BridgeTimeRow', () => {
     } as TransactionPayTotals);
     useTransactionPayTokenMock.mockReturnValue({
       payToken: {
-        chainId: '0x1' as Hex,
-        address: '0x123' as Hex,
+        assetId: 'eip155:1/erc20:0x0000000000000000000000000000000000000123',
         symbol: 'TST',
         decimals: 18,
         balanceFiat: '100',
