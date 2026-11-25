@@ -68,7 +68,7 @@ describe('HyperliquidConnectionBar', () => {
     const { getByTestId } = renderBar();
 
     expect(getByTestId('hyperliquid-connection-bar-header')).toHaveTextContent(
-      'Perps balance',
+      'Hyperliquid balance',
     );
     expect(
       getByTestId('perps-compact-balance-actions-available'),
