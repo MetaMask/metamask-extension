@@ -1,10 +1,16 @@
 /**
  * Scores paired base/head benchmark jobs for the main-commit performance
  * detector. Each job runs the base and head build in alternating sessions on
- * one runner, so a job gives one log ratio of head to base per metric. A batch
- * is several jobs; a suspicious batch is confirmed by a second, independent one.
+ * one runner, so a job gives one shift of head over base per metric, as a log
+ * ratio and in ms. A batch is several jobs; a suspicious batch is confirmed by
+ * a second, independent one.
  */
-import { mean, summarizeShifts, type ShiftSummary } from './stats.mts';
+import {
+  mean,
+  summarizeJobShifts,
+  type JobShift,
+  type MsShiftSummary as ShiftSummary,
+} from './stats.mts';
 
 export type Browser = 'chrome' | 'firefox';
 export const BROWSERS = ['chrome', 'firefox'] as const;
@@ -19,10 +25,13 @@ export const BREAKDOWN_METRICS = [
   'longTaskTotalDuration',
 ] as const;
 
+// Smallest shift, in ms, that can raise a ping, and the shift from which a
+// ping is loud, for one series.
+export type SeriesFloor = { floorMs: number; loudMs: number };
+
 export type DetectorConfig = {
-  // Smallest shift, in percent, that can raise a ping, per browser.
-  floorPct: Record<Browser, number>;
-  loudPct: number;
+  // Per browser and verdict metric. A metric with no entry never raises a ping.
+  floors: Record<Browser, Record<string, SeriesFloor>>;
   // Fewest usable jobs for a batch to count as measured.
   minJobs: number;
   // Leading browser sessions dropped as warm-up.
@@ -30,8 +39,27 @@ export type DetectorConfig = {
 };
 
 export const DEFAULT_CONFIG: DetectorConfig = {
-  floorPct: { chrome: 1.5, firefox: 2 },
-  loudPct: 5,
+  // A floor is in ms because noise has a part that does not scale with the
+  // series, so a percentage is meaningless on a short one: 1.5% of 30 ms is
+  // below timer jitter. Set a series' floor from its own A/A runs at about 2 to
+  // 3 SD of the mean shift of one batch, and keep it above timer resolution.
+  // The ping also needs the one-sided 95% bound on the same side of zero and a
+  // second batch that agrees.
+  //
+  // The 100 `mode=aa` runs of 2026-11-20 gave these SDs of a batch's mean
+  // shift (Chrome load, Chrome uiStartup, Firefox load, Firefox uiStartup):
+  // 4.8, 5.2, 15.6 and 22.6 ms, so the floors below are 2.8, 3.1, 2.2 and 1.8
+  // SD. Loud is 5% of those runs' base medians (902, 1073, 1744 and 2075 ms).
+  floors: {
+    chrome: {
+      load: { floorMs: 13.5, loudMs: 45.1 },
+      uiStartup: { floorMs: 16.1, loudMs: 53.7 },
+    },
+    firefox: {
+      load: { floorMs: 34.9, loudMs: 87.2 },
+      uiStartup: { floorMs: 41.5, loudMs: 103.8 },
+    },
+  },
   minJobs: 4,
   skipSessions: 2,
 };
@@ -54,13 +82,13 @@ const MIN_SESSIONS = 10;
  * @param job - One benchmark job's session records and flattened page-load samples.
  * @param metrics - Metric names to score.
  * @param skipSessions - Leading sessions to drop as warm-up.
- * @returns The log ratio of head (B) to base (A) per metric, or undefined when the job is unusable.
+ * @returns The shift of head (B) over base (A) per metric, as a log ratio and in ms of the difference of the means, or undefined when the job is unusable.
  */
-export function jobLogRatios(
+export function jobShifts(
   job: JobResult,
   metrics: readonly string[],
   skipSessions: number,
-): Record<string, number> | undefined {
+): Record<string, JobShift> | undefined {
   const { sessions, samples } = job;
   if (
     sessions.length < MIN_SESSIONS ||
@@ -68,7 +96,7 @@ export function jobLogRatios(
   ) {
     return undefined;
   }
-  const ratios: Record<string, number> = {};
+  const shifts: Record<string, JobShift> = {};
   for (const metric of metrics) {
     const values = samples[metric];
     if (!values) {
@@ -90,12 +118,12 @@ export function jobLogRatios(
     if (base.length === 0 || head.length === 0) {
       continue;
     }
-    const ratio = Math.log(mean(head) / mean(base));
-    if (Number.isFinite(ratio)) {
-      ratios[metric] = ratio;
+    const logRatio = Math.log(mean(head) / mean(base));
+    if (Number.isFinite(logRatio)) {
+      shifts[metric] = { logRatio, ms: mean(head) - mean(base) };
     }
   }
-  return ratios;
+  return shifts;
 }
 
 export type Level = 'none' | 'quiet' | 'loud';
@@ -103,25 +131,20 @@ export type Direction = 'slower' | 'faster';
 export type Verdict = { level: Level; direction?: Direction };
 
 /**
- * A shift counts when it reaches the floor and its one-sided 95% bound stays
- * on the same side of zero.
+ * A shift counts when it reaches the floor, in ms, and its one-sided 95% bound
+ * in ms stays on the same side of zero.
  *
  * @param summary - Shift of one metric over a set of jobs.
- * @param floorPct - Smallest shift, in percent, that counts.
- * @param loudPct - Shift, in percent, from which a ping is loud.
+ * @param floor - The series' floor and loud threshold, in ms.
  */
-export function classify(
-  summary: ShiftSummary,
-  floorPct: number,
-  loudPct: number,
-): Verdict {
-  const slower = summary.shiftPct >= floorPct && summary.lowerPct > 0;
-  const faster = summary.shiftPct <= -floorPct && summary.upperPct < 0;
+export function classify(summary: ShiftSummary, floor: SeriesFloor): Verdict {
+  const slower = summary.shiftMs >= floor.floorMs && summary.lowerMs > 0;
+  const faster = summary.shiftMs <= -floor.floorMs && summary.upperMs < 0;
   if (!slower && !faster) {
     return { level: 'none' };
   }
   return {
-    level: Math.abs(summary.shiftPct) >= loudPct ? 'loud' : 'quiet',
+    level: Math.abs(summary.shiftMs) >= floor.loudMs ? 'loud' : 'quiet',
     direction: slower ? 'slower' : 'faster',
   };
 }
@@ -132,7 +155,7 @@ export type BatchScore = {
   jobsTotal: number;
   jobsUsable: number;
   measurable: boolean;
-  logRatios: Record<string, number[]>;
+  shifts: Record<string, JobShift[]>;
   metrics: Record<string, MetricScore>;
 };
 
@@ -142,37 +165,39 @@ export function scoreBatch(
   config: DetectorConfig,
 ): BatchScore {
   const names = [...VERDICT_METRICS, ...BREAKDOWN_METRICS];
-  const logRatios: Record<string, number[]> = {};
+  const shifts: Record<string, JobShift[]> = {};
   let jobsUsable = 0;
   for (const job of jobs) {
-    const ratios = jobLogRatios(job, names, config.skipSessions);
-    // A job with no ratio for a verdict metric (empty or renamed samples) cannot show a change.
+    const jobResult = jobShifts(job, names, config.skipSessions);
+    // A job with no shift for a verdict metric (empty or renamed samples) cannot show a change.
     if (
-      !ratios ||
-      VERDICT_METRICS.some((metric) => ratios[metric] === undefined)
+      !jobResult ||
+      VERDICT_METRICS.some((metric) => jobResult[metric] === undefined)
     ) {
       continue;
     }
     jobsUsable += 1;
-    for (const [metric, ratio] of Object.entries(ratios)) {
-      (logRatios[metric] ??= []).push(ratio);
+    for (const [metric, shift] of Object.entries(jobResult)) {
+      (shifts[metric] ??= []).push(shift);
     }
   }
   const metrics: Record<string, MetricScore> = {};
   for (const metric of names) {
-    const summary = summarizeShifts(logRatios[metric] ?? []);
+    const summary = summarizeJobShifts(shifts[metric] ?? []);
     metrics[metric] = {
       summary,
-      verdict: summary
-        ? classify(summary, config.floorPct[browser], config.loudPct)
-        : { level: 'none' },
+      // Breakdown metrics have no floor and never raise a ping.
+      verdict:
+        summary && config.floors[browser][metric]
+          ? classify(summary, config.floors[browser][metric])
+          : { level: 'none' },
     };
   }
   return {
     jobsTotal: jobs.length,
     jobsUsable,
     measurable: jobsUsable >= config.minJobs,
-    logRatios,
+    shifts,
     metrics,
   };
 }
@@ -246,21 +271,20 @@ export function decide(
     for (const metric of suspicious) {
       const firstSummary = first[browser].metrics[metric].summary;
       const secondSummary = second[browser].metrics[metric].summary;
-      const pooled = summarizeShifts([
-        ...first[browser].logRatios[metric],
-        ...(second[browser].logRatios[metric] ?? []),
+      const pooled = summarizeJobShifts([
+        ...first[browser].shifts[metric],
+        ...(second[browser].shifts[metric] ?? []),
       ]);
       if (!firstSummary || !secondSummary || !pooled) {
         unmeasured.push(browser);
         break;
       }
-      const floor = config.floorPct[browser];
-      const verdict = classify(pooled, floor, config.loudPct);
+      const floor = config.floors[browser][metric];
+      const verdict = classify(pooled, floor);
       const sameWay =
         first[browser].metrics[metric].verdict.direction ===
           verdict.direction &&
-        classify(secondSummary, floor, config.loudPct).direction ===
-          verdict.direction;
+        classify(secondSummary, floor).direction === verdict.direction;
       if (verdict.level !== 'none' && verdict.direction && sameWay) {
         findings.push({
           browser,
