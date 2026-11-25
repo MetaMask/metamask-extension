@@ -18,12 +18,13 @@ on:
         required: false
         type: string
       mode:
-        description: auto, or aa to run the head against itself as a false-alarm canary
+        description: auto; aa to run the head against itself as a false-alarm canary; noop to measure a head whose build files equal its base's, built in separate Main runs, against that base (negative control)
         required: false
         type: choice
         options:
           - auto
           - aa
+          - noop
         default: auto
       inject_head_ms:
         description: Dry run only, milliseconds of busy-wait added to the head build
@@ -43,7 +44,7 @@ on:
           - startupPowerUserHome
         default: startupStandardHome
 
-run-name: ${{ format('Main performance detector {0}{1}{2}{3}', inputs.head_sha || github.event.workflow_run.head_sha || 'latest-main', inputs.mode == 'aa' && ' (aa)' || '', inputs.inject_head_ms && ' (inject)' || '', inputs.preset == 'startupPowerUserHome' && ' (power-user)' || '') }}
+run-name: ${{ format('Main performance detector {0}{1}{2}{3}', inputs.head_sha || github.event.workflow_run.head_sha || 'latest-main', (inputs.mode == 'aa' || inputs.mode == 'noop') && format(' ({0})', inputs.mode) || '', inputs.inject_head_ms && ' (inject)' || '', inputs.preset == 'startupPowerUserHome' && ' (power-user)' || '') }}
 
 # One run per commit. Runs for different commits are independent and none is
 # cancelled: a later merge must not drop the check of an earlier one. A dispatch
@@ -105,7 +106,7 @@ jobs:
               core.setOutput('done', 'true');
             };
 
-            if (process.env.MODE === 'aa' || process.env.INJECT) return;
+            if (process.env.MODE === 'aa' || process.env.MODE === 'noop' || process.env.INJECT) return;
 
             // Re-running Main fires this workflow again; do not measure a commit twice.
             if (Number(context.payload.workflow_run?.run_attempt) > 1) {
@@ -218,6 +219,10 @@ jobs:
             echo "::error::inject_head_ms must be a non-negative number"
             exit 1
           fi
+          if [[ "$MODE" == noop && -n "$INJECT" ]]; then
+            echo "::error::mode=noop measures an unmodified head; leave inject_head_ms empty"
+            exit 1
+          fi
 
           node .github/scripts/main-detector/resolve-cli.mts \
             --head "$head" --out resolve.json > /dev/null
@@ -237,7 +242,21 @@ jobs:
 
           base=$(jq -r '.base.sha // empty' resolve.json)
           identical=false
-          if [[ "$MODE" != aa ]]; then
+          if [[ "$MODE" == noop ]]; then
+            # A negative control needs two builds that differ only in being built
+            # separately: different Main runs, and the same files by name, size and CRC.
+            if [[ "$(jq -r .base.run resolve.json)" == "$(jq -r .head.run resolve.json)" ]]; then
+              echo "::error::mode=noop: head and base share build run $(jq -r .head.run resolve.json), so this would be an A/A run"
+              exit 1
+            fi
+            node .github/scripts/main-detector/compare-builds-cli.mts \
+              --resolve resolve.json --out compare.json --zips > /dev/null
+            if [[ "$(jq -r .identical compare.json)" != true ]]; then
+              echo "::error::mode=noop: the head build's files differ from base \`${base:0:10}\`'s, so it is not a no-op: $(jq -c . compare.json)"
+              exit 1
+            fi
+            cat compare.json
+          elif [[ "$MODE" != aa ]]; then
             # Compares each zip's file list (names, sizes, CRCs) from its central
             # directory with range requests, so identical builds exit without downloads.
             node .github/scripts/main-detector/compare-builds-cli.mts \
@@ -261,11 +280,12 @@ jobs:
             fi
           fi
 
-          plan=$(jq -c --argjson canary "$canary" --arg inject "$INJECT" '{
+          plan=$(jq -c --argjson canary "$canary" --arg inject "$INJECT" --arg mode "$MODE" '{
             headSha: .head.sha,
             headSubject: .subjects[.head.sha],
             baseSha: (if $canary then .head.sha else .base.sha end),
             canary: $canary,
+            noop: ($mode == "noop"),
             injectMs: (if $inject == "" then null else ($inject | tonumber) end),
             rangeSize: (if $canary then 1 else (.range | length) end),
             headRun: .head.run,

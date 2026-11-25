@@ -73,8 +73,10 @@ async function main(): Promise<void> {
   });
   const detectorRuns = listRuns('main-detector.yml', new Date(from))
     .map((run) => ({ ...run, sha: shaOf(run.title) }))
-    // Positive controls and canaries say nothing about whether the commit was checked.
-    .filter((run) => run.sha !== '' && !/\((aa|inject)\)/u.test(run.title));
+    // Positive and negative controls and canaries say nothing about whether the commit was checked.
+    .filter(
+      (run) => run.sha !== '' && !/\((aa|noop|inject)\)/u.test(run.title),
+    );
 
   const health = assessHealth(mainRuns, detectorRuns);
   const line = `Main finished ${health.expected} commit(s) between ${new Date(from).toISOString()} and ${new Date(to).toISOString()}: ${health.missing.length} without a detector run, ${health.failed.length} with only failed runs (${health.status}).`;

@@ -1,8 +1,10 @@
 /**
- * Usage: node .github/scripts/main-detector/compare-builds-cli.mts --resolve resolve.json --out compare.json
+ * Usage: node .github/scripts/main-detector/compare-builds-cli.mts --resolve resolve.json --out compare.json [--zips]
  * Decides whether the head and base builds hold the same files, by reading
  * only each zip's central directory with HTTP range requests (no downloads).
  * Any failure counts as "not identical", so the detector measures instead.
+ * --zips reads the zips even when the source hashes or the run match, for a
+ * no-op run that must show its two builds hold the same files.
  */
 import fs from 'node:fs';
 import { parseArgs } from 'node:util';
@@ -58,7 +60,11 @@ async function zipFingerprint(url: string): Promise<string> {
 
 async function main(): Promise<void> {
   const { values } = parseArgs({
-    options: { resolve: { type: 'string' }, out: { type: 'string' } },
+    options: {
+      resolve: { type: 'string' },
+      out: { type: 'string' },
+      zips: { type: 'boolean', default: false },
+    },
   });
   if (!values.resolve || !values.out) {
     throw new Error('--resolve and --out are required');
@@ -72,8 +78,9 @@ async function main(): Promise<void> {
   // Equal source hashes, or the same donor run, are what main.yml trusts to
   // reuse one build for both commits, so no zip needs reading.
   if (
-    baseRef.run === headRef.run ||
-    (baseRef.sourceHash && baseRef.sourceHash === headRef.sourceHash)
+    !values.zips &&
+    (baseRef.run === headRef.run ||
+      (baseRef.sourceHash && baseRef.sourceHash === headRef.sourceHash))
   ) {
     result.identical = true;
     result.via = baseRef.run === headRef.run ? 'same-run' : 'source-hash';
