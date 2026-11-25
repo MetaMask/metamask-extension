@@ -98,7 +98,7 @@ export const PerpsCompactBalanceActions = ({
             fontFamily={FontFamily.Hero}
             isHidden={privacyMode}
             length={SensitiveTextLength.Medium}
-            className="truncate"
+            className="truncate md:text-s-display-md md:leading-s-display-md md:font-bold md:tracking-s-display-md"
             data-testid="perps-compact-balance-actions-available"
           >
             {formatCurrency(availableBalance, 'USD')}
