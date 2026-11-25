@@ -12,6 +12,8 @@ module.exports = {
   modulePathIgnorePatterns: ['<rootDir>/development/.webpack/'],
   maxWorkers: '50%',
   moduleNameMapper: {
+    '^multiformats/cid$':
+      '<rootDir>/node_modules/@metamask/assets-controllers/node_modules/multiformats/dist/src/cid.js',
     // Stub @metamask/perps-controller so integration suites can resolve it
     // without transforming its ESM-only transitive deps (@nktkas/hyperliquid →
     // @noble/hashes). Mirrors the unit jest config mapping.

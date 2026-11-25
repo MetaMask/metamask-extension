@@ -172,6 +172,12 @@
     "yarn-binary:download": "corepack pack -o .yarn/yarn-corepack.tgz",
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
+  "previewBuilds": {
+    "@metamask/assets-controllers": {
+      "type": "non-breaking",
+      "previewVersion": "113.3.3-preview-f49a29d65"
+    }
+  },
   "resolutions": {
     "@metamask/network-controller": "^38.0.1",
     "@metamask/transaction-controller": "^74.3.0",

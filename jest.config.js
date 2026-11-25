@@ -20,6 +20,8 @@ module.exports = {
   coveragePathIgnorePatterns: ['.stories.*', '.snap$'],
   coverageReporters: ['html', 'json'],
   moduleNameMapper: {
+    '^multiformats/cid$':
+      '<rootDir>/node_modules/@metamask/assets-controllers/node_modules/multiformats/dist/src/cid.js',
     // Mock lightweight-charts since it requires browser/canvas APIs not available in Jest
     '^lightweight-charts$': '<rootDir>/test/mocks/lightweight-charts.js',
     // Stub @metamask/perps-controller so every test suite can resolve it without
