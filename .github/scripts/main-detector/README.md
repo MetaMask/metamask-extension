@@ -17,9 +17,9 @@ When the `Main` workflow finishes for a push to `main`, `main-detector.yml`:
 3. Otherwise runs 5 jobs per browser. Each job runs the base and head build
    alternately in one session on one runner, so runner and browser differences
    cancel out.
-4. Scores the log ratio of head to base for `uiStartup` and `load` in Chrome
-   and Firefox. If the first batch looks suspicious, a second independent batch
-   confirms it.
+4. Scores the shift of head over base, in ms, for `uiStartup` and `load` in
+   Chrome and Firefox. If the first batch looks suspicious, a second
+   independent batch confirms it.
 
 ## Reading a ping
 
@@ -29,10 +29,25 @@ the same direction. The message shows the pooled shift
 with its 95% bounds, the per-job shifts, and a breakdown (`loadScripts`,
 `setupStore`, `firstReactRender`, `longTaskTotalDuration`) to point at the phase.
 
-|            | Chrome                     | Firefox             |
-| ---------- | -------------------------- | ------------------- |
-| Quiet ping | shift of 1.5% or more      | shift of 2% or more |
-| Loud ping  | 5% or more (both browsers) |                     |
+| Shift, in ms | Chrome load | Chrome uiStartup | Firefox load | Firefox uiStartup |
+| ------------ | ----------- | ---------------- | ------------ | ----------------- |
+| Quiet ping   | 13.5 ms     | 16.1 ms          | 34.9 ms      | 41.5 ms           |
+| Loud ping    | 45.1 ms     | 53.7 ms          | 87.2 ms      | 103.8 ms          |
+
+A page load that got 40 ms slower in Chrome pings, quietly. Each job measures
+the shift in ms, as the head's mean less the base's, and the batch pools those
+shifts. The floors are in ms, not percent, because noise has a part that does
+not scale with the series: 1.5% of a 30 ms step is below timer jitter.
+
+The floors come from the 100 A/A runs of 2026-11-20, where base and head are
+the same build. The standard deviation of one batch's mean shift was 4.8 ms
+(Chrome load), 5.2 ms (Chrome uiStartup), 15.6 ms (Firefox load) and 22.6 ms
+(Firefox uiStartup), so a quiet floor is 2.8, 3.1, 2.2 and 1.8 of them. A loud
+ping is 5% of those series' base medians (902, 1073, 1744 and 2075 ms). The
+bound and the second batch are what keep false pings rare: none of the 100 A/A
+runs pinged. A new series gets its own floor from its own A/A runs, at about 2
+to 3 of those standard deviations and above timer resolution; a metric with no
+floor in `DEFAULT_CONFIG.floors`, such as the breakdown, never pings.
 
 The one-sided 95% bound applies to each test on its own. A commit has up to
 eight first-stage tests (2 browsers, 2 metrics, 2 directions), so the second
