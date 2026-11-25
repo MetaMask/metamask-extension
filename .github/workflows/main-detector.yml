@@ -10,7 +10,7 @@ name: Main performance detector
 # Beside the commit checks, a scheduled run slows Chrome's CPU and measures with
 # the same paired jobs and scoring, under its own Slack label: daily, the newest
 # main commit against the commit the last daily run measured, in the standard
-# startup preset and the critical user flows. See
+# and the power-user startup preset and the critical user flows. See
 # .github/scripts/main-detector/README.md.
 
 on:
@@ -401,6 +401,20 @@ jobs:
       include_cufs: true
       post_slack: ${{ inputs.post_slack == true }}
 
+  # The power-user startup preset, measured in the daily run on the same range.
+  power-user:
+    needs: scheduled
+    if: ${{ needs.scheduled.outputs.proceed == 'true' && needs.scheduled.outputs.kind == 'daily' }}
+    uses: ./.github/workflows/main-detector-batch.yml
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+    with:
+      plan: ${{ needs.scheduled.outputs.power_user_plan }}
+      iterations: ${{ needs.scheduled.outputs.iterations }}
+      include_cufs: false
+      post_slack: ${{ inputs.post_slack == true }}
+
   # The daily run's other presets, on the head build alone and unscored.
   presets:
     needs: scheduled
@@ -412,11 +426,11 @@ jobs:
     with:
       plan: ${{ needs.scheduled.outputs.plan }}
 
-  # Records the commit the daily run measured, once it succeeded.
+  # Records the commit the daily run measured, once every pass of it succeeded.
   # The next daily run reads the commit from the name of this artifact.
   record:
-    needs: [scheduled, daily]
-    if: ${{ needs.daily.result == 'success' && inputs.mode != 'throttled-aa' }}
+    needs: [scheduled, daily, power-user]
+    if: ${{ needs.daily.result == 'success' && needs.power-user.result == 'success' && inputs.mode != 'throttled-aa' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
