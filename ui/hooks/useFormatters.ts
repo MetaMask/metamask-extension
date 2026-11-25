@@ -1,9 +1,6 @@
-import { useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useMemo } from 'react';
 import { createFormatters } from '@metamask/client-utils';
-import { getIntlLocale } from '../ducks/locale/locale';
-import { resolveFormattingLocale } from '../helpers/utils/locale';
-import { useEventListener } from './useEventListener';
+import { useFormattingLocale } from './useFormattingLocale';
 
 const dateTimeFormatCache: Record<string, Intl.DateTimeFormat> = {};
 
@@ -34,17 +31,9 @@ function formatMediumDate(
 }
 
 export function useFormatters() {
-  const appLocale = useSelector(getIntlLocale);
-  const [deviceLocales, setDeviceLocales] = useState(() => navigator.languages);
-  useEventListener('languagechange', () =>
-    setDeviceLocales(navigator.languages),
-  );
+  const locale = useFormattingLocale();
 
   return useMemo(() => {
-    const locale = resolveFormattingLocale({
-      appLanguage: appLocale,
-      deviceLocales,
-    });
     const base = createFormatters({ locale });
 
     return {
@@ -54,5 +43,5 @@ export function useFormatters() {
        */
       formatMediumDate: formatMediumDate.bind(null, locale),
     };
-  }, [appLocale, deviceLocales]);
+  }, [locale]);
 }
