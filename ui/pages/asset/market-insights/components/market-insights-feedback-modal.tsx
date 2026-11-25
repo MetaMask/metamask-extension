@@ -1,4 +1,4 @@
-import React, { useCallback, useId, useMemo, useState } from 'react';
+import React, { useCallback, useId, useState } from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -99,10 +99,7 @@ export const MarketInsightsFeedbackModal = ({
   const canSubmit =
     selectedReason !== null && (!isSomethingElse || trimmedFeedback.length > 0);
 
-  const remainingChars = useMemo(
-    () => MAX_FEEDBACK_LENGTH - additionalFeedback.length,
-    [additionalFeedback],
-  );
+  const remainingChars = MAX_FEEDBACK_LENGTH - additionalFeedback.length;
 
   const handleReasonPress = useCallback(
     (reason: MarketInsightsFeedbackReason) => {
