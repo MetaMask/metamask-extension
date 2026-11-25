@@ -324,7 +324,7 @@ jobs:
             echo
             echo "- [ ] I've reviewed the shape changes and the CI results."
           } > pr-body.md
-          EXISTING="$(gh pr list --head "${BRANCH}" --base main --json number --jq '.[0].number')"
+          EXISTING="$(gh pr list --head "${BRANCH}" --base main --json number --jq '.[0].number // empty')"
           if [ -n "${EXISTING}" ]; then
             gh pr edit "${EXISTING}" --body-file pr-body.md --add-label team-qa --add-label no-changelog
             NUMBER="${EXISTING}"
