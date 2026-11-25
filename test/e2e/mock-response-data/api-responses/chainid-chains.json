@@ -49,8 +49,7 @@
       {
         "name": "etherscan",
         "url": "https://etherscan.io",
-        "standard": "EIP3091",
-        "icon": ""
+        "standard": "EIP3091"
       },
       {
         "name": "blockscout",
@@ -61,17 +60,14 @@
       {
         "name": "dexguru",
         "url": "https://ethereum.dex.guru",
-        "standard": "EIP3091",
-        "icon": ""
+        "standard": "EIP3091"
       },
       {
         "name": "Routescan",
         "url": "https://ethereum.routescan.io",
-        "standard": "EIP3091",
-        "icon": ""
+        "standard": "EIP3091"
       }
-    ],
-    "title": ""
+    ]
   },
   {
     "name": "Orderly Mainnet",
@@ -88,9 +84,6 @@
     "shortName": "orderly",
     "chainId": 291,
     "networkId": 291,
-    "ens": {
-      "registry": ""
-    },
     "explorers": [
       {
         "name": "orderlyscout",
@@ -98,13 +91,11 @@
         "standard": "EIP3091",
         "icon": ""
       }
-    ],
-    "title": ""
+    ]
   },
   {
     "name": "PrimusChain mainnet",
     "chain": "PC",
-    "icon": "",
     "rpc": ["https://ethnode.primusmoney.com/mainnet"],
     "faucets": [],
     "nativeCurrency": {
@@ -115,19 +106,7 @@
     "infoURL": "https://primusmoney.com",
     "shortName": "primuschain",
     "chainId": 78,
-    "networkId": 78,
-    "ens": {
-      "registry": ""
-    },
-    "explorers": [
-      {
-        "name": "",
-        "url": "",
-        "standard": "",
-        "icon": ""
-      }
-    ],
-    "title": ""
+    "networkId": 78
   },
   {
     "name": "Camino C-Chain",
@@ -144,23 +123,17 @@
     "shortName": "Camino",
     "chainId": 500,
     "networkId": 1000,
-    "ens": {
-      "registry": ""
-    },
     "explorers": [
       {
         "name": "blockexplorer",
         "url": "https://suite.camino.network/explorer",
-        "standard": "none",
-        "icon": ""
+        "standard": "none"
       }
-    ],
-    "title": ""
+    ]
   },
   {
     "name": "Elysium Testnet",
     "chain": "Atlantis",
-    "icon": "",
     "rpc": ["https://rpc.atlantischain.network"],
     "faucets": ["https://faucet.atlantischain.network"],
     "nativeCurrency": {
@@ -172,15 +145,11 @@
     "shortName": "ATL",
     "chainId": 1338,
     "networkId": 1338,
-    "ens": {
-      "registry": ""
-    },
     "explorers": [
       {
         "name": "Atlantis explorer",
         "url": "https://blockscout.atlantischain.network",
-        "standard": "EIP3091",
-        "icon": ""
+        "standard": "EIP3091"
       }
     ],
     "title": "An L1, carbon-neutral, tree-planting, metaverse dedicated blockchain created by VulcanForged"
@@ -188,7 +157,6 @@
   {
     "name": "Geth Testnet",
     "chain": "ETH",
-    "icon": "",
     "rpc": ["http://127.0.0.1:8545"],
     "faucets": [],
     "nativeCurrency": {
@@ -201,17 +169,6 @@
     "chainId": 1337,
     "networkId": 1337,
     "slip44": 1,
-    "ens": {
-      "registry": ""
-    },
-    "explorers": [
-      {
-        "name": "",
-        "url": "",
-        "standard": "",
-        "icon": ""
-      }
-    ],
     "title": "Go Ethereum (Geth) Private Testnet"
   },
   {
@@ -237,9 +194,6 @@
     "chainId": 59141,
     "networkId": 59141,
     "slip44": 1,
-    "ens": {
-      "registry": ""
-    },
     "explorers": [
       {
         "name": "Etherscan",
@@ -281,27 +235,17 @@
     "shortName": "megatest",
     "chainId": 6343,
     "networkId": 6343,
-    "ens": {
-      "registry": ""
-    },
     "explorers": [
       {
         "name": "",
         "url": "",
-        "standard": "",
-        "icon": ""
+        "standard": ""
       }
     ],
-    "title": "",
     "status": "",
     "parent": {
       "type": "",
-      "chain": "",
-      "bridges": [
-        {
-          "url": ""
-        }
-      ]
+      "chain": ""
     }
   },
   {
@@ -325,17 +269,12 @@
     "chainId": 10143,
     "networkId": 10143,
     "slip44": 1,
-    "ens": {
-      "registry": ""
-    },
     "explorers": [
       {
         "name": "Monad Testnet Explorer",
         "url": "https://testnet.monadexplorer.com",
-        "standard": "EIP3091",
-        "icon": ""
+        "standard": "EIP3091"
       }
-    ],
-    "title": ""
+    ]
   }
 ]
