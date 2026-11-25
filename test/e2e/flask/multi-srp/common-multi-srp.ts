@@ -6,6 +6,7 @@ import {
   LOCALHOST_NATIVE_ASSET_ID,
   MAINNET_NATIVE_ASSET_ID,
 } from '../../tests/tokens/utils/mocks';
+import { accountsSupportedNetworksV2 } from '../../mock-response-data/api-responses';
 
 export const ZERO_UNIFIED_EVM_BALANCES = {
   mainnetNativeEthHuman: '0',
@@ -36,8 +37,8 @@ export async function mockActiveNetworks(
   // Exclude 1337 from supported networks so newly imported SRP accounts report
   // their real on-chain balance (0 ETH) instead of inheriting the funded
   // fixture account's 25 ETH from the v5 multiaccount balances mock.
-  await mockServer
-    .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
+  await accountsSupportedNetworksV2
+    .rule(mockServer)
     .always()
     .thenCallback(() => ({
       statusCode: 200,

@@ -15,6 +15,11 @@ import {
   shapeV6AccountsApiBalances,
 } from '../../helpers/accounts-api-v6-balances';
 import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
+import {
+  fourByteSignatures,
+  priceV3Spot,
+  signatureInsightsSignature,
+} from '../../mock-response-data/api-responses';
 
 export const DECODING_E2E_API_URL =
   'https://signature-insights.api.cx.metamask.io/v1';
@@ -112,30 +117,10 @@ async function createMockSegmentEvent(mockServer: Mockttp, eventName: string) {
 }
 
 async function createMockSignatureDecodingEvent(mockServer: Mockttp) {
-  return await mockServer
-    .forPost(`${DECODING_E2E_API_URL}/signature`)
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        stateChanges: [
-          {
-            assetType: 'NATIVE',
-            changeType: 'RECEIVE',
-            address: '',
-            amount: '900000000000000000',
-            contractAddress: '',
-          },
-          {
-            assetType: 'ERC721',
-            changeType: 'LISTING',
-            address: '',
-            amount: '',
-            contractAddress: '0xafd4896984CA60d2feF66136e57f958dCe9482d5',
-            tokenID: '2101',
-          },
-        ],
-      },
-    }));
+  return await signatureInsightsSignature.rule(mockServer).thenCallback(() => ({
+    statusCode: 200,
+    json: signatureInsightsSignature.response(),
+  }));
 }
 
 export async function mockSignatureApproved(
@@ -200,36 +185,22 @@ export async function mockPermitDecoding(mockServer: Mockttp) {
 }
 
 export async function mockedSourcifyTokenSend(mockServer: Mockttp) {
-  return await mockServer
-    .forGet('https://www.4byte.directory/api/v1/signatures/')
+  return await fourByteSignatures
+    .rule(mockServer)
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     .withQuery({ hex_signature: '0xa9059cbb' })
     .always()
     .thenCallback(() => ({
       statusCode: 200,
-      json: {
-        count: 1,
-        next: null,
-        previous: null,
-        results: [
-          {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            bytes_signature: '©\u0005»',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            created_at: '2016-07-09T03:58:28.234977Z',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            hex_signature: '0xa9059cbb',
-            id: 145,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            text_signature: 'transfer(address,uint256)',
-          },
-        ],
-      },
+      json: fourByteSignatures.response({
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        hex_signature: '0xa9059cbb',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        text_signature: 'transfer(address,uint256)',
+      }),
     }));
 }
 
@@ -967,20 +938,19 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
           ],
         };
       }),
-    await mockServer
-      .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            'eip155:1/slip44:60': {
-              price: 1700,
-              marketCap: 382623505141,
-              pricePercentChange1d: 0,
-            },
+    await priceV3Spot.rule(mockServer).thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: priceV3Spot.response({
+          'eip155:1/slip44:60': {
+            id: 'ethereum',
+            price: 1700,
+            marketCap: 382623505141,
+            pricePercentChange1d: 0,
           },
-        };
-      }),
+        }),
+      };
+    }),
   ];
 }
 export async function mockNoDeFiPositionFeatureFlag(mockServer: Mockttp) {

@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "Gáz határértéke"
   },
-  "gasUsed": {
-    "message": "Használt gáz"
-  },
   "general": {
     "message": "Általános"
   },
@@ -401,9 +398,6 @@
     "message": "Privát kulcs",
     "description": "select this type of file to use to import an account"
   },
-  "privateNetwork": {
-    "message": "Magánhálózat"
-  },
   "readdToken": {
     "message": "Ezt a tokent a jövőben is hozzáadhatja, ha a fiókbeállítások menü „Token hozzáadása” elemére lép."
   },
@@ -554,9 +548,6 @@
   },
   "unapproved": {
     "message": "Jóvá nem hagyott"
-  },
-  "units": {
-    "message": "egységek"
   },
   "unknown": {
     "message": "Ismeretlen"

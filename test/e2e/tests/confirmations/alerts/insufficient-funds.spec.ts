@@ -8,6 +8,7 @@ import AlertModal from '../../../page-objects/pages/confirmations/alert-modal';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { login } from '../../../page-objects/flows/login.flow';
+import { accountsSupportedNetworksV2 } from '../../../mock-response-data/api-responses';
 
 /**
  * Exclude the local chain (1337) from the Accounts API supported
@@ -17,8 +18,8 @@ import { login } from '../../../page-objects/flows/login.flow';
  * @param server - The mock server instance.
  */
 async function mockAccountsApiWithoutLocalNode(server: Mockttp) {
-  await server
-    .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
+  await accountsSupportedNetworksV2
+    .rule(server)
     .always()
     .thenCallback(() => ({
       statusCode: 200,
