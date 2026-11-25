@@ -4762,52 +4762,6 @@
   "history": {
     "message": "Historial"
   },
-  "holdToRevealContent1": {
-    "message": "Su frase secreta de recuperación proporciona $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
-  },
-  "holdToRevealContent2": {
-    "message": "acceso completo a su monedero y a sus fondos.",
-    "description": "Is the bolded text in 'holdToRevealContent1'"
-  },
-  "holdToRevealContent3": {
-    "message": "No comparta esto con nadie. $1 $2",
-    "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
-  },
-  "holdToRevealContent4": {
-    "message": "El soporte técnico de MetaMask nunca se lo solicitará,",
-    "description": "Part of 'holdToRevealContent3'"
-  },
-  "holdToRevealContent5": {
-    "message": "pero quienes cometen fraudes electrónicos pueden solicitárselo.",
-    "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealContentPrivateKey1": {
-    "message": "Su clave privada proporciona $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealContentPrivateKey2": {
-    "message": "acceso completo a su monedero y fondos.",
-    "description": "Is the bolded text in 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealLockedLabel": {
-    "message": "mantenga presionado para revelar el círculo bloqueado"
-  },
-  "holdToRevealPrivateKey": {
-    "message": "Mantenga presionado para revelar su clave privada"
-  },
-  "holdToRevealPrivateKeyTitle": {
-    "message": "Mantenga segura su clave privada"
-  },
-  "holdToRevealSRP": {
-    "message": "Mantenga presionado para mostrar la SRP"
-  },
-  "holdToRevealSRPTitle": {
-    "message": "Mantenga segura su SRP"
-  },
-  "holdToRevealUnlockedLabel": {
-    "message": "mantenga presionado para revelar el círculo desbloqueado"
-  },
   "home": {
     "message": "Inicio",
     "description": "Label for the Home tab in the bottom navigation bar"
@@ -7314,9 +7268,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Sobreescribir el encabezado Content-Security-Policy"
-  },
-  "padlock": {
-    "message": "Candado"
   },
   "paidByMetaMask": {
     "message": "Pagado por MetaMask"

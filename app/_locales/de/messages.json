@@ -4758,52 +4758,6 @@
   "history": {
     "message": "Verlauf"
   },
-  "holdToRevealContent1": {
-    "message": "Ihre geheime Wiederherstellungsphrase bietet $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
-  },
-  "holdToRevealContent2": {
-    "message": "vollständigen Zugriff auf Ihre Wallet und Ihr Guthaben.",
-    "description": "Is the bolded text in 'holdToRevealContent1'"
-  },
-  "holdToRevealContent3": {
-    "message": "Teilen Sie dies mit niemandem. $1 $2",
-    "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
-  },
-  "holdToRevealContent4": {
-    "message": "Der MetaMask-Support wird Sie nicht danach fragen,",
-    "description": "Part of 'holdToRevealContent3'"
-  },
-  "holdToRevealContent5": {
-    "message": "Betrüger aber schon.",
-    "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealContentPrivateKey1": {
-    "message": "Ihr privater Schlüssel bietet $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealContentPrivateKey2": {
-    "message": "vollen Zugriff auf Ihre Wallet und Ihr Guthaben.",
-    "description": "Is the bolded text in 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealLockedLabel": {
-    "message": "Halten zum Offenlegen des gesperrten Kreises"
-  },
-  "holdToRevealPrivateKey": {
-    "message": "Halten, um privaten Schlüssel offenzulegen."
-  },
-  "holdToRevealPrivateKeyTitle": {
-    "message": "Bewaren Sie Ihren privaten Schlüssel sicher auf."
-  },
-  "holdToRevealSRP": {
-    "message": "Halten, um GWP anzuzeigen."
-  },
-  "holdToRevealSRPTitle": {
-    "message": "Bewahren Sie Ihre GWP sicher auf."
-  },
-  "holdToRevealUnlockedLabel": {
-    "message": "zur-Anzeige-Halten-Kreis entsperrt"
-  },
   "home": {
     "message": "Startseite",
     "description": "Label for the Home tab in the bottom navigation bar"
@@ -7310,9 +7264,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Content-Security-Policy-Header aufheben"
-  },
-  "padlock": {
-    "message": "Padlock"
   },
   "paidByMetaMask": {
     "message": "Bezahlt von MetaMask"
