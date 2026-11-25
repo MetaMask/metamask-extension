@@ -54,7 +54,6 @@ import {
 import type * as Wallet from './wallet-types';
 
 export {
-  FALLBACK_PRIORITY,
   defineApiMock,
   findDuplicateEndpoints,
   placeholderOf,
@@ -362,16 +361,6 @@ export const accountsTransactions = defineApiMock({
   syncUrl:
     'https://accounts.api.cx.metamask.io/v5/multiaccount/transactions?accountIds=eip155:1:0xd8da6bf26964af9d7eed9e03e53415d37aa96045&limit=1',
   body: accountsTransactionsJson,
-  defaultMock: {
-    always: true,
-    // An empty history. The fixture keeps one transaction for its shape.
-    reply: (_request, body) => ({
-      ...body,
-      data: [],
-      unprocessedAccounts: [],
-      pageInfo: { ...body.pageInfo, hasNextPage: false, count: 0 },
-    }),
-  },
 });
 
 export const bridgeAggregatorMetadata = defineApiMock({
@@ -471,7 +460,6 @@ export const clientConfigNetworks = defineApiMock({
   url: 'https://client-config.api.cx.metamask.io/v1/config/networks',
   syncUrl: 'https://client-config.api.cx.metamask.io/v1/config/networks',
   body: clientConfigNetworksJson,
-  defaultMock: { fallback: true },
 });
 
 export const clientConfigEvents = defineApiMock({
@@ -480,12 +468,6 @@ export const clientConfigEvents = defineApiMock({
   url: 'https://client-config.api.cx.metamask.io/v1/config/events-config',
   syncUrl: 'https://client-config.api.cx.metamask.io/v1/config/events-config',
   body: clientConfigEventsJson,
-  defaultMock: {
-    fallback: true,
-    // An empty map, so every event keeps its default purpose. The synced
-    // fixture lists live event names with placeholder purposes.
-    reply: (_request, body) => ({ data: { ...body.data, events: {} } }),
-  },
 });
 
 export const clientSideDetection = defineApiMock({
@@ -522,17 +504,6 @@ export const contentfulBanners = defineApiMock({
   syncUrl:
     'https://cdn.contentful.com/spaces/$CONTENTFUL_ACCESS_SPACE_ID/environments/master/entries?access_token=$CONTENTFUL_ACCESS_TOKEN&content_type=promotionalBanner&fields.showInExtension=true',
   body: contentfulBannersJson satisfies Wallet.ContentfulBannerResponse,
-  defaultMock: {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    query: { content_type: 'promotionalBanner' },
-    // The fixture keeps one placeholder banner and asset so their types are
-    // checked. No banner is shown.
-    reply: (_request, body) => ({
-      ...body,
-      items: body.items.filter((item) => item.sys.id),
-      includes: { ...body.includes, Asset: contentfulServedAssets(body) },
-    }),
-  },
 });
 
 export const geolocationV2 = defineApiMock({
@@ -554,15 +525,6 @@ export const moneyPositions = defineApiMock({
   syncUrl:
     'https://money.api.cx.metamask.io/v1/positions/0xd8da6bf26964af9d7eed9e03e53415d37aa96045',
   body: moneyPositionsJson,
-  defaultMock: {
-    always: true,
-    // A zero balance for the requested address satisfies the balance
-    // invariant of MoneyAccountBalanceService (musd + vmusd === total).
-    reply: (request, body) => ({
-      ...body,
-      address: new URL(request.url).pathname.split('/').pop(),
-    }),
-  },
 });
 
 export const onRampNetworks = defineApiMock({
@@ -589,9 +551,6 @@ export const priceSupportedNetworks = defineApiMock({
   url: 'https://price.api.cx.metamask.io/v2/supportedNetworks',
   syncUrl: 'https://price.api.cx.metamask.io/v2/supportedNetworks',
   body: priceSupportedNetworksJson,
-  // The price API client only caches a response with both `fullSupport` and
-  // `partialSupport`. The fixture lists match its hardcoded fallback.
-  defaultMock: { fallback: true, always: true },
 });
 
 export const priceV1Btc = defineApiMock({
@@ -601,7 +560,6 @@ export const priceV1Btc = defineApiMock({
   syncUrl:
     'https://price.api.cx.metamask.io/v1/spot-prices/bitcoin?vsCurrency=usd',
   body: priceV1BtcJson,
-  defaultMock: { query: { vsCurrency: 'usd' } },
 });
 
 export const rampsCountries = defineApiMock({
@@ -613,10 +571,6 @@ export const rampsCountries = defineApiMock({
   ),
   syncUrl: 'https://on-ramp-cache.api.cx.metamask.io/v2/regions/countries',
   body: rampsCountriesJson satisfies Wallet.RampsCountry[],
-  defaultMock: {
-    // The fixture keeps one placeholder country so its type is checked.
-    reply: (_request, body) => body.filter((country) => country.isoCode),
-  },
 });
 
 export const suggestedGasFees = defineApiMock({
@@ -643,8 +597,6 @@ export const swapsFeatureFlags = defineApiMock({
   defaultMock: {},
 });
 
-const AGLT_ADDRESS = '0x72c9Fb7ED19D3ce51cea5C56B3e023cd918baaDf';
-
 export const swapsToken = defineApiMock({
   id: 'swaps-token',
   method: 'GET',
@@ -652,18 +604,6 @@ export const swapsToken = defineApiMock({
   syncUrl:
     'https://bridge.api.cx.metamask.io/networks/1/token?address=0x72c9Fb7ED19D3ce51cea5C56B3e023cd918baaDf',
   body: swapsTokenJson,
-  defaultMock: {
-    query: { address: AGLT_ADDRESS },
-    // Swaps reads `decimals` as a string here, while the live API sends a
-    // number, so the value cannot live in the synced fixture.
-    reply: (_request, body) => ({
-      ...body,
-      symbol: 'AGLT',
-      type: 'erc20',
-      decimals: '18',
-      address: AGLT_ADDRESS.toLowerCase(),
-    }),
-  },
 });
 
 export const swapsTokens = defineApiMock({
@@ -682,7 +622,6 @@ export const tokenBlocklist = defineApiMock({
   syncUrl:
     'https://tokens.api.cx.metamask.io/blocklist?chainId=1&region=global',
   body: tokenBlocklistJson,
-  defaultMock: { query: { chainId: '1', region: 'global' } },
 });
 
 export const tokenMetadata = defineApiMock({

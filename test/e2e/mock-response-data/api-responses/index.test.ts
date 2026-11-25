@@ -67,25 +67,6 @@ describe('API endpoint definitions', () => {
       expect(findDuplicateEndpoints(endpoints)).toStrictEqual([]);
     });
 
-    it('builds every custom default from the request only for endpoints without a fixture default', () => {
-      expect(
-        endpoints
-          .filter(
-            ([, endpoint]) =>
-              endpoint.hasDefault && !endpoint.hasFixtureDefault,
-          )
-          .map(([key]) => key)
-          .sort(),
-      ).toStrictEqual([
-        'accounts-transactions',
-        'client-config-events',
-        'contentful-banners',
-        'money-positions',
-        'ramps-countries',
-        'swaps-token',
-      ]);
-    });
-
     it('serves the fixture as the default for 4byte, tx-sentinel /network and the token list', () => {
       expect(fourByteSignatures.hasFixtureDefault).toBe(true);
       expect(txSentinelNetwork.hasFixtureDefault).toBe(true);

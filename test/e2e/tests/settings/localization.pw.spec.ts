@@ -59,38 +59,41 @@ async function mockPhpConversion(mockServer: Mockttp) {
         };
       }),
     // Mock v3 spot-prices
-    await priceV3Spot.rule(mockServer).thenCallback((request) => {
-      const url = new URL(request.url);
-      const vsCurrency = url.searchParams.get('vsCurrency');
+    await priceV3Spot
+      .rule(mockServer)
+      .always()
+      .thenCallback((request) => {
+        const url = new URL(request.url);
+        const vsCurrency = url.searchParams.get('vsCurrency');
 
-      // Return PHP price if requesting PHP
-      if (vsCurrency === 'php') {
+        // Return PHP price if requesting PHP
+        if (vsCurrency === 'php') {
+          return {
+            statusCode: 200,
+            json: {
+              'eip155:1/slip44:60': {
+                id: 'ethereum',
+                price: 100000, // 1 ETH = 100,000 PHP
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
+            },
+          };
+        }
+
+        // Return USD price for any other currency
         return {
           statusCode: 200,
           json: {
             'eip155:1/slip44:60': {
               id: 'ethereum',
-              price: 100000, // 1 ETH = 100,000 PHP
+              price: 1,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
             },
           },
         };
-      }
-
-      // Return USD price for any other currency
-      return {
-        statusCode: 200,
-        json: {
-          'eip155:1/slip44:60': {
-            id: 'ethereum',
-            price: 1,
-            marketCap: 382623505141,
-            pricePercentChange1d: 0,
-          },
-        },
-      };
-    }),
+      }),
   ];
 }
 

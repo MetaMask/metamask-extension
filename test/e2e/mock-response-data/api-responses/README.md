@@ -19,6 +19,9 @@ export const gasPrices = defineApiMock({
 - `url` matches every request to the endpoint. `urlFor` matches one instance
   of it, such as one chain or one tx-sentinel host.
 - `syncUrl` is the live URL the fixture was taken from.
+  `yarn test:e2e:sync-api-mocks` fetches it and aligns `<id>.json` to the
+  live response's shape. `syncSkip` says why it is not fetched; POST
+  endpoints never are. `syncMapPaths` marks objects whose keys are data.
 - `body` is the fixture. `variants` holds responses with a different
   structure, if any.
 - `build` turns the test's input into a response for endpoints whose entries
@@ -26,8 +29,10 @@ export const gasPrices = defineApiMock({
   overrides on top of `body`.
 - `defaultMock` makes `mock-e2e.js` register `body` as the default response.
 
-`API_ENDPOINTS` lists every endpoint. `index.test.ts` fails when a JSON file
-in this folder has no definition, or a definition has no JSON file.
+`API_ENDPOINTS` lists every endpoint and is the only registry. `index.test.ts`
+and the sync fail when a JSON file in this folder has no definition, a
+definition has no JSON file, or two definitions share an id, a URL matcher or
+a sync URL.
 
 ## Using an endpoint in a spec
 
@@ -53,8 +58,7 @@ handler has to match on a query or a request body, needs a completion rule
 - `mockRaw(server, json, params?)` is the escape hatch for a body that is
   neither the fixture nor a variant.
 - `hasFixtureDefault` is true when `mock-e2e.js` serves the fixture `body` as
-  the endpoint's default (today `gas-prices` and
-  `accounts-supported-networks-v2`). The other endpoints that have a default in
+  the endpoint's default. The other endpoints that have a default in
   `mock-e2e.js` register it with `rule()` and their own handler.
 
 `body` and `variants` are deep-frozen, so a test cannot change the default for
@@ -62,25 +66,27 @@ later tests by editing them. `response()` returns a new object.
 
 ### One `mock()` per matcher
 
-`mock()` uses `.always()`, and mockttp serves the first matching rule that is
-not complete. A rule with `.always()` is never complete, so the first `mock()`
-for a matcher answers every request, and a later `mock()` (or `rule().always()`)
-for the same matcher is never served. It is ignored without an error. Put every
+`mock()`, `mockVariant()` and `mockRaw()` use `.always()`, and mockttp serves
+the first matching rule that is not complete. A rule with `.always()` is never
+complete, so the first of them for a matcher answers every request. A second
+one for the same matcher on the same server would never be served, so it
+throws. Put every
 entry the test needs in one call, or pass them to the helper that already
 registered the mock; for example, `mockPriceApi` takes `additionalSpotPrices`
 for this reason.
 
 ### When to use `rule()`
 
-Today most call sites still use `rule()`: it was the way to move a hand-written
-URL into the definition without changing the handler. Moving them to `mock()` or
-`response()` is the target of the follow-up PR (#47760), starting with the
-overrides that have no `.always()`.
+Most call sites still use `rule()`: it was the way to move a hand-written URL
+into the definition without changing the handler. Moving them to `mock()` or
+`response()` is a follow-up.
 
 `rule()` keeps mockttp's behaviour. A `rule()` override of an endpoint that has a
 default in `mock-e2e.js` answers only the first request unless it ends in
 `.always()`: after that, the default answers. Add `.always()` to any `rule()`
-override that has to answer every request.
+override that has to answer every request. The overrides that lacked it now
+use `mock()`, `mockRaw()` or `.always()`. A second `rule().always()` for the
+same matcher is still not detected.
 
 Overrides follow one rule: nested objects merge, arrays and scalars replace.
 Entries keyed by asset, token or account start from the fixture entry's shape

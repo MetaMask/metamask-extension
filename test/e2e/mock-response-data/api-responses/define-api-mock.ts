@@ -1,15 +1,4 @@
-import type {
-  CompletedRequest,
-  MockedEndpoint,
-  Mockttp,
-  RequestRuleBuilder,
-} from 'mockttp';
-
-/**
- * mockttp's `RulePriority.FALLBACK`. Not imported: this module also loads in
- * jsdom unit tests, where mockttp's runtime does not.
- */
-export const FALLBACK_PRIORITY = 0;
+import type { MockedEndpoint, Mockttp, RequestRuleBuilder } from 'mockttp';
 
 /** Values a test sets on top of a fixture. Nested objects are partial too. */
 export type Overrides<Fixture> = {
@@ -96,20 +85,11 @@ export type DefaultMockContext = {
   chainId: number;
 };
 
-type DefaultMock<Body, Params> = {
+type DefaultMock<Params> = {
   /** Narrows the default to one instance of the endpoint, e.g. one chain. */
   params?: (context: DefaultMockContext) => Params;
-  /** Narrows the default to requests with these query values. */
-  query?: Record<string, string>;
   /** Keeps answering after other matching rules, like `.always()`. */
   always?: boolean;
-  /** Answers only when no rule at the default priority matches. */
-  fallback?: boolean;
-  /**
-   * Builds the default from the request, for a default that answers by query
-   * or from the request URL. Without it, the default is `body`.
-   */
-  reply?: (request: CompletedRequest, body: Body) => unknown;
 };
 
 export type ApiMockDefinition<
@@ -148,8 +128,12 @@ export type ApiMockDefinition<
    * set of overrides applied on top of `body`.
    */
   build?: (input: Input) => Response;
-  /** Registers the endpoint's default response in `mock-e2e.js`. */
-  defaultMock?: DefaultMock<Body, Params>;
+  /**
+   * Registers `body` as the default response in `mock-e2e.js`. Endpoints
+   * whose default needs a query or callback handler register it there with
+   * `rule()` instead.
+   */
+  defaultMock?: DefaultMock<Params>;
 };
 
 type OptionalInput<Input, Params> = object extends Input
@@ -167,9 +151,7 @@ export type ApiMock<Body, Input, Response, Params, Variant extends string> = {
   readonly body: Body;
   /** Deep-frozen, like `body`. */
   readonly variants: Readonly<Record<Variant, unknown>>;
-  /** True when `mock-e2e.js` registers a default for this endpoint. */
-  readonly hasDefault: boolean;
-  /** True when that default serves the fixture `body` unchanged. */
+  /** True when `mock-e2e.js` serves the fixture `body` as this endpoint's default. */
   readonly hasFixtureDefault: boolean;
   /**
    * Escape hatch: the endpoint's rule builder, for handlers that match on a
@@ -348,8 +330,7 @@ export function defineApiMock<
     syncMapPaths: definition.syncMapPaths ?? [],
     body,
     variants,
-    hasDefault: Boolean(defaultMock),
-    hasFixtureDefault: Boolean(defaultMock && !defaultMock.reply),
+    hasFixtureDefault: Boolean(defaultMock),
     rule,
     response: (...args) => response(args[0]),
     mock: (server, ...args) =>
@@ -366,24 +347,8 @@ export function defineApiMock<
       if (!defaultMock) {
         return undefined;
       }
-      let builder = rule(server, defaultMock.params?.(context));
-      if (defaultMock.query) {
-        builder = builder.withQuery(defaultMock.query);
-      }
-      if (defaultMock.fallback) {
-        builder = builder.asPriority(FALLBACK_PRIORITY);
-      }
-      if (defaultMock.always) {
-        builder = builder.always();
-      }
-      const { reply: replyFor } = defaultMock;
-      if (replyFor) {
-        return builder.thenCallback(async (request) => ({
-          statusCode: 200,
-          json: await replyFor(request, body),
-        }));
-      }
-      return reply(() => body)(builder);
+      const builder = rule(server, defaultMock.params?.(context));
+      return reply(() => body)(defaultMock.always ? builder.always() : builder);
     },
   };
 }

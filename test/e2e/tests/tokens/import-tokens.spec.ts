@@ -129,27 +129,22 @@ async function importTokensTestMock(mockServer: Mockttp) {
 
 async function mockPriceFetch(mockServer: Mockttp) {
   return [
-    await priceV3Spot.rule(mockServer).thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          'eip155:1/slip44:60': {
-            price: ETH_CONVERSION_RATE_USD,
-          },
-          'eip155:59144/slip44:60': {
-            price: ETH_CONVERSION_RATE_USD,
-          },
-          'eip155:1/erc20:0x06af07097c9eeb7fd685c692751d5c66db49c215': {
-            price: 0.0002 * ETH_CONVERSION_RATE_USD,
-          },
-          'eip155:1/erc20:0x514910771af9ca656af840dff83e8264ecf986ca': {
-            price: 0.0003 * ETH_CONVERSION_RATE_USD,
-          },
-          'eip155:1/erc20:0x7d4b8cce0591c9044a22ee543533b72e976e36c3': {
-            price: 0.0001 * ETH_CONVERSION_RATE_USD,
-          },
-        },
-      };
+    await priceV3Spot.mockRaw(mockServer, {
+      'eip155:1/slip44:60': {
+        price: ETH_CONVERSION_RATE_USD,
+      },
+      'eip155:59144/slip44:60': {
+        price: ETH_CONVERSION_RATE_USD,
+      },
+      'eip155:1/erc20:0x06af07097c9eeb7fd685c692751d5c66db49c215': {
+        price: 0.0002 * ETH_CONVERSION_RATE_USD,
+      },
+      'eip155:1/erc20:0x514910771af9ca656af840dff83e8264ecf986ca': {
+        price: 0.0003 * ETH_CONVERSION_RATE_USD,
+      },
+      'eip155:1/erc20:0x7d4b8cce0591c9044a22ee543533b72e976e36c3': {
+        price: 0.0001 * ETH_CONVERSION_RATE_USD,
+      },
     }),
   ];
 }
@@ -189,34 +184,37 @@ async function mockSpotPricesV3(mockServer: Mockttp) {
     },
   };
 
-  return await priceV3Spot.rule(mockServer).thenCallback((request) => {
-    const url = new URL(request.url);
-    const assetIds = (url.searchParams.get('assetIds') ?? '').toLowerCase();
+  return await priceV3Spot
+    .rule(mockServer)
+    .always()
+    .thenCallback((request) => {
+      const url = new URL(request.url);
+      const assetIds = (url.searchParams.get('assetIds') ?? '').toLowerCase();
 
-    const json: Record<string, Record<string, unknown>> = {};
+      const json: Record<string, Record<string, unknown>> = {};
 
-    for (const [id, name] of Object.entries(nativeAssets)) {
-      if (assetIds.includes(id)) {
-        json[id] = {
-          ...NATIVE_ETH_SPOT_ENTRY_USD,
-          id: name,
-        };
+      for (const [id, name] of Object.entries(nativeAssets)) {
+        if (assetIds.includes(id)) {
+          json[id] = {
+            ...NATIVE_ETH_SPOT_ENTRY_USD,
+            id: name,
+          };
+        }
       }
-    }
 
-    for (const [id, { symbol }] of Object.entries(erc20Assets)) {
-      if (assetIds.includes(id)) {
-        json[id] = {
-          id: symbol,
-          price: 0,
-          marketCap: 0,
-          pricePercentChange1d: 0,
-        };
+      for (const [id, { symbol }] of Object.entries(erc20Assets)) {
+        if (assetIds.includes(id)) {
+          json[id] = {
+            id: symbol,
+            price: 0,
+            marketCap: 0,
+            pricePercentChange1d: 0,
+          };
+        }
       }
-    }
 
-    return { statusCode: 200, json };
-  });
+      return { statusCode: 200, json };
+    });
 }
 
 async function mockTokens(mockServer: Mockttp) {

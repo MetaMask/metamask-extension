@@ -32,8 +32,19 @@ const {
 const {
   API_ENDPOINTS,
   accountsBalancesV5,
+  accountsTransactions,
+  clientConfigEvents,
+  clientConfigNetworks,
+  contentfulBanners,
+  contentfulServedAssets,
+  moneyPositions,
   placeholderOf,
+  priceSupportedNetworks,
+  priceV1Btc,
   priceV3Spot,
+  rampsCountries,
+  swapsToken,
+  tokenBlocklist,
   tokensV3Assets,
 } = require('./mock-response-data/api-responses');
 
@@ -786,6 +797,30 @@ async function setupMocking(
       };
     });
 
+  // Config registry: networks config (ConfigRegistryController polling) and
+  // events config (AnalyticsController event-purpose classification, added in
+  // config-registry-controller 5.0.0). Without these mocks the unmocked-host
+  // catch-all returns a bare 200 with an empty body, which fails JSON parsing
+  // and retries 4x per poll before surfacing as a Sentry capture.
+  await server
+    .forGet('https://client-config.api.cx.metamask.io/v1/config/networks')
+    .asPriority(RulePriority.FALLBACK)
+    .thenCallback(() => ({
+      ok: true,
+      statusCode: 200,
+      json: clientConfigNetworks.body,
+    }));
+  await server
+    .forGet('https://client-config.api.cx.metamask.io/v1/config/events-config')
+    .asPriority(RulePriority.FALLBACK)
+    .thenCallback(() => ({
+      ok: true,
+      statusCode: 200,
+      // An empty map, so every event keeps its default purpose. The synced
+      // fixture lists live event names with placeholder purposes.
+      json: { data: { ...clientConfigEvents.body.data, events: {} } },
+    }));
+
   // Subscriptions Polling Get Subscriptions
   await server
     .forGet('https://subscription.api.cx.metamask.io/v1/subscriptions')
@@ -977,6 +1012,32 @@ async function setupMocking(
     await endpoint.mockDefault(server, { chainId });
   }
 
+  await server
+    .forGet('https://bridge.api.cx.metamask.io/networks/1/token')
+    .withQuery({ address: '0x72c9Fb7ED19D3ce51cea5C56B3e023cd918baaDf' })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          ...swapsToken.body,
+          symbol: 'AGLT',
+          type: 'erc20',
+          decimals: '18',
+          address: '0x72c9fb7ed19d3ce51cea5c56b3e023cd918baadf',
+        },
+      };
+    });
+
+  await server
+    .forGet('https://tokens.api.cx.metamask.io/blocklist')
+    .withQuery({ chainId: '1', region: 'global' })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: tokenBlocklist.body,
+      };
+    });
+
   // Surveys
   await server
     .forGet(
@@ -1130,6 +1191,19 @@ async function setupMocking(
       };
     });
 
+  // The price API client only caches this response when it contains both
+  // `fullSupport` and `partialSupport`; anything else (such as the empty-200
+  // catch-all this used to land on) makes it silently fall back to its
+  // hardcoded list without caching, so every later price fetch re-requests the
+  // endpoint. The fixture lists are that same hardcoded fallback
+  // (`SPOT_PRICES_SUPPORT_INFO` in @metamask/assets-controllers), so supported
+  // chains are unchanged and only the repeated requests go away.
+  await server
+    .forGet('https://price.api.cx.metamask.io/v2/supportedNetworks')
+    .asPriority(RulePriority.FALLBACK)
+    .always()
+    .thenJson(200, priceSupportedNetworks.body);
+
   // Native SOL + BTC v3 spot (multichain portfolio / assets unify). Without these,
   // Tron-only or default E2E flows still request these URLs but only ETH was mocked above.
   await priceV3Spot
@@ -1165,6 +1239,18 @@ async function setupMocking(
           id: 'bitcoin',
           price: DEFAULT_BTC_CONVERSION_RATE,
         },
+      },
+    }));
+
+  await server
+    .forGet('https://price.api.cx.metamask.io/v1/spot-prices/bitcoin')
+    .withQuery({ vsCurrency: 'usd' })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        ...priceV1Btc.body,
+        id: 'bitcoin',
+        price: DEFAULT_BTC_CONVERSION_RATE,
       },
     }));
 
@@ -1275,6 +1361,21 @@ async function setupMocking(
       },
     }));
 
+  // Money API: positions for a Money account, fetched as the API leg of
+  // MoneyAccountBalanceService:fetchBalanceWithFallback. A zero balance
+  // satisfies the service's balance invariant (musd + vmusd === total).
+  await server
+    .forGet(/^https:\/\/money\.api\.cx\.metamask\.io\/v1\/positions\/[^/]+$/u)
+    .always()
+    .thenCallback((req) => {
+      const url = new URL(req.url);
+      const address = url.pathname.split('/').pop();
+      return {
+        statusCode: 200,
+        json: { ...moneyPositions.body, address },
+      };
+    });
+
   // Accounts API: v5/v6 multi-account balances (used by AccountsApiDataSource
   // when assetsUnifyState is enabled). Default: 25 ETH native per requested
   // chain for the default fixture account. Override via
@@ -1327,6 +1428,26 @@ async function setupMocking(
       };
     });
 
+  // Accounts API: transactions
+  await server
+    .forGet('https://accounts.api.cx.metamask.io/v5/multiaccount/transactions')
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          ...accountsTransactions.body,
+          data: [],
+          unprocessedAccounts: [],
+          pageInfo: {
+            ...accountsTransactions.body.pageInfo,
+            hasNextPage: false,
+            count: 0,
+          },
+        },
+      };
+    });
+
   // Nft API: tokens
   // Matches any address, not just the default fixture account.
   // Has fallback priority like the other broad defaults so
@@ -1375,6 +1496,23 @@ async function setupMocking(
         },
       };
     });
+  }
+
+  // On Ramp: Countries list (RampsController.init on startup)
+  for (const host of [
+    'on-ramp-cache.api.cx.metamask.io',
+    'on-ramp-cache.uat-api.cx.metamask.io',
+    'on-ramp.dev-api.cx.metamask.io',
+  ]) {
+    await server
+      .forGet(`https://${host}/v2/regions/countries`)
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          // The fixture keeps one placeholder country so its type is checked.
+          json: rampsCountries.body.filter((country) => country.isoCode),
+        };
+      });
   }
 
   // Snaps: Execution environment html
@@ -1794,6 +1932,28 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
+      };
+    });
+
+  // Dynamic Banner Content
+  await server
+    .forGet(/^https:\/\/(cdn|preview)\.contentful\.com\/.*$/u)
+    .withQuery({
+      content_type: 'promotionalBanner',
+    })
+    .thenCallback(() => {
+      // The fixture keeps one placeholder banner and asset so their types are
+      // checked. No banner is shown.
+      return {
+        statusCode: 200,
+        json: {
+          ...contentfulBanners.body,
+          items: contentfulBanners.body.items.filter((item) => item.sys.id),
+          includes: {
+            ...contentfulBanners.body.includes,
+            Asset: contentfulServedAssets(contentfulBanners.body),
+          },
+        },
       };
     });
 

@@ -114,6 +114,7 @@ const exchangeRatesV1 = {
 export const mockExchangeRates = (mockServer: Mockttp) =>
   priceV3Spot
     .rule(mockServer)
+    .always()
     .withQuery({
       vsCurrency: 'usd',
       assetIds:
