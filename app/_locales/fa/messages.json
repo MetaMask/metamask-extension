@@ -401,9 +401,6 @@
     "message": "کلید شخصی",
     "description": "select this type of file to use to import an account"
   },
-  "privateNetwork": {
-    "message": "شبکه شخصی"
-  },
   "readdToken": {
     "message": "شما میتوانید این رمزیاب را دوباره برای آینده با رفتن به گزینه \"Add token\" در مینوی تنظیمات حساب ها، اضافه نمایید."
   },

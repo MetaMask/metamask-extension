@@ -2105,9 +2105,6 @@
   "blockExplorerUrl": {
     "message": "URL của Trình khám phá khối"
   },
-  "blockExplorerUrlDefinition": {
-    "message": "URL được dùng làm trình khám phá khối cho mạng này."
-  },
   "blockExplorerView": {
     "message": "Xem tài khoản tại $1",
     "description": "$1 replaced by URL for custom block explorer"
@@ -2620,9 +2617,6 @@
   "chainId": {
     "message": "ID Chuỗi"
   },
-  "chainIdDefinition": {
-    "message": "ID chuỗi được dùng để ký các giao dịch cho mạng này."
-  },
   "chainIdExistsErrorMsg": {
     "message": "Mạng $1 hiện đang sử dụng ID chuỗi này."
   },
@@ -2734,10 +2728,6 @@
   "clickHere": {
     "message": "Nhấp vào đây",
     "description": "Link to help when a JSON account import is not working"
-  },
-  "clickToConnectLedgerViaWebHID": {
-    "message": "Nhấp vào đây để kết nối với ví Ledger của bạn qua WebHID",
-    "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
   },
   "clipboardClearFailed": {
     "message": "Không thể xóa bộ nhớ đệm. Hãy thử lại."
@@ -3252,9 +3242,6 @@
   },
   "currencySymbol": {
     "message": "Biểu tượng tiền tệ"
-  },
-  "currencySymbolDefinition": {
-    "message": "Mã chứng khoán hiển thị cho tiền tệ của mạng này."
   },
   "current": {
     "message": "Hiện tại"
@@ -4013,9 +4000,6 @@
   "errorCode": {
     "message": "Mã: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorGettingSafeChainList": {
-    "message": "Đã xảy ra lỗi khi lấy danh sách chuỗi an toàn. Hãy thận trọng khi tiếp tục."
   },
   "errorLegalTextFirstInfo": {
     "message": "Thông tin chẩn đoán kỹ thuật."
@@ -4971,9 +4955,6 @@
   "insufficientTokens": {
     "message": "Không đủ token."
   },
-  "interactWithSmartContract": {
-    "message": "Hợp đồng thông minh"
-  },
   "interactingWith": {
     "message": "Tương tác với"
   },
@@ -5157,18 +5138,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Bạn cần sử dụng tài khoản gần đây nhất thì mới có thể thêm một tài khoản mới."
-  },
-  "ledgerConnectionInstructionCloseOtherApps": {
-    "message": "Đóng bất kỳ phần mềm nào khác được kết nối với thiết bị của bạn và sau đó nhấp vào đây để làm mới."
-  },
-  "ledgerConnectionInstructionHeader": {
-    "message": "Trước khi nhấp xác nhận:"
-  },
-  "ledgerConnectionInstructionStepFour": {
-    "message": "Bật \"dữ liệu hợp đồng thông minh\" hoặc \"ký mù\" trên thiết bị Ledger của bạn."
-  },
-  "ledgerConnectionInstructionStepThree": {
-    "message": "Nhớ cắm thiết bị Ledger và chọn ứng dụng Ethereum."
   },
   "ledgerConnectionStatusAppClosedDescription": {
     "message": "Mở ứng dụng trên thiết bị Ledger của bạn để tiếp tục"
@@ -5808,14 +5777,6 @@
   "minute": {
     "message": "phút"
   },
-  "mismatchedChainLinkText": {
-    "message": "xác minh thông tin về mạng",
-    "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
-  },
-  "mismatchedChainRecommendation": {
-    "message": "Bạn nên $1 trước khi tiếp tục.",
-    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
   "mismatchedNetworkName": {
     "message": "Theo hồ sơ của chúng tôi, tên mạng có thể không khớp hoàn toàn với ID chuỗi này."
   },
@@ -6404,9 +6365,6 @@
     "message": "Giới thiệu về tài khoản đa chuỗi",
     "description": "Title for the multichain accounts introduction modal."
   },
-  "multichainAddEthereumChainConfirmationDescription": {
-    "message": "Bạn đang thêm mạng này vào MetaMask và cấp cho trang web này quyền sử dụng mạng này."
-  },
   "multichainAddressViewAll": {
     "message": "Xem tất cả"
   },
@@ -6451,17 +6409,9 @@
   "musdBuyMusd": {
     "message": "Mua mUSD"
   },
-  "musdClaimTitle": {
-    "message": "Nhận thưởng",
-    "description": "Title for the mUSD bonus claim confirmation screen"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "Phí chuyển đổi mUSD bao gồm phí mạng và có thể bao gồm phí từ nhà cung cấp. Không áp dụng phí MetaMask khi bạn chuyển đổi sang mUSD.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
-  },
-  "musdConversionTitle": {
-    "message": "Đã chuyển đổi sang mUSD",
-    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "musdConvert": {
     "message": "Chuyển đổi"
@@ -6622,9 +6572,6 @@
     "message": "Bạn hiện đang giao dịch trên $1.",
     "description": "$1 is the name of the network"
   },
-  "networkDetails": {
-    "message": "Chi tiết về mạng"
-  },
   "networkFee": {
     "message": "Phí mạng"
   },
@@ -6642,9 +6589,6 @@
   },
   "networkNameBitcoin": {
     "message": "Bitcoin"
-  },
-  "networkNameDefinition": {
-    "message": "Tên được liên kết với mạng này."
   },
   "networkNameEthereum": {
     "message": "mạng"
@@ -6692,9 +6636,6 @@
   },
   "networkTabPopular": {
     "message": "Phổ biến"
-  },
-  "networkURL": {
-    "message": "URL mạng"
   },
   "networkURLDefinition": {
     "message": "URL dùng để truy cập vào mạng này."
@@ -6798,17 +6739,6 @@
   },
   "nftUnsupportedEmptyDescription": {
     "message": "NFT không được hỗ trợ trên mạng này."
-  },
-  "nftWarningContent": {
-    "message": "Bạn đang cấp quyền truy cập vào $1, bao gồm bất cứ tài sản nào mà bạn có thể sở hữu trong tương lai. Bên được cấp quyền có thể chuyển các NFT này khỏi ví của bạn bất cứ lúc nào mà không cần hỏi bạn cho đến khi bạn thu hồi sự chấp thuận này. $2",
-    "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
-  },
-  "nftWarningContentBold": {
-    "message": "tất cả NFT $1 của bạn",
-    "description": "$1 is name of the collection"
-  },
-  "nftWarningContentGrey": {
-    "message": "Hãy tiến hành thận trọng."
   },
   "nfts": {
     "message": "NFT"
@@ -7239,13 +7169,6 @@
   },
   "openFullScreen": {
     "message": "Mở toàn màn hình"
-  },
-  "openFullScreenForLedgerWebHid": {
-    "message": "Bật toàn màn hình để kết nối với thiết bị Ledger của bạn.",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
-  "openInBlockExplorer": {
-    "message": "Mở trên trình khám phá khối"
   },
   "openMultichainAccountAddressMenu": {
     "message": "Mở menu địa chỉ tài khoản đa chuỗi"
@@ -8079,9 +8002,6 @@
   },
   "perpsDepositFundsTitle": {
     "message": "Gửi tiền vào Hợp đồng vĩnh cửu"
-  },
-  "perpsDepositTitle": {
-    "message": "Đã nạp tiền tài khoản vĩnh cửu"
   },
   "perpsDepositToastErrorDescription": {
     "message": "Tiền của bạn chưa được thêm vào Hợp đồng vĩnh cửu. Hãy thử lại."
@@ -9113,14 +9033,8 @@
     "message": "Khóa riêng tư",
     "description": "Private keys row label on multichain account details page."
   },
-  "privateNetwork": {
-    "message": "Mạng riêng"
-  },
   "proceed": {
     "message": "Tiếp tục"
-  },
-  "proceedWithTransaction": {
-    "message": "Tôi vẫn muốn tiếp tục"
   },
   "provide": {
     "message": "Cung cấp"
@@ -9473,16 +9387,8 @@
   "receiveCrypto": {
     "message": "Nhận tiền mã hóa"
   },
-  "receiveToken": {
-    "message": "Token nhận được",
-    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
-  },
   "received": {
     "message": "Đã nhận"
-  },
-  "receivedTotal": {
-    "message": "Tổng số lượng nhận được",
-    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Địa chỉ nhận",
@@ -11311,9 +11217,6 @@
   "simulationDetailsUnavailable": {
     "message": "Không khả dụng"
   },
-  "simulationErrorMessageV2": {
-    "message": "Chúng tôi không thể ước tính gas. Có thể đã xảy ra lỗi trong hợp đồng và giao dịch này có thể thất bại."
-  },
   "simulationsSettingDescription": {
     "message": "Bật tính năng này để ước tính thay đổi số dư của các giao dịch và chữ ký trước khi bạn xác nhận. Điều này không đảm bảo cho kết quả cuối cùng. $1"
   },
@@ -11380,12 +11283,6 @@
   },
   "smartAccountRequestsFromDappsDescriptionV2": {
     "message": "Cho phép dapp yêu cầu các tính năng tài khoản thông minh cho tài khoản tiêu chuẩn. MetaMask sẽ chỉ nâng cấp lên tài khoản thông minh đã được kiểm tra của chúng tôi."
-  },
-  "smartAccountUpgradeBannerDescription": {
-    "message": "Cùng địa chỉ. Tính năng thông minh hơn."
-  },
-  "smartAccountUpgradeBannerTitle": {
-    "message": "Chuyển sang tài khoản thông minh"
   },
   "smartContractAddress": {
     "message": "Địa chỉ hợp đồng thông minh"
@@ -11821,9 +11718,6 @@
   "stakingWithdrawal": {
     "message": "Rút tài sản ký gửi"
   },
-  "standardAccountLabel": {
-    "message": "Tài khoản tiêu chuẩn"
-  },
   "stateCorruptionAreYouSure": {
     "message": "Bạn có chắc chắn muốn tiếp tục không?"
   },
@@ -12149,12 +12043,6 @@
   },
   "swapsRebateTooltipTitle": {
     "message": "Phần thưởng giao dịch"
-  },
-  "switch": {
-    "message": "Chuyển"
-  },
-  "switchBack": {
-    "message": "Chuyển trở lại"
   },
   "switchBackToPopup": {
     "message": "Chuyển lại sang cửa sổ bật lên"
@@ -12604,10 +12492,6 @@
   "unpin": {
     "message": "Bỏ ghim"
   },
-  "unrecognizedChain": {
-    "message": "Không thể nhận diện mạng tùy chỉnh này",
-    "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
   "unsendableAsset": {
     "message": "Hiện không hỗ trợ gửi token NFT (ERC-721)",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
@@ -12620,9 +12504,6 @@
   },
   "update": {
     "message": "Cập nhật"
-  },
-  "updateEthereumChainConfirmationDescription": {
-    "message": "Trang web này đang yêu cầu cập nhật URL mạng mặc định của bạn. Bạn có thể chỉnh sửa thông tin mặc định và mạng bất cứ lúc nào."
   },
   "updateInformation": {
     "message": "Chúng tôi đã giúp ví của bạn trở nên an toàn hơn, hoạt động trơn tru hơn và bổ sung một số tính năng mới. Hãy cập nhật ngay để được bảo vệ và trải nghiệm các cải tiến mới nhất."
@@ -12802,9 +12683,6 @@
   "walletReadyLoseSrpFromReminder": {
     "message": "Cụm từ khôi phục bí mật này có thể giúp bạn lấy lại quyền truy cập nếu bạn quên mật khẩu hoặc mất quyền đăng nhập."
   },
-  "wantToAddThisNetwork": {
-    "message": "Bạn muốn thêm mạng này?"
-  },
   "wantsToAddThisAsset": {
     "message": "Điều này cho phép các tài sản sau được thêm vào ví của bạn."
   },
@@ -12906,9 +12784,6 @@
   },
   "yourBalance": {
     "message": "Số dư của bạn"
-  },
-  "yourNFTmayBeAtRisk": {
-    "message": "NFT của bạn có thể gặp rủi ro"
   },
   "yourWalletIsReady": {
     "message": "Ví của bạn đã sẵn sàng!"
