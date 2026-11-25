@@ -34,10 +34,7 @@ import { MarketRow } from '../../components/app/perps/market-row';
 import { Tab, Tabs } from '../../components/ui/tabs';
 import { toast, ToastContent } from '../../components/ui/toast/toast';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
-import {
-  ScrollContainer,
-  useScrollContainer,
-} from '../../contexts/scroll-container';
+import { ScrollContainer } from '../../contexts/scroll-container';
 import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
@@ -117,27 +114,6 @@ const DiscoverSearchSectionDivider = () => (
     <Box className="border-t border-muted" />
   </Box>
 );
-
-const AllTabScrollReset = ({
-  isStocksPromoted,
-}: {
-  isStocksPromoted: boolean;
-}) => {
-  const scrollContainerRef = useScrollContainer();
-  const prevPromotedRef = useRef(isStocksPromoted);
-
-  useEffect(() => {
-    if (prevPromotedRef.current === isStocksPromoted) {
-      return;
-    }
-    prevPromotedRef.current = isStocksPromoted;
-    if (scrollContainerRef?.current) {
-      scrollContainerRef.current.scrollTop = 0;
-    }
-  }, [isStocksPromoted, scrollContainerRef]);
-
-  return null;
-};
 
 const SEARCH_QUERY_PARAM = 'q';
 const SEARCH_TAB_PARAM = 'tab';
@@ -843,8 +819,12 @@ export const DiscoverSearchPage = () => {
     );
   };
 
-  const renderScrollableTabContent = (content: React.ReactNode) => (
+  const renderScrollableTabContent = (
+    content: React.ReactNode,
+    scrollContainerKey?: string,
+  ) => (
     <ScrollContainer
+      key={scrollContainerKey}
       className="h-full min-h-0 overflow-y-auto overscroll-contain pb-6"
       onScroll={handleResultsContainerScroll}
     >
@@ -939,7 +919,6 @@ export const DiscoverSearchPage = () => {
     }
     return (
       <Box flexDirection={BoxFlexDirection.Column}>
-        <AllTabScrollReset isStocksPromoted={isStocksPromoted} />
         {visibleAllSectionIds.map((sectionId, index) => (
           <React.Fragment key={sectionId}>
             {index > 0 ? <DiscoverSearchSectionDivider /> : null}
@@ -1006,7 +985,10 @@ export const DiscoverSearchPage = () => {
         }}
       >
         <Tab name={t('all')} tabKey="all" data-testid="discover-tab-all">
-          {renderScrollableTabContent(allTabContent)}
+          {renderScrollableTabContent(
+            allTabContent,
+            `all-${isStocksPromoted ? 'stocks-promoted' : 'default-order'}`,
+          )}
         </Tab>
 
         <Tab

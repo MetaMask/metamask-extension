@@ -601,6 +601,30 @@ describe('DiscoverSearchPage', () => {
       },
     );
 
+    it('remounts the All tab scroll container when Stocks promotion changes', () => {
+      mockUseDiscoverSearch.mockReturnValue(mockTslaResult());
+
+      const { container } = renderPage({
+        route: `${DISCOVER_SEARCH_ROUTE}?q=TSL`,
+        remoteFeatureFlags: getPromotionFlag(true),
+      });
+      const initialScrollContainer = container
+        .querySelector('[data-testid="discover-search-page"]')
+        ?.querySelector('.overflow-y-auto');
+
+      expect(initialScrollContainer).not.toBeNull();
+
+      fireEvent.change(screen.getByTestId('discover-search-input'), {
+        target: { value: 'TSLA' },
+      });
+
+      const updatedScrollContainer = container
+        .querySelector('[data-testid="discover-search-page"]')
+        ?.querySelector('.overflow-y-auto');
+
+      expect(updatedScrollContainer).not.toBe(initialScrollContainer);
+    });
+
     it('promotes Stocks above both Crypto and Perps while keeping tab order unchanged', () => {
       mockGetIsPerpsExperienceAvailable.mockReturnValue(true);
       mockUseDiscoverSearch.mockReturnValue({
