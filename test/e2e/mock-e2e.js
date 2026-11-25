@@ -1056,6 +1056,15 @@ async function setupMocking(
       };
     });
 
+  await server
+    .forGet(`https://token.api.cx.metamask.io/token/${chainId}`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {},
+      };
+    });
+
   // It disables loading of token icons, e.g. this URL: https://static.cx.metamask.io/api/v1/tokenIcons/1337/0x0000000000000000000000000000000000000000.png
   const tokenIconRegex = new RegExp(
     `^https:\\/\\/static\\.cx\\.metamask\\.io\\/api\\/vi\\/tokenIcons\\/${chainId}\\/.*\\.png`,

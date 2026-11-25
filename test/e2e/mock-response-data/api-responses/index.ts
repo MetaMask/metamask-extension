@@ -636,7 +636,6 @@ export const tokenMetadata = defineApiMock({
   syncUrl:
     'https://token.api.cx.metamask.io/token/1?address=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
   body: tokenMetadataJson,
-  defaultMock: { params: ({ chainId }) => ({ chainId }) },
 });
 
 export const tokenOccurrenceFloors = defineApiMock({
