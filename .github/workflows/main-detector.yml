@@ -5,7 +5,8 @@ name: Main performance detector
 # its first-parent ancestor's in paired jobs on one runner, and confirms a
 # suspicious result with a second batch. The critical user flows of the same
 # commit run beside it in Chrome and are scored with ADR 0072's paired decision
-# rule. Identical builds exit early. It is not a merge gate. See
+# rule. Identical builds exit early. It is not a merge gate. Daily, it also runs
+# the Chrome benchmark presets on a throttled CPU, report-only. See
 # .github/scripts/main-detector/README.md.
 
 on:
@@ -13,6 +14,10 @@ on:
     workflows: [Main]
     types: [completed]
     branches: [main]
+  schedule:
+    # Daily at 07:00 UTC, after the scheduled Main runs, which start hourly from
+    # 02:00 to 06:00 UTC. Runs only the throttled job.
+    - cron: '0 7 * * *'
   workflow_dispatch:
     inputs:
       head_sha:
@@ -20,13 +25,19 @@ on:
         required: false
         type: string
       mode:
-        description: auto, or aa to run the head against itself as a false-alarm canary
+        description: auto, aa to run the head against itself as a false-alarm canary, or throttled to run only the throttled presets
         required: false
         type: choice
         options:
           - auto
           - aa
+          - throttled
         default: auto
+      cpu_throttle_rate:
+        description: Throttled mode only, how many times slower Chrome runs page CPU work
+        required: false
+        type: string
+        default: '2'
       inject_head_ms:
         description: Dry run only, milliseconds of busy-wait added to the head build
         required: false
@@ -37,14 +48,14 @@ on:
         type: boolean
         default: false
 
-run-name: ${{ format('Main performance detector {0}{1}{2}', inputs.head_sha || github.event.workflow_run.head_sha || 'latest-main', inputs.mode == 'aa' && ' (aa)' || '', inputs.inject_head_ms && ' (inject)' || '') }}
+run-name: ${{ format('Main performance detector {0}{1}{2}', inputs.head_sha || github.event.workflow_run.head_sha || 'latest-main', (github.event_name == 'schedule' || inputs.mode == 'throttled') && ' (throttled)' || inputs.mode == 'aa' && ' (aa)' || '', inputs.inject_head_ms && ' (inject)' || '') }}
 
 # One run per commit. Runs for different commits are independent and none is
 # cancelled: a later merge must not drop the check of an earlier one. A dispatch
 # with no head_sha measures the tip of main, which a title cannot name, so it
 # is called latest-main and no commit's heartbeat or re-run check counts it.
 concurrency:
-  group: main-detector-${{ inputs.head_sha || github.event.workflow_run.head_sha || 'latest-main' }}
+  group: main-detector-${{ (github.event_name == 'schedule' || inputs.mode == 'throttled') && 'throttled' || inputs.head_sha || github.event.workflow_run.head_sha || 'latest-main' }}
   cancel-in-progress: false
 
 permissions:
@@ -61,7 +72,7 @@ env:
 jobs:
   plan:
     # Main runs that were cancelled never finished their builds; failed runs still upload them.
-    if: ${{ github.event_name != 'workflow_run' || (github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion != 'cancelled') }}
+    if: ${{ github.event_name != 'schedule' && inputs.mode != 'throttled' && (github.event_name != 'workflow_run' || (github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion != 'cancelled')) }}
     runs-on: ubuntu-latest
     outputs:
       proceed: ${{ steps.quick.outputs.proceed || steps.plan.outputs.proceed }}
@@ -290,6 +301,15 @@ jobs:
           path: unmeasured.json
           overwrite: true
           retention-days: 30
+
+  throttled:
+    if: ${{ github.event_name == 'schedule' || inputs.mode == 'throttled' }}
+    uses: ./.github/workflows/main-detector-throttled.yml
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
+    with:
+      cpu_throttle_rate: ${{ inputs.cpu_throttle_rate || '2' }}
 
   measure-first:
     needs: plan

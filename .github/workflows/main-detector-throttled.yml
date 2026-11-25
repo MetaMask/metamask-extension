@@ -1,0 +1,175 @@
+name: Main detector throttled
+
+# The Chrome benchmark presets on a CPU throttled N times, on the newest main
+# build. Report-only: nothing is scored, posted to Slack, gated or written to
+# the benchmark history; the results are artifacts for admission under ADR 0072.
+# Called by main-detector.yml on its daily schedule.
+
+on:
+  workflow_call:
+    secrets:
+      INFURA_PROJECT_ID:
+        required: false
+      TEST_SRP_2:
+        required: false
+    inputs:
+      cpu_throttle_rate:
+        description: How many times slower Chrome runs page CPU work
+        required: false
+        type: string
+        default: '2'
+
+permissions:
+  contents: read
+  actions: read
+  statuses: read
+
+env:
+  # Same default as BUILD_HOST in .github/scripts/main-detector/build-source.mts.
+  DETECTOR_BUILD_HOST: https://diuv6g5fj9pvx.cloudfront.net/metamask-extension
+
+jobs:
+  resolve:
+    name: Find the newest main build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      sha: ${{ steps.find.outputs.sha }}
+      run: ${{ steps.find.outputs.run }}
+      version: ${{ steps.find.outputs.version }}
+    steps:
+      - name: Checkout the scripts
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: |
+            .github
+            .nvmrc
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+
+      - name: Fetch recent main history for the build lookup
+        run: git fetch --no-tags --depth=20 --filter=tree:0 origin main
+
+      - name: Find the newest first-parent commit on main with a build
+        id: find
+        uses: actions/github-script@v9
+        env:
+          GH_TOKEN: ${{ github.token }}
+        with:
+          script: |
+            const fs = require('fs');
+            const { owner, repo } = context.repo;
+            let { data: commit } = await github.rest.repos.getCommit({
+              owner,
+              repo,
+              ref: 'main',
+            });
+            // The tip's Main run may still be building, so walk back to the
+            // newest commit whose builds are on the build host.
+            for (let i = 0; i < 10; i++) {
+              await exec.exec(
+                'node',
+                [
+                  '.github/scripts/main-detector/resolve-cli.mts',
+                  ...['--head', commit.sha, '--depth', '1'],
+                  ...['--out', 'resolve.json'],
+                ],
+                { silent: true },
+              );
+              const { status, head } = JSON.parse(
+                fs.readFileSync('resolve.json', 'utf8'),
+              );
+              if (status !== 'no-build') {
+                core.setOutput('sha', head.sha);
+                core.setOutput('run', String(head.run));
+                core.setOutput('version', head.version);
+                core.info(`Using the build of ${head.sha.slice(0, 10)} from run ${head.run}`);
+                return;
+              }
+              const parent = commit.parents[0]?.sha;
+              if (!parent) {
+                break;
+              }
+              ({ data: commit } = await github.rest.repos.getCommit({
+                owner,
+                repo,
+                ref: parent,
+              }));
+            }
+            core.setFailed('None of the last 10 commits on main has a build');
+
+  benchmarks:
+    name: chrome-webpack-${{ matrix.pageType }}-cpu${{ inputs.cpu_throttle_rate }}x
+    needs: resolve
+    strategy:
+      fail-fast: false
+      matrix:
+        # The presets of the `benchmarks` job in run-benchmarks.yml, Chrome only.
+        pageType:
+          - startupStandardHome
+          - startupPowerUserHome
+          - interactionUserActions
+          - userJourneyOnboardingImport
+          - userJourneyOnboardingNew
+          - userJourneyAssets
+          - userJourneyTransactions
+          - userJourneyAccountManagement
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SELENIUM_BROWSER: chrome
+      SELENIUM_HEADLESS: true
+      BENCHMARK_CPU_THROTTLE_RATE: ${{ inputs.cpu_throttle_rate }}
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
+      RESULT: test-artifacts/benchmarks/throttled-cpu${{ inputs.cpu_throttle_rate }}x-benchmark-chrome-webpack-${{ matrix.pageType }}.json
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+          # The benchmark code must match the build it measures.
+          ref: ${{ needs.resolve.outputs.sha }}
+
+      - name: Install anvil with retry
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
+        with:
+          timeout_minutes: 1
+          max_attempts: 4
+          retry_wait_seconds: 30
+          command: yarn mm-foundryup
+
+      - name: Download the Chrome build
+        env:
+          RUN: ${{ needs.resolve.outputs.run }}
+          VERSION: ${{ needs.resolve.outputs.version }}
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --retry 5 --retry-all-errors \
+            --output chrome.zip \
+            "$DETECTOR_BUILD_HOST/$RUN/build-test-webpack/builds/metamask-chrome-$VERSION.zip"
+          mkdir -p dist/chrome
+          unzip -q chrome.zip -d dist/chrome
+
+      - name: Run the benchmark
+        # Job timeouts propagate to later jobs, step timeouts just cause job failure.
+        timeout-minutes: 25
+        run: >-
+          ${{ matrix.pageType == 'startupPowerUserHome' && 'yarn test:e2e:benchmark --preset startupPowerUserHome --browserLoads 15 --pageLoads 7 --out "$RESULT" --retries 2' || format('yarn test:e2e:benchmark --preset {0} --out "$RESULT" --retries 2', matrix.pageType) }}
+        shell: bash
+
+      - name: Upload benchmark result as GitHub artifact
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          # Must not match `benchmark-*.json` (the quality gate and the stats
+          # store) or `detector-b*` (the detector's scoring).
+          name: throttled-cpu${{ inputs.cpu_throttle_rate }}x-benchmark-chrome-webpack-${{ matrix.pageType }}.json
+          path: ${{ env.RESULT }}
+          retention-days: 30
+          if-no-files-found: ignore

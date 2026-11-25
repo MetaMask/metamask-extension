@@ -88,6 +88,17 @@ what it should, so check that first. A breakdown metric that moves by more than
   (a dry run); `resolve-cli.mts`, `compare-builds-cli.mts` and `score-cli.mts` are
   the same steps the workflow runs.
 
+## Throttled presets
+
+Daily at 07:00 UTC, the same workflow runs the Chrome benchmark presets of
+`run-benchmarks.yml` with Chrome's CPU throttled 2 times
+(`BENCHMARK_CPU_THROTTLE_RATE`), on the newest commit on `main` that has a
+build. It is report-only: nothing is scored or posted, and the results are the
+`throttled-cpu2x-benchmark-*` artifacts, kept for 30 days for admission under
+ADR 0072. The run is titled `latest-main (throttled)`, and the heartbeat does
+not count it. `workflow_dispatch` with `mode=throttled` runs it on demand, with
+`cpu_throttle_rate` setting the rate.
+
 ## Heartbeat
 
 `main-detector-heartbeat.yml` runs daily at 14:17 UTC. It takes the Main runs

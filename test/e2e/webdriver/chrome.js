@@ -6,6 +6,10 @@ const chrome = require('selenium-webdriver/chrome');
 const { ThenableWebDriver } = require('selenium-webdriver'); // eslint-disable-line no-unused-vars -- this is imported for JSDoc
 const { isHeadless } = require('../../helpers/env');
 const {
+  getCpuThrottleRate,
+  throttleCpu,
+} = require('../benchmarks/utils/cpu-throttle');
+const {
   CONSTRAINED_WINDOW_SIZE,
   DEFAULT_WINDOW_SIZE,
 } = require('./window-size');
@@ -143,6 +147,11 @@ class ChromeDriver {
               : DEFAULT_WINDOW_SIZE.width,
             height: DEFAULT_WINDOW_SIZE.height,
           });
+      }
+
+      const cpuThrottleRate = getCpuThrottleRate();
+      if (cpuThrottleRate) {
+        await throttleCpu(driver, cpuThrottleRate);
       }
 
       // When the manifest has a `key`, the extension ID is deterministic and can
