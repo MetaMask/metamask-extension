@@ -170,6 +170,14 @@ async function mockAuthAPICall(
     });
 }
 
+const SUBSCRIPTIONS_URL_PATTERN =
+  /subscription\.(dev-)?api\.cx\.metamask\.io\/v1\/subscriptions$/u;
+
+const EMPTY_SUBSCRIPTIONS_RESPONSE = {
+  statusCode: 200,
+  json: { subscriptions: [], trialedProducts: [] },
+};
+
 const MOCK_JWT =
   'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0IiwiaWF0IjoxNzA2MTEzMDYyLCJleHAiOjE5NjkxODUwNjN9.dGVzdA';
 const MOCK_ACCESS_TOKEN =
@@ -212,14 +220,8 @@ const INTERCEPTED_PATTERNS: {
     },
   },
   {
-    match: (url) =>
-      /subscription\.(dev-)?api\.cx\.metamask\.io\/v1\/subscriptions$/u.test(
-        url,
-      ),
-    response: {
-      statusCode: 200,
-      json: { subscriptions: [], trialedProducts: [] },
-    },
+    match: (url) => SUBSCRIPTIONS_URL_PATTERN.test(url),
+    response: EMPTY_SUBSCRIPTIONS_RESPONSE,
   },
   {
     match: (url) => url.includes('bitcoin-mainnet.infura.io'),
@@ -382,7 +384,7 @@ export function getCommonMocks(server: Mockttp): Promise<MockedEndpoint>[] {
       }),
     server
       .forGet(
-        /^https:\/\/subscription\.(dev-)?api\.cx\.metamask\.io\/v1\/subscriptions\/eligibility/u,
+        /subscription\.(dev-)?api\.cx\.metamask\.io\/v1\/subscriptions\/eligibility/u,
       )
       .always()
       .thenCallback(() => {
@@ -399,9 +401,7 @@ export function getCommonMocks(server: Mockttp): Promise<MockedEndpoint>[] {
         };
       }),
     server
-      .forGet(
-        /^https:\/\/subscription\.(dev-)?api\.cx\.metamask\.io\/v1\/subscriptions$/u,
-      )
+      .forGet(/subscription\.(dev-)?api\.cx\.metamask\.io\/v1\/subscriptions$/u)
       .always()
       .thenCallback(() => {
         return {
@@ -570,6 +570,35 @@ export function userStorageHostMock(server: Mockttp): Promise<MockedEndpoint> {
         return { response: { statusCode: 204 } };
       }
       return { response: { statusCode: 200, json: null } };
+    }
+    return existingInterceptor?.(req) ?? null;
+  });
+
+  return endpointPromise;
+}
+
+/**
+ * Answers the subscriptions poll without reaching the live API. Under
+ * pass-through mode only the interceptor registered here sees proxied HTTPS
+ * requests, so a poll that fails against the live API surfaces as a
+ * `[getSubscriptions]` console error and fails the run.
+ *
+ * @param server - The mockttp server instance.
+ * @returns The mocked endpoint.
+ */
+export function subscriptionsHostMock(
+  server: Mockttp,
+): Promise<MockedEndpoint> {
+  const endpointPromise = server
+    .forGet('https://subscription.api.cx.metamask.io/v1/subscriptions')
+    .always()
+    .thenCallback(() => EMPTY_SUBSCRIPTIONS_RESPONSE);
+
+  const existingInterceptor = (server as unknown as Record<string, unknown>)
+    .__passThroughInterceptor as PassThroughInterceptor | undefined;
+  setPassThroughInterceptor(server, (req) => {
+    if (req.method === 'GET' && SUBSCRIPTIONS_URL_PATTERN.test(req.url)) {
+      return { response: EMPTY_SUBSCRIPTIONS_RESPONSE };
     }
     return existingInterceptor?.(req) ?? null;
   });

@@ -8,7 +8,10 @@ import { generateWalletState } from '../../../../../app/scripts/fixtures/generat
 import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
 import AccountListPage from '../../../page-objects/pages/accounts/list-page';
-import { userStorageHostMock } from '../../mocks/performance-mocks';
+import {
+  subscriptionsHostMock,
+  userStorageHostMock,
+} from '../../mocks/performance-mocks';
 import { mockNotificationServices } from '../../../tests/notifications/mocks';
 import {
   BENCHMARK_PERSONA,
@@ -58,6 +61,7 @@ async function measurePagePowerUser(
       testSpecificMock: async (server: Mockttp) => {
         await mockNotificationServices(server);
         await userStorageHostMock(server);
+        await subscriptionsHostMock(server);
       },
     },
     async ({ driver, getNetworkReport, clearNetworkReport }) => {
