@@ -1,0 +1,137 @@
+name: Main detector measure
+
+# One batch of paired base/head benchmark jobs, 5 per browser, each job
+# alternating the two builds on one runner. Called by main-detector.yml.
+
+on:
+  workflow_call:
+    secrets:
+      INFURA_PROJECT_ID:
+        required: false
+    inputs:
+      plan:
+        description: Plan JSON from the plan job of main-detector.yml
+        required: true
+        type: string
+      batch:
+        description: 1 for the first batch, 2 for the confirmation batch
+        required: true
+        type: number
+      inject_head_ms:
+        description: Dry run only, milliseconds of busy-wait added to the head build
+        required: false
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+env:
+  # Pair mode: the harness alternates the base (A) and head (B) build per session.
+  BENCHMARK_AB_PILOT: '1'
+  BENCHMARK_AB_SEQUENCE: ABBABAABAB
+  # Same default as BUILD_HOST in .github/scripts/main-detector/build-source.mts.
+  DETECTOR_BUILD_HOST: https://diuv6g5fj9pvx.cloudfront.net/metamask-extension
+
+jobs:
+  measure:
+    name: b${{ inputs.batch }}-${{ matrix.browser }}-s${{ matrix.shard }}
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chrome, firefox]
+        # DETECTOR_SHARDS in main-detector.yml must equal the number of shards.
+        shard: [1, 2, 3, 4, 5]
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      SELENIUM_BROWSER: ${{ matrix.browser }}
+      SELENIUM_HEADLESS: true
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      BRANCH: ${{ github.ref_name }}
+      HEAD_COMMIT_HASH: ${{ github.sha }}
+      GITHUB_REF_NAME: ${{ github.ref_name }}
+      BENCHMARK_RUNNER_LABEL: ubuntu-latest
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Install anvil with retry
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
+        with:
+          timeout_minutes: 1
+          max_attempts: 4
+          retry_wait_seconds: 30
+          command: yarn mm-foundryup
+
+      - name: Download the base and head builds
+        env:
+          BROWSER: ${{ matrix.browser }}
+          PLAN: ${{ inputs.plan }}
+        run: |
+          set -euo pipefail
+          for side in base head; do
+            run=$(jq -r --arg k "${side}Run" '.[$k]' <<< "$PLAN")
+            version=$(jq -r --arg k "${side}Version" '.[$k]' <<< "$PLAN")
+            if [[ "$BROWSER" == firefox ]]; then
+              path="build-test-mv2-webpack/builds/metamask-firefox-$version.zip"
+            else
+              path="build-test-webpack/builds/metamask-chrome-$version.zip"
+            fi
+            curl --fail --silent --show-error --retry 5 --retry-all-errors \
+              --output "$side.zip" "$DETECTOR_BUILD_HOST/$run/$path"
+            mkdir -p "pair/$side"
+            unzip -q "$side.zip" -d "pair/$side"
+          done
+          mkdir -p test-artifacts/benchmarks
+
+      - name: Pin geckodriver 0.36.0 (Firefox only)
+        if: ${{ matrix.browser == 'firefox' }}
+        run: .github/scripts/pin-geckodriver.sh
+
+      - name: Prepare the A and B builds
+        env:
+          INJECT_HEAD_MS: ${{ inputs.inject_head_ms }}
+          # ab-pilot-builds.ts is a typeless .ts file; keep Node's warning out of the log.
+          NODE_OPTIONS: --disable-warning=MODULE_TYPELESS_PACKAGE_JSON
+        run: |
+          set -euo pipefail
+          args=()
+          if [[ -n "$INJECT_HEAD_MS" ]]; then
+            args+=(--inject-head-ms "$INJECT_HEAD_MS")
+          fi
+          node test/e2e/benchmarks/prepare-ab-builds.mts \
+            --browser "${{ matrix.browser }}" \
+            --base-source pair/base --head-source pair/head \
+            --out "test-artifacts/benchmarks/ab-builds-${{ matrix.browser }}-s${{ matrix.shard }}.json" \
+            "${args[@]}"
+
+      - name: Choose which build goes first
+        env:
+          SHARD: ${{ matrix.shard }}
+          BATCH: ${{ inputs.batch }}
+        run: echo "BENCHMARK_AB_FLIP=$(( (SHARD + BATCH) % 2 ))" >> "$GITHUB_ENV"
+
+      - name: Run the A/B benchmark
+        timeout-minutes: 35
+        run: >-
+          yarn test:e2e:benchmark
+          --preset startupStandardHome
+          --browserLoads 10 --pageLoads 10
+          --retries 2
+          --out test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-webpack-startupStandardHome-s${{ matrix.shard }}.json
+
+      - name: Upload batch result
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: detector-b${{ inputs.batch }}-${{ matrix.browser }}-s${{ matrix.shard }}
+          path: test-artifacts/benchmarks/*.json
+          # A re-run of failed jobs uploads the same names again.
+          overwrite: true
+          retention-days: 7
+          if-no-files-found: ignore

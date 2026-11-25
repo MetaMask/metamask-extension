@@ -1,0 +1,56 @@
+name: Main detector heartbeat
+
+# Once a day, checks that every Main run on main that finished a few hours ago
+# got a detector run, and posts to Slack only when one did not start or
+# failed. A day with no Main runs (weekends, holidays) is not a problem.
+# See .github/scripts/main-detector/README.md.
+
+on:
+  schedule:
+    - cron: '17 14 * * *'
+  workflow_dispatch:
+    inputs:
+      window_hours:
+        description: Hours of finished Main runs to check (default 24)
+        required: false
+        type: string
+      settle_hours:
+        description: Skip Main runs that finished within this many hours of the slot (default 3)
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  heartbeat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # The script has no dependencies, so there is no install step.
+      - name: Checkout the scripts
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: |
+            .github
+            .nvmrc
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+
+      - name: Check the detector ran for recent Main commits
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL: ${{ vars.SLACK_MAIN_DETECTOR_CHANNEL }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          WINDOW_HOURS: ${{ inputs.window_hours }}
+          SETTLE_HOURS: ${{ inputs.settle_hours }}
+        run: |
+          node ./.github/scripts/main-detector/heartbeat-cli.mts \
+            --window-hours "${WINDOW_HOURS:-24}" \
+            --settle-hours "${SETTLE_HOURS:-3}"

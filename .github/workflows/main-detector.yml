@@ -1,0 +1,406 @@
+name: Main performance detector
+
+# Posts to Slack when one commit on main changes startup performance by more
+# than the noise. For each push to main it compares the commit's build with
+# its first-parent ancestor's in paired jobs on one runner, and confirms a
+# suspicious result with a second batch. Identical builds exit early. It is
+# not a merge gate. See .github/scripts/main-detector/README.md.
+
+on:
+  workflow_run:
+    workflows: [Main]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      head_sha:
+        description: Commit on main to check (default is the latest main commit)
+        required: false
+        type: string
+      mode:
+        description: auto, or aa to run the head against itself as a false-alarm canary
+        required: false
+        type: choice
+        options:
+          - auto
+          - aa
+        default: auto
+      inject_head_ms:
+        description: Dry run only, milliseconds of busy-wait added to the head build
+        required: false
+        type: string
+      post_slack:
+        description: Post a ping to Slack (workflow_run always does)
+        required: false
+        type: boolean
+        default: false
+
+run-name: ${{ format('Main performance detector {0}{1}{2}', inputs.head_sha || github.event.workflow_run.head_sha || 'latest-main', inputs.mode == 'aa' && ' (aa)' || '', inputs.inject_head_ms && ' (inject)' || '') }}
+
+# One run per commit. Runs for different commits are independent and none is
+# cancelled: a later merge must not drop the check of an earlier one. A dispatch
+# with no head_sha measures the tip of main, which a title cannot name, so it
+# is called latest-main and no commit's heartbeat or re-run check counts it.
+concurrency:
+  group: main-detector-${{ inputs.head_sha || github.event.workflow_run.head_sha || 'latest-main' }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: read
+  statuses: read
+
+env:
+  # Must equal the number of shards in main-detector-measure.yml.
+  DETECTOR_SHARDS: 5
+
+jobs:
+  plan:
+    # Main runs that were cancelled never finished their builds; failed runs still upload them.
+    if: ${{ github.event_name != 'workflow_run' || (github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion != 'cancelled') }}
+    runs-on: ubuntu-latest
+    outputs:
+      proceed: ${{ steps.quick.outputs.proceed || steps.plan.outputs.proceed }}
+      plan: ${{ steps.plan.outputs.plan }}
+    steps:
+      # Needs no checkout, so an unchanged commit finishes before any setup.
+      # Canary and aa runs skip it and take the full path below.
+      - name: Quick exit when the build inputs are unchanged
+        id: quick
+        uses: actions/github-script@v9
+        env:
+          HEAD_INPUT: ${{ inputs.head_sha || github.event.workflow_run.head_sha }}
+          MODE: ${{ inputs.mode }}
+          INJECT: ${{ inputs.inject_head_ms }}
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const input = process.env.HEAD_INPUT;
+            if (input && !/^[0-9a-f]{40}$/u.test(input)) {
+              core.setFailed('head_sha must be a full 40-character commit SHA');
+              return;
+            }
+            const { data: commit } = await github.rest.repos.getCommit({
+              owner,
+              repo,
+              ref: input || 'main',
+            });
+            const head = commit.sha;
+            const parent = commit.parents[0]?.sha;
+            // The plan step reads this, so both steps judge the same commit.
+            core.setOutput('head', head);
+
+            const finish = async (label, message) => {
+              require('fs').writeFileSync('skip.json', JSON.stringify({ headSha: head, label }));
+              await core.summary.addRaw(`## Main performance detector\n\n${message}\n`).write();
+              core.setOutput('proceed', 'false');
+              core.setOutput('done', 'true');
+            };
+
+            if (process.env.MODE === 'aa' || process.env.INJECT) return;
+
+            // Re-running Main fires this workflow again; do not measure a commit twice.
+            if (Number(context.payload.workflow_run?.run_attempt) > 1) {
+              const since = new Date(Date.now() - 14 * 86400000).toISOString().slice(0, 10);
+              const runs = await github.paginate(github.rest.actions.listWorkflowRuns, {
+                owner,
+                repo,
+                workflow_id: 'main-detector.yml',
+                created: `>=${since}`,
+                per_page: 100,
+              });
+              // A run that could not measure leaves detector-unmeasured, not a verdict.
+              let checked = false;
+              const earlier = runs.filter(
+                (run) =>
+                  run.id !== context.runId &&
+                  run.event === 'workflow_run' &&
+                  run.display_title.includes(head),
+              );
+              for (const run of earlier) {
+                if (run.conclusion === null) {
+                  checked = true;
+                  break;
+                }
+                if (run.conclusion !== 'success') continue;
+                const artifacts = await github.paginate(github.rest.actions.listWorkflowRunArtifacts, {
+                  owner,
+                  repo,
+                  run_id: run.id,
+                  per_page: 100,
+                });
+                if (artifacts.some((a) => a.name === 'detector-result' || a.name === 'detector-skip')) {
+                  checked = true;
+                  break;
+                }
+              }
+              if (checked) {
+                await finish(
+                  'already checked (Main re-run)',
+                  `Head \`${head.slice(0, 10)}\` was already checked by an earlier detector run; this Main re-run is ignored.`,
+                );
+                return;
+              }
+            }
+
+            // Canary rule: keep in step with the shell check in the plan step below.
+            if (!parent || parseInt(head.slice(0, 8), 16) % 10 === 0) return;
+
+            const hashOf = async (ref) => {
+              const statuses = await github.paginate(github.rest.repos.listCommitStatusesForRef, {
+                owner,
+                repo,
+                ref,
+                per_page: 100,
+              });
+              return statuses.find((s) => s.context === 'build-source-hash')?.description ?? '';
+            };
+            const [headHash, parentHash] = await Promise.all([hashOf(head), hashOf(parent)]);
+            if (!headHash || headHash !== parentHash) return;
+
+            // A parent whose Main run did not succeed may have no build, and then the
+            // real base is an older commit, so only the full path can judge the head.
+            const { data: parentRuns } = await github.rest.actions.listWorkflowRuns({
+              owner,
+              repo,
+              workflow_id: 'main.yml',
+              head_sha: parent,
+              event: 'push',
+              status: 'success',
+              per_page: 1,
+            });
+            if (parentRuns.total_count === 0) return;
+
+            await finish(
+              'no change (identical builds)',
+              `Head \`${head.slice(0, 10)}\` has the same build-source hash as its parent \`${parent.slice(0, 10)}\`: **no change**, no jobs run.`,
+            );
+
+      - name: Checkout the scripts
+        if: ${{ steps.quick.outputs.done != 'true' }}
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: |
+            .github
+            .nvmrc
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Node.js
+        if: ${{ steps.quick.outputs.done != 'true' }}
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+
+      - name: Resolve the builds and compare them
+        id: plan
+        if: ${{ steps.quick.outputs.done != 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ steps.quick.outputs.head }}
+          MODE: ${{ inputs.mode }}
+          INJECT: ${{ inputs.inject_head_ms }}
+          MAIN_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+        run: |
+          set -euo pipefail
+          # Commits only: trees and blobs are fetched on demand, since the deep fetch took about a minute.
+          git fetch --no-tags --depth=150 --filter=tree:0 origin "$HEAD_SHA"
+          head=$(git rev-parse "$HEAD_SHA")
+          summary() { printf '## Main performance detector\n\n%s\n' "$1" >> "$GITHUB_STEP_SUMMARY"; }
+          if [[ -n "$INJECT" && ! "$INJECT" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
+            echo "::error::inject_head_ms must be a non-negative number"
+            exit 1
+          fi
+
+          node .github/scripts/main-detector/resolve-cli.mts \
+            --head "$head" --out resolve.json > /dev/null
+          status=$(jq -r .status resolve.json)
+          # An A/A canary never uses the base, so a missing one does not matter.
+          if [[ "$status" != measure && ! ( "$MODE" == aa && "$status" == no-base ) ]]; then
+            summary "Head \`${head:0:10}\`: **could not measure** ($status). No build for the head, or none for any of its recent ancestors."
+            printf '{"headSha":"%s","label":"could not measure (%s)"}\n' "$head" "$status" > unmeasured.json
+            echo "proceed=false" >> "$GITHUB_OUTPUT"
+            # A successful Main run always leaves a build, so a missing one
+            # means the lookup is broken; fail so the heartbeat reports it.
+            if [[ "$status" == no-base || "$MAIN_CONCLUSION" == success ]]; then
+              exit 1
+            fi
+            exit 0
+          fi
+
+          base=$(jq -r '.base.sha // empty' resolve.json)
+          identical=false
+          if [[ "$MODE" != aa ]]; then
+            # Compares each zip's file list (names, sizes, CRCs) from its central
+            # directory with range requests, so identical builds exit without downloads.
+            node .github/scripts/main-detector/compare-builds-cli.mts \
+              --resolve resolve.json --out compare.json > /dev/null
+            identical=$(jq -r .identical compare.json)
+          fi
+
+          # Identical builds need no jobs; 1 in 10 of them run as a false-alarm canary.
+          # An injection run must measure, since it slows the head on purpose.
+          canary=false
+          if [[ "$MODE" == aa ]]; then
+            canary=true
+          elif [[ "$identical" == true && -z "$INJECT" ]]; then
+            if (( 16#${head:0:8} % 10 == 0 )); then
+              canary=true
+            else
+              summary "Head \`${head:0:10}\` builds the same as base \`${base:0:10}\`: **no change**, no jobs run."
+              printf '{"headSha":"%s","label":"no change (identical builds)"}\n' "$head" > skip.json
+              echo "proceed=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          fi
+
+          plan=$(jq -c --argjson canary "$canary" --arg inject "$INJECT" '{
+            headSha: .head.sha,
+            headSubject: .subjects[.head.sha],
+            baseSha: (if $canary then .head.sha else .base.sha end),
+            canary: $canary,
+            injectMs: (if $inject == "" then null else ($inject | tonumber) end),
+            rangeSize: (if $canary then 1 else (.range | length) end),
+            headRun: .head.run,
+            headVersion: .head.version,
+            baseRun: (if $canary then .head.run else .base.run end),
+            baseVersion: (if $canary then .head.version else .base.version end)
+          }' resolve.json)
+          echo "proceed=true" >> "$GITHUB_OUTPUT"
+          echo "plan=$plan" >> "$GITHUB_OUTPUT"
+
+      - name: Upload the skip verdict
+        if: ${{ always() && hashFiles('skip.json') != '' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: detector-skip
+          path: skip.json
+          overwrite: true
+          retention-days: 30
+
+      # Kept apart from detector-skip so a Main re-run can tell "decided" from "could not decide".
+      - name: Upload the could-not-measure verdict
+        if: ${{ always() && hashFiles('unmeasured.json') != '' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: detector-unmeasured
+          path: unmeasured.json
+          overwrite: true
+          retention-days: 30
+
+  measure-first:
+    needs: plan
+    if: ${{ needs.plan.outputs.proceed == 'true' }}
+    uses: ./.github/workflows/main-detector-measure.yml
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+    with:
+      plan: ${{ needs.plan.outputs.plan }}
+      batch: 1
+      inject_head_ms: ${{ inputs.inject_head_ms }}
+
+  score-first:
+    needs: [plan, measure-first]
+    if: ${{ !cancelled() && needs.plan.outputs.proceed == 'true' }}
+    runs-on: ubuntu-latest
+    outputs:
+      needs_confirm: ${{ steps.score.outputs.needs_confirm }}
+    steps:
+      - name: Checkout the scripts
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: |
+            .github
+            .nvmrc
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+
+      - name: Download batch 1
+        uses: actions/download-artifact@v8
+        with:
+          pattern: detector-b1-*
+          path: artifacts
+
+      - name: Score batch 1
+        id: score
+        env:
+          PLAN: ${{ needs.plan.outputs.plan }}
+        run: |
+          echo "$PLAN" > plan.json
+          node .github/scripts/main-detector/score-cli.mts --stage first \
+            --dir artifacts --plan plan.json --out first.json --shards "$DETECTOR_SHARDS" \
+            --github-output "$GITHUB_OUTPUT"
+
+  measure-confirm:
+    needs: [plan, score-first]
+    if: ${{ needs.score-first.outputs.needs_confirm == 'true' }}
+    uses: ./.github/workflows/main-detector-measure.yml
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+    with:
+      plan: ${{ needs.plan.outputs.plan }}
+      batch: 2
+      inject_head_ms: ${{ inputs.inject_head_ms }}
+
+  report:
+    needs: [plan, score-first, measure-confirm]
+    if: ${{ !cancelled() && needs.plan.outputs.proceed == 'true' && needs.score-first.result == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the scripts
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: |
+            .github
+            .nvmrc
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+
+      - name: Download the batches
+        uses: actions/download-artifact@v8
+        with:
+          pattern: detector-b*
+          path: artifacts
+
+      - name: Score and report
+        env:
+          PLAN: ${{ needs.plan.outputs.plan }}
+        run: |
+          echo "$PLAN" > plan.json
+          node .github/scripts/main-detector/score-cli.mts --stage final \
+            --dir artifacts --plan plan.json --out result.json --shards "$DETECTOR_SHARDS" \
+            --summary "$GITHUB_STEP_SUMMARY" > /dev/null
+
+      - name: Upload the result
+        uses: actions/upload-artifact@v7
+        with:
+          name: detector-result
+          path: result.json
+          overwrite: true
+          retention-days: 30
+
+      - name: Post to Slack
+        if: ${{ github.event_name == 'workflow_run' || inputs.post_slack }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL: ${{ vars.SLACK_MAIN_DETECTOR_CHANNEL }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          node .github/scripts/main-detector/slack-cli.mts \
+            --result result.json --run-url "$RUN_URL"
+
+      # A result that measured nothing is green on its own, so fail the run for the heartbeat to see.
+      - name: Fail when a batch could not be measured
+        run: |
+          if jq -e '.decision.unmeasured | length > 0' result.json > /dev/null; then
+            echo "::error::Could not measure: $(jq -r '.decision.unmeasured | join(", ")' result.json)"
+            exit 1
+          fi
