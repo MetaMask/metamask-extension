@@ -1140,10 +1140,9 @@ describe('AssetPage', () => {
 
       expect(getByText(messages.yourBalance.message)).toBeInTheDocument();
       expect(queryByTestId('musd-position-section')).not.toBeInTheDocument();
-      expect(queryByTestId('musd-convert-section')).not.toBeInTheDocument();
     });
 
-    it('renders the position, but never the convert section, when the conversion flow is on', () => {
+    it('renders the position section when the conversion flow is on', () => {
       const { queryByTestId } = renderWithProvider(
         <AssetPage asset={musdToken} optionsButton={null} />,
         configureMockStore([thunk])({
@@ -1156,7 +1155,6 @@ describe('AssetPage', () => {
       );
 
       expect(queryByTestId('musd-position-section')).toBeInTheDocument();
-      expect(queryByTestId('musd-convert-section')).not.toBeInTheDocument();
     });
 
     it('disables the Money balance CTA when the position replaces the balance section', () => {

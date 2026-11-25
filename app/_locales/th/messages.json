@@ -217,9 +217,6 @@
     "message": "คีย์ส่วนตัว",
     "description": "select this type of file to use to import an account"
   },
-  "privateNetwork": {
-    "message": "เครือข่ายส่วนตัว"
-  },
   "readdToken": {
     "message": "คุณสามารถเพิ่มโทเค็นนี้ในอนาคตได้โดยไปที่ “เพิ่มโทเค็น” ในเมนูตัวเลือกบัญชีของคุณ"
   },

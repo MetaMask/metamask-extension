@@ -801,11 +801,6 @@
       "count": 1
     }
   },
-  "ui/pages/confirmations/hooks/useLedgerConnection.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
   "ui/pages/confirmations/hooks/useSetConfirmationAlerts.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 2

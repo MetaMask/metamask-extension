@@ -404,9 +404,6 @@
     "message": "Privātā atslēga",
     "description": "select this type of file to use to import an account"
   },
-  "privateNetwork": {
-    "message": "Privātais tīkls"
-  },
   "readdToken": {
     "message": "Jūs varat šo marķieri iestatīt atpakaļ nākotnē, konta opciju izvēlnē atverot \"Pievienot marķieri\"."
   },

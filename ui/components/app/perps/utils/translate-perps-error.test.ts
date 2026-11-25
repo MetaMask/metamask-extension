@@ -16,11 +16,19 @@ jest.mock('@metamask/perps-controller', () => ({
     CLIENT_REINITIALIZING: 'CLIENT_REINITIALIZING',
     PROVIDER_NOT_AVAILABLE: 'PROVIDER_NOT_AVAILABLE',
     PROVIDER_NOT_FOUND: 'PROVIDER_NOT_FOUND',
+    PROVIDER_ROUTE_REQUIRED: 'PROVIDER_ROUTE_REQUIRED',
     PROVIDER_LIFECYCLE_STALE: 'PROVIDER_LIFECYCLE_STALE',
     TOKEN_NOT_SUPPORTED: 'TOKEN_NOT_SUPPORTED',
     BRIDGE_CONTRACT_NOT_FOUND: 'BRIDGE_CONTRACT_NOT_FOUND',
     WITHDRAW_FAILED: 'WITHDRAW_FAILED',
     POSITIONS_FAILED: 'POSITIONS_FAILED',
+    BATCH_INCOMPLETE: 'BATCH_INCOMPLETE',
+    ORDERS_FAILED: 'ORDERS_FAILED',
+    LIQUIDATION_PRICE_UNAVAILABLE: 'LIQUIDATION_PRICE_UNAVAILABLE',
+    ORDER_NO_LONGER_OPEN: 'ORDER_NO_LONGER_OPEN',
+    ORDER_SCALE_SIZE_CONSERVATION_FAILED:
+      'ORDER_SCALE_SIZE_CONSERVATION_FAILED',
+    ORDER_SCALE_EXPOSURE_EXCEEDS_INTENT: 'ORDER_SCALE_EXPOSURE_EXCEEDS_INTENT',
     ACCOUNT_STATE_FAILED: 'ACCOUNT_STATE_FAILED',
     MARKETS_FAILED: 'MARKETS_FAILED',
     UNKNOWN_ERROR: 'UNKNOWN_ERROR',
@@ -84,6 +92,8 @@ jest.mock('@metamask/perps-controller', () => ({
     ORDER_MARGIN_MODE_UNSUPPORTED: 'ORDER_MARGIN_MODE_UNSUPPORTED',
     ORDER_MARGIN_MODE_POSITION_OPEN: 'ORDER_MARGIN_MODE_POSITION_OPEN',
     ORDER_MARGIN_MODE_ORDER_OPEN: 'ORDER_MARGIN_MODE_ORDER_OPEN',
+    ORDER_POST_ONLY_WOULD_CROSS: 'ORDER_POST_ONLY_WOULD_CROSS',
+    ORDER_POST_ONLY_WINDOW: 'ORDER_POST_ONLY_WINDOW',
     EXCHANGE_ACCOUNT_NOT_FOUND: 'EXCHANGE_ACCOUNT_NOT_FOUND',
     EXCHANGE_MULTI_SIG_REQUIRED: 'EXCHANGE_MULTI_SIG_REQUIRED',
     EXCHANGE_INVALID_NONCE: 'EXCHANGE_INVALID_NONCE',
@@ -108,6 +118,7 @@ jest.mock('@metamask/perps-controller', () => ({
     MARGIN_ADJUSTMENT_FAILED: 'MARGIN_ADJUSTMENT_FAILED',
     TPSL_UPDATE_FAILED: 'TPSL_UPDATE_FAILED',
     TPSL_PROTECTION_LOST: 'TPSL_PROTECTION_LOST',
+    TPSL_LEG_REPLACE_UNSUPPORTED: 'TPSL_LEG_REPLACE_UNSUPPORTED',
     ORDER_REJECTED: 'ORDER_REJECTED',
     SLIPPAGE_EXCEEDED: 'SLIPPAGE_EXCEEDED',
     PRICE_MOVED: 'PRICE_MOVED',
@@ -183,8 +194,8 @@ describe('ERROR_CODE_TO_I18N_KEY', () => {
       ['PROVIDER_LIFECYCLE_STALE', '[somethingWentWrong]'],
       ['ORDER_STRATEGY_ROUTE_UNAVAILABLE', '[perpsOrderFailed]'],
       ['ORDER_CHASE_MAX_DISTANCE_INVALID', '[perpsOrderFailed]'],
-      ['TPSL_PROTECTION_LOST', '[somethingWentWrong]'],
-      ['POSITION_NOT_FOUND', '[somethingWentWrong]'],
+      ['TPSL_PROTECTION_LOST', '[perpsTpslUpdateFailed]'],
+      ['POSITION_NOT_FOUND', '[perpsPositionNotFound]'],
       ['ORDER_MARGIN_MODE_INVALID', '[perpsOrderFailed]'],
       ['ORDER_MARGIN_MODE_UNSUPPORTED', '[perpsOrderFailed]'],
       ['ORDER_MARGIN_MODE_POSITION_OPEN', '[perpsOrderFailed]'],
@@ -309,6 +320,71 @@ describe('ERROR_CODE_TO_I18N_KEY', () => {
     expect(
       ERROR_CODE_TO_I18N_KEY[PERPS_ERROR_CODES.EXCHANGE_ACCOUNT_NOT_FOUND],
     ).toBe('perpsExchangeAccountNotFound');
+  });
+
+  it('shows the root cause for codes Extension can produce', () => {
+    const cases = [
+      [
+        'BATCH_INCOMPLETE',
+        "Some orders or positions couldn't be updated. Try again.",
+      ],
+      ['ORDERS_FAILED', "We couldn't load your orders. Try again."],
+      ['ORDER_LEVERAGE_REDUCTION_FAILED', 'You cannot reduce your leverage.'],
+      [
+        'REDUCE_ONLY_VIOLATION',
+        'This order would increase your position. Only reduce-only orders are allowed.',
+      ],
+      [
+        'POSITION_WOULD_FLIP',
+        'This order would flip your position direction. Please close your existing position first.',
+      ],
+      ['POSITION_NOT_FOUND', 'Position not found.'],
+      ['MARGIN_ADJUSTMENT_FAILED', 'Unable to adjust margin. Try again.'],
+      [
+        'TPSL_UPDATE_FAILED',
+        'Unable to update take profit/stop loss. Try again.',
+      ],
+      [
+        'TPSL_PROTECTION_LOST',
+        'Unable to update take profit/stop loss. Try again.',
+      ],
+      [
+        'TPSL_LEG_REPLACE_UNSUPPORTED',
+        'Unable to update take profit/stop loss. Try again.',
+      ],
+      [
+        'INSUFFICIENT_BALANCE',
+        'Insufficient balance to complete this operation. Check your available funds.',
+      ],
+      ['ORDER_SIZE_MIN', 'This order is below the minimum size.'],
+      ['ORDER_LEVERAGE_INVALID', 'This leverage is outside the allowed range.'],
+      [
+        'ORDER_LEVERAGE_BELOW_POSITION',
+        'Leverage must be at least as high as your existing position.',
+      ],
+      ['ORDER_MAX_VALUE_EXCEEDED', 'This order is above the maximum size.'],
+    ] as const;
+
+    expect(cases.map(([code]) => translatePerpsError(code, tEn))).toStrictEqual(
+      cases.map(([, expected]) => expected),
+    );
+  });
+
+  it('applies the cancel override only to perpsOrderFailed', () => {
+    expect(
+      translatePerpsError(
+        PERPS_ERROR_CODES.REDUCE_ONLY_VIOLATION,
+        mockT,
+        CANCEL_ORDER_I18N_KEY_OVERRIDES,
+      ),
+    ).toBe('[perpsReduceOnlyViolation]');
+    expect(
+      translatePerpsError(
+        PERPS_ERROR_CODES.ORDER_UNKNOWN_COIN,
+        mockT,
+        CANCEL_ORDER_I18N_KEY_OVERRIDES,
+      ),
+    ).toBe('[perpsCancelOrderFailed]');
   });
 });
 
@@ -540,6 +616,62 @@ describe('translatePerpsError', () => {
         translatePerpsError(error, mockT, CANCEL_ORDER_I18N_KEY_OVERRIDES),
       ).toBe('[perpsNetworkError]');
     });
+
+    it('does not rewrite post-only keys to cancel copy', () => {
+      const wouldCross = {
+        error: 'Post only order would have immediately matched',
+        errorCode: PERPS_ERROR_CODES.ORDER_POST_ONLY_WOULD_CROSS,
+        errorDetails: {
+          code: PERPS_ERROR_CODES.ORDER_POST_ONLY_WOULD_CROSS,
+          provider: 'hyperliquid' as const,
+        },
+      };
+      const postOnlyWindow = {
+        error:
+          'Only post-only orders allowed immediately after network upgrade',
+        errorCode: PERPS_ERROR_CODES.ORDER_POST_ONLY_WINDOW,
+      };
+
+      expect(
+        translatePerpsError(wouldCross, mockT, CANCEL_ORDER_I18N_KEY_OVERRIDES),
+      ).toBe('[perpsPostOnlyWouldCross]');
+      expect(
+        translatePerpsError(
+          postOnlyWindow,
+          mockT,
+          CANCEL_ORDER_I18N_KEY_OVERRIDES,
+        ),
+      ).toBe('[perpsPostOnlyWindow]');
+    });
+  });
+
+  it('translates provider-tagged post-only codes to their own keys', () => {
+    expect(
+      translatePerpsError(
+        {
+          error: 'ORDER_POST_ONLY_WOULD_CROSS',
+          errorCode: PERPS_ERROR_CODES.ORDER_POST_ONLY_WOULD_CROSS,
+          errorDetails: {
+            code: PERPS_ERROR_CODES.ORDER_POST_ONLY_WOULD_CROSS,
+            provider: 'hyperliquid',
+          },
+        },
+        mockT,
+      ),
+    ).toBe('[perpsPostOnlyWouldCross]');
+    expect(
+      translatePerpsError(
+        {
+          error: 'ORDER_POST_ONLY_WINDOW',
+          errorCode: PERPS_ERROR_CODES.ORDER_POST_ONLY_WINDOW,
+          errorDetails: {
+            code: PERPS_ERROR_CODES.ORDER_POST_ONLY_WINDOW,
+            provider: 'hyperliquid',
+          },
+        },
+        mockT,
+      ),
+    ).toBe('[perpsPostOnlyWindow]');
   });
 });
 

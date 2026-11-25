@@ -707,17 +707,19 @@ describe('PerpsOrderEntryPage', () => {
       (state.metamask as Record<string, unknown>).selectedOrderType = 'market';
       (state.metamask as Record<string, unknown>).tradeConfigurations = {
         mainnet: {
-          ETH: {
-            leverage: 3,
-            pendingConfig: {
-              amount: '25',
-              leverage: 5,
-              orderType: 'limit',
-              limitPrice: '3000',
-              takeProfitPrice: '3500',
-              stopLossPrice: '2500',
-              direction: 'long',
-              timestamp: Date.now(),
+          hyperliquid: {
+            ETH: {
+              leverage: 3,
+              pendingConfig: {
+                amount: '25',
+                leverage: 5,
+                orderType: 'limit',
+                limitPrice: '3000',
+                takeProfitPrice: '3500',
+                stopLossPrice: '2500',
+                direction: 'long',
+                timestamp: Date.now(),
+              },
             },
           },
         },
@@ -748,15 +750,17 @@ describe('PerpsOrderEntryPage', () => {
       const state = createMockState();
       (state.metamask as Record<string, unknown>).tradeConfigurations = {
         mainnet: {
-          ETH: {
-            leverage: 3,
-            pendingConfig: {
-              amount: '25',
-              leverage: 5,
-              orderType: 'limit',
-              limitPrice: '3000',
-              direction: 'long',
-              timestamp: Date.now() - 30_001,
+          hyperliquid: {
+            ETH: {
+              leverage: 3,
+              pendingConfig: {
+                amount: '25',
+                leverage: 5,
+                orderType: 'limit',
+                limitPrice: '3000',
+                direction: 'long',
+                timestamp: Date.now() - 30_001,
+              },
             },
           },
         },
@@ -781,14 +785,16 @@ describe('PerpsOrderEntryPage', () => {
       const state = createMockState();
       (state.metamask as Record<string, unknown>).tradeConfigurations = {
         mainnet: {
-          ETH: {
-            pendingConfig: {
-              amount: '25',
-              leverage: 5,
-              orderType: 'limit',
-              limitPrice: '3000',
-              direction: 'long',
-              timestamp: initialTime,
+          hyperliquid: {
+            ETH: {
+              pendingConfig: {
+                amount: '25',
+                leverage: 5,
+                orderType: 'limit',
+                limitPrice: '3000',
+                direction: 'long',
+                timestamp: initialTime,
+              },
             },
           },
         },
@@ -828,7 +834,9 @@ describe('PerpsOrderEntryPage', () => {
           ...base.metamask,
           selectedOrderType: 'market',
           tradeConfigurations: {
-            mainnet: { ETH: pendingConfig ? { pendingConfig } : {} },
+            mainnet: {
+              hyperliquid: { ETH: pendingConfig ? { pendingConfig } : {} },
+            },
             testnet: {},
           },
         },
@@ -889,14 +897,16 @@ describe('PerpsOrderEntryPage', () => {
       const state = createMockState();
       (state.metamask as Record<string, unknown>).tradeConfigurations = {
         mainnet: {
-          ETH: {
-            pendingConfig: {
-              amount: '25',
-              leverage: 5,
-              orderType: 'limit',
-              limitPrice: '3000',
-              direction: 'long',
-              timestamp: Date.now(),
+          hyperliquid: {
+            ETH: {
+              pendingConfig: {
+                amount: '25',
+                leverage: 5,
+                orderType: 'limit',
+                limitPrice: '3000',
+                direction: 'long',
+                timestamp: Date.now(),
+              },
             },
           },
         },
@@ -979,15 +989,17 @@ describe('PerpsOrderEntryPage', () => {
       const state = createMockState();
       (state.metamask as Record<string, unknown>).tradeConfigurations = {
         mainnet: {
-          ETH: {
-            pendingConfig: {
-              amount: '25',
-              leverage: 5,
-              orderType: 'market',
-              takeProfitPrice: undefined,
-              stopLossPrice: undefined,
-              direction: 'long',
-              timestamp: Date.now(),
+          hyperliquid: {
+            ETH: {
+              pendingConfig: {
+                amount: '25',
+                leverage: 5,
+                orderType: 'market',
+                takeProfitPrice: undefined,
+                stopLossPrice: undefined,
+                direction: 'long',
+                timestamp: Date.now(),
+              },
             },
           },
         },
@@ -3222,8 +3234,8 @@ describe('PerpsOrderEntryPage', () => {
       // Saved leverage well above the market max — the UI seeds the clamped
       // value, so the analytics default must be clamped too.
       (state.metamask as Record<string, unknown>).tradeConfigurations = {
-        mainnet: { ETH: { leverage: 999 } },
-        testnet: { ETH: { leverage: 999 } },
+        mainnet: { hyperliquid: { ETH: { leverage: 999 } } },
+        testnet: { hyperliquid: { ETH: { leverage: 999 } } },
       };
       renderWithProvider(<PerpsOrderEntryPage />, mockStore(state));
 
@@ -4792,7 +4804,9 @@ describe('PerpsOrderEntryPage', () => {
       const state = createMockState();
       (state.metamask as Record<string, unknown>).tradeConfigurations = {
         mainnet: {
-          ETH: { pendingConfig: { ...pendingConfig, timestamp: Date.now() } },
+          hyperliquid: {
+            ETH: { pendingConfig: { ...pendingConfig, timestamp: Date.now() } },
+          },
         },
         testnet: {},
       };

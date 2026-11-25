@@ -367,6 +367,7 @@ import { RewardsDataServiceInit } from './messenger-client-init/rewards-data-ser
 import { RewardsControllerInit } from './messenger-client-init/rewards-controller-init';
 import { RewardsMoneyDataServiceInit } from './messenger-client-init/rewards-money-data-service-init';
 import { RewardsMoneyControllerInit } from './messenger-client-init/rewards-money-controller-init';
+import { AiDigestControllerInit } from './messenger-client-init/ai-digest-controller-init';
 import { QrSyncControllerInit } from './messenger-client-init/qr-sync';
 import { getRootMessenger } from './lib/messenger';
 import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
@@ -618,6 +619,7 @@ export default class MetamaskController extends EventEmitter {
       RewardsController: RewardsControllerInit,
       RewardsMoneyDataService: RewardsMoneyDataServiceInit,
       RewardsMoneyController: RewardsMoneyControllerInit,
+      AiDigestController: AiDigestControllerInit,
       ProfileMetricsController: ProfileMetricsControllerInit,
       ProfileMetricsService: ProfileMetricsServiceInit,
       ProofOfOwnershipService: ProofOfOwnershipServiceInit,
