@@ -43,19 +43,22 @@ const MUSD_MAINNET_ASSET_ID =
 async function mockSeedlessOnboardingBalanceApis(
   mockServer: Mockttp,
 ): Promise<void> {
-  await accountsSupportedNetworksV2.mockRaw(mockServer, {
-    fullSupport: [
-      'eip155:1',
-      'eip155:137',
-      'eip155:56',
-      'eip155:59144',
-      'eip155:8453',
-      'eip155:10',
-      'eip155:42161',
-      'eip155:534352',
-    ],
-    partialSupport: ['eip155:42220', 'eip155:43114'],
-  });
+  await accountsSupportedNetworksV2
+    .rule(mockServer)
+    .always()
+    .thenJson(200, {
+      fullSupport: [
+        'eip155:1',
+        'eip155:137',
+        'eip155:56',
+        'eip155:59144',
+        'eip155:8453',
+        'eip155:10',
+        'eip155:42161',
+        'eip155:534352',
+      ],
+      partialSupport: ['eip155:42220', 'eip155:43114'],
+    });
 
   await accountsBalancesV5
     .rule(mockServer)

@@ -37,19 +37,25 @@ export async function mockActiveNetworks(
   // Exclude 1337 from supported networks so newly imported SRP accounts report
   // their real on-chain balance (0 ETH) instead of inheriting the funded
   // fixture account's 25 ETH from the v5 multiaccount balances mock.
-  await accountsSupportedNetworksV2.mockRaw(mockServer, {
-    fullSupport: [
-      'eip155:1',
-      'eip155:137',
-      'eip155:56',
-      'eip155:59144',
-      'eip155:8453',
-      'eip155:10',
-      'eip155:42161',
-      'eip155:534352',
-    ],
-    partialSupport: ['eip155:42220', 'eip155:43114'],
-  });
+  await accountsSupportedNetworksV2
+    .rule(mockServer)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        fullSupport: [
+          'eip155:1',
+          'eip155:137',
+          'eip155:56',
+          'eip155:59144',
+          'eip155:8453',
+          'eip155:10',
+          'eip155:42161',
+          'eip155:534352',
+        ],
+        partialSupport: ['eip155:42220', 'eip155:43114'],
+      },
+    }));
 
   return await mockServer
     .forGet('https://accounts.api.cx.metamask.io/v2/activeNetworks')

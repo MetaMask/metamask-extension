@@ -106,7 +106,6 @@ export const mockExchangeRates = (mockServer: Mockttp) =>
 export const mockSolanaSpotPrices = (mockServer: Mockttp) =>
   priceV3Spot
     .rule(mockServer)
-    .always()
     .withQuery({
       vsCurrency: 'usd',
       assetIds:

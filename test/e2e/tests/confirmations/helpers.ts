@@ -19,7 +19,6 @@ import {
   fourByteSignatures,
   priceV3Spot,
   signatureInsightsSignature,
-  type DefiPositionsResponse,
 } from '../../mock-response-data/api-responses';
 
 export const DECODING_E2E_API_URL =
@@ -118,7 +117,10 @@ async function createMockSegmentEvent(mockServer: Mockttp, eventName: string) {
 }
 
 async function createMockSignatureDecodingEvent(mockServer: Mockttp) {
-  return await signatureInsightsSignature.mock(mockServer, undefined);
+  return await signatureInsightsSignature.rule(mockServer).thenCallback(() => ({
+    statusCode: 200,
+    json: signatureInsightsSignature.response(),
+  }));
 }
 
 export async function mockSignatureApproved(
@@ -919,7 +921,7 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
                 ],
               },
             ],
-          } satisfies DefiPositionsResponse,
+          },
         };
       }),
     await mockServer
@@ -936,13 +938,18 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
           ],
         };
       }),
-    await priceV3Spot.mock(mockServer, {
-      'eip155:1/slip44:60': {
-        id: 'ethereum',
-        price: 1700,
-        marketCap: 382623505141,
-        pricePercentChange1d: 0,
-      },
+    await priceV3Spot.rule(mockServer).thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: priceV3Spot.response({
+          'eip155:1/slip44:60': {
+            id: 'ethereum',
+            price: 1700,
+            marketCap: 382623505141,
+            pricePercentChange1d: 0,
+          },
+        }),
+      };
     }),
   ];
 }
@@ -959,7 +966,7 @@ export async function mockNoDeFiPositionFeatureFlag(mockServer: Mockttp) {
         return {
           ok: true,
           statusCode: 200,
-          json: { data: [] } satisfies DefiPositionsResponse,
+          json: { data: [] },
         };
       }),
     await mockServer

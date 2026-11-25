@@ -356,18 +356,24 @@ export async function mockTokensWithSecurityData(
 }
 
 export async function mockGetPopularTokens(mockServer: Mockttp) {
-  return await bridgeGetTokensPopular.mock(
-    mockServer,
-    [
-      MOCK_TOKENS_ETHEREUM.map((token) => toBridgeTokenResponse(1, token)),
-      MOCK_TOKENS_LINEA.map((token) => toBridgeTokenResponse(59144, token)),
-      MOCK_TOKENS_ARBITRUM.map((token) => toBridgeTokenResponse(42161, token)),
-      MOCK_GET_TOKEN_ARBITRUM.map((token) =>
-        toBridgeTokenResponse(42161, token),
-      ),
-      MOCK_TOKENS_ROBINHOOD.map((token) => toBridgeTokenResponse(4663, token)),
-    ].flat(),
-  );
+  return await bridgeGetTokensPopular.rule(mockServer).thenCallback(() => ({
+    statusCode: 200,
+    json: bridgeGetTokensPopular.response(
+      [
+        MOCK_TOKENS_ETHEREUM.map((token) => toBridgeTokenResponse(1, token)),
+        MOCK_TOKENS_LINEA.map((token) => toBridgeTokenResponse(59144, token)),
+        MOCK_TOKENS_ARBITRUM.map((token) =>
+          toBridgeTokenResponse(42161, token),
+        ),
+        MOCK_GET_TOKEN_ARBITRUM.map((token) =>
+          toBridgeTokenResponse(42161, token),
+        ),
+        MOCK_TOKENS_ROBINHOOD.map((token) =>
+          toBridgeTokenResponse(4663, token),
+        ),
+      ].flat(),
+    ),
+  }));
 }
 
 function filterTokensByQuery<Token extends { symbol: string; name: string }>(
@@ -496,13 +502,15 @@ async function mockSearchTokensMonadBase(mockServer: Mockttp) {
 }
 
 async function mockGetPopularTokensMonadBase(mockServer: Mockttp) {
-  return await bridgeGetTokensPopular.mock(
-    mockServer,
-    [
-      MOCK_TOKENS_MONAD.map((token) => toBridgeTokenResponse(143, token)),
-      MOCK_TOKENS_BASE.map((token) => toBridgeTokenResponse(8453, token)),
-    ].flat(),
-  );
+  return await bridgeGetTokensPopular.rule(mockServer).thenCallback(() => ({
+    statusCode: 200,
+    json: bridgeGetTokensPopular.response(
+      [
+        MOCK_TOKENS_MONAD.map((token) => toBridgeTokenResponse(143, token)),
+        MOCK_TOKENS_BASE.map((token) => toBridgeTokenResponse(8453, token)),
+      ].flat(),
+    ),
+  }));
 }
 
 async function mockETHtoETH(mockServer: Mockttp, sseEnabled?: boolean) {

@@ -201,10 +201,13 @@ export async function mockAccountsApiDown(mockServer: Mockttp) {
       .forGet(`${ACCOUNTS_API}/v6/multiaccount/balances`)
       .always()
       .thenCallback(failBalances),
-    await accountsSupportedNetworksV2.mockRaw(mockServer, {
-      fullSupport: ['eip155:1337'],
-      partialSupport: [],
-    }),
+    await accountsSupportedNetworksV2
+      .rule(mockServer)
+      .always()
+      .thenJson(200, {
+        fullSupport: ['eip155:1337'],
+        partialSupport: [],
+      }),
   ];
 }
 
@@ -259,10 +262,13 @@ export async function mockUnprocessedChainBalances(mockServer: Mockttp) {
         statusCode: 200,
         json: flagsWithAccountsApiV6(),
       })),
-    await accountsSupportedNetworksV2.mockRaw(mockServer, {
-      fullSupport: ['eip155:1', 'eip155:137'],
-      partialSupport: [],
-    }),
+    await accountsSupportedNetworksV2
+      .rule(mockServer)
+      .always()
+      .thenJson(200, {
+        fullSupport: ['eip155:1', 'eip155:137'],
+        partialSupport: [],
+      }),
     await balances('v5'),
     await balances('v6'),
     await mockJsonRpc(

@@ -830,14 +830,17 @@ async function main() {
 
   const baseline = readAdvisories(AUDIT_BASELINE_FILE);
   if (baseline === null) {
-    // I/O error — should not happen since the workflow only runs this step
-    // when the baseline was successfully downloaded.
+    // The workflow only runs this step when the baseline artifact was
+    // downloaded, so a missing or malformed file means the baseline is
+    // corrupt. Fail closed: passing here would silently disable the
+    // dependency-vulnerability gate.
     console.log(
-      '::warning::Baseline file is missing or unreadable; nothing to diff.',
+      `::error::Baseline file ${AUDIT_BASELINE_FILE} is missing, unreadable, or not a valid advisory list.`,
     );
     writeStepSummary(
-      `\n> **Audit diff:** Baseline unreadable — skipping diff.\n`,
+      `\n> **Audit diff:** Baseline invalid — failing the audit check.\n`,
     );
+    process.exitCode = 1;
     return;
   }
 

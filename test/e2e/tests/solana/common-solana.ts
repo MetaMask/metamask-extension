@@ -335,7 +335,6 @@ export async function mockPriceApiSpotPriceSolanaUsdc(mockServer: Mockttp) {
   const response = await readResponseJsonFile('priceApiSpotSolanaUsdc.json');
   return await priceV3Spot
     .rule(mockServer)
-    .always()
     .withQuery({
       assetIds:
         'solana%35eykt4UsFv8P8NJdTREpY1vzqKqZKvdp%2token%3EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
@@ -352,7 +351,6 @@ export async function mockPriceApiSpotPriceSolanaUsdc(mockServer: Mockttp) {
 export async function mockPriceApiNative(mockServer: Mockttp) {
   return await priceV3Spot
     .rule(mockServer)
-    .always()
     .withQuery({
       assetIds: 'eip155:1/slip44:60',
     })
@@ -519,12 +517,9 @@ export async function mockTokenApiMainnetTest(mockServer: Mockttp) {
       },
     ],
   };
-  return await tokensV3Assets
-    .rule(mockServer)
-    .always()
-    .thenCallback(() => {
-      return response;
-    });
+  return await tokensV3Assets.rule(mockServer).thenCallback(() => {
+    return response;
+  });
 }
 
 export async function mockTokenApiMainnet(mockServer: Mockttp) {
@@ -547,12 +542,9 @@ export async function mockTokenApiMainnet(mockServer: Mockttp) {
       },
     ],
   };
-  return await tokensV3Assets
-    .rule(mockServer)
-    .always()
-    .thenCallback(() => {
-      return response;
-    });
+  return await tokensV3Assets.rule(mockServer).thenCallback(() => {
+    return response;
+  });
 }
 
 export async function mockMultiCoinPrice(mockServer: Mockttp) {

@@ -116,20 +116,26 @@ async function mockMoneyAccountDepositFlags(
 }
 
 async function mockPriceApis(server: Mockttp): Promise<void> {
-  await priceV1ExchangeRates.mockRaw(server, {
-    eth: {
-      name: 'Ether',
-      ticker: 'eth',
-      value: 1 / ETH_USD_PRICE,
-      currencyType: 'crypto',
-    },
-    usd: {
-      name: 'US Dollar',
-      ticker: 'usd',
-      value: 1,
-      currencyType: 'fiat',
-    },
-  });
+  await priceV1ExchangeRates
+    .rule(server)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        eth: {
+          name: 'Ether',
+          ticker: 'eth',
+          value: 1 / ETH_USD_PRICE,
+          currencyType: 'crypto',
+        },
+        usd: {
+          name: 'US Dollar',
+          ticker: 'usd',
+          value: 1,
+          currencyType: 'fiat',
+        },
+      },
+    }));
 
   await priceV3Spot
     .rule(server)
@@ -671,7 +677,10 @@ async function mockDepositSettlement(
     [TX_SENTINEL_URL, mainnetSentinelNetwork],
     [MONAD_TX_SENTINEL_URL, monadSentinelNetwork],
   ] as const) {
-    await txSentinelNetwork.mockRaw(server, network, { baseUrl: sentinelUrl });
+    await txSentinelNetwork
+      .rule(server, { baseUrl: sentinelUrl })
+      .always()
+      .thenCallback(() => ({ statusCode: 200, json: network }));
   }
 
   for (const sentinelUrl of [TX_SENTINEL_URL, MONAD_TX_SENTINEL_URL]) {

@@ -62,35 +62,47 @@ async function waitForBalanceUpdate(
 
 async function mockChain1337(mockServer: Mockttp) {
   return [
-    await priceV3Spot.mockRaw(mockServer, {
-      'eip155:1337/slip44:1': {
-        id: 'ethereum',
-        price: 3401,
-        marketCap: 0,
-        pricePercentChange1d: 0,
-      },
-      'eip155:1/slip44:60': {
-        id: 'ethereum',
-        price: 3401,
-        marketCap: 0,
-        pricePercentChange1d: 0,
-      },
-    }),
-    await priceV1ExchangeRates.mockRaw(mockServer, {
-      usd: {
-        name: 'US Dollar',
-        ticker: 'usd',
-        value: 1,
-        currencyType: 'fiat',
-      },
-      eth: {
-        name: 'Ether',
-        ticker: 'eth',
-        value: 1 / 3401,
-        currencyType: 'crypto',
-      },
-    }),
-    await accountsSupportedNetworksV2.mockRaw(mockServer, {
+    await priceV3Spot
+      .rule(mockServer)
+      .always()
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          'eip155:1337/slip44:1': {
+            id: 'ethereum',
+            price: 3401,
+            marketCap: 0,
+            pricePercentChange1d: 0,
+          },
+          'eip155:1/slip44:60': {
+            id: 'ethereum',
+            price: 3401,
+            marketCap: 0,
+            pricePercentChange1d: 0,
+          },
+        },
+      })),
+    await priceV1ExchangeRates
+      .rule(mockServer)
+      .always()
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          usd: {
+            name: 'US Dollar',
+            ticker: 'usd',
+            value: 1,
+            currencyType: 'fiat',
+          },
+          eth: {
+            name: 'Ether',
+            ticker: 'eth',
+            value: 1 / 3401,
+            currencyType: 'crypto',
+          },
+        },
+      })),
+    await accountsSupportedNetworksV2.rule(mockServer).always().thenJson(200, {
       fullSupport: [],
       partialSupport: [],
     }),

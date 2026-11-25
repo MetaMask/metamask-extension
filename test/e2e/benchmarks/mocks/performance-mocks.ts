@@ -18,7 +18,6 @@ import {
   bridgeGetTokensSearch,
   gasPrices,
   priceV1ExchangeRates,
-  type DefiPositionsResponse,
 } from '../../mock-response-data/api-responses';
 import { POWER_USER_PRICES } from './price-data';
 import { buildSseResponseBody } from './swap-mocks';
@@ -619,12 +618,7 @@ export async function mockBenchmarkEndpoints(
       .forGet(/defiadapters\.api\.cx\.metamask\.io\/positions/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(
-        delayedResponse(50, {
-          statusCode: 200,
-          json: { data: [] } satisfies DefiPositionsResponse,
-        }),
-      ),
+      .thenCallback(delayedResponse(50, { statusCode: 200, json: [] })),
   );
 
   endpoints.push(

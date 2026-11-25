@@ -26,7 +26,7 @@ const MUSD_ADDRESS = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
 async function mockEthMainnetAndMusd(mockServer: Mockttp) {
   return [
     ...(await mockPriceApi(mockServer, MOCK_ETH_CONVERSION_RATE)),
-    await accountsSupportedNetworksV2.mockRaw(mockServer, {
+    await accountsSupportedNetworksV2.rule(mockServer).always().thenJson(200, {
       fullSupport: [],
       partialSupport: [],
     }),

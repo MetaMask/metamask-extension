@@ -58,27 +58,39 @@ const ETH_CONVERSION_RATE_USD = 1700;
 
 async function mockPriceApi(mockServer: Mockttp) {
   const price = ETH_CONVERSION_RATE_USD;
-  await priceV3Spot.mockRaw(mockServer, {
-    'eip155:1/slip44:60': {
-      price,
-      marketCap: 382623505141,
-      pricePercentChange1d: 0,
-    },
-  });
-  await priceV1ExchangeRates.mockRaw(mockServer, {
-    eth: {
-      name: 'Ether',
-      ticker: 'eth',
-      value: 1 / ETH_CONVERSION_RATE_USD,
-      currencyType: 'crypto',
-    },
-    usd: {
-      name: 'US Dollar',
-      ticker: 'usd',
-      value: 1,
-      currencyType: 'fiat',
-    },
-  });
+  await priceV3Spot
+    .rule(mockServer)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'eip155:1/slip44:60': {
+          price,
+          marketCap: 382623505141,
+          pricePercentChange1d: 0,
+        },
+      },
+    }));
+  await priceV1ExchangeRates
+    .rule(mockServer)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        eth: {
+          name: 'Ether',
+          ticker: 'eth',
+          value: 1 / ETH_CONVERSION_RATE_USD,
+          currencyType: 'crypto',
+        },
+        usd: {
+          name: 'US Dollar',
+          ticker: 'usd',
+          value: 1,
+          currencyType: 'fiat',
+        },
+      },
+    }));
 }
 
 pwTest.describe('Settings', () => {

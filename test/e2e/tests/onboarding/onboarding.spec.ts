@@ -59,41 +59,50 @@ const NATIVE_ASSETS_INFO = {
 };
 
 async function mockSpotPrices(mockServer: Mockttp) {
-  return await priceV3Spot.mock(mockServer, {
-    'eip155:1/slip44:60': {
-      id: 'ethereum',
-      price: MOCK_ETH_PRICE,
-      marketCap: 382623505141,
-      pricePercentChange1d: 0,
+  return await priceV3Spot.rule(mockServer).thenCallback(() => ({
+    statusCode: 200,
+    json: {
+      'eip155:1/slip44:60': {
+        id: 'ethereum',
+        price: MOCK_ETH_PRICE,
+        marketCap: 382623505141,
+        pricePercentChange1d: 0,
+      },
     },
-  });
+  }));
 }
 
 async function mockCustomNetworkOnboarding(mockServer: Mockttp) {
-  await accountsSupportedNetworksV2.mockRaw(mockServer, {
-    fullSupport: [
-      'eip155:1',
-      'eip155:137',
-      'eip155:56',
-      'eip155:59144',
-      'eip155:8453',
-      'eip155:10',
-      'eip155:42161',
-      'eip155:534352',
-      'eip155:1337',
-      'eip155:1338',
-    ],
-    partialSupport: ['eip155:42220', 'eip155:43114'],
-  });
+  await accountsSupportedNetworksV2
+    .rule(mockServer)
+    .always()
+    .thenJson(200, {
+      fullSupport: [
+        'eip155:1',
+        'eip155:137',
+        'eip155:56',
+        'eip155:59144',
+        'eip155:8453',
+        'eip155:10',
+        'eip155:42161',
+        'eip155:534352',
+        'eip155:1337',
+        'eip155:1338',
+      ],
+      partialSupport: ['eip155:42220', 'eip155:43114'],
+    });
 
-  await priceV3Spot.mock(mockServer, {
-    'eip155:1338/slip44:60': {
-      id: 'ethereum',
-      price: 1700,
-      marketCap: 382623505141,
-      pricePercentChange1d: 0,
+  await priceV3Spot.rule(mockServer).thenCallback(() => ({
+    statusCode: 200,
+    json: {
+      'eip155:1338/slip44:60': {
+        id: 'ethereum',
+        price: 1700,
+        marketCap: 382623505141,
+        pricePercentChange1d: 0,
+      },
     },
-  });
+  }));
 }
 
 describe('MetaMask onboarding', function () {

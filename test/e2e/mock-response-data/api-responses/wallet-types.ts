@@ -16,48 +16,6 @@ import type { Country, State } from '@metamask/ramps-controller';
 export type { ContentfulBannerResponse } from '../../../../ui/hooks/useCarouselManagement/fetchCarouselSlidesFromContentful';
 export type { TokenListToken };
 
-/**
- * `@metamask/assets-controllers` does not export `DefiPositionResponse`. This
- * is the part of it the DeFi positions controller reads.
- */
-type DefiBalance = {
-  address: string;
-  name: string;
-  symbol: string;
-  decimals: number;
-  balanceRaw: string;
-  balance: number;
-  price?: number;
-  tokens?: (DefiBalance & {
-    type: 'underlying' | 'underlying-claimable';
-    iconUrl: string;
-  })[];
-};
-
-type DefiProtocolDetails = {
-  chainId: number;
-  chainName: string;
-  protocolId: string;
-  productId: string;
-  protocolDisplayName: string;
-  name: string;
-  description: string;
-  iconUrl: string;
-  siteUrl: string;
-  positionType: 'supply' | 'borrow' | 'stake' | 'reward';
-  metadata?: { groupPositions?: boolean };
-};
-
-type DefiPositionResponse =
-  | (DefiProtocolDetails & {
-      success: true;
-      tokens: (DefiBalance & { type: 'protocol'; tokenId?: string })[];
-    })
-  | (DefiProtocolDetails & { success: false; error: { message: string } })
-  | { success: false; error: { message: string } };
-
-export type DefiPositionsResponse = { data: DefiPositionResponse[] };
-
 /** The live API returns `null` for some fields of newly listed assets. */
 export type SpotPrice = {
   [Key in keyof Omit<MarketDataDetails, 'tokenAddress' | 'currency'>]:

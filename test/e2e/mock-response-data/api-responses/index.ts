@@ -64,7 +64,6 @@ export {
   type DefaultMockContext,
   type Overrides,
 } from './define-api-mock';
-export type { DefiPositionsResponse } from './wallet-types';
 
 const BRIDGE_API = String.raw`^https:\/\/bridge\.(?:api|dev-api)\.cx\.metamask\.io`;
 const TX_SENTINEL_API = String.raw`^https:\/\/tx-sentinel-[\w-]+\.api\.cx\.metamask\.io`;

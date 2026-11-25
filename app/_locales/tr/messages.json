@@ -1323,12 +1323,6 @@
   "add_device_try_again": {
     "message": "Tekrar deneyin"
   },
-  "add_device_validating_desc": {
-    "message": "Telefonunuzla güvenli, şifrelenmiş bağlantı kuruluyor."
-  },
-  "add_device_validating_title": {
-    "message": "Cihazlar eşleştiriliyor"
-  },
   "add_wallets": {
     "message": "Nelerin senkronize edileceğini seçin"
   },
@@ -2120,9 +2114,6 @@
   "blockExplorerUrl": {
     "message": "Blok Gezgini URL adresi"
   },
-  "blockExplorerUrlDefinition": {
-    "message": "Bu ağ için blok gezgini olarak kullanılan URL adresi."
-  },
   "blockExplorerView": {
     "message": "Hesabı şurada görüntüleyin: $1",
     "description": "$1 replaced by URL for custom block explorer"
@@ -2635,9 +2626,6 @@
   "chainId": {
     "message": "Zincir Kimliği"
   },
-  "chainIdDefinition": {
-    "message": "Zincir kimliği, bu ağda işlemleri imzalamak için kullanılır."
-  },
   "chainIdExistsErrorMsg": {
     "message": "Bu Zincir Kimliği şu anda $1 ağı tarafından kullanılıyor."
   },
@@ -2749,10 +2737,6 @@
   "clickHere": {
     "message": "Buraya tıklayın",
     "description": "Link to help when a JSON account import is not working"
-  },
-  "clickToConnectLedgerViaWebHID": {
-    "message": "WebHID üzerinden Ledger'ınızı bağlamak için tıklayın",
-    "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
   },
   "clipboardClearFailed": {
     "message": "Pano temizlenemedi. Tekrar deneyin."
@@ -3267,9 +3251,6 @@
   },
   "currencySymbol": {
     "message": "Para birimi sembolü"
-  },
-  "currencySymbolDefinition": {
-    "message": "Bu ağın para birimi için görüntülenen sembol."
   },
   "current": {
     "message": "Mevcut"
@@ -4013,10 +3994,6 @@
   "enter_verification_code_expired": {
     "message": "Doğrulama kodunun süresi doldu"
   },
-  "enter_verification_code_expires_in": {
-    "message": "Süresinin dolmasına kalan: $1sn",
-    "description": "$1 is the number of seconds remaining before the verification code expires"
-  },
   "enter_verification_code_max_attempts": {
     "message": "Çok sayıda yanlış deneme yapıldı. Yeni bir QR kodu ile başlayın."
   },
@@ -4032,9 +4009,6 @@
   "errorCode": {
     "message": "Kod: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorGettingSafeChainList": {
-    "message": "Güvenli zincir listesi alınırken hata oluştu. Dikkatli bir şekilde devam edin."
   },
   "errorLegalTextFirstInfo": {
     "message": "Teknik tanılama verileri."
@@ -4476,9 +4450,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Bir şeyler ters gitti...."
-  },
-  "generateNewQrCode": {
-    "message": "Yeni bir QR kodu oluştur"
   },
   "genericExplorerView": {
     "message": "Hesabı $1 üzerinde görüntüleyin"
@@ -4996,9 +4967,6 @@
   "insufficientTokens": {
     "message": "Token yetersiz."
   },
-  "interactWithSmartContract": {
-    "message": "Akıllı sözleşme"
-  },
   "interactingWith": {
     "message": "Etkileşimde"
   },
@@ -5182,18 +5150,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Yeni bir hesap ekleyebilmeniz için önce son hesabınızı kullanmanız gerekir."
-  },
-  "ledgerConnectionInstructionCloseOtherApps": {
-    "message": "Cihazınızla bağlantılı her türlü yazılımı kapatın ve ardından yenilemek için buraya tıklayın."
-  },
-  "ledgerConnectionInstructionHeader": {
-    "message": "Onayla düğmesine tıklamadan önce:"
-  },
-  "ledgerConnectionInstructionStepFour": {
-    "message": "Kayıt Defteri cihazınızda \"akıllı sözleşme verileri\" ya da \"kör imzalama\" özelliğini etkinleştirin."
-  },
-  "ledgerConnectionInstructionStepThree": {
-    "message": "Ledger'ınızın bağlı olduğundan emin olun ve Ethereum uygulamasını seçin."
   },
   "ledgerConnectionStatusAppClosedDescription": {
     "message": "Devam etmek için Ledger cihazınızda açın"
@@ -5833,14 +5789,6 @@
   "minute": {
     "message": "dk."
   },
-  "mismatchedChainLinkText": {
-    "message": "ağ bilgilerini doğrula",
-    "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
-  },
-  "mismatchedChainRecommendation": {
-    "message": "İlerlemeden önce şunu öneririz: $1.",
-    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
   "mismatchedNetworkName": {
     "message": "Kayıtlarımıza göre, ağ adı bu zincir kimliği ile doğru bir şekilde uyumlu olmayabilir."
   },
@@ -6429,9 +6377,6 @@
     "message": "Çoklu zincir hesaplarının tanıtımı",
     "description": "Title for the multichain accounts introduction modal."
   },
-  "multichainAddEthereumChainConfirmationDescription": {
-    "message": "Bu ağı MetaMask'e ekliyor ve bu siteye ağı kullanma izni veriyorsunuz."
-  },
   "multichainAddressViewAll": {
     "message": "Tümünü görüntüle"
   },
@@ -6448,42 +6393,6 @@
   "multipleSnapConnectionWarning": {
     "message": "$1 $2 Snap kullanmak istiyor",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
-  },
-  "musdAssetConvertBenefitDailyBonus": {
-    "message": "Günlük bonus",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertBenefitDollarBacked": {
-    "message": "Dolar destekli",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertBenefitNoLockups": {
-    "message": "Kilitleme yok",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertBenefitNoMetaMaskFee": {
-    "message": "MetaMask ücreti yok",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertDescriptionHighlight": {
-    "message": "%$1 yıllıklandırılmış bonus",
-    "description": "Shown in Figma accent lime (#baf24a) inside the mUSD asset details convert section description. $1 is the APY percentage."
-  },
-  "musdAssetConvertDescriptionLead": {
-    "message": "USDC, USDT ve DAI'yi mUSD'ye dönüştürerek ",
-    "description": "Text before the green APY phrase on the mUSD asset details convert section"
-  },
-  "musdAssetConvertDescriptionTail": {
-    "message": " alın.",
-    "description": "Text after the green APY phrase on the mUSD asset details convert section"
-  },
-  "musdAssetConvertLearnMore": {
-    "message": "Daha fazla bilgi edin",
-    "description": "Button to open the mUSD support article from the asset details convert section"
-  },
-  "musdAssetConvertTitle": {
-    "message": "Stabil kripto paralarınızı dönüştürün",
-    "description": "Title of the convert section on the mUSD asset details page"
   },
   "musdAssetPositionBalance": {
     "message": "Bakiye",
@@ -6512,17 +6421,9 @@
   "musdBuyMusd": {
     "message": "mUSD al"
   },
-  "musdClaimTitle": {
-    "message": "Bonusu al",
-    "description": "Title for the mUSD bonus claim confirmation screen"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "mUSD dönüştürme işlemine ağ maliyetleri dahildir ve sağlayıcı ücretleri dahil olabilir. mUSD dönüştürürken MetaMask ücreti uygulanmaz.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
-  },
-  "musdConversionTitle": {
-    "message": "mUSD'ye dönüştürüldü",
-    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "musdConvert": {
     "message": "Dönüştür"
@@ -6683,9 +6584,6 @@
     "message": "Şu anda $1 üzerinde işlem yapıyorsunuz.",
     "description": "$1 is the name of the network"
   },
-  "networkDetails": {
-    "message": "Ağ bilgileri"
-  },
   "networkFee": {
     "message": "Ağ ücreti"
   },
@@ -6703,9 +6601,6 @@
   },
   "networkNameBitcoin": {
     "message": "Bitcoin"
-  },
-  "networkNameDefinition": {
-    "message": "Bu ağ ile ilişkilendirilmiş ad."
   },
   "networkNameEthereum": {
     "message": "Ethereum"
@@ -6753,9 +6648,6 @@
   },
   "networkTabPopular": {
     "message": "Popüler"
-  },
-  "networkURL": {
-    "message": "Ağ URL adresi"
   },
   "networkURLDefinition": {
     "message": "Bu ağa erişim sağlamak için kullanılan URL adresi."
@@ -6859,17 +6751,6 @@
   },
   "nftUnsupportedEmptyDescription": {
     "message": "NFT'ler bu ağda desteklenmiyor."
-  },
-  "nftWarningContent": {
-    "message": "Gelecekte sahip olabilecekleriniz de dahil olmak üzere $1 erişimi veriyorsunuz, Diğer taraf, siz bu onayı iptal edene kadar size sormadan bu NFT'leri dilediği zaman cüzdanınızdan transfer edebilir. $2",
-    "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
-  },
-  "nftWarningContentBold": {
-    "message": "tüm $1 NFT'leriniz",
-    "description": "$1 is name of the collection"
-  },
-  "nftWarningContentGrey": {
-    "message": "Dikkatli bir şekilde devam edin."
   },
   "nfts": {
     "message": "NFT'ler"
@@ -7300,13 +7181,6 @@
   },
   "openFullScreen": {
     "message": "Tam ekranda aç"
-  },
-  "openFullScreenForLedgerWebHid": {
-    "message": "Ledger'ınızı bağlamak için tam ekrana gidin.",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
-  "openInBlockExplorer": {
-    "message": "Blok gezgininde aç"
   },
   "openMultichainAccountAddressMenu": {
     "message": "Çok zincirli hesap adres menüsünü açın"
@@ -8140,9 +8014,6 @@
   },
   "perpsDepositFundsTitle": {
     "message": "Sürekli Vadeli İşlemlere para yatır"
-  },
-  "perpsDepositTitle": {
-    "message": "Fonlanmış sürekli vadeli işlem sözleşmeleri hesabı"
   },
   "perpsDepositToastErrorDescription": {
     "message": "Fonlarınız Perps'e eklenmedi. Tekrar deneyin."
@@ -9174,14 +9045,8 @@
     "message": "Özel anahtarlar",
     "description": "Private keys row label on multichain account details page."
   },
-  "privateNetwork": {
-    "message": "Özel ağ"
-  },
   "proceed": {
     "message": "Devam et"
-  },
-  "proceedWithTransaction": {
-    "message": "Yine de devam etmek istiyorum"
   },
   "provide": {
     "message": "Sun"
@@ -9228,13 +9093,6 @@
   "qrCameraAccessNeededTitle": {
     "message": "Kamera erişimine ihtiyaç var",
     "description": "Title when the camera permission dialog was dismissed without a choice."
-  },
-  "qrCodeExpired": {
-    "message": "QR kodunun süresi doldu"
-  },
-  "qrCodeExpiresIn": {
-    "message": "Süresinin dolmasına kalan: $1sn",
-    "description": "$1 is the number of seconds remaining before the QR code expires"
   },
   "qrErrorMismatchedTransactionBody": {
     "message": "Bu QR kodu farklı bir işlem içindir. İptal edip tekrar deneyin ve önce donanım cüzdanınızla MetaMask'te gösterilen QR kodunu taradığınızdan emin olun.",
@@ -9541,16 +9399,8 @@
   "receiveCrypto": {
     "message": "Kripto al"
   },
-  "receiveToken": {
-    "message": "Token al",
-    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
-  },
   "received": {
     "message": "Alınan"
-  },
-  "receivedTotal": {
-    "message": "Alınan toplam",
-    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Alıcı adresi",
@@ -11379,9 +11229,6 @@
   "simulationDetailsUnavailable": {
     "message": "Mevcut değil"
   },
-  "simulationErrorMessageV2": {
-    "message": "Gaz tahmini yapamadık. Sözleşmede bir hata olabilir ve bu işlem başarısız olabilir."
-  },
   "simulationsSettingDescription": {
     "message": "Onaylamadan önce işlemlerdeki ve imzalardaki bakiye değişikliklerini tahmin etmek için bunu açın. Nihai sonucunu garanti etmez. $1"
   },
@@ -11448,12 +11295,6 @@
   },
   "smartAccountRequestsFromDappsDescriptionV2": {
     "message": "Dapp'lerin standart hesaplar için akıllı hesap özelliklerini talep etmesine izin verin. MetaMask yalnızca denetlenmiş akıllı hesabımıza yükseltecektir."
-  },
-  "smartAccountUpgradeBannerDescription": {
-    "message": "Aynı adres. Daha akıllı özellikler."
-  },
-  "smartAccountUpgradeBannerTitle": {
-    "message": "Akıllı hesaba geç"
   },
   "smartContractAddress": {
     "message": "Akıllı sözleşme adresi"
@@ -11889,12 +11730,6 @@
   "stakingWithdrawal": {
     "message": "Stake para yatırma işlemi"
   },
-  "standardAccountLabel": {
-    "message": "Standart hesap"
-  },
-  "start_with_new_qr_code": {
-    "message": "Yeni bir QR kodu ile başlayın"
-  },
   "stateCorruptionAreYouSure": {
     "message": "İlerlemek istediğinizden emin misiniz?"
   },
@@ -12220,12 +12055,6 @@
   },
   "swapsRebateTooltipTitle": {
     "message": "Yatırım Ödülleri"
-  },
-  "switch": {
-    "message": "Değiştir"
-  },
-  "switchBack": {
-    "message": "Geri dön"
   },
   "switchBackToPopup": {
     "message": "Açılır pencereye geri dön"
@@ -12699,10 +12528,6 @@
   "unpin": {
     "message": "Sabitlemeyi kaldır"
   },
-  "unrecognizedChain": {
-    "message": "Bu özel ağ tanınmadı",
-    "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
   "unsendableAsset": {
     "message": "NFT (ERC-721) tokenların gönderilmesi şu anda desteklenmiyor",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
@@ -12715,9 +12540,6 @@
   },
   "update": {
     "message": "Güncelle"
-  },
-  "updateEthereumChainConfirmationDescription": {
-    "message": "Bu site, varsayılan ağ URL adresinizi güncellemeyi talep ediyor. Varsayılanları ve ağ bilgilerini dilediğiniz zaman düzenleyebilirsiniz."
   },
   "updateInformation": {
     "message": "Cüzdanınızı daha güvenli, daha sorunsuz hale getirdik ve bazı yeni özellikler ekledik. Korunmaya devam etmek ve en son iyileştirmelerimizi kullanmak için şimdi güncelleyin."
@@ -12897,9 +12719,6 @@
   "walletReadyLoseSrpFromReminder": {
     "message": "Bu Gizli Kurtarma İfadesi, şifrenizi unutmanız veya oturumunuza erişimi kaybetmeniz durumunda yeniden erişim kazanmanıza yardımcı olabilir."
   },
-  "wantToAddThisNetwork": {
-    "message": "Bu ağı eklemek istiyor musunuz?"
-  },
   "wantsToAddThisAsset": {
     "message": "Bu, aşağıdaki varlığın cüzdanınıza eklenmesine izin verir."
   },
@@ -13001,9 +12820,6 @@
   },
   "yourBalance": {
     "message": "Bakiyeniz"
-  },
-  "yourNFTmayBeAtRisk": {
-    "message": "NFT'niz tehlikede olabilir"
   },
   "yourWalletIsReady": {
     "message": "Cüzdanınız hazır!"

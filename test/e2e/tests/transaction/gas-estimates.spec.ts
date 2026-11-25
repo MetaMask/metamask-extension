@@ -129,7 +129,6 @@ async function mockBinanceRelatedRequestsWithGasApiDown(
   const relatedRequests = await mockBinanceRelatedRequests(mockServer);
   const gasApiDownRequest = gasPrices
     .rule(mockServer, { chainId: parseInt(CHAIN_IDS.BSC, 16) })
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 422,
@@ -150,7 +149,6 @@ async function mockBinanceRelatedRequestsWithGasApiAvailable(
   const relatedRequests = await mockBinanceRelatedRequests(mockServer);
   const gasApiAvailableRequest = gasPrices
     .rule(mockServer, { chainId: parseInt(CHAIN_IDS.BSC, 16) })
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,

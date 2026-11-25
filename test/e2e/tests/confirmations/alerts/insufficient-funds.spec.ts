@@ -18,10 +18,16 @@ import { accountsSupportedNetworksV2 } from '../../../mock-response-data/api-res
  * @param server - The mock server instance.
  */
 async function mockAccountsApiWithoutLocalNode(server: Mockttp) {
-  await accountsSupportedNetworksV2.mockRaw(server, {
-    fullSupport: [],
-    partialSupport: [],
-  });
+  await accountsSupportedNetworksV2
+    .rule(server)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        fullSupport: [],
+        partialSupport: [],
+      },
+    }));
   return [];
 }
 

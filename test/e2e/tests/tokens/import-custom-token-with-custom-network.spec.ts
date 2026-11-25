@@ -204,9 +204,10 @@ async function mockPulseChainRpc(mockServer: Mockttp): Promise<void> {
 // restart. That aggregate is sourced separately and is not what this test
 // asserts (we check the token row amount "100 UFO"), so its value is cosmetic.
 async function mockPulseChainAssetApis(mockServer: Mockttp): Promise<void> {
-  await tokenList.mockRaw(mockServer, [], {
-    chainId: PULSECHAIN_CHAIN_ID_DECIMAL,
-  });
+  await tokenList
+    .rule(mockServer, { chainId: PULSECHAIN_CHAIN_ID_DECIMAL })
+    .always()
+    .thenCallback(() => ({ statusCode: 200, json: [] }));
 
   // Echo a price for whatever assetIds are requested. Matching by query is
   // brittle here because token assetIds use checksummed (mixed-case) addresses,

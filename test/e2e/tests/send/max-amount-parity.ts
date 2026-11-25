@@ -368,15 +368,14 @@ async function mockGasApi(
     )
     .always()
     .thenJson(200, SUGGESTED_GAS_FEES);
-  await gasPrices.mockRaw(
-    mockServer,
-    {
+  await gasPrices
+    .rule(mockServer, { chainId: network.chainIdDecimal })
+    .always()
+    .thenJson(200, {
       SafeGasPrice: '2000',
       ProposeGasPrice: '2000',
       FastGasPrice: '2000',
-    },
-    { chainId: network.chainIdDecimal },
-  );
+    });
 }
 
 async function mockAccountsApi(
@@ -397,10 +396,13 @@ async function mockAccountsApi(
     ];
   };
 
-  await accountsSupportedNetworksV2.mockRaw(mockServer, {
-    fullSupport: [`eip155:${network.chainIdDecimal}`],
-    partialSupport: [],
-  });
+  await accountsSupportedNetworksV2
+    .rule(mockServer)
+    .always()
+    .thenJson(200, {
+      fullSupport: [`eip155:${network.chainIdDecimal}`],
+      partialSupport: [],
+    });
 
   await accountsBalancesV5
     .rule(mockServer)
@@ -458,11 +460,14 @@ async function mockSpotPrice(
  * @param mockServer - Mockttp server for this test.
  */
 async function mockBridgeApis(mockServer: Mockttp): Promise<void> {
-  await bridgeGetTokensPopular.mockRaw(mockServer, []);
-  await bridgeGetTokensSearch.mockRaw(mockServer, {
-    data: [],
-    pageInfo: { hasNextPage: false },
-  });
+  await bridgeGetTokensPopular.rule(mockServer).always().thenJson(200, []);
+  await bridgeGetTokensSearch
+    .rule(mockServer)
+    .always()
+    .thenJson(200, {
+      data: [],
+      pageInfo: { hasNextPage: false },
+    });
   await mockServer
     .forGet(/https:\/\/bridge\.dev-api\.cx\.metamask\.io\/getQuoteStream/u)
     .always()
@@ -488,7 +493,7 @@ async function mockSentinelNetwork(
     smartTransactions: false,
   };
 
-  await txSentinelNetwork.mockRaw(mockServer, flags);
+  await txSentinelNetwork.rule(mockServer).always().thenJson(200, flags);
   await mockServer
     .forGet(/https:\/\/tx-sentinel-[\w-]+\.api\.cx\.metamask\.io\/networks$/u)
     .always()

@@ -889,9 +889,16 @@ export async function mockSentinelNetworks(mockServer: MockttpServer) {
       };
     });
 
-  await txSentinelNetwork.mockRaw(mockServer, network, {
-    baseUrl: TX_SENTINEL_URL,
-  });
+  await txSentinelNetwork
+    .rule(mockServer, { baseUrl: TX_SENTINEL_URL })
+    .always()
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: network,
+      };
+    });
 }
 
 /** Quote payload sent via mockSseEventSource for getQuoteStream (SSE data: field). */

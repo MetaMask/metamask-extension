@@ -58,9 +58,15 @@ export function mockAccountsApiV5MultiaccountBalances(mockServer: Mockttp) {
     },
   ];
 
-  return accountsBalancesV5.mockRaw(mockServer, {
-    count: balances.length,
-    unprocessedNetworks: [],
-    balances,
-  });
+  return accountsBalancesV5
+    .rule(mockServer)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        count: balances.length,
+        unprocessedNetworks: [],
+        balances,
+      },
+    }));
 }

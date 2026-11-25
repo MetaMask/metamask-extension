@@ -344,20 +344,26 @@ async function mockArbitrumGasData(server: Mockttp): Promise<void> {
 }
 
 async function mockArbitrumUsdcPriceData(server: Mockttp): Promise<void> {
-  await priceV1ExchangeRates.mockRaw(server, {
-    eth: {
-      name: 'Ether',
-      ticker: 'eth',
-      value: ARBITRUM_USDC_PRICE_IN_ETH,
-      currencyType: 'crypto',
-    },
-    usd: {
-      name: 'US Dollar',
-      ticker: 'usd',
-      value: 1,
-      currencyType: 'fiat',
-    },
-  });
+  await priceV1ExchangeRates
+    .rule(server)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        eth: {
+          name: 'Ether',
+          ticker: 'eth',
+          value: ARBITRUM_USDC_PRICE_IN_ETH,
+          currencyType: 'crypto',
+        },
+        usd: {
+          name: 'US Dollar',
+          ticker: 'usd',
+          value: 1,
+          currencyType: 'fiat',
+        },
+      },
+    }));
 
   await priceV3Spot
     .rule(server)

@@ -320,7 +320,10 @@ export function buildStellarTokenAssetMetadata() {
 export async function mockStellarTokensV3Assets(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
-  return tokensV3Assets.mockRaw(mockServer, buildStellarTokenAssetMetadata());
+  return tokensV3Assets
+    .rule(mockServer)
+    .always()
+    .thenJson(200, buildStellarTokenAssetMetadata());
 }
 
 /**
@@ -411,20 +414,23 @@ export async function mockStellarSpotPrices(
 export async function mockStellarExchangeRates(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
-  return priceV1ExchangeRates.mockRaw(mockServer, {
-    usd: {
-      name: 'US Dollar',
-      ticker: 'usd',
-      value: 1,
-      currencyType: 'fiat',
-    },
-    xlm: {
-      name: 'Stellar',
-      ticker: 'xlm',
-      value: 1 / XLM_TO_USD_RATE,
-      currencyType: 'crypto',
-    },
-  });
+  return priceV1ExchangeRates
+    .rule(mockServer)
+    .always()
+    .thenJson(200, {
+      usd: {
+        name: 'US Dollar',
+        ticker: 'usd',
+        value: 1,
+        currencyType: 'fiat',
+      },
+      xlm: {
+        name: 'Stellar',
+        ticker: 'xlm',
+        value: 1 / XLM_TO_USD_RATE,
+        currencyType: 'crypto',
+      },
+    });
 }
 
 /**

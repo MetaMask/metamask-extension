@@ -44,14 +44,17 @@ describe('MultiRpc:', function (this: Suite) {
             },
           })),
         // Mock spot-prices for balance display
-        await priceV3Spot.mock(mockServer, {
-          'eip155:1/slip44:60': {
-            id: 'ethereum',
-            price: MOCK_ETH_PRICE,
-            marketCap: 382623505141,
-            pricePercentChange1d: 0,
+        await priceV3Spot.rule(mockServer).thenCallback(() => ({
+          statusCode: 200,
+          json: {
+            'eip155:1/slip44:60': {
+              id: 'ethereum',
+              price: MOCK_ETH_PRICE,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
           },
-        }),
+        })),
       ];
     }
     await withFixtures(
@@ -181,14 +184,17 @@ describe('MultiRpc:', function (this: Suite) {
             },
           })),
         // Mock spot-prices for balance display
-        await priceV3Spot.mock(mockServer, {
-          'eip155:1/slip44:60': {
-            id: 'ethereum',
-            price: MOCK_ETH_PRICE,
-            marketCap: 382623505141,
-            pricePercentChange1d: 0,
+        await priceV3Spot.rule(mockServer).thenCallback(() => ({
+          statusCode: 200,
+          json: {
+            'eip155:1/slip44:60': {
+              id: 'ethereum',
+              price: MOCK_ETH_PRICE,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
           },
-        }),
+        })),
       ];
     }
     await withFixtures(
@@ -313,14 +319,17 @@ describe('MultiRpc:', function (this: Suite) {
             },
           })),
         // Mock spot-prices for balance display
-        await priceV3Spot.mock(mockServer, {
-          'eip155:1/slip44:60': {
-            id: 'ethereum',
-            price: MOCK_ETH_PRICE,
-            marketCap: 382623505141,
-            pricePercentChange1d: 0,
+        await priceV3Spot.rule(mockServer).thenCallback(() => ({
+          statusCode: 200,
+          json: {
+            'eip155:1/slip44:60': {
+              id: 'ethereum',
+              price: MOCK_ETH_PRICE,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
           },
-        }),
+        })),
       ];
     }
     await withFixtures(
@@ -432,14 +441,17 @@ describe('MultiRpc:', function (this: Suite) {
             },
           })),
         // Mock spot-prices for balance display
-        await priceV3Spot.mock(mockServer, {
-          'eip155:1/slip44:60': {
-            id: 'ethereum',
-            price: MOCK_ETH_PRICE,
-            marketCap: 382623505141,
-            pricePercentChange1d: 0,
+        await priceV3Spot.rule(mockServer).thenCallback(() => ({
+          statusCode: 200,
+          json: {
+            'eip155:1/slip44:60': {
+              id: 'ethereum',
+              price: MOCK_ETH_PRICE,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
           },
-        }),
+        })),
       ];
     }
     await withFixtures(

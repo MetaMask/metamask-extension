@@ -63,37 +63,34 @@ async function mockSetup(mockServer: Mockttp) {
         statusCode: 200,
         json: {},
       })),
-    await tokensV3Assets
-      .rule(mockServer)
-      .always()
-      .thenCallback((request) => {
-        const url = new URL(request.url);
-        const assetIds = url.searchParams
-          .getAll('assetIds')
-          .join(',')
-          .toLowerCase();
-        const results = [];
+    await tokensV3Assets.rule(mockServer).thenCallback((request) => {
+      const url = new URL(request.url);
+      const assetIds = url.searchParams
+        .getAll('assetIds')
+        .join(',')
+        .toLowerCase();
+      const results = [];
 
-        if (assetIds.includes('eip155:1/slip44:60')) {
-          results.push({
-            assetId: 'eip155:1/slip44:60',
-            name: 'Ethereum',
-            symbol: 'ETH',
-            decimals: 18,
-          });
-        }
+      if (assetIds.includes('eip155:1/slip44:60')) {
+        results.push({
+          assetId: 'eip155:1/slip44:60',
+          name: 'Ethereum',
+          symbol: 'ETH',
+          decimals: 18,
+        });
+      }
 
-        if (assetIds.includes(MUSD_MAINNET_ASSET_ID.toLowerCase())) {
-          results.push({
-            assetId: MUSD_MAINNET_ASSET_ID,
-            name: 'MUSD',
-            symbol: 'MUSD',
-            decimals: 6,
-          });
-        }
+      if (assetIds.includes(MUSD_MAINNET_ASSET_ID.toLowerCase())) {
+        results.push({
+          assetId: MUSD_MAINNET_ASSET_ID,
+          name: 'MUSD',
+          symbol: 'MUSD',
+          decimals: 6,
+        });
+      }
 
-        return { statusCode: 200, json: { data: results } };
-      }),
+      return { statusCode: 200, json: { data: results } };
+    }),
   ];
 }
 
