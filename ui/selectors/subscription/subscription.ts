@@ -92,6 +92,22 @@ const MONEY_ACCOUNT_PLUS_HUB_STATUSES = new Set<SubscriptionStatus>([
 ]);
 
 /**
+ * Finds the current subscription the Money Plus hub can render.
+ *
+ * @param subscriptions - The stored or freshly fetched subscriptions.
+ * @returns The matching current subscription, if any.
+ */
+export function findMoneyAccountPlusHubSubscription(
+  subscriptions?: Subscription[],
+): Subscription | undefined {
+  return subscriptions?.find(
+    (subscription) =>
+      MONEY_ACCOUNT_PLUS_HUB_STATUSES.has(subscription.status) &&
+      hasProduct(subscription, PRODUCT_TYPES.MONEY_ACCOUNT_PLUS),
+  );
+}
+
+/**
  * Selects the current subscription the Money Plus hub can render.
  *
  * @param state - The Redux state.
@@ -100,11 +116,7 @@ const MONEY_ACCOUNT_PLUS_HUB_STATUSES = new Set<SubscriptionStatus>([
 export function getMoneyAccountPlusHubSubscription(
   state: SubscriptionState,
 ): Subscription | undefined {
-  return state.metamask.subscriptions?.find(
-    (subscription) =>
-      MONEY_ACCOUNT_PLUS_HUB_STATUSES.has(subscription.status) &&
-      hasProduct(subscription, PRODUCT_TYPES.MONEY_ACCOUNT_PLUS),
-  );
+  return findMoneyAccountPlusHubSubscription(state.metamask.subscriptions);
 }
 
 /**

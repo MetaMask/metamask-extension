@@ -1,10 +1,12 @@
 import { it } from '@jest/globals';
 import { act, renderHook } from '@testing-library/react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   PRODUCT_TYPES,
   RECURRING_INTERVALS,
+  SUBSCRIPTION_STATUSES,
   SubscriptionControllerErrorMessage,
+  type Subscription,
 } from '@metamask/subscription-controller';
 import {
   isDevOrTestEnvironment,
@@ -13,18 +15,30 @@ import {
 import { selectPrimaryMoneyAccount } from '../../selectors/money-account';
 import { getMoneyAccountPlusHubSubscription } from '../../selectors/subscription/subscription';
 import {
+  forceUpdateMetamaskState,
+  getSubscriptions,
+} from '../../store/actions';
+import {
   checkMoneyAccountPlusBalance,
   startMoneyAccountPlusSubscription,
 } from '../../store/controller-actions/subscription-delegation-service';
 import { useStartMoneyAccountPlusSubscription } from './useStartMoneyAccountPlusSubscription';
 
 jest.mock('react-redux', () => ({
+  useDispatch: jest.fn(),
   useSelector: jest.fn(),
 }));
 jest.mock('../../../shared/lib/shield/config');
 jest.mock('../../selectors/money-account');
 jest.mock('../../selectors/money/money-account-feature-flags');
-jest.mock('../../selectors/subscription/subscription');
+jest.mock('../../selectors/subscription/subscription', () => ({
+  ...jest.requireActual('../../selectors/subscription/subscription'),
+  getMoneyAccountPlusHubSubscription: jest.fn(),
+}));
+jest.mock('../../store/actions', () => ({
+  forceUpdateMetamaskState: jest.fn(),
+  getSubscriptions: jest.fn(),
+}));
 jest.mock('../../store/controller-actions/subscription-delegation-service');
 
 const payerAddress = '0x1111111111111111111111111111111111111111';
@@ -36,8 +50,16 @@ const request = {
   chainId,
   recurringInterval: interval,
 };
+const hubSubscription = {
+  products: [{ name: PRODUCT_TYPES.MONEY_ACCOUNT_PLUS }],
+  status: SUBSCRIPTION_STATUSES.awaitingFunds,
+} as Subscription;
 const mockStart = jest.mocked(startMoneyAccountPlusSubscription);
 const mockCheck = jest.mocked(checkMoneyAccountPlusBalance);
+const mockForceUpdate = jest.mocked(forceUpdateMetamaskState);
+const mockGetSubscriptions = jest.mocked(getSubscriptions);
+const dispatch = jest.fn();
+const reloadThunk = jest.fn();
 
 function mockPayment(address?: string, chain?: string, subscription?: object) {
   jest.mocked(useSelector).mockImplementation((selector) => {
@@ -53,6 +75,9 @@ function mockPayment(address?: string, chain?: string, subscription?: object) {
 describe('useStartMoneyAccountPlusSubscription', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    jest.mocked(useDispatch).mockReturnValue(dispatch);
+    mockGetSubscriptions.mockReturnValue(reloadThunk);
+    dispatch.mockResolvedValue([hubSubscription]);
     mockPayment(payerAddress, chainId);
   });
 
@@ -74,6 +99,7 @@ describe('useStartMoneyAccountPlusSubscription', () => {
       });
       expect(mockCheck).not.toHaveBeenCalled();
       expect(mockStart).not.toHaveBeenCalled();
+      expect(dispatch).not.toHaveBeenCalled();
     },
   );
 
@@ -117,6 +143,7 @@ describe('useStartMoneyAccountPlusSubscription', () => {
       expect(mockStart).toHaveBeenCalledWith(
         devOrTest || devOrUat ? { ...request, useTestClock: true } : request,
       );
+      expect(mockForceUpdate).toHaveBeenCalledWith(dispatch);
     },
   );
 
@@ -133,28 +160,60 @@ describe('useStartMoneyAccountPlusSubscription', () => {
     expect(result.current.isSubmitting).toBe(false);
   });
 
-  it('returns alreadySubscribed when the background reports an existing subscription', async () => {
-    mockStart.mockRejectedValue(
-      new Error(SubscriptionControllerErrorMessage.UserAlreadySubscribed),
-    );
-    const { result } = renderHook(useStartMoneyAccountPlusSubscription);
-    await act(async () => {
-      await expect(result.current.startSubscription(interval)).resolves.toBe(
-        'alreadySubscribed',
+  it.each([true, false])(
+    'refreshes subscriptions when the background reports an existing subscription (refresh ok: %s)',
+    async (refreshSucceeds) => {
+      mockStart.mockRejectedValue(
+        new Error(SubscriptionControllerErrorMessage.UserAlreadySubscribed),
       );
-    });
-    expect(result.current.error).toBeUndefined();
-  });
+      if (!refreshSucceeds) {
+        dispatch.mockRejectedValue(new Error('Refresh failed'));
+      }
+      const { result } = renderHook(useStartMoneyAccountPlusSubscription);
+      await act(async () => {
+        await expect(result.current.startSubscription(interval)).resolves.toBe(
+          'alreadySubscribed',
+        );
+      });
+      expect(dispatch).toHaveBeenCalledWith(reloadThunk);
+      expect(mockForceUpdate).toHaveBeenCalledWith(dispatch);
+      expect(result.current.error).toBeUndefined();
+    },
+  );
 
-  it('returns alreadySubscribed without calling the background when a hub subscription exists', async () => {
-    mockPayment(payerAddress, chainId, { status: 'awaiting_funds' });
+  it.each([true, false])(
+    'refreshes and returns alreadySubscribed without starting when a hub subscription still exists (refresh ok: %s)',
+    async (refreshSucceeds) => {
+      mockPayment(payerAddress, chainId, hubSubscription);
+      if (!refreshSucceeds) {
+        dispatch.mockRejectedValue(new Error('Refresh failed'));
+      }
+      const { result } = renderHook(useStartMoneyAccountPlusSubscription);
+      await act(async () => {
+        await expect(result.current.startSubscription(interval)).resolves.toBe(
+          'alreadySubscribed',
+        );
+      });
+      expect(dispatch).toHaveBeenCalledWith(reloadThunk);
+      expect(mockForceUpdate).toHaveBeenCalledWith(dispatch);
+      expect(mockStart).not.toHaveBeenCalled();
+    },
+  );
+
+  it('starts a subscription when a stale hub subscription is no longer active after refresh', async () => {
+    mockPayment(payerAddress, chainId, hubSubscription);
+    dispatch.mockResolvedValue([
+      { ...hubSubscription, status: SUBSCRIPTION_STATUSES.canceled },
+    ]);
     const { result } = renderHook(useStartMoneyAccountPlusSubscription);
     await act(async () => {
       await expect(result.current.startSubscription(interval)).resolves.toBe(
-        'alreadySubscribed',
+        'success',
       );
     });
-    expect(mockStart).not.toHaveBeenCalled();
+    expect(dispatch).toHaveBeenCalledWith(reloadThunk);
+    expect(mockStart).toHaveBeenCalledWith(request);
+    expect(mockForceUpdate).toHaveBeenCalledTimes(2);
   });
 
   it('exposes a start failure and clears the submitting state', async () => {
