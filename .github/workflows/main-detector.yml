@@ -508,7 +508,7 @@ jobs:
         run: |
           node .github/scripts/main-detector/calibration-cli.mts \
             --out calibration.json --summary "$GITHUB_STEP_SUMMARY" \
-            --run-url "$RUN_URL" $POST
+            --run-url "$RUN_URL" ${POST:+"$POST"}
 
       - name: Upload the calibration
         uses: actions/upload-artifact@v7
