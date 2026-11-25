@@ -12,6 +12,8 @@ import {
   BoxFlexDirection,
   Button,
   ButtonVariant,
+  Text,
+  TextVariant,
   ButtonSize,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -340,8 +342,14 @@ export const OrderEntry = ({
           />
         )}
 
+        {mode === 'modify' && formState.leverage === undefined && (
+          <Text variant={TextVariant.BodySm}>
+            {t('perpsPositionLeverageUnavailable')}
+          </Text>
+        )}
+
         {/* New/Modify Modes: Show Amount Input Section (Size) */}
-        {mode !== 'close' && (
+        {mode !== 'close' && formState.leverage !== undefined && (
           <AmountInput
             amount={formState.amount}
             onAmountChange={handleAmountChange}
@@ -366,7 +374,7 @@ export const OrderEntry = ({
         )}
 
         {/* New/Modify Modes: Show Leverage Slider Section */}
-        {mode !== 'close' && (
+        {mode !== 'close' && formState.leverage !== undefined && (
           <LeverageSlider
             leverage={formState.leverage}
             onLeverageChange={handlePersistedLeverageChange}
@@ -380,7 +388,7 @@ export const OrderEntry = ({
         )}
 
         {/* New Mode Only: Show Auto Close (TP/SL) Section */}
-        {mode === 'new' && (
+        {mode === 'new' && formState.leverage !== undefined && (
           <AutoCloseSection
             enabled={formState.autoCloseEnabled}
             onEnabledChange={handleAutoCloseEnabledChange}
@@ -429,6 +437,7 @@ export const OrderEntry = ({
           <Button
             variant={ButtonVariant.Primary}
             size={ButtonSize.Md}
+            disabled={mode === 'modify' && formState.leverage === undefined}
             onClick={handleSubmit}
             className={twMerge(
               'w-full',

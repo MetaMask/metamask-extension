@@ -82,13 +82,12 @@ import {
 import {
   type PerpsState,
   selectPerpsDepositPending,
-  selectPerpsTradeConfigurations,
-  selectPerpsIsTestnet,
   selectPerpsActiveProvider,
   selectOrderBookPosition,
   selectOrderBookExpanded,
   selectChartExpanded,
   selectPerpsPendingTradeConfiguration,
+  selectPerpsTradeConfiguration,
   selectPerpsSelectedOrderType,
   selectPerpsVisibleCandleCount,
 } from '../../selectors/perps-controller';
@@ -408,13 +407,11 @@ const PerpsOrderEntryPage = () => {
   // Same reason: the considered event reads the latest slippage config without
   // re-arming its debounce whenever the estimate recomputes.
   const slippageTradePropertiesRef = useRef<Record<string, Json>>({});
-  const tradeConfigurations = useSelector(selectPerpsTradeConfigurations);
 
   useLayoutEffect(() => {
     trackRef.current = track;
   }, [track]);
 
-  const isTestnet = useSelector(selectPerpsIsTestnet);
   const activeProvider = useSelector(selectPerpsActiveProvider);
   const hasPendingPerpsDeposit = useSelector(selectPerpsDepositPending);
   const orderBookPosition = useSelector(selectOrderBookPosition);
@@ -452,6 +449,11 @@ const PerpsOrderEntryPage = () => {
       ? selectPerpsPendingTradeConfiguration(state, decodedSymbol)
       : undefined,
   );
+  const savedTradeConfiguration = useSelector((state: PerpsState) =>
+    decodedSymbol
+      ? selectPerpsTradeConfiguration(state, decodedSymbol)
+      : undefined,
+  );
 
   // Computed before the screen-view tracking below so the trading event can be
   // gated on the market existing (an unknown symbol renders the error state).
@@ -473,31 +475,31 @@ const PerpsOrderEntryPage = () => {
   // `default_payment_token` is intentionally omitted — the Extension
   // trade flow has no pay-with-token selector.
   const tradingScreenDefaults = useMemo(() => {
-    const env = isTestnet ? 'testnet' : 'mainnet';
-    const config = decodedSymbol
-      ? tradeConfigurations[env]?.[decodedSymbol]
-      : undefined;
-    const pending = config?.pendingConfig;
     // Report the leverage the UI actually seeds, which is clamped to the
     // market max (mirrors `initialLeverage`) — not the raw saved config.
     const marketMaxLeverage = market
       ? parseInt(market.maxLeverage.replace('x', ''), 10)
       : DEFAULT_MAX_LEVERAGE;
-    const savedLeverage = config?.leverage ?? TRADING_DEFAULTS.leverage;
+    const savedLeverage =
+      savedTradeConfiguration?.leverage ?? TRADING_DEFAULTS.leverage;
     return {
-      [PERPS_EVENT_PROPERTY.SAVED_ORDER]: Boolean(pending),
+      [PERPS_EVENT_PROPERTY.SAVED_ORDER]: Boolean(pendingTradeConfiguration),
       [PERPS_EVENT_PROPERTY.DEFAULT_LEVERAGE]: Math.min(
         savedLeverage,
         marketMaxLeverage,
       ),
-      ...(pending?.amount
-        ? { [PERPS_EVENT_PROPERTY.DEFAULT_SIZE_AMOUNT]: pending.amount }
+      ...(pendingTradeConfiguration?.amount
+        ? {
+            [PERPS_EVENT_PROPERTY.DEFAULT_SIZE_AMOUNT]:
+              pendingTradeConfiguration.amount,
+          }
         : {}),
       [PERPS_EVENT_PROPERTY.DEFAULT_AUTO_CLOSE]: Boolean(
-        pending?.takeProfitPrice || pending?.stopLossPrice,
+        pendingTradeConfiguration?.takeProfitPrice ||
+        pendingTradeConfiguration?.stopLossPrice,
       ),
     };
-  }, [tradeConfigurations, isTestnet, decodedSymbol, market]);
+  }, [pendingTradeConfiguration, savedTradeConfiguration, market]);
 
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
@@ -927,7 +929,9 @@ const PerpsOrderEntryPage = () => {
         [PERPS_EVENT_PROPERTY.ORDER_HAS_SL]: Boolean(
           orderFormState.autoCloseEnabled && orderFormState.stopLossPrice,
         ),
-        [PERPS_EVENT_PROPERTY.LEVERAGE]: orderFormState.leverage,
+        ...(orderFormState.leverage !== undefined && {
+          [PERPS_EVENT_PROPERTY.LEVERAGE]: orderFormState.leverage,
+        }),
         [PERPS_EVENT_PROPERTY.TRADE_WITH_TOKEN]: false,
         // Slippage rides the client-owned CONSIDERED event because the
         // controller's TrackingData has no slippage fields and AC5 forbids
@@ -1327,7 +1331,11 @@ const PerpsOrderEntryPage = () => {
     }
     const amount =
       Number.parseFloat(orderFormState.amount.replace(/,/gu, '')) || 0;
-    if (amount <= 0 || orderFormState.leverage <= 0) {
+    if (
+      amount <= 0 ||
+      orderFormState.leverage === undefined ||
+      orderFormState.leverage <= 0
+    ) {
       return false;
     }
     const marginRequired = amount / orderFormState.leverage;
@@ -1457,9 +1465,15 @@ const PerpsOrderEntryPage = () => {
   // The lookup settled without the market: the primary button retries it.
   const canRetryMarketInfo = isOrderSizeUnavailable && !isMarketInfoLoading;
 
+  const isModifyLeverageUnavailable =
+    orderMode === 'modify' &&
+    position !== undefined &&
+    (position.leverage.value === undefined ||
+      orderFormState?.leverage === undefined);
   const isSubmitDisabled =
     !canRetryMarketInfo &&
-    (!selectedAddress ||
+    (isModifyLeverageUnavailable ||
+      !selectedAddress ||
       feeNotional === undefined ||
       (orderMode === 'new' && isLoadingAccount) ||
       isOrderSizeUnavailable ||
@@ -1490,11 +1504,10 @@ const PerpsOrderEntryPage = () => {
     if (!decodedSymbol || orderMode !== 'new') {
       return undefined;
     }
-    const env = isTestnet ? 'testnet' : 'mainnet';
-    const config = tradeConfigurations[env]?.[decodedSymbol];
-    const saved = config?.leverage ?? TRADING_DEFAULTS.leverage;
+    const saved =
+      savedTradeConfiguration?.leverage ?? TRADING_DEFAULTS.leverage;
     return Math.min(saved, maxLeverage);
-  }, [decodedSymbol, orderMode, maxLeverage, tradeConfigurations, isTestnet]);
+  }, [decodedSymbol, orderMode, maxLeverage, savedTradeConfiguration]);
 
   const existingPositionForOrder = useMemo(() => {
     if (!position) {
@@ -1961,6 +1974,9 @@ const PerpsOrderEntryPage = () => {
     if (orderMode !== 'new' && !position) {
       hasSubmittedOrderRef.current = true;
       handlePositionAlreadyClosed();
+      return;
+    }
+    if (isModifyLeverageUnavailable || orderFormState.leverage === undefined) {
       return;
     }
 
@@ -2456,6 +2472,7 @@ const PerpsOrderEntryPage = () => {
       setIsSubmitting(false);
     }
   }, [
+    isModifyLeverageUnavailable,
     isEligible,
     orderFormState,
     orderMode,

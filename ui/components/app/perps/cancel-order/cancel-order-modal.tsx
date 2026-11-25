@@ -162,6 +162,7 @@ export const CancelOrderModal = ({
       const result = await submitRequestToBackground<{
         success: boolean;
         error?: string;
+        errorCode?: string;
       }>('perpsCancelOrder', [
         {
           orderId: order.orderId,
@@ -177,10 +178,10 @@ export const CancelOrderModal = ({
         },
       ]);
       if (!result?.success) {
-        // A `success: false` result carries the same provider prose a rejection
-        // does, so route both through the catch below: it already closes out
-        // quietly for orders no longer on the book and translates the rest.
-        throw new Error(result?.error ?? t('somethingWentWrong'));
+        throw Object.assign(
+          new Error(result?.error ?? t('somethingWentWrong')),
+          result,
+        );
       }
       track(MetaMetricsEventName.PerpsOrderCancelTransaction, {
         [PERPS_EVENT_PROPERTY.ASSET]: order.symbol,
@@ -191,20 +192,8 @@ export const CancelOrderModal = ({
       setIsSubmitting(false);
       onClose();
     } catch (err) {
-      // The order is already off the book (filled, cancelled elsewhere, or
-      // removed with its position). The user wanted it gone and it is gone, so
-      // close out quietly instead of surfacing a failure they cannot act on.
       if (isOrderNoLongerOpenError(err)) {
-        // Deliberately no analytics on THIS path. `TradingService.cancelOrder`
-        // already emitted `Perp Order Cancel Transaction` (submitted, then
-        // failed with the provider's message) for this attempt, so it is in the
-        // funnel and identifiable; a UI event here would be a second,
-        // contradictory-status row under the same name for one user action.
-        //
-        // The success path above and the generic-failure path below do still
-        // emit their own copies and duplicate the controller the same way. They
-        // predate this PR and removing them is a separate analytics change — do
-        // not "resolve" the inconsistency by re-adding an event here.
+        // Core already tracked the cancel attempt; the order is off the book.
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.CANCEL_ORDER_ALREADY_CLOSED,
           dataTestId: 'perps-toast-cancel-order-already-closed',

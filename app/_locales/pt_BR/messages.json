@@ -188,9 +188,6 @@
   "blockExplorerUrl": {
     "message": "URL do Block Explorer"
   },
-  "blockExplorerUrlDefinition": {
-    "message": "O URL usado como Block Explorer para essa rede."
-  },
   "blockExplorerView": {
     "message": "Exibir conta em $1",
     "description": "$1 replaced by URL for custom block explorer"
@@ -216,18 +213,11 @@
   "chainId": {
     "message": "ID da cadeia"
   },
-  "chainIdDefinition": {
-    "message": "O ID da cadeia usado para assinar transações para essa rede."
-  },
   "chainIdExistsErrorMsg": {
     "message": "Esse ID da cadeia é usado pela rede $1."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Você precisa usar a MetaMask no Google Chrome para se conectar com a sua carteira de hardware."
-  },
-  "clickToConnectLedgerViaWebHID": {
-    "message": "Clique aqui para conectar seu Ledger por meio do WebHID",
-    "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
   },
   "close": {
     "message": "Fechar"
@@ -342,9 +332,6 @@
   },
   "currencySymbol": {
     "message": "Símbolo da moeda"
-  },
-  "currencySymbolDefinition": {
-    "message": "O símbolo do ticker exibido para a moeda dessa rede."
   },
   "currentExtension": {
     "message": "Página atual da extensão"
@@ -760,18 +747,6 @@
   "ledgerAccountRestriction": {
     "message": "Você precisa usar sua última conta antes de adicionar uma nova."
   },
-  "ledgerConnectionInstructionCloseOtherApps": {
-    "message": "Encerre qualquer outro software conectado ao seu dispositivo e, em seguida, clique aqui para atualizar."
-  },
-  "ledgerConnectionInstructionHeader": {
-    "message": "Antes de clicar em confirmar:"
-  },
-  "ledgerConnectionInstructionStepFour": {
-    "message": "Ative \"dados de contrato inteligente\" ou \"assinatura cega\" no seu dispositivo Ledger"
-  },
-  "ledgerConnectionInstructionStepThree": {
-    "message": "Conecte o seu dispositivo Ledger e selecione o app Ethereum"
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Não foi possível abrir o dispositivo Ledger. Seu Ledger pode não estar conectado a outros softwares. Feche o Ledger Live ou outros aplicativos conectados ao seu dispositivo Ledger e tente reconectar."
   },
@@ -853,10 +828,6 @@
   "metamaskVersion": {
     "message": "Versão da MetaMask"
   },
-  "mismatchedChainLinkText": {
-    "message": "verifique os detalhes da rede",
-    "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
-  },
   "name": {
     "message": "Nome"
   },
@@ -877,14 +848,8 @@
     "message": "É preciso selecionar um arquivo para importar.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "networkDetails": {
-    "message": "Detalhes da rede"
-  },
   "networkName": {
     "message": "Nome da rede"
-  },
-  "networkNameDefinition": {
-    "message": "O nome associado a essa rede."
   },
   "networkNameEthereum": {
     "message": "Ethereum"
@@ -905,9 +870,6 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "As taxas de gás estão $1 em relação às últimas 72 horas.",
     "description": "$1 is networks stability value - stable, low, high"
-  },
-  "networkURL": {
-    "message": "URL da Rede"
   },
   "networkURLDefinition": {
     "message": "O URL usado para acessar essa rede."
@@ -983,10 +945,6 @@
     "message": "Conecte-se somente com sites em que você confia.",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
-  "openFullScreenForLedgerWebHid": {
-    "message": "Abra a MetaMask em tela cheia para conectar sua ledger por meio do WebHID.",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
   "origin": {
     "message": "Origem"
   },
@@ -1033,12 +991,6 @@
   "privateKey": {
     "message": "Chave privada",
     "description": "select this type of file to use to import an account"
-  },
-  "privateNetwork": {
-    "message": "Rede privada"
-  },
-  "proceedWithTransaction": {
-    "message": "Quero prosseguir mesmo assim"
   },
   "provide": {
     "message": "Fornecer"
@@ -1194,9 +1146,6 @@
   },
   "signed": {
     "message": "Assinado"
-  },
-  "simulationErrorMessageV2": {
-    "message": "Não conseguimos estimar o preço do gás. Pode haver um erro no contrato, e essa transação poderá falhar."
   },
   "somethingWentWrong": {
     "message": "Opa! Ocorreu algum erro."
