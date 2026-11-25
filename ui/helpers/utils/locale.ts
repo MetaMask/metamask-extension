@@ -10,7 +10,6 @@ export function resolveFormattingLocale({
     const appLocale = new Intl.Locale(
       Intl.getCanonicalLocales(appLanguage.replaceAll('_', '-'))[0],
     );
-    const appMax = appLocale.maximize();
 
     // Find first device locale with a region
     let deviceLocale: Intl.Locale | undefined;
@@ -30,32 +29,12 @@ export function resolveFormattingLocale({
       return appLocale.toString();
     }
 
-    const deviceMax = deviceLocale.maximize();
-
-    // Return device locale if language and script match
-    if (
-      appLocale.language === deviceLocale.language &&
-      appMax.script === deviceMax.script
-    ) {
-      return deviceLocale.toString();
-    }
-
-    // Keep the script unless it matches both defaults
-    const bareMax = new Intl.Locale(appLocale.language).maximize();
-    const withRegionMax = new Intl.Locale(
-      `${appLocale.language}-${deviceLocale.region}`,
-    ).maximize();
-
-    const script =
-      appMax.script === bareMax.script && appMax.script === withRegionMax.script
-        ? undefined
-        : appMax.script;
-
-    const combined = [appLocale.language, script, deviceLocale.region]
-      .filter(Boolean)
-      .join('-');
-
-    return new Intl.Locale(combined).toString();
+    // Apply the device region; minimize keeps only non-default subtags
+    return new Intl.Locale(appLocale.maximize(), {
+      region: deviceLocale.region,
+    })
+      .minimize()
+      .toString();
   } catch {
     return 'en';
   }
