@@ -9061,22 +9061,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/money-account-balance-service@npm:^3.2.0, @metamask/money-account-balance-service@npm:^3.2.1":
-  version: 3.2.1
-  resolution: "@metamask/money-account-balance-service@npm:3.2.1"
+"@metamask/money-account-balance-service@npm:^3.2.0, @metamask/money-account-balance-service@npm:^3.2.2":
+  version: 3.2.2
+  resolution: "@metamask/money-account-balance-service@npm:3.2.2"
   dependencies:
-    "@ethersproject/contracts": "npm:^5.7.0"
+    "@ethersproject/bignumber": "npm:^5.8.0"
+    "@ethersproject/contracts": "npm:^5.8.0"
     "@ethersproject/providers": "npm:^5.8.0"
     "@metamask/base-data-service": "npm:^2.1.0"
     "@metamask/controller-utils": "npm:^13.0.0"
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/money-account-api-data-service": "npm:^2.4.0"
-    "@metamask/network-controller": "npm:^38.0.0"
+    "@metamask/money-account-api-data-service": "npm:^2.5.0"
+    "@metamask/network-controller": "npm:^38.0.1"
     "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
     "@metamask/superstruct": "npm:^3.4.1"
-    "@metamask/utils": "npm:^12.0.1"
-  checksum: 10/b1124e36124ec0f9688df8ecdfaa973f3d7fc05c5a5b3969598309201bf1dcc03d2f7f4b1c3d07038565a89e20017681700490006ffa4ac612830638243ab9f0
+    "@metamask/utils": "npm:^12.0.2"
+  checksum: 10/ae79bfb955811887390fb44d3db443cb02502b9e1a03a764f04c1f24ed05a7ebd9bddf874fc763e931768cc92e90a4c938796cb0ec1b510bde6d691b57754c6f
   languageName: node
   linkType: hard
 
@@ -10203,11 +10204,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/subscription-controller@npm:^15.2.0, @metamask/subscription-controller@npm:^15.3.0":
-  version: 15.3.0
-  resolution: "@metamask/subscription-controller@npm:15.3.0"
+"@metamask/subscription-controller@npm:^15.2.0, @metamask/subscription-controller@npm:^15.4.0":
+  version: 15.4.0
+  resolution: "@metamask/subscription-controller@npm:15.4.0"
   dependencies:
-    "@ethersproject/abi": "npm:^5.7.0"
+    "@ethersproject/abi": "npm:^5.8.0"
     "@metamask/authenticated-user-storage": "npm:^4.2.0"
     "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/base-data-service": "npm:^2.1.0"
@@ -10218,7 +10219,7 @@ __metadata:
     "@metamask/delegation-deployments": "npm:^1.4.0"
     "@metamask/geolocation-controller": "npm:^2.0.0"
     "@metamask/messenger": "npm:^3.0.0"
-    "@metamask/money-account-balance-service": "npm:^3.2.1"
+    "@metamask/money-account-balance-service": "npm:^3.2.2"
     "@metamask/money-account-upgrade-controller": "npm:^7.0.0"
     "@metamask/money-account-utils": "npm:^2.2.1"
     "@metamask/polling-controller": "npm:^17.0.0"
@@ -10226,12 +10227,12 @@ __metadata:
     "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
     "@metamask/seedless-onboarding-controller": "npm:^12.1.0"
     "@metamask/superstruct": "npm:^3.4.1"
-    "@metamask/transaction-controller": "npm:^74.2.0"
+    "@metamask/transaction-controller": "npm:^74.3.0"
     "@metamask/utils": "npm:^12.0.2"
-    "@tanstack/query-core": "npm:^5.103.2"
+    "@tanstack/query-core": "npm:^5.107.1"
     bignumber.js: "npm:^9.1.2"
     fast-deep-equal: "npm:^3.1.3"
-  checksum: 10/ebe7b6dd591195860fc3a2e58b9b532f5b9017f66463e867e88e6eff29b5c372e015c5ec0fa43554ac70f4510560d03c6875f9a32721299e182feff003b02f3a
+  checksum: 10/8a1ba7e8b3e1f0a8d98836e410da9763fac6c7780a787c443ca89e967fd10224033e895b379918113dae4326ce54a5857487fb56eef56097f944ee99ced1fd7c
   languageName: node
   linkType: hard
 
@@ -10484,9 +10485,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/wallet@npm:@metamask-previews/wallet@21.0.4-preview-02adcc6f1":
-  version: 21.0.4-preview-02adcc6f1
-  resolution: "@metamask-previews/wallet@npm:21.0.4-preview-02adcc6f1"
+"@metamask/wallet@npm:^22.0.0":
+  version: 22.0.0
+  resolution: "@metamask/wallet@npm:22.0.0"
   dependencies:
     "@metamask/accounts-controller": "npm:^40.2.0"
     "@metamask/address-book-controller": "npm:^8.0.0"
@@ -10515,10 +10516,10 @@ __metadata:
     "@metamask/shield-controller": "npm:^7.1.2"
     "@metamask/signature-controller": "npm:^40.1.1"
     "@metamask/storage-service": "npm:^2.0.0"
-    "@metamask/subscription-controller": "npm:^15.3.0"
-    "@metamask/transaction-controller": "npm:^74.3.0"
+    "@metamask/subscription-controller": "npm:^15.4.0"
+    "@metamask/transaction-controller": "npm:^74.4.0"
     "@metamask/utils": "npm:^12.0.2"
-  checksum: 10/8fb2267b498f21c0cbf4a1e404c941febbdb4e4d77e0713114b4113be3e8d59024368cdead163e69da9c7b5d2782604efe378423a25d29e53d4648c58fe9910d
+  checksum: 10/ef5a6e42313d5ffe27ad300a908ce308d52d3ca1569aa1de08706d5351f0949d55d3ecc8cdff7c9a02df548147cfabb744c447f17865c30d83deaa75a957fae4
   languageName: node
   linkType: hard
 
@@ -34824,7 +34825,7 @@ __metadata:
     "@metamask/tron-wallet-snap": "npm:^4.4.0"
     "@metamask/user-operation-controller": "npm:^42.1.2"
     "@metamask/utils": "npm:^12.0.2"
-    "@metamask/wallet": "npm:^21.0.3"
+    "@metamask/wallet": "npm:^22.0.0"
     "@mui/material": "npm:^5.18.0"
     "@mui/system": "npm:^5.18.0"
     "@mui/x-date-pickers": "npm:^7.29.4"
