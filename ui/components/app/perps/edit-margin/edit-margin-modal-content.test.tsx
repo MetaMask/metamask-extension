@@ -1,4 +1,5 @@
 import React from 'react';
+import { it } from '@jest/globals';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
@@ -252,31 +253,37 @@ describe('EditMarginModalContent', () => {
   });
 
   describe('controller failure', () => {
-    it('shows fallback toast when perpsUpdateMargin returns success false with generic error', async () => {
-      mockSubmitRequestToBackground.mockResolvedValue({
-        success: false,
-        error: 'Failed to update margin',
-      });
+    it.each(['rejects', 'returns a failure'])(
+      'shows localized copy when the background %s with unmapped venue text',
+      async (outcome) => {
+        const error = 'Venue diagnostic 42';
+        if (outcome === 'rejects') {
+          mockSubmitRequestToBackground.mockRejectedValueOnce(new Error(error));
+        } else {
+          mockSubmitRequestToBackground.mockResolvedValueOnce({
+            success: false,
+            error,
+          });
+        }
 
-      renderWithProvider(
-        <EditMarginModalContent {...defaultProps} />,
-        mockStore,
-      );
+        renderWithProvider(
+          <EditMarginModalContent {...defaultProps} />,
+          mockStore,
+        );
 
-      const amountInput = screen.getByPlaceholderText('0.00');
-      fireEvent.change(amountInput, { target: { value: '100' } });
-      fireEvent.click(screen.getByTestId('perps-edit-margin-confirm'));
+        const amountInput = screen.getByPlaceholderText('0.00');
+        fireEvent.change(amountInput, { target: { value: '100' } });
+        fireEvent.click(screen.getByTestId('perps-edit-margin-confirm'));
 
-      await waitFor(() => {
-        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
-          key: 'perpsToastMarginAdjustmentFailed',
-          description:
-            messages.perpsToastMarginAdjustmentFailedDescriptionFallback
-              .message,
+        await waitFor(() => {
+          expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+            key: 'perpsToastMarginAdjustmentFailed',
+            description: messages.perpsMarginAdjustmentFailed.message,
+          });
         });
-      });
-      expect(defaultProps.onClose).not.toHaveBeenCalled();
-    });
+        expect(defaultProps.onClose).not.toHaveBeenCalled();
+      },
+    );
 
     it('emits a failed risk-management event when perpsUpdateMargin returns success false', async () => {
       mockSubmitRequestToBackground.mockResolvedValue({

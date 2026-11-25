@@ -32,14 +32,14 @@ function normalizePerpsError(error: unknown): PerpsErrorInput | null {
   } else if (typeof errorRecord.error === 'string') {
     message = errorRecord.error;
   }
-  if (message === null) {
-    return null;
-  }
 
   const errorCodeValue = errorRecord.errorCode ?? errorRecord.code;
   const errorCode = isPerpsErrorCodeValue(errorCodeValue)
     ? errorCodeValue
     : undefined;
+  if (message === null && errorCode === undefined) {
+    return null;
+  }
   const errorDetails =
     typeof errorRecord.errorDetails === 'object' &&
     errorRecord.errorDetails !== null
@@ -51,7 +51,7 @@ function normalizePerpsError(error: unknown): PerpsErrorInput | null {
       : undefined;
 
   return {
-    error: message,
+    error: message ?? '',
     errorCode,
     errorDetails,
     maxSlippageBps,
@@ -118,10 +118,8 @@ export const ERROR_CODE_TO_I18N_KEY = {
 
   // Provider / token
   [PERPS_ERROR_CODES.PROVIDER_NOT_AVAILABLE]: 'somethingWentWrong',
-  // Routing failures across the controller's multi-provider layer. The
-  // extension exposes no provider picker, so neither is user-actionable.
   [PERPS_ERROR_CODES.PROVIDER_NOT_FOUND]: 'somethingWentWrong',
-  [PERPS_ERROR_CODES.PROVIDER_ROUTE_REQUIRED]: 'somethingWentWrong',
+  [PERPS_ERROR_CODES.PROVIDER_ROUTE_REQUIRED]: 'perpsProviderRouteRequired',
   [PERPS_ERROR_CODES.PROVIDER_LIFECYCLE_STALE]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.TOKEN_NOT_SUPPORTED]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.BRIDGE_CONTRACT_NOT_FOUND]: 'somethingWentWrong',
@@ -130,21 +128,18 @@ export const ERROR_CODE_TO_I18N_KEY = {
   [PERPS_ERROR_CODES.WITHDRAW_FAILED]: 'perpsWithdrawFailed',
   [PERPS_ERROR_CODES.POSITIONS_FAILED]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.ACCOUNT_STATE_FAILED]: 'somethingWentWrong',
-  // Batched order management could not complete for every affected order.
-  [PERPS_ERROR_CODES.BATCH_INCOMPLETE]: 'somethingWentWrong',
-  [PERPS_ERROR_CODES.ORDERS_FAILED]: 'somethingWentWrong',
+  [PERPS_ERROR_CODES.BATCH_INCOMPLETE]: 'perpsBatchIncomplete',
+  [PERPS_ERROR_CODES.ORDERS_FAILED]: 'perpsOrdersFailed',
   // Scale-order bookkeeping failures: the controller could not preserve the
   // intended size or exposure distribution across the scale's levels.
   [PERPS_ERROR_CODES.ORDER_SCALE_SIZE_CONSERVATION_FAILED]:
-    'somethingWentWrong',
-  [PERPS_ERROR_CODES.ORDER_SCALE_EXPOSURE_EXCEEDS_INTENT]: 'somethingWentWrong',
+    'perpsScaleOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_SCALE_EXPOSURE_EXCEEDS_INTENT]:
+    'perpsScaleOrderFailed',
   // Display-only data gap: the liquidation price could not be computed.
-  [PERPS_ERROR_CODES.LIQUIDATION_PRICE_UNAVAILABLE]: 'somethingWentWrong',
-  // The order is already off the book. The cancel modal intercepts this code
-  // as a benign already-gone end state before translation, so this entry is
-  // defensive for any other flow that surfaces a failed cancellation of an
-  // order that is no longer open.
-  [PERPS_ERROR_CODES.ORDER_NO_LONGER_OPEN]: 'somethingWentWrong',
+  [PERPS_ERROR_CODES.LIQUIDATION_PRICE_UNAVAILABLE]:
+    'perpsLiquidationPriceUnavailable',
+  [PERPS_ERROR_CODES.ORDER_NO_LONGER_OPEN]: 'perpsOrderNoLongerOpen',
   [PERPS_ERROR_CODES.MARKETS_FAILED]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.UNKNOWN_ERROR]: 'somethingWentWrong',
 
@@ -344,17 +339,6 @@ export const API_ERROR_PATTERNS: {
   pattern: RegExp;
   code: PerpsErrorCode;
 }[] = [
-  // Post-only rejections come first. The would-cross sentence embeds raw bbo
-  // prices such as 2503.1, which a broad "503" pattern can misread as an outage.
-  {
-    pattern: /post only order would have immediately matched/iu,
-    code: PERPS_ERROR_CODES.ORDER_POST_ONLY_WOULD_CROSS,
-  },
-  {
-    pattern:
-      /only post-only orders allowed immediately after network upgrade/iu,
-    code: PERPS_ERROR_CODES.ORDER_POST_ONLY_WINDOW,
-  },
   // Order execution
   {
     pattern: /insufficient margin/iu,
@@ -456,7 +440,7 @@ export function translatePerpsError(
     return translate(i18nKey, substitutions);
   }
 
-  // 2. Pattern match against raw error messages from older controller versions.
+  // 2. Pattern match against raw error messages for legacy, unstructured failures.
   for (const { pattern, code } of API_ERROR_PATTERNS) {
     if (pattern.test(normalizedError.error)) {
       const { i18nKey, substitutions } = getErrorTranslation({

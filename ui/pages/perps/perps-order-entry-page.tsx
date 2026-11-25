@@ -929,7 +929,9 @@ const PerpsOrderEntryPage = () => {
         [PERPS_EVENT_PROPERTY.ORDER_HAS_SL]: Boolean(
           orderFormState.autoCloseEnabled && orderFormState.stopLossPrice,
         ),
-        [PERPS_EVENT_PROPERTY.LEVERAGE]: orderFormState.leverage,
+        ...(orderFormState.leverage !== undefined && {
+          [PERPS_EVENT_PROPERTY.LEVERAGE]: orderFormState.leverage,
+        }),
         [PERPS_EVENT_PROPERTY.TRADE_WITH_TOKEN]: false,
         // Slippage rides the client-owned CONSIDERED event because the
         // controller's TrackingData has no slippage fields and AC5 forbids
@@ -1329,7 +1331,11 @@ const PerpsOrderEntryPage = () => {
     }
     const amount =
       Number.parseFloat(orderFormState.amount.replace(/,/gu, '')) || 0;
-    if (amount <= 0 || orderFormState.leverage <= 0) {
+    if (
+      amount <= 0 ||
+      orderFormState.leverage === undefined ||
+      orderFormState.leverage <= 0
+    ) {
       return false;
     }
     const marginRequired = amount / orderFormState.leverage;
@@ -1459,9 +1465,15 @@ const PerpsOrderEntryPage = () => {
   // The lookup settled without the market: the primary button retries it.
   const canRetryMarketInfo = isOrderSizeUnavailable && !isMarketInfoLoading;
 
+  const isModifyLeverageUnavailable =
+    orderMode === 'modify' &&
+    position !== undefined &&
+    (position.leverage.value === undefined ||
+      orderFormState?.leverage === undefined);
   const isSubmitDisabled =
     !canRetryMarketInfo &&
-    (!selectedAddress ||
+    (isModifyLeverageUnavailable ||
+      !selectedAddress ||
       feeNotional === undefined ||
       (orderMode === 'new' && isLoadingAccount) ||
       isOrderSizeUnavailable ||
@@ -1503,10 +1515,6 @@ const PerpsOrderEntryPage = () => {
     }
     return {
       size: position.size,
-      // Venue-reported leverage; absent when the provider does not report one.
-      // Do not fall back to the new-order default here: this value seeds the
-      // modify form's leverage (and its slider minimum), so a fabricated
-      // default could silently re-lever the live position on submit.
       leverage: position.leverage.value,
       entryPrice: position.entryPrice,
       takeProfitPrice: position.takeProfitPrice,
@@ -1966,6 +1974,9 @@ const PerpsOrderEntryPage = () => {
     if (orderMode !== 'new' && !position) {
       hasSubmittedOrderRef.current = true;
       handlePositionAlreadyClosed();
+      return;
+    }
+    if (isModifyLeverageUnavailable || orderFormState.leverage === undefined) {
       return;
     }
 
@@ -2461,6 +2472,7 @@ const PerpsOrderEntryPage = () => {
       setIsSubmitting(false);
     }
   }, [
+    isModifyLeverageUnavailable,
     isEligible,
     orderFormState,
     orderMode,

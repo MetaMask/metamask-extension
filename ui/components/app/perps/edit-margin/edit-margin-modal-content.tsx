@@ -58,41 +58,6 @@ import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
 import { translatePerpsError } from '../utils/translate-perps-error';
 
 const MARGIN_PRESETS = [25, 50, 100] as const;
-const MARGIN_FAILED_FALLBACK_ERROR_PATTERNS = [
-  /^an unknown error occurred$/iu,
-  /^failed to update margin$/iu,
-  /^unknown error$/iu,
-  /^error$/iu,
-];
-
-/**
- * Build the margin-adjustment failure toast, swapping unhelpful backend strings
- * ("unknown error", empty) for the localized fallback copy. Shared by the
- * `{ success: false }` branch and the transport `catch`.
- *
- * @param errorMessage - The raw error text from the controller or transport.
- * @param fallbackDescription - Localized copy used when the raw text is empty
- * or one of the known unhelpful strings.
- * @returns The toast key and description to display.
- */
-const getMarginAdjustmentFailedToast = (
-  errorMessage: string,
-  fallbackDescription: string,
-) => {
-  const normalizedErrorMessage = errorMessage.trim();
-  const shouldUseFallbackDescription =
-    normalizedErrorMessage.length === 0 ||
-    MARGIN_FAILED_FALLBACK_ERROR_PATTERNS.some((pattern) =>
-      pattern.test(normalizedErrorMessage),
-    );
-
-  return {
-    key: PERPS_TOAST_KEYS.MARGIN_ADJUSTMENT_FAILED,
-    description: shouldUseFallbackDescription
-      ? fallbackDescription
-      : normalizedErrorMessage,
-  };
-};
 
 export type EditMarginModalContentProps = {
   position: Position;
@@ -302,6 +267,17 @@ export const EditMarginModalContent = ({
   );
 
   const handleSaveMargin = useCallback(async () => {
+    const showMarginAdjustmentFailure = (error: unknown) => {
+      replacePerpsToastByKey({
+        key: PERPS_TOAST_KEYS.MARGIN_ADJUSTMENT_FAILED,
+        description:
+          translatePerpsError(
+            error,
+            t as (key: string, substitutions?: string[]) => string,
+          ) ?? t('perpsMarginAdjustmentFailed'),
+      });
+    };
+
     await gate(async () => {
       if (!isEligible) {
         setIsGeoBlockModalOpen(true);
@@ -367,19 +343,7 @@ export const EditMarginModalContent = ({
             [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
           });
 
-          replacePerpsToastByKey(
-            getMarginAdjustmentFailedToast(
-              translatePerpsError(
-                {
-                  error: result.error ?? '',
-                  errorCode: result.errorCode,
-                  errorDetails: result.errorDetails,
-                },
-                t as (key: string, substitutions?: string[]) => string,
-              ) ?? errorMessage,
-              t('perpsToastMarginAdjustmentFailedDescriptionFallback'),
-            ),
-          );
+          showMarginAdjustmentFailure(result);
           // Error is DISPLAYED — emit the error screen view.
           trackPerpsErrorScreenViewed(
             track,
@@ -427,15 +391,7 @@ export const EditMarginModalContent = ({
           PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
         );
 
-        replacePerpsToastByKey(
-          getMarginAdjustmentFailedToast(
-            translatePerpsError(
-              error,
-              t as (key: string, substitutions?: string[]) => string,
-            ) ?? errorMessage,
-            t('perpsToastMarginAdjustmentFailedDescriptionFallback'),
-          ),
-        );
+        showMarginAdjustmentFailure(error);
       } finally {
         setIsSaving(false);
         onSavingChange?.(false);

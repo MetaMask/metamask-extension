@@ -22,6 +22,13 @@ jest.mock('@metamask/perps-controller', () => ({
     BRIDGE_CONTRACT_NOT_FOUND: 'BRIDGE_CONTRACT_NOT_FOUND',
     WITHDRAW_FAILED: 'WITHDRAW_FAILED',
     POSITIONS_FAILED: 'POSITIONS_FAILED',
+    BATCH_INCOMPLETE: 'BATCH_INCOMPLETE',
+    ORDERS_FAILED: 'ORDERS_FAILED',
+    LIQUIDATION_PRICE_UNAVAILABLE: 'LIQUIDATION_PRICE_UNAVAILABLE',
+    ORDER_NO_LONGER_OPEN: 'ORDER_NO_LONGER_OPEN',
+    ORDER_SCALE_SIZE_CONSERVATION_FAILED:
+      'ORDER_SCALE_SIZE_CONSERVATION_FAILED',
+    ORDER_SCALE_EXPOSURE_EXCEEDS_INTENT: 'ORDER_SCALE_EXPOSURE_EXCEEDS_INTENT',
     ACCOUNT_STATE_FAILED: 'ACCOUNT_STATE_FAILED',
     MARKETS_FAILED: 'MARKETS_FAILED',
     UNKNOWN_ERROR: 'UNKNOWN_ERROR',
@@ -317,6 +324,11 @@ describe('ERROR_CODE_TO_I18N_KEY', () => {
 
   it('shows the root cause for codes Extension can produce', () => {
     const cases = [
+      [
+        'BATCH_INCOMPLETE',
+        "Some orders or positions couldn't be updated. Try again.",
+      ],
+      ['ORDERS_FAILED', "We couldn't load your orders. Try again."],
       ['ORDER_LEVERAGE_REDUCTION_FAILED', 'You cannot reduce your leverage.'],
       [
         'REDUCE_ONLY_VIOLATION',
@@ -660,42 +672,6 @@ describe('translatePerpsError', () => {
         mockT,
       ),
     ).toBe('[perpsPostOnlyWindow]');
-  });
-
-  it('resolves raw post-only venue sentences to the same keys', () => {
-    expect(
-      translatePerpsError(
-        new Error(
-          'Post only order would have immediately matched, bbo was 2503.1',
-        ),
-        mockT,
-      ),
-    ).toBe('[perpsPostOnlyWouldCross]');
-    expect(
-      translatePerpsError(
-        new Error(
-          'Only post-only orders allowed immediately after network upgrade',
-        ),
-        mockT,
-      ),
-    ).toBe('[perpsPostOnlyWindow]');
-  });
-
-  it('does not classify a would-cross sentence with embedded prices as a service outage', () => {
-    const message =
-      'Post only order would have immediately matched, bbo was 2503.1';
-    const match = API_ERROR_PATTERNS.find(({ pattern }) =>
-      pattern.test(message),
-    );
-
-    expect(match?.code).toBe(PERPS_ERROR_CODES.ORDER_POST_ONLY_WOULD_CROSS);
-    expect(match?.code).not.toBe(PERPS_ERROR_CODES.SERVICE_UNAVAILABLE);
-    expect(translatePerpsError(new Error(message), mockT)).toBe(
-      '[perpsPostOnlyWouldCross]',
-    );
-    expect(translatePerpsError(new Error(message), mockT)).not.toBe(
-      '[perpsServiceUnavailable]',
-    );
   });
 });
 

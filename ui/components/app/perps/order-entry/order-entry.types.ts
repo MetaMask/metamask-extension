@@ -32,11 +32,7 @@ export type ExistingPositionData = {
   symbol?: string;
   /** Position size (signed: positive = long, negative = short) */
   size: string;
-  /**
-   * Venue-reported leverage multiplier. Absent when the provider does not
-   * report one; consumers seed their default and show a placeholder rather
-   * than fabricating a value that the venue never reported.
-   */
+  /** Venue-reported leverage, absent when unavailable. */
   leverage?: number;
   /** Entry price for reference display */
   entryPrice: string;
@@ -60,7 +56,7 @@ export type OrderFormState = {
   /** USD amount to trade (string for input handling) */
   amount: string;
   /** Leverage multiplier (1-50x typically) */
-  leverage: number;
+  leverage: number | undefined;
   /** Percentage of available balance (0-100) */
   balancePercent: number;
   /** Take profit price (optional) */

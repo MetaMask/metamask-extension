@@ -47,8 +47,6 @@ const PERPS_DEPOSIT_TRANSACTION_TYPES: ReadonlySet<TransactionType> = new Set([
 ]);
 
 const EMPTY_ARRAY: never[] = [];
-const EMPTY_TRADE_CONFIGURATIONS: PerpsControllerState['tradeConfigurations'] =
-  { testnet: {}, mainnet: {} };
 
 /**
  * Controller selectors expect `PerpsControllerState`. Extension flattens that
@@ -300,9 +298,6 @@ export const selectOrderBookExpanded = (state: PerpsState) =>
 export const selectChartExpanded = (state: PerpsState) =>
   state.metamask.proLayoutPreferences?.chartExpanded ??
   DEFAULT_PRO_LAYOUT_PREFERENCES.chartExpanded;
-
-export const selectPerpsTradeConfigurations = (state: PerpsState) =>
-  state.metamask.tradeConfigurations ?? EMPTY_TRADE_CONFIGURATIONS;
 
 /**
  * Return an unexpired pending trade draft for a market.

@@ -151,25 +151,6 @@ export const CancelOrderModal = ({
     t,
   ]);
 
-  const closeOutAlreadyClosed = useCallback(() => {
-    // Deliberately no analytics on THIS path. `TradingService.cancelOrder`
-    // already emitted `Perp Order Cancel Transaction` (submitted, then failed)
-    // for this attempt, so it is in the funnel and identifiable; a UI event
-    // here would be a second, contradictory-status row under the same name for
-    // one user action.
-    //
-    // The success path and the generic-failure path below do still emit their
-    // own copies and duplicate the controller the same way. They predate this
-    // PR and removing them is a separate analytics change — do not "resolve"
-    // the inconsistency by re-adding an event here.
-    replacePerpsToastByKey({
-      key: PERPS_TOAST_KEYS.CANCEL_ORDER_ALREADY_CLOSED,
-      dataTestId: 'perps-toast-cancel-order-already-closed',
-    });
-    setIsSubmitting(false);
-    onClose();
-  }, [onClose, replacePerpsToastByKey]);
-
   const handleCancel = useCallback(async () => {
     if (!isEligible) {
       setIsGeoBlockModalOpen(true);
@@ -197,15 +178,10 @@ export const CancelOrderModal = ({
         },
       ]);
       if (!result?.success) {
-        // Check the structured failed result before reconstructing an `Error`:
-        // the wrapper below keeps only the message and drops the controller's
-        // `errorCode`. An already-gone order closes out quietly here; other
-        // failures are routed through the catch below, which translates them.
-        if (isOrderNoLongerOpenError(result)) {
-          closeOutAlreadyClosed();
-          return;
-        }
-        throw new Error(result?.error ?? t('somethingWentWrong'));
+        throw Object.assign(
+          new Error(result?.error ?? t('somethingWentWrong')),
+          result,
+        );
       }
       track(MetaMetricsEventName.PerpsOrderCancelTransaction, {
         [PERPS_EVENT_PROPERTY.ASSET]: order.symbol,
@@ -216,13 +192,14 @@ export const CancelOrderModal = ({
       setIsSubmitting(false);
       onClose();
     } catch (err) {
-      // The order is already off the book (filled, cancelled elsewhere, or
-      // removed with its position). The user wanted it gone and it is gone, so
-      // close out quietly instead of surfacing a failure they cannot act on.
-      // Rejections reach here with the stable code as the message; results with
-      // the structured code are handled above, before the lossy wrap.
       if (isOrderNoLongerOpenError(err)) {
-        closeOutAlreadyClosed();
+        // Core already tracked the cancel attempt; the order is off the book.
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.CANCEL_ORDER_ALREADY_CLOSED,
+          dataTestId: 'perps-toast-cancel-order-already-closed',
+        });
+        setIsSubmitting(false);
+        onClose();
         return;
       }
       const errorMessage =
@@ -262,7 +239,6 @@ export const CancelOrderModal = ({
     order.price,
     order.orderType,
     buildTrackingData,
-    closeOutAlreadyClosed,
     onClose,
     replacePerpsToastByKey,
     track,

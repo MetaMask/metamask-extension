@@ -671,8 +671,7 @@ describe('CancelOrderModal', () => {
   });
 
   describe('order already closed on the provider', () => {
-    const alreadyClosedError =
-      'cancel 0: Order was never placed, already canceled, or filled. asset=4';
+    const alreadyClosedError = PERPS_ERROR_CODES.ORDER_NO_LONGER_OPEN;
 
     it('closes the modal without an error when the order is no longer open', async () => {
       const user = userEvent.setup();
@@ -712,50 +711,13 @@ describe('CancelOrderModal', () => {
       );
     });
 
-    it('closes the modal without an error when the background throws the same rejection', async () => {
-      const user = userEvent.setup();
-      const onClose = jest.fn();
-      mockSubmitRequestToBackground.mockRejectedValue(
-        new Error(alreadyClosedError),
-      );
-
-      renderWithProvider(
-        <CancelOrderModal isOpen onClose={onClose} order={baseOrder} />,
-        mockStore,
-      );
-
-      await act(async () => {
-        await user.click(screen.getByTestId('perps-cancel-order-button'));
-      });
-
-      await waitFor(() => {
-        expect(onClose).toHaveBeenCalled();
-      });
-      expect(screen.queryByText(alreadyClosedError)).not.toBeInTheDocument();
-      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
-        key: 'perpsToastCancelOrderAlreadyClosed',
-        dataTestId: 'perps-toast-cancel-order-already-closed',
-      });
-      expect(mockTrack).not.toHaveBeenCalledWith(
-        'Perp Error',
-        expect.anything(),
-      );
-      // No UI-side transaction event either: the controller already emitted
-      // `Perp Order Cancel Transaction` for this attempt, so one here would be a
-      // second, contradictory-status row for a single user action.
-      expect(mockTrack).not.toHaveBeenCalledWith(
-        'Perp Order Cancel Transaction',
-        expect.anything(),
-      );
-    });
-
     it('closes the modal without an error when the background resolves the normalized controller result', async () => {
       const user = userEvent.setup();
       const onClose = jest.fn();
       mockSubmitRequestToBackground.mockResolvedValue({
         success: false,
         orderId: '123',
-        error: 'ORDER_NO_LONGER_OPEN',
+        error: 'Venue diagnostic',
         errorCode: PERPS_ERROR_CODES.ORDER_NO_LONGER_OPEN,
         errorDetails: {
           code: PERPS_ERROR_CODES.ORDER_NO_LONGER_OPEN,

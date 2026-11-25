@@ -8052,6 +8052,9 @@
   "perpsBatchCloseFailed": {
     "message": "Failed to close one or more positions. Try again."
   },
+  "perpsBatchIncomplete": {
+    "message": "Some orders or positions couldn't be updated. Try again."
+  },
   "perpsCancelAllOrders": {
     "message": "Cancel all"
   },
@@ -8392,6 +8395,9 @@
     "message": "If the price hits this point, you'll be liquidated and lose your margin. Higher leverage makes this more likely.",
     "description": "Tooltip content for the liquidation price row on the Perps order summary"
   },
+  "perpsLiquidationPriceUnavailable": {
+    "message": "Liquidation price is unavailable. Try again."
+  },
   "perpsLong": {
     "message": "Long"
   },
@@ -8580,6 +8586,9 @@
     "message": "This order is above the maximum size.",
     "description": "Shown when an order exceeds the maximum order value"
   },
+  "perpsOrderNoLongerOpen": {
+    "message": "This order is no longer open. It may have already been filled or cancelled."
+  },
   "perpsOrderOriginalSize": {
     "message": "Original size"
   },
@@ -8605,6 +8614,9 @@
   "perpsOrders": {
     "message": "Orders"
   },
+  "perpsOrdersFailed": {
+    "message": "We couldn't load your orders. Try again."
+  },
   "perpsPerpMarketSubtitle": {
     "message": "$1-$2 perp",
     "description": "$1 is the market ticker (e.g. BTC), $2 is the collateral asset (e.g. USDC). Shown as the market pair subtitle on the perps market detail header, e.g. 'BTC-USDC perp'."
@@ -8614,6 +8626,9 @@
   },
   "perpsPosition": {
     "message": "Position"
+  },
+  "perpsPositionLeverageUnavailable": {
+    "message": "You can't add to this position until its leverage is available."
   },
   "perpsPositionNotFound": {
     "message": "Position not found.",
@@ -8641,6 +8656,9 @@
   "perpsProducts": {
     "message": "Products",
     "description": "Heading of the Perps tab section listing market categories as chips"
+  },
+  "perpsProviderRouteRequired": {
+    "message": "No exchange was selected for this order."
   },
   "perpsRateLimitExceeded": {
     "message": "Too many requests. Please wait and try again."
@@ -8695,6 +8713,9 @@
   "perpsSaveChanges": {
     "message": "Save changes",
     "description": "Button text for saving TP/SL changes"
+  },
+  "perpsScaleOrderFailed": {
+    "message": "We couldn't place your scale order. Try again."
   },
   "perpsSearchMarkets": {
     "message": "Search markets"
@@ -8900,10 +8921,6 @@
   "perpsToastMarginAdjustmentFailed": {
     "message": "Margin adjustment failed",
     "description": "Error toast text shown when adding or removing margin fails"
-  },
-  "perpsToastMarginAdjustmentFailedDescriptionFallback": {
-    "message": "Unable to adjust margin. Please try again.",
-    "description": "Fallback description shown when margin adjustment fails without a usable error message."
   },
   "perpsToastMarginRemoveSuccess": {
     "message": "Removed $1 margin from $2 position",

@@ -813,33 +813,11 @@ describe('orderUtils', () => {
   });
 
   describe('isOrderNoLongerOpenError', () => {
-    it('matches the provider rejection for an order that is already gone', () => {
-      const error = new Error(
-        'cancel 0: Order was never placed, already canceled, or filled. asset=4',
-      );
-
-      expect(isOrderNoLongerOpenError(error)).toBe(true);
-    });
-
-    it('matches the rejection when it arrives as a plain string', () => {
-      expect(
-        isOrderNoLongerOpenError(
-          'Order 0: Order was never placed, already canceled, or filled',
-        ),
-      ).toBe(true);
-    });
-
-    it('matches a structured result carrying the stable error code', () => {
+    it('matches a structured result even without an error message', () => {
       expect(
         isOrderNoLongerOpenError({
           success: false,
-          orderId: '123',
-          error: 'ORDER_NO_LONGER_OPEN',
           errorCode: PERPS_ERROR_CODES.ORDER_NO_LONGER_OPEN,
-          errorDetails: {
-            code: PERPS_ERROR_CODES.ORDER_NO_LONGER_OPEN,
-            provider: 'hyperliquid',
-          },
         }),
       ).toBe(true);
     });
@@ -856,19 +834,8 @@ describe('orderUtils', () => {
       expect(isOrderNoLongerOpenError('ORDER_NO_LONGER_OPEN')).toBe(true);
     });
 
-    it('matches a legacy prefixed provider sentence', () => {
-      expect(
-        isOrderNoLongerOpenError(
-          'cancel 0: Order was never placed, already cancelled, or filled. asset=4',
-        ),
-      ).toBe(true);
-    });
-
-    it('matches the venue markers the controller normalizes', () => {
-      expect(isOrderNoLongerOpenError('order not found')).toBe(true);
-      expect(isOrderNoLongerOpenError('cancel twap 3: twap not found')).toBe(
-        true,
-      );
+    it('does not infer an already-closed order from venue prose', () => {
+      expect(isOrderNoLongerOpenError('order not found')).toBe(false);
     });
 
     it('does not match UNKNOWN_ERROR', () => {

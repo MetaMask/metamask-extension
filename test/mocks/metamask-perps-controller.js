@@ -417,6 +417,24 @@ const mockDefaultVisibleCandleCount = 30;
 const mockPendingTradeConfigurationTtlMs = 30_000;
 
 /**
+ * Read v25 trade settings for the effective venue, including its pre-init fallback.
+ *
+ * @param {object | undefined} state
+ * @param {string} coin
+ * @returns {object | undefined}
+ */
+function mockGetMarketConfig(state, coin) {
+  const network = state?.isTestnet ? 'testnet' : 'mainnet';
+  const venue =
+    state?.effectiveProvider ??
+    (state?.activeProvider === 'aggregated'
+      ? state.defaultProvider
+      : state?.activeProvider);
+  const provider = venue === 'lighter' ? 'lighter' : 'hyperliquid';
+  return state?.tradeConfigurations?.[network]?.[provider]?.[coin];
+}
+
+/**
  * Mirror `selectPendingTradeConfiguration` so UI tests expire drafts the same
  * way `PerpsController.getPendingTradeConfiguration` does (`age > TTL`).
  *
@@ -425,8 +443,7 @@ const mockPendingTradeConfigurationTtlMs = 30_000;
  * @returns {object | undefined}
  */
 function mockSelectPendingTradeConfiguration(state, coin) {
-  const network = state?.isTestnet ? 'testnet' : 'mainnet';
-  const config = state?.tradeConfigurations?.[network]?.[coin]?.pendingConfig;
+  const config = mockGetMarketConfig(state, coin)?.pendingConfig;
   if (!config) {
     return undefined;
   }
@@ -443,9 +460,8 @@ function mockSelectPendingTradeConfiguration(state, coin) {
  * @returns {{ leverage?: number } | undefined}
  */
 function mockSelectTradeConfiguration(state, coin) {
-  const network = state?.isTestnet ? 'testnet' : 'mainnet';
-  const leverage = state?.tradeConfigurations?.[network]?.[coin]?.leverage;
-  return leverage === undefined ? undefined : { leverage };
+  const leverage = mockGetMarketConfig(state, coin)?.leverage;
+  return leverage ? { leverage } : undefined;
 }
 
 /**
@@ -465,8 +481,7 @@ function mockSelectOrderBookPreferences(state) {
  * @returns {number | undefined}
  */
 function mockSelectOrderBookGrouping(state, coin) {
-  const network = state?.isTestnet ? 'testnet' : 'mainnet';
-  return state?.tradeConfigurations?.[network]?.[coin]?.orderBookGrouping;
+  return mockGetMarketConfig(state, coin)?.orderBookGrouping;
 }
 
 /**
