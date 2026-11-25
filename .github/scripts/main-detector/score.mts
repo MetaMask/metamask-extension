@@ -24,8 +24,8 @@ export const BREAKDOWN_METRICS = [
   'longTaskTotalDuration',
 ] as const;
 
-// A series' floors in ms, and the fixed base median they are converted against.
-export type SeriesFloor = { floorMs: number; loudMs: number; medianMs: number };
+// A series' floors in ms.
+export type SeriesFloor = { floorMs: number; loudMs: number };
 
 export type DetectorConfig = {
   // Smallest shift, in ms, that can raise a ping and the shift from which it
@@ -39,15 +39,17 @@ export type DetectorConfig = {
 
 export const DEFAULT_CONFIG: DetectorConfig = {
   // 1.5% (Chrome) and 2% (Firefox) of the base medians of the 100 `mode=aa`
-  // runs of 2026-11-20; loud is 5%.
+  // runs of 2026-11-20 (902, 1073, 1744 and 2075 ms); loud is 5%. They are
+  // compared with the measured shift in ms, so a slow or fast runner does not
+  // rescale them.
   floors: {
     chrome: {
-      load: { floorMs: 13.53, loudMs: 45.1, medianMs: 902 },
-      uiStartup: { floorMs: 16.095, loudMs: 53.65, medianMs: 1073 },
+      load: { floorMs: 13.53, loudMs: 45.1 },
+      uiStartup: { floorMs: 16.095, loudMs: 53.65 },
     },
     firefox: {
-      load: { floorMs: 34.88, loudMs: 87.2, medianMs: 1744 },
-      uiStartup: { floorMs: 41.5, loudMs: 103.75, medianMs: 2075 },
+      load: { floorMs: 34.88, loudMs: 87.2 },
+      uiStartup: { floorMs: 41.5, loudMs: 103.75 },
     },
   },
   minJobs: 4,
@@ -121,16 +123,16 @@ export type Direction = 'slower' | 'faster';
 export type Verdict = { level: Level; direction?: Direction };
 
 /**
- * A shift counts when it reaches the floor, in ms of the series' fixed base
- * median, and its one-sided 95% bound stays on the same side of zero.
+ * A shift counts when its mean over the jobs, in ms, reaches the floor and its
+ * one-sided 95% bound stays on the same side of zero.
  *
  * @param summary - Shift of one metric over a set of jobs.
- * @param floor - The series' floors in ms and the median they are converted against.
+ * @param floor - The series' floors in ms.
  */
 export function classify(summary: ShiftSummary, floor: SeriesFloor): Verdict {
-  const shiftMs = (floor.medianMs * summary.shiftPct) / 100;
-  const slower = shiftMs >= floor.floorMs && summary.lowerPct > 0;
-  const faster = shiftMs <= -floor.floorMs && summary.upperPct < 0;
+  const shiftMs = summary.shiftMs;
+  const slower = shiftMs >= floor.floorMs && summary.lowerMs > 0;
+  const faster = shiftMs <= -floor.floorMs && summary.upperMs < 0;
   if (!slower && !faster) {
     return { level: 'none' };
   }

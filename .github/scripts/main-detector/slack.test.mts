@@ -103,7 +103,7 @@ describe('buildSlackMessage', () => {
     );
 
     expect(text).toContain(
-      'Chrome, UI Startup* (`uiStartup`, time from opening the UI until it is ready): 27 ms slower (2.5%)',
+      'Chrome, UI Startup* (`uiStartup`, time from opening the UI until it is ready): 25 ms slower (2.5%)',
     );
     expect(text).toContain('per job: +2.0, +3.0, +3.0 %');
     expect(text).toContain('Load Scripts');

@@ -69,8 +69,7 @@ function linkPullRequest(subject: string, repository: string): string {
 
 function formatFinding(finding: Finding, scores: BatchScores[]): string {
   const size = Math.abs(finding.pooled.shiftPct).toFixed(1);
-  const { medianMs } = DEFAULT_CONFIG.floors[finding.browser][finding.metric];
-  const ms = Math.abs((medianMs * finding.pooled.shiftPct) / 100).toFixed(0);
+  const ms = Math.abs(finding.pooled.shiftMs).toFixed(0);
   const jobs = scores
     .flatMap((batch) => batch[finding.browser].shifts[finding.metric] ?? [])
     .map(({ logRatio }) => pct(toPercent(logRatio)).replace('%', ''))
