@@ -128,6 +128,7 @@ import {
 import { trackPerpsErrorScreenViewed } from '../../components/app/perps/utils/track-perps-error-screen';
 import { PerpsGeoBlockModal } from '../../components/app/perps/perps-geo-block-modal';
 import { PerpsSlippageConfigModal } from '../../components/app/perps/slippage-config';
+import { PerpsRebateBanner } from '../../components/app/perps/perps-rebate-banner';
 import { bpsToPercent } from '../../components/app/perps/constants/slippageConfig';
 import { useSelectedAccountComplianceGate } from '../../components/app/compliance';
 import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
@@ -2839,6 +2840,11 @@ const PerpsOrderEntryPage = () => {
           isChartOpen ? 'fixed left-0 w-full' : 'sticky shrink-0',
         )}
       >
+        <PerpsRebateBanner
+          coin={decodedSymbol}
+          direction={orderFormState?.direction}
+          notionalUsd={orderFormState?.amount}
+        />
         {hasNoAvailableBalance && (
           <Text
             variant={TextVariant.BodySm}

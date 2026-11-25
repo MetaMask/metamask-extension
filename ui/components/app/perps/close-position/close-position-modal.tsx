@@ -88,6 +88,7 @@ import {
 } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import { PerpsServiceInterruptionBanner } from '../perps-service-interruption-banner';
+import { PerpsRebateBanner } from '../perps-rebate-banner';
 import { useSelectedAccountComplianceGate } from '../../compliance';
 import type { PerpsBackgroundResult, Position } from '../types';
 import { useVipTier } from '../../../../hooks/rewards/useVipTier';
@@ -1115,6 +1116,12 @@ export const ClosePositionModal = ({
                   </Text>
                 </Box>
               </Box>
+
+              <PerpsRebateBanner
+                coin={position.symbol}
+                direction={closeDirection}
+                notionalUsd={String(closeNotionalUsd)}
+              />
 
               {/* Error */}
               {visibleError && (

@@ -9465,6 +9465,15 @@
   "readdToken": {
     "message": "Vous pourrez ajouter à nouveau ce jeton en vous rendant dans « Gérer les jetons » dans le menu des jetons"
   },
+  "rebateBanner": {
+    "message": "Vous récupérez $1 % sur les frais"
+  },
+  "rebateTooltipContent": {
+    "message": "Récupérez $1 % des frais MetaMask liés à ce trade sous forme de récompense, versée en mUSD sur votre Money Account. Les frais de réseau ne sont pas inclus. Consultez l’onglet « Récompenses » pour plus de détails."
+  },
+  "rebateTooltipTitle": {
+    "message": "Récompenses de trading"
+  },
   "receive": {
     "message": "Recevoir"
   },
@@ -12138,15 +12147,6 @@
   },
   "swapsMaxSlippage": {
     "message": "Tolérance au slippage"
-  },
-  "swapsRebateBanner": {
-    "message": "Vous récupérez $1 % sur les frais"
-  },
-  "swapsRebateTooltipContent": {
-    "message": "Récupérez $1 % des frais MetaMask liés à ce trade sous forme de récompense, versée en mUSD sur votre Money Account. Les frais de réseau ne sont pas inclus. Consultez l’onglet « Récompenses » pour plus de détails."
-  },
-  "swapsRebateTooltipTitle": {
-    "message": "Récompenses de trading"
   },
   "switch": {
     "message": "Changer"

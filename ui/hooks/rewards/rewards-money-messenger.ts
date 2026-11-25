@@ -33,3 +33,17 @@ export const SWAPS_REBATE_ALLOWED_CAPABILITIES = defineAllowedRouteCapabilities(
 export type SwapsRebateMessenger = RouteMessengerFromCapabilities<
   typeof SWAPS_REBATE_ALLOWED_CAPABILITIES
 >;
+
+/**
+ * Actions the Perps rebate banner may call on RewardsMoneyController.
+ */
+export const PERPS_REBATE_ALLOWED_CAPABILITIES = defineAllowedRouteCapabilities(
+  {
+    actions: ['RewardsMoneyController:getPerpsRebateQuote'],
+    events: [],
+  },
+);
+
+export type PerpsRebateMessenger = RouteMessengerFromCapabilities<
+  typeof PERPS_REBATE_ALLOWED_CAPABILITIES
+>;
