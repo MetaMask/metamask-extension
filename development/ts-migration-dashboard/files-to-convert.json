@@ -412,8 +412,6 @@
   "ui/components/app/terms-of-use-popup/terms-of-use-popup.stories.js",
   "ui/components/app/terms-of-use-popup/terms-of-use-popup.test.js",
   "ui/components/app/toast-master/toast-master.js",
-  "ui/components/app/transaction-icon/index.js",
-  "ui/components/app/transaction-icon/transaction-icon.js",
   "ui/components/app/transaction-list-item-details/index.js",
   "ui/components/app/transaction-list-item-details/transaction-list-item-details.component.js",
   "ui/components/app/transaction-list-item-details/transaction-list-item-details.component.test.js",
