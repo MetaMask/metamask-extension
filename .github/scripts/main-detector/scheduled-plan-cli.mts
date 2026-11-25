@@ -14,6 +14,7 @@ import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import { REPOSITORY } from './build-source.mts';
+import type { ResolveResult } from './resolve.mts';
 import {
   buildScheduledPlan,
   parseDriftReference,
@@ -61,7 +62,7 @@ function artifactNamesOf(runId: number): string[] {
     .filter(Boolean);
 }
 
-type Resolved = { status: string } & Partial<MeasureResolution>;
+type Resolved = ResolveResult & { subjects?: Record<string, string> };
 
 function resolve(head: string, depth: string, base?: string): Resolved {
   runScript('resolve-cli.mts', [
@@ -168,16 +169,20 @@ async function main(): Promise<void> {
     finish(output, {
       ...common,
       proceed: 'false',
-      message: `Nothing new: the newest commit with a build, ${resolved.head?.sha.slice(0, 10)}, is the one the last run measured.`,
+      message: `Nothing new: the newest commit with a build, ${resolved.head.sha.slice(0, 10)}, is the one the last run measured.`,
     });
     return;
   }
-  if (resolved.status !== 'measure' || !resolved.head) {
+  if (resolved.status !== 'measure') {
     throw new Error(
       `Could not resolve a base for the head (${resolved.status})`,
     );
   }
 
+  const measured: MeasureResolution = {
+    ...resolved,
+    subjects: resolved.subjects ?? {},
+  };
   const headSha = resolved.head.sha;
   if (!canary) {
     runScript('compare-builds-cli.mts', [
@@ -190,13 +195,13 @@ async function main(): Promise<void> {
         // A daily run that skips still covers its head, so the next range starts there.
         // eslint-disable-next-line @typescript-eslint/naming-convention
         skip_record: kind === 'daily' ? headSha : '',
-        message: `Head ${headSha.slice(0, 10)} builds the same as base ${resolved.base?.sha.slice(0, 10)}: no change, no jobs run.`,
+        message: `Head ${headSha.slice(0, 10)} builds the same as base ${resolved.base.sha.slice(0, 10)}: no change, no jobs run.`,
       });
       return;
     }
   }
 
-  const plan = buildScheduledPlan(resolved as MeasureResolution, {
+  const plan = buildScheduledPlan(measured, {
     rate,
     kind,
     canary,
@@ -204,7 +209,7 @@ async function main(): Promise<void> {
   const powerUser =
     kind === 'daily'
       ? JSON.stringify(
-          buildScheduledPlan(resolved as MeasureResolution, {
+          buildScheduledPlan(measured, {
             rate,
             kind: 'power-user',
             canary,
