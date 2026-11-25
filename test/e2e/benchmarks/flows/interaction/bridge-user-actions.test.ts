@@ -149,6 +149,8 @@ import {
   waitForPageIdleBeforeStep,
 } from './bridge-user-actions';
 
+const TOKEN_SEARCH_URL = 'https://bridge.api.cx.metamask.io/getTokens/search';
+
 /**
  * Where an event was recorded; fails the test when it was not.
  * @param event - The event to find.
@@ -287,9 +289,8 @@ describe('bridge user actions', () => {
 
     const rules = await mockRules();
 
-    expect(rules.map((rule) => `${rule.method} ${rule.pattern}`)).toStrictEqual(
-      ['POST /getTokens\\/search/u'],
-    );
+    expect(rules.map((rule) => rule.method)).toStrictEqual(['POST']);
+    expect(rules[0].pattern.test(TOKEN_SEARCH_URL)).toBe(true);
   });
 
   it('answers the popular-token request with the JSON list the swap flow serves when the switch is unset', async () => {
@@ -297,9 +298,8 @@ describe('bridge user actions', () => {
 
     const rules = await mockRules();
 
-    expect(rules.map((rule) => `${rule.method} ${rule.pattern}`)).toStrictEqual(
-      ['POST /getTokens\\/search/u', 'POST /getTokens\\/popular/u'],
-    );
+    expect(rules.map((rule) => rule.method)).toStrictEqual(['POST', 'POST']);
+    expect(rules[0].pattern.test(TOKEN_SEARCH_URL)).toBe(true);
     const popular = rules[1];
     expect(
       popular.pattern.test(

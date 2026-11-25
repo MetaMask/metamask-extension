@@ -41,6 +41,7 @@ import type {
   LongTaskStepResult,
   TimerResult,
 } from '../../utils/types';
+import { bridgeGetTokensSearch } from '../../../mock-response-data/api-responses';
 
 export const testTitle = 'benchmark-user-actions-bridge-user-actions';
 export const persona = BENCHMARK_PERSONA.STANDARD;
@@ -50,7 +51,7 @@ const FXS_ADDRESS = MOCK_TOKENS_ETHEREUM.find(
 )?.address;
 
 async function mockTokensEthereum(mockServer: Mockttp) {
-  return await mockServer.forPost(/getTokens\/search/u).thenCallback(
+  return await bridgeGetTokensSearch.rule(mockServer).thenCallback(
     withKnownAnswerDelay(KNOWN_ANSWER_TOKEN_SEARCH_DELAY, () => ({
       statusCode: 200,
       json: {

@@ -108,11 +108,13 @@ describe('Token Details', function () {
           ])),
           await mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
+              id: 'ethereum',
               price: ethConversionInUsd,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
             },
             [`eip155:1/erc20:${tokenAddress.toLowerCase()}`]: {
+              id: 'ethereum',
               price: marketData.price * ethConversionInUsd,
               marketCap: marketData.marketCap * ethConversionInUsd,
             },
@@ -156,6 +158,7 @@ describe('Token Details', function () {
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
+              id: 'ethereum',
               price: 1700,
               marketCap: 382623505141,
               pricePercentChange1d: 0,

@@ -50,6 +50,39 @@ describe('dapp-page-load-stats', () => {
       expect(plt?.samples).toBe(2);
       expect(plt?.mean).toBeGreaterThan(0);
     });
+
+    it('records each value under the run it came from', () => {
+      const metrics = {
+        pageLoadTime: 100,
+        domContentLoaded: 40,
+        firstPaint: 10,
+        firstContentfulPaint: 20,
+      };
+      // Run 1 failed and left no sample, so positions and runs differ.
+      const samples: DappPageLoadSample[] = [
+        {
+          page: 'p',
+          run: 0,
+          timestamp: 1,
+          metrics: { ...metrics, largestContentfulPaint: 50 },
+        },
+        {
+          page: 'p',
+          run: 2,
+          timestamp: 3,
+          metrics: { ...metrics, largestContentfulPaint: 60 },
+        },
+      ];
+
+      const [{ timers }] = aggregateDappPageLoadStatistics(samples);
+
+      expect(
+        timers.find((t) => t.id === 'largestContentfulPaint')?.values,
+      ).toStrictEqual([
+        { iteration: 0, value: 50 },
+        { iteration: 2, value: 60 },
+      ]);
+    });
   });
 
   describe('dappPageLoadStatsToBenchmarkResults', () => {

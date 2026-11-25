@@ -8,6 +8,13 @@ import {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,
 } from '../btc/mocks/tokens-api';
+import {
+  bridgeGetTokensPopular,
+  bridgeGetTokensSearch,
+  bridgeGetTxStatus,
+  priceV3Spot,
+  tokensV3Assets,
+} from '../../mock-response-data/api-responses';
 /**
  * Holds the actual transaction signature captured from sendTransaction.
  * Shared between mock functions so that getSignaturesForAddress and
@@ -166,16 +173,12 @@ const SOLANA_STATIC_TOKEN_IMAGE_REGEX_MAINNET =
   /^https:\/\/static\.cx\.metamask\.io\/api\/v2\/tokenIcons\/assets\/solana\/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/u;
 const SOLANA_BITCOIN_MIN_API =
   /^https:\/\/min-api\.cryptocompare\.com\/data\/pricemulti/u;
-export const SOLANA_TOKEN_API =
-  /^https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u;
 export const METAMASK_PHISHING_DETECTION_API =
   /^https:\/\/phishing-detection\.api\.cx\.metamask\.io\/$/u;
 export const METAMASK_CLIENT_SIDE_DETECTION_REGEX =
   /^https:\/\/client-side-detection\.api\.cx\.metamask\.io\/$/u;
 export const ACCOUNTS_API =
   /^https:\/\/accounts\.api\.cx\.metamask\.io\/v1\/accounts\/0x5cfe73b6021e818b776b421b1c4db2474086a7e1\/$/u;
-export const BRIDGE_TX_STATUS =
-  /^https:\/\/bridge\.(api|dev-api)\.cx\.metamask\.io\/getTxStatus/u;
 export const BRIDGED_TOKEN_LIST_API =
   /^https:\/\/bridge\.(api|dev-api)\.cx\.metamask\.io\/getTokens/u;
 
@@ -330,8 +333,8 @@ export async function mockPhishingDetectionApi(mockServer: Mockttp) {
 
 export async function mockPriceApiSpotPriceSolanaUsdc(mockServer: Mockttp) {
   const response = await readResponseJsonFile('priceApiSpotSolanaUsdc.json');
-  return await mockServer
-    .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
+  return await priceV3Spot
+    .rule(mockServer)
     .withQuery({
       assetIds:
         'solana%35eykt4UsFv8P8NJdTREpY1vzqKqZKvdp%2token%3EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
@@ -346,8 +349,8 @@ export async function mockPriceApiSpotPriceSolanaUsdc(mockServer: Mockttp) {
     });
 }
 export async function mockPriceApiNative(mockServer: Mockttp) {
-  return await mockServer
-    .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
+  return await priceV3Spot
+    .rule(mockServer)
     .withQuery({
       assetIds: 'eip155:1/slip44:60',
     })
@@ -514,7 +517,7 @@ export async function mockTokenApiMainnetTest(mockServer: Mockttp) {
       },
     ],
   };
-  return await mockServer.forGet(SOLANA_TOKEN_API).thenCallback(() => {
+  return await tokensV3Assets.rule(mockServer).thenCallback(() => {
     return response;
   });
 }
@@ -539,7 +542,7 @@ export async function mockTokenApiMainnet(mockServer: Mockttp) {
       },
     ],
   };
-  return await mockServer.forGet(SOLANA_TOKEN_API).thenCallback(() => {
+  return await tokensV3Assets.rule(mockServer).thenCallback(() => {
     return response;
   });
 }
@@ -1886,7 +1889,7 @@ const SOLANA_BRIDGE_TOKENS = [
 ];
 
 export async function mockBridgeGetTokens(mockServer: Mockttp) {
-  return await mockServer.forPost(/getTokens\/popular/u).thenCallback(() => {
+  return await bridgeGetTokensPopular.rule(mockServer).thenCallback(() => {
     return {
       statusCode: 200,
       json: SOLANA_BRIDGE_TOKENS,
@@ -1895,7 +1898,7 @@ export async function mockBridgeGetTokens(mockServer: Mockttp) {
 }
 
 export async function mockBridgeSearchTokens(mockServer: Mockttp) {
-  return await mockServer.forPost(/getTokens\/search/u).thenCallback(() => {
+  return await bridgeGetTokensSearch.rule(mockServer).thenCallback(() => {
     return {
       statusCode: 200,
       json: {
@@ -1950,7 +1953,7 @@ export async function mockBridgeTxStatus(
   amounts?: UsdcToSolSwapAmounts,
 ) {
   const isSolToUsdc = direction === 'SOL_TO_USDC';
-  return await mockServer.forGet(BRIDGE_TX_STATUS).thenCallback(() => {
+  return await bridgeGetTxStatus.rule(mockServer).thenCallback(() => {
     const fallbackHash = isSolToUsdc
       ? SOL_TO_USDC_SWAP_SIGNATURE
       : USDC_TO_SOL_SWAP_SIGNATURE;
@@ -2105,8 +2108,8 @@ const MOCK_TOKEN_API_TRON_NATIVE_ASSET_ID = 'tron:728126428/slip44:195';
  * @param mockServer - The mockttp server instance.
  */
 export async function mockTokenApiAssets(mockServer: Mockttp) {
-  return await mockServer
-    .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+  return await tokensV3Assets
+    .rule(mockServer)
     .always()
     .thenCallback((request) => {
       const url = new URL(request.url);

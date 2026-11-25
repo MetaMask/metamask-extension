@@ -14,6 +14,12 @@ import {
   mockTokensV3Assets,
 } from '../../tests/btc/mocks/tokens-api';
 import {
+  bridgeGetTokensPopular,
+  bridgeGetTokensSearch,
+  gasPrices,
+  priceV1ExchangeRates,
+} from '../../mock-response-data/api-responses';
+import {
   KNOWN_ANSWER_HISTORICAL_PRICES_DELAY,
   KNOWN_ANSWER_QUOTE_DELAY,
   KNOWN_ANSWER_SOLANA_BLOCKHASH_DELAY,
@@ -1040,10 +1046,8 @@ export async function mockBenchmarkEndpoints(
   );
 
   endpoints.push(
-    await server
-      .forGet(
-        /https:\/\/price\.api\.cx\.metamask\.io\/v[1-9]\/exchange-rates(?:$|\?)/u,
-      )
+    await priceV1ExchangeRates
+      .rule(server)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
       .thenCallback(delayedResponse(100, CRYPTO_EXCHANGE_RATES)),
@@ -1300,8 +1304,8 @@ export async function mockBenchmarkEndpoints(
   );
 
   endpoints.push(
-    await server
-      .forPost(/getTokens\/popular/u)
+    await bridgeGetTokensPopular
+      .rule(server)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
       .thenCallback(
@@ -1310,8 +1314,8 @@ export async function mockBenchmarkEndpoints(
   );
 
   endpoints.push(
-    await server
-      .forPost(/getTokens\/search/u)
+    await bridgeGetTokensSearch
+      .rule(server)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
       .thenCallback(
@@ -1410,8 +1414,8 @@ export async function mockBenchmarkEndpoints(
   );
 
   endpoints.push(
-    await server
-      .forGet(/gas\.api\.cx\.metamask\.io\/networks\/\d+\/gasPrices/u)
+    await gasPrices
+      .rule(server)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
       .thenCallback(delayedResponse(600, GAS_PRICES)),
