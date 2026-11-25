@@ -392,7 +392,7 @@
     "@metamask/authenticated-user-storage": "^4.2.0",
     "@metamask/base-controller": "^10.1.0",
     "@metamask/base-data-service": "^2.1.0",
-    "@metamask/bitcoin-wallet-snap": "^3.3.0",
+    "@metamask/bitcoin-wallet-snap": "^3.4.0",
     "@metamask/bitcoin-wallet-standard": "^1.1.0",
     "@metamask/bridge-controller": "^83.2.0",
     "@metamask/bridge-status-controller": "^78.0.3",
