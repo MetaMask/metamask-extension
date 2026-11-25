@@ -2569,7 +2569,7 @@
         "deep-freeze-strict": true,
         "eslint>fast-deep-equal": true,
         "@metamask/permission-controller>immer": true,
-        "nanoid": true
+        "@metamask/permission-controller>nanoid": true
       }
     },
     "@metamask/permission-log-controller": {
@@ -6086,6 +6086,11 @@
       }
     },
     "nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/permission-controller>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
       }
