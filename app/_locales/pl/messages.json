@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "Limit gazu"
   },
-  "gasUsed": {
-    "message": "Użyty gaz"
-  },
   "general": {
     "message": "Ogólne"
   },
@@ -545,9 +542,6 @@
   },
   "unapproved": {
     "message": "Niezatwierdzone"
-  },
-  "units": {
-    "message": "jednostki"
   },
   "unknown": {
     "message": "Nieznane"

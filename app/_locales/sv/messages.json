@@ -214,9 +214,6 @@
   "gasLimit": {
     "message": "Gasgräns"
   },
-  "gasUsed": {
-    "message": "Gas använd"
-  },
   "general": {
     "message": "Allmänt"
   },
@@ -536,9 +533,6 @@
   },
   "unapproved": {
     "message": "Inte godkänd"
-  },
-  "units": {
-    "message": "enheter"
   },
   "unknown": {
     "message": "okänt"

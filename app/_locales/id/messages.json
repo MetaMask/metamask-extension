@@ -1422,9 +1422,6 @@
   "advancedGasPriceModalTitle": {
     "message": "Biaya jaringan lanjutan"
   },
-  "advancedGasPriceTitle": {
-    "message": "Harga gas"
-  },
   "advancedPermissionSmallCase": {
     "message": "izin lanjutan"
   },
@@ -1685,12 +1682,6 @@
   },
   "amount": {
     "message": "Jumlah"
-  },
-  "amountReceived": {
-    "message": "Jumlah diterima"
-  },
-  "amountSent": {
-    "message": "Jumlah dikirim"
   },
   "andForListItems": {
     "message": "$1, dan $2",
@@ -4328,9 +4319,6 @@
   "gasTimingSecondsShort": {
     "message": "$1 dtk",
     "description": "$1 represents a number of seconds"
-  },
-  "gasUsed": {
-    "message": "Gas yang digunakan"
   },
   "gatorNoJustificationProvided": {
     "message": "Tidak ada penjelasan yang diberikan untuk izin tersebut"
@@ -12269,27 +12257,6 @@
   "transactionFlowNetwork": {
     "message": "Jaringan"
   },
-  "transactionHistoryBaseFee": {
-    "message": "Biaya dasar (GWEI)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "Total biaya jaringan L1"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "Batas gas L2"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "Harga gas L2"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "Biaya maks per gas"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "Biaya prioritas (GWEI)"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "Total biaya jaringan"
-  },
   "transactionIdCopied": {
     "message": "ID Transaksi disalin"
   },
@@ -12472,9 +12439,6 @@
   "unifiedSwapFromTo": {
     "message": "Swap $1 $2 menjadi $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
-  "units": {
-    "message": "unit"
   },
   "unknown": {
     "message": "Tidak dikenal"
