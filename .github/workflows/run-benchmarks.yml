@@ -34,7 +34,7 @@ jobs:
   benchmarks:
     if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
     name: ${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pairedOrder != '' && format('{0}-r{1}-{2}', matrix.pairedFlow.name, matrix.pairedRepeat, matrix.pairedOrder) || matrix.pageType }}
-    # We decide whether to block the PR in the `quality-gate` step
+    # `quality-gate` decides, on main commits only
     continue-on-error: true
     strategy:
       fail-fast: false
@@ -170,7 +170,7 @@ jobs:
   benchmarks-page-load:
     if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
     name: chrome-webpack-pageLoadBenchmark
-    # We decide whether to block the PR in the `quality-gate` step
+    # `quality-gate` decides, on main commits only
     continue-on-error: true
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -269,10 +269,12 @@ jobs:
     needs:
       - benchmarks
       - benchmarks-page-load
+    # Decides on main commits, each paired against its first parent; pull
+    # requests run the benchmarks unpaired and take no verdict.
     if: >-
       ${{
         !cancelled() &&
-        github.event_name != 'merge_group'
+        github.event_name == 'push' && github.ref == 'refs/heads/main'
       }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -309,57 +311,13 @@ jobs:
           path: benchmark-results/
           merge-multiple: true
 
-      # skip-benchmark-gate label: convenience escape hatch for Phase 2–3.
-      # Honored on pull_request runs and on release/* push runs (RC validation)
-      # by resolving the open PR(s) containing the commit; never on main pushes.
-      # Labels are read at run time, so re-running this job picks up a label
-      # added after the failure.
-      # Remove when graduating to Phase 4 (required check) — at that point,
-      # use admin bypass or update thresholds instead.
-      # Runs when the download failed too, so the label also covers the last step.
-      - name: Check for skip label
-        id: skip-check
-        continue-on-error: true
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          EVENT_NAME: ${{ github.event_name }}
-          EVENT_PR_NUMBER: ${{ github.event.pull_request.number }}
-          EVENT_REF: ${{ github.ref }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.sha }}
-        run: |
-          if [ "$EVENT_NAME" = 'pull_request' ]; then
-            PR_NUMBERS="$EVENT_PR_NUMBER"
-          elif [[ "$EVENT_REF" == refs/heads/release/* ]]; then
-            PR_NUMBERS=$(gh api "repos/$REPO/commits/$COMMIT_SHA/pulls" --jq '.[] | select(.state == "open") | .number')
-          else
-            PR_NUMBERS=''
-          fi
-          for pr in $PR_NUMBERS; do
-            LABELS=$(gh api "repos/$REPO/issues/$pr/labels" --jq '.[].name')
-            if echo "$LABELS" | grep -qx 'skip-benchmark-gate'; then
-              echo "skip-benchmark-gate label found on PR #$pr — skipping quality gate"
-              echo "skip=true" >> "$GITHUB_OUTPUT"
-            fi
-          done
-        shell: bash
-
       - name: Run quality gate
-        if: >-
-          ${{
-            steps.download-benchmarks.outcome == 'success' &&
-            steps.skip-check.outputs.skip != 'true'
-          }}
-        run: ./node_modules/.bin/tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current ./benchmark-results/${{ github.event_name == 'pull_request' && ' --paired' || '' }}
+        if: ${{ steps.download-benchmarks.outcome == 'success' }}
+        run: ./node_modules/.bin/tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current ./benchmark-results/ --paired
         shell: bash
 
       - name: Fail when the benchmark artifacts did not download
-        if: >-
-          ${{
-            github.event_name == 'pull_request' &&
-            steps.download-benchmarks.outcome != 'success' &&
-            steps.skip-check.outputs.skip != 'true'
-          }}
+        if: ${{ steps.download-benchmarks.outcome != 'success' }}
         run: |
           echo '::error::The benchmark artifacts did not download, so the quality gate did not run'
           exit 1
