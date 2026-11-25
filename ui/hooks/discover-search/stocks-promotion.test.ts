@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import type { TrendingAsset } from '@metamask/assets-controllers';
 import type { DiscoverSearchSection, DiscoverSearchSectionId } from './types';
 import {
