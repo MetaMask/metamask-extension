@@ -139,6 +139,7 @@ export const unrestrictedMethods = Object.freeze([
   'eth_newPendingTransactionFilter',
   'eth_protocolVersion',
   'eth_requestAccounts',
+  'eth_sendRawTransaction',
   'eth_submitHashrate',
   'eth_submitWork',
   'eth_subscribe',
