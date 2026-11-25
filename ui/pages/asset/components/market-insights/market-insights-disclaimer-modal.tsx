@@ -13,10 +13,10 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-export const MARKET_INSIGHTS_DISCLAIMER_MODAL_TEST_ID =
+const MARKET_INSIGHTS_DISCLAIMER_MODAL_TEST_ID =
   'market-insights-disclaimer-modal';
 
-export type MarketInsightsDisclaimerModalProps = {
+type MarketInsightsDisclaimerModalProps = {
   /** Whether the modal is open. */
   isOpen: boolean;
   /** Called when the modal is dismissed. */
