@@ -28,6 +28,8 @@ export const BREAKDOWN_METRICS = [
 export type SeriesFloor = { floorMs: number; loudMs: number };
 
 export type DetectorConfig = {
+  // Browsers the batch holds scores for, in the order they are reported.
+  browsers: readonly Browser[];
   // Smallest shift, in ms, that can raise a ping and the shift from which it
   // is loud, per browser and verdict metric.
   floors: Record<Browser, Record<string, SeriesFloor>>;
@@ -38,6 +40,7 @@ export type DetectorConfig = {
 };
 
 export const DEFAULT_CONFIG: DetectorConfig = {
+  browsers: BROWSERS,
   // 1.5% (Chrome) and 2% (Firefox) of the base medians of the 100 `mode=aa`
   // runs of 2026-11-20 (902, 1073, 1744 and 2075 ms); loud is 5%. They are
   // compared with the measured shift in ms, so a slow or fast runner does not
@@ -55,6 +58,44 @@ export const DEFAULT_CONFIG: DetectorConfig = {
   minJobs: 4,
   skipSessions: 2,
 };
+
+// origin: ai-synthesis
+export type StartupPreset = 'startupStandardHome' | 'startupPowerUserHome';
+
+// Chrome floors of the power-user preset, set like the standard preset's: 1.5%
+// of the base median and loud at 5%. The medians (781 and 1117 ms) are those of
+// the 26 jobs of the six `mode=aa` power-user runs of 2026-11-25, not of 100
+// runs, so the floors are provisional until the weekly calibration has more.
+const POWER_USER_CHROME_FLOORS: Record<string, SeriesFloor> = {
+  load: { floorMs: 11.7, loudMs: 39 },
+  uiStartup: { floorMs: 16.75, loudMs: 55.85 },
+};
+
+/**
+ * The config of the runs that slow Chrome's CPU. The floors are the same
+ * numbers of ms as an unthrottled run's, and a shift is measured in the ms the
+ * throttled run took, so a shift that is below the floor on a normal CPU can
+ * reach it. Firefox has no CPU throttle.
+ *
+ * No throttled A/A run has set these floors; `mode=throttled-aa` produces them.
+ *
+ * @param preset - The startup preset the run measures.
+ */
+export function throttledConfig(
+  preset: StartupPreset = 'startupStandardHome',
+): DetectorConfig {
+  return {
+    ...DEFAULT_CONFIG,
+    browsers: ['chrome'],
+    floors: {
+      chrome:
+        preset === 'startupPowerUserHome'
+          ? POWER_USER_CHROME_FLOORS
+          : DEFAULT_CONFIG.floors.chrome,
+      firefox: DEFAULT_CONFIG.floors.firefox,
+    },
+  };
+}
 
 export type AbSession = {
   index: number;
@@ -195,7 +236,15 @@ export function scoreBatch(
   };
 }
 
+// Holds a score for each browser of the config it was scored with and none for the others.
 export type BatchScores = Record<Browser, BatchScore>;
+
+/**
+ * @param scores - Scores of one batch.
+ * @returns The browsers the batch holds scores for.
+ */
+export const scoredBrowsers = (scores: BatchScores): Browser[] =>
+  BROWSERS.filter((browser) => scores[browser] !== undefined);
 
 // Verdict metrics that crossed a threshold in one batch.
 function suspiciousMetrics(score: BatchScore) {
@@ -209,7 +258,7 @@ function suspiciousMetrics(score: BatchScore) {
  * @returns Whether any browser and metric is suspicious enough to need a second batch.
  */
 export function needsConfirmation(first: BatchScores): boolean {
-  return BROWSERS.some(
+  return scoredBrowsers(first).some(
     (browser) =>
       first[browser].measurable && suspiciousMetrics(first[browser]).length > 0,
   );
@@ -248,7 +297,7 @@ export function decide(
 ): Decision {
   const findings: Finding[] = [];
   const unmeasured: Browser[] = [];
-  for (const browser of BROWSERS) {
+  for (const browser of config.browsers) {
     if (!first[browser].measurable) {
       unmeasured.push(browser);
       continue;

@@ -1,3 +1,4 @@
+import type { PlanInfo } from './report.mts';
 import type { BatchScores, Decision, Finding } from './score.mts';
 import { buildSlackMessage } from './slack.mts';
 
@@ -313,5 +314,86 @@ describe('buildSlackMessage', () => {
       expect(render(payload)).toContain('Critical user flow slower');
       expect(payload.text).toContain('Chrome UI Startup');
     });
+  });
+
+  // origin: ai-synthesis
+  it('names the range of a throttled run and scores it in throttled ms', () => {
+    const { chrome: score } = batch({ load: [0.02, 0.03] });
+    const payload = buildSlackMessage({
+      plan: {
+        headSha: 'a'.repeat(40),
+        headSubject: 'feat: x (#42)',
+        baseSha: 'b'.repeat(40),
+        canary: false,
+        rangeSize: 12,
+        cpuThrottleRate: 2,
+      },
+      first: { chrome: score } as BatchScores,
+      second: { chrome: score } as BatchScores,
+      decision: {
+        ping: 'quiet',
+        findings: [finding({ metric: 'load' })],
+        unmeasured: [],
+      },
+      repository: 'MetaMask/metamask-extension',
+      runUrl: 'https://github.com/MetaMask/metamask-extension/actions/runs/1',
+      author: 'someone',
+    });
+    const text = render(payload);
+
+    expect(payload.text).toContain('(throttled, bbbbbbb..aaaaaaa)');
+    expect(text).toContain(
+      'Performance detector (throttled, bbbbbbb..aaaaaaa)',
+    );
+    expect(text).toContain(
+      'compare/' + 'b'.repeat(40) + '...' + 'a'.repeat(40),
+    );
+    expect(text).toContain('12 commits');
+    expect(text).toContain('CPU slowed 2 times');
+    expect(text).toContain('in Chrome, CPU slowed');
+    // The pooled shift's own ms, with no median in between.
+    expect(text).toContain('25 ms slower (2.5%)');
+    expect(text).not.toContain('Firefox');
+    expect(text).not.toContain('by someone');
+    expect(text).not.toContain('commits back');
+  });
+
+  // origin: ai-synthesis
+  it('labels the drift check and the power-user run apart from the daily run', () => {
+    const { chrome: score } = batch({ load: [0.02, 0.03] });
+    const input = (plan: Partial<PlanInfo>) => ({
+      plan: {
+        headSha: 'a'.repeat(40),
+        headSubject: 'feat: x (#42)',
+        baseSha: 'b'.repeat(40),
+        canary: false,
+        rangeSize: 300,
+        cpuThrottleRate: 2,
+        ...plan,
+      },
+      first: { chrome: score } as BatchScores,
+      second: { chrome: score } as BatchScores,
+      decision: {
+        ping: 'quiet' as const,
+        findings: [finding({ metric: 'load' })],
+        unmeasured: [],
+      },
+      repository: 'MetaMask/metamask-extension',
+      runUrl: 'https://github.com/MetaMask/metamask-extension/actions/runs/1',
+      author: 'someone',
+    });
+
+    const drift = render(buildSlackMessage(input({ kind: 'drift' })));
+    expect(drift).toContain('Performance detector (drift, bbbbbbb..aaaaaaa)');
+    expect(drift).toContain('Commits since the reference build');
+
+    const powerUser = buildSlackMessage(
+      input({ kind: 'power-user', preset: 'startupPowerUserHome' }),
+    );
+    expect(powerUser.text).toContain(
+      '(throttled power-user, bbbbbbb..aaaaaaa)',
+    );
+    expect(render(powerUser)).toContain('startupPowerUserHome');
+    expect(render(powerUser)).toContain('Power user (30 accounts');
   });
 });

@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { loadBatch, readJob, readJobFlows } from './load.mts';
+import { throttledConfig } from './score.mts';
 
 const sessions = Array.from({ length: 10 }, (_, index) => ({
   index,
@@ -92,5 +93,17 @@ describe('detector artifacts', () => {
     writeJob('detector-b1-chrome-s1', goodJob);
     expect(loadBatch(root, 2, 2, true)).toBeUndefined();
     expect(loadBatch(root, 1, 2, true)).toBeDefined();
+  });
+
+  // origin: ai-synthesis
+  it('reads the folders of a prefix and scores the browsers of its config', () => {
+    writeJob('throttled-b1-chrome-s1', goodJob);
+    writeJob('detector-b1-firefox-s1', goodJob);
+    const options = { config: throttledConfig(), prefix: 'throttled' };
+    const scores = loadBatch(root, 1, 2, false, options);
+    expect(scores?.chrome).toMatchObject({ jobsTotal: 2, jobsUsable: 1 });
+    expect(scores?.firefox).toBeUndefined();
+    expect(loadBatch(root, 2, 2, true, options)).toBeUndefined();
+    expect(loadBatch(root, 1, 2, true, { prefix: 'other' })).toBeUndefined();
   });
 });

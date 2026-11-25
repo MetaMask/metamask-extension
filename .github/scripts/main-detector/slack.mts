@@ -1,16 +1,16 @@
 import type { AnyBlock } from '@slack/types';
 import {
   BREAKDOWN_METRICS,
-  BROWSERS,
-  DEFAULT_CONFIG,
   VERDICT_METRICS,
+  scoredBrowsers,
   type BatchScores,
   type Browser,
   type Decision,
+  type DetectorConfig,
   type Finding,
 } from './score.mts';
 import { summarizeShifts, toPercent } from './stats.mts';
-import type { PlanInfo } from './report.mts';
+import { planConfig, planLabel, type PlanInfo } from './report.mts';
 import { CUF_FLOW_FILES, formatCufOutcome, type CufResult } from './cufs.mts';
 
 export type SlackPayload = {
@@ -40,9 +40,13 @@ const signedMs = (value: number) =>
 const browserName = (browser: Browser) =>
   browser === 'chrome' ? 'Chrome' : 'Firefox';
 
-// The detector runs a single benchmark preset, so every finding is about it.
-const SCENARIO =
-  'Standard user (default wallet state, not the power user with 30 accounts), loading the home page';
+// A startup run measures one preset, so every finding is about it.
+const SCENARIOS = {
+  startupStandardHome:
+    'Standard user (default wallet state, not the power user with 30 accounts), loading the home page',
+  startupPowerUserHome:
+    'Power user (30 accounts, with transactions), loading the home page',
+};
 
 const METRIC_LABELS: Record<string, string> = {
   uiStartup: 'UI Startup',
@@ -116,17 +120,20 @@ function formatBreakdown(browser: Browser, scores: BatchScores[]): string {
 }
 
 // The rule in ms, per browser and verdict metric, for example "Chrome page load 13.5 ms".
-function floorsText(key: 'floorMs' | 'loudMs'): string {
-  return BROWSERS.flatMap((browser) =>
-    VERDICT_METRICS.map(
-      (metric) =>
-        `${browserName(browser)} ${metricLabel(metric).toLowerCase()} ${(DEFAULT_CONFIG.floors[browser][metric][key] + 1e-9).toFixed(1)} ms`,
-    ),
-  ).join(', ');
+function floorsText(config: DetectorConfig, key: 'floorMs' | 'loudMs'): string {
+  return config.browsers
+    .flatMap((browser) =>
+      VERDICT_METRICS.map(
+        (metric) =>
+          `${browserName(browser)} ${metricLabel(metric).toLowerCase()} ${(config.floors[browser][metric][key] + 1e-9).toFixed(1)} ms`,
+      ),
+    )
+    .join(', ');
 }
 
 function policyText(
   plan: PlanInfo,
+  config: DetectorConfig,
   loud: boolean,
   startupChanged: boolean,
 ): string {
@@ -136,13 +143,17 @@ function policyText(
   if (plan.canary) {
     return 'Head and base are the same build, so this is noise, not a change. Nothing needs fixing in the commit.';
   }
+  const look =
+    plan.cpuThrottleRate === undefined
+      ? 'the commit below is worth a look'
+      : 'the commits in the range below are worth a look';
   if (!startupChanged) {
-    return "At least one critical user flow is slower than its series' threshold (δ_block) at the paired rule's one-sided 95% bound. PRs and releases are not blocked, but the commit below is worth a look.";
+    return `At least one critical user flow is slower than its series' threshold (δ_block) at the paired rule's one-sided 95% bound. PRs and releases are not blocked, but ${look}.`;
   }
   const size = loud
-    ? `At least one metric moved by its large-change size or more (${floorsText('loudMs')})`
-    : `At least one metric moved by more than the noise (${floorsText('floorMs')})`;
-  return `${size}, and a second batch of runs agreed. PRs and releases are not blocked, but the commit below is worth a look.`;
+    ? `At least one metric moved by its large-change size or more (${floorsText(config, 'loudMs')})`
+    : `At least one metric moved by more than the noise (${floorsText(config, 'floorMs')})`;
+  return `${size}, and a second batch of runs agreed. PRs and releases are not blocked, but ${look}.`;
 }
 
 /**
@@ -155,6 +166,9 @@ function policyText(
 export function buildSlackMessage(input: SlackInput): SlackPayload {
   const { plan, first, second, decision, repository, runUrl, author, cufs } =
     input;
+  const config = planConfig(plan);
+  const preset = plan.preset ?? 'startupStandardHome';
+  const label = planLabel(plan);
   const loud = decision.ping === 'loud';
   const startupChanged = decision.findings.length > 0;
   const slowCufs =
@@ -179,25 +193,42 @@ export function buildSlackMessage(input: SlackInput): SlackPayload {
     text: { type: 'mrkdwn', text },
   });
 
-  const blocks: AnyBlock[] = [
-    section(
-      `:warning: *Performance detector: ${headline}* just hit branch \`main\` on \`${repository}\`\n\n${policyText(plan, loud, startupChanged)}`,
-    ),
-    section(
-      `:mag: *Commit*\n• <${commitUrl}|${short}> ${subject} — by ${escapeSlack(author)}`,
-    ),
-  ];
+  const compareUrl = `https://github.com/${repository}/compare/${plan.baseSha}...${plan.headSha}`;
+  const policy = policyText(plan, config, loud, startupChanged);
+  const blocks: AnyBlock[] = label
+    ? [
+        section(
+          `:warning: *Performance detector (${label}): ${headline}* on branch \`main\` of \`${repository}\`, seen with Chrome's CPU slowed ${plan.cpuThrottleRate} times\n\n${policy}`,
+        ),
+        section(
+          `:mag: *${plan.kind === 'drift' ? 'Commits since the reference build' : 'Commits'}*\n• <${compareUrl}|${plan.baseSha.slice(0, 7)}..${short}> ${plan.rangeSize} commit${plan.rangeSize === 1 ? '' : 's'}, newest <${commitUrl}|${short}> ${subject}`,
+        ),
+      ]
+    : [
+        section(
+          `:warning: *Performance detector: ${headline}* just hit branch \`main\` on \`${repository}\`\n\n${policy}`,
+        ),
+        section(
+          `:mag: *Commit*\n• <${commitUrl}|${short}> ${subject} — by ${escapeSlack(author)}`,
+        ),
+      ];
 
-  const jobs = first.chrome.jobsTotal;
+  const measured = scoredBrowsers(first);
+  const jobs = first[measured[0]].jobsTotal;
+  const browserList = measured.map(browserName).join(' and ');
+  const slowed =
+    plan.cpuThrottleRate === undefined
+      ? ''
+      : `, CPU slowed ${plan.cpuThrottleRate} times`;
   blocks.push(
     section(
-      `:test_tube: *What was measured*\n• ${SCENARIO}\n• Benchmark \`startupStandardHome\` in Chrome and Firefox, ${scores.length} batch${scores.length === 1 ? '' : 'es'} of ${jobs} paired jobs per browser, base and head builds alternating on one runner${
+      `:test_tube: *What was measured*\n• ${SCENARIOS[preset]}\n• Benchmark \`${preset}\` in ${browserList}${slowed}, ${scores.length} batch${scores.length === 1 ? '' : 'es'} of ${jobs} paired jobs per browser, base and head builds alternating on one runner${
         cufs
           ? `\n• Critical user flows ${Object.keys(CUF_FLOW_FILES)
               .map((flow) => `\`${flow}\``)
               .join(
                 ', ',
-              )} in Chrome, base and head builds alternating per iteration`
+              )} in Chrome${slowed}, base and head builds alternating per iteration`
           : ''
       }`,
     ),
@@ -208,7 +239,7 @@ export function buildSlackMessage(input: SlackInput): SlackPayload {
   if (large.length > 0) {
     blocks.push(
       section(
-        `:red_circle: *Large change* (${floorsText('loudMs')} or more)\n${large
+        `:red_circle: *Large change* (${floorsText(config, 'loudMs')} or more)\n${large
           .map((f) => formatFinding(f, scores))
           .join('\n')}`,
       ),
@@ -264,7 +295,7 @@ export function buildSlackMessage(input: SlackInput): SlackPayload {
       '_A speed-up can also mean the metric stopped timing what it should. Check that the metric still measures the same thing._',
     );
   }
-  if (plan.rangeSize > 1) {
+  if (plan.rangeSize > 1 && !label) {
     notes.push(
       `_The nearest earlier build is ${plan.rangeSize} commits back, so any of them could be the cause._`,
     );
@@ -304,7 +335,7 @@ export function buildSlackMessage(input: SlackInput): SlackPayload {
     ),
   ].join(', ');
   return {
-    text: `Performance detector: ${headline} at ${short}: ${summary}`,
+    text: `Performance detector${label ? ` (${label})` : ''}: ${headline} at ${short}: ${summary}`,
     blocks,
   };
 }
