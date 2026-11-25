@@ -67,8 +67,11 @@ describe('postOrPrint', () => {
       channel: '#detector',
       blocks: [],
       text: 'hello',
+      // Slack API field names.
+      /* eslint-disable @typescript-eslint/naming-convention */
       unfurl_links: false,
       unfurl_media: false,
+      /* eslint-enable @typescript-eslint/naming-convention */
     });
   });
 

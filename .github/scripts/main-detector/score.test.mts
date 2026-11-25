@@ -228,6 +228,32 @@ describe('detector decisions', () => {
     expect(decision.unmeasured).toStrictEqual(['firefox']);
   });
 
+  it('does not count jobs without the verdict metrics as usable', () => {
+    const renamed = makeJobs(same).map((job) => ({ ...job, samples: {} }));
+    const first = scores(makeJobs(same), renamed);
+    expect(first.firefox.jobsUsable).toBe(0);
+    expect(first.firefox.measurable).toBe(false);
+    expect(decide(first, undefined, DEFAULT_CONFIG).unmeasured).toStrictEqual([
+      'firefox',
+    ]);
+  });
+
+  it('treats a job with only some verdict metrics as unusable', () => {
+    const partial = makeJobs(same).map((job) => ({
+      ...job,
+      samples: { uiStartup: job.samples.uiStartup },
+    }));
+    expect(scores(partial).chrome.measurable).toBe(false);
+  });
+
+  it('reports a confirmation batch without summaries as unmeasured', () => {
+    const slower = [1.03, 1.032, 1.028, 1.031, 1.029];
+    const second = scores(makeJobs(slower));
+    second.chrome.metrics.uiStartup.summary = undefined;
+    const decision = decide(scores(makeJobs(slower)), second, DEFAULT_CONFIG);
+    expect(decision.unmeasured).toStrictEqual(['chrome']);
+  });
+
   it('reports a needed confirmation that could not be measured', () => {
     const first = scores(makeJobs([1.03, 1.032, 1.028, 1.031, 1.029]));
     const decision = decide(first, undefined, DEFAULT_CONFIG);

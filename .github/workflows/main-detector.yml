@@ -158,6 +158,19 @@ jobs:
             const [headHash, parentHash] = await Promise.all([hashOf(head), hashOf(parent)]);
             if (!headHash || headHash !== parentHash) return;
 
+            // A parent whose Main run did not succeed may have no build, and then the
+            // real base is an older commit, so only the full path can judge the head.
+            const { data: parentRuns } = await github.rest.actions.listWorkflowRuns({
+              owner,
+              repo,
+              workflow_id: 'main.yml',
+              head_sha: parent,
+              event: 'push',
+              status: 'success',
+              per_page: 1,
+            });
+            if (parentRuns.total_count === 0) return;
+
             await finish(
               'no change (identical builds)',
               `Head \`${head.slice(0, 10)}\` has the same build-source hash as its parent \`${parent.slice(0, 10)}\`: **no change**, no jobs run.`,

@@ -49,8 +49,11 @@ export async function postOrPrint(payload: SlackPayload): Promise<void> {
       channel,
       blocks: payload.blocks,
       text: payload.text,
+      // Slack API field names.
+      /* eslint-disable @typescript-eslint/naming-convention */
       unfurl_links: false,
       unfurl_media: false,
+      /* eslint-enable @typescript-eslint/naming-convention */
     }),
   });
   if (!response.ok) {

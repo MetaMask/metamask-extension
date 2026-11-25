@@ -146,7 +146,11 @@ export function scoreBatch(
   let jobsUsable = 0;
   for (const job of jobs) {
     const ratios = jobLogRatios(job, names, config.skipSessions);
-    if (!ratios) {
+    // A job with no ratio for a verdict metric (empty or renamed samples) cannot show a change.
+    if (
+      !ratios ||
+      VERDICT_METRICS.some((metric) => ratios[metric] === undefined)
+    ) {
       continue;
     }
     jobsUsable += 1;
@@ -247,7 +251,8 @@ export function decide(
         ...(second[browser].logRatios[metric] ?? []),
       ]);
       if (!firstSummary || !secondSummary || !pooled) {
-        continue;
+        unmeasured.push(browser);
+        break;
       }
       const floor = config.floorPct[browser];
       const verdict = classify(pooled, floor, config.loudPct);
