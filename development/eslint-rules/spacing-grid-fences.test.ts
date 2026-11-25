@@ -36,7 +36,8 @@ const SHARED_SOURCE_FILE = 'shared/lib/fetch-with-cache.ts';
 const CONFIRMATIONS_FILE = 'ui/pages/confirmations/confirm/confirm.tsx';
 const UI_TEST_FILE =
   'ui/pages/asset/components/chart/advanced-chart-iframe.test.tsx';
-const STORIES_FILE = 'ui/components/component-library/text/text.stories.tsx';
+const STORIES_FILE =
+  'ui/components/component-library/banner-base/banner-base.stories.tsx';
 const MOCKS_FILE = 'ui/__mocks__/actions.js';
 
 const OFF_GRID = 'Spacing is off the 4px grid';
