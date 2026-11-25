@@ -3,8 +3,10 @@ name: Main performance detector
 # Posts to Slack when one commit on main changes startup performance by more
 # than the noise. For each push to main it compares the commit's build with
 # its first-parent ancestor's in paired jobs on one runner, and confirms a
-# suspicious result with a second batch. Identical builds exit early. It is
-# not a merge gate. See .github/scripts/main-detector/README.md.
+# suspicious result with a second batch. The critical user flows of the same
+# commit run beside it in Chrome and are scored with ADR 0072's paired decision
+# rule. Identical builds exit early. It is not a merge gate. See
+# .github/scripts/main-detector/README.md.
 
 on:
   workflow_run:
@@ -53,6 +55,8 @@ permissions:
 env:
   # Must equal the number of shards in main-detector-measure.yml.
   DETECTOR_SHARDS: 5
+  # Must equal the number of shards of the cufs job below.
+  DETECTOR_CUF_SHARDS: 2
 
 jobs:
   plan:
@@ -298,6 +302,121 @@ jobs:
       batch: 1
       inject_head_ms: ${{ inputs.inject_head_ms }}
 
+  # origin: ai-synthesis
+  # The critical user flows (CUFs) with an admitted series, on the plan's base
+  # and head builds, so they share the startup check's trigger, skip and canary.
+  # Each job alternates the two builds per iteration on one runner; the report
+  # job pairs consecutive iterations and scores them with the paired rule.
+  cufs:
+    name: cuf-${{ matrix.flow }}-s${{ matrix.shard }}
+    needs: plan
+    if: ${{ needs.plan.outputs.proceed == 'true' }}
+    # A failed job leaves its series unmeasured, which fails the report job.
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        # CUF_FLOW_FILES in .github/scripts/main-detector/cufs.mts; cufs.test.mts checks they match.
+        flow:
+          - bridgeUserActions
+          - loadNewAccount
+          - assetDetails
+          - solanaAssetDetails
+        # DETECTOR_CUF_SHARDS must equal the number of shards.
+        shard: [1, 2]
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      SELENIUM_BROWSER: chrome
+      SELENIUM_HEADLESS: true
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      BENCHMARK_RUNNER_LABEL: ubuntu-latest
+      # Pair mode: the harness alternates the base (A) and head (B) build per iteration.
+      BENCHMARK_AB_PILOT: '1'
+      BENCHMARK_AB_SEQUENCE: ABBABAABAB
+      # Same default as BUILD_HOST in .github/scripts/main-detector/build-source.mts.
+      DETECTOR_BUILD_HOST: https://diuv6g5fj9pvx.cloudfront.net/metamask-extension
+      # The scripts import typeless .ts files; keep Node's warning out of the log.
+      NODE_OPTIONS: --disable-warning=MODULE_TYPELESS_PACKAGE_JSON
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Install anvil with retry
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
+        with:
+          timeout_minutes: 1
+          max_attempts: 4
+          retry_wait_seconds: 30
+          command: yarn mm-foundryup
+
+      - name: Download the base and head builds
+        env:
+          PLAN: ${{ needs.plan.outputs.plan }}
+        run: |
+          set -euo pipefail
+          for side in base head; do
+            run=$(jq -r --arg k "${side}Run" '.[$k]' <<< "$PLAN")
+            version=$(jq -r --arg k "${side}Version" '.[$k]' <<< "$PLAN")
+            curl --fail --silent --show-error --retry 5 --retry-all-errors \
+              --output "$side.zip" \
+              "$DETECTOR_BUILD_HOST/$run/build-test-webpack/builds/metamask-chrome-$version.zip"
+            mkdir -p "pair/$side"
+            unzip -q "$side.zip" -d "pair/$side"
+          done
+          mkdir -p test-artifacts/benchmarks
+
+      - name: Prepare the A and B builds
+        env:
+          INJECT_HEAD_MS: ${{ inputs.inject_head_ms }}
+        run: |
+          set -euo pipefail
+          args=()
+          if [[ -n "$INJECT_HEAD_MS" ]]; then
+            args+=(--inject-head-ms "$INJECT_HEAD_MS")
+          fi
+          node test/e2e/benchmarks/prepare-ab-builds.mts \
+            --browser chrome \
+            --base-source pair/base --head-source pair/head \
+            --out "test-artifacts/benchmarks/ab-builds-${{ matrix.flow }}-s${{ matrix.shard }}.json" \
+            "${args[@]}"
+
+      - name: Choose which build goes first
+        env:
+          SHARD: ${{ matrix.shard }}
+        run: echo "BENCHMARK_AB_FLIP=$(( SHARD % 2 ))" >> "$GITHUB_ENV"
+
+      - name: Run the A/B benchmark
+        timeout-minutes: 35
+        env:
+          FLOW: ${{ matrix.flow }}
+          RESULT: test-artifacts/benchmarks/benchmark-chrome-webpack-${{ matrix.flow }}-s${{ matrix.shard }}.json
+        run: |
+          set -euo pipefail
+          file=$(node --input-type=module -e "
+            import { CUF_FLOW_FILES } from './.github/scripts/main-detector/cufs.mts';
+            console.log(CUF_FLOW_FILES[process.argv[1]] ?? '');
+          " "$FLOW")
+          if [[ -z "$file" ]]; then
+            echo "::error::No file for flow $FLOW in CUF_FLOW_FILES"
+            exit 1
+          fi
+          yarn test:e2e:benchmark "$file" --iterations 10 --retries 2 --out "$RESULT"
+
+      - name: Upload the result
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: detector-cuf-${{ matrix.flow }}-s${{ matrix.shard }}
+          path: test-artifacts/benchmarks/*.json
+          # A re-run of failed jobs uploads the same names again.
+          overwrite: true
+          retention-days: 7
+          if-no-files-found: ignore
+
   score-first:
     needs: [plan, measure-first]
     if: ${{ !cancelled() && needs.plan.outputs.proceed == 'true' }}
@@ -346,16 +465,22 @@ jobs:
       inject_head_ms: ${{ inputs.inject_head_ms }}
 
   report:
-    needs: [plan, score-first, measure-confirm]
+    needs: [plan, score-first, measure-confirm, cufs]
     if: ${{ !cancelled() && needs.plan.outputs.proceed == 'true' && needs.score-first.result == 'success' }}
     runs-on: ubuntu-latest
+    env:
+      # The CUF scoring imports typeless .ts files; keep Node's warning out of the log.
+      NODE_OPTIONS: --disable-warning=MODULE_TYPELESS_PACKAGE_JSON
     steps:
       - name: Checkout the scripts
         uses: actions/checkout@v6
         with:
+          # The two benchmark files are the admitted series and the paired rule, which import nothing.
           sparse-checkout: |
             .github
             .nvmrc
+            test/e2e/benchmarks/utils/admitted-series.ts
+            test/e2e/benchmarks/utils/paired-decision.ts
           sparse-checkout-cone-mode: false
 
       - name: Setup Node.js
@@ -369,6 +494,12 @@ jobs:
           pattern: detector-b*
           path: artifacts
 
+      - name: Download the critical user flows
+        uses: actions/download-artifact@v8
+        with:
+          pattern: detector-cuf-*
+          path: artifacts
+
       - name: Score and report
         env:
           PLAN: ${{ needs.plan.outputs.plan }}
@@ -376,6 +507,7 @@ jobs:
           echo "$PLAN" > plan.json
           node .github/scripts/main-detector/score-cli.mts --stage final \
             --dir artifacts --plan plan.json --out result.json --shards "$DETECTOR_SHARDS" \
+            --cuf-shards "$DETECTOR_CUF_SHARDS" \
             --summary "$GITHUB_STEP_SUMMARY" > /dev/null
 
       - name: Upload the result
@@ -398,9 +530,15 @@ jobs:
             --result result.json --run-url "$RUN_URL"
 
       # A result that measured nothing is green on its own, so fail the run for the heartbeat to see.
-      - name: Fail when a batch could not be measured
+      - name: Fail when a batch or a critical user flow could not be measured
         run: |
+          status=0
           if jq -e '.decision.unmeasured | length > 0' result.json > /dev/null; then
             echo "::error::Could not measure: $(jq -r '.decision.unmeasured | join(", ")' result.json)"
-            exit 1
+            status=1
           fi
+          if jq -e '(.cufs.unmeasured // []) | length > 0' result.json > /dev/null; then
+            echo "::error::Could not measure critical user flows: $(jq -r '.cufs.unmeasured | join(", ")' result.json)"
+            status=1
+          fi
+          exit "$status"

@@ -1,9 +1,11 @@
 /**
- * Usage: node .github/scripts/main-detector/score-cli.mts --stage first|final --dir ARTIFACTS --plan plan.json --out result.json [--summary FILE] [--github-output FILE] --shards N
+ * Usage: node .github/scripts/main-detector/score-cli.mts --stage first|final --dir ARTIFACTS --plan plan.json --out result.json [--summary FILE] [--github-output FILE] --shards N [--cuf-shards N]
  * Reads the artifacts of batch 1 (and 2) from detector-b<batch>-<browser>-s<shard> folders and scores them.
+ * At the final stage, --cuf-shards also scores the critical user flows from detector-cuf-<flow>-s<shard> folders.
  */
 import fs from 'node:fs';
 import { parseArgs } from 'node:util';
+import { loadCufJobs, scoreCufs } from './cufs.mts';
 import { loadBatch } from './load.mts';
 import { renderSummary, resultLabel, type PlanInfo } from './report.mts';
 import {
@@ -32,6 +34,7 @@ async function main(): Promise<void> {
       summary: { type: 'string' },
       'github-output': { type: 'string' },
       shards: { type: 'string' },
+      'cuf-shards': { type: 'string' },
     },
   });
   const { stage, dir, plan: planFile, out } = values;
@@ -64,10 +67,21 @@ async function main(): Promise<void> {
 
   const second = loadBatch(dir, 2, shards, true);
   const decision = decide(first, second, DEFAULT_CONFIG);
-  const label = resultLabel(decision, plan);
+  const cufShards = Number(values['cuf-shards']);
+  if (
+    values['cuf-shards'] !== undefined &&
+    (!Number.isInteger(cufShards) || cufShards < 1)
+  ) {
+    throw new Error('--cuf-shards must be a positive integer');
+  }
+  const cufs =
+    values['cuf-shards'] === undefined
+      ? undefined
+      : scoreCufs(loadCufJobs(dir, cufShards));
+  const label = resultLabel(decision, plan, cufs);
   fs.writeFileSync(
     out,
-    JSON.stringify({ plan, first, second, decision, label }, null, 2),
+    JSON.stringify({ plan, first, second, decision, cufs, label }, null, 2),
   );
   const summary = renderSummary({
     plan,
@@ -75,6 +89,7 @@ async function main(): Promise<void> {
     second,
     decision,
     config: DEFAULT_CONFIG,
+    cufs,
   });
   if (values.summary) {
     fs.appendFileSync(values.summary, `${summary}\n`);

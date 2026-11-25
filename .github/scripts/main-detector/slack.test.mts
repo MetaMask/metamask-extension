@@ -228,4 +228,72 @@ describe('buildSlackMessage', () => {
     expect(text).toContain('3 commits back');
     expect(text).toContain('Could not measure: Firefox');
   });
+
+  // origin: ai-synthesis
+  describe('critical user flows', () => {
+    const slowCuf = {
+      series: 'loadNewAccount.load_new_account',
+      deltaBlockMs: 50,
+      verdict: 'block' as const,
+      jobs: 2,
+      droppedPairs: 0,
+      decision: {
+        n: 10,
+        shift: 70,
+        lower: 61.5,
+        k: 11,
+        attainedLevel: 0.042,
+        verdict: 'block' as const,
+      },
+    };
+    const withCufs = (decision: Decision) =>
+      buildSlackMessage({
+        plan: {
+          headSha: 'a'.repeat(40),
+          headSubject: 'feat: x (#42)',
+          baseSha: 'b'.repeat(40),
+          canary: false,
+          rangeSize: 1,
+        },
+        first: batch({ uiStartup: [0.02, 0.03] }),
+        decision,
+        repository: 'MetaMask/metamask-extension',
+        runUrl: 'https://github.com/MetaMask/metamask-extension/actions/runs/1',
+        author: 'someone',
+        cufs: {
+          outcomes: [slowCuf],
+          findings: [slowCuf.series],
+          unmeasured: ['assetDetails.tbt'],
+        },
+      });
+
+    it('reports a slower flow when startup did not change, with no startup breakdown', () => {
+      const payload = withCufs({ ping: 'none', findings: [], unmeasured: [] });
+
+      expect(render(payload)).toContain('Critical user flow slower');
+      expect(render(payload)).toContain(
+        'shift +70.0 ms, lower bound +61.5 ms against δ_block 50 ms, 10 pairs from 2 jobs',
+      );
+      expect(render(payload)).toContain('critical user flow is slower');
+      expect(render(payload)).toContain(
+        'Could not measure critical user flows: assetDetails.tbt',
+      );
+      expect(render(payload)).not.toContain('Breakdown');
+      expect(payload.text).toContain(
+        'loadNewAccount.load_new_account +70.0 ms',
+      );
+    });
+
+    it('keeps the startup findings and adds the flow beside them', () => {
+      const payload = withCufs({
+        ping: 'quiet',
+        findings: [finding()],
+        unmeasured: [],
+      });
+
+      expect(render(payload)).toContain('Breakdown');
+      expect(render(payload)).toContain('Critical user flow slower');
+      expect(payload.text).toContain('Chrome UI Startup');
+    });
+  });
 });

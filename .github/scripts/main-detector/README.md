@@ -1,7 +1,7 @@
 # Main performance detector
 
-Posts to Slack when one commit on `main` changes startup performance. It is not
-a merge gate and never blocks anything.
+Posts to Slack when one commit on `main` changes startup performance or slows
+a critical user flow. It is not a merge gate and never blocks anything.
 
 ## What it does
 
@@ -20,6 +20,14 @@ When the `Main` workflow finishes for a push to `main`, `main-detector.yml`:
 4. Scores the log ratio of head to base for `uiStartup` and `load` in Chrome
    and Firefox. If the first batch looks suspicious, a second independent batch
    confirms it.
+5. Beside the startup jobs, on the same base and head builds, runs the critical
+   user flows with a series admitted under ADR 0072 (`CUF_FLOW_FILES` in
+   `cufs.mts`) in Chrome, 2 jobs per flow of 10 iterations, base and head
+   alternating per iteration. It pairs consecutive iterations and scores each
+   admitted series with the paired decision rule: slower when the one-sided 95%
+   lower bound of the Hodges-Lehmann shift of the head-minus-base differences
+   exceeds the series' `δ_block` (`admitted-series.ts`). The rule works in
+   milliseconds, so a series whose base is 0 ms (a long-task total) scores.
 
 ## Reading a ping
 
@@ -68,8 +76,8 @@ what it should, so check that first. A breakdown metric that moves by more than
 - Manual runs: `workflow_dispatch` with `head_sha`, `mode=aa` for a canary, and
   `post_slack` to post. `inject_head_ms` adds a busy-wait to the head build for
   a positive control.
-- Failures: the run fails, and the heartbeat reports it, when a batch could not
-  be measured, when a successful `Main` run left no build, or when the secret
+- Failures: the run fails, and the heartbeat reports it, when a batch or a
+  critical user flow series could not be measured, when a successful `Main` run left no build, or when the secret
   is missing on a `workflow_run` or `schedule` run. A `Main` re-run is ignored
   for a commit that an earlier `workflow_run` detector run already decided
   (artifact `detector-result` or `detector-skip`) or is still deciding; a run
@@ -105,3 +113,7 @@ GitHub emails the last person to edit the schedule when one fails.
 - A job's score is the ratio of the mean session times, so one slow session
   moves its job. The thresholds were calibrated with this statistic; changing
   it needs a new calibration.
+- The critical user flows' `δ_block` values were calibrated on differences of
+  run means, two per paired job; here each difference is one pair of
+  iterations. The rule bounds the false positive rate (FPR) at 5% for any
+  number of pairs, but recall at this shape has not been measured.
