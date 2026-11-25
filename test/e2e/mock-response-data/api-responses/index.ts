@@ -117,12 +117,19 @@ export type TxSentinelBatchStatusInput = {
   uuid: string;
 } & Overrides<TxSentinelBatchStatus>;
 
-const spotPriceEntry = (
-  input: SpotPriceInput,
-): SpotPrice & { assetPriceType?: 'fungible' } => ({
-  ...placeholderOf(priceV3SpotJson['eip155:1/slip44:60']),
-  ...input,
-});
+// The token row renders an absent change as "-" and a `0` as "+0.00%", so
+// `pricePercentChange1d` is not filled.
+type SpotPriceEntry = Omit<SpotPrice, 'pricePercentChange1d'> & {
+  pricePercentChange1d?: number;
+  assetPriceType?: 'fungible';
+};
+
+const spotPriceEntry = (input: SpotPriceInput): SpotPriceEntry => {
+  const { pricePercentChange1d: _unset, ...placeholder } = placeholderOf(
+    priceV3SpotJson['eip155:1/slip44:60'],
+  );
+  return { ...placeholder, ...input };
+};
 
 export const fourByteSignatures = defineApiMock({
   id: '4byte-signatures',

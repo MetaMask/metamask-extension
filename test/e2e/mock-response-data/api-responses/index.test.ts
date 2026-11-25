@@ -137,8 +137,10 @@ describe('API endpoint definitions', () => {
       expect(entry.price).toBe(0.9999);
       expect(entry.totalVolume).toBe(0);
       expect(entry.dilutedMarketCap).toBe(0);
+      expect(entry).not.toHaveProperty('pricePercentChange1d');
+      const { pricePercentChange1d: _unset, ...fixtureKeys } = fixtureEntry;
       expect(Object.keys(entry).sort()).toStrictEqual(
-        Object.keys(fixtureEntry).sort(),
+        Object.keys(fixtureKeys).sort(),
       );
     });
   });
