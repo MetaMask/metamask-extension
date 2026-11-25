@@ -9,7 +9,10 @@ import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
 import AccountListPage from '../../../page-objects/pages/accounts/list-page';
 import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
-import { userStorageHostMock } from '../../mocks/performance-mocks';
+import {
+  subscriptionsMock,
+  userStorageHostMock,
+} from '../../mocks/performance-mocks';
 import { mockNotificationServices } from '../../../tests/notifications/mocks';
 import {
   BENCHMARK_PERSONA,
@@ -52,6 +55,7 @@ async function measurePagePowerUser(
       testSpecificMock: async (server: Mockttp) => {
         await mockNotificationServices(server);
         await userStorageHostMock(server);
+        await subscriptionsMock(server);
       },
     },
     async ({ driver, getNetworkReport, clearNetworkReport }) => {

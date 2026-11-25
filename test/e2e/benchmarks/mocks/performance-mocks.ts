@@ -571,6 +571,39 @@ export function userStorageHostMock(server: Mockttp): Promise<MockedEndpoint> {
   return endpointPromise;
 }
 
+/**
+ * Answers the subscriptions poll with no subscriptions, as `mock-e2e.js` does.
+ * @param server - The mockttp server instance.
+ * @returns The endpoint promise.
+ */
+export function subscriptionsMock(server: Mockttp): Promise<MockedEndpoint> {
+  const subscriptionsUrl =
+    /^https:\/\/subscription\.(dev-)?api\.cx\.metamask\.io\/v1\/subscriptions$/u;
+  const endpointPromise = server
+    .forGet(subscriptionsUrl)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: { subscriptions: [], trialedProducts: [] },
+    }));
+
+  const existingInterceptor = (server as unknown as Record<string, unknown>)
+    .__passThroughInterceptor as PassThroughInterceptor | undefined;
+  setPassThroughInterceptor(server, (req) => {
+    if (subscriptionsUrl.test(req.url)) {
+      return {
+        response: {
+          statusCode: 200,
+          json: { subscriptions: [], trialedProducts: [] },
+        },
+      };
+    }
+    return existingInterceptor?.(req) ?? null;
+  });
+
+  return endpointPromise;
+}
+
 const SOLANA_URL_REGEX = /^https:\/\/solana-mainnet\.infura\.io\/v3\/.*/u;
 
 export async function mockBenchmarkEndpoints(
