@@ -9479,6 +9479,15 @@
   "readdToken": {
     "message": "Bu tokenı gelecekte token menüsünde \"Tokenları yönet\" seçeneğine giderek tekrar ekleyebilirsiniz"
   },
+  "rebateBanner": {
+    "message": "Ücretlerde %$1 iade alıyorsunuz"
+  },
+  "rebateTooltipContent": {
+    "message": "Bu yatırımda ödül olarak, MetaMask ücretinde Money account hesabınıza mUSD olarak yatırılacak %$1 indirim alın. Ağ ücretleri dahil değildir. Ayrıntılar için Ödüller sekmesine bakabilirsiniz."
+  },
+  "rebateTooltipTitle": {
+    "message": "Yatırım Ödülleri"
+  },
   "receive": {
     "message": "Al"
   },

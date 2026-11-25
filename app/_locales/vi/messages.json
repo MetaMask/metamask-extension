@@ -9479,6 +9479,15 @@
   "readdToken": {
     "message": "Bạn có thể nạp lại token này trong tương lai bằng cách vào phần \"Quản lý token\" trong menu token"
   },
+  "rebateBanner": {
+    "message": "Bạn được hoàn $1% phí"
+  },
+  "rebateTooltipContent": {
+    "message": "Bạn được hoàn $1% phí MetaMask của giao dịch này dưới dạng phần thưởng, được trả bằng mUSD vào Money Account của bạn. Không bao gồm phí mạng. Xem tab Phần thưởng để biết chi tiết."
+  },
+  "rebateTooltipTitle": {
+    "message": "Phần thưởng giao dịch"
+  },
   "receive": {
     "message": "Nhận"
   },

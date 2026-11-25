@@ -9473,6 +9473,15 @@
   "readdToken": {
     "message": "Anda dapat menambahkan kembali token ini di kemudian hari dengan membuka \"Kelola token\" di menu token"
   },
+  "rebateBanner": {
+    "message": "Anda mendapatkan pengembalian $1% dari biaya"
+  },
+  "rebateTooltipContent": {
+    "message": "Dapatkan $1% dari biaya MetaMask untuk perdagangan ini sebagai reward, yang dibayarkan dalam bentuk mUSD ke Money account Anda. Biaya jaringan tidak termasuk. Lihat tab Reward untuk detail selengkapnya."
+  },
+  "rebateTooltipTitle": {
+    "message": "Reward Perdagangan"
+  },
   "receive": {
     "message": "Terima"
   },

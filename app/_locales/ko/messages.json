@@ -9473,6 +9473,15 @@
   "readdToken": {
     "message": "나중에 토큰 메뉴의 ‘토큰 관리’에서 이 토큰을 다시 추가할 수 있습니다"
   },
+  "rebateBanner": {
+    "message": "수수료의 $1%를 환급받습니다"
+  },
+  "rebateTooltipContent": {
+    "message": "이번 거래에서 발생한 MetaMask 수수료의 $1%를 리워드로 돌려받으며, Money Account에 mUSD로 지급됩니다. 네트워크 수수료는 포함되지 않습니다. 자세한 내용은 리워드 탭을 확인하세요."
+  },
+  "rebateTooltipTitle": {
+    "message": "트레이드 보상"
+  },
   "receive": {
     "message": "받기"
   },

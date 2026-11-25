@@ -9469,6 +9469,15 @@
   "readdToken": {
     "message": "このトークンは、トークンメニューの「トークンを管理」から再び追加できます。"
   },
+  "rebateBanner": {
+    "message": "手数料の$1%が還元されます"
+  },
+  "rebateTooltipContent": {
+    "message": "この取引にかかるMetaMask手数料の$1%が報酬として還元され、Money AccountにmUSDで支払われます。ネットワーク手数料は含まれていません。詳細は「報酬」タブでご確認ください。"
+  },
+  "rebateTooltipTitle": {
+    "message": "取引リワード"
+  },
   "receive": {
     "message": "受取"
   },

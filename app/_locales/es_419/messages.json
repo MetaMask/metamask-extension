@@ -9479,6 +9479,15 @@
   "readdToken": {
     "message": "Puedes volver a agregar este token en el futuro desde \"Administrar tokens\" en el menú de tokens"
   },
+  "rebateBanner": {
+    "message": "Obtienes un $1 % de cashback en tarifas"
+  },
+  "rebateTooltipContent": {
+    "message": "Obtén como recompensa el $1 % de la tarifa de MetaMask de esta operación, que se depositará en mUSD en tu Money Account. No se incluyen las tarifas de red. Consulta la pestaña Recompensas para obtener más información."
+  },
+  "rebateTooltipTitle": {
+    "message": "Recompensas por trading"
+  },
   "receive": {
     "message": "Recibir"
   },
