@@ -426,7 +426,8 @@ jobs:
       SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
     with:
       plan: ${{ needs.scheduled.outputs.power_user_plan }}
-      iterations: ${{ needs.scheduled.outputs.iterations }}
+      # Its jobs take about 15 minutes at full speed with 10 sessions, so 20 sessions at 2 times slower would not fit a job's timeout.
+      iterations: '10'
       include_cufs: false
       post_slack: ${{ inputs.post_slack == true }}
 
