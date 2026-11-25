@@ -58,19 +58,16 @@ describe('SlidingTextCarousel', () => {
     jest.useFakeTimers();
     render(<SlidingTextCarousel texts={['First', 'Second']} />);
 
-    // First rotation shows the second text.
     act(() => {
       jest.advanceTimersByTime(5000 + 350);
     });
     expect(screen.getByText('Second')).toBeInTheDocument();
 
-    // Second rotation cycles back to the first text.
     act(() => {
       jest.advanceTimersByTime(5000 + 350);
     });
     expect(screen.getByText('First')).toBeInTheDocument();
 
-    // Third rotation shows the second text again.
     act(() => {
       jest.advanceTimersByTime(5000 + 350);
     });
