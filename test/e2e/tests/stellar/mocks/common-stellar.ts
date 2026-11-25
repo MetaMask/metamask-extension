@@ -4,6 +4,11 @@ import { getProductionRemoteFlagApiResponse } from '../../../feature-flags';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { EXPECTED_STELLAR_ADDRESSES_BY_INDEX } from '../../../constants';
 import {
+  priceV1ExchangeRates,
+  priceV3Spot,
+  tokensV3Assets,
+} from '../../../mock-response-data/api-responses';
+import {
   FEATURE_FLAGS_URL,
   STELLAR_CHAIN_ID,
   STELLAR_NATIVE_ASSET_ID,
@@ -188,7 +193,8 @@ export async function mockHorizonAccounts(
         };
       }
 
-      // Only seed known HD addresses; unknown G… ids stay 404 so discovery stops.
+      // Only Account 1 is in EXPECTED_STELLAR_ADDRESSES_BY_INDEX so discovery
+      // does not auto-create HD accounts 2+. Unknown G… ids stay 404.
       if (
         !(EXPECTED_STELLAR_ADDRESSES_BY_INDEX as readonly string[]).includes(
           address,
@@ -314,8 +320,8 @@ export function buildStellarTokenAssetMetadata() {
 export async function mockStellarTokensV3Assets(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
-  return mockServer
-    .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+  return tokensV3Assets
+    .rule(mockServer)
     .always()
     .thenJson(200, buildStellarTokenAssetMetadata());
 }
@@ -365,8 +371,8 @@ export async function mockStellarPriceApiSupportedNetworks(
 export async function mockStellarSpotPrices(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
-  return mockServer
-    .forGet(/https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+  return priceV3Spot
+    .rule(mockServer)
     .always()
     .thenCallback((request) => {
       const assetIdsParam =
@@ -408,8 +414,8 @@ export async function mockStellarSpotPrices(
 export async function mockStellarExchangeRates(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
-  return mockServer
-    .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+  return priceV1ExchangeRates
+    .rule(mockServer)
     .always()
     .thenJson(200, {
       usd: {

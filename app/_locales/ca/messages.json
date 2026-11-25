@@ -389,9 +389,6 @@
     "message": "Clau privada",
     "description": "select this type of file to use to import an account"
   },
-  "privateNetwork": {
-    "message": "Xarxa privada"
-  },
   "readdToken": {
     "message": "Pots tornar a afegir aquesta fitxa en el futur anant a \"Afegir fitxa\" al menu d'opcions dels teus comptes."
   },

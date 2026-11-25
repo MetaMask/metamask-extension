@@ -16,7 +16,6 @@ import {
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { PRIMARY_TYPES_PERMIT } from '../../../../shared/constants/signatures';
 import { PRIMARY_TYPE_DELEGATION } from '../transaction/delegation';
-import { isSecurityAlertsAPIEnabled } from '../ppom/security-alerts-api';
 import { scanAddressAndAddToCache } from './security-alerts-api';
 import {
   hasValidTypedDataParams,
@@ -62,10 +61,7 @@ export function createOriginScanMiddleware(
     try {
       req.requestUrl = requestUrl;
 
-      if (
-        !isSecurityAlertsEnabledByUser(preferencesController) ||
-        !isSecurityAlertsAPIEnabled()
-      ) {
+      if (!isSecurityAlertsEnabledByUser(preferencesController)) {
         return;
       }
 
@@ -103,10 +99,7 @@ export function createAddressScanMiddleware(
     next: () => void,
   ) => {
     try {
-      if (
-        !isSecurityAlertsEnabledByUser(preferencesController) ||
-        !isSecurityAlertsAPIEnabled()
-      ) {
+      if (!isSecurityAlertsEnabledByUser(preferencesController)) {
         return;
       }
 

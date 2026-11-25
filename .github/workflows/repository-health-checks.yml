@@ -81,8 +81,12 @@ jobs:
             // upload a newer artifact, but we always prefer the highest
             // run ID (latest workflow run) to stay on the newest commit.
             //
-            // Security: filter to head_branch === 'main' so a PR branch
-            // can never supply a poisoned baseline.
+            // Security: filter to head_branch === 'main' AND a head commit in
+            // this repository. Fork PR runs are stored in this repository
+            // with head_branch set to the fork's branch name and execute the
+            // fork's workflow files, so a fork branch named `main` could
+            // otherwise upload a poisoned baseline. Checking the branch name
+            // alone is not enough.
             const { data } = await github.rest.actions.listArtifactsForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -90,7 +94,11 @@ jobs:
               per_page: 20,
             });
             const baseline = data.artifacts
-              .filter(a => a.workflow_run?.head_branch === 'main')
+              .filter(a =>
+                a.workflow_run?.head_branch === 'main'
+                && a.workflow_run.repository_id != null
+                && a.workflow_run.head_repository_id === a.workflow_run.repository_id
+              )
               .sort((a, b) => b.workflow_run.id - a.workflow_run.id)[0];
             if (!baseline) {
               core.setFailed('No audit-baseline artifact found from a main-branch run');

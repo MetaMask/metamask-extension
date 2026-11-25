@@ -32,7 +32,6 @@ import {
   NetworkEnablementControllerState,
   NetworkEnablementControllerStateChangeEvent,
 } from '@metamask/network-enablement-controller';
-import { SelectedNetworkControllerGetNetworkClientIdForDomainAction } from '@metamask/selected-network-controller';
 import {
   add0x,
   bytesToHex,
@@ -130,8 +129,6 @@ import {
 } from '@metamask/signature-controller';
 import {
   AssetsContractControllerGetTokenStandardAndDetailsAction,
-  TokenDetectionControllerDisableAction,
-  TokenDetectionControllerEnableAction,
   TokensControllerAddTokenAction,
   TokensControllerGetStateAction,
 } from '@metamask/assets-controllers';
@@ -326,7 +323,6 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { restrictKeyringForDeviceRead } from '../lib/hardware-device-read-keyring';
-import type { UsePPOMAction } from '../lib/ppom/ppom-util';
 import {
   OnboardingControllerGetIsSocialLoginFlowAction,
   OnboardingControllerResetOnboardingAction,
@@ -751,7 +747,6 @@ type AllowedActions =
   | SeedlessOnboardingControllerSyncLatestGlobalPasswordAction
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
   | SeedlessOnboardingControllerIdentifyIncompleteMetadataBackupAction
-  | SelectedNetworkControllerGetNetworkClientIdForDomainAction
   | GetSignatureState
   | ShieldControllerClearStateAction
   | ShieldControllerStartAction
@@ -764,8 +759,6 @@ type AllowedActions =
   | SubscriptionControllerGetStateAction
   | SubscriptionControllerGetSubscriptionByProductAction
   | SubscriptionControllerStopAllPollingAction
-  | TokenDetectionControllerDisableAction
-  | TokenDetectionControllerEnableAction
   | TokensControllerAddTokenAction
   | TokensControllerGetStateAction
   | TransactionControllerAddTransactionAction
@@ -778,7 +771,6 @@ type AllowedActions =
   | TransactionControllerUpdateEditableParamsAction
   | TransactionControllerUpdateSecurityAlertResponseAction
   | TransactionControllerWipeTransactionsAction
-  | UsePPOMAction
   | UserOperationControllerAddUserOperationFromTransactionAction
   | UserOperationControllerStartPollingByNetworkClientIdAction;
 
@@ -3108,13 +3100,11 @@ export class LegacyBackgroundApiService {
     );
 
     if (useExternal) {
-      this.#messenger.call('TokenDetectionController:enable');
       this.#messenger.call('GasFeeController:enableNonRPCGasFeeApis');
       if (hasActiveShieldSubscription) {
         this.#messenger.call('ShieldController:start');
       }
     } else {
-      this.#messenger.call('TokenDetectionController:disable');
       this.#messenger.call('GasFeeController:disableNonRPCGasFeeApis');
       // stop polling for the subscriptions if external services are disabled
       this.#messenger.call('SubscriptionController:stopAllPolling');
@@ -4195,10 +4185,13 @@ export class LegacyBackgroundApiService {
 
       // Only emit a span when discovery actually created accounts.
       if (result.length > 0) {
+        // Discovery runs after onboarding or an SRP import, often detached from
+        // the request that triggered it, and no caller context reaches here.
         trace({
           name: TraceName.DiscoverAccounts,
           op: TraceOperation.AccountDiscover,
           startTime,
+          root: true,
         });
         endTrace({
           name: TraceName.DiscoverAccounts,
@@ -4516,10 +4509,6 @@ export class LegacyBackgroundApiService {
 
       this.#messenger.call('TransactionController:clearUnapprovedTransactions');
 
-      if (completedOnboarding) {
-        this.#messenger.call('TokenDetectionController:enable');
-      }
-
       // create new vault
       const seedPhraseAsUint8Array =
         this.#convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
@@ -4740,25 +4729,6 @@ export class LegacyBackgroundApiService {
 
     if (hasPendingApproval) {
       return;
-    }
-
-    // If the partner requires a specific chain and user's chain doesn't match,
-    // return early to avoid the referral code potentially not being applied.
-    // Don't write any account status so that the prompt can show on the next
-    // trigger (NewConnection or OnNavigateConnectedTab) once the user has switched chain
-    if (partner.requiredChainId) {
-      const networkClientId = this.#messenger.call(
-        'SelectedNetworkController:getNetworkClientIdForDomain',
-        partner.origin,
-      );
-      const networkConfig = this.#messenger.call(
-        'NetworkController:getNetworkConfigurationByNetworkClientId',
-        networkClientId,
-      );
-      const currentChainId = networkConfig?.chainId;
-      if (currentChainId !== partner.requiredChainId) {
-        return;
-      }
     }
 
     const { activePermittedAddressOverride } = options;

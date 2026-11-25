@@ -1,5 +1,4 @@
 import { MiddlewareContext } from '@metamask/json-rpc-engine/v2';
-import { EthAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   TransactionController,
@@ -9,11 +8,6 @@ import {
   TransactionParams,
   TransactionType,
 } from '@metamask/transaction-controller';
-import {
-  AddUserOperationOptions,
-  UserOperationControllerAddUserOperationFromTransactionAction,
-  UserOperationControllerStartPollingByNetworkClientIdAction,
-} from '@metamask/user-operation-controller';
 import { KeyringControllerGetKeyringForAccountAction } from '@metamask/keyring-controller';
 import type { PhishingControllerScanAddressAction } from '@metamask/phishing-controller';
 import { MessengerActions, MessengerEvents } from '@metamask/messenger';
@@ -23,7 +17,6 @@ import {
 } from '@metamask/subscription-controller';
 import { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
 import type { Hex, JsonRpcRequest } from '@metamask/utils';
-import { addHexPrefix } from 'ethereumjs-util';
 import log from 'loglevel';
 import {
   generateSecurityAlertId,
@@ -63,16 +56,13 @@ export type AddTransactionOptions = NonNullable<
 /**
  * The messenger used by the shared transaction-add pipeline. It extends the
  * {@link PPOMMessenger} (security validation) with the actions needed to add a
- * transaction or user operation, resolve an account's keyring, scan a
- * recipient address for trust signals, and read the security-alerts gateway
- * configuration.
+ * transaction, resolve an account's keyring, scan a recipient address for
+ * trust signals, and read the security-alerts gateway configuration.
  */
 export type AddTransactionMessenger = RootMessenger<
   | MessengerActions<PPOMMessenger>
   | TransactionControllerAddTransactionAction
   | TransactionControllerAddTransactionBatchAction
-  | UserOperationControllerAddUserOperationFromTransactionAction
-  | UserOperationControllerStartPollingByNetworkClientIdAction
   | KeyringControllerGetKeyringForAccountAction
   | AppStateControllerGetAddressSecurityAlertResponseAction
   | AppStateControllerAddAddressSecurityAlertResponseAction
@@ -252,17 +242,9 @@ export async function addTransaction(
 async function addTransactionOrUserOperation(
   request: FinalAddTransactionRequest,
 ) {
-  const { selectedAccount } = request;
   const isTempoChainId = isTempoChain(request.chainId);
   if (isTempoChainId) {
     return addTransactionOnTempo(request);
-  }
-
-  const isSmartContractAccount =
-    selectedAccount.type === EthAccountType.Erc4337;
-
-  if (isSmartContractAccount) {
-    return addUserOperationWithController(request);
   }
 
   return addTransactionWithController(request);
@@ -286,60 +268,6 @@ async function addTransactionWithController(
   return {
     transactionMeta,
     waitForHash: () => result,
-  };
-}
-
-async function addUserOperationWithController(
-  request: FinalAddTransactionRequest,
-) {
-  const { messenger, networkClientId, transactionOptions, transactionParams } =
-    request;
-
-  const { maxFeePerGas, maxPriorityFeePerGas } = transactionParams;
-
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { origin, requireApproval, type } = transactionOptions as any;
-
-  const normalisedTransaction: TransactionParams = {
-    ...transactionParams,
-    maxFeePerGas: addHexPrefix(maxFeePerGas as string),
-    maxPriorityFeePerGas: addHexPrefix(maxPriorityFeePerGas as string),
-  };
-
-  const swaps = transactionOptions?.swaps?.meta;
-
-  if (swaps?.type) {
-    delete swaps.type;
-  }
-
-  const options: AddUserOperationOptions = {
-    networkClientId,
-    origin,
-    requireApproval,
-    swaps,
-    type,
-  };
-
-  const result = await messenger.call(
-    'UserOperationController:addUserOperationFromTransaction',
-    normalisedTransaction,
-    options,
-  );
-
-  messenger.call(
-    'UserOperationController:startPollingByNetworkClientId',
-    networkClientId,
-  );
-
-  const transactionMeta = findTransaction(
-    messenger,
-    (tx) => tx.id === result.id,
-  );
-
-  return {
-    transactionMeta,
-    waitForHash: result.transactionHash,
   };
 }
 
@@ -521,7 +449,6 @@ async function validateSecurity(request: AddTransactionRequest) {
 
     // Intentionally not awaited to avoid blocking the confirmation process while the validation occurs.
     validateRequestWithPPOM({
-      messenger,
       request: ppomRequest,
       securityAlertId,
       chainId,

@@ -1,5 +1,4 @@
 import { toHex } from '@metamask/controller-utils';
-import { merge } from 'lodash';
 import type { Mockttp } from 'mockttp';
 import { v6AccountsApiBalancesJson } from '../../helpers/accounts-api-v6-balances';
 import { withFixtures } from '../../helpers';
@@ -17,6 +16,11 @@ import {
 } from '../../websocket/account-activity-mocks';
 import WebSocketRegistry from '../../websocket/registry';
 import { WEBSOCKET_SERVICES } from '../../websocket/constants';
+import {
+  accountsBalancesV5,
+  accountsSupportedNetworksV2,
+  tokensV3Assets,
+} from '../../mock-response-data/api-responses';
 
 function mockCommonApis(mockServer: Mockttp) {
   const supportedNetworks = {
@@ -25,10 +29,8 @@ function mockCommonApis(mockServer: Mockttp) {
   };
 
   return Promise.all([
-    mockServer
-      .forGet(
-        /https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u,
-      )
+    accountsSupportedNetworksV2
+      .rule(mockServer)
       .always()
       .thenJson(200, {
         fullSupport: [
@@ -51,8 +53,8 @@ function mockCommonApis(mockServer: Mockttp) {
       .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
       .always()
       .thenJson(200, supportedNetworks),
-    mockServer
-      .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+    tokensV3Assets
+      .rule(mockServer)
       .always()
       .thenCallback((request) => {
         const url = new URL(request.url);
@@ -89,10 +91,8 @@ function mockV5Balances(mockServer: Mockttp, tstBalance: { value: string }) {
   ];
 
   return Promise.all([
-    mockServer
-      .forGet(
-        /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
-      )
+    accountsBalancesV5
+      .rule(mockServer)
       .always()
       .thenCallback(() => {
         const balances = rows();
@@ -169,17 +169,6 @@ describe('Add hide token', function () {
         },
       })
       .build();
-    merge(fixture.data, {
-      AccountTrackerController: {
-        accountsByChainId: {
-          [chainIdHex]: {
-            [account]: {
-              balance: '0x15af1d78b58c400000', // 25 ETH
-            },
-          },
-        },
-      },
-    });
     await withFixtures(
       {
         fixtures: fixture,

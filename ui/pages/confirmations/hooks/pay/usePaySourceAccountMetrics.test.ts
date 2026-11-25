@@ -73,7 +73,7 @@ function runHook({
 
   const transactionData: Record<string, unknown> = {};
   if (payerKeyringType) {
-    transactionData.accountOverride = PAYER_ADDRESS;
+    transactionData.accountOverride = PAYER_ACCOUNT_ID;
   }
   if (paymentOverride) {
     transactionData.paymentOverride = paymentOverride;
