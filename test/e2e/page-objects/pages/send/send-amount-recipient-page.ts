@@ -1,21 +1,22 @@
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * Multichain send flow: asset, recipient, amount, and continue.
+ * Multichain send form: recipient, amount, and continue.
  *
- * Screen: `#/send` / `#/send/:page?`.
- * Owns: recipient and amount inputs, network/token pickers, Max, validation
- * and fee errors, hex data, alert acknowledge, and continue-enabled checks.
- * Boundaries: the send form through Continue. Confirmation / review screens
- * (including Bitcoin snap review) belong to confirmation or
- * `BitcoinReviewTxPage`.
- * Related: `BitcoinReviewTxPage`, `flows/transaction.flow.ts`.
+ * Screen: `#/send/amount-recipient`.
+ * Owns: recipient and amount inputs, Max, validation and fee errors, hex data,
+ * alert acknowledge, and continue-enabled checks.
+ * Boundaries: the send form through Continue. Picking the asset belongs to
+ * `SendAssetPickerPage`; confirmation / review screens (including Bitcoin snap
+ * review) belong to confirmation or `BitcoinReviewTxPage`.
+ * Related: `SendAssetPickerPage`, `BitcoinReviewTxPage`,
+ * `flows/transaction.flow.ts`.
  *
- * @see ui/pages/confirmations/send/send.tsx
  * @see ui/pages/confirmations/send/send-inner.tsx
+ * @see ui/pages/confirmations/components/send/amount-recipient/amount-recipient.tsx
  * @see test/e2e/page-objects/flows/transaction.flow.ts
  */
-class SendPage {
+class SendAmountRecipientPage {
   private readonly amountBalance = { testId: 'send-amount-balance' };
 
   private readonly amountFiatValue = { testId: 'send-amount-fiat-value' };
@@ -74,16 +75,6 @@ class SendPage {
     tag: 'button',
   };
 
-  private readonly networkName = (networkName: string) => {
-    return {
-      testId: networkName,
-    };
-  };
-
-  private readonly networkPicker = {
-    testId: 'send-network-filter-toggle',
-  };
-
   private readonly recipientFormatted = {
     testId: 'clear-recipient-btn',
   };
@@ -102,16 +93,6 @@ class SendPage {
 
   private readonly sendPage = {
     testId: 'parent-selector-send-page',
-  };
-
-  private readonly solanaNetwork = {
-    text: 'Solana',
-  };
-
-  private readonly tokenAsset = (chainId: string, symbol: string) => {
-    return {
-      testId: `token-asset-${chainId}-${symbol}`,
-    };
   };
 
   private readonly transactionError = {
@@ -253,22 +234,14 @@ class SendPage {
     await this.driver.waitForSelector(this.invalidValueError);
   }
 
-  async checkNetworkFilterToggleIsDisplayed(): Promise<void> {
-    await this.driver.waitForSelector(this.networkPicker);
-  }
-
   async checkPageIsLoaded(): Promise<void> {
     console.log('Checking if send page is loaded');
-    try {
-      await this.driver.waitForMultipleSelectors([
-        this.header,
-        this.networkPicker,
-        this.sendPage,
-      ]);
-    } catch (e) {
-      console.log('Timeout while waiting for send page to be loaded', e);
-      throw e;
-    }
+    await this.driver.waitForMultipleSelectors([
+      this.header,
+      this.sendPage,
+      this.amountInput,
+      this.inputRecipient,
+    ]);
     console.log('Send page is loaded');
   }
 
@@ -282,18 +255,6 @@ class SendPage {
   async checkRecipientValidationError(errorText: string): Promise<void> {
     console.log(`Checking recipient validation error: ${errorText}`);
     await this.driver.waitForSelector(this.recipientValidationError(errorText));
-  }
-
-  async checkSendFormIsLoaded(): Promise<void> {
-    await this.driver.waitForMultipleSelectors([
-      this.amountInput,
-      this.inputRecipient,
-    ]);
-  }
-
-  async checkSolanaNetworkIsPresent(): Promise<void> {
-    console.log('Checking if Solana network is present');
-    await this.driver.findElement(this.solanaNetwork);
   }
 
   /**
@@ -319,59 +280,6 @@ class SendPage {
   async clickMaxButton(): Promise<void> {
     console.log('Clicking max button');
     await this.driver.clickElement(this.maxButton);
-  }
-
-  async createMaxSendRequest({
-    chainId,
-    symbol,
-    recipientAddress,
-    recipientName,
-  }: {
-    chainId: string;
-    symbol: string;
-    recipientAddress?: string;
-    recipientName?: string;
-  }): Promise<void> {
-    console.log('Creating max send request');
-    await this.selectToken(chainId, symbol);
-    if (recipientAddress) {
-      await this.fillRecipient({ recipientAddress });
-    }
-    if (recipientName) {
-      await this.selectAccountFromRecipientModal(recipientName);
-    }
-    await this.clickMaxButton();
-    await this.waitForSendAmountBalance();
-    await this.checkContinueButton({ state: 'enabled' });
-    await this.pressContinueButton();
-  }
-
-  async createSendRequest({
-    chainId,
-    symbol,
-    recipientAddress,
-    recipientName,
-    amount = '0',
-  }: {
-    chainId: string;
-    symbol: string;
-    recipientAddress?: string;
-    recipientName?: string;
-    amount: string;
-  }): Promise<void> {
-    console.log('Creating send request');
-    await this.selectToken(chainId, symbol);
-    if (recipientAddress) {
-      await this.fillRecipient({ recipientAddress });
-    }
-    if (recipientName) {
-      await this.selectAccountFromRecipientModal(recipientName);
-    }
-    await this.fillAmount(amount);
-    await this.checkAmountInputValue(amount);
-    await this.waitForSendAmountBalance();
-    await this.checkContinueButton({ state: 'enabled' });
-    await this.pressContinueButton();
   }
 
   async editAmountByKeys(keys: string[]): Promise<void> {
@@ -469,25 +377,6 @@ class SendPage {
     await this.driver.clickElement({ text: accountName });
   }
 
-  async selectNetworkByName(networkName: string): Promise<void> {
-    console.log(`Selecting network ${networkName}`);
-    await this.driver.clickElement(this.networkPicker);
-    await this.driver.clickElement(this.networkName(networkName));
-  }
-
-  async selectNft(nftName: string): Promise<void> {
-    console.log(`Selecting nft ${nftName}`);
-    await this.driver.waitForElementToStopMoving({ text: nftName });
-    await this.driver.clickElement({ text: nftName });
-  }
-
-  async selectToken(chainId: string, symbol: string): Promise<void> {
-    console.log(`Selecting token ${symbol} on chain ${chainId}`);
-    const tokenAsset = this.tokenAsset(chainId, symbol);
-    await this.driver.waitForSelector(tokenAsset);
-    await this.driver.clickElement(tokenAsset);
-  }
-
   /**
    * Waits until the Continue button is visible, enabled, and remains so long
    * enough to avoid clicking during enable/disable flicker from validation.
@@ -521,4 +410,4 @@ class SendPage {
   }
 }
 
-export default SendPage;
+export default SendAmountRecipientPage;

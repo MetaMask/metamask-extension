@@ -13,7 +13,7 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
-import SendPage from '../../page-objects/pages/send/send-page';
+import SendAmountRecipientPage from '../../page-objects/pages/send/send-amount-recipient-page';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import { mockEthPrices } from '../tokens/utils/mocks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -64,7 +64,7 @@ describe('Send - Edit Transaction', function () {
         const transactionConfirmation = new TransactionConfirmation(driver);
         const gasFeeModal = new GasFeeModal(driver);
         const activityTab = new ActivityTab(driver);
-        const sendPage = new SendPage(driver);
+        const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
 
         await transactionConfirmation.checkSendAmount('1 ETH');
 
@@ -72,9 +72,14 @@ describe('Send - Edit Transaction', function () {
 
         await transactionConfirmation.clickBackButton();
 
-        await sendPage.editAmountByKeys([driver.Key.BACK_SPACE, '2', '.', '2']);
+        await sendAmountRecipientPage.editAmountByKeys([
+          driver.Key.BACK_SPACE,
+          '2',
+          '.',
+          '2',
+        ]);
 
-        await sendPage.pressContinueButton();
+        await sendAmountRecipientPage.pressContinueButton();
 
         // Wait for the gas fee to load before opening the gas fee modal
         await transactionConfirmation.checkGasFeeFiat('$0.07');
@@ -131,7 +136,7 @@ describe('Send - Edit Transaction', function () {
         const transactionConfirmation = new TransactionConfirmation(driver);
         const gasFeeModal = new GasFeeModal(driver);
         const activityTab = new ActivityTab(driver);
-        const sendPage = new SendPage(driver);
+        const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
 
         await transactionConfirmation.checkSendAmount('1 ETH');
 
@@ -139,9 +144,14 @@ describe('Send - Edit Transaction', function () {
 
         await transactionConfirmation.clickBackButton();
 
-        await sendPage.editAmountByKeys([driver.Key.BACK_SPACE, '2', '.', '2']);
+        await sendAmountRecipientPage.editAmountByKeys([
+          driver.Key.BACK_SPACE,
+          '2',
+          '.',
+          '2',
+        ]);
 
-        await sendPage.pressContinueButton();
+        await sendAmountRecipientPage.pressContinueButton();
 
         // Wait for the gas fee to load before opening the gas fee modal
         await transactionConfirmation.checkGasFeeFiat('$0.75');

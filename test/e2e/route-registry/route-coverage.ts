@@ -1,3 +1,4 @@
+import { matchPath } from 'react-router-dom';
 import { NOT_A_SCREEN, type RoutePageObjectRegistry } from './route-registry';
 
 export type RouteCoverageStatus =
@@ -12,7 +13,11 @@ export type RouteCoverageEntry = {
   status: RouteCoverageStatus;
   /** Class name of the page object, when there is one. */
   pageObject?: string;
+  /** For a screen of a dynamic route, that route's path pattern. */
+  parentRoute?: string;
 };
+
+type Route = { path: string; label: string };
 
 export type RouteCoverageReport = {
   generatedAt: string;
@@ -27,7 +32,10 @@ export type RouteCoverageReport = {
     coveragePercentage: number;
   };
   routes: RouteCoverageEntry[];
-  /** Registry paths that are not in `ROUTES` (renamed or removed routes). */
+  /**
+   * Registry paths that are neither in `ROUTES` nor a screen of a dynamic
+   * route (renamed or removed routes).
+   */
   staleEntries: string[];
 };
 
@@ -39,35 +47,85 @@ const byPath = (a: string, b: string): number => {
 };
 
 /**
+ * Finds the dynamic route that a registry path is one screen of: the path has
+ * no dynamic segments and matches a route with dynamic segments that the
+ * registry marks `NOT_A_SCREEN`.
+ *
+ * @param path - A registry path that is not in the routes.
+ * @param routes - The routes to cover.
+ * @param registry - Route path → page object, `NOT_A_SCREEN` or `null`.
+ * @returns The dynamic route, or `undefined`.
+ */
+function findParentRoute(
+  path: string,
+  routes: readonly Route[],
+  registry: RoutePageObjectRegistry,
+): Route | undefined {
+  if (path.includes(':')) {
+    return undefined;
+  }
+  return routes.find(
+    (route) =>
+      route.path.includes(':') &&
+      registry[route.path] === NOT_A_SCREEN &&
+      matchPath({ path: route.path, end: true }, path),
+  );
+}
+
+/**
  * Compares the routes with the page object registry.
  *
  * @param routes - The routes to cover, normally `ROUTES`.
  * @param registry - Route path → page object, `NOT_A_SCREEN` or `null`.
  * @returns Per-route status and stale registry entries, both sorted by path,
- * and a summary.
+ * and a summary. A registry path that is one screen of a dynamic route is
+ * reported as a route of its own.
  */
 export function getRouteCoverage(
-  routes: readonly { path: string; label: string }[],
+  routes: readonly Route[],
   registry: RoutePageObjectRegistry,
 ): RouteCoverageReport {
-  const sortedRoutes = [...routes].sort((a, b) => byPath(a.path, b.path));
-  const entries = sortedRoutes.map(({ path, label }): RouteCoverageEntry => {
-    if (!Object.hasOwn(registry, path)) {
-      return { path, label, status: 'unregistered' };
-    }
-    const pageObject = registry[path];
-    if (pageObject === NOT_A_SCREEN) {
-      return { path, label, status: 'not-a-screen' };
-    }
-    return pageObject
-      ? { path, label, status: 'page-object', pageObject: pageObject.name }
-      : { path, label, status: 'no-page-object' };
-  });
-
   const routePaths = new Set(routes.map(({ path }) => path));
-  const staleEntries = Object.keys(registry)
-    .filter((path) => !routePaths.has(path))
-    .sort(byPath);
+  const screensOfDynamicRoutes: (Route & { parentRoute?: string })[] = [];
+  const staleEntries: string[] = [];
+  for (const path of Object.keys(registry)) {
+    if (routePaths.has(path)) {
+      continue;
+    }
+    const parentRoute = findParentRoute(path, routes, registry);
+    if (parentRoute) {
+      screensOfDynamicRoutes.push({
+        path,
+        label: parentRoute.label,
+        parentRoute: parentRoute.path,
+      });
+    } else {
+      staleEntries.push(path);
+    }
+  }
+  staleEntries.sort(byPath);
+
+  const sortedRoutes: (Route & { parentRoute?: string })[] = [
+    ...routes,
+    ...screensOfDynamicRoutes,
+  ].sort((a, b) => byPath(a.path, b.path));
+  const entries = sortedRoutes.map(
+    ({ path, label, parentRoute }): RouteCoverageEntry => {
+      const entry = parentRoute
+        ? { path, label, parentRoute }
+        : { path, label };
+      if (!Object.hasOwn(registry, path)) {
+        return { ...entry, status: 'unregistered' };
+      }
+      const pageObject = registry[path];
+      if (pageObject === NOT_A_SCREEN) {
+        return { ...entry, status: 'not-a-screen' };
+      }
+      return pageObject
+        ? { ...entry, status: 'page-object', pageObject: pageObject.name }
+        : { ...entry, status: 'no-page-object' };
+    },
+  );
   const count = (status: RouteCoverageStatus) =>
     entries.filter((entry) => entry.status === status).length;
   const withPageObject = count('page-object');

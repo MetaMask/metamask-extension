@@ -11,7 +11,7 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
-import SendPage from '../../page-objects/pages/send/send-page';
+import SendAmountRecipientPage from '../../page-objects/pages/send/send-amount-recipient-page';
 import TokenOverviewPage from '../../page-objects/pages/asset/token-overview-page';
 import { login } from '../../page-objects/flows/login.flow';
 import { mockEmptyPrices } from '../tokens/utils/mocks';
@@ -66,8 +66,8 @@ describe('Send ERC20 - Contract Warning', function () {
         await tokenOverviewPage.checkPageIsLoaded();
         await tokenOverviewPage.clickSend();
 
-        const sendPage = new SendPage(driver);
-        await sendPage.fillRecipient({
+        const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
+        await sendAmountRecipientPage.fillRecipient({
           recipientAddress: contractAddress,
           validAddress: false,
         });
@@ -75,7 +75,7 @@ describe('Send ERC20 - Contract Warning', function () {
         // Verify warning
         const warningText =
           "You are sending tokens to the token's contract address. This may result in the loss of these tokens.";
-        await sendPage.checkWarningMessage(warningText);
+        await sendAmountRecipientPage.checkWarningMessage(warningText);
       },
     );
   });

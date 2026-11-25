@@ -10,7 +10,8 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Mockttp } from '../../mock-e2e';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { mockSpotPrices } from '../tokens/utils/mocks';
-import SendPage from '../../page-objects/pages/send/send-page';
+import SendAmountRecipientPage from '../../page-objects/pages/send/send-amount-recipient-page';
+import SendAssetPickerPage from '../../page-objects/pages/send/send-asset-picker-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import {
   DEFAULT_FIXTURE_ACCOUNT_ID,
@@ -290,7 +291,7 @@ describe('Multichain Asset List', function (this: Suite) {
         await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         const tokensTab = new TokensTab(driver);
-        const sendPage = new SendPage(driver);
+        const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
         await tokensTab.importCustomTokenByChain(
           '0x89',
           '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
@@ -300,8 +301,9 @@ describe('Multichain Asset List', function (this: Suite) {
         await tokensTab.checkTokenItemNumber(2);
 
         await homePage.startSendFlow();
-        await sendPage.selectToken('0x89', 'TST');
-        await sendPage.fillRecipient({
+        const sendAssetPickerPage = new SendAssetPickerPage(driver);
+        await sendAssetPickerPage.selectToken('0x89', 'TST');
+        await sendAmountRecipientPage.fillRecipient({
           recipientAddress: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         });
       },

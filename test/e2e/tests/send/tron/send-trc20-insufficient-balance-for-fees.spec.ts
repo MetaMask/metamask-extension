@@ -5,7 +5,8 @@ import { waitUntilAccountTreeSyncIdle } from '../../../page-objects/flows/add-ac
 import { login } from '../../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../../page-objects/flows/network.flow';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import SendPage from '../../../page-objects/pages/send/send-page';
+import SendAmountRecipientPage from '../../../page-objects/pages/send/send-amount-recipient-page';
+import SendAssetPickerPage from '../../../page-objects/pages/send/send-asset-picker-page';
 import {
   TRON_CHAIN_ID,
   TRON_RECIPIENT_ADDRESS,
@@ -32,18 +33,19 @@ describe('Tron Send', function (this: Suite) {
         await homePage.checkPageIsLoaded();
 
         await homePage.startSendFlow();
-        const sendPage = new SendPage(driver);
-        await sendPage.selectToken(TRON_CHAIN_ID, 'USDT');
-        await sendPage.checkSendFormIsLoaded();
+        const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
+        const sendAssetPickerPage = new SendAssetPickerPage(driver);
+        await sendAssetPickerPage.selectToken(TRON_CHAIN_ID, 'USDT');
+        await sendAmountRecipientPage.checkPageIsLoaded();
 
-        await sendPage.fillRecipient({
+        await sendAmountRecipientPage.fillRecipient({
           recipientAddress: TRON_RECIPIENT_ADDRESS,
         });
-        await sendPage.fillAmount('1');
+        await sendAmountRecipientPage.fillAmount('1');
         // With 1 sun TRX, Continue builds the TRC20 tx then fails fee cover.
-        await sendPage.pressContinueButton();
-        await sendPage.checkInsufficientBalanceToCoverFeesError();
-        await sendPage.checkContinueButtonIsDisabled();
+        await sendAmountRecipientPage.pressContinueButton();
+        await sendAmountRecipientPage.checkInsufficientBalanceToCoverFeesError();
+        await sendAmountRecipientPage.checkContinueButtonIsDisabled();
       },
     );
   });

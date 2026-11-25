@@ -7,9 +7,11 @@ import { Driver } from '../../../webdriver/driver';
  * Screen: snap confirmation dialog with "Transaction request" header after
  * Bitcoin send Continue (not redesigned MetaMask `#/confirmation`).
  * Owns: send amount / network fee / total display checks and confirm.
- * Boundaries: review and footer only. The send form is `SendPage`; other snap
- * sign/send confirmations use the `confirmations/` snap page objects.
- * Related: `SendPage`, Bitcoin send specs under `tests/send/bitcoin/`.
+ * Boundaries: review and footer only. The send form is
+ * `SendAmountRecipientPage`; other snap sign/send confirmations use the
+ * `confirmations/` snap page objects.
+ * Related: `SendAmountRecipientPage`, Bitcoin send specs under
+ * `tests/send/bitcoin/`.
  *
  * @see ui/components/app/snaps/snap-ui-footer-button/snap-ui-footer-button.tsx
  * @see ui/components/app/snaps/snap-ui-renderer/components/footer.ts

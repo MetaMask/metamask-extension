@@ -17,7 +17,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import { mockEthPrices } from '../tokens/utils/mocks';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
-import SendPage from '../../page-objects/pages/send/send-page';
+import SendAmountRecipientPage from '../../page-objects/pages/send/send-amount-recipient-page';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 
 const PREFERENCES_STATE_MOCK = {
@@ -318,9 +318,9 @@ describe('Send ETH - Max Amount', function () {
         // navigate back to edit
         await transactionConfirmation.clickBackButton();
 
-        const sendPage = new SendPage(driver);
-        await sendPage.fillAmount('10'); // update the value
-        await sendPage.pressContinueButton();
+        const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
+        await sendAmountRecipientPage.fillAmount('10'); // update the value
+        await sendAmountRecipientPage.pressContinueButton();
 
         await transactionConfirmation.checkPageIsLoaded();
         await transactionConfirmation.clickFooterButton({

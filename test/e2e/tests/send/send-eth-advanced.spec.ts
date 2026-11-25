@@ -19,7 +19,8 @@ import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
-import SendPage from '../../page-objects/pages/send/send-page';
+import SendAmountRecipientPage from '../../page-objects/pages/send/send-amount-recipient-page';
+import SendAssetPickerPage from '../../page-objects/pages/send/send-asset-picker-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { Anvil } from '../../seeder/anvil';
 import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
@@ -227,22 +228,23 @@ describe('Send ETH - Advanced', function () {
           await login(driver);
 
           const homePage = new HomePage(driver);
-          const sendPage = new SendPage(driver);
+          const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
           const transactionConfirmation = new TransactionConfirmation(driver);
 
           await homePage.startSendFlow();
 
-          await sendPage.selectToken('0x539', 'ETH');
+          const sendAssetPickerPage = new SendAssetPickerPage(driver);
+          await sendAssetPickerPage.selectToken('0x539', 'ETH');
 
-          await sendPage.fillRecipient({
+          await sendAmountRecipientPage.fillRecipient({
             recipientAddress: '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
           });
 
-          await sendPage.fillHexData(
+          await sendAmountRecipientPage.fillHexData(
             '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
           );
 
-          await sendPage.pressContinueButton();
+          await sendAmountRecipientPage.pressContinueButton();
 
           await transactionConfirmation.checkPageIsLoaded();
 

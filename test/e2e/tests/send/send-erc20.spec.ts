@@ -15,7 +15,8 @@ import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
-import SendPage from '../../page-objects/pages/send/send-page';
+import SendAmountRecipientPage from '../../page-objects/pages/send/send-amount-recipient-page';
+import SendAssetPickerPage from '../../page-objects/pages/send/send-asset-picker-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/token-transfer-confirmation';
 import WatchAssetConfirmation from '../../page-objects/pages/confirmations/watch-asset-confirmation';
@@ -101,15 +102,18 @@ describe('Send ERC20', function () {
           );
 
           const homePage = new HomePage(driver);
-          const sendPage = new SendPage(driver);
+          const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
           const confirmation = new Confirmation(driver);
           const activityTab = new ActivityTab(driver);
 
           await homePage.startSendFlow();
-          await sendPage.selectToken('0x539', 'TST');
-          await sendPage.fillRecipient({ recipientAddress: DEFAULT_RECIPIENT });
-          await sendPage.fillAmount('1');
-          await sendPage.pressContinueButton();
+          const sendAssetPickerPage = new SendAssetPickerPage(driver);
+          await sendAssetPickerPage.selectToken('0x539', 'TST');
+          await sendAmountRecipientPage.fillRecipient({
+            recipientAddress: DEFAULT_RECIPIENT,
+          });
+          await sendAmountRecipientPage.fillAmount('1');
+          await sendAmountRecipientPage.pressContinueButton();
 
           await confirmation.checkPageIsLoaded();
           await confirmation.clickFooterButton({ button: 'confirm' });

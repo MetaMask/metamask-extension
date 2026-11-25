@@ -8,7 +8,8 @@ import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
 import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
-import SendPage from '../../page-objects/pages/send/send-page';
+import SendAmountRecipientPage from '../../page-objects/pages/send/send-amount-recipient-page';
+import SendAssetPickerPage from '../../page-objects/pages/send/send-asset-picker-page';
 
 describe('ENS', function (this: Suite) {
   // End of the resolved address. The start is shortened to fit.
@@ -69,12 +70,15 @@ describe('ENS', function (this: Suite) {
         await homepage.startSendFlow();
 
         // fill ens address as recipient when user lands on send token screen
-        const sendToPage = new SendPage(driver);
-        await sendToPage.selectToken('0x1', 'ETH');
-        await sendToPage.fillRecipient({ recipientAddress: sampleEnsDomain });
+        const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
+        const sendAssetPickerPage = new SendAssetPickerPage(driver);
+        await sendAssetPickerPage.selectToken('0x1', 'ETH');
+        await sendAmountRecipientPage.fillRecipient({
+          recipientAddress: sampleEnsDomain,
+        });
 
         // Verify that ens is resolved to the correct address
-        await sendToPage.checkEnsAddressResolution(
+        await sendAmountRecipientPage.checkEnsAddressResolution(
           sampleEnsDomain,
           sampleAddressEnd,
         );

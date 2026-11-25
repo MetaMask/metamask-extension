@@ -11,7 +11,8 @@ import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import BitcoinReviewTxPage from '../../../page-objects/pages/send/bitcoin-review-tx-page';
-import SendPage from '../../../page-objects/pages/send/send-page';
+import SendAmountRecipientPage from '../../../page-objects/pages/send/send-amount-recipient-page';
+import SendAssetPickerPage from '../../../page-objects/pages/send/send-asset-picker-page';
 import { withBitcoinFixtures } from '../../btc/fixtures/with-bitcoin-fixtures';
 import { mockEvmActivityApi } from '../utils/mock-evm-activity-api';
 import {
@@ -84,17 +85,18 @@ describe('Bitcoin - Activity types', function (this: Suite) {
 
         await homePage.goToTokensTab();
         await homePage.startSendFlow();
-        const sendPage = new SendPage(driver);
-        await sendPage.selectToken(
+        const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
+        const sendAssetPickerPage = new SendAssetPickerPage(driver);
+        await sendAssetPickerPage.selectToken(
           'bip122:000000000019d6689c085ae165831e93',
           'BTC',
         );
-        await sendPage.fillRecipient({
+        await sendAmountRecipientPage.fillRecipient({
           recipientAddress: RECIPIENT_ADDRESS,
         });
-        await sendPage.fillAmount(SEND_AMOUNT);
-        await sendPage.checkContinueButton({ state: 'enabled' });
-        await sendPage.pressContinueButton();
+        await sendAmountRecipientPage.fillAmount(SEND_AMOUNT);
+        await sendAmountRecipientPage.checkContinueButton({ state: 'enabled' });
+        await sendAmountRecipientPage.pressContinueButton();
 
         const reviewPage = new BitcoinReviewTxPage(driver);
         await reviewPage.checkPageIsLoaded();

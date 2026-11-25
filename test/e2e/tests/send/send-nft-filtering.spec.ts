@@ -13,7 +13,8 @@ import { Driver } from '../../webdriver/driver';
 import Homepage from '../../page-objects/pages/home/homepage';
 import NftsTab from '../../page-objects/pages/home/nfts-tab';
 import { login } from '../../page-objects/flows/login.flow';
-import SendPage from '../../page-objects/pages/send/send-page';
+import SendAmountRecipientPage from '../../page-objects/pages/send/send-amount-recipient-page';
+import SendAssetPickerPage from '../../page-objects/pages/send/send-asset-picker-page';
 
 describe('Send NFT - Filtering', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -46,10 +47,12 @@ describe('Send NFT - Filtering', function () {
         await nftsTab.checkPageIsLoaded();
         await homepage.startSendFlow();
 
-        const sendPage = new SendPage(driver);
-        await sendPage.checkPageIsLoaded();
-        await sendPage.selectNft('Test Dapp NFTs #1');
-        await sendPage.fillRecipient({
+        const sendAssetPickerPage = new SendAssetPickerPage(driver);
+        await sendAssetPickerPage.checkPageIsLoaded();
+        await sendAssetPickerPage.selectNft('Test Dapp NFTs #1');
+
+        const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
+        await sendAmountRecipientPage.fillRecipient({
           recipientAddress: '0x1234567890123456789012345678901234567890',
         });
       },

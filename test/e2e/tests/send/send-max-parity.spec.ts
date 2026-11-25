@@ -9,7 +9,8 @@
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import SendPage from '../../page-objects/pages/send/send-page';
+import SendAmountRecipientPage from '../../page-objects/pages/send/send-amount-recipient-page';
+import SendAssetPickerPage from '../../page-objects/pages/send/send-asset-picker-page';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import {
   MAX_AMOUNT_NETWORKS,
@@ -31,16 +32,21 @@ describe('Send max amount parity', function () {
           const homePage = new HomePage(driver);
           await homePage.startSendFlow();
 
-          const sendPage = new SendPage(driver);
-          await sendPage.checkPageIsLoaded();
-          await sendPage.selectToken(network.chainId, network.symbol);
-          await sendPage.fillRecipient({
+          const sendAssetPickerPage = new SendAssetPickerPage(driver);
+          await sendAssetPickerPage.checkPageIsLoaded();
+          await sendAssetPickerPage.selectToken(
+            network.chainId,
+            network.symbol,
+          );
+
+          const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
+          await sendAmountRecipientPage.fillRecipient({
             recipientAddress: MAX_SEND_RECIPIENT,
           });
-          await sendPage.clickMaxButton();
+          await sendAmountRecipientPage.clickMaxButton();
 
-          const sendMax = await sendPage.getAmountInputValue();
-          await sendPage.pressContinueButton();
+          const sendMax = await sendAmountRecipientPage.getAmountInputValue();
+          await sendAmountRecipientPage.pressContinueButton();
 
           const transactionConfirmation = new TransactionConfirmation(driver);
           await transactionConfirmation.checkPageIsLoaded();

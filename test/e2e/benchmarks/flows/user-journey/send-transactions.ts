@@ -11,7 +11,8 @@ import AccountListPage from '../../../page-objects/pages/accounts/list-page';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import SnapTransactionConfirmation from '../../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import SendPage from '../../../page-objects/pages/send/send-page';
+import SendAmountRecipientPage from '../../../page-objects/pages/send/send-amount-recipient-page';
+import SendAssetPickerPage from '../../../page-objects/pages/send/send-asset-picker-page';
 import { Driver } from '../../../webdriver/driver';
 import { collectTimerResults } from '../../utils/timer-helper';
 import {
@@ -80,32 +81,35 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
             driver,
             'openSendPageFromHome',
             async () => {
-              const sendPage = new SendPage(driver);
-              await sendPage.checkNetworkFilterToggleIsDisplayed();
+              const sendAssetPickerPage = new SendAssetPickerPage(driver);
+              await sendAssetPickerPage.checkNetworkFilterToggleIsDisplayed();
             },
           ),
         );
 
         // Measure: Select token and load form
-        const sendPage = new SendPage(driver);
-        await sendPage.selectToken(
+        const sendAssetPickerPage = new SendAssetPickerPage(driver);
+        await sendAssetPickerPage.selectToken(
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
           'SOL',
         );
+        const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
         steps.push(
           await measureStepWithLongTasks(
             driver,
             'selectTokenToSendFormLoaded',
             async () => {
-              await sendPage.checkSendFormIsLoaded();
+              await sendAmountRecipientPage.checkPageIsLoaded();
             },
           ),
         );
 
         // Measure: Review transaction
-        await sendPage.fillRecipient({ recipientAddress: RECIPIENT_ADDRESS });
-        await sendPage.fillAmount('0.00001');
-        await sendPage.pressContinueButton();
+        await sendAmountRecipientPage.fillRecipient({
+          recipientAddress: RECIPIENT_ADDRESS,
+        });
+        await sendAmountRecipientPage.fillAmount('0.00001');
+        await sendAmountRecipientPage.pressContinueButton();
         steps.push(
           await measureStepWithLongTasks(
             driver,

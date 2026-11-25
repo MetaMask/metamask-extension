@@ -15,7 +15,7 @@ import {
 } from '../../constants';
 import { login } from '../../page-objects/flows/login.flow';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
-import SendPage from '../../page-objects/pages/send/send-page';
+import SendAmountRecipientPage from '../../page-objects/pages/send/send-amount-recipient-page';
 import {
   createBalanceUpdateNotification,
   waitForAccountActivitySubscription,
@@ -204,7 +204,7 @@ describe('Send ERC20 - Max Balance Validation', function () {
         await login(driver);
 
         const tokensTab = new TokensTab(driver);
-        const sendPage = new SendPage(driver);
+        const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
 
         // baseline: the Tokens list shows the seeded 10 TST balance
         await tokensTab.checkTokenAmountIsDisplayed(`10 ${SYMBOL}`);
@@ -241,19 +241,23 @@ describe('Send ERC20 - Max Balance Validation', function () {
         await tokensTab.checkTokenAmountIsDisplayed(`5 ${SYMBOL}`);
         await tokensTab.openTokenDetails(TOKEN_NAME);
         await tokensTab.startSendFlow();
-        await sendPage.fillRecipient({ recipientAddress: RECIPIENT_ADDRESS });
+        await sendAmountRecipientPage.fillRecipient({
+          recipientAddress: RECIPIENT_ADDRESS,
+        });
 
         // Wait for the Send balance to reflect the update before clicking Max,
         // otherwise Max races the async balance convergence.
-        await sendPage.checkAvailableBalance('5');
+        await sendAmountRecipientPage.checkAvailableBalance('5');
 
-        await sendPage.clickMaxButton();
-        await sendPage.checkAmountInputValue('5');
-        await sendPage.checkContinueButton({ state: 'enabled' });
+        await sendAmountRecipientPage.clickMaxButton();
+        await sendAmountRecipientPage.checkAmountInputValue('5');
+        await sendAmountRecipientPage.checkContinueButton({ state: 'enabled' });
 
-        await sendPage.fillAmount('10');
-        await sendPage.checkInsufficientFundsError();
-        await sendPage.checkContinueButton({ state: 'disabled' });
+        await sendAmountRecipientPage.fillAmount('10');
+        await sendAmountRecipientPage.checkInsufficientFundsError();
+        await sendAmountRecipientPage.checkContinueButton({
+          state: 'disabled',
+        });
       },
     );
   });

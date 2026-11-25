@@ -1,7 +1,8 @@
 import { Suite } from 'mocha';
 import { MockedEndpoint, Mockttp } from 'mockttp';
 
-import SendPage from '../../page-objects/pages/send/send-page';
+import SendAmountRecipientPage from '../../page-objects/pages/send/send-amount-recipient-page';
+import SendAssetPickerPage from '../../page-objects/pages/send/send-asset-picker-page';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -61,25 +62,30 @@ describe('Send flow', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        const sendPage = new SendPage(driver);
+        const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
 
         await switchToNetworkFromNetworkSelect(driver, 'Solana');
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('0', 'SOL', false);
         await homePage.clickOnSendButton();
-        await sendPage.checkSolanaNetworkIsPresent();
-        await sendPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
+        const sendAssetPickerPage = new SendAssetPickerPage(driver);
+        await sendAssetPickerPage.checkSolanaNetworkIsPresent();
+        await sendAssetPickerPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
 
-        await sendPage.fillRecipient({
+        await sendAmountRecipientPage.fillRecipient({
           recipientAddress: '2433asd',
           validAddress: false,
         });
-        await sendPage.checkInvalidAddressError();
+        await sendAmountRecipientPage.checkInvalidAddressError();
 
-        await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
-        await sendPage.fillAmount('1');
-        await sendPage.checkInsufficientFundsError();
-        await sendPage.checkContinueButton({ state: 'disabled' });
+        await sendAmountRecipientPage.fillRecipient({
+          recipientAddress: commonSolanaAddress,
+        });
+        await sendAmountRecipientPage.fillAmount('1');
+        await sendAmountRecipientPage.checkInsufficientFundsError();
+        await sendAmountRecipientPage.checkContinueButton({
+          state: 'disabled',
+        });
       },
     );
   });
@@ -114,23 +120,30 @@ describe('Send flow', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        const sendPage = new SendPage(driver);
+        const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
 
         await switchToNetworkFromNetworkSelect(driver, 'Solana');
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('50');
         await homePage.clickOnSendButton();
-        await sendPage.checkSolanaNetworkIsPresent();
-        await sendPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
+        const sendAssetPickerPage = new SendAssetPickerPage(driver);
+        await sendAssetPickerPage.checkSolanaNetworkIsPresent();
+        await sendAssetPickerPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
 
-        await sendPage.checkContinueButton({ state: 'disabled' });
-        await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
-        await sendPage.fillAmount('0.1');
-        await sendPage.waitForSendAmountBalance();
-        await sendPage.waitForSendAmountFiatValue(solSendAmountFiatValue);
-        await sendPage.checkContinueButton({ state: 'enabled' });
+        await sendAmountRecipientPage.checkContinueButton({
+          state: 'disabled',
+        });
+        await sendAmountRecipientPage.fillRecipient({
+          recipientAddress: commonSolanaAddress,
+        });
+        await sendAmountRecipientPage.fillAmount('0.1');
+        await sendAmountRecipientPage.waitForSendAmountBalance();
+        await sendAmountRecipientPage.waitForSendAmountFiatValue(
+          solSendAmountFiatValue,
+        );
+        await sendAmountRecipientPage.checkContinueButton({ state: 'enabled' });
 
-        await sendPage.pressContinueButton();
+        await sendAmountRecipientPage.pressContinueButton();
 
         const confirmation = new SnapTransactionConfirmation(driver);
         await confirmation.checkPageIsLoaded();
@@ -169,21 +182,26 @@ describe('Send flow', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        const sendPage = new SendPage(driver);
+        const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
 
         await switchToNetworkFromNetworkSelect(driver, 'Solana');
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('50');
         await homePage.clickOnSendButton();
-        await sendPage.checkSolanaNetworkIsPresent();
-        await sendPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
+        const sendAssetPickerPage = new SendAssetPickerPage(driver);
+        await sendAssetPickerPage.checkSolanaNetworkIsPresent();
+        await sendAssetPickerPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
 
-        await sendPage.checkContinueButton({ state: 'disabled' });
-        await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
-        await sendPage.fillAmount('0.1');
-        await sendPage.checkContinueButton({ state: 'enabled' });
+        await sendAmountRecipientPage.checkContinueButton({
+          state: 'disabled',
+        });
+        await sendAmountRecipientPage.fillRecipient({
+          recipientAddress: commonSolanaAddress,
+        });
+        await sendAmountRecipientPage.fillAmount('0.1');
+        await sendAmountRecipientPage.checkContinueButton({ state: 'enabled' });
 
-        await sendPage.pressContinueButton();
+        await sendAmountRecipientPage.pressContinueButton();
 
         const confirmation = new SnapTransactionConfirmation(driver);
         await confirmation.checkPageIsLoaded();

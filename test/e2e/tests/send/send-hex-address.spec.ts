@@ -6,7 +6,7 @@
  */
 
 import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
-import SendPage from '../../page-objects/pages/send/send-page';
+import SendAmountRecipientPage from '../../page-objects/pages/send/send-amount-recipient-page';
 import { withFixtures } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
@@ -78,11 +78,11 @@ describe('Send - Hex Address Normalization', function () {
           await tokensTab.clickMultichainTokenListButton();
           await homePage.clickOnSendButton();
           // Paste address without hex prefix
-          const sendPage = new SendPage(driver);
-          await sendPage.fillRecipient({
+          const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
+          await sendAmountRecipientPage.fillRecipient({
             recipientAddress: nonHexPrefixedAddress,
           });
-          await sendPage.pressContinueButton();
+          await sendAmountRecipientPage.pressContinueButton();
 
           // Verify address on confirmation screen
           const transactionConfirmation = new TransactionConfirmation(driver);
@@ -111,12 +111,12 @@ describe('Send - Hex Address Normalization', function () {
           await homePage.clickOnSendButton();
 
           // Type address without hex prefix
-          const sendPage = new SendPage(driver);
-          await sendPage.fillRecipient({
+          const sendAmountRecipientPage = new SendAmountRecipientPage(driver);
+          await sendAmountRecipientPage.fillRecipient({
             recipientAddress: nonHexPrefixedAddress,
           });
-          await sendPage.fillAmount('0');
-          await sendPage.pressContinueButton();
+          await sendAmountRecipientPage.fillAmount('0');
+          await sendAmountRecipientPage.pressContinueButton();
 
           // Confirm transaction
           const transactionConfirmation = new TransactionConfirmation(driver);
