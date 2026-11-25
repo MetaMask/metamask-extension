@@ -54,7 +54,7 @@ export function ExtensionUpdateTakeover({
     viewedPromptType.current = promptType;
 
     // useAnalytics swallows send failures, so this promise does not reject.
-    void trackEvent(
+    trackEvent(
       createEventBuilder(
         MetaMetricsEventName.ForceUpgradeUpdateNeededPromptViewed,
       )
