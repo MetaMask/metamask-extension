@@ -20,7 +20,7 @@ import { accountsSupportedNetworksV2 } from '../../mock-response-data/api-respon
 async function mocks(server: Mockttp) {
   return [
     await mockEmptyPrices(server),
-    await accountsSupportedNetworksV2.rule(server).always().thenJson(200, {
+    await accountsSupportedNetworksV2.mockRaw(server, {
       fullSupport: [],
       partialSupport: [],
     }),

@@ -1152,44 +1152,38 @@ export async function mockTronAssets(
   const trc10Assets = { ...DEFAULT_TRC10_ASSETS, ...tronNode?.trc10Tokens };
   const trc20Assets = { ...DEFAULT_TRC20_ASSETS, ...tronNode?.trc20Tokens };
 
-  return tokensV3Assets
-    .rule(mockServer)
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: [
-        {
-          assetId: `tron:728126428/trc20:${trc20Assets.USDT.address}`,
-          decimals: trc20Assets.USDT.decimals,
-          name: trc20Assets.USDT.name,
-          symbol: trc20Assets.USDT.symbol,
-        },
-        {
-          assetId: `tron:728126428/trc10:${trc10Assets.GAS_FREE.tokenId}`,
-          decimals: trc10Assets.GAS_FREE.decimals,
-          name: trc10Assets.GAS_FREE.name,
-          symbol: trc10Assets.GAS_FREE.symbol,
-        },
-        {
-          assetId: `tron:728126428/trc20:${trc20Assets.SEED.address}`,
-          decimals: trc20Assets.SEED.decimals,
-          name: trc20Assets.SEED.name,
-          symbol: trc20Assets.SEED.symbol,
-        },
-        {
-          assetId: `tron:728126428/trc20:${trc20Assets.USDD.address}`,
-          decimals: trc20Assets.USDD.decimals,
-          name: trc20Assets.USDD.name,
-          symbol: trc20Assets.USDD.symbol,
-        },
-        {
-          assetId: `tron:728126428/trc20:${trc20Assets.HTX.address}`,
-          decimals: trc20Assets.HTX.decimals,
-          name: trc20Assets.HTX.name,
-          symbol: trc20Assets.HTX.symbol,
-        },
-      ],
-    }));
+  return tokensV3Assets.mockRaw(mockServer, [
+    {
+      assetId: `tron:728126428/trc20:${trc20Assets.USDT.address}`,
+      decimals: trc20Assets.USDT.decimals,
+      name: trc20Assets.USDT.name,
+      symbol: trc20Assets.USDT.symbol,
+    },
+    {
+      assetId: `tron:728126428/trc10:${trc10Assets.GAS_FREE.tokenId}`,
+      decimals: trc10Assets.GAS_FREE.decimals,
+      name: trc10Assets.GAS_FREE.name,
+      symbol: trc10Assets.GAS_FREE.symbol,
+    },
+    {
+      assetId: `tron:728126428/trc20:${trc20Assets.SEED.address}`,
+      decimals: trc20Assets.SEED.decimals,
+      name: trc20Assets.SEED.name,
+      symbol: trc20Assets.SEED.symbol,
+    },
+    {
+      assetId: `tron:728126428/trc20:${trc20Assets.USDD.address}`,
+      decimals: trc20Assets.USDD.decimals,
+      name: trc20Assets.USDD.name,
+      symbol: trc20Assets.USDD.symbol,
+    },
+    {
+      assetId: `tron:728126428/trc20:${trc20Assets.HTX.address}`,
+      decimals: trc20Assets.HTX.decimals,
+      name: trc20Assets.HTX.name,
+      symbol: trc20Assets.HTX.symbol,
+    },
+  ]);
 }
 
 export async function mockTronGetReward(
@@ -1607,24 +1601,21 @@ export async function mockTronGetContract(
 export async function mockAccountsApiV2WithTron(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
-  return accountsSupportedNetworksV2
-    .rule(mockServer)
-    .always()
-    .thenJson(200, {
-      fullSupport: [
-        'eip155:1',
-        'eip155:137',
-        'eip155:56',
-        'eip155:59144',
-        'eip155:8453',
-        'eip155:10',
-        'eip155:42161',
-        'eip155:534352',
-        'eip155:1337',
-        TRON_CHAIN_ID,
-      ],
-      partialSupport: ['eip155:42220', 'eip155:43114'],
-    });
+  return accountsSupportedNetworksV2.mockRaw(mockServer, {
+    fullSupport: [
+      'eip155:1',
+      'eip155:137',
+      'eip155:56',
+      'eip155:59144',
+      'eip155:8453',
+      'eip155:10',
+      'eip155:42161',
+      'eip155:534352',
+      'eip155:1337',
+      TRON_CHAIN_ID,
+    ],
+    partialSupport: ['eip155:42220', 'eip155:43114'],
+  });
 }
 
 /**
@@ -1653,17 +1644,11 @@ export async function mockAccountsApiV5WithTron(
     },
   ];
 
-  return accountsBalancesV5
-    .rule(mockServer)
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        count: balances.length,
-        unprocessedNetworks: [],
-        balances,
-      },
-    }));
+  return accountsBalancesV5.mockRaw(mockServer, {
+    count: balances.length,
+    unprocessedNetworks: [],
+    balances,
+  });
 }
 
 export async function mockTronApis(

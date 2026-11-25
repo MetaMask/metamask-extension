@@ -44,22 +44,19 @@ function mockCommonApis(mockServer: Mockttp) {
   };
 
   return Promise.all([
-    accountsSupportedNetworksV2
-      .rule(mockServer)
-      .always()
-      .thenJson(200, {
-        fullSupport: [
-          'eip155:1',
-          'eip155:137',
-          'eip155:56',
-          'eip155:59144',
-          'eip155:8453',
-          'eip155:10',
-          'eip155:42161',
-          'eip155:1337',
-        ],
-        partialSupport: [],
-      }),
+    accountsSupportedNetworksV2.mockRaw(mockServer, {
+      fullSupport: [
+        'eip155:1',
+        'eip155:137',
+        'eip155:56',
+        'eip155:59144',
+        'eip155:8453',
+        'eip155:10',
+        'eip155:42161',
+        'eip155:1337',
+      ],
+      partialSupport: [],
+    }),
     mockServer
       .forGet('https://token.api.cx.metamask.io/v2/supportedNetworks')
       .always()

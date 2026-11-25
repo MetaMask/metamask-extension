@@ -81,24 +81,21 @@ const SMALL_USDC_TO_SOL_SWAP_AMOUNTS: UsdcToSolSwapAmounts = {
  * @param mockServer
  */
 async function mockAccountsApiV2WithSolana(mockServer: Mockttp) {
-  return accountsSupportedNetworksV2
-    .rule(mockServer)
-    .always()
-    .thenJson(200, {
-      fullSupport: [
-        'eip155:1',
-        'eip155:137',
-        'eip155:56',
-        'eip155:59144',
-        'eip155:8453',
-        'eip155:10',
-        'eip155:42161',
-        'eip155:534352',
-        'eip155:1337',
-        SOLANA_CHAIN_ID,
-      ],
-      partialSupport: ['eip155:42220', 'eip155:43114'],
-    });
+  return accountsSupportedNetworksV2.mockRaw(mockServer, {
+    fullSupport: [
+      'eip155:1',
+      'eip155:137',
+      'eip155:56',
+      'eip155:59144',
+      'eip155:8453',
+      'eip155:10',
+      'eip155:42161',
+      'eip155:534352',
+      'eip155:1337',
+      SOLANA_CHAIN_ID,
+    ],
+    partialSupport: ['eip155:42220', 'eip155:43114'],
+  });
 }
 
 const SOLANA_ACCOUNTS_API_BALANCES = [
@@ -150,17 +147,11 @@ async function mockAccountsApiV6WithSolana(mockServer: Mockttp) {
 async function mockAccountsApiV5WithSolana(mockServer: Mockttp) {
   const balances = SOLANA_ACCOUNTS_API_BALANCES;
 
-  return accountsBalancesV5
-    .rule(mockServer)
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        count: balances.length,
-        unprocessedNetworks: [],
-        balances,
-      },
-    }));
+  return accountsBalancesV5.mockRaw(mockServer, {
+    count: balances.length,
+    unprocessedNetworks: [],
+    balances,
+  });
 }
 
 async function mockSolanaTokenApiAssets(mockServer: Mockttp) {

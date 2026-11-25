@@ -173,7 +173,9 @@ export type ApiMock<Body, Input, Response, Params, Variant extends string> = {
   readonly hasFixtureDefault: boolean;
   /**
    * Escape hatch: the endpoint's rule builder, for handlers that match on a
-   * query or answer from a callback. The URL still comes from the definition.
+   * query or a request body, need a completion rule, or build their body when
+   * a request arrives. The URL still comes from the definition. An override
+   * of an endpoint with a default needs `.always()` to answer every request.
    *
    * @param server - The mock server.
    * @param params - Narrows the matcher to one instance of the endpoint.

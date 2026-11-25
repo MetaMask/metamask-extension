@@ -48,13 +48,7 @@ type BasicFunctionalityOnMocks = OnboardingPrivacyMocks & {
 };
 
 async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
-  const tokenPriceMock = await priceV3Spot
-    .rule(mockServer)
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {},
-    }));
+  const tokenPriceMock = await priceV3Spot.mockRaw(mockServer, {});
   const stalelistMock = await mockServer
     .forGet(METAMASK_STALELIST_URL)
     .always()

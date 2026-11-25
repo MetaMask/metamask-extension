@@ -24,44 +24,32 @@ describe('Add existing token using search', function () {
     mockServer: Mockttp,
   ): Promise<MockedEndpoint[]> {
     return [
-      await priceV3Spot
-        .rule(mockServer)
-        .always()
-        .thenCallback(() => ({
-          statusCode: 200,
-          json: {
-            'eip155:56/slip44:60': {
-              price: 600,
-              marketCap: 90000000000,
-              pricePercentChange1d: 0,
-            },
-            'eip155:56/erc20:0x0d8775f648430679a709e98d2b0cb6250d2887ef': {
-              price: 0.18,
-              marketCap: 270000000,
-              pricePercentChange1d: 0,
-            },
-          },
-        })),
-      await priceV1ExchangeRates
-        .rule(mockServer)
-        .always()
-        .thenCallback(() => ({
-          statusCode: 200,
-          json: {
-            usd: {
-              name: 'US Dollar',
-              ticker: 'usd',
-              value: 1,
-              currencyType: 'fiat',
-            },
-            bnb: {
-              name: 'BNB',
-              ticker: 'bnb',
-              value: 1 / 600,
-              currencyType: 'crypto',
-            },
-          },
-        })),
+      await priceV3Spot.mockRaw(mockServer, {
+        'eip155:56/slip44:60': {
+          price: 600,
+          marketCap: 90000000000,
+          pricePercentChange1d: 0,
+        },
+        'eip155:56/erc20:0x0d8775f648430679a709e98d2b0cb6250d2887ef': {
+          price: 0.18,
+          marketCap: 270000000,
+          pricePercentChange1d: 0,
+        },
+      }),
+      await priceV1ExchangeRates.mockRaw(mockServer, {
+        usd: {
+          name: 'US Dollar',
+          ticker: 'usd',
+          value: 1,
+          currencyType: 'fiat',
+        },
+        bnb: {
+          name: 'BNB',
+          ticker: 'bnb',
+          value: 1 / 600,
+          currencyType: 'crypto',
+        },
+      }),
     ];
   }
 
@@ -133,25 +121,21 @@ describe('Add existing token using search', function () {
     mockServer: Mockttp,
   ): Promise<MockedEndpoint[]> {
     return [
-      await tokensV3Assets.rule(mockServer).thenCallback(() => ({
-        statusCode: 200,
-        json: [
-          {
-            assetId: 'eip155:56/slip44:714',
-            name: 'BNB',
-            symbol: 'BNB',
-            decimals: 18,
-          },
-          {
-            assetId:
-              'eip155:56/erc20:0x0d8775f648430679a709e98d2b0cb6250d2887ef',
-            name: 'Basic Attention Token',
-            symbol: 'BAT',
-            decimals: 18,
-            occurrences: 100,
-          },
-        ],
-      })),
+      await tokensV3Assets.mockRaw(mockServer, [
+        {
+          assetId: 'eip155:56/slip44:714',
+          name: 'BNB',
+          symbol: 'BNB',
+          decimals: 18,
+        },
+        {
+          assetId: 'eip155:56/erc20:0x0d8775f648430679a709e98d2b0cb6250d2887ef',
+          name: 'Basic Attention Token',
+          symbol: 'BAT',
+          decimals: 18,
+          occurrences: 100,
+        },
+      ]),
     ];
   }
 

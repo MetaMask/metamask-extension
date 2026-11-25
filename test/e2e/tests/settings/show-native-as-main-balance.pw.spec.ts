@@ -19,22 +19,16 @@ import {
 } from '../../mock-response-data/api-responses';
 
 async function mockPriceApi(mockServer: Mockttp) {
-  const spotPricesMockEth = await priceV3Spot
-    .rule(mockServer)
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        'eip155:1/slip44:60': {
-          id: 'ethereum',
-          price: 1700,
-          marketCap: 112500000,
-          totalVolume: 4500000,
-          dilutedMarketCap: 120000000,
-          pricePercentChange1d: 0,
-        },
-      },
-    }));
+  const spotPricesMockEth = await priceV3Spot.mockRaw(mockServer, {
+    'eip155:1/slip44:60': {
+      id: 'ethereum',
+      price: 1700,
+      marketCap: 112500000,
+      totalVolume: 4500000,
+      dilutedMarketCap: 120000000,
+      pricePercentChange1d: 0,
+    },
+  });
   const mockExchangeRates = await priceV1ExchangeRates
     .rule(mockServer)
     .thenCallback(() => ({

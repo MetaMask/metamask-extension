@@ -260,48 +260,36 @@ describe('Send ERC20 - Gas Customization', function () {
   async function mocks(server: Mockttp) {
     return [
       await mockedSourcifyTokenSend(server),
-      await priceV3Spot
-        .rule(server)
-        .always()
-        .thenCallback(() => ({
-          statusCode: 200,
-          json: {
-            // Localhost chain 1337 native token uses slip44:1
-            'eip155:1337/slip44:1': {
-              id: 'ethereum',
-              price: 3401,
-              marketCap: 0,
-              pricePercentChange1d: 0,
-            },
-            // TST token on localhost chain 1337
-            'eip155:1337/erc20:0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947': {
-              price: 0.5,
-              marketCap: 0,
-              pricePercentChange1d: 0,
-            },
-          },
-        })),
-      await priceV1ExchangeRates
-        .rule(server)
-        .always()
-        .thenCallback(() => ({
-          statusCode: 200,
-          json: {
-            usd: {
-              name: 'US Dollar',
-              ticker: 'usd',
-              value: 1,
-              currencyType: 'fiat',
-            },
-            eth: {
-              name: 'Ether',
-              ticker: 'eth',
-              value: 1 / 3401,
-              currencyType: 'crypto',
-            },
-          },
-        })),
-      await accountsSupportedNetworksV2.rule(server).always().thenJson(200, {
+      await priceV3Spot.mockRaw(server, {
+        // Localhost chain 1337 native token uses slip44:1
+        'eip155:1337/slip44:1': {
+          id: 'ethereum',
+          price: 3401,
+          marketCap: 0,
+          pricePercentChange1d: 0,
+        },
+        // TST token on localhost chain 1337
+        'eip155:1337/erc20:0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947': {
+          price: 0.5,
+          marketCap: 0,
+          pricePercentChange1d: 0,
+        },
+      }),
+      await priceV1ExchangeRates.mockRaw(server, {
+        usd: {
+          name: 'US Dollar',
+          ticker: 'usd',
+          value: 1,
+          currencyType: 'fiat',
+        },
+        eth: {
+          name: 'Ether',
+          ticker: 'eth',
+          value: 1 / 3401,
+          currencyType: 'crypto',
+        },
+      }),
+      await accountsSupportedNetworksV2.mockRaw(server, {
         fullSupport: [],
         partialSupport: [],
       }),

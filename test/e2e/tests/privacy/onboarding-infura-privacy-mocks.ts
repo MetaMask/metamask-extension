@@ -80,17 +80,11 @@ export async function mockOnboardingInfuraPrivacy(
       }),
   ];
 
-  const accountsApiBalancesMock = await accountsBalancesV5
-    .rule(mockServer)
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        count: 0,
-        balances: [],
-        unprocessedNetworks: [],
-      },
-    }));
+  const accountsApiBalancesMock = await accountsBalancesV5.mockRaw(mockServer, {
+    count: 0,
+    balances: [],
+    unprocessedNetworks: [],
+  });
 
   return [...infuraMocks, accountsApiBalancesMock];
 }

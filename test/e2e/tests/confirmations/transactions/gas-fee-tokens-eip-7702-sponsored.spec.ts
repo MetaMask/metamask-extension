@@ -232,16 +232,9 @@ async function mockTransactionRelayNetworks(mockServer: MockttpServer) {
       };
     });
 
-  await txSentinelNetwork
-    .rule(mockServer, { baseUrl: TX_SENTINEL_URL })
-    .always()
-    .thenCallback(() => {
-      return {
-        ok: true,
-        statusCode: 200,
-        json: network,
-      };
-    });
+  await txSentinelNetwork.mockRaw(mockServer, network, {
+    baseUrl: TX_SENTINEL_URL,
+  });
 }
 
 async function mockTransactionRelaySubmit(mockServer: MockttpServer) {

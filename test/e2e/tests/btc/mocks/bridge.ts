@@ -314,13 +314,10 @@ export async function mockBridgeGetTokensEth(mockServer: Mockttp) {
 }
 
 export async function mockBridgePopularTokens(mockServer: Mockttp) {
-  return await bridgeGetTokensPopular
-    .rule(mockServer)
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: [...MOCK_BTC_TOKENS, ...MOCK_ETH_TOKENS_FOR_BRIDGE],
-    }));
+  return await bridgeGetTokensPopular.mockRaw(mockServer, [
+    ...MOCK_BTC_TOKENS,
+    ...MOCK_ETH_TOKENS_FOR_BRIDGE,
+  ]);
 }
 
 export async function mockBridgeSearchTokensBtc(mockServer: Mockttp) {
