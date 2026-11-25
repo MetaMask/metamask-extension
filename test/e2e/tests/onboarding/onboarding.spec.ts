@@ -40,6 +40,10 @@ import {
   generateECDSAKeyPair,
   prepareDeepLinkUrl,
 } from '../deep-link/helpers';
+import {
+  accountsSupportedNetworksV2,
+  priceV3Spot,
+} from '../../mock-response-data/api-responses';
 
 const IMPORTED_SRP_ACCOUNT_1 = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
@@ -55,24 +59,22 @@ const NATIVE_ASSETS_INFO = {
 };
 
 async function mockSpotPrices(mockServer: Mockttp) {
-  return await mockServer
-    .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        'eip155:1/slip44:60': {
-          id: 'ethereum',
-          price: MOCK_ETH_PRICE,
-          marketCap: 382623505141,
-          pricePercentChange1d: 0,
-        },
+  return await priceV3Spot.rule(mockServer).thenCallback(() => ({
+    statusCode: 200,
+    json: {
+      'eip155:1/slip44:60': {
+        id: 'ethereum',
+        price: MOCK_ETH_PRICE,
+        marketCap: 382623505141,
+        pricePercentChange1d: 0,
       },
-    }));
+    },
+  }));
 }
 
 async function mockCustomNetworkOnboarding(mockServer: Mockttp) {
-  await mockServer
-    .forGet(/https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
+  await accountsSupportedNetworksV2
+    .rule(mockServer)
     .always()
     .thenJson(200, {
       fullSupport: [
@@ -90,19 +92,17 @@ async function mockCustomNetworkOnboarding(mockServer: Mockttp) {
       partialSupport: ['eip155:42220', 'eip155:43114'],
     });
 
-  await mockServer
-    .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        'eip155:1338/slip44:60': {
-          id: 'ethereum',
-          price: 1700,
-          marketCap: 382623505141,
-          pricePercentChange1d: 0,
-        },
+  await priceV3Spot.rule(mockServer).thenCallback(() => ({
+    statusCode: 200,
+    json: {
+      'eip155:1338/slip44:60': {
+        id: 'ethereum',
+        price: 1700,
+        marketCap: 382623505141,
+        pricePercentChange1d: 0,
       },
-    }));
+    },
+  }));
 }
 
 describe('MetaMask onboarding', function () {
