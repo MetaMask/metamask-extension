@@ -42,7 +42,7 @@ const SPACING_KEY =
 const OFF_GRID_NUMBER =
   '/^(?!(\\d*[02468][048]|\\d*[13579][26]|[048])$)\\d+(\\.\\d+)?$/';
 const OFF_GRID_PX_STRING =
-  '/(?<![\\w.])(?!(?:\\d*[02468][048]|\\d*[13579][26]|[048])(?:\\.0+)?px)-?\\d+(?:\\.\\d+)?px/';
+  '/(?<![\\w.])(?!-?(?:\\d*[02468][048]|\\d*[13579][26]|[048])(?:\\.0+)?px)-?\\d+(?:\\.\\d+)?px/';
 const ARBITRARY_SPACING_CLASS =
   '/(^|[\\s:!])-?((m|p)[trblxyse]?|gap(-[xy])?|space(-[xy])?)-\\[-?\\d/';
 const CLASS_HELPER = '/^(twMerge|classnames|clsx|classNames)$/';
