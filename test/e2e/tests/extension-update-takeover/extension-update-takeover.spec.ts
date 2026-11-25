@@ -59,8 +59,9 @@ function notificationFlags(showOnNotification: boolean) {
 }
 
 async function mockUpdatingPage(server: Mockttp): Promise<MockedEndpoint> {
+  // openUpdateTabAndReload opens metamask.com, so the mock has to match it.
   return await server
-    .forGet('https://metamask.io/updating')
+    .forGet('https://metamask.com/updating')
     .thenCallback(() => ({
       statusCode: 200,
       body: '<title>MetaMask Updating</title><link rel="icon" href="data:image/png;base64,iVBORw0KGgo=">',
