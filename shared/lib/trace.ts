@@ -386,6 +386,13 @@ export type TraceRequest = {
    * Start the span as the root of a new trace, ignoring the active span. A
    * resolved `parentContext` still takes precedence.
    *
+   * It is the only flag a caller sets to start a new trace; there is no
+   * separate helper. Set it on an operation that is a unit of work of its own
+   * and starts with no caller to attribute it to, such as a poll cycle, a
+   * websocket connection, a sync, or a background RPC with no UI context.
+   * Leave it unset for work done on behalf of a caller, which belongs in the
+   * caller's trace.
+   *
    * In the background, work with no resolved parent and no active span to nest
    * under is a root too: the pageload's trace id stays on the scope there.
    *

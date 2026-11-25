@@ -1,4 +1,8 @@
 import * as Sentry from '@sentry/browser';
+import {
+  expectNested,
+  type SpanWindow,
+} from '../../test/e2e/helpers/span-nesting';
 import { trace, TraceName } from './trace';
 
 // Real SDK, not mocks: the assertions read Sentry's own trace and parent ids.
@@ -49,6 +53,7 @@ describe('trace root and parentContext (real SDK)', () => {
     );
     expect(json.trace_id).toBe(parent.spanContext().traceId);
     expect(json.parent_span_id).toBe(parent.spanContext().spanId);
+    expectNested(json as SpanWindow, Sentry.spanToJSON(parent) as SpanWindow);
   });
 
   it('starts a new trace for root when its parentContext does not resolve', () => {
