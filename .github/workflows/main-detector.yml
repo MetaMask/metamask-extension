@@ -34,8 +34,16 @@ on:
         required: false
         type: boolean
         default: false
+      preset:
+        description: Startup preset to measure
+        required: false
+        type: choice
+        options:
+          - startupStandardHome
+          - startupPowerUserHome
+        default: startupStandardHome
 
-run-name: ${{ format('Main performance detector {0}{1}{2}', inputs.head_sha || github.event.workflow_run.head_sha || 'latest-main', inputs.mode == 'aa' && ' (aa)' || '', inputs.inject_head_ms && ' (inject)' || '') }}
+run-name: ${{ format('Main performance detector {0}{1}{2}{3}', inputs.head_sha || github.event.workflow_run.head_sha || 'latest-main', inputs.mode == 'aa' && ' (aa)' || '', inputs.inject_head_ms && ' (inject)' || '', inputs.preset == 'startupPowerUserHome' && ' (power-user)' || '') }}
 
 # One run per commit. Runs for different commits are independent and none is
 # cancelled: a later merge must not drop the check of an earlier one. A dispatch
@@ -297,6 +305,7 @@ jobs:
       plan: ${{ needs.plan.outputs.plan }}
       batch: 1
       inject_head_ms: ${{ inputs.inject_head_ms }}
+      preset: ${{ inputs.preset || 'startupStandardHome' }}
 
   score-first:
     needs: [plan, measure-first]
@@ -344,6 +353,7 @@ jobs:
       plan: ${{ needs.plan.outputs.plan }}
       batch: 2
       inject_head_ms: ${{ inputs.inject_head_ms }}
+      preset: ${{ inputs.preset || 'startupStandardHome' }}
 
   report:
     needs: [plan, score-first, measure-confirm]

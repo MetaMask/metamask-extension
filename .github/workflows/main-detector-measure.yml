@@ -22,6 +22,11 @@ on:
         required: false
         type: string
         default: ''
+      preset:
+        description: Benchmark preset to measure, startupStandardHome or startupPowerUserHome
+        required: false
+        type: string
+        default: startupStandardHome
 
 permissions:
   contents: read
@@ -118,12 +123,25 @@ jobs:
 
       - name: Run the A/B benchmark
         timeout-minutes: 35
-        run: >-
-          yarn test:e2e:benchmark
-          --preset startupStandardHome
-          --browserLoads 10 --pageLoads 10
-          --retries 2
-          --out test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-webpack-startupStandardHome-s${{ matrix.shard }}.json
+        env:
+          PRESET: ${{ inputs.preset }}
+          BROWSER: ${{ matrix.browser }}
+          SHARD: ${{ matrix.shard }}
+        run: |
+          set -euo pipefail
+          # The scorer reads uiStartup and load, which only the startup presets record.
+          case "$PRESET" in
+            startupStandardHome | startupPowerUserHome) ;;
+            *)
+              echo "::error::preset must be startupStandardHome or startupPowerUserHome"
+              exit 1
+              ;;
+          esac
+          yarn test:e2e:benchmark \
+            --preset "$PRESET" \
+            --browserLoads 10 --pageLoads 10 \
+            --retries 2 \
+            --out "test-artifacts/benchmarks/benchmark-$BROWSER-webpack-$PRESET-s$SHARD.json"
 
       - name: Upload batch result
         if: ${{ always() }}
