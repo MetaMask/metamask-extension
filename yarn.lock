@@ -7239,6 +7239,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/ai-controllers@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/ai-controllers@npm:2.0.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^10.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/superstruct": "npm:^3.4.1"
+    "@metamask/utils": "npm:^11.12.0"
+  checksum: 10/49228f8b003f47fef4b557a9e4a8cfa8ee5e59e03458ebcf758a00004d0503524585ca20065057e899ed2a0006354d49de99df99b258c4571ab5c1cbada50d48
+  languageName: node
+  linkType: hard
+
 "@metamask/analytics-controller@npm:^1.2.1":
   version: 1.2.1
   resolution: "@metamask/analytics-controller@npm:1.2.1"
@@ -9489,24 +9501,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/perps-controller@npm:^22.3.0":
-  version: 22.3.0
-  resolution: "@metamask/perps-controller@npm:22.3.0"
-  dependencies:
-    "@metamask/abi-utils": "npm:^3.0.0"
-    "@metamask/base-controller": "npm:^10.1.0"
-    "@metamask/controller-utils": "npm:^13.0.0"
-    "@metamask/messenger": "npm:^3.0.0"
-    "@metamask/superstruct": "npm:^3.4.1"
-    "@metamask/utils": "npm:^12.0.1"
-    "@nktkas/hyperliquid": "npm:^0.33.3"
-    bignumber.js: "npm:^9.1.2"
-    reselect: "npm:^5.3.0"
-    uuid: "npm:^14.0.2"
-  checksum: 10/5f786a08f50dc992deb42c6c5d459b3729f13feea48e351f6667c57f90afa190ebdb0f5394f489b16c0cd4c1431c3784ab3dbbe6eaa442e762d2035b9d3224e4
-  languageName: node
-  linkType: hard
-
 "@metamask/perps-controller@npm:^24.0.0":
   version: 24.1.0
   resolution: "@metamask/perps-controller@npm:24.1.0"
@@ -9522,6 +9516,24 @@ __metadata:
     reselect: "npm:^5.3.0"
     uuid: "npm:^14.0.2"
   checksum: 10/fc1660caafc3ccba443329c14d569790ebffe9f6b1d895362edfd645472dd8dc490e179dc090b85b91e8529d15e228d3e537a751b298b58ca43099ab8a9e8a81
+  languageName: node
+  linkType: hard
+
+"@metamask/perps-controller@npm:^25.0.0":
+  version: 25.0.0
+  resolution: "@metamask/perps-controller@npm:25.0.0"
+  dependencies:
+    "@metamask/abi-utils": "npm:^3.0.0"
+    "@metamask/base-controller": "npm:^10.1.0"
+    "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/superstruct": "npm:^3.4.1"
+    "@metamask/utils": "npm:^12.0.2"
+    "@nktkas/hyperliquid": "npm:^0.33.3"
+    bignumber.js: "npm:^9.1.2"
+    reselect: "npm:^5.3.0"
+    uuid: "npm:^14.0.3"
+  checksum: 10/f7c1bda1e8288c007744aefab865e6c759872405ce7dc27a7976e7f5678cf222109da909a545be385d83c9fd4498c9d834bfabbbd82ea0eb323b5989b01a48e7
   languageName: node
   linkType: hard
 
@@ -34651,6 +34663,7 @@ __metadata:
     "@metamask/account-watcher": "npm:^4.1.3"
     "@metamask/accounts-controller": "npm:^40.2.0"
     "@metamask/address-book-controller": "npm:^8.0.0"
+    "@metamask/ai-controllers": "npm:^2.0.0"
     "@metamask/analytics-controller": "npm:^4.3.1"
     "@metamask/announcement-controller": "npm:^9.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
@@ -34758,7 +34771,7 @@ __metadata:
     "@metamask/permission-controller": "npm:^14.1.0"
     "@metamask/permission-log-controller": "npm:^6.0.0"
     "@metamask/permissions-kernel-snap": "npm:^1.3.0"
-    "@metamask/perps-controller": "npm:^22.3.0"
+    "@metamask/perps-controller": "npm:^25.0.0"
     "@metamask/phishing-controller": "npm:^18.3.1"
     "@metamask/phishing-warning": "npm:^6.0.0"
     "@metamask/platform-api-docs": "npm:^0.2.1"

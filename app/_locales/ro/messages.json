@@ -395,9 +395,6 @@
     "message": "Cheie privată",
     "description": "select this type of file to use to import an account"
   },
-  "privateNetwork": {
-    "message": "Rețea privată"
-  },
   "readdToken": {
     "message": "Puteți adăuga din nou acest indicativ în viitor accesând „Adăugați indicativ” din meniul de opțiuni al contului dvs."
   },

@@ -36,6 +36,7 @@ import {
   selectOrderBookExpanded,
   selectChartExpanded,
   selectPerpsPendingTradeConfiguration,
+  selectPerpsTradeConfiguration,
   selectPerpsSelectedOrderType,
   selectPerpsOrderBookPreferences,
   selectPerpsOrderBookGrouping,
@@ -945,6 +946,26 @@ describe('perps-controller selectors', () => {
     });
   });
 
+  describe('selectPerpsTradeConfiguration', () => {
+    it('reads the effective venue when the same symbol has different saved leverage', () => {
+      const state = buildState({
+        activeProvider: 'aggregated',
+        defaultProvider: 'hyperliquid',
+        effectiveProvider: 'lighter',
+        tradeConfigurations: {
+          mainnet: {
+            hyperliquid: { ETH: { leverage: 2 } },
+            lighter: { ETH: { leverage: 7 } },
+          },
+          testnet: {},
+        },
+      });
+      expect(selectPerpsTradeConfiguration(state, 'ETH')).toEqual({
+        leverage: 7,
+      });
+    });
+  });
+
   describe('selectPerpsPendingTradeConfiguration', () => {
     it('returns an unexpired draft for the active environment', () => {
       const dateNowSpy = jest.spyOn(Date, 'now').mockReturnValue(40_000);
@@ -955,11 +976,13 @@ describe('perps-controller selectors', () => {
             isTestnet: false,
             tradeConfigurations: {
               mainnet: {
-                ETH: {
-                  pendingConfig: {
-                    amount: '25',
-                    direction: 'long',
-                    timestamp: 10_000,
+                hyperliquid: {
+                  ETH: {
+                    pendingConfig: {
+                      amount: '25',
+                      direction: 'long',
+                      timestamp: 10_000,
+                    },
                   },
                 },
               },
@@ -984,10 +1007,12 @@ describe('perps-controller selectors', () => {
             isTestnet: false,
             tradeConfigurations: {
               mainnet: {
-                ETH: {
-                  pendingConfig: {
-                    amount: '25',
-                    timestamp: 10_000,
+                hyperliquid: {
+                  ETH: {
+                    pendingConfig: {
+                      amount: '25',
+                      timestamp: 10_000,
+                    },
                   },
                 },
               },
@@ -1009,10 +1034,12 @@ describe('perps-controller selectors', () => {
             isTestnet: false,
             tradeConfigurations: {
               mainnet: {
-                ETH: {
-                  pendingConfig: {
-                    amount: '25',
-                    timestamp: 10_000,
+                hyperliquid: {
+                  ETH: {
+                    pendingConfig: {
+                      amount: '25',
+                      timestamp: 10_000,
+                    },
                   },
                 },
               },
@@ -1062,7 +1089,7 @@ describe('perps-controller selectors', () => {
             isTestnet: true,
             tradeConfigurations: {
               mainnet: {},
-              testnet: { ETH: { orderBookGrouping: 5 } },
+              testnet: { hyperliquid: { ETH: { orderBookGrouping: 5 } } },
             },
           }),
           'ETH',
