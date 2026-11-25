@@ -337,6 +337,61 @@ describe('LegacyBackgroundApiService', () => {
         );
       });
     });
+
+    it('accepts a single address and defaults to the selected network client', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({ selectedNetworkClientId: 'linea' }),
+        );
+        const getNetworkClientByIdHandler = jest
+          .fn()
+          .mockReturnValue({ configuration: { chainId: '0xe708' } });
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          getNetworkClientByIdHandler,
+        );
+        const hideAssetHandler = jest.fn();
+        rootMessenger.registerActionHandler(
+          'AssetsController:hideAsset',
+          hideAssetHandler,
+        );
+        const address = '0x6b175474e89094c44da98b954eedeac495271d0f';
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:ignoreTokens',
+          address as unknown as string[],
+        );
+
+        expect(getNetworkClientByIdHandler).toHaveBeenCalledWith('linea');
+        expect(hideAssetHandler).toHaveBeenCalledTimes(1);
+        expect(hideAssetHandler).toHaveBeenCalledWith(
+          toAssetId(address, '0xe708'),
+        );
+      });
+    });
+
+    it('skips tokens for which an assetId cannot be built', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          jest.fn().mockReturnValue({ configuration: { chainId: undefined } }),
+        );
+        const hideAssetHandler = jest.fn();
+        rootMessenger.registerActionHandler(
+          'AssetsController:hideAsset',
+          hideAssetHandler,
+        );
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:ignoreTokens',
+          ['0x6b175474e89094c44da98b954eedeac495271d0f'],
+          'mainnet',
+        );
+
+        expect(hideAssetHandler).not.toHaveBeenCalled();
+      });
+    });
   });
 
   describe('getTokenStandardAndDetails', () => {

@@ -1,6 +1,8 @@
 import type { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { toAssetId } from '../../../../../shared/lib/asset-utils';
+import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../../shared/lib/environment';
+import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { MUSD_TOKEN, MUSD_TOKEN_ADDRESS } from '../constants';
 import { ensureMusdTokenImportedForChain } from './ensure-musd-token-imported';
 
@@ -22,6 +24,14 @@ jest.mock('../../../../../shared/lib/environment', () => ({
   ...jest.requireActual('../../../../../shared/lib/environment'),
   getIsAssetsUnifiedStateIncludedInBuild: jest.fn(() => true),
 }));
+
+jest.mock('../../../../../shared/lib/asset-utils', () => {
+  const actual = jest.requireActual('../../../../../shared/lib/asset-utils');
+  return {
+    ...actual,
+    toAssetId: jest.fn(actual.toAssetId),
+  };
+});
 
 describe('ensureMusdTokenImportedForChain', () => {
   const mockDispatch = jest.fn();
@@ -46,6 +56,35 @@ describe('ensureMusdTokenImportedForChain', () => {
 
   it('does nothing when chain has no mUSD mapping', async () => {
     await ensureMusdTokenImportedForChain('0x9999' as Hex, mockDispatch);
+
+    expect(mockImportCustomAssetsBatch).not.toHaveBeenCalled();
+  });
+
+  it('does nothing when unified assets state is not included in the build', async () => {
+    jest
+      .mocked(getIsAssetsUnifiedStateIncludedInBuild)
+      .mockReturnValueOnce(false);
+
+    await ensureMusdTokenImportedForChain(CHAIN_IDS.MAINNET, mockDispatch);
+
+    expect(mockDispatch).not.toHaveBeenCalled();
+    expect(mockImportCustomAssetsBatch).not.toHaveBeenCalled();
+  });
+
+  it('does nothing when there is no selected account', async () => {
+    jest
+      .mocked(getSelectedInternalAccount)
+      .mockReturnValueOnce(undefined as never);
+
+    await ensureMusdTokenImportedForChain(CHAIN_IDS.MAINNET, mockDispatch);
+
+    expect(mockImportCustomAssetsBatch).not.toHaveBeenCalled();
+  });
+
+  it('does nothing when an assetId cannot be built', async () => {
+    jest.mocked(toAssetId).mockReturnValueOnce(undefined);
+
+    await ensureMusdTokenImportedForChain(CHAIN_IDS.MAINNET, mockDispatch);
 
     expect(mockImportCustomAssetsBatch).not.toHaveBeenCalled();
   });
