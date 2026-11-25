@@ -6,15 +6,29 @@ const summary = (shiftPct: number) => ({
   lowerPct: shiftPct - 1,
   upperPct: shiftPct + 1,
   sdPct: 0.5,
+  shiftMs: shiftPct * 10,
+  lowerMs: (shiftPct - 1) * 10,
+  upperMs: (shiftPct + 1) * 10,
+  sdMs: 5,
   jobs: 5,
 });
 
+// Each log ratio is a shift against a 1000 ms base.
 const batch = (logRatios: Record<string, number[]>): BatchScores => {
+  const shifts = Object.fromEntries(
+    Object.entries(logRatios).map(([metric, ratios]) => [
+      metric,
+      ratios.map((logRatio) => ({
+        logRatio,
+        ms: 1000 * (Math.exp(logRatio) - 1),
+      })),
+    ]),
+  );
   const score = {
     jobsTotal: 5,
     jobsUsable: 5,
     measurable: true,
-    logRatios,
+    shifts,
     metrics: {},
   };
   return { chrome: score, firefox: score };
