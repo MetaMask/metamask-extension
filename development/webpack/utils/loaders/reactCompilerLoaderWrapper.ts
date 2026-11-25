@@ -165,7 +165,7 @@ const loader: LoaderDefinitionFunction<LoaderOptions> = function loader(
       schema === undefined ? originalGetOptions() : originalGetOptions(schema)
     ) as LoaderOptions;
     const { __verbose: _verbose, ...rest } = opts;
-    const babelTransFormOpt = {
+    rest.babelTransFormOpt = {
       ...(rest.babelTransFormOpt as Record<string, unknown> | undefined),
       // Babel names the input file by its absolute path inside the source map
       // it generates, and SWC (the next loader) keeps that name when it merges
@@ -175,10 +175,10 @@ const loader: LoaderDefinitionFunction<LoaderOptions> = function loader(
       // way webpack itself does. See `toWebpackSourceName`.
       sourceFileName: toWebpackSourceName(this.rootContext, this.resourcePath),
     };
-    const withSourceName = { ...rest, babelTransFormOpt };
-    return (
-      logger ? { ...withSourceName, logger } : withSourceName
-    ) as LoaderOptions;
+    if (logger) {
+      rest.logger = logger;
+    }
+    return rest as LoaderOptions;
   };
 
   try {
