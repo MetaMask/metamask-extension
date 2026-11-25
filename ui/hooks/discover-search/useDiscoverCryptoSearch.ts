@@ -15,6 +15,7 @@ import {
   DISCOVER_SEARCH_QUERY_KEY_ROOT,
   DISCOVER_SEARCH_STALE_TIME_MS,
 } from './constants';
+import { stripLeadingDollarQuery } from './stocks-promotion';
 import type { TokenSearchMarketResult } from './types';
 
 export type UseDiscoverCryptoSearchOptions = {
@@ -75,8 +76,8 @@ export const useDiscoverCryptoSearch = ({
   query,
   enabled = true,
 }: UseDiscoverCryptoSearchOptions): UseDiscoverCryptoSearchResult => {
-  const trimmedQuery = query.trim();
-  const isSearch = trimmedQuery.length > 0;
+  const normalizedQuery = stripLeadingDollarQuery(query);
+  const isSearch = normalizedQuery.length > 0;
   const chainIds = DISCOVER_SEARCH_CHAIN_IDS;
 
   const trendingQuery = useQuery<TrendingAsset[], Error>({
@@ -106,11 +107,11 @@ export const useDiscoverCryptoSearch = ({
       ...DISCOVER_SEARCH_QUERY_KEY_ROOT,
       'crypto',
       'search',
-      trimmedQuery,
+      normalizedQuery,
       chainIds,
     ] as const,
     queryFn: async ({ pageParam }): Promise<CryptoSearchPage> => {
-      const response = await searchTokens(chainIds, trimmedQuery, {
+      const response = await searchTokens(chainIds, normalizedQuery, {
         limit: DISCOVER_SEARCH_PAGE_SIZE,
         after: pageParam,
         includeMarketData: true,

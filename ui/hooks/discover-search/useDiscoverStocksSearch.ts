@@ -14,6 +14,7 @@ import {
   DISCOVER_SEARCH_STALE_TIME_MS,
   DISCOVER_STOCKS_CHAIN_IDS,
 } from './constants';
+import { stripLeadingDollarQuery } from './stocks-promotion';
 
 export type UseDiscoverStocksSearchOptions = {
   query: string;
@@ -66,8 +67,8 @@ export const useDiscoverStocksSearch = ({
   query,
   enabled = true,
 }: UseDiscoverStocksSearchOptions): UseDiscoverStocksSearchResult => {
-  const trimmedQuery = query.trim();
-  const hasQuery = trimmedQuery.length > 0;
+  const normalizedQuery = stripLeadingDollarQuery(query);
+  const hasQuery = normalizedQuery.length > 0;
 
   // Empty query: Ethereum-only preview (matches mobile stocks feed).
   // Search: Ethereum + BNB so users can find stocks across supported RWA chains.
@@ -81,13 +82,13 @@ export const useDiscoverStocksSearch = ({
     queryKey: [
       ...DISCOVER_SEARCH_QUERY_KEY_ROOT,
       'stocks',
-      trimmedQuery,
+      normalizedQuery,
       chainIds,
     ] as const,
     queryFn: async ({ pageParam }): Promise<StocksSearchPage> => {
       const response = await fetchRwas({
         chainIds,
-        query: hasQuery ? trimmedQuery : undefined,
+        query: hasQuery ? normalizedQuery : undefined,
         sortBy: 'price_change_desc',
         limit: DISCOVER_SEARCH_PAGE_SIZE,
         after: pageParam,

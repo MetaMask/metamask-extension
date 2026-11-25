@@ -15,6 +15,20 @@ const mockUseDiscoverSearch = jest.fn();
 const mockGetIsPerpsExperienceAvailable = jest.fn();
 const mockEnsureNetworkEnabled = jest.fn();
 const mockToastSuccess = jest.fn();
+const mockTrackEvent = jest.fn(() => Promise.resolve());
+
+jest.mock('../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
+  return {
+    useAnalytics: () => ({
+      createEventBuilder,
+      trackEvent: mockTrackEvent,
+      trackErrorAsAnalytics: jest.fn(() => Promise.resolve()),
+    }),
+  };
+});
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -123,6 +137,7 @@ const getEmptyDiscoverSearchResult = () => ({
 
 jest.mock('../../selectors/perps/feature-flags', () => ({
   getIsPerpsExperienceAvailable: () => mockGetIsPerpsExperienceAvailable(),
+  getIsPerpsShowFullAssetNamesEnabled: () => false,
 }));
 
 const mockStore = configureMockStore();
@@ -135,17 +150,27 @@ describe('DiscoverSearchPage', () => {
     mockUseDiscoverSearch.mockReturnValue(getDefaultDiscoverSearchResult());
     mockEnsureNetworkEnabled.mockResolvedValue(null);
     mockToastSuccess.mockClear();
+    mockTrackEvent.mockClear();
   });
 
   const renderPage = ({
     currentCurrency = 'usd',
     route = DISCOVER_SEARCH_ROUTE,
+    remoteFeatureFlags = {},
+  }: {
+    currentCurrency?: string;
+    route?: string;
+    remoteFeatureFlags?: Record<string, unknown>;
   } = {}) => {
     const store = mockStore({
       ...mockState,
       metamask: {
         ...mockState.metamask,
         currentCurrency,
+        remoteFeatureFlags: {
+          ...mockState.metamask.remoteFeatureFlags,
+          ...remoteFeatureFlags,
+        },
       },
     });
     const queryClient = new QueryClient({
@@ -474,5 +499,332 @@ describe('DiscoverSearchPage', () => {
     expect(
       screen.queryByTestId('discover-section-crypto'),
     ).not.toBeInTheDocument();
+  });
+
+  describe('Stocks promotion on exact ticker or company name match', () => {
+    const PROMOTE_FLAG_ON = {
+      exploreSearchPromoteStocksExactTicker: {
+        enabled: true,
+        minimumVersion: '0.0.0',
+      },
+    };
+
+    const PROMOTE_FLAG_OFF = {
+      exploreSearchPromoteStocksExactTicker: {
+        enabled: false,
+        minimumVersion: '0.0.0',
+      },
+    };
+
+    const mockTslaResult = () => ({
+      ...getDefaultDiscoverSearchResult(),
+      crypto: {
+        ...getDefaultDiscoverSearchResult().crypto,
+        items: [
+          {
+            assetId: 'eip155:1/erc20:0xtslameme',
+            name: 'TSLA Memecoin',
+            symbol: 'TSLA',
+            decimals: 18,
+            price: '0.01',
+            marketCap: 100_000,
+            aggregatedUsdVolume: 50_000,
+            priceChangePct: { h24: '5.0' },
+          },
+        ],
+        totalCount: 1,
+      },
+      stocks: {
+        ...getDefaultDiscoverSearchResult().stocks,
+        items: [
+          {
+            assetId: 'eip155:1/erc20:0xtslaon',
+            name: 'Tesla (Ondo Tokenized)',
+            symbol: 'TSLAon',
+            decimals: 18,
+            price: '250.00',
+            marketCap: 20_000_000_000,
+            aggregatedUsdVolume: 126_000_000,
+            priceChangePct: { h24: '1.2' },
+            rwaData: {
+              ticker: 'TSLA',
+              instrumentType: 'equity',
+            },
+          },
+          {
+            assetId: 'eip155:1/erc20:0xmsftx',
+            name: 'Microsoft xStock',
+            symbol: 'MSFTx',
+            decimals: 18,
+            price: '420.00',
+            marketCap: 20_000_000_000,
+            aggregatedUsdVolume: 126_000_000,
+            priceChangePct: { h24: '0.8' },
+            rwaData: {
+              ticker: 'MSFT',
+              instrumentType: 'equity',
+            },
+          },
+        ],
+        totalCount: 2,
+      },
+    });
+
+    const getRenderedSectionOrder = () =>
+      Array.from(
+        screen
+          .getByTestId('discover-search-page')
+          .querySelectorAll('[data-testid^="discover-section-"]'),
+      )
+        .map((el) => el.getAttribute('data-testid'))
+        .filter((id) => !id?.endsWith('-view-all'));
+
+    it.each([
+      'TSLA',
+      'tsla',
+      '$TSLA',
+      '  $TSLA  ',
+      'Tesla',
+      'tesla',
+      'Tesla (Ondo Tokenized)',
+      'Microsoft',
+    ])(
+      'renders Stocks above Crypto for exact match query %p when flag is enabled',
+      (query) => {
+        mockUseDiscoverSearch.mockReturnValue(mockTslaResult());
+
+        renderPage({
+          route: `${DISCOVER_SEARCH_ROUTE}?q=${encodeURIComponent(query)}`,
+          remoteFeatureFlags: PROMOTE_FLAG_ON,
+        });
+
+        expect(getRenderedSectionOrder()).toStrictEqual([
+          'discover-section-stocks',
+          'discover-section-crypto',
+        ]);
+        expect(
+          screen.getAllByTestId('discover-search-section-divider'),
+        ).toHaveLength(1);
+      },
+    );
+
+    it('promotes Stocks above both Crypto and Perps while keeping tab order unchanged', () => {
+      mockGetIsPerpsExperienceAvailable.mockReturnValue(true);
+      mockUseDiscoverSearch.mockReturnValue({
+        ...mockTslaResult(),
+        perps: {
+          id: 'perps' as const,
+          items: [
+            {
+              symbol: 'TSLA-USD',
+              name: 'Tesla',
+              price: '$250.00',
+              markPrice: '250',
+              change24hPercent: '+1.50%',
+              volume: '$1M',
+              volume24h: '1000000',
+              leverage: '10x',
+              openInterest: '$500K',
+              maxLeverage: 10,
+            },
+          ],
+          isLoading: false,
+          error: null,
+          totalCount: 1,
+        },
+      });
+
+      renderPage({
+        route: `${DISCOVER_SEARCH_ROUTE}?q=TSLA`,
+        remoteFeatureFlags: PROMOTE_FLAG_ON,
+      });
+
+      expect(getRenderedSectionOrder()).toStrictEqual([
+        'discover-section-stocks',
+        'discover-section-crypto',
+        'discover-section-perps',
+      ]);
+      expect(
+        screen.getAllByTestId('discover-search-section-divider'),
+      ).toHaveLength(2);
+
+      const tabIds = Array.from(
+        screen
+          .getByTestId('discover-search-page')
+          .querySelectorAll('[data-testid^="discover-tab-"]'),
+      ).map((el) => el.getAttribute('data-testid'));
+      expect(tabIds).toStrictEqual([
+        'discover-tab-all',
+        'discover-tab-crypto',
+        'discover-tab-perps',
+        'discover-tab-stocks',
+      ]);
+    });
+
+    it.each(['TSL', 'tesl', 'eth'])(
+      'keeps Crypto above Stocks for non-exact query %p',
+      (query) => {
+        mockUseDiscoverSearch.mockReturnValue(mockTslaResult());
+
+        renderPage({
+          route: `${DISCOVER_SEARCH_ROUTE}?q=${encodeURIComponent(query)}`,
+          remoteFeatureFlags: PROMOTE_FLAG_ON,
+        });
+
+        expect(getRenderedSectionOrder()).toStrictEqual([
+          'discover-section-crypto',
+          'discover-section-stocks',
+        ]);
+      },
+    );
+
+    it('keeps Crypto above Stocks when the remote flag is off', () => {
+      mockUseDiscoverSearch.mockReturnValue(mockTslaResult());
+
+      renderPage({
+        route: `${DISCOVER_SEARCH_ROUTE}?q=TSLA`,
+        remoteFeatureFlags: PROMOTE_FLAG_OFF,
+      });
+
+      expect(getRenderedSectionOrder()).toStrictEqual([
+        'discover-section-crypto',
+        'discover-section-stocks',
+      ]);
+    });
+
+    it('does not reorder while Stocks is loading', () => {
+      const result = mockTslaResult();
+      mockUseDiscoverSearch.mockReturnValue({
+        ...result,
+        stocks: {
+          ...result.stocks,
+          isLoading: true,
+        },
+      });
+
+      renderPage({
+        route: `${DISCOVER_SEARCH_ROUTE}?q=TSLA`,
+        remoteFeatureFlags: PROMOTE_FLAG_ON,
+      });
+
+      expect(getRenderedSectionOrder()).toStrictEqual([
+        'discover-section-crypto',
+        'discover-section-stocks',
+      ]);
+    });
+
+    it('does not reorder when Stocks has no results or items have no rwaData', () => {
+      const result = mockTslaResult();
+      mockUseDiscoverSearch.mockReturnValue({
+        ...result,
+        stocks: {
+          ...result.stocks,
+          items: [
+            {
+              ...result.stocks.items[0],
+              symbol: 'TSLA',
+              rwaData: undefined,
+            },
+          ],
+        },
+      });
+
+      renderPage({
+        route: `${DISCOVER_SEARCH_ROUTE}?q=TSLA`,
+        remoteFeatureFlags: PROMOTE_FLAG_ON,
+      });
+
+      expect(getRenderedSectionOrder()).toStrictEqual([
+        'discover-section-crypto',
+        'discover-section-stocks',
+      ]);
+    });
+
+    it('tracks stocks_promoted on searched, result_clicked, tab_switched, and scrolled analytics events', async () => {
+      mockUseDiscoverSearch.mockReturnValue(mockTslaResult());
+
+      renderPage({
+        route: `${DISCOVER_SEARCH_ROUTE}?q=TSLA`,
+        remoteFeatureFlags: PROMOTE_FLAG_ON,
+      });
+
+      await waitFor(() =>
+        expect(mockTrackEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            properties: expect.objectContaining({
+              interaction_type: 'searched',
+              search_query: 'TSLA',
+              stocks_promoted: true,
+            }),
+          }),
+        ),
+      );
+
+      fireEvent.click(
+        screen.getByTestId('discover-stocks-preview-eip155:1/erc20:0xtslaon'),
+      );
+
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            interaction_type: 'result_clicked',
+            section_name: 'stocks',
+            stocks_promoted: true,
+          }),
+        }),
+      );
+
+      const scrollContainer = screen
+        .getByTestId('discover-search-page')
+        .querySelector('.overflow-y-auto');
+      expect(scrollContainer).not.toBeNull();
+      if (scrollContainer) {
+        fireEvent.scroll(scrollContainer);
+      }
+
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            interaction_type: 'scrolled',
+            stocks_promoted: true,
+          }),
+        }),
+      );
+
+      fireEvent.click(screen.getByTestId('discover-tab-stocks'));
+
+      await waitFor(() =>
+        expect(mockTrackEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            properties: expect.objectContaining({
+              interaction_type: 'tab_switched',
+              tab_name: 'stocks',
+              stocks_promoted: true,
+            }),
+          }),
+        ),
+      );
+    });
+
+    it('tracks stocks_promoted=false when promotion is inactive', async () => {
+      mockUseDiscoverSearch.mockReturnValue(mockTslaResult());
+
+      renderPage({
+        route: `${DISCOVER_SEARCH_ROUTE}?q=TSLA`,
+        remoteFeatureFlags: PROMOTE_FLAG_OFF,
+      });
+
+      await waitFor(() =>
+        expect(mockTrackEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            properties: expect.objectContaining({
+              interaction_type: 'searched',
+              search_query: 'TSLA',
+              stocks_promoted: false,
+            }),
+          }),
+        ),
+      );
+    });
   });
 });

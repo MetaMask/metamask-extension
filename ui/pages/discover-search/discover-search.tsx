@@ -34,7 +34,10 @@ import { MarketRow } from '../../components/app/perps/market-row';
 import { Tab, Tabs } from '../../components/ui/tabs';
 import { toast, ToastContent } from '../../components/ui/toast/toast';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
-import { ScrollContainer } from '../../contexts/scroll-container';
+import {
+  ScrollContainer,
+  useScrollContainer,
+} from '../../contexts/scroll-container';
 import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
@@ -42,6 +45,10 @@ import {
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { DISCOVER_SEARCH_PREVIEW_COUNT } from '../../hooks/discover-search/constants';
 import { getDiscoverViewMoreAction } from '../../hooks/discover-search/get-discover-view-more-action';
+import {
+  orderDiscoverSearchSections,
+  shouldPromoteStocksSection,
+} from '../../hooks/discover-search/stocks-promotion';
 import { useEnableFeaturedEvmNetwork } from '../../hooks/useEnableFeaturedEvmNetwork';
 import { useDiscoverSearch } from '../../hooks/discover-search/useDiscoverSearch';
 import type {
@@ -50,6 +57,7 @@ import type {
 } from '../../hooks/discover-search/types';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { getIsDiscoverSearchPromoteStocksExactTickerEnabled } from '../../selectors/multichain/feature-flags';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
@@ -105,15 +113,41 @@ const DiscoverSearchEmptyState = ({
 };
 
 const DiscoverSearchSectionDivider = () => (
-  <Box className="px-4 py-2">
+  <Box className="px-4 py-2" data-testid="discover-search-section-divider">
     <Box className="border-t border-muted" />
   </Box>
 );
+
+const AllTabScrollReset = ({
+  isStocksPromoted,
+}: {
+  isStocksPromoted: boolean;
+}) => {
+  const scrollContainerRef = useScrollContainer();
+  const prevPromotedRef = useRef(isStocksPromoted);
+
+  useEffect(() => {
+    if (prevPromotedRef.current === isStocksPromoted) {
+      return;
+    }
+    prevPromotedRef.current = isStocksPromoted;
+    if (scrollContainerRef?.current) {
+      scrollContainerRef.current.scrollTop = 0;
+    }
+  }, [isStocksPromoted, scrollContainerRef]);
+
+  return null;
+};
 
 const SEARCH_QUERY_PARAM = 'q';
 const SEARCH_TAB_PARAM = 'tab';
 const DEFAULT_DISCOVER_SEARCH_TAB: DiscoverSearchTab = 'all';
 const DISCOVER_SEARCH_ROW_HEIGHT = 72;
+const ALL_TAB_SECTION_ORDER: readonly DiscoverSearchSectionId[] = [
+  'crypto',
+  'perps',
+  'stocks',
+];
 
 type ExploreSearchTabName = 'all' | 'tokens' | 'perps' | 'stocks';
 
@@ -190,6 +224,9 @@ export const DiscoverSearchPage = () => {
   const runCloseTransition = useGlobalMenuRouteTransition();
   const enableFeaturedEvmNetwork = useEnableFeaturedEvmNetwork();
   const isPerpsAvailable = useSelector(getIsPerpsExperienceAvailable);
+  const isStocksPromotionEnabled = useSelector(
+    getIsDiscoverSearchPromoteStocksExactTickerEnabled,
+  );
   const trackedSearchKey = useRef<string | null>(null);
   const pendingTabSwitch = useRef<PendingTabSwitch | null>(null);
   const hasTrackedScroll = useRef(false);
@@ -211,6 +248,13 @@ export const DiscoverSearchPage = () => {
     query: searchQuery,
     activeTab,
   });
+
+  const isStocksPromoted = useMemo(
+    () =>
+      isStocksPromotionEnabled &&
+      shouldPromoteStocksSection(searchQuery, stocks),
+    [isStocksPromotionEnabled, searchQuery, stocks],
+  );
 
   const getSectionResultCount = useCallback(
     (section: DiscoverSearchSectionId) => {
@@ -338,6 +382,8 @@ export const DiscoverSearchPage = () => {
         position,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         result_count: getResultCount(activeTab),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        stocks_promoted: isStocksPromoted,
       });
       if (isCaipAssetType(asset.assetId)) {
         const addedNetwork = await enableFeaturedEvmNetwork(asset.assetId);
@@ -356,6 +402,7 @@ export const DiscoverSearchPage = () => {
       activeTab,
       enableFeaturedEvmNetwork,
       getResultCount,
+      isStocksPromoted,
       navigate,
       searchQuery,
       t,
@@ -399,12 +446,21 @@ export const DiscoverSearchPage = () => {
         position,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         result_count: getResultCount(activeTab),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        stocks_promoted: isStocksPromoted,
       });
       navigate(
         `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(market.symbol)}`,
       );
     },
-    [activeTab, getResultCount, navigate, searchQuery, trackExploreSearchEvent],
+    [
+      activeTab,
+      getResultCount,
+      isStocksPromoted,
+      navigate,
+      searchQuery,
+      trackExploreSearchEvent,
+    ],
   );
 
   const handleViewAll = useCallback(
@@ -543,6 +599,8 @@ export const DiscoverSearchPage = () => {
       comes_from_view_all_tap: pendingSwitch.comesFromViewAllTap || undefined,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       result_count: getResultCount(pendingSwitch.tab),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      stocks_promoted: isStocksPromoted,
     });
     pendingTabSwitch.current = null;
   }, [
@@ -550,6 +608,7 @@ export const DiscoverSearchPage = () => {
     activeTabIsLoading,
     getResultCount,
     isDebouncing,
+    isStocksPromoted,
     searchQuery,
     trackExploreSearchEvent,
   ]);
@@ -576,6 +635,8 @@ export const DiscoverSearchPage = () => {
       tab_name: getExploreSearchTabName(activeTab),
       // eslint-disable-next-line @typescript-eslint/naming-convention
       result_count: getResultCount(activeTab),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      stocks_promoted: isStocksPromoted,
     });
     trackedSearchKey.current = searchKey;
   }, [
@@ -583,6 +644,7 @@ export const DiscoverSearchPage = () => {
     activeTabIsLoading,
     getResultCount,
     isDebouncing,
+    isStocksPromoted,
     searchQuery,
     trackExploreSearchEvent,
     trimmedSearchQuery,
@@ -606,10 +668,13 @@ export const DiscoverSearchPage = () => {
       tab_name: getExploreSearchTabName(activeTab),
       // eslint-disable-next-line @typescript-eslint/naming-convention
       result_count: getResultCount(activeTab),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      stocks_promoted: isStocksPromoted,
     });
   }, [
     activeTab,
     getResultCount,
+    isStocksPromoted,
     searchQuery,
     trackExploreSearchEvent,
     trimmedSearchQuery,
@@ -637,6 +702,33 @@ export const DiscoverSearchPage = () => {
   const showPerpsPreview =
     isPerpsAvailable && (previewPerps.length > 0 || perps.isLoading);
   const showStocksPreview = previewStocks.length > 0 || stocks.isLoading;
+
+  const orderedAllSectionIds = useMemo(
+    () => orderDiscoverSearchSections(ALL_TAB_SECTION_ORDER, isStocksPromoted),
+    [isStocksPromoted],
+  );
+
+  const visibleAllSectionIds = useMemo(
+    () =>
+      orderedAllSectionIds.filter((sectionId) => {
+        switch (sectionId) {
+          case 'crypto':
+            return showCryptoPreview;
+          case 'perps':
+            return showPerpsPreview;
+          case 'stocks':
+            return showStocksPreview;
+          default:
+            return false;
+        }
+      }),
+    [
+      orderedAllSectionIds,
+      showCryptoPreview,
+      showPerpsPreview,
+      showStocksPreview,
+    ],
+  );
 
   const renderAllTabSkeleton = () => (
     <Box
@@ -760,24 +852,10 @@ export const DiscoverSearchPage = () => {
     </ScrollContainer>
   );
 
-  const allTabContent = (() => {
-    if (showAllLoading) {
-      return renderAllTabSkeleton();
-    }
-    if (showAllEmpty) {
-      return hasAllError ? (
-        <DiscoverSearchErrorState />
-      ) : (
-        <DiscoverSearchEmptyState
-          noResultsMessage={noResultsMessage}
-          query={trimmedSearchQuery}
-          onAssetPress={handlePopularAssetPress}
-        />
-      );
-    }
-    return (
-      <Box flexDirection={BoxFlexDirection.Column}>
-        {showCryptoPreview ? (
+  const renderAllTabSection = (sectionId: DiscoverSearchSectionId) => {
+    switch (sectionId) {
+      case 'crypto':
+        return (
           <>
             <DiscoverSearchSectionHeader
               title={t('perpsFilterCrypto')}
@@ -798,11 +876,10 @@ export const DiscoverSearchPage = () => {
               'crypto',
             )}
           </>
-        ) : null}
-
-        {showPerpsPreview ? (
+        );
+      case 'perps':
+        return (
           <>
-            {showCryptoPreview ? <DiscoverSearchSectionDivider /> : null}
             <DiscoverSearchSectionHeader
               title={t('perps')}
               onViewAll={() => handleViewAll('perps')}
@@ -816,13 +893,10 @@ export const DiscoverSearchPage = () => {
             />
             {renderPerpsList(previewPerps, perps.isLoading, perps.error)}
           </>
-        ) : null}
-
-        {showStocksPreview ? (
+        );
+      case 'stocks':
+        return (
           <>
-            {showCryptoPreview || showPerpsPreview ? (
-              <DiscoverSearchSectionDivider />
-            ) : null}
             <DiscoverSearchSectionHeader
               title={t('perpsFilterStocks')}
               onViewAll={() => handleViewAll('stocks')}
@@ -842,7 +916,36 @@ export const DiscoverSearchPage = () => {
               'stocks',
             )}
           </>
-        ) : null}
+        );
+      default:
+        return null;
+    }
+  };
+
+  const allTabContent = (() => {
+    if (showAllLoading) {
+      return renderAllTabSkeleton();
+    }
+    if (showAllEmpty) {
+      return hasAllError ? (
+        <DiscoverSearchErrorState />
+      ) : (
+        <DiscoverSearchEmptyState
+          noResultsMessage={noResultsMessage}
+          query={trimmedSearchQuery}
+          onAssetPress={handlePopularAssetPress}
+        />
+      );
+    }
+    return (
+      <Box flexDirection={BoxFlexDirection.Column}>
+        <AllTabScrollReset isStocksPromoted={isStocksPromoted} />
+        {visibleAllSectionIds.map((sectionId, index) => (
+          <React.Fragment key={sectionId}>
+            {index > 0 ? <DiscoverSearchSectionDivider /> : null}
+            {renderAllTabSection(sectionId)}
+          </React.Fragment>
+        ))}
       </Box>
     );
   })();

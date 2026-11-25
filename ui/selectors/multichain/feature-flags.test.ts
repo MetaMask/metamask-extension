@@ -9,6 +9,7 @@ import {
   getIsAdvancedChartsThemingEnabled,
   getIsBasicFunctionalityConsolidationEnabled,
   getIsBasicFunctionalityToggleEnabled,
+  getIsDiscoverSearchPromoteStocksExactTickerEnabled,
   getIsNetworkManagementEnabled,
   getIsSecurityTrustTdpEnabled,
   getIsTokenManagementFilterEnabled,
@@ -558,6 +559,93 @@ describe('getIsAdvancedChartsThemingEnabled', () => {
     expect(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getIsAdvancedChartsThemingEnabled(buildState() as any),
+    ).toBe(false);
+  });
+});
+
+describe('getIsDiscoverSearchPromoteStocksExactTickerEnabled', () => {
+  it('returns true when the remote flag is a boolean true', () => {
+    expect(
+      getIsDiscoverSearchPromoteStocksExactTickerEnabled(
+        buildState({
+          exploreSearchPromoteStocksExactTicker: true,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(true);
+  });
+
+  it('returns true for a version-gated flag whose minimumVersion is satisfied', () => {
+    expect(
+      getIsDiscoverSearchPromoteStocksExactTickerEnabled(
+        buildState({
+          exploreSearchPromoteStocksExactTicker: {
+            enabled: true,
+            minimumVersion: '0.0.0',
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(true);
+  });
+
+  it('returns true for a progressive-rollout wrapped flag shape', () => {
+    expect(
+      getIsDiscoverSearchPromoteStocksExactTickerEnabled(
+        buildState({
+          exploreSearchPromoteStocksExactTicker: {
+            name: 'rollout',
+            value: {
+              enabled: true,
+              minimumVersion: '0.0.0',
+            },
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(true);
+  });
+
+  it('returns false when the remote flag is explicitly disabled', () => {
+    expect(
+      getIsDiscoverSearchPromoteStocksExactTickerEnabled(
+        buildState({
+          exploreSearchPromoteStocksExactTicker: {
+            enabled: false,
+            minimumVersion: '0.0.0',
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(false);
+  });
+
+  it('returns false when minimumVersion is in the future', () => {
+    expect(
+      getIsDiscoverSearchPromoteStocksExactTickerEnabled(
+        buildState({
+          exploreSearchPromoteStocksExactTicker: {
+            enabled: true,
+            minimumVersion: '999.0.0',
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(false);
+  });
+
+  it('returns false when the flag is missing or invalid', () => {
+    expect(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      getIsDiscoverSearchPromoteStocksExactTickerEnabled(buildState() as any),
+    ).toBe(false);
+    expect(
+      getIsDiscoverSearchPromoteStocksExactTickerEnabled(
+        buildState({
+          exploreSearchPromoteStocksExactTicker: 'invalid',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
     ).toBe(false);
   });
 });
