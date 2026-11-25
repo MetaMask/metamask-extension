@@ -6773,9 +6773,6 @@
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap và hầu hết các ví cứng sẽ không hoạt động với phiên bản trình duyệt hiện tại của bạn."
   },
-  "noMMFeeSwapping": {
-    "message": "Không có phí MetaMask"
-  },
   "noNetworkFee": {
     "message": "Không có phí mạng"
   },

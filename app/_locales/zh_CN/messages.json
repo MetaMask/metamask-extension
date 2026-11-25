@@ -6769,9 +6769,6 @@
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps 和大多数硬件钱包与您的当前浏览器版本不兼容。"
   },
-  "noMMFeeSwapping": {
-    "message": "无 MetaMask 费用"
-  },
   "noNetworkFee": {
     "message": "无网络费"
   },

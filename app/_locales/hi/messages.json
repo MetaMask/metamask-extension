@@ -6769,9 +6769,6 @@
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap और अधिकांश हार्डवेयर वॉलेट, आपके वर्तमान ब्राउज़र वर्जन के साथ काम नहीं करेंगे।"
   },
-  "noMMFeeSwapping": {
-    "message": "कोई MetaMask शुल्क नहीं"
-  },
   "noNetworkFee": {
     "message": "कोई नेटवर्क शुल्क नहीं"
   },

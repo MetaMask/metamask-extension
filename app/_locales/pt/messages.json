@@ -6769,9 +6769,6 @@
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps, e a maioria das carteiras de hardware, não funcionarão com a versão atual do navegador."
   },
-  "noMMFeeSwapping": {
-    "message": "Sem taxa da MetaMask"
-  },
   "noNetworkFee": {
     "message": "Sem taxa de rede"
   },
