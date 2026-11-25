@@ -5515,6 +5515,50 @@
   "marketDetails": {
     "message": "Market details"
   },
+  "marketInsightsFeedbackAdditionalLabel": {
+    "message": "Additional feedback",
+    "description": "Label for the free-text feedback field in the market insights feedback modal"
+  },
+  "marketInsightsFeedbackAdditionalPlaceholder": {
+    "message": "How can we improve?",
+    "description": "Placeholder for the free-text feedback field in the market insights feedback modal"
+  },
+  "marketInsightsFeedbackCharactersRemaining": {
+    "message": "$1 characters remaining",
+    "description": "Remaining character count for the market insights feedback text. $1 is the number of characters"
+  },
+  "marketInsightsFeedbackDescription": {
+    "message": "Your answer helps improve our AI summaries.",
+    "description": "Description shown at the top of the market insights feedback modal"
+  },
+  "marketInsightsFeedbackHardToUnderstand": {
+    "message": "Hard to understand",
+    "description": "Feedback option for insights that are hard to understand"
+  },
+  "marketInsightsFeedbackHarmfulOrOffensive": {
+    "message": "Harmful or offensive",
+    "description": "Feedback option for harmful or offensive insights"
+  },
+  "marketInsightsFeedbackNotAccurate": {
+    "message": "Not accurate",
+    "description": "Feedback option for inaccurate insights"
+  },
+  "marketInsightsFeedbackNotRelevant": {
+    "message": "Not relevant",
+    "description": "Feedback option for irrelevant insights"
+  },
+  "marketInsightsFeedbackSomethingElse": {
+    "message": "Something else",
+    "description": "Feedback option for other feedback"
+  },
+  "marketInsightsFeedbackSubmit": {
+    "message": "Submit",
+    "description": "Submit button in the market insights feedback modal"
+  },
+  "marketInsightsFeedbackTitle": {
+    "message": "Feedback",
+    "description": "Title of the market insights feedback modal"
+  },
   "marketRate": {
     "message": "Market rate"
   },
