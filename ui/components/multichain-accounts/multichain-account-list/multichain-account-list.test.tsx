@@ -1634,6 +1634,83 @@ describe('MultichainAccountList', () => {
       ).toHaveLength(0);
     });
 
+    describe('hidden private-key accounts', () => {
+      const walletsWithHiddenPrivateKey = {
+        ...mockWalletsWithPrivateKey,
+        [privateKeyWalletId]: {
+          ...mockWalletsWithPrivateKey[privateKeyWalletId],
+          groups: {
+            [privateKeyGroupId]: {
+              ...mockWalletsWithPrivateKey[privateKeyWalletId].groups[
+                privateKeyGroupId
+              ],
+              metadata: {
+                ...mockWalletsWithPrivateKey[privateKeyWalletId].groups[
+                  privateKeyGroupId
+                ].metadata,
+                hidden: true,
+              },
+            },
+          },
+        },
+      } as AccountTreeWallets;
+
+      it('shows the unhide toggle instead of the delete icon', () => {
+        renderComponent(
+          { wallets: walletsWithHiddenPrivateKey, isEditMode: true },
+          stateWithPrivateKeyAccount,
+        );
+
+        const privateKeyCell = screen.getByTestId(
+          `multichain-account-cell-${privateKeyGroupId}`,
+        );
+
+        expect(privateKeyCell).not.toHaveAttribute('data-delete-mode');
+        expect(privateKeyCell).toHaveClass('multichain-account-cell--hidden');
+        expect(
+          within(privateKeyCell).getByTestId(
+            'multichain-account-cell-edit-mode-hidden-icon',
+          ),
+        ).toBeInTheDocument();
+        expect(
+          within(privateKeyCell).queryByTestId(
+            'multichain-account-cell-edit-mode-delete-icon',
+          ),
+        ).not.toBeInTheDocument();
+      });
+
+      it('switches to delete mode once the account is revealed', async () => {
+        renderComponent(
+          { wallets: walletsWithHiddenPrivateKey, isEditMode: true },
+          stateWithPrivateKeyAccount,
+        );
+
+        fireEvent.click(
+          within(
+            screen.getByTestId(`multichain-account-cell-${privateKeyGroupId}`),
+          ).getByTestId('multichain-account-cell-edit-mode-hidden-icon'),
+        );
+
+        expect(mockSetAccountGroupHidden).toHaveBeenCalledWith(
+          privateKeyGroupId,
+          false,
+        );
+
+        const revealedCell = screen.getByTestId(
+          `multichain-account-cell-${privateKeyGroupId}`,
+        );
+        expect(revealedCell).toHaveAttribute('data-delete-mode', 'true');
+        expect(
+          within(revealedCell).getByTestId(
+            'multichain-account-cell-edit-mode-delete-icon',
+          ),
+        ).toBeInTheDocument();
+        expect(mockRemoveAccount).not.toHaveBeenCalled();
+
+        await act(async () => undefined);
+      });
+    });
+
     it('lists hidden accounts inline under their wallet', () => {
       renderComponent({
         wallets: walletsWithHiddenAccount,
