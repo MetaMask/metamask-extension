@@ -7,11 +7,12 @@ name: Main performance detector
 # commit run beside it in Chrome and are scored with ADR 0072's paired decision
 # rule. Identical builds exit early. It is not a merge gate.
 #
-# Beside the commit checks, a scheduled run slows Chrome's CPU and measures with
-# the same paired jobs and scoring, under its own Slack label: daily, the newest
-# main commit against the commit the last daily run measured, in the standard
-# and the power-user startup preset and the critical user flows. See
-# .github/scripts/main-detector/README.md.
+# Beside the commit checks, scheduled runs slow Chrome's CPU and measure with
+# the same paired jobs and scoring, each under its own Slack label: daily, the
+# newest main commit against the commit the last daily run measured, in the
+# standard and the power-user startup preset and the critical user flows; and
+# weekly, the newest main commit against a pinned reference build, to catch
+# creep spread over many commits. See .github/scripts/main-detector/README.md.
 
 on:
   workflow_run:
@@ -22,6 +23,8 @@ on:
     # Daily at 07:00 UTC, after the scheduled Main runs, which start hourly from
     # 02:00 to 06:00 UTC: the throttled daily run.
     - cron: '0 7 * * *'
+    # Mondays at 08:00 UTC: the drift check against the pinned reference build.
+    - cron: '0 8 * * 1'
   workflow_dispatch:
     inputs:
       head_sha:
@@ -29,7 +32,7 @@ on:
         required: false
         type: string
       mode:
-        description: auto; aa to run the head against itself as a false positive rate canary; throttled, or throttled-aa to run the head against itself, to run the daily throttled run now
+        description: auto; aa to run the head against itself as a false positive rate canary; throttled, throttled-aa (the same against itself) or drift to run a scheduled throttled run now
         required: false
         type: choice
         options:
@@ -37,6 +40,7 @@ on:
           - aa
           - throttled
           - throttled-aa
+          - drift
         default: auto
       cpu_throttle_rate:
         description: Throttled modes only, how many times slower Chrome runs page CPU work
@@ -49,7 +53,7 @@ on:
         type: string
         default: '20'
       base_sha:
-        description: Throttled mode only, the commit to compare with (default is the commit the last daily run measured)
+        description: Throttled mode only, the commit to compare with (default is the commit the last daily run measured, or the pinned reference for drift)
         required: false
         type: string
       inject_head_ms:
@@ -62,7 +66,7 @@ on:
         type: boolean
         default: false
 
-run-name: ${{ format('Main performance detector {0}{1}{2}', (github.event_name == 'schedule' || contains(fromJSON('["throttled","throttled-aa"]'), inputs.mode)) && 'latest-main' || inputs.head_sha || github.event.workflow_run.head_sha || 'latest-main', github.event_name == 'schedule' && format(' ({0})', 'throttled') || inputs.mode == 'throttled' && ' (throttled)' || inputs.mode == 'throttled-aa' && ' (throttled aa)' || inputs.mode == 'aa' && ' (aa)' || '', inputs.inject_head_ms && ' (inject)' || '') }}
+run-name: ${{ format('Main performance detector {0}{1}{2}', (github.event_name == 'schedule' || contains(fromJSON('["throttled","throttled-aa","drift"]'), inputs.mode)) && 'latest-main' || inputs.head_sha || github.event.workflow_run.head_sha || 'latest-main', github.event_name == 'schedule' && format(' ({0})', github.event.schedule == '0 8 * * 1' && 'drift' || 'throttled') || inputs.mode == 'throttled' && ' (throttled)' || inputs.mode == 'throttled-aa' && ' (throttled aa)' || inputs.mode == 'drift' && ' (drift)' || inputs.mode == 'aa' && ' (aa)' || '', inputs.inject_head_ms && ' (inject)' || '') }}
 
 # One run per commit. Runs for different commits are independent and none is
 # cancelled: a later merge must not drop the check of an earlier one. A dispatch
@@ -70,7 +74,7 @@ run-name: ${{ format('Main performance detector {0}{1}{2}', (github.event_name =
 # is called latest-main and no commit's heartbeat or re-run check counts it. The
 # scheduled runs are one group each, by what triggered them.
 concurrency:
-  group: main-detector-${{ (github.event_name == 'schedule' || contains(fromJSON('["throttled","throttled-aa"]'), inputs.mode)) && (inputs.mode || github.event.schedule) || inputs.head_sha || github.event.workflow_run.head_sha || 'latest-main' }}
+  group: main-detector-${{ (github.event_name == 'schedule' || contains(fromJSON('["throttled","throttled-aa","drift"]'), inputs.mode)) && (inputs.mode || github.event.schedule) || inputs.head_sha || github.event.workflow_run.head_sha || 'latest-main' }}
   cancel-in-progress: false
 
 permissions:
@@ -87,7 +91,7 @@ env:
 jobs:
   plan:
     # Main runs that were cancelled never finished their builds; failed runs still upload them.
-    if: ${{ github.event_name != 'schedule' && !contains(fromJSON('["throttled","throttled-aa"]'), inputs.mode) && (github.event_name != 'workflow_run' || (github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion != 'cancelled')) }}
+    if: ${{ github.event_name != 'schedule' && !contains(fromJSON('["throttled","throttled-aa","drift"]'), inputs.mode) && (github.event_name != 'workflow_run' || (github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion != 'cancelled')) }}
     runs-on: ubuntu-latest
     outputs:
       proceed: ${{ steps.quick.outputs.proceed || steps.plan.outputs.proceed }}
@@ -318,10 +322,11 @@ jobs:
           retention-days: 30
 
   # origin: ai-synthesis
-  # Plans the daily run, which slows Chrome's CPU and compares the newest main
-  # commit with a build against the one the last daily run measured.
+  # Plans the scheduled runs that slow Chrome's CPU: the daily run, which
+  # compares the newest main commit with a build against the one the last daily
+  # run measured, and the weekly drift check against the pinned reference build.
   scheduled:
-    if: ${{ (github.event_name == 'schedule' || contains(fromJSON('["throttled","throttled-aa"]'), inputs.mode)) }}
+    if: ${{ (github.event_name == 'schedule' || contains(fromJSON('["throttled","throttled-aa","drift"]'), inputs.mode)) }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     outputs:
@@ -344,7 +349,8 @@ jobs:
         with:
           node-version-file: .nvmrc
 
-      # Commits only: trees and blobs are fetched on demand.
+      # Commits only: trees and blobs are fetched on demand. The drift check
+      # needs every commit since its reference build, a few hundred.
       - name: Fetch the history of main
         run: git fetch --no-tags --depth=1500 --filter=tree:0 origin +main:refs/remotes/origin/main
 
@@ -352,6 +358,7 @@ jobs:
         id: plan
         env:
           GH_TOKEN: ${{ github.token }}
+          SCHEDULE: ${{ github.event.schedule }}
           MODE: ${{ inputs.mode }}
           RATE: ${{ inputs.cpu_throttle_rate || '2' }}
           ITERATIONS: ${{ inputs.iterations || '20' }}
@@ -360,6 +367,9 @@ jobs:
         run: |
           set -euo pipefail
           kind=daily
+          if [[ "$SCHEDULE" == '0 8 * * 1' || "$MODE" == drift ]]; then
+            kind=drift
+          fi
           args=(--kind "$kind" --rate "$RATE" --iterations "$ITERATIONS" --github-output "$GITHUB_OUTPUT")
           if [[ "$MODE" == throttled-aa ]]; then
             args+=(--canary)
@@ -413,6 +423,19 @@ jobs:
       plan: ${{ needs.scheduled.outputs.power_user_plan }}
       iterations: ${{ needs.scheduled.outputs.iterations }}
       include_cufs: false
+      post_slack: ${{ inputs.post_slack == true }}
+
+  drift:
+    needs: scheduled
+    if: ${{ needs.scheduled.outputs.proceed == 'true' && needs.scheduled.outputs.kind == 'drift' }}
+    uses: ./.github/workflows/main-detector-batch.yml
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+    with:
+      plan: ${{ needs.scheduled.outputs.plan }}
+      iterations: ${{ needs.scheduled.outputs.iterations }}
+      include_cufs: true
       post_slack: ${{ inputs.post_slack == true }}
 
   # The daily run's other presets, on the head build alone and unscored.
