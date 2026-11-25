@@ -1,5 +1,11 @@
 import React from 'react';
-import { render, fireEvent, act } from '@testing-library/react';
+import { render, fireEvent, act, waitFor } from '@testing-library/react';
+import {
+  Category,
+  ErrorCode,
+  HardwareWalletError,
+  Severity,
+} from '@metamask/hw-wallet-sdk';
 import { Provider } from 'react-redux';
 import { MemoryRouter, type MemoryRouterProps } from 'react-router-dom';
 import configureStore from '../../store/store';
@@ -287,6 +293,27 @@ describe('HardwareWalletRepair', () => {
     expect(
       await findByText('hardwareWalletErrorTitleBlindSignNotSupported'),
     ).toBeInTheDocument();
+  });
+
+  it('shows Ethereum app guidance instead of the raw device error when the app is closed', async () => {
+    mockRequestHardwareWalletPermission.mockResolvedValue(true);
+    jest
+      .spyOn(hardwareWalletRepairUtils, 'ensureRepairDeviceReady')
+      .mockRejectedValue(
+        new HardwareWalletError('Ethereum app is not open, got BOLOS', {
+          code: ErrorCode.DeviceStateEthAppClosed,
+          severity: Severity.Err,
+          category: Category.DeviceState,
+          userMessage: 'Ethereum app is closed. Please open it to continue.',
+        }),
+      );
+    const { getByTestId, container } = renderRepairPage();
+    fireEvent.click(getByTestId('hardware-wallet-repair-reconnect'));
+    await waitFor(() => {
+      expect(container.querySelector('.text-error-default')).toHaveTextContent(
+        'hardwareWalletEthAppNotOpenDescription',
+      );
+    });
   });
 
   it('shows error when ensureRepairDeviceReady throws', async () => {
