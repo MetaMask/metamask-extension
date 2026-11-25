@@ -2,7 +2,7 @@ import React from 'react';
 import configureStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../../test/data/mock-state.json';
-import NftDefaultImage from '.';
+import NftDefaultImage from './nft-default-image';
 
 describe('NFT Default Image', () => {
   const mockShowIpfsModal = jest.fn();
