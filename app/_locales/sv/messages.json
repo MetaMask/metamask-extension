@@ -392,9 +392,6 @@
     "message": "Privat nyckel",
     "description": "select this type of file to use to import an account"
   },
-  "privateNetwork": {
-    "message": "Privat nätverk"
-  },
   "readdToken": {
     "message": "Du kan lägga till denna token i framtiden genom att välja \"Lägg till token\" i kontots alternativmeny."
   },

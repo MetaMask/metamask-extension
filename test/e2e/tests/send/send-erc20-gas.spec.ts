@@ -21,6 +21,12 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/token-transfer-confirmation';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import SendPage from '../../page-objects/pages/send/send-page';
+import {
+  accountsSupportedNetworksV2,
+  priceV1ExchangeRates,
+  priceV3Spot,
+  tokensV3Assets,
+} from '../../mock-response-data/api-responses';
 
 const recipientAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 
@@ -254,8 +260,8 @@ describe('Send ERC20 - Gas Customization', function () {
   async function mocks(server: Mockttp) {
     return [
       await mockedSourcifyTokenSend(server),
-      await server
-        .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
+      await priceV3Spot
+        .rule(server)
         .always()
         .thenCallback(() => ({
           statusCode: 200,
@@ -275,8 +281,8 @@ describe('Send ERC20 - Gas Customization', function () {
             },
           },
         })),
-      await server
-        .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+      await priceV1ExchangeRates
+        .rule(server)
         .always()
         .thenCallback(() => ({
           statusCode: 200,
@@ -295,13 +301,10 @@ describe('Send ERC20 - Gas Customization', function () {
             },
           },
         })),
-      await server
-        .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
-        .always()
-        .thenJson(200, {
-          fullSupport: [],
-          partialSupport: [],
-        }),
+      await accountsSupportedNetworksV2.rule(server).always().thenJson(200, {
+        fullSupport: [],
+        partialSupport: [],
+      }),
       // Browse list on the token management page. Without this the catch-all
       // answers with an empty body, which `browseTokens` fails to parse.
       await server
@@ -315,8 +318,8 @@ describe('Send ERC20 - Gas Customization', function () {
           totalCount: 0,
           pageInfo: { hasNextPage: false, endCursor: '' },
         }),
-      await server
-        .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+      await tokensV3Assets
+        .rule(server)
         .always()
         .thenCallback((request) => {
           const url = new URL(request.url);
