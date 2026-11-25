@@ -158,7 +158,7 @@ jobs:
               | jq 'add // []' > pr-review-comments.json
             if jq -e --arg ids "${MATCHING}" '
               ($ids | split("\n") | map(select(length > 0))) as $reviewIds
-              | [.[] | select(($reviewIds | index(.pull_request_review_id | tostring)) != null)] | length > 0
+              | [.[] | (.pull_request_review_id | tostring) as $rid | select($reviewIds | index($rid) != null)] | length > 0
             ' pr-review-comments.json > /dev/null; then
               printf '%s\n' suggestions > suggest-mode.txt
               printf '\n' > suggest-reason.txt
@@ -178,7 +178,7 @@ jobs:
               | jq 'add // []' > pr-review-comments.json
             jq -r --arg old "${OLD}" '
               ($old | split("\n") | map(select(length > 0))) as $ids
-              | .[] | select(($ids | index(.pull_request_review_id | tostring)) != null) | .id
+              | .[] | (.pull_request_review_id | tostring) as $rid | select($ids | index($rid) != null) | .id
             ' pr-review-comments.json > old-comment-ids.txt
             while IFS= read -r COMMENT_ID || [ -n "${COMMENT_ID}" ]; do
               [ -z "${COMMENT_ID}" ] && continue
