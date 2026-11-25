@@ -206,6 +206,7 @@
       },
       "marketingCampaignCookieId": null,
       "marketingConsentDecisionMade": true,
+      "marketingConsentSyncPending": true,
       "optedIn": false,
       "optedInToMarketing": false
     },
