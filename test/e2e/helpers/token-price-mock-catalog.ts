@@ -1,5 +1,10 @@
 import { Mockttp } from 'mockttp';
 import { MOCK_ETH_CONVERSION_RATE } from '../tests/tokens/utils/mocks';
+import {
+  priceV1ExchangeRates,
+  priceV3Spot,
+  tokensV3Assets,
+} from '../mock-response-data/api-responses';
 
 export type PriceMode = 'quoted' | 'unsupported';
 
@@ -169,8 +174,8 @@ export async function mockTokenAndPriceApis(
 ) {
   const { assets, priceMode } = options;
 
-  const spotPricesMock = await mockServer
-    .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+  const spotPricesMock = await priceV3Spot
+    .rule(mockServer)
     .always()
     .thenCallback((request) => {
       const { spotPrices } = catalogResponses({
@@ -181,8 +186,8 @@ export async function mockTokenAndPriceApis(
       return { statusCode: 200, json: spotPrices };
     });
 
-  const exchangeRatesMock = await mockServer
-    .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+  const exchangeRatesMock = await priceV1ExchangeRates
+    .rule(mockServer)
     .always()
     .thenCallback(() => {
       const { exchangeRates } = catalogResponses({
@@ -202,8 +207,8 @@ export async function mockTokenAndPriceApis(
     return { statusCode: 200, json: assetsMetadata };
   };
 
-  const assetsMetadataMock = await mockServer
-    .forGet('https://tokens.api.cx.metamask.io/v3/assets')
+  const assetsMetadataMock = await tokensV3Assets
+    .rule(mockServer)
     .always()
     .thenCallback(respondWithAssetsMetadata);
 
