@@ -2078,6 +2078,23 @@ async function setupMocking(
     .always()
     .thenJson(200, tokenSupportedNetworks);
 
+  // Veda performance API: vault APY for builds that still read it through
+  // MoneyAccountBalanceService, such as the older main commits a benchmark
+  // detector measures. A valid response stops TanStack Query retrying against
+  // the catch-all.
+  await server
+    .forGet(/^https:\/\/api\.sevenseas\.capital\/performance\/[^/]+\/[^/]+$/u)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        Response: {
+          apy: 0.045,
+          timestamp: '2026-01-01T00:00:00Z',
+        },
+      },
+    }));
+
   // MoneyAccountApiDataService.fetchVaults (useMoneyVaultApy): a valid catalog
   // stops TanStack Query retrying against the catch-all.
   await server
