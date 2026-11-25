@@ -11,6 +11,7 @@ import {
   type OnboardingMetricsFlowOptions,
 } from './onboarding.flow';
 import { lockAndWaitForLoginPage } from './login.flow';
+import { openAccountMenu } from './account-menu.flow';
 
 /**
  * Returns the first (truncated) address from the account list in UI.
@@ -29,7 +30,7 @@ export async function getFirstAddress(
   { waitForSync = true }: { waitForSync?: boolean } = {},
 ): Promise<string> {
   await headerNavbar.checkPageIsLoaded();
-  await headerNavbar.openAccountMenu();
+  await openAccountMenu(driver);
 
   const accountListPage = new AccountListPage(driver);
   await accountListPage.checkPageIsLoaded(20000, { waitForSync });

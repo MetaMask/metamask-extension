@@ -1,40 +1,61 @@
 import * as Sentry from '@sentry/browser';
+import { Messenger } from '@metamask/messenger';
 import { getEnvironmentType } from './environment-type';
-import { trace, trackBackgroundPageloadEnd, TraceName } from './trace';
+import { wrapMessengerWithTracing } from './messenger-tracing';
+import { trace, trackBackgroundPageload, TraceName } from './trace';
 
 jest.mock('./environment-type', () => ({
   ...jest.requireActual('./environment-type'),
   getEnvironmentType: jest.fn(),
 }));
 
+jest.mock('./wrapper-sampling', () => ({
+  shouldSampleWrappers: () => true,
+}));
+
 // Real SDK, not mocks: `browserTracingIntegration` starts and ends the pageload
 // and leaves its trace id and sampling decision on the scope, as it does in the
 // background.
 describe('trace with no caller after the background pageload ends (real SDK)', () => {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  const globals = globalThis as { ServiceWorkerGlobalScope?: unknown };
+  const testGlobal = globalThis as {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    ServiceWorkerGlobalScope?: unknown;
+    stateHooks?: unknown;
+    sentry?: unknown;
+  };
   const NO_CALLER = TraceName.ContactSyncUpdateRemote;
 
   let tracesSampler: jest.Mock;
+  let client: Sentry.BrowserClient;
+  let runningPageload: Sentry.Span | undefined;
 
   beforeAll(() => {
     const perf = globalThis.performance as unknown as Record<string, unknown>;
     perf.getEntriesByType ??= () => [];
     perf.getEntries ??= () => [];
-    (globalThis as { sentry?: unknown }).sentry = Sentry;
+    testGlobal.sentry = Sentry;
+  });
+
+  beforeEach(() => {
+    // `bootstrap.ts` creates this object before any copy of the module runs; a
+    // fresh one keeps one test's pageload out of the next.
+    testGlobal.stateHooks = {};
   });
 
   afterEach(() => {
-    delete globals.ServiceWorkerGlobalScope;
+    runningPageload?.end();
+    runningPageload = undefined;
+    delete testGlobal.stateHooks;
+    delete testGlobal.ServiceWorkerGlobalScope;
   });
 
   // The service worker (`/service-worker.js`) and Firefox's persistent
   // background page (`/background.html`) both resolve to the background.
   function inContext(pathname: string) {
     if (pathname === '/service-worker.js') {
-      globals.ServiceWorkerGlobalScope = class {
+      testGlobal.ServiceWorkerGlobalScope = class {
         static [Symbol.hasInstance](instance: unknown) {
-          return instance === globalThis;
+          return instance === testGlobal;
         }
       };
     }
@@ -47,14 +68,14 @@ describe('trace with no caller after the background pageload ends (real SDK)', (
 
   /**
    * Start a client whose pageload and no-caller trace are drawn at the given
-   * rates, then end the pageload.
+   * rates, and leave the pageload running.
    *
    * @param rates - Sample rates.
    * @param rates.pageload - Rate for the pageload.
    * @param rates.noCaller - Rate for the no-caller trace.
-   * @returns The ended pageload's trace id.
+   * @returns The running pageload span.
    */
-  function endPageload(rates: { pageload: number; noCaller: number }) {
+  function startPageload(rates: { pageload: number; noCaller: number }) {
     // Inherits a parent decision, as `createTracesSampler` does for a name
     // without an override.
     tracesSampler = jest.fn(
@@ -65,7 +86,7 @@ describe('trace with no caller after the background pageload ends (real SDK)', (
         return name === NO_CALLER ? rates.noCaller : rates.pageload;
       },
     );
-    const client = new Sentry.BrowserClient({
+    client = new Sentry.BrowserClient({
       dsn: 'https://public@example.ingest.sentry.io/1',
       transport: () => ({
         send: () => Promise.resolve({}),
@@ -77,12 +98,31 @@ describe('trace with no caller after the background pageload ends (real SDK)', (
     });
     Sentry.getCurrentScope().setClient(client);
     client.init();
-    trackBackgroundPageloadEnd(client);
+    // `setupSentry` calls this right after `Sentry.init`, before the global
+    // `sentry` that `trace.ts` reads is assigned.
+    const assigned = testGlobal.sentry;
+    delete testGlobal.sentry;
+    trackBackgroundPageload(client);
+    testGlobal.sentry = assigned;
 
     const pageload = Sentry.getActiveSpan() as Sentry.Span;
     expect(Sentry.spanToJSON(pageload).op).toBe('pageload');
-    pageload.end();
     tracesSampler.mockClear();
+    runningPageload = pageload;
+    return pageload;
+  }
+
+  /**
+   * Start a client as `startPageload` does, then end the pageload.
+   *
+   * @param rates - Sample rates, as for `startPageload`.
+   * @param rates.pageload - Rate for the pageload.
+   * @param rates.noCaller - Rate for the no-caller trace.
+   * @returns The ended pageload's trace id.
+   */
+  function endPageload(rates: { pageload: number; noCaller: number }) {
+    const pageload = startPageload(rates);
+    pageload.end();
     return pageload.spanContext().traceId;
   }
 
@@ -255,6 +295,57 @@ describe('trace with no caller after the background pageload ends (real SDK)', (
 
       expect(result.traceId).toBe(result.otherTraceId);
       expect(result.traceId).not.toBe(pageloadTraceId);
+    });
+  });
+
+  describe('while the pageload is still running', () => {
+    // The idle pageload stays open and active on the service worker's scope for
+    // up to its final timeout, and its recorded end is the end of its last
+    // counted child. A transaction forced out of it starts after that end.
+    const RESTRICTED_METHOD = 'PermissionController:executeRestrictedMethod';
+
+    type RestrictedMethodAction = {
+      type: typeof RESTRICTED_METHOD;
+      handler: (origin: string, method: string) => string;
+    };
+
+    it('records no span for a restricted-method call, which has no parent to join', () => {
+      inContext('/service-worker.js');
+      const pageload = startPageload({ pageload: 1, noCaller: 1 });
+      const messenger = new Messenger<
+        'PermissionController',
+        RestrictedMethodAction,
+        never
+      >({ namespace: 'PermissionController' });
+      messenger.registerActionHandler(RESTRICTED_METHOD, () => 'result');
+      const started: Sentry.Span[] = [];
+      client.on('spanStart', (span) => started.push(span));
+
+      const result = wrapMessengerWithTracing(messenger).call(
+        RESTRICTED_METHOD,
+        'https://dapp.example',
+        'eth_accounts',
+      );
+
+      expect(result).toBe('result');
+      expect(
+        started.filter(
+          (span) =>
+            span.spanContext().traceId === pageload.spanContext().traceId,
+        ),
+      ).toStrictEqual([]);
+    });
+
+    it('starts a trace of its own for work that falls back to the active span', () => {
+      inContext('/service-worker.js');
+      const pageload = startPageload({ pageload: 1, noCaller: 1 });
+
+      const traceId = trace(
+        { name: NO_CALLER, allowActiveSpanFallback: true },
+        (span) => (span as Sentry.Span).spanContext().traceId,
+      );
+
+      expect(traceId).not.toBe(pageload.spanContext().traceId);
     });
   });
 

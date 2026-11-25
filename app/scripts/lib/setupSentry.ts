@@ -17,7 +17,7 @@ import { getSentryRelease } from '../../../shared/lib/sentry-release';
 import { applySentryRemoteRates } from '../../../shared/lib/sentry-remote-rates';
 import {
   trackDocumentRouteTrace,
-  trackBackgroundPageloadEnd,
+  trackBackgroundPageload,
 } from '../../../shared/lib/trace';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { metaMetricsIntegration } from './sentry-metametrics';
@@ -367,7 +367,7 @@ function setSentryClient(): true {
 
   Sentry.registerSpanErrorInstrumentation();
   Sentry.init(clientOptions);
-  trackBackgroundPageloadEnd(Sentry.getClient());
+  trackBackgroundPageload(Sentry.getClient());
   trackDocumentRouteTrace(Sentry.getClient());
 
   // Apply remote-flag sample-rate overrides once, post-init; compile-time
@@ -423,10 +423,9 @@ export function beforeBreadcrumb(): BeforeBreadcrumbHandler {
 }
 
 /**
- * Names a pageload or navigation span after the document path (`/home.html`),
- * not the hash route. With `URL` reachable, the SDK resolves a hash router's
- * `pushState('#/route')` against `location.origin`, which drops the document
- * path, so every navigation would be named `/`.
+ * Names a pageload or navigation span after the document path (`/home.html`).
+ * The SDK would otherwise resolve a hash route against `location.origin` and
+ * name every navigation `/`.
  *
  * @param options - The route span's start options.
  * @returns The options, named after the document path.

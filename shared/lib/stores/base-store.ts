@@ -44,6 +44,33 @@ export type MetaMaskStorageStructure = {
 };
 
 /**
+ * Outcome of one manifest key during a split-state diagnostic read.
+ */
+export type SplitStateReadKeyFailure = {
+  key: string;
+  errorName: string;
+};
+
+/**
+ * Per-key read results for split state.
+ *
+ * Key names and error names only. This must never include stored values.
+ */
+export type SplitStateReadDiagnostics = {
+  /**
+   * - `readable`: the split-state manifest was present and an array
+   * - `missing`: storage is available but there is no array manifest (legacy)
+   * - `failed`: the manifest could not be read, or local storage is unsupported
+   */
+  manifestStatus: 'readable' | 'missing' | 'failed';
+  manifestKeyCount?: number;
+  manifestErrorName?: string;
+  readableKeys: string[];
+  missingKeys: string[];
+  failedKeys: SplitStateReadKeyFailure[];
+};
+
+/**
  * The BaseStore class is an abstract class designed to be extended by other
  * classes that implement the abstract methods `set` and `get`. This class
  * provides the foundation for different storage implementations, enabling
@@ -65,6 +92,10 @@ export type BaseStore = {
   setKeyValues: (pairs: Map<string, unknown>) => Promise<void>;
 
   getBytesInUseByKey?: (keys: string[]) => Promise<Map<string, number>>;
+
+  getTotalBytesInUse?: (keys: string[]) => Promise<number>;
+
+  getSplitStateReadDiagnostics?: () => Promise<SplitStateReadDiagnostics>;
 
   set: (state: Required<MetaMaskStorageStructure>) => Promise<void>;
 

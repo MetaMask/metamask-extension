@@ -14,9 +14,12 @@ type TraceModule = typeof import('./trace');
 // another. Each instance has its own module-level variables. Jest normally
 // loads one instance, so these tests load two, as the build does.
 describe('trace state shared across module instances', () => {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  const globals = globalThis as { ServiceWorkerGlobalScope?: unknown };
-  const globalWithHooks = globalThis as { stateHooks?: unknown };
+  const testGlobal = globalThis as {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    ServiceWorkerGlobalScope?: unknown;
+    stateHooks?: unknown;
+    sentry?: unknown;
+  };
 
   function loadInstance(): TraceModule {
     let instance: TraceModule | undefined;
@@ -31,15 +34,15 @@ describe('trace state shared across module instances', () => {
     const perf = globalThis.performance as unknown as Record<string, unknown>;
     perf.getEntriesByType ??= () => [];
     perf.getEntries ??= () => [];
-    (globalThis as { sentry?: unknown }).sentry = Sentry;
+    testGlobal.sentry = Sentry;
   });
 
   beforeEach(() => {
     // `bootstrap.ts` creates this object before any copy of the module runs.
-    globalWithHooks.stateHooks = {};
-    globals.ServiceWorkerGlobalScope = class {
+    testGlobal.stateHooks = {};
+    testGlobal.ServiceWorkerGlobalScope = class {
       static [Symbol.hasInstance](instance: unknown) {
-        return instance === globalThis;
+        return instance === testGlobal;
       }
     };
     const { getEnvironmentType: actual } =
@@ -52,8 +55,8 @@ describe('trace state shared across module instances', () => {
   });
 
   afterEach(() => {
-    delete globals.ServiceWorkerGlobalScope;
-    delete globalWithHooks.stateHooks;
+    delete testGlobal.ServiceWorkerGlobalScope;
+    delete testGlobal.stateHooks;
   });
 
   it('lets trace() in one instance see the pageload end recorded by another', () => {
@@ -74,7 +77,7 @@ describe('trace state shared across module instances', () => {
     });
     Sentry.getCurrentScope().setClient(client);
     client.init();
-    setupSentryInstance.trackBackgroundPageloadEnd(client);
+    setupSentryInstance.trackBackgroundPageload(client);
 
     const pageload = Sentry.getActiveSpan() as Sentry.Span;
     expect(Sentry.spanToJSON(pageload).op).toBe('pageload');
@@ -90,7 +93,7 @@ describe('trace state shared across module instances', () => {
   });
 
   it('lets trace() in one instance see the route recorded by another in a UI document', () => {
-    delete globals.ServiceWorkerGlobalScope;
+    delete testGlobal.ServiceWorkerGlobalScope;
     const { getEnvironmentType: actual } =
       jest.requireActual('./environment-type');
     jest

@@ -36,11 +36,9 @@ jest.mock('../../pay/useTransactionPayToken');
 jest.mock('../../pay/useTransactionPayData');
 
 const ADDRESS_MOCK = '0x1234567890abcdef1234567890abcdef12345678' as Hex;
-const CHAIN_ID_MOCK = '0x1' as Hex;
 
 const PAY_TOKEN_MOCK = {
-  address: ADDRESS_MOCK,
-  chainId: CHAIN_ID_MOCK,
+  assetId: `eip155:1/erc20:${ADDRESS_MOCK}`,
 } as TransactionPaymentToken;
 
 const SOURCE_AMOUNT_MOCK = {

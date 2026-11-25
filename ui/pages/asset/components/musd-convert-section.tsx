@@ -39,6 +39,7 @@ import {
   getMultichainNetworkConfigurationsByChainId,
   getImageForChainId,
 } from '../../../selectors/multichain';
+import { getChainIdToNetworkImageUrlMap } from '../../../selectors/config-registry/config-registry';
 import { selectIsMusdConversionFlowEnabled } from '../../../selectors/musd';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
@@ -120,6 +121,7 @@ export function MusdConvertSection() {
   const networkConfigurationsByChainId = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
+  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
 
   const stablecoins = useMemo(
     () =>
@@ -275,7 +277,10 @@ export function MusdConvertSection() {
             const networkName =
               networkConfigurationsByChainId[chainIdHex.toLowerCase() as Hex]
                 ?.name ?? '';
-            const networkIcon = getImageForChainId(chainIdHex);
+            const networkIcon = getImageForChainId(
+              chainIdHex,
+              networkImageUrls,
+            );
             const fiat = token.tokenFiatAmount ?? null;
             const fiatLabel =
               fiat !== null && Number.isFinite(fiat) ? formatFiat(fiat) : '—';

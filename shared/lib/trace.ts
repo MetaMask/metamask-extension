@@ -131,6 +131,7 @@ export enum TraceName {
   MusdConversionQuote = 'mUSD Conversion Quote',
   MusdConversionConfirm = 'mUSD Conversion Confirm',
   BatchSellModal = 'Batch Sell Modal',
+  StateLoad = 'State Load',
   StatePersist = 'State Persist',
   // Money
   MoneyActivityVaultShareValuationsFetch = 'Money Activity Vault Share Valuations Fetch',
@@ -199,6 +200,7 @@ export enum TraceOperation {
   // mUSD Conversion
   MusdConversionOperation = 'musd.conversion.operation',
   MusdConversionDataFetch = 'musd.conversion.data_fetch',
+  StateRead = 'state.read',
   StateWrite = 'state.write',
   BridgeScreenPerformance = 'bridge.screen.performance',
   BridgeDataFetch = 'bridge.data_fetch',
@@ -254,13 +256,18 @@ if (process.env.IN_TEST && globalThis.stateHooks) {
  */
 export type SharedTraceState = {
   /**
-   * The background's pageload trace id, once the pageload ended. Unset outside
-   * the background.
+   * The background's pageload trace id, from the moment the pageload starts.
+   * Unset outside the background.
    */
-  endedBackgroundPageloadTraceId?: string;
+  backgroundPageloadTraceId?: string;
   /**
-   * The trace id of the UI document's latest pageload or navigation, which the
-   * SDK keeps on the scope until the next navigation. Unset in the background.
+   * The background's pageload span id, from the moment the pageload starts.
+   * Unset outside the background.
+   */
+  backgroundPageloadSpanId?: string;
+  /**
+   * The trace id of the UI document's latest pageload or navigation. Unset in
+   * the background.
    */
   documentRouteTraceId?: string;
 };
@@ -377,7 +384,7 @@ export type TraceRequest = {
 
   /**
    * Start the span as the root of a new trace, ignoring the active span. A
-   * `parentContext` that resolves still takes precedence.
+   * resolved `parentContext` still takes precedence.
    *
    * It is the only flag a caller sets to start a new trace; there is no
    * separate helper. Set it on an operation that is a unit of work of its own
@@ -386,16 +393,11 @@ export type TraceRequest = {
    * Leave it unset for work done on behalf of a caller, which belongs in the
    * caller's trace.
    *
-   * In the background (service worker or persistent background page), once
-   * its pageload has ended, a trace whose parent is undeclared or does not
-   * resolve, that would not nest under the active span, also starts a new
-   * trace, as if `root` were set. The SDK keeps the ended pageload's trace id
-   * and sampling decision on the scope for the background's whole life, so such
-   * work would otherwise join that trace and be kept or dropped with it.
+   * In the background, work with no resolved parent and no active span to nest
+   * under is a root too: the pageload's trace id stays on the scope there.
    *
-   * In a UI document, so does a trace started on the current route's trace id,
-   * which the SDK keeps on the scope until the next navigation. While a span is
-   * active, a declared parent that does not resolve nests under it instead.
+   * In a UI document, work on the current route's trace id is a root too,
+   * unless an active span adopts it.
    */
   root?: boolean;
 };
@@ -613,13 +615,9 @@ export const traceAsControllerCallback: ControllerTraceCallback = <Result>(
       : trace({ ...req, name: req.name as TraceName }),
   ) as Promise<Result>;
 
-// The build bundles this module into the self-contained `service-worker.js`
-// entry (through `setupSentry`) and into the chunk the rest of the background
-// loads from, and each copy has its own module-level variables. State written
-// by one copy and read by another therefore lives on `globalThis.stateHooks`,
-// which every copy sees and LavaMoat scuttling excepts, as in
-// `sentry-remote-rates.ts`. State a single copy both writes and reads stays at
-// module level.
+// The background bundles this module twice, so state one copy writes and the
+// other reads lives on `globalThis.stateHooks`, which LavaMoat leaves in place
+// (as in `sentry-remote-rates.ts`).
 const localSharedState: SharedTraceState = {};
 
 function getSharedState(): SharedTraceState {
@@ -632,47 +630,53 @@ function getSharedState(): SharedTraceState {
 }
 
 /**
- * In the background (the service worker, or Firefox's persistent background
- * page), record the pageload's trace id when the pageload ends, so a trace with
- * no caller started on that stale scope gets its own trace (see
- * {@link TraceRequest.root}). Neither context navigates again, so the ended
- * pageload's trace would otherwise absorb all later work. Does nothing in a UI
- * document, where the pageload trace belongs to the document.
+ * Record the background's pageload span, so work with no parent starts its own
+ * trace instead of joining it (see {@link TraceRequest.root} and
+ * {@link sentryGetActiveSpan}). Does nothing in a UI document.
  *
- * @param client - The Sentry client that emits the pageload's `spanEnd`.
+ * @param client - The Sentry client that emits the pageload's `spanStart`.
  */
-export function trackBackgroundPageloadEnd(client?: Client): void {
+export function trackBackgroundPageload(client?: Client): void {
   if (!isBackground()) {
     return;
   }
 
-  client?.on('spanEnd', (span) => {
+  const record = (span: Span) => {
     if (spanToJSON(span).op === 'pageload') {
-      getSharedState().endedBackgroundPageloadTraceId =
-        span.spanContext().traceId;
+      const { traceId, spanId } = span.spanContext();
+      const state = getSharedState();
+      state.backgroundPageloadTraceId = traceId;
+      state.backgroundPageloadSpanId = spanId;
     }
-  });
+  };
+  // `Sentry.init` has started the pageload by now, and `setupSentry` calls this
+  // before the global `sentry` is assigned, so read the span from `@sentry/core`.
+  const running = getActiveSpan();
+  if (running) {
+    record(running);
+  }
+  client?.on('spanStart', record);
 }
 
 /**
- * Whether the scope still carries the ended background pageload's trace id,
- * which a span starting without a parent would take. An active span is not
- * considered: callers ask this only for work that would not nest under it.
+ * Whether the scope still carries the background pageload's trace id. Ignores
+ * the active span.
  *
  * @returns True when such work should start its own trace.
  */
-function isOnEndedBackgroundPageload(): boolean {
-  const { endedBackgroundPageloadTraceId } = getSharedState();
-  if (!endedBackgroundPageloadTraceId) {
+function isOnBackgroundPageload(): boolean {
+  const { backgroundPageloadTraceId } = getSharedState();
+  if (!backgroundPageloadTraceId) {
     return false;
   }
-  return getScopeTraceId() === endedBackgroundPageloadTraceId;
+  return getScopeTraceId() === backgroundPageloadTraceId;
 }
 
 const ROUTE_OPS = new Set(['pageload', 'navigation']);
 
 /**
- * Records UI route trace ids for {@link TraceRequest.root}; call right after `Sentry.init`.
+ * Records UI route trace ids for {@link TraceRequest.root}. Call right after
+ * `Sentry.init`.
  *
  * @param client - The Sentry client that emits each navigation's `spanStart`.
  */
@@ -696,7 +700,7 @@ export function trackDocumentRouteTrace(client?: Client): void {
 }
 
 /**
- * Whether the scope still holds the latest route's trace id, running or ended.
+ * Whether the scope still holds the latest route's trace id.
  *
  * @returns True when such work should start its own trace.
  */
@@ -1154,17 +1158,13 @@ function startSpan<T>(
   // has no span. `resolveParentSpan` returns `null` for both, so read the input.
   const parentDeclared = parentContext !== undefined;
 
-  // Work without a resolved parent leaves the scope's ambient trace id, which
-  // is the ended background pageload's, or the UI document's latest route's. In
-  // either case it starts its own trace, declared parent or not. `traceparent`
-  // data is handled below and is not a root. In the background, an active span
-  // that the fallback or the unresolved-parent nesting below adopts keeps the
-  // work out of the ended pageload's trace.
+  // With no parent and nothing to nest under, work takes the scope's trace id:
+  // the background pageload's, or the UI document's latest route's.
   const root =
     request.root ||
     (!parentSpan &&
       !((parentDeclared || allowActiveSpanFallback) && sentryGetActiveSpan()) &&
-      isOnEndedBackgroundPageload()) ||
+      isOnBackgroundPageload()) ||
     (!parentSpan &&
       isOnDocumentRouteTrace() &&
       (!parentDeclared || !sentryGetActiveSpan()));
@@ -1434,6 +1434,9 @@ function sentrySetMeasurement(
  * Get the currently active Sentry span, if any.
  * Used by wrappers to avoid trace overhead when no span is active.
  *
+ * The background's pageload span counts as no span, running or ended: it is the
+ * scope's ambient span rather than a parent a caller chose.
+ *
  * @returns The active span or null.
  */
 export function sentryGetActiveSpan(): Sentry.Span | null {
@@ -1443,7 +1446,16 @@ export function sentryGetActiveSpan(): Sentry.Span | null {
     return null;
   }
 
-  return actual() ?? null;
+  const activeSpan = actual() ?? null;
+  const { backgroundPageloadSpanId } = getSharedState();
+  if (
+    activeSpan &&
+    backgroundPageloadSpanId &&
+    activeSpan.spanContext().spanId === backgroundPageloadSpanId
+  ) {
+    return null;
+  }
+  return activeSpan;
 }
 
 /**
