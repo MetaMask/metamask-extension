@@ -1,0 +1,339 @@
+name: Main detector batch
+
+# One scored pass of the main detector on a plan from `scheduled-plan-cli.mts`,
+# with Chrome's CPU slowed. Paired base/head jobs measure the startup preset
+# in Chrome, the critical user flows are measured beside them, and the same
+# scoring and Slack path as the commit checks reports the result. Called by
+# main-detector.yml for the daily run, its power-user pass and the weekly drift
+# check, which differ in the plan and in the artifact prefix.
+
+on:
+  workflow_call:
+    secrets:
+      INFURA_PROJECT_ID:
+        required: false
+      SLACK_BOT_TOKEN:
+        required: false
+    inputs:
+      plan:
+        description: Plan JSON from scheduled-plan-cli.mts
+        required: true
+        type: string
+      iterations:
+        description: Browser sessions per startup job and iterations per critical user flow job, a multiple of 10
+        required: false
+        type: string
+        default: '20'
+      include_cufs:
+        description: Also measure the critical user flows
+        required: false
+        type: boolean
+        default: true
+      post_slack:
+        description: Post a ping to Slack (a scheduled run always does)
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  actions: read
+  statuses: read
+
+env:
+  # Must equal the number of shards in main-detector-measure.yml.
+  DETECTOR_SHARDS: 5
+  # Must equal the number of shards of the cufs job below.
+  DETECTOR_CUF_SHARDS: 2
+  # Same default as BUILD_HOST in .github/scripts/main-detector/build-source.mts.
+  DETECTOR_BUILD_HOST: https://diuv6g5fj9pvx.cloudfront.net/metamask-extension
+
+jobs:
+  # What the jobs below take from the plan, in one place so that the artifact
+  # prefix agrees with `planPrefix` in report.mts, which the scorer reads it by.
+  meta:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      prefix: ${{ steps.read.outputs.prefix }}
+      preset: ${{ steps.read.outputs.preset }}
+      rate: ${{ steps.read.outputs.rate }}
+    steps:
+      - name: Read the plan
+        id: read
+        env:
+          PLAN: ${{ inputs.plan }}
+        run: |
+          set -euo pipefail
+          case "$(jq -r .kind <<< "$PLAN")" in
+            daily) prefix=throttled ;;
+            power-user) prefix=throttled-power-user ;;
+            drift) prefix=drift ;;
+            *)
+              echo "::error::The plan has no known kind"
+              exit 1
+              ;;
+          esac
+          {
+            echo "prefix=$prefix"
+            echo "preset=$(jq -r '.preset // "startupStandardHome"' <<< "$PLAN")"
+            echo "rate=$(jq -r .cpuThrottleRate <<< "$PLAN")"
+          } >> "$GITHUB_OUTPUT"
+
+  measure-first:
+    needs: meta
+    uses: ./.github/workflows/main-detector-measure.yml
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+    with:
+      plan: ${{ inputs.plan }}
+      batch: 1
+      preset: ${{ needs.meta.outputs.preset }}
+      browsers: '["chrome"]'
+      cpu_throttle_rate: ${{ needs.meta.outputs.rate }}
+      browser_loads: ${{ inputs.iterations }}
+      artifact_prefix: ${{ needs.meta.outputs.prefix }}
+
+  # origin: ai-synthesis
+  # The critical user flows with an admitted series, on the plan's base and head
+  # builds with Chrome's CPU slowed. Each job alternates the two builds per
+  # iteration on one runner; the report job pairs consecutive iterations and
+  # scores them with the paired rule, as the commit checks do.
+  cufs:
+    name: cuf-${{ matrix.flow }}-s${{ matrix.shard }}
+    needs: meta
+    if: ${{ inputs.include_cufs }}
+    # A failed job leaves its series unmeasured, which fails the report job.
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        # CUF_FLOW_FILES in .github/scripts/main-detector/cufs.mts; cufs.test.mts checks they match.
+        flow:
+          - bridgeUserActions
+          - loadNewAccount
+          - assetDetails
+          - solanaAssetDetails
+        # DETECTOR_CUF_SHARDS must equal the number of shards.
+        shard: [1, 2]
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      SELENIUM_BROWSER: chrome
+      SELENIUM_HEADLESS: true
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      BENCHMARK_RUNNER_LABEL: ubuntu-latest
+      BENCHMARK_CPU_THROTTLE_RATE: ${{ needs.meta.outputs.rate }}
+      # Pair mode: the harness alternates the base (A) and head (B) build per iteration.
+      BENCHMARK_AB_PILOT: '1'
+      BENCHMARK_AB_SEQUENCE: ABBABAABAB
+      # The scripts import typeless .ts files; keep Node's warning out of the log.
+      NODE_OPTIONS: --disable-warning=MODULE_TYPELESS_PACKAGE_JSON
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Install anvil with retry
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
+        with:
+          timeout_minutes: 1
+          max_attempts: 4
+          retry_wait_seconds: 30
+          command: yarn mm-foundryup
+
+      - name: Download the base and head builds
+        env:
+          PLAN: ${{ inputs.plan }}
+        run: |
+          set -euo pipefail
+          for side in base head; do
+            run=$(jq -r --arg k "${side}Run" '.[$k]' <<< "$PLAN")
+            version=$(jq -r --arg k "${side}Version" '.[$k]' <<< "$PLAN")
+            curl --fail --silent --show-error --retry 5 --retry-all-errors \
+              --output "$side.zip" \
+              "$DETECTOR_BUILD_HOST/$run/build-test-webpack/builds/metamask-chrome-$version.zip"
+            mkdir -p "pair/$side"
+            unzip -q "$side.zip" -d "pair/$side"
+          done
+          mkdir -p test-artifacts/benchmarks
+
+      - name: Prepare the A and B builds
+        run: |
+          node test/e2e/benchmarks/prepare-ab-builds.mts \
+            --browser chrome \
+            --base-source pair/base --head-source pair/head \
+            --out "test-artifacts/benchmarks/ab-builds-${{ matrix.flow }}-s${{ matrix.shard }}.json"
+
+      - name: Choose which build goes first
+        env:
+          SHARD: ${{ matrix.shard }}
+        run: echo "BENCHMARK_AB_FLIP=$(( SHARD % 2 ))" >> "$GITHUB_ENV"
+
+      - name: Run the A/B benchmark
+        timeout-minutes: 80
+        env:
+          FLOW: ${{ matrix.flow }}
+          ITERATIONS: ${{ inputs.iterations }}
+          RESULT: test-artifacts/benchmarks/benchmark-chrome-webpack-${{ matrix.flow }}-s${{ matrix.shard }}.json
+        run: |
+          set -euo pipefail
+          file=$(node --input-type=module -e "
+            import { CUF_FLOW_FILES } from './.github/scripts/main-detector/cufs.mts';
+            console.log(CUF_FLOW_FILES[process.argv[1]] ?? '');
+          " "$FLOW")
+          if [[ -z "$file" ]]; then
+            echo "::error::No file for flow $FLOW in CUF_FLOW_FILES"
+            exit 1
+          fi
+          yarn test:e2e:benchmark "$file" --iterations "$ITERATIONS" --retries 2 --out "$RESULT"
+
+      - name: Upload the result
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ needs.meta.outputs.prefix }}-cuf-${{ matrix.flow }}-s${{ matrix.shard }}
+          path: test-artifacts/benchmarks/*.json
+          # A re-run of failed jobs uploads the same names again.
+          overwrite: true
+          retention-days: 7
+          if-no-files-found: ignore
+
+  score-first:
+    needs: [meta, measure-first]
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    outputs:
+      needs_confirm: ${{ steps.score.outputs.needs_confirm }}
+    steps:
+      - name: Checkout the scripts
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: |
+            .github
+            .nvmrc
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+
+      - name: Download batch 1
+        uses: actions/download-artifact@v8
+        with:
+          pattern: ${{ needs.meta.outputs.prefix }}-b1-*
+          path: artifacts
+
+      - name: Score batch 1
+        id: score
+        env:
+          PLAN: ${{ inputs.plan }}
+        run: |
+          echo "$PLAN" > plan.json
+          node .github/scripts/main-detector/score-cli.mts --stage first \
+            --dir artifacts --plan plan.json --out first.json --shards "$DETECTOR_SHARDS" \
+            --github-output "$GITHUB_OUTPUT"
+
+  measure-confirm:
+    needs: [meta, score-first]
+    if: ${{ needs.score-first.outputs.needs_confirm == 'true' }}
+    uses: ./.github/workflows/main-detector-measure.yml
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+    with:
+      plan: ${{ inputs.plan }}
+      batch: 2
+      preset: ${{ needs.meta.outputs.preset }}
+      browsers: '["chrome"]'
+      cpu_throttle_rate: ${{ needs.meta.outputs.rate }}
+      browser_loads: ${{ inputs.iterations }}
+      artifact_prefix: ${{ needs.meta.outputs.prefix }}
+
+  report:
+    needs: [meta, score-first, measure-confirm, cufs]
+    if: ${{ !cancelled() && needs.score-first.result == 'success' }}
+    runs-on: ubuntu-latest
+    env:
+      # The CUF scoring imports typeless .ts files; keep Node's warning out of the log.
+      NODE_OPTIONS: --disable-warning=MODULE_TYPELESS_PACKAGE_JSON
+    steps:
+      - name: Checkout the scripts
+        uses: actions/checkout@v6
+        with:
+          # The two benchmark files are the admitted series and the paired rule, which import nothing.
+          sparse-checkout: |
+            .github
+            .nvmrc
+            test/e2e/benchmarks/utils/admitted-series.ts
+            test/e2e/benchmarks/utils/paired-decision.ts
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+
+      - name: Download the batches
+        uses: actions/download-artifact@v8
+        with:
+          pattern: ${{ needs.meta.outputs.prefix }}-b*
+          path: artifacts
+
+      - name: Download the critical user flows
+        if: ${{ inputs.include_cufs }}
+        uses: actions/download-artifact@v8
+        with:
+          pattern: ${{ needs.meta.outputs.prefix }}-cuf-*
+          path: artifacts
+
+      - name: Score and report
+        env:
+          PLAN: ${{ inputs.plan }}
+          WITH_CUFS: ${{ inputs.include_cufs }}
+        run: |
+          set -euo pipefail
+          echo "$PLAN" > plan.json
+          args=()
+          if [[ "$WITH_CUFS" == true ]]; then
+            args+=(--cuf-shards "$DETECTOR_CUF_SHARDS")
+          fi
+          node .github/scripts/main-detector/score-cli.mts --stage final \
+            --dir artifacts --plan plan.json --out result.json --shards "$DETECTOR_SHARDS" \
+            --summary "$GITHUB_STEP_SUMMARY" "${args[@]}" > /dev/null
+
+      - name: Upload the result
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ needs.meta.outputs.prefix }}-result
+          path: result.json
+          overwrite: true
+          retention-days: 30
+
+      - name: Post to Slack
+        if: ${{ github.event_name == 'schedule' || inputs.post_slack }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL: ${{ vars.SLACK_MAIN_DETECTOR_CHANNEL }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          node .github/scripts/main-detector/slack-cli.mts \
+            --result result.json --run-url "$RUN_URL"
+
+      # A result that measured nothing is green on its own, so fail the run: the
+      # next daily run then keeps this run's base and measures the commits again.
+      - name: Fail when a batch or a critical user flow could not be measured
+        run: |
+          status=0
+          if jq -e '.decision.unmeasured | length > 0' result.json > /dev/null; then
+            echo "::error::Could not measure: $(jq -r '.decision.unmeasured | join(", ")' result.json)"
+            status=1
+          fi
+          if jq -e '(.cufs.unmeasured // []) | length > 0' result.json > /dev/null; then
+            echo "::error::Could not measure critical user flows: $(jq -r '.cufs.unmeasured | join(", ")' result.json)"
+            status=1
+          fi
+          exit "$status"
