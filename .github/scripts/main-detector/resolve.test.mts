@@ -1,6 +1,7 @@
 import {
   parseStatusLines,
   resolveBuilds,
+  resolveBuildsAgainst,
   type BuildLookup,
   type BuildRef,
 } from './resolve.mts';
@@ -15,6 +16,41 @@ const lookupOf =
   (withBuild: string[]): BuildLookup =>
   async (sha) =>
     withBuild.includes(sha) ? build(sha) : undefined;
+
+describe('resolveBuildsAgainst', () => {
+  const history = ['e', 'd', 'c', 'b', 'a'];
+
+  it('measures the range back to the named base, skipping nearer builds', async () => {
+    const result = await resolveBuildsAgainst(history, 'b', lookupOf(history));
+    expect(result).toStrictEqual({
+      status: 'measure',
+      head: build('e'),
+      base: build('b'),
+      range: ['e', 'd', 'c'],
+    });
+  });
+
+  it('has nothing to measure when the base is the head', async () => {
+    expect(
+      await resolveBuildsAgainst(history, 'e', lookupOf(history)),
+    ).toStrictEqual({ status: 'unchanged', head: build('e') });
+  });
+
+  it('reports no base when the named commit is outside the history or has no build', async () => {
+    expect(
+      await resolveBuildsAgainst(history, 'z', lookupOf(history)),
+    ).toMatchObject({ status: 'no-base', checked: 4 });
+    expect(
+      await resolveBuildsAgainst(history, 'b', lookupOf(['e', 'a'])),
+    ).toMatchObject({ status: 'no-base' });
+  });
+
+  it('cannot measure a head without a build', async () => {
+    expect(
+      await resolveBuildsAgainst(history, 'b', lookupOf(['b'])),
+    ).toStrictEqual({ status: 'no-build', headSha: 'e' });
+  });
+});
 
 describe('resolveBuilds', () => {
   it('pairs the head with its parent when both have builds', async () => {

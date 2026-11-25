@@ -24,7 +24,9 @@ export type ResolveResult =
       range: string[];
     }
   | { status: 'no-build'; headSha: string }
-  | { status: 'no-base'; head: BuildRef; checked: number };
+  | { status: 'no-base'; head: BuildRef; checked: number }
+  // Only when a base was named: it is the head, so there is nothing new to measure.
+  | { status: 'unchanged'; head: BuildRef };
 
 export type BuildLookup = (sha: string) => Promise<BuildRef | undefined>;
 
@@ -53,6 +55,42 @@ export async function resolveBuilds(
     }
   }
   return { status: 'no-base', head, checked: ancestors.length };
+}
+
+// origin: ai-synthesis
+/**
+ * Like {@link resolveBuilds}, against a named base instead of the nearest
+ * ancestor with a build, so the range covers every commit since the base.
+ *
+ * @param commits - First-parent history, head first.
+ * @param baseSha - The commit to compare with.
+ * @param lookup - Finds the build of one commit, if any.
+ * @returns `no-base` when the base is not in the history or has no build.
+ */
+export async function resolveBuildsAgainst(
+  commits: string[],
+  baseSha: string,
+  lookup: BuildLookup,
+): Promise<ResolveResult> {
+  const [headSha, ...ancestors] = commits;
+  const head = await lookup(headSha);
+  if (!head) {
+    return { status: 'no-build', headSha };
+  }
+  if (headSha === baseSha) {
+    return { status: 'unchanged', head };
+  }
+  const position = ancestors.indexOf(baseSha);
+  const base = position === -1 ? undefined : await lookup(baseSha);
+  if (!base) {
+    return { status: 'no-base', head, checked: ancestors.length };
+  }
+  return {
+    status: 'measure',
+    head,
+    base,
+    range: commits.slice(0, position + 1),
+  };
 }
 
 /**

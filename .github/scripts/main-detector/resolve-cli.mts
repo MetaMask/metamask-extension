@@ -1,13 +1,20 @@
 /**
- * Usage: node .github/scripts/main-detector/resolve-cli.mts --head SHA --out resolve.json [--depth 40]
+ * Usage: node .github/scripts/main-detector/resolve-cli.mts --head SHA --out resolve.json [--depth 40] [--base SHA]
  * Resolves the head build and its base from main.yml push runs and CloudFront.
+ * With --base, the base is that commit and not the nearest ancestor with a
+ * build; it must be within --depth first-parent commits of the head.
  * Needs a checkout with enough first-parent history and the `gh` CLI.
  */
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import { parseArgs } from 'node:util';
 import { REPOSITORY, buildZipUrl } from './build-source.mts';
-import { parseStatusLines, resolveBuilds, type BuildRef } from './resolve.mts';
+import {
+  parseStatusLines,
+  resolveBuilds,
+  resolveBuildsAgainst,
+  type BuildRef,
+} from './resolve.mts';
 
 const run = (command: string, args: string[]) =>
   execFileSync(command, args, {
@@ -94,6 +101,7 @@ async function main(): Promise<void> {
     options: {
       head: { type: 'string', default: 'HEAD' },
       depth: { type: 'string', default: '40' },
+      base: { type: 'string' },
       out: { type: 'string' },
     },
   });
@@ -108,7 +116,9 @@ async function main(): Promise<void> {
     `-n${values.depth}`,
     values.head,
   ]).split('\n');
-  const result = await resolveBuilds(commits, lookup);
+  const result = values.base
+    ? await resolveBuildsAgainst(commits, values.base, lookup)
+    : await resolveBuilds(commits, lookup);
   const subjects = Object.fromEntries(
     ('range' in result ? result.range : [commits[0]]).map((sha) => [
       sha,
