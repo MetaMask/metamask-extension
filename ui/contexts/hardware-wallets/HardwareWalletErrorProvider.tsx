@@ -125,10 +125,15 @@ const HardwareWalletErrorMonitor = ({ children }: { children: ReactNode }) => {
   // Track if the modal was manually shown (vs from connection state)
   // Manually shown modals should NOT be dismissed based on selected account
   const isManuallyShownRef = useRef(false);
+  // Whether the open modal is about a device other than the selected
+  // account's, in which case closing it must not touch the selected account's
+  // connection state.
+  const isTargetDeviceModalRef = useRef(false);
 
   const resetModalState = useCallback(() => {
     isModalOpenRef.current = false;
     isManuallyShownRef.current = false;
+    isTargetDeviceModalRef.current = false;
     setDisplayedError(null);
     dispatch(hideModal());
   }, [dispatch]);
@@ -144,8 +149,11 @@ const HardwareWalletErrorMonitor = ({ children }: { children: ReactNode }) => {
    * Handle cancel/close action from the modal
    */
   const handleCancel = useCallback(() => {
+    const isTargetDeviceModal = isTargetDeviceModalRef.current;
     resetModalState();
-    clearError();
+    if (!isTargetDeviceModal) {
+      clearError();
+    }
     // Close the popup if there are no more pending approvals
     dispatch(closeCurrentNotificationWindow());
   }, [clearError, dispatch, resetModalState]);
@@ -168,8 +176,11 @@ const HardwareWalletErrorMonitor = ({ children }: { children: ReactNode }) => {
    */
   const dismissErrorModal = useCallback(() => {
     if (isModalOpenRef.current) {
+      const isTargetDeviceModal = isTargetDeviceModalRef.current;
       resetModalState();
-      clearError();
+      if (!isTargetDeviceModal) {
+        clearError();
+      }
       // Close the popup if there are no more pending approvals
       dispatch(closeCurrentNotificationWindow());
     }
@@ -205,6 +216,7 @@ const HardwareWalletErrorMonitor = ({ children }: { children: ReactNode }) => {
         if (isModalOpenRef.current) {
           isModalOpenRef.current = false;
           isManuallyShownRef.current = false;
+          isTargetDeviceModalRef.current = false;
           setDisplayedError(null);
           dispatch(hideModal());
         }
@@ -219,6 +231,7 @@ const HardwareWalletErrorMonitor = ({ children }: { children: ReactNode }) => {
 
       setDisplayedError(error);
       isModalOpenRef.current = true;
+      isTargetDeviceModalRef.current = Boolean(options?.ensureDeviceReady);
       if (skipFilters) {
         // Manually shown errors - mark them as manually shown
         // so they won't be dismissed by the selected account check

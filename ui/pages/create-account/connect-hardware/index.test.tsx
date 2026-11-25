@@ -10,7 +10,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
-import { ErrorCode } from '@metamask/hw-wallet-sdk';
+import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { tEn } from '../../../../test/lib/i18n-helpers';
 import {
@@ -54,12 +54,14 @@ jest.mock(
 );
 
 const mockEnsureDeviceReady = jest.fn();
+const mockCreateAdapterForHardwareWalletType = jest.fn(() => ({
+  connect: () => Promise.resolve(),
+  ensureDeviceReady: mockEnsureDeviceReady,
+  destroy: () => undefined,
+}));
 jest.mock('../../../contexts/hardware-wallets/adapters/factory', () => ({
-  createAdapterForHardwareWalletType: () => ({
-    connect: () => Promise.resolve(),
-    ensureDeviceReady: mockEnsureDeviceReady,
-    destroy: () => undefined,
-  }),
+  createAdapterForHardwareWalletType: () =>
+    mockCreateAdapterForHardwareWalletType(),
 }));
 
 jest.mock('../../../hooks/useAnalytics', () => {
@@ -618,6 +620,23 @@ describe('ConnectHardwareForm', () => {
       expect(
         screen.getByTestId('connect-hardware-wallet-ledger'),
       ).toBeInTheDocument();
+    });
+
+    it('shows the recovery modal when the device adapter cannot be created', async () => {
+      mockSearch = `device=${HardwareDeviceNames.ledger}`;
+      mockCreateAdapterForHardwareWalletType.mockImplementationOnce(() => {
+        throw new Error('Unsupported transport');
+      });
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      await waitFor(() => {
+        expect(mockShowErrorModal).toHaveBeenCalledWith(
+          expect.any(HardwareWalletError),
+          { ensureDeviceReady: expect.any(Function) },
+        );
+      });
+      expect(mockConnectHardwareAction).not.toHaveBeenCalled();
     });
 
     it('lists the accounts once a retry from the recovery modal finds the device ready', async () => {

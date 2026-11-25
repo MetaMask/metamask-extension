@@ -113,21 +113,24 @@ const noop = () => undefined;
  * @returns `null` when ready, otherwise the error explaining why not.
  */
 async function getDeviceReadyError(walletType: HardwareWalletType) {
-  const adapter = createAdapterForHardwareWalletType(walletType, {
-    onDisconnect: noop,
-    onAwaitingConfirmation: noop,
-    onDeviceLocked: noop,
-    onAppNotOpen: noop,
-    onDeviceEvent: noop,
-  });
+  let adapter:
+    | ReturnType<typeof createAdapterForHardwareWalletType>
+    | undefined;
   try {
+    adapter = createAdapterForHardwareWalletType(walletType, {
+      onDisconnect: noop,
+      onAwaitingConfirmation: noop,
+      onDeviceLocked: noop,
+      onAppNotOpen: noop,
+      onDeviceEvent: noop,
+    });
     await adapter.connect();
     await adapter.ensureDeviceReady?.({ requireBlindSigning: false });
     return null;
   } catch (error) {
     return toHardwareWalletError(error, walletType);
   } finally {
-    adapter.destroy();
+    adapter?.destroy();
   }
 }
 
@@ -548,14 +551,17 @@ const ConnectHardwareForm = () => {
       return deviceError;
     };
 
-    connectIfReady().then((deviceError) => {
-      if (deviceError && !isStale()) {
-        hasShownDeviceErrorModal.current = true;
-        showErrorModal(deviceError, {
-          ensureDeviceReady: async () => (await connectIfReady()) === null,
-        });
-      }
-    });
+    connectIfReady()
+      .then((deviceError) => {
+        if (deviceError && !isStale()) {
+          hasShownDeviceErrorModal.current = true;
+          showErrorModal(deviceError, {
+            ensureDeviceReady: async () => (await connectIfReady()) === null,
+          });
+        }
+      })
+      // The user can still pick the device from the device selection.
+      .catch(noop);
   }, [requestedDevice, showErrorModal]);
 
   const onPathChange = useCallback(

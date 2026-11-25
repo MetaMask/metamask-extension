@@ -1105,6 +1105,32 @@ describe('HardwareWalletErrorModal', () => {
 
       expect(mockHideModal).toHaveBeenCalledTimes(1);
       expect(mockSetConnectionReady).not.toHaveBeenCalled();
+      expect(mockClearError).not.toHaveBeenCalled();
+    });
+
+    it('does not clear the selected account device error when closed', async () => {
+      const error = createTestError(
+        ErrorCode.AuthenticationDeviceLocked,
+        'Device is locked',
+        'Your device is locked.',
+      );
+      const onCancel = jest.fn();
+
+      const { getByLabelText } = renderWithMetrics(
+        <HardwareWalletErrorModal
+          error={error}
+          onCancel={onCancel}
+          ensureDeviceReady={jest.fn()}
+        />,
+      );
+
+      await act(async () => {
+        fireEvent.click(getByLabelText('[close]'));
+      });
+
+      expect(onCancel).toHaveBeenCalledTimes(1);
+      expect(mockHideModal).toHaveBeenCalledTimes(1);
+      expect(mockClearError).not.toHaveBeenCalled();
     });
 
     it('stays on the error when the provided check fails', async () => {

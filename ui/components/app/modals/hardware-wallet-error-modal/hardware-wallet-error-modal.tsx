@@ -409,9 +409,12 @@ export const HardwareWalletErrorModal = React.memo(
 
     const handleClose = useCallback(() => {
       onCancel?.();
-      clearError();
+      // A target device error is not the selected account's to clear.
+      if (!ensureTargetDeviceReady) {
+        clearError();
+      }
       hideModal();
-    }, [clearError, hideModal, onCancel]);
+    }, [clearError, ensureTargetDeviceReady, hideModal, onCancel]);
 
     const handleRepairDevice = useCallback(() => {
       if (error && trackableMetricDeviceType) {
@@ -446,9 +449,9 @@ export const HardwareWalletErrorModal = React.memo(
     ]);
 
     const handleRecoveredClose = useCallback(() => {
-      clearError();
       // A target device check says nothing about the selected account's device.
       if (!ensureTargetDeviceReady) {
+        clearError();
         setConnectionReady();
       }
       hideModal();
