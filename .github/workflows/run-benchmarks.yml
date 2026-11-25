@@ -247,6 +247,7 @@ jobs:
             tsconfig.json
             development/metamaskbot-build-announce
             shared/constants/benchmarks.ts
+            test/e2e/benchmarks/utils/admitted-series.ts
             test/e2e/benchmarks/utils/gated-metrics.ts
             test/e2e/benchmarks/utils/thresholds.ts
             test/e2e/benchmarks/utils/statistics.ts
