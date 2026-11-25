@@ -134,31 +134,34 @@ describe('classify', () => {
     sdPct: 1,
   });
 
+  // Chrome load: 13.53 ms is 1.5% of its 902 ms median, loud is 5%.
+  const floor = DEFAULT_CONFIG.floors.chrome.load;
+
   it('is quiet at the floor with a positive lower bound', () => {
-    expect(classify(summary(1.6, 0.4, 2.8), 1.5, 5)).toStrictEqual({
+    expect(classify(summary(1.6, 0.4, 2.8), floor)).toStrictEqual({
       level: 'quiet',
       direction: 'slower',
     });
   });
 
   it('needs the lower bound above zero', () => {
-    expect(classify(summary(1.6, -0.1, 3.3), 1.5, 5).level).toBe('none');
+    expect(classify(summary(1.6, -0.1, 3.3), floor).level).toBe('none');
   });
 
   it('needs the shift to reach the floor', () => {
-    expect(classify(summary(1.4, 1, 1.8), 1.5, 5).level).toBe('none');
+    expect(classify(summary(1.4, 1, 1.8), floor).level).toBe('none');
   });
 
   it('is loud from the loud threshold, in either direction', () => {
-    expect(classify(summary(5.2, 4, 6.4), 1.5, 5).level).toBe('loud');
-    expect(classify(summary(-5.2, -6.4, -4), 1.5, 5)).toStrictEqual({
+    expect(classify(summary(5.2, 4, 6.4), floor).level).toBe('loud');
+    expect(classify(summary(-5.2, -6.4, -4), floor)).toStrictEqual({
       level: 'loud',
       direction: 'faster',
     });
   });
 
   it('reports a speed-up whose upper bound stays below zero', () => {
-    expect(classify(summary(-2, -3, -1), 1.5, 5).direction).toBe('faster');
+    expect(classify(summary(-2, -3, -1), floor).direction).toBe('faster');
   });
 });
 
@@ -193,7 +196,7 @@ describe('detector decisions', () => {
     const first = scores(makeJobs([1.03, 1.032, 1.028, 1.031, 1.029]));
     const noisy = scores(makeJobs([1.12, 0.98, 1.04, 1, 1]));
     expect(noisy.chrome.metrics.uiStartup.summary?.shiftPct).toBeGreaterThan(
-      DEFAULT_CONFIG.floorPct.chrome,
+      1.5,
     );
     expect(decide(first, noisy, DEFAULT_CONFIG).ping).toBe('none');
   });

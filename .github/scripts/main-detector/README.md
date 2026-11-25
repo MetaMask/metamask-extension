@@ -29,10 +29,17 @@ the same direction. The message shows the pooled shift
 with its 95% bounds, the per-job shifts, and a breakdown (`loadScripts`,
 `setupStore`, `firstReactRender`, `longTaskTotalDuration`) to point at the phase.
 
-|            | Chrome                     | Firefox             |
-| ---------- | -------------------------- | ------------------- |
-| Quiet ping | shift of 1.5% or more      | shift of 2% or more |
-| Loud ping  | 5% or more (both browsers) |                     |
+| Shift, in ms | Chrome load | Chrome uiStartup | Firefox load | Firefox uiStartup |
+| ------------ | ----------- | ---------------- | ------------ | ----------------- |
+| Quiet ping   | 13.5 ms     | 16.1 ms          | 34.9 ms      | 41.5 ms           |
+| Loud ping    | 45.1 ms     | 53.7 ms          | 87.2 ms      | 103.8 ms          |
+
+A page load that got 40 ms slower in Chrome pings, quietly. The floors are
+fixed numbers of ms, 1.5% (Chrome) and 2% (Firefox) of each series' base
+median over the 100 A/A runs, where base and head are the same build (902,
+1073, 1744 and 2075 ms), and loud is 5% of it. The shift in ms is
+the percent shift of the head's mean over the base's times that fixed median,
+so it reads the same whatever the runner's speed that day.
 
 The one-sided 95% bound applies to each test on its own. A commit has up to
 eight first-stage tests (2 browsers, 2 metrics, 2 directions), so the second
