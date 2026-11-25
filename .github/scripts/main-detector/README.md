@@ -17,9 +17,9 @@ When the `Main` workflow finishes for a push to `main`, `main-detector.yml`:
 3. Otherwise runs 5 jobs per browser. Each job runs the base and head build
    alternately in one session on one runner, so runner and browser differences
    cancel out.
-4. Scores the log ratio of head to base for `uiStartup` and `load` in Chrome
-   and Firefox. If the first batch looks suspicious, a second independent batch
-   confirms it.
+4. Scores the shift of head over base, in ms, for `uiStartup` and `load` in
+   Chrome and Firefox. If the first batch looks suspicious, a second
+   independent batch confirms it.
 
 ## Reading a ping
 
@@ -35,11 +35,14 @@ with its 95% bounds, the per-job shifts, and a breakdown (`loadScripts`,
 | Loud ping    | 45.1 ms     | 53.7 ms          | 87.2 ms      | 103.8 ms          |
 
 A page load that got 40 ms slower in Chrome pings, quietly. The floors are
-fixed numbers of ms, 1.5% (Chrome) and 2% (Firefox) of each series' base
-median over the 100 A/A runs, where base and head are the same build (902,
-1073, 1744 and 2075 ms), and loud is 5% of it. The shift in ms is
-the percent shift of the head's mean over the base's times that fixed median,
-so it reads the same whatever the runner's speed that day.
+fixed numbers of ms: 1.5% (Chrome) and 2% (Firefox) of each series' base median
+over the 100 A/A runs, where base and head are the same build (902, 1073, 1744
+and 2075 ms), and loud is 5% of it. A job's shift is the head's mean minus the
+base's mean, in ms, over that job's sessions; the batch's shift and its
+one-sided 95% bound, also in ms, come from the mean and spread of its jobs'
+shifts. They are compared with the floors as measured, so a shift of
+54 ms reads as 54 ms on a slow runner and on a fast one. The percent shift is
+printed beside it for reference and takes no part in the verdict.
 
 The one-sided 95% bound applies to each test on its own. A commit has up to
 eight first-stage tests (2 browsers, 2 metrics, 2 directions), so the second
