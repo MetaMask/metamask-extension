@@ -8,7 +8,7 @@ import { MarketInsightsEntryCard } from './market-insights-entry-card';
 import { MarketInsightsEntryCardSkeleton } from './market-insights-entry-card-skeleton';
 import { useMarketInsightsTracking } from './useMarketInsightsTracking';
 
-export const MARKET_INSIGHTS_SECTION_TEST_ID = 'asset-market-insights';
+const MARKET_INSIGHTS_SECTION_TEST_ID = 'asset-market-insights';
 
 export const MARKET_INSIGHTS_MIN_TOKEN_AGE_DAYS = 7;
 
@@ -37,7 +37,7 @@ export const isTokenUnderMinMarketInsightsAge = (
   return Date.now() - createdMs < minAgeDays * DAY_MS;
 };
 
-export type AssetMarketInsightsSectionProps = {
+type AssetMarketInsightsSectionProps = {
   /** CAIP-19 asset ID for the token shown on the asset page. */
   assetId: CaipAssetType | null | undefined;
 };
