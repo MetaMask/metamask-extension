@@ -14,17 +14,17 @@ import {
   mockTokensV3Assets,
 } from '../../tests/btc/mocks/tokens-api';
 import {
-  KNOWN_ANSWER_HISTORICAL_PRICES_DELAY,
-  KNOWN_ANSWER_QUOTE_DELAY,
-  KNOWN_ANSWER_SOLANA_BLOCKHASH_DELAY,
-  withKnownAnswerDelay,
-} from './known-answer';
-import {
   bridgeGetTokensPopular,
   bridgeGetTokensSearch,
   gasPrices,
   priceV1ExchangeRates,
 } from '../../mock-response-data/api-responses';
+import {
+  KNOWN_ANSWER_HISTORICAL_PRICES_DELAY,
+  KNOWN_ANSWER_QUOTE_DELAY,
+  KNOWN_ANSWER_SOLANA_BLOCKHASH_DELAY,
+  withKnownAnswerDelay,
+} from './known-answer';
 import { POWER_USER_PRICES } from './price-data';
 import { buildSseResponseBody } from './swap-mocks';
 import bridgeNetworkTokens from './bridge-network-tokens.json';
