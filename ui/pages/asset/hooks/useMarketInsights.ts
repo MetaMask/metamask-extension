@@ -143,11 +143,13 @@ export const useMarketInsights = (
   }, [isQueryEnabled, queryAssetIdentifier, queryClient]);
 
   const report = isQueryEnabled ? (query.data ?? null) : null;
-  const error = resolveErrorMessage(isQueryEnabled, report, query.error);
   // A remount of a cached `null` miss or error has no report and has not
   // fetched on this observer (`isFetchedAfterMount` is false). Keep loading
   // until that first fetch settles so the skeleton does not flash off and on.
   const isLoading = isQueryEnabled && !report && !query.isFetchedAfterMount;
+  const error = isLoading
+    ? null
+    : resolveErrorMessage(isQueryEnabled, report, query.error);
 
   const hasReport = report !== null;
   const [now, setNow] = useState(Date.now);

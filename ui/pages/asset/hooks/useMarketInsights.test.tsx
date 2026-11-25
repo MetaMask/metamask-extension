@@ -1,4 +1,6 @@
 import { act, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import React, { type PropsWithChildren } from 'react';
 import type { MarketInsightsReport } from '@metamask/ai-controllers';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as backgroundConnection from '../../../store/background-connection';
@@ -202,6 +204,40 @@ describe('useMarketInsights', () => {
 
       expect(result.current.report).toBeNull();
       expect(result.current.error).toBe('Digest unavailable');
+    });
+
+    it('hides a cached error while refetching a report on remount', async () => {
+      const assetId = 'eip155:1/slip44:60';
+      const queryKey = ['market-insights', assetId];
+      const queryClient = new QueryClient();
+      queryClient.setQueryData(queryKey, null);
+      await expect(
+        queryClient.fetchQuery({
+          queryKey,
+          queryFn: () => Promise.reject(new Error('Previous fetch failed')),
+        }),
+      ).rejects.toThrow('Previous fetch failed');
+      mockSubmitRequestToBackground.mockRejectedValue(
+        new Error('Current fetch failed'),
+      );
+
+      const { result } = renderHookWithProvider(
+        () => useMarketInsights(assetId, true),
+        undefined,
+        '/',
+        ({ children }: PropsWithChildren) => (
+          <QueryClientProvider client={queryClient}>
+            {children}
+          </QueryClientProvider>
+        ),
+      );
+
+      expect(result.current.isLoading).toBe(true);
+      expect(result.current.error).toBeNull();
+      await waitFor(() =>
+        expect(result.current.error).toBe('Current fetch failed'),
+      );
+      expect(result.current.isLoading).toBe(false);
     });
 
     it('treats a null report as a miss, not an error', async () => {
