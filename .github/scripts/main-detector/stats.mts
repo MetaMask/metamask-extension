@@ -27,14 +27,6 @@ export function standardDeviation(values: number[]): number {
   return Math.sqrt(squares / (values.length - 1));
 }
 
-// One job's shift of head over base on one metric.
-export type JobShift = {
-  // Natural log of the head's mean over the base's mean.
-  logRatio: number;
-  // Head's mean minus the base's mean, in ms.
-  ms: number;
-};
-
 export type ShiftSummary = {
   jobs: number;
   // Percent change of head over base, from the mean log ratio of the jobs.
@@ -44,42 +36,62 @@ export type ShiftSummary = {
   upperPct: number;
   // Spread of the per-job shifts, in percent.
   sdPct: number;
-  // Mean of the jobs' shifts in ms, with the same bounds and spread.
-  shiftMs: number;
-  lowerMs: number;
-  upperMs: number;
-  sdMs: number;
 };
 
 export const toPercent = (logRatio: number) => 100 * (Math.exp(logRatio) - 1);
 
-function boundedMean(values: number[]) {
-  const center = mean(values);
-  const sd = standardDeviation(values);
+/**
+ * @param logRatios - One natural-log ratio of head to base per job.
+ * @returns The mean shift with one-sided 95% bounds, or undefined with fewer than two jobs.
+ */
+export function summarizeShifts(logRatios: number[]): ShiftSummary | undefined {
+  if (logRatios.length < 2) {
+    return undefined;
+  }
+  const center = mean(logRatios);
+  const sd = standardDeviation(logRatios);
   const margin =
-    (tCritical95(values.length - 1) * sd) / Math.sqrt(values.length);
-  return { center, lower: center - margin, upper: center + margin, sd };
+    (tCritical95(logRatios.length - 1) * sd) / Math.sqrt(logRatios.length);
+  return {
+    jobs: logRatios.length,
+    shiftPct: toPercent(center),
+    lowerPct: toPercent(center - margin),
+    upperPct: toPercent(center + margin),
+    sdPct: 100 * sd,
+  };
 }
+
+// One job's change of head over base: as a log ratio, and in ms.
+export type JobShift = { logRatio: number; ms: number };
+
+export type MsShiftSummary = ShiftSummary & {
+  // Mean of the per-job shifts in ms, each measured as head mean less base mean.
+  shiftMs: number;
+  // One-sided 95% bounds on the shift, in ms.
+  lowerMs: number;
+  upperMs: number;
+};
 
 /**
  * @param shifts - One shift of head over base per job.
- * @returns The mean shift with one-sided 95% bounds, or undefined with fewer than two jobs.
+ * @returns The percent summary of the log ratios and the same statistic on the
+ * per-job ms shifts, or undefined with fewer than two jobs.
  */
-export function summarizeShifts(shifts: JobShift[]): ShiftSummary | undefined {
-  if (shifts.length < 2) {
+export function summarizeJobShifts(
+  shifts: JobShift[],
+): MsShiftSummary | undefined {
+  const percent = summarizeShifts(shifts.map((shift) => shift.logRatio));
+  if (!percent) {
     return undefined;
   }
-  const ratio = boundedMean(shifts.map((shift) => shift.logRatio));
-  const ms = boundedMean(shifts.map((shift) => shift.ms));
+  const ms = shifts.map((shift) => shift.ms);
+  const center = mean(ms);
+  const margin =
+    (tCritical95(ms.length - 1) * standardDeviation(ms)) / Math.sqrt(ms.length);
   return {
-    jobs: shifts.length,
-    shiftPct: toPercent(ratio.center),
-    lowerPct: toPercent(ratio.lower),
-    upperPct: toPercent(ratio.upper),
-    sdPct: 100 * ratio.sd,
-    shiftMs: ms.center,
-    lowerMs: ms.lower,
-    upperMs: ms.upper,
-    sdMs: ms.sd,
+    ...percent,
+    shiftMs: center,
+    lowerMs: center - margin,
+    upperMs: center + margin,
   };
 }

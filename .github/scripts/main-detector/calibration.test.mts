@@ -7,30 +7,18 @@ import {
 } from './calibration.mts';
 import type { BatchScores } from './score.mts';
 
+// Five jobs whose shifts in ms have a sample standard deviation of `sdMs`.
 const startupScore = (sdMs: number) => ({
   jobsTotal: 5,
   jobsUsable: 5,
   measurable: true,
-  shifts: {},
-  metrics: Object.fromEntries(
+  shifts: Object.fromEntries(
     ['uiStartup', 'load'].map((metric) => [
       metric,
-      {
-        summary: {
-          jobs: 5,
-          shiftPct: 0,
-          lowerPct: -0.1,
-          upperPct: 0.1,
-          sdPct: 0.5,
-          shiftMs: 0,
-          lowerMs: -1,
-          upperMs: 1,
-          sdMs,
-        },
-        verdict: { level: 'none' },
-      },
+      [sdMs, -sdMs, sdMs, -sdMs, 0].map((ms) => ({ logRatio: 0, ms })),
     ]),
   ),
+  metrics: {},
 });
 
 const canary = (

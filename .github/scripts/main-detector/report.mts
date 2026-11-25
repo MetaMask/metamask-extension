@@ -5,9 +5,9 @@ import {
   scoredBrowsers,
   throttledConfig,
   type BatchScores,
-  type StartupPreset,
   type Decision,
   type DetectorConfig,
+  type StartupPreset,
   type Verdict,
 } from './score.mts';
 import type { ShiftSummary } from './stats.mts';
@@ -71,12 +71,9 @@ export const planPrefix = (plan: PlanInfo): string => {
 
 const fmt = (value: number) => `${value >= 0 ? '+' : ''}${value.toFixed(2)}%`;
 
-const fmtMs = (value: number) => `${value >= 0 ? '+' : ''}${value.toFixed(1)}`;
-
-// The measured shift in ms with its bounds, then the percent for reference.
 const cell = (summary: ShiftSummary | undefined) =>
   summary
-    ? `${fmtMs(summary.shiftMs)} ms [${fmtMs(summary.lowerMs)}, ${fmtMs(summary.upperMs)}] n=${summary.jobs} (${fmt(summary.shiftPct)} [${fmt(summary.lowerPct)}, ${fmt(summary.upperPct)}])`
+    ? `${fmt(summary.shiftPct)} [${fmt(summary.lowerPct)}, ${fmt(summary.upperPct)}] n=${summary.jobs}`
     : 'n/a';
 
 const floorsText = (config: DetectorConfig, key: 'floorMs' | 'loudMs') =>
@@ -84,7 +81,7 @@ const floorsText = (config: DetectorConfig, key: 'floorMs' | 'loudMs') =>
     .flatMap((browser) =>
       VERDICT_METRICS.map(
         (metric) =>
-          `${(config.floors[browser][metric][key] + 1e-9).toFixed(1)} ms ${browser} ${metric}`,
+          `${config.floors[browser][metric][key].toFixed(1)} ms ${browser} ${metric}`,
       ),
     )
     .join(', ');
@@ -102,8 +99,8 @@ function batchTable(
     `#### ${title}`,
     '',
     withVerdict
-      ? '| Browser | Metric | Head minus base [95% bounds] (percent) | Verdict |'
-      : '| Browser | Metric | Head minus base [95% bounds] (percent) |',
+      ? '| Browser | Metric | Head vs base [95% bounds] | Verdict |'
+      : '| Browser | Metric | Head vs base [95% bounds] |',
     withVerdict ? '|---|---|---|---|' : '|---|---|---|',
   ];
   for (const browser of scoredBrowsers(scores)) {

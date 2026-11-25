@@ -42,15 +42,20 @@ with its 95% bounds, the per-job shifts, and a breakdown (`loadScripts`,
 | Quiet ping   | 13.5 ms     | 16.1 ms          | 34.9 ms      | 41.5 ms           |
 | Loud ping    | 45.1 ms     | 53.7 ms          | 87.2 ms      | 103.8 ms          |
 
-A page load that got 40 ms slower in Chrome pings, quietly. The floors are
-fixed numbers of ms: 1.5% (Chrome) and 2% (Firefox) of each series' base median
-over the 100 A/A runs, where base and head are the same build (902, 1073, 1744
-and 2075 ms), and loud is 5% of it. A job's shift is the head's mean minus the
-base's mean, in ms, over that job's sessions; the batch's shift and its
-one-sided 95% bound, also in ms, come from the mean and spread of its jobs'
-shifts. They are compared with the floors as measured, so a shift of
-54 ms reads as 54 ms on a slow runner and on a fast one. The percent shift is
-printed beside it for reference and takes no part in the verdict.
+A page load that got 40 ms slower in Chrome pings, quietly. Each job measures
+the shift in ms, as the head's mean less the base's, and the batch pools those
+shifts. The floors are in ms, not percent, because noise has a part that does
+not scale with the series: 1.5% of a 30 ms step is below timer jitter.
+
+The floors come from the 100 A/A runs of 2026-11-20, where base and head are
+the same build. The standard deviation of one batch's mean shift was 4.8 ms
+(Chrome load), 5.2 ms (Chrome uiStartup), 15.6 ms (Firefox load) and 22.6 ms
+(Firefox uiStartup), so a quiet floor is 2.8, 3.1, 2.2 and 1.8 of them. A loud
+ping is 5% of those series' base medians (902, 1073, 1744 and 2075 ms). The
+bound and the second batch are what keep false pings rare: none of the 100 A/A
+runs pinged. A new series gets its own floor from its own A/A runs, at about 2
+to 3 of those standard deviations and above timer resolution; a metric with no
+floor in `DEFAULT_CONFIG.floors`, such as the breakdown, never pings.
 
 The one-sided 95% bound applies to each test on its own. A commit has up to
 eight first-stage tests (2 browsers, 2 metrics, 2 directions), so the second
@@ -170,8 +175,8 @@ GitHub emails the last person to edit the schedule when one fails.
 - A `Main` run that failed before building leaves no build; the detector skips
   it without failing, and a later re-run of `Main` for that commit is measured.
   After a successful `Main` run, a missing build fails the run.
-- A job's score is the difference of the mean session times, so one slow
-  session moves its job. The thresholds were calibrated with this statistic; changing
+- A job's score is the ratio of the mean session times, so one slow session
+  moves its job. The thresholds were calibrated with this statistic; changing
   it needs a new calibration.
 - The critical user flows' `δ_block` values were calibrated on differences of
   run means, two per paired job; here each difference is one pair of

@@ -1,14 +1,15 @@
 /**
  * Scores paired base/head benchmark jobs for the main-commit performance
  * detector. Each job runs the base and head build in alternating sessions on
- * one runner, so a job gives one log ratio of head to base per metric. A batch
- * is several jobs; a suspicious batch is confirmed by a second, independent one.
+ * one runner, so a job gives one shift of head over base per metric, as a log
+ * ratio and in ms. A batch is several jobs; a suspicious batch is confirmed by
+ * a second, independent one.
  */
 import {
   mean,
-  summarizeShifts,
+  summarizeJobShifts,
   type JobShift,
-  type ShiftSummary,
+  type MsShiftSummary as ShiftSummary,
 } from './stats.mts';
 
 export type Browser = 'chrome' | 'firefox';
@@ -24,14 +25,14 @@ export const BREAKDOWN_METRICS = [
   'longTaskTotalDuration',
 ] as const;
 
-// A series' floors in ms.
+// Smallest shift, in ms, that can raise a ping, and the shift from which a
+// ping is loud, for one series.
 export type SeriesFloor = { floorMs: number; loudMs: number };
 
 export type DetectorConfig = {
   // Browsers the batch holds scores for, in the order they are reported.
   browsers: readonly Browser[];
-  // Smallest shift, in ms, that can raise a ping and the shift from which it
-  // is loud, per browser and verdict metric.
+  // Per browser and verdict metric. A metric with no entry never raises a ping.
   floors: Record<Browser, Record<string, SeriesFloor>>;
   // Fewest usable jobs for a batch to count as measured.
   minJobs: number;
@@ -41,25 +42,31 @@ export type DetectorConfig = {
 
 export const DEFAULT_CONFIG: DetectorConfig = {
   browsers: BROWSERS,
-  // 1.5% (Chrome) and 2% (Firefox) of the base medians of the 100 `mode=aa`
-  // runs of 2026-11-20 (902, 1073, 1744 and 2075 ms); loud is 5%. They are
-  // compared with the measured shift in ms, so a slow or fast runner does not
-  // rescale them.
+  // A floor is in ms because noise has a part that does not scale with the
+  // series, so a percentage is meaningless on a short one: 1.5% of 30 ms is
+  // below timer jitter. Set a series' floor from its own A/A runs at about 2 to
+  // 3 SD of the mean shift of one batch, and keep it above timer resolution.
+  // The ping also needs the one-sided 95% bound on the same side of zero and a
+  // second batch that agrees.
+  //
+  // The 100 `mode=aa` runs of 2026-11-20 gave these SDs of a batch's mean
+  // shift (Chrome load, Chrome uiStartup, Firefox load, Firefox uiStartup):
+  // 4.8, 5.2, 15.6 and 22.6 ms, so the floors below are 2.8, 3.1, 2.2 and 1.8
+  // SD. Loud is 5% of those runs' base medians (902, 1073, 1744 and 2075 ms).
   floors: {
     chrome: {
-      load: { floorMs: 13.53, loudMs: 45.1 },
-      uiStartup: { floorMs: 16.095, loudMs: 53.65 },
+      load: { floorMs: 13.5, loudMs: 45.1 },
+      uiStartup: { floorMs: 16.1, loudMs: 53.7 },
     },
     firefox: {
-      load: { floorMs: 34.88, loudMs: 87.2 },
-      uiStartup: { floorMs: 41.5, loudMs: 103.75 },
+      load: { floorMs: 34.9, loudMs: 87.2 },
+      uiStartup: { floorMs: 41.5, loudMs: 103.8 },
     },
   },
   minJobs: 4,
   skipSessions: 2,
 };
 
-// origin: ai-synthesis
 export type StartupPreset = 'startupStandardHome' | 'startupPowerUserHome';
 
 // Chrome floors of the power-user preset, set like the standard preset's: 1.5%
@@ -115,7 +122,7 @@ const MIN_SESSIONS = 10;
  * @param job - One benchmark job's session records and flattened page-load samples.
  * @param metrics - Metric names to score.
  * @param skipSessions - Leading sessions to drop as warm-up.
- * @returns The shift of head (B) over base (A) per metric, as a log ratio and in ms, or undefined when the job is unusable.
+ * @returns The shift of head (B) over base (A) per metric, as a log ratio and in ms of the difference of the means, or undefined when the job is unusable.
  */
 export function jobShifts(
   job: JobResult,
@@ -164,21 +171,20 @@ export type Direction = 'slower' | 'faster';
 export type Verdict = { level: Level; direction?: Direction };
 
 /**
- * A shift counts when its mean over the jobs, in ms, reaches the floor and its
- * one-sided 95% bound stays on the same side of zero.
+ * A shift counts when it reaches the floor, in ms, and its one-sided 95% bound
+ * in ms stays on the same side of zero.
  *
  * @param summary - Shift of one metric over a set of jobs.
- * @param floor - The series' floors in ms.
+ * @param floor - The series' floor and loud threshold, in ms.
  */
 export function classify(summary: ShiftSummary, floor: SeriesFloor): Verdict {
-  const { shiftMs } = summary;
-  const slower = shiftMs >= floor.floorMs && summary.lowerMs > 0;
-  const faster = shiftMs <= -floor.floorMs && summary.upperMs < 0;
+  const slower = summary.shiftMs >= floor.floorMs && summary.lowerMs > 0;
+  const faster = summary.shiftMs <= -floor.floorMs && summary.upperMs < 0;
   if (!slower && !faster) {
     return { level: 'none' };
   }
   return {
-    level: Math.abs(shiftMs) >= floor.loudMs ? 'loud' : 'quiet',
+    level: Math.abs(summary.shiftMs) >= floor.loudMs ? 'loud' : 'quiet',
     direction: slower ? 'slower' : 'faster',
   };
 }
@@ -202,22 +208,22 @@ export function scoreBatch(
   const shifts: Record<string, JobShift[]> = {};
   let jobsUsable = 0;
   for (const job of jobs) {
-    const jobShift = jobShifts(job, names, config.skipSessions);
+    const jobResult = jobShifts(job, names, config.skipSessions);
     // A job with no shift for a verdict metric (empty or renamed samples) cannot show a change.
     if (
-      !jobShift ||
-      VERDICT_METRICS.some((metric) => jobShift[metric] === undefined)
+      !jobResult ||
+      VERDICT_METRICS.some((metric) => jobResult[metric] === undefined)
     ) {
       continue;
     }
     jobsUsable += 1;
-    for (const [metric, shift] of Object.entries(jobShift)) {
+    for (const [metric, shift] of Object.entries(jobResult)) {
       (shifts[metric] ??= []).push(shift);
     }
   }
   const metrics: Record<string, MetricScore> = {};
   for (const metric of names) {
-    const summary = summarizeShifts(shifts[metric] ?? []);
+    const summary = summarizeJobShifts(shifts[metric] ?? []);
     metrics[metric] = {
       summary,
       // Breakdown metrics have no floor and never raise a ping.
@@ -313,7 +319,7 @@ export function decide(
     for (const metric of suspicious) {
       const firstSummary = first[browser].metrics[metric].summary;
       const secondSummary = second[browser].metrics[metric].summary;
-      const pooled = summarizeShifts([
+      const pooled = summarizeJobShifts([
         ...first[browser].shifts[metric],
         ...(second[browser].shifts[metric] ?? []),
       ]);

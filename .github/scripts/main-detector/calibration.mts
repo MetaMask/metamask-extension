@@ -13,12 +13,14 @@ import {
   BROWSERS,
   DEFAULT_CONFIG,
   VERDICT_METRICS,
+  type BatchScore,
   type BatchScores,
   type Browser,
   type Decision,
   type DetectorConfig,
 } from './score.mts';
 import type { SlackPayload } from './slack.mts';
+import { standardDeviation } from './stats.mts';
 
 /** What `score-cli.mts` writes to `result.json`. */
 export type DetectorResult = {
@@ -93,11 +95,19 @@ export type CalibrationReport = {
 const rms = (values: number[]) =>
   Math.sqrt(values.reduce((sum, value) => sum + value ** 2, 0) / values.length);
 
+// Standard error of a batch's mean shift in ms, from its jobs' shifts; a result
+// written before ms scoring has none.
+const shiftError = (score: BatchScore | undefined, metric: string) => {
+  const ms = score?.shifts?.[metric]?.map((shift) => shift.ms) ?? [];
+  return ms.length < 2
+    ? undefined
+    : standardDeviation(ms) / Math.sqrt(ms.length);
+};
+
 const isReadable = (result: DetectorResult) =>
-  BROWSERS.some((browser) => {
-    const summary = result.first[browser]?.metrics?.uiStartup?.summary;
-    return typeof summary?.sdMs === 'number';
-  });
+  BROWSERS.some(
+    (browser) => shiftError(result.first[browser], 'uiStartup') !== undefined,
+  );
 
 /**
  * @param results - Results of the week's detector runs; any that is not a canary is ignored.
@@ -125,8 +135,8 @@ export function summarizeCanaries(
   for (const browser of config.browsers) {
     for (const metric of VERDICT_METRICS) {
       const errors = canaries.flatMap((result) => {
-        const summary = result.first[browser]?.metrics[metric]?.summary;
-        return summary ? [summary.sdMs / Math.sqrt(summary.jobs)] : [];
+        const error = shiftError(result.first[browser], metric);
+        return error === undefined ? [] : [error];
       });
       if (errors.length === 0) {
         continue;

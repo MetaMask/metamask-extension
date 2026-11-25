@@ -1,4 +1,3 @@
-import { it } from '@jest/globals';
 import {
   DEFAULT_CONFIG,
   classify,
@@ -10,7 +9,7 @@ import {
   type BatchScores,
   type JobResult,
 } from './score.mts';
-import { summarizeShifts, tCritical95 } from './stats.mts';
+import { summarizeJobShifts, summarizeShifts, tCritical95 } from './stats.mts';
 
 // Ten sessions, alternating A and B, two page loads each. The first two sessions
 // are warm-up and slower. `headFactor` scales the head (B) values.
@@ -28,28 +27,6 @@ function makeJob(headFactor: number, jitter = 0, success = true): JobResult {
   });
   return { sessions, samples: { uiStartup: values, load: values } };
 }
-
-// A job whose base builds take `baseMs` and whose head builds take `baseMs + shiftMs`,
-// on both verdict metrics. The first two sessions are warm-up and slower.
-function makeShiftedJob(baseMs: number, shiftMs: number): JobResult {
-  const sessions = Array.from({ length: 10 }, (_, index) => ({
-    index,
-    build: index % 2 === 0 ? ('A' as const) : ('B' as const),
-    success: true,
-    pageLoads: 1,
-  }));
-  const values = sessions.map((session) => {
-    const level = session.index < 2 ? baseMs * 1.5 : baseMs;
-    return session.build === 'B' ? level + shiftMs : level;
-  });
-  return { sessions, samples: { uiStartup: values, load: values } };
-}
-
-// Five jobs of one batch, each shifted by `shiftMs` give or take 1 ms.
-const makeShiftedJobs = (baseMs: number, shiftMs: number): JobResult[] =>
-  [-1, 0.5, 0, -0.5, 1].map((spread) =>
-    makeShiftedJob(baseMs, shiftMs + spread),
-  );
 
 // A job that follows an A/B sequence such as the harness runs, with the head (B)
 // slower by headFactor. The first two sessions are warm-up and slower.
@@ -84,28 +61,30 @@ describe('stats', () => {
   });
 
   it('returns nothing for fewer than two jobs', () => {
-    expect(summarizeShifts([{ logRatio: 0.01, ms: 10 }])).toBeUndefined();
+    expect(summarizeShifts([0.01])).toBeUndefined();
   });
 
   it('summarizes equal shifts without spread', () => {
-    const shift = { logRatio: Math.log(1.02), ms: 20 };
-    const summary = summarizeShifts([shift, shift]);
+    const summary = summarizeShifts([Math.log(1.02), Math.log(1.02)]);
     expect(summary?.shiftPct).toBeCloseTo(2, 5);
     expect(summary?.lowerPct).toBeCloseTo(2, 5);
     expect(summary?.sdPct).toBeCloseTo(0, 5);
-    expect(summary?.shiftMs).toBeCloseTo(20, 5);
-    expect(summary?.lowerMs).toBeCloseTo(20, 5);
-    expect(summary?.sdMs).toBeCloseTo(0, 5);
   });
 
-  it('bounds the ms shift with the same t value as the percent shift', () => {
-    const summary = summarizeShifts(
-      [10, 20, 30].map((ms) => ({ logRatio: ms / 1000, ms })),
-    );
-    // Mean 20, sd 10, t(2) = 2.92: margin = 2.92 * 10 / sqrt(3).
-    expect(summary?.shiftMs).toBeCloseTo(20, 10);
-    expect(summary?.lowerMs).toBeCloseTo(20 - (2.92 * 10) / Math.sqrt(3), 10);
-    expect(summary?.upperMs).toBeCloseTo(20 + (2.92 * 10) / Math.sqrt(3), 10);
+  it('summarizes the shifts in ms beside the percent ones', () => {
+    const shifts = [10, 12, 14].map((ms) => ({
+      logRatio: Math.log(1 + ms / 1000),
+      ms,
+    }));
+    const summary = summarizeJobShifts(shifts);
+    expect(summary?.shiftMs).toBeCloseTo(12, 10);
+    expect(summary?.lowerMs).toBeCloseTo(12 - (2.92 * 2) / Math.sqrt(3), 10);
+    expect(summary?.upperMs).toBeCloseTo(12 + (2.92 * 2) / Math.sqrt(3), 10);
+    expect(summary?.shiftPct).toBeCloseTo(1.2, 1);
+  });
+
+  it('returns no ms summary for fewer than two jobs', () => {
+    expect(summarizeJobShifts([{ logRatio: 0.01, ms: 10 }])).toBeUndefined();
   });
 });
 
@@ -113,7 +92,12 @@ describe('jobShifts', () => {
   it('drops warm-up sessions and compares head with base', () => {
     const shifts = jobShifts(makeJob(1.03), ['uiStartup'], 2);
     expect(shifts?.uiStartup.logRatio).toBeCloseTo(Math.log(1.03), 10);
-    expect(shifts?.uiStartup.ms).toBeCloseTo(30, 10);
+  });
+
+  it('measures the shift in ms as head mean less base mean', () => {
+    // Base sessions run at 1000 ms after warm-up, head at 1030 ms.
+    const shifts = jobShifts(makeJob(1.03), ['uiStartup'], 2);
+    expect(shifts?.uiStartup.ms).toBeCloseTo(30, 8);
   });
 
   it('rejects a job with a failed session', () => {
@@ -141,7 +125,6 @@ describe('jobShifts', () => {
     for (const order of [sequence, flipped]) {
       const shifts = jobShifts(makeSequencedJob(order, 1.03), ['uiStartup'], 2);
       expect(shifts?.uiStartup.logRatio).toBeCloseTo(Math.log(1.03), 10);
-      expect(shifts?.uiStartup.ms).toBeCloseTo(30, 10);
     }
   });
 
@@ -160,20 +143,18 @@ describe('jobShifts', () => {
 });
 
 describe('classify', () => {
-  // Bounds in ms; the percent fields do not take part in the verdict.
+  // The percent fields are left at an unrelated value: the verdict is in ms.
   const summary = (shiftMs: number, lowerMs: number, upperMs: number) => ({
     jobs: 5,
-    shiftMs,
-    lowerMs,
-    upperMs,
-    sdMs: 1,
     shiftPct: 0,
     lowerPct: 0,
     upperPct: 0,
-    sdPct: 0,
+    sdPct: 1,
+    shiftMs,
+    lowerMs,
+    upperMs,
   });
 
-  // Chrome load: quiet from 13.53 ms, loud from 45.1 ms.
   const floor = DEFAULT_CONFIG.floors.chrome.load;
 
   it('is quiet at the floor with a positive lower bound', () => {
@@ -188,7 +169,7 @@ describe('classify', () => {
   });
 
   it('needs the shift to reach the floor', () => {
-    expect(classify(summary(13, 10, 16), floor).level).toBe('none');
+    expect(classify(summary(13, 8, 18), floor).level).toBe('none');
   });
 
   it('is loud from the loud threshold, in either direction', () => {
@@ -203,76 +184,22 @@ describe('classify', () => {
     expect(classify(summary(-20, -30, -10), floor).direction).toBe('faster');
   });
 
-  it('ignores the percent shift', () => {
-    const huge = { ...summary(5, 1, 9), shiftPct: 50, lowerPct: 40 };
-    expect(classify(huge, floor).level).toBe('none');
-  });
-});
-
-describe('measured ms shift', () => {
-  // The base medians of the 100 A/A runs the floors were set from.
-  const series = [
-    { browser: 'chrome', metric: 'load', median: 902 },
-    { browser: 'chrome', metric: 'uiStartup', median: 1073 },
-    { browser: 'firefox', metric: 'load', median: 1744 },
-    { browser: 'firefox', metric: 'uiStartup', median: 2075 },
-  ] as const;
-
-  const verdictAt = (
-    browser: 'chrome' | 'firefox',
-    metric: 'load' | 'uiStartup',
-    baseMs: number,
-    shiftMs: number,
-  ) =>
-    scoreBatch(browser, makeShiftedJobs(baseMs, shiftMs), DEFAULT_CONFIG)
-      .metrics[metric].verdict;
-
-  it.each(series)(
-    'decides $browser $metric at its old median as the percentage floors did',
-    ({ browser, metric, median }) => {
-      const { floorMs, loudMs } = DEFAULT_CONFIG.floors[browser][metric];
-      expect(verdictAt(browser, metric, median, floorMs * 0.9).level).toBe(
-        'none',
-      );
-      expect(verdictAt(browser, metric, median, floorMs * 1.05)).toStrictEqual({
-        level: 'quiet',
-        direction: 'slower',
-      });
-      expect(verdictAt(browser, metric, median, loudMs * 1.05)).toStrictEqual({
-        level: 'loud',
-        direction: 'slower',
-      });
-      expect(verdictAt(browser, metric, median, -loudMs * 1.05)).toStrictEqual({
-        level: 'loud',
-        direction: 'faster',
-      });
-    },
-  );
-
-  it('judges a real 54 ms shift as 54 ms when both builds run 2x slower than the old median', () => {
-    // 54 ms is 2.7% of a 2000 ms base. Scaled by the old 1073 ms median that
-    // read as 29 ms, quiet; measured, it reaches the 53.65 ms loud floor.
-    const verdict = verdictAt('chrome', 'uiStartup', 2 * 1073, 54);
-    expect(verdict).toStrictEqual({ level: 'loud', direction: 'slower' });
-    const batch = scoreBatch(
-      'chrome',
-      makeShiftedJobs(2 * 1073, 54),
-      DEFAULT_CONFIG,
-    );
-    expect(batch.metrics.uiStartup.summary?.shiftMs).toBeCloseTo(54, 10);
-    expect(batch.metrics.uiStartup.summary?.shiftPct).toBeLessThan(3);
+  it('keeps a short series from pinging on a within-noise change', () => {
+    // A series of about 30 ms with 3 ms of noise in a batch mean: a 4 ms
+    // wobble is 13%, yet below an 8 ms floor, while 1.5% of 30 ms is 0.45 ms.
+    const shortSeries = { floorMs: 8, loudMs: 15 };
+    expect(classify(summary(4, 1, 7), shortSeries).level).toBe('none');
+    expect(classify(summary(9, 5, 13), shortSeries).level).toBe('quiet');
+    expect(classify(summary(16, 12, 20), shortSeries).level).toBe('loud');
   });
 
-  it('does not let a runner twice as fast turn a 14 ms shift into a ping', () => {
-    // 14 ms is 2.8% of a 500 ms base: 30 ms on the old 1073 ms median, quiet.
-    // Measured it is below the 16.095 ms floor.
-    expect(verdictAt('chrome', 'uiStartup', 500, 14).level).toBe('none');
-  });
-
-  it('pings and confirms a 54 ms shift on slow runners through decide', () => {
-    const slow = () => scores(makeShiftedJobs(2 * 1073, 54));
-    expect(needsConfirmation(slow())).toBe(true);
-    expect(decide(slow(), slow(), DEFAULT_CONFIG).ping).toBe('loud');
+  it('decides on ms, not on percent', () => {
+    // 20% of a short series is 4 ms, and 1% of a long one is 12 ms.
+    const shortSeries = { floorMs: 8, loudMs: 15 };
+    const percentHigh = { ...summary(4, 1, 7), shiftPct: 20 };
+    const percentLow = { ...summary(12, 6, 18), shiftPct: 1 };
+    expect(classify(percentHigh, shortSeries).level).toBe('none');
+    expect(classify(percentLow, shortSeries).level).toBe('quiet');
   });
 });
 
@@ -306,8 +233,8 @@ describe('detector decisions', () => {
   it('does not ping when the second batch moves the same way but its own bound includes zero', () => {
     const first = scores(makeJobs([1.03, 1.032, 1.028, 1.031, 1.029]));
     const noisy = scores(makeJobs([1.12, 0.98, 1.04, 1, 1]));
-    expect(noisy.chrome.metrics.uiStartup.summary?.shiftPct).toBeGreaterThan(
-      1.5,
+    expect(noisy.chrome.metrics.uiStartup.summary?.shiftMs).toBeGreaterThan(
+      DEFAULT_CONFIG.floors.chrome.uiStartup.floorMs,
     );
     expect(decide(first, noisy, DEFAULT_CONFIG).ping).toBe('none');
   });
@@ -360,6 +287,22 @@ describe('detector decisions', () => {
     expect(scores(partial).chrome.measurable).toBe(false);
   });
 
+  it('never raises a verdict for a metric with no floor', () => {
+    const { uiStartup } = DEFAULT_CONFIG.floors.chrome;
+    const config = {
+      ...DEFAULT_CONFIG,
+      floors: { chrome: { uiStartup }, firefox: {} },
+    };
+    const batch = scoreBatch(
+      'chrome',
+      makeJobs([1.06, 1.062, 1.058, 1.061]),
+      config,
+    );
+    expect(batch.metrics.uiStartup.verdict.level).toBe('loud');
+    expect(batch.metrics.load.summary?.shiftMs).toBeGreaterThan(50);
+    expect(batch.metrics.load.verdict.level).toBe('none');
+  });
+
   it('reports a confirmation batch without summaries as unmeasured', () => {
     const slower = [1.03, 1.032, 1.028, 1.031, 1.029];
     const second = scores(makeJobs(slower));
@@ -394,7 +337,6 @@ describe('detector decisions', () => {
   });
 });
 
-// origin: ai-synthesis
 describe('throttled run', () => {
   const config = throttledConfig();
   const chromeOnly = (jobs: JobResult[], using = config) =>
