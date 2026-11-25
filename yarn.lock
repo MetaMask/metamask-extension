@@ -9047,7 +9047,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/money-account-api-data-service@npm:^2.4.0, @metamask/money-account-api-data-service@npm:^2.5.0":
+"@metamask/money-account-api-data-service@npm:^2.5.0":
   version: 2.5.0
   resolution: "@metamask/money-account-api-data-service@npm:2.5.0"
   dependencies:
