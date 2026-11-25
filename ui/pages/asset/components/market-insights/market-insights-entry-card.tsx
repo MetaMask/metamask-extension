@@ -16,8 +16,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { SlidingTextCarousel } from './sliding-text-carousel';
 
 export const MARKET_INSIGHTS_ENTRY_CARD_TEST_ID = 'market-insights-entry-card';
-const MARKET_INSIGHTS_INFO_BUTTON_TEST_ID =
-  'market-insights-info-button';
+const MARKET_INSIGHTS_INFO_BUTTON_TEST_ID = 'market-insights-info-button';
 
 type MarketInsightsEntryCardProps = {
   /** The market insights report to render. */
