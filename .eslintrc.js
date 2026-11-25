@@ -12,6 +12,7 @@ const reactHooksPlugin = require('eslint-plugin-react-hooks');
 const storybookPlugin = require('eslint-plugin-storybook');
 const tailwindCssPlugin = require('eslint-plugin-tailwindcss');
 const pageObjectMemberOrderRule = require('./development/eslint-rules/page-object-member-order');
+const designSystemPlugin = require('./development/eslint-rules/design-system-plugin');
 const {
   architecturalZones,
   buildSystemZones,
@@ -23,6 +24,79 @@ const typescriptCompatConfig = require('./.eslintrc.typescript-compat');
 
 const reactVersion = reactPackageJson.version;
 const gitignorePath = path.resolve(__dirname, '.gitignore');
+
+/**
+ * Spacing sits on the 4px grid (Design Brain SP-S5). Selectors match on the
+ * literal's source text: a number is a multiple of 4 when its last two digits
+ * are, so OFF_GRID_NUMBER needs no arithmetic. Arbitrary class values only
+ * count when they start with a digit, so calc(), var() and interpolated
+ * values are not flagged.
+ *
+ * `design-system/spacing-grid` is core `no-restricted-syntax` re-exported
+ * under the design-system plugin, so its selectors do not replace the
+ * `no-restricted-syntax` configs that other blocks set on the same files (the
+ * TypeScript block and the confirmations override both set it).
+ */
+const SPACING_KEY =
+  '/^(margin|padding)(Top|Right|Bottom|Left|Horizontal|Vertical|Start|End|(Inline|Block)(Start|End)?)?$|^(row|column)?[Gg]ap$/';
+const OFF_GRID_NUMBER =
+  '/^(?!(\\d*[02468][048]|\\d*[13579][26]|[048])$)\\d+(\\.\\d+)?$/';
+const OFF_GRID_PX_STRING =
+  '/(?<![\\w.])(?!(?:\\d*[02468][048]|\\d*[13579][26]|[048])(?:\\.0+)?px)-?\\d+(?:\\.\\d+)?px/';
+const ARBITRARY_SPACING_CLASS =
+  '/(^|[\\s:!])-?((m|p)[trblxyse]?|gap(-[xy])?|space(-[xy])?)-\\[-?\\d/';
+const CLASS_HELPER = '/^(twMerge|classnames|clsx|classNames)$/';
+const OFF_GRID_MESSAGE =
+  'Spacing is off the 4px grid. Use a multiple of 4, or a design-system spacing prop (1 = 4px). A 2px half-step or optical offset needs an eslint-disable comment that says why.';
+const ARBITRARY_SPACING_MESSAGE =
+  'Arbitrary spacing values like p-[15px] skip the 4px grid. Use a spacing step (p-4 = 16px, p-0.5 = 2px). An optical offset needs an eslint-disable comment that says why.';
+const spacingGridSelectors = [
+  // Off-grid px numbers on spacing keys, inside inline `style` objects.
+  // Box-prop objects such as `labelProps={{ marginBottom: 1 }}` use the
+  // design-system scale (1 = 4px) and are not flagged.
+  {
+    selector: `JSXAttribute[name.name='style'] Property[key.name=${SPACING_KEY}] > Literal[raw=${OFF_GRID_NUMBER}]`,
+    message: OFF_GRID_MESSAGE,
+  },
+  {
+    selector: `JSXAttribute[name.name='style'] Property[key.name=${SPACING_KEY}] > UnaryExpression > Literal[raw=${OFF_GRID_NUMBER}]`,
+    message: OFF_GRID_MESSAGE,
+  },
+  // Ternary branches, e.g. `style={{ paddingTop: expanded ? 22 : 0 }}`.
+  {
+    selector: `JSXAttribute[name.name='style'] Property[key.name=${SPACING_KEY}] > ConditionalExpression Literal[raw=${OFF_GRID_NUMBER}]`,
+    message: OFF_GRID_MESSAGE,
+  },
+  // Off-grid px tokens in string values, e.g. `style={{ margin: '1px 4px' }}`.
+  {
+    selector: `JSXAttribute[name.name='style'] Property[key.name=${SPACING_KEY}] > Literal[value=${OFF_GRID_PX_STRING}]`,
+    message: OFF_GRID_MESSAGE,
+  },
+  {
+    selector: `JSXAttribute[name.name='style'] Property[key.name=${SPACING_KEY}] > ConditionalExpression Literal[value=${OFF_GRID_PX_STRING}]`,
+    message: OFF_GRID_MESSAGE,
+  },
+  // Arbitrary Tailwind spacing classes in className strings. The `:not` keeps
+  // the call helpers below from double-reporting the same string.
+  {
+    selector: `JSXAttribute[name.name='className'] Literal[value=${ARBITRARY_SPACING_CLASS}]:not(CallExpression[callee.name=${CLASS_HELPER}] Literal)`,
+    message: ARBITRARY_SPACING_MESSAGE,
+  },
+  {
+    selector: `JSXAttribute[name.name='className'] TemplateElement[value.raw=${ARBITRARY_SPACING_CLASS}]:not(CallExpression[callee.name=${CLASS_HELPER}] TemplateElement)`,
+    message: ARBITRARY_SPACING_MESSAGE,
+  },
+  // ...and in arguments to twMerge, classnames and clsx. Descendant matching
+  // covers ternary branches, nested calls and classnames object keys.
+  {
+    selector: `CallExpression[callee.name=${CLASS_HELPER}] Literal[value=${ARBITRARY_SPACING_CLASS}]`,
+    message: ARBITRARY_SPACING_MESSAGE,
+  },
+  {
+    selector: `CallExpression[callee.name=${CLASS_HELPER}] TemplateElement[value.raw=${ARBITRARY_SPACING_CLASS}]`,
+    message: ARBITRARY_SPACING_MESSAGE,
+  },
+];
 
 module.exports = defineConfig([
   includeIgnoreFile(gitignorePath),
@@ -942,6 +1016,34 @@ module.exports = defineConfig([
       // This rule is very noisy because we need to deal with extension manifest
       // keys very often, and these keys often violate the rule
       '@typescript-eslint/naming-convention': 'off',
+    },
+  },
+  /**
+   * Design system spacing grid
+   *
+   * Spacing should sit on the 4px grid (Design Brain SP-S5). Off-grid values
+   * are an error, and existing violations are baselined in
+   * eslint-suppressions.json. After fixing one, run
+   * `yarn eslint <file> --prune-suppressions`.
+   *
+   * Only inline `style` objects are checked for numbers and px strings:
+   * Box-prop objects such as `labelProps={{ marginBottom: 1 }}` use the
+   * design-system scale (1 = 4px) and are not flagged. The block sits at the
+   * end of the config so no later block can override the rules.
+   */
+  {
+    files: ['ui/**/*.{js,jsx,ts,tsx}', 'shared/**/*.{js,jsx,ts,tsx}'],
+    ignores: [
+      '**/*.test.{js,jsx,ts,tsx}',
+      '**/*.stories.{js,jsx,ts,tsx}',
+      '**/__mocks__/**',
+    ],
+    plugins: {
+      'design-system': designSystemPlugin,
+    },
+    rules: {
+      'design-system/spacing-grid': ['error', ...spacingGridSelectors],
+      'design-system/spacing-grid-disable-reason': 'error',
     },
   },
 ]);
