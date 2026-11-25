@@ -324,7 +324,9 @@ describe('EditMarginExpandable', () => {
       await waitFor(() => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
           key: 'perpsToastMarginAdjustmentFailed',
-          description: messages.perpsMarginAdjustmentFailed.message,
+          description:
+            messages.perpsToastMarginAdjustmentFailedDescriptionFallback
+              .message,
         });
       });
     });

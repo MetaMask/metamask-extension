@@ -274,7 +274,7 @@ export const EditMarginModalContent = ({
           translatePerpsError(
             error,
             t as (key: string, substitutions?: string[]) => string,
-          ) ?? t('perpsMarginAdjustmentFailed'),
+          ) ?? t('perpsToastMarginAdjustmentFailedDescriptionFallback'),
       });
     };
 

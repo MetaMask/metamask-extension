@@ -8587,7 +8587,7 @@
     "description": "Shown when an order exceeds the maximum order value"
   },
   "perpsOrderNoLongerOpen": {
-    "message": "This order is no longer open. It may have already been filled or cancelled."
+    "message": "This order is no longer open. It may have already been filled or canceled."
   },
   "perpsOrderOriginalSize": {
     "message": "Original size"
@@ -8921,6 +8921,10 @@
   "perpsToastMarginAdjustmentFailed": {
     "message": "Margin adjustment failed",
     "description": "Error toast text shown when adding or removing margin fails"
+  },
+  "perpsToastMarginAdjustmentFailedDescriptionFallback": {
+    "message": "Unable to adjust margin. Please try again.",
+    "description": "Fallback description shown when margin adjustment fails without a usable error message."
   },
   "perpsToastMarginRemoveSuccess": {
     "message": "Removed $1 margin from $2 position",

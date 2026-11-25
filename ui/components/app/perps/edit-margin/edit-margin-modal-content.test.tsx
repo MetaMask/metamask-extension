@@ -278,7 +278,9 @@ describe('EditMarginModalContent', () => {
         await waitFor(() => {
           expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
             key: 'perpsToastMarginAdjustmentFailed',
-            description: messages.perpsMarginAdjustmentFailed.message,
+            description:
+              messages.perpsToastMarginAdjustmentFailedDescriptionFallback
+                .message,
           });
         });
         expect(defaultProps.onClose).not.toHaveBeenCalled();
