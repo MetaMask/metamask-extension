@@ -1,8 +1,7 @@
-import { it } from '@jest/globals';
-// origin: ai-synthesis
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { it } from '@jest/globals';
 import { ADMITTED_SERIES } from '../../../test/e2e/benchmarks/utils/admitted-series.ts';
 import {
   CUF_FLOW_FILES,
