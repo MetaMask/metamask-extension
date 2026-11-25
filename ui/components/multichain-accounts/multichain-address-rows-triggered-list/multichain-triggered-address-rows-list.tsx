@@ -457,6 +457,8 @@ export const MultichainTriggeredAddressRowsList = ({
           onMouseLeave={
             useHoverFallback ? scheduleHideFallbackPopover : undefined
           }
+          onFocus={useHoverFallback ? showFallbackPopover : undefined}
+          onBlur={useHoverFallback ? scheduleHideFallbackPopover : undefined}
           data-testid="multichain-address-rows-trigger"
         >
           {children}
@@ -525,6 +527,8 @@ export const MultichainTriggeredAddressRowsList = ({
         onMouseLeave={
           useHoverFallback ? scheduleHideFallbackPopover : undefined
         }
+        onFocus={useHoverFallback ? showFallbackPopover : undefined}
+        onBlur={useHoverFallback ? scheduleHideFallbackPopover : undefined}
         style={
           {
             width: '360px',
