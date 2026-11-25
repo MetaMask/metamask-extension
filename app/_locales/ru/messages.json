@@ -64,10 +64,6 @@
   "acceptAndClose": {
     "message": "Принять и закрыть"
   },
-  "acceptTermsOfUse": {
-    "message": "Я прочитал(-а) $1 и согласен(-на) с ними",
-    "description": "$1 is the `terms` message"
-  },
   "accessRestrictedContactSupport": {
     "message": "Связаться с поддержкой"
   },
@@ -6759,9 +6755,6 @@
   },
   "newNftAddedMessage": {
     "message": "NFT успешно добавлен!"
-  },
-  "newPassword": {
-    "message": "Новый пароль (мин. 8 знаков)"
   },
   "newPasswordCreate": {
     "message": "Создать новый пароль"

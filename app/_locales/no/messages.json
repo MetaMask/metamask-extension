@@ -337,9 +337,6 @@
   "newContract": {
     "message": "Ny kontaktperson"
   },
-  "newPassword": {
-    "message": "Nytt passord (minimum 8 tegn)"
-  },
   "next": {
     "message": "Neste"
   },

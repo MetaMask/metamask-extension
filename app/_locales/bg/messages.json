@@ -346,9 +346,6 @@
   "newContract": {
     "message": "Нов договор"
   },
-  "newPassword": {
-    "message": "Нова парола (мин. 8 символа)"
-  },
   "next": {
     "message": "Напред"
   },

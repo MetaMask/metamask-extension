@@ -64,10 +64,6 @@
   "acceptAndClose": {
     "message": "Kabul et ve kapat"
   },
-  "acceptTermsOfUse": {
-    "message": "$1 bölümünü okudum ve kabul ediyorum",
-    "description": "$1 is the `terms` message"
-  },
   "accessRestrictedContactSupport": {
     "message": "Destek ile iletişime geç"
   },
@@ -6763,9 +6759,6 @@
   },
   "newNftAddedMessage": {
     "message": "NFT başarılı bir şekilde eklendi!"
-  },
-  "newPassword": {
-    "message": "Yeni şifre"
   },
   "newPasswordCreate": {
     "message": "Yeni şifre oluştur"

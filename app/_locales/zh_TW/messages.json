@@ -2,10 +2,6 @@
   "about": {
     "message": "關於"
   },
-  "acceptTermsOfUse": {
-    "message": "我已閱讀並同意$1",
-    "description": "$1 is the `terms` message"
-  },
   "accessingYourCamera": {
     "message": "正在存取您的攝影鏡頭..."
   },
@@ -638,9 +634,6 @@
   },
   "newContract": {
     "message": "建立新合約"
-  },
-  "newPassword": {
-    "message": "新密碼（至少8個字元）"
   },
   "next": {
     "message": "下一頁"

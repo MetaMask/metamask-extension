@@ -334,9 +334,6 @@
   "newContract": {
     "message": "Nou Contracte"
   },
-  "newPassword": {
-    "message": "Nova contrasenya (mínim 8 caràcters)"
-  },
   "next": {
     "message": "Següent"
   },

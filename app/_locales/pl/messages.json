@@ -343,9 +343,6 @@
   "newContract": {
     "message": "Nowy kontrakt"
   },
-  "newPassword": {
-    "message": "Nowe hasło (min. 8 znaków)"
-  },
   "next": {
     "message": "Dalej"
   },

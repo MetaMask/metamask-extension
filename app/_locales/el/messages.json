@@ -64,10 +64,6 @@
   "acceptAndClose": {
     "message": "Αποδοχή και κλείσιμο"
   },
-  "acceptTermsOfUse": {
-    "message": "Έχω διαβάσει και συμφωνώ με το $1",
-    "description": "$1 is the `terms` message"
-  },
   "accessRestrictedContactSupport": {
     "message": "Επικοινωνήστε με την υποστήριξη"
   },
@@ -6759,9 +6755,6 @@
   },
   "newNftAddedMessage": {
     "message": "Το NFT προστέθηκε με επιτυχία!"
-  },
-  "newPassword": {
-    "message": "Νέος κωδικός πρόσβασης"
   },
   "newPasswordCreate": {
     "message": "Δημιουργία νέου κωδικού πρόσβασης"

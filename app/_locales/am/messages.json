@@ -331,9 +331,6 @@
   "newContract": {
     "message": "አዲስ ኮንትራት"
   },
-  "newPassword": {
-    "message": "አዲስ የይለፍ ቃል (ቢያንስ 8 ቁምፊዎች)"
-  },
   "next": {
     "message": "ቀጣይ"
   },

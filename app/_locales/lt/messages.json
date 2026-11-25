@@ -346,9 +346,6 @@
   "newContract": {
     "message": "Nauja sutartis"
   },
-  "newPassword": {
-    "message": "Naujas slaptažodis (bent 8 ženklai)"
-  },
   "next": {
     "message": "Toliau"
   },

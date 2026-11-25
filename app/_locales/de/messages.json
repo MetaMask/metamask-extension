@@ -64,10 +64,6 @@
   "acceptAndClose": {
     "message": "Akzeptieren und schließen"
   },
-  "acceptTermsOfUse": {
-    "message": "Ich habe die $1 gelesen und stimme ihnen zu.",
-    "description": "$1 is the `terms` message"
-  },
   "accessRestrictedContactSupport": {
     "message": "Support kontaktieren"
   },
@@ -6759,9 +6755,6 @@
   },
   "newNftAddedMessage": {
     "message": "NFT wurde erfolgreich hinzugefügt!"
-  },
-  "newPassword": {
-    "message": "Neues Passwort"
   },
   "newPasswordCreate": {
     "message": "Neues Passwort erstellen"

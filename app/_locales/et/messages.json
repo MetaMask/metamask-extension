@@ -340,9 +340,6 @@
   "newContract": {
     "message": "Uus kontakt"
   },
-  "newPassword": {
-    "message": "Uus parool (vähemalt 8 tähemärki)"
-  },
   "next": {
     "message": "Edasi"
   },

@@ -346,9 +346,6 @@
   "newContract": {
     "message": "ಹೊಸ ಒಪ್ಪಂದ"
   },
-  "newPassword": {
-    "message": "ಹೊಸ ಪಾಸ್‌ವರ್ಡ್ (ಕನಿಷ್ಟ 8 ಅಕ್ಷರಗಳು)"
-  },
   "next": {
     "message": "ಮುಂದೆ"
   },

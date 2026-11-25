@@ -64,10 +64,6 @@
   "acceptAndClose": {
     "message": "동의 및 닫기"
   },
-  "acceptTermsOfUse": {
-    "message": "$1의 내용을 읽고 이에 동의합니다",
-    "description": "$1 is the `terms` message"
-  },
   "accessRestrictedContactSupport": {
     "message": "지원팀에 문의"
   },
@@ -6763,9 +6759,6 @@
   },
   "newNftAddedMessage": {
     "message": "NFT를 성공적으로 추가했습니다!"
-  },
-  "newPassword": {
-    "message": "새 비밀번호(8자 이상)"
   },
   "newPasswordCreate": {
     "message": "새 비밀번호 만들기"

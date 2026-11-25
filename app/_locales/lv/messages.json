@@ -346,9 +346,6 @@
   "newContract": {
     "message": "Jauns līgums"
   },
-  "newPassword": {
-    "message": "Jauna parole (vism. 8 rakstzīmes)"
-  },
   "next": {
     "message": "Nākamais"
   },

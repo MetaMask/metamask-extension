@@ -8,10 +8,6 @@
   "about": {
     "message": "حول"
   },
-  "acceptTermsOfUse": {
-    "message": "لقد قرأت دولار واحد وأوافق عليه",
-    "description": "$1 is the `terms` message"
-  },
   "accessingYourCamera": {
     "message": "جاري استخدام كاميرتك..."
   },
@@ -346,9 +342,6 @@
   },
   "newContract": {
     "message": "عقد جديد"
-  },
-  "newPassword": {
-    "message": "كلمة مرور جديدة (8 أحرف كحد أدنى)"
   },
   "next": {
     "message": "التالي"

@@ -64,10 +64,6 @@
   "acceptAndClose": {
     "message": "Chấp nhận và đóng"
   },
-  "acceptTermsOfUse": {
-    "message": "Tôi đã đọc và đồng ý với $1",
-    "description": "$1 is the `terms` message"
-  },
   "accessRestrictedContactSupport": {
     "message": "Liên hệ bộ phận hỗ trợ"
   },
@@ -6763,9 +6759,6 @@
   },
   "newNftAddedMessage": {
     "message": "NFT đã được thêm thành công!"
-  },
-  "newPassword": {
-    "message": "Mật khẩu mới"
   },
   "newPasswordCreate": {
     "message": "Tạo mật khẩu mới"

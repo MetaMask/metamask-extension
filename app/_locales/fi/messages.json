@@ -346,9 +346,6 @@
   "newContract": {
     "message": "Uusi sopimus"
   },
-  "newPassword": {
-    "message": "Uusi salasana (väh. 8 merkkiä)"
-  },
   "next": {
     "message": "Seuraava"
   },

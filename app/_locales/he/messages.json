@@ -343,9 +343,6 @@
   "newContract": {
     "message": "חוזה חדש"
   },
-  "newPassword": {
-    "message": "ססמה חדשה (לפחות 8 תווים)"
-  },
   "next": {
     "message": "הבא"
   },
