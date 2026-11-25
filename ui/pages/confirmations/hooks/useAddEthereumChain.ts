@@ -31,7 +31,7 @@ const getDappHostName = (origin?: string) => {
   }
 };
 
-// Ported from templates/add-ethereum-chain.js
+// Ported from the legacy add-ethereum-chain approval template
 export const useAddEthereumChain = () => {
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();

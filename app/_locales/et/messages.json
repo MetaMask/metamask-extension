@@ -398,9 +398,6 @@
     "message": "Privaatvõti",
     "description": "select this type of file to use to import an account"
   },
-  "privateNetwork": {
-    "message": "Privaatvõrk"
-  },
   "readdToken": {
     "message": "Saate selle loa tulevikus tagasi lisada, kui lähete oma kontovalikute menüüs vahelehele „Lisa luba“."
   },
