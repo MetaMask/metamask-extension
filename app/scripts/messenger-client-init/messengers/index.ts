@@ -1,9 +1,5 @@
 import { noop } from 'lodash';
 import {
-  getPPOMControllerMessenger,
-  getPPOMControllerInitMessenger,
-} from './ppom-controller-messenger';
-import {
   getCronjobControllerMessenger,
   getExecutionServiceMessenger,
   getMultichainRoutingServiceInitMessenger,
@@ -22,6 +18,7 @@ import {
   getTransactionPayControllerMessenger,
   getTransactionPayControllerInitMessenger,
 } from './transaction-pay-controller-messenger';
+import { getAiDigestControllerMessenger } from './ai-digest-controller-messenger';
 import {
   getBackendWebSocketServiceMessenger,
   getBackendWebSocketServiceInitMessenger,
@@ -507,6 +504,10 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getRewardsControllerMessenger,
     getInitMessenger: getRewardsControllerInitMessenger,
   },
+  AiDigestController: {
+    getMessenger: getAiDigestControllerMessenger,
+    getInitMessenger: noop,
+  },
   RewardsMoneyDataService: {
     getMessenger: getRewardsMoneyDataServiceMessenger,
     getInitMessenger: noop,
@@ -514,10 +515,6 @@ export const MESSENGER_FACTORIES = {
   RewardsMoneyController: {
     getMessenger: getRewardsMoneyControllerMessenger,
     getInitMessenger: getRewardsMoneyControllerInitMessenger,
-  },
-  PPOMController: {
-    getMessenger: getPPOMControllerMessenger,
-    getInitMessenger: getPPOMControllerInitMessenger,
   },
   PreferencesController: {
     getMessenger: getPreferencesControllerMessenger,

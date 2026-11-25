@@ -1,10 +1,3 @@
-import {
-  ActionConstraint,
-  EventConstraint,
-  Messenger,
-  MessengerActions,
-  MessengerEvents,
-} from '@metamask/messenger';
 import type {
   RootMessengerActions,
   RootMessengerEvents,
@@ -12,24 +5,6 @@ import type {
   // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../app/scripts/lib/messenger';
 import type { ValidateElements } from '../../helpers/route-messenger-helpers';
-
-export type ExtractMessengerActionsExcluding<
-  MessengerInstance extends Messenger<
-    string,
-    ActionConstraint,
-    EventConstraint
-  >,
-  ActionTypes extends readonly MessengerActions<MessengerInstance>['type'][],
-> = Exclude<MessengerActions<MessengerInstance>, { type: ActionTypes[number] }>;
-
-export type ExtractMessengerEventsExcluding<
-  MessengerInstance extends Messenger<
-    string,
-    ActionConstraint,
-    EventConstraint
-  >,
-  EventTypes extends readonly MessengerEvents<MessengerInstance>['type'][],
-> = Exclude<MessengerEvents<MessengerInstance>, { type: EventTypes[number] }>;
 
 /**
  * Helper function to define the excluded capabilities for a messenger. This is

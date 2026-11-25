@@ -1,5 +1,7 @@
+import type { OrderFormState } from './order-entry.types';
 import {
   formatNumberForInput,
+  getOrderFormPositionSize,
   isDigitsOnlyInput,
   isUnsignedDecimalInput,
 } from './utils';
@@ -53,6 +55,56 @@ describe('order-entry utils', () => {
       expect(isUnsignedDecimalInput('10..2')).toBe(false);
       expect(isUnsignedDecimalInput('1-0')).toBe(false);
       expect(isUnsignedDecimalInput('a10')).toBe(false);
+    });
+  });
+
+  describe('getOrderFormPositionSize', () => {
+    const marketForm: Pick<OrderFormState, 'amount' | 'type' | 'limitPrice'> = {
+      amount: '100',
+      type: 'market',
+      limitPrice: '',
+    };
+
+    it('sizes from the USD notional and rounds up to the size grid', () => {
+      // 100 / 60,000 = 0.0016667 BTC; the controller rounds to 5 decimals.
+      expect(getOrderFormPositionSize(marketForm, 60000, 5)).toBe('0.00167');
+    });
+
+    it('reads a comma-grouped amount as the full number', () => {
+      expect(
+        getOrderFormPositionSize({ ...marketForm, amount: '1,000' }, 60000, 5),
+      ).toBe('0.01667');
+    });
+
+    it('sizes a limit order from the limit price', () => {
+      expect(
+        getOrderFormPositionSize(
+          { amount: '100', type: 'limit', limitPrice: '$40,000' },
+          60000,
+          5,
+        ),
+      ).toBe('0.00250');
+    });
+
+    it('uses the current price while the limit price is empty', () => {
+      expect(
+        getOrderFormPositionSize(
+          { amount: '100', type: 'limit', limitPrice: '' },
+          60000,
+          5,
+        ),
+      ).toBe('0.00167');
+    });
+
+    it('returns undefined for an empty amount', () => {
+      expect(
+        getOrderFormPositionSize({ ...marketForm, amount: '' }, 60000, 5),
+      ).toBeUndefined();
+    });
+
+    it('returns undefined without a positive, finite price', () => {
+      expect(getOrderFormPositionSize(marketForm, 0, 5)).toBeUndefined();
+      expect(getOrderFormPositionSize(marketForm, Infinity, 5)).toBeUndefined();
     });
   });
 });

@@ -364,6 +364,15 @@ jobs:
                 if (!allowedStatuses.has(run.status)) continue;
                 if (run.id === currentRunId) continue;
 
+                // Only reuse builds from runs whose head commit lives in this
+                // repository. Fork PR runs also execute here, and the `branch`
+                // filter matches on head branch name alone, so a fork could
+                // otherwise supply attacker-controlled build artifacts.
+                if (run.head_repository?.full_name !== `${owner}/${repo}`) {
+                  core.info(`-> Run ${run.id} is from ${run.head_repository?.full_name ?? 'an unknown repository'} — skipping`);
+                  continue;
+                }
+
                 try {
                   // Use the combined status endpoint — it de-duplicates and returns only
                   // the latest status per context, avoiding pagination issues when bots

@@ -76,7 +76,7 @@ export type FeatureFlagRegistryEntry = {
  * Remote flag values are stored in the exact format returned by the production
  * client-config API, so they can be served directly by mock-e2e.js.
  *
- * Production defaults last synced: 2026-11-17
+ * Production defaults last synced: 2026-11-24
  * Source: https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod
  */
 /* eslint-disable @typescript-eslint/naming-convention -- production API flag names */
@@ -1342,6 +1342,9 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
         },
         overrides: {
           moneyAccountDeposit: {
+            enabled: true,
+          },
+          perpsDeposit: {
             enabled: true,
           },
         },
@@ -2935,6 +2938,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  coreUxHyperliquidConnectionBar: {
+    inProd: true,
+    name: 'coreUxHyperliquidConnectionBar',
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '13.50.0',
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   dappOpenSidepanelEnabled: {
     inProd: true,
     name: 'dappOpenSidepanelEnabled',
@@ -3034,8 +3048,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'earnMoneyAssetOverviewBalanceCtaEnabled',
     productionDefault: {
-      enabled: false,
-      minimumVersion: '0.0.0',
+      enabled: true,
+      minimumVersion: '13.57.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -3044,7 +3058,53 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
   earnMoneyDepositCtaTokenAddresses: {
     inProd: true,
     name: 'earnMoneyDepositCtaTokenAddresses',
-    productionDefault: {},
+    productionDefault: {
+      '0x1': [
+        '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+        '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+        '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+        '0x98C23E9d8f34FEFb1B7BD6a91B7FF122F4e16F5c',
+        '0x23878914EFE38d27C4D67Ab83ed1b93A74D4086a',
+        '0x018008bfb33d285247A21d44E50697654f754e63',
+        '0x6c3ea9036406852006290770BEdFcAbA0e23A0e8',
+      ],
+      '0x2105': [
+        '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+        '0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2',
+        '0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb',
+        '0x4e65fE4DbA92790696d040ac24Aa414708F5c0AB',
+      ],
+      '0x38': [
+        '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+        '0x55d398326f99059fF775485246999027B3197955',
+        '0x00901a076785e0906d1028c7d6372d247bec7d61',
+        '0xa9251ca9DE909CB71783723713B21E4233fbf1B1',
+      ],
+      '0x89': [
+        '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+        '0xA4D94019934D8333Ef880ABFFbF2FDd611C762BD',
+      ],
+      '0x8f': [
+        '0x754704Bc059F8C67012fEd69BC8A327a5aafb603',
+        '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+      ],
+      '0xa4b1': [
+        '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+        '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',
+        '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
+        '0x625E7708f30cA75bfd92586e17077590C60eb4cD',
+        '0x724dc807b04555b71ed48a6896b6f41593b8c637',
+        '0x46850aD61C2B7d64d08c9C754F45254596696984',
+      ],
+      '0xe708': [
+        '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+        '0x176211869cA2b568f2A7D4EE941E073a821EE1ff',
+        '0xA219439258ca9da29E9Cc4cE5596924745e12B93',
+        '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
+        '0x374D7860c4f2f604De0191298dD393703Cce84f3',
+      ],
+    },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },
@@ -3074,8 +3134,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'earnMoneyTokenListItemCtaEnabled',
     productionDefault: {
-      enabled: false,
-      minimumVersion: '0.0.0',
+      enabled: true,
+      minimumVersion: '13.57.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -3301,6 +3361,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'extensionUpdatePromptMinimumVersion',
     productionDefault: '0.0.0',
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  extensionUpdatePromptOnAnyRoute: {
+    inProd: true,
+    name: 'extensionUpdatePromptOnAnyRoute',
+    productionDefault: false,
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },
@@ -3657,10 +3725,10 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'networkAssetsSnapsMigrationSolana',
     productionDefault: {
       versions: {
-        '13.41.0': {
+        '13.56.0': {
           featureVersion: '1',
-          minimumSnapVersion: '2.9.0',
-          stage: 0,
+          minimumSnapVersion: '7.2.0',
+          stage: 1,
         },
       },
     },
@@ -3673,10 +3741,10 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'networkAssetsSnapsMigrationStellar',
     productionDefault: {
       versions: {
-        '13.41.0': {
+        '13.56.0': {
           featureVersion: '1',
-          minimumSnapVersion: '1.20.0',
-          stage: 0,
+          minimumSnapVersion: '2.0.0',
+          stage: 1,
         },
       },
     },
@@ -3689,32 +3757,11 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'networkAssetsSnapsMigrationTron',
     productionDefault: {
       versions: {
-        '13.56.0': [
-          {
-            name: 's1',
-            scope: {
-              type: 'threshold',
-              value: 1,
-            },
-            value: {
-              featureVersion: '1',
-              minimumSnapVersion: '4.3.0',
-              stage: 1,
-            },
-          },
-          {
-            name: 'off',
-            scope: {
-              type: 'threshold',
-              value: 0,
-            },
-            value: {
-              featureVersion: '1',
-              minimumSnapVersion: '4.3.0',
-              stage: 0,
-            },
-          },
-        ],
+        '13.56.0': {
+          featureVersion: '1',
+          minimumSnapVersion: '4.3.0',
+          stage: 1,
+        },
       },
     },
     status: FeatureFlagStatus.Active,
@@ -4062,7 +4109,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'rewardsMoneyControllerEnabled',
     productionDefault: {
-      enabled: false,
+      enabled: true,
       minimumVersion: '13.0.0',
     },
     status: FeatureFlagStatus.Active,
@@ -4159,6 +4206,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       },
       '0x8f': {
         extensionActive: false,
+        gaslessBridgeWith7702Enabled: true,
         sentinelUrl: 'https://tx-sentinel-monad-mainnet.api.cx.metamask.io',
       },
       '0xa': {

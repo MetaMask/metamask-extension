@@ -770,7 +770,7 @@
         "@ledgerhq/device-management-kit>inversify>@inversifyjs/core": true,
         "@ledgerhq/device-management-kit": true,
         "bs58": true,
-        "@metamask/ppom-validator>crypto-js": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>crypto-js": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/context-module>ethers": true,
         "@ledgerhq/device-management-kit>inversify": true,
         "@ledgerhq/device-management-kit>purify-ts": true,
@@ -885,7 +885,7 @@
         "@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
         "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": true,
         "wait-on>axios": true,
-        "@metamask/ppom-validator>crypto-js": true
+        "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>crypto-js": true
       }
     },
     "@ledgerhq/hw-app-eth": {
@@ -1060,6 +1060,15 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true
+      }
+    },
+    "@metamask/ai-controllers": {
+      "globals": {
+        "fetch": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/superstruct": true
       }
     },
     "@metamask/analytics-controller": {
@@ -1521,26 +1530,6 @@
         "lodash": true
       }
     },
-    "@metamask/ppom-validator>@metamask/controller-utils": {
-      "globals": {
-        "Buffer.from": true,
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "@metamask/ppom-validator>@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "ethereumjs-util>bn.js": true,
-        "buffer": true,
-        "cockatiel": true,
-        "eth-ens-namehash": true,
-        "eslint>fast-deep-equal": true,
-        "lodash": true
-      }
-    },
     "@metamask/core-backend": {
       "globals": {
         "AbortController": true,
@@ -1689,7 +1678,7 @@
       "packages": {
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true,
-        "@metamask/ppom-validator>json-rpc-random-id": true
+        "@metamask/controller-utils>@metamask/eth-query>json-rpc-random-id": true
       }
     },
     "@metamask/network-controller>@metamask/eth-block-tracker": {
@@ -1707,7 +1696,7 @@
         "@metamask/utils>@metamask/error-utils": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true,
-        "@metamask/ppom-validator>json-rpc-random-id": true
+        "@metamask/controller-utils>@metamask/eth-query>json-rpc-random-id": true
       }
     },
     "@metamask/eth-hd-keyring": {
@@ -1883,7 +1872,7 @@
     },
     "@metamask/controller-utils>@metamask/eth-query": {
       "packages": {
-        "@metamask/ppom-validator>json-rpc-random-id": true,
+        "@metamask/controller-utils>@metamask/eth-query>json-rpc-random-id": true,
         "browserify>xtend": true
       }
     },
@@ -2919,23 +2908,6 @@
         "@metamask/utils>@metamask/type-utils": true,
         "@metamask/utils": true,
         "@metamask/post-message-stream>readable-stream": true
-      }
-    },
-    "@metamask/ppom-validator": {
-      "globals": {
-        "Buffer.from": true,
-        "URL": true,
-        "console.error": true,
-        "crypto": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/ppom-validator>@metamask/controller-utils": true,
-        "@metamask/ppom-validator>await-semaphore": true,
-        "buffer": true,
-        "@metamask/ppom-validator>crypto-js": true,
-        "@toruslabs/eccrypto>elliptic": true,
-        "@metamask/ppom-validator>json-rpc-random-id": true
       }
     },
     "@metamask/profile-metrics-controller": {
@@ -4434,16 +4406,6 @@
         "btoa": true
       }
     },
-    "@metamask/ppom-validator>@metamask/controller-utils>@spruceid/siwe-parser": {
-      "globals": {
-        "console.error": true,
-        "console.log": true
-      },
-      "packages": {
-        "@noble/hashes": true,
-        "@metamask/controller-utils>@signinwithethereum/siwe-parser>apg-js": true
-      }
-    },
     "@tanstack/react-query>@tanstack/query-core": {
       "globals": {
         "AbortController": true,
@@ -4796,16 +4758,6 @@
     "string.prototype.matchall>es-abstract>available-typed-arrays": {
       "packages": {
         "string.prototype.matchall>es-abstract>typed-array-length>possible-typed-array-names": true
-      }
-    },
-    "@metamask/ppom-validator>await-semaphore": {
-      "globals": {
-        "process": true,
-        "setImmediate": true
-      },
-      "packages": {
-        "core-js-pure": true,
-        "process": true
       }
     },
     "wait-on>axios": {
@@ -5342,10 +5294,8 @@
         "crypto-browserify>randomfill": true
       }
     },
-    "@metamask/ppom-validator>crypto-js": {
+    "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>crypto-js": {
       "globals": {
-        "Float32Array": true,
-        "Float64Array": true,
         "crypto": true,
         "define": true,
         "msCrypto": true

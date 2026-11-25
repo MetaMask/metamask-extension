@@ -9,6 +9,7 @@ import { GAS_API_BASE_URL } from '../../../../shared/constants/swaps';
 import { mockSpotPrices } from '../tokens/utils/mocks';
 import { Driver } from '../../webdriver/driver';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
+import { gasPrices } from '../../mock-response-data/api-responses';
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
@@ -20,16 +21,19 @@ const PREFERENCES_STATE_MOCK = {
 
 const SPOT_PRICES_MOCK = {
   'eip155:1/slip44:60': {
+    id: 'ethereum',
     price: 1700,
     marketCap: 382623505141,
     pricePercentChange1d: 0,
   },
   'eip155:56/slip44:714': {
+    id: 'ethereum',
     price: 300,
     marketCap: 85000000000,
     pricePercentChange1d: 0,
   },
   'eip155:56/slip44:60': {
+    id: 'ethereum',
     price: 300,
     marketCap: 85000000000,
     pricePercentChange1d: 0,
@@ -123,10 +127,8 @@ async function mockBinanceRelatedRequestsWithGasApiDown(
   mockServer: MockttpServer,
 ): Promise<unknown[]> {
   const relatedRequests = await mockBinanceRelatedRequests(mockServer);
-  const gasApiDownRequest = mockServer
-    .forGet(
-      `${GAS_API_BASE_URL}/networks/${parseInt(CHAIN_IDS.BSC, 16)}/gasPrices`,
-    )
+  const gasApiDownRequest = gasPrices
+    .rule(mockServer, { chainId: parseInt(CHAIN_IDS.BSC, 16) })
     .thenCallback(() => {
       return {
         statusCode: 422,
@@ -145,10 +147,8 @@ async function mockBinanceRelatedRequestsWithGasApiAvailable(
   mockServer: MockttpServer,
 ): Promise<unknown[]> {
   const relatedRequests = await mockBinanceRelatedRequests(mockServer);
-  const gasApiAvailableRequest = mockServer
-    .forGet(
-      `${GAS_API_BASE_URL}/networks/${parseInt(CHAIN_IDS.BSC, 16)}/gasPrices`,
-    )
+  const gasApiAvailableRequest = gasPrices
+    .rule(mockServer, { chainId: parseInt(CHAIN_IDS.BSC, 16) })
     .thenCallback(() => {
       return {
         statusCode: 200,

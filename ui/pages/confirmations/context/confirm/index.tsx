@@ -24,7 +24,7 @@ import useSyncConfirmPath from '../../hooks/useSyncConfirmPath';
 import { Confirmation } from '../../types/confirm';
 
 export type ConfirmContextType = {
-  /** @deprecated Use useTransactionMetadataRequest or useSignatureRequest hooks instead. */
+  /** @deprecated Use useTransactionMetadataRequest hook instead. */
   currentConfirmation: Confirmation;
   transactionMetadataRequestOverride?: TransactionMeta;
   isScrollToBottomCompleted: boolean;
@@ -179,7 +179,7 @@ export const useConfirmContext = <CurrentConfirmation = Confirmation>() => {
     );
   }
   return context as {
-    /** @deprecated Use useTransactionMetadataRequest or useSignatureRequest hooks instead. */
+    /** @deprecated Use useTransactionMetadataRequest hook instead. */
     currentConfirmation: CurrentConfirmation;
     transactionMetadataRequestOverride?: TransactionMeta;
     isScrollToBottomCompleted: boolean;
