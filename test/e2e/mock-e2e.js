@@ -719,6 +719,29 @@ async function setupMocking(
 ) {
   let numNetworkReqs = 0;
   const privacyReport = new Set();
+  await server
+    .forPost(
+      new RegExp(
+        `^https://(${blocklistedHosts
+          .map((host) => host.replace(/\./gu, '\\.'))
+          .join('|')})/`,
+        'u',
+      ),
+    )
+    .asPriority(RulePriority.FALLBACK)
+    .always()
+    .thenCallback(async (request) => {
+      const response = await fetch('http://localhost:8545', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: await request.body.getText(),
+      });
+      return {
+        statusCode: response.status,
+        headers: { 'Content-Type': 'application/json' },
+        body: await response.text(),
+      };
+    });
   // FALLBACK priority so that this catch-all only handles requests no other
   // DEFAULT-priority mock matches. This also lets other FALLBACK-priority
   // defaults (e.g. the Solana discovery mocks below) take precedence over the
