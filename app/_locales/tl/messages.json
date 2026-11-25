@@ -6781,9 +6781,6 @@
   "noHardwareWalletOrSnapsSupport": {
     "message": "Ang mga Snap, at karamihan sa mga hardware wallet, ay hindi gagana sa iyong kasalukuyang bersyon ng browser."
   },
-  "noMMFeeSwapping": {
-    "message": "Walang bayad sa MetaMask"
-  },
   "noNetworkFee": {
     "message": "Walanag bayad sa network"
   },
