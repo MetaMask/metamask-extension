@@ -209,7 +209,7 @@
       },
       "packages": {
         "ethers>@ethersproject/address": true,
-        "@ethersproject/bignumber": true,
+        "ethers>@ethersproject/bignumber": true,
         "@ethersproject/bytes": true,
         "ethers>@ethersproject/constants": true,
         "ethers>@ethersproject/hash": true,
@@ -221,7 +221,7 @@
     },
     "ethers>@ethersproject/abstract-provider": {
       "packages": {
-        "@ethersproject/bignumber": true,
+        "ethers>@ethersproject/bignumber": true,
         "@ethersproject/bytes": true,
         "ethers>@ethersproject/logger": true,
         "ethers>@ethersproject/properties": true
@@ -235,7 +235,7 @@
     },
     "ethers>@ethersproject/address": {
       "packages": {
-        "@ethersproject/bignumber": true,
+        "ethers>@ethersproject/bignumber": true,
         "@ethersproject/bytes": true,
         "ethers>@ethersproject/keccak256": true,
         "ethers>@ethersproject/logger": true,
@@ -257,7 +257,7 @@
         "ethers>@ethersproject/properties": true
       }
     },
-    "@ethersproject/bignumber": {
+    "ethers>@ethersproject/bignumber": {
       "packages": {
         "@ethersproject/bytes": true,
         "ethers>@ethersproject/logger": true,
@@ -271,7 +271,7 @@
     },
     "ethers>@ethersproject/constants": {
       "packages": {
-        "@ethersproject/bignumber": true
+        "ethers>@ethersproject/bignumber": true
       }
     },
     "@ethersproject/contracts": {
@@ -283,7 +283,7 @@
         "ethers>@ethersproject/abstract-provider": true,
         "ethers>@ethersproject/abstract-signer": true,
         "ethers>@ethersproject/address": true,
-        "@ethersproject/bignumber": true,
+        "ethers>@ethersproject/bignumber": true,
         "@ethersproject/bytes": true,
         "ethers>@ethersproject/logger": true,
         "ethers>@ethersproject/properties": true,
@@ -294,7 +294,7 @@
       "packages": {
         "ethers>@ethersproject/address": true,
         "ethers>@ethersproject/base64": true,
-        "@ethersproject/bignumber": true,
+        "ethers>@ethersproject/bignumber": true,
         "@ethersproject/bytes": true,
         "ethers>@ethersproject/keccak256": true,
         "ethers>@ethersproject/logger": true,
@@ -305,7 +305,7 @@
     "@ethersproject/hdnode": {
       "packages": {
         "ethers>@ethersproject/basex": true,
-        "@ethersproject/bignumber": true,
+        "ethers>@ethersproject/bignumber": true,
         "@ethersproject/bytes": true,
         "ethers>@ethersproject/logger": true,
         "ethers>@ethersproject/pbkdf2": true,
@@ -376,7 +376,7 @@
         "ethers>@ethersproject/address": true,
         "ethers>@ethersproject/base64": true,
         "ethers>@ethersproject/basex": true,
-        "@ethersproject/bignumber": true,
+        "ethers>@ethersproject/bignumber": true,
         "@ethersproject/bytes": true,
         "ethers>@ethersproject/constants": true,
         "ethers>@ethersproject/hash": true,
@@ -421,7 +421,7 @@
     },
     "ethers>@ethersproject/solidity": {
       "packages": {
-        "@ethersproject/bignumber": true,
+        "ethers>@ethersproject/bignumber": true,
         "@ethersproject/bytes": true,
         "ethers>@ethersproject/keccak256": true,
         "ethers>@ethersproject/logger": true,
@@ -439,7 +439,7 @@
     "@ethersproject/transactions": {
       "packages": {
         "ethers>@ethersproject/address": true,
-        "@ethersproject/bignumber": true,
+        "ethers>@ethersproject/bignumber": true,
         "@ethersproject/bytes": true,
         "ethers>@ethersproject/constants": true,
         "ethers>@ethersproject/keccak256": true,
@@ -451,7 +451,7 @@
     },
     "ethers>@ethersproject/units": {
       "packages": {
-        "@ethersproject/bignumber": true,
+        "ethers>@ethersproject/bignumber": true,
         "ethers>@ethersproject/logger": true
       }
     },
@@ -1042,7 +1042,7 @@
       },
       "packages": {
         "ethers>@ethersproject/address": true,
-        "@ethersproject/bignumber": true,
+        "ethers>@ethersproject/bignumber": true,
         "ethers>@ethersproject/constants": true,
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
@@ -1746,7 +1746,7 @@
       },
       "packages": {
         "@babel/runtime": true,
-        "@ethersproject/bignumber": true,
+        "ethers>@ethersproject/bignumber": true,
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
         "@metamask/eth-token-tracker>@metamask/eth-block-tracker": true,
@@ -5341,7 +5341,7 @@
         "ethers>@ethersproject/address": true,
         "ethers>@ethersproject/base64": true,
         "ethers>@ethersproject/basex": true,
-        "@ethersproject/bignumber": true,
+        "ethers>@ethersproject/bignumber": true,
         "@ethersproject/bytes": true,
         "ethers>@ethersproject/constants": true,
         "@ethersproject/contracts": true,
