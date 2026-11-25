@@ -101,6 +101,8 @@ const CONNECT_APPROVAL_TYPES = [
 export type ConfirmationNavigationOptions = {
   loader?: ConfirmationLoader;
   goBackTo?: string;
+  /* In-app route to show once the confirmation has been submitted. */
+  goToAfterSubmit?: string;
   /**
    * Set when the confirmation was pushed onto history. Back then pops that
    * entry instead of replacing it with `goBackTo`.
@@ -354,6 +356,9 @@ export function useConfirmationNavigationOptions(): ConfirmationNavigationOption
     ConfirmationLoader.Default;
 
   const goBackTo = sanitizeRedirectUrl(searchParams.get('goBackTo'));
+  const goToAfterSubmit = sanitizeRedirectUrl(
+    searchParams.get('goToAfterSubmit'),
+  );
 
   const goBackAction =
     searchParams.get('goBackAction') === ConfirmationGoBackAction.Pop
@@ -384,6 +389,7 @@ export function useConfirmationNavigationOptions(): ConfirmationNavigationOption
   return {
     loader,
     goBackTo,
+    goToAfterSubmit,
     goBackAction,
     payWithOption,
     preferredPaymentToken,

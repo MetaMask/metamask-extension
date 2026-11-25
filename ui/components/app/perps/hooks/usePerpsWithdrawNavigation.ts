@@ -25,6 +25,8 @@ export type PerpsWithdrawNavigationOptions = {
   /** When false, `trigger` still succeeds but does not call `navigate` */
   navigateOnTrigger?: boolean;
   onNavigated?: (route: string) => void;
+  /* Route to show once the withdrawal has been submitted */
+  goToAfterSubmit?: string;
 };
 
 export type PerpsWithdrawNavigationResult = {
@@ -44,7 +46,7 @@ export type PerpsWithdrawNavigationResult = {
 export function usePerpsWithdrawNavigation(
   options: PerpsWithdrawNavigationOptions = {},
 ): PerpsWithdrawNavigationResult {
-  const { navigateOnTrigger = true, onNavigated } = options;
+  const { navigateOnTrigger = true, onNavigated, goToAfterSubmit } = options;
   const navigate = useNavigate();
   const location = useLocation();
   // Perps withdraws settle to the EVM account, so resolve it directly instead
@@ -89,6 +91,10 @@ export function usePerpsWithdrawNavigation(
             params.set('goBackTo', goBackTo);
           }
 
+          if (goToAfterSubmit) {
+            params.set('goToAfterSubmit', goToAfterSubmit);
+          }
+
           navigate({
             pathname: route,
             search: params.toString(),
@@ -115,6 +121,7 @@ export function usePerpsWithdrawNavigation(
       setIsLoading(false);
     }
   }, [
+    goToAfterSubmit,
     isConfirmationFlowEnabled,
     isLoading,
     location.pathname,

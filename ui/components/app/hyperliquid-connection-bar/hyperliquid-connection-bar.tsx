@@ -14,10 +14,13 @@ import {
 } from '@metamask/design-system-react';
 import { HYPERLIQUID_DEPOSIT_PROMPT } from '../../../../shared/constants/hyperliquid-deposit-prompt';
 import { PERPS_EVENT_VALUE } from '../../../../shared/constants/perps-events';
+import { PERPS_HOME_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PerpsMarketBalanceActions } from '../perps/perps-market-balance-actions';
 import { usePerpsDepositConfirmation } from '../perps/hooks/usePerpsDepositConfirmation';
 import { usePerpsWithdrawNavigation } from '../perps/hooks/usePerpsWithdrawNavigation';
+
+const PERPS_HOME_FROM_BAR_ROUTE = `${PERPS_HOME_PAGE_ROUTE}?source=${PERPS_EVENT_VALUE.SOURCE.HYPERLIQUID_CONNECTION_BAR}`;
 
 /**
  * Hyperliquid Connection Bar: the Perps balance with Add funds and Withdraw,
@@ -30,8 +33,11 @@ const HyperliquidConnectionBar = () => {
   const contentId = useId();
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation({
     entryPoint: HYPERLIQUID_DEPOSIT_PROMPT,
+    goToAfterSubmit: PERPS_HOME_FROM_BAR_ROUTE,
   });
-  const { trigger: triggerWithdraw } = usePerpsWithdrawNavigation();
+  const { trigger: triggerWithdraw } = usePerpsWithdrawNavigation({
+    goToAfterSubmit: PERPS_HOME_FROM_BAR_ROUTE,
+  });
   const [isExpanded, setIsExpanded] = useState(true);
 
   const handleToggle = useCallback(() => {

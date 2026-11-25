@@ -25,7 +25,6 @@ const renderCompact = (
       totalBalance={15250}
       availableBalance={10125}
       privacyMode={false}
-      showActionButtons
       isAddFundsLoading={false}
       onAddFunds={jest.fn()}
       onWithdraw={jest.fn()}

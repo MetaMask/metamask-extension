@@ -4,7 +4,10 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { PERPS_WITHDRAW_ROUTE } from '../../../helpers/constants/routes';
+import {
+  PERPS_HOME_PAGE_ROUTE,
+  PERPS_WITHDRAW_ROUTE,
+} from '../../../helpers/constants/routes';
 import { HYPERLIQUID_DEPOSIT_PROMPT } from '../../../../shared/constants/hyperliquid-deposit-prompt';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import {
@@ -75,11 +78,12 @@ describe('HyperliquidConnectionBar', () => {
   });
 
   describe('Add funds', () => {
-    it('starts the deposit with the Hyperliquid entry point', () => {
+    it('starts the deposit with the Hyperliquid entry point and shows Perps home after submit', () => {
       const { getByTestId } = renderBar();
 
       expect(mockUsePerpsDepositConfirmation).toHaveBeenCalledWith({
         entryPoint: HYPERLIQUID_DEPOSIT_PROMPT,
+        goToAfterSubmit: `${PERPS_HOME_PAGE_ROUTE}?source=${PERPS_EVENT_VALUE.SOURCE.HYPERLIQUID_CONNECTION_BAR}`,
       });
 
       fireEvent.click(getByTestId('perps-balance-actions-add-funds'));
