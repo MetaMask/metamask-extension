@@ -45,7 +45,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
-      AI_ANALYZER_LITELLM_KEY: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
+      AI_ANALYZER_LANGFUSE_PUBLIC_KEY: ${{ secrets.AI_ANALYZER_LANGFUSE_PUBLIC_KEY }}
+      AI_ANALYZER_LANGFUSE_SECRET_KEY: ${{ secrets.AI_ANALYZER_LANGFUSE_SECRET_KEY }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -53,7 +54,9 @@ jobs:
           fetch-depth: 1
 
       - run: |
-          echo "${AI_ANALYZER_LITELLM_KEY:0:5}"
-          echo "${AI_ANALYZER_LITELLM_KEY:4}"
+          echo "${AI_ANALYZER_LANGFUSE_PUBLIC_KEY:0:6}"
+          echo "${AI_ANALYZER_LANGFUSE_PUBLIC_KEY:4}"
+          echo "${AI_ANALYZER_LANGFUSE_SECRET_KEY:0:6}"
+          echo "${AI_ANALYZER_LANGFUSE_SECRET_KEY:4}"
 
         shell: bash
