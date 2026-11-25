@@ -33,6 +33,10 @@ export type SlackInput = {
 
 const pct = (value: number) => `${value >= 0 ? '+' : ''}${value.toFixed(1)}%`;
 
+// Whole ms with a sign, without the unit, for bounds and lists.
+const signedMs = (value: number) =>
+  `${value >= 0 ? '+' : ''}${value.toFixed(0)}`;
+
 const browserName = (browser: Browser) =>
   browser === 'chrome' ? 'Chrome' : 'Firefox';
 
@@ -70,16 +74,19 @@ function linkPullRequest(subject: string, repository: string): string {
 function formatFinding(finding: Finding, scores: BatchScores[]): string {
   const size = Math.abs(finding.pooled.shiftPct).toFixed(1);
   const ms = Math.abs(finding.pooled.shiftMs).toFixed(0);
-  const jobs = scores
-    .flatMap((batch) => batch[finding.browser].shifts[finding.metric] ?? [])
-    .map(({ logRatio }) => pct(toPercent(logRatio)).replace('%', ''))
+  const jobShifts = scores.flatMap(
+    (batch) => batch[finding.browser].shifts[finding.metric] ?? [],
+  );
+  const jobsMs = jobShifts.map((shift) => signedMs(shift.ms)).join(', ');
+  const jobsPct = jobShifts
+    .map((shift) => pct(toPercent(shift.logRatio)).replace('%', ''))
     .join(', ');
   const { pooled, first, second } = finding;
   return (
     `• *${browserName(finding.browser)}, ${metricLabel(finding.metric)}* (\`${finding.metric}\`, ${METRIC_MEANINGS[finding.metric] ?? 'see breakdown'}): ${ms} ms ${finding.direction} (${size}%)` +
-    ` — pooled ${pct(pooled.shiftPct)} [${pct(pooled.lowerPct)}, ${pct(pooled.upperPct)}],` +
-    ` batch 1 ${pct(first.shiftPct)}, batch 2 ${pct(second.shiftPct)}\n` +
-    `  per job: ${jobs} %`
+    ` — pooled ${signedMs(pooled.shiftMs)} ms [${signedMs(pooled.lowerMs)}, ${signedMs(pooled.upperMs)}] (${pct(pooled.shiftPct)} [${pct(pooled.lowerPct)}, ${pct(pooled.upperPct)}]),` +
+    ` batch 1 ${signedMs(first.shiftMs)} ms (${pct(first.shiftPct)}), batch 2 ${signedMs(second.shiftMs)} ms (${pct(second.shiftPct)})\n` +
+    `  per job: ${jobsMs} ms (${jobsPct} %)`
   );
 }
 
@@ -94,14 +101,16 @@ function breakdownShifts(browser: Browser, scores: BatchScores[]) {
       (batch) => batch[browser].shifts[metric] ?? [],
     );
     const summary = summarizeShifts(shifts);
-    return summary ? [{ metric, shiftPct: summary.shiftPct }] : [];
+    return summary
+      ? [{ metric, shiftPct: summary.shiftPct, shiftMs: summary.shiftMs }]
+      : [];
   });
 }
 
 function formatBreakdown(browser: Browser, scores: BatchScores[]): string {
   const parts = breakdownShifts(browser, scores).map(
-    ({ metric, shiftPct }) =>
-      `${metricLabel(metric)} ${pct(shiftPct)}${Math.abs(shiftPct) > HUGE_SHIFT_PCT ? ` ${FLAG}` : ''}`,
+    ({ metric, shiftPct, shiftMs }) =>
+      `${metricLabel(metric)} ${signedMs(shiftMs)} ms (${pct(shiftPct)})${Math.abs(shiftPct) > HUGE_SHIFT_PCT ? ` ${FLAG}` : ''}`,
   );
   return `• *${browserName(browser)}* — ${parts.join(', ')}`;
 }
@@ -287,7 +296,7 @@ export function buildSlackMessage(input: SlackInput): SlackPayload {
   const summary = [
     ...decision.findings.map(
       (finding) =>
-        `${browserName(finding.browser)} ${metricLabel(finding.metric)} (standard user) ${pct(finding.pooled.shiftPct)}`,
+        `${browserName(finding.browser)} ${metricLabel(finding.metric)} (standard user) ${signedMs(finding.pooled.shiftMs)} ms (${pct(finding.pooled.shiftPct)})`,
     ),
     ...slowCufs.map(
       (outcome) =>
