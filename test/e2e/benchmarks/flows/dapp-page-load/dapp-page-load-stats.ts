@@ -41,15 +41,20 @@ export function aggregateDappPageLoadStatistics(
   const summaries: DappPageLoadStats[] = [];
 
   for (const [page, pageResults] of Object.entries(resultsByPage)) {
-    const metricRows = pageResults.map((r) => r.metrics);
-
     const timers: TimerStatistics[] = [];
     for (const key of NUMERIC_METRIC_KEYS) {
-      const values = metricRows
-        .map((m) => m[key])
-        .filter((v): v is number => typeof v === 'number');
-      if (values.length > 0) {
-        timers.push(calculateTimerStatistics(key, values));
+      const measured = pageResults.flatMap((sample) => {
+        const value = sample.metrics[key];
+        return typeof value === 'number' ? [{ value, run: sample.run }] : [];
+      });
+      if (measured.length > 0) {
+        timers.push(
+          calculateTimerStatistics(
+            key,
+            measured.map(({ value }) => value),
+            { iterations: measured.map(({ run }) => run) },
+          ),
+        );
       }
     }
 

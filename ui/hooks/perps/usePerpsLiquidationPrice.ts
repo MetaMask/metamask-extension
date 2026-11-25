@@ -12,7 +12,7 @@ type UsePerpsLiquidationPriceParams = {
   asset: string;
   direction: 'long' | 'short';
   entryPrice: number;
-  leverage: number;
+  leverage: number | undefined;
   enabled: boolean;
 };
 
@@ -40,7 +40,11 @@ export const usePerpsLiquidationPrice = (
 ): UsePerpsLiquidationPriceResult => {
   const debounceMs = options?.debounceMs ?? DEFAULT_DEBOUNCE_MS;
   const hasValidInputs =
-    enabled && entryPrice > 0 && leverage > 0 && Boolean(asset);
+    enabled &&
+    entryPrice > 0 &&
+    leverage !== undefined &&
+    leverage > 0 &&
+    Boolean(asset);
 
   const [liquidationPrice, setLiquidationPrice] = useState<string>(
     DEFAULT_LIQUIDATION_PRICE,

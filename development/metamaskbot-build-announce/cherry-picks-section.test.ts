@@ -40,6 +40,9 @@ function mockGit(
 }
 
 describe('cherry-picks-section', () => {
+  // The module derives its repo URL from GITHUB_REPOSITORY, which differs on forks.
+  const repoUrl = `https://github.com/${process.env.GITHUB_REPOSITORY || 'MetaMask/metamask-extension'}`;
+
   beforeEach(() => {
     execFileSyncMock.mockReset();
   });
@@ -309,7 +312,7 @@ describe('cherry-picks-section', () => {
 
       expect(section).toContain('<a id="cherry-picks"></a>');
       expect(section).toContain(
-        'fix: keep \\| slash \\\\ and &lt;tag&gt; ([#123](https://github.com/MetaMask/metamask-extension/pull/123)) next line',
+        `fix: keep \\| slash \\\\ and &lt;tag&gt; ([#123](${repoUrl}/pull/123)) next line`,
       );
     });
   });
