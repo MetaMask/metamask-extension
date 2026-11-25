@@ -28,6 +28,7 @@ import {
   MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME,
   MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME,
 } from '../../../shared/lib/money/feature-flags';
+import { WIDE_SCREEN_REDESIGN_REMOTE_FLAG } from '../../../shared/lib/ab-testing/configs/wide-screen-redesign';
 import { toDeterministicThresholdScopes } from './deterministic-threshold-scopes';
 
 // ============================================================================
@@ -2855,15 +2856,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
   coreCEUX1492AbtestWideScreenRedesign: {
     inProd: true,
     name: 'coreCEUX1492AbtestWideScreenRedesign',
-    productionDefault: [
-      {
-        name: 'treatment',
-        scope: {
-          type: 'threshold',
-          value: 1,
-        },
-      },
-    ],
+    productionDefault: WIDE_SCREEN_REDESIGN_REMOTE_FLAG,
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },
