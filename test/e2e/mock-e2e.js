@@ -2104,19 +2104,31 @@ async function setupMocking(
       };
     });
 
-  // Veda performance API: vault APY, fetched by MoneyAccountBalanceService
-  // whenever a Money Account surface renders. A minimal valid response stops
-  // TanStack Query from retrying against the catch-all.
+  // MoneyAccountApiDataService.fetchVaults (useMoneyVaultApy): a valid catalog
+  // stops TanStack Query retrying against the catch-all.
   await server
-    .forGet(/^https:\/\/api\.sevenseas\.capital\/performance\/[^/]+\/[^/]+$/u)
+    .forGet('https://money.api.cx.metamask.io/v1/vaults')
     .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
-        Response: {
-          apy: 0.045,
-          timestamp: '2026-01-01T00:00:00Z',
-        },
+        vaults: [
+          {
+            chain_id: 143,
+            vault_address: '0x1C8a336051D2024E318A229d01F9F6CF96efD316',
+            vault_key: 'standard',
+            name: 'Money Account mUSD Vault',
+            asset_symbol: 'mUSD',
+            asset_decimals: 6,
+            asset_contract_address:
+              '0xaca92e438df0b2401ff60da7e4337b687a2435da',
+            current_apy: '0.045',
+            as_of_block: 1,
+            as_of_timestamp: '2026-01-01T00:00:00Z',
+            data_freshness: 'live',
+            indexer_lag_seconds: 0,
+          },
+        ],
       },
     }));
 
@@ -2232,10 +2244,15 @@ async function setupMocking(
     });
 
   // Nft API: tokens
+  // Matches any address, not just the default fixture account.
+  // Has fallback priority like the other broad defaults so
+  // specs that mock a specific address take precedence.
   await server
     .forGet(
-      `https://nft.api.cx.metamask.io/users/${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}/tokens`,
+      /^https:\/\/nft\.api\.cx\.metamask\.io\/users\/0x[0-9a-fA-F]{40}\/tokens/u,
     )
+    .asPriority(RulePriority.FALLBACK)
+    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,

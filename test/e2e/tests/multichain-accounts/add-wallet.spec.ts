@@ -25,6 +25,7 @@ import {
   mockPriceApi,
 } from '../tokens/utils/mocks';
 import { mockIdentityServices } from '../identity/mocks';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 
 const DEFAULT_LOCAL_NODE_USD_BALANCE = '85,025.00';
 
@@ -81,8 +82,7 @@ describe('Add wallet', function () {
         await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
         // Open account details modal and check displayed account address
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
 
@@ -111,15 +111,14 @@ describe('Add wallet', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);
         // Extended timeout: AccountTreeController sync (triggered by the
         // multi-SRP vault) can take longer than the default 10s on Firefox CI.
         await accountListPage.checkPageIsLoaded(30000);
         await importWalletWithSrp(driver, E2E_SRP);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await accountListPage.checkPageIsLoaded(30000);
         await accountListPage.checkNumberOfAvailableAccounts(3);
       },
@@ -155,7 +154,7 @@ describe('Add wallet', function () {
         // Wait until account list is loaded to mitigate race condition
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.checkAccountLabel('Account 1');
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
 
@@ -176,7 +175,7 @@ describe('Add wallet', function () {
         await homePage.checkAccountImportedToastIsDisplayed();
         await headerNavbar.checkAccountLabel(IMPORTED_ACCOUNT_NAME);
 
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountDisplayedInAccountList(
           IMPORTED_ACCOUNT_NAME,
@@ -218,7 +217,7 @@ describe('Add wallet', function () {
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.checkAccountLabel('Account 1');
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
 

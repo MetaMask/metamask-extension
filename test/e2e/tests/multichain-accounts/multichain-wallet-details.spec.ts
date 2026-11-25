@@ -3,10 +3,10 @@ import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import { Driver } from '../../webdriver/driver';
-import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import { mockPriceApi } from '../tokens/utils/mocks';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 
 describe('Multichain Accounts - Wallet Details', function (this: Suite) {
   it('should view wallet details with one Ethereum', async function () {
@@ -24,8 +24,7 @@ describe('Multichain Accounts - Wallet Details', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { expectedBalance: '$85,025.00' });
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();

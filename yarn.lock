@@ -4113,7 +4113,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/contracts@npm:5.8.0, @ethersproject/contracts@npm:^5.7.0":
+"@ethersproject/contracts@npm:5.8.0, @ethersproject/contracts@npm:^5.7.0, @ethersproject/contracts@npm:^5.8.0":
   version: 5.8.0
   resolution: "@ethersproject/contracts@npm:5.8.0"
   dependencies:
@@ -7239,6 +7239,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/ai-controllers@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/ai-controllers@npm:2.0.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^10.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/superstruct": "npm:^3.4.1"
+    "@metamask/utils": "npm:^11.12.0"
+  checksum: 10/49228f8b003f47fef4b557a9e4a8cfa8ee5e59e03458ebcf758a00004d0503524585ca20065057e899ed2a0006354d49de99df99b258c4571ab5c1cbada50d48
+  languageName: node
+  linkType: hard
+
 "@metamask/analytics-controller@npm:^1.2.1":
   version: 1.2.1
   resolution: "@metamask/analytics-controller@npm:1.2.1"
@@ -7895,12 +7907,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-system-react@npm:^0.53.0":
-  version: 0.53.0
-  resolution: "@metamask/design-system-react@npm:0.53.0"
+"@metamask/design-system-react@npm:^0.54.0":
+  version: 0.54.0
+  resolution: "@metamask/design-system-react@npm:0.54.0"
   dependencies:
     "@floating-ui/react-dom": "npm:^2.1.2"
-    "@metamask/design-system-shared": "npm:^0.46.0"
+    "@metamask/design-system-shared": "npm:^0.47.0"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@radix-ui/react-slot": "npm:^1.1.0"
     blo: "npm:^2.0.0"
@@ -7912,18 +7924,18 @@ __metadata:
     "@metamask/utils": ^11.12.1
     react: ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/f852405a1a849e18f15029513469b8adc65954372134a2daf5eefb2f7f5bd1f6549e099f295ba1a0097a256c583b21984b7d033a7408bc74602a87397b792238
+  checksum: 10/48f40b2c819bea3043f7b215538b3bd64a60c2ec38138f358b3080d7d245d39f1b1357666ff4a31a568a97b46b9b4a237ed4ff756818848b096a412cde4a7aea
   languageName: node
   linkType: hard
 
-"@metamask/design-system-shared@npm:^0.46.0":
-  version: 0.46.0
-  resolution: "@metamask/design-system-shared@npm:0.46.0"
+"@metamask/design-system-shared@npm:^0.47.0":
+  version: 0.47.0
+  resolution: "@metamask/design-system-shared@npm:0.47.0"
   dependencies:
     "@metamask/utils": "npm:^11.12.1"
   peerDependencies:
     react: ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/b82123ae2f7a49ed35eee16219b1a0a1ebbb5c05e74cac0052c3e5597cf129d9fa1cdf99189d3d3b5bb1a3d6cbac0ec734f25671333536fc6987810a8abb8ae3
+  checksum: 10/bfcafbaa18c529f10cb1b2a3c6f95784e0e0e9a0aad605ae0888498607f0c25f2fa9755a198217fad7a43a52a4802528544b9915ff3ef30e4aac9d148ce835c8
   languageName: node
   linkType: hard
 
@@ -9035,17 +9047,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/money-account-api-data-service@npm:^2.4.0":
-  version: 2.4.0
-  resolution: "@metamask/money-account-api-data-service@npm:2.4.0"
+"@metamask/money-account-api-data-service@npm:^2.4.0, @metamask/money-account-api-data-service@npm:^2.5.0":
+  version: 2.5.0
+  resolution: "@metamask/money-account-api-data-service@npm:2.5.0"
   dependencies:
     "@metamask/base-data-service": "npm:^2.1.0"
     "@metamask/controller-utils": "npm:^13.0.0"
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/superstruct": "npm:^3.4.1"
-    "@metamask/utils": "npm:^12.0.1"
-    "@tanstack/query-core": "npm:^5.103.2"
-  checksum: 10/7b959ec3982f6c34219c45db4d1f7f2758e087e977ff20f5c3601888bfe94d759d26d16a0b5c04639bdae6cdbff4bb126aa2ede02b7b74e8f227d10ea8c7a246
+    "@metamask/utils": "npm:^12.0.2"
+    "@tanstack/query-core": "npm:^5.107.1"
+  checksum: 10/4e96215ea460fcf1f67b1aba9a9366c5d46b4520e89f41dc4979eaa3df39bf664a9ee6307e7530732faa103259715565ab368e4913a77b9f47457fd5b568ddc6
   languageName: node
   linkType: hard
 
@@ -10320,16 +10332,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^74.2.0":
-  version: 74.2.0
-  resolution: "@metamask/transaction-controller@npm:74.2.0"
+"@metamask/transaction-controller@npm:^74.3.0":
+  version: 74.3.0
+  resolution: "@metamask/transaction-controller@npm:74.3.0"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/rlp": "npm:^5.0.2"
     "@ethereumjs/tx": "npm:^5.4.0"
     "@ethereumjs/util": "npm:^9.1.0"
-    "@ethersproject/abi": "npm:^5.7.0"
-    "@ethersproject/contracts": "npm:^5.7.0"
+    "@ethersproject/abi": "npm:^5.8.0"
+    "@ethersproject/contracts": "npm:^5.8.0"
     "@ethersproject/wallet": "npm:^5.8.0"
     "@metamask/accounts-controller": "npm:^40.2.0"
     "@metamask/approval-controller": "npm:^10.0.0"
@@ -10352,11 +10364,11 @@ __metadata:
     ethereum-cryptography: "npm:^3.2.0"
     fast-json-patch: "npm:^3.1.1"
     lodash-es: "npm:^4.18.1"
-    uuid: "npm:^14.0.2"
+    uuid: "npm:^14.0.3"
   peerDependencies:
     "@babel/runtime": ^7.0.0
     "@metamask/eth-block-tracker": ">=9"
-  checksum: 10/c12fd84d9b3720b2831b9388e09d0139a63f0d13ac9f3de5b99d38b39028c9a4b2977581bf31ce61c6f794791633db4aabe4db57784dc42b05fac20c724f25fd
+  checksum: 10/e319e08e2d53833c35d080fcf10e391903aec561e080bc471ffafd6d54a7da3c577a2526110dfef6a4550c4a7781e0085e5441d61b94d3741b714f0401c92460
   languageName: node
   linkType: hard
 
@@ -34651,6 +34663,7 @@ __metadata:
     "@metamask/account-watcher": "npm:^4.1.3"
     "@metamask/accounts-controller": "npm:^40.2.0"
     "@metamask/address-book-controller": "npm:^8.0.0"
+    "@metamask/ai-controllers": "npm:^2.0.0"
     "@metamask/analytics-controller": "npm:^4.3.1"
     "@metamask/announcement-controller": "npm:^9.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
@@ -34683,8 +34696,8 @@ __metadata:
     "@metamask/delegation-controller": "npm:^4.0.0"
     "@metamask/delegation-core": "npm:^2.0.0"
     "@metamask/delegation-deployments": "npm:^2.1.0"
-    "@metamask/design-system-react": "npm:^0.53.0"
-    "@metamask/design-system-shared": "npm:^0.46.0"
+    "@metamask/design-system-react": "npm:^0.54.0"
+    "@metamask/design-system-shared": "npm:^0.47.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.16.0"
     "@metamask/design-tokens": "npm:^13.0.0"
     "@metamask/dummy-package": "workspace:*"
@@ -34737,7 +34750,7 @@ __metadata:
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/mobile-wallet-protocol-core": "npm:^0.4.0"
     "@metamask/mobile-wallet-protocol-dapp-client": "npm:^0.3.0"
-    "@metamask/money-account-api-data-service": "npm:^2.4.0"
+    "@metamask/money-account-api-data-service": "npm:^2.5.0"
     "@metamask/money-account-balance-service": "npm:^3.2.0"
     "@metamask/money-account-controller": "npm:^3.0.1"
     "@metamask/money-account-upgrade-controller": "npm:^4.0.0"
@@ -34804,7 +34817,7 @@ __metadata:
     "@metamask/test-dapp-solana": "npm:^0.3.1"
     "@metamask/test-dapp-tron": "npm:^0.3.1"
     "@metamask/test-snaps": "npm:^3.6.0"
-    "@metamask/transaction-controller": "npm:^74.2.0"
+    "@metamask/transaction-controller": "npm:^74.3.0"
     "@metamask/transaction-pay-controller": "npm:^32.0.0"
     "@metamask/transaction-pay-middleware": "npm:^2.0.4"
     "@metamask/tron-wallet-snap": "npm:^4.4.0"
@@ -46525,7 +46538,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:^14.0.2":
+"uuid@npm:^14.0.2, uuid@npm:^14.0.3":
   version: 14.0.3
   resolution: "uuid@npm:14.0.3"
   bin:

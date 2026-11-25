@@ -2,13 +2,13 @@ import { Driver } from '../../webdriver/driver';
 import { WALLET_PASSWORD } from '../../constants';
 import AccountListPage from '../pages/accounts/list-page';
 import TokensTab from '../pages/home/tokens-tab';
-import HeaderNavbar from '../pages/home/header-navbar';
 import HomePage from '../pages/home/homepage';
 import RevealSrpPage from '../pages/reveal-srp-page';
 import ManageWalletRecoverySettings from '../pages/settings/security-and-password/manage-wallet-recovery-settings';
 import SecurityAndPasswordSettings from '../pages/settings/security-and-password/security-and-password-settings';
 import { importWalletWithSrp } from './add-wallet.flow';
 import { navigateToSecurityAndPassword, openRevealSrp } from './settings.flow';
+import { openAccountMenu } from './account-menu.flow';
 
 export const SECOND_TEST_E2E_SRP =
   'bench top weekend buyer spoon side resist become detect gauge eye feed';
@@ -30,8 +30,7 @@ export async function importAdditionalSecretRecoveryPhrase(
 ): Promise<void> {
   const homePage = new HomePage(driver);
   await homePage.checkPageIsLoaded();
-  const headerNavbar = new HeaderNavbar(driver);
-  await headerNavbar.openAccountMenu();
+  await openAccountMenu(driver);
   const accountListPage = new AccountListPage(driver);
   await accountListPage.checkPageIsLoaded();
   await importWalletWithSrp(driver, srpWords);
