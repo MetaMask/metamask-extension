@@ -1341,12 +1341,15 @@ const STX_LINEA_NETWORK_CONFIG = {
  * @param chainId
  * @param sentinelUrl
  * @param batchStatusOverride
+ * @param mockNetworks - Registers the sentinel `/networks` and `/network`
+ * mocks. Pass false when the test already registered them.
  */
 async function mockSmartTransactionsForBridge(
   mockServer: Mockttp,
   chainId: number = 1,
   sentinelUrl: string = STX_MAINNET_SENTINEL_URL,
   batchStatusOverride?: Record<string, unknown>,
+  mockNetworks: boolean = true,
 ) {
   const ANVIL_RPC_URL = 'http://localhost:8545';
 
@@ -1361,21 +1364,23 @@ async function mockSmartTransactionsForBridge(
     smartTransactions: true,
   };
 
-  // Registry lookup. getNetworks always hits the ethereum-mainnet host, then
-  // getNetwork follows `network` to this chain's sentinel URL.
-  await mockServer
-    .forGet(`${STX_MAINNET_SENTINEL_URL}/networks`)
-    .always()
-    .thenCallback(() => ({
-      ok: true,
-      statusCode: 200,
-      json: { [String(chainId)]: sentinelNetwork },
-    }));
+  if (mockNetworks) {
+    // Registry lookup. getNetworks always hits the ethereum-mainnet host, then
+    // getNetwork follows `network` to this chain's sentinel URL.
+    await mockServer
+      .forGet(`${STX_MAINNET_SENTINEL_URL}/networks`)
+      .always()
+      .thenCallback(() => ({
+        ok: true,
+        statusCode: 200,
+        json: { [String(chainId)]: sentinelNetwork },
+      }));
 
-  // Sentinel /network: called by fetchLiveness to set livenessByChainId
-  await txSentinelNetwork.mockRaw(mockServer, sentinelNetwork, {
-    baseUrl: sentinelUrl,
-  });
+    // Sentinel /network: called by fetchLiveness to set livenessByChainId
+    await txSentinelNetwork.mockRaw(mockServer, sentinelNetwork, {
+      baseUrl: sentinelUrl,
+    });
+  }
 
   // getFees: queried before submitting each STX
   await txSentinelGetFees.mock(
@@ -2081,7 +2086,13 @@ export const getGasIncludedSwapFixtures = (title?: string) => {
         ...(await mockSearchTokens(mockServer)),
       ];
 
-      await mockSmartTransactionsForBridge(mockServer);
+      await mockSmartTransactionsForBridge(
+        mockServer,
+        1,
+        STX_MAINNET_SENTINEL_URL,
+        undefined,
+        false,
+      );
 
       return mocks;
     },
@@ -2221,7 +2232,13 @@ export const getGasless7702SwapFixtures = (title?: string) => {
         ...(await mockSearchTokens(mockServer)),
       ];
 
-      await mockSmartTransactionsForBridge(mockServer);
+      await mockSmartTransactionsForBridge(
+        mockServer,
+        1,
+        STX_MAINNET_SENTINEL_URL,
+        undefined,
+        false,
+      );
 
       return mocks;
     },
