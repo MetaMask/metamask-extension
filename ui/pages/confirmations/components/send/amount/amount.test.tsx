@@ -240,6 +240,7 @@ describe('Amount', () => {
     } as unknown as SendContext.SendContextType);
     jest.spyOn(MaxAmount, 'useMaxAmount').mockReturnValue({
       getMaxAmount: async () => '5',
+      isMaxAmountSupported: true,
     });
 
     const { getByRole, getByText } = render();
@@ -255,6 +256,7 @@ describe('Amount', () => {
     } as unknown as SendContext.SendContextType);
     jest.spyOn(MaxAmount, 'useMaxAmount').mockReturnValue({
       getMaxAmount: async () => '5',
+      isMaxAmountSupported: true,
     });
     const mockSetAmountInputMethodPressedMax = jest.fn();
     jest

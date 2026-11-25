@@ -1,4 +1,3 @@
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import type { MetaMaskReduxState } from '../../../../store/store';
 
 import { Numeric } from '../../../../../shared/lib/Numeric';
@@ -10,36 +9,17 @@ import {
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import * as SendContext from '../../context/send';
-import * as MultichainSnaps from '../../utils/multichain-snaps';
 import { useMaxAmount } from './useMaxAmount';
 import { useBalance } from './useBalance';
+import { useNonEvmMaxAmount } from './useNonEvmMaxAmount';
 
 jest.mock('./useBalance');
 
+jest.mock('./useNonEvmMaxAmount', () => ({
+  useNonEvmMaxAmount: jest.fn(),
+}));
+
 const MOCK_ADDRESS_1 = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
-
-const TRON_ASSET = {
-  assetId: 'tron:728126428/slip44:195',
-  chainId: 'tron:728126428',
-  decimals: 6,
-  name: 'Tron',
-  symbol: 'TRX',
-  isNative: true,
-};
-
-const MOCK_TRON_ACCOUNT = {
-  id: 'tron-account-id',
-  address: 'TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3',
-  metadata: { snap: { id: 'npm:@metamask/tron-wallet-snap', enabled: true } },
-} as unknown as InternalAccount;
-
-const MOCK_SOLANA_ACCOUNT = {
-  ...MOCK_TRON_ACCOUNT,
-  id: 'solana-account-id',
-  metadata: {
-    snap: { id: 'npm:@metamask/solana-wallet-snap', enabled: true },
-  },
-} as unknown as InternalAccount;
 
 function renderHook() {
   const { result } = renderHookWithProvider(
@@ -50,6 +30,8 @@ function renderHook() {
 }
 
 const useBalanceMock = jest.mocked(useBalance);
+const mockUseNonEvmMaxAmount = jest.mocked(useNonEvmMaxAmount);
+const mockGetNonEvmMaxAmount = jest.fn();
 
 function mockSendContext(
   asset: unknown,
@@ -71,7 +53,18 @@ function mockBalance(rawBalance: string, decimals: number) {
   });
 }
 
+function mockNonEvmMaxAmount(isSupported: boolean) {
+  mockUseNonEvmMaxAmount.mockReturnValue({
+    getNonEvmMaxAmount: mockGetNonEvmMaxAmount,
+    isNonEvmMaxSupported: isSupported,
+  });
+}
+
 describe('useMaxAmount', () => {
+  beforeEach(() => {
+    mockNonEvmMaxAmount(false);
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
     jest.restoreAllMocks();
@@ -105,52 +98,43 @@ describe('useMaxAmount', () => {
     expect(await renderHook().getMaxAmount()).toBe('48573');
   });
 
-  it('returns the Snap maximum for Solana assets', async () => {
-    const getMaxMock = jest
-      .spyOn(MultichainSnaps, 'getMaxSendableAmountMultichain')
-      .mockResolvedValue({ amount: '0.999' });
+  it('reports Max as supported for EVM assets', () => {
+    mockSendContext(EVM_NATIVE_ASSET);
+    mockBalance('1000000000000000000000', 18);
+
+    expect(renderHook().isMaxAmountSupported).toBe(true);
+  });
+
+  it('returns the non-EVM quote when the chain supports it', async () => {
+    mockNonEvmMaxAmount(true);
+    mockGetNonEvmMaxAmount.mockResolvedValue('0.999');
     mockSendContext(SOLANA_NATIVE_ASSET, {
       chainId: SOLANA_NATIVE_ASSET.chainId,
-      fromAccount: MOCK_SOLANA_ACCOUNT,
     });
     mockBalance('1000000000', 9);
 
     expect(await renderHook().getMaxAmount()).toBe('0.999');
-    expect(getMaxMock).toHaveBeenCalledWith(MOCK_SOLANA_ACCOUNT, {
-      accountId: MOCK_SOLANA_ACCOUNT.id,
-      assetId: SOLANA_NATIVE_ASSET.assetId,
-    });
+    expect(mockGetNonEvmMaxAmount).toHaveBeenCalled();
   });
 
-  it('returns the Snap maximum for Tron assets', async () => {
-    const getMaxMock = jest
-      .spyOn(MultichainSnaps, 'getMaxSendableAmountMultichain')
-      .mockResolvedValue({ amount: '4.972392' });
-    mockSendContext(TRON_ASSET, {
-      chainId: TRON_ASSET.chainId,
-      fromAccount: MOCK_TRON_ACCOUNT,
-      toResolved: 'TK3xRFq22eEiATz6kfamDeAAQrPdfdGPeq',
+  it('falls back to the full balance when the non-EVM chain cannot quote', async () => {
+    mockNonEvmMaxAmount(true);
+    mockGetNonEvmMaxAmount.mockResolvedValue(undefined);
+    mockSendContext(SOLANA_NATIVE_ASSET, {
+      chainId: SOLANA_NATIVE_ASSET.chainId,
     });
-    mockBalance('6072392', 6);
+    mockBalance('1000000000000000000', 18);
 
-    expect(await renderHook().getMaxAmount()).toBe('4.972392');
-    expect(getMaxMock).toHaveBeenCalledWith(MOCK_TRON_ACCOUNT, {
-      accountId: MOCK_TRON_ACCOUNT.id,
-      assetId: TRON_ASSET.assetId,
-      toAddress: 'TK3xRFq22eEiATz6kfamDeAAQrPdfdGPeq',
-    });
+    expect(await renderHook().getMaxAmount()).toBe('1');
   });
 
-  it('falls back to the full balance when the Tron Snap cannot quote a maximum', async () => {
-    jest
-      .spyOn(MultichainSnaps, 'getMaxSendableAmountMultichain')
-      .mockRejectedValue(new Error('Method not found'));
-    mockSendContext(TRON_ASSET, {
-      chainId: TRON_ASSET.chainId,
-      fromAccount: MOCK_TRON_ACCOUNT,
+  it('reports Max as unsupported for a non-EVM chain without a quote', () => {
+    mockNonEvmMaxAmount(false);
+    mockSendContext(SOLANA_NATIVE_ASSET, {
+      chainId: SOLANA_NATIVE_ASSET.chainId,
     });
-    mockBalance('6072392', 6);
+    mockBalance('1000000000', 9);
 
-    expect(await renderHook().getMaxAmount()).toBe('6.072392');
+    expect(renderHook().isMaxAmountSupported).toBe(false);
   });
 });

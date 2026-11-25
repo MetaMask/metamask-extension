@@ -27,7 +27,6 @@ import { useBalance } from '../../../hooks/send/useBalance';
 import { useCurrencyConversions } from '../../../hooks/send/useCurrencyConversions';
 import { useMaxAmount } from '../../../hooks/send/useMaxAmount';
 import { useSendContext } from '../../../context/send';
-import { useSendType } from '../../../hooks/send/useSendType';
 import {
   formatToFixedDecimals,
   getFractionLength,
@@ -51,8 +50,7 @@ export const Amount = ({
     getFiatDisplayValue,
     getNativeValue,
   } = useCurrencyConversions();
-  const { getMaxAmount } = useMaxAmount();
-  const { isNonEvmSendType, isTronSendType } = useSendType();
+  const { getMaxAmount, isMaxAmountSupported } = useMaxAmount();
   const {
     setAmountInputMethodManual,
     setAmountInputMethodPasted,
@@ -221,7 +219,7 @@ export const Amount = ({
           >
             {balanceDisplayValue}
           </Text>
-          {(!isNonEvmSendType || isTronSendType) && (
+          {isMaxAmountSupported && (
             <ButtonLink
               marginLeft={2}
               onClick={updateToMax}
