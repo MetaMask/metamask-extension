@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { ADMITTED_SERIES } from '../../../test/e2e/benchmarks/utils/admitted-series.ts';
 import {
   CUF_FLOW_FILES,
   cufSeries,
@@ -13,8 +14,6 @@ import {
 } from './cufs.mts';
 import { resultLabel } from './report.mts';
 import type { Decision, JobResult } from './score.mts';
-// eslint-disable-next-line import-x/extensions
-import { ADMITTED_SERIES } from '../../../test/e2e/benchmarks/utils/admitted-series.ts';
 
 const SEQUENCE = 'ABBABAABAB';
 

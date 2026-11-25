@@ -10,12 +10,10 @@
  */
 import path from 'node:path';
 // The detector runs without an install, so these two files import nothing.
-// eslint-disable-next-line import-x/extensions
 import { ADMITTED_SERIES } from '../../../test/e2e/benchmarks/utils/admitted-series.ts';
 import {
   decidePaired,
   type PairedDecision,
-  // eslint-disable-next-line import-x/extensions
 } from '../../../test/e2e/benchmarks/utils/paired-decision.ts';
 import { readJobFlows } from './load.mts';
 import type { JobResult } from './score.mts';
