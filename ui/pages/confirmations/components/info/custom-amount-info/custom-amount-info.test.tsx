@@ -71,11 +71,22 @@ jest.mock('../../rows/pay-with-row/pay-with-row', () => ({
   PayWithRow: () => <div data-testid="pay-with-row" />,
   PayWithRowSkeleton: () => <div data-testid="pay-with-row-skeleton" />,
 }));
+jest.mock('../../rows/from-account-row', () => ({
+  FromAccountRow: ({ showDivider }: { showDivider?: boolean }) => (
+    <div
+      data-testid="from-account-row"
+      data-show-divider={String(Boolean(showDivider))}
+    />
+  ),
+}));
 jest.mock('../../rows/perps-account-picker-row', () => ({
   PerpsAccountPickerRow: () => <div data-testid="perps-account-picker-row" />,
 }));
 jest.mock('../../rows/bridge-fee-row/bridge-fee-row', () => ({
   BridgeFeeRow: () => <div data-testid="bridge-fee-row" />,
+}));
+jest.mock('../../../../../hooks/money/useMoneyVaultApy', () => ({
+  useMoneyVaultApy: () => ({ apyPercentFormatted: '6.2%' }),
 }));
 jest.mock('../../rows/bridge-time-row/bridge-time-row', () => ({
   BridgeTimeRow: () => <div data-testid="bridge-time-row" />,
@@ -100,6 +111,15 @@ const MOCK_MONEY_ACCOUNT_WITHDRAW_TRANSACTION_META = {
   ],
 } as TransactionMeta;
 
+const MOCK_MONEY_ACCOUNT_DEPOSIT_TRANSACTION_META = {
+  ...MOCK_TRANSACTION_META,
+  type: TransactionType.batch,
+  nestedTransactions: [
+    { type: TransactionType.tokenMethodApprove },
+    { type: TransactionType.moneyAccountDeposit },
+  ],
+} as TransactionMeta;
+
 const mockStore = configureMockStore([]);
 
 const DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN = {
@@ -114,6 +134,7 @@ const DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN = {
   isDepositPrefillSkipped: false,
   isInputChanged: false,
   isQuoteDerivedAmountLoading: false,
+  resolveAmountFiat: (amountFiat: string) => amountFiat,
   updatePendingAmount: jest.fn(),
   updatePendingAmountPercentage: jest.fn(),
 };
@@ -154,6 +175,7 @@ function render(
     disableAutomaticToken?: boolean;
     disablePay?: boolean;
     disablePercentageButtons?: boolean;
+    displayAccountRow?: boolean;
     displayPercentageButtons?: boolean;
     hidePayTokenAmount?: boolean;
     availableTokens?: (typeof MOCK_AVAILABLE_TOKEN)[];
@@ -173,6 +195,8 @@ function render(
     primaryRequiredToken?: typeof MOCK_PRIMARY_REQUIRED_TOKEN | undefined;
     withdraw?: { isWithdraw: boolean; canSelectWithdrawToken: boolean };
     isDefaultMoneyAccount?: boolean;
+    resultRows?: React.ReactNode;
+    showAccountDivider?: boolean;
   } = {},
 ) {
   const {
@@ -180,6 +204,7 @@ function render(
     disableAutomaticToken,
     disablePay = false,
     disablePercentageButtons,
+    displayAccountRow = false,
     displayPercentageButtons = false,
     hidePayTokenAmount = false,
     availableTokens = [MOCK_AVAILABLE_TOKEN],
@@ -198,6 +223,8 @@ function render(
     requiredTokens = [],
     withdraw = { isWithdraw: false, canSelectWithdrawToken: false },
     isDefaultMoneyAccount = false,
+    resultRows,
+    showAccountDivider,
   } = options;
   const primaryRequiredToken = Object.prototype.hasOwnProperty.call(
     options,
@@ -309,9 +336,12 @@ function render(
       disableAutomaticToken={disableAutomaticToken}
       disablePay={disablePay}
       disablePercentageButtons={disablePercentageButtons}
+      displayAccountRow={displayAccountRow}
       displayPercentageButtons={displayPercentageButtons}
       hasMax={hasMax}
       hidePayTokenAmount={hidePayTokenAmount}
+      resultRows={resultRows}
+      showAccountDivider={showAccountDivider}
     />,
     mockStore(state),
   );
@@ -754,6 +784,79 @@ describe('CustomAmountInfo', () => {
     });
   });
 
+  describe('snap typed amount to Max', () => {
+    const useTransactionCustomAmountMock = jest.mocked(
+      useTransactionCustomAmountModule.useTransactionCustomAmount,
+    );
+
+    function getIsMaxAvailable() {
+      return useTransactionCustomAmountMock.mock.lastCall?.[0]?.isMaxAvailable;
+    }
+
+    it('enables snapping when Max is offered', () => {
+      render({ displayPercentageButtons: true, hasMax: true });
+
+      expect(getIsMaxAvailable()).toBe(true);
+    });
+
+    it('enables snapping on withdraws', () => {
+      render({
+        displayPercentageButtons: true,
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: false },
+      });
+
+      expect(getIsMaxAvailable()).toBe(true);
+    });
+
+    it('disables snapping when Max is not offered', () => {
+      render({ displayPercentageButtons: true });
+
+      expect(getIsMaxAvailable()).toBe(false);
+    });
+
+    it('disables snapping when percentage buttons are hidden', () => {
+      render({ hasMax: true });
+
+      expect(getIsMaxAvailable()).toBe(false);
+    });
+
+    it('disables snapping when percentage buttons are disabled', () => {
+      render({
+        disablePercentageButtons: true,
+        displayPercentageButtons: true,
+        hasMax: true,
+      });
+
+      expect(getIsMaxAvailable()).toBe(false);
+    });
+
+    it('disables snapping for a native pay token on deposits', () => {
+      render({
+        displayPercentageButtons: true,
+        hasMax: true,
+        isNativePayToken: true,
+      });
+
+      expect(getIsMaxAvailable()).toBe(false);
+    });
+
+    it('evaluates pending amount alerts against the resolved amount', () => {
+      render({
+        customAmountHookReturn: {
+          ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+          amountFiat: '2.28',
+          resolveAmountFiat: () => '2.2895',
+        },
+        displayPercentageButtons: true,
+        hasMax: true,
+      });
+
+      expect(
+        useTransactionCustomAmountAlertsModule.useTransactionCustomAmountAlerts,
+      ).toHaveBeenCalledWith({ pendingFiatAmount: '2.2895' });
+    });
+  });
+
   describe('result rows', () => {
     it('renders result rows when quotes are loading', () => {
       const { getByTestId } = render({ isQuotesLoading: true });
@@ -971,6 +1074,81 @@ describe('CustomAmountInfo', () => {
 
       expect(getByTestId('total-row')).toBeInTheDocument();
       expect(queryByTestId('receive-row')).not.toBeInTheDocument();
+    });
+
+    it('renders resultRows directly below PayWithRow and before BridgeFeeRow when results are ready', () => {
+      const { getByTestId } = render({
+        hasQuotes: true,
+        resultRows: <div data-testid="custom-result-row" />,
+      });
+
+      const payWithRow = getByTestId('pay-with-row');
+      const customResultRow = getByTestId('custom-result-row');
+      const feeRow = getByTestId('bridge-fee-row');
+      const timeRow = getByTestId('bridge-time-row');
+
+      expect(customResultRow).toBeInTheDocument();
+      expect(payWithRow.compareDocumentPosition(customResultRow)).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      );
+      expect(customResultRow.compareDocumentPosition(feeRow)).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      );
+      expect(feeRow.compareDocumentPosition(timeRow)).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      );
+    });
+
+    it('hides resultRows when results are hidden', () => {
+      const { queryByTestId } = render({
+        alertsHookReturn: {
+          alertMessage: 'Error',
+          hasAlert: true,
+          hideResults: true,
+          disableUpdate: false,
+        },
+        hasQuotes: true,
+        resultRows: <div data-testid="custom-result-row" />,
+      });
+
+      expect(queryByTestId('custom-result-row')).not.toBeInTheDocument();
+    });
+
+    it('renders ReceiveRow with dotted mUSD dialog trigger for input-based money-account deposits', () => {
+      const { getByTestId } = render({
+        hasQuotes: true,
+        transactionMeta: MOCK_MONEY_ACCOUNT_DEPOSIT_TRANSACTION_META,
+        totals: {
+          isInputBased: true,
+          targetAmount: { fiat: '100', usd: '100' },
+        } as TransactionPayTotals,
+      });
+
+      const receiveValue = getByTestId('receive-value');
+      expect(receiveValue.tagName).toBe('BUTTON');
+    });
+
+    it('respects showAccountDivider on FromAccountRow', () => {
+      const { getByTestId: getHiddenDividerTestId, unmount } = render({
+        displayAccountRow: true,
+        showAccountDivider: false,
+      });
+
+      expect(getHiddenDividerTestId('from-account-row')).toHaveAttribute(
+        'data-show-divider',
+        'false',
+      );
+
+      unmount();
+
+      const { getByTestId: getDefaultDividerTestId } = render({
+        displayAccountRow: true,
+      });
+
+      expect(getDefaultDividerTestId('from-account-row')).toHaveAttribute(
+        'data-show-divider',
+        'true',
+      );
     });
   });
 

@@ -1,4 +1,5 @@
 import ts from 'typescript';
+import { getPropertyNameText } from './ast-utils';
 import { ResolutionContext } from './module-resolution';
 
 /**
@@ -62,7 +63,7 @@ export function getPublicMethodNamesOfLegacyBackgroundApiService(
     // EXAMPLE:
     // async addToken(options) { ... }
     //       ^^^^^^^^ (member.name)
-    names.add(member.name.getText(sourceFile));
+    names.add(getPropertyNameText(member.name));
   }
 
   return names;

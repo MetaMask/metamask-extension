@@ -1,4 +1,8 @@
 import { Mockttp } from 'mockttp';
+import {
+  priceV1ExchangeRates,
+  priceV3Spot,
+} from '../../../mock-response-data/api-responses';
 
 const PRICE_API_URL = 'https://price.api.cx.metamask.io';
 
@@ -108,8 +112,8 @@ const exchangeRatesV1 = {
 };
 
 export const mockExchangeRates = (mockServer: Mockttp) =>
-  mockServer
-    .forGet(`${PRICE_API_URL}/v3/spot-prices`)
+  priceV3Spot
+    .rule(mockServer)
     .withQuery({
       vsCurrency: 'usd',
       assetIds:
@@ -142,8 +146,8 @@ export const mockExchangeRates = (mockServer: Mockttp) =>
     });
 
 export const mockExchangeRatesV1 = (mockServer: Mockttp) =>
-  mockServer
-    .forGet(`${PRICE_API_URL}/v1/exchange-rates`)
+  priceV1ExchangeRates
+    .rule(mockServer)
     .withQuery({
       baseCurrency: 'usd',
     })

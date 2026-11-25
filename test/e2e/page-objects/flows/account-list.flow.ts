@@ -8,6 +8,7 @@ import AccountAddressListPage from '../pages/accounts/address-list-page';
 import HeaderNavbar from '../pages/home/header-navbar';
 import HomePage from '../pages/home/homepage';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
+import { openAccountMenu } from './account-menu.flow';
 
 /**
  * Asserts that the specified account is visible in the account list.
@@ -22,7 +23,7 @@ export const assertAccountVisible = async (
   const headerNavbar = new HeaderNavbar(driver);
   const accountListPage = new AccountListPage(driver);
   await headerNavbar.checkPageIsLoaded();
-  await headerNavbar.openAccountMenu();
+  await openAccountMenu(driver);
   await accountListPage.checkAccountDisplayedInAccountList(accountName);
   await accountListPage.closeMultichainAccountsPage();
 };
@@ -64,7 +65,7 @@ export const switchToAccount = async (
 ): Promise<void> => {
   const homePage = new HomePage(driver);
   await homePage.checkPageIsLoaded();
-  await homePage.headerNavbar.openAccountMenu();
+  await openAccountMenu(driver);
 
   const accountListPage = new AccountListPage(driver);
   await accountListPage.checkPageIsLoaded();
@@ -139,7 +140,7 @@ export async function assertNetworkAddressesForAccounts(
   const homePage = new HomePage(driver);
   const accountListPage = new AccountListPage(driver);
 
-  await homePage.headerNavbar.openAccountMenu();
+  await openAccountMenu(driver);
   await accountListPage.checkPageIsLoaded();
   await accountListPage.waitUntilSyncingIsCompleted();
 

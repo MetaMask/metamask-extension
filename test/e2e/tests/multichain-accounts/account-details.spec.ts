@@ -4,13 +4,13 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
-import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import AccountAddressModal from '../../page-objects/pages/accounts/address-modal';
 import AccountAddressListPage from '../../page-objects/pages/accounts/address-list-page';
 import AccountDetailsPage from '../../page-objects/pages/accounts/details-page';
 import WalletDetailsPage from '../../page-objects/pages/accounts/wallet-details-page';
 import PrivateKeyModal from '../../page-objects/pages/accounts/private-key-modal';
 import { Driver } from '../../webdriver/driver';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 
 const account1 = {
   name: 'Account 1',
@@ -31,8 +31,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           await login(driver, { validateBalance: false });
-          const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.openAccountMenu();
+          await openAccountMenu(driver);
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.checkPageIsLoaded();
@@ -112,8 +111,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           await login(driver, { validateBalance: false });
-          const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.openAccountMenu();
+          await openAccountMenu(driver);
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.checkPageIsLoaded();
@@ -150,8 +148,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           await login(driver, { validateBalance: false });
-          const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.openAccountMenu();
+          await openAccountMenu(driver);
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.checkPageIsLoaded();
@@ -187,8 +184,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           await login(driver, { validateBalance: false });
-          const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.openAccountMenu();
+          await openAccountMenu(driver);
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.checkPageIsLoaded();
@@ -222,8 +218,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           await login(driver, { validateBalance: false });
-          const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.openAccountMenu();
+          await openAccountMenu(driver);
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.checkPageIsLoaded();
@@ -261,8 +256,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           await login(driver, { validateBalance: false });
-          const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.openAccountMenu();
+          await openAccountMenu(driver);
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.checkPageIsLoaded();

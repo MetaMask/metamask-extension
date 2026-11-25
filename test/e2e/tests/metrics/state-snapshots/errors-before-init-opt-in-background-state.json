@@ -4,7 +4,6 @@
       "hiddenAccountList": "object",
       "pinnedAccountList": "object"
     },
-    "AccountTracker": { "accountsByChainId": "object" },
     "AccountTreeController": {
       "accountGroupsMetadata": "object",
       "accountTree": "object",
@@ -169,7 +168,6 @@
       "onboardingJourneyEnded": true,
       "seedPhraseBackedUp": null
     },
-    "PPOMController": { "storageMetadata": "object" },
     "PasskeyController": { "passkeyRecord": null },
     "PermissionController": {},
     "PermissionLogController": { "permissionHistory": "object" },
