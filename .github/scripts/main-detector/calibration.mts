@@ -220,7 +220,7 @@ export function renderCalibration(
     `## Main performance detector calibration (${window})`,
     '',
     report.canaries === 0
-      ? 'No canary run in the window, so nothing was checked.'
+      ? `No canary run in the window could be read, so nothing was checked.${report.skipped > 0 ? ` ${report.skipped} canary result${report.skipped === 1 ? ' was' : 's were'} written before ms scoring.` : ''}`
       : `${report.canaries} canary run${report.canaries === 1 ? '' : 's'}, ${report.falsePings} pinged (false positives, since base and head are the same build).${report.skipped > 0 ? ` ${report.skipped} older canary result${report.skipped === 1 ? '' : 's'} could not be read.` : ''}`,
     '',
   ];

@@ -87,6 +87,11 @@ describe('summarizeCanaries', () => {
     const none = summarizeCanaries([canary({ canary: false })]);
     expect(none).toMatchObject({ canaries: 0, ping: false, reasons: [] });
     expect(renderCalibration(none, '7 days')).toContain('nothing was checked');
+    const old = canary();
+    old.first = {} as BatchScores;
+    expect(renderCalibration(summarizeCanaries([old]), '7 days')).toContain(
+      '1 canary result was written before ms scoring',
+    );
   });
 
   it('reports false pings without pinging while they stay within what the floors assume', () => {
