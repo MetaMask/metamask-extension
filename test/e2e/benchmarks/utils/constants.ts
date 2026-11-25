@@ -66,6 +66,10 @@ export const ALL_METRICS = {
   firstReactRender: 'First Render',
   initialActions: 'Initial Actions',
   loadScripts: 'Load Scripts',
+  // Navigation start to the first `mm-hero-painted` mark, which the app sets
+  // in the animation frame after the home view's hero node mounts. Read by the
+  // startup flows (`readStartupPageSignals`), not by `collectMetrics`.
+  heroPainted: 'heroPainted',
   setupStore: 'Setup Store',
   numNetworkReqs: 'numNetworkReqs',
   // Long Task / TBT metrics (benchmark-only, via `PerformanceObserver`)

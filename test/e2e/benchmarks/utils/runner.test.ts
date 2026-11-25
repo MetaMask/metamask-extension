@@ -1,13 +1,18 @@
+import { BENCHMARK_PERSONA } from '../../../../shared/constants/benchmarks';
 import type {
   TimerStatistics,
   WebVitalsMetrics,
 } from '../../../../shared/constants/benchmarks';
+import type { Driver } from '../../webdriver/driver';
 import { WARMUP_RUNS } from './constants';
 import {
+  applyStartupPageSignals,
   convertTimerStatisticsToBenchmarkResults,
+  readStartupPageSignals,
   runBenchmarkWithIterations,
   runPageLoadBenchmark,
 } from './runner';
+import type { StartupMetrics } from './runner';
 import type { BenchmarkRunResult, MeasurePageResult, Metrics } from './types';
 
 function createTimerStats(
@@ -79,6 +84,214 @@ describe('convertTimerStatisticsToBenchmarkResults', () => {
   });
 });
 
+/**
+ * One page load's metrics as `driver.collectMetrics` returns them.
+ *
+ * @param uiStartup - The value for every interval timed from navigation start.
+ */
+function pageLoadMetrics(uiStartup: number): Metrics {
+  return {
+    navigation: [
+      {
+        load: uiStartup,
+        domContentLoaded: uiStartup,
+        domInteractive: 20,
+        type: 'navigate',
+      },
+    ],
+    paint: {},
+    'UI Startup': uiStartup,
+    'Background Connect': 30,
+    'First Render': 2,
+    'Initial Actions': 2,
+    'Load Scripts': uiStartup,
+    'Setup Store': 18,
+    numNetworkReqs: 40,
+  };
+}
+
+describe('applyStartupPageSignals', () => {
+  it('adds the hero time to the page load metrics', () => {
+    const metrics = applyStartupPageSignals(pageLoadMetrics(1000), {
+      heroPainted: 850,
+    });
+
+    expect(metrics.heroPainted).toBe(850);
+    expect(metrics['UI Startup']).toBe(1000);
+  });
+
+  it('adds no hero time when the page set no mark', () => {
+    const metrics = applyStartupPageSignals(pageLoadMetrics(1000), {
+      heroPainted: null,
+    });
+
+    expect(metrics).not.toHaveProperty('heroPainted');
+  });
+});
+
+describe('readStartupPageSignals', () => {
+  const originalGetEntriesByName = performance.getEntriesByName;
+  const driver = {
+    executeScript: jest.fn((script: () => unknown) => script()),
+    delay: jest.fn(async () => undefined),
+  } as unknown as Driver;
+
+  afterEach(() => {
+    performance.getEntriesByName = originalGetEntriesByName;
+  });
+
+  it('reads the first hero mark in the page', async () => {
+    performance.getEntriesByName = jest
+      .fn()
+      .mockReturnValue([{ startTime: 850 }, { startTime: 1900 }]);
+
+    await expect(readStartupPageSignals(driver)).resolves.toStrictEqual({
+      heroPainted: 850,
+    });
+    expect(performance.getEntriesByName).toHaveBeenCalledWith(
+      'mm-hero-painted',
+      'mark',
+    );
+  });
+
+  it('reads null when the page set no hero mark before the timeout', async () => {
+    performance.getEntriesByName = jest.fn().mockReturnValue([]);
+
+    await expect(readStartupPageSignals(driver, 300)).resolves.toStrictEqual({
+      heroPainted: null,
+    });
+    expect(performance.getEntriesByName).toHaveBeenCalledTimes(4);
+  });
+
+  it('waits for a hero mark set after the first read', async () => {
+    performance.getEntriesByName = jest
+      .fn()
+      .mockReturnValueOnce([])
+      .mockReturnValueOnce([])
+      .mockReturnValue([{ startTime: 2600 }]);
+
+    await expect(readStartupPageSignals(driver)).resolves.toStrictEqual({
+      heroPainted: 2600,
+    });
+    expect(performance.getEntriesByName).toHaveBeenCalledTimes(3);
+  });
+});
+
+describe('runPageLoadBenchmark heroPainted', () => {
+  beforeEach(() => {
+    jest.spyOn(console, 'log').mockImplementation(() => undefined);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  /**
+   * A `measurePageFn` whose nth call is browser load n.
+   *
+   * @param heroByBrowserLoad - `heroPainted` per page load, per browser load.
+   */
+  function measurePageFn(heroByBrowserLoad: (number | null)[][]) {
+    let call = 0;
+    return async () => {
+      const heroes = heroByBrowserLoad[call];
+      call += 1;
+      const metrics: StartupMetrics[] = heroes.map((heroPainted) =>
+        applyStartupPageSignals(pageLoadMetrics(1000), { heroPainted }),
+      );
+      return {
+        metrics,
+        title: 'measurePageStandard',
+        persona: BENCHMARK_PERSONA.STANDARD,
+      };
+    };
+  }
+
+  it('reports heroPainted in the statistics and keeps each page load in values', async () => {
+    const results = await runPageLoadBenchmark(
+      measurePageFn([
+        [100, 100, 100],
+        [800, 820, 840],
+      ]),
+      { browserLoads: 2, pageLoads: 3 },
+    );
+
+    expect(results.mean.heroPainted).toBe(820);
+    expect(results.values?.heroPainted).toStrictEqual([
+      { iteration: 3, value: 800 },
+      { iteration: 4, value: 820 },
+      { iteration: 5, value: 840 },
+    ]);
+  });
+
+  it('leaves a page load with no mark out of the statistics', async () => {
+    const results = await runPageLoadBenchmark(
+      measurePageFn([
+        [100, 100, 100],
+        [800, null, 840],
+      ]),
+      { browserLoads: 2, pageLoads: 3 },
+    );
+
+    expect(results.mean.heroPainted).toBe(820);
+    expect(results.min.heroPainted).toBe(800);
+    expect(results.max.heroPainted).toBe(840);
+  });
+
+  it('counts the page loads with no mark in missingCount, and none when every load has one', async () => {
+    const missing = await runPageLoadBenchmark(
+      measurePageFn([
+        [100, 100, 100],
+        [null, null, 840],
+      ]),
+      { browserLoads: 2, pageLoads: 3 },
+    );
+    const complete = await runPageLoadBenchmark(
+      measurePageFn([
+        [100, 100, 100],
+        [800, 820, 840],
+      ]),
+      { browserLoads: 2, pageLoads: 3 },
+    );
+
+    expect(missing.missingCount?.heroPainted).toBe(2);
+    expect(missing.missingCount?.uiStartup).toBe(0);
+    expect(complete.missingCount?.heroPainted).toBe(0);
+  });
+
+  it('counts a load with no mark as missing when it is the only one that lacks it', async () => {
+    const results = await runPageLoadBenchmark(
+      measurePageFn([
+        [100, 100, 100],
+        [null, 820, 840],
+      ]),
+      { browserLoads: 2, pageLoads: 3 },
+    );
+
+    // The mean covers the two loads that painted: the count is what shows a third did not.
+    expect(results.mean.heroPainted).toBe(830);
+    expect(results.missingCount?.heroPainted).toBe(1);
+  });
+
+  it('keeps a metric other than heroPainted that failed to read as NaN', async () => {
+    const unreadable = {
+      ...pageLoadMetrics(1000),
+      'Load Scripts': Number.NaN,
+    };
+    const results = await runPageLoadBenchmark(
+      async () => ({
+        metrics: [pageLoadMetrics(1000), unreadable, pageLoadMetrics(1000)],
+        title: 'measurePageStandard',
+        persona: BENCHMARK_PERSONA.STANDARD,
+      }),
+      { browserLoads: 2, pageLoads: 3 },
+    );
+
+    expect(results.mean.loadScripts).toBeNaN();
+    expect(results.missingCount?.loadScripts).toBe(1);
+  });
+});
+
 describe('runBenchmarkWithIterations', () => {
   it('numbers retained values by iteration, leaving a gap after a failed first iteration', async () => {
     // `retry` logs the failed iteration.
@@ -114,38 +327,18 @@ describe('runBenchmarkWithIterations', () => {
   });
 });
 
-function createMetrics(uiStartup: number): Metrics {
-  return {
-    navigation: [
-      {
-        load: 500,
-        domContentLoaded: 400,
-        domInteractive: 300,
-        type: 'navigate',
-      },
-    ],
-    paint: { 'first-paint': 200 },
-    'UI Startup': uiStartup,
-    'Background Connect': 10,
-    'First Render': 20,
-    'Initial Actions': 30,
-    'Load Scripts': 40,
-    'Setup Store': 50,
-    numNetworkReqs: 5,
-  };
-}
-
-describe('runPageLoadBenchmark', () => {
+describe('runPageLoadBenchmark iteration numbering', () => {
   it('numbers retained values after the warm-up sessions', async () => {
+    jest.spyOn(console, 'log').mockImplementation(() => undefined);
     const pageLoads = 2;
     const sessions = [
-      [createMetrics(900), createMetrics(910)],
-      [createMetrics(100), createMetrics(120)],
+      [pageLoadMetrics(900), pageLoadMetrics(910)],
+      [pageLoadMetrics(100), pageLoadMetrics(120)],
     ];
     const measurePageFn = jest.fn().mockImplementation(async () => ({
       metrics: sessions.shift(),
-      title: 'home',
-      persona: 'standard',
+      title: 'measurePageStandard',
+      persona: BENCHMARK_PERSONA.STANDARD,
     }));
 
     const results = await runPageLoadBenchmark(measurePageFn, {
