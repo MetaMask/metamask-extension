@@ -75,7 +75,7 @@ const HyperliquidConnectionBar = () => {
               color={TextColor.TextDefault}
               data-testid="hyperliquid-connection-bar-header"
             >
-              {t('perpsBalance')}
+              {t('hyperliquidBalance')}
             </Text>
             <Icon
               name={IconName.ArrowDown}

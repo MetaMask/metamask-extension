@@ -4891,6 +4891,9 @@
   "honeypotTitle": {
     "message": "Honey pot"
   },
+  "hyperliquidBalance": {
+    "message": "Hyperliquid balance"
+  },
   "hyperliquidDepositPromptDescription": {
     "message": "Deposit any token. We'll swap it and send it to your Hyperliquid account automatically—no MetaMask fee.",
     "description": "The description of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
