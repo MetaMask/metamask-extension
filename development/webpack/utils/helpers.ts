@@ -120,7 +120,12 @@ export function toWebpackSourceName(
   if (!rootContext) {
     return resourcePath;
   }
-  const request = relative(rootContext, resourcePath).split(sep).join('/');
+  let request = relative(rootContext, resourcePath);
+
+  if (sep !== '/') {
+    request = request.replaceAll(sep, '/');
+  }
+
   return `webpack://${request.startsWith('../') ? '' : './'}${request}`;
 }
 
