@@ -2,8 +2,14 @@
  * @jest-environment node
  */
 import http from 'http';
-import { getLocal, type Mockttp } from 'mockttp';
-import { defineApiMock, placeholderOf, withOverrides } from './define-api-mock';
+import { getLocal, RulePriority, type Mockttp } from 'mockttp';
+import {
+  FALLBACK_PRIORITY,
+  defineApiMock,
+  findDuplicateEndpoints,
+  placeholderOf,
+  withOverrides,
+} from './define-api-mock';
 
 const BODY = { value: 'fixture', nested: { a: 1, b: 2 }, list: [1, 2] };
 
@@ -150,6 +156,93 @@ describe('defineApiMock', () => {
         undefined,
       );
       expect((await proxyGet(server, 'http://api.test/none')).status).toBe(503);
+    });
+  });
+
+  describe('mockDefault with a custom handler', () => {
+    const custom = defineApiMock({
+      id: 'custom-default',
+      method: 'GET',
+      url: /^http:\/\/api\.test\/custom\/[^/?]+(?:\?.*)?$/u,
+      syncUrl: 'http://api.test/custom/a',
+      body: { address: '', count: 1 },
+      defaultMock: {
+        query: { mode: 'test' },
+        reply: (request, body) => ({
+          ...body,
+          address: new URL(request.url).pathname.split('/').pop(),
+        }),
+      },
+    });
+
+    it('builds the default from the request and only for the given query', async () => {
+      await custom.mockDefault(server, { chainId: 1 });
+
+      expect(
+        (await proxyGet(server, 'http://api.test/custom/0xabc?mode=test')).json,
+      ).toStrictEqual({ address: '0xabc', count: 1 });
+      expect(
+        (await proxyGet(server, 'http://api.test/custom/0xabc?mode=other'))
+          .status,
+      ).toBe(503);
+      expect(custom.hasDefault).toBe(true);
+      expect(custom.hasFixtureDefault).toBe(false);
+    });
+
+    it('lets any other rule answer first when the default is a fallback', async () => {
+      const fallback = defineApiMock({
+        id: 'fallback-default',
+        method: 'GET',
+        url: 'http://api.test/fallback',
+        syncUrl: 'http://api.test/fallback',
+        body: BODY,
+        defaultMock: { fallback: true, always: true },
+      });
+      await fallback.mockDefault(server, { chainId: 1 });
+      await server.forGet('http://api.test/fallback').thenJson(200, {
+        value: 'later rule',
+      });
+
+      expect(
+        (await proxyGet(server, 'http://api.test/fallback')).json,
+      ).toStrictEqual({ value: 'later rule' });
+      expect(FALLBACK_PRIORITY).toBe(RulePriority.FALLBACK);
+    });
+  });
+
+  describe('one override per matcher', () => {
+    it('throws on a second mock() for the same matcher on the same server', async () => {
+      await endpoint.mock(server, { value: 'first' }, { chainId: 1 });
+
+      expect(() =>
+        endpoint.mock(server, { value: 'second' }, { chainId: 1 }),
+      ).toThrow(
+        'test-endpoint: a mock for GET http://api.test/networks/1/data is already registered on this server (by test-endpoint)',
+      );
+      expect(() =>
+        endpoint.mockVariant(server, 'failed', { chainId: 1 }),
+      ).toThrow('already registered');
+      expect(() => endpoint.mockRaw(server, {}, { chainId: 1 })).toThrow(
+        'already registered',
+      );
+    });
+
+    it('allows one override per instance and per server', async () => {
+      await endpoint.mock(server, { value: 'chain 1' }, { chainId: 1 });
+      await endpoint.mock(server, { value: 'chain 2' }, { chainId: 2 });
+
+      const other = getLocal();
+      await other.start();
+      try {
+        await expect(
+          endpoint.mock(other, { value: 'chain 1' }, { chainId: 1 }),
+        ).resolves.toBeDefined();
+      } finally {
+        await other.stop();
+      }
+      expect(
+        (await proxyGet(server, 'http://api.test/networks/2/data')).json,
+      ).toStrictEqual({ ...BODY, value: 'chain 2' });
     });
   });
 
@@ -329,5 +422,33 @@ describe('placeholderOf', () => {
       tags: [],
       rows: [{ name: '' }],
     });
+  });
+});
+
+describe('findDuplicateEndpoints', () => {
+  const entry = (id: string, url: string, syncUrl = url) =>
+    [id, { id, method: 'GET', url, syncUrl }] as [
+      string,
+      { id: string; method: string; url: string; syncUrl: string },
+    ];
+
+  it('accepts distinct endpoints', () => {
+    expect(
+      findDuplicateEndpoints([entry('a', 'http://a'), entry('b', 'http://b')]),
+    ).toStrictEqual([]);
+  });
+
+  it('reports a key that is not the id, a repeated id, and a repeated endpoint', () => {
+    expect(
+      findDuplicateEndpoints([
+        entry('a', 'http://a'),
+        ['b', { id: 'a', method: 'GET', url: 'http://b', syncUrl: 'http://b' }],
+        entry('c', 'http://a', 'http://c'),
+      ]),
+    ).toStrictEqual([
+      'b is registered under a different id (a)',
+      'a is defined more than once',
+      'c and a define the same URL matcher: GET http://a',
+    ]);
   });
 });

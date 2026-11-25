@@ -1,0 +1,29 @@
+[
+  {
+    "isoCode": "",
+    "id": "",
+    "flag": "",
+    "name": "",
+    "phone": {
+      "prefix": "",
+      "placeholder": "",
+      "template": ""
+    },
+    "currency": "",
+    "supported": {
+      "buy": false,
+      "sell": false
+    },
+    "recommended": false,
+    "states": [
+      {
+        "id": "",
+        "name": "",
+        "stateId": "",
+        "supported": false
+      }
+    ],
+    "defaultAmount": 0,
+    "quickAmounts": []
+  }
+]

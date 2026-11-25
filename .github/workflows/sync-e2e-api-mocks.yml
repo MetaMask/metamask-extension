@@ -1,12 +1,13 @@
 name: Sync E2E API Mocks
 
-# Aligns the E2E API mock fixtures with the live response shapes. See
-# test/e2e/mock-response-data/api-mock-catalog.md.
+# Aligns the E2E API mock fixtures with the live response shapes. The
+# endpoints are the definitions in
+# test/e2e/mock-response-data/api-responses/index.ts (see its README.md).
 #
 # pull-request: a same-repo pull request that touches the mocks. Read-only
 # contents and no Contentful secrets (those rows are skipped). All live drift
-# gets suggestions, but only drift in rows the pull request changed (catalog
-# entry or fixture value, against the merge base) fails the check. When the
+# gets suggestions, but only drift in rows the pull request changed (a new
+# definition or a changed fixture, against the merge base) fails the check. When the
 # drift is small and in the pull request diff, one review of suggestion
 # blocks lets the author commit it. Nothing is pushed. Fork pull requests are
 # skipped. A fetch failure does not fail. A refused write fails (exit 5) only
@@ -27,7 +28,6 @@ on:
     paths:
       - test/e2e/mock-e2e.js
       - test/e2e/mock-response-data/**
-      - test/e2e/mock-cdn/ppom-version.json
 
 permissions:
   contents: read
@@ -89,8 +89,9 @@ jobs:
           # 0: no drift. 1: drift in rows this pull request changed, which
           # fails the check. 4: drift only in other rows, which gets the same
           # suggestions but does not fail. 2: a fetch failed and nothing was
-          # written, which does not fail. 3: an api-responses fixture has no
-          # sources.json entry, which fails. 5: a refused write on a row this
+          # written, which does not fail. 3: the endpoint registry is
+          # inconsistent (a duplicate id or endpoint, or a fixture without a
+          # definition), which fails. 5: a refused write on a row this
           # pull request changed, which fails. 6: a refused write on any other
           # row. The check passes, and the drift comment is kept.
           if [ "${EXIT}" -eq 1 ] || [ "${EXIT}" -eq 4 ]; then
@@ -245,9 +246,9 @@ jobs:
           set -e
           bash .github/scripts/e2e-api-mock-sync-summary.sh "${EXIT}"
           echo "EXIT=${EXIT}" >> "${GITHUB_OUTPUT}"
-          # 0: no drift. 1: fixtures written. 2: a fetch failed. 3: an
-          # api-responses fixture has no sources.json entry. 5: a write was
-          # refused. Exits above 1 fail the job.
+          # 0: no drift. 1: fixtures written. 2: a fetch failed. 3: the
+          # endpoint registry is inconsistent. 5: a write was refused. Exits
+          # above 1 fail the job.
           [ "${EXIT}" -le 1 ]
 
       - name: Record the fixture diff

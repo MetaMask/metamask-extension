@@ -1,0 +1,358 @@
+{
+  "arbitrum": {
+    "mobile_active": false,
+    "extension_active": false,
+    "fallback_to_v1": false,
+    "fallbackToV1": false,
+    "mobileActive": false,
+    "extensionActive": false,
+    "mobileActiveIOS": false,
+    "mobileActiveAndroid": false,
+    "v2": {
+      "swapAndSend": {
+        "enabled": false
+      }
+    },
+    "smartTransactions": {
+      "expectedDeadline": 0,
+      "maxDeadline": 0,
+      "returnTxHashAsap": false,
+      "mobileActive": false,
+      "extensionActive": false,
+      "mobileActiveIos": false,
+      "mobileActiveAndroid": false
+    }
+  },
+  "arc": {
+    "mobile_active": false,
+    "extension_active": false,
+    "fallback_to_v1": false,
+    "fallbackToV1": false,
+    "mobileActive": false,
+    "extensionActive": false,
+    "mobileActiveIOS": false,
+    "mobileActiveAndroid": false,
+    "v2": {
+      "swapAndSend": {
+        "enabled": false
+      }
+    },
+    "smartTransactions": {
+      "expectedDeadline": 0,
+      "maxDeadline": 0,
+      "returnTxHashAsap": false
+    }
+  },
+  "avalanche": {
+    "mobile_active": false,
+    "extension_active": false,
+    "fallback_to_v1": false,
+    "fallbackToV1": false,
+    "mobileActive": true,
+    "extensionActive": true,
+    "mobileActiveIOS": false,
+    "mobileActiveAndroid": false,
+    "v2": {
+      "swapAndSend": {
+        "enabled": false
+      }
+    },
+    "smartTransactions": {
+      "expectedDeadline": 0,
+      "maxDeadline": 0,
+      "returnTxHashAsap": false
+    }
+  },
+  "base": {
+    "mobile_active": false,
+    "extension_active": false,
+    "fallback_to_v1": false,
+    "fallbackToV1": false,
+    "mobileActive": false,
+    "extensionActive": false,
+    "mobileActiveIOS": false,
+    "mobileActiveAndroid": false,
+    "v2": {
+      "swapAndSend": {
+        "enabled": false
+      }
+    },
+    "smartTransactions": {
+      "expectedDeadline": 0,
+      "maxDeadline": 0,
+      "returnTxHashAsap": false,
+      "mobileActive": false,
+      "extensionActive": false,
+      "mobileActiveIos": false,
+      "mobileActiveAndroid": false
+    }
+  },
+  "bsc": {
+    "mobile_active": false,
+    "extension_active": false,
+    "fallback_to_v1": false,
+    "fallbackToV1": false,
+    "mobileActive": true,
+    "extensionActive": true,
+    "mobileActiveIOS": false,
+    "mobileActiveAndroid": false,
+    "v2": {
+      "swapAndSend": {
+        "enabled": false
+      }
+    },
+    "smartTransactions": {
+      "expectedDeadline": 0,
+      "maxDeadline": 0,
+      "returnTxHashAsap": false,
+      "mobileActive": false,
+      "extensionActive": false,
+      "mobileActiveIos": false,
+      "mobileActiveAndroid": false
+    }
+  },
+  "compliance": {
+    "merkleScienceMinThreshold": 0
+  },
+  "ethereum": {
+    "mobile_active": false,
+    "extension_active": false,
+    "fallback_to_v1": false,
+    "fallbackToV1": false,
+    "mobileActive": true,
+    "extensionActive": true,
+    "mobileActiveIOS": false,
+    "mobileActiveAndroid": false,
+    "v2": {
+      "swapAndSend": {
+        "enabled": false
+      }
+    },
+    "smartTransactions": {
+      "expectedDeadline": 0,
+      "maxDeadline": 0,
+      "returnTxHashAsap": false,
+      "mobileActive": false,
+      "extensionActive": false,
+      "mobileActiveIos": false,
+      "mobileActiveAndroid": false
+    }
+  },
+  "hyperevm": {
+    "mobile_active": false,
+    "extension_active": false,
+    "fallback_to_v1": false,
+    "fallbackToV1": false,
+    "mobileActive": false,
+    "extensionActive": false,
+    "mobileActiveIOS": false,
+    "mobileActiveAndroid": false,
+    "v2": {
+      "swapAndSend": {
+        "enabled": false
+      }
+    },
+    "smartTransactions": {
+      "expectedDeadline": 0,
+      "maxDeadline": 0,
+      "returnTxHashAsap": false
+    }
+  },
+  "linea": {
+    "mobile_active": false,
+    "extension_active": false,
+    "fallback_to_v1": false,
+    "fallbackToV1": false,
+    "mobileActive": false,
+    "extensionActive": false,
+    "mobileActiveIOS": false,
+    "mobileActiveAndroid": false,
+    "v2": {
+      "swapAndSend": {
+        "enabled": false
+      }
+    },
+    "smartTransactions": {
+      "expectedDeadline": 0,
+      "maxDeadline": 0,
+      "returnTxHashAsap": false,
+      "mobileActive": false,
+      "extensionActive": false,
+      "mobileActiveIos": false,
+      "mobileActiveAndroid": false
+    }
+  },
+  "megaeth": {
+    "mobile_active": false,
+    "extension_active": false,
+    "fallback_to_v1": false,
+    "fallbackToV1": false,
+    "mobileActive": false,
+    "extensionActive": false,
+    "mobileActiveIOS": false,
+    "mobileActiveAndroid": false,
+    "v2": {
+      "swapAndSend": {
+        "enabled": false
+      }
+    },
+    "smartTransactions": {
+      "expectedDeadline": 0,
+      "maxDeadline": 0,
+      "returnTxHashAsap": false
+    }
+  },
+  "migrateToV2": {
+    "extensionActive": false,
+    "mobileActive": false
+  },
+  "monad": {
+    "mobile_active": false,
+    "extension_active": false,
+    "fallback_to_v1": false,
+    "fallbackToV1": false,
+    "mobileActive": false,
+    "extensionActive": false,
+    "mobileActiveIOS": false,
+    "mobileActiveAndroid": false,
+    "v2": {
+      "swapAndSend": {
+        "enabled": false
+      }
+    },
+    "smartTransactions": {
+      "expectedDeadline": 0,
+      "maxDeadline": 0,
+      "returnTxHashAsap": false
+    }
+  },
+  "multiChainAssets": {
+    "pollingSeconds": 0
+  },
+  "optimism": {
+    "mobile_active": false,
+    "extension_active": false,
+    "fallback_to_v1": false,
+    "fallbackToV1": false,
+    "mobileActive": false,
+    "extensionActive": false,
+    "mobileActiveIOS": false,
+    "mobileActiveAndroid": false,
+    "v2": {
+      "swapAndSend": {
+        "enabled": false
+      }
+    },
+    "smartTransactions": {
+      "expectedDeadline": 0,
+      "maxDeadline": 0,
+      "returnTxHashAsap": false
+    }
+  },
+  "polygon": {
+    "mobile_active": false,
+    "extension_active": false,
+    "fallback_to_v1": false,
+    "fallbackToV1": false,
+    "mobileActive": true,
+    "extensionActive": true,
+    "mobileActiveIOS": false,
+    "mobileActiveAndroid": false,
+    "v2": {
+      "swapAndSend": {
+        "enabled": false
+      }
+    },
+    "smartTransactions": {
+      "expectedDeadline": 0,
+      "maxDeadline": 0,
+      "returnTxHashAsap": false,
+      "mobileActive": false,
+      "extensionActive": false,
+      "mobileActiveIos": false,
+      "mobileActiveAndroid": false
+    }
+  },
+  "robinhood": {
+    "mobile_active": false,
+    "extension_active": false,
+    "fallback_to_v1": false,
+    "fallbackToV1": false,
+    "mobileActive": false,
+    "extensionActive": false,
+    "mobileActiveIOS": false,
+    "mobileActiveAndroid": false,
+    "v2": {
+      "swapAndSend": {
+        "enabled": false
+      }
+    },
+    "smartTransactions": {
+      "expectedDeadline": 0,
+      "maxDeadline": 0,
+      "returnTxHashAsap": false
+    }
+  },
+  "sei": {
+    "mobile_active": false,
+    "extension_active": false,
+    "fallback_to_v1": false,
+    "fallbackToV1": false,
+    "mobileActive": false,
+    "extensionActive": false,
+    "mobileActiveIOS": false,
+    "mobileActiveAndroid": false,
+    "v2": {
+      "swapAndSend": {
+        "enabled": false
+      }
+    },
+    "smartTransactions": {
+      "expectedDeadline": 0,
+      "maxDeadline": 0,
+      "returnTxHashAsap": false
+    }
+  },
+  "smartTransactions": {
+    "mobileActive": false,
+    "extensionActive": true,
+    "mobileActiveIOS": false,
+    "mobileActiveAndroid": false,
+    "mobileReturnTxHashAsap": false,
+    "extensionReturnTxHashAsap": false,
+    "batchStatusPollingInterval": 0
+  },
+  "smart_transactions": {
+    "mobile_active": false,
+    "extension_active": false
+  },
+  "swapRedesign": {
+    "mobileActive": false,
+    "extensionActive": false
+  },
+  "transactions": {
+    "acceleratedPollingEnabled": false,
+    "acceleratedPollingInterval": 0,
+    "maxAcceleratedPolls": 0
+  },
+  "zksync": {
+    "mobile_active": false,
+    "extension_active": false,
+    "fallback_to_v1": false,
+    "fallbackToV1": false,
+    "mobileActive": false,
+    "extensionActive": false,
+    "mobileActiveIOS": false,
+    "mobileActiveAndroid": false,
+    "v2": {
+      "swapAndSend": {
+        "enabled": false
+      }
+    },
+    "smartTransactions": {
+      "expectedDeadline": 0,
+      "maxDeadline": 0,
+      "returnTxHashAsap": false
+    }
+  }
+}

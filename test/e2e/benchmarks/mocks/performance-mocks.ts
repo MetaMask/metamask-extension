@@ -13,12 +13,12 @@ import {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,
 } from '../../tests/btc/mocks/tokens-api';
-import type { DefiPositionsResponse } from '../../mock-response-data/api-mocks';
 import {
   bridgeGetTokensPopular,
   bridgeGetTokensSearch,
   gasPrices,
   priceV1ExchangeRates,
+  type DefiPositionsResponse,
 } from '../../mock-response-data/api-responses';
 import { POWER_USER_PRICES } from './price-data';
 import { buildSseResponseBody } from './swap-mocks';

@@ -1,0 +1,54 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "chainId": 59144,
+    "assetId": "",
+    "symbol": "ETH",
+    "decimals": 18,
+    "name": "Ethereum",
+    "coingeckoId": "",
+    "aggregators": [""],
+    "occurrences": 0,
+    "iconUrl": "",
+    "coinLabel": ""
+  },
+  {
+    "address": "0x176211869cA2b568f2A7D4EE941E073a821EE1ff",
+    "chainId": 59144,
+    "assetId": "",
+    "symbol": "USDC",
+    "decimals": 6,
+    "name": "USD Coin",
+    "coingeckoId": "",
+    "aggregators": [""],
+    "occurrences": 0,
+    "iconUrl": "",
+    "coinLabel": ""
+  },
+  {
+    "address": "0xa219439258ca9da29e9cc4ce5596924745e12b93",
+    "chainId": 59144,
+    "assetId": "",
+    "symbol": "USDT",
+    "decimals": 6,
+    "name": "Tether USD",
+    "coingeckoId": "",
+    "aggregators": [""],
+    "occurrences": 0,
+    "iconUrl": "",
+    "coinLabel": ""
+  },
+  {
+    "address": "0xe5d7c2a44ffddf6b295a15c148167daaaf5cf34f",
+    "chainId": 59144,
+    "assetId": "",
+    "symbol": "WETH",
+    "decimals": 18,
+    "name": "Wrapped Ether",
+    "coingeckoId": "",
+    "aggregators": [""],
+    "occurrences": 0,
+    "iconUrl": "",
+    "coinLabel": ""
+  }
+]

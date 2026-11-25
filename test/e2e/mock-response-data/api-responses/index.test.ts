@@ -7,6 +7,8 @@ import {
   bridgeGetTokensPopular,
   bridgeGetTokensSearch,
   bridgeGetTxStatus,
+  contentfulServedAssets,
+  findDuplicateEndpoints,
   fourByteSignatures,
   gasPrices,
   priceV1ExchangeRates,
@@ -61,13 +63,33 @@ describe('API endpoint definitions', () => {
       });
     }
 
-    it('registers fixture defaults only for the endpoints that have one', () => {
+    it('has no duplicate ids or endpoints', () => {
+      expect(findDuplicateEndpoints(endpoints)).toStrictEqual([]);
+    });
+
+    it('builds every custom default from the request only for endpoints without a fixture default', () => {
       expect(
         endpoints
-          .filter(([, endpoint]) => endpoint.hasFixtureDefault)
+          .filter(
+            ([, endpoint]) =>
+              endpoint.hasDefault && !endpoint.hasFixtureDefault,
+          )
           .map(([key]) => key)
           .sort(),
-      ).toStrictEqual(['accounts-supported-networks-v2', 'gas-prices']);
+      ).toStrictEqual([
+        'accounts-transactions',
+        'client-config-events',
+        'contentful-banners',
+        'money-positions',
+        'ramps-countries',
+        'swaps-token',
+      ]);
+    });
+
+    it('serves the fixture as the default for 4byte, tx-sentinel /network and the token list', () => {
+      expect(fourByteSignatures.hasFixtureDefault).toBe(true);
+      expect(txSentinelNetwork.hasFixtureDefault).toBe(true);
+      expect(tokenList.hasFixtureDefault).toBe(true);
     });
   });
 
@@ -281,6 +303,23 @@ describe('API endpoint definitions', () => {
       expect(response.count).toBe(fourByteSignatures.body.count);
       expect(response.results).toHaveLength(1);
       expect(response.results[0].bytes_signature).toBe('');
+    });
+  });
+
+  describe('contentfulServedAssets', () => {
+    it('returns no assets when includes is missing', () => {
+      expect(contentfulServedAssets({})).toStrictEqual([]);
+      expect(contentfulServedAssets({ includes: {} })).toStrictEqual([]);
+    });
+
+    it('drops placeholder assets that have no id', () => {
+      expect(
+        contentfulServedAssets({
+          includes: {
+            Asset: [{ sys: { id: '' } }, { sys: { id: 'banner' } }],
+          },
+        }),
+      ).toStrictEqual([{ sys: { id: 'banner' } }]);
     });
   });
 });

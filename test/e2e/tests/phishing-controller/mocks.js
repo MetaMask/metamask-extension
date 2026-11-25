@@ -1,6 +1,4 @@
-const {
-  'phishing-stalelist': syncedStalelist,
-} = require('../../mock-response-data/api-fixtures.json');
+const { phishingStalelist } = require('../../mock-response-data/api-responses');
 const {
   METAMASK_STALELIST_URL,
   METAMASK_HOTLIST_DIFF_URL,
@@ -19,7 +17,7 @@ const defaultC2DomainBlocklist = {
   lastFetchedAt: '2024-08-27T15:30:45Z',
 };
 const defaultStalelist = {
-  ...syncedStalelist.data,
+  ...phishingStalelist.body.data,
   version: 2,
   tolerance: 2,
   lastUpdated,

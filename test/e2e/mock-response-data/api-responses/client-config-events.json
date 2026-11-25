@@ -1,0 +1,38 @@
+{
+  "data": {
+    "version": "0",
+    "timestamp": 0,
+    "schemaVersion": "0",
+    "events": {
+      "Test Marketing Purpose Event": [""],
+      "Test Product Purpose Event": [""],
+      "Test Dual Purpose Event": [""],
+      "App Installed": [""],
+      "App Opened": [""],
+      "Approval Completed": [""],
+      "Banner Display": [""],
+      "Banner Select": [""],
+      "Banner Dismissed": [""],
+      "Card Delegation Process Completed": [""],
+      "Deep Link Used": [""],
+      "InApp Notification Clicked": [""],
+      "InApp Notification Detail Clicked": [""],
+      "mUSD Conversion Status Updated": [""],
+      "mUSD Fullscreen Announcement Displayed": [""],
+      "mUSD Fullscreen Announcement Button Clicked": [""],
+      "On-ramp Purchase Completed": [""],
+      "Perp Position Close Transaction": [""],
+      "Perp Risk Management": [""],
+      "Perp Trade Transaction": [""],
+      "Predict Trade Transaction": [""],
+      "Push Notification Clicked": [""],
+      "Rewards Opt In Completed": [""],
+      "Shield Subscription Request": [""],
+      "Swap Completed": [""],
+      "Transaction Finalized": [""],
+      "Unified SwapBridge Completed": [""],
+      "Wallet Created": [""],
+      "Wallet Imported": [""]
+    }
+  }
+}

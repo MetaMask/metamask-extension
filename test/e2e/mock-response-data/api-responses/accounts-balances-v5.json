@@ -1,9 +1,15 @@
 {
   "balances": [
     {
-      "accountId": "eip155:1:0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
+      "object": "",
+      "symbol": "",
+      "name": "",
+      "type": "",
+      "decimals": 0,
       "assetId": "eip155:1/slip44:60",
-      "balance": "25"
+      "balance": "25",
+      "accountId": "eip155:1:0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
+      "securityResultType": ""
     }
   ],
   "count": 1,

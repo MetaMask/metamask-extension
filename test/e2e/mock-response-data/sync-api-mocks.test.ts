@@ -1,24 +1,21 @@
-import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'fs';
-import { tmpdir } from 'os';
-import path from 'path';
+import { API_ENDPOINTS } from './api-responses';
 import {
   alignShape,
-  catalogSkipWarnings,
-  discoverApiResponses,
+  baseSyncEntry,
   fetchJsonWithRetry,
   fixtureGitPath,
   type Json,
   isIdKey,
   isRowChanged,
-  listApiResponseFixtureIds,
   mapWithConcurrency,
-  missingApiResponseSourceMessage,
-  parseSyncCell,
   placeholder,
+  planSyncRows,
   readFixtureAtRef,
   refuseWriteReason,
   selectFixtureChangeLines,
+  syncEntry,
   syncExitCode,
+  type SyncEndpoint,
 } from './sync-api-mocks';
 
 function jsonResponse(status: number, body: unknown): Response {
@@ -155,23 +152,6 @@ describe('alignShape map keys', () => {
       alignShape(mock, live, false, { mapPaths: ['flags'] }),
     ).toStrictEqual({ config: { a: 1, b: 0 }, flags: { bsc: { on: true } } });
   });
-
-  it('parses the map option from a catalog Sync cell', () => {
-    expect(
-      parseSyncCell('write:api-fixtures.json#swaps-feature-flags map'),
-    ).toStrictEqual({
-      mode: 'write:api-fixtures.json#swaps-feature-flags',
-      mapPaths: [''],
-    });
-    expect(parseSyncCell('write:a.json map:chains map:x.y')).toStrictEqual({
-      mode: 'write:a.json',
-      mapPaths: ['chains', 'x.y'],
-    });
-    expect(parseSyncCell('write:a.json')).toStrictEqual({
-      mode: 'write:a.json',
-      mapPaths: [],
-    });
-  });
 });
 
 describe('fetchJsonWithRetry', () => {
@@ -256,8 +236,8 @@ describe('refuseWriteReason', () => {
 
 describe('isRowChanged', () => {
   const row = {
-    baseEntry: '| gas | GET | `url` | mock | `write:a.json#gas` | |',
-    headEntry: '| gas | GET | `url` | mock | `write:a.json#gas` | |',
+    baseEntry: '["GET","https://gas.example/p",null,[]]',
+    headEntry: '["GET","https://gas.example/p",null,[]]',
     baseValue: { low: '1' },
     headValue: { low: '1' },
   };
@@ -266,12 +246,12 @@ describe('isRowChanged', () => {
     expect(isRowChanged(row)).toBe(false);
   });
 
-  it('ignores surrounding whitespace and is true when the catalog entry changed', () => {
+  it('ignores surrounding whitespace and is true when the definition entry changed', () => {
     expect(isRowChanged({ ...row, headEntry: `${row.headEntry} ` })).toBe(
       false,
     );
     expect(
-      isRowChanged({ ...row, headEntry: row.headEntry.replace('url', 'url2') }),
+      isRowChanged({ ...row, headEntry: row.headEntry.replace('/p', '/q') }),
     ).toBe(true);
   });
 
@@ -282,32 +262,7 @@ describe('isRowChanged', () => {
   });
 });
 
-function responsesDir(): string {
-  return mkdtempSync(path.join(tmpdir(), 'api-responses-'));
-}
-
-function writeJson(dir: string, name: string, value: unknown) {
-  writeFileSync(path.join(dir, name), `${JSON.stringify(value, null, 2)}\n`);
-}
-
-describe('catalog skips and refused writes', () => {
-  it('warns for a catalog skip row and ignores write rows', () => {
-    const text = [
-      '| id | method | url | where | sync | notes |',
-      '| --- | --- | --- | --- | --- | --- |',
-      '| gas-prices | GET | `https://gas.example/p` | mock-e2e.js | `write:a.json` | |',
-      '| client-config-flags | GET | `client-config.example/flags` | mock-e2e.js | skip | owned by feature-flags |',
-    ].join('\n');
-    expect(catalogSkipWarnings(text)).toStrictEqual([
-      'skip client-config-flags GET client-config.example/flags: owned by feature-flags',
-    ]);
-    const catalog = catalogSkipWarnings(
-      readFileSync(path.join(__dirname, 'api-mock-catalog.md'), 'utf8'),
-    );
-    expect(catalog.length).toBeGreaterThan(0);
-    expect(catalog.every((line) => line.startsWith('skip '))).toBe(true);
-  });
-
+describe('syncExitCode', () => {
   it('fails a blocking refused write even when other rows drifted', () => {
     const base = {
       changed: false,
@@ -331,15 +286,21 @@ describe('catalog skips and refused writes', () => {
 
 describe('fixture git paths', () => {
   it('normalizes a path that steps out of mock-response-data', () => {
-    expect(fixtureGitPath('../mock-cdn/ppom-version.json')).toBe(
-      'test/e2e/mock-cdn/ppom-version.json',
+    expect(fixtureGitPath('../other/file.json')).toBe(
+      'test/e2e/other/file.json',
     );
-    const text = readFixtureAtRef('HEAD', '../mock-cdn/ppom-version.json');
-    const onDisk = readFileSync(
-      path.join(__dirname, '../mock-cdn/ppom-version.json'),
-      'utf8',
+    expect(fixtureGitPath('api-responses/chomp.json')).toBe(
+      'test/e2e/mock-response-data/api-responses/chomp.json',
     );
-    expect(text).toBe(onDisk);
+  });
+
+  it('reads a fixture as committed at a revision', () => {
+    expect(
+      readFixtureAtRef('HEAD', 'api-responses/gas-prices.json'),
+    ).toStrictEqual(expect.stringContaining('"SafeGasPrice"'));
+    expect(
+      readFixtureAtRef('HEAD', 'api-responses/does-not-exist.json'),
+    ).toBeUndefined();
   });
 });
 
@@ -359,92 +320,104 @@ describe('selectFixtureChangeLines', () => {
   });
 });
 
-describe('api-responses discovery', () => {
-  it('ignores a missing directory and the source manifest', () => {
-    expect(
-      listApiResponseFixtureIds(path.join(tmpdir(), 'missing-api-responses')),
-    ).toStrictEqual([]);
-    const dir = responsesDir();
-    writeJson(dir, 'sources.json', {});
-    writeJson(dir, 'gas-prices.json', { low: '' });
-    expect(listApiResponseFixtureIds(dir)).toStrictEqual(['gas-prices']);
-  });
+const endpoint = (overrides: Partial<SyncEndpoint> = {}): SyncEndpoint => ({
+  id: 'gas-prices',
+  method: 'GET',
+  url: 'https://gas.example/p',
+  syncUrl: 'https://gas.example/p',
+  syncMapPaths: [],
+  ...overrides,
+});
 
-  it('fails with the object to add when a fixture has no source entry', () => {
-    const dir = responsesDir();
-    writeJson(dir, 'gas-prices.json', {});
-    const plan = discoverApiResponses(dir);
-    expect(plan.rows).toStrictEqual([]);
-    expect(plan.errors).toStrictEqual([
-      missingApiResponseSourceMessage('gas-prices'),
-    ]);
-    expect(plan.errors[0]).toContain('api-responses/sources.json');
-    expect(plan.errors[0]).toContain('"mode": "write"');
-  });
-
-  it('syncs a GET fixture from its declared url', () => {
-    const dir = responsesDir();
-    writeJson(dir, 'gas-prices.json', {});
-    writeJson(dir, 'sources.json', {
-      'gas-prices': {
-        method: 'GET',
-        url: 'https://gas.api.cx.metamask.io/networks/1/gasPrices',
-        mode: 'write',
-      },
-    });
-    expect(discoverApiResponses(dir)).toStrictEqual({
-      errors: [],
-      warnings: [],
-      rows: [
-        {
-          id: 'gas-prices',
-          url: 'https://gas.api.cx.metamask.io/networks/1/gasPrices',
-          mode: 'write:api-responses/gas-prices.json',
-          mapPaths: [],
-        },
-      ],
-    });
-  });
-
-  it('warns for a skip entry and does not fetch it', () => {
-    const dir = responsesDir();
-    writeJson(dir, 'bridge-get-tokens-popular.json', {});
-    writeJson(dir, 'sources.json', {
-      'bridge-get-tokens-popular': {
-        method: 'POST',
-        url: 'https://bridge.api.cx.metamask.io/getTokens/popular',
-        mode: 'skip',
-        reason: 'POST with a request-specific body',
-      },
-    });
-    const plan = discoverApiResponses(dir);
+describe('planSyncRows', () => {
+  it('plans one row per GET definition, reading its own fixture', () => {
+    const plan = planSyncRows(
+      [['gas-prices', endpoint({ syncMapPaths: [''] })]],
+      ['gas-prices'],
+    );
     expect(plan.errors).toStrictEqual([]);
+    expect(plan.warnings).toStrictEqual([]);
+    expect(plan.rows).toStrictEqual([
+      {
+        id: 'gas-prices',
+        url: 'https://gas.example/p',
+        file: 'api-responses/gas-prices.json',
+        mapPaths: [''],
+        entry: syncEntry(endpoint({ syncMapPaths: [''] })),
+      },
+    ]);
+  });
+
+  it('warns for a POST or a syncSkip definition and does not fetch it', () => {
+    const plan = planSyncRows(
+      [
+        ['popular', endpoint({ id: 'popular', method: 'POST' })],
+        [
+          'auth',
+          endpoint({
+            id: 'auth',
+            url: 'https://auth.example/a',
+            syncUrl: 'https://auth.example/a',
+            syncSkip: 'needs a profile token',
+          }),
+        ],
+      ],
+      ['popular', 'auth'],
+    );
     expect(plan.rows).toStrictEqual([]);
     expect(plan.warnings).toStrictEqual([
-      'skip bridge-get-tokens-popular POST https://bridge.api.cx.metamask.io/getTokens/popular: POST with a request-specific body',
+      'skip popular POST https://gas.example/p: POST endpoints are not fetched',
+      'skip auth GET https://auth.example/a: needs a profile token',
     ]);
   });
 
-  it('rejects a skip entry with no reason and a non-GET write', () => {
-    const dir = responsesDir();
-    mkdirSync(dir, { recursive: true });
-    writeJson(dir, 'needs-id.json', {});
-    writeJson(dir, 'popular.json', {});
-    writeJson(dir, 'sources.json', {
-      'needs-id': {
-        method: 'GET',
-        url: 'https://example.test/status',
-        mode: 'skip',
-      },
-      popular: {
-        method: 'POST',
-        url: 'https://example.test/popular',
-        mode: 'write',
-      },
-    });
-    const { errors, rows } = discoverApiResponses(dir);
-    expect(rows).toStrictEqual([]);
-    expect(errors.join('\n')).toContain('needs a "reason"');
-    expect(errors.join('\n')).toContain('Set "mode" to "skip"');
+  it('fails on a fixture without a definition and a definition without a fixture', () => {
+    const plan = planSyncRows([['gas-prices', endpoint()]], ['orphan']);
+    expect(plan.errors).toStrictEqual([
+      'api-responses/orphan.json has no definition. Add a defineApiMock entry for "orphan" to api-responses/index.ts and to API_ENDPOINTS.',
+      'gas-prices has no api-responses/gas-prices.json fixture.',
+    ]);
+  });
+
+  it('fails on a duplicate endpoint', () => {
+    const plan = planSyncRows(
+      [
+        ['gas-prices', endpoint()],
+        ['gas-prices-copy', endpoint({ id: 'gas-prices-copy' })],
+      ],
+      ['gas-prices', 'gas-prices-copy'],
+    );
+    expect(plan.errors).toStrictEqual([
+      'gas-prices-copy and gas-prices define the same URL matcher: GET https://gas.example/p',
+      'gas-prices-copy and gas-prices define the same sync URL: GET https://gas.example/p',
+    ]);
+  });
+
+  it('plans every committed definition without errors', () => {
+    const fixtureIds = Object.keys(API_ENDPOINTS);
+    const plan = planSyncRows(
+      Object.entries(API_ENDPOINTS) as [string, SyncEndpoint][],
+      fixtureIds,
+    );
+    expect(plan.errors).toStrictEqual([]);
+    expect(plan.rows.length + plan.warnings.length).toBe(fixtureIds.length);
+  });
+});
+
+describe('baseSyncEntry', () => {
+  it('is the head entry when the base index defines the id and sync URL', () => {
+    const baseIndex = "id: 'gas-prices',\n  syncUrl: 'https://gas.example/p',";
+    expect(baseSyncEntry(baseIndex, endpoint())).toBe(syncEntry(endpoint()));
+  });
+
+  it('is undefined for a new definition or a changed sync URL', () => {
+    expect(baseSyncEntry(undefined, endpoint())).toBeUndefined();
+    expect(baseSyncEntry("id: 'other'", endpoint())).toBeUndefined();
+    expect(
+      baseSyncEntry(
+        "id: 'gas-prices',\n  syncUrl: 'https://gas.example/old',",
+        endpoint(),
+      ),
+    ).toBeUndefined();
   });
 });

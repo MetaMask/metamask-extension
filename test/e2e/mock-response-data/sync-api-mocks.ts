@@ -1,20 +1,24 @@
 #!/usr/bin/env tsx
 /**
- * Aligns the E2E API mock fixtures with the live API shapes, as listed in
- * `api-mock-catalog.md`.
+ * Aligns the E2E API mock fixtures with the live API shapes. The endpoints
+ * are the definitions in `api-responses/index.ts`: each one's `syncUrl` is
+ * fetched and its `api-responses/<id>.json` fixture is aligned to it.
  *
  * Exit 0: no change. Exit 1: a fixture was written. Exit 2: nothing was
- * written and a fetch failed. Exit 3: an `api-responses` fixture has no source.
+ * written and a fetch failed. Exit 3: the registry is inconsistent (a
+ * duplicate id or endpoint, or a fixture without a definition).
  * Exit 5: a blocking row's write was refused. Exit 6: only a non-blocking row's
  * write was refused. Exit 6 passes a pull-request check and is not a clean run.
  *
  * `--changed-since <ref>` still writes all drift, but exit 1 only covers rows
- * whose catalog entry or fixture value differs from `<ref>`. Drift only in
+ * whose definition is new or whose fixture differs from `<ref>`. Drift only in
  * other rows exits 4 and is noted on stderr as `info`.
  */
 import { execFileSync } from 'child_process';
-import { existsSync, readdirSync, readFileSync, writeFileSync } from 'fs';
+import { readdirSync, readFileSync, writeFileSync } from 'fs';
 import path from 'path';
+import { API_ENDPOINTS } from './api-responses';
+import { findDuplicateEndpoints } from './api-responses/define-api-mock';
 
 export type Json =
   | null
@@ -323,9 +327,9 @@ const canonical = (value: Json): string =>
 export type SyncRow = {
   id: string;
   url: string;
-  /** `write:<file>` or `write:<file>#<key>`. */
-  mode: string;
-  /** Dot paths under the row's value whose keys are data. `''` is the root. */
+  /** Fixture path under `mock-response-data/`. */
+  file: string;
+  /** Dot paths under the fixture whose keys are data. `''` is the root. */
   mapPaths?: string[];
 };
 
@@ -333,24 +337,6 @@ export type SyncRow = {
 export const FETCH_CONCURRENCY = 6;
 const FETCH_ATTEMPTS = 3;
 const FETCH_TIMEOUT_MS = 20_000;
-
-/**
- * Parses a catalog Sync cell. Options follow the mode, separated by spaces:
- * `map` marks the row's value as a data map, `map:a.b` marks a nested object.
- *
- * @param cell - The Sync cell without backticks.
- * @returns The mode and the data-map paths.
- */
-export function parseSyncCell(cell: string): {
-  mode: string;
-  mapPaths: string[];
-} {
-  const [mode = '', ...options] = cell.trim().split(/\s+/u);
-  const mapPaths = options
-    .filter((option) => option === 'map' || option.startsWith('map:'))
-    .map((option) => (option === 'map' ? '' : option.slice('map:'.length)));
-  return { mode, mapPaths };
-}
 
 const sleep = (ms: number) =>
   new Promise<void>((resolve) => {
@@ -463,16 +449,14 @@ export type RowResult = 'unchanged' | 'changed' | 'refused';
 /**
  * Aligns one row's fixture with an already-fetched live response.
  *
- * @param row - Catalog row.
+ * @param row - Sync row.
  * @param live - Live response body.
  * @returns What happened to the row.
  */
 async function applyRow(row: SyncRow, live: Json): Promise<RowResult> {
-  const { id, url, mode, mapPaths = [] } = row;
-  const [file, key] = mode.slice('write:'.length).split('#');
+  const { id, url, file, mapPaths = [] } = row;
   const filePath = path.join(__dirname, file);
-  const fixture = JSON.parse(readFileSync(filePath, 'utf8'));
-  const current = key ? fixture[key] : fixture;
+  const current = JSON.parse(readFileSync(filePath, 'utf8')) as Json;
   const aligned = alignShape(current, live, false, { mapPaths });
   if (canonical(current) === canonical(aligned)) {
     return 'unchanged';
@@ -484,7 +468,7 @@ async function applyRow(row: SyncRow, live: Json): Promise<RowResult> {
     );
     return 'refused';
   }
-  const next = key === undefined ? aligned : { ...fixture, [key]: aligned };
+  const next = aligned;
   // Loaded only when a file is written. A static import breaks Jest, which
   // loads this module through the E2E mocks.
   const { format, resolveConfig } = await import('prettier');
@@ -505,12 +489,12 @@ async function applyRow(row: SyncRow, live: Json): Promise<RowResult> {
 }
 
 /**
- * Whether a pull request changed a row: its catalog entry or its fixture
+ * Whether a pull request changed a row: its definition entry or its fixture
  * value differs from the base. A row missing from the base is changed.
  *
  * @param change - The row's entry and value at the base and at head.
- * @param change.baseEntry - Catalog line or source entry at the base.
- * @param change.headEntry - Catalog line or source entry at head.
+ * @param change.baseEntry - The definition's sync entry at the base.
+ * @param change.headEntry - The definition's sync entry at head.
  * @param change.baseValue - Fixture value at the base, if the base has it.
  * @param change.headValue - Fixture value at head.
  * @returns True when the pull request changed the row.
@@ -535,98 +519,111 @@ export function isRowChanged({
   );
 }
 
-/** Directory of one-file-per-endpoint fixtures. Absent until those files land. */
+/** Directory of the endpoint definitions and their one fixture each. */
 export const API_RESPONSES_DIR_NAME = 'api-responses';
 
-/** Manifest beside the fixtures. Not itself a response body. */
-export const API_RESPONSE_SOURCES_FILE = 'sources.json';
-
-export type ApiResponseSource = {
-  method?: string;
-  url?: string;
-  mode?: string;
-  reason?: string;
-  follows?: string;
-  /** Data-map paths, as the catalog `map` option. `""` is the root. */
-  map?: string[];
+/** The parts of an endpoint definition the sync reads. */
+export type SyncEndpoint = {
+  id: string;
+  method: string;
+  url: string | RegExp;
+  syncUrl: string;
+  syncSkip?: string;
+  syncMapPaths: readonly string[];
 };
 
-export type DiscoveredApiResponses = {
+/**
+ * A definition's sync entry: what has to change at the base for the row to
+ * count as changed by a pull request.
+ *
+ * @param endpoint - The definition.
+ * @returns The entry text.
+ */
+export function syncEntry(endpoint: SyncEndpoint): string {
+  return JSON.stringify([
+    endpoint.method,
+    endpoint.syncUrl,
+    endpoint.syncSkip ?? null,
+    endpoint.syncMapPaths,
+  ]);
+}
+
+/**
+ * The entry a definition had at the base, read from the base `index.ts`
+ * text. A definition whose id or sync URL is not there is new or moved.
+ *
+ * @param baseIndex - `api-responses/index.ts` at the base, if it existed.
+ * @param endpoint - The definition at head.
+ * @returns The entry at the base, or `undefined` when it did not have it.
+ */
+export function baseSyncEntry(
+  baseIndex: string | undefined,
+  endpoint: SyncEndpoint,
+): string | undefined {
+  if (
+    !baseIndex?.includes(`id: '${endpoint.id}'`) ||
+    !baseIndex.includes(endpoint.syncUrl)
+  ) {
+    return undefined;
+  }
+  return syncEntry(endpoint);
+}
+
+/**
+ * Plans the sync from the endpoint definitions. Duplicate ids or endpoints,
+ * and a fixture file without a definition (or the reverse), are errors.
+ * POST endpoints and definitions with `syncSkip` are not fetched; each one
+ * is a `skip` warning, so the job summary lists it.
+ *
+ * @param entries - `[key, definition]` pairs from `API_ENDPOINTS`.
+ * @param fixtureIds - The `*.json` file names in `api-responses/`, without
+ * the extension.
+ * @returns Errors, skip warnings, and the rows to fetch.
+ */
+export function planSyncRows(
+  entries: [string, SyncEndpoint][],
+  fixtureIds: string[],
+): {
   errors: string[];
   warnings: string[];
-  rows: SyncRow[];
-};
-
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  value !== null && typeof value === 'object' && !Array.isArray(value);
-
-/**
- * Fixture ids in `api-responses/`, excluding the source manifest.
- *
- * @param responsesDir - The `api-responses` directory.
- * @returns Sorted ids. Empty when the directory does not exist yet.
- */
-export function listApiResponseFixtureIds(responsesDir: string): string[] {
-  if (!existsSync(responsesDir)) {
-    return [];
-  }
-  return readdirSync(responsesDir)
-    .filter(
-      (name) => name.endsWith('.json') && name !== API_RESPONSE_SOURCES_FILE,
-    )
-    .map((name) => name.slice(0, -'.json'.length))
-    .sort();
-}
-
-/**
- * Tells the author exactly which object to add for a fixture with no source.
- *
- * @param id - Fixture id, the file name without `.json`.
- * @returns The check failure text.
- */
-export function missingApiResponseSourceMessage(id: string): string {
-  return [
-    `${API_RESPONSES_DIR_NAME}/${id}.json has no source entry.`,
-    `Add "${id}" to test/e2e/mock-response-data/${API_RESPONSES_DIR_NAME}/${API_RESPONSE_SOURCES_FILE}:`,
-    '{ "method": "GET", "url": "https://...", "mode": "write" }',
-    'For POST, auth, or an endpoint that needs a real id, use "mode": "skip" and a "reason".',
-  ].join('\n');
-}
-
-/**
- * Reads `sources.json`. A missing file is an empty manifest.
- *
- * @param responsesDir - The `api-responses` directory.
- * @returns The manifest, or one error when the file is not a JSON object.
- */
-export function readApiResponseSources(responsesDir: string): {
-  sources: Record<string, ApiResponseSource>;
-  error: string | null;
+  rows: (SyncRow & { entry: string })[];
 } {
-  const filePath = path.join(responsesDir, API_RESPONSE_SOURCES_FILE);
-  if (!existsSync(filePath)) {
-    return { sources: {}, error: null };
+  const errors = findDuplicateEndpoints(entries);
+  const defined = new Set(entries.map(([key]) => key));
+  for (const id of fixtureIds) {
+    if (!defined.has(id)) {
+      errors.push(
+        `${API_RESPONSES_DIR_NAME}/${id}.json has no definition. Add a defineApiMock entry for "${id}" to ${API_RESPONSES_DIR_NAME}/index.ts and to API_ENDPOINTS.`,
+      );
+    }
   }
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(readFileSync(filePath, 'utf8'));
-  } catch (error) {
-    return {
-      sources: {},
-      error: `${API_RESPONSE_SOURCES_FILE} is not valid JSON: ${String(error)}`,
-    };
+  const files = new Set(fixtureIds);
+  const warnings: string[] = [];
+  const rows: (SyncRow & { entry: string })[] = [];
+  for (const [key, endpoint] of entries) {
+    if (!files.has(key)) {
+      errors.push(
+        `${key} has no ${API_RESPONSES_DIR_NAME}/${key}.json fixture.`,
+      );
+      continue;
+    }
+    if (endpoint.method !== 'GET' || endpoint.syncSkip) {
+      const reason =
+        endpoint.syncSkip ?? `${endpoint.method} endpoints are not fetched`;
+      warnings.push(
+        `skip ${endpoint.id} ${endpoint.method} ${endpoint.syncUrl}: ${reason}`,
+      );
+      continue;
+    }
+    rows.push({
+      id: endpoint.id,
+      url: endpoint.syncUrl,
+      file: `${API_RESPONSES_DIR_NAME}/${endpoint.id}.json`,
+      mapPaths: [...endpoint.syncMapPaths],
+      entry: syncEntry(endpoint),
+    });
   }
-  if (!isRecord(parsed)) {
-    return {
-      sources: {},
-      error: `${API_RESPONSE_SOURCES_FILE} must be a JSON object keyed by fixture id.`,
-    };
-  }
-  const sources: Record<string, ApiResponseSource> = {};
-  for (const [id, value] of Object.entries(parsed)) {
-    sources[id] = isRecord(value) ? (value as ApiResponseSource) : {};
-  }
-  return { sources, error: null };
+  return { errors, warnings, rows };
 }
 
 /**
@@ -648,122 +645,6 @@ export function selectFixtureChangeLines(report: string): string[] {
     }
     return line.includes(' https://') || line.includes(' http://');
   });
-}
-
-/**
- * Plans sync rows for every discovered fixture. Skip entries become warnings.
- * A fixture with no entry, or a write entry that is not GET, is an error.
- *
- * @param responsesDir - The `api-responses` directory.
- * @returns Errors, skip warnings, and write rows.
- */
-export function discoverApiResponses(
-  responsesDir: string,
-): DiscoveredApiResponses {
-  const ids = listApiResponseFixtureIds(responsesDir);
-  if (ids.length === 0) {
-    return { errors: [], warnings: [], rows: [] };
-  }
-  const { sources, error } = readApiResponseSources(responsesDir);
-  if (error) {
-    return { errors: [error], warnings: [], rows: [] };
-  }
-  const errors: string[] = [];
-  const warnings: string[] = [];
-  const rows: DiscoveredApiResponses['rows'] = [];
-  for (const id of ids) {
-    const source = sources[id];
-    if (!source || Object.keys(source).length === 0) {
-      errors.push(missingApiResponseSourceMessage(id));
-      continue;
-    }
-    const method = source.method ?? '';
-    const url = source.url ?? '';
-    const mode = source.mode ?? '';
-    const reason = source.reason?.trim() ?? '';
-    if (mode !== 'write' && mode !== 'derived' && mode !== 'skip') {
-      errors.push(
-        `${id}: sources.json "mode" must be "write", "derived", or "skip".`,
-      );
-      continue;
-    }
-    if (!url) {
-      errors.push(`${id}: sources.json needs a "url".`);
-      continue;
-    }
-    if (mode === 'skip') {
-      if (!reason) {
-        errors.push(
-          `${id}: a skip entry needs a "reason", so the endpoint is not silently ignored.`,
-        );
-        continue;
-      }
-      warnings.push(`skip ${id} ${method || 'GET'} ${url}: ${reason}`);
-      continue;
-    }
-    if (mode === 'derived') {
-      if (!source.follows) {
-        errors.push(`${id}: a derived entry needs "follows".`);
-      }
-      continue;
-    }
-    if (method.toUpperCase() !== 'GET') {
-      errors.push(
-        `${id}: ${method || 'non-GET'} cannot be synced. Set "mode" to "skip" and add a "reason".`,
-      );
-      continue;
-    }
-    rows.push({
-      id,
-      url,
-      mode: `write:${API_RESPONSES_DIR_NAME}/${id}.json`,
-      mapPaths: source.map ?? [],
-    });
-  }
-  return { errors, warnings, rows };
-}
-
-/** Catalog rows with their raw line, for comparing against a base revision. */
-export function parseCatalogRows(
-  text: string,
-): (SyncRow & { entry: string })[] {
-  return text
-    .split('\n')
-    .filter((line) => /^\| [a-z0-9]/u.test(line))
-    .map((line) => {
-      const [id, , url, , syncCell] = line
-        .slice(1, -1)
-        .split(/(?<!\\)\|/u)
-        .map((cell) => cell.trim().replace(/^`|`$/gu, ''));
-      return { id, url, ...parseSyncCell(syncCell), entry: line };
-    })
-    .filter(({ mode }) => mode.startsWith('write:'));
-}
-
-/**
- * Skip warnings for catalog rows. `sources.json` skips are warned during
- * discovery; catalog skips used to be dropped, so the job summary never
- * showed them.
- *
- * @param text - `api-mock-catalog.md`.
- * @returns One `skip <id> <method> <url>: <reason>` line per skip row.
- */
-export function catalogSkipWarnings(text: string): string[] {
-  return text
-    .split('\n')
-    .filter((line) => /^\| [a-z0-9]/u.test(line))
-    .flatMap((line) => {
-      const [id, method, url, , syncCell, reason = ''] = line
-        .slice(1, -1)
-        .split(/(?<!\\)\|/u)
-        .map((cell) => cell.trim().replace(/^`|`$/gu, ''));
-      if (syncCell !== 'skip') {
-        return [];
-      }
-      return [
-        `skip ${id} ${method || 'GET'} ${url}: ${reason || 'catalog skip'}`,
-      ];
-    });
 }
 
 /**
@@ -819,7 +700,7 @@ const MOCK_DATA_DIR = 'test/e2e/mock-response-data';
 
 /**
  * Git path of a fixture. `path.posix.normalize` collapses `..`, which `git
- * show` rejects (exit 128). The PPOM row is `../mock-cdn/ppom-version.json`.
+ * show` rejects (exit 128).
  *
  * @param relativePath - Path under `mock-response-data/`, possibly with `..`.
  * @returns Path from the repository root.
@@ -855,23 +736,17 @@ export function readFixtureAtRef(
 }
 
 /**
- * The value a row writes, from a fixture file's text.
+ * A fixture's value, from its file text.
  *
  * @param text - Fixture file text, or `undefined`.
- * @param mode - `write:<file>` or `write:<file>#<key>`.
- * @returns The row's value, or `undefined`.
+ * @returns The value, or `undefined` when the file is missing or invalid.
  */
-function rowValue(text: string | undefined, mode: string): Json | undefined {
+function fixtureValue(text: string | undefined): Json | undefined {
   if (text === undefined) {
     return undefined;
   }
-  const key = mode.slice('write:'.length).split('#')[1];
   try {
-    const parsed = JSON.parse(text) as Json;
-    if (key === undefined) {
-      return parsed;
-    }
-    return isObject(parsed) ? parsed[key] : undefined;
+    return JSON.parse(text) as Json;
   } catch {
     return undefined;
   }
@@ -884,32 +759,23 @@ function argValue(name: string): string | undefined {
 
 async function main(): Promise<number> {
   const responsesDir = path.join(__dirname, API_RESPONSES_DIR_NAME);
-  const discovered = discoverApiResponses(responsesDir);
-  if (discovered.errors.length > 0) {
-    for (const error of discovered.errors) {
+  const fixtureIds = readdirSync(responsesDir)
+    .filter((name) => name.endsWith('.json'))
+    .map((name) => name.slice(0, -'.json'.length));
+  const plan = planSyncRows(
+    Object.entries(API_ENDPOINTS) as [string, SyncEndpoint][],
+    fixtureIds,
+  );
+  if (plan.errors.length > 0) {
+    for (const error of plan.errors) {
       console.error(error);
     }
     return 3;
   }
-  for (const warning of discovered.warnings) {
+  for (const warning of plan.warnings) {
     console.warn(warning);
   }
-
-  const catalogText = readFileSync(
-    path.join(__dirname, 'api-mock-catalog.md'),
-    'utf8',
-  );
-  for (const warning of catalogSkipWarnings(catalogText)) {
-    console.warn(warning);
-  }
-  const catalogRows = parseCatalogRows(catalogText);
-  const { sources } = readApiResponseSources(responsesDir);
-  const rows: (SyncRow & { entry: string })[] = catalogRows.concat(
-    discovered.rows.map((row) => ({
-      ...row,
-      entry: JSON.stringify(sources[row.id] ?? {}),
-    })),
-  );
+  const { rows } = plan;
 
   // With a base revision, every drifted row is still written, so a pull
   // request can apply all of it, but only rows that pull request changed
@@ -917,34 +783,20 @@ async function main(): Promise<number> {
   const changedSince = argValue('--changed-since');
   let isBlocking = (_row: SyncRow & { entry: string }) => true;
   if (changedSince) {
-    const baseCatalog = readFixtureAtRef(changedSince, 'api-mock-catalog.md');
-    const baseEntries = new Map(
-      parseCatalogRows(baseCatalog ?? '').map((row) => [row.id, row.entry]),
-    );
-    const baseSourcesText = readFixtureAtRef(
+    const baseIndex = readFixtureAtRef(
       changedSince,
-      `${API_RESPONSES_DIR_NAME}/${API_RESPONSE_SOURCES_FILE}`,
+      `${API_RESPONSES_DIR_NAME}/index.ts`,
     );
-    const baseSources = (
-      baseSourcesText ? JSON.parse(baseSourcesText) : {}
-    ) as Record<string, unknown>;
-    for (const row of discovered.rows) {
-      if (row.id in baseSources) {
-        baseEntries.set(row.id, JSON.stringify(baseSources[row.id]));
-      }
-    }
-    isBlocking = (row) => {
-      const file = row.mode.slice('write:'.length).split('#')[0];
-      return isRowChanged({
-        baseEntry: baseEntries.get(row.id),
+    const endpoints = API_ENDPOINTS as Record<string, SyncEndpoint>;
+    isBlocking = (row) =>
+      isRowChanged({
+        baseEntry: baseSyncEntry(baseIndex, endpoints[row.id]),
         headEntry: row.entry,
-        baseValue: rowValue(readFixtureAtRef(changedSince, file), row.mode),
-        headValue: rowValue(
-          readFileSync(path.join(__dirname, file), 'utf8'),
-          row.mode,
+        baseValue: fixtureValue(readFixtureAtRef(changedSince, row.file)),
+        headValue: fixtureValue(
+          readFileSync(path.join(__dirname, row.file), 'utf8'),
         ) as Json,
       });
-    };
   }
 
   const fetchable = rows.filter((row) => {
@@ -978,7 +830,7 @@ async function main(): Promise<number> {
     },
   );
 
-  // Rows are applied one at a time, in catalog order: several share a file.
+  // Rows are applied one at a time, in registry order.
   let changed = false;
   let changedOther = false;
   let failed = false;

@@ -8,11 +8,6 @@ const {
 } = require('../../shared/constants/accounts');
 const { REWARDS_API_URL } = require('../../shared/constants/rewards');
 const {
-  GAS_API_BASE_URL,
-  SWAPS_API_V2_BASE_URL,
-  TOKEN_API_BASE_URL,
-} = require('../../shared/constants/swaps');
-const {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   DEFAULT_BTC_CONVERSION_RATE,
   LOCAL_NODE_ACCOUNT,
@@ -35,38 +30,24 @@ const {
   setupSnapRegistryMocks,
 } = require('./mock-response-data/snaps/snap-registry-mocks');
 const {
-  API_MOCKS,
-  SPOT_PRICE_FALLBACK,
-  contentfulServedAssets,
-  withPins,
-} = require('./mock-response-data/api-mocks');
-const {
   API_ENDPOINTS,
   accountsBalancesV5,
-  fourByteSignatures,
+  placeholderOf,
   priceV3Spot,
-  tokenList,
   tokensV3Assets,
-  txSentinelNetwork,
 } = require('./mock-response-data/api-responses');
 
 const DEFAULT_ETH_USD_PRICE = 3010;
-const SPOT_PRICES = API_MOCKS['price-v3-spot'];
+const SPOT_PRICES = priceV3Spot.body;
+// A spot price for any other asset: the fixture entry's fields, no values.
+const SPOT_PRICE_FALLBACK = placeholderOf(SPOT_PRICES['eip155:1/slip44:60']);
 
 const ACCOUNTS_API_TOKENS_PATH =
   'test/e2e/mock-response-data/accounts-api-tokens.json';
-const AGGREGATOR_METADATA_PATH =
-  'test/e2e/mock-response-data/aggregator-metadata.json';
-const CHAIN_ID_NETWORKS_PATH =
-  'test/e2e/mock-response-data/chain-id-network-chains.json';
-const CLIENT_SIDE_DETECTION_BLOCKLIST_PATH =
-  'test/e2e/mock-response-data/client-side-detection-blocklist.json';
-const ON_RAMP_CONTENT_PATH = 'test/e2e/mock-response-data/on-ramp-content.json';
 const TEST_DAPP_STYLES_1_PATH =
   'test/e2e/mock-response-data/test-dapp-styles-1.txt';
 const TEST_DAPP_STYLES_2_PATH =
   'test/e2e/mock-response-data/test-dapp-styles-2.txt';
-const TOKEN_BLOCKLIST_PATH = 'test/e2e/mock-response-data/token-blocklist.json';
 
 const snapsExecutionEnvBasePath = path.dirname(
   require.resolve('@metamask/snaps-execution-environments/package.json'),
@@ -604,10 +585,7 @@ function getWellKnownTokenAssetMetadata(assetIds) {
     }
   }
 
-  return results.map((token) => ({
-    ...API_MOCKS['token-assets'][0],
-    ...token,
-  }));
+  return results;
 }
 
 /**
@@ -808,32 +786,6 @@ async function setupMocking(
       };
     });
 
-  // Config registry: networks config (ConfigRegistryController polling) and
-  // events config (AnalyticsController event-purpose classification, added in
-  // config-registry-controller 5.0.0). Without these mocks the unmocked-host
-  // catch-all returns a bare 200 with an empty body, which fails JSON parsing
-  // and retries 4x per poll before surfacing as a Sentry capture.
-  await server
-    .forGet('https://client-config.api.cx.metamask.io/v1/config/networks')
-    .asPriority(RulePriority.FALLBACK)
-    .thenCallback(() => ({
-      ok: true,
-      statusCode: 200,
-      json: API_MOCKS['client-config-networks'],
-    }));
-  await server
-    .forGet('https://client-config.api.cx.metamask.io/v1/config/events-config')
-    .asPriority(RulePriority.FALLBACK)
-    .thenCallback(() => ({
-      ok: true,
-      statusCode: 200,
-      // An empty map, so every event keeps its default purpose. The synced
-      // fixture lists live event names with placeholder purposes.
-      json: {
-        data: { ...API_MOCKS['client-config-events'].data, events: {} },
-      },
-    }));
-
   // Subscriptions Polling Get Subscriptions
   await server
     .forGet('https://subscription.api.cx.metamask.io/v1/subscriptions')
@@ -898,16 +850,6 @@ async function setupMocking(
           created_at: '2025-07-16T10:03:57Z',
           profile_id: '0deaba86-4b9d-4137-87d7-18bc5bf7708d',
         },
-      };
-    });
-
-  // Chomp API service
-  await server
-    .forGet('https://chomp.api.cx.metamask.io/v1/chomp')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: API_MOCKS.chomp,
       };
     });
 
@@ -1028,90 +970,12 @@ async function setupMocking(
     };
   });
 
-  // The default body predates the 4byte-signatures fixture and differs from it.
-  await fourByteSignatures.rule(server).thenCallback(() => {
-    return {
-      statusCode: 200,
-      json: {
-        count: 1,
-        next: null,
-        previous: null,
-        results: [
-          {
-            id: 1,
-            created_at: null,
-            text_signature: 'deposit()',
-            hex_signature: null,
-            bytes_signature: null,
-          },
-        ],
-      },
-    };
-  });
-
-  // Endpoints whose default response is their fixture body.
+  // Endpoint defaults, from each definition's `defaultMock`, in registry order.
+  // STX v26 routes to per-network tx-sentinel hosts, so the tx-sentinel
+  // defaults cover every sentinel subdomain.
   for (const endpoint of Object.values(API_ENDPOINTS)) {
     await endpoint.mockDefault(server, { chainId });
   }
-
-  await server
-    .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/token`)
-    .withQuery({ address: '0x72c9Fb7ED19D3ce51cea5C56B3e023cd918baaDf' })
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          ...API_MOCKS['swaps-token'],
-          symbol: 'AGLT',
-          type: 'erc20',
-          decimals: '18',
-          address: '0x72c9fb7ed19d3ce51cea5c56b3e023cd918baadf',
-        },
-      };
-    });
-
-  await server
-    .forGet(`${GAS_API_BASE_URL}/networks/${chainId}/suggestedGasFees`)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: withPins(
-          API_MOCKS['suggested-gas-fees'],
-          MOCK_SUGGESTED_GAS_FEES,
-        ),
-      };
-    });
-
-  // STX v26 always routes to per-network tx-sentinel hosts. Default mocks cover
-  // all sentinel subdomains so startup/liveness/polling does not hang in E2E.
-  const txSentinelNetworksRegistry = {
-    1: {
-      name: 'Mainnet',
-      group: 'ethereum',
-      chainID: 1,
-      nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-      network: 'ethereum-mainnet',
-      explorer: 'https://etherscan.io',
-      confirmations: true,
-      smartTransactions: true,
-      hidden: false,
-    },
-  };
-  await server
-    .forGet(/https:\/\/tx-sentinel-[\w-]+\.api\.cx\.metamask\.io\/networks$/u)
-    .thenJson(200, txSentinelNetworksRegistry);
-  await txSentinelNetwork
-    .rule(server)
-    .thenJson(200, txSentinelNetworksRegistry[1]);
-
-  await server
-    .forGet(`${SWAPS_API_V2_BASE_URL}/featureFlags`)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: API_MOCKS['swaps-feature-flags'],
-      };
-    });
 
   // Surveys
   await server
@@ -1128,182 +992,6 @@ async function setupMocking(
           userId: '0x123',
           surveys: {},
         },
-      };
-    });
-
-  await tokenList.rule(server, { chainId }).thenCallback(() => {
-    return {
-      statusCode: 200,
-      json: [
-        {
-          address: '0x0d8775f648430679a709e98d2b0cb6250d2887ef',
-          symbol: 'BAT',
-          decimals: 18,
-          name: 'Basic Attention Token',
-          iconUrl:
-            'https://assets.coingecko.com/coins/images/677/thumb/basic-attention-token.png?1547034427',
-          aggregators: [
-            'aave',
-            'bancor',
-            'coinGecko',
-            'oneInch',
-            'paraswap',
-            'pmm',
-            'zapper',
-            'zerion',
-            'zeroEx',
-          ],
-          occurrences: 9,
-        },
-        {
-          address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-          symbol: 'DAI',
-          decimals: 18,
-          name: 'Dai Stablecoin',
-          iconUrl:
-            'https://raw.githubusercontent.com/MetaMask/contract-metadata/master/images/dai.svg',
-          type: 'erc20',
-          aggregators: [
-            'metamask',
-            'aave',
-            'bancor',
-            'cmc',
-            'cryptocom',
-            'coinGecko',
-            'oneInch',
-            'pmm',
-            'sushiswap',
-            'zerion',
-            'lifi',
-            'socket',
-            'squid',
-            'openswap',
-            'sonarwatch',
-            'uniswapLabs',
-            'coinmarketcap',
-          ],
-          occurrences: 17,
-          erc20Permit: true,
-          fees: { '0xb0da5965d43369968574d399dbe6374683773a65': 0 },
-          storage: { balance: 2 },
-        },
-      ],
-    };
-  });
-
-  // Token API: per-chain suggested occurrence floors — mocked globally so token
-  // list / spam-filter fetches do not hit the live endpoint in E2E.
-  await server
-    .forGet('https://token.api.cx.metamask.io/v1/suggestedOccurrenceFloors')
-    .always()
-    .thenJson(200, API_MOCKS['token-occurrence-floors']);
-
-  const TOKEN_BLOCKLIST = fs.readFileSync(TOKEN_BLOCKLIST_PATH);
-  await server
-    .forGet(`${TOKEN_API_BASE_URL}/blocklist`)
-    .withQuery({ chainId: '1', region: 'global' })
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: JSON.parse(TOKEN_BLOCKLIST),
-      };
-    });
-
-  const AGGREGATOR_METADATA = fs.readFileSync(AGGREGATOR_METADATA_PATH);
-  await server
-    .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/aggregatorMetadata`)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: JSON.parse(AGGREGATOR_METADATA),
-      };
-    });
-
-  // Bridge API mocks - must be after AGGREGATOR_METADATA is defined
-  // Network 1 (Mainnet)
-  await server
-    .forGet(`https://bridge.api.cx.metamask.io/networks/1/topAssets`)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: API_MOCKS['bridge-top-assets'],
-      };
-    });
-
-  await server
-    .forGet('https://bridge.api.cx.metamask.io/networks/1/aggregatorMetadata')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: JSON.parse(AGGREGATOR_METADATA),
-      };
-    });
-
-  await server
-    .forGet('https://bridge.api.cx.metamask.io/networks/1/tokens')
-    .withQuery({ includeBlockedTokens: 'true' })
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: API_MOCKS['bridge-tokens'],
-      };
-    });
-
-  // Network 59144 (Linea)
-  await server
-    .forGet('https://bridge.api.cx.metamask.io/networks/59144/topAssets')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: API_MOCKS['bridge-top-assets-linea'],
-      };
-    });
-
-  await server
-    .forGet(
-      'https://bridge.api.cx.metamask.io/networks/59144/aggregatorMetadata',
-    )
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: API_MOCKS['bridge-aggregator-metadata-linea'],
-      };
-    });
-
-  await server
-    .forGet('https://bridge.api.cx.metamask.io/networks/59144/tokens')
-    .withQuery({ includeBlockedTokens: 'true' })
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: API_MOCKS['bridge-tokens-linea'],
-      };
-    });
-
-  await server
-    .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/tokens`)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: API_MOCKS['swaps-tokens'],
-      };
-    });
-
-  await server
-    .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/topAssets`)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: API_MOCKS['swaps-top-assets'],
-      };
-    });
-
-  await server
-    .forGet(`https://token.api.cx.metamask.io/token/${chainId}`)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: API_MOCKS['token-metadata'],
       };
     });
 
@@ -1442,19 +1130,6 @@ async function setupMocking(
       };
     });
 
-  // The price API client only caches this response when it contains both
-  // `fullSupport` and `partialSupport`; anything else (such as the empty-200
-  // catch-all this used to land on) makes it silently fall back to its
-  // hardcoded list without caching, so every later price fetch re-requests the
-  // endpoint. The fixture lists are that same hardcoded fallback
-  // (`SPOT_PRICES_SUPPORT_INFO` in @metamask/assets-controllers), so supported
-  // chains are unchanged and only the repeated requests go away.
-  await server
-    .forGet('https://price.api.cx.metamask.io/v2/supportedNetworks')
-    .asPriority(RulePriority.FALLBACK)
-    .always()
-    .thenJson(200, API_MOCKS['price-supported-networks']);
-
   // Native SOL + BTC v3 spot (multichain portfolio / assets unify). Without these,
   // Tron-only or default E2E flows still request these URLs but only ETH was mocked above.
   await priceV3Spot
@@ -1490,18 +1165,6 @@ async function setupMocking(
           id: 'bitcoin',
           price: DEFAULT_BTC_CONVERSION_RATE,
         },
-      },
-    }));
-
-  await server
-    .forGet('https://price.api.cx.metamask.io/v1/spot-prices/bitcoin')
-    .withQuery({ vsCurrency: 'usd' })
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        ...API_MOCKS['price-v1-btc'],
-        id: 'bitcoin',
-        price: DEFAULT_BTC_CONVERSION_RATE,
       },
     }));
 
@@ -1554,38 +1217,6 @@ async function setupMocking(
     };
   });
 
-  // On Ramp Content
-  const ON_RAMP_CONTENT = fs.readFileSync(ON_RAMP_CONTENT_PATH);
-  await server
-    .forGet('https://on-ramp-content.api.cx.metamask.io/regions/networks')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: JSON.parse(ON_RAMP_CONTENT),
-      };
-    });
-
-  // Chains Metadata
-  const CHAIN_ID_NETWORKS = fs.readFileSync(CHAIN_ID_NETWORKS_PATH);
-  await server
-    .forGet('https://chainid.network/chains.json')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: JSON.parse(CHAIN_ID_NETWORKS),
-      };
-    });
-
-  // Accounts API: supported networks
-  await server
-    .forGet('https://accounts.api.cx.metamask.io/v1/supportedNetworks')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: API_MOCKS['accounts-supported-networks-v1'],
-      };
-    });
-
   // Tokens API v3 assets: default handler for token metadata lookups used by
   // useTokensData (via useDisplayName). Returns well-known tokens by asset ID;
   // all other requests get an empty array. Tests can override via testSpecificMock.
@@ -1616,19 +1247,6 @@ async function setupMocking(
       };
     });
 
-  // v2 supported networks — mocked globally so all tests work.
-  // Rpc token detection calls token.api; TokenDataSource calls tokens.api.
-  // Both responses use the same chain list.
-  await server
-    .forGet('https://token.api.cx.metamask.io/v2/supportedNetworks')
-    .always()
-    .thenJson(200, API_MOCKS['token-supported-networks']);
-
-  await server
-    .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
-    .always()
-    .thenJson(200, API_MOCKS['tokens-supported-networks']);
-
   // MoneyAccountApiDataService.fetchVaults (useMoneyVaultApy): a valid catalog
   // stops TanStack Query retrying against the catch-all.
   await server
@@ -1656,21 +1274,6 @@ async function setupMocking(
         ],
       },
     }));
-
-  // Money API: positions for a Money account, fetched as the API leg of
-  // MoneyAccountBalanceService:fetchBalanceWithFallback. A zero balance
-  // satisfies the service's balance invariant (musd + vmusd === total).
-  await server
-    .forGet(/^https:\/\/money\.api\.cx\.metamask\.io\/v1\/positions\/[^/]+$/u)
-    .always()
-    .thenCallback((req) => {
-      const url = new URL(req.url);
-      const address = url.pathname.split('/').pop();
-      return {
-        statusCode: 200,
-        json: { ...API_MOCKS['money-positions'], address },
-      };
-    });
 
   // Accounts API: v5/v6 multi-account balances (used by AccountsApiDataSource
   // when assetsUnifyState is enabled). Default: 25 ETH native per requested
@@ -1724,41 +1327,6 @@ async function setupMocking(
       };
     });
 
-  // Accounts API: transactions
-  await server
-    .forGet('https://accounts.api.cx.metamask.io/v5/multiaccount/transactions')
-    .always()
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          ...API_MOCKS['accounts-transactions'],
-          data: [],
-          unprocessedAccounts: [],
-          pageInfo: {
-            ...API_MOCKS['accounts-transactions'].pageInfo,
-            hasNextPage: false,
-            count: 0,
-          },
-        },
-      };
-    });
-
-  // Client Side Detection: Request Blocklist
-  const CLIENT_SIDE_DETECTION_BLOCKLIST = fs.readFileSync(
-    CLIENT_SIDE_DETECTION_BLOCKLIST_PATH,
-  );
-  await server
-    .forGet(
-      'https://client-side-detection.api.cx.metamask.io/v1/request-blocklist',
-    )
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: JSON.parse(CLIENT_SIDE_DETECTION_BLOCKLIST),
-      };
-    });
-
   // Nft API: tokens
   // Matches any address, not just the default fixture account.
   // Has fallback priority like the other broad defaults so
@@ -1807,44 +1375,6 @@ async function setupMocking(
         },
       };
     });
-  }
-
-  // Geolocation API v2 (GeolocationController -> GeolocationApiService).
-  // Mirrors the legacy on-ramp mock above (US-TX) but in the v2 JSON shape.
-  for (const host of [
-    'geolocation.api.cx.metamask.io',
-    'geolocation.dev-api.cx.metamask.io',
-  ]) {
-    await server.forGet(`https://${host}/v2/geolocation`).thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          ...API_MOCKS['geolocation-v2'],
-          country: 'US',
-          region: 'TX',
-          timezone: 'America/Chicago',
-        },
-      };
-    });
-  }
-
-  // On Ramp: Countries list (RampsController.init on startup)
-  for (const host of [
-    'on-ramp-cache.api.cx.metamask.io',
-    'on-ramp-cache.uat-api.cx.metamask.io',
-    'on-ramp.dev-api.cx.metamask.io',
-  ]) {
-    await server
-      .forGet(`https://${host}/v2/regions/countries`)
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          // The fixture keeps one placeholder country so its type is checked.
-          json: API_MOCKS['ramps-countries'].filter(
-            (country) => country.isoCode,
-          ),
-        };
-      });
   }
 
   // Snaps: Execution environment html
@@ -2264,28 +1794,6 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-      };
-    });
-
-  // Dynamic Banner Content
-  await server
-    .forGet(/^https:\/\/(cdn|preview)\.contentful\.com\/.*$/u)
-    .withQuery({
-      content_type: 'promotionalBanner',
-    })
-    .thenCallback(() => {
-      // The fixture keeps one placeholder banner and asset so their types are
-      // checked. No banner is shown.
-      return {
-        statusCode: 200,
-        json: {
-          ...API_MOCKS.contentful,
-          items: API_MOCKS.contentful.items.filter((item) => item.sys.id),
-          includes: {
-            ...API_MOCKS.contentful.includes,
-            Asset: contentfulServedAssets(API_MOCKS.contentful),
-          },
-        },
       };
     });
 

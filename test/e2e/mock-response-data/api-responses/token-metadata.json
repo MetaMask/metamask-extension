@@ -1,0 +1,20 @@
+{
+  "address": "",
+  "aggregators": [""],
+  "decimals": 0,
+  "erc20Permit": false,
+  "fees": {
+    "minFee": 0,
+    "avgFee": 0,
+    "maxFee": 0
+  },
+  "iconUrl": "",
+  "name": "",
+  "occurrences": 0,
+  "storage": {
+    "balance": 0,
+    "approval": 0
+  },
+  "symbol": "",
+  "type": ""
+}

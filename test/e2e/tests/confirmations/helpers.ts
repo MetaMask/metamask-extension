@@ -15,11 +15,11 @@ import {
   shapeV6AccountsApiBalances,
 } from '../../helpers/accounts-api-v6-balances';
 import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
-import type { DefiPositionsResponse } from '../../mock-response-data/api-mocks';
 import {
   fourByteSignatures,
   priceV3Spot,
   signatureInsightsSignature,
+  type DefiPositionsResponse,
 } from '../../mock-response-data/api-responses';
 
 export const DECODING_E2E_API_URL =

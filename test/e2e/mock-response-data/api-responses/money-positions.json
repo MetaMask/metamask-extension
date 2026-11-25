@@ -1,0 +1,16 @@
+{
+  "address": "",
+  "as_of_block": 1,
+  "as_of_timestamp": "2026-01-01T00:00:00Z",
+  "balance": {
+    "musd_balance": "0",
+    "vmusd_value_in_musd": "0",
+    "total_balance": "0",
+    "musd_balance_updated_at": "",
+    "by_asset": [],
+    "total_balance_usd": "0"
+  },
+  "data_freshness": "live",
+  "indexer_lag_seconds": 0,
+  "positions": []
+}
