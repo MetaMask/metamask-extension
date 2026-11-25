@@ -1,7 +1,4 @@
-import {
-  AllProperties,
-  type ObjectMask,
-} from '../../../shared/lib/object.utils';
+import { type ObjectMask } from '../../../shared/lib/object.utils';
 
 /**
  * Sentry “state” here means **masks** passed to `maskObject` (see
