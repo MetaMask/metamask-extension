@@ -9840,7 +9840,7 @@
     "message": "A token here reuses a symbol from another token you watch, this can be confusing or deceptive."
   },
   "revealMultichainPrivateKeysBannerDescription": {
-    "message": "This key grants full control of your account for the associated chain. $1",
+    "message": "This key grants full control of your account for the associated chain. No app or website needs your Private Key to sign you in. $1",
     "description": "Description for the banner warning users not to share their private key"
   },
   "revealMultichainPrivateKeysBannerTitle": {
@@ -9867,7 +9867,7 @@
     "message": "Text"
   },
   "revealSeedWordsWarning": {
-    "message": "Make sure nobody is looking at your screen. MetaMask Support will never ask for this."
+    "message": "Make sure nobody is looking at your screen. MetaMask Support will never ask for this. No app or website needs your Secret Recovery Phrase to sign you in."
   },
   "revealSensitiveContent": {
     "message": "Reveal sensitive content"
