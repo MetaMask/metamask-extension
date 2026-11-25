@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import {
   DEFAULT_CONFIG,
   classify,

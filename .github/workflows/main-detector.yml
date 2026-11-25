@@ -491,6 +491,8 @@ jobs:
           sparse-checkout: |
             .github
             .nvmrc
+            test/e2e/benchmarks/utils/admitted-series.ts
+            test/e2e/benchmarks/utils/paired-decision.ts
           sparse-checkout-cone-mode: false
 
       - name: Setup Node.js
@@ -656,6 +658,8 @@ jobs:
           sparse-checkout: |
             .github
             .nvmrc
+            test/e2e/benchmarks/utils/admitted-series.ts
+            test/e2e/benchmarks/utils/paired-decision.ts
           sparse-checkout-cone-mode: false
 
       - name: Setup Node.js

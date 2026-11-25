@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 // origin: ai-synthesis
 import fs from 'node:fs';
 import os from 'node:os';
