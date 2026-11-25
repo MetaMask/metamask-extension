@@ -39,12 +39,12 @@ const HyperliquidConnectionBar = () => {
   }, []);
 
   return (
-    <Box className="pointer-events-none overflow-hidden pt-6">
+    <Box className="pointer-events-none -mt-6 overflow-hidden pt-6">
       <Box
         flexDirection={BoxFlexDirection.Column}
         padding={3}
         paddingLeft={4}
-        className="pointer-events-auto w-full rounded-t-3xl bg-default shadow-[0_-8px_16px_-6px_var(--color-shadow-default)] [[data-theme=dark]_&]:bg-[var(--color-background-elevated1)] [animation:slide-up-from-below_800ms_cubic-bezier(0.22,1,0.36,1)_backwards] motion-reduce:[animation:none]"
+        className="pointer-events-auto relative isolate w-full rounded-t-3xl bg-default [[data-theme=dark]_&]:bg-[var(--color-background-elevated1)] before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:rounded-t-3xl before:shadow-[0_-8px_16px_-6px_var(--color-shadow-default)] before:[animation:bar-shadow-fade-in_500ms_ease-out_backwards] [animation:slide-up-from-below_550ms_cubic-bezier(0.22,1,0.36,1)_backwards] motion-reduce:[animation:none] motion-reduce:before:[animation:none]"
         data-testid="hyperliquid-connection-bar"
       >
         <Box
@@ -80,11 +80,11 @@ const HyperliquidConnectionBar = () => {
         </Box>
         <Box
           id={contentId}
-          className="invisible grid grid-rows-[0fr] opacity-0 transition-[grid-template-rows,opacity,visibility] duration-[240ms] ease-[cubic-bezier(0.22,1,0.36,1)] data-[expanded=true]:visible data-[expanded=true]:grid-rows-[1fr] data-[expanded=true]:opacity-100 motion-reduce:transition-none"
+          className="invisible grid grid-rows-[0fr] opacity-0 transition-[grid-template-rows,opacity,visibility] duration-[240ms] ease-[cubic-bezier(0.22,1,0.36,1)] data-[expanded=true]:visible data-[expanded=true]:grid-rows-[1fr] data-[expanded=true]:opacity-100 motion-reduce:transition-[opacity,visibility]"
           data-expanded={isExpanded}
           data-testid="hyperliquid-connection-bar-content"
         >
-          <Box className="min-h-0 overflow-hidden">
+          <Box className="min-h-0 [overflow-clip-margin:4px] [overflow:clip]">
             <Box paddingTop={2}>
               <PerpsMarketBalanceActions
                 variant="compact"

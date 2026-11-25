@@ -53,14 +53,10 @@ module.exports = {
           to: { translate: '0 0' },
         },
         '@keyframes slide-up-from-below': {
-          from: {
-            transform: 'translateY(100%)',
-            boxShadow: '0 -8px 16px -6px transparent',
-          },
-          to: {
-            transform: 'translateY(0)',
-            boxShadow: '0 -8px 16px -6px var(--color-shadow-default)',
-          },
+          from: { transform: 'translateY(100%)' },
+        },
+        '@keyframes bar-shadow-fade-in': {
+          from: { opacity: '0' },
         },
       });
     }),
