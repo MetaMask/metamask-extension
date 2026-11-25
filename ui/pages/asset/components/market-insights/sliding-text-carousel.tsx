@@ -8,12 +8,12 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 /** Duration of the slide transition between texts in ms. */
-export const SLIDE_DURATION_MS = 350;
+const SLIDE_DURATION_MS = 350;
 
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
 
 /** Interval between text rotations in ms. */
-export const ROTATE_INTERVAL_MS = 5000;
+const ROTATE_INTERVAL_MS = 5000;
 
 export type SlidingTextCarouselProps = {
   /** List of text strings to cycle through. */
@@ -24,10 +24,6 @@ export type SlidingTextCarouselProps = {
   onSlideComplete?: () => void;
   /** Optional test id applied to the container. */
   testId?: string;
-};
-
-type CarouselInnerProps = Omit<SlidingTextCarouselProps, 'texts'> & {
-  texts: string[];
 };
 
 /**
@@ -46,7 +42,7 @@ const CarouselInner = ({
   onSlideStart,
   onSlideComplete,
   testId,
-}: CarouselInnerProps) => {
+}: SlidingTextCarouselProps) => {
   const t = useI18nContext();
   const [isPaused, setIsPaused] = useState(false);
   const [slotAText, setSlotAText] = useState(texts[0] ?? '');
