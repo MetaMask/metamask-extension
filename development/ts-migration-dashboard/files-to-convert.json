@@ -259,8 +259,6 @@
   "ui/components/app/modals/customize-nonce/index.js",
   "ui/components/app/modals/fade-modal.js",
   "ui/components/app/modals/hide-token-confirmation-modal/hide-token-confirmation-modal.test.js",
-  "ui/components/app/modals/hide-token-confirmation-modal/hide-token-confirmation.stories.js",
-  "ui/components/app/modals/hide-token-confirmation-modal/index.js",
   "ui/components/app/modals/index.js",
   "ui/components/app/modals/modal.js",
   "ui/components/app/modals/new-account-modal/index.js",
