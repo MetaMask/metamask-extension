@@ -2,7 +2,8 @@
  * Usage: node .github/scripts/main-detector/heartbeat-cli.mts [--window-hours 24] [--settle-hours 3]
  * Checks that every Main run that finished in the window got a detector run,
  * and posts to Slack only when something is wrong. With no
- * SLACK_WEBHOOK_URL set it prints the message instead.
+ * SLACK_BOT_TOKEN set it prints the message instead; SLACK_CHANNEL names the
+ * channel to post to.
  * Needs no npm dependencies, so the workflow runs it without an install.
  */
 import { appendFileSync } from 'node:fs';
@@ -14,7 +15,7 @@ import {
   latestSlot,
   type RunInfo,
 } from './heartbeat.mts';
-import { postOrPrint, requireWebhookInCi } from './post-webhook.mts';
+import { postOrPrint, requireSlackInCi } from './post-slack.mts';
 
 const REPOSITORY =
   process.env.GITHUB_REPOSITORY ?? 'MetaMask/metamask-extension';
@@ -52,7 +53,7 @@ async function main(): Promise<void> {
       'settle-hours': { type: 'string', default: '3' },
     },
   });
-  requireWebhookInCi();
+  requireSlackInCi();
   const settleHours = Number(values['settle-hours']);
   const windowHours = Number(values['window-hours']);
   if (!(settleHours >= 0) || !(windowHours > 0)) {

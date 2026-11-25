@@ -7,11 +7,7 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { parseArgs } from 'node:util';
-import {
-  getInjectionSnippet,
-  getLastHomeScript,
-  preparePairBuilds,
-} from './utils/ab-pilot-builds.ts';
+import { preparePairBuilds } from './utils/ab-pilot-builds.ts';
 
 async function main(): Promise<void> {
   const { values } = parseArgs({
@@ -41,13 +37,12 @@ async function main(): Promise<void> {
     throw new Error('--inject-head-ms must be a non-negative number');
   }
 
-  const summary = preparePairBuilds({ browser, baseSource, headSource });
-  if (injectMs !== undefined) {
-    const directory = summary.directories.B;
-    const target = path.join(directory, getLastHomeScript(directory));
-    const original = await fs.readFile(target, 'utf8');
-    await fs.writeFile(target, getInjectionSnippet(injectMs) + original);
-  }
+  const summary = preparePairBuilds({
+    browser,
+    baseSource,
+    headSource,
+    injectHeadMs: injectMs,
+  });
   console.log(JSON.stringify(summary, null, 2));
 
   if (out) {

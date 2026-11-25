@@ -56,9 +56,13 @@ what it should, so check that first. A breakdown metric that moves by more than
 
 ## Operating it
 
-- Secret: `SLACK_WEBHOOK_MAIN_DETECTOR` (an incoming webhook for the channel), mapped to the `SLACK_WEBHOOK_URL` env var the scripts read.
-  Without it, `slack-cli.mts` prints the message instead of posting it, except
-  on `workflow_run` and `schedule` runs, where it fails.
+- Slack: posted with the bot token (`chat.postMessage`, as in
+  `slack-rc-notification.mts`). The workflows pass the repository secret
+  `SLACK_BOT_TOKEN` as `SLACK_BOT_TOKEN` and the repository variable
+  `SLACK_MAIN_DETECTOR_CHANNEL` (for example `#my-channel`) as `SLACK_CHANNEL`.
+  The bot must be a member of the channel. Without a token, `slack-cli.mts`
+  prints the message instead of posting it, except on `workflow_run` and
+  `schedule` runs, where a missing token or channel fails the run.
 - A dispatch without `head_sha` measures the tip of `main` and is titled
   `latest-main`; neither the heartbeat nor the re-run check counts it.
 - Manual runs: `workflow_dispatch` with `head_sha`, `mode=aa` for a canary, and

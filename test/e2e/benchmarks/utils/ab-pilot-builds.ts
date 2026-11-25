@@ -151,17 +151,20 @@ export type PairBuildsSummary = {
  * @param options.baseSource - Unpacked base build, copied to the A directory.
  * @param options.headSource - Unpacked head build, copied to the B directory.
  * @param options.baseDirectory - Working directory the output paths are under.
+ * @param options.injectHeadMs - Busy-wait to add to the head build before it is hashed, so the summary shows it.
  */
 export function preparePairBuilds({
   browser,
   baseSource,
   headSource,
   baseDirectory = process.cwd(),
+  injectHeadMs,
 }: {
   browser: string;
   baseSource: string;
   headSource: string;
   baseDirectory?: string;
+  injectHeadMs?: number;
 }): PairBuildsSummary {
   const markerKey = getMarkerKey(browser);
   const sources: Record<AbBuild, string> = { A: baseSource, B: headSource };
@@ -176,6 +179,11 @@ export function preparePairBuilds({
       throw new Error(`No home.html in ${sources[build]}`);
     }
     const copy = copyAndStamp({ browser, source, baseDirectory, build });
+    if (build === 'B' && injectHeadMs !== undefined) {
+      const script = path.join(copy.target, getLastHomeScript(copy.target));
+      const original = fs.readFileSync(script, 'utf8');
+      fs.writeFileSync(script, getInjectionSnippet(injectHeadMs) + original);
+    }
     directories[build] = copy.relative;
     manifestHashes[build] = copy.manifestHash;
     trees[build] = hashTree(copy.target);

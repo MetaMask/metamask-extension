@@ -377,7 +377,8 @@ jobs:
         if: ${{ github.event_name == 'workflow_run' || inputs.post_slack }}
         env:
           GH_TOKEN: ${{ github.token }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_MAIN_DETECTOR }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL: ${{ vars.SLACK_MAIN_DETECTOR_CHANNEL }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           node .github/scripts/main-detector/slack-cli.mts \

@@ -109,6 +109,27 @@ describe('preparePairBuilds', () => {
     expect(summary.builds.A.contentHash).toBe(summary.builds.B.contentHash);
   });
 
+  it('counts an injected head delay in the summary', () => {
+    writeBuild('head', 'console.log(1)', '1.0.0');
+
+    const summary = preparePairBuilds({
+      browser: 'chrome',
+      baseSource: 'base',
+      headSource: 'head',
+      baseDirectory: workDir,
+      injectHeadMs: 5,
+    });
+
+    expect(summary.differingFiles).toBe(1);
+    expect(summary.builds.A.contentHash).not.toBe(summary.builds.B.contentHash);
+    expect(
+      fs.readFileSync(
+        path.join(workDir, summary.directories.B, 'scripts', 'app.js'),
+        'utf8',
+      ),
+    ).toContain(INJECTION_MARK);
+  });
+
   it('uses short_name as the marker for Firefox and leaves the sources untouched', () => {
     const summary = preparePairBuilds({
       browser: 'firefox',

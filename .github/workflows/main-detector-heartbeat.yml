@@ -45,7 +45,8 @@ jobs:
       - name: Check the detector ran for recent Main commits
         env:
           GH_TOKEN: ${{ github.token }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_MAIN_DETECTOR }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL: ${{ vars.SLACK_MAIN_DETECTOR_CHANNEL }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           WINDOW_HOURS: ${{ inputs.window_hours }}
           SETTLE_HOURS: ${{ inputs.settle_hours }}
