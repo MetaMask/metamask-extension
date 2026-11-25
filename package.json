@@ -642,7 +642,7 @@
     "@metamask/phishing-warning": "^6.0.0",
     "@metamask/platform-api-docs": "^0.2.1",
     "@metamask/preferences-controller": "^24.0.0",
-    "@metamask/skills": "^0.4.0",
+    "@metamask/skills": "^0.5.0",
     "@metamask/snap-simple-keyring-site": "^2.1.1",
     "@metamask/snaps-registry": "^4.0.0",
     "@metamask/solana-test-validator-up": "^2.0.0",
