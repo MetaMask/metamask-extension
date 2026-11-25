@@ -87,6 +87,28 @@ describe('alignShape lists and nulls', () => {
     ]);
   });
 
+  it('treats a nested list field as optional when only one item has it', () => {
+    const mock: Json[] = [{ explorers: [{ name: 'a' }] }];
+    const live: Json[] = [
+      { explorers: [{ name: 'b', icon: 'i' }] },
+      { explorers: [{ name: 'c' }, { name: 'd' }] },
+    ];
+    expect(alignShape(mock, live)).toStrictEqual([
+      { explorers: [{ name: 'a' }] },
+    ]);
+  });
+
+  it('adds a nested list field every entry of every item returns', () => {
+    const mock: Json[] = [{ explorers: [{ name: 'a' }] }];
+    const live: Json[] = [
+      { explorers: [{ name: 'b', url: 'x' }] },
+      { explorers: [{ name: 'c', url: 'y' }] },
+    ];
+    expect(alignShape(mock, live)).toStrictEqual([
+      { explorers: [{ name: 'a', url: '' }] },
+    ]);
+  });
+
   it('adds a nested field every list item returns', () => {
     const mock: Json[] = [{ storage: { balance: 0 } }];
     const live: Json[] = [

@@ -201,6 +201,11 @@ function listItemShape(mock: Json, samples: Json[]): Json {
   if (present.length === 0) {
     return null;
   }
+  if (present.every((sample) => Array.isArray(sample))) {
+    // A nested list: align against the entries of every sample, so a field
+    // only one entry's list has stays optional.
+    return (present as Json[][]).flat();
+  }
   if (!present.every(isObject)) {
     return present[0] ?? null;
   }
