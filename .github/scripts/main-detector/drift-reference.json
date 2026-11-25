@@ -1,0 +1,5 @@
+{
+  "commit": "cb23281219345f73893002583bc9a40835792469",
+  "recorded": "2026-11-25",
+  "note": "The build the weekly drift run compares the newest main with. Update it by hand to a newer main commit with a build, in its own commit, when the drift it caught has been dealt with or is accepted."
+}
