@@ -15,7 +15,6 @@ import {
 } from '@metamask/design-system-react';
 import {
   getMultichainNativeTokenBalance,
-  selectIsAssetsLoadingForSelectedAccountGroup,
   selectUnifiedBalanceBySelectedAccountGroup,
 } from '../../../../selectors/assets';
 
@@ -34,6 +33,7 @@ import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { hexWEIToDecETH } from '../../../../../shared/lib/conversion.utils';
 import { TEST_CHAINS } from '../../../../../shared/constants/network';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
+import { useAssetsHaveLoaded } from '../hooks/useAssetsHaveLoaded';
 
 export type AccountGroupBalanceProps = {
   classPrefix: string;
@@ -62,9 +62,7 @@ export const AccountGroupBalance = ({
   const anyEnabledNetworksAreAvailable = useSelector(
     selectAnyEnabledNetworksAreAvailable,
   );
-  const isAssetsLoading = useSelector(
-    selectIsAssetsLoadingForSelectedAccountGroup,
-  );
+  const assetsHaveLoaded = useAssetsHaveLoaded();
 
   const caipChainId = useMemo(
     () => (isCaipChainId(chainId) ? chainId : formatChainIdToCaip(chainId)),
@@ -174,7 +172,7 @@ export const AccountGroupBalance = ({
     <Skeleton
       hideChildren={
         totalIsUnresolved &&
-        ((isEvm && !anyEnabledNetworksAreAvailable) || isAssetsLoading)
+        ((isEvm && !anyEnabledNetworksAreAvailable) || !assetsHaveLoaded)
       }
       className="mb-1"
       data-testid="account-group-balance-skeleton"

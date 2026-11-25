@@ -20,6 +20,9 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import { setEditedNetwork, updateNetwork } from '../../../../store/actions';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
+import { NetworkManagementEntryPoint } from '../../../../../shared/constants/metametrics';
+import { trackRpcSwitched } from '../../../../helpers/utils/network-management-metrics';
 import RpcListItem from '../rpc-list-item';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../../selectors';
 import { useDispatch } from '../../../../store/hooks';
@@ -27,11 +30,14 @@ import { useDispatch } from '../../../../store/hooks';
 export const SelectRpcUrlModal = ({
   networkConfiguration,
   onNetworkChange,
+  entryPoint = NetworkManagementEntryPoint.NetworkPicker,
 }: {
   networkConfiguration?: NetworkConfiguration;
   onNetworkChange: (chainId: CaipChainId, networkClientId: string) => void;
+  entryPoint?: NetworkManagementEntryPoint;
 }) => {
   const dispatch = useDispatch();
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const location = useLocation();
   const chainId = location.state?.chainId;
 
@@ -81,6 +87,17 @@ export const SelectRpcUrlModal = ({
           key={rpcEndpoint.url}
           data-testid={`network-rpc-option-${rpcEndpoint.name ?? String(index)}`}
           onClick={() => {
+            if (index !== networkConfigurationToUse.defaultRpcEndpointIndex) {
+              trackRpcSwitched(
+                { trackEvent, createEventBuilder },
+                {
+                  chainId: networkConfigurationToUse.chainId,
+                  rpcUrlIndex: index,
+                  rpcCount: networkConfigurationToUse.rpcEndpoints.length,
+                  entryPoint,
+                },
+              );
+            }
             const network = {
               ...networkConfigurationToUse,
               defaultRpcEndpointIndex: index,

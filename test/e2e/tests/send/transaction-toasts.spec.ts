@@ -208,6 +208,7 @@ describe('Transaction toasts', function (this: Suite) {
         testSpecificMock: async (mockServer: Mockttp) => {
           await mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
+              id: 'ethereum',
               price: 1700,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
@@ -217,10 +218,7 @@ describe('Transaction toasts', function (this: Suite) {
         },
       },
       async ({ driver }) => {
-        await login(driver, {
-          expectedBalance: '20 ETH',
-          waitForNonEvmAccounts: false,
-        });
+        await login(driver, { expectedBalance: '20 ETH' });
         await createInternalTransaction({
           driver,
           chainId: '0x1',

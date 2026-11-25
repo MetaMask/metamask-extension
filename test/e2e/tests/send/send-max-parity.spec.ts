@@ -26,10 +26,7 @@ describe('Send max amount parity', function () {
       await withFixtures(
         getMaxAmountParityFixtures(network, this.test?.fullTitle()),
         async ({ driver }) => {
-          await login(driver, {
-            validateBalance: false,
-            waitForNonEvmAccounts: false,
-          });
+          await login(driver, { validateBalance: false });
 
           const homePage = new HomePage(driver);
           await homePage.startSendFlow();

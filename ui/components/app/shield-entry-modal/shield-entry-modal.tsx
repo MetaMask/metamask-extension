@@ -235,7 +235,9 @@ const ShieldEntryModal = ({
             'data-testid': 'shield-entry-modal-close-button',
             ariaLabel: t('close'),
           }}
-          className="absolute top-4 left-0 right-0 w-full"
+          // ModalBody is position:relative and paints after this header.
+          // Without a z-index the close control stays visible but cannot be clicked.
+          className="absolute top-4 left-0 right-0 z-10 w-full"
         />
         <ModalBody className="overflow-y-auto py-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <MarketingMoment

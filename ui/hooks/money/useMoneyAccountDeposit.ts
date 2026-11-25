@@ -1,10 +1,15 @@
 import { TransactionType } from '@metamask/transaction-controller';
-import { bytesToHex, type Hex } from '@metamask/utils';
+import { bytesToHex } from '@metamask/utils';
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { parse as uuidParse, v4 as uuidv4 } from 'uuid';
-import { openMoneyFtue, selectHasSeenMoneyFtue } from '../../ducks/money-ftue';
+import {
+  openMoneyFtue,
+  selectHasSeenMoneyFtue,
+  type MoneyFtueOrigin,
+} from '../../ducks/money-ftue';
+import { MoneyFtueEntryPoint } from '../../pages/money/constants/money-events';
 import {
   selectMoneyFundingAccount,
   type MoneyFundingAccountState,
@@ -41,6 +46,10 @@ export type InitiateDepositOptions = {
    * splash.
    */
   skipFtue?: boolean;
+  /**
+   * Where the user came from, used only when this deposit opens the splash.
+   */
+  ftueOrigin?: MoneyFtueOrigin;
   /**
    * Replace the current page with the confirmation instead of pushing it,
    * for entry points that should not be returned to (e.g. the deeplink
@@ -107,7 +116,7 @@ let isDepositInitiationInFlight = false;
  * `confirmations_pay_hardware` enables Money Account deposits; otherwise a
  * user on a hardware wallet funds from their first eligible account rather
  * than being blocked at the confirmation. Fails fast only when no eligible
- * account exists. That address is passed as Pay's `accountOverride` so
+ * account exists. Its account ID is passed as Pay's `accountOverride` so
  * the confirmation defaults the From row — and quotes — to that account instead of
  * the money account that executes the batch.
  *
@@ -147,6 +156,9 @@ export function useMoneyAccountDeposit() {
         dispatch(
           openMoneyFtue({
             source: 'deposit',
+            origin: options?.ftueOrigin ?? {
+              entryPoint: MoneyFtueEntryPoint.Unknown,
+            },
             preferredPaymentToken: options?.preferredPaymentToken,
             intent: options?.intent,
           }),
@@ -171,7 +183,7 @@ export function useMoneyAccountDeposit() {
 
         const { transactionId } = await createMoneyAccountDepositTransaction(
           batchId,
-          fundingAccount.address as Hex,
+          fundingAccount.id,
         );
 
         navigateToTransaction(transactionId, {

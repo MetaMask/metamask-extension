@@ -980,13 +980,14 @@ async function collectRouteCoverage(): Promise<Record<string, number>> {
   const { summary } = generateReport();
 
   console.log(
-    `[e2e_routes] total: ${summary.totalRoutes}, with page object: ${summary.withPageObject}, coverage: ${summary.coveragePercentage}%`,
+    `[e2e_routes] total: ${summary.totalRoutes}, with page object: ${summary.withPageObject}, not a screen: ${summary.notAScreen}, coverage: ${summary.coveragePercentage}%`,
   );
 
   return {
     total_routes: summary.totalRoutes,
     routes_with_page_object: summary.withPageObject,
     routes_without_page_object: summary.withoutPageObject,
+    routes_not_a_screen: summary.notAScreen,
     unregistered_routes: summary.unregistered,
     stale_registry_entries: summary.staleEntries,
     coverage_percentage: summary.coveragePercentage,

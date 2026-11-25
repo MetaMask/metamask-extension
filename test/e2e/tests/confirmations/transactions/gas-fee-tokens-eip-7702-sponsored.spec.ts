@@ -16,6 +16,7 @@ import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { mockEip7702FeatureFlag } from '../helpers';
 import { mockSpotPrices } from '../../tokens/utils/mocks';
+import { txSentinelNetwork } from '../../../mock-response-data/api-responses';
 
 const UUID = '1234-5678';
 const TRANSACTION_HASH =
@@ -55,6 +56,7 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
           mockSmartTransactionFeatureFlags(mockServer);
           mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
+              id: 'ethereum',
               price: 1700,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
@@ -128,6 +130,7 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
           mockSmartTransactionFeatureFlags(mockServer);
           mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
+              id: 'ethereum',
               price: 1700,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
@@ -229,8 +232,8 @@ async function mockTransactionRelayNetworks(mockServer: MockttpServer) {
       };
     });
 
-  await mockServer
-    .forGet(`${TX_SENTINEL_URL}/network`)
+  await txSentinelNetwork
+    .rule(mockServer, { baseUrl: TX_SENTINEL_URL })
     .always()
     .thenCallback(() => {
       return {

@@ -19,6 +19,10 @@ import {
   ConfirmationLoader,
   useConfirmationNavigation,
 } from '../../pages/confirmations/hooks/useConfirmationNavigation';
+import {
+  MoneyComponentName,
+  MoneyFtueEntryPoint,
+} from '../../pages/money/constants/money-events';
 import { createMoneyAccountDepositTransaction } from '../../store/controller-actions/transaction-pay-controller';
 import { useMoneyAccountDeposit } from './useMoneyAccountDeposit';
 import { useMoneyErrorReporter } from './useMoneyErrorReporter';
@@ -203,7 +207,7 @@ describe('useMoneyAccountDeposit', () => {
 
     expect(createDepositTransactionMock).toHaveBeenCalledWith(
       expect.stringMatching(/^0x[0-9a-f]{32}$/u),
-      '0x1234567890123456789012345678901234567890',
+      ACCOUNT_ID,
     );
     expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
       loader: ConfirmationLoader.CustomAmount,
@@ -236,9 +240,29 @@ describe('useMoneyAccountDeposit', () => {
     expect(store.getState().moneyFtue).toStrictEqual({
       isOpen: true,
       source: 'deposit',
+      origin: { entryPoint: MoneyFtueEntryPoint.Unknown },
       pendingDeposit: { preferredPaymentToken, intent: 'addMusd' },
       acknowledged: false,
     });
+  });
+
+  it('forwards the FTUE origin when the splash opens', async () => {
+    selectHasSeenMoneyFtueMock.mockReturnValue(false);
+    const ftueOrigin = {
+      entryPoint: MoneyFtueEntryPoint.WalletHome,
+      componentName: MoneyComponentName.TokenListItemCta,
+    };
+
+    const { result, store } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    await act(async () => {
+      await result.current.initiateDeposit({ ftueOrigin });
+    });
+
+    expect(store.getState().moneyFtue.origin).toStrictEqual(ftueOrigin);
   });
 
   it('opens the FTUE splash for an option-less deposit when unseen', async () => {
@@ -257,6 +281,7 @@ describe('useMoneyAccountDeposit', () => {
     expect(store.getState().moneyFtue).toStrictEqual({
       isOpen: true,
       source: 'deposit',
+      origin: { entryPoint: MoneyFtueEntryPoint.Unknown },
       pendingDeposit: {},
       acknowledged: false,
     });
@@ -527,7 +552,7 @@ describe('useMoneyAccountDeposit', () => {
 
     expect(createDepositTransactionMock).toHaveBeenCalledWith(
       expect.stringMatching(/^0x[0-9a-f]{32}$/u),
-      SOFTWARE_ADDRESS,
+      SOFTWARE_ACCOUNT.id,
     );
     expect(navigateToTransactionMock).toHaveBeenCalledWith(
       TRANSACTION_ID,
@@ -597,7 +622,7 @@ describe('useMoneyAccountDeposit', () => {
 
       expect(createDepositTransactionMock).toHaveBeenCalledWith(
         expect.stringMatching(/^0x[0-9a-f]{32}$/u),
-        '0x1234567890123456789012345678901234567890',
+        HARDWARE_ACCOUNT_ID,
       );
     });
 
@@ -622,7 +647,7 @@ describe('useMoneyAccountDeposit', () => {
 
       expect(createDepositTransactionMock).toHaveBeenCalledWith(
         expect.stringMatching(/^0x[0-9a-f]{32}$/u),
-        SOFTWARE_ADDRESS,
+        SOFTWARE_ACCOUNT.id,
       );
     });
 
@@ -638,7 +663,7 @@ describe('useMoneyAccountDeposit', () => {
 
       expect(createDepositTransactionMock).toHaveBeenCalledWith(
         expect.stringMatching(/^0x[0-9a-f]{32}$/u),
-        SOFTWARE_ADDRESS,
+        SOFTWARE_ACCOUNT.id,
       );
       expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
         loader: ConfirmationLoader.CustomAmount,
@@ -667,7 +692,7 @@ describe('useMoneyAccountDeposit', () => {
 
       expect(createDepositTransactionMock).toHaveBeenCalledWith(
         expect.stringMatching(/^0x[0-9a-f]{32}$/u),
-        SOFTWARE_ADDRESS,
+        SOFTWARE_ACCOUNT.id,
       );
     });
 

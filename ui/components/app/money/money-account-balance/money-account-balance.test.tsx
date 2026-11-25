@@ -17,6 +17,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyScreenName,
   MoneyTooltipName,
   MoneyTooltipType,
@@ -127,7 +128,7 @@ const arrange = ({
     lastKnownTotalFiatFormatted,
     isBalanceLoading,
     apyPercentFormatted,
-    vaultApyQuery: { isLoading: isVaultApyLoading },
+    isApyLoading: isVaultApyLoading,
   } as UseMoneyAccountBalanceResult);
 };
 
@@ -363,7 +364,12 @@ describe('MoneyAccountBalance', () => {
     fireEvent.click(getByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID));
 
     expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
-    expect(mockInitiateDeposit).toHaveBeenCalledWith();
+    expect(mockInitiateDeposit).toHaveBeenCalledWith({
+      ftueOrigin: {
+        entryPoint: MoneyFtueEntryPoint.WalletHome,
+        componentName: MoneyComponentName.BalanceCard,
+      },
+    });
     expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
       screenName: MoneyScreenName.WalletHome,
       componentName: MoneyComponentName.BalanceCard,

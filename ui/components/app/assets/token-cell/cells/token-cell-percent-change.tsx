@@ -1,9 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import { CaipAssetType, Hex } from '@metamask/utils';
+import { Hex } from '@metamask/utils';
 import { Skeleton } from '@metamask/design-system-react';
-import { toChecksumHexAddress } from '@metamask/controller-utils';
+import { getCachedPercentChange } from '../../../../../../shared/lib/token-price';
 import { getMarketData } from '../../../../../selectors';
 import { TokenFiatDisplayInfo } from '../../types';
 import { PercentageChange } from '../../../../multichain/token-list-item/price/percentage-change';
@@ -37,20 +37,16 @@ export const TokenCellPercentChange = React.memo(
       );
     }
 
-    let tokenPercentageChange;
-
-    // Compare null and undefined
-    // eslint-disable-next-line no-eq-null
-    if (price != null && comparePrice != null) {
-      tokenPercentageChange = ((price - comparePrice) / comparePrice) * 100;
-    } else {
-      tokenPercentageChange = isEvm
-        ? multiChainMarketData?.[token.chainId as Hex]?.[
-            toChecksumHexAddress(tokenAddress) as Hex
-          ]?.pricePercentChange1d
-        : nonEvmConversionRates?.[tokenAddress as CaipAssetType]?.marketData
-            ?.pricePercentChange?.P1D;
-    }
+    const tokenPercentageChange =
+      typeof price === 'number' && typeof comparePrice === 'number'
+        ? ((price - comparePrice) / comparePrice) * 100
+        : getCachedPercentChange({
+            isNative: Boolean(token.isNative),
+            chainId: token.chainId,
+            address: token.address,
+            marketData: multiChainMarketData,
+            conversionRates: nonEvmConversionRates,
+          });
 
     return (
       <PercentageChange value={tokenPercentageChange} address={tokenAddress} />

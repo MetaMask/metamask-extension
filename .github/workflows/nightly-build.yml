@@ -8,10 +8,12 @@ on:
 
 permissions:
   contents: read
-  id-token: write # required for s3 uploads
 
 jobs:
   build-dist-webpack:
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-webpack
@@ -20,6 +22,9 @@ jobs:
     secrets: inherit
 
   build-dist-mv2-webpack:
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-mv2-webpack
@@ -28,6 +33,9 @@ jobs:
     secrets: inherit
 
   build-experimental-webpack:
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-experimental-webpack
@@ -36,6 +44,9 @@ jobs:
     secrets: inherit
 
   build-experimental-mv2-webpack:
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-experimental-mv2-webpack

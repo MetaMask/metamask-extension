@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { errorCodes } from '@metamask/rpc-errors';
 import { parseCaipAssetType, isCaipAssetType } from '@metamask/utils';
 
@@ -10,6 +11,11 @@ import {
 import { getMultichainBalances } from '../../../selectors/multichain';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { forceUpdateMetamaskState } from '../../../store/actions';
+import {
+  ASSET_ACTIVATION_LOADER_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../../helpers/constants/routes';
+import { toast } from '../../../components/ui/toast/toast';
 import {
   requestStellarChangeTrustOptAdd,
   requestStellarChangeTrustOptDelete,
@@ -33,6 +39,7 @@ export const useAssetActivation = ({
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const chainId = isCaipAssetType(assetId)
     ? parseCaipAssetType(assetId).chainId
@@ -91,6 +98,9 @@ export const useAssetActivation = ({
 
     setErrorMessage(null);
     setIsDeactivating(true);
+    // Same pattern as non-EVM send: park on a loader so fullscreen can reach the
+    // snap dialog (ConfirmationRouter does not auto-navigate there).
+    navigate(ASSET_ACTIVATION_LOADER_ROUTE);
     try {
       await requestStellarChangeTrustOptDelete({
         accountId: resolvedAccountId,
@@ -103,17 +113,24 @@ export const useAssetActivation = ({
       const isUserRejection =
         errorCode === errorCodes.provider.userRejectedRequest;
       if (!isUserRejection) {
-        setErrorMessage(
-          hasNonZeroBalance
-            ? (t('assetDeactivationNonZeroBalanceError', [
-                balanceDisplay,
-                assetSymbol,
-              ]) as string)
-            : (t('assetDeactivationError') as string),
-        );
+        const message = hasNonZeroBalance
+          ? (t('assetDeactivationNonZeroBalanceError', [
+              balanceDisplay,
+              assetSymbol,
+            ]) as string)
+          : (t('assetDeactivationError') as string);
+        // Loader replaced this screen; surface the error on return via toast.
+        toast.error(message);
+        setErrorMessage(message);
       }
     } finally {
       setIsDeactivating(false);
+      // Once the snap confirmation has replaced the loader, the confirmation
+      // page redirects on close. Navigating back here as well races that
+      // redirect. Only leave if we never left the loader.
+      if (isRemainOnAssetActivationLoader()) {
+        navigate(PREVIOUS_ROUTE);
+      }
     }
   }, [
     assetId,
@@ -122,6 +139,7 @@ export const useAssetActivation = ({
     canDeactivate,
     chainId,
     dispatch,
+    navigate,
     resolvedAccountId,
     t,
   ]);
@@ -138,6 +156,9 @@ export const useAssetActivation = ({
     }
     setErrorMessage(null);
     setIsActivating(true);
+    // Same pattern as non-EVM send: park on a loader so fullscreen can reach the
+    // snap dialog (ConfirmationRouter does not auto-navigate there).
+    navigate(ASSET_ACTIVATION_LOADER_ROUTE);
     try {
       const result = await requestStellarChangeTrustOptAdd({
         accountId: resolvedAccountId,
@@ -154,12 +175,29 @@ export const useAssetActivation = ({
       const isUserRejection =
         errorCode === errorCodes.provider.userRejectedRequest;
       if (!isUserRejection) {
-        setErrorMessage(t('assetActivationError') as string);
+        const message = t('assetActivationError') as string;
+        // Loader replaced this screen; surface the error on return via toast.
+        toast.error(message);
+        setErrorMessage(message);
       }
     } finally {
       setIsActivating(false);
+      // Once the snap confirmation has replaced the loader, the confirmation
+      // page redirects on close. Navigating back here as well races that
+      // redirect. Only leave if we never left the loader.
+      if (isRemainOnAssetActivationLoader()) {
+        navigate(PREVIOUS_ROUTE);
+      }
     }
-  }, [assetId, chainId, dispatch, requiresActivate, resolvedAccountId, t]);
+  }, [
+    assetId,
+    chainId,
+    dispatch,
+    navigate,
+    requiresActivate,
+    resolvedAccountId,
+    t,
+  ]);
 
   return {
     deactivateAsset,
@@ -172,3 +210,16 @@ export const useAssetActivation = ({
     dismissErrorMessage,
   };
 };
+
+/**
+ * Returns whether the current route is still the asset activation loader.
+ *
+ * The loader replaces history when the snap confirmation opens, so callers use
+ * this to avoid racing the confirmation page's own redirect on close.
+ *
+ * @returns True when the current route is the asset activation loader.
+ */
+function isRemainOnAssetActivationLoader() {
+  const pathname = window.location.hash.replace(/^#/u, '').split('?')[0];
+  return pathname === ASSET_ACTIVATION_LOADER_ROUTE;
+}

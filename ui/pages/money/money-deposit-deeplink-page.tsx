@@ -7,6 +7,7 @@ import {
 } from '../../helpers/constants/routes';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useMoneyAccountDeposit } from '../../hooks/money/useMoneyAccountDeposit';
+import { MoneyFtueEntryPoint } from './constants/money-events';
 
 /**
  * Bridge for the `money-account-deposit` deeplink, mirroring mobile's
@@ -34,6 +35,7 @@ export function MoneyDepositDeeplinkPage() {
     initiateDeposit({
       replaceConfirmation: true,
       goBackTo: MONEY_HOME_ROUTE,
+      ftueOrigin: { entryPoint: MoneyFtueEntryPoint.MoneyDepositDeeplink },
     }).then((isStarted) => {
       if (!isStarted) {
         navigate(DEFAULT_ROUTE, { replace: true });

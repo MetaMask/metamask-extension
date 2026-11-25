@@ -13,6 +13,10 @@ import {
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { formatUnits } from '../../../../shared/lib/unit';
 import {
+  priceV1ExchangeRates,
+  priceV3Spot,
+} from '../../mock-response-data/api-responses';
+import {
   MOCK_ETH_OPEN_LONG_FILL,
   MOCK_ETH_LIMIT_ORDER,
   MOCK_ETH_FUNDING,
@@ -170,9 +174,6 @@ const PERPS_GEO_BLOCKED_FLAG = {
  * without `GeolocationController:getGeolocation` on PerpsControllerMessenger,
  * `refreshEligibility()` would fail and perps-controller would set `isEligible`
  * to true, hiding the geo-block modal. Deferred checks keep `isEligible: false`.
- * Callers must use `login(..., { waitForNonEvmAccounts: false })` because the
- * home flow otherwise waits for non-EVM account icons that do not load when
- * basic functionality is off.
  *
  * Also sets isFirstTimeUser to false so the tutorial modal does not intercept clicks.
  *
@@ -343,8 +344,8 @@ async function mockArbitrumGasData(server: Mockttp): Promise<void> {
 }
 
 async function mockArbitrumUsdcPriceData(server: Mockttp): Promise<void> {
-  await server
-    .forGet(`${PRICE_API_BASE_URL}/v1/exchange-rates`)
+  await priceV1ExchangeRates
+    .rule(server)
     .always()
     .thenCallback(() => ({
       statusCode: 200,
@@ -364,8 +365,8 @@ async function mockArbitrumUsdcPriceData(server: Mockttp): Promise<void> {
       },
     }));
 
-  await server
-    .forGet(`${PRICE_API_BASE_URL}/v3/spot-prices`)
+  await priceV3Spot
+    .rule(server)
     .always()
     .thenCallback((request) => {
       const url = new URL(request.url);

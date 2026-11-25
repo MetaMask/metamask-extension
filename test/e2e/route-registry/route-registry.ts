@@ -20,6 +20,9 @@
  * own, otherwise `null`.
  */
 
+import ChooseWalletTypePage from '../page-objects/pages/accounts/add-wallet/choose-wallet-type-page';
+import ImportAccountPage from '../page-objects/pages/accounts/add-wallet/import-account-page';
+import ImportSrpPage from '../page-objects/pages/accounts/add-wallet/import-srp-page';
 import AccountAddressListPage from '../page-objects/pages/accounts/address-list-page';
 import AccountDetailsPage from '../page-objects/pages/accounts/details-page';
 import AccountListPage from '../page-objects/pages/accounts/list-page';
@@ -29,13 +32,16 @@ import AssetDetailsPage from '../page-objects/pages/asset/asset-details';
 import DeFiDetailsPage from '../page-objects/pages/asset/defi-details-page';
 import ImportNftPage from '../page-objects/pages/asset/import-nft-page';
 import NFTDetailsPage from '../page-objects/pages/asset/nft-details-page';
-import BridgeQuotePage from '../page-objects/pages/bridge/quote-page';
 import AddTokenConfirmation from '../page-objects/pages/confirmations/add-token-confirmations';
 import Confirmation from '../page-objects/pages/confirmations/confirmation';
 import ConnectAccountConfirmation from '../page-objects/pages/confirmations/connect-account-confirmation';
 import DecryptMessageConfirmation from '../page-objects/pages/confirmations/decrypt-message-confirmation';
 import GetEncryptionKeyConfirmation from '../page-objects/pages/confirmations/get-encryption-key-confirmation';
 import WatchAssetConfirmation from '../page-objects/pages/confirmations/watch-asset-confirmation';
+import AddContactPage from '../page-objects/pages/contacts/add-contact-page';
+import ContactDetailsPage from '../page-objects/pages/contacts/contact-details-page';
+import ContactsListPage from '../page-objects/pages/contacts/contacts-list-page';
+import EditContactPage from '../page-objects/pages/contacts/edit-contact-page';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import ConnectHardwareWalletPage from '../page-objects/pages/hardware-wallet/connect-hardware-wallet-page';
 import HardwareWalletSignaturesPage from '../page-objects/pages/hardware-wallet/hardware-wallet-signatures-page';
@@ -47,6 +53,8 @@ import MoneyTransactionDetailsPage from '../page-objects/pages/money/money-trans
 import NetworksPage from '../page-objects/pages/networks/networks-page';
 import NotificationDetailsPage from '../page-objects/pages/notifications/notification-details-page';
 import NotificationsListPage from '../page-objects/pages/notifications/notifications-list-page';
+import ConfirmRecoveryPhrasePage from '../page-objects/pages/onboarding/confirm-recovery-phrase-page';
+import DownloadAppPage from '../page-objects/pages/onboarding/download-app-page';
 import LoginPage from '../page-objects/pages/onboarding/login-page';
 import OnboardingCompletePage from '../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingMetricsPage from '../page-objects/pages/onboarding/onboarding-metrics-page';
@@ -54,6 +62,7 @@ import OnboardingPasswordPage from '../page-objects/pages/onboarding/onboarding-
 import OnboardingPrivacySettingsPage from '../page-objects/pages/onboarding/onboarding-privacy-settings-page';
 import OnboardingSrpPage from '../page-objects/pages/onboarding/onboarding-srp-page';
 import ResetPasswordPage from '../page-objects/pages/onboarding/reset-password-page';
+import RevealRecoveryPhrasePage from '../page-objects/pages/onboarding/reveal-recovery-phrase-page';
 import SecureWalletPage from '../page-objects/pages/onboarding/secure-wallet-page';
 import SetupPasskeyPage from '../page-objects/pages/onboarding/setup-passkey-page';
 import StartOnboardingPage from '../page-objects/pages/onboarding/start-onboarding-page';
@@ -64,6 +73,7 @@ import { PerpsActivityPage } from '../page-objects/pages/perps/perps-activity-pa
 import { PerpsMarketDetailPage } from '../page-objects/pages/perps/perps-market-detail-page';
 import { PerpsMarketListPage } from '../page-objects/pages/perps/perps-market-list-page';
 import { PerpsOrderEntryPage } from '../page-objects/pages/perps/perps-order-entry-page';
+import { PerpsTransactionDetailsPage } from '../page-objects/pages/perps/perps-transaction-details-page';
 import { PerpsWithdrawPage } from '../page-objects/pages/perps/perps-withdraw-page';
 import RevealSrpPage from '../page-objects/pages/reveal-srp-page';
 import RewardsPage from '../page-objects/pages/rewards/rewards-page';
@@ -76,7 +86,6 @@ import AutoLockSettings from '../page-objects/pages/settings/security-and-passwo
 import BackupAndSyncSettings from '../page-objects/pages/settings/backup-and-sync-settings';
 import BasicFunctionalityOffPage from '../page-objects/pages/settings/basic-functionality-off-page';
 import ChangePasswordPage from '../page-objects/pages/settings/security-and-password/change-password-page';
-import ContactsSettings from '../page-objects/pages/settings/contacts-settings';
 import DebugOptions from '../page-objects/pages/settings/debug-page';
 import DeveloperToolsSettings from '../page-objects/pages/settings/developer-tools-settings';
 import ExperimentalSettings from '../page-objects/pages/settings/experimental-settings';
@@ -99,6 +108,8 @@ import ThirdPartyApisSettings from '../page-objects/pages/settings/privacy/third
 import TransactionsSettingsPage from '../page-objects/pages/settings/transactions-settings';
 import TurnOffPasskeySettings from '../page-objects/pages/settings/security-and-password/turn-off-passkey-settings';
 import SnapListPage from '../page-objects/pages/snaps/list-page';
+import SwapAssetPickerPage from '../page-objects/pages/swap/swap-asset-picker-page';
+import SwapPage from '../page-objects/pages/swap/swap-page';
 import CustomTokenImportPage from '../page-objects/pages/token-management/custom-token-import-page';
 import TokenManagementPage from '../page-objects/pages/token-management/token-management-page';
 import TransactionDetailsPage from '../page-objects/pages/transaction-details-page';
@@ -136,7 +147,7 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/restore-vault': ResetPasswordPage,
   '/seed': RevealSrpPage,
   '/seed/:keyringId': RevealSrpPage,
-  '/import-srp': null,
+  '/import-srp': ImportSrpPage,
   '/discover-search': null,
   '/hardware-wallet-repair': null,
   '/shield-plan': ShieldPlanPage,
@@ -156,15 +167,15 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/perps/market/:symbol': PerpsMarketDetailPage,
   '/perps/trade/:symbol': PerpsOrderEntryPage,
   '/perps/activity': PerpsActivityPage,
-  '/perps/transaction-details': null,
+  '/perps/transaction-details': PerpsTransactionDetailsPage,
   '/perps/withdraw': PerpsWithdrawPage,
 
   // Accounts
   '/account-list': AccountListPage,
   '/multichain-account-details': AccountDetailsPage,
   '/multichain-wallet-details-page': WalletDetailsPage,
-  '/choose-new-wallet-type': null,
-  '/add-wallet-page': null,
+  '/choose-new-wallet-type': ChooseWalletTypePage,
+  '/add-wallet-page': ImportAccountPage,
   '/multichain-smart-account/:address': null,
   '/multichain-account-address-list': AccountAddressListPage,
   '/multichain-account-private-key-list': PrivateKeyModal,
@@ -175,6 +186,7 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
 
   // Assets and tokens
   '/asset/image/:asset/:id': NFTDetailsPage,
+  '/asset/activation/loader': NOT_A_SCREEN,
   '/asset/:chainId/:asset?/:id?': AssetDetailsPage,
   '/asset/:chainId/:asset?/:id?/security-trust': null,
   '/defi': DeFiDetailsPage,
@@ -191,11 +203,12 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/ramps/token-selection': null,
   '/ramps/payment-method': null,
   '/ramps/complete-buy': null,
+  '/ramps/buy-interstitial': null,
 
   // Send, swap and bridge
   '/send/:page?': SendPage,
-  '/cross-chain/swaps/prepare-bridge-page': BridgeQuotePage,
-  '/cross-chain/swaps/prepare-bridge-page/assets': null,
+  '/cross-chain/swaps/prepare-bridge-page': SwapPage,
+  '/cross-chain/swaps/prepare-bridge-page/assets': SwapAssetPickerPage,
   '/swaps/awaiting-signatures': null,
   '/swaps/hardware-wallet-signatures': HardwareWalletSignaturesPage,
 
@@ -233,10 +246,10 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
 
   // Networks and contacts
   '/networks': NetworksPage,
-  '/contacts': ContactsSettings,
-  '/contacts/add': null,
-  '/contacts/view/:chainId/:address': null,
-  '/contacts/edit/:chainId/:address': null,
+  '/contacts': ContactsListPage,
+  '/contacts/add': AddContactPage,
+  '/contacts/view/:chainId/:address': ContactDetailsPage,
+  '/contacts/edit/:chainId/:address': EditContactPage,
 
   // Settings
   '/settings': SettingsPage,
@@ -287,8 +300,8 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/onboarding/welcome': StartOnboardingPage,
   '/onboarding/create-password': OnboardingPasswordPage,
   '/onboarding/review-recovery-phrase': SecureWalletPage,
-  '/onboarding/confirm-recovery-phrase': null,
-  '/onboarding/reveal-recovery-phrase': null,
+  '/onboarding/confirm-recovery-phrase': ConfirmRecoveryPhrasePage,
+  '/onboarding/reveal-recovery-phrase': RevealRecoveryPhrasePage,
   '/onboarding/import-with-recovery-phrase': OnboardingSrpPage,
   '/onboarding/unlock': LoginPage,
   '/onboarding/privacy-settings': OnboardingPrivacySettingsPage,
@@ -297,6 +310,6 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/onboarding/account-exist': null,
   '/onboarding/account-not-found': null,
   '/onboarding/setup-passkey': SetupPasskeyPage,
-  '/onboarding/download-app': null,
+  '/onboarding/download-app': DownloadAppPage,
   '/onboarding/experimental-area': null,
 };

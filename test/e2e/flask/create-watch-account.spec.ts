@@ -6,6 +6,7 @@ import { withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import AccountDetailsPage from '../page-objects/pages/accounts/details-page';
 import AccountListPage from '../page-objects/pages/accounts/list-page';
+import ChooseWalletTypePage from '../page-objects/pages/accounts/add-wallet/choose-wallet-type-page';
 import ExperimentalSettings from '../page-objects/pages/settings/experimental-settings';
 import HeaderNavbar from '../page-objects/pages/home/header-navbar';
 import HomePage from '../page-objects/pages/home/homepage';
@@ -13,6 +14,12 @@ import SettingsPage from '../page-objects/pages/settings/settings-page';
 import { login } from '../page-objects/flows/login.flow';
 import { closeSettings } from '../page-objects/flows/settings.flow';
 import { watchEoaAddress } from '../page-objects/flows/watch-account.flow';
+import {
+  importAccountWithPrivateKey,
+  openAddWalletMenu,
+  watchEthereumAccount,
+} from '../page-objects/flows/add-wallet.flow';
+import { openAccountMenu } from '../page-objects/flows/account-menu.flow';
 
 const ACCOUNT_1 = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 const EOA_ADDRESS = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
@@ -138,10 +145,10 @@ describe.skip('Account-watcher snap', function (this: Suite) {
             await homePage.checkExpectedBalanceIsDisplayed();
 
             // error message should be displayed by snap when try to watch an EOA with invalid input
-            await homePage.headerNavbar.openAccountMenu();
+            await openAccountMenu(driver);
             const accountListPage = new AccountListPage(driver);
             await accountListPage.checkPageIsLoaded();
-            await accountListPage.addEoaAccount(input, message);
+            await watchEthereumAccount(driver, input, message);
           },
         );
       });
@@ -177,10 +184,11 @@ describe.skip('Account-watcher snap', function (this: Suite) {
           await headerNavbar.checkAccountLabel(DEFAULT_WATCHED_ACCOUNT_NAME);
 
           // try to import private key of watched ACCOUNT_2 address and check error message
-          await headerNavbar.openAccountMenu();
+          await openAccountMenu(driver);
           const accountListPage = new AccountListPage(driver);
           await accountListPage.checkPageIsLoaded();
-          await accountListPage.addNewImportedAccount(
+          await importAccountWithPrivateKey(
+            driver,
             PRIVATE_KEY_TWO,
             'KeyringController - The account you are trying to import is a duplicate',
           );
@@ -248,14 +256,14 @@ describe.skip('Account-watcher snap', function (this: Suite) {
           );
 
           // remove the selected watched account
-          await homePage.headerNavbar.openAccountMenu();
+          await openAccountMenu(driver);
           const accountListPage = new AccountListPage(driver);
           await accountListPage.removeAccount(DEFAULT_WATCHED_ACCOUNT_NAME);
           await homePage.checkPageIsLoaded();
           await homePage.checkExpectedBalanceIsDisplayed();
 
           // account should be removed from the account list
-          await homePage.headerNavbar.openAccountMenu();
+          await openAccountMenu(driver);
           await accountListPage.checkAccountIsNotDisplayedInAccountList(
             DEFAULT_WATCHED_ACCOUNT_NAME,
           );
@@ -309,10 +317,13 @@ describe.skip('Account-watcher snap', function (this: Suite) {
           // verify the 'Watch and Ethereum account (Beta)' option is available
           await homePage.checkPageIsLoaded();
           await homePage.checkExpectedBalanceIsDisplayed();
-          await homePage.headerNavbar.openAccountMenu();
+          await openAccountMenu(driver);
           const accountListPage = new AccountListPage(driver);
           await accountListPage.checkPageIsLoaded();
-          await accountListPage.checkAddWatchAccountAvailable(true);
+          await openAddWalletMenu(driver);
+          await new ChooseWalletTypePage(
+            driver,
+          ).checkWatchAccountOptionIsDisplayed();
         },
       );
     });
@@ -342,10 +353,12 @@ describe.skip('Account-watcher snap', function (this: Suite) {
           // verify the 'Watch and Ethereum account (Beta)' option is available
           await homePage.checkPageIsLoaded();
           await homePage.checkExpectedBalanceIsDisplayed();
-          await homePage.headerNavbar.openAccountMenu();
+          await openAccountMenu(driver);
           const accountListPage = new AccountListPage(driver);
           await accountListPage.checkPageIsLoaded();
-          await accountListPage.checkAddWatchAccountAvailable(true);
+          const chooseWalletTypePage = new ChooseWalletTypePage(driver);
+          await openAddWalletMenu(driver);
+          await chooseWalletTypePage.checkWatchAccountOptionIsDisplayed();
           await accountListPage.closeAccountModal();
 
           // navigate back to experimental settings and disable the toggle
@@ -361,9 +374,10 @@ describe.skip('Account-watcher snap', function (this: Suite) {
           // verify the 'Watch and Ethereum account (Beta)' option is not available
           await homePage.checkPageIsLoaded();
           await homePage.checkExpectedBalanceIsDisplayed();
-          await homePage.headerNavbar.openAccountMenu();
+          await openAccountMenu(driver);
           await accountListPage.checkPageIsLoaded();
-          await accountListPage.checkAddWatchAccountAvailable(false);
+          await openAddWalletMenu(driver);
+          await chooseWalletTypePage.checkWatchAccountOptionIsDisplayed(false);
         },
       );
     });

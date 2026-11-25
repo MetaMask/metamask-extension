@@ -4,7 +4,6 @@
  * Regression test for ASSETS-3385 ("Max Send balance not updating").
  */
 
-import { merge } from 'lodash';
 import { toHex } from '@metamask/controller-utils';
 import type { Mockttp } from 'mockttp';
 import { v6AccountsApiBalancesJson } from '../../helpers/accounts-api-v6-balances';
@@ -23,6 +22,11 @@ import {
 } from '../../websocket/account-activity-mocks';
 import WebSocketRegistry from '../../websocket/registry';
 import { WEBSOCKET_SERVICES } from '../../websocket/constants';
+import {
+  accountsBalancesV5,
+  accountsSupportedNetworksV2,
+  tokensV3Assets,
+} from '../../mock-response-data/api-responses';
 
 const CHAIN_ID = 1337;
 const CHAIN_ID_HEX = toHex(CHAIN_ID);
@@ -40,10 +44,8 @@ function mockCommonApis(mockServer: Mockttp) {
   };
 
   return Promise.all([
-    mockServer
-      .forGet(
-        /https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u,
-      )
+    accountsSupportedNetworksV2
+      .rule(mockServer)
       .always()
       .thenJson(200, {
         fullSupport: [
@@ -66,8 +68,8 @@ function mockCommonApis(mockServer: Mockttp) {
       .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
       .always()
       .thenJson(200, supportedNetworks),
-    mockServer
-      .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+    tokensV3Assets
+      .rule(mockServer)
       .always()
       .thenCallback((request) => {
         const url = new URL(request.url);
@@ -105,10 +107,12 @@ function mockV5Balances(mockServer: Mockttp, tstBalance: { value: string }) {
 
   return Promise.all(
     (['v5', 'v6'] as const).map((version) =>
-      mockServer
-        .forGet(
-          `https://accounts.api.cx.metamask.io/${version}/multiaccount/balances`,
-        )
+      (version === 'v5'
+        ? accountsBalancesV5.rule(mockServer)
+        : mockServer.forGet(
+            'https://accounts.api.cx.metamask.io/v6/multiaccount/balances',
+          )
+      )
         .always()
         .thenCallback((request) => {
           const balances = rows();
@@ -182,18 +186,6 @@ describe('Send ERC20 - Max Balance Validation', function () {
         },
       })
       .build();
-
-    merge(fixture.data, {
-      AccountTrackerController: {
-        accountsByChainId: {
-          [CHAIN_ID_HEX]: {
-            [account]: {
-              balance: '0x15af1d78b58c400000', // 25 ETH
-            },
-          },
-        },
-      },
-    });
 
     await withFixtures(
       {

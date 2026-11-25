@@ -98,6 +98,7 @@ describe('useTokenInsightsData', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseSelector.mockReset();
     mockIsEvmChainId.mockReturnValue(true);
     mockIsNativeAddress.mockReturnValue(false);
     mockFormatChainIdToCaip.mockReturnValue('eip155:1');
@@ -254,10 +255,13 @@ describe('useTokenInsightsData', () => {
     });
 
     it('should use direct values for non-EVM tokens without conversion', async () => {
-      mockUseSelector
-        .mockReturnValueOnce('USD') // getCurrentCurrency
-        .mockReturnValueOnce(defaultCurrencyRates) // getCurrencyRates
-        .mockReturnValueOnce(null); // getMarketData
+      mockUseSelector.mockImplementation((selector) =>
+        selector({
+          currentCurrency: 'USD',
+          currencyRates: defaultCurrencyRates,
+          marketData: null,
+        }),
+      );
 
       const apiResponse = {
         'eip155:1/erc20:0x1234567890123456789012345678901234567890': {
@@ -272,10 +276,10 @@ describe('useTokenInsightsData', () => {
       const { result } = renderHook(() => useTokenInsightsData(defaultToken));
 
       await waitFor(() => {
-        expect(result.current.isLoading).toBe(false);
+        expect(result.current.marketDataFiat.price).toBe(150);
       });
 
-      expect(result.current.marketDataFiat.price).toBe(150);
+      expect(result.current.isLoading).toBe(false);
       expect(result.current.marketDataFiat.formattedPrice).toBe('$150');
       expect(result.current.marketDataFiat.formattedVolume).toBe('$2.00M');
       expect(result.current.marketDataFiat.formattedMarketCap).toBe('$75.00M');

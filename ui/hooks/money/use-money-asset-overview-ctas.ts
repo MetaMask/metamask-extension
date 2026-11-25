@@ -9,6 +9,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyScreenName,
   MoneyTooltipName,
   MoneyTooltipType,
@@ -87,8 +88,12 @@ function useMoneyAssetOverviewCta(
         address: token.address as Hex,
         chainId: token.chainId as Hex,
       },
+      ftueOrigin: {
+        entryPoint: MoneyFtueEntryPoint.AssetDetail,
+        componentName,
+      },
     });
-  }, [initiateDeposit, token.address, token.chainId]);
+  }, [componentName, initiateDeposit, token.address, token.chainId]);
 
   return {
     isEligible,
@@ -220,7 +225,7 @@ export function useMoneyAssetOverviewBalanceCta(
   );
   const { trackComponentViewed, trackTokenButtonClicked, trackTooltipClicked } =
     analytics;
-  const { apyDecimal, apyPercent, apyPercentFormatted, vaultApyQuery } =
+  const { apyDecimal, apyPercent, apyPercentFormatted, isApyLoading } =
     vaultApy;
 
   const projectedEarningsFormatted = useMemo(
@@ -273,8 +278,7 @@ export function useMoneyAssetOverviewBalanceCta(
 
   useTrackOnce(display !== undefined, trackComponentViewed);
 
-  const isLoading =
-    isEligible && display === undefined && vaultApyQuery.isLoading;
+  const isLoading = isEligible && display === undefined && isApyLoading;
 
   return { display, isLoading, onStartEarning, onProjectionTooltipOpen };
 }

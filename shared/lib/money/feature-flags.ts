@@ -57,6 +57,13 @@ export const MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME =
   'moneyEnableActivityDetails';
 
 /**
+ * The LaunchDarkly flag that gates historical vault-share valuations for card
+ * spend and cashback rows. Same name and version-gated shape as mobile.
+ */
+export const MONEY_ENABLE_HISTORICAL_VAULT_SHARE_VALUATIONS_FLAG_NAME =
+  'moneyEnableHistoricalVaultShareValuations';
+
+/**
  * The LaunchDarkly flag that gates the "Get X% APY" Money deposit CTA on
  * token list rows. Same name and version-gated shape as mobile.
  */
@@ -252,6 +259,28 @@ export function isMoneyActivityDetailsEnabled(
   }
 
   return process.env.MM_MONEY_ENABLE_ACTIVITY_DETAILS?.toString() === 'true';
+}
+
+/**
+ * Whether card spend and cashback rows should use historical vault-share
+ * valuations instead of treating the raw share amount as mUSD.
+ *
+ * The flag is version-gated and fails closed when absent, malformed, or below
+ * the current extension version.
+ *
+ * @param remoteFeatureFlags - The remote feature flags.
+ * @returns Whether historical vault-share valuations are enabled.
+ */
+export function isMoneyHistoricalVaultShareValuationsEnabled(
+  remoteFeatureFlags: Record<string, unknown> | undefined,
+): boolean {
+  return (
+    validatedVersionGatedFeatureFlag(
+      remoteFeatureFlags?.[
+        MONEY_ENABLE_HISTORICAL_VAULT_SHARE_VALUATIONS_FLAG_NAME
+      ],
+    ) ?? false
+  );
 }
 
 const isMoneyAccountSubFeatureEnabled = (

@@ -94,11 +94,25 @@ describe('Shield Entry Modal', () => {
 
     const closeButton = getByTestId('shield-entry-modal-close-button');
     expect(closeButton).toHaveAccessibleName('Close');
+    expect(closeButton.closest('header')).toHaveClass('z-10');
     fireEvent.click(closeButton);
     expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith({
       show: false,
       hasUserInteractedWithModal: true,
     });
+  });
+
+  it('dismisses through the local onClose callback when event submission is skipped', () => {
+    const onClose = jest.fn();
+    const { getByTestId } = renderWithProvider(
+      <ShieldEntryModal skipEventSubmission onClose={onClose} />,
+      mockStore,
+    );
+
+    fireEvent.click(getByTestId('shield-entry-modal-close-button'));
+
+    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(setShowShieldEntryModalOnceSpy).not.toHaveBeenCalled();
   });
 
   it('should call onGetStarted when the get started button is clicked', async () => {

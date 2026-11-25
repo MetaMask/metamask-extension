@@ -1,8 +1,17 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { Hex } from '@metamask/utils';
 import type { MoneyAccountDepositIntent } from '../../helpers/money/deposit-intent';
+import type {
+  MoneyComponentName,
+  MoneyFtueEntryPoint,
+} from '../../pages/money/constants/money-events';
 
 export type MoneyFtueSource = 'moneyHome' | 'deposit';
+
+export type MoneyFtueOrigin = {
+  entryPoint: MoneyFtueEntryPoint;
+  componentName?: MoneyComponentName;
+};
 
 export type MoneyFtuePendingDeposit = {
   preferredPaymentToken?: {
@@ -15,6 +24,7 @@ export type MoneyFtuePendingDeposit = {
 export type MoneyFtueState = {
   isOpen: boolean;
   source: MoneyFtueSource | null;
+  origin: MoneyFtueOrigin | null;
   pendingDeposit: MoneyFtuePendingDeposit | null;
   /**
    * Set for the rest of the UI session when the user acknowledges the splash,
@@ -27,6 +37,7 @@ export type MoneyFtueState = {
 export const initialState: MoneyFtueState = {
   isOpen: false,
   source: null,
+  origin: null,
   pendingDeposit: null,
   acknowledged: false,
 };
@@ -38,7 +49,10 @@ const moneyFtueSlice = createSlice({
     openMoneyFtue: (
       state,
       action: PayloadAction<
-        { source: MoneyFtueSource } & MoneyFtuePendingDeposit
+        {
+          source: MoneyFtueSource;
+          origin: MoneyFtueOrigin;
+        } & MoneyFtuePendingDeposit
       >,
     ) => {
       // A splash may already be open (for example a deposit intent opened from
@@ -48,10 +62,11 @@ const moneyFtueSlice = createSlice({
         return;
       }
 
-      const { source, preferredPaymentToken, intent } = action.payload;
+      const { source, origin, preferredPaymentToken, intent } = action.payload;
 
       state.isOpen = true;
       state.source = source;
+      state.origin = origin;
       state.pendingDeposit =
         source === 'deposit'
           ? {
@@ -63,6 +78,7 @@ const moneyFtueSlice = createSlice({
     closeMoneyFtue: (state) => {
       state.isOpen = false;
       state.source = null;
+      state.origin = null;
       state.pendingDeposit = null;
       state.acknowledged = true;
     },

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from 'viem';
+import { toHex } from '@metamask/controller-utils';
 import {
   Box,
   Text,
@@ -19,6 +20,12 @@ import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 import { getSubjectMetadata } from '../../../../selectors';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
+import {
+  MetaMetricsEventName,
+  MetaMetricsNetworkEventSource,
+} from '../../../../../shared/constants/metametrics';
+import { trackDappNetworkRequest } from '../../../../helpers/utils/network-management-metrics';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { stripProtocol, toPunycodeURL } from '../../utils/confirm';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
@@ -32,6 +39,35 @@ export const AddEthereumChain = () => {
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const networkConfig = networkConfigurations[requestData.chainId as Hex];
   const subjectMetadata = useSelector(getSubjectMetadata);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const didTrackRequest = useRef(false);
+
+  useEffect(() => {
+    if (didTrackRequest.current || !requestData?.chainId) {
+      return;
+    }
+    didTrackRequest.current = true;
+
+    let dappHostName = origin;
+    try {
+      dappHostName = new URL(origin).host;
+    } catch {
+      dappHostName = origin?.replace(/^https?:\/\//u, '');
+    }
+
+    trackDappNetworkRequest(
+      { trackEvent, createEventBuilder },
+      MetaMetricsEventName.NetworkRequested,
+      {
+        chainId: toHex(requestData.chainId),
+        dappHostName,
+        alreadyAdded: Boolean(networkConfig),
+        sourceConnectionMethod: MetaMetricsNetworkEventSource.Dapp,
+      },
+    );
+    // The request is shown once when the confirmation opens.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const title = networkConfig
     ? t('updateNetworkConfirmationTitle', [networkConfig.name])

@@ -108,6 +108,21 @@ describe('NetworkPillSelector', () => {
     expect(mockHandleSelectAll).toHaveBeenCalledTimes(1);
   });
 
+  it('disables the pills while a network switch is pending', () => {
+    mockFilter({ isPending: true });
+
+    renderSelector();
+
+    expect(screen.getByTestId('network-pill-all-default')).toBeDisabled();
+    expect(screen.getByTestId('network-pill-0x1')).toBeDisabled();
+    expect(screen.getByTestId('network-pill-0xa')).toBeDisabled();
+
+    fireEvent.click(screen.getByTestId('network-pill-0xa'));
+    fireEvent.click(screen.getByTestId('network-pill-all-default'));
+    expect(mockHandleSelectNetwork).not.toHaveBeenCalled();
+    expect(mockHandleSelectAll).not.toHaveBeenCalled();
+  });
+
   it('marks the selected network', () => {
     mockFilter({
       isAllDefaultSelected: false,

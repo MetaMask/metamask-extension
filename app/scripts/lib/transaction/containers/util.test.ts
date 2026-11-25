@@ -199,6 +199,88 @@ describe('Container Utils', () => {
       ]);
     });
 
+    it('preserves the original gas without re-estimating if no containers are applied', async () => {
+      const transactionMeta = {
+        ...TRANSACTION_META_MOCK,
+        txParams: { gas: '0x5208' },
+      } as TransactionMeta;
+
+      const { updateTransaction } = await applyTransactionContainers({
+        isApproved: false,
+        messenger,
+        transactionMeta,
+        types: [],
+      });
+
+      const transactionToUpdate = cloneDeep(transactionMeta);
+      updateTransaction(transactionToUpdate);
+
+      expect(transactionToUpdate.txParams.gas).toBe('0x5208');
+      expect(estimateGasMock).not.toHaveBeenCalled();
+      expect(enforceSimulationsMock).not.toHaveBeenCalled();
+    });
+
+    it('restores the original parameters and gas when containers are removed', async () => {
+      const transactionMeta = {
+        ...TRANSACTION_META_MOCK,
+        containerTypes: [TransactionContainerType.EnforcedSimulations],
+        txParams: {
+          data: NEW_DATA_MOCK,
+          gas: '0x30000',
+          to: '0xdelegationManager',
+          value: '0x0',
+        },
+        txParamsOriginal: {
+          data: '0xabc',
+          gas: '0x20000',
+          to: '0xdapp',
+          value: '0x1',
+        },
+      } as TransactionMeta;
+
+      const { updateTransaction } = await applyTransactionContainers({
+        isApproved: false,
+        messenger,
+        transactionMeta,
+        types: [],
+      });
+
+      const transactionToUpdate = cloneDeep(transactionMeta);
+      updateTransaction(transactionToUpdate);
+
+      expect(transactionToUpdate.containerTypes).toStrictEqual([]);
+      expect(transactionToUpdate.txParams).toStrictEqual(
+        expect.objectContaining({
+          data: '0xabc',
+          gas: '0x20000',
+          to: '0xdapp',
+          value: '0x1',
+        }),
+      );
+      expect(estimateGasMock).not.toHaveBeenCalled();
+    });
+
+    it('preserves the original gas and gas limit if approved without containers', async () => {
+      const transactionMeta = {
+        ...TRANSACTION_META_MOCK,
+        txParams: { gas: '0x5208', gasLimit: '0x5208' },
+      } as TransactionMeta;
+
+      const { updateTransaction } = await applyTransactionContainers({
+        isApproved: true,
+        messenger,
+        transactionMeta,
+        types: [],
+      });
+
+      const transactionToUpdate = cloneDeep(transactionMeta);
+      updateTransaction(transactionToUpdate);
+
+      expect(transactionToUpdate.txParams.gas).toBe('0x5208');
+      expect(transactionToUpdate.txParams.gasLimit).toBe('0x5208');
+      expect(estimateGasMock).not.toHaveBeenCalled();
+    });
+
     it('updates container types', async () => {
       const { updateTransaction } = await applyTransactionContainers({
         isApproved: false,

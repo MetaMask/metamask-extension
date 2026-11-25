@@ -21,6 +21,7 @@ import {
   type LastActivityContext,
 } from '../telemetry/last-activity';
 import type { CurrentActivity, IdleStatus } from '../telemetry/idle-status';
+import { buildActivityAttributes } from '../telemetry/activity-attributes';
 import { IndexedDBStore } from './indexeddb-store';
 import {
   BACKUP_INDEXED_DB_NAME,
@@ -31,6 +32,7 @@ import type {
   MetaMaskStorageStructure,
   BaseStore,
   MetaData,
+  SplitStateReadDiagnostics,
 } from './base-store';
 import { runTrackedTask } from './utils/run-tracked-task';
 
@@ -81,6 +83,22 @@ export type WriteRetryRecoveredEvent = {
   retryDelayMs: number;
 };
 
+/**
+ * How a persisted-state size was measured for telemetry.
+ *
+ * - `storage_get_bytes_in_use`: exact bytes from the browser storage API
+ * - `json_string_length_estimate`: `JSON.stringify(value).length` fallback
+ *   when `getBytesInUse` is unavailable (e.g. Firefox)
+ */
+export type StateSizeMeasurementSource =
+  | 'storage_get_bytes_in_use'
+  | 'json_string_length_estimate';
+
+export type StoredBytesResult = {
+  bytes: number;
+  source: StateSizeMeasurementSource;
+};
+
 export type SplitStateWriteEvent = {
   /**
    * Per-controller size measurements. Exact storage bytes when
@@ -92,9 +110,7 @@ export type SplitStateWriteEvent = {
   idleStatus: IdleStatus;
   measurementDurationMs: number;
   sampleRate: number;
-  sizeMeasurementSource:
-    | 'storage_get_bytes_in_use'
-    | 'json_string_length_estimate';
+  sizeMeasurementSource: StateSizeMeasurementSource;
   /**
    * Sum of {@link bytesByController} values.
    */
@@ -439,10 +455,166 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     return error instanceof Error ? error : new Error(String(error));
   }
 
-  #captureWriteFailure(
+  /**
+   * Activity snapshot shared by sampled write traces and storage error reports.
+   *
+   * A missing or throwing provider becomes an empty snapshot, and a throwing
+   * idle classifier becomes `'unknown'`. Session restore runs first so an
+   * early startup write still sees timestamps from before the service-worker
+   * restart.
+   *
+   * @returns The activity snapshot for this event.
+   */
+  async #getActivitySnapshot(): Promise<{
+    currentActivity: CurrentActivity;
+    environmentType: EnvironmentType | 'unknown';
+    idleStatus: IdleStatus;
+    lastActivity: LastActivityContext;
+  }> {
+    let currentActivity: CurrentActivity = {};
+    if (this.#getCurrentActivity) {
+      try {
+        currentActivity = this.#getCurrentActivity();
+      } catch {
+        // Keep empty snapshot.
+      }
+    }
+
+    let lastActivity: LastActivityContext = {};
+    try {
+      await hydrateLastActivity();
+    } catch {
+      // Snapshot whatever is already in memory.
+    }
+    try {
+      lastActivity = getLastActivityContext();
+    } catch {
+      // Keep empty snapshot.
+    }
+
+    let idleStatus: IdleStatus = 'unknown';
+    try {
+      idleStatus = this.#getIsIdle(currentActivity, lastActivity) ?? 'unknown';
+    } catch {
+      // Keep unknown status.
+    }
+
+    let environmentType: EnvironmentType | 'unknown' = 'unknown';
+    try {
+      const href = globalThis.self?.location?.href;
+      if (href !== undefined && href !== '') {
+        environmentType = getEnvironmentType(href) as EnvironmentType;
+      }
+    } catch {
+      // Keep unknown. `getEnvironmentType` parses with `new URL`.
+    }
+
+    return { currentActivity, environmentType, idleStatus, lastActivity };
+  }
+
+  /**
+   * Reads split-state key outcomes for a failure report.
+   *
+   * A missing diagnostic method or a probe failure returns `undefined` so the
+   * original error is still reported without a snapshot.
+   *
+   * @returns The snapshot, or `undefined` when it should be omitted.
+   */
+  async #readSplitStateDiagnostics(): Promise<
+    SplitStateReadDiagnostics | undefined
+  > {
+    try {
+      return await this.#localStore.getSplitStateReadDiagnostics?.();
+    } catch {
+      return undefined;
+    }
+  }
+
+  async #capturePersistenceException(
+    error: unknown,
+    failure: string,
+    writeDetails?: { controllers: string[]; coalescedUpdates?: number },
+  ) {
+    // Callers intentionally do not await this method so reporting cannot hold
+    // STATE_LOCK. Swallow failures so the floating promise never rejects.
+    try {
+      const snapshot = await this.#getActivitySnapshot();
+      const activity = buildActivityAttributes(
+        snapshot.currentActivity,
+        snapshot.lastActivity,
+        snapshot.idleStatus,
+        snapshot.environmentType,
+      );
+
+      const extra: Record<string, number | string | boolean> = {};
+      for (const [key, value] of Object.entries(activity)) {
+        if (key === 'idle_status' || key === 'environment_type') {
+          continue;
+        }
+        extra[`persistence.${key}`] = value;
+      }
+
+      if (writeDetails) {
+        extra['persistence.controllers'] = writeDetails.controllers.join(',');
+        extra['persistence.controller_count'] = writeDetails.controllers.length;
+        if (writeDetails.coalescedUpdates !== undefined) {
+          extra['persistence.coalesced_updates'] =
+            writeDetails.coalescedUpdates;
+        }
+      }
+
+      if (!isBrowserShuttingDownError(error)) {
+        const readDiagnostics = await this.#readSplitStateDiagnostics();
+        if (readDiagnostics) {
+          extra['persistence.read_manifest_status'] =
+            readDiagnostics.manifestStatus;
+          if (readDiagnostics.manifestKeyCount !== undefined) {
+            extra['persistence.read_manifest_key_count'] =
+              readDiagnostics.manifestKeyCount;
+          }
+          if (readDiagnostics.manifestErrorName) {
+            extra['persistence.read_manifest_error_name'] =
+              readDiagnostics.manifestErrorName;
+          }
+          if (readDiagnostics.readableKeys.length > 0) {
+            extra['persistence.read_readable_keys'] =
+              readDiagnostics.readableKeys.join(',');
+          }
+          if (readDiagnostics.missingKeys.length > 0) {
+            extra['persistence.read_missing_keys'] =
+              readDiagnostics.missingKeys.join(',');
+          }
+          if (readDiagnostics.failedKeys.length > 0) {
+            extra['persistence.read_failed_keys'] = readDiagnostics.failedKeys
+              .map((keyFailure) => `${keyFailure.key}:${keyFailure.errorName}`)
+              .join(',');
+          }
+        }
+      }
+
+      // Custom fingerprint prevents Sentry's deduplication from dropping
+      // this event when other persistence errors with the same underlying
+      // error message (e.g., "An unexpected error occurred") are reported.
+      // `idle_status` and `environment_type` are tags so they can be filtered.
+      captureException(error, {
+        tags: {
+          'persistence.error': failure,
+          'persistence.environment_type': snapshot.environmentType,
+          'persistence.idle_status': snapshot.idleStatus,
+        },
+        extra,
+        fingerprint: ['persistence-error', failure],
+      });
+    } catch {
+      // Telemetry must not surface reporting failures.
+    }
+  }
+
+  async #captureWriteFailure(
     error: unknown,
     target: PersistenceWriteTarget,
     operation: PersistenceWriteOperation,
+    writeDetails: { controllers: string[]; coalescedUpdates?: number },
   ) {
     if (this.#dataPersistenceFailures.has(target)) {
       return;
@@ -454,13 +626,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         ? `${operation}-failed`
         : `${operation}-backup-failed`;
 
-    // Custom fingerprint prevents Sentry's deduplication from dropping
-    // this event when other persistence errors with the same underlying
-    // error message (e.g., "An unexpected error occurred") are reported.
-    captureException(error, {
-      tags: { 'persistence.error': failure },
-      fingerprint: ['persistence-error', failure],
-    });
+    this.#capturePersistenceException(error, failure, writeDetails);
   }
 
   #captureWriteRecovery(
@@ -814,6 +980,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             err,
             backupFailed ? 'backup' : 'primary',
             'set',
+            { controllers: Object.keys(state) },
           );
           const normalizedError = this.#normalizePersistError(err);
           this.#notifySetFailed(normalizedError.message);
@@ -863,44 +1030,10 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       return;
     }
 
-    // Snapshot activity before any awaits so init / UI changes during size
-    // measurement cannot skew the write's reported context.
-    // Best-effort: missing/throwing provider → empty activity, write still emits.
-    let currentActivity: CurrentActivity = {};
-    if (this.#getCurrentActivity) {
-      try {
-        currentActivity = this.#getCurrentActivity();
-      } catch {
-        // Keep empty snapshot.
-      }
-    }
-
-    // Best-effort: throwing getter → empty activity, write still emits.
-    // Wait for session restore so an early startup write still reports
-    // timestamps from before the service-worker restart.
-    let lastActivity: LastActivityContext = {};
-    try {
-      await hydrateLastActivity();
-    } catch {
-      // Snapshot whatever is already in memory.
-    }
-    try {
-      lastActivity = getLastActivityContext();
-    } catch {
-      // Keep empty snapshot.
-    }
-
-    // Not wrapped in try/catch: a throwing provider aborts the rest of this
-    // method, matching the existing contract that telemetry failures must
-    // not emit a partial `splitStateWrite` event (the write itself already
-    // succeeded by this point).
-    const idleStatus =
-      this.#getIsIdle(currentActivity, lastActivity) ?? 'unknown';
-
-    const href = globalThis.self?.location?.href;
-    const environmentType = (
-      href !== undefined && href !== '' ? getEnvironmentType(href) : 'unknown'
-    ) as EnvironmentType | 'unknown';
+    // Snapshot before size measurement so init / UI changes during that await
+    // cannot skew the write's reported context.
+    const { currentActivity, environmentType, idleStatus, lastActivity } =
+      await this.#getActivitySnapshot();
 
     let bytesByController: Map<string, number> | undefined;
     let sizeMeasurementSource: SplitStateWriteEvent['sizeMeasurementSource'] =
@@ -991,6 +1124,11 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         this.#currentLockAbortController = undefined;
         // Track which operation failed to use the correct Sentry tag
         let backupFailed = false;
+        // Read before cloning so a failed clone still reports what was pending.
+        const failedWriteControllers = [...this.#pendingPairs.keys()].filter(
+          (key) => key !== 'data' && key !== 'manifest' && key !== 'meta',
+        );
+        const failedCoalescedUpdates = this.#pendingUpdateCount;
         try {
           const clone = structuredClone(this.#pendingPairs);
           const coalescedUpdates = this.#pendingUpdateCount;
@@ -1085,6 +1223,10 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             err,
             backupFailed ? 'backup' : 'primary',
             'persist',
+            {
+              controllers: failedWriteControllers,
+              coalescedUpdates: failedCoalescedUpdates,
+            },
           );
           const normalizedError = this.#normalizePersistError(err);
           this.#notifySetFailed(normalizedError.message);
@@ -1137,13 +1279,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             localStoreError,
           );
           if (reportErrors) {
-            // Custom fingerprint prevents Sentry's deduplication from dropping
-            // this event when other persistence errors with the same underlying
-            // error message (e.g., "An unexpected error occurred") are reported.
-            captureException(localStoreError, {
-              tags: { 'persistence.error': 'get-failed' },
-              fingerprint: ['persistence-error', 'get-failed'],
-            });
+            this.#capturePersistenceException(localStoreError, 'get-failed');
           }
 
           // A read that failed only because the browser is closing says nothing
@@ -1268,6 +1404,48 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         this.#errorTypeBeforeCallbackRegistered = null;
       },
     );
+  }
+
+  /**
+   * Returns the total stored size of the given keys in the local store.
+   *
+   * Prefers exact `getBytesInUse` bytes. When that API is missing or fails,
+   * falls back to a `JSON.stringify` string-length estimate from
+   * `valuesByKey`.
+   *
+   * @param keys - The storage keys to measure.
+   * @param valuesByKey - In-memory values for those keys, used only for the
+   * estimate fallback.
+   * @returns The measured size and its source, or `undefined` when neither
+   * exact bytes nor an estimate is available.
+   */
+  async getStoredBytes(
+    keys: string[],
+    valuesByKey?: Readonly<Record<string, unknown>>,
+  ): Promise<StoredBytesResult | undefined> {
+    try {
+      const bytes = await this.#localStore.getTotalBytesInUse?.(keys);
+      if (typeof bytes === 'number') {
+        return { bytes, source: 'storage_get_bytes_in_use' };
+      }
+    } catch {
+      // Fall back to a synchronous estimate when exact storage bytes are
+      // unavailable or fail. Telemetry must not fail a successful read.
+    }
+
+    if (!valuesByKey) {
+      return undefined;
+    }
+
+    let bytes = 0;
+    for (const key of keys) {
+      // Cheap size estimate for telemetry: `JSON.stringify` string length
+      // (UTF-16 code units), not UTF-8 byte length via `TextEncoder`.
+      const serializedValue = JSON.stringify(valuesByKey[key]);
+      bytes += serializedValue === undefined ? 0 : serializedValue.length;
+    }
+
+    return { bytes, source: 'json_string_length_estimate' };
   }
 
   /**

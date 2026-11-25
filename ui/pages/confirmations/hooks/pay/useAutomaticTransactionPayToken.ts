@@ -33,8 +33,10 @@ import {
 import { useIsHardwareWalletAccount } from '../../../../hooks/useIsHardwareWalletAccount';
 import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
 import { useTransactionPayingAccount } from '../transactions/useTransactionPayingAccount';
+import { encodeEvmAssetId } from '../../../../../shared/lib/transaction/pay-token';
 import { useImportPayToken } from './useImportPayToken';
 import { useIsPayHardwareBlocked } from './useIsPayHardwareBlocked';
+import { useAutomaticMoneyAccountPayToken } from './useAutomaticMoneyAccountPayToken';
 import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
@@ -115,6 +117,15 @@ export function useAutomaticTransactionPayToken({
     () => tokens.filter((t) => !t.disabled),
     [tokens],
   );
+
+  const {
+    isPending: isMoneyAccountPayPending,
+    shouldSelect: shouldSelectMoneyAccount,
+  } = useAutomaticMoneyAccountPayToken({
+    availableTokens: tokensWithBalance,
+    disable,
+    payTokenSelected: Boolean(payToken),
+  });
 
   const [emptyAccountReselectTimedOut, setEmptyAccountReselectTimedOut] =
     useState(false);
@@ -200,6 +211,16 @@ export function useAutomaticTransactionPayToken({
       return;
     }
 
+    // Money Account owns the default when it is the better funding source.
+    // Selecting a token first latches payToken, so the balance default never
+    // runs. Wait while its balance is still loading.
+    if (isMoneyAccountPayPending || shouldSelectMoneyAccount) {
+      if (shouldSelectMoneyAccount) {
+        isUpdated.current = transactionId;
+      }
+      return;
+    }
+
     if (!automaticToken) {
       return;
     }
@@ -227,23 +248,24 @@ export function useAutomaticTransactionPayToken({
     }
 
     isUpdated.current = transactionId;
-    setPayToken({
-      address: automaticToken.address,
-      chainId: automaticToken.chainId,
-    }).catch((error) => {
-      console.error('Failed to set automatic pay token', error);
-      if (isUpdated.current === transactionId) {
-        isUpdated.current = undefined;
-      }
-    });
+    setPayToken({ assetId: encodeEvmAssetId(automaticToken) }).catch(
+      (error) => {
+        console.error('Failed to set automatic pay token', error);
+        if (isUpdated.current === transactionId) {
+          isUpdated.current = undefined;
+        }
+      },
+    );
   }, [
     automaticToken,
     disable,
     isDefaultMoneyAccount,
+    isMoneyAccountPayPending,
     isPostQuoteWithdraw,
     payToken,
     preferredToken,
     setPayToken,
+    shouldSelectMoneyAccount,
     tokens,
     transactionId,
   ]);
@@ -279,6 +301,12 @@ export function useAutomaticTransactionPayToken({
       return;
     }
 
+    // Initial selection already yielded to Money Account. Once a pay token
+    // exists, an account change still needs a token for the new account.
+    if (!payToken && (isMoneyAccountPayPending || shouldSelectMoneyAccount)) {
+      return;
+    }
+
     if (!automaticToken) {
       // Keep pending after the empty-account timeout. Funding tokens can still
       // arrive later; clearing pending here would leave payToken unset forever
@@ -286,10 +314,7 @@ export function useAutomaticTransactionPayToken({
       return;
     }
 
-    setPayToken({
-      address: automaticToken.address,
-      chainId: automaticToken.chainId,
-    });
+    setPayToken({ assetId: encodeEvmAssetId(automaticToken) });
     pendingAccountReselectRef.current = false;
   }, [
     accountOverride,
@@ -298,8 +323,11 @@ export function useAutomaticTransactionPayToken({
     emptyAccountReselectTimedOut,
     from,
     isDefaultMoneyAccount,
+    isMoneyAccountPayPending,
     isPostQuoteWithdraw,
+    payToken,
     setPayToken,
+    shouldSelectMoneyAccount,
     tokensWithBalance.length,
   ]);
 
@@ -351,10 +379,11 @@ export function useAutomaticTransactionPayToken({
     }
 
     if (automaticToken) {
-      setPayToken({
-        address: automaticToken.address,
-        chainId: automaticToken.chainId,
-      });
+      setPayToken({ assetId: encodeEvmAssetId(automaticToken) }).catch(
+        (error) => {
+          console.error('Failed to set automatic pay token', error);
+        },
+      );
     }
   }, [automaticToken, disable, from, isMoneyPaymentOverride, setPayToken]);
 }

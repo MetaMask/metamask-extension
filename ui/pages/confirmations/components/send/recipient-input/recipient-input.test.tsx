@@ -163,8 +163,8 @@ describe('RecipientInput', () => {
     expect(mockUpdateTo).toHaveBeenCalledWith('');
   });
 
-  it('shows 10 characters on each side of an unnamed address', () => {
-    const address = '0x1234567890abcdef1234567890abcdef12345678';
+  it('shows the full address when it has no name', () => {
+    const address = '0x36dB199F0a1cD131ad0b5Cf4Fe7FE522839a1B2C';
     mockUseSendContext.mockReturnValue({
       to: address,
       updateTo: mockUpdateTo,
@@ -175,11 +175,11 @@ describe('RecipientInput', () => {
       recipientValidationResult: { toAddressValidated: address },
     });
 
-    expect(getByText('0x12345678...ef12345678')).toBeInTheDocument();
+    expect(getByText(address)).toBeInTheDocument();
   });
 
-  it('shows 10 characters on each side of the address under a contact name', () => {
-    const address = '0x1234567890abcdef1234567890abcdef12345678';
+  it('shows the address under a contact name', () => {
+    const address = '0x36dB199F0a1cD131ad0b5Cf4Fe7FE522839a1B2C';
     mockUseRecipients.mockReturnValue([
       { address, contactName: 'Alice' },
     ] as unknown as ReturnType<typeof useRecipients>);
@@ -194,7 +194,7 @@ describe('RecipientInput', () => {
     });
 
     expect(getByText('Alice')).toBeInTheDocument();
-    expect(getByText('0x12345678...ef12345678')).toBeInTheDocument();
+    expect(getByText(address)).toBeInTheDocument();
   });
 
   it('display confusable characters when they exist', () => {

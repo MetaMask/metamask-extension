@@ -32,6 +32,13 @@ PASSKEY_ENABLED='false'
 ; usually needed alongside the URL overrides above.
 ;MM_BACKEND_DISABLE_AUTH='true'
 
+; Advanced Charts iframe origin. Defaults to the UAT origin,
+; https://chart.uat.metamask-charts.com (production is
+; https://chart.metamask-charts.com). Your extension id must be in that
+; origin's frame-ancestors allowlist, so point this at the local
+; chart-origin server when it isn't.
+;CHART_ORIGIN_URL='http://localhost:8001'
+
 ; This variable is not required but it's necessary for the storybook
 ; to render stories that use onchain data.
 INFURA_STORYBOOK_PROJECT_ID=
@@ -52,8 +59,6 @@ INFURA_STORYBOOK_PROJECT_ID=
 
 ; Set this to test changes to the phishing warning page.
 ;PHISHING_WARNING_PAGE_URL=
-BLOCKAID_FILE_CDN=
-BLOCKAID_PUBLIC_KEY=
 
 ; Change this to override built-in intercepting https proxy for e2e tests
 ; SELENIUM_HTTPS_PROXY='http://127.0.0.1:8000'
@@ -66,8 +71,6 @@ BLOCKAID_PUBLIC_KEY=
 
 ; URL of security alerts API used to validate dApp requests
 ; SECURITY_ALERTS_API_URL='http://localhost:3000'
-; Temporary mechanism to enable security alerts API prior to release
-; SECURITY_ALERTS_API_ENABLED='true'
 
 ; Enables the Settings Page - Developer Options
 ; ENABLE_SETTINGS_PAGE_DEV_OPTIONS=true

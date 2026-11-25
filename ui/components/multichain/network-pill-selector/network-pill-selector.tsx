@@ -23,6 +23,7 @@ import {
 import { useSelector } from 'react-redux';
 import { getNetworkIcon } from '../../../../shared/lib/network.utils';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
+import { getChainIdToNetworkImageUrlMap } from '../../../selectors/config-registry/config-registry';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -33,7 +34,7 @@ import { getHiddenPillCount } from './get-hidden-pill-count';
 import { useNetworkPillBalances } from './use-network-pill-balances';
 
 const PILL_CLASS_NAME =
-  'flex h-10 shrink-0 cursor-pointer items-center gap-2 rounded-full border-0 px-4 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-default';
+  'flex h-10 shrink-0 cursor-pointer items-center gap-2 rounded-full border-0 px-4 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-default transition-opacity disabled:cursor-default disabled:opacity-60 disabled:delay-75 motion-reduce:transition-none';
 
 const PILL_UNSELECTED_CLASS_NAME = 'bg-muted text-default hover:bg-muted-hover';
 
@@ -42,6 +43,7 @@ type NetworkPillProps = {
   balance?: string;
   isSelected: boolean;
   isHidden?: boolean;
+  isDisabled?: boolean;
   privacyMode: boolean;
   icon: React.ReactNode;
   onClick: () => void;
@@ -60,6 +62,7 @@ const NetworkPill = ({
   balance,
   isSelected,
   isHidden = false,
+  isDisabled = false,
   privacyMode,
   icon,
   onClick,
@@ -67,6 +70,7 @@ const NetworkPill = ({
 }: NetworkPillProps) => (
   <button
     type="button"
+    disabled={isDisabled}
     className={classnames(
       PILL_CLASS_NAME,
       isSelected
@@ -136,6 +140,7 @@ export const NetworkPillSelector = () => {
   const t = useI18nContext();
   const { formatCurrency } = useFormatters();
   const { privacyMode } = useSelector(getPreferences);
+  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
   const {
     defaultNetworks,
     handleSelectAllDefaultNetworks,
@@ -144,6 +149,7 @@ export const NetworkPillSelector = () => {
     isAllDefaultSelected,
     isNetworkDisabled,
     isNetworkSelected,
+    isPending,
   } = useHomeNetworkFilter();
   const networks = useMemo(
     () => defaultNetworks.filter((network) => !isNetworkDisabled(network)),
@@ -211,7 +217,7 @@ export const NetworkPillSelector = () => {
   if (isLoading) {
     return (
       <div
-        className="flex gap-2 px-4 py-2"
+        className="flex gap-2 p-4"
         data-testid="network-pill-selector-skeleton"
       >
         {[0, 1, 2].map((key) => (
@@ -222,7 +228,7 @@ export const NetworkPillSelector = () => {
   }
 
   return (
-    <div className="px-4 py-2" data-testid="network-pill-selector">
+    <div className="p-4" data-testid="network-pill-selector">
       <div
         ref={pillsRef}
         className={classnames(
@@ -249,6 +255,7 @@ export const NetworkPillSelector = () => {
             />
           }
           isHidden={isPillHidden(0)}
+          isDisabled={isPending}
           onClick={handleSelectAllDefaultNetworks}
           testId="network-pill-all-default"
         />
@@ -259,11 +266,12 @@ export const NetworkPillSelector = () => {
             balance={format(balanceByChainId[network.chainId])}
             isSelected={isNetworkSelected(network)}
             isHidden={isPillHidden(index + 1)}
+            isDisabled={isPending}
             privacyMode={privacyMode}
             icon={
               <AvatarNetwork
                 name={network.name}
-                src={getNetworkIcon(network)}
+                src={getNetworkIcon(network, networkImageUrls)}
                 size={AvatarNetworkSize.Sm}
                 className="rounded-full"
               />

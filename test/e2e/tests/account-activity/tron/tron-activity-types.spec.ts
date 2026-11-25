@@ -83,6 +83,7 @@ describe('Tron - Activity types', function (this: Suite) {
             },
           },
         ],
+        localNode: false,
         fixtures: new FixtureBuilderV2()
           .withBridgeStatusController({
             txHistory: { [bridge.raw.txID]: bridgeHistory },
@@ -93,7 +94,6 @@ describe('Tron - Activity types', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, {
           validateBalance: false,
-          waitForNonEvmAccounts: false,
         });
         await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
@@ -179,6 +179,7 @@ describe('Tron - Activity types', function (this: Suite) {
             transactions: { raw: [sendTx] },
           },
         ],
+        localNode: false,
         fixtures: new FixtureBuilderV2().build(),
         testSpecificMock: mockEvmActivityApi,
         title: this.test?.fullTitle(),
@@ -186,7 +187,6 @@ describe('Tron - Activity types', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, {
           validateBalance: false,
-          waitForNonEvmAccounts: false,
         });
         await switchToNetworkFromNetworkSelect(driver, 'Tron');
 

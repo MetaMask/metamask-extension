@@ -161,6 +161,7 @@ describe('useSimulationMetrics', () => {
     useAnalyticsMock.mockReturnValue({
       trackEvent: trackEventMock,
       createEventBuilder,
+      trackErrorAsAnalytics: jest.fn(),
     });
     useContextMock.mockReturnValue({
       bufferedTrace: jest.fn(),

@@ -3,6 +3,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyScreenName,
 } from '../../pages/money/constants/money-events';
 import type { MoneyDepositToken } from './money-deposit-token-utils';
@@ -49,6 +50,7 @@ describe('useMoneyAddDepositToken', () => {
       useMoneyAddDepositToken({
         screenName: MoneyScreenName.MoneyPotentialEarnings,
         tokenRowComponentName: MoneyComponentName.PotentialEarningsTokenRow,
+        ftueEntryPoint: MoneyFtueEntryPoint.MoneyPotentialEarnings,
       }),
     ).result.current;
 
@@ -72,6 +74,10 @@ describe('useMoneyAddDepositToken', () => {
     });
     expect(mockInitiateDeposit).toHaveBeenCalledWith({
       preferredPaymentToken: { address: token.address, chainId: '0xe708' },
+      ftueOrigin: {
+        entryPoint: MoneyFtueEntryPoint.MoneyPotentialEarnings,
+        componentName: MoneyComponentName.PotentialEarningsTokenRow,
+      },
     });
   });
 
@@ -90,6 +96,10 @@ describe('useMoneyAddDepositToken', () => {
     );
     expect(mockInitiateDeposit).toHaveBeenCalledWith({
       preferredPaymentToken: { address: token.address, chainId: '0xe708' },
+      ftueOrigin: {
+        entryPoint: MoneyFtueEntryPoint.MoneyPotentialEarnings,
+        componentName: MoneyComponentName.ConvertCryptoButton,
+      },
     });
   });
 });

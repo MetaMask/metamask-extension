@@ -15,6 +15,8 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy/privacy-settings';
 import { login } from '../../page-objects/flows/login.flow';
 import { closeSettings } from '../../page-objects/flows/settings.flow';
+import { NetworkId, NetworkName } from '../../helpers/network-constants';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 
 const MOCK_CHAINLIST_RESPONSE = [
   {
@@ -84,8 +86,10 @@ describe('Popular Networks', function (this: Suite) {
 
         await networksPage.checkPageIsLoaded();
 
-        await networksPage.clickAddButtonForPopularNetwork('0xa86a');
-        await networksPage.checkAddNetworkMessageIsDisplayed('Avalanche');
+        await networksPage.clickAddButtonForPopularNetwork(CHAIN_IDS.AVALANCHE);
+        await networksPage.checkAddNetworkMessageIsDisplayed(
+          NetworkName.AVALANCHE,
+        );
         await networksPage.clickCloseButton();
 
         // verify the additional network was added without switching the home filter
@@ -109,7 +113,7 @@ describe('Popular Networks', function (this: Suite) {
 
         const networksPage = new NetworksPage(driver);
         await networksPage.checkPageIsLoaded();
-        await networksPage.disableNetwork('eip155:42161');
+        await networksPage.disableNetwork(NetworkId.ARBITRUM);
         await networksPage.clickCloseButton();
         await headerNavbar.clickDrawerBackButton();
 
@@ -120,8 +124,8 @@ describe('Popular Networks', function (this: Suite) {
         // check that arbitrum is on the list of popular network
         await networksPage.checkPageIsLoaded();
         await networksPage.checkPopularNetworkIsDisplayed({
-          chainId: '0xa4b1',
-          networkName: 'Arbitrum',
+          chainId: CHAIN_IDS.ARBITRUM,
+          networkName: NetworkName.ARBITRUM,
         });
       },
     );

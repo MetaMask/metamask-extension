@@ -57,6 +57,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyOnboardingStepAction,
   MoneyScreenName,
   MoneyTooltipName,
@@ -184,7 +185,7 @@ export function MoneyHomePage() {
     tokenTotal,
     totalFiatFormatted,
     totalFiatRaw,
-    vaultApyQuery,
+    isApyLoading,
   } = useMoneyAccountBalance({ enabled: availability.isAvailable });
   const isMoneyEarningSectionEnabled = useSelector(
     selectMoneyEarningSectionEnabled,
@@ -219,7 +220,7 @@ export function MoneyHomePage() {
     last30DaysQuery.isLoading ||
     (formatInterestEarned(last30DaysQuery.data?.interest_earned_usd) ===
       undefined &&
-      (vaultApyQuery.isLoading || isBalanceLoading));
+      (isApyLoading || isBalanceLoading));
   const isLifetimeEarningsLoading =
     !sinceInceptionQuery.isError && sinceInceptionQuery.isLoading;
   const { tokens: depositTokens, isNoFeeToken } = useMoneyDepositTokens();
@@ -239,6 +240,7 @@ export function MoneyHomePage() {
       screenName: MoneyScreenName.MoneyHome,
       tokenRowComponentName:
         MoneyComponentName.PotentialEarningsSectionTokenRow,
+      ftueEntryPoint: MoneyFtueEntryPoint.MoneyHome,
     });
   const { initiateWithdrawal, isLoading: isWithdrawLoading } =
     useMoneyAccountWithdrawal();
@@ -321,7 +323,12 @@ export function MoneyHomePage() {
       buttonPosition: 1,
       buttonRowButtonCount: ACTION_BUTTON_ROW_BUTTON_COUNT,
     });
-    initiateDeposit();
+    initiateDeposit({
+      ftueOrigin: {
+        entryPoint: MoneyFtueEntryPoint.MoneyHome,
+        componentName: MoneyComponentName.ActionButtonRow,
+      },
+    });
   }, [initiateDeposit, trackButtonClicked]);
   const handleAddFundsFromFundCard = useCallback(() => {
     trackOnboardingEvent({
@@ -331,7 +338,12 @@ export function MoneyHomePage() {
       stepAction: MoneyOnboardingStepAction.DepositInitiated,
       redirectTarget: MoneyScreenName.MoneyDeposit,
     });
-    initiateDeposit();
+    initiateDeposit({
+      ftueOrigin: {
+        entryPoint: MoneyFtueEntryPoint.MoneyHome,
+        componentName: MoneyComponentName.OnboardingCard,
+      },
+    });
   }, [initiateDeposit, trackOnboardingEvent]);
   const handleLearnMore = useCallback(() => {
     trackButtonClicked({
@@ -486,7 +498,7 @@ export function MoneyHomePage() {
               </Text>
             ) : null}
             <div className="flex h-6 items-center gap-1">
-              {vaultApyQuery.isLoading && !apyDisplay ? (
+              {isApyLoading && !apyDisplay ? (
                 <Skeleton className="h-4 w-24" />
               ) : (
                 <>

@@ -20,6 +20,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyOnboardingStepAction,
   MoneyScreenName,
   MoneyTooltipName,
@@ -66,8 +67,19 @@ const interestResponse = (value: string) => ({
 });
 
 jest.mock('react-redux', () => ({
-  useSelector: (selector: () => unknown) => selector(),
+  useSelector: (selector: (state: unknown) => unknown) =>
+    selector({ metamask: {} }),
 }));
+
+jest.mock(
+  '../../components/app/modals/visit-support-data-consent-modal',
+  () => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: () => null,
+    useOpenSupport: () => jest.fn(),
+  }),
+);
 
 jest.mock('../../selectors/money/money-account-feature-flags', () => ({
   ...jest.requireActual('../../selectors/money/money-account-feature-flags'),
@@ -191,7 +203,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber(0),
       totalFiatFormatted: '$0.00',
       totalFiatRaw: '0',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
@@ -360,7 +372,7 @@ describe('MoneyHomePage', () => {
     });
 
     expect(global.platform.openTab).toHaveBeenCalledWith({
-      url: 'https://metamask.io/money?utm_source=extension',
+      url: 'https://metamask.com/money?utm_source=extension',
     });
   });
 
@@ -404,7 +416,12 @@ describe('MoneyHomePage', () => {
     );
 
     expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
-    expect(mockInitiateDeposit).toHaveBeenCalledWith();
+    expect(mockInitiateDeposit).toHaveBeenCalledWith({
+      ftueOrigin: {
+        entryPoint: MoneyFtueEntryPoint.MoneyHome,
+        componentName: MoneyComponentName.ActionButtonRow,
+      },
+    });
     expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
       buttonType: MoneyButtonType.Text,
       buttonIntent: MoneyButtonIntent.AddMoney,
@@ -431,7 +448,12 @@ describe('MoneyHomePage', () => {
     );
 
     expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
-    expect(mockInitiateDeposit).toHaveBeenCalledWith();
+    expect(mockInitiateDeposit).toHaveBeenCalledWith({
+      ftueOrigin: {
+        entryPoint: MoneyFtueEntryPoint.MoneyHome,
+        componentName: MoneyComponentName.OnboardingCard,
+      },
+    });
     expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
       screenName: MoneyScreenName.MoneyHome,
       componentName: MoneyComponentName.OnboardingCard,
@@ -490,6 +512,10 @@ describe('MoneyHomePage', () => {
       preferredPaymentToken: {
         address: DEPOSIT_TOKEN.address,
         chainId: DEPOSIT_TOKEN.chainId,
+      },
+      ftueOrigin: {
+        entryPoint: MoneyFtueEntryPoint.MoneyHome,
+        componentName: MoneyComponentName.PotentialEarningsSectionTokenRow,
       },
     });
   });
@@ -585,7 +611,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('3475.45'),
       totalFiatFormatted: '$3,475.45',
       totalFiatRaw: '3475.45',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     renderWithLocalization(<MoneyHomePage />);
 
@@ -610,7 +636,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('3475.45'),
       totalFiatFormatted: '$3,475.45',
       totalFiatRaw: '3475.45',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     renderWithLocalization(<MoneyHomePage />);
 
@@ -656,13 +682,16 @@ describe('MoneyHomePage', () => {
       screen.getByRole('link', { name: messages.moneyMeetMusd.message }),
     ).toHaveAttribute(
       'href',
-      'https://metamask.io/price/metamask-usd?utm_source=extension',
+      'https://metamask.com/price/metamask-usd?utm_source=extension',
     );
     expect(
       screen.getByRole('link', {
         name: messages.moneyExploreBenefits.message,
       }),
-    ).toHaveAttribute('href', 'https://metamask.io/money?utm_source=extension');
+    ).toHaveAttribute(
+      'href',
+      'https://metamask.com/money?utm_source=extension',
+    );
     expect(
       screen.getByRole('link', {
         name: messages.moneyHowYourMoneyGrows.message,
@@ -694,7 +723,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('100'),
       totalFiatFormatted: '$100.00',
       totalFiatRaw: '100',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -728,7 +757,7 @@ describe('MoneyHomePage', () => {
         tokenTotal: new BigNumber('100'),
         totalFiatFormatted: '$100.00',
         totalFiatRaw: '100',
-        vaultApyQuery: { isLoading: false },
+        isApyLoading: false,
       });
       global.platform.openTab = jest.fn();
 
@@ -756,7 +785,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('100'),
       totalFiatFormatted: '$100.00',
       totalFiatRaw: '100',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -782,7 +811,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('100'),
       totalFiatFormatted: '$100.00',
       totalFiatRaw: '100',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     global.platform.openTab = jest.fn();
 
@@ -791,7 +820,7 @@ describe('MoneyHomePage', () => {
     fireEvent.click(screen.getByTestId('money-condensed-info-card-musd'));
 
     expect(global.platform.openTab).toHaveBeenCalledWith({
-      url: 'https://metamask.io/price/metamask-usd?utm_source=extension',
+      url: 'https://metamask.com/price/metamask-usd?utm_source=extension',
     });
   });
 
@@ -805,7 +834,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('100'),
       totalFiatFormatted: '$100.00',
       totalFiatRaw: '100',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     global.platform.openTab = jest.fn();
 
@@ -814,7 +843,7 @@ describe('MoneyHomePage', () => {
     fireEvent.click(screen.getByTestId('money-condensed-info-card-benefits'));
 
     expect(global.platform.openTab).toHaveBeenCalledWith({
-      url: 'https://metamask.io/money?utm_source=extension',
+      url: 'https://metamask.com/money?utm_source=extension',
     });
   });
 
@@ -828,7 +857,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('3475.45'),
       totalFiatFormatted: '$3,475.45',
       totalFiatRaw: '3475.45',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyActivityItems.mockReturnValue({
       items: MOCK_MONEY_TRANSACTIONS.map(onchainItem),
@@ -865,7 +894,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('3475.45'),
       totalFiatFormatted: '$3,475.45',
       totalFiatRaw: '3475.45',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyActivityItems.mockReturnValue({ items });
 
@@ -885,7 +914,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('10'),
       totalFiatFormatted: '$10.00',
       totalFiatRaw: '10',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
@@ -919,7 +948,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('10'),
       totalFiatFormatted: '$10.00',
       totalFiatRaw: '10',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
@@ -953,7 +982,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('10'),
       totalFiatFormatted: '$10.00',
       totalFiatRaw: '10',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: { data: undefined, isLoading: true },
@@ -980,7 +1009,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('120'),
       totalFiatFormatted: '$120.00',
       totalFiatRaw: '120',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
@@ -1013,7 +1042,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('120'),
       totalFiatFormatted: '$120.00',
       totalFiatRaw: '120',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
@@ -1046,7 +1075,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('10'),
       totalFiatFormatted: '$10.00',
       totalFiatRaw: '10',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
@@ -1079,7 +1108,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('10'),
       totalFiatFormatted: '$10.00',
       totalFiatRaw: '10',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
@@ -1127,7 +1156,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('10'),
       totalFiatFormatted: '$10.00',
       totalFiatRaw: '10',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
@@ -1161,7 +1190,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('10'),
       totalFiatFormatted: '$10.00',
       totalFiatRaw: '10',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyDepositTokens.mockReturnValue({
       tokens: [DEPOSIT_TOKEN],
@@ -1186,7 +1215,7 @@ describe('MoneyHomePage', () => {
       isBalanceLoading: false,
       tokenTotal: new BigNumber('0.009'),
       totalFiatFormatted: '$0.01',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -1219,7 +1248,7 @@ describe('MoneyHomePage', () => {
       isBalanceLoading: true,
       tokenTotal: undefined,
       totalFiatFormatted: undefined,
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -1253,7 +1282,7 @@ describe('MoneyHomePage', () => {
       refetchBalance: jest.fn().mockResolvedValue(undefined),
       tokenTotal: undefined,
       totalFiatFormatted: undefined,
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -1285,7 +1314,7 @@ describe('MoneyHomePage', () => {
       refetchBalance,
       tokenTotal: undefined,
       totalFiatFormatted: undefined,
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -1319,7 +1348,7 @@ describe('MoneyHomePage', () => {
       refetchBalance,
       tokenTotal: undefined,
       totalFiatFormatted: undefined,
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -1340,7 +1369,7 @@ describe('MoneyHomePage', () => {
       isBalanceLoading: false,
       tokenTotal: new BigNumber(0),
       totalFiatFormatted: '$0.00',
-      vaultApyQuery: { isLoading: true },
+      isApyLoading: true,
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -1426,7 +1455,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('3475.45'),
       totalFiatFormatted: '$3,475.45',
       totalFiatRaw: '3475.45',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyDepositTokens.mockReturnValue({
       tokens: [DEPOSIT_TOKEN],

@@ -3,7 +3,6 @@
     "hiddenAccountList": "object",
     "pinnedAccountList": "object"
   },
-  "AccountTracker": { "accountsByChainId": "object" },
   "AccountTreeController": {
     "accountGroupsMetadata": "object",
     "accountTree": "object",
@@ -147,10 +146,6 @@
   },
   "ConnectivityController": { "connectivityStatus": "online" },
   "CronjobController": { "events": "object" },
-  "CurrencyController": {
-    "currencyRates": {},
-    "currentCurrency": "usd"
-  },
   "DeFiPositionsController": "object",
   "DeFiPositionsControllerV2": "object",
   "DecryptMessageController": {
@@ -255,7 +250,6 @@
     "onboardingTabs": "object",
     "seedPhraseBackedUp": null
   },
-  "PPOMController": { "storageMetadata": "object" },
   "PasskeyController": { "passkeyRecord": null },
   "PermissionController": { "subjects": "object" },
   "PermissionLogController": {
@@ -294,6 +288,7 @@
       "hideZeroBalanceTokens": false,
       "isBasicFunctionalityConsolidatedEnabled": "boolean",
       "privacyMode": "boolean",
+      "shouldShowSupportConsent": "boolean",
       "showConfirmationAdvancedDetails": false,
       "showDefaultAddress": "boolean",
       "showExtensionInFullSizeView": false,
@@ -305,6 +300,10 @@
       "skipDeepLinkInterstitial": "boolean",
       "smartTransactionsMigrationApplied": "boolean",
       "smartTransactionsOptInStatus": true,
+      "supportDataSharingPreference": null,
+      "tdpChartIndicators": "object",
+      "tdpChartInterval": "string",
+      "tdpChartType": "number",
       "tokenNetworkFilter": { "0x539": "boolean" },
       "tokenSortConfig": "object",
       "useNativeCurrencyAsPrimaryCurrency": "boolean",
@@ -339,8 +338,10 @@
   },
   "QrSyncController": "object",
   "RampsController": {
+    "autorampTransactionRecords": "object",
     "autoramps": "object",
     "countries": "object",
+    "moneyAccountWalletRegistrations": "object",
     "nativeProviders": "object",
     "orders": "object",
     "paymentMethods": "object",
@@ -348,7 +349,10 @@
     "providers": "object",
     "requests": "object",
     "tokens": "object",
-    "userRegion": null
+    "userRegion": null,
+    "userSelectedProviderId": null,
+    "vbaAutorampListFetchedAt": null,
+    "vbaCustomerAbilities": null
   },
   "RemoteFeatureFlagController": {
     "cacheTimestamp": "number",
@@ -426,7 +430,6 @@
     "transactionBatches": "object",
     "transactions": "object"
   },
-  "UserOperationController": { "userOperations": "object" },
   "UserStorageController": {
     "isAccountSyncingEnabled": true,
     "isBackupAndSyncEnabled": true,

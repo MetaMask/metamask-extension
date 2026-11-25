@@ -189,13 +189,13 @@ export const useBridgeNavigation = () => {
    * @param to - The default route to navigate to.
    */
   const resetLocationState = useCallback(
-    (to: To = { pathname }, options: { replace?: boolean } = {}) => {
+    (to: To = { pathname, search }, options: { replace?: boolean } = {}) => {
       navigate(to, {
         state: clearedBridgeState(state),
         ...options,
       });
     },
-    [navigate, state, pathname],
+    [navigate, state, pathname, search],
   );
 
   /**

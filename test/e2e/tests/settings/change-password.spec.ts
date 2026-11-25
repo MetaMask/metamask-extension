@@ -80,7 +80,6 @@ describe('Change wallet password', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.waitForNonEvmAccountsLoaded();
 
         await changePasswordAndLockWallet(
           driver,

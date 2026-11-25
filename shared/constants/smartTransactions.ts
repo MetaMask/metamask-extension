@@ -44,4 +44,4 @@ export const DEFAULT_SMART_TRANSACTIONS_ALLOWED_RPC_HOSTS: string[] = [
 ];
 
 export const SMART_TRANSACTIONS_LEARN_MORE_URL =
-  'https://support.metamask.io/transactions-and-gas/transactions/smart-transactions/?utm_source=extension';
+  'https://support.metamask.com/transactions-and-gas/transactions/smart-transactions/?utm_source=extension';

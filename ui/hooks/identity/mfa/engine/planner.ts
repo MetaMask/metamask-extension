@@ -3,6 +3,7 @@ import type { EnrolledCredential } from '@metamask/profile-sync-controller/sdk';
 import type {
   MethodStatus,
   MethodStatuses,
+  MfaFlowErrorCode,
   MfaKitErrorCode,
   MfaMethod,
   MfaPlatform,
@@ -20,7 +21,7 @@ import type {
  * the ones it can run (`PLATFORM_METHODS`). An authenticator app code comes
  * before an email code, which has to arrive first.
  */
-const METHOD_COST_RANKING: readonly MfaMethod[] = [
+export const METHOD_COST_RANKING: readonly MfaMethod[] = [
   'passkey',
   'totp',
   'email_otp',
@@ -88,13 +89,29 @@ export const getMethodStatuses = (
     ]),
   ) as MethodStatuses;
 
-const fail = (code: MfaKitErrorCode): Plan => ({ ok: false, code });
+const fail = (code: MfaFlowErrorCode): Plan => ({ ok: false, code });
 
 const isYoungerThan = (
   session: SessionSnapshot,
   maxAgeMs: number,
   now: number,
 ): boolean => now - session.obtainedAt < maxAgeMs;
+
+/**
+ * Methods that are active on the profile and supported on this platform, the
+ * ones that can prove it's the user right now, in the cost ranking's order.
+ *
+ * @param credentials - The `refreshEnrolledCredentials()` result.
+ * @param platform - The client running the kit.
+ * @returns The methods that can verify.
+ */
+export const getVerifiableMethods = (
+  credentials: EnrolledCredential[],
+  platform: MfaPlatform,
+): MfaMethod[] => {
+  const statuses = getMethodStatuses(credentials, platform);
+  return METHOD_COST_RANKING.filter((method) => statuses[method].canVerify);
+};
 
 /**
  * Age limit for a session that authorizes adding a factor: proven during this
@@ -205,8 +222,9 @@ const addConfirmIfNeeded = (
 };
 
 /**
- * Plans a feature's `verifyOrEnroll` call: intro, then per missing method an
- * optional "confirm it's you" and its setup, then an optional verification.
+ * Plans a feature's `verifyOrEnroll` call: an intro when it asks for more than
+ * one method, then per missing method an optional "confirm it's you" and its
+ * setup, then an optional verification.
  * Recomputed from fresh state after every step.
  *
  * @param request - What the feature asked for.
@@ -221,18 +239,26 @@ export const planVerifyOrEnroll = (
   if (verifyWith.some((method) => !request.methods.includes(method))) {
     return fail('invalid_request');
   }
+  // Verifying is all a verify-only request is for.
+  if (request.verifyOnly && verifyWith.length === 0) {
+    return fail('invalid_request');
+  }
 
   const statuses = getMethodStatuses(context.credentials, context.platform);
-  const missing = orderSetups(
-    request.methods.filter((method) => !statuses[method].isActive),
-    verifyWith,
-  );
+  const missing = request.verifyOnly
+    ? []
+    : orderSetups(
+        request.methods.filter((method) => !statuses[method].isActive),
+        verifyWith,
+      );
   if (missing.some((method) => !statuses[method].canEnroll)) {
     return fail('passkey_unsupported');
   }
 
   const steps: PlanStep[] = [];
-  if (missing.length > 0 && !context.introShown) {
+  // The intro presents the methods as backups for each other, which takes
+  // more than one.
+  if (missing.length > 0 && request.methods.length > 1 && !context.introShown) {
     steps.push({ kind: 'intro', methods: request.methods, missing });
   }
 
@@ -269,7 +295,11 @@ export const planVerifyOrEnroll = (
           isMethodSupported(method, context.platform),
       );
       if (options.length === 0) {
-        return fail('passkey_unsupported');
+        return fail(
+          request.verifyOnly
+            ? 'credential_not_enrolled'
+            : 'passkey_unsupported',
+        );
       }
       steps.push({ kind: 'verify', options });
     }

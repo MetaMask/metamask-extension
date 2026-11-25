@@ -157,7 +157,11 @@ const AssetChart = ({
         isPlaceholderData={isPlaceholderData}
         currency={currency}
         currentPrice={currentPrice}
-        onHoverPrice={(point) => priceRef?.current?.setPrice(point)}
+        onHoverPrice={(point) =>
+          priceRef?.current?.setPrice(
+            point ?? { price: currentPrice, date: Date.now() },
+          )
+        }
       >
         <Box
           style={prices ? undefined : { visibility: `hidden` }}

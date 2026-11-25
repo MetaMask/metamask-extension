@@ -19,12 +19,7 @@ import {
 import { MultichainNetworks } from '../../constants/multichain/networks';
 import { decimalToPrefixedHex } from '../conversion.utils';
 
-const DOMAIN = 'https://metamask.io';
-
-export function isSecurityAlertsAPIEnabled() {
-  const isEnabled = process.env.SECURITY_ALERTS_API_ENABLED;
-  return isEnabled?.toString() === 'true';
-}
+const DOMAIN = 'https://metamask.com';
 
 function getUrl(endpoint: string) {
   const host = process.env.SECURITY_ALERTS_API_URL;
@@ -67,10 +62,6 @@ export async function fetchTokenAlert(
   chain: string,
   tokenAddress: string,
 ): Promise<TokenAlertWithLabelIds | null> {
-  if (!isSecurityAlertsAPIEnabled()) {
-    return null;
-  }
-
   const url = getUrl('token/scan');
   const body = getSecurityApiScanTokenRequestBody(chain, tokenAddress);
 
@@ -174,7 +165,7 @@ export async function fetchEvmAddressScan(
 ): Promise<AddressScanResult | null> {
   const chain = getEvmAddressChainName(chainId);
 
-  if (!isSecurityAlertsAPIEnabled() || !address || !chain) {
+  if (!address || !chain) {
     return null;
   }
 
@@ -223,7 +214,7 @@ export async function fetchTxAlerts(
     accountAddress: string;
   } | null,
 ): Promise<TxAlert | null> {
-  if (!isSecurityAlertsAPIEnabled() || !params) {
+  if (!params) {
     return null;
   }
 
