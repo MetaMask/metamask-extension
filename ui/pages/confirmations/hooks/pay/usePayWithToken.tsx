@@ -6,6 +6,7 @@ import {
 import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
+import { createFormatters } from '@metamask/client-utils';
 import {
   hasTransactionType,
   isPostQuoteWithdrawTransaction,
@@ -21,6 +22,7 @@ import { useConfirmContext } from '../../context/confirm';
 import { PayWithModal } from '../../components/modals/pay-with-modal';
 import { useMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useMoneyAccountWithdrawableFiat';
 import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
+import { useIsMoneyAccountPerpsNavigation } from './useIsMoneyAccountPerpsNavigation';
 import { usePayTokenAccountBalance } from './usePayTokenAccountBalance';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
@@ -32,6 +34,16 @@ export type PayWithDisplayToken = {
   symbol: string;
   balanceUsd: string;
 };
+
+const CONVERT_ROW_LABEL_TRANSACTION_TYPES = [
+  TransactionType.moneyAccountDeposit,
+  TransactionType.perpsDeposit,
+];
+
+const { formatCurrency: formatEnUsCurrency } = createFormatters({
+  locale: 'en-US',
+  currencyDisplay: 'narrowSymbol',
+});
 
 type PayWithToken = {
   displayToken: PayWithDisplayToken | undefined;
@@ -70,6 +82,7 @@ export function usePayWithToken(): PayWithToken {
     selectPaymentOverrideByTransactionId(state, transactionId),
   );
   const isDefaultMoneyAccount = useIsMoneyAccountFlagDefault();
+  const isMoneyAccountPerpsDeposit = useIsMoneyAccountPerpsNavigation();
   const isMoneyAccountSelected =
     paymentOverride === PaymentOverride.MoneyAccount ||
     (isDefaultMoneyAccount && !payToken);
@@ -77,18 +90,25 @@ export function usePayWithToken(): PayWithToken {
     isMoneyAccountSelected,
   );
 
+  const isMoneyAccountDeposit = hasTransactionType(currentConfirmation, [
+    TransactionType.moneyAccountDeposit,
+  ]);
+
   const isPostQuoteWithdraw =
     isPostQuoteWithdrawTransaction(currentConfirmation);
+  const isConvertDeposit =
+    !isMoneyAccountSelected &&
+    !isMoneyAccountPerpsDeposit &&
+    hasTransactionType(
+      currentConfirmation,
+      CONVERT_ROW_LABEL_TRANSACTION_TYPES,
+    );
   // Avoid flashing the destination/required token (e.g. mUSD on Monad) while
   // payToken is cleared during account switches or initial auto-select.
   // Also wait when Money Account is the flag default so deposits do not flash
   // the required destination token before the override lands.
   const shouldWaitForPayToken =
-    isPostQuoteWithdraw ||
-    isDefaultMoneyAccount ||
-    hasTransactionType(currentConfirmation, [
-      TransactionType.moneyAccountDeposit,
-    ]);
+    isPostQuoteWithdraw || isDefaultMoneyAccount || isMoneyAccountDeposit;
 
   const openModal = useCallback(() => {
     setIsModalOpen(true);
@@ -125,10 +145,14 @@ export function usePayWithToken(): PayWithToken {
     if (isMoneyAccountSelected) {
       return withdrawableFiatFormatted ?? '';
     }
-    return fiatFormatter(new BigNumber(cryptoBalanceUsd).toNumber());
+    const balanceNumber = new BigNumber(cryptoBalanceUsd).toNumber();
+    return isMoneyAccountDeposit
+      ? formatEnUsCurrency(balanceNumber, 'usd')
+      : fiatFormatter(balanceNumber);
   }, [
     cryptoBalanceUsd,
     fiatFormatter,
+    isMoneyAccountDeposit,
     isMoneyAccountSelected,
     withdrawableFiatFormatted,
   ]);
@@ -150,10 +174,17 @@ export function usePayWithToken(): PayWithToken {
     };
   }
 
+  let label = t('payWith');
+  if (isPostQuoteWithdraw) {
+    label = t('withdrawTo');
+  } else if (isConvertDeposit) {
+    label = t('convert');
+  }
+
   return {
     displayToken,
     balanceUsdFormatted,
-    label: isPostQuoteWithdraw ? t('withdrawTo') : t('payWith'),
+    label,
     from,
     ownerId: currentConfirmation?.id ?? '',
     isPostQuoteWithdraw,
