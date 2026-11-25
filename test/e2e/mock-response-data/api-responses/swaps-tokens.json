@@ -30,26 +30,7 @@
       "custodians": [""],
       "isOpen": false
     },
-    "badgeLabel": "",
-    "containsProfanity": false,
-    "erc20Permit": false,
-    "fees": {
-      "maxFee": 0,
-      "avgFee": 0,
-      "minFee": 0
-    },
-    "honeypotStatus": {
-      "honeypotIs": false,
-      "goPlus": false
-    },
-    "storage": {
-      "balance": 0,
-      "approval": 0
-    },
-    "isContractVerified": false,
-    "description": {
-      "en": ""
-    }
+    "badgeLabel": ""
   },
   {
     "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
@@ -92,26 +73,7 @@
       "custodians": [""],
       "isOpen": false
     },
-    "badgeLabel": "",
-    "containsProfanity": false,
-    "erc20Permit": false,
-    "fees": {
-      "maxFee": 0,
-      "avgFee": 0,
-      "minFee": 0
-    },
-    "honeypotStatus": {
-      "honeypotIs": false,
-      "goPlus": false
-    },
-    "storage": {
-      "balance": 0,
-      "approval": 0
-    },
-    "isContractVerified": false,
-    "description": {
-      "en": ""
-    }
+    "badgeLabel": ""
   },
   {
     "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
@@ -153,26 +115,7 @@
       "custodians": [""],
       "isOpen": false
     },
-    "badgeLabel": "",
-    "containsProfanity": false,
-    "erc20Permit": false,
-    "fees": {
-      "maxFee": 0,
-      "avgFee": 0,
-      "minFee": 0
-    },
-    "honeypotStatus": {
-      "honeypotIs": false,
-      "goPlus": false
-    },
-    "storage": {
-      "balance": 0,
-      "approval": 0
-    },
-    "isContractVerified": false,
-    "description": {
-      "en": ""
-    }
+    "badgeLabel": ""
   },
   {
     "address": "0xc6bdb96e29c38dc43f014eed44de4106a6a8eb5f",
@@ -205,25 +148,6 @@
       "custodians": [""],
       "isOpen": false
     },
-    "badgeLabel": "",
-    "containsProfanity": false,
-    "erc20Permit": false,
-    "fees": {
-      "maxFee": 0,
-      "avgFee": 0,
-      "minFee": 0
-    },
-    "honeypotStatus": {
-      "honeypotIs": false,
-      "goPlus": false
-    },
-    "storage": {
-      "balance": 0,
-      "approval": 0
-    },
-    "isContractVerified": false,
-    "description": {
-      "en": ""
-    }
+    "badgeLabel": ""
   }
 ]
