@@ -70,10 +70,12 @@ later tests by editing them. `response()` returns a new object.
 the first matching rule that is not complete. A rule with `.always()` is never
 complete, so the first of them for a matcher answers every request. A second
 one for the same matcher on the same server would never be served, so it
-throws. Put every
+logs a warning. Put every
 entry the test needs in one call, or pass them to the helper that already
 registered the mock; for example, `mockPriceApi` takes `additionalSpotPrices`
-for this reason.
+for this reason. The gasless swap fixtures in `bridge-test-utils.ts` still
+register the tx-sentinel `/network` mock twice; fixing them and turning the
+warning into an error is planned for PR 3.
 
 ### When to use `rule()`
 
@@ -85,8 +87,9 @@ into the definition without changing the handler. Moving them to `mock()` or
 default in `mock-e2e.js` answers only the first request unless it ends in
 `.always()`: after that, the default answers. Add `.always()` to any `rule()`
 override that has to answer every request. The overrides that lacked it now
-use `mock()`, `mockRaw()` or `.always()`. A second `rule().always()` for the
-same matcher is still not detected.
+use `mock()`, `mockRaw()` or `.always()`, except the Ledger swap mocks in
+`hardware-wallets/ledger/mocks.ts` (planned for PR 3). A second
+`rule().always()` for the same matcher is still not detected.
 
 Overrides follow one rule: nested objects merge, arrays and scalars replace.
 Entries keyed by asset, token or account start from the fixture entry's shape

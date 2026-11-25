@@ -159,20 +159,25 @@ describe('defineApiMock', () => {
   });
 
   describe('one override per matcher', () => {
-    it('throws on a second mock() for the same matcher on the same server', async () => {
+    it('warns on a second mock() for the same matcher on the same server', async () => {
+      const warn = jest.spyOn(console, 'warn').mockImplementation(() => {
+        // Silences the expected warnings.
+      });
       await endpoint.mock(server, { value: 'first' }, { chainId: 1 });
+      expect(warn).not.toHaveBeenCalled();
 
-      expect(() =>
-        endpoint.mock(server, { value: 'second' }, { chainId: 1 }),
-      ).toThrow(
-        'test-endpoint: a mock for GET http://api.test/networks/1/data is already registered on this server (by test-endpoint)',
+      await endpoint.mock(server, { value: 'second' }, { chainId: 1 });
+      expect(warn).toHaveBeenCalledWith(
+        expect.stringContaining(
+          'test-endpoint: a mock for GET http://api.test/networks/1/data is already registered on this server (by test-endpoint)',
+        ),
       );
-      expect(() =>
-        endpoint.mockVariant(server, 'failed', { chainId: 1 }),
-      ).toThrow('already registered');
-      expect(() => endpoint.mockRaw(server, {}, { chainId: 1 })).toThrow(
-        'already registered',
-      );
+      await endpoint.mockVariant(server, 'failed', { chainId: 1 });
+      await endpoint.mockRaw(server, {}, { chainId: 1 });
+      expect(warn).toHaveBeenCalledTimes(3);
+      expect(
+        (await proxyGet(server, 'http://api.test/networks/1/data')).json,
+      ).toStrictEqual({ ...BODY, value: 'first' });
     });
 
     it('allows one override per instance and per server', async () => {

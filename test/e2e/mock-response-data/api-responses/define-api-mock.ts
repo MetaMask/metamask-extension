@@ -247,7 +247,7 @@ export function findDuplicateEndpoints(
 const registeredMatchers = new WeakMap<Mockttp, Map<string, string>>();
 
 /**
- * Records an `.always()` override for a matcher, and throws when the server
+ * Records an `.always()` override for a matcher, and warns when the server
  * already has one: mockttp would never serve the second.
  *
  * @param server - The mock server.
@@ -266,9 +266,10 @@ function claimMatcher(
   const key = `${method} ${String(matcher)}`;
   const previous = claimed.get(key);
   if (previous !== undefined) {
-    throw new Error(
+    console.warn(
       `${id}: a mock for ${key} is already registered on this server (by ${previous}). mockttp serves the first .always() rule, so this one would never answer. Pass every value to the first mock() call instead.`,
     );
+    return;
   }
   claimed.set(key, id);
 }
