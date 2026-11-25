@@ -45,6 +45,29 @@ describe('getTransactionPayControllerMessenger', () => {
     );
   });
 
+  it('delegates the actions and events needed to resume interrupted transactions', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getTransactionPayControllerMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        actions: expect.arrayContaining([
+          'AccountTreeController:getState',
+          'KeyringController:getState',
+          'NetworkController:getState',
+          'RampsController:getState',
+          'RemoteFeatureFlagController:getState',
+          'TransactionController:addTransactionBatch',
+          'TransactionController:failTransaction',
+          'TransactionController:finalizeResumedTransaction',
+        ]),
+        events: expect.arrayContaining(['KeyringController:unlock']),
+      }),
+    );
+  });
+
   it('delegates SentinelApiService:simulateTransactions', () => {
     const messenger = getRootMessenger<never, never>();
     const delegateSpy = jest.spyOn(messenger, 'delegate');
