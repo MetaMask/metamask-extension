@@ -40,7 +40,7 @@ export const useShieldConfirm = () => {
     getLastUsedShieldSubscriptionPaymentDetails,
   );
   const { trialedProducts } = useSelector(getUserSubscriptions);
-  const lastSubscription = useSelector(getLastShieldSubscription);
+  const lastShieldSubscription = useSelector(getLastShieldSubscription);
   const modalType = useSelector(getModalTypeForShieldEntryModal) as ModalType;
   const getCryptoConfirmationEventParams = useCallback(
     (
@@ -59,7 +59,7 @@ export const useShieldConfirm = () => {
         defaultPaymentChain: txMeta.chainId,
         source: ShieldMetricsSourceEnum.ShieldSettings,
         type: modalType,
-        subscriptionState: lastSubscription
+        subscriptionState: lastShieldSubscription
           ? ShieldSubscriptionRequestSubscriptionStateEnum.Renew
           : ShieldSubscriptionRequestSubscriptionStateEnum.New,
         paymentType: PAYMENT_TYPES.byCrypto,
@@ -74,7 +74,12 @@ export const useShieldConfirm = () => {
         hasInsufficientGas,
       };
     },
-    [lastSelectedPaymentDetails, lastSubscription, modalType, trialedProducts],
+    [
+      lastSelectedPaymentDetails,
+      lastShieldSubscription,
+      modalType,
+      trialedProducts,
+    ],
   );
 
   /**

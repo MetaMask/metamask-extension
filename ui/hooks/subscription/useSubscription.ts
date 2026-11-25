@@ -598,7 +598,7 @@ export const useHandleSubscription = ({
   const { search } = useLocation();
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
     useSubscriptionCryptoApprovalTransaction(selectedToken);
-  const lastSubscription = useSelector(getLastShieldSubscription);
+  const lastShieldSubscription = useSelector(getLastShieldSubscription);
   const {
     captureShieldSubscriptionRequestEvent,
     setShieldSubscriptionMetricsPropsToBackground,
@@ -606,10 +606,10 @@ export const useHandleSubscription = ({
   const modalType: ModalType = useSelector(getModalTypeForShieldEntryModal);
 
   const latestSubscriptionStatus = useMemo(() => {
-    return lastSubscription
+    return lastShieldSubscription
       ? ShieldSubscriptionRequestSubscriptionStateEnum.Renew
       : ShieldSubscriptionRequestSubscriptionStateEnum.New;
-  }, [lastSubscription]);
+  }, [lastShieldSubscription]);
 
   const determineSubscriptionRequestSource =
     useCallback((): ShieldMetricsSourceEnum => {
