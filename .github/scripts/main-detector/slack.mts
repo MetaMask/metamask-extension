@@ -1,7 +1,9 @@
 import type { AnyBlock } from '@slack/types';
 import {
   BREAKDOWN_METRICS,
+  BROWSERS,
   DEFAULT_CONFIG,
+  VERDICT_METRICS,
   type BatchScores,
   type Browser,
   type Decision,
@@ -67,13 +69,14 @@ function linkPullRequest(subject: string, repository: string): string {
 
 function formatFinding(finding: Finding, scores: BatchScores[]): string {
   const size = Math.abs(finding.pooled.shiftPct).toFixed(1);
+  const ms = Math.abs(finding.pooled.shiftMs).toFixed(0);
   const jobs = scores
-    .flatMap((batch) => batch[finding.browser].logRatios[finding.metric] ?? [])
-    .map((ratio) => pct(toPercent(ratio)).replace('%', ''))
+    .flatMap((batch) => batch[finding.browser].shifts[finding.metric] ?? [])
+    .map((shift) => pct(toPercent(shift.logRatio)).replace('%', ''))
     .join(', ');
   const { pooled, first, second } = finding;
   return (
-    `• *${browserName(finding.browser)}, ${metricLabel(finding.metric)}* (\`${finding.metric}\`, ${METRIC_MEANINGS[finding.metric] ?? 'see breakdown'}): ${size}% ${finding.direction}` +
+    `• *${browserName(finding.browser)}, ${metricLabel(finding.metric)}* (\`${finding.metric}\`, ${METRIC_MEANINGS[finding.metric] ?? 'see breakdown'}): ${ms} ms ${finding.direction} (${size}%)` +
     ` — pooled ${pct(pooled.shiftPct)} [${pct(pooled.lowerPct)}, ${pct(pooled.upperPct)}],` +
     ` batch 1 ${pct(first.shiftPct)}, batch 2 ${pct(second.shiftPct)}\n` +
     `  per job: ${jobs} %`
@@ -87,8 +90,8 @@ const FLAG = ':triangular_flag_on_post:';
 
 function breakdownShifts(browser: Browser, scores: BatchScores[]) {
   return BREAKDOWN_METRICS.flatMap((metric) => {
-    const ratios = scores.flatMap(
-      (batch) => batch[browser].logRatios[metric] ?? [],
+    const ratios = scores.flatMap((batch) =>
+      (batch[browser].shifts[metric] ?? []).map((shift) => shift.logRatio),
     );
     const summary = summarizeShifts(ratios);
     return summary ? [{ metric, shiftPct: summary.shiftPct }] : [];
@@ -101,6 +104,16 @@ function formatBreakdown(browser: Browser, scores: BatchScores[]): string {
       `${metricLabel(metric)} ${pct(shiftPct)}${Math.abs(shiftPct) > HUGE_SHIFT_PCT ? ` ${FLAG}` : ''}`,
   );
   return `• *${browserName(browser)}* — ${parts.join(', ')}`;
+}
+
+// The rule in ms, per browser and verdict metric, for example "Chrome page load 13.5 ms".
+function floorsText(key: 'floorMs' | 'loudMs'): string {
+  return BROWSERS.flatMap((browser) =>
+    VERDICT_METRICS.map(
+      (metric) =>
+        `${browserName(browser)} ${metricLabel(metric).toLowerCase()} ${DEFAULT_CONFIG.floors[browser][metric][key].toFixed(1)} ms`,
+    ),
+  ).join(', ');
 }
 
 function policyText(
@@ -117,10 +130,9 @@ function policyText(
   if (!startupChanged) {
     return "At least one critical user flow is slower than its series' threshold (δ_block) at the paired rule's one-sided 95% bound. PRs and releases are not blocked, but the commit below is worth a look.";
   }
-  const { floorPct, loudPct } = DEFAULT_CONFIG;
   const size = loud
-    ? `At least one metric moved by ${loudPct}% or more`
-    : `At least one metric moved by more than the noise (${floorPct.chrome}% in Chrome, ${floorPct.firefox}% in Firefox)`;
+    ? `At least one metric moved by its large-change size or more (${floorsText('loudMs')})`
+    : `At least one metric moved by more than the noise (${floorsText('floorMs')})`;
   return `${size}, and a second batch of runs agreed. PRs and releases are not blocked, but the commit below is worth a look.`;
 }
 
@@ -187,7 +199,7 @@ export function buildSlackMessage(input: SlackInput): SlackPayload {
   if (large.length > 0) {
     blocks.push(
       section(
-        `:red_circle: *Large change* (${DEFAULT_CONFIG.loudPct}% or more)\n${large
+        `:red_circle: *Large change* (${floorsText('loudMs')} or more)\n${large
           .map((f) => formatFinding(f, scores))
           .join('\n')}`,
       ),

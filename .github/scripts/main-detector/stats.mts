@@ -60,3 +60,38 @@ export function summarizeShifts(logRatios: number[]): ShiftSummary | undefined {
     sdPct: 100 * sd,
   };
 }
+
+// One job's change of head over base: as a log ratio, and in ms.
+export type JobShift = { logRatio: number; ms: number };
+
+export type MsShiftSummary = ShiftSummary & {
+  // Mean of the per-job shifts in ms, each measured as head mean less base mean.
+  shiftMs: number;
+  // One-sided 95% bounds on the shift, in ms.
+  lowerMs: number;
+  upperMs: number;
+};
+
+/**
+ * @param shifts - One shift of head over base per job.
+ * @returns The percent summary of the log ratios and the same statistic on the
+ * per-job ms shifts, or undefined with fewer than two jobs.
+ */
+export function summarizeJobShifts(
+  shifts: JobShift[],
+): MsShiftSummary | undefined {
+  const percent = summarizeShifts(shifts.map((shift) => shift.logRatio));
+  if (!percent) {
+    return undefined;
+  }
+  const ms = shifts.map((shift) => shift.ms);
+  const center = mean(ms);
+  const margin =
+    (tCritical95(ms.length - 1) * standardDeviation(ms)) / Math.sqrt(ms.length);
+  return {
+    ...percent,
+    shiftMs: center,
+    lowerMs: center - margin,
+    upperMs: center + margin,
+  };
+}

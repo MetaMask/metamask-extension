@@ -29,6 +29,14 @@ const cell = (summary: ShiftSummary | undefined) =>
     ? `${fmt(summary.shiftPct)} [${fmt(summary.lowerPct)}, ${fmt(summary.upperPct)}] n=${summary.jobs}`
     : 'n/a';
 
+const floorsText = (config: DetectorConfig, key: 'floorMs' | 'loudMs') =>
+  BROWSERS.flatMap((browser) =>
+    VERDICT_METRICS.map(
+      (metric) =>
+        `${config.floors[browser][metric][key].toFixed(1)} ms ${browser} ${metric}`,
+    ),
+  ).join(', ');
+
 const verdictCell = (verdict: Verdict) =>
   verdict.level === 'none' ? '' : `${verdict.level} ${verdict.direction}`;
 
@@ -87,7 +95,7 @@ export function renderSummary(options: {
     '',
     `**Result: ${resultLabel(decision, plan, cufs)}**`,
     '',
-    `Quiet at a shift of at least ${config.floorPct.chrome}% on Chrome and ${config.floorPct.firefox}% on Firefox with the one-sided 95% bound on the same side of zero, confirmed by a second batch; loud from ${config.loudPct}%.`,
+    `Quiet at a shift of at least ${floorsText(config, 'floorMs')} with the one-sided 95% bound on the same side of zero, confirmed by a second batch; loud from ${floorsText(config, 'loudMs')}.`,
     '',
   ];
 

@@ -1,12 +1,16 @@
 import type { BatchScores, Decision, Finding } from './score.mts';
 import { buildSlackMessage } from './slack.mts';
 
+// Ten ms to the percent, as on a series of about one second.
 const summary = (shiftPct: number) => ({
   shiftPct,
   lowerPct: shiftPct - 1,
   upperPct: shiftPct + 1,
   sdPct: 0.5,
   jobs: 5,
+  shiftMs: shiftPct * 10,
+  lowerMs: (shiftPct - 1) * 10,
+  upperMs: (shiftPct + 1) * 10,
 });
 
 const batch = (logRatios: Record<string, number[]>): BatchScores => {
@@ -14,7 +18,12 @@ const batch = (logRatios: Record<string, number[]>): BatchScores => {
     jobsTotal: 5,
     jobsUsable: 5,
     measurable: true,
-    logRatios,
+    shifts: Object.fromEntries(
+      Object.entries(logRatios).map(([metric, ratios]) => [
+        metric,
+        ratios.map((logRatio) => ({ logRatio, ms: 0 })),
+      ]),
+    ),
     metrics: {},
   };
   return { chrome: score, firefox: score };
@@ -89,7 +98,7 @@ describe('buildSlackMessage', () => {
     );
 
     expect(text).toContain(
-      'Chrome, UI Startup* (`uiStartup`, time from opening the UI until it is ready): 2.5% slower',
+      'Chrome, UI Startup* (`uiStartup`, time from opening the UI until it is ready): 25 ms slower (2.5%)',
     );
     expect(text).toContain('per job: +2.0, +3.0, +3.0 %');
     expect(text).toContain('Load Scripts');
