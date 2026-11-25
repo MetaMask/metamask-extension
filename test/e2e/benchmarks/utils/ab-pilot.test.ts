@@ -10,6 +10,7 @@ import {
   getMarkerValue,
   resetAbPilot,
 } from './ab-pilot';
+import { runBenchmarkWithIterations } from './runner';
 
 describe('ab-pilot', () => {
   const originalEnv = { ...process.env };
@@ -95,6 +96,62 @@ describe('ab-pilot', () => {
       writeBuild('dist/chrome-a', 'pilot-B');
 
       expect(() => beginAbSession(0)).toThrow('expected pilot-A');
+    });
+  });
+
+  // origin: ai-synthesis
+  describe('runBenchmarkWithIterations', () => {
+    it('runs each iteration on its build and keeps the values aligned to the iteration', async () => {
+      // retry() logs the failed iteration.
+      jest.spyOn(console, 'error').mockImplementation(() => undefined);
+      const directories: (string | undefined)[] = [];
+      const benchmark = async () => {
+        directories.push(process.env.BENCHMARK_EXTENSION_DIR);
+        const iteration = directories.length - 1;
+        // The third iteration fails, so its values must stay empty.
+        return iteration === 2
+          ? { timers: [], success: false, error: 'flake' }
+          : {
+              timers: [{ id: 'step', value: 100 + iteration }],
+              success: true,
+            };
+      };
+
+      const summary = await runBenchmarkWithIterations(
+        'flow',
+        benchmark,
+        4,
+        0,
+        {},
+      );
+
+      expect(directories).toStrictEqual(
+        ['a', 'b', 'b', 'a'].map((build) =>
+          path.join('dist', `chrome-${build}`),
+        ),
+      );
+      expect(summary.samples).toStrictEqual({ step: [100, 101, null, 103] });
+      expect(getAbPilotRecord()?.sessions).toMatchObject([
+        { index: 0, build: 'A', success: true },
+        { index: 1, build: 'B', success: true },
+        { index: 2, build: 'B', success: false },
+        { index: 3, build: 'A', success: true },
+      ]);
+    });
+
+    it('adds no values when the pilot is disabled', async () => {
+      delete process.env.BENCHMARK_AB_PILOT;
+
+      const summary = await runBenchmarkWithIterations(
+        'flow',
+        async () => ({ timers: [{ id: 'step', value: 100 }], success: true }),
+        2,
+        0,
+        {},
+      );
+
+      expect(summary.samples).toBeUndefined();
+      expect(process.env.BENCHMARK_EXTENSION_DIR).toBeUndefined();
     });
   });
 });

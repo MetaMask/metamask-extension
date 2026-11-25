@@ -111,6 +111,8 @@ export type BenchmarkSummary = {
   benchmarkType?: BenchmarkType;
   /** Web vitals per-run data and aggregated statistics */
   webVitals?: WebVitalsSummary;
+  /** Under the A/B pilot, each timer's value per iteration, `null` where none */
+  samples?: Record<string, (number | null)[]>;
 };
 
 /**

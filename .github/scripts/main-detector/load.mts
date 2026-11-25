@@ -15,32 +15,52 @@ function parseJson(file: string): unknown {
   }
 }
 
+type FlowEntry = {
+  abPilot?: { sessions: JobResult['sessions'] };
+  samples?: JobResult['samples'];
+};
+
+// origin: ai-reviewed
 /**
  * @param directory - One job's artifact folder.
- * @returns The job's sessions and samples, or an empty job when the folder,
- * the file or its A/B data is missing or unreadable.
+ * @returns Each flow's sessions and samples, by the flow's result key, for
+ * every flow with A/B data; empty when the folder or the file is missing or
+ * unreadable.
  */
-export function readJob(directory: string): JobResult {
-  const unusable: JobResult = { sessions: [], samples: {} };
+export function readJobFlows(directory: string): Record<string, JobResult> {
   if (!fs.existsSync(directory)) {
-    return unusable;
+    return {};
   }
   const file = fs
     .readdirSync(directory)
     .find((name) => /^benchmark-.*\.json$/u.test(name));
   if (!file) {
-    return unusable;
+    return {};
   }
   const parsed = parseJson(path.join(directory, file));
-  const entry = Object.values((parsed ?? {}) as Record<string, unknown>)[0] as
-    | {
-        abPilot?: { sessions: JobResult['sessions'] };
-        samples?: JobResult['samples'];
-      }
-    | undefined;
-  return entry?.abPilot && entry.samples
-    ? { sessions: entry.abPilot.sessions, samples: entry.samples }
-    : unusable;
+  const flows: Record<string, JobResult> = {};
+  for (const [flow, value] of Object.entries(
+    (parsed ?? {}) as Record<string, FlowEntry | undefined>,
+  )) {
+    if (value?.abPilot && value.samples) {
+      flows[flow] = {
+        sessions: value.abPilot.sessions,
+        samples: value.samples,
+      };
+    }
+  }
+  return flows;
+}
+
+/**
+ * @param directory - One job's artifact folder.
+ * @returns The job's sessions and samples, or an empty job when the folder,
+ * the file or its A/B data is missing or unreadable. A startup job has one flow.
+ */
+export function readJob(directory: string): JobResult {
+  return (
+    Object.values(readJobFlows(directory))[0] ?? { sessions: [], samples: {} }
+  );
 }
 
 /**

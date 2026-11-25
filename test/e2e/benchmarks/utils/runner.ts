@@ -112,7 +112,9 @@ export async function runBenchmarkWithIterations(
   let failedRuns = 0;
 
   for (let i = 0; i < iterations; i++) {
+    beginAbSession(i);
     const result = await runWithRetries(benchmarkFn, retries);
+    endAbSession(i, { success: result.success });
     allResults.push(result);
 
     if (result.success) {
@@ -237,7 +239,29 @@ export async function runBenchmarkWithIterations(
     thresholdsPassed: thresholdResult?.passed ?? true,
     ...(webVitalsSummary && { webVitals: webVitalsSummary }),
     benchmarkType,
+    // Raw per-iteration values, which the main detector pairs by iteration.
+    ...(isAbPilotEnabled() && { samples: getIterationSamples(allResults) }),
   };
+}
+
+/**
+ * Each timer's value per iteration index, `null` where an iteration failed.
+ * @param results - One result per iteration, in order.
+ */
+export function getIterationSamples(
+  results: readonly BenchmarkRunResult[],
+): Record<string, (number | null)[]> {
+  const samples: Record<string, (number | null)[]> = {};
+  results.forEach((result, index) => {
+    if (!result.success) {
+      return;
+    }
+    for (const timer of result.timers) {
+      samples[timer.id] ??= Array(results.length).fill(null);
+      samples[timer.id][index] = timer.value;
+    }
+  });
+  return samples;
 }
 
 /**
