@@ -1,34 +1,15 @@
 import type { TrendingAsset } from '@metamask/assets-controllers';
 import type { DiscoverSearchSection, DiscoverSearchSectionId } from './types';
 
-/**
- * Normalizes a search query or RWA ticker for exact-match comparison.
- * Ignores case, spaces, and a single leading `$`.
- *
- * @param value - The raw query or ticker string.
- * @returns The normalized lowercase string.
- */
+/** Normalize an RWA ticker or query for exact matching. */
 export const normalizeStockTicker = (value: string): string =>
-  value.trim().replace(/^\$/, '').replace(/\s+/g, '').toLowerCase();
+  value.trim().replace(/^\$/u, '').replace(/\s+/gu, '').toLowerCase();
 
-/**
- * Normalizes a search query or RWA asset name for exact-match comparison.
- * Trims, collapses internal whitespace, and lowercases.
- *
- * @param value - The raw query or asset name string.
- * @returns The normalized lowercase string.
- */
+/** Normalize an RWA asset name or query for exact matching. */
 export const normalizeStockName = (value: string): string =>
-  value.trim().replace(/\s+/g, ' ').toLowerCase();
+  value.trim().replace(/\s+/gu, ' ').toLowerCase();
 
-/**
- * Strips common issuer suffixes from tokenized stock names (e.g.
- * `"Tesla (Ondo Tokenized)"` -> `"Tesla"`, `"Microsoft xStock"` -> `"Microsoft"`)
- * so exact company-name queries still match issuer-wrapped RWA names.
- *
- * @param name - The tokenized stock display name.
- * @returns The name with trailing issuer suffixes removed.
- */
+/** Strip common issuer suffixes from tokenized stock names. */
 const stripRwaNameIssuerSuffix = (name: string): string =>
   name
     .trim()
@@ -36,27 +17,13 @@ const stripRwaNameIssuerSuffix = (name: string): string =>
     .replace(/\s+xstock$/iu, '')
     .trim();
 
-/**
- * Strips whitespace and an optional single leading `$` from a query before
- * sending it to search endpoints (so `$TSLA` searches for `TSLA`).
- *
- * @param query - The raw search query.
- * @returns The cleaned query string.
- */
+/** Strip whitespace and an optional leading `$` from a search query. */
 export const stripLeadingDollarQuery = (query?: string): string =>
-  query?.trim().replace(/^\$/, '').trim() ?? '';
+  query?.trim().replace(/^\$/u, '').trim() ?? '';
 
 /**
- * Returns true when `query` exactly matches either `rwaData.ticker` or the
- * RWA asset `name` (full or issuer-stripped) of at least one item in a loaded,
- * non-empty Stocks section.
- *
- * Returns false while Stocks is loading, when it has no results, when the
- * query is empty after normalization, or when the item has no `rwaData`.
- *
- * @param query - The current user search query.
- * @param stocksSection - The Stocks search section state.
- * @returns True if the Stocks section should be promoted above Crypto.
+ * Return true when a loaded Stocks result exactly matches the query by ticker
+ * or full/issuer-stripped name.
  */
 export const shouldPromoteStocksSection = (
   query: string,
@@ -108,15 +75,7 @@ export const shouldPromoteStocksSection = (
   });
 };
 
-/**
- * Moves `'stocks'` to index 0 when `shouldPromote` is true while preserving
- * the relative order of all other sections. Returns the original array
- * reference when no reorder is needed.
- *
- * @param sectionIds - The default ordered section IDs.
- * @param shouldPromote - Whether to promote Stocks to the top.
- * @returns The ordered section IDs.
- */
+/** Move Stocks to the front while preserving the order of other sections. */
 export const orderDiscoverSearchSections = (
   sectionIds: readonly DiscoverSearchSectionId[],
   shouldPromote: boolean,

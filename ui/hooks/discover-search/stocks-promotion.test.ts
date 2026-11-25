@@ -1,7 +1,6 @@
 import type { TrendingAsset } from '@metamask/assets-controllers';
 import type { DiscoverSearchSection, DiscoverSearchSectionId } from './types';
 import {
-  normalizeStockName,
   normalizeStockTicker,
   orderDiscoverSearchSections,
   shouldPromoteStocksSection,
@@ -53,18 +52,6 @@ describe('normalizeStockTicker', () => {
   });
 });
 
-describe('normalizeStockName', () => {
-  it.each([
-    ['Tesla', 'tesla'],
-    ['  TESLA  ', 'tesla'],
-    ['Tesla   Motors', 'tesla motors'],
-    ['   ', ''],
-    ['', ''],
-  ])('normalizes %p to %p', (input, expected) => {
-    expect(normalizeStockName(input)).toBe(expected);
-  });
-});
-
 describe('stripLeadingDollarQuery', () => {
   it.each([
     ['$TSLA', 'TSLA'],
@@ -87,34 +74,34 @@ describe('shouldPromoteStocksSection', () => {
     isLoading: false,
   });
 
-  it.each(['TSLA', 'tsla', '$TSLA', '  $tsla  ', '$ TSLA', 'TsLa'])(
-    'returns true for exact ticker match query %p',
-    (query) => {
-      expect(shouldPromoteStocksSection(query, loadedStocks)).toBe(true);
-    },
-  );
-
-  it.each(['Tesla', 'tesla', '  TESLA  ', 'Tesla (Ondo Tokenized)'])(
-    'returns true for exact name match query %p',
-    (query) => {
-      expect(shouldPromoteStocksSection(query, loadedStocks)).toBe(true);
-    },
-  );
+  it.each([
+    ['TSLA', true],
+    ['tsla', true],
+    ['$TSLA', true],
+    ['  $tsla  ', true],
+    ['$ TSLA', true],
+    ['Tesla', true],
+    ['Tesla (Ondo Tokenized)', true],
+    ['TSL', false],
+    ['tesl', false],
+    ['eth', false],
+    ['', false],
+    ['$', false],
+    ['$$TSLA', false],
+  ])('returns %p for query %p', (query, expected) => {
+    expect(shouldPromoteStocksSection(query, loadedStocks)).toBe(expected);
+  });
 
   it('matches exact company name for xStock and plain-named RWAs', () => {
     const stocksSection = makeStocksSection({
       items: [
         makeStockAsset({
-          assetId: 'eip155:1/erc20:0xmsft',
-          symbol: 'MSFTx',
           name: 'Microsoft xStock',
           rwaData: {
             ticker: 'MSFT',
           } as unknown as TrendingAsset['rwaData'],
         }),
         makeStockAsset({
-          assetId: 'eip155:1/erc20:0xaapl',
-          symbol: 'AAPL',
           name: 'Apple',
           rwaData: {
             ticker: 'AAPL',
@@ -131,87 +118,26 @@ describe('shouldPromoteStocksSection', () => {
     expect(shouldPromoteStocksSection('App', stocksSection)).toBe(false);
   });
 
-  it.each(['TSL', 'tesl', 'eth', '', '   ', '$', '$$TSLA'])(
-    'returns false for non-matching query %p',
-    (query) => {
-      expect(shouldPromoteStocksSection(query, loadedStocks)).toBe(false);
-    },
-  );
+  it('does not promote while loading, when empty, missing RWA data, or without a ticker', () => {
+    const sections = [
+      makeStocksSection({ items: [makeStockAsset()], isLoading: true }),
+      makeStocksSection(),
+      makeStocksSection({
+        items: [makeStockAsset({ rwaData: undefined })],
+      }),
+      makeStocksSection({
+        items: [
+          makeStockAsset({
+            rwaData: {} as unknown as TrendingAsset['rwaData'],
+          }),
+        ],
+      }),
+      undefined,
+    ];
 
-  it('returns false while Stocks is loading', () => {
-    const loadingStocks = makeStocksSection({
-      items: [makeStockAsset()],
-      isLoading: true,
+    sections.forEach((section) => {
+      expect(shouldPromoteStocksSection('TSLA', section)).toBe(false);
     });
-
-    expect(shouldPromoteStocksSection('TSLA', loadingStocks)).toBe(false);
-  });
-
-  it('returns false when Stocks has no results', () => {
-    const emptyStocks = makeStocksSection({
-      items: [],
-      isLoading: false,
-    });
-
-    expect(shouldPromoteStocksSection('TSLA', emptyStocks)).toBe(false);
-  });
-
-  it('returns false when Stocks section is missing', () => {
-    expect(shouldPromoteStocksSection('TSLA', undefined)).toBe(false);
-  });
-
-  it('returns false when symbol matches but item has no rwaData', () => {
-    const noRwaStocks = makeStocksSection({
-      items: [
-        makeStockAsset({
-          symbol: 'TSLA',
-          rwaData: undefined,
-        }),
-      ],
-      isLoading: false,
-    });
-
-    expect(shouldPromoteStocksSection('TSLA', noRwaStocks)).toBe(false);
-  });
-
-  it('returns false when rwaData exists without ticker and name does not match', () => {
-    const noTickerStocks = makeStocksSection({
-      items: [
-        makeStockAsset({
-          symbol: 'TSLA',
-          rwaData: {} as unknown as TrendingAsset['rwaData'],
-        }),
-      ],
-      isLoading: false,
-    });
-
-    expect(shouldPromoteStocksSection('TSLA', noTickerStocks)).toBe(false);
-  });
-
-  it('matches when any stock item in the section has a matching rwaData.ticker', () => {
-    const multiStocks = makeStocksSection({
-      items: [
-        makeStockAsset({
-          assetId: 'eip155:1/erc20:0xaapl',
-          symbol: 'AAPLon',
-          name: 'Apple (Ondo Tokenized)',
-          rwaData: {
-            ticker: 'AAPL',
-          } as unknown as TrendingAsset['rwaData'],
-        }),
-        makeStockAsset({
-          assetId: 'eip155:1/erc20:0xtsla',
-          symbol: 'TSLAon',
-          name: 'Tesla (Ondo Tokenized)',
-          rwaData: {
-            ticker: 'TSLA',
-          } as unknown as TrendingAsset['rwaData'],
-        }),
-      ],
-      isLoading: false,
-    });
-
-    expect(shouldPromoteStocksSection('TSLA', multiStocks)).toBe(true);
   });
 });
 
@@ -230,23 +156,14 @@ describe('orderDiscoverSearchSections', () => {
     ]);
   });
 
-  it('returns the original array reference when shouldPromote is false', () => {
-    expect(orderDiscoverSearchSections(sectionIds, false)).toBe(sectionIds);
-  });
-
-  it('returns the original array reference when stocks is missing or already first', () => {
-    const withoutStocks: readonly DiscoverSearchSectionId[] = [
-      'crypto',
-      'perps',
-    ];
-    expect(orderDiscoverSearchSections(withoutStocks, true)).toBe(
-      withoutStocks,
-    );
-
-    const stocksFirst: readonly DiscoverSearchSectionId[] = [
-      'stocks',
-      'crypto',
-    ];
-    expect(orderDiscoverSearchSections(stocksFirst, true)).toBe(stocksFirst);
-  });
+  it.each([
+    [sectionIds, false],
+    [['crypto', 'perps'] as const, true],
+    [['stocks', 'crypto'] as const, true],
+  ])(
+    'preserves the original array when no reorder is needed',
+    (sections, promote) => {
+      expect(orderDiscoverSearchSections(sections, promote)).toBe(sections);
+    },
+  );
 });

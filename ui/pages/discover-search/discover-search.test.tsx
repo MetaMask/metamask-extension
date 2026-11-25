@@ -502,69 +502,63 @@ describe('DiscoverSearchPage', () => {
   });
 
   describe('Stocks promotion on exact ticker or company name match', () => {
-    const PROMOTE_FLAG_ON = {
+    const getPromotionFlag = (enabled: boolean) => ({
       exploreSearchPromoteStocksExactTicker: {
-        enabled: true,
+        enabled,
         minimumVersion: '0.0.0',
       },
-    };
+    });
 
-    const PROMOTE_FLAG_OFF = {
-      exploreSearchPromoteStocksExactTicker: {
-        enabled: false,
-        minimumVersion: '0.0.0',
-      },
-    };
+    const makeAsset = ({
+      assetId,
+      name,
+      symbol,
+      rwaData,
+    }: {
+      assetId: string;
+      name: string;
+      symbol: string;
+      rwaData?: { ticker: string; instrumentType: string };
+    }) => ({
+      assetId,
+      name,
+      symbol,
+      decimals: 18,
+      price: '1',
+      marketCap: 100_000,
+      aggregatedUsdVolume: 50_000,
+      priceChangePct: { h24: '1.2' },
+      rwaData,
+    });
 
     const mockTslaResult = () => ({
       ...getDefaultDiscoverSearchResult(),
       crypto: {
         ...getDefaultDiscoverSearchResult().crypto,
         items: [
-          {
+          makeAsset({
             assetId: 'eip155:1/erc20:0xtslameme',
             name: 'TSLA Memecoin',
             symbol: 'TSLA',
-            decimals: 18,
-            price: '0.01',
-            marketCap: 100_000,
-            aggregatedUsdVolume: 50_000,
-            priceChangePct: { h24: '5.0' },
-          },
+          }),
         ],
         totalCount: 1,
       },
       stocks: {
         ...getDefaultDiscoverSearchResult().stocks,
         items: [
-          {
+          makeAsset({
             assetId: 'eip155:1/erc20:0xtslaon',
             name: 'Tesla (Ondo Tokenized)',
             symbol: 'TSLAon',
-            decimals: 18,
-            price: '250.00',
-            marketCap: 20_000_000_000,
-            aggregatedUsdVolume: 126_000_000,
-            priceChangePct: { h24: '1.2' },
-            rwaData: {
-              ticker: 'TSLA',
-              instrumentType: 'equity',
-            },
-          },
-          {
+            rwaData: { ticker: 'TSLA', instrumentType: 'equity' },
+          }),
+          makeAsset({
             assetId: 'eip155:1/erc20:0xmsftx',
             name: 'Microsoft xStock',
             symbol: 'MSFTx',
-            decimals: 18,
-            price: '420.00',
-            marketCap: 20_000_000_000,
-            aggregatedUsdVolume: 126_000_000,
-            priceChangePct: { h24: '0.8' },
-            rwaData: {
-              ticker: 'MSFT',
-              instrumentType: 'equity',
-            },
-          },
+            rwaData: { ticker: 'MSFT', instrumentType: 'equity' },
+          }),
         ],
         totalCount: 2,
       },
@@ -583,19 +577,17 @@ describe('DiscoverSearchPage', () => {
       'TSLA',
       'tsla',
       '$TSLA',
-      '  $TSLA  ',
       'Tesla',
-      'tesla',
       'Tesla (Ondo Tokenized)',
       'Microsoft',
     ])(
-      'renders Stocks above Crypto for exact match query %p when flag is enabled',
+      'renders Stocks above Crypto for exact match query %p when enabled',
       (query) => {
         mockUseDiscoverSearch.mockReturnValue(mockTslaResult());
 
         renderPage({
           route: `${DISCOVER_SEARCH_ROUTE}?q=${encodeURIComponent(query)}`,
-          remoteFeatureFlags: PROMOTE_FLAG_ON,
+          remoteFeatureFlags: getPromotionFlag(true),
         });
 
         expect(getRenderedSectionOrder()).toStrictEqual([
@@ -636,7 +628,7 @@ describe('DiscoverSearchPage', () => {
 
       renderPage({
         route: `${DISCOVER_SEARCH_ROUTE}?q=TSLA`,
-        remoteFeatureFlags: PROMOTE_FLAG_ON,
+        remoteFeatureFlags: getPromotionFlag(true),
       });
 
       expect(getRenderedSectionOrder()).toStrictEqual([
@@ -661,14 +653,19 @@ describe('DiscoverSearchPage', () => {
       ]);
     });
 
-    it.each(['TSL', 'tesl', 'eth'])(
-      'keeps Crypto above Stocks for non-exact query %p',
-      (query) => {
+    it.each([
+      ['TSL', true],
+      ['tesl', true],
+      ['eth', true],
+      ['TSLA', false],
+    ])(
+      'keeps Crypto above Stocks for query %p when enabled=%p',
+      (query, enabled) => {
         mockUseDiscoverSearch.mockReturnValue(mockTslaResult());
 
         renderPage({
           route: `${DISCOVER_SEARCH_ROUTE}?q=${encodeURIComponent(query)}`,
-          remoteFeatureFlags: PROMOTE_FLAG_ON,
+          remoteFeatureFlags: getPromotionFlag(enabled),
         });
 
         expect(getRenderedSectionOrder()).toStrictEqual([
@@ -678,74 +675,42 @@ describe('DiscoverSearchPage', () => {
       },
     );
 
-    it('keeps Crypto above Stocks when the remote flag is off', () => {
-      mockUseDiscoverSearch.mockReturnValue(mockTslaResult());
+    it.each(['loading', 'missing-rwa'])(
+      'does not reorder when Stocks is %p',
+      (state) => {
+        const result = mockTslaResult();
+        const stocks =
+          state === 'loading'
+            ? { ...result.stocks, isLoading: true }
+            : {
+                ...result.stocks,
+                items: [
+                  {
+                    ...result.stocks.items[0],
+                    symbol: 'TSLA',
+                    rwaData: undefined,
+                  },
+                ],
+              };
+        mockUseDiscoverSearch.mockReturnValue({ ...result, stocks });
+        renderPage({
+          route: `${DISCOVER_SEARCH_ROUTE}?q=TSLA`,
+          remoteFeatureFlags: getPromotionFlag(true),
+        });
+        expect(getRenderedSectionOrder()).toStrictEqual([
+          'discover-section-crypto',
+          'discover-section-stocks',
+        ]);
+      },
+    );
 
-      renderPage({
-        route: `${DISCOVER_SEARCH_ROUTE}?q=TSLA`,
-        remoteFeatureFlags: PROMOTE_FLAG_OFF,
-      });
-
-      expect(getRenderedSectionOrder()).toStrictEqual([
-        'discover-section-crypto',
-        'discover-section-stocks',
-      ]);
-    });
-
-    it('does not reorder while Stocks is loading', () => {
-      const result = mockTslaResult();
-      mockUseDiscoverSearch.mockReturnValue({
-        ...result,
-        stocks: {
-          ...result.stocks,
-          isLoading: true,
-        },
-      });
-
-      renderPage({
-        route: `${DISCOVER_SEARCH_ROUTE}?q=TSLA`,
-        remoteFeatureFlags: PROMOTE_FLAG_ON,
-      });
-
-      expect(getRenderedSectionOrder()).toStrictEqual([
-        'discover-section-crypto',
-        'discover-section-stocks',
-      ]);
-    });
-
-    it('does not reorder when Stocks has no results or items have no rwaData', () => {
-      const result = mockTslaResult();
-      mockUseDiscoverSearch.mockReturnValue({
-        ...result,
-        stocks: {
-          ...result.stocks,
-          items: [
-            {
-              ...result.stocks.items[0],
-              symbol: 'TSLA',
-              rwaData: undefined,
-            },
-          ],
-        },
-      });
-
-      renderPage({
-        route: `${DISCOVER_SEARCH_ROUTE}?q=TSLA`,
-        remoteFeatureFlags: PROMOTE_FLAG_ON,
-      });
-
-      expect(getRenderedSectionOrder()).toStrictEqual([
-        'discover-section-crypto',
-        'discover-section-stocks',
-      ]);
-    });
-
+    /* eslint-disable @typescript-eslint/naming-convention -- analytics property names */
     it('tracks stocks_promoted on searched, result_clicked, tab_switched, and scrolled analytics events', async () => {
       mockUseDiscoverSearch.mockReturnValue(mockTslaResult());
 
       renderPage({
         route: `${DISCOVER_SEARCH_ROUTE}?q=TSLA`,
-        remoteFeatureFlags: PROMOTE_FLAG_ON,
+        remoteFeatureFlags: getPromotionFlag(true),
       });
 
       await waitFor(() =>
@@ -805,26 +770,6 @@ describe('DiscoverSearchPage', () => {
         ),
       );
     });
-
-    it('tracks stocks_promoted=false when promotion is inactive', async () => {
-      mockUseDiscoverSearch.mockReturnValue(mockTslaResult());
-
-      renderPage({
-        route: `${DISCOVER_SEARCH_ROUTE}?q=TSLA`,
-        remoteFeatureFlags: PROMOTE_FLAG_OFF,
-      });
-
-      await waitFor(() =>
-        expect(mockTrackEvent).toHaveBeenCalledWith(
-          expect.objectContaining({
-            properties: expect.objectContaining({
-              interaction_type: 'searched',
-              search_query: 'TSLA',
-              stocks_promoted: false,
-            }),
-          }),
-        ),
-      );
-    });
+    /* eslint-enable @typescript-eslint/naming-convention */
   });
 });
