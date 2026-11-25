@@ -10,9 +10,11 @@ name: Main performance detector
 # Beside the commit checks, scheduled runs slow Chrome's CPU and measure with
 # the same paired jobs and scoring, each under its own Slack label: daily, the
 # newest main commit against the commit the last daily run measured, in the
-# standard and the power-user startup preset and the critical user flows; and
+# standard and the power-user startup preset and the critical user flows;
 # weekly, the newest main commit against a pinned reference build, to catch
-# creep spread over many commits. See .github/scripts/main-detector/README.md.
+# creep spread over many commits; and weekly, a check of the floors against the
+# week's A/A canary results, which measures nothing. See
+# .github/scripts/main-detector/README.md.
 
 on:
   workflow_run:
@@ -25,6 +27,8 @@ on:
     - cron: '0 7 * * *'
     # Mondays at 08:00 UTC: the drift check against the pinned reference build.
     - cron: '0 8 * * 1'
+    # Mondays at 09:00 UTC: the check of the floors against the week's canaries.
+    - cron: '0 9 * * 1'
   workflow_dispatch:
     inputs:
       head_sha:
@@ -32,7 +36,7 @@ on:
         required: false
         type: string
       mode:
-        description: auto; aa to run the head against itself as a false positive rate canary; throttled, throttled-aa (the same against itself) or drift to run a scheduled throttled run now
+        description: auto; aa to run the head against itself as a false positive rate canary; throttled, throttled-aa (the same against itself) or drift to run a scheduled throttled run now; calibration to check the floors against the week's canaries
         required: false
         type: choice
         options:
@@ -41,6 +45,7 @@ on:
           - throttled
           - throttled-aa
           - drift
+          - calibration
         default: auto
       cpu_throttle_rate:
         description: Throttled modes only, how many times slower Chrome runs page CPU work
@@ -66,7 +71,7 @@ on:
         type: boolean
         default: false
 
-run-name: ${{ format('Main performance detector {0}{1}{2}', (github.event_name == 'schedule' || contains(fromJSON('["throttled","throttled-aa","drift"]'), inputs.mode)) && 'latest-main' || inputs.head_sha || github.event.workflow_run.head_sha || 'latest-main', github.event_name == 'schedule' && format(' ({0})', github.event.schedule == '0 8 * * 1' && 'drift' || 'throttled') || inputs.mode == 'throttled' && ' (throttled)' || inputs.mode == 'throttled-aa' && ' (throttled aa)' || inputs.mode == 'drift' && ' (drift)' || inputs.mode == 'aa' && ' (aa)' || '', inputs.inject_head_ms && ' (inject)' || '') }}
+run-name: ${{ format('Main performance detector {0}{1}{2}', (github.event_name == 'schedule' || contains(fromJSON('["throttled","throttled-aa","drift","calibration"]'), inputs.mode)) && 'latest-main' || inputs.head_sha || github.event.workflow_run.head_sha || 'latest-main', github.event_name == 'schedule' && format(' ({0})', github.event.schedule == '0 8 * * 1' && 'drift' || github.event.schedule == '0 9 * * 1' && 'calibration' || 'throttled') || inputs.mode == 'throttled' && ' (throttled)' || inputs.mode == 'throttled-aa' && ' (throttled aa)' || inputs.mode == 'drift' && ' (drift)' || inputs.mode == 'calibration' && ' (calibration)' || inputs.mode == 'aa' && ' (aa)' || '', inputs.inject_head_ms && ' (inject)' || '') }}
 
 # One run per commit. Runs for different commits are independent and none is
 # cancelled: a later merge must not drop the check of an earlier one. A dispatch
@@ -74,7 +79,7 @@ run-name: ${{ format('Main performance detector {0}{1}{2}', (github.event_name =
 # is called latest-main and no commit's heartbeat or re-run check counts it. The
 # scheduled runs are one group each, by what triggered them.
 concurrency:
-  group: main-detector-${{ (github.event_name == 'schedule' || contains(fromJSON('["throttled","throttled-aa","drift"]'), inputs.mode)) && (inputs.mode || github.event.schedule) || inputs.head_sha || github.event.workflow_run.head_sha || 'latest-main' }}
+  group: main-detector-${{ (github.event_name == 'schedule' || contains(fromJSON('["throttled","throttled-aa","drift","calibration"]'), inputs.mode)) && (inputs.mode || github.event.schedule) || inputs.head_sha || github.event.workflow_run.head_sha || 'latest-main' }}
   cancel-in-progress: false
 
 permissions:
@@ -91,7 +96,7 @@ env:
 jobs:
   plan:
     # Main runs that were cancelled never finished their builds; failed runs still upload them.
-    if: ${{ github.event_name != 'schedule' && !contains(fromJSON('["throttled","throttled-aa","drift"]'), inputs.mode) && (github.event_name != 'workflow_run' || (github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion != 'cancelled')) }}
+    if: ${{ github.event_name != 'schedule' && !contains(fromJSON('["throttled","throttled-aa","drift","calibration"]'), inputs.mode) && (github.event_name != 'workflow_run' || (github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion != 'cancelled')) }}
     runs-on: ubuntu-latest
     outputs:
       proceed: ${{ steps.quick.outputs.proceed || steps.plan.outputs.proceed }}
@@ -326,7 +331,7 @@ jobs:
   # compares the newest main commit with a build against the one the last daily
   # run measured, and the weekly drift check against the pinned reference build.
   scheduled:
-    if: ${{ (github.event_name == 'schedule' || contains(fromJSON('["throttled","throttled-aa","drift"]'), inputs.mode)) }}
+    if: ${{ (github.event_name == 'schedule' || contains(fromJSON('["throttled","throttled-aa","drift"]'), inputs.mode)) && github.event.schedule != '0 9 * * 1' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     outputs:
@@ -471,6 +476,44 @@ jobs:
           name: throttled-measured-${{ env.HEAD_SHA }}
           path: measured.json
           overwrite: true
+          retention-days: 30
+
+  # Reads the week's A/A canary results and measures nothing.
+  calibration:
+    if: ${{ github.event.schedule == '0 9 * * 1' || inputs.mode == 'calibration' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout the scripts
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: |
+            .github
+            .nvmrc
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+
+      - name: Check the floors against the week's canaries
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL: ${{ vars.SLACK_MAIN_DETECTOR_CHANNEL }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          POST: ${{ inputs.post_slack == true && '--post' || '' }}
+        run: |
+          node .github/scripts/main-detector/calibration-cli.mts \
+            --out calibration.json --summary "$GITHUB_STEP_SUMMARY" \
+            --run-url "$RUN_URL" $POST
+
+      - name: Upload the calibration
+        uses: actions/upload-artifact@v7
+        with:
+          name: calibration
+          path: calibration.json
           retention-days: 30
 
   measure-first:
