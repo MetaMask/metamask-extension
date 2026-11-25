@@ -123,7 +123,7 @@ describe('SurveyToast', () => {
           }),
         }),
         expect.objectContaining({
-          id: 'survey-toast',
+          id: `survey-toast-${surveyData.valid.id}`,
           icon: expect.anything(),
         }),
       );
