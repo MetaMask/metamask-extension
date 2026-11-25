@@ -12147,15 +12147,6 @@
   "swapsMaxSlippage": {
     "message": "슬리피지 허용치"
   },
-  "swapsRebateBanner": {
-    "message": "수수료의 $1%를 환급받습니다"
-  },
-  "swapsRebateTooltipContent": {
-    "message": "이번 거래에서 발생한 MetaMask 수수료의 $1%를 리워드로 돌려받으며, Money Account에 mUSD로 지급됩니다. 네트워크 수수료는 포함되지 않습니다. 자세한 내용은 리워드 탭을 확인하세요."
-  },
-  "swapsRebateTooltipTitle": {
-    "message": "트레이드 보상"
-  },
   "switch": {
     "message": "전환"
   },

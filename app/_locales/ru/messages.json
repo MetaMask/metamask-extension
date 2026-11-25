@@ -12139,15 +12139,6 @@
   "swapsMaxSlippage": {
     "message": "Допуск проскальзывания"
   },
-  "swapsRebateBanner": {
-    "message": "Вы получаете возврат $1% комиссий"
-  },
-  "swapsRebateTooltipContent": {
-    "message": "Получите $1% комиссии MetaMask за эту сделку обратно в виде бонуса — он будет зачислен в mUSD на ваш счет Money Account. Сетевые комиссии не учитываются. Подробности — на вкладке «Бонусы»."
-  },
-  "swapsRebateTooltipTitle": {
-    "message": "Бонусы за торговлю"
-  },
   "switch": {
     "message": "Сменить"
   },

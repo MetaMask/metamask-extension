@@ -12139,15 +12139,6 @@
   "swapsMaxSlippage": {
     "message": "Tolerância a slippage"
   },
-  "swapsRebateBanner": {
-    "message": "Você recebe $1% de cashback nas taxas"
-  },
-  "swapsRebateTooltipContent": {
-    "message": "Receba de volta $1% da taxa da MetaMask nesta negociação como recompensa, paga em mUSD na sua conta Money. As taxas de rede não estão incluídas. Consulte a guia Recompensas para ver mais detalhes."
-  },
-  "swapsRebateTooltipTitle": {
-    "message": "Recompensas de negociação"
-  },
   "switch": {
     "message": "Mudar"
   },

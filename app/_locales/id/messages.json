@@ -12147,15 +12147,6 @@
   "swapsMaxSlippage": {
     "message": "Toleransi selip"
   },
-  "swapsRebateBanner": {
-    "message": "Anda mendapatkan pengembalian $1% dari biaya"
-  },
-  "swapsRebateTooltipContent": {
-    "message": "Dapatkan $1% dari biaya MetaMask untuk perdagangan ini sebagai reward, yang dibayarkan dalam bentuk mUSD ke Money account Anda. Biaya jaringan tidak termasuk. Lihat tab Reward untuk detail selengkapnya."
-  },
-  "swapsRebateTooltipTitle": {
-    "message": "Reward Perdagangan"
-  },
   "switch": {
     "message": "Alihkan"
   },
