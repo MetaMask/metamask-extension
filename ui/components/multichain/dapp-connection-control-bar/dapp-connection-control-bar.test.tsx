@@ -3,7 +3,22 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { HYPERLIQUID_ORIGIN } from '../../../../shared/constants/defi-referrals';
 import { DappConnectionControlBar } from './dapp-connection-control-bar';
+
+jest.mock('../../../../shared/lib/environment', () => ({
+  ...jest.requireActual('../../../../shared/lib/environment'),
+  getIsPerpsIncludedInBuild: () => true,
+}));
+
+jest.mock(
+  '../../app/hyperliquid-connection-bar/lazy-hyperliquid-connection-bar',
+  () => ({
+    LazyHyperliquidConnectionBar: () => (
+      <div data-testid="hyperliquid-connection-bar" />
+    ),
+  }),
+);
 
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
@@ -726,6 +741,83 @@ describe('DappConnectionControlBar', () => {
       );
       expect(
         queryByTestId('dapp-connection-control-bar'),
+      ).not.toBeInTheDocument();
+    });
+  });
+  describe('Hyperliquid Connection Bar', () => {
+    const enabledRollout = { enabled: true, minimumVersion: '0.0.0' };
+
+    const renderHyperliquid = ({
+      origin = HYPERLIQUID_ORIGIN,
+      isConnected = true,
+      isFlagEnabled = true,
+      isPerpsEnabled = true,
+    }: {
+      origin?: string;
+      isConnected?: boolean;
+      isFlagEnabled?: boolean;
+      isPerpsEnabled?: boolean;
+    } = {}) => {
+      const store = configureStore({
+        metamask: {
+          ...connectedMockState.metamask,
+          subjects: isConnected
+            ? {
+                [origin]: {
+                  permissions: makeCaip25Permission(
+                    [`eip155:0:${ACCOUNT_1_ADDRESS}`],
+                    'eip155:0',
+                    { 'eip1193-compatible': true },
+                  ),
+                },
+              }
+            : {},
+          remoteFeatureFlags: {
+            ...mockState.metamask.remoteFeatureFlags,
+            perpsEnabledVersion: isPerpsEnabled ? enabledRollout : undefined,
+            coreUxHyperliquidConnectionBar: isFlagEnabled
+              ? enabledRollout
+              : undefined,
+          },
+        },
+        activeTab: { ...activeTab, origin },
+      });
+      return renderWithProvider(<DappConnectionControlBar />, store);
+    };
+
+    it('shows the bar when connected to Hyperliquid with the flag and Perps on', () => {
+      const { getByTestId } = renderHyperliquid();
+      expect(getByTestId('hyperliquid-connection-bar')).toBeInTheDocument();
+    });
+
+    it('does not show the bar when the remote flag is off', () => {
+      const { queryByTestId } = renderHyperliquid({ isFlagEnabled: false });
+      expect(
+        queryByTestId('hyperliquid-connection-bar'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not show the bar when Perps is unavailable', () => {
+      const { queryByTestId } = renderHyperliquid({ isPerpsEnabled: false });
+      expect(
+        queryByTestId('hyperliquid-connection-bar'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not show the bar on another connected dapp', () => {
+      const { queryByTestId } = renderHyperliquid({ origin: DAPP_ORIGIN });
+      expect(
+        queryByTestId('hyperliquid-connection-bar'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not show the bar when the tab is not connected to any dapp', () => {
+      const { queryByTestId } = renderHyperliquid({ isConnected: false });
+      expect(
+        queryByTestId('dapp-connection-control-bar'),
+      ).not.toBeInTheDocument();
+      expect(
+        queryByTestId('hyperliquid-connection-bar'),
       ).not.toBeInTheDocument();
     });
   });

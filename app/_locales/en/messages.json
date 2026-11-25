@@ -8940,6 +8940,10 @@
     "message": "Losers",
     "description": "Toggle option showing the markets that fell the most over 24h in the Top movers section"
   },
+  "perpsTotalAndAvailableToTradeOrWithdraw": {
+    "message": "$1 total, $2 available to trade or withdraw",
+    "description": "Tooltip shown when hovering the Hyperliquid Connection Bar balance. $1 is the formatted total account balance and $2 is the formatted amount available to trade or withdraw."
+  },
   "perpsTrades": {
     "message": "Trades"
   },

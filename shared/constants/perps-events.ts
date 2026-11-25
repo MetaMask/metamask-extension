@@ -95,6 +95,8 @@ export const PERPS_EVENT_VALUE = {
     AMOUNT_INPUT: 'amount_input',
     /** Extension trade-screen sticky-footer primary CTA. */
     ORDER_FORM_FOOTER: 'order_form_footer',
+    /** Add funds / Withdraw on the Hyperliquid Connection Bar above the dapp connection bar. */
+    HYPERLIQUID_CONNECTION_BAR: 'hyperliquid_connection_bar',
   },
   BUTTON_CLICKED: {
     ...CONTROLLER_PERPS_EVENT_VALUE.BUTTON_CLICKED,

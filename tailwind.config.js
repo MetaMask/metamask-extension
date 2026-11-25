@@ -52,6 +52,16 @@ module.exports = {
           from: { translate: '100% 0' },
           to: { translate: '0 0' },
         },
+        '@keyframes slide-up-from-below': {
+          from: {
+            transform: 'translateY(100%)',
+            boxShadow: '0 -8px 16px -6px transparent',
+          },
+          to: {
+            transform: 'translateY(0)',
+            boxShadow: '0 -8px 16px -6px var(--color-shadow-default)',
+          },
+        },
       });
     }),
   ],

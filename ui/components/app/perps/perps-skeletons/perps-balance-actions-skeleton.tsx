@@ -1,11 +1,50 @@
 import React from 'react';
-import { Box, BoxFlexDirection, Skeleton } from '@metamask/design-system-react';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  Skeleton,
+} from '@metamask/design-system-react';
+
+type PerpsBalanceActionsSkeletonProps = {
+  variant?: 'default' | 'compact';
+};
 
 /**
  * PerpsBalanceActionsSkeleton component displays a loading skeleton for the balance actions
  * Matches the layout of PerpsMarketBalanceActions
+ *
+ * @param props
+ * @param props.variant
  */
-export const PerpsBalanceActionsSkeleton = () => {
+export const PerpsBalanceActionsSkeleton = ({
+  variant = 'default',
+}: PerpsBalanceActionsSkeletonProps) => {
+  if (variant === 'compact') {
+    return (
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.End}
+        justifyContent={BoxJustifyContent.Between}
+        gap={4}
+        className="w-full"
+        data-testid="perps-balance-actions-skeleton"
+      >
+        <Skeleton className="h-10 w-24" />
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={2}
+          className="shrink-0"
+        >
+          <Skeleton className="h-8 w-20 rounded-full" />
+          <Skeleton className="h-8 w-20 rounded-full" />
+        </Box>
+      </Box>
+    );
+  }
+
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}

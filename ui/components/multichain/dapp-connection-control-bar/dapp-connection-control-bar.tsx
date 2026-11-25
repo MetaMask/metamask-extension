@@ -35,6 +35,7 @@ import {
   getPermissionSubjects,
   getSubjectMetadata,
 } from '../../../selectors';
+import { getIsHyperliquidConnectionBarAvailable } from '../../../selectors/perps';
 import {
   getInternalAccountsFromGroupById,
   getMultichainAccountGroupById,
@@ -50,10 +51,12 @@ import {
 } from '../../../store/actions';
 import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+import { HYPERLIQUID_ORIGIN } from '../../../../shared/constants/defi-referrals';
 import { getURLHost } from '../../../helpers/utils/util';
 import { getCaip25CaveatValueFromPermissions } from '../../../helpers/utils/caip25-permissions';
 import { hasChainIdSupport } from '../../../../shared/lib/multichain/scope-utils';
 import { DisconnectAllModal } from '../disconnect-all-modal/disconnect-all-modal';
+import { LazyHyperliquidConnectionBar } from '../../app/hyperliquid-connection-bar/lazy-hyperliquid-connection-bar';
 import { useDispatch } from '../../../store/hooks';
 import { DappBarEVMNetworkSelectorPopover } from './dapp-bar-network-selector-popover';
 
@@ -77,6 +80,9 @@ export const DappConnectionControlBar = memo(() => {
     useState<HTMLButtonElement | null>(null);
 
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
+  const isHyperliquidConnectionBarAvailable = useSelector(
+    getIsHyperliquidConnectionBarAvailable,
+  );
   const subjectMetadata = useSelector(getSubjectMetadata);
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
   const subjects = useSelector(getPermissionSubjects) as Record<
@@ -212,10 +218,15 @@ export const DappConnectionControlBar = memo(() => {
   }
 
   const showNotConnectedState = !isActiveAccountConnected;
+  const showHyperliquidConnectionBar =
+    activeTabOrigin === HYPERLIQUID_ORIGIN &&
+    isHyperliquidConnectionBarAvailable &&
+    !showNotConnectedState;
   const canConnect = showNotConnectedState && addressesToPermit.length > 0;
 
   return (
     <>
+      {showHyperliquidConnectionBar && <LazyHyperliquidConnectionBar />}
       <Box
         className="dapp-connection-control-bar w-full"
         flexDirection={BoxFlexDirection.Row}
@@ -229,7 +240,7 @@ export const DappConnectionControlBar = memo(() => {
         {/* Left side: Favicon with green dot + Identity */}
         <Box
           flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.End}
+          alignItems={BoxAlignItems.Center}
           gap={2}
           className="dapp-connection-control-bar__left-group"
         >
