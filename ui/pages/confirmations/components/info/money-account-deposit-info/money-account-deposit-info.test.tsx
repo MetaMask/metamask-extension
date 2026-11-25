@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { useAddToken } from '../../../hooks/tokens/useAddToken';
 import { useUpgradeMoneyAccount } from '../../../../../hooks/money/use-upgrade-money-account';
 import { useConfirmationNavigationOptions } from '../../../hooks/useConfirmationNavigation';
+import { MoneyAccountToRow } from '../../rows/money-account-to-row';
 import { CustomAmountInfo } from '../custom-amount-info';
 import {
   MUSD_CONVERSION_DEFAULT_CHAIN_ID,
@@ -56,7 +57,7 @@ describe('MoneyAccountDepositInfo', () => {
     });
   });
 
-  it('renders CustomAmountInfo with the account row for a USD fiat deposit', () => {
+  it('renders CustomAmountInfo with the account row, resultRows, and hidden account divider for a USD fiat deposit', () => {
     render(<MoneyAccountDepositInfo />);
 
     expect(screen.getByTestId('custom-amount-info')).toBeInTheDocument();
@@ -69,6 +70,8 @@ describe('MoneyAccountDepositInfo', () => {
         displayPercentageButtons: true,
         hasMax: true,
         hidePayTokenAmount: true,
+        resultRows: expect.objectContaining({ type: MoneyAccountToRow }),
+        showAccountDivider: false,
       }),
       expect.anything(),
     );

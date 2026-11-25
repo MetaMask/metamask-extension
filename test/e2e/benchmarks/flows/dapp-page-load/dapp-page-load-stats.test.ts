@@ -58,6 +58,7 @@ describe('dapp-page-load-stats', () => {
         firstPaint: 10,
         firstContentfulPaint: 20,
       };
+      // Run 1 failed and left no sample, so positions and runs differ.
       const samples: DappPageLoadSample[] = [
         {
           page: 'p',
@@ -65,7 +66,6 @@ describe('dapp-page-load-stats', () => {
           timestamp: 1,
           metrics: { ...metrics, largestContentfulPaint: 50 },
         },
-        { page: 'p', run: 1, timestamp: 2, metrics },
         {
           page: 'p',
           run: 2,

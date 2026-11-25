@@ -2114,9 +2114,6 @@
   "blockExplorerUrl": {
     "message": "URL block explorer"
   },
-  "blockExplorerUrlDefinition": {
-    "message": "URL digunakan sebagai block explorer untuk jaringan ini."
-  },
   "blockExplorerView": {
     "message": "Lihat akun di $1",
     "description": "$1 replaced by URL for custom block explorer"
@@ -2629,9 +2626,6 @@
   "chainId": {
     "message": "ID chain"
   },
-  "chainIdDefinition": {
-    "message": "ID chain digunakan untuk menandatangani transaksi untuk jaringan ini."
-  },
   "chainIdExistsErrorMsg": {
     "message": "ID chain ini saat ini digunakan oleh jaringan $1."
   },
@@ -2743,10 +2737,6 @@
   "clickHere": {
     "message": "Klik di sini",
     "description": "Link to help when a JSON account import is not working"
-  },
-  "clickToConnectLedgerViaWebHID": {
-    "message": "Klik di sini untuk menghubungkan Ledger Anda melalui WebHID",
-    "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
   },
   "clipboardClearFailed": {
     "message": "Tidak dapat menghapus papan klip. Coba lagi."
@@ -3261,9 +3251,6 @@
   },
   "currencySymbol": {
     "message": "Simbol mata uang"
-  },
-  "currencySymbolDefinition": {
-    "message": "Simbol ticker ditampilkan untuk mata uang jaringan ini."
   },
   "current": {
     "message": "Saat ini"
@@ -4022,9 +4009,6 @@
   "errorCode": {
     "message": "Kode: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorGettingSafeChainList": {
-    "message": "Terjadi kesalahan saat mendapatkan daftar rantai aman. Lanjutkan dengan hati-hati."
   },
   "errorLegalTextFirstInfo": {
     "message": "Informasi diagnostik teknis."
@@ -4983,9 +4967,6 @@
   "insufficientTokens": {
     "message": "Token tidak cukup."
   },
-  "interactWithSmartContract": {
-    "message": "Kontrak cerdas"
-  },
   "interactingWith": {
     "message": "Berinteraksi dengan"
   },
@@ -5169,18 +5150,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Manfaatkan akun terakhir Anda sebelum menambahkan yang baru."
-  },
-  "ledgerConnectionInstructionCloseOtherApps": {
-    "message": "Tutup perangkat lunak lain yang terhubung ke perangkat Anda, lalu klik di sini untuk memperbarui."
-  },
-  "ledgerConnectionInstructionHeader": {
-    "message": "Sebelum mengeklik konfirmasi:"
-  },
-  "ledgerConnectionInstructionStepFour": {
-    "message": "Aktifkan \"data kontrak cerdas\" atau \"penandatanganan buta\" pada perangkat Ledger Anda."
-  },
-  "ledgerConnectionInstructionStepThree": {
-    "message": "Pastikan Ledger terhubung dan untuk memilih aplikasi Ethereum."
   },
   "ledgerConnectionStatusAppClosedDescription": {
     "message": "Buka di perangkat Ledger untuk melanjutkan"
@@ -5820,14 +5789,6 @@
   "minute": {
     "message": "mnt"
   },
-  "mismatchedChainLinkText": {
-    "message": "verifikasi detail jaringan",
-    "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
-  },
-  "mismatchedChainRecommendation": {
-    "message": "Kami menyarankan agar Anda $1 sebelum melanjutkan.",
-    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
   "mismatchedNetworkName": {
     "message": "Menurut catatan kami, nama jaringan mungkin tidak sepenuhnya sesuai dengan ID chain ini."
   },
@@ -6416,9 +6377,6 @@
     "message": "Memperkenalkan akun multichain",
     "description": "Title for the multichain accounts introduction modal."
   },
-  "multichainAddEthereumChainConfirmationDescription": {
-    "message": "Anda menambahkan jaringan ini ke MetaMask dan memberikan situs ini izin untuk menggunakannya."
-  },
   "multichainAddressViewAll": {
     "message": "Lihat semua"
   },
@@ -6463,17 +6421,9 @@
   "musdBuyMusd": {
     "message": "Beli mUSD"
   },
-  "musdClaimTitle": {
-    "message": "Klaim bonus",
-    "description": "Title for the mUSD bonus claim confirmation screen"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "Biaya konversi mUSD mencakup biaya jaringan dan mungkin termasuk biaya penyedia. MetaMask tidak mengenakan biaya saat Anda mengonversi ke mUSD.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
-  },
-  "musdConversionTitle": {
-    "message": "Dikonversi ke mUSD",
-    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "musdConvert": {
     "message": "Konversikan"
@@ -6634,9 +6584,6 @@
     "message": "Saat ini Anda bertransaksi pada $1.",
     "description": "$1 is the name of the network"
   },
-  "networkDetails": {
-    "message": "Detail jaringan"
-  },
   "networkFee": {
     "message": "Biaya jaringan"
   },
@@ -6654,9 +6601,6 @@
   },
   "networkNameBitcoin": {
     "message": "Bitcoin"
-  },
-  "networkNameDefinition": {
-    "message": "Nama yang dikaitkan dengan jaringan ini."
   },
   "networkNameEthereum": {
     "message": "Ethereum"
@@ -6704,9 +6648,6 @@
   },
   "networkTabPopular": {
     "message": "Populer"
-  },
-  "networkURL": {
-    "message": "URL Jaringan"
   },
   "networkURLDefinition": {
     "message": "URL yang digunakan untuk mengakses jaringan ini."
@@ -6810,17 +6751,6 @@
   },
   "nftUnsupportedEmptyDescription": {
     "message": "NFT tidak didukung di jaringan ini."
-  },
-  "nftWarningContent": {
-    "message": "Anda memberikan akses ke $1, termasuk setiap akses yang Anda miliki di masa mendatang. Pihak lain dapat mentransfer NFT ini dari dompet Anda kapan saja tanpa meminta izin Anda sampai Anda membatalkan persetujuan ini. $2",
-    "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
-  },
-  "nftWarningContentBold": {
-    "message": "semua NFT $1 Anda",
-    "description": "$1 is name of the collection"
-  },
-  "nftWarningContentGrey": {
-    "message": "Lanjutkan dengan hati-hati."
   },
   "nfts": {
     "message": "NFT"
@@ -7251,13 +7181,6 @@
   },
   "openFullScreen": {
     "message": "Buka layar penuh"
-  },
-  "openFullScreenForLedgerWebHid": {
-    "message": "Buka layar penuh untuk menghubungkan Ledger Anda.",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
-  "openInBlockExplorer": {
-    "message": "Buka di block explorer"
   },
   "openMultichainAccountAddressMenu": {
     "message": "Buka menu alamat akun multichain"
@@ -8085,9 +8008,6 @@
   },
   "perpsDepositFundsTitle": {
     "message": "Depositkan dana ke Perp"
-  },
-  "perpsDepositTitle": {
-    "message": "Akun perp yang didanai"
   },
   "perpsDepositToastErrorDescription": {
     "message": "Dana Anda belum ditambahkan ke Perp. Coba lagi."
@@ -9119,14 +9039,8 @@
     "message": "Kunci pribadi",
     "description": "Private keys row label on multichain account details page."
   },
-  "privateNetwork": {
-    "message": "Jaringan pribadi"
-  },
   "proceed": {
     "message": "Lanjutkan"
-  },
-  "proceedWithTransaction": {
-    "message": "Saya tetap ingin melanjutkan"
   },
   "provide": {
     "message": "Berikan"
@@ -9479,16 +9393,8 @@
   "receiveCrypto": {
     "message": "Terima kripto"
   },
-  "receiveToken": {
-    "message": "Terima token",
-    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
-  },
   "received": {
     "message": "Diterima"
-  },
-  "receivedTotal": {
-    "message": "Total yang diterima",
-    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Alamat penerima",
@@ -11317,9 +11223,6 @@
   "simulationDetailsUnavailable": {
     "message": "Tidak tersedia"
   },
-  "simulationErrorMessageV2": {
-    "message": "Kami tidak dapat memperkirakan gas. Tampaknya ada kesalahan dalam kontrak dan transaksi ini berpotensi gagal."
-  },
   "simulationsSettingDescription": {
     "message": "Aktifkan untuk mengestimasikan perubahan saldo transaksi dan tanda tangan sebelum Anda mengonfirmasikannya. Ini tidak menjamin hasil akhirnya. $1"
   },
@@ -11386,12 +11289,6 @@
   },
   "smartAccountRequestsFromDappsDescriptionV2": {
     "message": "Izinkan dapp meminta fitur akun cerdas untuk akun standar. MetaMask hanya akan melakukan peningkatan ke akun cerdas kami yang telah diaudit."
-  },
-  "smartAccountUpgradeBannerDescription": {
-    "message": "Alamat sama. Fitur lebih cerdas."
-  },
-  "smartAccountUpgradeBannerTitle": {
-    "message": "Beralih ke akun cerdas"
   },
   "smartContractAddress": {
     "message": "Alamat kontrak cerdas"
@@ -11827,9 +11724,6 @@
   "stakingWithdrawal": {
     "message": "Penarikan stake"
   },
-  "standardAccountLabel": {
-    "message": "Akun standar"
-  },
   "stateCorruptionAreYouSure": {
     "message": "Yakin ingin melanjutkan?"
   },
@@ -12155,12 +12049,6 @@
   },
   "swapsRebateTooltipTitle": {
     "message": "Reward Perdagangan"
-  },
-  "switch": {
-    "message": "Alihkan"
-  },
-  "switchBack": {
-    "message": "Alihkan kembali"
   },
   "switchBackToPopup": {
     "message": "Kembali ke popup"
@@ -12634,10 +12522,6 @@
   "unpin": {
     "message": "Batal semat"
   },
-  "unrecognizedChain": {
-    "message": "Jaringan khusus ini tidak dikenali",
-    "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
   "unsendableAsset": {
     "message": "Tidak mendukung pengiriman token NFT (ERC-721) untuk saat ini",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
@@ -12650,9 +12534,6 @@
   },
   "update": {
     "message": "Perbarui"
-  },
-  "updateEthereumChainConfirmationDescription": {
-    "message": "Situs ini meminta pembaruan URL jaringan default Anda. Anda dapat mengedit informasi default dan jaringan setiap saat."
   },
   "updateInformation": {
     "message": "Kami telah membuat dompet Anda lebih aman, lebih lancar, dan menambahkan beberapa fitur baru. Perbarui sekarang untuk tetap terlindungi dan gunakan penyempurnaan terkini dari kami."
@@ -12832,9 +12713,6 @@
   "walletReadyLoseSrpFromReminder": {
     "message": "Frasa Pemulihan Rahasia ini dapat membantu Anda mendapatkan kembali akses jika lupa kata sandi atau kehilangan akses login Anda."
   },
-  "wantToAddThisNetwork": {
-    "message": "Ingin menambahkan jaringan ini?"
-  },
   "wantsToAddThisAsset": {
     "message": "Ini memungkinkan aset untuk ditambahkan ke dompet Anda."
   },
@@ -12936,9 +12814,6 @@
   },
   "yourBalance": {
     "message": "Saldo Anda"
-  },
-  "yourNFTmayBeAtRisk": {
-    "message": "NFT Anda mungkin berisiko"
   },
   "yourWalletIsReady": {
     "message": "Dompet Anda sudah siap"

@@ -13,10 +13,14 @@ import {
   getLocalhost25EthAssetsControllerPatch,
   getMainnet25EthAssetsControllerPatch,
 } from '../tokens/utils/mocks';
+import {
+  priceV1ExchangeRates,
+  priceV3Spot,
+} from '../../mock-response-data/api-responses';
 
 async function mockPriceApi(mockServer: Mockttp) {
-  const spotPricesMockEth = await mockServer
-    .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+  const spotPricesMockEth = await priceV3Spot
+    .rule(mockServer)
     .always()
     .thenCallback(() => ({
       statusCode: 200,
@@ -31,8 +35,8 @@ async function mockPriceApi(mockServer: Mockttp) {
         },
       },
     }));
-  const mockExchangeRates = await mockServer
-    .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+  const mockExchangeRates = await priceV1ExchangeRates
+    .rule(mockServer)
     .thenCallback(() => ({
       statusCode: 200,
       json: {

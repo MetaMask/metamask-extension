@@ -18,6 +18,7 @@ import {
   getTransactionPayControllerMessenger,
   getTransactionPayControllerInitMessenger,
 } from './transaction-pay-controller-messenger';
+import { getAiDigestControllerMessenger } from './ai-digest-controller-messenger';
 import {
   getBackendWebSocketServiceMessenger,
   getBackendWebSocketServiceInitMessenger,
@@ -502,6 +503,10 @@ export const MESSENGER_FACTORIES = {
   RewardsController: {
     getMessenger: getRewardsControllerMessenger,
     getInitMessenger: getRewardsControllerInitMessenger,
+  },
+  AiDigestController: {
+    getMessenger: getAiDigestControllerMessenger,
+    getInitMessenger: noop,
   },
   RewardsMoneyDataService: {
     getMessenger: getRewardsMoneyDataServiceMessenger,

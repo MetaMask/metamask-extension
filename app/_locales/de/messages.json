@@ -2114,9 +2114,6 @@
   "blockExplorerUrl": {
     "message": "Block-Explorer-URL"
   },
-  "blockExplorerUrlDefinition": {
-    "message": "Die URL, die als Block-Explorer für dieses Netzwerk verwendet wird."
-  },
   "blockExplorerView": {
     "message": "Konto bei $1 anzeigen",
     "description": "$1 replaced by URL for custom block explorer"
@@ -2629,9 +2626,6 @@
   "chainId": {
     "message": "Chain-ID"
   },
-  "chainIdDefinition": {
-    "message": "Die Chain-ID, die verwendet wird, um Transaktionen für dieses Netzwerk zu signieren."
-  },
   "chainIdExistsErrorMsg": {
     "message": "Diese Chain-ID wird derzeit vom $1-Netzwerk verwendet."
   },
@@ -2743,10 +2737,6 @@
   "clickHere": {
     "message": "Klicken Sie hier",
     "description": "Link to help when a JSON account import is not working"
-  },
-  "clickToConnectLedgerViaWebHID": {
-    "message": "Klicken Sie hier, um Ihren Ledger über WebHID zu verbinden.",
-    "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
   },
   "clipboardClearFailed": {
     "message": "Zwischenablage konnte nicht geleert werden. Versuchen Sie es erneut."
@@ -3261,9 +3251,6 @@
   },
   "currencySymbol": {
     "message": "Währungszeichen"
-  },
-  "currencySymbolDefinition": {
-    "message": "Das Ticker-Symbol, das für die Währung dieses Netzwerks angezeigt wird."
   },
   "current": {
     "message": "Aktuell"
@@ -4022,9 +4009,6 @@
   "errorCode": {
     "message": "Code: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorGettingSafeChainList": {
-    "message": "Fehler beim Abrufen der Liste der sicheren Ketten. Fahren Sie mit Vorsicht fort."
   },
   "errorLegalTextFirstInfo": {
     "message": "Technische Diagnoseinformationen."
@@ -4979,9 +4963,6 @@
   "insufficientTokens": {
     "message": "Nicht genügend Tokens."
   },
-  "interactWithSmartContract": {
-    "message": "Smart Contract"
-  },
   "interactingWith": {
     "message": "Interaktion mit"
   },
@@ -5165,18 +5146,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Sie müssen Ihr letztes Konto verwenden, ehe Sie ein neues hinzufügen können."
-  },
-  "ledgerConnectionInstructionCloseOtherApps": {
-    "message": "Schließen Sie jede andere Software, die mit Ihrem Gerät verbunden ist und klicken Sie dann hier zum Aktualisieren."
-  },
-  "ledgerConnectionInstructionHeader": {
-    "message": "Vor dem Klicken bestätigen:"
-  },
-  "ledgerConnectionInstructionStepFour": {
-    "message": "Aktivieren Sie „Smart Contract Data“ oder „blind signing“ auf Ihrem Ledger-Gerät."
-  },
-  "ledgerConnectionInstructionStepThree": {
-    "message": "Stellen Sie sicher, dass Ihr Ledger angeschlossen ist und die Ethereum-App ausgewählt ist."
   },
   "ledgerConnectionStatusAppClosedDescription": {
     "message": "Öffnen Sie sie auf Ihrem Ledger-Gerät, um fortzufahren"
@@ -5816,14 +5785,6 @@
   "minute": {
     "message": "Min."
   },
-  "mismatchedChainLinkText": {
-    "message": "verifizieren Sie die Netzwerkdetails",
-    "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
-  },
-  "mismatchedChainRecommendation": {
-    "message": "Wir empfehlen, dass Sie vor dem Fortfahren $1.",
-    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
   "mismatchedNetworkName": {
     "message": "Laut unseren Aufzeichnungen stimmt dieser Netzwerkname nicht mit dieser Chain-ID überein."
   },
@@ -6412,9 +6373,6 @@
     "message": "Einführung von Multichain-Konten",
     "description": "Title for the multichain accounts introduction modal."
   },
-  "multichainAddEthereumChainConfirmationDescription": {
-    "message": "Sie fügen dieses Netzwerk zu MetaMask hinzu und geben dieser Website die Genehmigung, es zu nutzen."
-  },
   "multichainAddressViewAll": {
     "message": "Alle anzeigen"
   },
@@ -6459,17 +6417,9 @@
   "musdBuyMusd": {
     "message": "mUSD kaufen"
   },
-  "musdClaimTitle": {
-    "message": "Bonus einfordern",
-    "description": "Title for the mUSD bonus claim confirmation screen"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "Die Gebühren für die mUSD-Konvertierung beinhalten Netzwerkkosten und können Anbietergebühren beinhalten. Bei der Konvertierung in mUSD fällt keine MetaMask-Gebühr an.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
-  },
-  "musdConversionTitle": {
-    "message": "Zu mUSD konvertiert",
-    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "musdConvert": {
     "message": "Konvertieren"
@@ -6630,9 +6580,6 @@
     "message": "Sie führen jetzt eine Transaktion bei $1 durch.",
     "description": "$1 is the name of the network"
   },
-  "networkDetails": {
-    "message": "Netzwerkdetails"
-  },
   "networkFee": {
     "message": "Netzwerk-Gebühr"
   },
@@ -6650,9 +6597,6 @@
   },
   "networkNameBitcoin": {
     "message": "Bitcoin"
-  },
-  "networkNameDefinition": {
-    "message": "Der diesem Netzwerk zugeordnete Name."
   },
   "networkNameEthereum": {
     "message": "Ethereum"
@@ -6700,9 +6644,6 @@
   },
   "networkTabPopular": {
     "message": "Beliebt"
-  },
-  "networkURL": {
-    "message": "Netzwerk-URL"
   },
   "networkURLDefinition": {
     "message": "Die URL, die für den Zugriff auf dieses Netzwerk verwendet wird."
@@ -6806,17 +6747,6 @@
   },
   "nftUnsupportedEmptyDescription": {
     "message": "NFTs werden in diesem Netzwerk nicht unterstützt."
-  },
-  "nftWarningContent": {
-    "message": "Sie gewähren den Zugriff auf $1, auch auf solche, die Sie in Zukunft besitzen könnten. Die Gegenseite kann diese NFTs jederzeit aus Ihrer Wallet übertragen, ohne Sie zu fragen, bis Sie diese Genehmigung widerrufen. $2",
-    "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
-  },
-  "nftWarningContentBold": {
-    "message": "alle Ihre $1-NFTs",
-    "description": "$1 is name of the collection"
-  },
-  "nftWarningContentGrey": {
-    "message": "Seien Sie vorsichtig."
   },
   "nfts": {
     "message": "NFTs"
@@ -7247,13 +7177,6 @@
   },
   "openFullScreen": {
     "message": "Vollbild öffnen"
-  },
-  "openFullScreenForLedgerWebHid": {
-    "message": "Öffnen Sie MetaMask im Vollbildmodus, um Ihren Ledger über WebHID zu verbinden.",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
-  "openInBlockExplorer": {
-    "message": "Im Block-Explorer öffnen"
   },
   "openMultichainAccountAddressMenu": {
     "message": "Adressen-Menü des Multichain-Kontos öffnen"
@@ -8081,9 +8004,6 @@
   },
   "perpsDepositFundsTitle": {
     "message": "Gelder an Perps einzahlen"
-  },
-  "perpsDepositTitle": {
-    "message": "Finanziertes Perps-Konto"
   },
   "perpsDepositToastErrorDescription": {
     "message": "Ihre Gelder wurden Perps nicht hinzugefügt. Versuchen Sie es erneut."
@@ -9111,14 +9031,8 @@
     "message": "Private Schlüssel",
     "description": "Private keys row label on multichain account details page."
   },
-  "privateNetwork": {
-    "message": "Privates Netzwerk"
-  },
   "proceed": {
     "message": "Fortfahren"
-  },
-  "proceedWithTransaction": {
-    "message": "Ich möchte dennoch fortfahren."
   },
   "provide": {
     "message": "Bereitstellen"
@@ -9471,16 +9385,8 @@
   "receiveCrypto": {
     "message": "Krypto empfangen"
   },
-  "receiveToken": {
-    "message": "Token empfangen",
-    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
-  },
   "received": {
     "message": "Empfangen"
-  },
-  "receivedTotal": {
-    "message": "Insgesamt erhalten",
-    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Empfängeradresse",
@@ -11309,9 +11215,6 @@
   "simulationDetailsUnavailable": {
     "message": "Nicht verfügbar"
   },
-  "simulationErrorMessageV2": {
-    "message": "Wir konnten das Gas nicht schätzen. Es könnte einen Fehler im Contract geben und diese Transaktion könnte fehlschlagen."
-  },
   "simulationsSettingDescription": {
     "message": "Aktivieren Sie diese Funktion, um Änderungen Ihres Kontostands durch Transaktionen und Signaturen vor der Bestätigung abzuschätzen. Dies garantiert nicht das endgültige Ergebnis. $1"
   },
@@ -11378,12 +11281,6 @@
   },
   "smartAccountRequestsFromDappsDescriptionV2": {
     "message": "Ermöglichen Sie es DApps, Smart-Konto-Funktionen für Standardkonten anzufordern. MetaMask wird dabei ausschließlich auf unserem auditierten Smart-Konto upgraden."
-  },
-  "smartAccountUpgradeBannerDescription": {
-    "message": "Dieselbe Adresse. Intelligentere Funktionen."
-  },
-  "smartAccountUpgradeBannerTitle": {
-    "message": "Zum Smart-Konto wechseln"
   },
   "smartContractAddress": {
     "message": "Smart-Contract-Adresse"
@@ -11819,9 +11716,6 @@
   "stakingWithdrawal": {
     "message": "Staking-Auszahlung"
   },
-  "standardAccountLabel": {
-    "message": "Standardkonto"
-  },
   "stateCorruptionAreYouSure": {
     "message": "Möchten Sie wirklich fortfahren?"
   },
@@ -12147,12 +12041,6 @@
   },
   "swapsRebateTooltipTitle": {
     "message": "Tradingsprämien"
-  },
-  "switch": {
-    "message": "Wechseln"
-  },
-  "switchBack": {
-    "message": "Zurückwechseln"
   },
   "switchBackToPopup": {
     "message": "Zum Popup zurückwechseln"
@@ -12626,10 +12514,6 @@
   "unpin": {
     "message": "Lösen"
   },
-  "unrecognizedChain": {
-    "message": "Dieses benutzerdefinierte Netzwerk wird nicht erkannt",
-    "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
   "unsendableAsset": {
     "message": "Senden von NFT-Tokens (ERC-721) wird derzeit nicht unterstützt.",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
@@ -12642,9 +12526,6 @@
   },
   "update": {
     "message": "Update"
-  },
-  "updateEthereumChainConfirmationDescription": {
-    "message": "Diese Website fordert Sie zur Aktualisierung Ihrer Standard-Netzwerk-URL auf. Sie können die Standardeinstellungen und Netzwerkinformationen jederzeit ändern."
   },
   "updateInformation": {
     "message": "Wir haben Ihre Wallet sicherer und reibungsloser gemacht und einige neue Funktionen hinzugefügt. Aktualisieren Sie jetzt, um geschützt zu bleiben und unsere neuesten Verbesserungen zu nutzen."
@@ -12824,9 +12705,6 @@
   "walletReadyLoseSrpFromReminder": {
     "message": "Mit dieser geheimen Wiederherstellungsphrase können Sie den Zugriff wiedererlangen, wenn Sie Ihr Passwort vergessen oder den Zugriff auf Ihre Anmeldung verlieren."
   },
-  "wantToAddThisNetwork": {
-    "message": "Möchten Sie dieses Netzwerk hinzufügen?"
-  },
   "wantsToAddThisAsset": {
     "message": "Dadurch kann das folgende Asset zu Ihrer Wallet hinzugefügt werden."
   },
@@ -12928,9 +12806,6 @@
   },
   "yourBalance": {
     "message": "Ihr Kontostand"
-  },
-  "yourNFTmayBeAtRisk": {
-    "message": "Ihr NFT könnte gefährdet sein"
   },
   "yourWalletIsReady": {
     "message": "Ihre Wallet ist bereit!"

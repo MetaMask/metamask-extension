@@ -397,12 +397,3 @@ export async function switchChain(
     return end(error);
   }
 }
-
-const EthChainUtils = {
-  validateChainId,
-  validateSwitchEthereumChainParams,
-  validateAddEthereumChainParams,
-  switchChain,
-};
-
-export default EthChainUtils;

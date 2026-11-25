@@ -392,9 +392,6 @@
     "message": "Privat nøgle",
     "description": "select this type of file to use to import an account"
   },
-  "privateNetwork": {
-    "message": "Privat netværk"
-  },
   "readdToken": {
     "message": "Du kan tilføje denne token i fremtiden, ved at gå til \"Tilføj token\" under dine valgmenuen for dine konti."
   },
