@@ -46,16 +46,14 @@ import { MarketInsightsViewSkeleton } from './components/market-insights-view-sk
 import { getOpenableSourceUrl } from './utils/market-insights-formatting';
 import { useMarketInsightsViewTracking } from './useMarketInsightsViewTracking';
 
-export const MARKET_INSIGHTS_VIEW_TEST_ID = 'market-insights-view-container';
-export const MARKET_INSIGHTS_SOURCES_FOOTER_TEST_ID =
-  'market-insights-sources-footer';
-export const MARKET_INSIGHTS_THUMBS_UP_TEST_ID =
-  'market-insights-thumbs-up-button';
-export const MARKET_INSIGHTS_THUMBS_DOWN_TEST_ID =
+const MARKET_INSIGHTS_VIEW_TEST_ID = 'market-insights-view-container';
+const MARKET_INSIGHTS_SOURCES_FOOTER_TEST_ID = 'market-insights-sources-footer';
+const MARKET_INSIGHTS_THUMBS_UP_TEST_ID = 'market-insights-thumbs-up-button';
+const MARKET_INSIGHTS_THUMBS_DOWN_TEST_ID =
   'market-insights-thumbs-down-button';
-export const MARKET_INSIGHTS_HEADLINE_TEST_ID = 'market-insights-headline';
-export const MARKET_INSIGHTS_SUMMARY_TEST_ID = 'market-insights-summary';
-export const MARKET_INSIGHTS_WHATS_BEING_SAID_TEST_ID =
+const MARKET_INSIGHTS_HEADLINE_TEST_ID = 'market-insights-headline';
+const MARKET_INSIGHTS_SUMMARY_TEST_ID = 'market-insights-summary';
+const MARKET_INSIGHTS_WHATS_BEING_SAID_TEST_ID =
   'market-insights-whats-being-said';
 
 const SKELETON_DELAY_MS = 150;
