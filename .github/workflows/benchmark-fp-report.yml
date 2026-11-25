@@ -35,7 +35,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Setup Node.js
-        uses: metamask/github-tools/.github/actions/setup-environment@v1
+        uses: MetaMask/github-tools/.github/actions/setup-environment@v1
 
       - name: Get token
         id: token

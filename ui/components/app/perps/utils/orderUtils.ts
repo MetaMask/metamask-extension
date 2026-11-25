@@ -4,7 +4,9 @@ import {
   type Order,
   type OrderParams,
   type Position,
+  PERPS_ERROR_CODES,
 } from '@metamask/perps-controller';
+import { isPerpsErrorCode } from './translate-perps-error';
 
 const FULL_POSITION_SIZE_TOLERANCE = new BigNumber('0.00000001');
 const ORDER_PRICE_MATCH_TOLERANCE = new BigNumber('0.00000001');
@@ -16,18 +18,6 @@ const TP_SL_DETAILED_ORDER_TYPES = new Set([
   'Take Profit Limit',
   'Take Profit Market',
 ]);
-/**
- * HyperLiquid rejects a cancel for an order it no longer holds open with this
- * status text (surfaced by the SDK as `<type> <index>: <error>`).
- *
- * Protocol-specific prose, like `API_ERROR_PATTERNS` in
- * `utils/translate-perps-error.ts`, and it should stay in sync with mobile the
- * same way. It lives here instead of in that list because it maps to a benign
- * end state the UI closes out on, not to a `PerpsErrorCode` to display.
- */
-const ORDER_NO_LONGER_OPEN_PATTERN =
-  /never placed, already canceled, or filled/iu;
-
 /**
  * Maps a lowercased `PerpsOrderTransactionStatus` string (e.g. `'filled'`,
  * `'canceled'`) to the i18n key used to render its translated label.
@@ -514,13 +504,11 @@ export const isClosingOrder = (
  * — which is the outcome the user asked for, so the UI treats it as a benign
  * end state instead of a failure the user has to react to.
  *
- * @param error - The error surfaced by the cancel request.
+ * @param error - The error or failed result surfaced by the cancel request.
  * @returns Whether the order is no longer open on the provider.
  */
-export const isOrderNoLongerOpenError = (error: unknown): boolean => {
-  const message = error instanceof Error ? error.message : String(error ?? '');
-  return ORDER_NO_LONGER_OPEN_PATTERN.test(message);
-};
+export const isOrderNoLongerOpenError = (error: unknown): boolean =>
+  isPerpsErrorCode(error, PERPS_ERROR_CODES.ORDER_NO_LONGER_OPEN);
 
 /**
  * Formats an order label following the pattern: [Type] [close?] [direction]

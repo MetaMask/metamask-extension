@@ -97,9 +97,6 @@
   "advanced": {
     "message": "Avançado"
   },
-  "advancedGasPriceTitle": {
-    "message": "Preço do gás"
-  },
   "alertDisableTooltip": {
     "message": "Isso pode ser alterado em \"Configurações > Alertas\""
   },
@@ -191,9 +188,6 @@
   "blockExplorerUrl": {
     "message": "URL do Block Explorer"
   },
-  "blockExplorerUrlDefinition": {
-    "message": "O URL usado como Block Explorer para essa rede."
-  },
   "blockExplorerView": {
     "message": "Exibir conta em $1",
     "description": "$1 replaced by URL for custom block explorer"
@@ -219,18 +213,11 @@
   "chainId": {
     "message": "ID da cadeia"
   },
-  "chainIdDefinition": {
-    "message": "O ID da cadeia usado para assinar transações para essa rede."
-  },
   "chainIdExistsErrorMsg": {
     "message": "Esse ID da cadeia é usado pela rede $1."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Você precisa usar a MetaMask no Google Chrome para se conectar com a sua carteira de hardware."
-  },
-  "clickToConnectLedgerViaWebHID": {
-    "message": "Clique aqui para conectar seu Ledger por meio do WebHID",
-    "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
   },
   "close": {
     "message": "Fechar"
@@ -345,9 +332,6 @@
   },
   "currencySymbol": {
     "message": "Símbolo da moeda"
-  },
-  "currencySymbolDefinition": {
-    "message": "O símbolo do ticker exibido para a moeda dessa rede."
   },
   "currentExtension": {
     "message": "Página atual da extensão"
@@ -612,9 +596,6 @@
     "message": "$1 s",
     "description": "$1 represents a number of seconds"
   },
-  "gasUsed": {
-    "message": "Gás usado"
-  },
   "general": {
     "message": "Geral"
   },
@@ -766,18 +747,6 @@
   "ledgerAccountRestriction": {
     "message": "Você precisa usar sua última conta antes de adicionar uma nova."
   },
-  "ledgerConnectionInstructionCloseOtherApps": {
-    "message": "Encerre qualquer outro software conectado ao seu dispositivo e, em seguida, clique aqui para atualizar."
-  },
-  "ledgerConnectionInstructionHeader": {
-    "message": "Antes de clicar em confirmar:"
-  },
-  "ledgerConnectionInstructionStepFour": {
-    "message": "Ative \"dados de contrato inteligente\" ou \"assinatura cega\" no seu dispositivo Ledger"
-  },
-  "ledgerConnectionInstructionStepThree": {
-    "message": "Conecte o seu dispositivo Ledger e selecione o app Ethereum"
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Não foi possível abrir o dispositivo Ledger. Seu Ledger pode não estar conectado a outros softwares. Feche o Ledger Live ou outros aplicativos conectados ao seu dispositivo Ledger e tente reconectar."
   },
@@ -859,10 +828,6 @@
   "metamaskVersion": {
     "message": "Versão da MetaMask"
   },
-  "mismatchedChainLinkText": {
-    "message": "verifique os detalhes da rede",
-    "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
-  },
   "name": {
     "message": "Nome"
   },
@@ -883,14 +848,8 @@
     "message": "É preciso selecionar um arquivo para importar.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "networkDetails": {
-    "message": "Detalhes da rede"
-  },
   "networkName": {
     "message": "Nome da rede"
-  },
-  "networkNameDefinition": {
-    "message": "O nome associado a essa rede."
   },
   "networkNameEthereum": {
     "message": "Ethereum"
@@ -911,9 +870,6 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "As taxas de gás estão $1 em relação às últimas 72 horas.",
     "description": "$1 is networks stability value - stable, low, high"
-  },
-  "networkURL": {
-    "message": "URL da Rede"
   },
   "networkURLDefinition": {
     "message": "O URL usado para acessar essa rede."
@@ -989,10 +945,6 @@
     "message": "Conecte-se somente com sites em que você confia.",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
-  "openFullScreenForLedgerWebHid": {
-    "message": "Abra a MetaMask em tela cheia para conectar sua ledger por meio do WebHID.",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
   "origin": {
     "message": "Origem"
   },
@@ -1039,12 +991,6 @@
   "privateKey": {
     "message": "Chave privada",
     "description": "select this type of file to use to import an account"
-  },
-  "privateNetwork": {
-    "message": "Rede privada"
-  },
-  "proceedWithTransaction": {
-    "message": "Quero prosseguir mesmo assim"
   },
   "provide": {
     "message": "Fornecer"
@@ -1201,9 +1147,6 @@
   "signed": {
     "message": "Assinado"
   },
-  "simulationErrorMessageV2": {
-    "message": "Não conseguimos estimar o preço do gás. Pode haver um erro no contrato, e essa transação poderá falhar."
-  },
   "somethingWentWrong": {
     "message": "Opa! Ocorreu algum erro."
   },
@@ -1249,16 +1192,6 @@
   "swapAggregator": {
     "message": "Agregador"
   },
-  "swapAllowSwappingOf": {
-    "message": "Permitir troca de $1",
-    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
-  },
-  "swapAmountReceived": {
-    "message": "Valor garantido"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "Esse é o valor mínimo que você receberá. Você pode receber mais, dependendo do slippage."
-  },
   "swapApproval": {
     "message": "Aprovar $1 para trocas",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
@@ -1292,16 +1225,6 @@
     "message": "Isso vai $1 para trocas",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
-  "swapEstimatedNetworkFees": {
-    "message": "Taxas de rede estimadas"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "Essa é a estimativa da taxa de rede que será usada para concluir sua troca. O valor real pode mudar conforme as condições de rede."
-  },
-  "swapFailedErrorDescriptionWithSupportLink": {
-    "message": "Falhas na transação acontecem, e estamos aqui para ajudar. Se esse problema persistir, você pode entrar em contato com nosso atendimento ao cliente em $1 para receber assistência adicional.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
-  },
   "swapFailedErrorTitle": {
     "message": "Falha na troca"
   },
@@ -1314,22 +1237,9 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "Erro ao obter cotações"
   },
-  "swapFromTo": {
-    "message": "A troca de $1 para $2",
-    "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
-  "swapGasFeesSplit": {
-    "message": "As taxas de gás da tela anterior estão divididas entre essas duas transações."
-  },
   "swapIncludesMMFee": {
     "message": "Inclui uma taxa de $1% da MetaMask.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapMaxSlippage": {
-    "message": "Slippage máximo"
-  },
-  "swapMetaMaskFee": {
-    "message": "Taxa da MetaMask"
   },
   "swapMetaMaskFeeDescription": {
     "message": "Encontramos o melhor preço das principais fontes de liquidez – todas as vezes. Uma taxa de $1% é automaticamente incorporada nessa cotação.",
@@ -1339,85 +1249,26 @@
     "message": "$1 cotações.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapOnceTransactionHasProcess": {
-    "message": "Seu $1 será adicionado à sua conta quando essa transação for processada.",
-    "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
-  },
-  "swapProcessing": {
-    "message": "Processando"
-  },
-  "swapQuoteDetails": {
-    "message": "Detalhes da cotação"
-  },
-  "swapQuoteSource": {
-    "message": "Fonte da cotação"
-  },
   "swapQuotesExpiredErrorDescription": {
     "message": "Solicite novas cotações para receber as taxas mais recentes."
   },
   "swapQuotesExpiredErrorTitle": {
     "message": "Cotações expiradas"
   },
-  "swapQuotesNotAvailableErrorDescription": {
-    "message": "Experimente ajustar a quantidade ou as configurações de slippage e tente novamente."
-  },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "Não há cotações disponíveis"
-  },
-  "swapRate": {
-    "message": "Taxa"
-  },
-  "swapReceiving": {
-    "message": "Recebendo"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "Essa é uma estimativa. O valor exato dependerá do slippage."
   },
   "swapRequestForQuotation": {
     "message": "Solicitação de cotação"
   },
-  "swapSelect": {
-    "message": "Selecione"
-  },
-  "swapSelectAQuote": {
-    "message": "Selecione uma cotação"
-  },
-  "swapSelectAToken": {
-    "message": "Selecione um token"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "Abaixo estão todas as cotações reunidas de diversas fontes de liquidez."
-  },
-  "swapSource": {
-    "message": "Fonte de liquidez"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Trocas (swaps) são transações complexas e urgentes. Recomendamos essa taxa de gás para atingir o equilíbrio ideal entre o custo e a confiança de uma troca bem-sucedida."
-  },
-  "swapToConfirmWithHwWallet": {
-    "message": "para confirmar com a sua carteira de hardware"
-  },
-  "swapTokenAvailable": {
-    "message": "Seu $1 foi adicionado à sua conta.",
-    "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
-  },
-  "swapTransactionComplete": {
-    "message": "Transação concluída"
-  },
-  "swapTwoTransactions": {
-    "message": "2 transações"
   },
   "swapUnknown": {
     "message": "Desconhecido"
   },
-  "swapZeroSlippage": {
-    "message": "0% de slippage"
-  },
   "swapsMaxSlippage": {
     "message": "Tolerância a slippage"
-  },
-  "swapsViewInActivity": {
-    "message": "Ver na atividade"
   },
   "switchEthereumChainConfirmationDescription": {
     "message": "Isso mudará a rede selecionada dentro da MetaMask para uma rede adicionada anteriormente:"
@@ -1485,27 +1336,6 @@
   "transactionErrorNoContract": {
     "message": "Tentando chamar uma função em um endereço que não está no contrato."
   },
-  "transactionHistoryBaseFee": {
-    "message": "Taxa de base (GWEI)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "Taxa de gás L1 total"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "Limite de gás L2"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "Preço do gás L2"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "Taxa máxima por gás"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "Taxa de prioridade (GWEI)"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "Taxa de gás total"
-  },
   "transfer": {
     "message": "Transferir"
   },
@@ -1528,9 +1358,6 @@
   },
   "unapproved": {
     "message": "Não aprovado"
-  },
-  "units": {
-    "message": "unidades"
   },
   "unknown": {
     "message": "Desconhecido"

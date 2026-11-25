@@ -1,5 +1,5 @@
 import React from 'react';
-import { AvatarBaseSize } from '@metamask/design-system-shared';
+import { AvatarBaseSize } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
 import { useGetDisplayName } from '#ui/hooks/useGetDisplayName';
 import { shortenAddress } from '../../../helpers/utils/util';

@@ -1,4 +1,6 @@
+import React from 'react';
 import { act, renderHook, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { priceApiBaseUrl } from '../../../../../shared/constants/price-api';
 import {
   fetchOHLCV,
@@ -7,9 +9,24 @@ import {
   FETCH_TIMEOUT_MS,
   INTERVAL_TO_TIME_PERIOD,
   OHLCV_BASE_URL,
+  type FetchOlderBarsResult,
 } from './useOHLCVChart';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
+
+/** Creates a fresh QueryClient + Provider wrapper for each test. */
+const createWrapper = () => {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false, gcTime: 0 } },
+  });
+  return function wrapperElement({ children }: { children: React.ReactNode }) {
+    return React.createElement(
+      QueryClientProvider,
+      { client: queryClient },
+      children,
+    );
+  };
+};
 
 const MOCK_API_CANDLES = [
   {
@@ -210,8 +227,14 @@ describe('useOHLCVChart', () => {
   it('requests the display currency rather than always USD', async () => {
     mockFetchSuccess();
 
-    renderHook(() =>
-      useOHLCVChart({ assetId: 'ethereum', interval: '1h', currency: 'EUR' }),
+    renderHook(
+      () =>
+        useOHLCVChart({
+          assetId: 'ethereum',
+          interval: '1h',
+          currency: 'EUR',
+        }),
+      { wrapper: createWrapper() },
     );
 
     await waitFor(() => expect(global.fetch).toHaveBeenCalled());
@@ -229,8 +252,14 @@ describe('useOHLCVChart', () => {
         json: jest.fn().mockResolvedValue({ data: MOCK_API_CANDLES }),
       });
 
-    const { result } = renderHook(() =>
-      useOHLCVChart({ assetId: 'ethereum', interval: '1h', currency: 'sek' }),
+    const { result } = renderHook(
+      () =>
+        useOHLCVChart({
+          assetId: 'ethereum',
+          interval: '1h',
+          currency: 'sek',
+        }),
+      { wrapper: createWrapper() },
     );
 
     await waitFor(() => expect(result.current.ohlcvData).toHaveLength(2));
@@ -246,8 +275,14 @@ describe('useOHLCVChart', () => {
   it('surfaces the error instead of retrying when USD itself fails', async () => {
     mockFetchFailure(500);
 
-    const { result } = renderHook(() =>
-      useOHLCVChart({ assetId: 'ethereum', interval: '1h', currency: 'usd' }),
+    const { result } = renderHook(
+      () =>
+        useOHLCVChart({
+          assetId: 'ethereum',
+          interval: '1h',
+          currency: 'usd',
+        }),
+      { wrapper: createWrapper() },
     );
 
     await waitFor(() =>
@@ -259,8 +294,14 @@ describe('useOHLCVChart', () => {
   it('makes no request when the asset id is undefined', () => {
     mockFetchSuccess();
 
-    const { result } = renderHook(() =>
-      useOHLCVChart({ assetId: undefined, interval: '1h', currency: 'usd' }),
+    const { result } = renderHook(
+      () =>
+        useOHLCVChart({
+          assetId: undefined,
+          interval: '1h',
+          currency: 'usd',
+        }),
+      { wrapper: createWrapper() },
     );
 
     expect(global.fetch).not.toHaveBeenCalled();
@@ -270,13 +311,15 @@ describe('useOHLCVChart', () => {
   it('makes no request while disabled, as in line chart mode', () => {
     mockFetchSuccess();
 
-    renderHook(() =>
-      useOHLCVChart({
-        assetId: 'ethereum',
-        interval: '1h',
-        currency: 'usd',
-        enabled: false,
-      }),
+    renderHook(
+      () =>
+        useOHLCVChart({
+          assetId: 'ethereum',
+          interval: '1h',
+          currency: 'usd',
+          enabled: false,
+        }),
+      { wrapper: createWrapper() },
     );
 
     expect(global.fetch).not.toHaveBeenCalled();
@@ -294,17 +337,17 @@ describe('useOHLCVChart', () => {
       } as unknown as Response)
       .mockReturnValueOnce(new Promise(() => undefined));
 
+    const wrapper = createWrapper();
     const { result, rerender } = renderHook(
       ({ assetId }) =>
         useOHLCVChart({ assetId, interval: '1h', currency: 'usd' }),
-      { initialProps: { assetId: 'ethereum' } },
+      { initialProps: { assetId: 'ethereum' }, wrapper },
     );
 
     await waitFor(() => expect(result.current.ohlcvData).toHaveLength(2));
 
-    // Switching the asset resets during render, so the next committed state has
-    // no bars and is already loading — the previous series cannot be painted
-    // under the new key while the fetch is in flight.
+    // Switching the asset triggers a new queryKey with no cached data.
+    // React Query sets `isLoading` and returns no data for the uncached key.
     rerender({ assetId: 'bitcoin' });
 
     expect(result.current.ohlcvData).toEqual([]);
@@ -315,6 +358,7 @@ describe('useOHLCVChart', () => {
   it('keeps the loaded candles when toggling to line mode and back, so the iframe does not blank', async () => {
     mockFetchSuccess();
 
+    const wrapper = createWrapper();
     const { result, rerender } = renderHook(
       ({ enabled }) =>
         useOHLCVChart({
@@ -323,23 +367,18 @@ describe('useOHLCVChart', () => {
           currency: 'usd',
           enabled,
         }),
-      { initialProps: { enabled: true } },
+      { initialProps: { enabled: true }, wrapper },
     );
 
     await waitFor(() => expect(result.current.ohlcvData).toHaveLength(2));
 
-    // Line mode disables the hook; the bars must survive so the still-mounted
-    // chart keeps showing them.
+    // Line mode disables the hook; React Query keeps the cached data so bars
+    // survive even though the query is no longer active.
     rerender({ enabled: false });
     expect(result.current.ohlcvData).toHaveLength(2);
 
-    // Back to candle mode: still the same bars (refreshed in the background),
-    // never cleared to an empty series.
+    // Back to candle mode: still the same bars from cache, never cleared.
     rerender({ enabled: true });
-    expect(result.current.ohlcvData).toHaveLength(2);
-
-    // Let the background refresh settle so its state updates run inside `act`.
-    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2));
     expect(result.current.ohlcvData).toHaveLength(2);
   });
 
@@ -347,6 +386,7 @@ describe('useOHLCVChart', () => {
     // Fetch hangs so the state right after enabling is observable.
     global.fetch = jest.fn().mockReturnValue(new Promise(() => undefined));
 
+    const wrapper = createWrapper();
     const { result, rerender } = renderHook(
       ({ enabled }) =>
         useOHLCVChart({
@@ -355,15 +395,14 @@ describe('useOHLCVChart', () => {
           currency: 'usd',
           enabled,
         }),
-      { initialProps: { enabled: false } },
+      { initialProps: { enabled: false }, wrapper },
     );
 
     // Starts idle in line mode: no request, no bars, not loading.
     expect(result.current.isLoading).toBe(false);
     expect(result.current.ohlcvData).toEqual([]);
 
-    // Entering candle mode with no bars yet shows loading immediately, avoiding
-    // the empty "no data" flash before the fetch resolves.
+    // Entering candle mode with no cached data shows loading immediately.
     rerender({ enabled: true });
     expect(result.current.isLoading).toBe(true);
     expect(result.current.ohlcvData).toEqual([]);
@@ -445,10 +484,18 @@ describe('useOHLCVChart – fetchOlderBars', () => {
       .mockResolvedValueOnce(mockPage(MOCK_API_CANDLES, null, false));
     global.fetch = fetchMock as unknown as typeof fetch;
 
-    const { result } = renderHook(() =>
-      useOHLCVChart({ assetId: 'ethereum', interval: '1h', currency: 'usd' }),
+    const { result } = renderHook(
+      () =>
+        useOHLCVChart({
+          assetId: 'ethereum',
+          interval: '1h',
+          currency: 'usd',
+        }),
+      { wrapper: createWrapper() },
     );
     await waitFor(() => expect(result.current.ohlcvData).toHaveLength(2));
+    // The iframe anchors the cursor when it posts the full SET_OHLCV_DATA.
+    act(() => result.current.resetPagination());
 
     let older;
     await act(async () => {
@@ -471,10 +518,18 @@ describe('useOHLCVChart – fetchOlderBars', () => {
       .mockResolvedValue(mockPage(MOCK_API_CANDLES, null, false));
     global.fetch = fetchMock as unknown as typeof fetch;
 
-    const { result } = renderHook(() =>
-      useOHLCVChart({ assetId: 'ethereum', interval: '1h', currency: 'usd' }),
+    const { result } = renderHook(
+      () =>
+        useOHLCVChart({
+          assetId: 'ethereum',
+          interval: '1h',
+          currency: 'usd',
+        }),
+      { wrapper: createWrapper() },
     );
     await waitFor(() => expect(result.current.ohlcvData).toHaveLength(2));
+    // The iframe anchors the cursor when it posts the full SET_OHLCV_DATA.
+    act(() => result.current.resetPagination());
 
     let older;
     await act(async () => {
@@ -483,6 +538,191 @@ describe('useOHLCVChart – fetchOlderBars', () => {
     expect(older).toEqual({ bars: [], noData: true });
     // Only the initial load fetched; the exhausted cursor short-circuits.
     expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('accumulates successive pages in one call until countBack is met', async () => {
+    // Initial load + three older pages, two bars each. countBack 5 should pull
+    // pages until >= 5 bars are gathered (3 pages = 6 bars) and return them as
+    // a single batch, advancing the cursor through each page.
+    const fetchMock = jest
+      .fn()
+      .mockResolvedValueOnce(mockPage(MOCK_API_CANDLES, 'cursor-1', true))
+      .mockResolvedValueOnce(mockPage(MOCK_API_CANDLES, 'cursor-2', true))
+      .mockResolvedValueOnce(mockPage(MOCK_API_CANDLES, 'cursor-3', true))
+      .mockResolvedValueOnce(mockPage(MOCK_API_CANDLES, 'cursor-4', true));
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    const { result } = renderHook(
+      () =>
+        useOHLCVChart({
+          assetId: 'ethereum',
+          interval: '1h',
+          currency: 'usd',
+        }),
+      { wrapper: createWrapper() },
+    );
+    await waitFor(() => expect(result.current.ohlcvData).toHaveLength(2));
+    // The iframe anchors the cursor when it posts the full SET_OHLCV_DATA.
+    act(() => result.current.resetPagination());
+
+    let older;
+    await act(async () => {
+      older = await result.current.fetchOlderBars(5);
+    });
+
+    // One initial load + three older-page fetches, all in the single call.
+    expect(fetchMock).toHaveBeenCalledTimes(4);
+    expect(older).toEqual({ bars: expect.any(Array), noData: false });
+    expect((older as unknown as FetchOlderBarsResult).bars).toHaveLength(6);
+    // The cursor walked page by page: last older fetch used cursor-3.
+    const lastUrl = new URL(fetchMock.mock.calls[3][0] as string);
+    expect(lastUrl.searchParams.get('nextCursor')).toBe('cursor-3');
+  });
+
+  it('stops accumulating when history runs out before countBack is met', async () => {
+    const fetchMock = jest
+      .fn()
+      .mockResolvedValueOnce(mockPage(MOCK_API_CANDLES, 'cursor-1', true))
+      .mockResolvedValueOnce(mockPage(MOCK_API_CANDLES, null, false));
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    const { result } = renderHook(
+      () =>
+        useOHLCVChart({
+          assetId: 'ethereum',
+          interval: '1h',
+          currency: 'usd',
+        }),
+      { wrapper: createWrapper() },
+    );
+    await waitFor(() => expect(result.current.ohlcvData).toHaveLength(2));
+    // The iframe anchors the cursor when it posts the full SET_OHLCV_DATA.
+    act(() => result.current.resetPagination());
+
+    let older;
+    await act(async () => {
+      older = await result.current.fetchOlderBars(100);
+    });
+
+    // Asked for 100 but history ends after the first older page; returns what
+    // exists rather than looping forever.
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect((older as unknown as FetchOlderBarsResult).bars).toHaveLength(2);
+    expect((older as unknown as FetchOlderBarsResult).noData).toBe(false);
+  });
+
+  it('keeps the advanced cursor when a refetch delivers new data (no rewind)', async () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    const wrapper = ({ children }: { children: React.ReactNode }) =>
+      React.createElement(
+        QueryClientProvider,
+        { client: queryClient },
+        children,
+      );
+    const fetchMock = jest
+      .fn()
+      .mockResolvedValueOnce(mockPage(MOCK_API_CANDLES, 'page-2', true))
+      .mockResolvedValueOnce(mockPage(MOCK_API_CANDLES, 'page-3', true))
+      // background refetch of page 1
+      .mockResolvedValueOnce(mockPage(MOCK_API_CANDLES, 'page-2-fresh', true))
+      .mockResolvedValueOnce(mockPage(MOCK_API_CANDLES, 'page-4', true));
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    const { result } = renderHook(
+      () =>
+        useOHLCVChart({ assetId: 'ethereum', interval: '1h', currency: 'usd' }),
+      { wrapper },
+    );
+    await waitFor(() => expect(result.current.ohlcvData).toHaveLength(2));
+    act(() => result.current.resetPagination());
+
+    await act(async () => {
+      await result.current.fetchOlderBars();
+    });
+
+    await act(async () => {
+      await queryClient.refetchQueries({ queryKey: ['ohlcv'] });
+    });
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+
+    await act(async () => {
+      await result.current.fetchOlderBars();
+    });
+    const url = new URL(fetchMock.mock.calls[3][0] as string);
+    expect(url.searchParams.get('nextCursor')).toBe('page-3');
+  });
+
+  it('re-anchors to the cached page cursor on resetPagination', async () => {
+    const fetchMock = jest
+      .fn()
+      .mockResolvedValueOnce(mockPage(MOCK_API_CANDLES, 'page-2', true))
+      .mockResolvedValueOnce(mockPage(MOCK_API_CANDLES, 'page-3', true))
+      .mockResolvedValueOnce(mockPage(MOCK_API_CANDLES, 'page-3', true));
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    const { result } = renderHook(
+      () =>
+        useOHLCVChart({ assetId: 'ethereum', interval: '1h', currency: 'usd' }),
+      { wrapper: createWrapper() },
+    );
+    await waitFor(() => expect(result.current.ohlcvData).toHaveLength(2));
+    act(() => result.current.resetPagination());
+    await act(async () => {
+      await result.current.fetchOlderBars();
+    });
+
+    act(() => result.current.resetPagination());
+    await act(async () => {
+      await result.current.fetchOlderBars();
+    });
+    const url = new URL(fetchMock.mock.calls[2][0] as string);
+    expect(url.searchParams.get('nextCursor')).toBe('page-2');
+  });
+
+  it('drops an in-flight page and keeps the new cursor when a reset lands mid-flight', async () => {
+    let resolveOlder: (r: Response) => void = () => undefined;
+    const fetchMock = jest
+      .fn()
+      .mockResolvedValueOnce(mockPage(MOCK_API_CANDLES, 'page-2', true))
+      .mockImplementationOnce(
+        () =>
+          new Promise<Response>((resolve) => {
+            resolveOlder = resolve;
+          }),
+      )
+      .mockResolvedValueOnce(mockPage(MOCK_API_CANDLES, 'page-3', true));
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    const { result } = renderHook(
+      () =>
+        useOHLCVChart({ assetId: 'ethereum', interval: '1h', currency: 'usd' }),
+      { wrapper: createWrapper() },
+    );
+    await waitFor(() => expect(result.current.ohlcvData).toHaveLength(2));
+    act(() => result.current.resetPagination());
+
+    let pending: Promise<FetchOlderBarsResult> | undefined;
+    act(() => {
+      pending = result.current.fetchOlderBars();
+    });
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+
+    act(() => result.current.resetPagination());
+    let stale: FetchOlderBarsResult | undefined;
+    await act(async () => {
+      resolveOlder(mockPage(MOCK_API_CANDLES, 'stale-cursor', true));
+      stale = await pending;
+    });
+    expect(stale).toEqual({ bars: [], noData: true });
+
+    // The stale call neither advanced the cursor nor kept the lock.
+    await act(async () => {
+      await result.current.fetchOlderBars();
+    });
+    const url = new URL(fetchMock.mock.calls[2][0] as string);
+    expect(url.searchParams.get('nextCursor')).toBe('page-2');
   });
 });
 

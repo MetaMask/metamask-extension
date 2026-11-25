@@ -1,7 +1,7 @@
 import React from 'react';
-import type {
-  TransactionMeta,
+import {
   TransactionType,
+  type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { Text } from '../../../../../components/component-library';
 import {
@@ -22,8 +22,13 @@ import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToke
 import { useConfirmContext } from '../../../context/confirm';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
+import { decodePaymentTokenAssetId } from '../../../../../../shared/lib/transaction/pay-token';
 
 const SAME_CHAIN_DURATION_SECONDS = '< 10';
+
+const COMPACT_TIME_LABEL_TRANSACTION_TYPES: TransactionType[] = [
+  TransactionType.moneyAccountDeposit,
+];
 
 const HIDE_TYPES: TransactionType[] = [];
 
@@ -45,9 +50,16 @@ export function BridgeTimeRow({
   const showEstimate =
     !hasTransactionType(currentConfirmation, HIDE_TYPES) &&
     (isLoading || Boolean(quotes?.length));
+  const useCompactCopy = hasTransactionType(
+    currentConfirmation,
+    COMPACT_TIME_LABEL_TRANSACTION_TYPES,
+  );
 
   const isSmall = rowVariant === ConfirmInfoRowSize.Small;
   const textVariant = isSmall ? TextVariant.bodyMd : TextVariant.bodyMdMedium;
+  const timeLabel = useCompactCopy
+    ? t('moneyAccountDepositEstTime')
+    : t('estimatedTime');
 
   if (!showEstimate) {
     return null;
@@ -57,23 +69,24 @@ export function BridgeTimeRow({
     return (
       <ConfirmInfoRowSkeleton
         data-testid="bridge-time-row-skeleton"
-        label={t('estimatedTime')}
+        label={timeLabel}
         rowVariant={rowVariant}
       />
     );
   }
 
-  const isSameChain = payToken?.chainId === chainId;
+  const isSameChain = decodePaymentTokenAssetId(payToken)?.chainId === chainId;
   const formattedSeconds = formatSeconds(
     t,
     estimatedDuration ?? 0,
     isSameChain,
+    useCompactCopy,
   );
 
   return (
     <ConfirmInfoRow
       data-testid="bridge-time-row"
-      label={t('estimatedTime')}
+      label={timeLabel}
       rowVariant={rowVariant}
     >
       <Text
@@ -91,13 +104,16 @@ function formatSeconds(
   t: ReturnType<typeof useI18nContext>,
   seconds: number,
   isSameChainPayment: boolean,
+  useCompactCopy: boolean,
 ): string {
   if (isSameChainPayment) {
     return `${SAME_CHAIN_DURATION_SECONDS} ${t('second')}`;
   }
 
   if (seconds <= 30) {
-    return `< 1 ${t('minute')}`;
+    return useCompactCopy
+      ? t('moneyAccountDepositLessThanOneMinute')
+      : `< 1 ${t('minute')}`;
   }
 
   if (seconds <= 60) {

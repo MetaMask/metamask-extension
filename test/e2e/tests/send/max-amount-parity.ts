@@ -22,6 +22,15 @@ import {
 import { v6AccountsApiBalancesJson } from '../../helpers/accounts-api-v6-balances';
 import { DEFAULT_BRIDGE_FEATURE_FLAGS } from '../bridge/constants';
 import {
+  accountsBalancesV5,
+  accountsSupportedNetworksV2,
+  bridgeGetTokensPopular,
+  bridgeGetTokensSearch,
+  gasPrices,
+  priceV3Spot,
+  txSentinelNetwork,
+} from '../../mock-response-data/api-responses';
+import {
   AMOUNT_TOLERANCE,
   GAS_FEE_NATIVE,
   GAS_FEE_TOLERANCE,
@@ -126,15 +135,6 @@ export function buildMaxAmountParityFixture(network: MaxAmountNetwork) {
           lastUpdated: 0,
           price: 1,
           usdPrice: 1,
-        },
-      },
-    })
-    .withAccountTracker({
-      accountsByChainId: {
-        [network.chainId]: {
-          [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
-            balance: NATIVE_BALANCE_HEX,
-          },
         },
       },
     })
@@ -368,8 +368,8 @@ async function mockGasApi(
     )
     .always()
     .thenJson(200, SUGGESTED_GAS_FEES);
-  await mockServer
-    .forGet(`${GAS_API_BASE_URL}/networks/${network.chainIdDecimal}/gasPrices`)
+  await gasPrices
+    .rule(mockServer, { chainId: network.chainIdDecimal })
     .always()
     .thenJson(200, {
       SafeGasPrice: '2000',
@@ -396,16 +396,16 @@ async function mockAccountsApi(
     ];
   };
 
-  await mockServer
-    .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
+  await accountsSupportedNetworksV2
+    .rule(mockServer)
     .always()
     .thenJson(200, {
       fullSupport: [`eip155:${network.chainIdDecimal}`],
       partialSupport: [],
     });
 
-  await mockServer
-    .forGet('https://accounts.api.cx.metamask.io/v5/multiaccount/balances')
+  await accountsBalancesV5
+    .rule(mockServer)
     .always()
     .thenCallback((request) => {
       const balances = accountIdsFrom(request.url).flatMap(balancesFor);
@@ -435,8 +435,8 @@ async function mockSpotPrice(
   mockServer: Mockttp,
   network: MaxAmountNetwork,
 ): Promise<void> {
-  await mockServer
-    .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
+  await priceV3Spot
+    .rule(mockServer)
     .always()
     .thenCallback((request) => {
       const assetIds = new URL(request.url).searchParams.get('assetIds') ?? '';
@@ -460,12 +460,9 @@ async function mockSpotPrice(
  * @param mockServer - Mockttp server for this test.
  */
 async function mockBridgeApis(mockServer: Mockttp): Promise<void> {
-  await mockServer
-    .forPost(/https:\/\/bridge\.dev-api\.cx\.metamask\.io\/getTokens\/popular/u)
-    .always()
-    .thenJson(200, []);
-  await mockServer
-    .forPost(/https:\/\/bridge\.dev-api\.cx\.metamask\.io\/getTokens\/search/u)
+  await bridgeGetTokensPopular.rule(mockServer).always().thenJson(200, []);
+  await bridgeGetTokensSearch
+    .rule(mockServer)
     .always()
     .thenJson(200, {
       data: [],
@@ -496,10 +493,7 @@ async function mockSentinelNetwork(
     smartTransactions: false,
   };
 
-  await mockServer
-    .forGet(/https:\/\/tx-sentinel-[\w-]+\.api\.cx\.metamask\.io\/network$/u)
-    .always()
-    .thenJson(200, flags);
+  await txSentinelNetwork.rule(mockServer).always().thenJson(200, flags);
   await mockServer
     .forGet(/https:\/\/tx-sentinel-[\w-]+\.api\.cx\.metamask\.io\/networks$/u)
     .always()

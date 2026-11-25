@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
+import { initialState as initialRewardsMoneyState } from '#ui/ducks/rewards-money';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
@@ -117,6 +118,7 @@ const messengerCallMock = jest.fn(
 
 describe('Wallet Ready Page', () => {
   const mockState = {
+    rewardsMoney: { ...initialRewardsMoneyState },
     metamask: {
       internalAccounts: {
         accounts: {
