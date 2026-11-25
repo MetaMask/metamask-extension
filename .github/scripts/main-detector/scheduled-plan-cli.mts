@@ -6,7 +6,7 @@
  * pinned reference of `drift-reference.json` for `drift`, else the commit the
  * last successful scheduled `daily` run measured, else the head's nearest
  * ancestor with a build. Writes `proceed`, `kind`, `plan`, `power_user_plan`
- * (daily only), `record_sha` and `message` to --github-output.
+ * (daily only), `skip_record` and `message` to --github-output.
  * Needs a checkout with first-parent history of main and the `gh` CLI.
  */
 import { execFileSync } from 'node:child_process';
@@ -108,13 +108,13 @@ async function main(): Promise<void> {
   if (!Number.isFinite(rate) || rate < 1) {
     throw new Error('--rate must be a number of at least 1');
   }
-  // The A/B sequence is ten long, and the paired rule pairs consecutive iterations.
+  // The A/B sequence is ten long, so a multiple of ten keeps both builds equally often.
   if (
     !Number.isInteger(iterations) ||
     iterations < 10 ||
-    iterations % 2 !== 0
+    iterations % 10 !== 0
   ) {
-    throw new Error('--iterations must be an even number of at least 10');
+    throw new Error('--iterations must be a multiple of 10');
   }
   const output = values['github-output'];
   const common = { kind, iterations: String(iterations), rate: String(rate) };
@@ -187,8 +187,9 @@ async function main(): Promise<void> {
       finish(output, {
         ...common,
         proceed: 'false',
-        // A daily run that skips still counts its head as covered, so the next range starts there.
-        record_sha: kind === 'daily' ? headSha : '',
+        // A daily run that skips still covers its head, so the next range starts there.
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        skip_record: kind === 'daily' ? headSha : '',
         message: `Head ${headSha.slice(0, 10)} builds the same as base ${resolved.base?.sha.slice(0, 10)}: no change, no jobs run.`,
       });
       return;
@@ -216,8 +217,6 @@ async function main(): Promise<void> {
     plan: JSON.stringify(plan),
     // eslint-disable-next-line @typescript-eslint/naming-convention
     power_user_plan: powerUser,
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    record_sha: headSha,
     message: [
       `Head ${headSha.slice(0, 10)} against base ${plan.baseSha.slice(0, 10)}, ${plan.rangeSize} commit${plan.rangeSize === 1 ? '' : 's'}.`,
       ...notes,

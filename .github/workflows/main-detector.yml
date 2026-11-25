@@ -5,8 +5,12 @@ name: Main performance detector
 # its first-parent ancestor's in paired jobs on one runner, and confirms a
 # suspicious result with a second batch. The critical user flows of the same
 # commit run beside it in Chrome and are scored with ADR 0072's paired decision
-# rule. Identical builds exit early. It is not a merge gate. Daily, it also runs
-# the Chrome benchmark presets on a throttled CPU, report-only. See
+# rule. Identical builds exit early. It is not a merge gate.
+#
+# Beside the commit checks, a scheduled run slows Chrome's CPU and measures with
+# the same paired jobs and scoring, under its own Slack label: daily, the newest
+# main commit against the commit the last daily run measured, in the standard
+# startup preset and the critical user flows. See
 # .github/scripts/main-detector/README.md.
 
 on:
@@ -16,7 +20,7 @@ on:
     branches: [main]
   schedule:
     # Daily at 07:00 UTC, after the scheduled Main runs, which start hourly from
-    # 02:00 to 06:00 UTC. Runs only the throttled job.
+    # 02:00 to 06:00 UTC: the throttled daily run.
     - cron: '0 7 * * *'
   workflow_dispatch:
     inputs:
@@ -25,19 +29,29 @@ on:
         required: false
         type: string
       mode:
-        description: auto, aa to run the head against itself as a false-alarm canary, or throttled to run only the throttled presets
+        description: auto; aa to run the head against itself as a false positive rate canary; throttled, or throttled-aa to run the head against itself, to run the daily throttled run now
         required: false
         type: choice
         options:
           - auto
           - aa
           - throttled
+          - throttled-aa
         default: auto
       cpu_throttle_rate:
-        description: Throttled mode only, how many times slower Chrome runs page CPU work
+        description: Throttled modes only, how many times slower Chrome runs page CPU work
         required: false
         type: string
         default: '2'
+      iterations:
+        description: Throttled modes only, browser sessions per startup job and iterations per critical user flow job, a multiple of 10 (the commit checks use 10)
+        required: false
+        type: string
+        default: '20'
+      base_sha:
+        description: Throttled mode only, the commit to compare with (default is the commit the last daily run measured)
+        required: false
+        type: string
       inject_head_ms:
         description: Dry run only, milliseconds of busy-wait added to the head build
         required: false
@@ -48,14 +62,15 @@ on:
         type: boolean
         default: false
 
-run-name: ${{ format('Main performance detector {0}{1}{2}', (github.event_name == 'schedule' || inputs.mode == 'throttled') && 'latest-main' || inputs.head_sha || github.event.workflow_run.head_sha || 'latest-main', (github.event_name == 'schedule' || inputs.mode == 'throttled') && ' (throttled)' || inputs.mode == 'aa' && ' (aa)' || '', inputs.inject_head_ms && ' (inject)' || '') }}
+run-name: ${{ format('Main performance detector {0}{1}{2}', (github.event_name == 'schedule' || contains(fromJSON('["throttled","throttled-aa"]'), inputs.mode)) && 'latest-main' || inputs.head_sha || github.event.workflow_run.head_sha || 'latest-main', github.event_name == 'schedule' && format(' ({0})', 'throttled') || inputs.mode == 'throttled' && ' (throttled)' || inputs.mode == 'throttled-aa' && ' (throttled aa)' || inputs.mode == 'aa' && ' (aa)' || '', inputs.inject_head_ms && ' (inject)' || '') }}
 
 # One run per commit. Runs for different commits are independent and none is
 # cancelled: a later merge must not drop the check of an earlier one. A dispatch
 # with no head_sha measures the tip of main, which a title cannot name, so it
-# is called latest-main and no commit's heartbeat or re-run check counts it.
+# is called latest-main and no commit's heartbeat or re-run check counts it. The
+# scheduled runs are one group each, by what triggered them.
 concurrency:
-  group: main-detector-${{ (github.event_name == 'schedule' || inputs.mode == 'throttled') && 'throttled' || inputs.head_sha || github.event.workflow_run.head_sha || 'latest-main' }}
+  group: main-detector-${{ (github.event_name == 'schedule' || contains(fromJSON('["throttled","throttled-aa"]'), inputs.mode)) && (inputs.mode || github.event.schedule) || inputs.head_sha || github.event.workflow_run.head_sha || 'latest-main' }}
   cancel-in-progress: false
 
 permissions:
@@ -72,7 +87,7 @@ env:
 jobs:
   plan:
     # Main runs that were cancelled never finished their builds; failed runs still upload them.
-    if: ${{ github.event_name != 'schedule' && inputs.mode != 'throttled' && (github.event_name != 'workflow_run' || (github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion != 'cancelled')) }}
+    if: ${{ github.event_name != 'schedule' && !contains(fromJSON('["throttled","throttled-aa"]'), inputs.mode) && (github.event_name != 'workflow_run' || (github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion != 'cancelled')) }}
     runs-on: ubuntu-latest
     outputs:
       proceed: ${{ steps.quick.outputs.proceed || steps.plan.outputs.proceed }}
@@ -302,14 +317,124 @@ jobs:
           overwrite: true
           retention-days: 30
 
-  throttled:
-    if: ${{ github.event_name == 'schedule' || inputs.mode == 'throttled' }}
+  # origin: ai-synthesis
+  # Plans the daily run, which slows Chrome's CPU and compares the newest main
+  # commit with a build against the one the last daily run measured.
+  scheduled:
+    if: ${{ (github.event_name == 'schedule' || contains(fromJSON('["throttled","throttled-aa"]'), inputs.mode)) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      kind: ${{ steps.plan.outputs.kind }}
+      proceed: ${{ steps.plan.outputs.proceed }}
+      plan: ${{ steps.plan.outputs.plan }}
+      power_user_plan: ${{ steps.plan.outputs.power_user_plan }}
+      iterations: ${{ steps.plan.outputs.iterations }}
+    steps:
+      - name: Checkout the scripts
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: |
+            .github
+            .nvmrc
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+
+      # Commits only: trees and blobs are fetched on demand.
+      - name: Fetch the history of main
+        run: git fetch --no-tags --depth=1500 --filter=tree:0 origin +main:refs/remotes/origin/main
+
+      - name: Choose the head and the base
+        id: plan
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MODE: ${{ inputs.mode }}
+          RATE: ${{ inputs.cpu_throttle_rate || '2' }}
+          ITERATIONS: ${{ inputs.iterations || '20' }}
+          HEAD_SHA: ${{ inputs.head_sha }}
+          BASE_SHA: ${{ inputs.base_sha }}
+        run: |
+          set -euo pipefail
+          kind=daily
+          args=(--kind "$kind" --rate "$RATE" --iterations "$ITERATIONS" --github-output "$GITHUB_OUTPUT")
+          if [[ "$MODE" == throttled-aa ]]; then
+            args+=(--canary)
+          fi
+          if [[ -n "$HEAD_SHA" ]]; then
+            args+=(--head "$HEAD_SHA")
+          fi
+          if [[ -n "$BASE_SHA" ]]; then
+            args+=(--base "$BASE_SHA")
+          fi
+          node .github/scripts/main-detector/scheduled-plan-cli.mts "${args[@]}" | tee message.txt
+          printf '## Main performance detector (%s)\n\n%s\n' "$kind" "$(cat message.txt)" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Write the record of a skipped daily run
+        if: ${{ steps.plan.outputs.skip_record != '' }}
+        env:
+          SKIPPED: ${{ steps.plan.outputs.skip_record }}
+        run: printf '{"headSha":"%s","label":"no change (identical builds)"}\n' "$SKIPPED" > measured.json
+
+      - name: Record the commit a daily run skipped
+        if: ${{ steps.plan.outputs.skip_record != '' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: throttled-measured-${{ steps.plan.outputs.skip_record }}
+          path: measured.json
+          overwrite: true
+          retention-days: 30
+
+  daily:
+    needs: scheduled
+    if: ${{ needs.scheduled.outputs.proceed == 'true' && needs.scheduled.outputs.kind == 'daily' }}
+    uses: ./.github/workflows/main-detector-batch.yml
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+    with:
+      plan: ${{ needs.scheduled.outputs.plan }}
+      iterations: ${{ needs.scheduled.outputs.iterations }}
+      include_cufs: true
+      post_slack: ${{ inputs.post_slack == true }}
+
+  # The daily run's other presets, on the head build alone and unscored.
+  presets:
+    needs: scheduled
+    if: ${{ needs.scheduled.outputs.proceed == 'true' && needs.scheduled.outputs.kind == 'daily' && inputs.mode != 'throttled-aa' }}
     uses: ./.github/workflows/main-detector-throttled.yml
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
       TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
     with:
-      cpu_throttle_rate: ${{ inputs.cpu_throttle_rate || '2' }}
+      plan: ${{ needs.scheduled.outputs.plan }}
+
+  # Records the commit the daily run measured, once it succeeded.
+  # The next daily run reads the commit from the name of this artifact.
+  record:
+    needs: [scheduled, daily]
+    if: ${{ needs.daily.result == 'success' && inputs.mode != 'throttled-aa' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Write the record
+        env:
+          PLAN: ${{ needs.scheduled.outputs.plan }}
+        run: |
+          set -euo pipefail
+          echo "$PLAN" | jq -c '{headSha, baseSha, rangeSize}' > measured.json
+          echo "HEAD_SHA=$(jq -r .headSha measured.json)" >> "$GITHUB_ENV"
+
+      - name: Record the commit the daily run measured
+        uses: actions/upload-artifact@v7
+        with:
+          name: throttled-measured-${{ env.HEAD_SHA }}
+          path: measured.json
+          overwrite: true
+          retention-days: 30
 
   measure-first:
     needs: plan
