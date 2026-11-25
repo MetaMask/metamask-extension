@@ -16,10 +16,9 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { SlidingTextCarousel } from './sliding-text-carousel';
 
 export const MARKET_INSIGHTS_ENTRY_CARD_TEST_ID = 'market-insights-entry-card';
-export const MARKET_INSIGHTS_INFO_BUTTON_TEST_ID =
-  'market-insights-info-button';
+const MARKET_INSIGHTS_INFO_BUTTON_TEST_ID = 'market-insights-info-button';
 
-export type MarketInsightsEntryCardProps = {
+type MarketInsightsEntryCardProps = {
   /** The market insights report to render. */
   report: MarketInsightsReport;
   /** Relative time since the report was generated (e.g., "3m ago"). */
@@ -45,8 +44,6 @@ export const MarketInsightsEntryCard = ({
   const gradient = `url(#${gradientId})`;
   const [borderAnimationKey, setBorderAnimationKey] = useState(0);
 
-  // Derive a stable key from actual text content so the memo doesn't bust
-  // when the parent passes a new report object with identical data.
   const trendsKey = report.trends.map((trend) => trend.description).join('\0');
   const displayTexts = useMemo(() => {
     const descriptions = report.trends

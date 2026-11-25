@@ -740,6 +740,23 @@ describe('usePerpsOrderForm', () => {
       stopLossPrice: '40000',
     };
 
+    it('does not use a new-order default to calculate missing position margin', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            mode: 'modify',
+            initialLeverage: 10,
+            existingPosition: { ...existingPosition, leverage: undefined },
+          }),
+        mockStateWithLocale,
+      );
+
+      act(() => result.current.handleAmountChange('100'));
+      expect(result.current.formState.leverage).toBeUndefined();
+      expect(result.current.calculations.marginRequired).toBeNull();
+    });
+
     it('pre-populates leverage from existing position', () => {
       const { result } = renderHookWithProvider(
         () =>

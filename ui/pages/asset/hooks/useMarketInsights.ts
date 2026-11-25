@@ -11,7 +11,6 @@ const MARKET_INSIGHTS_QUERY_KEY = 'market-insights';
  *  AiDigestController is a passthrough and does not cache.
  */
 export const DIGEST_QUERY_STALE_TIME_MS = 10 * 60 * 1000;
-export const DIGEST_QUERY_GC_TIME_MS = DIGEST_QUERY_STALE_TIME_MS;
 
 /**
  * Dynamic `staleTime` so a successful digest payload stays fresh for 10
@@ -130,7 +129,7 @@ export const useMarketInsights = (
     retry: false,
     networkMode: 'always',
     staleTime: digestQueryStaleTime,
-    gcTime: DIGEST_QUERY_GC_TIME_MS,
+    gcTime: DIGEST_QUERY_STALE_TIME_MS,
   });
 
   useEffect(() => {
@@ -143,9 +142,6 @@ export const useMarketInsights = (
   }, [isQueryEnabled, queryAssetIdentifier, queryClient]);
 
   const report = isQueryEnabled ? (query.data ?? null) : null;
-  // A remount of a cached `null` miss or error has no report and has not
-  // fetched on this observer (`isFetchedAfterMount` is false). Keep loading
-  // until that first fetch settles so the skeleton does not flash off and on.
   const isLoading = isQueryEnabled && !report && !query.isFetchedAfterMount;
   const error = isLoading
     ? null
