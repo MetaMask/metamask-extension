@@ -214,10 +214,10 @@ const ms = (value: number) => `${value.toFixed(1)} ms`;
 /** The step summary of the weekly check. */
 export function renderCalibration(
   report: CalibrationReport,
-  window: string,
+  range: string,
 ): string {
   const lines = [
-    `## Main performance detector calibration (${window})`,
+    `## Main performance detector calibration (${range})`,
     '',
     report.canaries === 0
       ? `No canary run in the window could be read, so nothing was checked.${report.skipped > 0 ? ` ${report.skipped} canary result${report.skipped === 1 ? ' was' : 's were'} written before ms scoring.` : ''}`
@@ -258,12 +258,12 @@ export function renderCalibration(
 
 /**
  * @param report - A report that pinged.
- * @param window - The days it covers, for the label.
+ * @param range - The days it covers, for the label.
  * @param runUrl - The run that made it.
  */
 export function buildCalibrationMessage(
   report: CalibrationReport,
-  window: string,
+  range: string,
   runUrl: string,
 ): SlackPayload {
   const section = (text: string): AnyBlock => ({
@@ -271,10 +271,10 @@ export function buildCalibrationMessage(
     text: { type: 'mrkdwn', text },
   });
   return {
-    text: `Performance detector (calibration, ${window}): ${report.reasons.length} reason${report.reasons.length === 1 ? '' : 's'} to recheck the floors`,
+    text: `Performance detector (calibration, ${range}): ${report.reasons.length} reason${report.reasons.length === 1 ? '' : 's'} to recheck the floors`,
     blocks: [
       section(
-        `:warning: *Performance detector (calibration, ${window}): the floors may no longer fit the noise*\n\n${report.canaries} canary runs of the week, where base and head are the same build, ${report.falsePings} pinged.`,
+        `:warning: *Performance detector (calibration, ${range}): the floors may no longer fit the noise*\n\n${report.canaries} canary runs of the week, where base and head are the same build, ${report.falsePings} pinged.`,
       ),
       section(
         `:mag: *Why*\n${report.reasons.map((reason) => `• ${reason}`).join('\n')}`,

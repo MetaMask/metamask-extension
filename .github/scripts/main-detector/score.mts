@@ -171,7 +171,7 @@ export type Verdict = { level: Level; direction?: Direction };
  * @param floor - The series' floors in ms.
  */
 export function classify(summary: ShiftSummary, floor: SeriesFloor): Verdict {
-  const shiftMs = summary.shiftMs;
+  const { shiftMs } = summary;
   const slower = shiftMs >= floor.floorMs && summary.lowerMs > 0;
   const faster = shiftMs <= -floor.floorMs && summary.upperMs < 0;
   if (!slower && !faster) {

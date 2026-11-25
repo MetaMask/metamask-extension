@@ -136,7 +136,7 @@ describe('buildSlackMessage', () => {
       runUrl: 'https://github.com/MetaMask/metamask-extension/actions/runs/1',
       author: 'someone',
     });
-    expect(render(payload)).toMatch(/First Render \+\d+ ms \(\+7\d+\.\d%\)/);
+    expect(render(payload)).toMatch(/First Render \+\d+ ms \(\+7\d+\.\d%\)/u);
     expect(render(payload)).toContain('triangular_flag_on_post');
     expect(render(payload)).toContain('changed what the metric measures');
     expect(
@@ -345,9 +345,7 @@ describe('buildSlackMessage', () => {
     expect(text).toContain(
       'Performance detector (throttled, bbbbbbb..aaaaaaa)',
     );
-    expect(text).toContain(
-      'compare/' + 'b'.repeat(40) + '...' + 'a'.repeat(40),
-    );
+    expect(text).toContain(`compare/${'b'.repeat(40)}...${'a'.repeat(40)}`);
     expect(text).toContain('12 commits');
     expect(text).toContain('CPU slowed 2 times');
     expect(text).toContain('in Chrome, CPU slowed');

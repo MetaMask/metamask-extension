@@ -106,7 +106,7 @@ describe('renderSummary', () => {
     expect(decision.ping).toBe('loud');
     expect(text).toContain('Head minus base [95% bounds] (percent)');
     expect(text).toMatch(
-      /\| chrome \| uiStartup \| loud slower \| \+54\.0 ms \[\+5\d\.\d, \+5\d\.\d\] n=5 \(\+2\.52% \[/,
+      /\| chrome \| uiStartup \| loud slower \| \+54\.0 ms \[\+5\d\.\d, \+5\d\.\d\] n=5 \(\+2\.52% \[/u,
     );
   });
 

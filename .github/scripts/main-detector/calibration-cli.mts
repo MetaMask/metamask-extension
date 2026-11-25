@@ -93,7 +93,7 @@ async function main(): Promise<void> {
 
   const now = Date.now();
   const since = new Date(now - days * DAY_MS);
-  const window = `${since.toISOString().slice(0, 10)}..${new Date(now).toISOString().slice(0, 10)}`;
+  const range = `${since.toISOString().slice(0, 10)}..${new Date(now).toISOString().slice(0, 10)}`;
   const directory = fs.mkdtempSync(
     path.join(os.tmpdir(), 'detector-canaries-'),
   );
@@ -104,7 +104,7 @@ async function main(): Promise<void> {
   }
 
   const report = summarizeCanaries(results);
-  const summary = renderCalibration(report, window);
+  const summary = renderCalibration(report, range);
   console.log(
     `${runs.length} detector runs with a result, ${report.canaries} canaries, ${report.ping ? 'pinging' : 'no ping'}.`,
   );
@@ -118,7 +118,7 @@ async function main(): Promise<void> {
   if (!report.ping) {
     return;
   }
-  const payload = buildCalibrationMessage(report, window, values['run-url']);
+  const payload = buildCalibrationMessage(report, range, values['run-url']);
   if (process.env.GITHUB_EVENT_NAME === 'schedule' || values.post) {
     await postOrPrint(payload);
   } else {

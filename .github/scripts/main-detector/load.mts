@@ -69,8 +69,10 @@ export function readJob(directory: string): JobResult {
  * @param batch - 1 for the first batch, 2 for the confirmation batch.
  * @param shards - Number of jobs per browser the batch should have.
  * @param optional - When true, a batch with no artifact folders was not run.
- * @param options - The config to score with, whose browsers are the ones
- * scored, and the artifact name prefix.
+ * @param options - What to score with.
+ * @param options.config - The config to score with, whose browsers are the ones
+ * scored.
+ * @param options.prefix - The artifact name prefix.
  */
 export function loadBatch(
   root: string,
