@@ -105,7 +105,11 @@ describe('buildSlackMessage', () => {
     expect(text).toContain(
       'Chrome, UI Startup* (`uiStartup`, time from opening the UI until it is ready): 25 ms slower (2.5%)',
     );
-    expect(text).toContain('per job: +2.0, +3.0, +3.0 %');
+    expect(text).toContain(
+      'pooled +25 ms [+15, +35] (+2.5% [+1.5%, +3.5%]), batch 1 +20 ms (+2.0%), batch 2 +30 ms (+3.0%)',
+    );
+    // Each per-job log ratio is a shift against a 1000 ms base.
+    expect(text).toContain('per job: +20, +30, +30 ms (+2.0, +3.0, +3.0 %)');
     expect(text).toContain('Load Scripts');
     expect(text).toContain('Standard user');
     expect(text).toContain('startupStandardHome');
@@ -131,7 +135,7 @@ describe('buildSlackMessage', () => {
       runUrl: 'https://github.com/MetaMask/metamask-extension/actions/runs/1',
       author: 'someone',
     });
-    expect(render(payload)).toContain('First Render +7');
+    expect(render(payload)).toMatch(/First Render \+\d+ ms \(\+7\d+\.\d%\)/);
     expect(render(payload)).toContain('triangular_flag_on_post');
     expect(render(payload)).toContain('changed what the metric measures');
     expect(

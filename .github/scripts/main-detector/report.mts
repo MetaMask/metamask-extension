@@ -23,9 +23,12 @@ export type PlanInfo = {
 
 const fmt = (value: number) => `${value >= 0 ? '+' : ''}${value.toFixed(2)}%`;
 
+const fmtMs = (value: number) => `${value >= 0 ? '+' : ''}${value.toFixed(1)}`;
+
+// The measured shift in ms with its bounds, then the percent for reference.
 const cell = (summary: ShiftSummary | undefined) =>
   summary
-    ? `${fmt(summary.shiftPct)} [${fmt(summary.lowerPct)}, ${fmt(summary.upperPct)}] n=${summary.jobs}`
+    ? `${fmtMs(summary.shiftMs)} ms [${fmtMs(summary.lowerMs)}, ${fmtMs(summary.upperMs)}] n=${summary.jobs} (${fmt(summary.shiftPct)} [${fmt(summary.lowerPct)}, ${fmt(summary.upperPct)}])`
     : 'n/a';
 
 const floorsText = (config: DetectorConfig, key: 'floorMs' | 'loudMs') =>
@@ -49,8 +52,8 @@ function batchTable(
     `#### ${title}`,
     '',
     withVerdict
-      ? '| Browser | Metric | Head vs base [95% bounds] | Verdict |'
-      : '| Browser | Metric | Head vs base [95% bounds] |',
+      ? '| Browser | Metric | Head minus base [95% bounds] (percent) | Verdict |'
+      : '| Browser | Metric | Head minus base [95% bounds] (percent) |',
     withVerdict ? '|---|---|---|---|' : '|---|---|---|',
   ];
   for (const browser of BROWSERS) {
