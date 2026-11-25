@@ -2163,6 +2163,34 @@ async function setupMocking(
     .always()
     .thenJson(200, tokenSupportedNetworks);
 
+  // MoneyAccountApiDataService.fetchVaults (useMoneyVaultApy): a valid catalog
+  // stops TanStack Query retrying against the catch-all.
+  await server
+    .forGet('https://money.api.cx.metamask.io/v1/vaults')
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        vaults: [
+          {
+            chain_id: 143,
+            vault_address: '0x1C8a336051D2024E318A229d01F9F6CF96efD316',
+            vault_key: 'standard',
+            name: 'Money Account mUSD Vault',
+            asset_symbol: 'mUSD',
+            asset_decimals: 6,
+            asset_contract_address:
+              '0xaca92e438df0b2401ff60da7e4337b687a2435da',
+            current_apy: '0.045',
+            as_of_block: 1,
+            as_of_timestamp: '2026-01-01T00:00:00Z',
+            data_freshness: 'live',
+            indexer_lag_seconds: 0,
+          },
+        ],
+      },
+    }));
+
   // Accounts API: v2 supported networks (used by AccountsApiDataSource when assetsUnifyState is enabled)
   await server
     .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
