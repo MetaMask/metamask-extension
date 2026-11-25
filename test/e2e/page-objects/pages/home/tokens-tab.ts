@@ -349,11 +349,6 @@ class TokensTab extends HomePage {
     );
   }
 
-  async checkPriceChartLoaded(assetAddress: string): Promise<void> {
-    console.log(`Verify the price chart is loaded`);
-    await this.driver.waitForSelector(this.tokenPercentage(assetAddress));
-  }
-
   /**
    * Verifies the coin overview Send and Swap action buttons are both rendered
    * and enabled (the action buttons are not gated on the account balance, so

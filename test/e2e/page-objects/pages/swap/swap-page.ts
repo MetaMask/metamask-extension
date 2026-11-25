@@ -149,7 +149,7 @@ class SwapPage {
 
   private sourceAmount = '[data-testid="from-amount"]';
 
-  private sourceAssetPickerButton = '[data-testid="bridge-source-button"]';
+  readonly sourceAssetPickerButton = '[data-testid="bridge-source-button"]';
 
   private submitButton = '[data-testid="bridge-cta-button"]';
 
