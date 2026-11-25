@@ -19,6 +19,7 @@ import {
 } from '../../utils/sentry-transactions';
 import { TraceName } from '../../../../../shared/lib/trace';
 import { buildLongTaskTimerResults } from '../../utils/long-task-helper';
+import { getSentryTransactionManifestFlags } from '../../utils/sentry-transaction-flags';
 import { measureAssetClickToPriceChart } from '../../utils/asset-price-chart-step';
 import {
   getTestSpecificMock,
@@ -57,10 +58,9 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
           testing: {
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
-          // Sample every trace, so the `Asset Details` span reaches the mocked
-          // Sentry endpoint this benchmark reads it from. CI builds otherwise
-          // send only a small fraction of traces.
-          sentry: { tracesSampleRate: 1 },
+          // The `Asset Details` span must reach the mocked Sentry endpoint this
+          // benchmark reads it from.
+          ...getSentryTransactionManifestFlags(),
         },
         useMockingPassThrough: !shouldUseMockedRequests(),
         disableServerMochaToBackground: true,
