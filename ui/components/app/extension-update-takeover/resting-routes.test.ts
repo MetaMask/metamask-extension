@@ -79,11 +79,15 @@ describe('isExtensionUpdateRestingPathname', () => {
     TRANSACTION_SHIELD_CLAIM_ROUTES.EDIT_DRAFT.FULL,
   ];
 
-  it.each(restingPathnames)('treats %s as a resting screen', (pathname) => {
-    expect(isExtensionUpdateRestingPathname(pathname)).toBe(true);
-  });
+  for (const pathname of restingPathnames) {
+    it(`treats ${pathname} as a resting screen`, () => {
+      expect(isExtensionUpdateRestingPathname(pathname)).toBe(true);
+    });
+  }
 
-  it.each(activePathnames)('waits on %s', (pathname) => {
-    expect(isExtensionUpdateRestingPathname(pathname)).toBe(false);
-  });
+  for (const pathname of activePathnames) {
+    it(`waits on ${pathname}`, () => {
+      expect(isExtensionUpdateRestingPathname(pathname)).toBe(false);
+    });
+  }
 });
