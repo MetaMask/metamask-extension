@@ -9,10 +9,6 @@ export const WIDE_SCREEN_REDESIGN_REMOTE_FLAG = {
   versions: {
     [WIDE_SCREEN_REDESIGN_MIN_VERSION]: [
       {
-        name: ABTestVariant.Control,
-        scope: { type: 'threshold', value: 0 },
-      },
-      {
         name: ABTestVariant.Treatment,
         scope: { type: 'threshold', value: 1 },
       },
