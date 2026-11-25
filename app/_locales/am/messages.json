@@ -386,9 +386,6 @@
     "message": "የግል ቁልፍ",
     "description": "select this type of file to use to import an account"
   },
-  "privateNetwork": {
-    "message": "የግል አውታረ መረብ"
-  },
   "readdToken": {
     "message": "በመለያ አማራጮችዎ ምናሌ ውስጥ ወደ “ተለዋጭ ስም አክል” በመግባት ለወደፊቱ ይህን ተለዋጭ ስም መልሰው ማከል ይችላሉ።"
   },

@@ -1,11 +1,15 @@
 import { Mockttp } from 'mockttp';
 import { DEFAULT_BTC_CONVERSION_RATE } from '../../../constants';
+import {
+  priceV1ExchangeRates,
+  priceV3Spot,
+} from '../../../mock-response-data/api-responses';
 
 const PRICE_API_URL = 'https://price.api.cx.metamask.io';
 
 export const mockCurrencyExchangeRates = (mockServer: Mockttp) =>
-  mockServer
-    .forGet(`${PRICE_API_URL}/v1/exchange-rates`)
+  priceV1ExchangeRates
+    .rule(mockServer)
     .withQuery({
       baseCurrency: 'usd',
     })
@@ -100,8 +104,8 @@ export const mockExchangeRates = (mockServer: Mockttp) =>
 
 // Mock para precios de Solana (usado cuando se tienen cuentas multichain habilitadas)
 export const mockSolanaSpotPrices = (mockServer: Mockttp) =>
-  mockServer
-    .forGet(`${PRICE_API_URL}/v3/spot-prices`)
+  priceV3Spot
+    .rule(mockServer)
     .withQuery({
       vsCurrency: 'usd',
       assetIds:
@@ -187,8 +191,8 @@ const BTC_ASSET_ID = 'bip122:000000000019d6689c085ae165831e93/slip44:0';
  * @param mockServer - The Mockttp server instance.
  */
 export const mockBtcSpotPrices = (mockServer: Mockttp) =>
-  mockServer
-    .forGet(`${PRICE_API_URL}/v3/spot-prices`)
+  priceV3Spot
+    .rule(mockServer)
     .always()
     .thenCallback((request) => {
       const url = new URL(request.url);

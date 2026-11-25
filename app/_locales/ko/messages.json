@@ -2110,9 +2110,6 @@
   "blockExplorerUrl": {
     "message": "블록 탐색기 URL"
   },
-  "blockExplorerUrlDefinition": {
-    "message": "이 네트워크에 대한 블록 탐색기로 사용되는 URL입니다."
-  },
   "blockExplorerView": {
     "message": "$1의 계정 보기",
     "description": "$1 replaced by URL for custom block explorer"
@@ -2625,9 +2622,6 @@
   "chainId": {
     "message": "체인 ID"
   },
-  "chainIdDefinition": {
-    "message": "이 네트워크의 트랜잭션에 서명하는 데 사용되는 체인 ID입니다."
-  },
   "chainIdExistsErrorMsg": {
     "message": "이 체인 ID는 현재 $1 네트워크에서 사용됩니다."
   },
@@ -2739,10 +2733,6 @@
   "clickHere": {
     "message": "여기를 클릭",
     "description": "Link to help when a JSON account import is not working"
-  },
-  "clickToConnectLedgerViaWebHID": {
-    "message": "WebHID를 통해 Ledger를 연결하려면 여기를 클릭하세요.",
-    "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
   },
   "clipboardClearFailed": {
     "message": "클립보드를 지울 수 없습니다. 다시 시도하세요."
@@ -3257,9 +3247,6 @@
   },
   "currencySymbol": {
     "message": "통화 기호"
-  },
-  "currencySymbolDefinition": {
-    "message": "이 네트워크의 통화를 표시하는 티커 기호입니다."
   },
   "current": {
     "message": "현재"
@@ -4018,9 +4005,6 @@
   "errorCode": {
     "message": "코드: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorGettingSafeChainList": {
-    "message": "안전한 체인 목록을 가져오는 중 오류가 발생했습니다. 주의하여 계속 진행하세요."
   },
   "errorLegalTextFirstInfo": {
     "message": "기술 진단 정보입니다."
@@ -4979,9 +4963,6 @@
   "insufficientTokens": {
     "message": "토큰이 부족합니다."
   },
-  "interactWithSmartContract": {
-    "message": "스마트 계약"
-  },
   "interactingWith": {
     "message": "상호작용 대상:"
   },
@@ -5165,18 +5146,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "새 계정을 추가하려면 먼저 기존의 최종 계정을 사용해야 합니다."
-  },
-  "ledgerConnectionInstructionCloseOtherApps": {
-    "message": "장치에 연결된 다른 소프트웨어를 닫은 다음 여기를 클릭하여 새로 고침하세요."
-  },
-  "ledgerConnectionInstructionHeader": {
-    "message": "컨펌을 클릭하기 전:"
-  },
-  "ledgerConnectionInstructionStepFour": {
-    "message": "Ledger 장치에서 \"스마트 계약 데이터\" 또는 \"블라인드 서명\"을 활성화하세요."
-  },
-  "ledgerConnectionInstructionStepThree": {
-    "message": "Ledger 장치를 연결하고 이더리움 앱을 선택하세요."
   },
   "ledgerConnectionStatusAppClosedDescription": {
     "message": "계속하려면 Ledger 장치에서 열어 주세요"
@@ -5816,14 +5785,6 @@
   "minute": {
     "message": "분"
   },
-  "mismatchedChainLinkText": {
-    "message": "네트워크 세부 정보 검증",
-    "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
-  },
-  "mismatchedChainRecommendation": {
-    "message": "계속 진행하기 전에 $1(을)를 확인하시기 바랍니다.",
-    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
   "mismatchedNetworkName": {
     "message": "기록에 따르면 네트워크 이름이 이 체인 ID와 일치하지 않습니다."
   },
@@ -6412,9 +6373,6 @@
     "message": "멀티체인 계정을 소개합니다",
     "description": "Title for the multichain accounts introduction modal."
   },
-  "multichainAddEthereumChainConfirmationDescription": {
-    "message": "MetaMask에 이 네트워크를 추가하고 이 사이트에 사용 권한을 허용합니다."
-  },
   "multichainAddressViewAll": {
     "message": "모두 보기"
   },
@@ -6459,17 +6417,9 @@
   "musdBuyMusd": {
     "message": "mUSD 구매"
   },
-  "musdClaimTitle": {
-    "message": "보너스 수령",
-    "description": "Title for the mUSD bonus claim confirmation screen"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "mUSD 환전 수수료에는 네트워크 비용이 포함되며 제공업체 수수료가 포함될 수 있습니다. mUSD로 환전할 때 MetaMask 수수료는 적용되지 않습니다.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
-  },
-  "musdConversionTitle": {
-    "message": "mUSD로 전환 완료",
-    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "musdConvert": {
     "message": "전환"
@@ -6630,9 +6580,6 @@
     "message": "이제 $1 네트워크에서 트랜잭션 중입니다.",
     "description": "$1 is the name of the network"
   },
-  "networkDetails": {
-    "message": "네트워크 세부 정보"
-  },
   "networkFee": {
     "message": "네트워크 수수료"
   },
@@ -6650,9 +6597,6 @@
   },
   "networkNameBitcoin": {
     "message": "비트코인"
-  },
-  "networkNameDefinition": {
-    "message": "이 네트워크와 연결된 이름입니다."
   },
   "networkNameEthereum": {
     "message": "이더리움"
@@ -6700,9 +6644,6 @@
   },
   "networkTabPopular": {
     "message": "인기"
-  },
-  "networkURL": {
-    "message": "네트워크 URL"
   },
   "networkURLDefinition": {
     "message": "이 네트워크에 액세스하는 데 사용되는 URL입니다."
@@ -6804,17 +6745,6 @@
   "nftUnsupportedEmptyDescription": {
     "message": "이 네트워크에서는 NFT가 지원되지 않습니다."
   },
-  "nftWarningContent": {
-    "message": "향후 소유할 수 있는 모든 $1에 대한 액세스를 허용하는 것입니다. 이 허용을 취소하지 않는 한, 상대방이 언제든지 허락 없이 지갑에서 NFT를 전송할 수 있습니다. $2",
-    "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
-  },
-  "nftWarningContentBold": {
-    "message": "내 모든 $1 NFT",
-    "description": "$1 is name of the collection"
-  },
-  "nftWarningContentGrey": {
-    "message": "주의하여 진행하세요."
-  },
   "nfts": {
     "message": "NFT"
   },
@@ -6847,9 +6777,6 @@
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap 및 대부분의 하드웨어 지갑은 현재 사용 중인 브라우저 버전에서 작동하지 않습니다."
-  },
-  "noMMFeeSwapping": {
-    "message": "MetaMask 수수료 없음"
   },
   "noNetworkFee": {
     "message": "네트워크 수수료 없음"
@@ -7244,13 +7171,6 @@
   },
   "openFullScreen": {
     "message": "전체 화면 열기"
-  },
-  "openFullScreenForLedgerWebHid": {
-    "message": "전체 화면으로 이동하여 Ledger를 연결하세요.",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
-  "openInBlockExplorer": {
-    "message": "블록 탐색기 열기"
   },
   "openMultichainAccountAddressMenu": {
     "message": "멀티체인 계정 주소 메뉴 열기"
@@ -8078,9 +7998,6 @@
   },
   "perpsDepositFundsTitle": {
     "message": "무기한 선물에 자금 예치"
-  },
-  "perpsDepositTitle": {
-    "message": "입금 완료된 무기한 선물 계정"
   },
   "perpsDepositToastErrorDescription": {
     "message": "자금이 무기한 선물에 추가되지 않았습니다. 다시 시도해 주세요."
@@ -9112,14 +9029,8 @@
     "message": "개인 키",
     "description": "Private keys row label on multichain account details page."
   },
-  "privateNetwork": {
-    "message": "비공개 네트워크"
-  },
   "proceed": {
     "message": "진행"
-  },
-  "proceedWithTransaction": {
-    "message": "계속 진행"
   },
   "provide": {
     "message": "제공"
@@ -9472,16 +9383,8 @@
   "receiveCrypto": {
     "message": "암호화폐 수령"
   },
-  "receiveToken": {
-    "message": "토큰 받기",
-    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
-  },
   "received": {
     "message": "받음"
-  },
-  "receivedTotal": {
-    "message": "총 수령액",
-    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "받는 주소",
@@ -11310,9 +11213,6 @@
   "simulationDetailsUnavailable": {
     "message": "사용 불가"
   },
-  "simulationErrorMessageV2": {
-    "message": "가스를 추정할 수 없었습니다. 계약에 오류가 있을 수 있으며 이 트랜잭션이 실패할 수 있습니다."
-  },
   "simulationsSettingDescription": {
     "message": "이 기능을 사용하면 트랜잭션 및 서명으로 인한 잔액 변동을 컨펌 전에 예상할 수 있습니다. 다만, 이러한 예상치가 최종 결과와 일치한다는 보장은 없습니다. $1"
   },
@@ -11379,12 +11279,6 @@
   },
   "smartAccountRequestsFromDappsDescriptionV2": {
     "message": "Dapp이 일반 계정에 대한 스마트 계정 기능을 요청할 수 있도록 허용합니다. MetaMask는 자체 감사를 거친 스마트 계정으로만 업그레이드합니다."
-  },
-  "smartAccountUpgradeBannerDescription": {
-    "message": "같은 주소. 더욱 스마트한 기능."
-  },
-  "smartAccountUpgradeBannerTitle": {
-    "message": "스마트 계정으로 전환"
   },
   "smartContractAddress": {
     "message": "스마트 계약 주소"
@@ -11820,9 +11714,6 @@
   "stakingWithdrawal": {
     "message": "스테이킹 출금"
   },
-  "standardAccountLabel": {
-    "message": "일반 계정"
-  },
   "stateCorruptionAreYouSure": {
     "message": "계속 진행하시겠습니까?"
   },
@@ -12148,12 +12039,6 @@
   },
   "swapsRebateTooltipTitle": {
     "message": "트레이드 보상"
-  },
-  "switch": {
-    "message": "전환"
-  },
-  "switchBack": {
-    "message": "돌아가기"
   },
   "switchBackToPopup": {
     "message": "팝업으로 다시 전환"
@@ -12627,10 +12512,6 @@
   "unpin": {
     "message": "고정 해제"
   },
-  "unrecognizedChain": {
-    "message": "이 사용자 지정 네트워크는 인식되지 않았습니다",
-    "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
   "unsendableAsset": {
     "message": "NFT(ERC-721) 토큰 전송은 현재 지원되지 않습니다.",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
@@ -12643,9 +12524,6 @@
   },
   "update": {
     "message": "업데이트"
-  },
-  "updateEthereumChainConfirmationDescription": {
-    "message": "이 사이트에서 기본 네트워크 URL 업데이트를 요청하고 있습니다. 기본값 및 네트워크 정보는 언제든지 수정할 수 있습니다."
   },
   "updateInformation": {
     "message": "지갑을 더 안전하고 원활하게 만들고, 새로운 기능을 추가했습니다. 지금 업데이트하여 최신 개선 사항을 사용하세요."
@@ -12825,9 +12703,6 @@
   "walletReadyLoseSrpFromReminder": {
     "message": "이 비밀복구구문은 비밀번호를 잊거나 로그인 접근 권한을 잃었을 때 지갑을 복구하는 데 도움이 됩니다."
   },
-  "wantToAddThisNetwork": {
-    "message": "이 네트워크를 추가하시겠습니까?"
-  },
   "wantsToAddThisAsset": {
     "message": "이렇게 하면 다음 자산이 지갑에 추가됩니다"
   },
@@ -12929,9 +12804,6 @@
   },
   "yourBalance": {
     "message": "내 잔액"
-  },
-  "yourNFTmayBeAtRisk": {
-    "message": "NFT가 위험할 수 있습니다"
   },
   "yourWalletIsReady": {
     "message": "지갑이 준비되었습니다"

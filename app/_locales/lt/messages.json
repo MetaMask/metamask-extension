@@ -401,9 +401,6 @@
     "message": "Asmeninis raktas",
     "description": "select this type of file to use to import an account"
   },
-  "privateNetwork": {
-    "message": "Privatus tinklas"
-  },
   "readdToken": {
     "message": "Šį žetoną galite bet kada galite įtraukti ir vėl, tiesiog savo paskyros parinkčių meniu nueikite  į „Įtraukti žetoną“."
   },

@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, fireEvent } from '@testing-library/react';
+import { act, fireEvent, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import configureMockStore from 'redux-mock-store';
 import { TransactionType } from '@metamask/transaction-controller';
@@ -50,6 +50,21 @@ function getPerpsWithdrawState() {
     origin: 'metamask',
   };
   return getMockConfirmStateForTransaction(withdraw);
+}
+
+function getMoneyDepositState(
+  stateOverride?: Parameters<typeof getMockConfirmStateForTransaction>[1],
+) {
+  const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
+  const deposit = {
+    ...base,
+    type: TransactionType.batch,
+    nestedTransactions: [
+      { type: TransactionType.tokenMethodApprove },
+      { type: TransactionType.moneyAccountDeposit },
+    ],
+  } as Parameters<typeof getMockConfirmStateForTransaction>[0];
+  return getMockConfirmStateForTransaction(deposit, stateOverride);
 }
 
 describe('BridgeFeeRow', () => {
@@ -473,6 +488,99 @@ describe('BridgeFeeRow', () => {
 
       // 0.042058 + 0.004347 = 0.046405 → rounds to $0.05
       expect(getByTestId('transaction-fee-value')).toHaveTextContent('$0.05');
+    });
+  });
+
+  describe('moneyAccountDeposit dotted value tooltip', () => {
+    it('hides the question icon and shows the fee tooltip via focusable button on hover, focus, and click', async () => {
+      const { getByTestId, queryByTestId, findByText } = render(
+        { variant: ConfirmInfoRowSize.Small },
+        getMoneyDepositState(),
+      );
+
+      expect(
+        queryByTestId('bridge-fee-tooltip-popover-button'),
+      ).not.toBeInTheDocument();
+
+      const trigger = getByTestId('bridge-fee-tooltip-popover-trigger');
+      expect(trigger.tagName).toBe('BUTTON');
+      expect(trigger).toHaveTextContent('$1.23');
+      expect(trigger).toHaveClass('underline', 'decoration-dotted');
+
+      await act(async () => {
+        fireEvent.mouseEnter(trigger);
+      });
+      const tooltip = await findByText((content) =>
+        content.includes(`${messages.networkFee.message}:`),
+      );
+      expect(tooltip.textContent).toContain(`${messages.bridgeFee.message}:`);
+      expect(tooltip.textContent).toContain(`${messages.metamaskFee.message}:`);
+
+      await act(async () => {
+        fireEvent.mouseLeave(trigger);
+      });
+      await waitFor(() => {
+        expect(
+          queryByTestId('bridge-fee-tooltip-popover'),
+        ).not.toBeInTheDocument();
+      });
+
+      await act(async () => {
+        fireEvent.focus(trigger);
+      });
+      expect(getByTestId('bridge-fee-tooltip-popover')).toHaveTextContent(
+        `${messages.networkFee.message}:`,
+      );
+
+      await act(async () => {
+        fireEvent.blur(trigger);
+      });
+      expect(
+        queryByTestId('bridge-fee-tooltip-popover'),
+      ).not.toBeInTheDocument();
+
+      await act(async () => {
+        fireEvent.click(trigger);
+      });
+      expect(getByTestId('bridge-fee-tooltip-popover')).toHaveTextContent(
+        `${messages.networkFee.message}:`,
+      );
+    });
+
+    it('formats fee and tooltip breakdown with "$" and en-US separators even in a non-US locale', async () => {
+      useTransactionPayTotalsMock.mockReturnValue({
+        fees: {
+          provider: { usd: '1000.50' },
+          metaMask: { usd: '234.00' },
+          sourceNetwork: { estimate: { usd: '0.20' } },
+          targetNetwork: { usd: '0.03' },
+        },
+      } as TransactionPayTotals);
+
+      const state = getMoneyDepositState({
+        metamask: {},
+        localeMessages: { currentLocale: 'en_GB' },
+      });
+
+      const { getByTestId, findByText } = render(
+        { variant: ConfirmInfoRowSize.Small },
+        state,
+      );
+
+      const trigger = getByTestId('bridge-fee-tooltip-popover-trigger');
+      expect(trigger).toHaveTextContent('$1,234.73');
+      expect(trigger).not.toHaveTextContent('US$');
+
+      await act(async () => {
+        fireEvent.mouseEnter(trigger);
+      });
+
+      const tooltip = await findByText((content) =>
+        content.includes(`${messages.networkFee.message}:`),
+      );
+      expect(tooltip.textContent).toContain('$1,000.50');
+      expect(tooltip.textContent).toContain('$234.00');
+      expect(tooltip.textContent).not.toContain('US$');
     });
   });
 });

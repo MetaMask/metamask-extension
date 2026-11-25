@@ -520,21 +520,25 @@ export const MultichainAccountList = ({
       const isRemovable = false;
 
       const wallet = wallets[walletId as AccountWalletId];
+      const isEffectivelyHidden = getEffectiveIsHidden(
+        groupId,
+        groupData.metadata.hidden,
+        visibilityOverrides,
+      );
       // Only imported private-key accounts can be deleted, so they get delete
-      // mode while every other wallet gets visible/hidden mode. The two modes
-      // are mutually exclusive.
+      // mode while every other wallet gets visible/hidden mode. A hidden
+      // private-key account (hidden before hiding was removed for them) gets
+      // visibility mode instead, so it can be revealed first and only then
+      // deleted. The two modes are mutually exclusive.
       const isDeleteMode =
-        isEditMode && Boolean(wallet) && isPrivateKeyWallet(wallet);
+        isEditMode &&
+        Boolean(wallet) &&
+        isPrivateKeyWallet(wallet) &&
+        !isEffectivelyHidden;
       const isVisibilityMode = isEditMode && !isDeleteMode;
       // Hidden styling is an edit-mode affordance; outside edit mode the hidden
       // section renders these cells with their normal appearance.
-      const isHidden =
-        isVisibilityMode &&
-        getEffectiveIsHidden(
-          groupId,
-          groupData.metadata.hidden,
-          visibilityOverrides,
-        );
+      const isHidden = isVisibilityMode && isEffectivelyHidden;
 
       const isConnectedAccount = connectedAccountGroups.find(
         (accountGroup) => accountGroup.id === groupId,

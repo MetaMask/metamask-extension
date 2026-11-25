@@ -373,9 +373,6 @@
     "message": "Privátní klíč",
     "description": "select this type of file to use to import an account"
   },
-  "privateNetwork": {
-    "message": "Soukromá síť"
-  },
   "readdToken": {
     "message": "Tento token můžete v budoucnu přidat zpět s „Přidat token“ v nastavení účtu."
   },

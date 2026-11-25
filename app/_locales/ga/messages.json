@@ -666,9 +666,6 @@
   "blockExplorerUrl": {
     "message": "URL taiscéalaí blocála"
   },
-  "blockExplorerUrlDefinition": {
-    "message": "An URL a úsáidtear mar iniúchóir bloc don líonra seo."
-  },
   "blockExplorerView": {
     "message": "Féach ar chuntas ag $1",
     "description": "$1 replaced by URL for custom block explorer"
@@ -795,9 +792,6 @@
   "chainId": {
     "message": "Aitheantas Slabhra"
   },
-  "chainIdDefinition": {
-    "message": "An t-aitheantas slabhra a úsáidtear chun idirbhearta a shíniú don líonra seo."
-  },
   "chainIdExistsErrorMsg": {
     "message": "Tá an ID Slabhra seo in úsáid ag an líonra $1 faoi láthair."
   },
@@ -833,10 +827,6 @@
   },
   "click": {
     "message": "Cliceáil"
-  },
-  "clickToConnectLedgerViaWebHID": {
-    "message": "Cliceáil anseo chun do Ledger a nascadh trí WebHID",
-    "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
   },
   "close": {
     "message": "Dún"
@@ -1221,9 +1211,6 @@
   },
   "currencySymbol": {
     "message": "Siombail airgeadra"
-  },
-  "currencySymbolDefinition": {
-    "message": "An tsiombail ticéir a thaispeántar d’airgeadra an líonra seo."
   },
   "currentExtension": {
     "message": "Leathanach síneadh reatha"
@@ -1728,9 +1715,6 @@
   "errorCode": {
     "message": "Cód: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorGettingSafeChainList": {
-    "message": "Earráid agus liosta slabhra sábháilte á fháil, lean ar aghaidh go cúramach le do thoil."
   },
   "errorLegalTextFirstInfo": {
     "message": "Faisnéis theicniúil dhiagnóiseach."
@@ -2260,9 +2244,6 @@
   "insufficientTokens": {
     "message": "Easpa comharthaí."
   },
-  "interactWithSmartContract": {
-    "message": "Conradh cliste"
-  },
   "interactingWith": {
     "message": "Ag idirghníomhú le"
   },
@@ -2414,18 +2395,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Ní mór duit do chuntas deireanach a úsáid sula bhféadann tú ceann nua a chur leis."
-  },
-  "ledgerConnectionInstructionCloseOtherApps": {
-    "message": "Dún aon bhogearraí eile atá ceangailte le do ghléas agus ansin cliceáil anseo chun athnuachan."
-  },
-  "ledgerConnectionInstructionHeader": {
-    "message": "Sula gcliceálann tú ar dheimhniú:"
-  },
-  "ledgerConnectionInstructionStepFour": {
-    "message": "Cumasaigh \"sonraí conartha cliste\" nó \"síniú dall\" ar do ghléas Ledger."
-  },
-  "ledgerConnectionInstructionStepThree": {
-    "message": "Bí cinnte go bhfuil do Ledger plugáilte isteach agus roghnaigh an aip Ethereum."
   },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Theip ar an ngléas Ledger oscailt. B’fhéidir go bhfuil do Ledger ceangailte le bogearraí eile. Dún Ledger Live nó feidhmchláir eile atá ceangailte le do ghléas Ledger, agus déan iarracht ceangal arís."
@@ -2649,14 +2618,6 @@
   "minimumReceivedLabel": {
     "message": "Íosmhéid faighte"
   },
-  "mismatchedChainLinkText": {
-    "message": "fíoraigh sonraí an líonra",
-    "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
-  },
-  "mismatchedChainRecommendation": {
-    "message": "Molaimid duit $1 a íoc sula leanann tú ar aghaidh.",
-    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
   "mismatchedNetworkName": {
     "message": "De réir ár dtaifead, b’fhéidir nach n-oireann ainm an líonra i gceart don ID slabhra seo."
   },
@@ -2724,9 +2685,6 @@
   "multichainAccountsIntroductionModalTitle": {
     "message": "Cuntais ilshlabhra á dtabhairt isteach",
     "description": "Title for the multichain accounts introduction modal."
-  },
-  "multichainAddEthereumChainConfirmationDescription": {
-    "message": "Tá tú ag cur an líonra seo le MetaMask agus ag tabhairt cead don suíomh seo é a úsáid."
   },
   "multichainQuoteCardRateExplanation": {
     "message": "An ráta is fearr a fuair muid ó sholáthraithe, lena n-áirítear táillí soláthraithe agus táille $1% ar MetaMask."
@@ -2865,9 +2823,6 @@
     "message": "Tá tú ag déanamh idirbheart ar $1 anois.",
     "description": "$1 is the name of the network"
   },
-  "networkDetails": {
-    "message": "Sonraí líonra"
-  },
   "networkFee": {
     "message": "Táille líonra"
   },
@@ -2885,9 +2840,6 @@
   },
   "networkNameBitcoin": {
     "message": "Bitcoin"
-  },
-  "networkNameDefinition": {
-    "message": "An t-ainm a bhaineann leis an líonra seo."
   },
   "networkNameEthereum": {
     "message": "Ethereum"
@@ -2923,9 +2875,6 @@
   },
   "networkTabPopular": {
     "message": "Coitianta"
-  },
-  "networkURL": {
-    "message": "URL an líonra"
   },
   "networkURLDefinition": {
     "message": "An URL a úsáidtear chun rochtain a fháil ar an líonra seo."
@@ -3016,17 +2965,6 @@
   },
   "nftTokenIdPlaceholder": {
     "message": "Cuir isteach an aitheantas comhartha"
-  },
-  "nftWarningContent": {
-    "message": "Tá tú ag tabhairt rochtana ar $1, lena n-áirítear aon cheann a d'fhéadfadh a bheith i do sheilbh amach anseo. Is féidir leis an bpáirtí ar an taobh eile na NFTanna seo a aistriú ó do sparán ag am ar bith gan iarraidh ort go dtí go gcuirfidh tú an cead seo ar ceal. $2",
-    "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
-  },
-  "nftWarningContentBold": {
-    "message": "do NFTanna $1 go léir",
-    "description": "$1 is name of the collection"
-  },
-  "nftWarningContentGrey": {
-    "message": "Lean ar aghaidh go cúramach."
   },
   "nfts": {
     "message": "NFTanna"
@@ -3337,13 +3275,6 @@
   "onlyConnectTrust": {
     "message": "Ná déan nasc ach le suíomhanna a bhfuil muinín agat astu. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
-  },
-  "openFullScreenForLedgerWebHid": {
-    "message": "Téigh go dtí an scáileán iomlán chun do Ledger a nascadh.",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
-  "openInBlockExplorer": {
-    "message": "Oscail i mbloc-iniúchóir"
   },
   "options": {
     "message": "Roghanna"
@@ -3784,12 +3715,6 @@
   "privateKeys": {
     "message": "Eochracha príobháideacha",
     "description": "Private keys row label on multichain account details page."
-  },
-  "privateNetwork": {
-    "message": "Líonra príobháideach"
-  },
-  "proceedWithTransaction": {
-    "message": "Ba mhaith liom dul ar aghaidh ar aon nós"
   },
   "provide": {
     "message": "Cuir ar fáil"
@@ -4498,9 +4423,6 @@
   "simulationDetailsUnavailable": {
     "message": "Gan a bheith ar fáil"
   },
-  "simulationErrorMessageV2": {
-    "message": "Ní raibh muid in ann gás a mheas. D’fhéadfadh earráid a bheith sa chonradh agus d’fhéadfadh teip a bheith ar an idirbheart seo."
-  },
   "simulationsSettingDescription": {
     "message": "Cas air seo chun athruithe ar iarmhéid idirbheart agus sínithe a mheas sula ndeimhníonn tú iad. Ní ráthaíonn sé seo a dtoradh deiridh. $1"
   },
@@ -4545,12 +4467,6 @@
   },
   "smartAccountLabel": {
     "message": "Cuntas Cliste"
-  },
-  "smartAccountUpgradeBannerDescription": {
-    "message": "An seoladh céanna. Gnéithe níos cliste."
-  },
-  "smartAccountUpgradeBannerTitle": {
-    "message": "Athraigh go cuntas cliste"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Níl dóthain cistí ann le haghaidh malartú cliste."
@@ -4926,9 +4842,6 @@
   "staked": {
     "message": "Geallta"
   },
-  "standardAccountLabel": {
-    "message": "Cuntas Caighdeánach"
-  },
   "stateCorruptionAreYouSure": {
     "message": "An bhfuil tú cinnte gur mian leat dul ar aghaidh?"
   },
@@ -5208,12 +5121,6 @@
   },
   "swapsMaxSlippage": {
     "message": "Caoinfhulaingt sleamhnáin"
-  },
-  "switch": {
-    "message": "Lasc"
-  },
-  "switchBack": {
-    "message": "Lasc ar ais"
   },
   "switchEthereumChainConfirmationDescription": {
     "message": "Aistreoidh sé seo an líonra roghnaithe laistigh de MetaMask go líonra a cuireadh leis roimhe seo:"
@@ -5518,10 +5425,6 @@
   "unpin": {
     "message": "Díbhioráin"
   },
-  "unrecognizedChain": {
-    "message": "Ní aithnítear an líonra saincheaptha seo",
-    "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
   "unsendableAsset": {
     "message": "Ní thacaítear le comharthaí NFT (ERC-721) a sheoladh faoi láthair.",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
@@ -5534,9 +5437,6 @@
   },
   "update": {
     "message": "Nuashonrú"
-  },
-  "updateEthereumChainConfirmationDescription": {
-    "message": "Tá an suíomh seo ag iarraidh do URL líonra réamhshocraithe a nuashonrú. Is féidir leat socruithe réamhshocraithe agus faisnéis líonra a chur in eagar am ar bith."
   },
   "updateInformation": {
     "message": "Tá do sparán déanta níos sábháilte, níos réidhe, agus roinnt gnéithe nua curtha leis againn. Nuashonraigh anois chun fanacht faoi chosaint agus ár bhfeabhsuithe is déanaí a úsáid."
@@ -5675,9 +5575,6 @@
   "walletReadyLoseSrpFromReminder": {
     "message": "Is féidir leis an bhFrása Rúnda Aisghabhála seo cabhrú leat rochtain a fháil ar ais má dhéanann tú dearmad ar do phasfhocal nó má chailleann tú rochtain ar do logáil isteach riamh."
   },
-  "wantToAddThisNetwork": {
-    "message": "Ar mhaith leat an líonra seo a chur leis?"
-  },
   "wantsToAddThisAsset": {
     "message": "Ligeann sé seo an tsócmhainn seo a leanas a chur le do sparán."
   },
@@ -5758,9 +5655,6 @@
   },
   "yourBalance": {
     "message": "D'iarmhéid"
-  },
-  "yourNFTmayBeAtRisk": {
-    "message": "D’fhéadfadh do NFT a bheith i mbaol"
   },
   "yourWalletIsReady": {
     "message": "Tá do sparán réidh!"

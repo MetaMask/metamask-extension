@@ -17,6 +17,10 @@ import { mockEip7702FeatureFlag } from '../helpers';
 import { mockSpotPrices } from '../../tokens/utils/mocks';
 import { login } from '../../../page-objects/flows/login.flow';
 import {
+  tokensV3Assets,
+  txSentinelNetwork,
+} from '../../../mock-response-data/api-responses';
+import {
   GAS_FEE_DAI_ADDRESS,
   GAS_FEE_DAI_ASSET_ID,
   GAS_FEE_ETH_CONVERSION_RATE_USD,
@@ -270,8 +274,8 @@ async function mockTransactionRelayNetworks(mockServer: MockttpServer) {
       };
     });
 
-  await mockServer
-    .forGet(`${TX_SENTINEL_URL}/network`)
+  await txSentinelNetwork
+    .rule(mockServer, { baseUrl: TX_SENTINEL_URL })
     .always()
     .thenCallback(() => {
       return {
@@ -339,8 +343,8 @@ async function mockSmartTransactionFeatureFlags(mockServer: MockttpServer) {
 // global `/v3/assets` mock returns nothing for them. Provide metadata here so
 // the AssetsController can resolve symbols/decimals for the gas-fee tokens.
 async function mockTokenAssets(mockServer: MockttpServer) {
-  await mockServer
-    .forGet('https://tokens.api.cx.metamask.io/v3/assets')
+  await tokensV3Assets
+    .rule(mockServer)
     .always()
     .thenCallback((request) => {
       const url = new URL(request.url);

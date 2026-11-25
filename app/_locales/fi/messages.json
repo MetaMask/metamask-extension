@@ -398,9 +398,6 @@
     "message": "Yksityinen avain",
     "description": "select this type of file to use to import an account"
   },
-  "privateNetwork": {
-    "message": "Yksityinen verkko"
-  },
   "readdToken": {
     "message": "Voit lisätä tämän tietueen myöhemmin takaisin siirtymällä tilisi vaihtoehtovalikon kohtaan ”Lisää tietue”."
   },

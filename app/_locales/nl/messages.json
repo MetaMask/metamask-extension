@@ -165,9 +165,6 @@
     "message": "Prive sleutel",
     "description": "select this type of file to use to import an account"
   },
-  "privateNetwork": {
-    "message": "Prive netwerk"
-  },
   "readdToken": {
     "message": "U kunt dit token in de toekomst weer toevoegen door naar \"Token toevoegen\" te gaan in het menu met accountopties."
   },
