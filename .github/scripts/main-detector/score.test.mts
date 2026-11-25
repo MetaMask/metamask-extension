@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import {
   DEFAULT_CONFIG,
   classify,
@@ -265,6 +266,24 @@ describe('measured ms shift', () => {
     // 14 ms is 2.8% of a 500 ms base: 30 ms on the old 1073 ms median, quiet.
     // Measured it is below the 16.095 ms floor.
     expect(verdictAt('chrome', 'uiStartup', 500, 14).level).toBe('none');
+  });
+
+  it('keeps a 5 ms floor on a 30 ms series, where 1.5% would be 0.45 ms', () => {
+    const shortSeries = {
+      ...DEFAULT_CONFIG,
+      floors: {
+        ...DEFAULT_CONFIG.floors,
+        chrome: {
+          ...DEFAULT_CONFIG.floors.chrome,
+          load: { floorMs: 5, loudMs: 15 },
+        },
+      },
+    };
+    const verdict = (shiftMs: number) =>
+      scoreBatch('chrome', makeShiftedJobs(30, shiftMs), shortSeries).metrics
+        .load.verdict;
+    expect(verdict(3).level).toBe('none');
+    expect(verdict(6)).toStrictEqual({ level: 'quiet', direction: 'slower' });
   });
 
   it('pings and confirms a 54 ms shift on slow runners through decide', () => {
