@@ -217,9 +217,6 @@
   "gasLimit": {
     "message": "Had Gas"
   },
-  "gasUsed": {
-    "message": "Gas Digunakan"
-  },
   "general": {
     "message": "Am"
   },
@@ -541,9 +538,6 @@
   },
   "unapproved": {
     "message": "Belum Diluluskan"
-  },
-  "units": {
-    "message": "unit"
   },
   "unknown": {
     "message": "Tidak diketahui"

@@ -224,9 +224,6 @@
   "gasLimit": {
     "message": "الحد الأقصى لوحدات جاس"
   },
-  "gasUsed": {
-    "message": "وحدات جاس المستخدمة"
-  },
   "general": {
     "message": "عام"
   },
@@ -561,9 +558,6 @@
   },
   "unapproved": {
     "message": "تم الرفض"
-  },
-  "units": {
-    "message": "وحدات"
   },
   "unknown": {
     "message": "غير معروف"

@@ -141,9 +141,6 @@
   "gasLimit": {
     "message": "Limit gaz"
   },
-  "gasUsed": {
-    "message": "Gaz yo Itilize"
-  },
   "hardware": {
     "message": "materyèl"
   },
@@ -406,9 +403,6 @@
   },
   "unapproved": {
     "message": "Pa apwouve"
-  },
-  "units": {
-    "message": "inite yo"
   },
   "unknown": {
     "message": "Enkoni"

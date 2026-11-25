@@ -217,9 +217,6 @@
   "from": {
     "message": "Od"
   },
-  "gasUsed": {
-    "message": "Uporabljen gas"
-  },
   "general": {
     "message": "Splošno"
   },
@@ -548,9 +545,6 @@
   },
   "unapproved": {
     "message": "Neodobreno"
-  },
-  "units": {
-    "message": "enote"
   },
   "unknown": {
     "message": "Neznano"

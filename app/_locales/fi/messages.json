@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "Gas-raja"
   },
-  "gasUsed": {
-    "message": "Käytetty bensaa"
-  },
   "general": {
     "message": "Yleistä"
   },
@@ -557,9 +554,6 @@
   },
   "unapproved": {
     "message": "Ei hyväksytty"
-  },
-  "units": {
-    "message": "yksikköä"
   },
   "unknown": {
     "message": "Tuntematon"

@@ -217,9 +217,6 @@
   "gasLimit": {
     "message": "গ্যাসের সীমা"
   },
-  "gasUsed": {
-    "message": "গ্যাস ব্যবহার করা হয়েছে"
-  },
   "general": {
     "message": "সাধারণ"
   },
@@ -557,9 +554,6 @@
   },
   "unapproved": {
     "message": "অননুমোদিত"
-  },
-  "units": {
-    "message": "ইউনিটসমূহ"
   },
   "unknown": {
     "message": "অজানা"

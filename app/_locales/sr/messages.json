@@ -217,9 +217,6 @@
   "gasLimit": {
     "message": "Limit gasa"
   },
-  "gasUsed": {
-    "message": "Korišćen gas"
-  },
   "general": {
     "message": "Opšte"
   },
@@ -548,9 +545,6 @@
   },
   "unapproved": {
     "message": "Neodobren"
-  },
-  "units": {
-    "message": "jedinice"
   },
   "unknown": {
     "message": "Непознато"

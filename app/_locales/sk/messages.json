@@ -214,9 +214,6 @@
   "gasLimit": {
     "message": "Limit paliva"
   },
-  "gasUsed": {
-    "message": "GAS použitý"
-  },
   "general": {
     "message": "Všeobecne"
   },
@@ -526,9 +523,6 @@
   },
   "unapproved": {
     "message": "Neschváleno"
-  },
-  "units": {
-    "message": "jednotky"
   },
   "unknown": {
     "message": "Neznámé"

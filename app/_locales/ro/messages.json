@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "Limită gas"
   },
-  "gasUsed": {
-    "message": "Suma gaz folosită"
-  },
   "goerli": {
     "message": "Rețea de test Goerli"
   },
@@ -545,9 +542,6 @@
   },
   "unapproved": {
     "message": "Neaprobat"
-  },
-  "units": {
-    "message": "unități"
   },
   "unknown": {
     "message": "Necunoscută"

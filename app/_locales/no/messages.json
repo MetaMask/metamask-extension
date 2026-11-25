@@ -217,9 +217,6 @@
   "gasLimit": {
     "message": "Datakraftsgrense "
   },
-  "gasUsed": {
-    "message": "Brukt datakraft "
-  },
   "general": {
     "message": "Generell"
   },
@@ -545,9 +542,6 @@
   },
   "unapproved": {
     "message": "Ikke godkjent "
-  },
-  "units": {
-    "message": "enheter "
   },
   "unknown": {
     "message": "Ukjent"

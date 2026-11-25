@@ -217,9 +217,6 @@
   "gasLimit": {
     "message": "Límit de gas"
   },
-  "gasUsed": {
-    "message": "Gas utilitzat"
-  },
   "goerli": {
     "message": "Xarxa de test Goerli"
   },
@@ -539,9 +536,6 @@
   },
   "unapproved": {
     "message": "Pendent d'aprovació"
-  },
-  "units": {
-    "message": "unitats"
   },
   "unknown": {
     "message": "Desconegut"

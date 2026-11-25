@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "Dujų apribojimas"
   },
-  "gasUsed": {
-    "message": "Sunaudotos dujos"
-  },
   "general": {
     "message": "Bendra"
   },
@@ -560,9 +557,6 @@
   },
   "unapproved": {
     "message": "Nepatvirtinta"
-  },
-  "units": {
-    "message": "vienetai"
   },
   "unknown": {
     "message": "Nežinoma"

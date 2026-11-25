@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "הגבלת דלק"
   },
-  "gasUsed": {
-    "message": "דלק שנעשה בו שימוש"
-  },
   "general": {
     "message": "כללי"
   },
@@ -557,9 +554,6 @@
   },
   "unapproved": {
     "message": "לא אושר"
-  },
-  "units": {
-    "message": "יחידות"
   },
   "unknown": {
     "message": "לא ידוע"

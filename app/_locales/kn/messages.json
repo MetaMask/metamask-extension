@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "ಗ್ಯಾಸ್ ಮಿತಿ"
   },
-  "gasUsed": {
-    "message": "ಗ್ಯಾಸ್ ಬಳಸಲಾಗಿದೆ"
-  },
   "general": {
     "message": "ಸಾಮಾನ್ಯ"
   },
@@ -560,9 +557,6 @@
   },
   "unapproved": {
     "message": "ಅನುಮೋದಿಸದಿರುವುದು"
-  },
-  "units": {
-    "message": "ಘಟಕಗಳು"
   },
   "unknown": {
     "message": "ಅಪರಿಚಿತ"

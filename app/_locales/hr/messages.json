@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "Ograničenje goriva"
   },
-  "gasUsed": {
-    "message": "Upotrijebljeno gorivo"
-  },
   "general": {
     "message": "Opće"
   },
@@ -554,9 +551,6 @@
   },
   "unapproved": {
     "message": "Neodobreno"
-  },
-  "units": {
-    "message": "jedinice/a"
   },
   "unknown": {
     "message": "Nepoznato"
