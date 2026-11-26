@@ -10,7 +10,10 @@ import { ENVIRONMENT } from '../../../../../shared/constants/build';
 import { useTheme } from '../../../../hooks/useTheme';
 import { isMovingAverage } from './advanced-chart-indicator-bar';
 import { CHART_TYPE_CANDLE } from './advanced-chart-interval-bar';
-import { VISIBLE_WINDOW_MS_BY_INTERVAL } from './chart-window-mapping';
+import {
+  getTvResolution,
+  VISIBLE_WINDOW_MS_BY_INTERVAL,
+} from './chart-window-mapping';
 import type { FetchOlderBarsResult, OHLCVBar } from './useOHLCVChart';
 import type { OHLCVRealtimeBar } from './useOHLCVRealtime';
 
@@ -479,6 +482,9 @@ const AdvancedChartIframe = ({
       lastBarTime !== undefined && windowMs !== undefined
         ? lastBarTime - windowMs
         : undefined;
+    // Explicit resolution: the engine otherwise infers it from bar spacing,
+    // which misfires on low-liquidity tokens (e.g. 5m detected as 30m).
+    const resolution = getTvResolution(selectedInterval);
 
     // Engine history is replaced by page 1, so pagination restarts from it.
     resetPagination?.();
@@ -498,6 +504,8 @@ const AdvancedChartIframe = ({
         // don't trigger a backward pagination storm.
         boundedIntervalWindow: true,
         ...(visibleFromMs === undefined ? {} : { visibleFromMs }),
+        // Older core versions ignore this field.
+        ...(resolution === undefined ? {} : { resolution }),
       },
     });
     prevOhlcvDataRef.current = ohlcvData;

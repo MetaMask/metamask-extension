@@ -17,6 +17,41 @@ export const VISIBLE_WINDOW_MS_BY_INTERVAL: Record<string, number> = {
   '1w': 365 * DAY_MS, // 1y = 1Y range -> ~52 candles
 };
 
+/** Candle intervals the chart supports. */
+export type CandleInterval = '1m' | '5m' | '15m' | '1h' | '4h' | '1d' | '1w';
+
+/**
+ * TradingView resolution for each candle interval, sent with `SET_OHLCV_DATA`
+ * so the chart engine doesn't infer it from bar spacing (which misfires on
+ * low-liquidity tokens, e.g. 5m detected as 30m). Minutes are plain numbers
+ * (hours as minutes); days/weeks use `1D`/`1W`.
+ */
+export const INTERVAL_TO_TV_RESOLUTION: Record<CandleInterval, string> = {
+  '1m': '1',
+  '5m': '5',
+  '15m': '15',
+  '1h': '60',
+  '4h': '240',
+  '1d': '1D',
+  '1w': '1W',
+};
+
+/**
+ * Looks up the TradingView resolution for a candle interval.
+ *
+ * @param interval - The candle interval, e.g. `5m`.
+ * @returns The TradingView resolution, or `undefined` for unknown intervals.
+ */
+export function getTvResolution(interval: string): string | undefined {
+  return isCandleInterval(interval)
+    ? INTERVAL_TO_TV_RESOLUTION[interval]
+    : undefined;
+}
+
+function isCandleInterval(interval: string): interval is CandleInterval {
+  return Object.hasOwn(INTERVAL_TO_TV_RESOLUTION, interval);
+}
+
 /** Duration of a single candle at each interval, used for bar-count math. */
 export const INTERVAL_DURATION_MS: Record<string, number> = {
   '1m': 60 * 1000,
