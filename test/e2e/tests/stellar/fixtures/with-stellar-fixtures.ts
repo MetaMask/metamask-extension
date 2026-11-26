@@ -7,6 +7,11 @@ import {
   type MockStellarApisOptions,
   type StellarAccountTransactionFixture,
 } from '../mocks/common-stellar';
+import {
+  createStellarSubmittedTxStore,
+  getSubmittedHorizonRecordsForAccount,
+  mockStellarSendNetwork,
+} from '../mocks/stellar-send-mocks';
 
 type WithFixturesOptions = Parameters<typeof withFixtures>[0];
 type WithFixturesTestSuite = Parameters<typeof withFixtures>[1];
@@ -31,7 +36,15 @@ export type WithStellarFixturesOptions = Omit<
 > & {
   accounts?: StellarFixtureAccount[];
   fixtures?: unknown;
-  horizonOptions?: Omit<MockStellarApisOptions, 'transactions'>;
+  horizonOptions?: Omit<
+    MockStellarApisOptions,
+    'transactions' | 'getExtraTransactionRecords'
+  >;
+  /**
+   * When true, mocks Soroban RPC submit + Horizon fee/tx endpoints so Send can
+   * progress Pending → Confirmed without a live Stellar node.
+   */
+  enableSend?: boolean;
   ignoredConsoleErrors?: string[];
   testSpecificMock?: (
     mockServer: Mockttp,
@@ -53,6 +66,7 @@ export async function withStellarFixtures(
     accounts = [{ address: DEFAULT_STELLAR_ADDRESS }],
     fixtures = new FixtureBuilderV2().build(),
     horizonOptions = {},
+    enableSend = false,
     ignoredConsoleErrors,
     testSpecificMock,
     ...withFixtureOptions
@@ -64,6 +78,10 @@ export async function withStellarFixtures(
       records: account.horizonTransactions ?? [],
     }),
   );
+
+  const submittedTxStore = enableSend
+    ? createStellarSubmittedTxStore()
+    : undefined;
 
   await withFixtures(
     {
@@ -78,17 +96,27 @@ export async function withStellarFixtures(
         // Custom endpoints first: mockttp's first matching `.always()` rule
         // wins, so a test override of a Stellar default URL must precede
         // `mockStellarApis` (same order as `withTronFixtures`).
+        // Send network mocks also precede defaults so RPC / fee_stats / tx-by-hash
+        // submit handlers win over empty Horizon defaults.
         const customEndpoints = testSpecificMock
           ? await testSpecificMock(mockServer)
+          : [];
+        const sendMocks = submittedTxStore
+          ? await mockStellarSendNetwork(mockServer, submittedTxStore)
           : [];
         const stellarMocks = await mockStellarApis(mockServer, {
           ...horizonOptions,
           transactions,
+          getExtraTransactionRecords: submittedTxStore
+            ? (address) =>
+                getSubmittedHorizonRecordsForAccount(submittedTxStore, address)
+            : undefined,
         });
         return [
           ...(Array.isArray(customEndpoints)
             ? customEndpoints
             : [customEndpoints]),
+          ...sendMocks,
           ...stellarMocks,
         ];
       },
