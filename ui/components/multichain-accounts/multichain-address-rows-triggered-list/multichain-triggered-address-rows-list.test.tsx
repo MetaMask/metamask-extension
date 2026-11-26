@@ -818,7 +818,7 @@ describe('MultichainTriggeredAddressRowsList', () => {
         ).toBeInTheDocument();
       });
 
-      const copyButtons = screen.getAllByLabelText(/copy/i);
+      const copyButtons = screen.getAllByLabelText(/copy/iu);
       const copyButton = copyButtons.find((button) => {
         const row = button.closest(
           `[data-testid="${TEST_IDS.MULTICHAIN_ADDRESS_ROW}"]`,
