@@ -623,7 +623,7 @@ describe('useOnboardingCompletion', () => {
             ...mockState.metamask,
             deferredDeepLink: {
               createdAt: Date.now(),
-              referringLink:
+              originalUrl:
                 'https://example.com/deferred?redirectTo=https://external-app.com/callback',
             },
           },
@@ -700,7 +700,7 @@ describe('useOnboardingCompletion', () => {
             ...mockState.metamask,
             deferredDeepLink: {
               createdAt: Date.now(),
-              referringLink: 'https://link.metamask.io/buy',
+              originalUrl: 'https://link.metamask.io/buy',
             },
           },
         },
@@ -796,7 +796,7 @@ describe('useOnboardingCompletion', () => {
             ...mockState.metamask,
             deferredDeepLink: {
               createdAt: Date.now(),
-              referringLink: 'https://example.com/deferred?path=/home',
+              originalUrl: 'https://example.com/deferred?path=/home',
             },
           },
         },
@@ -832,7 +832,7 @@ describe('useOnboardingCompletion', () => {
             ...mockState.metamask,
             deferredDeepLink: {
               createdAt: Date.now() - 2 * 60 * 60 * 1000,
-              referringLink: 'https://example.com/deferred',
+              originalUrl: 'https://example.com/deferred',
             },
           },
         },
@@ -875,7 +875,7 @@ describe('useOnboardingCompletion', () => {
             ...mockState.metamask,
             deferredDeepLink: {
               createdAt: Date.now(),
-              referringLink: 'https://link.metamask.io/swap?amount=100',
+              originalUrl: 'https://link.metamask.io/swap?amount=100',
             },
           },
         },
@@ -926,7 +926,7 @@ describe('useOnboardingCompletion', () => {
             ...mockState.metamask,
             deferredDeepLink: {
               createdAt: Date.now(),
-              referringLink: 'https://link.metamask.io/buy',
+              originalUrl: 'https://link.metamask.io/buy',
             },
           },
         },
@@ -958,7 +958,7 @@ describe('useOnboardingCompletion', () => {
             ...mockState.metamask,
             deferredDeepLink: {
               createdAt: Date.now(),
-              referringLink: 'https://link.metamask.io/swap',
+              originalUrl: 'https://link.metamask.io/swap',
             },
           },
         },
@@ -996,7 +996,7 @@ describe('useOnboardingCompletion', () => {
             completedOnboarding: true,
             deferredDeepLink: {
               createdAt: Date.now(),
-              referringLink: 'https://link.metamask.io/swap?ref=abc123',
+              originalUrl: 'https://link.metamask.io/swap?ref=abc123',
             },
           },
         },
@@ -1037,7 +1037,7 @@ describe('useOnboardingCompletion', () => {
             ...mockState.metamask,
             deferredDeepLink: {
               createdAt: Date.now() - 2 * 60 * 60 * 1000,
-              referringLink: 'https://link.metamask.io/swap',
+              originalUrl: 'https://link.metamask.io/swap',
             },
           },
         },
@@ -1178,7 +1178,7 @@ describe('useOnboardingCompletion', () => {
                 ...mockState.metamask,
                 deferredDeepLink: {
                   createdAt: Date.now(),
-                  referringLink:
+                  originalUrl:
                     'https://link.metamask.io/swap?attributionId=install-123&utm_source=campaign',
                 },
               },
