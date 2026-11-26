@@ -1,4 +1,5 @@
 import { it } from '@jest/globals';
+import { JsonRpcError, serializeError } from '@metamask/rpc-errors';
 import type {
   Position,
   PerpsMarketData,
@@ -661,45 +662,6 @@ describe('PerpsStreamManager', () => {
       }
     });
 
-    it.each([
-      ['an Error', new Error('PROVIDER_LIFECYCLE_STALE')],
-      ['a string', 'PROVIDER_LIFECYCLE_STALE'],
-    ])(
-      'does not log or notify when the REST fallback is rejected with %s for a stale provider lifecycle',
-      async (_label, rejection) => {
-        const consoleErrorSpy = jest
-          .spyOn(console, 'error')
-          .mockImplementation(() => undefined);
-
-        try {
-          mockSubmitRequestToBackground.mockImplementation((method: string) => {
-            if (method === 'perpsGetPositions') {
-              return Promise.reject(rejection);
-            }
-            return Promise.resolve(undefined);
-          });
-
-          const cb = jest.fn();
-          manager.positions.subscribe(cb);
-
-          await jest.advanceTimersByTimeAsync(3_000);
-
-          expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-            'perpsGetPositions',
-            [],
-          );
-          expect(consoleErrorSpy).not.toHaveBeenCalledWith(
-            '[PerpsStreamManager] Failed to fetch positions',
-            expect.anything(),
-          );
-          expect(cb).not.toHaveBeenCalledWith([]);
-          expect(manager.positions.hasCachedData()).toBe(false);
-        } finally {
-          consoleErrorSpy.mockRestore();
-        }
-      },
-    );
-
     it('does not log when an in-flight positions fetch rejects after teardown', async () => {
       const consoleErrorSpy = jest
         .spyOn(console, 'error')
@@ -821,45 +783,6 @@ describe('PerpsStreamManager', () => {
       }
     });
 
-    it.each([
-      ['an Error', new Error('PROVIDER_LIFECYCLE_STALE')],
-      ['a string', 'PROVIDER_LIFECYCLE_STALE'],
-    ])(
-      'does not log or notify when the REST fallback is rejected with %s for a stale provider lifecycle',
-      async (_label, rejection) => {
-        const consoleErrorSpy = jest
-          .spyOn(console, 'error')
-          .mockImplementation(() => undefined);
-
-        try {
-          mockSubmitRequestToBackground.mockImplementation((method: string) => {
-            if (method === 'perpsGetOpenOrders') {
-              return Promise.reject(rejection);
-            }
-            return Promise.resolve(undefined);
-          });
-
-          const cb = jest.fn();
-          manager.orders.subscribe(cb);
-
-          await jest.advanceTimersByTimeAsync(3_000);
-
-          expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-            'perpsGetOpenOrders',
-            [],
-          );
-          expect(consoleErrorSpy).not.toHaveBeenCalledWith(
-            '[PerpsStreamManager] Failed to fetch orders',
-            expect.anything(),
-          );
-          expect(cb).not.toHaveBeenCalledWith([]);
-          expect(manager.orders.hasCachedData()).toBe(false);
-        } finally {
-          consoleErrorSpy.mockRestore();
-        }
-      },
-    );
-
     it('does not log when an in-flight orders fetch rejects after teardown', async () => {
       const consoleErrorSpy = jest
         .spyOn(console, 'error')
@@ -896,6 +819,103 @@ describe('PerpsStreamManager', () => {
         consoleErrorSpy.mockRestore();
       }
     });
+  });
+
+  describe('REST fallback rejections', () => {
+    const channels: ['positions' | 'orders' | 'account', string, string][] = [
+      ['positions', 'perpsGetPositions', 'positions'],
+      ['orders', 'perpsGetOpenOrders', 'orders'],
+      ['account', 'perpsGetAccountState', 'account'],
+    ];
+
+    const subscribeWithRejection = async (
+      channel: 'positions' | 'orders' | 'account',
+      method: string,
+      error: Error,
+    ) => {
+      mockSubmitRequestToBackground.mockImplementation((name: string) =>
+        name === method ? Promise.reject(error) : Promise.resolve(undefined),
+      );
+      const cb = jest.fn();
+      manager[channel].subscribe(cb);
+      await jest.advanceTimersByTimeAsync(3_000);
+      return cb;
+    };
+
+    let consoleErrorSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      jest.useFakeTimers();
+      consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+    });
+
+    afterEach(() => {
+      consoleErrorSpy.mockRestore();
+      mockSubmitRequestToBackground.mockReset();
+      mockSubmitRequestToBackground.mockResolvedValue(undefined);
+    });
+
+    it.each(channels)(
+      'does not log a PROVIDER_LIFECYCLE_STALE rejection of the %s fetch',
+      async (channel, method) => {
+        await subscribeWithRejection(
+          channel,
+          method,
+          new Error('PROVIDER_LIFECYCLE_STALE'),
+        );
+
+        expect(consoleErrorSpy).not.toHaveBeenCalled();
+      },
+    );
+
+    it.each(channels)(
+      'does not log a PROVIDER_LIFECYCLE_STALE rejection of the %s fetch after a background RPC round trip',
+      async (channel, method) => {
+        // Mirrors createMetaRPCHandler (serializeError) and
+        // metaRPCClientFactory (JsonRpcError), the path the UI error takes.
+        const { code, message, data } = serializeError(
+          new Error('PROVIDER_LIFECYCLE_STALE'),
+          { shouldIncludeStack: true },
+        );
+        await subscribeWithRejection(
+          channel,
+          method,
+          new JsonRpcError(code, message, data),
+        );
+
+        expect(consoleErrorSpy).not.toHaveBeenCalled();
+      },
+    );
+
+    it.each(channels)(
+      'logs any other rejection of the %s fetch',
+      async (channel, method, label) => {
+        await subscribeWithRejection(channel, method, new Error('boom'));
+
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          `[PerpsStreamManager] Failed to fetch ${label}`,
+          expect.objectContaining({ message: 'boom' }),
+        );
+      },
+    );
+
+    it.each([
+      ['positions', 'perpsGetPositions'],
+      ['orders', 'perpsGetOpenOrders'],
+    ] as ['positions' | 'orders', string][])(
+      'still pushes an empty %s list when the fetch is lifecycle-stale',
+      async (channel, method) => {
+        const cb = await subscribeWithRejection(
+          channel,
+          method,
+          new Error('PROVIDER_LIFECYCLE_STALE'),
+        );
+
+        expect(cb).toHaveBeenCalledWith([]);
+      },
+    );
   });
 
   describe('markets channel', () => {

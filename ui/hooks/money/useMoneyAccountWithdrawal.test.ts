@@ -33,6 +33,12 @@ jest.mock('../../pages/confirmations/hooks/useConfirmationNavigation', () => ({
   useConfirmationNavigation: jest.fn(),
 }));
 
+const mockUseMoneyAccountLifecycle = jest.fn();
+
+jest.mock('./use-money-account-lifecycle', () => ({
+  useMoneyAccountLifecycle: () => mockUseMoneyAccountLifecycle(),
+}));
+
 const createWithdrawTransactionMock = jest.mocked(
   createMoneyAccountWithdrawTransaction,
 );
@@ -169,6 +175,12 @@ describe('useMoneyAccountWithdrawal', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseMoneyAccountLifecycle.mockReturnValue({
+      lifecycle: undefined,
+      isLifecycleUnavailable: false,
+      isReadOnly: false,
+      isLoading: false,
+    });
 
     useMoneyErrorReporterMock.mockReturnValue(reportErrorMock);
     useConfirmationNavigationMock.mockReturnValue({
@@ -197,6 +209,68 @@ describe('useMoneyAccountWithdrawal', () => {
       loader: ConfirmationLoader.CustomAmount,
       goBackTo: '/',
     });
+  });
+
+  it('does not start a withdrawal when the Money Account is read-only', async () => {
+    mockUseMoneyAccountLifecycle.mockReturnValue({
+      lifecycle: { type: 'migrating' },
+      isReadOnly: true,
+      isLoading: false,
+    });
+
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountWithdrawal(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    await act(async () => {
+      await result.current.initiateWithdrawal();
+    });
+
+    expect(result.current.isDisabled).toBe(true);
+    expect(createWithdrawTransactionMock).not.toHaveBeenCalled();
+    expect(navigateToTransactionMock).not.toHaveBeenCalled();
+  });
+
+  it('does not start a withdrawal when the lifecycle is unavailable', async () => {
+    mockUseMoneyAccountLifecycle.mockReturnValue({
+      isLifecycleUnavailable: true,
+      isReadOnly: false,
+      isLoading: false,
+    });
+
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountWithdrawal(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    await act(async () => {
+      await result.current.initiateWithdrawal();
+    });
+
+    expect(result.current.isDisabled).toBe(true);
+    expect(createWithdrawTransactionMock).not.toHaveBeenCalled();
+  });
+
+  it('does not start a withdrawal while the lifecycle read is pending', async () => {
+    mockUseMoneyAccountLifecycle.mockReturnValue({
+      lifecycle: undefined,
+      isReadOnly: false,
+      isLoading: true,
+    });
+
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountWithdrawal(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    await act(async () => {
+      await result.current.initiateWithdrawal();
+    });
+
+    expect(result.current.isDisabled).toBe(true);
+    expect(createWithdrawTransactionMock).not.toHaveBeenCalled();
+    expect(navigateToTransactionMock).not.toHaveBeenCalled();
   });
 
   it('passes the originating route as goBackTo so the confirmation returns there', async () => {

@@ -30,6 +30,7 @@ export async function validateAmountMultichain(
     value: string;
     accountId: string;
     assetId: CaipAssetType;
+    toAddress?: string;
   },
 ) {
   return await handleSnapRequest({
@@ -41,4 +42,23 @@ export async function validateAmountMultichain(
       params,
     },
   });
+}
+
+export async function getMaxSendableAmountMultichain(
+  fromAccount: InternalAccount,
+  params: {
+    accountId: string;
+    assetId: CaipAssetType;
+    toAddress?: string;
+  },
+): Promise<{ amount: string }> {
+  return (await handleSnapRequest({
+    snapId: fromAccount.metadata?.snap?.id as SnapId,
+    origin: 'metamask',
+    handler: HandlerType.OnClientRequest,
+    request: {
+      method: 'getMaxSendableAmount',
+      params,
+    },
+  })) as { amount: string };
 }
