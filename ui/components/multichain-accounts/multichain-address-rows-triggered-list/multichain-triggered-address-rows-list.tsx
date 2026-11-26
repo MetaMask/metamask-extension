@@ -539,6 +539,7 @@ export const MultichainTriggeredAddressRowsList = ({
         }
         onFocus={useHoverFallback ? showFallbackPopover : undefined}
         onBlur={useHoverFallback ? scheduleHideFallbackPopover : undefined}
+        data-testid="multichain-address-rows-popover"
         style={
           {
             width: '360px',

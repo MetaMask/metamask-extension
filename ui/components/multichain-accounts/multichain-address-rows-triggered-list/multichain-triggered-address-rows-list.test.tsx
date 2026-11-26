@@ -818,12 +818,16 @@ describe('MultichainTriggeredAddressRowsList', () => {
         ).toBeInTheDocument();
       });
 
-      const evmRow = screen
-        .getByText(TEST_STRINGS.EVM_NETWORKS)
-        .closest(`[data-testid="${TEST_IDS.MULTICHAIN_ADDRESS_ROW}"]`);
-      const copyButton = evmRow?.querySelector(
-        '[aria-label*="copy"]',
-      ) as HTMLElement;
+      const copyButtons = screen.getAllByLabelText(/copy/i);
+      const copyButton = copyButtons.find((button) => {
+        const row = button.closest(
+          `[data-testid="${TEST_IDS.MULTICHAIN_ADDRESS_ROW}"]`,
+        );
+        return row && row.textContent?.includes(TEST_STRINGS.EVM_NETWORKS);
+      });
+      if (!copyButton) {
+        throw new Error('Copy button not found');
+      }
 
       fireEvent.click(copyButton);
 
@@ -1021,7 +1025,7 @@ describe('MultichainTriggeredAddressRowsList', () => {
       openPopoverByHover();
       expectPopoverOpen();
 
-      const popover = getPopoverList()?.closest('[popover]') as HTMLElement;
+      const popover = screen.getByTestId('multichain-address-rows-popover');
       fireEvent.mouseLeave(trigger);
       fireEvent.mouseEnter(popover);
       expectPopoverOpen();
@@ -1043,7 +1047,7 @@ describe('MultichainTriggeredAddressRowsList', () => {
       });
 
       fireEvent.blur(trigger);
-      const popover = getPopoverList()?.closest('[popover]') as HTMLElement;
+      const popover = screen.getByTestId('multichain-address-rows-popover');
       fireEvent.focus(popover);
       await waitFor(() => {
         expectPopoverOpen();
@@ -1062,7 +1066,7 @@ describe('MultichainTriggeredAddressRowsList', () => {
       openPopoverByHover();
       expectPopoverOpen();
 
-      const popover = getPopoverList()?.closest('[popover]') as HTMLElement;
+      const popover = screen.getByTestId('multichain-address-rows-popover');
       fireEvent.blur(trigger, { relatedTarget: popover });
 
       await waitFor(() => {
@@ -1157,7 +1161,7 @@ describe('MultichainTriggeredAddressRowsList', () => {
 
       expectPopoverClosed();
 
-      fireEvent.click(triggerElement as HTMLElement);
+      fireEvent.click(triggerElement);
 
       await waitFor(() => {
         expectPopoverOpen();
@@ -1169,7 +1173,7 @@ describe('MultichainTriggeredAddressRowsList', () => {
 
       const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
 
-      fireEvent.mouseEnter(triggerElement as HTMLElement);
+      fireEvent.mouseEnter(triggerElement);
 
       expectPopoverClosed();
     });
@@ -1179,13 +1183,13 @@ describe('MultichainTriggeredAddressRowsList', () => {
 
       const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
 
-      fireEvent.click(triggerElement as HTMLElement);
+      fireEvent.click(triggerElement);
 
       await waitFor(() => {
         expectPopoverOpen();
       });
 
-      fireEvent.click(triggerElement as HTMLElement);
+      fireEvent.click(triggerElement);
 
       await waitFor(() => {
         expectPopoverClosed();
