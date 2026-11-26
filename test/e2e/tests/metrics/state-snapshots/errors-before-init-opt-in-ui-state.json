@@ -36,6 +36,7 @@
       "eventsConfig": "object",
       "marketingCampaignCookieId": null,
       "marketingConsentDecisionMade": "boolean",
+      "marketingConsentSyncPending": "boolean",
       "optedIn": true,
       "optedInToMarketing": "boolean"
     },
@@ -198,9 +199,6 @@
       "hasSeenOnboardingCompletionPage": true,
       "onboardingJourneyEnded": true,
       "seedPhraseBackedUp": null
-    },
-    "PPOMController": {
-      "storageMetadata": "object"
     },
     "PasskeyController": {
       "passkeyRecord": null
@@ -365,6 +363,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 235
+    "version": 238
   }
 }

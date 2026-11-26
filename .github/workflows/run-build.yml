@@ -10,7 +10,7 @@ on:
       build-command:
         type: string
         required: true
-        description: The build command to run
+        description: The yarn script and arguments to run, without the leading yarn
       builds-from-run:
         required: true
         type: string
@@ -91,7 +91,12 @@ jobs:
         run: yarn webpack:tsc
 
       - name: Run build
-        run: ${{ inputs.build-command }}${{ inputs.bundle-analyzer && ' --bundleAnalyzer' || '' }}
+        env:
+          BUILD_COMMAND: ${{ inputs.build-command }}${{ inputs.bundle-analyzer && ' --bundleAnalyzer' || '' }}
+        run: |
+          # Split on spaces only; the value is never parsed as shell.
+          IFS=' ' read -r -a script_and_args <<< "$BUILD_COMMAND"
+          yarn run "${script_and_args[@]}"
 
       - name: Validate source maps
         run: yarn validate-source-maps

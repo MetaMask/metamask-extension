@@ -1323,12 +1323,6 @@
   "add_device_try_again": {
     "message": "Réessayer"
   },
-  "add_device_validating_desc": {
-    "message": "Établissement d'une connexion sécurisée et chiffrée avec votre téléphone."
-  },
-  "add_device_validating_title": {
-    "message": "Appairage des appareils"
-  },
   "add_wallets": {
     "message": "Choisissez ce que vous souhaitez synchroniser"
   },
@@ -1427,9 +1421,6 @@
   },
   "advancedGasPriceModalTitle": {
     "message": "Frais de réseau avancés"
-  },
-  "advancedGasPriceTitle": {
-    "message": "Prix du gaz"
   },
   "advancedPermissionSmallCase": {
     "message": "autorisation avancée"
@@ -1691,12 +1682,6 @@
   },
   "amount": {
     "message": "Montant"
-  },
-  "amountReceived": {
-    "message": "Montant reçu"
-  },
-  "amountSent": {
-    "message": "Montant envoyé"
   },
   "andForListItems": {
     "message": "$1, et $2",
@@ -2119,9 +2104,6 @@
   },
   "blockExplorerUrl": {
     "message": "URL de l’explorateur de blocs"
-  },
-  "blockExplorerUrlDefinition": {
-    "message": "L’URL utilisée comme explorateur de blocs pour ce réseau."
   },
   "blockExplorerView": {
     "message": "Afficher le compte à $1",
@@ -2635,9 +2617,6 @@
   "chainId": {
     "message": "Identifiant de la chaîne"
   },
-  "chainIdDefinition": {
-    "message": "L’ID de chaîne utilisé pour signer les transactions pour ce réseau."
-  },
   "chainIdExistsErrorMsg": {
     "message": "Cet ID de chaîne est actuellement utilisé par le réseau $1."
   },
@@ -2749,10 +2728,6 @@
   "clickHere": {
     "message": "Cliquez ici",
     "description": "Link to help when a JSON account import is not working"
-  },
-  "clickToConnectLedgerViaWebHID": {
-    "message": "Cliquez ici pour connecter votre Ledger via WebHID",
-    "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
   },
   "clipboardClearFailed": {
     "message": "Impossible de vider le presse-papiers. Veuillez réessayer."
@@ -3267,9 +3242,6 @@
   },
   "currencySymbol": {
     "message": "Symbole de la devise"
-  },
-  "currencySymbolDefinition": {
-    "message": "Le code mnémo affiché pour la devise de ce réseau."
   },
   "current": {
     "message": "Actuel"
@@ -4010,10 +3982,6 @@
   "enter_verification_code_expired": {
     "message": "Le code de vérification a expiré"
   },
-  "enter_verification_code_expires_in": {
-    "message": "Expire dans $1 s",
-    "description": "$1 is the number of seconds remaining before the verification code expires"
-  },
   "enter_verification_code_max_attempts": {
     "message": "Trop de tentatives infructueuses. Commencez avec un nouveau code QR."
   },
@@ -4029,9 +3997,6 @@
   "errorCode": {
     "message": "Code : $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorGettingSafeChainList": {
-    "message": "Erreur lors de l’obtention de la liste des chaînes sécurisées. Continuez avec prudence."
   },
   "errorLegalTextFirstInfo": {
     "message": "Informations de diagnostic technique."
@@ -4352,9 +4317,6 @@
     "message": "$1 s",
     "description": "$1 represents a number of seconds"
   },
-  "gasUsed": {
-    "message": "Gaz utilisé"
-  },
   "gatorNoJustificationProvided": {
     "message": "Aucune justification n’a été fournie pour cette autorisation"
   },
@@ -4469,9 +4431,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Une erreur s’est produite...."
-  },
-  "generateNewQrCode": {
-    "message": "Générer un nouveau code QR"
   },
   "genericExplorerView": {
     "message": "Voir le compte sur $1"
@@ -4989,9 +4948,6 @@
   "insufficientTokens": {
     "message": "Jetons insuffisants."
   },
-  "interactWithSmartContract": {
-    "message": "Contrat intelligent"
-  },
   "interactingWith": {
     "message": "Interagissant avec"
   },
@@ -5175,18 +5131,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Vous devez d’abord utiliser le dernier compte que vous avez créé avant de pouvoir en ajouter un nouveau."
-  },
-  "ledgerConnectionInstructionCloseOtherApps": {
-    "message": "Fermez tout autre logiciel connecté à votre appareil, puis cliquez ici pour actualiser."
-  },
-  "ledgerConnectionInstructionHeader": {
-    "message": "Avant de cliquer sur confirmer :"
-  },
-  "ledgerConnectionInstructionStepFour": {
-    "message": "Activez les « données de contrat intelligent » ou la « signature aveugle » sur votre dispositif Ledger."
-  },
-  "ledgerConnectionInstructionStepThree": {
-    "message": "Assurez-vous que votre dispositif Ledger est branché et sélectionnez l'application Ethereum."
   },
   "ledgerConnectionStatusAppClosedDescription": {
     "message": "Veuillez l’ouvrir sur votre appareil Ledger pour continuer"
@@ -5826,14 +5770,6 @@
   "minute": {
     "message": "min"
   },
-  "mismatchedChainLinkText": {
-    "message": "vérifier les détails du réseau",
-    "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
-  },
-  "mismatchedChainRecommendation": {
-    "message": "Nous vous recommandons de $1 avant de continuer.",
-    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
   "mismatchedNetworkName": {
     "message": "Selon nos informations, le nom du réseau peut ne pas correspondre exactement à l’ID de la chaîne."
   },
@@ -6422,9 +6358,6 @@
     "message": "Présentation des comptes multichaînes",
     "description": "Title for the multichain accounts introduction modal."
   },
-  "multichainAddEthereumChainConfirmationDescription": {
-    "message": "Vous allez ajouter ce réseau à MetaMask et donner à ce site l’autorisation de l’utiliser."
-  },
   "multichainAddressViewAll": {
     "message": "Tout afficher"
   },
@@ -6441,42 +6374,6 @@
   "multipleSnapConnectionWarning": {
     "message": "$1 veut utiliser $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
-  },
-  "musdAssetConvertBenefitDailyBonus": {
-    "message": "Bonus quotidien",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertBenefitDollarBacked": {
-    "message": "Adossé au dollar",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertBenefitNoLockups": {
-    "message": "Pas de blocage de fonds",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertBenefitNoMetaMaskFee": {
-    "message": "Pas de frais MetaMask",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertDescriptionHighlight": {
-    "message": "Bonus annualisé de $1 %",
-    "description": "Shown in Figma accent lime (#baf24a) inside the mUSD asset details convert section description. $1 is the APY percentage."
-  },
-  "musdAssetConvertDescriptionLead": {
-    "message": "Obtenez un ",
-    "description": "Text before the green APY phrase on the mUSD asset details convert section"
-  },
-  "musdAssetConvertDescriptionTail": {
-    "message": " en convertissant vos USDC, USDT et DAI en mUSD.",
-    "description": "Text after the green APY phrase on the mUSD asset details convert section"
-  },
-  "musdAssetConvertLearnMore": {
-    "message": "En savoir plus.",
-    "description": "Button to open the mUSD support article from the asset details convert section"
-  },
-  "musdAssetConvertTitle": {
-    "message": "Convertissez vos stablecoins",
-    "description": "Title of the convert section on the mUSD asset details page"
   },
   "musdAssetPositionBalance": {
     "message": "Solde",
@@ -6505,17 +6402,9 @@
   "musdBuyMusd": {
     "message": "Acheter des mUSD"
   },
-  "musdClaimTitle": {
-    "message": "Réclamer le bonus",
-    "description": "Title for the mUSD bonus claim confirmation screen"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "Les frais de conversion en mUSD comprennent les coûts de réseau et peuvent inclure des frais de fournisseur. Aucuns frais MetaMask ne s’appliquent lorsque vous effectuez un échange contre des mUSD.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
-  },
-  "musdConversionTitle": {
-    "message": "Converti en mUSD",
-    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "musdConvert": {
     "message": "Convertir"
@@ -6676,9 +6565,6 @@
     "message": "Vous effectuez maintenant une transaction sur $1.",
     "description": "$1 is the name of the network"
   },
-  "networkDetails": {
-    "message": "Détails du réseau"
-  },
   "networkFee": {
     "message": "Frais de réseau"
   },
@@ -6696,9 +6582,6 @@
   },
   "networkNameBitcoin": {
     "message": "Bitcoin"
-  },
-  "networkNameDefinition": {
-    "message": "Le nom associé à ce réseau."
   },
   "networkNameEthereum": {
     "message": "Ethereum"
@@ -6746,9 +6629,6 @@
   },
   "networkTabPopular": {
     "message": "Populaire"
-  },
-  "networkURL": {
-    "message": "URL du réseau"
   },
   "networkURLDefinition": {
     "message": "L’URL utilisée pour accéder à ce réseau."
@@ -6853,17 +6733,6 @@
   "nftUnsupportedEmptyDescription": {
     "message": "Les NFT ne sont pas pris en charge sur ce réseau."
   },
-  "nftWarningContent": {
-    "message": "Vous êtes en train d’accorder à un tiers l’autorisation d’accéder à $1 que vous possédez actuellement ou que vous pourrez posséder dans le futur. Tant que vous n’aurez pas révoqué cette autorisation, l’autre partie pourra transférer ces NFT de votre portefeuille à tout moment et sans demander votre consentement. $2",
-    "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
-  },
-  "nftWarningContentBold": {
-    "message": "tous les NFT $1",
-    "description": "$1 is name of the collection"
-  },
-  "nftWarningContentGrey": {
-    "message": "Agissez avec prudence."
-  },
   "nfts": {
     "message": "NFT"
   },
@@ -6896,9 +6765,6 @@
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Les Snaps et la plupart des portefeuilles matériels ne fonctionneront pas avec la version actuelle de votre navigateur."
-  },
-  "noMMFeeSwapping": {
-    "message": "Pas de frais MetaMask"
   },
   "noNetworkFee": {
     "message": "Pas de frais de réseau"
@@ -7293,13 +7159,6 @@
   },
   "openFullScreen": {
     "message": "Ouvrir en plein écran"
-  },
-  "openFullScreenForLedgerWebHid": {
-    "message": "Passez en plein écran pour connecter votre Ledger.",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
-  "openInBlockExplorer": {
-    "message": "Ouvrir dans l’explorateur de blocs"
   },
   "openMultichainAccountAddressMenu": {
     "message": "Ouvrir le menu des adresses de compte multichaînes"
@@ -8127,9 +7986,6 @@
   },
   "perpsDepositFundsTitle": {
     "message": "Déposer des fonds sur le compte de trading de contrats à terme perpétuels"
-  },
-  "perpsDepositTitle": {
-    "message": "Compte de trading de contrats à terme financé"
   },
   "perpsDepositToastErrorDescription": {
     "message": "Les fonds n’ont pas été ajoutés à votre compte de trading de contrats à terme perpétuels. Veuillez réessayer."
@@ -9157,14 +9013,8 @@
     "message": "Clés privées",
     "description": "Private keys row label on multichain account details page."
   },
-  "privateNetwork": {
-    "message": "Réseau privé"
-  },
   "proceed": {
     "message": "Continuer"
-  },
-  "proceedWithTransaction": {
-    "message": "Je veux tout de même continuer"
   },
   "provide": {
     "message": "Fournir"
@@ -9211,13 +9061,6 @@
   "qrCameraAccessNeededTitle": {
     "message": "L’accès à l’appareil photo est requis",
     "description": "Title when the camera permission dialog was dismissed without a choice."
-  },
-  "qrCodeExpired": {
-    "message": "Le code QR a expiré"
-  },
-  "qrCodeExpiresIn": {
-    "message": "Expire dans $1 s",
-    "description": "$1 is the number of seconds remaining before the QR code expires"
   },
   "qrErrorMismatchedTransactionBody": {
     "message": "Ce code QR concerne une autre transaction. Annulez l’opération et réessayez, en veillant à scanner d’abord le code QR affiché dans MetaMask avec votre portefeuille matériel.",
@@ -9524,16 +9367,8 @@
   "receiveCrypto": {
     "message": "Recevoir des crypto-actifs"
   },
-  "receiveToken": {
-    "message": "Recevoir le jeton",
-    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
-  },
   "received": {
     "message": "Reçu"
-  },
-  "receivedTotal": {
-    "message": "Total reçu",
-    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Adresse de réception",
@@ -11362,9 +11197,6 @@
   "simulationDetailsUnavailable": {
     "message": "Non disponible"
   },
-  "simulationErrorMessageV2": {
-    "message": "Nous n’avons pas pu estimer le prix de carburant. Par conséquent, il se peut qu’il y ait une erreur dans le contrat et que cette transaction échoue."
-  },
   "simulationsSettingDescription": {
     "message": "Activez cette option pour estimer les changements de solde des transactions et des signatures avant de les confirmer. Ces estimations sont fournies à titre indicatif et n’engagent en rien les parties à la transaction. $1"
   },
@@ -11431,12 +11263,6 @@
   },
   "smartAccountRequestsFromDappsDescriptionV2": {
     "message": "Autorisez les dapps à demander des fonctionnalités de compte intelligent pour les comptes standards. MetaMask effectuera la mise à niveau uniquement vers notre compte intelligent audité."
-  },
-  "smartAccountUpgradeBannerDescription": {
-    "message": "Même adresse. Des fonctionnalités plus intelligentes."
-  },
-  "smartAccountUpgradeBannerTitle": {
-    "message": "Passez à un compte intelligent"
   },
   "smartContractAddress": {
     "message": "Adresse du contrat intelligent"
@@ -11872,12 +11698,6 @@
   "stakingWithdrawal": {
     "message": "Retrait de staking"
   },
-  "standardAccountLabel": {
-    "message": "Compte standard"
-  },
-  "start_with_new_qr_code": {
-    "message": "Commencer avec un nouveau code QR"
-  },
   "stateCorruptionAreYouSure": {
     "message": "Voulez-vous vraiment continuer ?"
   },
@@ -12033,28 +11853,12 @@
   "swapAggregator": {
     "message": "Agrégateur"
   },
-  "swapAllowSwappingOf": {
-    "message": "Autoriser le swap de $1",
-    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
-  },
-  "swapAmountReceived": {
-    "message": "Montant garanti"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "Il s’agit du montant minimal que vous recevrez. Vous pouvez recevoir plus en fonction du glissement."
-  },
   "swapAndSend": {
     "message": "Échanger et envoyer"
   },
   "swapApproval": {
     "message": "Approuver $1 pour les swaps",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
-  },
-  "swapAreYouStillThere": {
-    "message": "Êtes-vous toujours là ?"
-  },
-  "swapAreYouStillThereDescription": {
-    "message": "Si vous le souhaitez, nous sommes prêts à vous présenter les dernières cotations"
   },
   "swapConfirmWithHwWallet": {
     "message": "Confirmez avec votre portefeuille matériel"
@@ -12085,16 +11889,6 @@
     "message": "Ce sera $1 pour le swap",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
-  "swapEstimatedNetworkFees": {
-    "message": "Frais de réseau estimés"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "Il s’agit d’une estimation des frais de réseau qui seront utilisés pour effectuer votre swap. Le montant réel peut varier en fonction des conditions du réseau."
-  },
-  "swapFailedErrorDescriptionWithSupportLink": {
-    "message": "Sachez que les transactions peuvent échouer et que nous sommes là pour vous aider. Si ce problème persiste, vous pouvez contacter notre service clientèle au $1 pour plus d’assistance.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
-  },
   "swapFailedErrorTitle": {
     "message": "Échec du swap"
   },
@@ -12111,10 +11905,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "Erreur lors de la récupération des cotations"
   },
-  "swapFromTo": {
-    "message": "Le swap de $1 vers $2",
-    "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
   "swapGasFeesExplanation": {
     "message": "MetaMask ne tire aucun profit des frais de réseau. Ces frais sont des estimations et peuvent changer en fonction de l’activité du réseau et de la complexité de la transaction. En savoir plus $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -12122,9 +11912,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "ici",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesSplit": {
-    "message": "Les frais de réseau indiqués sur l’écran précédent sont répartis entre ces deux transactions."
   },
   "swapGasFeesSponsored": {
     "message": "Payé par MetaMask"
@@ -12139,15 +11926,6 @@
   "swapLearnMore": {
     "message": "En savoir plus sur les swaps"
   },
-  "swapLiquiditySourceInfo": {
-    "message": "Nous consultons différentes sources de liquidité (bourses, agrégateurs et teneurs de marché professionnels) pour comparer les taux de change et les frais de réseau."
-  },
-  "swapMaxSlippage": {
-    "message": "Glissement maximal"
-  },
-  "swapMetaMaskFee": {
-    "message": "Commission MetaMask"
-  },
   "swapMetaMaskFeeDescription": {
     "message": "Des frais de $1 % sont automatiquement ajoutés à ce devis. Ces frais vous sont facturés en échange d'une licence d'utilisation du logiciel d'agrégation d'informations sur les fournisseurs de liquidités de MetaMask.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
@@ -12155,19 +11933,6 @@
   "swapNQuotesWithDot": {
     "message": "$1 cotations.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapOnceTransactionHasProcess": {
-    "message": "Vos $1 seront ajoutés à votre compte une fois que cette transaction sera traitée.",
-    "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
-  },
-  "swapProcessing": {
-    "message": "Traitement en cours"
-  },
-  "swapQuoteDetails": {
-    "message": "Détails de la cotation"
-  },
-  "swapQuoteSource": {
-    "message": "Origine de la cotation"
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "Veuillez demander de nouvelles cotations pour obtenir les derniers taux."
@@ -12178,41 +11943,14 @@
   "swapQuotesNotAvailableDescription": {
     "message": "Réduisez le montant de la transaction ou utilisez un autre jeton."
   },
-  "swapQuotesNotAvailableErrorDescription": {
-    "message": "Essayez d’ajuster le montant ou les paramètres de glissement, puis réessayez."
-  },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "Aucune cotation disponible"
-  },
-  "swapRate": {
-    "message": "Taux"
-  },
-  "swapReceiving": {
-    "message": "Réception"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "Il s’agit d’une estimation. Le montant exact dépend du glissement."
   },
   "swapRequestForQuotation": {
     "message": "Demande de cotation"
   },
-  "swapSelect": {
-    "message": "Sélectionner"
-  },
-  "swapSelectAQuote": {
-    "message": "Sélectionnez une cotation"
-  },
-  "swapSelectAToken": {
-    "message": "Sélectionnez un jeton"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "Vous trouverez ci-dessous toutes les cotations obtenues auprès de multiples sources de liquidité."
-  },
   "swapSelectToken": {
     "message": "Sélectionnez un jeton"
-  },
-  "swapShowLatestQuotes": {
-    "message": "Afficher les dernières cotations"
   },
   "swapSlippageAutoDescription": {
     "message": "Automatique"
@@ -12259,18 +11997,8 @@
   "swapSlippageZeroTitle": {
     "message": "Recherche de prestataires de services d’investissement sans slippage"
   },
-  "swapSource": {
-    "message": "Source de liquidité"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Les swaps sont des transactions complexes et soumises à une contrainte de temps. Nous recommandons ces frais de réseau pour assurer un bon équilibre entre le coût et la garantie de réussite de l’échange."
-  },
-  "swapToConfirmWithHwWallet": {
-    "message": "pour confirmer avec votre portefeuille matériel"
-  },
-  "swapTokenAvailable": {
-    "message": "Votre $1 a été ajouté à votre compte.",
-    "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
   },
   "swapTokenNotAvailable": {
     "message": "Impossible d’échanger ce jeton dans cette région"
@@ -12278,20 +12006,11 @@
   "swapTokens": {
     "message": "Échanger des jetons"
   },
-  "swapTransactionComplete": {
-    "message": "Transaction terminée"
-  },
-  "swapTwoTransactions": {
-    "message": "2 transactions"
-  },
   "swapUnknown": {
     "message": "Inconnu"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "Vous n’avez pas assez de $1 pour payer les frais de réseau pour ce swap. Saisissez un montant plus petit ou achetez plus de $1."
-  },
-  "swapZeroSlippage": {
-    "message": "0 % de glissement"
   },
   "swapsMaxSlippage": {
     "message": "Tolérance au slippage"
@@ -12304,15 +12023,6 @@
   },
   "swapsRebateTooltipTitle": {
     "message": "Récompenses de trading"
-  },
-  "swapsViewInActivity": {
-    "message": "Afficher dans l’activité"
-  },
-  "switch": {
-    "message": "Changer"
-  },
-  "switchBack": {
-    "message": "Rétablir"
   },
   "switchBackToPopup": {
     "message": "revenir à la fenêtre contextuelle"
@@ -12536,27 +12246,6 @@
   "transactionFlowNetwork": {
     "message": "Réseau :"
   },
-  "transactionHistoryBaseFee": {
-    "message": "Frais de base (GWEI)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "Total des frais de réseau L1"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "Montant maximal des frais de transaction L2"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "Prix du gaz L2"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "Frais maximaux par unité de gaz"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "Frais de priorité (GWEI)"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "Frais de réseau totaux"
-  },
   "transactionIdCopied": {
     "message": "ID de transaction copié"
   },
@@ -12740,9 +12429,6 @@
     "message": "Échanger $1 $2 contre $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "units": {
-    "message": "unités"
-  },
   "unknown": {
     "message": "Inconnu"
   },
@@ -12786,10 +12472,6 @@
   "unpin": {
     "message": "Détacher"
   },
-  "unrecognizedChain": {
-    "message": "Ce réseau personnalisé n’est pas reconnu",
-    "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
   "unsendableAsset": {
     "message": "L’envoi de jetons NFT (ERC-721) n’est pas pris en charge actuellement",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
@@ -12802,9 +12484,6 @@
   },
   "update": {
     "message": "Mise à jour"
-  },
-  "updateEthereumChainConfirmationDescription": {
-    "message": "Ce site demande à mettre à jour l’URL par défaut de votre réseau. Vous pouvez modifier les paramètres par défaut et les informations du réseau à tout moment."
   },
   "updateInformation": {
     "message": "Nous avons ajouté de nouvelles fonctionnalités qui permettent de renforcer la sécurité et de faciliter l’utilisation de votre portefeuille. Mettez-le à jour maintenant pour bénéficier des dernières améliorations."
@@ -12984,9 +12663,6 @@
   "walletReadyLoseSrpFromReminder": {
     "message": "Cette phrase secrète de récupération peut vous aider à accéder à nouveau à votre compte si jamais vous oubliez votre mot de passe ou votre identifiant."
   },
-  "wantToAddThisNetwork": {
-    "message": "Vous voulez ajouter ce réseau ?"
-  },
   "wantsToAddThisAsset": {
     "message": "Cela permet d’ajouter l’actif suivant à votre portefeuille."
   },
@@ -13088,9 +12764,6 @@
   },
   "yourBalance": {
     "message": "Votre solde"
-  },
-  "yourNFTmayBeAtRisk": {
-    "message": "Il peut y avoir des risques associés à votre NFT"
   },
   "yourWalletIsReady": {
     "message": "Votre portefeuille est prêt"

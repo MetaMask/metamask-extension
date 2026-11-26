@@ -8,6 +8,11 @@ import {
 } from '../../../../shared/constants/network';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import { login } from '../../page-objects/flows/login.flow';
+import {
+  priceV1ExchangeRates,
+  priceV3Spot,
+  tokensV3Assets,
+} from '../../mock-response-data/api-responses';
 import { mockTokenMetadataApis } from './utils/mocks';
 
 const BSC_BAT_ADDRESS = '0x0d8775f648430679a709e98d2b0cb6250d2887ef';
@@ -19,8 +24,8 @@ describe('Add existing token using search', function () {
     mockServer: Mockttp,
   ): Promise<MockedEndpoint[]> {
     return [
-      await mockServer
-        .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
+      await priceV3Spot
+        .rule(mockServer)
         .always()
         .thenCallback(() => ({
           statusCode: 200,
@@ -37,8 +42,8 @@ describe('Add existing token using search', function () {
             },
           },
         })),
-      await mockServer
-        .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+      await priceV1ExchangeRates
+        .rule(mockServer)
         .always()
         .thenCallback(() => ({
           statusCode: 200,
@@ -128,27 +133,25 @@ describe('Add existing token using search', function () {
     mockServer: Mockttp,
   ): Promise<MockedEndpoint[]> {
     return [
-      await mockServer
-        .forGet('https://tokens.api.cx.metamask.io/v3/assets')
-        .thenCallback(() => ({
-          statusCode: 200,
-          json: [
-            {
-              assetId: 'eip155:56/slip44:714',
-              name: 'BNB',
-              symbol: 'BNB',
-              decimals: 18,
-            },
-            {
-              assetId:
-                'eip155:56/erc20:0x0d8775f648430679a709e98d2b0cb6250d2887ef',
-              name: 'Basic Attention Token',
-              symbol: 'BAT',
-              decimals: 18,
-              occurrences: 100,
-            },
-          ],
-        })),
+      await tokensV3Assets.rule(mockServer).thenCallback(() => ({
+        statusCode: 200,
+        json: [
+          {
+            assetId: 'eip155:56/slip44:714',
+            name: 'BNB',
+            symbol: 'BNB',
+            decimals: 18,
+          },
+          {
+            assetId:
+              'eip155:56/erc20:0x0d8775f648430679a709e98d2b0cb6250d2887ef',
+            name: 'Basic Attention Token',
+            symbol: 'BAT',
+            decimals: 18,
+            occurrences: 100,
+          },
+        ],
+      })),
     ];
   }
 

@@ -8,6 +8,10 @@ import { GAS_FREE, HTX, SEED, TRX, USDD, USDT } from './tokens';
 
 export const TRON_PORTFOLIO_TRX_BALANCE_IN_SUN = 6_072_392;
 
+/** Funded on the local node so it is already activated when used as a recipient. */
+export const TRON_ACTIVE_RECIPIENT_ADDRESS =
+  'TYWc7X6YHpp2YrFXwLRsofdiL78JRvDd6u';
+
 /** Mirrors `LOW_VALUE_ASSET_FIAT_THRESHOLD` in token-list.tsx ($1 USD). */
 export const LOW_VALUE_FIAT_THRESHOLD_USD = 1;
 
@@ -62,4 +66,9 @@ export const TRON_CHECK_BALANCE_ACCOUNT: TronFixtureAccount = {
   assets: (TRON_PORTFOLIO_ACCOUNT.assets ?? []).map((asset) =>
     asset.type === 'native' ? { ...asset, balance: TRX_BALANCE } : { ...asset },
   ),
+};
+
+export const TRON_ACTIVE_RECIPIENT_ACCOUNT: TronFixtureAccount = {
+  address: TRON_ACTIVE_RECIPIENT_ADDRESS,
+  assets: [{ ...TRX, balance: 1_000_000, priceUsd: TRX_TO_USD_RATE }],
 };

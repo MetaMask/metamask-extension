@@ -9,7 +9,7 @@
 name: RC Slack notify
 
 on:
-  workflow_run:
+  workflow_run: # zizmor: ignore[dangerous-triggers] Runs default-branch tooling for same-repo release pushes; release files are data only.
     workflows:
       - Main
     types:

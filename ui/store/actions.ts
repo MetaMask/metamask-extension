@@ -4514,17 +4514,14 @@ export function setParticipateInMetaMetrics(
 
 export function setDataCollectionForMarketing(
   dataCollectionPreference: boolean,
-): ThunkAction<
-  Promise<[boolean, string]>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.setDataCollectionForMarketing`);
-    // MarketingConsentSyncService picks up the change and saves it to AUS.
-    await submitRequestToBackground('setDataCollectionForMarketing', [
-      dataCollectionPreference,
+    log.debug(`background.MarketingConsentSyncService:setMarketingConsent`);
+    // The service applies the consent to AnalyticsController and saves it to
+    // AUS, so the call rejects if AUS did not save it.
+    await submitRequestToBackground('messengerCall', [
+      'MarketingConsentSyncService:setMarketingConsent',
+      [dataCollectionPreference],
     ]);
     dispatch({
       type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,

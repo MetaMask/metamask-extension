@@ -1323,12 +1323,6 @@
   "add_device_try_again": {
     "message": "请重试"
   },
-  "add_device_validating_desc": {
-    "message": "正在与您的手机建立安全的加密连接。"
-  },
-  "add_device_validating_title": {
-    "message": "正在配对设备"
-  },
   "add_wallets": {
     "message": "选择要同步的内容"
   },
@@ -1427,9 +1421,6 @@
   },
   "advancedGasPriceModalTitle": {
     "message": "高级网络费"
-  },
-  "advancedGasPriceTitle": {
-    "message": "燃料价格"
   },
   "advancedPermissionSmallCase": {
     "message": "高级许可"
@@ -1691,12 +1682,6 @@
   },
   "amount": {
     "message": "金额"
-  },
-  "amountReceived": {
-    "message": "已收款金额"
-  },
-  "amountSent": {
-    "message": "已发送金额"
   },
   "andForListItems": {
     "message": "$1，和 $2",
@@ -2119,9 +2104,6 @@
   },
   "blockExplorerUrl": {
     "message": "区块浏览器 URL"
-  },
-  "blockExplorerUrlDefinition": {
-    "message": "用作此网络的区块浏览器的 URL。"
   },
   "blockExplorerView": {
     "message": "在 $1 查看账户",
@@ -2635,9 +2617,6 @@
   "chainId": {
     "message": "链 ID"
   },
-  "chainIdDefinition": {
-    "message": "用于签署此网络的交易的链 ID。"
-  },
   "chainIdExistsErrorMsg": {
     "message": "此链 ID 目前已被 $1 网络使用。"
   },
@@ -2749,10 +2728,6 @@
   "clickHere": {
     "message": "点击此处",
     "description": "Link to help when a JSON account import is not working"
-  },
-  "clickToConnectLedgerViaWebHID": {
-    "message": "点击这里以通过 WebHID 连接您的 Ledger",
-    "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
   },
   "clipboardClearFailed": {
     "message": "无法清除剪贴板。请重试。"
@@ -3267,9 +3242,6 @@
   },
   "currencySymbol": {
     "message": "货币符号"
-  },
-  "currencySymbolDefinition": {
-    "message": "此网络的货币显示的股票代码。"
   },
   "current": {
     "message": "当前"
@@ -4010,10 +3982,6 @@
   "enter_verification_code_expired": {
     "message": "验证码已过期"
   },
-  "enter_verification_code_expires_in": {
-    "message": "$1 秒后过期",
-    "description": "$1 is the number of seconds remaining before the verification code expires"
-  },
   "enter_verification_code_max_attempts": {
     "message": "错误次数过多。请使用新的二维码重新开始。"
   },
@@ -4029,9 +3997,6 @@
   "errorCode": {
     "message": "代码：$1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorGettingSafeChainList": {
-    "message": "获取安全链列表时出错。请谨慎继续。"
   },
   "errorLegalTextFirstInfo": {
     "message": "技术诊断信息。"
@@ -4352,9 +4317,6 @@
     "message": "$1 秒",
     "description": "$1 represents a number of seconds"
   },
-  "gasUsed": {
-    "message": "使用的燃料"
-  },
   "gatorNoJustificationProvided": {
     "message": "未就该许可提供任何正当理由"
   },
@@ -4469,9 +4431,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "出错了...."
-  },
-  "generateNewQrCode": {
-    "message": "生成新的二维码"
   },
   "genericExplorerView": {
     "message": "在$1查看账户"
@@ -4989,9 +4948,6 @@
   "insufficientTokens": {
     "message": "代币不足。"
   },
-  "interactWithSmartContract": {
-    "message": "智能合约"
-  },
   "interactingWith": {
     "message": "正在与下述内容交互："
   },
@@ -5175,18 +5131,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "您需要先使用最后一个账户，然后才能添加新账户。"
-  },
-  "ledgerConnectionInstructionCloseOtherApps": {
-    "message": "关闭任何连接到您设备的其他软件，然后点击这里刷新。"
-  },
-  "ledgerConnectionInstructionHeader": {
-    "message": "点击确认前："
-  },
-  "ledgerConnectionInstructionStepFour": {
-    "message": "在您的 Ledger 设备上启用“智能合约数据”或“盲签”。"
-  },
-  "ledgerConnectionInstructionStepThree": {
-    "message": "请确保您的 Ledger 设备已插入并选择以太坊应用程序。"
   },
   "ledgerConnectionStatusAppClosedDescription": {
     "message": "请在 Ledger 设备上打开该应用以继续"
@@ -5826,14 +5770,6 @@
   "minute": {
     "message": "分钟"
   },
-  "mismatchedChainLinkText": {
-    "message": "验证网络信息",
-    "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
-  },
-  "mismatchedChainRecommendation": {
-    "message": "我们建议您在继续之前$1。",
-    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
   "mismatchedNetworkName": {
     "message": "根据我们的记录，该网络名称可能与此链 ID 不匹配。"
   },
@@ -6422,9 +6358,6 @@
     "message": "多链账户简介",
     "description": "Title for the multichain accounts introduction modal."
   },
-  "multichainAddEthereumChainConfirmationDescription": {
-    "message": "您正在将此网络添加到 MetaMask 并授予该网站其使用许可。"
-  },
   "multichainAddressViewAll": {
     "message": "查看全部"
   },
@@ -6441,42 +6374,6 @@
   "multipleSnapConnectionWarning": {
     "message": "$1 想连接 $2 个 snap。",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
-  },
-  "musdAssetConvertBenefitDailyBonus": {
-    "message": "每日奖励",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertBenefitDollarBacked": {
-    "message": "美元挂钩",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertBenefitNoLockups": {
-    "message": "无锁仓限制",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertBenefitNoMetaMaskFee": {
-    "message": "无 MetaMask 手续费",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertDescriptionHighlight": {
-    "message": "$1% 年化奖励",
-    "description": "Shown in Figma accent lime (#baf24a) inside the mUSD asset details convert section description. $1 is the APY percentage."
-  },
-  "musdAssetConvertDescriptionLead": {
-    "message": "获得 ",
-    "description": "Text before the green APY phrase on the mUSD asset details convert section"
-  },
-  "musdAssetConvertDescriptionTail": {
-    "message": " 通过将 USDC、USDT 和 DAI 兑换为 mUSD。",
-    "description": "Text after the green APY phrase on the mUSD asset details convert section"
-  },
-  "musdAssetConvertLearnMore": {
-    "message": "了解更多。",
-    "description": "Button to open the mUSD support article from the asset details convert section"
-  },
-  "musdAssetConvertTitle": {
-    "message": "兑换您的稳定币",
-    "description": "Title of the convert section on the mUSD asset details page"
   },
   "musdAssetPositionBalance": {
     "message": "余额",
@@ -6505,17 +6402,9 @@
   "musdBuyMusd": {
     "message": "购买 mUSD"
   },
-  "musdClaimTitle": {
-    "message": "领取奖励",
-    "description": "Title for the mUSD bonus claim confirmation screen"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "mUSD 兑换费用包含网络费用，并可能包含提供商费用。兑换为 mUSD 时，MetaMask 不收取任何费用。",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
-  },
-  "musdConversionTitle": {
-    "message": "已兑换为 mUSD",
-    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "musdConvert": {
     "message": "兑换"
@@ -6676,9 +6565,6 @@
     "message": "您正在 $1 上交易。",
     "description": "$1 is the name of the network"
   },
-  "networkDetails": {
-    "message": "网络详情"
-  },
   "networkFee": {
     "message": "网络费"
   },
@@ -6696,9 +6582,6 @@
   },
   "networkNameBitcoin": {
     "message": "比特币"
-  },
-  "networkNameDefinition": {
-    "message": "与此网络关联的名称。"
   },
   "networkNameEthereum": {
     "message": "以太坊"
@@ -6746,9 +6629,6 @@
   },
   "networkTabPopular": {
     "message": "热门"
-  },
-  "networkURL": {
-    "message": "网络 URL"
   },
   "networkURLDefinition": {
     "message": "用于访问此网络的 URL。"
@@ -6853,17 +6733,6 @@
   "nftUnsupportedEmptyDescription": {
     "message": "该网络不支持 NFT。"
   },
-  "nftWarningContent": {
-    "message": "您正在授予对 $1 的访问权限，包括您将来可能拥有的任何 NFT。另一端的一方可以随时从您的钱包中转账这些NFT，而无需询问您，直到您撤销此授权。$2",
-    "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
-  },
-  "nftWarningContentBold": {
-    "message": "您所有的 $1 NFT",
-    "description": "$1 is name of the collection"
-  },
-  "nftWarningContentGrey": {
-    "message": "请谨慎行事。"
-  },
   "nfts": {
     "message": "NFT"
   },
@@ -6896,9 +6765,6 @@
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps 和大多数硬件钱包与您的当前浏览器版本不兼容。"
-  },
-  "noMMFeeSwapping": {
-    "message": "无 MetaMask 费用"
   },
   "noNetworkFee": {
     "message": "无网络费"
@@ -7293,13 +7159,6 @@
   },
   "openFullScreen": {
     "message": "开启全屏模式"
-  },
-  "openFullScreenForLedgerWebHid": {
-    "message": "全屏打开以连接您的 Ledger。",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
-  "openInBlockExplorer": {
-    "message": "在区块浏览器上打开"
   },
   "openMultichainAccountAddressMenu": {
     "message": "打开多链账户地址菜单"
@@ -8133,9 +7992,6 @@
   },
   "perpsDepositFundsTitle": {
     "message": "向永续合约账户存入资金"
-  },
-  "perpsDepositTitle": {
-    "message": "已注资的永续合约账户"
   },
   "perpsDepositToastErrorDescription": {
     "message": "您的资金未添加至永续合约。请重试。"
@@ -9163,14 +9019,8 @@
     "message": "私钥",
     "description": "Private keys row label on multichain account details page."
   },
-  "privateNetwork": {
-    "message": "私有网络"
-  },
   "proceed": {
     "message": "继续"
-  },
-  "proceedWithTransaction": {
-    "message": "我仍然想继续"
   },
   "provide": {
     "message": "提供"
@@ -9217,13 +9067,6 @@
   "qrCameraAccessNeededTitle": {
     "message": "需要访问相机",
     "description": "Title when the camera permission dialog was dismissed without a choice."
-  },
-  "qrCodeExpired": {
-    "message": "二维码已过期"
-  },
-  "qrCodeExpiresIn": {
-    "message": "$1 秒后过期",
-    "description": "$1 is the number of seconds remaining before the QR code expires"
   },
   "qrErrorMismatchedTransactionBody": {
     "message": "此二维码对应另一笔交易。请取消并重试，确保先用您的硬件钱包扫描 MetaMask 中显示的二维码。",
@@ -9530,16 +9373,8 @@
   "receiveCrypto": {
     "message": "接收加密货币"
   },
-  "receiveToken": {
-    "message": "收款代币",
-    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
-  },
   "received": {
     "message": "已收到"
-  },
-  "receivedTotal": {
-    "message": "收款总额",
-    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "接收地址",
@@ -11368,9 +11203,6 @@
   "simulationDetailsUnavailable": {
     "message": "不可用"
   },
-  "simulationErrorMessageV2": {
-    "message": "我们无法估算燃料。合约中可能存在错误，这笔交易可能会失败。"
-  },
   "simulationsSettingDescription": {
     "message": "开启后，可在您确认交易或签名前预估余额变化，但不保证最终结果。$1"
   },
@@ -11437,12 +11269,6 @@
   },
   "smartAccountRequestsFromDappsDescriptionV2": {
     "message": "允许 dapp 为标准账户请求智能账户功能。MetaMask 只会将账户升级至经过我们审计的智能账户。"
-  },
-  "smartAccountUpgradeBannerDescription": {
-    "message": "地址相同。功能更加智能化。"
-  },
-  "smartAccountUpgradeBannerTitle": {
-    "message": "切换至智能账户"
   },
   "smartContractAddress": {
     "message": "智能合约地址"
@@ -11878,12 +11704,6 @@
   "stakingWithdrawal": {
     "message": "质押提取"
   },
-  "standardAccountLabel": {
-    "message": "标准账户"
-  },
-  "start_with_new_qr_code": {
-    "message": "使用新的二维码开始"
-  },
   "stateCorruptionAreYouSure": {
     "message": "您确定要继续吗？"
   },
@@ -12039,28 +11859,12 @@
   "swapAggregator": {
     "message": "聚合器"
   },
-  "swapAllowSwappingOf": {
-    "message": "允许交换 $1",
-    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
-  },
-  "swapAmountReceived": {
-    "message": "保证金额"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "这是您将收到的最低金额。根据滑点值，您可能会收到更多。"
-  },
   "swapAndSend": {
     "message": "兑换并发送"
   },
   "swapApproval": {
     "message": "批准 $1 进行交换",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
-  },
-  "swapAreYouStillThere": {
-    "message": "您还在吗？"
-  },
-  "swapAreYouStillThereDescription": {
-    "message": "如果您想继续，我们准备好为您显示最新报价"
   },
   "swapConfirmWithHwWallet": {
     "message": "使用您的硬件钱包确认"
@@ -12091,16 +11895,6 @@
     "message": "这将 $1 进行交换",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
-  "swapEstimatedNetworkFees": {
-    "message": "预估网络费用"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "这是预估的网络费用，将用于完成您的交换。实际金额可能会根据网络条件而变化。"
-  },
-  "swapFailedErrorDescriptionWithSupportLink": {
-    "message": "交易有时会失败，我们随时为您提供帮助。如果此问题仍然存在，您可以在 $1 联系我们的客服，以获得进一步的帮助。",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
-  },
   "swapFailedErrorTitle": {
     "message": "交换失败"
   },
@@ -12117,10 +11911,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "获取报价出错"
   },
-  "swapFromTo": {
-    "message": "$1 到 $2 的交换",
-    "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
   "swapGasFeesExplanation": {
     "message": "MetaMask 不会从网络费用中获利。这些费用仅为估算值，可能会根据网络繁忙程度和交易复杂程度发生变化。通过$1了解更多信息。",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -12128,9 +11918,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "参见此处",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesSplit": {
-    "message": "上一页显示的网络费用包含这两笔交易产生的费用。"
   },
   "swapGasFeesSponsored": {
     "message": "由 MetaMask 支付"
@@ -12145,15 +11932,6 @@
   "swapLearnMore": {
     "message": "了解有关 Swaps 的更多信息"
   },
-  "swapLiquiditySourceInfo": {
-    "message": "我们搜索多种流动性来源（交易所、聚合器和专业做市商），以比较汇率和网络费用。"
-  },
-  "swapMaxSlippage": {
-    "message": "最大滑点"
-  },
-  "swapMetaMaskFee": {
-    "message": "MetaMask 费用"
-  },
   "swapMetaMaskFeeDescription": {
     "message": "该报价中会自动计入一笔 $1% 的费用。您支付该费用以换取使用 MetaMask 流动性提供商信息聚合软件的许可证。",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
@@ -12161,19 +11939,6 @@
   "swapNQuotesWithDot": {
     "message": "$1 报价。",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapOnceTransactionHasProcess": {
-    "message": "处理完此交易后，您的 $1 将被添加到您的账户中。",
-    "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
-  },
-  "swapProcessing": {
-    "message": "处理中"
-  },
-  "swapQuoteDetails": {
-    "message": "报价详情"
-  },
-  "swapQuoteSource": {
-    "message": "报价来源"
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "请请求新的报价，以获得最新的价格。"
@@ -12184,41 +11949,14 @@
   "swapQuotesNotAvailableDescription": {
     "message": "缩小您的交易规模或者使用不同的代币。"
   },
-  "swapQuotesNotAvailableErrorDescription": {
-    "message": "尝试调整金额或滑点设置，然后重试。"
-  },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "无可用报价"
-  },
-  "swapRate": {
-    "message": "价格"
-  },
-  "swapReceiving": {
-    "message": "正在接收"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "这是一个预估额。确切的金额取决于滑点。"
   },
   "swapRequestForQuotation": {
     "message": "请求报价"
   },
-  "swapSelect": {
-    "message": "选择"
-  },
-  "swapSelectAQuote": {
-    "message": "选择一个报价"
-  },
-  "swapSelectAToken": {
-    "message": "选择代币"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "以下是从多个流动性来源收集到的所有报价。"
-  },
   "swapSelectToken": {
     "message": "选择代币"
-  },
-  "swapShowLatestQuotes": {
-    "message": "显示最新报价"
   },
   "swapSlippageAutoDescription": {
     "message": "自动"
@@ -12265,18 +12003,8 @@
   "swapSlippageZeroTitle": {
     "message": "寻找零滑点供应商"
   },
-  "swapSource": {
-    "message": "流动性来源"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "兑换交易较为复杂，且对时效要求较高。我们建议采用此网络费用，以便在成本和成功完成兑换的可能性之间取得良好平衡。"
-  },
-  "swapToConfirmWithHwWallet": {
-    "message": "使用您的硬件钱包确认"
-  },
-  "swapTokenAvailable": {
-    "message": "您的 $1 已添加到您的账户。",
-    "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
   },
   "swapTokenNotAvailable": {
     "message": "在此地区无法兑换代币"
@@ -12284,20 +12012,11 @@
   "swapTokens": {
     "message": "兑换代币"
   },
-  "swapTransactionComplete": {
-    "message": "交易完成"
-  },
-  "swapTwoTransactions": {
-    "message": "2笔交易"
-  },
   "swapUnknown": {
     "message": "未知"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "您的 $1 不足以支付此次兑换的网络费用。请输入较小的金额或购买更多 $1。"
-  },
-  "swapZeroSlippage": {
-    "message": "0%滑点"
   },
   "swapsMaxSlippage": {
     "message": "滑点容差"
@@ -12310,15 +12029,6 @@
   },
   "swapsRebateTooltipTitle": {
     "message": "交易奖励"
-  },
-  "swapsViewInActivity": {
-    "message": "在活动中查看"
-  },
-  "switch": {
-    "message": "切换"
-  },
-  "switchBack": {
-    "message": "切换回"
   },
   "switchBackToPopup": {
     "message": "切换回弹窗"
@@ -12542,27 +12252,6 @@
   "transactionFlowNetwork": {
     "message": "网络"
   },
-  "transactionHistoryBaseFee": {
-    "message": "基础费用（GWEI）"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "L1 网络费用总计"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "L2 燃料限制"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "2层燃料价格"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "每单位燃料的最大费用"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "优先费用（GWEI）"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "网络费用总额"
-  },
   "transactionIdCopied": {
     "message": "交易 ID 已复制"
   },
@@ -12746,9 +12435,6 @@
     "message": "将 $1 $2 兑换为 $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "units": {
-    "message": "单位"
-  },
   "unknown": {
     "message": "未知"
   },
@@ -12792,10 +12478,6 @@
   "unpin": {
     "message": "取消置顶"
   },
-  "unrecognizedChain": {
-    "message": "该自定义网络无法识别",
-    "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
   "unsendableAsset": {
     "message": "当前不支持发送NFT (ERC-721)代币",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
@@ -12808,9 +12490,6 @@
   },
   "update": {
     "message": "更新"
-  },
-  "updateEthereumChainConfirmationDescription": {
-    "message": "此网站正在请求更新您的默认网络 URL。您可以随时编辑默认值和网络信息。"
   },
   "updateInformation": {
     "message": "我们已对钱包进行全方位升级，安全性更高、运行更流畅，并新增多项功能。立即更新，即可获得最新防护措施并体验最新优化功能。"
@@ -12990,9 +12669,6 @@
   "walletReadyLoseSrpFromReminder": {
     "message": "如果您忘记密码或失去登录权限，此私钥助记词可以帮助您重新获得访问权限。"
   },
-  "wantToAddThisNetwork": {
-    "message": "想要添加此网络吗？"
-  },
   "wantsToAddThisAsset": {
     "message": "这将允许将以下资产添加至您的钱包。"
   },
@@ -13094,9 +12770,6 @@
   },
   "yourBalance": {
     "message": "您的余额"
-  },
-  "yourNFTmayBeAtRisk": {
-    "message": "您的 NFT 可能面临风险"
   },
   "yourWalletIsReady": {
     "message": "您的钱包已准备就绪"

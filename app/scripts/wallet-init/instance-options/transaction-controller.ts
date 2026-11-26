@@ -7,6 +7,10 @@ import {
   TransactionType,
   UserFeeLevel,
 } from '@metamask/transaction-controller';
+import {
+  isPayTransactionResumable,
+  type TransactionPayControllerMessenger,
+} from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
 import type { WalletOptions } from '@metamask/wallet';
 import { traceAsControllerCallback } from '../../../../shared/lib/trace';
@@ -92,6 +96,11 @@ export function getTransactionControllerInstanceOptions({
     isFirstTimeInteractionEnabled: () =>
       initMessenger.call('PreferencesController:getState')
         .securityAlertsEnabled,
+    isResumable: (transactionMeta) =>
+      isPayTransactionResumable(
+        initMessenger as unknown as TransactionPayControllerMessenger,
+        transactionMeta,
+      ),
     isSimulationEnabled: () =>
       initMessenger.call('PreferencesController:getState')
         .useTransactionSimulations,

@@ -64,7 +64,7 @@ eligible. The scheduling hook has no dependency on telemetry or routing.
 - Background warmness uses the existing `BACKGROUND_INITIALIZED` message:
   before navigation=true, afterward=false, not received=unknown. No new RPC or
   wait is introduced.
-- Default sampling is 0.1%, with existing consent, remote overrides, and ceilings.
+- Default sampling is 1%, with existing consent, remote overrides, and ceilings.
 
 Collect a production baseline before optimizations. Live Sentry ingestion and
 dashboard availability must be verified after deployment. This metric covers

@@ -13,6 +13,7 @@ import {
   selectOrderBookGrouping,
   selectOrderBookPreferences,
   selectPendingTradeConfiguration,
+  selectTradeConfiguration,
   selectVisibleCandleCount,
 } from '@metamask/perps-controller';
 
@@ -46,8 +47,6 @@ const PERPS_DEPOSIT_TRANSACTION_TYPES: ReadonlySet<TransactionType> = new Set([
 ]);
 
 const EMPTY_ARRAY: never[] = [];
-const EMPTY_TRADE_CONFIGURATIONS: PerpsControllerState['tradeConfigurations'] =
-  { testnet: {}, mainnet: {} };
 
 /**
  * Controller selectors expect `PerpsControllerState`. Extension flattens that
@@ -300,9 +299,6 @@ export const selectChartExpanded = (state: PerpsState) =>
   state.metamask.proLayoutPreferences?.chartExpanded ??
   DEFAULT_PRO_LAYOUT_PREFERENCES.chartExpanded;
 
-export const selectPerpsTradeConfigurations = (state: PerpsState) =>
-  state.metamask.tradeConfigurations ?? EMPTY_TRADE_CONFIGURATIONS;
-
 /**
  * Return an unexpired pending trade draft for a market.
  *
@@ -318,6 +314,22 @@ export const selectPerpsPendingTradeConfiguration = (
   state: PerpsState,
   symbol: string,
 ) => selectPendingTradeConfiguration(getPerpsControllerState(state), symbol);
+
+/**
+ * Return the saved trade configuration for a market on the current network
+ * and effective provider.
+ *
+ * Saved configurations are keyed by provider before market symbol, so this
+ * delegates venue and network resolution to the controller selector.
+ *
+ * @param state - Flattened controller state.
+ * @param symbol - Market symbol.
+ * @returns The saved configuration, or undefined when none exists.
+ */
+export const selectPerpsTradeConfiguration = (
+  state: PerpsState,
+  symbol: string,
+) => selectTradeConfiguration(getPerpsControllerState(state), symbol);
 
 /**
  * Return the selected market/limit order type shared across markets.

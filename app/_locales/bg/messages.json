@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "Ограничение на газ"
   },
-  "gasUsed": {
-    "message": "Използван газ"
-  },
   "general": {
     "message": "Общ"
   },
@@ -404,9 +401,6 @@
     "message": "Частен ключ",
     "description": "select this type of file to use to import an account"
   },
-  "privateNetwork": {
-    "message": "Частна мрежа"
-  },
   "readdToken": {
     "message": "Можете да добавите този жетон в бъдеще, като отидете на „Добавяне на жетон“ в менюто с опции на акаунти."
   },
@@ -560,9 +554,6 @@
   },
   "unapproved": {
     "message": "Неодобрено"
-  },
-  "units": {
-    "message": "елементи"
   },
   "unknown": {
     "message": "Неизвестно"

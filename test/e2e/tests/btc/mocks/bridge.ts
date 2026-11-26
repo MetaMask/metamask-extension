@@ -1,5 +1,10 @@
 import { Mockttp } from 'mockttp';
 import { getProductionRemoteFlagApiResponse } from '../../../feature-flags';
+import {
+  bridgeGetTokensPopular,
+  bridgeGetTokensSearch,
+  bridgeGetTxStatus,
+} from '../../../mock-response-data/api-responses';
 
 // Bitcoin mainnet chain ID formats
 export const BTC_CHAIN_ID = 'bip122:000000000019d6689c085ae165831e93';
@@ -309,8 +314,8 @@ export async function mockBridgeGetTokensEth(mockServer: Mockttp) {
 }
 
 export async function mockBridgePopularTokens(mockServer: Mockttp) {
-  return await mockServer
-    .forPost(/getTokens\/popular/u)
+  return await bridgeGetTokensPopular
+    .rule(mockServer)
     .always()
     .thenCallback(() => ({
       statusCode: 200,
@@ -319,8 +324,8 @@ export async function mockBridgePopularTokens(mockServer: Mockttp) {
 }
 
 export async function mockBridgeSearchTokensBtc(mockServer: Mockttp) {
-  return await mockServer
-    .forPost(/getTokens\/search/u)
+  return await bridgeGetTokensSearch
+    .rule(mockServer)
     .withJsonBodyIncluding({
       chainIds: [BTC_CHAIN_ID],
     })
@@ -340,8 +345,8 @@ export async function mockBridgeSearchTokensBtc(mockServer: Mockttp) {
 }
 
 export async function mockBridgeSearchTokensEth(mockServer: Mockttp) {
-  return await mockServer
-    .forPost(/getTokens\/search/u)
+  return await bridgeGetTokensSearch
+    .rule(mockServer)
     .withJsonBodyIncluding({
       chainIds: ['eip155:1'],
     })
@@ -361,8 +366,8 @@ export async function mockBridgeSearchTokensEth(mockServer: Mockttp) {
 }
 
 export async function mockBridgeTxStatus(mockServer: Mockttp) {
-  return await mockServer
-    .forGet(/getTxStatus/u)
+  return await bridgeGetTxStatus
+    .rule(mockServer)
     .always()
     .thenCallback(async (req) => {
       const urlObj = new URL(req.url);
