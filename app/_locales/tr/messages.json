@@ -1279,38 +1279,6 @@
   "add_device_error_title": {
     "message": "Senkronizasyon tamamlanamadı"
   },
-  "add_device_success_desc_imported_plural": {
-    "message": "$1 içe aktarılan hesap telefonunuza senkronize edildi.",
-    "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
-  },
-  "add_device_success_desc_imported_singular": {
-    "message": "1 içe aktarılan hesap telefonunuza senkronize edildi.",
-    "description": "Used when a single imported account was synced"
-  },
-  "add_device_success_desc_wallet_plural": {
-    "message": "$1 cüzdan telefonunuza senkronize edildi.",
-    "description": "$1 is the number of wallets. Used when only wallets were synced"
-  },
-  "add_device_success_desc_wallet_plural_imported_plural": {
-    "message": "$1 cüzdan ve $2 içe aktarılan hesap telefonunuza senkronize edildi.",
-    "description": "$1 is the number of wallets, $2 is the number of imported accounts"
-  },
-  "add_device_success_desc_wallet_plural_imported_singular": {
-    "message": "$1 cüzdan ve 1 içe aktarılan hesap telefonunuza senkronize edildi.",
-    "description": "$1 is the number of wallets. Used when multiple wallets and a single imported account were synced"
-  },
-  "add_device_success_desc_wallet_singular": {
-    "message": "1 cüzdan telefonunuza senkronize edildi.",
-    "description": "Used when a single wallet was synced"
-  },
-  "add_device_success_desc_wallet_singular_imported_plural": {
-    "message": "1 cüzdan ve $1 içe aktarılan hesap telefonunuza senkronize edildi.",
-    "description": "$1 is the number of imported accounts. Used when a single wallet and multiple imported accounts were synced"
-  },
-  "add_device_success_desc_wallet_singular_imported_singular": {
-    "message": "1 cüzdan ve 1 içe aktarılan hesap telefonunuza senkronize edildi.",
-    "description": "Used when a single wallet and a single imported account were synced"
-  },
   "add_device_success_title": {
     "message": "Cihaz eşleştirildi"
   },

@@ -1279,38 +1279,6 @@
   "add_device_error_title": {
     "message": "동기화를 완료할 수 없습니다"
   },
-  "add_device_success_desc_imported_plural": {
-    "message": "가져온 계정 $1개가 휴대전화에 동기화되었습니다.",
-    "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
-  },
-  "add_device_success_desc_imported_singular": {
-    "message": "가져온 계정 1개가 휴대전화에 동기화되었습니다.",
-    "description": "Used when a single imported account was synced"
-  },
-  "add_device_success_desc_wallet_plural": {
-    "message": "지갑 $1개가 휴대전화에 동기화되었습니다.",
-    "description": "$1 is the number of wallets. Used when only wallets were synced"
-  },
-  "add_device_success_desc_wallet_plural_imported_plural": {
-    "message": "지갑 $1개와 가져온 계정 $2개가 휴대전화에 동기화되었습니다.",
-    "description": "$1 is the number of wallets, $2 is the number of imported accounts"
-  },
-  "add_device_success_desc_wallet_plural_imported_singular": {
-    "message": "지갑 $1개와 가져온 계정 1개가 휴대전화에 동기화되었습니다.",
-    "description": "$1 is the number of wallets. Used when multiple wallets and a single imported account were synced"
-  },
-  "add_device_success_desc_wallet_singular": {
-    "message": "지갑 1개가 휴대전화에 동기화되었습니다.",
-    "description": "Used when a single wallet was synced"
-  },
-  "add_device_success_desc_wallet_singular_imported_plural": {
-    "message": "지갑 1개와 가져온 계정 $1개가 휴대전화에 동기화되었습니다.",
-    "description": "$1 is the number of imported accounts. Used when a single wallet and multiple imported accounts were synced"
-  },
-  "add_device_success_desc_wallet_singular_imported_singular": {
-    "message": "지갑 1개와 가져온 계정 1개가 휴대전화에 동기화되었습니다.",
-    "description": "Used when a single wallet and a single imported account were synced"
-  },
   "add_device_success_title": {
     "message": "장치 페어링됨"
   },
