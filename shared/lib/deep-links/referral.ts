@@ -11,7 +11,11 @@ import {
  */
 export function getReferralCode(params: URLSearchParams): string | null {
   const values = params.getAll('ref');
-  const code = values.length === 1 ? values[0].trim().toUpperCase() : '';
+  // Hyphens are cosmetic: the backend looks codes up without them.
+  const code =
+    values.length === 1
+      ? values[0].trim().toUpperCase().replaceAll('-', '')
+      : '';
   return code.length >= MONEY_REFERRAL_CODE_MIN_LENGTH &&
     normalizeMoneyReferralCode(code) === code
     ? code

@@ -150,6 +150,14 @@ describe('createEvent', () => {
       });
     });
 
+    it('reports a hyphenated Money ref without hyphens', () => {
+      const url = new URL('https://example.com/test?ref=data-nerd');
+
+      const result = createEvent({ signature: MISSING, url });
+
+      expect(result.properties.referral_code).toBe('DATANERD');
+    });
+
     it('should handle non-UTM parameters as sensitive', () => {
       const url = new URL(
         'https://example.com/test?' +
