@@ -10395,10 +10395,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/tron-wallet-snap@npm:^4.5.0":
-  version: 4.5.0
-  resolution: "@metamask/tron-wallet-snap@npm:4.5.0"
-  checksum: 10/95adc37142adbdaa1a1c3039b977846b53427b643c591ea51345aae5eac0124b4a8d3bf3eeac3d0f64cbf38528ed63544b07758ccda6a9705ecfc4b3d1718114
+"@metamask/tron-wallet-snap@npm:^4.6.0":
+  version: 4.6.0
+  resolution: "@metamask/tron-wallet-snap@npm:4.6.0"
+  checksum: 10/c5ee64977701e536a7bf4c783240b85ef1af090d6e8a67d0dd4c291d8cb30cd40e53c8820c98c14abaab7eeca044611540ac826d7aca7378bf2088ab84d38f9d
   languageName: node
   linkType: hard
 
@@ -34795,7 +34795,7 @@ __metadata:
     "@metamask/transaction-controller": "npm:^74.4.0"
     "@metamask/transaction-pay-controller": "npm:^33.0.0"
     "@metamask/transaction-pay-middleware": "npm:^2.0.4"
-    "@metamask/tron-wallet-snap": "npm:^4.5.0"
+    "@metamask/tron-wallet-snap": "npm:^4.6.0"
     "@metamask/user-operation-controller": "npm:^42.1.2"
     "@metamask/utils": "npm:^12.0.2"
     "@metamask/wallet": "npm:^22.0.0"
