@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "Gaasi ülemmäär"
   },
-  "gasUsed": {
-    "message": "Kasutatud gaasihulk"
-  },
   "general": {
     "message": "Üldine teave"
   },
@@ -551,9 +548,6 @@
   },
   "unapproved": {
     "message": "Kinnitamata"
-  },
-  "units": {
-    "message": "ühikud"
   },
   "unknown": {
     "message": "Teadmata"

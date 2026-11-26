@@ -492,10 +492,11 @@ const AdvancedChartIframe = ({
       payload: {
         data: ohlcvData,
         rnBackedPagination: { enabled: true },
-        // Opt into the core interval-window fix: clamps the pinned visible
-        // window to the loaded bars so an interval switch never frames an
-        // interval older than what is in memory.
-        atomicIntervalWindow: true,
+        // Opt into the core bounded interval window: each interval's visible
+        // window is applied after load (never inherited from a previous
+        // interval) and clamped to the loaded bars, so interval switches
+        // don't trigger a backward pagination storm.
+        boundedIntervalWindow: true,
         ...(visibleFromMs === undefined ? {} : { visibleFromMs }),
       },
     });

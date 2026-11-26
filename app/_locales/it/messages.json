@@ -97,9 +97,6 @@
   "advanced": {
     "message": "Avanzate"
   },
-  "advancedGasPriceTitle": {
-    "message": "Prezzo gas"
-  },
   "alertDisableTooltip": {
     "message": "Può essere cambiato in \"Impostazioni > Avvisi\""
   },
@@ -522,9 +519,6 @@
   },
   "gasLimit": {
     "message": "Gas Limite"
-  },
-  "gasUsed": {
-    "message": "Gas Utilizzato"
   },
   "general": {
     "message": "Generale"
@@ -1010,9 +1004,6 @@
   },
   "unapproved": {
     "message": "Non approvata"
-  },
-  "units": {
-    "message": "unità"
   },
   "unknown": {
     "message": "Sconosciuto"

@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "Ліміт газу"
   },
-  "gasUsed": {
-    "message": "Пального використано"
-  },
   "general": {
     "message": "Загальні"
   },
@@ -557,9 +554,6 @@
   },
   "unapproved": {
     "message": "Не затверджено"
-  },
-  "units": {
-    "message": "одиниці"
   },
   "unknown": {
     "message": "невідомо"

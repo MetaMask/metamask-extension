@@ -362,7 +362,6 @@ import { DecryptMessageManagerInit } from './messenger-client-init/confirmations
 import { DecryptMessageControllerInit } from './messenger-client-init/confirmations/decrypt-message-controller-init';
 import { EncryptionPublicKeyControllerInit } from './messenger-client-init/confirmations/encryption-public-key-controller-init';
 import { EncryptionPublicKeyManagerInit } from './messenger-client-init/confirmations/encryption-public-key-message-manager-init';
-import { SignatureControllerInit } from './messenger-client-init/confirmations/signature-controller-init';
 import { RewardsDataServiceInit } from './messenger-client-init/rewards-data-service-init';
 import { RewardsControllerInit } from './messenger-client-init/rewards-controller-init';
 import { RewardsMoneyDataServiceInit } from './messenger-client-init/rewards-money-data-service-init';
@@ -548,7 +547,6 @@ export default class MetamaskController extends EventEmitter {
       DecryptMessageController: DecryptMessageControllerInit,
       EncryptionPublicKeyManager: EncryptionPublicKeyManagerInit,
       EncryptionPublicKeyController: EncryptionPublicKeyControllerInit,
-      SignatureController: SignatureControllerInit,
       PermissionLogController: PermissionLogControllerInit,
       AppStateController: AppStateControllerInit,
       OnboardingController: OnboardingControllerInit,
@@ -681,7 +679,7 @@ export default class MetamaskController extends EventEmitter {
       messengerClientsByName.DecryptMessageController;
     this.encryptionPublicKeyController =
       messengerClientsByName.EncryptionPublicKeyController;
-    this.signatureController = messengerClientsByName.SignatureController;
+    this.signatureController = this.wallet.getInstance('SignatureController');
     this.permissionController = this.wallet.getInstance('PermissionController');
     this.permissionLogController =
       messengerClientsByName.PermissionLogController;
