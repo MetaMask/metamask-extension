@@ -28,7 +28,7 @@ permissions:
 
 env:
   # Number of builds per variant. 2 for a smoke run, 50 for the real run.
-  ITERATIONS: '2'
+  ITERATIONS: '50'
   # Any fixed value works: both variants share it, so it cannot explain a diff.
   SOURCE_DATE_EPOCH: '1757400000'
   TZ: UTC
