@@ -2,7 +2,6 @@ import React, { useSyncExternalStore } from 'react';
 import {
   BannerAlert,
   BannerAlertSeverity,
-  Box,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
@@ -17,23 +16,17 @@ const subscribe = (callback: () => void) => {
 
 const getSnapshot = () => navigator.onLine;
 
-const getServerSnapshot = () => true;
-
 export const OfflineBanner = () => {
   const t = useI18nContext();
-  const isOnline = useSyncExternalStore(
-    subscribe,
-    getSnapshot,
-    getServerSnapshot,
-  );
+  const isOnline = useSyncExternalStore(subscribe, getSnapshot);
 
   return (
-    <Box role="status">
+    <div role="status">
       {!isOnline && (
         <BannerAlert severity={BannerAlertSeverity.Warning}>
           {t('offlineBanner')}
         </BannerAlert>
       )}
-    </Box>
+    </div>
   );
 };
