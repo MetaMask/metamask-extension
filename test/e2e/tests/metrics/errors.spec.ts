@@ -101,11 +101,6 @@ const maskedBackgroundFields = [
   'AppStateController.fullScreenGasPollTokens',
   'AppStateController.notificationGasPollTokens',
   'AppStateController.popupGasPollTokens',
-  'CurrencyController.currencyRates.ETH.conversionDate',
-  'CurrencyController.currencyRates.LineaETH.conversionDate',
-  'CurrencyController.currencyRates.SepoliaETH.conversionDate',
-  'CurrencyController.currencyRates.MegaETH.conversionDate',
-  'CurrencyController.currencyRates.MON.conversionDate',
   // Network metadata entries vary as networks are added/removed in the codebase
   'NetworkController.networksMetadata',
 ];
@@ -120,8 +115,6 @@ const removedBackgroundFields = [
   'AppStateController.lastUpdatedFromVersion',
   'BridgeController.quoteRequest.walletAddress',
   'BridgeController.quoteRequest.slippage',
-  'PPOMController.chainStatus.0x539.lastVisited',
-  'PPOMController.versionInfo',
   // Populated asynchronously during sign-in (the shield cohort-eligibility
   // evaluation round-trips to the subscription backend), so captured as
   // `null` or a string depending on whether that settles before the error.

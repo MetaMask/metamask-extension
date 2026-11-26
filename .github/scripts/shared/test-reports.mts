@@ -1,4 +1,4 @@
-export const CONSTANT_TIME_PER_TESTCASE = 3000; // 3 seconds to setup/tear down each test case
+export const BLANK_TEST_FILE_TIME = 3000; // estimate for a test file with no recorded timings
 
 export type TestRun = {
   name: string;
@@ -12,7 +12,6 @@ export type TestFile = {
   failed: number;
   skipped: number;
   time: number;
-  timePlusSetup?: number;
   testSuites: TestSuite[];
 };
 
@@ -52,21 +51,42 @@ export type TestChunk = {
   paths: string[];
 };
 
-export function getTestFilesSortedByTime(testRun: TestRun) {
-  // add CONSTANT_TIME_PER_TESTCASE
-  testRun.testFiles.forEach((file) => {
-    file.timePlusSetup = file.time + CONSTANT_TIME_PER_TESTCASE * file.tests;
-  });
+/**
+ * Returns a test suite's duration, never less than the sum of its test cases.
+ *
+ * mocha-junit-reporter only records the time of the most recently started
+ * suite when a suite ends. Mocha runs a suite's own tests before its nested
+ * suites, so a suite with both is reported as taking 0ms.
+ *
+ * @param suiteTime - The suite time reported in the JUnit XML, in ms.
+ * @param testCases - The suite's test cases.
+ * @returns The suite duration in ms.
+ */
+export function getTestSuiteTime(
+  suiteTime: number,
+  testCases: TestCase[],
+): number {
+  const testCasesTime = testCases.reduce((total, { time }) => total + time, 0);
+  return Math.max(suiteTime, testCasesTime);
+}
 
-  return testRun.testFiles.sort((a, b) => {
-    return (b?.timePlusSetup ?? 0) - (a?.timePlusSetup ?? 0);
-  });
+/**
+ * Returns the test files sorted from slowest to fastest.
+ *
+ * A file's recorded time already includes the fixture setup and teardown of
+ * each test, so no per-test overhead is added on top of it.
+ *
+ * @param testRun - The test run whose files to sort.
+ * @returns The test files, slowest first.
+ */
+export function getTestFilesSortedByTime(testRun: TestRun): TestFile[] {
+  return testRun.testFiles.sort((a, b) => (b?.time ?? 0) - (a?.time ?? 0));
 }
 
 export function getNewBlankTestFile(path: string): TestFile {
   return {
     path,
-    time: CONSTANT_TIME_PER_TESTCASE, // if there's no information, which in most cases is it.skip() for all tests
+    time: BLANK_TEST_FILE_TIME, // if there's no information, which in most cases is it.skip() for all tests
     tests: 0,
     passed: 0,
     failed: 0,

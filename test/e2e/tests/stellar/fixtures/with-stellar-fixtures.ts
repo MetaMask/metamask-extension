@@ -1,8 +1,8 @@
 import { MockedEndpoint, Mockttp } from 'mockttp';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
+import { DEFAULT_STELLAR_ADDRESS } from '../../../constants';
 import {
-  STELLAR_ACCOUNT_ADDRESS,
-  buildStellarFixture,
   mockStellarApis,
   type MockStellarApisOptions,
   type StellarAccountTransactionFixture,
@@ -63,8 +63,8 @@ export async function withStellarFixtures(
   testSuite: WithFixturesTestSuite,
 ): Promise<void> {
   const {
-    accounts = [{ address: STELLAR_ACCOUNT_ADDRESS }],
-    fixtures = buildStellarFixture().build(),
+    accounts = [{ address: DEFAULT_STELLAR_ADDRESS }],
+    fixtures = new FixtureBuilderV2().build(),
     horizonOptions = {},
     enableSend = false,
     ignoredConsoleErrors,
@@ -74,7 +74,7 @@ export async function withStellarFixtures(
 
   const transactions: StellarAccountTransactionFixture[] = accounts.map(
     (account) => ({
-      address: account.address ?? STELLAR_ACCOUNT_ADDRESS,
+      address: account.address ?? DEFAULT_STELLAR_ADDRESS,
       records: account.horizonTransactions ?? [],
     }),
   );
@@ -93,6 +93,17 @@ export async function withStellarFixtures(
       ],
       localNodeOptions: 'none',
       testSpecificMock: async (mockServer: Mockttp) => {
+        // Custom endpoints first: mockttp's first matching `.always()` rule
+        // wins, so a test override of a Stellar default URL must precede
+        // `mockStellarApis` (same order as `withTronFixtures`).
+        // Send network mocks also precede defaults so RPC / fee_stats / tx-by-hash
+        // submit handlers win over empty Horizon defaults.
+        const customEndpoints = testSpecificMock
+          ? await testSpecificMock(mockServer)
+          : [];
+        const sendMocks = submittedTxStore
+          ? await mockStellarSendNetwork(mockServer, submittedTxStore)
+          : [];
         const stellarMocks = await mockStellarApis(mockServer, {
           ...horizonOptions,
           transactions,
@@ -101,16 +112,12 @@ export async function withStellarFixtures(
                 getSubmittedHorizonRecordsForAccount(submittedTxStore, address)
             : undefined,
         });
-        const sendMocks = submittedTxStore
-          ? await mockStellarSendNetwork(mockServer, submittedTxStore)
-          : [];
-        const extra = testSpecificMock
-          ? await testSpecificMock(mockServer)
-          : [];
         return [
-          ...stellarMocks,
+          ...(Array.isArray(customEndpoints)
+            ? customEndpoints
+            : [customEndpoints]),
           ...sendMocks,
-          ...(Array.isArray(extra) ? extra : [extra]),
+          ...stellarMocks,
         ];
       },
     },

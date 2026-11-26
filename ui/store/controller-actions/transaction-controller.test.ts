@@ -48,7 +48,7 @@ describe('transaction controller actions', () => {
     await updateBatchTransactions(args);
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-      'updateBatchTransactions',
+      'TransactionController:updateBatchTransactions',
       [args],
     );
   });

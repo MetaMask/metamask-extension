@@ -5,11 +5,17 @@ import { getMfaUsedFor, type MfaUsedFor } from './mfa-used-for';
 const keys = (rows: MfaUsedFor[]) => rows.map(({ key }) => key);
 
 describe('getMfaUsedFor', () => {
-  it.each(['passkey', 'email_otp'] as const)('lists Money for %s', (method) => {
-    expect(keys(getMfaUsedFor(method, { isSocialLogin: true }))).toStrictEqual([
-      'money',
-    ]);
-  });
+  it.each(['passkey', 'email_otp', 'totp'] as const)(
+    'lists wallet recovery for %s only for social login wallets',
+    (method) => {
+      expect(
+        keys(getMfaUsedFor(method, { isSocialLogin: true })),
+      ).toStrictEqual(['wallet_recovery', 'money']);
+      expect(
+        keys(getMfaUsedFor(method, { isSocialLogin: false })),
+      ).toStrictEqual(['money']);
+    },
+  );
 
   it('lists the uses that accept the method, where they apply', () => {
     const usedFor: MfaUsedFor[] = [

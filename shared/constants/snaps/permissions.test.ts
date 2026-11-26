@@ -14,7 +14,6 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
   it('creates valid permission specification objects', () => {
     const hooks = {
       getUnlockPromise: jest.fn(),
-      getClientCryptography: jest.fn(),
       isOnPhishingList: jest.fn(),
       maybeUpdatePhishingList: jest.fn(),
       getSnapKeyring: jest.fn(),

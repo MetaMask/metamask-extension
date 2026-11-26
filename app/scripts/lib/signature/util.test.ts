@@ -8,7 +8,7 @@ import {
   MiddlewareContext,
 } from '@metamask/json-rpc-engine/v2';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
-import { addTypedMessage } from './util';
+import { addPersonalMessage, addTypedMessage } from './util';
 import type { AddSignatureMessageRequest, SignatureParams } from './util';
 
 jest.mock('../../../../shared/lib/trace', () => ({
@@ -69,6 +69,46 @@ describe('addSignatureMessage', () => {
     expect(endTrace).toHaveBeenCalledWith({
       name: TraceName.Signature,
       id: idMock.toString(),
+    });
+  });
+
+  describe('trace context', () => {
+    const traceContextMock = { name: 'Signature' };
+
+    const makeRequestWithTraceContext = (version?: string) => {
+      const requestContext = new MiddlewareContext();
+      requestContext.set('traceContext', traceContextMock);
+      const signatureParams: SignatureParams = [
+        messageParamsMock,
+        originalRequestMock,
+        requestContext,
+        version,
+      ];
+      return { signatureParams, signatureController: signatureControllerMock };
+    };
+
+    it('passes the trace context in the options of a personal message', async () => {
+      await addPersonalMessage(makeRequestWithTraceContext());
+
+      expect(
+        signatureControllerMock.newUnsignedPersonalMessage,
+      ).toHaveBeenCalledWith(messageParamsMock, expect.any(Object), {
+        traceContext: traceContextMock,
+      });
+    });
+
+    it('passes the version and the trace context in the options of a typed message', async () => {
+      await addTypedMessage(makeRequestWithTraceContext('V4'));
+
+      expect(
+        signatureControllerMock.newUnsignedTypedMessage,
+      ).toHaveBeenCalledWith(
+        messageParamsMock,
+        expect.any(Object),
+        'V4',
+        undefined,
+        { traceContext: traceContextMock },
+      );
     });
   });
 });

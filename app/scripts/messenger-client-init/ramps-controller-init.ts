@@ -1,5 +1,6 @@
 import {
   RampsController,
+  RampsEnvironment,
   RampsOrderStatus,
   getDefaultRampsControllerState,
   type RampsControllerMessenger,
@@ -12,17 +13,21 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { createEventBuilder } from '../../../shared/lib/analytics/create-event-builder';
+import { getRampsEnvironment } from '../../../shared/lib/ramps/environment';
+import {
+  isRampsNetworkAllowed,
+  type RampsNetworkAccessState,
+} from '../../../shared/lib/ramps/network-access';
 import { trace } from '../../../shared/lib/trace';
 import { captureException } from '../../../shared/lib/sentry';
 import { trackEvent } from '../controllers/analytics';
 import type { MessengerClientInitFunction } from './types';
 import { getRampsControllerApi } from './ramps-controller-api';
 import type { RampsControllerInitMessenger } from './messengers/ramps-controller-messenger';
-import { applyRampsNetworkGate } from './ramps-network-gate';
 
-function isRampsNetworkAllowed(
+function getRampsNetworkAccessState(
   initMessenger: RampsControllerInitMessenger,
-): boolean {
+): RampsNetworkAccessState {
   const { completedOnboarding } = initMessenger.call(
     'OnboardingController:getState',
   );
@@ -30,7 +35,7 @@ function isRampsNetworkAllowed(
     'PreferencesController:getState',
   );
 
-  return completedOnboarding && Boolean(useExternalServices);
+  return { completedOnboarding, useExternalServices };
 }
 
 /**
@@ -49,6 +54,13 @@ const IN_FLIGHT_ORDER_STATUSES = new Set<string>([
   RampsOrderStatus.Created,
   RampsOrderStatus.Pending,
 ]);
+
+/**
+ * Cache lifetime for ramps requests in non-production builds. The controller
+ * defaults to 15 minutes, which makes manual gate/privacy testing wait out the
+ * cache before it can observe a request.
+ */
+const NON_PRODUCTION_REQUEST_CACHE_TTL_MS = 60_000;
 
 function hasInFlightOrders(messengerClient: RampsController): boolean {
   return (messengerClient.state?.orders ?? []).some((order) =>
@@ -167,9 +179,21 @@ export const RampsControllerInit: MessengerClientInitFunction<
   RampsControllerMessenger,
   RampsControllerInitMessenger
 > = ({ controllerMessenger, persistedState, initMessenger, platform }) => {
+  const isNetworkAccessAllowed = () =>
+    isRampsNetworkAllowed(getRampsNetworkAccessState(initMessenger));
+
   const messengerClient = new RampsController({
     messenger: controllerMessenger,
     state: persistedState.RampsController ?? getDefaultRampsControllerState(),
+    // Keep the 15-minute default in production; shorten it in test builds so
+    // gate/privacy checks can observe a fresh request without waiting it out.
+    requestCacheTTL:
+      getRampsEnvironment() === RampsEnvironment.Production
+        ? undefined
+        : NON_PRODUCTION_REQUEST_CACHE_TTL_MS,
+    // Host gate: the controller does not call the ramps API until onboarding is
+    // complete and basic functionality is enabled. Read cached state to render.
+    isNetworkAccessAllowed,
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     onOrderSyncErroneousSituation: (situationMessage, sentryContext) => {
@@ -194,23 +218,20 @@ export const RampsControllerInit: MessengerClientInitFunction<
     },
   });
 
-  const isNetworkAllowed = () => isRampsNetworkAllowed(initMessenger);
-  applyRampsNetworkGate(messengerClient, isNetworkAllowed);
-
   const {
     startRampsLifecycle,
     stopRampsLifecycle,
     stopRampsLifecycleWhenSettled,
-  } = createRampsLifecycleManager(messengerClient, isNetworkAllowed);
+  } = createRampsLifecycleManager(messengerClient, isNetworkAccessAllowed);
 
   const tryStartRampsLifecycle = (): void => {
-    if (isNetworkAllowed()) {
+    if (isNetworkAccessAllowed()) {
       startRampsLifecycle();
     }
   };
 
   const tryStopRampsLifecycle = (): void => {
-    if (!isNetworkAllowed()) {
+    if (!isNetworkAccessAllowed()) {
       stopRampsLifecycle();
     }
   };

@@ -2,36 +2,17 @@
 import { MockedEndpoint, Mockttp } from 'mockttp';
 import { getProductionRemoteFlagApiResponse } from '../../../feature-flags';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
+import { EXPECTED_STELLAR_ADDRESSES_BY_INDEX } from '../../../constants';
 import {
-  DEFAULT_STELLAR_ADDRESS,
-  EXPECTED_STELLAR_ADDRESSES_BY_INDEX,
-} from '../../../constants';
+  FEATURE_FLAGS_URL,
+  STELLAR_CHAIN_ID,
+  STELLAR_NATIVE_ASSET_ID,
+  STELLAR_USDC_ASSET_ID,
+  STELLAR_USDC_ISSUER,
+  XLM_BALANCE,
+  XLM_TO_USD_RATE,
+} from './stellar-constants';
 
-export const STELLAR_NETWORK_NAME = 'Stellar';
-export const STELLAR_CHAIN_ID = 'stellar:pubnet';
-export const STELLAR_NATIVE_ASSET_ID = `${STELLAR_CHAIN_ID}/slip44:148`;
-export const STELLAR_ACCOUNT_ADDRESS = DEFAULT_STELLAR_ADDRESS;
-
-/** Circle USDC on Stellar pubnet (classic asset used across product tests). */
-export const STELLAR_USDC_ISSUER =
-  'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
-export const STELLAR_USDC_ASSET_ID = `${STELLAR_CHAIN_ID}/asset:USDC-${STELLAR_USDC_ISSUER}`;
-
-/** Funded mock balance: 100 XLM. */
-export const XLM_BALANCE = '100.0000000';
-export const XLM_TO_USD_RATE = 0.4;
-/** Expected homepage native balance string for funded account. */
-export const XLM_BALANCE_DISPLAY = '100 XLM';
-/** Expected homepage fiat for funded account (100 * $0.4). */
-export const XLM_FIAT_DISPLAY = '$40.00';
-
-export const FEATURE_FLAGS_URL =
-  'https://client-config.api.cx.metamask.io/v1/flags';
-
-/**
- * Preinstalled stellar-wallet-snap Horizon hosts (see snap bundle config).
- * Public Horizon is kept for local/dev snaps that still point at stellar.org.
- */
 /**
  * Preinstalled stellar-wallet-snap Horizon hosts (Infura) plus public Horizon
  * for local/dev snaps. Path-only `/horizon/accounts/…` forms also match via
@@ -40,59 +21,15 @@ export const FEATURE_FLAGS_URL =
 const HORIZON_ACCOUNT_RE =
   /(?:^https:\/\/(?:horizon\.stellar\.org|stellar-(?:mainnet|testnet)\.infura\.io\/v3\/[^/?#]+\/horizon)|(?:^|\/)horizon)\/accounts\/([A-Z0-9]{56})\/?(?:[?#].*)?$/iu;
 
-/**
- * Unlike Tron/BTC, the XLM provider starts disabled and only turns on when
- * `stellarAccounts` is enabled in RemoteFeatureFlagController state (see
- * `MultichainAccountServiceInit`). Seed it in fixtures + HTTP mocks.
- */
-export const STELLAR_ACCOUNTS_FLAG = {
-  enabled: true,
-  minimumVersion: '13.50.0',
-} as const;
-
-// BIP44 Stage 2 feature flags - enables automatic multichain account creation
-export const BIP44_STAGE_TWO = {
-  enableMultichainAccountsState2: {
-    enabled: true,
-    featureVersion: '2',
-    minimumVersion: '12.19.0',
-  },
-  bitcoinAccounts: {
-    enabled: true,
-    minimumVersion: '13.6.0',
-  },
-  tronAccounts: {
-    enabled: true,
-    minimumVersion: '13.6.0',
-  },
-  stellarAccounts: STELLAR_ACCOUNTS_FLAG,
-};
-
-/**
- * Fixture RemoteFeatureFlagController state so the XLM provider is enabled at
- * MultichainAccountService init (default fixtures omit stellarAccounts).
- */
-export const STELLAR_REMOTE_FEATURE_FLAGS = {
-  remoteFeatureFlags: {
-    stellarAccounts: STELLAR_ACCOUNTS_FLAG,
-    enableMultichainAccountsState2: {
-      enabled: true,
-      featureVersion: '2',
-      minimumVersion: '12.19.0',
-    },
-  },
-} as const;
-
 export type StellarHorizonBalanceOptions = {
   /** When true, Horizon returns 404 (unfunded / zero balance). */
   unfunded?: boolean;
   /** Native XLM balance as Horizon decimal string. */
   xlmBalance?: string;
   /**
-   * Optional classic USDC trustline. Only `limit > 0` rows are visible in the
-   * snap keyring balances (limit `0` is a tombstone and is omitted from the
-   * token list). Inactive / activate UX is covered by navigating to a USDC
-   * asset that has no active trustline metadata.
+   * Optional classic USDC trustline. When set, the account response includes
+   * that balance row and increments `subentry_count`. Omit for inactive /
+   * no-trustline accounts (do not pass `limit: '0'` as a tombstone here).
    */
   usdc?: {
     balance: string;
@@ -166,10 +103,12 @@ export function buildHorizonAccountResponse(
 }
 
 /**
- * Mocks the feature flags endpoint with BIP44 Stage 2 configuration.
- * This enables automatic Stellar account creation.
+ * Mocks the feature flags endpoint with production defaults plus the few
+ * overrides that differ for Stellar E2E (failover disabled). Account flags
+ * such as `stellarAccounts` already come from
+ * `getProductionRemoteFlagApiResponse()` / the feature-flag registry.
  *
- * @param mockServer
+ * @param mockServer - Mockttp server.
  */
 export async function mockStellarFeatureFlags(
   mockServer: Mockttp,
@@ -185,17 +124,18 @@ export async function mockStellarFeatureFlags(
       statusCode: 200,
       json: [
         ...getProductionRemoteFlagApiResponse(),
-        BIP44_STAGE_TWO,
-        // Same bridge / failover overrides as Tron E2E mocks.
-        { bridgeConfig: {} },
+        // Account discovery queries popular EVM chains; with Anvil/Infura off
+        // these fixtures only mock Horizon. Disable failover to avoid privacy
+        // hosts (same override as Tron E2E mocks).
         { corePlatformRpcFailoverMode: 'disabled' },
       ],
     }));
 }
 
 /**
- * Builds a FixtureBuilderV2 with Stellar accounts enabled in remote flag state
- * so the XLM provider is on at MultichainAccountService init.
+ * Builds a FixtureBuilderV2 for Stellar E2E. Remote flags come from the
+ * production defaults served by `mock-e2e` / `mockStellarFeatureFlags` — no
+ * fixture-side `stellarAccounts` seed is required (Stellar is GA).
  *
  * @param options - Optional fixture builder tweaks.
  * @param options.onboarding - When true, start from onboarding (SRP import).
@@ -209,7 +149,7 @@ export function buildStellarFixture(
 ): FixtureBuilderV2 {
   let builder = new FixtureBuilderV2(
     options.onboarding ? { onboarding: true } : undefined,
-  ).withRemoteFeatureFlagController(STELLAR_REMOTE_FEATURE_FLAGS);
+  );
 
   if (options.showNativeTokenAsMainBalanceDisabled) {
     builder = builder.withShowNativeTokenAsMainBalanceDisabled();
@@ -222,8 +162,8 @@ export function buildStellarFixture(
  * Mocks Horizon account endpoints for known E2E Stellar addresses.
  *
  * @param mockServer - Mockttp server.
- * @param options - Balance / trustline options applied to Account 1; other
- * derived addresses default to the same funded shape unless `unfunded`.
+ * @param options - Balance / trustline options applied to every address in
+ * `EXPECTED_STELLAR_ADDRESSES_BY_INDEX` (unknown G… ids stay 404).
  */
 export async function mockHorizonAccounts(
   mockServer: Mockttp,
@@ -248,7 +188,8 @@ export async function mockHorizonAccounts(
         };
       }
 
-      // Only seed known HD addresses; unknown G… ids stay 404 so discovery stops.
+      // Only Account 1 is in EXPECTED_STELLAR_ADDRESSES_BY_INDEX so discovery
+      // does not auto-create HD accounts 2+. Unknown G… ids stay 404.
       if (
         !(EXPECTED_STELLAR_ADDRESSES_BY_INDEX as readonly string[]).includes(
           address,
@@ -347,20 +288,14 @@ export async function mockStellarTokensV2SupportedNetworks(
 }
 
 /**
- * Builds Stellar native + USDC TokenAsset metadata for the requested asset ids.
+ * Stellar native + USDC TokenAsset metadata.
  *
- * Used by both `tokens.api` v3 and `token.api` (fetchTokenAssets / deep links).
- *
- * @param assetIds - Comma-joined or raw assetIds query value.
+ * Always returns the known list (Tron-style) so lowercased `useTokensData`
+ * requests still resolve. Used by both `tokens.api` v3 and `token.api`.
  */
-export function buildStellarTokenAssetMetadata(assetIds: string) {
-  const results: object[] = [];
-
-  if (
-    assetIds.includes(STELLAR_NATIVE_ASSET_ID) ||
-    assetIds.includes(STELLAR_CHAIN_ID)
-  ) {
-    results.push({
+export function buildStellarTokenAssetMetadata() {
+  return [
+    {
       assetId: STELLAR_NATIVE_ASSET_ID,
       name: 'Stellar',
       symbol: 'XLM',
@@ -369,15 +304,8 @@ export function buildStellarTokenAssetMetadata(assetIds: string) {
       iconUrl:
         'https://static.cx.metamask.io/api/v2/tokenIcons/assets/stellar/pubnet/slip44/148.png',
       coingeckoId: 'stellar',
-    });
-  }
-
-  if (
-    assetIds.includes(STELLAR_USDC_ASSET_ID) ||
-    assetIds.includes(STELLAR_USDC_ISSUER) ||
-    assetIds.includes('USDC')
-  ) {
-    results.push({
+    },
+    {
       assetId: STELLAR_USDC_ASSET_ID,
       name: 'USD Coin',
       symbol: 'USDC',
@@ -385,21 +313,8 @@ export function buildStellarTokenAssetMetadata(assetIds: string) {
       iconUrl:
         'https://static.cx.metamask.io/api/v2/tokenIcons/assets/stellar/pubnet/asset/USDC.png',
       coingeckoId: 'usd-coin',
-    });
-  }
-
-  return results;
-}
-
-function stellarAssetsRequestCallback(request: { url: string }) {
-  const assetIds =
-    new URL(request.url).searchParams.get('assetIds') ??
-    new URL(request.url).searchParams.getAll('assetIds').join(',');
-
-  return {
-    statusCode: 200,
-    json: buildStellarTokenAssetMetadata(assetIds),
-  };
+    },
+  ];
 }
 
 /**
@@ -413,7 +328,7 @@ export async function mockStellarTokensV3Assets(
   return mockServer
     .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
     .always()
-    .thenCallback(stellarAssetsRequestCallback);
+    .thenJson(200, buildStellarTokenAssetMetadata());
 }
 
 /**
@@ -429,7 +344,7 @@ export async function mockStellarTokenApiAssets(
   return mockServer
     .forGet('https://token.api.cx.metamask.io/assets')
     .always()
-    .thenCallback(stellarAssetsRequestCallback);
+    .thenJson(200, buildStellarTokenAssetMetadata());
 }
 
 /**

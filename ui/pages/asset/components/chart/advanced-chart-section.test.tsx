@@ -119,13 +119,16 @@ function setupPreferences(
   chartType: number = CHART_TYPE_LINE,
   overrides: { interval?: string } = {},
 ) {
+  const interval = overrides.interval ?? '15m';
   mockUseAdvancedChartPreferences.mockReturnValue({
     chartType,
-    interval: overrides.interval ?? '15m',
+    interval,
+    displayInterval: interval,
     lineTimeRange: '1D',
     indicators: new Set<string>(),
     setChartType,
     setCandleInterval,
+    applyToggleCandle: jest.fn(),
     setLineTimeRange,
     toggleIndicator: jest.fn(),
     isLineChart: chartType === CHART_TYPE_LINE,
@@ -151,12 +154,12 @@ function setupData(
     realtimePrice: undefined,
     realtimeTimestamp: undefined,
     price: undefined,
-    percentChange: undefined,
     timestamp: undefined,
     isLoading: false,
     error: null,
     resolvedCurrency: 'eur',
     fetchOlderBars: jest.fn().mockResolvedValue({ bars: [], noData: true }),
+    resetPagination: jest.fn(),
     ...overrides,
   });
 }
@@ -241,7 +244,7 @@ describe('AdvancedChartSection', () => {
       render();
 
       expect(mockUseHistoricalPrices).toHaveBeenCalledWith(
-        expect.objectContaining({ timeRange: 'P1D', enabled: true }),
+        expect.objectContaining({ timeRange: 'P1D' }),
       );
       expect(mockUseAdvancedChartData).toHaveBeenCalledWith(
         expect.objectContaining({ needsHistory: false }),
@@ -499,14 +502,16 @@ describe('AdvancedChartSection', () => {
       expect(isSlotVisible('legacy-chart-slot')).toBe(false);
     });
 
-    it('fetches the candle history and skips the historical prices', () => {
+    it('fetches the candle history plus the P1D historical series for the 24H change', () => {
       render();
 
       expect(mockUseAdvancedChartData).toHaveBeenCalledWith(
         expect.objectContaining({ needsHistory: true }),
       );
+      // The 24H percentage is always sourced from the interval-independent P1D
+      // series, so it is fetched in candle mode regardless of the interval.
       expect(mockUseHistoricalPrices).toHaveBeenCalledWith(
-        expect.objectContaining({ enabled: false }),
+        expect.objectContaining({ timeRange: 'P1D' }),
       );
     });
 
@@ -551,6 +556,61 @@ describe('AdvancedChartSection', () => {
       render({ caipAssetId: undefined });
 
       expect(screen.queryByTestId('chart-iframe')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('candle mode header', () => {
+    beforeEach(() => {
+      setupPreferences(CHART_TYPE_CANDLE);
+    });
+
+    it('labels the 24H change with "Today" rather than a date', () => {
+      // 24H change is derived from the P1D historical series (opens at 100, see
+      // PRICES), not from the candle data: (150 - 100) / 100 = +50%. The candle
+      // resolved in the requested currency (EUR), so the live candle price is
+      // used as the current value.
+      setupData({ price: 150 });
+      render();
+
+      expect(
+        screen.getByTestId('asset-price-percent-change'),
+      ).toHaveTextContent('+50.00%');
+      expect(screen.getByText(messages.today.message)).toBeInTheDocument();
+    });
+
+    it('does not mix currencies in the 24H change when the candle data resolved to a different fiat', () => {
+      // The candle resolved to USD while the user currency is EUR, so the USD
+      // candle price must NOT be compared against the EUR P1D baseline. The
+      // percentage uses a EUR-denominated current price (the wallet current
+      // price, 200) against the EUR P1D open (100): (200 - 100) / 100 = +100%.
+      // The displayed price still shows the USD figure the data came back in.
+      setupData({ price: 150, resolvedCurrency: 'usd' });
+      render({ currency: 'EUR', currentPrice: 200 });
+
+      expect(
+        screen.getByTestId('asset-price-percent-change'),
+      ).toHaveTextContent('+100.00%');
+      expect(screen.getByText(/\$150/u)).toBeInTheDocument();
+    });
+
+    it('keeps the 24H change identical across candle intervals', () => {
+      // The percentage comes from the interval-independent P1D series, so it
+      // must not change when the candle interval does. A naive candle-derived
+      // baseline would differ between a 15m and a 1w interval (and collapse to
+      // 0% on 1w).
+      setupData({ price: 150 });
+
+      setupPreferences(CHART_TYPE_CANDLE, { interval: '15m' });
+      const { rerender } = render();
+      expect(
+        screen.getByTestId('asset-price-percent-change'),
+      ).toHaveTextContent('+50.00%');
+
+      setupPreferences(CHART_TYPE_CANDLE, { interval: '1w' });
+      rerender(<AdvancedChartSection {...DEFAULT_PROPS} />);
+      expect(
+        screen.getByTestId('asset-price-percent-change'),
+      ).toHaveTextContent('+50.00%');
     });
   });
 
@@ -635,6 +695,101 @@ describe('AdvancedChartSection', () => {
       render();
 
       expect(screen.getByTestId('chart-error-state')).toBeInTheDocument();
+    });
+
+    it('falls back to the live price and a 24H change from historical prices when candle data fails', () => {
+      // Historical P1D series opens at 100 (see PRICES), live price is 175.
+      setupData({
+        price: undefined,
+        realtimePrice: 175,
+        error: 'OHLCV API error: 500',
+      });
+      render();
+
+      // Chart keeps its overlay, but the header is no longer blank.
+      expect(screen.getByTestId('chart-error-state')).toBeInTheDocument();
+      expect(screen.getByTestId('asset-hovered-price')).toHaveTextContent(
+        '175',
+      );
+      // 24H change derived from historical prices: (175 - 100) / 100 = +75%,
+      // still labelled "Today".
+      expect(
+        screen.getByTestId('asset-price-percent-change'),
+      ).toHaveTextContent('+75.00%');
+      expect(screen.getByText(messages.today.message)).toBeInTheDocument();
+    });
+
+    it('falls back to the live price when candle data succeeds but returns no bars', () => {
+      // OHLCV API succeeds (no error) but returns 0 bars (e.g. WBTC on 4h).
+      // The header must still show the live price, not be blank.
+      setupData({
+        ohlcvData: [],
+        price: undefined,
+        realtimePrice: 175,
+        isLoading: false,
+        error: null,
+      });
+      render();
+
+      expect(screen.getByTestId('chart-error-state')).toBeInTheDocument();
+      expect(screen.getByTestId('asset-hovered-price')).toHaveTextContent(
+        '175',
+      );
+    });
+
+    it('falls back to the wallet-wide current price when candle data is empty and there is no live price', () => {
+      setupData({
+        ohlcvData: [],
+        price: undefined,
+        realtimePrice: undefined,
+        isLoading: false,
+        error: null,
+      });
+      render({ currentPrice: 200 });
+
+      expect(screen.getByTestId('asset-hovered-price')).toHaveTextContent(
+        '200',
+      );
+    });
+
+    it('keeps the P1D historical series for the 24H change when the candle API fails', () => {
+      setupData({ error: 'OHLCV API error: 500' });
+      render();
+
+      expect(mockUseHistoricalPrices).toHaveBeenCalledWith(
+        expect.objectContaining({ timeRange: 'P1D' }),
+      );
+    });
+
+    it('hides the percentage while the historical fallback is still loading', () => {
+      setupHistorical({ isPlaceholderData: true });
+      setupData({
+        price: undefined,
+        realtimePrice: 175,
+        error: 'OHLCV API error: 500',
+      });
+      render();
+
+      // Price is shown immediately, but the 24H change waits for real data.
+      expect(screen.getByTestId('asset-hovered-price')).toHaveTextContent(
+        '175',
+      );
+      expect(
+        screen.queryByTestId('asset-price-percent-change'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('falls back to the wallet-wide current price when there is no live price', () => {
+      setupData({
+        price: undefined,
+        realtimePrice: undefined,
+        error: 'OHLCV API error: 500',
+      });
+      render({ currentPrice: 200 });
+
+      expect(screen.getByTestId('asset-hovered-price')).toHaveTextContent(
+        '200',
+      );
     });
 
     it('hides the indicator bar while the chart is failed', () => {

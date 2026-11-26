@@ -1,25 +1,31 @@
-import { Suite } from 'mocha';
 import { Driver } from '../../../webdriver/driver';
+import { login } from '../../../page-objects/flows/login.flow';
+import { switchToNetworkFromNetworkSelect } from '../../../page-objects/flows/network.flow';
+import HomePage from '../../../page-objects/pages/home/homepage';
 import SendPage from '../../../page-objects/pages/send/send-page';
 import { withStellarFixtures } from '../../stellar/fixtures/with-stellar-fixtures';
-import { STELLAR_CHAIN_ID } from '../../stellar/mocks/common-stellar';
+import {
+  STELLAR_CHAIN_ID,
+  STELLAR_NETWORK_NAME,
+} from '../../stellar/mocks/stellar-constants';
 import { STELLAR_RECIPIENT_ADDRESS } from '../../stellar/mocks/stellar-tx-fixtures';
 import {
   checkStellarHomeXlmBalance,
   fillStellarRecipient,
-  landOnStellarSendHome,
 } from './helpers';
 
-describe('Stellar Send', function (this: Suite) {
-  this.timeout(180_000);
-
+describe('Stellar Send', function () {
   it('blocks Continue when amount is empty', async function () {
     await withStellarFixtures(
       {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        const homePage = await landOnStellarSendHome(driver);
+        await login(driver, { validateBalance: false });
+        await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         await checkStellarHomeXlmBalance(homePage);
 
         await homePage.startSendFlow();

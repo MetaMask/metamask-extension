@@ -922,12 +922,7 @@ export class RewardsController extends BaseController<
       {
         data: messageHex,
         from: account.address,
-        // `detectSIWE` comes from an older `@metamask/controller-utils` than
-        // the one `@metamask/keyring-controller` types `siwe` with. Remove
-        // this cast once `@metamask/controller-utils` is bumped to ^13.
-        siwe: siwe as Parameters<
-          KeyringController['signPersonalMessage']
-        >[0]['siwe'],
+        siwe,
       },
     );
     return signature;

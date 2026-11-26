@@ -22,6 +22,7 @@ import { selectPerpsActiveProvider } from '../../../../selectors/perps-controlle
 import { getDisplaySymbol } from '../utils';
 import type { OrderType } from '../types';
 import type { OrderEntryProps, OrderCalculations } from './order-entry.types';
+import { getOrderFormPositionSize } from './utils';
 
 import { AmountInput } from './components/amount-input';
 import { LimitPriceInput } from './components/limit-price-input';
@@ -109,6 +110,9 @@ export const OrderEntry = ({
 
   // Fetch full MarketInfo for szDecimals (used to round position size before margin calc)
   const { market: marketInfo } = usePerpsMarketInfo(asset);
+  // Prefer the page's precision so the form, fee preview and placement all
+  // recover together after a market-info retry.
+  const szDecimals = sizeDecimals ?? marketInfo?.szDecimals;
 
   // Use custom hook for form state management
   const {
@@ -140,7 +144,7 @@ export const OrderEntry = ({
     initialDraft,
     sizeDecimals,
     maxLeverage,
-    szDecimals: marketInfo?.szDecimals,
+    szDecimals,
     markPrice,
     limitPricePrefill,
   });
@@ -254,6 +258,7 @@ export const OrderEntry = ({
   // Get position size for close mode
   const positionSize = existingPosition?.size ?? '0';
 
+  // Same size the page submits: notional at the fill price, on the size grid.
   const estimatedSize = useMemo(() => {
     if (mode === 'modify' && existingPosition) {
       const parsed = Number.parseFloat(
@@ -261,58 +266,30 @@ export const OrderEntry = ({
       );
       return Number.isFinite(parsed) ? parsed : undefined;
     }
-    const amount = Number.parseFloat(formState.amount.replaceAll(',', '')) || 0;
-    if (amount === 0) {
+    if (szDecimals === undefined) {
       return undefined;
     }
-
-    let fillPrice = currentPrice;
-    if (formState.type === 'limit' && formState.limitPrice) {
-      const parsed = Number.parseFloat(
-        formState.limitPrice.replaceAll(/[$,]/gu, ''),
-      );
-      if (Number.isFinite(parsed) && parsed > 0) {
-        fillPrice = parsed;
-      }
-    }
-    if (!Number.isFinite(fillPrice) || fillPrice <= 0) {
+    const size = getOrderFormPositionSize(formState, currentPrice, szDecimals);
+    if (size === undefined || !(Number.parseFloat(size) > 0)) {
       return undefined;
     }
-
-    const size = amount / fillPrice;
-    return formState.direction === 'long' ? size : -size;
-  }, [
-    mode,
-    existingPosition,
-    formState.amount,
-    formState.direction,
-    formState.type,
-    formState.limitPrice,
-    currentPrice,
-  ]);
+    const absSize = Number.parseFloat(size);
+    return formState.direction === 'long' ? absSize : -absSize;
+  }, [mode, existingPosition, formState, currentPrice, szDecimals]);
 
   const existingSignedSize =
     Number.parseFloat(existingPosition?.size.replaceAll(',', '') ?? '0') || 0;
-  const orderSignedSize = estimatedSize ?? 0;
-  // The page classifies flips using its legacy leverage-based sizing before
-  // the provider recalculates the actual size from usdAmount.
-  const sizeForSubmitRoute =
-    currentPrice > 0
-      ? ((Number.parseFloat(formState.amount) || 0) * formState.leverage) /
-        currentPrice
-      : 0;
-  const signedSizeForSubmitRoute =
-    formState.direction === 'long' ? sizeForSubmitRoute : -sizeForSubmitRoute;
   // Match the page's new/flip market flow: attach after placement using the
   // resulting position size. Other orders share their order's fee resolution.
   const submitsTpslSeparately =
     formState.type === 'market' &&
+    estimatedSize !== undefined &&
     (existingSignedSize === 0 ||
-      (existingSignedSize * signedSizeForSubmitRoute < 0 &&
-        Math.abs(signedSizeForSubmitRoute) > Math.abs(existingSignedSize)));
+      (existingSignedSize * estimatedSize < 0 &&
+        Math.abs(estimatedSize) > Math.abs(existingSignedSize)));
   const tpslFeeNotionalUsd = submitsTpslSeparately
     ? getPerpsNotionalUsd({
-        size: existingSignedSize + orderSignedSize,
+        size: existingSignedSize + estimatedSize,
         price: [formState.takeProfitPrice, formState.stopLossPrice],
       })
     : getPerpsNotionalUsd({ usdAmount: formState.amount });
@@ -375,7 +352,7 @@ export const OrderEntry = ({
             leverage={formState.leverage}
             asset={asset}
             currentPrice={currentPrice}
-            szDecimals={sizeDecimals ?? marketInfo?.szDecimals}
+            szDecimals={szDecimals}
             currentPositionSize={
               mode === 'modify' ? existingPosition?.size : undefined
             }

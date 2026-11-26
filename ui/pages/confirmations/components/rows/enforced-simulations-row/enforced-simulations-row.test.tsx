@@ -122,6 +122,29 @@ describe('EnforcedSimulationsRow', () => {
     });
   });
 
+  it('renders nothing when the transaction is no longer eligible after opting out', async () => {
+    const { container } = render({
+      isEligible: false,
+      containerTypes: [],
+    });
+
+    await waitFor(() => {
+      expect(container).toBeEmptyDOMElement();
+    });
+    expect(applyTransactionContainersExisting).not.toHaveBeenCalled();
+  });
+
+  it('keeps the row while protection is applied so the user can opt out after losing eligibility', async () => {
+    const { getByTestId } = render({
+      isEligible: false,
+      containerTypes: [TransactionContainerType.EnforcedSimulations],
+    });
+
+    await waitFor(() => {
+      expect(getByTestId('enforced-simulations-toggle-input')).toBeChecked();
+    });
+  });
+
   it('renders the component when enforced simulations is supported', async () => {
     const { getByTestId } = render({ containerTypes: [] });
 

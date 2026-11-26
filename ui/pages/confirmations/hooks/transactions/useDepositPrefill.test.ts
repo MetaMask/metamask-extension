@@ -3,7 +3,12 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import type { Hex } from '@metamask/utils';
+import {
+  hexToNumber,
+  parseCaipAssetType,
+  toCaipAssetType,
+  type Hex,
+} from '@metamask/utils';
 import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
 import { useSelector } from 'react-redux';
 import { getMarketData } from '../../../../selectors';
@@ -77,16 +82,25 @@ function makeTransactionMeta(
   } as unknown as TransactionMeta;
 }
 
-function makePayToken(
-  overrides?: Partial<TransactionPaymentToken>,
-): TransactionPaymentToken {
+function makePayToken({
+  address = ETHEREUM_USDT_ADDRESS,
+  chainId = CHAIN_ID_MOCK,
+  ...overrides
+}: Partial<TransactionPaymentToken> & {
+  address?: Hex;
+  chainId?: Hex;
+} = {}): TransactionPaymentToken {
   return {
-    address: ETHEREUM_USDT_ADDRESS,
+    assetId: toCaipAssetType(
+      'eip155',
+      String(hexToNumber(chainId)),
+      'erc20',
+      address,
+    ),
     balanceUsd: '1000',
     // Non-zero raw so uncapped 100% prefill can commit (waits on live raw).
     balanceRaw: '1000000000',
     decimals: 6,
-    chainId: CHAIN_ID_MOCK,
     ...overrides,
   } as TransactionPaymentToken;
 }
@@ -136,9 +150,15 @@ function setupMocks(
   // `stablecoin: false` is expressed as a token the flag does not list, since
   // the hook now decides from the address rather than a mocked predicate.
   if (resolvedPayToken && !stablecoin) {
+    const { chain } = parseCaipAssetType(resolvedPayToken.assetId);
     resolvedPayToken = {
       ...resolvedPayToken,
-      address: NON_STABLECOIN_ADDRESS,
+      assetId: toCaipAssetType(
+        chain.namespace,
+        chain.reference,
+        'erc20',
+        NON_STABLECOIN_ADDRESS,
+      ),
     };
   }
 

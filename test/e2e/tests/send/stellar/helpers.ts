@@ -1,10 +1,8 @@
 import { HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS } from '../../../constants';
 import { Driver } from '../../../webdriver/driver';
-import { login } from '../../../page-objects/flows/login.flow';
-import { selectStellarNetwork } from '../../../page-objects/flows/stellar-network.flow';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
-import { XLM_BALANCE_DISPLAY } from '../../stellar/mocks/common-stellar';
+import { XLM_BALANCE_DISPLAY } from '../../stellar/mocks/stellar-constants';
 
 /** Same timeout assets E2E uses for Stellar token rows after refresh. */
 export const STELLAR_SEND_ASSET_LIST_TIMEOUT_MS = 30_000;
@@ -45,21 +43,6 @@ export async function fillStellarAmount(
   amount: string,
 ): Promise<void> {
   await driver.fill({ testId: 'send-amount-input' }, amount);
-}
-
-/**
- * Same landing path as check-balance / assets: login → home → Stellar → refresh.
- *
- * @param driver - WebDriver instance.
- */
-export async function landOnStellarSendHome(driver: Driver): Promise<HomePage> {
-  await login(driver, { validateBalance: false });
-  const homePage = new HomePage(driver);
-  await homePage.checkPageIsLoaded();
-  await selectStellarNetwork(driver);
-  await driver.refresh();
-  await homePage.checkPageIsLoaded();
-  return homePage;
 }
 
 /**
