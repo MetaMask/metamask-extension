@@ -31,8 +31,8 @@ export type StepProps<Name extends MfaFlowStep['name']> = {
 
 type StepLayoutProps = {
   title: string;
-  /** Sends the taps on the error's link to the flow. */
-  onAction: (action: MfaFlowAction) => void;
+  /** Sends the taps on the error's link to the flow; only needed with `error`. */
+  onAction?: (action: MfaFlowAction) => void;
   description?: string;
   error?: MfaFlowErrorCode;
   top?: ReactNode;
@@ -202,7 +202,9 @@ const StepLayout = ({
         isCentered={top !== undefined}
       />
       {children}
-      {error ? <StepError code={error} onAction={onAction} /> : null}
+      {error && onAction ? (
+        <StepError code={error} onAction={onAction} />
+      ) : null}
     </Box>
     {footer ? (
       <Box flexDirection={BoxFlexDirection.Column} gap={2} padding={4}>

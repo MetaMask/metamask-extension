@@ -5780,6 +5780,24 @@
   "mfaPasskeyTitleVerify": {
     "message": "Use your passkey"
   },
+  "mfaPhoneEntryContinue": {
+    "message": "Continue"
+  },
+  "mfaPhoneEntryCountryLabel": {
+    "message": "Country code"
+  },
+  "mfaPhoneEntryDescription": {
+    "message": "We’ll send a text with a one-time code for verification."
+  },
+  "mfaPhoneEntryDisclaimer": {
+    "message": "We’ll only use this number to send security codes."
+  },
+  "mfaPhoneEntryInvalid": {
+    "message": "Enter a valid phone number."
+  },
+  "mfaPhoneEntryTitle": {
+    "message": "Verify your phone number"
+  },
   "mfaPickerEmailOtp": {
     "message": "Get a verification code"
   },

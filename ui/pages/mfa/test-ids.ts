@@ -7,6 +7,7 @@ export const MfaFlowTestIds = {
   ERROR: 'mfa-flow-error',
   ERROR_LINK: 'mfa-flow-error-link',
   EMAIL_INPUT: 'mfa-flow-email-input',
+  PHONE_ENTRY_PREFIX: 'mfa-flow-phone',
   CODE_INPUT: 'mfa-flow-code-input',
   RESEND_BUTTON: 'mfa-flow-resend-button',
   VERIFYING_INDICATOR: 'mfa-flow-verifying-indicator',
