@@ -17,6 +17,10 @@ describe('LoadingStep', () => {
     expect(screen.getByText('Validating device')).toBeInTheDocument();
     expect(screen.getByText('Please wait')).toBeInTheDocument();
     expect(screen.getByTestId('qr-sync-loading-indicator')).toBeInTheDocument();
+    expect(screen.getByTestId('qr-sync-loading')).toHaveAttribute(
+      'aria-busy',
+      'true',
+    );
     expect(screen.getByText('Validating device').parentElement).toHaveClass(
       'min-h-[88px]',
     );

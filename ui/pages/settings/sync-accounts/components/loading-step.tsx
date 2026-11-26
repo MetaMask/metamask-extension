@@ -69,6 +69,7 @@ const LoadingStep = ({
       flexDirection={BoxFlexDirection.Column}
       className="flex-1"
       data-testid="qr-sync-loading"
+      aria-busy="true"
     >
       <Box
         className="text-center flex-1 justify-center"

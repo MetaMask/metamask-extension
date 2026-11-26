@@ -15,9 +15,21 @@ import SuccessCheckAnimation from './success-check-animation';
 
 type SuccessProps = {
   onDone: () => void;
+  /**
+   * Number of wallets (SRPs) that were synced. Only exposed through the
+   * `data-synced-wallet-count` attribute for tests.
+   */
   walletCount?: number;
+  /**
+   * Number of imported private-key accounts that were synced. This is not the
+   * number shown to the user. It is only exposed through the
+   * `data-synced-account-count` attribute for tests.
+   */
   importedAccountCount?: number;
-  /** Total number of accounts that were sent to MetaMask Mobile. */
+  /**
+   * Total number of accounts that were sent to MetaMask Mobile, across all
+   * wallet types. This is the number shown in the description.
+   */
   accountCount?: number;
 };
 

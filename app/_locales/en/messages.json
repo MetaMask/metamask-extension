@@ -1322,7 +1322,7 @@
     "message": "This session expired. Start with a new QR code."
   },
   "add_device_error_generic": {
-    "message": "This session expired. Start with a new QR code."
+    "message": "Something went wrong. Start with a new QR code."
   },
   "add_device_error_invalid_code": {
     "message": "That code is incorrect. Try again."
