@@ -33,8 +33,8 @@ import { extractMessageFromUnknownError } from '../error';
 import { HardwareWalletType } from './types';
 import {
   createHardwareWalletError,
+  HardwareWalletErrorCode,
   LEDGER_SEED_MISMATCH_MESSAGES,
-  LEDGER_WRONG_DEVICE_ERROR_CODE,
 } from './errors';
 
 /**
@@ -392,10 +392,9 @@ function convertDataToHardwareWalletError(
  * @returns The corresponding ErrorCode enum value
  */
 function mapNumericCodeToErrorCode(numericCode: number): ErrorCode {
-  // 3012 is extension-local, so it is missing from the SDK enum and would be
-  // downgraded to Unknown by the filter below.
-  if (numericCode === LEDGER_WRONG_DEVICE_ERROR_CODE) {
-    return LEDGER_WRONG_DEVICE_ERROR_CODE;
+  // The SDK enum does not include the extension-local codes yet.
+  if (numericCode === HardwareWalletErrorCode.DeviceSeedMismatch) {
+    return HardwareWalletErrorCode.DeviceSeedMismatch;
   }
 
   const errorCodeValues = Object.values(ErrorCode).filter(
@@ -423,6 +422,11 @@ function mapStringCodeToErrorCode(stringCode: string): ErrorCode {
   const numericCode = Number.parseInt(stringCode, 10);
   if (!Number.isNaN(numericCode)) {
     return mapNumericCodeToErrorCode(numericCode);
+  }
+
+  // Extension-local codes are not in the SDK enum, so match their names first.
+  if (stringCode === 'DeviceSeedMismatch') {
+    return HardwareWalletErrorCode.DeviceSeedMismatch;
   }
 
   // Check if it's a valid ErrorCode key name (e.g., "DeviceDisconnected")
@@ -874,7 +878,7 @@ function tryInferLedgerKeyringError(
     )
   ) {
     return createHardwareWalletError(
-      LEDGER_WRONG_DEVICE_ERROR_CODE,
+      HardwareWalletErrorCode.DeviceSeedMismatch,
       walletType,
       causeMessage || error.message,
       {
@@ -1030,7 +1034,7 @@ function tryFromLedgerErrorMessage(
     )
   ) {
     return createHardwareWalletError(
-      LEDGER_WRONG_DEVICE_ERROR_CODE,
+      HardwareWalletErrorCode.DeviceSeedMismatch,
       walletType,
       errorMessage,
       { cause: getErrorCause(error) },

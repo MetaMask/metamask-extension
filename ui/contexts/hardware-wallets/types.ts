@@ -80,6 +80,13 @@ export type EnsureDeviceReadyOptions = {
    * (e.g. Trezor Model One message size limits).
    */
   preflightMessageBytes?: number;
+
+  /**
+   * Account being signed for. Ledger verifies the connected device derives it
+   * before the signature is submitted, so a wrong-seed device is blocked
+   * before it prompts on-device.
+   */
+  accountAddress?: string;
 };
 
 /**

@@ -6,7 +6,7 @@ import {
   MetaMetricsHardwareWalletRecoveryErrorType,
   MetaMetricsHardwareWalletRecoveryLocation,
 } from '../constants/metametrics';
-import { LEDGER_WRONG_DEVICE_ERROR_CODE } from './hardware-wallets/errors';
+import { HardwareWalletErrorCode } from './hardware-wallets/errors';
 
 const UNKNOWN_DEVICE_MODEL = 'N/A';
 const MAX_ERROR_MESSAGE_LENGTH = 500;
@@ -145,14 +145,14 @@ function sanitizeErrorMessage(message: string): string {
 }
 
 /**
- * Maps an {@link ErrorCode} numeric value to its enum name string for Segment `error_code`.
+ * Maps a hardware-wallet error code to its enum name string for Segment `error_code`.
  *
- * @param code - Hardware wallet SDK error code.
+ * @param code - Hardware wallet error code.
  * @returns String label (e.g. `DeviceDisconnected`).
  */
 function errorCodeToLabel(code: ErrorCode): string {
-  if (code === LEDGER_WRONG_DEVICE_ERROR_CODE) {
-    return 'LedgerWrongDevice';
+  if (code === HardwareWalletErrorCode.DeviceSeedMismatch) {
+    return 'DeviceSeedMismatch';
   }
 
   return ErrorCode[code];

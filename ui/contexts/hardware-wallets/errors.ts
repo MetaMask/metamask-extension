@@ -1,9 +1,10 @@
 import { HardwareWalletError, ErrorCode } from '@metamask/hw-wallet-sdk';
+import { HardwareWalletErrorCode } from '../../../shared/lib/hardware-wallets/errors';
 import { DeviceEvent } from './types';
 
 export {
   createHardwareWalletError,
-  LEDGER_WRONG_DEVICE_ERROR_CODE,
+  HardwareWalletErrorCode,
 } from '../../../shared/lib/hardware-wallets/errors';
 
 /**
@@ -50,6 +51,7 @@ export function isRetryableHardwareWalletError(error: HardwareWalletError) {
     case ErrorCode.DeviceStateBlindSignNotSupported:
     case ErrorCode.PermissionCameraDenied:
     case ErrorCode.PermissionCameraPromptDismissed:
+    case HardwareWalletErrorCode.DeviceSeedMismatch:
       return true;
     default:
       return false;

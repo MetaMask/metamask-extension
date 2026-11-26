@@ -819,6 +819,22 @@ export type LegacyBackgroundApiServiceGetLedgerPublicKeyAction = {
 };
 
 /**
+ * Verifies the connected Ledger derives the given account, so the signing
+ * preflight can block a wrong-seed device before it prompts on-device.
+ *
+ * Runs on the lock-free device-read path (the derivation is a device read).
+ * Fails open on everything except a confirmed seed mismatch: no
+ * `unlockAccountByAddress`, no recorded derivation path, and transient
+ * transport errors all resolve; signing still enforces ownership.
+ *
+ * @param address - The account being signed for.
+ */
+export type LegacyBackgroundApiServiceVerifyLedgerAccountOwnershipAction = {
+  type: `LegacyBackgroundApiService:verifyLedgerAccountOwnership`;
+  handler: LegacyBackgroundApiService['verifyLedgerAccountOwnership'];
+};
+
+/**
  * Gets the features from the Trezor device.
  *
  * @returns The features.
@@ -1253,6 +1269,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceCheckHardwareStatusAction
   | LegacyBackgroundApiServiceGetHdPathForLedgerKeyringAction
   | LegacyBackgroundApiServiceGetLedgerPublicKeyAction
+  | LegacyBackgroundApiServiceVerifyLedgerAccountOwnershipAction
   | LegacyBackgroundApiServiceGetTrezorFeaturesAction
   | LegacyBackgroundApiServiceForgetDeviceAction
   | LegacyBackgroundApiServiceUnlockHardwareWalletAccountAction

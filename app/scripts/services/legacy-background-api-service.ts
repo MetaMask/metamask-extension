@@ -412,6 +412,7 @@ import {
   LEDGER_LIVE_PATH,
 } from '../../../shared/constants/hardware-wallets';
 import {
+  HardwareWalletErrorCode,
   HardwareWalletType,
   createHardwareWalletError,
   isLedgerAccountPathMissingError,
@@ -598,6 +599,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'unlockAndGetSeedPhrase',
   'unlockHardwareWalletAccount',
   'upsertTransactionUIMetricsFragment',
+  'verifyLedgerAccountOwnership',
 ] as const;
 
 /**
@@ -2927,14 +2929,28 @@ export class LegacyBackgroundApiService {
     options: {
       walletType?: HardwareWalletType;
       waitForResult?: boolean;
+      fromAddress?: string;
     } | null = {},
   ): Promise<void> {
     // RPC params may serialize an omitted argument as `null`, so normalize first
     // before destructuring to avoid a runtime TypeError.
     const normalizedOptions = options ?? {};
-    const { walletType, waitForResult } = normalizedOptions;
+    const { walletType, waitForResult, fromAddress } = normalizedOptions;
     const approvalOptions =
       typeof waitForResult === 'boolean' ? { waitForResult } : undefined;
+
+    // Hard gate: verify the device before the approval is accepted, because
+    // accepting it sends the signing request. The UI preflight is best-effort
+    // and route-gated; this is the invariant. Route failures through the
+    // standard hardware-error wrapper so the UI always gets a typed RPC error
+    // and shows the modal instead of unwinding the confirmation page.
+    if (walletType === HardwareWalletType.Ledger && fromAddress) {
+      try {
+        await this.verifyLedgerAccountOwnership(fromAddress);
+      } catch (error) {
+        await this.#handleHardwareWalletError(error as Error, walletType);
+      }
+    }
 
     try {
       await this.#messenger.call(
@@ -3013,10 +3029,13 @@ export class LegacyBackgroundApiService {
     actionId: string;
     walletType: HardwareWalletType;
   }): Promise<void> {
+    const fromAddress = (txMeta as { txParams?: { from?: string } } | undefined)
+      ?.txParams?.from;
+
     await this.resolvePendingApproval(
       String(txId),
       { txMeta, actionId },
-      { waitForResult: true, walletType },
+      { waitForResult: true, walletType, fromAddress },
     );
   }
 
@@ -3343,6 +3362,72 @@ export class LegacyBackgroundApiService {
   }
 
   /**
+   * The connection whose Ledger already proved it derives a stored account.
+   * Signing preflights run on every confirmation, so the on-device derivation
+   * is kept to once per connection and only re-runs after a disconnect
+   * (which surfaces as a new `connectionId`).
+   */
+  #ledgerOwnershipMemo: number | null = null;
+
+  /**
+   * Verifies the connected Ledger derives the given account, so the signing
+   * preflight can block a wrong-seed device before it prompts on-device.
+   *
+   * Runs on the lock-free device-read path (the derivation is a device read).
+   * Fails open on everything except a confirmed seed mismatch: no
+   * `unlockAccountByAddress`, no recorded derivation path, and transient
+   * transport errors all resolve; signing still enforces ownership.
+   *
+   * @param address - The account being signed for.
+   */
+  async verifyLedgerAccountOwnership(address: string): Promise<void> {
+    await this.#withKeyringForDevice(
+      { name: HardwareDeviceNames.ledger, deviceRead: true },
+      async (keyring) => {
+        const ownershipKeyring = keyring as unknown as {
+          unlockAccountByAddress?: (account: string) => Promise<string>;
+        };
+        if (typeof ownershipKeyring.unlockAccountByAddress !== 'function') {
+          return;
+        }
+
+        const normalizedAddress = normalizeAddress(address);
+        const connected = await this.#queryConnectedLedgerDevices(
+          keyring as LedgerKeyringV2,
+        );
+        const connection = connected?.length === 1 ? connected[0] : null;
+
+        if (!connection) {
+          this.#ledgerOwnershipMemo = null;
+        } else if (this.#ledgerOwnershipMemo === connection.connectionId) {
+          return;
+        }
+
+        try {
+          await ownershipKeyring.unlockAccountByAddress(normalizedAddress);
+          this.#ledgerOwnershipMemo = connection?.connectionId ?? null;
+        } catch (error) {
+          this.#ledgerOwnershipMemo = null;
+          if (
+            error instanceof Error &&
+            LEDGER_SEED_MISMATCH_MESSAGES.some((shape) =>
+              error.message.includes(shape),
+            )
+          ) {
+            throw this.#createWrongDeviceError(normalizedAddress);
+          }
+          // No recorded derivation path, or a transient device/transport
+          // error: fail open, signing enforces ownership anyway.
+          log.warn(
+            'Ledger account ownership preflight failed, failing open',
+            error,
+          );
+        }
+      },
+    );
+  }
+
+  /**
    * Gets the features from the Trezor device.
    *
    * @returns The features.
@@ -3585,6 +3670,21 @@ export class LegacyBackgroundApiService {
   }
 
   /**
+   * Throws 3012 for a Ledger that does not hold the stored account.
+   *
+   * @param address - The first stored account, normalized for the retry copy.
+   * @returns A HardwareWalletError carrying the "Use the correct Ledger" copy.
+   */
+  #createWrongDeviceError(address: string): HardwareWalletError {
+    return createHardwareWalletError(
+      HardwareWalletErrorCode.DeviceSeedMismatch,
+      HardwareWalletType.Ledger,
+      undefined,
+      { metadata: { accountAddress: normalizeAddress(address) } },
+    );
+  }
+
+  /**
    * Queries the offscreen for the connected (permitted) Ledger devices.
    *
    * @param keyring - The keyring or device-read facade holding the bridge.
@@ -3693,7 +3793,9 @@ export class LegacyBackgroundApiService {
    * Runs on the lock-free deviceRead path (the derivation is a device read
    * that may hang on a locked device). Fails open on every outcome except a
    * confirmed seed mismatch: no stored accounts, legacy accounts without
-   * recorded details, and transient transport errors all proceed.
+   * recorded details, and transient transport errors all proceed. A mismatch
+   * means the connected device does not hold the stored account, so it throws
+   * 3012 (wrong device); the model/count gate still throws 3011.
    *
    * @param keyring - The Ledger V2 keyring wrapper (as restricted by the
    * device-read facade, which exposes `getAccounts` and the inner keyring's
@@ -3750,7 +3852,7 @@ export class LegacyBackgroundApiService {
           error.message.includes(shape),
         )
       ) {
-        throw this.#createDeviceMultipleConnectedError();
+        throw this.#createWrongDeviceError(firstAccount);
       }
       if (isLedgerAccountPathMissingError(error)) {
         // No recorded derivation path to compare against. Re-importing the

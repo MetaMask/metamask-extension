@@ -1,9 +1,6 @@
 import { Category, ErrorCode, Severity } from '@metamask/hw-wallet-sdk';
 
-import {
-  createHardwareWalletError,
-  LEDGER_WRONG_DEVICE_ERROR_CODE,
-} from './errors';
+import { createHardwareWalletError, HardwareWalletErrorCode } from './errors';
 import { HardwareWalletType } from './types';
 
 describe('createHardwareWalletError', () => {
@@ -43,10 +40,10 @@ describe('createHardwareWalletError', () => {
     });
   });
 
-  describe('LEDGER_WRONG_DEVICE_ERROR_CODE (3012)', () => {
+  describe('DeviceSeedMismatch (3012)', () => {
     it('carries the wrong-device copy', () => {
       const error = createHardwareWalletError(
-        LEDGER_WRONG_DEVICE_ERROR_CODE,
+        HardwareWalletErrorCode.DeviceSeedMismatch,
         HardwareWalletType.Ledger,
       );
 
@@ -58,7 +55,7 @@ describe('createHardwareWalletError', () => {
 
     it('is severity Error, category DeviceState', () => {
       const error = createHardwareWalletError(
-        LEDGER_WRONG_DEVICE_ERROR_CODE,
+        HardwareWalletErrorCode.DeviceSeedMismatch,
         HardwareWalletType.Ledger,
       );
 
@@ -69,11 +66,11 @@ describe('createHardwareWalletError', () => {
 
     it('keeps code 3012 and the wallet type in metadata', () => {
       const error = createHardwareWalletError(
-        LEDGER_WRONG_DEVICE_ERROR_CODE,
+        HardwareWalletErrorCode.DeviceSeedMismatch,
         HardwareWalletType.Ledger,
       );
 
-      expect(error.code).toBe(LEDGER_WRONG_DEVICE_ERROR_CODE);
+      expect(error.code).toBe(HardwareWalletErrorCode.DeviceSeedMismatch);
       expect(error.code).toBe(3012);
       expect(error.metadata?.walletType).toBe(HardwareWalletType.Ledger);
     });

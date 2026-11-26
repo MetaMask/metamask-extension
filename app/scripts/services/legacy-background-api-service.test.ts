@@ -78,7 +78,10 @@ import { isRelaySupported } from '../lib/transaction/transaction-relay';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { decodeTransactionData } from '../lib/transaction/decode/util';
 import { openUpdateTabAndReload } from '../lib/open-update-tab-and-reload';
-import { HardwareWalletType } from '../../../shared/lib/hardware-wallets';
+import {
+  HardwareWalletErrorCode,
+  HardwareWalletType,
+} from '../../../shared/lib/hardware-wallets';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import {
   DEFI_REFERRAL_PARTNERS,
@@ -2329,7 +2332,7 @@ describe('LegacyBackgroundApiService', () => {
         });
       });
 
-      it('blocks with 3011 when the device derives a different address', async () => {
+      it('blocks with 3012 and the normalized account when the device derives a different address', async () => {
         await withService(async ({ rootMessenger }) => {
           const unlockAccountByAddress = jest
             .fn()
@@ -2346,7 +2349,10 @@ describe('LegacyBackgroundApiService', () => {
 
           await expect(
             connectLedger(rootMessenger, keyring),
-          ).rejects.toMatchObject({ code: ErrorCode.DeviceMultipleConnected });
+          ).rejects.toMatchObject({
+            code: HardwareWalletErrorCode.DeviceSeedMismatch,
+            metadata: { accountAddress: FIRST_ACCOUNT_LOWER },
+          });
           expect(getFirstPage).not.toHaveBeenCalled();
         });
       });
@@ -2568,6 +2574,174 @@ describe('LegacyBackgroundApiService', () => {
 
           await connect(rootMessenger, keyring, 0);
           await connect(rootMessenger, keyring, 0);
+
+          expect(unlockAccountByAddress).toHaveBeenCalledTimes(2);
+        });
+      });
+    });
+
+    describe('verifyLedgerAccountOwnership', () => {
+      const ACCOUNT_LOWER = '0x5aaeb6053f3e94c9b9a09f33669435e7ef1beaed';
+      const ACCOUNT_CHECKSUMMED = '0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed';
+      const OTHER_ADDRESS = '0x0000000000000000000000000000000000000001';
+
+      const buildOwnershipKeyring = ({
+        connectionId = 1,
+        unlockAccountByAddress = jest
+          .fn()
+          .mockResolvedValue("m/44'/60'/0'/0/0"),
+      }: {
+        connectionId?: number;
+        unlockAccountByAddress?: jest.Mock;
+      } = {}) => {
+        const getConnectedDeviceInfo = jest.fn().mockResolvedValue([
+          {
+            vendorId: 0x2c97,
+            productId: 0x0004,
+            productName: 'Ledger Nano X',
+            connectionId,
+          },
+        ]);
+
+        return {
+          keyring: {
+            bridge: {
+              updateTransportMethod: jest.fn().mockResolvedValue(true),
+              getConnectedDeviceInfo,
+            },
+            inner: { unlockAccountByAddress },
+            getFirstPage: jest.fn().mockResolvedValue([]),
+            getNextPage: jest.fn().mockResolvedValue([]),
+            getPreviousPage: jest.fn().mockResolvedValue([]),
+          } as Record<string, unknown>,
+          unlockAccountByAddress,
+          getConnectedDeviceInfo,
+        };
+      };
+
+      const setup = async (
+        rootMessenger: RootMessenger,
+        keyring: Record<string, unknown>,
+      ) => {
+        registerWithKeyringV2(rootMessenger, keyring);
+      };
+
+      const verify = async (
+        rootMessenger: RootMessenger,
+        address = ACCOUNT_CHECKSUMMED,
+      ) =>
+        rootMessenger.call(
+          'LegacyBackgroundApiService:verifyLedgerAccountOwnership',
+          address,
+        );
+
+      it('resolves when the device derives the account and normalizes the address', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { keyring, unlockAccountByAddress } = buildOwnershipKeyring();
+          await setup(rootMessenger, keyring);
+
+          await expect(verify(rootMessenger)).resolves.toBeUndefined();
+          expect(unlockAccountByAddress).toHaveBeenCalledWith(ACCOUNT_LOWER);
+        });
+      });
+
+      it('rejects with 3012 and the account metadata on a seed mismatch', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { keyring } = buildOwnershipKeyring({
+            unlockAccountByAddress: jest
+              .fn()
+              .mockRejectedValue(
+                new Error(
+                  `Ledger: Account ${ACCOUNT_CHECKSUMMED} does not belong to the connected device`,
+                ),
+              ),
+          });
+          await setup(rootMessenger, keyring);
+
+          await expect(verify(rootMessenger)).rejects.toMatchObject({
+            code: HardwareWalletErrorCode.DeviceSeedMismatch,
+            metadata: { accountAddress: ACCOUNT_LOWER },
+          });
+        });
+      });
+
+      it('fails open when the account has no recorded derivation path', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { keyring } = buildOwnershipKeyring({
+            unlockAccountByAddress: jest
+              .fn()
+              .mockRejectedValue(
+                new Error(
+                  `Ledger: Account for address '${ACCOUNT_CHECKSUMMED}' not found`,
+                ),
+              ),
+          });
+          await setup(rootMessenger, keyring);
+
+          await expect(verify(rootMessenger)).resolves.toBeUndefined();
+        });
+      });
+
+      it('fails open on a transient transport error', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { keyring } = buildOwnershipKeyring({
+            unlockAccountByAddress: jest
+              .fn()
+              .mockRejectedValue(new Error('TransportOpen failed')),
+          });
+          await setup(rootMessenger, keyring);
+
+          await expect(verify(rootMessenger)).resolves.toBeUndefined();
+        });
+      });
+
+      it('fails open when the keyring cannot unlock by address', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const keyring = {
+            bridge: {
+              updateTransportMethod: jest.fn().mockResolvedValue(true),
+              getConnectedDeviceInfo: jest.fn().mockResolvedValue([]),
+            },
+          };
+          await setup(rootMessenger, keyring);
+
+          await expect(verify(rootMessenger)).resolves.toBeUndefined();
+        });
+      });
+
+      it('derives once per connection until the device reconnects', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { keyring, unlockAccountByAddress, getConnectedDeviceInfo } =
+            buildOwnershipKeyring();
+          await setup(rootMessenger, keyring);
+
+          await verify(rootMessenger);
+          await verify(rootMessenger);
+          await verify(rootMessenger, OTHER_ADDRESS);
+
+          expect(unlockAccountByAddress).toHaveBeenCalledTimes(1);
+
+          getConnectedDeviceInfo.mockResolvedValue([
+            {
+              vendorId: 0x2c97,
+              productId: 0x0004,
+              productName: 'Ledger Nano X',
+              connectionId: 2,
+            },
+          ]);
+          await verify(rootMessenger);
+          expect(unlockAccountByAddress).toHaveBeenCalledTimes(2);
+        });
+      });
+
+      it('does not memoize a fail-open result', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { keyring, unlockAccountByAddress } = buildOwnershipKeyring();
+          unlockAccountByAddress.mockRejectedValue(new Error('TransportOpen'));
+          await setup(rootMessenger, keyring);
+
+          await verify(rootMessenger);
+          await verify(rootMessenger);
 
           expect(unlockAccountByAddress).toHaveBeenCalledTimes(2);
         });
@@ -6259,6 +6433,170 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
 
+    describe('Ledger ownership gate', () => {
+      const ACCOUNT = '0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed';
+      const ACCOUNT_LOWER = '0x5aaeb6053f3e94c9b9a09f33669435e7ef1beaed';
+
+      const registerWithKeyring = (
+        rootMessenger: RootMessenger,
+        keyring: Record<string, unknown>,
+      ) => {
+        const handler = jest
+          .fn()
+          .mockImplementation((_selector, callback) => callback({ keyring }));
+        rootMessenger.registerActionHandler(
+          'KeyringController:withKeyringV2',
+          handler,
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:withKeyringV2Unsafe',
+          handler,
+        );
+      };
+
+      const buildKeyring = (
+        unlockAccountByAddress: jest.Mock,
+      ): Record<string, unknown> => ({
+        bridge: {
+          updateTransportMethod: jest.fn().mockResolvedValue(true),
+          getConnectedDeviceInfo: jest.fn().mockResolvedValue([]),
+        },
+        inner: { unlockAccountByAddress },
+        getFirstPage: jest.fn().mockResolvedValue([]),
+        getNextPage: jest.fn().mockResolvedValue([]),
+        getPreviousPage: jest.fn().mockResolvedValue([]),
+      });
+
+      it('verifies the account before accepting the approval', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const unlockAccountByAddress = jest
+            .fn()
+            .mockResolvedValue("m/44'/60'/0'/0/0");
+          registerWithKeyring(
+            rootMessenger,
+            buildKeyring(unlockAccountByAddress),
+          );
+          const acceptRequest = jest.fn().mockResolvedValue(undefined);
+          rootMessenger.registerActionHandler(
+            'ApprovalController:acceptRequest',
+            acceptRequest,
+          );
+
+          await rootMessenger.call(
+            'LegacyBackgroundApiService:resolvePendingApproval',
+            'approval-id',
+            undefined,
+            {
+              waitForResult: true,
+              walletType: HardwareWalletType.Ledger,
+              fromAddress: ACCOUNT,
+            },
+          );
+
+          expect(unlockAccountByAddress).toHaveBeenCalledWith(ACCOUNT_LOWER);
+          expect(
+            unlockAccountByAddress.mock.invocationCallOrder[0],
+          ).toBeLessThan(acceptRequest.mock.invocationCallOrder[0]);
+        });
+      });
+
+      it('does not accept the approval when the device holds a different seed', async () => {
+        await withService(async ({ rootMessenger }) => {
+          mockToHardwareWalletError.mockImplementation((error) => error);
+          const unlockAccountByAddress = jest
+            .fn()
+            .mockRejectedValue(
+              new Error(
+                `Ledger: Account ${ACCOUNT} does not belong to the connected device`,
+              ),
+            );
+          registerWithKeyring(
+            rootMessenger,
+            buildKeyring(unlockAccountByAddress),
+          );
+          const acceptRequest = jest.fn().mockResolvedValue(undefined);
+          rootMessenger.registerActionHandler(
+            'ApprovalController:acceptRequest',
+            acceptRequest,
+          );
+
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:resolvePendingApproval',
+              'approval-id',
+              undefined,
+              {
+                waitForResult: true,
+                walletType: HardwareWalletType.Ledger,
+                fromAddress: ACCOUNT,
+              },
+            ),
+          ).rejects.toMatchObject({
+            code: -32603,
+            data: { code: HardwareWalletErrorCode.DeviceSeedMismatch },
+          });
+
+          expect(acceptRequest).not.toHaveBeenCalled();
+        });
+      });
+
+      it('skips the check when the approval has no account address', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const unlockAccountByAddress = jest
+            .fn()
+            .mockResolvedValue("m/44'/60'/0'/0/0");
+          registerWithKeyring(
+            rootMessenger,
+            buildKeyring(unlockAccountByAddress),
+          );
+          const acceptRequest = jest.fn().mockResolvedValue(undefined);
+          rootMessenger.registerActionHandler(
+            'ApprovalController:acceptRequest',
+            acceptRequest,
+          );
+
+          await rootMessenger.call(
+            'LegacyBackgroundApiService:resolvePendingApproval',
+            'approval-id',
+            undefined,
+            { waitForResult: true, walletType: HardwareWalletType.Ledger },
+          );
+
+          expect(unlockAccountByAddress).not.toHaveBeenCalled();
+          expect(acceptRequest).toHaveBeenCalled();
+        });
+      });
+
+      it('skips the check for non-Ledger wallets', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const unlockAccountByAddress = jest.fn();
+          registerWithKeyring(
+            rootMessenger,
+            buildKeyring(unlockAccountByAddress),
+          );
+          const acceptRequest = jest.fn().mockResolvedValue(undefined);
+          rootMessenger.registerActionHandler(
+            'ApprovalController:acceptRequest',
+            acceptRequest,
+          );
+
+          await rootMessenger.call(
+            'LegacyBackgroundApiService:resolvePendingApproval',
+            'approval-id',
+            undefined,
+            {
+              waitForResult: true,
+              walletType: HardwareWalletType.Trezor,
+              fromAddress: ACCOUNT,
+            },
+          );
+
+          expect(unlockAccountByAddress).not.toHaveBeenCalled();
+          expect(acceptRequest).toHaveBeenCalled();
+        });
+      });
+    });
+
     it('transforms hardware wallet errors to internal JSON-RPC errors', async () => {
       await withService(async ({ rootMessenger }) => {
         const error = new Error('Ledger transport disconnected');
@@ -6381,7 +6719,11 @@ describe('LegacyBackgroundApiService', () => {
         expect(resolvePendingApprovalSpy).toHaveBeenCalledWith(
           '42',
           { txMeta, actionId: 'action-id' },
-          { waitForResult: true, walletType: HardwareWalletType.Ledger },
+          {
+            waitForResult: true,
+            walletType: HardwareWalletType.Ledger,
+            fromAddress: '0x0000000000000000000000000000000000000001',
+          },
         );
       });
     });

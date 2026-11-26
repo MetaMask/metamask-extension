@@ -283,6 +283,7 @@ describe('useHardwareFooter', () => {
 
       expect(mockEnsureDeviceReady).toHaveBeenCalledWith({
         requireBlindSigning: false,
+        accountAddress: HARDWARE_ACCOUNT_ADDRESS,
       });
       expect(result.current.isHardwareWalletReady).toBe(true);
     });
@@ -300,6 +301,7 @@ describe('useHardwareFooter', () => {
 
       expect(mockEnsureDeviceReady).toHaveBeenCalledWith({
         requireBlindSigning: true,
+        accountAddress: HARDWARE_ACCOUNT_ADDRESS,
       });
     });
 

@@ -20,7 +20,7 @@ import {
   nextHardwareWalletRecoveryInlineCtaViewCount,
   resetHardwareWalletRecoveryInlineCtaViewCount,
 } from './hardware-wallet-recovery-metrics';
-import { LEDGER_WRONG_DEVICE_ERROR_CODE } from './hardware-wallets/errors';
+import { HardwareWalletErrorCode } from './hardware-wallets/errors';
 
 describe('hardware-wallet-recovery-metrics', () => {
   describe('mapHardwareWalletTypeToMetricDeviceType', () => {
@@ -205,13 +205,13 @@ describe('hardware-wallet-recovery-metrics', () => {
       expect(error_message).toContain('user facing');
     });
 
-    it('labels the extension-local wrong-device code as LedgerWrongDevice', () => {
+    it('labels the wrong-device code as DeviceSeedMismatch', () => {
       const { error_code } = extractHardwareWalletRecoveryErrorCodeAndMessage({
-        code: LEDGER_WRONG_DEVICE_ERROR_CODE,
+        code: HardwareWalletErrorCode.DeviceSeedMismatch,
         message: 'different seed',
       });
 
-      expect(error_code).toBe('LedgerWrongDevice');
+      expect(error_code).toBe('DeviceSeedMismatch');
     });
 
     it('uses message when userMessage is absent on HardwareWalletError', () => {

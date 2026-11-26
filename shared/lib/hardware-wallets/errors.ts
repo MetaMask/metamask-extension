@@ -10,9 +10,19 @@ import {
 import { HardwareWalletType } from './types';
 
 /**
+ * Hardware-wallet error codes the extension defines until the SDK ships them.
+ * 3012 sits in the SDK's device range, after `DeviceMultipleConnected` (3011).
+ * Typed as ErrorCode so it flows through the SDK-typed helpers; delete this
+ * and use the SDK member once it exists.
+ */
+export const HardwareWalletErrorCode = {
+  DeviceSeedMismatch: 3012 as ErrorCode,
+} as const;
+
+/**
  * Factory function to create hardware wallet errors
  *
- * @param code - The error code from ErrorCode enum
+ * @param code - The hardware wallet error code
  * @param walletType - The hardware wallet type
  * @param message - Optional custom error message
  * @param options - Optional error options
@@ -44,14 +54,6 @@ export function createHardwareWalletError(
     },
   });
 }
-
-/**
- * Extension-local code for a signing-time seed mismatch: the connected device
- * does not hold the requested account. No SDK code exists for this, and it is
- * distinct from 3011 because 3011 is the onboarding single-device gate, while
- * this one just means the wrong Ledger is plugged in.
- */
-export const LEDGER_WRONG_DEVICE_ERROR_CODE = 3012 as ErrorCode;
 
 /**
  * Error properties map built from LEDGER_ERROR_MAPPINGS
@@ -107,9 +109,10 @@ ERROR_PROPERTIES_MAP.set(ErrorCode.DeviceMultipleConnected, {
     "You can only connect one Ledger at a time. To use a different Ledger, remove the connected Ledger's accounts from MetaMask first.",
 });
 
-// Extension-local: signing found a Ledger that holds a different seed (no SDK
-// code). 3011 stays reserved for the onboarding single-device gate.
-ERROR_PROPERTIES_MAP.set(LEDGER_WRONG_DEVICE_ERROR_CODE, {
+// The connected Ledger does not hold the stored account, raised by the connect
+// seed check and mapped from signing. The SDK has no copy for it, so set it
+// after extraction. 3011 stays reserved for the single-device model/count gate.
+ERROR_PROPERTIES_MAP.set(HardwareWalletErrorCode.DeviceSeedMismatch, {
   severity: Severity.Err,
   category: Category.DeviceState,
   userMessage:
@@ -120,8 +123,8 @@ ERROR_PROPERTIES_MAP.set(LEDGER_WRONG_DEVICE_ERROR_CODE, {
  * Substrings of the plain `Error` messages the Ledger keyring throws when the
  * connected device holds a different seed for the requested account. There is
  * no typed error, so both the signing mapping and the connect-time seed check
- * match on these. Signing maps them to {@link LEDGER_WRONG_DEVICE_ERROR_CODE};
- * the connect seed check keeps mapping them to 3011.
+ * match on these. Both map them to
+ * {@link HardwareWalletErrorCode.DeviceSeedMismatch}.
  */
 export const LEDGER_SEED_MISMATCH_MESSAGES = [
   'does not belong to the connected device',

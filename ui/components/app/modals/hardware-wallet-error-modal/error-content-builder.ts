@@ -2,9 +2,9 @@ import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { IconName, IconColor } from '@metamask/design-system-react';
 import {
   getHardwareWalletErrorCode,
+  HardwareWalletErrorCode,
   HardwareWalletType,
   isTrezorDesktopConnectionMissingError,
-  LEDGER_WRONG_DEVICE_ERROR_CODE,
 } from '../../../../contexts/hardware-wallets';
 
 /** Discriminant values for {@link ErrorContent}; use for comparisons and `buildErrorContent` returns. */
@@ -151,7 +151,7 @@ export function buildErrorContent(
     // Signing-time seed mismatch: the connected Ledger does not hold the
     // requested account. Point the user at the Ledger they added it with;
     // retrying with this device cannot succeed.
-    case LEDGER_WRONG_DEVICE_ERROR_CODE:
+    case HardwareWalletErrorCode.DeviceSeedMismatch:
       return {
         variant: HardwareWalletErrorContentVariant.Description,
         icon: IconName.Danger,

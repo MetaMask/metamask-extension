@@ -6,7 +6,7 @@ import {
   Category,
 } from '@metamask/hw-wallet-sdk';
 import { KeyringControllerError } from '@metamask/keyring-controller';
-import { LEDGER_WRONG_DEVICE_ERROR_CODE } from './errors';
+import { HardwareWalletErrorCode } from './errors';
 import { HardwareWalletType } from './types';
 import {
   isJsonRpcHardwareWalletError,
@@ -304,7 +304,7 @@ describe('rpc-error-utils', () => {
 
       const result = toHardwareWalletError(error, HardwareWalletType.Ledger);
 
-      expect(result.code).toBe(LEDGER_WRONG_DEVICE_ERROR_CODE);
+      expect(result.code).toBe(HardwareWalletErrorCode.DeviceSeedMismatch);
       expect(result.userMessage).toContain("doesn't hold the account");
     });
 
@@ -320,8 +320,10 @@ describe('rpc-error-utils', () => {
         HardwareWalletType.Ledger,
       );
 
-      expect(personalSign.code).toBe(LEDGER_WRONG_DEVICE_ERROR_CODE);
-      expect(eip7702.code).toBe(LEDGER_WRONG_DEVICE_ERROR_CODE);
+      expect(personalSign.code).toBe(
+        HardwareWalletErrorCode.DeviceSeedMismatch,
+      );
+      expect(eip7702.code).toBe(HardwareWalletErrorCode.DeviceSeedMismatch);
     });
 
     it('maps a KeyringControllerError wrapping a seed-mismatch message to the wrong-device code', () => {
@@ -333,17 +335,15 @@ describe('rpc-error-utils', () => {
 
       const result = toHardwareWalletError(wrapped, HardwareWalletType.Ledger);
 
-      expect(result.code).toBe(LEDGER_WRONG_DEVICE_ERROR_CODE);
+      expect(result.code).toBe(HardwareWalletErrorCode.DeviceSeedMismatch);
     });
 
     it('keeps the wrong-device code across the RPC boundary', () => {
-      // 3012 is not in the SDK enum, so this only works because
-      // mapNumericCodeToErrorCode special-cases it.
       const deserialized = {
         code: -32603,
         message: 'Hardware wallet error',
         data: {
-          code: LEDGER_WRONG_DEVICE_ERROR_CODE,
+          code: HardwareWalletErrorCode.DeviceSeedMismatch,
           severity: Severity.Err,
           category: Category.DeviceState,
           userMessage: "This Ledger doesn't hold the account",
@@ -355,7 +355,7 @@ describe('rpc-error-utils', () => {
         HardwareWalletType.Ledger,
       );
 
-      expect(result.code).toBe(LEDGER_WRONG_DEVICE_ERROR_CODE);
+      expect(result.code).toBe(HardwareWalletErrorCode.DeviceSeedMismatch);
       expect(result.code).toBe(3012);
     });
 

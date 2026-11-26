@@ -4,9 +4,9 @@
 export { HardwareWalletType } from './types';
 export {
   createHardwareWalletError,
+  HardwareWalletErrorCode,
   isLedgerAccountPathMissingError,
   LEDGER_SEED_MISMATCH_MESSAGES,
-  LEDGER_WRONG_DEVICE_ERROR_CODE,
 } from './errors';
 export * from './rpc-error-utils';
 export { ENABLE_DMK_FEATURE_FLAG, isDmkFeatureEnabled } from './feature-flags';

@@ -5488,7 +5488,13 @@ export function resolvePendingApproval(
   return async (dispatch: MetaMaskReduxDispatch, getState) => {
     const walletType = options?.walletType;
     if (walletType) {
-      return resolveHardwareWalletApproval(dispatch, id, value, walletType);
+      return resolveHardwareWalletApproval(
+        dispatch,
+        id,
+        value,
+        walletType,
+        options?.fromAddress,
+      );
     }
 
     // Check if this is a hardware wallet account
@@ -5507,6 +5513,7 @@ export function resolvePendingApproval(
           id,
           value,
           detectedWalletType,
+          fromAddress,
         );
       }
     }
@@ -5565,6 +5572,7 @@ async function resolveHardwareWalletApproval(
   id: string,
   value: unknown,
   walletType: HardwareWalletType,
+  fromAddress?: string,
 ): Promise<void> {
   dispatch(showLoadingIndication());
 
@@ -5572,6 +5580,7 @@ async function resolveHardwareWalletApproval(
     const requestOptions = {
       waitForResult: true,
       walletType,
+      fromAddress,
     };
 
     await submitRequestToBackground(
@@ -6061,6 +6070,21 @@ export async function getLedgerPublicKey(
   return await submitRequestToBackground(
     'LegacyBackgroundApiService:getLedgerPublicKey',
     [hdPath],
+  );
+}
+
+/**
+ * Checks that the connected Ledger derives the given account, so the signing
+ * preflight can block a wrong-seed device before it prompts on-device.
+ *
+ * @param address - The account being signed for.
+ */
+export async function verifyLedgerAccountOwnership(
+  address: string,
+): Promise<void> {
+  await submitRequestToBackground(
+    'LegacyBackgroundApiService:verifyLedgerAccountOwnership',
+    [address],
   );
 }
 

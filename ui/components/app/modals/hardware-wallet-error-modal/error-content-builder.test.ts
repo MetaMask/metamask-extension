@@ -1,7 +1,7 @@
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import {
   createHardwareWalletError,
-  LEDGER_WRONG_DEVICE_ERROR_CODE,
+  HardwareWalletErrorCode,
 } from '../../../../contexts/hardware-wallets/errors';
 import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
 import { buildErrorContent } from './error-content-builder';
@@ -125,7 +125,7 @@ describe('buildErrorContent', () => {
     );
   });
 
-  it('shows the wrong-device copy for LEDGER_WRONG_DEVICE_ERROR_CODE', () => {
+  it('shows the wrong-device copy for DeviceSeedMismatch', () => {
     const t = jest.fn((key: string, substitutions?: string[]) => {
       if (key === HardwareWalletType.Ledger) {
         return 'Ledger';
@@ -135,7 +135,7 @@ describe('buildErrorContent', () => {
     });
 
     const error = createHardwareWalletError(
-      LEDGER_WRONG_DEVICE_ERROR_CODE,
+      HardwareWalletErrorCode.DeviceSeedMismatch,
       HardwareWalletType.Ledger,
     );
 
