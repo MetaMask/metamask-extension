@@ -9321,14 +9321,6 @@
     "message": "Scan next QR code",
     "description": "Button label for scanning a non-final QR hardware-wallet signature after the user signs on their device."
   },
-  "qrSyncAccountImportedDescription": {
-    "message": "$1 account imported to MetaMask mobile",
-    "description": "$1 is the number of imported accounts"
-  },
-  "qrSyncAccountsImportedDescription": {
-    "message": "$1 accounts imported to MetaMask mobile",
-    "description": "$1 is the number of imported accounts"
-  },
   "qrSyncAccountCount": {
     "message": "$1 accounts",
     "description": "$1 is the number of accounts in a wallet"
@@ -9336,6 +9328,14 @@
   "qrSyncAccountCountOne": {
     "message": "$1 account",
     "description": "$1 is the number of accounts in a wallet"
+  },
+  "qrSyncAccountImportedDescription": {
+    "message": "$1 account imported to MetaMask mobile",
+    "description": "$1 is the number of imported accounts"
+  },
+  "qrSyncAccountsImportedDescription": {
+    "message": "$1 accounts imported to MetaMask mobile",
+    "description": "$1 is the number of imported accounts"
   },
   "qrSyncImportAccountsCta": {
     "message": "Import accounts",
