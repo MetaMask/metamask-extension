@@ -36,6 +36,11 @@ import {
   getShieldApiServiceInstanceOptions,
   getShieldControllerInstanceOptions,
 } from './instance-options/shield-controller';
+import {
+  getSignatureControllerInstanceOptions,
+  setupSignatureControllerListeners,
+} from './instance-options/signature-controller';
+import { getSignatureControllerInitMessenger } from './messengers/signature-controller-messenger';
 import { getSubscriptionServiceInstanceOptions } from './instance-options/subscription-service';
 import { getPermissionControllerInstanceOptions } from './instance-options/permission-controller';
 import { getPermissionControllerInitMessenger } from './messengers/permission-controller-messenger';
@@ -111,6 +116,9 @@ export function initializeWallet(request: InitializeWalletRequest) {
         getSeedlessOnboardingControllerInstanceOptions({
           initMessenger: seedlessOnboardingControllerInitMessenger,
         }),
+      signatureController: getSignatureControllerInstanceOptions({
+        initMessenger: getSignatureControllerInitMessenger(messenger),
+      }),
       shieldApiService: getShieldApiServiceInstanceOptions(),
       shieldController: getShieldControllerInstanceOptions(),
       remoteFeatureFlagController:
@@ -130,6 +138,8 @@ export function initializeWallet(request: InitializeWalletRequest) {
     messenger,
     state,
   });
+
+  setupSignatureControllerListeners(wallet.getInstance('SignatureController'));
 
   // Fixture-less test builds (like `yarn build:test:dev`) have no persisted
   // networks, so they would otherwise come up with Arc selected. Fixtures that

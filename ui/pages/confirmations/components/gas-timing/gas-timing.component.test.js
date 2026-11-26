@@ -8,7 +8,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
-import GasTiming from '.';
+import GasTiming from './gas-timing.component';
 
 jest.mock('../../../../store/actions.ts', () => ({
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),

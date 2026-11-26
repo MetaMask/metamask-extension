@@ -217,9 +217,6 @@
   "from": {
     "message": "Od"
   },
-  "gasUsed": {
-    "message": "Uporabljen gas"
-  },
   "general": {
     "message": "Splošno"
   },
@@ -392,9 +389,6 @@
     "message": "Zasebni lljuč",
     "description": "select this type of file to use to import an account"
   },
-  "privateNetwork": {
-    "message": "Zasebno omrežje"
-  },
   "readdToken": {
     "message": "Ta žeton lahko dodate tudi kasneje z uporabo gumba “Dodaj žeton” v možnostih vašega računa."
   },
@@ -548,9 +542,6 @@
   },
   "unapproved": {
     "message": "Neodobreno"
-  },
-  "units": {
-    "message": "enote"
   },
   "unknown": {
     "message": "Neznano"

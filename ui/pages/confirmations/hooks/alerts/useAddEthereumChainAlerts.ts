@@ -27,7 +27,7 @@ const isRouteMeshRpcForChain = (rpcUrl: URL, chainId: string) => {
   );
 };
 
-// Ported from templates/add-ethereum-chain.js
+// Ported from the legacy add-ethereum-chain approval template
 export function useAddEthereumChainAlerts() {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const t = useI18nContext();
