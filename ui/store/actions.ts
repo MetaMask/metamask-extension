@@ -2920,45 +2920,6 @@ export function multichainAddAssets(
 }
 
 /**
- * To add ignored token addresses to state
- *
- * @param options
- * @param options.tokensToIgnore
- * @param options.networkClientId
- * @param options.dontShowLoadingIndicator
- */
-export function ignoreTokens({
-  tokensToIgnore,
-  dontShowLoadingIndicator = false,
-  networkClientId = null,
-}: {
-  tokensToIgnore: string[];
-  dontShowLoadingIndicator: boolean;
-  networkClientId?: NetworkClientId;
-}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  const _tokensToIgnore = Array.isArray(tokensToIgnore)
-    ? tokensToIgnore
-    : [tokensToIgnore];
-
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    if (!dontShowLoadingIndicator) {
-      dispatch(showLoadingIndication());
-    }
-    try {
-      await submitRequestToBackground(
-        'LegacyBackgroundApiService:ignoreTokens',
-        [_tokensToIgnore, networkClientId],
-      );
-    } catch (error) {
-      logErrorWithMessage(error);
-    } finally {
-      await forceUpdateMetamaskState(dispatch);
-      dispatch(hideLoadingIndication());
-    }
-  };
-}
-
-/**
  * To ignore tokens using the unified state
  *
  * @param assetId

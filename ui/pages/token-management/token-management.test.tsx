@@ -124,7 +124,6 @@ jest.mock('../../store/actions', () => {
     ),
     addCustomAsset: jest.fn(() => () => Promise.resolve()),
     hideAsset: jest.fn(() => () => Promise.resolve()),
-    ignoreTokens: jest.fn(() => () => Promise.resolve()),
     importCustomAssetsBatch: jest.fn(() => () => Promise.resolve()),
     multichainAddAssets: jest.fn(() => () => Promise.resolve()),
     multichainIgnoreAssets: jest.fn(() => () => Promise.resolve()),
@@ -135,7 +134,6 @@ type MockedTokenManagementActions = {
   addNetwork: jest.Mock;
   addCustomAsset: jest.Mock;
   hideAsset: jest.Mock;
-  ignoreTokens: jest.Mock;
   importCustomAssetsBatch: jest.Mock;
   multichainAddAssets: jest.Mock;
   multichainIgnoreAssets: jest.Mock;
@@ -392,7 +390,6 @@ describe('TokenManagementPage', () => {
     actions.addNetwork.mockClear();
     actions.addCustomAsset.mockClear();
     actions.hideAsset.mockClear();
-    actions.ignoreTokens.mockClear();
     actions.importCustomAssetsBatch.mockClear();
     actions.multichainAddAssets.mockClear();
     actions.multichainIgnoreAssets.mockClear();
@@ -1510,7 +1507,6 @@ describe('TokenManagementPage', () => {
 
     expect(screen.getByText('Alpha Token')).toBeInTheDocument();
     expect(toggle.value).toBe('false');
-    expect(actions.ignoreTokens).not.toHaveBeenCalled();
     expect(actions.hideAsset).not.toHaveBeenCalled();
     expect(trackAnalyticsEventMock).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -1718,7 +1714,6 @@ describe('TokenManagementPage', () => {
 
     unmount();
 
-    expect(actions.ignoreTokens).not.toHaveBeenCalled();
     expect(actions.hideAsset).not.toHaveBeenCalled();
     expect(actions.multichainIgnoreAssets).not.toHaveBeenCalled();
   });

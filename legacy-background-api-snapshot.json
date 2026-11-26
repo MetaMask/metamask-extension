@@ -86,7 +86,6 @@
     "getTrezorFeatures",
     "handleDefiReferral",
     "handleDefiReferralOnPermittedAccountsAdded",
-    "ignoreTokens",
     "importAccountWithStrategy",
     "importMnemonicToVault",
     "isPublicEndpointUrl",

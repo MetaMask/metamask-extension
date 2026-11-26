@@ -46,18 +46,6 @@ export type LegacyBackgroundApiServiceAddTokenAction = {
 };
 
 /**
- * Hides tokens on the AssetsController.
- *
- * @param tokensToIgnore - The token contract addresses to hide.
- * @param networkClientId - The ID of the network client the tokens are on.
- * Defaults to the selected network client.
- */
-export type LegacyBackgroundApiServiceIgnoreTokensAction = {
-  type: `LegacyBackgroundApiService:ignoreTokens`;
-  handler: LegacyBackgroundApiService['ignoreTokens'];
-};
-
-/**
  * Determines if the given endpoint URL is a public endpoint URL.
  *
  * @param endpointUrl - The endpoint URL to check.
@@ -1202,7 +1190,6 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceSetCurrentCurrencyAction
   | LegacyBackgroundApiServiceGetAssetsAction
   | LegacyBackgroundApiServiceAddTokenAction
-  | LegacyBackgroundApiServiceIgnoreTokensAction
   | LegacyBackgroundApiServiceIsPublicEndpointUrlAction
   | LegacyBackgroundApiServiceIsSendBundleSupportedAction
   | LegacyBackgroundApiServiceGetRequestAccountTabIdsAction

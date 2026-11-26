@@ -2667,62 +2667,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('#ignoreTokens', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls ignoreTokens in background', async () => {
-      const store = mockStore();
-
-      const messengerCallStub = sinon
-        .stub()
-        .withArgs('LegacyBackgroundApiService:ignoreTokens', [
-          ['0x0000001'],
-          null,
-        ])
-        .resolves();
-      setBackgroundConnection({
-        messengerCall: messengerCallStub,
-        getStatePatches: sinon.stub().resolves([]),
-      });
-
-      await store.dispatch(
-        actions.ignoreTokens({ tokensToIgnore: '0x0000001' }),
-      );
-      expect(
-        messengerCallStub.calledOnceWithExactly(
-          'LegacyBackgroundApiService:ignoreTokens',
-          [['0x0000001'], null],
-        ),
-      ).toBe(true);
-    });
-
-    it('hides loading indicator when ignoreTokens in background fails', async () => {
-      const store = mockStore();
-
-      const messengerCallStub = sinon
-        .stub()
-        .withArgs('LegacyBackgroundApiService:ignoreTokens', sinon.match.array)
-        .rejects(new Error('error'));
-      setBackgroundConnection({
-        messengerCall: messengerCallStub,
-        getStatePatches: sinon.stub().resolves([]),
-      });
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
-      await store.dispatch(
-        actions.ignoreTokens({ tokensToIgnore: '0x0000001' }),
-      );
-
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
   describe('#hideAsset', () => {
     afterEach(() => {
       sinon.restore();
