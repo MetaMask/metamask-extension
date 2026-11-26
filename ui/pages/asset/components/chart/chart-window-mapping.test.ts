@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import {
   getTvResolution,
   INTERVAL_DURATION_MS,
@@ -37,7 +38,7 @@ describe('chart-window-mapping', () => {
       expect(getTvResolution('4h')).toBe('240');
     });
 
-    it.each(['', '2h', 'toString'])(
+    it.each<string>(['', '2h', 'toString'])(
       'returns undefined for unknown interval %j',
       (interval) => {
         expect(getTvResolution(interval)).toBeUndefined();

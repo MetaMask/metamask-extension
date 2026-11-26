@@ -1,4 +1,5 @@
 import React from 'react';
+import { it } from '@jest/globals';
 import { render, waitFor, act } from '@testing-library/react';
 import AdvancedChartIframe, {
   CHART_ORIGIN,
@@ -794,7 +795,7 @@ describe('AdvancedChartIframe', () => {
       });
     });
 
-    it.each([
+    it.each<[string, string]>([
       ['5m', '5'],
       ['4h', '240'],
       ['1w', '1W'],
