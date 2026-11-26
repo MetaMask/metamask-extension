@@ -123,6 +123,34 @@ describe('useSnapAmountOnInput', () => {
     });
   });
 
+  // The Bitcoin Snap accepts `toAddress` on `onAmountInput`, but only Tron sends
+  // it, so the Bitcoin fee probe quotes against the account's own address.
+  it('omits the recipient address for Bitcoin sends', async () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: {
+        assetId:
+          'bip122:000000000019d6689c085ae165831e93/slip44:0' as CaipAssetType,
+        chainId: 'bip122:000000000019d6689c085ae165831e93',
+        decimals: 8,
+        symbol: 'BTC',
+        isNative: true,
+      },
+      chainId: 'bip122:000000000019d6689c085ae165831e93',
+      fromAccount: MOCK_ACCOUNT,
+      toResolved: 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf',
+      value: '0.5',
+    } as unknown as SendContext.SendContextType);
+
+    const { result } = renderHookWithProvider(() => useSnapAmountOnInput());
+    await result.current.validateAmountWithSnap('0.5');
+
+    expect(validateAmountMultichainMock).toHaveBeenCalledWith(MOCK_ACCOUNT, {
+      value: '0.5',
+      accountId: MOCK_ACCOUNT.id,
+      assetId: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+    });
+  });
+
   it('returns validation result from validateAmountMultichain', async () => {
     const mockValidationResult = { error: 'Insufficient balance' };
     validateAmountMultichainMock.mockResolvedValue(mockValidationResult);
