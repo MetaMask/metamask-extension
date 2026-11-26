@@ -182,7 +182,7 @@ jobs:
           mods = {m['ident'].replace(root, '<root>'): m.get('buildHash') for m in dump['modules']}
           # Provisional chunk content hashes, as embedded in the runtime chunk
           # before the real content hashes replace them.
-          chunks = {str(c['name'] or c['id']): (c.get('contentHash') or {}).get('javascript') for c in dump['chunks']}
+          chunks = {str(c.get('name') or c.get('id')): (c.get('contentHash') or {}).get('javascript') for c in dump['chunks']}
           files = {}
           for line in open(sys.argv[5]):
               digest, name = line.rstrip('\n').split('  ', 1)
