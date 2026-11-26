@@ -241,12 +241,26 @@ export const MultichainTriggeredAddressRowsList = ({
     setIsPopoverOpen(false);
   }, [clearHoverCloseTimeout]);
 
-  const scheduleHideFallbackPopover = useCallback(() => {
-    clearHoverCloseTimeout();
-    hoverCloseTimeoutRef.current = setTimeout(() => {
-      hideFallbackPopover();
-    }, hoverCloseDelay);
-  }, [clearHoverCloseTimeout, hideFallbackPopover, hoverCloseDelay]);
+  const scheduleHideFallbackPopover = useCallback(
+    (event?: React.FocusEvent | React.MouseEvent) => {
+      if (event && 'relatedTarget' in event && event.relatedTarget) {
+        const popover = popoverRef.current;
+        const relatedTarget = event.relatedTarget as EventTarget;
+        if (
+          popover &&
+          relatedTarget instanceof Node &&
+          popover.contains(relatedTarget)
+        ) {
+          return;
+        }
+      }
+      clearHoverCloseTimeout();
+      hoverCloseTimeoutRef.current = setTimeout(() => {
+        hideFallbackPopover();
+      }, hoverCloseDelay);
+    },
+    [clearHoverCloseTimeout, hideFallbackPopover, hoverCloseDelay],
+  );
 
   useEffect(
     () => () => {
@@ -522,7 +536,7 @@ export const MultichainTriggeredAddressRowsList = ({
         id={popoverId}
         // @ts-expect-error React types do not include popover yet.
         popover="auto"
-        className="rounded-lg border border-border-muted bg-background-elevated2 p-2 inset-auto"
+        className="rounded-lg border border-border-muted bg-background-elevated2 p-2 supports-[top:anchor(bottom)]:inset-auto"
         onMouseEnter={useHoverFallback ? showFallbackPopover : undefined}
         onMouseLeave={
           useHoverFallback ? scheduleHideFallbackPopover : undefined
@@ -532,11 +546,12 @@ export const MultichainTriggeredAddressRowsList = ({
         style={
           {
             width: '360px',
+            maxWidth: 'calc(100vw - 16px)',
             margin: '2px 0 0',
             positionAnchor: anchorName,
             top: 'anchor(bottom)',
             left: 'anchor(left)',
-            positionTryFallbacks: 'flip-block',
+            positionTryFallbacks: 'flip-block, flip-inline',
           } as React.CSSProperties
         }
       >

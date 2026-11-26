@@ -98,7 +98,7 @@ describe('AppHeaderUnlockedContent trace', () => {
     const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
     renderWithProvider(<AppHeaderUnlockedContent menuRef={menuRef} />, store);
 
-    const hoverTarget = screen.getByTestId('network-group-with-copy-icon');
+    const hoverTarget = screen.getByTestId('multichain-address-rows-trigger');
     fireEvent.mouseEnter(hoverTarget);
 
     await waitFor(() => {

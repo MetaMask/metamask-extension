@@ -50,7 +50,14 @@ export const MultichainAccountNetworkGroupWithCopyIcon = ({
 
   return (
     <Box
-      onClick={displayDefaultAddress ? handleDefaultAddressClick : undefined}
+      onClick={
+        displayDefaultAddress
+          ? (e) => {
+              e.stopPropagation();
+              handleDefaultAddressClick();
+            }
+          : undefined
+      }
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       backgroundColor={
