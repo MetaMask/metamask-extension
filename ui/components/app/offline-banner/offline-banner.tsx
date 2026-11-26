@@ -5,25 +5,26 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-const subscribe = (callback: () => void) => {
+function subscribeToOnlineStatus(callback: () => void) {
   window.addEventListener('online', callback);
   window.addEventListener('offline', callback);
+
   return () => {
     window.removeEventListener('online', callback);
     window.removeEventListener('offline', callback);
   };
-};
+}
 
 const getSnapshot = () => navigator.onLine;
 
 export const OfflineBanner = () => {
   const t = useI18nContext();
-  const isOnline = useSyncExternalStore(subscribe, getSnapshot);
+  const isOnline = useSyncExternalStore(subscribeToOnlineStatus, getSnapshot);
 
   return (
     <div role="status">
       {!isOnline && (
-        <BannerAlert severity={BannerAlertSeverity.Warning}>
+        <BannerAlert className="m-4" severity={BannerAlertSeverity.Warning}>
           {t('offlineBanner')}
         </BannerAlert>
       )}
