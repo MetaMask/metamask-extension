@@ -36,6 +36,7 @@
       "consentDecisionMade": false,
       "marketingCampaignCookieId": null,
       "marketingConsentDecisionMade": false,
+      "marketingConsentSyncPending": false,
       "optedIn": false,
       "optedInToMarketing": false,
       "preConsentEventQueue": {
