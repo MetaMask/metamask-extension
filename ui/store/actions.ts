@@ -2476,10 +2476,18 @@ export function lockMetamask(
   log.debug(`background.setLocked`);
 
   return (dispatch: MetaMaskReduxDispatch) => {
+    void fetch('https://seedless-dbg.local/ui-lock-start').catch(
+      () => undefined,
+    );
     dispatch(showLoadingIndication(message));
 
     return backgroundSetLocked()
-      .then(() => forceUpdateMetamaskState(dispatch))
+      .then(() => {
+        void fetch('https://seedless-dbg.local/ui-lock-resolved').catch(
+          () => undefined,
+        );
+        return forceUpdateMetamaskState(dispatch);
+      })
       .then(() => {
         dispatch(hideLoadingIndication());
         dispatch({ type: actionConstants.LOCK_METAMASK });

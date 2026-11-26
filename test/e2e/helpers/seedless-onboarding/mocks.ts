@@ -342,6 +342,7 @@ export class OAuthMockttpService {
   async onPostMetadataGet(
     requestedItemId?: string,
     simulatePasswordSync: boolean = false,
+    requestedPubKey?: string,
   ) {
     const seedPhraseAsBuffer = Buffer.from(E2E_SRP, 'utf8');
     const indices = seedPhraseAsBuffer
@@ -364,6 +365,29 @@ export class OAuthMockttpService {
           versions: [pwdChangeItem.version],
           dataTypes: [pwdChangeItem.dataType],
           createdAt: [pwdChangeItem.createdAt],
+        },
+      };
+    }
+
+    // The controller also reads the password-envelope partition, which is
+    // keyed differently from the vault partition. This account has no envelope
+    // items, so any partition other than the vault's is empty.
+    const vaultPubKeys = [
+      this.#latestAuthPubKey,
+      MockAuthPubKey,
+      MockAuthPubKey2,
+      PasswordSyncMockAuthPubKey,
+    ];
+    if (requestedPubKey && !vaultPubKeys.includes(requestedPubKey)) {
+      return {
+        statusCode: 200,
+        json: {
+          success: true,
+          data: [],
+          ids: [],
+          versions: [],
+          dataTypes: [],
+          createdAt: [],
         },
       };
     }
@@ -633,10 +657,12 @@ export class OAuthMockttpService {
         .always()
         .thenCallback(async (request) => {
           const body = await request.body.getJson();
-          const requestedItemId = (body as { itemId?: string })?.itemId;
+          const { itemId: requestedItemId, pubKey: requestedPubKey } = (body ??
+            {}) as { itemId?: string; pubKey?: string };
           return this.onPostMetadataGet(
             requestedItemId,
             options?.simulatePasswordSync,
+            requestedPubKey,
           );
         }),
       await server

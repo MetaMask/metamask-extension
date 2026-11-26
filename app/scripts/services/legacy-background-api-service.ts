@@ -426,6 +426,37 @@ import type {
 } from './sentry/sentry-tracing-service-method-action-types';
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
 
+// Temporary diagnostics for the seedless lock hang. Remove after investigation.
+let seedlessDbgSeq = 0;
+function seedlessDbg(step: string): number {
+  const id = ++seedlessDbgSeq;
+  const text = `${id} ${step}`;
+  console.error(`[seedless-dbg] ${text}`);
+  void fetch(
+    `https://seedless-dbg.local/${encodeURIComponent(text).slice(0, 400)}`,
+  ).catch(() => undefined);
+  return id;
+}
+
+function traceSeedlessMutex(mutex: Mutex, name: string): Mutex {
+  const acquire = mutex.acquire.bind(mutex);
+  mutex.acquire = ((priority?: number) => {
+    const caller =
+      new Error().stack?.split('\n')[2]?.trim().slice(0, 140) ?? 'unknown';
+    const id = seedlessDbg(
+      `${name} wait locked=${mutex.isLocked()} ${caller}`,
+    );
+    return acquire(priority).then((release) => {
+      seedlessDbg(`${name} acquired ${id}`);
+      return () => {
+        seedlessDbg(`${name} release ${id}`);
+        release();
+      };
+    });
+  }) as Mutex['acquire'];
+  return mutex;
+}
+
 const serviceName = 'LegacyBackgroundApiService';
 
 /**
@@ -929,8 +960,11 @@ export class LegacyBackgroundApiService {
       markNotificationPopupAsAutomaticallyClosed;
     this.#requestSafeReload = requestSafeReload;
     this.#sendUpdate = sendUpdate;
-    this.#seedlessOperationMutex = new Mutex();
-    this.#createVaultMutex = new Mutex();
+    this.#seedlessOperationMutex = traceSeedlessMutex(
+      new Mutex(),
+      'op-mutex',
+    );
+    this.#createVaultMutex = traceSeedlessMutex(new Mutex(), 'vault-mutex');
     this.#offscreenPromise = offscreenPromise;
 
     this.#messenger.registerMethodActionHandlers(
@@ -2312,6 +2346,7 @@ export class LegacyBackgroundApiService {
   async resolveSeedlessPasswordSyncInstruction({
     skipCache = false,
   }: { skipCache?: boolean } = {}): Promise<PasswordSyncInstruction> {
+    seedlessDbg(`resolveSync enter skipCache=${skipCache}`);
     const isSocialLoginFlow = this.#messenger.call(
       'OnboardingController:getIsSocialLoginFlow',
     );
@@ -2320,13 +2355,16 @@ export class LegacyBackgroundApiService {
     );
 
     if (!isSocialLoginFlow || !completedOnboarding) {
+      seedlessDbg('resolveSync skip');
       return PasswordSyncInstruction.InSync;
     }
 
-    return this.#messenger.call(
+    const instruction = await this.#messenger.call(
       'SeedlessOnboardingController:resolvePasswordSyncState',
       { skipCache },
     );
+    seedlessDbg(`resolveSync result=${instruction}`);
+    return instruction;
   }
 
   /**
@@ -2341,6 +2379,9 @@ export class LegacyBackgroundApiService {
     skipCache = false,
     captureSentryError = false,
   } = {}): Promise<boolean | undefined> {
+    seedlessDbg(
+      `checkOutdated enter skipCache=${skipCache}`,
+    );
     try {
       const isSocialLoginFlow = this.#messenger.call(
         'OnboardingController:getIsSocialLoginFlow',
@@ -2359,8 +2400,11 @@ export class LegacyBackgroundApiService {
         { skipCache },
       );
 
-      return passwordSyncState !== PasswordSyncInstruction.InSync;
+      const isOutdated = passwordSyncState !== PasswordSyncInstruction.InSync;
+      seedlessDbg(`checkOutdated result=${isOutdated}`);
+      return isOutdated;
     } catch (error) {
+      seedlessDbg(`checkOutdated error=${(error as Error)?.message}`);
       if (captureSentryError) {
         this.#messenger.captureException?.(
           createSentryError(
@@ -2774,7 +2818,9 @@ export class LegacyBackgroundApiService {
    * controller.
    */
   async setLocked({ skipSeedlessOperationLock = false } = {}): Promise<void> {
+    seedlessDbg(`setLocked enter skipSeedless=${skipSeedlessOperationLock}`);
     const releaseVaultMutex = await this.#createVaultMutex.acquire();
+    seedlessDbg('setLocked vault mutex held');
     try {
       const isSocialLoginFlow = this.#messenger.call(
         'OnboardingController:getIsSocialLoginFlow',
@@ -2783,13 +2829,18 @@ export class LegacyBackgroundApiService {
       let releaseLock;
       if (isSocialLoginFlow && !skipSeedlessOperationLock) {
         releaseLock = await this.#seedlessOperationMutex.acquire();
+        seedlessDbg('setLocked op mutex held');
       }
 
       try {
         if (isSocialLoginFlow) {
+          seedlessDbg('setLocked before controller');
           await this.#messenger.call('SeedlessOnboardingController:setLocked');
+          seedlessDbg('setLocked after controller');
         }
+        seedlessDbg('setLocked before keyring');
         await this.#messenger.call('KeyringController:setLocked');
+        seedlessDbg('setLocked after keyring');
 
         // stop polling for the subscriptions when the wallet is locked manually and window/side-panel is still open
         this.#messenger.call('SubscriptionController:stopAllPolling');
