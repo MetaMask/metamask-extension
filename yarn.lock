@@ -7279,21 +7279,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/analytics-controller@npm:^4.4.0":
-  version: 4.4.0
-  resolution: "@metamask/analytics-controller@npm:4.4.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^10.1.0"
-    "@metamask/config-registry-controller": "npm:^6.0.0"
-    "@metamask/geolocation-controller": "npm:^2.0.0"
-    "@metamask/messenger": "npm:^3.0.0"
-    "@metamask/utils": "npm:^12.0.2"
-    lodash-es: "npm:^4.18.1"
-    uuid: "npm:^14.0.3"
-  checksum: 10/ac5901e15fe1c8105dc50b67f12e7d392b2edd7a00bc3211877889a219924e1f235c4e4dffbd562be59bb95812c1f4d60020b93b2d4b37e44916a00b1bab7597
-  languageName: node
-  linkType: hard
-
 "@metamask/announcement-controller@npm:^9.0.0":
   version: 9.0.0
   resolution: "@metamask/announcement-controller@npm:9.0.0"
