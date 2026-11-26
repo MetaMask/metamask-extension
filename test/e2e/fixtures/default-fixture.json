@@ -206,7 +206,7 @@
       },
       "marketingCampaignCookieId": null,
       "marketingConsentDecisionMade": true,
-      "marketingConsentSyncPending": true,
+      "marketingConsentSyncPending": false,
       "optedIn": false,
       "optedInToMarketing": false
     },
@@ -214,7 +214,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 238,
+      "currentMigrationVersion": 239,
       "firstTimeInfo": {},
       "installAttribution": null,
       "previousAppVersion": "",
@@ -1291,6 +1291,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 238
+    "version": 239
   }
 }
