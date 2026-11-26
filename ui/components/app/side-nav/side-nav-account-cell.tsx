@@ -109,6 +109,7 @@ export const SideNavAccountCell = ({
           </Text>
           {(balance || subtitle) && (
             <div className="flex min-w-0 items-center gap-2">
+              {subtitle}
               {balance ? (
                 <SensitiveText
                   data-testid="side-nav-account-cell-balance"
@@ -117,12 +118,11 @@ export const SideNavAccountCell = ({
                   fontWeight={FontWeight.Medium}
                   ellipsis
                   isHidden={privacyMode}
-                  className="shrink-0"
+                  className="w-max"
                 >
                   {balance}
                 </SensitiveText>
               ) : null}
-              {subtitle}
             </div>
           )}
         </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, within } from '@testing-library/react';
 import { AccountGroupId } from '@metamask/account-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
@@ -123,11 +123,15 @@ describe('SideNavAccountCell', () => {
     ).toBeInTheDocument();
   });
 
-  it('copies the address without selecting the account', () => {
+  it('copies the address without selecting the account when the copy icon is clicked', () => {
     const handleClick = jest.fn();
     renderCell({ showDefaultAddress: true, onClick: handleClick });
 
-    fireEvent.click(screen.getByTestId('side-nav-account-cell-address'));
+    fireEvent.click(
+      within(screen.getByTestId('side-nav-account-cell-address')).getByRole(
+        'button',
+      ),
+    );
 
     expect(mockHandleCopy).toHaveBeenCalledWith(defaultAddress);
     expect(handleClick).not.toHaveBeenCalled();
