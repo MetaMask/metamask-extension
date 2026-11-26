@@ -28,6 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixed a bug that could make the full screen view unresponsive after adding an account or forgetting a hardware wallet when the wallet had many accounts (#48186)
+- Fixed the Solana token logo showing on a white background in token avatars (#48176)
 - Fixed a bug that prevented custom token changes from syncing to Authenticated User Storage (#48163)
 - Restored support for the MPCVault custodian in the institutional wallet snap (#48074)
 - Fixed dapp confirmation popups not opening after switching the preferred view from the side panel to the popup (#48048)
