@@ -1,18 +1,15 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { OfflineBanner } from './offline-banner';
+import { OfflineBanner } from '#ui/components/app/offline-banner/offline-banner';
 
-const mockUseI18nContext = jest.fn(() => (key: string) => key);
-
-jest.mock('../../../hooks/useI18nContext', () => ({
-  useI18nContext: () => mockUseI18nContext(),
+jest.mock('#ui/hooks/useI18nContext', () => ({
+  useI18nContext: () => (key: string) => key,
 }));
 
 describe('OfflineBanner', () => {
   let mockNavigatorOnLine: boolean;
 
   beforeEach(() => {
-    jest.clearAllMocks();
     mockNavigatorOnLine = true;
     Object.defineProperty(navigator, 'onLine', {
       configurable: true,
