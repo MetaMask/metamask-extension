@@ -1,4 +1,5 @@
 import { it } from '@jest/globals';
+import { JsonRpcError, serializeError } from '@metamask/rpc-errors';
 import type {
   Position,
   PerpsMarketData,
@@ -789,6 +790,25 @@ describe('PerpsStreamManager', () => {
           channel,
           method,
           new Error('PROVIDER_LIFECYCLE_STALE'),
+        );
+
+        expect(consoleErrorSpy).not.toHaveBeenCalled();
+      },
+    );
+
+    it.each(channels)(
+      'does not log a PROVIDER_LIFECYCLE_STALE rejection of the %s fetch after a background RPC round trip',
+      async (channel, method) => {
+        // Mirrors createMetaRPCHandler (serializeError) and
+        // metaRPCClientFactory (JsonRpcError), the path the UI error takes.
+        const { code, message, data } = serializeError(
+          new Error('PROVIDER_LIFECYCLE_STALE'),
+          { shouldIncludeStack: true },
+        );
+        await subscribeWithRejection(
+          channel,
+          method,
+          new JsonRpcError(code, message, data),
         );
 
         expect(consoleErrorSpy).not.toHaveBeenCalled();
