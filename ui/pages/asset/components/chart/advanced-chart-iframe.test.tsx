@@ -33,7 +33,7 @@ function setOhlcvPayload(
   return {
     data,
     rnBackedPagination: { enabled: true },
-    atomicIntervalWindow: true,
+    boundedIntervalWindow: true,
     ...(visibleFromMs === undefined ? {} : { visibleFromMs }),
   };
 }
