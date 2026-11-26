@@ -57,7 +57,7 @@ export const SideNavAccountAddress = ({
 
   return (
     <Box
-      className="flex min-w-0 basis-[60px] grow max-w-max items-center gap-1"
+      className="flex min-w-[60px] basis-[60px] grow max-w-max items-center gap-1"
       data-testid="side-nav-account-cell-address"
     >
       <Text
@@ -66,6 +66,7 @@ export const SideNavAccountAddress = ({
         color={
           addressCopied ? TextColor.SuccessDefault : TextColor.TextAlternative
         }
+        className="min-w-0"
       >
         {addressCopied
           ? `${scopeLabel} ${t('addressCopied').toLowerCase()}`
