@@ -7,6 +7,15 @@ import {
   mockTokensV3Assets,
 } from '../../btc/mocks/tokens-api';
 import { TronNode } from '../../../seeder/tron/node';
+import {
+  accountsBalancesV5,
+  accountsSupportedNetworksV2,
+  bridgeGetTokensPopular,
+  bridgeGetTokensSearch,
+  priceV1ExchangeRates,
+  priceV3Spot,
+  tokensV3Assets,
+} from '../../../mock-response-data/api-responses';
 
 export const TRON_ACCOUNT_ADDRESS = 'TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3';
 export const TRON_RECIPIENT_ADDRESS = 'TK3xRFq22eEiATz6kfamDeAAQrPdfdGPeq';
@@ -815,8 +824,8 @@ export async function mockTronGetTransactions(
 export async function mockExchangeRates(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
-  return mockServer
-    .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+  return priceV1ExchangeRates
+    .rule(mockServer)
     .withQuery({ baseCurrency: 'usd' })
     .always()
     .thenCallback(() => ({
@@ -1040,8 +1049,8 @@ export async function mockTronSpotPrices(
     },
   };
 
-  return mockServer
-    .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
+  return priceV3Spot
+    .rule(mockServer)
     .always()
     .thenCallback((request) => {
       const { searchParams } = new URL(request.url);
@@ -1102,8 +1111,8 @@ export async function mockTrxNativeSpotPrices(
   };
 
   // Initial load: all three Tron chains bundled together
-  const allChainsEndpoint = await mockServer
-    .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
+  const allChainsEndpoint = await priceV3Spot
+    .rule(mockServer)
     .withQuery({
       vsCurrency: 'usd',
       assetIds:
@@ -1117,8 +1126,8 @@ export async function mockTrxNativeSpotPrices(
     }));
 
   // After switching to Tron network: single-chain refresh with cacheOnly=false
-  const singleChainEndpoint = await mockServer
-    .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
+  const singleChainEndpoint = await priceV3Spot
+    .rule(mockServer)
     .withQuery({
       assetIds: 'tron:728126428/slip44:195',
       vsCurrency: 'usd',
@@ -1143,8 +1152,8 @@ export async function mockTronAssets(
   const trc10Assets = { ...DEFAULT_TRC10_ASSETS, ...tronNode?.trc10Tokens };
   const trc20Assets = { ...DEFAULT_TRC20_ASSETS, ...tronNode?.trc20Tokens };
 
-  return mockServer
-    .forGet('https://tokens.api.cx.metamask.io/v3/assets')
+  return tokensV3Assets
+    .rule(mockServer)
     .always()
     .thenCallback(() => ({
       statusCode: 200,
@@ -1457,8 +1466,8 @@ const MOCK_TRON_TOKENS = [
 export async function mockBridgeGetTronTokens(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint[]> {
-  const searchEndpoint = await mockServer
-    .forPost(/getTokens\/search/u)
+  const searchEndpoint = await bridgeGetTokensSearch
+    .rule(mockServer)
     .thenCallback(() => ({
       statusCode: 200,
       json: {
@@ -1470,8 +1479,8 @@ export async function mockBridgeGetTronTokens(
       },
     }));
 
-  const popularEndpoint = await mockServer
-    .forPost(/getTokens\/popular/u)
+  const popularEndpoint = await bridgeGetTokensPopular
+    .rule(mockServer)
     .thenCallback(() => ({
       statusCode: 200,
       json: MOCK_TRON_TOKENS,
@@ -1598,8 +1607,8 @@ export async function mockTronGetContract(
 export async function mockAccountsApiV2WithTron(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
-  return mockServer
-    .forGet(/https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
+  return accountsSupportedNetworksV2
+    .rule(mockServer)
     .always()
     .thenJson(200, {
       fullSupport: [
@@ -1644,10 +1653,8 @@ export async function mockAccountsApiV5WithTron(
     },
   ];
 
-  return mockServer
-    .forGet(
-      /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
-    )
+  return accountsBalancesV5
+    .rule(mockServer)
     .always()
     .thenCallback(() => ({
       statusCode: 200,

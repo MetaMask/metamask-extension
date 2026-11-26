@@ -1482,9 +1482,6 @@
   "advancedGasPriceModalTitle": {
     "message": "Advanced network fee"
   },
-  "advancedGasPriceTitle": {
-    "message": "Gas price"
-  },
   "advancedPermissionSmallCase": {
     "message": "advanced permission"
   },
@@ -1745,12 +1742,6 @@
   },
   "amount": {
     "message": "Amount"
-  },
-  "amountReceived": {
-    "message": "Amount received"
-  },
-  "amountSent": {
-    "message": "Amount sent"
   },
   "andForListItems": {
     "message": "$1, and $2",
@@ -2173,9 +2164,6 @@
   },
   "blockExplorerUrl": {
     "message": "Block explorer URL"
-  },
-  "blockExplorerUrlDefinition": {
-    "message": "The URL used as the block explorer for this network."
   },
   "blockExplorerView": {
     "message": "View account at $1",
@@ -2692,9 +2680,6 @@
   "chainId": {
     "message": "Chain ID"
   },
-  "chainIdDefinition": {
-    "message": "The chain ID used to sign transactions for this network."
-  },
   "chainIdExistsErrorMsg": {
     "message": "This Chain ID is currently used by the $1 network."
   },
@@ -2806,10 +2791,6 @@
   "clickHere": {
     "message": "Click here",
     "description": "Link to help when a JSON account import is not working"
-  },
-  "clickToConnectLedgerViaWebHID": {
-    "message": "Click here to connect your Ledger via WebHID",
-    "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
   },
   "clipboardClearFailed": {
     "message": "Couldn't clear clipboard. Try again."
@@ -3218,6 +3199,10 @@
   "contractInteraction": {
     "message": "Contract interaction"
   },
+  "convert": {
+    "message": "Convert",
+    "description": "Label for the source token row in deposit confirmations"
+  },
   "convertTokenToNFTDescription": {
     "message": "We've detected that this asset is an NFT. MetaMask now has full native support for NFTs. Would you like to remove it from your token list and add it as an NFT?"
   },
@@ -3324,9 +3309,6 @@
   },
   "currencySymbol": {
     "message": "Currency symbol"
-  },
-  "currencySymbolDefinition": {
-    "message": "The ticker symbol displayed for this network’s currency."
   },
   "current": {
     "message": "Current"
@@ -4089,9 +4071,6 @@
     "message": "Code: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorGettingSafeChainList": {
-    "message": "Error while getting safe chain list. Continue with caution."
-  },
   "errorLegalTextFirstInfo": {
     "message": "Technical diagnostic information."
   },
@@ -4410,9 +4389,6 @@
   "gasTimingSecondsShort": {
     "message": "$1 sec",
     "description": "$1 represents a number of seconds"
-  },
-  "gasUsed": {
-    "message": "Gas used"
   },
   "gatorNoJustificationProvided": {
     "message": "No justification was provided for the permission"
@@ -5068,9 +5044,6 @@
   "insufficientTokens": {
     "message": "Insufficient tokens."
   },
-  "interactWithSmartContract": {
-    "message": "Smart contract"
-  },
   "interactingWith": {
     "message": "Interacting with"
   },
@@ -5254,18 +5227,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "You need to make use your last account before you can add a new one."
-  },
-  "ledgerConnectionInstructionCloseOtherApps": {
-    "message": "Close any other software connected to your device and then click here to refresh."
-  },
-  "ledgerConnectionInstructionHeader": {
-    "message": "Prior to clicking confirm:"
-  },
-  "ledgerConnectionInstructionStepFour": {
-    "message": "Enable \"smart contract data\" or \"blind signing\" on your Ledger device."
-  },
-  "ledgerConnectionInstructionStepThree": {
-    "message": "Be sure your Ledger is plugged in and to select the Ethereum app."
   },
   "ledgerConnectionStatusAppClosedDescription": {
     "message": "Open it on your Ledger device to continue"
@@ -5905,14 +5866,6 @@
   "minute": {
     "message": "min"
   },
-  "mismatchedChainLinkText": {
-    "message": "verify the network details",
-    "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
-  },
-  "mismatchedChainRecommendation": {
-    "message": "We recommend that you $1 before proceeding.",
-    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
   "mismatchedNetworkName": {
     "message": "According to our record the network name may not correctly match this chain ID."
   },
@@ -5946,13 +5899,72 @@
     "message": "Available balance: $1",
     "description": "$1 is the formatted Money Account vault withdrawable balance"
   },
+  "moneyAccountDepositApyDialogHowItWorksBody": {
+    "message": "Earnings are added to your balance in real time and compound, so your earnings earn too."
+  },
+  "moneyAccountDepositApyDialogLead": {
+    "message": "This is the rate your MetaMask Money balance is earning right now."
+  },
+  "moneyAccountDepositApyDialogSubtitle": {
+    "message": "Annual Percentage Yield"
+  },
+  "moneyAccountDepositApyDialogWhereItComesFromBody": {
+    "message": "Your funds go into a DeFi vault that lends across established markets. Veda manages the vault, and Steakhouse Financial oversees its risk."
+  },
+  "moneyAccountDepositApyDialogWhereItComesFromTitle": {
+    "message": "Where it comes from"
+  },
+  "moneyAccountDepositApyDialogWhyChangesBody": {
+    "message": "APY is variable and isn't guaranteed. It moves up and down with borrowing demand."
+  },
+  "moneyAccountDepositApyDialogWhyChangesTitle": {
+    "message": "Why it changes"
+  },
   "moneyAccountDepositConvert": {
     "message": "Convert $1",
     "description": "Confirm button on a MetaMask Money deposit. $1 is the pay token symbol, for example USDC."
   },
+  "moneyAccountDepositEstTime": {
+    "message": "Est. time"
+  },
   "moneyAccountDepositHeader": {
     "message": "Add to MetaMask Money",
     "description": "Header on the MetaMask Money deposit confirmation"
+  },
+  "moneyAccountDepositLessThanOneMinute": {
+    "message": "Less than 1 min"
+  },
+  "moneyAccountDepositNoLockupsBody": {
+    "message": "There are no notice periods or penalties to swap or send your funds."
+  },
+  "moneyAccountDepositNoLockupsTitle": {
+    "message": "No lockups"
+  },
+  "moneyAccountDepositUsdDialogAlwaysWorthBody": {
+    "message": "It's backed 1:1 by short-term US Treasury bills and cash."
+  },
+  "moneyAccountDepositUsdDialogAlwaysWorthTitle": {
+    "message": "Always worth $1"
+  },
+  "moneyAccountDepositUsdDialogBackedBody": {
+    "message": "BlackRock manages the reserves and JPMorgan Chase holds them. mUSD is issued by Bridge, a Stripe company."
+  },
+  "moneyAccountDepositUsdDialogBackedTitle": {
+    "message": "Backed by names you know"
+  },
+  "moneyAccountDepositUsdDialogEarnsBody": {
+    "message": "It starts earning automatically in your MetaMask Money account."
+  },
+  "moneyAccountDepositUsdDialogEarnsTitle": {
+    "message": "Earns up to $1",
+    "description": "$1 is the styled APY run, e.g. \"6.2% APY\""
+  },
+  "moneyAccountDepositUsdDialogLead": {
+    "message": "MetaMask USD (mUSD) is a dollar stablecoin."
+  },
+  "moneyAccountDepositUsdDialogTitle": {
+    "message": "You'll receive $1 of MetaMask USD",
+    "description": "$1 is the formatted receive amount, e.g. \"$100\"."
   },
   "moneyAccountProjectedBalance": {
     "message": "Projected 1-year balance:"
@@ -6501,9 +6513,6 @@
     "message": "Introducing multichain accounts",
     "description": "Title for the multichain accounts introduction modal."
   },
-  "multichainAddEthereumChainConfirmationDescription": {
-    "message": "You're adding this network to MetaMask and giving this site permission to use it."
-  },
   "multichainAddressViewAll": {
     "message": "View all"
   },
@@ -6548,17 +6557,9 @@
   "musdBuyMusd": {
     "message": "Buy mUSD"
   },
-  "musdClaimTitle": {
-    "message": "Claim bonus",
-    "description": "Title for the mUSD bonus claim confirmation screen"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "mUSD conversion fees include network costs and may include provider fees. No MetaMask fee applies when you convert to mUSD.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
-  },
-  "musdConversionTitle": {
-    "message": "Converted to mUSD",
-    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "musdConvert": {
     "message": "Convert"
@@ -6719,9 +6720,6 @@
     "message": "You're now transacting on $1.",
     "description": "$1 is the name of the network"
   },
-  "networkDetails": {
-    "message": "Network details"
-  },
   "networkFee": {
     "message": "Network fee"
   },
@@ -6739,9 +6737,6 @@
   },
   "networkNameBitcoin": {
     "message": "Bitcoin"
-  },
-  "networkNameDefinition": {
-    "message": "The name associated with this network."
   },
   "networkNameEthereum": {
     "message": "Ethereum"
@@ -6789,9 +6784,6 @@
   },
   "networkTabPopular": {
     "message": "Popular"
-  },
-  "networkURL": {
-    "message": "Network URL"
   },
   "networkURLDefinition": {
     "message": "The URL used to access this network."
@@ -6896,17 +6888,6 @@
   "nftUnsupportedEmptyDescription": {
     "message": "NFTs aren't supported on this network."
   },
-  "nftWarningContent": {
-    "message": "You're granting access to $1, including any you might own in the future. The party on the other end can transfer these NFTs from your wallet at any time without asking you until you revoke this approval. $2",
-    "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
-  },
-  "nftWarningContentBold": {
-    "message": "all your $1 NFTs",
-    "description": "$1 is name of the collection"
-  },
-  "nftWarningContentGrey": {
-    "message": "Proceed with caution."
-  },
   "nfts": {
     "message": "NFTs"
   },
@@ -6939,9 +6920,6 @@
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps, and most hardware wallets, will not work with your current browser version."
-  },
-  "noMMFeeSwapping": {
-    "message": "No MetaMask fee"
   },
   "noNetworkFee": {
     "message": "No network fee"
@@ -7336,13 +7314,6 @@
   },
   "openFullScreen": {
     "message": "Open full screen"
-  },
-  "openFullScreenForLedgerWebHid": {
-    "message": "Go to full screen to connect your Ledger.",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
-  "openInBlockExplorer": {
-    "message": "Open in block explorer"
   },
   "openMultichainAccountAddressMenu": {
     "message": "Open multichain account address menu"
@@ -8052,6 +8023,9 @@
   "perpsBatchCloseFailed": {
     "message": "Failed to close one or more positions. Try again."
   },
+  "perpsBatchIncomplete": {
+    "message": "Some orders or positions couldn't be updated. Try again."
+  },
   "perpsCancelAllOrders": {
     "message": "Cancel all"
   },
@@ -8176,9 +8150,6 @@
   },
   "perpsDepositFundsTitle": {
     "message": "Deposit funds to Perps"
-  },
-  "perpsDepositTitle": {
-    "message": "Funded perps account"
   },
   "perpsDepositToastErrorDescription": {
     "message": "Your funds were not added to Perps. Try again."
@@ -8325,6 +8296,10 @@
   "perpsIncludesPnl": {
     "message": "includes P&L $1"
   },
+  "perpsInsufficientBalance": {
+    "message": "Insufficient balance to complete this operation. Check your available funds.",
+    "description": "Shown when a perps action fails because the account balance is too low"
+  },
   "perpsInsufficientMargin": {
     "message": "Insufficient margin to place this order."
   },
@@ -8346,6 +8321,18 @@
   },
   "perpsLeverage": {
     "message": "Leverage"
+  },
+  "perpsLeverageBelowPosition": {
+    "message": "Leverage must be at least as high as your existing position.",
+    "description": "Shown when an order uses lower leverage than the open position on the same market"
+  },
+  "perpsLeverageInvalid": {
+    "message": "This leverage is outside the allowed range.",
+    "description": "Shown when an order leverage is outside the market range"
+  },
+  "perpsLeverageReductionFailed": {
+    "message": "You cannot reduce your leverage.",
+    "description": "Shown when the exchange rejects lowering leverage on an open position"
   },
   "perpsLimit": {
     "message": "Limit"
@@ -8376,11 +8363,18 @@
     "message": "If the price hits this point, you'll be liquidated and lose your margin. Higher leverage makes this more likely.",
     "description": "Tooltip content for the liquidation price row on the Perps order summary"
   },
+  "perpsLiquidationPriceUnavailable": {
+    "message": "Liquidation price is unavailable. Try again."
+  },
   "perpsLong": {
     "message": "Long"
   },
   "perpsMargin": {
     "message": "Margin"
+  },
+  "perpsMarginAdjustmentFailed": {
+    "message": "Unable to adjust margin. Try again.",
+    "description": "Shown when adding or removing margin on a position fails"
   },
   "perpsMarginRiskWarning": {
     "message": "Removing margin moves your liquidation price closer. Ensure you have sufficient buffer."
@@ -8556,11 +8550,22 @@
   "perpsOrderFilled": {
     "message": "Filled"
   },
+  "perpsOrderMaxValueExceeded": {
+    "message": "This order is above the maximum size.",
+    "description": "Shown when an order exceeds the maximum order value"
+  },
+  "perpsOrderNoLongerOpen": {
+    "message": "This order is no longer open. It may have already been filled or canceled."
+  },
   "perpsOrderOriginalSize": {
     "message": "Original size"
   },
   "perpsOrderRejected": {
     "message": "Your order was rejected. Try again."
+  },
+  "perpsOrderSizeMin": {
+    "message": "This order is below the minimum size.",
+    "description": "Shown when an order is smaller than the minimum order size"
   },
   "perpsOrderStatus": {
     "message": "Status"
@@ -8577,6 +8582,9 @@
   "perpsOrders": {
     "message": "Orders"
   },
+  "perpsOrdersFailed": {
+    "message": "We couldn't load your orders. Try again."
+  },
   "perpsPerpMarketSubtitle": {
     "message": "$1-$2 perp",
     "description": "$1 is the market ticker (e.g. BTC), $2 is the collateral asset (e.g. USDC). Shown as the market pair subtitle on the perps market detail header, e.g. 'BTC-USDC perp'."
@@ -8587,8 +8595,27 @@
   "perpsPosition": {
     "message": "Position"
   },
+  "perpsPositionLeverageUnavailable": {
+    "message": "You can't add to this position until its leverage is available."
+  },
+  "perpsPositionNotFound": {
+    "message": "Position not found.",
+    "description": "Shown when an action targets a position that no longer exists"
+  },
+  "perpsPositionWouldFlip": {
+    "message": "This order would flip your position direction. Please close your existing position first.",
+    "description": "Shown when a closing order would reverse the position direction"
+  },
   "perpsPositions": {
     "message": "Positions"
+  },
+  "perpsPostOnlyWindow": {
+    "message": "Trading is temporarily restricted after a network upgrade and will resume shortly. Try again in a few minutes.",
+    "description": "Shown when the exchange only accepts post-only orders immediately after a network upgrade."
+  },
+  "perpsPostOnlyWouldCross": {
+    "message": "This price would cross the spread, so the post-only order wasn't placed. Adjust the price or use a non-post-only order.",
+    "description": "Shown when a post-only order is rejected because its price would immediately match the book."
   },
   "perpsPriceMoved": {
     "message": "The price moved $1%, exceeding your $2% slippage tolerance. Review the updated price and try again.",
@@ -8597,6 +8624,9 @@
   "perpsProducts": {
     "message": "Products",
     "description": "Heading of the Perps tab section listing market categories as chips"
+  },
+  "perpsProviderRouteRequired": {
+    "message": "No exchange was selected for this order."
   },
   "perpsRateLimitExceeded": {
     "message": "Too many requests. Please wait and try again."
@@ -8623,6 +8653,10 @@
   "perpsReduceOnly": {
     "message": "Reduce only"
   },
+  "perpsReduceOnlyViolation": {
+    "message": "This order would increase your position. Only reduce-only orders are allowed.",
+    "description": "Shown when the exchange rejects a reduce-only order that would increase the position"
+  },
   "perpsRemoveFromFavorites": {
     "message": "Remove from favorites"
   },
@@ -8647,6 +8681,9 @@
   "perpsSaveChanges": {
     "message": "Save changes",
     "description": "Button text for saving TP/SL changes"
+  },
+  "perpsScaleOrderFailed": {
+    "message": "We couldn't place your scale order. Try again."
   },
   "perpsSearchMarkets": {
     "message": "Search markets"
@@ -8957,6 +8994,10 @@
     "message": "Losers",
     "description": "Toggle option showing the markets that fell the most over 24h in the Top movers section"
   },
+  "perpsTpslUpdateFailed": {
+    "message": "Unable to update take profit/stop loss. Try again.",
+    "description": "Shown when updating take profit or stop loss on a position fails"
+  },
   "perpsTrades": {
     "message": "Trades"
   },
@@ -9210,14 +9251,8 @@
     "message": "Private keys",
     "description": "Private keys row label on multichain account details page."
   },
-  "privateNetwork": {
-    "message": "Private network"
-  },
   "proceed": {
     "message": "Proceed"
-  },
-  "proceedWithTransaction": {
-    "message": "I want to proceed anyway"
   },
   "provide": {
     "message": "Provide"
@@ -9574,16 +9609,8 @@
   "receiveCrypto": {
     "message": "Receive crypto"
   },
-  "receiveToken": {
-    "message": "Receive token",
-    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
-  },
   "received": {
     "message": "Received"
-  },
-  "receivedTotal": {
-    "message": "Received total",
-    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Receiving address",
@@ -11418,9 +11445,6 @@
   "simulationDetailsUnavailable": {
     "message": "Unavailable"
   },
-  "simulationErrorMessageV2": {
-    "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
-  },
   "simulationsSettingDescription": {
     "message": "Turn this on to estimate balance changes of transactions and signatures before you confirm them. This doesn't guarantee their final outcome. $1"
   },
@@ -11487,12 +11511,6 @@
   },
   "smartAccountRequestsFromDappsDescriptionV2": {
     "message": "Let dapps request smart account features for standard accounts. MetaMask will only upgrade to our audited smart account."
-  },
-  "smartAccountUpgradeBannerDescription": {
-    "message": "Same address. Smarter features."
-  },
-  "smartAccountUpgradeBannerTitle": {
-    "message": "Switch to smart account"
   },
   "smartContractAddress": {
     "message": "Smart contract address"
@@ -11928,9 +11946,6 @@
   "stakingWithdrawal": {
     "message": "Staking withdrawal"
   },
-  "standardAccountLabel": {
-    "message": "Standard account"
-  },
   "stateCorruptionAreYouSure": {
     "message": "Are you sure you want to proceed?"
   },
@@ -12257,12 +12272,6 @@
   "swapsRebateTooltipTitle": {
     "message": "Trading Rewards"
   },
-  "switch": {
-    "message": "Switch"
-  },
-  "switchBack": {
-    "message": "Switch back"
-  },
   "switchBackToPopup": {
     "message": "Switch back to popup"
   },
@@ -12485,27 +12494,6 @@
   "transactionFlowNetwork": {
     "message": "Network"
   },
-  "transactionHistoryBaseFee": {
-    "message": "Base fee (GWEI)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "Total L1 network fee"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "L2 gas limit"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "L2 gas price"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "Max fee per gas"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "Priority fee (GWEI)"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "Total network fee"
-  },
   "transactionIdCopied": {
     "message": "Transaction ID copied"
   },
@@ -12689,9 +12677,6 @@
     "message": "Swap $1 $2 to $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "units": {
-    "message": "units"
-  },
   "unknown": {
     "message": "Unknown"
   },
@@ -12735,10 +12720,6 @@
   "unpin": {
     "message": "Unpin"
   },
-  "unrecognizedChain": {
-    "message": "This custom network is not recognized",
-    "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
   "unsendableAsset": {
     "message": "Sending NFT (ERC-721) tokens is not currently supported",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
@@ -12751,9 +12732,6 @@
   },
   "update": {
     "message": "Update"
-  },
-  "updateEthereumChainConfirmationDescription": {
-    "message": "This site is requesting to update your default network URL. You can edit defaults and network information any time."
   },
   "updateInformation": {
     "message": "We've made your wallet safer, smoother, and added some new features. Update now to stay protected and use our latest improvements."
@@ -12936,9 +12914,6 @@
   "walletReadyLoseSrpFromReminder": {
     "message": "This Secret Recovery Phrase can help you regain access if you ever forget your password or lose access to your login."
   },
-  "wantToAddThisNetwork": {
-    "message": "Want to add this network?"
-  },
   "wantsToAddThisAsset": {
     "message": "This allows the following asset to be added to your wallet."
   },
@@ -13040,9 +13015,6 @@
   },
   "yourBalance": {
     "message": "Your balance"
-  },
-  "yourNFTmayBeAtRisk": {
-    "message": "Your NFT may be at risk"
   },
   "yourWalletIsReady": {
     "message": "Your wallet is ready!"

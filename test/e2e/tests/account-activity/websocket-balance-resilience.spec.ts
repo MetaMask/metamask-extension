@@ -18,6 +18,12 @@ import {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
 } from '../../constants';
 import { Anvil } from '../../seeder/anvil';
+import {
+  accountsSupportedNetworksV2,
+  priceV1ExchangeRates,
+  priceV3Spot,
+  tokensV3Assets,
+} from '../../mock-response-data/api-responses';
 
 const FIFTY_ETH_WEI = '0x2b5e3af16b1880000';
 const THIRTY_FIVE_ETH_WEI = '0x1e5b8fa8fe2ac0000';
@@ -56,8 +62,8 @@ async function waitForBalanceUpdate(
 
 async function mockChain1337(mockServer: Mockttp) {
   return [
-    await mockServer
-      .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+    await priceV3Spot
+      .rule(mockServer)
       .always()
       .thenCallback(() => ({
         statusCode: 200,
@@ -76,8 +82,8 @@ async function mockChain1337(mockServer: Mockttp) {
           },
         },
       })),
-    await mockServer
-      .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+    await priceV1ExchangeRates
+      .rule(mockServer)
       .always()
       .thenCallback(() => ({
         statusCode: 200,
@@ -96,15 +102,12 @@ async function mockChain1337(mockServer: Mockttp) {
           },
         },
       })),
-    await mockServer
-      .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
-      .always()
-      .thenJson(200, {
-        fullSupport: [],
-        partialSupport: [],
-      }),
-    await mockServer
-      .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+    await accountsSupportedNetworksV2.rule(mockServer).always().thenJson(200, {
+      fullSupport: [],
+      partialSupport: [],
+    }),
+    await tokensV3Assets
+      .rule(mockServer)
       .always()
       .thenCallback((request) => {
         const url = new URL(request.url);
