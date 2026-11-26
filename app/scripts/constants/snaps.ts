@@ -36,6 +36,18 @@ export const PREINSTALLED_SNAPS_URLS = [
     '@metamask/institutional-wallet-snap/dist/preinstalled-snap.json',
     import.meta.url,
   ),
+  // Add the following only in configured non-test builds.
+  // This cannot say `isBrazeConfigured()` because the swc compiler will not inline and exclude properly
+  ...(!process.env.IN_TEST &&
+  process.env.BRAZE_WEB_API_KEY &&
+  process.env.BRAZE_SDK_ENDPOINT
+    ? [
+        new URL(
+          '@metamask/braze-snap/dist/preinstalled-snap.json',
+          import.meta.url,
+        ),
+      ]
+    : []),
   // Add the following to the list only if the build is Flask or Experimental
   // This cannot say `isFlask() || isExperimental()` because the swc compiler will not inline and exclude properly
   ...(process.env.METAMASK_BUILD_TYPE === 'flask' ||

@@ -123,6 +123,7 @@ ignores:
   - '@metamask/institutional-wallet-snap'
   - '@metamask/gator-permissions-snap'
   - '@metamask/permissions-kernel-snap'
+  - '@metamask/braze-snap'
   # package.json subpath imports
   - '#ui'
   - '#shared'

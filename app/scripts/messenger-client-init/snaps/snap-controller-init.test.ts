@@ -13,6 +13,7 @@ import {
   KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
+import type { SnapId } from '@metamask/snaps-sdk';
 import {
   createDeferredPromise,
   inMilliseconds,
@@ -34,6 +35,8 @@ import {
 import { SnapControllerInit } from './snap-controller-init';
 
 jest.mock('@metamask/snaps-controllers');
+
+const MOCK_SNAP_ID = 'npm:@metamask/example-snap' as SnapId;
 
 function getInitRequestMock(
   baseMessenger = getRootMessenger(),
@@ -90,6 +93,17 @@ describe('SnapControllerInit', () => {
       preinstalledSnaps: expect.any(Array),
       ensureOnboardingComplete: expect.any(Function),
     });
+  });
+
+  it('registers `SnapController:stopSnap`', async () => {
+    const baseMessenger = getRootMessenger();
+    const { messengerClient } = SnapControllerInit(
+      getInitRequestMock(baseMessenger),
+    );
+
+    await baseMessenger.call('SnapController:stopSnap', MOCK_SNAP_ID);
+
+    expect(messengerClient.stopSnap).toHaveBeenCalledWith(MOCK_SNAP_ID);
   });
 
   it('calls `SnapController:setClientActive` when the client is locked', () => {
