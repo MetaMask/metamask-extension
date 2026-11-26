@@ -55,6 +55,8 @@ class SnapInstall {
     text: 'Connect',
   };
 
+  private readonly connectionFailedMessage = { text: 'Connection failed' };
+
   private readonly connectionRequestHeader = {
     tag: 'h3',
     text: 'Connection request',
@@ -245,8 +247,10 @@ class SnapInstall {
    */
   async waitForAddToMetaMaskInstallHeader(): Promise<void> {
     try {
-      await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-      await this.driver.waitForSelector(this.addToMetaMaskHeader);
+      await this.driver.waitForSelectorInWindowWithTitle(
+        WINDOW_TITLES.Dialog,
+        this.addToMetaMaskHeader,
+      );
     } catch (error) {
       const original = error instanceof Error ? error.message : String(error);
       throw new Error(
@@ -263,6 +267,18 @@ class SnapInstall {
 
   async waitForConfirmationDialogLinkText(): Promise<void> {
     await this.driver.waitForSelector(this.confirmationDialogLinkText);
+  }
+
+  /**
+   * Waits for the "Connection failed" install result. The dialog can be
+   * replaced after "Connect", so this waits in whichever window is the
+   * current dialog.
+   */
+  async waitForConnectionFailed(): Promise<void> {
+    await this.driver.waitForSelectorInWindowWithTitle(
+      WINDOW_TITLES.Dialog,
+      this.connectionFailedMessage,
+    );
   }
 
   async waitForDialogApproveButton(): Promise<void> {
