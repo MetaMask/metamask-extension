@@ -106,17 +106,9 @@ export const extensionToJs = (filename: string) =>
 
 /**
  * It gets minimizers for the webpack build.
- *
- * SWC mangling can still produce different `runtime.[contenthash].js` output
- * across Linux rebuilds (short-name swaps such as `c`/`l`), even with
- * TerserPlugin `parallel: false`. That breaks Firefox AMO reviewer `mtree`
- * comparisons. Disabling mangling for the runtime chunk keeps it
- * content-stable while leaving mangling ON for all other chunks.
  */
 export async function getMinimizers() {
   const { default: TerserPlugin } = await import('terser-webpack-plugin');
-  // Match webpack asset names like `chrome/runtime.<hash>.js` or `runtime.<hash>.js`.
-  const runtimeChunkRe = /(?:^|[/\\])runtime\./u;
   return [
     new TerserPlugin({
       // use SWC to minify (about 7x faster than Terser)
@@ -127,24 +119,7 @@ export async function getMinimizers() {
       // comments were ever extracted here; `false` keeps that behavior.
       extractComments: false,
       parallel: false,
-      terserOptions: {
-        mangle: true,
-      },
-      // do not minify snow or the runtime chunk (handled below).
-      exclude: [/snow\.prod/u, runtimeChunkRe],
-    }),
-    new TerserPlugin({
-      // use SWC to minify (about 7x faster than Terser)
-      minify: TerserPlugin.swcMinify,
-      // see the note on the minimizer above
-      extractComments: false,
-      parallel: false,
-      terserOptions: {
-        // Disable mangling for the runtime chunk so AMO Linux rebuilds stay
-        // content-stable.
-        mangle: false,
-      },
-      include: runtimeChunkRe,
+      // do not minify snow.
       exclude: /snow\.prod/u,
     }),
   ];
