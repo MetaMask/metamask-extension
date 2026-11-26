@@ -41,43 +41,54 @@ export const MultichainAddressCopyButton = ({
     return null;
   }
 
+  const visibleText = addressCopied
+    ? `${t(DEFAULT_ADDRESS_DISPLAY_KEY_BY_SCOPE[defaultAddressScope])} ${t('addressCopied').toLowerCase()}`
+    : shortenAddress(normalizeSafeAddress(defaultAddress));
+
+  const ariaLabel = addressCopied
+    ? visibleText
+    : `${visibleText}, ${t('copyAddress')}`;
+
   return (
-    <button
-      type="button"
-      onClick={handleDefaultAddressClick}
-      className={classnames(
-        'flex h-6 flex-row items-center gap-1 rounded-lg border-0 p-1',
-        {
-          'cursor-pointer': true,
-          'bg-success-muted': addressCopied,
-          'bg-background-muted': !addressCopied,
-          'hover:bg-muted-hover': !addressCopied,
-        },
-      )}
-      data-testid="network-address-copy-button"
-      aria-label={t('copyAddress')}
-    >
-      <Text
-        ellipsis
-        variant={TextVariant.BodySm}
-        fontWeight={FontWeight.Medium}
-        color={
-          addressCopied ? TextColor.SuccessDefault : TextColor.TextAlternative
-        }
-        className="flex-1"
-        data-testid="default-address-container"
+    <>
+      <button
+        type="button"
+        onClick={handleDefaultAddressClick}
+        className={classnames(
+          'flex h-6 flex-row items-center gap-1 rounded-lg border-0 p-1',
+          {
+            'cursor-pointer': true,
+            'bg-success-muted': addressCopied,
+            'bg-background-muted': !addressCopied,
+            'hover:bg-muted-hover': !addressCopied,
+          },
+        )}
+        data-testid="network-address-copy-button"
+        aria-label={ariaLabel}
       >
-        {addressCopied
-          ? `${t(DEFAULT_ADDRESS_DISPLAY_KEY_BY_SCOPE[defaultAddressScope])} ${t('addressCopied').toLowerCase()}`
-          : shortenAddress(normalizeSafeAddress(defaultAddress))}
-      </Text>
-      <Icon
-        name={addressCopied ? IconName.CopySuccess : IconName.Copy}
-        size={IconSize.Sm}
-        color={
-          addressCopied ? IconColor.SuccessDefault : IconColor.IconAlternative
-        }
-      />
-    </button>
+        <Text
+          ellipsis
+          variant={TextVariant.BodySm}
+          fontWeight={FontWeight.Medium}
+          color={
+            addressCopied ? TextColor.SuccessDefault : TextColor.TextAlternative
+          }
+          className="flex-1"
+          data-testid="default-address-container"
+        >
+          {visibleText}
+        </Text>
+        <Icon
+          name={addressCopied ? IconName.CopySuccess : IconName.Copy}
+          size={IconSize.Sm}
+          color={
+            addressCopied ? IconColor.SuccessDefault : IconColor.IconAlternative
+          }
+        />
+      </button>
+      <span className="sr-only" role="status">
+        {addressCopied ? t('addressCopied') : null}
+      </span>
+    </>
   );
 };
