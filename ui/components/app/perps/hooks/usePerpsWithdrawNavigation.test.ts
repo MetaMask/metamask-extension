@@ -201,23 +201,6 @@ describe('usePerpsWithdrawNavigation', () => {
     });
   });
 
-  it('adds goToAfterSubmit alongside goBackTo when provided', async () => {
-    const { result } = renderUsePerpsWithdrawNavigation(
-      () => usePerpsWithdrawNavigation({ goToAfterSubmit: '/perps-home' }),
-      buildStateWithPerpsWithdrawFlag(true),
-      '/perps/trade/BTC',
-    );
-
-    await act(async () => {
-      await result.current.trigger();
-    });
-
-    expect(mockNavigate).toHaveBeenCalledWith({
-      pathname: `${CONFIRM_TRANSACTION_ROUTE}/${MOCK_TX_ID}`,
-      search: `loader=${ConfirmationLoader.CustomAmount}&goBackTo=%2Fperps%2Ftrade%2FBTC&goToAfterSubmit=%2Fperps-home`,
-    });
-  });
-
   it('creates confirmation transaction without navigating when navigateOnTrigger is false', async () => {
     const { result } = renderUsePerpsWithdrawNavigation(
       () =>

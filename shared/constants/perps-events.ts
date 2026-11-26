@@ -70,8 +70,6 @@ export const PERPS_EVENT_VALUE = {
     BOTTOM_NAV_BAR: 'bottom_nav_bar',
     /** Extension-only: source for Hyperliquid deposit prompt. */
     HYPERLIQUID_DEPOSIT_PROMPT: 'hyperliquid_deposit_prompt',
-    /** Extension-only: source for the Hyperliquid Connection Bar. */
-    HYPERLIQUID_CONNECTION_BAR: 'hyperliquid_connection_bar',
   },
   SCREEN_TYPE: {
     ...CONTROLLER_PERPS_EVENT_VALUE.SCREEN_TYPE,

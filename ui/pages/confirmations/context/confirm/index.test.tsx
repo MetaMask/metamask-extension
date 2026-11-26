@@ -153,21 +153,6 @@ describe('ConfirmContextProvider', () => {
     });
   });
 
-  it('navigates to goToAfterSubmit when the confirmation disappears', () => {
-    const search = '?goBackTo=/perps/trade/BTC&goToAfterSubmit=/perps-home';
-    mockWindowSearch = search;
-    window.history.replaceState({}, '', `/${search}`);
-    const store = createStore();
-    const { rerender } = renderContextProvider(store);
-
-    mockCurrentConfirmation = undefined;
-    rerender();
-
-    expect(mockNavigate).toHaveBeenCalledWith('/perps-home', {
-      replace: true,
-    });
-  });
-
   it('does not navigate when confirmation is still present', () => {
     const store = createStore();
     const { rerender } = renderContextProvider(store);

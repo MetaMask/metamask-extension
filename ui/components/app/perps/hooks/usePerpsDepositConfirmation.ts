@@ -28,8 +28,6 @@ export type PerpsDepositConfirmationOptions = {
   navigateOnCreate?: boolean;
   payWithOption?: PayWithOption;
   entryPoint?: string;
-  /* Route to show once the deposit has been submitted */
-  goToAfterSubmit?: string;
 };
 
 export type PerpsDepositConfirmationResult = {
@@ -54,7 +52,6 @@ export function usePerpsDepositConfirmation(
     navigateOnCreate = true,
     payWithOption,
     entryPoint,
-    goToAfterSubmit,
   } = options;
   const navigate = useNavigate();
   const location = useLocation();
@@ -114,10 +111,6 @@ export function usePerpsDepositConfirmation(
           params.set('goBackTo', goBackTo);
         }
 
-        if (goToAfterSubmit) {
-          params.set('goToAfterSubmit', goToAfterSubmit);
-        }
-
         navigate(
           {
             pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
@@ -140,7 +133,6 @@ export function usePerpsDepositConfirmation(
   }, [
     ensureArbitrumNetworkExists,
     entryPoint,
-    goToAfterSubmit,
     isLoading,
     location.pathname,
     track,

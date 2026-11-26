@@ -68,13 +68,9 @@ export const ConfirmContextProvider = ({
   /** Test hook for a confirmation that opens with a typed amount still pending. */
   initialIsAmountPending?: boolean;
 }>) => {
-  const {
-    goBackTo: goBackFromUrl,
-    goToAfterSubmit: goToAfterSubmitFromUrl,
-    goBackAction: goBackActionFromUrl,
-  } = useConfirmationNavigationOptions();
+  const { goBackTo: goBackFromUrl, goBackAction: goBackActionFromUrl } =
+    useConfirmationNavigationOptions();
   const [goBackTo] = useState(goBackFromUrl);
-  const [goToAfterSubmit] = useState(goToAfterSubmitFromUrl);
   const [goBackAction] = useState(goBackActionFromUrl);
   const { key: locationKey } = useLocation();
   const [isScrollToBottomCompleted, setIsScrollToBottomCompleted] =
@@ -127,7 +123,7 @@ export const ConfirmContextProvider = ({
         return;
       }
       navigateConfirmationExit(navigate, {
-        goBackTo: goToAfterSubmit ?? goBackTo,
+        goBackTo,
         goBackAction,
         locationKey,
       });
@@ -138,7 +134,6 @@ export const ConfirmContextProvider = ({
     currentConfirmation,
     navigate,
     goBackTo,
-    goToAfterSubmit,
     goBackAction,
     locationKey,
     isHardwareWalletErrorModalVisible,

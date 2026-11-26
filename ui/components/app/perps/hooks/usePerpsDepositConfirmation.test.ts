@@ -140,30 +140,6 @@ describe('usePerpsDepositConfirmation', () => {
     );
   });
 
-  it('adds goToAfterSubmit alongside goBackTo when provided', async () => {
-    mockCreatePerpsDepositTransaction.mockResolvedValue({
-      transactionId: 'tx-after-submit',
-    });
-
-    const { result } = renderHookWithProvider(
-      () => usePerpsDepositConfirmation({ goToAfterSubmit: '/perps-home' }),
-      mockState,
-      '/perps/trade/BTC',
-    );
-
-    await act(async () => {
-      await result.current.trigger();
-    });
-
-    expect(mockNavigate).toHaveBeenCalledWith(
-      {
-        pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-after-submit`,
-        search: `loader=${ConfirmationLoader.CustomAmount}&goBackTo=%2Fperps%2Ftrade%2FBTC&goToAfterSubmit=%2Fperps-home`,
-      },
-      { replace: true },
-    );
-  });
-
   it('returns transaction id without navigating when navigateOnCreate is false', async () => {
     mockCreatePerpsDepositTransaction.mockResolvedValue({
       transactionId: 'tx-456',
