@@ -24,7 +24,9 @@ describe('MultichainAddressCopyButton', () => {
   });
 
   it('renders with accessible name including address and copy action when not copied', () => {
-    renderWithProvider(<MultichainAddressCopyButton groupId="keyring:test/test" />);
+    renderWithProvider(
+      <MultichainAddressCopyButton groupId="keyring:test/test" />,
+    );
 
     const button = screen.getByRole('button', {
       name: /0x12345\.\.\.67890, Copy address to clipboard/iu,
@@ -33,15 +35,17 @@ describe('MultichainAddressCopyButton', () => {
   });
 
   it('renders with accessible name matching visible text when copied', () => {
-    jest.spyOn(useDefaultAddressHook, 'useDefaultAddress')      .mockReturnValue({
-        defaultAddress: '0x1234567890123456789012345678901234567890', // pragma: allowlist secret
-        defaultAddressScope: 'eip155',
-        displayDefaultAddress: '0x1234567890123456789012345678901234567890', // pragma: allowlist secret
-        addressCopied: true,
-        handleDefaultAddressClick: mockHandleDefaultAddressClick,
-      });
+    jest.spyOn(useDefaultAddressHook, 'useDefaultAddress').mockReturnValue({
+      defaultAddress: '0x1234567890123456789012345678901234567890', // pragma: allowlist secret
+      defaultAddressScope: 'eip155',
+      displayDefaultAddress: '0x1234567890123456789012345678901234567890', // pragma: allowlist secret
+      addressCopied: true,
+      handleDefaultAddressClick: mockHandleDefaultAddressClick,
+    });
 
-    renderWithProvider(<MultichainAddressCopyButton groupId="keyring:test/test" />);
+    renderWithProvider(
+      <MultichainAddressCopyButton groupId="keyring:test/test" />,
+    );
 
     const button = screen.getByRole('button', {
       name: /Ethereum address copied/iu,
@@ -50,35 +54,39 @@ describe('MultichainAddressCopyButton', () => {
   });
 
   it('shows status message after copying', () => {
-    jest.spyOn(useDefaultAddressHook, 'useDefaultAddress')      .mockReturnValue({
-        defaultAddress: '0x1234567890123456789012345678901234567890', // pragma: allowlist secret
-        defaultAddressScope: 'eip155',
-        displayDefaultAddress: '0x1234567890123456789012345678901234567890', // pragma: allowlist secret
-        addressCopied: true,
-        handleDefaultAddressClick: mockHandleDefaultAddressClick,
-      });
+    jest.spyOn(useDefaultAddressHook, 'useDefaultAddress').mockReturnValue({
+      defaultAddress: '0x1234567890123456789012345678901234567890', // pragma: allowlist secret
+      defaultAddressScope: 'eip155',
+      displayDefaultAddress: '0x1234567890123456789012345678901234567890', // pragma: allowlist secret
+      addressCopied: true,
+      handleDefaultAddressClick: mockHandleDefaultAddressClick,
+    });
 
-    renderWithProvider(<MultichainAddressCopyButton groupId="keyring:test/test" />);
+    renderWithProvider(
+      <MultichainAddressCopyButton groupId="keyring:test/test" />,
+    );
 
     const statusMessage = screen.getByRole('status');
     expect(statusMessage).toHaveTextContent('Address copied');
   });
 
   it('does not show status message when not copied', () => {
-    renderWithProvider(<MultichainAddressCopyButton groupId="keyring:test/test" />);
+    renderWithProvider(
+      <MultichainAddressCopyButton groupId="keyring:test/test" />,
+    );
 
     const statusMessage = screen.getByRole('status');
     expect(statusMessage).toBeEmptyDOMElement();
   });
 
   it('returns null when displayDefaultAddress is false', () => {
-    jest.spyOn(useDefaultAddressHook, 'useDefaultAddress')      .mockReturnValue({
-        defaultAddress: '0x1234567890123456789012345678901234567890', // pragma: allowlist secret
-        defaultAddressScope: 'eip155',
-        displayDefaultAddress: false,
-        addressCopied: false,
-        handleDefaultAddressClick: mockHandleDefaultAddressClick,
-      });
+    jest.spyOn(useDefaultAddressHook, 'useDefaultAddress').mockReturnValue({
+      defaultAddress: '0x1234567890123456789012345678901234567890', // pragma: allowlist secret
+      defaultAddressScope: 'eip155',
+      displayDefaultAddress: false,
+      addressCopied: false,
+      handleDefaultAddressClick: mockHandleDefaultAddressClick,
+    });
 
     const { container } = renderWithProvider(
       <MultichainAddressCopyButton groupId="keyring:test/test" />,
@@ -88,7 +96,9 @@ describe('MultichainAddressCopyButton', () => {
   });
 
   it('calls handleDefaultAddressClick when button is clicked', () => {
-    renderWithProvider(<MultichainAddressCopyButton groupId="keyring:test/test" />);
+    renderWithProvider(
+      <MultichainAddressCopyButton groupId="keyring:test/test" />,
+    );
 
     const button = screen.getByRole('button');
     fireEvent.click(button);
