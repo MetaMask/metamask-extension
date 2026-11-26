@@ -6338,6 +6338,12 @@
   "moneyLearnMore": {
     "message": "Learn more"
   },
+  "moneyLifecycleUnavailableBannerDescription": {
+    "message": "We couldn't confirm your Money account status. Deposits and withdrawals are disabled until it can be confirmed."
+  },
+  "moneyLifecycleUnavailableBannerTitle": {
+    "message": "Money account status unavailable"
+  },
   "moneyLifetime": {
     "message": "Lifetime"
   },
@@ -6346,6 +6352,12 @@
   },
   "moneyMeetMusd": {
     "message": "Meet mUSD"
+  },
+  "moneyMfaReadOnlyBannerDescription": {
+    "message": "You turned on extra security in MetaMask mobile. To add funds or withdraw, use your mobile app."
+  },
+  "moneyMfaReadOnlyBannerTitle": {
+    "message": "Manage on MetaMask mobile"
   },
   "moneyMonthlyTooltip": {
     "message": "The total you've earned on your Money account balance in the last 30 days."
