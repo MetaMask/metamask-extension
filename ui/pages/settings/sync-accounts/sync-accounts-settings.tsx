@@ -150,9 +150,9 @@ const SyncAccountsSettings = () => {
         // button is hidden once the import has been submitted.
         return (
           <Success
-            importedAccountCount={syncSummary?.syncedAccountCount ?? 0}
-            walletCount={syncSummary?.syncedWalletCount ?? 0}
-            accountCount={syncSummary?.selectedAccountCount}
+            syncedPrivateKeyAccountCount={syncSummary?.syncedAccountCount ?? 0}
+            syncedWalletCount={syncSummary?.syncedWalletCount ?? 0}
+            totalSelectedAccountCount={syncSummary?.selectedAccountCount}
             onDone={() => handleExit().catch(() => undefined)}
           />
         );

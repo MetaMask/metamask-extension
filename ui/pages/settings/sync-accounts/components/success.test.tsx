@@ -14,9 +14,9 @@ describe('Success', () => {
     renderWithLocalization(
       <Success
         onDone={jest.fn()}
-        walletCount={2}
-        importedAccountCount={0}
-        accountCount={18}
+        syncedWalletCount={2}
+        syncedPrivateKeyAccountCount={0}
+        totalSelectedAccountCount={18}
       />,
     );
 
@@ -40,7 +40,11 @@ describe('Success', () => {
 
   it('renders singular copy for one imported account', () => {
     renderWithLocalization(
-      <Success onDone={jest.fn()} walletCount={1} accountCount={1} />,
+      <Success
+        onDone={jest.fn()}
+        syncedWalletCount={1}
+        totalSelectedAccountCount={1}
+      />,
     );
 
     expect(
@@ -52,9 +56,9 @@ describe('Success', () => {
     renderWithLocalization(
       <Success
         onDone={jest.fn()}
-        walletCount={1}
-        importedAccountCount={0}
-        accountCount={3}
+        syncedWalletCount={1}
+        syncedPrivateKeyAccountCount={0}
+        totalSelectedAccountCount={3}
       />,
     );
 

@@ -16,38 +16,38 @@ import SuccessCheckAnimation from './success-check-animation';
 type SuccessProps = {
   onDone: () => void;
   /**
-   * Number of wallets (SRPs) that were synced. Only exposed through the
+   * Number of HD/SRP wallets that were synced. Only exposed through the
    * `data-synced-wallet-count` attribute for tests.
    */
-  walletCount?: number;
+  syncedWalletCount?: number;
   /**
    * Number of imported private-key accounts that were synced. This is not the
    * number shown to the user. It is only exposed through the
    * `data-synced-account-count` attribute for tests.
    */
-  importedAccountCount?: number;
+  syncedPrivateKeyAccountCount?: number;
   /**
-   * Total number of accounts that were sent to MetaMask Mobile, across all
+   * Total number of selected accounts sent to MetaMask Mobile, across all
    * wallet types. This is the number shown in the description.
    */
-  accountCount?: number;
+  totalSelectedAccountCount?: number;
 };
 
 const Success = ({
   onDone,
-  walletCount = 0,
-  importedAccountCount = 0,
-  accountCount = 0,
+  syncedWalletCount = 0,
+  syncedPrivateKeyAccountCount = 0,
+  totalSelectedAccountCount = 0,
 }: SuccessProps) => {
   const t = useI18nContext();
 
   let description: string | null = null;
-  if (accountCount > 0) {
+  if (totalSelectedAccountCount > 0) {
     description = t(
-      accountCount === 1
+      totalSelectedAccountCount === 1
         ? 'qrSyncAccountImportedDescription'
         : 'qrSyncAccountsImportedDescription',
-      [accountCount],
+      [totalSelectedAccountCount],
     );
   }
 
@@ -57,8 +57,8 @@ const Success = ({
       flexDirection={BoxFlexDirection.Column}
       className="relative flex-1"
       data-testid="qr-sync-success"
-      data-synced-wallet-count={walletCount}
-      data-synced-account-count={importedAccountCount}
+      data-synced-wallet-count={syncedWalletCount}
+      data-synced-account-count={syncedPrivateKeyAccountCount}
     >
       <Box
         className="text-center flex-1 justify-center"
