@@ -1055,6 +1055,40 @@ describe('MultichainTriggeredAddressRowsList', () => {
       });
     });
 
+    it('keeps popover open when trigger blurs but focus moves to popover', async () => {
+      renderComponent();
+
+      const trigger = getHoverTriggerButton();
+      openPopoverByHover();
+      expectPopoverOpen();
+
+      const popover = getPopoverList()?.closest('[popover]') as HTMLElement;
+      fireEvent.blur(trigger, { relatedTarget: popover });
+
+      await waitFor(() => {
+        expectPopoverOpen();
+      });
+    });
+
+    it('closes popover when trigger blurs and focus moves outside', async () => {
+      renderComponent();
+
+      const trigger = getHoverTriggerButton();
+      openPopoverByHover();
+      expectPopoverOpen();
+
+      const outsideElement = document.createElement('div');
+      document.body.appendChild(outsideElement);
+
+      fireEvent.blur(trigger, { relatedTarget: outsideElement });
+
+      await waitFor(() => {
+        expectPopoverClosed();
+      });
+
+      document.body.removeChild(outsideElement);
+    });
+
     it('uses interestfor on the button when Interest Invokers are supported', () => {
       interestInvokerSupport.detected = true;
       renderComponent();

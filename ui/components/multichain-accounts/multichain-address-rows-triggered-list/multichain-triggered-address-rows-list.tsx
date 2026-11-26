@@ -243,14 +243,9 @@ export const MultichainTriggeredAddressRowsList = ({
 
   const scheduleHideFallbackPopover = useCallback(
     (event?: React.FocusEvent | React.MouseEvent) => {
-      if (event && 'relatedTarget' in event && event.relatedTarget) {
+      if (event?.relatedTarget instanceof Node) {
         const popover = popoverRef.current;
-        const relatedTarget = event.relatedTarget as EventTarget;
-        if (
-          popover &&
-          relatedTarget instanceof Node &&
-          popover.contains(relatedTarget)
-        ) {
+        if (popover?.contains(event.relatedTarget)) {
           return;
         }
       }
@@ -536,7 +531,8 @@ export const MultichainTriggeredAddressRowsList = ({
         id={popoverId}
         // @ts-expect-error React types do not include popover yet.
         popover="auto"
-        className="rounded-lg border border-border-muted bg-background-elevated2 p-2 supports-[top:anchor(bottom)]:inset-auto"
+        tabIndex={-1}
+        className="rounded-lg border border-border-muted bg-background-elevated2 p-2 supports-[top:anchor(bottom)]:[inset:auto] supports-[top:anchor(bottom)]:[margin:2px_0_0]"
         onMouseEnter={useHoverFallback ? showFallbackPopover : undefined}
         onMouseLeave={
           useHoverFallback ? scheduleHideFallbackPopover : undefined
@@ -547,7 +543,6 @@ export const MultichainTriggeredAddressRowsList = ({
           {
             width: '360px',
             maxWidth: 'calc(100vw - 16px)',
-            margin: '2px 0 0',
             positionAnchor: anchorName,
             top: 'anchor(bottom)',
             left: 'anchor(left)',
