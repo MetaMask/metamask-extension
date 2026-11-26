@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
 import { selectPrimaryMoneyAccount } from '../../../../selectors/money-account';
+import { useMoneyAccountLifecycle } from '../../../../hooks/money/use-money-account-lifecycle';
 import {
   selectDefaultPaySelectedSection,
   selectIsMoneyAccountTransactionEnabled,
@@ -60,6 +61,11 @@ export function useIsMoneyAccountFlagDefault(): boolean {
   const isMoneyAccountPayEnabled = useSelector((state) =>
     selectIsMoneyAccountTransactionEnabled(state, effectiveType),
   );
+  const {
+    isLifecycleUnavailable,
+    isReadOnly,
+    isLoading: isLifecycleLoading,
+  } = useMoneyAccountLifecycle();
 
   const isPerpsOrPredict = hasTransactionType(
     transactionMeta,
@@ -71,6 +77,9 @@ export function useIsMoneyAccountFlagDefault(): boolean {
     : undefined;
 
   return (
+    !isLifecycleLoading &&
+    !isReadOnly &&
+    !isLifecycleUnavailable &&
     !payToken &&
     sectionForType === 'money-account' &&
     Boolean(moneyAccount) &&

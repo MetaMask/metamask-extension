@@ -391,6 +391,7 @@ describe('Token Cell', () => {
   describe('moneyCta', () => {
     const createMoneyCta = (shouldShow: boolean) => ({
       label: 'Get 6% APY',
+      isDisabled: false,
       isLoading: false,
       shouldShow: jest.fn().mockReturnValue(shouldShow),
       onClick: jest.fn(),
@@ -464,6 +465,7 @@ describe('Token Cell', () => {
           {...(props as TokenCellProps)}
           moneyCta={{
             label: 'Get 6% APY',
+            isDisabled: false,
             isLoading: false,
             shouldShow: jest.fn().mockReturnValue(true),
             onClick: jest.fn(),
