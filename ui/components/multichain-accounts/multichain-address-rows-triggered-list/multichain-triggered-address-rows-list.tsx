@@ -111,6 +111,10 @@ export type MultichainAddressRowsListProps = {
    * Gives the pointer time to move onto the popover (WCAG 1.4.13).
    */
   hoverCloseDelay?: number;
+  /**
+   * Accessible name for the trigger button (required for hover mode).
+   */
+  ariaLabel?: string;
 };
 
 const Divider = () => (
@@ -160,6 +164,7 @@ export const MultichainTriggeredAddressRowsList = ({
   showDefaultAddressSection = true,
   triggerMode = 'hover',
   hoverCloseDelay = 50,
+  ariaLabel,
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
   const popoverId = useId().replace(/:/gu, '');
@@ -469,6 +474,7 @@ export const MultichainTriggeredAddressRowsList = ({
           onFocus={useHoverFallback ? showFallbackPopover : undefined}
           onBlur={useHoverFallback ? scheduleHideFallbackPopover : undefined}
           data-testid="multichain-address-rows-trigger"
+          aria-label={ariaLabel}
         >
           {children}
         </button>
@@ -511,6 +517,7 @@ export const MultichainTriggeredAddressRowsList = ({
     return children;
   }, [
     anchorName,
+    ariaLabel,
     children,
     handleClickTrigger,
     handlePointerDownTrigger,

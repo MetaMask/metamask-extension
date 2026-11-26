@@ -12,19 +12,9 @@ import {
   BadgeWrapper,
   BadgeWrapperPosition,
   Box,
-  BoxAlignItems,
-  BoxBackgroundColor,
-  BoxFlexDirection,
   ButtonIcon,
   ButtonIconSize,
-  FontWeight,
-  Icon,
-  IconColor,
   IconName,
-  IconSize,
-  Text,
-  TextColor,
-  TextVariant,
 } from '@metamask/design-system-react';
 import { selectShowTermsOfUse } from '#ui/selectors/home-modals';
 import { useAnalytics } from '../../../hooks/useAnalytics';
@@ -55,10 +45,7 @@ import {
 } from '../../../selectors/multichain-accounts/account-tree';
 import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { MultichainAccountNetworkGroup } from '../../multichain-accounts/multichain-account-network-group';
-import { useDefaultAddress } from '../../multichain-accounts/hooks/useDefaultAddress';
-import { shortenAddress } from '../../../helpers/utils/util';
-import { normalizeSafeAddress } from '../../../../shared/lib/multichain/address';
-import { DEFAULT_ADDRESS_DISPLAY_KEY_BY_SCOPE } from '../../../../shared/constants/default-address';
+import { MultichainAddressCopyButton } from '../../multichain-accounts/multichain-address-copy-button';
 import { useDispatch } from '../../../store/hooks';
 import { getIsDiscoverSearchEnabled } from '../../../selectors/multichain/feature-flags';
 import { AccountName } from './account-name';
@@ -94,14 +81,6 @@ export const AppHeaderUnlockedContent = ({
   const isDiscoverSearchEnabled = useSelector(getIsDiscoverSearchEnabled);
 
   const accountName = selectedMultichainAccount?.metadata.name ?? '';
-
-  const {
-    defaultAddress,
-    defaultAddressScope,
-    displayDefaultAddress,
-    addressCopied,
-    handleDefaultAddressClick,
-  } = useDefaultAddress(selectedMultichainAccountId);
 
   const showSupportDataConsentModal = useSelector(
     getShowSupportDataConsentModal,
@@ -213,58 +192,16 @@ export const AppHeaderUnlockedContent = ({
                   op: TraceOperation.AccountUi,
                 });
               }}
+              ariaLabel={t('openMultichainAccountAddressMenu')}
             >
               <MultichainAccountNetworkGroup
                 groupId={selectedMultichainAccountId}
                 limit={4}
               />
             </MultichainTriggeredAddressRowsList>
-            {displayDefaultAddress && defaultAddress && (
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDefaultAddressClick();
-                }}
-                className={classnames(
-                  'flex h-6 flex-row items-center gap-1 rounded-lg border-0 p-1',
-                  {
-                    'cursor-pointer': true,
-                    'bg-success-muted': addressCopied,
-                    'bg-background-muted': !addressCopied,
-                    'hover:bg-muted-hover': !addressCopied,
-                  },
-                )}
-                data-testid="network-address-copy-button"
-                aria-label={t('copyAddress')}
-              >
-                <Text
-                  ellipsis
-                  variant={TextVariant.BodySm}
-                  fontWeight={FontWeight.Medium}
-                  color={
-                    addressCopied
-                      ? TextColor.SuccessDefault
-                      : TextColor.TextAlternative
-                  }
-                  className="flex-1"
-                  data-testid="default-address-container"
-                >
-                  {addressCopied
-                    ? `${t(DEFAULT_ADDRESS_DISPLAY_KEY_BY_SCOPE[defaultAddressScope])} ${t('addressCopied').toLowerCase()}`
-                    : shortenAddress(normalizeSafeAddress(defaultAddress))}
-                </Text>
-                <Icon
-                  name={addressCopied ? IconName.CopySuccess : IconName.Copy}
-                  size={IconSize.Sm}
-                  color={
-                    addressCopied
-                      ? IconColor.SuccessDefault
-                      : IconColor.IconAlternative
-                  }
-                />
-              </button>
-            )}
+            <MultichainAddressCopyButton
+              groupId={selectedMultichainAccountId}
+            />
           </Box>
         )}
       </Box>
@@ -278,11 +215,6 @@ export const AppHeaderUnlockedContent = ({
     trackEvent,
     createEventBuilder,
     accountListStats,
-    displayDefaultAddress,
-    defaultAddress,
-    addressCopied,
-    handleDefaultAddressClick,
-    defaultAddressScope,
     t,
   ]);
 
