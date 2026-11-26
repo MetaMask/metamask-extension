@@ -93,4 +93,31 @@ describe('parsePortInfo', () => {
 
     expect(result.isMetaMaskUIPort).toBe(false);
   });
+
+  it('does not treat the cashtag widget page as MetaMask UI', () => {
+    const OriginalURL = globalThis.URL;
+    jest.spyOn(globalThis, 'URL').mockImplementation((input) => {
+      const url = new OriginalURL(String(input));
+      if (String(input).startsWith('chrome-extension://')) {
+        Object.defineProperty(url, 'origin', {
+          value: `chrome-extension://${RUNTIME_ID}`,
+        });
+      }
+      return url;
+    });
+
+    try {
+      const result = parsePortInfo({
+        name: 'cashtag-widget',
+        sender: {
+          url: `chrome-extension://${RUNTIME_ID}/cashtag-widget.html`,
+        },
+      });
+
+      expect(result.isMetaMaskUIPort).toBe(false);
+      expect(result.processName).toBe('cashtag-widget');
+    } finally {
+      jest.restoreAllMocks();
+    }
+  });
 });
