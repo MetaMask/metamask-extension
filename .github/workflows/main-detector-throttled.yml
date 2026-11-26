@@ -64,6 +64,10 @@ jobs:
           # The benchmark code must match the build it measures.
           ref: ${{ fromJSON(inputs.plan).headSha }}
 
+      - name: Fail if the head predates the CPU throttle harness
+        # Without it the run is unthrottled while the artifact says throttled.
+        run: test -f test/e2e/benchmarks/utils/cpu-throttle.ts || { echo "::error::Head predates the CPU throttle harness"; exit 1; }
+
       - name: Install anvil with retry
         uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
         with:
