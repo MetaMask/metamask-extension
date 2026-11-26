@@ -2883,6 +2883,7 @@
         "@metamask/utils>@metamask/type-utils": true,
         "@metamask/utils": true,
         "@noble/curves": true,
+        "@noble/hashes": true,
         "async-mutex": true
       }
     },
