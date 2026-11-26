@@ -1,0 +1,305 @@
+name: AMO determinism recheck
+
+# Rechecks Firefox build reproducibility now that every known cause of path
+# dependence is fixed on main.
+#
+# Builds the Firefox MV2 production bundle in N different absolute paths for
+# two branches:
+#   before: test/amo-recheck-before, the commit right before the source-map
+#           naming fix (#47007);
+#   after:  test/amo-recheck-after, main with that fix.
+# Both have the runtime-chunk mangling workaround (#46236) reverted, so a
+# path-dependent build is free to show up in the final output.
+#
+# Every job records the runtime chunk name, a sha256 of every file in
+# dist/firefox, and every webpack module's build hash. The report says, per
+# variant, how many distinct outputs the builds produced and how many modules
+# have a build hash that depends on the path.
+#
+# This workflow only runs on the experiment branch; it is not part of CI.
+
+on:
+  push:
+    branches:
+      - test/amo-recheck-after
+
+permissions:
+  contents: read
+
+env:
+  # Number of builds per variant. 2 for a smoke run, 50 for the real run.
+  ITERATIONS: '2'
+  # Any fixed value works: both variants share it, so it cannot explain a diff.
+  SOURCE_DATE_EPOCH: '1757400000'
+  TZ: UTC
+  ENABLE_MV3: 'false'
+  # The production build only requires these to be *defined*. Values are
+  # placeholders of the right shape; they are baked into chunk contents, so
+  # the resulting hashes will not equal the published release, but every
+  # iteration of a variant gets identical values and must agree with itself.
+  INFURA_PROJECT_ID: '00000000000000000000000000000000'
+  INFURA_PROD_PROJECT_ID: '00000000000000000000000000000000'
+  INFURA_BETA_PROJECT_ID: '00000000000000000000000000000000'
+  INFURA_FLASK_PROJECT_ID: '00000000000000000000000000000000'
+  INFURA_EXPERIMENTAL_PROJECT_ID: ''
+  SEGMENT_WRITE_KEY: 'placeholder'
+  SEGMENT_PROD_WRITE_KEY: 'placeholder'
+  SEGMENT_BETA_WRITE_KEY: 'placeholder'
+  SEGMENT_FLASK_WRITE_KEY: 'placeholder'
+  SEGMENT_EXPERIMENTAL_WRITE_KEY: ''
+  CONTENTFUL_ACCESS_SPACE_ID: 'placeholder'
+  CONTENTFUL_ACCESS_TOKEN: 'placeholder'
+  ETHERSCAN_API_KEY: 'placeholder'
+  FIREBASE_API_KEY: 'placeholder'
+  FIREBASE_APP_ID: '1:0:web:0'
+  FIREBASE_AUTH_DOMAIN: 'placeholder.firebaseapp.com'
+  FIREBASE_MEASUREMENT_ID: 'G-PLACEHOLDER'
+  FIREBASE_MESSAGING_SENDER_ID: '0'
+  FIREBASE_PROJECT_ID: 'placeholder'
+  FIREBASE_STORAGE_BUCKET: 'placeholder.appspot.com'
+  QUICKNODE_ARBITRUM_URL: 'https://placeholder.quiknode.pro/0/'
+  QUICKNODE_AVALANCHE_URL: 'https://placeholder.quiknode.pro/0/'
+  QUICKNODE_BASE_URL: 'https://placeholder.quiknode.pro/0/'
+  QUICKNODE_LINEA_MAINNET_URL: 'https://placeholder.quiknode.pro/0/'
+  QUICKNODE_MAINNET_URL: 'https://placeholder.quiknode.pro/0/'
+  QUICKNODE_OPTIMISM_URL: 'https://placeholder.quiknode.pro/0/'
+  QUICKNODE_POLYGON_URL: 'https://placeholder.quiknode.pro/0/'
+  QUICKNODE_SEI_URL: 'https://placeholder.quiknode.pro/0/'
+  QUICKNODE_MONAD_URL: 'https://placeholder.quiknode.pro/0/'
+  QUICKNODE_HYPEREVM_URL: 'https://placeholder.quiknode.pro/0/'
+  QUICKNODE_ARC_URL: 'https://placeholder.quiknode.pro/0/'
+  QUICKNODE_ROBINHOOD_URL: 'https://placeholder.quiknode.pro/0/'
+  QUICKNODE_BSC_URL: 'https://placeholder.quiknode.pro/0/'
+  QUICKNODE_ZKSYNC_URL: 'https://placeholder.quiknode.pro/0/'
+  QUICKNODE_MEGAETH_URL: 'https://placeholder.quiknode.pro/0/'
+  ANALYTICS_DATA_DELETION_SOURCE_ID: 'placeholder'
+  ANALYTICS_DATA_DELETION_ENDPOINT: 'https://placeholder.example/segment/v1'
+  SENTRY_DSN: 'https://00000000000000000000000000000000@sentry.io/0'
+  SENTRY_DSN_DEV: 'https://00000000000000000000000000000000@sentry.io/0'
+  SENTRY_DSN_PERFORMANCE: 'https://00000000000000000000000000000000@sentry.io/0'
+  VAPID_KEY: 'placeholder'
+
+
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    outputs:
+      iterations: ${{ steps.matrix.outputs.iterations }}
+    steps:
+      - name: Build the iteration list
+        id: matrix
+        shell: bash
+        run: |
+          echo "iterations=$(python3 -c "import json; print(json.dumps(list(range(1, ${ITERATIONS} + 1))))")" >> "${GITHUB_OUTPUT}"
+
+  build:
+    name: ${{ matrix.variant }} #${{ matrix.iteration }}
+    needs: setup
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [before, after]
+        iteration: ${{ fromJSON(needs.setup.outputs.iterations) }}
+    steps:
+      - name: Choose a build directory whose absolute path differs per iteration
+        id: dir
+        shell: bash
+        run: |
+          # Iteration n gets a directory name of n*2 extra characters, so 50
+          # iterations span absolute path lengths of roughly 70 to 170.
+          pad="$(printf '%*s' "$(( ${{ matrix.iteration }} * 2 ))" '' | tr ' ' 'x')"
+          # Relative to the workspace: actions/setup-node resolves
+          # node-version-file against GITHUB_WORKSPACE.
+          dir="work/i${{ matrix.iteration }}-${pad}/metamask-extension"
+          mkdir -p "${dir}"
+          abs="$(cd "${dir}" && pwd)"
+          echo "dir=${dir}" >> "${GITHUB_OUTPUT}"
+          echo "abs=${abs}" >> "${GITHUB_OUTPUT}"
+          echo "len=${#abs}" >> "${GITHUB_OUTPUT}"
+          echo "Building in ${abs} (length ${#abs})"
+
+      - name: Clone the ${{ matrix.variant }} branch into that directory
+        id: clone
+        shell: bash
+        run: |
+          git clone --quiet --depth 1 --branch "test/amo-recheck-${{ matrix.variant }}" \
+            https://github.com/MetaMask/metamask-extension.git \
+            "${{ steps.dir.outputs.dir }}"
+          git -C "${{ steps.dir.outputs.dir }}" log -1 --format='%H %s'
+          # No checkout of the workspace itself: Yarn merges .yarnrc.yml from
+          # parent directories, and a partial checkout there breaks the install.
+          echo "node=$(cat "${{ steps.dir.outputs.dir }}/.nvmrc")" >> "${GITHUB_OUTPUT}"
+          echo "sha=$(git -C "${{ steps.dir.outputs.dir }}" rev-parse HEAD)" >> "${GITHUB_OUTPUT}"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ steps.clone.outputs.node }}
+
+      - name: Install dependencies
+        shell: bash
+        working-directory: ${{ steps.dir.outputs.dir }}
+        run: |
+          npm install -g corepack
+          corepack enable
+          yarn install --immutable
+
+      - name: Build Firefox MV2 production bundle
+        shell: bash
+        working-directory: ${{ steps.dir.outputs.dir }}
+        env:
+          MM_DEBUG_HASH_DUMP: ${{ runner.temp }}/hashdump.json
+        run: |
+          yarn webpack:tsc
+          # The build script exits 0 even when webpack reports errors, so
+          # capture the output and fail explicitly on any compilation error.
+          yarn webpack:lavamoat:build:mv2 2>&1 | tee build.log
+          if grep -qE "compiled with [0-9]+ errors?|ERROR in" build.log; then
+            echo "::error::webpack reported compilation errors"
+            grep -E "ERROR in|Can't resolve|compiled with" build.log | head -20
+            exit 1
+          fi
+          test -f "${MM_DEBUG_HASH_DUMP}"
+
+      - name: Record result
+        shell: bash
+        working-directory: ${{ steps.dir.outputs.dir }}
+        run: |
+          runtime="$(find dist/firefox -maxdepth 1 -name 'runtime.*.js' -exec basename {} \;)"
+          (cd dist/firefox && find . -type f | LC_ALL=C sort | xargs sha256sum) > "${RUNNER_TEMP}/files.sha256"
+          dist_digest="$(sha256sum "${RUNNER_TEMP}/files.sha256" | cut -d' ' -f1)"
+          mkdir -p "${RUNNER_TEMP}/result"
+          out="${RUNNER_TEMP}/result/${{ matrix.variant }}-${{ matrix.iteration }}.json"
+          python3 - "${RUNNER_TEMP}/hashdump.json" "${out}" "${runtime}" "${dist_digest}" "${RUNNER_TEMP}/files.sha256" <<'PY'
+          import json, sys
+          dump = json.load(open(sys.argv[1]))
+          # Identifiers carry absolute paths (loaders under the repo root, the
+          # resource under the webpack context <root>/app); normalise the root.
+          root = '${{ steps.dir.outputs.abs }}'
+          mods = {m['ident'].replace(root, '<root>'): m.get('buildHash') for m in dump['modules']}
+          # Provisional chunk content hashes, as embedded in the runtime chunk
+          # before the real content hashes replace them.
+          chunks = {str(c['name'] or c['id']): (c.get('contentHash') or {}).get('javascript') for c in dump['chunks']}
+          files = {}
+          for line in open(sys.argv[5]):
+              digest, name = line.rstrip('\n').split('  ', 1)
+              files[name] = digest
+          result = {
+              'variant': '${{ matrix.variant }}',
+              'iteration': ${{ matrix.iteration }},
+              'sha': '${{ steps.clone.outputs.sha }}',
+              'path': root,
+              'path_length': ${{ steps.dir.outputs.len }},
+              'runtime': sys.argv[3],
+              'dist_digest': sys.argv[4],
+              'files': files,
+              'chunks': chunks,
+              'modules': mods,
+          }
+          json.dump(result, open(sys.argv[2], 'w'))
+          print({k: v for k, v in result.items() if k not in ('modules', 'files', 'chunks')},
+                len(mods), 'modules', len(chunks), 'chunks', len(files), 'files')
+          PY
+
+      - name: Upload result
+        uses: actions/upload-artifact@v6
+        with:
+          name: result-${{ matrix.variant }}-${{ matrix.iteration }}
+          path: ${{ runner.temp }}/result/*.json
+          retention-days: 30
+
+      - name: Upload runtime chunk
+        uses: actions/upload-artifact@v6
+        with:
+          name: runtime-${{ matrix.variant }}-${{ matrix.iteration }}
+          path: ${{ steps.dir.outputs.dir }}/dist/firefox/runtime.*.js
+          retention-days: 30
+
+  report:
+    name: Report
+    needs: build
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all results
+        uses: actions/download-artifact@v7
+        with:
+          pattern: result-*
+          path: results
+          merge-multiple: true
+
+      - name: Tabulate
+        shell: bash
+        run: |
+          python3 - <<'PY' | tee -a "${GITHUB_STEP_SUMMARY}"
+          import glob, json, collections
+
+          rows = [json.load(open(f)) for f in sorted(glob.glob('results/*.json'))]
+          by_variant = collections.defaultdict(list)
+          for r in rows:
+              by_variant[r['variant']].append(r)
+
+          def unstable_keys(rs, field):
+              values = collections.defaultdict(set)
+              seen = collections.Counter()
+              for r in rs:
+                  for k, v in r[field].items():
+                      values[k].add(v)
+                      seen[k] += 1
+              # A key missing from some builds is itself a difference.
+              return sorted(k for k, vs in values.items() if len(vs) > 1 or seen[k] != len(rs)), len(values)
+
+          print('# Firefox MV2 production build, each build in a different absolute path\n')
+          print('Both variants have the runtime-chunk mangling workaround reverted.\n')
+          summary = {}
+          for variant in ('before', 'after'):
+              rs = sorted(by_variant.get(variant, []), key=lambda r: r['iteration'])
+              if not rs:
+                  print(f'## {variant}: no results\n')
+                  continue
+              runtimes = collections.Counter(r['runtime'] for r in rs)
+              digests = collections.Counter(r['dist_digest'] for r in rs)
+              mods, n_mods = unstable_keys(rs, 'modules')
+              chunks, n_chunks = unstable_keys(rs, 'chunks')
+              files, n_files = unstable_keys(rs, 'files')
+              summary[variant] = dict(n=len(rs), runtimes=len(runtimes), digests=len(digests), mods=len(mods), files=files)
+              shas = sorted({r['sha'] for r in rs})
+              print(f'## {variant}: {len(rs)} builds of `{", ".join(shas)}`\n')
+              print(f'- distinct `dist/firefox` contents: **{len(digests)}**')
+              print(f'- distinct runtime chunk names: **{len(runtimes)}**')
+              print(f'- output files that differ between builds: **{len(files)}** of {n_files}')
+              print(f'- modules whose build hash depends on the path: **{len(mods)}** of {n_mods}')
+              print(f'- chunks whose provisional content hash depends on the path: **{len(chunks)}** of {n_chunks}\n')
+              for name, n in runtimes.most_common():
+                  print(f'- `{name}` x {n}')
+              print()
+              if files:
+                  print('Output files that differ:\n')
+                  for f in files[:20]:
+                      print(f'- `{f}`')
+                  if len(files) > 20:
+                      print(f'- ... and {len(files) - 20} more')
+                  print()
+              print('<details><summary>Per-build table</summary>\n')
+              print('| # | path length | runtime chunk | dist digest (first 12) |')
+              print('|---|---|---|---|')
+              for r in rs:
+                  print(f"| {r['iteration']} | {r['path_length']} | `{r['runtime']}` | `{r['dist_digest'][:12]}` |")
+              print('\n</details>\n')
+
+          print('## Verdict\n')
+          a = summary.get('after'); b = summary.get('before')
+          ok = a is not None and a['digests'] == 1 and a['mods'] == 0
+          if b:
+              print(f"Before the fix: {b['digests']} distinct output(s) over {b['n']} builds, "
+                    f"{b['mods']} module(s) with a path-dependent build hash.")
+          if ok:
+              print(f"After the fix: all {a['n']} builds produced a byte-identical `dist/firefox` "
+                    f"and no module has a path-dependent build hash.")
+          else:
+              print('After the fix: the builds did not all agree, or some are missing. See above.')
+          raise SystemExit(0 if ok else 1)
+          PY
