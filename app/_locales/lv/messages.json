@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "Gas robežvērtība"
   },
-  "gasUsed": {
-    "message": "Izlietotie Gas"
-  },
   "general": {
     "message": "Vispārīgi"
   },
@@ -557,9 +554,6 @@
   },
   "unapproved": {
     "message": "Nav apstiprināts"
-  },
-  "units": {
-    "message": "vienības"
   },
   "unknown": {
     "message": "Nezināma"

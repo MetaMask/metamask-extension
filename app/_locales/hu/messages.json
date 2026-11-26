@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "Gáz határértéke"
   },
-  "gasUsed": {
-    "message": "Használt gáz"
-  },
   "general": {
     "message": "Általános"
   },
@@ -551,9 +548,6 @@
   },
   "unapproved": {
     "message": "Jóvá nem hagyott"
-  },
-  "units": {
-    "message": "egységek"
   },
   "unknown": {
     "message": "Ismeretlen"

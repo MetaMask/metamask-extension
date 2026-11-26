@@ -1482,9 +1482,6 @@
   "advancedGasPriceModalTitle": {
     "message": "Advanced network fee"
   },
-  "advancedGasPriceTitle": {
-    "message": "Gas price"
-  },
   "advancedPermissionSmallCase": {
     "message": "advanced permission"
   },
@@ -1745,12 +1742,6 @@
   },
   "amount": {
     "message": "Amount"
-  },
-  "amountReceived": {
-    "message": "Amount received"
-  },
-  "amountSent": {
-    "message": "Amount sent"
   },
   "andForListItems": {
     "message": "$1, and $2",
@@ -4399,9 +4390,6 @@
     "message": "$1 sec",
     "description": "$1 represents a number of seconds"
   },
-  "gasUsed": {
-    "message": "Gas used"
-  },
   "gatorNoJustificationProvided": {
     "message": "No justification was provided for the permission"
   },
@@ -6936,9 +6924,6 @@
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps, and most hardware wallets, will not work with your current browser version."
   },
-  "noMMFeeSwapping": {
-    "message": "No MetaMask fee"
-  },
   "noNetworkFee": {
     "message": "No network fee"
   },
@@ -8041,6 +8026,9 @@
   "perpsBatchCloseFailed": {
     "message": "Failed to close one or more positions. Try again."
   },
+  "perpsBatchIncomplete": {
+    "message": "Some orders or positions couldn't be updated. Try again."
+  },
   "perpsCancelAllOrders": {
     "message": "Cancel all"
   },
@@ -8311,6 +8299,10 @@
   "perpsIncludesPnl": {
     "message": "includes P&L $1"
   },
+  "perpsInsufficientBalance": {
+    "message": "Insufficient balance to complete this operation. Check your available funds.",
+    "description": "Shown when a perps action fails because the account balance is too low"
+  },
   "perpsInsufficientMargin": {
     "message": "Insufficient margin to place this order."
   },
@@ -8332,6 +8324,18 @@
   },
   "perpsLeverage": {
     "message": "Leverage"
+  },
+  "perpsLeverageBelowPosition": {
+    "message": "Leverage must be at least as high as your existing position.",
+    "description": "Shown when an order uses lower leverage than the open position on the same market"
+  },
+  "perpsLeverageInvalid": {
+    "message": "This leverage is outside the allowed range.",
+    "description": "Shown when an order leverage is outside the market range"
+  },
+  "perpsLeverageReductionFailed": {
+    "message": "You cannot reduce your leverage.",
+    "description": "Shown when the exchange rejects lowering leverage on an open position"
   },
   "perpsLimit": {
     "message": "Limit"
@@ -8362,11 +8366,18 @@
     "message": "If the price hits this point, you'll be liquidated and lose your margin. Higher leverage makes this more likely.",
     "description": "Tooltip content for the liquidation price row on the Perps order summary"
   },
+  "perpsLiquidationPriceUnavailable": {
+    "message": "Liquidation price is unavailable. Try again."
+  },
   "perpsLong": {
     "message": "Long"
   },
   "perpsMargin": {
     "message": "Margin"
+  },
+  "perpsMarginAdjustmentFailed": {
+    "message": "Unable to adjust margin. Try again.",
+    "description": "Shown when adding or removing margin on a position fails"
   },
   "perpsMarginRiskWarning": {
     "message": "Removing margin moves your liquidation price closer. Ensure you have sufficient buffer."
@@ -8542,11 +8553,22 @@
   "perpsOrderFilled": {
     "message": "Filled"
   },
+  "perpsOrderMaxValueExceeded": {
+    "message": "This order is above the maximum size.",
+    "description": "Shown when an order exceeds the maximum order value"
+  },
+  "perpsOrderNoLongerOpen": {
+    "message": "This order is no longer open. It may have already been filled or canceled."
+  },
   "perpsOrderOriginalSize": {
     "message": "Original size"
   },
   "perpsOrderRejected": {
     "message": "Your order was rejected. Try again."
+  },
+  "perpsOrderSizeMin": {
+    "message": "This order is below the minimum size.",
+    "description": "Shown when an order is smaller than the minimum order size"
   },
   "perpsOrderStatus": {
     "message": "Status"
@@ -8563,6 +8585,9 @@
   "perpsOrders": {
     "message": "Orders"
   },
+  "perpsOrdersFailed": {
+    "message": "We couldn't load your orders. Try again."
+  },
   "perpsPerpMarketSubtitle": {
     "message": "$1-$2 perp",
     "description": "$1 is the market ticker (e.g. BTC), $2 is the collateral asset (e.g. USDC). Shown as the market pair subtitle on the perps market detail header, e.g. 'BTC-USDC perp'."
@@ -8573,8 +8598,27 @@
   "perpsPosition": {
     "message": "Position"
   },
+  "perpsPositionLeverageUnavailable": {
+    "message": "You can't add to this position until its leverage is available."
+  },
+  "perpsPositionNotFound": {
+    "message": "Position not found.",
+    "description": "Shown when an action targets a position that no longer exists"
+  },
+  "perpsPositionWouldFlip": {
+    "message": "This order would flip your position direction. Please close your existing position first.",
+    "description": "Shown when a closing order would reverse the position direction"
+  },
   "perpsPositions": {
     "message": "Positions"
+  },
+  "perpsPostOnlyWindow": {
+    "message": "Trading is temporarily restricted after a network upgrade and will resume shortly. Try again in a few minutes.",
+    "description": "Shown when the exchange only accepts post-only orders immediately after a network upgrade."
+  },
+  "perpsPostOnlyWouldCross": {
+    "message": "This price would cross the spread, so the post-only order wasn't placed. Adjust the price or use a non-post-only order.",
+    "description": "Shown when a post-only order is rejected because its price would immediately match the book."
   },
   "perpsPriceMoved": {
     "message": "The price moved $1%, exceeding your $2% slippage tolerance. Review the updated price and try again.",
@@ -8583,6 +8627,9 @@
   "perpsProducts": {
     "message": "Products",
     "description": "Heading of the Perps tab section listing market categories as chips"
+  },
+  "perpsProviderRouteRequired": {
+    "message": "No exchange was selected for this order."
   },
   "perpsRateLimitExceeded": {
     "message": "Too many requests. Please wait and try again."
@@ -8609,6 +8656,10 @@
   "perpsReduceOnly": {
     "message": "Reduce only"
   },
+  "perpsReduceOnlyViolation": {
+    "message": "This order would increase your position. Only reduce-only orders are allowed.",
+    "description": "Shown when the exchange rejects a reduce-only order that would increase the position"
+  },
   "perpsRemoveFromFavorites": {
     "message": "Remove from favorites"
   },
@@ -8633,6 +8684,9 @@
   "perpsSaveChanges": {
     "message": "Save changes",
     "description": "Button text for saving TP/SL changes"
+  },
+  "perpsScaleOrderFailed": {
+    "message": "We couldn't place your scale order. Try again."
   },
   "perpsSearchMarkets": {
     "message": "Search markets"
@@ -8946,6 +9000,10 @@
   "perpsTotalAndAvailableToTradeOrWithdraw": {
     "message": "$1 total, $2 available to trade or withdraw",
     "description": "Tooltip shown when hovering the Hyperliquid Connection Bar balance. $1 is the formatted total account balance and $2 is the formatted amount available to trade or withdraw."
+  },
+  "perpsTpslUpdateFailed": {
+    "message": "Unable to update take profit/stop loss. Try again.",
+    "description": "Shown when updating take profit or stop loss on a position fails"
   },
   "perpsTrades": {
     "message": "Trades"
@@ -12443,27 +12501,6 @@
   "transactionFlowNetwork": {
     "message": "Network"
   },
-  "transactionHistoryBaseFee": {
-    "message": "Base fee (GWEI)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "Total L1 network fee"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "L2 gas limit"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "L2 gas price"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "Max fee per gas"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "Priority fee (GWEI)"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "Total network fee"
-  },
   "transactionIdCopied": {
     "message": "Transaction ID copied"
   },
@@ -12646,9 +12683,6 @@
   "unifiedSwapFromTo": {
     "message": "Swap $1 $2 to $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
-  "units": {
-    "message": "units"
   },
   "unknown": {
     "message": "Unknown"
