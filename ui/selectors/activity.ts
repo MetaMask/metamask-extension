@@ -469,45 +469,72 @@ const selectBridgeHistory = createSelector(
     selectBridgeHistoryItemForTx(state, tx),
 );
 
+/**
+ * Source transaction hashes of MetaMask Pay transactions, such as the Solana
+ * signature of a transaction paid with a Solana token. The local Pay activity
+ * already represents those source transactions.
+ */
+const selectPaySourceHashes = createSelector(
+  selectLocalTransactions,
+  (transactionGroups) =>
+    new Set(
+      transactionGroups
+        .map(
+          ({ initialTransaction }) =>
+            initialTransaction.metamaskPay?.sourceHash,
+        )
+        .filter((hash): hash is string => Boolean(hash)),
+    ),
+);
+
 export const selectNonEvmActivityItems = createSelector(
   [
     selectNonEvmTransactionsForActivity,
     getAssetsMetadata,
     getInternalAccountsObject,
     selectBridgeHistory,
+    selectPaySourceHashes,
   ],
-  (transactions, assetsMetadata, internalAccountsById, getBridgeHistory) =>
-    transactions.map((transaction) => {
-      const subjectAddress =
-        internalAccountsById?.[transaction.account]?.address;
-      const activity = mapKeyringTransaction({
-        // Unified assets caused Snap token movements with empty or placeholder units.
-        transaction: patchKeyringTransaction(transaction, assetsMetadata),
-        subjectAddress,
-      });
+  (
+    transactions,
+    assetsMetadata,
+    internalAccountsById,
+    getBridgeHistory,
+    paySourceHashes,
+  ) =>
+    transactions
+      .filter((transaction) => !paySourceHashes.has(transaction.id))
+      .map((transaction) => {
+        const subjectAddress =
+          internalAccountsById?.[transaction.account]?.address;
+        const activity = mapKeyringTransaction({
+          // Unified assets caused Snap token movements with empty or placeholder units.
+          transaction: patchKeyringTransaction(transaction, assetsMetadata),
+          subjectAddress,
+        });
 
-      const bridgeHistoryEntry = getBridgeHistory({ hash: transaction.id });
-      const { quote } = bridgeHistoryEntry ?? {};
+        const bridgeHistoryEntry = getBridgeHistory({ hash: transaction.id });
+        const { quote } = bridgeHistoryEntry ?? {};
 
-      if (quote && isCrossChain(quote.srcChainId, quote.destChainId)) {
-        const tokens = getSwapTokens(bridgeHistoryEntry);
-        const status = getBridgeActivityStatus(bridgeHistoryEntry);
-        const fees = 'fees' in activity.data ? activity.data.fees : undefined;
+        if (quote && isCrossChain(quote.srcChainId, quote.destChainId)) {
+          const tokens = getSwapTokens(bridgeHistoryEntry);
+          const status = getBridgeActivityStatus(bridgeHistoryEntry);
+          const fees = 'fees' in activity.data ? activity.data.fees : undefined;
 
-        return {
-          ...activity,
-          type: 'bridge',
-          ...(status ? { status } : {}),
-          data: {
-            from: subjectAddress,
-            ...tokens,
-            ...(fees === undefined ? {} : { fees }),
-          },
-        } as ActivityListItem;
-      }
+          return {
+            ...activity,
+            type: 'bridge',
+            ...(status ? { status } : {}),
+            data: {
+              from: subjectAddress,
+              ...tokens,
+              ...(fees === undefined ? {} : { fees }),
+            },
+          } as ActivityListItem;
+        }
 
-      return activity;
-    }),
+        return activity;
+      }),
 );
 
 export const selectNonEvmActivityItemsById = createSelector(
