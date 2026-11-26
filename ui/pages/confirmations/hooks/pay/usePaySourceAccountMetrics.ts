@@ -30,6 +30,7 @@ const MONEY_ACCOUNT_PAY_SOURCE = 'money-account';
 const PAYMENT_OVERRIDE_SOURCES = {
   [PaymentOverride.MoneyAccount]: MONEY_ACCOUNT_PAY_SOURCE,
   [PaymentOverride.Perps]: 'perps',
+  [PaymentOverride.PerpsLighter]: 'perps',
   [PaymentOverride.Predict]: 'predict',
 } as const satisfies Record<PaymentOverride, string>;
 

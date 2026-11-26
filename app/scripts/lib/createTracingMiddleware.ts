@@ -31,10 +31,14 @@ export default function createTracingMiddleware() {
     const traceName = METHOD_TYPE_TO_TRACE_NAME[method];
 
     if (traceName) {
+      // A provider request carries no trace context, so the transaction or
+      // signature it starts begins its own trace instead of joining whichever
+      // trace the service worker's current scope holds.
       req.traceContext = await trace({
         name: traceName,
         id,
         tags: METHOD_TYPE_TO_TAGS[method],
+        root: true,
       });
 
       await trace({

@@ -4,6 +4,7 @@ import { AccountGroupId } from '@metamask/account-api';
 import {
   Box,
   BoxAlignItems,
+  BoxBackgroundColor,
   BoxFlexDirection,
   Checkbox,
   FontWeight,
@@ -20,6 +21,7 @@ import { AccountTreeWallets } from '../../../../selectors/multichain-accounts/ac
 import { selectBalanceForAllWallets } from '../../../../selectors/assets';
 import { getShowDefaultAddressPreference } from '../../../../selectors';
 import { useFormatters } from '../../../../hooks/useFormatters';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getAccountGroupDisplayBalance } from '../../../../helpers/utils/account-group-balance';
 import { VirtualizedList } from '../../../../components/ui/virtualized-list/virtualized-list';
 
@@ -27,6 +29,10 @@ type WalletGroupData =
   AccountTreeWallets[keyof AccountTreeWallets]['groups'][AccountGroupId];
 
 type ListItem =
+  | {
+      type: 'divider';
+      key: string;
+    }
   | {
       type: 'wallet-header';
       key: string;
@@ -54,6 +60,7 @@ export const WalletSelectionList = ({
   selectedAccountGroups,
   onSelectionChange,
 }: WalletSelectionListProps) => {
+  const t = useI18nContext();
   const allBalances = useSelector(selectBalanceForAllWallets);
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const showDefaultAddress = useSelector(getShowDefaultAddressPreference);
@@ -86,6 +93,13 @@ export const WalletSelectionList = ({
       const groupIds = Object.keys(wallet.groups) as AccountGroupId[];
       if (groupIds.length === 0) {
         return;
+      }
+
+      if (items.length > 0) {
+        items.push({
+          type: 'divider',
+          key: `divider-${walletId}`,
+        });
       }
 
       const isExpanded = !collapsedWallets.has(walletId);
@@ -131,9 +145,37 @@ export const WalletSelectionList = ({
     [selectedSet, onSelectionChange],
   );
 
+  const toggleAccount = useCallback(
+    (groupId: AccountGroupId) => {
+      const next = new Set(selectedSet);
+      if (next.has(groupId)) {
+        next.delete(groupId);
+      } else {
+        next.add(groupId);
+      }
+      onSelectionChange(Array.from(next));
+    },
+    [onSelectionChange, selectedSet],
+  );
+
   const renderItem = useCallback(
     (info: { item: ListItem }) => {
       const { item } = info;
+      if (item.type === 'divider') {
+        return (
+          <Box
+            paddingHorizontal={4}
+            paddingVertical={2}
+            data-testid="qr-sync-wallet-divider"
+          >
+            <Box
+              backgroundColor={BoxBackgroundColor.BackgroundMuted}
+              className="h-px w-full"
+            />
+          </Box>
+        );
+      }
+
       if (item.type === 'wallet-header') {
         const allSelected = item.groupIds.every((id) => selectedSet.has(id));
 
@@ -160,14 +202,36 @@ export const WalletSelectionList = ({
                 className="flex w-full items-center justify-between gap-3"
                 aria-expanded={item.isExpanded}
               >
-                <Text
-                  variant={TextVariant.BodyMd}
-                  fontWeight={FontWeight.Medium}
-                  color={TextColor.TextAlternative}
-                  ellipsis
+                <Box
+                  flexDirection={BoxFlexDirection.Row}
+                  alignItems={BoxAlignItems.Center}
+                  gap={2}
+                  className="min-w-0"
                 >
-                  {item.walletName}
-                </Text>
+                  <Text
+                    variant={TextVariant.BodyMd}
+                    fontWeight={FontWeight.Medium}
+                    color={TextColor.TextAlternative}
+                    ellipsis
+                  >
+                    {item.walletName}
+                  </Text>
+                  <Text
+                    variant={TextVariant.BodyMd}
+                    fontWeight={FontWeight.Medium}
+                    color={TextColor.TextAlternative}
+                    className="shrink-0"
+                  >
+                    (
+                    {t(
+                      item.groupIds.length === 1
+                        ? 'qrSyncAccountCountOne'
+                        : 'qrSyncAccountCount',
+                      [item.groupIds.length],
+                    )}
+                    )
+                  </Text>
+                </Box>
                 <Icon
                   name={item.isExpanded ? IconName.ArrowUp : IconName.ArrowDown}
                   size={IconSize.Md}
@@ -191,15 +255,36 @@ export const WalletSelectionList = ({
           groupBalance.currency,
         );
 
+      const isSelected = selectedSet.has(item.groupId);
+
       return (
-        <MultichainAccountCell
-          accountId={item.groupId}
-          accountName={item.groupData.metadata.name}
-          accountNameString={item.groupData.metadata.name}
-          balance={balance}
-          selected={false}
-          showDefaultAddress={showDefaultAddress}
-        />
+        <Box
+          className="[&_.multichain-account-cell]:!py-3"
+          data-testid={`qr-sync-account-row-${item.groupId}`}
+        >
+          <MultichainAccountCell
+            accountId={item.groupId}
+            accountName={item.groupData.metadata.name}
+            accountNameString={item.groupData.metadata.name}
+            balance={balance}
+            selected={isSelected}
+            onClick={() => toggleAccount(item.groupId)}
+            showDefaultAddress={showDefaultAddress}
+            startAccessory={
+              <Box
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
+                onClick={(event: React.MouseEvent) => event.stopPropagation()}
+              >
+                <Checkbox
+                  id={`account-select-${item.groupId}`}
+                  isSelected={isSelected}
+                  onChange={() => toggleAccount(item.groupId)}
+                />
+              </Box>
+            }
+          />
+        </Box>
       );
     },
     [
@@ -207,6 +292,8 @@ export const WalletSelectionList = ({
       formatCurrencyWithMinThreshold,
       showDefaultAddress,
       selectedSet,
+      t,
+      toggleAccount,
       toggleWallet,
       toggleCollapsed,
     ],

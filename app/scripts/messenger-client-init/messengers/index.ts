@@ -1,9 +1,5 @@
 import { noop } from 'lodash';
 import {
-  getPPOMControllerMessenger,
-  getPPOMControllerInitMessenger,
-} from './ppom-controller-messenger';
-import {
   getCronjobControllerMessenger,
   getExecutionServiceMessenger,
   getMultichainRoutingServiceInitMessenger,
@@ -22,6 +18,7 @@ import {
   getTransactionPayControllerMessenger,
   getTransactionPayControllerInitMessenger,
 } from './transaction-pay-controller-messenger';
+import { getAiDigestControllerMessenger } from './ai-digest-controller-messenger';
 import {
   getBackendWebSocketServiceMessenger,
   getBackendWebSocketServiceInitMessenger,
@@ -131,10 +128,6 @@ import {
   getEncryptionPublicKeyControllerMessenger,
 } from './encryption-public-key-controller-messenger';
 import { getEncryptionPublicKeyManagerMessenger } from './encryption-public-key-manager-messenger';
-import {
-  getSignatureControllerInitMessenger,
-  getSignatureControllerMessenger,
-} from './signature-controller-messenger';
 import { getRewardsDataServiceMessenger } from './reward-data-service-messenger';
 import { getAuthenticatedUserStorageServiceMessenger } from './authenticated-user-storage-service-messenger';
 import {
@@ -233,11 +226,6 @@ export { getComplianceServiceMessenger } from './compliance-service-messenger';
 export type { PerpsControllerMessenger } from './perps-controller-messenger';
 export { getPerpsControllerMessenger } from './perps-controller-messenger';
 export { getPhishingControllerMessenger } from './phishing-controller-messenger';
-export type { SignatureControllerInitMessenger } from './signature-controller-messenger';
-export {
-  getSignatureControllerMessenger,
-  getSignatureControllerInitMessenger,
-} from './signature-controller-messenger';
 export { getRewardsControllerMessenger } from './rewards-controller-messenger';
 export {
   getRewardsMoneyControllerInitMessenger,
@@ -469,10 +457,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getSentryTracingServiceMessenger,
     getInitMessenger: noop,
   },
-  SignatureController: {
-    getMessenger: getSignatureControllerMessenger,
-    getInitMessenger: getSignatureControllerInitMessenger,
-  },
   SnapAccountService: {
     getMessenger: getSnapAccountServiceMessenger,
     getInitMessenger: noop,
@@ -513,6 +497,10 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getRewardsControllerMessenger,
     getInitMessenger: getRewardsControllerInitMessenger,
   },
+  AiDigestController: {
+    getMessenger: getAiDigestControllerMessenger,
+    getInitMessenger: noop,
+  },
   RewardsMoneyDataService: {
     getMessenger: getRewardsMoneyDataServiceMessenger,
     getInitMessenger: noop,
@@ -520,10 +508,6 @@ export const MESSENGER_FACTORIES = {
   RewardsMoneyController: {
     getMessenger: getRewardsMoneyControllerMessenger,
     getInitMessenger: getRewardsMoneyControllerInitMessenger,
-  },
-  PPOMController: {
-    getMessenger: getPPOMControllerMessenger,
-    getInitMessenger: getPPOMControllerInitMessenger,
   },
   PreferencesController: {
     getMessenger: getPreferencesControllerMessenger,

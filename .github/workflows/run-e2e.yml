@@ -14,11 +14,15 @@ on:
       build-command:
         type: string
         default: ''
-        description: The build command to run
+        description: The yarn script and arguments to build with, without the leading yarn
       test-command:
         required: true
         type: string
-        description: The test command to run
+        description: The E2E yarn script and arguments, without the leading yarn
+      e2e-debug:
+        type: boolean
+        default: false
+        description: Whether to set E2E_DEBUG=true for the test run
       playwright-browsers:
         required: false
         type: string
@@ -109,8 +113,13 @@ jobs:
           run-id: ${{ inputs.builds-from-run }} # Download from the run that produced the builds.
 
       # if there is a build-command and there is no build artifact, or the specified artifact does not exist, we run the build command
-      - run: ${{ inputs.build-command }}
-        if: ${{ inputs.build-command != '' && (inputs.build-artifact == '' || steps.download-build-artifact.outcome == 'failure') }}
+      - if: ${{ inputs.build-command != '' && (inputs.build-artifact == '' || steps.download-build-artifact.outcome == 'failure') }}
+        env:
+          BUILD_COMMAND: ${{ inputs.build-command }}
+        run: |
+          # Split on spaces only; the value is never parsed as shell.
+          IFS=' ' read -r -a script_and_args <<< "$BUILD_COMMAND"
+          yarn run "${script_and_args[@]}"
 
       - name: Download changed-files artifact
         if: ${{ env.BRANCH != 'main' }}
@@ -154,8 +163,13 @@ jobs:
 
       - name: Run E2E tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
-        run: ${{ inputs.test-command }} --retries 1
+        run: |
+          # Split on spaces only; the value is never parsed as shell.
+          IFS=' ' read -r -a script_and_args <<< "$TEST_COMMAND"
+          yarn run "${script_and_args[@]}" --retries 1
         env:
+          TEST_COMMAND: ${{ inputs.test-command }}
+          E2E_DEBUG: ${{ inputs.e2e-debug && 'true' || '' }}
           # The properties are picked up by mocha-junit-reporter and added to the XML test results
           PROPERTIES: 'JOB_NAME:${{ env.JOB_NAME }},JOB_ID:${{ job.check_run_id }},RUN_ID:${{ env.RUN_ID }},PR_NUMBER:${{ env.PR_NUMBER }}'
           # On re-run, pass the path to previous results to run only failed tests

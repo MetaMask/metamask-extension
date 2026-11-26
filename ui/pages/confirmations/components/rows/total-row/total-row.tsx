@@ -1,5 +1,10 @@
 import React, { useMemo } from 'react';
+import { createFormatters } from '@metamask/client-utils';
 import { BigNumber } from 'bignumber.js';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import type { TransactionPayTotals } from '@metamask/transaction-pay-controller';
 import { Box, Text } from '../../../../../components/component-library';
 import {
@@ -17,6 +22,7 @@ import {
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useConfirmContext } from '../../../context/confirm';
+import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import {
   getUserPaidNetworkFeeUsd,
   type SponsoredNetworkFeeFlags,
@@ -28,6 +34,15 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 
+const EN_US_USD_TRANSACTION_TYPES = [TransactionType.moneyAccountDeposit];
+
+const { formatCurrency: formatEnUsCurrency } = createFormatters({
+  locale: 'en-US',
+  currencyDisplay: 'narrowSymbol',
+});
+
+const formatUsd = (amount: number) => formatEnUsCurrency(amount, 'usd');
+
 export type TotalRowProps = {
   variant?: ConfirmInfoRowSize;
 };
@@ -36,9 +51,15 @@ export function TotalRow({
   variant = ConfirmInfoRowSize.Default,
 }: TotalRowProps) {
   const t = useI18nContext();
-  const formatFiat = useFiatFormatter({ overrideCurrency: 'usd' });
+  const { currentConfirmation, isAmountPending } =
+    useConfirmContext<TransactionMeta>();
+  const useEnUsUsd = hasTransactionType(
+    currentConfirmation,
+    EN_US_USD_TRANSACTION_TYPES,
+  );
+  const formatLocaleFiat = useFiatFormatter({ overrideCurrency: 'usd' });
+  const formatFiat = useEnUsUsd ? formatUsd : formatLocaleFiat;
   const isPayLoading = useIsTransactionPayLoading();
-  const { isAmountPending } = useConfirmContext();
   // Totals come from the executable quote. While a typed amount is still
   // pending, that quote is the previous amount, so show the skeleton.
   const isLoading = isPayLoading || isAmountPending;

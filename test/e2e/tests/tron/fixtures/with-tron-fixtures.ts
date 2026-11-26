@@ -9,7 +9,7 @@ import {
   TronTrc10Symbol,
   TronTrc20Symbol,
   createEmptyTronGridTransactionsResponse,
-  createTronGridAccountResponse,
+  normalizeTronHexAddress,
 } from '../../../seeder/tron/assets';
 import { TronNode } from '../../../seeder/tron/node';
 import { TronSeeder } from '../../../seeder/tron/tron-seeder';
@@ -34,6 +34,11 @@ import {
   mockTronPriceSupportedNetworks,
 } from '../mocks/common-tron';
 import { proxyTronBlockchainCalls } from '../mocks/local-tron-node-mocks';
+import {
+  accountsBalancesV5,
+  priceV3Spot,
+  tokensV3Assets,
+} from '../../../mock-response-data/api-responses';
 
 const TRON_PROVIDER_ANY_ACCOUNT_RE =
   /^(https:\/\/tron-mainnet\.infura\.io\/v3\/[^/]+|https:\/\/api\.trongrid\.io|https:\/\/api\.shasta\.trongrid\.io|https:\/\/shasta\.api\.trongrid\.io|https:\/\/nile\.trongrid\.io|https:\/\/nile\.api\.trongrid\.io)\/v1\/accounts\/([A-Za-z0-9]{20,})(\/transactions(\/trc20)?)?(\?.*)?$/u;
@@ -248,7 +253,7 @@ async function mockTronFixtureApis(
   );
 
   const accountByAddress = new Map(
-    accounts.map((account) => [account.address, account]),
+    accounts.map((account) => [normalizeTronAddress(account.address), account]),
   );
   const fixtureHistoryEndpoints = await mockFixtureTransactionHistory(
     mockServer,
@@ -383,7 +388,7 @@ async function mockWildcardTronAccountApis(
       const match = req.url.match(TRON_PROVIDER_ANY_ACCOUNT_RE);
       const address = match?.[2] ?? '';
       const suffix = match?.[3] ?? '';
-      const account = accountByAddress.get(address);
+      const account = accountByAddress.get(normalizeTronAddress(address));
 
       if (suffix.startsWith('/transactions')) {
         const transactions = suffix.includes('/trc20')
@@ -396,16 +401,29 @@ async function mockWildcardTronAccountApis(
         return {
           statusCode: 200,
           json: tronNode
-            ? await tronNode.getTronGridAccountResponse(address)
+            ? await tronNode.getTronGridAccountResponse(account.address)
             : buildStaticTronGridAccountResponse(account),
         };
       }
 
+      // TronGrid returns no account data for an address that is not activated.
       return {
         statusCode: 200,
-        json: createTronGridAccountResponse({ address }),
+        json: createEmptyTronGridTransactionsResponse(),
       };
     });
+}
+
+/**
+ * Normalizes Tron addresses so hex and base58 forms resolve to the same account.
+ * @param address
+ */
+function normalizeTronAddress(address: string): string {
+  try {
+    return normalizeTronHexAddress(address);
+  } catch {
+    return address;
+  }
 }
 
 function formatFixtureBalanceForAccountsApi(asset: TronFixtureAsset): string {
@@ -596,10 +614,8 @@ async function mockTronFixtureAccountsApiV5(
   // endpoint registered before the Tron defaults wins exactly one request and
   // then falls through to this default. Custom overrides of these endpoints
   // must use `.always()`.
-  return mockServer
-    .forGet(
-      /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
-    )
+  return accountsBalancesV5
+    .rule(mockServer)
     .always()
     .thenCallback(async (request) => {
       const requestedBalances = await getRequestedTronFixtureBalances(
@@ -652,8 +668,8 @@ async function mockTronFixtureAssets(
 ): Promise<MockedEndpoint> {
   const knownAssets = buildFixtureTokenMetadata(accounts, tronNode);
 
-  return mockServer
-    .forGet('https://tokens.api.cx.metamask.io/v3/assets')
+  return tokensV3Assets
+    .rule(mockServer)
     .always()
     .thenCallback((request) => {
       const assetIdsParam =
@@ -687,8 +703,8 @@ async function mockTronFixtureSpotPrices(
     ]),
   ]);
 
-  return mockServer
-    .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
+  return priceV3Spot
+    .rule(mockServer)
     .always()
     .thenCallback((request) => {
       const assetIds = new URL(request.url).searchParams
