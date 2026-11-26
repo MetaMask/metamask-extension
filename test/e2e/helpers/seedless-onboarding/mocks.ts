@@ -23,6 +23,7 @@ import {
   MockAuthPubKey,
   MockAuthPubKey2,
   PasswordSyncMockAuthPubKey,
+  PasswordSyncMockEncryptionKey,
 } from './data';
 import {
   TOPRF_EVAL_THRESHOLD,
@@ -392,18 +393,25 @@ export class OAuthMockttpService {
       };
     }
 
-    // Default: return SRP data only (PW_BACKUP excluded from regular queries)
-    const result = generateEncryptedSecretData([
-      {
-        data: seedPhraseBytes,
-        timestamp: Date.now(),
-        type: SecretType.Mnemonic,
-        itemId: crypto.randomUUID(),
-        dataType: 1,
-        createdAt: new Date().toISOString(),
-        version: 'v2',
-      },
-    ]);
+    // Default: return SRP data only (PW_BACKUP excluded from regular queries).
+    // The partition of the global password is encrypted with the key derived
+    // from that password.
+    const result = generateEncryptedSecretData(
+      [
+        {
+          data: seedPhraseBytes,
+          timestamp: Date.now(),
+          type: SecretType.Mnemonic,
+          itemId: crypto.randomUUID(),
+          dataType: 1,
+          createdAt: new Date().toISOString(),
+          version: 'v2',
+        },
+      ],
+      requestedPubKey === PasswordSyncMockAuthPubKey
+        ? PasswordSyncMockEncryptionKey
+        : undefined,
+    );
 
     return {
       statusCode: 200,

@@ -108,6 +108,7 @@ export async function generateBlindedOutput(
  * Generate mock encrypted secret data for Metadata Service.
  *
  * @param secretDataArr - Array of secret data items.
+ * @param encKey - The encryption key of the secret data.
  * @returns Parallel arrays matching the server response format (data, ids, versions, dataTypes, createdAt).
  */
 export function generateEncryptedSecretData(
@@ -120,6 +121,7 @@ export function generateEncryptedSecretData(
     createdAt?: string | null;
     version?: string;
   }[],
+  encKey: Uint8Array = InitialMockEncryptionKey,
 ): {
   data: string[];
   ids: string[];
@@ -141,7 +143,7 @@ export function generateEncryptedSecretData(
       type: secretData.type,
     });
 
-    const aes = managedNonce(gcm)(InitialMockEncryptionKey);
+    const aes = managedNonce(gcm)(encKey);
     const cipherText = aes.encrypt(stringToBytes(secretMetadata));
 
     data.push(bytesToBase64(cipherText));

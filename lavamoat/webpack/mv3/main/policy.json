@@ -3076,10 +3076,6 @@
       }
     },
     "@metamask/seedless-onboarding-controller": {
-      "globals": {
-        "console": true,
-        "fetch": true
-      },
       "meta": {
         "webpack-optimization": [
           "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/byte-utils' and webpack collapsed that to a direct import.",
