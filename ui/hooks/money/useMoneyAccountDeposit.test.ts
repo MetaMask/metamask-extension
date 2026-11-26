@@ -47,6 +47,12 @@ jest.mock('../../ducks/money-ftue', () => ({
   selectHasSeenMoneyFtue: jest.fn(() => true),
 }));
 
+const mockUseMoneyAccountLifecycle = jest.fn();
+
+jest.mock('./use-money-account-lifecycle', () => ({
+  useMoneyAccountLifecycle: () => mockUseMoneyAccountLifecycle(),
+}));
+
 const createDepositTransactionMock = jest.mocked(
   createMoneyAccountDepositTransaction,
 );
@@ -183,6 +189,12 @@ describe('useMoneyAccountDeposit', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     selectHasSeenMoneyFtueMock.mockReturnValue(true);
+    mockUseMoneyAccountLifecycle.mockReturnValue({
+      lifecycle: undefined,
+      isLifecycleUnavailable: false,
+      isReadOnly: false,
+      isLoading: false,
+    });
 
     useMoneyErrorReporterMock.mockReturnValue(reportErrorMock);
     useConfirmationNavigationMock.mockReturnValue({
@@ -213,6 +225,75 @@ describe('useMoneyAccountDeposit', () => {
       loader: ConfirmationLoader.CustomAmount,
       goBackTo: '/',
     });
+  });
+
+  it('does not start a deposit when the Money Account is read-only', async () => {
+    mockUseMoneyAccountLifecycle.mockReturnValue({
+      lifecycle: { type: 'mfa' },
+      isReadOnly: true,
+      isLoading: false,
+    });
+
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    let started: boolean | undefined;
+    await act(async () => {
+      started = await result.current.initiateDeposit();
+    });
+
+    expect(started).toBe(false);
+    expect(result.current.isDisabled).toBe(true);
+    expect(createDepositTransactionMock).not.toHaveBeenCalled();
+    expect(navigateToTransactionMock).not.toHaveBeenCalled();
+  });
+
+  it('does not start a deposit when the lifecycle is unavailable', async () => {
+    mockUseMoneyAccountLifecycle.mockReturnValue({
+      isLifecycleUnavailable: true,
+      isReadOnly: false,
+      isLoading: false,
+    });
+
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    let started: boolean | undefined;
+    await act(async () => {
+      started = await result.current.initiateDeposit();
+    });
+
+    expect(started).toBe(false);
+    expect(result.current.isDisabled).toBe(true);
+    expect(createDepositTransactionMock).not.toHaveBeenCalled();
+  });
+
+  it('does not start a deposit while the lifecycle read is pending', async () => {
+    mockUseMoneyAccountLifecycle.mockReturnValue({
+      lifecycle: undefined,
+      isReadOnly: false,
+      isLoading: true,
+    });
+
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    let started: boolean | undefined;
+    await act(async () => {
+      started = await result.current.initiateDeposit();
+    });
+
+    expect(started).toBe(false);
+    expect(result.current.isDisabled).toBe(true);
+    expect(result.current.isLifecycleLoading).toBe(true);
+    expect(createDepositTransactionMock).not.toHaveBeenCalled();
+    expect(navigateToTransactionMock).not.toHaveBeenCalled();
   });
 
   it('opens the FTUE splash instead of creating the batch when unseen', async () => {

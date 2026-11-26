@@ -38,6 +38,7 @@ describe('MoneyTransferSheet', () => {
     mockUseMoneyAnalytics.mockReturnValue(mockMoneyAnalytics);
     useMoneyAccountWithdrawalMock.mockReturnValue({
       initiateWithdrawal,
+      isDisabled: false,
       isLoading: false,
     });
     useMoneyPerpsDepositMock.mockReturnValue({
