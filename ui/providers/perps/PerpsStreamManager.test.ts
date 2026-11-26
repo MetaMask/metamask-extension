@@ -660,6 +660,82 @@ describe('PerpsStreamManager', () => {
         jest.useFakeTimers();
       }
     });
+
+    it.each([
+      ['an Error', new Error('PROVIDER_LIFECYCLE_STALE')],
+      ['a string', 'PROVIDER_LIFECYCLE_STALE'],
+    ])(
+      'does not log or notify when the REST fallback is rejected with %s for a stale provider lifecycle',
+      async (_label, rejection) => {
+        const consoleErrorSpy = jest
+          .spyOn(console, 'error')
+          .mockImplementation(() => undefined);
+
+        try {
+          mockSubmitRequestToBackground.mockImplementation((method: string) => {
+            if (method === 'perpsGetPositions') {
+              return Promise.reject(rejection);
+            }
+            return Promise.resolve(undefined);
+          });
+
+          const cb = jest.fn();
+          manager.positions.subscribe(cb);
+
+          await jest.advanceTimersByTimeAsync(3_000);
+
+          expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+            'perpsGetPositions',
+            [],
+          );
+          expect(consoleErrorSpy).not.toHaveBeenCalledWith(
+            '[PerpsStreamManager] Failed to fetch positions',
+            expect.anything(),
+          );
+          expect(cb).not.toHaveBeenCalledWith([]);
+          expect(manager.positions.hasCachedData()).toBe(false);
+        } finally {
+          consoleErrorSpy.mockRestore();
+        }
+      },
+    );
+
+    it('does not log when an in-flight positions fetch rejects after teardown', async () => {
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        let rejectInFlight: (reason: Error) => void = () => undefined;
+        mockSubmitRequestToBackground.mockImplementation(
+          (method: string) =>
+            new Promise((_resolve, reject) => {
+              if (method === 'perpsGetPositions') {
+                rejectInFlight = reject;
+              }
+            }),
+        );
+
+        const unsubscribe = manager.positions.subscribe(jest.fn());
+
+        await jest.advanceTimersByTimeAsync(3_000);
+        unsubscribe();
+
+        rejectInFlight(new Error('network'));
+        await jest.advanceTimersByTimeAsync(0);
+
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsGetPositions',
+          [],
+        );
+        expect(consoleErrorSpy).not.toHaveBeenCalledWith(
+          '[PerpsStreamManager] Failed to fetch positions',
+          expect.anything(),
+        );
+      } finally {
+        consoleErrorSpy.mockRestore();
+      }
+    });
   });
 
   describe('orders channel', () => {
@@ -742,6 +818,82 @@ describe('PerpsStreamManager', () => {
         consoleErrorSpy.mockRestore();
         jest.useRealTimers();
         jest.useFakeTimers();
+      }
+    });
+
+    it.each([
+      ['an Error', new Error('PROVIDER_LIFECYCLE_STALE')],
+      ['a string', 'PROVIDER_LIFECYCLE_STALE'],
+    ])(
+      'does not log or notify when the REST fallback is rejected with %s for a stale provider lifecycle',
+      async (_label, rejection) => {
+        const consoleErrorSpy = jest
+          .spyOn(console, 'error')
+          .mockImplementation(() => undefined);
+
+        try {
+          mockSubmitRequestToBackground.mockImplementation((method: string) => {
+            if (method === 'perpsGetOpenOrders') {
+              return Promise.reject(rejection);
+            }
+            return Promise.resolve(undefined);
+          });
+
+          const cb = jest.fn();
+          manager.orders.subscribe(cb);
+
+          await jest.advanceTimersByTimeAsync(3_000);
+
+          expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+            'perpsGetOpenOrders',
+            [],
+          );
+          expect(consoleErrorSpy).not.toHaveBeenCalledWith(
+            '[PerpsStreamManager] Failed to fetch orders',
+            expect.anything(),
+          );
+          expect(cb).not.toHaveBeenCalledWith([]);
+          expect(manager.orders.hasCachedData()).toBe(false);
+        } finally {
+          consoleErrorSpy.mockRestore();
+        }
+      },
+    );
+
+    it('does not log when an in-flight orders fetch rejects after teardown', async () => {
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        let rejectInFlight: (reason: Error) => void = () => undefined;
+        mockSubmitRequestToBackground.mockImplementation(
+          (method: string) =>
+            new Promise((_resolve, reject) => {
+              if (method === 'perpsGetOpenOrders') {
+                rejectInFlight = reject;
+              }
+            }),
+        );
+
+        const unsubscribe = manager.orders.subscribe(jest.fn());
+
+        await jest.advanceTimersByTimeAsync(3_000);
+        unsubscribe();
+
+        rejectInFlight(new Error('network'));
+        await jest.advanceTimersByTimeAsync(0);
+
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsGetOpenOrders',
+          [],
+        );
+        expect(consoleErrorSpy).not.toHaveBeenCalledWith(
+          '[PerpsStreamManager] Failed to fetch orders',
+          expect.anything(),
+        );
+      } finally {
+        consoleErrorSpy.mockRestore();
       }
     });
   });

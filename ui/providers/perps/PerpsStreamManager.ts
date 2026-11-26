@@ -25,6 +25,7 @@
  * ```
  */
 
+import { PERPS_ERROR_CODES } from '@metamask/perps-controller';
 import type {
   Position,
   Order,
@@ -89,6 +90,18 @@ const TESTNET_TAG = 'is_testnet';
  */
 // eslint-disable-next-line no-empty-function
 const placeholderConnectFn = () => () => {};
+
+/**
+ * Returns true when a background request was rejected because the Perps
+ * provider was disconnected or rebuilt while the request was in flight.
+ * Fresh data arrives from the reconnected stream, so this is not a failure.
+ *
+ * @param err - The value the background request rejected with.
+ */
+function isProviderLifecycleStaleError(err: unknown): boolean {
+  const message = err instanceof Error ? err.message : String(err);
+  return message.includes(PERPS_ERROR_CODES.PROVIDER_LIFECYCLE_STALE);
+}
 
 /**
  * Optimistic TP/SL override for a position.
@@ -232,11 +245,17 @@ class PerpsStreamManager {
               }
             })
             .catch((err) => {
+              if (!isCurrent()) {
+                return;
+              }
+              if (isProviderLifecycleStaleError(err)) {
+                return;
+              }
               console.error(
                 '[PerpsStreamManager] Failed to fetch positions',
                 err,
               );
-              if (isCurrent() && !this.positions.hasCachedData()) {
+              if (!this.positions.hasCachedData()) {
                 push(EMPTY_POSITIONS);
               }
             });
@@ -265,8 +284,14 @@ class PerpsStreamManager {
               }
             })
             .catch((err) => {
+              if (cancelled) {
+                return;
+              }
+              if (isProviderLifecycleStaleError(err)) {
+                return;
+              }
               console.error('[PerpsStreamManager] Failed to fetch orders', err);
-              if (!cancelled && !this.orders.hasCachedData()) {
+              if (!this.orders.hasCachedData()) {
                 push(EMPTY_ORDERS);
               }
             });
