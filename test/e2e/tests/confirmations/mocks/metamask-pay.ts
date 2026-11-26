@@ -41,6 +41,11 @@ import {
   USDC_BALANCE_RAW,
   USDC_USD_PRICE,
 } from '../metamask-pay/constants';
+import {
+  priceV1ExchangeRates,
+  priceV3Spot,
+  txSentinelNetwork,
+} from '../../../mock-response-data/api-responses';
 
 /** Accountant `getRate()`. A zero rate makes share math divide by zero. */
 const ACCOUNTANT_GET_RATE_SELECTOR = '0x679aefce';
@@ -111,8 +116,8 @@ async function mockMoneyAccountDepositFlags(
 }
 
 async function mockPriceApis(server: Mockttp): Promise<void> {
-  await server
-    .forGet(`${PRICE_API_BASE_URL}/v1/exchange-rates`)
+  await priceV1ExchangeRates
+    .rule(server)
     .always()
     .thenCallback(() => ({
       statusCode: 200,
@@ -132,8 +137,8 @@ async function mockPriceApis(server: Mockttp): Promise<void> {
       },
     }));
 
-  await server
-    .forGet(`${PRICE_API_BASE_URL}/v3/spot-prices`)
+  await priceV3Spot
+    .rule(server)
     .always()
     .thenCallback((request) => {
       const url = new URL(request.url);
@@ -672,8 +677,8 @@ async function mockDepositSettlement(
     [TX_SENTINEL_URL, mainnetSentinelNetwork],
     [MONAD_TX_SENTINEL_URL, monadSentinelNetwork],
   ] as const) {
-    await server
-      .forGet(`${sentinelUrl}/network`)
+    await txSentinelNetwork
+      .rule(server, { baseUrl: sentinelUrl })
       .always()
       .thenCallback(() => ({ statusCode: 200, json: network }));
   }

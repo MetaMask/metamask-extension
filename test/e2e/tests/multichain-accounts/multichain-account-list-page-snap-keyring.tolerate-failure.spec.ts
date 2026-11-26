@@ -15,6 +15,10 @@ import {
   MOCK_ETH_CONVERSION_RATE,
   mockPriceApi,
 } from '../tokens/utils/mocks';
+import {
+  accountsSupportedNetworksV2,
+  tokensV3Assets,
+} from '../../mock-response-data/api-responses';
 import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 
 const MUSD_ADDRESS = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
@@ -22,15 +26,12 @@ const MUSD_ADDRESS = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
 async function mockEthMainnetAndMusd(mockServer: Mockttp) {
   return [
     ...(await mockPriceApi(mockServer, MOCK_ETH_CONVERSION_RATE)),
-    await mockServer
-      .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
-      .always()
-      .thenJson(200, {
-        fullSupport: [],
-        partialSupport: [],
-      }),
-    await mockServer
-      .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+    await accountsSupportedNetworksV2.rule(mockServer).always().thenJson(200, {
+      fullSupport: [],
+      partialSupport: [],
+    }),
+    await tokensV3Assets
+      .rule(mockServer)
       .always()
       .thenCallback((request) => {
         const url = new URL(request.url);

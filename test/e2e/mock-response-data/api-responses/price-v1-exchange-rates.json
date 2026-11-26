@@ -1,0 +1,26 @@
+{
+  "btc": {
+    "name": "Bitcoin",
+    "ticker": "btc",
+    "value": 0.0000140251960683841,
+    "currencyType": "crypto"
+  },
+  "eth": {
+    "name": "Ether",
+    "ticker": "eth",
+    "value": 0.000294031167303734,
+    "currencyType": "crypto"
+  },
+  "sol": {
+    "name": "Solana",
+    "ticker": "sol",
+    "value": 0.0123639817200643,
+    "currencyType": "crypto"
+  },
+  "usd": {
+    "name": "US Dollar",
+    "ticker": "usd",
+    "value": 1,
+    "currencyType": "fiat"
+  }
+}

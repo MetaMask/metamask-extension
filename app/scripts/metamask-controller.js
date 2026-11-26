@@ -237,6 +237,7 @@ import {
 } from './controllers/analytics';
 import { handleRampsOrderStatusChanged } from './lib/ramps/handleRampsOrderStatusChanged';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
+import { traceSubscriptionControllerPolls } from './wallet-init/subscription-controller-poll-trace';
 import {
   addHexPrefix,
   getMethodDataName,
@@ -368,6 +369,7 @@ import { RewardsDataServiceInit } from './messenger-client-init/rewards-data-ser
 import { RewardsControllerInit } from './messenger-client-init/rewards-controller-init';
 import { RewardsMoneyDataServiceInit } from './messenger-client-init/rewards-money-data-service-init';
 import { RewardsMoneyControllerInit } from './messenger-client-init/rewards-money-controller-init';
+import { AiDigestControllerInit } from './messenger-client-init/ai-digest-controller-init';
 import { QrSyncControllerInit } from './messenger-client-init/qr-sync';
 import { getRootMessenger } from './lib/messenger';
 import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
@@ -618,6 +620,7 @@ export default class MetamaskController extends EventEmitter {
       RewardsController: RewardsControllerInit,
       RewardsMoneyDataService: RewardsMoneyDataServiceInit,
       RewardsMoneyController: RewardsMoneyControllerInit,
+      AiDigestController: AiDigestControllerInit,
       ProfileMetricsController: ProfileMetricsControllerInit,
       ProfileMetricsService: ProfileMetricsServiceInit,
       ProofOfOwnershipService: ProofOfOwnershipServiceInit,
@@ -757,6 +760,7 @@ export default class MetamaskController extends EventEmitter {
     this.subscriptionController = this.wallet.getInstance(
       'SubscriptionController',
     );
+    traceSubscriptionControllerPolls(this.subscriptionController);
     this.networkOrderController = messengerClientsByName.NetworkOrderController;
     this.shieldController = this.wallet.getInstance('ShieldController');
     this.gatorPermissionsController =

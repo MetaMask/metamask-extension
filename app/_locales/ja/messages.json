@@ -1323,12 +1323,6 @@
   "add_device_try_again": {
     "message": "もう一度お試しください"
   },
-  "add_device_validating_desc": {
-    "message": "お使いの携帯電話との暗号化された安全な接続を確立します。"
-  },
-  "add_device_validating_title": {
-    "message": "デバイスのペアリング"
-  },
   "add_wallets": {
     "message": "同期する項目を選択"
   },
@@ -1427,9 +1421,6 @@
   },
   "advancedGasPriceModalTitle": {
     "message": "詳細なネットワーク手数料"
-  },
-  "advancedGasPriceTitle": {
-    "message": "ガス価格"
   },
   "advancedPermissionSmallCase": {
     "message": "高度なアクセス許可"
@@ -1691,12 +1682,6 @@
   },
   "amount": {
     "message": "金額"
-  },
-  "amountReceived": {
-    "message": "受取額"
-  },
-  "amountSent": {
-    "message": "送金額"
   },
   "andForListItems": {
     "message": "$1、および$2",
@@ -2119,9 +2104,6 @@
   },
   "blockExplorerUrl": {
     "message": "ブロックエクスプローラーURL"
-  },
-  "blockExplorerUrlDefinition": {
-    "message": "このネットワークのブロックエクスプローラーとして使用されるURL。"
   },
   "blockExplorerView": {
     "message": "$1でアカウントを表示",
@@ -2635,9 +2617,6 @@
   "chainId": {
     "message": "チェーンID"
   },
-  "chainIdDefinition": {
-    "message": "このネットワークのトランザクションの署名に使用されるチェーンID。"
-  },
   "chainIdExistsErrorMsg": {
     "message": "このチェーンIDは現在$1ネットワークで使用されています。"
   },
@@ -2749,10 +2728,6 @@
   "clickHere": {
     "message": "こちらをクリック",
     "description": "Link to help when a JSON account import is not working"
-  },
-  "clickToConnectLedgerViaWebHID": {
-    "message": "ここをクリックして、WebHIDでLedgerを接続します",
-    "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
   },
   "clipboardClearFailed": {
     "message": "クリップボードのデータを消去できませんでした。もう一度お試しください。"
@@ -3267,9 +3242,6 @@
   },
   "currencySymbol": {
     "message": "通貨記号"
-  },
-  "currencySymbolDefinition": {
-    "message": "このネットワークの通貨に対して表示されるティッカーシンボル。"
   },
   "current": {
     "message": "現在"
@@ -4013,10 +3985,6 @@
   "enter_verification_code_expired": {
     "message": "認証コードの有効期限が切れました"
   },
-  "enter_verification_code_expires_in": {
-    "message": "期限切れまであと$1秒",
-    "description": "$1 is the number of seconds remaining before the verification code expires"
-  },
   "enter_verification_code_max_attempts": {
     "message": "間違った試行が多すぎます。新しいQRコードを使ってやり直してください。"
   },
@@ -4032,9 +4000,6 @@
   "errorCode": {
     "message": "コード: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorGettingSafeChainList": {
-    "message": "安全なチェーンリストの取得中にエラーが発生しました。慎重に続けてください。"
   },
   "errorLegalTextFirstInfo": {
     "message": "技術的な診断情報です。"
@@ -4355,9 +4320,6 @@
     "message": "$1秒",
     "description": "$1 represents a number of seconds"
   },
-  "gasUsed": {
-    "message": "ガス使用量"
-  },
   "gatorNoJustificationProvided": {
     "message": "アクセス許可の正当な理由が提供されませんでした"
   },
@@ -4476,9 +4438,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "問題が発生しました...."
-  },
-  "generateNewQrCode": {
-    "message": "新しいQRコードを生成"
   },
   "genericExplorerView": {
     "message": "$1でアカウントを表示"
@@ -4996,9 +4955,6 @@
   "insufficientTokens": {
     "message": "トークンが不十分です。"
   },
-  "interactWithSmartContract": {
-    "message": "スマートコントラクト"
-  },
   "interactingWith": {
     "message": "相手"
   },
@@ -5182,18 +5138,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "新しいアカウントを追加するには、その前に最後のアカウントを使用する必要があります。"
-  },
-  "ledgerConnectionInstructionCloseOtherApps": {
-    "message": "デバイスに接続されている他のソフトウェアを閉じてから、ここをクリックして更新してください。"
-  },
-  "ledgerConnectionInstructionHeader": {
-    "message": "確認をクリックする前:に:"
-  },
-  "ledgerConnectionInstructionStepFour": {
-    "message": "Ledgerデバイスで「スマートコントラクトデータ」または「ブラインド署名」を有効にしてください."
-  },
-  "ledgerConnectionInstructionStepThree": {
-    "message": "Ledgerが接続されていて、イーサリアムアプリを選択していることを確認してください。"
   },
   "ledgerConnectionStatusAppClosedDescription": {
     "message": "Ledgerデバイスでアプリを開いてから続行してください"
@@ -5833,14 +5777,6 @@
   "minute": {
     "message": "分"
   },
-  "mismatchedChainLinkText": {
-    "message": "ネットワークの詳細の確認",
-    "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
-  },
-  "mismatchedChainRecommendation": {
-    "message": "先に進む前に$1をお勧めします。",
-    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
   "mismatchedNetworkName": {
     "message": "弊社の記録によると、ネットワーク名がこのチェーンIDと正しく一致していない可能性があります。"
   },
@@ -6429,9 +6365,6 @@
     "message": "マルチチェーンアカウントのご紹介",
     "description": "Title for the multichain accounts introduction modal."
   },
-  "multichainAddEthereumChainConfirmationDescription": {
-    "message": "このネットワークをMetaMaskに追加し、サイトがそれを使用することを許可しようとしています。"
-  },
   "multichainAddressViewAll": {
     "message": "すべて表示"
   },
@@ -6448,42 +6381,6 @@
   "multipleSnapConnectionWarning": {
     "message": "$1が$2 Snapの使用を求めています",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
-  },
-  "musdAssetConvertBenefitDailyBonus": {
-    "message": "デイリーボーナス",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertBenefitDollarBacked": {
-    "message": "ドルペッグ制",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertBenefitNoLockups": {
-    "message": "ロックアップなし",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertBenefitNoMetaMaskFee": {
-    "message": "MetaMaskの手数料なし",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertDescriptionHighlight": {
-    "message": "年率$1%のボーナス",
-    "description": "Shown in Figma accent lime (#baf24a) inside the mUSD asset details convert section description. $1 is the APY percentage."
-  },
-  "musdAssetConvertDescriptionLead": {
-    "message": " USDC、USDT、DAIをmUSDに換金すると、",
-    "description": "Text before the green APY phrase on the mUSD asset details convert section"
-  },
-  "musdAssetConvertDescriptionTail": {
-    "message": "を獲得できます。",
-    "description": "Text after the green APY phrase on the mUSD asset details convert section"
-  },
-  "musdAssetConvertLearnMore": {
-    "message": "詳細。",
-    "description": "Button to open the mUSD support article from the asset details convert section"
-  },
-  "musdAssetConvertTitle": {
-    "message": "ステーブルコインの換金",
-    "description": "Title of the convert section on the mUSD asset details page"
   },
   "musdAssetPositionBalance": {
     "message": "残高",
@@ -6512,17 +6409,9 @@
   "musdBuyMusd": {
     "message": "mUSDを購入"
   },
-  "musdClaimTitle": {
-    "message": "ボーナスを請求する",
-    "description": "Title for the mUSD bonus claim confirmation screen"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "mUSD換算手数料にはネットワークコストが含まれるほか、プロバイダー手数料も含まれる場合があります。なお、mUSDへの換算時にMetaMaskの手数料は発生しません。",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
-  },
-  "musdConversionTitle": {
-    "message": "mUSDへの変換完了",
-    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "musdConvert": {
     "message": "変換"
@@ -6683,9 +6572,6 @@
     "message": "現在$1で取引しています。",
     "description": "$1 is the name of the network"
   },
-  "networkDetails": {
-    "message": "ネットワークの詳細"
-  },
   "networkFee": {
     "message": "ネットワーク手数料"
   },
@@ -6703,9 +6589,6 @@
   },
   "networkNameBitcoin": {
     "message": "ビットコイン"
-  },
-  "networkNameDefinition": {
-    "message": "このネットワークに関連付けられている名前。"
   },
   "networkNameEthereum": {
     "message": "Ethereum"
@@ -6753,9 +6636,6 @@
   },
   "networkTabPopular": {
     "message": "人気"
-  },
-  "networkURL": {
-    "message": "ネットワークURL"
   },
   "networkURLDefinition": {
     "message": "このネットワークへのアクセスに使用されるURLです。"
@@ -6860,17 +6740,6 @@
   "nftUnsupportedEmptyDescription": {
     "message": "NFTはこのネットワークでサポートされていません。"
   },
-  "nftWarningContent": {
-    "message": "今後取得する可能性のあるものも含め、$1へのアクセスを許可しようとしています。相手はこの承認が取り消されるまで、お客様のウォレットからいつでも許可なしにこれらのNFTを送ることができます。$2",
-    "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
-  },
-  "nftWarningContentBold": {
-    "message": "手持ちのすべての$1 NFT",
-    "description": "$1 is name of the collection"
-  },
-  "nftWarningContentGrey": {
-    "message": "慎重に進めてください。"
-  },
   "nfts": {
     "message": "NFT"
   },
@@ -6903,9 +6772,6 @@
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap、およびほとんどのハードウェアウォレットは、現在お使いのブラウザのバージョンで使用できません。"
-  },
-  "noMMFeeSwapping": {
-    "message": "MetaMaskの手数料なし"
   },
   "noNetworkFee": {
     "message": "ネットワーク手数料なし"
@@ -7300,13 +7166,6 @@
   },
   "openFullScreen": {
     "message": "全画面表示"
-  },
-  "openFullScreenForLedgerWebHid": {
-    "message": "全画面モードにしてLedgerを接続します。",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
-  "openInBlockExplorer": {
-    "message": "ブロックエクスプローラーで開く"
   },
   "openMultichainAccountAddressMenu": {
     "message": "マルチチェーンアカウントアドレスメニューを開く"
@@ -8134,9 +7993,6 @@
   },
   "perpsDepositFundsTitle": {
     "message": "パーペチュアルに資金をデポジット"
-  },
-  "perpsDepositTitle": {
-    "message": "パーペチュアルアカウントに入金しました"
   },
   "perpsDepositToastErrorDescription": {
     "message": "パーペチュアルに資金が追加されませんでした。もう一度お試しください。"
@@ -9164,14 +9020,8 @@
     "message": "秘密鍵",
     "description": "Private keys row label on multichain account details page."
   },
-  "privateNetwork": {
-    "message": "プライベートネットワーク"
-  },
   "proceed": {
     "message": "先に進む"
-  },
-  "proceedWithTransaction": {
-    "message": "それでも続行"
   },
   "provide": {
     "message": "提供"
@@ -9218,13 +9068,6 @@
   "qrCameraAccessNeededTitle": {
     "message": "カメラへのアクセスが必要です",
     "description": "Title when the camera permission dialog was dismissed without a choice."
-  },
-  "qrCodeExpired": {
-    "message": "QRコードが期限切れです"
-  },
-  "qrCodeExpiresIn": {
-    "message": "期限切れまであと$1秒",
-    "description": "$1 is the number of seconds remaining before the QR code expires"
   },
   "qrErrorMismatchedTransactionBody": {
     "message": "このQRコードは別の取引用です。一度キャンセルし、まずMetaMaskに表示されているQRコードをハードウェアウォレットでスキャンしてからもう一度お試しください。",
@@ -9531,16 +9374,8 @@
   "receiveCrypto": {
     "message": "仮想通貨を受け取ります"
   },
-  "receiveToken": {
-    "message": "トークンの受取",
-    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
-  },
   "received": {
     "message": "受け取りました"
-  },
-  "receivedTotal": {
-    "message": "受取額合計",
-    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "受取人のアドレス",
@@ -11369,9 +11204,6 @@
   "simulationDetailsUnavailable": {
     "message": "利用不可"
   },
-  "simulationErrorMessageV2": {
-    "message": "ガス代を見積もることができませんでした。コントラクトにエラーがある可能性があり、このトランザクションは失敗するかもしれません。"
-  },
   "simulationsSettingDescription": {
     "message": "トランザクションと署名を確定する前に残高の増減を予測するには、この機能をオンにします。これは最終的な結果を保証するものではありません。$1"
   },
@@ -11438,12 +11270,6 @@
   },
   "smartAccountRequestsFromDappsDescriptionV2": {
     "message": "DAppによる標準アカウント用のスマートアカウント機能のリクエストを許可します。MetaMaskは監査対象となるスマートアカウントにしかアップグレードしません。"
-  },
-  "smartAccountUpgradeBannerDescription": {
-    "message": "同じアドレスでよりスマートな機能。"
-  },
-  "smartAccountUpgradeBannerTitle": {
-    "message": "スマートアカウントに切り替える"
   },
   "smartContractAddress": {
     "message": "スマートコントラクトアドレス"
@@ -11879,12 +11705,6 @@
   "stakingWithdrawal": {
     "message": "ステーキングの引き出し"
   },
-  "standardAccountLabel": {
-    "message": "スタンダードアカウント"
-  },
-  "start_with_new_qr_code": {
-    "message": "新しいQRコードで始める"
-  },
   "stateCorruptionAreYouSure": {
     "message": "続行してよろしいですか？"
   },
@@ -12211,12 +12031,6 @@
   "swapsRebateTooltipTitle": {
     "message": "取引リワード"
   },
-  "switch": {
-    "message": "切り替える"
-  },
-  "switchBack": {
-    "message": "元に戻す"
-  },
   "switchBackToPopup": {
     "message": "ポップアップに戻す"
   },
@@ -12439,27 +12253,6 @@
   "transactionFlowNetwork": {
     "message": "ネットワーク:"
   },
-  "transactionHistoryBaseFee": {
-    "message": "基本料金 (Gwei)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "L1ネットワーク手数料合計"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "L2ガスリミット"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "L2ガス価格"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "ガス1単位あたりの最大手数料"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "優先手数料 (gwei)"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "ネットワーク手数料合計"
-  },
   "transactionIdCopied": {
     "message": "トランザクションIDがコピーされました"
   },
@@ -12643,9 +12436,6 @@
     "message": "$1 $2を$3にスワップ",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "units": {
-    "message": "単位"
-  },
   "unknown": {
     "message": "不明"
   },
@@ -12689,10 +12479,6 @@
   "unpin": {
     "message": "ピン留めを解除"
   },
-  "unrecognizedChain": {
-    "message": "このカスタムネットワークは認識されていません",
-    "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
   "unsendableAsset": {
     "message": "NFT (ERC-721) トークンの送信は現在サポートされていません",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
@@ -12705,9 +12491,6 @@
   },
   "update": {
     "message": "更新"
-  },
-  "updateEthereumChainConfirmationDescription": {
-    "message": "このサイトがデフォルトのネットワークURLの更新を要求しています。デフォルトとネットワーク情報はいつでも編集できます。"
   },
   "updateInformation": {
     "message": "ウォレットがより安全かつスムーズになり、新機能が追加されました。今すぐアップデートして保護を維持し、最新の改善点をご活用ください。"
@@ -12887,9 +12670,6 @@
   "walletReadyLoseSrpFromReminder": {
     "message": "このシークレットリカバリーフレーズは、パスワードを忘れた場合やログイン情報にアクセスできなくなった場合に、アクセスを回復するのに役立ちます。"
   },
-  "wantToAddThisNetwork": {
-    "message": "このネットワークを追加しますか？"
-  },
   "wantsToAddThisAsset": {
     "message": "これにより次の資産をウォレットに追加できます。"
   },
@@ -12991,9 +12771,6 @@
   },
   "yourBalance": {
     "message": "残高"
-  },
-  "yourNFTmayBeAtRisk": {
-    "message": "NFTが危険にさらされている可能性があります"
   },
   "yourWalletIsReady": {
     "message": "ウォレットの準備ができました"

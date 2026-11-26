@@ -1,10 +1,11 @@
 import { Mockttp } from 'mockttp';
+import { tokensV3Assets } from '../../../mock-response-data/api-responses';
 
 const PRICE_API_URL = 'https://tokens.api.cx.metamask.io';
 
 export const mockTokens = (mockServer: Mockttp) =>
-  mockServer
-    .forGet(`${PRICE_API_URL}/v3/assets`)
+  tokensV3Assets
+    .rule(mockServer)
     .withQuery({
       assetIds: 'tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
     })
