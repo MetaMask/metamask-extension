@@ -64,10 +64,6 @@
   "acceptAndClose": {
     "message": "Chấp nhận và đóng"
   },
-  "acceptTermsOfUse": {
-    "message": "Tôi đã đọc và đồng ý với $1",
-    "description": "$1 is the `terms` message"
-  },
   "accessRestrictedContactSupport": {
     "message": "Liên hệ bộ phận hỗ trợ"
   },
@@ -4702,52 +4698,6 @@
   "history": {
     "message": "Lịch sử"
   },
-  "holdToRevealContent1": {
-    "message": "Cụm từ khôi phục bí mật của bạn cung cấp $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
-  },
-  "holdToRevealContent2": {
-    "message": "toàn quyền truy cập vào ví và tiền của bạn.",
-    "description": "Is the bolded text in 'holdToRevealContent1'"
-  },
-  "holdToRevealContent3": {
-    "message": "Không chia sẻ với bất kỳ ai. $1 $2",
-    "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
-  },
-  "holdToRevealContent4": {
-    "message": "Bộ phận Hỗ trợ của MetaMask sẽ không yêu cầu điều này,",
-    "description": "Part of 'holdToRevealContent3'"
-  },
-  "holdToRevealContent5": {
-    "message": "nhưng những kẻ lừa đảo qua mạng thì có.",
-    "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealContentPrivateKey1": {
-    "message": "Khóa riêng tư của bạn cung cấp $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealContentPrivateKey2": {
-    "message": "toàn quyền truy cập vào ví và tiền của bạn.",
-    "description": "Is the bolded text in 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealLockedLabel": {
-    "message": "giữ để hiển thị vòng tròn bị khóa"
-  },
-  "holdToRevealPrivateKey": {
-    "message": "Giữ để hiển thị Khóa riêng tư"
-  },
-  "holdToRevealPrivateKeyTitle": {
-    "message": "Đảm bảo an toàn cho khóa riêng tư của bạn"
-  },
-  "holdToRevealSRP": {
-    "message": "Giữ để hiển thị Cụm từ khôi phục bí mật"
-  },
-  "holdToRevealSRPTitle": {
-    "message": "Đảm bảo an toàn cho Cụm từ khôi phục bí mật của bạn"
-  },
-  "holdToRevealUnlockedLabel": {
-    "message": "giữ để hiển thị vòng tròn được mở khóa"
-  },
   "home": {
     "message": "Trang chủ",
     "description": "Label for the Home tab in the bottom navigation bar"
@@ -6661,9 +6611,6 @@
   "newNftAddedMessage": {
     "message": "NFT đã được thêm thành công!"
   },
-  "newPassword": {
-    "message": "Mật khẩu mới"
-  },
   "newPasswordCreate": {
     "message": "Tạo mật khẩu mới"
   },
@@ -7190,9 +7137,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Ghi đè tiêu đề Nội dung-Bảo mật-Riêng tư"
-  },
-  "padlock": {
-    "message": "Ổ khóa"
   },
   "paidByMetaMask": {
     "message": "Được thanh toán bởi MetaMask"

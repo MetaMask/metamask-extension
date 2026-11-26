@@ -64,10 +64,6 @@
   "acceptAndClose": {
     "message": "Принять и закрыть"
   },
-  "acceptTermsOfUse": {
-    "message": "Я прочитал(-а) $1 и согласен(-на) с ними",
-    "description": "$1 is the `terms` message"
-  },
   "accessRestrictedContactSupport": {
     "message": "Связаться с поддержкой"
   },
@@ -4698,52 +4694,6 @@
   "history": {
     "message": "История"
   },
-  "holdToRevealContent1": {
-    "message": "Ваша секретная фраза для восстановления дает $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
-  },
-  "holdToRevealContent2": {
-    "message": "полный доступ к вашему кошельку и средствам.",
-    "description": "Is the bolded text in 'holdToRevealContent1'"
-  },
-  "holdToRevealContent3": {
-    "message": "Не сообщайте ее никому. $1 $2",
-    "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
-  },
-  "holdToRevealContent4": {
-    "message": "Поддержка MetaMask не будет запрашивать это,",
-    "description": "Part of 'holdToRevealContent3'"
-  },
-  "holdToRevealContent5": {
-    "message": "но злоумышленники-фишеры могут попросить предоставить эти сведения.",
-    "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealContentPrivateKey1": {
-    "message": "Ваш закрытый ключ обеспечивает $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealContentPrivateKey2": {
-    "message": "полный доступ к вашему кошельку и средствам.",
-    "description": "Is the bolded text in 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealLockedLabel": {
-    "message": "удерживайте, чтобы показать заблокированный круг"
-  },
-  "holdToRevealPrivateKey": {
-    "message": "Удерживайте, чтобы показать закрытый ключ"
-  },
-  "holdToRevealPrivateKeyTitle": {
-    "message": "Обеспечьте безопасность своего закрытого ключа"
-  },
-  "holdToRevealSRP": {
-    "message": "Удерживайте для отображения СВФ"
-  },
-  "holdToRevealSRPTitle": {
-    "message": "Обеспечьте безопасность своей СВФ"
-  },
-  "holdToRevealUnlockedLabel": {
-    "message": "удерживайте, чтобы показать разблокированный круг"
-  },
   "home": {
     "message": "Главная",
     "description": "Label for the Home tab in the bottom navigation bar"
@@ -6657,9 +6607,6 @@
   "newNftAddedMessage": {
     "message": "NFT успешно добавлен!"
   },
-  "newPassword": {
-    "message": "Новый пароль (мин. 8 знаков)"
-  },
   "newPasswordCreate": {
     "message": "Создать новый пароль"
   },
@@ -7186,9 +7133,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Переопределить заголовок Content-Security-Policy"
-  },
-  "padlock": {
-    "message": "Замок"
   },
   "paidByMetaMask": {
     "message": "Оплачено MetaMask"

@@ -64,10 +64,6 @@
   "acceptAndClose": {
     "message": "接受并关闭"
   },
-  "acceptTermsOfUse": {
-    "message": "我已阅读并同意 $1",
-    "description": "$1 is the `terms` message"
-  },
   "accessRestrictedContactSupport": {
     "message": "联系支持团队"
   },
@@ -4698,52 +4694,6 @@
   "history": {
     "message": "历史记录"
   },
-  "holdToRevealContent1": {
-    "message": "您的私钥助记词提供 $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
-  },
-  "holdToRevealContent2": {
-    "message": "对您的钱包和资金的完整访问权限。",
-    "description": "Is the bolded text in 'holdToRevealContent1'"
-  },
-  "holdToRevealContent3": {
-    "message": "请勿与任何人分享此信息。$1 $2",
-    "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
-  },
-  "holdToRevealContent4": {
-    "message": "MetaMask 支持团队不会要求提供此项信息，",
-    "description": "Part of 'holdToRevealContent3'"
-  },
-  "holdToRevealContent5": {
-    "message": "但网络钓鱼者可能会。",
-    "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealContentPrivateKey1": {
-    "message": "您的私钥提供 $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealContentPrivateKey2": {
-    "message": "对您的钱包和资金的完整访问权限。",
-    "description": "Is the bolded text in 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealLockedLabel": {
-    "message": "按住以显示圆圈锁定"
-  },
-  "holdToRevealPrivateKey": {
-    "message": "按住以显示私钥"
-  },
-  "holdToRevealPrivateKeyTitle": {
-    "message": "保护好您的私钥"
-  },
-  "holdToRevealSRP": {
-    "message": "按住以显示 SRP"
-  },
-  "holdToRevealSRPTitle": {
-    "message": "确保 SRP 的安全"
-  },
-  "holdToRevealUnlockedLabel": {
-    "message": "按住以显示圆圈解锁"
-  },
   "home": {
     "message": "主页",
     "description": "Label for the Home tab in the bottom navigation bar"
@@ -6657,9 +6607,6 @@
   "newNftAddedMessage": {
     "message": "NFT已成功添加！"
   },
-  "newPassword": {
-    "message": "新密码（至少 8 个字符）"
-  },
   "newPasswordCreate": {
     "message": "创建新密码"
   },
@@ -7186,9 +7133,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "覆盖 Content-Security-Policy 标头"
-  },
-  "padlock": {
-    "message": "挂锁"
   },
   "paidByMetaMask": {
     "message": "由 MetaMask 支付"

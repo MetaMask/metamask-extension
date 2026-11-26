@@ -331,9 +331,6 @@
   "newContract": {
     "message": "Nova pogodba"
   },
-  "newPassword": {
-    "message": "Novo geslo (min 8 znakov)"
-  },
   "next": {
     "message": "Naprej"
   },

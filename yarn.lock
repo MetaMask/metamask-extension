@@ -9902,12 +9902,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/skills@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "@metamask/skills@npm:0.4.0"
+"@metamask/skills@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@metamask/skills@npm:0.5.0"
   bin:
     metamask-skills: bin/metamask-skills.mjs
-  checksum: 10/31c4d879d3abc7fb3e27461d4cd3e9605f28949c1fc59480deeffdbe0933ed26f2c69e30ebb46cc39e2c93296390153aaa9c59ae63ca75dd31de15372c46ec7c
+  checksum: 10/73ac85a4f09c8502883c80ff95e635dea6d4476df78047d984ed99572c192ee7370b4417e50a2b48f74e9c6e81f76e43b83c53acb7fc7a1e136d0b7bc472a348
   languageName: node
   linkType: hard
 
@@ -34607,7 +34607,6 @@ __metadata:
     "@eslint/config-helpers": "npm:^0.7.0"
     "@ethereumjs/tx": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch"
     "@ethersproject/abi": "npm:^5.6.4"
-    "@ethersproject/bignumber": "npm:^5.7.0"
     "@ethersproject/bytes": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/hdnode": "npm:^5.6.2"
@@ -34769,7 +34768,7 @@ __metadata:
     "@metamask/sentinel-api-service": "npm:^2.3.0"
     "@metamask/shield-controller": "npm:^7.1.1"
     "@metamask/signature-controller": "npm:^40.1.1"
-    "@metamask/skills": "npm:^0.4.0"
+    "@metamask/skills": "npm:^0.5.0"
     "@metamask/smart-transactions-controller": "npm:^28.0.0"
     "@metamask/snap-account-service": "npm:^4.0.0"
     "@metamask/snap-simple-keyring-site": "npm:^2.1.1"
