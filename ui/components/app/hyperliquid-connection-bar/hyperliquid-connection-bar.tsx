@@ -74,6 +74,7 @@ const HyperliquidConnectionBar = () => {
             <Icon
               name={IconName.ArrowDown}
               size={IconSize.Sm}
+              aria-hidden="true"
               className="mr-1 transition-transform duration-[240ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[expanded=false]:rotate-180 motion-reduce:transition-none"
             />
           </button>
