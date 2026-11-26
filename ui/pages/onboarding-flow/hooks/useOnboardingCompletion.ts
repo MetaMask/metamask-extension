@@ -115,8 +115,8 @@ export function useOnboardingCompletion() {
       }
 
       // Retain install attribution even when a later direct link supplies the action.
-      if (deferredDeepLinkResult && deferredDeepLinkToUse?.referringLink) {
-        const url = new URL(deferredDeepLinkToUse.referringLink);
+      if (deferredDeepLinkResult && deferredDeepLinkToUse?.originalUrl) {
+        const url = new URL(deferredDeepLinkToUse.originalUrl);
         if (
           !pendingReferralCode &&
           deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Navigate
