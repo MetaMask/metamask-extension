@@ -31,11 +31,6 @@ class SendPage {
   private readonly continueButtonEnabled =
     '[data-testid="send-continue-button"]:not([disabled])';
 
-  private readonly continueButtonError = (errorText: string) => ({
-    css: '[data-testid="send-continue-button"]',
-    text: errorText,
-  });
-
   private readonly driver: Driver;
 
   private readonly header = {
@@ -112,10 +107,6 @@ class SendPage {
     return {
       testId: `token-asset-${chainId}-${symbol}`,
     };
-  };
-
-  private readonly transactionError = {
-    text: 'Transaction error. Exception thrown in contract code.',
   };
 
   constructor(driver: Driver) {
@@ -294,18 +285,6 @@ class SendPage {
   async checkSolanaNetworkIsPresent(): Promise<void> {
     console.log('Checking if Solana network is present');
     await this.driver.findElement(this.solanaNetwork);
-  }
-
-  /**
-   * Waits for a non-EVM submit validation error on the Continue button after
-   * Continue is pressed with an invalid amount (Tron shows transactionError
-   * copy on the button rather than inline "Required").
-   */
-  async checkTransactionError(): Promise<void> {
-    console.log('Checking for transaction error');
-    await this.driver.waitForSelector(
-      this.continueButtonError(this.transactionError.text),
-    );
   }
 
   async checkWarningMessage(warningText: string): Promise<void> {

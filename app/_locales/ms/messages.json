@@ -217,9 +217,6 @@
   "gasLimit": {
     "message": "Had Gas"
   },
-  "gasUsed": {
-    "message": "Gas Digunakan"
-  },
   "general": {
     "message": "Am"
   },
@@ -388,9 +385,6 @@
     "message": "Kekunci Persendirian",
     "description": "select this type of file to use to import an account"
   },
-  "privateNetwork": {
-    "message": "Rangkaian Persendirian"
-  },
   "readdToken": {
     "message": "Anda boleh tambah token ini kembali pada masa depan dengan pergi ke \"Tambah token\" di dalam menu pilihan akaun anda."
   },
@@ -541,9 +535,6 @@
   },
   "unapproved": {
     "message": "Belum Diluluskan"
-  },
-  "units": {
-    "message": "unit"
   },
   "unknown": {
     "message": "Tidak diketahui"

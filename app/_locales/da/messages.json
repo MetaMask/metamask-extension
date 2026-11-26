@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "Gas-grænse"
   },
-  "gasUsed": {
-    "message": "Gas brugt"
-  },
   "general": {
     "message": "Generelt"
   },
@@ -392,9 +389,6 @@
     "message": "Privat nøgle",
     "description": "select this type of file to use to import an account"
   },
-  "privateNetwork": {
-    "message": "Privat netværk"
-  },
   "readdToken": {
     "message": "Du kan tilføje denne token i fremtiden, ved at gå til \"Tilføj token\" under dine valgmenuen for dine konti."
   },
@@ -536,9 +530,6 @@
   },
   "unapproved": {
     "message": "Ikke godkendt"
-  },
-  "units": {
-    "message": "enheder"
   },
   "unknown": {
     "message": "ukendt"

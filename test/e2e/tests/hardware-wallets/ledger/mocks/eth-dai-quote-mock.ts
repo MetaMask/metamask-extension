@@ -2,6 +2,10 @@ import { ReadableStream as ReadableStreamWeb } from 'stream/web';
 import { Readable } from 'stream';
 import { Mockttp } from 'mockttp';
 import { SSE_RESPONSE_HEADER } from '../../../bridge/constants';
+import {
+  bridgeGetTokensPopular,
+  bridgeGetTokensSearch,
+} from '../../../../mock-response-data/api-responses';
 import MOCK_SWAP_QUOTES_ETH_DAI from './swap-quotes-eth-dai.json';
 
 const ETH_TOKEN = {
@@ -49,12 +53,12 @@ function mockSseEventSource(mockQuotes: unknown[], delayMs: number = 0) {
  * @param mockServer
  */
 export async function mockLedgerEthDaiSwapQuoteApis(mockServer: Mockttp) {
-  await mockServer.forPost(/getTokens\/popular/u).thenCallback(() => ({
+  await bridgeGetTokensPopular.rule(mockServer).thenCallback(() => ({
     statusCode: 200,
     json: [ETH_TOKEN, DAI_TOKEN],
   }));
 
-  await mockServer.forPost(/getTokens\/search/u).thenCallback(() => ({
+  await bridgeGetTokensSearch.rule(mockServer).thenCallback(() => ({
     statusCode: 200,
     json: {
       data: [ETH_TOKEN, DAI_TOKEN],

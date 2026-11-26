@@ -80,6 +80,7 @@ async function withFixturesForSmartTransactions(
       testSpecificMock: async (mockServer: MockttpServer) => {
         await mockSpotPrices(mockServer, {
           'eip155:1/slip44:60': {
+            id: 'ethereum',
             price: 1700,
             marketCap: 382623505141,
             pricePercentChange1d: 0,

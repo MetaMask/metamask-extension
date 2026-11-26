@@ -1,0 +1,70 @@
+[
+  {
+    "address": "0x0d8775f648430679a709e98d2b0cb6250d2887ef",
+    "symbol": "BAT",
+    "decimals": 18,
+    "name": "Basic Attention Token",
+    "iconUrl": "https://assets.coingecko.com/coins/images/677/thumb/basic-attention-token.png?1547034427",
+    "type": "",
+    "aggregators": [
+      "aave",
+      "bancor",
+      "coinGecko",
+      "oneInch",
+      "paraswap",
+      "pmm",
+      "zapper",
+      "zerion",
+      "zeroEx"
+    ],
+    "occurrences": 9,
+    "storage": {
+      "balance": 0,
+      "approval": 0
+    },
+    "fees": {
+      "minFee": 0,
+      "avgFee": 0,
+      "maxFee": 0
+    },
+    "erc20Permit": false
+  },
+  {
+    "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
+    "symbol": "DAI",
+    "decimals": 18,
+    "name": "Dai Stablecoin",
+    "iconUrl": "https://raw.githubusercontent.com/MetaMask/contract-metadata/master/images/dai.svg",
+    "type": "erc20",
+    "aggregators": [
+      "metamask",
+      "aave",
+      "bancor",
+      "cmc",
+      "cryptocom",
+      "coinGecko",
+      "oneInch",
+      "pmm",
+      "sushiswap",
+      "zerion",
+      "lifi",
+      "socket",
+      "squid",
+      "openswap",
+      "sonarwatch",
+      "uniswapLabs",
+      "coinmarketcap"
+    ],
+    "occurrences": 17,
+    "storage": {
+      "balance": 2,
+      "approval": 0
+    },
+    "fees": {
+      "minFee": 0,
+      "avgFee": 0,
+      "maxFee": 0
+    },
+    "erc20Permit": true
+  }
+]

@@ -1,167 +1,124 @@
-import { captureException } from '../../../shared/lib/sentry';
-import { migrate, version } from './236';
+import migrate, { version } from './236';
 
-jest.mock('../../../shared/lib/sentry', () => ({
-  captureException: jest.fn(),
-}));
+/*eslint accessor-pairs: ["error", { "setWithoutGet": false }]*/
+/*eslint no-empty-function: ["error", { "allow": ["setters"] }]*/
 
-const mockedCaptureException = jest.mocked(captureException);
+const PPOM_DB_NAME = 'PPOMDB';
 
-const VERSION = version;
-const OLD_VERSION = VERSION - 1;
+describe(`migration #${version}`, () => {
+  let deleteDbMock: jest.Mock;
 
-type VersionedData = {
-  meta: { version: number };
-  data: Record<string, unknown>;
-};
-
-const createState = (data: Record<string, unknown>): VersionedData => ({
-  meta: { version: OLD_VERSION },
-  data,
-});
-
-describe(`migration #${VERSION}`, () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    deleteDbMock = jest.fn().mockReturnValue({
+      set onsuccess(handler: () => void) {
+        handler();
+      },
+      set onerror(_handler: () => void) {},
+      set onblocked(_handler: () => void) {},
+    });
+
+    Object.defineProperty(globalThis, 'indexedDB', {
+      value: { deleteDatabase: deleteDbMock },
+      writable: true,
+      configurable: true,
+    });
   });
 
-  it('bumps the version', async () => {
-    const oldStorage = createState({ OtherController: { preserved: true } });
-
-    await migrate(oldStorage, new Set<string>());
-
-    expect(oldStorage.meta.version).toBe(VERSION);
+  afterEach(() => {
+    // @ts-expect-error Cleaning up global mock
+    delete globalThis.indexedDB;
   });
 
-  it('carries a pending opt-in into AnalyticsController and drops the legacy state', async () => {
-    const oldStorage = createState({
-      MarketingConsentController: { pendingMarketingConsent: true },
-      AnalyticsController: {
-        analyticsId: 'analytics-id',
-        optedIn: true,
-        consentDecisionMade: true,
-        optedInToMarketing: false,
-        marketingConsentDecisionMade: false,
+  it('bumps the state version', async () => {
+    const state = { meta: { version: version - 1 }, data: {} };
+    await migrate(state, new Set());
+    expect(state.meta.version).toBe(version);
+  });
+
+  it('removes PPOMController from state', async () => {
+    const state = {
+      meta: { version: version - 1 },
+      data: {
+        PPOMController: {
+          versionInfo: [{ name: 'blob', chainId: '0x1' }],
+          storageMetadata: [],
+        },
+        OtherController: { kept: true },
+      },
+    };
+    const changedKeys = new Set<string>();
+    await migrate(state, changedKeys);
+
+    expect(state.data.PPOMController).toBeUndefined();
+    expect(state.data.OtherController).toStrictEqual({ kept: true });
+    expect(changedKeys).toStrictEqual(new Set(['PPOMController']));
+  });
+
+  it('is a no-op for state when PPOMController is absent', async () => {
+    const state = {
+      meta: { version: version - 1 },
+      data: { OtherController: { kept: true } },
+    };
+    const changedKeys = new Set<string>();
+    await migrate(state, changedKeys);
+
+    expect(state.data).toStrictEqual({ OtherController: { kept: true } });
+    expect(changedKeys.size).toBe(0);
+  });
+
+  it('deletes the PPOMDB IndexedDB database', async () => {
+    const state = { meta: { version: version - 1 }, data: {} };
+    await migrate(state, new Set());
+
+    expect(deleteDbMock).toHaveBeenCalledWith(PPOM_DB_NAME);
+  });
+
+  it('does not throw when IndexedDB deletion fails', async () => {
+    deleteDbMock.mockReturnValue({
+      set onsuccess(_handler: () => void) {},
+      set onerror(handler: () => void) {
+        handler();
+      },
+      set onblocked(_handler: () => void) {},
+    });
+
+    const state = {
+      meta: { version: version - 1 },
+      data: { PPOMController: {} },
+    };
+    const changedKeys = new Set<string>();
+
+    await expect(migrate(state, changedKeys)).resolves.toBeUndefined();
+    expect(state.data.PPOMController).toBeUndefined();
+    expect(changedKeys).toStrictEqual(new Set(['PPOMController']));
+  });
+
+  it('does not throw when IndexedDB deletion is blocked', async () => {
+    deleteDbMock.mockReturnValue({
+      set onsuccess(_handler: () => void) {},
+      set onerror(_handler: () => void) {},
+      set onblocked(handler: () => void) {
+        handler();
       },
     });
-    const changedControllers = new Set<string>();
 
-    await migrate(oldStorage, changedControllers);
+    const state = { meta: { version: version - 1 }, data: {} };
 
-    expect(oldStorage.data).not.toHaveProperty('MarketingConsentController');
-    expect(oldStorage.data.AnalyticsController).toStrictEqual({
-      analyticsId: 'analytics-id',
-      optedIn: true,
-      consentDecisionMade: true,
-      optedInToMarketing: true,
-      marketingConsentDecisionMade: true,
-      marketingConsentSyncPending: true,
-    });
-    expect(changedControllers.has('MarketingConsentController')).toBe(true);
-    expect(changedControllers.has('AnalyticsController')).toBe(true);
-    expect(mockedCaptureException).not.toHaveBeenCalled();
+    await expect(migrate(state, new Set())).resolves.toBeUndefined();
   });
 
-  it('carries a pending opt-out into AnalyticsController', async () => {
-    const oldStorage = createState({
-      MarketingConsentController: { pendingMarketingConsent: false },
-      AnalyticsController: {
-        optedInToMarketing: true,
-        marketingConsentDecisionMade: true,
-      },
-    });
+  it('does not throw when indexedDB is unavailable', async () => {
+    // @ts-expect-error Simulating missing indexedDB
+    delete globalThis.indexedDB;
 
-    await migrate(oldStorage, new Set<string>());
+    const state = {
+      meta: { version: version - 1 },
+      data: { PPOMController: { storageMetadata: [] } },
+    };
+    const changedKeys = new Set<string>();
 
-    expect(oldStorage.data.AnalyticsController).toStrictEqual({
-      optedInToMarketing: false,
-      marketingConsentDecisionMade: true,
-      marketingConsentSyncPending: true,
-    });
-  });
-
-  it('drops the legacy state without touching AnalyticsController when nothing is pending', async () => {
-    const oldStorage = createState({
-      MarketingConsentController: { pendingMarketingConsent: null },
-      AnalyticsController: {
-        optedInToMarketing: false,
-        marketingConsentDecisionMade: true,
-      },
-    });
-    const changedControllers = new Set<string>();
-
-    await migrate(oldStorage, changedControllers);
-
-    expect(oldStorage.data).not.toHaveProperty('MarketingConsentController');
-    expect(oldStorage.data.AnalyticsController).toStrictEqual({
-      optedInToMarketing: false,
-      marketingConsentDecisionMade: true,
-    });
-    expect(changedControllers.has('MarketingConsentController')).toBe(true);
-    expect(changedControllers.has('AnalyticsController')).toBe(false);
-  });
-
-  it('does nothing when the legacy controller is absent', async () => {
-    const oldStorage = createState({ OtherController: { preserved: true } });
-    const changedControllers = new Set<string>();
-
-    await migrate(oldStorage, changedControllers);
-
-    expect(oldStorage.data).toStrictEqual({
-      OtherController: { preserved: true },
-    });
-    expect(changedControllers.size).toBe(0);
-    expect(mockedCaptureException).not.toHaveBeenCalled();
-  });
-
-  it('drops an invalid legacy value without copying it', async () => {
-    const oldStorage = createState({
-      MarketingConsentController: { pendingMarketingConsent: 'yes' },
-      AnalyticsController: { optedInToMarketing: false },
-    });
-    const changedControllers = new Set<string>();
-
-    await migrate(oldStorage, changedControllers);
-
-    expect(oldStorage.data).not.toHaveProperty('MarketingConsentController');
-    expect(oldStorage.data.AnalyticsController).toStrictEqual({
-      optedInToMarketing: false,
-    });
-    expect(changedControllers.has('AnalyticsController')).toBe(false);
-  });
-
-  it('creates AnalyticsController state when it is missing', async () => {
-    const oldStorage = createState({
-      MarketingConsentController: { pendingMarketingConsent: true },
-    });
-    const changedControllers = new Set<string>();
-
-    await migrate(oldStorage, changedControllers);
-
-    expect(oldStorage.data).not.toHaveProperty('MarketingConsentController');
-    expect(oldStorage.data.AnalyticsController).toStrictEqual({
-      optedInToMarketing: true,
-      marketingConsentDecisionMade: true,
-      marketingConsentSyncPending: true,
-    });
-    expect(changedControllers.has('AnalyticsController')).toBe(true);
-    expect(mockedCaptureException).not.toHaveBeenCalled();
-  });
-
-  it('reports and drops a non-object legacy value', async () => {
-    const oldStorage = createState({
-      MarketingConsentController: 'invalid',
-      AnalyticsController: { optedInToMarketing: false },
-    });
-    const changedControllers = new Set<string>();
-
-    await migrate(oldStorage, changedControllers);
-
-    expect(oldStorage.data).not.toHaveProperty('MarketingConsentController');
-    expect(oldStorage.data.AnalyticsController).toStrictEqual({
-      optedInToMarketing: false,
-    });
-    expect(changedControllers.has('MarketingConsentController')).toBe(true);
-    expect(mockedCaptureException).toHaveBeenCalledTimes(1);
+    await expect(migrate(state, changedKeys)).resolves.toBeUndefined();
+    expect(state.data.PPOMController).toBeUndefined();
+    expect(changedKeys).toStrictEqual(new Set(['PPOMController']));
   });
 });

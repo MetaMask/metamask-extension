@@ -1,6 +1,7 @@
 import React from 'react';
 import { act, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { PERPS_ERROR_CODES } from '@metamask/perps-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { PERPS_EVENT_PROPERTY } from '../../../../../shared/constants/perps-events';
@@ -456,9 +457,11 @@ describe('CancelOrderModal', () => {
 
     it('shows a generic cancel failure when the provider error has no translation', async () => {
       const user = userEvent.setup();
+      // Not an already-gone marker and not a translated code: the order-not-found
+      // sentence now classifies as already gone, mirroring the controller.
       mockSubmitRequestToBackground.mockResolvedValue({
         success: false,
-        error: 'Order not found',
+        error: 'Exchange request failed',
       });
 
       renderWithProvider(
@@ -668,8 +671,7 @@ describe('CancelOrderModal', () => {
   });
 
   describe('order already closed on the provider', () => {
-    const alreadyClosedError =
-      'cancel 0: Order was never placed, already canceled, or filled. asset=4';
+    const alreadyClosedError = PERPS_ERROR_CODES.ORDER_NO_LONGER_OPEN;
 
     it('closes the modal without an error when the order is no longer open', async () => {
       const user = userEvent.setup();
@@ -709,12 +711,19 @@ describe('CancelOrderModal', () => {
       );
     });
 
-    it('closes the modal without an error when the background throws the same rejection', async () => {
+    it('closes the modal without an error when the background resolves the normalized controller result', async () => {
       const user = userEvent.setup();
       const onClose = jest.fn();
-      mockSubmitRequestToBackground.mockRejectedValue(
-        new Error(alreadyClosedError),
-      );
+      mockSubmitRequestToBackground.mockResolvedValue({
+        success: false,
+        orderId: '123',
+        error: 'Venue diagnostic',
+        errorCode: PERPS_ERROR_CODES.ORDER_NO_LONGER_OPEN,
+        errorDetails: {
+          code: PERPS_ERROR_CODES.ORDER_NO_LONGER_OPEN,
+          provider: 'hyperliquid',
+        },
+      });
 
       renderWithProvider(
         <CancelOrderModal isOpen onClose={onClose} order={baseOrder} />,
@@ -728,7 +737,7 @@ describe('CancelOrderModal', () => {
       await waitFor(() => {
         expect(onClose).toHaveBeenCalled();
       });
-      expect(screen.queryByText(alreadyClosedError)).not.toBeInTheDocument();
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledTimes(1);
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
         key: 'perpsToastCancelOrderAlreadyClosed',
         dataTestId: 'perps-toast-cancel-order-already-closed',
@@ -744,6 +753,71 @@ describe('CancelOrderModal', () => {
         'Perp Order Cancel Transaction',
         expect.anything(),
       );
+    });
+
+    it('closes the modal without an error when the background throws the normalized stable-code error', async () => {
+      const user = userEvent.setup();
+      const onClose = jest.fn();
+      mockSubmitRequestToBackground.mockRejectedValue(
+        new Error(PERPS_ERROR_CODES.ORDER_NO_LONGER_OPEN),
+      );
+
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={onClose} order={baseOrder} />,
+        mockStore,
+      );
+
+      await act(async () => {
+        await user.click(screen.getByTestId('perps-cancel-order-button'));
+      });
+
+      await waitFor(() => {
+        expect(onClose).toHaveBeenCalled();
+      });
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledTimes(1);
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastCancelOrderAlreadyClosed',
+        dataTestId: 'perps-toast-cancel-order-already-closed',
+      });
+      expect(mockTrack).not.toHaveBeenCalledWith(
+        'Perp Error',
+        expect.anything(),
+      );
+      expect(mockTrack).not.toHaveBeenCalledWith(
+        'Perp Order Cancel Transaction',
+        expect.anything(),
+      );
+    });
+
+    it('does not treat unknown normalized failures as an already-closed order', async () => {
+      const user = userEvent.setup();
+      const onClose = jest.fn();
+      mockSubmitRequestToBackground.mockResolvedValue({
+        success: false,
+        error: 'UNKNOWN_ERROR',
+        errorCode: PERPS_ERROR_CODES.UNKNOWN_ERROR,
+      });
+
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={onClose} order={baseOrder} />,
+        mockStore,
+      );
+
+      await act(async () => {
+        await user.click(screen.getByTestId('perps-cancel-order-button'));
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(messages.somethingWentWrong.message),
+        ).toBeInTheDocument();
+      });
+      expect(onClose).not.toHaveBeenCalled();
+      expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith({
+        key: 'perpsToastCancelOrderAlreadyClosed',
+        dataTestId: 'perps-toast-cancel-order-already-closed',
+      });
     });
   });
 
@@ -788,9 +862,11 @@ describe('CancelOrderModal', () => {
 
     it('emits cancel order failed toast when perpsCancelOrder returns success: false', async () => {
       const user = userEvent.setup();
+      // Not an already-gone marker and not a translated code: the order-not-found
+      // sentence now classifies as already gone, mirroring the controller.
       mockSubmitRequestToBackground.mockResolvedValue({
         success: false,
-        error: 'Order not found',
+        error: 'Exchange request failed',
       });
 
       renderWithProvider(

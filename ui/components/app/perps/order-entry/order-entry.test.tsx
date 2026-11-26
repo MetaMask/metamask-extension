@@ -1,6 +1,7 @@
 import { it } from '@jest/globals';
 import { act, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type { MarketInfo } from '@metamask/perps-controller';
 import React from 'react';
 
 import mockState from '../../../../../test/data/mock-state.json';
@@ -29,8 +30,15 @@ jest.mock('../../../../hooks/perps/usePerpsTransactionHistory', () => ({
   }),
 }));
 
+const BTC_MARKET_INFO: MarketInfo = {
+  name: 'BTC',
+  szDecimals: 5,
+  maxLeverage: 40,
+  marginTableId: 0,
+};
+let mockMarketInfo: MarketInfo | undefined;
 jest.mock('../../../../hooks/perps/usePerpsMarketInfo', () => ({
-  usePerpsMarketInfo: () => ({ market: undefined, isLoading: false }),
+  usePerpsMarketInfo: () => ({ market: mockMarketInfo, isLoading: false }),
 }));
 
 const mockUsePerpsOrderFees = jest.fn();
@@ -64,6 +72,7 @@ describe('OrderEntry', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     resetSizeDenominations();
+    mockMarketInfo = undefined;
     jest.mocked(submitRequestToBackground).mockImplementation((method) => {
       function immediate<ResolvedValue>(
         value: ResolvedValue,
@@ -91,45 +100,148 @@ describe('OrderEntry', () => {
     });
   });
 
-  for (const [label, type, size, amount] of [
-    ['new market', 'market', undefined, '100000'],
-    ['attached limit', 'limit', undefined, '90000'],
-    ['market adding to a long', 'market', '1', '90000'],
-    ['market flipping a short', 'market', '-1', '50000'],
-    ['market route with leverage', 'market', '-3', '50000'],
-  ] as const) {
-    it(`matches the ${label} TP/SL fee-resolution notional`, () => {
-      renderWithProvider(
-        <OrderEntry
-          {...defaultProps}
-          currentPrice={45000}
-          orderType={type}
-          existingPosition={
-            size ? { size, leverage: 3, entryPrice: '45000' } : undefined
-          }
-          initialDraft={{
-            type,
-            direction: 'long',
-            amount: '90000',
-            leverage: 3,
-            limitPrice: '45000',
-            takeProfitPrice: '50000',
-            stopLossPrice: '40000',
-          }}
-        />,
-        mockStore,
-      );
-      expect(mockUsePerpsOrderFees).toHaveBeenLastCalledWith({
-        symbol: 'BTC',
-        orderType: 'market',
-        amount,
-      });
+  describe('TP/SL fee resolution', () => {
+    beforeEach(() => {
+      mockMarketInfo = BTC_MARKET_INFO;
     });
-  }
+
+    for (const [label, type, size, amount] of [
+      ['new market', 'market', undefined, '100000'],
+      ['attached limit', 'limit', undefined, '90000'],
+      ['market adding to a long', 'market', '1', '90000'],
+      ['market flipping a short', 'market', '-1', '50000'],
+      // $90,000 at $45,000 is 2 BTC: it reduces the 3 BTC short, not a flip.
+      ['market reducing a larger short', 'market', '-3', '90000'],
+    ] as const) {
+      it(`matches the ${label} TP/SL fee-resolution notional`, () => {
+        renderWithProvider(
+          <OrderEntry
+            {...defaultProps}
+            currentPrice={45000}
+            orderType={type}
+            existingPosition={
+              size ? { size, leverage: 3, entryPrice: '45000' } : undefined
+            }
+            initialDraft={{
+              type,
+              direction: 'long',
+              amount: '90000',
+              leverage: 3,
+              limitPrice: '45000',
+              takeProfitPrice: '50000',
+              stopLossPrice: '40000',
+            }}
+          />,
+          mockStore,
+        );
+        expect(mockUsePerpsOrderFees).toHaveBeenLastCalledWith({
+          symbol: 'BTC',
+          orderType: 'market',
+          amount,
+        });
+      });
+    }
+  });
+
+  it('resolves the new-position TP/SL fee from the size placement rounds to', () => {
+    mockMarketInfo = BTC_MARKET_INFO;
+    renderWithProvider(
+      <OrderEntry
+        {...defaultProps}
+        currentPrice={60000}
+        orderType="market"
+        initialDraft={{
+          type: 'market',
+          direction: 'long',
+          amount: '100',
+          leverage: 10,
+          limitPrice: '',
+          takeProfitPrice: '50000',
+          stopLossPrice: '40000',
+        }}
+      />,
+      mockStore,
+    );
+    // $100 at $60,000 is 0.0016667 BTC, placed as 0.00167 on the 5-decimal
+    // grid; the fee notional uses 0.00167 * $50,000, not $83.33.
+    expect(mockUsePerpsOrderFees).toHaveBeenLastCalledWith({
+      symbol: 'BTC',
+      orderType: 'market',
+      amount: '83.5',
+    });
+  });
+
+  it('uses the page precision for the TP/SL fee once its lookup recovers', () => {
+    // The form's own market lookup failed and stays empty; the page retried
+    // and now passes the recovered precision down.
+    mockMarketInfo = undefined;
+    const props = {
+      ...defaultProps,
+      currentPrice: 60000,
+      orderType: 'market' as const,
+      initialDraft: {
+        type: 'market' as const,
+        direction: 'long' as const,
+        amount: '100',
+        leverage: 10,
+        limitPrice: '',
+        takeProfitPrice: '50000',
+        stopLossPrice: '40000',
+      },
+    };
+    const { rerender } = renderWithProvider(
+      <OrderEntry {...props} sizeDecimals={undefined} />,
+      mockStore,
+    );
+    expect(mockUsePerpsOrderFees).toHaveBeenLastCalledWith({
+      symbol: 'BTC',
+      orderType: 'market',
+      amount: '100',
+    });
+
+    rerender(<OrderEntry {...props} sizeDecimals={5} />);
+
+    expect(mockUsePerpsOrderFees).toHaveBeenLastCalledWith({
+      symbol: 'BTC',
+      orderType: 'market',
+      amount: '83.5',
+    });
+  });
+
+  it('sizes the margin from the page precision when its own lookup failed', () => {
+    // $1 at $60,000 is 0.0000167 BTC, placed as 0.00002 on the 5-decimal grid.
+    mockMarketInfo = undefined;
+    const props = {
+      ...defaultProps,
+      currentPrice: 60000,
+      orderType: 'market' as const,
+      initialDraft: {
+        type: 'market' as const,
+        direction: 'long' as const,
+        amount: '1',
+        leverage: 1,
+        limitPrice: '',
+      },
+    };
+    const { rerender } = renderWithProvider(
+      <OrderEntry {...props} sizeDecimals={undefined} />,
+      mockStore,
+    );
+    expect(
+      screen.getByTestId('perps-order-summary-margin-required'),
+    ).not.toHaveTextContent('$1.2');
+
+    rerender(<OrderEntry {...props} sizeDecimals={5} />);
+
+    expect(
+      screen.getByTestId('perps-order-summary-margin-required'),
+    ).toHaveTextContent('$1.20');
+  });
 
   it.each([NaN, Infinity])(
     'keeps order entry mounted until price %s becomes available',
     (currentPrice) => {
+      mockMarketInfo = BTC_MARKET_INFO;
       const props = {
         ...defaultProps,
         initialDraft: {

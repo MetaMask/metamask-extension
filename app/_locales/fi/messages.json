@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "Gas-raja"
   },
-  "gasUsed": {
-    "message": "Käytetty bensaa"
-  },
   "general": {
     "message": "Yleistä"
   },
@@ -401,9 +398,6 @@
     "message": "Yksityinen avain",
     "description": "select this type of file to use to import an account"
   },
-  "privateNetwork": {
-    "message": "Yksityinen verkko"
-  },
   "readdToken": {
     "message": "Voit lisätä tämän tietueen myöhemmin takaisin siirtymällä tilisi vaihtoehtovalikon kohtaan ”Lisää tietue”."
   },
@@ -557,9 +551,6 @@
   },
   "unapproved": {
     "message": "Ei hyväksytty"
-  },
-  "units": {
-    "message": "yksikköä"
   },
   "unknown": {
     "message": "Tuntematon"

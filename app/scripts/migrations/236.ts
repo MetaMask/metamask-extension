@@ -1,64 +1,65 @@
-import { hasProperty, isObject } from '@metamask/utils';
-import { captureException } from '../../../shared/lib/sentry';
+import { hasProperty } from '@metamask/utils';
 import type { Migrate } from './types';
 
 export const version = 236;
 
+const PPOM_DB_NAME = 'PPOMDB';
+
 /**
- * Migration 236: carry an unsent marketing consent choice from the
- * `MarketingConsentController` preview builds into `AnalyticsController`.
+ * Migration 236: Clean up PPOMController persisted state and its IndexedDB
+ * database after the PPOM Controller was removed.
  *
- * `MarketingConsentController` never shipped in a release. Its persisted
- * `pendingMarketingConsent` is the only state `MarketingConsentSyncService`
- * cannot reconstruct, so a pending `true` or `false` is written to the
- * Analytics fields the service reads. Consent stays decided, so no consent
- * prompt reappears.
+ * - Removes the `PPOMController` key from persisted state.
+ * - Deletes the `PPOMDB` IndexedDB database that stored PPOM model data.
  *
- * @param versionedData - The versioned data object to migrate.
- * @param changedControllers - A set used to record controllers that were modified.
+ * @param versionedData - Versioned MetaMask extension state; what we persist
+ * to disk.
+ * @param changedKeys - `Set` to track which controller keys were modified.
  */
-export const migrate = (async (versionedData, changedControllers) => {
+export const migrate = (async (versionedData, changedKeys) => {
   versionedData.meta.version = version;
 
-  const data = versionedData.data as Record<string, unknown>;
+  const state = versionedData.data as Record<string, unknown>;
 
-  if (!hasProperty(data, 'MarketingConsentController')) {
-    return;
+  if (hasProperty(state, 'PPOMController')) {
+    delete state.PPOMController;
+    changedKeys.add('PPOMController');
   }
 
-  const legacyState = data.MarketingConsentController;
-
-  if (!isObject(legacyState)) {
-    captureException(
-      new Error(
-        `Migration ${version}: Invalid MarketingConsentController state: '${typeof legacyState}'`,
-      ),
-    );
-    delete data.MarketingConsentController;
-    changedControllers.add('MarketingConsentController');
-    return;
-  }
-
-  const pendingConsent = hasProperty(legacyState, 'pendingMarketingConsent')
-    ? legacyState.pendingMarketingConsent
-    : undefined;
-
-  if (typeof pendingConsent === 'boolean') {
-    const analyticsState =
-      hasProperty(data, 'AnalyticsController') &&
-      isObject(data.AnalyticsController)
-        ? (data.AnalyticsController as Record<string, unknown>)
-        : {};
-
-    data.AnalyticsController = {
-      ...analyticsState,
-      optedInToMarketing: pendingConsent,
-      marketingConsentDecisionMade: true,
-      marketingConsentSyncPending: true,
-    };
-    changedControllers.add('AnalyticsController');
-  }
-
-  delete data.MarketingConsentController;
-  changedControllers.add('MarketingConsentController');
+  await deletePPOMDatabase();
 }) satisfies Migrate;
+
+export default migrate;
+
+/**
+ * Deletes the PPOMDB IndexedDB database. Resolves even on failure so the
+ * migration is never blocked by IndexedDB issues.
+ */
+async function deletePPOMDatabase(): Promise<void> {
+  return new Promise<void>((resolve) => {
+    try {
+      const request = indexedDB.deleteDatabase(PPOM_DB_NAME);
+
+      request.onsuccess = () => {
+        resolve();
+      };
+
+      request.onerror = () => {
+        console.warn(
+          `Migration #${version}: Failed to delete ${PPOM_DB_NAME} IndexedDB database`,
+        );
+        resolve();
+      };
+
+      request.onblocked = () => {
+        console.warn(
+          `Migration #${version}: Deletion of ${PPOM_DB_NAME} IndexedDB database was blocked`,
+        );
+        resolve();
+      };
+    } catch {
+      // indexedDB may not be available in all contexts
+      resolve();
+    }
+  });
+}
