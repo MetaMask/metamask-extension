@@ -1336,9 +1336,6 @@
   "add_device_error_title": {
     "message": "Couldn't add to mobile"
   },
-  "add_device_import_accounts": {
-    "message": "Import accounts"
-  },
   "add_device_success_desc_imported_plural": {
     "message": "$1 imported accounts were synced to MetaMask mobile.",
     "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
@@ -9355,6 +9352,34 @@
   "qrHardwareScanSignatureNext": {
     "message": "Scan next QR code",
     "description": "Button label for scanning a non-final QR hardware-wallet signature after the user signs on their device."
+  },
+  "qrSyncAccountCount": {
+    "message": "$1 accounts",
+    "description": "$1 is the number of accounts in a wallet"
+  },
+  "qrSyncAccountCountOne": {
+    "message": "$1 account",
+    "description": "$1 is the number of accounts in a wallet"
+  },
+  "qrSyncImportAccountsCta": {
+    "message": "Import accounts",
+    "description": "Primary action on the account selection screen"
+  },
+  "qrSyncSelectionSummary": {
+    "message": "$1 wallets · $2 accounts selected",
+    "description": "$1 is the selected wallet count and $2 is the selected account count"
+  },
+  "qrSyncSelectionSummaryOneAccount": {
+    "message": "$1 wallets · $2 account selected",
+    "description": "$1 is the selected wallet count and $2 is the selected account count"
+  },
+  "qrSyncSelectionSummaryOneWallet": {
+    "message": "$1 wallet · $2 accounts selected",
+    "description": "$1 is the selected wallet count and $2 is the selected account count"
+  },
+  "qrSyncSelectionSummaryOneWalletOneAccount": {
+    "message": "$1 wallet · $2 account selected",
+    "description": "$1 is the selected wallet count and $2 is the selected account count"
   },
   "qrSyncStillConnecting": {
     "message": "Still connecting. Don’t close MetaMask mobile.",
