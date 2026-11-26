@@ -40,6 +40,7 @@ describe('Seedless Onboarding (Social Login) password sync and recovery', functi
         },
         ignoredConsoleErrors: [
           'SeedlessOnboardingController - Failed to change password',
+          '[PerpsStreamManager] Failed to fetch', // issue #46623
         ],
       },
       async ({ driver }: { driver: Driver }) => {
@@ -95,6 +96,9 @@ describe('Seedless Onboarding (Social Login) password sync and recovery', functi
             simulatePasswordSync: true,
           });
         },
+        ignoredConsoleErrors: [
+          '[PerpsStreamManager] Failed to fetch', // issue #46623
+        ],
       },
       async ({ driver }: { driver: Driver }) => {
         await importWalletWithSocialLoginOnboardingFlow({
@@ -150,6 +154,9 @@ describe('Seedless Onboarding (Social Login) password sync and recovery', functi
             initialAuthPubKey: authPubKey,
           });
         },
+        ignoredConsoleErrors: [
+          '[PerpsStreamManager] Failed to fetch', // issue #46623
+        ],
       },
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate();
@@ -211,6 +218,9 @@ describe('Seedless Onboarding (Social Login) password sync and recovery', functi
             initialAuthPubKey: authPubKey,
           });
         },
+        ignoredConsoleErrors: [
+          '[PerpsStreamManager] Failed to fetch', // issue #46623
+        ],
       },
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate();

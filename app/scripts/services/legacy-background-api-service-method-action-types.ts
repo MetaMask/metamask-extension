@@ -600,7 +600,10 @@ export type LegacyBackgroundApiServiceUnlockWithPasskeyAction = {
  * Locks MetaMask
  *
  * @param options - The options for setting the locked state.
- * @param options.skipSeedlessOperationLock - If true, the seedless operation mutex will not be locked.
+ * @param options.skipSeedlessOperationLock - If true, the seedless operation
+ * mutex will not be locked. Recovery callers must set this when they already
+ * hold that mutex; the vault mutex is still acquired before locking either
+ * controller.
  */
 export type LegacyBackgroundApiServiceSetLockedAction = {
   type: `LegacyBackgroundApiService:setLocked`;
