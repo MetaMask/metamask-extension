@@ -396,7 +396,8 @@ const npmEnvs = {
   // https://github.com/MetaMask/metamask-extension/pull/47090
   IN_TEST: safeVariables.IN_TEST,
   NODE_ENV: safeVariables.NODE_ENV,
-  DEBUG: safeVariables.DEBUG,
+  // DEBUG is undefined in production builds, and SWC rejects undefined values.
+  ...(safeVariables.DEBUG === undefined ? {} : { DEBUG: safeVariables.DEBUG }),
 };
 const npmLoader = getSwcLoader('ecmascript', false, npmEnvs, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
