@@ -4,7 +4,6 @@ import { setEnvironmentVariables } from './set-environment-variables';
 
 const SET_ENVIRONMENT_VARIABLES_DECLARED_VARIABLES = [
   'DEBUG',
-  'EIP_4337_ENTRYPOINT',
   'IN_TEST',
   'INFURA_PROJECT_ID',
   'INFURA_ENV_KEY_REF',
@@ -30,6 +29,8 @@ const SET_ENVIRONMENT_VARIABLES_DECLARED_VARIABLES = [
   'METAMASK_SHIELD_ENABLED',
   'PERPS_ENABLED',
   'QR_SYNC_ENABLED',
+  'MM_MONEY_MPC_ADDRESS',
+  'MM_MONEY_MPC_KEYRING_ENABLED',
   'COMPLIANCE_API_URL',
 ];
 
@@ -38,7 +39,6 @@ function getVariablesForSetEnvironmentVariables() {
 
   variables.set({
     DEBUG: false,
-    EIP_4337_ENTRYPOINT: '0x0000000000000000000000000000000000000000',
     INFURA_PROJECT_ID: 'direct-infura-project-id',
     INFURA_ENV_KEY_REF: 'INFURA_PROD_PROJECT_ID',
     INFURA_PROD_PROJECT_ID: 'prod-infura-project-id',
@@ -56,6 +56,8 @@ function getVariablesForSetEnvironmentVariables() {
     METAMASK_SHIELD_ENABLED: 'false',
     PERPS_ENABLED: 'false',
     QR_SYNC_ENABLED: 'false',
+    MM_MONEY_MPC_ADDRESS: '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B',
+    MM_MONEY_MPC_KEYRING_ENABLED: 'false',
     COMPLIANCE_API_URL: 'https://compliance.example.test',
   });
 

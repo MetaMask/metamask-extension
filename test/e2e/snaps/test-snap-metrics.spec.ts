@@ -254,10 +254,7 @@ describe('Test Snap Metrics', function () {
         const snapInstall = new SnapInstall(driver);
         await snapInstall.checkPageIsLoaded();
         await snapInstall.clickConnectButton();
-        await driver.clickElement({
-          text: 'Cancel',
-          tag: 'button',
-        });
+        await snapInstall.clickCancelInstallAndWaitForClose();
 
         const events = await getEventPayloads(
           driver,
@@ -389,6 +386,7 @@ describe('Test Snap Metrics', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectNotificationButton',
+          { snapId: 'npm:@metamask/notification-example-snap' },
         );
 
         await driver.switchToWindowWithTitle(
@@ -455,12 +453,9 @@ describe('Test Snap Metrics', function () {
         const testSnaps = new TestSnaps(driver);
         const snapInstall = new SnapInstall(driver);
 
-        await openTestSnapClickButtonAndInstall(driver, 'connectUpdateButton');
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
-        await testSnaps.checkInstallationComplete(
-          'connectUpdateButton',
-          'Reconnect to Update Snap',
-        );
+        await openTestSnapClickButtonAndInstall(driver, 'connectUpdateButton', {
+          expectedMessage: 'Reconnect to Update Snap',
+        });
 
         await testSnaps.scrollAndClickButton('connectUpdateNewButton');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -539,12 +534,9 @@ describe('Test Snap Metrics', function () {
         const testSnaps = new TestSnaps(driver);
         const snapInstall = new SnapInstall(driver);
 
-        await openTestSnapClickButtonAndInstall(driver, 'connectUpdateButton');
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
-        await testSnaps.checkInstallationComplete(
-          'connectUpdateButton',
-          'Reconnect to Update Snap',
-        );
+        await openTestSnapClickButtonAndInstall(driver, 'connectUpdateButton', {
+          expectedMessage: 'Reconnect to Update Snap',
+        });
 
         await testSnaps.scrollAndClickButton('connectUpdateNewButton');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -619,12 +611,9 @@ describe('Test Snap Metrics', function () {
       }) => {
         await login(driver);
         const testSnaps = new TestSnaps(driver);
-        await openTestSnapClickButtonAndInstall(driver, 'connectUpdateButton');
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
-        await testSnaps.checkInstallationComplete(
-          'connectUpdateButton',
-          'Reconnect to Update Snap',
-        );
+        await openTestSnapClickButtonAndInstall(driver, 'connectUpdateButton', {
+          expectedMessage: 'Reconnect to Update Snap',
+        });
 
         await testSnaps.scrollAndClickButton('connectUpdateNewButton');
         await driver.delay(1000);

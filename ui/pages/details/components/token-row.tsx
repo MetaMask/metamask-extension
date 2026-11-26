@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Text } from '@metamask/design-system-react';
+import cn from 'clsx';
 import type { CaipChainId } from '@metamask/utils';
 import {
   applyDisplaySign,
@@ -50,15 +50,15 @@ export function TokenRow({
   return (
     <div className="flex items-center gap-2">
       <ChainBadge chainId={chainId}>{avatar}</ChainBadge>
-      <Text
-        variant="heading-lg"
-        color={
-          token.direction === 'in' ? 'text-success-default' : 'text-default'
-        }
+      <h2
+        className={cn(
+          'text-s-heading-lg font-bold leading-8',
+          token.direction === 'in' ? 'text-success-default' : 'text-default',
+        )}
         data-testid="transaction-list-item-primary-currency"
       >
         {formattedAmount}
-      </Text>
+      </h2>
     </div>
   );
 }

@@ -33,15 +33,6 @@
       border-color: var(--color-border-muted);
     }
 
-    .mm-text-field.mm-text-field--quiz-word {
-      cursor: pointer;
-
-      .mm-input {
-        cursor: pointer;
-      }
-    }
-
-    .mm-text-field.mm-text-field--target-index,
     .mm-text-field.mm-text-field--focused {
       outline: none;
       border-color: var(--color-icon-default);

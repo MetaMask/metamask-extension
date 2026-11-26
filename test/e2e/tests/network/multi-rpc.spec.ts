@@ -23,7 +23,9 @@ import {
 } from '../../page-objects/flows/onboarding.flow';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
+import { NetworkId } from '../../helpers/network-constants';
 import { getMockAssetsPrice } from '../tokens/utils/mocks';
+import { priceV3Spot } from '../../mock-response-data/api-responses';
 
 const MOCK_ETH_PRICE = 1700;
 
@@ -42,19 +44,17 @@ describe('MultiRpc:', function (this: Suite) {
             },
           })),
         // Mock spot-prices for balance display
-        await mockServer
-          .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
-          .thenCallback(() => ({
-            statusCode: 200,
-            json: {
-              'eip155:1/slip44:60': {
-                id: 'ethereum',
-                price: MOCK_ETH_PRICE,
-                marketCap: 382623505141,
-                pricePercentChange1d: 0,
-              },
+        await priceV3Spot.rule(mockServer).thenCallback(() => ({
+          statusCode: 200,
+          json: {
+            'eip155:1/slip44:60': {
+              id: 'ethereum',
+              price: MOCK_ETH_PRICE,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
             },
-          })),
+          },
+        })),
       ];
     }
     await withFixtures(
@@ -88,9 +88,6 @@ describe('MultiRpc:', function (this: Suite) {
                 nativeCurrency: 'ETH',
                 rpcEndpoints: [
                   {
-                    failoverUrls: [
-                      'https://purple-young-mansion.arbitrum-mainnet.quiknode.pro/f48c5cbfd1f5b39f0e5542d3b23c181b4085a2b5/',
-                    ],
                     networkClientId: '2ce66016-8aab-47df-b27f-318c80865eb0',
                     type: RpcEndpointType.Custom,
                     url: 'https://arbitrum-mainnet.infura.io/',
@@ -157,7 +154,7 @@ describe('MultiRpc:', function (this: Suite) {
         await networksPage.checkPageIsLoaded();
 
         // check rpc number
-        await networksPage.openNetworkRPC('eip155:42161');
+        await networksPage.openNetworkRPC(NetworkId.ARBITRUM);
         await networksPage.checkNetworkRPCNumber(2);
       },
     );
@@ -187,19 +184,17 @@ describe('MultiRpc:', function (this: Suite) {
             },
           })),
         // Mock spot-prices for balance display
-        await mockServer
-          .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
-          .thenCallback(() => ({
-            statusCode: 200,
-            json: {
-              'eip155:1/slip44:60': {
-                id: 'ethereum',
-                price: MOCK_ETH_PRICE,
-                marketCap: 382623505141,
-                pricePercentChange1d: 0,
-              },
+        await priceV3Spot.rule(mockServer).thenCallback(() => ({
+          statusCode: 200,
+          json: {
+            'eip155:1/slip44:60': {
+              id: 'ethereum',
+              price: MOCK_ETH_PRICE,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
             },
-          })),
+          },
+        })),
       ];
     }
     await withFixtures(
@@ -290,7 +285,7 @@ describe('MultiRpc:', function (this: Suite) {
         await headerNavbar.openGlobalNetworksMenu();
         const networksPage = new NetworksPage(driver);
         await networksPage.checkPageIsLoaded();
-        await networksPage.openNetworkRPC('eip155:42161');
+        await networksPage.openNetworkRPC(NetworkId.ARBITRUM);
         await networksPage.checkNetworkRPCNumber(2);
         await networksPage.selectRPC('Arbitrum mainnet 2');
         await networksPage.checkPageIsLoaded();
@@ -298,7 +293,7 @@ describe('MultiRpc:', function (this: Suite) {
           'Arbitrum mainnet',
         );
         // Re-open the chain's RPC list to confirm the new RPC is selected.
-        await networksPage.openNetworkRPC('eip155:42161');
+        await networksPage.openNetworkRPC(NetworkId.ARBITRUM);
         await networksPage.checkRpcIsSelected('Arbitrum mainnet 2');
 
         const usedUrl = await mockedEndpoint[0].getSeenRequests();
@@ -324,19 +319,17 @@ describe('MultiRpc:', function (this: Suite) {
             },
           })),
         // Mock spot-prices for balance display
-        await mockServer
-          .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
-          .thenCallback(() => ({
-            statusCode: 200,
-            json: {
-              'eip155:1/slip44:60': {
-                id: 'ethereum',
-                price: MOCK_ETH_PRICE,
-                marketCap: 382623505141,
-                pricePercentChange1d: 0,
-              },
+        await priceV3Spot.rule(mockServer).thenCallback(() => ({
+          statusCode: 200,
+          json: {
+            'eip155:1/slip44:60': {
+              id: 'ethereum',
+              price: MOCK_ETH_PRICE,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
             },
-          })),
+          },
+        })),
       ];
     }
     await withFixtures(
@@ -412,7 +405,7 @@ describe('MultiRpc:', function (this: Suite) {
         await networksPage.checkPageIsLoaded();
 
         // go to Edit Menu for Arbitrum network and select the second rpc
-        await networksPage.openNetworkListOptions('eip155:42161');
+        await networksPage.openNetworkListOptions(NetworkId.ARBITRUM);
         await networksPage.openEditNetworkPage();
 
         const editNetworkPage = new AddEditNetworkPage(driver);
@@ -448,19 +441,17 @@ describe('MultiRpc:', function (this: Suite) {
             },
           })),
         // Mock spot-prices for balance display
-        await mockServer
-          .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
-          .thenCallback(() => ({
-            statusCode: 200,
-            json: {
-              'eip155:1/slip44:60': {
-                id: 'ethereum',
-                price: MOCK_ETH_PRICE,
-                marketCap: 382623505141,
-                pricePercentChange1d: 0,
-              },
+        await priceV3Spot.rule(mockServer).thenCallback(() => ({
+          statusCode: 200,
+          json: {
+            'eip155:1/slip44:60': {
+              id: 'ethereum',
+              price: MOCK_ETH_PRICE,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
             },
-          })),
+          },
+        })),
       ];
     }
     await withFixtures(

@@ -37,6 +37,7 @@ const EmailEntryStep = ({ step, state, onAction }: StepProps<'emailEntry'>) => {
 
   return (
     <StepLayout
+      onAction={onAction}
       title={t('mfaEmailEntryTitle')}
       description={t('mfaEmailEntryDescription')}
       // One message at a time: the address check replaces the server's error.

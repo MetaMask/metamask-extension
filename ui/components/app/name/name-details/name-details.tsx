@@ -441,7 +441,7 @@ export default function NameDetails({
               label={t('nameAddressLabel')}
               value={formattedValue}
               marginBottom={4}
-              disabled
+              readOnly
               endAccessory={
                 <ButtonIcon
                   display={Display.Flex}

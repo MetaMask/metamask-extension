@@ -2,6 +2,7 @@ import { CHAIN_IDS } from './network';
 import {
   getFailoverUrlsByChainId,
   getFailoverUrlsForChainId,
+  getFailoverUrlsForEndpoint,
   getIsQuicknodeEndpointUrl,
 } from './network-failover';
 
@@ -31,6 +32,47 @@ describe('getFailoverUrlsForChainId', () => {
   it('returns an empty array for a chain that has no mapped failover', () => {
     // Sepolia is not in the failover map
     expect(getFailoverUrlsForChainId(CHAIN_IDS.SEPOLIA)).toStrictEqual([]);
+  });
+});
+
+describe('getFailoverUrlsForEndpoint', () => {
+  const OLD_ENV = process.env;
+  beforeEach(() => {
+    process.env = { ...OLD_ENV };
+    process.env.QUICKNODE_BSC_URL = 'https://failover.example/bsc';
+  });
+  afterAll(() => {
+    process.env = OLD_ENV;
+  });
+
+  it('returns the chain failover urls for an Infura endpoint', () => {
+    expect(
+      getFailoverUrlsForEndpoint(
+        CHAIN_IDS.BSC,
+        'https://bsc-mainnet.infura.io/v3/key',
+      ),
+    ).toStrictEqual(['https://failover.example/bsc']);
+  });
+
+  it('returns an empty array for a non-Infura endpoint', () => {
+    expect(
+      getFailoverUrlsForEndpoint(CHAIN_IDS.BSC, 'https://bsc.example/rpc'),
+    ).toStrictEqual([]);
+  });
+
+  it('returns an empty array for an Infura endpoint on a chain with no mapped failover', () => {
+    expect(
+      getFailoverUrlsForEndpoint(
+        CHAIN_IDS.SEPOLIA,
+        'https://sepolia.infura.io/v3/key',
+      ),
+    ).toStrictEqual([]);
+  });
+
+  it('returns an empty array when there is no endpoint URL', () => {
+    expect(getFailoverUrlsForEndpoint(CHAIN_IDS.BSC, undefined)).toStrictEqual(
+      [],
+    );
   });
 });
 

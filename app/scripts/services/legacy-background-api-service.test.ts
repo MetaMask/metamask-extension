@@ -1,4 +1,10 @@
 import { Mutex } from 'async-mutex';
+import nock from 'nock';
+import { it as jestIt } from '@jest/globals';
+import {
+  AnalyticsController,
+  type AnalyticsControllerInitialState,
+} from '@metamask/analytics-controller';
 import {
   Messenger,
   MessengerActions,
@@ -62,7 +68,7 @@ import { createSentryError } from '../../../shared/lib/error';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { captureException } from '../../../shared/lib/sentry';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
-import { TraceName, TraceOperation } from '../../../shared/lib/trace';
+import { trace, TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../../shared/constants/passkey';
 import { DecodedTransactionDataSource } from '../../../shared/types/transaction-decode';
 import { enforceSimulations } from '../lib/transaction/containers/enforced-simulations';
@@ -160,15 +166,10 @@ describe('LegacyBackgroundApiService', () => {
   });
 
   describe('setCurrentCurrency', () => {
-    it('sets the currency in the AssetsController and CurrencyRateController', async () => {
+    it('sets the currency in the AssetsController', async () => {
       const currencyCode: SupportedCurrency = 'usd';
 
       await withService(async ({ serviceMessenger, rootMessenger }) => {
-        rootMessenger.registerActionHandler(
-          'CurrencyRateController:setCurrentCurrency',
-          jest.fn(),
-        );
-
         rootMessenger.registerActionHandler(
           'AssetsController:setSelectedCurrency',
           jest.fn(),
@@ -182,11 +183,6 @@ describe('LegacyBackgroundApiService', () => {
             currencyCode,
           ),
         ).resolves.toBeUndefined();
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'CurrencyRateController:setCurrentCurrency',
-          currencyCode,
-        );
 
         expect(callSpy).toHaveBeenCalledWith(
           'AssetsController:setSelectedCurrency',
@@ -5261,6 +5257,62 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
 
+    it('persists the original parameters and gas when containers are removed', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const transactionMeta = {
+          ...TRANSACTION_META_MOCK,
+          containerTypes: [TransactionContainerType.EnforcedSimulations],
+          txParams: {
+            data: NEW_DATA_MOCK,
+            gas: '0x30000',
+            to: '0x2',
+            value: '0x0',
+          },
+          txParamsOriginal: {
+            data: '0xabc',
+            gas: '0x20000',
+            to: '0x1',
+            value: '0x1',
+          },
+        } as TransactionMeta;
+
+        rootMessenger.registerActionHandler(
+          'TransactionController:getState',
+          jest.fn().mockReturnValue({ transactions: [transactionMeta] }),
+        );
+
+        const estimateGasMock = jest.fn();
+        rootMessenger.registerActionHandler(
+          'TransactionController:estimateGas',
+          estimateGasMock,
+        );
+
+        const updateEditableParamsMock = jest.fn();
+        rootMessenger.registerActionHandler(
+          'TransactionController:updateEditableParams',
+          updateEditableParamsMock,
+        );
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:applyTransactionContainersExisting',
+          TRANSACTION_ID_MOCK,
+          [],
+        );
+
+        expect(estimateGasMock).not.toHaveBeenCalled();
+        expect(updateEditableParamsMock).toHaveBeenCalledWith(
+          TRANSACTION_ID_MOCK,
+          expect.objectContaining({
+            containerTypes: [],
+            data: '0xabc',
+            gas: '0x20000',
+            to: '0x1',
+            value: '0x1',
+          }),
+        );
+      });
+    });
+
     it('rejects if the transaction container update fails', async () => {
       await withService(async ({ rootMessenger }) => {
         jest.mocked(enforceSimulations).mockResolvedValue({
@@ -6011,8 +6063,6 @@ describe('LegacyBackgroundApiService', () => {
       const handlers = {
         toggleExternalServices: jest.fn(),
         getState: jest.fn().mockReturnValue({ subscriptions: [] }),
-        enableTokenDetection: jest.fn(),
-        disableTokenDetection: jest.fn(),
         enableGasFeeApis: jest.fn(),
         disableGasFeeApis: jest.fn(),
         stopAllPolling: jest.fn(),
@@ -6026,14 +6076,6 @@ describe('LegacyBackgroundApiService', () => {
       rootMessenger.registerActionHandler(
         'SubscriptionController:getState',
         handlers.getState,
-      );
-      rootMessenger.registerActionHandler(
-        'TokenDetectionController:enable',
-        handlers.enableTokenDetection,
-      );
-      rootMessenger.registerActionHandler(
-        'TokenDetectionController:disable',
-        handlers.disableTokenDetection,
       );
       rootMessenger.registerActionHandler(
         'GasFeeController:enableNonRPCGasFeeApis',
@@ -6073,10 +6115,8 @@ describe('LegacyBackgroundApiService', () => {
           true,
           undefined,
         );
-        expect(handlers.enableTokenDetection).toHaveBeenCalledTimes(1);
         expect(handlers.enableGasFeeApis).toHaveBeenCalledTimes(1);
         expect(handlers.startShield).toHaveBeenCalledTimes(1);
-        expect(handlers.disableTokenDetection).not.toHaveBeenCalled();
         expect(handlers.stopAllPolling).not.toHaveBeenCalled();
         expect(handlers.stopShield).not.toHaveBeenCalled();
       });
@@ -6093,7 +6133,6 @@ describe('LegacyBackgroundApiService', () => {
           true,
         );
 
-        expect(handlers.enableTokenDetection).toHaveBeenCalledTimes(1);
         expect(handlers.enableGasFeeApis).toHaveBeenCalledTimes(1);
         expect(handlers.startShield).not.toHaveBeenCalled();
       });
@@ -6116,7 +6155,6 @@ describe('LegacyBackgroundApiService', () => {
           true,
           ownedPreferences,
         );
-        expect(handlers.enableTokenDetection).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -6135,11 +6173,9 @@ describe('LegacyBackgroundApiService', () => {
           false,
           undefined,
         );
-        expect(handlers.disableTokenDetection).toHaveBeenCalledTimes(1);
         expect(handlers.disableGasFeeApis).toHaveBeenCalledTimes(1);
         expect(handlers.stopAllPolling).toHaveBeenCalledTimes(1);
         expect(handlers.stopShield).toHaveBeenCalledTimes(1);
-        expect(handlers.enableTokenDetection).not.toHaveBeenCalled();
         expect(handlers.startShield).not.toHaveBeenCalled();
       });
     });
@@ -6155,7 +6191,6 @@ describe('LegacyBackgroundApiService', () => {
           false,
         );
 
-        expect(handlers.disableTokenDetection).toHaveBeenCalledTimes(1);
         expect(handlers.disableGasFeeApis).toHaveBeenCalledTimes(1);
         expect(handlers.stopAllPolling).toHaveBeenCalledTimes(1);
         expect(handlers.stopShield).not.toHaveBeenCalled();
@@ -6479,6 +6514,34 @@ describe('LegacyBackgroundApiService', () => {
         expect(counts).toStrictEqual({ Bitcoin: 1, Solana: 1, Tron: 1 });
       });
     });
+
+    it('roots the Discover Accounts trace when accounts are discovered', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        rootMessenger.registerActionHandler(
+          'KeyringController:getState',
+          jest.fn().mockReturnValue({
+            keyrings: [{ metadata: { id: 'kr1' } }],
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'MultichainAccountService:getMultichainAccountWallet',
+          jest.fn().mockReturnValue({
+            discoverAccounts: jest
+              .fn()
+              .mockResolvedValue([{ type: SolAccountType.DataAccount }]),
+          }),
+        );
+
+        await service.discoverAndCreateAccounts();
+
+        expect(jest.mocked(trace)).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: TraceName.DiscoverAccounts,
+            root: true,
+          }),
+        );
+      });
+    });
   });
 
   describe('isRelaySupported', () => {
@@ -6502,7 +6565,6 @@ describe('LegacyBackgroundApiService', () => {
   describe('DeFi referral', () => {
     const HYPERLIQUID = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid];
     const GMX = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX];
-    const VARIATIONAL = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Variational];
     const mockTabId = 140;
     const mockPermittedAccount = '0x123';
     const mockPermittedAccounts = [mockPermittedAccount, '0x456'];
@@ -6607,26 +6669,6 @@ describe('LegacyBackgroundApiService', () => {
       rootMessenger.registerActionHandler(
         'NetworkController:getNetworkClientById',
         jest.fn().mockReturnValue({ provider: { request: jest.fn() } }),
-      );
-    }
-
-    /**
-     * Registers the network handlers used by the requiredChainId gate.
-     *
-     * @param rootMessenger - The root messenger to register handlers on.
-     * @param chainId - The active chain ID for the partner's domain.
-     */
-    function registerPartnerNetwork(
-      rootMessenger: RootMessenger,
-      chainId: string,
-    ) {
-      rootMessenger.registerActionHandler(
-        'SelectedNetworkController:getNetworkClientIdForDomain',
-        jest.fn().mockReturnValue('network-client-id'),
-      );
-      rootMessenger.registerActionHandler(
-        'NetworkController:getNetworkConfigurationByNetworkClientId',
-        jest.fn().mockReturnValue({ chainId }),
       );
     }
 
@@ -7317,69 +7359,6 @@ describe('LegacyBackgroundApiService', () => {
               );
 
               expect(checkHyperliquidHasReferralCode).not.toHaveBeenCalled();
-            },
-          );
-        });
-      });
-
-      describe('requiredChainId gate', () => {
-        it('does not proceed when the active chain does not match requiredChainId', async () => {
-          const getPermittedAccounts = jest
-            .fn()
-            .mockResolvedValue(mockPermittedAccounts);
-          await withService(
-            { options: { getPermittedAccounts } },
-            async ({ rootMessenger }) => {
-              const handlers = registerReferralHandlers(rootMessenger, {
-                featureFlags: { [DefiReferralPartner.Variational]: true },
-                referrals: { [DefiReferralPartner.Variational]: {} },
-              });
-              registerPartnerNetwork(rootMessenger, '0x1');
-
-              await rootMessenger.call(
-                'LegacyBackgroundApiService:handleDefiReferral',
-                VARIATIONAL,
-                mockTabId,
-                ReferralTriggerType.NewConnection,
-              );
-
-              expect(handlers.add).not.toHaveBeenCalled();
-              expect(handlers.addReferralPassedAccount).not.toHaveBeenCalled();
-            },
-          );
-        });
-
-        it('proceeds when the active chain matches requiredChainId', async () => {
-          const getPermittedAccounts = jest
-            .fn()
-            .mockResolvedValue(mockPermittedAccounts);
-          await withService(
-            { options: { getPermittedAccounts } },
-            async ({ rootMessenger }) => {
-              const handlers = registerReferralHandlers(rootMessenger, {
-                featureFlags: { [DefiReferralPartner.Variational]: true },
-                referrals: { [DefiReferralPartner.Variational]: {} },
-              });
-              registerPartnerNetwork(rootMessenger, '0xa4b1');
-
-              await rootMessenger.call(
-                'LegacyBackgroundApiService:handleDefiReferral',
-                VARIATIONAL,
-                mockTabId,
-                ReferralTriggerType.NewConnection,
-              );
-
-              expect(handlers.add).toHaveBeenCalledWith({
-                origin: VARIATIONAL.origin,
-                type: VARIATIONAL.approvalType,
-                requestData: {
-                  learnMoreUrl: VARIATIONAL.learnMoreUrl,
-                  partnerId: DefiReferralPartner.Variational,
-                  partnerName: VARIATIONAL.name,
-                  selectedAddress: mockPermittedAccount,
-                },
-                shouldShowRequest: true,
-              });
             },
           );
         });
@@ -8394,6 +8373,415 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
   });
+
+  describe('setParticipateInMetaMetrics', () => {
+    /**
+     * Connects real analytics consent behavior to the service test messenger.
+     *
+     * Only the external analytics delivery and buffered-trace boundaries are mocked.
+     *
+     * @param rootMessenger - The service's root messenger.
+     * @param state - The initial analytics state for the scenario.
+     * @returns The analytics controller and trace handlers.
+     */
+    function registerAnalyticsHandlers(
+      rootMessenger: RootMessenger,
+      state: AnalyticsControllerInitialState,
+    ) {
+      const analyticsController = new AnalyticsController({
+        messenger: new Messenger({ namespace: 'AnalyticsController' }),
+        state,
+        platformAdapter: {
+          skipUUIDv4Check: true,
+          track: jest.fn(),
+          identify: jest.fn(),
+          view: jest.fn(),
+          onSetupCompleted: jest.fn(),
+        },
+      });
+      const trackTraces = jest.fn();
+      const clearTraces = jest.fn();
+
+      rootMessenger.registerActionHandler(
+        'AnalyticsController:getState',
+        () => analyticsController.state,
+      );
+      rootMessenger.registerActionHandler(
+        'AnalyticsController:optIn',
+        analyticsController.optIn.bind(analyticsController),
+      );
+      rootMessenger.registerActionHandler(
+        'AnalyticsController:optOut',
+        analyticsController.optOut.bind(analyticsController),
+      );
+      rootMessenger.registerActionHandler(
+        'AnalyticsController:resetConsentDecision',
+        analyticsController.resetConsentDecision.bind(analyticsController),
+      );
+      rootMessenger.registerActionHandler(
+        'SentryTracingService:trackTracesAfterMetricsOptIn',
+        trackTraces,
+      );
+      rootMessenger.registerActionHandler(
+        'SentryTracingService:clearTracesAfterMetricsOptIn',
+        clearTraces,
+      );
+
+      return { analyticsController, trackTraces, clearTraces };
+    }
+
+    it('opts in and out via AnalyticsController and records the consent decision', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const { analyticsController } = registerAnalyticsHandlers(
+          rootMessenger,
+          {
+            analyticsId: 'test-analytics-id',
+            optedIn: false,
+            consentDecisionMade: false,
+          },
+        );
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:setParticipateInMetaMetrics',
+          true,
+        );
+        expect(analyticsController.state).toMatchObject({
+          optedIn: true,
+          consentDecisionMade: true,
+        });
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:setParticipateInMetaMetrics',
+          false,
+        );
+        expect(analyticsController.state).toMatchObject({
+          optedIn: false,
+          consentDecisionMade: true,
+        });
+      });
+    });
+
+    it('resets the consent decision when set to null', async () => {
+      await withService(async ({ service, rootMessenger }) => {
+        const { analyticsController } = registerAnalyticsHandlers(
+          rootMessenger,
+          {
+            analyticsId: 'test-analytics-id',
+            optedIn: true,
+            consentDecisionMade: true,
+          },
+        );
+
+        await service.setParticipateInMetaMetrics(null);
+
+        expect(analyticsController.state).toMatchObject({
+          optedIn: false,
+          consentDecisionMade: false,
+        });
+      });
+    });
+
+    it('preserves the analytics ID when opting out and back in', async () => {
+      await withService(async ({ service, rootMessenger }) => {
+        const { analyticsController } = registerAnalyticsHandlers(
+          rootMessenger,
+          {
+            analyticsId: 'test-analytics-id',
+          },
+        );
+
+        const analyticsIdAfterOptOut =
+          await service.setParticipateInMetaMetrics(false);
+        const analyticsIdAfterOptIn =
+          await service.setParticipateInMetaMetrics(true);
+
+        expect(analyticsIdAfterOptOut).toBe('test-analytics-id');
+        expect(analyticsIdAfterOptIn).toBe('test-analytics-id');
+        expect(analyticsController.state.analyticsId).toBe('test-analytics-id');
+      });
+    });
+
+    it('retains the marketingCampaignCookieId when participation is toggled off', async () => {
+      await withService(async ({ service, rootMessenger }) => {
+        const { analyticsController } = registerAnalyticsHandlers(
+          rootMessenger,
+          {
+            analyticsId: 'test-analytics-id',
+            optedIn: true,
+            marketingCampaignCookieId: '123456.123455',
+          },
+        );
+
+        await service.setParticipateInMetaMetrics(false);
+
+        expect(analyticsController.state.marketingCampaignCookieId).toBe(
+          '123456.123455',
+        );
+      });
+    });
+
+    it('tracks buffered traces before clearing them after opt-in', async () => {
+      await withService(async ({ service, rootMessenger }) => {
+        const { trackTraces, clearTraces } = registerAnalyticsHandlers(
+          rootMessenger,
+          {
+            analyticsId: 'test-analytics-id',
+          },
+        );
+
+        await service.setParticipateInMetaMetrics(true);
+
+        expect(trackTraces).toHaveBeenCalledTimes(1);
+        expect(clearTraces).toHaveBeenCalledTimes(1);
+        expect(trackTraces.mock.invocationCallOrder[0]).toBeLessThan(
+          clearTraces.mock.invocationCallOrder[0],
+        );
+      });
+    });
+
+    it('clears buffered traces without tracking them after opt-out', async () => {
+      await withService(async ({ service, rootMessenger }) => {
+        const { trackTraces, clearTraces } = registerAnalyticsHandlers(
+          rootMessenger,
+          {
+            analyticsId: 'test-analytics-id',
+          },
+        );
+
+        await service.setParticipateInMetaMetrics(false);
+
+        expect(trackTraces).not.toHaveBeenCalled();
+        expect(clearTraces).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    it('leaves buffered traces unchanged when resetting consent', async () => {
+      await withService(async ({ service, rootMessenger }) => {
+        const { trackTraces, clearTraces } = registerAnalyticsHandlers(
+          rootMessenger,
+          {
+            analyticsId: 'test-analytics-id',
+          },
+        );
+
+        await service.setParticipateInMetaMetrics(null);
+
+        expect(trackTraces).not.toHaveBeenCalled();
+        expect(clearTraces).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('the extension uninstall URL', () => {
+      it('updates it when opting in on a main production build', async () => {
+        const setUninstallURL = jest.fn();
+
+        await withService(
+          {
+            options: {
+              appBuildType: 'main',
+              appEnvironment: 'production',
+              appVersion: '13.0.0',
+              setUninstallURL,
+            },
+          },
+          async ({ service, rootMessenger }) => {
+            registerAnalyticsHandlers(rootMessenger, {
+              analyticsId: 'test-analytics-id',
+            });
+
+            await service.setParticipateInMetaMetrics(true);
+
+            expect(setUninstallURL).toHaveBeenCalledTimes(1);
+            expect(setUninstallURL).toHaveBeenCalledWith(
+              `https://metamask.com/uninstalled?${new URLSearchParams({
+                av: '13.0.0',
+                mmi: Buffer.from('test-analytics-id').toString('base64'),
+                env: 'production',
+              }).toString()}`,
+            );
+          },
+        );
+      });
+
+      it('updates it when opting out on a main production build', async () => {
+        const setUninstallURL = jest.fn();
+
+        await withService(
+          {
+            options: {
+              appBuildType: 'main',
+              appEnvironment: 'production',
+              appVersion: '13.0.0',
+              setUninstallURL,
+            },
+          },
+          async ({ service, rootMessenger }) => {
+            registerAnalyticsHandlers(rootMessenger, {
+              analyticsId: 'test-analytics-id',
+            });
+
+            await service.setParticipateInMetaMetrics(false);
+
+            expect(setUninstallURL).toHaveBeenCalledTimes(1);
+            expect(setUninstallURL).toHaveBeenCalledWith(
+              'https://metamask.com/uninstalled?av=13.0.0',
+            );
+          },
+        );
+      });
+
+      it('does not update it when participation is reset to null', async () => {
+        const setUninstallURL = jest.fn();
+
+        await withService(
+          {
+            options: {
+              appBuildType: 'main',
+              appEnvironment: 'production',
+              setUninstallURL,
+            },
+          },
+          async ({ service, rootMessenger }) => {
+            registerAnalyticsHandlers(rootMessenger, {
+              analyticsId: 'test-analytics-id',
+            });
+
+            await service.setParticipateInMetaMetrics(null);
+
+            expect(setUninstallURL).not.toHaveBeenCalled();
+          },
+        );
+      });
+
+      it('does not update it in development', async () => {
+        const setUninstallURL = jest.fn();
+
+        await withService(
+          {
+            options: {
+              appBuildType: 'main',
+              appEnvironment: 'development',
+              setUninstallURL,
+            },
+          },
+          async ({ service, rootMessenger }) => {
+            registerAnalyticsHandlers(rootMessenger, {
+              analyticsId: 'test-analytics-id',
+            });
+
+            await service.setParticipateInMetaMetrics(true);
+
+            expect(setUninstallURL).not.toHaveBeenCalled();
+          },
+        );
+      });
+
+      it('does not update it for a non-main build', async () => {
+        const setUninstallURL = jest.fn();
+
+        await withService(
+          {
+            options: {
+              appBuildType: 'flask',
+              appEnvironment: 'production',
+              setUninstallURL,
+            },
+          },
+          async ({ service, rootMessenger }) => {
+            registerAnalyticsHandlers(rootMessenger, {
+              analyticsId: 'test-analytics-id',
+            });
+
+            await service.setParticipateInMetaMetrics(true);
+
+            expect(setUninstallURL).not.toHaveBeenCalled();
+          },
+        );
+      });
+    });
+  });
+
+  describe('checkFirstTimeInteraction', () => {
+    jestIt.each([
+      [0, true],
+      [1, false],
+      [undefined, undefined],
+    ])('returns %s interactions as %s', async (count, expected) => {
+      await withService(async ({ rootMessenger }) => {
+        const scope = nock('https://accounts.api.cx.metamask.io')
+          .get('/v1/networks/1/accounts/0x123/relationships/0x456')
+          .reply(200, count === undefined ? {} : { count });
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:checkFirstTimeInteraction',
+          { chainId: 1, from: '0x123', to: '0x456' },
+        );
+
+        expect(result).toBe(expected);
+        expect(scope.isDone()).toBe(true);
+      });
+    });
+
+    it('returns undefined when the relationship request fails', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const scope = nock('https://accounts.api.cx.metamask.io')
+          .get('/v1/networks/1/accounts/0x123/relationships/0x456')
+          .replyWithError('Request failed');
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:checkFirstTimeInteraction',
+          { chainId: 1, from: '0x123', to: '0x456' },
+        );
+
+        expect(result).toBeUndefined();
+        expect(scope.isDone()).toBe(true);
+      });
+    });
+  });
+
+  describe('backupUserData', () => {
+    it('returns a JSON backup of preferences, accounts, address book, and networks', async () => {
+      const preferences = { theme: 'dark' };
+      const internalAccounts = { accounts: {}, selectedAccount: 'account-1' };
+      const addressBook = { addressBook: { '0x1': {} } };
+      const networkConfigurationsByChainId = { '0x1': { chainId: '0x1' } };
+
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'PreferencesController:getState',
+          jest.fn().mockReturnValue(preferences),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:getState',
+          jest.fn().mockReturnValue({ internalAccounts }),
+        );
+        rootMessenger.registerActionHandler(
+          'AddressBookController:getState',
+          jest.fn().mockReturnValue(addressBook),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({ networkConfigurationsByChainId }),
+        );
+
+        const backup = await rootMessenger.call(
+          'LegacyBackgroundApiService:backupUserData',
+        );
+
+        expect(backup).toMatchObject({
+          fileName: expect.stringMatching(
+            /^MetaMaskUserData\.\d{4}_\d{2}_\d{2}_\d{2}_\d{2}_\d{2}\.json$/u,
+          ),
+          data: JSON.stringify({
+            preferences,
+            internalAccounts: { internalAccounts },
+            addressBook,
+            network: { networkConfigurationsByChainId },
+          }),
+        });
+      });
+    });
+  });
 });
 
 /**
@@ -8466,7 +8854,7 @@ function getMessenger(
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
       'NetworkController:getNetworkConfigurationByNetworkClientId',
-      'SelectedNetworkController:getNetworkClientIdForDomain',
+      'AddressBookController:getState',
       'NetworkController:getSelectedNetworkClient',
       'NetworkController:addNetwork',
       'NetworkController:setActiveNetwork',
@@ -8477,7 +8865,6 @@ function getMessenger(
       'NetworkEnablementController:isNetworkEnabled',
       'NetworkEnablementController:restoreEnabledNetworkMap',
       'RemoteFeatureFlagController:getState',
-      'CurrencyRateController:setCurrentCurrency',
       'AssetsContractController:getTokenStandardAndDetails',
       'AssetsController:addCustomAsset',
       'AssetsController:getAssets',
@@ -8586,8 +8973,14 @@ function getMessenger(
       'KeyringController:withKeyringV2Unsafe',
       'AnalyticsController:getEventFragmentById',
       'AnalyticsController:upsertEventFragment',
+      'AnalyticsController:getState',
+      'AnalyticsController:optIn',
+      'AnalyticsController:optOut',
+      'AnalyticsController:resetConsentDecision',
       'SentryTracingService:bufferedTrace',
       'SentryTracingService:bufferedEndTrace',
+      'SentryTracingService:trackTracesAfterMetricsOptIn',
+      'SentryTracingService:clearTracesAfterMetricsOptIn',
       'TransactionController:updateEditableParams',
       'TransactionController:estimateGas',
       'TransactionController:isAtomicBatchSupported',
@@ -8598,8 +8991,6 @@ function getMessenger(
       'PhishingController:testOrigin',
       'PreferencesController:toggleExternalServices',
       'SubscriptionController:getState',
-      'TokenDetectionController:enable',
-      'TokenDetectionController:disable',
       'GasFeeController:enableNonRPCGasFeeApis',
       'GasFeeController:disableNonRPCGasFeeApis',
       'ShieldController:start',
@@ -8609,7 +9000,6 @@ function getMessenger(
       'TransactionController:updateSecurityAlertResponse',
       'UserOperationController:addUserOperationFromTransaction',
       'UserOperationController:startPollingByNetworkClientId',
-      'PPOMController:usePPOM',
       'KeyringController:getKeyringForAccount',
       'SignatureController:getState',
       'AppStateController:getAddressSecurityAlertResponse',
@@ -8658,6 +9048,10 @@ async function withService<ReturnValue>(
   const serviceMessenger = getMessenger(rootMessenger);
   const service = new LegacyBackgroundApiService({
     messenger: serviceMessenger,
+    appBuildType: 'main',
+    appEnvironment: 'testing',
+    appVersion: '13.0.0',
+    setUninstallURL: jest.fn(),
     infuraProjectId: 'test-infura-project-id',
     getRequestAccountTabIds: () => ({}),
     getOpenMetamaskTabsIds: () => ({}),

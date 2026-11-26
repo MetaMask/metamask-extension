@@ -34,6 +34,40 @@ describe('BitcoinNode helpers', () => {
     });
   });
 
+  describe('mineBlocks', () => {
+    it('mines the requested block count to a fresh wallet address', async () => {
+      const node = new BitcoinNode();
+      const rpc = jest
+        .spyOn(
+          node as unknown as {
+            rpc: (
+              method: string,
+              params?: unknown[],
+              wallet?: boolean,
+            ) => Promise<unknown>;
+          },
+          'rpc',
+        )
+        .mockResolvedValueOnce('bcrt1qminer')
+        .mockResolvedValueOnce(['block-1', 'block-2']);
+
+      await expect(node.mineBlocks(2)).resolves.toStrictEqual([
+        'block-1',
+        'block-2',
+      ]);
+      expect(rpc).toHaveBeenNthCalledWith(
+        1,
+        'getnewaddress',
+        ['', 'bech32'],
+        true,
+      );
+      expect(rpc).toHaveBeenNthCalledWith(2, 'generatetoaddress', [
+        2,
+        'bcrt1qminer',
+      ]);
+    });
+  });
+
   describe('createEsploraTransaction', () => {
     it('maps bitcoind verbose transaction output to the Esplora transaction shape', () => {
       const transaction = createEsploraTransaction({

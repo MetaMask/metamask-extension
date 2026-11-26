@@ -9,7 +9,6 @@ import {
 } from '../../../../ducks/rewards/selectors';
 import {
   setRewardsModalOpen,
-  setOnboardingReferralCode,
   setRewardsDeeplinkUrl,
 } from '../../../../ducks/rewards';
 import { ThemeType } from '../../../../../shared/constants/preferences';
@@ -29,6 +28,10 @@ jest.mock('react-redux', () => ({
 
 jest.mock('../../../../hooks/useTheme', () => ({
   useTheme: jest.fn(() => 'light'),
+}));
+
+jest.mock('../../../../hooks/useI18nContext', () => ({
+  useI18nContext: () => (key: string) => key,
 }));
 
 jest.mock('./OnboardingMainStep', () => () => (
@@ -127,7 +130,7 @@ describe('RewardsModal', () => {
     });
   });
 
-  it('dispatches close + clears referral code + clears deeplink url when close button is clicked', () => {
+  it('dispatches close and clears the deeplink url when close button is clicked', () => {
     setupSelectors({ isOpen: true, candidateSubscriptionId: null });
     const dispatchMock = jest.fn();
     mockedUseAppDispatch.mockReturnValue(dispatchMock);
@@ -140,7 +143,6 @@ describe('RewardsModal', () => {
     fireEvent.click(closeButton as Element);
 
     expect(dispatchMock).toHaveBeenCalledWith(setRewardsModalOpen(false));
-    expect(dispatchMock).toHaveBeenCalledWith(setOnboardingReferralCode(null));
     expect(dispatchMock).toHaveBeenCalledWith(setRewardsDeeplinkUrl(null));
   });
 

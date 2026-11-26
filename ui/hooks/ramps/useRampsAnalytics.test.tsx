@@ -28,10 +28,8 @@ jest.mock('../../store/controller-actions/ramps-controller', () => ({
   setRampsUserRegion: jest.fn(),
 }));
 
-function renderRampsAnalytics(rampsEnabled = true) {
-  const store = createRampsMockStore({
-    remoteFeatureFlags: { rampsEnabled },
-  });
+function renderRampsAnalytics() {
+  const store = createRampsMockStore();
   return renderHook(() => useRampsAnalytics(), {
     wrapper: createRampsTestWrapper(store),
   });
@@ -83,17 +81,5 @@ describe('useRampsAnalytics', () => {
       location: 'Order Details',
       region: 'us-ca',
     });
-  });
-
-  it('does not track when rampsEnabled is off', () => {
-    const { result } = renderRampsAnalytics(false);
-
-    result.current.trackScreenViewed('Amount Input');
-    result.current.trackProviderSelected({
-      provider: 'Transak',
-      location: 'Provider Selection',
-    });
-
-    expect(mockTrackEvent).not.toHaveBeenCalled();
   });
 });

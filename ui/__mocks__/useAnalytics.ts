@@ -6,6 +6,8 @@ import {
 export function useAnalytics() {
   return {
     trackEvent: (_built: AnalyticsEvent) => undefined,
+    trackErrorAsAnalytics: (_error: unknown, _options: { source: string }) =>
+      undefined,
     createEventBuilder,
   };
 }

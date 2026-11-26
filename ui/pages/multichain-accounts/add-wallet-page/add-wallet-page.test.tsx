@@ -67,8 +67,9 @@ describe('AddWalletPage', () => {
   it('renders the page with correct title and components', () => {
     renderComponent();
 
-    expect(screen.getByText(messages.addWallet.message)).toBeInTheDocument();
-    expect(screen.getByText(messages.privateKey.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.importAnAccount.message),
+    ).toBeInTheDocument();
     expect(screen.getByTestId(backButtonTestId)).toBeInTheDocument();
   });
 

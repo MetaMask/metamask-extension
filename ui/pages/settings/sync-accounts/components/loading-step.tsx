@@ -8,16 +8,11 @@ import {
   TextColor,
   FontWeight,
   TextAlign,
-  BoxJustifyContent,
   BoxAlignItems,
-  IconName,
-  Icon,
   BoxFlexDirection,
-  BoxBackgroundColor,
 } from '@metamask/design-system-react';
-import Spinner from '../../../../components/ui/spinner';
-import PulseLoader from '../../../../components/ui/pulse-loader';
 import { subscribeToMessengerEvent } from '../../../../store/background-connection';
+import LoadingFoxAnimation from './loading-fox-animation';
 
 const DEFAULT_DELAY_MS = 2000;
 
@@ -72,57 +67,40 @@ const LoadingStep = ({
     <Box
       alignItems={BoxAlignItems.Center}
       flexDirection={BoxFlexDirection.Column}
-      gap={8}
-      paddingTop={8}
       className="flex-1"
       data-testid="qr-sync-loading"
+      aria-busy="true"
     >
       <Box
-        alignItems={BoxAlignItems.Center}
-        justifyContent={BoxJustifyContent.Center}
-        flexDirection={BoxFlexDirection.Row}
-        gap={4}
-      >
-        <Box
-          backgroundColor={BoxBackgroundColor.PrimaryMuted}
-          padding={3}
-          className="rounded-md"
-        >
-          <Icon name={IconName.Monitor} />
-        </Box>
-        <PulseLoader />
-        <Box
-          backgroundColor={BoxBackgroundColor.PrimaryMuted}
-          padding={3}
-          className="rounded-md"
-        >
-          <Icon name={IconName.Mobile} />
-        </Box>
-      </Box>
-      <Box className="w-10 h-10">
-        <Spinner />
-      </Box>
-      <Box
+        className="text-center flex-1 justify-center"
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Center}
-        gap={1}
+        gap={0}
       >
-        <Text
-          variant={TextVariant.HeadingLg}
-          color={TextColor.TextDefault}
-          fontWeight={FontWeight.Bold}
-          textAlign={TextAlign.Center}
-          className="mb-2"
+        <LoadingFoxAnimation />
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Center}
+          gap={2}
+          className="min-h-[88px]"
         >
-          {title}
-        </Text>
-        <Text
-          variant={TextVariant.BodyMd}
-          color={TextColor.TextAlternative}
-          textAlign={TextAlign.Center}
-        >
-          {message}
-        </Text>
+          <Text
+            variant={TextVariant.HeadingMd}
+            color={TextColor.TextDefault}
+            fontWeight={FontWeight.Bold}
+            textAlign={TextAlign.Center}
+          >
+            {title}
+          </Text>
+          <Text
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextAlternative}
+            textAlign={TextAlign.Center}
+            className="max-w-80"
+          >
+            {message}
+          </Text>
+        </Box>
       </Box>
     </Box>
   );

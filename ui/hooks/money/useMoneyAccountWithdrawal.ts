@@ -1,14 +1,14 @@
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import type { Hex } from '@metamask/utils';
-import { selectMoneyFundingAccount } from '../../selectors/money/money-funding-account';
+import { selectMoneyWithdrawalRecipient } from '../../selectors/money/money-funding-account';
 import {
   ConfirmationLoader,
   useConfirmationNavigation,
 } from '../../pages/confirmations/hooks/useConfirmationNavigation';
 import { createMoneyAccountWithdrawTransaction } from '../../store/controller-actions/transaction-pay-controller';
 import { useMoneyErrorReporter } from './useMoneyErrorReporter';
+import { useMoneyAccountLifecycle } from './use-money-account-lifecycle';
 
 /**
  * Initiates a Money Account withdrawal: creates the placeholder withdraw +
@@ -21,32 +21,41 @@ import { useMoneyErrorReporter } from './useMoneyErrorReporter';
  * as `useMoneyAccountDeposit`. There is no deposit-intent equivalent for
  * withdrawals — mobile records none either.
  *
- * The recipient is resolved by `selectMoneyFundingAccount`: the globally
- * selected account when it is eligible, otherwise the EVM account of the
- * selected account group (a non-EVM network filter switches the selected
- * account to e.g. a Solana account, but the group still holds the EVM
- * account the user expects), otherwise the user's first eligible EVM
- * account. A hardware account cannot sign the batch, so a user on a
- * hardware wallet withdraws to their first eligible account rather than
- * being blocked at the confirmation. Fails fast only when no eligible
- * account exists. That address is passed as Pay's `accountOverride` so
- * the confirmation defaults the From row — and the withdraw recipient — to that
- * account instead of the money account that executes the batch.
+ * The recipient is resolved by `selectMoneyWithdrawalRecipient`: the globally
+ * selected account when it is EVM, otherwise the EVM account of the selected
+ * account group (a non-EVM network filter switches the selected account to
+ * e.g. a Solana account, but the group still holds the EVM account the user
+ * expects), otherwise the user's first EVM account. Hardware accounts are
+ * valid recipients: the money account signs the batch, and the recipient
+ * never signs. Fails fast only when no EVM account exists. Its account ID is
+ * passed as Pay's `accountOverride` so the confirmation defaults the To row
+ * — the withdraw recipient — to that account instead of the money account
+ * that executes the batch.
  *
  * Setup failures are reported to Sentry and shown as a toast inside this
  * hook, matching mobile. The promise resolves after that so callers do not
  * each need a `.catch`.
  *
- * @returns The initiator and its loading state.
+ * @returns The initiator, its loading state, and whether withdrawals are disabled.
  */
 export function useMoneyAccountWithdrawal() {
   const { navigateToTransaction } = useConfirmationNavigation();
   const location = useLocation();
-  const recipientAccount = useSelector(selectMoneyFundingAccount);
+  const recipientAccount = useSelector(selectMoneyWithdrawalRecipient);
   const reportError = useMoneyErrorReporter();
   const [isLoading, setIsLoading] = useState(false);
+  const {
+    isLifecycleUnavailable,
+    isReadOnly,
+    isLoading: isLifecycleLoading,
+  } = useMoneyAccountLifecycle();
+  const isDisabled = isReadOnly || isLifecycleUnavailable || isLifecycleLoading;
 
   const initiateWithdrawal = useCallback(async () => {
+    if (isDisabled) {
+      return;
+    }
+
     setIsLoading(true);
     try {
       if (!recipientAccount) {
@@ -54,7 +63,7 @@ export function useMoneyAccountWithdrawal() {
       }
 
       const { transactionId } = await createMoneyAccountWithdrawTransaction(
-        recipientAccount.address as Hex,
+        recipientAccount.id,
       );
 
       navigateToTransaction(transactionId, {
@@ -73,6 +82,7 @@ export function useMoneyAccountWithdrawal() {
       setIsLoading(false);
     }
   }, [
+    isDisabled,
     location.pathname,
     location.search,
     navigateToTransaction,
@@ -80,5 +90,5 @@ export function useMoneyAccountWithdrawal() {
     reportError,
   ]);
 
-  return { initiateWithdrawal, isLoading };
+  return { initiateWithdrawal, isDisabled, isLoading };
 }

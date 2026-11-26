@@ -11,6 +11,7 @@ import {
 } from '../../helpers/constants/routes';
 import { selectMoneyEarningSectionEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getPrivacyMode } from '../../selectors/selectors';
+import { AppLayoutProvider } from '../../contexts/app-layout';
 import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
 import { createMoneyAnalyticsMock } from '../../hooks/money/useMoneyAnalytics.mock';
 import {
@@ -19,6 +20,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyOnboardingStepAction,
   MoneyScreenName,
   MoneyTooltipName,
@@ -30,6 +32,7 @@ import MOCK_MONEY_TRANSACTIONS from './constants/mock-activity-data';
 import { onchainItem } from './types/money-activity';
 
 const mockUseMoneyAccountAvailability = jest.fn();
+const mockUseMoneyAccountLifecycle = jest.fn();
 const mockUseMoneyAccountBalance = jest.fn();
 const mockUseMoneyAccountInterest = jest.fn();
 const mockUseMoneyDepositTokens = jest.fn();
@@ -40,6 +43,7 @@ const mockInitiateDeposit = jest.fn();
 const mockUseMoneyAccountWithdrawal = jest.fn();
 const mockInitiateWithdrawal = jest.fn();
 const mockUseUpgradeMoneyAccount = jest.fn();
+const mockUseOpenMoneyFtueOnFirstVisit = jest.fn();
 const mockNavigate = jest.fn();
 const mockSelectMoneyEarningSectionEnabled = jest.mocked(
   selectMoneyEarningSectionEnabled,
@@ -64,8 +68,19 @@ const interestResponse = (value: string) => ({
 });
 
 jest.mock('react-redux', () => ({
-  useSelector: (selector: () => unknown) => selector(),
+  useSelector: (selector: (state: unknown) => unknown) =>
+    selector({ metamask: {} }),
 }));
+
+jest.mock(
+  '../../components/app/modals/visit-support-data-consent-modal',
+  () => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: () => null,
+    useOpenSupport: () => jest.fn(),
+  }),
+);
 
 jest.mock('../../selectors/money/money-account-feature-flags', () => ({
   ...jest.requireActual('../../selectors/money/money-account-feature-flags'),
@@ -107,6 +122,9 @@ jest.mock('react-router-dom', () => ({
 jest.mock('../../hooks/money/use-money-account-availability', () => ({
   useMoneyAccountAvailability: () => mockUseMoneyAccountAvailability(),
 }));
+jest.mock('../../hooks/money/use-money-account-lifecycle', () => ({
+  useMoneyAccountLifecycle: () => mockUseMoneyAccountLifecycle(),
+}));
 jest.mock('../../hooks/money/useMoneyAccountBalance', () => ({
   useMoneyAccountBalance: () => mockUseMoneyAccountBalance(),
 }));
@@ -128,6 +146,10 @@ jest.mock('../../hooks/money/useMoneyAccountWithdrawal', () => ({
 }));
 jest.mock('../../hooks/money/use-upgrade-money-account', () => ({
   useUpgradeMoneyAccount: () => mockUseUpgradeMoneyAccount(),
+}));
+jest.mock('../../hooks/money/use-open-money-ftue-on-first-visit', () => ({
+  useOpenMoneyFtueOnFirstVisit: (options: unknown) =>
+    mockUseOpenMoneyFtueOnFirstVisit(options),
 }));
 
 jest.mock('../../hooks/money/use-money-activity-item-click', () => ({
@@ -174,6 +196,12 @@ describe('MoneyHomePage', () => {
       },
       isLoading: false,
     });
+    mockUseMoneyAccountLifecycle.mockReturnValue({
+      lifecycle: undefined,
+      isLifecycleUnavailable: false,
+      isReadOnly: false,
+      isLoading: false,
+    });
     mockUseMoneyAccountBalance.mockReturnValue({
       apyDecimal: 0.042,
       apyPercent: 4.2,
@@ -185,7 +213,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber(0),
       totalFiatFormatted: '$0.00',
       totalFiatRaw: '0',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
@@ -283,6 +311,47 @@ describe('MoneyHomePage', () => {
     expect(mockUseUpgradeMoneyAccount).toHaveBeenCalled();
   });
 
+  it('passes availability to the FTUE auto-open hook', () => {
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(mockUseOpenMoneyFtueOnFirstVisit).toHaveBeenCalledWith({
+      isAvailable: true,
+      isLoading: false,
+    });
+  });
+
+  it('does not auto-open the FTUE for a read-only account', () => {
+    mockUseMoneyAccountLifecycle.mockReturnValue({
+      lifecycle: { type: 'mfa' },
+      isLifecycleUnavailable: false,
+      isReadOnly: true,
+      isLoading: false,
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(mockUseOpenMoneyFtueOnFirstVisit).toHaveBeenCalledWith({
+      isAvailable: false,
+      isLoading: false,
+    });
+  });
+
+  it('waits for the lifecycle read before auto-opening the FTUE', () => {
+    mockUseMoneyAccountLifecycle.mockReturnValue({
+      lifecycle: undefined,
+      isLifecycleUnavailable: false,
+      isReadOnly: false,
+      isLoading: true,
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(mockUseOpenMoneyFtueOnFirstVisit).toHaveBeenCalledWith({
+      isAvailable: true,
+      isLoading: true,
+    });
+  });
+
   it('keeps groundwork actions other than the transfer entry points inert', () => {
     renderWithLocalization(<MoneyHomePage />);
 
@@ -345,7 +414,7 @@ describe('MoneyHomePage', () => {
     });
 
     expect(global.platform.openTab).toHaveBeenCalledWith({
-      url: 'https://metamask.io/money?utm_source=extension',
+      url: 'https://metamask.com/money?utm_source=extension',
     });
   });
 
@@ -389,7 +458,12 @@ describe('MoneyHomePage', () => {
     );
 
     expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
-    expect(mockInitiateDeposit).toHaveBeenCalledWith();
+    expect(mockInitiateDeposit).toHaveBeenCalledWith({
+      ftueOrigin: {
+        entryPoint: MoneyFtueEntryPoint.MoneyHome,
+        componentName: MoneyComponentName.ActionButtonRow,
+      },
+    });
     expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
       buttonType: MoneyButtonType.Text,
       buttonIntent: MoneyButtonIntent.AddMoney,
@@ -416,7 +490,12 @@ describe('MoneyHomePage', () => {
     );
 
     expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
-    expect(mockInitiateDeposit).toHaveBeenCalledWith();
+    expect(mockInitiateDeposit).toHaveBeenCalledWith({
+      ftueOrigin: {
+        entryPoint: MoneyFtueEntryPoint.MoneyHome,
+        componentName: MoneyComponentName.OnboardingCard,
+      },
+    });
     expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
       screenName: MoneyScreenName.MoneyHome,
       componentName: MoneyComponentName.OnboardingCard,
@@ -475,6 +554,10 @@ describe('MoneyHomePage', () => {
       preferredPaymentToken: {
         address: DEPOSIT_TOKEN.address,
         chainId: DEPOSIT_TOKEN.chainId,
+      },
+      ftueOrigin: {
+        entryPoint: MoneyFtueEntryPoint.MoneyHome,
+        componentName: MoneyComponentName.PotentialEarningsSectionTokenRow,
       },
     });
   });
@@ -570,7 +653,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('3475.45'),
       totalFiatFormatted: '$3,475.45',
       totalFiatRaw: '3475.45',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     renderWithLocalization(<MoneyHomePage />);
 
@@ -595,7 +678,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('3475.45'),
       totalFiatFormatted: '$3,475.45',
       totalFiatRaw: '3475.45',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     renderWithLocalization(<MoneyHomePage />);
 
@@ -641,13 +724,16 @@ describe('MoneyHomePage', () => {
       screen.getByRole('link', { name: messages.moneyMeetMusd.message }),
     ).toHaveAttribute(
       'href',
-      'https://metamask.io/price/metamask-usd?utm_source=extension',
+      'https://metamask.com/price/metamask-usd?utm_source=extension',
     );
     expect(
       screen.getByRole('link', {
         name: messages.moneyExploreBenefits.message,
       }),
-    ).toHaveAttribute('href', 'https://metamask.io/money?utm_source=extension');
+    ).toHaveAttribute(
+      'href',
+      'https://metamask.com/money?utm_source=extension',
+    );
     expect(
       screen.getByRole('link', {
         name: messages.moneyHowYourMoneyGrows.message,
@@ -679,7 +765,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('100'),
       totalFiatFormatted: '$100.00',
       totalFiatRaw: '100',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -713,7 +799,7 @@ describe('MoneyHomePage', () => {
         tokenTotal: new BigNumber('100'),
         totalFiatFormatted: '$100.00',
         totalFiatRaw: '100',
-        vaultApyQuery: { isLoading: false },
+        isApyLoading: false,
       });
       global.platform.openTab = jest.fn();
 
@@ -741,7 +827,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('100'),
       totalFiatFormatted: '$100.00',
       totalFiatRaw: '100',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -767,7 +853,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('100'),
       totalFiatFormatted: '$100.00',
       totalFiatRaw: '100',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     global.platform.openTab = jest.fn();
 
@@ -776,7 +862,7 @@ describe('MoneyHomePage', () => {
     fireEvent.click(screen.getByTestId('money-condensed-info-card-musd'));
 
     expect(global.platform.openTab).toHaveBeenCalledWith({
-      url: 'https://metamask.io/price/metamask-usd?utm_source=extension',
+      url: 'https://metamask.com/price/metamask-usd?utm_source=extension',
     });
   });
 
@@ -790,7 +876,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('100'),
       totalFiatFormatted: '$100.00',
       totalFiatRaw: '100',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     global.platform.openTab = jest.fn();
 
@@ -799,7 +885,7 @@ describe('MoneyHomePage', () => {
     fireEvent.click(screen.getByTestId('money-condensed-info-card-benefits'));
 
     expect(global.platform.openTab).toHaveBeenCalledWith({
-      url: 'https://metamask.io/money?utm_source=extension',
+      url: 'https://metamask.com/money?utm_source=extension',
     });
   });
 
@@ -813,7 +899,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('3475.45'),
       totalFiatFormatted: '$3,475.45',
       totalFiatRaw: '3475.45',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyActivityItems.mockReturnValue({
       items: MOCK_MONEY_TRANSACTIONS.map(onchainItem),
@@ -850,7 +936,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('3475.45'),
       totalFiatFormatted: '$3,475.45',
       totalFiatRaw: '3475.45',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyActivityItems.mockReturnValue({ items });
 
@@ -870,7 +956,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('10'),
       totalFiatFormatted: '$10.00',
       totalFiatRaw: '10',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
@@ -904,7 +990,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('10'),
       totalFiatFormatted: '$10.00',
       totalFiatRaw: '10',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
@@ -938,7 +1024,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('10'),
       totalFiatFormatted: '$10.00',
       totalFiatRaw: '10',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: { data: undefined, isLoading: true },
@@ -965,7 +1051,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('120'),
       totalFiatFormatted: '$120.00',
       totalFiatRaw: '120',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
@@ -998,7 +1084,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('120'),
       totalFiatFormatted: '$120.00',
       totalFiatRaw: '120',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
@@ -1031,7 +1117,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('10'),
       totalFiatFormatted: '$10.00',
       totalFiatRaw: '10',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
@@ -1064,7 +1150,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('10'),
       totalFiatFormatted: '$10.00',
       totalFiatRaw: '10',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
@@ -1112,7 +1198,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('10'),
       totalFiatFormatted: '$10.00',
       totalFiatRaw: '10',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
@@ -1146,7 +1232,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('10'),
       totalFiatFormatted: '$10.00',
       totalFiatRaw: '10',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyDepositTokens.mockReturnValue({
       tokens: [DEPOSIT_TOKEN],
@@ -1171,7 +1257,7 @@ describe('MoneyHomePage', () => {
       isBalanceLoading: false,
       tokenTotal: new BigNumber('0.009'),
       totalFiatFormatted: '$0.01',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -1204,7 +1290,7 @@ describe('MoneyHomePage', () => {
       isBalanceLoading: true,
       tokenTotal: undefined,
       totalFiatFormatted: undefined,
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -1238,7 +1324,7 @@ describe('MoneyHomePage', () => {
       refetchBalance: jest.fn().mockResolvedValue(undefined),
       tokenTotal: undefined,
       totalFiatFormatted: undefined,
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -1270,7 +1356,7 @@ describe('MoneyHomePage', () => {
       refetchBalance,
       tokenTotal: undefined,
       totalFiatFormatted: undefined,
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -1304,7 +1390,7 @@ describe('MoneyHomePage', () => {
       refetchBalance,
       tokenTotal: undefined,
       totalFiatFormatted: undefined,
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -1325,7 +1411,7 @@ describe('MoneyHomePage', () => {
       isBalanceLoading: false,
       tokenTotal: new BigNumber(0),
       totalFiatFormatted: '$0.00',
-      vaultApyQuery: { isLoading: true },
+      isApyLoading: true,
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -1411,7 +1497,7 @@ describe('MoneyHomePage', () => {
       tokenTotal: new BigNumber('3475.45'),
       totalFiatFormatted: '$3,475.45',
       totalFiatRaw: '3475.45',
-      vaultApyQuery: { isLoading: false },
+      isApyLoading: false,
     });
     mockUseMoneyDepositTokens.mockReturnValue({
       tokens: [DEPOSIT_TOKEN],
@@ -1428,5 +1514,150 @@ describe('MoneyHomePage', () => {
     expect(
       screen.getByTestId('money-potential-earnings-projection-trigger'),
     ).toHaveTextContent('+$0.50');
+  });
+
+  describe('fullscreen design', () => {
+    it('keeps the centred, stacked layout, with wide-layout overrides', () => {
+      renderWithLocalization(<MoneyHomePage />);
+
+      expect(screen.getByTestId('money-balance').parentElement).toHaveClass(
+        'max-w-[784px]',
+        'sm:items-center',
+        'wide-layout:max-w-none',
+        'wide-layout:items-start',
+      );
+      expect(screen.getByTestId('money-add-button')).toHaveClass(
+        'h-[76px]',
+        'flex-col',
+      );
+      expect(screen.getByTestId('money-send-button')).toHaveClass(
+        'h-[76px]',
+        'flex-col',
+      );
+      expect(screen.getByTestId('money-fund-card')).toHaveClass(
+        'flex-col',
+        'max-w-[389px]',
+        'wide-layout:flex-row',
+        'wide-layout:max-w-none',
+      );
+    });
+
+    it('uses the button defaults in the wide layout', () => {
+      renderWithLocalization(
+        <AppLayoutProvider isWideLayout>
+          <MoneyHomePage />
+        </AppLayoutProvider>,
+      );
+
+      expect(screen.getByTestId('money-add-button')).not.toHaveClass(
+        'h-[76px]',
+      );
+      expect(screen.getByTestId('money-send-button')).not.toHaveClass(
+        'h-[76px]',
+      );
+    });
+  });
+
+  describe('read-only Money Account', () => {
+    it.each(['mfa', 'migrating'] as const)(
+      'disables the money actions and shows the banner for %s',
+      (type) => {
+        mockUseMoneyAccountLifecycle.mockReturnValue({
+          lifecycle: { type },
+          isReadOnly: true,
+          isLoading: false,
+        });
+
+        renderWithLocalization(<MoneyHomePage />);
+
+        expect(
+          screen.getByTestId('money-mfa-read-only-banner'),
+        ).toBeInTheDocument();
+        expect(screen.getByTestId('money-add-button')).toBeDisabled();
+        expect(screen.getByTestId('money-send-button')).toBeDisabled();
+        expect(
+          screen.getByRole('button', { name: messages.addFunds.message }),
+        ).toBeDisabled();
+      },
+    );
+
+    it.each(['sfa', 'notInIdentity'] as const)(
+      'hides the banner and keeps the actions enabled for %s',
+      (type) => {
+        mockUseMoneyAccountLifecycle.mockReturnValue({
+          lifecycle: { type },
+          isReadOnly: false,
+          isLoading: false,
+        });
+
+        renderWithLocalization(<MoneyHomePage />);
+
+        expect(
+          screen.queryByTestId('money-mfa-read-only-banner'),
+        ).not.toBeInTheDocument();
+        expect(screen.getByTestId('money-add-button')).toBeEnabled();
+        expect(screen.getByTestId('money-send-button')).toBeEnabled();
+      },
+    );
+
+    it('keeps the page loading until the lifecycle read settles', () => {
+      mockUseMoneyAccountLifecycle.mockReturnValue({
+        lifecycle: undefined,
+        isReadOnly: false,
+        isLoading: true,
+      });
+
+      renderWithLocalization(<MoneyHomePage />);
+
+      expect(screen.getByTestId('money-home-loading')).toBeInTheDocument();
+    });
+
+    it('shows the unavailable banner and disables the actions when the lifecycle is unavailable', () => {
+      mockUseMoneyAccountLifecycle.mockReturnValue({
+        lifecycle: undefined,
+        isLifecycleUnavailable: true,
+        isReadOnly: false,
+        isLoading: false,
+      });
+
+      renderWithLocalization(<MoneyHomePage />);
+
+      expect(
+        screen.getByTestId('money-lifecycle-unavailable-banner'),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('money-mfa-read-only-banner'),
+      ).not.toBeInTheDocument();
+      expect(screen.getByTestId('money-add-button')).toBeDisabled();
+      expect(screen.getByTestId('money-send-button')).toBeDisabled();
+      expect(
+        screen.getByRole('button', { name: messages.addFunds.message }),
+      ).toBeDisabled();
+    });
+
+    it('shows the balance-error banner alongside the read-only banner', () => {
+      mockUseMoneyAccountLifecycle.mockReturnValue({
+        lifecycle: { type: 'mfa' },
+        isReadOnly: true,
+        isLoading: false,
+      });
+      mockUseMoneyAccountBalance.mockReturnValue({
+        isBalanceFetchError: true,
+        isBalanceLoading: false,
+        refetchBalance: jest.fn().mockResolvedValue(undefined),
+        tokenTotal: undefined,
+        totalFiatFormatted: undefined,
+        vaultApyQuery: { isLoading: false },
+      });
+
+      renderWithLocalization(<MoneyHomePage />);
+
+      expect(
+        screen.getByTestId('money-mfa-read-only-banner'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('money-balance-unavailable-banner'),
+      ).toBeInTheDocument();
+    });
   });
 });

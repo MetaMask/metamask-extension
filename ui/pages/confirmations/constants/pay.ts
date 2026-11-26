@@ -16,9 +16,11 @@ export const PAY_TRANSACTION_TYPES = [
  * Pay flows that can never be funded by a hardware wallet account, regardless
  * of feature flags. These flows submit a batch that the hardware device cannot
  * sign, so a hardware account is not a valid funding source.
+ *
+ * Money Account withdraws are not listed: the money account signs them, and
+ * the selected account only receives the funds.
  */
 export const PAY_HARDWARE_BLOCKED_TRANSACTION_TYPES: TransactionType[] = [
-  TransactionType.moneyAccountWithdraw,
   TransactionType.perpsDeposit,
   TransactionType.perpsWithdraw,
   TransactionType.predictDeposit,

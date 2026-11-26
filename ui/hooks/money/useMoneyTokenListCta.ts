@@ -6,6 +6,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyScreenName,
 } from '../../pages/money/constants/money-events';
 import { selectMoneyTokenListItemCtaEnabled } from '../../selectors/money/money-account-feature-flags';
@@ -20,6 +21,7 @@ const LABEL_KEY = 'moneyGetApy';
 
 export type MoneyTokenListCta = {
   label: string;
+  isDisabled: boolean;
   isLoading: boolean;
   shouldShow: (token: TokenWithFiatAmount) => boolean;
   onClick: (token: TokenWithFiatAmount) => void;
@@ -51,7 +53,7 @@ export function useMoneyTokenListCta(
     enabled: isActive,
   });
   const hasPositiveApy = apyPercent !== undefined && apyPercent > 0;
-  const { initiateDeposit, isLoading } = useMoneyAccountDeposit();
+  const { initiateDeposit, isDisabled, isLoading } = useMoneyAccountDeposit();
   const { trackTokenButtonClicked } = useMoneyAnalytics({
     screenName: MoneyScreenName.WalletHome,
     componentName: MoneyComponentName.TokenListItemCta,
@@ -59,7 +61,7 @@ export function useMoneyTokenListCta(
 
   const onClick = useCallback(
     (token: TokenWithFiatAmount) => {
-      if (!apyPercentFormatted || isLoading) {
+      if (!apyPercentFormatted || isLoading || isDisabled) {
         return;
       }
 
@@ -82,11 +84,16 @@ export function useMoneyTokenListCta(
           address: token.address as Hex,
           chainId: token.chainId as Hex,
         },
+        ftueOrigin: {
+          entryPoint: MoneyFtueEntryPoint.WalletHome,
+          componentName: MoneyComponentName.TokenListItemCta,
+        },
       });
     },
     [
       apyPercentFormatted,
       initiateDeposit,
+      isDisabled,
       isLoading,
       tokens,
       trackTokenButtonClicked,
@@ -98,6 +105,7 @@ export function useMoneyTokenListCta(
       isActive && hasPositiveApy && apyPercentFormatted
         ? {
             label: t(LABEL_KEY, [apyPercentFormatted]),
+            isDisabled,
             isLoading,
             shouldShow: isEligible,
             onClick,
@@ -107,6 +115,7 @@ export function useMoneyTokenListCta(
       apyPercentFormatted,
       hasPositiveApy,
       isActive,
+      isDisabled,
       isEligible,
       isLoading,
       onClick,

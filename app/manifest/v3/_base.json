@@ -9,10 +9,9 @@
       "128": "images/icon-128.png",
       "512": "images/icon-512.png"
     },
-    "default_title": "MetaMask",
-    "default_popup": "popup-init.html"
+    "default_title": "MetaMask"
   },
-  "author": "https://metamask.io",
+  "author": "https://metamask.com",
   "background": {
     "service_worker": "service-worker.ts"
   },

@@ -15,7 +15,11 @@ const AmountConsumer = ({
     useBuildQuoteAmount(regionDefaultAmount);
 
   return (
-    <input data-testid="amount" value={amount} onChange={handleAmountChange} />
+    <input
+      data-testid="amount"
+      value={amount}
+      onChange={(event) => handleAmountChange(event.target.value)}
+    />
   );
 };
 

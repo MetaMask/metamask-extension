@@ -6,8 +6,8 @@ import { getAllMultichainNetworkConfigurations } from '../../../../../../selecto
 const currencySymbolOverrides: {
   [key: Hex | CaipChainId]: string;
 } = {
-  // Tempo Mainnet (no native, local config 'USD' but we prefer to display 'pathUSD')
-  'eip155:4217': 'pathUSD',
+  // Tempo Mainnet (no native, local config 'USD' but we prefer to display 'OUSD')
+  'eip155:4217': 'OUSD',
   // Tempo Testnet (no native, local config 'USD' but we prefer to display 'pathUSD')
   'eip155:42431': 'pathUSD',
 };

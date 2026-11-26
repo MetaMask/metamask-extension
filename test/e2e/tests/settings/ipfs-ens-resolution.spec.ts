@@ -3,7 +3,7 @@ import { getCleanAppState, tinyDelayMs, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import LoginPage from '../../page-objects/pages/onboarding/login-page';
-import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import PrivacySettings from '../../page-objects/pages/settings/privacy/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
 import { NETWORK_CLIENT_ID } from '../../constants';

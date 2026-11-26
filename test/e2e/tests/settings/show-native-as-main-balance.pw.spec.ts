@@ -5,7 +5,7 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
-import PreferencesAndDisplaySettings from '../../page-objects/pages/settings/preferences-and-display-settings';
+import AssetsSettings from '../../page-objects/pages/settings/assets-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
 import { closeSettings } from '../../page-objects/flows/settings.flow';
@@ -13,10 +13,14 @@ import {
   getLocalhost25EthAssetsControllerPatch,
   getMainnet25EthAssetsControllerPatch,
 } from '../tokens/utils/mocks';
+import {
+  priceV1ExchangeRates,
+  priceV3Spot,
+} from '../../mock-response-data/api-responses';
 
 async function mockPriceApi(mockServer: Mockttp) {
-  const spotPricesMockEth = await mockServer
-    .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+  const spotPricesMockEth = await priceV3Spot
+    .rule(mockServer)
     .always()
     .thenCallback(() => ({
       statusCode: 200,
@@ -31,8 +35,8 @@ async function mockPriceApi(mockServer: Mockttp) {
         },
       },
     }));
-  const mockExchangeRates = await mockServer
-    .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+  const mockExchangeRates = await priceV1ExchangeRates
+    .rule(mockServer)
     .thenCallback(() => ({
       statusCode: 200,
       json: {
@@ -111,11 +115,11 @@ pwTest.describe('Settings: Show native token as main balance', () => {
           await homePage.checkExpectedBalanceIsDisplayed('$42,500.00', 'USD');
 
           await homePage.headerNavbar.openSettingsPage();
-          const assetsSettings = new PreferencesAndDisplaySettings(driver);
+          const assetsSettings = new AssetsSettings(driver);
           const settingsPage = new SettingsPage(driver);
           await settingsPage.checkPageIsLoaded();
           await settingsPage.goToAssetsSettings();
-          await assetsSettings.checkAssetsPageIsLoaded();
+          await assetsSettings.checkPageIsLoaded();
           await assetsSettings.toggleShowNativeTokenAsMainBalance();
           await closeSettings(driver);
 
@@ -154,11 +158,11 @@ pwTest.describe('Settings: Show native token as main balance', () => {
           await homePage.checkExpectedBalanceIsDisplayed('$42,500.00', 'USD');
 
           await homePage.headerNavbar.openSettingsPage();
-          const assetsSettings = new PreferencesAndDisplaySettings(driver);
+          const assetsSettings = new AssetsSettings(driver);
           const settingsPage = new SettingsPage(driver);
           await settingsPage.checkPageIsLoaded();
           await settingsPage.goToAssetsSettings();
-          await assetsSettings.checkAssetsPageIsLoaded();
+          await assetsSettings.checkPageIsLoaded();
           await assetsSettings.toggleShowNativeTokenAsMainBalance();
           await closeSettings(driver);
 

@@ -5,6 +5,7 @@ import {
   MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME,
   MONEY_EARNING_SECTION_ENABLED_FLAG_NAME,
   MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME,
+  MONEY_ENABLE_HISTORICAL_VAULT_SHARE_VALUATIONS_FLAG_NAME,
   MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME,
   MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME,
   MONEY_DEPOSIT_CTA_TOKEN_ADDRESSES_FLAG_NAME,
@@ -18,6 +19,7 @@ import {
   isMoneyActivityDetailsEnabled,
   isMoneyActivityMockDataEnabled,
   isMoneyEarningSectionEnabled,
+  isMoneyHistoricalVaultShareValuationsEnabled,
   isMoneyHomeScreenCardEnabled,
   isMoneyTokenListItemCtaEnabled,
   isMoneyEarnBannerEnabled,
@@ -433,6 +435,57 @@ describe('isMoneyActivityDetailsEnabled', () => {
 
   it('returns false when the remote flag is unserved and the env var is missing', () => {
     expect(isMoneyActivityDetailsEnabled(undefined)).toBe(false);
+  });
+});
+
+describe('isMoneyHistoricalVaultShareValuationsEnabled', () => {
+  it('returns true for an enabled flag the current version satisfies', () => {
+    expect(
+      isMoneyHistoricalVaultShareValuationsEnabled({
+        [MONEY_ENABLE_HISTORICAL_VAULT_SHARE_VALUATIONS_FLAG_NAME]: {
+          enabled: true,
+          minimumVersion: '0.0.1',
+        },
+      }),
+    ).toBe(true);
+  });
+
+  it('returns true for an enabled flag inside a progressive rollout wrapper', () => {
+    expect(
+      isMoneyHistoricalVaultShareValuationsEnabled({
+        [MONEY_ENABLE_HISTORICAL_VAULT_SHARE_VALUATIONS_FLAG_NAME]: {
+          name: 'money-rollout',
+          value: { enabled: true, minimumVersion: CURRENT_VERSION },
+        },
+      }),
+    ).toBe(true);
+  });
+
+  it('returns false for a disabled flag', () => {
+    expect(
+      isMoneyHistoricalVaultShareValuationsEnabled({
+        [MONEY_ENABLE_HISTORICAL_VAULT_SHARE_VALUATIONS_FLAG_NAME]: {
+          enabled: false,
+          minimumVersion: '0.0.1',
+        },
+      }),
+    ).toBe(false);
+  });
+
+  it('returns false when the flag is unserved', () => {
+    expect(isMoneyHistoricalVaultShareValuationsEnabled(undefined)).toBe(false);
+    expect(isMoneyHistoricalVaultShareValuationsEnabled({})).toBe(false);
+  });
+
+  it('returns false when the current version is below the flag minimum', () => {
+    expect(
+      isMoneyHistoricalVaultShareValuationsEnabled({
+        [MONEY_ENABLE_HISTORICAL_VAULT_SHARE_VALUATIONS_FLAG_NAME]: {
+          enabled: true,
+          minimumVersion: '9999.0.0',
+        },
+      }),
+    ).toBe(false);
   });
 });
 

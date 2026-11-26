@@ -1,8 +1,10 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
+import { NoDepositFeeTag } from '../../UI/no-fee-tag';
 import { PaymentMethodRow } from './payment-method-row';
 
 const renderRow = (
@@ -93,5 +95,20 @@ describe('PaymentMethodRow', () => {
     expect(
       screen.queryByTestId('payment-method-row-subtitle'),
     ).not.toBeInTheDocument();
+  });
+
+  it('renders the first non-null tag next to the title', () => {
+    renderRow({
+      testId: 'payment-method-row',
+      tagRenderers: [
+        () => null,
+        () => <NoDepositFeeTag testId="payment-method-row-no-fee-tag" />,
+      ],
+    });
+
+    expect(
+      screen.getByTestId('payment-method-row-no-fee-tag'),
+    ).toBeInTheDocument();
+    expect(screen.getByText(messages.noDepositFee.message)).toBeInTheDocument();
   });
 });

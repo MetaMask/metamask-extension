@@ -18,6 +18,7 @@ export async function retrievePullRequest(
           body
           author {
             login
+            __typename
           }
           labels(first: 100) {
             nodes {
@@ -38,6 +39,8 @@ export async function retrievePullRequest(
         body: string;
         author: {
           login: string;
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          __typename: string;
         };
         labels: {
           nodes: {
@@ -57,11 +60,13 @@ export async function retrievePullRequest(
     id: retrievePullRequestResult?.repository?.pullRequest?.id,
     type: LabelableType.PullRequest,
     number: prNumber,
-    repoOwner: repoOwner,
-    repoName: repoName,
+    repoOwner,
+    repoName,
     createdAt: retrievePullRequestResult?.repository?.pullRequest?.createdAt,
     body: retrievePullRequestResult?.repository?.pullRequest?.body,
     author: retrievePullRequestResult?.repository?.pullRequest?.author?.login,
+    authorType:
+      retrievePullRequestResult?.repository?.pullRequest?.author?.__typename,
     labels: retrievePullRequestResult?.repository?.pullRequest?.labels?.nodes,
   };
 

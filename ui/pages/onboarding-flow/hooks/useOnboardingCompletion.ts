@@ -3,6 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { shallowEqual, useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
+import { getReferralCode } from '#shared/lib/deep-links/referral';
+import { setPendingReferralCode } from '#ui/ducks/rewards-money';
+import {
+  getOnboardingRedirect,
+  setOnboardingRedirect,
+} from '#ui/ducks/app/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -50,7 +56,7 @@ import {
   setIsBackupAndSyncFeatureEnabled,
   setHasSeenOnboardingCompletionPage,
 } from '../../../store/actions';
-import { useDispatch } from '../../../store/hooks';
+import { useAppSelector, useDispatch } from '../../../store/hooks';
 
 /**
  * Shared onboarding-completion actions for the completion route.
@@ -78,6 +84,10 @@ export function useOnboardingCompletion() {
   const isOptedIn = useSelector(getOptedIn);
   const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const deferredDeepLink = useSelector(getDeferredDeepLink);
+  const onboardingRedirect = useSelector(getOnboardingRedirect);
+  const pendingReferralCode = useAppSelector(
+    (state) => state.rewardsMoney.pendingReferralCode,
+  );
   const isBasicFunctionalityForcedOn = useSelector(
     getIsBasicFunctionalityForcedOnDuringOnboarding,
   );
@@ -104,16 +114,29 @@ export function useOnboardingCompletion() {
         dispatch(removeDeferredDeepLink());
       }
 
-      if (deferredDeepLinkResult && deferredDeepLinkToUse?.referringLink) {
+      // Retain install attribution even when a later direct link supplies the action.
+      if (deferredDeepLinkResult && deferredDeepLinkToUse?.originalUrl) {
+        const url = new URL(deferredDeepLinkToUse.originalUrl);
+        if (
+          !pendingReferralCode &&
+          deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Navigate
+        ) {
+          const referralCode = getReferralCode(url.searchParams);
+          if (referralCode) {
+            dispatch(setPendingReferralCode(referralCode));
+          }
+        }
         await trackEvent(
           createEvent({
             signature: deferredDeepLinkResult.signature,
-            url: new URL(deferredDeepLinkToUse.referringLink),
+            url,
           }),
         );
       }
 
-      if (deferredDeepLinkResult) {
+      if (onboardingRedirect) {
+        navigate(onboardingRedirect, { replace: true });
+      } else if (deferredDeepLinkResult) {
         if (
           deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Redirect
         ) {
@@ -141,8 +164,11 @@ export function useOnboardingCompletion() {
       } else if (!completedWithSidePanelFlow) {
         navigate(DEFAULT_ROUTE);
       }
+      if (onboardingRedirect) {
+        dispatch(setOnboardingRedirect(null));
+      }
     },
-    [dispatch, navigate, trackEvent],
+    [dispatch, navigate, onboardingRedirect, pendingReferralCode, trackEvent],
   );
 
   const completeOnboardingWithSidePanel = useCallback(
@@ -175,8 +201,8 @@ export function useOnboardingCompletion() {
         }
 
         // `browser.sidePanel.open()` requires a user gesture. Auto-complete
-        // runs from `useEffect`, so skip the call there. Navigate/Interstitial
-        // deferred deep links also skip opening so the popup can route first.
+        // runs from `useEffect`, so skip the call there. Internal destinations
+        // and interstitials also keep navigation in this UI.
         if (shouldOpenSidePanel && !autoCompleteWithoutUserGesture) {
           await browserWithSidePanel.sidePanel.open({
             windowId,
@@ -242,6 +268,7 @@ export function useOnboardingCompletion() {
         const deferredDeepLinkResult =
           await getDeferredDeepLinkRoute(deferredDeepLink);
         const shouldOpenSidePanel =
+          !onboardingRedirect &&
           deferredDeepLinkResult?.type !== DeferredDeepLinkRouteType.Navigate &&
           deferredDeepLinkResult?.type !==
             DeferredDeepLinkRouteType.Interstitial;
@@ -356,6 +383,7 @@ export function useOnboardingCompletion() {
       isOptedIn,
       isSidePanelEnabled,
       isUnlocked,
+      onboardingRedirect,
       trackEvent,
     ],
   );

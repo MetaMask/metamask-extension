@@ -2,8 +2,8 @@ import React from 'react';
 import {
   ButtonIcon,
   ButtonIconSize,
-  HeaderBase,
   IconName,
+  ModalHeader,
   Text,
   TextAlign,
   TextVariant,
@@ -42,14 +42,6 @@ function getTitleConfig(item: ActivityListItem | undefined) {
       return {
         key,
         args: getDefinedArgs(sourceSymbol, destinationSymbol),
-      };
-    }
-    case 'convert': {
-      return {
-        key,
-        args: getDefinedArgs(
-          item.data.destinationToken?.symbol ?? item.data.sourceToken?.symbol,
-        ),
       };
     }
     case 'bridge':
@@ -96,11 +88,22 @@ export function Header({ item, onBack }: Props) {
   const titleConfig = getTitleConfig(item);
 
   return (
-    <HeaderBase
+    <ModalHeader
       startAccessory={
         <ButtonIcon
+          className="md:hidden"
           iconName={IconName.ArrowLeft}
           ariaLabel={t('back')}
+          size={ButtonIconSize.Md}
+          onClick={onBack}
+          data-testid="transaction-details-mobile-back-button"
+        />
+      }
+      endAccessory={
+        <ButtonIcon
+          className="hidden md:block"
+          iconName={IconName.Close}
+          ariaLabel={t('close')}
           size={ButtonIconSize.Md}
           onClick={onBack}
           data-testid="transaction-details-back-button"
@@ -112,6 +115,6 @@ export function Header({ item, onBack }: Props) {
           {t(titleConfig.key, titleConfig.args)}
         </Text>
       ) : null}
-    </HeaderBase>
+    </ModalHeader>
   );
 }

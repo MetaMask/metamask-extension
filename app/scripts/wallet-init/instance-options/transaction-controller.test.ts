@@ -6,19 +6,25 @@ import {
   TransactionStatus,
 } from '@metamask/transaction-controller';
 import { EthAccountType } from '@metamask/keyring-api';
+import { isPayTransactionResumable } from '@metamask/transaction-pay-controller';
 import {
   createCacheKey,
   ResultType,
 } from '../../../../shared/lib/trust-signals';
 import * as sentinelApiModule from '../../lib/transaction/sentinel-api';
 import * as selectorsModule from '../../../../shared/lib/selectors';
+import * as shieldModule from '../../../../shared/lib/shield';
 import { createMockMessenger } from '../test-utils';
 import { getTransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import { getTransactionControllerInstanceOptions } from './transaction-controller';
 
+jest.mock('@metamask/transaction-pay-controller', () => ({
+  isPayTransactionResumable: jest.fn(),
+}));
 jest.mock('../../lib/smart-transaction/smart-transactions');
 jest.mock('../../lib/transaction/sentinel-api');
 jest.mock('../../../../shared/lib/selectors');
+jest.mock('../../../../shared/lib/shield');
 jest.mock('../../lib/transaction/hooks', () => ({
   getTransactionControllerHooks: jest.fn(() => ({ beforeSign: jest.fn() })),
 }));
@@ -152,6 +158,25 @@ describe('TransactionController wallet instance options', () => {
     expect(isFirstTimeInteractionEnabled?.()).toBe(true);
   });
 
+  jestIt.each([true, false])(
+    'returns %s from isResumable when the pay controller does',
+    (resumable) => {
+      const isPayTransactionResumableMock = jest.mocked(
+        isPayTransactionResumable,
+      );
+      isPayTransactionResumableMock.mockReturnValue(resumable);
+      const transactionMeta = { id: '1' } as TransactionMeta;
+
+      const isResumable = testConstructorOption('isResumable');
+
+      expect(isResumable?.(transactionMeta)).toBe(resumable);
+      expect(isPayTransactionResumableMock).toHaveBeenCalledWith(
+        expect.anything(),
+        transactionMeta,
+      );
+    },
+  );
+
   it('determines if simulation is enabled using preferences', () => {
     const isSimulationEnabled = testConstructorOption('isSimulationEnabled', {
       preferencesState: {
@@ -160,6 +185,19 @@ describe('TransactionController wallet instance options', () => {
     });
 
     expect(isSimulationEnabled?.()).toBe(true);
+  });
+
+  it('returns only the simulation URL from the Shield gateway config', async () => {
+    jest.mocked(shieldModule.getShieldGatewayConfig).mockResolvedValue({
+      authorization: 'Bearer token',
+      newUrl: 'https://shield.test/simulate',
+    });
+
+    const getSimulationConfig = testConstructorOption('getSimulationConfig');
+
+    expect(
+      await getSimulationConfig?.('https://sentinel.test/simulate'),
+    ).toStrictEqual({ newUrl: 'https://shield.test/simulate' });
   });
 
   it('determines transaction trust from current trust signals and accounts', () => {

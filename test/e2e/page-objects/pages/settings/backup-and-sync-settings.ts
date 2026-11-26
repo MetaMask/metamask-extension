@@ -8,8 +8,9 @@ import { Driver } from '../../../webdriver/driver';
  * Owns: page load checks and toggling backup-and-sync, account sync, and
  * contact sync.
  * Boundaries: toggle surface only. QR sync / add-wallet flows belong to
- * `SyncAccountsSettingsPage`; contact CRUD belongs to `ContactsSettings`.
- * Related: `SettingsPage`, `SyncAccountsSettingsPage`, `ContactsSettings`.
+ * `SyncAccountsSettingsPage`; contacts belong to `ContactsListPage` and its
+ * add, details and edit page objects.
+ * Related: `SettingsPage`, `SyncAccountsSettingsPage`, `ContactsListPage`.
  *
  * @see ui/pages/settings/backup-and-sync-tab/backup-and-sync-tab.tsx
  */

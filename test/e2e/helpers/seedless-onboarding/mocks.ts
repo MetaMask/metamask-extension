@@ -586,18 +586,7 @@ export class OAuthMockttpService {
         }),
 
       await server
-        .forGet(AuthServer.GetMarketingOptInStatus)
-        .always()
-        .thenCallback(() => {
-          return {
-            statusCode: 200,
-            json: {
-              is_opt_in: true,
-            },
-          };
-        }),
-      await server
-        .forPost(AuthServer.GetMarketingOptInStatus)
+        .forPost(AuthServer.MarketingOptInStatus)
         .always()
         .thenCallback(() => {
           return {
@@ -619,6 +608,15 @@ export class OAuthMockttpService {
         .always()
         .thenCallback(() => {
           return this.onPostMintToken(options);
+        }),
+      await server
+        .forPost(AuthServer.PairSocialIdentifier)
+        .always()
+        .thenCallback(() => {
+          return {
+            statusCode: 200,
+            json: { profile: { paired_identifier_ids: [] } },
+          };
         }),
       await server
         .forGet(ProfileSyncServer.OAuthInitiate)

@@ -6,6 +6,13 @@ import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
 import { SSE_RESPONSE_HEADER } from '../bridge/constants';
 import { TX_SENTINEL_URL } from '../../../../shared/constants/transaction';
+import {
+  bridgeGetTokensPopular,
+  bridgeGetTokensSearch,
+  txSentinelBatchStatus,
+  txSentinelGetFees,
+  txSentinelNetwork,
+} from '../../mock-response-data/api-responses';
 
 const STX_UUID = '0d506aaa-5e38-4cab-ad09-2039cb7a0f33';
 
@@ -703,12 +710,12 @@ export async function mockGasIncludedTransactionRequests(
   // Mock bridge token list endpoints. Without these, the catch-all in
   // mock-e2e.js returns an empty body and `JSON.parse('')` throws
   // "Unexpected end of JSON input" when fetchPopularTokens consumes it.
-  await mockServer.forPost(/getTokens\/popular/u).thenCallback(() => ({
+  await bridgeGetTokensPopular.rule(mockServer).thenCallback(() => ({
     statusCode: 200,
     json: [SWAP_ETH_TOKEN, SWAP_MUSD_TOKEN],
   }));
 
-  await mockServer.forPost(/getTokens\/search/u).thenCallback(() => ({
+  await bridgeGetTokensSearch.rule(mockServer).thenCallback(() => ({
     statusCode: 200,
     json: {
       data: [SWAP_ETH_TOKEN, SWAP_MUSD_TOKEN],
@@ -792,22 +799,22 @@ export async function mockSmartTransactionRequestsBase(
     ['eth_chainId', { result: `0x1` }],
   ]);
 
-  await mockServer
-    .forPost(`${TX_SENTINEL_URL}/v1/networks/1/getFees`)
+  await txSentinelGetFees
+    .rule(mockServer, { baseUrl: TX_SENTINEL_URL, chainId: 1 })
     .thenCallback(() => {
       return { statusCode: 200, json: GET_FEES_RESPONSE };
     });
 
-  await mockServer
-    .forGet(`${TX_SENTINEL_URL}/v1/networks/1/batchStatus`)
+  await txSentinelBatchStatus
+    .rule(mockServer, { baseUrl: TX_SENTINEL_URL, chainId: 1 })
     .withQuery({ uuids: STX_UUID })
     .once()
     .thenCallback(() => {
       return { statusCode: 200, json: GET_BATCH_STATUS_RESPONSE_PENDING };
     });
 
-  await mockServer
-    .forGet(`${TX_SENTINEL_URL}/v1/networks/1/batchStatus`)
+  await txSentinelBatchStatus
+    .rule(mockServer, { baseUrl: TX_SENTINEL_URL, chainId: 1 })
     .withQuery({ uuids: STX_UUID })
     .once()
     .thenCallback(() => {
@@ -882,8 +889,8 @@ export async function mockSentinelNetworks(mockServer: MockttpServer) {
       };
     });
 
-  await mockServer
-    .forGet(`${TX_SENTINEL_URL}/network`)
+  await txSentinelNetwork
+    .rule(mockServer, { baseUrl: TX_SENTINEL_URL })
     .always()
     .thenCallback(() => {
       return {
@@ -1048,12 +1055,12 @@ function mockSseEventSource(mockQuotes: unknown[], delay: number = 2000) {
 }
 
 export async function mockSwapTokensMockApis(mockServer: MockttpServer) {
-  await mockServer.forPost(/getTokens\/popular/u).thenCallback(() => ({
+  await bridgeGetTokensPopular.rule(mockServer).thenCallback(() => ({
     statusCode: 200,
     json: [SWAP_ETH_TOKEN, SWAP_DAI_TOKEN],
   }));
 
-  await mockServer.forPost(/getTokens\/search/u).thenCallback(() => ({
+  await bridgeGetTokensSearch.rule(mockServer).thenCallback(() => ({
     statusCode: 200,
     json: {
       data: [SWAP_ETH_TOKEN, SWAP_DAI_TOKEN],
@@ -1092,64 +1099,64 @@ export async function mockSwapTokensMockApis(mockServer: MockttpServer) {
 const SWAP_ACCOUNT_ADDRESS = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 
 /**
- * One completed "Swap ETH to DAI" transaction in accounts API v4 format.
+ * One completed "Swap ETH to DAI" transaction for accounts API v5.
  * Activity list uses this API; default mock returns empty data, so we override
  * to show the swap as completed.
  */
 const MOCK_ACCOUNTS_API_SWAP_TX = {
-  hash: TRANSACTION_HASH,
-  timestamp: new Date().toISOString(),
-  chainId: 1,
   accountId: `eip155:1:${SWAP_ACCOUNT_ADDRESS}`,
-  blockNumber: 24384555,
-  blockHash: BLOCK_HASH,
-  gas: 2530032,
-  gasUsed: 774866,
-  gasPrice: '2657647800',
-  effectiveGasPrice: '2657647800',
-  nonce: 0,
-  cumulativeGasUsed: 19094274,
-  methodId: null,
-  value: '0',
-  to: '0x881D40237659C251811CEC9c364ef91dC08D300C',
-  from: SWAP_ACCOUNT_ADDRESS,
-  isError: false,
+  tx: {
+    id: TRANSACTION_HASH,
+    chainId: 'eip155:1',
+    status: 'confirmed',
+    timestamp: Date.now(),
+    date: new Date().toISOString(),
+    from: SWAP_ACCOUNT_ADDRESS,
+    to: '0x881D40237659C251811CEC9c364ef91dC08D300C',
+    blockNumber: '24384555',
+    blockHash: BLOCK_HASH,
+    value: '0',
+    methodId: null,
+    transactionType: 'SWAP',
+    transactionCategory: 'SWAP',
+    readable: 'Swap ETH to DAI',
+  },
   valueTransfers: [
     {
+      assetClass: 'ft',
       from: SWAP_ACCOUNT_ADDRESS,
       to: '0x6b175474e89094c44da98b954eedeac495271d0f',
+      assetId: 'eip155:1/slip44:60',
       amount: '2000000000000000000',
       decimal: 18,
       symbol: 'ETH',
       name: 'Ether',
-      transferType: 'normal',
     },
     {
+      assetClass: 'ft',
       from: '0x6b175474e89094c44da98b954eedeac495271d0f',
       to: SWAP_ACCOUNT_ADDRESS,
+      assetId: 'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f',
       amount: '4625979906416670820458',
       decimal: 18,
       symbol: 'DAI',
       name: 'Dai Stablecoin',
-      transferType: 'normal',
     },
   ],
-  logs: [],
-  transactionType: 'SWAP',
-  transactionCategory: 'SWAP',
-  readable: 'Swap ETH to DAI',
+  fee: null,
 };
 
 export async function mockAccountsApiSwapTransaction(
   mockServer: MockttpServer,
 ): Promise<void> {
   await mockServer
-    .forGet('https://accounts.api.cx.metamask.io/v4/multiaccount/transactions')
+    .forGet('https://accounts.api.cx.metamask.io/v5/multiaccount/transactions')
     .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
         data: [MOCK_ACCOUNTS_API_SWAP_TX],
+        unprocessedAccounts: [],
         pageInfo: { hasNextPage: false, count: 1 },
       },
     }));

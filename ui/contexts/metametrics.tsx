@@ -225,11 +225,15 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
   // that copy lags the background state, and a changing identity here would
   // restart the onboarding spans that consumers key effects off of.
   const bufferedTrace: UITraceMethod = useCallback((request) => {
-    return submitRequestToBackground('bufferedTrace', [request]);
+    return submitRequestToBackground('SentryTracingService:bufferedTrace', [
+      request,
+    ]);
   }, []);
 
   const bufferedEndTrace: UIEndTraceMethod = useCallback((request) => {
-    submitRequestToBackground('bufferedEndTrace', [request]);
+    submitRequestToBackground('SentryTracingService:bufferedEndTrace', [
+      request,
+    ]);
   }, []);
 
   // Used to prevent double tracking page calls across StrictMode remounts.

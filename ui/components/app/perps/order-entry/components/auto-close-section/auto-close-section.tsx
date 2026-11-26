@@ -16,9 +16,16 @@ import React, {
   useState,
 } from 'react';
 import {
+  calculatePriceForRoE,
+  calculateSignedRoEForPrice,
+  formatRoePercent,
+  isStopLossSafeFromLiquidation,
+  isValidStopLossPrice,
+  isValidTakeProfitPrice,
+} from '@metamask/perps-controller';
+import {
   formatPerpsFiat,
   PRICE_RANGES_MINIMAL_VIEW,
-  PRICE_RANGES_UNIVERSAL,
 } from '../../../../../../../shared/lib/perps-formatters';
 
 import {
@@ -33,9 +40,6 @@ import ToggleButton from '../../../../../ui/toggle-button';
 import type { AutoCloseSectionProps } from '../../order-entry.types';
 import { isUnsignedDecimalInput } from '../../utils';
 import {
-  isValidTakeProfitPrice,
-  isValidStopLossPrice,
-  isStopLossSafeFromLiquidation,
   getTakeProfitErrorDirection,
   getStopLossErrorDirection,
   getStopLossLiquidationErrorDirection,
@@ -43,11 +47,9 @@ import {
 import {
   applyDefaultStopLossSign,
   isSignedDecimalInput,
+  toTriggerPriceInput,
 } from '../../../utils/tpslInput';
-import { formatRoePercent, getPnlDisplayColor } from '../../../utils';
-
-const LOW_VALUE_TRIGGER_PRICE_THRESHOLD = 0.01;
-const LOW_VALUE_TRIGGER_PRICE_DECIMALS = 6;
+import { getPnlDisplayColor } from '../../../utils';
 
 /**
  * AutoCloseSection - Collapsible section for Take Profit and Stop Loss configuration
@@ -120,73 +122,37 @@ export const AutoCloseSection = ({
   const [isSlPercentFocused, setIsSlPercentFocused] = useState(false);
 
   /**
-   * Convert a target price to a signed RoE% for display.
-   * Positive = profitable (above entry for long / below entry for short).
-   * Negative = at a loss.
-   * RoE% = ((targetPrice - entryPrice) / entryPrice) * leverage * 100
+   * Convert a target price to a signed RoE% for display, with Core's TP/SL
+   * calculation: positive at a gain, negative at a loss, scaled by leverage.
    */
   const priceToPercent = useCallback(
-    (price: string): string => {
-      if (!price || !entryPrice) {
-        return '';
-      }
-      const priceNum = Number.parseFloat(price);
-      if (!Number.isFinite(priceNum) || priceNum <= 0) {
-        return '';
-      }
-
-      const diff = priceNum - entryPrice;
-      const percentChange = (diff / entryPrice) * leverage * 100;
-
-      // For long: positive when price > entry (profit). For short: negate (profit when price < entry).
-      return formatRoePercent(
-        direction === 'long' ? percentChange : -percentChange,
-      );
-    },
+    (price: string): string =>
+      formatRoePercent(
+        calculateSignedRoEForPrice(price, {
+          currentPrice: entryPrice,
+          direction,
+          leverage,
+        }),
+      ),
     [entryPrice, leverage, direction],
   );
 
   /**
-   * Convert a signed RoE% to a target price.
-   * Positive percent = profitable direction (above entry for long / below entry for short).
-   * Negative percent = loss direction.
-   * targetPrice = entryPrice * (1 + signedRoe / (leverage * 100))  [long]
-   * targetPrice = entryPrice * (1 - signedRoe / (leverage * 100))  [short]
+   * Convert a signed RoE% to a trigger price with Core's TP/SL calculation,
+   * which caps a stop loss's loss at 99% per 1x of leverage. A cleared RoE
+   * clears the price.
    */
   const percentToPrice = useCallback(
-    (percent: number): string => {
-      if (!entryPrice || percent === 0) {
+    (percent: number, isProfit: boolean): string => {
+      if (percent === 0) {
         return '';
       }
-
-      const priceChangeRatio = percent / (leverage * 100);
-      const multiplier =
-        direction === 'long' ? 1 + priceChangeRatio : 1 - priceChangeRatio;
-      const price = entryPrice * multiplier;
-
-      if (!Number.isFinite(price) || price <= 0) {
-        return '';
-      }
-
-      const preserveLowValueDecimals =
-        Math.abs(price) < LOW_VALUE_TRIGGER_PRICE_THRESHOLD;
-
-      const formattedPrice = formatPerpsFiat(price, {
-        ranges: PRICE_RANGES_UNIVERSAL,
-        ...(preserveLowValueDecimals
-          ? {
-              minimumDecimals: LOW_VALUE_TRIGGER_PRICE_DECIMALS,
-              maximumDecimals: LOW_VALUE_TRIGGER_PRICE_DECIMALS,
-              stripTrailingZeros: false,
-            }
-          : {}),
+      const price = calculatePriceForRoE(percent, isProfit, {
+        currentPrice: entryPrice,
+        direction,
+        leverage,
       });
-
-      if (formattedPrice.startsWith('<')) {
-        return '';
-      }
-
-      return formattedPrice.replace(/[$,]/gu, '');
+      return toTriggerPriceInput(price);
     },
     [entryPrice, leverage, direction],
   );
@@ -234,7 +200,7 @@ export const AutoCloseSection = ({
         if (value === '' || value === '-' || value === '+') {
           onTakeProfitPriceChange('');
         } else if (!isNaN(numValue)) {
-          const newPrice = percentToPrice(numValue);
+          const newPrice = percentToPrice(numValue, true);
           onTakeProfitPriceChange(newPrice);
         }
       }
@@ -291,7 +257,7 @@ export const AutoCloseSection = ({
         if (value === '' || value === '-' || value === '+') {
           onStopLossPriceChange('');
         } else if (!isNaN(numValue)) {
-          const newPrice = percentToPrice(numValue);
+          const newPrice = percentToPrice(numValue, false);
           onStopLossPriceChange(newPrice);
         }
       }
@@ -416,10 +382,11 @@ export const AutoCloseSection = ({
     () =>
       Boolean(
         stopLossPrice.trim() &&
-        !isStopLossSafeFromLiquidation(stopLossPrice, {
-          liquidationPrice,
+        !isStopLossSafeFromLiquidation(
+          stopLossPrice,
+          liquidationPrice?.toString(),
           direction,
-        }),
+        ),
       ),
     [stopLossPrice, liquidationPrice, direction],
   );

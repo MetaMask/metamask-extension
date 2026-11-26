@@ -3,12 +3,12 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
-import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import { Driver } from '../../webdriver/driver';
 import {
   DEFAULT_FIXTURE_ACCOUNT_ID,
   HARDWARE_WALLET_ACCOUNT_ID,
 } from '../../constants';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 
 describe('Multichain Accounts - Multichain accounts list page', function (this: Suite) {
   it('displays wallet and accounts for hardware wallet', async function () {
@@ -41,10 +41,8 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
       async ({ driver }: { driver: Driver }) => {
         await login(driver, {
           expectedBalance: '0',
-          waitForNonEvmAccounts: false,
         });
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);
 

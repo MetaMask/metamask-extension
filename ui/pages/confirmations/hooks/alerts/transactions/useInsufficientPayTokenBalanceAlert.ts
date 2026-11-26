@@ -23,6 +23,7 @@ import { getInternalAccountByAddress } from '../../../../../selectors/accounts';
 import { isHardwareAccount } from '../../../../../components/app/rewards/utils/isHardwareAccount';
 import { useTransactionPayingAccount } from '../../transactions/useTransactionPayingAccount';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
+import { decodePaymentTokenAssetId } from '../../../../../../shared/lib/transaction/pay-token';
 import { usePayTokenAccountBalance } from '../../pay/usePayTokenAccountBalance';
 import { useIsFundingAccountBalanceSettling } from '../../pay/useIsFundingAccountBalanceSettling';
 import { useTransactionPayWithdraw } from '../../pay/useTransactionPayWithdraw';
@@ -45,6 +46,10 @@ export function useInsufficientPayTokenBalanceAlert({
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { payToken } = useTransactionPayToken();
+  const payTokenAsset = useMemo(
+    () => decodePaymentTokenAssetId(payToken),
+    [payToken],
+  );
   const requiredTokens = useTransactionPayRequiredTokens();
   const totals = useTransactionPayTotals();
   const isLoading = useIsTransactionPayLoading();
@@ -72,7 +77,7 @@ export function useInsufficientPayTokenBalanceAlert({
   const sourceChainId = (
     isPostQuote
       ? (currentConfirmation?.chainId ?? '0x0')
-      : (payToken?.chainId ?? '0x0')
+      : (payTokenAsset?.chainId ?? '0x0')
   ) as Hex;
 
   const networkConfigurationsByChainId = useSelector(
@@ -117,9 +122,10 @@ export function useInsufficientPayTokenBalanceAlert({
   const isPayTokenNative =
     !isPostQuote &&
     Boolean(
-      payToken &&
-      payToken.address.toLowerCase() === nativeTokenAddress.toLowerCase() &&
-      payToken.chainId === sourceChainId,
+      payTokenAsset &&
+      payTokenAsset.address.toLowerCase() ===
+        nativeTokenAddress.toLowerCase() &&
+      payTokenAsset.chainId === sourceChainId,
     );
 
   // Live funding-account balance (USD already reconciles snapshot vs live
@@ -318,9 +324,10 @@ export function useInsufficientPayTokenBalanceAlert({
   // network fee compares two unrelated quantities and reports "Not enough MON
   // to cover fees" against a fee nobody pays from that balance.
   //
-  // Suppress for deposit *and* withdraw, unconditionally, mirroring
-  // `useInsufficientBalanceAlerts`. Gating on `isGasFeeSponsored` or on the
-  // post-quote flag is what made this alert appear only sometimes:
+  // Suppress for deposit *and* withdraw, but only for the leg that runs *from*
+  // the money account — that is, when the pay token is on the same chain as the
+  // parent transaction. Gating on `isGasFeeSponsored` or on the post-quote flag
+  // is what made this alert appear only sometimes:
   //   - `isGasFeeSponsored` is only set at creation for `CHAIN_IDS.MONAD`, and
   //     `useTransactionConfirm` can clear it (opt-out / unsupported gasless),
   //     so the guard could evaporate mid-confirmation.
@@ -333,16 +340,37 @@ export function useInsufficientPayTokenBalanceAlert({
   // Genuine shortfalls remain covered: deposits by the pay-token balance
   // checks above, withdrawals by `useInsufficientMoneyAccountBalanceAlert`.
   //
-  // Exception: a hardware payer funds a deposit with plain (non-7702)
+  // Exception 1: a hardware payer funds a deposit with plain (non-7702)
   // transactions signed on-device, so it pays source-network gas itself and
   // parent sponsorship does not cover it. Keep the check for that payer.
+  //
+  // Exception 2 (CONF-2217): a *cross-chain* deposit funds the money account
+  // from the user's own EOA on another chain. That source leg is an ordinary
+  // transaction billed to `payingAccount` in the source chain's native token,
+  // and sponsorship cannot apply — the pay controller only zeroes source gas
+  // when source chain == target chain == parent chain (`isSponsoredRoute`).
+  // Suppressing here let a deposit reach `eth_sendRawTransaction` with zero
+  // native balance and fail with "insufficient funds for gas * price + value".
+  // Scope the suppression to the same-chain case so the cross-chain leg — the
+  // only one actually paid from this balance — is still checked.
   const isMoneyAccountTransaction = Boolean(
     getMoneyAccountFlow(currentConfirmation),
   );
   const isHardwareFundedMoneyDeposit = isMoneyAccountDeposit && isHardwarePayer;
+  const isSameChainAsParent =
+    currentConfirmation?.chainId !== undefined &&
+    sourceChainId === currentConfirmation.chainId;
+  // Only the same-chain money-account leg runs from the money account, so only
+  // that leg compares two unrelated balances. A cross-chain source leg is paid
+  // by `payingAccount` and must stay checked.
+  const isMoneyAccountGasPaidByOtherAccount =
+    isMoneyAccountTransaction &&
+    isSameChainAsParent &&
+    !isHardwareFundedMoneyDeposit;
+
   const isInsufficientForSourceNetwork = useMemo(
     () =>
-      (!isMoneyAccountTransaction || isHardwareFundedMoneyDeposit) &&
+      !isMoneyAccountGasPaidByOtherAccount &&
       !isMoneyPaymentOverride &&
       (payToken || isPostQuote) &&
       !isPayTokenNative &&
@@ -350,8 +378,7 @@ export function useInsufficientPayTokenBalanceAlert({
       !isSourceGasFeeToken &&
       totalSourceNetworkFeeRaw.gt(nativeBalanceRaw),
     [
-      isHardwareFundedMoneyDeposit,
-      isMoneyAccountTransaction,
+      isMoneyAccountGasPaidByOtherAccount,
       isMoneyPaymentOverride,
       isPayTokenNative,
       isPendingAlert,

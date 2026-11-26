@@ -1,8 +1,30 @@
+import { it as jestIt } from '@jest/globals';
 import { INVALID, MISSING, VALID } from './verify';
 import { shouldShowDeepLinkInterstitial } from './security-policy';
 
 describe('shouldShowDeepLinkInterstitial', () => {
   describe('when the deep link is intercepted', () => {
+    jestIt.each([VALID, MISSING, INVALID])(
+      'bypasses the interstitial before onboarding only for a valid signature: %s',
+      (signatureStatus) => {
+        const getSkipDeepLinkInterstitial = jest.fn(() => false);
+        const getCompletedOnboarding = jest.fn(() => false);
+
+        expect(
+          shouldShowDeepLinkInterstitial({
+            source: 'intercepted',
+            signatureStatus,
+            getCompletedOnboarding,
+            getSkipDeepLinkInterstitial,
+          }),
+        ).toBe(signatureStatus !== VALID);
+        expect(getSkipDeepLinkInterstitial).not.toHaveBeenCalled();
+        expect(getCompletedOnboarding).toHaveBeenCalledTimes(
+          signatureStatus === VALID ? 1 : 0,
+        );
+      },
+    );
+
     for (const requestOrigin of [
       'https://metamask.io',
       'https://app.metamask.io',
@@ -46,18 +68,22 @@ describe('shouldShowDeepLinkInterstitial', () => {
       expect(getSkipDeepLinkInterstitial).toHaveBeenCalledTimes(1);
     });
 
-    it('shows the interstitial for a valid signature when the user did not opt out', () => {
-      const getSkipDeepLinkInterstitial = jest.fn(() => false);
+    jestIt.each([true, undefined])(
+      'shows the interstitial for a valid signature without opt-out when onboarding completion is %s',
+      (completedOnboarding) => {
+        const getSkipDeepLinkInterstitial = jest.fn(() => false);
 
-      const result = shouldShowDeepLinkInterstitial({
-        source: 'intercepted',
-        signatureStatus: VALID,
-        getSkipDeepLinkInterstitial,
-      });
+        const result = shouldShowDeepLinkInterstitial({
+          source: 'intercepted',
+          signatureStatus: VALID,
+          getCompletedOnboarding: () => completedOnboarding,
+          getSkipDeepLinkInterstitial,
+        });
 
-      expect(result).toBe(true);
-      expect(getSkipDeepLinkInterstitial).toHaveBeenCalledTimes(1);
-    });
+        expect(result).toBe(true);
+        expect(getSkipDeepLinkInterstitial).toHaveBeenCalledTimes(1);
+      },
+    );
 
     for (const signatureStatus of [MISSING, INVALID]) {
       it(`shows the interstitial for a ${signatureStatus} signature even when the user opted out`, () => {

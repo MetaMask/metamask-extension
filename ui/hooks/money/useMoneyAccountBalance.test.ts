@@ -1,11 +1,16 @@
+/* eslint-disable @typescript-eslint/naming-convention -- API response fixtures use snake_case */
 import type { Hex } from '@metamask/utils';
 import { useQuery } from '@metamask/react-data-query';
+import type { CanonicalMoneyAccountBalanceResponse } from '@metamask/money-account-balance-service';
 import type {
-  CanonicalMoneyAccountBalanceResponse,
-  NormalizedVaultApyResponse,
-} from '@metamask/money-account-balance-service';
+  VaultSummary,
+  VaultsResponse,
+} from '@metamask/money-account-api-data-service';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
-import { MoneyAccountBalanceServiceQueryKeys } from '../../../shared/lib/money/query-keys';
+import {
+  MoneyAccountApiDataServiceQueryKeys,
+  MoneyAccountBalanceServiceQueryKeys,
+} from '../../../shared/lib/money/query-keys';
 import { invalidateMoneyAccountBalanceCaches } from '../../helpers/money/invalidate-balance-caches';
 import { reportMoneyQueryErrorOnce } from '../../helpers/money/report-money-error';
 import type { PersistedMoneyBalance } from '../../ducks/money-balance';
@@ -36,6 +41,17 @@ const mockReportMoneyQueryErrorOnce = jest.mocked(reportMoneyQueryErrorOnce);
 
 const MONEY_ADDRESS: Hex = '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B';
 const OTHER_ADDRESS: Hex = '0x2D49EA58A4C70b62c8B56DE971310d9e999c8117';
+const VAULT_ADDRESS: Hex = '0xb4563bcD3B7764CCBf497f515585f70B6C3EA5Ae';
+const OTHER_VAULT_ADDRESS: Hex = '0x7382c5b8B51B8C4f127B3123C1039581BAA5A06B';
+
+const VAULT_CONFIG = {
+  chainId: '0x8f',
+  boringVault: VAULT_ADDRESS,
+  tellerAddress: '0x7382c5b8B51B8C4f127B3123C1039581BAA5A06B',
+  accountantAddress: '0x7382c5b8B51B8C4f127B3123C1039581BAA5A06B',
+  lensAddress: '0xA816ECd922de94c6879AD23B9A884dB257F20947',
+  underlyingToken: '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+};
 
 /**
  * The subset of a `UseQueryResult` this hook reads. Written as a partial rather
@@ -79,30 +95,52 @@ const BALANCE_ERROR: QueryStub<CanonicalMoneyAccountBalanceResponse> = {
   isFetching: false,
 };
 
-const apyResponse = (apy: number): NormalizedVaultApyResponse => ({
-  apy,
-  timestamp: '2026-01-01T00:00:00Z',
+const vault = (
+  currentApy: string,
+  vaultKey = 'standard',
+  vaultAddress: string = VAULT_ADDRESS,
+): VaultSummary => ({
+  chain_id: 143,
+  vault_address: vaultAddress,
+  vault_key: vaultKey,
+  name: 'MetaMask USD',
+  asset_symbol: 'musd',
+  asset_decimals: 6,
+  asset_contract_address: '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+  current_apy: currentApy,
+  as_of_block: 1,
+  as_of_timestamp: '2026-01-01T00:00:00Z',
+  data_freshness: 'live',
+  indexer_lag_seconds: 0,
 });
 
-const APY_LOADED: QueryStub<NormalizedVaultApyResponse> = {
-  data: apyResponse(0.05),
+const vaultsResponse = (
+  currentApy: string,
+  vaultKey = 'standard',
+  vaultAddress: string = VAULT_ADDRESS,
+): VaultsResponse => ({
+  vaults: [vault(currentApy, vaultKey, vaultAddress)],
+});
+
+const APY_LOADED: QueryStub<VaultsResponse> = {
+  data: vaultsResponse('0.05'),
   isLoading: false,
   isError: false,
 };
 
-const APY_LOADING: QueryStub<NormalizedVaultApyResponse> = {
+const APY_LOADING: QueryStub<VaultsResponse> = {
   data: undefined,
   isLoading: true,
   isError: false,
 };
 
-const APY_SETTLED_EMPTY: QueryStub<NormalizedVaultApyResponse> = {
+const APY_SETTLED_EMPTY: QueryStub<VaultsResponse> = {
   data: undefined,
   isLoading: false,
   isError: false,
 };
 
-const APY_ERROR: QueryStub<NormalizedVaultApyResponse> = {
+const APY_ERROR: QueryStub<VaultsResponse> = {
   data: undefined,
   isLoading: false,
   isError: true,
@@ -117,12 +155,12 @@ const APY_ERROR: QueryStub<NormalizedVaultApyResponse> = {
  */
 function stubQueries(
   balance: QueryStub<CanonicalMoneyAccountBalanceResponse> = BALANCE_LOADED,
-  apy: QueryStub<NormalizedVaultApyResponse> = APY_LOADED,
+  apy: QueryStub<VaultsResponse> = APY_LOADED,
 ) {
   mockUseQuery.mockImplementation((options) => {
     const key = (options.queryKey as unknown[])[0];
     return (
-      key === MoneyAccountBalanceServiceQueryKeys.GET_VAULT_APY ? apy : balance
+      key === MoneyAccountApiDataServiceQueryKeys.FETCH_VAULTS ? apy : balance
     ) as never;
   });
 }
@@ -146,7 +184,7 @@ const balanceQueryOptions = () =>
   );
 
 const apyQueryOptions = () =>
-  queryOptionsFor(MoneyAccountBalanceServiceQueryKeys.GET_VAULT_APY);
+  queryOptionsFor(MoneyAccountApiDataServiceQueryKeys.FETCH_VAULTS);
 
 type StateOptions = {
   lastKnownBalance?: PersistedMoneyBalance | null;
@@ -161,6 +199,7 @@ const buildState = ({
 }: StateOptions = {}) => ({
   metamask: {
     remoteFeatureFlags: {
+      moneyAccountVaultConfig: VAULT_CONFIG,
       earnMoneyVaultApyControl: {
         ...(vaultApyFallback === undefined ? {} : { vaultApyFallback }),
         ...(vaultApyOverride === undefined ? {} : { vaultApyOverride }),
@@ -242,6 +281,49 @@ describe('useMoneyAccountBalance', () => {
       expect(result.current.withdrawableFiatRaw).toBe('2');
     });
 
+    it('rounds the withdrawable display down so it stays withdrawable', () => {
+      // Regression: CONF-2196. A $0.50 deposit credits 499,999 micro-units
+      // (one unit lost to vault-share conversion). Half-up rounding showed
+      // "Available balance: $0.50", but the amount field only accepts two
+      // decimals, so the smallest typable match was 0.50 — a hundredth of a
+      // cent more than held. That failed the balance check and blocked the
+      // withdraw outright, with no typable amount that would work.
+      stubQueries({
+        ...BALANCE_LOADED,
+        data: {
+          ...LOADED_BALANCE,
+          musdBalance: '0',
+          vmusdValueInMusd: '499999',
+          totalBalance: '499999',
+        },
+      });
+
+      const { result } = renderBalanceHook();
+
+      expect(result.current.withdrawableFiatFormatted).toBe('$0.49');
+      // Raw keeps full precision so Max still drains the whole vault.
+      expect(result.current.withdrawableFiatRaw).toBe('0.499999');
+      expect(result.current.withdrawableMusd?.toString()).toBe('0.499999');
+    });
+
+    it('keeps the total balance on half-up rounding', () => {
+      // Only the withdrawable figure doubles as a spendable target. The total
+      // is read-only, so it stays byte-identical with mobile's formatting.
+      stubQueries({
+        ...BALANCE_LOADED,
+        data: {
+          ...LOADED_BALANCE,
+          musdBalance: '0',
+          vmusdValueInMusd: '499999',
+          totalBalance: '499999',
+        },
+      });
+
+      const { result } = renderBalanceHook();
+
+      expect(result.current.totalFiatFormatted).toBe('$0.50');
+    });
+
     it('distinguishes a genuine zero from an unknown balance', () => {
       stubQueries({
         ...BALANCE_LOADED,
@@ -281,13 +363,12 @@ describe('useMoneyAccountBalance', () => {
       expect(result.current.totalFiatRaw).toBe('0.000002');
     });
 
-    it('surfaces the query object so a caller can read isFetching directly', () => {
+    it('surfaces the balance query object', () => {
       const { result } = renderBalanceHook();
 
       expect(result.current.moneyBalanceQuery.data).toStrictEqual(
         LOADED_BALANCE,
       );
-      expect(result.current.vaultApyQuery.data?.apy).toBe(0.05);
     });
   });
 
@@ -373,13 +454,89 @@ describe('useMoneyAccountBalance', () => {
       expect(result.current.apyPercentFormatted).toBe('5%');
     });
 
-    it('survives a live APY with full float precision', () => {
-      // Real service values carry >15 significant digits, which
-      // `bignumber.js@4` rejects when passed as a number. Regression test for
-      // the crash that took down the whole balance surface.
+    it('uses the vault at the configured address', () => {
       stubQueries(BALANCE_LOADED, {
         ...APY_LOADED,
-        data: apyResponse(0.06632893279913232),
+        data: {
+          vaults: [
+            vault('0.02', 'standard', OTHER_VAULT_ADDRESS),
+            vault('0.05', 'premium', VAULT_ADDRESS.toLowerCase()),
+          ],
+        },
+      });
+
+      const { result } = renderBalanceHook();
+
+      expect(result.current.apyDecimal).toBe(0.05);
+      expect(result.current.apyPercentFormatted).toBe('5%');
+    });
+
+    it('falls back to the standard vault when no vault matches the configured address', () => {
+      stubQueries(BALANCE_LOADED, {
+        ...APY_LOADED,
+        data: {
+          vaults: [
+            vault('0.02', 'premium', OTHER_VAULT_ADDRESS),
+            vault('0.05', 'standard', OTHER_VAULT_ADDRESS),
+          ],
+        },
+      });
+
+      const { result } = renderBalanceHook();
+
+      expect(result.current.apyDecimal).toBe(0.05);
+      expect(result.current.apyPercentFormatted).toBe('5%');
+    });
+
+    it('uses the override when no vault matches', () => {
+      stubQueries(BALANCE_LOADED, {
+        ...APY_LOADED,
+        data: { vaults: [vault('0.07', 'premium', OTHER_VAULT_ADDRESS)] },
+      });
+
+      const { result } = renderBalanceHook(undefined, {
+        vaultApyFallback: 0.04,
+        vaultApyOverride: 0.08,
+      });
+
+      expect(result.current.apyDecimal).toBe(0.08);
+      expect(result.current.apyPercentFormatted).toBe('8%');
+    });
+
+    it('uses the remote fallback when no vault matches', () => {
+      stubQueries(BALANCE_LOADED, {
+        ...APY_LOADED,
+        data: { vaults: [vault('0.07', 'premium', OTHER_VAULT_ADDRESS)] },
+      });
+
+      const { result } = renderBalanceHook(undefined, {
+        vaultApyFallback: 0.04,
+      });
+
+      expect(result.current.apyDecimal).toBe(0.04);
+      expect(result.current.apyPercentFormatted).toBe('4%');
+    });
+
+    it('falls back when the catalog APY is malformed', () => {
+      stubQueries(BALANCE_LOADED, {
+        ...APY_LOADED,
+        data: vaultsResponse('not-a-number'),
+      });
+
+      const { result } = renderBalanceHook(undefined, {
+        vaultApyFallback: 0.04,
+      });
+
+      expect(result.current.apyDecimal).toBe(0.04);
+      expect(result.current.apyPercentFormatted).toBe('4%');
+    });
+
+    it('survives a live APY with full float precision', () => {
+      // Real service values carry more than 15 significant digits; parsing the
+      // decimal string keeps them exact.
+      stubQueries(BALANCE_LOADED, {
+        ...APY_LOADED,
+        data: vaultsResponse('0.06632893279913232'),
       });
 
       const { result } = renderBalanceHook();
@@ -411,7 +568,7 @@ describe('useMoneyAccountBalance', () => {
     });
 
     it('shows a genuine live 0% rather than falling back', () => {
-      stubQueries(BALANCE_LOADED, { ...APY_LOADED, data: apyResponse(0) });
+      stubQueries(BALANCE_LOADED, { ...APY_LOADED, data: vaultsResponse('0') });
 
       const { result } = renderBalanceHook(undefined, {
         vaultApyFallback: 0.04,
@@ -450,10 +607,10 @@ describe('useMoneyAccountBalance', () => {
       renderBalanceHook();
 
       expect(mockReportMoneyQueryErrorOnce).toHaveBeenCalledWith(
-        'getVaultApy',
+        'fetchVaults',
         '[Money Account] Vault APY fetch failed',
         error,
-        { query: 'getVaultApy' },
+        { query: 'fetchVaults' },
       );
     });
 
@@ -482,7 +639,7 @@ describe('useMoneyAccountBalance', () => {
     it('rounds the percentage half up to one decimal place', () => {
       stubQueries(BALANCE_LOADED, {
         ...APY_LOADED,
-        data: apyResponse(0.0377356238130822),
+        data: vaultsResponse('0.0377356238130822'),
       });
 
       const { result } = renderBalanceHook();
@@ -495,7 +652,7 @@ describe('useMoneyAccountBalance', () => {
     it('formats a service APY with more than 15 significant digits', () => {
       stubQueries(BALANCE_LOADED, {
         ...APY_LOADED,
-        data: apyResponse(0.06917567309149253),
+        data: vaultsResponse('0.06917567309149253'),
       });
 
       const { result } = renderBalanceHook();
@@ -508,7 +665,7 @@ describe('useMoneyAccountBalance', () => {
     it('rounds the percentage down when the next digit is below half', () => {
       stubQueries(BALANCE_LOADED, {
         ...APY_LOADED,
-        data: apyResponse(0.03341),
+        data: vaultsResponse('0.03341'),
       });
 
       const { result } = renderBalanceHook();

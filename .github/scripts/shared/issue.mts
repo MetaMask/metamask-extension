@@ -3,7 +3,7 @@ import type { GitHub } from '@actions/github/lib/utils';
 import { LabelableType, type Labelable } from './labelable.mts';
 import { retrieveRepo } from './repo.mts';
 
-interface RawIssue {
+type RawIssue = {
   id: string;
   title: string;
   number: number;
@@ -11,6 +11,8 @@ interface RawIssue {
   body: string;
   author: {
     login: string;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __typename: string;
   };
   labels: {
     nodes: {
@@ -24,7 +26,7 @@ interface RawIssue {
       login: string;
     };
   };
-}
+};
 
 // This function retrieves an issue on a specific repo
 export async function retrieveIssue(
@@ -44,6 +46,7 @@ export async function retrieveIssue(
             body
             author {
               login
+              __typename
             }
             labels(first: 100) {
               nodes {
@@ -76,11 +79,12 @@ export async function retrieveIssue(
     id: retrieveIssueResult?.repository?.issue?.id,
     type: LabelableType.Issue,
     number: issueNumber,
-    repoOwner: repoOwner,
-    repoName: repoName,
+    repoOwner,
+    repoName,
     createdAt: retrieveIssueResult?.repository?.issue?.createdAt,
     body: retrieveIssueResult?.repository?.issue?.body,
     author: retrieveIssueResult?.repository?.issue?.author?.login,
+    authorType: retrieveIssueResult?.repository?.issue?.author?.__typename,
     labels: retrieveIssueResult?.repository?.issue?.labels?.nodes,
   };
 
@@ -140,15 +144,17 @@ export async function retrieveIssueByTitle(
     searchQuery,
   });
 
-  const issueWithSameTitle = retrieveIssueByTitleResult?.search?.nodes?.find(rawIssue => rawIssue.title === issueTitle);
+  const issueWithSameTitle = retrieveIssueByTitleResult?.search?.nodes?.find(
+    (rawIssue) => rawIssue.title === issueTitle,
+  );
 
   const issue: Labelable | undefined = issueWithSameTitle
     ? {
         id: issueWithSameTitle?.id,
         type: LabelableType.Issue,
         number: issueWithSameTitle?.number,
-        repoOwner: repoOwner,
-        repoName: repoName,
+        repoOwner,
+        repoName,
         createdAt: issueWithSameTitle?.createdAt,
         body: issueWithSameTitle?.body,
         author: issueWithSameTitle?.author?.login,
@@ -166,7 +172,6 @@ export async function retrieveLinkedIssues(
   repoName: string,
   prNumber: number,
 ): Promise<Labelable[]> {
-
   // We assume there won't be more than 100 linked issues
   const retrieveLinkedIssuesQuery = `
   query ($repoOwner: String!, $repoName: String!, $prNumber: Int!) {

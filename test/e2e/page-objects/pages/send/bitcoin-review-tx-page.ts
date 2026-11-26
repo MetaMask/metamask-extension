@@ -1,3 +1,4 @@
+import { quoteXPathText } from '../../../../helpers/quoteXPathText';
 import { Driver } from '../../../webdriver/driver';
 
 /**
@@ -8,11 +9,10 @@ import { Driver } from '../../../webdriver/driver';
  * Owns: send amount / network fee / total display checks and confirm.
  * Boundaries: review and footer only. The send form is `SendPage`; other snap
  * sign/send confirmations use the `confirmations/` snap page objects.
- * Related: `SendPage`, `flows/bitcoin-send.flow.ts`.
+ * Related: `SendPage`, Bitcoin send specs under `tests/send/bitcoin/`.
  *
  * @see ui/components/app/snaps/snap-ui-footer-button/snap-ui-footer-button.tsx
  * @see ui/components/app/snaps/snap-ui-renderer/components/footer.ts
- * @see test/e2e/page-objects/flows/bitcoin-send.flow.ts
  */
 class BitcoinReviewTxPage {
   private readonly cancelButton =
@@ -67,8 +67,13 @@ class BitcoinReviewTxPage {
       `Check if send amount ${amount} is displayed on bitcoin review tx page`,
     );
     await this.driver.waitForSelector({
-      text: `-${amount} BTC`,
-      tag: 'p',
+      xpath:
+        '//*[contains(concat(" ", normalize-space(@class), " "), ' +
+        '" snap-ui-renderer__text ") and ' +
+        'contains(concat(" ", normalize-space(@class), " "), ' +
+        `" mm-box--color-error-default ") and normalize-space(.)=${quoteXPathText(
+          `-${amount}`,
+        )}]`,
     });
   }
 

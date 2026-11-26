@@ -37,7 +37,11 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
-import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
+import { encodeEvmAssetId } from '../../../../shared/lib/transaction/pay-token';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  PERPS_HOME_PAGE_ROUTE,
+} from '../../../helpers/constants/routes';
 import { ScrollContainer } from '../../../contexts/scroll-container';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
@@ -49,7 +53,6 @@ import { selectBlockedPayTokens } from '../../../pages/confirmations/selectors/f
 import { getAvailableTokens } from '../../../pages/confirmations/utils/transaction-pay';
 import { Asset } from '../../../pages/confirmations/components/send/asset/asset';
 import type { Asset as AssetType } from '../../../pages/confirmations/types/send';
-import { usePerpsHomeRoute } from '../../../hooks/perps/usePerpsHomeRoute';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { usePerpsDepositConfirmation } from '../perps/hooks/usePerpsDepositConfirmation';
 import { PERPS_EVENT_VALUE } from '../../../../shared/constants/perps-events';
@@ -187,7 +190,6 @@ export const HyperliquidDepositPrompt: React.FC<
 > = ({ onActionComplete, selectedAddress }) => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const perpsHomeRoute = usePerpsHomeRoute();
   const tokens = useHyperliquidDepositTokens();
   const currentAccount = useSelector(getSelectedInternalAccount);
   const { trackEvent, createEventBuilder } = useAnalytics();
@@ -295,8 +297,10 @@ export const HyperliquidDepositPrompt: React.FC<
       try {
         await updateTransactionPaymentToken({
           transactionId,
-          tokenAddress: displayToken.address as Hex,
-          chainId: displayToken.chainId as Hex,
+          assetId: encodeEvmAssetId({
+            address: displayToken.address as Hex,
+            chainId: displayToken.chainId as Hex,
+          }),
         });
       } catch (error) {
         // The confirmation falls back to its automatic pay token selection,
@@ -313,7 +317,7 @@ export const HyperliquidDepositPrompt: React.FC<
         pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
         search: new URLSearchParams({
           loader: ConfirmationLoader.CustomAmount,
-          goBackTo: buildGoBackToWithSource(perpsHomeRoute),
+          goBackTo: buildGoBackToWithSource(PERPS_HOME_PAGE_ROUTE),
         }).toString(),
       },
       { replace: true },
@@ -325,7 +329,6 @@ export const HyperliquidDepositPrompt: React.FC<
     displayToken,
     navigate,
     onActionComplete,
-    perpsHomeRoute,
     startPerpsDeposit,
     trackPromptInteracted,
   ]);

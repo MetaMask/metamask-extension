@@ -5,6 +5,7 @@ import { TraceCoordinator } from '#ui/hooks/useTraceCoordinator';
 import { getSelectedAccountGroupNetworkGenerationKey } from '#ui/selectors/assets';
 import { NetworkConnectionBanner } from '../../app/network-connection-banner';
 import { MoneyAccountBalance } from '../../app/money/money-account-balance';
+import { AssetsHaveLoadedProvider } from '../../app/assets/hooks/useAssetsHaveLoaded';
 import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
@@ -36,33 +37,35 @@ export const AccountOverviewLayout = ({
   }, []);
 
   return (
-    <TraceCoordinator
-      name={TraceName.HomepageReady}
-      op={TraceOperation.HomepagePerformance}
-      parentId={tabsProps.showTokens === false ? undefined : homepageTraceId}
-      requiredSignals={homepageRequiredSignals}
-    >
-      <div
-        ref={heroRef}
-        className="account-overview__balance-wrapper flex flex-col p-4 pb-2 gap-4"
-        data-testid={dataTestId}
+    <AssetsHaveLoadedProvider>
+      <TraceCoordinator
+        name={TraceName.HomepageReady}
+        op={TraceOperation.HomepagePerformance}
+        parentId={tabsProps.showTokens === false ? undefined : homepageTraceId}
+        requiredSignals={homepageRequiredSignals}
       >
-        <NetworkConnectionBanner />
+        <div
+          ref={heroRef}
+          className="account-overview__balance-wrapper flex flex-col p-4 pb-2 gap-4 wide-layout:gap-6 wide-layout:p-6"
+          data-testid={dataTestId}
+        >
+          <NetworkConnectionBanner />
 
-        {children}
+          {children}
 
-        {/*
+          {/*
           Renders nothing unless there is a Money Account with a balance to
           show, which is every user until the Money keyring is registered. Sits
           below the hero balance and above the carousel, mirroring where mobile
           puts it on the wallet home.
         */}
-        <MoneyAccountBalance />
+          <MoneyAccountBalance />
 
-        <Carousel />
-      </div>
+          <Carousel />
+        </div>
 
-      <AccountOverviewTabs {...tabsProps} />
-    </TraceCoordinator>
+        <AccountOverviewTabs {...tabsProps} />
+      </TraceCoordinator>
+    </AssetsHaveLoadedProvider>
   );
 };

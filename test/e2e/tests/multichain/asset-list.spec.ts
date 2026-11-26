@@ -13,13 +13,14 @@ import { mockSpotPrices } from '../tokens/utils/mocks';
 import SendPage from '../../page-objects/pages/send/send-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import {
-  DEFAULT_FIXTURE_ACCOUNT,
   DEFAULT_FIXTURE_ACCOUNT_ID,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   NETWORK_CLIENT_ID,
 } from '../../constants';
+import { NetworkName } from '../../helpers/network-constants';
+import { tokensV3Assets } from '../../mock-response-data/api-responses';
 
-const NETWORK_NAME_MAINNET = 'Ethereum';
+const NETWORK_NAME_MAINNET = NetworkName.ETHEREUM;
 const HST_TOKEN_ADDRESS = '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947';
 const MUSD_ADDRESS = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
 const MUSD_MAINNET_ASSET_ID = `eip155:1/erc20:${MUSD_ADDRESS}`;
@@ -30,11 +31,13 @@ async function mockSetup(mockServer: Mockttp) {
   return [
     await mockSpotPrices(mockServer, {
       'eip155:1/slip44:60': {
+        id: 'ethereum',
         price: 1,
         marketCap: 0,
         pricePercentChange1d: 0,
       },
       'eip155:137/slip44:60': {
+        id: 'polygon',
         price: 1,
         marketCap: 0,
         pricePercentChange1d: 0,
@@ -60,36 +63,34 @@ async function mockSetup(mockServer: Mockttp) {
         statusCode: 200,
         json: {},
       })),
-    await mockServer
-      .forGet(/^https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
-      .thenCallback((request) => {
-        const url = new URL(request.url);
-        const assetIds = url.searchParams
-          .getAll('assetIds')
-          .join(',')
-          .toLowerCase();
-        const results = [];
+    await tokensV3Assets.rule(mockServer).thenCallback((request) => {
+      const url = new URL(request.url);
+      const assetIds = url.searchParams
+        .getAll('assetIds')
+        .join(',')
+        .toLowerCase();
+      const results = [];
 
-        if (assetIds.includes('eip155:1/slip44:60')) {
-          results.push({
-            assetId: 'eip155:1/slip44:60',
-            name: 'Ethereum',
-            symbol: 'ETH',
-            decimals: 18,
-          });
-        }
+      if (assetIds.includes('eip155:1/slip44:60')) {
+        results.push({
+          assetId: 'eip155:1/slip44:60',
+          name: 'Ethereum',
+          symbol: 'ETH',
+          decimals: 18,
+        });
+      }
 
-        if (assetIds.includes(MUSD_MAINNET_ASSET_ID.toLowerCase())) {
-          results.push({
-            assetId: MUSD_MAINNET_ASSET_ID,
-            name: 'MUSD',
-            symbol: 'MUSD',
-            decimals: 6,
-          });
-        }
+      if (assetIds.includes(MUSD_MAINNET_ASSET_ID.toLowerCase())) {
+        results.push({
+          assetId: MUSD_MAINNET_ASSET_ID,
+          name: 'MUSD',
+          symbol: 'MUSD',
+          decimals: 6,
+        });
+      }
 
-        return { statusCode: 200, json: { data: results } };
-      }),
+      return { statusCode: 200, json: { data: results } };
+    }),
   ];
 }
 
@@ -187,15 +188,6 @@ function buildFixturesForAssetDetails(title: string) {
         },
       })
       .withShowNativeTokenAsMainBalanceDisabled()
-      .withTokenBalancesController({
-        tokenBalances: {
-          [DEFAULT_FIXTURE_ACCOUNT]: {
-            [CHAIN_IDS.MAINNET]: {
-              [HST_TOKEN_ADDRESS]: '0x3e8',
-            },
-          },
-        },
-      })
       .build(),
     localNodeOptions: [
       {
@@ -235,18 +227,10 @@ function buildFixturesForSend(title: string) {
       .withAssetsController({
         assetsBalance: {
           [DEFAULT_FIXTURE_ACCOUNT_ID]: {
-            // Pre-seed Polygon native balance so the home page shows 25 at login
+            // Pre-seed Polygon native balance so the home page shows 25 at login.
+            // The ERC-20 is imported during the test, so it must not be seeded
+            // here or the import form treats it as already added.
             'eip155:137/slip44:60': { amount: '25' },
-          },
-        },
-      })
-      .withTokenBalancesController({
-        tokenBalances: {
-          [DEFAULT_FIXTURE_ACCOUNT]: {
-            [CHAIN_IDS.POLYGON]: {
-              // HST (TST) contract pre-seeded so it shows after import in test 2
-              [HST_TOKEN_ADDRESS]: '0x3e8',
-            },
           },
         },
       })

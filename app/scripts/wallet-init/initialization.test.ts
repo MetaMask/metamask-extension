@@ -7,6 +7,7 @@ import { initializeWallet } from './initialization';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
 import { getConnectivityControllerInstanceOptions } from './instance-options/connectivity-controller';
+import { getAnalyticsControllerInstanceOptions } from './instance-options/analytics-controller';
 import { getGasFeeControllerInstanceOptions } from './instance-options/gas-fee-controller';
 import { getPasskeyControllerInstanceOptions } from './instance-options/passkey-controller';
 import { getKeyringControllerInstanceOptions } from './instance-options/keyring-controller';
@@ -16,11 +17,13 @@ import {
   getTransactionControllerInstanceOptions,
   setupTransactionControllerListeners,
 } from './instance-options/transaction-controller';
+import { getAnalyticsControllerInitMessenger } from './messengers/analytics-controller-messenger';
 import { getTransactionControllerInitMessenger } from './messengers/transaction-controller-messenger';
 import { getGasFeeControllerInitMessenger } from './messengers/gas-fee-controller-messenger';
 import { getSeedlessOnboardingControllerInitMessenger } from './messengers/seedless-onboarding-controller-messenger';
 import { getSeedlessOnboardingControllerInstanceOptions } from './instance-options/seedless-onboarding-controller';
 import { getClaimsServiceInstanceOptions } from './instance-options/claims-service';
+import { getGeolocationApiServiceInstanceOptions } from './instance-options/geolocation-api-service';
 import { getConfigRegistryApiServiceInstanceOptions } from './instance-options/config-registry-api-service';
 import {
   getShieldApiServiceInstanceOptions,
@@ -43,6 +46,9 @@ jest.mock('@metamask/wallet', () => ({
 jest.mock('./remote-feature-flags', () => ({
   setupRemoteFeatureFlagToggle: jest.fn(),
 }));
+jest.mock('./instance-options/analytics-controller', () => ({
+  getAnalyticsControllerInstanceOptions: jest.fn(() => 'analytics-options'),
+}));
 jest.mock('./instance-options/approval-controller', () => ({
   getApprovalControllerInstanceOptions: jest.fn(() => 'approval-options'),
 }));
@@ -53,6 +59,11 @@ jest.mock('./instance-options/connectivity-controller', () => ({
 }));
 jest.mock('./instance-options/claims-service', () => ({
   getClaimsServiceInstanceOptions: jest.fn(() => 'claims-options'),
+}));
+jest.mock('./instance-options/geolocation-api-service', () => ({
+  getGeolocationApiServiceInstanceOptions: jest.fn(
+    () => 'geolocation-api-service-options',
+  ),
 }));
 jest.mock('./instance-options/config-registry-api-service', () => ({
   getConfigRegistryApiServiceInstanceOptions: jest.fn(
@@ -75,6 +86,17 @@ jest.mock('./instance-options/subscription-service', () => ({
 jest.mock('./instance-options/gas-fee-controller', () => ({
   getGasFeeControllerInstanceOptions: jest.fn(
     () => 'gas-fee-controller-options',
+  ),
+}));
+jest.mock('./instance-options/signature-controller', () => ({
+  getSignatureControllerInstanceOptions: jest.fn(
+    () => 'signature-controller-options',
+  ),
+  setupSignatureControllerListeners: jest.fn(),
+}));
+jest.mock('./messengers/signature-controller-messenger', () => ({
+  getSignatureControllerInitMessenger: jest.fn(
+    () => 'signature-controller-init-messenger',
   ),
 }));
 jest.mock('./instance-options/keyring-controller', () => ({
@@ -103,6 +125,11 @@ jest.mock('./instance-options/transaction-controller', () => ({
 jest.mock('./messengers/transaction-controller-messenger', () => ({
   getTransactionControllerInitMessenger: jest.fn(
     () => 'transaction-controller-init-messenger',
+  ),
+}));
+jest.mock('./messengers/analytics-controller-messenger', () => ({
+  getAnalyticsControllerInitMessenger: jest.fn(
+    () => 'analytics-controller-init-messenger',
   ),
 }));
 jest.mock('./messengers/gas-fee-controller-messenger', () => ({
@@ -150,11 +177,13 @@ describe('initializeWallet', () => {
 
     expect(MockWallet).toHaveBeenCalledWith({
       instanceOptions: {
+        analyticsController: 'analytics-options',
         approvalController: 'approval-options',
         claimsService: 'claims-options',
         configRegistryApiService: 'config-registry-api-service-options',
         connectivityController: 'connectivity-options',
         gasFeeController: 'gas-fee-controller-options',
+        geolocationApiService: 'geolocation-api-service-options',
         keyringController: 'keyring-options',
         networkController: {
           infuraProjectId: 'fake-infura-project-id',
@@ -190,6 +219,7 @@ describe('initializeWallet', () => {
         selectedNetworkController: {
           domainProxyMap: new WeakRefObjectMap(),
         },
+        signatureController: 'signature-controller-options',
         shieldApiService: 'shield-api-service-options',
         shieldController: 'shield-controller-options',
         remoteFeatureFlagController: 'rffc-options',
@@ -266,6 +296,7 @@ describe('initializeWallet', () => {
       showApprovalRequest,
     });
     expect(getClaimsServiceInstanceOptions).toHaveBeenCalledWith();
+    expect(getGeolocationApiServiceInstanceOptions).toHaveBeenCalledWith();
     expect(getConfigRegistryApiServiceInstanceOptions).toHaveBeenCalledWith();
     expect(getShieldApiServiceInstanceOptions).toHaveBeenCalledWith();
     expect(getShieldControllerInstanceOptions).toHaveBeenCalledWith();
@@ -284,6 +315,12 @@ describe('initializeWallet', () => {
     );
     expect(getConnectivityControllerInstanceOptions).toHaveBeenCalledWith({
       connectivityAdapter,
+    });
+    expect(getAnalyticsControllerInitMessenger).toHaveBeenCalledWith(messenger);
+    expect(getAnalyticsControllerInstanceOptions).toHaveBeenCalledWith({
+      initMessenger: 'analytics-controller-init-messenger',
+      state,
+      platform,
     });
     expect(getGasFeeControllerInitMessenger).toHaveBeenCalledWith(messenger);
     expect(getGasFeeControllerInstanceOptions).toHaveBeenCalledWith({

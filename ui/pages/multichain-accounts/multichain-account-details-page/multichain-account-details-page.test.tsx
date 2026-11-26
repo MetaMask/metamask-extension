@@ -12,6 +12,12 @@ import {
   PREVIOUS_ROUTE,
 } from '../../../helpers/constants/routes';
 import * as traceModule from '../../../../shared/lib/trace';
+import {
+  MetaMetricsAccountRemovedLocation,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsHardwareWalletDeviceType,
+} from '../../../../shared/constants/metametrics';
 import { MultichainAccountDetailsPage } from './multichain-account-details-page';
 
 const backButtonTestId = 'back-button';
@@ -30,6 +36,28 @@ jest.mock('../../../../shared/lib/trace', () => ({
   ...jest.requireActual('../../../../shared/lib/trace'),
   trace: jest.fn(),
 }));
+
+jest.mock('../../../../shared/lib/sentry', () => ({
+  ...jest.requireActual('../../../../shared/lib/sentry'),
+  captureException: jest.fn(),
+}));
+
+const mockCaptureException = jest.requireMock('../../../../shared/lib/sentry')
+  .captureException as jest.Mock;
+
+const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 const mockUseNavigate = jest.fn();
 const mockUseSearchParams = jest.fn();
@@ -231,6 +259,54 @@ describe('MultichainAccountDetailsPage', () => {
 
     // First call should be the removeAccount thunk (AsyncFunction)
     expect(mockDispatch).toHaveBeenNthCalledWith(1, expect.any(Function));
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+  });
+
+  it('tracks Account Removed from account details with the hardware device as the account type once the removal succeeds', async () => {
+    setSearchParams(LEDGER_ACCOUNT_GROUP_ID);
+    renderComponent();
+
+    fireEvent.click(screen.getByTestId('account-remove-action'));
+    fireEvent.click(screen.getByText(messages.remove.message));
+
+    await waitFor(() =>
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        name: MetaMetricsEventName.AccountRemoved,
+        properties: {
+          category: MetaMetricsEventCategory.Accounts,
+          // The schema's `account_type` enum carries the device name for
+          // hardware wallets, matching `account_hardware_type`.
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: MetaMetricsHardwareWalletDeviceType.Ledger,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_hardware_type: MetaMetricsHardwareWalletDeviceType.Ledger,
+          location: MetaMetricsAccountRemovedLocation.AccountDetails,
+        },
+        sensitiveProperties: {},
+      }),
+    );
+  });
+
+  it('reports a failed removal without tracking it', async () => {
+    // `removeAccount` rejects when the background fails to remove.
+    const removalError = new Error('Removal failed');
+    mockDispatch.mockRejectedValueOnce(removalError);
+    setSearchParams(LEDGER_ACCOUNT_GROUP_ID);
+    renderComponent();
+
+    fireEvent.click(screen.getByTestId('account-remove-action'));
+    fireEvent.click(screen.getByText(messages.remove.message));
+
+    expect(mockDispatch).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    await waitFor(() =>
+      expect(mockCaptureException).toHaveBeenCalledWith(removalError),
+    );
+    expect(mockTrackEvent).not.toHaveBeenCalledWith(
+      expect.objectContaining({ name: MetaMetricsEventName.AccountRemoved }),
+    );
   });
 
   describe('tracing', () => {

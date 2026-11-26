@@ -1,5 +1,4 @@
-import { SUPPORTED_CHAIN_IDS } from '@metamask/assets-controllers';
-import { Hex, assert } from '@metamask/utils';
+import { assert } from '@metamask/utils';
 import { Duration } from 'luxon';
 import {
   processAssetParams,
@@ -60,14 +59,6 @@ export const getPricePrecision = (price: number) => {
   return precision;
 };
 
-/**
- * Returns true if the price api supports the chain id.
- *
- * @param chainId - The hexadecimal chain id.
- */
-export const chainSupportsPricing = (chainId: Hex) =>
-  (SUPPORTED_CHAIN_IDS as readonly string[]).includes(chainId);
-
 /** The opacity components should set during transition */
 export const loadingOpacity = 0.2;
 
@@ -118,6 +109,7 @@ export const fromIso8601DurationToPriceApiTimePeriod = (
   );
 
   const SUPPORTED_MAPPINGS: Record<string, PriceApiTimePeriod> = {
+    PT1H: '1H',
     P1D: '1D',
     P7D: '7D',
     P1W: '7D',

@@ -11,14 +11,14 @@
  */
 export type MergeQueueEntryState = 'current' | 'stale' | 'unverified';
 
-export interface MergeQueueEntryVerification {
+export type MergeQueueEntryVerification = {
   /** Whether retrying the failed merge-group workflow is safe. */
   state: MergeQueueEntryState;
   /** The active queue-entry SHA when GitHub returned one. */
   headSha?: string;
-}
+};
 
-export interface VerifyMergeQueueEntryOptions {
+export type VerifyMergeQueueEntryOptions = {
   /** SHA from the failed workflow_run event. */
   expectedHeadSha: string;
   /** Fetches the active merge queue entry's head SHA, or null if none exists. */
@@ -27,13 +27,12 @@ export interface VerifyMergeQueueEntryOptions {
   maxAttempts?: number;
   /** Injectable delay for unit tests and bounded production backoff. */
   sleep?: (milliseconds: number) => Promise<void>;
-}
+};
 
-export interface VerifyMergeQueueRetryOptions
-  extends VerifyMergeQueueEntryOptions {
+export type VerifyMergeQueueRetryOptions = {
   /** Confirms the failed run's temporary merge-queue ref still exists. */
   refExists: () => Promise<boolean>;
-}
+} & VerifyMergeQueueEntryOptions;
 
 const DEFAULT_MAX_ATTEMPTS = 3;
 

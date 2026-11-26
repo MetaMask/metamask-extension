@@ -8,6 +8,11 @@ import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { login } from '../../page-objects/flows/login.flow';
+import {
+  importAccountWithJsonFile,
+  importAccountWithPrivateKey,
+  importWalletWithSrp,
+} from '../../page-objects/flows/add-wallet.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
 import {
@@ -20,6 +25,7 @@ import {
   mockPriceApi,
 } from '../tokens/utils/mocks';
 import { mockIdentityServices } from '../identity/mocks';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 
 const DEFAULT_LOCAL_NODE_USD_BALANCE = '85,025.00';
 
@@ -76,8 +82,7 @@ describe('Add wallet', function () {
         await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
         // Open account details modal and check displayed account address
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
 
@@ -106,15 +111,14 @@ describe('Add wallet', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);
         // Extended timeout: AccountTreeController sync (triggered by the
         // multi-SRP vault) can take longer than the default 10s on Firefox CI.
         await accountListPage.checkPageIsLoaded(30000);
-        await accountListPage.startImportSecretPhrase(E2E_SRP);
-        await headerNavbar.openAccountMenu();
+        await importWalletWithSrp(driver, E2E_SRP);
+        await openAccountMenu(driver);
         await accountListPage.checkPageIsLoaded(30000);
         await accountListPage.checkNumberOfAvailableAccounts(3);
       },
@@ -150,7 +154,7 @@ describe('Add wallet', function () {
         // Wait until account list is loaded to mitigate race condition
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.checkAccountLabel('Account 1');
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
 
@@ -161,17 +165,17 @@ describe('Add wallet', function () {
           'import-utc-json',
           'test-json-import-account-file.json',
         );
-        await accountListPage.importAccountWithJsonFile(
-          jsonFile,
-          'foobarbazqux',
-        );
+        await importAccountWithJsonFile(driver, {
+          jsonFilePath: jsonFile,
+          password: 'foobarbazqux',
+        });
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkAccountImportedToastIsDisplayed();
         await headerNavbar.checkAccountLabel(IMPORTED_ACCOUNT_NAME);
 
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountDisplayedInAccountList(
           IMPORTED_ACCOUNT_NAME,
@@ -213,12 +217,13 @@ describe('Add wallet', function () {
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.checkAccountLabel('Account 1');
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
 
         // import active account with private key from the account menu and check error message
-        await accountListPage.addNewImportedAccount(
+        await importAccountWithPrivateKey(
+          driver,
           testPrivateKey,
           'The account you are trying to import is a duplicate',
         );

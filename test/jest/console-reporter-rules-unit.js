@@ -279,6 +279,15 @@ module.exports = [
   },
 
   // ===========================================================================
+  // JSDOM LIMITATIONS
+  // ===========================================================================
+
+  {
+    match: /Warning: The tag <search> is unrecognized in this browser/u,
+    group: null,
+  },
+
+  // ===========================================================================
   // REACT 18 MIGRATION (temporary — will be removed by
   // https://github.com/MetaMask/MetaMask-planning/issues/6934)
   // ===========================================================================

@@ -13,7 +13,7 @@ import { Driver } from '../../../webdriver/driver';
  * Related: `SelectNetworkModal` (what `open()` opens), `TokensTab` / `DefiTab`
  * (the lists this filters).
  *
- * @see ui/components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar.tsx
+ * @see ui/components/app/assets/asset-list/asset-list-control-bar/network-filter.tsx
  */
 class NetworkFilter {
   private readonly driver: Driver;

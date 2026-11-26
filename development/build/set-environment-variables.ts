@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import assert from 'node:assert';
-import phishingWarningPackageJson from '@metamask/phishing-warning/package.json';
-import { ENVIRONMENT, type BuildEnvironment } from './constants';
+import phishingWarningPackageJson from '@metamask/phishing-warning/package.json' with { type: 'json' };
+import { ENVIRONMENT, type BuildEnvironment } from './constants.ts';
 
 export type { BuildEnvironment };
 
@@ -49,9 +49,6 @@ export function setEnvironmentVariables({
 }: SetEnvironmentVariablesOptions): void {
   variables.set({
     DEBUG: isDevBuild || isTestBuild ? variables.getMaybe('DEBUG') : undefined,
-    EIP_4337_ENTRYPOINT: isTestBuild
-      ? '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b'
-      : variables.getMaybe('EIP_4337_ENTRYPOINT'),
     IN_TEST: isTestBuild,
     INFURA_PROJECT_ID: getInfuraProjectId({
       buildType,
@@ -97,6 +94,10 @@ export function setEnvironmentVariables({
     QR_SYNC_ENABLED: isTestBuild
       ? 'true'
       : variables.getMaybe('QR_SYNC_ENABLED'),
+    MM_MONEY_MPC_ADDRESS: variables.getMaybe('MM_MONEY_MPC_ADDRESS'),
+    MM_MONEY_MPC_KEYRING_ENABLED: variables.getMaybe(
+      'MM_MONEY_MPC_KEYRING_ENABLED',
+    ),
     COMPLIANCE_API_URL: variables.getMaybe('COMPLIANCE_API_URL'),
   });
 }

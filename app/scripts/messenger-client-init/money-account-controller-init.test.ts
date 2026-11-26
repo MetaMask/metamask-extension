@@ -20,6 +20,7 @@ import type {
   RemoteFeatureFlagControllerStateChangeEvent,
 } from '@metamask/remote-feature-flag-controller';
 import { MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME } from '../../../shared/lib/money/feature-flags';
+import { isMnemonicMoneyAccount } from '../../../shared/lib/money/money-accounts';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getMoneyAccountControllerInitMessenger,
@@ -43,7 +44,12 @@ const moneyAccountFor = (entropySource: string) =>
   ({
     id: `money-account-${entropySource}`,
     address: '0xd5fe9b0579443e7025cf3309ba420977710e7183',
-    options: { entropy: { id: entropySource } },
+    options: {
+      entropy: {
+        type: 'mnemonic' as const,
+        id: entropySource,
+      },
+    },
   }) as unknown as MoneyAccountControllerState['moneyAccounts'][string];
 
 type BaseMessenger = Messenger<
@@ -176,7 +182,7 @@ describe('MoneyAccountControllerInit', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    state = { moneyAccounts: {} };
+    state = { moneyAccounts: {}, defaultMoneyAccountId: null };
     primaryEntropySource = PRIMARY_ENTROPY_SOURCE;
 
     // The real `init` creates the keyring and records the account, so the stub
@@ -191,10 +197,13 @@ describe('MoneyAccountControllerInit', () => {
       state.moneyAccounts = {};
     });
     // Matches the real controller: the account is looked up by the primary
-    // entropy source, not by "is there any account at all".
+    // entropy source (the mnemonic selector), not by "is there any account at
+    // all".
     const getMoneyAccount = jest.fn(() =>
       Object.values(state.moneyAccounts).find(
-        (account) => account.options.entropy.id === primaryEntropySource,
+        (account) =>
+          isMnemonicMoneyAccount(account) &&
+          account.options.entropy.id === primaryEntropySource,
       ),
     );
 

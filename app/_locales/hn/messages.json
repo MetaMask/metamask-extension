@@ -84,10 +84,6 @@
   "failed": {
     "message": "विफल"
   },
-  "fileImportFail": {
-    "message": "फ़ाइल आयात काम नहीं कर रहा है? यहां क्लिक करें!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "from": {
     "message": "की तरफ से - संदेश"
   },
@@ -172,10 +168,6 @@
   "next": {
     "message": "अगला"
   },
-  "pastePrivateKey": {
-    "message": "यहां अपनी निजी कुंजी स्ट्रिंग चिपकाएं:",
-    "description": "For importing an account from a private key"
-  },
   "personalAddressDetected": {
     "message": "व्यक्तिगत पता मिला। टोकन अनुबंध का पता इनपुट।"
   },
@@ -185,9 +177,6 @@
   "privateKey": {
     "message": "निजी कुंजी",
     "description": "select this type of file to use to import an account"
-  },
-  "privateNetwork": {
-    "message": "निजी नेटवर्क"
   },
   "readdToken": {
     "message": "आप अपने खाता विकल्प मेनू में .टोकन जोड़ें. पर जाकर भविष्य में इस टोकन को वापस जोड़ सकते हैं।"
@@ -258,9 +247,6 @@
   },
   "urlErrorMsg": {
     "message": "URI-यूआरआई को उपयुक्त HTTP / HTTPS उपसर्ग की आवश्यकता होती है।"
-  },
-  "usedByClients": {
-    "message": "विभिन्न क्लाइंट्स द्वारा उपयोग किया जाता है"
   },
   "visitWebSite": {
     "message": "हमारी वेब साइट पर जाएं"

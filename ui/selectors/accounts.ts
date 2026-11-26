@@ -41,15 +41,6 @@ export function isStellarAccount(account: InternalAccount) {
   return Boolean(account && account.type === Account);
 }
 
-export function isNonEvmAccount(account: InternalAccount) {
-  return (
-    isBitcoinAccount(account) ||
-    isSolanaAccount(account) ||
-    isTronAccount(account) ||
-    isStellarAccount(account)
-  );
-}
-
 export const getInternalAccountsObject = (state: AccountsState) =>
   state.metamask.internalAccounts.accounts;
 
@@ -90,11 +81,6 @@ export const selectEvmAddress = createSelector(
   getSelectedInternalAccount,
   (account) =>
     account && isEvmAccountType(account.type) ? account.address : undefined,
-);
-
-export const isSelectedInternalAccountSolana = createSelector(
-  getSelectedInternalAccount,
-  (account) => isSolanaAccount(account),
 );
 
 /**

@@ -1,4 +1,14 @@
+import path from 'path';
+import {
+  writeSessionMetadata,
+  type SessionLaunchInput,
+  type WorkflowContext,
+} from '@metamask/client-mcp-core';
 import { MetaMaskSessionManager } from './metamask-provider';
+import { resolveRepoRoot } from './resolve-repo-root';
+import { MetaMaskExtensionLauncher } from '.';
+
+const REPO_ROOT = resolveRepoRoot();
 
 jest.mock('.', () => ({
   MetaMaskExtensionLauncher: jest.fn().mockImplementation(() => ({
@@ -51,9 +61,9 @@ jest.mock('@metamask/client-mcp-core', () => ({
     MM_CONTEXT_SWITCH_BLOCKED: 'MM_CONTEXT_SWITCH_BLOCKED',
   },
   generateSessionId: jest.fn().mockReturnValue('test-session-id'),
-  knowledgeStore: {
-    writeSessionMetadata: jest.fn().mockResolvedValue(undefined),
-  },
+  writeSessionMetadata: jest
+    .fn()
+    .mockResolvedValue('/repo/test-artifacts/test-session-id/session.json'),
 }));
 
 describe('MetaMaskSessionManager', () => {
@@ -67,6 +77,141 @@ describe('MetaMaskSessionManager', () => {
   describe('getBuildCapability', () => {
     it('returns undefined (build capability removed)', () => {
       expect(sessionManager.getBuildCapability()).toBeUndefined();
+    });
+  });
+
+  describe('launch', () => {
+    const PHRASE = Array.from({ length: 12 }, () => 'abandon').join(' ');
+    const PASSWORD = 'per-run-vault-password';
+
+    beforeEach(() => {
+      sessionManager.setWorkflowContext({
+        config: { environment: 'prod', defaultChainId: 1337 },
+        stateSnapshot: {
+          getState: jest.fn().mockResolvedValue({ currentScreen: 'home' }),
+        },
+      } as unknown as WorkflowContext);
+    });
+
+    it('hands the self-onboarding phrase and password to the launcher and clears them from the request', async () => {
+      const request = {
+        stateMode: 'onboarding' as const,
+        selfOnboarding: true,
+        srp: PHRASE,
+        password: PASSWORD,
+      };
+
+      await sessionManager.launch(request);
+
+      expect(MetaMaskExtensionLauncher).toHaveBeenCalledWith(
+        expect.objectContaining({
+          selfOnboarding: true,
+          srp: PHRASE,
+          password: PASSWORD,
+        }),
+      );
+      expect(request.srp).toBeUndefined();
+      expect(request.password).toBeUndefined();
+    });
+
+    it('leaves the password unset when the request has none', async () => {
+      await sessionManager.launch({
+        stateMode: 'onboarding',
+        selfOnboarding: true,
+        srp: PHRASE,
+      } as SessionLaunchInput);
+
+      expect(MetaMaskExtensionLauncher).toHaveBeenCalledWith(
+        expect.objectContaining({ password: undefined }),
+      );
+    });
+
+    it('writes session metadata to the default artifacts dir without goal or flowTags', async () => {
+      await sessionManager.launch({
+        stateMode: 'default',
+        tags: ['smoke'],
+      } as SessionLaunchInput);
+
+      expect(writeSessionMetadata).toHaveBeenCalledTimes(1);
+      const [artifactsDir, metadata] =
+        jest.mocked(writeSessionMetadata).mock.calls[0];
+      expect(artifactsDir).toBe(path.join(REPO_ROOT, 'test-artifacts'));
+      expect(metadata).toStrictEqual(
+        expect.objectContaining({
+          schemaVersion: 1,
+          sessionId: 'test-session-id',
+          tags: ['smoke'],
+          launch: expect.objectContaining({ stateMode: 'default' }),
+        }),
+      );
+      expect(metadata).not.toHaveProperty('goal');
+      expect(metadata).not.toHaveProperty('flowTags');
+    });
+
+    it('writes session metadata to the workflow context artifacts dir', async () => {
+      sessionManager.setWorkflowContext({
+        config: {
+          environment: 'prod',
+          defaultChainId: 1337,
+          artifactsDir: 'custom-artifacts',
+        },
+        stateSnapshot: {
+          getState: jest.fn().mockResolvedValue({ currentScreen: 'home' }),
+        },
+      } as unknown as WorkflowContext);
+
+      await sessionManager.launch({ stateMode: 'default' });
+
+      expect(writeSessionMetadata).toHaveBeenCalledWith(
+        path.join(REPO_ROOT, 'custom-artifacts'),
+        expect.objectContaining({ sessionId: 'test-session-id' }),
+      );
+      expect(MetaMaskExtensionLauncher).toHaveBeenCalledWith(
+        expect.objectContaining({
+          screenshotDir: path.join(
+            REPO_ROOT,
+            'custom-artifacts',
+            'screenshots',
+          ),
+        }),
+      );
+    });
+
+    it('writes screenshots and session metadata to the artifactsDir that core passes in', async () => {
+      await sessionManager.launch({
+        stateMode: 'default',
+        artifactsDir: '/tmp/host-artifacts',
+      });
+
+      expect(MetaMaskExtensionLauncher).toHaveBeenCalledWith(
+        expect.objectContaining({
+          screenshotDir: path.join('/tmp/host-artifacts', 'screenshots'),
+        }),
+      );
+      expect(writeSessionMetadata).toHaveBeenCalledWith(
+        '/tmp/host-artifacts',
+        expect.objectContaining({ sessionId: 'test-session-id' }),
+      );
+    });
+
+    it('writes screenshots to <repo>/test-artifacts/screenshots by default', async () => {
+      await sessionManager.launch({ stateMode: 'default' });
+
+      expect(MetaMaskExtensionLauncher).toHaveBeenCalledWith(
+        expect.objectContaining({
+          screenshotDir: path.join(REPO_ROOT, 'test-artifacts', 'screenshots'),
+        }),
+      );
+    });
+
+    it('fails the launch when the session metadata cannot be written', async () => {
+      jest
+        .mocked(writeSessionMetadata)
+        .mockRejectedValueOnce(new Error('disk full'));
+
+      await expect(
+        sessionManager.launch({ stateMode: 'default' }),
+      ).rejects.toThrow('disk full');
     });
   });
 });

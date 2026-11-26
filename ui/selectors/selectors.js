@@ -37,6 +37,7 @@ import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { KeyringType as KeyringTypeV2 } from '@metamask/keyring-api/v2';
 
 import log from 'loglevel';
+import { isManifestV3 } from '#shared/lib/mv3.utils';
 import { generateTokenCacheKey } from '../helpers/utils/token-scan';
 import {
   getCurrentChainId,
@@ -189,6 +190,7 @@ import {
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../contexts/hardware-wallets/constants';
 import { UTM_PARAMETERS } from '../../shared/types/metametrics';
+import { getChainIdToNativeTokenImageUrlMap } from './config-registry/config-registry';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 import {
   getUnapprovedTransactions,
@@ -319,14 +321,6 @@ export function getExternalServicesOnboardingToggleState(state) {
 
 export function getBackupAndSyncOnboardingToggleState(state) {
   return state.appState.backupAndSyncOnboardingToggleState;
-}
-
-export function getShowDeleteMetaMetricsDataModal(state) {
-  return state.appState.showDeleteMetaMetricsDataModal;
-}
-
-export function getShowDataDeletionErrorModal(state) {
-  return state.appState.showDataDeletionErrorModal;
 }
 
 export function getKeyringSnapRemovalResult(state) {
@@ -911,12 +905,14 @@ export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
     (state, accountAddress) =>
       getNativeTokenCachedBalanceByChainIdSelector(state, accountAddress),
     (_state, accountAddress) => accountAddress,
+    getChainIdToNativeTokenImageUrlMap,
   ],
   (
     allTokens,
     networkConfigurationsByChainId,
     nativeTokenBalancesByChainId,
     selectedAddress,
+    nativeTokenImageUrls,
   ) => {
     const tokensByChain = {};
 
@@ -949,7 +945,8 @@ export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
           balance: nativeBalance,
           chainId,
           isNative: true,
-          image: getNativeCurrencyForChain(chainId),
+          image:
+            nativeTokenImageUrls[chainId] ?? getNativeCurrencyForChain(chainId),
         });
       }
     });
@@ -1279,12 +1276,16 @@ export const getNetworkConfigurationIdByChainId = createResultEqualSelector(
 );
 
 /**
+ * Mirrors the NetworkController: RPC failover is on unless the
+ * `corePlatformRpcFailoverMode` flag is `disabled`. An absent or unrecognized
+ * value falls back to the controller default (`enabled`).
+ *
  * @type (state: RemoteFeatureFlagsState) => boolean
  */
 export const getIsRpcFailoverEnabled = createSelector(
   getRemoteFeatureFlags,
   (remoteFeatureFlags) =>
-    remoteFeatureFlags.walletFrameworkRpcFailoverEnabled ?? false,
+    remoteFeatureFlags.corePlatformRpcFailoverMode !== 'disabled',
 );
 
 /**
@@ -1556,6 +1557,7 @@ export function selectShowTickerWidget(state) {
 export function selectIsTickerWidgetFeatureEnabled(state) {
   const remoteFeatureFlags = getRemoteFeatureFlags(state);
   return (
+    isManifestV3 &&
     state.metamask.useExternalServices !== false &&
     getBooleanFeatureFlag(remoteFeatureFlags?.cashtagInjection, false)
   );
@@ -4107,13 +4109,13 @@ export function getDeferredDeepLink(state) {
 export const getDeferredDeepLinkParameters = createResultEqualSelector(
   getDeferredDeepLink,
   (deferredDeepLink) => {
-    if (!deferredDeepLink?.referringLink) {
+    if (!deferredDeepLink?.originalUrl) {
       return null;
     }
 
     const utmProperties = {};
     try {
-      const url = new URL(deferredDeepLink.referringLink);
+      const url = new URL(deferredDeepLink.originalUrl);
 
       for (const utmParam of UTM_PARAMETERS) {
         const value = url.searchParams.get(utmParam);

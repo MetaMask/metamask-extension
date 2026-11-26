@@ -28,12 +28,22 @@ import {
   importSRPOnboardingFlow,
   incompleteCreateNewWalletOnboardingFlow,
   onboardingMetricsFlow,
+  revealAndConfirmSrp,
   skipPasskeySetup,
 } from '../../page-objects/flows/onboarding.flow';
 import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import { lockAndWaitForPasskeyUnlockPage } from '../../page-objects/flows/login.flow';
 import DeepLink from '../../page-objects/pages/security/deep-link-page';
 import { getMockAssetsPrice } from '../tokens/utils/mocks';
+import {
+  bytesToB64,
+  generateECDSAKeyPair,
+  prepareDeepLinkUrl,
+} from '../deep-link/helpers';
+import {
+  accountsSupportedNetworksV2,
+  priceV3Spot,
+} from '../../mock-response-data/api-responses';
 
 const IMPORTED_SRP_ACCOUNT_1 = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
@@ -49,24 +59,22 @@ const NATIVE_ASSETS_INFO = {
 };
 
 async function mockSpotPrices(mockServer: Mockttp) {
-  return await mockServer
-    .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        'eip155:1/slip44:60': {
-          id: 'ethereum',
-          price: MOCK_ETH_PRICE,
-          marketCap: 382623505141,
-          pricePercentChange1d: 0,
-        },
+  return await priceV3Spot.rule(mockServer).thenCallback(() => ({
+    statusCode: 200,
+    json: {
+      'eip155:1/slip44:60': {
+        id: 'ethereum',
+        price: MOCK_ETH_PRICE,
+        marketCap: 382623505141,
+        pricePercentChange1d: 0,
       },
-    }));
+    },
+  }));
 }
 
 async function mockCustomNetworkOnboarding(mockServer: Mockttp) {
-  await mockServer
-    .forGet(/https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
+  await accountsSupportedNetworksV2
+    .rule(mockServer)
     .always()
     .thenJson(200, {
       fullSupport: [
@@ -84,19 +92,17 @@ async function mockCustomNetworkOnboarding(mockServer: Mockttp) {
       partialSupport: ['eip155:42220', 'eip155:43114'],
     });
 
-  await mockServer
-    .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        'eip155:1338/slip44:60': {
-          id: 'ethereum',
-          price: 1700,
-          marketCap: 382623505141,
-          pricePercentChange1d: 0,
-        },
+  await priceV3Spot.rule(mockServer).thenCallback(() => ({
+    statusCode: 200,
+    json: {
+      'eip155:1338/slip44:60': {
+        id: 'ethereum',
+        price: 1700,
+        marketCap: 382623505141,
+        pricePercentChange1d: 0,
       },
-    }));
+    },
+  }));
 }
 
 describe('MetaMask onboarding', function () {
@@ -119,7 +125,7 @@ describe('MetaMask onboarding', function () {
 
         const secureWalletPage = new SecureWalletPage(driver);
         await secureWalletPage.checkPageIsLoaded();
-        await secureWalletPage.revealAndConfirmSRP();
+        await revealAndConfirmSrp(driver);
 
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           await onboardingMetricsFlow(driver);
@@ -403,7 +409,7 @@ describe('MetaMask onboarding', function () {
   });
 
   it('Navigates to a route using deferred deep link after onboarding completes', async function () {
-    const referringLink =
+    const originalUrl =
       'https://link.metamask.io/swap?amount=22000000000000000&from=eip155%3A1%2Fslip44%3A60&sig_params=amount%2Cfrom%2Cto&to=eip155%3A59144%2Ferc20%3A0x176211869cA2b568f2A7D4EE941E073a821EE1ff&sig=KYoYO9beWAlLIT6GUATcHj98hoDiO9h3UZC76ZcMfreKsJcFtCp_vJCWqa9s8-6aO4FLPgoMI02k03t2WcL5bA';
     const expectedPath = '/cross-chain/swaps/';
 
@@ -413,7 +419,7 @@ describe('MetaMask onboarding', function () {
           .withAppStateController({
             deferredDeepLink: {
               createdAt: Date.now(),
-              referringLink,
+              originalUrl,
             },
           })
           .build(),
@@ -452,10 +458,16 @@ describe('MetaMask onboarding', function () {
   });
 
   it('Navigates to an external web page using deferred deep link after onboarding completes', async function () {
-    const referringLink =
-      'https://link.metamask.io/buy?address=0xacA92E438df0B2401fF60dA7E4337B687a2435DA&amount=100&chainId=1&sig=aagQN9osZ1tfoYIEKvU6t5i8FVaW4Gi6EGimMcZ0VTDmAlPDk800-Nx3131QlDTmO3UF2JCmR2Y2RAJhceNOYw';
-    const expectedUrlOpened =
-      'https://app.metamask.io/buy?address=0xacA92E438df0B2401fF60dA7E4337B687a2435DA&amount=100&chainId=1';
+    const keyPair = await generateECDSAKeyPair();
+    const deepLinkPublicKey = bytesToB64(
+      await crypto.subtle.exportKey('raw', keyPair.publicKey),
+    );
+    const originalUrl = await prepareDeepLinkUrl({
+      route: '/card-onboarding?amount=100',
+      signed: 'signed with sig_params',
+      privateKey: keyPair.privateKey,
+    });
+    const expectedUrlOpened = 'https://metamask.com/card?amount=100';
 
     await withFixtures(
       {
@@ -463,10 +475,15 @@ describe('MetaMask onboarding', function () {
           .withAppStateController({
             deferredDeepLink: {
               createdAt: Date.now(),
-              referringLink,
+              originalUrl,
             },
           })
           .build(),
+        manifestFlags: {
+          testing: {
+            deepLinkPublicKey,
+          },
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -543,7 +560,7 @@ describe('MetaMask onboarding', function () {
 
   it('Shows interstitial warning page for unsigned deferred deep link after onboarding completes', async function () {
     // This deep link is unsigned (no sig parameter)
-    const referringLink =
+    const originalUrl =
       'https://link.metamask.io/swap?amount=22000000000000000&from=eip155%3A1%2Fslip44%3A60&sig_params=amount%2Cfrom%2Cto&to=eip155%3A59144%2Ferc20%3A0x176211869cA2b568f2A7D4EE941E073a821EE1ff';
     const expectedInterstitialPath = '/link';
 
@@ -553,7 +570,7 @@ describe('MetaMask onboarding', function () {
           .withAppStateController({
             deferredDeepLink: {
               createdAt: Date.now(),
-              referringLink,
+              originalUrl,
             },
           })
           .build(),
@@ -599,7 +616,7 @@ describe('MetaMask onboarding', function () {
   });
 
   it('Shows interstitial warning page for deferred deep link with invalid signature after onboarding completes', async function () {
-    const referringLink =
+    const originalUrl =
       'https://link.metamask.io/swap?amount=22000000000000000&from=eip155%3A1%2Fslip44%3A60&sig_params=amount%2Cfrom%2Cto&to=eip155%3A59144%2Ferc20%3A0x176211869cA2b568f2A7D4EE941E073a821EE1ff&sig=aW52YWxpZC1zaWduYXR1cmU=';
     const expectedInterstitialPath = '/link';
 
@@ -609,7 +626,7 @@ describe('MetaMask onboarding', function () {
           .withAppStateController({
             deferredDeepLink: {
               createdAt: Date.now(),
-              referringLink,
+              originalUrl,
             },
           })
           .build(),

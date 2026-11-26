@@ -41,6 +41,16 @@ const getPerpsDepositState = () => {
   } as TransactionMeta);
 };
 
+/** Build a confirm state for a moneyAccountDeposit transaction. */
+const getMoneyAccountDepositState = () => {
+  const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
+  return getMockConfirmStateForTransaction({
+    ...base,
+    type: TransactionType.moneyAccountDeposit,
+    origin: 'metamask',
+  } as TransactionMeta);
+};
+
 /** Build a confirm state for a moneyAccountWithdraw transaction. */
 const getMoneyAccountWithdrawState = () => {
   const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
@@ -248,6 +258,12 @@ describe('<WalletInitiatedHeader />', () => {
     const { getByText } = render(getMoneyAccountWithdrawState());
 
     expect(getByText(tEn('send'))).toBeInTheDocument();
+  });
+
+  it('shows moneyAccountDepositHeader as the header title for moneyAccountDeposit', () => {
+    const { getByText } = render(getMoneyAccountDepositState());
+
+    expect(getByText(tEn('moneyAccountDepositHeader'))).toBeInTheDocument();
   });
 
   it('hides AdvancedDetailsButton visually for perpsWithdraw', () => {

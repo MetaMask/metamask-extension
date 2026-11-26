@@ -208,10 +208,6 @@
   "fast": {
     "message": "Cepat"
   },
-  "fileImportFail": {
-    "message": "Pengimportan fail tidak berfungsi? Klik di sini!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "Lupakan peranti ini"
   },
@@ -220,9 +216,6 @@
   },
   "gasLimit": {
     "message": "Had Gas"
-  },
-  "gasUsed": {
-    "message": "Gas Digunakan"
   },
   "general": {
     "message": "Am"
@@ -376,10 +369,6 @@
   "passwordsDontMatch": {
     "message": "Kata Laluan Tidak Sepadan"
   },
-  "pastePrivateKey": {
-    "message": "Tampal rentetan kekunci persendirian anda di sini:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "menunggu"
   },
@@ -395,9 +384,6 @@
   "privateKey": {
     "message": "Kekunci Persendirian",
     "description": "select this type of file to use to import an account"
-  },
-  "privateNetwork": {
-    "message": "Rangkaian Persendirian"
   },
   "readdToken": {
     "message": "Anda boleh tambah token ini kembali pada masa depan dengan pergi ke \"Tambah token\" di dalam menu pilihan akaun anda."
@@ -550,9 +536,6 @@
   "unapproved": {
     "message": "Belum Diluluskan"
   },
-  "units": {
-    "message": "unit"
-  },
   "unknown": {
     "message": "Tidak diketahui"
   },
@@ -564,9 +547,6 @@
   },
   "urlErrorMsg": {
     "message": "URI memerlukan awalan HTTP/HTTPS yang sesuai."
-  },
-  "usedByClients": {
-    "message": "Digunakan oleh pelbagai klien berbeza"
   },
   "visitWebSite": {
     "message": "Kunjungi laman web kami"

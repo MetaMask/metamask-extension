@@ -372,6 +372,49 @@ describe('PerpsTransactionDetailsPage', () => {
       expect(screen.queryByText('+$150.00')).not.toBeInTheDocument();
     });
 
+    it('shows a zero net PnL with the same text as the activity row', () => {
+      const transaction = findTransaction('tx-002');
+      if (!transaction.fill) {
+        throw new Error('Missing test fill');
+      }
+
+      renderWithTransaction({
+        ...transaction,
+        fill: {
+          ...transaction.fill,
+          pnl: '2.5',
+          fee: '2.5',
+          amount: '$0.00',
+          amountNumber: 0,
+          isPositive: true,
+        },
+      });
+
+      expect(getRowValueByLabel(messages.perpsPnl.message)).toBe('$0.00');
+    });
+
+    it('shows an unknown fee as unavailable rather than $0', () => {
+      const transaction = findTransaction('tx-002');
+      if (!transaction.fill) {
+        throw new Error('Missing test fill');
+      }
+
+      renderWithTransaction({
+        ...transaction,
+        fill: {
+          ...transaction.fill,
+          fee: '',
+          amount: 'Unknown',
+          amountNumber: undefined,
+        },
+      });
+
+      expect(getRowValueByLabel(messages.perpsPnl.message)).toBe(
+        messages.unknown.message,
+      );
+      expect(getRowValueByLabel(messages.perpsFees.message)).toBe('$---');
+    });
+
     it('labels the price row "Close price" for a closed position fill', () => {
       const transaction = findTransaction('tx-002');
       expect(transaction.fill?.action).toBe('Closed');

@@ -41,6 +41,11 @@ import {
   USDC_BALANCE_RAW,
   USDC_USD_PRICE,
 } from '../metamask-pay/constants';
+import {
+  priceV1ExchangeRates,
+  priceV3Spot,
+  txSentinelNetwork,
+} from '../../../mock-response-data/api-responses';
 
 /** Accountant `getRate()`. A zero rate makes share math divide by zero. */
 const ACCOUNTANT_GET_RATE_SELECTOR = '0x679aefce';
@@ -50,12 +55,20 @@ const ACCOUNTANT_GET_RATE_SELECTOR = '0x679aefce';
  */
 const VAULT_RATE_ONE_TO_ONE = pad(toHex(1_000_000n), { size: 32 });
 
+/** Opaque token Relay returns on execute quotes and expects back on /execute. */
+const RELAY_EXECUTE_SIGNATURE = 'money-account-withdraw-e2e-signature';
+
 type RelayQuoteRequestBody = {
   amount?: string;
   destinationCurrency?: string;
+  metamask?: { executeVersion?: number };
   originCurrency?: string;
   recipient?: string;
   user?: string;
+};
+
+type RelayExecuteRequestBody = {
+  requestId?: string;
 };
 
 function getProductionRemoteFlagApiResponseWithOverrides(
@@ -103,8 +116,8 @@ async function mockMoneyAccountDepositFlags(
 }
 
 async function mockPriceApis(server: Mockttp): Promise<void> {
-  await server
-    .forGet(`${PRICE_API_BASE_URL}/v1/exchange-rates`)
+  await priceV1ExchangeRates
+    .rule(server)
     .always()
     .thenCallback(() => ({
       statusCode: 200,
@@ -124,8 +137,8 @@ async function mockPriceApis(server: Mockttp): Promise<void> {
       },
     }));
 
-  await server
-    .forGet(`${PRICE_API_BASE_URL}/v3/spot-prices`)
+  await priceV3Spot
+    .rule(server)
     .always()
     .thenCallback((request) => {
       const url = new URL(request.url);
@@ -664,8 +677,8 @@ async function mockDepositSettlement(
     [TX_SENTINEL_URL, mainnetSentinelNetwork],
     [MONAD_TX_SENTINEL_URL, monadSentinelNetwork],
   ] as const) {
-    await server
-      .forGet(`${sentinelUrl}/network`)
+    await txSentinelNetwork
+      .rule(server, { baseUrl: sentinelUrl })
       .always()
       .thenCallback(() => ({ statusCode: 200, json: network }));
   }
@@ -792,6 +805,9 @@ function buildRelayQuote(body: RelayQuoteRequestBody): {
     sourceSymbol = 'ETH';
   }
   const sourceChainId = isMusdSource ? MONAD_CHAIN_ID_DECIMAL : 1;
+  // The Money Account cannot sign a plain transaction, so its quotes must be
+  // Relay execute quotes. Deposits keep the plain step that Anvil mines.
+  const isExecute = isMusdSource && Boolean(body.metamask?.executeVersion);
   const user = (body.user ??
     (isMusdSource
       ? MONEY_ACCOUNT_ADDRESS
@@ -882,6 +898,9 @@ function buildRelayQuote(body: RelayQuoteRequestBody): {
     settlementHash,
     settlesOnMainnet: isMusdSource,
     quote: {
+      ...(isExecute
+        ? { metamask: { isExecute: true, signature: RELAY_EXECUTE_SIGNATURE } }
+        : {}),
       steps: [
         {
           id: 'deposit',
@@ -947,7 +966,7 @@ function buildRelayQuote(body: RelayQuoteRequestBody): {
 }
 
 /**
- * Registers the Relay quote mock. Records each served quote's request id,
+ * Registers the Relay quote and execute mocks. Records each served quote's request id,
  * settlement hash and mUSD output so the settlement mocks report the amount
  * the confirmed quote promised.
  *
@@ -986,6 +1005,16 @@ async function mockRelayQuote(
     .forPost(/intents\.(uat-)?api\.cx\.metamask\.io\/relay\/quote/u)
     .always()
     .thenCallback(handler);
+
+  // Echo the quote's request id so the status mocks resolve its settlement.
+  await server
+    .forPost(/intents\.(uat-)?api\.cx\.metamask\.io\/relay\/execute/u)
+    .always()
+    .thenCallback(async (request) => {
+      const body = ((await request.body.getJson()) ??
+        {}) as RelayExecuteRequestBody;
+      return { statusCode: 200, json: { requestId: body.requestId } };
+    });
 }
 
 /**

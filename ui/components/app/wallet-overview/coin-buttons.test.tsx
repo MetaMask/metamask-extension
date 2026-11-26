@@ -100,8 +100,6 @@ jest.mock(
 
 jest.mock('../../../store/actions', () => ({
   setActiveNetworkWithError: jest.fn(),
-  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
-  tokenBalancesStopPollingByPollingToken: jest.fn(),
 }));
 
 const mockAccount = {
@@ -251,5 +249,53 @@ describe('CoinButtons – asset page swap token', () => {
     expect(
       screen.queryByTestId('coin-overview-receive'),
     ).not.toBeInTheDocument();
+  });
+});
+
+describe('CoinButtons – pills design', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  const renderCoinButtons = (
+    props: Partial<React.ComponentProps<typeof CoinButtons>> = {},
+  ) =>
+    renderWithProvider(
+      <CoinButtons
+        account={mockAccount as Parameters<typeof CoinButtons>[0]['account']}
+        chainId="0x1"
+        trackingLocation="home"
+        isSwapsChain
+        isSigningEnabled
+        showAsPills
+        {...props}
+      />,
+      configureStore(mockState),
+      '/',
+    );
+
+  it('shows every action as its own button', () => {
+    renderCoinButtons();
+
+    expect(
+      screen
+        .getAllByRole('button')
+        .map((button) => button.getAttribute('data-testid')),
+    ).toStrictEqual([
+      'coin-overview-buy',
+      'coin-overview-swap',
+      'coin-overview-send',
+      'coin-overview-batchSell',
+      'coin-overview-receive',
+    ]);
+    expect(screen.queryByTestId('coin-overview-more')).not.toBeInTheDocument();
+  });
+
+  it('disables Swap and Send when signing is not enabled', () => {
+    renderCoinButtons({ isSigningEnabled: false });
+
+    expect(screen.getByTestId('coin-overview-swap')).toBeDisabled();
+    expect(screen.getByTestId('coin-overview-send')).toBeDisabled();
+    expect(screen.getByTestId('coin-overview-buy')).toBeEnabled();
   });
 });

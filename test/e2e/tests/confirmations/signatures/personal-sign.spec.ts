@@ -40,7 +40,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
         const confirmation = new PersonalSignConfirmation(driver);
         const testDapp = new TestDapp(driver);
 
-        await login(driver);
+        await login(driver, { waitForSignIn: true });
         await testDapp.openTestDappAndTriggerSignature(
           SignatureType.PersonalSign,
         );
@@ -92,7 +92,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
         const confirmation = new PersonalSignConfirmation(driver);
         const testDapp = new TestDapp(driver);
 
-        await login(driver);
+        await login(driver, { waitForSignIn: true });
         await testDapp.openTestDappAndTriggerSignature(
           SignatureType.PersonalSign,
         );

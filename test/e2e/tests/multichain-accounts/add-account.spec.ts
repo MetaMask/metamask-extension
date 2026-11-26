@@ -3,11 +3,12 @@ import { Browser } from 'selenium-webdriver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { E2E_SRP, WALLET_PASSWORD } from '../../constants';
-import { sendRedesignedTransactionToAccount } from '../../page-objects/flows/send-transaction.flow';
+import { sendTransaction } from '../../page-objects/flows/transaction.flow';
 import {
   login,
   lockAndWaitForLoginPage,
 } from '../../page-objects/flows/login.flow';
+import { importAccountWithPrivateKey } from '../../page-objects/flows/add-wallet.flow';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
@@ -22,6 +23,7 @@ import {
   mockPriceApi,
 } from '../tokens/utils/mocks';
 import SetupPasskeyPage from '../../page-objects/pages/onboarding/setup-passkey-page';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 
 const SECOND_ACCOUNT_NAME = 'Account 2';
 const IMPORTED_ACCOUNT_NAME = 'Imported Account 1';
@@ -58,7 +60,7 @@ describe('Add account', function () {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { expectedBalance: '$85,025.00' });
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
@@ -72,18 +74,19 @@ describe('Add account', function () {
         });
         await accountListPage.closeMultichainAccountsPage();
 
-        await sendRedesignedTransactionToAccount({
+        await sendTransaction({
           driver,
-          recipientAccount: SECOND_ACCOUNT_NAME,
+          recipientName: SECOND_ACCOUNT_NAME,
           amount: '2.8',
         });
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+        await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkTxAmountInActivity('-2.8 ETH');
         await activityTab.waitPendingTxToNotBeVisible();
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await accountListPage.checkMultichainAccountBalanceDisplayed({
           wallet: 'Wallet 1',
           account: 'Account 1',
@@ -111,7 +114,7 @@ describe('Add account', function () {
         await homePage.checkPageIsLoaded();
         await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
         await homePage.checkExpectedBalanceIsDisplayed('75,502');
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountDisplayedInAccountList(
           SECOND_ACCOUNT_NAME,
@@ -140,13 +143,12 @@ describe('Add account', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { expectedBalance: '$75,250.00' });
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.addNewImportedAccount(TEST_PRIVATE_KEY);
+        await importAccountWithPrivateKey(driver, TEST_PRIVATE_KEY);
 
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await accountListPage.checkPageIsLoaded();
         await accountListPage.openMultichainAccountMenu({
           accountLabel: importedAccount.name,
@@ -188,8 +190,7 @@ describe('Add account', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { expectedBalance: '$85,025.00' });
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
@@ -216,9 +217,9 @@ describe('Add account', function () {
         await accountDetailsPage.navigateBack();
 
         // Create 3rd account with private key
-        await accountListPage.addNewImportedAccount(testPrivateKey);
+        await importAccountWithPrivateKey(driver, testPrivateKey);
 
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountDisplayedInAccountList(
           IMPORTED_ACCOUNT_NAME,
@@ -236,7 +237,7 @@ describe('Add account', function () {
         await accountDetailsPage.checkPageIsLoaded();
         await accountDetailsPage.removeAccount();
 
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountNotDisplayedInAccountList(
           IMPORTED_ACCOUNT_NAME,
@@ -264,7 +265,7 @@ describe('Add account', function () {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { expectedBalance: '$75,250.00' });
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
@@ -282,20 +283,13 @@ describe('Add account', function () {
 
         await headerNavbar.checkAccountLabel(CUSTOM_ACCOUNT_NAME);
 
-        // Wait for the runtime-created non-EVM (Solana/Bitcoin) accounts to finish
-        // loading before locking. Otherwise account creation is still in-flight in
-        // the background when the wallet locks, which slows the service-worker restart
-        // and makes the post-lock navigate time out waiting for `.controller-loaded`.
-        const homePage = new HomePage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
-
         // Lock and unlock wallet
         await lockAndWaitForLoginPage(driver);
         await login(driver, { validateBalance: false });
 
         // Verify both account labels persist after unlock
         await headerNavbar.checkAccountLabel(CUSTOM_ACCOUNT_NAME);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
 
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountDisplayedInAccountList(

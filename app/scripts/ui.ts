@@ -1,8 +1,3 @@
-// ESLint complains that we are mixing imports and runtime code, which we are,
-// but we need to initialize React Devtools before importing React (which
-// happens in the UI code).
-/* eslint-disable import-x/first */
-
 // This import sets up safe intrinsics required for LavaDome to function securely.
 // It must be run before any less trusted code so that no such code can undermine it.
 import '@lavamoat/lavadome-react';
@@ -16,14 +11,7 @@ import './development/wdyr';
 import '../../shared/constants/infura-project-id';
 
 import type { Duplex } from 'stream';
-import * as reactDevtoolsCore from 'react-devtools-core';
 import type { Substream } from '@metamask/object-multiplex/dist/Substream';
-
-if (reactDevtoolsCore && process.env.METAMASK_REACT_REDUX_DEVTOOLS) {
-  const { initialize, connectToDevTools } = reactDevtoolsCore;
-  initialize();
-  connectToDevTools();
-}
 
 import browser from 'webextension-polyfill';
 
@@ -34,6 +22,7 @@ import log from 'loglevel';
 import { ExtensionPortStream } from 'extension-port-stream';
 import {
   launchMetamaskUi,
+  trackDocumentPageClose,
   CriticalStartupErrorHandler,
   connectToBackground,
   displayCriticalErrorMessage,
@@ -56,10 +45,13 @@ import {
   TraceName,
   type TraceContext,
 } from '../../shared/lib/trace';
+import { recordBackgroundInitializationTiming } from '../../shared/lib/ui-startup-timing';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
 import metaRPCClientFactory from './lib/metaRPCClientFactory';
+
+trackDocumentPageClose();
 
 const PHISHING_WARNING_PAGE_TIMEOUT = 1 * 1000; // 1 Second
 const PHISHING_WARNING_SW_STORAGE_KEY = 'phishing-warning-sw-registered';
@@ -135,6 +127,7 @@ async function start(): Promise<void> {
 
   // setup stream to background
   const extensionPort = browser.runtime.connect({ name: windowType });
+  extensionPort.onMessage.addListener(recordBackgroundInitializationTiming);
 
   // Set up error handlers as early as possible to ensure we are ready to
   // handle any errors that occur at any time
@@ -152,6 +145,9 @@ async function start(): Promise<void> {
   connectToBackground(backgroundConnection, handleStartUISync);
 
   async function handleStartUISync(initialState: unknown): Promise<void> {
+    extensionPort.onMessage.removeListener(
+      recordBackgroundInitializationTiming,
+    );
     endTrace({ name: TraceName.BackgroundConnect });
     criticalErrorHandler.startUiSyncReceived();
 
@@ -289,9 +285,8 @@ async function initializeUiWithTab(
       backgroundConnection,
       traceContext,
       initialState,
+      onFirstCommit: () => endTrace({ name: TraceName.UIStartup }),
     });
-
-    endTrace({ name: TraceName.UIStartup });
 
     if (process.env.IN_TEST) {
       window.document?.documentElement?.classList.add('controller-loaded');
@@ -301,6 +296,9 @@ async function initializeUiWithTab(
     const { metamask: { completedOnboarding } = {} } = state;
 
     if (!completedOnboarding && windowType !== ENVIRONMENT_TYPE_FULLSCREEN) {
+      // The window may close before React commits, so end the traces here.
+      endTrace({ name: TraceName.FirstRender });
+      endTrace({ name: TraceName.UIStartup });
       globalThis.platform.openExtensionInBrowser();
     }
   } catch (error) {

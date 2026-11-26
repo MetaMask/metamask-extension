@@ -75,12 +75,12 @@ const getMetaMaskStateWithUnapprovedRevokeTx = (opts?: {
 };
 
 const advancedDetailsMockedRequests = {
-  getGasFeeTimeEstimate: {
+  'GasFeeController:getTimeEstimate': {
     lowerTimeBound: new Date().getTime(),
     upperTimeBound: new Date().getTime(),
   },
-  getNextNonce: '9',
-  decodeTransactionData: {
+  'LegacyBackgroundApiService:getNextNonce': '9',
+  'LegacyBackgroundApiService:decodeTransactionData': {
     data: [
       {
         name: 'setApprovalForAll',
@@ -98,7 +98,7 @@ const advancedDetailsMockedRequests = {
     ],
     source: 'FourByte',
   },
-  addKnownMethodData: {},
+  'PreferencesController:addKnownMethodData': {},
 };
 
 const setupSubmitRequestToBackgroundMocks = (
@@ -125,7 +125,7 @@ describe('ERC721 setApprovalForAll - Revoke Confirmation', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks({
-      getTokenStandardAndDetails: {
+      'LegacyBackgroundApiService:getTokenStandardAndDetails': {
         standard: ERC721,
       },
     });

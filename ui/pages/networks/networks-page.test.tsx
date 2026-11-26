@@ -1,7 +1,17 @@
 import React from 'react';
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { RpcEndpointType } from '@metamask/network-controller';
+import type {
+  ConfigRegistryControllerState,
+  RegistryNetworkConfig,
+} from '@metamask/config-registry-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import configureStore from '../../store/store';
@@ -251,6 +261,7 @@ describe('NetworksPage', () => {
     },
     editedNetwork,
     remoteFeatureFlags = {},
+    configs,
     showTestNetworks = false,
   }: {
     pathname?: string;
@@ -260,6 +271,7 @@ describe('NetworksPage', () => {
     enabledNetworkMap?: Record<string, Record<string, boolean>>;
     editedNetwork?: { chainId: string; nickname?: string };
     remoteFeatureFlags?: Record<string, unknown>;
+    configs?: ConfigRegistryControllerState['configs'];
     showTestNetworks?: boolean;
   } = {}) => {
     const store = configureStore({
@@ -276,6 +288,7 @@ describe('NetworksPage', () => {
           ...mockState.metamask.remoteFeatureFlags,
           ...remoteFeatureFlags,
         },
+        ...(configs ? { configs } : {}),
         providerConfig: {
           chainId: selectedProviderChainId,
           rpcUrl: 'https://mainnet.infura.io/v3/123',
@@ -362,6 +375,42 @@ describe('NetworksPage', () => {
     ).toHaveAttribute('src', './images/empty-state-activity-light.png');
     expect(screen.queryByText('Custom network 1')).not.toBeInTheDocument();
     expect(screen.queryByText('Sepolia')).not.toBeInTheDocument();
+  });
+
+  it('uses the config registry logo for a featured network not yet enabled', () => {
+    // Only the fields consumed by the featured-network conversion and the
+    // logo lookups are populated.
+    const registryNetwork = {
+      chainId: 'eip155:1329',
+      name: 'Sei Network',
+      imageUrl: 'https://example.com/sei.png',
+      assets: { native: { symbol: 'SEI' } },
+      rpcProviders: {
+        default: {
+          url: 'https://evm-rpc.sei.network',
+          type: 'custom',
+          networkClientId: 'evm-sei-1329',
+        },
+      },
+      blockExplorerUrls: { default: 'https://seitrace.com' },
+      config: {
+        isActive: true,
+        isTestnet: false,
+        isFeatured: true,
+      },
+    } as unknown as RegistryNetworkConfig;
+
+    renderNetworksPage({
+      remoteFeatureFlags: { configRegistryApiEnabled: true },
+      configs: { networks: { 'eip155:1329': registryNetwork } },
+    });
+
+    const row = screen.getByTestId('popular-network-0x531');
+    expect(within(row).getByText('Sei Network')).toBeInTheDocument();
+    expect(within(row).getByRole('img')).toHaveAttribute(
+      'src',
+      'https://example.com/sei.png',
+    );
   });
 
   it('renders the add network flow from the query param', () => {
@@ -541,6 +590,117 @@ describe('NetworksPage', () => {
     expect(screen.getByTestId('network-form-ticker-input')).toHaveValue('xDAI');
     expect(
       screen.queryByTestId('networks-page-chainlist-source-banner'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('highlights a Chainlist suggestion without leaving the name field', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add`,
+      remoteFeatureFlags: {
+        extensionUxChainlist: true,
+        extensionUxChainlistV2: true,
+      },
+    });
+
+    const nameInput = screen.getByTestId('network-form-network-name');
+    nameInput.focus();
+    expect(nameInput).toHaveAttribute('role', 'combobox');
+    expect(nameInput).toHaveAttribute('aria-expanded', 'true');
+
+    await act(async () => {
+      fireEvent.keyDown(nameInput, { key: 'ArrowDown' });
+    });
+    const [firstNetwork, secondNetwork] = screen.getAllByTestId(
+      'networks-page-chainlist-network',
+    );
+    expect(nameInput).toHaveFocus();
+    expect(firstNetwork).toHaveAttribute('aria-selected', 'true');
+    expect(firstNetwork).toHaveAttribute('tabindex', '-1');
+    expect(secondNetwork).toHaveAttribute('aria-selected', 'false');
+
+    await act(async () => {
+      fireEvent.keyDown(nameInput, { key: 'ArrowDown' });
+    });
+    expect(nameInput).toHaveFocus();
+    expect(secondNetwork).toHaveAttribute('aria-selected', 'true');
+
+    await act(async () => {
+      fireEvent.keyDown(nameInput, { key: 'Enter' });
+    });
+
+    expect(nameInput).toHaveValue('Cronos');
+    expect(screen.getByTestId('network-form-chain-id')).toHaveValue('25');
+  });
+
+  it('keeps the typed name when Enter is pressed before a suggestion is highlighted', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add`,
+      remoteFeatureFlags: {
+        extensionUxChainlist: true,
+        extensionUxChainlistV2: true,
+      },
+    });
+
+    const nameInput = screen.getByTestId('network-form-network-name');
+    nameInput.focus();
+
+    await act(async () => {
+      fireEvent.keyDown(nameInput, { key: 'Enter' });
+    });
+
+    expect(nameInput).toHaveValue('');
+    expect(nameInput).toHaveFocus();
+    expect(
+      screen.getByTestId('networks-page-chainlist-dropdown'),
+    ).toBeInTheDocument();
+  });
+
+  it('closes the Chainlist suggestions when Tab is pressed', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add`,
+      remoteFeatureFlags: {
+        extensionUxChainlist: true,
+        extensionUxChainlistV2: true,
+      },
+    });
+
+    const nameInput = screen.getByTestId('network-form-network-name');
+    nameInput.focus();
+    expect(
+      screen.getByRole('button', {
+        name: messages.chainlistLearnHowToStaySafe.message,
+      }),
+    ).toHaveAttribute('tabindex', '-1');
+
+    let tabMovesFocus = false;
+    await act(async () => {
+      tabMovesFocus = fireEvent.keyDown(nameInput, { key: 'Tab' });
+    });
+
+    expect(tabMovesFocus).toBe(true);
+    expect(
+      screen.queryByTestId('networks-page-chainlist-dropdown'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('closes the Chainlist suggestions when Escape is pressed', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add`,
+      remoteFeatureFlags: {
+        extensionUxChainlist: true,
+        extensionUxChainlistV2: true,
+      },
+    });
+
+    const nameInput = screen.getByTestId('network-form-network-name');
+    nameInput.focus();
+
+    await act(async () => {
+      fireEvent.keyDown(nameInput, { key: 'Escape' });
+    });
+
+    expect(
+      screen.queryByTestId('networks-page-chainlist-dropdown'),
     ).not.toBeInTheDocument();
   });
 

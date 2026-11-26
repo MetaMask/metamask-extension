@@ -2267,28 +2267,6 @@ describe('#getConnectedSitesList', () => {
       },
     });
   });
-  describe('#getShowDeleteMetaMetricsDataModal', () => {
-    it('returns state of showDeleteMetaMetricsDataModal', () => {
-      expect(
-        selectors.getShowDeleteMetaMetricsDataModal({
-          appState: {
-            showDeleteMetaMetricsDataModal: true,
-          },
-        }),
-      ).toStrictEqual(true);
-    });
-  });
-  describe('#getShowDataDeletionErrorModal', () => {
-    it('returns state of showDataDeletionErrorModal', () => {
-      expect(
-        selectors.getShowDataDeletionErrorModal({
-          appState: {
-            showDataDeletionErrorModal: true,
-          },
-        }),
-      ).toStrictEqual(true);
-    });
-  });
   describe('#getMetaMetricsDataDeletionId', () => {
     it('returns metaMetricsDataDeletionId', () => {
       expect(
@@ -4958,7 +4936,7 @@ describe('getDeferredDeepLink', () => {
   it('returns the deferredDeepLink value when it exists', () => {
     const mockDeepLink = {
       createdAt: 1765465337256,
-      referringLink: 'https://link.metamask.io/deep-link',
+      originalUrl: 'https://link.metamask.io/deep-link',
     };
     const state = {
       metamask: {
@@ -4986,7 +4964,7 @@ describe('getDeferredDeepLinkParameters', () => {
       metamask: {
         deferredDeepLink: {
           createdAt: 1765465337256,
-          referringLink:
+          originalUrl:
             'https://link.metamask.io/swap?utm_source=newsletter&utm_medium=email&utm_campaign=&foo=bar',
         },
       },

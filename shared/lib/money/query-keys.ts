@@ -4,12 +4,14 @@ import type {
   MoneyAccountBalanceServiceGetMoneyAccountBalanceAction,
   MoneyAccountBalanceServiceGetMusdBalanceAction,
   MoneyAccountBalanceServiceGetMusdEquivalentValueAction,
-  MoneyAccountBalanceServiceGetVaultApyAction,
   MoneyAccountBalanceServiceGetVmusdBalanceAction,
 } from '@metamask/money-account-balance-service';
 import type {
   MoneyAccountApiDataServiceFetchInterestAction,
   MoneyAccountApiDataServiceFetchPositionsAction,
+  MoneyAccountApiDataServiceFetchVaultsAction,
+  MoneyAccountApiDataServiceFetchVaultRateAction,
+  MoneyAccountApiDataServiceFetchVaultShareValuationsAction,
 } from '@metamask/money-account-api-data-service';
 
 type MoneyAccountBalanceServiceQueryAction =
@@ -18,17 +20,18 @@ type MoneyAccountBalanceServiceQueryAction =
   | MoneyAccountBalanceServiceGetMoneyAccountBalanceAction
   | MoneyAccountBalanceServiceGetMusdBalanceAction
   | MoneyAccountBalanceServiceGetMusdEquivalentValueAction
-  | MoneyAccountBalanceServiceGetVaultApyAction
   | MoneyAccountBalanceServiceGetVmusdBalanceAction;
 
 type MoneyAccountApiDataServiceQueryAction =
   | MoneyAccountApiDataServiceFetchInterestAction
-  | MoneyAccountApiDataServiceFetchPositionsAction;
+  | MoneyAccountApiDataServiceFetchPositionsAction
+  | MoneyAccountApiDataServiceFetchVaultsAction
+  | MoneyAccountApiDataServiceFetchVaultRateAction
+  | MoneyAccountApiDataServiceFetchVaultShareValuationsAction;
 
 export const MoneyAccountBalanceServiceQueryKeys = {
   GET_MUSD_BALANCE: 'MoneyAccountBalanceService:getMusdBalance',
   GET_VMUSD_BALANCE: 'MoneyAccountBalanceService:getVmusdBalance',
-  GET_VAULT_APY: 'MoneyAccountBalanceService:getVaultApy',
   GET_MUSD_EQUIVALENT_VALUE:
     'MoneyAccountBalanceService:getMusdEquivalentValue',
   GET_EXCHANGE_RATE: 'MoneyAccountBalanceService:getExchangeRate',
@@ -44,6 +47,10 @@ export const MoneyAccountBalanceServiceQueryKeys = {
 export const MoneyAccountApiDataServiceQueryKeys = {
   FETCH_POSITIONS: 'MoneyAccountApiDataService:fetchPositions',
   FETCH_INTEREST: 'MoneyAccountApiDataService:fetchInterest',
+  FETCH_VAULTS: 'MoneyAccountApiDataService:fetchVaults',
+  FETCH_VAULT_RATE: 'MoneyAccountApiDataService:fetchVaultRate',
+  FETCH_VAULT_SHARE_VALUATIONS:
+    'MoneyAccountApiDataService:fetchVaultShareValuations',
 } as const satisfies Record<
   string,
   MoneyAccountApiDataServiceQueryAction['type']

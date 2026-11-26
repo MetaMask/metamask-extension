@@ -41,6 +41,7 @@ describe('Money Account Deposit - Max', function (this: Suite) {
         );
 
         await selectPayToken(driver, confirmation, CHAIN_IDS.MAINNET, 'USDC');
+        await confirmation.checkPayWithBalance(`($${USDC_BALANCE_HUMAN}.00)`);
 
         await confirmation.clickMax();
         await confirmation.checkAmount(String(USDC_BALANCE_HUMAN));

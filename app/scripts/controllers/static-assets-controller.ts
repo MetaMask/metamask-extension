@@ -15,10 +15,12 @@ import type {
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
+import { traceBackgroundPoll } from '../../../shared/lib/trace';
 import {
   toAssetId,
   isNativeCaipAssetId,
 } from '../../../shared/lib/asset-utils';
+import { StaticAssetsControllerMethodActions } from './static-assets-controller-method-action-types';
 
 const CONTROLLER = 'StaticAssetsController' as const;
 
@@ -45,13 +47,24 @@ export type StaticAssetsPollingFeatureFlagOptions = {
 
 export type StaticAssetsControllerState = {};
 
+const MESSENGER_EXPOSED_METHODS = [
+  'startPolling',
+  'stopPollingByPollingToken',
+] as const;
+
 export type StaticAssetsControllerGetStateAction = ControllerGetStateAction<
   typeof CONTROLLER,
   StaticAssetsControllerState
 >;
 
 export type StaticAssetsControllerActions =
-  StaticAssetsControllerGetStateAction;
+  | StaticAssetsControllerGetStateAction
+  | StaticAssetsControllerMethodActions;
+
+export type AllowedActions =
+  | NetworkControllerFindNetworkClientIdByChainIdAction
+  | AssetsControllerGetStateAction
+  | AssetsControllerAddCustomAssetAction;
 
 export type StaticAssetsControllerStateChangeEvent = ControllerStateChangeEvent<
   typeof CONTROLLER,
@@ -60,11 +73,6 @@ export type StaticAssetsControllerStateChangeEvent = ControllerStateChangeEvent<
 
 export type StaticAssetsControllerEvents =
   StaticAssetsControllerStateChangeEvent;
-
-export type AllowedActions =
-  | NetworkControllerFindNetworkClientIdByChainIdAction
-  | AssetsControllerGetStateAction
-  | AssetsControllerAddCustomAssetAction;
 
 export type StaticAssetsControllerMessenger = Messenger<
   typeof CONTROLLER,
@@ -188,6 +196,11 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
     this.#getCacheExpirationTime = getCacheExpirationTime;
 
     this.#getTopX = getTopX;
+
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
+    );
   }
 
   /**
@@ -207,16 +220,18 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
     selectedAccountAddress: string;
     selectedAccountId: string;
   }): Promise<void> {
-    if (!selectedAccountAddress || !selectedAccountId) {
-      return;
-    }
-    // Use Promise.allSettled to wait for all the promises to settle,
-    // even if some of chains are rejected.
-    await Promise.allSettled(
-      chainIds.map((chainId) =>
-        this.#addTokensByChainId(chainId, selectedAccountId),
-      ),
-    );
+    await traceBackgroundPoll(CONTROLLER, async () => {
+      if (!selectedAccountAddress || !selectedAccountId) {
+        return;
+      }
+      // Use Promise.allSettled to wait for all the promises to settle,
+      // even if some of chains are rejected.
+      await Promise.allSettled(
+        chainIds.map((chainId) =>
+          this.#addTokensByChainId(chainId, selectedAccountId),
+        ),
+      );
+    });
   }
 
   /**

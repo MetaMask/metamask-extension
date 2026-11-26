@@ -211,10 +211,6 @@
   "fast": {
     "message": "Ātrs"
   },
-  "fileImportFail": {
-    "message": "Vai faila importēšanas iespēja nedarbojas? Klikšķiniet šeit!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "Aizmirst šo ierīci"
   },
@@ -223,9 +219,6 @@
   },
   "gasLimit": {
     "message": "Gas robežvērtība"
-  },
-  "gasUsed": {
-    "message": "Izlietotie Gas"
   },
   "general": {
     "message": "Vispārīgi"
@@ -392,10 +385,6 @@
   "passwordsDontMatch": {
     "message": "Paroles nesakrīt"
   },
-  "pastePrivateKey": {
-    "message": "Ielīmējiet privātās atslēgas rindu šeit:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "gaida"
   },
@@ -411,9 +400,6 @@
   "privateKey": {
     "message": "Privātā atslēga",
     "description": "select this type of file to use to import an account"
-  },
-  "privateNetwork": {
-    "message": "Privātais tīkls"
   },
   "readdToken": {
     "message": "Jūs varat šo marķieri iestatīt atpakaļ nākotnē, konta opciju izvēlnē atverot \"Pievienot marķieri\"."
@@ -569,9 +555,6 @@
   "unapproved": {
     "message": "Nav apstiprināts"
   },
-  "units": {
-    "message": "vienības"
-  },
   "unknown": {
     "message": "Nezināma"
   },
@@ -583,9 +566,6 @@
   },
   "urlErrorMsg": {
     "message": "URI jāsākas ar atbilstošo HTTP/HTTPS priedēkli."
-  },
-  "usedByClients": {
-    "message": "Izmanto dažādi klienti"
   },
   "visitWebSite": {
     "message": "Apmeklējiet mūsu tīmekļa vietni"

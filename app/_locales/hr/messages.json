@@ -211,10 +211,6 @@
   "fast": {
     "message": "Brzo"
   },
-  "fileImportFail": {
-    "message": "Uvoženje datoteke ne radi? Kliknite ovdje.",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "Zaboravi ovaj uređaj"
   },
@@ -223,9 +219,6 @@
   },
   "gasLimit": {
     "message": "Ograničenje goriva"
-  },
-  "gasUsed": {
-    "message": "Upotrijebljeno gorivo"
   },
   "general": {
     "message": "Opće"
@@ -389,10 +382,6 @@
   "passwordsDontMatch": {
     "message": "Lozinke se ne podudaraju"
   },
-  "pastePrivateKey": {
-    "message": "Ovdje zalijepite svoj privatni niz ključa:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "na čekanju"
   },
@@ -408,9 +397,6 @@
   "privateKey": {
     "message": "Privatni ključ",
     "description": "select this type of file to use to import an account"
-  },
-  "privateNetwork": {
-    "message": "Privatna mreža"
   },
   "readdToken": {
     "message": "Ovaj token možete dodati kasnije odlaskom pod stavku „Dodaj token” u izborniku mogućnosti računa. "
@@ -563,9 +549,6 @@
   "unapproved": {
     "message": "Neodobreno"
   },
-  "units": {
-    "message": "jedinice/a"
-  },
   "unknown": {
     "message": "Nepoznato"
   },
@@ -577,9 +560,6 @@
   },
   "urlErrorMsg": {
     "message": "URI-jevima se zahtijeva prikladan prefiks HTTP/HTTPS."
-  },
-  "usedByClients": {
-    "message": "Upotrebljavaju brojni klijenti"
   },
   "visitWebSite": {
     "message": "Posjetite naše mrežno mjesto"

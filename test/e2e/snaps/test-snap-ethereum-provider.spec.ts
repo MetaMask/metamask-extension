@@ -36,10 +36,7 @@ describe('Test Snap ethereum_provider', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'ethereumProviderConnectButton',
-        );
-        await testSnaps.checkInstallationComplete(
-          'ethereumProviderConnectButton',
-          'Reconnect to Ethereum Provider Snap',
+          { expectedMessage: 'Reconnect to Ethereum Provider Snap' },
         );
 
         await testSnaps.scrollAndClickButton('getVersionButton');

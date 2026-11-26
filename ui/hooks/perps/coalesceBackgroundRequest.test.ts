@@ -83,10 +83,9 @@ describe('coalesceBackgroundRequest', () => {
   });
 
   it('invalidate() mid-flight preserves the in-flight promise so concurrent callers coalesce into one request', async () => {
-    // Rapid-navigation scenario: hook A fires a request, then hook B's
-    // forceFreshOnMount refetch invalidates the cache while A is still
-    // in flight. B must share A's request rather than fire a duplicate HL
-    // call — the in-flight snapshot is the freshest data available.
+    // Rapid navigation: hook A fires a request, then hook B invalidates the
+    // cache while A is still in flight. A caller that does not opt out shares
+    // A's request. A caller that cannot share it passes replaceInFlight.
     let resolveFirst: ((v: string) => void) | undefined;
     const firstPromise = new Promise<string>((resolve) => {
       resolveFirst = resolve;
@@ -148,6 +147,49 @@ describe('coalesceBackgroundRequest', () => {
     const [first, second] = await Promise.all([firstCall, secondCall]);
     expect(first).toBe('oldScope');
     expect(second).toBe('newScope');
+    expect(fn).toHaveBeenCalledTimes(2);
+  });
+
+  it('replaceInFlight issues a new request and keeps that result in the cache', async () => {
+    let resolveFirst: ((value: string) => void) | undefined;
+    const firstPromise = new Promise<string>((resolve) => {
+      resolveFirst = resolve;
+    });
+    const fn = jest
+      .fn<Promise<string>, []>()
+      .mockReturnValueOnce(firstPromise)
+      .mockResolvedValueOnce('fresh');
+
+    const firstCall = coalesceBackgroundRequest('k', fn, 10_000);
+    await Promise.resolve();
+
+    const secondCall = coalesceBackgroundRequest('k', fn, 10_000, {
+      replaceInFlight: true,
+    });
+    resolveFirst?.('stale');
+
+    const [first, second] = await Promise.all([firstCall, secondCall]);
+    expect(first).toBe('stale');
+    expect(second).toBe('fresh');
+    expect(fn).toHaveBeenCalledTimes(2);
+
+    const cached = await coalesceBackgroundRequest('k', fn, 10_000);
+    expect(cached).toBe('fresh');
+    expect(fn).toHaveBeenCalledTimes(2);
+  });
+
+  it('replaceInFlight does not return a value cached inside the TTL', async () => {
+    const fn = jest
+      .fn<Promise<string>, []>()
+      .mockResolvedValueOnce('cached')
+      .mockResolvedValueOnce('fresh');
+
+    await coalesceBackgroundRequest('k', fn, 10_000);
+    const second = await coalesceBackgroundRequest('k', fn, 10_000, {
+      replaceInFlight: true,
+    });
+
+    expect(second).toBe('fresh');
     expect(fn).toHaveBeenCalledTimes(2);
   });
 

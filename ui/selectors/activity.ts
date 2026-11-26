@@ -7,12 +7,12 @@ import {
 import { isCrossChain, StatusTypes } from '@metamask/bridge-controller';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   EthScope,
   isEvmAccountType,
   type Transaction as KeyringTransaction,
 } from '@metamask/keyring-api';
-import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
 import {
   mapKeyringTransaction,
   mapLocalTransaction,
@@ -30,18 +30,21 @@ import { NATIVE_TOKEN_ADDRESS } from '../../shared/constants/transaction';
 import type { MetaMaskReduxState } from '../store/store';
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { getTokensControllerAllTokens } from '../../shared/lib/selectors/assets-migration';
-import { toAssetId } from '../../shared/lib/asset-utils';
 import { getLocalTransactionFees } from '../../shared/lib/activity/adapters/helpers';
+import { getTransactionPayingAccount } from '../../shared/lib/transactions.utils';
+import { getEvmAccountOverride } from '../../shared/lib/transaction/pay-token';
 import {
   getMoneyAccountTransactionType,
   isProtectedByEnforcedSimulations,
 } from '../pages/confirmations/utils/confirm';
+import { getMoneyAccountWithdrawTransferDetails } from '../pages/confirmations/utils/money-account-withdraw';
 import { ActivityListItem, Status } from '../../shared/lib/activity/types';
 import {
   selectBridgeHistoryForOriginalTxMetaId,
   selectBridgeHistoryItemByHash,
 } from '../ducks/bridge-status/selectors';
-import { getInternalAccountsObject } from './accounts';
+import { isMnemonicMoneyAccount } from '../../shared/lib/money/money-accounts';
+import { getInternalAccounts, getInternalAccountsObject } from './accounts';
 import {
   getInternalAccountBySelectedAccountGroupAndCaip,
   getSelectedAccountGroup,
@@ -78,9 +81,25 @@ const selectTransactionPayData = (state: MetaMaskReduxState) =>
   (EMPTY_OBJECT as TransactionPayControllerState['transactionData']);
 
 /**
+ * The entropy source ID backing the primary money account. MPC-backed money
+ * accounts have no entropy source ID, so this is `undefined` for them.
+ *
+ * @param primaryMoneyAccount - Primary money account, when present.
+ * @returns The entropy source ID, or `undefined`.
+ */
+function getMoneyAccountEntropyId(
+  primaryMoneyAccount: PrimaryMoneyAccount | undefined,
+): string | undefined {
+  return primaryMoneyAccount && isMnemonicMoneyAccount(primaryMoneyAccount)
+    ? primaryMoneyAccount.options.entropy.id
+    : undefined;
+}
+
+/**
  * Whether the selected account group belongs to the same HD entropy wallet that
- * owns the primary money account. Money-account activity is only surfaced for
- * that wallet so switching to another SRP does not leak unrelated rows.
+ * owns the primary money account. Money-account activity with no known payer
+ * is only surfaced for that wallet so switching to another SRP does not leak
+ * unrelated rows.
  *
  * @param selectedAccountGroup - Currently selected account group id.
  * @param primaryMoneyAccount - Primary money account, when present.
@@ -90,7 +109,9 @@ function isSelectedGroupOwnedByMoneyAccountEntropy(
   selectedAccountGroup: string | null | undefined,
   primaryMoneyAccount: PrimaryMoneyAccount | undefined,
 ): boolean {
-  const entropyId = primaryMoneyAccount?.options?.entropy?.id;
+  // MPC-backed money accounts have no entropy source ID, so no account group
+  // is ever owned by their entropy.
+  const entropyId = getMoneyAccountEntropyId(primaryMoneyAccount);
   if (!selectedAccountGroup || !entropyId) {
     return false;
   }
@@ -124,6 +145,81 @@ function isMoneyAccountTransaction(
   );
 }
 
+/**
+ * Account that funded a money-account transaction, such as the hardware
+ * account behind a deposit. Pay clears its account override once the
+ * transaction finalizes, so this falls back to the sender of the funding
+ * transactions Pay links via `requiredTransactionIds`.
+ *
+ * @param tx - The money-account transaction.
+ * @param transactionsById - Local transactions keyed by id.
+ * @param transactionPayData - Pay data keyed by transaction id.
+ * @returns Lowercased paying account address, if known.
+ */
+function getMoneyAccountPayer(
+  tx: TransactionMeta,
+  transactionsById: Map<string, TransactionMeta>,
+  transactionPayData: TransactionPayControllerState['transactionData'],
+  internalAccountsById: Record<string, InternalAccount>,
+) {
+  const fundingFrom = tx.requiredTransactionIds
+    ?.map((id) => transactionsById.get(id)?.txParams?.from)
+    .find(Boolean) as Hex | undefined;
+
+  return getTransactionPayingAccount(
+    tx,
+    getEvmAccountOverride(
+      transactionPayData[tx.id]?.accountOverride,
+      internalAccountsById,
+    ) ?? fundingFrom,
+  )?.toLowerCase();
+}
+
+/**
+ * Wallet account that receives a money-account withdrawal. Pay holds the
+ * recipient's account ID while the transaction is live and persists it on
+ * the transaction afterwards. A withdrawal that is not quoted also names the
+ * recipient in its nested transfer.
+ *
+ * @param tx - The money-account transaction.
+ * @param transactionPayData - Pay data keyed by transaction id.
+ * @param internalAccounts - Accounts in the wallet.
+ * @param internalAccountsById - Accounts in the wallet keyed by id.
+ * @returns Lowercased recipient address, if the transaction is a withdrawal
+ * to a wallet account.
+ */
+function getMoneyAccountWithdrawRecipient(
+  tx: TransactionMeta,
+  transactionPayData: TransactionPayControllerState['transactionData'],
+  internalAccounts: InternalAccount[],
+  internalAccountsById: Record<string, InternalAccount>,
+) {
+  if (
+    getMoneyAccountTransactionType(tx) !== TransactionType.moneyAccountWithdraw
+  ) {
+    return undefined;
+  }
+
+  const overrideAddress = getEvmAccountOverride(
+    transactionPayData[tx.id]?.accountOverride ??
+      tx.metamaskPay?.accountOverride,
+    internalAccountsById,
+  );
+  if (overrideAddress) {
+    return overrideAddress.toLowerCase();
+  }
+
+  const transferRecipient =
+    getMoneyAccountWithdrawTransferDetails(tx).recipient?.toLowerCase();
+  if (!transferRecipient) {
+    return undefined;
+  }
+
+  return internalAccounts
+    .find(({ address }) => address.toLowerCase() === transferRecipient)
+    ?.address.toLowerCase();
+}
+
 function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {
   // Ported from selectedAddressTxListSelector
   if (tx.txParams?.from?.toLowerCase() !== selectedAddress) {
@@ -152,6 +248,9 @@ export const selectLocalTransactions = createSelector(
   selectRequiredTransactionHashes,
   selectPrimaryMoneyAccount,
   getSelectedAccountGroup,
+  selectTransactionPayData,
+  getInternalAccounts,
+  getInternalAccountsObject,
   (
     transactions,
     evmAddress,
@@ -160,6 +259,9 @@ export const selectLocalTransactions = createSelector(
     internalTxHashes,
     primaryMoneyAccount,
     selectedAccountGroup,
+    transactionPayData,
+    internalAccounts,
+    internalAccountsById,
   ): TransactionGroup[] => {
     if (!evmAddress) {
       return EMPTY_ARRAY as unknown as TransactionGroup[];
@@ -185,11 +287,51 @@ export const selectLocalTransactions = createSelector(
       return false;
     };
 
+    const transactionsById = new Map(
+      (transactions ?? []).map((tx) => [tx.id, tx]),
+    );
+
+    // Payers from the money account's own SRP keep the wallet-wide rule.
+    // MPC-backed money accounts have no entropy source ID, so every payer
+    // other than the money account itself counts as outside its wallet.
+    const moneyAccountEntropyId = getMoneyAccountEntropyId(primaryMoneyAccount);
+    const isPayerOutsideMoneyAccountWallet = (payer: string) =>
+      payer !== moneyAccountAddress &&
+      internalAccounts.some(
+        (account) =>
+          account.address.toLowerCase() === payer &&
+          account.options?.entropySource !== moneyAccountEntropyId,
+      );
+
+    const isSelectedMoneyAccountTransaction = (tx: TransactionMeta) => {
+      if (!isMoneyAccountTransaction(tx, moneyAccountAddress)) {
+        return false;
+      }
+      const recipient = getMoneyAccountWithdrawRecipient(
+        tx,
+        transactionPayData,
+        internalAccounts,
+        internalAccountsById,
+      );
+      if (recipient && recipient !== moneyAccountAddress) {
+        return recipient === selectedAddress;
+      }
+      const payer = getMoneyAccountPayer(
+        tx,
+        transactionsById,
+        transactionPayData,
+        internalAccountsById,
+      );
+      if (payer && isPayerOutsideMoneyAccountWallet(payer)) {
+        return payer === selectedAddress;
+      }
+      return includeMoneyAccountTransactions;
+    };
+
     const filtered = (transactions ?? []).filter(
       (tx) =>
         (isFromSelectedAccount(tx, selectedAddress) ||
-          (includeMoneyAccountTransactions &&
-            isMoneyAccountTransaction(tx, moneyAccountAddress))) &&
+          isSelectedMoneyAccountTransaction(tx)) &&
         !isInternalRequiredTransaction(tx),
     );
 
@@ -485,14 +627,12 @@ function getBridgeActivityStatus(
 export const selectLocalActivityItems = createSelector(
   selectLocalTransactions,
   selectBridgeHistory,
-  selectTransactionPayData,
   getNetworkConfigurationsByChainId,
   selectEvmAddress,
   getTokensControllerAllTokens,
   (
     transactionGroups,
     getBridgeHistory,
-    transactionPayData,
     networkConfigurationsByChainId,
     evmAddress,
     allTokens,
@@ -528,62 +668,6 @@ export const selectLocalActivityItems = createSelector(
         chainId,
         transactionGroup.initialTransaction.txParams.to,
       );
-      const sourceToken = (() => {
-        if (type !== TransactionType.musdConversion) {
-          return undefined;
-        }
-
-        const { metamaskPay } = transactionGroup.initialTransaction;
-        const transactionPay =
-          transactionPayData[transactionGroup.initialTransaction.id];
-        const paymentToken = transactionPay?.paymentToken;
-        const payTokenAddress =
-          metamaskPay?.tokenAddress ?? paymentToken?.address;
-        const payTokenChainId = metamaskPay?.chainId ?? paymentToken?.chainId;
-        const sourceTokenMetadata = resolveContractTokenMetadata(
-          payTokenChainId,
-          payTokenAddress,
-        );
-        const sourceAmount =
-          transactionPay?.totals?.sourceAmount.raw ??
-          transactionPay?.sourceAmounts?.find((sourceAmountData) => {
-            const targetTokenAddress =
-              transactionGroup.initialTransaction.txParams.to;
-
-            return (
-              targetTokenAddress &&
-              sourceAmountData.targetTokenAddress.toLowerCase() ===
-                targetTokenAddress.toLowerCase()
-            );
-          })?.sourceAmountRaw ??
-          transactionPay?.sourceAmounts?.[0]?.sourceAmountRaw;
-        const sourceTokenCaipChainId = payTokenChainId
-          ? toCaipChainId(
-              KnownCaipNamespace.Eip155,
-              Number.parseInt(payTokenChainId, 16).toString(),
-            )
-          : undefined;
-        const sourceTokenAssetId =
-          payTokenAddress && sourceTokenCaipChainId
-            ? toAssetId(payTokenAddress, sourceTokenCaipChainId)
-            : undefined;
-        const sourceTokenSymbol =
-          sourceTokenMetadata?.symbol ?? paymentToken?.symbol;
-        const sourceTokenDecimals =
-          sourceTokenMetadata?.decimals ?? paymentToken?.decimals;
-
-        return sourceTokenMetadata || paymentToken || sourceTokenAssetId
-          ? {
-              direction: 'out' as const,
-              ...(sourceAmount ? { amount: sourceAmount } : {}),
-              ...(sourceTokenSymbol ? { symbol: sourceTokenSymbol } : {}),
-              ...(sourceTokenDecimals === undefined
-                ? {}
-                : { decimals: sourceTokenDecimals }),
-              ...(sourceTokenAssetId ? { assetId: sourceTokenAssetId } : {}),
-            }
-          : undefined;
-      })();
 
       if (
         type === TransactionType.swap ||
@@ -612,7 +696,6 @@ export const selectLocalActivityItems = createSelector(
         ...transactionGroup,
         nativeAssetSymbol,
         contractTokenMetadata,
-        ...(sourceToken ? { sourceToken } : {}),
       };
 
       return enrichLocalActivity(mapLocalTransaction(prepared), prepared);

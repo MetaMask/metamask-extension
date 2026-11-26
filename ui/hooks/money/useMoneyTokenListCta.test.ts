@@ -15,6 +15,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyScreenName,
 } from '../../pages/money/constants/money-events';
 import { useMoneyAccountDeposit } from './useMoneyAccountDeposit';
@@ -119,6 +120,7 @@ describe('useMoneyTokenListCta', () => {
     mockUseMoneyAnalytics.mockReturnValue(moneyAnalytics);
     mockUseMoneyAccountDeposit.mockReturnValue({
       initiateDeposit: mockInitiateDeposit,
+      isDisabled: false,
       isLoading: false,
     } as unknown as ReturnType<typeof useMoneyAccountDeposit>);
     mockUseMoneyAccountInfo.mockReturnValue({
@@ -246,6 +248,7 @@ describe('useMoneyTokenListCta', () => {
     it('does nothing while a deposit is being set up', () => {
       mockUseMoneyAccountDeposit.mockReturnValue({
         initiateDeposit: mockInitiateDeposit,
+        isDisabled: false,
         isLoading: true,
       } as unknown as ReturnType<typeof useMoneyAccountDeposit>);
       const token = createToken();
@@ -254,6 +257,22 @@ describe('useMoneyTokenListCta', () => {
       cta?.onClick(token);
 
       expect(cta?.isLoading).toBe(true);
+      expect(moneyAnalytics.trackTokenButtonClicked).not.toHaveBeenCalled();
+      expect(mockInitiateDeposit).not.toHaveBeenCalled();
+    });
+
+    it('does nothing when the Money Account is read-only', () => {
+      mockUseMoneyAccountDeposit.mockReturnValue({
+        initiateDeposit: mockInitiateDeposit,
+        isDisabled: true,
+        isLoading: false,
+      } as unknown as ReturnType<typeof useMoneyAccountDeposit>);
+      const token = createToken();
+      const cta = renderCta([token]);
+
+      cta?.onClick(token);
+
+      expect(cta?.isDisabled).toBe(true);
       expect(moneyAnalytics.trackTokenButtonClicked).not.toHaveBeenCalled();
       expect(mockInitiateDeposit).not.toHaveBeenCalled();
     });
@@ -297,6 +316,10 @@ describe('useMoneyTokenListCta', () => {
       });
       expect(mockInitiateDeposit).toHaveBeenCalledWith({
         preferredPaymentToken: { address: USDC_ADDRESS, chainId: '0x1' },
+        ftueOrigin: {
+          entryPoint: MoneyFtueEntryPoint.WalletHome,
+          componentName: MoneyComponentName.TokenListItemCta,
+        },
       });
     });
   });

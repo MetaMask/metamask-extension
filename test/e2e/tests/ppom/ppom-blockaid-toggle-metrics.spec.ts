@@ -6,7 +6,7 @@ import { MOCK_ANALYTICS_ID, NETWORK_CLIENT_ID } from '../../constants';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import PrivacySettings from '../../page-objects/pages/settings/privacy/privacy-settings';
 
 async function mockServerCalls(mockServer: Mockttp) {
   return [

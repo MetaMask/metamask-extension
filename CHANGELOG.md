@@ -7,6 +7,267 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.58.0]
+
+### Added
+
+- Added referral invitations to deep links, including links restored after onboarding (#47665)
+- Added the Money CTA to the wide-screen token table (#47870)
+- Added loading of older historical data when scrolling back on the token details page chart, behind a feature flag (#47753)
+- Added advanced candlestick charts on the token details page, behind a feature flag (#47751)
+- Added a "No deposit fee" label next to the Money account when depositing into Perps (#47831)
+- Added sort controls to the wide-screen token table (#47835)
+- Added a new wide-screen layout for viewports over 768px, behind a feature flag (#47614)
+- Added a Money deposit deep link (#47592)
+
+### Changed
+
+- Increased spacing in the wide-layout account overview and padding around network selector pills (#47863)
+- Routed Buy deep links into the in-app Buy flow with the token preselected; users who previously connected to Portfolio are still redirected there (#46498)
+- Moved the network filter and asset controls onto the account tab row in the wide layout (#47747)
+- Stacked the token price and 24h change in the narrow wide-layout token table (#47757)
+- Updated the MetaMask Money deposit confirmation to say where funds are added and which token is converted (#47805)
+- Improved address display in confirmations and the Send flow so addresses use the available width and keep their end visible (#47726)
+- Updated the Stellar network logo to a square icon (#47824)
+- Updated bridge dependencies, transaction submission integration, and location values (#47426)
+- Improved the first Money visit by loading the home page behind the intro splash (#47799)
+- Updated the wide-screen network list with a pill-shaped toggle to show more or fewer networks (#47791)
+- Updated the Add wallet screen design and fixed the back button on the Import a wallet screen, which closed the whole flow (#47780)
+- Updated the account rename dialog to show "Rename account", prefill the current name, and include a clear button (#47738)
+- Updated the token contract address copy confirmation on the token details page to read "Token contract address copied" (#47656)
+- Updated the Swap form with separate source and destination cards, a new flip button, and a token tag for gas-included network fees (#47725)
+- Updated the Money account splash with the new hero artwork and heading styling (#47716)
+- Updated the Cronos network and native CRO token logos to the new brand mark (#47714)
+- Updated the Perps withdraw amount input to the Grotzec typeface (#47560)
+
+### Removed
+
+- Removed outdated mUSD fee wording from the Perps withdraw transaction fee tooltip (#47723)
+- Removed support for Chrome versions below 137 and Firefox versions below 140 (#47531)
+
+### Fixed
+
+- Fixed a crash when opening a MetaMask Pay confirmation with a token balance that has many decimal places (#47932)
+- Fixed a bug that blocked custom token imports on chains that forked Ethereum Mainnet (such as PulseChain) whenever the token address matched a known Ethereum Mainnet token (#47928)
+- Hid the X widget when all matching tokens have a missing or zero market cap (#47914)
+- Fixed Perps token logo backgrounds so light logos remained visible in dark mode (#47599)
+- Fixed navigation after submitting a swap or bridge so users stayed on the Swaps page instead of returning to Home (#47591)
+- Fixed Discover Search crypto results to show the order provided by the search API (#47699)
+- Fixed native token prices and charts on Matchain and Nomina (#47728)
+- Fixed referral dialogs losing focus behind destination dialogs while preserving Terms of Use priority (#47682)
+- Fixed marketing consent for social login users failing to save and snapping back in Settings (#47808)
+- Fixed content jumping when dismissing the last banner on the home screen (#47769)
+- Fixed JSON account import showing a wrong-password error under the file picker instead of the password field (#47802)
+- Fixed transactions losing the dapp-provided or buffered gas limit when Added protection was not enabled (#47807)
+- Fixed Pay with for Perps and Predict deposits so it defaults to Money Account when that balance is the highest (#47836)
+- Fixed direct deep-link destinations being lost during onboarding and removed the extra pre-onboarding warning for validly signed links (#47678)
+- Fixed referral invitations allowing dismissal or duplicate submission while acceptance was pending (#47668)
+- Fixed the insufficient funds alert not appearing after switching from sponsored gas to paying with the native token (#47795)
+- Fixed network, token and site favicon avatars so non-square images fill the avatar instead of being letterboxed (#47774)
+- Fixed the Money Account splash so closing it cancels the pending deposit instead of opening MetaMask Pay (#47798)
+- Fixed Perps close amounts, closed PnL and TP/SL prices so they match the MetaMask mobile app (#47777)
+- Fixed a bug where a Perps position could stay visible after it closed right after its TP/SL was edited (#47796)
+- Fixed a bug where a money account deposit funded from another network could be submitted without enough native token to pay for gas, causing the transaction to fail (#47689)
+- Fixed the Back button leaving the extension when Swap was opened from a link (#47664)
+- Fixed TP/SL and close on a perps position that had already closed: the trader is now told it is closed instead of seeing a generic failure (#47473)
+- Fixed a bug where the Send network list only showed non-EVM networks after a non-EVM network was selected on the Home page (#47652)
+
+## [13.57.0]
+
+### Added
+
+- Added support for withdrawing from a Money Account to hardware wallet accounts (#47111)
+- Added a first-visit Money Account splash that introduces earning, trading, sending, and spending (#47626)
+- Added a fee rebate banner in Swaps for users eligible for a MetaMask fee rebate (#47618)
+
+### Changed
+
+- Updated the Money onboarding splash with new hero artwork, heading styles, and card layout (#47716)
+- Updated the Perps withdrawal amount input to the Grotzec typeface (#47560)
+- Updated the MetaMask Pay amount input to the Grotzec typeface (#47565)
+- Made bottom navigation available by default (#47206)
+- Showed more of recipient addresses in Send (#47533)
+- Updated the Money home layout for the fullscreen redesign when enabled (#47581)
+- Increased the precision of send confirmation and estimated change amounts to up to eight decimal places (#47532)
+- Updated Swap and Bridge amount inputs to the Grotzec typeface (#47558)
+- Updated the Buy amount input to the Grotzec typeface (#47559)
+- Updated warnings for outdated browsers ahead of ending support in the following release (#47451)
+- Updated Terms of Use, Privacy Policy, and related legal links to use metamask.com instead of metamask.io (#47571)
+- Updated onboarding card corners to match modal corners (#47550)
+
+### Fixed
+
+- Fixed a bug where the close button on the Transaction Shield intro modal in Settings could not be clicked (#47916)
+- Fixed the nickname modal address field appearing disabled while keeping it read-only (#47593)
+- Fixed the token details header to show the token name with its ticker beneath it (#47552)
+- Fixed Tron balances being ignored when determining whether to show the wallet empty state (#47570)
+- Fixed the order of the "Minimum received" row and typos in Swap quote card tooltips (#47642)
+- Fixed Perps outage banner links so the FAQ opens the troubleshooting article and contact support opens the help center (#47617)
+- Fixed a bug where a just-closed Perps trade could be missing from Perps Activity (#47643)
+- Fixed spam tokens not being removed from the token list on unlock (#47609)
+- Fixed Money Account deposits and withdrawals on Monad failing after opting out of gas sponsorship (#47616)
+- Fixed HyperLiquid live fills stopping after a WebSocket reconnect (#47600)
+- Fixed Money Account withdrawals being rejected as "Insufficient funds" when the displayed available balance was rounded up (#47569)
+- Fixed native token icons for Fraxtal and Katana (#47583)
+- Fixed missing error messages when non-EVM sends failed after confirmation (#47528)
+- Fixed the home network filter remaining on a non-EVM network after Basic Functionality was turned off (#47494)
+
+## [13.56.0]
+
+### Added
+
+- Added sponsor names to sponsored network fees in transaction confirmations (#47350)
+- Enabled Rewards for Bitcoin and Tron accounts when basic functionality is enabled (#46963)
+
+### Changed
+
+- Updated the perpetuals market price to use the larger Hero typeface (#47503)
+- Updated the stablecoin education, wallet-ready, and Transaction Shield screens to use the shared marketing layout (#47423, #47424, #47425)
+- Recorded account hide and removal metrics from the Manage Accounts screen (#46403)
+- Set OUSD as the default gas token on Tempo when available (#47342)
+- Updated self-onboarding to accept a vault password (#47201)
+- Updated the Stellar wallet integration from version 1.3.0 to 2.0.0 (#47381)
+- Updated the hero typeface to Grotzec Cond Bold (#47128)
+- Updated Terms of Use, Privacy Policy, and related legal links to use metamask.com instead of consensys.io (#46389)
+- Improved authenticator app setup and one-time-code verification feedback (#47257)
+
+### Removed
+
+- Removed the Discover link from the home balance header (#47458)
+- Removed the referral code field from Rewards onboarding (#46957)
+
+### Fixed
+
+- Fixed cashtag resolution to match exact token symbols or real-world asset tickers. (#47602)
+- Automatically removed detected NFTs when they are identified as spam, while preserving manually imported and dapp-added NFTs (#47436)
+- Hid inaccurate "No fee" labels for Money Account deposits from hardware wallet accounts (#47276)
+- Fixed the OUSD icon in Tempo network fee errors (#47396)
+- Fixed missing asset icons in asset details headers (#47376)
+- Fixed NFTs not appearing when switching from a non-EVM network to All networks (#47320)
+- Fixed Perps withdrawals not finding a quote when Money Account was preselected as the receive option (#47383)
+- Fixed a typo in the hardware wallet error modal (#47253)
+- Fixed malicious nested transactions not displaying transaction warnings (#47236)
+
+## [13.55.0]
+
+### Added
+
+- Added a link to supported passkey providers when passkey setup fails because the provider is unsupported (#47275)
+- Added Stellar as a default address option (#47134)
+- Added a mobile QR code for Limit Order deeplinks (#47181)
+- Added friendly names for known contract addresses in Activity (#47149)
+
+### Changed
+
+- Made marketing data collection independent of MetaMetrics and corrected the default marketing opt-in for social login users in the US (#47039)
+- Disconnected the backend WebSocket when Basic functionality is turned off (#47068)
+- Displayed the Money header while content loads and aligned its spacing with other pages (#47202)
+- Listed networks with logos first in Chainlist dropdowns (#47205)
+- Reorganized default onboarding settings into Privacy, Backup and sync, and Networks sections (#47192)
+- Updated error monitoring for swap and batch-sell flows (#47183)
+- Added self-onboarding support for development tooling (#46916)
+- Updated how Stellar spendable balances use asset decimals (#47263)
+- Updated the bundled Stellar wallet (#47198)
+- Improved transaction simulation accuracy for verified contracts (#47025)
+- Updated the preinstalled Stellar wallet. (#47080)
+
+### Removed
+
+- Removed the Speed up action from pending swap and bridge activity rows (#47152)
+
+### Fixed
+
+- Fixed Perps order and close failures to clearly explain slippage-related rejections (#47264)
+- Fixed MetaMask Pay quotes not loading for some users with outdated token data saved from older versions (#47233)
+- Fixed the token list loading state to show skeleton rows until assets load (#47248)
+- Kept default test networks visible in Chainlist when Show test networks is off and enabled the setting when one is opened (#47213)
+- Fixed Money balances and earnings remaining visible when privacy mode is enabled (#47139)
+- Fixed duplicate native token entries in Manage Tokens (#47038)
+- Added a Max option for Money account deposits using non-native tokens (#47115)
+- Updated the wallet recovery completion screen and prevented onboarding content from flashing after Secret Recovery Phrase backup (#45879)
+- Fixed Stellar contract-token sends showing a memo field when memos are not supported. (#46973)
+- Fixed the bottom navigation bar and account header appearing on Money subpages. (#47268)
+- Fixed Perps order and position-close failures to show clear slippage errors for immediate-or-cancel and price-movement rejections. (#47182, #47264)
+- Fixed MetaMask Pay quotes not loading for some users with outdated token data saved from older versions. (#47233, #47272)
+- Fixed errors when changing a Money Account deposit amount. (#47194)
+- Fixed Bitcoin price charts showing another network's history when that network was selected. (#47109)
+- Fixed Swap Back returning to Home instead of the previous page. (#46888)
+- Fixed Flask builds remaining on the loading screen when Perps was not included in the build. (#47171)
+- Fixed errors when opening unknown wallet pages by showing a Page Not Found screen. (#46749)
+- Fixed missing native-token icons for sends in Activity on networks not supported by Bridge. (#47145)
+- Fixed transaction nonce reuse when the network transaction count lagged behind a confirmed transaction. (#47085)
+- Fixed Money deposits confirming the previous Max amount when Add funds was pressed before the typed amount finished updating. (#47018)
+- Fixed Money routes becoming a dead end when the bottom navbar was unavailable (#47321)
+- Fixed Money Account deposits on Monad being incorrectly blocked by a reserve balance alert (#47395)
+
+### Security
+
+- Fixed malicious and suspicious token warnings not appearing in Swaps when destination tokens were opened from deeplinks, asset pages, and other entry points. (#47097)
+
+## [13.54.0]
+
+### Added
+
+- Added an earn section and dismissible banner to eligible stablecoin token details (#47056)
+- Added deep links to notification settings and supported preference sections (#46753)
+- Added a Perps outage banner with help-center and support links across Perps screens (#46864)
+- Added token symbols to Crypto and Stocks search results (#47045)
+- Added an About section to Perps market details when asset descriptions are available (#46610)
+- Added feature-flagged earning CTAs to eligible token rows (#46923)
+
+### Changed
+
+- Updated Tron and Solana wallet support and hid amounts for incomplete swaps with zero source amounts (#47048)
+- Improved monitoring for lifetime earnings API failures (#47078)
+- Recorded smart transaction fee lookup errors in transaction analytics (#46825)
+- Moved Import NFT from a modal to a full page (#47027)
+- Reordered notification settings so Agentic CLI appears above Marketing (#47023)
+- Updated the Money balance card so its summary opens the Money page and removed the mUSD label (#46901)
+- Updated delegation deployment support for Ark (#46777)
+- Improved Money account styling and prevented sidebar tooltips from being clipped (#47026)
+- Updated preinstalled Stellar wallet support (#47080, #47084, #47224)
+- Updated Perps and Predict deposits to prefill half of the selected token balance (#46892)
+- Aligned the Money menu with the main menu when a scrollbar is visible (#47071)
+- Enabled the bottom navigation bar for all users so Money pages are no longer a dead end when the feature flag is unavailable (#47322)
+
+### Removed
+
+- Removed Bitcoin account-type labels except in the multichain account address list (#47077)
+
+### Fixed
+
+- Prevented Bitcoin transactions with zero fees when fee estimates are zero or below one sat/vB (#47052)
+- Simplified the locked hardware wallet error to a single unlock message (#46936)
+- Showed the basic functionality page instead of Discover search when basic functionality is turned off (#46874)
+- Updated the Import NFT banner to point to Basic Functionality when NFT media is controlled by that setting (#47044)
+- Fixed Stellar contract-based token sends showing a memo field (#46973, #46975)
+- Fixed Tempo networks using USD instead of pathUSD as the native currency placeholder (#47074)
+- Fixed the Send flow showing fiat values when Basic Functionality is turned off (#47022)
+- Fixed locked hardware wallets showing an error while browsing swap quotes (#46766)
+- Fixed Money transaction details showing a `0x0` placeholder hash (#47035)
+- Fixed the Add contact network dropdown border to match other form fields (#47037)
+- Fixed the home balance flashing “Fund your wallet” or a zero balance during the initial asset load (#47105)
+- Fixed grammar in the Arc usage notice (#47112)
+- Fixed Tron energy and bandwidth values displaying incorrectly when unavailable and showed a warning instead (#47046)
+- Fixed infinite loading when sending with a Keystone hardware wallet (#47088)
+- Fixed QR hardware wallet transaction signing that could remain blocked by a loading screen (#47067)
+- Fixed Money lifetime earnings displaying `$0.00` when the data was unavailable (#47076)
+- Fixed Send Max transactions on Ink by accounting for Layer 1 gas fees (#46880)
+- Fixed hardware wallet swaps and bridges from automatically retrying after a transaction was rejected (#47060)
+- Fixed Perps reverse-position fee previews showing stale fees during quote refresh and unavailable estimates for invalid live position values (#47016)
+- Fixed add-network suggestion lists to remain open, stay attached to the active field, and retain entered details when adding RPC or block explorer URLs (#47001)
+- Fixed native Max sends to reserve gas estimated by the selected network (#46461)
+- Fixed Robinhood Chain explorer links for existing users (#47019)
+- Fixed failed-transaction toasts not appearing when transactions failed before submission (#46872)
+- Fixed the internal error dialog to follow the selected theme (#46890)
+- Fixed misleading insufficient network fee alerts on Monad when the 10 MON reserve balance requirement was the cause (#46049)
+- Fixed MetaMask Pay quotes not loading for some users with outdated token data saved from older versions (#47233)
+- Fixed Flask builds staying on the loading screen when Perps was left out of the build (#47173)
+
+### Security
+
+- Patched fast-uri, body-parser, undici, serialize-javascript, and zod to resolve security advisories (#47358, #47363)
+
 ## [13.53.0]
 
 ### Added
@@ -105,6 +366,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added deep linking to the Money home page (#46589)
 - Added an “Add funds to trade” option on the Perps order screen for accounts with no balance (#45986)
 - Added XDC Network to the Additional networks list when enabled (#46543)
+- Refreshed Tron energy, bandwidth and staking information on the TRX token details page so it shows up-to-date values when the page is opened and after Tron transactions are confirmed (#46795)
 
 ### Changed
 
@@ -3479,7 +3741,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.53.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.58.0...HEAD
+[13.58.0]: https://github.com/MetaMask/metamask-extension/compare/v13.57.0...v13.58.0
+[13.57.0]: https://github.com/MetaMask/metamask-extension/compare/v13.56.0...v13.57.0
+[13.56.0]: https://github.com/MetaMask/metamask-extension/compare/v13.55.0...v13.56.0
+[13.55.0]: https://github.com/MetaMask/metamask-extension/compare/v13.54.0...v13.55.0
+[13.54.0]: https://github.com/MetaMask/metamask-extension/compare/v13.53.0...v13.54.0
 [13.53.0]: https://github.com/MetaMask/metamask-extension/compare/v13.52.0...v13.53.0
 [13.52.0]: https://github.com/MetaMask/metamask-extension/compare/v13.51.0...v13.52.0
 [13.51.0]: https://github.com/MetaMask/metamask-extension/compare/v13.50.0...v13.51.0

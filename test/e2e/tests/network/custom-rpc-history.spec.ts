@@ -9,6 +9,7 @@ import Homepage from '../../page-objects/pages/home/homepage';
 import NetworksPage from '../../page-objects/pages/networks/networks-page';
 import { login } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
+import { NetworkId } from '../../helpers/network-constants';
 
 describe('Custom RPC history', function (this: Suite) {
   it(`creates first custom RPC entry`, async function () {
@@ -189,7 +190,7 @@ describe('Custom RPC history', function (this: Suite) {
         await networksPage.checkNetworkOptionIsDisplayed('Localhost 8545');
 
         // Only recent 3 are found and in correct order (most recent at the top)
-        await networksPage.openNetworkRPC('eip155:1337');
+        await networksPage.openNetworkRPC(NetworkId.LOCALHOST);
         await networksPage.checkNetworkRPCNumber(3);
       },
     );

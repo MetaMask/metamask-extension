@@ -111,10 +111,6 @@
   "fast": {
     "message": "เร็ว"
   },
-  "fileImportFail": {
-    "message": "นำเข้าไฟล์ไม่สำเหร็จ กดที่นี่!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "from": {
     "message": "จาก"
   },
@@ -211,10 +207,6 @@
   "participateInMetaMetricsDescription": {
     "message": "เข้าร่วมใน MetaMetrics เพื่อช่วยเราในการพัฒนา MetaMask"
   },
-  "pastePrivateKey": {
-    "message": "วางคีย์ส่วนตัวของคุณที่นี่:",
-    "description": "For importing an account from a private key"
-  },
   "personalAddressDetected": {
     "message": "ตรวจพบแอดแดรสส่วนตัวแล้ว ใส่แอดแดรสสัญญาโทเค็น"
   },
@@ -224,9 +216,6 @@
   "privateKey": {
     "message": "คีย์ส่วนตัว",
     "description": "select this type of file to use to import an account"
-  },
-  "privateNetwork": {
-    "message": "เครือข่ายส่วนตัว"
   },
   "readdToken": {
     "message": "คุณสามารถเพิ่มโทเค็นนี้ในอนาคตได้โดยไปที่ “เพิ่มโทเค็น” ในเมนูตัวเลือกบัญชีของคุณ"
@@ -309,9 +298,6 @@
   },
   "urlErrorMsg": {
     "message": "URI ต้องมีคำนำหน้าเป็น HTTP หรือ HTTPS"
-  },
-  "usedByClients": {
-    "message": "ถูกใช้งานโดยหลายไคลเอนท์"
   },
   "visitWebSite": {
     "message": "เยี่ยมชมเว็บไซต์ของเรา"

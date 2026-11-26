@@ -66,7 +66,7 @@
 name: Triage and Retry System
 
 on:
-  workflow_run:
+  workflow_run: # zizmor: ignore[dangerous-triggers] Runs only default-branch scripts; uses upstream logs and version data to decide API reruns.
     workflows: ['Main']
     types: [completed]
 
@@ -152,19 +152,24 @@ jobs:
       - name: Install Sentry SDK
         run: npm install --no-save @sentry/node@10.73.0
 
-      - name: Get version from package.json
-        run: |
-          TMPFILE=$(mktemp)
-          if curl -sSf -o "$TMPFILE" "https://raw.githubusercontent.com/${REPO}/${HEAD_SHA}/package.json"; then
-            echo "VERSION=$(node -p "JSON.parse(require('fs').readFileSync('$TMPFILE','utf8')).version")" >> "$GITHUB_ENV"
-          else
-            echo "::warning::Could not download package.json — VERSION will be 'unknown'"
-          fi
-          rm -f "$TMPFILE"
-
       - name: Classify failures
         id: classify
-        run: node .github/scripts/classify-failures.mts
+        shell: bash
+        run: |
+          if ! version=$(
+            curl -fsS --max-time 20 "https://raw.githubusercontent.com/${REPO}/${HEAD_SHA}/package.json" |
+              jq -ers '
+                select(length == 1)
+                | .[0].version
+                | strings
+                | select(length > 0 and (test("[^A-Za-z0-9._+-]") | not))
+              '
+          ); then
+            echo "::warning::Could not read a safe version from package.json"
+            version=''
+          fi
+
+          VERSION="$version" node .github/scripts/classify-failures.mts
 
       - name: Verify current merge queue entry
         id: verify-queue-entry

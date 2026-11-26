@@ -1,8 +1,13 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { TransactionType } from '@metamask/transaction-controller';
 import type { TransactionPayTotals } from '@metamask/transaction-pay-controller';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
-import { getMockPersonalSignConfirmState } from '../../../../../../test/data/confirmations/helper';
+import {
+  getMockConfirmStateForTransaction,
+  getMockPersonalSignConfirmState,
+} from '../../../../../../test/data/confirmations/helper';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import {
   useIsTransactionPayLoading,
   useTransactionPayTotals,
@@ -173,5 +178,32 @@ describe('TotalRow', () => {
 
     // 100.37 - 0.20 - 0.03 = 100.14
     expect(getByTestId('total-value')).toHaveTextContent('$100.14');
+  });
+
+  it('formats total with "$" and en-US separators in non-US locales for moneyAccountDeposit transactions', () => {
+    useTransactionPayTotalsMock.mockReturnValue({
+      total: { usd: '1234.5' },
+    } as TransactionPayTotals);
+
+    const base = genUnapprovedContractInteractionConfirmation({
+      chainId: '0x1',
+    });
+    const deposit = {
+      ...base,
+      type: TransactionType.batch,
+      nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+    } as Parameters<typeof getMockConfirmStateForTransaction>[0];
+    const state = getMockConfirmStateForTransaction(deposit, {
+      metamask: {},
+      localeMessages: { currentLocale: 'en_GB' },
+    });
+
+    const { getByTestId } = renderWithConfirmContextProvider(
+      <TotalRow variant={ConfirmInfoRowSize.Small} />,
+      mockStore(state),
+    );
+
+    expect(getByTestId('total-value')).toHaveTextContent('$1,234.50');
+    expect(getByTestId('total-value')).not.toHaveTextContent('US$');
   });
 });

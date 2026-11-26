@@ -1,5 +1,6 @@
 import React from 'react';
 import { act, fireEvent, screen } from '@testing-library/react';
+import { Provider } from 'react-redux';
 import { renderWithLocalization } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import {
@@ -11,13 +12,21 @@ import { getPrivacyMode } from '../../selectors/selectors';
 import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
 import { createMoneyAnalyticsMock } from '../../hooks/money/useMoneyAnalytics.mock';
 import type { MoneyDepositToken } from '../../hooks/money/money-deposit-token-utils';
+import configureStore from '../../store/store';
+import mockState from '../../../test/data/mock-state.json';
 import {
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyScreenName,
   MoneyTooltipName,
   MoneyTooltipType,
 } from './constants/money-events';
 import { MoneyEarnPage } from './money-earn-page';
+
+const renderWithStore = (component: React.ReactElement) =>
+  renderWithLocalization(
+    <Provider store={configureStore(mockState)}>{component}</Provider>,
+  );
 
 const mockUseMoneyAccountAvailability = jest.fn();
 const mockUseMoneyAccountBalance = jest.fn();
@@ -44,7 +53,9 @@ const createToken = (
 });
 
 jest.mock('react-redux', () => ({
-  useSelector: (selector: () => unknown) => selector(),
+  useSelector: (selector: (state: unknown) => unknown) =>
+    selector({ metamask: {} }),
+  Provider: ({ children }: { children: React.ReactNode }) => children,
 }));
 
 jest.mock('../../selectors/selectors', () => ({
@@ -112,6 +123,7 @@ describe('MoneyEarnPage', () => {
     mockUseMoneyAddDepositToken.mockReturnValue({
       handleAddToken: mockHandleAddToken,
       initiateDeposit: mockInitiateDeposit,
+      isDepositDisabled: false,
       isDepositLoading: false,
     });
   });
@@ -122,7 +134,7 @@ describe('MoneyEarnPage', () => {
       isLoading: false,
     });
 
-    renderWithLocalization(<MoneyEarnPage />);
+    renderWithStore(<MoneyEarnPage />);
 
     expect(screen.getByTestId('navigate')).toHaveAttribute(
       'data-to',
@@ -136,13 +148,13 @@ describe('MoneyEarnPage', () => {
       isLoading: true,
     });
 
-    renderWithLocalization(<MoneyEarnPage />);
+    renderWithStore(<MoneyEarnPage />);
 
     expect(screen.getByTestId('money-earn-loading')).toBeInTheDocument();
   });
 
   it('renders every eligible token, not only the home preview count', () => {
-    renderWithLocalization(<MoneyEarnPage />);
+    renderWithStore(<MoneyEarnPage />);
 
     expect(screen.getByTestId('money-earn-page')).toBeInTheDocument();
     expect(
@@ -152,6 +164,7 @@ describe('MoneyEarnPage', () => {
     expect(mockUseMoneyAddDepositToken).toHaveBeenCalledWith({
       screenName: MoneyScreenName.MoneyPotentialEarnings,
       tokenRowComponentName: MoneyComponentName.PotentialEarningsTokenRow,
+      ftueEntryPoint: MoneyFtueEntryPoint.MoneyPotentialEarnings,
     });
     expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
       screenName: MoneyScreenName.MoneyPotentialEarnings,
@@ -159,7 +172,7 @@ describe('MoneyEarnPage', () => {
   });
 
   it('navigates back when the back button is clicked', () => {
-    renderWithLocalization(<MoneyEarnPage />);
+    renderWithStore(<MoneyEarnPage />);
 
     fireEvent.click(screen.getByTestId('money-earn-back-button'));
 
@@ -169,7 +182,7 @@ describe('MoneyEarnPage', () => {
   it('back button navigates to Money home when the page was opened directly by URL', () => {
     mockUseLocation.mockReturnValue({ key: 'default' });
 
-    renderWithLocalization(<MoneyEarnPage />);
+    renderWithStore(<MoneyEarnPage />);
 
     fireEvent.click(screen.getByTestId('money-earn-back-button'));
 
@@ -180,7 +193,7 @@ describe('MoneyEarnPage', () => {
   });
 
   it('passes the row token to handleAddToken when Add is clicked', () => {
-    renderWithLocalization(<MoneyEarnPage />);
+    renderWithStore(<MoneyEarnPage />);
 
     fireEvent.click(
       screen.getAllByTestId('money-potential-earnings-token-add')[2],
@@ -190,7 +203,7 @@ describe('MoneyEarnPage', () => {
   });
 
   it('adds the first eligible token when Convert your crypto is clicked', () => {
-    renderWithLocalization(<MoneyEarnPage />);
+    renderWithStore(<MoneyEarnPage />);
 
     fireEvent.click(screen.getByTestId('money-earn-convert-cta'));
 
@@ -207,7 +220,7 @@ describe('MoneyEarnPage', () => {
       isNoFeeToken: () => false,
     });
 
-    renderWithLocalization(<MoneyEarnPage />);
+    renderWithStore(<MoneyEarnPage />);
 
     const convertButton = screen.getByTestId('money-earn-convert-cta');
     expect(convertButton).toBeDisabled();
@@ -215,8 +228,24 @@ describe('MoneyEarnPage', () => {
     expect(mockHandleAddToken).not.toHaveBeenCalled();
   });
 
-  it('tracks the projected earnings tooltip from the view header', async () => {
+  it('disables the token rows and Convert your crypto when the Money Account is read-only', () => {
+    mockUseMoneyAddDepositToken.mockReturnValue({
+      handleAddToken: mockHandleAddToken,
+      initiateDeposit: mockInitiateDeposit,
+      isDepositDisabled: true,
+      isDepositLoading: false,
+    });
+
     renderWithLocalization(<MoneyEarnPage />);
+
+    expect(screen.getByTestId('money-earn-convert-cta')).toBeDisabled();
+    screen
+      .getAllByTestId('money-potential-earnings-token-add')
+      .forEach((button) => expect(button).toBeDisabled());
+  });
+
+  it('tracks the projected earnings tooltip from the view header', async () => {
+    renderWithStore(<MoneyEarnPage />);
 
     await act(async () => {
       fireEvent.mouseEnter(

@@ -1,6 +1,8 @@
 /* Fixes for any styles that are not compatible with Storybook */
 
-.create-snap-account-page, .remove-snap-account-page, .snap-ui-renderer {
+.create-snap-account-page,
+.remove-snap-account-page,
+.snap-ui-renderer {
   width: 100% !important;
 }
 .snap-ui-renderer__footer-centered {

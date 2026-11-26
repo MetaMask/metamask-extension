@@ -25,14 +25,23 @@ import {
  * getSession but before we read, index 0 can be `true` instead of
  * a sessionScopes object — treat that as "not ready" and retry.
  *
- * @param driver - The E2E test Driver instance.
- * @param testDapp - The multichain test dapp page object.
+ * @param params - The parameters.
+ * @param params.driver - The E2E test Driver instance.
+ * @param params.testDapp - The multichain test dapp page object.
+ * @param params.initialNumberOfResultItems - Result rows expected on the
+ * first attempt. Defaults to 3 (create + revoke + getSession); pass 4 when a
+ * `getSession` call was already made before the revoke.
  */
-async function waitForEmptySessionAfterRevoke(
-  driver: Driver,
-  testDapp: TestDappMultichain,
-): Promise<void> {
-  let numberOfResultItems = 3; // create + revoke + getSession
+async function waitForEmptySessionAfterRevoke({
+  driver,
+  testDapp,
+  initialNumberOfResultItems = 3,
+}: {
+  driver: Driver;
+  testDapp: TestDappMultichain;
+  initialNumberOfResultItems?: number;
+}): Promise<void> {
+  let numberOfResultItems = initialNumberOfResultItems;
   await driver.waitUntil(
     async () => {
       try {
@@ -105,16 +114,12 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
         );
 
         await testDapp.revokeSession();
-
-        const parsedResult = await testDapp.getSession({
-          numberOfResultItems: 3,
+        // create + getSession + revoke + getSession = 4 rows on first attempt
+        await waitForEmptySessionAfterRevoke({
+          driver,
+          testDapp,
+          initialNumberOfResultItems: 4,
         });
-        const resultSessionScopes = parsedResult.sessionScopes;
-        assert.deepStrictEqual(
-          resultSessionScopes,
-          {},
-          'Should receive an empty session scopes value after calling `wallet_revokeSession`',
-        );
       },
     );
   });
@@ -160,7 +165,7 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
         await testDapp.checkPageIsLoaded();
 
         await testDapp.revokeSession();
-        await waitForEmptySessionAfterRevoke(driver, testDapp);
+        await waitForEmptySessionAfterRevoke({ driver, testDapp });
 
         for (const scope of EVM_SCOPES) {
           const request = {

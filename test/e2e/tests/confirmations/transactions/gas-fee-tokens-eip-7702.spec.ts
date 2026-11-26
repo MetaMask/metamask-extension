@@ -5,11 +5,7 @@ import { RelayStatus } from '../../../../../app/scripts/lib/transaction/transact
 import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
 import { decimalToHex } from '../../../../../shared/lib/conversion.utils';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
-import {
-  DEFAULT_FIXTURE_ACCOUNT,
-  DEFAULT_FIXTURE_ACCOUNT_ID,
-  WINDOW_TITLES,
-} from '../../../constants';
+import { DEFAULT_FIXTURE_ACCOUNT_ID, WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction.flow';
 import GasFeeTokenModal from '../../../page-objects/pages/confirmations/gas-fee-token-modal';
@@ -20,6 +16,10 @@ import { Driver } from '../../../webdriver/driver';
 import { mockEip7702FeatureFlag } from '../helpers';
 import { mockSpotPrices } from '../../tokens/utils/mocks';
 import { login } from '../../../page-objects/flows/login.flow';
+import {
+  tokensV3Assets,
+  txSentinelNetwork,
+} from '../../../mock-response-data/api-responses';
 import {
   GAS_FEE_DAI_ADDRESS,
   GAS_FEE_DAI_ASSET_ID,
@@ -46,34 +46,10 @@ const SPOT_PRICES = GAS_FEE_SPOT_PRICES;
 
 const MAINNET_NATIVE_ETH_BALANCE = '0';
 
-const MAINNET_ACCOUNT_TRACKER_CHAIN_IDS = [
-  '0x1',
-  '0x38',
-  '0x89',
-  '0xa',
-  '0xa4b1',
-  '0xe708',
-] as const;
-
 function buildGasFeeTokenFixtures() {
-  const zeroAccountTrackerBalances = Object.fromEntries(
-    MAINNET_ACCOUNT_TRACKER_CHAIN_IDS.map((chainId) => [
-      chainId,
-      {
-        [DEFAULT_FIXTURE_ACCOUNT]: {
-          balance: '0x0',
-          stakedBalance: '0x0',
-        },
-      },
-    ]),
-  );
-
   return new FixtureBuilderV2()
     .withEnabledNetworks({ eip155: { '0x1': true } })
     .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
-    .withAccountTracker({
-      accountsByChainId: zeroAccountTrackerBalances,
-    })
     .withAssetsController(
       getGasFeeTokenAssetsControllerPatch(MAINNET_NATIVE_ETH_BALANCE),
     );
@@ -112,7 +88,6 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
         await login(driver, {
           validateBalance: false,
-          waitForNonEvmAccounts: false,
         });
 
         await createDappTransaction(driver);
@@ -182,7 +157,6 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
         await login(driver, {
           validateBalance: false,
-          waitForNonEvmAccounts: false,
         });
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -300,8 +274,8 @@ async function mockTransactionRelayNetworks(mockServer: MockttpServer) {
       };
     });
 
-  await mockServer
-    .forGet(`${TX_SENTINEL_URL}/network`)
+  await txSentinelNetwork
+    .rule(mockServer, { baseUrl: TX_SENTINEL_URL })
     .always()
     .thenCallback(() => {
       return {
@@ -369,8 +343,8 @@ async function mockSmartTransactionFeatureFlags(mockServer: MockttpServer) {
 // global `/v3/assets` mock returns nothing for them. Provide metadata here so
 // the AssetsController can resolve symbols/decimals for the gas-fee tokens.
 async function mockTokenAssets(mockServer: MockttpServer) {
-  await mockServer
-    .forGet('https://tokens.api.cx.metamask.io/v3/assets')
+  await tokensV3Assets
+    .rule(mockServer)
     .always()
     .thenCallback((request) => {
       const url = new URL(request.url);

@@ -3,7 +3,7 @@ import { renderWithProvider } from '../../../../../../test/lib/render-helpers-na
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
-import { NoFeeTag } from './no-fee-tag';
+import { NoDepositFeeTag, NoFeeTag } from './no-fee-tag';
 
 describe('NoFeeTag', () => {
   it('renders the No fee label', () => {
@@ -22,5 +22,18 @@ describe('NoFeeTag', () => {
       'shrink-0',
       'whitespace-nowrap',
     );
+  });
+});
+
+describe('NoDepositFeeTag', () => {
+  it('renders the No deposit fee label', () => {
+    const store = configureStore(mockState);
+    const { getByTestId, getByText } = renderWithProvider(
+      <NoDepositFeeTag />,
+      store,
+    );
+
+    expect(getByTestId('no-deposit-fee-tag')).toBeInTheDocument();
+    expect(getByText(messages.noDepositFee.message)).toBeInTheDocument();
   });
 });

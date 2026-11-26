@@ -6,12 +6,6 @@ import {
 import { DappClient } from '@metamask/mobile-wallet-protocol-dapp-client';
 import type { KeyManager } from './key-manager';
 
-export type MwpStackFactoryOptions = {
-  kvStore: IKVStore;
-  relayUrl: string;
-  keyManager: KeyManager;
-};
-
 function shouldUseE2eMwpStack(): boolean {
   // Jest unit tests set IN_TEST but must keep using mocked production MWP packages.
   return Boolean(process.env.IN_TEST) && typeof jest === 'undefined';

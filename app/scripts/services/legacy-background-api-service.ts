@@ -2,6 +2,10 @@ import log from 'loglevel';
 import { Messenger } from '@metamask/messenger';
 import type {
   AnalyticsControllerGetEventFragmentByIdAction,
+  AnalyticsControllerGetStateAction,
+  AnalyticsControllerOptInAction,
+  AnalyticsControllerOptOutAction,
+  AnalyticsControllerResetConsentDecisionAction,
   AnalyticsControllerUpsertEventFragmentAction,
   ReadonlyAnalyticsEventFragment,
 } from '@metamask/analytics-controller';
@@ -28,7 +32,6 @@ import {
   NetworkEnablementControllerState,
   NetworkEnablementControllerStateChangeEvent,
 } from '@metamask/network-enablement-controller';
-import { SelectedNetworkControllerGetNetworkClientIdForDomainAction } from '@metamask/selected-network-controller';
 import {
   add0x,
   bytesToHex,
@@ -100,6 +103,7 @@ import { QrKeyring as QrKeyringV2 } from '@metamask/eth-qr-keyring/v2';
 import { KeyringType } from '@metamask/keyring-api/v2';
 import { normalize } from '@metamask/eth-sig-util';
 import {
+  getAccountAddressRelationship,
   TransactionContainerType,
   TransactionControllerAddTransactionAction,
   TransactionControllerAddTransactionBatchAction,
@@ -125,9 +129,6 @@ import {
 } from '@metamask/signature-controller';
 import {
   AssetsContractControllerGetTokenStandardAndDetailsAction,
-  CurrencyRateControllerSetCurrentCurrencyAction,
-  TokenDetectionControllerDisableAction,
-  TokenDetectionControllerEnableAction,
   TokensControllerAddTokenAction,
   TokensControllerGetStateAction,
 } from '@metamask/assets-controllers';
@@ -272,7 +273,10 @@ import {
   ShieldControllerStopAction,
 } from '@metamask/shield-controller';
 import { ClaimsControllerClearStateAction } from '@metamask/claims-controller';
-import { AddressBookControllerClearAction } from '@metamask/address-book-controller';
+import {
+  AddressBookControllerClearAction,
+  AddressBookControllerGetStateAction,
+} from '@metamask/address-book-controller';
 import {
   GasFeeControllerDisableNonRPCGasFeeApisAction,
   GasFeeControllerEnableNonRPCGasFeeApisAction,
@@ -319,7 +323,6 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { restrictKeyringForDeviceRead } from '../lib/hardware-device-read-keyring';
-import type { UsePPOMAction } from '../lib/ppom/ppom-util';
 import {
   OnboardingControllerGetIsSocialLoginFlowAction,
   OnboardingControllerResetOnboardingAction,
@@ -358,6 +361,8 @@ import {
 } from '../controllers/preferences-controller';
 import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
 import { createEventBuilder, trackEvent } from '../controllers/analytics';
+import { updateExtensionUninstallUrl } from '../controllers/analytics/analytics';
+import { ENVIRONMENT } from '../../../shared/constants/build';
 import {
   DefiReferralPartner,
   DefiReferralPartnerConfig,
@@ -408,9 +413,12 @@ import {
   LatticeKeyringV2,
   LatticeCreateAccountOptions,
 } from '../lib/offscreen-bridge/lattice-keyring-v2';
+import { prependZero } from '../../../shared/lib/string-utils';
 import type {
   SentryTracingServiceBufferedEndTraceAction,
   SentryTracingServiceBufferedTraceAction,
+  SentryTracingServiceClearTracesAfterMetricsOptInAction,
+  SentryTracingServiceTrackTracesAfterMetricsOptInAction,
 } from './sentry/sentry-tracing-service-method-action-types';
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
 
@@ -491,10 +499,12 @@ const MESSENGER_EXPOSED_METHODS = [
   'addTransactionAndWaitForPublish',
   'applyTransactionContainersExisting',
   'attemptLedgerTransportCreation',
+  'backupUserData',
   'captureTestError',
   'changePassword',
   'changePasswordWithPasskeyVerification',
   'checkDelegationDisabled',
+  'checkFirstTimeInteraction',
   'checkHardwareStatus',
   'checkIsSeedlessPasswordOutdated',
   'connectHardware',
@@ -559,6 +569,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'setEnabledAllPopularNetworks',
   'setEnabledNetworks',
   'setLocked',
+  'setParticipateInMetaMetrics',
   'setPermittedAccounts',
   'setPermittedChains',
   'setSelectedInternalAccount',
@@ -608,6 +619,7 @@ type AllowedActions =
   | AccountsControllerSetSelectedAccountAction
   | AccountsControllerUpdateAccountsAction
   | AddressBookControllerClearAction
+  | AddressBookControllerGetStateAction
   | ApprovalControllerAcceptRequestAction
   | ApprovalControllerAddAction
   | ApprovalControllerAddAndShowApprovalRequestAction
@@ -633,7 +645,6 @@ type AllowedActions =
   | AuthenticationControllerPerformSignOutAction
   | BridgeStatusControllerWipeBridgeStatusAction
   | ClaimsControllerClearStateAction
-  | CurrencyRateControllerSetCurrentCurrencyAction
   | DelegationControllerSignDelegationAction
   | GasFeeControllerDisableNonRPCGasFeeApisAction
   | GasFeeControllerEnableNonRPCGasFeeApisAction
@@ -651,6 +662,10 @@ type AllowedActions =
   | KeyringControllerWithKeyringV2Action
   | KeyringControllerWithKeyringV2UnsafeAction
   | AnalyticsControllerGetEventFragmentByIdAction
+  | AnalyticsControllerGetStateAction
+  | AnalyticsControllerOptInAction
+  | AnalyticsControllerOptOutAction
+  | AnalyticsControllerResetConsentDecisionAction
   | AnalyticsControllerUpsertEventFragmentAction
   | KeyringControllerSetLockedAction
   | KeyringControllerSignEip7702AuthorizationAction
@@ -660,6 +675,8 @@ type AllowedActions =
   | KeyringControllerWithKeyringAction
   | SentryTracingServiceBufferedTraceAction
   | SentryTracingServiceBufferedEndTraceAction
+  | SentryTracingServiceClearTracesAfterMetricsOptInAction
+  | SentryTracingServiceTrackTracesAfterMetricsOptInAction
   | MultichainAccountServiceAlignWalletsAction
   | MultichainAccountServiceCreateMultichainAccountWalletAction
   | MultichainAccountServiceGetMultichainAccountWalletAction
@@ -730,7 +747,6 @@ type AllowedActions =
   | SeedlessOnboardingControllerSyncLatestGlobalPasswordAction
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
   | SeedlessOnboardingControllerIdentifyIncompleteMetadataBackupAction
-  | SelectedNetworkControllerGetNetworkClientIdForDomainAction
   | GetSignatureState
   | ShieldControllerClearStateAction
   | ShieldControllerStartAction
@@ -743,8 +759,6 @@ type AllowedActions =
   | SubscriptionControllerGetStateAction
   | SubscriptionControllerGetSubscriptionByProductAction
   | SubscriptionControllerStopAllPollingAction
-  | TokenDetectionControllerDisableAction
-  | TokenDetectionControllerEnableAction
   | TokensControllerAddTokenAction
   | TokensControllerGetStateAction
   | TransactionControllerAddTransactionAction
@@ -757,7 +771,6 @@ type AllowedActions =
   | TransactionControllerUpdateEditableParamsAction
   | TransactionControllerUpdateSecurityAlertResponseAction
   | TransactionControllerWipeTransactionsAction
-  | UsePPOMAction
   | UserOperationControllerAddUserOperationFromTransactionAction
   | UserOperationControllerStartPollingByNetworkClientIdAction;
 
@@ -786,6 +799,10 @@ export type LegacyBackgroundApiServiceMessenger = Messenger<
  */
 type LegacyBackgroundApiServiceOptions = {
   messenger: LegacyBackgroundApiServiceMessenger;
+  appBuildType: string;
+  appEnvironment: string;
+  appVersion: string;
+  setUninstallURL: (url: string) => void;
   infuraProjectId: string;
   getRequestAccountTabIds: () => Record<string, number>;
   getOpenMetamaskTabsIds: () => Record<string, number>;
@@ -812,6 +829,14 @@ export class LegacyBackgroundApiService {
   name: typeof serviceName = serviceName;
 
   readonly #messenger: LegacyBackgroundApiServiceMessenger;
+
+  readonly #appBuildType: string;
+
+  readonly #appEnvironment: string;
+
+  readonly #appVersion: string;
+
+  readonly #setUninstallURL: (url: string) => void;
 
   readonly #infuraProjectId: string;
 
@@ -845,6 +870,10 @@ export class LegacyBackgroundApiService {
    * Creates a new instance of the LegacyBackgroundApiService.
    * @param options - The options required to initialize the LegacyBackgroundApiService.
    * @param options.messenger - The messenger instance used for communication.
+   * @param options.appBuildType - The extension build type.
+   * @param options.appEnvironment - The extension environment.
+   * @param options.appVersion - The extension version.
+   * @param options.setUninstallURL - Sets the extension uninstall URL.
    * @param options.infuraProjectId - The Infura project ID.
    * @param options.getRequestAccountTabIds - A function that returns a record of account tab IDs.
    * @param options.getOpenMetamaskTabsIds - A function that returns a record of open MetaMask tab IDs.
@@ -859,6 +888,10 @@ export class LegacyBackgroundApiService {
    */
   constructor({
     messenger,
+    appBuildType,
+    appEnvironment,
+    appVersion,
+    setUninstallURL,
     infuraProjectId,
     getRequestAccountTabIds,
     getOpenMetamaskTabsIds,
@@ -872,6 +905,10 @@ export class LegacyBackgroundApiService {
     offscreenPromise,
   }: LegacyBackgroundApiServiceOptions) {
     this.#messenger = messenger;
+    this.#appBuildType = appBuildType;
+    this.#appEnvironment = appEnvironment;
+    this.#appVersion = appVersion;
+    this.#setUninstallURL = setUninstallURL;
 
     this.#infuraProjectId = infuraProjectId;
     this.#getRequestAccountTabIds = getRequestAccountTabIds;
@@ -895,16 +932,11 @@ export class LegacyBackgroundApiService {
   }
 
   /**
-   * Sets the current currency for the CurrencyRateController and AssetsController.
+   * Sets the selected currency on the AssetsController.
    *
    * @param currencyCode - The currency code to set as the current currency.
    */
   async setCurrentCurrency(currencyCode: SupportedCurrency): Promise<void> {
-    await this.#messenger.call(
-      'CurrencyRateController:setCurrentCurrency',
-      currencyCode,
-    );
-
     this.#messenger.call('AssetsController:setSelectedCurrency', currencyCode);
   }
 
@@ -1090,13 +1122,13 @@ export class LegacyBackgroundApiService {
    * @param networkClientId - The ID of the network client to use for the request.
    * @returns The code of the contract at the given address.
    */
-  async getCode(address: Hex, networkClientId: string): Promise<Json> {
+  async getCode(address: Hex, networkClientId: string): Promise<Hex> {
     const { provider } = this.#messenger.call(
       'NetworkController:getNetworkClientById',
       networkClientId,
     );
 
-    return await provider.request({
+    return await provider.request<[Hex], Hex>({
       method: 'eth_getCode',
       params: [address],
     });
@@ -3068,13 +3100,11 @@ export class LegacyBackgroundApiService {
     );
 
     if (useExternal) {
-      this.#messenger.call('TokenDetectionController:enable');
       this.#messenger.call('GasFeeController:enableNonRPCGasFeeApis');
       if (hasActiveShieldSubscription) {
         this.#messenger.call('ShieldController:start');
       }
     } else {
-      this.#messenger.call('TokenDetectionController:disable');
       this.#messenger.call('GasFeeController:disableNonRPCGasFeeApis');
       // stop polling for the subscriptions if external services are disabled
       this.#messenger.call('SubscriptionController:stopAllPolling');
@@ -4155,10 +4185,13 @@ export class LegacyBackgroundApiService {
 
       // Only emit a span when discovery actually created accounts.
       if (result.length > 0) {
+        // Discovery runs after onboarding or an SRP import, often detached from
+        // the request that triggered it, and no caller context reaches here.
         trace({
           name: TraceName.DiscoverAccounts,
           op: TraceOperation.AccountDiscover,
           startTime,
+          root: true,
         });
         endTrace({
           name: TraceName.DiscoverAccounts,
@@ -4476,10 +4509,6 @@ export class LegacyBackgroundApiService {
 
       this.#messenger.call('TransactionController:clearUnapprovedTransactions');
 
-      if (completedOnboarding) {
-        this.#messenger.call('TokenDetectionController:enable');
-      }
-
       // create new vault
       const seedPhraseAsUint8Array =
         this.#convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
@@ -4700,25 +4729,6 @@ export class LegacyBackgroundApiService {
 
     if (hasPendingApproval) {
       return;
-    }
-
-    // If the partner requires a specific chain and user's chain doesn't match,
-    // return early to avoid the referral code potentially not being applied.
-    // Don't write any account status so that the prompt can show on the next
-    // trigger (NewConnection or OnNavigateConnectedTab) once the user has switched chain
-    if (partner.requiredChainId) {
-      const networkClientId = this.#messenger.call(
-        'SelectedNetworkController:getNetworkClientIdForDomain',
-        partner.origin,
-      );
-      const networkConfig = this.#messenger.call(
-        'NetworkController:getNetworkConfigurationByNetworkClientId',
-        networkClientId,
-      );
-      const currentChainId = networkConfig?.chainId;
-      if (currentChainId !== partner.requiredChainId) {
-        return;
-      }
     }
 
     const { activePermittedAddressOverride } = options;
@@ -5429,5 +5439,112 @@ export class LegacyBackgroundApiService {
         PermissionControllerGrantPermissionsAction['handler']
       >[0]['approvedPermissions'],
     });
+  }
+
+  /**
+   * Sets the user's MetaMetrics participation preference.
+   *
+   * The UI calls this through the background API so consent changes can also
+   * update the extension uninstall URL and tracing behavior.
+   *
+   * @param participateInMetaMetrics - Whether the user wants to participate,
+   * or `null` to reset the consent decision.
+   * @returns The current analytics ID.
+   */
+  async setParticipateInMetaMetrics(
+    participateInMetaMetrics: boolean | null,
+  ): Promise<string> {
+    const { analyticsId } = this.#messenger.call(
+      'AnalyticsController:getState',
+    );
+
+    if (participateInMetaMetrics === true) {
+      await this.#messenger.call('AnalyticsController:optIn');
+      this.#messenger.call('SentryTracingService:trackTracesAfterMetricsOptIn');
+      this.#messenger.call('SentryTracingService:clearTracesAfterMetricsOptIn');
+    } else if (participateInMetaMetrics === false) {
+      this.#messenger.call('AnalyticsController:optOut');
+      this.#messenger.call('SentryTracingService:clearTracesAfterMetricsOptIn');
+    } else {
+      this.#messenger.call('AnalyticsController:resetConsentDecision');
+    }
+
+    if (
+      this.#appBuildType === 'main' &&
+      this.#appEnvironment !== ENVIRONMENT.DEVELOPMENT &&
+      participateInMetaMetrics !== null
+    ) {
+      updateExtensionUninstallUrl({
+        participateInMetaMetrics,
+        analyticsId,
+        appVersion: this.#appVersion,
+        appEnvironment: this.#appEnvironment,
+        setUninstallURL: this.#setUninstallURL,
+      });
+    }
+
+    return analyticsId;
+  }
+
+  /**
+   * Determines whether the sender has no prior interaction with an address.
+   *
+   * Missing relationship data and request failures remain unknown so callers
+   * can distinguish them from a confirmed first interaction.
+   *
+   * @param request - The chain, sender, and recipient to check.
+   * @param request.chainId - The numeric chain ID.
+   * @param request.from - The sender address.
+   * @param request.to - The recipient address.
+   * @returns Whether this is the first interaction, or undefined if unknown.
+   */
+  // TODO: Move this to `transaction-controller` and expose as a messenger
+  // action.
+  async checkFirstTimeInteraction(request: {
+    chainId: number;
+    from: string;
+    to: string;
+  }): Promise<boolean | undefined> {
+    try {
+      const result = await getAccountAddressRelationship(request);
+      return result.count === undefined ? undefined : result.count === 0;
+    } catch {
+      return undefined;
+    }
+  }
+
+  /**
+   * Creates a JSON backup of the user's preferences, accounts, address book,
+   * and network configurations for download from the UI.
+   *
+   * @returns The backup filename and serialized data.
+   */
+  backupUserData(): { fileName: string; data: string } {
+    const preferences = this.#messenger.call('PreferencesController:getState');
+    const { internalAccounts } = this.#messenger.call(
+      'AccountsController:getState',
+    );
+    const addressBook = this.#messenger.call('AddressBookController:getState');
+    const { networkConfigurationsByChainId } = this.#messenger.call(
+      'NetworkController:getState',
+    );
+
+    const data = JSON.stringify({
+      preferences: { ...preferences },
+      internalAccounts: { internalAccounts },
+      addressBook: { ...addressBook },
+      network: { networkConfigurationsByChainId },
+    });
+
+    const date = new Date();
+    const prefixZero = (num: number): string => prependZero(num, 2);
+
+    const userDataFileName = `MetaMaskUserData.${date.getFullYear()}_${prefixZero(
+      date.getMonth() + 1,
+    )}_${prefixZero(date.getDay())}_${prefixZero(date.getHours())}_${prefixZero(
+      date.getMinutes(),
+    )}_${prefixZero(date.getDay())}.json`;
+
+    return { fileName: userDataFileName, data };
   }
 }

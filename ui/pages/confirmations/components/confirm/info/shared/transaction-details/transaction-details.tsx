@@ -13,7 +13,6 @@ import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { selectPaymasterAddress } from '../../../../../../../selectors/account-abstraction';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useFourByte } from '../../hooks/useFourByte';
@@ -54,7 +53,13 @@ export const OriginRow = () => {
   );
 };
 
-export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
+export const RecipientRow = ({
+  recipient,
+  nestedTransactionIndex,
+}: {
+  recipient?: Hex;
+  nestedTransactionIndex?: number;
+} = {}) => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { isUpgrade } = useIsUpgradeTransaction();
@@ -78,12 +83,16 @@ export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
   return (
     <ConfirmInfoAlertRow
       ownerId={id}
-      alertKey={RowAlertKey.InteractingWith}
+      alertKey={
+        nestedTransactionIndex === undefined
+          ? RowAlertKey.InteractingWith
+          : `${RowAlertKey.InteractingWith}-${nestedTransactionIndex}`
+      }
       data-testid="transaction-details-recipient-row"
       label={t('interactingWith')}
       tooltip={t('interactingWithTransactionDescription')}
     >
-      <ConfirmInfoRowAddress address={to} chainId={chainId} />
+      <ConfirmInfoRowAddress address={to} chainId={chainId} fillWidth />
     </ConfirmInfoAlertRow>
   );
 };
@@ -146,36 +155,6 @@ const AmountRow = () => {
   );
 };
 
-const PaymasterRow = () => {
-  const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-
-  const { id: userOperationId, chainId } = currentConfirmation ?? {};
-  const isUserOperation = Boolean(currentConfirmation?.isUserOperation);
-
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const paymasterAddress = useSelector((state: any) =>
-    selectPaymasterAddress(state, userOperationId as string),
-  );
-
-  if (!isUserOperation || !paymasterAddress) {
-    return null;
-  }
-
-  return (
-    <ConfirmInfoSection>
-      <ConfirmInfoRow
-        data-testid="transaction-details-paymaster-row"
-        label={t('confirmFieldPaymaster')}
-        tooltip={t('confirmFieldTooltipPaymaster')}
-      >
-        <ConfirmInfoRowAddress address={paymasterAddress} chainId={chainId} />
-      </ConfirmInfoRow>
-    </ConfirmInfoSection>
-  );
-};
-
 export const TransactionDetails = () => {
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
@@ -204,7 +183,6 @@ export const TransactionDetails = () => {
       {(showAdvancedDetails || hasValueAndNativeBalanceMismatch) && (
         <AmountRow />
       )}
-      <PaymasterRow />
     </>
   );
 };

@@ -104,7 +104,6 @@ export const selectNonEvmBridgeSourceTxIds = createSelector(
   },
 );
 
-// eslint-disable-next-line jsdoc/require-param
 /**
  * @deprecated use selectBridgeHistoryItemForTransactionHash instead
  */
@@ -146,7 +145,6 @@ const selectBridgeHistoryByApprovalTxId = createSelector(
     ),
 );
 
-// eslint-disable-next-line jsdoc/require-param
 /**
  * Returns a bridge history item for a given original tx meta id.
  * Used by intent flows where txHistory key is orderUid and tx meta id is stored separately.
@@ -162,7 +160,6 @@ export const selectBridgeHistoryForOriginalTxMetaId = (
   return selectBridgeHistoryByOriginalTransactionId(state)[originalTxMetaId];
 };
 
-// eslint-disable-next-line jsdoc/require-param
 /**
  * Returns a bridge history item for a given approval tx id
  */

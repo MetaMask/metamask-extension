@@ -6,14 +6,28 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 // eslint-disable-next-line import-x/no-restricted-paths
 import messages from '../../../../../app/_locales/en/messages.json';
-import { QR_SYNC_TIMEOUT_MS } from '../../../../../shared/constants/qr-sync';
+import { ENVIRONMENT } from '../../../../../shared/constants/build';
+import { QrSyncErrorCodes } from '../../../../../shared/constants/qr-sync';
 import { selectQrSyncQrPayload } from '../../../../selectors/qr-sync/qr-sync';
 import QrCodeScan from './qr-code-scan';
 
-jest.mock('qrcode-generator', () => () => ({
-  addData: jest.fn(),
-  make: jest.fn(),
-  createDataURL: jest.fn(() => 'data:image/gif;base64,mock-qr'),
+jest.mock('qrcode.react', () => ({
+  QRCodeSVG: ({
+    value,
+    className,
+    size,
+  }: {
+    value: string;
+    className?: string;
+    size: number;
+  }) => (
+    <svg
+      data-testid="qr-code-image"
+      data-value={value}
+      data-size={size}
+      className={className}
+    />
+  ),
 }));
 
 jest.mock('../../../../selectors/qr-sync/qr-sync', () => ({
@@ -22,7 +36,6 @@ jest.mock('../../../../selectors/qr-sync/qr-sync', () => ({
 }));
 
 const mockSelectQrSyncQrPayload = jest.mocked(selectQrSyncQrPayload);
-const defaultOnRestart = jest.fn();
 
 const createMockStore = (metamaskOverrides = {}) =>
   configureMockStore([thunk])({
@@ -35,92 +48,177 @@ const createMockStore = (metamaskOverrides = {}) =>
     },
   });
 
-const renderQrCodeScan = (
-  mockStore = createMockStore(),
-  onRestart: () => void = defaultOnRestart,
-) => renderWithProvider(<QrCodeScan onRestart={onRestart} />, mockStore);
+const mockOnRestart = jest.fn();
+
+const renderQrCodeScan = (mockStore = createMockStore()) =>
+  renderWithProvider(<QrCodeScan onRestart={mockOnRestart} />, mockStore);
 
 describe('QrCodeScan', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    defaultOnRestart.mockClear();
     mockSelectQrSyncQrPayload.mockImplementation(
       (state) => state.metamask.qrSyncQrPayload,
     );
-  });
-
-  afterEach(() => {
-    jest.useRealTimers();
   });
 
   it('renders the heading, description and QR code image', () => {
     const mockStore = createMockStore();
     renderQrCodeScan(mockStore);
 
-    expect(screen.getByText(messages.scanQrCode.message)).toBeInTheDocument();
+    expect(screen.getByText(messages.syncAccounts.message)).toBeInTheDocument();
     expect(
       screen.getByText(messages.scan_qr_code_desc.message),
     ).toBeInTheDocument();
-    expect(screen.getByTestId('qr-code-image')).toBeInTheDocument();
+    expect(screen.getByTestId('qr-code-image')).toHaveAttribute(
+      'data-size',
+      '152',
+    );
   });
 
-  it('shows the countdown while the QR code is valid', () => {
-    const mockStore = createMockStore();
-    renderQrCodeScan(mockStore);
+  it('reveals the QR payload on request in development', () => {
+    const originalMetaMaskEnvironment = process.env.METAMASK_ENVIRONMENT;
+    process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.DEVELOPMENT;
 
-    expect(
-      screen.getByText(
-        `Expires in ${QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT / 1000}s`,
-      ),
-    ).toBeInTheDocument();
+    try {
+      renderQrCodeScan();
+
+      expect(
+        screen.queryByTestId('qr-sync-qr-payload'),
+      ).not.toBeInTheDocument();
+
+      fireEvent.click(screen.getByTestId('qr-sync-toggle-qr-payload'));
+
+      const payload = screen.getByTestId('qr-sync-qr-payload');
+      expect(payload).toHaveTextContent('metamask://connect/mwp?p=test');
+    } finally {
+      process.env.METAMASK_ENVIRONMENT = originalMetaMaskEnvironment;
+    }
   });
 
-  it('shows the expired message and reset button after the timer runs out', () => {
-    jest.useFakeTimers();
-    const mockStore = createMockStore();
-    renderQrCodeScan(mockStore);
+  it('reveals the QR payload on request in test builds', () => {
+    const originalMetaMaskEnvironment = process.env.METAMASK_ENVIRONMENT;
+    process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.TESTING;
 
-    act(() => {
-      jest.advanceTimersByTime(QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT);
-    });
+    try {
+      renderQrCodeScan();
 
-    expect(
-      screen.getByText(messages.qrCodeExpired.message),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByTestId('qr-sync-generate-new-qr-code'),
-    ).toBeInTheDocument();
+      fireEvent.click(screen.getByTestId('qr-sync-toggle-qr-payload'));
+
+      expect(screen.getByTestId('qr-sync-qr-payload')).toHaveTextContent(
+        'metamask://connect/mwp?p=test',
+      );
+    } finally {
+      process.env.METAMASK_ENVIRONMENT = originalMetaMaskEnvironment;
+    }
   });
 
-  it('keeps the previous QR image when the payload becomes null', () => {
-    const mockStore = createMockStore();
-    const { rerender } = renderQrCodeScan(mockStore);
+  it('does not render the QR payload in production', () => {
+    const originalMetaMaskEnvironment = process.env.METAMASK_ENVIRONMENT;
+    process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.PRODUCTION;
 
-    expect(screen.getByTestId('qr-code-image')).toBeInTheDocument();
+    try {
+      renderQrCodeScan();
 
+      expect(
+        screen.queryByTestId('qr-sync-qr-payload'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('qr-sync-toggle-qr-payload'),
+      ).not.toBeInTheDocument();
+    } finally {
+      process.env.METAMASK_ENVIRONMENT = originalMetaMaskEnvironment;
+    }
+  });
+
+  it('uses the white bordered QR surface', () => {
+    renderQrCodeScan();
+
+    const qrCode = screen.getByTestId('qr-code-image');
+    expect(qrCode.parentElement).toHaveClass(
+      'bg-white',
+      'border',
+      'border-muted',
+      'p-4',
+    );
+  });
+
+  it('uses a white background around the centered fox', () => {
+    renderQrCodeScan();
+
+    const fox = screen.getByTestId('qr-code-fox');
+
+    expect(fox).toHaveClass('h-[35px]', 'w-[35px]', 'object-contain');
+    expect(fox.parentElement).toHaveClass('h-10', 'w-[45px]', 'bg-white');
+  });
+
+  it('shows a loading state when the next QR payload is being created', () => {
     mockSelectQrSyncQrPayload.mockReturnValue(null);
-    rerender(<QrCodeScan onRestart={defaultOnRestart} />);
+    renderQrCodeScan();
 
-    expect(screen.getByTestId('qr-code-image')).toBeInTheDocument();
+    expect(screen.getByTestId('qr-sync-qr-loading')).toBeInTheDocument();
+    expect(screen.queryByTestId('qr-code-image')).not.toBeInTheDocument();
   });
 
-  it('calls onRestart when the reset button is clicked', () => {
-    jest.useFakeTimers();
-    const mockStore = createMockStore();
-    const onRestart = jest.fn();
-    renderQrCodeScan(mockStore, onRestart);
+  describe('when the QR code expired', () => {
+    const expiredError = {
+      code: QrSyncErrorCodes.QR_EXPIRED,
+      message: 'QR code expired.',
+    };
 
-    act(() => {
-      jest.advanceTimersByTime(QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT);
+    it('does not show the expired state or restart button while the QR code is valid', () => {
+      renderQrCodeScan();
+
+      expect(
+        screen.queryByTestId('qr-sync-qr-expired'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('qr-sync-generate-new-qr-code'),
+      ).not.toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByTestId('qr-sync-generate-new-qr-code'));
+    it('shows the expired message and a button to get a new code', () => {
+      renderQrCodeScan(createMockStore({ qrSyncError: expiredError }));
 
-    expect(onRestart).toHaveBeenCalledTimes(1);
-    expect(
-      screen.getByText(
-        `Expires in ${QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT / 1000}s`,
-      ),
-    ).toBeInTheDocument();
+      expect(screen.getByTestId('qr-sync-qr-expired')).toHaveTextContent(
+        messages.enter_verification_code_expired.message,
+      );
+      expect(
+        screen.getByTestId('qr-sync-generate-new-qr-code'),
+      ).toHaveTextContent(messages.add_device_try_again.message);
+    });
+
+    it('keeps showing the previous QR code, dimmed, after the controller clears the payload', () => {
+      let currentState = createMockStore().getState();
+      const store = configureMockStore([thunk])(() => currentState);
+      renderQrCodeScan(store);
+      expect(screen.getByTestId('qr-code-image')).toHaveAttribute(
+        'data-value',
+        'metamask://connect/mwp?p=test',
+      );
+
+      currentState = createMockStore({
+        qrSyncQrPayload: null,
+        qrSyncError: expiredError,
+      }).getState();
+      act(() => {
+        store.dispatch({ type: 'QR_SYNC_TEST_EXPIRED' });
+      });
+
+      expect(screen.getByTestId('qr-code-image')).toHaveAttribute(
+        'data-value',
+        'metamask://connect/mwp?p=test',
+      );
+      expect(screen.getByTestId('qr-sync-qr-code')).toHaveStyle({
+        opacity: '0.3',
+      });
+    });
+
+    it('calls onRestart when the button is clicked', () => {
+      renderQrCodeScan(createMockStore({ qrSyncError: expiredError }));
+
+      fireEvent.click(screen.getByTestId('qr-sync-generate-new-qr-code'));
+
+      expect(mockOnRestart).toHaveBeenCalledTimes(1);
+    });
   });
 });

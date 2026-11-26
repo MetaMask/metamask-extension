@@ -698,7 +698,7 @@ describe('RewardsPointsBalance', () => {
     setSelectorValues({
       candidateSubscriptionId: null,
       rewardsActiveAccountSubscriptionId: null,
-      rewardsDeeplinkUrl: 'https://link.metamask.io/rewards?referral=ABC123',
+      rewardsDeeplinkUrl: 'https://link.metamask.io/rewards',
     });
 
     render(<RewardsPointsBalance />);
@@ -715,7 +715,7 @@ describe('RewardsPointsBalance', () => {
     setSelectorValues({
       candidateSubscriptionId: null,
       rewardsActiveAccountSubscriptionId: null,
-      rewardsDeeplinkUrl: 'https://link.metamask.io/rewards?referral=ABC123',
+      rewardsDeeplinkUrl: 'https://link.metamask.io/rewards',
     });
 
     render(<RewardsPointsBalance />);
@@ -732,7 +732,7 @@ describe('RewardsPointsBalance', () => {
     setSelectorValues({
       candidateSubscriptionId: 'candidate-subscription-id',
       rewardsActiveAccountSubscriptionId: null,
-      rewardsDeeplinkUrl: 'https://link.metamask.io/rewards?referral=ABC123',
+      rewardsDeeplinkUrl: 'https://link.metamask.io/rewards',
     });
 
     render(<RewardsPointsBalance />);
@@ -749,7 +749,7 @@ describe('RewardsPointsBalance', () => {
     setSelectorValues({
       candidateSubscriptionId: null,
       rewardsActiveAccountSubscriptionId: 'active-subscription-id',
-      rewardsDeeplinkUrl: 'https://link.metamask.io/rewards?referral=ABC123',
+      rewardsDeeplinkUrl: 'https://link.metamask.io/rewards',
     });
 
     render(<RewardsPointsBalance />);

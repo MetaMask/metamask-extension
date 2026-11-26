@@ -29,10 +29,8 @@ import {
   TextFieldSize,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  type UpdateNetworkFields,
-  RpcEndpointType,
-} from '@metamask/network-controller';
+import { RpcEndpointType } from '@metamask/network-controller';
+import type { UpdateNetworkFields } from '@metamask/network-controller';
 import { Hex, isStrictHexString, hexToNumber } from '@metamask/utils';
 import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
 import { useAnalytics } from '../../../hooks/useAnalytics';
@@ -40,14 +38,26 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsNetworkEventSource,
+  NetworkManagementAction,
+  NetworkManagementEntryPoint,
+  NetworkManagementInteractionType,
+  NetworkManagementSource,
 } from '../../../../shared/constants/metametrics';
+import {
+  getChangedNetworkFields,
+  trackNetworkAdded,
+  trackNetworkEdited,
+  trackNetworkManagementInteracted,
+  trackRpcRemoved,
+} from '../../../helpers/utils/network-management-metrics';
+import { getNetworkSectionKey } from '../../../helpers/utils/network-sections';
 import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_IDS,
   infuraProjectId,
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
-import { getFailoverUrlsForChainId } from '../../../../shared/constants/network-failover';
+import { getFailoverUrlsForEndpoint } from '../../../../shared/constants/network-failover';
 import {
   decimalToHex,
   hexToDecimal,
@@ -91,9 +101,9 @@ import { onlyKeepHost } from '../../../../shared/lib/only-keep-host';
 import { useDispatch } from '../../../store/hooks';
 import {
   ChainlistNetworkPicker,
-  type ChainlistNetwork,
   getUsableUrls,
 } from '../../../pages/networks/chainlist-network-picker';
+import type { ChainlistNetwork } from '../../../pages/networks/chainlist-network-picker';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
 
@@ -299,20 +309,13 @@ export const NetworksForm = ({
       : rpcUrls.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex];
 
   const networkChainIdHex = chainId === '' ? undefined : toHex(chainId);
-  const chainFailoverUrls = networkChainIdHex
-    ? getFailoverUrlsForChainId(networkChainIdHex)
-    : [];
 
-  // Failover only applies to Infura RPC endpoints. NetworkController wires
-  // failover URLs solely for Infura endpoints; applying them to custom RPCs
-  // would leak requests to the failover, so it does not. Only surface failover
-  // in the form for Infura endpoints so the UI matches the actual behaviour.
-  const failoverUrlsForEndpoint = (endpoint?: { url: string }) => {
-    return endpoint?.url &&
-      new URL(endpoint.url).hostname.endsWith('.infura.io')
-      ? chainFailoverUrls
+  // Failover only applies to Infura RPC endpoints (see
+  // `getFailoverUrlsForEndpoint`), so the UI matches the actual behaviour.
+  const failoverUrlsForEndpoint = (endpoint?: { url: string }) =>
+    networkChainIdHex
+      ? getFailoverUrlsForEndpoint(networkChainIdHex, endpoint?.url)
       : [];
-  };
 
   const defaultFailoverUrls = failoverUrlsForEndpoint(defaultRpcEndpoint);
 
@@ -338,6 +341,51 @@ export const NetworksForm = ({
       : endpoint;
 
   const chainIdHex = chainId ? toHex(chainId) : undefined;
+  let metricsEntryPoint = NetworkManagementEntryPoint.NetworkPicker;
+  if (usePageFooterStyle) {
+    metricsEntryPoint = NetworkManagementEntryPoint.SettingsNetworks;
+  } else if (existingNetwork) {
+    metricsEntryPoint = NetworkManagementEntryPoint.EditNetworkModal;
+  }
+  const didTrackFormOpen = useRef(false);
+
+  useEffect(() => {
+    if (didTrackFormOpen.current) {
+      return;
+    }
+    didTrackFormOpen.current = true;
+
+    trackNetworkManagementInteracted(
+      { trackEvent, createEventBuilder },
+      {
+        interactionType: NetworkManagementInteractionType.NetworkFormOpened,
+        action: existingNetwork
+          ? NetworkManagementAction.Edit
+          : NetworkManagementAction.Add,
+        entryPoint: metricsEntryPoint,
+        chainId: chainIdHex,
+        networkType: chainIdHex ? getNetworkSectionKey(chainIdHex) : undefined,
+        rpcCount: rpcUrls.rpcEndpoints?.length ?? 0,
+      },
+    );
+
+    if (!existingNetwork) {
+      Promise.resolve(
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.CustomNetworkFormViewed)
+            .addCategory(MetaMetricsEventCategory.Network)
+            .addProperties({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              source_connection_method:
+                MetaMetricsNetworkEventSource.CustomNetworkForm,
+            })
+            .build(),
+        ),
+      ).catch(() => undefined);
+    }
+    // Fire once when the form opens. Later field edits are not new views.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const { suggestedName, nameWarning } = useMemo(() => {
     const expectedName = chainIdHex
@@ -611,8 +659,8 @@ export const NetworksForm = ({
               const chainIdAsDecimal = hexToNumber(chainIdHex);
 
               const sanitizeRpcUrl = async (url: string) => {
-                const isPublic = await submitRequestToBackground<boolean>(
-                  'isPublicEndpointUrl',
+                const isPublic = await submitRequestToBackground(
+                  'LegacyBackgroundApiService:isPublicEndpointUrl',
                   [url],
                 );
                 return isPublic ? onlyKeepHost(url) : 'custom';
@@ -696,6 +744,39 @@ export const NetworksForm = ({
             })
             .build(),
         );
+
+        if (chainIdHex) {
+          const analytics = { trackEvent, createEventBuilder };
+          const rpcCount = rpcUrls?.rpcEndpoints?.length ?? 0;
+          if (existingNetwork) {
+            trackNetworkEdited(analytics, {
+              chainId: chainIdHex,
+              entryPoint: metricsEntryPoint,
+              changedFields: getChangedNetworkFields(existingNetwork, {
+                name,
+                chainId: chainIdHex,
+                nativeCurrency: ticker,
+                rpcEndpoints: rpcUrls?.rpcEndpoints,
+                defaultRpcEndpointIndex: rpcUrls?.defaultRpcEndpointIndex,
+                blockExplorerUrls: blockExplorers?.blockExplorerUrls,
+              }),
+              rpcCount,
+            });
+          } else {
+            trackNetworkAdded(analytics, {
+              chainId: chainIdHex,
+              source:
+                source === 'chainlist'
+                  ? NetworkManagementSource.Chainlist
+                  : NetworkManagementSource.Manual,
+              entryPoint: metricsEntryPoint,
+              rpcCount,
+              blockExplorerSet: Boolean(
+                blockExplorers?.blockExplorerUrls?.length,
+              ),
+            });
+          }
+        }
 
         dispatch(
           setEditedNetwork({
@@ -793,6 +874,8 @@ export const NetworksForm = ({
                 maxHeight={chainlistMaxHeight}
                 searchValue={name}
                 showSearchField={false}
+                comboboxInputId="networkName"
+                onDismiss={closeChainlist}
                 onSelect={(network, searchQuery) => {
                   setSource('chainlist');
                   closeChainlist();
@@ -901,6 +984,19 @@ export const NetworksForm = ({
               }))
             }
             onItemDeleted={(deletedIndex, newSelectedIndex) => {
+              trackRpcRemoved(
+                { trackEvent, createEventBuilder },
+                {
+                  chainId: chainIdHex,
+                  rpcCount: Math.max(
+                    (rpcUrls.rpcEndpoints?.length ?? 1) - 1,
+                    0,
+                  ),
+                  wasActive:
+                    deletedIndex === (rpcUrls.defaultRpcEndpointIndex ?? 0),
+                  entryPoint: metricsEntryPoint,
+                },
+              );
               setRpcUrls({
                 rpcEndpoints: rpcUrls.rpcEndpoints
                   ?.slice(0, deletedIndex)
@@ -980,6 +1076,8 @@ export const NetworksForm = ({
                   maxHeight={chainlistMaxHeight}
                   searchValue={chainId}
                   showSearchField={false}
+                  comboboxInputId="chainId"
+                  onDismiss={closeChainlist}
                   onSelect={(network, searchQuery) => {
                     setSource('chainlist');
                     closeChainlist();

@@ -115,28 +115,20 @@ export const DEFAULT_MUSD_BLOCKED_COUNTRIES: string[] = ['GB'];
  * Displayed in the education screen
  */
 export const MUSD_CONVERSION_BONUS_TERMS_OF_USE =
-  'https://metamask.io/musd-bonus-terms-of-use';
+  'https://metamask.com/musd-bonus-terms-of-use';
 
 /**
  * URL for the mUSD Help Center article
  * Linked from the asset details bonus and convert sections
  */
 export const MUSD_SUPPORT_ARTICLE_URL =
-  'https://support.metamask.io/manage-crypto/tokens/musd';
+  'https://support.metamask.com/manage-crypto/tokens/musd';
 
 /**
  * Minimum asset balance required in USD for a token to be eligible for conversion
  * Default is $0.01 (1 cent) if not configured via feature flag
  */
 export const FALLBACK_MIN_ASSET_BALANCE_REQUIRED = 0.01;
-
-/**
- * Relay API endpoints for mUSD conversion
- */
-export const RELAY_API_ENDPOINTS = {
-  QUOTE: 'https://api.relay.link/quote',
-  STATUS: 'https://api.relay.link/intents/status',
-} as const;
 
 // ============================================================================
 // Utility Functions

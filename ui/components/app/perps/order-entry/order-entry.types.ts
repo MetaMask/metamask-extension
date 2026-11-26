@@ -32,8 +32,8 @@ export type ExistingPositionData = {
   symbol?: string;
   /** Position size (signed: positive = long, negative = short) */
   size: string;
-  /** Current leverage multiplier */
-  leverage: number;
+  /** Venue-reported leverage, absent when unavailable. */
+  leverage?: number;
   /** Entry price for reference display */
   entryPrice: string;
   /** Take profit price (if set) */
@@ -56,7 +56,7 @@ export type OrderFormState = {
   /** USD amount to trade (string for input handling) */
   amount: string;
   /** Leverage multiplier (1-50x typically) */
-  leverage: number;
+  leverage: number | undefined;
   /** Percentage of available balance (0-100) */
   balancePercent: number;
   /** Take profit price (optional) */

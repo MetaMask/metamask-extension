@@ -1,7 +1,6 @@
 import { captureException } from '../../../shared/lib/sentry';
 import {
   fetchCarouselSlidesFromContentful,
-  getContentfulEnvironmentDetails,
   UnknownLocaleError,
 } from './fetchCarouselSlidesFromContentful';
 

@@ -186,31 +186,3 @@
   opacity: 0.7;
   transition: opacity 250ms ease-in-out;
 }
-
-// Empty State Fold-Up Animation (when shown as standalone component)
-.empty-state-exit {
-  opacity: 1;
-  transform: scaleY(1);
-  height: 106px; // Match carousel-container height
-}
-
-.empty-state-exit-active {
-  opacity: 0;
-  transform: scaleY(0);
-  height: 0;
-  transition:
-    opacity 200ms ease-in-out,
-    height 300ms ease-in-out,
-    transform 200ms ease-in-out 50ms;
-  transform-origin: bottom;
-  overflow: hidden;
-}
-
-// Legacy styles for backward compatibility during transition
-.mm-carousel {
-  height: 106px;
-}
-
-.mm-carousel--single-slide {
-  height: 106px;
-}

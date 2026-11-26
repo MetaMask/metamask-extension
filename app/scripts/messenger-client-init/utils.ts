@@ -44,7 +44,6 @@ type ControllerMessengerCallback = (
 ) => BaseRestrictedControllerMessenger;
 
 export type MessengerClientsToInitialize =
-  | 'AccountTrackerController'
   | 'AuthenticationController'
   | 'CronjobController'
   | 'DeFiPositionsController'
@@ -60,10 +59,7 @@ export type MessengerClientsToInitialize =
   | 'SnapController'
   | 'SnapInsightsController'
   | 'SnapInterfaceController'
-  | 'GeolocationApiService'
-  | 'GeolocationController'
   | 'PerpsController'
-  | 'PPOMController'
   | 'QrSyncController'
   | 'SentinelApiService'
   | 'SentryTracingService'

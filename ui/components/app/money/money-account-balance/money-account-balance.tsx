@@ -33,6 +33,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyScreenName,
   MoneyTooltipName,
   MoneyTooltipType,
@@ -73,10 +74,10 @@ const Balance = ({
   return (
     <>
       {isLoading ? (
-        // 22px matches the bodyMd line-height of the balance text so
+        // 24px matches the HeadingMd line-height of the balance text so
         // the row doesn't shift when the figure arrives.
         <Skeleton
-          height={22}
+          height={24}
           width={100}
           data-testid={MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID}
         />
@@ -116,10 +117,12 @@ const Balance = ({
 const Add = ({
   onAddClick,
   isDepositLoading,
+  isDisabled,
   moneyAccountEmpty,
 }: {
   onAddClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
   isDepositLoading: boolean;
+  isDisabled: boolean;
   moneyAccountEmpty: boolean;
 }) => {
   const t = useI18nContext();
@@ -131,8 +134,9 @@ const Add = ({
         // If the user has no balance this is a primary CTA
         moneyAccountEmpty ? ButtonVariant.Primary : ButtonVariant.Secondary
       }
-      className="shrink-0"
+      className="w-full"
       isLoading={isDepositLoading}
+      isDisabled={isDisabled || isDepositLoading}
       data-testid={MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID}
       onClick={onAddClick}
     >
@@ -211,10 +215,13 @@ export const MoneyAccountBalance = () => {
     lastKnownTotalFiatFormatted,
     isBalanceLoading,
     apyPercentFormatted,
-    vaultApyQuery,
+    isApyLoading,
   } = useMoneyAccountBalance();
-  const { initiateDeposit, isLoading: isDepositLoading } =
-    useMoneyAccountDeposit();
+  const {
+    initiateDeposit,
+    isDisabled: isDepositDisabled,
+    isLoading: isDepositLoading,
+  } = useMoneyAccountDeposit();
   const {
     trackButtonClicked,
     trackSurfaceClicked,
@@ -228,13 +235,14 @@ export const MoneyAccountBalance = () => {
   const fiatBalance = totalFiatFormatted ?? lastKnownTotalFiatFormatted;
   const isLoading = isBalanceLoading && fiatBalance === undefined;
   const isLastKnown = totalFiatFormatted === undefined && !isLoading;
-  const isApyLoading = vaultApyQuery.isLoading && !apyPercentFormatted;
+  const showApySkeleton = isApyLoading && !apyPercentFormatted;
   const isVisible =
     isHomeCardEnabled &&
     hasMoneyAccount &&
     (fiatBalance !== undefined || isLoading);
   const moneyAccountEmpty =
-    tokenTotal !== undefined && !isMoneyBalanceFunded(tokenTotal);
+    isLoading ||
+    (tokenTotal !== undefined && !isMoneyBalanceFunded(tokenTotal));
 
   useTrackOnce(isVisible, trackComponentViewed);
 
@@ -246,9 +254,7 @@ export const MoneyAccountBalance = () => {
     trackSurfaceClicked({
       redirectTarget: MoneyScreenName.MoneyHome,
     });
-    transitionForward(() =>
-      navigate(MONEY_HOME_ROUTE, { state: { stayOnHomePage: true } }),
-    );
+    transitionForward(() => navigate(MONEY_HOME_ROUTE));
   };
 
   const handleSummaryClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -267,7 +273,7 @@ export const MoneyAccountBalance = () => {
   };
 
   const startDeposit = () => {
-    if (isDepositLoading) {
+    if (isDepositLoading || isDepositDisabled) {
       return;
     }
     trackButtonClicked({
@@ -276,7 +282,12 @@ export const MoneyAccountBalance = () => {
       labelKey: 'moneyAdd',
       redirectTarget: MoneyScreenName.MoneyDeposit,
     });
-    initiateDeposit();
+    initiateDeposit({
+      ftueOrigin: {
+        entryPoint: MoneyFtueEntryPoint.WalletHome,
+        componentName: MoneyComponentName.BalanceCard,
+      },
+    });
   };
 
   const handleAddClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -297,9 +308,9 @@ export const MoneyAccountBalance = () => {
       alignItems={BoxAlignItems.Stretch}
       justifyContent={BoxJustifyContent.Between}
       backgroundColor={BoxBackgroundColor.BackgroundSection}
-      // 458px matches .wallet-overview__buttons ($wallet-overview-sidepanel-max-width - 32px)
+      // 458px matches the max width of the WalletOverview action buttons (490px - 32px)
       // so this row lines up with the action buttons above it.
-      className="w-full max-w-[458px] self-center rounded-2xl"
+      className="w-full max-w-[458px] self-center rounded-2xl wide-layout:max-w-none"
       data-testid={MONEY_ACCOUNT_BALANCE_TEST_ID}
     >
       <Box
@@ -343,7 +354,7 @@ export const MoneyAccountBalance = () => {
             </Box>
           </TooltipText>
 
-          {isApyLoading ? (
+          {showApySkeleton ? (
             // 22px matches the bodyMd line-height of the APY text so the
             // row doesn't shift when the figure arrives.
             <Skeleton
@@ -384,6 +395,7 @@ export const MoneyAccountBalance = () => {
           moneyAccountEmpty={moneyAccountEmpty}
           onAddClick={handleAddClick}
           isDepositLoading={isDepositLoading}
+          isDisabled={isDepositDisabled}
         />
       </Box>
     </Box>

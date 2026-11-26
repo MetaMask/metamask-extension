@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { submitRequestToBackground } from '../../../store/background-connection';
@@ -44,23 +44,24 @@ const SyncAccountsSettings = () => {
     },
     [qrSyncPhase],
   );
-  const [syncSummary, setSyncSummary] = useState<Pick<
-    AddDeviceSyncRequest,
-    'syncedAccountCount' | 'syncedWalletCount'
-  > | null>(null);
+  const [syncSummary, setSyncSummary] = useState<
+    | (Pick<
+        AddDeviceSyncRequest,
+        'syncedAccountCount' | 'syncedWalletCount'
+      > & { selectedAccountCount: number })
+    | null
+  >(null);
 
   const cancelQrSyncSession = useCallback(async () => {
-    await submitRequestToBackground<void>('messengerCall', [
-      'QrSyncController:cancelSync',
-      [],
-    ]).catch(() => undefined);
+    await submitRequestToBackground('QrSyncController:cancelSync', []).catch(
+      () => undefined,
+    );
   }, []);
 
   const createQrSyncSession = useCallback(async () => {
-    await submitRequestToBackground<void>('messengerCall', [
-      'QrSyncController:createSession',
-      [],
-    ]).catch(() => undefined);
+    await submitRequestToBackground('QrSyncController:createSession', []).catch(
+      () => undefined,
+    );
   }, []);
 
   const startNewSession = useCallback(async () => {
@@ -68,29 +69,17 @@ const SyncAccountsSettings = () => {
     await createQrSyncSession();
   }, [cancelQrSyncSession, createQrSyncSession]);
 
+  const isIdle = qrSyncPhase === QR_SYNC_PHASES.IDLE;
+  const hasRequestedSessionRef = useRef(false);
+
   useEffect(() => {
-    if (isExiting) {
-      return undefined;
+    if (isExiting || (hasRequestedSessionRef.current && !isIdle)) {
+      return;
     }
 
-    let isActive = true;
-
-    const initializeSession = async () => {
-      await cancelQrSyncSession();
-      if (!isActive || isExiting) {
-        return;
-      }
-
-      await createQrSyncSession();
-    };
-
-    initializeSession();
-
-    return () => {
-      isActive = false;
-      cancelQrSyncSession().catch(() => undefined);
-    };
-  }, [cancelQrSyncSession, createQrSyncSession, isExiting]);
+    hasRequestedSessionRef.current = true;
+    createQrSyncSession();
+  }, [createQrSyncSession, isExiting, isIdle]);
 
   const handleExit = useCallback(async () => {
     setIsExiting(true);
@@ -112,11 +101,15 @@ const SyncAccountsSettings = () => {
         throw new Error('Password is required before syncing accounts.');
       }
 
-      setSyncSummary({ syncedAccountCount, syncedWalletCount });
+      setSyncSummary({
+        syncedAccountCount,
+        syncedWalletCount,
+        selectedAccountCount: selectedAccountGroupIds.length,
+      });
 
-      await submitRequestToBackground<void>('messengerCall', [
-        'QrSyncController:syncAccounts',
-        [password, selectedAccountGroupIds],
+      await submitRequestToBackground('QrSyncController:syncAccounts', [
+        password,
+        selectedAccountGroupIds,
       ]);
     },
     [password],
@@ -136,10 +129,7 @@ const SyncAccountsSettings = () => {
         return <EnterVerificationCode onRestart={handleRetry} />;
       case QR_SYNC_PHASES.AWAITING_SYNC_OFFER:
         return (
-          <LoadingStep
-            title={`${t('add_device_validating_title')}...`}
-            message={t('add_device_validating_desc')}
-          />
+          <EnterVerificationCode onRestart={handleRetry} isAwaitingSyncOffer />
         );
       case QR_SYNC_PHASES.REVIEWING_SYNC_OFFER:
         return password ? (
@@ -150,18 +140,22 @@ const SyncAccountsSettings = () => {
       case QR_SYNC_PHASES.AWAITING_SYNC_COMPLETION:
         return (
           <LoadingStep
-            title={`${t('add_device_syncing_title')}...`}
+            title={t('add_device_syncing_title')}
             message={t('add_device_syncing_desc')}
           />
         );
       case QR_SYNC_PHASES.COMPLETED:
-        return syncSummary ? (
+        // Another open surface may not have submitted the import itself, so it
+        // has no local summary. It still needs the Done action because the back
+        // button is hidden once the import has been submitted.
+        return (
           <Success
-            importedAccountCount={syncSummary.syncedAccountCount}
-            walletCount={syncSummary.syncedWalletCount}
+            syncedPrivateKeyAccountCount={syncSummary?.syncedAccountCount ?? 0}
+            syncedWalletCount={syncSummary?.syncedWalletCount ?? 0}
+            totalSelectedAccountCount={syncSummary?.selectedAccountCount}
             onDone={() => handleExit().catch(() => undefined)}
           />
-        ) : null;
+        );
       case QR_SYNC_PHASES.CANCELLED:
       case QR_SYNC_PHASES.FAILED:
         return (

@@ -3,12 +3,13 @@ import { Mockttp } from 'mockttp';
 import { DEFAULT_BTC_BALANCE } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
+import { enterBridgeQuote } from '../../page-objects/flows/bridge.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
-import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import SwapPage from '../../page-objects/pages/swap/swap-page';
 import {
   mockAllBridgeEndpoints,
   mockBtcSpotPrices,
@@ -87,9 +88,9 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
 
         await homePage.startSwapFlow();
 
-        const bridgePage = new BridgeQuotePage(driver);
-        await bridgePage.checkPageIsLoaded();
-        await bridgePage.checkAssetsAreSelected('BTC', 'ETH');
+        const swapPage = new SwapPage(driver);
+        await swapPage.checkPageIsLoaded();
+        await swapPage.checkAssetsAreSelected('BTC', 'ETH');
       },
     );
   });
@@ -116,26 +117,26 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
 
         await homePage.startSwapFlow();
 
-        const bridgePage = new BridgeQuotePage(driver);
-        await bridgePage.checkPageIsLoaded();
-        await bridgePage.enterBridgeQuote({
+        const swapPage = new SwapPage(driver);
+        await swapPage.checkPageIsLoaded();
+        await enterBridgeQuote(driver, {
           amount: '0.5',
           tokenTo: 'ETH',
           toChain: 'Ethereum',
         });
-        await bridgePage.waitForQuote();
-        await bridgePage.checkExpectedNetworkFeeIsDisplayed();
-        await bridgePage.checkAssetsAreSelected('BTC', 'ETH');
-        await bridgePage.checkDestAmount('14.72');
+        await swapPage.waitForQuote();
+        await swapPage.checkExpectedNetworkFeeIsDisplayed();
+        await swapPage.checkAssetsAreSelected('BTC', 'ETH');
+        await swapPage.checkDestAmount('14.72');
 
-        await bridgePage.enterBridgeQuote({
+        await enterBridgeQuote(driver, {
           amount: '0.5',
           tokenTo: 'USDC',
           toChain: 'Ethereum',
         });
-        await bridgePage.waitForQuote();
-        await bridgePage.checkAssetsAreSelected('BTC', 'USDC');
-        await bridgePage.checkDestAmount('40,296');
+        await swapPage.waitForQuote();
+        await swapPage.checkAssetsAreSelected('BTC', 'USDC');
+        await swapPage.checkDestAmount('40,296');
       },
     );
   });
@@ -162,16 +163,16 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
 
         await homePage.clickOnSwapButton();
 
-        const bridgePage = new BridgeQuotePage(driver);
-        await bridgePage.checkPageIsLoaded();
+        const swapPage = new SwapPage(driver);
+        await swapPage.checkPageIsLoaded();
 
-        await bridgePage.enterBridgeQuote({
+        await enterBridgeQuote(driver, {
           amount: '10',
           tokenTo: 'ETH',
           toChain: 'Ethereum',
         });
 
-        await bridgePage.checkInsufficientFundsButtonIsDisplayed();
+        await swapPage.checkInsufficientFundsButtonIsDisplayed();
       },
     );
   });
@@ -196,16 +197,16 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
 
         await homePage.startSwapFlow();
 
-        const bridgePage = new BridgeQuotePage(driver);
-        await bridgePage.checkPageIsLoaded();
-        await bridgePage.enterBridgeQuote({
+        const swapPage = new SwapPage(driver);
+        await swapPage.checkPageIsLoaded();
+        await enterBridgeQuote(driver, {
           amount: '0.5',
           tokenTo: 'ETH',
           toChain: 'Ethereum',
         });
-        await bridgePage.waitForQuote();
-        await bridgePage.checkExpectedNetworkFeeIsNotDisplayed();
-        await bridgePage.checkInsufficientFundsButtonIsDisplayed();
+        await swapPage.waitForQuote();
+        await swapPage.checkExpectedNetworkFeeIsNotDisplayed();
+        await swapPage.checkInsufficientFundsButtonIsDisplayed();
       },
     );
   });
@@ -232,16 +233,16 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
 
         await homePage.startSwapFlow();
 
-        const bridgePage = new BridgeQuotePage(driver);
-        await bridgePage.checkPageIsLoaded();
+        const swapPage = new SwapPage(driver);
+        await swapPage.checkPageIsLoaded();
 
-        await bridgePage.enterBridgeQuote({
+        await enterBridgeQuote(driver, {
           amount: '0.5',
           tokenTo: 'ETH',
           toChain: 'Ethereum',
         });
 
-        await bridgePage.checkNoTradeRouteMessageIsDisplayed();
+        await swapPage.checkNoTradeRouteMessageIsDisplayed();
       },
     );
   });
@@ -268,18 +269,19 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
 
         await homePage.clickOnSwapButton();
 
-        const bridgePage = new BridgeQuotePage(driver);
-        await bridgePage.checkPageIsLoaded();
+        const swapPage = new SwapPage(driver);
+        await swapPage.checkPageIsLoaded();
 
-        await bridgePage.enterBridgeQuote({
+        await enterBridgeQuote(driver, {
           amount: '0.1',
           tokenTo: 'ETH',
           toChain: 'Ethereum',
         });
-        await bridgePage.waitForQuote();
-        await bridgePage.checkExpectedNetworkFeeIsDisplayed();
-        await bridgePage.submitQuote();
+        await swapPage.waitForQuote();
+        await swapPage.checkExpectedNetworkFeeIsDisplayed();
+        await swapPage.submitQuote();
 
+        await swapPage.goBackAfterSubmit();
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkCompletedBridgeTransactionActivity(2);
@@ -319,18 +321,19 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
 
         await homePage.clickOnSwapButton();
 
-        const bridgePage = new BridgeQuotePage(driver);
-        await bridgePage.checkPageIsLoaded();
+        const swapPage = new SwapPage(driver);
+        await swapPage.checkPageIsLoaded();
 
-        await bridgePage.enterBridgeQuote({
+        await enterBridgeQuote(driver, {
           amount: '0.1',
           tokenTo: 'USDC',
           toChain: 'Ethereum',
         });
-        await bridgePage.waitForQuote();
-        await bridgePage.checkExpectedNetworkFeeIsDisplayed();
-        await bridgePage.submitQuote();
+        await swapPage.waitForQuote();
+        await swapPage.checkExpectedNetworkFeeIsDisplayed();
+        await swapPage.submitQuote();
 
+        await swapPage.goBackAfterSubmit();
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkCompletedBridgeTransactionActivity(2);

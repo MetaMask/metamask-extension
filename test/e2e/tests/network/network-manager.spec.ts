@@ -9,14 +9,19 @@ import {
 } from '../../constants';
 import { getCleanAppState, withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
-import SelectNetworkModal, {
-  NetworkId,
-} from '../../page-objects/pages/networks/select-network-modal';
+import SelectNetworkModal from '../../page-objects/pages/networks/select-network-modal';
+import { NetworkId } from '../../helpers/network-constants';
 import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import AddNetworkConfirmation from '../../page-objects/pages/confirmations/add-network-confirmations';
 import { getMockAssetsPrice } from '../tokens/utils/mocks';
+import {
+  accountsSupportedNetworksV2,
+  priceV1ExchangeRates,
+  priceV3Spot,
+  tokensV3Assets,
+} from '../../mock-response-data/api-responses';
 
 const MUSD_ADDRESS = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
 const MUSD_MAINNET_ASSET_ID = `eip155:1/erc20:${MUSD_ADDRESS}`;
@@ -179,8 +184,8 @@ function buildTokenFilterFixtures() {
 
 async function mockLineaAndMusd(mockServer: Mockttp) {
   return [
-    await mockServer
-      .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
+    await priceV3Spot
+      .rule(mockServer)
       .always()
       .thenCallback(() => ({
         statusCode: 200,
@@ -209,8 +214,8 @@ async function mockLineaAndMusd(mockServer: Mockttp) {
           },
         },
       })),
-    await mockServer
-      .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+    await priceV1ExchangeRates
+      .rule(mockServer)
       .always()
       .thenCallback(() => ({
         statusCode: 200,
@@ -229,15 +234,12 @@ async function mockLineaAndMusd(mockServer: Mockttp) {
           },
         },
       })),
-    await mockServer
-      .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
-      .always()
-      .thenJson(200, {
-        fullSupport: [],
-        partialSupport: [],
-      }),
-    await mockServer
-      .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+    await accountsSupportedNetworksV2.rule(mockServer).always().thenJson(200, {
+      fullSupport: [],
+      partialSupport: [],
+    }),
+    await tokensV3Assets
+      .rule(mockServer)
       .always()
       .thenCallback((request) => {
         const url = new URL(request.url);
@@ -385,7 +387,7 @@ describe('Network Manager', function (this: Suite) {
         await selectNetworkModal.checkNetworkIsDeselected(
           FAKE_CONFIG_REGISTRY_CAIP_CHAIN_ID,
         );
-        await selectNetworkModal.checkNetworkIsSelected('eip155:1337');
+        await selectNetworkModal.checkNetworkIsSelected(NetworkId.LOCALHOST);
         await selectNetworkModal.close();
         await networkFilter.checkLabelIs('Network: Localhost 8545');
       },

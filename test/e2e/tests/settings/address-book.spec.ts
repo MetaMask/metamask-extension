@@ -5,7 +5,12 @@ import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
-import ContactsPage from '../../page-objects/pages/settings/contacts-settings';
+import ContactsListPage from '../../page-objects/pages/contacts/contacts-list-page';
+import {
+  addContact,
+  deleteContact,
+  editContact,
+} from '../../page-objects/flows/contacts.flow';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import { login } from '../../page-objects/flows/login.flow';
@@ -144,12 +149,12 @@ describe('Address Book', function (this: Suite) {
         await login(driver);
 
         await new HeaderNavbar(driver).openContactsPage();
-        const contactsPage = new ContactsPage(driver);
+        const contactsPage = new ContactsListPage(driver);
         await contactsPage.checkPageIsLoaded();
-        await contactsPage.addContact(
-          'Test User',
-          '0x56A355d3427bC2B1E22c78197AF091230919Cc2A',
-        );
+        await addContact(driver, {
+          name: 'Test User',
+          address: '0x56A355d3427bC2B1E22c78197AF091230919Cc2A',
+        });
         await contactsPage.checkContactDisplayed({
           contactName: 'Test User',
           address: shortenAddress('0x56A355d3427bC2B1E22c78197AF091230919Cc2A'),
@@ -168,13 +173,13 @@ describe('Address Book', function (this: Suite) {
         await login(driver);
 
         await new HeaderNavbar(driver).openContactsPage();
-        const contactsPage = new ContactsPage(driver);
+        const contactsPage = new ContactsListPage(driver);
         await contactsPage.checkPageIsLoaded();
-        await contactsPage.addContactNewChain(
-          'Test User',
-          '0x56A355d3427bC2B1E22c78197AF091230919Cc2A',
-          'Sepolia',
-        );
+        await addContact(driver, {
+          name: 'Test User',
+          address: '0x56A355d3427bC2B1E22c78197AF091230919Cc2A',
+          network: 'Sepolia',
+        });
         await contactsPage.checkContactDisplayed({
           contactName: 'Test User',
           address: shortenAddress('0x56A355d3427bC2B1E22c78197AF091230919Cc2A'),
@@ -207,9 +212,9 @@ describe('Address Book', function (this: Suite) {
         await login(driver);
 
         await new HeaderNavbar(driver).openContactsPage();
-        const contactsPage = new ContactsPage(driver);
+        const contactsPage = new ContactsListPage(driver);
         await contactsPage.checkPageIsLoaded();
-        await contactsPage.editContact({
+        await editContact(driver, {
           existingContactName: 'Test Name 1',
           newContactName: 'Test Name Edit',
           newContactAddress: '0x74cE91B75935D6Bedc27eE002DeFa566c5946f74',
@@ -245,9 +250,9 @@ describe('Address Book', function (this: Suite) {
         await login(driver);
 
         await new HeaderNavbar(driver).openContactsPage();
-        const contactsPage = new ContactsPage(driver);
+        const contactsPage = new ContactsListPage(driver);
         await contactsPage.checkPageIsLoaded();
-        await contactsPage.deleteContact('Test Name 1');
+        await deleteContact(driver, 'Test Name 1');
 
         // it checks if account is deleted
         await contactsPage.checkContactDisplayed({
@@ -269,22 +274,22 @@ describe('Address Book', function (this: Suite) {
         await login(driver);
 
         await new HeaderNavbar(driver).openContactsPage();
-        const contactsPage = new ContactsPage(driver);
+        const contactsPage = new ContactsListPage(driver);
         await contactsPage.checkPageIsLoaded();
-        await contactsPage.addContact(
-          'Test User 1',
-          '0x56A355d3427bC2B1E22c78197AF091230919Cc2A',
-        );
+        await addContact(driver, {
+          name: 'Test User 1',
+          address: '0x56A355d3427bC2B1E22c78197AF091230919Cc2A',
+        });
         await contactsPage.checkContactDisplayed({
           contactName: 'Test User 1',
           address: shortenAddress('0x56A355d3427bC2B1E22c78197AF091230919Cc2A'),
         });
 
-        await contactsPage.addContactNewChain(
-          'Test User 2',
-          '0x56A355d3427bC2B1E22c78197AF091230919Cc2A',
-          'Sepolia',
-        );
+        await addContact(driver, {
+          name: 'Test User 2',
+          address: '0x56A355d3427bC2B1E22c78197AF091230919Cc2A',
+          network: 'Sepolia',
+        });
         await contactsPage.checkContactDisplayed({
           contactName: 'Test User 2',
           address: shortenAddress('0x56A355d3427bC2B1E22c78197AF091230919Cc2A'),

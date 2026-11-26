@@ -211,10 +211,6 @@
   "fast": {
     "message": "Kiire"
   },
-  "fileImportFail": {
-    "message": "Faili importimine ei toimi? Klõpsake siia!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "Unusta see seade"
   },
@@ -223,9 +219,6 @@
   },
   "gasLimit": {
     "message": "Gaasi ülemmäär"
-  },
-  "gasUsed": {
-    "message": "Kasutatud gaasihulk"
   },
   "general": {
     "message": "Üldine teave"
@@ -386,10 +379,6 @@
   "passwordsDontMatch": {
     "message": "Paroolid ei ühti"
   },
-  "pastePrivateKey": {
-    "message": "Kleepige oma privaatne võtmestring siia:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "ootel"
   },
@@ -405,9 +394,6 @@
   "privateKey": {
     "message": "Privaatvõti",
     "description": "select this type of file to use to import an account"
-  },
-  "privateNetwork": {
-    "message": "Privaatvõrk"
   },
   "readdToken": {
     "message": "Saate selle loa tulevikus tagasi lisada, kui lähete oma kontovalikute menüüs vahelehele „Lisa luba“."
@@ -563,9 +549,6 @@
   "unapproved": {
     "message": "Kinnitamata"
   },
-  "units": {
-    "message": "ühikud"
-  },
   "unknown": {
     "message": "Teadmata"
   },
@@ -577,9 +560,6 @@
   },
   "urlErrorMsg": {
     "message": "URI-d nõuavad sobivat HTTP/HTTPS-i prefiksit."
-  },
-  "usedByClients": {
-    "message": "Kasutavad erinevad kliendid"
   },
   "visitWebSite": {
     "message": "Külastage meie veebilehte"

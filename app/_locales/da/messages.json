@@ -211,10 +211,6 @@
   "fast": {
     "message": "Hurtig"
   },
-  "fileImportFail": {
-    "message": "Virker filimportering ikke? Klik her!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "Glem denne enhed"
   },
@@ -223,9 +219,6 @@
   },
   "gasLimit": {
     "message": "Gas-grænse"
-  },
-  "gasUsed": {
-    "message": "Gas brugt"
   },
   "general": {
     "message": "Generelt"
@@ -380,10 +373,6 @@
   "passwordsDontMatch": {
     "message": "Adgangskoder stemmer ikke ovenens"
   },
-  "pastePrivateKey": {
-    "message": "Indsæt din private nøglestreng her:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "afventer"
   },
@@ -399,9 +388,6 @@
   "privateKey": {
     "message": "Privat nøgle",
     "description": "select this type of file to use to import an account"
-  },
-  "privateNetwork": {
-    "message": "Privat netværk"
   },
   "readdToken": {
     "message": "Du kan tilføje denne token i fremtiden, ved at gå til \"Tilføj token\" under dine valgmenuen for dine konti."
@@ -545,9 +531,6 @@
   "unapproved": {
     "message": "Ikke godkendt"
   },
-  "units": {
-    "message": "enheder"
-  },
   "unknown": {
     "message": "ukendt"
   },
@@ -559,9 +542,6 @@
   },
   "urlErrorMsg": {
     "message": "Links kræver det rette HTTP/HTTPS-præfix."
-  },
-  "usedByClients": {
-    "message": "Brugt af forskellige kunder"
   },
   "visitWebSite": {
     "message": "Besøg vores webside"

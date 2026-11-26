@@ -9,12 +9,20 @@ import {
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { AccountGroupType, AccountWalletType } from '@metamask/account-api';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
-import { MONEY_HOME_ROUTE } from '../../helpers/constants/routes';
+import {
+  MONEY_DEPOSIT_ROUTE,
+  MONEY_HOME_ROUTE,
+} from '../../helpers/constants/routes';
 import { getMoneyAccountDepositIntent } from '../../helpers/money/deposit-intent';
+import { selectHasSeenMoneyFtue } from '../../ducks/money-ftue';
 import {
   ConfirmationLoader,
   useConfirmationNavigation,
 } from '../../pages/confirmations/hooks/useConfirmationNavigation';
+import {
+  MoneyComponentName,
+  MoneyFtueEntryPoint,
+} from '../../pages/money/constants/money-events';
 import { createMoneyAccountDepositTransaction } from '../../store/controller-actions/transaction-pay-controller';
 import { useMoneyAccountDeposit } from './useMoneyAccountDeposit';
 import { useMoneyErrorReporter } from './useMoneyErrorReporter';
@@ -34,11 +42,23 @@ jest.mock('../../pages/confirmations/hooks/useConfirmationNavigation', () => ({
   useConfirmationNavigation: jest.fn(),
 }));
 
+jest.mock('../../ducks/money-ftue', () => ({
+  ...jest.requireActual('../../ducks/money-ftue'),
+  selectHasSeenMoneyFtue: jest.fn(() => true),
+}));
+
+const mockUseMoneyAccountLifecycle = jest.fn();
+
+jest.mock('./use-money-account-lifecycle', () => ({
+  useMoneyAccountLifecycle: () => mockUseMoneyAccountLifecycle(),
+}));
+
 const createDepositTransactionMock = jest.mocked(
   createMoneyAccountDepositTransaction,
 );
 const useConfirmationNavigationMock = jest.mocked(useConfirmationNavigation);
 const useMoneyErrorReporterMock = jest.mocked(useMoneyErrorReporter);
+const selectHasSeenMoneyFtueMock = jest.mocked(selectHasSeenMoneyFtue);
 
 const TRANSACTION_ID = 'transaction-id-mock';
 const ACCOUNT_ID = 'account-id-mock';
@@ -168,6 +188,13 @@ describe('useMoneyAccountDeposit', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    selectHasSeenMoneyFtueMock.mockReturnValue(true);
+    mockUseMoneyAccountLifecycle.mockReturnValue({
+      lifecycle: undefined,
+      isLifecycleUnavailable: false,
+      isReadOnly: false,
+      isLoading: false,
+    });
 
     useMoneyErrorReporterMock.mockReturnValue(reportErrorMock);
     useConfirmationNavigationMock.mockReturnValue({
@@ -192,8 +219,168 @@ describe('useMoneyAccountDeposit', () => {
 
     expect(createDepositTransactionMock).toHaveBeenCalledWith(
       expect.stringMatching(/^0x[0-9a-f]{32}$/u),
-      '0x1234567890123456789012345678901234567890',
+      ACCOUNT_ID,
     );
+    expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
+      loader: ConfirmationLoader.CustomAmount,
+      goBackTo: '/',
+    });
+  });
+
+  it('does not start a deposit when the Money Account is read-only', async () => {
+    mockUseMoneyAccountLifecycle.mockReturnValue({
+      lifecycle: { type: 'mfa' },
+      isReadOnly: true,
+      isLoading: false,
+    });
+
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    let started: boolean | undefined;
+    await act(async () => {
+      started = await result.current.initiateDeposit();
+    });
+
+    expect(started).toBe(false);
+    expect(result.current.isDisabled).toBe(true);
+    expect(createDepositTransactionMock).not.toHaveBeenCalled();
+    expect(navigateToTransactionMock).not.toHaveBeenCalled();
+  });
+
+  it('does not start a deposit when the lifecycle is unavailable', async () => {
+    mockUseMoneyAccountLifecycle.mockReturnValue({
+      isLifecycleUnavailable: true,
+      isReadOnly: false,
+      isLoading: false,
+    });
+
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    let started: boolean | undefined;
+    await act(async () => {
+      started = await result.current.initiateDeposit();
+    });
+
+    expect(started).toBe(false);
+    expect(result.current.isDisabled).toBe(true);
+    expect(createDepositTransactionMock).not.toHaveBeenCalled();
+  });
+
+  it('does not start a deposit while the lifecycle read is pending', async () => {
+    mockUseMoneyAccountLifecycle.mockReturnValue({
+      lifecycle: undefined,
+      isReadOnly: false,
+      isLoading: true,
+    });
+
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    let started: boolean | undefined;
+    await act(async () => {
+      started = await result.current.initiateDeposit();
+    });
+
+    expect(started).toBe(false);
+    expect(result.current.isDisabled).toBe(true);
+    expect(result.current.isLifecycleLoading).toBe(true);
+    expect(createDepositTransactionMock).not.toHaveBeenCalled();
+    expect(navigateToTransactionMock).not.toHaveBeenCalled();
+  });
+
+  it('opens the FTUE splash instead of creating the batch when unseen', async () => {
+    selectHasSeenMoneyFtueMock.mockReturnValue(false);
+    const preferredPaymentToken = {
+      address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' as const,
+      chainId: '0x1' as const,
+    };
+
+    const { result, store } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    await act(async () => {
+      await result.current.initiateDeposit({
+        preferredPaymentToken,
+        intent: 'addMusd',
+      });
+    });
+
+    expect(createDepositTransactionMock).not.toHaveBeenCalled();
+    expect(navigateToTransactionMock).not.toHaveBeenCalled();
+    expect(result.current.isLoading).toBe(false);
+    expect(store.getState().moneyFtue).toStrictEqual({
+      isOpen: true,
+      source: 'deposit',
+      origin: { entryPoint: MoneyFtueEntryPoint.Unknown },
+      pendingDeposit: { preferredPaymentToken, intent: 'addMusd' },
+      acknowledged: false,
+    });
+  });
+
+  it('forwards the FTUE origin when the splash opens', async () => {
+    selectHasSeenMoneyFtueMock.mockReturnValue(false);
+    const ftueOrigin = {
+      entryPoint: MoneyFtueEntryPoint.WalletHome,
+      componentName: MoneyComponentName.TokenListItemCta,
+    };
+
+    const { result, store } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    await act(async () => {
+      await result.current.initiateDeposit({ ftueOrigin });
+    });
+
+    expect(store.getState().moneyFtue.origin).toStrictEqual(ftueOrigin);
+  });
+
+  it('opens the FTUE splash for an option-less deposit when unseen', async () => {
+    selectHasSeenMoneyFtueMock.mockReturnValue(false);
+
+    const { result, store } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    await act(async () => {
+      await result.current.initiateDeposit();
+    });
+
+    expect(createDepositTransactionMock).not.toHaveBeenCalled();
+    expect(store.getState().moneyFtue).toStrictEqual({
+      isOpen: true,
+      source: 'deposit',
+      origin: { entryPoint: MoneyFtueEntryPoint.Unknown },
+      pendingDeposit: {},
+      acknowledged: false,
+    });
+  });
+
+  it('creates the batch when the FTUE splash has been acknowledged', async () => {
+    selectHasSeenMoneyFtueMock.mockReturnValue(false);
+
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    await act(async () => {
+      await result.current.initiateDeposit({ skipFtue: true });
+    });
+
+    expect(createDepositTransactionMock).toHaveBeenCalledTimes(1);
     expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
       loader: ConfirmationLoader.CustomAmount,
       goBackTo: '/',
@@ -251,6 +438,54 @@ describe('useMoneyAccountDeposit', () => {
     expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
       loader: ConfirmationLoader.CustomAmount,
       goBackTo: MONEY_HOME_ROUTE,
+    });
+  });
+
+  it('resolves true once the confirmation is opened', async () => {
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    await act(async () => {
+      await expect(result.current.initiateDeposit()).resolves.toBe(true);
+    });
+  });
+
+  it('resolves false for an initiation ignored while one is in flight', async () => {
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    await act(async () => {
+      const [first, second] = await Promise.all([
+        result.current.initiateDeposit(),
+        result.current.initiateDeposit(),
+      ]);
+      expect(first).toBe(true);
+      expect(second).toBe(false);
+    });
+  });
+
+  it('replaces the current page and uses an explicit goBackTo when requested', async () => {
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+      MONEY_DEPOSIT_ROUTE,
+    );
+
+    await act(async () => {
+      await result.current.initiateDeposit({
+        replaceConfirmation: true,
+        goBackTo: MONEY_HOME_ROUTE,
+      });
+    });
+
+    expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
+      loader: ConfirmationLoader.CustomAmount,
+      goBackTo: MONEY_HOME_ROUTE,
+      replace: true,
     });
   });
 
@@ -327,7 +562,7 @@ describe('useMoneyAccountDeposit', () => {
     await act(async () => {
       await expect(
         result.current.initiateDeposit({ intent: 'card' }),
-      ).resolves.toBeUndefined();
+      ).resolves.toBe(false);
     });
 
     expect(getMoneyAccountDepositIntent(failedBatchId)).toBeUndefined();
@@ -398,7 +633,7 @@ describe('useMoneyAccountDeposit', () => {
 
     expect(createDepositTransactionMock).toHaveBeenCalledWith(
       expect.stringMatching(/^0x[0-9a-f]{32}$/u),
-      SOFTWARE_ADDRESS,
+      SOFTWARE_ACCOUNT.id,
     );
     expect(navigateToTransactionMock).toHaveBeenCalledWith(
       TRANSACTION_ID,
@@ -414,7 +649,7 @@ describe('useMoneyAccountDeposit', () => {
     );
 
     await act(async () => {
-      await expect(result.current.initiateDeposit()).resolves.toBeUndefined();
+      await expect(result.current.initiateDeposit()).resolves.toBe(false);
     });
 
     expect(createDepositTransactionMock).not.toHaveBeenCalled();
@@ -436,7 +671,7 @@ describe('useMoneyAccountDeposit', () => {
     });
 
     await act(async () => {
-      await expect(result.current.initiateDeposit()).resolves.toBeUndefined();
+      await expect(result.current.initiateDeposit()).resolves.toBe(false);
     });
 
     expect(createDepositTransactionMock).not.toHaveBeenCalled();
@@ -468,7 +703,7 @@ describe('useMoneyAccountDeposit', () => {
 
       expect(createDepositTransactionMock).toHaveBeenCalledWith(
         expect.stringMatching(/^0x[0-9a-f]{32}$/u),
-        '0x1234567890123456789012345678901234567890',
+        HARDWARE_ACCOUNT_ID,
       );
     });
 
@@ -493,7 +728,7 @@ describe('useMoneyAccountDeposit', () => {
 
       expect(createDepositTransactionMock).toHaveBeenCalledWith(
         expect.stringMatching(/^0x[0-9a-f]{32}$/u),
-        SOFTWARE_ADDRESS,
+        SOFTWARE_ACCOUNT.id,
       );
     });
 
@@ -509,7 +744,7 @@ describe('useMoneyAccountDeposit', () => {
 
       expect(createDepositTransactionMock).toHaveBeenCalledWith(
         expect.stringMatching(/^0x[0-9a-f]{32}$/u),
-        SOFTWARE_ADDRESS,
+        SOFTWARE_ACCOUNT.id,
       );
       expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
         loader: ConfirmationLoader.CustomAmount,
@@ -538,7 +773,7 @@ describe('useMoneyAccountDeposit', () => {
 
       expect(createDepositTransactionMock).toHaveBeenCalledWith(
         expect.stringMatching(/^0x[0-9a-f]{32}$/u),
-        SOFTWARE_ADDRESS,
+        SOFTWARE_ACCOUNT.id,
       );
     });
 
@@ -556,7 +791,7 @@ describe('useMoneyAccountDeposit', () => {
       );
 
       await act(async () => {
-        await expect(result.current.initiateDeposit()).resolves.toBeUndefined();
+        await expect(result.current.initiateDeposit()).resolves.toBe(false);
       });
 
       expect(createDepositTransactionMock).not.toHaveBeenCalled();

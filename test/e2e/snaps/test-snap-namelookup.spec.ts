@@ -10,6 +10,7 @@ import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install
 import { mockLookupSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import SendPage from '../page-objects/pages/send/send-page';
 import { mockSpotPrices } from '../tests/tokens/utils/mocks';
+import { tokensV3Assets } from '../mock-response-data/api-responses';
 
 async function mockTokensApiSupportedNetworks(mockServer: Mockttp) {
   const supportedNetworks = {
@@ -28,8 +29,8 @@ async function mockTokensApiSupportedNetworks(mockServer: Mockttp) {
 }
 
 async function mockTokensApiV3Assets(mockServer: Mockttp) {
-  return mockServer
-    .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+  return tokensV3Assets
+    .rule(mockServer)
     .always()
     .thenCallback((request) => {
       const url = new URL(request.url);
@@ -81,6 +82,7 @@ describe('Name lookup', function () {
           await mockLookupSnap(mockServer),
           await mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
+              id: 'ethereum',
               price: 1,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
@@ -111,7 +113,8 @@ describe('Name lookup', function () {
         await sendPage.selectToken('0x1', 'ETH');
         await sendPage.fillRecipient({ recipientAddress: 'metamask.domain' });
 
-        await driver.findElement({ text: '0xc0ffe...54979' });
+        // End of the resolved address. The start is shortened to fit.
+        await driver.findElement({ text: '10F9d54979' });
       },
     );
   });

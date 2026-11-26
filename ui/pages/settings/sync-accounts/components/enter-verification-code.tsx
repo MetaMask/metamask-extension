@@ -2,193 +2,94 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Box,
   Text,
+  TextAlign,
   TextVariant,
   TextColor,
   FontWeight,
-  Input,
   BoxFlexDirection,
   BoxAlignItems,
   BoxJustifyContent,
-  TextButton,
+  Icon,
+  IconName,
+  IconSize,
+  Button,
+  ButtonSize,
 } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { QrSyncErrorCodes } from '../../../../../shared/constants/qr-sync';
 import {
-  QR_SYNC_TIMEOUT_MS,
-  QrSyncErrorCodes,
-} from '../../../../../shared/constants/qr-sync';
-import { selectQrSyncError } from '../../../../selectors/qr-sync/qr-sync';
+  selectQrSyncError,
+  selectQrSyncExpiresAt,
+} from '../../../../selectors/qr-sync/qr-sync';
+import { useQrSyncCountdown } from '../hooks/use-qr-sync-countdown';
 
 const CODE_LENGTH = 6;
-const NON_DIGITS_REGEX = /\D/gu;
-const SINGLE_DIGIT_REGEX = /^[0-9]$/u;
-// TODO: source this from the controller
+const CELLS = Array.from({ length: CODE_LENGTH }, (_, index) => index);
+const CONNECTING_HELPER_DELAY_MS = 1200;
 
-const createEmptyCode = () => new Array<string>(CODE_LENGTH).fill('');
-const MWP_SESSION_REQUEST_EXPIRY_SECONDS =
-  QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT / 1000;
+const getCodeDigits = (text: string) =>
+  text.replace(/\D/gu, '').slice(0, CODE_LENGTH);
 
 type EnterVerificationCodeProps = {
   onRestart: () => void;
+  isAwaitingSyncOffer?: boolean;
 };
 
-const EnterVerificationCode = ({ onRestart }: EnterVerificationCodeProps) => {
+const EnterVerificationCode = ({
+  onRestart,
+  isAwaitingSyncOffer = false,
+}: EnterVerificationCodeProps) => {
   const t = useI18nContext();
   const qrSyncError = useSelector(selectQrSyncError);
+  const expiresAt = useSelector(selectQrSyncExpiresAt);
+  const secondsLeft = useQrSyncCountdown(expiresAt);
   const hasMaxedOutAttempts =
     qrSyncError?.code === QrSyncErrorCodes.OTP_ATTEMPTS_EXCEEDED;
   const [isError, setIsError] = useState(false);
-  const [code, setCode] = useState<string[]>(createEmptyCode);
-  const [secondsLeft, setSecondsLeft] = useState(
-    MWP_SESSION_REQUEST_EXPIRY_SECONDS,
-  );
-  const isExpired = secondsLeft <= 0;
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [showConnectingHelper, setShowConnectingHelper] = useState(false);
+  const [code, setCode] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
+  // Once the code is accepted the OTP deadline no longer applies: the controller
+  // is waiting for the phone's sync offer, and a real failure arrives as an
+  // error that routes back to the code step.
+  const isExpired = secondsLeft === 0 && !isAwaitingSyncOffer;
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (isExpired) {
+    if (!isAwaitingSyncOffer) {
       return undefined;
     }
 
-    const intervalId = setInterval(() => {
-      setSecondsLeft((prev) => Math.max(prev - 1, 0));
-    }, 1000);
+    const timeoutId = setTimeout(() => {
+      setShowConnectingHelper(true);
+    }, CONNECTING_HELPER_DELAY_MS);
 
-    return () => clearInterval(intervalId);
-  }, [isExpired]);
+    return () => clearTimeout(timeoutId);
+  }, [isAwaitingSyncOffer]);
 
-  const focusInput = useCallback((index: number) => {
-    const clampedIndex = Math.max(0, Math.min(index, CODE_LENGTH - 1));
-    const target = inputRefs.current[clampedIndex];
-    target?.focus();
-    target?.select();
-  }, []);
-
-  // Single place that persists a new code and reacts to completion, so the
-  // change/paste/keydown handlers never duplicate validation or error resets.
-  const commitCode = useCallback(async (nextCode: string[]) => {
+  const handleChange = useCallback(async (rawValue: string) => {
+    const nextCode = getCodeDigits(rawValue);
     setCode(nextCode);
     setIsError(false);
 
-    const joined = nextCode.join('');
-    if (joined.length < CODE_LENGTH) {
+    if (nextCode.length < CODE_LENGTH) {
       return;
     }
 
+    setIsVerifying(true);
+    setShowConnectingHelper(false);
     try {
-      await submitRequestToBackground<void>('messengerCall', [
-        'QrSyncController:submitOtp',
-        [joined],
-      ]);
+      await submitRequestToBackground('QrSyncController:submitOtp', [nextCode]);
     } catch {
+      setIsVerifying(false);
+      setCode('');
       setIsError(true);
+      inputRef.current?.focus();
     }
   }, []);
-
-  // Writes one or more digits starting at `startIndex` (typing or pasting),
-  // then moves focus to the box following the last digit written.
-  const writeDigits = useCallback(
-    (startIndex: number, digits: string) => {
-      const nextCode = [...code];
-      let cursor = startIndex;
-      for (const digit of digits) {
-        if (cursor >= CODE_LENGTH) {
-          break;
-        }
-        nextCode[cursor] = digit;
-        cursor += 1;
-      }
-
-      commitCode(nextCode);
-      focusInput(cursor);
-    },
-    [code, commitCode, focusInput],
-  );
-
-  const clearDigit = useCallback(
-    (index: number) => {
-      const nextCode = [...code];
-      nextCode[index] = '';
-      commitCode(nextCode);
-    },
-    [code, commitCode],
-  );
-
-  const handleChange = useCallback(
-    (rawValue: string, index: number) => {
-      const sanitized = rawValue.replace(NON_DIGITS_REGEX, '');
-      if (sanitized) {
-        writeDigits(index, sanitized);
-      } else {
-        clearDigit(index);
-      }
-    },
-    [writeDigits, clearDigit],
-  );
-
-  const handleKeyDown = useCallback(
-    (event: React.KeyboardEvent<HTMLInputElement>, index: number) => {
-      const { key } = event;
-
-      // Re-typing into a filled box must be handled here: the browser won't
-      // fire onChange because the box is already at maxLength and the
-      // controlled value is unchanged when the same digit is entered again.
-      if (SINGLE_DIGIT_REGEX.test(key) && code[index]) {
-        event.preventDefault();
-        writeDigits(index, key);
-        return;
-      }
-
-      switch (key) {
-        case 'Backspace':
-          // Owning Backspace prevents the native delete from also firing
-          // onChange and clearing the box a second time.
-          event.preventDefault();
-          if (code[index]) {
-            clearDigit(index);
-          } else if (index > 0) {
-            const nextCode = [...code];
-            nextCode[index - 1] = '';
-            commitCode(nextCode);
-            focusInput(index - 1);
-          }
-          break;
-        case 'ArrowLeft':
-          event.preventDefault();
-          focusInput(index - 1);
-          break;
-        case 'ArrowRight':
-          event.preventDefault();
-          focusInput(index + 1);
-          break;
-        default:
-          break;
-      }
-    },
-    [code, writeDigits, clearDigit, commitCode, focusInput],
-  );
-
-  const handlePaste = useCallback(
-    (event: React.ClipboardEvent<HTMLInputElement>, index: number) => {
-      const pasted = event.clipboardData
-        .getData('text')
-        .replace(NON_DIGITS_REGEX, '');
-      if (!pasted) {
-        return;
-      }
-      event.preventDefault();
-      writeDigits(index, pasted);
-    },
-    [writeDigits],
-  );
-
-  const handleFocus = useCallback(
-    (event: React.FocusEvent<HTMLInputElement>) => {
-      event.target.select();
-    },
-    [],
-  );
 
   let errorMessage: string | null = null;
   if (isExpired) {
@@ -199,8 +100,19 @@ const EnterVerificationCode = ({ onRestart }: EnterVerificationCodeProps) => {
     errorMessage = t('enter_verification_code_error');
   }
 
+  const getCellBorder = (index: number) => {
+    return isFocused && index === Math.min(code.length, CODE_LENGTH - 1)
+      ? 'border-primary-default'
+      : 'border-muted';
+  };
+
   return (
-    <Box flexDirection={BoxFlexDirection.Column} gap={6} className="flex-1">
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      gap={6}
+      paddingBottom={4}
+      className="flex-1"
+    >
       <Box flexDirection={BoxFlexDirection.Column} gap={2}>
         <Text
           variant={TextVariant.HeadingLg}
@@ -214,59 +126,121 @@ const EnterVerificationCode = ({ onRestart }: EnterVerificationCodeProps) => {
         </Text>
       </Box>
       <Box
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        justifyContent={BoxJustifyContent.Between}
+        flexDirection={BoxFlexDirection.Column}
         gap={2}
-        className="mx-auto"
+        paddingTop={2}
+        className="w-full max-w-[414px]"
       >
-        {code.map((digit, index) => (
-          <Input
-            // The list is a fixed-length set of positional inputs, so the
-            // index is a stable identity here.
-            key={`verification-code-${index}`}
-            ref={(ref) => {
-              inputRefs.current[index] = ref;
-            }}
-            value={digit}
-            onChange={(event) => handleChange(event.target.value, index)}
-            onKeyDown={(event) => handleKeyDown(event, index)}
-            onPaste={(event) => handlePaste(event, index)}
-            onFocus={handleFocus}
+        <Box className="relative">
+          <Box flexDirection={BoxFlexDirection.Row} gap={2} aria-hidden="true">
+            {CELLS.map((index) => (
+              <Box
+                key={index}
+                data-testid={`qr-sync-otp-cell-${index}`}
+                className={`flex-1 h-14 flex items-center justify-center rounded-xl border-[1.5px] bg-muted ${getCellBorder(
+                  index,
+                )}`}
+              >
+                <Text variant={TextVariant.HeadingMd} className="text-[22px]">
+                  {code[index] ?? ''}
+                </Text>
+              </Box>
+            ))}
+          </Box>
+          <input
+            ref={inputRef}
+            value={code}
+            onChange={(event) => handleChange(event.target.value)}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
             type="text"
             inputMode="numeric"
             autoComplete="one-time-code"
-            aria-label={`${t('enter_verification_code')} ${index + 1}`}
-            maxLength={1}
-            autoFocus={index === 0}
-            isDisabled={isExpired || hasMaxedOutAttempts}
-            data-testid={`qr-sync-otp-input-${index}`}
-            className="w-12 h-[54px] rounded-lg border border-muted bg-default text-center text-l-medium"
+            spellCheck={false}
+            autoCorrect="off"
+            aria-label={t('enter_verification_code')}
+            aria-invalid={Boolean(errorMessage)}
+            maxLength={CODE_LENGTH}
+            autoFocus
+            disabled={
+              isExpired ||
+              hasMaxedOutAttempts ||
+              isVerifying ||
+              isAwaitingSyncOffer
+            }
+            data-testid="qr-sync-otp-input"
+            className="absolute inset-0 w-full h-full opacity-0 cursor-text"
           />
-        ))}
-      </Box>
-      <Box
-        flexDirection={BoxFlexDirection.Column}
-        alignItems={BoxAlignItems.Center}
-        gap={1}
-      >
-        {!isExpired && !hasMaxedOutAttempts && (
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {t('enter_verification_code_expires_in', [secondsLeft])}
-          </Text>
-        )}
-        <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
-          {errorMessage}
-        </Text>
-        {errorMessage && (
-          <TextButton
-            data-testid="qr-sync-start-with-new-qr-code"
-            onClick={onRestart}
+        </Box>
+        {(isVerifying || isAwaitingSyncOffer) &&
+        !isExpired &&
+        !hasMaxedOutAttempts ? (
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            justifyContent={BoxJustifyContent.Center}
+            paddingTop={2}
+            className="w-full"
+            role="status"
+            aria-label={
+              showConnectingHelper
+                ? t('qrSyncStillConnecting')
+                : t('mfaOtpVerifying')
+            }
+            data-testid="qr-sync-otp-verifying"
+            data-awaiting-sync-offer={isAwaitingSyncOffer}
           >
-            {t('start_with_new_qr_code')}
-          </TextButton>
-        )}
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              gap={2}
+              className="max-w-[320px]"
+            >
+              <Icon
+                name={IconName.Loading}
+                size={IconSize.Sm}
+                className="animate-spin shrink-0"
+                aria-hidden
+              />
+              <Text
+                variant={
+                  showConnectingHelper ? TextVariant.BodyXs : TextVariant.BodySm
+                }
+                textAlign={TextAlign.Center}
+                className={
+                  showConnectingHelper ? 'whitespace-nowrap' : 'max-w-[280px]'
+                }
+              >
+                {showConnectingHelper
+                  ? t('qrSyncStillConnecting')
+                  : t('mfaOtpVerifying')}
+              </Text>
+            </Box>
+          </Box>
+        ) : null}
+        {errorMessage ? (
+          <Text
+            asChild
+            variant={TextVariant.BodySm}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.ErrorDefault}
+          >
+            <p role="alert">{errorMessage}</p>
+          </Text>
+        ) : null}
       </Box>
+      {isExpired || hasMaxedOutAttempts ? (
+        <Button
+          size={ButtonSize.Lg}
+          className="w-full mt-auto"
+          onClick={onRestart}
+          data-testid="qr-sync-otp-try-again"
+        >
+          {isExpired
+            ? t('add_device_try_again')
+            : t('enter_verification_code_try_again')}
+        </Button>
+      ) : null}
     </Box>
   );
 };

@@ -115,6 +115,20 @@ describe('GasSponsorshipModal', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders the sponsor option when a sponsor is provided', () => {
+    const result = renderWithConfirmContextProvider(
+      <GasSponsorshipModal sponsor="Uniswap" onClose={jest.fn()} />,
+      store,
+    );
+
+    expect(result.getByText('Paid by Uniswap')).toBeInTheDocument();
+    expect(result.getByText('U')).toBeInTheDocument();
+    expect(result.queryByText(messages.paidByMetaMask.message)).toBeNull();
+    expect(
+      result.getByText(messages.includesSmartAccountActivation.message),
+    ).toBeInTheDocument();
+  });
+
   it('renders native token option with fee estimate', () => {
     const result = renderWithConfirmContextProvider(
       <GasSponsorshipModal onClose={jest.fn()} />,

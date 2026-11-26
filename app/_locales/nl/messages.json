@@ -81,10 +81,6 @@
   "failed": {
     "message": "mislukt"
   },
-  "fileImportFail": {
-    "message": "Bestandsimport werkt niet? Klik hier!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "from": {
     "message": "Van"
   },
@@ -162,10 +158,6 @@
   "next": {
     "message": "volgende"
   },
-  "pastePrivateKey": {
-    "message": "Plak hier uw privésleutelstring:",
-    "description": "For importing an account from a private key"
-  },
   "personalAddressDetected": {
     "message": "Persoonlijk adres gedetecteerd. Voer het tokencontractadres in."
   },
@@ -175,9 +167,6 @@
   "privateKey": {
     "message": "Prive sleutel",
     "description": "select this type of file to use to import an account"
-  },
-  "privateNetwork": {
-    "message": "Prive netwerk"
   },
   "readdToken": {
     "message": "U kunt dit token in de toekomst weer toevoegen door naar \"Token toevoegen\" te gaan in het menu met accountopties."
@@ -245,9 +234,6 @@
   },
   "urlErrorMsg": {
     "message": "Voor URI's is het juiste HTTP / HTTPS-voorvoegsel vereist."
-  },
-  "usedByClients": {
-    "message": "Gebruikt door verschillende klanten"
   },
   "visitWebSite": {
     "message": "Bezoek onze website"

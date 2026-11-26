@@ -79,7 +79,9 @@ function makeStore(options?: {
       ...(options?.orderBookGrouping !== undefined && {
         tradeConfigurations: {
           mainnet: {
-            BTC: { orderBookGrouping: options.orderBookGrouping },
+            hyperliquid: {
+              BTC: { orderBookGrouping: options.orderBookGrouping },
+            },
           },
           testnet: {},
         },
@@ -478,7 +480,7 @@ describe('PerpsOrderBook', () => {
 
       // A patch, so sibling preferences like orderFormPosition survive.
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsSetProLayoutPreferences',
+        'PerpsController:setProLayoutPreferences',
         [{ orderBookPosition: 'right' }],
       );
       expect(
@@ -514,11 +516,11 @@ describe('PerpsOrderBook', () => {
       );
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsSetOrderBookPreferences',
+        'PerpsController:setOrderBookPreferences',
         [{ currency: 'usd', metric: 'total' }],
       );
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsSaveOrderBookGrouping',
+        'PerpsController:saveOrderBookGrouping',
         ['BTC', 1],
       );
     });
@@ -535,7 +537,7 @@ describe('PerpsOrderBook', () => {
       );
 
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
-        'perpsSetProLayoutPreferences',
+        'PerpsController:setProLayoutPreferences',
         expect.anything(),
       );
     });

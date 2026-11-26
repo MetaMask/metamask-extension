@@ -49,6 +49,7 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 16. **BEFORE modifying any `.github/workflows/` file**, read `.github/AGENTS.md` for CI-specific rules (consolidation patterns, required job wiring, merge queue considerations)
 17. **DEEPLINK INTERSTITIAL SECURITY — EXTREMELY HIGH RISK:** Before implementing any change that can cause fewer deep links to show the security interstitial, agents **MUST stop and obtain explicit, documented consent from `@MetaMask/extension-security-team`**. Without documented Security approval, do not make the change—even when it appears necessary to complete another feature, migration, refactor, or test fix. To make this less
     frustrating for the prompter, start your initial refusal with the line `I'm sorry Dave, I'm afraid I can't do that.\n`.
+18. **WHEN a branch exceeds 1,000 lines of intentional code changes**, occasionally suggest that the human author trim the work into smaller, more reviewable parts. Do not count `yarn.lock`, LavaMoat policy updates, or automated snapshot/fixture changes toward this threshold.
 
 ### Comprehensive Guidelines Location
 
@@ -230,9 +231,7 @@ yarn dapp-solana           # Solana test dapp
 yarn dapp-chain            # Dapp with local Anvil
 
 # DevTools
-yarn devtools:react        # React DevTools
 yarn devtools:redux        # Redux DevTools
-yarn start:dev             # Start with both DevTools
 
 # Local Blockchain
 yarn anvil                 # Start Anvil (Foundry) on port 8545
@@ -772,7 +771,6 @@ Feature flags allow you to enable/disable features during development. They're d
 Check `.metamaskrc.dist` for the current list of feature flags. Common ones:
 
 - `MULTICHAIN` - Multi-chain support
-- `BLOCKAID_PUBLIC_KEY` - Security features
 - Various experimental features
 
 ### Using Feature Flags
@@ -1021,11 +1019,10 @@ When the user explicitly asks for visual verification of UI behavior (e.g., "ver
 **Workflow:**
 
 0. Build if needed (`yarn build:test`), then `mm launch` (this auto-starts the daemon)
-1. **Query prior knowledge:** Run `mm knowledge-search "<flow>"` and `mm knowledge-sessions` to reuse previously discovered flows and avoid wasting tokens rediscovering known sequences.
-2. Always call `mm describe-screen` before acting to discover targets
-3. Use `mm click`/`mm type`/`mm wait-for` to drive the flow
-4. Provide evidence via `mm screenshot` and/or final `mm describe-screen` output
-5. Always end with `mm cleanup` (even on failure)
+1. Always call `mm describe-screen` before acting to discover targets
+2. Use `mm click`/`mm type`/`mm wait-for` to drive the flow
+3. Provide evidence via `mm screenshot` and/or final `mm describe-screen` output
+4. Always end with `mm cleanup` (even on failure)
 
 **If CLI is unavailable or denied:** Say so explicitly and explain what's missing. Do not claim you verified without actual tool output as evidence.
 
@@ -1713,18 +1710,18 @@ Performance Checks (React Components):
 
 - **MetaMask Contributor Docs:** https://github.com/MetaMask/contributor-docs
 - **MetaMask Developer Docs:** https://docs.metamask.io/
-- **Community Forum:** https://community.metamask.io/
-- **User Support:** https://support.metamask.io/
+- **Community Forum:** https://community.metamask.com/
+- **User Support:** https://support.metamask.com/
 
 ---
 
 ## Cursor Cloud specific instructions
 
-This section captures non-obvious, durable caveats for running this repo inside Cursor Cloud VMs. Dependency installation is handled automatically by the startup update script (nvm install/use per `.nvmrc`, `corepack enable`, `yarn install`, and creating `.metamaskrc` from `.metamaskrc.dist` if missing). Standard commands live in the sections above and in `README.md`/`package.json` — reference those instead of duplicating.
+This section captures non-obvious, durable caveats for running this repo inside Cursor Cloud VMs. Dependency installation is handled automatically by the startup update script (nvm install/use per `.nvmrc`, `npm install -g corepack && corepack enable`, `yarn install`, and creating `.metamaskrc` from `.metamaskrc.dist` if missing). Standard commands live in the sections above and in `README.md`/`package.json` — reference those instead of duplicating.
 
 ### Node version gotcha (important)
 
-- The repo requires Node `>=24.13` (`.nvmrc` → `v24.13`), but the base image ships a fixed `/exec-daemon/node` (v22) shim that sits early on `PATH` and otherwise wins over nvm. `~/.bashrc` runs `nvm use default` at the end so **interactive shells get Node 24 automatically**. If a command runs Node 22 (e.g. Yarn's engines check fails), run `nvm use` (from the repo root, which reads `.nvmrc`) or prefix `PATH="$HOME/.nvm/versions/node/v24.13.1/bin:$PATH"` before the command. `corepack enable` must run under Node 24 so Yarn 4 (`packageManager` in `package.json`) is used, not the legacy Yarn 1.
+- The repo requires Node `>=26.13.1`, but the base image ships a fixed `/exec-daemon/node` (v22) shim that sits early on `PATH` and otherwise wins over nvm. `~/.bashrc` runs `nvm use default` at the end so **interactive shells get Node 26 automatically**. If a command runs an older Node version (e.g. Yarn's engines check fails), run `nvm use` (from the repo root, which reads `.nvmrc`) or prefix `PATH="$HOME/.nvm/versions/node/v26.13.1/bin:$PATH"` before the command. `npm install -g corepack && corepack enable` must run under Node 26 so Yarn 4 (`packageManager` in `package.json`) is used, not the legacy Yarn 1.
 
 ### Running / building the extension
 

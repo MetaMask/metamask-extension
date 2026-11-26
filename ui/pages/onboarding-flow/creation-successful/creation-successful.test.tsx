@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
+import { initialState as initialRewardsMoneyState } from '#ui/ducks/rewards-money';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
@@ -86,7 +87,7 @@ jest.mock('../../../../shared/lib/environment', () => ({
     mockGetIsBasicFunctionalityConsolidationEnabledInBuild(),
 }));
 
-// Mock background connection to prevent "Background connection not initialized" warnings
+// Mock messenger actions to prevent "Background connection not initialized" warnings.
 const mockRemoveDeferredDeepLink = jest.fn().mockResolvedValue(undefined);
 const mockSetIsBackupAndSyncFeatureEnabled = jest
   .fn()
@@ -96,26 +97,28 @@ const mockSetPreference = jest.fn().mockResolvedValue(undefined);
 const mockSetUseMultiAccountBalanceChecker = jest
   .fn()
   .mockResolvedValue(undefined);
-const backgroundConnectionMock = new Proxy(
-  {
-    removeDeferredDeepLink: mockRemoveDeferredDeepLink,
-    setIsBackupAndSyncFeatureEnabled: mockSetIsBackupAndSyncFeatureEnabled,
-    toggleExternalServices: mockToggleExternalServices,
-    setPreference: mockSetPreference,
-    setUseMultiAccountBalanceChecker: mockSetUseMultiAccountBalanceChecker,
-  },
-  {
-    get: (target, prop) => {
-      if (prop in target) {
-        return target[prop as keyof typeof target];
-      }
-      return jest.fn().mockResolvedValue(undefined);
-    },
+const messengerCallMock = jest.fn(
+  (actionType: string, args: unknown[] = []) => {
+    switch (actionType) {
+      case 'AppStateController:removeDeferredDeepLink':
+        return mockRemoveDeferredDeepLink(...args);
+      case 'UserStorageController:setIsBackupAndSyncFeatureEnabled':
+        return mockSetIsBackupAndSyncFeatureEnabled(...args);
+      case 'LegacyBackgroundApiService:toggleExternalServices':
+        return mockToggleExternalServices(...args);
+      case 'PreferencesController:setPreference':
+        return mockSetPreference(...args);
+      case 'PreferencesController:setUseMultiAccountBalanceChecker':
+        return mockSetUseMultiAccountBalanceChecker(...args);
+      default:
+        return Promise.resolve(undefined);
+    }
   },
 );
 
 describe('Wallet Ready Page', () => {
   const mockState = {
+    rewardsMoney: { ...initialRewardsMoneyState },
     metamask: {
       internalAccounts: {
         accounts: {
@@ -156,7 +159,10 @@ describe('Wallet Ready Page', () => {
     );
     mockUseNavigate.mockClear();
     mockTrackEvent.mockClear();
-    setBackgroundConnection(backgroundConnectionMock as never);
+    setBackgroundConnection({
+      getStatePatches: jest.fn().mockResolvedValue([]),
+      messengerCall: messengerCallMock,
+    } as never);
   });
 
   it('should render the wallet ready content if the seed phrase is backed up', () => {
@@ -400,7 +406,7 @@ describe('Wallet Ready Page', () => {
           ...mockState.metamask,
           deferredDeepLink: {
             createdAt: Date.now(),
-            referringLink:
+            originalUrl:
               'https://example.com/deferred?redirectTo=https://external-app.com/callback',
           },
         },
@@ -443,7 +449,7 @@ describe('Wallet Ready Page', () => {
           ...mockState.metamask,
           deferredDeepLink: {
             createdAt: Date.now(),
-            referringLink: 'https://example.com/deferred?path=/home',
+            originalUrl: 'https://example.com/deferred?path=/home',
           },
         },
       });
@@ -481,7 +487,7 @@ describe('Wallet Ready Page', () => {
           ...mockState.metamask,
           deferredDeepLink: {
             createdAt: Date.now() - 2 * 60 * 60 * 1000, // Expired link
-            referringLink: 'https://example.com/deferred',
+            originalUrl: 'https://example.com/deferred',
           },
         },
       });
@@ -526,7 +532,7 @@ describe('Wallet Ready Page', () => {
           ...mockState.metamask,
           deferredDeepLink: {
             createdAt: Date.now(),
-            referringLink: 'https://link.metamask.io/swap?amount=100',
+            originalUrl: 'https://link.metamask.io/swap?amount=100',
           },
         },
       });
@@ -615,7 +621,7 @@ describe('Wallet Ready Page', () => {
           ...mockState.metamask,
           deferredDeepLink: {
             createdAt: Date.now(),
-            referringLink: 'https://link.metamask.io/buy',
+            originalUrl: 'https://link.metamask.io/buy',
           },
         },
       });
@@ -650,7 +656,7 @@ describe('Wallet Ready Page', () => {
           ...mockState.metamask,
           deferredDeepLink: {
             createdAt: Date.now(),
-            referringLink: 'https://link.metamask.io/swap',
+            originalUrl: 'https://link.metamask.io/swap',
           },
         },
       });
@@ -680,7 +686,7 @@ describe('Wallet Ready Page', () => {
           ...mockState.metamask,
           deferredDeepLink: {
             createdAt: Date.now() - 2 * 60 * 60 * 1000, // Expired link
-            referringLink: 'https://link.metamask.io/swap',
+            originalUrl: 'https://link.metamask.io/swap',
           },
         },
       });
@@ -741,7 +747,7 @@ describe('Wallet Ready Page', () => {
           ...mockState.metamask,
           deferredDeepLink: {
             createdAt: Date.now(),
-            referringLink: 'https://link.metamask.io/swap?amount=100',
+            originalUrl: 'https://link.metamask.io/swap?amount=100',
           },
         },
       });
@@ -768,7 +774,7 @@ describe('Wallet Ready Page', () => {
     describe('Deep Link Used metrics', () => {
       it('tracks the event for deferred Redirect links', async () => {
         const externalUrl = 'https://external-app.com/callback';
-        const referringLink =
+        const originalUrl =
           'https://link.metamask.io/buy?utm_source=onboarding&redirectTo=https%3A%2F%2Fexternal-app.com%2Fcallback';
         (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue(
           {
@@ -788,7 +794,7 @@ describe('Wallet Ready Page', () => {
             ...mockState.metamask,
             deferredDeepLink: {
               createdAt: Date.now(),
-              referringLink,
+              originalUrl,
             },
           },
         });
@@ -821,7 +827,7 @@ describe('Wallet Ready Page', () => {
       });
 
       it('tracks the event for deferred Navigate links', async () => {
-        const referringLink =
+        const originalUrl =
           'https://link.metamask.io/swap?utm_campaign=onboarding&sig=fake-signature';
         (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue(
           {
@@ -837,7 +843,7 @@ describe('Wallet Ready Page', () => {
             ...mockState.metamask,
             deferredDeepLink: {
               createdAt: Date.now(),
-              referringLink,
+              originalUrl,
             },
           },
         });
@@ -866,7 +872,7 @@ describe('Wallet Ready Page', () => {
       });
 
       it('tracks the event for deferred Interstitial links', async () => {
-        const referringLink =
+        const originalUrl =
           'https://link.metamask.io/swap?amount=100&utm_medium=email';
         const urlPathAndQuery = '/swap?amount=100&utm_medium=email';
         (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue(
@@ -886,7 +892,7 @@ describe('Wallet Ready Page', () => {
             ...mockState.metamask,
             deferredDeepLink: {
               createdAt: Date.now(),
-              referringLink,
+              originalUrl,
             },
           },
         });

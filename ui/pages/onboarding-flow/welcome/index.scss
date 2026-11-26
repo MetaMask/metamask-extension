@@ -1,17 +1,5 @@
 @use "design-system";
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(5px) scale(0.8);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
 @keyframes fadeInUpSmooth {
   from {
     opacity: 0;
@@ -106,41 +94,6 @@
 
 .welcome-container {
   position: relative;
-
-  &__wordmark-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    &--complete {
-      animation: slideUpSmooth 1s ease-out forwards;
-    }
-  }
-}
-
-.welcome-banner {
-  &__wrapper {
-    max-width: 1280px;
-    margin: 125px auto 0;
-  }
-
-  &__title {
-    font-family: var(--font-family-hero);
-    color: var(--color-accent03-dark);
-    font-size: 6.5rem;
-    line-height: 7.125rem;
-    word-wrap: break-word;
-  }
-
-  &__description {
-    color: var(--color-accent03-dark);
-    max-width: 548px;
-  }
-
-  &__button {
-    width: 240px;
-  }
 }
 
 .welcome-login {
@@ -173,19 +126,6 @@
 
     &--fade-in {
       animation: fadeInUpSmooth 0.2s ease-in-out forwards;
-    }
-  }
-
-  &__title {
-    font-family: var(--font-family-accent);
-    font-size: 40px;
-    color: var(--color-accent02-dark);
-    line-height: 1em;
-  }
-
-  &__mascot {
-    &--image {
-      margin-bottom: 60px;
     }
   }
 }

@@ -15,7 +15,6 @@ import {
   IconSize,
   Text,
 } from '@metamask/design-system-react';
-import type { Hex } from '@metamask/utils';
 import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { ConfirmInfoAlertRow } from '../../../../../components/app/confirm/info/row/alert-row/alert-row';
@@ -25,8 +24,8 @@ import { hasTransactionType } from '../../../../../../shared/lib/transactions.ut
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import { setAccountOverride } from '../../../../../store/controller-actions/transaction-pay-controller';
 import {
-  selectTransactionPayAccountOverrideByTransactionId,
-  type TransactionPayState,
+  selectTransactionPayEvmAccountOverrideByTransactionId,
+  type TransactionPayAccountsState,
 } from '../../../../../selectors/transactionPayController';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useDisplayName } from '../../../../../hooks/useDisplayName';
@@ -34,7 +33,10 @@ import { useConfirmContext } from '../../../context/confirm';
 import { PAY_QR_HARDWARE_BLOCKED_TRANSACTION_TYPES } from '../../../constants/pay';
 import { useIsPayHardwareBlocked } from '../../../hooks/pay/useIsPayHardwareBlocked';
 import { replaceAccountInNestedTransactions } from '../../../utils/transaction-pay';
-import { AccountSelectModal } from '../../account-select-modal';
+import {
+  AccountSelectModal,
+  type SelectedAccount,
+} from '../../account-select-modal';
 
 export { ConfirmInfoRowSize };
 
@@ -52,9 +54,8 @@ type FromAccountRowProps = {
  * rather than the source, so the row must read "To" instead of "From".
  *
  * A money-account withdraw moves mUSD out of the vault into an EVM account, so
- * the account picked here is the recipient — see
- * `replaceAccountInNestedTransactions`, which rewrites the transfer recipient
- * in the nested calldata when the selection changes. Mirrors mobile
+ * the account picked here is the recipient. Setting it re-encodes the
+ * transfer in the background. Mirrors mobile
  * `PayAccountSelector`, which only labels the row "From" for deposits and
  * otherwise falls back to the "To" default.
  */
@@ -66,18 +67,20 @@ const RECIPIENT_ACCOUNT_ROW_TRANSACTION_TYPES = [
  * "From <wallet>" / "To <wallet>" account selector row.
  *
  * Displays the account on the other end of the transfer and lets the user
- * switch to another EVM account via a modal. Selecting an account updates the
- * TransactionPayController's `accountOverride`. The displayed account is
- * `accountOverride ?? txParams.from`, matching how the pay controller resolves
- * the funding account.
+ * switch to another EVM account via a modal. Selecting an account sets the
+ * TransactionPayController's `accountOverride` to its account ID. The
+ * displayed account is the override account address, or `txParams.from`,
+ * matching how the pay controller resolves the funding account.
  *
  * The label direction follows the flow: funding flows (e.g. money-account
  * deposit) read "From", whereas withdraws read "To" because the selected
  * account receives the funds.
  *
- * Flows that cannot be funded by a hardware device (Money Account deposit and
- * withdraw, Perps, Predict) hide hardware accounts from the modal, so the user
- * cannot pick an account that `usePayHardwareAccountAlert` would then block.
+ * Flows that cannot be funded by a hardware device (Perps, Predict, and Money
+ * Account deposit unless enabled) hide hardware accounts from the modal, so
+ * the user cannot pick an account that `usePayHardwareAccountAlert` would then
+ * block. Money Account withdraws list hardware accounts because the recipient
+ * never signs.
  *
  * @param props - Component props.
  * @param props.showDivider - Whether to render a divider below the row.
@@ -96,12 +99,16 @@ export function FromAccountRow({
     currentConfirmation,
     PAY_QR_HARDWARE_BLOCKED_TRANSACTION_TYPES,
   );
+  const isRecipientRow = hasTransactionType(
+    currentConfirmation,
+    RECIPIENT_ACCOUNT_ROW_TRANSACTION_TYPES,
+  );
   const transactionId = currentConfirmation?.id ?? '';
   const txFrom = currentConfirmation?.txParams?.from ?? '';
   const { chainId, id: ownerId } = currentConfirmation ?? {};
 
-  const accountOverride = useSelector((state: TransactionPayState) =>
-    selectTransactionPayAccountOverrideByTransactionId(state, transactionId),
+  const accountOverride = useSelector((state: TransactionPayAccountsState) =>
+    selectTransactionPayEvmAccountOverrideByTransactionId(state, transactionId),
   );
 
   // Prefer the pay-controller override so the pill updates when the user picks
@@ -119,42 +126,46 @@ export function FromAccountRow({
   const closeModal = useCallback(() => setIsModalOpen(false), []);
 
   const handleSelect = useCallback(
-    async (address: string) => {
+    async (account: SelectedAccount) => {
       closeModal();
 
       if (
         !currentConfirmation?.id ||
-        address.toLowerCase() === from.toLowerCase()
+        account.address.toLowerCase() === from.toLowerCase()
       ) {
         return;
       }
 
-      // Rewrite nested calldata first and await persistence so confirm cannot
-      // approve a previously funded batch that still transfers to the old
-      // recipient, then seed accountOverride.
+      // Withdraws re-encode the transfer in the background when the override
+      // is set. Other flows rewrite nested calldata first.
       try {
-        await replaceAccountInNestedTransactions({
-          transactionId: currentConfirmation.id,
-          nestedTransactions: currentConfirmation.nestedTransactions,
-          oldAddress: accountOverride ?? txFrom,
-          newAddress: address,
-        });
-        await setAccountOverride(currentConfirmation.id, address as Hex);
+        if (!isRecipientRow) {
+          await replaceAccountInNestedTransactions({
+            transactionId: currentConfirmation.id,
+            nestedTransactions: currentConfirmation.nestedTransactions,
+            oldAddress: accountOverride ?? txFrom,
+            newAddress: account.address,
+          });
+        }
+        await setAccountOverride(currentConfirmation.id, account.id);
       } catch (error) {
         console.error('Failed to update pay account override', error);
       }
     },
-    [accountOverride, closeModal, currentConfirmation, from, txFrom],
+    [
+      accountOverride,
+      closeModal,
+      currentConfirmation,
+      from,
+      isRecipientRow,
+      txFrom,
+    ],
   );
 
   if (!currentConfirmation || !from) {
     return null;
   }
 
-  const isRecipientRow = hasTransactionType(
-    currentConfirmation,
-    RECIPIENT_ACCOUNT_ROW_TRANSACTION_TYPES,
-  );
   const directionLabel = isRecipientRow ? t('to') : t('from');
   const label = fromWalletName
     ? `${directionLabel} ${fromWalletName}`

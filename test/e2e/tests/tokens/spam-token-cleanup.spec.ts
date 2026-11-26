@@ -9,6 +9,10 @@ import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import { Driver } from '../../webdriver/driver';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { DEFAULT_FIXTURE_ACCOUNT_ID, NETWORK_CLIENT_ID } from '../../constants';
+import {
+  accountsBalancesV5,
+  tokensV3Assets,
+} from '../../mock-response-data/api-responses';
 
 /**
  * Live `GET token.api.cx.metamask.io/v1/suggestedOccurrenceFloors` payload.
@@ -171,10 +175,20 @@ function buildFixtures(title: string) {
           ),
         },
         assetsInfo: Object.fromEntries(
-          TRACKED_ASSETS.map(({ assetId, name, symbol, decimals }) => [
-            assetId,
-            { type: 'erc20' as const, aggregators: [], decimals, name, symbol },
-          ]),
+          TRACKED_ASSETS.map(
+            ({ assetId, name, symbol, decimals, occurrences }) => [
+              assetId,
+              {
+                type: 'erc20' as const,
+                aggregators: [],
+                decimals,
+                image: 'icon',
+                name,
+                occurrences,
+                symbol,
+              },
+            ],
+          ),
         ),
         customAssets: {
           [DEFAULT_FIXTURE_ACCOUNT_ID]: [CUSTOM_ASSET.assetId],
@@ -211,8 +225,8 @@ async function mockOccurrenceApis(
           ? { statusCode: 500, json: { message: 'Internal server error' } }
           : { statusCode: 200, json: SUGGESTED_OCCURRENCE_FLOORS },
       ),
-    await mockServer
-      .forGet(`https://tokens.api.cx.metamask.io/v3/assets`)
+    await tokensV3Assets
+      .rule(mockServer)
       .withQuery({ includeOccurrences: 'true' })
       .always()
       .thenCallback((request) => {
@@ -237,14 +251,23 @@ async function mockOccurrenceApis(
           })),
         };
       }),
+    // Launchpad lookup for below-floor assets. None of the tracked assets are
+    // launchpad tokens, so none are exempted from the cleanup. An unmocked
+    // (empty-body) response fails the lookup and keeps every asset.
+    await mockServer
+      .forGet(`https://token.api.cx.metamask.io/v2/assets`)
+      .always()
+      .thenCallback(() => ({ statusCode: 200, json: [] })),
 
     // Mock balances as so it doesn't impact the original cleanup unlock logic.
     ...(await Promise.all(
       (['v5', 'v6'] as const).map((version) =>
-        mockServer
-          .forGet(
-            `https://accounts.api.cx.metamask.io/${version}/multiaccount/balances`,
-          )
+        (version === 'v5'
+          ? accountsBalancesV5.rule(mockServer)
+          : mockServer.forGet(
+              'https://accounts.api.cx.metamask.io/v6/multiaccount/balances',
+            )
+        )
           .always()
           .thenCallback((request) => {
             const accountIds = (

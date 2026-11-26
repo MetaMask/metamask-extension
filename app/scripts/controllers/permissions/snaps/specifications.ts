@@ -147,15 +147,6 @@ export function getSnapPermissionSpecifications(
           return messenger.call('PhishingController:testOrigin', url).result;
         },
 
-        /**
-         * Get custom cryptography implementations for the client.
-         *
-         * @returns An object containing custom cryptography implementations.
-         * We currently don't use any specific implementations, so this is an
-         * empty object.
-         */
-        getClientCryptography: () => ({}),
-
         getSnapKeyring: async () => ({
           // We only need a subset of the Snap keyring's functionality, and this message handling is now
           // owned by the Snap account service.

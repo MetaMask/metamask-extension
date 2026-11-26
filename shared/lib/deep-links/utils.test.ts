@@ -21,6 +21,7 @@ const routesProtectedByInterstitial = [
   '/card-onboarding',
   '/swap',
   '/money',
+  '/money-account-deposit',
   '/earn-musd',
   '/perps',
   '/perps-markets',
@@ -82,7 +83,7 @@ describe('Deep link utils', () => {
 
         const result = await getDeferredDeepLinkRoute({
           createdAt,
-          referringLink: mockBuyLink,
+          originalUrl: mockBuyLink,
         });
 
         expect(result).toStrictEqual({
@@ -107,7 +108,7 @@ describe('Deep link utils', () => {
 
         const result = await getDeferredDeepLinkRoute({
           createdAt,
-          referringLink: mockSwapLink,
+          originalUrl: mockSwapLink,
         });
 
         expect(result).toStrictEqual({
@@ -130,7 +131,7 @@ describe('Deep link utils', () => {
 
         const result = await getDeferredDeepLinkRoute({
           createdAt,
-          referringLink: mockBuyLink,
+          originalUrl: mockBuyLink,
         });
 
         expect(result).toStrictEqual({
@@ -154,7 +155,7 @@ describe('Deep link utils', () => {
 
         const result = await getDeferredDeepLinkRoute({
           createdAt,
-          referringLink: mockSwapLink,
+          originalUrl: mockSwapLink,
         });
 
         expect(result).toStrictEqual({
@@ -182,7 +183,7 @@ describe('Deep link utils', () => {
 
           const result = await getDeferredDeepLinkRoute({
             createdAt,
-            referringLink: `https://link.metamask.io${route}`,
+            originalUrl: `https://link.metamask.io${route}`,
           });
 
           expect(result).toStrictEqual({
@@ -205,7 +206,7 @@ describe('Deep link utils', () => {
 
         const result = await getDeferredDeepLinkRoute({
           createdAt,
-          referringLink: 'https://link.metamask.io/buy',
+          originalUrl: 'https://link.metamask.io/buy',
         });
 
         expect(result).toStrictEqual({
@@ -232,7 +233,7 @@ describe('Deep link utils', () => {
 
         const result = await getDeferredDeepLinkRoute({
           createdAt,
-          referringLink: assetLink,
+          originalUrl: assetLink,
         });
 
         expect(result).toStrictEqual({
@@ -244,24 +245,24 @@ describe('Deep link utils', () => {
       });
     });
 
-    describe('when referringLink is missing or invalid', () => {
+    describe('when originalUrl is missing or invalid', () => {
       it('returns null when deferredDeepLink is null', async () => {
         const result = await getDeferredDeepLinkRoute(null);
         expect(result).toBeNull();
       });
 
-      it('returns null when referringLink is null', async () => {
+      it('returns null when originalUrl is null', async () => {
         const result = await getDeferredDeepLinkRoute({
           createdAt: Date.now(),
-          referringLink: null as never,
+          originalUrl: null as never,
         });
         expect(result).toBeNull();
       });
 
-      it('returns null when referringLink is empty string', async () => {
+      it('returns null when originalUrl is empty string', async () => {
         const result = await getDeferredDeepLinkRoute({
           createdAt: Date.now(),
-          referringLink: '',
+          originalUrl: '',
         });
         expect(result).toBeNull();
       });
@@ -276,7 +277,7 @@ describe('Deep link utils', () => {
 
         const result = await getDeferredDeepLinkRoute({
           createdAt,
-          referringLink: mockSwapLink,
+          originalUrl: mockSwapLink,
         });
 
         expect(result).toBeNull();
@@ -284,27 +285,27 @@ describe('Deep link utils', () => {
     });
 
     describe('when URL parsing fails', () => {
-      it('returns null when referringLink is not a valid URL', async () => {
+      it('returns null when originalUrl is not a valid URL', async () => {
         const createdAt = 1000000;
 
         jest.setSystemTime(createdAt + 60 * 1000);
 
         const result = await getDeferredDeepLinkRoute({
           createdAt,
-          referringLink: 'not-a-valid-url',
+          originalUrl: 'not-a-valid-url',
         });
 
         expect(result).toBeNull();
       });
 
-      it('returns null when referringLink is malformed', async () => {
+      it('returns null when originalUrl is malformed', async () => {
         const createdAt = 1000000;
 
         jest.setSystemTime(createdAt + 60 * 1000);
 
         const result = await getDeferredDeepLinkRoute({
           createdAt,
-          referringLink: 'ht!tp://[invalid',
+          originalUrl: 'ht!tp://[invalid',
         });
 
         expect(result).toBeNull();

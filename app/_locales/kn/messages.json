@@ -211,10 +211,6 @@
   "fast": {
     "message": "ವೇಗ"
   },
-  "fileImportFail": {
-    "message": "ಫೈಲ್ ಆಮದು ಮಾಡುವಿಕೆ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತಿಲ್ಲವೇ? ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "ಈ ಸಾಧನವನ್ನು ಮರೆತುಬಿಡಿ"
   },
@@ -223,9 +219,6 @@
   },
   "gasLimit": {
     "message": "ಗ್ಯಾಸ್ ಮಿತಿ"
-  },
-  "gasUsed": {
-    "message": "ಗ್ಯಾಸ್ ಬಳಸಲಾಗಿದೆ"
   },
   "general": {
     "message": "ಸಾಮಾನ್ಯ"
@@ -392,10 +385,6 @@
   "passwordsDontMatch": {
     "message": "ಪಾಸ್‌ವರ್ಡ್‌ಗಳು ಹೊಂದಾಣಿಕೆಯಾಗುತ್ತಿಲ್ಲ"
   },
-  "pastePrivateKey": {
-    "message": "ನಿಮ್ಮ ಖಾಸಗಿ ಪ್ರಮುಖ ಸ್ಟ್ರಿಂಗ್ ಅನ್ನು ಇಲ್ಲಿ ನಕಲಿಸಿ:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "ಬಾಕಿಯಿರುವುದು"
   },
@@ -411,9 +400,6 @@
   "privateKey": {
     "message": "ಖಾಸಗಿ ಕೀ",
     "description": "select this type of file to use to import an account"
-  },
-  "privateNetwork": {
-    "message": "ಖಾಸಗಿ ನೆಟ್‌ವರ್ಕ್"
   },
   "readdToken": {
     "message": "ನಿಮ್ಮ ಖಾತೆಗಳ ಆಯ್ಕೆಗಳ ಮೆನುವಿನಲ್ಲಿ \"ಟೋಕನ್ ಸೇರಿಸು\" ಗೆ ಹೋಗುವ ಮೂಲಕ ನೀವು ಈ ಟೋಕನ್ ಅನ್ನು ಭವಿಷ್ಯದಲ್ಲಿ ಮರಳಿ ಸೇರಿಸಬಹುದು."
@@ -569,9 +555,6 @@
   "unapproved": {
     "message": "ಅನುಮೋದಿಸದಿರುವುದು"
   },
-  "units": {
-    "message": "ಘಟಕಗಳು"
-  },
   "unknown": {
     "message": "ಅಪರಿಚಿತ"
   },
@@ -583,9 +566,6 @@
   },
   "urlErrorMsg": {
     "message": "URI ಗಳಿಗೆ ಸೂಕ್ತವಾದ HTTP/HTTPS ಪೂರ್ವಪ್ರತ್ಯಯದ ಅಗತ್ಯವಿದೆ."
-  },
-  "usedByClients": {
-    "message": "ವಿಭಿನ್ನ ಕ್ಲೈಂಟ್‌ಗಳ ಮೂಲಕ ಬಳಸಲಾಗುತ್ತದೆ"
   },
   "visitWebSite": {
     "message": "ನಮ್ಮ ವೆಬ್ ಸೈಟ್ ಅನ್ನು ಭೇಟಿ ಮಾಡಿ"

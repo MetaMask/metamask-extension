@@ -63,6 +63,7 @@
     "newTokensImportedError": "string",
     "nextNonce": "null",
     "onboardedInThisUISession": "boolean",
+    "onboardingRedirect": "null",
     "openMetaMaskTabs": {},
     "pendingTokens": {},
     "qrCodeData": "null",
@@ -71,8 +72,6 @@
     "sendInputCurrencySwitched": "boolean",
     "showBasicFunctionalityModal": "boolean",
     "showClaimSubmitToast": "null",
-    "showDataDeletionErrorModal": "boolean",
-    "showDeleteMetaMetricsDataModal": "boolean",
     "showInfuraSwitchToast": "boolean",
     "showIpfsModalOpen": "boolean",
     "showKeyringRemovalSnapModal": "boolean",
@@ -162,13 +161,6 @@
       "*": "array"
     },
     "accountState": "null",
-    "accountsByChainId": {
-      "*": {
-        "*": {
-          "balance": "string"
-        }
-      }
-    },
     "accountTree": {
       "wallets": {
         "entropy:01K98E0QDS4HYMTRJ5WHZ73ZWJ": {
@@ -198,7 +190,8 @@
                 "d5e45e4a-3b04-4a09-a5e1-39762e5c6be4",
                 "<solana-account-1>",
                 "<bitcoin-account-1>",
-                "<tron-account-1>"
+                "<tron-account-1>",
+                "<stellar-account-1>"
               ]
             }
           }
@@ -246,10 +239,17 @@
     "approvalFlows": [],
     "assetExchangeRates": {},
     "assetPreferences": {},
+    "assetsBackgroundLoadingStatus": {
+      "*": "string"
+    },
     "assetsBalance": {
       "*": {
         "*": {
-          "amount": "string"
+          "amount": "string",
+          "metadata": {
+            "minimumReserveBalance": "string",
+            "spendableBalance": "string"
+          }
         }
       }
     },
@@ -303,6 +303,7 @@
         "lastUpdated": "number"
       }
     },
+    "autorampTransactionRecords": {},
     "autoramps": [],
     "batchSellTrades": "null",
     "batchSellTradesLoadingStatus": "null",
@@ -345,13 +346,10 @@
     "cryptocurrencies": ["string"],
     "currencyRates": {
       "*": {
-        "conversionDate": "null",
-        "conversionRate": "number",
-        "usdConversionRate": "null"
+        "conversionRate": "null"
       }
     },
     "currentAppVersion": "string",
-    "currentCurrency": "string",
     "currentExtensionPopupId": "number",
     "dappSwapComparisonData": {},
     "currentLocale": "string",
@@ -368,11 +366,14 @@
     },
     "databaseUnavailable": "boolean",
     "defaultHomeActiveTabName": "null",
+    "defaultMoneyAccountId": "null",
+    "defaultProvider": "string",
     "depositInProgress": "boolean",
     "depositRequests": [],
     "dismissSeedBackUpReminder": "boolean",
     "domains": {},
     "drafts": [],
+    "effectiveProvider": "null",
     "enabledNetworkMap": {
       "bip122": {
         "bip122:000000000019d6689c085ae165831e93": "boolean",
@@ -392,6 +393,7 @@
         "0x2105": "boolean",
         "0xa4b1": "boolean",
         "0x38": "boolean",
+        "0x531": "boolean",
         "0xa": "boolean",
         "0x89": "boolean"
       },
@@ -429,6 +431,7 @@
     "estimatedGasFeeTimeBounds": {},
     "etag": "null",
     "eventsConfigEtag": "null",
+    "excludedRegions": "null",
     "eventsConfig": {
       "events": {},
       "schemaVersion": "string",
@@ -516,6 +519,9 @@
     "gasFeeEstimatesByChainId": {},
     "grantedPermissions": [],
     "lastSyncedTimestamp": "number",
+    "hasExplicitDefaultProviderSelection": "boolean",
+    "hasExplicitProviderSelection": "boolean",
+    "hasMigratedToMultiProvider": "boolean",
     "hasPlacedFirstOrder": {
       "testnet": "boolean",
       "mainnet": "boolean"
@@ -645,6 +651,33 @@
             },
             "lastSelected": "number"
           }
+        },
+        "<stellar-account-1>": {
+          "type": "string",
+          "scopes": ["string"],
+          "id": "string",
+          "address": "string",
+          "options": {
+            "exportable": "boolean",
+            "entropy": {
+              "type": "string",
+              "id": "string",
+              "derivationPath": "string",
+              "groupIndex": "number"
+            }
+          },
+          "methods": ["string"],
+          "metadata": {
+            "name": "string",
+            "importTime": "number",
+            "keyring": {
+              "type": "string"
+            },
+            "snap": {
+              "id": "string"
+            },
+            "lastSelected": "number"
+          }
         }
       },
       "selectedAccount": "string"
@@ -716,9 +749,7 @@
     "lastWithdrawResult": "null",
     "manageInstitutionalWallets": "boolean",
     "marketingConsentDecisionMade": "boolean",
-    "marketData": {
-      "*": {}
-    },
+    "marketingConsentSyncPending": "boolean",
     "marketFilterPreferences": {
       "optionId": "string",
       "direction": "string"
@@ -732,6 +763,7 @@
     "migrationVersion": "number",
     "minimumBalanceForRentExemptionInLamports": "string",
     "mode": "string",
+    "moneyAccountWalletRegistrations": [],
     "moneyAccounts": {},
     "multichainNetworkConfigurationsByChainId": {
       "bip122:000000000019d6689c085ae165831e93": {
@@ -816,6 +848,7 @@
     "musdConversionEducationSeen": "boolean",
     "perpsTabBadgeSeen": "boolean",
     "moneyEarnBannerDismissedTokenKeys": [],
+    "moneyFtueSeen": "boolean",
     "musdConversionDismissedCtaKeys": [],
     "names": {
       "ethereumAddress": {}
@@ -865,7 +898,8 @@
     "nonEvmTransactions": {
       "<solana-account-1>": {},
       "<bitcoin-account-1>": {},
-      "<tron-account-1>": {}
+      "<tron-account-1>": {},
+      "<stellar-account-1>": {}
     },
     "nonRPCGasFeeApisDisabled": "boolean",
     "notificationGasPollTokens": [],
@@ -930,6 +964,7 @@
       "basicFunctionalityMigrationNotification": "null",
       "basicFunctionalityMigrationNotificationDismissed": "boolean",
       "privacyMode": "boolean",
+      "shouldShowSupportConsent": "boolean",
       "showDefaultAddress": "boolean",
       "showConfirmationAdvancedDetails": "boolean",
       "showExtensionInFullSizeView": "boolean",
@@ -941,6 +976,10 @@
       "skipDeepLinkInterstitial": "boolean",
       "smartTransactionsMigrationApplied": "boolean",
       "smartTransactionsOptInStatus": "boolean",
+      "supportDataSharingPreference": "null",
+      "tdpChartType": "number",
+      "tdpChartInterval": "string",
+      "tdpChartIndicators": "array",
       "tokenNetworkFilter": {
         "0x539": "boolean"
       },
@@ -1059,7 +1098,13 @@
         "subscriptionId": "null"
       }
     },
-    "rewardsActiveAccount": "null",
+    "rewardsActiveAccount": {
+      "account": "string",
+      "lastFreshOptInStatusCheck": "number",
+      "lastPerpsDiscountRateFetched": "null",
+      "perpsFeeDiscount": "null",
+      "subscriptionId": "null"
+    },
     "rewardsPointsEstimateHistory": [],
     "rewardsSeasons": {},
     "rewardsSeasonStatuses": {},
@@ -1131,7 +1176,6 @@
       }
     },
     "status": "string",
-    "storageMetadata": [],
     "subjectMetadata": {
       "npm:@metamask/bitcoin-wallet-snap": {
         "extensionId": "null",
@@ -1224,7 +1268,6 @@
     "throttledOrigins": {},
     "timeoutMinutes": "number",
     "timezone": "string",
-    "tokenBalances": {},
     "tokenScanCache": {},
     "tokens": {
       "data": "null",
@@ -1266,14 +1309,15 @@
     "useMultiAccountBalanceChecker": "boolean",
     "useNftDetection": "boolean",
     "usePhishDetect": "boolean",
-    "userOperations": {},
     "userRegion": "null",
+    "userSelectedProviderId": "null",
+    "vbaAutorampListFetchedAt": "null",
+    "vbaCustomerAbilities": "null",
     "walletComplianceStatusMap": {},
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": "boolean",
     "useTransactionSimulations": "boolean",
     "version": "string",
-    "versionInfo": [],
     "visibleCandleCount": "number",
     "watchEthereumAccountEnabled": "boolean",
     "watchlistMarkets": {
@@ -1293,6 +1337,13 @@
   "moneyBalance": {
     "lastKnownBalance": "null"
   },
+  "moneyFtue": {
+    "acknowledged": "boolean",
+    "isOpen": "boolean",
+    "origin": "null",
+    "pendingDeposit": "null",
+    "source": "null"
+  },
   "perpsTutorial": {
     "tutorialModalOpen": "boolean",
     "activeStep": "string",
@@ -1304,7 +1355,6 @@
   },
   "rewards": {
     "rewardsModalOpen": "boolean",
-    "onboardingReferralCode": "string",
     "geoLocation": "null",
     "optinAllowedForGeo": "null",
     "optinAllowedForGeoLoading": "boolean",
@@ -1323,6 +1373,11 @@
       "isOpen": "boolean",
       "title": "string"
     }
+  },
+  "rewardsMoney": {
+    "pendingReferralCode": "null",
+    "referralMe": "null",
+    "referralMeSettled": "boolean"
   },
   "sendMaxValue": {
     "maxValueMode": {}

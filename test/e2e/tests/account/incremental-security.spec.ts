@@ -20,9 +20,11 @@ import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboa
 import TestDappSendEthWithPrivateKey from '../../page-objects/pages/test-dapp-send-eth-with-private-key';
 import {
   handleSidepanelPostOnboarding,
+  revealAndConfirmSrp,
   skipPasskeySetup,
 } from '../../page-objects/flows/onboarding.flow';
 import { mockSpotPrices } from '../tokens/utils/mocks';
+import { accountsBalancesV5 } from '../../mock-response-data/api-responses';
 
 // 1 ETH in wei, hex-encoded
 const ONE_ETH_IN_WEI_HEX = '0xde0b6b3a7640000';
@@ -37,6 +39,7 @@ const BALANCE_CHECKER_1_ETH_RESULT =
 async function mockIncrementalSecurityEndpoints(mockServer: Mockttp) {
   await mockSpotPrices(mockServer, {
     'eip155:1/slip44:60': {
+      id: 'ethereum',
       price: 1700,
       marketCap: 382623505141,
       pricePercentChange1d: 0,
@@ -44,10 +47,8 @@ async function mockIncrementalSecurityEndpoints(mockServer: Mockttp) {
   });
 
   // With assetsUnifyState, homepage balance reads Accounts API v5 instead of RPC.
-  await mockServer
-    .forGet(
-      /^https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
-    )
+  await accountsBalancesV5
+    .rule(mockServer)
     .asPriority(99)
     .always()
     .thenCallback((req) => {
@@ -219,7 +220,7 @@ describe('Incremental Security', function (this: Suite) {
           await homePage.goToBackupSRPPage();
 
           // reveal and confirm the Secret Recovery Phrase on backup SRP page
-          await secureWalletPage.revealAndConfirmSRP(WALLET_PASSWORD);
+          await revealAndConfirmSrp(driver, WALLET_PASSWORD);
 
           // complete backup
           await onboardingCompletePage.checkPageIsLoadedBackup();

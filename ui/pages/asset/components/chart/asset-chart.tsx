@@ -1,15 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  Chart,
-  LineElement,
-  LinearScale,
-  PointElement,
-  Filler,
-  ChartOptions,
-  Decimation,
-  Point,
-} from 'chart.js';
-import { Line } from 'react-chartjs-2';
 import classnames from 'clsx';
 import { Hex, isCaipAssetType } from '@metamask/utils';
 import { trim } from 'lodash';
@@ -17,7 +6,6 @@ import { Duration } from 'luxon';
 import { useParams } from 'react-router-dom';
 import {
   Box,
-  BoxBackgroundColor,
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
@@ -31,44 +19,11 @@ import {
   ButtonBaseSize,
 } from '../../../../components/component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { usePrevious } from '../../../../hooks/usePrevious';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { useHistoricalPrices } from '../../hooks/useHistoricalPrices';
-import { finiteFallback, loadingOpacity, processAssetParams } from '../../util';
-import ChartTooltip from './chart-tooltip';
-import { CrosshairPlugin } from './crosshair-plugin';
-import { AssetChartEmptyState } from './asset-chart-empty-state';
+import { processAssetParams } from '../../util';
+import { AssetChartBody } from './asset-chart-body';
 import AssetChartPrice from './asset-chart-price';
-
-Chart.register(
-  LinearScale,
-  PointElement,
-  LineElement,
-  Filler,
-  Decimation,
-  CrosshairPlugin,
-);
-
-const initialChartOptions: ChartOptions<'line'> = {
-  normalized: true,
-  parsing: false,
-  aspectRatio: 2.6,
-  layout: { autoPadding: false, padding: 0 },
-  animation: { duration: 0 },
-  elements: {
-    line: { borderWidth: 1.5 },
-    point: { pointStyle: false },
-  },
-  plugins: {
-    // Downsample to a maximum number of points
-    decimation: {
-      algorithm: 'lttb',
-      samples: 150,
-      threshold: 150,
-      enabled: true,
-    },
-  },
-};
 
 /**
  * Returns a translated time range label for a given ISO 8601 duration string.
@@ -155,10 +110,7 @@ const AssetChart = ({
     loading,
     isFetching,
     isPlaceholderData,
-    data: {
-      prices,
-      metadata: { minPricePoint, maxPricePoint, xMin, xMax, yMin, yMax },
-    },
+    data: { prices, metadata },
   } = useHistoricalPrices({
     chainId,
     address: getChartAddress(chainId, decodedAsset, address),
@@ -166,56 +118,10 @@ const AssetChart = ({
     timeRange: selectedTimeRange,
   });
 
-  const prevIsPlaceholderData = usePrevious(isPlaceholderData);
-  const wasPlaceholderData = prevIsPlaceholderData && !isPlaceholderData;
+  // When the chart is not loading anymore and there are no prices, there is
+  // nothing to compare the current price against.
+  const shouldShowChartEmptyState = !loading && prices.length === 0;
 
-  // The cases below are not mutually exclusive
-  const shouldShowChartEmptyState = !loading && prices.length === 0; // When the chart is not loading anymore and there are no prices, show an empty state
-  const shouldShowChartMuted =
-    isFetching && prices.length > 0 && !isPlaceholderData;
-
-  const animation =
-    isPlaceholderData || wasPlaceholderData
-      ? {
-          x: false,
-          y: {
-            from: (ctx: { chart: { scales: { y: { bottom: number } } } }) =>
-              ctx.chart.scales.y.bottom,
-            duration: 400,
-          },
-        }
-      : {
-          x: { type: 'number', duration: 400 },
-          y: { type: 'number', duration: 400 },
-        };
-
-  const options = {
-    ...initialChartOptions,
-    borderColor: ({ chart }) =>
-      getComputedStyle(chart.canvas)
-        .getPropertyValue('--color-success-default')
-        .trim(),
-    transitions: {
-      active: { animation },
-      default: { animation },
-      resize: { animation: { duration: 0 } },
-    },
-    scales: {
-      x: {
-        min: finiteFallback(xMin, undefined),
-        max: finiteFallback(xMax, undefined),
-        display: false,
-        type: 'linear',
-      },
-      y: {
-        min: isPlaceholderData ? 0 : finiteFallback(yMin, 0),
-        max: isPlaceholderData ? 1 : finiteFallback(yMax, 1),
-        display: false,
-      },
-    },
-  } as ChartOptions<'line'>;
-
-  const chartRef = useRef<Chart<'line', Point[]>>();
   const priceRef = useRef<{
     setPrice: (_: { price?: number; date?: number }) => void;
   }>();
@@ -243,84 +149,20 @@ const AssetChart = ({
         }
       />
 
-      <Box
-        data-testid="asset-price-chart"
-        className="flex rounded-lg"
-        marginTop={4}
-        backgroundColor={
-          loading && !prices
-            ? BoxBackgroundColor.BackgroundSection
-            : BoxBackgroundColor.Transparent
+      <AssetChartBody
+        prices={prices}
+        metadata={metadata}
+        loading={loading}
+        isFetching={isFetching}
+        isPlaceholderData={isPlaceholderData}
+        currency={currency}
+        currentPrice={currentPrice}
+        onHoverPrice={(point) =>
+          priceRef?.current?.setPrice(
+            point ?? { price: currentPrice, date: Date.now() },
+          )
         }
-        flexDirection={BoxFlexDirection.Column}
       >
-        {shouldShowChartEmptyState && <AssetChartEmptyState />}
-        {!shouldShowChartEmptyState && (
-          <Box style={{ opacity: shouldShowChartMuted ? loadingOpacity : 1 }}>
-            <ChartTooltip
-              point={isPlaceholderData ? undefined : maxPricePoint}
-              xMin={xMin}
-              xMax={xMax}
-              currency={currency}
-            />
-            <Box
-              style={{ aspectRatio: `${options.aspectRatio}` }}
-              className="flex"
-              flexDirection={BoxFlexDirection.Column}
-              justifyContent={
-                currentPrice ? BoxJustifyContent.End : BoxJustifyContent.Start
-              }
-            >
-              <Line
-                ref={chartRef}
-                data={{ datasets: [{ data: prices, fill: false }] }}
-                options={options}
-                // Update the price display on chart hover
-                onMouseMove={(event) => {
-                  if (isPlaceholderData) {
-                    return;
-                  }
-                  const data = chartRef?.current?.data?.datasets?.[0]?.data;
-                  if (data) {
-                    const target = event.target as HTMLElement;
-                    const index = Math.max(
-                      0,
-                      Math.min(
-                        data.length - 1,
-                        Math.round(
-                          (event.nativeEvent.offsetX / target.clientWidth) *
-                            data.length,
-                        ),
-                      ),
-                    );
-                    const point = data[index];
-                    if (point) {
-                      priceRef?.current?.setPrice({
-                        price: point.y,
-                        date: point.x,
-                      });
-                    }
-                  }
-                }}
-                // Revert to current price when not hovering
-                onMouseOut={() => {
-                  priceRef?.current?.setPrice({
-                    price: currentPrice,
-                    date: Date.now(),
-                  });
-                }}
-              />
-            </Box>
-
-            <ChartTooltip
-              point={isPlaceholderData ? undefined : minPricePoint}
-              xMin={xMin}
-              xMax={xMax}
-              currency={currency}
-            />
-          </Box>
-        )}
-
         <Box
           style={prices ? undefined : { visibility: `hidden` }}
           className="flex"
@@ -350,7 +192,7 @@ const AssetChart = ({
             </ButtonBase>
           ))}
         </Box>
-      </Box>
+      </AssetChartBody>
     </Box>
   );
 };

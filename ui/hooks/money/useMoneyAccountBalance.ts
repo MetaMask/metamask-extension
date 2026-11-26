@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 import type { UseQueryResult } from '@tanstack/react-query';
 import { useQuery } from '@metamask/react-data-query';
-import type {
-  CanonicalMoneyAccountBalanceResponse,
-  NormalizedVaultApyResponse,
-} from '@metamask/money-account-balance-service';
+import type { CanonicalMoneyAccountBalanceResponse } from '@metamask/money-account-balance-service';
 import { MoneyAccountBalanceServiceQueryKeys } from '../../../shared/lib/money/query-keys';
 import { MUSD_UNIT } from '../../../shared/lib/money/withdrawable-balance';
-import { moneyFormatUsd } from '../../helpers/money/format';
+import {
+  moneyFormatUsd,
+  moneyFormatUsdSpendable,
+} from '../../helpers/money/format';
 import { projectVmusdValueInMusdToHuman } from '../../helpers/money/withdrawable-balance';
 import { invalidateMoneyAccountBalanceCaches } from '../../helpers/money/invalidate-balance-caches';
 import {
@@ -28,7 +28,6 @@ const DEFAULT_REFETCH_INTERVAL = 30 * 1000; // 30 seconds
 
 export type UseMoneyAccountBalanceResult = {
   moneyBalanceQuery: UseQueryResult<CanonicalMoneyAccountBalanceResponse>;
-  vaultApyQuery: UseQueryResult<NormalizedVaultApyResponse>;
   isBalanceLoading: boolean;
   isBalanceFetchError: boolean;
   isBalanceUnavailable: boolean;
@@ -46,9 +45,15 @@ export type UseMoneyAccountBalanceResult = {
   tokenTotal: BigNumber | undefined;
   totalFiatFormatted: string | undefined;
   totalFiatRaw: string | undefined;
+  /**
+   * Withdrawable balance for display, rounded *down* to cents so the label
+   * never advertises more than the user can actually withdraw.
+   */
   withdrawableFiatFormatted: string | undefined;
+  /** Exact withdrawable balance. Drives Max, so it keeps full precision. */
   withdrawableFiatRaw: string | undefined;
   withdrawableMusd: BigNumber | undefined;
+  isApyLoading: boolean;
   apyDecimal: number | undefined;
   apyPercent: number | undefined;
   apyPercentFormatted: string | undefined;
@@ -89,7 +94,7 @@ export function useMoneyAccountBalance({
     refetchInterval,
   });
 
-  const { vaultApyQuery, apyDecimal, apyPercent, apyPercentFormatted } =
+  const { isApyLoading, apyDecimal, apyPercent, apyPercentFormatted } =
     useMoneyVaultApy({ enabled: enabled && hasAddress });
 
   /**
@@ -163,9 +168,12 @@ export function useMoneyAccountBalance({
   const totalFiatRaw =
     !isBalanceFetchError && totalFiat ? totalFiat.toString() : undefined;
 
+  // Rounded down to cents: this figure is the "Available balance" the user
+  // types back into a two-decimal amount field, so it must always be
+  // affordable. `withdrawableFiatRaw` below keeps full precision for Max.
   const withdrawableFiatFormatted =
     !isBalanceFetchError && withdrawableFiat
-      ? moneyFormatUsd(withdrawableFiat)
+      ? moneyFormatUsdSpendable(withdrawableFiat)
       : undefined;
 
   const withdrawableFiatRaw =
@@ -216,7 +224,6 @@ export function useMoneyAccountBalance({
 
   return {
     moneyBalanceQuery,
-    vaultApyQuery,
     isBalanceLoading,
     isBalanceFetchError,
     isBalanceUnavailable,
@@ -231,6 +238,7 @@ export function useMoneyAccountBalance({
     withdrawableFiatFormatted,
     withdrawableFiatRaw,
     withdrawableMusd,
+    isApyLoading,
     apyDecimal,
     apyPercent,
     apyPercentFormatted,

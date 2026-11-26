@@ -6,6 +6,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyScreenName,
   MoneyTooltipName,
   MoneyTooltipType,
@@ -112,7 +113,7 @@ const mockApy = (
   { isLoading = false } = {},
 ) =>
   mockUseMoneyVaultApy.mockReturnValue({
-    vaultApyQuery: { isLoading },
+    isApyLoading: isLoading,
     apyDecimal,
     apyPercent,
     apyPercentFormatted:
@@ -130,12 +131,17 @@ const EXPECTED_TOKEN_PROPERTIES = {
 const mockDepositLoading = () =>
   mockUseMoneyAccountDeposit.mockReturnValue({
     initiateDeposit: mockInitiateDeposit,
+    isDisabled: false,
     isLoading: true,
   } as unknown as ReturnType<typeof useMoneyAccountDeposit>);
 
-const EXPECTED_DEPOSIT = {
+const expectedDeposit = (componentName: MoneyComponentName) => ({
   preferredPaymentToken: { address: USDC_ADDRESS as Hex, chainId: '0x1' },
-};
+  ftueOrigin: {
+    entryPoint: MoneyFtueEntryPoint.AssetDetail,
+    componentName,
+  },
+});
 
 describe('use-money-asset-overview-ctas', () => {
   const moneyAnalytics = createMoneyAnalyticsMock();
@@ -146,6 +152,7 @@ describe('use-money-asset-overview-ctas', () => {
     mockUseMoneyAnalytics.mockReturnValue(moneyAnalytics);
     mockUseMoneyAccountDeposit.mockReturnValue({
       initiateDeposit: mockInitiateDeposit,
+      isDisabled: false,
       isLoading: false,
     } as unknown as ReturnType<typeof useMoneyAccountDeposit>);
     mockUseMoneyAccountInfo.mockReturnValue({
@@ -290,7 +297,9 @@ describe('use-money-asset-overview-ctas', () => {
         ...EXPECTED_TOKEN_PROPERTIES,
         redirectTarget: MoneyScreenName.MoneyDeposit,
       });
-      expect(mockInitiateDeposit).toHaveBeenCalledWith(EXPECTED_DEPOSIT);
+      expect(mockInitiateDeposit).toHaveBeenCalledWith(
+        expectedDeposit(MoneyComponentName.EarnBanner),
+      );
     });
 
     it('tracks a CTA click and deposits with the token pre-selected', () => {
@@ -304,11 +313,29 @@ describe('use-money-asset-overview-ctas', () => {
         labelSubstitutions: ['USDC'],
         redirectTarget: MoneyScreenName.MoneyDeposit,
       });
-      expect(mockInitiateDeposit).toHaveBeenCalledWith(EXPECTED_DEPOSIT);
+      expect(mockInitiateDeposit).toHaveBeenCalledWith(
+        expectedDeposit(MoneyComponentName.EarnBanner),
+      );
     });
 
     it('ignores banner and CTA clicks while a deposit is starting', () => {
       mockDepositLoading();
+
+      const banner = renderBanner();
+      banner.onBannerClick();
+      banner.onCtaClick();
+
+      expect(moneyAnalytics.trackTokenSurfaceClicked).not.toHaveBeenCalled();
+      expect(moneyAnalytics.trackTokenButtonClicked).not.toHaveBeenCalled();
+      expect(mockInitiateDeposit).not.toHaveBeenCalled();
+    });
+
+    it('ignores banner and CTA clicks when the Money Account is read-only', () => {
+      mockUseMoneyAccountDeposit.mockReturnValue({
+        initiateDeposit: mockInitiateDeposit,
+        isDisabled: true,
+        isLoading: false,
+      } as unknown as ReturnType<typeof useMoneyAccountDeposit>);
 
       const banner = renderBanner();
       banner.onBannerClick();
@@ -421,6 +448,10 @@ describe('use-money-asset-overview-ctas', () => {
 
         expect(mockInitiateDeposit).toHaveBeenCalledWith({
           preferredPaymentToken: { address, chainId },
+          ftueOrigin: {
+            entryPoint: MoneyFtueEntryPoint.AssetDetail,
+            componentName: MoneyComponentName.EarnBanner,
+          },
         });
       },
     );
@@ -531,6 +562,20 @@ describe('use-money-asset-overview-ctas', () => {
       expect(moneyAnalytics.trackComponentViewed).not.toHaveBeenCalled();
     });
 
+    it('reports the start-earning CTA as disabled when the Money Account is read-only', () => {
+      mockUseMoneyAccountDeposit.mockReturnValue({
+        initiateDeposit: mockInitiateDeposit,
+        isDisabled: true,
+        isLoading: false,
+      } as unknown as ReturnType<typeof useMoneyAccountDeposit>);
+
+      const balanceCta = renderBalanceCta();
+
+      expect(balanceCta.isStartEarningDisabled).toBe(true);
+      balanceCta.onStartEarning();
+      expect(mockInitiateDeposit).not.toHaveBeenCalled();
+    });
+
     it('tracks the component view when shown', () => {
       renderBalanceCta();
 
@@ -557,7 +602,9 @@ describe('use-money-asset-overview-ctas', () => {
         labelKey: 'moneyStartEarning',
         redirectTarget: MoneyScreenName.MoneyDeposit,
       });
-      expect(mockInitiateDeposit).toHaveBeenCalledWith(EXPECTED_DEPOSIT);
+      expect(mockInitiateDeposit).toHaveBeenCalledWith(
+        expectedDeposit(MoneyComponentName.AssetOverviewBalanceCta),
+      );
     });
 
     it('ignores Start earning while a deposit is starting', () => {

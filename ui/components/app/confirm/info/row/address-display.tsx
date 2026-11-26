@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo, useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import {
   AvatarAccountSize,
@@ -19,34 +19,11 @@ import {
   FontWeight,
 } from '@metamask/design-system-react';
 
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../../shared/constants/app';
-import { getEnvironmentType } from '../../../../../../shared/lib/environment-type';
 import { toChecksumHexAddress } from '../../../../../../shared/lib/hexstring-utils';
+import { useStartTruncatedText } from '../../../../../hooks/useStartTruncatedText';
 import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
 import { PreferredAvatar } from '../../../preferred-avatar';
 import NameDetails from '../../../name/name-details/name-details';
-
-const ELLIPSIS = '\u2026';
-
-/** Truncation config: [prefix chars to show, suffix chars to show] */
-const TRUNCATION_CONFIG = {
-  full: [Infinity, Infinity] as const,
-  truncated: [14, 10] as const,
-} as const;
-
-function getTruncatedAddress(text: string): string {
-  const environmentType = getEnvironmentType();
-  const [prefixLen, suffixLen] =
-    environmentType === ENVIRONMENT_TYPE_FULLSCREEN
-      ? TRUNCATION_CONFIG.full
-      : TRUNCATION_CONFIG.truncated;
-
-  if (text.length <= prefixLen + suffixLen + 1) {
-    return text;
-  }
-
-  return `${text.slice(0, prefixLen)}${ELLIPSIS}${text.slice(-suffixLen)}`;
-}
 
 const TrustIcon = ({
   displayState,
@@ -107,10 +84,7 @@ export const ConfirmInfoRowAddressDisplay = memo(
     const [modalOpen, setModalOpen] = useState(false);
 
     const isClickable = !isAccount;
-    const display = useMemo(
-      () => getTruncatedAddress(hexAddress),
-      [hexAddress],
-    );
+    const [addressRef, fittedAddress] = useStartTruncatedText(hexAddress, 10);
 
     const handleClick = useCallback(() => {
       if (!isClickable) {
@@ -139,11 +113,12 @@ export const ConfirmInfoRowAddressDisplay = memo(
         )}
         {name && <TrustIcon displayState={displayState} image={image} />}
         {name && isClickable && (
-          <span className="address-display-clickable">
+          <span className="address-display-clickable min-w-0">
             <TextButton
               size={TextButtonSize.BodyMd}
               onClick={handleClick}
               className="min-w-0 hover:bg-transparent active:bg-transparent"
+              textProps={{ ellipsis: true }}
               data-testid="confirm-info-row-display-name"
             >
               {name}
@@ -155,32 +130,48 @@ export const ConfirmInfoRowAddressDisplay = memo(
             variant={TextVariant.BodyMd}
             fontWeight={FontWeight.Medium}
             color={TextColor.TextDefault}
+            ellipsis
             data-testid="confirm-info-row-display-name"
           >
             {name}
           </Text>
         )}
         {!name && isClickable && (
-          <span className="address-display-clickable">
+          <span className="address-display-clickable min-w-0 flex-1">
             <TextButton
               size={TextButtonSize.BodyMd}
               onClick={handleClick}
-              className="hover:bg-transparent active:bg-transparent whitespace-nowrap"
+              className="flex-1 hover:bg-transparent active:bg-transparent whitespace-nowrap"
               data-testid="confirm-info-row-display-name"
             >
-              {display}
+              <Text
+                asChild
+                variant={TextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.Inherit}
+              >
+                <span
+                  ref={addressRef}
+                  className="flex-1 overflow-hidden text-start"
+                >
+                  {fittedAddress}
+                </span>
+              </Text>
             </TextButton>
           </span>
         )}
         {!name && !isClickable && (
           <Text
+            asChild
             variant={TextVariant.BodyMd}
             fontWeight={FontWeight.Medium}
             color={TextColor.TextDefault}
             ellipsis
             data-testid="confirm-info-row-display-name"
           >
-            {display}
+            <span ref={addressRef} className="flex-1">
+              {fittedAddress}
+            </span>
           </Text>
         )}
         {showAvatar && (
