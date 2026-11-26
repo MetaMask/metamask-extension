@@ -334,9 +334,6 @@
   "newContract": {
     "message": "Novi ugovor"
   },
-  "newPassword": {
-    "message": "Nova lozinka (minimalno 8 karaktera)"
-  },
   "next": {
     "message": "Даље"
   },

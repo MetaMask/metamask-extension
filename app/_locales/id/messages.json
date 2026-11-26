@@ -64,10 +64,6 @@
   "acceptAndClose": {
     "message": "Terima dan tutup"
   },
-  "acceptTermsOfUse": {
-    "message": "Saya telah membaca dan menyetujui $1",
-    "description": "$1 is the `terms` message"
-  },
   "accessRestrictedContactSupport": {
     "message": "Hubungi dukungan"
   },
@@ -6614,9 +6610,6 @@
   },
   "newNftAddedMessage": {
     "message": "NFT berhasil ditambahkan!"
-  },
-  "newPassword": {
-    "message": "Kata sandi baru"
   },
   "newPasswordCreate": {
     "message": "Buat kata sandi baru"

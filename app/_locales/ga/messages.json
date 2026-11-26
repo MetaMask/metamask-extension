@@ -54,10 +54,6 @@
   "accept": {
     "message": "Glac leis"
   },
-  "acceptTermsOfUse": {
-    "message": "Léigh mé agus aontaím leis an $1",
-    "description": "$1 is the `terms` message"
-  },
   "accessingYourCamera": {
     "message": "Ag rochtain do cheamara..."
   },
@@ -2870,9 +2866,6 @@
   },
   "newNftAddedMessage": {
     "message": "Cuireadh NFT leis go rathúil!"
-  },
-  "newPassword": {
-    "message": "Pasfhocal nua"
   },
   "newPasswordCreate": {
     "message": "Cruthaigh pasfhocal nua"

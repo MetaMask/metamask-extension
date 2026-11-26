@@ -29,10 +29,6 @@
   "about": {
     "message": "Sobre"
   },
-  "acceptTermsOfUse": {
-    "message": "Eu li e concordo com os $1",
-    "description": "$1 is the `terms` message"
-  },
   "accessingYourCamera": {
     "message": "Acessando sua câmera..."
   },
@@ -889,9 +885,6 @@
   },
   "newNftAddedMessage": {
     "message": "O colecionável foi adicionado com sucesso!"
-  },
-  "newPassword": {
-    "message": "Nova senha (no mínimo 8 caracteres)"
   },
   "next": {
     "message": "Seguinte"

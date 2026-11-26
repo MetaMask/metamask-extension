@@ -64,10 +64,6 @@
   "acceptAndClose": {
     "message": "接受并关闭"
   },
-  "acceptTermsOfUse": {
-    "message": "我已阅读并同意 $1",
-    "description": "$1 is the `terms` message"
-  },
   "accessRestrictedContactSupport": {
     "message": "联系支持团队"
   },
@@ -6610,9 +6606,6 @@
   },
   "newNftAddedMessage": {
     "message": "NFT已成功添加！"
-  },
-  "newPassword": {
-    "message": "新密码（至少 8 个字符）"
   },
   "newPasswordCreate": {
     "message": "创建新密码"

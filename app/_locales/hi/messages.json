@@ -64,10 +64,6 @@
   "acceptAndClose": {
     "message": "स्वीकार करें और बंद करें"
   },
-  "acceptTermsOfUse": {
-    "message": "मैंने $1 पढ़ लिया है और मैं सहमत हूं",
-    "description": "$1 is the `terms` message"
-  },
   "accessRestrictedContactSupport": {
     "message": "सपोर्ट टीम से कॉन्टेक्ट करें"
   },
@@ -6610,9 +6606,6 @@
   },
   "newNftAddedMessage": {
     "message": "NFT सफलतापूर्वक जोड़ा गया!"
-  },
-  "newPassword": {
-    "message": "नया पासवर्ड"
   },
   "newPasswordCreate": {
     "message": "नया पासवर्ड बनाएं"
