@@ -347,21 +347,21 @@ export function usePerpsOrderForm({
    * @param pos - Existing position data
    */
   function deriveModifyFields(
-    pos: ExistingPositionData,
+    pos?: ExistingPositionData,
   ): Partial<OrderFormState> {
     return {
       amount: '',
       balancePercent: 0,
-      leverage: pos.leverage,
-      takeProfitPrice: pos.takeProfitPrice ?? '',
-      stopLossPrice: pos.stopLossPrice ?? '',
-      autoCloseEnabled: Boolean(pos.takeProfitPrice || pos.stopLossPrice),
+      leverage: pos?.leverage,
+      takeProfitPrice: pos?.takeProfitPrice ?? '',
+      stopLossPrice: pos?.stopLossPrice ?? '',
+      autoCloseEnabled: Boolean(pos?.takeProfitPrice || pos?.stopLossPrice),
     };
   }
 
   // Initialize form state based on mode
   const [formState, setFormState] = useState<OrderFormState>(() => {
-    if (mode === 'modify' && existingPosition) {
+    if (mode === 'modify') {
       return {
         ...mockOrderFormDefaults,
         asset,
@@ -480,7 +480,7 @@ export function usePerpsOrderForm({
           : {};
 
       setHasUserEditedAmount(Boolean(initialDraft?.amount));
-      if (mode === 'modify' && existingPosition) {
+      if (mode === 'modify') {
         setFormState({
           ...mockOrderFormDefaults,
           asset,
@@ -511,9 +511,13 @@ export function usePerpsOrderForm({
   // metadata that replaces it, leaving the trader on a leverage the provider
   // will reject. Only new orders are pulled back: in modify mode the leverage
   // describes an existing position the provider already accepted.
-  if (mode === 'new' && formState.leverage > maxLeverage) {
+  if (
+    mode === 'new' &&
+    formState.leverage !== undefined &&
+    formState.leverage > maxLeverage
+  ) {
     setFormState((prev) =>
-      prev.leverage > maxLeverage
+      prev.leverage !== undefined && prev.leverage > maxLeverage
         ? withLeverage(prev, maxLeverage, availableBalance)
         : prev,
     );
@@ -537,11 +541,14 @@ export function usePerpsOrderForm({
     }
   }
 
-  const defaultAmountFieldsForBalance = buildDefaultNewOrderAmountFields(
-    computeInitialAmountValue(formState.leverage),
-    formState.leverage,
-    availableBalance,
-  );
+  const defaultAmountFieldsForBalance =
+    mode === 'new' && formState.leverage !== undefined
+      ? buildDefaultNewOrderAmountFields(
+          computeInitialAmountValue(formState.leverage),
+          formState.leverage,
+          availableBalance,
+        )
+      : {};
   const [prevDefaultAmountKey, setPrevDefaultAmountKey] = useState(
     `${mode}|${formState.leverage}|${availableBalance}|${defaultAmountFieldsForBalance.amount}|${defaultAmountFieldsForBalance.balancePercent}`,
   );
@@ -662,7 +669,7 @@ export function usePerpsOrderForm({
     // grouping separators.
     const amount = parsedAmount;
 
-    if (amount === 0) {
+    if (amount === 0 || formState.leverage === undefined) {
       return {
         positionSize: null,
         marginRequired: null,

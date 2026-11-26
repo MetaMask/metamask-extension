@@ -1,5 +1,6 @@
 import { act, waitFor } from '@testing-library/react';
 import { describe, it } from '@jest/globals';
+import { initialState as initialRewardsMoneyState } from '#ui/ducks/rewards-money';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import {
@@ -622,7 +623,7 @@ describe('useOnboardingCompletion', () => {
             ...mockState.metamask,
             deferredDeepLink: {
               createdAt: Date.now(),
-              referringLink:
+              originalUrl:
                 'https://example.com/deferred?redirectTo=https://external-app.com/callback',
             },
           },
@@ -699,7 +700,7 @@ describe('useOnboardingCompletion', () => {
             ...mockState.metamask,
             deferredDeepLink: {
               createdAt: Date.now(),
-              referringLink: 'https://link.metamask.io/buy',
+              originalUrl: 'https://link.metamask.io/buy',
             },
           },
         },
@@ -795,7 +796,7 @@ describe('useOnboardingCompletion', () => {
             ...mockState.metamask,
             deferredDeepLink: {
               createdAt: Date.now(),
-              referringLink: 'https://example.com/deferred?path=/home',
+              originalUrl: 'https://example.com/deferred?path=/home',
             },
           },
         },
@@ -831,7 +832,7 @@ describe('useOnboardingCompletion', () => {
             ...mockState.metamask,
             deferredDeepLink: {
               createdAt: Date.now() - 2 * 60 * 60 * 1000,
-              referringLink: 'https://example.com/deferred',
+              originalUrl: 'https://example.com/deferred',
             },
           },
         },
@@ -874,7 +875,7 @@ describe('useOnboardingCompletion', () => {
             ...mockState.metamask,
             deferredDeepLink: {
               createdAt: Date.now(),
-              referringLink: 'https://link.metamask.io/swap?amount=100',
+              originalUrl: 'https://link.metamask.io/swap?amount=100',
             },
           },
         },
@@ -925,7 +926,7 @@ describe('useOnboardingCompletion', () => {
             ...mockState.metamask,
             deferredDeepLink: {
               createdAt: Date.now(),
-              referringLink: 'https://link.metamask.io/buy',
+              originalUrl: 'https://link.metamask.io/buy',
             },
           },
         },
@@ -957,7 +958,7 @@ describe('useOnboardingCompletion', () => {
             ...mockState.metamask,
             deferredDeepLink: {
               createdAt: Date.now(),
-              referringLink: 'https://link.metamask.io/swap',
+              originalUrl: 'https://link.metamask.io/swap',
             },
           },
         },
@@ -995,7 +996,7 @@ describe('useOnboardingCompletion', () => {
             completedOnboarding: true,
             deferredDeepLink: {
               createdAt: Date.now(),
-              referringLink: 'https://link.metamask.io/swap?ref=abc123',
+              originalUrl: 'https://link.metamask.io/swap?ref=abc123',
             },
           },
         },
@@ -1036,7 +1037,7 @@ describe('useOnboardingCompletion', () => {
             ...mockState.metamask,
             deferredDeepLink: {
               createdAt: Date.now() - 2 * 60 * 60 * 1000,
-              referringLink: 'https://link.metamask.io/swap',
+              originalUrl: 'https://link.metamask.io/swap',
             },
           },
         },
@@ -1084,6 +1085,58 @@ describe('useOnboardingCompletion', () => {
   ])(
     'Direct link after install (side panel: %s, auto-complete: %s)',
     (sidePanelEnabled, autoComplete) => {
+      it.each(['', '?ref=???', '?ref=def456'])(
+        'preserves the direct referral when the deferred link has query "%s"',
+        async (referralQuery) => {
+          jest
+            .mocked(useSidePanelEnabledHook.useSidePanelEnabled)
+            .mockReturnValue(sidePanelEnabled);
+          jest
+            .mocked(deepLinkUtils.getDeferredDeepLinkRoute)
+            .mockResolvedValue({
+              type: DeferredDeepLinkRouteType.Navigate,
+              route: '/swap',
+              signature: VALID,
+            });
+          const browserMock = jest.requireMock('webextension-polyfill');
+          browserMock.tabs.query.mockResolvedValue([{ windowId: 1, id: 1 }]);
+          const directRoute = '/settings/privacy';
+
+          const { result, store } = renderHookWithProvider(
+            () => useOnboardingCompletion(),
+            {
+              ...mockState,
+              appState: {
+                ...mockState.appState,
+                onboardingRedirect: directRoute,
+              },
+              rewardsMoney: {
+                ...initialRewardsMoneyState,
+                pendingReferralCode: 'ABC123',
+              },
+              metamask: {
+                ...mockState.metamask,
+                deferredDeepLink: {
+                  createdAt: Date.now(),
+                  referringLink: `https://link.metamask.io/swap${referralQuery}`,
+                },
+              },
+            },
+          );
+
+          await act(async () => {
+            await result.current.completeOnboarding(autoComplete);
+          });
+
+          expect(store.getState().rewardsMoney.pendingReferralCode).toBe(
+            'ABC123',
+          );
+          expect(mockUseNavigate).toHaveBeenCalledWith(directRoute, {
+            replace: true,
+          });
+        },
+      );
+
       it.each([
         {
           type: DeferredDeepLinkRouteType.Navigate,
@@ -1125,7 +1178,7 @@ describe('useOnboardingCompletion', () => {
                 ...mockState.metamask,
                 deferredDeepLink: {
                   createdAt: Date.now(),
-                  referringLink:
+                  originalUrl:
                     'https://link.metamask.io/swap?attributionId=install-123&utm_source=campaign',
                 },
               },

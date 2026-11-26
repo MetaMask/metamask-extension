@@ -26,6 +26,7 @@ import {
 } from '../../../../ducks/metamask/metamask';
 import { getConversionRate } from '../../../../ducks/metamask/base-selectors';
 import { getTopAssets } from '../../../../ducks/swaps/swaps';
+import { getChainIdToNativeTokenImageUrlMap } from '../../../../selectors/config-registry/config-registry';
 import {
   getMultichainNetworkConfigurationsByChainId,
   getMultichainCurrentChainId,
@@ -169,6 +170,9 @@ describe('AssetPickerModal', () => {
       }
       if (selector === getTopAssets) {
         return [];
+      }
+      if (selector === getChainIdToNativeTokenImageUrlMap) {
+        return {};
       }
       return undefined;
     });

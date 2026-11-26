@@ -159,19 +159,6 @@ export function musdConversionFlowEntryPointToCtaEventLocation(
 }
 
 /**
- * Properties for MUSD_BONUS_TERMS_OF_USE_PRESSED event
- */
-export type MusdBonusTermsOfUsePressedEventProperties = {
-  /** Screen or component where the terms of use link was pressed */
-  location:
-    | 'conversion_education_screen'
-    | 'custom_amount_navbar'
-    | 'percentage_row';
-  /** The URL opened when the terms of use link is pressed */
-  url: string;
-};
-
-/**
  * Properties for MUSD_FULLSCREEN_ANNOUNCEMENT_BUTTON_CLICKED event
  */
 export type MusdEducationButtonClickedEventProperties = {
@@ -241,133 +228,9 @@ export const TOKEN_LIST_CELL_MUSD_OPTIONS: TokenListCellMusdOptions = {
   convert: { entryPoint: 'token_list' },
 };
 
-/**
- * Properties for quote-related events
- */
-export type MusdQuoteEventProperties = {
-  /** Source token symbol */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  source_token_symbol: string;
-  /** Source token address */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  source_token_address: string;
-  /** Amount being converted */
-  amount: string;
-  /** Network chain ID (hex) */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  chain_id: string;
-  /** Network name */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  network_name: string;
-  /** Error message if applicable */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  error_message?: string;
-  /** Quote response time in ms (for received event) */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  response_time_ms?: number;
-};
-
-/**
- * Properties for conversion completion/failure events
- */
-export type MusdConversionResultEventProperties = {
-  /** Transaction ID */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  transaction_id: string;
-  /** Transaction hash */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  transaction_hash?: string;
-  /** Source token symbol */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  source_token_symbol: string;
-  /** Amount converted */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  amount_converted: string;
-  /** mUSD amount received */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  musd_amount_received?: string;
-  /** Network chain ID (hex) */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  chain_id: string;
-  /** Network name */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  network_name: string;
-  /** Error message if applicable */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  error_message?: string;
-  /** Time from start to completion in ms */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  duration_ms: number;
-};
-
-// ============================================================================
-// Trace Names (Sentry Performance)
-// ============================================================================
-
-/**
- * Trace names for performance monitoring
- */
-export const MUSD_TRACE_NAMES = {
-  /** Navigation to conversion screen */
-  MUSD_CONVERSION_NAVIGATION: 'MusdConversionNavigation',
-  /** Quote fetching time */
-  MUSD_CONVERSION_QUOTE: 'MusdConversionQuote',
-  /** Transaction confirmation time */
-  MUSD_CONVERSION_CONFIRM: 'MusdConversionConfirm',
-} as const;
-
-/**
- * Trace operations for categorization
- */
-export const MUSD_TRACE_OPERATIONS = {
-  OPERATION: 'musd.conversion.operation',
-  DATA_FETCH: 'musd.conversion.data_fetch',
-} as const;
-
 // ============================================================================
 // Helper Functions
 // ============================================================================
-
-/**
- * Create standard mUSD event properties with network info
- *
- * @param chainId - The chain ID in hex format
- * @param chainName - The network name
- * @returns Base event properties with network info
- */
-export const createMusdNetworkEventProperties = (
-  chainId: string | null,
-  chainName: string,
-): {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  network_chain_id: string | null;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  network_name: string;
-} => ({
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  network_chain_id: chainId,
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  network_name: chainName,
-});
 
 /**
  * Create CTA clicked event properties

@@ -219,7 +219,8 @@ jobs:
 
       - name: Get token
         id: token
-        if: ${{ env.PR_NUMBER && vars.AWS_CLOUDFRONT_URL }}
+        # The token exchange service denies forks (HTTP 403), so only the canonical repository announces.
+        if: ${{ env.PR_NUMBER && vars.AWS_CLOUDFRONT_URL && github.repository == 'MetaMask/metamask-extension' }}
         uses: MetaMask/github-tools/.github/actions/get-token@v1
         with:
           token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
