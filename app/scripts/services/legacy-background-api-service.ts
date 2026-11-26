@@ -175,6 +175,7 @@ import {
   SeedlessOnboardingControllerCreateToprfKeyAndBackupSeedPhraseAction,
   SeedlessOnboardingControllerErrorMessage,
   SeedlessOnboardingControllerFetchAllSecretDataAction,
+  SeedlessOnboardingControllerRestoreVaultWithPasswordAction,
   SeedlessOnboardingControllerGetSecretDataBackupStateAction,
   SeedlessOnboardingControllerGetStateAction,
   SeedlessOnboardingControllerLoadKeyringEncryptionKeyAction,
@@ -739,6 +740,7 @@ type AllowedActions =
   | SeedlessOnboardingControllerClearStateAction
   | SeedlessOnboardingControllerCreateToprfKeyAndBackupSeedPhraseAction
   | SeedlessOnboardingControllerFetchAllSecretDataAction
+  | SeedlessOnboardingControllerRestoreVaultWithPasswordAction
   | SeedlessOnboardingControllerGetSecretDataBackupStateAction
   | SeedlessOnboardingControllerGetStateAction
   | SeedlessOnboardingControllerLoadKeyringEncryptionKeyAction
@@ -3989,10 +3991,15 @@ export class LegacyBackgroundApiService {
         name: TraceName.OnboardingFetchSrps,
         op: TraceOperation.OnboardingSecurityOp,
       });
-      const allSeedPhrases = await this.#messenger.call(
-        'SeedlessOnboardingController:fetchAllSecretData',
-        password,
-      );
+      const allSeedPhrases =
+        password === undefined
+          ? await this.#messenger.call(
+              'SeedlessOnboardingController:fetchAllSecretData',
+            )
+          : await this.#messenger.call(
+              'SeedlessOnboardingController:restoreVaultWithPassword',
+              { password },
+            );
       fetchAllSeedPhrasesSuccess = true;
 
       return allSeedPhrases;

@@ -7415,9 +7415,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/auth-network-utils@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "@metamask/auth-network-utils@npm:0.4.0"
+"@metamask/auth-network-utils@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@metamask/auth-network-utils@npm:0.5.0"
   dependencies:
     "@noble/curves": "npm:^1.8.1"
     "@noble/hashes": "npm:^1.7.1"
@@ -7428,7 +7428,7 @@ __metadata:
     elliptic: "npm:^6.6.1"
     json-stable-stringify-without-jsonify: "npm:^1.0.1"
     loglevel: "npm:^1.9.2"
-  checksum: 10/db528a23607dc010c0c6ab94cd1d7042041cabbb0f3ca0e11745f23dcdb733d79b72ed1ca16733d96a97aa953c8af8a5c190f2287c2131862cccb2a9991a9006
+  checksum: 10/2812957f0d9b247f99d78bc3224ef37c3b542e529f8453f05d5194b9a0d270d59c171604e5f73323ed6e0cf90c54f93163bc388104db912a5a8adb2a2105497a
   languageName: node
   linkType: hard
 
@@ -9843,23 +9843,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/seedless-onboarding-controller@npm:@metamask-previews/seedless-onboarding-controller@12.1.0-preview-2f5f4e394":
-  version: 12.1.0-preview-2f5f4e394
-  resolution: "@metamask-previews/seedless-onboarding-controller@npm:12.1.0-preview-2f5f4e394"
+"@metamask/seedless-onboarding-controller@npm:@metamask-previews/seedless-onboarding-controller@12.1.0-preview-abcfadf":
+  version: 12.1.0-preview-abcfadf
+  resolution: "@metamask-previews/seedless-onboarding-controller@npm:12.1.0-preview-abcfadf"
   dependencies:
     "@metamask/analytics-controller": "npm:^4.4.0"
-    "@metamask/auth-network-utils": "npm:^0.4.0"
+    "@metamask/auth-network-utils": "npm:^0.5.0"
     "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/cryptography": "npm:^1.1.2"
     "@metamask/keyring-controller": "npm:^28.2.2"
     "@metamask/messenger": "npm:^3.0.0"
-    "@metamask/toprf-secure-backup": "npm:^1.1.0"
+    "@metamask/superstruct": "npm:^3.4.1"
+    "@metamask/toprf-secure-backup": "npm:^2.0.0"
     "@metamask/utils": "npm:^12.0.2"
     "@noble/curves": "npm:^1.9.7"
     "@noble/hashes": "npm:^1.8.0"
     async-mutex: "npm:^0.5.0"
-  checksum: 10/8234555a9d3dddabe2f61598d1066a8aff76089364c3549ebc9cb9b541543fca349546b236520f52c56875818d882a8d5d1c74cc8df835b8c46be38d8236d5cb
+  checksum: 10/6b12a7fbdd163364d5fdbe2a30d7b04f9e03c8fd43ce426c11bf764baf6241486aa206a5453bc7f4405800125850a1b4a4d8ae99c04e5844e70c402bc67b5ee2
   languageName: node
   linkType: hard
 
@@ -10317,11 +10318,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/toprf-secure-backup@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@metamask/toprf-secure-backup@npm:1.1.0"
+"@metamask/toprf-secure-backup@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/toprf-secure-backup@npm:2.0.0"
   dependencies:
-    "@metamask/auth-network-utils": "npm:^0.4.0"
+    "@metamask/auth-network-utils": "npm:^0.5.0"
     "@noble/ciphers": "npm:^1.2.1"
     "@noble/curves": "npm:^1.8.1"
     "@noble/hashes": "npm:^1.7.1"
@@ -10331,7 +10332,7 @@ __metadata:
     "@toruslabs/fetch-node-details": "npm:^15.0.0"
     "@toruslabs/http-helpers": "npm:^8.1.1"
     bn.js: "npm:^5.2.2"
-  checksum: 10/2714a70eae53a1f46d293980c71a1ed2f59708247019444154e71fc15328e78ec95287ffc2d954a29f903224a1a9fe4d69fb17724e9039bcefd240752f1df26c
+  checksum: 10/6c8721d9bec1151edc50727e4a6ba5bfa14067967a7796f36791e604092b82d55158aac90bee0ae087ff56dfe080924417663be61cf4f20c815bfdc084f7b77c
   languageName: node
   linkType: hard
 

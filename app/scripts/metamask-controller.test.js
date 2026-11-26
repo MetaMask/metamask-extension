@@ -4187,7 +4187,7 @@ describe('MetaMaskController', () => {
         Buffer.from(mockMnemonic, 'utf8').values(),
       );
 
-      let fetchAllSecretDataMock;
+      let restoreVaultWithPasswordMock;
 
       beforeEach(async () => {
         // Unlock the keyring controller first
@@ -4195,9 +4195,9 @@ describe('MetaMaskController', () => {
           'test-password',
         );
 
-        fetchAllSecretDataMock = mockMessengerControllerAction(
+        restoreVaultWithPasswordMock = mockMessengerControllerAction(
           metamaskController.seedlessOnboardingController,
-          'SeedlessOnboardingController:fetchAllSecretData',
+          'SeedlessOnboardingController:restoreVaultWithPassword',
         );
 
         jest.spyOn(utils, 'convertEnglishWordlistIndicesToCodepoints');
@@ -4236,7 +4236,7 @@ describe('MetaMaskController', () => {
           },
         ];
 
-        fetchAllSecretDataMock.mockResolvedValue([
+        restoreVaultWithPasswordMock.mockResolvedValue([
           mockFirstSecretData,
           ...mockRemainingSecretData,
         ]);
@@ -4250,7 +4250,9 @@ describe('MetaMaskController', () => {
             mockPassword,
           );
 
-        expect(fetchAllSecretDataMock).toHaveBeenCalledWith(mockPassword);
+        expect(restoreVaultWithPasswordMock).toHaveBeenCalledWith({
+          password: mockPassword,
+        });
         expect(
           utils.convertEnglishWordlistIndicesToCodepoints,
         ).toHaveBeenCalledWith(mockEncodedMnemonic);
@@ -4275,7 +4277,7 @@ describe('MetaMaskController', () => {
           dataType: 1, // PrimarySrp
         };
 
-        fetchAllSecretDataMock.mockResolvedValue([mockFirstSecretData]);
+        restoreVaultWithPasswordMock.mockResolvedValue([mockFirstSecretData]);
 
         utils.convertEnglishWordlistIndicesToCodepoints.mockReturnValue(
           Buffer.from(mockMnemonic, 'utf8'),
@@ -4333,7 +4335,7 @@ describe('MetaMaskController', () => {
           },
         ];
 
-        fetchAllSecretDataMock.mockResolvedValue([
+        restoreVaultWithPasswordMock.mockResolvedValue([
           mockFirstSecretData,
           ...mockRemainingSecretData,
         ]);
@@ -4354,9 +4356,9 @@ describe('MetaMaskController', () => {
         expect(result).toBe(mockMnemonic);
       });
 
-      it('should handle errors from fetchAllSecretData', async () => {
+      it('should handle errors from restoreVaultWithPassword', async () => {
         const mockError = new Error('Failed to fetch secret data');
-        fetchAllSecretDataMock.mockRejectedValue(mockError);
+        restoreVaultWithPasswordMock.mockRejectedValue(mockError);
 
         await expect(
           metamaskController.legacyBackgroundApiService.restoreSocialBackupAndGetSeedPhrase(
@@ -4375,7 +4377,7 @@ describe('MetaMaskController', () => {
           dataType: 1, // PrimarySrp
         };
 
-        fetchAllSecretDataMock.mockResolvedValue([mockFirstSecretData]);
+        restoreVaultWithPasswordMock.mockResolvedValue([mockFirstSecretData]);
 
         utils.convertEnglishWordlistIndicesToCodepoints.mockReturnValue(
           Buffer.from(mockMnemonic, 'utf8'),
@@ -4413,7 +4415,7 @@ describe('MetaMaskController', () => {
           },
         ];
 
-        fetchAllSecretDataMock.mockResolvedValue([
+        restoreVaultWithPasswordMock.mockResolvedValue([
           mockFirstSecretData,
           ...mockRemainingSecretData,
         ]);

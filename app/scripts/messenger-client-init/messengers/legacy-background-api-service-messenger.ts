@@ -82,6 +82,7 @@ export function getLegacyBackgroundApiServiceMessenger(
       'SeedlessOnboardingController:changePassword',
       'SeedlessOnboardingController:createToprfKeyAndBackupSeedPhrase',
       'SeedlessOnboardingController:fetchAllSecretData',
+      'SeedlessOnboardingController:restoreVaultWithPassword',
       'SeedlessOnboardingController:getSecretDataBackupState',
       'SeedlessOnboardingController:updateBackupMetadataState',
       'PermissionController:clearState',
