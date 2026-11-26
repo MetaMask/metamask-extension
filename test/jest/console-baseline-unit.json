@@ -153,6 +153,10 @@
       "error: Error: Migration 197: Infura project": 1,
       "error: Error: Migration 197: Invalid NetworkController": 6
     },
+    "app/scripts/migrations/236.test.ts": {
+      "warn: Migration #236: Deletion of PPOMDB": 1,
+      "warn: Migration #236: Failed to delete": 1
+    },
     "shared/lib/bridge-utils/security-alerts-api.util.test.ts": {
       "warn: Missing token alert translation for": 1
     },
@@ -841,6 +845,9 @@
       "React: componentWill* lifecycle deprecations": 1
     },
     "ui/pages/settings/sync-accounts/components/enter-verification-code.test.tsx": {
+      "Reselect: Identity function warnings": 1
+    },
+    "ui/pages/settings/sync-accounts/components/qr-code-scan.test.tsx": {
       "Reselect: Identity function warnings": 1
     },
     "ui/pages/settings/sync-accounts/components/sync-error.test.tsx": {

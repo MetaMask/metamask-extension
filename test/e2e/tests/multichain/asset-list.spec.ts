@@ -18,6 +18,7 @@ import {
   NETWORK_CLIENT_ID,
 } from '../../constants';
 import { NetworkName } from '../../helpers/network-constants';
+import { tokensV3Assets } from '../../mock-response-data/api-responses';
 
 const NETWORK_NAME_MAINNET = NetworkName.ETHEREUM;
 const HST_TOKEN_ADDRESS = '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947';
@@ -30,11 +31,13 @@ async function mockSetup(mockServer: Mockttp) {
   return [
     await mockSpotPrices(mockServer, {
       'eip155:1/slip44:60': {
+        id: 'ethereum',
         price: 1,
         marketCap: 0,
         pricePercentChange1d: 0,
       },
       'eip155:137/slip44:60': {
+        id: 'polygon',
         price: 1,
         marketCap: 0,
         pricePercentChange1d: 0,
@@ -60,36 +63,34 @@ async function mockSetup(mockServer: Mockttp) {
         statusCode: 200,
         json: {},
       })),
-    await mockServer
-      .forGet(/^https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
-      .thenCallback((request) => {
-        const url = new URL(request.url);
-        const assetIds = url.searchParams
-          .getAll('assetIds')
-          .join(',')
-          .toLowerCase();
-        const results = [];
+    await tokensV3Assets.rule(mockServer).thenCallback((request) => {
+      const url = new URL(request.url);
+      const assetIds = url.searchParams
+        .getAll('assetIds')
+        .join(',')
+        .toLowerCase();
+      const results = [];
 
-        if (assetIds.includes('eip155:1/slip44:60')) {
-          results.push({
-            assetId: 'eip155:1/slip44:60',
-            name: 'Ethereum',
-            symbol: 'ETH',
-            decimals: 18,
-          });
-        }
+      if (assetIds.includes('eip155:1/slip44:60')) {
+        results.push({
+          assetId: 'eip155:1/slip44:60',
+          name: 'Ethereum',
+          symbol: 'ETH',
+          decimals: 18,
+        });
+      }
 
-        if (assetIds.includes(MUSD_MAINNET_ASSET_ID.toLowerCase())) {
-          results.push({
-            assetId: MUSD_MAINNET_ASSET_ID,
-            name: 'MUSD',
-            symbol: 'MUSD',
-            decimals: 6,
-          });
-        }
+      if (assetIds.includes(MUSD_MAINNET_ASSET_ID.toLowerCase())) {
+        results.push({
+          assetId: MUSD_MAINNET_ASSET_ID,
+          name: 'MUSD',
+          symbol: 'MUSD',
+          decimals: 6,
+        });
+      }
 
-        return { statusCode: 200, json: { data: results } };
-      }),
+      return { statusCode: 200, json: { data: results } };
+    }),
   ];
 }
 

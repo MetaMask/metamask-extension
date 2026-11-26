@@ -246,7 +246,7 @@ export const NetworkPillSelector = () => {
           icon={
             <Icon
               name={IconName.Global}
-              size={IconSize.Md}
+              size={IconSize.Lg}
               color={
                 isAllDefaultSelected
                   ? IconColor.IconInverse
@@ -273,7 +273,7 @@ export const NetworkPillSelector = () => {
                 name={network.name}
                 src={getNetworkIcon(network, networkImageUrls)}
                 size={AvatarNetworkSize.Sm}
-                className="rounded-full"
+                className="rounded-md"
               />
             }
             onClick={() => handleSelectNetwork(network.chainId, 'Network Pill')}

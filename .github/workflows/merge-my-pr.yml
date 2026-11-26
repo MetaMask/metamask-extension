@@ -2,7 +2,7 @@ name: Merge my PR
 
 on:
   # Trigger the workflow when a comment is created on an issue or pull request
-  issue_comment:
+  issue_comment: # zizmor: ignore[dangerous-triggers] Uses the GitHub API to verify and merge PRs without checking out or running their code.
     types: [created]
 
 env:

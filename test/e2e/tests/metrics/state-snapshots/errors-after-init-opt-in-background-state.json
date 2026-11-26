@@ -32,6 +32,7 @@
     "eventsConfig": "object",
     "marketingCampaignCookieId": null,
     "marketingConsentDecisionMade": "boolean",
+    "marketingConsentSyncPending": "boolean",
     "optedIn": true,
     "optedInToMarketing": "boolean"
   },
@@ -250,7 +251,6 @@
     "onboardingTabs": "object",
     "seedPhraseBackedUp": null
   },
-  "PPOMController": { "storageMetadata": "object" },
   "PasskeyController": { "passkeyRecord": null },
   "PermissionController": { "subjects": "object" },
   "PermissionLogController": {

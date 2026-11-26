@@ -54,11 +54,19 @@ jest.mock(
     MultichainAccountCell: ({
       accountName,
       startAccessory,
+      selected,
+      onClick,
     }: {
       accountName: string;
       startAccessory?: React.ReactNode;
+      selected?: boolean;
+      onClick?: () => void;
     }) => (
-      <div data-testid="account-cell">
+      <div
+        data-testid="account-cell"
+        data-selected={String(Boolean(selected))}
+        onClick={onClick}
+      >
         <span>{accountName}</span>
         {startAccessory}
       </div>
@@ -69,6 +77,9 @@ jest.mock(
 const walletId = toAccountWalletId(AccountWalletType.Entropy, 'entropy1');
 const groupOneId = `${walletId}/0` as AccountGroupId;
 const groupTwoId = `${walletId}/1` as AccountGroupId;
+
+const secondWalletId = toAccountWalletId(AccountWalletType.Entropy, 'entropy2');
+const secondWalletGroupId = `${secondWalletId}/0` as AccountGroupId;
 
 const mockWallets = {
   [walletId]: {
@@ -83,6 +94,17 @@ const mockWallets = {
       [groupTwoId]: {
         id: groupTwoId,
         metadata: { name: 'Account 2' },
+      },
+    },
+  },
+  [secondWalletId]: {
+    id: secondWalletId,
+    type: AccountWalletType.Entropy,
+    metadata: { name: 'Second Wallet', entropy: { id: 'entropy2' } },
+    groups: {
+      [secondWalletGroupId]: {
+        id: secondWalletGroupId,
+        metadata: { name: 'Account 3' },
       },
     },
   },
@@ -112,15 +134,57 @@ describe('WalletSelectionList', () => {
     expect(screen.getByText('Account 2')).toBeInTheDocument();
   });
 
-  it('does not render per-account checkboxes', () => {
+  it('shows the account count next to each wallet name', () => {
     render();
 
+    expect(screen.getByText(/\(2 accounts\)/u)).toBeInTheDocument();
+    expect(screen.getByText(/\(1 account\)/u)).toBeInTheDocument();
+  });
+
+  it('separates wallets with a divider', () => {
+    render();
+
+    expect(screen.getAllByTestId('qr-sync-wallet-divider')).toHaveLength(1);
+  });
+
+  it('renders a checkbox for each account that reflects the selection', () => {
+    render({ selectedAccountGroups: [groupOneId] });
+
     expect(
-      document.querySelector(`input[id="account-select-${groupOneId}"]`),
-    ).toBeNull();
+      document.querySelector<HTMLInputElement>(
+        `input[id="account-select-${groupOneId}"]`,
+      ),
+    ).toBeChecked();
     expect(
-      document.querySelector(`input[id="account-select-${groupTwoId}"]`),
-    ).toBeNull();
+      document.querySelector<HTMLInputElement>(
+        `input[id="account-select-${groupTwoId}"]`,
+      ),
+    ).not.toBeChecked();
+  });
+
+  it('adds an account to the selection when its checkbox is clicked', () => {
+    const onSelectionChange = jest.fn();
+    render({ selectedAccountGroups: [groupOneId], onSelectionChange });
+
+    fireEvent.click(
+      document.querySelector(
+        `input[id="account-select-${groupTwoId}"]`,
+      ) as HTMLInputElement,
+    );
+
+    expect(onSelectionChange).toHaveBeenCalledWith([groupOneId, groupTwoId]);
+  });
+
+  it('removes an account from the selection when its row is clicked', () => {
+    const onSelectionChange = jest.fn();
+    render({
+      selectedAccountGroups: [groupOneId, groupTwoId],
+      onSelectionChange,
+    });
+
+    fireEvent.click(screen.getByText('Account 1'));
+
+    expect(onSelectionChange).toHaveBeenCalledWith([groupTwoId]);
   });
 
   it('selects all accounts when the wallet header checkbox is clicked', () => {
@@ -133,5 +197,25 @@ describe('WalletSelectionList', () => {
     fireEvent.click(checkbox);
 
     expect(onSelectionChange).toHaveBeenCalledWith([groupOneId, groupTwoId]);
+  });
+
+  it('keeps accounts from other wallets when the wallet header checkbox is clicked', () => {
+    const onSelectionChange = jest.fn();
+    render({
+      selectedAccountGroups: [secondWalletGroupId],
+      onSelectionChange,
+    });
+
+    fireEvent.click(
+      document.querySelector(
+        `input[id="wallet-select-${walletId}"]`,
+      ) as HTMLInputElement,
+    );
+
+    expect(onSelectionChange).toHaveBeenCalledWith([
+      secondWalletGroupId,
+      groupOneId,
+      groupTwoId,
+    ]);
   });
 });

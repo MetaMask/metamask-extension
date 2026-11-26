@@ -1279,38 +1279,6 @@
   "add_device_error_title": {
     "message": "सिंक पूरा नहीं हो सका"
   },
-  "add_device_success_desc_imported_plural": {
-    "message": "$1 इंपोर्ट किए गए अकाउंट आपके फ़ोन से सिंक हो गए हैं।",
-    "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
-  },
-  "add_device_success_desc_imported_singular": {
-    "message": "1 इंपोर्ट किया गया अकाउंट आपके फ़ोन से सिंक हो गया है।",
-    "description": "Used when a single imported account was synced"
-  },
-  "add_device_success_desc_wallet_plural": {
-    "message": "$1 वॉलेट आपके फ़ोन से सिंक हो गए हैं।",
-    "description": "$1 is the number of wallets. Used when only wallets were synced"
-  },
-  "add_device_success_desc_wallet_plural_imported_plural": {
-    "message": "$1 वॉलेट और $2 इंपोर्ट किए गए अकाउंट आपके फ़ोन से सिंक हो गए हैं।",
-    "description": "$1 is the number of wallets, $2 is the number of imported accounts"
-  },
-  "add_device_success_desc_wallet_plural_imported_singular": {
-    "message": "$1 वॉलेट और 1 इंपोर्ट किया गया अकाउंट आपके फ़ोन से सिंक हो गया है।",
-    "description": "$1 is the number of wallets. Used when multiple wallets and a single imported account were synced"
-  },
-  "add_device_success_desc_wallet_singular": {
-    "message": "1 वॉलेट आपके फ़ोन से सिंक हो गया है।",
-    "description": "Used when a single wallet was synced"
-  },
-  "add_device_success_desc_wallet_singular_imported_plural": {
-    "message": "1 वॉलेट और $1 इंपोर्ट किए गए अकाउंट आपके फ़ोन से सिंक हो गए हैं।",
-    "description": "$1 is the number of imported accounts. Used when a single wallet and multiple imported accounts were synced"
-  },
-  "add_device_success_desc_wallet_singular_imported_singular": {
-    "message": "1 वॉलेट और 1 इंपोर्ट किया गया अकाउंट आपके फ़ोन से सिंक हो गया है।",
-    "description": "Used when a single wallet and a single imported account were synced"
-  },
   "add_device_success_title": {
     "message": "डिवाइस जोड़ा गया"
   },
@@ -1322,12 +1290,6 @@
   },
   "add_device_try_again": {
     "message": "फिर से प्रयास करें"
-  },
-  "add_device_validating_desc": {
-    "message": "आपके फ़ोन के साथ एक सुरक्षित, एन्क्रिप्टेड कनेक्शन बनाया जा रहा है।"
-  },
-  "add_device_validating_title": {
-    "message": "डिवाइस जोड़े जा रहे हैं"
   },
   "add_wallets": {
     "message": "चुनें कि क्या सिंक करना है"
@@ -1427,9 +1389,6 @@
   },
   "advancedGasPriceModalTitle": {
     "message": "एडवांस्ड नेटवर्क फीस"
-  },
-  "advancedGasPriceTitle": {
-    "message": "गैस प्राइस"
   },
   "advancedPermissionSmallCase": {
     "message": "एडवांस्डअनुमति"
@@ -1691,12 +1650,6 @@
   },
   "amount": {
     "message": "अमाउंट"
-  },
-  "amountReceived": {
-    "message": "प्राप्त की गई राशि"
-  },
-  "amountSent": {
-    "message": "भेजी गई राशि"
   },
   "andForListItems": {
     "message": "$1, और $2",
@@ -2119,9 +2072,6 @@
   },
   "blockExplorerUrl": {
     "message": "एक्सप्लोरर URL को ब्लॉक करें"
-  },
-  "blockExplorerUrlDefinition": {
-    "message": "इस नेटवर्क के लिए ब्लॉक एक्सप्लोरर के रूप में इस्तेमाल किया जाने वाला URL।"
   },
   "blockExplorerView": {
     "message": "$1 पर अकाउंट देखें",
@@ -2635,9 +2585,6 @@
   "chainId": {
     "message": "चेन आईडी"
   },
-  "chainIdDefinition": {
-    "message": "इस नेटवर्क के लिए ट्रांसेक्शन पर हस्ताक्षर करने के लिए इस्तेमाल की जाने वाली चेन ID।"
-  },
   "chainIdExistsErrorMsg": {
     "message": "यह चेन ID वर्तमान में $1 नेटवर्क द्वारा इस्तेमाल की जाती है।"
   },
@@ -2749,10 +2696,6 @@
   "clickHere": {
     "message": "यहाँ क्लिक करें",
     "description": "Link to help when a JSON account import is not working"
-  },
-  "clickToConnectLedgerViaWebHID": {
-    "message": "अपने Ledger को WebHID के ज़रिए कनेक्ट करने के लिए यहां क्लिक करें",
-    "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
   },
   "clipboardClearFailed": {
     "message": "क्लिपबोर्ड हटाया नहीं जा सका। फिर से प्रयास करें।"
@@ -3267,9 +3210,6 @@
   },
   "currencySymbol": {
     "message": "करेंसी का प्रतीक"
-  },
-  "currencySymbolDefinition": {
-    "message": "इस नेटवर्क की करेंसी के लिए दिखाया गया टिकर सिंबल।"
   },
   "current": {
     "message": "मौजूदा"
@@ -4013,10 +3953,6 @@
   "enter_verification_code_expired": {
     "message": "वेरिफिकेशन कोड एक्सपायर हो गया है"
   },
-  "enter_verification_code_expires_in": {
-    "message": "$1सेकंड में एक्स्पायर होगा",
-    "description": "$1 is the number of seconds remaining before the verification code expires"
-  },
   "enter_verification_code_max_attempts": {
     "message": "बहुत अधिक गलत प्रयास हुए। नए QR कोड के साथ शुरू करें।"
   },
@@ -4032,9 +3968,6 @@
   "errorCode": {
     "message": "कोड: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorGettingSafeChainList": {
-    "message": "सेफ चेन लिस्ट पाते समय गड़बड़ी हुई। कृपया सावधानी के साथ जारी रखें।"
   },
   "errorLegalTextFirstInfo": {
     "message": "तकनीकी नैदानिक जानकारी।"
@@ -4355,9 +4288,6 @@
     "message": "$1 सेकंड",
     "description": "$1 represents a number of seconds"
   },
-  "gasUsed": {
-    "message": "इस्तेमाल की गई गैस"
-  },
   "gatorNoJustificationProvided": {
     "message": "अनुमति के लिए कोई वजह नहीं बताई गई"
   },
@@ -4472,9 +4402,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "कुछ गलत हो गया..."
-  },
-  "generateNewQrCode": {
-    "message": "नया QR कोड जेनरेट करें"
   },
   "genericExplorerView": {
     "message": "$1 पर अकाउंट देखें"
@@ -4992,9 +4919,6 @@
   "insufficientTokens": {
     "message": "कम टोकन।"
   },
-  "interactWithSmartContract": {
-    "message": "स्मार्ट कॉन्ट्रैक्ट"
-  },
   "interactingWith": {
     "message": "के साथ इंटरैक्ट कर रहा है"
   },
@@ -5178,18 +5102,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "नया अकाउंट जोड़ने से पहले आपको अपने पिछले अकाउंट का इस्तेमाल करना होगा।"
-  },
-  "ledgerConnectionInstructionCloseOtherApps": {
-    "message": "अपने डिवाइस से जुड़े किसी अन्य सॉफ्टवेयर को बंद करें और फिर रिफ्रेश करने के लिए यहां क्लिक करें।"
-  },
-  "ledgerConnectionInstructionHeader": {
-    "message": "कन्फर्म पर क्लिक करने से पहले:"
-  },
-  "ledgerConnectionInstructionStepFour": {
-    "message": "अपने Ledger डिवाइस पर \"स्मार्ट कॉन्ट्रैक्ट डेटा\" या \"ब्लाइंड साइनिंग\" एनेबल करें"
-  },
-  "ledgerConnectionInstructionStepThree": {
-    "message": "अपने Ledger डिवाइस में प्लग इन करें और Ethereum ऐप चुनें"
   },
   "ledgerConnectionStatusAppClosedDescription": {
     "message": "जारी रखने के लिए कृपया इसे अपने Ledger डिवाइस पर खोलें"
@@ -5829,14 +5741,6 @@
   "minute": {
     "message": "मिनट"
   },
-  "mismatchedChainLinkText": {
-    "message": "नेटवर्क विवरण वेरीफ़ाई करें",
-    "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
-  },
-  "mismatchedChainRecommendation": {
-    "message": "हम सिफ़ारिश करते हैं कि आगे बढ़ने से पहले आप $1 करें।",
-    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
   "mismatchedNetworkName": {
     "message": "हमारे रिकॉर्ड के अनुसार, नेटवर्क का नाम इस चेन ID से ठीक से मेल नहीं खा सकता है।"
   },
@@ -6425,9 +6329,6 @@
     "message": "मल्टीचेन एकाउंट्स का परिचय देना",
     "description": "Title for the multichain accounts introduction modal."
   },
-  "multichainAddEthereumChainConfirmationDescription": {
-    "message": "आप इस नेटवर्क को MetaMask में जोड़ रहे हैं और इस साइट को इसका उपयोग करने की अनुमति दे रहे हैं।"
-  },
   "multichainAddressViewAll": {
     "message": "सभी दिखाएं"
   },
@@ -6444,42 +6345,6 @@
   "multipleSnapConnectionWarning": {
     "message": "$1 $2 Snaps का उपयोग करना चाहता है",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
-  },
-  "musdAssetConvertBenefitDailyBonus": {
-    "message": "दैनिक बोनस",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertBenefitDollarBacked": {
-    "message": "डॉलर-समर्थित",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertBenefitNoLockups": {
-    "message": "कोई लॉकअप नहीं",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertBenefitNoMetaMaskFee": {
-    "message": "कोई MetaMask फीस नहीं",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertDescriptionHighlight": {
-    "message": "$1% सालाना बोनस",
-    "description": "Shown in Figma accent lime (#baf24a) inside the mUSD asset details convert section description. $1 is the APY percentage."
-  },
-  "musdAssetConvertDescriptionLead": {
-    "message": "एक ",
-    "description": "Text before the green APY phrase on the mUSD asset details convert section"
-  },
-  "musdAssetConvertDescriptionTail": {
-    "message": " USDC, USDT और DAI को mUSD में कन्वर्ट करके।",
-    "description": "Text after the green APY phrase on the mUSD asset details convert section"
-  },
-  "musdAssetConvertLearnMore": {
-    "message": "ज़्यादा जानें",
-    "description": "Button to open the mUSD support article from the asset details convert section"
-  },
-  "musdAssetConvertTitle": {
-    "message": "अपने स्टेबलकॉइन कन्वर्ट करें",
-    "description": "Title of the convert section on the mUSD asset details page"
   },
   "musdAssetPositionBalance": {
     "message": "बैलेंस",
@@ -6508,17 +6373,9 @@
   "musdBuyMusd": {
     "message": "mUSD खरीदें"
   },
-  "musdClaimTitle": {
-    "message": "बोनस क्लेम करें",
-    "description": "Title for the mUSD bonus claim confirmation screen"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "mUSD कन्वर्शन शुल्क में नेटवर्क लागत शामिल होती है और इसमें प्रदाता शुल्क भी शामिल हो सकता है। जब आप mUSD में कन्वर्ट करते हैं, तो कोई MetaMask शुल्क लागू नहीं होता।",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
-  },
-  "musdConversionTitle": {
-    "message": "mUSD में कन्वर्ट किया गया",
-    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "musdConvert": {
     "message": "कन्वर्ट करें"
@@ -6679,9 +6536,6 @@
     "message": "अब आप $1 पर लेन-देन कर रहे हैं।",
     "description": "$1 is the name of the network"
   },
-  "networkDetails": {
-    "message": "नेटवर्क विवरण"
-  },
   "networkFee": {
     "message": "नेटवर्क फीस"
   },
@@ -6699,9 +6553,6 @@
   },
   "networkNameBitcoin": {
     "message": "Bitcoin"
-  },
-  "networkNameDefinition": {
-    "message": "इस नेटवर्क के साथ जुड़ा नाम।"
   },
   "networkNameEthereum": {
     "message": "Ethereum"
@@ -6749,9 +6600,6 @@
   },
   "networkTabPopular": {
     "message": "लोकप्रिय"
-  },
-  "networkURL": {
-    "message": "नेटवर्क यूआरएल"
   },
   "networkURLDefinition": {
     "message": "इस नेटवर्क तक पहुंचने के लिए इस्तेमाल किया जाने वाला URL।"
@@ -6856,17 +6704,6 @@
   "nftUnsupportedEmptyDescription": {
     "message": "इस नेटवर्क पर NFT सपोर्टेड नहीं है।"
   },
-  "nftWarningContent": {
-    "message": "आप भविष्य में जिस पर भी आपकी ओनरशिप होगी उसके सहित, $1 को ऐक्सेस प्रदान कर रहे हैं। दूसरे छोर पर मौजूद पक्ष इन NFTs को आपके वॉलेट से किसी भी समय बिना आपसे पूछे तब तक ट्रांसफ़र कर सकता है जब तक कि आप इस एप्रूवल को कैंसिल नहीं कर देते। $2",
-    "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
-  },
-  "nftWarningContentBold": {
-    "message": "आपके सभी $1 NFTs",
-    "description": "$1 is name of the collection"
-  },
-  "nftWarningContentGrey": {
-    "message": "सावधानी के साथ आगे बढ़ें।"
-  },
   "nfts": {
     "message": "NFTs"
   },
@@ -6899,9 +6736,6 @@
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap और अधिकांश हार्डवेयर वॉलेट, आपके वर्तमान ब्राउज़र वर्जन के साथ काम नहीं करेंगे।"
-  },
-  "noMMFeeSwapping": {
-    "message": "कोई MetaMask शुल्क नहीं"
   },
   "noNetworkFee": {
     "message": "कोई नेटवर्क शुल्क नहीं"
@@ -7296,13 +7130,6 @@
   },
   "openFullScreen": {
     "message": "फुल स्क्रीन खोलें"
-  },
-  "openFullScreenForLedgerWebHid": {
-    "message": "अपने Ledger को कनेक्ट करने के लिए फुल स्क्रीन पर जाएं।",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
-  "openInBlockExplorer": {
-    "message": "ब्लॉक एक्सप्लोरर में खोलें"
   },
   "openMultichainAccountAddressMenu": {
     "message": "मल्टीचेन अकाउंट एड्रेस मेनू खोलें"
@@ -8130,9 +7957,6 @@
   },
   "perpsDepositFundsTitle": {
     "message": "पर्प्स में फंड डिपॉज़िट करें"
-  },
-  "perpsDepositTitle": {
-    "message": "फंडेड पर्प्स अकाउंट"
   },
   "perpsDepositToastErrorDescription": {
     "message": "आपके फंड्स पर्प्स में नहीं जोड़े जा सके। फिर से प्रयास करें।"
@@ -9160,14 +8984,8 @@
     "message": "प्राइवेट कीज़ (keys)",
     "description": "Private keys row label on multichain account details page."
   },
-  "privateNetwork": {
-    "message": "निजी नेटवर्क"
-  },
   "proceed": {
     "message": "आगे बढ़ें"
-  },
-  "proceedWithTransaction": {
-    "message": "मैं फिर भी आगे बढ़ना चाहता हूं"
   },
   "provide": {
     "message": "प्रदान करें"
@@ -9214,13 +9032,6 @@
   "qrCameraAccessNeededTitle": {
     "message": "कैमरा एक्सेस की आवश्यकता है",
     "description": "Title when the camera permission dialog was dismissed without a choice."
-  },
-  "qrCodeExpired": {
-    "message": "QR कोड एक्सपायर हो गया"
-  },
-  "qrCodeExpiresIn": {
-    "message": "$1सेकंड में एक्स्पायर होगा",
-    "description": "$1 is the number of seconds remaining before the QR code expires"
   },
   "qrErrorMismatchedTransactionBody": {
     "message": "यह QR कोड किसी दूसरे ट्रांसेक्शन के लिए है। इसे कैंसिल करें और दोबारा कोशिश करें, और दोबारा कोशिश करने से पहले सुनिश्चित करें कि आप अपने हार्डवेयर वॉलेट से MetaMask में दिखाए गए QR कोड को पहले स्कैन करें।",
@@ -9527,16 +9338,8 @@
   "receiveCrypto": {
     "message": "क्रिप्टो प्राप्त करें"
   },
-  "receiveToken": {
-    "message": "टोकन प्राप्त करें",
-    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
-  },
   "received": {
     "message": "प्राप्त किया गया"
-  },
-  "receivedTotal": {
-    "message": "कुल प्राप्त हुआ",
-    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "एड्रेस प्राप्त हो रहा है",
@@ -11365,9 +11168,6 @@
   "simulationDetailsUnavailable": {
     "message": "अनुपलब्ध"
   },
-  "simulationErrorMessageV2": {
-    "message": "हम गैस का अनुमान नहीं लगा पाए। कॉन्ट्रैक्ट में कोई गड़बड़ी हो सकती है और यह ट्रांसेक्शन विफल हो सकता है।"
-  },
   "simulationsSettingDescription": {
     "message": "इसे ऑन करने पर ट्रांज़ैक्शन या सिग्नेचर कन्फर्म करने से पहले बैलेंस में होने वाले बदलाव का अनुमान दिखाया जाएगा। यह अंतिम परिणाम की गारंटी नहीं है। $1"
   },
@@ -11434,12 +11234,6 @@
   },
   "smartAccountRequestsFromDappsDescriptionV2": {
     "message": "डैप्स को स्टैंडर्ड एकाउंट्स के लिए स्मार्ट अकाउंट फीचर्स का अनुरोध करने दें। MetaMask केवल हमारे ऑडिट किए गए स्मार्ट अकाउंट में ही अपग्रेड करेगा।"
-  },
-  "smartAccountUpgradeBannerDescription": {
-    "message": "वही एड्रेस। और स्मार्ट फीचर्स।"
-  },
-  "smartAccountUpgradeBannerTitle": {
-    "message": "स्मार्ट अकाउंट पर स्विच करें"
   },
   "smartContractAddress": {
     "message": "स्मार्ट कॉन्ट्रैक्ट एड्रेस"
@@ -11875,12 +11669,6 @@
   "stakingWithdrawal": {
     "message": "स्टेकिंग विदड्रॉवल"
   },
-  "standardAccountLabel": {
-    "message": "मानक अकाउंट"
-  },
-  "start_with_new_qr_code": {
-    "message": "नए QR कोड से शुरू करें"
-  },
   "stateCorruptionAreYouSure": {
     "message": "क्या आप वाकई आगे बढ़ना चाहते हैं?"
   },
@@ -12207,12 +11995,6 @@
   "swapsRebateTooltipTitle": {
     "message": "ट्रेडिंग रिवॉर्ड"
   },
-  "switch": {
-    "message": "बदलें"
-  },
-  "switchBack": {
-    "message": "वापस स्विच करें"
-  },
   "switchBackToPopup": {
     "message": "पॉपअप पर वापस स्विच करें"
   },
@@ -12435,27 +12217,6 @@
   "transactionFlowNetwork": {
     "message": "नेटवर्क"
   },
-  "transactionHistoryBaseFee": {
-    "message": "बेस फी (GWEI)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "कुल L1 नेटवर्क शुल्क"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "L2 गैस लिमिट"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "L2 गैस कीमत"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "प्रति गैस अधिकतम फीस"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "प्रायोरिटी फी (GWEI)"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "कुल नेटवर्क शुल्क"
-  },
   "transactionIdCopied": {
     "message": "Transaction ID कॉपी किया गया"
   },
@@ -12639,9 +12400,6 @@
     "message": "$1 $2 से $3 में स्वैप करें",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "units": {
-    "message": "यूनिट्स"
-  },
   "unknown": {
     "message": "अज्ञात"
   },
@@ -12685,10 +12443,6 @@
   "unpin": {
     "message": "अनपिन करें"
   },
-  "unrecognizedChain": {
-    "message": "यह कस्टम नेटवर्क मान्यता प्राप्त नहीं है",
-    "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
   "unsendableAsset": {
     "message": "वर्तमान में NFT (ERC-721) टोकन भेजना समर्थित नहीं है",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
@@ -12701,9 +12455,6 @@
   },
   "update": {
     "message": "अपडेट करें"
-  },
-  "updateEthereumChainConfirmationDescription": {
-    "message": "यह साइट आपके डिफ़ॉल्ट नेटवर्क URL को अपडेट करने का अनुरोध कर रही है। आप किसी भी समय डिफ़ॉल्ट और नेटवर्क जानकारी बदल सकते हैं।"
   },
   "updateInformation": {
     "message": "हमने आपके वॉलेट को अधिक सुरक्षित और सहज बनाया है, तथा कुछ नए फीचर्स जोड़े हैं। सुरक्षित रहने और हमारे नवीनतम सुधारों का लाभ उठाने के लिए अभी अपडेट करें।"
@@ -12883,9 +12634,6 @@
   "walletReadyLoseSrpFromReminder": {
     "message": "यदि आप कभी अपना पासवर्ड भूल जाते हैं या अपने लॉगिन तक पहुंच खो देते हैं तो यह सीक्रेट रिकवरी फ्रेज़ आपको पुनः पहुंच प्राप्त करने में मदद कर सकता है।"
   },
-  "wantToAddThisNetwork": {
-    "message": "इस नेटवर्क को जोड़ना चाहते हैं?"
-  },
   "wantsToAddThisAsset": {
     "message": "यह निम्नलिखित एसेट को आपके वॉलेट में जोड़ने की अनुमति देता है।"
   },
@@ -12987,9 +12735,6 @@
   },
   "yourBalance": {
     "message": "आपका बैलेंस"
-  },
-  "yourNFTmayBeAtRisk": {
-    "message": "आपका NFT खतरे में हो सकता है"
   },
   "yourWalletIsReady": {
     "message": "आपका वॉलेट तैयार है"

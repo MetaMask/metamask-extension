@@ -77,6 +77,7 @@ type ArrangeOptions = {
   lastKnownTotalFiatFormatted?: string;
   isBalanceLoading?: boolean;
   isDepositLoading?: boolean;
+  isDepositDisabled?: boolean;
   apyPercentFormatted?: string;
   isVaultApyLoading?: boolean;
 };
@@ -95,6 +96,7 @@ type ArrangeOptions = {
  * @param options.lastKnownTotalFiatFormatted - The last-known balance, if any.
  * @param options.isBalanceLoading - Whether the balance fetch is in flight.
  * @param options.isDepositLoading - Whether a deposit initiation is in flight.
+ * @param options.isDepositDisabled - Whether deposits are disabled for this account.
  * @param options.apyPercentFormatted - The formatted vault APY, if any.
  * @param options.isVaultApyLoading - Whether the vault APY fetch is in flight.
  */
@@ -105,12 +107,15 @@ const arrange = ({
   lastKnownTotalFiatFormatted,
   isBalanceLoading = false,
   isDepositLoading = false,
+  isDepositDisabled = false,
   apyPercentFormatted,
   isVaultApyLoading = false,
 }: ArrangeOptions = {}) => {
   mockInitiateDeposit.mockResolvedValue(undefined);
   mockUseMoneyAccountDeposit.mockReturnValue({
     initiateDeposit: mockInitiateDeposit,
+    isDisabled: isDepositDisabled,
+    isLifecycleLoading: false,
     isLoading: isDepositLoading,
   });
 
@@ -128,7 +133,7 @@ const arrange = ({
     lastKnownTotalFiatFormatted,
     isBalanceLoading,
     apyPercentFormatted,
-    vaultApyQuery: { isLoading: isVaultApyLoading },
+    isApyLoading: isVaultApyLoading,
   } as UseMoneyAccountBalanceResult);
 };
 
@@ -478,6 +483,20 @@ describe('MoneyAccountBalance', () => {
       tokenTotal: new BigNumber(0),
       totalFiatFormatted: '$0.00',
       isDepositLoading: true,
+    });
+
+    const { getByTestId } = render();
+
+    expect(
+      getByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID),
+    ).toBeDisabled();
+  });
+
+  it('disables the Add button when the Money Account is read-only', () => {
+    arrange({
+      tokenTotal: new BigNumber(0),
+      totalFiatFormatted: '$0.00',
+      isDepositDisabled: true,
     });
 
     const { getByTestId } = render();
