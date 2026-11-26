@@ -34607,7 +34607,6 @@ __metadata:
     "@eslint/config-helpers": "npm:^0.7.0"
     "@ethereumjs/tx": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch"
     "@ethersproject/abi": "npm:^5.6.4"
-    "@ethersproject/bignumber": "npm:^5.7.0"
     "@ethersproject/bytes": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/hdnode": "npm:^5.6.2"
