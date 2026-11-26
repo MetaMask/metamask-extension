@@ -6,7 +6,10 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import { MOCK_ACCOUNT_EOA } from '../../../test/data/mock-accounts';
+import {
+  MOCK_ACCOUNT_EOA,
+  MOCK_ACCOUNT_SOLANA_MAINNET,
+} from '../../../test/data/mock-accounts';
 import { getRootMessenger } from '../lib/messenger';
 import {
   getMaxSourceBalance,
@@ -68,10 +71,12 @@ const getPaymentOverrideDataMock = jest.mocked(getPaymentOverrideData);
 
 const EVM_ASSET_ID_MOCK =
   'eip155:1/erc20:0x1234567890abcdef1234567890abcdef12345678';
+const SOL_ASSET_ID_MOCK = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
 const ACCOUNT_OVERRIDE_MOCK = MOCK_ACCOUNT_EOA.id;
 const ACCOUNT_OVERRIDE_ADDRESS_MOCK = MOCK_ACCOUNT_EOA.address;
 const ACCOUNTS_MOCK = {
   [MOCK_ACCOUNT_EOA.id]: MOCK_ACCOUNT_EOA,
+  [MOCK_ACCOUNT_SOLANA_MAINNET.id]: MOCK_ACCOUNT_SOLANA_MAINNET,
 };
 
 function getInitRequestMock(
@@ -94,6 +99,7 @@ function getInitRequestMock(
   const requestMock = {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getTransactionPayControllerMessenger(baseMessenger),
+    infuraProjectId: 'test-infura-project-id',
     initMessenger,
   };
 
@@ -118,6 +124,7 @@ describe('TransactionPayControllerInit', () => {
       getDelegationTransaction: expect.any(Function),
       getPaymentOverrideData: expect.any(Function),
       getStrategy: expect.any(Function),
+      infuraProjectId: 'test-infura-project-id',
       messenger: expect.any(Object),
       state: undefined,
     });
@@ -854,6 +861,35 @@ describe('TransactionPayControllerInit', () => {
       expect(callOrder).toEqual(['refresh', 'updateAmount']);
     });
 
+    it('refreshes a non-EVM payment token by asset ID', async () => {
+      const { api, messengerClient } =
+        TransactionPayControllerInit(getInitRequestMock());
+      if (!api) {
+        throw new Error('Expected init result to expose an api');
+      }
+      (
+        messengerClient as unknown as {
+          state: {
+            transactionData: Record<string, { paymentToken: unknown }>;
+          };
+        }
+      ).state = {
+        transactionData: {
+          'tx-1': {
+            paymentToken: { assetId: SOL_ASSET_ID_MOCK },
+          },
+        },
+      };
+      updateDepositAmountMock.mockResolvedValue(true);
+
+      await api.updateMoneyAccountDepositAmount('tx-1', '10');
+
+      expect(messengerClient.updatePaymentToken).toHaveBeenCalledWith({
+        transactionId: 'tx-1',
+        assetId: SOL_ASSET_ID_MOCK,
+      });
+    });
+
     it('forwards the amount when the payment token refresh throws', async () => {
       const { api, messengerClient } =
         TransactionPayControllerInit(getInitRequestMock());
@@ -957,6 +993,38 @@ describe('TransactionPayControllerInit', () => {
           address: '0x1234567890abcdef1234567890abcdef12345678',
           chainId: '0x1',
         },
+      );
+    });
+
+    it('does not forward a non-EVM Pay account override as the recipient', async () => {
+      const { api, messengerClient } =
+        TransactionPayControllerInit(getInitRequestMock());
+      if (!api) {
+        throw new Error('Expected init result to expose an api');
+      }
+      (
+        messengerClient as {
+          state: {
+            transactionData: Record<string, { accountOverride?: string }>;
+          };
+        }
+      ).state = {
+        transactionData: {
+          'tx-1': {
+            accountOverride: MOCK_ACCOUNT_SOLANA_MAINNET.id,
+          },
+        },
+      };
+      updateWithdrawAmountMock.mockResolvedValue(false);
+
+      await api.updateMoneyAccountWithdrawAmount('tx-1', '10');
+
+      expect(updateWithdrawAmountMock).toHaveBeenCalledWith(
+        expect.anything(),
+        'tx-1',
+        '10',
+        undefined,
+        undefined,
       );
     });
 

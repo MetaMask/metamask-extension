@@ -202,9 +202,13 @@ export function getMoneyActivityTransactionHash(
     };
   }
 
+  // A non-EVM source hash, such as a Solana signature, is not an EVM hash.
   const sourceHash = tx.metamaskPay?.sourceHash;
   if (sourceHash && isValidTransactionHash(sourceHash)) {
-    return { hash: sourceHash, chainId: tx.metamaskPay?.chainId ?? tx.chainId };
+    return {
+      hash: sourceHash as Hex,
+      chainId: tx.metamaskPay?.chainId ?? tx.chainId,
+    };
   }
 
   return undefined;

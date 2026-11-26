@@ -83,6 +83,7 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
         initMessenger as PaymentOverrideMessenger,
       ),
     getStrategy,
+    infuraProjectId: request.infuraProjectId,
     messenger: controllerMessenger,
     state: persistedState.TransactionPayController,
   });

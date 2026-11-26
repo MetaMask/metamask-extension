@@ -29,6 +29,24 @@ describe('getTransactionPayControllerMessenger', () => {
     );
   });
 
+  it('delegates the actions needed to pay with a Solana source', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getTransactionPayControllerMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        actions: expect.arrayContaining([
+          'ConfigRegistryController:getNetworkConfigByCaip2ChainId',
+          'ConfigRegistryController:getState',
+          'SnapController:getState',
+          'SnapController:handleRequest',
+        ]),
+      }),
+    );
+  });
+
   it('delegates the AccountTreeController actions that resolve the payment token account', () => {
     const messenger = getRootMessenger<never, never>();
     const delegateSpy = jest.spyOn(messenger, 'delegate');

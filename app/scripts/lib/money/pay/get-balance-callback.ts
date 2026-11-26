@@ -37,13 +37,17 @@ export function getBalance(
   { transaction, transactionData }: GetBalanceRequest,
   messenger: MoneyPayMessenger,
 ): GetBalanceResponse | undefined {
-  if (getMoneyAccountFlow(transaction) !== MoneyAccountFlow.Deposit) {
+  const { paymentToken } = transactionData;
+  const paymentTokenAsset = decodePaymentTokenAssetId(paymentToken);
+
+  // Non-EVM balances come from AssetsController in Core; the recorded Max
+  // balance is keyed by EVM funding account, address and chain.
+  if (
+    getMoneyAccountFlow(transaction) !== MoneyAccountFlow.Deposit ||
+    (paymentToken && !paymentTokenAsset)
+  ) {
     return undefined;
   }
-
-  const paymentTokenAsset = decodePaymentTokenAssetId(
-    transactionData.paymentToken,
-  );
 
   const balanceRaw = getMaxSourceBalance({
     transactionId: transaction.id,

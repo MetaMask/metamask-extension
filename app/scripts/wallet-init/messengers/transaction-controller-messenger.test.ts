@@ -27,4 +27,21 @@ describe('getTransactionControllerInitMessenger', () => {
       }),
     );
   });
+
+  it('delegates the actions used to publish with a Solana Pay source', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getTransactionControllerInitMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        actions: expect.arrayContaining([
+          'ConfigRegistryController:getNetworkConfigByCaip2ChainId',
+          'SnapController:handleRequest',
+          'TransactionPayController:getInfuraProjectId',
+        ]),
+      }),
+    );
+  });
 });

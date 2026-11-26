@@ -8,6 +8,7 @@ import {
   parseCaipAssetType,
   toCaipAssetType,
   type CaipAssetType,
+  type CaipChainId,
   type Hex,
 } from '@metamask/utils';
 import { CHAIN_IDS } from '../../constants/network';
@@ -144,8 +145,25 @@ export function isSameAssetId(
 }
 
 /**
+ * Chain of a payment token: the Hex chain ID for EVM tokens, and the CAIP-2
+ * chain ID for non-EVM tokens.
+ *
+ * @param paymentToken - Payment token.
+ * @returns The chain ID derived from the asset ID.
+ */
+export function getPaymentTokenChainId(
+  paymentToken: Pick<TransactionPaymentToken, 'assetId'>,
+): Hex | CaipChainId {
+  return (
+    decodeEvmAssetId(paymentToken.assetId)?.chainId ??
+    parseCaipAssetType(paymentToken.assetId).chainId
+  );
+}
+
+/**
  * Address of the EVM account selected by a MetaMask Pay `accountOverride`,
- * which is the ID of an `InternalAccount`.
+ * which is the ID of an `InternalAccount`. A non-EVM override only selects the
+ * account holding a non-EVM payment token and does not change the EVM account.
  *
  * @param accountOverride - Account override of the transaction, if any.
  * @param accounts - Internal accounts keyed by ID.
