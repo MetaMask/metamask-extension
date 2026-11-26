@@ -509,7 +509,7 @@
     "@metamask/transaction-controller": "^74.3.0",
     "@metamask/transaction-pay-controller": "^32.0.0",
     "@metamask/transaction-pay-middleware": "^2.0.4",
-    "@metamask/tron-wallet-snap": "^4.4.0",
+    "@metamask/tron-wallet-snap": "^4.5.0",
     "@metamask/user-operation-controller": "^42.1.2",
     "@metamask/utils": "^12.0.2",
     "@metamask/wallet": "^22.0.0",
