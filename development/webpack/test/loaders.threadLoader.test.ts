@@ -130,7 +130,6 @@ export function Component({ name }: { name: string }) {
                 target: '18',
                 verbose: false,
                 debug: 'all',
-                threadLoaderEnabled: true,
               }),
             ],
           },

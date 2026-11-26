@@ -1422,9 +1422,6 @@
   "advancedGasPriceModalTitle": {
     "message": "Advanced na bayad sa network"
   },
-  "advancedGasPriceTitle": {
-    "message": "Presyo ng gas"
-  },
   "advancedPermissionSmallCase": {
     "message": "advanced na pahintulot"
   },
@@ -1685,12 +1682,6 @@
   },
   "amount": {
     "message": "Halaga"
-  },
-  "amountReceived": {
-    "message": "Halagang Natanggap"
-  },
-  "amountSent": {
-    "message": "Halagang Ipinadala"
   },
   "andForListItems": {
     "message": "$1, at $2",
@@ -4329,9 +4320,6 @@
     "message": "$1 seg",
     "description": "$1 represents a number of seconds"
   },
-  "gasUsed": {
-    "message": "Nagamit na Gas"
-  },
   "gatorNoJustificationProvided": {
     "message": "Walang katwiran na ibinigay para sa pahintulot"
   },
@@ -6780,9 +6768,6 @@
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Ang mga Snap, at karamihan sa mga hardware wallet, ay hindi gagana sa iyong kasalukuyang bersyon ng browser."
-  },
-  "noMMFeeSwapping": {
-    "message": "Walang bayad sa MetaMask"
   },
   "noNetworkFee": {
     "message": "Walanag bayad sa network"
@@ -12264,27 +12249,6 @@
   "transactionFlowNetwork": {
     "message": "Network"
   },
-  "transactionHistoryBaseFee": {
-    "message": "Batayang bayad (GWEI)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "Kabuuang L1 na bayad sa network"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "L2 na limitasyon ng gas"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "L2 na presyo ng gas"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "Pinakamataas na bayad bawat gas"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "Bayad sa priyoridad (GWEI)"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "Kabuuang bayad sa network"
-  },
   "transactionIdCopied": {
     "message": "Nakopya ang ID ng transaksyon"
   },
@@ -12467,9 +12431,6 @@
   "unifiedSwapFromTo": {
     "message": "I-swap ang $1 $2 sa$3",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
-  "units": {
-    "message": "(na) unit"
   },
   "unknown": {
     "message": "Hindi Kilala"

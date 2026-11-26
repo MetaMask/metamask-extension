@@ -1422,9 +1422,6 @@
   "advancedGasPriceModalTitle": {
     "message": "Taxa de rede avançada"
   },
-  "advancedGasPriceTitle": {
-    "message": "Preço do gás"
-  },
   "advancedPermissionSmallCase": {
     "message": "permissão avançada"
   },
@@ -1685,12 +1682,6 @@
   },
   "amount": {
     "message": "Valor"
-  },
-  "amountReceived": {
-    "message": "Valor recebido"
-  },
-  "amountSent": {
-    "message": "Valor enviado"
   },
   "andForListItems": {
     "message": "$1 e $2",
@@ -4329,9 +4320,6 @@
     "message": "$1 s",
     "description": "$1 represents a number of seconds"
   },
-  "gasUsed": {
-    "message": "Gás usado"
-  },
   "gatorNoJustificationProvided": {
     "message": "Nenhuma justificativa foi fornecida para a permissão"
   },
@@ -6780,9 +6768,6 @@
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps, e a maioria das carteiras de hardware, não funcionarão com a versão atual do navegador."
-  },
-  "noMMFeeSwapping": {
-    "message": "Sem taxa da MetaMask"
   },
   "noNetworkFee": {
     "message": "Sem taxa de rede"
@@ -12264,27 +12249,6 @@
   "transactionFlowNetwork": {
     "message": "Rede"
   },
-  "transactionHistoryBaseFee": {
-    "message": "Taxa-base (GWEI)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "Taxa de rede L1 total"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "Limite de gás L2"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "Preço do gás L2"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "Taxa máxima por gás"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "Taxa de prioridade (GWEI)"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "Taxa total da rede"
-  },
   "transactionIdCopied": {
     "message": "ID da transação copiada"
   },
@@ -12467,9 +12431,6 @@
   "unifiedSwapFromTo": {
     "message": "Trocar $1 $2 por $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
-  "units": {
-    "message": "unidades"
   },
   "unknown": {
     "message": "Desconhecida"

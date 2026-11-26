@@ -409,7 +409,6 @@ const reactCompiler = getReactCompilerLoader({
   target: '18',
   verbose: args.reactCompilerVerbose,
   debug: args.reactCompilerDebug,
-  threadLoaderEnabled: threadLoader !== null,
 });
 
 const config = {

@@ -41,6 +41,7 @@ describe('useMoneyAddDepositToken', () => {
     mockUseMoneyAnalytics.mockReturnValue(moneyAnalytics);
     mockUseMoneyAccountDeposit.mockReturnValue({
       initiateDeposit: mockInitiateDeposit,
+      isDisabled: false,
       isLoading: false,
     } as unknown as ReturnType<typeof useMoneyAccountDeposit>);
   });
@@ -101,5 +102,15 @@ describe('useMoneyAddDepositToken', () => {
         componentName: MoneyComponentName.ConvertCryptoButton,
       },
     });
+  });
+
+  it('forwards the disabled state from the deposit hook', () => {
+    mockUseMoneyAccountDeposit.mockReturnValue({
+      initiateDeposit: mockInitiateDeposit,
+      isDisabled: true,
+      isLoading: false,
+    } as unknown as ReturnType<typeof useMoneyAccountDeposit>);
+
+    expect(renderAddDepositToken().isDepositDisabled).toBe(true);
   });
 });

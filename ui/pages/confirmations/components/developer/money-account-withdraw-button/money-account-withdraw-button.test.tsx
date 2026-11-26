@@ -33,6 +33,7 @@ describe('MoneyAccountWithdrawButton', () => {
     initiateWithdrawalMock.mockResolvedValue(undefined);
     useMoneyAccountWithdrawalMock.mockReturnValue({
       initiateWithdrawal: initiateWithdrawalMock,
+      isDisabled: false,
       isLoading: false,
     });
     useMoneyAccountInfoMock.mockReturnValue({
@@ -69,6 +70,7 @@ describe('MoneyAccountWithdrawButton', () => {
   it('disables the button while initiating', () => {
     useMoneyAccountWithdrawalMock.mockReturnValue({
       initiateWithdrawal: initiateWithdrawalMock,
+      isDisabled: false,
       isLoading: true,
     });
 

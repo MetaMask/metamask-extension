@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "Gas-grænse"
   },
-  "gasUsed": {
-    "message": "Gas brugt"
-  },
   "general": {
     "message": "Generelt"
   },
@@ -533,9 +530,6 @@
   },
   "unapproved": {
     "message": "Ikke godkendt"
-  },
-  "units": {
-    "message": "enheder"
   },
   "unknown": {
     "message": "ukendt"

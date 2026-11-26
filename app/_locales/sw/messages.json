@@ -214,9 +214,6 @@
   "gasLimit": {
     "message": "Kikomo cha Gesi"
   },
-  "gasUsed": {
-    "message": "Gesi iliyotumika"
-  },
   "general": {
     "message": "Jumla"
   },
@@ -539,9 +536,6 @@
   },
   "unapproved": {
     "message": "Haijaidhinishwa"
-  },
-  "units": {
-    "message": "vizio"
   },
   "unknown": {
     "message": "Haijulikani"

@@ -1422,9 +1422,6 @@
   "advancedGasPriceModalTitle": {
     "message": "高级网络费"
   },
-  "advancedGasPriceTitle": {
-    "message": "燃料价格"
-  },
   "advancedPermissionSmallCase": {
     "message": "高级许可"
   },
@@ -1685,12 +1682,6 @@
   },
   "amount": {
     "message": "金额"
-  },
-  "amountReceived": {
-    "message": "已收款金额"
-  },
-  "amountSent": {
-    "message": "已发送金额"
   },
   "andForListItems": {
     "message": "$1，和 $2",
@@ -4329,9 +4320,6 @@
     "message": "$1 秒",
     "description": "$1 represents a number of seconds"
   },
-  "gasUsed": {
-    "message": "使用的燃料"
-  },
   "gatorNoJustificationProvided": {
     "message": "未就该许可提供任何正当理由"
   },
@@ -6780,9 +6768,6 @@
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps 和大多数硬件钱包与您的当前浏览器版本不兼容。"
-  },
-  "noMMFeeSwapping": {
-    "message": "无 MetaMask 费用"
   },
   "noNetworkFee": {
     "message": "无网络费"
@@ -12270,27 +12255,6 @@
   "transactionFlowNetwork": {
     "message": "网络"
   },
-  "transactionHistoryBaseFee": {
-    "message": "基础费用（GWEI）"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "L1 网络费用总计"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "L2 燃料限制"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "2层燃料价格"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "每单位燃料的最大费用"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "优先费用（GWEI）"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "网络费用总额"
-  },
   "transactionIdCopied": {
     "message": "交易 ID 已复制"
   },
@@ -12473,9 +12437,6 @@
   "unifiedSwapFromTo": {
     "message": "将 $1 $2 兑换为 $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
-  "units": {
-    "message": "单位"
   },
   "unknown": {
     "message": "未知"
