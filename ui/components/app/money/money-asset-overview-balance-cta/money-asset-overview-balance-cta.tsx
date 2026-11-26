@@ -77,8 +77,10 @@ export const MoneyAssetOverviewBalanceApy = ({ apy }: { apy: string }) => {
 };
 
 export const MoneyAssetOverviewBalanceCta = ({
+  isDisabled = false,
   onStartEarning,
 }: {
+  isDisabled?: boolean;
   onStartEarning: () => void;
 }) => {
   const t = useI18nContext();
@@ -89,6 +91,7 @@ export const MoneyAssetOverviewBalanceCta = ({
         isFullWidth
         size={ButtonSize.Lg}
         variant={ButtonVariant.Primary}
+        isDisabled={isDisabled}
         onClick={onStartEarning}
         data-testid={`${MONEY_ASSET_OVERVIEW_BALANCE_CTA_TEST_ID}-start-earning`}
       >
