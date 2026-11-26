@@ -97,9 +97,6 @@
   "advanced": {
     "message": "Avanzate"
   },
-  "advancedGasPriceTitle": {
-    "message": "Prezzo gas"
-  },
   "alertDisableTooltip": {
     "message": "Può essere cambiato in \"Impostazioni > Avvisi\""
   },
@@ -187,9 +184,6 @@
   "blockExplorerUrl": {
     "message": "URL Block Explorer"
   },
-  "blockExplorerUrlDefinition": {
-    "message": "L'URL usato come Block Explorer per questa rete."
-  },
   "blockExplorerView": {
     "message": "Visualizza account su $1",
     "description": "$1 replaced by URL for custom block explorer"
@@ -212,18 +206,11 @@
   "cancelled": {
     "message": "Annullata"
   },
-  "chainIdDefinition": {
-    "message": "Il Chain ID utilizzato per firmare le transazioni per questa rete."
-  },
   "chainIdExistsErrorMsg": {
     "message": "Questo Chain ID al momento è usato dalla rete $1."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Devi usare MetaMask con Google Chrome per connettere il tuo Portafoglio Hardware"
-  },
-  "clickToConnectLedgerViaWebHID": {
-    "message": "Clicca qui per connettere il tuo Ledger tramite WebHID",
-    "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
   },
   "close": {
     "message": "Chiudi"
@@ -344,9 +331,6 @@
   },
   "currencySymbol": {
     "message": "Simbolo moneta"
-  },
-  "currencySymbolDefinition": {
-    "message": "Il simbolo del ticker visualizzato per la valuta di questa rete."
   },
   "currentExtension": {
     "message": "Pagina estensione corrente"
@@ -535,9 +519,6 @@
   },
   "gasLimit": {
     "message": "Gas Limite"
-  },
-  "gasUsed": {
-    "message": "Gas Utilizzato"
   },
   "general": {
     "message": "Generale"
@@ -778,9 +759,6 @@
   "privateKey": {
     "message": "Chiave Privata",
     "description": "select this type of file to use to import an account"
-  },
-  "privateNetwork": {
-    "message": "Rete Privata"
   },
   "provide": {
     "message": "Fornisci"
@@ -1026,9 +1004,6 @@
   },
   "unapproved": {
     "message": "Non approvata"
-  },
-  "units": {
-    "message": "unità"
   },
   "unknown": {
     "message": "Sconosciuto"

@@ -36,6 +36,7 @@
       "eventsConfig": "object",
       "marketingCampaignCookieId": null,
       "marketingConsentDecisionMade": "boolean",
+      "marketingConsentSyncPending": "boolean",
       "optedIn": true,
       "optedInToMarketing": "boolean"
     },
@@ -362,6 +363,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 236
+    "version": 238
   }
 }

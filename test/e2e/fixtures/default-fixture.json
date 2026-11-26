@@ -16,72 +16,19 @@
     "AccountsController": {
       "internalAccounts": {
         "accounts": {
-          "de270db7-4c97-4101-84eb-d44aa1ae52d4": {
-            "address": "bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252",
-            "id": "de270db7-4c97-4101-84eb-d44aa1ae52d4",
-            "metadata": {
-              "importTime": 1793717662258,
-              "keyring": { "type": "snap" },
-              "lastSelected": 0,
-              "name": "",
-              "snap": { "id": "npm:@metamask/bitcoin-wallet-snap" }
-            },
-            "methods": [
-              "signPsbt",
-              "computeFee",
-              "fillPsbt",
-              "broadcastPsbt",
-              "sendTransfer",
-              "getUtxo",
-              "listUtxos",
-              "publicDescriptor",
-              "signMessage"
-            ],
-            "options": {
-              "entropy": {
-                "derivationPath": "m/84'/0'/0'",
-                "groupIndex": 0,
-                "id": "01KGPGYE2JJGMXDJPEVXKPJ1JG",
-                "type": "mnemonic"
-              },
-              "entropySource": "01KGPGYE2JJGMXDJPEVXKPJ1JG",
-              "exportable": true
-            },
-            "scopes": ["bip122:000000000019d6689c085ae165831e93"],
-            "type": "bip122:p2wpkh"
-          },
-          "7fbb503f-68e5-40d8-a91e-97d75f482fc2": {
-            "address": "TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3",
-            "id": "7fbb503f-68e5-40d8-a91e-97d75f482fc2",
-            "metadata": {
-              "importTime": 1793717662299,
-              "keyring": { "type": "snap" },
-              "lastSelected": 0,
-              "name": "",
-              "snap": { "id": "npm:@metamask/tron-wallet-snap" }
-            },
-            "methods": ["signMessage", "signTransaction"],
-            "options": {
-              "entropy": {
-                "derivationPath": "m/44'/195'/0'/0/0",
-                "groupIndex": 0,
-                "id": "01KGPGYE2JJGMXDJPEVXKPJ1JG",
-                "type": "mnemonic"
-              },
-              "exportable": true
-            },
-            "scopes": ["tron:728126428"],
-            "type": "tron:eoa"
-          },
           "688e01b8-3134-4ef4-80e6-8772bab38ef7": {
             "address": "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer",
             "id": "688e01b8-3134-4ef4-80e6-8772bab38ef7",
             "metadata": {
               "importTime": 1770282512702,
-              "keyring": { "type": "snap" },
+              "keyring": {
+                "type": "snap"
+              },
               "lastSelected": 0,
               "name": "",
-              "snap": { "id": "npm:@metamask/solana-wallet-snap" }
+              "snap": {
+                "id": "npm:@metamask/solana-wallet-snap"
+              }
             },
             "methods": [
               "signAndSendTransaction",
@@ -107,35 +54,41 @@
             ],
             "type": "solana:data-account"
           },
-          "ee913f81-d818-4191-9e73-8557dd1167e0": {
-            "address": "GDEM2RN4QLPSSPGSPSKSEQ3XXFGM4X4BRH4X4EOPABHAXBVV6OQ6YE6K",
-            "id": "ee913f81-d818-4191-9e73-8557dd1167e0",
+          "7fbb503f-68e5-40d8-a91e-97d75f482fc2": {
+            "address": "TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3",
+            "id": "7fbb503f-68e5-40d8-a91e-97d75f482fc2",
             "metadata": {
-              "importTime": 1793717662335,
-              "keyring": { "type": "snap" },
+              "importTime": 1793717662299,
+              "keyring": {
+                "type": "snap"
+              },
               "lastSelected": 0,
               "name": "",
-              "snap": { "id": "npm:@metamask/stellar-wallet-snap" }
+              "snap": {
+                "id": "npm:@metamask/tron-wallet-snap"
+              }
             },
-            "methods": ["signMessage", "signTransaction", "signAuthEntry"],
+            "methods": ["signMessage", "signTransaction"],
             "options": {
               "entropy": {
-                "derivationPath": "m/44'/148'/0'",
+                "derivationPath": "m/44'/195'/0'/0/0",
                 "groupIndex": 0,
                 "id": "01KGPGYE2JJGMXDJPEVXKPJ1JG",
                 "type": "mnemonic"
               },
               "exportable": true
             },
-            "scopes": ["stellar:pubnet"],
-            "type": "stellar:account"
+            "scopes": ["tron:728126428"],
+            "type": "tron:eoa"
           },
           "d5e45e4a-3b04-4a09-a5e1-39762e5c6be4": {
             "address": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
             "id": "d5e45e4a-3b04-4a09-a5e1-39762e5c6be4",
             "metadata": {
               "importTime": 1770282498132,
-              "keyring": { "type": "HD Key Tree" },
+              "keyring": {
+                "type": "HD Key Tree"
+              },
               "lastSelected": 1770282498132,
               "name": ""
             },
@@ -160,6 +113,71 @@
             },
             "scopes": ["eip155:0"],
             "type": "eip155:eoa"
+          },
+          "de270db7-4c97-4101-84eb-d44aa1ae52d4": {
+            "address": "bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252",
+            "id": "de270db7-4c97-4101-84eb-d44aa1ae52d4",
+            "metadata": {
+              "importTime": 1793717662258,
+              "keyring": {
+                "type": "snap"
+              },
+              "lastSelected": 0,
+              "name": "",
+              "snap": {
+                "id": "npm:@metamask/bitcoin-wallet-snap"
+              }
+            },
+            "methods": [
+              "signPsbt",
+              "computeFee",
+              "fillPsbt",
+              "broadcastPsbt",
+              "sendTransfer",
+              "getUtxo",
+              "listUtxos",
+              "publicDescriptor",
+              "signMessage"
+            ],
+            "options": {
+              "entropy": {
+                "derivationPath": "m/84'/0'/0'",
+                "groupIndex": 0,
+                "id": "01KGPGYE2JJGMXDJPEVXKPJ1JG",
+                "type": "mnemonic"
+              },
+              "entropySource": "01KGPGYE2JJGMXDJPEVXKPJ1JG",
+              "exportable": true
+            },
+            "scopes": ["bip122:000000000019d6689c085ae165831e93"],
+            "type": "bip122:p2wpkh"
+          },
+          "ee913f81-d818-4191-9e73-8557dd1167e0": {
+            "address": "GDEM2RN4QLPSSPGSPSKSEQ3XXFGM4X4BRH4X4EOPABHAXBVV6OQ6YE6K",
+            "id": "ee913f81-d818-4191-9e73-8557dd1167e0",
+            "metadata": {
+              "importTime": 1793717662335,
+              "keyring": {
+                "type": "snap"
+              },
+              "lastSelected": 0,
+              "name": "",
+              "snap": {
+                "id": "npm:@metamask/stellar-wallet-snap"
+              }
+            },
+            "methods": ["signMessage", "signTransaction", "signAuthEntry"],
+            "options": {
+              "entropy": {
+                "derivationPath": "m/44'/148'/0'",
+                "groupIndex": 0,
+                "id": "01KGPGYE2JJGMXDJPEVXKPJ1JG",
+                "type": "mnemonic"
+              },
+              "exportable": true
+            },
+            "scopes": ["stellar:pubnet"],
+            "type": "stellar:account"
           }
         },
         "selectedAccount": "d5e45e4a-3b04-4a09-a5e1-39762e5c6be4"
@@ -188,6 +206,7 @@
       },
       "marketingCampaignCookieId": null,
       "marketingConsentDecisionMade": true,
+      "marketingConsentSyncPending": true,
       "optedIn": false,
       "optedInToMarketing": false
     },
@@ -195,7 +214,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 236,
+      "currentMigrationVersion": 238,
       "firstTimeInfo": {},
       "installAttribution": null,
       "previousAppVersion": "",
@@ -574,8 +593,8 @@
     "MultichainTransactionsController": {
       "nonEvmTransactions": {
         "688e01b8-3134-4ef4-80e6-8772bab38ef7": {},
-        "de270db7-4c97-4101-84eb-d44aa1ae52d4": {},
         "7fbb503f-68e5-40d8-a91e-97d75f482fc2": {},
+        "de270db7-4c97-4101-84eb-d44aa1ae52d4": {},
         "ee913f81-d818-4191-9e73-8557dd1167e0": {}
       }
     },
@@ -1272,6 +1291,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 236
+    "version": 238
   }
 }

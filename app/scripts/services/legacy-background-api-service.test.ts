@@ -69,7 +69,7 @@ import { createSentryError } from '../../../shared/lib/error';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { captureException } from '../../../shared/lib/sentry';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
-import { TraceName, TraceOperation } from '../../../shared/lib/trace';
+import { trace, TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../../shared/constants/passkey';
 import { DecodedTransactionDataSource } from '../../../shared/types/transaction-decode';
 import { enforceSimulations } from '../lib/transaction/containers/enforced-simulations';
@@ -6821,6 +6821,34 @@ describe('LegacyBackgroundApiService', () => {
         expect(counts).toStrictEqual({ Bitcoin: 1, Solana: 1, Tron: 1 });
       });
     });
+
+    it('roots the Discover Accounts trace when accounts are discovered', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        rootMessenger.registerActionHandler(
+          'KeyringController:getState',
+          jest.fn().mockReturnValue({
+            keyrings: [{ metadata: { id: 'kr1' } }],
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'MultichainAccountService:getMultichainAccountWallet',
+          jest.fn().mockReturnValue({
+            discoverAccounts: jest
+              .fn()
+              .mockResolvedValue([{ type: SolAccountType.DataAccount }]),
+          }),
+        );
+
+        await service.discoverAndCreateAccounts();
+
+        expect(jest.mocked(trace)).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: TraceName.DiscoverAccounts,
+            root: true,
+          }),
+        );
+      });
+    });
   });
 
   describe('isRelaySupported', () => {
@@ -6844,7 +6872,6 @@ describe('LegacyBackgroundApiService', () => {
   describe('DeFi referral', () => {
     const HYPERLIQUID = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid];
     const GMX = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX];
-    const VARIATIONAL = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Variational];
     const mockTabId = 140;
     const mockPermittedAccount = '0x123';
     const mockPermittedAccounts = [mockPermittedAccount, '0x456'];
@@ -6949,26 +6976,6 @@ describe('LegacyBackgroundApiService', () => {
       rootMessenger.registerActionHandler(
         'NetworkController:getNetworkClientById',
         jest.fn().mockReturnValue({ provider: { request: jest.fn() } }),
-      );
-    }
-
-    /**
-     * Registers the network handlers used by the requiredChainId gate.
-     *
-     * @param rootMessenger - The root messenger to register handlers on.
-     * @param chainId - The active chain ID for the partner's domain.
-     */
-    function registerPartnerNetwork(
-      rootMessenger: RootMessenger,
-      chainId: string,
-    ) {
-      rootMessenger.registerActionHandler(
-        'SelectedNetworkController:getNetworkClientIdForDomain',
-        jest.fn().mockReturnValue('network-client-id'),
-      );
-      rootMessenger.registerActionHandler(
-        'NetworkController:getNetworkConfigurationByNetworkClientId',
-        jest.fn().mockReturnValue({ chainId }),
       );
     }
 
@@ -7659,69 +7666,6 @@ describe('LegacyBackgroundApiService', () => {
               );
 
               expect(checkHyperliquidHasReferralCode).not.toHaveBeenCalled();
-            },
-          );
-        });
-      });
-
-      describe('requiredChainId gate', () => {
-        it('does not proceed when the active chain does not match requiredChainId', async () => {
-          const getPermittedAccounts = jest
-            .fn()
-            .mockResolvedValue(mockPermittedAccounts);
-          await withService(
-            { options: { getPermittedAccounts } },
-            async ({ rootMessenger }) => {
-              const handlers = registerReferralHandlers(rootMessenger, {
-                featureFlags: { [DefiReferralPartner.Variational]: true },
-                referrals: { [DefiReferralPartner.Variational]: {} },
-              });
-              registerPartnerNetwork(rootMessenger, '0x1');
-
-              await rootMessenger.call(
-                'LegacyBackgroundApiService:handleDefiReferral',
-                VARIATIONAL,
-                mockTabId,
-                ReferralTriggerType.NewConnection,
-              );
-
-              expect(handlers.add).not.toHaveBeenCalled();
-              expect(handlers.addReferralPassedAccount).not.toHaveBeenCalled();
-            },
-          );
-        });
-
-        it('proceeds when the active chain matches requiredChainId', async () => {
-          const getPermittedAccounts = jest
-            .fn()
-            .mockResolvedValue(mockPermittedAccounts);
-          await withService(
-            { options: { getPermittedAccounts } },
-            async ({ rootMessenger }) => {
-              const handlers = registerReferralHandlers(rootMessenger, {
-                featureFlags: { [DefiReferralPartner.Variational]: true },
-                referrals: { [DefiReferralPartner.Variational]: {} },
-              });
-              registerPartnerNetwork(rootMessenger, '0xa4b1');
-
-              await rootMessenger.call(
-                'LegacyBackgroundApiService:handleDefiReferral',
-                VARIATIONAL,
-                mockTabId,
-                ReferralTriggerType.NewConnection,
-              );
-
-              expect(handlers.add).toHaveBeenCalledWith({
-                origin: VARIATIONAL.origin,
-                type: VARIATIONAL.approvalType,
-                requestData: {
-                  learnMoreUrl: VARIATIONAL.learnMoreUrl,
-                  partnerId: DefiReferralPartner.Variational,
-                  partnerName: VARIATIONAL.name,
-                  selectedAddress: mockPermittedAccount,
-                },
-                shouldShowRequest: true,
-              });
             },
           );
         });
@@ -9218,7 +9162,6 @@ function getMessenger(
       'NetworkController:getNetworkClientById',
       'NetworkController:getNetworkConfigurationByNetworkClientId',
       'AddressBookController:getState',
-      'SelectedNetworkController:getNetworkClientIdForDomain',
       'NetworkController:getSelectedNetworkClient',
       'NetworkController:addNetwork',
       'NetworkController:setActiveNetwork',

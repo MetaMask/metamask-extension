@@ -32,11 +32,13 @@ const USDC_ASSET_ID = `eip155:1/erc20:${USDC_ADDRESS}`;
 const ETH_USD_CONVERSION_RATE = 3010;
 const ENFORCED_SIMULATIONS_SPOT_PRICES = {
   'eip155:1/slip44:60': {
+    id: 'ethereum',
     price: ETH_USD_CONVERSION_RATE,
     marketCap: 382623505141,
     pricePercentChange1d: 0,
   },
   [USDC_ASSET_ID]: {
+    id: 'usd-coin',
     price: 1,
     marketCap: 0,
     pricePercentChange1d: 0,

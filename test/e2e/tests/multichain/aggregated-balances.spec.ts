@@ -20,7 +20,6 @@ import { NetworkName } from '../../helpers/network-constants';
 import {
   getMockAssetsPrice,
   mockPriceApi,
-  mockSpotPrices,
   MOCK_ETH_CONVERSION_RATE,
 } from '../tokens/utils/mocks';
 import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
@@ -91,27 +90,20 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         smartContract,
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockPriceApi(mockServer);
-          // mockSpotPrices uses `.always()` and overrides mockPriceApi's
-          // catch-all. Include mainnet + both Sepolia native ID shapes
-          // (slip44:60 and the zero-address ERC-20 alias AC 15 requests).
-          await mockSpotPrices(mockServer, {
-            'eip155:1/slip44:60': {
-              price: MOCK_ETH_CONVERSION_RATE,
-              marketCap: 112500000,
-              pricePercentChange1d: 0,
-            },
-            [SEPOLIA_NATIVE_ASSET_ID]: {
-              price: MOCK_ETH_CONVERSION_RATE,
-              marketCap: 112500000,
-              pricePercentChange1d: 0,
-            },
+          // mockPriceApi registers one `.always()` rule for v3 spot-prices, and
+          // the first rule for a URL answers every request, so the Sepolia
+          // native entries (slip44:60 and the zero-address ERC-20 alias AC 15
+          // requests) are passed to it rather than to a second mock.
+          const sepoliaSpotPrice = {
+            id: 'ethereum',
+            price: MOCK_ETH_CONVERSION_RATE,
+            marketCap: 112500000,
+            pricePercentChange1d: 0,
+          };
+          await mockPriceApi(mockServer, MOCK_ETH_CONVERSION_RATE, '0x1', {
+            [SEPOLIA_NATIVE_ASSET_ID]: sepoliaSpotPrice,
             'eip155:11155111/erc20:0x0000000000000000000000000000000000000000':
-              {
-                price: MOCK_ETH_CONVERSION_RATE,
-                marketCap: 112500000,
-                pricePercentChange1d: 0,
-              },
+              sepoliaSpotPrice,
           });
         },
       },

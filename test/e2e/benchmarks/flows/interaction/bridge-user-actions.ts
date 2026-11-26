@@ -22,12 +22,13 @@ import {
 } from '../../../../../shared/constants/benchmarks';
 import { runUserActionBenchmark, collectWebVitals } from '../../utils';
 import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
+import { bridgeGetTokensSearch } from '../../../mock-response-data/api-responses';
 
 export const testTitle = 'benchmark-user-actions-bridge-user-actions';
 export const persona = BENCHMARK_PERSONA.STANDARD;
 
 async function mockTokensEthereum(mockServer: Mockttp) {
-  return await mockServer.forPost(/getTokens\/search/u).thenCallback(() => {
+  return await bridgeGetTokensSearch.rule(mockServer).thenCallback(() => {
     return {
       statusCode: 200,
       json: {

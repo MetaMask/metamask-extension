@@ -4,9 +4,11 @@ import { CaipAssetType } from '@metamask/utils';
 
 import { useSendContext } from '../../context/send';
 import { validateAmountMultichain } from '../../utils/multichain-snaps';
+import { useSendType } from './useSendType';
 
 export const useSnapAmountOnInput = () => {
-  const { asset, fromAccount, value } = useSendContext();
+  const { asset, fromAccount, toResolved } = useSendContext();
+  const { isTronSendType } = useSendType();
 
   const validateAmountWithSnap = useCallback(
     async (amount: string) => {
@@ -16,11 +18,14 @@ export const useSnapAmountOnInput = () => {
           value: amount,
           accountId: (fromAccount as InternalAccount).id,
           assetId: asset?.assetId as CaipAssetType,
+          // `toResolved` is the resolved destination address for when there is
+          // a name service like ENS.
+          ...(isTronSendType && toResolved ? { toAddress: toResolved } : {}),
         },
       );
       return result;
     },
-    [fromAccount, value, asset],
+    [asset, fromAccount, isTronSendType, toResolved],
   );
 
   return { validateAmountWithSnap };

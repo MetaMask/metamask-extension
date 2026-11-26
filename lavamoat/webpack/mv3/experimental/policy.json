@@ -1062,6 +1062,15 @@
         "@metamask/controller-utils": true
       }
     },
+    "@metamask/ai-controllers": {
+      "globals": {
+        "fetch": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/superstruct": true
+      }
+    },
     "@metamask/analytics-controller": {
       "packages": {
         "@metamask/base-controller": true,
@@ -2806,6 +2815,7 @@
     "@metamask/perps-controller": {
       "globals": {
         "AbortController": true,
+        "AggregateError": true,
         "Intl.NumberFormat": true,
         "URLSearchParams": true,
         "clearInterval": true,
@@ -3565,6 +3575,7 @@
         "@metamask/seedless-onboarding-controller": true,
         "@metamask/selected-network-controller": true,
         "@metamask/shield-controller": true,
+        "@metamask/signature-controller": true,
         "@metamask/storage-service": true,
         "@metamask/subscription-controller": true,
         "@metamask/transaction-controller": true,

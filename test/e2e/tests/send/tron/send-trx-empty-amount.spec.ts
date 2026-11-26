@@ -42,10 +42,10 @@ describe('Tron Send', function (this: Suite) {
         await sendPage.fillRecipient({
           recipientAddress: TRON_RECIPIENT_ADDRESS,
         });
-        // Empty amount leaves Continue enabled; Tron snap rejects on submit and
-        // surfaces transactionError on the Continue button.
+        // Empty amount leaves Continue enabled; pressing it re-runs the Snap
+        // amount validation, which rejects the zero amount.
         await sendPage.pressContinueButton();
-        await sendPage.checkTransactionError();
+        await sendPage.checkInvalidValueError();
         await sendPage.checkContinueButtonIsDisabled();
       },
     );

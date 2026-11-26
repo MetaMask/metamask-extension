@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "Ograničenje goriva"
   },
-  "gasUsed": {
-    "message": "Upotrijebljeno gorivo"
-  },
   "general": {
     "message": "Opće"
   },
@@ -401,9 +398,6 @@
     "message": "Privatni ključ",
     "description": "select this type of file to use to import an account"
   },
-  "privateNetwork": {
-    "message": "Privatna mreža"
-  },
   "readdToken": {
     "message": "Ovaj token možete dodati kasnije odlaskom pod stavku „Dodaj token” u izborniku mogućnosti računa. "
   },
@@ -554,9 +548,6 @@
   },
   "unapproved": {
     "message": "Neodobreno"
-  },
-  "units": {
-    "message": "jedinice/a"
   },
   "unknown": {
     "message": "Nepoznato"
