@@ -4698,52 +4698,6 @@
   "history": {
     "message": "History"
   },
-  "holdToRevealContent1": {
-    "message": "Ang iyong Lihim na Parirala sa Pagbawi ay nagbibigay ng $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
-  },
-  "holdToRevealContent2": {
-    "message": "ganap na access sa iyong wallet at mga pondo.",
-    "description": "Is the bolded text in 'holdToRevealContent1'"
-  },
-  "holdToRevealContent3": {
-    "message": "Huwag ibahagi ito sa sinuman. $1 $2",
-    "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
-  },
-  "holdToRevealContent4": {
-    "message": "Hindi ito hihilingin ng Suporta sa MetaMask,",
-    "description": "Part of 'holdToRevealContent3'"
-  },
-  "holdToRevealContent5": {
-    "message": "pero pwedeng hingiin ng mga manloloko.",
-    "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealContentPrivateKey1": {
-    "message": "Nagbibigay ang iyong Pribadong Key ng $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealContentPrivateKey2": {
-    "message": "buong access sa iyong wallet at pondo.",
-    "description": "Is the bolded text in 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealLockedLabel": {
-    "message": "i-hold para ibunyag ang bilog na naka-lock"
-  },
-  "holdToRevealPrivateKey": {
-    "message": "I-hold para ibunyag ang Pribadong Key"
-  },
-  "holdToRevealPrivateKeyTitle": {
-    "message": "Ingatan ang iyong pribadong key"
-  },
-  "holdToRevealSRP": {
-    "message": "I-hold para ibunyag ang SRP"
-  },
-  "holdToRevealSRPTitle": {
-    "message": "Ingatan ang iyong SRP"
-  },
-  "holdToRevealUnlockedLabel": {
-    "message": "i-hold para ibunyag ang bilog na naka-unlock"
-  },
   "home": {
     "message": "Home",
     "description": "Label for the Home tab in the bottom navigation bar"
@@ -7186,9 +7140,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Override Content-Security-Policy header"
-  },
-  "padlock": {
-    "message": "Padlock"
   },
   "paidByMetaMask": {
     "message": "Binayaran ng MetaMask"

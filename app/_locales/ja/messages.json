@@ -4702,52 +4702,6 @@
   "history": {
     "message": "履歴"
   },
-  "holdToRevealContent1": {
-    "message": "シークレットリカバリーフレーズは$1を提供します。",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
-  },
-  "holdToRevealContent2": {
-    "message": "ウォレットと資金への完全アクセスを提供します。",
-    "description": "Is the bolded text in 'holdToRevealContent1'"
-  },
-  "holdToRevealContent3": {
-    "message": "これは誰にも教えないでください。$1 $2",
-    "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
-  },
-  "holdToRevealContent4": {
-    "message": "MetaMaskサポートがこの情報を尋ねることはなく、",
-    "description": "Part of 'holdToRevealContent3'"
-  },
-  "holdToRevealContent5": {
-    "message": "もし尋ねられた場合はフィッシング詐欺の可能性があります。",
-    "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealContentPrivateKey1": {
-    "message": "秘密鍵は$1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealContentPrivateKey2": {
-    "message": "ウォレットと資金への完全アクセス",
-    "description": "Is the bolded text in 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealLockedLabel": {
-    "message": "長押ししてロックされた円を表示します"
-  },
-  "holdToRevealPrivateKey": {
-    "message": "長押しして秘密鍵を表示します"
-  },
-  "holdToRevealPrivateKeyTitle": {
-    "message": "秘密鍵は安全に保管してください"
-  },
-  "holdToRevealSRP": {
-    "message": "長押しして SRP を表示"
-  },
-  "holdToRevealSRPTitle": {
-    "message": "SRPは安全に保管してください"
-  },
-  "holdToRevealUnlockedLabel": {
-    "message": "長押ししてロックが解除された円を表示します"
-  },
   "home": {
     "message": "ホーム",
     "description": "Label for the Home tab in the bottom navigation bar"
@@ -7190,9 +7144,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Content-Security-Policyヘッダーを上書き"
-  },
-  "padlock": {
-    "message": "南京錠"
   },
   "paidByMetaMask": {
     "message": "MetaMaskが負担"

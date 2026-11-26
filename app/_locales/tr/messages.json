@@ -4702,52 +4702,6 @@
   "history": {
     "message": "Geçmiş"
   },
-  "holdToRevealContent1": {
-    "message": "Gizli Kurtarma İfadeniz: $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
-  },
-  "holdToRevealContent2": {
-    "message": "cüzdanınıza ve paranıza tam erişim.",
-    "description": "Is the bolded text in 'holdToRevealContent1'"
-  },
-  "holdToRevealContent3": {
-    "message": "Hiç kimseyle paylaşmayın. $1 $2",
-    "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
-  },
-  "holdToRevealContent4": {
-    "message": "MetaMask Destek tarafından bu talep edilmez,",
-    "description": "Part of 'holdToRevealContent3'"
-  },
-  "holdToRevealContent5": {
-    "message": "ancak dolandırıcılar tarafından talep edilebilir.",
-    "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealContentPrivateKey1": {
-    "message": "Özel Anahtarınız $1 sağlar",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealContentPrivateKey2": {
-    "message": "cüzdanınıza ve paranıza tam erişim sağlar.",
-    "description": "Is the bolded text in 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealLockedLabel": {
-    "message": "kilitli daireyi açığa çıkarmak için tut"
-  },
-  "holdToRevealPrivateKey": {
-    "message": "Özel Anahtarı açığa çıkarmak için tut"
-  },
-  "holdToRevealPrivateKeyTitle": {
-    "message": "Özel anahtarınızı güvende tutun"
-  },
-  "holdToRevealSRP": {
-    "message": "GKİ'yi göstermek için basılı tut"
-  },
-  "holdToRevealSRPTitle": {
-    "message": "GKİ'nizi güvende tutun"
-  },
-  "holdToRevealUnlockedLabel": {
-    "message": "kilidi açılmış daireyi açığa çıkarmak için tut"
-  },
   "home": {
     "message": "Ana Sayfa",
     "description": "Label for the Home tab in the bottom navigation bar"
@@ -7190,9 +7144,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "İçerik-Güvenlik-Politika başlığını geçersiz kıl"
-  },
-  "padlock": {
-    "message": "Asma Kilit"
   },
   "paidByMetaMask": {
     "message": "MetaMask tarafından ödenir"

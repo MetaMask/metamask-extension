@@ -2068,52 +2068,6 @@
   "history": {
     "message": "Stair"
   },
-  "holdToRevealContent1": {
-    "message": "Soláthraíonn Do Rúndaí Aisghabhála $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
-  },
-  "holdToRevealContent2": {
-    "message": "rochtain iomlán ar do sparán agus ar do chistí.",
-    "description": "Is the bolded text in 'holdToRevealContent1'"
-  },
-  "holdToRevealContent3": {
-    "message": "Ná roinn seo le duine ar bith. $1 $2",
-    "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
-  },
-  "holdToRevealContent4": {
-    "message": "Ní iarrfaidh Tacaíocht MetaMask é seo,",
-    "description": "Part of 'holdToRevealContent3'"
-  },
-  "holdToRevealContent5": {
-    "message": "ach d’fhéadfadh iascairí.",
-    "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealContentPrivateKey1": {
-    "message": "Soláthraíonn d'Eochair Phríobháideach $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealContentPrivateKey2": {
-    "message": "rochtain iomlán ar do sparán agus ar do chistí.",
-    "description": "Is the bolded text in 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealLockedLabel": {
-    "message": "coinnigh chun an ciorcal faoi ghlas a nochtadh"
-  },
-  "holdToRevealPrivateKey": {
-    "message": "Coinnigh síos chun an Eochair Phríobháideach a nochtadh"
-  },
-  "holdToRevealPrivateKeyTitle": {
-    "message": "Coinnigh d’eochair phríobháideach slán"
-  },
-  "holdToRevealSRP": {
-    "message": "Coinnigh chun SRP a nochtadh"
-  },
-  "holdToRevealSRPTitle": {
-    "message": "Coinnigh do SRP slán"
-  },
-  "holdToRevealUnlockedLabel": {
-    "message": "coinnigh chun an ciorcal díghlasáilte a nochtadh"
-  },
   "honeypotDescription": {
     "message": "D’fhéadfadh riosca meala a bheith i gceist leis an gcomhartha seo. Moltar duit dícheall cuí a dhéanamh sula ndéantar idirghníomhú chun aon chaillteanas airgeadais féideartha a chosc."
   },
@@ -3305,9 +3259,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Sáraigh ceanntásc Beartas Slándála Ábhair"
-  },
-  "padlock": {
-    "message": "glas fraincín "
   },
   "participateInMetaMetrics": {
     "message": "Glac páirt i MetaMetrics"

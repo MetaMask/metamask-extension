@@ -4698,52 +4698,6 @@
   "history": {
     "message": "Ιστορικό"
   },
-  "holdToRevealContent1": {
-    "message": "Η Μυστική σας Φράση Ανάκτησης παρέχει $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
-  },
-  "holdToRevealContent2": {
-    "message": "πλήρη πρόσβαση στο πορτοφόλι και τα κεφάλαιά σας.",
-    "description": "Is the bolded text in 'holdToRevealContent1'"
-  },
-  "holdToRevealContent3": {
-    "message": "Μην τη μοιραστείτε με κανέναν. $1 $2",
-    "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
-  },
-  "holdToRevealContent4": {
-    "message": "Η Υποστήριξη του MetaMask δεν θα σας το ζητήσει ποτέ,",
-    "description": "Part of 'holdToRevealContent3'"
-  },
-  "holdToRevealContent5": {
-    "message": "αλλά ίσως το ζητήσουν οι απατεώνες.",
-    "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealContentPrivateKey1": {
-    "message": "Το ιδιωτικό σας κλειδί παρέχει $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealContentPrivateKey2": {
-    "message": "πλήρη πρόσβαση στο πορτοφόλι και τα κεφάλαιά σας.",
-    "description": "Is the bolded text in 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealLockedLabel": {
-    "message": "κρατήστε πατημένο για να αποκαλύψετε το κυκλάκι με κλειδί"
-  },
-  "holdToRevealPrivateKey": {
-    "message": "Κρατήστε πατήμενο για να αποκαλύψετε το ιδιωτικό κλειδί"
-  },
-  "holdToRevealPrivateKeyTitle": {
-    "message": "Κρατήστε το ιδιωτικό σας κλειδί ασφαλές"
-  },
-  "holdToRevealSRP": {
-    "message": "Κρατήστε πατημένο για αποκάλυψη της ΜΦΑ"
-  },
-  "holdToRevealSRPTitle": {
-    "message": "Κρατήστε τη ΜΦΑ σας ασφαλή"
-  },
-  "holdToRevealUnlockedLabel": {
-    "message": "κρατήστε πατημένο για να μην αποκαλύψετε το κυκλάκι με κλειδί"
-  },
   "home": {
     "message": "Αρχική σελίδα",
     "description": "Label for the Home tab in the bottom navigation bar"
@@ -7186,9 +7140,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Επικεφαλίδα Παράκαμψης Περιεχομένου-Ασφάλεια-Πολιτική"
-  },
-  "padlock": {
-    "message": "Padlock"
   },
   "paidByMetaMask": {
     "message": "Πληρωμή μέσω MetaMask"

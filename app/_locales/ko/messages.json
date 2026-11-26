@@ -4702,52 +4702,6 @@
   "history": {
     "message": "기록"
   },
-  "holdToRevealContent1": {
-    "message": "비밀복구구문이 있으면 $1 기능을 사용할 수 있습니다",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
-  },
-  "holdToRevealContent2": {
-    "message": "지갑과 자금 모두에 액세스할 수 있습니다.",
-    "description": "Is the bolded text in 'holdToRevealContent1'"
-  },
-  "holdToRevealContent3": {
-    "message": "이는 누구와도 공유하지 마세요. $1 $2",
-    "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
-  },
-  "holdToRevealContent4": {
-    "message": "MetaMask 지원팀은 이러한 정보를 절대로 묻지 않습니다,",
-    "description": "Part of 'holdToRevealContent3'"
-  },
-  "holdToRevealContent5": {
-    "message": "정보를 요구하는 경우 피싱 사기일 수 있습니다.",
-    "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealContentPrivateKey1": {
-    "message": "개인 키가 있으면 $1 기능을 사용할 수 있습니다",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealContentPrivateKey2": {
-    "message": "지갑과 자금 모두에 액세스할 수 있습니다.",
-    "description": "Is the bolded text in 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealLockedLabel": {
-    "message": "눌러서 잠긴 서클 공개"
-  },
-  "holdToRevealPrivateKey": {
-    "message": "눌러서 개인 키 공개"
-  },
-  "holdToRevealPrivateKeyTitle": {
-    "message": "개인 키를 안전하게 보관하세요"
-  },
-  "holdToRevealSRP": {
-    "message": "눌러서 SRP 공개"
-  },
-  "holdToRevealSRPTitle": {
-    "message": "SRP를 안전하게 보관하세요"
-  },
-  "holdToRevealUnlockedLabel": {
-    "message": "눌러서 잠금해제된 서클 공개"
-  },
   "home": {
     "message": "홈",
     "description": "Label for the Home tab in the bottom navigation bar"
@@ -7190,9 +7144,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Content-Security-Policy 헤더 무시"
-  },
-  "padlock": {
-    "message": "패드락"
   },
   "paidByMetaMask": {
     "message": "MetaMask가 지불함"
