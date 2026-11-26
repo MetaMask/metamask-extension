@@ -9,10 +9,7 @@ import {
   STELLAR_NETWORK_NAME,
 } from '../../stellar/mocks/stellar-constants';
 import { STELLAR_RECIPIENT_ADDRESS } from '../../stellar/mocks/stellar-tx-fixtures';
-import {
-  checkStellarHomeXlmBalance,
-  fillStellarRecipient,
-} from './helpers';
+import { checkStellarHomeXlmBalance, fillStellarRecipient } from './helpers';
 
 describe('Stellar Send', function () {
   it('blocks Continue when amount is empty', async function () {

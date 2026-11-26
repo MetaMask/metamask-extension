@@ -8,10 +8,7 @@ import {
   STELLAR_CHAIN_ID,
   STELLAR_NETWORK_NAME,
 } from '../../stellar/mocks/stellar-constants';
-import {
-  checkStellarHomeXlmBalance,
-  fillStellarRecipient,
-} from './helpers';
+import { checkStellarHomeXlmBalance, fillStellarRecipient } from './helpers';
 
 describe('Stellar Send', function () {
   it('blocks Continue when a bad address is entered', async function () {

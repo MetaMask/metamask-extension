@@ -41,8 +41,7 @@ function horizonRecordFromSignedXdr(
   envelopeXdr: string,
 ): Horizon.ServerApi.TransactionRecord {
   const parsed = TransactionBuilder.fromXDR(envelopeXdr, Networks.PUBLIC);
-  const built =
-    'innerTransaction' in parsed ? parsed.innerTransaction : parsed;
+  const built = 'innerTransaction' in parsed ? parsed.innerTransaction : parsed;
   const hash = built.hash().toString('hex');
   const createdAt = new Date().toISOString();
 
@@ -135,7 +134,8 @@ export async function mockHorizonTransactionByHash(
     .forGet(HORIZON_TX_BY_HASH_RE)
     .always()
     .thenCallback((req) => {
-      const hash = req.url.match(HORIZON_TX_BY_HASH_RE)?.[1]?.toLowerCase() ?? '';
+      const hash =
+        req.url.match(HORIZON_TX_BY_HASH_RE)?.[1]?.toLowerCase() ?? '';
       const record = store.byHash.get(hash);
       if (!record) {
         return {
