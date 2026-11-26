@@ -330,6 +330,10 @@ async function getPlugins() {
       lavamoatUnsafeLayerPlugin,
     );
   }
+  if (process.env.MM_DEBUG_HASH_DUMP) {
+    const { MmHashDump } = await import('./utils/plugins/MmHashDump.ts');
+    plugins.push(new MmHashDump());
+  }
   if (args.progress) {
     plugins.push(new ProgressPlugin());
   }
