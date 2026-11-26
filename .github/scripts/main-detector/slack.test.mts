@@ -381,5 +381,8 @@ describe('buildSlackMessage', () => {
     );
     expect(render(powerUser)).toContain('startupPowerUserHome');
     expect(render(powerUser)).toContain('Power user (30 accounts');
+    expect(powerUser.text).toContain('(power user) +');
+    expect(powerUser.text).not.toContain('standard user');
+    expect(buildSlackMessage(input({})).text).toContain('(standard user) +');
   });
 });

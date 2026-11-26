@@ -44,6 +44,12 @@ const SCENARIOS = {
     'Power user (30 accounts, with transactions), loading the home page',
 };
 
+// The user a startup preset measures, for the text that previews the message.
+const PRESET_USERS = {
+  startupStandardHome: 'standard user',
+  startupPowerUserHome: 'power user',
+};
+
 const METRIC_LABELS: Record<string, string> = {
   uiStartup: 'UI Startup',
   load: 'Page load',
@@ -318,7 +324,7 @@ export function buildSlackMessage(input: SlackInput): SlackPayload {
   const summary = [
     ...decision.findings.map(
       (finding) =>
-        `${browserName(finding.browser)} ${metricLabel(finding.metric)} (standard user) ${pct(finding.pooled.shiftPct)}`,
+        `${browserName(finding.browser)} ${metricLabel(finding.metric)} (${PRESET_USERS[preset]}) ${pct(finding.pooled.shiftPct)}`,
     ),
     ...slowCufs.map(
       (outcome) =>
