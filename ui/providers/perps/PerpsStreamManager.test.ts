@@ -746,6 +746,84 @@ describe('PerpsStreamManager', () => {
     });
   });
 
+  describe('REST fallback rejections', () => {
+    const channels: ['positions' | 'orders' | 'account', string, string][] = [
+      ['positions', 'perpsGetPositions', 'positions'],
+      ['orders', 'perpsGetOpenOrders', 'orders'],
+      ['account', 'perpsGetAccountState', 'account'],
+    ];
+
+    const subscribeWithRejection = async (
+      channel: 'positions' | 'orders' | 'account',
+      method: string,
+      error: Error,
+    ) => {
+      mockSubmitRequestToBackground.mockImplementation((name: string) =>
+        name === method ? Promise.reject(error) : Promise.resolve(undefined),
+      );
+      const cb = jest.fn();
+      manager[channel].subscribe(cb);
+      await jest.advanceTimersByTimeAsync(3_000);
+      return cb;
+    };
+
+    let consoleErrorSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      jest.useFakeTimers();
+      consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+    });
+
+    afterEach(() => {
+      consoleErrorSpy.mockRestore();
+      mockSubmitRequestToBackground.mockReset();
+      mockSubmitRequestToBackground.mockResolvedValue(undefined);
+    });
+
+    it.each(channels)(
+      'does not log a PROVIDER_LIFECYCLE_STALE rejection of the %s fetch',
+      async (channel, method) => {
+        await subscribeWithRejection(
+          channel,
+          method,
+          new Error('PROVIDER_LIFECYCLE_STALE'),
+        );
+
+        expect(consoleErrorSpy).not.toHaveBeenCalled();
+      },
+    );
+
+    it.each(channels)(
+      'logs any other rejection of the %s fetch',
+      async (channel, method, label) => {
+        await subscribeWithRejection(channel, method, new Error('boom'));
+
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          `[PerpsStreamManager] Failed to fetch ${label}`,
+          expect.objectContaining({ message: 'boom' }),
+        );
+      },
+    );
+
+    it.each([
+      ['positions', 'perpsGetPositions'],
+      ['orders', 'perpsGetOpenOrders'],
+    ] as ['positions' | 'orders', string][])(
+      'still pushes an empty %s list when the fetch is lifecycle-stale',
+      async (channel, method) => {
+        const cb = await subscribeWithRejection(
+          channel,
+          method,
+          new Error('PROVIDER_LIFECYCLE_STALE'),
+        );
+
+        expect(cb).toHaveBeenCalledWith([]);
+      },
+    );
+  });
+
   describe('markets channel', () => {
     beforeEach(() => {
       jest.useRealTimers();
