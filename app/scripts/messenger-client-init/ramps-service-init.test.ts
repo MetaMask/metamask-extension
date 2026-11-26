@@ -11,6 +11,7 @@ import { RampsServiceInit } from './ramps-service-init';
 jest.mock('@metamask/ramps-controller');
 jest.mock('../../../shared/lib/ramps/environment', () => ({
   getRampsEnvironment: jest.fn(() => 'staging'),
+  getRampsClientBuild: jest.fn(() => 'rc'),
 }));
 
 function getInitRequestMock(): jest.Mocked<
@@ -46,6 +47,7 @@ describe('RampsServiceInit', () => {
       fetch: expect.any(Function),
       clientProduct: 'metamask-extension',
       clientVersion: process.env.METAMASK_VERSION,
+      clientBuild: 'rc',
     });
   });
 
