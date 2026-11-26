@@ -345,8 +345,9 @@ describe('useUpdateSubscriptionCryptoPaymentMethod', () => {
           type: PAYMENT_TYPES.byCrypto,
           chains: [
             {
-              chainId: '0x1',
-              paymentAddress: '0x1234567890123456789012345678901234567890',
+              chainId: '0x1' as Hex,
+              paymentAddress:
+                '0x1234567890123456789012345678901234567890' as Hex,
               tokens: [],
             },
           ],
@@ -375,10 +376,10 @@ describe('useUpdateSubscriptionCryptoPaymentMethod', () => {
   });
 
   it('adds the approval transaction once when the hook re-renders while the update is in flight', async () => {
-    let resolveEstimateGas: (gas: string) => void = () => undefined;
+    let resolveEstimateGas: (gas: Hex) => void = () => undefined;
     mockEstimateGas.mockImplementationOnce(
       () =>
-        new Promise<string>((resolve) => {
+        new Promise<Hex>((resolve) => {
           resolveEstimateGas = resolve;
         }),
     );
@@ -403,7 +404,7 @@ describe('useUpdateSubscriptionCryptoPaymentMethod', () => {
     rerender();
 
     await act(async () => {
-      resolveEstimateGas('0x5208');
+      resolveEstimateGas('0x5208' as Hex);
     });
 
     await waitFor(() => {

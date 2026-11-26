@@ -819,11 +819,16 @@ export const useUpdateSubscriptionCryptoPaymentMethod = ({
       return;
     }
     isUpdatingPaymentMethodRef.current = true;
-    handler().finally(() => {
-      isUpdatingPaymentMethodRef.current = false;
-      // reset selected change payment token after update subscription crypto payment method finished
-      setSelectedChangePaymentToken(undefined);
-    });
+    const updatePaymentMethod = async () => {
+      try {
+        await handler();
+      } finally {
+        isUpdatingPaymentMethodRef.current = false;
+        // reset selected change payment token after update subscription crypto payment method finished
+        setSelectedChangePaymentToken(undefined);
+      }
+    };
+    updatePaymentMethod().catch(() => undefined);
   }, [selectedPaymentTokenAddress, handler]);
 
   // execute update subscription crypto payment method with new token by settings state with useEffect above to workaround useAsyncCallback hook not accepting callback parameter
