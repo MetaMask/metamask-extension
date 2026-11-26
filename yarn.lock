@@ -7704,11 +7704,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/client-mcp-core@npm:0.14.0":
-  version: 0.14.0
-  resolution: "@metamask/client-mcp-core@npm:0.14.0"
+"@metamask/client-mcp-core@npm:0.15.0":
+  version: 0.15.0
+  resolution: "@metamask/client-mcp-core@npm:0.15.0"
   dependencies:
-    "@metamask/device-mcp": "npm:^0.8.0"
+    "@metamask/device-mcp": "npm:^0.9.0"
     cosmiconfig: "npm:^9.0.0"
     express: "npm:^5.2.1"
     zod: "npm:^4.4.3"
@@ -7717,7 +7717,7 @@ __metadata:
     playwright: ^1.49.0
   bin:
     mm: ./dist/cli/mm.cjs
-  checksum: 10/be053d57b4992111568bf169dd41deb19a48f8fb35b395c1049c8d77197ff9ed3cfdabaf17321b8892b74691478d1db22c1a1b3a7f490ac6d3eafd2bd64972b2
+  checksum: 10/d1200be23e574c98d75c5389336fbf0028f272a7aa18aad67eeaccc220375959587a827d5583c2b952dbb0a6044c2d17e81a41cd32c0563638a44410fe5210cd
   languageName: node
   linkType: hard
 
@@ -7963,15 +7963,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/device-mcp@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "@metamask/device-mcp@npm:0.8.0"
+"@metamask/device-mcp@npm:^0.9.0":
+  version: 0.9.0
+  resolution: "@metamask/device-mcp@npm:0.9.0"
   dependencies:
     "@modelcontextprotocol/sdk": "npm:^1.32.0"
     zod: "npm:^4.6.6"
   bin:
     device-mcp: ./dist/cli/device-mcp.mjs
-  checksum: 10/92e0321ec1edfd9c686ce786ee29b87cb35f0af8e14d5ea90d355d9db18a50bb325a32e7042cade447ae61c8d540c8556481c6f5f0eadc343501173f9affb186
+  checksum: 10/edffb339e331a1b2f7ad175ca24d277dfc08e75d4f7e7dcf14a1c72ab0abb659783e4025b72934386af135d0b9cbaabaa2ba2962336f0b646b29a29d51b5bdf5
   languageName: node
   linkType: hard
 
@@ -34687,7 +34687,7 @@ __metadata:
     "@metamask/chomp-api-service": "npm:^4.0.2"
     "@metamask/claims-controller": "npm:^1.1.0"
     "@metamask/client-controller": "npm:^2.0.0"
-    "@metamask/client-mcp-core": "npm:0.14.0"
+    "@metamask/client-mcp-core": "npm:0.15.0"
     "@metamask/client-utils": "npm:^3.4.0"
     "@metamask/compliance-controller": "npm:^3.0.0"
     "@metamask/config-registry-controller": "npm:^6.0.0"
