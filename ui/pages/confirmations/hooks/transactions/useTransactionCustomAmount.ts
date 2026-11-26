@@ -13,7 +13,6 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
 import {
   setTransactionPayAtomic,
@@ -43,7 +42,11 @@ import {
   useTransactionPayPrimaryRequiredToken,
   useTransactionPayTotals,
 } from '../pay/useTransactionPayData';
-import { getTokenAddress } from '../../utils/transaction-pay';
+import {
+  getPaymentTokenKey,
+  getTokenAddress,
+  isMoneyAccountFunding,
+} from '../../utils/transaction-pay';
 import { decodePaymentTokenAssetId } from '../../../../../shared/lib/transaction/pay-token';
 import {
   MUSD_CONVERSION_DEFAULT_CHAIN_ID,
@@ -135,6 +138,8 @@ export function useTransactionCustomAmount({
   const { balanceRaw: livePayTokenBalanceRaw } = usePayTokenAccountBalance();
 
   const { payToken } = useTransactionPayToken();
+  // No-fee routes, the atomic Max hint and the recorded Max balance are keyed
+  // by EVM address and chain.
   const payTokenAsset = useMemo(
     () => decodePaymentTokenAssetId(payToken),
     [payToken],
@@ -420,7 +425,7 @@ export function useTransactionCustomAmount({
     setTransactionPayAtomic(transactionId, isAtomicMaxAllowed);
   }, [isAtomicMaxAllowed, isMaxAmount, isMoneyAccountDeposit, transactionId]);
 
-  const payTokenKey = `${payTokenAsset?.address ?? ''}:${payTokenAsset?.chainId ?? ''}:${accountOverride ?? ''}`;
+  const payTokenKey = `${getPaymentTokenKey(payToken)}:${accountOverride ?? ''}`;
   const prevPayTokenKeyRef = useRef(payTokenKey);
 
   // Pay-with / funding-account switches are token-specific: drop the raw Max
@@ -477,8 +482,7 @@ export function useTransactionCustomAmount({
     amountHuman,
     isMaxAmount,
     isMoneyAccountWithdraw,
-    payTokenAsset?.address,
-    payTokenAsset?.chainId,
+    payTokenKey,
     transactionId,
   ]);
 
@@ -905,8 +909,12 @@ function usePayTokenBalanceUsd(balanceUsdOverride?: number) {
   const paymentOverride = useSelector((state: TransactionPayState) =>
     selectPaymentOverrideByTransactionId(state, transactionId),
   );
-  const isMoneyPaymentOverride =
-    paymentOverride === PaymentOverride.MoneyAccount;
+  const { payToken } = useTransactionPayToken();
+  const isMoneyPaymentOverride = isMoneyAccountFunding({
+    paymentOverride,
+    payToken,
+    transactionMeta,
+  });
   const { withdrawableFiatRaw } = useMoneyAccountWithdrawableFiat(
     isMoneyPaymentOverride,
   );

@@ -415,6 +415,11 @@ type PayExtendedFlag = {
     relay?: {
       atomicMaxEnabled?: RelayAtomicMaxEnabledConfig;
     };
+    server?: {
+      enabled?: boolean;
+      enabledTransactionTypes?: string[];
+      solanaEnabled?: boolean;
+    };
   };
 };
 
@@ -503,6 +508,35 @@ export const selectRelayAtomicMaxEnabled = createSelector(
     }
 
     return config?.default ?? false;
+  },
+);
+
+/**
+ * Whether Solana payment tokens may be offered in MetaMask Pay for a
+ * transaction. Mirrors the Core gates for Solana sources under
+ * `confirmations_pay_extended.payStrategies.server`: the server strategy is
+ * `enabled`, the transaction type (including nested batch types) is in
+ * `enabledTransactionTypes`, and `solanaEnabled` is `true`.
+ *
+ * @param _state
+ * @param transactionMeta - Transaction being confirmed.
+ */
+export const selectIsSolanaPayEnabled = createSelector(
+  [
+    selectPayExtendedFlag,
+    (_state, transactionMeta?: TransactionMeta) => transactionMeta,
+  ],
+  (flag, transactionMeta): boolean => {
+    const server = flag?.payStrategies?.server;
+
+    return (
+      server?.enabled === true &&
+      server.solanaEnabled === true &&
+      hasTransactionType(
+        transactionMeta,
+        (server.enabledTransactionTypes ?? []) as TransactionType[],
+      )
+    );
   },
 );
 

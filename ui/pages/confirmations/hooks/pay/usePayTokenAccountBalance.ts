@@ -134,12 +134,23 @@ export function usePayTokenAccountBalance(): {
   );
 
   return useMemo(() => {
-    if (!payToken || !payTokenAsset) {
+    if (!payToken) {
       return {
         balanceUsd: '0',
         balanceRaw: '0',
         isLiveBalance: false,
         isBalanceUsdKnown: false,
+      };
+    }
+
+    // Core reads non-EVM balances and prices from AssetsController on every
+    // quote update, so the controller snapshot is the live balance.
+    if (!payTokenAsset) {
+      return {
+        balanceUsd: payToken.balanceUsd,
+        balanceRaw: payToken.balanceRaw,
+        isLiveBalance: true,
+        isBalanceUsdKnown: true,
       };
     }
 

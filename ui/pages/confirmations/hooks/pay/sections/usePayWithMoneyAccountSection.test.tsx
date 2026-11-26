@@ -47,6 +47,11 @@ jest.mock('../../../../../hooks/money/useMoneyVaultApy', () => ({
 }));
 jest.mock('../../../utils/transaction-pay', () => ({
   applyMoneyAccountOverride: jest.fn(),
+  isMoneyAccountFunding: jest.requireActual('../../../utils/transaction-pay')
+    .isMoneyAccountFunding,
+}));
+jest.mock('../useTransactionPayToken', () => ({
+  useTransactionPayToken: () => ({ payToken: undefined }),
 }));
 
 const MONEY_ACCOUNT_ADDRESS = '0xc4ff9e84b5754570812d891ade0bad3952bb5946';
