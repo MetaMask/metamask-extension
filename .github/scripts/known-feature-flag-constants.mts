@@ -74,6 +74,11 @@ const FILE_SOURCES: {
     exportName: 'EXTENSION_UPDATE_PROMPT_ON_ANY_ROUTE_FLAG',
   },
   {
+    key: 'EXTENSION_UPDATE_PROMPT_ON_NOTIFICATION_FLAG',
+    file: 'ui/selectors/extension-update-prompt.ts',
+    exportName: 'EXTENSION_UPDATE_PROMPT_ON_NOTIFICATION_FLAG',
+  },
+  {
     key: 'PAY_EXTENDED_FEATURE_FLAG',
     file: 'shared/lib/transaction/pay-prefill.ts',
     exportName: 'PAY_EXTENDED_FEATURE_FLAG',

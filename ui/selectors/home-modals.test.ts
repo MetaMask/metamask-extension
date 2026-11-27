@@ -3,6 +3,7 @@ import {
   selectCanShowLowPriorityModal,
   selectDisplayUpdateModal,
   selectIsUpdateModalDeferred,
+  selectIsUpdateModalDeferredByOpenFlow,
   getHomeDeepLinkQrCode,
 } from './home-modals';
 
@@ -271,4 +272,28 @@ describe('selectIsUpdateModalDeferred', () => {
       ).toBe(true);
     });
   }
+});
+
+describe('selectIsUpdateModalDeferredByOpenFlow', () => {
+  it('does not defer for a pending confirmation', () => {
+    expect(
+      selectIsUpdateModalDeferredByOpenFlow(
+        buildUpdatePendingState({
+          metamask: {
+            pendingApprovals: {
+              'approval-1': { id: 'approval-1', type: 'personal_sign' },
+            },
+          },
+        }),
+      ),
+    ).toBe(false);
+  });
+
+  it('defers while the network menu is open', () => {
+    expect(
+      selectIsUpdateModalDeferredByOpenFlow(
+        buildUpdatePendingState({ appState: { isNetworkMenuOpen: true } }),
+      ),
+    ).toBe(true);
+  });
 });
