@@ -36,6 +36,7 @@ import { useTransactionCustomAmountAlerts } from '../../../hooks/transactions/us
 import { useAutomaticTransactionPayToken } from '../../../hooks/pay/useAutomaticTransactionPayToken';
 import { useDefaultPaySelectedSection } from '../../../hooks/pay/useDefaultPaySelectedSection';
 import { useIsMoneyAccountFlagDefault } from '../../../hooks/pay/useIsMoneyAccountFlagDefault';
+import { useIsPaidByMetaMask } from '../../../hooks/pay/useIsPaidByMetaMask';
 import { useTransactionPayPostQuote } from '../../../hooks/pay/useTransactionPayPostQuote';
 import { useTransactionPayWithdraw } from '../../../hooks/pay/useTransactionPayWithdraw';
 import type { SetPayTokenRequest } from '../../../hooks/pay/types';
@@ -438,11 +439,15 @@ function BottomContainer({
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
-  // Withdrawals show Receive only when post-quote token selection is enabled;
-  // otherwise the direct transfer keeps its regular Total. Input-based quotes
-  // show Receive according to the controller-owned totals semantics.
+  // Show Receive for post-quote withdrawals, input-based quotes, and subsidized
+  // quotes; keep Total for unsubsidized target-based quotes and direct
+  // transfers.
   const { canSelectWithdrawToken } = useTransactionPayWithdraw();
   const isInputBased = useTransactionPayTotals()?.isInputBased === true;
+  const isPaidByMetaMask = useIsPaidByMetaMask();
+  const showReceiveRow =
+    (canSelectWithdrawToken || isInputBased || isPaidByMetaMask) &&
+    disablePay !== true;
 
   return (
     <Box
@@ -470,7 +475,7 @@ function BottomContainer({
               <BridgeTimeRow rowVariant={ConfirmInfoRowSize.Small} />
             </>
           )}
-          {(canSelectWithdrawToken || isInputBased) && disablePay !== true ? (
+          {showReceiveRow ? (
             <ReceiveRow
               inputAmountUsd={amountFiat}
               variant={ConfirmInfoRowSize.Small}

@@ -57,16 +57,16 @@ export type ReceiveRowProps = {
 };
 
 /**
- * Row that displays "You'll receive" for withdrawals and input-based deposits.
- * Withdrawals calculate input minus provider, source-network, target-network,
- * and MetaMask fees. Input-based deposits display the controller's target
- * amount.
+ * Row that displays "You'll receive" for withdrawals, input-based quotes, and
+ * subsidized quotes. Withdrawals subtract provider, source-network,
+ * target-network, and MetaMask fees; input-based quotes display the
+ * controller's target amount; subsidized quotes display the entered amount.
  *
  * Mirrors the mobile `ReceiveRow`.
  *
- * @param options0
- * @param options0.inputAmountUsd
- * @param options0.variant
+ * @param options0 - Component props.
+ * @param options0.inputAmountUsd - The user's entered amount in USD.
+ * @param options0.variant - Row size variant.
  */
 export function ReceiveRow({
   inputAmountUsd,
@@ -112,8 +112,8 @@ export function ReceiveRow({
     }
 
     const inputUsd = new BigNumber(inputAmountUsd || '0');
-    // Same-token Money Account withdraws quote estimated network gas that
-    // Monad sponsors. Subtracting it would show $0 received on a tiny send.
+    // Subsidized quotes and gas-sponsored withdraws deliver the full entered
+    // amount without subtracting fees.
     if (isPaidByMetaMask) {
       return formatFiat(
         (inputUsd.gte(0) ? inputUsd : new BigNumber(0)).toNumber(),
