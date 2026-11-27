@@ -8,6 +8,7 @@ import {
   type Verdict,
 } from './score.mts';
 import type { ShiftSummary } from './stats.mts';
+import { renderCufSummary, type CufResult } from './cufs.mts';
 
 export type PlanInfo = {
   headSha: string;
@@ -77,8 +78,9 @@ export function renderSummary(options: {
   second?: BatchScores;
   decision: Decision;
   config: DetectorConfig;
+  cufs?: CufResult;
 }): string {
-  const { plan, first, second, decision, config } = options;
+  const { plan, first, second, decision, config, cufs } = options;
   const head = plan.headSha.slice(0, 10);
   const lines = [
     '## Main performance detector',
@@ -91,7 +93,7 @@ export function renderSummary(options: {
       ? `Dry run: the head build was slowed by ${plan.injectMs} ms on purpose.`
       : '',
     '',
-    `**Result: ${resultLabel(decision, plan)}**`,
+    `**Result: ${resultLabel(decision, plan, cufs)}**`,
     '',
     `Quiet at a shift of at least ${floorsText(config, 'floorMs')} with the one-sided 95% bound on the same side of zero, confirmed by a second batch; loud from ${floorsText(config, 'loudMs')}.`,
     '',
@@ -131,11 +133,43 @@ export function renderSummary(options: {
       BREAKDOWN_METRICS,
       false,
     ),
+    ...(cufs ? renderCufSummary(cufs) : []),
   );
   return lines.join('\n');
 }
 
-export function resultLabel(decision: Decision, plan: PlanInfo): string {
+// origin: ai-reviewed
+/**
+ * @param decision - The startup decision.
+ * @param plan - What was compared.
+ * @param cufs - The critical user flows' result, when they ran.
+ */
+export function resultLabel(
+  decision: Decision,
+  plan: PlanInfo,
+  cufs?: CufResult,
+): string {
+  const startup = startupLabel(decision, plan);
+  const parts: string[] = [];
+  if (cufs && cufs.findings.length > 0) {
+    parts.push(
+      `critical user flow slower${plan.canary ? ' (false alarm: canary)' : ''}: ${cufs.findings.join(', ')}`,
+    );
+  }
+  if (cufs && cufs.unmeasured.length > 0) {
+    parts.push(
+      `could not measure critical user flows: ${cufs.unmeasured.join(', ')}`,
+    );
+  }
+  if (parts.length === 0) {
+    return startup;
+  }
+  return startup === 'no change detected'
+    ? parts.join('; ')
+    : [startup, ...parts].join('; ');
+}
+
+function startupLabel(decision: Decision, plan: PlanInfo): string {
   if (decision.ping !== 'none') {
     const metrics = [
       ...new Set(

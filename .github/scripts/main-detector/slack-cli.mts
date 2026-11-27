@@ -1,6 +1,7 @@
 /**
  * Usage: node .github/scripts/main-detector/slack-cli.mts --result result.json [--run-url URL]
- * Posts a Slack message when the detector result has a ping. With no
+ * Posts a Slack message when the detector result has a ping or a slower
+ * critical user flow. With no
  * SLACK_BOT_TOKEN set it prints the payload instead, so the same
  * command doubles as a dry run; SLACK_CHANNEL names the channel to post to.
  * Needs `gh` for the commit author.
@@ -43,7 +44,8 @@ async function main(): Promise<void> {
   requireSlackInCi();
 
   const result = JSON.parse(fs.readFileSync(values.result, 'utf8'));
-  if (result.decision.ping === 'none') {
+  // A slower critical user flow posts even when startup did not change.
+  if (result.decision.ping === 'none' && !result.cufs?.findings.length) {
     console.log(`No ping (${result.label}); nothing to post.`);
     return;
   }
@@ -56,6 +58,7 @@ async function main(): Promise<void> {
     repository: REPOSITORY,
     runUrl: values['run-url'],
     author: authorOf(result.plan.headSha),
+    cufs: result.cufs,
   });
 
   await postOrPrint(payload);

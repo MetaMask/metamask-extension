@@ -25,6 +25,7 @@ import {
 } from '../../../shared/constants/benchmarks';
 import { toCamelCase } from '../../../shared/lib/string-utils';
 import { runBenchmarkWithIterations, convertSummaryToResults } from './utils';
+import type { BenchmarkSummary } from './utils/types';
 import {
   STARTUP_PRESETS,
   INTERACTION_PRESETS,
@@ -201,6 +202,7 @@ async function runBenchmarkFile(
 
   let result: BenchmarkResults;
   let violations: ThresholdViolation[];
+  let samples: BenchmarkSummary['samples'];
 
   resetAbPilot();
 
@@ -225,6 +227,7 @@ async function runBenchmarkFile(
     );
 
     violations = summary.thresholdViolations;
+    ({ samples } = summary);
     result = convertSummaryToResults(
       summary,
       testTitle,
@@ -246,7 +249,11 @@ async function runBenchmarkFile(
 
   const abPilot = getAbPilotRecord();
 
-  return { ...result, ...(abPilot && { abPilot }) };
+  return {
+    ...result,
+    ...(samples && { samples }),
+    ...(abPilot && { abPilot }),
+  };
 }
 
 /**

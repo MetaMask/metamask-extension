@@ -11,6 +11,7 @@ import {
 } from './score.mts';
 import { summarizeShifts, toPercent } from './stats.mts';
 import type { PlanInfo } from './report.mts';
+import { CUF_FLOW_FILES, formatCufOutcome, type CufResult } from './cufs.mts';
 
 export type SlackPayload = {
   // Fallback for notifications and clients without block support.
@@ -26,6 +27,8 @@ export type SlackInput = {
   repository: string;
   runUrl: string;
   author: string;
+  // The critical user flows' result, when they ran.
+  cufs?: CufResult;
 };
 
 const pct = (value: number) => `${value >= 0 ? '+' : ''}${value.toFixed(1)}%`;
@@ -113,12 +116,19 @@ function floorsText(key: 'floorMs' | 'loudMs'): string {
   ).join(', ');
 }
 
-function policyText(plan: PlanInfo, loud: boolean): string {
+function policyText(
+  plan: PlanInfo,
+  loud: boolean,
+  startupChanged: boolean,
+): string {
   if (typeof plan.injectMs === 'number') {
     return `The head build was slowed by ${plan.injectMs} ms on purpose to test the detector. This is not a real change.`;
   }
   if (plan.canary) {
     return 'Head and base are the same build, so this is noise, not a change. Nothing needs fixing in the commit.';
+  }
+  if (!startupChanged) {
+    return "At least one critical user flow is slower than its series' threshold (δ_block) at the paired rule's one-sided 95% bound. PRs and releases are not blocked, but the commit below is worth a look.";
   }
   const size = loud
     ? `At least one metric moved by its large-change size or more (${floorsText('loudMs')})`
@@ -134,8 +144,12 @@ function policyText(plan: PlanInfo, loud: boolean): string {
  * @param input - The detector result and where it ran.
  */
 export function buildSlackMessage(input: SlackInput): SlackPayload {
-  const { plan, first, second, decision, repository, runUrl, author } = input;
+  const { plan, first, second, decision, repository, runUrl, author, cufs } =
+    input;
   const loud = decision.ping === 'loud';
+  const startupChanged = decision.findings.length > 0;
+  const slowCufs =
+    cufs?.outcomes.filter((outcome) => outcome.verdict === 'block') ?? [];
   const scores = second ? [first, second] : [first];
   const short = plan.headSha.slice(0, 7);
   const commitUrl = `https://github.com/${repository}/commit/${plan.headSha}`;
@@ -158,7 +172,7 @@ export function buildSlackMessage(input: SlackInput): SlackPayload {
 
   const blocks: AnyBlock[] = [
     section(
-      `:warning: *Performance detector: ${headline}* just hit branch \`main\` on \`${repository}\`\n\n${policyText(plan, loud)}`,
+      `:warning: *Performance detector: ${headline}* just hit branch \`main\` on \`${repository}\`\n\n${policyText(plan, loud, startupChanged)}`,
     ),
     section(
       `:mag: *Commit*\n• <${commitUrl}|${short}> ${subject} — by ${escapeSlack(author)}`,
@@ -168,7 +182,15 @@ export function buildSlackMessage(input: SlackInput): SlackPayload {
   const jobs = first.chrome.jobsTotal;
   blocks.push(
     section(
-      `:test_tube: *What was measured*\n• ${SCENARIO}\n• Benchmark \`startupStandardHome\` in Chrome and Firefox, ${scores.length} batch${scores.length === 1 ? '' : 'es'} of ${jobs} paired jobs per browser, base and head builds alternating on one runner`,
+      `:test_tube: *What was measured*\n• ${SCENARIO}\n• Benchmark \`startupStandardHome\` in Chrome and Firefox, ${scores.length} batch${scores.length === 1 ? '' : 'es'} of ${jobs} paired jobs per browser, base and head builds alternating on one runner${
+        cufs
+          ? `\n• Critical user flows ${Object.keys(CUF_FLOW_FILES)
+              .map((flow) => `\`${flow}\``)
+              .join(
+                ', ',
+              )} in Chrome, base and head builds alternating per iteration`
+          : ''
+      }`,
     ),
   );
 
@@ -193,14 +215,29 @@ export function buildSlackMessage(input: SlackInput): SlackPayload {
     );
   }
 
+  if (slowCufs.length > 0) {
+    blocks.push(
+      section(
+        `:large_orange_circle: *Critical user flow slower* (paired rule, lower bound above δ_block)\n${slowCufs
+          .map(
+            (outcome) =>
+              `• *\`${outcome.series}\`*: ${formatCufOutcome(outcome)}`,
+          )
+          .join('\n')}`,
+      ),
+    );
+  }
+
   const browsers = [...new Set(decision.findings.map((f) => f.browser))];
-  blocks.push(
-    section(
-      `:large_blue_circle: *Breakdown* (pooled, for context)\n${browsers
-        .map((browser) => formatBreakdown(browser, scores))
-        .join('\n')}`,
-    ),
-  );
+  if (browsers.length > 0) {
+    blocks.push(
+      section(
+        `:large_blue_circle: *Breakdown* (pooled, for context)\n${browsers
+          .map((browser) => formatBreakdown(browser, scores))
+          .join('\n')}`,
+      ),
+    );
+  }
 
   const notes: string[] = [];
   const huge = browsers.some((browser) =>
@@ -228,6 +265,11 @@ export function buildSlackMessage(input: SlackInput): SlackPayload {
       `_Could not measure: ${decision.unmeasured.map(browserName).join(', ')}._`,
     );
   }
+  if (cufs && cufs.unmeasured.length > 0) {
+    notes.push(
+      `_Could not measure critical user flows: ${cufs.unmeasured.join(', ')}._`,
+    );
+  }
   if (notes.length > 0) {
     blocks.push(section(notes.join('\n')));
   }
@@ -242,12 +284,16 @@ export function buildSlackMessage(input: SlackInput): SlackPayload {
     ],
   });
 
-  const summary = decision.findings
-    .map(
+  const summary = [
+    ...decision.findings.map(
       (finding) =>
         `${browserName(finding.browser)} ${metricLabel(finding.metric)} (standard user) ${pct(finding.pooled.shiftPct)}`,
-    )
-    .join(', ');
+    ),
+    ...slowCufs.map(
+      (outcome) =>
+        `${outcome.series} ${(outcome.decision?.shift ?? 0) >= 0 ? '+' : ''}${(outcome.decision?.shift ?? 0).toFixed(1)} ms`,
+    ),
+  ].join(', ');
   return {
     text: `Performance detector: ${headline} at ${short}: ${summary}`,
     blocks,

@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { loadBatch, readJob } from './load.mts';
+import { loadBatch, readJob, readJobFlows } from './load.mts';
 
 const sessions = Array.from({ length: 10 }, (_, index) => ({
   index,
@@ -59,6 +59,24 @@ describe('detector artifacts', () => {
       writeJob('job', content);
       expect(readJob(path.join(root, 'job'))).toStrictEqual(unusable);
     }
+  });
+
+  // origin: ai-synthesis
+  it('reads every flow of a job that ran several, skipping a flow with no A/B data', () => {
+    const flowSamples = { step: [100, 101] };
+    writeJob(
+      'job',
+      JSON.stringify({
+        loadNewAccount: { abPilot: { sessions }, samples: flowSamples },
+        confirmTx: { error: 'flake' },
+        bridgeUserActions: { abPilot: { sessions }, samples },
+      }),
+    );
+    expect(readJobFlows(path.join(root, 'job'))).toStrictEqual({
+      loadNewAccount: { sessions, samples: flowSamples },
+      bridgeUserActions: { sessions, samples },
+    });
+    expect(readJobFlows(path.join(root, 'missing'))).toStrictEqual({});
   });
 
   it('counts a shard whose artifact is missing as an unusable job', () => {

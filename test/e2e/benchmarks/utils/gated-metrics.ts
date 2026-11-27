@@ -92,3 +92,10 @@ export type GatedMetric = (typeof GATED_METRIC_VALUES)[number];
 export const GATED_METRICS: ReadonlySet<GatedMetric> = new Set(
   GATED_METRIC_VALUES,
 );
+
+// origin: ai-synthesis
+export {
+  ADMITTED_SERIES,
+  getAdmittedDeltaBlockMs,
+  type AdmittedSeries,
+} from './admitted-series';
