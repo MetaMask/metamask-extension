@@ -20,7 +20,7 @@ import {
 } from '@metamask/design-system-react';
 import { AccountTypeLabel } from '../account-type-label/account-type-label';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { getImageForChainId } from '../../../selectors/multichain';
+import { useImageForChainId } from '../../../hooks/useImageForChainId';
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
@@ -88,7 +88,7 @@ export const MultichainAddressRow = ({
   className = '',
 }: MultichainAddressRowProps) => {
   const t = useI18nContext();
-  const networkImageSrc = getImageForChainId(
+  const networkImageSrc = useImageForChainId(
     chainId.startsWith(KnownCaipNamespace.Eip155)
       ? convertCaipToHexChainId(chainId as CaipChainId)
       : chainId,

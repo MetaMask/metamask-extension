@@ -141,6 +141,8 @@ describe('MoneyAccountDetails', () => {
     mockUseLocalTransactionMeta.mockReturnValue(undefined);
     mockUseMoneyAccountDeposit.mockReturnValue({
       initiateDeposit: mockInitiateDeposit,
+      isDisabled: false,
+      isLifecycleLoading: false,
       isLoading: false,
     });
     mockUseMoneyAccountInfo.mockReturnValue({
@@ -289,6 +291,20 @@ describe('MoneyAccountDetails', () => {
       });
     });
 
+    it('disables the Add funds button when the Money Account is read-only', () => {
+      mockUseMoneyAccountDeposit.mockReturnValue({
+        initiateDeposit: mockInitiateDeposit,
+        isDisabled: true,
+        isLifecycleLoading: false,
+        isLoading: false,
+      });
+      mockUseLocalTransactionMeta.mockReturnValue(buildTransactionMeta());
+
+      render(<MoneyAccountDetails item={buildItem()} />);
+
+      expect(screen.getByRole('button', { name: 'addFunds' })).toBeDisabled();
+    });
+
     it('falls back to the block explorer for a withdrawal', () => {
       mockUseLocalTransactionMeta.mockReturnValue(buildTransactionMeta());
 
@@ -302,6 +318,26 @@ describe('MoneyAccountDetails', () => {
       expect(button).toHaveAttribute('data-chain-id', 'eip155:1');
       expect(button).toHaveAttribute('data-tx-hash', '0xhash');
       expect(screen.queryByText('addFunds')).toBeNull();
+    });
+
+    it('opens a cross-chain withdrawal on the destination chain explorer', () => {
+      mockUseLocalTransactionMeta.mockReturnValue({
+        ...buildTransactionMeta(),
+        type: 'moneyAccountWithdraw',
+        chainId: '0x8f',
+        metamaskPay: { chainId: '0x2105', isPostQuote: true },
+      } as unknown as TransactionMeta);
+
+      render(
+        <MoneyAccountDetails
+          item={buildItem({ type: 'moneyAccountWithdraw' })}
+        />,
+      );
+
+      expect(screen.getByTestId('block-explorer-button')).toHaveAttribute(
+        'data-chain-id',
+        'eip155:8453',
+      );
     });
 
     it('falls back to the block explorer when the user has no money account', () => {

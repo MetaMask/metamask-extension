@@ -15,11 +15,13 @@ import { isManifestV3 } from '../../../shared/lib/mv3.utils';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { getSentryRelease } from '../../../shared/lib/sentry-release';
 import { applySentryRemoteRates } from '../../../shared/lib/sentry-remote-rates';
+import { trackBackgroundPageload } from '../../../shared/lib/trace';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { metaMetricsIntegration } from './sentry-metametrics';
 import {
   BACKEND_TRACE_PROPAGATION_TARGETS,
   consensysTracePropagationIntegration,
+  isClaimedRequest,
 } from './sentry-trace-propagation';
 import {
   getAnalyticsState,
@@ -362,6 +364,7 @@ function setSentryClient(): true {
 
   Sentry.registerSpanErrorInstrumentation();
   Sentry.init(clientOptions);
+  trackBackgroundPageload(Sentry.getClient());
 
   // Apply remote-flag sample-rate overrides once, post-init; compile-time
   // rates remain the fallback when the flag is absent or malformed.
@@ -427,12 +430,17 @@ export function beforeBreadcrumb(): BeforeBreadcrumbHandler {
  * Never filter a URL matching
  * `BACKEND_TRACE_PROPAGATION_TARGETS` — the SDK propagates the request span's
  * id as the W3C `traceparent` parent, so dropping that span client-side
- * orphans the backend's subtree of the trace.
+ * orphans the backend's subtree of the trace. A claimed request is the
+ * exception: its headers name the claimant (`claimBackendRequests`).
  *
  * @param url - The request URL.
  * @returns Whether to create a span for the request.
  */
 export function shouldCreateSpanForRequest(url: string): boolean {
+  // A claimed request's trace headers name its claimant, not the active span.
+  if (isClaimedRequest(url)) {
+    return false;
+  }
   // Do not create spans for high-volume remote fetches with no per-request
   // diagnostic value: telemetry endpoints (sentry.io, segment.io) and static
   // config files re-fetched on a constant poll cadence (chainid.network chain

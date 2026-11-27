@@ -417,6 +417,24 @@ const mockDefaultVisibleCandleCount = 30;
 const mockPendingTradeConfigurationTtlMs = 30_000;
 
 /**
+ * Read v25 trade settings for the effective venue, including its pre-init fallback.
+ *
+ * @param {object | undefined} state
+ * @param {string} coin
+ * @returns {object | undefined}
+ */
+function mockGetMarketConfig(state, coin) {
+  const network = state?.isTestnet ? 'testnet' : 'mainnet';
+  const venue =
+    state?.effectiveProvider ??
+    (state?.activeProvider === 'aggregated'
+      ? state.defaultProvider
+      : state?.activeProvider);
+  const provider = venue === 'lighter' ? 'lighter' : 'hyperliquid';
+  return state?.tradeConfigurations?.[network]?.[provider]?.[coin];
+}
+
+/**
  * Mirror `selectPendingTradeConfiguration` so UI tests expire drafts the same
  * way `PerpsController.getPendingTradeConfiguration` does (`age > TTL`).
  *
@@ -425,8 +443,7 @@ const mockPendingTradeConfigurationTtlMs = 30_000;
  * @returns {object | undefined}
  */
 function mockSelectPendingTradeConfiguration(state, coin) {
-  const network = state?.isTestnet ? 'testnet' : 'mainnet';
-  const config = state?.tradeConfigurations?.[network]?.[coin]?.pendingConfig;
+  const config = mockGetMarketConfig(state, coin)?.pendingConfig;
   if (!config) {
     return undefined;
   }
@@ -435,6 +452,16 @@ function mockSelectPendingTradeConfiguration(state, coin) {
     return undefined;
   }
   return configWithoutTimestamp;
+}
+
+/**
+ * @param {object | undefined} state
+ * @param {string} coin
+ * @returns {{ leverage?: number } | undefined}
+ */
+function mockSelectTradeConfiguration(state, coin) {
+  const leverage = mockGetMarketConfig(state, coin)?.leverage;
+  return leverage ? { leverage } : undefined;
 }
 
 /**
@@ -454,8 +481,7 @@ function mockSelectOrderBookPreferences(state) {
  * @returns {number | undefined}
  */
 function mockSelectOrderBookGrouping(state, coin) {
-  const network = state?.isTestnet ? 'testnet' : 'mainnet';
-  return state?.tradeConfigurations?.[network]?.[coin]?.orderBookGrouping;
+  return mockGetMarketConfig(state, coin)?.orderBookGrouping;
 }
 
 /**
@@ -475,6 +501,7 @@ const mockCloseCalculations = require('@metamask/perps-controller/utils/closeCal
 const mockTpslCalculations = require('@metamask/perps-controller/utils/tpslCalculations');
 const mockPerpsConfig = require('@metamask/perps-controller/constants/perpsConfig');
 const mockPerpsFormatters = require('@metamask/perps-controller/utils/perpsFormatters');
+const mockOrderCalculations = require('@metamask/perps-controller/utils/orderCalculations');
 
 module.exports = {
   ...mockCloseCalculations,
@@ -483,6 +510,7 @@ module.exports = {
   TP_SL_PRECISION_CONFIG: mockPerpsConfig.TP_SL_PRECISION_CONFIG,
   formatPerpsFiat: mockPerpsFormatters.formatPerpsFiat,
   formatPnl: mockPerpsFormatters.formatPnl,
+  calculatePositionSize: mockOrderCalculations.calculatePositionSize,
   DEFAULT_ORDER_BOOK_PREFERENCES: mockDefaultOrderBookPreferences,
   DEFAULT_PRO_LAYOUT_PREFERENCES: mockDefaultProLayoutPreferences,
   DEFAULT_SELECTED_ORDER_TYPE: 'market',
@@ -491,6 +519,7 @@ module.exports = {
     PendingTradeConfigurationTtlMs: mockPendingTradeConfigurationTtlMs,
   },
   selectPendingTradeConfiguration: mockSelectPendingTradeConfiguration,
+  selectTradeConfiguration: mockSelectTradeConfiguration,
   selectOrderBookPreferences: mockSelectOrderBookPreferences,
   selectOrderBookGrouping: mockSelectOrderBookGrouping,
   selectVisibleCandleCount: mockSelectVisibleCandleCount,

@@ -8,10 +8,6 @@
   "about": {
     "message": "حول"
   },
-  "acceptTermsOfUse": {
-    "message": "لقد قرأت دولار واحد وأوافق عليه",
-    "description": "$1 is the `terms` message"
-  },
   "accessingYourCamera": {
     "message": "جاري استخدام كاميرتك..."
   },
@@ -224,9 +220,6 @@
   "gasLimit": {
     "message": "الحد الأقصى لوحدات جاس"
   },
-  "gasUsed": {
-    "message": "وحدات جاس المستخدمة"
-  },
   "general": {
     "message": "عام"
   },
@@ -347,9 +340,6 @@
   "newContract": {
     "message": "عقد جديد"
   },
-  "newPassword": {
-    "message": "كلمة مرور جديدة (8 أحرف كحد أدنى)"
-  },
   "next": {
     "message": "التالي"
   },
@@ -404,9 +394,6 @@
   "privateKey": {
     "message": "المفتاح الخاص",
     "description": "select this type of file to use to import an account"
-  },
-  "privateNetwork": {
-    "message": "شبكة خاصة"
   },
   "readdToken": {
     "message": "يمكنك إضافة هذه العملة الرمزية مرة أخرى في المستقبل من خلال الانتقال إلى \"إضافة عملة رمزية\" في قائمة خيارات الحسابات الخاصة بك."
@@ -561,9 +548,6 @@
   },
   "unapproved": {
     "message": "تم الرفض"
-  },
-  "units": {
-    "message": "وحدات"
   },
   "unknown": {
     "message": "غير معروف"

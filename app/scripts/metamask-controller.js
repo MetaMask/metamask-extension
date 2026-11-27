@@ -235,6 +235,7 @@ import {
 } from './controllers/analytics';
 import { handleRampsOrderStatusChanged } from './lib/ramps/handleRampsOrderStatusChanged';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
+import { traceSubscriptionControllerPolls } from './wallet-init/subscription-controller-poll-trace';
 import {
   addHexPrefix,
   getMethodDataName,
@@ -302,7 +303,6 @@ import { RampsServiceInit } from './messenger-client-init/ramps-service-init';
 import { RampsControllerInit } from './messenger-client-init/ramps-controller-init';
 import { PerpsControllerInit } from './messenger-client-init/perps-controller-init';
 import { PerpsStreamBridge } from './controllers/perps/perps-stream-bridge';
-import { PPOMControllerInit } from './messenger-client-init/confirmations/ppom-controller-init';
 import { SmartTransactionsControllerInit } from './messenger-client-init/smart-transactions/smart-transactions-controller-init';
 import { initMessengerClients } from './messenger-client-init/utils';
 import {
@@ -340,15 +340,13 @@ import { GatorPermissionsControllerInit } from './messenger-client-init/gator-pe
 import { registerLinkedSocialLoginProfileSync } from './lib/sync-linked-social-login-profile';
 
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
-import { TokenDetectionControllerInit } from './messenger-client-init/token-detection-controller-init';
+import { updatePhishingLists } from './lib/update-phishing-lists';
 import { TokensControllerInit } from './messenger-client-init/tokens-controller-init';
 import { StaticAssetsControllerInit } from './messenger-client-init/static-assets-controller-init';
 import { RatesControllerInit } from './messenger-client-init/rates-controller-init';
-import { CurrencyRateControllerInit } from './messenger-client-init/currency-rate-controller-init';
 import { NameControllerInit } from './messenger-client-init/confirmations/name-controller-init';
 import { ShieldSubscriptionServiceInit } from './messenger-client-init/subscription';
 import { NetworkConnectionBannerControllerInit } from './messenger-client-init/network-connection-banner';
-import { AccountTrackerControllerInit } from './messenger-client-init/account-tracker-controller-init';
 import { OnboardingControllerInit } from './messenger-client-init/onboarding-controller-init';
 import { BridgeControllerInit } from './messenger-client-init/bridge-controller-init';
 import { BridgeStatusControllerInit } from './messenger-client-init/bridge-status-controller-init';
@@ -365,12 +363,11 @@ import { DecryptMessageManagerInit } from './messenger-client-init/confirmations
 import { DecryptMessageControllerInit } from './messenger-client-init/confirmations/decrypt-message-controller-init';
 import { EncryptionPublicKeyControllerInit } from './messenger-client-init/confirmations/encryption-public-key-controller-init';
 import { EncryptionPublicKeyManagerInit } from './messenger-client-init/confirmations/encryption-public-key-message-manager-init';
-import { SignatureControllerInit } from './messenger-client-init/confirmations/signature-controller-init';
-import { UserOperationControllerInit } from './messenger-client-init/confirmations/user-operation-controller-init';
 import { RewardsDataServiceInit } from './messenger-client-init/rewards-data-service-init';
 import { RewardsControllerInit } from './messenger-client-init/rewards-controller-init';
 import { RewardsMoneyDataServiceInit } from './messenger-client-init/rewards-money-data-service-init';
 import { RewardsMoneyControllerInit } from './messenger-client-init/rewards-money-controller-init';
+import { AiDigestControllerInit } from './messenger-client-init/ai-digest-controller-init';
 import { QrSyncControllerInit } from './messenger-client-init/qr-sync';
 import { getRootMessenger } from './lib/messenger';
 import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
@@ -388,6 +385,7 @@ import { MoneyAccountApiDataServiceInit } from './messenger-client-init/money-ac
 import { MoneyAccountAvailabilityServiceInit } from './messenger-client-init/money-account-availability-service-init';
 import { MoneyAccountBalanceServiceInit } from './messenger-client-init/money-account-balance-service-init';
 import { MoneyAccountControllerInit } from './messenger-client-init/money-account-controller-init';
+import { MoneyAccountLifecycleControllerInit } from './messenger-client-init/money-account-lifecycle-controller-init';
 import { MoneyAccountUpgradeControllerInit } from './messenger-client-init/money-account-upgrade-controller-init';
 import { initializeWallet } from './wallet-init/initialization';
 import { setupNetworkEnablementController } from './wallet-init/network-enablement-controller';
@@ -550,7 +548,6 @@ export default class MetamaskController extends EventEmitter {
       DecryptMessageController: DecryptMessageControllerInit,
       EncryptionPublicKeyManager: EncryptionPublicKeyManagerInit,
       EncryptionPublicKeyController: EncryptionPublicKeyControllerInit,
-      SignatureController: SignatureControllerInit,
       PermissionLogController: PermissionLogControllerInit,
       AppStateController: AppStateControllerInit,
       OnboardingController: OnboardingControllerInit,
@@ -558,7 +555,6 @@ export default class MetamaskController extends EventEmitter {
       UserTraitsService: UserTraitsServiceInit,
       DataDeletionService: DataDeletionServiceInit,
       MetaMetricsDataDeletionController: MetaMetricsDataDeletionControllerInit,
-      UserOperationController: UserOperationControllerInit,
       ExecutionService: ExecutionServiceInit,
       InstitutionalSnapController: InstitutionalSnapControllerInit,
       RateLimitController: RateLimitControllerInit,
@@ -579,8 +575,6 @@ export default class MetamaskController extends EventEmitter {
       ...(getIsPerpsIncludedInBuild()
         ? { PerpsController: PerpsControllerInit }
         : {}),
-      PPOMController: PPOMControllerInit,
-      AccountTrackerController: AccountTrackerControllerInit,
       PhishingController: PhishingControllerInit,
       TransactionPayController: TransactionPayControllerInit,
       SmartTransactionsController: SmartTransactionsControllerInit,
@@ -589,9 +583,7 @@ export default class MetamaskController extends EventEmitter {
       NftController: NftControllerInit,
       AssetsContractController: AssetsContractControllerInit,
       NftDetectionController: NftDetectionControllerInit,
-      CurrencyRateController: CurrencyRateControllerInit,
       RatesController: RatesControllerInit,
-      TokenDetectionController: TokenDetectionControllerInit,
       TokensController: TokensControllerInit,
       StaticAssetsController: StaticAssetsControllerInit,
       MultichainNetworkController: MultichainNetworkControllerInit,
@@ -626,6 +618,7 @@ export default class MetamaskController extends EventEmitter {
       RewardsController: RewardsControllerInit,
       RewardsMoneyDataService: RewardsMoneyDataServiceInit,
       RewardsMoneyController: RewardsMoneyControllerInit,
+      AiDigestController: AiDigestControllerInit,
       ProfileMetricsController: ProfileMetricsControllerInit,
       ProfileMetricsService: ProfileMetricsServiceInit,
       ProofOfOwnershipService: ProofOfOwnershipServiceInit,
@@ -635,6 +628,7 @@ export default class MetamaskController extends EventEmitter {
       MoneyAccountAvailabilityService: MoneyAccountAvailabilityServiceInit,
       MoneyAccountBalanceService: MoneyAccountBalanceServiceInit,
       MoneyAccountController: MoneyAccountControllerInit,
+      MoneyAccountLifecycleController: MoneyAccountLifecycleControllerInit,
       MoneyAccountUpgradeController: MoneyAccountUpgradeControllerInit,
       AssetsController: AssetsControllerInit,
       LegacyBackgroundApiService: LegacyBackgroundApiServiceInit,
@@ -686,7 +680,7 @@ export default class MetamaskController extends EventEmitter {
       messengerClientsByName.DecryptMessageController;
     this.encryptionPublicKeyController =
       messengerClientsByName.EncryptionPublicKeyController;
-    this.signatureController = messengerClientsByName.SignatureController;
+    this.signatureController = this.wallet.getInstance('SignatureController');
     this.permissionController = this.wallet.getInstance('PermissionController');
     this.permissionLogController =
       messengerClientsByName.PermissionLogController;
@@ -704,8 +698,6 @@ export default class MetamaskController extends EventEmitter {
       'RemoteFeatureFlagController',
     );
     this.gasFeeController = this.wallet.getInstance('GasFeeController');
-    this.userOperationController =
-      messengerClientsByName.UserOperationController;
     this.cronjobController = messengerClientsByName.CronjobController;
     this.rateLimitController = messengerClientsByName.RateLimitController;
     this.selectedNetworkController = this.wallet.getInstance(
@@ -716,11 +708,8 @@ export default class MetamaskController extends EventEmitter {
     this.snapInterfaceController =
       messengerClientsByName.SnapInterfaceController;
     this.snapsRegistry = messengerClientsByName.SnapRegistryController;
-    this.ppomController = messengerClientsByName.PPOMController;
     this.phishingController = messengerClientsByName.PhishingController;
     this.onboardingController = messengerClientsByName.OnboardingController;
-    this.accountTrackerController =
-      messengerClientsByName.AccountTrackerController;
     this.txController = this.wallet.getInstance('TransactionController');
     this.txPayController = messengerClientsByName.TransactionPayController;
     this.smartTransactionsController =
@@ -742,10 +731,7 @@ export default class MetamaskController extends EventEmitter {
     this.multichainAccountService =
       messengerClientsByName.MultichainAccountService;
     this.staticAssetsController = messengerClientsByName.StaticAssetsController;
-    this.tokenDetectionController =
-      messengerClientsByName.TokenDetectionController;
     this.tokensController = messengerClientsByName.TokensController;
-    this.currencyRateController = messengerClientsByName.CurrencyRateController;
     this.multichainNetworkController =
       messengerClientsByName.MultichainNetworkController;
     this.multichainRatesController = messengerClientsByName.RatesController;
@@ -773,6 +759,7 @@ export default class MetamaskController extends EventEmitter {
     this.subscriptionController = this.wallet.getInstance(
       'SubscriptionController',
     );
+    traceSubscriptionControllerPolls(this.subscriptionController);
     this.networkOrderController = messengerClientsByName.NetworkOrderController;
     this.shieldController = this.wallet.getInstance('ShieldController');
     this.gatorPermissionsController =
@@ -797,6 +784,8 @@ export default class MetamaskController extends EventEmitter {
     );
     this.moneyAccountUpgradeController =
       messengerClientsByName.MoneyAccountUpgradeController;
+    this.moneyAccountLifecycleController =
+      messengerClientsByName.MoneyAccountLifecycleController;
 
     this.extension.runtime.onInstalled.addListener((details) => {
       if (details.reason === 'update') {
@@ -920,6 +909,7 @@ export default class MetamaskController extends EventEmitter {
     this.snapController.init();
     this.cronjobController.init();
     this.moneyAccountUpgradeController.init();
+    this.moneyAccountLifecycleController.init();
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionStatusUpdated',
@@ -951,7 +941,6 @@ export default class MetamaskController extends EventEmitter {
           // Safely read the selected account and entropy id. In some test or
           // edge flows the selected account may not yet be available.
           const selected = this.accountsController.getSelectedAccount();
-          const address = selected?.address;
           // After onboarding, default selected account will be an EVM
           // account, and those accounts are `Bip44Account`s which should have
           // an `entropy` property.
@@ -980,10 +969,20 @@ export default class MetamaskController extends EventEmitter {
           this.postOnboardingInitialization();
           this.triggerNetworkrequests();
 
-          // execute once the token detection on the post-onboarding
-          await this.tokenDetectionController.detectTokens({
-            selectedAddress: address,
-          });
+          // Re-resolve after sync and discovery. The account captured above
+          // can be missing until those steps create one. getSelectedAccount
+          // returns the last selected EVM account.
+          const accountToRefresh = this.accountsController.getSelectedAccount();
+          if (accountToRefresh?.address && this.assetsController) {
+            await this.assetsController
+              .getAssets([accountToRefresh], {
+                assetTypes: ['token', 'metadata'],
+                forceUpdate: true,
+              })
+              .catch((err) => {
+                log.error('Error refreshing assets after onboarding', { err });
+              });
+          }
         }
       }, this.onboardingController.state),
     );
@@ -1067,7 +1066,6 @@ export default class MetamaskController extends EventEmitter {
               validateSecurity: (securityAlertId, request, chainId) =>
                 validateRequestWithPPOM({
                   chainId,
-                  messenger: this.controllerMessenger,
                   request,
                   securityAlertId,
                   updateSecurityAlertResponse:
@@ -1367,7 +1365,6 @@ export default class MetamaskController extends EventEmitter {
      * On chrome profile re-start, they will be re-initialized.
      */
     const resetOnRestartStore = {
-      AccountTracker: this.accountTrackerController,
       DecryptMessageController: this.decryptMessageController,
       EncryptionPublicKeyController: this.encryptionPublicKeyController,
       SignatureController: this.signatureController,
@@ -1386,7 +1383,6 @@ export default class MetamaskController extends EventEmitter {
       GeolocationController: this.geolocationController,
       MetaMetricsDataDeletionController: this.metaMetricsDataDeletionController,
       AddressBookController: this.addressBookController,
-      CurrencyController: this.currencyRateController,
       MultichainNetworkController: this.multichainNetworkController,
       NetworkController: this.networkController,
       AlertController: this.alertController,
@@ -1412,7 +1408,6 @@ export default class MetamaskController extends EventEmitter {
       LoggingController: this.loggingController,
       MultichainRatesController: this.multichainRatesController,
       NameController: this.nameController,
-      UserOperationController: this.userOperationController,
       // Notification Controllers
       AuthenticationController: this.authenticationController,
       UserStorageController: this.userStorageController,
@@ -1449,7 +1444,6 @@ export default class MetamaskController extends EventEmitter {
         MetaMetricsDataDeletionController:
           this.metaMetricsDataDeletionController,
         AddressBookController: this.addressBookController,
-        CurrencyController: this.currencyRateController,
         AlertController: this.alertController,
         OnboardingController: this.onboardingController,
         PasskeyController: this.passkeyController,
@@ -1478,7 +1472,6 @@ export default class MetamaskController extends EventEmitter {
         SnapInterfaceController: this.snapInterfaceController,
         SnapInsightsController: this.snapInsightsController,
         NameController: this.nameController,
-        UserOperationController: this.userOperationController,
         // Notification Controllers
         AuthenticationController: this.authenticationController,
         UserStorageController: this.userStorageController,
@@ -1622,7 +1615,9 @@ export default class MetamaskController extends EventEmitter {
     const { usePhishDetect } = this.preferencesController.state;
 
     if (usePhishDetect) {
-      this.phishingController.maybeUpdateState();
+      updatePhishingLists(this.phishingController).catch((error) => {
+        log.error('Failed to update phishing lists', error);
+      });
     }
 
     if (
@@ -1661,7 +1656,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   triggerNetworkrequests() {
-    this.tokenDetectionController.enable();
     if (
       getIsPerpsIncludedInBuild() &&
       this.preferencesController.state.useExternalServices
@@ -1678,7 +1672,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   stopNetworkRequests() {
-    this.tokenDetectionController.disable();
     if (getIsPerpsIncludedInBuild()) {
       this.messengerClientApi
         .perpsStopEligibilityMonitoring?.()
@@ -1865,16 +1858,24 @@ export default class MetamaskController extends EventEmitter {
       (assetId) => {
         const { chain } = parseCaipAssetType(assetId);
 
-        if (chain.namespace === KnownCaipNamespace.Eip155) {
-          const chainId = toHex(chain?.reference);
-
-          if (chainId) {
-            this.tokenDetectionController
-              .detectTokens({ chainIds: [chainId] })
-              .catch((err) => {
-                log.error('Error detecting tokens', { err });
-              });
+        if (
+          chain.namespace === KnownCaipNamespace.Eip155 &&
+          this.assetsController
+        ) {
+          const account = this.accountsController.getSelectedAccount();
+          if (!account) {
+            return;
           }
+          const caipChainId = `${chain.namespace}:${chain.reference}`;
+          this.assetsController
+            .getAssets([account], {
+              chainIds: [caipChainId],
+              assetTypes: ['token', 'metadata'],
+              forceUpdate: true,
+            })
+            .catch((err) => {
+              log.error('Error refreshing assets after bridge', { err });
+            });
         }
       },
     );
@@ -2439,7 +2440,8 @@ export default class MetamaskController extends EventEmitter {
   //=============================================================================
 
   /**
-   * Get an account balance from the AccountTrackerController or request it directly from the network.
+   * Get an account balance from AssetsController-derived AccountTracker state
+   * or request it directly from the network.
    *
    * @param {string} address - The account address
    * @param {Provider} provider - The provider instance to use when asking the network
@@ -3139,7 +3141,9 @@ export default class MetamaskController extends EventEmitter {
       if (this.onboardingController.state.completedOnboarding) {
         if (this.preferencesController.state.usePhishDetect) {
           const { hostname } = new URL(sender.url);
-          this.phishingController.maybeUpdateState();
+          updatePhishingLists(this.phishingController).catch((error) => {
+            log.error('Failed to update phishing lists', error);
+          });
           // Check if new connection is blocked if phishing detection is on
           const phishingTestResponse = this.phishingController.test(sender.url);
           if (phishingTestResponse?.result) {
@@ -3918,7 +3922,6 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(
       createPPOMMiddleware(
-        this.controllerMessenger,
         this.preferencesController,
         this.networkController,
         this.appStateController,
@@ -3997,6 +4000,15 @@ export default class MetamaskController extends EventEmitter {
     if (subjectType === SubjectType.Snap && isSnapPreinstalled(origin)) {
       engine.push(
         createPreinstalledSnapsMiddleware({
+          getEvmScopes: () => {
+            const chainIds = Object.keys(
+              this.controllerMessenger.call('NetworkController:getState')
+                .networkConfigurationsByChainId,
+            );
+            return chainIds.map(
+              (chainId) => `eip155:${BigInt(chainId).toString(10)}`,
+            );
+          },
           getPermissions: this.permissionController.getPermissions.bind(
             this.permissionController,
             origin,
@@ -4220,7 +4232,13 @@ export default class MetamaskController extends EventEmitter {
             // `captureException` imported from `@sentry/browser` does not seem to
             // work in E2E tests. This is a workaround which works in both E2E
             // tests and production.
-            return global.sentry?.captureException?.(error);
+            if (subjectType !== SubjectType.Snap) {
+              return global.sentry?.captureException?.(error);
+            }
+
+            return global.sentry?.captureException?.(error, {
+              tags: { feature: 'snaps', snap_id: origin },
+            });
           },
           trackEvent: (payload, options) => {
             trackEvent(
@@ -4512,7 +4530,6 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(
       createPPOMMiddleware(
-        this.controllerMessenger,
         this.preferencesController,
         this.networkController,
         this.appStateController,
@@ -5098,11 +5115,8 @@ export default class MetamaskController extends EventEmitter {
   onClientClosed() {
     try {
       this.gasFeeController.stopAllPolling();
-      this.currencyRateController.stopAllPolling();
-      this.tokenDetectionController.stopAllPolling();
       this.staticAssetsController.stopAllPolling();
       this.appStateController.clearPollingTokens();
-      this.accountTrackerController.stopAllPolling();
       this.deFiPositionsController.stopAllPolling();
       this.subscriptionController.stopAllPolling();
     } catch (error) {
@@ -5125,10 +5139,7 @@ export default class MetamaskController extends EventEmitter {
       // We don't know which controller the token is associated with, so try them all.
       // Consider storing the tokens per controller in state instead.
       this.gasFeeController.stopPollingByPollingToken(pollingToken);
-      this.currencyRateController.stopPollingByPollingToken(pollingToken);
-      this.tokenDetectionController.stopPollingByPollingToken(pollingToken);
       this.staticAssetsController.stopPollingByPollingToken(pollingToken);
-      this.accountTrackerController.stopPollingByPollingToken(pollingToken);
       this.appStateController.removePollingToken(
         pollingToken,
         appStatePollingTokenType,
@@ -5354,15 +5365,14 @@ export default class MetamaskController extends EventEmitter {
     }
     const startTime = performance.now();
 
-    const traceContext = trace({
-      name: TraceName.OnFinishedTransaction,
-      startTime: performance.timeOrigin,
-    });
-
+    // Keyed by transaction id: `tracesByKey` keys on name + id and falls back to
+    // the literal 'default' when no id is given, so two transactions finishing
+    // during the awaits below would otherwise share one key and the first span
+    // would be silently dropped.
     trace({
       name: TraceName.OnFinishedTransaction,
+      id: transactionMeta.id,
       startTime: performance.timeOrigin,
-      parentContext: traceContext,
       data: {
         transactionMeta,
       },
@@ -5373,6 +5383,7 @@ export default class MetamaskController extends EventEmitter {
     this._trackTransactionFailure(transactionMeta);
     endTrace({
       name: TraceName.OnFinishedTransaction,
+      id: transactionMeta.id,
       timestamp: performance.timeOrigin + startTime,
     });
   }

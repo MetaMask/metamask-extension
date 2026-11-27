@@ -25,6 +25,7 @@ import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
 import { NetworkId } from '../../helpers/network-constants';
 import { getMockAssetsPrice } from '../tokens/utils/mocks';
+import { priceV3Spot } from '../../mock-response-data/api-responses';
 
 const MOCK_ETH_PRICE = 1700;
 
@@ -43,19 +44,17 @@ describe('MultiRpc:', function (this: Suite) {
             },
           })),
         // Mock spot-prices for balance display
-        await mockServer
-          .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
-          .thenCallback(() => ({
-            statusCode: 200,
-            json: {
-              'eip155:1/slip44:60': {
-                id: 'ethereum',
-                price: MOCK_ETH_PRICE,
-                marketCap: 382623505141,
-                pricePercentChange1d: 0,
-              },
+        await priceV3Spot.rule(mockServer).thenCallback(() => ({
+          statusCode: 200,
+          json: {
+            'eip155:1/slip44:60': {
+              id: 'ethereum',
+              price: MOCK_ETH_PRICE,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
             },
-          })),
+          },
+        })),
       ];
     }
     await withFixtures(
@@ -185,19 +184,17 @@ describe('MultiRpc:', function (this: Suite) {
             },
           })),
         // Mock spot-prices for balance display
-        await mockServer
-          .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
-          .thenCallback(() => ({
-            statusCode: 200,
-            json: {
-              'eip155:1/slip44:60': {
-                id: 'ethereum',
-                price: MOCK_ETH_PRICE,
-                marketCap: 382623505141,
-                pricePercentChange1d: 0,
-              },
+        await priceV3Spot.rule(mockServer).thenCallback(() => ({
+          statusCode: 200,
+          json: {
+            'eip155:1/slip44:60': {
+              id: 'ethereum',
+              price: MOCK_ETH_PRICE,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
             },
-          })),
+          },
+        })),
       ];
     }
     await withFixtures(
@@ -322,19 +319,17 @@ describe('MultiRpc:', function (this: Suite) {
             },
           })),
         // Mock spot-prices for balance display
-        await mockServer
-          .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
-          .thenCallback(() => ({
-            statusCode: 200,
-            json: {
-              'eip155:1/slip44:60': {
-                id: 'ethereum',
-                price: MOCK_ETH_PRICE,
-                marketCap: 382623505141,
-                pricePercentChange1d: 0,
-              },
+        await priceV3Spot.rule(mockServer).thenCallback(() => ({
+          statusCode: 200,
+          json: {
+            'eip155:1/slip44:60': {
+              id: 'ethereum',
+              price: MOCK_ETH_PRICE,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
             },
-          })),
+          },
+        })),
       ];
     }
     await withFixtures(
@@ -446,19 +441,17 @@ describe('MultiRpc:', function (this: Suite) {
             },
           })),
         // Mock spot-prices for balance display
-        await mockServer
-          .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
-          .thenCallback(() => ({
-            statusCode: 200,
-            json: {
-              'eip155:1/slip44:60': {
-                id: 'ethereum',
-                price: MOCK_ETH_PRICE,
-                marketCap: 382623505141,
-                pricePercentChange1d: 0,
-              },
+        await priceV3Spot.rule(mockServer).thenCallback(() => ({
+          statusCode: 200,
+          json: {
+            'eip155:1/slip44:60': {
+              id: 'ethereum',
+              price: MOCK_ETH_PRICE,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
             },
-          })),
+          },
+        })),
       ];
     }
     await withFixtures(

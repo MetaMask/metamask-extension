@@ -116,7 +116,7 @@ Every command except `mm stop` prints JSON on stdout; `mm stop` prints a plain-t
 | 2         | Usage or validation error                        |
 | 3         | No session, or the daemon is not running or lost |
 | 4         | Target not found or not actionable               |
-| 5         | Timeout                                          |
+| 5         | Timeout (includes `MM_QUEUE_TIMEOUT`)            |
 | 6         | Platform or device not available                 |
 
 Read `error.code`, `error.hint` and `error.retryable` to decide what to do next.
@@ -144,6 +144,18 @@ Read `error.code`, `error.hint` and `error.retryable` to decide what to do next.
 - `mm inspect <ref>`: Shows the attributes, disabled and read-only flags, and computed styles of an element.
 - `mm hover <ref>` / `mm unhover`: Moves the pointer over an element / off the page.
 - `mm set-viewport <width> <height>` / `mm reset-viewport`: Resizes the page / restores its size.
+
+`mm click`, `type`, `hover`, `wait-for`, `get-text`, `inspect` and `screenshot` accept `--frame <iframe>` to act inside an iframe; `mm describe-screen` lists visible iframes with refs `f1e1`, `f1e2`, .... `mm click` on a visually hidden checkbox or radio with one label clicks the label and returns `clickedLabel: true`.
+
+### Logs and Network
+
+- `mm events mark`: Returns the current cursor. Take it at the start of a flow.
+- `mm logs --cursor <n>`: Console errors of the pages, the background service worker, the offscreen document and snaps iframes.
+- `mm network --settled --cursor <n>`: HTTP(S) requests of the same targets, with status, duration and JSON-RPC methods. `--errors` keeps failures only.
+- `mm mock-network add '<rule>'`: Mocks or records requests from pages, the service worker, the offscreen document and snaps. Add `"record":{"body":true}` to a rule and read the bodies with `mm mock-network requests --bodies`.
+- `mm cdp <method> --target sw`: Sends a CDP command to the service worker instead of the page. While the session records, `mm cdp Network.disable` fails with `MM_CDP_BLOCKED`.
+
+Recording starts when `mm launch` returns; requests made during the launch are not recorded or mocked.
 
 ### Navigation
 
@@ -192,7 +204,7 @@ mm launch --state onboarding --self-onboarding < phrase.txt
 
 ### Custom Fixture
 
-`mm launch --state custom` needs a wallet fixture, and `mm launch` has no flag to pass one. The `launch` tool accepts `fixturePreset` (a preset name) or `fixture` (a fixture object), but `--preset` is not a launch flag in `@metamask/client-mcp-core` 0.14.0: `mm launch --state custom --preset <name>` warns `unknown launch flag '--preset'` and then fails with `MM_LAUNCH_FAILED` (`stateMode 'custom' requires either 'fixturePreset' or 'fixture'`).
+`mm launch --state custom` needs a wallet fixture, and `mm launch` has no flag to pass one. The `launch` tool accepts `fixturePreset` (a preset name) or `fixture` (a fixture object), but `--preset` is not a launch flag in `@metamask/client-mcp-core` 0.15.0: `mm launch --state custom --preset <name>` warns `unknown launch flag '--preset'` and then fails with `MM_LAUNCH_FAILED` (`stateMode 'custom' requires either 'fixturePreset' or 'fixture'`).
 
 The presets are defined by `createFixturePresets` in `fixture-helper.ts`: `default`, `onboarding`, `withMultipleAccounts`, `withERC20Tokens`, `withConnectedDapp`, `withMainnet`, `withNFTs`, `withFiatDisabled` and `withHSTToken`. Pass one as `fixturePreset` to the `launch` tool directly, for example in a `POST /launch` body (the daemon port is in `.mm-server`). From the CLI, only `--state default` and `--state onboarding` are usable, because they need no fixture.
 
@@ -202,9 +214,41 @@ The presets are defined by `createFixturePresets` in `fixture-helper.ts`: `defau
 
 ---
 
+## Screen recording (opt-in)
+
+Set `MM_SCREENCAST_DIR` (or the `screencastDir` launch option, which wins)
+before `mm launch --self-onboarding`. The names keep their `screencast` spelling.
+Recording starts after onboarding and stops first in `cleanup()`.
+
+Every 250 ms the recorder captures a JPEG screenshot of each page. The directory
+contains `frames/<page>-<epochMs>.jpg` (`page` is the 0-based attach index),
+`frames.jsonl` (one line per written frame with `page`, `url`, `ts`,
+`deviceWidth`, `deviceHeight`, `file` and `bytes`), and `events.jsonl`
+(`start`, `page-attach`, `page-close`, `skip-sensitive`, `error` and `stop`).
+
+Screenshots use the page's emulated viewport (1280x800 by default) and JPEG
+quality 60. The capture is clipped to that viewport, so the browser window or
+an open side panel cannot crop the frame: frames are always the viewport size.
+When the browser window is smaller than the viewport (headless window chrome,
+or the side panel opening), the area outside the window is white in the frame,
+because that part is not on screen. Only byte-identical consecutive
+frames of a page are dropped, so unchanged pages produce no new frames, and
+states shorter than 250 ms can be missed. Frames contain whatever is on screen,
+so treat them as sensitive as screenshots; no network or console data is
+recorded.
+
+Pages on routes that can show or take wallet secrets are never captured:
+onboarding, reveal recovery phrase (`/seed`), manage wallet recovery, the
+private key list, import recovery phrase and restore vault. The URL is checked
+before and after each capture, and `skip-sensitive` is logged when a page
+enters one of these routes. A secret shown on any other route, for example in
+a modal, is still captured.
+
+---
+
 ## Known Limitations
 
-- **Pre-launch network mocking:** `mm mock-network` uses Playwright route interception, which is only active after `mm launch` completes. Requests made during extension startup (before the session is active) cannot be intercepted. Pre-launch mocking support will be added in a future update.
+- **Pre-launch network mocking:** `mm mock-network` rules are only active after `mm launch` completes. Requests made during extension startup (before the session is active) cannot be intercepted. Pre-launch mocking support will be added in a future update.
 
 ---
 

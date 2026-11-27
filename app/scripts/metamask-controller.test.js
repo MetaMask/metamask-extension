@@ -30,7 +30,11 @@ import {
   KnownSessionProperties,
   getEthAccounts,
 } from '@metamask/chain-agnostic-permission';
-import { PermissionDoesNotExistError } from '@metamask/permission-controller';
+import {
+  PermissionDoesNotExistError,
+  SubjectType,
+} from '@metamask/permission-controller';
+import { createSnapsMethodMiddleware } from '@metamask/snaps-rpc-methods';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
@@ -55,7 +59,6 @@ import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { flushPromises } from '../../test/lib/timer-helpers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
-import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import { toAssetId } from '../../shared/lib/asset-utils';
 import * as gatorPermissionFeatureFlags from '../../shared/lib/gator-permissions/feature-flags';
 import * as environment from '../../shared/lib/environment';
@@ -262,6 +265,16 @@ jest.mock('./controllers/permissions/specifications', () => ({
 
 jest.mock('./lib/createLoggerMiddleware', () => createLoggerMiddlewareMock);
 
+// Wraps the real snaps middleware so tests can read the hooks the controller
+// passes to it, such as `trackError`.
+jest.mock('@metamask/snaps-rpc-methods', () => {
+  const actual = jest.requireActual('@metamask/snaps-rpc-methods');
+  return {
+    ...actual,
+    createSnapsMethodMiddleware: jest.fn(actual.createSnapsMethodMiddleware),
+  };
+});
+
 jest.mock('./lib/rpc-method-middleware', () => ({
   ...jest.requireActual('./lib/rpc-method-middleware'),
   createEip1193MethodMiddleware: () => (_req, _res, next, _end) => {
@@ -346,6 +359,7 @@ jest.mock('@metamask/core-backend', () => ({
     queryClient: { fetchQuery: jest.fn().mockResolvedValue({}) },
     setCachedData: jest.fn(),
     getCachedData: jest.fn().mockReturnValue({}),
+    accounts: { fetchV2SupportedNetworks: jest.fn().mockResolvedValue({}) },
   }),
 }));
 
@@ -1318,7 +1332,35 @@ describe('MetaMaskController', () => {
     });
 
     describe('#getBalance', () => {
-      it('should ask the network for a balance when not known by accountTrackerController', async () => {
+      it('should return the balance from AssetsController-derived AccountTracker state', async () => {
+        const balance = '0x14ced5122ce0a000';
+        const accountId = 'test-account-id';
+        const nativeAssetId = 'eip155:1/slip44:60';
+
+        jest.spyOn(metamaskController, '_getMetaMaskState').mockReturnValue({
+          metamask: {
+            assetsInfo: {
+              [nativeAssetId]: { type: 'native', decimals: 18 },
+            },
+            assetsBalance: {
+              [accountId]: {
+                [nativeAssetId]: { amount: '1.49937' },
+              },
+            },
+            internalAccounts: {
+              accounts: {
+                [accountId]: { address: TEST_ADDRESS, type: 'eip155:eoa' },
+              },
+            },
+          },
+        });
+
+        const gotten = await metamaskController.getBalance(TEST_ADDRESS);
+
+        expect(balance).toStrictEqual(gotten);
+      });
+
+      it('should ask the network for a balance when not known in derived AccountTracker state', async () => {
         const balance = '0x14ced5122ce0a000';
         const { provider } = createTestProviderTools({
           scaffold: {
@@ -1326,15 +1368,11 @@ describe('MetaMaskController', () => {
           },
         });
 
-        jest
-          .spyOn(metamaskController.accountTrackerController, 'state', 'get')
-          .mockReturnValue({
-            accountsByChainId: {
-              '0x1': {
-                [toChecksumHexAddress(TEST_ADDRESS)]: { balance },
-              },
-            },
-          });
+        jest.spyOn(metamaskController, '_getMetaMaskState').mockReturnValue({
+          metamask: {
+            accountsByChainId: {},
+          },
+        });
 
         const gotten = await metamaskController.getBalance(
           TEST_ADDRESS,
@@ -2490,6 +2528,61 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('snaps trackError', () => {
+      const SNAP_ID = 'npm:@metamask/tron-wallet-snap';
+      const WEBSITE_ORIGIN = 'https://dapp.example';
+      const WEBSITE_URL = `${WEBSITE_ORIGIN}/path?token=abc123`;
+      const SENTRY_EVENT_ID = 'sentry-event-id';
+
+      // Sets up the provider engine for a subject and returns the `trackError`
+      // hook the controller passed to the snaps method middleware.
+      const getTrackErrorHook = ({ origin, subjectType, sender }) => {
+        metamaskController.setupProviderEngineEip1193({
+          origin,
+          subjectType,
+          sender,
+        });
+        const [, hooks] = createSnapsMethodMiddleware.mock.calls.at(-1);
+        return hooks.trackError;
+      };
+
+      beforeEach(() => {
+        createSnapsMethodMiddleware.mockClear();
+        globalThis.sentry = {
+          ...globalThis.sentry,
+          captureException: jest.fn().mockReturnValue(SENTRY_EVENT_ID),
+        };
+      });
+
+      it('reports snap errors with feature and snap_id tags', () => {
+        const trackError = getTrackErrorHook({
+          origin: SNAP_ID,
+          subjectType: SubjectType.Snap,
+          sender: { snapId: SNAP_ID },
+        });
+        const error = new Error('Snap error');
+
+        expect(trackError(error)).toBe(SENTRY_EVENT_ID);
+        expect(globalThis.sentry.captureException).toHaveBeenCalledTimes(1);
+        expect(globalThis.sentry.captureException).toHaveBeenCalledWith(error, {
+          tags: { feature: 'snaps', snap_id: SNAP_ID },
+        });
+      });
+
+      it('reports website errors without tags', () => {
+        const trackError = getTrackErrorHook({
+          origin: WEBSITE_ORIGIN,
+          subjectType: SubjectType.Website,
+          sender: { url: WEBSITE_URL, tab: { id: 1 } },
+        });
+        const error = new Error('Website error');
+
+        expect(trackError(error)).toBe(SENTRY_EVENT_ID);
+        expect(globalThis.sentry.captureException).toHaveBeenCalledTimes(1);
+        expect(globalThis.sentry.captureException).toHaveBeenCalledWith(error);
+      });
+    });
+
     describe('#setupUntrustedCommunicationEip1193', () => {
       beforeEach(() => {
         initializeMockMiddlewareLog();
@@ -2536,7 +2629,7 @@ describe('MetaMaskController', () => {
       it('checks the sender hostname with the phishing controller', async () => {
         jest
           .spyOn(metamaskController.phishingController, 'maybeUpdateState')
-          .mockReturnValue();
+          .mockResolvedValue();
 
         jest
           .spyOn(metamaskController.phishingController, 'test')
@@ -2906,61 +2999,52 @@ describe('MetaMaskController', () => {
       });
 
       it('scans the origin for wallet_createSession', async () => {
-        const previousSecurityAlertsApiEnabled =
-          process.env.SECURITY_ALERTS_API_ENABLED;
-        process.env.SECURITY_ALERTS_API_ENABLED = 'true';
+        localMetamaskController.preferencesController.setSecurityAlertsEnabled(
+          true,
+        );
 
-        try {
-          localMetamaskController.preferencesController.setSecurityAlertsEnabled(
-            true,
-          );
+        const scanUrlSpy = jest
+          .spyOn(localMetamaskController.phishingController, 'scanUrl')
+          .mockResolvedValue({});
 
-          const scanUrlSpy = jest
-            .spyOn(localMetamaskController.phishingController, 'scanUrl')
-            .mockResolvedValue({});
+        const messageSender = { url: 'http://mycrypto.com' };
+        const streamTest = createThroughStream((chunk, _, cb) => {
+          if (chunk && chunk.method) {
+            cb(null, chunk);
+            return;
+          }
+          cb();
+        });
 
-          const messageSender = { url: 'http://mycrypto.com' };
-          const streamTest = createThroughStream((chunk, _, cb) => {
-            if (chunk && chunk.method) {
-              cb(null, chunk);
-              return;
-            }
-            cb();
-          });
+        localMetamaskController.setupUntrustedCommunicationCaip({
+          connectionStream: streamTest,
+          sender: messageSender,
+        });
 
-          localMetamaskController.setupUntrustedCommunicationCaip({
-            connectionStream: streamTest,
-            sender: messageSender,
-          });
-
-          streamTest.write(
-            {
-              id: 1,
-              jsonrpc: '2.0',
-              method: 'wallet_createSession',
-              params: {
-                requiredScopes: {
-                  'eip155:1': { methods: [], notifications: [] },
-                },
+        streamTest.write(
+          {
+            id: 1,
+            jsonrpc: '2.0',
+            method: 'wallet_createSession',
+            params: {
+              requiredScopes: {
+                'eip155:1': { methods: [], notifications: [] },
               },
             },
-            null,
-            () => undefined,
-          );
+          },
+          null,
+          () => undefined,
+        );
 
-          await waitForAllPromises();
-          await new Promise((resolve) => setTimeout(resolve, 0));
+        await waitForAllPromises();
+        await new Promise((resolve) => setTimeout(resolve, 0));
 
-          expect(scanUrlSpy).toHaveBeenCalledWith(
-            'http://mycrypto.com',
-            RequestSourceFlow.DappConnection,
-          );
+        expect(scanUrlSpy).toHaveBeenCalledWith(
+          'http://mycrypto.com',
+          RequestSourceFlow.DappConnection,
+        );
 
-          streamTest.end();
-        } finally {
-          process.env.SECURITY_ALERTS_API_ENABLED =
-            previousSecurityAlertsApiEnabled;
-        }
+        streamTest.end();
       });
     });
 
@@ -4724,9 +4808,6 @@ describe('MetaMaskController', () => {
       jest
         .spyOn(metamaskController, 'triggerNetworkrequests')
         .mockImplementation(noop);
-      jest
-        .spyOn(metamaskController.tokenDetectionController, 'detectTokens')
-        .mockResolvedValue(undefined);
 
       await metamaskController.legacyBackgroundApiService.createNewVaultAndRestore(
         password,
@@ -4802,6 +4883,214 @@ describe('MetaMaskController', () => {
           actionType === 'LegacyBackgroundApiService:discoverAndCreateAccounts',
       );
       expect(discoverCalls).toHaveLength(1);
+    });
+
+    async function completeOnboarding() {
+      jest
+        .spyOn(
+          metamaskController.accountTreeController,
+          'syncWithUserStorageAtLeastOnce',
+        )
+        .mockResolvedValue(undefined);
+
+      await publishOnboardingState({
+        completedOnboarding: false,
+        firstTimeFlowType: FirstTimeFlowType.create,
+      });
+      await publishOnboardingState({
+        completedOnboarding: true,
+        firstTimeFlowType: FirstTimeFlowType.create,
+      });
+      await new Promise((resolve) => setImmediate(resolve));
+    }
+
+    it('refreshes token assets after onboarding completes', async () => {
+      const getAssets = jest
+        .spyOn(metamaskController.assetsController, 'getAssets')
+        .mockResolvedValue({});
+
+      await completeOnboarding();
+
+      expect(getAssets).toHaveBeenCalledTimes(1);
+      expect(getAssets).toHaveBeenCalledWith(
+        [metamaskController.accountsController.getSelectedAccount()],
+        {
+          assetTypes: ['token', 'metadata'],
+          forceUpdate: true,
+        },
+      );
+    });
+
+    it('logs an error when the post-onboarding asset refresh fails', async () => {
+      const error = new Error('refresh failed');
+      jest
+        .spyOn(metamaskController.assetsController, 'getAssets')
+        .mockRejectedValue(error);
+      const logError = jest
+        .spyOn(log, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        await completeOnboarding();
+
+        expect(logError).toHaveBeenCalledWith(
+          'Error refreshing assets after onboarding',
+          { err: error },
+        );
+      } finally {
+        logError.mockRestore();
+      }
+    });
+
+    it('skips the asset refresh when no account is selected', async () => {
+      jest
+        .spyOn(metamaskController.accountsController, 'getSelectedAccount')
+        .mockReturnValue(undefined);
+      const getAssets = jest
+        .spyOn(metamaskController.assetsController, 'getAssets')
+        .mockResolvedValue({});
+
+      await completeOnboarding();
+
+      expect(getAssets).not.toHaveBeenCalled();
+    });
+
+    it('refreshes the account selected after discovery when none was selected before', async () => {
+      const accountAfterDiscovery =
+        metamaskController.accountsController.getSelectedAccount();
+      let discovered = false;
+      const previousCall = messengerCallSpy.getMockImplementation();
+      messengerCallSpy.mockImplementation((actionType, ...args) => {
+        if (
+          actionType === 'LegacyBackgroundApiService:discoverAndCreateAccounts'
+        ) {
+          discovered = true;
+        }
+        return previousCall(actionType, ...args);
+      });
+      const selectedAccountReads = [];
+      jest
+        .spyOn(metamaskController.accountsController, 'getSelectedAccount')
+        .mockImplementation(() => {
+          const account = discovered ? accountAfterDiscovery : undefined;
+          selectedAccountReads.push(account);
+          return account;
+        });
+      const getAssets = jest
+        .spyOn(metamaskController.assetsController, 'getAssets')
+        .mockResolvedValue({});
+
+      await completeOnboarding();
+
+      expect(selectedAccountReads).toContain(undefined);
+      expect(selectedAccountReads.at(-1)).toBe(accountAfterDiscovery);
+      expect(getAssets).toHaveBeenCalledTimes(1);
+      expect(getAssets).toHaveBeenCalledWith([accountAfterDiscovery], {
+        assetTypes: ['token', 'metadata'],
+        forceUpdate: true,
+      });
+    });
+
+    it('skips the asset refresh when the assets controller is missing', async () => {
+      const getAssets = jest
+        .spyOn(metamaskController.assetsController, 'getAssets')
+        .mockResolvedValue({});
+      metamaskController.assetsController = undefined;
+
+      await completeOnboarding();
+
+      expect(getAssets).not.toHaveBeenCalled();
+    });
+
+    describe('BridgeStatusController:destinationTransactionCompleted', () => {
+      const evmAssetId = 'eip155:1/slip44:60';
+      const nonEvmAssetId =
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
+
+      function publishBridgeCompletion(assetId) {
+        metamaskController.controllerMessenger.publish(
+          'BridgeStatusController:destinationTransactionCompleted',
+          assetId,
+        );
+      }
+
+      it('refreshes EVM token assets for the selected account', async () => {
+        const getAssets = jest
+          .spyOn(metamaskController.assetsController, 'getAssets')
+          .mockResolvedValue({});
+
+        publishBridgeCompletion(evmAssetId);
+        await flushPromises();
+
+        expect(getAssets).toHaveBeenCalledTimes(1);
+        expect(getAssets).toHaveBeenCalledWith(
+          [metamaskController.accountsController.getSelectedAccount()],
+          {
+            chainIds: ['eip155:1'],
+            assetTypes: ['token', 'metadata'],
+            forceUpdate: true,
+          },
+        );
+      });
+
+      it('skips the refresh for a non-EVM destination', async () => {
+        const getAssets = jest
+          .spyOn(metamaskController.assetsController, 'getAssets')
+          .mockResolvedValue({});
+
+        publishBridgeCompletion(nonEvmAssetId);
+        await flushPromises();
+
+        expect(getAssets).not.toHaveBeenCalled();
+      });
+
+      it('skips the refresh when the assets controller is missing', async () => {
+        const getAssets = jest
+          .spyOn(metamaskController.assetsController, 'getAssets')
+          .mockResolvedValue({});
+        metamaskController.assetsController = undefined;
+
+        publishBridgeCompletion(evmAssetId);
+        await flushPromises();
+
+        expect(getAssets).not.toHaveBeenCalled();
+      });
+
+      it('skips the refresh when no account is selected', async () => {
+        jest
+          .spyOn(metamaskController.accountsController, 'getSelectedAccount')
+          .mockReturnValue(undefined);
+        const getAssets = jest
+          .spyOn(metamaskController.assetsController, 'getAssets')
+          .mockResolvedValue({});
+
+        publishBridgeCompletion(evmAssetId);
+        await flushPromises();
+
+        expect(getAssets).not.toHaveBeenCalled();
+      });
+
+      it('logs an error when the bridge asset refresh fails', async () => {
+        const error = new Error('bridge refresh failed');
+        jest
+          .spyOn(metamaskController.assetsController, 'getAssets')
+          .mockRejectedValue(error);
+        const logError = jest
+          .spyOn(log, 'error')
+          .mockImplementation(() => undefined);
+
+        try {
+          publishBridgeCompletion(evmAssetId);
+          await flushPromises();
+
+          expect(logError).toHaveBeenCalledWith(
+            'Error refreshing assets after bridge',
+            { err: error },
+          );
+        } finally {
+          logError.mockRestore();
+        }
+      });
     });
   });
 

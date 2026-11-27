@@ -1,7 +1,9 @@
 import { extname } from 'node:path';
 import { ZipFile } from 'yazl';
-import { sources } from 'webpack';
+import webpackApi from 'webpack';
 import type { ZipOptions } from './types';
+
+const { sources } = webpackApi;
 
 const { RawSource } = sources;
 
@@ -35,7 +37,7 @@ export type ZipCompressionOptions = Pick<ZipOptions['zipOptions'], 'level'>;
 type CreateBrowserZipBuilderOptions = {
   compressionOptions: ZipCompressionOptions;
   excludeExtensions: string[];
-  manifest: sources.RawSource;
+  assets: Record<string, webpackApi.sources.RawSource>;
   mtime: number;
   onAssetAdded: (assetName: string) => void;
 };
@@ -47,12 +49,12 @@ export type BrowserZipBuilder = {
   /**
    * Adds an emitted webpack asset to the in-progress zip.
    */
-  addAsset: (assetName: string, asset: sources.Source) => void;
+  addAsset: (assetName: string, asset: webpackApi.sources.Source) => void;
 
   /**
    * Finalizes the zip and resolves the emitted webpack source.
    */
-  finalize: () => Promise<sources.Source>;
+  finalize: () => Promise<webpackApi.sources.Source>;
 };
 
 /**
@@ -61,7 +63,7 @@ export type BrowserZipBuilder = {
  * @param options - Zip generation options.
  * @param options.compressionOptions - ZIP compression settings.
  * @param options.excludeExtensions - Asset extensions to skip entirely.
- * @param options.manifest - The browser-specific manifest source.
+ * @param options.assets - Required browser-specific JSON files, including the manifest.
  * @param options.mtime - The zip entry modification time.
  * @param options.onAssetAdded - Progress callback for each added file.
  * @returns The zip builder.
@@ -69,18 +71,20 @@ export type BrowserZipBuilder = {
 export function createBrowserZipBuilder({
   compressionOptions,
   excludeExtensions,
-  manifest,
+  assets,
   mtime,
   onAssetAdded,
 }: CreateBrowserZipBuilderOptions): BrowserZipBuilder {
   let errored = false;
   let finalized = false;
-  let resolveSource!: (source: sources.Source) => void;
+  let resolveSource!: (source: webpackApi.sources.Source) => void;
   let rejectSource!: (error: Error) => void;
-  const sourcePromise = new Promise<sources.Source>((resolve, reject) => {
-    resolveSource = resolve;
-    rejectSource = reject;
-  });
+  const sourcePromise = new Promise<webpackApi.sources.Source>(
+    (resolve, reject) => {
+      resolveSource = resolve;
+      rejectSource = reject;
+    },
+  );
 
   const zipFile = new ZipFile();
   const zipChunks: Buffer[] = [];
@@ -112,17 +116,19 @@ export function createBrowserZipBuilder({
     }
   });
 
-  addAssetToZip(
-    manifest.buffer(),
-    'manifest.json',
-    true,
-    compressionOptions,
-    zipEntryDate,
-    zipFile,
-  );
-  onAssetAdded('manifest.json');
+  for (const [filename, source] of Object.entries(assets)) {
+    addAssetToZip(
+      source.buffer(),
+      filename,
+      true,
+      compressionOptions,
+      zipEntryDate,
+      zipFile,
+    );
+    onAssetAdded(filename);
+  }
 
-  const addAsset = (assetName: string, asset: sources.Source) => {
+  const addAsset = (assetName: string, asset: webpackApi.sources.Source) => {
     if (finalized) {
       throw new Error('Cannot add asset after finalize()');
     }

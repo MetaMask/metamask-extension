@@ -1,7 +1,10 @@
 import React from 'react';
 import { fireEvent, screen, render } from '@testing-library/react';
+import { Provider } from 'react-redux';
 import { BtcAccountType } from '@metamask/keyring-api';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import configureStore from '../../../store/store';
+import mockState from '../../../../test/data/mock-state.json';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MultichainAddressRow } from './multichain-address-row';
 
@@ -43,7 +46,11 @@ const propsWithQrCode = {
 };
 
 const renderComponent = (props = {}) => {
-  return render(<MultichainAddressRow {...defaultProps} {...props} />);
+  return render(
+    <Provider store={configureStore(mockState)}>
+      <MultichainAddressRow {...defaultProps} {...props} />
+    </Provider>,
+  );
 };
 
 describe('MultichainAddressRow', () => {

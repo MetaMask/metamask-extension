@@ -1,6 +1,12 @@
 import type * as Sentry from '@sentry/browser';
-import { SPAN_STATUS_ERROR, SPAN_STATUS_OK } from '@sentry/core';
+import {
+  getActiveSpan,
+  SPAN_STATUS_ERROR,
+  SPAN_STATUS_OK,
+  spanToJSON,
+} from '@sentry/core';
 import type {
+  Client,
   MeasurementUnit,
   Span,
   StartSpanOptions,
@@ -16,6 +22,8 @@ import type {
   SwapTraceRequest,
   SwapRelatedTraceName,
 } from '@metamask/bridge-controller';
+import { ENVIRONMENT_TYPE_BACKGROUND } from '../constants/app';
+import { getEnvironmentType } from './environment-type';
 import { sentryLogger } from './sentry';
 
 /**
@@ -76,6 +84,11 @@ export enum TraceName {
   LoadCollectibles = 'Load Collectibles',
   GetAssetHistoricalPrices = 'Get Asset Historical Prices',
   OnFinishedTransaction = 'On Finished Transaction',
+  AccountsApiSupportedNetworksFetch = 'Accounts API Supported Networks Fetch',
+  GeolocationFetch = 'Geolocation Fetch',
+  PhishingListsUpdate = 'Phishing Lists Update',
+  RampsInit = 'Ramps Init',
+  RemoteFeatureFlagsFetch = 'Remote Feature Flags Fetch',
   AccountSyncFull = 'Multichain Account Syncing - Full',
   AccountSyncSaveIndividual = 'Account Sync Save Individual',
   ContactSyncFull = 'Contact Sync Full',
@@ -122,6 +135,7 @@ export enum TraceName {
   MusdConversionQuote = 'mUSD Conversion Quote',
   MusdConversionConfirm = 'mUSD Conversion Confirm',
   BatchSellModal = 'Batch Sell Modal',
+  StateLoad = 'State Load',
   StatePersist = 'State Persist',
   // Money
   MoneyActivityVaultShareValuationsFetch = 'Money Activity Vault Share Valuations Fetch',
@@ -190,6 +204,7 @@ export enum TraceOperation {
   // mUSD Conversion
   MusdConversionOperation = 'musd.conversion.operation',
   MusdConversionDataFetch = 'musd.conversion.data_fetch',
+  StateRead = 'state.read',
   StateWrite = 'state.write',
   BridgeScreenPerformance = 'bridge.screen.performance',
   BridgeDataFetch = 'bridge.data_fetch',
@@ -239,6 +254,22 @@ let onboardingMachineTimeByKey = new Map<string, number>();
 if (process.env.IN_TEST && globalThis.stateHooks) {
   globalThis.stateHooks.getCustomTraces = () => durationsByName;
 }
+
+/**
+ * Trace state that one copy of this module writes and another reads.
+ */
+export type SharedTraceState = {
+  /**
+   * The background's pageload trace id, from the moment the pageload starts.
+   * Unset outside the background.
+   */
+  backgroundPageloadTraceId?: string;
+  /**
+   * The background's pageload span id, from the moment the pageload starts.
+   * Unset outside the background.
+   */
+  backgroundPageloadSpanId?: string;
+};
 
 type PendingTrace = {
   end: (timestamp?: number) => void;
@@ -352,7 +383,10 @@ export type TraceRequest = {
 
   /**
    * Start the span as the root of a new trace, ignoring the active span. A
-   * `parentContext` that resolves still takes precedence.
+   * resolved `parentContext` still takes precedence.
+   *
+   * In the background, work with no resolved parent and no active span to nest
+   * under is a root too: the pageload's trace id stays on the scope there.
    */
   root?: boolean;
 };
@@ -570,6 +604,160 @@ export const traceAsControllerCallback: ControllerTraceCallback = <Result>(
       : trace({ ...req, name: req.name as TraceName }),
   ) as Promise<Result>;
 
+// The background bundles this module twice, so state one copy writes and the
+// other reads lives on `globalThis.stateHooks`, which LavaMoat leaves in place
+// (as in `sentry-remote-rates.ts`).
+const localSharedState: SharedTraceState = {};
+
+function getSharedState(): SharedTraceState {
+  const hooks = globalThis.stateHooks;
+  if (!hooks) {
+    return localSharedState;
+  }
+  hooks.traceSharedState ??= {};
+  return hooks.traceSharedState;
+}
+
+/**
+ * Record the background's pageload span, so work with no parent starts its own
+ * trace instead of joining it (see {@link TraceRequest.root} and
+ * {@link sentryGetActiveSpan}). Does nothing in a UI document.
+ *
+ * @param client - The Sentry client that emits the pageload's `spanStart`.
+ */
+export function trackBackgroundPageload(client?: Client): void {
+  if (
+    getEnvironmentType(globalThis.location.href) !== ENVIRONMENT_TYPE_BACKGROUND
+  ) {
+    return;
+  }
+
+  const record = (span: Span) => {
+    if (spanToJSON(span).op === 'pageload') {
+      const { traceId, spanId } = span.spanContext();
+      const state = getSharedState();
+      state.backgroundPageloadTraceId = traceId;
+      state.backgroundPageloadSpanId = spanId;
+    }
+  };
+  // `Sentry.init` has started the pageload by now, and `setupSentry` calls this
+  // before the global `sentry` is assigned, so read the span from `@sentry/core`.
+  const running = getActiveSpan();
+  if (running) {
+    record(running);
+  }
+  client?.on('spanStart', record);
+}
+
+/**
+ * Whether the scope still carries the background pageload's trace id. Ignores
+ * the active span.
+ *
+ * @returns True when such work should start its own trace.
+ */
+function isOnBackgroundPageload(): boolean {
+  const { backgroundPageloadTraceId } = getSharedState();
+  if (!backgroundPageloadTraceId) {
+    return false;
+  }
+  const scopeTraceId = globalThis.sentry
+    ?.getCurrentScope?.()
+    ?.getPropagationContext?.()?.traceId;
+  return scopeTraceId === backgroundPageloadTraceId;
+}
+
+/**
+ * Children of a segment root that were still running when the root ended and
+ * were handed to the standalone-span path, so they are sent when they end.
+ */
+export const IN_FLIGHT_STANDALONE_ATTRIBUTE =
+  'trace.in_flight_children.standalone';
+
+/**
+ * Children of a segment root that were still running when the root ended and
+ * could not be handed off, so the SDK will never send them.
+ */
+export const IN_FLIGHT_LOST_ATTRIBUTE = 'trace.in_flight_children.lost';
+
+/**
+ * Finished children past the SDK's per-transaction cap, which it cuts without
+ * reporting.
+ */
+export const OVER_SPAN_LIMIT_ATTRIBUTE = 'trace.children_over_span_limit';
+
+/**
+ * `MAX_SPAN_COUNT` in `@sentry/core`'s `SentrySpan`, which is not exported.
+ */
+const MAX_CHILD_SPANS_PER_TRANSACTION = 1000;
+
+type StandaloneCapableSpan = Span & {
+  // Private `SentrySpan` field read by its `_onSpanEnded`.
+  _isStandaloneSpan?: boolean;
+  isStandaloneSpan?: () => boolean;
+};
+
+function isStandaloneSpan(span: Span): boolean {
+  const { isStandaloneSpan: check } = span as StandaloneCapableSpan;
+  return typeof check === 'function' && check.call(span);
+}
+
+/**
+ * Mark a span standalone. False means an SDK rename broke the private write.
+ *
+ * @param span - A running child span.
+ */
+function markStandalone(span: Span): boolean {
+  const candidate = span as StandaloneCapableSpan;
+  if (typeof candidate.isStandaloneSpan !== 'function') {
+    return false;
+  }
+  candidate._isStandaloneSpan = true;
+  return candidate.isStandaloneSpan();
+}
+
+/**
+ * Send a root's still-running children standalone and count them on the root.
+ *
+ * @param span - The span about to end.
+ */
+function preserveInFlightChildren(span: Span | null | undefined): void {
+  const globalGetRootSpan = globalThis.sentry?.getRootSpan;
+  const getSpanDescendants = globalThis.sentry?.getSpanDescendants;
+
+  if (!span || !globalGetRootSpan || !getSpanDescendants) {
+    return;
+  }
+
+  if (globalGetRootSpan(span) !== span) {
+    return;
+  }
+
+  let standalone = 0;
+  let lost = 0;
+  let finished = 0;
+
+  // Only sampled spans are returned, so a non-recording one has ended.
+  for (const child of getSpanDescendants(span)) {
+    if (child === span || isStandaloneSpan(child)) {
+      continue;
+    }
+    if (!child.isRecording()) {
+      finished += 1;
+    } else if (markStandalone(child)) {
+      standalone += 1;
+    } else {
+      lost += 1;
+    }
+  }
+
+  span.setAttribute(IN_FLIGHT_STANDALONE_ATTRIBUTE, standalone);
+  span.setAttribute(IN_FLIGHT_LOST_ATTRIBUTE, lost);
+  span.setAttribute(
+    OVER_SPAN_LIMIT_ATTRIBUTE,
+    Math.max(0, finished - MAX_CHILD_SPANS_PER_TRANSACTION),
+  );
+}
+
 /**
  * End a pending trace that was started without a callback.
  * Does nothing if the pending trace cannot be found.
@@ -607,6 +795,7 @@ export function endTrace(request: EndTraceRequest): void {
     finalizeOnboardingMachineTime(pendingTrace.span);
   }
 
+  preserveInFlightChildren(pendingTrace.span);
   pendingTrace.end(endTime);
 
   tracesByKey.delete(key);
@@ -802,6 +991,8 @@ function traceCallback<ResultType>(
         throw currentError;
       },
       () => {
+        // Runs before the SDK ends the span on return or settlement.
+        preserveInFlightChildren(span);
         const end = Date.now();
         logTrace(request, start, end, error);
       },
@@ -998,13 +1189,20 @@ function startSpan<T>(
     startTime,
     op,
     allowActiveSpanFallback,
-    root,
   } = request;
   let parentSpan = resolveParentSpan(parentContext);
 
   // `undefined` means no parent was declared; `null` means one was intended but
   // has no span. `resolveParentSpan` returns `null` for both, so read the input.
   const parentDeclared = parentContext !== undefined;
+
+  // With no parent and nothing to nest under, work takes the scope's trace id,
+  // which in the background is the pageload's.
+  const root =
+    request.root ||
+    (!parentSpan &&
+      !((parentDeclared || allowActiveSpanFallback) && sentryGetActiveSpan()) &&
+      isOnBackgroundPageload());
 
   // Read the active span before `withScope` forks the scope. `forceTransaction`
   // keeps an inherited span in transaction-level dashboards.
@@ -1271,6 +1469,9 @@ function sentrySetMeasurement(
  * Get the currently active Sentry span, if any.
  * Used by wrappers to avoid trace overhead when no span is active.
  *
+ * The background's pageload span counts as no span, running or ended: it is the
+ * scope's ambient span rather than a parent a caller chose.
+ *
  * @returns The active span or null.
  */
 export function sentryGetActiveSpan(): Sentry.Span | null {
@@ -1280,12 +1481,22 @@ export function sentryGetActiveSpan(): Sentry.Span | null {
     return null;
   }
 
-  return actual() ?? null;
+  const activeSpan = actual() ?? null;
+  const { backgroundPageloadSpanId } = getSharedState();
+  if (
+    activeSpan &&
+    backgroundPageloadSpanId &&
+    activeSpan.spanContext().spanId === backgroundPageloadSpanId
+  ) {
+    return null;
+  }
+  return activeSpan;
 }
 
 /**
  * Baggage for a continued trace. It must carry `sentry-sampled`, which backends
- * route spans to Sentry on.
+ * route spans to Sentry on, and `public_key`: a root's frozen DSC without it
+ * leaves a standalone child's envelope with no `trace` header, so it is rejected.
  *
  * @param sentryTrace - A `{traceId}-{spanId}-{sampled}` header.
  * @returns A `baggage` string, or undefined when the header is malformed.
@@ -1295,7 +1506,19 @@ function sentryTraceToBaggage(sentryTrace: string): string | undefined {
   if (!traceId || (sampled !== '0' && sampled !== '1')) {
     return undefined;
   }
-  return `sentry-trace_id=${traceId},sentry-sampled=${sampled === '1'}`;
+  const client = globalThis.sentry?.getClient?.();
+  const options = client?.getOptions();
+  const entries: Record<string, string | undefined> = {
+    'sentry-trace_id': traceId,
+    'sentry-public_key': client?.getDsn()?.publicKey,
+    'sentry-environment': options?.environment,
+    'sentry-release': options?.release,
+    'sentry-sampled': String(sampled === '1'),
+  };
+  return Object.entries(entries)
+    .filter(([, value]) => value !== undefined)
+    .map(([key, value]) => `${key}=${encodeURIComponent(value as string)}`)
+    .join(',');
 }
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

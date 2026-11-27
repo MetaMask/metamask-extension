@@ -3,6 +3,12 @@ import type { AuthenticationControllerState } from '@metamask/profile-sync-contr
 import { ClientConfigApiService } from '@metamask/remote-feature-flag-controller';
 import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { getBaseSemVerVersion } from '../../../../shared/lib/feature-flags/version-gating';
+import { TraceName } from '../../../../shared/lib/trace';
+import {
+  readActiveSpan,
+  startServiceWorkerSentry,
+  stopServiceWorkerSentry,
+} from '../../../../test/lib/service-worker-sentry';
 import { createMockMessenger } from '../test-utils';
 import {
   getConfigForRemoteFeatureFlagRequest,
@@ -249,9 +255,31 @@ describe('getConfigForRemoteFeatureFlagRequest', () => {
 });
 
 describe('getRemoteFeatureFlagClientConfigApiService', () => {
+  afterEach(() => {
+    stopServiceWorkerSentry();
+    jest.restoreAllMocks();
+  });
+
   it('returns a configured ClientConfigApiService', () => {
     expect(getRemoteFeatureFlagClientConfigApiService()).toBeInstanceOf(
       ClientConfigApiService,
     );
+  });
+
+  it('fetches flags requested with no caller under their own root trace (real SDK)', async () => {
+    const ambientTraceId = startServiceWorkerSentry();
+    let seen: ReturnType<typeof readActiveSpan>;
+    jest.spyOn(globalThis, 'fetch').mockImplementation(async () => {
+      seen = readActiveSpan();
+      return new Response('[]');
+    });
+
+    await getRemoteFeatureFlagClientConfigApiService().fetchRemoteFeatureFlags();
+
+    expect(seen).toStrictEqual({
+      traceId: expect.any(String),
+      rootName: TraceName.RemoteFeatureFlagsFetch,
+    });
+    expect(seen?.traceId).not.toBe(ambientTraceId);
   });
 });

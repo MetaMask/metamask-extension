@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "Limită gas"
   },
-  "gasUsed": {
-    "message": "Suma gaz folosită"
-  },
   "goerli": {
     "message": "Rețea de test Goerli"
   },
@@ -337,9 +334,6 @@
   "newContract": {
     "message": "Contract nou"
   },
-  "newPassword": {
-    "message": "Parola Nouă (minimum 8 caractere)"
-  },
   "next": {
     "message": "Înainte"
   },
@@ -394,9 +388,6 @@
   "privateKey": {
     "message": "Cheie privată",
     "description": "select this type of file to use to import an account"
-  },
-  "privateNetwork": {
-    "message": "Rețea privată"
   },
   "readdToken": {
     "message": "Puteți adăuga din nou acest indicativ în viitor accesând „Adăugați indicativ” din meniul de opțiuni al contului dvs."
@@ -545,9 +536,6 @@
   },
   "unapproved": {
     "message": "Neaprobat"
-  },
-  "units": {
-    "message": "unități"
   },
   "unknown": {
     "message": "Necunoscută"

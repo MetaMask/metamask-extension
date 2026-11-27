@@ -14,6 +14,7 @@ import { getConfirmationTransactionType } from '../../../utils/confirm';
 import { selectIsMoneyAccountTransactionEnabled } from '../../../selectors/feature-flags';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useMoneyAccountWithdrawableFiat } from '../../../../../hooks/money/useMoneyAccountWithdrawableFiat';
+import { useMoneyAccountLifecycle } from '../../../../../hooks/money/use-money-account-lifecycle';
 import { useMoneyVaultApy } from '../../../../../hooks/money/useMoneyVaultApy';
 import { selectPrimaryMoneyAccount } from '../../../../../selectors/money-account';
 import { useConfirmContext } from '../../../context/confirm';
@@ -42,12 +43,19 @@ export function usePayWithMoneyAccountSection({
   const transactionId = currentConfirmation?.id ?? '';
   const transactionType = getConfirmationTransactionType(currentConfirmation);
   const primaryMoneyAccount = useSelector(selectPrimaryMoneyAccount);
+  const {
+    isLifecycleUnavailable,
+    isReadOnly,
+    isLoading: isLifecycleLoading,
+  } = useMoneyAccountLifecycle();
+  const isMoneyAccountUnavailable =
+    isLifecycleLoading || isReadOnly || isLifecycleUnavailable;
 
   const isEnabled = useSelector((state) =>
     selectIsMoneyAccountTransactionEnabled(state, transactionType),
   );
   const { withdrawableFiatFormatted } = useMoneyAccountWithdrawableFiat(
-    Boolean(isEnabled && primaryMoneyAccount),
+    Boolean(isEnabled && primaryMoneyAccount && !isMoneyAccountUnavailable),
   );
 
   // Perps withdraw pays into the Money Account, so the vault rate is what the
@@ -71,7 +79,7 @@ export function usePayWithMoneyAccountSection({
   ]);
 
   const handlePress = useCallback(() => {
-    if (!transactionId) {
+    if (!transactionId || isMoneyAccountUnavailable) {
       return;
     }
     applyMoneyAccountOverride(
@@ -82,13 +90,14 @@ export function usePayWithMoneyAccountSection({
     onClose();
   }, [
     currentConfirmation,
+    isMoneyAccountUnavailable,
     onClose,
     primaryMoneyAccount?.address,
     transactionId,
   ]);
 
   return useMemo(() => {
-    if (!isEnabled || !primaryMoneyAccount) {
+    if (!isEnabled || isMoneyAccountUnavailable || !primaryMoneyAccount) {
       return null;
     }
 
@@ -144,6 +153,7 @@ export function usePayWithMoneyAccountSection({
     handlePress,
     isEnabled,
     isMoneyAccountSelected,
+    isMoneyAccountUnavailable,
     isPerpsWithdraw,
     primaryMoneyAccount,
     showNoDepositFeeTag,

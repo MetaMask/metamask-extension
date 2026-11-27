@@ -9,6 +9,7 @@ import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snaps/simple-keyring-page';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { login } from '../../page-objects/flows/login.flow';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
 
 describe('Create Snap Account', function (this: Suite) {
@@ -73,7 +74,7 @@ describe('Create Snap Account', function (this: Suite) {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await new HeaderNavbar(driver).openAccountMenu();
+        await openAccountMenu(driver);
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
         for (const expectedName of expectedNames) {
@@ -114,7 +115,7 @@ describe('Create Snap Account', function (this: Suite) {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await new HeaderNavbar(driver).openAccountMenu();
+        await openAccountMenu(driver);
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountIsNotDisplayedInAccountList(

@@ -68,7 +68,7 @@ import { createSentryError } from '../../../shared/lib/error';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { captureException } from '../../../shared/lib/sentry';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
-import { TraceName, TraceOperation } from '../../../shared/lib/trace';
+import { trace, TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../../shared/constants/passkey';
 import { DecodedTransactionDataSource } from '../../../shared/types/transaction-decode';
 import { enforceSimulations } from '../lib/transaction/containers/enforced-simulations';
@@ -166,15 +166,10 @@ describe('LegacyBackgroundApiService', () => {
   });
 
   describe('setCurrentCurrency', () => {
-    it('sets the currency in the AssetsController and CurrencyRateController', async () => {
+    it('sets the currency in the AssetsController', async () => {
       const currencyCode: SupportedCurrency = 'usd';
 
       await withService(async ({ serviceMessenger, rootMessenger }) => {
-        rootMessenger.registerActionHandler(
-          'CurrencyRateController:setCurrentCurrency',
-          jest.fn(),
-        );
-
         rootMessenger.registerActionHandler(
           'AssetsController:setSelectedCurrency',
           jest.fn(),
@@ -188,11 +183,6 @@ describe('LegacyBackgroundApiService', () => {
             currencyCode,
           ),
         ).resolves.toBeUndefined();
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'CurrencyRateController:setCurrentCurrency',
-          currencyCode,
-        );
 
         expect(callSpy).toHaveBeenCalledWith(
           'AssetsController:setSelectedCurrency',
@@ -6220,8 +6210,6 @@ describe('LegacyBackgroundApiService', () => {
       const handlers = {
         toggleExternalServices: jest.fn(),
         getState: jest.fn().mockReturnValue({ subscriptions: [] }),
-        enableTokenDetection: jest.fn(),
-        disableTokenDetection: jest.fn(),
         enableGasFeeApis: jest.fn(),
         disableGasFeeApis: jest.fn(),
         stopAllPolling: jest.fn(),
@@ -6235,14 +6223,6 @@ describe('LegacyBackgroundApiService', () => {
       rootMessenger.registerActionHandler(
         'SubscriptionController:getState',
         handlers.getState,
-      );
-      rootMessenger.registerActionHandler(
-        'TokenDetectionController:enable',
-        handlers.enableTokenDetection,
-      );
-      rootMessenger.registerActionHandler(
-        'TokenDetectionController:disable',
-        handlers.disableTokenDetection,
       );
       rootMessenger.registerActionHandler(
         'GasFeeController:enableNonRPCGasFeeApis',
@@ -6282,10 +6262,8 @@ describe('LegacyBackgroundApiService', () => {
           true,
           undefined,
         );
-        expect(handlers.enableTokenDetection).toHaveBeenCalledTimes(1);
         expect(handlers.enableGasFeeApis).toHaveBeenCalledTimes(1);
         expect(handlers.startShield).toHaveBeenCalledTimes(1);
-        expect(handlers.disableTokenDetection).not.toHaveBeenCalled();
         expect(handlers.stopAllPolling).not.toHaveBeenCalled();
         expect(handlers.stopShield).not.toHaveBeenCalled();
       });
@@ -6302,7 +6280,6 @@ describe('LegacyBackgroundApiService', () => {
           true,
         );
 
-        expect(handlers.enableTokenDetection).toHaveBeenCalledTimes(1);
         expect(handlers.enableGasFeeApis).toHaveBeenCalledTimes(1);
         expect(handlers.startShield).not.toHaveBeenCalled();
       });
@@ -6325,7 +6302,6 @@ describe('LegacyBackgroundApiService', () => {
           true,
           ownedPreferences,
         );
-        expect(handlers.enableTokenDetection).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -6344,11 +6320,9 @@ describe('LegacyBackgroundApiService', () => {
           false,
           undefined,
         );
-        expect(handlers.disableTokenDetection).toHaveBeenCalledTimes(1);
         expect(handlers.disableGasFeeApis).toHaveBeenCalledTimes(1);
         expect(handlers.stopAllPolling).toHaveBeenCalledTimes(1);
         expect(handlers.stopShield).toHaveBeenCalledTimes(1);
-        expect(handlers.enableTokenDetection).not.toHaveBeenCalled();
         expect(handlers.startShield).not.toHaveBeenCalled();
       });
     });
@@ -6364,7 +6338,6 @@ describe('LegacyBackgroundApiService', () => {
           false,
         );
 
-        expect(handlers.disableTokenDetection).toHaveBeenCalledTimes(1);
         expect(handlers.disableGasFeeApis).toHaveBeenCalledTimes(1);
         expect(handlers.stopAllPolling).toHaveBeenCalledTimes(1);
         expect(handlers.stopShield).not.toHaveBeenCalled();
@@ -6688,6 +6661,34 @@ describe('LegacyBackgroundApiService', () => {
         expect(counts).toStrictEqual({ Bitcoin: 1, Solana: 1, Tron: 1 });
       });
     });
+
+    it('roots the Discover Accounts trace when accounts are discovered', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        rootMessenger.registerActionHandler(
+          'KeyringController:getState',
+          jest.fn().mockReturnValue({
+            keyrings: [{ metadata: { id: 'kr1' } }],
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'MultichainAccountService:getMultichainAccountWallet',
+          jest.fn().mockReturnValue({
+            discoverAccounts: jest
+              .fn()
+              .mockResolvedValue([{ type: SolAccountType.DataAccount }]),
+          }),
+        );
+
+        await service.discoverAndCreateAccounts();
+
+        expect(jest.mocked(trace)).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: TraceName.DiscoverAccounts,
+            root: true,
+          }),
+        );
+      });
+    });
   });
 
   describe('isRelaySupported', () => {
@@ -6711,7 +6712,6 @@ describe('LegacyBackgroundApiService', () => {
   describe('DeFi referral', () => {
     const HYPERLIQUID = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid];
     const GMX = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX];
-    const VARIATIONAL = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Variational];
     const mockTabId = 140;
     const mockPermittedAccount = '0x123';
     const mockPermittedAccounts = [mockPermittedAccount, '0x456'];
@@ -6816,26 +6816,6 @@ describe('LegacyBackgroundApiService', () => {
       rootMessenger.registerActionHandler(
         'NetworkController:getNetworkClientById',
         jest.fn().mockReturnValue({ provider: { request: jest.fn() } }),
-      );
-    }
-
-    /**
-     * Registers the network handlers used by the requiredChainId gate.
-     *
-     * @param rootMessenger - The root messenger to register handlers on.
-     * @param chainId - The active chain ID for the partner's domain.
-     */
-    function registerPartnerNetwork(
-      rootMessenger: RootMessenger,
-      chainId: string,
-    ) {
-      rootMessenger.registerActionHandler(
-        'SelectedNetworkController:getNetworkClientIdForDomain',
-        jest.fn().mockReturnValue('network-client-id'),
-      );
-      rootMessenger.registerActionHandler(
-        'NetworkController:getNetworkConfigurationByNetworkClientId',
-        jest.fn().mockReturnValue({ chainId }),
       );
     }
 
@@ -7526,69 +7506,6 @@ describe('LegacyBackgroundApiService', () => {
               );
 
               expect(checkHyperliquidHasReferralCode).not.toHaveBeenCalled();
-            },
-          );
-        });
-      });
-
-      describe('requiredChainId gate', () => {
-        it('does not proceed when the active chain does not match requiredChainId', async () => {
-          const getPermittedAccounts = jest
-            .fn()
-            .mockResolvedValue(mockPermittedAccounts);
-          await withService(
-            { options: { getPermittedAccounts } },
-            async ({ rootMessenger }) => {
-              const handlers = registerReferralHandlers(rootMessenger, {
-                featureFlags: { [DefiReferralPartner.Variational]: true },
-                referrals: { [DefiReferralPartner.Variational]: {} },
-              });
-              registerPartnerNetwork(rootMessenger, '0x1');
-
-              await rootMessenger.call(
-                'LegacyBackgroundApiService:handleDefiReferral',
-                VARIATIONAL,
-                mockTabId,
-                ReferralTriggerType.NewConnection,
-              );
-
-              expect(handlers.add).not.toHaveBeenCalled();
-              expect(handlers.addReferralPassedAccount).not.toHaveBeenCalled();
-            },
-          );
-        });
-
-        it('proceeds when the active chain matches requiredChainId', async () => {
-          const getPermittedAccounts = jest
-            .fn()
-            .mockResolvedValue(mockPermittedAccounts);
-          await withService(
-            { options: { getPermittedAccounts } },
-            async ({ rootMessenger }) => {
-              const handlers = registerReferralHandlers(rootMessenger, {
-                featureFlags: { [DefiReferralPartner.Variational]: true },
-                referrals: { [DefiReferralPartner.Variational]: {} },
-              });
-              registerPartnerNetwork(rootMessenger, '0xa4b1');
-
-              await rootMessenger.call(
-                'LegacyBackgroundApiService:handleDefiReferral',
-                VARIATIONAL,
-                mockTabId,
-                ReferralTriggerType.NewConnection,
-              );
-
-              expect(handlers.add).toHaveBeenCalledWith({
-                origin: VARIATIONAL.origin,
-                type: VARIATIONAL.approvalType,
-                requestData: {
-                  learnMoreUrl: VARIATIONAL.learnMoreUrl,
-                  partnerId: DefiReferralPartner.Variational,
-                  partnerName: VARIATIONAL.name,
-                  selectedAddress: mockPermittedAccount,
-                },
-                shouldShowRequest: true,
-              });
             },
           );
         });
@@ -9085,7 +9002,6 @@ function getMessenger(
       'NetworkController:getNetworkClientById',
       'NetworkController:getNetworkConfigurationByNetworkClientId',
       'AddressBookController:getState',
-      'SelectedNetworkController:getNetworkClientIdForDomain',
       'NetworkController:getSelectedNetworkClient',
       'NetworkController:addNetwork',
       'NetworkController:setActiveNetwork',
@@ -9096,7 +9012,6 @@ function getMessenger(
       'NetworkEnablementController:isNetworkEnabled',
       'NetworkEnablementController:restoreEnabledNetworkMap',
       'RemoteFeatureFlagController:getState',
-      'CurrencyRateController:setCurrentCurrency',
       'AssetsContractController:getTokenStandardAndDetails',
       'AssetsController:addCustomAsset',
       'AssetsController:getAssets',
@@ -9223,8 +9138,6 @@ function getMessenger(
       'PhishingController:testOrigin',
       'PreferencesController:toggleExternalServices',
       'SubscriptionController:getState',
-      'TokenDetectionController:enable',
-      'TokenDetectionController:disable',
       'GasFeeController:enableNonRPCGasFeeApis',
       'GasFeeController:disableNonRPCGasFeeApis',
       'ShieldController:start',
@@ -9234,7 +9147,6 @@ function getMessenger(
       'TransactionController:updateSecurityAlertResponse',
       'UserOperationController:addUserOperationFromTransaction',
       'UserOperationController:startPollingByNetworkClientId',
-      'PPOMController:usePPOM',
       'KeyringController:getKeyringForAccount',
       'SignatureController:getState',
       'AppStateController:getAddressSecurityAlertResponse',

@@ -1,10 +1,19 @@
 import {
   RampsController,
+  RampsEnvironment,
   getDefaultRampsControllerState,
   type RampsControllerMessenger,
 } from '@metamask/ramps-controller';
+import { getRampsEnvironment } from '../../../shared/lib/ramps/environment';
 import { getRootMessenger } from '../lib/messenger';
 import { captureException } from '../../../shared/lib/sentry';
+import { TraceName } from '../../../shared/lib/trace';
+import {
+  readActiveSpan,
+  startServiceWorkerSentry,
+  stopServiceWorkerSentry,
+} from '../../../test/lib/service-worker-sentry';
+import { flushPromises } from '../../../test/lib/timer-helpers';
 import { trackEvent } from '../controllers/analytics';
 import type { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
@@ -14,8 +23,6 @@ import {
   type RampsControllerInitMessenger,
 } from './messengers';
 import { RampsControllerInit } from './ramps-controller-init';
-
-import { RAMPS_NETWORK_ACCESS_DENIED_MESSAGE } from './ramps-network-gate';
 
 const mockRampsController = {
   state: { orders: [] as { status: string }[] },
@@ -44,10 +51,16 @@ let mockInit: jest.Mock;
 let mockStartOrderPolling: jest.Mock;
 let mockStopOrderPolling: jest.Mock;
 
-const mockGetQuotesParams = {
-  amount: 0,
-  walletAddress: '0x0',
-};
+/**
+ * Reads the `isNetworkAccessAllowed` check the controller was constructed with.
+ *
+ * @returns The network access check passed to the `RampsController` constructor.
+ */
+function getNetworkAccessAllowedCheck(): () => boolean {
+  const [options] = jest.mocked(RampsController).mock.lastCall ?? [];
+  return (options as unknown as { isNetworkAccessAllowed: () => boolean })
+    .isNetworkAccessAllowed;
+}
 
 jest.mock('@metamask/ramps-controller', () => {
   const actual = jest.requireActual('@metamask/ramps-controller');
@@ -64,6 +77,10 @@ jest.mock('../../../shared/lib/sentry', () => ({
 
 jest.mock('../controllers/analytics', () => ({
   trackEvent: jest.fn(),
+}));
+
+jest.mock('../../../shared/lib/ramps/environment', () => ({
+  getRampsEnvironment: jest.fn(),
 }));
 
 type InitRequestMock = jest.Mocked<
@@ -157,6 +174,7 @@ function resetMockRampsController(): void {
 describe('RampsControllerInit', () => {
   beforeEach(() => {
     resetMockRampsController();
+    jest.mocked(getRampsEnvironment).mockReturnValue(RampsEnvironment.Staging);
   });
 
   it('initializes the controller with default state', () => {
@@ -165,9 +183,23 @@ describe('RampsControllerInit', () => {
     expect(RampsController).toHaveBeenCalledWith({
       messenger: expect.any(Object),
       state: getDefaultRampsControllerState(),
+      requestCacheTTL: 60_000,
+      isNetworkAccessAllowed: expect.any(Function),
       trace: expect.any(Function),
       onOrderSyncErroneousSituation: expect.any(Function),
     });
+  });
+
+  it('keeps the controller default cache TTL in production', () => {
+    jest
+      .mocked(getRampsEnvironment)
+      .mockReturnValue(RampsEnvironment.Production);
+
+    RampsControllerInit(getInitRequestMock());
+
+    expect(RampsController).toHaveBeenCalledWith(
+      expect.objectContaining({ requestCacheTTL: undefined }),
+    );
   });
 
   it('reports order sync erroneous situations to sentry and analytics', () => {
@@ -192,11 +224,32 @@ describe('RampsControllerInit', () => {
     expect(Object.keys(api ?? {}).sort()).toMatchSnapshot();
   });
 
+  it('initializes the controller under its own root trace (real SDK)', async () => {
+    const ambientTraceId = startServiceWorkerSentry();
+    let seen: ReturnType<typeof readActiveSpan>;
+    mockInit.mockImplementation(async () => {
+      seen = readActiveSpan();
+    });
+
+    try {
+      RampsControllerInit(getInitRequestMock());
+      await flushPromises();
+    } finally {
+      stopServiceWorkerSentry();
+    }
+
+    expect(seen).toStrictEqual({
+      traceId: expect.any(String),
+      rootName: TraceName.RampsInit,
+    });
+    expect(seen?.traceId).not.toBe(ambientTraceId);
+  });
+
   it('starts order polling after init resolves when onboarding is complete', async () => {
     RampsControllerInit(getInitRequestMock());
-    await Promise.resolve();
+    await flushPromises();
     expect(mockInit).toHaveBeenCalled();
-    await Promise.resolve();
+    await flushPromises();
     expect(mockStartOrderPolling).toHaveBeenCalled();
   });
 
@@ -207,7 +260,7 @@ describe('RampsControllerInit', () => {
         useExternalServices: true,
       }),
     );
-    await Promise.resolve();
+    await flushPromises();
     expect(mockInit).not.toHaveBeenCalled();
     expect(mockStartOrderPolling).not.toHaveBeenCalled();
   });
@@ -219,7 +272,7 @@ describe('RampsControllerInit', () => {
         useExternalServices: false,
       }),
     );
-    await Promise.resolve();
+    await flushPromises();
     expect(mockInit).not.toHaveBeenCalled();
     expect(mockStartOrderPolling).not.toHaveBeenCalled();
   });
@@ -250,14 +303,13 @@ describe('RampsControllerInit', () => {
       persistedState: {},
     });
 
-    await Promise.resolve();
+    await flushPromises();
     expect(mockInit).not.toHaveBeenCalled();
 
     setCompletedOnboarding(true);
     onboardingListeners[0]?.({ completedOnboarding: true });
 
-    await Promise.resolve();
-    await Promise.resolve();
+    await flushPromises();
     expect(mockInit).toHaveBeenCalled();
     expect(mockStartOrderPolling).toHaveBeenCalled();
     subscribeSpy.mockRestore();
@@ -274,23 +326,52 @@ describe('RampsControllerInit', () => {
     expect(api?.stopRampsLifecycle).toEqual(expect.any(Function));
   });
 
-  it('blocks network methods before onboarding completes', () => {
-    const { messengerClient } = RampsControllerInit(
+  it('passes a network access check to the controller', () => {
+    RampsControllerInit(
       getInitRequestMock({
         completedOnboarding: false,
         useExternalServices: true,
       }),
     );
 
-    expect(() => messengerClient.getQuotes(mockGetQuotesParams)).toThrow(
-      RAMPS_NETWORK_ACCESS_DENIED_MESSAGE,
-    );
+    expect(getNetworkAccessAllowedCheck()()).toBe(false);
+  });
+
+  it('allows network access once onboarding is complete and basic functionality is on', () => {
+    RampsControllerInit(getInitRequestMock());
+
+    expect(getNetworkAccessAllowedCheck()()).toBe(true);
+  });
+
+  it('re-reads onboarding and basic functionality state on every check', () => {
+    const baseMessenger = getRootMessenger<never, never>();
+    const { initMessenger, setCompletedOnboarding, setUseExternalServices } =
+      createInitMessenger({
+        completedOnboarding: false,
+        useExternalServices: true,
+      });
+
+    RampsControllerInit({
+      ...buildControllerInitRequestMock(),
+      controllerMessenger: getRampsControllerMessenger(baseMessenger),
+      initMessenger,
+      persistedState: {},
+    });
+
+    const isNetworkAccessAllowed = getNetworkAccessAllowedCheck();
+
+    expect(isNetworkAccessAllowed()).toBe(false);
+
+    setCompletedOnboarding(true);
+    expect(isNetworkAccessAllowed()).toBe(true);
+
+    setUseExternalServices(false);
+    expect(isNetworkAccessAllowed()).toBe(false);
   });
 
   it('stopRampsLifecycle stops polling when network access is allowed', async () => {
     const { api } = RampsControllerInit(getInitRequestMock());
-    await Promise.resolve();
-    await Promise.resolve();
+    await flushPromises();
     expect(mockStartOrderPolling).toHaveBeenCalled();
 
     api?.stopRampsLifecycle?.();
@@ -301,8 +382,7 @@ describe('RampsControllerInit', () => {
   it('keeps polling on UI close while an order is still pending', async () => {
     mockRampsController.state = { orders: [{ status: 'PENDING' }] };
     const { api } = RampsControllerInit(getInitRequestMock());
-    await Promise.resolve();
-    await Promise.resolve();
+    await flushPromises();
     expect(mockStartOrderPolling).toHaveBeenCalled();
 
     api?.stopRampsLifecycle?.();
@@ -315,8 +395,7 @@ describe('RampsControllerInit', () => {
   async function expectUiCloseStopsPollingFor(status: string): Promise<void> {
     mockRampsController.state = { orders: [{ status }] };
     const { api } = RampsControllerInit(getInitRequestMock());
-    await Promise.resolve();
-    await Promise.resolve();
+    await flushPromises();
 
     api?.stopRampsLifecycle?.();
 
@@ -334,8 +413,7 @@ describe('RampsControllerInit', () => {
   it('runs stale-stub cleanup again after a UI close/open cycle', async () => {
     mockRampsController.state = { orders: [{ status: 'PRECREATED' }] };
     const { api } = RampsControllerInit(getInitRequestMock());
-    await Promise.resolve();
-    await Promise.resolve();
+    await flushPromises();
     const startCallsAfterBoot = mockStartOrderPolling.mock.calls.length;
 
     // Close: the stub must not hold the lifecycle open, otherwise
@@ -345,8 +423,7 @@ describe('RampsControllerInit', () => {
 
     // Reopen: lifecycle restarts, so cleanup gets another chance.
     api?.startRampsLifecycle?.();
-    await Promise.resolve();
-    await Promise.resolve();
+    await flushPromises();
     expect(mockStartOrderPolling.mock.calls.length).toBeGreaterThan(
       startCallsAfterBoot,
     );
@@ -357,8 +434,7 @@ describe('RampsControllerInit', () => {
       orders: [{ status: 'COMPLETED' }, { status: 'CANCELLED' }],
     };
     const { api } = RampsControllerInit(getInitRequestMock());
-    await Promise.resolve();
-    await Promise.resolve();
+    await flushPromises();
 
     api?.stopRampsLifecycle?.();
 
@@ -375,8 +451,7 @@ describe('RampsControllerInit', () => {
       initMessenger,
       persistedState: {},
     });
-    await Promise.resolve();
-    await Promise.resolve();
+    await flushPromises();
 
     setUseExternalServices(false);
     api?.stopRampsLifecycle?.();
@@ -412,8 +487,7 @@ describe('RampsControllerInit', () => {
       persistedState: {},
     });
 
-    await Promise.resolve();
-    await Promise.resolve();
+    await flushPromises();
     expect(mockStartOrderPolling).toHaveBeenCalled();
 
     setUseExternalServices(false);
@@ -458,7 +532,7 @@ describe('RampsControllerInit', () => {
       persistedState: {},
     });
 
-    await Promise.resolve();
+    await flushPromises();
     expect(mockInit).toHaveBeenCalled();
     expect(mockStartOrderPolling).not.toHaveBeenCalled();
 
@@ -467,7 +541,7 @@ describe('RampsControllerInit', () => {
     expect(mockStopOrderPolling).toHaveBeenCalled();
 
     resolveInit();
-    await Promise.resolve();
+    await flushPromises();
 
     expect(mockStartOrderPolling).not.toHaveBeenCalled();
   });
@@ -479,8 +553,7 @@ describe('RampsControllerInit', () => {
     mockInit.mockRejectedValueOnce(new Error('init failed'));
 
     RampsControllerInit(getInitRequestMock());
-    await Promise.resolve();
-    await Promise.resolve();
+    await flushPromises();
 
     expect(mockStartOrderPolling).not.toHaveBeenCalled();
     expect(consoleErrorSpy).toHaveBeenCalledWith(

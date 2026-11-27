@@ -211,9 +211,6 @@
   "gasLimit": {
     "message": "የነዳጅ ገደብ"
   },
-  "gasUsed": {
-    "message": "ጥቅም ላይ የዋለ ነዳጅ"
-  },
   "general": {
     "message": "አጠቃላይ"
   },
@@ -331,9 +328,6 @@
   "newContract": {
     "message": "አዲስ ኮንትራት"
   },
-  "newPassword": {
-    "message": "አዲስ የይለፍ ቃል (ቢያንስ 8 ቁምፊዎች)"
-  },
   "next": {
     "message": "ቀጣይ"
   },
@@ -388,9 +382,6 @@
   "privateKey": {
     "message": "የግል ቁልፍ",
     "description": "select this type of file to use to import an account"
-  },
-  "privateNetwork": {
-    "message": "የግል አውታረ መረብ"
   },
   "readdToken": {
     "message": "በመለያ አማራጮችዎ ምናሌ ውስጥ ወደ “ተለዋጭ ስም አክል” በመግባት ለወደፊቱ ይህን ተለዋጭ ስም መልሰው ማከል ይችላሉ።"
@@ -545,9 +536,6 @@
   },
   "unapproved": {
     "message": "ያልተፈቀደ"
-  },
-  "units": {
-    "message": "መለኪያዎች"
   },
   "unknown": {
     "message": "ያልታወቀ"

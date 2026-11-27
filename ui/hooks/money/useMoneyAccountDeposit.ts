@@ -1,5 +1,5 @@
 import { TransactionType } from '@metamask/transaction-controller';
-import { bytesToHex, type Hex } from '@metamask/utils';
+import { bytesToHex } from '@metamask/utils';
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
@@ -28,6 +28,7 @@ import { selectIsPayHardwareEnabled } from '../../pages/confirmations/selectors/
 import { createMoneyAccountDepositTransaction } from '../../store/controller-actions/transaction-pay-controller';
 import { useDispatch } from '../../store/hooks';
 import { useMoneyErrorReporter } from './useMoneyErrorReporter';
+import { useMoneyAccountLifecycle } from './use-money-account-lifecycle';
 
 export type InitiateDepositOptions = {
   /**
@@ -52,8 +53,8 @@ export type InitiateDepositOptions = {
   ftueOrigin?: MoneyFtueOrigin;
   /**
    * Replace the current page with the confirmation instead of pushing it,
-   * for entry points that should not be returned to (e.g. the deeplink
-   * bridge).
+   * for entry points that should not be returned to (e.g. the deposit
+   * interstitial).
    */
   replaceConfirmation?: boolean;
   /**
@@ -116,7 +117,7 @@ let isDepositInitiationInFlight = false;
  * `confirmations_pay_hardware` enables Money Account deposits; otherwise a
  * user on a hardware wallet funds from their first eligible account rather
  * than being blocked at the confirmation. Fails fast only when no eligible
- * account exists. That address is passed as Pay's `accountOverride` so
+ * account exists. Its account ID is passed as Pay's `accountOverride` so
  * the confirmation defaults the From row — and quotes — to that account instead of
  * the money account that executes the batch.
  *
@@ -130,7 +131,7 @@ let isDepositInitiationInFlight = false;
  * (the extension navigates after creation) and no user-rejection path at
  * initiation (rejection happens later, inside the confirmation).
  *
- * @returns The initiator and its loading state.
+ * @returns The initiator, its loading state, and whether deposits are disabled.
  */
 export function useMoneyAccountDeposit() {
   const { navigateToTransaction } = useConfirmationNavigation();
@@ -145,10 +146,16 @@ export function useMoneyAccountDeposit() {
   );
   const reportError = useMoneyErrorReporter();
   const [isLoading, setIsLoading] = useState(false);
+  const {
+    isLifecycleUnavailable,
+    isReadOnly,
+    isLoading: isLifecycleLoading,
+  } = useMoneyAccountLifecycle();
+  const isDisabled = isReadOnly || isLifecycleUnavailable || isLifecycleLoading;
 
   const initiateDeposit = useCallback(
     async (options?: InitiateDepositOptions): Promise<boolean> => {
-      if (isDepositInitiationInFlight) {
+      if (isDisabled || isDepositInitiationInFlight) {
         return false;
       }
 
@@ -183,7 +190,7 @@ export function useMoneyAccountDeposit() {
 
         const { transactionId } = await createMoneyAccountDepositTransaction(
           batchId,
-          fundingAccount.address as Hex,
+          fundingAccount.id,
         );
 
         navigateToTransaction(transactionId, {
@@ -216,6 +223,7 @@ export function useMoneyAccountDeposit() {
       dispatch,
       fundingAccount,
       hasSeenFtue,
+      isDisabled,
       location.pathname,
       location.search,
       navigateToTransaction,
@@ -223,5 +231,5 @@ export function useMoneyAccountDeposit() {
     ],
   );
 
-  return { initiateDeposit, isLoading };
+  return { initiateDeposit, isDisabled, isLifecycleLoading, isLoading };
 }

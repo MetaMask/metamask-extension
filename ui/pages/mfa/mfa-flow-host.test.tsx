@@ -248,7 +248,7 @@ describe('MfaFlowHost', () => {
     expect(mockNavigate).toHaveBeenCalledTimes(1);
   });
 
-  it('shows the intro, sets up email, then verifies it and returns the token', async () => {
+  it('sets up email without an intro, then verifies it and returns the token', async () => {
     const controller = createController();
     const { outcome } = await start(
       {
@@ -260,10 +260,6 @@ describe('MfaFlowHost', () => {
     );
     renderHost();
 
-    expect(screen.getByText('Why we ask')).toBeInTheDocument();
-    await act(async () => {
-      fireEvent.click(screen.getByTestId(MfaFlowTestIds.PRIMARY_BUTTON));
-    });
     fireEvent.change(getInput(MfaFlowTestIds.EMAIL_INPUT), {
       target: { value: 'a@b.co' },
     });

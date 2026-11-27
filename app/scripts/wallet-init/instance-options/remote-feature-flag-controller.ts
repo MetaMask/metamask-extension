@@ -11,6 +11,8 @@ import {
   type MetaMaskBuildEnvironment,
 } from '../../../../shared/constants/build';
 import { getBaseSemVerVersion } from '../../../../shared/lib/feature-flags/version-gating';
+import { TraceName } from '../../../../shared/lib/trace';
+import { withOwnRootTrace } from '../../lib/own-root-trace';
 import type { WalletInitMessenger } from '../types';
 
 const REMOTE_FEATURE_FLAG_FETCH_INTERVAL = 15 * 60 * 1000;
@@ -74,7 +76,10 @@ export function getRemoteFeatureFlagClientConfigApiService() {
   const { distribution, environment } = getConfigForRemoteFeatureFlagRequest();
 
   return new ClientConfigApiService({
-    fetch: globalThis.fetch.bind(globalThis),
+    fetch: withOwnRootTrace(
+      TraceName.RemoteFeatureFlagsFetch,
+      globalThis.fetch.bind(globalThis),
+    ),
     config: {
       client: ClientType.Extension,
       distribution,

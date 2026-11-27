@@ -1,5 +1,5 @@
 import React from 'react';
-import NftsDetectionNotice from '.';
+import NftsDetectionNotice from './nfts-detection-notice-nfts-tab';
 
 export default {
   title: 'Components/App/NftsDetectionNoticeNFTsTab',

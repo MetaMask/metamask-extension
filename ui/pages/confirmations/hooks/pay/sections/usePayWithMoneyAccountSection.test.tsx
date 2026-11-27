@@ -9,6 +9,7 @@ import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { useConfirmContext } from '../../../context/confirm';
 import { useMoneyAccountWithdrawableFiat } from '../../../../../hooks/money/useMoneyAccountWithdrawableFiat';
+import { useMoneyAccountLifecycle } from '../../../../../hooks/money/use-money-account-lifecycle';
 import { useMoneyVaultApy } from '../../../../../hooks/money/useMoneyVaultApy';
 import { applyMoneyAccountOverride } from '../../../utils/transaction-pay';
 import { ApyTag } from '../../../components/UI/apy-tag';
@@ -38,6 +39,9 @@ jest.mock('../../../../../hooks/useI18nContext', () => ({
 jest.mock('../../../../../hooks/money/useMoneyAccountWithdrawableFiat', () => ({
   useMoneyAccountWithdrawableFiat: jest.fn(),
 }));
+jest.mock('../../../../../hooks/money/use-money-account-lifecycle', () => ({
+  useMoneyAccountLifecycle: jest.fn(),
+}));
 jest.mock('../../../../../hooks/money/useMoneyVaultApy', () => ({
   useMoneyVaultApy: jest.fn(),
 }));
@@ -53,10 +57,7 @@ function mockVaultApy(apyPercent?: number) {
     apyPercent,
     apyPercentFormatted:
       apyPercent === undefined ? undefined : `${apyPercent}%`,
-    vaultApyQuery: {
-      isError: false,
-      isLoading: false,
-    },
+    isApyLoading: false,
   } as ReturnType<typeof useMoneyVaultApy>);
 }
 
@@ -81,11 +82,19 @@ function mockSelectors({
 describe('usePayWithMoneyAccountSection', () => {
   const useConfirmContextMock = jest.mocked(useConfirmContext);
   const useCachedBalanceMock = jest.mocked(useMoneyAccountWithdrawableFiat);
+  const useMoneyAccountLifecycleMock = jest.mocked(useMoneyAccountLifecycle);
   const applyMoneyAccountOverrideMock = jest.mocked(applyMoneyAccountOverride);
   const onClose = jest.fn();
 
   beforeEach(() => {
     jest.resetAllMocks();
+
+    useMoneyAccountLifecycleMock.mockReturnValue({
+      lifecycle: undefined,
+      isLifecycleUnavailable: false,
+      isReadOnly: false,
+      isLoading: false,
+    });
 
     useConfirmContextMock.mockReturnValue({
       currentConfirmation: {
@@ -114,6 +123,51 @@ describe('usePayWithMoneyAccountSection', () => {
 
   it('returns null when there is no money account', () => {
     mockSelectors({ primaryMoneyAccount: null });
+
+    const { result } = renderHook(() =>
+      usePayWithMoneyAccountSection({ onClose }),
+    );
+
+    expect(result.current).toBeNull();
+  });
+
+  it('returns null when the Money Account lifecycle is read-only', () => {
+    useMoneyAccountLifecycleMock.mockReturnValue({
+      lifecycle: undefined,
+      isLifecycleUnavailable: false,
+      isReadOnly: true,
+      isLoading: false,
+    });
+
+    const { result } = renderHook(() =>
+      usePayWithMoneyAccountSection({ onClose }),
+    );
+
+    expect(result.current).toBeNull();
+  });
+
+  it('returns null when the Money Account lifecycle is unavailable', () => {
+    useMoneyAccountLifecycleMock.mockReturnValue({
+      lifecycle: undefined,
+      isLifecycleUnavailable: true,
+      isReadOnly: false,
+      isLoading: false,
+    });
+
+    const { result } = renderHook(() =>
+      usePayWithMoneyAccountSection({ onClose }),
+    );
+
+    expect(result.current).toBeNull();
+  });
+
+  it('returns null while the Money Account lifecycle is loading', () => {
+    useMoneyAccountLifecycleMock.mockReturnValue({
+      lifecycle: undefined,
+      isLifecycleUnavailable: false,
+      isReadOnly: false,
+      isLoading: true,
+    });
 
     const { result } = renderHook(() =>
       usePayWithMoneyAccountSection({ onClose }),

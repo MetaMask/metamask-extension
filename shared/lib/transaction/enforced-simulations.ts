@@ -139,6 +139,9 @@ export function getEnforcedSimulationsSlippageBasisPoints(
 /**
  * Determines whether a transaction is eligible for enforced simulations.
  *
+ * Requires a completed simulation without an error, since the enforced
+ * caveats are derived from the simulated balance changes.
+ *
  * Also requires that Blockaid address screening supports the chain. On
  * unsupported chains, `scanAddress` returns Error without hitting the API;
  * that must not turn enforcement on. Then requires that at least one
@@ -177,6 +180,16 @@ export function isEnforcedSimulationsEligible(
 
   if (!simulationData) {
     log('Not eligible - simulation not complete', { type });
+    return false;
+  }
+
+  // Caveats are derived from the simulated balance changes, so a failed,
+  // reverted, disabled or unsupported simulation leaves nothing to enforce.
+  if (simulationData.error) {
+    log('Not eligible - simulation failed', {
+      error: simulationData.error,
+      type,
+    });
     return false;
   }
 

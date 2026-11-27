@@ -48,6 +48,7 @@ describe('MoneyEarnBanner', () => {
     jest.clearAllMocks();
     mockUseMoneyEarnBanner.mockReturnValue({
       isVisible: true,
+      isCtaDisabled: false,
       apyPercentFormatted: '6%',
       ...handlers,
     });
@@ -72,6 +73,7 @@ describe('MoneyEarnBanner', () => {
   it('falls back to a title without the APY', () => {
     mockUseMoneyEarnBanner.mockReturnValue({
       isVisible: true,
+      isCtaDisabled: false,
       apyPercentFormatted: undefined,
       ...handlers,
     });
@@ -86,6 +88,7 @@ describe('MoneyEarnBanner', () => {
   it('renders nothing when not visible', () => {
     mockUseMoneyEarnBanner.mockReturnValue({
       isVisible: false,
+      isCtaDisabled: false,
       apyPercentFormatted: '6%',
       ...handlers,
     });
@@ -111,6 +114,23 @@ describe('MoneyEarnBanner', () => {
 
     expect(handlers.onCtaClick).toHaveBeenCalledTimes(1);
     expect(handlers.onBannerClick).not.toHaveBeenCalled();
+  });
+
+  it('disables the CTA when the Money Account is read-only', () => {
+    mockUseMoneyEarnBanner.mockReturnValue({
+      isVisible: true,
+      isCtaDisabled: true,
+      apyPercentFormatted: '6%',
+      ...handlers,
+    });
+
+    const { getByTestId } = renderBanner();
+    const cta = getByTestId(`${MONEY_EARN_BANNER_TEST_ID}-cta`);
+
+    fireEvent.click(cta);
+
+    expect(cta).toBeDisabled();
+    expect(handlers.onCtaClick).not.toHaveBeenCalled();
   });
 
   it('hides on dismiss without starting a deposit', () => {

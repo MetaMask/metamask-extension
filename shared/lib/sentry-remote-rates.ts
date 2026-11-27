@@ -171,8 +171,10 @@ export function getRemoteTransactionSampleRates():
 /**
  * The remote `tracesSampleRate` override, when a valid one was read at init.
  * Consumed by the `tracesSampler` as both the default rate and a hard ceiling
- * across all transactions. Release scoping, when needed, is resolved by the
- * controller from the flag's `versions` ladder before the value reaches here.
+ * on per-name overrides; a span continuing a sampled parent is exempt, since
+ * its trace was admitted at the root under this rate. Release scoping, when
+ * needed, is resolved by the controller from the flag's `versions` ladder
+ * before the value reaches here.
  *
  * @returns The override, or undefined so callers fall back to the build-time rate.
  */
