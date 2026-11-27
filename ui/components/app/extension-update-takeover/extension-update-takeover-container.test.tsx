@@ -5,6 +5,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
+import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import {
   getExtensionUpdatePromptType,
   getIsExtensionUpdatePromptOnAnyRouteEnabled,
@@ -30,6 +31,10 @@ jest.mock('react-redux', () => ({
 
 jest.mock('../../../../shared/lib/environment-type', () => ({
   getEnvironmentType: jest.fn(),
+}));
+
+jest.mock('../../../ducks/metamask/base-selectors', () => ({
+  getIsUnlocked: jest.fn(),
 }));
 
 jest.mock('../../../selectors/extension-update-prompt', () => ({
@@ -58,6 +63,7 @@ function renderContainer(pathname = '/') {
 describe('ExtensionUpdateTakeoverContainer', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    jest.mocked(getIsUnlocked).mockReturnValue(true);
     jest.mocked(getExtensionUpdatePromptType).mockReturnValue('versionUpdate');
     jest.mocked(selectDisplayUpdateModal).mockReturnValue(true);
     mockPathname = '/';
@@ -82,6 +88,25 @@ describe('ExtensionUpdateTakeoverContainer', () => {
     expect(screen.getByTestId('takeover')).toHaveTextContent(
       'unsupportedVersion',
     );
+  });
+
+  it('renders nothing while the wallet is locked', () => {
+    jest.mocked(getIsUnlocked).mockReturnValue(false);
+
+    renderContainer();
+
+    expect(screen.queryByTestId('takeover')).not.toBeInTheDocument();
+  });
+
+  it('stays hidden while locked when the any-route flag is on', () => {
+    jest.mocked(getIsUnlocked).mockReturnValue(false);
+    jest
+      .mocked(getIsExtensionUpdatePromptOnAnyRouteEnabled)
+      .mockReturnValue(true);
+
+    renderContainer('/send');
+
+    expect(screen.queryByTestId('takeover')).not.toBeInTheDocument();
   });
 
   it('renders nothing when the update modal is not displayed', () => {
@@ -131,6 +156,20 @@ describe('ExtensionUpdateTakeoverContainer', () => {
     renderContainer('/confirmation/1');
 
     expect(screen.getByTestId('takeover')).toHaveTextContent('versionUpdate');
+  });
+
+  it('stays hidden in a notification window while the wallet is locked', () => {
+    jest.mocked(getIsUnlocked).mockReturnValue(false);
+    jest
+      .mocked(getEnvironmentType)
+      .mockReturnValue(ENVIRONMENT_TYPE_NOTIFICATION);
+    jest
+      .mocked(getIsExtensionUpdatePromptOnNotificationEnabled)
+      .mockReturnValue(true);
+
+    renderContainer('/confirmation/1');
+
+    expect(screen.queryByTestId('takeover')).not.toBeInTheDocument();
   });
 
   it('still waits for an open dialog in a notification window', () => {

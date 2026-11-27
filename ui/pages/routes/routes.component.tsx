@@ -1016,7 +1016,7 @@ export default function Routes() {
 
       {isUnlocked ? <Toaster /> : null}
       {isUnlocked ? <Modals /> : null}
-      {isUnlocked ? <ExtensionUpdateTakeoverContainer /> : null}
+      <ExtensionUpdateTakeoverContainer />
     </div>
   );
 }
