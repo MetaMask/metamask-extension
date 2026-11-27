@@ -11,6 +11,16 @@ import {
   normalizeReport,
 } from './knip-baseline';
 
+/**
+ * Builds a knip issue group; unlisted issue types default to empty so
+ * fixtures only spell out what they exercise.
+ */
+const group = (
+  file: string,
+  issues: Record<string, { name: string; line?: number }[]> = {},
+  owners: string[] = [],
+) => ({ file, owners: owners.map((name) => ({ name })), ...issues });
+
 describe('compareEntries', () => {
   it('sorts by issue type order before sorting entries of the same type', () => {
     const sorted = [
@@ -46,13 +56,13 @@ describe('compareEntries', () => {
 describe('normalizeReport', () => {
   it('keys unused files by the flagged file itself', () => {
     const { entries } = normalizeReport([
-      {
-        file: 'ui/components/ui/icon/icon-times.js',
-        owners: [{ name: '@MetaMask/extension-platform' }],
-        files: [{ name: 'ui/components/ui/icon/icon-times.js' }],
-        dependencies: [],
-        unlisted: [],
-      },
+      group(
+        'ui/components/ui/icon/icon-times.js',
+        {
+          files: [{ name: 'ui/components/ui/icon/icon-times.js' }],
+        },
+        ['@MetaMask/extension-platform'],
+      ),
     ]);
 
     expect(entries).toStrictEqual([
@@ -62,43 +72,25 @@ describe('normalizeReport', () => {
 
   it('keys dependency and unlisted findings by file and symbol', () => {
     const { entries } = normalizeReport([
-      {
-        file: 'package.json',
-        dependencies: [
-          {
-            name: '@fortawesome/fontawesome-free',
-            line: 364,
-            col: 6,
-            pos: 26311,
-          },
-        ],
-        files: [],
-        unlisted: [],
-      },
-      {
-        file: 'app/scripts/metamask-controller.test.js',
-        dependencies: [],
-        files: [],
+      group('package.json', {
+        dependencies: [{ name: '@fortawesome/fontawesome-free', line: 364 }],
+      }),
+      group('app/scripts/foo.test.js', {
         unlisted: [{ name: 'ulid' }],
-      },
+      }),
     ]);
 
     expect(entries).toStrictEqual([
       'dependencies|package.json|@fortawesome/fontawesome-free',
-      'unlisted|app/scripts/metamask-controller.test.js|ulid',
+      'unlisted|app/scripts/foo.test.js|ulid',
     ]);
   });
 
   it('drops line numbers from the baseline key but records them for annotations', () => {
     const { entries, linesByEntry } = normalizeReport([
-      {
-        file: 'package.json',
-        dependencies: [
-          { name: 'base32-encode', line: 535, col: 6, pos: 38857 },
-        ],
-        files: [],
-        unlisted: [],
-      },
+      group('package.json', {
+        dependencies: [{ name: 'base32-encode', line: 535 }],
+      }),
     ]);
 
     expect(entries).toStrictEqual(['dependencies|package.json|base32-encode']);
@@ -108,78 +100,18 @@ describe('normalizeReport', () => {
     );
   });
 
-  it('skips malformed symbols instead of throwing', () => {
-    const { entries } = normalizeReport([
-      {
-        file: 'package.json',
-        dependencies: [undefined, { name: 'chalk' }] as never,
-        files: [],
-        unlisted: [],
-      },
-    ]);
-
-    expect(entries).toStrictEqual(['dependencies|package.json|chalk']);
-  });
-
-  it('returns a sorted, deduplicated entry list', () => {
-    const { entries } = normalizeReport([
-      {
-        file: 'b.ts',
-        files: [{ name: 'b.ts' }],
-        dependencies: [],
-        unlisted: [],
-      },
-      {
-        file: 'a.ts',
-        files: [{ name: 'a.ts' }],
-        dependencies: [],
-        unlisted: [],
-      },
-      {
-        file: 'a.ts',
-        files: [{ name: 'a.ts' }],
-        dependencies: [],
-        unlisted: [],
-      },
-    ]);
-
-    expect(entries).toStrictEqual(['files|a.ts', 'files|b.ts']);
-  });
-
-  it('orders known issue types first and sorts unknown future types after them', () => {
-    const { entries } = normalizeReport([
-      {
-        file: 'f.ts',
-        files: [],
-        unlisted: [{ name: 'z-package' }],
-        zeta: [{ name: 'z' }],
-        exports: [{ name: 'unusedExport' }],
-      },
-    ]);
-
-    expect(entries).toStrictEqual([
-      'unlisted|f.ts|z-package',
-      'exports|f.ts|unusedExport',
-      'zeta|f.ts|z',
-    ]);
-  });
-
   it('records the CODEOWNERS teams resolved by knip for each entry', () => {
     const { ownersByEntry } = normalizeReport([
-      {
-        file: 'ui/pages/deep-link/index.ts',
-        owners: [{ name: '@MetaMask/extension-security-team' }],
-        files: [{ name: 'ui/pages/deep-link/index.ts' }],
-        dependencies: [],
-        unlisted: [],
-      },
-      {
-        file: 'app/scripts/disable-console.ts',
-        owners: [],
+      group(
+        'ui/pages/deep-link/index.ts',
+        {
+          files: [{ name: 'ui/pages/deep-link/index.ts' }],
+        },
+        ['@MetaMask/extension-security-team'],
+      ),
+      group('app/scripts/disable-console.ts', {
         files: [{ name: 'app/scripts/disable-console.ts' }],
-        dependencies: [],
-        unlisted: [],
-      },
+      }),
     ]);
 
     expect(
@@ -188,6 +120,42 @@ describe('normalizeReport', () => {
     expect(ownersByEntry.has('files|app/scripts/disable-console.ts')).toBe(
       false,
     );
+  });
+
+  it('skips malformed symbols instead of throwing', () => {
+    const { entries } = normalizeReport([
+      group('package.json', {
+        dependencies: [undefined, { name: 'chalk' }] as never,
+      }),
+    ]);
+
+    expect(entries).toStrictEqual(['dependencies|package.json|chalk']);
+  });
+
+  it('returns a sorted, deduplicated entry list', () => {
+    const { entries } = normalizeReport([
+      group('b.ts', { files: [{ name: 'b.ts' }] }),
+      group('a.ts', { files: [{ name: 'a.ts' }] }),
+      group('a.ts', { files: [{ name: 'a.ts' }] }),
+    ]);
+
+    expect(entries).toStrictEqual(['files|a.ts', 'files|b.ts']);
+  });
+
+  it('orders known issue types first and sorts unknown future types after them', () => {
+    const { entries } = normalizeReport([
+      group('f.ts', {
+        unlisted: [{ name: 'z-package' }],
+        zeta: [{ name: 'z' }],
+        exports: [{ name: 'unusedExport' }],
+      }),
+    ]);
+
+    expect(entries).toStrictEqual([
+      'unlisted|f.ts|z-package',
+      'exports|f.ts|unusedExport',
+      'zeta|f.ts|z',
+    ]);
   });
 });
 
@@ -263,8 +231,8 @@ describe('formatEntry', () => {
   });
 
   it('prints an unlisted finding as symbol and importing file', () => {
-    expect(
-      formatEntry('unlisted|app/scripts/metamask-controller.test.js|ulid'),
-    ).toBe('ulid (in app/scripts/metamask-controller.test.js)');
+    expect(formatEntry('unlisted|app/scripts/foo.test.js|ulid')).toBe(
+      'ulid (in app/scripts/foo.test.js)',
+    );
   });
 });

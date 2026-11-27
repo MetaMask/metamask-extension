@@ -14,14 +14,11 @@ import type { KnipConfig } from 'knip';
  * against the committed baseline in `development/knip-baseline.jsonc`
  * (development/knip-baseline.ts). The baseline is the work queue: new findings
  * fail, already-known findings are listed there and get cleaned up by the
- * owning teams over time.
+ * owning teams over time. See docs/dead-code-check.md.
  *
  * Knip only parses JS/TS (and a few framework) files. The extension's real
  * entry points are referenced from HTML pages and extension manifests, which
- * knip cannot parse, so they are declared explicitly below. Stylesheets are
- * kept out of the graph entirely: they are aggregated through
- * `ui/css/index.scss` (referenced from `app/html/partials/partial-head.html`)
- * and webpack, not through import analysis.
+ * knip cannot parse, so they are declared explicitly below.
  */
 const config: KnipConfig = {
   // The Stylelint plugin would pull every .scss/.css file into the project
@@ -55,22 +52,22 @@ const config: KnipConfig = {
 
   entry: [
     // Runtime roots referenced from the HTML pages in app/html (background,
-    // popup/notification/sidepanel UI, loading, offscreen, cashtag widget):
+    // popup/notification/sidepanel UI, loading, offscreen, cashtag widget);
     // knip does not parse HTML, so the <script src> targets are declared.
     'app/scripts/load/*.{js,ts,tsx}',
     'app/offscreen/*.ts',
     'app/scripts/cashtag/widget/frame.tsx',
     'app/scripts/use-snow.js',
-    // Referenced from the extension manifests (app/manifest/v2, v3): content
-    // scripts, the MV3 service worker and web-accessible vendor bundles.
+    // Referenced from the extension manifests (app/manifest/v2, v3); knip
+    // does not parse manifests either.
     'app/scripts/contentscript.js',
     'app/scripts/inpage.js',
     'app/service-worker.ts',
     // Standalone dev-only scripts injected at runtime (see
-    // app/scripts/development/README.md).
+    // app/scripts/development/README.md), and compile-time type-level proofs
+    // (type assertions exercised by `yarn lint:tsc` through tsconfig
+    // inclusion, never imported).
     'app/scripts/development/**/*.ts',
-    // Compile-time type-level proofs (type assertions exercised by
-    // `yarn lint:tsc` through tsconfig inclusion, never imported).
     '**/*.proof.ts',
     // Storybook: the .storybook config is the entry; stories are picked up
     // from the `stories` globs in .storybook/main.js by the Storybook plugin.
@@ -97,11 +94,9 @@ const config: KnipConfig = {
     '*.{js,mjs,cjs,ts,mts}',
   ],
 
-  // Explicit project globs keep the graph to JS/TS only: stylesheets
-  // (.scss/.css), HTML pages, manifests and images are aggregated or
-  // referenced through mechanisms knip cannot parse (webpack, the
-  // partial-head.html <link>, the stylelint config) and are verified by
-  // dedicated tooling instead.
+  // Explicit project globs keep the graph to JS/TS only: stylesheets, HTML
+  // pages, manifests and images are aggregated or referenced through
+  // mechanisms knip cannot parse and are verified by dedicated tooling.
   project: [
     'app/**/*.{js,mjs,cjs,jsx,ts,tsx,mts,cts}',
     'shared/**/*.{js,mjs,cjs,jsx,ts,tsx,mts,cts}',
@@ -116,8 +111,8 @@ const config: KnipConfig = {
   ],
 
   // Files knip should not analyze at all. These are the only ignore entries
-  // with effect: they sit inside the `project` globs above but are not
-  // part of the JS import graph (vendored bundles, caches, build outputs).
+  // with effect: they sit inside the `project` globs above but are not part
+  // of the JS import graph (vendored bundles, caches, build outputs).
   ignore: [
     // Vendored, self-contained browser bundles; referenced directly from the
     // manifests and HTML pages, with nothing for knip to parse inside.
@@ -133,8 +128,8 @@ const config: KnipConfig = {
 
   // Dependencies referenced only through mechanisms knip cannot see. Every
   // entry documents why the dependency is real — do not delete an entry
-  // without re-verifying. Mirrors (and should stay consistent with)
-  // .depcheckrc.yml, which tracks the same class of blind spots for depcheck.
+  // without re-verifying. Mirrors .depcheckrc.yml, which tracks the same
+  // class of blind spots for depcheck.
   ignoreDependencies: [
     // Loaded via `<script src="@lavamoat/snow/snow.prod.js">` from the HTML
     // pages in app/html; never imported from JS.
