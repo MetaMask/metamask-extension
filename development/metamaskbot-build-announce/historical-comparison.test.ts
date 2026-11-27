@@ -64,15 +64,15 @@ describe('aggregateHistoricalData', () => {
     jest.restoreAllMocks();
   });
 
-  it('averages across the 3 most recent commits', () => {
+  it('averages the means of the most recent commits and reports no percentile', () => {
     const result = aggregateHistoricalData(mockFile);
 
     expect(result['pageLoad/standardHome']?.uiStartup?.mean).toBe(1500);
-    expect(result['pageLoad/standardHome']?.uiStartup?.p75).toBe(1650);
-    expect(result['pageLoad/standardHome']?.uiStartup?.p95).toBe(1950);
+    expect(result['pageLoad/standardHome']?.uiStartup?.p75).toBeUndefined();
+    expect(result['pageLoad/standardHome']?.uiStartup?.p95).toBeUndefined();
     expect(result['pageLoad/standardHome']?.load?.mean).toBe(550);
-    expect(result['pageLoad/standardHome']?.load?.p75).toBe(605);
-    expect(result['pageLoad/standardHome']?.load?.p95).toBe(715);
+    expect(result['pageLoad/standardHome']?.load?.p75).toBeUndefined();
+    expect(result['pageLoad/standardHome']?.load?.p95).toBeUndefined();
   });
 
   it('includes data from older commits when latest is incomplete', () => {
@@ -196,6 +196,78 @@ describe('aggregateHistoricalData', () => {
     );
   });
 
+  it('keeps a run in the mean when it lacks a percentile', () => {
+    // Percentiles are not combined across runs, so a missing p75 is no reason
+    // to leave the run out of the mean.
+    const data = asHistoricalFile({
+      c1: {
+        timestamp: 1,
+        presets: {
+          pageLoad: {
+            entry: { mean: { metric: 100 }, p75: { metric: 100 } },
+          },
+        },
+      },
+      c2: {
+        timestamp: 2,
+        presets: {
+          pageLoad: { entry: { mean: { metric: 100 } } },
+        },
+      },
+      c3: {
+        timestamp: 3,
+        presets: {
+          pageLoad: {
+            entry: { mean: { metric: 1000 }, p75: { metric: 1000 } },
+          },
+        },
+      },
+    });
+
+    const baseline = aggregateHistoricalData(data)['pageLoad/entry']?.metric;
+
+    expect(baseline).toStrictEqual({ mean: 400 });
+  });
+
+  it('omits stdDev when only some contributing runs recorded it', () => {
+    // A stdDev averaged over a subset describes a different population than
+    // the mean beside it, which is how `stdDev ~ 0` could sit next to a p75
+    // far above the mean. Emitting nothing is correct.
+    const data = asHistoricalFile({
+      c1: {
+        timestamp: 1,
+        presets: {
+          pageLoad: {
+            entry: {
+              mean: { metric: 100 },
+              stdDev: { metric: 5 },
+              p75: { metric: 100 },
+              p95: { metric: 100 },
+            },
+          },
+        },
+      },
+      c2: {
+        timestamp: 2,
+        presets: {
+          pageLoad: {
+            entry: {
+              mean: { metric: 1000 },
+              p75: { metric: 1000 },
+              p95: { metric: 1000 },
+            },
+          },
+        },
+      },
+    });
+
+    const result = aggregateHistoricalData(data);
+    const baseline = result['pageLoad/entry']?.metric;
+
+    expect(baseline?.mean).toBe(550);
+    expect(baseline?.stdDev).toBeUndefined();
+  });
+
   it('includes stdDev in the baseline when stdDev data is present', () => {
     const data = asHistoricalFile({
       c1: {
@@ -228,9 +300,10 @@ describe('aggregateHistoricalData', () => {
 
     const result = aggregateHistoricalData(data);
 
-    // stdDev true-branch: result should include a stdDev field
-    expect(result['pageLoad/entry']?.metric).toHaveProperty('stdDev');
-    expect(result['pageLoad/entry']?.metric?.stdDev).toBeCloseTo(35);
+    // Within-run variance 1250 plus between-run variance 2500.
+    expect(result['pageLoad/entry']?.metric?.stdDev).toBeCloseTo(
+      Math.sqrt(3750),
+    );
   });
 
   it('skips entries where mean values average to NaN (e.g. Infinity + -Infinity)', () => {
@@ -270,7 +343,7 @@ describe('aggregateHistoricalData', () => {
     expect(result['pageLoad/nanEntry']).toBeUndefined();
   });
 
-  it('falls back to mean when p75/p95 data is missing', () => {
+  it('reports no percentile when p75 and p95 are missing', () => {
     const data = asHistoricalFile({
       c1: {
         timestamp: 1,
@@ -286,15 +359,133 @@ describe('aggregateHistoricalData', () => {
 
     const result = aggregateHistoricalData(data);
 
-    expect(result['pageLoad/entry']?.metric?.mean).toBe(500);
-    expect(result['pageLoad/entry']?.metric?.p75).toBe(500);
-    expect(result['pageLoad/entry']?.metric?.p95).toBe(500);
-    expect(console.warn).toHaveBeenCalledWith(
-      expect.stringContaining('No p75 data'),
-    );
-    expect(console.warn).toHaveBeenCalledWith(
-      expect.stringContaining('No p95 data'),
-    );
+    expect(result['pageLoad/entry']?.metric).toStrictEqual({ mean: 500 });
+  });
+});
+
+describe('aggregateHistoricalData pooling', () => {
+  beforeEach(() => {
+    jest.spyOn(console, 'log').mockImplementation();
+    jest.spyOn(console, 'warn').mockImplementation();
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  type RunStats = {
+    mean: number;
+    stdDev?: number;
+    p75?: number;
+    p95?: number;
+  };
+
+  // One commit holding a single run of `pageLoad/entry/metric`.
+  const commitWithRun = (timestamp: number, run: RunStats) => ({
+    timestamp,
+    presets: {
+      pageLoad: {
+        entry: {
+          mean: { metric: run.mean },
+          ...(run.stdDev === undefined
+            ? {}
+            : { stdDev: { metric: run.stdDev } }),
+          ...(run.p75 === undefined ? {} : { p75: { metric: run.p75 } }),
+          ...(run.p95 === undefined ? {} : { p95: { metric: run.p95 } }),
+        },
+      },
+    },
+  });
+
+  const baselineOf = (runs: RunStats[]) =>
+    aggregateHistoricalData(
+      asHistoricalFile(
+        Object.fromEntries(
+          runs.map((run, index) => [
+            `c${index}`,
+            commitWithRun(index + 1, run),
+          ]),
+        ),
+      ),
+    )['pageLoad/entry']?.metric;
+
+  it('adds the variance of the run means to stdDev', () => {
+    // Two tight runs at different levels: the pooled samples span both, so the
+    // stdDev is dominated by the 1000 ms gap, not the 10 ms within a run.
+    const baseline = baselineOf([
+      { mean: 1000, stdDev: 10 },
+      { mean: 2000, stdDev: 10 },
+    ]);
+
+    expect(baseline?.mean).toBe(1500);
+    expect(baseline?.stdDev).toBeCloseTo(Math.sqrt(100 + 500 ** 2), 6);
+  });
+
+  it('matches the stdDev of the raw pooled samples', () => {
+    const runA = [90, 100, 110, 100];
+    const runB = [190, 200, 210, 200];
+    const summarize = (samples: number[]) => {
+      const mean = samples.reduce((a, b) => a + b, 0) / samples.length;
+      const variance =
+        samples.reduce((a, b) => a + (b - mean) ** 2, 0) / samples.length;
+      return { mean, stdDev: Math.sqrt(variance) };
+    };
+
+    const baseline = baselineOf([summarize(runA), summarize(runB)]);
+    const pooled = summarize([...runA, ...runB]);
+
+    expect(baseline?.mean).toBeCloseTo(pooled.mean, 9);
+    expect(baseline?.stdDev).toBeCloseTo(pooled.stdDev, 9);
+  });
+
+  it('keeps stdDev at the within-run value when runs agree on the mean', () => {
+    const baseline = baselineOf([
+      { mean: 1000, stdDev: 30 },
+      { mean: 1000, stdDev: 30 },
+    ]);
+
+    expect(baseline?.stdDev).toBeCloseTo(30, 9);
+  });
+
+  it('reproduces a single run unchanged, percentiles included', () => {
+    const baseline = baselineOf([
+      { mean: 1000, stdDev: 25, p75: 1020, p95: 1050 },
+    ]);
+
+    expect(baseline).toStrictEqual({
+      mean: 1000,
+      stdDev: 25,
+      p75: 1020,
+      p95: 1050,
+    });
+  });
+
+  it('omits a percentile the single run did not report', () => {
+    const baseline = baselineOf([{ mean: 1000, stdDev: 10, p95: 1300 }]);
+
+    expect(baseline).toStrictEqual({ mean: 1000, stdDev: 10, p95: 1300 });
+  });
+
+  it('reports no percentile across several runs', () => {
+    // A mean of per-run p75s is not the p75 of the pooled samples, so none is
+    // reported, and the mean does not stand in for it.
+    const baseline = baselineOf([
+      { mean: 1000, stdDev: 10, p75: 1010, p95: 1020 },
+      { mean: 2000, stdDev: 10, p75: 2010, p95: 2020 },
+    ]);
+
+    expect(baseline?.p75).toBeUndefined();
+    expect(baseline?.p95).toBeUndefined();
+  });
+
+  it('omits stdDev when one run has none, leaving the mean over every run', () => {
+    const baseline = baselineOf([
+      { mean: 1000, stdDev: 10 },
+      { mean: 1000, stdDev: 10 },
+      { mean: 4000 },
+    ]);
+
+    expect(baseline).toStrictEqual({ mean: 2000 });
   });
 });
 
@@ -453,7 +644,7 @@ describe('fetchHistoricalPerformanceDataFromMain', () => {
     expect(result).toBeNull();
   });
 
-  it('uses mean as fallback p75 when p75 data is absent from all commits', async () => {
+  it('omits p75 when p75 data is absent from all commits', async () => {
     // Only mean and p95 provided — no p75 in the benchmark results
     const data = asHistoricalFile({
       commit1: {
@@ -471,11 +662,11 @@ describe('fetchHistoricalPerformanceDataFromMain', () => {
 
     const result = aggregateHistoricalData(data);
 
-    expect(result['pageLoad/standardHome']?.uiStartup?.p75).toBe(1000);
+    expect(result['pageLoad/standardHome']?.uiStartup?.p75).toBeUndefined();
     expect(result['pageLoad/standardHome']?.uiStartup?.p95).toBe(1300);
   });
 
-  it('uses mean as fallback p95 when p95 data is absent from all commits', async () => {
+  it('omits p95 when p95 data is absent from all commits', async () => {
     // Only mean and p75 provided — no p95 in the benchmark results
     const data = asHistoricalFile({
       commit1: {
@@ -494,8 +685,7 @@ describe('fetchHistoricalPerformanceDataFromMain', () => {
 
     const result = aggregateHistoricalData(data);
 
-    // p95 should fall back to the mean value (1000)
-    expect(result['pageLoad/standardHome']?.uiStartup?.p95).toBe(1000);
+    expect(result['pageLoad/standardHome']?.uiStartup?.p95).toBeUndefined();
     expect(result['pageLoad/standardHome']?.uiStartup?.p75).toBe(1100);
   });
 
