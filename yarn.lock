@@ -7564,6 +7564,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/braze-snap@portal:../internal-snaps/packages/braze-snap::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@metamask/braze-snap@portal:../internal-snaps/packages/braze-snap::locator=metamask-crx%40workspace%3A."
+  languageName: node
+  linkType: soft
+
 "@metamask/bridge-controller@npm:^83.1.5, @metamask/bridge-controller@npm:^83.2.0":
   version: 83.2.0
   resolution: "@metamask/bridge-controller@npm:83.2.0"
@@ -34650,6 +34656,7 @@ __metadata:
     "@metamask/bitcoin-regtest-up": "npm:^2.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^3.3.0"
     "@metamask/bitcoin-wallet-standard": "npm:^1.1.0"
+    "@metamask/braze-snap": "portal:../internal-snaps/packages/braze-snap"
     "@metamask/bridge-controller": "npm:^83.2.0"
     "@metamask/bridge-status-controller": "npm:^78.0.3"
     "@metamask/browser-passworder": "npm:^6.0.0"

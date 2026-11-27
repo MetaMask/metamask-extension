@@ -393,6 +393,7 @@
     "@metamask/base-data-service": "^2.1.0",
     "@metamask/bitcoin-wallet-snap": "^3.3.0",
     "@metamask/bitcoin-wallet-standard": "^1.1.0",
+    "@metamask/braze-snap": "portal:../internal-snaps/packages/braze-snap",
     "@metamask/bridge-controller": "^83.2.0",
     "@metamask/bridge-status-controller": "^78.0.3",
     "@metamask/browser-passworder": "^6.0.0",

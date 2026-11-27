@@ -23,6 +23,7 @@ export const PREINSTALLED_SNAPS = [
   'npm:@metamask/stellar-wallet-snap',
   'npm:@metamask/permissions-kernel-snap',
   'npm:@metamask/gator-permissions-snap',
+  'npm:@metamask/braze-snap',
 ];
 
 /**
