@@ -320,13 +320,6 @@
       "globals": {
         "PushManager": true
       }
-    },
-    "interestfor": {
-      "globals": {
-        "InterestEvent": false,
-        "interestForPolyfillInstalled": false,
-        "interestForUsePolyfillAlways": false
-      }
     }
   }
 }
