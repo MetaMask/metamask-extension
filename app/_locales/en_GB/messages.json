@@ -4607,6 +4607,10 @@
     "message": "Unlock it and try again to continue",
     "description": "Description shown when a hardware wallet is locked during an operation"
   },
+  "hardwareWalletErrorMultipleDevicesConnectedDescription": {
+    "message": "Multiple $1 devices are connected. Unplug the extra devices, then try again.",
+    "description": "$1 is the hardware wallet type. Keep one physical device connected; no accounts need to be removed from MetaMask."
+  },
   "hardwareWalletErrorOnlyV4SupportedDescription": {
     "message": "Your $1 can only sign version 4 (V4) typed data. This site requested an older signature type that isn't supported",
     "description": "$1 is the hardware wallet type"
@@ -4658,6 +4662,10 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "$1 locked",
     "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorTitleMultipleDevicesConnected": {
+    "message": "Multiple $1 devices connected",
+    "description": "$1 is the hardware wallet type. Shown when multiple physical devices are connected, not when Ledger accounts are bound to a different device."
   },
   "hardwareWalletErrorTitleUnsupportedSignature": {
     "message": "Signature not supported"
