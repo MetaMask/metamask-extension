@@ -475,6 +475,9 @@
     "ui/hooks/useTokenInsightsData.test.ts": {
       "React: Act warnings (component updates not wrapped)": 2
     },
+    "ui/index.startup-tags.test.ts": {
+      "Reselect: Input stability warnings": 1
+    },
     "ui/pages/asset/components/asset-page.test.tsx": {
       "Reselect: Identity function warnings": 1
     },

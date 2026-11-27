@@ -9,6 +9,7 @@ import type {
   Client,
   MeasurementUnit,
   Span,
+  SpanAttributeValue,
   StartSpanOptions,
   TraceparentData,
 } from '@sentry/types';
@@ -662,98 +663,6 @@ function isOnBackgroundPageload(): boolean {
 }
 
 /**
- * Children of a segment root that were still running when the root ended and
- * were handed to the standalone-span path, so they are sent when they end.
- */
-export const IN_FLIGHT_STANDALONE_ATTRIBUTE =
-  'trace.in_flight_children.standalone';
-
-/**
- * Children of a segment root that were still running when the root ended and
- * could not be handed off, so the SDK will never send them.
- */
-export const IN_FLIGHT_LOST_ATTRIBUTE = 'trace.in_flight_children.lost';
-
-/**
- * Finished children past the SDK's per-transaction cap, which it cuts without
- * reporting.
- */
-export const OVER_SPAN_LIMIT_ATTRIBUTE = 'trace.children_over_span_limit';
-
-/**
- * `MAX_SPAN_COUNT` in `@sentry/core`'s `SentrySpan`, which is not exported.
- */
-const MAX_CHILD_SPANS_PER_TRANSACTION = 1000;
-
-type StandaloneCapableSpan = Span & {
-  // Private `SentrySpan` field read by its `_onSpanEnded`.
-  _isStandaloneSpan?: boolean;
-  isStandaloneSpan?: () => boolean;
-};
-
-function isStandaloneSpan(span: Span): boolean {
-  const { isStandaloneSpan: check } = span as StandaloneCapableSpan;
-  return typeof check === 'function' && check.call(span);
-}
-
-/**
- * Mark a span standalone. False means an SDK rename broke the private write.
- *
- * @param span - A running child span.
- */
-function markStandalone(span: Span): boolean {
-  const candidate = span as StandaloneCapableSpan;
-  if (typeof candidate.isStandaloneSpan !== 'function') {
-    return false;
-  }
-  candidate._isStandaloneSpan = true;
-  return candidate.isStandaloneSpan();
-}
-
-/**
- * Send a root's still-running children standalone and count them on the root.
- *
- * @param span - The span about to end.
- */
-function preserveInFlightChildren(span: Span | null | undefined): void {
-  const globalGetRootSpan = globalThis.sentry?.getRootSpan;
-  const getSpanDescendants = globalThis.sentry?.getSpanDescendants;
-
-  if (!span || !globalGetRootSpan || !getSpanDescendants) {
-    return;
-  }
-
-  if (globalGetRootSpan(span) !== span) {
-    return;
-  }
-
-  let standalone = 0;
-  let lost = 0;
-  let finished = 0;
-
-  // Only sampled spans are returned, so a non-recording one has ended.
-  for (const child of getSpanDescendants(span)) {
-    if (child === span || isStandaloneSpan(child)) {
-      continue;
-    }
-    if (!child.isRecording()) {
-      finished += 1;
-    } else if (markStandalone(child)) {
-      standalone += 1;
-    } else {
-      lost += 1;
-    }
-  }
-
-  span.setAttribute(IN_FLIGHT_STANDALONE_ATTRIBUTE, standalone);
-  span.setAttribute(IN_FLIGHT_LOST_ATTRIBUTE, lost);
-  span.setAttribute(
-    OVER_SPAN_LIMIT_ATTRIBUTE,
-    Math.max(0, finished - MAX_CHILD_SPANS_PER_TRANSACTION),
-  );
-}
-
-/**
  * End a pending trace that was started without a callback.
  * Does nothing if the pending trace cannot be found.
  *
@@ -790,7 +699,6 @@ export function endTrace(request: EndTraceRequest): void {
     finalizeOnboardingMachineTime(pendingTrace.span);
   }
 
-  preserveInFlightChildren(pendingTrace.span);
   pendingTrace.end(endTime);
 
   tracesByKey.delete(key);
@@ -975,10 +883,6 @@ function traceCallback<ResultType>(
     const start = Date.now();
     let error: unknown;
 
-    if (span) {
-      initSpan(span, request);
-    }
-
     return tryCatchMaybePromise<ResultType>(
       () => fn(span),
       (currentError) => {
@@ -986,8 +890,6 @@ function traceCallback<ResultType>(
         throw currentError;
       },
       () => {
-        // Runs before the SDK ends the span on return or settlement.
-        preserveInFlightChildren(span);
         const end = Date.now();
         logTrace(request, start, end, error);
       },
@@ -1012,10 +914,6 @@ function startTrace(request: TraceRequest): TraceContext {
     const end = (timestamp?: number) => {
       span?.end(timestamp);
     };
-
-    if (span) {
-      initSpan(span, request);
-    }
 
     const pendingTrace = { end, request, startTime, span };
     const key = getTraceKey(request);
@@ -1178,9 +1076,10 @@ function startSpan<T>(
   callback: (spanOptions: StartSpanOptions) => T,
 ) {
   const {
-    data: attributes,
+    data,
     name,
     parentContext,
+    tags,
     startTime,
     op,
     allowActiveSpanFallback,
@@ -1210,8 +1109,9 @@ function startSpan<T>(
     }
   }
 
+  // Streamed spans carry no tags, so a request's tags travel as attributes.
   const spanOptions: StartSpanOptions = {
-    attributes,
+    attributes: { ...tags, ...data },
     name,
     op: op ?? OP_DEFAULT,
     parentSpan,
@@ -1300,8 +1200,8 @@ export function getPerformanceTimestamp(): number {
 }
 
 /**
- * Initialise the isolated Sentry scope created for each trace.
- * Includes setting all non-numeric tags.
+ * Initialise the forked Sentry scope created for each trace, so error events
+ * captured inside the trace carry its non-numeric tags.
  *
  * @param scope - The Sentry scope to initialise.
  * @param request - The trace request.
@@ -1312,23 +1212,6 @@ function initScope(scope: Sentry.Scope, request: TraceRequest) {
   for (const [key, value] of Object.entries(tags)) {
     if (typeof value !== 'number') {
       scope.setTag(key, value);
-    }
-  }
-}
-
-/**
- * Initialise the Sentry span created for each trace.
- * Includes setting all numeric tags as measurements so they can be queried numerically in Sentry.
- *
- * @param _span - The Sentry span to initialise.
- * @param request - The trace request.
- */
-function initSpan(_span: Sentry.Span, request: TraceRequest) {
-  const tags = request.tags ?? {};
-
-  for (const [key, value] of Object.entries(tags)) {
-    if (typeof value === 'number') {
-      sentrySetMeasurement(key, value, 'none');
     }
   }
 }
@@ -1446,18 +1329,41 @@ function sentryWithScope<T>(callback: (scope: Sentry.Scope) => T): T {
   return actual(callback);
 }
 
-function sentrySetMeasurement(
+function getActiveRootSpan(): Sentry.Span | undefined {
+  const { sentry } = globalThis;
+  const activeSpan = sentry?.getActiveSpan?.();
+  return activeSpan ? sentry?.getRootSpan?.(activeSpan) : undefined;
+}
+
+/**
+ * Records a measurement as a `{ value, unit }` attribute on the active trace's
+ * root span, since streamed spans do not serialize span events.
+ *
+ * @param key - The measurement name.
+ * @param value - The measurement value.
+ * @param unit - The measurement unit.
+ */
+export function setMeasurement(
   key: string,
   value: number,
   unit: MeasurementUnit,
 ) {
-  const actual = globalThis.sentry?.setMeasurement;
+  // The SDK serializes a `{ value, unit }` attribute; its types do not list it.
+  getActiveRootSpan()?.setAttribute(key, {
+    value,
+    unit,
+  } as unknown as SpanAttributeValue);
+}
 
-  if (!actual) {
-    return;
-  }
-
-  actual(key, value, unit);
+/**
+ * Records a tag-like value as an attribute on the active trace's root span:
+ * scope tags reach error events only.
+ *
+ * @param key - The attribute name.
+ * @param value - The attribute value.
+ */
+export function setRootSpanAttribute(key: string, value: TraceValue) {
+  getActiveRootSpan()?.setAttribute(key, value);
 }
 
 /**

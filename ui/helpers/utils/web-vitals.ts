@@ -36,6 +36,7 @@ import type {
 } from 'web-vitals/attribution';
 import { onINP, onLCP, onCLS, onFCP } from 'web-vitals/attribution';
 import type { WebVitalsMetrics } from '../../../shared/constants/benchmarks';
+import { setRootSpanAttribute } from '../../../shared/lib/trace';
 
 /**
  * Stored web vitals metrics for E2E benchmark retrieval.
@@ -130,6 +131,7 @@ function enrichSentryWithWebVitals(
 
   // Set rating tag for filtering (e.g. inp.rating:poor in Sentry Discover)
   sentry.setTag?.(`${name.toLowerCase()}.rating`, rating);
+  setRootSpanAttribute(`${name.toLowerCase()}.rating`, rating);
 
   // Set attribution context if available
   if (attribution && Object.keys(attribution).length > 0) {

@@ -8,6 +8,7 @@ import type {
   Event as SentryEvent,
   EventHint,
   Integration,
+  StreamedSpanJSON,
 } from '@sentry/core';
 import { addFetchInstrumentationHandler } from '@sentry/core';
 import { v4 as uuidv4 } from 'uuid';
@@ -332,16 +333,25 @@ export function consensysTracePropagationIntegration({
     processEvent: (event: SentryEvent, _hint: EventHint, _client: Client) => {
       const traceId = event.contexts?.trace?.trace_id;
       if (traceId) {
-        event.tags = { ...event.tags, otelTraceId: traceId };
-        const requestId = requestIdByTraceId.get(traceId);
-        if (requestId) {
-          event.tags = {
-            ...event.tags,
-            consensysRequestId: requestId,
-          };
-        }
+        event.tags = { ...event.tags, ...getTraceCorrelation(traceId) };
       }
       return event;
     },
+    // Streamed spans carry no `tags`, so the same correlation ids travel as
+    // attributes on the segment span.
+    processSegmentSpan: (span: StreamedSpanJSON) => {
+      span.attributes = {
+        ...span.attributes,
+        ...getTraceCorrelation(span.trace_id),
+      };
+    },
+  };
+}
+
+function getTraceCorrelation(traceId: string): Record<string, string> {
+  const requestId = requestIdByTraceId.get(traceId);
+  return {
+    otelTraceId: traceId,
+    ...(requestId ? { consensysRequestId: requestId } : {}),
   };
 }
