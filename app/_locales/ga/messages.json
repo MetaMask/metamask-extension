@@ -4032,9 +4032,6 @@
   "sendSelectReceiveAsset": {
     "message": "Roghnaigh sócmhainn le fáil"
   },
-  "sendSelectSendAsset": {
-    "message": "Roghnaigh sócmhainn le seoladh"
-  },
   "sendingAsset": {
     "message": "Ag seoladh $1"
   },

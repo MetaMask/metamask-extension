@@ -10301,9 +10301,6 @@
   "sendSelectReceiveAsset": {
     "message": "Pilih aset yang akan diterima"
   },
-  "sendSelectSendAsset": {
-    "message": "Pilih aset yang akan dikirim"
-  },
   "sendToPerps": {
     "message": "Kirim ke Perp"
   },

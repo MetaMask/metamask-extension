@@ -10299,9 +10299,6 @@
   "sendSelectReceiveAsset": {
     "message": "选择要接收的资产"
   },
-  "sendSelectSendAsset": {
-    "message": "选择要发送的资产"
-  },
   "sendToPerps": {
     "message": "转入永续合约"
   },

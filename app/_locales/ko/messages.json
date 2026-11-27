@@ -10301,9 +10301,6 @@
   "sendSelectReceiveAsset": {
     "message": "수취할 자산 선택"
   },
-  "sendSelectSendAsset": {
-    "message": "전송할 자산 선택"
-  },
   "sendToPerps": {
     "message": "무기한 선물로 보내기"
   },
