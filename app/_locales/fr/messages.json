@@ -10293,9 +10293,6 @@
   "sendSelectReceiveAsset": {
     "message": "Sélectionnez l’actif que vous recevrez"
   },
-  "sendSelectSendAsset": {
-    "message": "Sélectionnez l’actif que vous voulez envoyer"
-  },
   "sendToPerps": {
     "message": "Envoyer vers PERPS"
   },

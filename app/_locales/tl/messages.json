@@ -10293,9 +10293,6 @@
   "sendSelectReceiveAsset": {
     "message": "Piliin ang asset na tatanggapin"
   },
-  "sendSelectSendAsset": {
-    "message": "Piliin ang asset na ipapadala"
-  },
   "sendToPerps": {
     "message": "Ipadala sa Perps"
   },

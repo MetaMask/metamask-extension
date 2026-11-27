@@ -10307,9 +10307,6 @@
   "sendSelectReceiveAsset": {
     "message": "Chọn tài sản để nhận"
   },
-  "sendSelectSendAsset": {
-    "message": "Chọn tài sản để gửi"
-  },
   "sendToPerps": {
     "message": "Gửi đến Hợp đồng vĩnh cửu"
   },

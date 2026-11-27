@@ -10293,9 +10293,6 @@
   "sendSelectReceiveAsset": {
     "message": "प्राप्त करने के लिए एसेट को चुनें"
   },
-  "sendSelectSendAsset": {
-    "message": "भेजने के लिए एसेट को चुनें"
-  },
   "sendToPerps": {
     "message": "पर्प्स को भेजें"
   },

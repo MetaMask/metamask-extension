@@ -10293,9 +10293,6 @@
   "sendSelectReceiveAsset": {
     "message": "Επιλέξτε περιουσιακό στοιχείο για λήψη"
   },
-  "sendSelectSendAsset": {
-    "message": "Επιλέξτε περιουσιακό στοιχείο για αποστολή"
-  },
   "sendToPerps": {
     "message": "Αποστολή στα Perps"
   },

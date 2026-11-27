@@ -10307,9 +10307,6 @@
   "sendSelectReceiveAsset": {
     "message": "Alınacak varlıkları seçin"
   },
-  "sendSelectSendAsset": {
-    "message": "Gönderilecek varlıkları seçin"
-  },
   "sendToPerps": {
     "message": "Perps'e Gönder"
   },

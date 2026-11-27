@@ -10297,9 +10297,6 @@
   "sendSelectReceiveAsset": {
     "message": "受け取るアラートを選択してください"
   },
-  "sendSelectSendAsset": {
-    "message": "送る資産を選択してください"
-  },
   "sendToPerps": {
     "message": "パーペチュアルに送金"
   },
