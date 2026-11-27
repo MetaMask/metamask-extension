@@ -197,6 +197,23 @@ export const getIsDiscoverSearchEnabled = createSelector(
 );
 
 /**
+ * Whether Discover search promotes the Stocks section above Crypto when the
+ * query exactly matches an RWA `rwaData.ticker` or company name.
+ *
+ * Remote flag key: `exploreSearchPromoteStocksExactTicker`. Defaults to false
+ * when the flag is missing or invalid.
+ *
+ * @param _state - The MetaMask state object
+ * @returns boolean - True if Stocks exact-match promotion is enabled.
+ */
+export const getIsDiscoverSearchPromoteStocksExactTickerEnabled =
+  createSelector(
+    getRemoteFeatureFlags,
+    ({ exploreSearchPromoteStocksExactTicker }) =>
+      getBooleanFeatureFlag(exploreSearchPromoteStocksExactTicker, false),
+  );
+
+/**
  * Selector that returns whether the TradingView advanced charts integration
  * should be shown on the Token Details Page.
  *

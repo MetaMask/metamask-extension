@@ -3275,6 +3275,16 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  exploreSearchPromoteStocksExactTicker: {
+    inProd: false,
+    name: 'exploreSearchPromoteStocksExactTicker',
+    productionDefault: {
+      enabled: false,
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   extensionBasicFunctionalityToggle: {
     inProd: true,
     name: 'extensionBasicFunctionalityToggle',

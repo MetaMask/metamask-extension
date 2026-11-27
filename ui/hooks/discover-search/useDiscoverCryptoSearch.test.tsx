@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import { renderHook, waitFor } from '@testing-library/react';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -432,6 +433,62 @@ describe('useDiscoverCryptoSearch', () => {
       'WRN',
       'SPM',
       'MAL',
+    ]);
+  });
+
+  it.each([
+    ['$TSLA', 'TSLA'],
+    ['  $TSLA  ', 'TSLA'],
+    ['$ tsla', 'tsla'],
+  ])(
+    'strips a leading $ from %p before calling searchTokens',
+    async (input, expected) => {
+      mockSearchTokens.mockResolvedValue({
+        count: 0,
+        totalCount: 0,
+        data: [],
+        pageInfo: { hasNextPage: false, endCursor: null },
+      } as never);
+
+      const { result } = renderHook(
+        () => useDiscoverCryptoSearch({ query: input }),
+        { wrapper: createWrapper() },
+      );
+
+      await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+      expect(mockSearchTokens).toHaveBeenCalledWith(
+        DISCOVER_SEARCH_CHAIN_IDS,
+        expected,
+        expect.objectContaining({
+          includeMarketData: true,
+          includeTokenSecurityData: true,
+        }),
+      );
+    },
+  );
+
+  it('treats a lone $ query like an empty query and loads trending tokens', async () => {
+    mockGetTrendingTokens.mockResolvedValue([
+      {
+        assetId: 'eip155:1/slip44:60',
+        name: 'Ethereum',
+        symbol: 'ETH',
+        decimals: 18,
+      },
+    ] as never);
+
+    const { result } = renderHook(
+      () => useDiscoverCryptoSearch({ query: '$' }),
+      { wrapper: createWrapper() },
+    );
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    expect(mockSearchTokens).not.toHaveBeenCalled();
+    expect(mockGetTrendingTokens).toHaveBeenCalled();
+    expect(result.current.data.map(({ symbol }) => symbol)).toStrictEqual([
+      'ETH',
     ]);
   });
 });

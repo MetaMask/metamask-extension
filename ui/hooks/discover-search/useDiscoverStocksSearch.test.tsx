@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import { renderHook, waitFor } from '@testing-library/react';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -130,5 +131,57 @@ describe('useDiscoverStocksSearch', () => {
     expect(result.current.data[0].securityData).toStrictEqual({
       resultType: 'Verified',
     });
+  });
+
+  it.each([
+    ['$TSLA', 'TSLA'],
+    ['  $TSLA  ', 'TSLA'],
+    ['$ tsla', 'tsla'],
+  ])(
+    'strips a leading $ from %p before calling fetchRwas',
+    async (input, expected) => {
+      mockFetchRwas.mockResolvedValue({
+        count: 0,
+        totalCount: 0,
+        data: [],
+        pageInfo: { hasNextPage: false, nextCursor: null },
+      } as never);
+
+      const { result } = renderHook(
+        () => useDiscoverStocksSearch({ query: input }),
+        { wrapper: createWrapper() },
+      );
+
+      await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+      expect(mockFetchRwas).toHaveBeenCalledWith(
+        expect.objectContaining({
+          query: expected,
+          includeTokenSecurityData: true,
+        }),
+      );
+    },
+  );
+
+  it('treats a lone $ query like no query', async () => {
+    mockFetchRwas.mockResolvedValue({
+      count: 0,
+      totalCount: 0,
+      data: [],
+      pageInfo: { hasNextPage: false, nextCursor: null },
+    } as never);
+
+    const { result } = renderHook(
+      () => useDiscoverStocksSearch({ query: '$' }),
+      { wrapper: createWrapper() },
+    );
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    expect(mockFetchRwas).toHaveBeenCalledWith(
+      expect.objectContaining({
+        query: undefined,
+      }),
+    );
   });
 });
