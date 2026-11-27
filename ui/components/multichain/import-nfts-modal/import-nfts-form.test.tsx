@@ -7,7 +7,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
   addNftVerifyOwnership,
-  ignoreTokens,
+  hideAsset,
   updateNftDropDownState,
 } from '../../../store/actions';
 import { mockNetworkState } from '../../../../test/stub/networks';
@@ -45,9 +45,7 @@ jest.mock('../../../store/actions.ts', () => ({
     .fn()
     .mockReturnValue(jest.fn().mockResolvedValue(undefined)),
   getTokenStandardAndDetails: jest.fn().mockResolvedValue(undefined),
-  ignoreTokens: jest
-    .fn()
-    .mockReturnValue(jest.fn().mockResolvedValue(undefined)),
+  hideAsset: jest.fn().mockReturnValue(jest.fn().mockResolvedValue(undefined)),
   updateNftDropDownState: jest
     .fn()
     .mockReturnValue(jest.fn().mockResolvedValue(undefined)),
@@ -266,7 +264,7 @@ describe('ImportNftsPage', () => {
     expect(getImportButton()).not.toBeEnabled(); // Valid token address, invalid token id
   });
 
-  it('should call addNftVerifyOwnership, updateNftDropDownState, show success toast, and ignoreTokens action with correct values (tokenId should not be in scientific notation)', async () => {
+  it('should call addNftVerifyOwnership, updateNftDropDownState, show success toast, and hideAsset action with correct values (tokenId should not be in scientific notation)', async () => {
     store = configureMockStore([thunk])({
       ...mockStateWithTestNetworks,
       appState: { importNftsModal: { ignoreErc20Token: true } },
@@ -320,11 +318,7 @@ describe('ImportNftsPage', () => {
 
       expect(mockToastSuccess).toHaveBeenCalled();
 
-      expect(ignoreTokens).toHaveBeenCalledWith({
-        dontShowLoadingIndicator: true,
-        tokensToIgnore: [VALID_ADDRESS],
-        networkClientId: 'goerli',
-      });
+      expect(hideAsset).toHaveBeenCalledWith(`eip155:5/erc20:${VALID_ADDRESS}`);
     });
   });
 

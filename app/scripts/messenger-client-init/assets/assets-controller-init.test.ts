@@ -169,7 +169,6 @@ describe('AssetsControllerInit', () => {
         enabled: false,
       },
       isOnboarded: expect.any(Function),
-      tempMigrateAssetsInfoMetadataAssets3346: expect.any(Function),
       trace: expect.any(Function),
     });
   });
@@ -209,7 +208,6 @@ describe('AssetsControllerInit', () => {
         enabled: false,
       },
       isOnboarded: expect.any(Function),
-      tempMigrateAssetsInfoMetadataAssets3346: expect.any(Function),
       trace: expect.any(Function),
     });
   });
@@ -616,60 +614,6 @@ describe('AssetsControllerInit', () => {
       await expect(trace(request, fn)).resolves.toBe('result');
 
       expect(traceAsControllerCallback).toHaveBeenCalledWith(request, fn);
-    });
-  });
-
-  describe('tempMigrateAssetsInfoMetadataAssets3346', () => {
-    it('returns the TokensController and AccountsController persisted state slices for the healing migration', () => {
-      const persistedState = {
-        TokensController: {
-          allTokens: {
-            '0xe': {
-              '0x0000000000000000000000000000000000000001': [
-                {
-                  address: '0x0000000000000000000000000000000000000002',
-                  symbol: 'NICHE',
-                  decimals: 18,
-                },
-              ],
-            },
-          },
-        },
-        AccountsController: {
-          internalAccounts: {
-            accounts: {
-              'account-id-1': {
-                address: '0x0000000000000000000000000000000000000001',
-              },
-            },
-          },
-        },
-      };
-
-      const requestMock = getInitRequestMock();
-      // The healing migration treats the persisted state as untrusted and
-      // re-validates every shape, so a partial fixture is intentional here.
-      requestMock.persistedState =
-        persistedState as unknown as typeof requestMock.persistedState;
-
-      AssetsControllerInit(requestMock);
-
-      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
-      const getMigrationState =
-        constructorCall.tempMigrateAssetsInfoMetadataAssets3346;
-      if (!getMigrationState) {
-        throw new Error(
-          'Expected tempMigrateAssetsInfoMetadataAssets3346 to be defined',
-        );
-      }
-
-      const migrationState = getMigrationState();
-      expect(migrationState.TokensController).toBe(
-        persistedState.TokensController,
-      );
-      expect(migrationState.AccountsController).toBe(
-        persistedState.AccountsController,
-      );
     });
   });
 

@@ -1269,11 +1269,6 @@
       "subscriptions": [],
       "trialedProducts": []
     },
-    "TokensController": {
-      "allDetectedTokens": {},
-      "allIgnoredTokens": {},
-      "allTokens": {}
-    },
     "TransactionController": {
       "lastFetchedBlockNumbers": {},
       "methodData": {},

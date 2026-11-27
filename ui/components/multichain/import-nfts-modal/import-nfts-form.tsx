@@ -29,7 +29,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
-  getSelectedNetworkClientId,
 } from '../../../../shared/lib/selectors/networks';
 import {
   getOpenSeaEnabled,
@@ -41,7 +40,7 @@ import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/acc
 import {
   addNftVerifyOwnership,
   getTokenStandardAndDetails,
-  ignoreTokens,
+  hideAsset,
   updateNftDropDownState,
 } from '../../../store/actions';
 import { useDispatch } from '../../../store/hooks';
@@ -50,6 +49,7 @@ import Tooltip from '../../ui/tooltip';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import { checkTokenIdExists } from '../../../helpers/utils/util';
 import { NetworkSelectorCustomImport } from '../../app/import-token/network-selector-custom-import';
+import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import { toast, ToastContent } from '../../ui/toast/toast';
 import { CustomTokenImportNetworkSelector } from '../../../pages/custom-token-import/custom-token-import-network-selector';
@@ -87,7 +87,6 @@ export const ImportNftsForm = ({
   const nftsDropdownState = useSelector(getNftsDropdownState);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const chainId = useSelector(getCurrentChainId);
-  const networkClientId = useSelector(getSelectedNetworkClientId);
   const importNftsState = useSelector(
     (state: { appState: { importNftsModal: ImportNftsLocationState } }) =>
       state.appState.importNftsModal,
@@ -188,13 +187,10 @@ export const ImportNftsForm = ({
     }
 
     if (ignoreErc20Token && nftAddress) {
-      dispatch(
-        ignoreTokens({
-          tokensToIgnore: [nftAddress],
-          dontShowLoadingIndicator: true,
-          networkClientId,
-        }),
-      );
+      const erc20AssetId = toAssetId(nftAddress, chainId);
+      if (erc20AssetId) {
+        dispatch(hideAsset(erc20AssetId));
+      }
     }
     toast.success(
       <ToastContent

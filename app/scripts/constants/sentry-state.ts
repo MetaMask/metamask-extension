@@ -1,7 +1,4 @@
-import {
-  AllProperties,
-  type ObjectMask,
-} from '../../../shared/lib/object.utils';
+import { type ObjectMask } from '../../../shared/lib/object.utils';
 
 /**
  * Sentry “state” here means **masks** passed to `maskObject` (see
@@ -354,17 +351,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   StaticAssetsController: {},
   SubjectMetadataController: {
     subjectMetadata: false,
-  },
-  TokensController: {
-    allDetectedTokens: {
-      [AllProperties]: false,
-    },
-    allIgnoredTokens: {
-      [AllProperties]: false,
-    },
-    allTokens: {
-      [AllProperties]: false,
-    },
   },
   TransactionController: {
     transactions: false,

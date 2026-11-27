@@ -127,10 +127,9 @@ import {
   GetSignatureState,
   SignatureStateChange,
 } from '@metamask/signature-controller';
-import {
+import type {
   AssetsContractControllerGetTokenStandardAndDetailsAction,
-  TokensControllerAddTokenAction,
-  TokensControllerGetStateAction,
+  Token,
 } from '@metamask/assets-controllers';
 import {
   AccountId,
@@ -138,6 +137,7 @@ import {
   AssetsControllerAddCustomAssetAction,
   AssetsControllerGetAssetsAction,
   AssetsControllerGetStateAction,
+  AssetsControllerHideAssetAction,
   AssetsControllerSetSelectedCurrencyAction,
   Caip19AssetId,
 } from '@metamask/assets-controller';
@@ -638,6 +638,7 @@ type AllowedActions =
   | AssetsControllerAddCustomAssetAction
   | AssetsControllerGetAssetsAction
   | AssetsControllerGetStateAction
+  | AssetsControllerHideAssetAction
   | AssetsControllerSetSelectedCurrencyAction
   | AuthenticationControllerClearStateAction
   | AuthenticationControllerGetBearerTokenAction
@@ -759,8 +760,6 @@ type AllowedActions =
   | SubscriptionControllerGetStateAction
   | SubscriptionControllerGetSubscriptionByProductAction
   | SubscriptionControllerStopAllPollingAction
-  | TokensControllerAddTokenAction
-  | TokensControllerGetStateAction
   | TransactionControllerAddTransactionAction
   | TransactionControllerAddTransactionBatchAction
   | TransactionControllerClearUnapprovedTransactionsAction
@@ -1605,8 +1604,6 @@ export class LegacyBackgroundApiService {
    * @returns The `ChainId -> AccountAddress -> Token[]` map.
    */
   #getAllTokens(): ReturnType<typeof getTokensControllerAllTokens> {
-    const { allTokens } = this.#messenger.call('TokensController:getState');
-
     const { internalAccounts } = this.#messenger.call(
       'AccountsController:getState',
     );
@@ -1618,7 +1615,7 @@ export class LegacyBackgroundApiService {
     );
 
     const metamask = {
-      allTokens,
+      allTokens: {},
       internalAccounts,
       remoteFeatureFlags,
       assetsInfo,

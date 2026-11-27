@@ -382,11 +382,6 @@ export const AssetsControllerInit: MessengerClientInitFunction<
         return false;
       }
     },
-    // TEMPORARY (ASSETS-3346): legacy state slices used to heal wiped `assetsInfo` metadata.
-    tempMigrateAssetsInfoMetadataAssets3346: () => ({
-      TokensController: persistedState.TokensController,
-      AccountsController: persistedState.AccountsController,
-    }),
     trace: createAssetsControllerTrace(initMessenger),
   });
 

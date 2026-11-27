@@ -2896,30 +2896,6 @@ export function addToken(
 }
 
 /**
- * To add the tokens user selected to state
- *
- * @param tokensToImport
- * @param networkClientId
- */
-export function addImportedTokens(
-  tokensToImport: Token[],
-  networkClientId?: NetworkClientId,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    try {
-      await submitRequestToBackground('TokensController:addTokens', [
-        tokensToImport,
-        networkClientId,
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-    } finally {
-      await forceUpdateMetamaskState(dispatch);
-    }
-  };
-}
-
-/**
  * To add multichain assets (non-EVM tokens like Solana, Bitcoin)
  *
  * @param assetIds - The CAIP asset IDs (includes chain information)
@@ -2939,45 +2915,6 @@ export function multichainAddAssets(
       logErrorWithMessage(error);
     } finally {
       await forceUpdateMetamaskState(dispatch);
-    }
-  };
-}
-
-/**
- * To add ignored token addresses to state
- *
- * @param options
- * @param options.tokensToIgnore
- * @param options.networkClientId
- * @param options.dontShowLoadingIndicator
- */
-export function ignoreTokens({
-  tokensToIgnore,
-  dontShowLoadingIndicator = false,
-  networkClientId = null,
-}: {
-  tokensToIgnore: string[];
-  dontShowLoadingIndicator: boolean;
-  networkClientId?: NetworkClientId;
-}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  const _tokensToIgnore = Array.isArray(tokensToIgnore)
-    ? tokensToIgnore
-    : [tokensToIgnore];
-
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    if (!dontShowLoadingIndicator) {
-      dispatch(showLoadingIndication());
-    }
-    try {
-      await submitRequestToBackground('TokensController:ignoreTokens', [
-        _tokensToIgnore,
-        networkClientId,
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-    } finally {
-      await forceUpdateMetamaskState(dispatch);
-      dispatch(hideLoadingIndication());
     }
   };
 }
@@ -6108,19 +6045,6 @@ export function estimateGas(params: TransactionParams): Promise<Hex> {
   return submitRequestToBackground('LegacyBackgroundApiService:estimateGas', [
     params,
   ]);
-}
-
-export async function updateTokenType(
-  tokenAddress: string,
-): Promise<Token | undefined> {
-  try {
-    return await submitRequestToBackground('TokensController:updateTokenType', [
-      tokenAddress,
-    ]);
-  } catch (error) {
-    logErrorWithMessage(error);
-  }
-  return undefined;
 }
 
 export async function addPollingTokenToAppState(pollingToken: string) {

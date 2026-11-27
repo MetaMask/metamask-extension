@@ -91,7 +91,6 @@ jest.mock('../../store/actions', () => {
   const actual = jest.requireActual('../../store/actions');
   return {
     ...actual,
-    addImportedTokens: jest.fn(() => () => Promise.resolve()),
     importCustomAssetsBatch: jest.fn(() => () => Promise.resolve()),
     getTokenStandardAndDetailsByChain: jest.fn().mockResolvedValue({
       standard: 'ERC20',
@@ -104,7 +103,6 @@ jest.mock('../../store/actions', () => {
 
 const getMockedActions = () =>
   jest.requireMock('../../store/actions') as {
-    addImportedTokens: jest.Mock;
     importCustomAssetsBatch: jest.Mock;
     getTokenStandardAndDetailsByChain: jest.Mock;
   };
@@ -171,7 +169,6 @@ describe('CustomTokenImportPage', () => {
     mockNavigate.mockClear();
     mockToastSuccess.mockClear();
     const actions = getMockedActions();
-    actions.addImportedTokens.mockClear();
     actions.importCustomAssetsBatch.mockClear();
     actions.getTokenStandardAndDetailsByChain.mockClear();
     actions.getTokenStandardAndDetailsByChain.mockResolvedValue({
@@ -239,6 +236,10 @@ describe('CustomTokenImportPage', () => {
     );
 
     fireEvent.click(screen.getByTestId('custom-token-import-submit-button'));
+
+    await waitFor(() =>
+      expect(mockNavigate).toHaveBeenCalledWith(TOKEN_MANAGEMENT_ROUTE),
+    );
 
     return { ...rendered };
   };
@@ -357,17 +358,28 @@ describe('CustomTokenImportPage', () => {
     const actions = getMockedActions();
     await submitCustomToken();
 
+    const expectedAssetId =
+      'eip155:1/erc20:0x1111111111111111111111111111111111111111';
+
     await waitFor(() =>
-      expect(actions.addImportedTokens).toHaveBeenCalledWith(
+      expect(actions.importCustomAssetsBatch).toHaveBeenCalledWith(
+        'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         [
-          expect.objectContaining({
+          {
+            assetId: expectedAssetId,
+            isHidden: false,
+          },
+        ],
+        {
+          [expectedAssetId]: expect.objectContaining({
             address: '0x1111111111111111111111111111111111111111',
             symbol: 'APE',
+            name: 'ApeCoin',
             decimals: 18,
-            isERC721: false,
+            chainId: '0x1',
+            unlisted: true,
           }),
-        ],
-        'mainnet',
+        },
       ),
     );
     await waitFor(() =>
@@ -436,8 +448,6 @@ describe('CustomTokenImportPage', () => {
           },
         ),
       );
-
-      await waitFor(() => expect(actions.addImportedTokens).toHaveBeenCalled());
     });
 
     it('passes the full token name (not the symbol) as the name field in metadata', async () => {
@@ -647,17 +657,23 @@ describe('CustomTokenImportPage', () => {
     fireEvent.click(submit);
 
     await waitFor(() =>
-      expect(actions.addImportedTokens).toHaveBeenCalledWith(
-        [
-          expect.objectContaining({
-            address: daiAddress,
-            symbol: 'DAI',
-            decimals: 18,
-            isERC721: false,
-          }),
-        ],
-        'pulsechain',
-      ),
+      expect(actions.importCustomAssetsBatch).toHaveBeenCalledTimes(1),
+    );
+    const [accountId, assets, metadata] =
+      actions.importCustomAssetsBatch.mock.calls[0];
+    expect(accountId).toBe('cf8dace4-9439-4bd4-b3a8-88c821c8fcb3');
+    expect(assets).toStrictEqual([
+      {
+        assetId: expect.stringMatching(/^eip155:369\/erc20:/u),
+        isHidden: false,
+      },
+    ]);
+    expect(metadata[assets[0].assetId]).toStrictEqual(
+      expect.objectContaining({
+        address: daiAddress,
+        symbol: 'DAI',
+        decimals: 18,
+      }),
     );
   });
 

@@ -48,9 +48,9 @@ import { createDeepEqualSelector } from './selector-creators';
 // accountsByChainId: DONE (via AssetsController when unify enabled; controller removed)
 //
 // TokensController
-// allTokens: DONE
-// allIgnoredTokens: DONE
-// allDetectedTokens: DONE (Not being used)
+// allTokens: DONE (via AssetsController; controller removed)
+// allIgnoredTokens: DONE (via AssetsController; controller removed)
+// allDetectedTokens: DONE (Not being used; controller removed)
 //
 // TokenBalancesController
 // tokenBalances: DONE (via AssetsController when unify enabled; controller removed)
@@ -205,9 +205,6 @@ export const getAccountTrackerControllerAccountsByChainId =
 // ChainId (hex) -> AccountAddress (hex lowercase) -> Array of Tokens
 export const getTokensControllerAllTokens = createDeepEqualSelector(
   [
-    getIsAssetsUnifyStateEnabled,
-    (state: { metamask: Pick<TokensControllerState, 'allTokens'> }) =>
-      state.metamask?.allTokens ?? {},
     (state: { metamask: Pick<AssetsControllerState, 'assetsInfo'> }) =>
       state.metamask?.assetsInfo ?? {},
     (state: { metamask: Pick<AssetsControllerState, 'assetsBalance'> }) =>
@@ -217,18 +214,7 @@ export const getTokensControllerAllTokens = createDeepEqualSelector(
     (state: { metamask: Pick<AccountsControllerState, 'internalAccounts'> }) =>
       state.metamask?.internalAccounts?.accounts ?? {},
   ],
-  (
-    isAssetsUnifyStateEnabled,
-    allTokens,
-    assetsInfo,
-    assetsBalance,
-    customAssets,
-    internalAccountsById,
-  ) => {
-    if (!isAssetsUnifyStateEnabled) {
-      return allTokens;
-    }
-
+  (assetsInfo, assetsBalance, customAssets, internalAccountsById) => {
     const result: TokensControllerState['allTokens'] = {};
 
     // Merge assetsBalance and customAssets: accountId -> assetId[]
@@ -290,24 +276,12 @@ export const getTokensControllerAllTokens = createDeepEqualSelector(
 // ChainId (hex) -> AccountAddress (hex lowercase) -> Array of TokenAddress (hex lowercase)
 export const getTokensControllerAllIgnoredTokens = createDeepEqualSelector(
   [
-    getIsAssetsUnifyStateEnabled,
-    (state: { metamask: Pick<TokensControllerState, 'allIgnoredTokens'> }) =>
-      state.metamask?.allIgnoredTokens ?? {},
     (state: { metamask: Pick<AssetsControllerState, 'assetPreferences'> }) =>
       state.metamask?.assetPreferences ?? {},
     (state: { metamask: Pick<AccountsControllerState, 'internalAccounts'> }) =>
       state.metamask?.internalAccounts?.accounts ?? {},
   ],
-  (
-    isAssetsUnifyStateEnabled,
-    allIgnoredTokens,
-    assetPreferences,
-    internalAccountsById,
-  ) => {
-    if (!isAssetsUnifyStateEnabled) {
-      return allIgnoredTokens;
-    }
-
+  (assetPreferences, internalAccountsById) => {
     const result: TokensControllerState['allIgnoredTokens'] = {};
 
     for (const [assetId, { hidden }] of Object.entries(assetPreferences)) {

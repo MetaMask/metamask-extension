@@ -123,9 +123,7 @@ jest.mock('../../store/actions', () => {
         }),
     ),
     addCustomAsset: jest.fn(() => () => Promise.resolve()),
-    addImportedTokens: jest.fn(() => () => Promise.resolve()),
     hideAsset: jest.fn(() => () => Promise.resolve()),
-    ignoreTokens: jest.fn(() => () => Promise.resolve()),
     importCustomAssetsBatch: jest.fn(() => () => Promise.resolve()),
     multichainAddAssets: jest.fn(() => () => Promise.resolve()),
     multichainIgnoreAssets: jest.fn(() => () => Promise.resolve()),
@@ -135,9 +133,7 @@ jest.mock('../../store/actions', () => {
 type MockedTokenManagementActions = {
   addNetwork: jest.Mock;
   addCustomAsset: jest.Mock;
-  addImportedTokens: jest.Mock;
   hideAsset: jest.Mock;
-  ignoreTokens: jest.Mock;
   importCustomAssetsBatch: jest.Mock;
   multichainAddAssets: jest.Mock;
   multichainIgnoreAssets: jest.Mock;
@@ -242,20 +238,6 @@ const expectEvmApiResultImport = async ({
   name: string;
   symbol: string;
 }) => {
-  await waitFor(() =>
-    expect(actions.addImportedTokens).toHaveBeenCalledWith(
-      [
-        expect.objectContaining({
-          address,
-          symbol,
-          decimals,
-          isERC721: false,
-          name,
-        }),
-      ],
-      'mainnet',
-    ),
-  );
   await waitFor(() =>
     expect(actions.importCustomAssetsBatch).toHaveBeenCalledWith(
       accountId,
@@ -407,9 +389,7 @@ describe('TokenManagementPage', () => {
     const actions = getMockedActions();
     actions.addNetwork.mockClear();
     actions.addCustomAsset.mockClear();
-    actions.addImportedTokens.mockClear();
     actions.hideAsset.mockClear();
-    actions.ignoreTokens.mockClear();
     actions.importCustomAssetsBatch.mockClear();
     actions.multichainAddAssets.mockClear();
     actions.multichainIgnoreAssets.mockClear();
@@ -1362,7 +1342,6 @@ describe('TokenManagementPage', () => {
         }),
       ),
     );
-    expect(actions.addImportedTokens).not.toHaveBeenCalled();
   });
 
   it('toggling ON a not-yet-imported browse result imports the token and seeds unified assets', async () => {
@@ -1528,7 +1507,6 @@ describe('TokenManagementPage', () => {
 
     expect(screen.getByText('Alpha Token')).toBeInTheDocument();
     expect(toggle.value).toBe('false');
-    expect(actions.ignoreTokens).not.toHaveBeenCalled();
     expect(actions.hideAsset).not.toHaveBeenCalled();
     expect(trackAnalyticsEventMock).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -1552,13 +1530,6 @@ describe('TokenManagementPage', () => {
     unmount();
 
     await waitFor(() =>
-      expect(actions.ignoreTokens).toHaveBeenCalledWith({
-        tokensToIgnore: [mainnetToken.address],
-        dontShowLoadingIndicator: true,
-        networkClientId: 'mainnet',
-      }),
-    );
-    await waitFor(() =>
       expect(actions.hideAsset).toHaveBeenCalledWith(
         `eip155:1/erc20:${mainnetToken.address}`,
       ),
@@ -1574,18 +1545,16 @@ describe('TokenManagementPage', () => {
       `token-management-cell-0x1:${mainnetToken.address}-toggle`,
     ) as HTMLInputElement;
     fireEvent.click(toggle);
-    expect(actions.ignoreTokens).not.toHaveBeenCalled();
+    expect(actions.hideAsset).not.toHaveBeenCalled();
 
     fireEvent.change(screen.getByTestId('token-management-search-input'), {
       target: { value: 'usdc' },
     });
 
     await waitFor(() =>
-      expect(actions.ignoreTokens).toHaveBeenCalledWith({
-        tokensToIgnore: [mainnetToken.address],
-        dontShowLoadingIndicator: true,
-        networkClientId: 'mainnet',
-      }),
+      expect(actions.hideAsset).toHaveBeenCalledWith(
+        `eip155:1/erc20:${mainnetToken.address}`,
+      ),
     );
   });
 
@@ -1621,11 +1590,9 @@ describe('TokenManagementPage', () => {
     expect(searchResultToggle.value).toBe('false');
 
     await waitFor(() =>
-      expect(actions.ignoreTokens).toHaveBeenCalledWith({
-        tokensToIgnore: [mainnetToken.address],
-        dontShowLoadingIndicator: true,
-        networkClientId: 'mainnet',
-      }),
+      expect(actions.hideAsset).toHaveBeenCalledWith(
+        `eip155:1/erc20:${mainnetToken.address}`,
+      ),
     );
   });
 
@@ -1659,11 +1626,9 @@ describe('TokenManagementPage', () => {
     fireEvent.change(searchInput, { target: { value: '' } });
 
     await waitFor(() =>
-      expect(actions.ignoreTokens).toHaveBeenCalledWith({
-        tokensToIgnore: [mainnetToken.address],
-        dontShowLoadingIndicator: true,
-        networkClientId: 'mainnet',
-      }),
+      expect(actions.hideAsset).toHaveBeenCalledWith(
+        `eip155:1/erc20:${mainnetToken.address}`,
+      ),
     );
 
     fireEvent.change(searchInput, {
@@ -1704,11 +1669,9 @@ describe('TokenManagementPage', () => {
     fireEvent.click(screen.getByTestId('token-management-header-back-button'));
 
     await waitFor(() =>
-      expect(actions.ignoreTokens).toHaveBeenCalledWith({
-        tokensToIgnore: [mainnetToken.address],
-        dontShowLoadingIndicator: true,
-        networkClientId: 'mainnet',
-      }),
+      expect(actions.hideAsset).toHaveBeenCalledWith(
+        `eip155:1/erc20:${mainnetToken.address}`,
+      ),
     );
   });
 
@@ -1721,18 +1684,16 @@ describe('TokenManagementPage', () => {
       `token-management-cell-0x1:${mainnetToken.address}-toggle`,
     ) as HTMLInputElement;
     fireEvent.click(toggle);
-    expect(actions.ignoreTokens).not.toHaveBeenCalled();
+    expect(actions.hideAsset).not.toHaveBeenCalled();
 
     fireEvent.click(
       screen.getByTestId('token-management-add-custom-token-button'),
     );
 
     await waitFor(() =>
-      expect(actions.ignoreTokens).toHaveBeenCalledWith({
-        tokensToIgnore: [mainnetToken.address],
-        dontShowLoadingIndicator: true,
-        networkClientId: 'mainnet',
-      }),
+      expect(actions.hideAsset).toHaveBeenCalledWith(
+        `eip155:1/erc20:${mainnetToken.address}`,
+      ),
     );
   });
 
@@ -1753,7 +1714,6 @@ describe('TokenManagementPage', () => {
 
     unmount();
 
-    expect(actions.ignoreTokens).not.toHaveBeenCalled();
     expect(actions.hideAsset).not.toHaveBeenCalled();
     expect(actions.multichainIgnoreAssets).not.toHaveBeenCalled();
   });

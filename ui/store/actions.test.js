@@ -2667,57 +2667,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('#ignoreTokens', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls ignoreTokens in background', async () => {
-      const store = mockStore();
-
-      const messengerCallStub = sinon
-        .stub()
-        .withArgs('TokensController:ignoreTokens', [
-          { tokensToIgnore: '0x0000001' },
-          undefined,
-        ])
-        .resolves();
-      setBackgroundConnection({
-        messengerCall: messengerCallStub,
-        getStatePatches: sinon.stub().resolves([]),
-      });
-
-      await store.dispatch(
-        actions.ignoreTokens({ tokensToIgnore: '0x0000001' }),
-      );
-      expect(messengerCallStub.calledOnce).toBe(true);
-    });
-
-    it('hides loading indicator when ignoreTokens in background fails', async () => {
-      const store = mockStore();
-
-      const messengerCallStub = sinon
-        .stub()
-        .withArgs('TokensController:ignoreTokens', sinon.match.array)
-        .rejects(new Error('error'));
-      setBackgroundConnection({
-        messengerCall: messengerCallStub,
-        getStatePatches: sinon.stub().resolves([]),
-      });
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
-      await store.dispatch(
-        actions.ignoreTokens({ tokensToIgnore: '0x0000001' }),
-      );
-
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
   describe('#hideAsset', () => {
     afterEach(() => {
       sinon.restore();
@@ -6722,28 +6671,6 @@ describe('Actions', () => {
           'NotificationServicesController:disableNotificationServices',
           [],
         ),
-      ).toBe(true);
-    });
-  });
-
-  describe('addImportedTokens', () => {
-    it('forwards imported tokens through the messenger', async () => {
-      const store = mockStore();
-      const messengerCallStub = sinon.stub().resolves();
-      setBackgroundConnection({
-        messengerCall: messengerCallStub,
-        getStatePatches: sinon.stub().resolves([]),
-      });
-
-      await store.dispatch(
-        actions.addImportedTokens([{ address: '0x123' }], 'mainnet'),
-      );
-
-      expect(
-        messengerCallStub.calledOnceWithExactly('TokensController:addTokens', [
-          [{ address: '0x123' }],
-          'mainnet',
-        ]),
       ).toBe(true);
     });
   });

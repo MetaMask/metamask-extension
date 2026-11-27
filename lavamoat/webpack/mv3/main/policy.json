@@ -1134,7 +1134,6 @@
     },
     "@metamask/assets-controllers": {
       "globals": {
-        "AbortController": true,
         "URL": true,
         "URLSearchParams": true,
         "clearInterval": true,
@@ -1159,7 +1158,6 @@
         "@metamask/abi-utils": true,
         "@metamask/base-controller": true,
         "@metamask/utils>@metamask/byte-utils": true,
-        "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/core-backend": true,
         "@metamask/keyring-api": true,
@@ -1171,10 +1169,8 @@
         "@metamask/snaps-utils": true,
         "@metamask/utils>@metamask/type-utils": true,
         "@metamask/utils": true,
-        "@tanstack/react-query>@tanstack/query-core": true,
         "async-mutex": true,
         "ethereumjs-util>bn.js": true,
-        "@metamask/controller-utils>lodash-es": true,
         "@metamask/assets-controllers>multiformats": true,
         "@metamask/assets-controllers>reselect": true,
         "@metamask/assets-controllers>single-call-balance-checker-abi": true,

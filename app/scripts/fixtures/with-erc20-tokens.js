@@ -1,4 +1,7 @@
+import { cloneDeep } from 'lodash';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import { hexToDecimal } from '../../../shared/lib/conversion.utils';
+import { normalizeSafeAddress } from '../../../shared/lib/multichain/address';
 
 export const FIXTURES_ERC20_TOKENS = {
   allTokens: {
@@ -534,3 +537,46 @@ export const FIXTURES_ERC20_TOKENS = {
     },
   },
 };
+
+/**
+ * AssetsController state for the benchmark ERC-20 catalog.
+ * Replaces the removed TokensController fixture (`allTokens`).
+ *
+ * @param {string} accountId - Internal account id that owns the imported tokens.
+ * @returns {{
+ *   customAssets: Record<string, string[]>,
+ *   assetsInfo: Record<string, { type: 'erc20', symbol: string, name: string, decimals: number, image: string }>,
+ * }} Persisted custom-asset slice for that account.
+ */
+export function buildFixtureErc20AssetsState(accountId) {
+  const tokens = cloneDeep(FIXTURES_ERC20_TOKENS);
+  const customAssetIds = [];
+  const assetsInfo = {};
+
+  for (const [chainId, data] of Object.entries(tokens.allTokens)) {
+    const chainIdDecimal = hexToDecimal(chainId);
+
+    for (const token of data.myAccount) {
+      const checksumAddress = normalizeSafeAddress(token.address);
+      const assetId = `eip155:${chainIdDecimal}/erc20:${checksumAddress.toLowerCase()}`;
+
+      customAssetIds.push(assetId);
+      assetsInfo[assetId] = {
+        type: 'erc20',
+        symbol: token.symbol,
+        name: token.name ?? token.symbol,
+        decimals: token.decimals,
+        image:
+          token.image ??
+          `https://static.cx.metamask.io/api/v1/tokenIcons/${chainIdDecimal}/${checksumAddress}.png`,
+      };
+    }
+  }
+
+  return {
+    customAssets: {
+      [accountId]: customAssetIds,
+    },
+    assetsInfo,
+  };
+}

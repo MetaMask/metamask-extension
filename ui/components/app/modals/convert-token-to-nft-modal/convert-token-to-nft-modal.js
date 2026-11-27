@@ -11,9 +11,10 @@ import {
   IMPORT_NFTS_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { getNfts } from '../../../../ducks/metamask/metamask';
-import { ignoreTokens } from '../../../../store/actions';
+import { hideAsset } from '../../../../store/actions';
+import { toAssetId } from '../../../../../shared/lib/asset-utils';
 import { isEqualCaseInsensitive } from '../../../../../shared/lib/string-utils';
-import { getSelectedNetworkClientId } from '../../../../../shared/lib/selectors/networks';
+import { getCurrentChainId } from '../../../../../shared/lib/selectors/networks';
 import { useDispatch } from '../../../../store/hooks';
 
 const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
@@ -24,19 +25,16 @@ const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
   const tokenAddedAsNFT = allNfts.find(({ address }) =>
     isEqualCaseInsensitive(address, tokenAddress),
   );
-  const networkClientId = useSelector(getSelectedNetworkClientId);
+  const chainId = useSelector(getCurrentChainId);
 
   return (
     <Modal
       onSubmit={async () => {
         if (tokenAddedAsNFT) {
-          await dispatch(
-            ignoreTokens({
-              tokensToIgnore: tokenAddress,
-              dontShowLoadingIndicator: true,
-              networkClientId,
-            }),
-          );
+          const assetId = toAssetId(tokenAddress, chainId);
+          if (assetId) {
+            await dispatch(hideAsset(assetId));
+          }
           const { tokenId } = tokenAddedAsNFT;
           navigate(`${ASSET_ROUTE}/${tokenAddress}/${tokenId}`);
         } else {
