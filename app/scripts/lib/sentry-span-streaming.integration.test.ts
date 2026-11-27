@@ -2,6 +2,7 @@ import * as Sentry from '@sentry/browser';
 import type { DynamicSamplingContext, Integration } from '@sentry/core';
 import {
   continueTraceContext,
+  endTrace,
   setMeasurement,
   setRootSpanAttribute,
   trace,
@@ -13,6 +14,7 @@ import { getClientOptions, setCITags } from './setupSentry';
 /* eslint-disable @typescript-eslint/naming-convention */
 type SentSpan = {
   name: string;
+  span_id: string;
   is_segment: boolean;
   attributes: Record<string, { value: unknown; type: string; unit?: string }>;
 };
@@ -131,6 +133,31 @@ describe('span streaming (integration with the shipped Sentry options)', () => {
 
   // Streamed spans carry no tags or measurements, so the values dashboards
   // read as `tags[...]` and `measurements.*` must be attributes.
+  // A standalone span skips the streamed path and goes out as a v1 span
+  // envelope, the path the SDK plans to remove.
+  it('streams a child still running when its `trace()` root ends', async () => {
+    const root = trace({
+      name: TraceName.Transaction,
+      id: 'root',
+      root: true,
+    }) as Sentry.Span;
+    const child = trace({
+      name: TraceName.Transaction,
+      id: 'child',
+      parentContext: root,
+    }) as Sentry.Span;
+
+    endTrace({ name: TraceName.Transaction, id: 'root' });
+    endTrace({ name: TraceName.Transaction, id: 'child' });
+    await Sentry.flush();
+
+    const childSpanId = child.spanContext().spanId;
+    expect(Reflect.get(child, '_isStandaloneSpan')).toBeFalsy();
+    expect(
+      sentSpans().filter((span) => span.span_id === childSpanId),
+    ).toHaveLength(1);
+  });
+
   it("sends a trace request's tags and a measurement as attributes on the spans", async () => {
     trace(
       {
