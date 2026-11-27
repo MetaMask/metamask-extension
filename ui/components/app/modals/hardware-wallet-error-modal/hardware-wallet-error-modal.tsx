@@ -254,16 +254,15 @@ export const HardwareWalletErrorModal = React.memo(
     // Prefer `walletType` from error metadata first (e.g. signature flows where the signing
     // account may differ from the selected account). Read both top-level `metadata` and RPC-style
     // `data.metadata`. Then selected account, then Ledger so copy/icons still resolve if metadata is missing.
+    type ErrorMetadata = {
+      walletType?: HardwareWalletType;
+      accountAddress?: string;
+    };
     const errorMetadata =
       error === undefined
         ? undefined
-        : ((error as { metadata?: { walletType?: HardwareWalletType } })
-            .metadata ??
-          (
-            error as {
-              data?: { metadata?: { walletType?: HardwareWalletType } };
-            }
-          ).data?.metadata);
+        : ((error as { metadata?: ErrorMetadata }).metadata ??
+          (error as { data?: { metadata?: ErrorMetadata } }).data?.metadata);
     const errorWalletType = errorMetadata?.walletType;
     const displayWalletType = useMemo(
       () =>
@@ -370,7 +369,12 @@ export const HardwareWalletErrorModal = React.memo(
 
       setIsLoading(true);
       try {
-        const result = await ensureDeviceReady();
+        // Re-check the same account on Reconnect so a device swap clears 3012.
+        const result = errorMetadata?.accountAddress
+          ? await ensureDeviceReady({
+              accountAddress: errorMetadata.accountAddress,
+            })
+          : await ensureDeviceReady();
         if (result) {
           setConnectionReady();
           setRecovered(true);

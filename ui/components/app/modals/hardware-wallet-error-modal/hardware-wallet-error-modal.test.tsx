@@ -23,7 +23,10 @@ import {
   MetaMetricsHardwareWalletDeviceType,
   MetaMetricsHardwareWalletRecoveryErrorType,
 } from '../../../../../shared/constants/metametrics';
-import { createHardwareWalletError } from '../../../../contexts/hardware-wallets/errors';
+import {
+  createHardwareWalletError,
+  HardwareWalletErrorCode,
+} from '../../../../contexts/hardware-wallets/errors';
 import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
 import configureStore from '../../../../store/store';
 import {
@@ -818,6 +821,30 @@ describe('HardwareWalletErrorModal', () => {
         getByText('[hardwareWalletErrorReconnectButton]'),
       ).toBeInTheDocument();
       expect(queryByText('[confirm]')).not.toBeInTheDocument();
+    });
+
+    it('displays Reconnect and re-checks accountAddress for a wrong-device (3012) error', async () => {
+      const accountAddress = '0xabc';
+      const error = createHardwareWalletError(
+        HardwareWalletErrorCode.DeviceSeedMismatch,
+        HardwareWalletType.Ledger,
+        'Wrong device',
+        { metadata: { accountAddress } },
+      );
+
+      const { getByText, queryByText } = renderWithMetrics(
+        <HardwareWalletErrorModal error={error} />,
+      );
+
+      const reconnectButton = getByText('[hardwareWalletErrorReconnectButton]');
+      expect(reconnectButton).toBeInTheDocument();
+      expect(queryByText('[confirm]')).not.toBeInTheDocument();
+
+      await act(async () => {
+        fireEvent.click(reconnectButton);
+      });
+
+      expect(mockEnsureDeviceReady).toHaveBeenCalledWith({ accountAddress });
     });
 
     it('displays Continue button for device disconnected', () => {

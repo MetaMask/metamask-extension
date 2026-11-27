@@ -364,7 +364,9 @@ describe('LedgerDmkBridgeHandler', () => {
           LedgerAction.getConnectedDeviceInfo,
         );
 
-        expect(result).toStrictEqual([{ productId: 0x0400 }]);
+        expect(result).toStrictEqual([
+          { productId: 0x0400, connectionId: expect.any(String) },
+        ]);
         expect(LedgerDmkBridge).not.toHaveBeenCalled();
         expect(mockBridgeConnect).not.toHaveBeenCalled();
       });

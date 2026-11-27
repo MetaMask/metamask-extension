@@ -97,7 +97,8 @@
     "unlockAndGetSeedPhrase",
     "unlockHardwareWalletAccount",
     "unlockWithPasskey",
-    "upsertTransactionUIMetricsFragment"
+    "upsertTransactionUIMetricsFragment",
+    "verifyLedgerAccountOwnership"
   ],
   "MetamaskController.getApi": [
     "setArcUsageNoticeShown",

@@ -90,4 +90,28 @@ describe('restrictKeyringForDeviceRead', () => {
     // @ts-expect-error - intentionally probing the restricted surface
     expect(facade.getAppNameAndVersion).toBeUndefined();
   });
+
+  it('exposes getAccounts and binds inner unlockAccountByAddress on the frozen facade', async () => {
+    const unlockAccountByAddress = jest
+      .fn()
+      .mockResolvedValue("m/44'/60'/0'/0/0");
+    const inner = { unlockAccountByAddress };
+    const facade = restrictKeyringForDeviceRead({
+      ...buildKeyring(),
+      getAccounts: jest.fn().mockResolvedValue([{ address: '0xabc' }]),
+      inner,
+    });
+    const bound = facade as unknown as {
+      unlockAccountByAddress: (address: string) => Promise<string>;
+    };
+
+    await expect(facade.getAccounts()).resolves.toStrictEqual([
+      { address: '0xabc' },
+    ]);
+    await expect(bound.unlockAccountByAddress('0xabc')).resolves.toBe(
+      "m/44'/60'/0'/0/0",
+    );
+    expect(unlockAccountByAddress.mock.instances[0]).toBe(inner);
+    expect(Object.isFrozen(facade)).toBe(true);
+  });
 });

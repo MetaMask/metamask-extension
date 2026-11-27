@@ -818,6 +818,12 @@ export type LegacyBackgroundApiServiceGetLedgerPublicKeyAction = {
   handler: LegacyBackgroundApiService['getLedgerPublicKey'];
 };
 
+/** Verifies the connected Ledger derives the account before signing. */
+export type LegacyBackgroundApiServiceVerifyLedgerAccountOwnershipAction = {
+  type: `LegacyBackgroundApiService:verifyLedgerAccountOwnership`;
+  handler: LegacyBackgroundApiService['verifyLedgerAccountOwnership'];
+};
+
 /**
  * Gets the features from the Trezor device.
  *
@@ -1253,6 +1259,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceCheckHardwareStatusAction
   | LegacyBackgroundApiServiceGetHdPathForLedgerKeyringAction
   | LegacyBackgroundApiServiceGetLedgerPublicKeyAction
+  | LegacyBackgroundApiServiceVerifyLedgerAccountOwnershipAction
   | LegacyBackgroundApiServiceGetTrezorFeaturesAction
   | LegacyBackgroundApiServiceForgetDeviceAction
   | LegacyBackgroundApiServiceUnlockHardwareWalletAccountAction

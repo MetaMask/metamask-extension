@@ -125,7 +125,7 @@ describe('LedgerOffscreenBridge', () => {
     });
 
     it('getConnectedDeviceInfo sends the query and resolves the device array', async () => {
-      const expected = [{ productId: 0x0004 }];
+      const expected = [{ productId: 0x0004, connectionId: 'conn-1' }];
       const promise = new LedgerOffscreenBridge().getConnectedDeviceInfo();
 
       expect(chromeRuntimeMock.sendMessage.mock.calls[0][0]).toEqual({

@@ -2,6 +2,11 @@
  * Shared hardware-wallet utilities safe for background and UI.
  */
 export { HardwareWalletType } from './types';
-export { createHardwareWalletError } from './errors';
+export {
+  createHardwareWalletError,
+  HardwareWalletErrorCode,
+  isLedgerAccountPathMissingError,
+  isLedgerSeedMismatchMessage,
+} from './errors';
 export * from './rpc-error-utils';
 export { ENABLE_DMK_FEATURE_FLAG, isDmkFeatureEnabled } from './feature-flags';

@@ -958,6 +958,7 @@ describe('ConfirmFooter', () => {
       await waitFor(() => {
         expect(ensureDeviceReadyMock).toHaveBeenCalledWith({
           requireBlindSigning: true,
+          accountAddress: PERSONAL_SIGN_SENDER_ADDRESS,
         });
       });
       expect(mockOnTransactionConfirm).not.toHaveBeenCalled();

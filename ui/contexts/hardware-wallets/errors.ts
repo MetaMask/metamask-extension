@@ -1,7 +1,11 @@
 import { HardwareWalletError, ErrorCode } from '@metamask/hw-wallet-sdk';
+import { HardwareWalletErrorCode } from '../../../shared/lib/hardware-wallets/errors';
 import { DeviceEvent } from './types';
 
-export { createHardwareWalletError } from '../../../shared/lib/hardware-wallets/errors';
+export {
+  createHardwareWalletError,
+  HardwareWalletErrorCode,
+} from '../../../shared/lib/hardware-wallets/errors';
 
 /**
  * Map an error code to the appropriate device event
@@ -47,6 +51,7 @@ export function isRetryableHardwareWalletError(error: HardwareWalletError) {
     case ErrorCode.DeviceStateBlindSignNotSupported:
     case ErrorCode.PermissionCameraDenied:
     case ErrorCode.PermissionCameraPromptDismissed:
+    case HardwareWalletErrorCode.DeviceSeedMismatch:
       return true;
     default:
       return false;

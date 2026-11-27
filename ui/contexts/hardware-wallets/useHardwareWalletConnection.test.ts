@@ -664,11 +664,13 @@ describe('useHardwareWalletConnection', () => {
       await act(async () => {
         await result.current.ensureDeviceReady({
           requireBlindSigning: false,
+          accountAddress: '0xabc',
         });
       });
 
       expect(mockAdapter.ensureDeviceReadyMock).toHaveBeenCalledWith({
         requireBlindSigning: false,
+        accountAddress: '0xabc',
       });
     });
 

@@ -2,6 +2,7 @@ import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { IconName, IconColor } from '@metamask/design-system-react';
 import {
   getHardwareWalletErrorCode,
+  HardwareWalletErrorCode,
   HardwareWalletType,
   isTrezorDesktopConnectionMissingError,
 } from '../../../../contexts/hardware-wallets';
@@ -147,7 +148,20 @@ export function buildErrorContent(
         ]),
       };
 
-    // Single-device gate: another device is connected; retrying won't help.
+    // Wrong device for this account; retrying with it can't succeed.
+    case HardwareWalletErrorCode.DeviceSeedMismatch:
+      return {
+        variant: HardwareWalletErrorContentVariant.Description,
+        icon: IconName.Danger,
+        iconColor: IconColor.WarningDefault,
+        title: t('hardwareWalletErrorTitleWrongDevice', [t(walletType)]),
+        showRepairLink: false,
+        description: t('hardwareWalletErrorWrongDeviceDescription', [
+          t(walletType),
+        ]),
+      };
+
+    // Single-device gate: another Ledger is connected; retrying won't help.
     case ErrorCode.DeviceMultipleConnected:
       return {
         variant: HardwareWalletErrorContentVariant.Description,

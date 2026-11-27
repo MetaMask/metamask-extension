@@ -1,5 +1,8 @@
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
-import { createHardwareWalletError } from '../../../../contexts/hardware-wallets/errors';
+import {
+  createHardwareWalletError,
+  HardwareWalletErrorCode,
+} from '../../../../contexts/hardware-wallets/errors';
 import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
 import { buildErrorContent } from './error-content-builder';
 
@@ -116,6 +119,28 @@ describe('buildErrorContent', () => {
       'hardwareWalletErrorDeviceAlreadyConnectedDescription',
       ['Ledger', 'Ledger', 'Ledger'],
     );
+  });
+
+  it('shows the wrong-device copy for DeviceSeedMismatch', () => {
+    const t = jest.fn((key: string, substitutions?: string[]) =>
+      key === HardwareWalletType.Ledger
+        ? 'Ledger'
+        : `${key}:${substitutions?.join(',') ?? ''}`,
+    );
+    const error = createHardwareWalletError(
+      HardwareWalletErrorCode.DeviceSeedMismatch,
+      HardwareWalletType.Ledger,
+    );
+
+    expect(
+      buildErrorContent(error, HardwareWalletType.Ledger, t),
+    ).toMatchObject({
+      variant: 'description',
+      icon: expect.anything(),
+      showRepairLink: false,
+      title: 'hardwareWalletErrorTitleWrongDevice:Ledger',
+      description: 'hardwareWalletErrorWrongDeviceDescription:Ledger',
+    });
   });
 
   describe('showRepairLink flag', () => {

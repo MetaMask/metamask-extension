@@ -4725,6 +4725,14 @@
     "message": "You can only connect one $1 at a time. To use a different $1, remove the connected $1's accounts from MetaMask first.",
     "description": "$1 is the hardware wallet type"
   },
+  "hardwareWalletErrorTitleWrongDevice": {
+    "message": "Use the correct $1",
+    "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorWrongDeviceDescription": {
+    "message": "This $1 doesn't hold the account you're trying to use. Connect the $1 you used to add this account and try again.",
+    "description": "$1 is the hardware wallet type"
+  },
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "$1 locked",
     "description": "$1 is the hardware wallet type"

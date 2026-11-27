@@ -10,7 +10,9 @@ import {
   getHdPathForLedgerKeyring,
   getLedgerAppConfiguration,
   getLedgerPublicKey,
+  verifyLedgerAccountOwnership,
 } from '../../../store/actions';
+import { HardwareWalletErrorCode } from '../../../../shared/lib/hardware-wallets/errors';
 import { DeviceEvent, type HardwareWalletAdapterOptions } from '../types';
 import * as webConnectionUtils from '../webConnectionUtils';
 import { LedgerAdapter } from './LedgerAdapter';
@@ -21,6 +23,7 @@ jest.mock('../../../store/actions', () => ({
   getHdPathForLedgerKeyring: jest.fn(),
   getLedgerAppConfiguration: jest.fn(),
   getLedgerPublicKey: jest.fn(),
+  verifyLedgerAccountOwnership: jest.fn(),
 }));
 
 jest.mock('../webConnectionUtils', () => ({
@@ -45,6 +48,10 @@ const mockGetLedgerAppConfiguration =
 const mockGetLedgerPublicKey = getLedgerPublicKey as jest.MockedFunction<
   typeof getLedgerPublicKey
 >;
+const mockVerifyLedgerAccountOwnership =
+  verifyLedgerAccountOwnership as jest.MockedFunction<
+    typeof verifyLedgerAccountOwnership
+  >;
 
 describe('LedgerAdapter', () => {
   let adapter: LedgerAdapter;
@@ -533,6 +540,20 @@ describe('LedgerAdapter', () => {
   });
 
   describe('ensureDeviceReady', () => {
+    const accountAddress = '0xabc';
+
+    const connectWithEthApp = async () => {
+      mockNavigatorHid.getDevices.mockResolvedValue([
+        createMockHidDevice(0x2c97),
+      ]);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(true);
+      await adapter.connect();
+      mockGetAppNameAndVersion.mockResolvedValue({
+        appName: 'Ethereum',
+        version: '1.0.0',
+      });
+    };
+
     it('connects to device when not already connected', async () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
@@ -566,6 +587,49 @@ describe('LedgerAdapter', () => {
 
       expect(mockGetAppNameAndVersion).toHaveBeenCalled();
       expect(mockGetLedgerAppConfiguration).toHaveBeenCalled();
+    });
+
+    it('checks account ownership between app and blind-signing checks, and skips without accountAddress', async () => {
+      mockVerifyLedgerAccountOwnership.mockResolvedValue();
+      await connectWithEthApp();
+
+      await adapter.ensureDeviceReady({ accountAddress });
+      expect(mockVerifyLedgerAccountOwnership).toHaveBeenCalledWith(
+        accountAddress,
+      );
+      expect(mockGetAppNameAndVersion.mock.invocationCallOrder[0]).toBeLessThan(
+        mockVerifyLedgerAccountOwnership.mock.invocationCallOrder[0],
+      );
+      expect(
+        mockVerifyLedgerAccountOwnership.mock.invocationCallOrder[0],
+      ).toBeLessThan(mockGetLedgerAppConfiguration.mock.invocationCallOrder[0]);
+
+      mockVerifyLedgerAccountOwnership.mockClear();
+      await adapter.ensureDeviceReady();
+      expect(mockVerifyLedgerAccountOwnership).not.toHaveBeenCalled();
+    });
+
+    it('throws 3012 with accountAddress metadata on a seed mismatch', async () => {
+      await connectWithEthApp();
+      mockVerifyLedgerAccountOwnership.mockRejectedValue(
+        new Error(
+          `Ledger: Account ${accountAddress} does not belong to the connected device`,
+        ),
+      );
+
+      await expect(
+        adapter.ensureDeviceReady({ accountAddress }),
+      ).rejects.toMatchObject({
+        code: HardwareWalletErrorCode.DeviceSeedMismatch,
+        metadata: { accountAddress },
+      });
+      expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          error: expect.objectContaining({
+            metadata: expect.objectContaining({ accountAddress }),
+          }),
+        }),
+      );
     });
 
     it('throws error when wrong app is open on device', async () => {

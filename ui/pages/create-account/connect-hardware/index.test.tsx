@@ -26,7 +26,10 @@ import {
 } from '../../../../shared/constants/hardware-wallets';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { createHardwareWalletError } from '../../../contexts/hardware-wallets/errors';
+import {
+  createHardwareWalletError,
+  HardwareWalletErrorCode,
+} from '../../../contexts/hardware-wallets/errors';
 import { HardwareWalletType } from '../../../contexts/hardware-wallets/types';
 import { UPDATE_METAMASK_STATE } from '../../../store/actionConstants';
 import configureStore from '../../../store/store';
@@ -568,6 +571,24 @@ describe('ConnectHardwareForm', () => {
       expect(
         screen.queryByText(blockedError.userMessage),
       ).not.toBeInTheDocument();
+    });
+
+    it('shows the inline wrong-device message for a 3012 error', async () => {
+      const error = createHardwareWalletError(
+        HardwareWalletErrorCode.DeviceSeedMismatch,
+        HardwareWalletType.Ledger,
+      );
+      mockConnectHardware.mockRejectedValue(error);
+      renderWithProvider(
+        <ConnectHardwareForm />,
+        configureMockStore([thunk])(createMockState()),
+      );
+
+      connectToDevice(tEn('ledger'));
+      await waitFor(() => {
+        expect(screen.getByText(error.userMessage)).toBeInTheDocument();
+      });
+      expect(mockShowErrorModal).not.toHaveBeenCalled();
     });
 
     it('displays a generic error message', async () => {
