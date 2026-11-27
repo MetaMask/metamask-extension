@@ -1075,6 +1075,91 @@ describe('HardwareWalletErrorModal', () => {
     });
   });
 
+  describe('Target device readiness check', () => {
+    it('retries with the provided check instead of the selected account device', async () => {
+      const error = createTestError(
+        ErrorCode.AuthenticationDeviceLocked,
+        'Device is locked',
+        'Your device is locked.',
+      );
+      const ensureDeviceReady = jest.fn().mockResolvedValue(true);
+
+      const { getByText, getByLabelText } = renderWithMetrics(
+        <HardwareWalletErrorModal
+          error={error}
+          ensureDeviceReady={ensureDeviceReady}
+        />,
+      );
+
+      await act(async () => {
+        fireEvent.click(getByText('[hardwareWalletErrorReconnectButton]'));
+      });
+
+      expect(ensureDeviceReady).toHaveBeenCalledTimes(1);
+      expect(mockEnsureDeviceReady).not.toHaveBeenCalled();
+      expect(getByText('[hardwareWalletTypeConnected]')).toBeInTheDocument();
+
+      await act(async () => {
+        fireEvent.click(getByLabelText('[close]'));
+      });
+
+      expect(mockHideModal).toHaveBeenCalledTimes(1);
+      expect(mockSetConnectionReady).not.toHaveBeenCalled();
+      expect(mockClearError).not.toHaveBeenCalled();
+    });
+
+    it('does not clear the selected account device error when closed', async () => {
+      const error = createTestError(
+        ErrorCode.AuthenticationDeviceLocked,
+        'Device is locked',
+        'Your device is locked.',
+      );
+      const onCancel = jest.fn();
+
+      const { getByLabelText } = renderWithMetrics(
+        <HardwareWalletErrorModal
+          error={error}
+          onCancel={onCancel}
+          ensureDeviceReady={jest.fn()}
+        />,
+      );
+
+      await act(async () => {
+        fireEvent.click(getByLabelText('[close]'));
+      });
+
+      expect(onCancel).toHaveBeenCalledTimes(1);
+      expect(mockHideModal).toHaveBeenCalledTimes(1);
+      expect(mockClearError).not.toHaveBeenCalled();
+    });
+
+    it('stays on the error when the provided check fails', async () => {
+      const error = createTestError(
+        ErrorCode.AuthenticationDeviceLocked,
+        'Device is locked',
+        'Your device is locked.',
+      );
+      const ensureDeviceReady = jest.fn().mockResolvedValue(false);
+
+      const { getByText, queryByText } = renderWithMetrics(
+        <HardwareWalletErrorModal
+          error={error}
+          ensureDeviceReady={ensureDeviceReady}
+        />,
+      );
+
+      await act(async () => {
+        fireEvent.click(getByText('[hardwareWalletErrorReconnectButton]'));
+      });
+
+      expect(ensureDeviceReady).toHaveBeenCalledTimes(1);
+      expect(
+        queryByText('[hardwareWalletTypeConnected]'),
+      ).not.toBeInTheDocument();
+      expect(mockSetConnectionReady).not.toHaveBeenCalled();
+    });
+  });
+
   describe('Props Merging', () => {
     it('merges props from direct props and modal state', () => {
       const error = createTestError(

@@ -174,6 +174,88 @@ describe('HardwareWalletErrorProvider', () => {
       });
     });
 
+    it('forwards a target device readiness check to the error modal', () => {
+      const store = mockStore(createMockState());
+      const { result } = renderHardwareWalletErrorHook(store);
+      const error = createHardwareWalletError(
+        ErrorCode.DeviceDisconnected,
+        HardwareWalletType.Ledger,
+        'Device not found',
+      );
+      const ensureDeviceReady = jest.fn();
+
+      act(() => {
+        result.current.showErrorModal(error, { ensureDeviceReady });
+      });
+
+      expect(mockShowModal).toHaveBeenCalledWith(
+        expect.objectContaining({ error, ensureDeviceReady }),
+      );
+    });
+
+    it('does not clear the selected account device error when a target device modal is cancelled', () => {
+      const store = mockStore(createMockState());
+      const { result } = renderHardwareWalletErrorHook(store);
+      const error = createHardwareWalletError(
+        ErrorCode.AuthenticationDeviceLocked,
+        HardwareWalletType.Ledger,
+        'Device is locked',
+      );
+
+      act(() => {
+        result.current.showErrorModal(error, { ensureDeviceReady: jest.fn() });
+      });
+      const { onCancel } = mockShowModal.mock.calls[0][0];
+      act(() => {
+        onCancel();
+      });
+
+      expect(mockHideModal).toHaveBeenCalled();
+      expect(mockClearError).not.toHaveBeenCalled();
+    });
+
+    it('does not clear the selected account device error when a target device modal is dismissed', () => {
+      const store = mockStore(createMockState());
+      const { result } = renderHardwareWalletErrorHook(store);
+      const error = createHardwareWalletError(
+        ErrorCode.AuthenticationDeviceLocked,
+        HardwareWalletType.Ledger,
+        'Device is locked',
+      );
+
+      act(() => {
+        result.current.showErrorModal(error, { ensureDeviceReady: jest.fn() });
+      });
+      act(() => {
+        result.current.dismissErrorModal();
+      });
+
+      expect(mockHideModal).toHaveBeenCalled();
+      expect(mockClearError).not.toHaveBeenCalled();
+    });
+
+    it('clears the selected account device error again once a regular modal follows a target device modal', () => {
+      const store = mockStore(createMockState());
+      const { result } = renderHardwareWalletErrorHook(store);
+      const error = createHardwareWalletError(
+        ErrorCode.AuthenticationDeviceLocked,
+        HardwareWalletType.Ledger,
+        'Device is locked',
+      );
+
+      act(() => {
+        result.current.showErrorModal(error, { ensureDeviceReady: jest.fn() });
+      });
+      act(() => {
+        result.current.showErrorModal(error);
+      });
+      act(() => {
+        result.current.dismissErrorModal();
+      });
+
+      expect(mockClearError).toHaveBeenCalledTimes(1);
+    });
+
     it('opens the repair page with the wallet type query parameter', () => {
       const openExtensionInBrowser = jest.fn();
       globalThis.platform = { openExtensionInBrowser } as never;

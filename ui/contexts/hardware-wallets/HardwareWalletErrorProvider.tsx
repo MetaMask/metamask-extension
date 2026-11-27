@@ -42,11 +42,19 @@ import { isHardwareWalletErrorModalRoute } from './utils';
  * This restricts auto-shown errors to transaction, signing, and bridge pages.
  * Manually triggered errors (via showErrorModal) are not affected.
  */
+type ShowErrorModalOptions = {
+  /**
+   * Readiness check run when the user retries, for flows targeting a device
+   * other than the selected account's.
+   */
+  ensureDeviceReady?: () => Promise<boolean>;
+};
+
 type HardwareWalletErrorContextType = {
   /**
    * Manually show the error modal with a specific error
    */
-  showErrorModal: (error: unknown) => void;
+  showErrorModal: (error: unknown, options?: ShowErrorModalOptions) => void;
 
   /**
    * Manually dismiss the error modal
@@ -117,10 +125,15 @@ const HardwareWalletErrorMonitor = ({ children }: { children: ReactNode }) => {
   // Track if the modal was manually shown (vs from connection state)
   // Manually shown modals should NOT be dismissed based on selected account
   const isManuallyShownRef = useRef(false);
+  // Whether the open modal is about a device other than the selected
+  // account's, in which case closing it must not touch the selected account's
+  // connection state.
+  const isTargetDeviceModalRef = useRef(false);
 
   const resetModalState = useCallback(() => {
     isModalOpenRef.current = false;
     isManuallyShownRef.current = false;
+    isTargetDeviceModalRef.current = false;
     setDisplayedError(null);
     dispatch(hideModal());
   }, [dispatch]);
@@ -136,8 +149,11 @@ const HardwareWalletErrorMonitor = ({ children }: { children: ReactNode }) => {
    * Handle cancel/close action from the modal
    */
   const handleCancel = useCallback(() => {
+    const isTargetDeviceModal = isTargetDeviceModalRef.current;
     resetModalState();
-    clearError();
+    if (!isTargetDeviceModal) {
+      clearError();
+    }
     // Close the popup if there are no more pending approvals
     dispatch(closeCurrentNotificationWindow());
   }, [clearError, dispatch, resetModalState]);
@@ -160,8 +176,11 @@ const HardwareWalletErrorMonitor = ({ children }: { children: ReactNode }) => {
    */
   const dismissErrorModal = useCallback(() => {
     if (isModalOpenRef.current) {
+      const isTargetDeviceModal = isTargetDeviceModalRef.current;
       resetModalState();
-      clearError();
+      if (!isTargetDeviceModal) {
+        clearError();
+      }
       // Close the popup if there are no more pending approvals
       dispatch(closeCurrentNotificationWindow());
     }
@@ -190,13 +209,14 @@ const HardwareWalletErrorMonitor = ({ children }: { children: ReactNode }) => {
    * Show error modal (internal implementation)
    */
   const showErrorModalInternal = useCallback(
-    (error: unknown, skipFilters = false) => {
+    (error: unknown, skipFilters = false, options?: ShowErrorModalOptions) => {
       // For user rejections/cancellations: dismiss any open modal and close the popup
       // unless explicitly forced (manual calls can show these errors)
       if (!skipFilters && isUserRejection(error)) {
         if (isModalOpenRef.current) {
           isModalOpenRef.current = false;
           isManuallyShownRef.current = false;
+          isTargetDeviceModalRef.current = false;
           setDisplayedError(null);
           dispatch(hideModal());
         }
@@ -211,6 +231,7 @@ const HardwareWalletErrorMonitor = ({ children }: { children: ReactNode }) => {
 
       setDisplayedError(error);
       isModalOpenRef.current = true;
+      isTargetDeviceModalRef.current = Boolean(options?.ensureDeviceReady);
       if (skipFilters) {
         // Manually shown errors - mark them as manually shown
         // so they won't be dismissed by the selected account check
@@ -223,6 +244,7 @@ const HardwareWalletErrorMonitor = ({ children }: { children: ReactNode }) => {
         onRetry: handleRetry,
         onCancel: handleCancel,
         onRepairDevice: openRepairPage,
+        ensureDeviceReady: options?.ensureDeviceReady,
         isOpen: true,
       };
       dispatch(showModal(modalPayload));
@@ -242,12 +264,12 @@ const HardwareWalletErrorMonitor = ({ children }: { children: ReactNode }) => {
    * This allows components to manually trigger the error modal
    */
   const showErrorModal = useCallback(
-    (error: unknown) => {
+    (error: unknown, options?: ShowErrorModalOptions) => {
       if (isErrorModalSuppressed) {
         return;
       }
       // When called manually, we skip the filters (allow user cancellations, duplicates, etc.)
-      showErrorModalInternal(error, true);
+      showErrorModalInternal(error, true, options);
     },
     [isErrorModalSuppressed, showErrorModalInternal],
   );
