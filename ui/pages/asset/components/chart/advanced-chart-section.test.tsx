@@ -154,7 +154,6 @@ function setupData(
     realtimePrice: undefined,
     realtimeTimestamp: undefined,
     price: undefined,
-    timestamp: undefined,
     isLoading: false,
     error: null,
     resolvedCurrency: 'eur',

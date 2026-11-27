@@ -1,13 +1,12 @@
 import React from 'react';
+import { it } from '@jest/globals';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { priceApiBaseUrl } from '../../../../../shared/constants/price-api';
 import {
-  fetchOHLCV,
   fetchOHLCVPage,
   useOHLCVChart,
   FETCH_TIMEOUT_MS,
-  INTERVAL_TO_TIME_PERIOD,
   OHLCV_BASE_URL,
   type FetchOlderBarsResult,
 } from './useOHLCVChart';
@@ -65,7 +64,7 @@ const mockFetchFailure = (status: number) => {
 
 // ─── Tests ──────────────────────────────────────────────────────────────────
 
-describe('useOHLCVChart – fetchOHLCV', () => {
+describe('useOHLCVChart – fetchOHLCVPage (first page)', () => {
   beforeEach(() => {
     jest.useFakeTimers();
   });
@@ -78,7 +77,7 @@ describe('useOHLCVChart – fetchOHLCV', () => {
   it('returns mapped OHLCVBar array on success', async () => {
     mockFetchSuccess();
 
-    const bars = await fetchOHLCV('ethereum', '1h');
+    const { bars } = await fetchOHLCVPage('ethereum', '1h');
 
     expect(bars).toHaveLength(2);
     expect(bars[0]).toEqual({
@@ -106,14 +105,14 @@ describe('useOHLCVChart – fetchOHLCV', () => {
       json: jest.fn().mockResolvedValue({ data: null }),
     } as unknown as Response);
 
-    const bars = await fetchOHLCV('ethereum', '1h');
+    const { bars } = await fetchOHLCVPage('ethereum', '1h');
     expect(bars).toEqual([]);
   });
 
   it('throws on non-200 response', async () => {
     mockFetchFailure(500);
 
-    await expect(fetchOHLCV('ethereum', '1h')).rejects.toThrow(
+    await expect(fetchOHLCVPage('ethereum', '1h')).rejects.toThrow(
       'OHLCV API error: 500',
     );
   });
@@ -121,7 +120,7 @@ describe('useOHLCVChart – fetchOHLCV', () => {
   it('throws on 404 response', async () => {
     mockFetchFailure(404);
 
-    await expect(fetchOHLCV('ethereum', '1h')).rejects.toThrow(
+    await expect(fetchOHLCVPage('ethereum', '1h')).rejects.toThrow(
       'OHLCV API error: 404',
     );
   });
@@ -139,7 +138,7 @@ describe('useOHLCVChart – fetchOHLCV', () => {
         }),
     );
 
-    const promise = fetchOHLCV('ethereum', '1h');
+    const promise = fetchOHLCVPage('ethereum', '1h');
 
     jest.advanceTimersByTime(FETCH_TIMEOUT_MS);
 
@@ -150,7 +149,7 @@ describe('useOHLCVChart – fetchOHLCV', () => {
   it('does not leave the timeout timer pending after a successful fetch', async () => {
     mockFetchSuccess();
 
-    await fetchOHLCV('ethereum', '1h');
+    await fetchOHLCVPage('ethereum', '1h');
 
     expect(jest.getTimerCount()).toBe(0);
   });
@@ -164,7 +163,7 @@ describe('useOHLCVChart – fetchOHLCV', () => {
   it('constructs URL correctly with all params', async () => {
     mockFetchSuccess();
 
-    await fetchOHLCV('ethereum', '4h', 'eur');
+    await fetchOHLCVPage('ethereum', '4h', 'eur');
 
     const calledUrl = (global.fetch as jest.Mock).mock.calls[0][0] as string;
     const url = new URL(calledUrl);
@@ -178,7 +177,7 @@ describe('useOHLCVChart – fetchOHLCV', () => {
   it('defaults vsCurrency to "usd"', async () => {
     mockFetchSuccess();
 
-    await fetchOHLCV('bitcoin', '1d');
+    await fetchOHLCVPage('bitcoin', '1d');
 
     const calledUrl = (global.fetch as jest.Mock).mock.calls[0][0] as string;
     const url = new URL(calledUrl);
@@ -189,7 +188,7 @@ describe('useOHLCVChart – fetchOHLCV', () => {
   it('falls back to "1d" timePeriod for unknown interval', async () => {
     mockFetchSuccess();
 
-    await fetchOHLCV('ethereum', 'unknown_interval');
+    await fetchOHLCVPage('ethereum', 'unknown_interval');
 
     const calledUrl = (global.fetch as jest.Mock).mock.calls[0][0] as string;
     const url = new URL(calledUrl);
@@ -210,7 +209,9 @@ describe('useOHLCVChart – fetchOHLCV', () => {
     const controller = new AbortController();
 
     // eslint-disable-next-line no-void -- asserting on the signal, not the result
-    void fetchOHLCV('ethereum', '1h', 'usd', controller.signal);
+    void fetchOHLCVPage('ethereum', '1h', 'usd', {
+      signal: controller.signal,
+    });
     expect(seen?.aborted).toBe(false);
 
     controller.abort();
@@ -726,9 +727,12 @@ describe('useOHLCVChart – fetchOlderBars', () => {
   });
 });
 
-describe('useOHLCVChart – INTERVAL_TO_TIME_PERIOD mapping', () => {
-  // @ts-expect-error This is missing from the Mocha type definitions
-  test.each<[string, string]>([
+describe('useOHLCVChart – timePeriod query param', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it.each<[string, string]>([
     ['1m', '1d'],
     ['5m', '1d'],
     ['15m', '1d'],
@@ -737,13 +741,16 @@ describe('useOHLCVChart – INTERVAL_TO_TIME_PERIOD mapping', () => {
     ['1d', '1m'],
     ['1w', '1y'],
   ])(
-    'maps interval "%s" → timePeriod "%s"',
-    (interval: string, expected: string) => {
-      expect(INTERVAL_TO_TIME_PERIOD[interval]).toBe(expected);
+    'requests interval "%s" with timePeriod "%s"',
+    async (interval, expected) => {
+      mockFetchSuccess();
+
+      await fetchOHLCVPage('ethereum', interval);
+
+      const url = new URL(
+        (global.fetch as jest.Mock).mock.calls[0][0] as string,
+      );
+      expect(url.searchParams.get('timePeriod')).toBe(expected);
     },
   );
-
-  it('has exactly 7 entries', () => {
-    expect(Object.keys(INTERVAL_TO_TIME_PERIOD)).toHaveLength(7);
-  });
 });

@@ -4,18 +4,13 @@ import {
   submitRequestToBackground,
   subscribeToMessengerEvent,
 } from '../../../../store/background-connection';
-import { INTERVAL_TO_TIME_PERIOD, OHLCV_BASE_URL } from './useOHLCVChart';
+import { priceApiBaseUrl } from '../../../../../shared/constants/price-api';
+import { getOhlcvTimePeriod } from './chart-window-mapping';
+import { type OHLCVApiCandle, type OHLCVBar, toOHLCVBar } from './ohlcv-types';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
-export type OHLCVRealtimeBar = {
-  time: number;
-  open: number;
-  high: number;
-  low: number;
-  close: number;
-  volume: number;
-};
+export type OHLCVRealtimeBar = OHLCVBar;
 
 export type UseOHLCVRealtimeOptions = {
   /** CAIP-19 or similar asset identifier. The hook stays idle while undefined. */
@@ -45,7 +40,7 @@ const STALENESS_CHECK_INTERVAL_MS = 5_000;
 const STALENESS_THRESHOLD_MS = 5_000;
 
 /** REST endpoint for fetching the latest single candle. */
-const OHLCV_LATEST_URL = OHLCV_BASE_URL.replace('/ohlcv-chart', '/ohlcv');
+const OHLCV_LATEST_URL = `${priceApiBaseUrl}/v3/ohlcv`;
 
 /**
  * Field-by-field equality check to avoid re-rendering on identical bars.
@@ -74,14 +69,17 @@ function areBarsEqual(
 
 // ─── Helper functions ───────────────────────────────────────────────────────
 
-type OHLCVApiBar = {
-  timestamp: number;
-  open: number;
-  high: number;
-  low: number;
-  close: number;
-  volume: number;
-};
+/**
+ * Unwraps a messenger event payload. MessengerSubscriptions wraps the event
+ * args in an array, e.g. publish('OHLCVService:barUpdated', {channel, bar})
+ * arrives as [{channel, bar}].
+ *
+ * @param data - The raw event data.
+ * @returns The first event argument.
+ */
+function unwrapEventPayload<Payload>(data: Json): Payload {
+  return (Array.isArray(data) ? data[0] : data) as unknown as Payload;
+}
 
 /**
  * Fetch the latest (current) candle from the /latest REST endpoint.
@@ -111,7 +109,7 @@ async function fetchLatestBar(
     return null;
   }
 
-  const bar = (await response.json()) as OHLCVApiBar | null;
+  const bar = (await response.json()) as OHLCVApiCandle | null;
   if (!bar) {
     return null;
   }
@@ -127,14 +125,7 @@ async function fetchLatestBar(
   }
 
   // Keep timestamp in milliseconds (matching useOHLCVChart format)
-  return {
-    time: bar.timestamp,
-    open: bar.open,
-    high: bar.high,
-    low: bar.low,
-    close: bar.close,
-    volume: bar.volume,
-  };
+  return toOHLCVBar(bar);
 }
 
 /**
@@ -190,7 +181,6 @@ export function useOHLCVRealtime({
     setLatestBar((prev) => (areBarsEqual(prev, bar) ? prev : bar));
   }, []);
 
-  const subscribedRef = useRef(false);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Staleness tracking
@@ -232,7 +222,7 @@ export function useOHLCVRealtime({
     lastMessageTimeRef.current = 0;
     chainDownRef.current = false;
 
-    const timePeriod = INTERVAL_TO_TIME_PERIOD[interval] ?? '1d';
+    const timePeriod = getOhlcvTimePeriod(interval);
 
     // Staleness polling: check periodically if we should fall back to REST
     const pollLatest = async () => {
@@ -260,43 +250,25 @@ export function useOHLCVRealtime({
     const unsubscribes: (() => Promise<void>)[] = [];
 
     const handleBarUpdated = (data: Json) => {
-      // MessengerSubscriptions wraps the event args in an array:
-      // publish('OHLCVService:barUpdated', {channel, bar}) arrives as [{channel, bar}]
-      const unwrapped = Array.isArray(data) ? data[0] : data;
-      const payload = unwrapped as unknown as {
+      const payload = unwrapEventPayload<{
         channel: string;
-        bar: {
-          timestamp: number;
-          open: number;
-          high: number;
-          low: number;
-          close: number;
-          volume: number;
-        };
-      };
+        bar: OHLCVApiCandle;
+      }>(data);
 
       if (!cancelled && payload.channel === channel) {
         lastMessageTimeRef.current = Date.now();
         chainDownRef.current = false;
         // Convert WS bar (timestamp in seconds) to extension format (milliseconds)
-        updateLatestBar({
-          time: payload.bar.timestamp * 1000,
-          open: payload.bar.open,
-          high: payload.bar.high,
-          low: payload.bar.low,
-          close: payload.bar.close,
-          volume: payload.bar.volume,
-        });
+        updateLatestBar(toOHLCVBar(payload.bar, 1000));
       }
     };
 
     const handleSubscriptionError = (data: Json) => {
-      const unwrapped = Array.isArray(data) ? data[0] : data;
-      const payload = unwrapped as unknown as {
+      const payload = unwrapEventPayload<{
         channel: string;
         error: string;
         operation: string;
-      };
+      }>(data);
 
       if (payload.operation === 'subscribe' && payload.channel === channel) {
         // Mark as stale so staleness check triggers REST polling immediately
@@ -308,12 +280,11 @@ export function useOHLCVRealtime({
 
     const chainId = extractChainId(assetId);
     const handleChainStatusChanged = (data: Json) => {
-      const unwrapped = Array.isArray(data) ? data[0] : data;
-      const payload = unwrapped as unknown as {
+      const payload = unwrapEventPayload<{
         chainIds: string[];
         status: 'up' | 'down';
         timestamp?: number;
-      };
+      }>(data);
 
       if (payload.chainIds.includes(chainId)) {
         chainDownRef.current = payload.status === 'down';
@@ -386,7 +357,6 @@ export function useOHLCVRealtime({
           return;
         }
 
-        subscribedRef.current = true;
         lastMessageTimeRef.current = Date.now();
 
         // Immediate REST poll for instant data while waiting for first WS bar
@@ -426,8 +396,6 @@ export function useOHLCVRealtime({
       ]).catch(() => {
         // Non-fatal: grace period in core will handle cleanup.
       });
-
-      subscribedRef.current = false;
     };
   }, [assetId, interval, currency, enabled, buildChannel, updateLatestBar]);
 

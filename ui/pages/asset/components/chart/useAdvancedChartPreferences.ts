@@ -8,9 +8,7 @@ import {
 import type { Preferences } from '../../../../../shared/types/preferences';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { CHART_TYPE_LINE } from './advanced-chart-interval-bar';
-
-/** Default time range for line chart mode (matches mobile). */
-const DEFAULT_LINE_TIME_RANGE = '1D';
+import { DEFAULT_LINE_RANGE } from './chart-window-mapping';
 
 /**
  * Writes one preference through the PreferencesController.
@@ -67,9 +65,8 @@ export function useAdvancedChartPreferences() {
   const interval = useSelector(getTdpChartInterval);
   const persistedIndicators = useSelector(getTdpChartIndicators);
 
-  const [lineTimeRange, setLineTimeRange] = useState<string>(
-    DEFAULT_LINE_TIME_RANGE,
-  );
+  const [lineTimeRange, setLineTimeRange] =
+    useState<string>(DEFAULT_LINE_RANGE);
 
   // Rendered interval. Equals the saved `interval` unless a toggle stepped it
   // (e.g. line 1Y → candle 1w while saved 1m is kept). Never persisted.

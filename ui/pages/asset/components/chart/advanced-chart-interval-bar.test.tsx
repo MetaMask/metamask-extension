@@ -6,9 +6,8 @@ import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import IntervalBar, {
   CHART_TYPE_CANDLE,
   CHART_TYPE_LINE,
-  LINE_CHART_TIME_RANGES,
-  LINE_TIME_RANGE_TO_ISO8601,
 } from './advanced-chart-interval-bar';
+import { LINE_RANGES } from './chart-window-mapping';
 
 const DEFAULT_PROPS = {
   selectedInterval: '15m',
@@ -54,9 +53,9 @@ describe('IntervalBar', () => {
     });
 
     it('shows the time ranges it is given instead, for line mode', () => {
-      renderBar({ intervals: LINE_CHART_TIME_RANGES, selectedInterval: '1D' });
+      renderBar({ intervals: LINE_RANGES, selectedInterval: '1D' });
 
-      expect(intervalLabels()).toStrictEqual([...LINE_CHART_TIME_RANGES]);
+      expect(intervalLabels()).toStrictEqual([...LINE_RANGES]);
     });
 
     it('reports the chosen interval', () => {
@@ -81,7 +80,7 @@ describe('IntervalBar', () => {
     it('marks the selection regardless of label casing', () => {
       // Candle intervals persist lowercase but line ranges are uppercase, and
       // both go through this same prop.
-      renderBar({ intervals: LINE_CHART_TIME_RANGES, selectedInterval: '1d' });
+      renderBar({ intervals: LINE_RANGES, selectedInterval: '1d' });
 
       expect(screen.getByRole('button', { name: '1D' })).toHaveAttribute(
         'aria-pressed',
@@ -185,14 +184,6 @@ describe('IntervalBar', () => {
         'aria-pressed',
         'false',
       );
-    });
-  });
-
-  describe('LINE_TIME_RANGE_TO_ISO8601', () => {
-    it('maps every offered time range to a duration', () => {
-      LINE_CHART_TIME_RANGES.forEach((range) => {
-        expect(LINE_TIME_RANGE_TO_ISO8601[range]).toBeDefined();
-      });
     });
   });
 });

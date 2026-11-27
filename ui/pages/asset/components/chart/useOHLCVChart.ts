@@ -1,17 +1,12 @@
 import { useCallback, useRef } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { priceApiBaseUrl } from '../../../../../shared/constants/price-api';
+import { getOhlcvTimePeriod } from './chart-window-mapping';
+import { type OHLCVApiCandle, type OHLCVBar, toOHLCVBar } from './ohlcv-types';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
-export type OHLCVBar = {
-  time: number;
-  open: number;
-  high: number;
-  low: number;
-  close: number;
-  volume: number;
-};
+export type { OHLCVBar } from './ohlcv-types';
 
 /** One page of candles plus the cursor needed to fetch the page before it. */
 export type OHLCVPage = {
@@ -74,18 +69,7 @@ const MAX_OLDER_BARS_PAGES_PER_REQUEST = 20;
 // `MM_BACKEND_PRICES_API_URL` (staging/local) instead of always hitting prod.
 export const OHLCV_BASE_URL = `${priceApiBaseUrl}/v3/ohlcv-chart`;
 
-export const FALLBACK_CURRENCY = 'usd';
-
-/** Maps a candle interval to the timePeriod query param the OHLCV API expects. */
-export const INTERVAL_TO_TIME_PERIOD: Record<string, string> = {
-  '1m': '1d',
-  '5m': '1d',
-  '15m': '1d',
-  '1h': '1w',
-  '4h': '1m',
-  '1d': '1m',
-  '1w': '1y',
-};
+const FALLBACK_CURRENCY = 'usd';
 
 /**
  * Budget for a single history request. Generous because exceeding it now
@@ -95,15 +79,6 @@ export const INTERVAL_TO_TIME_PERIOD: Record<string, string> = {
 export const FETCH_TIMEOUT_MS = 10_000;
 
 // ─── Pure fetch function (exported for testing & direct use) ────────────────
-
-type OHLCVApiCandle = {
-  timestamp: number;
-  open: number;
-  high: number;
-  low: number;
-  close: number;
-  volume: number;
-};
 
 /**
  * Fetches one page of OHLCV candles from the MetaMask Price API, along with
@@ -133,10 +108,7 @@ export async function fetchOHLCVPage(
   if (nextCursor) {
     url.searchParams.set('nextCursor', nextCursor);
   } else {
-    url.searchParams.set(
-      'timePeriod',
-      INTERVAL_TO_TIME_PERIOD[interval] ?? '1d',
-    );
+    url.searchParams.set('timePeriod', getOhlcvTimePeriod(interval));
     url.searchParams.set('interval', interval);
   }
   url.searchParams.set('vsCurrency', vsCurrency);
@@ -164,14 +136,9 @@ export async function fetchOHLCVPage(
     }
 
     const json = await response.json();
-    const bars: OHLCVBar[] = (json.data ?? []).map((c: OHLCVApiCandle) => ({
-      time: c.timestamp,
-      open: c.open,
-      high: c.high,
-      low: c.low,
-      close: c.close,
-      volume: c.volume,
-    }));
+    const bars: OHLCVBar[] = (json.data ?? []).map((c: OHLCVApiCandle) =>
+      toOHLCVBar(c),
+    );
     return {
       bars,
       nextCursor: json.nextCursor ?? null,
@@ -184,29 +151,6 @@ export async function fetchOHLCVPage(
   }
 }
 
-/**
- * Fetches the initial page of OHLCV candle data from the MetaMask Price API.
- * Thin wrapper over {@link fetchOHLCVPage} that drops the cursor fields, kept
- * for callers that only need the bars.
- *
- * @param assetId    - CAIP or CoinGecko asset identifier
- * @param interval   - Candle interval (e.g. '1h', '1d')
- * @param vsCurrency - Fiat quote currency (default 'usd')
- * @param signal     - Optional AbortSignal for cancellation
- * @returns Mapped array of OHLCVBar objects
- */
-export async function fetchOHLCV(
-  assetId: string,
-  interval: string,
-  vsCurrency = FALLBACK_CURRENCY,
-  signal?: AbortSignal,
-): Promise<OHLCVBar[]> {
-  const { bars } = await fetchOHLCVPage(assetId, interval, vsCurrency, {
-    signal,
-  });
-  return bars;
-}
-
 // ─── React Query configuration ──────────────────────────────────────────────
 
 /**
@@ -214,7 +158,7 @@ export async function fetchOHLCV(
  * for the second 1h. Fewer requests also avoids the API's truncated pages
  * under rapid switching.
  */
-export const OHLCV_STALE_TIME_MS = 60_000;
+const OHLCV_STALE_TIME_MS = 60_000;
 
 /**
  * Reject a refetch with < 50% of the cached bars as truncated, e.g. 120

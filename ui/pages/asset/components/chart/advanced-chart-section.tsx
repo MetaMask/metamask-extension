@@ -8,12 +8,15 @@ import { useHistoricalPrices } from '../../hooks/useHistoricalPrices';
 import { computePercentChange } from '../../../../components/app/assets/util/percentChange';
 import AdvancedChartIframe from './advanced-chart-iframe';
 import IndicatorBar from './advanced-chart-indicator-bar';
-import IntervalBar, {
-  LINE_CHART_TIME_RANGES,
-  LINE_TIME_RANGE_TO_ISO8601,
-} from './advanced-chart-interval-bar';
+import IntervalBar from './advanced-chart-interval-bar';
 import { AssetChartBody, type HoveredPoint } from './asset-chart-body';
 import ChartErrorState from './chart-error-state';
+import {
+  DEFAULT_LINE_RANGE,
+  getLineRangeConfig,
+  LINE_RANGE_CONFIG,
+  LINE_RANGES,
+} from './chart-window-mapping';
 import TokenPriceHeader from './token-price-header';
 import { useAdvancedChartData } from './useAdvancedChartData';
 import { useCandle24hChange } from './useCandle24hChange';
@@ -66,7 +69,7 @@ const OFFSCREEN: CSSProperties = {
   pointerEvents: 'none',
 };
 
-const DEFAULT_LINE_ISO8601 = 'P1D';
+const DEFAULT_LINE_ISO8601 = LINE_RANGE_CONFIG[DEFAULT_LINE_RANGE].iso8601;
 
 export type AdvancedChartSectionProps = {
   chainId: Hex;
@@ -180,7 +183,7 @@ export const AdvancedChartSection = ({
     address,
     currency,
     timeRange: isLineChart
-      ? (LINE_TIME_RANGE_TO_ISO8601[lineTimeRange] ?? DEFAULT_LINE_ISO8601)
+      ? (getLineRangeConfig(lineTimeRange)?.iso8601 ?? DEFAULT_LINE_ISO8601)
       : DEFAULT_LINE_ISO8601,
   });
 
@@ -342,7 +345,7 @@ export const AdvancedChartSection = ({
       />
 
       <IntervalBar
-        intervals={isLineChart ? LINE_CHART_TIME_RANGES : undefined}
+        intervals={isLineChart ? LINE_RANGES : undefined}
         selectedInterval={isLineChart ? lineTimeRange : displayInterval}
         onIntervalSelect={
           isLineChart ? handleLineTimeRangeSelect : handleCandleIntervalSelect
