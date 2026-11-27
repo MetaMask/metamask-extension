@@ -50,6 +50,18 @@ jest.mock('../../../hooks/useAnalytics', () => {
   };
 });
 
+const mockUseAssetPageSecurityTrustCtaGate = jest.fn<
+  ((action: () => void, source: 'buy' | 'swap') => void) | null,
+  []
+>(() => null);
+const mockUseAssetPageSecurityTrustCtaGateReady = jest.fn(() => true);
+jest.mock('./security-trust', () => ({
+  useAssetPageSecurityTrustCtaGate: () =>
+    mockUseAssetPageSecurityTrustCtaGate(),
+  useAssetPageSecurityTrustCtaGateReady: () =>
+    mockUseAssetPageSecurityTrustCtaGateReady(),
+}));
+
 const token = {
   type: AssetType.token,
   address: '0x6b175474e89094c44da98b954eedeac495271d0f',
@@ -226,6 +238,42 @@ describe('AssetStickyActions', () => {
 
     expect(getByTestId('asset-sticky-swap')).toHaveClass('bg-success-default');
     expect(getByTestId('asset-sticky-buy')).toHaveClass('bg-transparent');
+  });
+});
+
+describe('press seams', () => {
+  it('notifies onSwapPress even when a CTA gate blocks the swap', () => {
+    const onSwapPress = jest.fn();
+    const gateCtaAction = jest.fn();
+    mockUseAssetPageSecurityTrustCtaGate.mockReturnValue(gateCtaAction);
+
+    const { getByTestId } = renderWithProvider(
+      <AssetStickyActions asset={token} onSwapPress={onSwapPress} />,
+      store,
+    );
+
+    fireEvent.click(getByTestId('asset-sticky-swap'));
+
+    expect(onSwapPress).toHaveBeenCalledTimes(1);
+    expect(gateCtaAction).toHaveBeenCalledWith(expect.any(Function), 'swap');
+    expect(mockOpenBridgeExperience).not.toHaveBeenCalled();
+  });
+
+  it('notifies onBuyPress even when a CTA gate blocks the buy', () => {
+    const onBuyPress = jest.fn();
+    const gateCtaAction = jest.fn();
+    mockUseAssetPageSecurityTrustCtaGate.mockReturnValue(gateCtaAction);
+
+    const { getByTestId } = renderWithProvider(
+      <AssetStickyActions asset={token} onBuyPress={onBuyPress} />,
+      store,
+    );
+
+    fireEvent.click(getByTestId('asset-sticky-buy'));
+
+    expect(onBuyPress).toHaveBeenCalledTimes(1);
+    expect(gateCtaAction).toHaveBeenCalledWith(expect.any(Function), 'buy');
+    expect(mockGoToBuy).not.toHaveBeenCalled();
   });
 });
 
