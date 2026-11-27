@@ -173,6 +173,11 @@ async function main(): Promise<void> {
     });
     return;
   }
+  if (resolved.status === 'no-base' && kind === 'drift') {
+    throw new Error(
+      `The drift reference ${base?.slice(0, 10)} has no build in reach (Main artifacts expire), so pin a newer main commit with a build in drift-reference.json`,
+    );
+  }
   if (resolved.status !== 'measure') {
     throw new Error(
       `Could not resolve a base for the head (${resolved.status})`,
