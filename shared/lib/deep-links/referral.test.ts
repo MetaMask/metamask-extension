@@ -8,6 +8,9 @@ describe('getReferralCode', () => {
   jestIt.each([
     [' a1b ', 'A1B'],
     ['a'.repeat(24), 'A'.repeat(24)],
+    ['DATA-NERD', 'DATANERD'],
+    ['data-nerd', 'DATANERD'],
+    ['-ABC', 'ABC'],
   ])('normalizes a valid code: %s', (input, expected) => {
     expect(getReferralCode(new URLSearchParams({ ref: input }))).toBe(expected);
   });
@@ -15,7 +18,9 @@ describe('getReferralCode', () => {
   jestIt.each([
     '',
     'ref=ab',
-    'ref=ABC-123',
+    'ref=A-B',
+    'ref=ABC_123',
+    'ref=ABC.123',
     'ref=ABC&ref=DEF',
     `ref=${'A'.repeat(25)}`,
   ])('ignores malformed or ambiguous input: %s', (query) => {
