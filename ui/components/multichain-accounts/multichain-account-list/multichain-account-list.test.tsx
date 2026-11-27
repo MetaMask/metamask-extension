@@ -14,6 +14,8 @@ import {
   toAccountWalletId,
 } from '@metamask/account-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { EthAccountType } from '@metamask/keyring-api';
+import type { Asset } from '@metamask/assets-controllers';
 import {
   MetaMetricsAccountHiddenLocation,
   MetaMetricsAccountRemovedLocation,
@@ -458,12 +460,20 @@ describe('MultichainAccountList', () => {
 
   it('updates the account balance with the streamed price', () => {
     const assetId = 'eip155:1/slip44:60';
-    const asset = {
-      assetId,
+    const asset: Asset = {
+      accountType: EthAccountType.Eoa,
+      accountId: 'account-1',
+      assetId: '0x0000000000000000000000000000000000000000',
       balance: '1',
-      fiat: { balance: 38.02 },
+      rawBalance: '0x0de0b6b3a7640000',
+      fiat: { balance: 38.02, currency: 'usd', conversionRate: 38.02 },
       isNative: true,
       chainId: '0x1',
+      image: '',
+      name: 'Ethereum',
+      symbol: 'ETH',
+      address: '0x0000000000000000000000000000000000000000',
+      decimals: 18,
     };
     const balanceSpy = jest
       .spyOn(assetsSelectors, 'selectBalanceForAllWallets')
@@ -486,30 +496,36 @@ describe('MultichainAccountList', () => {
         totalBalanceInUserCurrency: 38.02,
         userCurrency: 'usd',
       });
+    const allAssetsByGroup: ReturnType<
+      typeof assetsSelectors.getAssetsByAllAccountGroups
+    > = {
+      [walletOneGroupId]: { '0x1': [asset] },
+    };
     const allAssetsSpy = jest
       .spyOn(assetsSelectors, 'getAssetsByAllAccountGroups')
-      .mockReturnValue({
-        [walletOneGroupId]: { '0x1': [asset] },
-      } as unknown as ReturnType<
-        typeof assetsSelectors.getAssetsByAllAccountGroups
-      >);
+      .mockReturnValue(allAssetsByGroup);
+
+    const selectedGroupAssets: ReturnType<
+      typeof assetsSelectors.getAssetsBySelectedAccountGroup
+    > = {
+      '0x1': [asset],
+    };
     const selectedAssetsSpy = jest
       .spyOn(assetsSelectors, 'getAssetsBySelectedAccountGroup')
-      .mockReturnValue({
-        '0x1': [asset],
-      } as unknown as ReturnType<
-        typeof assetsSelectors.getAssetsBySelectedAccountGroup
-      >);
+      .mockReturnValue(selectedGroupAssets);
+
     const selectedGroupSpy = jest
       .spyOn(accountTreeSelectors, 'getSelectedAccountGroup')
       .mockReturnValue(walletOneGroupId);
+
+    const assetsByGroupForLiveTotals: ReturnType<
+      typeof assetsSelectors.getAssetsByAccountGroupForLiveTotals
+    > = {
+      [walletOneGroupId]: { '0x1': [asset] },
+    };
     const assetsByGroupForLiveTotalsSpy = jest
       .spyOn(assetsSelectors, 'getAssetsByAccountGroupForLiveTotals')
-      .mockReturnValue({
-        [walletOneGroupId]: { '0x1': [asset] },
-      } as unknown as ReturnType<
-        typeof assetsSelectors.getAssetsByAccountGroupForLiveTotals
-      >);
+      .mockReturnValue(assetsByGroupForLiveTotals);
     const livePricesSpy = jest
       .spyOn(marketStats, 'useMarketStats')
       .mockImplementation((select?: unknown) => {
