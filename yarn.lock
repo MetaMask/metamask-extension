@@ -9465,7 +9465,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permission-controller@npm:^14.0.0, @metamask/permission-controller@npm:^14.1.0":
+"@metamask/permission-controller@npm:^14.1.0":
   version: 14.1.0
   resolution: "@metamask/permission-controller@npm:14.1.0"
   dependencies:

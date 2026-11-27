@@ -324,7 +324,7 @@
     "esbuild": "0.28.1",
     "valibot": "^1.4.2",
     "@metamask/snaps-controllers": "^23.0.1",
-    "@metamask/permission-controller@npm:^13.1.1": "^14.0.0",
+    "@metamask/permission-controller@npm:^13.1.1": "^15.0.0",
     "@ecies/ciphers@npm:^0.2.6": "patch:@ecies/ciphers@npm%3A0.2.6#~/.yarn/patches/@ecies-ciphers-npm-0.2.6-9a4b96d70b.patch",
     "@metamask/keyring-api": "^24.3.0",
     "@metamask/accounts-controller": "^40.2.0",
