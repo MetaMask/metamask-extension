@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "Ограничение на газ"
   },
-  "gasUsed": {
-    "message": "Използван газ"
-  },
   "general": {
     "message": "Общ"
   },
@@ -345,9 +342,6 @@
   },
   "newContract": {
     "message": "Нов договор"
-  },
-  "newPassword": {
-    "message": "Нова парола (мин. 8 символа)"
   },
   "next": {
     "message": "Напред"
@@ -557,9 +551,6 @@
   },
   "unapproved": {
     "message": "Неодобрено"
-  },
-  "units": {
-    "message": "елементи"
   },
   "unknown": {
     "message": "Неизвестно"

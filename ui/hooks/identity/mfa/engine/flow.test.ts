@@ -1003,13 +1003,30 @@ describe('createMfaFlow', () => {
       });
     });
 
-    it('shows the passkey screen only when the system sheet is dismissed', async () => {
+    it('ends the flow when the system sheet is cancelled before any kit screen', async () => {
       const fake = createFakeController([passkey]);
       passkeyAdapter.get.mockRejectedValueOnce(
         Object.assign(new Error('cancelled'), {
           mfaCode: 'passkey_ceremony_cancelled',
         }),
       );
+      const { flow, outcome } = await startFlow(
+        { kind: 'verifyOrEnroll', methods: ['passkey'], verifyWith: 'passkey' },
+        fake.controller,
+      );
+
+      expect(flow.getState().step).toStrictEqual({ name: 'idle' });
+      const result = await outcome;
+      expect(result.ok).toBe(false);
+      expect(result.ok ? undefined : result.error).toMatchObject({
+        mfaCode: 'flow_cancelled',
+      });
+    });
+
+    it('shows the passkey retry screen when the system sheet fails for a non-cancel reason', async () => {
+      const fake = createFakeController([passkey]);
+      passkeyAdapter.get.mockClear();
+      passkeyAdapter.get.mockRejectedValueOnce(new Error('hardware failed'));
       const { flow } = await startFlow(
         { kind: 'verifyOrEnroll', methods: ['passkey'], verifyWith: 'passkey' },
         fake.controller,
@@ -1017,7 +1034,7 @@ describe('createMfaFlow', () => {
 
       expect(flow.getState()).toMatchObject({
         step: { name: 'passkey', purpose: 'verify' },
-        error: 'passkey_ceremony_cancelled',
+        error: 'server_error',
       });
 
       await act(flow, { type: 'continue' });
@@ -1622,6 +1639,60 @@ describe('createMfaFlow analytics', () => {
         purpose: 'verify',
         options: ['totp', 'email_otp'],
       });
+    });
+
+    it('rejects with flow_cancelled and skips the passkey retry screen when the sheet is cancelled before any kit screen', async () => {
+      const fake = createFakeController([passkey]);
+      passkeyAdapter.get.mockRejectedValueOnce(
+        new MfaFlowError('passkey_ceremony_cancelled'),
+      );
+
+      const { flow, outcome } = await startFlow(
+        {
+          kind: 'verifyOrEnroll',
+          methods: ['passkey'],
+          verifyWith: ['passkey'],
+          verifyOnly: true,
+        },
+        fake.controller,
+      );
+
+      expect(flow.getState().step).toStrictEqual({ name: 'idle' });
+      const result = await outcome;
+      expect(result.ok).toBe(false);
+      expect(result.ok ? undefined : result.error).toMatchObject({
+        mfaCode: 'flow_cancelled',
+      });
+    });
+
+    it('shows the passkey retry screen when the sheet is cancelled after the kit picker', async () => {
+      const fake = createFakeController([passkey, authenticatorApp]);
+      passkeyAdapter.get.mockRejectedValueOnce(
+        new MfaFlowError('passkey_ceremony_cancelled'),
+      );
+
+      const { flow } = await startFlow(
+        {
+          kind: 'verifyOrEnroll',
+          methods: ['passkey', 'totp'],
+          verifyWith: ['passkey', 'totp'],
+          verifyOnly: true,
+        },
+        fake.controller,
+      );
+
+      expect(flow.getState().step).toMatchObject({
+        name: 'picker',
+        purpose: 'verify',
+      });
+
+      await act(flow, { type: 'choose', method: 'passkey' });
+
+      expect(flow.getState().step).toMatchObject({
+        name: 'passkey',
+        purpose: 'verify',
+      });
+      expect(flow.getState().error).toBe('passkey_ceremony_cancelled');
     });
 
     it('fails instead of setting up when the profile loses its method mid-flow', async () => {

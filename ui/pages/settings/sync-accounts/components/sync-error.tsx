@@ -4,10 +4,6 @@ import {
   Box,
   Button,
   ButtonVariant,
-  Icon,
-  IconColor,
-  IconName,
-  IconSize,
   Text,
   TextAlign,
   TextColor,
@@ -52,43 +48,48 @@ const SyncError = ({ onRetry, onCancel }: SyncErrorProps) => {
     <Box
       alignItems={BoxAlignItems.Center}
       flexDirection={BoxFlexDirection.Column}
-      gap={8}
-      paddingTop={8}
+      paddingBottom={4}
       className="flex-1"
     >
       <Box
-        className="text-center"
+        className="text-center flex-1 justify-center"
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Center}
-        gap={2}
+        gap={6}
+        data-testid="qr-sync-error-content"
       >
-        <Icon
-          name={IconName.CircleX}
-          size={IconSize.Xl}
-          color={IconColor.ErrorDefault}
-          className="mx-auto"
+        <img
+          src="./images/mfa-failure.svg"
+          alt=""
+          width={370}
+          height={64}
+          className="self-center max-w-full h-auto"
+          data-testid="qr-sync-error-illustration"
         />
-        <Text
-          variant={TextVariant.HeadingLg}
-          color={TextColor.TextDefault}
-          fontWeight={FontWeight.Bold}
-          textAlign={TextAlign.Center}
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Center}
+          gap={1}
         >
-          {t('add_device_error_title')}
-        </Text>
-        <Text
-          variant={TextVariant.BodyMd}
-          color={TextColor.TextAlternative}
-          textAlign={TextAlign.Center}
-        >
-          {t(messageKey)}
-        </Text>
+          <Text
+            variant={TextVariant.HeadingLg}
+            color={TextColor.TextDefault}
+            fontWeight={FontWeight.Bold}
+            textAlign={TextAlign.Center}
+          >
+            {t('add_device_error_title')}
+          </Text>
+          <Text
+            variant={TextVariant.BodySm}
+            color={TextColor.TextAlternative}
+            fontWeight={FontWeight.Medium}
+            textAlign={TextAlign.Center}
+          >
+            {t(messageKey)}
+          </Text>
+        </Box>
       </Box>
-      <Box
-        flexDirection={BoxFlexDirection.Column}
-        gap={2}
-        className="w-full mt-auto"
-      >
+      <Box flexDirection={BoxFlexDirection.Column} gap={2} className="w-full">
         <Button className="w-full" onClick={onRetry}>
           {t('add_device_try_again')}
         </Button>

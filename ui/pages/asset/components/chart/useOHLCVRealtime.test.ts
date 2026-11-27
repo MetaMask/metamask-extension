@@ -110,6 +110,8 @@ describe('useOHLCVRealtime', () => {
   beforeEach(() => {
     jest.useFakeTimers();
     jest.clearAllMocks();
+    submitRequestToBackground.mockReset();
+    submitRequestToBackground.mockResolvedValue(undefined);
     mockEventSubscriptions.clear();
     mockUnsubscribeFns.clear();
   });
@@ -919,6 +921,70 @@ describe('useOHLCVRealtime', () => {
         'OHLCVService:subscribe',
         [{ assetId: 'bitcoin', interval: '1h', currency: 'usd' }],
       ]);
+    });
+  });
+
+  describe('rapid interval switches', () => {
+    const ONE_HOUR_BAR_MS = 1700002800000; // 13:00-style hourly bucket
+    const ONE_MINUTE_BAR_MS = ONE_HOUR_BAR_MS + 52 * 60_000;
+
+    const restResponse = (timestamp: number, close: number) =>
+      ({
+        ok: true,
+        status: 200,
+        json: jest
+          .fn()
+          .mockResolvedValue({ ...MOCK_LATEST_BAR, timestamp, close }),
+      }) as unknown as Response;
+
+    it('does not poll or emit when a subscribe resolves after the interval changed', async () => {
+      let resolveSubscribe: () => void = () => undefined;
+      submitRequestToBackground.mockImplementation(
+        (_method: string, [action]: [string]) =>
+          action === 'OHLCVService:subscribe'
+            ? new Promise<void>((resolve) => {
+                resolveSubscribe = resolve;
+              })
+            : Promise.resolve(),
+      );
+      global.fetch = jest.fn().mockImplementation((input: string) => {
+        const isHourly = new URL(input).searchParams.get('interval') === '1h';
+        return Promise.resolve(
+          isHourly
+            ? restResponse(ONE_HOUR_BAR_MS, 1)
+            : restResponse(ONE_MINUTE_BAR_MS, 2),
+        );
+      });
+
+      const { result, rerender } = renderHook(
+        ({ interval }) =>
+          useOHLCVRealtime({ assetId: 'ethereum', interval, enabled: true }),
+        { initialProps: { interval: '1h' } },
+      );
+
+      // 1h subscribe is sent but stays in flight.
+      await advanceTimersAndFlush(500);
+      const pendingHourlySubscribe = resolveSubscribe;
+
+      rerender({ interval: '1m' });
+
+      // The 1h subscribe resolves after the switch.
+      await act(async () => {
+        pendingHourlySubscribe();
+      });
+
+      const fetchedIntervals = (global.fetch as jest.Mock).mock.calls.map(
+        ([url]) => new URL(url as string).searchParams.get('interval'),
+      );
+      expect(fetchedIntervals).not.toContain('1h');
+      expect(result.current.latestBar).toBeNull();
+
+      // Cleanup already balanced the 1h subscribe; no extra unsubscribe.
+      const hourlyUnsubscribes = submitRequestToBackground.mock.calls.filter(
+        ([, [action, [options]]]) =>
+          action === 'OHLCVService:unsubscribe' && options.interval === '1h',
+      );
+      expect(hourlyUnsubscribes).toHaveLength(1);
     });
   });
 

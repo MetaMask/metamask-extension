@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "Gas robežvērtība"
   },
-  "gasUsed": {
-    "message": "Izlietotie Gas"
-  },
   "general": {
     "message": "Vispārīgi"
   },
@@ -345,9 +342,6 @@
   },
   "newContract": {
     "message": "Jauns līgums"
-  },
-  "newPassword": {
-    "message": "Jauna parole (vism. 8 rakstzīmes)"
   },
   "next": {
     "message": "Nākamais"
@@ -557,9 +551,6 @@
   },
   "unapproved": {
     "message": "Nav apstiprināts"
-  },
-  "units": {
-    "message": "vienības"
   },
   "unknown": {
     "message": "Nezināma"

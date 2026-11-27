@@ -214,9 +214,6 @@
   "gasLimit": {
     "message": "Kikomo cha Gesi"
   },
-  "gasUsed": {
-    "message": "Gesi iliyotumika"
-  },
   "general": {
     "message": "Jumla"
   },
@@ -327,9 +324,6 @@
   },
   "newContract": {
     "message": "Mkataba Mpya"
-  },
-  "newPassword": {
-    "message": "Nenosiri Jipya (kiwango cha chini herufi 8)"
   },
   "next": {
     "message": "Inayofuata"
@@ -539,9 +533,6 @@
   },
   "unapproved": {
     "message": "Haijaidhinishwa"
-  },
-  "units": {
-    "message": "vizio"
   },
   "unknown": {
     "message": "Haijulikani"

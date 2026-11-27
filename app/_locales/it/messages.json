@@ -29,10 +29,6 @@
   "about": {
     "message": "Informazioni"
   },
-  "acceptTermsOfUse": {
-    "message": "Ho letto e accetto i $1",
-    "description": "$1 is the `terms` message"
-  },
   "accessingYourCamera": {
     "message": "Accesso alla fotocamera..."
   },
@@ -96,9 +92,6 @@
   },
   "advanced": {
     "message": "Avanzate"
-  },
-  "advancedGasPriceTitle": {
-    "message": "Prezzo gas"
   },
   "alertDisableTooltip": {
     "message": "Può essere cambiato in \"Impostazioni > Avvisi\""
@@ -523,9 +516,6 @@
   "gasLimit": {
     "message": "Gas Limite"
   },
-  "gasUsed": {
-    "message": "Gas Utilizzato"
-  },
   "general": {
     "message": "Generale"
   },
@@ -692,9 +682,6 @@
   },
   "newContract": {
     "message": "Nuovo Contratto"
-  },
-  "newPassword": {
-    "message": "Nuova Password (minimo 8 caratteri)"
   },
   "next": {
     "message": "Avanti"
@@ -1010,9 +997,6 @@
   },
   "unapproved": {
     "message": "Non approvata"
-  },
-  "units": {
-    "message": "unità"
   },
   "unknown": {
     "message": "Sconosciuto"

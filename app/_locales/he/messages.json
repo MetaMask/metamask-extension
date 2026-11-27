@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "הגבלת דלק"
   },
-  "gasUsed": {
-    "message": "דלק שנעשה בו שימוש"
-  },
   "general": {
     "message": "כללי"
   },
@@ -342,9 +339,6 @@
   },
   "newContract": {
     "message": "חוזה חדש"
-  },
-  "newPassword": {
-    "message": "ססמה חדשה (לפחות 8 תווים)"
   },
   "next": {
     "message": "הבא"
@@ -554,9 +548,6 @@
   },
   "unapproved": {
     "message": "לא אושר"
-  },
-  "units": {
-    "message": "יחידות"
   },
   "unknown": {
     "message": "לא ידוע"

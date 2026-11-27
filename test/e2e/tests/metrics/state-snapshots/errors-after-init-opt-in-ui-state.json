@@ -251,6 +251,7 @@
     "marketFilterPreferences": "object",
     "marketingCampaignCookieId": null,
     "marketingConsentDecisionMade": "boolean",
+    "marketingConsentSyncPending": "boolean",
     "metaMetricsDataDeletionId": null,
     "metaMetricsDataDeletionTimestamp": 0,
     "metamaskNotificationsList": "object",
