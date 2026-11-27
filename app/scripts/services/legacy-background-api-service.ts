@@ -294,6 +294,7 @@ import type {
   PasskeyControllerUnlockWithPasskeyAction,
 } from '@metamask/passkey-controller';
 import { cloneDeep, merge } from 'lodash';
+import { HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   convertEnglishWordlistIndicesToCodepoints,
   isPublicEndpointUrl,
@@ -408,6 +409,7 @@ import {
   LEDGER_LIVE_PATH,
 } from '../../../shared/constants/hardware-wallets';
 import {
+  HardwareWalletErrorCode,
   HardwareWalletType,
   isUserRejectedHardwareWalletError,
   toHardwareWalletError,
@@ -590,6 +592,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'unlockAndGetSeedPhrase',
   'unlockHardwareWalletAccount',
   'upsertTransactionUIMetricsFragment',
+  'verifyLedgerAccountOwnership',
 ] as const;
 
 /**
@@ -2914,6 +2917,7 @@ export class LegacyBackgroundApiService {
    * @param options - Options for the approval.
    * @param options.walletType - The hardware wallet type (if hardware wallet).
    * @param options.waitForResult - Whether to wait for the result.
+   * @param options.fromAddress - The account being signed for, when known.
    */
   async resolvePendingApproval(
     id: string,
@@ -2921,14 +2925,38 @@ export class LegacyBackgroundApiService {
     options: {
       walletType?: HardwareWalletType;
       waitForResult?: boolean;
+      fromAddress?: string;
     } | null = {},
   ): Promise<void> {
     // RPC params may serialize an omitted argument as `null`, so normalize first
     // before destructuring to avoid a runtime TypeError.
     const normalizedOptions = options ?? {};
-    const { walletType, waitForResult } = normalizedOptions;
+    const { walletType, waitForResult, fromAddress } = normalizedOptions;
     const approvalOptions =
       typeof waitForResult === 'boolean' ? { waitForResult } : undefined;
+
+    // Surface a wrong-seed device before `acceptRequest` consumes the approval
+    // and unwinds the confirmation screen; the keyring still blocks signing.
+    if (walletType === HardwareWalletType.Ledger && fromAddress) {
+      try {
+        await this.verifyLedgerAccountOwnership(fromAddress);
+      } catch (error) {
+        if (
+          error instanceof HardwareWalletError &&
+          error.code === HardwareWalletErrorCode.DeviceSeedMismatch
+        ) {
+          // Always throws a typed RPC error; prevents acceptRequest below.
+          await this.#handleHardwareWalletError(error, walletType);
+        } else {
+          // Non-3012 preflight gaps (missing keyring, device-read timeout) must
+          // not block signing: the keyring enforces ownership on the device.
+          log.warn(
+            'Ledger ownership preflight failed, continuing to sign',
+            error,
+          );
+        }
+      }
+    }
 
     try {
       await this.#messenger.call(
@@ -3007,10 +3035,13 @@ export class LegacyBackgroundApiService {
     actionId: string;
     walletType: HardwareWalletType;
   }): Promise<void> {
+    const fromAddress = (txMeta as { txParams?: { from?: string } } | undefined)
+      ?.txParams?.from;
+
     await this.resolvePendingApproval(
       String(txId),
       { txMeta, actionId },
-      { waitForResult: true, walletType },
+      { waitForResult: true, walletType, fromAddress },
     );
   }
 
@@ -3249,6 +3280,7 @@ export class LegacyBackgroundApiService {
           await this.#ledgerDeviceGate.enforceSingleDevice(ledgerKeyring, {
             allowBind: false,
           });
+          await this.#ledgerDeviceGate.verifyFirstStoredAccount(ledgerKeyring);
         }
         let accounts: AccountPage = [];
         switch (page) {
@@ -3333,6 +3365,22 @@ export class LegacyBackgroundApiService {
   }
 
   /**
+   * Verifies the connected Ledger derives the given account before signing.
+   *
+   * @param address - The account being signed for.
+   */
+  async verifyLedgerAccountOwnership(address: string): Promise<void> {
+    await this.#withKeyringForDevice(
+      { name: HardwareDeviceNames.ledger, deviceRead: true },
+      async (keyring) =>
+        this.#ledgerDeviceGate.verifyAccountOwnership(
+          keyring as LedgerKeyringV2,
+          address,
+        ),
+    );
+  }
+
+  /**
    * Gets the features from the Trezor device.
    *
    * @returns The features.
@@ -3368,7 +3416,13 @@ export class LegacyBackgroundApiService {
         this.onAccountRemoved(account.address);
       }
 
-      await keyring.forgetDevice();
+      try {
+        await keyring.forgetDevice();
+      } finally {
+        if (deviceName === HardwareDeviceNames.ledger) {
+          this.#ledgerDeviceGate.clearMemo();
+        }
+      }
 
       return true;
     });

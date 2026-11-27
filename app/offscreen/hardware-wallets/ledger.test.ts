@@ -478,7 +478,9 @@ describe('Ledger Offscreen', () => {
         const response = await sendAction(LedgerAction.getConnectedDeviceInfo);
 
         expect(response.success).toBe(true);
-        expect(response.payload).toStrictEqual([{ productId: 0x0001 }]);
+        expect(response.payload).toStrictEqual([
+          { productId: 0x0001, connectionId: expect.any(String) },
+        ]);
       });
 
       it('propagates getDevices() rejection', async () => {

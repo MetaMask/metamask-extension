@@ -324,7 +324,7 @@ export const useHardwareWalletConnection = ({
       options?: EnsureDeviceReadyOptions,
     ): Promise<HardwareWalletError | null> => {
       const requireBlindSigning = options?.requireBlindSigning ?? true;
-      const dedupKey = `${requireBlindSigning}:${options?.preflightMessageBytes ?? ''}`;
+      const dedupKey = `${requireBlindSigning}:${options?.preflightMessageBytes ?? ''}:${options?.accountAddress ?? ''}`;
       const inFlightPromise =
         refs.ensureDeviceReadyPromiseRef.current.get(dedupKey);
       if (inFlightPromise) {
@@ -398,6 +398,7 @@ export const useHardwareWalletConnection = ({
           try {
             const result = await adapter.ensureDeviceReady({
               requireBlindSigning,
+              accountAddress: options?.accountAddress,
             });
             if (abortSignal?.aborted || isEnsureStale()) {
               return notReady();

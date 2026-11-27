@@ -132,6 +132,22 @@ export function serializeLedgerError(error: unknown): SerializedLedgerError {
   return serializeError(error);
 }
 
+// Random prefix keeps ids unique across offscreen restarts so a cached memo
+// cannot match another device. `Math.random` also works in Jest jsdom.
+const CONNECTION_ID_PREFIX = Math.random().toString(36).slice(2);
+const connectionIds = new WeakMap<HIDDevice, string>();
+let nextConnectionId = 1;
+
+function getConnectionId(device: HIDDevice): string {
+  let id = connectionIds.get(device);
+  if (id === undefined) {
+    id = `${CONNECTION_ID_PREFIX}-${nextConnectionId}`;
+    nextConnectionId += 1;
+    connectionIds.set(device, id);
+  }
+  return id;
+}
+
 /**
  * Returns the connected (permitted) Ledger devices for the background gate.
  *
@@ -144,5 +160,8 @@ export async function getConnectedLedgerDeviceInfo(): Promise<
   const devices = await navigator.hid.getDevices();
   return devices
     .filter((device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID))
-    .map((device) => ({ productId: device.productId }));
+    .map((device) => ({
+      productId: device.productId,
+      connectionId: getConnectionId(device),
+    }));
 }

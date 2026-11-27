@@ -5,6 +5,7 @@ import {
   getHdPathForLedgerKeyring,
   getLedgerAppConfiguration,
   getLedgerPublicKey,
+  verifyLedgerAccountOwnership,
 } from '../../../store/actions';
 import { createHardwareWalletError, getDeviceEventForError } from '../errors';
 import { toHardwareWalletError } from '../rpcErrorUtils';
@@ -182,12 +183,14 @@ export class LedgerAdapter implements HardwareWalletAdapter {
    * @param options.requireBlindSigning - Whether to check if blind signing is enabled
    * on the Ledger device. Defaults to true. Set to false for simple sends (plain
    * native asset transfers) that don't involve contract interactions.
+   * @param options.accountAddress - Account being signed for, so a wrong-seed
+   * device is blocked before the signing prompt.
    * @returns true if device is ready
    */
   async ensureDeviceReady(
     options?: EnsureDeviceReadyOptions,
   ): Promise<boolean> {
-    const { requireBlindSigning = true } = options ?? {};
+    const { requireBlindSigning = true, accountAddress } = options ?? {};
 
     if (!this.isConnected()) {
       await this.connect();
@@ -202,6 +205,11 @@ export class LedgerAdapter implements HardwareWalletAdapter {
           HardwareWalletType.Ledger,
           `Ethereum app is not open, got ${appName}`,
         );
+      }
+
+      // Block a wrong-seed device before it prompts; the derivation is memoized.
+      if (accountAddress) {
+        await verifyLedgerAccountOwnership(accountAddress);
       }
 
       // Blind signing check: only needed for contract interactions, signatures,
@@ -220,7 +228,11 @@ export class LedgerAdapter implements HardwareWalletAdapter {
 
       return true;
     } catch (error) {
-      const hwError = toHardwareWalletError(error, HardwareWalletType.Ledger);
+      const baseError = toHardwareWalletError(error, HardwareWalletType.Ledger);
+      // Keep the account on the error so the modal's Reconnect re-checks it.
+      const hwError = accountAddress
+        ? baseError.withMetadata({ accountAddress })
+        : baseError;
       // Emit appropriate device events with the properly reconstructed error
       const deviceEvent = getDeviceEventForError(
         hwError.code,

@@ -36,8 +36,20 @@ describe('ledger-utils', () => {
       ]);
 
       await expect(getConnectedLedgerDeviceInfo()).resolves.toStrictEqual([
-        { productId: 0x0004 },
+        { productId: 0x0004, connectionId: expect.any(String) },
       ]);
+    });
+
+    it('keeps connectionId stable per device and distinct across devices', async () => {
+      const first = device(Number(LEDGER_USB_VENDOR_ID));
+      const second = device(Number(LEDGER_USB_VENDOR_ID));
+      mockGetDevices.mockResolvedValue([first, second]);
+
+      const [a1, b1] = await getConnectedLedgerDeviceInfo();
+      const [a2] = await getConnectedLedgerDeviceInfo();
+
+      expect(a1.connectionId).toBe(a2.connectionId);
+      expect(a1.connectionId).not.toBe(b1.connectionId);
     });
 
     it('returns [] when no Ledger device is connected', async () => {

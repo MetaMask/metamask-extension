@@ -241,7 +241,9 @@ export default function useSubmitBridgeTransaction(
         // on bridge/quote pages, where auto-shown modals are route-gated off.
         // Manual showErrorModal calls bypass that gate; the provider still
         // filters user rejections itself.
-        const deviceError = await ensureDeviceReadyOrError();
+        const deviceError = await ensureDeviceReadyOrError({
+          accountAddress: fromAccount?.address,
+        });
         if (deviceError) {
           showErrorModal(deviceError);
           setIsSubmitting(false);

@@ -38,6 +38,8 @@ const DEVICE_READ_METHODS = [
   'getFirstPage',
   'getNextPage',
   'getPreviousPage',
+  // Ledger V2 registers accounts lazily in the in-memory registry (no vault write).
+  'getAccounts',
   'getDeviceId', // only for Ledger — read of the persisted binding
   'isUnlocked', // only for Trezor/Ledger
   'getMode', // only for QR
@@ -98,6 +100,23 @@ export function restrictKeyringForDeviceRead<
         enumerable: true,
       });
     }
+  }
+
+  // Seed checks derive accounts on-device. `unlockAccountByAddress` lives only
+  // on the inner legacy keyring and is a pure read, so expose it here.
+  type UnlockAccountByAddress = (address: string) => Promise<string>;
+  const keyringLike = keyring as {
+    unlockAccountByAddress?: UnlockAccountByAddress;
+    inner?: { unlockAccountByAddress?: UnlockAccountByAddress };
+  };
+  const unlockSource = [keyringLike, keyringLike.inner].find(
+    (source) => typeof source?.unlockAccountByAddress === 'function',
+  );
+  if (unlockSource?.unlockAccountByAddress) {
+    Object.defineProperty(facade, 'unlockAccountByAddress', {
+      value: unlockSource.unlockAccountByAddress.bind(unlockSource),
+      enumerable: true,
+    });
   }
 
   return Object.freeze(facade) as DeviceReadKeyring<Keyring>;

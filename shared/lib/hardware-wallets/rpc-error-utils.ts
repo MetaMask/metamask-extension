@@ -31,7 +31,11 @@ import {
 import { TREZOR_DESKTOP_CONNECTION_MISSING_CODE } from '../../constants/hardware-wallets';
 import { extractMessageFromUnknownError } from '../error';
 import { HardwareWalletType } from './types';
-import { createHardwareWalletError } from './errors';
+import {
+  createHardwareWalletError,
+  HardwareWalletErrorCode,
+  isLedgerSeedMismatchMessage,
+} from './errors';
 
 /**
  * Structs for serialized HardwareWalletError cause objects.
@@ -388,6 +392,11 @@ function convertDataToHardwareWalletError(
  * @returns The corresponding ErrorCode enum value
  */
 function mapNumericCodeToErrorCode(numericCode: number): ErrorCode {
+  // Extension-local 3012 is not in the SDK enum yet.
+  if (numericCode === HardwareWalletErrorCode.DeviceSeedMismatch) {
+    return HardwareWalletErrorCode.DeviceSeedMismatch;
+  }
+
   const errorCodeValues = Object.values(ErrorCode).filter(
     (v): v is number => typeof v === 'number',
   );
@@ -413,6 +422,11 @@ function mapStringCodeToErrorCode(stringCode: string): ErrorCode {
   const numericCode = Number.parseInt(stringCode, 10);
   if (!Number.isNaN(numericCode)) {
     return mapNumericCodeToErrorCode(numericCode);
+  }
+
+  // Extension-local codes are not in the SDK enum, so match their names first.
+  if (stringCode === 'DeviceSeedMismatch') {
+    return HardwareWalletErrorCode.DeviceSeedMismatch;
   }
 
   // Check if it's a valid ErrorCode key name (e.g., "DeviceDisconnected")
@@ -856,6 +870,20 @@ function tryInferLedgerKeyringError(
   }
 
   const causeMessage = getErrorMessage(error.cause);
+  if (
+    isLedgerSeedMismatchMessage(causeMessage) ||
+    isLedgerSeedMismatchMessage(error.message)
+  ) {
+    return createHardwareWalletError(
+      HardwareWalletErrorCode.DeviceSeedMismatch,
+      walletType,
+      causeMessage || error.message,
+      {
+        cause: getErrorCause(error.cause),
+      },
+    );
+  }
+
   if (isOnlyV4TypedDataErrorMessage(causeMessage)) {
     return createHardwareWalletError(
       ErrorCode.DeviceStateOnlyV4Supported,
@@ -988,6 +1016,15 @@ function tryFromLedgerErrorMessage(
   ) {
     return createHardwareWalletError(
       ErrorCode.ConnectionTransportMissing,
+      walletType,
+      errorMessage,
+      { cause: getErrorCause(error) },
+    );
+  }
+
+  if (isLedgerSeedMismatchMessage(errorMessage)) {
+    return createHardwareWalletError(
+      HardwareWalletErrorCode.DeviceSeedMismatch,
       walletType,
       errorMessage,
       { cause: getErrorCause(error) },

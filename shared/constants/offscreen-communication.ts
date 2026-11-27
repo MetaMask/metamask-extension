@@ -127,9 +127,11 @@ export enum LedgerAction {
 
 /**
  * Connected (permitted) Ledger device as reported by the offscreen handlers.
+ * The background owns count/model rules; `connectionId` scopes memoization.
  */
 export type ConnectedLedgerDeviceInfo = {
   productId: number;
+  connectionId: string;
 };
 
 /**

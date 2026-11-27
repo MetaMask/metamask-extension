@@ -469,7 +469,9 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     const attemptRestart = async () => {
       // E2E has no physical device; skip the live readiness check and
       // restart directly (same policy as the bridge path's preflight).
-      const isDeviceReady = inE2e || (await ensureDeviceReady());
+      const isDeviceReady =
+        inE2e ||
+        (await ensureDeviceReady({ accountAddress: fromAddress ?? undefined }));
 
       if (cancelled) {
         return;
@@ -505,6 +507,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
   }, [
     connectionState,
     ensureDeviceReady,
+    fromAddress,
     handleRetry,
     inE2e,
     isSendBundleFlow,

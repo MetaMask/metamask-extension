@@ -10,10 +10,15 @@ import {
 } from '@metamask/hw-wallet-sdk';
 import { HardwareWalletType } from './types';
 
+/** Extension-local hardware-wallet error codes until the SDK ships them. */
+export const HardwareWalletErrorCode = {
+  DeviceSeedMismatch: 3012 as ErrorCode,
+} as const;
+
 /**
  * Factory function to create hardware wallet errors
  *
- * @param code - The error code from ErrorCode enum
+ * @param code - The hardware wallet error code
  * @param walletType - The hardware wallet type
  * @param message - Optional custom error message
  * @param options - Optional error options
@@ -92,6 +97,35 @@ const ERROR_PROPERTIES_MAP = (() => {
 
   return map;
 })();
+
+// Set after extraction to avoid TDZ; 3011 is resolved per walletType below.
+ERROR_PROPERTIES_MAP.set(HardwareWalletErrorCode.DeviceSeedMismatch, {
+  severity: Severity.Err,
+  category: Category.DeviceState,
+  userMessage:
+    "This Ledger doesn't hold the account you're trying to use. Connect the Ledger you used to add this account and try again.",
+});
+
+const LEDGER_SEED_MISMATCH_MESSAGES = [
+  'does not belong to the connected device',
+  'doesnt match the right address', // signPersonalMessage
+  'does not match the right address', // EIP-7702
+] as const;
+
+export function isLedgerSeedMismatchMessage(message: string): boolean {
+  const normalized = message.toLowerCase();
+  return LEDGER_SEED_MISMATCH_MESSAGES.some((pattern) =>
+    normalized.includes(pattern),
+  );
+}
+
+export function isLedgerAccountPathMissingError(error: unknown): boolean {
+  return (
+    error instanceof Error &&
+    error.message.includes('Ledger:') &&
+    error.message.includes('not found')
+  );
+}
 
 /**
  * Get error properties for a code, with wallet-specific copy where needed.

@@ -110,8 +110,9 @@ export const useHardwareFooter = ({
     () => ({
       requireBlindSigning:
         currentConfirmation?.type !== TransactionType.simpleSend,
+      accountAddress: fromAddress,
     }),
-    [currentConfirmation?.type],
+    [currentConfirmation?.type, fromAddress],
   );
 
   useEffect(() => {

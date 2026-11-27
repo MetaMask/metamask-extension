@@ -6,6 +6,7 @@ import {
   Category,
 } from '@metamask/hw-wallet-sdk';
 import { KeyringControllerError } from '@metamask/keyring-controller';
+import { HardwareWalletErrorCode } from './errors';
 import { HardwareWalletType } from './types';
 import {
   isJsonRpcHardwareWalletError,
@@ -292,6 +293,49 @@ describe('rpc-error-utils', () => {
       );
 
       expect(result.code).toBe(ErrorCode.AuthenticationDeviceLocked);
+    });
+
+    it('maps Ledger seed-mismatch errors (raw, wrapped, and RPC round-trip) to 3012', () => {
+      for (const message of [
+        'Ledger: Account 0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed does not belong to the connected device',
+        'Ledger: The signature doesnt match the right address',
+        'Ledger: The EIP-7702 authorization signature does not match the right address',
+      ]) {
+        const result = toHardwareWalletError(
+          new Error(message),
+          HardwareWalletType.Ledger,
+        );
+        expect(result.code).toBe(HardwareWalletErrorCode.DeviceSeedMismatch);
+        expect(result.userMessage).toContain("doesn't hold the account");
+      }
+
+      const wrapped = new KeyringControllerError('sign operation failed', {
+        cause: new Error(
+          'Ledger: Account 0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed does not belong to the connected device',
+        ),
+      });
+      expect(
+        toHardwareWalletError(wrapped, HardwareWalletType.Ledger).code,
+      ).toBe(HardwareWalletErrorCode.DeviceSeedMismatch);
+
+      for (const code of [
+        HardwareWalletErrorCode.DeviceSeedMismatch,
+        'DeviceSeedMismatch',
+      ]) {
+        const rpc = {
+          code: -32603,
+          message: 'Hardware wallet error',
+          data: {
+            code,
+            severity: Severity.Err,
+            category: Category.DeviceState,
+            userMessage: "This Ledger doesn't hold the account",
+          },
+        };
+        expect(toHardwareWalletError(rpc, HardwareWalletType.Ledger).code).toBe(
+          3012,
+        );
+      }
     });
 
     it('preserves stack trace from JsonRpcError', () => {
