@@ -9,7 +9,6 @@ import {
 } from '@metamask/utils';
 import { MessengerClientInitFunction } from '../types';
 import {
-  EndowmentPermissions,
   ExcludedSnapEndowments,
   ExcludedSnapPermissions,
 } from '../../../../shared/constants/snaps/permissions';
@@ -96,7 +95,6 @@ export const SnapControllerInit: MessengerClientInitFunction<
   }
 
   const messengerClient = new SnapController({
-    environmentEndowmentPermissions: Object.values(EndowmentPermissions),
     excludedPermissions: {
       ...ExcludedSnapPermissions,
       ...ExcludedSnapEndowments,

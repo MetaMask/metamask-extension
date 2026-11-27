@@ -52,7 +52,7 @@ export function getSnapControllerMessenger(
     ],
     actions: [
       'AnalyticsController:trackEvent',
-      'PermissionController:getEndowments',
+      'PermissionController:getEndowmentsGlobals',
       'PermissionController:getPermissions',
       'PermissionController:hasPermission',
       'PermissionController:hasPermissions',
