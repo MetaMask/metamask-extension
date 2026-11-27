@@ -130,3 +130,32 @@ export function getCachedPercentChange({
       ?.pricePercentChange?.P1D ?? undefined
   );
 }
+
+type AssetsPricePercentEntry = {
+  assetPriceType?: string;
+  pricePercentChange1d?: number;
+};
+
+/**
+ * The fungible assets-price 1d change for one CAIP asset id.
+ *
+ * @param assetsPrice - Assets-price map keyed by CAIP-19 asset id.
+ * @param assetId - The asset to read.
+ * @returns The percent change, or `undefined` when this asset has none.
+ */
+export function readAssetsPricePercentChange1d(
+  assetsPrice: Record<string, AssetsPricePercentEntry | undefined> | undefined,
+  assetId: string | undefined,
+): number | undefined {
+  if (!assetId) {
+    return undefined;
+  }
+  const entry = assetsPrice?.[assetId];
+  if (!entry || entry.assetPriceType !== 'fungible') {
+    return undefined;
+  }
+  const change = entry.pricePercentChange1d;
+  return typeof change === 'number' && Number.isFinite(change)
+    ? change
+    : undefined;
+}

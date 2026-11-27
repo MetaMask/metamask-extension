@@ -13,10 +13,7 @@ import {
   Skeleton,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  getMultichainNativeTokenBalance,
-  selectUnifiedBalanceBySelectedAccountGroup,
-} from '../../../../selectors/assets';
+import { getMultichainNativeTokenBalance } from '../../../../selectors/assets';
 
 import {
   getEnabledNetworksByNamespace,
@@ -34,6 +31,7 @@ import { hexWEIToDecETH } from '../../../../../shared/lib/conversion.utils';
 import { TEST_CHAINS } from '../../../../../shared/constants/network';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 import { useAssetsHaveLoaded } from '../hooks/useAssetsHaveLoaded';
+import { useAccountGroupLiveTotal } from './useAccountGroupLiveTotal';
 
 export type AccountGroupBalanceProps = {
   classPrefix: string;
@@ -55,9 +53,11 @@ export const AccountGroupBalance = ({
   const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
   const { formatCurrency, formatTokenQuantity } = useFormatters();
 
-  const selectedGroupBalance = useSelector(
-    selectUnifiedBalanceBySelectedAccountGroup,
-  );
+  const {
+    total,
+    currency: liveTotalCurrency,
+    hasBalance,
+  } = useAccountGroupLiveTotal();
   const fallbackCurrency = useSelector(getCurrentCurrency);
   const anyEnabledNetworksAreAvailable = useSelector(
     selectAnyEnabledNetworksAreAvailable,
@@ -122,8 +122,6 @@ export const AccountGroupBalance = ({
     fallbackCurrency,
   ]);
 
-  const total = selectedGroupBalance?.totalBalanceInUserCurrency;
-
   let formattedNativeBalance = null;
   if (showNativeTokenAsMain || isTestnetSelected) {
     if (isEvm) {
@@ -141,8 +139,8 @@ export const AccountGroupBalance = ({
     }
   }
 
-  const currency = selectedGroupBalance
-    ? (selectedGroupBalance.userCurrency ?? fallbackCurrency)
+  const currency = hasBalance
+    ? (liveTotalCurrency ?? fallbackCurrency)
     : undefined;
 
   const formattedTotal = useMemo(() => {

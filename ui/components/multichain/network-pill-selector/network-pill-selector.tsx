@@ -30,6 +30,7 @@ import {
   getSelectableChainId,
   useHomeNetworkFilter,
 } from '../../app/assets/asset-list/asset-list-control-bar/use-home-network-filter';
+import { useAccountGroupLiveTotal } from '../../app/assets/account-group-balance/useAccountGroupLiveTotal';
 import { getHiddenPillCount } from './get-hidden-pill-count';
 import { useNetworkPillBalances } from './use-network-pill-balances';
 
@@ -157,6 +158,15 @@ export const NetworkPillSelector = () => {
   );
   const { balanceByChainId, total, currency, isLoading } =
     useNetworkPillBalances(networks);
+  const { total: overviewTotal, currency: overviewCurrency } =
+    useAccountGroupLiveTotal();
+  // The selected All networks pill shows the wallet overview total.
+  const allNetworksBalance = isAllDefaultSelected
+    ? (overviewTotal ?? total)
+    : total;
+  const allNetworksCurrency = isAllDefaultSelected
+    ? (overviewCurrency ?? currency)
+    : currency;
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [hiddenCount, setHiddenCount] = useState(0);
@@ -240,7 +250,11 @@ export const NetworkPillSelector = () => {
           name={
             hasOnlyDefaultNetworks ? t('allNetworks') : t('allDefaultNetworks')
           }
-          balance={format(total)}
+          balance={
+            allNetworksBalance === undefined
+              ? undefined
+              : formatCurrency(allNetworksBalance, allNetworksCurrency)
+          }
           isSelected={isAllDefaultSelected}
           privacyMode={privacyMode}
           icon={

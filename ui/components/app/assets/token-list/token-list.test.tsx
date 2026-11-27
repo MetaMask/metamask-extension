@@ -5,6 +5,7 @@ import {
   screen,
 } from '@testing-library/react';
 import { Provider } from 'react-redux';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { CaipChainId, Hex } from '@metamask/utils';
@@ -123,6 +124,7 @@ jest.mock('../../../../../shared/lib/selectors/preferences', () => ({
 jest.mock('../../../../selectors/multichain/networks', () => ({
   getAllEnabledNetworksForAllNamespaces: jest.fn(),
   getIsEvmMultichainNetworkSelected: jest.fn(),
+  getSelectedMultichainNetworkChainId: jest.fn(),
   getSelectedMultichainNetworkConfiguration: jest.fn(),
 }));
 
@@ -168,11 +170,16 @@ const lowValueAssetsLabel = (count: number) =>
 
 const render = () => {
   const store = configureMockStore([thunk])({});
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
 
   return renderComponent(
-    <Provider store={store}>
-      <TokenList onTokenClick={jest.fn()} />
-    </Provider>,
+    <QueryClientProvider client={queryClient}>
+      <Provider store={store}>
+        <TokenList onTokenClick={jest.fn()} />
+      </Provider>
+    </QueryClientProvider>,
   );
 };
 const createAsset = ({
@@ -657,11 +664,16 @@ describe('TokenList', () => {
         ]),
       );
 
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
     const initialStore = configureMockStore([thunk])({});
     const { rerender } = renderComponent(
-      <Provider store={initialStore}>
-        <TokenList onTokenClick={jest.fn()} />
-      </Provider>,
+      <QueryClientProvider client={queryClient}>
+        <Provider store={initialStore}>
+          <TokenList onTokenClick={jest.fn()} />
+        </Provider>
+      </QueryClientProvider>,
     );
 
     expect(screen.getByTestId('token-cell-USDC')).toBeInTheDocument();
@@ -676,9 +688,11 @@ describe('TokenList', () => {
       );
 
     rerender(
-      <Provider store={configureMockStore([thunk])({ accountSwitch: true })}>
-        <TokenList onTokenClick={jest.fn()} />
-      </Provider>,
+      <QueryClientProvider client={queryClient}>
+        <Provider store={configureMockStore([thunk])({ accountSwitch: true })}>
+          <TokenList onTokenClick={jest.fn()} />
+        </Provider>
+      </QueryClientProvider>,
     );
 
     expect(screen.getByTestId('token-cell-DAI')).toBeInTheDocument();
@@ -722,7 +736,7 @@ describe('TokenList', () => {
 
     expect(useTokenAssetSecurityResults).toHaveBeenCalledWith({
       assetIds: [
-        'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
         'eip155:1/slip44:60',
       ],
     });
@@ -754,7 +768,7 @@ describe('TokenList', () => {
     render();
 
     expect(useTokenAssetSecurityResults).toHaveBeenCalledWith({
-      assetIds: ['eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'],
+      assetIds: ['eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'],
     });
   });
 });

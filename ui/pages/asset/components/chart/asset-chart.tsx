@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import classnames from 'clsx';
 import { Hex, isCaipAssetType } from '@metamask/utils';
 import { trim } from 'lodash';
@@ -22,6 +22,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { useHistoricalPrices } from '../../hooks/useHistoricalPrices';
 import { processAssetParams } from '../../util';
+import { useOHLCVRealtime } from './useOHLCVRealtime';
 import { AssetChartBody } from './asset-chart-body';
 import AssetChartPrice from './asset-chart-price';
 
@@ -92,11 +93,14 @@ const getChartAddress = (
 const AssetChart = ({
   chainId,
   address,
+  caipAssetId,
   currentPrice,
   currency,
 }: {
   chainId: Hex;
   address: string;
+  /** CAIP-19 id used to read the OHLCV close for the header price. */
+  caipAssetId?: string;
   currentPrice?: number;
   currency: string;
 }) => {
@@ -105,6 +109,13 @@ const AssetChart = ({
   const [selectedTimeRange, setSelectedTimeRange] = useState<string>(
     TIME_RANGES[0],
   );
+  const { latestBar } = useOHLCVRealtime({
+    assetId: caipAssetId,
+    interval: '1m',
+    currency: currency.toLowerCase(),
+    enabled: Boolean(caipAssetId),
+  });
+  const headerPrice = latestBar?.close ?? currentPrice;
 
   const {
     loading,
@@ -123,24 +134,18 @@ const AssetChart = ({
   const shouldShowChartEmptyState = !loading && prices.length === 0;
 
   const priceRef = useRef<{
-    setPrice: (_: { price?: number; date?: number }) => void;
+    setPrice: (_: { price?: number; date?: number; hovered?: boolean }) => void;
   }>();
-
-  // Init the price ref with the current price
-  useEffect(() => {
-    priceRef?.current?.setPrice({
-      price: currentPrice,
-      date: Date.now(),
-    });
-  }, [currentPrice]);
 
   return (
     <Box className="flex rounded-lg" flexDirection={BoxFlexDirection.Column}>
       <AssetChartPrice
         ref={priceRef}
-        loading={loading || isPlaceholderData}
+        // The header price and resting 1d change do not depend on the
+        // historical series, so a range change must not skeleton them.
+        loading={(loading || isPlaceholderData) && headerPrice === undefined}
         currency={currency}
-        price={currentPrice}
+        price={headerPrice}
         date={Date.now()}
         comparePrice={
           isPlaceholderData || shouldShowChartEmptyState
@@ -159,7 +164,9 @@ const AssetChart = ({
         currentPrice={currentPrice}
         onHoverPrice={(point) =>
           priceRef?.current?.setPrice(
-            point ?? { price: currentPrice, date: Date.now() },
+            point
+              ? { ...point, hovered: true }
+              : { price: headerPrice, date: Date.now(), hovered: false },
           )
         }
       >

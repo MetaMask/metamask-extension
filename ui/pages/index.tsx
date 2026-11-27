@@ -17,6 +17,7 @@ import { MetamaskIdentityProvider } from '../contexts/identity';
 import { ShieldSubscriptionProvider } from '../contexts/shield/shield-subscription';
 import RiveWasmProvider from '../contexts/rive-wasm';
 import { queryClient } from '../contexts/query-client';
+import { MarketStatsBridge } from '../hooks/assets/MarketStatsBridge';
 import RampsBootstrap from '../hooks/ramps/RampsBootstrap';
 import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets';
 import { UIMessengerProvider } from '../contexts/ui-messenger';
@@ -47,6 +48,7 @@ const AppProviders = () => {
       <I18nProvider>
         <QueryClientProvider client={queryClient}>
           <RampsBootstrap />
+          <MarketStatsBridge />
           <AssetPollingProvider>
             <MetamaskIdentityProvider>
               <MetamaskNotificationsProvider>

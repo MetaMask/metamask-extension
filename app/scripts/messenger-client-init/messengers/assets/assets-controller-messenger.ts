@@ -43,6 +43,10 @@ export const ASSETS_CONTROLLER_DELEGATED_ACTIONS = [
   'AuthenticatedUserStorageService:setUserAssets',
   'AuthenticatedUserStorageService:importTokens',
   'AuthenticatedUserStorageService:hideTokens',
+  'MarketStatsService:subscribe',
+  'MarketStatsService:unsubscribe',
+  'MarketStatsService:getSubscriptions',
+  'MarketStatsService:getChainStatuses',
 ] as const;
 
 /**

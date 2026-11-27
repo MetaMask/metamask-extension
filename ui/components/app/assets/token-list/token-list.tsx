@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { type CaipAssetType } from '@metamask/utils';
 import { useHomeReady } from '../../../../pages/home/home-performance';
 import { getSelectedAccountGroup } from '../../../../selectors/multichain-accounts/account-tree';
-import TokenCell from '../token-cell';
+import TokenCell, { type TokenCellProps } from '../token-cell';
 import { ASSET_CELL_HEIGHT } from '../constants';
 import { SafeChain } from '../../../multichain/networks-form/use-safe-chains';
 import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
@@ -14,6 +14,7 @@ import {
   type TokenListDisplayItem,
   useTokenListData,
 } from '../hooks/useTokenListData';
+import { useLiveToken } from '../hooks/useLiveToken';
 import { LowValueAssetsToggle } from './low-value-assets-toggle';
 import { TokenListLoadingSkeleton } from './token-list-loading-skeleton';
 
@@ -25,6 +26,15 @@ type TokenListProps = {
   ) => void;
   safeChains?: SafeChain[];
 };
+
+/**
+ * A token cell that reads its own streamed quote, so a tick re-renders this row
+ * and not the list.
+ */
+const LiveTokenCell = React.memo((props: TokenCellProps) => {
+  const token = useLiveToken(props.token);
+  return <TokenCell {...props} token={token} />;
+});
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -61,7 +71,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       const { token } = item;
 
       return (
-        <TokenCell
+        <LiveTokenCell
           token={token}
           privacyMode={privacyMode}
           onClick={getTokenClickHandler(token)}

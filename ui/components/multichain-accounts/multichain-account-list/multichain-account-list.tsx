@@ -86,6 +86,7 @@ import { useDispatch } from '../../../store/hooks';
 import { useDisconnectAccountGroup } from '../../../hooks/useDisconnectAccountGroup';
 import { useTrackAccountHidden } from '../hooks/useTrackAccountHidden';
 import { useTrackAccountRemoved } from '../hooks/useTrackAccountRemoved';
+import { useLiveAccountGroupFiatAdjustments } from './useLiveAccountGroupFiatAdjustments';
 
 export type MultichainAccountListProps = {
   wallets: AccountTreeWallets;
@@ -233,6 +234,7 @@ export const MultichainAccountList = ({
   );
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const allBalances = useSelector(selectBalanceForAllWallets);
+  const liveAdjustments = useLiveAccountGroupFiatAdjustments();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const { privacyMode } = useSelector(getPreferences);
   const internalAccountsById = useSelector(getInternalAccountsObject);
@@ -512,7 +514,7 @@ export const MultichainAccountList = ({
       const balance =
         groupBalance &&
         formatCurrencyWithMinThreshold(
-          groupBalance.amount,
+          groupBalance.amount + (liveAdjustments.get(groupId) ?? 0),
           groupBalance.currency,
         );
 
@@ -635,6 +637,7 @@ export const MultichainAccountList = ({
     },
     [
       allBalances,
+      liveAdjustments,
       formatCurrencyWithMinThreshold,
       connectedAccountGroups,
       showConnectionStatus,

@@ -37,6 +37,7 @@ import {
   type TokenListDisplayItem,
   useTokenListData,
 } from '../hooks/useTokenListData';
+import { useLiveToken } from '../hooks/useLiveToken';
 import { useTokenSortOverride } from '../hooks/useTokenSortOverride';
 import type {
   TokenTableHeaderSort,
@@ -214,12 +215,14 @@ const TokenTableHeader = ({
 };
 
 const TokenTableRow = ({
-  token,
+  token: polledToken,
   privacyMode,
   onClick,
   safeChains,
   moneyCta,
 }: TokenTableRowProps) => {
+  // Reads only this row's streamed quote, so a tick leaves the table alone.
+  const token = useLiveToken(polledToken);
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
   const tokenDisplayInfo = useTokenDisplayInfo({ token });
   const displayToken = useMemo(
