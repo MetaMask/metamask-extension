@@ -107,7 +107,7 @@ skipped via rule #6:
 | Config files           | `.eslint*`, `.prettierrc*`, `codecov.yml`, `stylelint.config.js`, etc.                    |
 | Dev tools              | `development/{attributions,fitness-functions,lint-*,ts-migration-dashboard}/**`           |
 | CI/GitHub              | `.github/**` (with build-affecting exception below)                                       |
-| Editor/Agent           | `.agents/**`, `.claude/**`, `.cursor/**`, `.vscode/**`, `.storybook/**`                   |
+| Editor/Agent           | `.agents/**`, `.claude/**`, `.cursor/**`, `.vscode/**`                                    |
 
 ### Exception: build-affecting CI files
 
@@ -119,13 +119,12 @@ all other files are non-E2E-related.
 
 ## Other test types
 
-The same 2×2 matrix pattern applies to unit/integration and storybook tests:
+The same 2×2 matrix pattern applies to unit/integration tests and benchmarks:
 
-| Test type          | Skip when                                                            | Filter                                         |
-| ------------------ | -------------------------------------------------------------------- | ---------------------------------------------- |
-| Unit & integration | Builds from base branch AND no `unit_integration_test_files` changed | `**/*.test.*`, `jest.config.js`, etc.          |
-| Storybook          | Builds from base branch AND no `storybook_files` changed             | `**/*.stories.*`, `.storybook/**`, `**/*.snap` |
-| Benchmarks         | Any build reuse (same or base branch)                                | N/A — identical builds = identical perf        |
+| Test type          | Skip when                                                            | Filter                                  |
+| ------------------ | -------------------------------------------------------------------- | --------------------------------------- |
+| Unit & integration | Builds from base branch AND no `unit_integration_test_files` changed | `**/*.test.*`, `jest.config.js`, etc.   |
+| Benchmarks         | Any build reuse (same or base branch)                                | N/A — identical builds = identical perf |
 
 ---
 

@@ -273,7 +273,11 @@ function failIfDisallowedCircularDepsFound(tree: MadgeInstance): void {
     cycle.some((dep) => !micromatch.some(dep, allowedCircularGlob)),
   );
 
-  const { skipped } = tree.warnings();
+  // TEMPORARY: dead Storybook stories still import Storybook-only modules that
+  // no longer exist. Removed by the final cleanup PR once the stories are gone.
+  const skipped = tree
+    .warnings()
+    .skipped.filter((module) => !/storybook|(^|\/)story-state$/u.test(module));
   if (!maybeLogErrors(disallowedCycles, skipped)) {
     process.exit(1);
   }

@@ -16,8 +16,6 @@ import { RESIZE } from './textarea.constants';
 /**
  * @deprecated `<TextArea />` has been deprecated in favor of the `<Textarea />`
  * component in ./ui/components/component-library/textarea/textarea.tsx.
- * See storybook documentation for BannerAlert here:
- * {@see {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-textarea--default-story#textarea}}
  *
  * Help to replace `<TextArea />` with `<Textarea />` by submitting a PR
  */

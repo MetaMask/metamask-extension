@@ -42,8 +42,7 @@ async function main(): Promise<void> {
     .sort()
     .filter((filePath) => {
       return (
-        /\.(?:js|tsx?)$/u.test(filePath) &&
-        !/^(?:\.storybook|node_modules)\//u.test(filePath)
+        /\.(?:js|tsx?)$/u.test(filePath) && !/^node_modules\//u.test(filePath)
       );
     });
 

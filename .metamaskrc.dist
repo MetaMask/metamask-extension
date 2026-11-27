@@ -39,10 +39,6 @@ PASSKEY_ENABLED='false'
 ; chart-origin server when it isn't.
 ;CHART_ORIGIN_URL='http://localhost:8001'
 
-; This variable is not required but it's necessary for the storybook
-; to render stories that use onchain data.
-INFURA_STORYBOOK_PROJECT_ID=
-
 ;PASSWORD=METAMASK PASSWORD
 ;SEGMENT_WRITE_KEY=
 ; Override the Bridge API base URL (e.g. to point at a local server or a

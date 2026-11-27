@@ -16,8 +16,6 @@ import { Text } from '../../component-library';
 /**
  * @deprecated The `<FormField />` component has been deprecated in favor of the new `<FormTextField>` component from the component-library.
  * Please update your code to use the new `<FormTextField>` component instead, which can be found at ui/components/component-library/form-text-field/form-text-field.js.
- * You can find documentation for the new FormTextField component in the MetaMask Storybook:
- * {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-formtextfield--docs}
  * If you would like to help with the replacement of the old FormField component, please submit a pull request against this GitHub issue:
  * {@link https://github.com/MetaMask/metamask-extension/issues/19737}
  */

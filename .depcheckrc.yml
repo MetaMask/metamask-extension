@@ -59,22 +59,11 @@ ignores:
   - 'mocha-junit-reporter'
   - 'prettier-plugin-sort-json' # automatically imported by prettier
   - 'playwright'
-  - 'wait-on'
   - 'tsx' # used in .devcontainer
   - 'tweetnacl' # used by solana-wallet-standard
   - 'bs58' # used by solana-wallet-standard
   - '@metamask/design-system-shared' # scanned by Tailwind JIT to generate utility classes; dev dependency not imported directly
-  # storybook
-  - '@storybook/cli'
-  - '@storybook/core'
-  - '@storybook/addon-essentials'
-  - '@storybook/addon-a11y'
-  - '@storybook/addon-docs'
-  - '@storybook/builder-webpack5'
-  - '@storybook/manager-webpack5'
-  - '@storybook/react-webpack5'
-  - 'react-syntax-highlighter'
-  - 'style-loader'
+  - 'stream-browserify' # resolved by name via resolvePackage() in development/webpack/webpack.config.ts, which depcheck cannot detect
   - 'css-loader'
   - 'sass-loader'
   - 'resolve-url-loader'
@@ -129,6 +118,9 @@ ignores:
 
 # files depcheck should not parse
 ignorePatterns:
+  # TEMPORARY: dead Storybook stories import packages that are no longer
+  # installed; removed by the final cleanup PR once the stories are deleted.
+  - '**/*.stories.*'
   # seems to incorrectly parse scss @include pragmas?
   - '**/*.scss'
   # self-contained bundle used for testing

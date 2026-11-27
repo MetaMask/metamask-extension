@@ -77,7 +77,6 @@ editor_and_agent_files: &editor_and_agent_files
   - '.cursor/**'
   - '.devcontainer/**'
   - '.husky/**'
-  - '.storybook/**'
   - '.vscode/**'
 
 # NON-E2E FILES — union of all file types that, when a PR touches ONLY
@@ -89,12 +88,6 @@ non_e2e_related_files:
   - *dev_tools
   - *ci_files
   - *editor_and_agent_files
-
-# Storybook files — stories, config, and snapshots that affect storybook tests
-storybook_files:
-  - '**/*.stories.*'
-  - '**/*.snap'
-  - '.storybook/**'
 
 # E2E test files and runtime inputs — changes require running E2E even when builds are reused
 e2e_test_files:

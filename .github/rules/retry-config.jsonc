@@ -33,7 +33,6 @@
         "^build-",
         "^Build lavamoat",
         "^Build source map",
-        "^Build storybook",
         "^Build ts migration",
         "^bundle-size",
         "^Get workflow",
@@ -46,7 +45,6 @@
         "^sonarcloud",
         "^store-benchmark-stats",
         "^Test lint$",
-        "^Test storybook",
         "^Trigger Regression",
         "^validate-lavamoat-policies"
       ]
@@ -139,7 +137,6 @@
     "ERR_PACKAGE_PATH_NOT_EXPORTED", // Node.js subpath export not defined in package.json (dependency misconfiguration)
     "Error in plugin \"sass\"", // Sass compilation error (invalid SCSS syntax)
     "Error occurred when checking code style", // oxfmt parse error checking formatting
-    "Failed to build the preview", // Storybook: Webpack compilation error building story preview
     "Format issues found in above \\d+ files", // Prettier or oxfmt --check: files need reformatting
     "I18nProvider: Support for defaultProps", // Unit console baseline check: React defaultProps warning count changed
     "Invalid code fence parameters", // build: malformed code fence in source (BEGIN:, END:)
@@ -153,7 +150,6 @@
     "Not a valid commit name", // git can't resolve a commit SHA (shallow clone, force-pushed, or pruned ref)
     "packageManager.*current global version", // Corepack not enabled: workflow uses wrong Yarn version (needs corepack enable)
     "Post comment failed with status '(Forbidden|Unauthorized)'", // Publish prerelease: GitHub comment denied because issue is locked or token lacks permission
-    "Protected branch update failed for refs/heads/", // Storybook deploy: target branch requires a PR and rejects force pushes
     "ReferenceError:", // JS runtime error: undefined variable or function
     "runInChildProcess for task .* encountered an error", // Browserify build: a build sub-task crashed
     "shellcheck reported issue", // actionlint/shellcheck: shell script issues in workflow YAML

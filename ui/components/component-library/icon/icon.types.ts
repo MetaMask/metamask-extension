@@ -22,10 +22,6 @@ export enum IconSize {
 /**
  * The IconName enum contains all the possible icon names.
  *
- * Search for an icon: https://metamask.github.io/metamask-storybook/?path=/story/components-componentlibrary-icon--default-story
- *
- * Add an icon: https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-icon--default-story#adding-a-new-icon
- *
  * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
  */
 
@@ -123,7 +119,6 @@ export enum IconName {
 export interface IconStyleUtilityProps extends StyleUtilityProps {
   /**
    * The name of the icon to display. Use the IconName enum
-   * Search for an icon: https://metamask.github.io/metamask-storybook/?path=/story/components-componentlibrary-icon--default-story
    */
   name: IconName;
   /**
