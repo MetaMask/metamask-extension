@@ -21,6 +21,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
+import { useAccountGroupLiveTotal } from '#ui/hooks/assets/use-account-group-live-total';
 import { getNetworkIcon } from '../../../../shared/lib/network.utils';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { getChainIdToNetworkImageUrlMap } from '../../../selectors/config-registry/config-registry';
@@ -30,7 +31,6 @@ import {
   getSelectableChainId,
   useHomeNetworkFilter,
 } from '../../app/assets/asset-list/asset-list-control-bar/use-home-network-filter';
-import { useAccountGroupLiveTotal } from '../../app/assets/account-group-balance/useAccountGroupLiveTotal';
 import { getHiddenPillCount } from './get-hidden-pill-count';
 import { useNetworkPillBalances } from './use-network-pill-balances';
 

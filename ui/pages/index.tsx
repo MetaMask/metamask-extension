@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
 import type { Store } from 'redux';
+import { MarketStatsBridge } from '#ui/hooks/assets/market-stats-bridge';
 import { captureException } from '../../shared/lib/sentry';
 import { I18nProvider } from '../contexts/i18n';
 import { MetaMetricsProvider } from '../contexts/metametrics';
@@ -17,7 +18,6 @@ import { MetamaskIdentityProvider } from '../contexts/identity';
 import { ShieldSubscriptionProvider } from '../contexts/shield/shield-subscription';
 import RiveWasmProvider from '../contexts/rive-wasm';
 import { queryClient } from '../contexts/query-client';
-import { MarketStatsBridge } from '../hooks/assets/MarketStatsBridge';
 import RampsBootstrap from '../hooks/ramps/RampsBootstrap';
 import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets';
 import { UIMessengerProvider } from '../contexts/ui-messenger';

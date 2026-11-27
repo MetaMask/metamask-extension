@@ -1,10 +1,10 @@
 import { useCallback, useMemo } from 'react';
+import type { TokenWithFiatAmount } from '#ui/components/app/assets/types';
 import {
   applyLiveTokenFiat,
   readLiveQuotes,
   useMarketStats,
-} from '../../../../hooks/assets/market-stats';
-import type { TokenWithFiatAmount } from '../types';
+} from './market-stats';
 
 /**
  * Applies the streamed quote of one token to its row.

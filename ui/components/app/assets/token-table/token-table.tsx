@@ -13,6 +13,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import type { CaipAssetType } from '@metamask/utils';
+import { useLiveToken } from '#ui/hooks/assets/use-live-token';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -37,7 +38,6 @@ import {
   type TokenListDisplayItem,
   useTokenListData,
 } from '../hooks/useTokenListData';
-import { useLiveToken } from '../hooks/useLiveToken';
 import { useTokenSortOverride } from '../hooks/useTokenSortOverride';
 import type {
   TokenTableHeaderSort,

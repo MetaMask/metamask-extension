@@ -86,7 +86,7 @@ import { useDispatch } from '../../../store/hooks';
 import { useDisconnectAccountGroup } from '../../../hooks/useDisconnectAccountGroup';
 import { useTrackAccountHidden } from '../hooks/useTrackAccountHidden';
 import { useTrackAccountRemoved } from '../hooks/useTrackAccountRemoved';
-import { useLiveAccountGroupFiatAdjustments } from './useLiveAccountGroupFiatAdjustments';
+import { useLiveAccountGroupFiatAdjustments } from './use-live-account-group-fiat-adjustments';
 
 export type MultichainAccountListProps = {
   wallets: AccountTreeWallets;

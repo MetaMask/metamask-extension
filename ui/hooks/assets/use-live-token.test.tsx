@@ -2,8 +2,9 @@ import React, { type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { marketStatsQueryKey, type LiveQuote } from '@metamask/core-backend';
-import type { TokenWithFiatAmount } from '../types';
-import { useLiveToken } from './useLiveToken';
+import type { TokenWithFiatAmount } from '#ui/components/app/assets/types';
+
+import { useLiveToken } from './use-live-token';
 
 jest.mock('react-redux', () => ({
   useSelector: (
@@ -36,6 +37,10 @@ function setup() {
 }
 
 describe('useLiveToken', () => {
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   it('returns the row as given before a quote arrives', () => {
     const { wrapper } = setup();
 
@@ -60,12 +65,13 @@ describe('useLiveToken', () => {
   });
 
   it('keeps the row when a tick is for another asset', async () => {
+    jest.useFakeTimers();
     const { wrapper, tick } = setup();
     const { result } = renderHook(() => useLiveToken(token), { wrapper });
 
     tick([[POL, { price: 1 }]]);
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await jest.runOnlyPendingTimersAsync();
     });
 
     expect(result.current).toBe(token);

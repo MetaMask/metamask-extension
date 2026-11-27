@@ -15,6 +15,7 @@ import {
 } from '#shared/lib/asset-utils';
 import { useLowValueTokenPartition } from '#ui/components/app/assets/hooks/useLowValueTokenPartition';
 import { useCoordinatedTrace } from '#ui/hooks/useTraceCoordinator';
+import { assetToCaipId } from '#shared/lib/asset-utils';
 import {
   getShouldHideZeroBalanceTokens,
   getTokenSortConfig,
@@ -49,7 +50,7 @@ import { isMusdToken } from '../../musd/constants';
 import { isZeroAmount } from '../../../../helpers/utils/number-utils';
 import { useBoolean } from '../../../../hooks/useBoolean';
 import { useRWAToken } from '../../../../pages/bridge/hooks/useRWAToken';
-import { toCaipAssetId } from '../util/to-caip-asset-id';
+
 import { useAssetsHaveLoaded } from './useAssetsHaveLoaded';
 
 export type TokenListDisplayItem =
@@ -181,7 +182,7 @@ export function useTokenListData({
             address:
               'address' in asset ? asset.address : (asset.assetId as Hex),
             chainId: asset.chainId as Hex,
-            caipAssetId: toCaipAssetId(asset),
+            caipAssetId: assetToCaipId(asset),
           };
 
           return token;

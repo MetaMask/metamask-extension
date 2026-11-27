@@ -50,6 +50,10 @@ describe('useMarketStats', () => {
     };
   }
 
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   it('keeps delivering ticks after a subscribe, release, and subscribe', async () => {
     const callbacks: ((payload: unknown) => void)[] = [];
     const offs: jest.Mock[] = [];
@@ -190,6 +194,7 @@ describe('useMarketStats', () => {
   });
 
   it('keeps the list when a tick is for another asset', async () => {
+    jest.useFakeTimers();
     const callbacks: ((payload: unknown) => void)[] = [];
     subscribeToMessengerEventMock.mockImplementation((_event, callback) => {
       callbacks.push(callback as (payload: unknown) => void);
@@ -221,7 +226,7 @@ describe('useMarketStats', () => {
       callbacks[0]?.([
         { updates: [{ assetId: other, currency: 'usd', price: 99 }] },
       ]);
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await jest.runOnlyPendingTimersAsync();
     });
 
     expect(result.current).toBe(quotes);

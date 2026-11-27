@@ -2,7 +2,7 @@ import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render } from '@testing-library/react';
 import { subscribeToMessengerEvent } from '../../store/background-connection';
-import { MarketStatsBridge } from './MarketStatsBridge';
+import { MarketStatsBridge } from './market-stats-bridge';
 
 jest.mock('react-redux', () => ({
   useSelector: (

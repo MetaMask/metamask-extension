@@ -1,11 +1,11 @@
 import React from 'react';
 import { act, fireEvent, screen } from '@testing-library/react';
 import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
+import { useAccountGroupLiveTotal } from '#ui/hooks/assets/use-account-group-live-total';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { useHomeNetworkFilter } from '../../app/assets/asset-list/asset-list-control-bar/use-home-network-filter';
-import { useAccountGroupLiveTotal } from '../../app/assets/account-group-balance/useAccountGroupLiveTotal';
 import { useNetworkPillBalances } from './use-network-pill-balances';
 import { NetworkPillSelector } from './network-pill-selector';
 

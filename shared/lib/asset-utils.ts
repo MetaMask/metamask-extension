@@ -121,6 +121,51 @@ export const getNativeAssetId = (
   }
 };
 
+/**
+ * Extract CAIP-19 asset id from an Asset row, matching the key live prices are stored under.
+ *
+ * @param asset - Asset row from the account group list.
+ * @param asset.assetId - The asset's CAIP-19 id if already in CAIP format.
+ * @param asset.chainId - The chain id (CAIP or Hex).
+ * @param asset.isNative - Whether this is a native asset.
+ * @param asset.address - The asset's address if EVM.
+ * @param asset.balance - Asset balance (unused, present on asset rows).
+ * @param asset.fiat - Fiat information (unused, present on asset rows).
+ * @param asset.fiat.balance - Fiat balance (unused, present on asset rows).
+ * @returns The row's CAIP-19 id, or undefined when the row has no asset id.
+ */
+export const assetToCaipId = (asset: {
+  assetId?: string;
+  chainId: string;
+  isNative?: boolean;
+  address?: string;
+  balance?: string;
+  fiat?: { balance?: number };
+}): CaipAssetType | undefined => {
+  const { assetId, chainId, isNative } = asset;
+
+  if (assetId && isCaipAssetType(assetId)) {
+    return assetId;
+  }
+
+  if (isNative) {
+    if (isCaipChainId(chainId)) {
+      return getNativeAssetId(chainId);
+    }
+    if (isStrictHexString(chainId)) {
+      return getNativeAssetId(chainId);
+    }
+    return undefined;
+  }
+
+  const evmAddress = 'address' in asset ? asset.address : assetId;
+  if (evmAddress && isStrictHexString(chainId)) {
+    return toAssetId(evmAddress, chainId);
+  }
+
+  return undefined;
+};
+
 export const isNativeCaipAssetId = (assetId: CaipAssetType) => {
   try {
     return (

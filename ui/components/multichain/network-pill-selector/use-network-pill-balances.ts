@@ -1,22 +1,22 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { parseCaipChainId } from '@metamask/utils';
 import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import type { Asset } from '@metamask/assets-controllers';
+import type { LivePriceMap } from '@metamask/core-backend';
+
 import {
   getAssetsBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
   selectAccountGroupBalanceIsLoadedForEmptyState,
   selectUnifiedBalanceGetterBySelectedAccountGroup,
-} from '../../../selectors/assets';
-import {
-  liveFiatDelta,
-  useMarketStats,
-} from '../../../hooks/assets/market-stats';
+} from '#ui/selectors/assets';
+import { liveFiatDelta, useMarketStats } from '#ui/hooks/assets/market-stats';
+import { assetToCaipId } from '#shared/lib/asset-utils';
+
 import { useAccountGroupBalanceDisplay } from '../../app/assets/account-group-balance-change/useAccountGroupBalanceDisplay';
 import { getSelectableChainId } from '../../app/assets/asset-list/asset-list-control-bar/use-home-network-filter';
 import { useAssetsHaveLoaded } from '../../app/assets/hooks/useAssetsHaveLoaded';
-import { toCaipAssetId } from '../../app/assets/util/to-caip-asset-id';
 
 type EnabledNetworkMap = Record<string, Record<string, boolean>>;
 
@@ -57,23 +57,36 @@ export const useNetworkPillBalances = (
   const assetsHaveLoaded = useAssetsHaveLoaded();
   const { isLoading: balanceIsLoading } = useAccountGroupBalanceDisplay('1d');
   const assetsByChain = useSelector(getAssetsBySelectedAccountGroup);
-  const livePrices = useMarketStats();
 
   // Same check the wallet overview uses to show its loading state.
   const isLoading =
     !hasBalance && (balanceIsLoading || !balanceIsLoaded || !assetsHaveLoaded);
 
-  return useMemo(() => {
-    const getLiveDelta = (network: MultichainNetworkConfiguration) =>
-      liveFiatDelta(
-        (assetsByChain?.[getSelectableChainId(network)] ?? []) as Asset[],
-        livePrices,
-        toCaipAssetId,
-      );
+  const selectDeltas = useCallback(
+    (quotes: LivePriceMap) => {
+      const allAssets: Asset[] = Object.values(assetsByChain ?? {}).flat();
 
+      const networkDeltas = new Map<string, number>();
+      networks.forEach((network) => {
+        const networkAssets: Asset[] =
+          assetsByChain?.[getSelectableChainId(network)] ?? [];
+        const delta = liveFiatDelta(networkAssets, quotes, assetToCaipId);
+        networkDeltas.set(network.chainId, delta);
+      });
+
+      const totalDelta = liveFiatDelta(allAssets, quotes, assetToCaipId);
+
+      return { networkDeltas, totalDelta };
+    },
+    [assetsByChain, networks],
+  );
+
+  const { networkDeltas, totalDelta } = useMarketStats(selectDeltas);
+
+  return useMemo(() => {
     const balanceByChainId: Record<string, number | undefined> = {};
     networks.forEach((network) => {
-      const delta = getLiveDelta(network);
+      const delta = networkDeltas.get(network.chainId) ?? 0;
       const polled = isLoading
         ? undefined
         : getBalance(toEnabledNetworkMap([network]))
@@ -84,13 +97,6 @@ export const useNetworkPillBalances = (
 
     const total = getBalance(toEnabledNetworkMap(networks));
     const polledTotal = total?.totalBalanceInUserCurrency;
-    // Same streamed-price adjustment as the wallet overview: every asset row,
-    // including chains that are not one of these network pills.
-    const totalDelta = liveFiatDelta(
-      Object.values(assetsByChain ?? {}).flat() as Asset[],
-      livePrices,
-      toCaipAssetId,
-    );
 
     return {
       balanceByChainId,
@@ -101,5 +107,5 @@ export const useNetworkPillBalances = (
       currency: total?.userCurrency,
       isLoading,
     };
-  }, [assetsByChain, getBalance, isLoading, livePrices, networks]);
+  }, [getBalance, isLoading, networkDeltas, networks, totalDelta]);
 };

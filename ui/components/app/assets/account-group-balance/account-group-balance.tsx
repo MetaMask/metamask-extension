@@ -13,6 +13,7 @@ import {
   Skeleton,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useAccountGroupLiveTotal } from '#ui/hooks/assets/use-account-group-live-total';
 import { getMultichainNativeTokenBalance } from '../../../../selectors/assets';
 
 import {
@@ -31,7 +32,6 @@ import { hexWEIToDecETH } from '../../../../../shared/lib/conversion.utils';
 import { TEST_CHAINS } from '../../../../../shared/constants/network';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 import { useAssetsHaveLoaded } from '../hooks/useAssetsHaveLoaded';
-import { useAccountGroupLiveTotal } from './useAccountGroupLiveTotal';
 
 export type AccountGroupBalanceProps = {
   classPrefix: string;

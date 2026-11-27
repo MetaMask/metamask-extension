@@ -53,9 +53,12 @@ const mockState = ({
   jest.mocked(useAccountGroupBalanceDisplay).mockReturnValue({
     isLoading: isNetworkLoading,
   } as ReturnType<typeof useAccountGroupBalanceDisplay>);
-  jest
-    .mocked(useMarketStats)
-    .mockReturnValue(livePrices as ReturnType<typeof useMarketStats>);
+  jest.mocked(useMarketStats).mockImplementation((select?: unknown) => {
+    if (select && typeof select === 'function') {
+      return select(livePrices);
+    }
+    return livePrices;
+  });
   jest.mocked(useSelector).mockImplementation((selector: unknown) => {
     const values = new Map<unknown, unknown>([
       [selectUnifiedBalanceGetterBySelectedAccountGroup, getBalance],

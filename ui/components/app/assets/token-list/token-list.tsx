@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { type CaipAssetType } from '@metamask/utils';
+import { useLiveToken } from '#ui/hooks/assets/use-live-token';
 import { useHomeReady } from '../../../../pages/home/home-performance';
 import { getSelectedAccountGroup } from '../../../../selectors/multichain-accounts/account-tree';
 import TokenCell, { type TokenCellProps } from '../token-cell';
@@ -14,7 +15,6 @@ import {
   type TokenListDisplayItem,
   useTokenListData,
 } from '../hooks/useTokenListData';
-import { useLiveToken } from '../hooks/useLiveToken';
 import { LowValueAssetsToggle } from './low-value-assets-toggle';
 import { TokenListLoadingSkeleton } from './token-list-loading-skeleton';
 
