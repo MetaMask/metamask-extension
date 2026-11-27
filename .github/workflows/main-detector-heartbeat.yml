@@ -3,6 +3,8 @@ name: Main detector heartbeat
 # Once a day, checks that every Main run on main that finished a few hours ago
 # got a detector run, and posts to Slack only when one did not start or
 # failed. A day with no Main runs (weekends, holidays) is not a problem.
+# Also checks that the scheduled throttled, drift and calibration runs due in
+# the window started and succeeded.
 # See .github/scripts/main-detector/README.md.
 
 on:

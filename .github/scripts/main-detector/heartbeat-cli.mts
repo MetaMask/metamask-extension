@@ -11,9 +11,12 @@ import { parseArgs } from 'node:util';
 import { ghApi } from '../shared/gh-api.mts';
 import {
   assessHealth,
+  assessSchedule,
   buildHeartbeatMessage,
   latestSlot,
+  scheduledDue,
   type RunInfo,
+  type ScheduledKind,
 } from './heartbeat.mts';
 import { postOrPrint, requireSlackInCi } from './post-slack.mts';
 
@@ -21,7 +24,11 @@ const REPOSITORY =
   process.env.GITHUB_REPOSITORY ?? 'MetaMask/metamask-extension';
 const HOUR_MS = 60 * 60 * 1000;
 
-type ListedRun = RunInfo & { title: string; finishedAt: string };
+type ListedRun = RunInfo & {
+  title: string;
+  createdAt: string;
+  finishedAt: string;
+};
 
 function listRuns(
   workflow: string,
@@ -33,7 +40,7 @@ function listRuns(
     `repos/${REPOSITORY}/actions/workflows/${workflow}/runs?per_page=100&created=${created}${filters}`,
     {
       paginate: true,
-      jq: '.workflow_runs[] | {sha: .head_sha, title: .display_title, conclusion, url: .html_url, finishedAt: .updated_at}',
+      jq: '.workflow_runs[] | {sha: .head_sha, title: .display_title, conclusion, url: .html_url, createdAt: .created_at, finishedAt: .updated_at}',
     },
   );
   return output
@@ -76,8 +83,21 @@ async function main(): Promise<void> {
     // Positive controls and canaries say nothing about whether the commit was checked.
     .filter((run) => run.sha !== '' && !/\((aa|inject)\)/u.test(run.title));
 
-  const health = assessHealth(mainRuns, detectorRuns);
-  const line = `Main finished ${health.expected} commit(s) between ${new Date(from).toISOString()} and ${new Date(to).toISOString()}: ${health.missing.length} without a detector run, ${health.failed.length} with only failed runs (${health.status}).`;
+  // Scheduled runs are named after their kind, not a commit.
+  const scheduledRuns = listRuns(
+    'main-detector.yml',
+    new Date(from),
+    '&event=schedule',
+  )
+    .filter((run) => Date.parse(run.createdAt) < to)
+    .flatMap((run) => {
+      const kind = run.title.match(/\((throttled|drift|calibration)\)/u)?.[1];
+      return kind ? [{ ...run, kind: kind as ScheduledKind }] : [];
+    });
+  const schedule = assessSchedule(scheduledDue(from, to), scheduledRuns);
+
+  const health = assessHealth(mainRuns, detectorRuns, schedule);
+  const line = `Main finished ${health.expected} commit(s) between ${new Date(from).toISOString()} and ${new Date(to).toISOString()}: ${health.missing.length} without a detector run, ${health.failed.length} with only failed runs; scheduled runs: ${health.scheduleMissing.length} not started, ${health.scheduleFailed.length} failed (${health.status}).`;
   console.log(line);
   if (process.env.GITHUB_STEP_SUMMARY) {
     appendFileSync(

@@ -16,7 +16,78 @@ export type Health = {
   missing: RunInfo[];
   // Commits whose detector runs all ended without success.
   failed: RunInfo[];
+  // Scheduled runs due in the window that did not start.
+  scheduleMissing: string[];
+  // Scheduled runs that ended without success.
+  scheduleFailed: ScheduledRun[];
 };
+
+export type ScheduledRun = {
+  kind: ScheduledKind;
+  conclusion: string | null;
+  url: string;
+};
+
+export type ScheduledKind = 'throttled' | 'drift' | 'calibration';
+
+// Keep in step with the crons in main-detector.yml: [kind, UTC weekday or null for daily, UTC hour].
+const SCHEDULES: [ScheduledKind, number | null, number][] = [
+  ['throttled', null, 7],
+  ['drift', 1, 8],
+  ['calibration', 1, 9],
+];
+
+/**
+ * The scheduled runs whose start time falls in [from, to).
+ *
+ * @param from - Window start, milliseconds since the epoch.
+ * @param to - Window end, milliseconds since the epoch.
+ */
+export function scheduledDue(from: number, to: number): ScheduledKind[] {
+  const due: ScheduledKind[] = [];
+  for (let day = from - (from % DAY_MS); day < to; day += DAY_MS) {
+    const weekday = new Date(day).getUTCDay();
+    for (const [kind, onWeekday, hour] of SCHEDULES) {
+      const start = day + hour * 60 * 60 * 1000;
+      if (
+        (onWeekday === null || onWeekday === weekday) &&
+        start >= from &&
+        start < to
+      ) {
+        due.push(kind);
+      }
+    }
+  }
+  return due;
+}
+
+/**
+ * Compares the scheduled runs due in a window with the ones that ran. A run
+ * still going counts as started.
+ *
+ * @param due - Kinds due, from {@link scheduledDue}.
+ * @param runs - Scheduled detector runs started in the window.
+ */
+export function assessSchedule(
+  due: ScheduledKind[],
+  runs: ScheduledRun[],
+): Pick<Health, 'scheduleMissing' | 'scheduleFailed'> {
+  const scheduleMissing: string[] = [];
+  const scheduleFailed: ScheduledRun[] = [];
+  for (const kind of due) {
+    const ofKind = runs.filter((run) => run.kind === kind);
+    if (ofKind.length === 0) {
+      scheduleMissing.push(kind);
+    } else if (
+      ofKind.every(
+        (run) => run.conclusion !== null && run.conclusion !== 'success',
+      )
+    ) {
+      scheduleFailed.push(ofKind[0]);
+    }
+  }
+  return { scheduleMissing, scheduleFailed };
+}
 
 /**
  * Compares the Main runs that finished in a window with the detector runs for
@@ -28,6 +99,10 @@ export type Health = {
 export function assessHealth(
   mainRuns: RunInfo[],
   detectorRuns: RunInfo[],
+  schedule: Pick<Health, 'scheduleMissing' | 'scheduleFailed'> = {
+    scheduleMissing: [],
+    scheduleFailed: [],
+  },
 ): Health {
   // A cancelled Main run never finished its builds, so the detector skips it.
   const expected = new Map<string, RunInfo>();
@@ -57,13 +132,15 @@ export function assessHealth(
     }
   }
 
+  const scheduleProblem =
+    schedule.scheduleMissing.length > 0 || schedule.scheduleFailed.length > 0;
   let status: Health['status'] = 'ok';
-  if (expected.size === 0) {
-    status = 'quiet';
-  } else if (missing.length > 0 || failed.length > 0) {
+  if (missing.length > 0 || failed.length > 0 || scheduleProblem) {
     status = 'problem';
+  } else if (expected.size === 0) {
+    status = 'quiet';
   }
-  return { status, expected: expected.size, missing, failed };
+  return { status, expected: expected.size, missing, failed, ...schedule };
 }
 
 // Keep in step with the cron in main-detector-heartbeat.yml.
@@ -141,12 +218,26 @@ export function buildHeartbeatMessage(
       ),
     );
   }
+  if (health.scheduleMissing.length > 0) {
+    blocks.push(
+      section(
+        `:no_entry: *Scheduled run did not start*\n${health.scheduleMissing.map((kind) => `• ${kind}`).join('\n')}`,
+      ),
+    );
+  }
+  if (health.scheduleFailed.length > 0) {
+    blocks.push(
+      section(
+        `:x: *Scheduled run failed*\n${health.scheduleFailed.map((run) => `• ${run.kind} (<${run.url}|run>)`).join('\n')}`,
+      ),
+    );
+  }
   blocks.push({
     type: 'context',
     elements: [{ type: 'mrkdwn', text: `<${runUrl}|View health check>` }],
   });
   return {
-    text: `Performance detector health check failed: ${health.missing.length} not started, ${health.failed.length} failed`,
+    text: `Performance detector health check failed: ${health.missing.length + health.scheduleMissing.length} not started, ${health.failed.length + health.scheduleFailed.length} failed`,
     blocks,
   };
 }
