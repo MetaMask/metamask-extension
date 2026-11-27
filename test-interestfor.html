@@ -1,170 +1,215 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interestfor Polyfill Test</title>
-  <style>
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 20px;
-      line-height: 1.6;
-    }
-    button {
-      padding: 12px 24px;
-      font-size: 16px;
-      margin: 10px 0;
-      cursor: pointer;
-    }
-    [popover] {
-      padding: 20px;
-      border: 2px solid #333;
-      border-radius: 8px;
-      background: white;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-    .status {
-      margin: 20px 0;
-      padding: 15px;
-      border-radius: 4px;
-      background: #f0f0f0;
-    }
-    .success { background: #d4edda; border-left: 4px solid #28a745; }
-    .error { background: #f8d7da; border-left: 4px solid #dc3545; }
-    .info { background: #d1ecf1; border-left: 4px solid #17a2b8; }
-  </style>
-</head>
-<body>
-  <h1>Interestfor Polyfill Test</h1>
-  
-  <div class="status info">
-    <strong>Test Status:</strong> <span id="status">Initializing...</span>
-  </div>
-  
-  <h2>Test Controls</h2>
-  <button interestfor="test-popover" id="trigger">
-    Hover me to test interestfor
-  </button>
-  
-  <div popover id="test-popover">
-    <strong>Success!</strong> The interestfor polyfill is working correctly.
-    This popover appeared because you hovered the button.
-  </div>
-  
-  <h2>Test Results</h2>
-  <div id="results"></div>
-  
-  <h2>Console Logs</h2>
-  <pre id="console-log" style="background: #f5f5f5; padding: 10px; border-radius: 4px; max-height: 300px; overflow-y: auto;"></pre>
-  
-  <script>
-    const statusEl = document.getElementById('status');
-    const resultsEl = document.getElementById('results');
-    const consoleLogEl = document.getElementById('console-log');
-    const results = [];
-    
-    function logMessage(message, isError = false) {
-      const timestamp = new Date().toLocaleTimeString();
-      const prefix = isError ? '❌' : '✅';
-      const logText = `[${timestamp}] ${prefix} ${message}`;
-      
-      consoleLogEl.textContent += logText + '\\n';
-      console.log(logText);
-      
-      return message;
-    }
-    
-    function addResult(test, passed, message) {
-      results.push({ test, passed, message });
-      
-      const resultDiv = document.createElement('div');
-      resultDiv.className = `status ${passed ? 'success' : 'error'}`;
-      resultDiv.innerHTML = `
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interestfor Polyfill Test</title>
+    <style>
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+        line-height: 1.6;
+      }
+      button {
+        padding: 12px 24px;
+        font-size: 16px;
+        margin: 10px 0;
+        cursor: pointer;
+      }
+      [popover] {
+        padding: 20px;
+        border: 2px solid #333;
+        border-radius: 8px;
+        background: white;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .status {
+        margin: 20px 0;
+        padding: 15px;
+        border-radius: 4px;
+        background: #f0f0f0;
+      }
+      .success {
+        background: #d4edda;
+        border-left: 4px solid #28a745;
+      }
+      .error {
+        background: #f8d7da;
+        border-left: 4px solid #dc3545;
+      }
+      .info {
+        background: #d1ecf1;
+        border-left: 4px solid #17a2b8;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Interestfor Polyfill Test</h1>
+
+    <div class="status info">
+      <strong>Test Status:</strong> <span id="status">Initializing...</span>
+    </div>
+
+    <h2>Test Controls</h2>
+    <button interestfor="test-popover" id="trigger">
+      Hover me to test interestfor
+    </button>
+
+    <div popover id="test-popover">
+      <strong>Success!</strong> The interestfor polyfill is working correctly.
+      This popover appeared because you hovered the button.
+    </div>
+
+    <h2>Test Results</h2>
+    <div id="results"></div>
+
+    <h2>Console Logs</h2>
+    <pre
+      id="console-log"
+      style="
+        background: #f5f5f5;
+        padding: 10px;
+        border-radius: 4px;
+        max-height: 300px;
+        overflow-y: auto;
+      "
+    ></pre>
+
+    <script>
+      const statusEl = document.getElementById('status');
+      const resultsEl = document.getElementById('results');
+      const consoleLogEl = document.getElementById('console-log');
+      const results = [];
+
+      function logMessage(message, isError = false) {
+        const timestamp = new Date().toLocaleTimeString();
+        const prefix = isError ? '❌' : '✅';
+        const logText = `[${timestamp}] ${prefix} ${message}`;
+
+        consoleLogEl.textContent += logText + '\\n';
+        console.log(logText);
+
+        return message;
+      }
+
+      function addResult(test, passed, message) {
+        results.push({ test, passed, message });
+
+        const resultDiv = document.createElement('div');
+        resultDiv.className = `status ${passed ? 'success' : 'error'}`;
+        resultDiv.innerHTML = `
         <strong>${passed ? '✅' : '❌'} ${test}</strong><br>
         ${message}
       `;
-      resultsEl.appendChild(resultDiv);
-    }
-    
-    // Check for LavaMoat errors
-    const originalError = console.error;
-    const lavamoatErrors = [];
-    console.error = function(...args) {
-      const msg = args.join(' ');
-      if (msg.includes('LavaMoat') || msg.includes('policy')) {
-        lavamoatErrors.push(msg);
-        logMessage(`LavaMoat error: ${msg}`, true);
+        resultsEl.appendChild(resultDiv);
       }
-      originalError.apply(console, args);
-    };
-    
-    // Test 1: Check for polyfill installation
-    setTimeout(() => {
-      if (window.interestForPolyfillInstalled) {
-        addResult('Polyfill Detection', true, 'interestForPolyfillInstalled flag is set');
-        logMessage('Polyfill is installed');
-      } else {
-        addResult('Polyfill Detection', false, 'interestForPolyfillInstalled flag not found (might be native support)');
-        logMessage('No polyfill flag detected', false);
-      }
-    }, 1000);
-    
-    // Test 2: Check for LavaMoat errors
-    setTimeout(() => {
-      if (lavamoatErrors.length === 0) {
-        addResult('LavaMoat Policy', true, 'No LavaMoat policy errors detected');
-        logMessage('No LavaMoat errors');
-      } else {
-        addResult('LavaMoat Policy', false, `${lavamoatErrors.length} LavaMoat errors: ${lavamoatErrors.join(', ')}`);
-        logMessage(`${lavamoatErrors.length} LavaMoat errors found`, true);
-      }
-    }, 2000);
-    
-    // Test 3: Listen for interest event
-    const trigger = document.getElementById('trigger');
-    const popover = document.getElementById('test-popover');
-    let interestEventFired = false;
-    let popoverOpened = false;
-    
-    trigger.addEventListener('interest', (e) => {
-      interestEventFired = true;
-      logMessage(`Interest event fired on element: ${e.target.id}`);
-      
-      if (!results.find(r => r.test === 'Interest Event')) {
-        addResult('Interest Event', true, 'Interest event fired successfully on hover');
-      }
-    });
-    
-    popover.addEventListener('beforetoggle', (e) => {
-      if (e.newState === 'open') {
-        popoverOpened = true;
-        logMessage('Popover opened successfully');
-        
-        if (!results.find(r => r.test === 'Popover Opening')) {
-          addResult('Popover Opening', true, 'Popover opened in response to interest event');
+
+      // Check for LavaMoat errors
+      const originalError = console.error;
+      const lavamoatErrors = [];
+      console.error = function (...args) {
+        const msg = args.join(' ');
+        if (msg.includes('LavaMoat') || msg.includes('policy')) {
+          lavamoatErrors.push(msg);
+          logMessage(`LavaMoat error: ${msg}`, true);
         }
-      }
-    });
-    
-    // Update status
-    setTimeout(() => {
-      const allPassed = results.every(r => r.passed);
-      const summary = `${results.filter(r => r.passed).length}/${results.length} tests passed`;
-      
-      if (allPassed) {
-        statusEl.textContent = `✅ All tests passed (${summary})`;
-        statusEl.parentElement.className = 'status success';
-      } else {
-        statusEl.textContent = `⚠️ Some tests failed (${summary})`;
-        statusEl.parentElement.className = 'status error';
-      }
-    }, 5000);
-    
-    // Initial status
-    statusEl.textContent = 'Running tests... Please hover the button above.';
-    logMessage('Test page initialized');
-  </script>
-</body>
+        originalError.apply(console, args);
+      };
+
+      // Test 1: Check for polyfill installation
+      setTimeout(() => {
+        if (window.interestForPolyfillInstalled) {
+          addResult(
+            'Polyfill Detection',
+            true,
+            'interestForPolyfillInstalled flag is set',
+          );
+          logMessage('Polyfill is installed');
+        } else {
+          addResult(
+            'Polyfill Detection',
+            false,
+            'interestForPolyfillInstalled flag not found (might be native support)',
+          );
+          logMessage('No polyfill flag detected', false);
+        }
+      }, 1000);
+
+      // Test 2: Check for LavaMoat errors
+      setTimeout(() => {
+        if (lavamoatErrors.length === 0) {
+          addResult(
+            'LavaMoat Policy',
+            true,
+            'No LavaMoat policy errors detected',
+          );
+          logMessage('No LavaMoat errors');
+        } else {
+          addResult(
+            'LavaMoat Policy',
+            false,
+            `${lavamoatErrors.length} LavaMoat errors: ${lavamoatErrors.join(', ')}`,
+          );
+          logMessage(`${lavamoatErrors.length} LavaMoat errors found`, true);
+        }
+      }, 2000);
+
+      // Test 3: Listen for interest event
+      const trigger = document.getElementById('trigger');
+      const popover = document.getElementById('test-popover');
+      let interestEventFired = false;
+      let popoverOpened = false;
+
+      trigger.addEventListener('interest', (e) => {
+        interestEventFired = true;
+        logMessage(`Interest event fired on element: ${e.target.id}`);
+
+        if (!results.find((r) => r.test === 'Interest Event')) {
+          addResult(
+            'Interest Event',
+            true,
+            'Interest event fired successfully on hover',
+          );
+        }
+      });
+
+      popover.addEventListener('beforetoggle', (e) => {
+        if (e.newState === 'open') {
+          popoverOpened = true;
+          logMessage('Popover opened successfully');
+
+          if (!results.find((r) => r.test === 'Popover Opening')) {
+            addResult(
+              'Popover Opening',
+              true,
+              'Popover opened in response to interest event',
+            );
+          }
+        }
+      });
+
+      // Update status
+      setTimeout(() => {
+        const allPassed = results.every((r) => r.passed);
+        const summary = `${results.filter((r) => r.passed).length}/${results.length} tests passed`;
+
+        if (allPassed) {
+          statusEl.textContent = `✅ All tests passed (${summary})`;
+          statusEl.parentElement.className = 'status success';
+        } else {
+          statusEl.textContent = `⚠️ Some tests failed (${summary})`;
+          statusEl.parentElement.className = 'status error';
+        }
+      }, 5000);
+
+      // Initial status
+      statusEl.textContent = 'Running tests... Please hover the button above.';
+      logMessage('Test page initialized');
+    </script>
+  </body>
 </html>

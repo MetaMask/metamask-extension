@@ -1,9 +1,11 @@
 # Interestfor Polyfill Firefox Manual Test
 
 ## Background
+
 This test verifies that the interestfor polyfill works correctly with the LavaMoat policy overrides that restrict three unnecessary globals:
+
 - `InterestEvent` (write)
-- `interestForPolyfillInstalled` (write)  
+- `interestForPolyfillInstalled` (write)
 - `interestForUsePolyfillAlways` (read)
 
 ## Test Steps
@@ -21,6 +23,7 @@ yarn build:test:mv2
 ```
 
 ### 2. Open Browser Console
+
 - Press Ctrl+Shift+J (or Cmd+Opt+J on Mac)
 - Check for LavaMoat policy errors
 - Expected: No errors related to "LavaMoat", "policy", or "interestfor"
@@ -28,6 +31,7 @@ yarn build:test:mv2
 ### 3. Test Interestfor Polyfill
 
 #### Option A: Use test-interestfor.html
+
 1. Open `test-interestfor.html` in Firefox
 2. Observe the test results on the page
 3. Hover the button to trigger the interestfor event
@@ -38,6 +42,7 @@ yarn build:test:mv2
    - ✅ Popover opens when button is hovered
 
 #### Option B: Test in Extension UI
+
 1. Open MetaMask extension popup
 2. Navigate to a page with interestfor usage:
    - **Transaction Status**: Go to activity, click a transaction
@@ -51,6 +56,7 @@ yarn build:test:mv2
 ## Expected Results
 
 ### ✅ Success Criteria
+
 - No LavaMoat policy errors in console
 - Polyfill loads successfully
 - Hovering elements with `interestfor` attribute fires `interest` events
@@ -58,12 +64,14 @@ yarn build:test:mv2
 - No runtime errors related to `InterestEvent`, `interestForPolyfillInstalled`, or `interestForUsePolyfillAlways`
 
 ### ❌ Failure Indicators
+
 - Console errors mentioning "LavaMoat" or "policy violation"
 - Popovers fail to open on hover
 - JavaScript errors referencing the restricted globals
 - Extension fails to load
 
 ## Notes
+
 - Firefox does not have native Interest Invokers support, so the polyfill always loads
 - The three restricted globals are not needed for the polyfill to function
 - Testing confirms that the LavaMoat overrides successfully restrict these globals without breaking functionality
