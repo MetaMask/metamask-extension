@@ -275,21 +275,40 @@ export const selectLocalTransactions = createSelector(
         primaryMoneyAccount,
       );
 
+    const transactionsById = new Map(
+      (transactions ?? []).map((tx) => [tx.id, tx]),
+    );
+
+    // A MetaMask Pay transaction whose calls run as a second leg, such as a
+    // Money Account deposit paid with SOL, takes the hash of that second leg,
+    // which is one of its own required transactions.
+    const hasOwnRequiredTransactionHash = (
+      tx: Pick<Partial<TransactionMeta>, 'hash' | 'requiredTransactionIds'>,
+      hash: string,
+    ) =>
+      (tx.requiredTransactionIds ?? []).some(
+        (id) => transactionsById.get(id)?.hash?.toLowerCase() === hash,
+      );
+
     const isInternalRequiredTransaction = (
-      tx: Pick<Partial<TransactionMeta>, 'id' | 'hash'>,
+      tx: Pick<
+        Partial<TransactionMeta>,
+        'id' | 'hash' | 'requiredTransactionIds'
+      >,
     ) => {
       if (tx.id && internalTxIds.has(tx.id)) {
         return true;
       }
-      if (tx.hash && internalTxHashes.has(tx.hash.toLowerCase())) {
+      const hash = tx.hash?.toLowerCase();
+      if (
+        hash &&
+        internalTxHashes.has(hash) &&
+        !hasOwnRequiredTransactionHash(tx, hash)
+      ) {
         return true;
       }
       return false;
     };
-
-    const transactionsById = new Map(
-      (transactions ?? []).map((tx) => [tx.id, tx]),
-    );
 
     // Payers from the money account's own SRP keep the wallet-wide rule.
     // MPC-backed money accounts have no entropy source ID, so every payer

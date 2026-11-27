@@ -419,6 +419,32 @@ describe('selectLocalTransactions', () => {
     ).toBe(true);
   });
 
+  it('includes a money-account deposit that shares the hash of its second-leg required transaction', () => {
+    const hash =
+      '0x8c79f16f9cf2941fc9bf8b5c51d5a75b294d55091c223104a4d400d34cf5171c';
+    const secondLeg = buildMoneyAccountTransaction({
+      id: 'second-leg-tx',
+      hash,
+      time: 2,
+    });
+    const state = buildStateWithMoneyAccount(
+      buildMoneyAccountTransaction({
+        hash,
+        requiredTransactionIds: [secondLeg.id],
+      }),
+    );
+    state.metamask.transactions = [
+      ...(state.metamask.transactions ?? []),
+      secondLeg,
+    ];
+
+    const groupIds = selectLocalTransactions(state).map(
+      (group) => group.initialTransaction.id,
+    );
+
+    expect(groupIds).toStrictEqual(['money-account-tx']);
+  });
+
   it('excludes non-money transactions sent from the money account', () => {
     const state = buildStateWithMoneyAccount(
       buildMoneyAccountTransaction({
