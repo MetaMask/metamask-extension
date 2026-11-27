@@ -115,6 +115,15 @@ export type CustomAmountInfoProps = {
    */
   prefillMaxOnLoad?: boolean;
   preferredToken?: SetPayTokenRequest;
+  /**
+   * Optional flow-specific rows rendered inside the result section before the
+   * standard fee, time, and total/receive rows.
+   */
+  resultRows?: ReactNode;
+  /**
+   * When false, hides the divider rendered below `FromAccountRow`.
+   */
+  showAccountDivider?: boolean;
 };
 
 export const CustomAmountInfo = React.memo(
@@ -135,6 +144,8 @@ export const CustomAmountInfo = React.memo(
     overrideCenterContent,
     prefillMaxOnLoad,
     preferredToken,
+    resultRows,
+    showAccountDivider = true,
   }: CustomAmountInfoProps) => {
     const isDefaultMoneyAccount = useIsMoneyAccountFlagDefault();
     useDefaultPaySelectedSection();
@@ -171,6 +182,20 @@ export const CustomAmountInfo = React.memo(
     // typed amount — evaluate without pending fiat so amount state can load.
     const { disableUpdate } = useTransactionCustomAmountAlerts();
 
+    const { isNative: isNativePayToken } = useTransactionPayToken();
+    // Withdraw always offers Max: in post-quote mode the picker token is the
+    // destination, so the native gas reserve below does not apply.
+    // Otherwise Max needs the flow to opt in (`hasMax`) and a non-native pay
+    // token — spending a whole native balance would leave nothing for gas, so
+    // those keep 90%. Matches mobile `custom-amount-info`.
+    const showMax = isWithdraw || (Boolean(hasMax) && !isNativePayToken);
+    const isPercentageButtonsEnabled =
+      Boolean(displayPercentageButtons) &&
+      hasTokens &&
+      !disablePercentageButtons;
+    // Typing the displayed balance commits Max only where Max is offered.
+    const isMaxAvailable = isPercentageButtonsEnabled && showMax;
+
     const {
       amountFiat,
       amountHuman,
@@ -178,12 +203,14 @@ export const CustomAmountInfo = React.memo(
       hasInput,
       isDepositPrefillLoading,
       isQuoteDerivedAmountLoading,
+      resolveAmountFiat,
       updatePendingAmount,
       updatePendingAmountPercentage,
     } = useTransactionCustomAmount({
       balanceUsdOverride,
       currency,
       disableUpdate,
+      isMaxAvailable,
       prefillMaxOnLoad,
     });
 
@@ -203,18 +230,15 @@ export const CustomAmountInfo = React.memo(
     // amount that is about to be replaced, so withhold it until the field
     // settles. Amount-independent alerts (no funds, hardware, signing) are
     // unaffected — they come from the argument-less call above.
+    // A typed amount that will snap to Max is judged as the full balance it
+    // commits, so the insufficient-balance alert does not fire on the rounded
+    // display value.
     const { alertContent, alertMessage, hasAlert, hideResults } =
       useTransactionCustomAmountAlerts({
-        pendingFiatAmount: showAmountLoader ? undefined : amountFiat,
+        pendingFiatAmount: showAmountLoader
+          ? undefined
+          : resolveAmountFiat(amountFiat),
       });
-
-    const { isNative: isNativePayToken } = useTransactionPayToken();
-    // Withdraw always offers Max: in post-quote mode the picker token is the
-    // destination, so the native gas reserve below does not apply.
-    // Otherwise Max needs the flow to opt in (`hasMax`) and a non-native pay
-    // token — spending a whole native balance would leave nothing for gas, so
-    // those keep 90%. Matches mobile `custom-amount-info`.
-    const showMax = isWithdraw || (Boolean(hasMax) && !isNativePayToken);
 
     const handleAmountChange = useCallback(
       (value: string) => {
@@ -258,7 +282,7 @@ export const CustomAmountInfo = React.memo(
         <AlertMessage alertContent={alertContent} alertMessage={alertMessage} />
         {displayPercentageButtons && (
           <PercentageButtons
-            disabled={!hasTokens || Boolean(disablePercentageButtons)}
+            disabled={!isPercentageButtonsEnabled}
             hasMax={showMax}
             onPercentageClick={updatePendingAmountPercentage}
           />
@@ -270,6 +294,8 @@ export const CustomAmountInfo = React.memo(
             displayAccountRow={displayAccountRow}
             hasAmount={hasAmount}
             hideResults={hideResults}
+            resultRows={resultRows}
+            showAccountDivider={showAccountDivider}
           />
         )}
       </Box>
@@ -396,12 +422,16 @@ function BottomContainer({
   displayAccountRow,
   hasAmount,
   hideResults,
+  resultRows,
+  showAccountDivider,
 }: {
   amountFiat: string;
   disablePay?: boolean;
   displayAccountRow?: boolean;
   hasAmount: boolean;
   hideResults: boolean;
+  resultRows?: ReactNode;
+  showAccountDivider: boolean;
 }) {
   const t = useI18nContext();
   const isResultReady = useIsResultReady(hasAmount, disablePay);
@@ -421,13 +451,14 @@ function BottomContainer({
       gap={2}
       paddingBottom={4}
     >
-      {displayAccountRow && <FromAccountRow showDivider />}
+      {displayAccountRow && <FromAccountRow showDivider={showAccountDivider} />}
       <PerpsAccountPickerRow />
       {/* Keep mounted while funding tokens load after account override so the
           selector does not unmount for the reselect wait, then remount. */}
       {disablePay !== true && <PayWithRow />}
       {isResultReady && !hideResults && (
         <>
+          {resultRows}
           {disablePay !== true && (
             <>
               <BridgeFeeRow

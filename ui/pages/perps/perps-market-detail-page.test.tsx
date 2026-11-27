@@ -2172,7 +2172,7 @@ describe('PerpsMarketDetailPage', () => {
       await waitFor(() => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
           key: 'perpsToastUpdateFailed',
-          description: 'TP/SL rejected',
+          description: messages.perpsTpslUpdateFailed.message,
         });
       });
 

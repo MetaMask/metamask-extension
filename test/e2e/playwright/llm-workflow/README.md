@@ -116,7 +116,7 @@ Every command except `mm stop` prints JSON on stdout; `mm stop` prints a plain-t
 | 2         | Usage or validation error                        |
 | 3         | No session, or the daemon is not running or lost |
 | 4         | Target not found or not actionable               |
-| 5         | Timeout                                          |
+| 5         | Timeout (includes `MM_QUEUE_TIMEOUT`)            |
 | 6         | Platform or device not available                 |
 
 Read `error.code`, `error.hint` and `error.retryable` to decide what to do next.
@@ -144,6 +144,18 @@ Read `error.code`, `error.hint` and `error.retryable` to decide what to do next.
 - `mm inspect <ref>`: Shows the attributes, disabled and read-only flags, and computed styles of an element.
 - `mm hover <ref>` / `mm unhover`: Moves the pointer over an element / off the page.
 - `mm set-viewport <width> <height>` / `mm reset-viewport`: Resizes the page / restores its size.
+
+`mm click`, `type`, `hover`, `wait-for`, `get-text`, `inspect` and `screenshot` accept `--frame <iframe>` to act inside an iframe; `mm describe-screen` lists visible iframes with refs `f1e1`, `f1e2`, .... `mm click` on a visually hidden checkbox or radio with one label clicks the label and returns `clickedLabel: true`.
+
+### Logs and Network
+
+- `mm events mark`: Returns the current cursor. Take it at the start of a flow.
+- `mm logs --cursor <n>`: Console errors of the pages, the background service worker, the offscreen document and snaps iframes.
+- `mm network --settled --cursor <n>`: HTTP(S) requests of the same targets, with status, duration and JSON-RPC methods. `--errors` keeps failures only.
+- `mm mock-network add '<rule>'`: Mocks or records requests from pages, the service worker, the offscreen document and snaps. Add `"record":{"body":true}` to a rule and read the bodies with `mm mock-network requests --bodies`.
+- `mm cdp <method> --target sw`: Sends a CDP command to the service worker instead of the page. While the session records, `mm cdp Network.disable` fails with `MM_CDP_BLOCKED`.
+
+Recording starts when `mm launch` returns; requests made during the launch are not recorded or mocked.
 
 ### Navigation
 
@@ -192,7 +204,7 @@ mm launch --state onboarding --self-onboarding < phrase.txt
 
 ### Custom Fixture
 
-`mm launch --state custom` needs a wallet fixture, and `mm launch` has no flag to pass one. The `launch` tool accepts `fixturePreset` (a preset name) or `fixture` (a fixture object), but `--preset` is not a launch flag in `@metamask/client-mcp-core` 0.14.0: `mm launch --state custom --preset <name>` warns `unknown launch flag '--preset'` and then fails with `MM_LAUNCH_FAILED` (`stateMode 'custom' requires either 'fixturePreset' or 'fixture'`).
+`mm launch --state custom` needs a wallet fixture, and `mm launch` has no flag to pass one. The `launch` tool accepts `fixturePreset` (a preset name) or `fixture` (a fixture object), but `--preset` is not a launch flag in `@metamask/client-mcp-core` 0.15.0: `mm launch --state custom --preset <name>` warns `unknown launch flag '--preset'` and then fails with `MM_LAUNCH_FAILED` (`stateMode 'custom' requires either 'fixturePreset' or 'fixture'`).
 
 The presets are defined by `createFixturePresets` in `fixture-helper.ts`: `default`, `onboarding`, `withMultipleAccounts`, `withERC20Tokens`, `withConnectedDapp`, `withMainnet`, `withNFTs`, `withFiatDisabled` and `withHSTToken`. Pass one as `fixturePreset` to the `launch` tool directly, for example in a `POST /launch` body (the daemon port is in `.mm-server`). From the CLI, only `--state default` and `--state onboarding` are usable, because they need no fixture.
 
@@ -236,7 +248,7 @@ a modal, is still captured.
 
 ## Known Limitations
 
-- **Pre-launch network mocking:** `mm mock-network` uses Playwright route interception, which is only active after `mm launch` completes. Requests made during extension startup (before the session is active) cannot be intercepted. Pre-launch mocking support will be added in a future update.
+- **Pre-launch network mocking:** `mm mock-network` rules are only active after `mm launch` completes. Requests made during extension startup (before the session is active) cannot be intercepted. Pre-launch mocking support will be added in a future update.
 
 ---
 

@@ -4,7 +4,6 @@
       "hiddenAccountList": "object",
       "pinnedAccountList": "object"
     },
-    "AccountTracker": { "accountsByChainId": "object" },
     "AccountTreeController": {
       "accountGroupsMetadata": "object",
       "accountTree": "object",
@@ -31,6 +30,7 @@
       "eventsConfig": "object",
       "marketingCampaignCookieId": null,
       "marketingConsentDecisionMade": "boolean",
+      "marketingConsentSyncPending": "boolean",
       "optedIn": true,
       "optedInToMarketing": "boolean"
     },
@@ -169,7 +169,6 @@
       "onboardingJourneyEnded": true,
       "seedPhraseBackedUp": null
     },
-    "PPOMController": { "storageMetadata": "object" },
     "PasskeyController": { "passkeyRecord": null },
     "PermissionController": {},
     "PermissionLogController": { "permissionHistory": "object" },

@@ -1,14 +1,16 @@
 import { describe, it, afterEach, beforeEach, mock } from 'node:test';
 import assert from 'node:assert';
-import {
-  version,
-  type Stats,
-  type Compilation,
-  type StatsOptions,
-  type StatsCompilation,
+import webpackApi from 'webpack';
+import type {
+  Stats,
+  Compilation,
+  StatsOptions,
+  StatsCompilation,
 } from 'webpack';
-import * as helpers from '../utils/helpers';
-import { type Combination, generateCases } from './helpers';
+import * as helpers from '../utils/helpers.ts';
+import { type Combination, generateCases } from './helpers.ts';
+
+const { version } = webpackApi;
 
 describe('./utils/helpers.ts', () => {
   afterEach(() => mock.restoreAll());
@@ -121,18 +123,18 @@ describe('./utils/helpers.ts', () => {
     function runTest(settings: Combination<typeof matrix>) {
       const { colorDepth, level, env, hasErrors, hasWarnings } = settings;
 
-      let testHelpers: typeof import('../utils/helpers');
+      let testHelpers: typeof import('../utils/helpers.ts');
       const originalGetColorDepth = process.stderr.getColorDepth;
-      beforeEach(() => {
+      beforeEach(async () => {
         // getColorDepth is undefined sometimes, so we need to mock it like this
         process.stderr.getColorDepth = (
           colorDepth ? mock.fn(() => colorDepth) : colorDepth
         ) as (env?: object | undefined) => number;
 
-        // helpers caches `getColorDepth` on initialization, so we need to a new
-        // one after we mock `getColorDepth`.
-        delete require.cache[require.resolve('../utils/helpers')];
-        testHelpers = require('../utils/helpers');
+        // ESM caches by URL; use a fresh URL after changing getColorDepth.
+        testHelpers = await import(
+          `../utils/helpers.ts?colorDepth=${colorDepth}&level=${level}&env=${env}&errors=${hasErrors}&warnings=${hasWarnings}`
+        );
       });
 
       afterEach(() => {
@@ -188,5 +190,34 @@ describe('./utils/helpers.ts', () => {
         }
       });
     }
+  });
+});
+
+describe('toWebpackSourceName', () => {
+  const { toWebpackSourceName } = helpers;
+
+  it('names files under the context with a ./ prefix', () => {
+    assert.strictEqual(
+      toWebpackSourceName('/project/app', '/project/app/scripts/x.ts'),
+      'webpack://./scripts/x.ts',
+    );
+  });
+
+  it('names files outside the context with a ../ prefix', () => {
+    assert.strictEqual(
+      toWebpackSourceName('/project/app', '/project/ui/x.tsx'),
+      'webpack://../ui/x.tsx',
+    );
+    assert.strictEqual(
+      toWebpackSourceName('/project/app', '/project/node_modules/pkg/i.js'),
+      'webpack://../node_modules/pkg/i.js',
+    );
+  });
+
+  it('falls back to the absolute path when there is no context', () => {
+    assert.strictEqual(
+      toWebpackSourceName(undefined, '/project/app/x.ts'),
+      '/project/app/x.ts',
+    );
   });
 });

@@ -195,9 +195,6 @@
   "newContract": {
     "message": "สร้างสัญญาใหม่"
   },
-  "newPassword": {
-    "message": "รหัสผ่านใหม่(ขั้นต่ำ 8 ตัวอักษร)"
-  },
   "next": {
     "message": "ถัดไป"
   },
@@ -216,9 +213,6 @@
   "privateKey": {
     "message": "คีย์ส่วนตัว",
     "description": "select this type of file to use to import an account"
-  },
-  "privateNetwork": {
-    "message": "เครือข่ายส่วนตัว"
   },
   "readdToken": {
     "message": "คุณสามารถเพิ่มโทเค็นนี้ในอนาคตได้โดยไปที่ “เพิ่มโทเค็น” ในเมนูตัวเลือกบัญชีของคุณ"

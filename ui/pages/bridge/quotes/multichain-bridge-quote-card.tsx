@@ -1,9 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
+import { parseCaipAssetType } from '@metamask/utils';
 import {
   BRIDGE_MM_FEE_RATE,
   FeatureId,
+  assetIdsMatch,
   UnifiedSwapBridgeEventName,
   getNativeAssetForChainId,
   sumAmounts,
@@ -70,6 +72,7 @@ import {
   formatTokenAmount,
   readMmFee,
 } from '../utils/quote';
+import { getAssetImageUrl } from '../../../../shared/lib/asset-utils';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export { MultichainBridgeQuoteCardSkeleton } from './multichain-bridge-quote-card-skeleton';
@@ -211,6 +214,18 @@ export const MultichainBridgeQuoteCard = ({
   const gasFees = getGasFees(activeQuote);
   const totalNetworkFee = getTotalNetworkFee(activeQuote);
   const relayerFees = sumAmounts(activeQuote.quote.feeData.relayer);
+  const isGasless = Boolean(
+    activeQuote.quote.gasIncluded || activeQuote.quote.gasIncluded7702,
+  );
+  const networkFees =
+    (isGasless
+      ? activeQuote.quote.feeData.txFee
+      : activeQuote.quote.feeData.network) ?? [];
+  const networkFeeToken = networkFees.every(({ asset }) =>
+    assetIdsMatch(asset.assetId, networkFees[0].asset.assetId),
+  )
+    ? networkFees[0]?.asset
+    : undefined;
 
   return (
     <>
@@ -339,8 +354,11 @@ export const MultichainBridgeQuoteCard = ({
                 <SuccessPill label={t('swapGasFeesSponsored')} />
               </Row>
             )}
-            {!shouldShowGasSponsored && activeQuote.quote.gasIncluded && (
-              <Row gap={1} data-testid="network-fees-included">
+            {!shouldShowGasSponsored && (
+              <Row
+                gap={1}
+                data-testid={isGasless ? 'network-fees-included' : undefined}
+              >
                 <Text
                   variant={TextVariant.bodySm}
                   color={
@@ -348,46 +366,45 @@ export const MultichainBridgeQuoteCard = ({
                       ? TextColor.warningDefault
                       : TextColor.textAlternative
                   }
-                  data-testid="network-fees-included-original-amount"
+                  data-testid={
+                    isGasless
+                      ? 'network-fees-included-original-amount'
+                      : 'network-fees'
+                  }
                 >
-                  {includedTxFees?.valueInCurrency
+                  {isGasless && includedTxFees?.valueInCurrency
                     ? formatNetworkFee(includedTxFees.valueInCurrency, currency)
                     : formatNetworkFee(gasFees?.valueInCurrency, currency)}
                 </Text>
-                <Box
-                  flexDirection={BoxFlexDirection.Row}
-                  alignItems={BoxAlignItems.Center}
-                  backgroundColor={BoxBackgroundColor.BackgroundMuted}
-                  className="gap-0.5 px-1.5 rounded-md"
-                  data-testid="network-fees-included-token"
-                >
-                  <AvatarToken
-                    size={AvatarTokenSize.Xs}
-                    src={fromToken?.iconUrl ?? undefined}
-                    name={fromToken?.symbol}
-                  />
-                  <DsText
-                    variant={DsTextVariant.BodyXs}
-                    fontWeight={FontWeight.Medium}
-                    color={DsTextColor.TextAlternative}
+                {networkFeeToken && (
+                  <Box
+                    flexDirection={BoxFlexDirection.Row}
+                    alignItems={BoxAlignItems.Center}
+                    backgroundColor={BoxBackgroundColor.BackgroundMuted}
+                    className="gap-0.5 px-1.5 rounded-md"
+                    data-testid="network-fees-included-token"
                   >
-                    {fromToken?.symbol}
-                  </DsText>
-                </Box>
+                    <AvatarToken
+                      size={AvatarTokenSize.Xs}
+                      src={
+                        networkFeeToken.iconUrl ||
+                        getAssetImageUrl(
+                          networkFeeToken.assetId,
+                          parseCaipAssetType(networkFeeToken.assetId).chainId,
+                        )
+                      }
+                      name={networkFeeToken.symbol}
+                    />
+                    <DsText
+                      variant={DsTextVariant.BodyXs}
+                      fontWeight={FontWeight.Medium}
+                      color={DsTextColor.TextAlternative}
+                    >
+                      {networkFeeToken.symbol}
+                    </DsText>
+                  </Box>
+                )}
               </Row>
-            )}
-            {!shouldShowGasSponsored && !activeQuote.quote.gasIncluded && (
-              <Text
-                variant={TextVariant.bodySm}
-                color={
-                  isEstimatedReturnLow
-                    ? TextColor.warningDefault
-                    : TextColor.textAlternative
-                }
-                data-testid="network-fees"
-              >
-                {formatNetworkFee(gasFees?.valueInCurrency, currency)}
-              </Text>
             )}
           </Row>
         )}
