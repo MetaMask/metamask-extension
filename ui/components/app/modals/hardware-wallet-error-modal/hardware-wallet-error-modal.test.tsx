@@ -381,6 +381,40 @@ describe('HardwareWalletErrorModal', () => {
       ).not.toBeInTheDocument();
     });
 
+    it('uses Trezor multiple-device copy from error metadata instead of the selected Ledger', () => {
+      const error = createHardwareWalletError(
+        ErrorCode.DeviceMultipleConnected,
+        HardwareWalletType.Trezor,
+      );
+      const onCancel = jest.fn();
+      const onRetry = jest.fn();
+
+      const { getByText, queryByText } = renderWithMetrics(
+        <HardwareWalletErrorModal
+          error={error}
+          onCancel={onCancel}
+          onRetry={onRetry}
+        />,
+      );
+
+      expect(
+        getByText('[hardwareWalletErrorTitleMultipleDevicesConnected]'),
+      ).toBeInTheDocument();
+      expect(
+        getByText('[hardwareWalletErrorMultipleDevicesConnectedDescription]'),
+      ).toBeInTheDocument();
+      expect(
+        queryByText('[hardwareWalletErrorDeviceAlreadyConnectedDescription]'),
+      ).not.toBeInTheDocument();
+      expect(
+        queryByText('[hardwareWalletErrorReconnectButton]'),
+      ).not.toBeInTheDocument();
+
+      fireEvent.click(getByText('[confirm]'));
+      expect(onCancel).toHaveBeenCalledTimes(1);
+      expect(onRetry).not.toHaveBeenCalled();
+    });
+
     it('displays app instructions for DeviceStateEthAppClosed', () => {
       const error = createTestError(
         ErrorCode.DeviceStateEthAppClosed,

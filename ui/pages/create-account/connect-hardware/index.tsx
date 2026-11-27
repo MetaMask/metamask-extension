@@ -611,6 +611,16 @@ const ConnectHardwareForm = () => {
             })
             .build(),
         );
+
+        if (deviceName === HardwareDeviceNames.ledger) {
+          const hwError = toHardwareWalletError(e, HardwareWalletType.Ledger);
+          if (hwError.code === ErrorCode.DeviceMultipleConnected) {
+            setError(null);
+            showErrorModal(hwError);
+            return;
+          }
+        }
+
         setError(errorMessage);
       }
     },
@@ -621,6 +631,7 @@ const ConnectHardwareForm = () => {
       hdEntropyIndex,
       navigate,
       selectedAccounts,
+      showErrorModal,
       t,
       trackEvent,
     ],

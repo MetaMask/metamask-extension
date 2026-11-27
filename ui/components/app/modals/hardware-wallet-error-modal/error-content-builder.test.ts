@@ -1,4 +1,5 @@
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
+import { tEn } from '../../../../../test/lib/i18n-helpers';
 import { createHardwareWalletError } from '../../../../contexts/hardware-wallets/errors';
 import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
 import { buildErrorContent } from './error-content-builder';
@@ -116,6 +117,23 @@ describe('buildErrorContent', () => {
       'hardwareWalletErrorDeviceAlreadyConnectedDescription',
       ['Ledger', 'Ledger', 'Ledger'],
     );
+  });
+
+  it('instructs Trezor users to unplug extra devices without removing accounts', () => {
+    const error = createHardwareWalletError(
+      ErrorCode.DeviceMultipleConnected,
+      HardwareWalletType.Trezor,
+    );
+
+    const content = buildErrorContent(error, HardwareWalletType.Trezor, tEn);
+
+    expect(content).toMatchObject({
+      variant: 'description',
+      showRepairLink: false,
+      title: 'Multiple Trezor devices connected',
+      description:
+        'Multiple Trezor devices are connected. Unplug the extra devices, then try again.',
+    });
   });
 
   describe('showRepairLink flag', () => {

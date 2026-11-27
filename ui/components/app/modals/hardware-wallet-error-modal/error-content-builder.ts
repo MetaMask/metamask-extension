@@ -147,21 +147,31 @@ export function buildErrorContent(
         ]),
       };
 
-    // Single-device gate: another device is connected; retrying won't help.
+    // Ledger's account binding differs from other wallets' extra-device errors.
     case ErrorCode.DeviceMultipleConnected:
       return {
         variant: HardwareWalletErrorContentVariant.Description,
         icon: IconName.Danger,
         iconColor: IconColor.WarningDefault,
-        title: t('hardwareWalletErrorTitleDeviceAlreadyConnected', [
-          t(walletType),
-        ]),
+        title:
+          walletType === HardwareWalletType.Ledger
+            ? t('hardwareWalletErrorTitleDeviceAlreadyConnected', [
+                t(walletType),
+              ])
+            : t('hardwareWalletErrorTitleMultipleDevicesConnected', [
+                t(walletType),
+              ]),
         showRepairLink: false,
-        description: t('hardwareWalletErrorDeviceAlreadyConnectedDescription', [
-          t(walletType),
-          t(walletType),
-          t(walletType),
-        ]),
+        description:
+          walletType === HardwareWalletType.Ledger
+            ? t('hardwareWalletErrorDeviceAlreadyConnectedDescription', [
+                t(walletType),
+                t(walletType),
+                t(walletType),
+              ])
+            : t('hardwareWalletErrorMultipleDevicesConnectedDescription', [
+                t(walletType),
+              ]),
       };
 
     // Device state - Disconnected/Connection issues
