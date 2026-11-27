@@ -44,7 +44,8 @@ import {
   getSelectedAccountGroup,
 } from '../../../selectors/multichain-accounts/account-tree';
 import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
-import { MultichainAccountNetworkGroupWithCopyIcon } from '../../multichain-accounts/multichain-account-network-group-with-copy-icon';
+import { MultichainAccountNetworkGroup } from '../../multichain-accounts/multichain-account-network-group';
+import { MultichainAddressCopyButton } from '../../multichain-accounts/multichain-address-copy-button';
 import { useDispatch } from '../../../store/hooks';
 import { getIsDiscoverSearchEnabled } from '../../../selectors/multichain/feature-flags';
 import { AccountName } from './account-name';
@@ -179,7 +180,7 @@ export const AppHeaderUnlockedContent = ({
         )}
         {selectedMultichainAccountId && (
           <Box
-            className="ml-2 mt-1 w-fit"
+            className="ml-2 mt-1 flex w-fit items-center gap-1"
             data-testid="networks-subtitle-test-id"
           >
             <MultichainTriggeredAddressRowsList
@@ -191,11 +192,16 @@ export const AppHeaderUnlockedContent = ({
                   op: TraceOperation.AccountUi,
                 });
               }}
+              ariaLabel={t('openMultichainAccountAddressMenu')}
             >
-              <MultichainAccountNetworkGroupWithCopyIcon
+              <MultichainAccountNetworkGroup
                 groupId={selectedMultichainAccountId}
+                limit={4}
               />
             </MultichainTriggeredAddressRowsList>
+            <MultichainAddressCopyButton
+              groupId={selectedMultichainAccountId}
+            />
           </Box>
         )}
       </Box>
@@ -209,6 +215,7 @@ export const AppHeaderUnlockedContent = ({
     trackEvent,
     createEventBuilder,
     accountListStats,
+    t,
   ]);
 
   return (

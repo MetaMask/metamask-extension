@@ -206,7 +206,7 @@ class HeaderNavbar {
   }
 
   async clickAddressCopyButton(): Promise<void> {
-    await this.driver.clickElement(this.networkAddressesLink);
+    await this.clickNetworkAddresses();
     await this.driver.clickElement(this.copyAddressButton);
   }
 
@@ -226,11 +226,22 @@ class HeaderNavbar {
   }
 
   /**
-   * Click the network addresses link
+   * Hover the network addresses trigger to open the quick-copy popover.
    */
   async clickNetworkAddresses(): Promise<void> {
-    console.log('Click the network addresses link');
-    await this.driver.clickElement(this.networkAddressesLink);
+    console.log(
+      'Hover the network addresses trigger to open quick-copy popover',
+    );
+    const container = await this.driver.findElement(this.networkAddressesLink);
+    const trigger = await container.findElement({
+      css: '[data-testid="multichain-address-rows-trigger"]',
+    });
+    // WebDriver's pointer move fires mouseenter. Do not synthesize a
+    // MouseEvent in the page: LavaMoat scuttling blocks globalThis.MouseEvent
+    // in the test build. Leave the trigger first: if the pointer is already
+    // over it (e.g. left there by the previous click), no mouseenter fires.
+    await this.driver.hoverElement(await this.driver.findElement('body'));
+    await this.driver.hoverElement(trigger);
   }
 
   async clickNotificationCount(count: number): Promise<void> {
