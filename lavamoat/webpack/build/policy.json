@@ -3029,7 +3029,7 @@
     "mockttp>express>proxy-addr": {
       "packages": {
         "mockttp>express>proxy-addr>forwarded": true,
-        "react-devtools>internal-ip>ipaddr.js": true
+        "mockttp>express>proxy-addr>ipaddr.js": true
       }
     },
     "mockttp>@peculiar/x509>pvtsutils": {

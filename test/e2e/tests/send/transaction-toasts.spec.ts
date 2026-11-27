@@ -217,10 +217,7 @@ describe('Transaction toasts', function (this: Suite) {
         },
       },
       async ({ driver }) => {
-        await login(driver, {
-          expectedBalance: '20 ETH',
-          waitForNonEvmAccounts: false,
-        });
+        await login(driver, { expectedBalance: '20 ETH' });
         await createInternalTransaction({
           driver,
           chainId: '0x1',

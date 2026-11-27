@@ -23,6 +23,7 @@ import {
   AssetsContractController,
   BalanceMap,
   Nft,
+  Source,
   Token,
 } from '@metamask/assets-controllers';
 import { PayloadAction } from '@reduxjs/toolkit';
@@ -528,7 +529,7 @@ export function subscriptionsStartPolling(): ThunkAction<
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       const pollingToken = await submitRequestToBackground(
-        'subscriptionsStartPolling',
+        'SubscriptionController:startPolling',
         // We need to provide the polling input when start polling
         // Otherwise, stop polling won't work with `undefined` input.
         [SUBSCRIPTIONS_POLLING_INPUT],
@@ -1725,32 +1726,17 @@ export function updateEditableParams(
 }
 
 export async function backupUserData(): Promise<{
-  filename: string;
+  fileName: string;
   data: string;
 }> {
-  let backedupData;
   try {
-    backedupData = await submitRequestToBackground<{
-      filename: string;
-      data: string;
-    }>('backupUserData');
+    return await submitRequestToBackground(
+      'LegacyBackgroundApiService:backupUserData',
+    );
   } catch (error) {
     logErrorWithMessage(error);
     throw error;
   }
-
-  return backedupData;
-}
-
-export async function restoreUserData(jsonString: Json): Promise<true> {
-  try {
-    await submitRequestToBackground('restoreUserData', [jsonString]);
-  } catch (error) {
-    logErrorWithMessage(error);
-    throw error;
-  }
-
-  return true;
 }
 
 export function updateSlides(
@@ -2130,8 +2116,8 @@ export async function checkFirstTimeInteraction(request: {
   to: string;
   chainId: number;
 }): Promise<boolean | undefined> {
-  return submitRequestToBackground<boolean | undefined>(
-    'checkFirstTimeInteraction',
+  return submitRequestToBackground(
+    'LegacyBackgroundApiService:checkFirstTimeInteraction',
     [request],
   );
 }
@@ -3233,10 +3219,11 @@ export function addNft(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('addNft', [
+      await submitRequestToBackground('NftController:addNft', [
         address,
         tokenID,
         networkClientId,
+        { source: Source.Custom },
       ]);
     } catch (error) {
       logErrorWithMessage(error);
@@ -3267,10 +3254,11 @@ export function addNftVerifyOwnership(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('addNftVerifyOwnership', [
+      await submitRequestToBackground('NftController:addNftVerifyOwnership', [
         address,
         tokenID,
         networkClientId,
+        { source: Source.Custom },
       ]);
     } catch (error) {
       if (isErrorWithMessage(error)) {
@@ -3308,7 +3296,7 @@ export function removeAndIgnoreNft(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('removeAndIgnoreNft', [
+      await submitRequestToBackground('NftController:removeAndIgnoreNft', [
         address,
         tokenID,
         networkClientId,
@@ -3353,7 +3341,7 @@ export function removeNft(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('removeNft', [
+      await submitRequestToBackground('NftController:removeNft', [
         address,
         tokenID,
         networkClientId,
@@ -3370,9 +3358,10 @@ export function removeNft(
 export async function checkAndUpdateAllNftsOwnershipStatus(
   networkClientId: NetworkClientId,
 ) {
-  await submitRequestToBackground('checkAndUpdateAllNftsOwnershipStatus', [
-    networkClientId,
-  ]);
+  await submitRequestToBackground(
+    'NftController:checkAndUpdateAllNftsOwnershipStatus',
+    [networkClientId],
+  );
 }
 
 export async function isNftOwner(
@@ -3381,7 +3370,7 @@ export async function isNftOwner(
   nftId: string,
   networkClientId: NetworkClientId,
 ): Promise<boolean> {
-  return await submitRequestToBackground('isNftOwner', [
+  return await submitRequestToBackground('NftController:isNftOwner', [
     ownerAddress,
     nftAddress,
     nftId,
@@ -3393,10 +3382,10 @@ export async function checkAndUpdateSingleNftOwnershipStatus(
   nft: Nft,
   networkClientId: NetworkClientId,
 ) {
-  await submitRequestToBackground('checkAndUpdateSingleNftOwnershipStatus', [
-    nft,
-    networkClientId,
-  ]);
+  await submitRequestToBackground(
+    'NftController:checkAndUpdateSingleNftOwnershipStatus',
+    [nft, networkClientId],
+  );
 }
 
 // When we upgrade to TypeScript 4.5 this is part of the language. It will get
@@ -3710,7 +3699,10 @@ export function removeNetwork(
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
-      await submitRequestToBackground('removeNetwork', [chainId]);
+      await submitRequestToBackground(
+        'MultichainNetworkController:removeNetwork',
+        [chainId],
+      );
     } catch (error) {
       logErrorWithMessage(error);
     }
@@ -4752,21 +4744,6 @@ export function setUseCurrencyRateCheck(
   };
 }
 
-// TokenDetectionController
-export function detectTokens(
-  chainIds?: string[],
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.detectTokens`);
-    await submitRequestToBackground('TokenDetectionController:detectTokens', [
-      { chainIds },
-    ]);
-    dispatch(hideLoadingIndication());
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
 // TODO: with support of non EVM, check if possible to refactor this and get chainIds from the state in the fct instead of passing it as a param
 export function detectNfts(
   chainIds: string[],
@@ -4775,7 +4752,9 @@ export function detectNfts(
     dispatch(showNftStillFetchingIndication());
     log.debug(`background.detectNfts`);
     try {
-      await submitRequestToBackground('detectNfts', [chainIds]);
+      await submitRequestToBackground('NftDetectionController:detectNfts', [
+        chainIds,
+      ]);
     } finally {
       dispatch(hideNftStillFetchingIndication());
     }
@@ -6159,71 +6138,6 @@ export async function removePollingTokenFromAppState(pollingToken: string) {
 }
 
 /**
- * Informs the CurrencyRateController that the UI requires currency rate polling
- *
- * @param nativeCurrencies - An array of native currency symbols
- * @returns polling token that can be used to stop polling
- */
-export async function currencyRateStartPolling(
-  nativeCurrencies: string[],
-): Promise<string> {
-  const pollingToken = await submitRequestToBackground(
-    'currencyRateStartPolling',
-    [{ nativeCurrencies }],
-  );
-  await addPollingTokenToAppState(pollingToken);
-  return pollingToken;
-}
-
-/**
- * Informs the CurrencyRateController that the UI no longer requires currency rate polling
- * for the given network client.
- * If all network clients unsubscribe, the controller stops polling.
- *
- * @param pollingToken - Poll token received from calling currencyRateStartPolling
- */
-export async function currencyRateStopPollingByPollingToken(
-  pollingToken: string,
-) {
-  await submitRequestToBackground('currencyRateStopPollingByPollingToken', [
-    pollingToken,
-  ]);
-  await removePollingTokenFromAppState(pollingToken);
-}
-
-/**
- * Informs the TokenDetectionController that the UI requires token detection polling
- *
- * @param chainIds - An array of chain ids to poll token detection on.
- * @returns polling token that can be used to stop polling.
- */
-export async function tokenDetectionStartPolling(
-  chainIds: string[],
-): Promise<string> {
-  const pollingToken = await submitRequestToBackground(
-    'tokenDetectionStartPolling',
-    [{ chainIds }],
-  );
-
-  await addPollingTokenToAppState(pollingToken);
-  return pollingToken;
-}
-
-/**
- * Informs the TokenDetectionController that the UI no longer token detection polling
- *
- * @param pollingToken - Poll token received from calling tokenDetectionStartPolling
- */
-export async function tokenDetectionStopPollingByPollingToken(
-  pollingToken: string,
-) {
-  await submitRequestToBackground('tokenDetectionStopPollingByPollingToken', [
-    pollingToken,
-  ]);
-  await removePollingTokenFromAppState(pollingToken);
-}
-
-/**
  * Informs the StaticAssetsController that the UI requires static assets polling
  * for the given chain ids and selected account address.
  *
@@ -6239,7 +6153,7 @@ export async function staticAssetsStartPolling(params: {
   selectedAccountId: string;
 }): Promise<string> {
   const pollingToken = await submitRequestToBackground(
-    'staticAssetsStartPolling',
+    'StaticAssetsController:startPolling',
     [params],
   );
   await addPollingTokenToAppState(pollingToken);
@@ -6249,9 +6163,10 @@ export async function staticAssetsStartPolling(params: {
 export async function staticAssetsStopPollingByPollingToken(
   pollingToken: string,
 ) {
-  await submitRequestToBackground('staticAssetsStopPollingByPollingToken', [
-    pollingToken,
-  ]);
+  await submitRequestToBackground(
+    'StaticAssetsController:stopPollingByPollingToken',
+    [pollingToken],
+  );
   await removePollingTokenFromAppState(pollingToken);
 }
 
@@ -6278,9 +6193,10 @@ export async function accountTrackerStopPollingByPollingToken(
 export async function gasFeeStartPollingByNetworkClientId(
   networkClientId: string,
 ) {
-  const pollingToken = await submitRequestToBackground('gasFeeStartPolling', [
-    { networkClientId },
-  ]);
+  const pollingToken = await submitRequestToBackground(
+    'GasFeeController:startPolling',
+    [{ networkClientId }],
+  );
   await addPollingTokenToAppState(pollingToken);
   return pollingToken;
 }
@@ -6293,9 +6209,10 @@ export async function gasFeeStartPollingByNetworkClientId(
  * @param pollingToken - Poll token received from calling gasFeeStartPolling
  */
 export async function gasFeeStopPollingByPollingToken(pollingToken: string) {
-  await submitRequestToBackground('gasFeeStopPollingByPollingToken', [
-    pollingToken,
-  ]);
+  await submitRequestToBackground(
+    'GasFeeController:stopPollingByPollingToken',
+    [pollingToken],
+  );
   await removePollingTokenFromAppState(pollingToken);
 }
 
@@ -6441,13 +6358,13 @@ export function trackMetaMetricsPage(payload: MetaMetricsPagePayload) {
 }
 
 export function resetViewedNotifications() {
-  return submitRequestToBackground('resetViewedNotifications');
+  return submitRequestToBackground('AnnouncementController:resetViewed');
 }
 
 export function updateViewedNotifications(notificationIdViewedStatusMap: {
   [notificationId: string]: boolean;
 }) {
-  return submitRequestToBackground('updateViewedNotifications', [
+  return submitRequestToBackground('AnnouncementController:updateViewed', [
     notificationIdViewedStatusMap,
   ]);
 }
@@ -7234,7 +7151,9 @@ export function requestProfilePairing(): ThunkAction<
 > {
   return async () => {
     try {
-      await submitRequestToBackground('requestProfilePairing');
+      await submitRequestToBackground(
+        'AuthenticationController:requestProfilePairing',
+      );
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -7307,7 +7226,7 @@ export async function getUserProfileLineage(): Promise<
 > {
   try {
     const userProfileLineage = await submitRequestToBackground(
-      'getUserProfileLineage',
+      'AuthenticationController:getUserProfileLineage',
     );
     return userProfileLineage;
   } catch (error) {
@@ -7971,6 +7890,27 @@ export async function getSentinelNetworkFlags(
  */
 export function setSkipDeepLinkInterstitial(value: boolean) {
   return setPreference('skipDeepLinkInterstitial', value, false);
+}
+
+/**
+ * Sets whether the support data sharing consent modal is shown every time,
+ * or the saved `supportDataSharingPreference` is applied instead.
+ *
+ * @param value - Whether to show the consent modal every time.
+ * @returns A promise that resolves when the preference is set.
+ */
+export function setShouldShowSupportConsent(value: boolean) {
+  return setPreference('shouldShowSupportConsent', value, false);
+}
+
+/**
+ * Saves the user's support data sharing choice.
+ *
+ * @param value - Whether to share the user ID and app version with support.
+ * @returns A promise that resolves when the preference is set.
+ */
+export function setSupportDataSharingPreference(value: boolean) {
+  return setPreference('supportDataSharingPreference', value, false);
 }
 
 /**

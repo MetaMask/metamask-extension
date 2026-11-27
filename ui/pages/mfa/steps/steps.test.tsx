@@ -623,7 +623,7 @@ describe('CodeStep', () => {
     );
   });
 
-  it('sends the first code by itself once the cooldown ends', () => {
+  it('lets the user send the first code once the cooldown ends, never by itself', () => {
     const { onAction } = renderCode(otp(false), {
       error: 'otp_resend_cooldown',
       resendAvailableAt: Date.now() + 2_000,
@@ -632,11 +632,15 @@ describe('CodeStep', () => {
     expect(
       screen.getByText(messages.mfaOtpSendIn.message.replace('$1', '2')),
     ).toBeInTheDocument();
-    expect(onAction).not.toHaveBeenCalled();
+    expect(
+      screen.getByText(/^We'll send a 6-digit code to /u),
+    ).toBeInTheDocument();
     act(() => {
       jest.advanceTimersByTime(2_000);
     });
-    expect(onAction).toHaveBeenCalledWith({ type: 'resend', trigger: 'auto' });
+    expect(onAction).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByText(messages.mfaOtpSend.message));
+    expect(onAction).toHaveBeenCalledWith({ type: 'resend' });
   });
 
   it('waits out a new cooldown before sending again', () => {

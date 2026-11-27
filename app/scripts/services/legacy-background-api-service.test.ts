@@ -1,4 +1,6 @@
 import { Mutex } from 'async-mutex';
+import nock from 'nock';
+import { it as jestIt } from '@jest/globals';
 import {
   AnalyticsController,
   type AnalyticsControllerInitialState,
@@ -164,15 +166,10 @@ describe('LegacyBackgroundApiService', () => {
   });
 
   describe('setCurrentCurrency', () => {
-    it('sets the currency in the AssetsController and CurrencyRateController', async () => {
+    it('sets the currency in the AssetsController', async () => {
       const currencyCode: SupportedCurrency = 'usd';
 
       await withService(async ({ serviceMessenger, rootMessenger }) => {
-        rootMessenger.registerActionHandler(
-          'CurrencyRateController:setCurrentCurrency',
-          jest.fn(),
-        );
-
         rootMessenger.registerActionHandler(
           'AssetsController:setSelectedCurrency',
           jest.fn(),
@@ -186,11 +183,6 @@ describe('LegacyBackgroundApiService', () => {
             currencyCode,
           ),
         ).resolves.toBeUndefined();
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'CurrencyRateController:setCurrentCurrency',
-          currencyCode,
-        );
 
         expect(callSpy).toHaveBeenCalledWith(
           'AssetsController:setSelectedCurrency',
@@ -6071,8 +6063,6 @@ describe('LegacyBackgroundApiService', () => {
       const handlers = {
         toggleExternalServices: jest.fn(),
         getState: jest.fn().mockReturnValue({ subscriptions: [] }),
-        enableTokenDetection: jest.fn(),
-        disableTokenDetection: jest.fn(),
         enableGasFeeApis: jest.fn(),
         disableGasFeeApis: jest.fn(),
         stopAllPolling: jest.fn(),
@@ -6086,14 +6076,6 @@ describe('LegacyBackgroundApiService', () => {
       rootMessenger.registerActionHandler(
         'SubscriptionController:getState',
         handlers.getState,
-      );
-      rootMessenger.registerActionHandler(
-        'TokenDetectionController:enable',
-        handlers.enableTokenDetection,
-      );
-      rootMessenger.registerActionHandler(
-        'TokenDetectionController:disable',
-        handlers.disableTokenDetection,
       );
       rootMessenger.registerActionHandler(
         'GasFeeController:enableNonRPCGasFeeApis',
@@ -6133,10 +6115,8 @@ describe('LegacyBackgroundApiService', () => {
           true,
           undefined,
         );
-        expect(handlers.enableTokenDetection).toHaveBeenCalledTimes(1);
         expect(handlers.enableGasFeeApis).toHaveBeenCalledTimes(1);
         expect(handlers.startShield).toHaveBeenCalledTimes(1);
-        expect(handlers.disableTokenDetection).not.toHaveBeenCalled();
         expect(handlers.stopAllPolling).not.toHaveBeenCalled();
         expect(handlers.stopShield).not.toHaveBeenCalled();
       });
@@ -6153,7 +6133,6 @@ describe('LegacyBackgroundApiService', () => {
           true,
         );
 
-        expect(handlers.enableTokenDetection).toHaveBeenCalledTimes(1);
         expect(handlers.enableGasFeeApis).toHaveBeenCalledTimes(1);
         expect(handlers.startShield).not.toHaveBeenCalled();
       });
@@ -6176,7 +6155,6 @@ describe('LegacyBackgroundApiService', () => {
           true,
           ownedPreferences,
         );
-        expect(handlers.enableTokenDetection).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -6195,11 +6173,9 @@ describe('LegacyBackgroundApiService', () => {
           false,
           undefined,
         );
-        expect(handlers.disableTokenDetection).toHaveBeenCalledTimes(1);
         expect(handlers.disableGasFeeApis).toHaveBeenCalledTimes(1);
         expect(handlers.stopAllPolling).toHaveBeenCalledTimes(1);
         expect(handlers.stopShield).toHaveBeenCalledTimes(1);
-        expect(handlers.enableTokenDetection).not.toHaveBeenCalled();
         expect(handlers.startShield).not.toHaveBeenCalled();
       });
     });
@@ -6215,7 +6191,6 @@ describe('LegacyBackgroundApiService', () => {
           false,
         );
 
-        expect(handlers.disableTokenDetection).toHaveBeenCalledTimes(1);
         expect(handlers.disableGasFeeApis).toHaveBeenCalledTimes(1);
         expect(handlers.stopAllPolling).toHaveBeenCalledTimes(1);
         expect(handlers.stopShield).not.toHaveBeenCalled();
@@ -8781,6 +8756,88 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
   });
+
+  describe('checkFirstTimeInteraction', () => {
+    jestIt.each([
+      [0, true],
+      [1, false],
+      [undefined, undefined],
+    ])('returns %s interactions as %s', async (count, expected) => {
+      await withService(async ({ rootMessenger }) => {
+        const scope = nock('https://accounts.api.cx.metamask.io')
+          .get('/v1/networks/1/accounts/0x123/relationships/0x456')
+          .reply(200, count === undefined ? {} : { count });
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:checkFirstTimeInteraction',
+          { chainId: 1, from: '0x123', to: '0x456' },
+        );
+
+        expect(result).toBe(expected);
+        expect(scope.isDone()).toBe(true);
+      });
+    });
+
+    it('returns undefined when the relationship request fails', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const scope = nock('https://accounts.api.cx.metamask.io')
+          .get('/v1/networks/1/accounts/0x123/relationships/0x456')
+          .replyWithError('Request failed');
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:checkFirstTimeInteraction',
+          { chainId: 1, from: '0x123', to: '0x456' },
+        );
+
+        expect(result).toBeUndefined();
+        expect(scope.isDone()).toBe(true);
+      });
+    });
+  });
+
+  describe('backupUserData', () => {
+    it('returns a JSON backup of preferences, accounts, address book, and networks', async () => {
+      const preferences = { theme: 'dark' };
+      const internalAccounts = { accounts: {}, selectedAccount: 'account-1' };
+      const addressBook = { addressBook: { '0x1': {} } };
+      const networkConfigurationsByChainId = { '0x1': { chainId: '0x1' } };
+
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'PreferencesController:getState',
+          jest.fn().mockReturnValue(preferences),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:getState',
+          jest.fn().mockReturnValue({ internalAccounts }),
+        );
+        rootMessenger.registerActionHandler(
+          'AddressBookController:getState',
+          jest.fn().mockReturnValue(addressBook),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({ networkConfigurationsByChainId }),
+        );
+
+        const backup = await rootMessenger.call(
+          'LegacyBackgroundApiService:backupUserData',
+        );
+
+        expect(backup).toMatchObject({
+          fileName: expect.stringMatching(
+            /^MetaMaskUserData\.\d{4}_\d{2}_\d{2}_\d{2}_\d{2}_\d{2}\.json$/u,
+          ),
+          data: JSON.stringify({
+            preferences,
+            internalAccounts: { internalAccounts },
+            addressBook,
+            network: { networkConfigurationsByChainId },
+          }),
+        });
+      });
+    });
+  });
 });
 
 /**
@@ -8853,6 +8910,7 @@ function getMessenger(
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
       'NetworkController:getNetworkConfigurationByNetworkClientId',
+      'AddressBookController:getState',
       'SelectedNetworkController:getNetworkClientIdForDomain',
       'NetworkController:getSelectedNetworkClient',
       'NetworkController:addNetwork',
@@ -8864,7 +8922,6 @@ function getMessenger(
       'NetworkEnablementController:isNetworkEnabled',
       'NetworkEnablementController:restoreEnabledNetworkMap',
       'RemoteFeatureFlagController:getState',
-      'CurrencyRateController:setCurrentCurrency',
       'AssetsContractController:getTokenStandardAndDetails',
       'AssetsController:addCustomAsset',
       'AssetsController:getAssets',
@@ -8991,8 +9048,6 @@ function getMessenger(
       'PhishingController:testOrigin',
       'PreferencesController:toggleExternalServices',
       'SubscriptionController:getState',
-      'TokenDetectionController:enable',
-      'TokenDetectionController:disable',
       'GasFeeController:enableNonRPCGasFeeApis',
       'GasFeeController:disableNonRPCGasFeeApis',
       'ShieldController:start',

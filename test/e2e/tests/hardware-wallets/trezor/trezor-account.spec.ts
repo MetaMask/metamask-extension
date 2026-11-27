@@ -19,7 +19,7 @@ describe('Trezor Hardware', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver, { waitForNonEvmAccounts: false });
+        await login(driver);
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
@@ -66,7 +66,7 @@ describe('Trezor Hardware', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver, { waitForNonEvmAccounts: false });
+        await login(driver);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 

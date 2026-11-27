@@ -95,6 +95,37 @@ async function buildCashtagWidgetCss(content: Buffer | string, from: string) {
 }
 
 // #region cache
+// Invalidates the build cache when the listed files change.
+// `__filename` makes all `require`d dependencies of *this* file
+// `buildDependencies`.
+// Modules loaded with `await import()` are not recorded as
+// `require` children, so `getPlugins` appends the optional
+// plugins it loads to keep their own dependencies tracked.
+const cacheBuildDependencies: string[] = args.cache
+  ? [
+      __filename,
+      ...[join(root, '.metamaskprodrc'), join(root, '.metamaskrc')].filter(
+        existsSync,
+      ),
+      join(root, 'builds.yml'),
+      browsersListPath,
+    ]
+  : [];
+/**
+ * Tracks a lazily imported module as a cache build dependency, as a `require`
+ * of the same module would have done.
+ *
+ * @param id - The module specifier passed to `import()`.
+ */
+function trackBuildDependency(id: string) {
+  if (!args.cache) {
+    return;
+  }
+  const path = require.resolve(id);
+  if (!cacheBuildDependencies.includes(path)) {
+    cacheBuildDependencies.push(path);
+  }
+}
 const cache = args.cache
   ? ({
       type: 'filesystem',
@@ -109,17 +140,7 @@ const cache = args.cache
       allowCollectingMemory: false,
       buildDependencies: {
         defaultConfig: [__filename],
-        // Invalidates the build cache when the listed files change.
-        // `__filename` makes all `require`d dependencies of *this* file
-        // `buildDependencies`
-        config: [
-          __filename,
-          ...[join(root, '.metamaskprodrc'), join(root, '.metamaskrc')].filter(
-            existsSync,
-          ),
-          join(root, 'builds.yml'),
-          browsersListPath,
-        ],
+        config: cacheBuildDependencies,
       },
     } as const satisfies FileCacheOptions)
   : ({ type: 'memory' } as const satisfies MemoryCacheOptions);
@@ -172,7 +193,7 @@ const manifestPlugin = new ManifestPlugin({
     : false,
 });
 
-const plugins: WebpackPluginInstance[] = [
+const basePlugins: WebpackPluginInstance[] = [
   manifestPlugin,
   // HtmlBundlerPlugin treats HTML files as entry points
   new HtmlBundlerPlugin({
@@ -278,46 +299,59 @@ const plugins: WebpackPluginInstance[] = [
     ],
   }),
 ];
-// MV2 requires self-injection
-if (MANIFEST_VERSION === 2) {
-  const { SelfInjectPlugin } = require('./utils/plugins/SelfInjectPlugin');
-  plugins.push(new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }));
-}
-if (args.lavamoat) {
-  const {
-    lavamoatPlugin,
-    lavamoatUnsafeLayerPlugin,
-  } = require('./utils/plugins/LavamoatPlugin');
-  plugins.push(lavamoatPlugin(args, manifestPlugin), lavamoatUnsafeLayerPlugin);
-}
-if (args.progress) {
-  const { ProgressPlugin } = require('webpack');
-  plugins.push(new ProgressPlugin());
-}
-if (args.reactCompilerVerbose) {
-  const {
-    ReactCompilerPlugin,
-  } = require('./utils/plugins/ReactCompilerPlugin');
-  plugins.push(new ReactCompilerPlugin());
-}
+// TODO: Replace this wrapper with top-level await once the tooling runs
+// as ESM under LavaMoat.
+/** Loads optional plugins in configuration order. */
+async function getPlugins() {
+  const plugins = [...basePlugins];
+  // MV2 requires self-injection
+  if (MANIFEST_VERSION === 2) {
+    const { SelfInjectPlugin } =
+      await import('./utils/plugins/SelfInjectPlugin');
+    trackBuildDependency('./utils/plugins/SelfInjectPlugin');
+    plugins.push(new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }));
+  }
+  if (args.lavamoat) {
+    const { lavamoatPlugin, lavamoatUnsafeLayerPlugin } =
+      await import('./utils/plugins/LavamoatPlugin');
+    trackBuildDependency('./utils/plugins/LavamoatPlugin');
+    plugins.push(
+      lavamoatPlugin(args, manifestPlugin),
+      lavamoatUnsafeLayerPlugin,
+    );
+  }
+  if (args.progress) {
+    const { ProgressPlugin } = require('webpack');
+    plugins.push(new ProgressPlugin());
+  }
+  if (args.reactCompilerVerbose) {
+    const { ReactCompilerPlugin } =
+      await import('./utils/plugins/ReactCompilerPlugin');
+    trackBuildDependency('./utils/plugins/ReactCompilerPlugin');
+    plugins.push(new ReactCompilerPlugin());
+  }
 
-if (isDevelopmentWatchMode) {
-  const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
-  plugins.push(
-    new HotModuleReplacementPlugin(),
-    new ReactRefreshWebpackPlugin({
-      include: UI_DIR_RE,
-      overlay: false,
-      runtimeEntry: false,
-    }),
-  );
-}
+  if (isDevelopmentWatchMode) {
+    const { default: ReactRefreshWebpackPlugin } =
+      await import('@pmmmwh/react-refresh-webpack-plugin');
+    plugins.push(
+      new HotModuleReplacementPlugin(),
+      new ReactRefreshWebpackPlugin({
+        include: UI_DIR_RE,
+        overlay: false,
+        runtimeEntry: false,
+      }),
+    );
+  }
 
-if (args.bundleAnalyzer) {
-  const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-  plugins.push(
-    new BundleAnalyzerPlugin({ analyzerMode: 'static', openAnalyzer: false }),
-  );
+  if (args.bundleAnalyzer) {
+    const { default: analyzer } = await import('webpack-bundle-analyzer');
+    const { BundleAnalyzerPlugin } = analyzer;
+    plugins.push(
+      new BundleAnalyzerPlugin({ analyzerMode: 'static', openAnalyzer: false }),
+    );
+  }
+  return plugins;
 }
 
 // #endregion plugins
@@ -372,7 +406,6 @@ const config = {
   // an empty entry object prevents webpack's default entry.
   entry: {},
   cache,
-  plugins,
   context,
   mode: args.mode,
   stats: 'none',
@@ -414,21 +447,22 @@ const config = {
     // Extensions added to the request when trying to find the file. The most
     // common extensions should be first to improve resolution performance.
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+    // Keep optional developer-tool grants in generated policies for builds that
+    // enable them; normal builds exclude the installed packages by alias.
+    alias: {
+      // #region conditionally remove developer tooling
+      // remove remote-redux-devtools unless METAMASK_REACT_REDUX_DEVTOOLS is enabled
+      'remote-redux-devtools':
+        args.generatePolicy || variables.get('METAMASK_REACT_REDUX_DEVTOOLS')
+          ? require.resolve('remote-redux-devtools')
+          : false,
+      // #endregion conditionally remove developer tooling
+    },
     // use `fallback` to redirect module requests when normal resolving fails,
     // good for polyfill-ing built-in node modules that aren't available in
     // the browser. The browser will first attempt to load these modules, if
     // it fails it will load the fallback.
     fallback: {
-      // #region conditionally remove developer tooling
-      // remove react-devtools-core unless METAMASK_REACT_REDUX_DEVTOOLS is enabled
-      'react-devtools-core': variables.get('METAMASK_REACT_REDUX_DEVTOOLS')
-        ? require.resolve('react-devtools-core')
-        : false,
-      // remove remote-redux-devtools unless METAMASK_REACT_REDUX_DEVTOOLS is enabled
-      'remote-redux-devtools': variables.get('METAMASK_REACT_REDUX_DEVTOOLS')
-        ? require.resolve('remote-redux-devtools')
-        : false,
-      // #endregion conditionally remove developer tooling
       // #region node polyfills
       crypto: require.resolve('crypto-browserify'),
       fs: false,
@@ -631,9 +665,7 @@ const config = {
     // chunk changes, but the parent chunk does not.
     moduleIds: 'deterministic',
     chunkIds: 'deterministic',
-    ...(args.minify
-      ? { minimize: true, minimizer: getMinimizers() }
-      : { minimize: false }),
+    minimize: args.minify,
     // Make most chunks share a single runtime file, which contains the
     // webpack "runtime". The exception is @lavamoat/snow and all scripts
     // found in the extension manifest; these scripts must be self-contained
@@ -694,4 +726,16 @@ const config = {
   ],
 } as const satisfies Configuration;
 
-export default config;
+// TODO: Replace this wrapper with top-level await once the tooling runs
+// as ESM under LavaMoat.
+/** Finishes the configuration after loading optional dependencies. */
+export default async function createConfig() {
+  return {
+    ...config,
+    plugins: await getPlugins(),
+    optimization: {
+      ...config.optimization,
+      ...(args.minify ? { minimizer: await getMinimizers() } : {}),
+    },
+  };
+}

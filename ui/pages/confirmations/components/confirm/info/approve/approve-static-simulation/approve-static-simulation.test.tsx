@@ -2,8 +2,16 @@ import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { getMockApproveConfirmState } from '../../../../../../../../test/data/confirmations/helper';
+import {
+  getMockApproveConfirmState,
+  getMockConfirmStateForTransaction,
+} from '../../../../../../../../test/data/confirmations/helper';
+import {
+  genUnapprovedPermit2ApproveConfirmation,
+  PERMIT2_TOKEN_ADDRESS,
+} from '../../../../../../../../test/data/confirmations/token-approve';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
+import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import { useIsNFT } from '../hooks/use-is-nft';
 import { ApproveStaticSimulation } from './approve-static-simulation';
 
@@ -78,5 +86,27 @@ describe('<ApproveStaticSimulation />', () => {
     fireEvent.click(editButton);
 
     expect(setIsOpenEditSpendingCapModal).toHaveBeenCalledWith(true);
+  });
+
+  it('shows the token from the calldata for Permit2 approvals', () => {
+    (useIsNFT as jest.Mock).mockReturnValue({ isNFT: false });
+
+    const transactionMeta = genUnapprovedPermit2ApproveConfirmation();
+    const state = getMockConfirmStateForTransaction(transactionMeta);
+    const mockStore = configureMockStore(middleware)(state);
+
+    const { getByText, queryByText } = renderWithConfirmContextProvider(
+      <ApproveStaticSimulation setIsOpenEditSpendingCapModal={jest.fn()} />,
+      mockStore,
+    );
+
+    expect(useAssetDetails).toHaveBeenCalledWith(
+      PERMIT2_TOKEN_ADDRESS,
+      transactionMeta.txParams.from,
+      transactionMeta.txParams.data,
+      transactionMeta.chainId,
+    );
+    expect(getByText('0x11111...11111')).toBeInTheDocument();
+    expect(queryByText('0x00000...78BA3')).not.toBeInTheDocument();
   });
 });

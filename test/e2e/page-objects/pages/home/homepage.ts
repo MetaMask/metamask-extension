@@ -10,19 +10,12 @@ import {
 } from '../../../tests/identity/account-syncing/helpers';
 import HeaderNavbar from './header-navbar';
 
-type ReceiveButton = 'default' | 'row';
-
 export type CheckExpectedBalanceOptions = {
   expectedBalance?: string;
   symbol?: string;
   expectFundYourWalletBanner?: boolean;
   timeout?: number;
 };
-
-// TODO: Remove this widened wait once #43958 completes the Solana discovery
-// mocks; until then the unmocked discovery RPCs retry-storm the Solana icon
-// past the default 10s wait.
-const NON_EVM_ICON_TIMEOUT = 20_000;
 
 /**
  * Wallet home / account overview: balance, primary CTAs, and tab navigation.
@@ -58,15 +51,6 @@ class HomePage {
   // (`coin-overview__primary-currency`) balance containers.
   protected readonly balance: string =
     '[data-testid$="overview__primary-currency"]';
-
-  private readonly bitcoinAccountIcon = 'img[src="./images/bitcoin-logo.svg"]';
-
-  protected readonly bottomNavActivityButton =
-    '[data-testid="bottom-nav-activity"]';
-
-  private readonly bottomNavHomeButton = '[data-testid="bottom-nav-home"]';
-
-  protected readonly bottomNavPerpsButton = '[data-testid="bottom-nav-perps"]';
 
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
@@ -108,6 +92,13 @@ class HomePage {
     text: 'Connecting to Localhost 8545',
   };
 
+  protected readonly mainNavActivityButton =
+    '[data-testid="main-nav-activity"]';
+
+  private readonly mainNavHomeButton = '[data-testid="main-nav-home"]';
+
+  protected readonly mainNavPerpsButton = '[data-testid="main-nav-perps"]';
+
   protected readonly nftTab = {
     testId: 'account-overview__nfts-tab',
   };
@@ -122,7 +113,11 @@ class HomePage {
     testId: 'account-value-and-suffix',
   };
 
-  private readonly receiveOnRow = '[data-testid$="-overview-receive"]';
+  // Narrow layout: Receive is the only action left in the "More" group, which
+  // renders as `-overview-default`. Wide layout: actions are pills and Receive
+  // is its own `-overview-receive` pill.
+  private readonly receiveButton =
+    '[data-testid$="-overview-default"], [data-testid$="-overview-receive"]';
 
   private readonly revealSrpPasswordInput = '[data-testid="input-password"]';
 
@@ -135,10 +130,6 @@ class HomePage {
 
   private readonly shieldEntryModalSkip =
     '[data-testid="shield-entry-modal-close-button"]';
-
-  private readonly singleActionButton = '[data-testid$="-overview-default"]';
-
-  private readonly solanaAccountIcon = 'img[src="./images/solana-logo.svg"]';
 
   private readonly srpAddedToast = '[data-testid="new-srp-added-toast"]';
 
@@ -479,10 +470,8 @@ class HomePage {
     );
   }
 
-  async clickOnReceiveButton(receiveButton: ReceiveButton): Promise<void> {
-    const selector =
-      receiveButton === 'default' ? this.singleActionButton : this.receiveOnRow;
-    await this.driver.clickElement(selector);
+  async clickOnReceiveButton(): Promise<void> {
+    await this.driver.clickElement(this.receiveButton);
   }
 
   async clickOnSendButton(): Promise<void> {
@@ -578,8 +567,8 @@ class HomePage {
   }
 
   async goToActivityList(): Promise<void> {
-    console.log('Open the activity page from the bottom navigation bar');
-    await this.driver.clickElement(this.bottomNavActivityButton);
+    console.log('Open the activity page from the main navigation');
+    await this.driver.clickElement(this.mainNavActivityButton);
     await this.driver.waitForSelector({
       testId: 'parent-selector-activity-tab',
     });
@@ -607,7 +596,7 @@ class HomePage {
     if (alreadyOnHome) {
       return;
     }
-    await this.driver.clickElement(this.bottomNavHomeButton);
+    await this.driver.clickElement(this.mainNavHomeButton);
     await this.checkPageIsLoaded();
   }
 
@@ -752,18 +741,6 @@ class HomePage {
       },
       { timeout: 15000, interval: 500, stableFor: 5000 },
     );
-  }
-
-  async waitForNonEvmAccountsLoaded(): Promise<void> {
-    console.log('Waiting for Non EVM account icons to be visible');
-    // See the removal TODO on `NON_EVM_ICON_TIMEOUT`. Still polled: returns
-    // as soon as the icons render.
-    await this.driver.waitForSelector(this.solanaAccountIcon, {
-      timeout: NON_EVM_ICON_TIMEOUT,
-    });
-    await this.driver.waitForSelector(this.bitcoinAccountIcon, {
-      timeout: NON_EVM_ICON_TIMEOUT,
-    });
   }
 }
 

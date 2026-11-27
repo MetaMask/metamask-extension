@@ -32,14 +32,14 @@ describe('getRouteCoverage', () => {
         status: 'page-object',
         pageObject: 'HomePage',
       },
+      { path: '/activity', label: 'Activity', status: 'no-page-object' },
+      { path: '/lock', label: 'Lock Page', status: 'not-a-screen' },
       {
         path: '/send',
         label: 'Send Page',
         status: 'page-object',
         pageObject: 'SendPage',
       },
-      { path: '/activity', label: 'Activity', status: 'no-page-object' },
-      { path: '/lock', label: 'Lock Page', status: 'not-a-screen' },
       { path: '/unlock', label: 'Unlock Page', status: 'unregistered' },
     ]);
   });
@@ -48,6 +48,26 @@ describe('getRouteCoverage', () => {
     const { staleEntries } = getRouteCoverage(ROUTES, registry);
 
     expect(staleEntries).toStrictEqual(['/removed-route']);
+  });
+
+  it('sorts routes and stale entries by path', () => {
+    const { routes, staleEntries } = getRouteCoverage(
+      [
+        { path: '/settings/b', label: 'B' },
+        { path: '', label: 'Empty' },
+        { path: '/settings', label: 'Settings' },
+        { path: '/settings/a', label: 'A' },
+      ],
+      { '/zeta': null, '/alpha': null },
+    );
+
+    expect(routes.map(({ path }) => path)).toStrictEqual([
+      '',
+      '/settings',
+      '/settings/a',
+      '/settings/b',
+    ]);
+    expect(staleEntries).toStrictEqual(['/alpha', '/zeta']);
   });
 
   it('summarizes the counts and the share of screen routes with a page object', () => {

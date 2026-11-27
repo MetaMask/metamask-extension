@@ -112,6 +112,9 @@ describe('MoneyApiActivityDetails', () => {
       screen.getByTestId('money-api-activity-details-hero-amount'),
     ).toHaveTextContent('+$0.30');
     expect(
+      screen.getByTestId('money-api-activity-details-hero-amount'),
+    ).toHaveClass('text-success-default');
+    expect(
       screen.getByTestId('money-api-activity-details-counterparty'),
     ).toHaveTextContent(
       `${messages.moneyActivityDetailsReceivedFrom.message}${shortenMoneyActivityHex(
@@ -134,6 +137,74 @@ describe('MoneyApiActivityDetails', () => {
     expect(
       screen.getByTestId('money-api-activity-details-hero-amount'),
     ).toHaveTextContent('+$10.00');
+  });
+
+  it('renders the historical valuation in the hero', () => {
+    renderWithLocalization(
+      <MoneyApiActivityDetails
+        activity={{
+          ...cardActivity,
+          displayAmount: { type: 'historical', value: '10174880', decimals: 6 },
+        }}
+        onBack={onBack}
+      />,
+    );
+
+    expect(
+      screen.getByTestId('money-api-activity-details-hero-amount'),
+    ).toHaveTextContent('-$10.17');
+  });
+
+  it('marks the approximate valuation in the hero', () => {
+    renderWithLocalization(
+      <MoneyApiActivityDetails
+        activity={{
+          ...cardActivity,
+          displayAmount: {
+            type: 'approximate',
+            value: '15000000',
+            decimals: 6,
+          },
+        }}
+        onBack={onBack}
+      />,
+    );
+
+    expect(
+      screen.getByTestId('money-api-activity-details-hero-amount'),
+    ).toHaveTextContent('≈-$15.00');
+  });
+
+  it('renders a pending placeholder without the success color', () => {
+    renderWithLocalization(
+      <MoneyApiActivityDetails
+        activity={{
+          ...cashbackActivity,
+          displayAmount: { type: 'pending' },
+        }}
+        onBack={onBack}
+      />,
+    );
+
+    const hero = screen.getByTestId('money-api-activity-details-hero-amount');
+    expect(hero).toHaveTextContent('—');
+    expect(hero).not.toHaveClass('text-success-default');
+  });
+
+  it('renders the unavailable copy when no valuation exists', () => {
+    renderWithLocalization(
+      <MoneyApiActivityDetails
+        activity={{
+          ...cardActivity,
+          displayAmount: { type: 'unavailable' },
+        }}
+        onBack={onBack}
+      />,
+    );
+
+    expect(
+      screen.getByTestId('money-api-activity-details-hero-amount'),
+    ).toHaveTextContent(messages.moneyActivityAmountUnavailable.message);
   });
 
   it('copies the transaction hash when the copy button is pressed', () => {

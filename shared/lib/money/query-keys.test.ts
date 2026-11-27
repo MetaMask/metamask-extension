@@ -39,6 +39,9 @@ describe('MoneyAccountApiDataServiceQueryKeys', () => {
     expect(MoneyAccountApiDataServiceQueryKeys).toStrictEqual({
       FETCH_POSITIONS: 'MoneyAccountApiDataService:fetchPositions',
       FETCH_INTEREST: 'MoneyAccountApiDataService:fetchInterest',
+      FETCH_VAULT_RATE: 'MoneyAccountApiDataService:fetchVaultRate',
+      FETCH_VAULT_SHARE_VALUATIONS:
+        'MoneyAccountApiDataService:fetchVaultShareValuations',
     });
   });
 

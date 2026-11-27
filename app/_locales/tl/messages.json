@@ -2838,9 +2838,6 @@
   "confirmFieldNeverExpires": {
     "message": "Hindi nag-e-expire"
   },
-  "confirmFieldPaymaster": {
-    "message": "Ang bayarin ay binayaran ni"
-  },
   "confirmFieldPeriodDurationBiWeekly": {
     "message": "Tuwing dalawang linggo"
   },
@@ -2865,9 +2862,6 @@
   },
   "confirmFieldTooltipJustification": {
     "message": "Katwiran para sa kahilingan na ibinigay ng website"
-  },
-  "confirmFieldTooltipPaymaster": {
-    "message": "Ang bayarin para sa transaksyong ito ay babayaran ng paymaster smart contract."
   },
   "confirmFieldTotalExposure": {
     "message": "Kabuuang exposure"
@@ -3466,7 +3460,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "I-update ang pinakabagong bersyon ng MetaMask",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "Walang ibinigay na url para sa pag-navigate."
@@ -3479,6 +3473,12 @@
   },
   "deepLink_GoToTheHomePageButton": {
     "message": "Magpunta sa home page"
+  },
+  "deepLink_MobileShareDescription": {
+    "message": "I-scan ang QR code na ito sa iyong mobile device para buksan ang link na ito sa MetaMask Mobile."
+  },
+  "deepLink_MobileShareTitle": {
+    "message": "Magpatuloy sa MetaMask Mobile"
   },
   "deepLink_RedirectingToMetaMask": {
     "message": "Inire-redirect sa MetaMask"
@@ -3607,10 +3607,6 @@
   "deleteMetaMetricsData": {
     "message": "Tanggalin ang data ng MetaMetrics"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "Tatanggalin nito ang kasaysayan ng data ng MetaMetrics na may kaugnayan sa paggamit mo sa device na ito. Hindi magbabago ang wallet at mga account mo sa kung ano ito ngayon pagkatapos mabura ang data na ito. Ang prosesong ito ay maaaring tumagal nang hanggang 30 araw. Tingnan ang aming $1.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Tatanggalin nito ang kasaysayan ng data ng MetaMetrics na may kaugnayan sa iyong wallet. Kabilang sa MetaMetrics ang walang pagkakakilanlan na paggamit at diagnostic data. Mananatili ang wallet at mga account mo sa kung ano ang mga ito ngayon. Ang proseso na ito ay maaaring tumagal ng 30 araw. Tingnan ang aming $1.",
     "description": "$1 will have text saying Privacy Policy "
@@ -3618,17 +3614,14 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Hindi makumpleto ang kahilingang ito sa ngayon dahil sa isang isyu sa server ng analytics system. Subukan muli mamaya."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "Hindi namin matanggal ang data na ito sa ngayon"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "Hindi matanggal"
   },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "Aalisin na namin ang lahat ng iyong data ng MetaMetrics. Sigurado ka ba?"
-  },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Tanggalin ang data ng MetaMetrics?"
+  },
+  "deleteMetaMetricsDataPrivacyNotice": {
+    "message": "Patakaran sa Pagkapribado"
   },
   "deleteMetaMetricsDataRequestedDescription": {
     "message": "Pinasimulan mo ang pagtatanggal sa $1. Ang prosesong ito ay maaaring tumagal nang hanggang 30 araw. Tingnan ang $2.",
@@ -5500,9 +5493,6 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Makikita sa button ng katayuan ng koneksyon kung nakakonekta ang website na binibisita mo sa kasalukuyan mong napiling account."
   },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Dahil hindi mo kailanman sinubukan ang MetaMetrics, walang data na tatanggalin dito."
-  },
   "metadataModalSourceTooltip": {
     "message": "Ang $1 ay naka-host sa npm at $2 ang natatanging pagkakailanlan ng Snap.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
@@ -5657,6 +5647,13 @@
   "mfaOtpDescriptionTotp": {
     "message": "Buksan ang iyong authenticator app at ilagay ang 6 digit code."
   },
+  "mfaOtpDescriptionUnsent": {
+    "message": "Magpapadala kami ng 6 digit code sa iyong email. Ilagay ito sa ibaba para i-verify ang email mo."
+  },
+  "mfaOtpDescriptionUnsentWithEmail": {
+    "message": "Magpapadala kami ng 6 digit code sa $1. Ilagay ito sa ibaba para i-verify ang email mo.",
+    "description": "$1 is the user's masked email address"
+  },
   "mfaOtpDescriptionWithEmail": {
     "message": "Nagpadala kami ng 6 digit code sa $1. Ilagay ito sa ibaba para i-verify ang email mo.",
     "description": "$1 is the email address the code was sent to"
@@ -5683,6 +5680,9 @@
   },
   "mfaOtpRetryIn": {
     "message": "Subukan muli sa $1s"
+  },
+  "mfaOtpSend": {
+    "message": "Magpadala ng code"
   },
   "mfaOtpSendIn": {
     "message": "Magpadala ng code pagkalipas ng $1s",
@@ -5748,6 +5748,9 @@
   "mfaSettingsNotice": {
     "message": "Ang mga pamamaraang ito ay nagdadagdag ng proteksyon sa mga transaksyon ng Money account. Hindi nila mababawi ang wallet mo."
   },
+  "mfaSettingsNoticeSocialLogin": {
+    "message": "Ang mga pamamaraang ito ay nagdadagdag ng proteksyon sa mga transaksyon ng Money account at para mabawi ang wallet mo."
+  },
   "mfaSettingsRemoveElsewhereDescription": {
     "message": "Gumagana lamang ang ibang mga paraan mo sa MetaMask mobile app. Tanggalin ang email mo mula rito."
   },
@@ -5786,6 +5789,9 @@
   },
   "mfaSettingsUsedForMoney": {
     "message": "I-verify ang mga transaksyong Money"
+  },
+  "mfaSettingsUsedForWalletRecovery": {
+    "message": "Pag-recover ng wallet"
   },
   "mfaTotpSetupContinue": {
     "message": "Magpatuloy"
@@ -5881,6 +5887,10 @@
   },
   "moneyActivity": {
     "message": "Aktibidad"
+  },
+  "moneyActivityAmountUnavailable": {
+    "message": "Hindi available ang halaga",
+    "description": "Shown in place of a Money card activity amount when the historical mUSD value cannot be calculated"
   },
   "moneyActivityCard": {
     "message": "Card"
@@ -7179,8 +7189,7 @@
     "message": "Iba pang kaugnay na mga materyal sa promosyon"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "Nais naming gamitin ang data (tulad ng impormasyon mula sa mga cookie) upang matutunan kung paano ka nakikipag-ugnayan sa aming mga komunikasyon sa marketing.",
-    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
+    "message": "Nais naming gamitin ang data (tulad ng impormasyon mula sa mga cookie) upang matutunan kung paano ka nakikipag-ugnayan sa aming mga komunikasyon sa marketing."
   },
   "onboardedMetametricsParagraph2": {
     "message": "Tumutulong ito sa amin na maiangkop ang aming ibinabahagi sa iyo, tulad ng:"
@@ -9716,9 +9725,6 @@
   "restore": {
     "message": "Ibalik"
   },
-  "restoreUserData": {
-    "message": "Ibalik ang data ng user"
-  },
   "restoreWalletDescription": {
     "message": "Ilagay ang $1 mo. Sa pag-import sa wallet, mabubura ang kasalukuyang data ng wallet mo mula sa device na ito. Hindi na ito mababawi.",
     "description": "$1 is the Secret Recovery Phrase"
@@ -11946,7 +11952,7 @@
   },
   "stxFailureDescription": {
     "message": "Ang biglaang pagbabago sa merkado ay maaaring maging sanhi ng pagkabigo. Kung magpatuloy ang problema, makipag-ugnyan sa $1.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxOptInDescriptionV2": {
     "message": "I-on ang mga Smart Transaction para sa mas maaasahan at ligtas na mga transaksyon. $1"
@@ -12090,7 +12096,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Nangyayari ang mga pagkabigo sa transaksyon at narito kami upang tumulong. Kung magpapatuloy ang isyung ito, maaari kapag makipag-ugnay sa aming suporta sa customer sa $1 para sa karagdagang tulong.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "Nabigo ang pag-swap"
@@ -12402,6 +12408,9 @@
   },
   "to": {
     "message": "Sa/Kay"
+  },
+  "today": {
+    "message": "Ngayong araw"
   },
   "toggleDecodeDescription": {
     "message": "Ginagamit namin ang mga serbisyo ng 4byte.directory at Sourcify para i-decode at ipakita ang mas nababasang data ng transaksyon. Tinutulungan ka nito na maunawaan ang kinalabasan ng mga nakabinbin at nakalipas na transaksyon, ngunit maaaring humantong sa pagbabahagi ng iyong IP address."

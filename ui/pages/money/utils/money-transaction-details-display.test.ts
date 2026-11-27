@@ -207,6 +207,18 @@ describe('getMoneyActivityTransactionHash', () => {
     ).toStrictEqual({ hash: parentHash, chainId: '0x8f' });
   });
 
+  it('labels a Money withdraw hash with its destination chain', () => {
+    expect(
+      getMoneyActivityTransactionHash(
+        buildDeposit({
+          type: 'moneyAccountWithdraw',
+          hash: parentHash,
+          metamaskPay: { chainId: '0x2105', isPostQuote: true },
+        } as Partial<TransactionMeta>),
+      ),
+    ).toStrictEqual({ hash: parentHash, chainId: '0x2105' });
+  });
+
   it('falls back to the required transaction hash for the 0x0 Pay placeholder', () => {
     expect(
       getMoneyActivityTransactionHash(buildDeposit({ hash: '0x0' }), {

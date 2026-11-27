@@ -125,7 +125,6 @@ describe('Assets API fallbacks', function () {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, {
           validateBalance: false,
-          waitForNonEvmAccounts: false,
         });
 
         const tokensTab = new TokensTab(driver);
@@ -187,7 +186,6 @@ describe('Assets API fallbacks', function () {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, {
           validateBalance: false,
-          waitForNonEvmAccounts: false,
         });
 
         const tokensTab = new TokensTab(driver);

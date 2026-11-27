@@ -5,6 +5,7 @@ import {
   defaultState,
 } from '@metamask/notification-services-controller/push-services';
 import type { PushAnalyticsPayload } from '@metamask/notification-services-controller/push-services';
+import { Env } from '@metamask/profile-sync-controller/sdk';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { MessengerClientInitRequest } from '../types';
 import {
@@ -109,6 +110,7 @@ describe('NotificationServicesPushControllerInit', () => {
       config: {
         isPushFeatureEnabled: false,
         platform: 'extension',
+        env: Env.PRD,
         pushService: {
           createRegToken: expect.any(Function),
           deleteRegToken: expect.any(Function),
@@ -118,6 +120,37 @@ describe('NotificationServicesPushControllerInit', () => {
         appVersion: '7.80.0',
       },
     });
+  });
+
+  it('uses the authentication environment for push API calls', () => {
+    const previousEnvironment = process.env.METAMASK_ENVIRONMENT;
+    const previousDevApiEnv = process.env.MM_DEV_API_ENV;
+    const { requestMock, NotificationServicesPushControllerClassMock } =
+      arrange();
+
+    try {
+      process.env.METAMASK_ENVIRONMENT = 'development';
+      process.env.MM_DEV_API_ENV = 'dev';
+
+      NotificationServicesPushControllerInit(requestMock);
+
+      expect(NotificationServicesPushControllerClassMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          config: expect.objectContaining({ env: Env.DEV }),
+        }),
+      );
+    } finally {
+      if (previousEnvironment === undefined) {
+        delete process.env.METAMASK_ENVIRONMENT;
+      } else {
+        process.env.METAMASK_ENVIRONMENT = previousEnvironment;
+      }
+      if (previousDevApiEnv === undefined) {
+        delete process.env.MM_DEV_API_ENV;
+      } else {
+        process.env.MM_DEV_API_ENV = previousDevApiEnv;
+      }
+    }
   });
 
   it('omits app version when platform version is not backend-safe', () => {

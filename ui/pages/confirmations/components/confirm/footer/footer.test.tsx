@@ -205,6 +205,7 @@ jest.mock('../../../../../contexts/hardware-wallets', () => ({
 jest.mock('../../../hooks/useAddEthereumChain', () => ({
   useAddEthereumChain: jest.fn(() => ({
     onSubmit: jest.fn().mockResolvedValue(undefined),
+    onReject: jest.fn(),
   })),
   isAddEthereumChainType: jest.fn(
     (confirmation) => confirmation?.type === 'wallet_addEthereumChain',
@@ -1007,6 +1008,7 @@ describe('ConfirmFooter', () => {
       const addEthereumChainSubmitMock = jest.fn().mockResolvedValue(undefined);
       useAddEthereumChainMock.mockReturnValue({
         onSubmit: addEthereumChainSubmitMock,
+        onReject: jest.fn(),
       });
       jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
         currentConfirmation: addEthereumChainApproval,

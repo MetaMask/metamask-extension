@@ -204,8 +204,12 @@ export function useOHLCVRealtime({
   // Track the subscription key to reset state on dependency changes
   const subscriptionKeyRef = useRef('');
 
+  // The backend publishes OHLCV bars on the `ohlcv.v1.` namespace, e.g.
+  // `ohlcv.v1.eip155:1/slip44:60.1h.eur`. This must match that prefix exactly;
+  // previously it used `market-data.v1.`, so incoming bars never matched, WS
+  // updates were ignored, and the staleness fallback polled `/latest` forever.
   const buildChannel = useCallback(
-    () => `market-data.v1.${assetId}.${interval}.${currency}`,
+    () => `ohlcv.v1.${assetId}.${interval}.${currency}`,
     [assetId, interval, currency],
   );
 

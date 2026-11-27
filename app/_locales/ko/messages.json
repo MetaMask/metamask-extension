@@ -2838,9 +2838,6 @@
   "confirmFieldNeverExpires": {
     "message": "만료 없음"
   },
-  "confirmFieldPaymaster": {
-    "message": "수수료 지불:"
-  },
   "confirmFieldPeriodDurationBiWeekly": {
     "message": "2주마다"
   },
@@ -2865,9 +2862,6 @@
   },
   "confirmFieldTooltipJustification": {
     "message": "해당 요청에 대한 근거는 웹사이트에서 제시됩니다"
-  },
-  "confirmFieldTooltipPaymaster": {
-    "message": "이 트랜잭션에 대한 수수료는 Paymaster 스마트 계약에서 지불합니다."
   },
   "confirmFieldTotalExposure": {
     "message": "총 익스포저"
@@ -3466,7 +3460,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "MetaMask 최신 버전으로 업데이트하세요",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "이동할 URL이 제공되지 않았습니다."
@@ -3479,6 +3473,12 @@
   },
   "deepLink_GoToTheHomePageButton": {
     "message": "홈페이지로 이동"
+  },
+  "deepLink_MobileShareDescription": {
+    "message": "MetaMask Mobile에서 이 링크를 열려면 모바일 기기로 이 QR 코드를 스캔하세요."
+  },
+  "deepLink_MobileShareTitle": {
+    "message": "MetaMask Mobile에서 계속하기"
   },
   "deepLink_RedirectingToMetaMask": {
     "message": "MetaMask로 이동 중"
@@ -3607,10 +3607,6 @@
   "deleteMetaMetricsData": {
     "message": "MetaMetrics 데이터 삭제"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "이렇게 하면 이 기기에서 사용한 과거 MetaMetrics 데이터가 삭제됩니다. 이 데이터를 삭제해도 지갑과 계정에는 아무런 영향이 없습니다. 삭제는 최대 30일 정도 소요됩니다. 다음을 참고하세요: $1.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "이 작업을 수행하면 지갑과 연결된 과거 MetaMetrics 데이터가 삭제됩니다. MetaMetrics에는 익명화된 사용량 및 진단 데이터가 포함됩니다. 지갑과 계정은 현재 상태 그대로 유지됩니다. 이 과정은 최대 30일이 걸릴 수 있습니다. 당사의 $1을(를) 확인하세요.",
     "description": "$1 will have text saying Privacy Policy "
@@ -3618,17 +3614,14 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "분석 시스템 서버 문제로 지금 요청을 처리할 수 없습니다. 나중에 다시 시도해 주세요."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "지금은 데이터를 삭제할 수 없습니다"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "삭제할 수 없음"
   },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "모든 MetaMetrics 데이터를 삭제하려고 합니다. 확실합니까?"
-  },
   "deleteMetaMetricsDataModalTitle": {
     "message": "MetaMetrics 데이터를 삭제할까요?"
+  },
+  "deleteMetaMetricsDataPrivacyNotice": {
+    "message": "개인정보 처리 안내"
   },
   "deleteMetaMetricsDataRequestedDescription": {
     "message": "$1에서 삭제를 시작했습니다. 이 과정에는 최대 30일이 소요됩니다. 다음을 참고하세요: $2.",
@@ -5504,9 +5497,6 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "방문 중인 웹사이트가 현재 선택한 계정에 연결되어 있다면 연결 상태 버튼이 표시됩니다."
   },
-  "metaMetricsIdNotAvailableError": {
-    "message": "MetaMetrics에 가입한 적이 없으므로 여기에는 삭제할 데이터가 없습니다"
-  },
   "metadataModalSourceTooltip": {
     "message": "$1 스냅은 npm이 호스팅합니다. 이 Snap의 고유 식별자는 $2 입니다.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
@@ -5661,6 +5651,13 @@
   "mfaOtpDescriptionTotp": {
     "message": "인증 앱을 열어 6자리 코드를 입력하세요."
   },
+  "mfaOtpDescriptionUnsent": {
+    "message": "이메일로 6자리 코드를 보내드립니다. 이메일을 인증하려면 아래에 코드를 입력하세요."
+  },
+  "mfaOtpDescriptionUnsentWithEmail": {
+    "message": "$1(으)로 6자리 코드를 보내드립니다. 이메일을 인증하려면 아래에 코드를 입력하세요.",
+    "description": "$1 is the user's masked email address"
+  },
   "mfaOtpDescriptionWithEmail": {
     "message": "$1에 6자리 코드를 보냈습니다. 이메일 주소를 인증하려면 해당 코드를 아래에 입력하세요.",
     "description": "$1 is the email address the code was sent to"
@@ -5687,6 +5684,9 @@
   },
   "mfaOtpRetryIn": {
     "message": "$1초 후 다시 시도"
+  },
+  "mfaOtpSend": {
+    "message": "코드 전송"
   },
   "mfaOtpSendIn": {
     "message": "$1초 후에 코드 전송",
@@ -5752,6 +5752,9 @@
   "mfaSettingsNotice": {
     "message": "이 보안 수단은 Money account 거래의 보안을 강화합니다. 지갑을 복구하는 데는 사용할 수 없습니다."
   },
+  "mfaSettingsNoticeSocialLogin": {
+    "message": "이러한 방식은 Money Account 트랜잭션 및 지갑 복구에 대한 보안을 강화합니다."
+  },
   "mfaSettingsRemoveElsewhereDescription": {
     "message": "다른 보안 수단은 MetaMask 모바일 앱에서만 사용할 수 있습니다. 모바일 앱에서 이메일 주소를 제거하세요."
   },
@@ -5790,6 +5793,9 @@
   },
   "mfaSettingsUsedForMoney": {
     "message": "Money 거래 인증"
+  },
+  "mfaSettingsUsedForWalletRecovery": {
+    "message": "지갑 복구"
   },
   "mfaTotpSetupContinue": {
     "message": "계속"
@@ -5885,6 +5891,10 @@
   },
   "moneyActivity": {
     "message": "활동"
+  },
+  "moneyActivityAmountUnavailable": {
+    "message": "금액 정보 없음",
+    "description": "Shown in place of a Money card activity amount when the historical mUSD value cannot be calculated"
   },
   "moneyActivityCard": {
     "message": "카드"
@@ -7183,8 +7193,7 @@
     "message": "기타 관련 프로모션 자료"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "MetaMask는 쿠키 정보 같은 데이터를 사용하여 사용자가 마케팅 커뮤니케이션과 어떻게 상호작용하는지 파악하고자 합니다.",
-    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
+    "message": "MetaMask는 쿠키 정보 같은 데이터를 사용하여 사용자가 마케팅 커뮤니케이션과 어떻게 상호작용하는지 파악하고자 합니다."
   },
   "onboardedMetametricsParagraph2": {
     "message": "이를 통해 회원님과 공유하는 다음과 같은 콘텐츠를 개인화할 수 있습니다."
@@ -9724,9 +9733,6 @@
   "restore": {
     "message": "복구"
   },
-  "restoreUserData": {
-    "message": "사용자 데이터 복구"
-  },
   "restoreWalletDescription": {
     "message": "$1을(를) 입력하세요. 지갑을 가져오면 이 기기에서 현재 지갑 데이터가 삭제됩니다. 이 작업은 취소할 수 없습니다.",
     "description": "$1 is the Secret Recovery Phrase"
@@ -11954,7 +11960,7 @@
   },
   "stxFailureDescription": {
     "message": "시장 상황이 갑자기 변하면 실패할 수 있습니다. 문제가 지속되면 $1(으)로 문의하세요.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxOptInDescriptionV2": {
     "message": "더욱 안정적이고 안전하게 트랜잭션을 진행하려면 스마트 트랜잭션을 활성화하세요. $1"
@@ -12098,7 +12104,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "트랜잭션이 실패할 경우 언제든 문의하세요. 오류가 해결되지 않는다면 고객 지원 $1에 문의하세요.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "스왑 실패"
@@ -12410,6 +12416,9 @@
   },
   "to": {
     "message": "수신:"
+  },
+  "today": {
+    "message": "오늘"
   },
   "toggleDecodeDescription": {
     "message": "트랜잭션 데이터는 4byte.directory와 Sourcify 서비스를 사용하여 디코딩하고 읽기 쉬운 형식으로 표시합니다. 이는 대기 중이거나 과거 트랜잭션의 결과를 이해하는 데 도움이 되지만, IP 주소를 공유하는 결과가 초래될 수 있습니다."

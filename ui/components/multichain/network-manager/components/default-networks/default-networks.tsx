@@ -19,6 +19,7 @@ import {
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
 import {
   getFeaturedEvmNetworks,
+  getChainIdToNetworkImageUrlMap,
   type FeaturedNetwork,
 } from '../../../../../selectors/config-registry/config-registry';
 import {
@@ -126,6 +127,7 @@ const DefaultNetworks = memo(() => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const orderedNetworksList = useSelector(getOrderedNetworksList);
+  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
@@ -335,7 +337,7 @@ const DefaultNetworks = memo(() => {
         onDiscoverClick,
         onRpcSelect,
       } = getItemCallbacks(network);
-      const iconSrc = getNetworkIcon(network);
+      const iconSrc = getNetworkIcon(network, networkImageUrls);
       const isSelected = isSingleNetworkSelected(hexChainId as Hex);
 
       const singleRemainingNetwork = enabledChainIds.length === 1;
@@ -393,6 +395,7 @@ const DefaultNetworks = memo(() => {
     useExternalServices,
     selectedNonEvmChainId,
     isPending,
+    networkImageUrls,
   ]);
 
   // Memoize the additional network list items

@@ -350,6 +350,27 @@ export const EXPECTED_TRON_ADDRESSES_BY_INDEX = [
   string,
 ];
 
+/**
+ * Default Stellar address created using test SRP (Account 1 / HD index 0).
+ * Path: `m/44'/148'/0'` via SLIP-0010 ed25519 (same as stellar-wallet-snap).
+ */
+export const DEFAULT_STELLAR_ADDRESS =
+  'GDEM2RN4QLPSSPGSPSKSEQ3XXFGM4X4BRH4X4EOPABHAXBVV6OQ6YE6K';
+
+/**
+ * Stellar addresses derived from `E2E_SRP` for HD Account 1 (SLIP-0010
+ * ed25519 path `m/44'/148'/0'`). Account-derivation E2E covers Account 1
+ * only; keep this list to one entry so Horizon discovery does not auto-create
+ * HD accounts 2+. Re-derive with `@metamask/key-tree` `SLIP10Node` (curve
+ * `ed25519`, `slip10:` path segments) + `@stellar/stellar-base` Keypair —
+ * not BIP-32 secp256k1 HDKey, which yields different addresses.
+ *
+ * Note: index 0 matches `DEFAULT_STELLAR_ADDRESS`.
+ */
+export const EXPECTED_STELLAR_ADDRESSES_BY_INDEX = [
+  DEFAULT_STELLAR_ADDRESS,
+] as const satisfies readonly [string];
+
 /* Account types */
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -388,7 +409,7 @@ export const MOCK_DOWNSTREAM_EVENT_ENRICHMENT_PROPERTIES = {
   ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
 } as const;
 
-/* Processed remote feature flags for `MOCK_ANALYTICS_ID` (RFFC threshold group C). */
+/* Processed remote feature flags for `MOCK_CANONICAL_PROFILE_ID` (RFFC threshold group C). */
 export const MOCK_REMOTE_FEATURE_FLAGS_RESPONSE = {
   feature1: true,
   feature2: false,

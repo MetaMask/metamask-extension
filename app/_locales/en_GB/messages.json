@@ -2895,9 +2895,6 @@
   "confirmFieldNeverExpires": {
     "message": "Never expires"
   },
-  "confirmFieldPaymaster": {
-    "message": "Fee paid by"
-  },
   "confirmFieldPeriodDurationBiWeekly": {
     "message": "Bi-Weekly"
   },
@@ -2922,9 +2919,6 @@
   },
   "confirmFieldTooltipJustification": {
     "message": "Justification for the request provided by the website"
-  },
-  "confirmFieldTooltipPaymaster": {
-    "message": "The fee for this transaction will be paid by the paymaster smart contract."
   },
   "confirmFieldTotalExposure": {
     "message": "Total exposure"
@@ -3428,7 +3422,7 @@
     "message": "Data collection for marketing"
   },
   "dataCollectionForMarketingDescription": {
-    "message": "We'll collect data on how you interact with our marketing communications, so we can share relevant news (like product features and other materials)."
+    "message": "We'll collect data on how you interact with our marketing communications to personalize the updates we send you."
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Get product updates, tips, and news - including by email. We may use your interactions to improve what we share."
@@ -3523,7 +3517,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "Update to the latest version of MetaMask",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "No url to navigate to was provided."
@@ -3536,6 +3530,12 @@
   },
   "deepLink_GoToTheHomePageButton": {
     "message": "Go to the home page"
+  },
+  "deepLink_MobileShareDescription": {
+    "message": "Scan this QR code with your mobile device to open this link in MetaMask Mobile."
+  },
+  "deepLink_MobileShareTitle": {
+    "message": "Continue on MetaMask Mobile"
   },
   "deepLink_RedirectingToMetaMask": {
     "message": "Redirecting to MetaMask"
@@ -3664,28 +3664,21 @@
   "deleteMetaMetricsData": {
     "message": "Delete MetaMetrics data"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "This will delete historical MetaMetrics data associated with your use on this device. Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 30 days. View our $1.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
-    "message": "This will delete historical MetaMetrics data associated with your wallet. MetaMetrics includes anonymized usage and diagnostic data. Your wallet and accounts will remain the same. This process may take up to 30 days. View our $1.",
+    "message": "This will delete historical MetaMetrics data associated with your wallet. MetaMetrics includes anonymized usage and diagnostic data. Your wallet and accounts will remain exactly as they are now. This process may take up to 30 days. View our $1.",
     "description": "$1 will have text saying Privacy Policy "
   },
   "deleteMetaMetricsDataErrorDesc": {
     "message": "This request can't be completed right now due to an analytics system server issue. Try again later."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "We are unable to delete this data right now"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "Unable to delete"
   },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "We are about to remove all your MetaMetrics data. Are you sure?"
-  },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Delete MetaMetrics data?"
+  },
+  "deleteMetaMetricsDataPrivacyNotice": {
+    "message": "Privacy Notice"
   },
   "deleteMetaMetricsDataRequestedDescription": {
     "message": "You initiated deletion on $1. This process can take up to 30 days. View the $2.",
@@ -5577,9 +5570,6 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "The connection status button shows if the website you’re visiting is connected to your currently selected account."
   },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Since you've never opted into MetaMetrics, there's no data to delete here."
-  },
   "metadataModalSourceTooltip": {
     "message": "$1 is hosted on npm and $2 is this Snap’s unique identifier.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
@@ -5660,7 +5650,7 @@
     "message": "Sign in to continue."
   },
   "mfaErrorTooManyAttempts": {
-    "message": "Too many incorrect codes. Get a new code when it's available."
+    "message": "Too many incorrect codes. Get a new code."
   },
   "mfaErrorTotpExpired": {
     "message": "That took too long. Enter the current code from your app."
@@ -5734,6 +5724,13 @@
   "mfaOtpDescriptionTotp": {
     "message": "Open your authenticator app and enter the 6-digit code."
   },
+  "mfaOtpDescriptionUnsent": {
+    "message": "We'll send a 6-digit code to your email. Enter it below to verify your email."
+  },
+  "mfaOtpDescriptionUnsentWithEmail": {
+    "message": "We'll send a 6-digit code to $1. Enter it below to verify your email.",
+    "description": "$1 is the user's masked email address"
+  },
   "mfaOtpDescriptionWithEmail": {
     "message": "We sent a 6-digit code to $1. Enter it below to verify your email.",
     "description": "$1 is the email address the code was sent to"
@@ -5761,8 +5758,11 @@
   "mfaOtpRetryIn": {
     "message": "Try again in $1s"
   },
+  "mfaOtpSend": {
+    "message": "Send code"
+  },
   "mfaOtpSendIn": {
-    "message": "Sending a new code in $1s",
+    "message": "Send code in $1s",
     "description": "$1 is a number of seconds"
   },
   "mfaOtpSending": {
@@ -5825,6 +5825,9 @@
   "mfaSettingsNotice": {
     "message": "These methods add protection to Money account transactions. They can’t recover your wallet."
   },
+  "mfaSettingsNoticeSocialLogin": {
+    "message": "These methods add protection to Money account transactions and to recovering your wallet."
+  },
   "mfaSettingsRemoveElsewhereDescription": {
     "message": "Your other methods only work in the MetaMask mobile app. Remove your email from there."
   },
@@ -5863,6 +5866,9 @@
   },
   "mfaSettingsUsedForMoney": {
     "message": "Verifying Money transactions"
+  },
+  "mfaSettingsUsedForWalletRecovery": {
+    "message": "Wallet recovery"
   },
   "mfaTotpSetupContinue": {
     "message": "Continue"
@@ -5958,6 +5964,10 @@
   },
   "moneyActivity": {
     "message": "Activity"
+  },
+  "moneyActivityAmountUnavailable": {
+    "message": "Amount unavailable",
+    "description": "Shown in place of a Money card activity amount when the historical mUSD value cannot be calculated"
   },
   "moneyActivityCard": {
     "message": "Card"
@@ -7255,18 +7265,14 @@
   "onboardedMetametricsKey3": {
     "message": "Other relevant promotional materials"
   },
-  "onboardedMetametricsLink": {
-    "message": "MetaMetrics"
-  },
   "onboardedMetametricsParagraph1": {
-    "message": "In addition to $1, we'd like to use data to understand how you interact with marketing communications.",
-    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
+    "message": "We'd like to use data (like information from cookies) to learn how you interact with our marketing communications."
   },
   "onboardedMetametricsParagraph2": {
     "message": "This helps us personalize what we share with you, like:"
   },
   "onboardedMetametricsParagraph3": {
-    "message": "Remember, we never sell the data you provide and you can opt out any time."
+    "message": "We'll never sell or share the data you provide. You can opt out anytime."
   },
   "onboardedMetametricsTitle": {
     "message": "Help us enhance your experience"
@@ -7312,22 +7318,22 @@
     "message": "We’ll collect basic product usage data. We may associate this information with on-chain data."
   },
   "onboardingMetametricCheckboxDescriptionTwo": {
-    "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
+    "message": "We’ll collect data to learn how you interact with our marketing communications. We may use this data to share relevant news (like product updates)."
   },
   "onboardingMetametricCheckboxTitleOne": {
-    "message": "Gather basic usage data"
+    "message": "Basic usage data"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "Marketing updates"
+    "message": "Marketing data"
   },
   "onboardingMetametricsContinue": {
     "message": "Continue"
   },
   "onboardingMetametricsDescription": {
-    "message": "We’d like to request these permissions. You can opt out or delete your usage data at any time."
+    "message": "We’d like to request these permissions. You can opt out or delete your usage data anytime."
   },
   "onboardingMetametricsTitle": {
-    "message": "Help improve MetaMask"
+    "message": "Help us improve MetaMask"
   },
   "onboardingSignInWith": {
     "message": "Sign in with $1",
@@ -9671,6 +9677,12 @@
   "relayerFee": {
     "message": "Relayer fee"
   },
+  "rememberSupportPreference": {
+    "message": "Remember my support preference"
+  },
+  "rememberSupportPreferenceDescription": {
+    "message": "When enabled, MetaMask remembers whether you want to share your User ID and app version with our Support Center. Sharing this information will help us better solve your problem."
+  },
   "remindMeLater": {
     "message": "Remind me later",
     "description": "Secondary action to postpone replacing a legacy passkey."
@@ -9806,9 +9818,6 @@
   "restore": {
     "message": "Restore"
   },
-  "restoreUserData": {
-    "message": "Restore user data"
-  },
   "restoreWalletDescription": {
     "message": "Enter your $1. By importing the wallet, you will erase your current wallet data from this device. This can’t be undone.",
     "description": "$1 is the Secret Recovery Phrase"
@@ -9916,7 +9925,7 @@
     "message": "Failed to add account"
   },
   "rewardsMoneyReferralActiveTrader": {
-    "message": "You cannot be referred because of recent trading activity."
+    "message": "This referral code is only valid for new traders."
   },
   "rewardsMoneyReferralAlreadyReferred": {
     "message": "You have already been referred by another user."
@@ -12036,7 +12045,7 @@
   },
   "stxFailureDescription": {
     "message": "Sudden market changes can cause failures. If the problem persists, please reach out to $1.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxOptInDescriptionV2": {
     "message": "Turn on Smart Transactions for more reliable and secure transactions. $1"
@@ -12180,7 +12189,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Transaction failures happen and we are here to help. If this issue persists, you can reach our customer support at $1 for further assistance.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "Swap failed"
@@ -12492,6 +12501,9 @@
   },
   "to": {
     "message": "To"
+  },
+  "today": {
+    "message": "Today"
   },
   "toggleDecodeDescription": {
     "message": "We use 4byte.directory and Sourcify services to decode and display more readable transaction data. This helps you understand the outcome of pending and past transactions, but can result in your IP address being shared."
@@ -13029,16 +13041,19 @@
     "message": "Visit site"
   },
   "visitSupportDataConsentModalAccept": {
-    "message": "Confirm"
+    "message": "Continue"
   },
   "visitSupportDataConsentModalDescription": {
-    "message": "Do you want to share your MetaMask Identifier and app version with our Support Center? This can help us better solve your problem, but is optional."
+    "message": "By continuing, you agree to share your User ID and app version with our Support Center. This will help us better solve your problem."
   },
   "visitSupportDataConsentModalReject": {
     "message": "Don’t share"
   },
+  "visitSupportDataConsentModalSavePreference": {
+    "message": "Save my preference"
+  },
   "visitSupportDataConsentModalTitle": {
-    "message": "Share device details with support"
+    "message": "Share your User ID with Support"
   },
   "visitWebSite": {
     "message": "Visit our website"

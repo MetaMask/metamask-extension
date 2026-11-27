@@ -912,9 +912,11 @@ class AccountListPage {
     console.log(
       `Open multichain account menu in account list for account ${accountLabel}`,
     );
-    // To ensure no pending Create Account action is in progress
+    // To ensure no pending Create Account action is in progress. Creating a
+    // group can include starting the non-EVM account snaps, which is slow on CI.
     await this.driver.assertElementNotPresent(this.addingAccountMessage, {
       waitAtLeastGuard: largeDelayMs,
+      timeout: BASE_ACCOUNT_SYNC_TIMEOUT,
     });
 
     await this.driver.clickElement({

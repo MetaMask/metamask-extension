@@ -93,16 +93,6 @@
       "lastFetched": null,
       "version": "0"
     },
-    "CurrencyController": {
-      "currencyRates": {
-        "ETH": {
-          "conversionDate": "object",
-          "conversionRate": 1700,
-          "usdConversionRate": null
-        }
-      },
-      "currentCurrency": "usd"
-    },
     "DeFiPositionsControllerV2": "object",
     "GasFeeController": {
       "estimatedGasFeeTimeBounds": {},
@@ -215,6 +205,7 @@
         "hideZeroBalanceTokens": false,
         "isBasicFunctionalityConsolidatedEnabled": "boolean",
         "privacyMode": "boolean",
+        "shouldShowSupportConsent": "boolean",
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": "boolean",
         "showExtensionInFullSizeView": false,
@@ -226,6 +217,7 @@
         "skipDeepLinkInterstitial": "boolean",
         "smartTransactionsMigrationApplied": "boolean",
         "smartTransactionsOptInStatus": true,
+        "supportDataSharingPreference": null,
         "tdpChartIndicators": "object",
         "tdpChartInterval": "string",
         "tdpChartType": "number",
@@ -309,7 +301,10 @@
     "SeedlessOnboardingController": "object",
     "SelectedNetworkController": { "domains": "object" },
     "ShieldController": "object",
-    "SnapController": { "unencryptedSnapStates": "object" },
+    "SnapController": {
+      "snapStates": "object",
+      "unencryptedSnapStates": "object"
+    },
     "SnapInterfaceController": { "interfaces": "object" },
     "SubjectMetadataController": {},
     "SubscriptionController": "object",
@@ -325,7 +320,6 @@
       "transactionBatches": "object",
       "transactions": "object"
     },
-    "UserOperationController": { "userOperations": "object" },
     "UserStorageController": {
       "isAccountSyncingEnabled": true,
       "isBackupAndSyncEnabled": true,

@@ -67,3 +67,34 @@ export const genUnapprovedApproveConfirmation = ({
   gasLimitNoBuffer: '0x16a92',
   type: TransactionType.tokenMethodApprove,
 });
+
+export const PERMIT2_CONTRACT_ADDRESS =
+  '0x000000000022D473030F116dDEE9F6B43aC78BA3';
+export const PERMIT2_TOKEN_ADDRESS =
+  '0x1111111111111111111111111111111111111111';
+export const PERMIT2_SPENDER_ADDRESS =
+  '0x2222222222222222222222222222222222222222';
+
+export const genUnapprovedPermit2ApproveConfirmation = ({
+  amount = 1500000,
+  expiration = 1767225600,
+}: {
+  amount?: number;
+  expiration?: number;
+} = {}) => {
+  const confirmation = genUnapprovedApproveConfirmation();
+
+  return {
+    ...confirmation,
+    txParams: {
+      ...confirmation.txParams,
+      to: PERMIT2_CONTRACT_ADDRESS,
+      data: buildPermit2ApproveTransactionData(
+        PERMIT2_TOKEN_ADDRESS,
+        PERMIT2_SPENDER_ADDRESS,
+        amount,
+        expiration,
+      ),
+    },
+  };
+};

@@ -2838,9 +2838,6 @@
   "confirmFieldNeverExpires": {
     "message": "कभी एक्सपायर नहीं होता"
   },
-  "confirmFieldPaymaster": {
-    "message": "के द्वारा शुल्क का भुगतान किया गया"
-  },
   "confirmFieldPeriodDurationBiWeekly": {
     "message": "पाक्षिक"
   },
@@ -2865,9 +2862,6 @@
   },
   "confirmFieldTooltipJustification": {
     "message": "वेबसाइट द्वारा दिए गए अनुरोध का औचित्य"
-  },
-  "confirmFieldTooltipPaymaster": {
-    "message": "इस ट्रांसेक्शन के लिए शुल्क का भुगतान पेमास्टर स्मार्ट कॉन्ट्रैक्ट द्वारा किया जाएगा।"
   },
   "confirmFieldTotalExposure": {
     "message": "कुल एक्सपोज़र"
@@ -3466,7 +3460,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "MetaMask के लेटेस्ट वर्शन में अपडेट करें",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "नेविगेट करने के लिए कोई URL उपलब्ध नहीं कराया गया था।"
@@ -3479,6 +3473,12 @@
   },
   "deepLink_GoToTheHomePageButton": {
     "message": "होम पेज पर जाएं"
+  },
+  "deepLink_MobileShareDescription": {
+    "message": "MetaMask मोबाइल में इस लिंक को खोलने के लिए अपने मोबाइल डिवाइस से इस QR कोड को स्कैन करें।"
+  },
+  "deepLink_MobileShareTitle": {
+    "message": "MetaMask मोबाइल पर जारी रखें"
   },
   "deepLink_RedirectingToMetaMask": {
     "message": "MetaMask पर रीडायरेक्ट किया जा रहा है"
@@ -3607,10 +3607,6 @@
   "deleteMetaMetricsData": {
     "message": "मेटामेट्रिक्स डेटा हटाएं"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "यह इस डिवाइस पर आपके उपयोग से जुड़ा ऐतिहासिक MetaMetrics डेटा डिलीट कर देगा। इस डेटा को डिलीट किए जाने के बाद आपका वॉलेट और एकाउंट्स बिल्कुल वैसे ही रहेंगे जैसे वे अभी हैं। इस प्रक्रिया में 30 दिन तक का समय लग सकता है। हमारी $1 देखें।",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "इससे आपके वॉलेट से जुड़ा पुराना MetaMetrics डेटा डिलीट हो जाएगा। MetaMetrics में एनॉनिमाइज़्ड इस्तेमाल और डायग्नोस्टिक डेटा शामिल है। आपका वॉलेट और अकाउंट वैसे ही रहेंगे जैसे अभी हैं। इस प्रोसेस में 30 दिन तक लग सकते हैं। हमारा $1 देखें।",
     "description": "$1 will have text saying Privacy Policy "
@@ -3618,17 +3614,14 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "एनालिटिक्स सिस्टम सर्वर की समस्या के कारण यह रिक्वेस्ट अभी पूरा नहीं किया जा सकता है। बाद में फिर से प्रयास करें।"
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "हम अभी इस डेटा को डिलीट करने में असमर्थ हैं"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "मिटाया नहीं जा सका"
   },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "हम आपके सभी मेटामेट्रिक्स डेटा को निकालने वाले हैं। क्या आप वाकई ऐसा चाहते हैं?"
-  },
   "deleteMetaMetricsDataModalTitle": {
     "message": "मेटामेट्रिक्स डेटा हटाएं?"
+  },
+  "deleteMetaMetricsDataPrivacyNotice": {
+    "message": "गोपनीयता नोटिस"
   },
   "deleteMetaMetricsDataRequestedDescription": {
     "message": "आपने यह मिटाने की कार्रवाई $1 पर शुरू की। इस प्रक्रिया में 30 दिन तक का समय लग सकता है। $2 देखें।",
@@ -5500,9 +5493,6 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "कनेक्शन स्थिति बटन दिखाता है कि आप जिस वेबसाइट पर जा रहे हैं, वह आपके वर्तमान में चुना गया अकाउंट से कनेक्ट है।"
   },
-  "metaMetricsIdNotAvailableError": {
-    "message": "चूंकि आपने कभी भी MetaMetrics का विकल्प नहीं चुना है, इसलिए यहां डिलीट करने के लिए कोई डेटा नहीं है।"
-  },
   "metadataModalSourceTooltip": {
     "message": "$1 को npm पर होस्ट किया गया है और $2 इस Snap का यूनीक आइडेंटिफायर है।",
     "description": "$1 is the snap name and $2 is the snap NPM id."
@@ -5657,6 +5647,13 @@
   "mfaOtpDescriptionTotp": {
     "message": "अपना ऑथेंटिकेटर ऐप खोलें और 6-डिजिट का कोड डालें।"
   },
+  "mfaOtpDescriptionUnsent": {
+    "message": "हम आपके ईमेल पर 6-डिजिट का कोड भेजेंगे। अपना ईमेल वेरिफ़ाई करने के लिए इसे नीचे एंटर करें।"
+  },
+  "mfaOtpDescriptionUnsentWithEmail": {
+    "message": "हम $1 पर 6-डिजिट का कोड भेजेंगे। अपना ईमेल वेरिफ़ाई करने के लिए इसे नीचे एंटर करें।",
+    "description": "$1 is the user's masked email address"
+  },
   "mfaOtpDescriptionWithEmail": {
     "message": "हमने $1 पर 6-डिजिट का कोड भेजा है। अपना ईमेल वेरिफ़ाई करने के लिए इसे नीचे डालें।",
     "description": "$1 is the email address the code was sent to"
@@ -5683,6 +5680,9 @@
   },
   "mfaOtpRetryIn": {
     "message": "$1s में फिर से कोशिश करें"
+  },
+  "mfaOtpSend": {
+    "message": "कोड भेजें"
   },
   "mfaOtpSendIn": {
     "message": "$1सेकंड में कोड भेजें",
@@ -5748,6 +5748,9 @@
   "mfaSettingsNotice": {
     "message": "ये तरीके Money account ट्रांसेक्शन में सुरक्षा जोड़ते हैं। वे आपके वॉलेट को रिकवर नहीं कर सकते।"
   },
+  "mfaSettingsNoticeSocialLogin": {
+    "message": "ये तरीके Money account ट्रांसेक्शन में और आपके वॉलेट को रिकवर करने में सुरक्षा जोड़ते हैं।"
+  },
   "mfaSettingsRemoveElsewhereDescription": {
     "message": "आपके दूसरे तरीके सिर्फ़ MetaMask मोबाइल ऐप में काम करते हैं। वहां से अपना ईमेल हटा दें।"
   },
@@ -5786,6 +5789,9 @@
   },
   "mfaSettingsUsedForMoney": {
     "message": "Money ट्रांसेक्शन वेरिफ़ाई किया जा रहा है"
+  },
+  "mfaSettingsUsedForWalletRecovery": {
+    "message": "वॉलेट रिकवरी"
   },
   "mfaTotpSetupContinue": {
     "message": "जारी रखें"
@@ -5881,6 +5887,10 @@
   },
   "moneyActivity": {
     "message": "गतिविधि"
+  },
+  "moneyActivityAmountUnavailable": {
+    "message": "अमाउंट उपलब्ध नहीं है",
+    "description": "Shown in place of a Money card activity amount when the historical mUSD value cannot be calculated"
   },
   "moneyActivityCard": {
     "message": "कार्ड"
@@ -7179,8 +7189,7 @@
     "message": "अन्य प्रासंगिक प्रमोशनल सामग्री"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "हम यह जानने के लिए डेटा (जैसे कुकीज़ से जानकारी) का उपयोग करना चाहेंगे कि आप हमारे मार्केटिंग कम्यूनिकेशन्स के साथ कैसे इंटरैक्ट करते हैं।",
-    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
+    "message": "हम यह जानने के लिए डेटा (जैसे कुकीज़ से जानकारी) का उपयोग करना चाहेंगे कि आप हमारे मार्केटिंग कम्यूनिकेशन्स के साथ कैसे इंटरैक्ट करते हैं।"
   },
   "onboardedMetametricsParagraph2": {
     "message": "इससे हमें आपके साथ साझा की जाने वाली चीज़ों को निजीकृत करने में मदद मिलती है, जैसे:"
@@ -9716,9 +9725,6 @@
   "restore": {
     "message": "रीस्टोर करें"
   },
-  "restoreUserData": {
-    "message": "यूज़र डेटा रीस्टोर करें"
-  },
   "restoreWalletDescription": {
     "message": "अपना $1 टाइप करें। वॉलेट इंपोर्ट करके, आप इस डिवाइस से अपना मौजूदा वॉलेट डेटा मिटा देंगे। इसे पहले जैसा नहीं किया जा सकता।",
     "description": "$1 is the Secret Recovery Phrase"
@@ -11946,7 +11952,7 @@
   },
   "stxFailureDescription": {
     "message": "मार्केट के आकस्मिक बदलावों के कारण विफलताएं हो सकती हैं। अगर समस्या जारी रहती है, तो कृपया $1 से कॉन्टेक्ट करें।",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxOptInDescriptionV2": {
     "message": "अधिक विश्वसनीय और सुरक्षित ट्रांसेक्शन के लिए स्मार्ट ट्रांसेक्शन चालू करें। $1"
@@ -12090,7 +12096,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "ट्रांसेक्शन विफल हो जाता है और हम मदद करने के लिए उपलब्ध हैं। यदि यह समस्या बनी रहती है, तो आप आगे की सहायता के लिए $1 पर हमारे ग्राहक सहायता से कॉन्टेक्ट कर सकते हैं।",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "स्वैप नहीं हो पाया"
@@ -12402,6 +12408,9 @@
   },
   "to": {
     "message": "प्रति"
+  },
+  "today": {
+    "message": "आज"
   },
   "toggleDecodeDescription": {
     "message": "हम अधिक पठनीय ट्रांसेक्शन डेटा को डिकोड करने और प्रदर्शित करने के लिए 4byte.directory और Sourcify सेवाओं का उपयोग करते हैं। इससे आपको लंबित और पिछले ट्रांसेक्शन के परिणाम को समझने में मदद मिलती है, लेकिन इसके परिणामस्वरूप आपका आईपी ​​एड्रेस साझा किया जा सकता है।"

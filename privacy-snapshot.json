@@ -47,6 +47,7 @@
   "claims.api.cx.metamask.io",
   "client-config.api.cx.metamask.io",
   "client-side-detection.api.cx.metamask.io",
+  "config-registry-fake-network.invalid",
   "configuration.dev.metamask-institutional.io",
   "configuration.metamask-institutional.io",
   "connect.trezor.io",

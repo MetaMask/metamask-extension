@@ -17,14 +17,12 @@ import { AccountsController } from '@metamask/accounts-controller';
 import {
   AccountTrackerController,
   AssetsContractController,
-  CurrencyRateController,
   DeFiPositionsController,
   DeFiPositionsControllerV2,
   MultichainAssetsController,
   NftController,
   NftDetectionController,
   RatesController,
-  TokenDetectionController,
   TokensController,
 } from '@metamask/assets-controllers';
 import { AssetsController } from '@metamask/assets-controller';
@@ -74,7 +72,6 @@ import {
   EncryptionPublicKeyManager,
 } from '@metamask/message-manager';
 import { SignatureController } from '@metamask/signature-controller';
-import { UserOperationController } from '@metamask/user-operation-controller';
 import {
   AccountActivityService,
   BackendWebSocketService,
@@ -160,7 +157,6 @@ export type MessengerClient =
   | ChompApiService
   | ClaimsController
   | CronjobController
-  | CurrencyRateController
   | DataDeletionService
   | UserTraitsService
   | DecryptMessageController
@@ -231,12 +227,10 @@ export type MessengerClient =
   | SnapsNameProvider
   | SubjectMetadataController
   | ShieldSubscriptionService
-  | TokenDetectionController
   | TokensController
   | TransactionController
   | TransactionPayController
   | InstitutionalSnapController
-  | UserOperationController
   | UserStorageController
   | NftController
   | NftDetectionController
@@ -285,7 +279,6 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   ComplianceController['state'] &
   ConfigRegistryController['state'] &
   CronjobController['state'] &
-  CurrencyRateController['state'] &
   DeFiPositionsController['state'] &
   DeFiPositionsControllerV2['state'] &
   DelegationController['state'] &
@@ -328,12 +321,10 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   SnapInterfaceController['state'] &
   SnapRegistryController['state'] &
   SubscriptionController['state'] &
-  TokenDetectionController['state'] &
   TokensController['state'] &
   StaticAssetsController['state'] &
   TransactionController['state'] &
   TransactionPayController['state'] &
-  UserOperationController['state'] &
   UserStorageController['state'] &
   NftController['state'] &
   NftDetectionController['state'] &
