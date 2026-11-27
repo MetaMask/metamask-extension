@@ -48,6 +48,7 @@ import {
 import { recordBackgroundInitializationTiming } from '../../shared/lib/ui-startup-timing';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
+import { BatchingPortStream } from './lib/batching-port-stream';
 import { getEnvironmentType, getPlatform } from './lib/util';
 import metaRPCClientFactory from './lib/metaRPCClientFactory';
 
@@ -137,7 +138,11 @@ async function start(): Promise<void> {
   );
   criticalErrorHandler.install();
 
-  const connectionStream = new ExtensionPortStream(extensionPort);
+  // Messages written in the same task share one `postMessage`. Layered above
+  // the port stream so its chunking applies to an oversized batch.
+  const connectionStream = new BatchingPortStream(
+    new ExtensionPortStream(extensionPort),
+  );
   const subStreams = connectSubstreams(connectionStream);
   const backgroundConnection = metaRPCClientFactory<UiBackgroundRpcApi>(
     subStreams.controller as unknown as Duplex,
@@ -387,9 +392,7 @@ async function queryCurrentActiveTab(
  * @param connectionStream - PortStream instance establishing a background connection
  * @returns The multiplexed streams
  */
-function connectSubstreams(
-  connectionStream: ExtensionPortStream,
-): UiSubstreams {
+function connectSubstreams(connectionStream: BatchingPortStream): UiSubstreams {
   const mx = setupMultiplex(connectionStream);
 
   const controllerSubstream = mx.createStream('controller');
