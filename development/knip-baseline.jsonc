@@ -1,0 +1,60 @@
+// This is a machine-generated file that tracks known knip (dead-code) findings in the codebase.
+// To understand changes in this file:
+// - Each entry is "<type>|<file>|<symbol>" (no line numbers), sorted for consistent diffs
+// - New knip findings fail `yarn knip:check`; shrink this file by fixing the findings and running `yarn knip:update`
+// - Suppress intentional findings in knip.config.ts with a reason comment instead
+// - For more information, see docs/dead-code-check.md
+
+{
+  "entries": [
+    "files|app/scripts/constants/on-ramp.ts",
+    "files|app/scripts/disable-console.ts",
+    "files|app/scripts/lib/smart-transaction/smart-transactions-mocks.ts",
+    "files|app/scripts/runtime-cjs.ts",
+    "files|ui/components/app/account-icon-tour/account-icon-tour.tsx",
+    "files|ui/components/app/app-loading-spinner/index.js",
+    "files|ui/components/app/configure-snap-popup/index.js",
+    "files|ui/components/app/menu-droppo.js",
+    "files|ui/components/app/perps/perps-candlestick-chart/mock-candle-data.ts",
+    "files|ui/components/app/perps/perps-empty-state/index.ts",
+    "files|ui/components/app/perps/start-trade-cta/index.ts",
+    "files|ui/components/app/perps/transaction-card/types/index.ts",
+    "files|ui/components/app/perps/transaction-card/types/transactionHistory.ts",
+    "files|ui/components/app/perps/utils/index.ts",
+    "files|ui/components/app/rewards/RewardsVipReferralTag/index.ts",
+    "files|ui/components/multichain-accounts/address-qr-code-modal/index.ts",
+    "files|ui/components/multichain-accounts/hardware-wallets/ledger/index.ts",
+    "files|ui/components/multichain-accounts/hooks/index.ts",
+    "files|ui/components/multichain-accounts/multichain-address-row/index.ts",
+    "files|ui/components/multichain/import-nfts-modal/index.js",
+    "files|ui/components/multichain/network-manager/index.ts",
+    "files|ui/components/multichain/notification-detail-asset/notification-detail-asset.tests.tsx",
+    "files|ui/components/multichain/token-list-item/price/percentage-and-amount-change/index.ts",
+    "files|ui/components/ui/chip/chip-with-input.js",
+    "files|ui/components/ui/color-indicator/index.js",
+    "files|ui/components/ui/form-combo-field/index.ts",
+    "files|ui/components/ui/icon/icon-times.js",
+    "files|ui/components/ui/icon/overview-buy-icon.component.js",
+    "files|ui/components/ui/list-item/index.js",
+    "files|ui/components/ui/page-container/page-container-content.component.js",
+    "files|ui/components/ui/snackbar/index.js",
+    "files|ui/contexts/hardware-wallets/adapters/index.ts",
+    "files|ui/ducks/alerts/unconnected-account.js",
+    "files|ui/helpers/constants/beta.js",
+    "files|ui/helpers/higher-order-components/feature-toggled-route.js",
+    "files|ui/hooks/gator-permissions/index.ts",
+    "files|ui/hooks/hardware-wallets/index.ts",
+    "files|ui/hooks/perps/stream/index.mock.ts",
+    "files|ui/pages/deep-link/index.ts",
+    "files|ui/pages/error-page/index.ts",
+    "files|ui/pages/hardware-wallets/swap/components/index.ts",
+    "files|ui/pages/multichain-accounts/account-details/index.ts",
+    "files|ui/pages/notifications-settings/index.js",
+    "files|ui/pages/perps/index.ts",
+    "files|ui/pages/perps/perps-market-detail-page.types.ts",
+    "files|ui/pages/perps/utils/index.ts",
+    "files|ui/providers/perps/PerpsStreamManager/index.mock.ts",
+    "files|ui/providers/perps/PerpsStreamManager/index.ts",
+    "files|ui/providers/perps/index.mock.ts"
+  ]
+}

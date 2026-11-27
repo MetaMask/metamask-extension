@@ -11,6 +11,7 @@ export default defineConfig({
     '/CHANGELOG*.md',
     '/development/chromereload.js',
     '/development/circular-deps.jsonc',
+    '/development/knip-baseline.jsonc',
     '/test/e2e/send-eth-with-private-key-test/',
   ],
   printWidth: 80,

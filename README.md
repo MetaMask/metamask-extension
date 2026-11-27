@@ -159,6 +159,14 @@ You can run the linter by itself with `yarn lint`, and you can automatically fix
 
 For Jest debugging guide using Node.js, see [docs/tests/jest.md](docs/tests/jest.md).
 
+### Dead-code check (knip)
+
+`yarn knip:check` reports unused files, unused `package.json` dependencies and
+undeclared (unlisted) imports. It runs in CI as part of the Repository health
+checks job and gates on the diff against the committed baseline in
+`development/knip-baseline.jsonc` — the baseline doubles as the cleanup queue
+for known dead code. See [docs/dead-code-check.md](docs/dead-code-check.md).
+
 ### Running E2E Tests
 
 Our e2e test suite can be run on either Firefox or Chrome. Here's how to get started with e2e testing:
