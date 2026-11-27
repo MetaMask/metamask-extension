@@ -1536,6 +1536,29 @@
         "@metamask/core-backend>uuid": true
       }
     },
+    "@metamask/wallet>@metamask/core-backend": {
+      "globals": {
+        "AggregateError": true,
+        "URL": true,
+        "WebSocket": true,
+        "clearTimeout": true,
+        "setTimeout": true
+      },
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import.",
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/error-utils' and webpack collapsed that to a direct import."
+        ]
+      },
+      "packages": {
+        "@metamask/controller-utils": true,
+        "@metamask/utils>@metamask/error-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "cockatiel": true,
+        "@metamask/wallet>@metamask/core-backend>uuid": true
+      }
+    },
     "@metamask/snaps-utils>@metamask/cryptography": {
       "globals": {
         "crypto.getRandomValues": true,
@@ -3367,8 +3390,10 @@
     "@metamask/subscription-controller": {
       "globals": {
         "URL": true,
+        "clearTimeout": true,
         "crypto.getRandomValues": true,
-        "fetch": true
+        "fetch": true,
+        "setTimeout": true
       },
       "meta": {
         "webpack-optimization": [
@@ -3540,6 +3565,7 @@
         "@metamask/config-registry-controller": true,
         "@metamask/connectivity-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/wallet>@metamask/core-backend": true,
         "@metamask/gas-fee-controller": true,
         "@metamask/geolocation-controller": true,
         "@metamask/keyring-controller": true,
