@@ -19,12 +19,9 @@ jest.mock(
   }),
 );
 jest.mock('./use-network-pill-balances');
-jest.mock(
-  '../../app/assets/account-group-balance/useAccountGroupLiveTotal',
-  () => ({
-    useAccountGroupLiveTotal: jest.fn(),
-  }),
-);
+jest.mock('#ui/hooks/assets/use-account-group-live-total', () => ({
+  useAccountGroupLiveTotal: jest.fn(),
+}));
 
 const ETHEREUM = {
   chainId: 'eip155:1',
