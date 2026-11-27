@@ -4573,43 +4573,6 @@ export function setPna25Acknowledged(
   };
 }
 
-/**
- * Sets marketing consent with OAuth service for social login users.
- *
- * @param hasEmailMarketingConsent - Boolean value for marketing consent
- */
-export function setMarketingConsent(
-  hasEmailMarketingConsent: boolean,
-): ThunkAction<Promise<boolean>, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    try {
-      const res = await submitRequestToBackground(
-        'OAuthService:setMarketingConsent',
-        [hasEmailMarketingConsent],
-      );
-      return Boolean(res);
-    } catch (error) {
-      logErrorWithMessage(getErrorMessage(error));
-      return false;
-    }
-  };
-}
-
-/**
- * Gets marketing consent with OAuth service for social login users.
- */
-export async function getMarketingConsent() {
-  try {
-    const res = await submitRequestToBackground(
-      'OAuthService:getMarketingConsent',
-    );
-    return Boolean(res);
-  } catch (error) {
-    logErrorWithMessage(getErrorMessage(error));
-    return false;
-  }
-}
-
 export function setAvatarType(value: string) {
   return setPreference('avatarType', value);
 }
