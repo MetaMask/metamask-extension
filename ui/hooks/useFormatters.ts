@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import { createFormatters } from '@metamask/client-utils';
-import { getIntlLocale } from '../ducks/locale/locale';
+import { useFormattingLocale } from './useFormattingLocale';
 
 const dateTimeFormatCache: Record<string, Intl.DateTimeFormat> = {};
 
@@ -32,10 +31,11 @@ function formatMediumDate(
 }
 
 export function useFormatters() {
-  const locale = useSelector(getIntlLocale);
+  const locale = useFormattingLocale();
 
   return useMemo(() => {
     const base = createFormatters({ locale });
+
     return {
       ...base,
       /**
