@@ -216,6 +216,29 @@ describe('ReceiveRow', () => {
     expect(screen.queryByTestId('money-usd-dialog')).not.toBeInTheDocument();
   });
 
+  it('opens the MetaMask USD dialog with the full entered amount for subsidized target-based moneyAccountDeposit transactions', () => {
+    useIsPaidByMetaMaskMock.mockReturnValue(true);
+
+    render(
+      {
+        inputAmountUsd: '100',
+        variant: ConfirmInfoRowSize.Small,
+      },
+      getMoneyDepositState(),
+    );
+
+    const trigger = screen.getByTestId('receive-value');
+    expect(trigger).toHaveTextContent('$100.00');
+    expect(trigger).toHaveClass('underline', 'decoration-dotted');
+
+    fireEvent.click(trigger);
+
+    expect(screen.getByTestId('money-usd-dialog')).toBeInTheDocument();
+    expect(screen.getByTestId('money-usd-dialog-title')).toHaveTextContent(
+      "You'll receive $100.00 of MetaMask USD",
+    );
+  });
+
   it('formats receive amounts with "$" and en-US separators for moneyAccountDeposit even when currentLocale is non-US', () => {
     useTransactionPayTotalsMock.mockReturnValue({
       isInputBased: true,
