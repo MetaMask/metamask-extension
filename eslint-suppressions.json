@@ -292,6 +292,11 @@
       "count": 2
     }
   },
+  "ui/components/app/confirm/info/row/row.tsx": {
+    "design-system/spacing-grid": {
+      "count": 2
+    }
+  },
   "ui/components/app/modals/multichain-accounts/intro-modal/multichain-account-intro-modal.container.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 1
@@ -312,8 +317,23 @@
       "count": 1
     }
   },
+  "ui/components/app/perps/perps-candlestick-chart/perps-candlestick-chart.tsx": {
+    "design-system/spacing-grid": {
+      "count": 1
+    }
+  },
+  "ui/components/app/perps/perps-support-learn/perps-support-learn.tsx": {
+    "design-system/spacing-grid": {
+      "count": 1
+    }
+  },
   "ui/components/app/product-safety/scam-questionnaire/useScamQuestionnaire.ts": {
     "react-hooks/set-state-in-effect": {
+      "count": 1
+    }
+  },
+  "ui/components/app/rewards/RewardsDiscountBadge.tsx": {
+    "design-system/spacing-grid": {
       "count": 1
     }
   },
@@ -390,6 +410,11 @@
   "ui/components/multichain/network-list-menu/popular-network-list/popular-network-list.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 1
+    }
+  },
+  "ui/components/multichain/notification-list-item-snap/notification-list-item-snap.tsx": {
+    "design-system/spacing-grid": {
+      "count": 3
     }
   },
   "ui/components/multichain/toast/toast.tsx": {
@@ -582,6 +607,11 @@
       "count": 1
     }
   },
+  "ui/pages/activity/rows/pending-transaction-actions.tsx": {
+    "design-system/spacing-grid": {
+      "count": 1
+    }
+  },
   "ui/pages/activity/useTransactionsQuery.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
@@ -593,6 +623,11 @@
     },
     "react-hooks/preserve-manual-memoization": {
       "count": 4
+    }
+  },
+  "ui/pages/asset/components/chart/advanced-chart-interval-bar.tsx": {
+    "design-system/spacing-grid": {
+      "count": 1
     }
   },
   "ui/pages/asset/components/chart/asset-chart.tsx": {
@@ -625,6 +660,11 @@
       "count": 1
     }
   },
+  "ui/pages/bridge/asset-picker/selected-asset-button.tsx": {
+    "design-system/spacing-grid": {
+      "count": 1
+    }
+  },
   "ui/pages/bridge/awaiting-signatures/awaiting-signatures.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 1
@@ -640,8 +680,18 @@
       "count": 1
     }
   },
+  "ui/pages/bridge/prepare/components/destination-account-list-item.tsx": {
+    "design-system/spacing-grid": {
+      "count": 2
+    }
+  },
   "ui/pages/bridge/prepare/prepare-bridge-page.tsx": {
     "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/bridge/quotes/bridge-quotes-modal.tsx": {
+    "design-system/spacing-grid": {
       "count": 1
     }
   },
@@ -678,6 +728,9 @@
   "ui/pages/confirmations/components/confirm/info/info.tsx": {
     "react-hooks/static-components": {
       "count": 1
+    },
+    "design-system/spacing-grid": {
+      "count": 1
     }
   },
   "ui/pages/confirmations/components/confirm/info/shared/batched-approval-function/batched-approval-function.tsx": {
@@ -685,9 +738,24 @@
       "count": 1
     }
   },
+  "ui/pages/confirmations/components/confirm/info/shared/send-heading/send-heading.tsx": {
+    "design-system/spacing-grid": {
+      "count": 1
+    }
+  },
   "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/decoded-simulation/decoded-simulation.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 1
+    }
+  },
+  "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/native-value-display/native-value-display.tsx": {
+    "design-system/spacing-grid": {
+      "count": 2
+    }
+  },
+  "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/value-display/value-display.tsx": {
+    "design-system/spacing-grid": {
+      "count": 2
     }
   },
   "ui/pages/confirmations/components/developer/perps-withdraw-button/perps-withdraw-button.tsx": {
@@ -721,6 +789,11 @@
   "ui/pages/confirmations/components/simulation-details/useSimulationMetrics.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 2
+    }
+  },
+  "ui/pages/confirmations/components/snap-account-error-message/SnapAccountErrorMessage.tsx": {
+    "design-system/spacing-grid": {
+      "count": 1
     }
   },
   "ui/pages/confirmations/hooks/alerts/transactions/useContractCode.ts": {
@@ -821,6 +894,11 @@
   "ui/pages/details/templates/helpers.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
+    }
+  },
+  "ui/pages/discover-search/discover-no-results-state.tsx": {
+    "design-system/spacing-grid": {
+      "count": 2
     }
   },
   "ui/pages/hardware-wallets/swap/hooks/useHardwareWalletSignatures.ts": {
