@@ -7516,7 +7516,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-data-service@npm:^2.1.0":
+"@metamask/base-data-service@npm:^2.0.0, @metamask/base-data-service@npm:^2.1.0":
   version: 2.1.0
   resolution: "@metamask/base-data-service@npm:2.1.0"
   dependencies:
@@ -8755,7 +8755,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^28.2.2":
+"@metamask/keyring-controller@npm:^28.0.0, @metamask/keyring-controller@npm:^28.1.0, @metamask/keyring-controller@npm:^28.2.0, @metamask/keyring-controller@npm:^28.2.1, @metamask/keyring-controller@npm:^28.2.2":
   version: 28.2.2
   resolution: "@metamask/keyring-controller@npm:28.2.2"
   dependencies:
