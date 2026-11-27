@@ -21,6 +21,14 @@ class PrivacySettings {
     testId: 'basic-configuration-checkbox',
   };
 
+  private readonly basicConfigurationModal = {
+    testId: 'dapp-permission-modal',
+  };
+
+  private readonly basicConfigurationModalCancelButton = {
+    testId: 'basic-configuration-modal-cancel-button',
+  };
+
   private readonly basicConfigurationModalToggleButton = {
     testId: 'basic-configuration-modal-toggle-button',
   };
@@ -83,9 +91,20 @@ class PrivacySettings {
     this.driver = driver;
   }
 
+  async cancelBasicFunctionalityModal(): Promise<void> {
+    console.log('Cancel basic functionality modal on privacy settings page');
+    await this.driver.clickElementAndWaitToDisappear(
+      this.basicConfigurationModalCancelButton,
+    );
+  }
+
   async checkBasicFunctionalityIsOff(): Promise<void> {
     console.log('Check basic functionality is off on privacy settings page');
     await this.driver.waitForSelector(this.basicFunctionalityToggleOff);
+  }
+
+  async checkBasicFunctionalityModalIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.basicConfigurationModal);
   }
 
   async checkPageIsLoaded(): Promise<void> {

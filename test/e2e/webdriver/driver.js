@@ -6,6 +6,7 @@ const {
   Browser,
   Condition,
   Key,
+  Origin,
   until,
   ThenableWebDriver, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
   WebElement, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
@@ -1111,6 +1112,32 @@ class Driver {
   }
 
   /**
+   * Simulates a click at a point in the viewport, on whatever element is there.
+   *
+   * @param {number} x - Offset from the left edge of the viewport
+   * @param {number} y - Offset from the top edge of the viewport
+   * @returns {Promise<void>} promise resolving after a click
+   */
+  async clickViewportPoint(x, y) {
+    await this.driver
+      .actions()
+      .move({ origin: Origin.VIEWPORT, x, y })
+      .click()
+      .perform();
+  }
+
+  /**
+   * Double-clicks the element matching the locator once it is clickable.
+   *
+   * @param {string | object} rawLocator - Element locator
+   * @returns {Promise<void>} promise resolving after the double click
+   */
+  async doubleClickElement(rawLocator) {
+    const element = await this.findClickableElement(rawLocator);
+    await this.driver.actions().doubleClick(element).perform();
+  }
+
+  /**
    * Simulates holding the mouse button down on the given web element.
    *
    * @param {string | object} rawLocator - Element locator
@@ -1694,6 +1721,55 @@ class Driver {
     }
 
     throw new Error(`No window with title: ${title}`);
+  }
+
+  /**
+   * Waits until exactly `count` windows or tabs have the given title. Windows
+   * that close while they are checked, for example during an extension
+   * reload, are skipped. Checking titles switches windows, so switch to the
+   * window you need afterwards.
+   *
+   * @param {string} title - The window or tab title to count.
+   * @param {number} count - The exact number of matching windows to wait for.
+   * @param {object} [options] - Wait options.
+   * @param {number} [options.stableFor] - Milliseconds the count must hold
+   * before the wait ends. Use it when an extra window could open late.
+   * @param {number} [options.timeout] - Defaults to `this.timeout`.
+   * @returns {Promise<void>} Promise that resolves once the count holds.
+   * @throws {Error} Throws if the count is not reached and held in time.
+   */
+  async waitForWindowsWithTitle(
+    title,
+    count,
+    { stableFor = 0, timeout = this.timeout } = {},
+  ) {
+    let matches = 0;
+    try {
+      await this.waitUntil(
+        async () => {
+          matches = 0;
+          for (const handle of await this.driver.getAllWindowHandles()) {
+            try {
+              await this.driver.switchTo().window(handle);
+              if ((await this.driver.getTitle()) === title) {
+                matches += 1;
+              }
+            } catch (error) {
+              if (error?.name !== 'NoSuchWindowError') {
+                throw error;
+              }
+            }
+          }
+          return matches === count;
+        },
+        { interval: 500, timeout, stableFor },
+      );
+    } catch (error) {
+      throw new Error(
+        `Expected ${count} window(s) titled "${title}", found ${matches}`,
+        { cause: error },
+      );
+    }
   }
 
   /**

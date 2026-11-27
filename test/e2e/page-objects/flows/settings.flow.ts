@@ -8,6 +8,7 @@ import PreferencesAndDisplaySettings from '../pages/settings/preferences-and-dis
 import NetworksPage from '../pages/networks/networks-page';
 import HeaderNavbar from '../pages/home/header-navbar';
 import RevealSrpPage from '../pages/reveal-srp-page';
+import PrivacySettings from '../pages/settings/privacy/privacy-settings';
 import SecurityAndPasswordSettings from '../pages/settings/security-and-password/security-and-password-settings';
 import ChangePasswordPage from '../pages/settings/security-and-password/change-password-page';
 import { lockAndWaitForLoginPage } from './login.flow';
@@ -95,6 +96,19 @@ export async function navigateToSecurityAndPassword(
   await settingsPage.goToSecurityAndPasswordSettings();
   const securityAndPasswordSettings = new SecurityAndPasswordSettings(driver);
   await securityAndPasswordSettings.checkPageIsLoaded();
+}
+
+/**
+ * Open Settings → Privacy from the wallet home.
+ *
+ * @param driver - The WebDriver instance
+ */
+export async function navigateToPrivacySettings(driver: Driver): Promise<void> {
+  await new HeaderNavbar(driver).openSettingsPage();
+  const settingsPage = new SettingsPage(driver);
+  await settingsPage.checkPageIsLoaded();
+  await settingsPage.goToPrivacySettings();
+  await new PrivacySettings(driver).checkPageIsLoaded();
 }
 
 /**
