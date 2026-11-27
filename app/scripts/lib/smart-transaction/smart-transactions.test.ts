@@ -379,6 +379,182 @@ describe('submitSmartTransactionHook', () => {
     );
   });
 
+  it('sends the signer hardware type on sentinel metadata', async () => {
+    const getAccountHardwareType = jest.fn().mockReturnValue('Ledger');
+    await withRequest(
+      {
+        options: { getAccountHardwareType },
+      },
+      async ({ request, messenger, submitSignedTransactionsSpy }) => {
+        setImmediate(() => {
+          messenger.publish('SmartTransactionsController:smartTransaction', {
+            status: 'pending',
+            uuid,
+            statusMetadata: {
+              minedHash: '',
+            },
+          } as SmartTransaction);
+          messenger.publish('SmartTransactionsController:smartTransaction', {
+            status: 'success',
+            uuid,
+            statusMetadata: {
+              minedHash: txHash,
+            },
+          } as SmartTransaction);
+        });
+        await submitSmartTransactionHook(request);
+        expect(getAccountHardwareType).toHaveBeenCalledWith(addressFrom);
+        expect(submitSignedTransactionsSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            signedTransactionsWithMetadata: [
+              expect.objectContaining({
+                tx: request.signedTransactionInHex,
+                metadata: expect.objectContaining({
+                  accountHardwareType: 'Ledger',
+                }),
+              }),
+            ],
+          }),
+        );
+      },
+    );
+  });
+
+  it('omits account hardware type when lookup returns undefined', async () => {
+    await withRequest(
+      {
+        options: {
+          getAccountHardwareType: jest.fn().mockReturnValue(undefined),
+        },
+      },
+      async ({ request, messenger, submitSignedTransactionsSpy }) => {
+        setImmediate(() => {
+          messenger.publish('SmartTransactionsController:smartTransaction', {
+            status: 'pending',
+            uuid,
+            statusMetadata: {
+              minedHash: '',
+            },
+          } as SmartTransaction);
+          messenger.publish('SmartTransactionsController:smartTransaction', {
+            status: 'success',
+            uuid,
+            statusMetadata: {
+              minedHash: txHash,
+            },
+          } as SmartTransaction);
+        });
+        await submitSmartTransactionHook(request);
+        const { metadata } =
+          submitSignedTransactionsSpy.mock.calls[0][0]
+            .signedTransactionsWithMetadata[0];
+        expect(metadata).not.toHaveProperty('accountHardwareType');
+      },
+    );
+  });
+
+  it('still submits when the hardware type lookup throws', async () => {
+    await withRequest(
+      {
+        options: {
+          getAccountHardwareType: jest.fn().mockImplementation(() => {
+            throw new Error('keyring down');
+          }),
+        },
+      },
+      async ({ request, messenger, submitSignedTransactionsSpy }) => {
+        setImmediate(() => {
+          messenger.publish('SmartTransactionsController:smartTransaction', {
+            status: 'pending',
+            uuid,
+            statusMetadata: {
+              minedHash: '',
+            },
+          } as SmartTransaction);
+          messenger.publish('SmartTransactionsController:smartTransaction', {
+            status: 'success',
+            uuid,
+            statusMetadata: {
+              minedHash: txHash,
+            },
+          } as SmartTransaction);
+        });
+        const result = await submitSmartTransactionHook(request);
+        expect(result).toEqual({ transactionHash: txHash });
+        const { metadata } =
+          submitSignedTransactionsSpy.mock.calls[0][0]
+            .signedTransactionsWithMetadata[0];
+        expect(metadata).not.toHaveProperty('accountHardwareType');
+      },
+    );
+  });
+
+  it('attaches hardware type across multiple fee tiers', async () => {
+    const getAccountHardwareType = jest.fn().mockReturnValue('Trezor');
+    await withRequest(
+      {
+        options: {
+          signedTransactionInHex: undefined,
+          getAccountHardwareType,
+        },
+      },
+      async ({ request, messenger, submitSignedTransactionsSpy }) => {
+        jest
+          .spyOn(request.smartTransactionsController, 'getFees')
+          .mockResolvedValue({
+            tradeTxFees: {
+              cancelFees: [],
+              feeEstimate: 42000000000000,
+              fees: [
+                { maxFeePerGas: 12843636951, maxPriorityFeePerGas: 2853145236 },
+                { maxFeePerGas: 15843636951, maxPriorityFeePerGas: 3853145236 },
+              ],
+              gasLimit: 21000,
+              gasUsed: 21000,
+            },
+            approvalTxFees: null,
+          });
+        (
+          request.transactionController
+            .approveTransactionsWithSameNonce as jest.Mock
+        ).mockResolvedValue(['0xsigned1', '0xsigned2']);
+
+        setImmediate(() => {
+          messenger.publish('SmartTransactionsController:smartTransaction', {
+            status: 'success',
+            uuid,
+            statusMetadata: {
+              minedHash: txHash,
+            },
+          } as SmartTransaction);
+        });
+
+        await submitSmartTransactionHook(request);
+
+        expect(getAccountHardwareType).toHaveBeenCalledTimes(1);
+        expect(getAccountHardwareType).toHaveBeenCalledWith(addressFrom);
+        expect(submitSignedTransactionsSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            signedTransactionsWithMetadata: [
+              expect.objectContaining({
+                tx: '0xsigned1',
+                metadata: expect.objectContaining({
+                  accountHardwareType: 'Trezor',
+                }),
+              }),
+              expect.objectContaining({
+                tx: '0xsigned2',
+                metadata: expect.objectContaining({
+                  accountHardwareType: 'Trezor',
+                }),
+              }),
+            ],
+          }),
+        );
+      },
+    );
+  });
+
   it('signs and submits only the trade smart transaction', async () => {
     await withRequest(
       {
@@ -559,6 +735,62 @@ describe('submitBatchSmartTransactionHook', () => {
         expect(submitSignedTransactionsMock).toHaveBeenCalledTimes(1);
         const submitRequest = submitSignedTransactionsMock.mock.calls[0][0];
         expect(submitRequest).not.toHaveProperty('signedCanceledTransactions');
+      },
+    );
+  });
+
+  it('attaches hardware type across batch transactions', async () => {
+    const getAccountHardwareType = jest.fn().mockReturnValue('OneKey');
+    await withRequest(
+      {
+        options: {
+          getAccountHardwareType,
+          transactions: [
+            {
+              id: '1',
+              signedTx: '0x1234',
+              params: { to: '0x1', value: '0x0' },
+            },
+            {
+              id: '2',
+              signedTx: '0x5678',
+              params: { to: '0x2', value: '0x0' },
+            },
+          ],
+        },
+      },
+      async ({ request, submitSignedTransactionsSpy }) => {
+        request.featureFlags.extensionReturnTxHashAsapBatch = true;
+        request.transactionController.state.transactions = [
+          { ...request.transactionMeta, id: '1' },
+          { ...request.transactionMeta, id: '2' },
+        ];
+        submitSignedTransactionsSpy.mockResolvedValue({
+          uuid,
+          txHashes: ['hash1', 'hash2'],
+        });
+
+        await submitBatchSmartTransactionHook(request);
+
+        expect(getAccountHardwareType).toHaveBeenCalledWith(addressFrom);
+        expect(submitSignedTransactionsSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            signedTransactionsWithMetadata: [
+              expect.objectContaining({
+                tx: '0x1234',
+                metadata: expect.objectContaining({
+                  accountHardwareType: 'OneKey',
+                }),
+              }),
+              expect.objectContaining({
+                tx: '0x5678',
+                metadata: expect.objectContaining({
+                  accountHardwareType: 'OneKey',
+                }),
+              }),
+            ],
+          }),
+        );
       },
     );
   });

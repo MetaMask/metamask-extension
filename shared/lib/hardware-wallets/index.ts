@@ -5,3 +5,7 @@ export { HardwareWalletType } from './types';
 export { createHardwareWalletError } from './errors';
 export * from './rpc-error-utils';
 export { ENABLE_DMK_FEATURE_FLAG, isDmkFeatureEnabled } from './feature-flags';
+export {
+  getAccountHardwareType,
+  type HardwareTypeLookupMessenger,
+} from './account-hardware-type';
