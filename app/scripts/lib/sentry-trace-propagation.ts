@@ -2,14 +2,20 @@ import {
   getActiveSpan,
   getCurrentScope,
   getIsolationScope,
+  getTraceData,
+  spanToJSON,
 } from '@sentry/browser';
 import type {
   Client,
   Event as SentryEvent,
   EventHint,
   Integration,
+  Span,
 } from '@sentry/core';
-import { addFetchInstrumentationHandler } from '@sentry/core';
+import {
+  addFetchInstrumentationHandler,
+  getDefaultCurrentScope,
+} from '@sentry/core';
 import { v4 as uuidv4 } from 'uuid';
 
 const NAME = 'ConsensysTracePropagation';
@@ -82,11 +88,11 @@ export function matchesBackendTarget(url: string): boolean {
  * the W3C `traceparent` header itself is injected natively by the SDK
  * (`propagateTraceparent`).
  *
+ * @param activeSpan - The span the request runs under, if any.
  * @returns The current trace id, or undefined when none is known.
  */
-function getCurrentTraceId(): string | undefined {
+function getCurrentTraceId(activeSpan: Span | undefined): string | undefined {
   try {
-    const activeSpan = getActiveSpan();
     if (activeSpan) {
       return activeSpan.spanContext().traceId || undefined;
     }
@@ -239,6 +245,147 @@ export function stripTraceHeaders(args: unknown[]): Headers | undefined {
   return removed ? headers : undefined;
 }
 
+function isRunning(span: Span): boolean {
+  return spanToJSON(span).timestamp === undefined;
+}
+
+/**
+ * The span a request should run under: the active span while it runs. An ended
+ * span can stay active after concurrent async spans pop the scope stack out of
+ * order, and then the base scope's span (the pageload) is the running one.
+ *
+ * @param activeSpan - The active span, if any.
+ * @returns A running span, or `undefined` when there is none.
+ */
+function getRunningSpan(activeSpan: Span | undefined): Span | undefined {
+  if (!activeSpan) {
+    return undefined;
+  }
+  if (isRunning(activeSpan)) {
+    return activeSpan;
+  }
+  const baseSpan = getDefaultCurrentScope().getScopeData().span;
+  return baseSpan && isRunning(baseSpan) ? baseSpan : undefined;
+}
+
+/**
+ * Point a fetch's trace headers at `span`, replacing the ones the SDK attached
+ * for the ended active span.
+ *
+ * @param args - The fetch arguments (`[input, init]`), whose `init.headers` is replaced.
+ * @param span - The running span to name as the parent.
+ * @returns False when the span yields no trace data and the headers were left alone.
+ */
+function retargetTraceHeaders(args: unknown[], span: Span): boolean {
+  const traceData = getTraceData({ span, propagateTraceparent: true });
+  if (!traceData['sentry-trace']) {
+    return false;
+  }
+  const headers = stripTraceHeaders(args) ?? mergeFetchHeaders(args);
+  headers.set('sentry-trace', traceData['sentry-trace']);
+  if (traceData.traceparent) {
+    headers.set('traceparent', traceData.traceparent);
+  }
+  if (traceData.baggage) {
+    headers.append('baggage', traceData.baggage);
+  }
+  const init = (args[1] = args[1] || {}) as { headers?: Headers };
+  init.headers = headers;
+  return true;
+}
+
+export type BackendRequestClaim = {
+  span: Span;
+  claims: (url: string) => boolean;
+};
+
+const localRequestClaims = new Set<BackendRequestClaim>();
+
+// The background bundles this module twice: `sentry-install` reads the claims
+// and the operations write them. They share one registry on
+// `globalThis.stateHooks`, which LavaMoat leaves in place (as in
+// `shared/lib/trace.ts`).
+function getRequestClaims(): Set<BackendRequestClaim> {
+  const hooks = globalThis.stateHooks;
+  if (!hooks) {
+    return localRequestClaims;
+  }
+  hooks.backendRequestClaims ??= new Set();
+  return hooks.backendRequestClaims;
+}
+
+/**
+ * Send matching backend requests under `span` while it runs, for an operation
+ * whose later requests leave from code it cannot hand a `fetch`, after the
+ * span has stopped being the active span. Their trace headers name `span`, and
+ * no `http.client` span is recorded for them under another span.
+ *
+ * @param span - The operation's running root.
+ * @param claims - Whether a request URL belongs to the operation.
+ * @returns A function that releases the claim.
+ */
+export function claimBackendRequests(
+  span: Span,
+  claims: (url: string) => boolean,
+): () => void {
+  const requestClaims = getRequestClaims();
+  const claim = { span, claims };
+  requestClaims.add(claim);
+  return () => {
+    requestClaims.delete(claim);
+  };
+}
+
+/**
+ * The running span that claims a request, when it is not the active span.
+ *
+ * @param url - The request URL.
+ * @returns The claiming span, or `undefined`.
+ */
+export function getClaimingSpan(url: string): Span | undefined {
+  const activeSpan = getActiveSpan();
+  for (const { span, claims } of getRequestClaims()) {
+    if (span !== activeSpan && isRunning(span) && claims(url)) {
+      return span;
+    }
+  }
+  return undefined;
+}
+
+// The SDK asks `shouldCreateSpanForRequest` again when a request ends, and ends
+// the request's span only if the answer is still yes. A request that started
+// unclaimed, under its operation's root, stays unclaimed until it ends, though
+// the root has stopped being the active span by then. Both checks run in the
+// `sentry-install` copy, so this state is local.
+const unclaimedRequests = new WeakSet<object>();
+const unclaimedRequestsByUrl = new Map<string, number>();
+
+function trackUnclaimedRequest(fetchData: object, url: string): void {
+  unclaimedRequests.add(fetchData);
+  unclaimedRequestsByUrl.set(url, (unclaimedRequestsByUrl.get(url) ?? 0) + 1);
+}
+
+function releaseUnclaimedRequest(fetchData: object, url: string): void {
+  if (!unclaimedRequests.delete(fetchData)) {
+    return;
+  }
+  const count = (unclaimedRequestsByUrl.get(url) ?? 1) - 1;
+  if (count > 0) {
+    unclaimedRequestsByUrl.set(url, count);
+  } else {
+    unclaimedRequestsByUrl.delete(url);
+  }
+}
+
+/**
+ * Whether a request is claimed, giving the same answer at its end as its start.
+ * @param url - The request URL.
+ * @returns True when a claimant names the request's parent.
+ */
+export function isClaimedRequest(url: string): boolean {
+  return !unclaimedRequestsByUrl.has(url) && getClaimingSpan(url) !== undefined;
+}
+
 function setRequestIdForTraceId(traceId: string, requestId: string): void {
   if (requestIdByTraceId.has(traceId)) {
     // A trace can fan out to multiple outbound requests, each with its own id.
@@ -268,7 +415,7 @@ function setRequestIdForTraceId(traceId: string, requestId: string): void {
  * `consensysRequestId`). The W3C `traceparent` / `sentry-trace` headers are
  * injected natively by the SDK (`propagateTraceparent` + `tracePropagationTargets`).
  *
- * With no active span, a matched request goes out with no trace headers and no
+ * With no running span, a matched request goes out with no trace headers and no
  * Consensys `baggage`.
  *
  * Must be registered after `browserTracingIntegration` so the SDK's
@@ -288,19 +435,37 @@ export function consensysTracePropagationIntegration({
     name: NAME,
     afterAllSetup: () => {
       addFetchInstrumentationHandler((handlerData) => {
-        // The handler fires at request start (no `endTimestamp`) and again on
-        // response; only the start invocation can mutate the outgoing request.
-        if (handlerData.endTimestamp !== undefined) {
+        const { fetchData } = handlerData;
+        const url = fetchData?.url;
+        if (!url || !matchesBackendTarget(url)) {
           return;
         }
-        const url = handlerData.fetchData?.url;
-        if (!url || !matchesBackendTarget(url)) {
+        // The handler fires at request start (no `endTimestamp`) and again on
+        // response; only the start invocation can mutate the outgoing request.
+        // It runs after the SDK's handler, which has ended the span by then.
+        if (handlerData.endTimestamp !== undefined) {
+          releaseUnclaimedRequest(fetchData, url);
           return;
         }
         try {
           // The SDK attaches trace headers to matched URLs even with no active
-          // span, naming a parent that is never sent: strip them.
-          if (!getActiveSpan()) {
+          // span, or under one that has ended, naming a span that is never
+          // sent: strip them, or point them at a running span. A claimed
+          // request is pointed at its claimant.
+          const activeSpan = getActiveSpan();
+          const claimingSpan = getClaimingSpan(url);
+          if (!claimingSpan) {
+            trackUnclaimedRequest(fetchData, url);
+          }
+          let runningSpan = claimingSpan ?? getRunningSpan(activeSpan);
+          if (
+            runningSpan &&
+            runningSpan !== activeSpan &&
+            !retargetTraceHeaders(handlerData.args, runningSpan)
+          ) {
+            runningSpan = undefined;
+          }
+          if (!runningSpan) {
             const strippedHeaders = stripTraceHeaders(handlerData.args);
             if (strippedHeaders) {
               handlerData.args[1] = handlerData.args[1] || {};
@@ -312,7 +477,7 @@ export function consensysTracePropagationIntegration({
           const requestId = requestIdProvider();
           currentConsensysRequestId = requestId;
 
-          const traceId = getCurrentTraceId();
+          const traceId = getCurrentTraceId(runningSpan);
           if (traceId) {
             setRequestIdForTraceId(traceId, requestId);
           }
