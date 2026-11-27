@@ -4,6 +4,10 @@ import {
   Box,
   Button,
   ButtonVariant,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
   Text,
   TextAlign,
   TextColor,
@@ -58,13 +62,12 @@ const SyncError = ({ onRetry, onCancel }: SyncErrorProps) => {
         gap={6}
         data-testid="qr-sync-error-content"
       >
-        <img
-          src="./images/mfa-failure.svg"
-          alt=""
-          width={370}
-          height={64}
-          className="self-center max-w-full h-auto"
-          data-testid="qr-sync-error-illustration"
+        <Icon
+          name={IconName.CircleX}
+          size={IconSize.Xl}
+          color={IconColor.ErrorDefault}
+          className="mx-auto"
+          data-testid="qr-sync-error-icon"
         />
         <Box
           flexDirection={BoxFlexDirection.Column}

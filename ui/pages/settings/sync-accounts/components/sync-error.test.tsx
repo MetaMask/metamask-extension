@@ -42,9 +42,7 @@ describe('SyncError', () => {
     expect(
       screen.getByText(messages.add_device_error_title.message),
     ).toBeInTheDocument();
-    expect(
-      screen.getByTestId('qr-sync-error-illustration'),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('qr-sync-error-icon')).toBeInTheDocument();
     expect(screen.getByTestId('qr-sync-error-content')).toHaveClass(
       'flex-1',
       'justify-center',
