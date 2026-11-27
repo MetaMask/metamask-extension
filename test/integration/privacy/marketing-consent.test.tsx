@@ -37,8 +37,9 @@ const selectors = {
   marketingConsentToggleInput: 'data-collection-for-marketing-input',
 };
 
-const baseBackgroundMock = createMockImplementation({});
-
+const baseBackgroundMock = createMockImplementation({
+  'AuthenticatedUserStorageService:getNotificationPreferences': null,
+});
 const getSocialLoginState = (overrides: Record<string, unknown> = {}) => ({
   ...mockMetaMaskState,
   firstTimeFlowType: FirstTimeFlowType.socialCreate,
