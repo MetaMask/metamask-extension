@@ -7,8 +7,6 @@ import type { OHLCVBar } from './useOHLCVChart';
 export type OHLCVPriceData = {
   /** Current/latest price (close of the most recent bar) */
   price: number | undefined;
-  /** Timestamp of the latest bar */
-  timestamp: number | undefined;
 };
 
 /**
@@ -16,13 +14,12 @@ export type OHLCVPriceData = {
  *
  * This hook derives:
  * - `price`: The close price of the most recent candle
- * - `timestamp`: The timestamp of the most recent candle
  *
  * The 24H percentage change is intentionally NOT derived here. Candles are
  * interval-bucketed, so a candle-based 24H baseline drifts as the interval
  * changes and breaks down on coarse intervals (e.g. 1w). The candle header
  * sources its 24H change from the interval-independent historical-prices (P1D)
- * series instead — see `advanced-chart-section.tsx`.
+ * series instead — see `useCandle24hChange.ts`.
  *
  * @param ohlcvData - Array of OHLCV bars from useOHLCVChart
  * @returns Computed price display data
@@ -30,22 +27,9 @@ export type OHLCVPriceData = {
  * @example
  * ```tsx
  * const { ohlcvData } = useOHLCVChart({ assetId, interval });
- * const { price, timestamp } = useOHLCVPriceData(ohlcvData);
+ * const { price } = useOHLCVPriceData(ohlcvData);
  * ```
  */
 export function useOHLCVPriceData(ohlcvData: OHLCVBar[]): OHLCVPriceData {
-  return useMemo(() => {
-    const latestBar = ohlcvData?.at(-1);
-    if (!latestBar) {
-      return {
-        price: undefined,
-        timestamp: undefined,
-      };
-    }
-
-    return {
-      price: latestBar.close,
-      timestamp: latestBar.time,
-    };
-  }, [ohlcvData]);
+  return useMemo(() => ({ price: ohlcvData.at(-1)?.close }), [ohlcvData]);
 }

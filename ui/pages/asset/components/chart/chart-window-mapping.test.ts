@@ -1,27 +1,51 @@
 import { it } from '@jest/globals';
 import {
+  CANDLE_INTERVAL_CONFIG,
+  CANDLE_INTERVALS,
+  DEFAULT_LINE_RANGE,
+  getCandleIntervalConfig,
+  getLineRangeConfig,
+  getOhlcvTimePeriod,
   getTvResolution,
-  INTERVAL_DURATION_MS,
-  INTERVAL_TO_TV_RESOLUTION,
-  LINE_RANGE_MS,
+  isCandleInterval,
+  LINE_RANGE_CONFIG,
+  LINE_RANGES,
   mapCandleIntervalToLineRange,
   nearestByWindow,
+  type OhlcvTimePeriod,
   resolveCandleForLineRange,
-  VISIBLE_WINDOW_MS_BY_INTERVAL,
 } from './chart-window-mapping';
 
+const MINUTE_MS = 60 * 1000;
+const HOUR_MS = 60 * MINUTE_MS;
+const DAY_MS = 24 * HOUR_MS;
+
+const pick = <Key extends string, Value>(
+  config: Record<Key, Value>,
+  select: (value: Value) => unknown,
+) =>
+  Object.fromEntries(
+    Object.entries<Value>(config).map(([key, value]) => [key, select(value)]),
+  );
+
 describe('chart-window-mapping', () => {
-  describe('INTERVAL_TO_TV_RESOLUTION', () => {
-    it('maps every supported candle interval', () => {
-      const intervals = Object.keys(INTERVAL_TO_TV_RESOLUTION).sort();
-      expect(intervals).toStrictEqual(Object.keys(INTERVAL_DURATION_MS).sort());
-      expect(intervals).toStrictEqual(
-        Object.keys(VISIBLE_WINDOW_MS_BY_INTERVAL).sort(),
-      );
+  describe('CANDLE_INTERVAL_CONFIG', () => {
+    it('lists intervals finest -> coarsest', () => {
+      expect(CANDLE_INTERVALS).toStrictEqual([
+        '1m',
+        '5m',
+        '15m',
+        '1h',
+        '4h',
+        '1d',
+        '1w',
+      ]);
     });
 
     it('uses TradingView resolution format (hours as minutes)', () => {
-      expect(INTERVAL_TO_TV_RESOLUTION).toStrictEqual({
+      expect(
+        pick(CANDLE_INTERVAL_CONFIG, (config) => config.tvResolution),
+      ).toStrictEqual({
         '1m': '1',
         '5m': '5',
         '15m': '15',
@@ -31,6 +55,117 @@ describe('chart-window-mapping', () => {
         '1w': '1W',
       });
     });
+
+    it('has the expected candle durations', () => {
+      expect(
+        pick(CANDLE_INTERVAL_CONFIG, (config) => config.durationMs),
+      ).toStrictEqual({
+        '1m': MINUTE_MS,
+        '5m': 5 * MINUTE_MS,
+        '15m': 15 * MINUTE_MS,
+        '1h': HOUR_MS,
+        '4h': 4 * HOUR_MS,
+        '1d': DAY_MS,
+        '1w': 7 * DAY_MS,
+      });
+    });
+
+    it('has the expected visible windows', () => {
+      expect(
+        pick(CANDLE_INTERVAL_CONFIG, (config) => config.visibleWindowMs),
+      ).toStrictEqual({
+        '1m': HOUR_MS,
+        '5m': 12 * HOUR_MS,
+        '15m': DAY_MS,
+        '1h': 7 * DAY_MS,
+        '4h': 7 * DAY_MS,
+        '1d': 30 * DAY_MS,
+        '1w': 365 * DAY_MS,
+      });
+    });
+
+    it('has the expected OHLCV time periods', () => {
+      expect(
+        pick(CANDLE_INTERVAL_CONFIG, (config) => config.timePeriod),
+      ).toStrictEqual({
+        '1m': '1d',
+        '5m': '1d',
+        '15m': '1d',
+        '1h': '1w',
+        '4h': '1m',
+        '1d': '1m',
+        '1w': '1y',
+      });
+    });
+
+    it('never opens on a window wider than the first fetched page', () => {
+      const timePeriodSpanMs: Record<OhlcvTimePeriod, number> = {
+        '1h': HOUR_MS,
+        '1d': DAY_MS,
+        '1w': 7 * DAY_MS,
+        '1m': 30 * DAY_MS,
+        '1y': 365 * DAY_MS,
+      };
+      for (const { visibleWindowMs, timePeriod } of Object.values(
+        CANDLE_INTERVAL_CONFIG,
+      )) {
+        expect(visibleWindowMs).toBeLessThanOrEqual(
+          timePeriodSpanMs[timePeriod],
+        );
+      }
+    });
+  });
+
+  describe('isCandleInterval / getCandleIntervalConfig', () => {
+    it('accepts a known interval', () => {
+      expect(isCandleInterval('4h')).toBe(true);
+      expect(getCandleIntervalConfig('4h')).toBe(CANDLE_INTERVAL_CONFIG['4h']);
+    });
+
+    it.each<string>(['', '2h', '1H', 'toString'])(
+      'rejects unknown interval %j',
+      (interval) => {
+        expect(isCandleInterval(interval)).toBe(false);
+        expect(getCandleIntervalConfig(interval)).toBeUndefined();
+      },
+    );
+  });
+
+  describe('getOhlcvTimePeriod', () => {
+    it('returns the time period for a known interval', () => {
+      expect(getOhlcvTimePeriod('4h')).toBe('1m');
+    });
+
+    it.each<string>(['', 'unknown_interval', 'toString'])(
+      'falls back to 1d for unknown interval %j',
+      (interval) => {
+        expect(getOhlcvTimePeriod(interval)).toBe('1d');
+      },
+    );
+  });
+
+  describe('LINE_RANGE_CONFIG', () => {
+    it('lists ranges shortest -> longest and defaults to 1D', () => {
+      expect(LINE_RANGES).toStrictEqual(['1H', '1D', '1W', '1M', '1Y']);
+      expect(DEFAULT_LINE_RANGE).toBe('1D');
+    });
+
+    it('has the expected spans and ISO 8601 durations', () => {
+      expect(LINE_RANGE_CONFIG).toStrictEqual({
+        '1H': { windowMs: HOUR_MS, iso8601: 'PT1H' },
+        '1D': { windowMs: DAY_MS, iso8601: 'P1D' },
+        '1W': { windowMs: 7 * DAY_MS, iso8601: 'P1W' },
+        '1M': { windowMs: 30 * DAY_MS, iso8601: 'P1M' },
+        '1Y': { windowMs: 365 * DAY_MS, iso8601: 'P1Y' },
+      });
+    });
+
+    it.each<string>(['', '1h', 'toString'])(
+      'returns undefined for unknown range %j',
+      (range) => {
+        expect(getLineRangeConfig(range)).toBeUndefined();
+      },
+    );
   });
 
   describe('getTvResolution', () => {
@@ -47,14 +182,25 @@ describe('chart-window-mapping', () => {
   });
 
   describe('nearestByWindow', () => {
+    const LINE_RANGE_WINDOWS = {
+      '1H': HOUR_MS,
+      '1D': DAY_MS,
+      '1W': 7 * DAY_MS,
+      '1M': 30 * DAY_MS,
+      '1Y': 365 * DAY_MS,
+    };
+
     it('returns the candidate whose window matches exactly', () => {
-      expect(nearestByWindow(LINE_RANGE_MS['1D'], LINE_RANGE_MS)).toBe('1D');
+      expect(nearestByWindow(DAY_MS, LINE_RANGE_WINDOWS)).toBe('1D');
     });
 
     it('picks the closest candidate on a ratio scale', () => {
       // 6h is a factor of 6 from 1H but only a factor of 4 from 1D, so 1D wins.
-      const sixHoursMs = 6 * 60 * 60 * 1000;
-      expect(nearestByWindow(sixHoursMs, LINE_RANGE_MS)).toBe('1D');
+      expect(nearestByWindow(6 * HOUR_MS, LINE_RANGE_WINDOWS)).toBe('1D');
+    });
+
+    it('breaks a tie toward the later-listed candidate', () => {
+      expect(nearestByWindow(DAY_MS, { a: DAY_MS, b: DAY_MS })).toBe('b');
     });
   });
 

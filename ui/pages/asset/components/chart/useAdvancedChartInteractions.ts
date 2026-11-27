@@ -13,7 +13,7 @@ type UseAdvancedChartInteractionsParams = {
   interval: string;
   /** Candle interval currently on screen (may be a toggle override). */
   displayInterval: string;
-  /** Active line time range, used to seed the candle window on line -> candle. */
+  /** Active line time range, used to resolve the candle interval on line -> candle. */
   lineTimeRange: string;
   /** Currently active indicator names. */
   indicators: Set<string>;
@@ -55,7 +55,7 @@ type UseAdvancedChartInteractionsParams = {
  * @param params.setChartType - Sets the active chart type.
  * @param params.setLineTimeRange - Sets the line-mode time range.
  * @param params.setCandleInterval - Sets the candle-mode interval.
- * @param params.applyToggleCandle - Seeds candle interval + window on toggle.
+ * @param params.applyToggleCandle - Seeds the candle interval on toggle (no persist).
  * @param params.toggleIndicator - Toggles an indicator on or off.
  * @returns The handlers the section wires into its toolbar, iframe, and bars.
  */

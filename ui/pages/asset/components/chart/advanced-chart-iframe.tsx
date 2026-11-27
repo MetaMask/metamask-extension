@@ -10,10 +10,7 @@ import { ENVIRONMENT } from '../../../../../shared/constants/build';
 import { useTheme } from '../../../../hooks/useTheme';
 import { isMovingAverage } from './advanced-chart-indicator-bar';
 import { CHART_TYPE_CANDLE } from './advanced-chart-interval-bar';
-import {
-  getTvResolution,
-  VISIBLE_WINDOW_MS_BY_INTERVAL,
-} from './chart-window-mapping';
+import { getCandleIntervalConfig } from './chart-window-mapping';
 import type { FetchOlderBarsResult, OHLCVBar } from './useOHLCVChart';
 import type { OHLCVRealtimeBar } from './useOHLCVRealtime';
 
@@ -476,15 +473,15 @@ const AdvancedChartIframe = ({
     // Anchor the initial visible window to the latest loaded bar so the
     // engine frames a recent span instead of auto-fitting all history
     // (which makes candle mode reach much further back than the line).
-    const lastBarTime = ohlcvData[ohlcvData.length - 1]?.time;
-    const windowMs = VISIBLE_WINDOW_MS_BY_INTERVAL[selectedInterval];
+    // `ohlcvData` is non-empty here (guarded above).
+    const lastBarTime = ohlcvData[ohlcvData.length - 1].time;
+    const intervalConfig = getCandleIntervalConfig(selectedInterval);
+    const windowMs = intervalConfig?.visibleWindowMs;
     const visibleFromMs =
-      lastBarTime !== undefined && windowMs !== undefined
-        ? lastBarTime - windowMs
-        : undefined;
+      windowMs === undefined ? undefined : lastBarTime - windowMs;
     // Explicit resolution: the engine otherwise infers it from bar spacing,
     // which misfires on low-liquidity tokens (e.g. 5m detected as 30m).
-    const resolution = getTvResolution(selectedInterval);
+    const resolution = intervalConfig?.tvResolution;
 
     // Engine history is replaced by page 1, so pagination restarts from it.
     resetPagination?.();
@@ -509,7 +506,7 @@ const AdvancedChartIframe = ({
       },
     });
     prevOhlcvDataRef.current = ohlcvData;
-    engineLastTimeRef.current = lastBarTime ?? null;
+    engineLastTimeRef.current = lastBarTime;
   }, [
     iframeLoaded,
     ohlcvData,

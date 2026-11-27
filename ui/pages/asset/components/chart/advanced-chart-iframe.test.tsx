@@ -9,8 +9,8 @@ import AdvancedChartIframe, {
   LOAD_TIMEOUT_MS,
 } from './advanced-chart-iframe';
 import {
+  getCandleIntervalConfig,
   getTvResolution,
-  VISIBLE_WINDOW_MS_BY_INTERVAL,
 } from './chart-window-mapping';
 
 type Bar = { time: number };
@@ -29,7 +29,7 @@ function setOhlcvPayload(
   interval = '15m',
 ): Record<string, unknown> {
   const lastBarTime = data[data.length - 1]?.time;
-  const windowMs = VISIBLE_WINDOW_MS_BY_INTERVAL[interval];
+  const windowMs = getCandleIntervalConfig(interval)?.visibleWindowMs;
   const visibleFromMs =
     lastBarTime !== undefined && windowMs !== undefined
       ? lastBarTime - windowMs
@@ -252,6 +252,26 @@ describe('AdvancedChartIframe', () => {
           }),
           CHART_ORIGIN,
         );
+      });
+    });
+
+    it('sends the literal 15m resolution and 1-day window for the default interval', async () => {
+      const { container } = render(<AdvancedChartIframe {...defaultProps} />);
+
+      act(() => {
+        container.querySelector('iframe')?.dispatchEvent(new Event('load'));
+      });
+
+      await waitFor(() => {
+        const payload = postMessageSpy.mock.calls
+          .map(([message]) => JSON.parse(message))
+          .find(({ type }) => type === 'SET_OHLCV_DATA')?.payload;
+        // Literals rather than `getTvResolution`/config lookups, so a wrong
+        // mapping cannot be masked by the helper computing the same value.
+        expect(payload).toMatchObject({
+          resolution: '15',
+          visibleFromMs: 1700003600 - 24 * 60 * 60 * 1000,
+        });
       });
     });
 

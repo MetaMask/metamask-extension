@@ -12,6 +12,7 @@ import {
   twMerge,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { CANDLE_INTERVALS } from './chart-window-mapping';
 
 /**
  * Mirrors mobile's IntervalBar.tsx + ChartTypeToggle.tsx.
@@ -23,26 +24,12 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 export const CHART_TYPE_CANDLE = 1;
 export const CHART_TYPE_LINE = 2;
 
-/** Candle-granularity intervals for candlestick chart mode. */
-const CANDLE_INTERVAL_KEYS = ['1m', '5m', '15m', '1h', '4h', '1d', '1w'];
-
-/**
- * Time-range options shown in the IntervalBar when chart type is Line. These
- * replace the legacy chart's own selector row, which the advanced layout hides.
- */
-export const LINE_CHART_TIME_RANGES = ['1H', '1D', '1W', '1M', '1Y'] as const;
-
-/** Maps a line time range to the ISO 8601 duration `useHistoricalPrices` wants. */
-export const LINE_TIME_RANGE_TO_ISO8601: Record<string, string> = {
-  '1H': 'PT1H',
-  '1D': 'P1D',
-  '1W': 'P1W',
-  '1M': 'P1M',
-  '1Y': 'P1Y',
-};
-
 type IntervalBarProps = {
-  /** Override the default candle intervals, e.g. time-range labels for line mode. */
+  /**
+   * Override the default candle intervals, e.g. `LINE_RANGES` for line mode.
+   * These replace the legacy chart's own selector row, which the advanced
+   * layout hides.
+   */
   intervals?: readonly string[];
   selectedInterval: string;
   onIntervalSelect: (interval: string) => void;
@@ -51,7 +38,7 @@ type IntervalBarProps = {
 };
 
 const IntervalBar = ({
-  intervals = CANDLE_INTERVAL_KEYS,
+  intervals = CANDLE_INTERVALS,
   selectedInterval,
   onIntervalSelect,
   chartType,

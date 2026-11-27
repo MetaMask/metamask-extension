@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import {
   useOHLCVChart,
-  type FetchOlderBarsResult,
   type OHLCVBar,
+  type UseOHLCVChartResult,
 } from './useOHLCVChart';
 import { useOHLCVRealtime, type OHLCVRealtimeBar } from './useOHLCVRealtime';
 import { useOHLCVPriceData } from './useOHLCVPriceData';
@@ -30,15 +30,14 @@ export type UseAdvancedChartDataResult = {
   /** Latest traded price, available in both modes. */
   realtimePrice?: number;
   realtimeTimestamp?: number;
-  /** Header figures derived from the candle history. Candle mode only. */
+  /** Header price derived from the candle history. Candle mode only. */
   price?: number;
-  timestamp?: number;
   isLoading: boolean;
   error: string | null;
   /** The currency the candle history is actually priced in. */
   resolvedCurrency: string;
   /** Fetches an older page of candles for the chart engine to prepend. */
-  fetchOlderBars: () => Promise<FetchOlderBarsResult>;
+  fetchOlderBars: UseOHLCVChartResult['fetchOlderBars'];
   /** Resets pagination; call only on a full engine reload. */
   resetPagination: () => void;
 };
@@ -99,7 +98,7 @@ export function useAdvancedChartData({
       : ohlcvData;
   }, [ohlcvData, latestBar]);
 
-  const { price, timestamp } = useOHLCVPriceData(mergedOhlcvData);
+  const { price } = useOHLCVPriceData(mergedOhlcvData);
 
   return {
     ohlcvData,
@@ -107,7 +106,6 @@ export function useAdvancedChartData({
     realtimePrice: latestBar?.close,
     realtimeTimestamp: latestBar?.time,
     price,
-    timestamp,
     isLoading,
     error,
     resolvedCurrency,

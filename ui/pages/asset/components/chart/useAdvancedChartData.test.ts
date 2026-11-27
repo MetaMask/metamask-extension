@@ -161,7 +161,6 @@ describe('useAdvancedChartData', () => {
       );
 
       expect(result.current.price).toBe(30);
-      expect(result.current.timestamp).toBe(1_700_007_200_000);
     });
 
     it('ignores a live bar older than the last candle', () => {
@@ -223,7 +222,6 @@ describe('useAdvancedChartData', () => {
       );
 
       expect(result.current.price).toBe(25);
-      expect(result.current.timestamp).toBe(1_700_003_600_000);
     });
   });
 

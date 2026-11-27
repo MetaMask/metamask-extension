@@ -1,4 +1,5 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
+import { priceApiBaseUrl } from '../../../../../shared/constants/price-api';
 import { useOHLCVRealtime } from './useOHLCVRealtime';
 
 // ─── Mocks ──────────────────────────────────────────────────────────────────
@@ -563,6 +564,10 @@ describe('useOHLCVRealtime', () => {
       const url = new URL(calledUrl);
 
       expect(url.pathname).toContain('/ethereum/latest');
+      // Sibling of the history endpoint: `/v3/ohlcv`, not `/v3/ohlcv-chart`.
+      expect(url.origin + url.pathname).toBe(
+        `${priceApiBaseUrl}/v3/ohlcv/ethereum/latest`,
+      );
       expect(url.searchParams.get('timePeriod')).toBe('1m');
       expect(url.searchParams.get('interval')).toBe('4h');
       expect(url.searchParams.get('vsCurrency')).toBe('eur');
