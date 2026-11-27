@@ -24,6 +24,7 @@ import { useFormatters } from '../../../../hooks/useFormatters';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getAccountGroupDisplayBalance } from '../../../../helpers/utils/account-group-balance';
 import { VirtualizedList } from '../../../../components/ui/virtualized-list/virtualized-list';
+import { isPrivateKeyWallet } from '../utils';
 
 type WalletGroupData =
   AccountTreeWallets[keyof AccountTreeWallets]['groups'][AccountGroupId];
@@ -47,6 +48,12 @@ type ListItem =
       walletId: string;
       groupId: AccountGroupId;
       groupData: WalletGroupData;
+      /**
+       * Whether this account can be selected on its own. Only imported
+       * private-key accounts can. Accounts in other wallets are synced as part
+       * of the whole wallet.
+       */
+      isSelectable: boolean;
     };
 
 export type WalletSelectionListProps = {
@@ -117,6 +124,8 @@ export const WalletSelectionList = ({
         return;
       }
 
+      const isSelectable = isPrivateKeyWallet(wallet);
+
       groupIds.forEach((groupId) => {
         items.push({
           type: 'account',
@@ -124,6 +133,7 @@ export const WalletSelectionList = ({
           walletId,
           groupId,
           groupData: wallet.groups[groupId],
+          isSelectable,
         });
       });
     });
@@ -254,6 +264,24 @@ export const WalletSelectionList = ({
           groupBalance.amount,
           groupBalance.currency,
         );
+
+      if (!item.isSelectable) {
+        // Part of a whole wallet: shown for context, selected with the wallet.
+        return (
+          <Box
+            className="[&_.multichain-account-cell]:!py-3"
+            data-testid={`qr-sync-account-row-${item.groupId}`}
+          >
+            <MultichainAccountCell
+              accountId={item.groupId}
+              accountName={item.groupData.metadata.name}
+              accountNameString={item.groupData.metadata.name}
+              balance={balance}
+              showDefaultAddress={showDefaultAddress}
+            />
+          </Box>
+        );
+      }
 
       const isSelected = selectedSet.has(item.groupId);
 

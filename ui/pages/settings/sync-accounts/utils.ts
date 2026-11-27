@@ -25,6 +25,21 @@ export function isSyncableWallet(wallet: AccountWalletObject): boolean {
 }
 
 /**
+ * Whether a wallet holds imported private-key accounts.
+ *
+ * QR sync can only send a whole wallet group (HD/SRP) or an individual
+ * imported private-key account. Accounts inside any other wallet cannot be
+ * selected one by one, so only private-key wallets are individually selectable.
+ * @param wallet
+ */
+export function isPrivateKeyWallet(wallet: AccountWalletObject): boolean {
+  return (
+    wallet.type === AccountWalletType.Keyring &&
+    wallet.metadata.keyring.type === KeyringTypes.simple
+  );
+}
+
+/**
  * Returns only wallets that can be synced (HD/SRP and imported private-key wallets).
  * @param wallets
  */
