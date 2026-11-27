@@ -51,7 +51,8 @@ import {
   TokenCellSecondaryDisplay,
   TokenCellTitle,
 } from '../token-cell/cells';
-import { LowValueAssetsToggle } from '../token-list/low-value-assets-toggle';
+import { DustRedeemModal } from '../dust-redeem/dust-redeem-modal';
+import { LowValueAssetsSection } from '../dust-redeem/low-value-assets-section';
 import { TokenListLoadingSkeleton } from '../token-list/token-list-loading-skeleton';
 import type { TokenWithFiatAmount } from '../types';
 
@@ -348,10 +349,15 @@ export const TokenTable = ({ onTokenClick, safeChains }: TokenTableProps) => {
     isLowValueAssetsExpanded,
     handleLowValueAssetsToggle,
     getTokenClickHandler,
+    lowValueTokens,
+    accountTokens,
   } = useTokenListData({
     onTokenClick,
     sortOverride,
   });
+  const [isDustRedeemOpen, setIsDustRedeemOpen] = useState(false);
+  const openDustRedeem = useCallback(() => setIsDustRedeemOpen(true), []);
+  const closeDustRedeem = useCallback(() => setIsDustRedeemOpen(false), []);
   const moneyTokenListCta = useMoneyTokenListCta(displayedTokens);
 
   const renderRow = useCallback(
@@ -359,10 +365,13 @@ export const TokenTable = ({ onTokenClick, safeChains }: TokenTableProps) => {
       const { item } = info;
       if (item.type === 'low-value-toggle') {
         return (
-          <LowValueAssetsToggle
+          <LowValueAssetsSection
             count={item.count}
             isExpanded={isLowValueAssetsExpanded}
-            onClick={handleLowValueAssetsToggle}
+            onToggle={handleLowValueAssetsToggle}
+            tokens={lowValueTokens}
+            privacyMode={privacyMode}
+            onRedeemClick={openDustRedeem}
           />
         );
       }
@@ -381,7 +390,9 @@ export const TokenTable = ({ onTokenClick, safeChains }: TokenTableProps) => {
       getTokenClickHandler,
       handleLowValueAssetsToggle,
       isLowValueAssetsExpanded,
+      lowValueTokens,
       moneyTokenListCta,
+      openDustRedeem,
       privacyMode,
       safeChains,
     ],
@@ -416,6 +427,12 @@ export const TokenTable = ({ onTokenClick, safeChains }: TokenTableProps) => {
           ))}
         </div>
       )}
+      <DustRedeemModal
+        isOpen={isDustRedeemOpen}
+        tokens={accountTokens}
+        privacyMode={privacyMode}
+        onClose={closeDustRedeem}
+      />
     </div>
   );
 };

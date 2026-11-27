@@ -3832,6 +3832,38 @@
     "message": "Y",
     "description": "Shortened form of 'year'"
   },
+  "dustRedeemBalanceUnder": {
+    "message": "<$$1",
+    "description": "$1 is 1, 5, or 10. Option in the dust redeem modal balance dropdown, shown as <$1."
+  },
+  "dustRedeemExcludeGasTokens": {
+    "message": "Exclude gas tokens",
+    "description": "Button in the dust redeem modal when native gas tokens under the balance ceiling are included."
+  },
+  "dustRedeemForMusd": {
+    "message": "Redeem for $1 mUSD",
+    "description": "$1 is a formatted fiat amount, such as $4.20. Shown on the low balance tokens row and as the redeem confirmation."
+  },
+  "dustRedeemFromAccount": {
+    "message": "Consolidate your dust into mUSD",
+    "description": "Shown under the title of the dust redeem modal."
+  },
+  "dustRedeemIncludeGasTokens": {
+    "message": "Include gas tokens",
+    "description": "Button in the dust redeem modal when native gas tokens under the balance ceiling are excluded."
+  },
+  "dustRedeemShowBalances": {
+    "message": "Show token balances",
+    "description": "Label beside the balance ceiling dropdown in the dust redeem modal."
+  },
+  "dustRedeemTitle": {
+    "message": "Redeem for mUSD",
+    "description": "Title of the modal for redeeming low balance tokens for mUSD."
+  },
+  "dustRedeemToken": {
+    "message": "Redeem $1",
+    "description": "$1 is the token symbol. Accessible name for a token checkbox in the dust redeem modal."
+  },
   "earn": {
     "message": "Earn"
   },
