@@ -250,13 +250,18 @@ class PerpsStreamManager {
               }
             })
             .catch((err) => {
+              // Nobody is waiting for this answer once the channel was torn
+              // down or the account/network changed.
+              if (!isCurrent()) {
+                return;
+              }
               if (!isProviderLifecycleStale(err)) {
                 console.error(
                   '[PerpsStreamManager] Failed to fetch positions',
                   err,
                 );
               }
-              if (isCurrent() && !this.positions.hasCachedData()) {
+              if (!this.positions.hasCachedData()) {
                 push(EMPTY_POSITIONS);
               }
             });
@@ -285,13 +290,18 @@ class PerpsStreamManager {
               }
             })
             .catch((err) => {
+              // Nobody is waiting for this answer once the channel was torn
+              // down.
+              if (cancelled) {
+                return;
+              }
               if (!isProviderLifecycleStale(err)) {
                 console.error(
                   '[PerpsStreamManager] Failed to fetch orders',
                   err,
                 );
               }
-              if (!cancelled && !this.orders.hasCachedData()) {
+              if (!this.orders.hasCachedData()) {
                 push(EMPTY_ORDERS);
               }
             });

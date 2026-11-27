@@ -661,6 +661,43 @@ describe('PerpsStreamManager', () => {
         jest.useFakeTimers();
       }
     });
+
+    it('does not log when an in-flight positions fetch rejects after teardown', async () => {
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        let rejectInFlight: (reason: Error) => void = () => undefined;
+        mockSubmitRequestToBackground.mockImplementation(
+          (method: string) =>
+            new Promise((_resolve, reject) => {
+              if (method === 'perpsGetPositions') {
+                rejectInFlight = reject;
+              }
+            }),
+        );
+
+        const unsubscribe = manager.positions.subscribe(jest.fn());
+
+        await jest.advanceTimersByTimeAsync(3_000);
+        unsubscribe();
+
+        rejectInFlight(new Error('network'));
+        await jest.advanceTimersByTimeAsync(0);
+
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsGetPositions',
+          [],
+        );
+        expect(consoleErrorSpy).not.toHaveBeenCalledWith(
+          '[PerpsStreamManager] Failed to fetch positions',
+          expect.anything(),
+        );
+      } finally {
+        consoleErrorSpy.mockRestore();
+      }
+    });
   });
 
   describe('orders channel', () => {
@@ -743,6 +780,43 @@ describe('PerpsStreamManager', () => {
         consoleErrorSpy.mockRestore();
         jest.useRealTimers();
         jest.useFakeTimers();
+      }
+    });
+
+    it('does not log when an in-flight orders fetch rejects after teardown', async () => {
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        let rejectInFlight: (reason: Error) => void = () => undefined;
+        mockSubmitRequestToBackground.mockImplementation(
+          (method: string) =>
+            new Promise((_resolve, reject) => {
+              if (method === 'perpsGetOpenOrders') {
+                rejectInFlight = reject;
+              }
+            }),
+        );
+
+        const unsubscribe = manager.orders.subscribe(jest.fn());
+
+        await jest.advanceTimersByTimeAsync(3_000);
+        unsubscribe();
+
+        rejectInFlight(new Error('network'));
+        await jest.advanceTimersByTimeAsync(0);
+
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsGetOpenOrders',
+          [],
+        );
+        expect(consoleErrorSpy).not.toHaveBeenCalledWith(
+          '[PerpsStreamManager] Failed to fetch orders',
+          expect.anything(),
+        );
+      } finally {
+        consoleErrorSpy.mockRestore();
       }
     });
   });
