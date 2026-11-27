@@ -7863,6 +7863,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/core-backend@npm:^15.0.0":
+  version: 15.0.0
+  resolution: "@metamask/core-backend@npm:15.0.0"
+  dependencies:
+    "@metamask/account-tree-controller": "npm:^11.2.0"
+    "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/keyring-controller": "npm:^28.2.2"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/profile-sync-controller": "npm:^36.1.2"
+    "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
+    "@metamask/superstruct": "npm:^3.4.1"
+    "@metamask/utils": "npm:^12.0.2"
+    "@tanstack/query-core": "npm:^5.107.1"
+    async-mutex: "npm:^0.5.0"
+    cockatiel: "npm:^3.2.1"
+    uuid: "npm:^14.0.3"
+  checksum: 10/642705cd7a3fe2d8a8b4166be56e25756e4a1d5b333149790e61355ebb3ac3f7fd0aa38071d40664a6b061c424493b6b360c8f53c20f55ed598e6de6c560c9b0
+  languageName: node
+  linkType: hard
+
 "@metamask/cryptography@npm:^1.1.0, @metamask/cryptography@npm:^1.1.2":
   version: 1.1.2
   resolution: "@metamask/cryptography@npm:1.1.2"
@@ -10305,9 +10325,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^74.4.1":
-  version: 74.4.1
-  resolution: "@metamask/transaction-controller@npm:74.4.1"
+"@metamask/transaction-controller@npm:^74.5.1":
+  version: 74.5.1
+  resolution: "@metamask/transaction-controller@npm:74.5.1"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/rlp": "npm:^5.0.2"
@@ -10320,7 +10340,7 @@ __metadata:
     "@metamask/approval-controller": "npm:^10.0.0"
     "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/controller-utils": "npm:^13.0.0"
-    "@metamask/core-backend": "npm:^14.1.0"
+    "@metamask/core-backend": "npm:^15.0.0"
     "@metamask/gas-fee-controller": "npm:^27.1.1"
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
@@ -10341,7 +10361,7 @@ __metadata:
   peerDependencies:
     "@babel/runtime": ^7.0.0
     "@metamask/eth-block-tracker": ">=9"
-  checksum: 10/8b5f0ba004f2bf2d6797946b115ed6c253a38315ada0623d8fc37692a4d45b1c8b7024c289d5fe5fa5d0e716b5e2ce79ccdcdbbd822f68fe64b32da4952f3a2a
+  checksum: 10/9ce127110f43ef6a890a68edfeba5dfb5c59ca5bd5baf5b245b41d25f3ffc5a64d99732d86231e7e923301737bb926d3e1952994bcb3f6d098a514d66fd82648
   languageName: node
   linkType: hard
 
@@ -34790,7 +34810,7 @@ __metadata:
     "@metamask/test-dapp-solana": "npm:^0.3.1"
     "@metamask/test-dapp-tron": "npm:^0.3.1"
     "@metamask/test-snaps": "npm:^3.6.0"
-    "@metamask/transaction-controller": "npm:^74.4.1"
+    "@metamask/transaction-controller": "npm:^74.5.1"
     "@metamask/transaction-pay-controller": "npm:^33.0.0"
     "@metamask/transaction-pay-middleware": "npm:^2.0.4"
     "@metamask/tron-wallet-snap": "npm:^4.6.0"
