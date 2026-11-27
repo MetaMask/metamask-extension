@@ -657,6 +657,7 @@ export const ARC_NATIVE_TOKEN_IMAGE_URL = './images/arc-native-token-logo.svg';
 export const ARC_NETWORK_IMAGE_URL = './images/arc-network-logo.svg';
 export const GRAVITY_IMAGE_URL = './images/gravity.svg';
 export const SOMNIA_IMAGE_URL = './images/somnia.svg';
+export const MOBILENODE_IMAGE_URL = './images/mobilenode.png';
 export const SOMNIA_NATIVE_TOKEN_IMAGE_URL = './images/somnia.svg';
 
 export const INFURA_PROVIDER_TYPES = [
@@ -1221,6 +1222,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.ARC]: ARC_NETWORK_IMAGE_URL,
   [CHAIN_IDS.GRAVITY]: GRAVITY_IMAGE_URL,
   [CHAIN_IDS.SOMNIA]: SOMNIA_IMAGE_URL,
+  [CHAIN_IDS.MOBILENODE]: MOBILENODE_IMAGE_URL,
   [CHAIN_IDS.ROBINHOOD_CHAIN]: ROBINHOOD_CHAIN_IMAGE_URL,
   [CHAIN_IDS.ZERO_G]: ZERO_G_IMAGE_URL,
   // Kinetiq Elysium (chain 99901). Not in CHAIN_IDS, since that list is used for validation.
@@ -1325,6 +1327,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.ARC]: ARC_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.GRAVITY]: GRAVITY_IMAGE_URL,
   [CHAIN_IDS.SOMNIA]: SOMNIA_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.MOBILENODE]: MOBILENODE_IMAGE_URL,
   [CHAIN_IDS.KONET]: KONET_IMAGE_URL,
   [CHAIN_IDS.ROBINHOOD_CHAIN]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ZERO_G]: ZERO_G_NATIVE_TOKEN_IMAGE_URL,
