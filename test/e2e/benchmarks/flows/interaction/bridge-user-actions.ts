@@ -22,27 +22,38 @@ import {
 } from '../../../../../shared/constants/benchmarks';
 import { runUserActionBenchmark, collectWebVitals } from '../../utils';
 import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
+import bridgeTokensPopular from '../../mocks/bridge-tokens-popular.json';
 
 export const testTitle = 'benchmark-user-actions-bridge-user-actions';
 export const persona = BENCHMARK_PERSONA.STANDARD;
 
+// Popular tokens are fetched when the asset picker opens. Unmocked, the POST
+// reaches the mock server's catch-all, whose empty 200 body fails
+// `response.json()` and the unhandled rejection fails the iteration.
 async function mockTokensEthereum(mockServer: Mockttp) {
-  return await mockServer.forPost(/getTokens\/search/u).thenCallback(() => {
-    return {
-      statusCode: 200,
-      json: {
-        data: MOCK_TOKENS_ETHEREUM.map((token) => ({
-          ...token,
-          assetId: `eip155:1/erc20:${token.address.toLowerCase()}`,
-          chainId: 'eip155:1',
-        })),
-        pageInfo: {
-          hasNextPage: false,
-          endCursor: null,
+  const popular = await mockServer
+    .forPost(/getTokens\/popular/u)
+    .always()
+    .thenJson(200, bridgeTokensPopular);
+  const search = await mockServer
+    .forPost(/getTokens\/search/u)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          data: MOCK_TOKENS_ETHEREUM.map((token) => ({
+            ...token,
+            assetId: `eip155:1/erc20:${token.address.toLowerCase()}`,
+            chainId: 'eip155:1',
+          })),
+          pageInfo: {
+            hasNextPage: false,
+            endCursor: null,
+          },
         },
-      },
-    };
-  });
+      };
+    });
+  return [popular, search];
 }
 
 export async function run(): Promise<BenchmarkRunResult> {
