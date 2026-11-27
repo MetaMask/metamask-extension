@@ -2501,18 +2501,27 @@ export class LegacyBackgroundApiService {
           await this.#unlockSeedlessWallet(password);
           break;
         case PasswordSyncInstruction.ReconcileKeyring: {
-          // `reconcilePassword` has already rewritten the Seedless vault and
-          // re-wrapped this stored key under the latest global password.
-          const keyringEncryptionKey = await this.#messenger.call(
-            'SeedlessOnboardingController:loadKeyringEncryptionKey',
-          );
-          await this.submitPasswordOrEncryptionKey({
-            encryptionKey: keyringEncryptionKey,
-          });
-          await this.#messenger.call(
-            'KeyringController:changePassword',
-            password,
-          );
+          if (isKeyringPasswordValid) {
+            // The Keyring already uses the new password. The password change
+            // stopped after `KeyringController:changePassword` and before the
+            // checkpoint moved on, so the stored Keyring key is out of date
+            // and cannot unlock the vault. Unlock with the password instead.
+            await this.submitPasswordOrEncryptionKey({ password });
+          } else {
+            // `reconcilePassword` has already rewritten the Seedless vault and
+            // re-wrapped this stored key under the latest global password.
+            const keyringEncryptionKey = await this.#messenger.call(
+              'SeedlessOnboardingController:loadKeyringEncryptionKey',
+            );
+            await this.submitPasswordOrEncryptionKey({
+              encryptionKey: keyringEncryptionKey,
+            });
+            // sync latest password to the keyring
+            await this.#messenger.call(
+              'KeyringController:changePassword',
+              password,
+            );
+          }
           await this.#syncAndCompleteKeyringEncryptionKey();
           // The old-Keyring branch does not go through
           // `#unlockSeedlessWallet`, so revoke refresh tokens here after
