@@ -235,6 +235,7 @@ import {
 } from './controllers/analytics';
 import { handleRampsOrderStatusChanged } from './lib/ramps/handleRampsOrderStatusChanged';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
+import { traceSubscriptionControllerPolls } from './wallet-init/subscription-controller-poll-trace';
 import {
   addHexPrefix,
   getMethodDataName,
@@ -302,7 +303,6 @@ import { RampsServiceInit } from './messenger-client-init/ramps-service-init';
 import { RampsControllerInit } from './messenger-client-init/ramps-controller-init';
 import { PerpsControllerInit } from './messenger-client-init/perps-controller-init';
 import { PerpsStreamBridge } from './controllers/perps/perps-stream-bridge';
-import { PPOMControllerInit } from './messenger-client-init/confirmations/ppom-controller-init';
 import { SmartTransactionsControllerInit } from './messenger-client-init/smart-transactions/smart-transactions-controller-init';
 import { initMessengerClients } from './messenger-client-init/utils';
 import {
@@ -340,6 +340,7 @@ import { GatorPermissionsControllerInit } from './messenger-client-init/gator-pe
 import { registerLinkedSocialLoginProfileSync } from './lib/sync-linked-social-login-profile';
 
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
+import { updatePhishingLists } from './lib/update-phishing-lists';
 import { StaticAssetsControllerInit } from './messenger-client-init/static-assets-controller-init';
 import { RatesControllerInit } from './messenger-client-init/rates-controller-init';
 import { NameControllerInit } from './messenger-client-init/confirmations/name-controller-init';
@@ -361,11 +362,11 @@ import { DecryptMessageManagerInit } from './messenger-client-init/confirmations
 import { DecryptMessageControllerInit } from './messenger-client-init/confirmations/decrypt-message-controller-init';
 import { EncryptionPublicKeyControllerInit } from './messenger-client-init/confirmations/encryption-public-key-controller-init';
 import { EncryptionPublicKeyManagerInit } from './messenger-client-init/confirmations/encryption-public-key-message-manager-init';
-import { SignatureControllerInit } from './messenger-client-init/confirmations/signature-controller-init';
 import { RewardsDataServiceInit } from './messenger-client-init/rewards-data-service-init';
 import { RewardsControllerInit } from './messenger-client-init/rewards-controller-init';
 import { RewardsMoneyDataServiceInit } from './messenger-client-init/rewards-money-data-service-init';
 import { RewardsMoneyControllerInit } from './messenger-client-init/rewards-money-controller-init';
+import { AiDigestControllerInit } from './messenger-client-init/ai-digest-controller-init';
 import { QrSyncControllerInit } from './messenger-client-init/qr-sync';
 import { getRootMessenger } from './lib/messenger';
 import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
@@ -383,6 +384,7 @@ import { MoneyAccountApiDataServiceInit } from './messenger-client-init/money-ac
 import { MoneyAccountAvailabilityServiceInit } from './messenger-client-init/money-account-availability-service-init';
 import { MoneyAccountBalanceServiceInit } from './messenger-client-init/money-account-balance-service-init';
 import { MoneyAccountControllerInit } from './messenger-client-init/money-account-controller-init';
+import { MoneyAccountLifecycleControllerInit } from './messenger-client-init/money-account-lifecycle-controller-init';
 import { MoneyAccountUpgradeControllerInit } from './messenger-client-init/money-account-upgrade-controller-init';
 import { initializeWallet } from './wallet-init/initialization';
 import { setupNetworkEnablementController } from './wallet-init/network-enablement-controller';
@@ -545,7 +547,6 @@ export default class MetamaskController extends EventEmitter {
       DecryptMessageController: DecryptMessageControllerInit,
       EncryptionPublicKeyManager: EncryptionPublicKeyManagerInit,
       EncryptionPublicKeyController: EncryptionPublicKeyControllerInit,
-      SignatureController: SignatureControllerInit,
       PermissionLogController: PermissionLogControllerInit,
       AppStateController: AppStateControllerInit,
       OnboardingController: OnboardingControllerInit,
@@ -573,7 +574,6 @@ export default class MetamaskController extends EventEmitter {
       ...(getIsPerpsIncludedInBuild()
         ? { PerpsController: PerpsControllerInit }
         : {}),
-      PPOMController: PPOMControllerInit,
       PhishingController: PhishingControllerInit,
       TransactionPayController: TransactionPayControllerInit,
       SmartTransactionsController: SmartTransactionsControllerInit,
@@ -616,6 +616,7 @@ export default class MetamaskController extends EventEmitter {
       RewardsController: RewardsControllerInit,
       RewardsMoneyDataService: RewardsMoneyDataServiceInit,
       RewardsMoneyController: RewardsMoneyControllerInit,
+      AiDigestController: AiDigestControllerInit,
       ProfileMetricsController: ProfileMetricsControllerInit,
       ProfileMetricsService: ProfileMetricsServiceInit,
       ProofOfOwnershipService: ProofOfOwnershipServiceInit,
@@ -625,6 +626,7 @@ export default class MetamaskController extends EventEmitter {
       MoneyAccountAvailabilityService: MoneyAccountAvailabilityServiceInit,
       MoneyAccountBalanceService: MoneyAccountBalanceServiceInit,
       MoneyAccountController: MoneyAccountControllerInit,
+      MoneyAccountLifecycleController: MoneyAccountLifecycleControllerInit,
       MoneyAccountUpgradeController: MoneyAccountUpgradeControllerInit,
       AssetsController: AssetsControllerInit,
       LegacyBackgroundApiService: LegacyBackgroundApiServiceInit,
@@ -676,7 +678,7 @@ export default class MetamaskController extends EventEmitter {
       messengerClientsByName.DecryptMessageController;
     this.encryptionPublicKeyController =
       messengerClientsByName.EncryptionPublicKeyController;
-    this.signatureController = messengerClientsByName.SignatureController;
+    this.signatureController = this.wallet.getInstance('SignatureController');
     this.permissionController = this.wallet.getInstance('PermissionController');
     this.permissionLogController =
       messengerClientsByName.PermissionLogController;
@@ -704,7 +706,6 @@ export default class MetamaskController extends EventEmitter {
     this.snapInterfaceController =
       messengerClientsByName.SnapInterfaceController;
     this.snapsRegistry = messengerClientsByName.SnapRegistryController;
-    this.ppomController = messengerClientsByName.PPOMController;
     this.phishingController = messengerClientsByName.PhishingController;
     this.onboardingController = messengerClientsByName.OnboardingController;
     this.txController = this.wallet.getInstance('TransactionController');
@@ -755,6 +756,7 @@ export default class MetamaskController extends EventEmitter {
     this.subscriptionController = this.wallet.getInstance(
       'SubscriptionController',
     );
+    traceSubscriptionControllerPolls(this.subscriptionController);
     this.networkOrderController = messengerClientsByName.NetworkOrderController;
     this.shieldController = this.wallet.getInstance('ShieldController');
     this.gatorPermissionsController =
@@ -779,6 +781,8 @@ export default class MetamaskController extends EventEmitter {
     );
     this.moneyAccountUpgradeController =
       messengerClientsByName.MoneyAccountUpgradeController;
+    this.moneyAccountLifecycleController =
+      messengerClientsByName.MoneyAccountLifecycleController;
 
     this.extension.runtime.onInstalled.addListener((details) => {
       if (details.reason === 'update') {
@@ -902,6 +906,7 @@ export default class MetamaskController extends EventEmitter {
     this.snapController.init();
     this.cronjobController.init();
     this.moneyAccountUpgradeController.init();
+    this.moneyAccountLifecycleController.init();
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionStatusUpdated',
@@ -1058,7 +1063,6 @@ export default class MetamaskController extends EventEmitter {
               validateSecurity: (securityAlertId, request, chainId) =>
                 validateRequestWithPPOM({
                   chainId,
-                  messenger: this.controllerMessenger,
                   request,
                   securityAlertId,
                   updateSecurityAlertResponse:
@@ -1606,7 +1610,9 @@ export default class MetamaskController extends EventEmitter {
     const { usePhishDetect } = this.preferencesController.state;
 
     if (usePhishDetect) {
-      this.phishingController.maybeUpdateState();
+      updatePhishingLists(this.phishingController).catch((error) => {
+        log.error('Failed to update phishing lists', error);
+      });
     }
 
     if (
@@ -3130,7 +3136,9 @@ export default class MetamaskController extends EventEmitter {
       if (this.onboardingController.state.completedOnboarding) {
         if (this.preferencesController.state.usePhishDetect) {
           const { hostname } = new URL(sender.url);
-          this.phishingController.maybeUpdateState();
+          updatePhishingLists(this.phishingController).catch((error) => {
+            log.error('Failed to update phishing lists', error);
+          });
           // Check if new connection is blocked if phishing detection is on
           const phishingTestResponse = this.phishingController.test(sender.url);
           if (phishingTestResponse?.result) {
@@ -3909,7 +3917,6 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(
       createPPOMMiddleware(
-        this.controllerMessenger,
         this.preferencesController,
         this.networkController,
         this.appStateController,
@@ -4518,7 +4525,6 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(
       createPPOMMiddleware(
-        this.controllerMessenger,
         this.preferencesController,
         this.networkController,
         this.appStateController,

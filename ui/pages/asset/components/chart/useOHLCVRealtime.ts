@@ -191,9 +191,7 @@ export function useOHLCVRealtime({
   }, []);
 
   const subscribedRef = useRef(false);
-  const cancelledRef = useRef(false);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const channelRef = useRef<string>('');
 
   // Staleness tracking
   const lastMessageTimeRef = useRef<number>(0);
@@ -228,8 +226,9 @@ export function useOHLCVRealtime({
     }
 
     const channel = buildChannel();
-    channelRef.current = channel;
-    cancelledRef.current = false;
+    // Per-run flag: a shared ref would be reset by the next run, letting late
+    // async work from a previous interval emit bars after a switch.
+    let cancelled = false;
     lastMessageTimeRef.current = 0;
     chainDownRef.current = false;
 
@@ -249,7 +248,7 @@ export function useOHLCVRealtime({
           currency,
           controller.signal,
         );
-        if (bar && !controller.signal.aborted) {
+        if (bar && !controller.signal.aborted && !cancelled) {
           lastMessageTimeRef.current = Date.now();
           updateLatestBar(bar);
         }
@@ -276,7 +275,7 @@ export function useOHLCVRealtime({
         };
       };
 
-      if (payload.channel === channelRef.current) {
+      if (!cancelled && payload.channel === channel) {
         lastMessageTimeRef.current = Date.now();
         chainDownRef.current = false;
         // Convert WS bar (timestamp in seconds) to extension format (milliseconds)
@@ -299,10 +298,7 @@ export function useOHLCVRealtime({
         operation: string;
       };
 
-      if (
-        payload.operation === 'subscribe' &&
-        payload.channel === channelRef.current
-      ) {
+      if (payload.operation === 'subscribe' && payload.channel === channel) {
         // Mark as stale so staleness check triggers REST polling immediately
         lastMessageTimeRef.current = 1;
         // eslint-disable-next-line no-void -- fire-and-forget async poll
@@ -334,7 +330,7 @@ export function useOHLCVRealtime({
         'OHLCVService:barUpdated',
         handleBarUpdated,
       );
-      if (cancelledRef.current) {
+      if (cancelled) {
         await unsubBarUpdated();
         return;
       }
@@ -344,7 +340,7 @@ export function useOHLCVRealtime({
         'OHLCVService:subscriptionError',
         handleSubscriptionError,
       );
-      if (cancelledRef.current) {
+      if (cancelled) {
         await unsubError();
         return;
       }
@@ -354,7 +350,7 @@ export function useOHLCVRealtime({
         'OHLCVService:chainStatusChanged',
         handleChainStatusChanged,
       );
-      if (cancelledRef.current) {
+      if (cancelled) {
         await unsubChainStatus();
         return;
       }
@@ -385,13 +381,8 @@ export function useOHLCVRealtime({
           'OHLCVService:subscribe',
           [{ assetId, interval, currency }],
         ]);
-        if (cancelledRef.current) {
-          await submitRequestToBackground('messengerCall', [
-            'OHLCVService:unsubscribe',
-            [{ assetId, interval, currency }],
-          ]).catch(() => {
-            // Non-fatal: grace period in core will handle cleanup.
-          });
+        // Cleanup already sent the matching unsubscribe.
+        if (cancelled) {
           return;
         }
 
@@ -407,7 +398,7 @@ export function useOHLCVRealtime({
     }, DEBOUNCE_MS);
 
     return () => {
-      cancelledRef.current = true;
+      cancelled = true;
 
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current);

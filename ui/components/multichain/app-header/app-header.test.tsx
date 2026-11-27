@@ -4,6 +4,7 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
 } from '#shared/constants/app';
+import { WIDE_SCREEN_REDESIGN_AB_KEY } from '#shared/lib/ab-testing/configs/wide-screen-redesign';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { AppLayoutProvider } from '../../../contexts/app-layout';
 import configureStore from '../../../store/store';
@@ -27,12 +28,26 @@ jest.mock('./app-header-unlocked-content', () => ({
 
 const mockGetEnvironmentType = jest.mocked(getEnvironmentType);
 
-const renderHeader = (isWideLayout = false) =>
+const renderHeader = (
+  isWideLayout = false,
+  wideScreenVariant?: 'control' | 'treatment',
+) =>
   renderWithProvider(
     <AppLayoutProvider isWideLayout={isWideLayout}>
       <AppHeader />
     </AppLayoutProvider>,
-    configureStore(mockState),
+    configureStore({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        remoteFeatureFlags: {
+          ...mockState.metamask.remoteFeatureFlags,
+          ...(wideScreenVariant && {
+            [WIDE_SCREEN_REDESIGN_AB_KEY]: { name: wideScreenVariant },
+          }),
+        },
+      },
+    }),
   );
 
 describe('AppHeader', () => {
@@ -66,7 +81,7 @@ describe('AppHeader', () => {
     });
 
     it('is hidden in the new fullscreen design', () => {
-      const { queryByRole } = renderHeader(true);
+      const { queryByRole } = renderHeader(true, 'treatment');
 
       expect(
         queryByRole('link', { name: messages.home.message }),

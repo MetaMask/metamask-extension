@@ -13,10 +13,19 @@ import {
   AssetsControllerInitMessenger,
 } from '../messengers/assets/assets-controller-messenger';
 import { ASSETS_UNIFY_STATE_FLAG } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
-import { traceAsControllerCallback } from '../../../../shared/lib/trace';
+import {
+  traceAsControllerCallback,
+  TraceName,
+} from '../../../../shared/lib/trace';
+import {
+  readActiveSpan,
+  startServiceWorkerSentry,
+  stopServiceWorkerSentry,
+} from '../../../../test/lib/service-worker-sentry';
 import { AssetsControllerInit } from './assets-controller-init';
 
 jest.mock('../../../../shared/lib/trace', () => ({
+  ...jest.requireActual('../../../../shared/lib/trace'),
   traceAsControllerCallback: jest.fn((_req, fn) =>
     Promise.resolve(fn?.('traced-context')),
   ),
@@ -29,7 +38,9 @@ jest.mock('@metamask/assets-controller', () => ({
 }));
 
 jest.mock('@metamask/core-backend', () => ({
-  createApiPlatformClient: jest.fn().mockReturnValue({ mockApiClient: true }),
+  createApiPlatformClient: jest.fn(() => ({
+    accounts: { fetchV2SupportedNetworks: jest.fn() },
+  })),
 }));
 
 function buildClientControllerMock(isUiOpen = true): ClientController {
@@ -621,6 +632,40 @@ describe('AssetsControllerInit', () => {
         clientVersion: process.env.METAMASK_VERSION,
         getBearerToken: expect.any(Function),
       });
+    });
+
+    it('fetches supported networks with no caller under their own root trace (real SDK)', async () => {
+      const ambientTraceId = startServiceWorkerSentry();
+      let seen: ReturnType<typeof readActiveSpan>;
+      const client = {
+        accounts: {
+          fetchV2SupportedNetworks: jest.fn(async () => {
+            seen = readActiveSpan();
+          }),
+        },
+      };
+      jest
+        .mocked(createApiPlatformClient)
+        .mockReturnValueOnce(
+          client as unknown as ReturnType<typeof createApiPlatformClient>,
+        );
+
+      try {
+        jest.isolateModules(() => {
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
+          const freshModule = require('./assets-controller-init') as any;
+          freshModule.AssetsControllerInit(getInitRequestMock());
+        });
+        await client.accounts.fetchV2SupportedNetworks();
+      } finally {
+        stopServiceWorkerSentry();
+      }
+
+      expect(seen).toStrictEqual({
+        traceId: expect.any(String),
+        rootName: TraceName.AccountsApiSupportedNetworksFetch,
+      });
+      expect(seen?.traceId).not.toBe(ambientTraceId);
     });
 
     it('reuses the cached API client across multiple init calls', () => {

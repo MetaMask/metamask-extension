@@ -3,6 +3,7 @@ import {
   type RampsServiceMessenger,
 } from '@metamask/ramps-controller';
 import { getRampsEnvironment } from '../../../shared/lib/ramps/environment';
+import { rampsInitTrace } from '../lib/ramps/ramps-init-trace';
 import type { MessengerClientInitFunction } from './types';
 
 /**
@@ -20,7 +21,7 @@ export const RampsServiceInit: MessengerClientInitFunction<
     messenger: controllerMessenger,
     environment: getRampsEnvironment(),
     context: 'extension',
-    fetch: globalThis.fetch.bind(globalThis),
+    fetch: rampsInitTrace.bindFetch(globalThis.fetch.bind(globalThis)),
     // Sent as clientProduct/clientVersion query params so the on-ramp API
     // can version-gate features per client. Headers are not used for gating.
     clientProduct: 'metamask-extension',

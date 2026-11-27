@@ -3,6 +3,7 @@ import { Mockttp, MockedEndpoint } from 'mockttp';
 import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
 import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import { withFixtures } from '../../helpers';
+import { v6AccountsApiBalancesJson } from '../../helpers/accounts-api-v6-balances';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { createSwap } from '../../page-objects/flows/bridge.flow';
 import { login } from '../../page-objects/flows/login.flow';
@@ -15,6 +16,11 @@ import {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,
 } from '../btc/mocks/tokens-api';
+import {
+  accountsBalancesV5,
+  accountsSupportedNetworksV2,
+  tokensV3Assets,
+} from '../../mock-response-data/api-responses';
 import {
   mockAccountsApiV2SupportedNetworks,
   mockAccountsApiV5MultiaccountBalances,
@@ -75,8 +81,8 @@ const SMALL_USDC_TO_SOL_SWAP_AMOUNTS: UsdcToSolSwapAmounts = {
  * @param mockServer
  */
 async function mockAccountsApiV2WithSolana(mockServer: Mockttp) {
-  return mockServer
-    .forGet(/https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
+  return accountsSupportedNetworksV2
+    .rule(mockServer)
     .always()
     .thenJson(200, {
       fullSupport: [
@@ -95,6 +101,46 @@ async function mockAccountsApiV2WithSolana(mockServer: Mockttp) {
     });
 }
 
+const SOLANA_ACCOUNTS_API_BALANCES = [
+  {
+    accountId: `eip155:1337:${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}`,
+    assetId: 'eip155:1337/slip44:1',
+    balance: '25',
+  },
+  {
+    accountId: `${SOLANA_CHAIN_ID}:${SOLANA_WALLET_ADDRESS}`,
+    assetId: `${SOLANA_CHAIN_ID}/slip44:501`,
+    balance: '50',
+  },
+  {
+    accountId: `${SOLANA_CHAIN_ID}:${SOLANA_WALLET_ADDRESS}`,
+    assetId: `${SOLANA_CHAIN_ID}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`,
+    balance: '8.908267',
+  },
+];
+
+/**
+ * Mock V6 multiaccount balances with SOL + USDC for the Solana wallet address
+ * plus localhost ETH. The `assetsAccountsApiV6` remote flag is ON in production
+ * defaults, so the AccountsApiDataSource calls v6 rather than v5.
+ *
+ * @param mockServer
+ */
+async function mockAccountsApiV6WithSolana(mockServer: Mockttp) {
+  return mockServer
+    .forGet(
+      /https:\/\/accounts\.api\.cx\.metamask\.io\/v6\/multiaccount\/balances/u,
+    )
+    .always()
+    .thenCallback((request) => ({
+      statusCode: 200,
+      json: v6AccountsApiBalancesJson(
+        request.url,
+        SOLANA_ACCOUNTS_API_BALANCES,
+      ),
+    }));
+}
+
 /**
  * Mock V5 multiaccount balances with SOL + USDC for the Solana wallet address
  * plus localhost ETH. The AccountsApiDataSource maps by address (not account
@@ -102,28 +148,10 @@ async function mockAccountsApiV2WithSolana(mockServer: Mockttp) {
  * @param mockServer
  */
 async function mockAccountsApiV5WithSolana(mockServer: Mockttp) {
-  const balances = [
-    {
-      accountId: `eip155:1337:${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}`,
-      assetId: 'eip155:1337/slip44:1',
-      balance: '25',
-    },
-    {
-      accountId: `${SOLANA_CHAIN_ID}:${SOLANA_WALLET_ADDRESS}`,
-      assetId: `${SOLANA_CHAIN_ID}/slip44:501`,
-      balance: '50',
-    },
-    {
-      accountId: `${SOLANA_CHAIN_ID}:${SOLANA_WALLET_ADDRESS}`,
-      assetId: `${SOLANA_CHAIN_ID}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`,
-      balance: '8.908267',
-    },
-  ];
+  const balances = SOLANA_ACCOUNTS_API_BALANCES;
 
-  return mockServer
-    .forGet(
-      /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
-    )
+  return accountsBalancesV5
+    .rule(mockServer)
     .always()
     .thenCallback(() => ({
       statusCode: 200,
@@ -164,8 +192,9 @@ async function mockSolanaTokenApiAssets(mockServer: Mockttp) {
     },
   };
 
-  return mockServer
-    .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets.*solana/u)
+  return tokensV3Assets
+    .rule(mockServer)
+    .matching((request) => request.url.includes('solana'))
     .always()
     .thenCallback((request) => {
       const url = new URL(request.url);
@@ -217,6 +246,7 @@ async function mockSwapUSDCtoSOL(
     await mockDisabledRpcFailover(mockServer),
     await mockAccountsApiV2WithSolana(mockServer),
     await mockAccountsApiV5WithSolana(mockServer),
+    await mockAccountsApiV6WithSolana(mockServer),
     await mockGetTokenAccountsUSDCOnly(mockServer),
     await mockGetTokenAccountBalance(mockServer),
     await simulateSolanaTransaction(mockServer),

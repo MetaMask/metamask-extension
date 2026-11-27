@@ -36,6 +36,7 @@
       "consentDecisionMade": false,
       "marketingCampaignCookieId": null,
       "marketingConsentDecisionMade": false,
+      "marketingConsentSyncPending": false,
       "optedIn": false,
       "optedInToMarketing": false,
       "preConsentEventQueue": {
@@ -52,7 +53,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 235,
+      "currentMigrationVersion": 238,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -553,10 +554,6 @@
       "hasSeenOnboardingCompletionPage": false,
       "onboardingJourneyEnded": false,
       "seedPhraseBackedUp": null
-    },
-    "PPOMController": {
-      "storageMetadata": [],
-      "versionInfo": []
     },
     "PasskeyController": {
       "passkeyRecord": null
@@ -2214,6 +2211,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 235
+    "version": 238
   }
 }

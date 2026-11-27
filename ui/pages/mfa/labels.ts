@@ -61,7 +61,7 @@ export const getMethodLabelKey = (method: MfaMethod): string =>
  * @param method - The method the error is about, when its wording differs.
  * @returns The key, or `undefined` for the generic case.
  */
-export const getSpecificErrorMessageKey = (
+const getSpecificErrorMessageKey = (
   code: MfaFlowErrorCode,
   method?: MfaMethod,
 ): string | undefined =>

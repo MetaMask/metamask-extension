@@ -359,6 +359,7 @@ jest.mock('@metamask/core-backend', () => ({
     queryClient: { fetchQuery: jest.fn().mockResolvedValue({}) },
     setCachedData: jest.fn(),
     getCachedData: jest.fn().mockReturnValue({}),
+    accounts: { fetchV2SupportedNetworks: jest.fn().mockResolvedValue({}) },
   }),
 }));
 
@@ -2620,7 +2621,7 @@ describe('MetaMaskController', () => {
       it('checks the sender hostname with the phishing controller', async () => {
         jest
           .spyOn(metamaskController.phishingController, 'maybeUpdateState')
-          .mockReturnValue();
+          .mockResolvedValue();
 
         jest
           .spyOn(metamaskController.phishingController, 'test')
@@ -2990,61 +2991,52 @@ describe('MetaMaskController', () => {
       });
 
       it('scans the origin for wallet_createSession', async () => {
-        const previousSecurityAlertsApiEnabled =
-          process.env.SECURITY_ALERTS_API_ENABLED;
-        process.env.SECURITY_ALERTS_API_ENABLED = 'true';
+        localMetamaskController.preferencesController.setSecurityAlertsEnabled(
+          true,
+        );
 
-        try {
-          localMetamaskController.preferencesController.setSecurityAlertsEnabled(
-            true,
-          );
+        const scanUrlSpy = jest
+          .spyOn(localMetamaskController.phishingController, 'scanUrl')
+          .mockResolvedValue({});
 
-          const scanUrlSpy = jest
-            .spyOn(localMetamaskController.phishingController, 'scanUrl')
-            .mockResolvedValue({});
+        const messageSender = { url: 'http://mycrypto.com' };
+        const streamTest = createThroughStream((chunk, _, cb) => {
+          if (chunk && chunk.method) {
+            cb(null, chunk);
+            return;
+          }
+          cb();
+        });
 
-          const messageSender = { url: 'http://mycrypto.com' };
-          const streamTest = createThroughStream((chunk, _, cb) => {
-            if (chunk && chunk.method) {
-              cb(null, chunk);
-              return;
-            }
-            cb();
-          });
+        localMetamaskController.setupUntrustedCommunicationCaip({
+          connectionStream: streamTest,
+          sender: messageSender,
+        });
 
-          localMetamaskController.setupUntrustedCommunicationCaip({
-            connectionStream: streamTest,
-            sender: messageSender,
-          });
-
-          streamTest.write(
-            {
-              id: 1,
-              jsonrpc: '2.0',
-              method: 'wallet_createSession',
-              params: {
-                requiredScopes: {
-                  'eip155:1': { methods: [], notifications: [] },
-                },
+        streamTest.write(
+          {
+            id: 1,
+            jsonrpc: '2.0',
+            method: 'wallet_createSession',
+            params: {
+              requiredScopes: {
+                'eip155:1': { methods: [], notifications: [] },
               },
             },
-            null,
-            () => undefined,
-          );
+          },
+          null,
+          () => undefined,
+        );
 
-          await waitForAllPromises();
-          await new Promise((resolve) => setTimeout(resolve, 0));
+        await waitForAllPromises();
+        await new Promise((resolve) => setTimeout(resolve, 0));
 
-          expect(scanUrlSpy).toHaveBeenCalledWith(
-            'http://mycrypto.com',
-            RequestSourceFlow.DappConnection,
-          );
+        expect(scanUrlSpy).toHaveBeenCalledWith(
+          'http://mycrypto.com',
+          RequestSourceFlow.DappConnection,
+        );
 
-          streamTest.end();
-        } finally {
-          process.env.SECURITY_ALERTS_API_ENABLED =
-            previousSecurityAlertsApiEnabled;
-        }
+        streamTest.end();
       });
     });
 
