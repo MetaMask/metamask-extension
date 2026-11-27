@@ -14,6 +14,8 @@ import {
   toAccountWalletId,
 } from '@metamask/account-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { EthAccountType } from '@metamask/keyring-api';
+import type { Asset } from '@metamask/assets-controllers';
 import {
   MetaMetricsAccountHiddenLocation,
   MetaMetricsAccountRemovedLocation,
@@ -22,6 +24,9 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { AccountTreeWallets } from '../../../selectors/multichain-accounts/account-tree.types';
+import * as accountTreeSelectors from '../../../selectors/multichain-accounts/account-tree';
+import * as assetsSelectors from '../../../selectors/assets';
+import * as marketStats from '../../../hooks/assets/market-stats';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
@@ -451,6 +456,100 @@ describe('MultichainAccountList', () => {
     // would read as "your funds are gone", so nothing is rendered instead.
     expect(screen.queryAllByTestId('balance-display')).toHaveLength(0);
     expect(screen.queryByText('$0.00')).not.toBeInTheDocument();
+  });
+
+  it('updates the account balance with the streamed price', () => {
+    const assetId = 'eip155:1/slip44:60';
+    const asset: Asset = {
+      accountType: EthAccountType.Eoa,
+      accountId: 'account-1',
+      assetId: '0x0000000000000000000000000000000000000000',
+      balance: '1',
+      rawBalance: '0x0de0b6b3a7640000',
+      fiat: { balance: 38.02, currency: 'usd', conversionRate: 38.02 },
+      isNative: true,
+      chainId: '0x1',
+      image: '',
+      name: 'Ethereum',
+      symbol: 'ETH',
+      address: '0x0000000000000000000000000000000000000000',
+      decimals: 18,
+    };
+    const balanceSpy = jest
+      .spyOn(assetsSelectors, 'selectBalanceForAllWallets')
+      .mockReturnValue({
+        wallets: {
+          [walletOneId]: {
+            walletId: walletOneId,
+            totalBalanceInUserCurrency: 38.02,
+            userCurrency: 'usd',
+            groups: {
+              [walletOneGroupId]: {
+                walletId: walletOneId,
+                groupId: walletOneGroupId,
+                totalBalanceInUserCurrency: 38.02,
+                userCurrency: 'usd',
+              },
+            },
+          },
+        },
+        totalBalanceInUserCurrency: 38.02,
+        userCurrency: 'usd',
+      });
+    const allAssetsByGroup: ReturnType<
+      typeof assetsSelectors.getAssetsByAllAccountGroups
+    > = {
+      [walletOneGroupId]: { '0x1': [asset] },
+    };
+    const allAssetsSpy = jest
+      .spyOn(assetsSelectors, 'getAssetsByAllAccountGroups')
+      .mockReturnValue(allAssetsByGroup);
+
+    const selectedGroupAssets: ReturnType<
+      typeof assetsSelectors.getAssetsBySelectedAccountGroup
+    > = {
+      '0x1': [asset],
+    };
+    const selectedAssetsSpy = jest
+      .spyOn(assetsSelectors, 'getAssetsBySelectedAccountGroup')
+      .mockReturnValue(selectedGroupAssets);
+
+    const selectedGroupSpy = jest
+      .spyOn(accountTreeSelectors, 'getSelectedAccountGroup')
+      .mockReturnValue(walletOneGroupId);
+
+    const assetsByGroupForLiveTotals: ReturnType<
+      typeof assetsSelectors.getAssetsByAccountGroupForLiveTotals
+    > = {
+      [walletOneGroupId]: { '0x1': [asset] },
+    };
+    const assetsByGroupForLiveTotalsSpy = jest
+      .spyOn(assetsSelectors, 'getAssetsByAccountGroupForLiveTotals')
+      .mockReturnValue(assetsByGroupForLiveTotals);
+    const livePricesSpy = jest
+      .spyOn(marketStats, 'useMarketStats')
+      .mockImplementation((select?: unknown) => {
+        const quotes = new Map([[assetId, { price: 38 }]]);
+        if (select && typeof select === 'function') {
+          return select(quotes);
+        }
+        return quotes;
+      });
+
+    try {
+      renderComponent();
+
+      // Polled total is $38.02. The streamed price is $38, so the cell matches
+      // the header total instead of staying on the last poll.
+      expect(screen.getByTestId('balance-display')).toHaveTextContent('$38.00');
+    } finally {
+      balanceSpy.mockRestore();
+      allAssetsSpy.mockRestore();
+      selectedAssetsSpy.mockRestore();
+      selectedGroupSpy.mockRestore();
+      assetsByGroupForLiveTotalsSpy.mockRestore();
+      livePricesSpy.mockRestore();
+    }
   });
 
   it('does not render wallet headers based on prop', () => {

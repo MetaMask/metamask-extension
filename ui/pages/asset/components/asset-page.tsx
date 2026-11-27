@@ -72,6 +72,7 @@ import { getIsAdvancedChartsEnabled } from '../../../selectors/multichain/featur
 import {
   getAsset,
   getAssetsBySelectedAccountGroup,
+  getAssetsPrice,
   getMultichainNativeAssetType,
 } from '../../../selectors/assets';
 import {
@@ -84,6 +85,11 @@ import { useImageForChainId } from '../../../hooks/useImageForChainId';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { selectIsMusdConversionFlowEnabled } from '../../../selectors/musd';
 import { useSafeChains } from '../../../components/multichain/networks-form/use-safe-chains';
+import { readAssetsPricePercentChange1d } from '../../../../shared/lib/token-price';
+import {
+  readLiveQuotes,
+  useMarketStats,
+} from '../../../hooks/assets/market-stats';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
 import { useSpendableBalance } from '../hooks/useSpendableBalance';
 import { useAssetPerpsMarket } from '../hooks/useAssetPerpsMarket';
@@ -257,7 +263,11 @@ const AssetPage = ({
     return '';
   }, [shouldShowContractAddress, isEvm, tokenAddress, address]);
 
-  const { currentPrice, marketData } = useCurrentPrice(asset);
+  const {
+    currentPrice,
+    marketData,
+    pricePercentChange1d: spotPercentChange1d,
+  } = useCurrentPrice(asset);
 
   const assetWithBalance = accountGroupIdAssets[chainId]?.find(
     (item) =>
@@ -271,7 +281,6 @@ const AssetPage = ({
   address = assetWithBalance?.assetId || address;
   const assetId = assetWithBalance?.assetId || '';
   const balance = assetWithBalance?.balance ?? '0';
-  const tokenFiatAmount = assetWithBalance?.fiat?.balance ?? 0;
   const tokenHexBalance = assetWithBalance?.rawBalance as string;
 
   const shouldShowSpendingCaps = isEvm;
@@ -300,6 +309,30 @@ const AssetPage = ({
   const caipAssetId = isEvm
     ? toAssetId(address, caipChainId)
     : (decodedAsset as CaipAssetType);
+  // A holding uses the market-stats price for fiat and the 1d change. An
+  // empty balance stays on the polled price. The chart header price is OHLCV.
+  const selectLiveQuote = useCallback(
+    (quotes: Parameters<typeof readLiveQuotes>[0]) =>
+      readLiveQuotes(quotes, [caipAssetId]),
+    [caipAssetId],
+  );
+  const [liveQuote] = useMarketStats(selectLiveQuote);
+  const liveUnitPrice = liveQuote?.price;
+  const assetsPrice = useSelector(getAssetsPrice);
+  // One 1d change for the header and Your Balance. A token the account does
+  // not hold is absent from assetsPrice, so the spot-price response fills the
+  // gap until the first market-stats quote arrives.
+  const percentChange1d =
+    liveQuote?.pricePercentChange1d ??
+    readAssetsPricePercentChange1d(assetsPrice, caipAssetId) ??
+    spotPercentChange1d;
+  const heldAmount = Number(balance);
+  const holdsAsset = Number.isFinite(heldAmount) && heldAmount > 0;
+  const polledFiat = assetWithBalance?.fiat?.balance ?? 0;
+  const tokenFiatAmount =
+    holdsAsset && liveUnitPrice !== undefined
+      ? heldAmount * liveUnitPrice
+      : polledFiat;
 
   const securityTrustToken = useMemo(
     () => ({
@@ -360,6 +393,7 @@ const AssetPage = ({
       image,
       title: name ?? symbol,
       tokenFiatAmount: showFiat ? tokenFiatAmount : null,
+      pricePercentChange1d: percentChange1d,
       string: balance ? balance.toString() : '',
       decimals: asset.decimals,
       aggregators: aggregators ?? [],
@@ -380,6 +414,7 @@ const AssetPage = ({
       name,
       showFiat,
       tokenFiatAmount,
+      percentChange1d,
       balance,
       asset.decimals,
       aggregators,
@@ -477,12 +512,14 @@ const AssetPage = ({
             address={address}
             caipAssetId={caipAssetId}
             currentPrice={currentPrice}
+            percentChange1d={percentChange1d}
             currency={currency}
           />
         ) : (
           <AssetChart
             chainId={chainId}
             address={address}
+            caipAssetId={caipAssetId}
             currentPrice={currentPrice}
             currency={currency}
           />
@@ -617,6 +654,7 @@ const AssetPage = ({
                   key={`${symbol}-${address}`}
                   token={tokenWithFiatAmount as TokenWithFiatAmount}
                   safeChains={safeChains}
+                  explicitPercentChange={percentChange1d ?? null}
                   priceChangeOverride={
                     moneyBalanceDisplay ? (
                       <MoneyAssetOverviewBalanceApy

@@ -360,11 +360,6 @@ export const AssetsControllerInit: MessengerClientInitFunction<
       balanceInterval: 30_000,
       detectionInterval: 180_000,
     },
-    // Accounts API defaults this to () => true. When detection is off, it
-    // returns balances only for tokens already in state.
-    accountsApiDataSourceConfig: {
-      tokenDetectionEnabled: () => safeGetTokenDetectionEnabled(initMessenger),
-    },
     priceDataSourceConfig: {
       pollInterval: 180_000,
     },

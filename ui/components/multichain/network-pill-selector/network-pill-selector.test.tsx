@@ -1,6 +1,7 @@
 import React from 'react';
 import { act, fireEvent, screen } from '@testing-library/react';
 import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
+import { useAccountGroupLiveTotal } from '#ui/hooks/assets/use-account-group-live-total';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -18,6 +19,9 @@ jest.mock(
   }),
 );
 jest.mock('./use-network-pill-balances');
+jest.mock('#ui/hooks/assets/use-account-group-live-total', () => ({
+  useAccountGroupLiveTotal: jest.fn(),
+}));
 
 const ETHEREUM = {
   chainId: 'eip155:1',
@@ -60,6 +64,59 @@ describe('NetworkPillSelector', () => {
       currency: 'usd',
       isLoading: false,
     });
+    jest.mocked(useAccountGroupLiveTotal).mockReturnValue({
+      total: 16.31,
+      currency: 'usd',
+      hasBalance: true,
+    });
+  });
+
+  it('shows the wallet overview total on All networks while that filter is selected', () => {
+    jest.mocked(useAccountGroupLiveTotal).mockReturnValue({
+      total: 30.26,
+      currency: 'usd',
+      hasBalance: true,
+    });
+    jest.mocked(useNetworkPillBalances).mockReturnValue({
+      balanceByChainId: { 'eip155:1': 6.84, 'eip155:10': 8.14 },
+      total: 31.16,
+      currency: 'usd',
+      isLoading: false,
+    });
+
+    renderSelector();
+
+    expect(screen.getByTestId('network-pill-all-default')).toHaveTextContent(
+      '$30.26',
+    );
+    expect(screen.getByTestId('network-pill-0x1')).toHaveTextContent(
+      'Ethereum$6.84',
+    );
+  });
+
+  it('keeps the combined network total on All networks when one network is selected', () => {
+    mockFilter({
+      isAllDefaultSelected: false,
+      isNetworkSelected: (network: MultichainNetworkConfiguration) =>
+        network.chainId === 'eip155:1',
+    });
+    jest.mocked(useAccountGroupLiveTotal).mockReturnValue({
+      total: 6.84,
+      currency: 'usd',
+      hasBalance: true,
+    });
+    jest.mocked(useNetworkPillBalances).mockReturnValue({
+      balanceByChainId: { 'eip155:1': 6.84, 'eip155:10': 8.14 },
+      total: 31.16,
+      currency: 'usd',
+      isLoading: false,
+    });
+
+    renderSelector();
+
+    expect(screen.getByTestId('network-pill-all-default')).toHaveTextContent(
+      '$31.16',
+    );
   });
 
   it('shows the default networks with their balances', () => {

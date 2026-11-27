@@ -13,6 +13,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import type { CaipAssetType } from '@metamask/utils';
+import { useLiveToken } from '#ui/hooks/assets/use-live-token';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -214,12 +215,14 @@ const TokenTableHeader = ({
 };
 
 const TokenTableRow = ({
-  token,
+  token: polledToken,
   privacyMode,
   onClick,
   safeChains,
   moneyCta,
 }: TokenTableRowProps) => {
+  // Reads only this row's streamed quote, so a tick leaves the table alone.
+  const token = useLiveToken(polledToken);
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
   const tokenDisplayInfo = useTokenDisplayInfo({ token });
   const displayToken = useMemo(

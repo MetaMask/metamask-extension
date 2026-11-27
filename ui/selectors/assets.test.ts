@@ -52,11 +52,17 @@ import {
   selectIsAssetsLoadingForSelectedAccountGroup,
   getAssetsByAccountGroupId,
   getAssetsBySelectedAccountGroup,
+  getEnabledAssetsBySelectedAccountGroup,
+  getAssetsByAccountGroupForLiveTotals,
+  getAccountGroupLiveTotalState,
   getAssetsBySelectedAccountGroupIncludingHidden,
   getAsset,
   getFungibleAssetForRoute,
   getAssetsBySelectedAccountGroupWithTronSpecialAssets,
+  getAssetsByAllAccountGroups,
+  selectUnifiedBalanceBySelectedAccountGroup,
 } from './assets';
+import { getSelectedAccountGroup } from './multichain-accounts/account-tree';
 
 /**
  * Override the global jest setup mock so migration selectors resolve
@@ -2497,6 +2503,172 @@ describe('getAssetsBySelectedAccountGroupIncludingHidden', () => {
     const result = getAssetsBySelectedAccountGroupIncludingHidden(mockState);
 
     expect(result['0x13b2']).toStrictEqual([arcNative]);
+  });
+});
+
+describe('getEnabledAssetsBySelectedAccountGroup', () => {
+  beforeEach(() => {
+    getEnabledAssetsBySelectedAccountGroup.clearCache();
+    getAssetsBySelectedAccountGroup.clearCache();
+    getAssetsBySelectedAccountGroup.memoizedResultFunc.clearCache();
+    jest.mocked(selectAssetsBySelectedAccountGroup).mockReset();
+  });
+
+  it('returns only assets from enabled networks', () => {
+    const ethAsset = { assetId: 'eth-asset', chainId: '0x1' };
+    const polygonAsset = { assetId: 'pol-asset', chainId: '0x89' };
+    const optimismAsset = { assetId: 'op-asset', chainId: '0xa' };
+
+    jest.mocked(selectAssetsBySelectedAccountGroup).mockReturnValue({
+      '0x1': [ethAsset],
+      '0x89': [polygonAsset],
+      '0xa': [optimismAsset],
+    });
+
+    const mockState = {
+      metamask: {
+        ...createUnifiedAssetListMockMetamask(),
+        enabledNetworkMap: {
+          'eip155:1': { '0x1': true, '0xa': true },
+        },
+      },
+    };
+
+    const result = getEnabledAssetsBySelectedAccountGroup(mockState);
+
+    expect(result).toStrictEqual([ethAsset, optimismAsset]);
+
+    const result2 = getEnabledAssetsBySelectedAccountGroup(mockState);
+    expect(result2).toBe(result);
+  });
+
+  it('returns all assets when all networks are enabled', () => {
+    const ethAsset = { assetId: 'eth-asset', chainId: '0x1' };
+    const polygonAsset = { assetId: 'pol-asset', chainId: '0x89' };
+
+    jest.mocked(selectAssetsBySelectedAccountGroup).mockReturnValue({
+      '0x1': [ethAsset],
+      '0x89': [polygonAsset],
+    });
+
+    const mockState = {
+      metamask: {
+        ...createUnifiedAssetListMockMetamask(),
+        enabledNetworkMap: {
+          'eip155:1': { '0x1': true, '0x89': true },
+        },
+      },
+    };
+
+    const result = getEnabledAssetsBySelectedAccountGroup(mockState);
+
+    expect(result).toStrictEqual([ethAsset, polygonAsset]);
+
+    const result2 = getEnabledAssetsBySelectedAccountGroup(mockState);
+    expect(result2).toBe(result);
+  });
+
+  it('returns empty array when no assets match enabled networks', () => {
+    const polygonAsset = { assetId: 'pol-asset', chainId: '0x89' };
+
+    jest.mocked(selectAssetsBySelectedAccountGroup).mockReturnValue({
+      '0x89': [polygonAsset],
+    });
+
+    const mockState = {
+      metamask: {
+        ...createUnifiedAssetListMockMetamask(),
+        enabledNetworkMap: {
+          'eip155:1': { '0x1': true },
+        },
+      },
+    };
+
+    const result = getEnabledAssetsBySelectedAccountGroup(mockState);
+
+    expect(result).toStrictEqual([]);
+
+    const result2 = getEnabledAssetsBySelectedAccountGroup(mockState);
+    expect(result2).toBe(result);
+  });
+});
+
+describe('getAccountGroupLiveTotalState', () => {
+  beforeEach(() => {
+    getAccountGroupLiveTotalState.clearCache();
+    getEnabledAssetsBySelectedAccountGroup.clearCache();
+    getAssetsBySelectedAccountGroup.clearCache();
+    getAssetsBySelectedAccountGroup.memoizedResultFunc.clearCache();
+    jest.mocked(selectAssetsBySelectedAccountGroup).mockReset();
+  });
+
+  it('returns consolidated state for live total calculation', () => {
+    const ethAsset = { assetId: 'eth-asset', chainId: '0x1' };
+
+    jest.mocked(selectAssetsBySelectedAccountGroup).mockReturnValue({
+      '0x1': [ethAsset],
+    });
+
+    const mockState = {
+      metamask: {
+        ...createUnifiedAssetListMockMetamask({
+          selectedCurrency: 'usd',
+        }),
+        selectedAccountGroup: 'wallet-1/group-1',
+        accountTree: {
+          'wallet-1': {
+            id: 'wallet-1',
+            accountIds: ['account-1'],
+            groups: {
+              'wallet-1/group-1': {
+                id: 'wallet-1/group-1',
+                accountIds: ['account-1'],
+              },
+            },
+          },
+        },
+        internalAccounts: {
+          accounts: {
+            'account-1': { id: 'account-1', address: '0xabc' },
+          },
+        },
+        enabledNetworkMap: {
+          'eip155:1': { '0x1': true },
+        },
+      },
+    };
+
+    const result = getAccountGroupLiveTotalState(mockState);
+
+    expect(result.assets).toStrictEqual([ethAsset]);
+    expect(result.currency).toBe('usd');
+
+    const result2 = getAccountGroupLiveTotalState(mockState);
+    expect(result2).toBe(result);
+  });
+
+  it('returns hasBalance false when balance is null', () => {
+    jest.mocked(selectAssetsBySelectedAccountGroup).mockReturnValue({});
+
+    const mockState = {
+      metamask: {
+        ...createUnifiedAssetListMockMetamask(),
+        enabledNetworkMap: {},
+        unifiedBalanceByAccountGroup: {
+          selectedAccountGroup: null,
+        },
+      },
+    };
+
+    const result = getAccountGroupLiveTotalState(mockState);
+
+    expect(result.hasBalance).toBe(false);
+    expect(result.polledTotal).toBeUndefined();
+    expect(result.currency).toBeUndefined();
+    expect(result.assets).toStrictEqual([]);
+
+    const result2 = getAccountGroupLiveTotalState(mockState);
+    expect(result2).toBe(result);
   });
 });
 

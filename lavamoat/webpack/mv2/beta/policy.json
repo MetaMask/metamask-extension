@@ -1308,6 +1308,7 @@
     "@metamask/core-backend": {
       "globals": {
         "AbortController": true,
+        "AggregateError": true,
         "URL": true,
         "WebSocket": true,
         "clearTimeout": true,
@@ -1324,6 +1325,7 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/utils>@metamask/error-utils": true,
+        "@metamask/superstruct": true,
         "@metamask/utils>@metamask/type-utils": true,
         "@metamask/utils": true,
         "@tanstack/react-query>@tanstack/query-core": true,
@@ -3140,11 +3142,13 @@
         "console.warn": true
       }
     },
-    "@metamask/subscription-controller": {
+    "@metamask/wallet>@metamask/subscription-controller": {
       "globals": {
         "URL": true,
+        "clearTimeout": true,
         "crypto.getRandomValues": true,
-        "fetch": true
+        "fetch": true,
+        "setTimeout": true
       },
       "meta": {
         "webpack-optimization": [
@@ -3158,13 +3162,13 @@
         "@metamask/utils>@metamask/byte-utils": true,
         "@metamask/controller-utils": true,
         "@metamask/delegation-core": true,
-        "@metamask/subscription-controller>@metamask/delegation-deployments": true,
+        "@metamask/wallet>@metamask/subscription-controller>@metamask/delegation-deployments": true,
         "@metamask/money-account-utils": true,
         "@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
-        "@metamask/subscription-controller>bignumber.js": true,
+        "@metamask/wallet>@metamask/subscription-controller>bignumber.js": true,
         "cockatiel": true,
         "eslint>fast-deep-equal": true
       }
@@ -3316,6 +3320,7 @@
         "@metamask/config-registry-controller": true,
         "@metamask/connectivity-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/core-backend": true,
         "@metamask/gas-fee-controller": true,
         "@metamask/geolocation-controller": true,
         "@metamask/keyring-controller": true,
@@ -3331,7 +3336,7 @@
         "@metamask/shield-controller": true,
         "@metamask/signature-controller": true,
         "@metamask/storage-service": true,
-        "@metamask/subscription-controller": true,
+        "@metamask/wallet>@metamask/subscription-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils>@metamask/type-utils": true,
         "@metamask/utils": true
@@ -4551,7 +4556,7 @@
         "crypto": true
       }
     },
-    "@metamask/subscription-controller>bignumber.js": {
+    "@metamask/wallet>@metamask/subscription-controller>bignumber.js": {
       "globals": {
         "crypto": true
       }

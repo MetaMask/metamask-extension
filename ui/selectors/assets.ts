@@ -5,6 +5,7 @@ import {
   selectAllAssets,
   selectAssetsBySelectedAccountGroup,
   type AccountGroupAssets,
+  type Asset,
   type TokenBalancesControllerState,
   type TokenRatesControllerState,
   type MultichainBalancesControllerState,
@@ -1605,6 +1606,20 @@ export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
     filterExcludedAssets(selectAssetsBySelectedAccountGroup(assetListState)),
 );
 
+/**
+ * Assets for the selected account group, filtered to enabled networks only.
+ * The polled total only covers enabled networks, so the live delta must too,
+ * or moves on hidden networks drift the total from the network pill.
+ */
+export const getEnabledAssetsBySelectedAccountGroup = createSelector(
+  [getAssetsBySelectedAccountGroup, getAllEnabledNetworksForAllNamespaces],
+  (assetsByChain, enabledChainIds): Asset[] => {
+    return Object.entries(assetsByChain ?? {})
+      .filter(([chainId]) => enabledChainIds.includes(chainId))
+      .flatMap(([, chainAssets]) => chainAssets);
+  },
+);
+
 export const getSelectedAccountGroupNetworkGenerationKey = createSelector(
   [getSelectedAccountGroup, getAllEnabledNetworksForAllNamespaces],
   (selectedAccountGroup, allEnabledNetworksForAllNamespaces) =>
@@ -1633,6 +1648,70 @@ const EMPTY_ACCOUNT_GROUP_ASSETS: AccountGroupAssets = {};
 const selectAllAssetsGrouped = createSelector(
   getStateForAssetSelector,
   (assetListState: AssetListState) => selectAllAssets(assetListState),
+);
+
+const EMPTY_ASSETS_BY_GROUP: Record<string, AccountGroupAssets> = {};
+
+/**
+ * Assets for every account group, with excluded homonym tokens removed.
+ * Sidebar totals add a streamed-price delta computed from these rows.
+ *
+ * @returns Per-group, per-chain asset rows.
+ */
+export const getAssetsByAllAccountGroups = createDeepEqualSelector(
+  selectAllAssetsGrouped,
+  (allAssets): Record<string, AccountGroupAssets> => {
+    if (!allAssets || typeof allAssets !== 'object') {
+      return EMPTY_ASSETS_BY_GROUP;
+    }
+
+    const filtered: Record<string, AccountGroupAssets> = {};
+    for (const [groupId, assets] of Object.entries(
+      allAssets as Record<string, AccountGroupAssets>,
+    )) {
+      filtered[groupId] = filterExcludedAssets(
+        assets ?? EMPTY_ACCOUNT_GROUP_ASSETS,
+      );
+    }
+    return filtered;
+  },
+);
+
+/**
+ * Assets by account group, with the selected group using the same asset rows
+ * as the header total. Other groups use their own rows, so an account you are
+ * not viewing still moves when one of its assets ticks.
+ */
+export const getAssetsByAccountGroupForLiveTotals = createSelector(
+  [
+    getAssetsByAllAccountGroups,
+    getSelectedAccountGroup,
+    getAssetsBySelectedAccountGroup,
+  ],
+  (assetsByGroup, selectedGroupId, selectedGroupAssets) => {
+    return selectedGroupId
+      ? { ...assetsByGroup, [selectedGroupId]: selectedGroupAssets }
+      : assetsByGroup;
+  },
+);
+
+/**
+ * All state needed by useAccountGroupLiveTotal: enabled assets, polled balance,
+ * currency, and hasBalance flag. The hook only needs to read this selector and
+ * apply the live price delta.
+ */
+export const getAccountGroupLiveTotalState = createSelector(
+  [
+    getEnabledAssetsBySelectedAccountGroup,
+    selectUnifiedBalanceBySelectedAccountGroup,
+  ],
+  (assets, selectedGroupBalance) => ({
+    assets,
+    polledTotal: selectedGroupBalance?.totalBalanceInUserCurrency,
+    currency: selectedGroupBalance?.userCurrency,
+    hasBalance:
+      selectedGroupBalance !== null && selectedGroupBalance !== undefined,
+  }),
 );
 
 const selectAllAssetsGroupedIncludingHidden = createSelector(

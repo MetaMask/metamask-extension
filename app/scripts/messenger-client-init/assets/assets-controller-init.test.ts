@@ -160,9 +160,6 @@ describe('AssetsControllerInit', () => {
         balanceInterval: 30_000,
         detectionInterval: 180_000,
       },
-      accountsApiDataSourceConfig: {
-        tokenDetectionEnabled: expect.any(Function),
-      },
       priceDataSourceConfig: { pollInterval: 180_000 },
       stakedBalanceDataSourceConfig: {
         pollInterval: 30_000,
@@ -199,9 +196,6 @@ describe('AssetsControllerInit', () => {
         tokenDetectionEnabled: expect.any(Function),
         balanceInterval: 30_000,
         detectionInterval: 180_000,
-      },
-      accountsApiDataSourceConfig: {
-        tokenDetectionEnabled: expect.any(Function),
       },
       priceDataSourceConfig: { pollInterval: 180_000 },
       stakedBalanceDataSourceConfig: {
@@ -256,46 +250,6 @@ describe('AssetsControllerInit', () => {
     const config = constructorCall.rpcDataSourceConfig;
     if (!config?.tokenDetectionEnabled) {
       throw new Error('Expected rpcDataSourceConfig.tokenDetectionEnabled');
-    }
-
-    expect(config.tokenDetectionEnabled()).toBe(false);
-
-    preferences.useTokenDetection = true;
-    expect(config.tokenDetectionEnabled()).toBe(true);
-
-    preferences.useTokenDetection = false;
-    expect(config.tokenDetectionEnabled()).toBe(false);
-  });
-
-  it('reads accountsApiDataSourceConfig.tokenDetectionEnabled live when useTokenDetection changes', () => {
-    const preferences: { useTokenDetection?: boolean } = {
-      useTokenDetection: false,
-    };
-    const requestMock = getInitRequestMock();
-    requestMock.initMessenger.call = jest.fn().mockImplementation((action) => {
-      if (action === 'OnboardingController:getState') {
-        return { completedOnboarding: true };
-      }
-      if (action === 'PreferencesController:getState') {
-        return preferences;
-      }
-      if (action === 'AuthenticationController:getBearerToken') {
-        return Promise.resolve('mock-bearer-token');
-      }
-      if (action === 'RemoteFeatureFlagController:getState') {
-        return { remoteFeatureFlags: {} };
-      }
-      throw new Error(`Unexpected action: ${action}`);
-    });
-
-    AssetsControllerInit(requestMock);
-
-    const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
-    const config = constructorCall.accountsApiDataSourceConfig;
-    if (!config?.tokenDetectionEnabled) {
-      throw new Error(
-        'Expected accountsApiDataSourceConfig.tokenDetectionEnabled',
-      );
     }
 
     expect(config.tokenDetectionEnabled()).toBe(false);

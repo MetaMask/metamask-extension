@@ -5,20 +5,17 @@ import {
   type CaipChainId,
   type Hex,
   isCaipAssetType,
-  isStrictHexString,
 } from '@metamask/utils';
-import type { Asset } from '@metamask/assets-controllers';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import { useTokenAssetSecurityResults } from '#ui/hooks/token-asset/useTokenAssetSecurityResults';
 import {
-  getNativeAssetId,
   isEvmChainId,
   isTronSpecialAsset,
   normalizeTokenAssetId,
 } from '#shared/lib/asset-utils';
-import { buildEvmCaip19AssetId } from '#shared/lib/multichain/buildEvmCaip19AssetId';
 import { useLowValueTokenPartition } from '#ui/components/app/assets/hooks/useLowValueTokenPartition';
 import { useCoordinatedTrace } from '#ui/hooks/useTraceCoordinator';
+import { assetToCaipId } from '#shared/lib/asset-utils';
 import {
   getShouldHideZeroBalanceTokens,
   getTokenSortConfig,
@@ -50,9 +47,10 @@ import {
   type TokenTableSort,
 } from '../util/sortAssetsWithPriority';
 import { isMusdToken } from '../../musd/constants';
+import { isZeroAmount } from '../../../../helpers/utils/number-utils';
 import { useBoolean } from '../../../../hooks/useBoolean';
 import { useRWAToken } from '../../../../pages/bridge/hooks/useRWAToken';
-import { isZeroAmount } from '../../../../helpers/utils/number-utils';
+
 import { useAssetsHaveLoaded } from './useAssetsHaveLoaded';
 
 export type TokenListDisplayItem =
@@ -77,26 +75,6 @@ type UseTokenListDataOptions = {
 };
 
 let lowValueAssetsExpandedSessionValue = false;
-
-const toCaipAssetId = (asset: Asset): CaipAssetType | undefined => {
-  const { assetId, chainId, isNative } = asset;
-
-  if (assetId && isCaipAssetType(assetId)) {
-    return normalizeTokenAssetId(assetId);
-  }
-
-  if (isNative) {
-    const nativeAssetId = getNativeAssetId(chainId as Hex | undefined);
-    return nativeAssetId ? normalizeTokenAssetId(nativeAssetId) : undefined;
-  }
-
-  const evmAddress = 'address' in asset ? asset.address : assetId;
-  if (evmAddress && isStrictHexString(chainId)) {
-    return buildEvmCaip19AssetId(evmAddress, chainId) as CaipAssetType;
-  }
-
-  return undefined;
-};
 
 export const getTokenListItemKey = (
   item: TokenListDisplayItem,
@@ -192,27 +170,26 @@ export function useTokenListData({
     useExternalServices,
   ]);
 
-  const sortedFilteredTokens = useMemo(() => {
-    const accountAssets = sortTokenAssets(
-      filteredAssets,
-      tokenSortConfig,
-      sortOverride,
-    );
+  const sortedFilteredTokens = useMemo(
+    () =>
+      sortTokenAssets(filteredAssets, tokenSortConfig, sortOverride).map(
+        (asset) => {
+          const token: TokenWithFiatAmount = {
+            ...asset,
+            tokenFiatAmount: asset.fiat?.balance,
+            secondary: null,
+            title: asset.name,
+            address:
+              'address' in asset ? asset.address : (asset.assetId as Hex),
+            chainId: asset.chainId as Hex,
+            caipAssetId: assetToCaipId(asset),
+          };
 
-    return accountAssets.map((asset) => {
-      const token: TokenWithFiatAmount = {
-        ...asset,
-        tokenFiatAmount: asset.fiat?.balance,
-        secondary: null,
-        title: asset.name,
-        address: 'address' in asset ? asset.address : (asset.assetId as Hex),
-        chainId: asset.chainId as Hex,
-        caipAssetId: toCaipAssetId(asset),
-      };
-
-      return token;
-    });
-  }, [filteredAssets, sortOverride, tokenSortConfig]);
+          return token;
+        },
+      ),
+    [filteredAssets, sortOverride, tokenSortConfig],
+  );
 
   // The fast pipeline can populate zero-value gas tokens and mUSD before the
   // background pipeline finishes the remaining tokens. Hide those placeholders,
@@ -274,7 +251,7 @@ export function useTokenListData({
         token: {
           ...token,
           safetyResult: token.caipAssetId
-            ? securityResultByAssetId[token.caipAssetId]
+            ? securityResultByAssetId[normalizeTokenAssetId(token.caipAssetId)]
             : undefined,
         },
       }),
@@ -296,7 +273,9 @@ export function useTokenListData({
             token: {
               ...token,
               safetyResult: token.caipAssetId
-                ? securityResultByAssetId[token.caipAssetId]
+                ? securityResultByAssetId[
+                    normalizeTokenAssetId(token.caipAssetId)
+                  ]
                 : undefined,
             },
           }))

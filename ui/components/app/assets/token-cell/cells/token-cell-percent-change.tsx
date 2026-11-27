@@ -14,10 +14,20 @@ type TokenCellPercentChangeProps = {
   token: TokenFiatDisplayInfo;
   price?: number;
   comparePrice?: number;
+  /**
+   * When set, this is the only percent shown. `null` means there is no
+   * percent and the cached market-data change must not fill in.
+   */
+  explicitPercentChange?: number | null;
 };
 
 export const TokenCellPercentChange = React.memo(
-  ({ token, price, comparePrice }: TokenCellPercentChangeProps) => {
+  ({
+    token,
+    price,
+    comparePrice,
+    explicitPercentChange,
+  }: TokenCellPercentChangeProps) => {
     const isEvm = isEvmChainId(token.chainId);
     const multiChainMarketData = useSelector(getMarketData);
     const nonEvmConversionRates = useSelector(getAssetsRates);
@@ -37,16 +47,26 @@ export const TokenCellPercentChange = React.memo(
       );
     }
 
-    const tokenPercentageChange =
-      typeof price === 'number' && typeof comparePrice === 'number'
-        ? ((price - comparePrice) / comparePrice) * 100
-        : getCachedPercentChange({
-            isNative: Boolean(token.isNative),
-            chainId: token.chainId,
-            address: token.address,
-            marketData: multiChainMarketData,
-            conversionRates: nonEvmConversionRates,
-          });
+    let tokenPercentageChange;
+
+    if (explicitPercentChange !== undefined) {
+      tokenPercentageChange =
+        typeof explicitPercentChange === 'number'
+          ? explicitPercentChange
+          : undefined;
+    } else if (typeof price === 'number' && typeof comparePrice === 'number') {
+      tokenPercentageChange = ((price - comparePrice) / comparePrice) * 100;
+    } else if (typeof token.pricePercentChange1d === 'number') {
+      tokenPercentageChange = token.pricePercentChange1d;
+    } else {
+      tokenPercentageChange = getCachedPercentChange({
+        isNative: Boolean(token.isNative),
+        chainId: token.chainId,
+        address: token.address,
+        marketData: multiChainMarketData,
+        conversionRates: nonEvmConversionRates,
+      });
+    }
 
     return (
       <PercentageChange value={tokenPercentageChange} address={tokenAddress} />
@@ -55,6 +75,9 @@ export const TokenCellPercentChange = React.memo(
   (prevProps, nextProps) =>
     prevProps.token.address === nextProps.token.address &&
     prevProps.token.isFiatLoading === nextProps.token.isFiatLoading &&
+    prevProps.token.pricePercentChange1d ===
+      nextProps.token.pricePercentChange1d &&
     prevProps.price === nextProps.price &&
-    prevProps.comparePrice === nextProps.comparePrice,
+    prevProps.comparePrice === nextProps.comparePrice &&
+    prevProps.explicitPercentChange === nextProps.explicitPercentChange,
 );

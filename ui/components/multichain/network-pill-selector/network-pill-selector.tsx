@@ -21,6 +21,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
+import { useAccountGroupLiveTotal } from '#ui/hooks/assets/use-account-group-live-total';
 import { getNetworkIcon } from '../../../../shared/lib/network.utils';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { getChainIdToNetworkImageUrlMap } from '../../../selectors/config-registry/config-registry';
@@ -157,6 +158,15 @@ export const NetworkPillSelector = () => {
   );
   const { balanceByChainId, total, currency, isLoading } =
     useNetworkPillBalances(networks);
+  const { total: overviewTotal, currency: overviewCurrency } =
+    useAccountGroupLiveTotal();
+  // The selected All networks pill shows the wallet overview total.
+  const allNetworksBalance = isAllDefaultSelected
+    ? (overviewTotal ?? total)
+    : total;
+  const allNetworksCurrency = isAllDefaultSelected
+    ? (overviewCurrency ?? currency)
+    : currency;
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [hiddenCount, setHiddenCount] = useState(0);
@@ -240,7 +250,11 @@ export const NetworkPillSelector = () => {
           name={
             hasOnlyDefaultNetworks ? t('allNetworks') : t('allDefaultNetworks')
           }
-          balance={format(total)}
+          balance={
+            allNetworksBalance === undefined
+              ? undefined
+              : formatCurrency(allNetworksBalance, allNetworksCurrency)
+          }
           isSelected={isAllDefaultSelected}
           privacyMode={privacyMode}
           icon={

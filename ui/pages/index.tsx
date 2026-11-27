@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
 import type { Store } from 'redux';
+import { MarketStatsBridge } from '#ui/hooks/assets/market-stats-bridge';
 import { captureException } from '../../shared/lib/sentry';
 import { I18nProvider } from '../contexts/i18n';
 import { MetaMetricsProvider } from '../contexts/metametrics';
@@ -47,6 +48,7 @@ const AppProviders = () => {
       <I18nProvider>
         <QueryClientProvider client={queryClient}>
           <RampsBootstrap />
+          <MarketStatsBridge />
           <AssetPollingProvider>
             <MetamaskIdentityProvider>
               <MetamaskNotificationsProvider>

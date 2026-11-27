@@ -3,11 +3,13 @@ import { renderHook } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import {
+  getAssetsBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
   selectAccountGroupBalanceIsLoadedForEmptyState,
   selectAssetsHaveLoadedForSelectedAccountGroup,
   selectUnifiedBalanceGetterBySelectedAccountGroup,
 } from '../../../selectors/assets';
+import { useMarketStats } from '../../../hooks/assets/market-stats';
 import { useAccountGroupBalanceDisplay } from '../../app/assets/account-group-balance-change/useAccountGroupBalanceDisplay';
 import { useNetworkPillBalances } from './use-network-pill-balances';
 
@@ -15,6 +17,12 @@ jest.mock('react-redux', () => ({ useSelector: jest.fn() }));
 jest.mock(
   '../../app/assets/account-group-balance-change/useAccountGroupBalanceDisplay',
 );
+jest.mock('../../../hooks/assets/market-stats', () => ({
+  ...jest.requireActual('../../../hooks/assets/market-stats'),
+  useMarketStats: jest.fn(),
+}));
+
+const ETH_NATIVE_ASSET_ID = 'eip155:1/slip44:60';
 
 const ETHEREUM = {
   chainId: 'eip155:1',
@@ -31,22 +39,33 @@ const mockState = ({
   isLoaded = true,
   assetsHaveLoaded = true,
   isNetworkLoading = false,
+  assetsByChain = {},
+  livePrices = new Map(),
 }: {
   getBalance: (map: Record<string, unknown>) => unknown;
   hasBalance?: boolean;
   isLoaded?: boolean;
   assetsHaveLoaded?: boolean;
   isNetworkLoading?: boolean;
+  assetsByChain?: Record<string, unknown[]>;
+  livePrices?: ReadonlyMap<string, { price: number }>;
 }) => {
   jest.mocked(useAccountGroupBalanceDisplay).mockReturnValue({
     isLoading: isNetworkLoading,
   } as ReturnType<typeof useAccountGroupBalanceDisplay>);
+  jest.mocked(useMarketStats).mockImplementation((select?: unknown) => {
+    if (select && typeof select === 'function') {
+      return select(livePrices);
+    }
+    return livePrices;
+  });
   jest.mocked(useSelector).mockImplementation((selector: unknown) => {
     const values = new Map<unknown, unknown>([
       [selectUnifiedBalanceGetterBySelectedAccountGroup, getBalance],
       [selectAccountGroupBalanceForEmptyState, hasBalance],
       [selectAccountGroupBalanceIsLoadedForEmptyState, isLoaded],
       [selectAssetsHaveLoadedForSelectedAccountGroup, assetsHaveLoaded],
+      [getAssetsBySelectedAccountGroup, assetsByChain],
     ]);
     return values.get(selector);
   });
@@ -78,6 +97,106 @@ describe('useNetworkPillBalances', () => {
       currency: 'usd',
       isLoading: false,
     });
+  });
+
+  it('adds the streamed price change to the network and the total', () => {
+    mockState({
+      getBalance: () => ({
+        totalBalanceInUserCurrency: 100,
+        userCurrency: 'usd',
+      }),
+      assetsByChain: {
+        '0x1': [
+          {
+            assetId: ETH_NATIVE_ASSET_ID,
+            chainId: '0x1',
+            isNative: true,
+            balance: '2',
+            fiat: { balance: 100 },
+          },
+        ],
+      },
+      livePrices: new Map([[ETH_NATIVE_ASSET_ID, { price: 55 }]]),
+    });
+
+    const { result } = renderHook(() => useNetworkPillBalances([ETHEREUM]));
+
+    expect(result.current.balanceByChainId).toStrictEqual({
+      'eip155:1': 110,
+    });
+    expect(result.current.total).toBe(110);
+  });
+
+  it('adds a streamed price change outside the pill networks to the total only', () => {
+    mockState({
+      getBalance: () => ({
+        totalBalanceInUserCurrency: 100,
+        userCurrency: 'usd',
+      }),
+      assetsByChain: {
+        '0x1': [
+          {
+            assetId: ETH_NATIVE_ASSET_ID,
+            chainId: '0x1',
+            isNative: true,
+            balance: '2',
+            fiat: { balance: 100 },
+          },
+        ],
+        '0x89': [
+          {
+            assetId:
+              'eip155:137/erc20:0x0000000000000000000000000000000000000001',
+            chainId: '0x89',
+            isNative: false,
+            address: '0x0000000000000000000000000000000000000001',
+            balance: '1',
+            fiat: { balance: 4 },
+          },
+        ],
+      },
+      livePrices: new Map([
+        [ETH_NATIVE_ASSET_ID, { price: 55 }],
+        [
+          'eip155:137/erc20:0x0000000000000000000000000000000000000001',
+          { price: 5 },
+        ],
+      ]),
+    });
+
+    const { result } = renderHook(() => useNetworkPillBalances([ETHEREUM]));
+
+    expect(result.current.balanceByChainId).toStrictEqual({
+      'eip155:1': 110,
+    });
+    expect(result.current.total).toBe(111);
+  });
+
+  it('keeps the polled balance for a network with no streamed price', () => {
+    mockState({
+      getBalance: () => ({
+        totalBalanceInUserCurrency: 100,
+        userCurrency: 'usd',
+      }),
+      assetsByChain: {
+        '0x1': [
+          {
+            assetId: ETH_NATIVE_ASSET_ID,
+            chainId: '0x1',
+            isNative: true,
+            balance: '2',
+            fiat: { balance: 100 },
+          },
+        ],
+      },
+    });
+
+    const { result } = renderHook(() => useNetworkPillBalances([ETHEREUM]));
+
+    expect(result.current.balanceByChainId).toStrictEqual({
+      'eip155:1': 100,
+    });
+    expect(result.current.total).toBe(100);
   });
 
   it('returns no balances when there is no selected account group', () => {

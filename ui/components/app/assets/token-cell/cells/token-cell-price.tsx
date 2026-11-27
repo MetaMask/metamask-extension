@@ -21,8 +21,8 @@ type TokenCellPriceProps = {
 };
 
 /**
- * The token's current price in the user's currency, from cached market data.
- * Renders a dash when no price is available.
+ * The token's current price in the user's currency.
+ * A market-stats tick replaces the cached price. Renders a dash when neither is available.
  *
  * @param props - The component props.
  * @param props.token - The token to show the price of.
@@ -52,7 +52,8 @@ export const TokenCellPrice = React.memo(({ token }: TokenCellPriceProps) => {
     token.symbol,
   ]);
 
-  const { currentPrice } = useCachedPrice(asset);
+  const { currentPrice: cachedPrice } = useCachedPrice(asset);
+  const currentPrice = token.livePrice ?? cachedPrice;
 
   if (token.isFiatLoading) {
     return (
