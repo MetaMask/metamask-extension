@@ -5,6 +5,7 @@ import type { AccountTreeWallets } from '../../../selectors/multichain-accounts/
 import {
   filterSyncableWallets,
   getSyncSummaryCounts,
+  isPrivateKeyWallet,
   isSyncableWallet,
 } from './utils';
 
@@ -85,6 +86,20 @@ describe('add-device-tab utils', () => {
 
     it('returns false for snap wallets', () => {
       expect(isSyncableWallet(mockWallets[snapWalletId])).toBe(false);
+    });
+  });
+
+  describe('isPrivateKeyWallet', () => {
+    it('returns true for imported private-key wallets', () => {
+      expect(isPrivateKeyWallet(mockWallets[importedWalletId])).toBe(true);
+    });
+
+    it('returns false for entropy wallets', () => {
+      expect(isPrivateKeyWallet(mockWallets[entropyWalletId])).toBe(false);
+    });
+
+    it('returns false for HD keyring wallets', () => {
+      expect(isPrivateKeyWallet(mockWallets[hdKeyringWalletId])).toBe(false);
     });
   });
 
