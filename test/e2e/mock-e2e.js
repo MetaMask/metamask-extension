@@ -1786,7 +1786,6 @@ async function setupMocking(
     'eip155:68414',
     'eip155:73115',
     'eip155:80094',
-    'eip155:81457',
     'eip155:88888',
     'eip155:97741',
     'eip155:98866',
