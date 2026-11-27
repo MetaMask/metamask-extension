@@ -5,7 +5,6 @@ import {
   AccountWalletType,
   toAccountWalletId,
 } from '@metamask/account-api';
-import { KeyringTypes } from '@metamask/keyring-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import { AccountTreeWallets } from '../../../../selectors/multichain-accounts/account-tree.types';
@@ -111,31 +110,6 @@ const mockWallets = {
   },
 } as unknown as AccountTreeWallets;
 
-const importedWalletId = toAccountWalletId(
-  AccountWalletType.Keyring,
-  'imported',
-);
-const importedGroupOneId = `${importedWalletId}/0` as AccountGroupId;
-const importedGroupTwoId = `${importedWalletId}/1` as AccountGroupId;
-
-const importedWallets = {
-  [importedWalletId]: {
-    id: importedWalletId,
-    type: AccountWalletType.Keyring,
-    metadata: { name: 'Imported', keyring: { type: KeyringTypes.simple } },
-    groups: {
-      [importedGroupOneId]: {
-        id: importedGroupOneId,
-        metadata: { name: 'Imported Account 1' },
-      },
-      [importedGroupTwoId]: {
-        id: importedGroupTwoId,
-        metadata: { name: 'Imported Account 2' },
-      },
-    },
-  },
-} as unknown as AccountTreeWallets;
-
 const render = (
   props: Partial<React.ComponentProps<typeof WalletSelectionList>> = {},
 ) => {
@@ -173,38 +147,35 @@ describe('WalletSelectionList', () => {
     expect(screen.getAllByTestId('qr-sync-wallet-divider')).toHaveLength(1);
   });
 
-  it('does not render account checkboxes inside an SRP wallet', () => {
-    render({ selectedAccountGroups: [groupOneId, groupTwoId] });
-
-    expect(
-      document.querySelector(`input[id="account-select-${groupOneId}"]`),
-    ).toBeNull();
-    expect(
-      document.querySelector(`input[id="account-select-${groupTwoId}"]`),
-    ).toBeNull();
-  });
-
-  it('shows the wallet as selected when all of its accounts are selected', () => {
-    render({ selectedAccountGroups: [groupOneId, groupTwoId] });
+  it('renders a checkbox for each account that reflects the selection', () => {
+    render({ selectedAccountGroups: [groupOneId] });
 
     expect(
       document.querySelector<HTMLInputElement>(
-        `input[id="wallet-select-${walletId}"]`,
+        `input[id="account-select-${groupOneId}"]`,
       ),
     ).toBeChecked();
-  });
-
-  it('shows the wallet as not selected when none of its accounts are selected', () => {
-    render({ selectedAccountGroups: [] });
-
     expect(
       document.querySelector<HTMLInputElement>(
-        `input[id="wallet-select-${walletId}"]`,
+        `input[id="account-select-${groupTwoId}"]`,
       ),
     ).not.toBeChecked();
   });
 
-  it('does not change the selection when an SRP account row is clicked', () => {
+  it('adds an account to the selection when its checkbox is clicked', () => {
+    const onSelectionChange = jest.fn();
+    render({ selectedAccountGroups: [groupOneId], onSelectionChange });
+
+    fireEvent.click(
+      document.querySelector(
+        `input[id="account-select-${groupTwoId}"]`,
+      ) as HTMLInputElement,
+    );
+
+    expect(onSelectionChange).toHaveBeenCalledWith([groupOneId, groupTwoId]);
+  });
+
+  it('removes an account from the selection when its row is clicked', () => {
     const onSelectionChange = jest.fn();
     render({
       selectedAccountGroups: [groupOneId, groupTwoId],
@@ -213,76 +184,7 @@ describe('WalletSelectionList', () => {
 
     fireEvent.click(screen.getByText('Account 1'));
 
-    expect(onSelectionChange).not.toHaveBeenCalled();
-  });
-
-  it('deselects every account in a wallet when its checkbox is clicked while selected', () => {
-    const onSelectionChange = jest.fn();
-    render({
-      selectedAccountGroups: [groupOneId, groupTwoId, secondWalletGroupId],
-      onSelectionChange,
-    });
-
-    fireEvent.click(
-      document.querySelector(
-        `input[id="wallet-select-${walletId}"]`,
-      ) as HTMLInputElement,
-    );
-
-    expect(onSelectionChange).toHaveBeenCalledWith([secondWalletGroupId]);
-  });
-
-  describe('imported private-key accounts', () => {
-    it('renders a checkbox for each account that reflects the selection', () => {
-      render({
-        wallets: importedWallets,
-        selectedAccountGroups: [importedGroupOneId],
-      });
-
-      expect(
-        document.querySelector<HTMLInputElement>(
-          `input[id="account-select-${importedGroupOneId}"]`,
-        ),
-      ).toBeChecked();
-      expect(
-        document.querySelector<HTMLInputElement>(
-          `input[id="account-select-${importedGroupTwoId}"]`,
-        ),
-      ).not.toBeChecked();
-    });
-
-    it('adds a single account to the selection when its checkbox is clicked', () => {
-      const onSelectionChange = jest.fn();
-      render({
-        wallets: importedWallets,
-        selectedAccountGroups: [importedGroupOneId],
-        onSelectionChange,
-      });
-
-      fireEvent.click(
-        document.querySelector(
-          `input[id="account-select-${importedGroupTwoId}"]`,
-        ) as HTMLInputElement,
-      );
-
-      expect(onSelectionChange).toHaveBeenCalledWith([
-        importedGroupOneId,
-        importedGroupTwoId,
-      ]);
-    });
-
-    it('removes a single account from the selection when its row is clicked', () => {
-      const onSelectionChange = jest.fn();
-      render({
-        wallets: importedWallets,
-        selectedAccountGroups: [importedGroupOneId, importedGroupTwoId],
-        onSelectionChange,
-      });
-
-      fireEvent.click(screen.getByText('Imported Account 1'));
-
-      expect(onSelectionChange).toHaveBeenCalledWith([importedGroupTwoId]);
-    });
+    expect(onSelectionChange).toHaveBeenCalledWith([groupTwoId]);
   });
 
   it('selects all accounts when the wallet header checkbox is clicked', () => {
