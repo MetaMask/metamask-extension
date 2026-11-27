@@ -100,7 +100,7 @@ const TICKER_LIKE_QUERY = /^[a-z0-9]{1,6}$/u;
 
 /**
  * Sort values accepted on the `sort` / `direction` search params. The fields
- * are the ones the sort dropdown itself offers, so a deeplink can never select
+ * are the ones the sort dropdown itself offers, so a deep link can never select
  * a ranking the user could not reach from the UI.
  */
 const SORT_DIRECTIONS: SortDirection[] = ['asc', 'desc'];
@@ -255,7 +255,7 @@ export const MarketListView = () => {
 
   const hasWatchlistMarkets = watchlistSymbols.size > 0;
 
-  // Read initial filter from URL params (set by deeplink)
+  // Read initial filter from URL params (set by deep link)
   const initialFilter = useMemo<MarketFilter>(() => {
     const filterParam = searchParams.get('filter');
     if (filterParam) {

@@ -1,7 +1,7 @@
 import { MONEY_HOME_ROUTE, Route } from './route';
 
 /**
- * Deeplink for the Money experience.
+ * Deep link for the Money experience.
  *
  * It navigate to the money home.
  * If the user is ineligible for a money account they are redirected to the

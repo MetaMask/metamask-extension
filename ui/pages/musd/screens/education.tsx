@@ -53,7 +53,7 @@ import {
   MUSD_CONVERSION_BONUS_TERMS_OF_USE,
   MUSD_CONVERSION_DEFAULT_CHAIN_ID,
 } from '../../../components/app/musd/constants';
-import { MUSD_DEEPLINK_PARAM } from '../../../../shared/lib/deep-links/routes/musd';
+import { MUSD_DEEP_LINK_PARAM } from '../../../../shared/lib/deep-links/routes/musd';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useDispatch } from '../../../store/hooks';
 
@@ -79,7 +79,7 @@ const MusdEducationScreen = () => {
   const [searchParams] = useSearchParams();
   const { trackEvent, createEventBuilder } = useAnalytics();
 
-  const isDeeplink = searchParams.get(MUSD_DEEPLINK_PARAM) === 'true';
+  const isDeepLink = searchParams.get(MUSD_DEEP_LINK_PARAM) === 'true';
 
   // Track education screen display on mount (fire-once guard)
   const hasTrackedDisplayRef = useRef(false);
@@ -113,20 +113,20 @@ const MusdEducationScreen = () => {
   const hasEligibleConversionTokens = conversionTokens.length > 0;
 
   /**
-   * When deeplink and user has no eligible tokens: if they can buy in region
+   * When opened from a deep link with no eligible tokens: if they can buy in region
    * (not geo-blocked AND buyable on at least one enabled chain) then primary
    * CTA goes to buy flow; otherwise "Continue" goes home.
    */
-  const isDeeplinkNoTokensContinueHome =
-    isDeeplink && !hasEligibleConversionTokens && !canBuyMusdInRegion;
-  const isDeeplinkNoTokensGoToBuy =
-    isDeeplink && !hasEligibleConversionTokens && canBuyMusdInRegion;
+  const isDeepLinkNoTokensContinueHome =
+    isDeepLink && !hasEligibleConversionTokens && !canBuyMusdInRegion;
+  const isDeepLinkNoTokensGoToBuy =
+    isDeepLink && !hasEligibleConversionTokens && canBuyMusdInRegion;
 
   // Determine button labels - must be before callbacks that use them
   let primaryButtonLabel = t('musdEducationGetStarted') as string;
-  if (isDeeplinkNoTokensGoToBuy) {
+  if (isDeepLinkNoTokensGoToBuy) {
     primaryButtonLabel = t('musdBuyMusd') as string;
-  } else if (isDeeplinkNoTokensContinueHome || isGeoBlocked) {
+  } else if (isDeepLinkNoTokensContinueHome || isGeoBlocked) {
     primaryButtonLabel = t('continue') as string;
   }
   const secondaryButtonLabel = t('musdEducationNotNow') as string;
@@ -136,28 +136,28 @@ const MusdEducationScreen = () => {
    */
   const getRedirectDestination =
     useCallback((): MusdEducationButtonClickedEventProperties['redirects_to'] => {
-      if (isDeeplinkNoTokensGoToBuy) {
+      if (isDeepLinkNoTokensGoToBuy) {
         return MUSD_EVENTS_CONSTANTS.REDIRECT_DESTINATIONS
           .BUY_SCREEN as MusdEducationButtonClickedEventProperties['redirects_to'];
       }
-      if (isDeeplinkNoTokensContinueHome || isGeoBlocked) {
+      if (isDeepLinkNoTokensContinueHome || isGeoBlocked) {
         return MUSD_EVENTS_CONSTANTS.REDIRECT_DESTINATIONS
           .HOME_SCREEN as MusdEducationButtonClickedEventProperties['redirects_to'];
       }
       return MUSD_EVENTS_CONSTANTS.REDIRECT_DESTINATIONS
         .CUSTOM_AMOUNT_SCREEN as MusdEducationButtonClickedEventProperties['redirects_to'];
     }, [
-      isDeeplinkNoTokensGoToBuy,
-      isDeeplinkNoTokensContinueHome,
+      isDeepLinkNoTokensGoToBuy,
+      isDeepLinkNoTokensContinueHome,
       isGeoBlocked,
     ]);
 
   /**
    * Handle primary CTA click.
-   * - Deeplink + no tokens + can buy: open buy flow then go home ("Buy mUSD").
-   * - Deeplink + no tokens + cannot buy: go home ("Continue").
-   * - Geo-blocked (non-deeplink): go home ("Continue").
-   * - Otherwise (including deeplink + has tokens): start conversion flow ("Get started").
+   * - Deep link + no tokens + can buy: open buy flow then go home ("Buy mUSD").
+   * - Deep link + no tokens + cannot buy: go home ("Continue").
+   * - Geo-blocked (non-deep-link): go home ("Continue").
+   * - Otherwise (including deep link + has tokens): start conversion flow ("Get started").
    */
   const handleContinue = useCallback(async () => {
     /* eslint-disable @typescript-eslint/naming-convention */
@@ -182,7 +182,7 @@ const MusdEducationScreen = () => {
 
     dispatch(setMusdConversionEducationSeen(true));
 
-    if (isDeeplinkNoTokensGoToBuy) {
+    if (isDeepLinkNoTokensGoToBuy) {
       const destination = await goToBuy({
         // Pre-select mUSD (mainnet) so the in-app flow lands on build-quote
         // instead of the token-selection page; chainId is only used for the
@@ -201,7 +201,7 @@ const MusdEducationScreen = () => {
       return;
     }
 
-    if (isDeeplinkNoTokensContinueHome) {
+    if (isDeepLinkNoTokensContinueHome) {
       navigate(DEFAULT_ROUTE);
       return;
     }
@@ -225,7 +225,7 @@ const MusdEducationScreen = () => {
           address: defaultPaymentToken.address,
           chainId: defaultPaymentToken.chainId,
         },
-        entryPoint: isDeeplink ? 'deeplink' : undefined,
+        entryPoint: isDeepLink ? 'deeplink' : undefined,
       });
     } finally {
       setIsLoading(false);
@@ -233,9 +233,9 @@ const MusdEducationScreen = () => {
   }, [
     dispatch,
     navigate,
-    isDeeplinkNoTokensGoToBuy,
-    isDeeplinkNoTokensContinueHome,
-    isDeeplink,
+    isDeepLinkNoTokensGoToBuy,
+    isDeepLinkNoTokensContinueHome,
+    isDeepLink,
     isGeoBlocked,
     goToBuy,
     startConversionFlow,

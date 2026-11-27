@@ -51,7 +51,7 @@ describe('PrivacyTab', () => {
     });
   });
 
-  it('keeps privacy deeplink anchors in sync with settings item ids', () => {
+  it('keeps privacy deep link anchors in sync with settings item ids', () => {
     const ids = PRIVACY_SETTING_ITEMS.map((item) => item.id);
     const consolidatedIds = CONSOLIDATED_BASIC_FUNCTIONALITY_PRIVACY_ITEMS.map(
       (item) => item.id,

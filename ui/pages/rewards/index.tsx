@@ -5,8 +5,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import LoadingIndicator from '../../components/ui/loading-indicator';
 import { selectRewardsEnabled } from '../../ducks/rewards/selectors';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import { setRewardsDeeplinkUrl } from '../../ducks/rewards';
-import { REWARDS_DEEPLINK_HOST } from '../../components/app/rewards/utils/constants';
+import { setRewardsDeepLinkUrl } from '../../ducks/rewards';
+import { REWARDS_DEEP_LINK_HOST } from '../../components/app/rewards/utils/constants';
 import { useDispatch } from '../../store/hooks';
 
 const RewardsPage = () => {
@@ -18,8 +18,8 @@ const RewardsPage = () => {
   useEffect(() => {
     if (rewardsEnabled) {
       dispatch(
-        setRewardsDeeplinkUrl(
-          REWARDS_DEEPLINK_HOST + location.pathname + location.search,
+        setRewardsDeepLinkUrl(
+          REWARDS_DEEP_LINK_HOST + location.pathname + location.search,
         ),
       );
     }

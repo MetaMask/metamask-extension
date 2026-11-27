@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
-import type { HomeDeepLinkQrCode } from '../pages/home/HomeDeepLinkActions';
+import type { HomeDeepLinkQrCode } from '../pages/home/home-deep-link-actions';
 import type { MetaMaskReduxState } from '../store/store';
 import {
   getIsPrimarySeedPhraseBackedUp,

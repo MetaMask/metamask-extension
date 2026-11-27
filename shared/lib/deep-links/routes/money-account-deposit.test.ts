@@ -2,7 +2,7 @@ import { MONEY_DEPOSIT_ROUTE } from './route';
 import { moneyAccountDeposit } from './money-account-deposit';
 
 describe('money account deposit deep link route', () => {
-  it('has the same pathname as the mobile deeplink', () => {
+  it('has the same pathname as the mobile deep link', () => {
     expect(moneyAccountDeposit.pathname).toBe('/money-account-deposit');
   });
 

@@ -93,7 +93,7 @@ describe('FundingMethodModal', () => {
     );
 
     fireEvent.click(getByText(messages.tokenMarketplace.message));
-    // Preserves the chain context it passed to the Portfolio deeplink today;
+    // Preserves the chain context it passed to the Portfolio deep link today;
     // goToBuy handles the flag-off Portfolio fallback internally.
     expect(mockGoToBuy).toHaveBeenCalledWith({ chainId: '0x5' });
   });

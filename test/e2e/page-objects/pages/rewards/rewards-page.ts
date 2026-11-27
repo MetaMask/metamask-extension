@@ -6,7 +6,7 @@ import { Driver } from '../../../webdriver/driver';
  * Screen: `#/rewards` redirects to home and surfaces the rewards modal
  * (`data-testid="parent-selector-rewards-page"`).
  * Owns: waiting for the rewards modal to be loaded.
- * Boundaries: modal presence only. Rewards deeplink routing and referral
+ * Boundaries: modal presence only. Rewards deep link routing and referral
  * handling live in the rewards page/container; home chrome is `HomePage`.
  * Related: home-hosted rewards onboarding entry.
  *

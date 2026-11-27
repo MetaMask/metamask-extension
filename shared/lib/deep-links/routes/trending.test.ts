@@ -44,7 +44,7 @@ describe('trending deep link route', () => {
     );
   });
 
-  it('opens the default route with QR modal params for the trending deeplink', () => {
+  it('opens the default route with QR modal params for the trending deep link', () => {
     const params = new URLSearchParams();
 
     const destination = trending.handler(params);
@@ -53,19 +53,19 @@ describe('trending deep link route', () => {
     expect((destination as { path: string }).path).toBe(DEFAULT_ROUTE);
     expect(
       (destination as { query: URLSearchParams }).query.get(
-        HomeQueryParams.TrendingDeeplinkUrl,
+        HomeQueryParams.TrendingDeepLinkUrl,
       ),
     ).toBe('https://link.metamask.io/trending');
   });
 
-  it('includes query parameters in the QR deeplink', () => {
+  it('includes query parameters in the QR deep link', () => {
     const params = new URLSearchParams({ tab: 'crypto' });
 
     const destination = trending.handler(params);
 
     expect(
       (destination as { query: URLSearchParams }).query.get(
-        HomeQueryParams.TrendingDeeplinkUrl,
+        HomeQueryParams.TrendingDeepLinkUrl,
       ),
     ).toBe('https://link.metamask.io/trending?tab=crypto');
   });

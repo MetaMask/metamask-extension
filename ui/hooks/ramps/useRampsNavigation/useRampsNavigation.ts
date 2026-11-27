@@ -52,7 +52,7 @@ import { resolveRampControllerToken } from '../utils/resolveRampControllerToken'
 export type RampIntent = {
   /** CAIP-19 asset to pre-select, e.g. `eip155:1/erc20:0x...`. */
   assetId?: CaipAssetType;
-  /** Chain for Portfolio fallback deeplinks. */
+  /** Chain for Portfolio fallback deep links. */
   chainId?: Hex | CaipChainId;
 };
 

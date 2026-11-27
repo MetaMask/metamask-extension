@@ -17,7 +17,7 @@ jest.mock('../../../shared/lib/deep-links/parse', () => ({
   parse: jest.fn(),
 }));
 
-jest.mock('../../components/app/deeplink-qr-code', () => ({
+jest.mock('../../components/app/deep-link-qr-code', () => ({
   QRCodeImage: ({ data }: { data: string }) => (
     <div data-testid="qr-code-image" data-qr-value={data} />
   ),

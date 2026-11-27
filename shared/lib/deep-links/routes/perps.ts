@@ -7,7 +7,7 @@ import {
 } from './route';
 
 /**
- * Deeplink for the Perps experience.
+ * Deep link for the Perps experience.
  * Mirrors mobile's ACTIONS.PERPS handler in handlePerpsUrl.ts.
  *
  * Supported URL formats:

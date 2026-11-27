@@ -1,7 +1,7 @@
 import { PRIVACY_ROUTE, Route } from './route';
 
 /**
- * Where a `privacy` deeplink lands when no `setting` is given, or when the one
+ * Where a `privacy` deep link lands when no `setting` is given, or when the one
  * given isn't recognised.
  */
 export const DEFAULT_SETTING_ANCHOR = 'metametrics';
@@ -17,7 +17,7 @@ export const SETTING_ANCHORS = new Set([
 ]);
 
 /**
- * Deeplink to the Privacy & Security settings tab, scrolled to a specific
+ * Deep link to the Privacy & Security settings tab, scrolled to a specific
  * setting.
  *
  * Supported URL formats:

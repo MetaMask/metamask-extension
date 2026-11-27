@@ -8,7 +8,7 @@ const USDC_ASSET_ID =
   'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 
 describe('swap deep link route', () => {
-  it('opens the default route with a mobile-compatible Limit Order QR deeplink', () => {
+  it('opens the default route with a mobile-compatible Limit Order QR deep link', () => {
     const params = new URLSearchParams({
       [BridgeQueryParams.Tab]: LIMIT_ORDER_TAB,
       [BridgeQueryParams.From]: ETH_ASSET_ID,
@@ -23,7 +23,7 @@ describe('swap deep link route', () => {
     expect(destination).toHaveProperty('path', DEFAULT_ROUTE);
     expect(
       (destination as { query: URLSearchParams }).query.get(
-        HomeQueryParams.LimitOrderDeeplinkUrl,
+        HomeQueryParams.LimitOrderDeepLinkUrl,
       ),
     ).toBe(`https://link.metamask.io/swap?${params.toString()}`);
   });

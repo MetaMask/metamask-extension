@@ -12,9 +12,9 @@ import RewardsModal from './RewardsModal';
  * Reads all priority guard selectors from Redux so that Home no longer needs
  * to receive or track rewards-related props.
  *
- * Priority order: deeplink QR > rewards > PNA25.
+ * Priority order: deep link QR > rewards > PNA25.
  * The `!deepLinkQrCode` guard prevents rewards from appearing while the
- * deeplink QR code modal is displayed.
+ * deep link QR code modal is displayed.
  */
 export function RewardsModalContainer() {
   const canShow = useSelector(selectCanShowLowPriorityModal);
