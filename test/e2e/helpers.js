@@ -953,6 +953,24 @@ async function getCleanAppState(driver) {
   );
 }
 
+/**
+ * Waits until a remote feature flag value has reached the UI state.
+ *
+ * @param {import('./webdriver/driver').Driver} driver - The webdriver instance.
+ * @param {string} name - Remote feature flag name.
+ * @param {unknown} value - Expected flag value.
+ * @returns {Promise<void>} Promise that resolves once the UI has the value.
+ */
+async function waitForRemoteFeatureFlag(driver, name, value) {
+  await driver.waitUntil(
+    async () => {
+      const uiState = await getCleanAppState(driver);
+      return uiState?.metamask?.remoteFeatureFlags?.[name] === value;
+    },
+    { interval: 500, timeout: driver.timeout },
+  );
+}
+
 const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
 
 /**
@@ -1042,5 +1060,6 @@ module.exports = {
   shouldIgnoreKey,
   tinyDelayMs,
   veryLargeDelayMs,
+  waitForRemoteFeatureFlag,
   withFixtures,
 };
