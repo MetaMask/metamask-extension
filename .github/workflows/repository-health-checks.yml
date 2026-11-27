@@ -188,6 +188,10 @@ jobs:
         if: ${{ !cancelled() }}
         run: yarn depcheck
 
+      - name: Run knip dead-code check
+        if: ${{ !cancelled() }}
+        run: yarn knip:check
+
       - name: Validate allow-scripts config
         if: ${{ !cancelled() }}
         run: yarn allow-scripts auto

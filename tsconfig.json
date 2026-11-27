@@ -47,6 +47,7 @@
     ".storybook/**/*",
     "app",
     "development",
+    "scripts",
     "shared",
     "test",
     "types",

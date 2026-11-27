@@ -892,7 +892,7 @@
     "chokidar>anymatch": {
       "packages": {
         "chokidar>normalize-path": true,
-        "micromatch>picomatch": true
+        "chokidar>anymatch>picomatch": true
       }
     },
     "mockttp>@peculiar/asn1-x509>asn1js": {
@@ -1290,7 +1290,7 @@
         "schema-utils": true,
         "copy-webpack-plugin>serialize-javascript": true,
         "mocha>serialize-javascript": true,
-        "copy-webpack-plugin>tinyglobby": true
+        "knip>tinyglobby": true
       }
     },
     "postcss-loader>cosmiconfig": {
@@ -1877,7 +1877,7 @@
         "webpack-dev-server>sockjs>websocket-driver": true
       }
     },
-    "copy-webpack-plugin>tinyglobby>fdir": {
+    "knip>tinyglobby>fdir": {
       "builtin": {
         "fs": true,
         "path": true
@@ -1886,7 +1886,7 @@
         "process.platform": true
       },
       "packages": {
-        "copy-webpack-plugin>tinyglobby>picomatch": true
+        "knip>picomatch": true
       }
     },
     "chokidar>braces>fill-range": {
@@ -2654,6 +2654,22 @@
         "process": true
       }
     },
+    "chokidar>anymatch>picomatch": {
+      "builtin": {
+        "path.basename": true,
+        "path.sep": true
+      },
+      "globals": {
+        "process.platform": true,
+        "process.version.slice": true
+      }
+    },
+    "knip>picomatch": {
+      "globals": {
+        "navigator": true,
+        "process": true
+      }
+    },
     "micromatch>picomatch": {
       "builtin": {
         "path.basename": true,
@@ -2664,10 +2680,14 @@
         "process.version.slice": true
       }
     },
-    "copy-webpack-plugin>tinyglobby>picomatch": {
+    "chokidar>readdirp>picomatch": {
+      "builtin": {
+        "path.basename": true,
+        "path.sep": true
+      },
       "globals": {
-        "navigator": true,
-        "process": true
+        "process.platform": true,
+        "process.version.slice": true
       }
     },
     "postcss": {
@@ -3081,7 +3101,7 @@
         "process.versions.node.split": true
       },
       "packages": {
-        "micromatch>picomatch": true
+        "chokidar>readdirp>picomatch": true
       }
     },
     "@ledgerhq/device-management-kit>reflect-metadata": {
@@ -3728,7 +3748,7 @@
         "process.nextTick": true
       }
     },
-    "copy-webpack-plugin>tinyglobby": {
+    "knip>tinyglobby": {
       "builtin": {
         "fs.readdir": true,
         "fs.readdirSync": true,
@@ -3751,8 +3771,8 @@
         "process.platform": true
       },
       "packages": {
-        "copy-webpack-plugin>tinyglobby>fdir": true,
-        "copy-webpack-plugin>tinyglobby>picomatch": true
+        "knip>tinyglobby>fdir": true,
+        "knip>picomatch": true
       }
     },
     "chokidar>braces>fill-range>to-regex-range": {
