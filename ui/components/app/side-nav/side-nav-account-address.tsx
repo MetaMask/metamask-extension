@@ -1,10 +1,10 @@
 import React from 'react';
 import { type AccountGroupId } from '@metamask/account-api';
 import {
-  Icon,
-  IconColor,
+  Box,
+  ButtonIcon,
+  ButtonIconSize,
   IconName,
-  IconSize,
   Text,
   TextColor,
   TextVariant,
@@ -56,10 +56,8 @@ export const SideNavAccountAddress = ({
   };
 
   return (
-    <button
-      type="button"
-      className="relative z-10 flex min-w-0 items-center gap-1 px-1 rounded-lg hover:bg-hover"
-      onClick={handleClick}
+    <Box
+      className="flex min-w-[60px] basis-[60px] grow max-w-max items-center gap-1"
       data-testid="side-nav-account-cell-address"
     >
       <Text
@@ -74,14 +72,15 @@ export const SideNavAccountAddress = ({
           ? `${scopeLabel} ${t('addressCopied').toLowerCase()}`
           : shortenAddress(normalizeSafeAddress(defaultAddress))}
       </Text>
-      <Icon
-        name={addressCopied ? IconName.CopySuccess : IconName.Copy}
-        size={IconSize.Xs}
-        color={
-          addressCopied ? IconColor.SuccessDefault : IconColor.IconAlternative
-        }
-        className="shrink-0"
+      <ButtonIcon
+        onClick={handleClick}
+        iconName={addressCopied ? IconName.CopySuccess : IconName.Copy}
+        ariaLabel={t('copyAddress')}
+        size={ButtonIconSize.Xs}
+        className={`relative z-10 shrink-0 rounded-md ${
+          addressCopied ? 'text-success-default' : 'text-icon-alternative'
+        }`}
       />
-    </button>
+    </Box>
   );
 };
