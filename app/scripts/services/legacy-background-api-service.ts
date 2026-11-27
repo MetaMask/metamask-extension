@@ -2554,15 +2554,6 @@ export class LegacyBackgroundApiService {
           );
       }
 
-      // ReconcilePassword updates the Seedless vault but does not invalidate
-      // the controller's cached outdated-password result. Refresh it after
-      // recovery so the first post-recovery home-page check sees in-sync state
-      // instead of showing the stale PasswordOutdatedModal.
-      await this.#messenger.call(
-        'SeedlessOnboardingController:resolvePasswordSyncState',
-        { skipCache: true },
-      );
-
       passwordSyncSuccess = true;
     } finally {
       this.#messenger.call('SentryTracingService:bufferedEndTrace', {

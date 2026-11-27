@@ -9880,9 +9880,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/seedless-onboarding-controller@npm:@metamask-previews/seedless-onboarding-controller@12.1.0-preview-631bb5669":
-  version: 12.1.0-preview-631bb5669
-  resolution: "@metamask-previews/seedless-onboarding-controller@npm:12.1.0-preview-631bb5669"
+"@metamask/seedless-onboarding-controller@npm:@metamask-previews/seedless-onboarding-controller@12.1.0-preview-b4b27350d":
+  version: 12.1.0-preview-b4b27350d
+  resolution: "@metamask-previews/seedless-onboarding-controller@npm:12.1.0-preview-b4b27350d"
   dependencies:
     "@metamask/analytics-controller": "npm:^4.4.0"
     "@metamask/auth-network-utils": "npm:^0.5.0"
@@ -9893,11 +9893,11 @@ __metadata:
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/superstruct": "npm:^3.4.1"
     "@metamask/toprf-secure-backup": "npm:^2.0.0"
-    "@metamask/utils": "npm:^12.0.2"
+    "@metamask/utils": "npm:^12.1.0"
     "@noble/curves": "npm:^1.9.7"
     "@noble/hashes": "npm:^1.8.0"
     async-mutex: "npm:^0.5.0"
-  checksum: 10/b2394883833aaf17996719c0b0a226e61731c773e4827bf1babd9e988c36051866b4321a4a0d9afb19e5496870a5f04f389a467b96f739fdace36d325b89b3c2
+  checksum: 10/eb4f6f42ce7deb9a1a88614c32f87c9213fa3c4da1a1351a105051aefab620fa205a958419e7307f9ff46a4305e18e9ce90aaa12292693e0bfcab52e30a9d3f2
   languageName: node
   linkType: hard
 
