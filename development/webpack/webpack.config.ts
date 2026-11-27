@@ -387,7 +387,8 @@ const reactRefreshJsxLoader = getSwcLoader(
 );
 
 // Inline public flags in .js/.mjs dependencies: IN_TEST controls E2E polling,
-// and NODE_ENV removes runtime reads before policy generation.
+// NODE_ENV removes runtime reads before policy generation, and DEBUG sets the
+// `debug` namespaces. DEBUG is only defined in dev and test builds.
 const npmEnvs = {
   // TODO: Remove vendor IN_TEST inlining once the Core changes are released and
   // adopted in Extension (explicit test polling and gas-estimation mocks):
@@ -395,6 +396,8 @@ const npmEnvs = {
   // https://github.com/MetaMask/metamask-extension/pull/47090
   IN_TEST: safeVariables.IN_TEST,
   NODE_ENV: safeVariables.NODE_ENV,
+  // DEBUG is undefined in production builds, and SWC rejects undefined values.
+  ...(safeVariables.DEBUG === undefined ? {} : { DEBUG: safeVariables.DEBUG }),
 };
 const npmLoader = getSwcLoader('ecmascript', false, npmEnvs, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
