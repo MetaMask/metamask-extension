@@ -357,11 +357,6 @@
       "count": 1
     }
   },
-  "ui/components/component-library/select-wrapper/select-wrapper.stories.tsx": {
-    "react-hooks/static-components": {
-      "count": 1
-    }
-  },
   "ui/components/multichain-accounts/multichain-account-menu/multichain-account-menu.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 1
