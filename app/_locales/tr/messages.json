@@ -4409,9 +4409,6 @@
   "getDollarMore": {
     "message": "$1 daha al"
   },
-  "getTheNewestFeatures": {
-    "message": "En yeni özellikleri alın"
-  },
   "getYourWalletReadyToUseWeb3": {
     "message": "Cüzdanınızı web3 kullanmaya hazır hale getirin",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
@@ -12414,9 +12411,6 @@
   "update": {
     "message": "Güncelle"
   },
-  "updateInformation": {
-    "message": "Cüzdanınızı daha güvenli, daha sorunsuz hale getirdik ve bazı yeni özellikler ekledik. Korunmaya devam etmek ve en son iyileştirmelerimizi kullanmak için şimdi güncelleyin."
-  },
   "updateNetworkConfirmationTitle": {
     "message": "Güncelle: $1",
     "description": "$1 represents network name"
@@ -12430,9 +12424,6 @@
   "updateRpc": {
     "message": "RPC'yi güncelle",
     "description": "Button text to update RPC endpoint"
-  },
-  "updateToTheLatestVersion": {
-    "message": "En son sürüme güncelleyin"
   },
   "updatedRpcForNetworks": {
     "message": "Ağ RPC'leri Güncellendi"

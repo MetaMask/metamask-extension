@@ -1976,9 +1976,6 @@
   "genericExplorerView": {
     "message": "Féach ar chuntas ar $1"
   },
-  "getTheNewestFeatures": {
-    "message": "Faigh na gnéithe is nuaí"
-  },
   "goToSite": {
     "message": "Téigh go dtí an suíomh"
   },
@@ -5353,9 +5350,6 @@
   "update": {
     "message": "Nuashonrú"
   },
-  "updateInformation": {
-    "message": "Tá do sparán déanta níos sábháilte, níos réidhe, agus roinnt gnéithe nua curtha leis againn. Nuashonraigh anois chun fanacht faoi chosaint agus ár bhfeabhsuithe is déanaí a úsáid."
-  },
   "updateNetworkConfirmationTitle": {
     "message": "Nuashonraigh $1",
     "description": "$1 represents network name"
@@ -5369,9 +5363,6 @@
   "updateRpc": {
     "message": "Nuashonraigh RPC",
     "description": "Button text to update RPC endpoint"
-  },
-  "updateToTheLatestVersion": {
-    "message": "Nuashonraigh go dtí an leagan is déanaí"
   },
   "updatedRpcForNetworks": {
     "message": "Nuashonruithe ar RPCanna Líonra"

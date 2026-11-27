@@ -4409,9 +4409,6 @@
   "getDollarMore": {
     "message": "$1 더 받기"
   },
-  "getTheNewestFeatures": {
-    "message": "최신 기능 받기"
-  },
   "getYourWalletReadyToUseWeb3": {
     "message": "Web3를 사용할 수 있도록 지갑을 준비해 주세요",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
@@ -12408,9 +12405,6 @@
   "update": {
     "message": "업데이트"
   },
-  "updateInformation": {
-    "message": "지갑을 더 안전하고 원활하게 만들고, 새로운 기능을 추가했습니다. 지금 업데이트하여 최신 개선 사항을 사용하세요."
-  },
   "updateNetworkConfirmationTitle": {
     "message": "$1 업데이트",
     "description": "$1 represents network name"
@@ -12424,9 +12418,6 @@
   "updateRpc": {
     "message": "RPC 업데이트",
     "description": "Button text to update RPC endpoint"
-  },
-  "updateToTheLatestVersion": {
-    "message": "최신 버전으로 업데이트"
   },
   "updatedRpcForNetworks": {
     "message": "네트워크 RPC 업데이트 완료"

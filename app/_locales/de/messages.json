@@ -4405,9 +4405,6 @@
   "getDollarMore": {
     "message": "Erhalten Sie $1 mehr"
   },
-  "getTheNewestFeatures": {
-    "message": "Holen Sie sich die neuesten Funktionen"
-  },
   "getYourWalletReadyToUseWeb3": {
     "message": "Bereiten Sie Ihre Wallet für die Nutzung von web3 vor",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
@@ -12400,9 +12397,6 @@
   "update": {
     "message": "Update"
   },
-  "updateInformation": {
-    "message": "Wir haben Ihre Wallet sicherer und reibungsloser gemacht und einige neue Funktionen hinzugefügt. Aktualisieren Sie jetzt, um geschützt zu bleiben und unsere neuesten Verbesserungen zu nutzen."
-  },
   "updateNetworkConfirmationTitle": {
     "message": "$1 aktualisieren",
     "description": "$1 represents network name"
@@ -12416,9 +12410,6 @@
   "updateRpc": {
     "message": "RPC aktualisieren",
     "description": "Button text to update RPC endpoint"
-  },
-  "updateToTheLatestVersion": {
-    "message": "Aktualisierung auf die neueste Version"
   },
   "updatedRpcForNetworks": {
     "message": "Netzwerk-RPCs aktualisiert"
