@@ -128,6 +128,7 @@ describe('useTokenSecurityData', () => {
     });
 
     expect(mockFetchCachedTokenAssets).toHaveBeenCalledWith([assetId], {
+      includeRwaData: true,
       includeTokenSecurityData: true,
     });
     expect(result.current.securityData).toBe(mockSecurityData);

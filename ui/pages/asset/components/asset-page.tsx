@@ -57,6 +57,7 @@ import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useInAppBack } from '../../../hooks/useInAppBack';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { useTokenAssetQuery } from '../../../hooks/token-asset/useTokenAssetQuery';
 import { transitionBack } from '../../../components/ui/transition';
 import {
   getDataCollectionForMarketing,
@@ -67,6 +68,7 @@ import {
   getOptedIn,
   getPrivacyMode,
   getShowFiatInTestnets,
+  getUseExternalServices,
 } from '../../../selectors';
 import { getIsAdvancedChartsEnabled } from '../../../selectors/multichain/feature-flags';
 import {
@@ -323,8 +325,17 @@ const AssetPage = ({
     [address, chainId],
   );
   const bip44Asset = useSelector(selectBip44Asset);
-  const rwaData =
+  const stateRwaData =
     assetWithBalance?.rwaData ?? bip44Asset?.rwaData ?? asset.rwaData;
+  const isExternalServicesEnabled = useSelector(getUseExternalServices);
+  const shouldFetchTokenAsset =
+    isExternalServicesEnabled && type !== AssetType.native;
+  const tokenAssetQuery = useTokenAssetQuery({
+    assetId: caipAssetId,
+    fetchOnMiss: shouldFetchTokenAsset,
+    enabled: shouldFetchTokenAsset,
+  });
+  const rwaData = stateRwaData ?? tokenAssetQuery.data?.rwaData;
   const updatedAsset: Asset = {
     ...asset,
     rwaData,
@@ -413,8 +424,9 @@ const AssetPage = ({
   const tokenAsset = isUpdatedAssetNative ? null : updatedAsset;
   // Perps-eligible assets show Long / Short / Send / More instead of the
   // regular action buttons (mobile Token Details parity).
+  const perpSymbol = rwaData?.ticker || symbol;
   const { market: perpsMarket, isLoading: isPerpsMarketLoading } =
-    useAssetPerpsMarket(symbol);
+    useAssetPerpsMarket(perpSymbol, { isRwa: Boolean(rwaData) });
   const { isLoading: isPerpsPositionLoading } = usePerpsPositionForAsset(
     perpsMarket?.name ?? '',
   );

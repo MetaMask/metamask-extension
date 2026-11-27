@@ -92,7 +92,21 @@ const mockUseAssetPerpsMarket = jest.fn(
   }),
 );
 jest.mock('../hooks/useAssetPerpsMarket', () => ({
-  useAssetPerpsMarket: () => mockUseAssetPerpsMarket(),
+  useAssetPerpsMarket: (symbol: string, options?: { isRwa?: boolean }) =>
+    (mockUseAssetPerpsMarket as jest.Mock)(symbol, options),
+}));
+
+type MockTokenAssetQueryResult = {
+  data?: { rwaData?: { ticker: string } } | null;
+};
+const mockUseTokenAssetQuery = jest.fn(
+  (): MockTokenAssetQueryResult => ({
+    data: null,
+  }),
+);
+jest.mock('../../../hooks/token-asset/useTokenAssetQuery', () => ({
+  useTokenAssetQuery: (props: { enabled?: boolean }) =>
+    (mockUseTokenAssetQuery as jest.Mock)(props),
 }));
 
 const mockUsePerpsPositionForAsset = jest.fn(() => ({
@@ -475,6 +489,7 @@ describe('AssetPage', () => {
       position: undefined,
       isLoading: false,
     });
+    mockUseTokenAssetQuery.mockReturnValue({ data: null });
 
     // Return a stable (same-reference) default so Reselect's input stability
     // check does not trigger a warning when getAsset calls this selector twice.
@@ -840,6 +855,51 @@ describe('AssetPage', () => {
         queryByTestId('asset-perps-position-section'),
       ).not.toBeInTheDocument();
       expect(queryByTestId('coin-overview-buy')).toBeInTheDocument();
+    });
+  });
+
+  describe('Perps actions on an RWA token asset page', () => {
+    const msft = {
+      ...token,
+      address: '0xe93237c50d904957cf27e7b1133b510c669c2e74',
+      symbol: 'MSFT',
+    };
+
+    it('looks the market up by the token API rwaData ticker', () => {
+      mockUseTokenAssetQuery.mockReturnValue({
+        data: { rwaData: { ticker: 'MSFT' } },
+      });
+      mockUseAssetPerpsMarket.mockReturnValue({
+        market: { name: 'xyz:MSFT' },
+        isLoading: false,
+      });
+
+      const { queryByTestId } = renderWithProvider(
+        <AssetPage asset={msft} optionsButton={null} />,
+        store,
+      );
+
+      expect(mockUseAssetPerpsMarket).toHaveBeenCalledWith('MSFT', {
+        isRwa: true,
+      });
+      expect(queryByTestId('perps-trade-buttons')).toHaveAttribute(
+        'data-market',
+        'xyz:MSFT',
+      );
+    });
+
+    it('does not fetch rwaData when external services are off', () => {
+      renderWithProvider(
+        <AssetPage asset={msft} optionsButton={null} />,
+        configureMockStore([thunk])({
+          ...mockStore,
+          metamask: { ...mockStore.metamask, useExternalServices: false },
+        }),
+      );
+
+      expect(mockUseTokenAssetQuery).toHaveBeenCalledWith(
+        expect.objectContaining({ enabled: false }),
+      );
     });
   });
 

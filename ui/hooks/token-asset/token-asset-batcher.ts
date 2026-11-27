@@ -54,6 +54,7 @@ async function fetchTokenAssetBatch(assetIds: CaipAssetType[]) {
 
     try {
       const chunkTokens = await fetchTokenAssets(chunkAssetIds, {
+        includeRwaData: true,
         includeTokenSecurityData: true,
       });
       tokens.push(...chunkTokens);

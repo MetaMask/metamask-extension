@@ -101,6 +101,7 @@ describe('useTokenAssetQuery', () => {
     });
 
     expect(mockFetchTokenAssets).toHaveBeenCalledWith([usdcAssetId], {
+      includeRwaData: true,
       includeTokenSecurityData: true,
     });
     expect(result.current.data).toEqual(usdcToken);
