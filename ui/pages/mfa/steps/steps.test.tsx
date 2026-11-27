@@ -154,6 +154,31 @@ describe('IntroStep', () => {
 });
 
 describe('PickerStep', () => {
+  const PASSKEY_FAILURES: MfaFlowErrorCode[] = [
+    'passkey_ceremony_cancelled',
+    'invalid_assertion',
+  ];
+
+  it.each(PASSKEY_FAILURES)(
+    'offers to try again or use another method when the passkey fails (%s)',
+    (error) => {
+      render(
+        <PickerStep
+          {...buildState(
+            { name: 'picker', purpose: 'verify', options: ['passkey', 'totp'] },
+            { error },
+          )}
+          reason={reason}
+          onAction={jest.fn()}
+        />,
+      );
+
+      expect(
+        screen.getByText(messages.mfaPickerPasskeyFailed.message),
+      ).toBeInTheDocument();
+    },
+  );
+
   it('leads with the passkey, then the other methods below an "or"', () => {
     const onAction = jest.fn();
     render(

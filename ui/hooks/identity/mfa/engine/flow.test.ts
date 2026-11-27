@@ -12,12 +12,19 @@ import { MfaFlowError } from './errors';
 import { createMfaFlow } from './flow';
 import type {
   MfaControllerAdapter,
+  MfaFlowErrorCode,
   MfaFlow,
   MfaFlowOptions,
   MfaFlowRequest,
   MfaMethod,
   PasskeyAdapter,
 } from './types';
+
+// The sheet was closed, or the passkey refused.
+const PASSKEY_FAILURES: MfaFlowErrorCode[] = [
+  'passkey_ceremony_cancelled',
+  'invalid_assertion',
+];
 
 const DEAD_EMAIL_CODE_ERRORS: MfaErrorCode[] = [
   'flow_expired',
@@ -1665,12 +1672,42 @@ describe('createMfaFlow analytics', () => {
       });
     });
 
-    it('shows the passkey retry screen when the sheet is cancelled after the kit picker', async () => {
+    it.each(PASSKEY_FAILURES)(
+      'returns to the picker when the passkey chosen there fails (%s), to try again or use another method',
+      async (code) => {
+        const fake = createFakeController([passkey, authenticatorApp]);
+        passkeyAdapter.get.mockClear();
+        passkeyAdapter.get.mockRejectedValueOnce(new MfaFlowError(code));
+
+        const { flow, outcome } = await startFlow(
+          {
+            kind: 'verifyOrEnroll',
+            methods: ['passkey', 'totp'],
+            verifyWith: ['passkey', 'totp'],
+            verifyOnly: true,
+          },
+          fake.controller,
+        );
+        expect(flow.getState().step).toMatchObject({ name: 'picker' });
+
+        await act(flow, { type: 'choose', method: 'passkey' });
+        expect(flow.getState()).toMatchObject({
+          step: { name: 'picker', options: ['passkey', 'totp'] },
+          error: code,
+          busy: false,
+        });
+
+        await act(flow, { type: 'choose', method: 'passkey' });
+        expect(passkeyAdapter.get).toHaveBeenCalledTimes(2);
+        expect((await outcome).ok).toBe(true);
+      },
+    );
+
+    it('lets the user switch to another method after the passkey fails on the picker', async () => {
       const fake = createFakeController([passkey, authenticatorApp]);
       passkeyAdapter.get.mockRejectedValueOnce(
         new MfaFlowError('passkey_ceremony_cancelled'),
       );
-
       const { flow } = await startFlow(
         {
           kind: 'verifyOrEnroll',
@@ -1681,18 +1718,13 @@ describe('createMfaFlow analytics', () => {
         fake.controller,
       );
 
-      expect(flow.getState().step).toMatchObject({
-        name: 'picker',
-        purpose: 'verify',
-      });
-
       await act(flow, { type: 'choose', method: 'passkey' });
+      await act(flow, { type: 'choose', method: 'totp' });
 
-      expect(flow.getState().step).toMatchObject({
-        name: 'passkey',
-        purpose: 'verify',
+      expect(flow.getState()).toMatchObject({
+        step: { name: 'otp', method: 'totp' },
+        error: undefined,
       });
-      expect(flow.getState().error).toBe('passkey_ceremony_cancelled');
     });
 
     it('fails instead of setting up when the profile loses its method mid-flow', async () => {

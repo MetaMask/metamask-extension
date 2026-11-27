@@ -567,11 +567,11 @@ export const createMfaFlow = ({
   };
 
   /**
-   * Opens the system passkey sheet straight away. On failure, the passkey
-   * screen shows with retry. When the sheet is cancelled and nothing from
-   * the kit has been shown yet (`!presented`), the flow ends with
-   * `flow_cancelled` so a host can open its own list; other failures still
-   * show retry.
+   * Opens the system passkey sheet straight away. On failure, the picker the
+   * passkey was chosen from shows the error, or else the passkey screen,
+   * with retry. When the sheet is cancelled and nothing from the kit has
+   * been shown yet (`!presented`), the flow ends with `flow_cancelled` so a
+   * host can open its own list.
    *
    * A function declaration, as it and `advance` call each other.
    *
@@ -589,7 +589,11 @@ export const createMfaFlow = ({
         rejectWith('flow_cancelled');
         return;
       }
-      show({ name: 'passkey', purpose });
+      // Chosen from the picker: the error shows there, so the user can try
+      // the passkey again or choose another method.
+      if (state.step.name !== 'picker') {
+        show({ name: 'passkey', purpose });
+      }
       throw error;
     }
     // The ceremony went through: retrying must not run it again.
