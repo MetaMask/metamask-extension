@@ -31,9 +31,9 @@ describe('useAccountGroupLiveTotal', () => {
   });
 
   it('calculates live total from polled balance and live delta', () => {
-    const mockQuotes = new Map([
+    const mockQuotes: LivePriceMap = new Map([
       ['eip155:1/slip44:60', { price: 150 }],
-    ]) as LivePriceMap;
+    ]);
 
     jest.mocked(useSelector).mockReturnValue({
       assets: [ETH_ASSET],
@@ -57,7 +57,7 @@ describe('useAccountGroupLiveTotal', () => {
   });
 
   it('returns undefined total until a polled balance exists', () => {
-    const mockQuotes = new Map() as LivePriceMap;
+    const mockQuotes: LivePriceMap = new Map();
 
     jest.mocked(useSelector).mockReturnValue({
       assets: [],
