@@ -278,17 +278,12 @@ jobs:
         with:
           node-version-file: .nvmrc
 
-      - name: Download the batches
+      # One download for both, as in main-detector.yml: a lone match unpacks into `path`
+      # itself, so a single CUF job downloaded on its own would be missed.
+      - name: Download the batches and critical user flows
         uses: actions/download-artifact@v8
         with:
-          pattern: ${{ needs.meta.outputs.prefix }}-b*
-          path: artifacts
-
-      - name: Download the critical user flows
-        if: ${{ inputs.include_cufs }}
-        uses: actions/download-artifact@v8
-        with:
-          pattern: ${{ needs.meta.outputs.prefix }}-cuf-*
+          pattern: ${{ needs.meta.outputs.prefix }}-{b*,cuf-*}
           path: artifacts
 
       - name: Score and report
