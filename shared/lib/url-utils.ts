@@ -59,6 +59,16 @@ export function isWebOrigin(origin: string | undefined | null): boolean {
   return origin.startsWith('http://') || origin.startsWith('https://');
 }
 
+export function isXDotCom(origin: string): boolean {
+  try {
+    const url = new URL(origin);
+    const hostname = url.hostname.toLowerCase();
+    return hostname === 'x.com' || hostname.endsWith('.x.com');
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Check if a hostname is localhost or an IP address.
  * Public RPC providers use domain names, not raw IP addresses.

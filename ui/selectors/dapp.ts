@@ -1,5 +1,8 @@
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { KnownSessionProperties } from '@metamask/chain-agnostic-permission';
+import { createSelector } from 'reselect';
+import { getBooleanFeatureFlag } from '#shared/lib/remote-feature-flag-utils';
+import { getRemoteFeatureFlags } from '#shared/lib/selectors/remote-feature-flags';
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import { getCaip25CaveatValueFromPermissions } from '../helpers/utils/caip25-permissions';
@@ -111,4 +114,13 @@ export const getIsEip1193CompatibleConnection = createDeepEqualSelector(
       ] === true
     );
   },
+);
+
+export const getIsXDappConnectionWarningEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    getBooleanFeatureFlag(
+      remoteFeatureFlags?.extensionXDappConnectionWarning,
+      true,
+    ),
 );

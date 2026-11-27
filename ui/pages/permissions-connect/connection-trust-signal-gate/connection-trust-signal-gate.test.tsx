@@ -12,7 +12,14 @@ jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
 }));
 
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useSelector: jest.fn(),
+}));
+
 const mockUseOriginTrustSignals = useOriginTrustSignals as jest.Mock;
+const mockUseSelector = jest.requireMock('react-redux')
+  .useSelector as jest.Mock;
 
 describe('ConnectionTrustSignalGate', () => {
   const defaultProps = {
@@ -22,6 +29,7 @@ describe('ConnectionTrustSignalGate', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseSelector.mockReturnValue(true);
   });
 
   it('renders children when trust state is Unknown', () => {
@@ -120,5 +128,20 @@ describe('ConnectionTrustSignalGate', () => {
 
     fireEvent.click(getByTestId('trust-signal-block-modal-cancel'));
     expect(onCancel).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders modal for x.com origin when flag is enabled', () => {
+    mockUseOriginTrustSignals.mockReturnValue({
+      state: TrustSignalDisplayState.Unknown,
+      label: null,
+    });
+
+    const { getByTestId } = render(
+      <ConnectionTrustSignalGate {...defaultProps} origin="https://x.com">
+        <div>Child content</div>
+      </ConnectionTrustSignalGate>,
+    );
+
+    expect(getByTestId('trust-signal-block-modal')).toBeInTheDocument();
   });
 });
