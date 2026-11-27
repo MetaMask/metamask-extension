@@ -13,6 +13,11 @@
   z-index: design-system.$dapp-connection-bar-z-index;
   view-transition-name: dapp-connection-bar;
 
+  html[data-theme='dark'] & {
+    background-color: var(--color-background-elevated1);
+    background-image: none;
+  }
+
   &__left-group {
     min-width: 0; // allow truncation
   }

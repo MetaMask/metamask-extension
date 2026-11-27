@@ -444,4 +444,101 @@ describe('PerpsMarketBalanceActions', () => {
       expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
     });
   });
+  describe('compact variant', () => {
+    it('renders the compact layout with the available balance and both actions', () => {
+      renderWithProvider(
+        <PerpsMarketBalanceActions showActionButtons variant="compact" />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-compact-balance-actions-available'),
+      ).toHaveTextContent('$10,125.00');
+      expect(
+        screen.getByTestId('perps-balance-actions-withdraw'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-balance-actions-add-funds'),
+      ).toBeInTheDocument();
+    });
+
+    it('shows the geo-block modal instead of adding funds when not eligible', () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+      const onAddFunds = jest.fn();
+
+      renderWithProvider(
+        <PerpsMarketBalanceActions
+          showActionButtons
+          variant="compact"
+          onAddFunds={onAddFunds}
+        />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('perps-balance-actions-add-funds'));
+
+      expect(onAddFunds).not.toHaveBeenCalled();
+      expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+    });
+
+    it('renders the compact skeleton while the account is loading', () => {
+      mockUsePerpsLiveAccount.mockReturnValue({
+        account: null,
+        isInitialLoading: true,
+      });
+
+      renderWithProvider(
+        <PerpsMarketBalanceActions showActionButtons variant="compact" />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-balance-actions-skeleton'),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-balance-actions-total'),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('buttonLocation', () => {
+    it('defaults to Perps home', () => {
+      renderWithProvider(
+        <PerpsMarketBalanceActions showActionButtons />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('perps-balance-actions-withdraw'));
+
+      expect(mockTrack).toHaveBeenCalledWith(
+        MetaMetricsEventName.PerpsUiInteraction,
+        expect.objectContaining({
+          [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+            PERPS_EVENT_VALUE.BUTTON_LOCATION.PERPS_HOME,
+        }),
+      );
+    });
+
+    it('reports the provided location for Add funds and Withdraw', () => {
+      renderWithProvider(
+        <PerpsMarketBalanceActions
+          showActionButtons
+          buttonLocation={
+            PERPS_EVENT_VALUE.BUTTON_LOCATION.HYPERLIQUID_CONNECTION_BAR
+          }
+        />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('perps-balance-actions-add-funds'));
+      fireEvent.click(screen.getByTestId('perps-balance-actions-withdraw'));
+
+      expect(mockTrack).toHaveBeenCalledTimes(2);
+      mockTrack.mock.calls.forEach(([, properties]) => {
+        expect(properties[PERPS_EVENT_PROPERTY.BUTTON_LOCATION]).toBe(
+          PERPS_EVENT_VALUE.BUTTON_LOCATION.HYPERLIQUID_CONNECTION_BAR,
+        );
+      });
+    });
+  });
 });

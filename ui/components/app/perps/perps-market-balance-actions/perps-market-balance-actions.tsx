@@ -11,11 +11,14 @@ import {
   TextVariant,
   TextColor,
   FontFamily,
+  BoxAlignItems,
   BoxFlexDirection,
+  BoxJustifyContent,
 } from '@metamask/design-system-react';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
+  type PerpsButtonLocation,
 } from '../../../../../shared/constants/perps-events';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
@@ -29,6 +32,7 @@ import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
 import { getTradeableBalance } from '../../../../hooks/perps/getTradeableBalance';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import { PerpsBalanceActionsSkeleton } from '../perps-skeletons';
+import { PerpsCompactBalanceActions } from './perps-compact-balance-actions';
 
 /** Handler from perps triggers (e.g. deposit / withdraw); may return a Promise. */
 export type PerpsBalanceActionHandler = () => void | Promise<unknown>;
@@ -64,6 +68,13 @@ type PerpsMarketBalanceActionsProps = {
   onLearnMore?: () => void;
   /** Whether the action buttons are stacked (default) or in a row. */
   layout?: 'column' | 'row';
+  /**
+   * `default` is the Perps home header. `compact` is a single row with the
+   * available balance on the left and small action buttons on the right.
+   */
+  variant?: 'default' | 'compact';
+  /** Where button clicks are reported from. Defaults to Perps home. */
+  buttonLocation?: PerpsButtonLocation;
 };
 
 const PerpsMarketBalanceActions = ({
@@ -73,6 +84,8 @@ const PerpsMarketBalanceActions = ({
   onWithdraw,
   onLearnMore,
   layout = 'column',
+  variant = 'default',
+  buttonLocation = PERPS_EVENT_VALUE.BUTTON_LOCATION.PERPS_HOME,
 }: PerpsMarketBalanceActionsProps) => {
   const t = useI18nContext();
   const { track } = usePerpsEventTracking();
@@ -102,15 +115,14 @@ const PerpsMarketBalanceActions = ({
         PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
       [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
         PERPS_EVENT_VALUE.BUTTON_CLICKED.DEPOSIT,
-      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
-        PERPS_EVENT_VALUE.BUTTON_LOCATION.PERPS_HOME,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]: buttonLocation,
     });
     if (!isEligible) {
       setIsGeoBlockModalOpen(true);
       return;
     }
     invokePerpsBalanceAction(onAddFunds);
-  }, [isEligible, onAddFunds, track]);
+  }, [buttonLocation, isEligible, onAddFunds, track]);
 
   const handleWithdraw = useCallback(() => {
     track(MetaMetricsEventName.PerpsUiInteraction, {
@@ -118,11 +130,10 @@ const PerpsMarketBalanceActions = ({
         PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
       [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
         PERPS_EVENT_VALUE.BUTTON_CLICKED.WITHDRAW,
-      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
-        PERPS_EVENT_VALUE.BUTTON_LOCATION.PERPS_HOME,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]: buttonLocation,
     });
     invokePerpsBalanceAction(onWithdraw);
-  }, [onWithdraw, track]);
+  }, [buttonLocation, onWithdraw, track]);
 
   const handleLearnMore = useCallback(() => {
     track(MetaMetricsEventName.PerpsUiInteraction, {
@@ -130,11 +141,10 @@ const PerpsMarketBalanceActions = ({
         PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
       [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
         PERPS_EVENT_VALUE.BUTTON_CLICKED.TUTORIAL,
-      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
-        PERPS_EVENT_VALUE.BUTTON_LOCATION.PERPS_HOME,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]: buttonLocation,
     });
     onLearnMore?.();
-  }, [onLearnMore, track]);
+  }, [buttonLocation, onLearnMore, track]);
 
   const geoBlockModal = (
     <PerpsGeoBlockModal
@@ -146,7 +156,23 @@ const PerpsMarketBalanceActions = ({
   // Show a skeleton while the initial account snapshot is being fetched so we
   // don't flash the zero-balance state before real data arrives.
   if (isInitialLoading) {
-    return <PerpsBalanceActionsSkeleton />;
+    return <PerpsBalanceActionsSkeleton variant={variant} />;
+  }
+
+  if (variant === 'compact') {
+    return (
+      <>
+        <PerpsCompactBalanceActions
+          totalBalance={accountValue}
+          availableBalance={parseFloat(availableBalance)}
+          privacyMode={privacyMode}
+          isAddFundsLoading={isAddFundsLoading}
+          onAddFunds={handleAddFunds}
+          onWithdraw={handleWithdraw}
+        />
+        {geoBlockModal}
+      </>
+    );
   }
 
   // Renders the same balance header regardless of whether the account is

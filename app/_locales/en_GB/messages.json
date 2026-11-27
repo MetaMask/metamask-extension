@@ -4794,6 +4794,9 @@
   "honeypotTitle": {
     "message": "Honey pot"
   },
+  "hyperliquidBalance": {
+    "message": "Hyperliquid balance"
+  },
   "hyperliquidDepositPromptDescription": {
     "message": "Deposit any token. We'll swap it and send it to your Hyperliquid account automatically—no MetaMask fee.",
     "description": "The description of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
@@ -8914,6 +8917,10 @@
   "perpsTopMoversLosers": {
     "message": "Losers",
     "description": "Toggle option showing the markets that fell the most over 24h in the Top movers section"
+  },
+  "perpsTotalAndAvailableToTradeOrWithdraw": {
+    "message": "$1 total, $2 available to trade or withdraw",
+    "description": "Tooltip shown when hovering the Hyperliquid Connection Bar balance. $1 is the formatted total account balance and $2 is the formatted amount available to trade or withdraw."
   },
   "perpsTpslUpdateFailed": {
     "message": "Unable to update take profit/stop loss. Try again.",

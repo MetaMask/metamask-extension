@@ -52,6 +52,12 @@ module.exports = {
           from: { translate: '100% 0' },
           to: { translate: '0 0' },
         },
+        '@keyframes slide-up-from-below': {
+          from: { transform: 'translateY(100%)' },
+        },
+        '@keyframes bar-shadow-fade-in': {
+          from: { opacity: '0' },
+        },
       });
     }),
   ],
