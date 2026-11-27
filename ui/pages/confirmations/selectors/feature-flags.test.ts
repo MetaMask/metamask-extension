@@ -3,6 +3,7 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
+import type { Json } from '@metamask/utils';
 import { DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE } from '../../../../shared/lib/transaction/enforced-simulations';
 import {
   selectBlockedPayTokens,
@@ -15,6 +16,7 @@ import {
   selectIsMoneyAccountTransactionEnabled,
   selectIsPayAmountPrefillEnabled,
   selectIsPayHardwareEnabled,
+  selectIsSolanaPayEnabled,
   selectMinimumRequiredTokenBalance,
   selectPayHardwareConfig,
   selectPayQuoteConfig,
@@ -174,6 +176,72 @@ const getMockPayExtendedState = (
       }),
     },
   },
+});
+
+describe('selectIsSolanaPayEnabled', () => {
+  const TRANSACTION_META = {
+    type: TransactionType.perpsDeposit,
+  } as TransactionMeta;
+
+  const getState = (server: Json) => ({
+    metamask: {
+      remoteFeatureFlags: {
+        confirmations_pay_extended: { payStrategies: { server } },
+      },
+    },
+  });
+
+  const ENABLED_SERVER = {
+    enabled: true,
+    enabledTransactionTypes: [TransactionType.perpsDeposit],
+    solanaEnabled: true,
+  };
+
+  it('returns true when the server strategy, transaction type and Solana gates are on', () => {
+    expect(
+      selectIsSolanaPayEnabled(getState(ENABLED_SERVER), TRANSACTION_META),
+    ).toBe(true);
+  });
+
+  it('matches a nested transaction type', () => {
+    expect(
+      selectIsSolanaPayEnabled(getState(ENABLED_SERVER), {
+        type: TransactionType.batch,
+        nestedTransactions: [{ type: TransactionType.perpsDeposit }],
+      } as TransactionMeta),
+    ).toBe(true);
+  });
+
+  // @ts-expect-error This function is missing from the Mocha type definitions
+  it.each([
+    ['the server strategy is disabled', { ...ENABLED_SERVER, enabled: false }],
+    [
+      'the transaction type is not enabled',
+      { ...ENABLED_SERVER, enabledTransactionTypes: [] },
+    ],
+    [
+      'the enabled transaction types are missing',
+      { ...ENABLED_SERVER, enabledTransactionTypes: undefined },
+    ],
+    ['solanaEnabled is false', { ...ENABLED_SERVER, solanaEnabled: false }],
+    [
+      'solanaEnabled is not a boolean',
+      { ...ENABLED_SERVER, solanaEnabled: 'true' },
+    ],
+  ])('returns false when %s', (_label: string, server: Json) => {
+    expect(selectIsSolanaPayEnabled(getState(server), TRANSACTION_META)).toBe(
+      false,
+    );
+  });
+
+  it('returns false when confirmations_pay_extended is missing', () => {
+    expect(
+      selectIsSolanaPayEnabled(
+        { metamask: { remoteFeatureFlags: {} } },
+        TRANSACTION_META,
+      ),
+    ).toBe(false);
+  });
 });
 
 describe('selectRelayAtomicMaxEnabled', () => {

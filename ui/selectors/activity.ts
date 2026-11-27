@@ -275,21 +275,40 @@ export const selectLocalTransactions = createSelector(
         primaryMoneyAccount,
       );
 
+    const transactionsById = new Map(
+      (transactions ?? []).map((tx) => [tx.id, tx]),
+    );
+
+    // A MetaMask Pay transaction whose calls run as a second leg, such as a
+    // Money Account deposit paid with SOL, takes the hash of that second leg,
+    // which is one of its own required transactions.
+    const hasOwnRequiredTransactionHash = (
+      tx: Pick<Partial<TransactionMeta>, 'hash' | 'requiredTransactionIds'>,
+      hash: string,
+    ) =>
+      (tx.requiredTransactionIds ?? []).some(
+        (id) => transactionsById.get(id)?.hash?.toLowerCase() === hash,
+      );
+
     const isInternalRequiredTransaction = (
-      tx: Pick<Partial<TransactionMeta>, 'id' | 'hash'>,
+      tx: Pick<
+        Partial<TransactionMeta>,
+        'id' | 'hash' | 'requiredTransactionIds'
+      >,
     ) => {
       if (tx.id && internalTxIds.has(tx.id)) {
         return true;
       }
-      if (tx.hash && internalTxHashes.has(tx.hash.toLowerCase())) {
+      const hash = tx.hash?.toLowerCase();
+      if (
+        hash &&
+        internalTxHashes.has(hash) &&
+        !hasOwnRequiredTransactionHash(tx, hash)
+      ) {
         return true;
       }
       return false;
     };
-
-    const transactionsById = new Map(
-      (transactions ?? []).map((tx) => [tx.id, tx]),
-    );
 
     // Payers from the money account's own SRP keep the wallet-wide rule.
     // MPC-backed money accounts have no entropy source ID, so every payer
@@ -469,45 +488,72 @@ const selectBridgeHistory = createSelector(
     selectBridgeHistoryItemForTx(state, tx),
 );
 
+/**
+ * Source transaction hashes of MetaMask Pay transactions, such as the Solana
+ * signature of a transaction paid with a Solana token. The local Pay activity
+ * already represents those source transactions.
+ */
+const selectPaySourceHashes = createSelector(
+  selectLocalTransactions,
+  (transactionGroups) =>
+    new Set(
+      transactionGroups
+        .map(
+          ({ initialTransaction }) =>
+            initialTransaction.metamaskPay?.sourceHash,
+        )
+        .filter((hash): hash is string => Boolean(hash)),
+    ),
+);
+
 export const selectNonEvmActivityItems = createSelector(
   [
     selectNonEvmTransactionsForActivity,
     getAssetsMetadata,
     getInternalAccountsObject,
     selectBridgeHistory,
+    selectPaySourceHashes,
   ],
-  (transactions, assetsMetadata, internalAccountsById, getBridgeHistory) =>
-    transactions.map((transaction) => {
-      const subjectAddress =
-        internalAccountsById?.[transaction.account]?.address;
-      const activity = mapKeyringTransaction({
-        // Unified assets caused Snap token movements with empty or placeholder units.
-        transaction: patchKeyringTransaction(transaction, assetsMetadata),
-        subjectAddress,
-      });
+  (
+    transactions,
+    assetsMetadata,
+    internalAccountsById,
+    getBridgeHistory,
+    paySourceHashes,
+  ) =>
+    transactions
+      .filter((transaction) => !paySourceHashes.has(transaction.id))
+      .map((transaction) => {
+        const subjectAddress =
+          internalAccountsById?.[transaction.account]?.address;
+        const activity = mapKeyringTransaction({
+          // Unified assets caused Snap token movements with empty or placeholder units.
+          transaction: patchKeyringTransaction(transaction, assetsMetadata),
+          subjectAddress,
+        });
 
-      const bridgeHistoryEntry = getBridgeHistory({ hash: transaction.id });
-      const { quote } = bridgeHistoryEntry ?? {};
+        const bridgeHistoryEntry = getBridgeHistory({ hash: transaction.id });
+        const { quote } = bridgeHistoryEntry ?? {};
 
-      if (quote && isCrossChain(quote.srcChainId, quote.destChainId)) {
-        const tokens = getSwapTokens(bridgeHistoryEntry);
-        const status = getBridgeActivityStatus(bridgeHistoryEntry);
-        const fees = 'fees' in activity.data ? activity.data.fees : undefined;
+        if (quote && isCrossChain(quote.srcChainId, quote.destChainId)) {
+          const tokens = getSwapTokens(bridgeHistoryEntry);
+          const status = getBridgeActivityStatus(bridgeHistoryEntry);
+          const fees = 'fees' in activity.data ? activity.data.fees : undefined;
 
-        return {
-          ...activity,
-          type: 'bridge',
-          ...(status ? { status } : {}),
-          data: {
-            from: subjectAddress,
-            ...tokens,
-            ...(fees === undefined ? {} : { fees }),
-          },
-        } as ActivityListItem;
-      }
+          return {
+            ...activity,
+            type: 'bridge',
+            ...(status ? { status } : {}),
+            data: {
+              from: subjectAddress,
+              ...tokens,
+              ...(fees === undefined ? {} : { fees }),
+            },
+          } as ActivityListItem;
+        }
 
-      return activity;
-    }),
+        return activity;
+      }),
 );
 
 export const selectNonEvmActivityItemsById = createSelector(

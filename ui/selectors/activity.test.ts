@@ -214,6 +214,53 @@ describe('selectNonEvmActivityItems', () => {
     });
   });
 
+  it('hides a Solana source transaction represented by its MetaMask Pay transaction', () => {
+    const state = structuredClone(
+      typedMockState,
+    ) as unknown as MetaMaskReduxState & MultichainAccountsState;
+    state.metamask.internalAccounts.selectedAccount =
+      MOCK_ACCOUNT_SOLANA_MAINNET.id;
+    state.metamask.internalAccounts.accounts = {
+      ...state.metamask.internalAccounts.accounts,
+      [MOCK_ACCOUNT_SOLANA_MAINNET.id]: {
+        ...MOCK_ACCOUNT_SOLANA_MAINNET,
+        address: solanaAddress,
+      },
+    };
+    state.metamask.accountTree.wallets[
+      'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
+    ].groups['entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0'].accounts.push(
+      MOCK_ACCOUNT_SOLANA_MAINNET.id,
+    );
+    state.metamask.nonEvmTransactions = {
+      [MOCK_ACCOUNT_SOLANA_MAINNET.id]: {
+        [MultichainNetworks.SOLANA]: {
+          transactions: [solanaSendTransaction],
+          next: null,
+          lastUpdated: 0,
+        },
+      },
+    };
+    state.metamask.enabledNetworkMap = {
+      solana: { [MultichainNetworks.SOLANA]: true },
+    };
+    state.metamask.transactions = [
+      {
+        chainId: '0x1',
+        id: 'parent-transaction-id',
+        metamaskPay: {
+          sourceHash: solanaTxId,
+        },
+        networkClientId: 'mainnet',
+        status: EvmTransactionStatus.submitted,
+        txParams: { from: selectEvmAddress(state) },
+        type: EvmTransactionType.perpsDeposit,
+      } as unknown as TransactionMeta,
+    ];
+
+    expect(selectNonEvmActivityItems(state)).toEqual([]);
+  });
+
   it('keeps unmatched non-EVM sends classified as sends', () => {
     const state = structuredClone(
       typedMockState,
@@ -370,6 +417,32 @@ describe('selectLocalTransactions', () => {
         (group) => group.initialTransaction.id === 'money-account-tx',
       ),
     ).toBe(true);
+  });
+
+  it('includes a money-account deposit that shares the hash of its second-leg required transaction', () => {
+    const hash =
+      '0x8c79f16f9cf2941fc9bf8b5c51d5a75b294d55091c223104a4d400d34cf5171c';
+    const secondLeg = buildMoneyAccountTransaction({
+      id: 'second-leg-tx',
+      hash,
+      time: 2,
+    });
+    const state = buildStateWithMoneyAccount(
+      buildMoneyAccountTransaction({
+        hash,
+        requiredTransactionIds: [secondLeg.id],
+      }),
+    );
+    state.metamask.transactions = [
+      ...(state.metamask.transactions ?? []),
+      secondLeg,
+    ];
+
+    const groupIds = selectLocalTransactions(state).map(
+      (group) => group.initialTransaction.id,
+    );
+
+    expect(groupIds).toStrictEqual(['money-account-tx']);
   });
 
   it('excludes non-money transactions sent from the money account', () => {

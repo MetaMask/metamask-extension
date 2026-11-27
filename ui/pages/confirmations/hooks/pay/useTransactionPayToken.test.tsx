@@ -2,7 +2,11 @@ import { renderHook } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import React from 'react';
-import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
+import { TransactionType } from '@metamask/transaction-controller';
+import {
+  PaymentOverride,
+  type TransactionPaymentToken,
+} from '@metamask/transaction-pay-controller';
 import * as controllerActions from '../../../../store/controller-actions/transaction-pay-controller';
 import { ConfirmContext } from '../../context/confirm';
 import { useTransactionPayToken } from './useTransactionPayToken';
@@ -10,6 +14,7 @@ import { useTransactionPayToken } from './useTransactionPayToken';
 jest.mock(
   '../../../../store/controller-actions/transaction-pay-controller',
   () => ({
+    setPaymentOverride: jest.fn(),
     updateTransactionPaymentToken: jest.fn(),
   }),
 );
@@ -49,14 +54,16 @@ function createMockState({
 
 function renderHookWithProvider({
   payToken,
+  transactionType,
 }: {
   payToken?: TransactionPaymentToken;
+  transactionType?: TransactionType;
 } = {}) {
   const state = createMockState({ payToken });
   const store = mockStore(state);
 
   const confirmContextValue = {
-    currentConfirmation: { id: TRANSACTION_ID_MOCK },
+    currentConfirmation: { id: TRANSACTION_ID_MOCK, type: transactionType },
     isScrollToBottomCompleted: true,
     setIsScrollToBottomCompleted: jest.fn(),
   };
@@ -108,6 +115,90 @@ describe('useTransactionPayToken', () => {
       transactionId: TRANSACTION_ID_MOCK,
       assetId: `eip155:1/erc20:${TOKEN_ADDRESS_MOCK}`,
     });
+  });
+
+  describe('Money Account deposit', () => {
+    const SOLANA_ASSET_ID =
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501' as const;
+    const setPaymentOverrideMock = jest.mocked(
+      controllerActions.setPaymentOverride,
+    );
+
+    it('sets the non-atomic Money Account override before selecting a Solana source', async () => {
+      const { result } = renderHookWithProvider({
+        transactionType: TransactionType.moneyAccountDeposit,
+      });
+
+      await result.current.setPayToken({ assetId: SOLANA_ASSET_ID });
+
+      expect(setPaymentOverrideMock).toHaveBeenCalledWith(TRANSACTION_ID_MOCK, {
+        atomic: false,
+        paymentOverride: PaymentOverride.MoneyAccount,
+      });
+      expect(setPaymentOverrideMock.mock.invocationCallOrder[0]).toBeLessThan(
+        updatePaymentTokenMock.mock.invocationCallOrder[0],
+      );
+    });
+
+    it('clears the override when switching from a Solana source to an EVM token', async () => {
+      const { result } = renderHookWithProvider({
+        payToken: { ...PAY_TOKEN_MOCK, assetId: SOLANA_ASSET_ID },
+        transactionType: TransactionType.moneyAccountDeposit,
+      });
+
+      await result.current.setPayToken({ assetId: PAY_TOKEN_MOCK.assetId });
+
+      expect(setPaymentOverrideMock).toHaveBeenCalledWith(TRANSACTION_ID_MOCK, {
+        paymentOverride: undefined,
+      });
+    });
+
+    it('does not change the override when switching between EVM tokens', async () => {
+      const { result } = renderHookWithProvider({
+        payToken: PAY_TOKEN_MOCK,
+        transactionType: TransactionType.moneyAccountDeposit,
+      });
+
+      await result.current.setPayToken({ assetId: 'eip155:1/slip44:60' });
+
+      expect(setPaymentOverrideMock).not.toHaveBeenCalled();
+    });
+
+    it('does not set the override for a Solana source on another transaction type', async () => {
+      const { result } = renderHookWithProvider({
+        transactionType: TransactionType.perpsDeposit,
+      });
+
+      await result.current.setPayToken({ assetId: SOLANA_ASSET_ID });
+
+      expect(setPaymentOverrideMock).not.toHaveBeenCalled();
+    });
+  });
+
+  it('returns isNative from the CAIP asset namespace for non-EVM tokens', () => {
+    const solanaPayToken: TransactionPaymentToken = {
+      assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      balanceFiat: '150',
+      balanceHuman: '1.5',
+      balanceRaw: '1500000000',
+      balanceUsd: '150',
+      decimals: 9,
+      symbol: 'SOL',
+    };
+
+    const { result: nativeResult } = renderHookWithProvider({
+      payToken: solanaPayToken,
+    });
+    const { result: splResult } = renderHookWithProvider({
+      payToken: {
+        ...solanaPayToken,
+        assetId:
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+      },
+    });
+
+    expect(nativeResult.current.isNative).toBe(true);
+    expect(splResult.current.isNative).toBe(false);
   });
 
   it('returns isNative true when pay token is an EVM native asset', () => {

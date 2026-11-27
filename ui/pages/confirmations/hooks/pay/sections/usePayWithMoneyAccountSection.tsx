@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import {
   TransactionType,
   type TransactionMeta,
@@ -20,7 +19,11 @@ import { selectPrimaryMoneyAccount } from '../../../../../selectors/money-accoun
 import { useConfirmContext } from '../../../context/confirm';
 import { NoDepositFeeTag } from '../../../components/UI/no-fee-tag';
 import { ApyTag } from '../../../components/UI/apy-tag';
-import { applyMoneyAccountOverride } from '../../../utils/transaction-pay';
+import {
+  applyMoneyAccountOverride,
+  isMoneyAccountFunding,
+} from '../../../utils/transaction-pay';
+import { useTransactionPayToken } from '../useTransactionPayToken';
 import type {
   PayWithRowTagRenderer,
   PayWithSectionConfig,
@@ -71,8 +74,12 @@ export function usePayWithMoneyAccountSection({
   const paymentOverride = useSelector((state: TransactionPayState) =>
     selectPaymentOverrideByTransactionId(state, transactionId),
   );
-  const isMoneyAccountSelected =
-    paymentOverride === PaymentOverride.MoneyAccount;
+  const { payToken } = useTransactionPayToken();
+  const isMoneyAccountSelected = isMoneyAccountFunding({
+    paymentOverride,
+    payToken,
+    transactionMeta: currentConfirmation,
+  });
   const showNoDepositFeeTag = hasTransactionType(currentConfirmation, [
     TransactionType.perpsDeposit,
     TransactionType.perpsDepositAndOrder,

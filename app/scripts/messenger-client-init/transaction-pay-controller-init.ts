@@ -3,7 +3,6 @@ import {
   TransactionPayClientId,
   TransactionPayController,
   TransactionPayControllerMessenger,
-  TransactionPayStrategy,
 } from '@metamask/transaction-pay-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
@@ -82,7 +81,7 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
         paymentOverrideRequest,
         initMessenger as PaymentOverrideMessenger,
       ),
-    getStrategy,
+    infuraProjectId: request.infuraProjectId,
     messenger: controllerMessenger,
     state: persistedState.TransactionPayController,
   });
@@ -169,9 +168,13 @@ function getApi(
         if (options.isMoneyAccountDeposit) {
           // Leave `atomic` unset when Core may quote Max atomically: the route
           // match only predicts the subsidy, and Core verifies it and re-quotes
-          // non-atomically when the response is unsubsidized.
+          // non-atomically when the response is unsubsidized. A non-EVM source
+          // always runs the vault deposit as a non-atomic second leg.
           config.atomic =
-            isMaxAmount && !options.isAtomicMaxAllowed ? false : undefined;
+            hasNonEvmPaymentToken(messengerClient, transactionId) ||
+            (isMaxAmount && !options.isAtomicMaxAllowed)
+              ? false
+              : undefined;
         }
       });
     },
@@ -360,6 +363,24 @@ function subscribeWithdrawTransferSync(
   );
 }
 
+/**
+ * Whether the transaction pays with a non-EVM token, such as SOL. Core can
+ * only fund a Money Account deposit from one non-atomically.
+ *
+ * @param messengerClient - TransactionPayController to read the token from.
+ * @param transactionId - ID of the transaction.
+ * @returns True if the selected payment token is not an EVM asset.
+ */
+function hasNonEvmPaymentToken(
+  messengerClient: TransactionPayController,
+  transactionId: string,
+): boolean {
+  const paymentToken =
+    messengerClient.state.transactionData[transactionId]?.paymentToken;
+
+  return paymentToken !== undefined && !decodeEvmAssetId(paymentToken.assetId);
+}
+
 function getWithdrawPaymentToken(
   transactionData:
     | TransactionPayController['state']['transactionData'][string]
@@ -437,8 +458,4 @@ function seedDepositPayConfig(
     config.accountOverride = accountOverride;
     config.isQuoteRequired = true;
   });
-}
-
-function getStrategy(_transaction: TransactionMeta): TransactionPayStrategy {
-  return TransactionPayStrategy.Relay;
 }

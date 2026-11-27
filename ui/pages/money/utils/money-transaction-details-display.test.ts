@@ -239,6 +239,20 @@ describe('getMoneyActivityTransactionHash', () => {
     ).toStrictEqual({ hash: sourceHash, chainId: MAINNET_CHAIN_ID });
   });
 
+  it('ignores a Solana source signature', () => {
+    expect(
+      getMoneyActivityTransactionHash(
+        buildDeposit({
+          hash: '0x0',
+          metamaskPay: {
+            sourceHash:
+              '5VERv8NMvzbJMEkV8xnrLkEaWRtSz9CosKDYjCJjBRnbJLgp8uirBgmQpjKhoR4tjF3ZpRzrFmBV6UjKdiSZkQUW',
+          },
+        }),
+      ),
+    ).toBeUndefined();
+  });
+
   it('returns undefined when no valid hash is known', () => {
     expect(
       getMoneyActivityTransactionHash(buildDeposit({ hash: '0x0' }), {
