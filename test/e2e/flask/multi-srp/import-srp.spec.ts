@@ -11,13 +11,13 @@ import {
   SECOND_TEST_E2E_SRP,
   verifyAccountBelongsToSrp,
 } from '../../page-objects/flows/multi-srp.flow';
-import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import ChooseWalletTypePage from '../../page-objects/pages/accounts/add-wallet/choose-wallet-type-page';
 import ImportSrpPage from '../../page-objects/pages/accounts/add-wallet/import-srp-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AccountDetailsPage from '../../page-objects/pages/accounts/details-page';
 import RevealSrpPage from '../../page-objects/pages/reveal-srp-page';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 import { mockActiveNetworks } from './common-multi-srp';
 
 const TEST_SRP_WORDS_FOR_UI_TEST = [
@@ -64,8 +64,7 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         await importAdditionalSecretRecoveryPhrase(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
         const accountListPage = new AccountListPage(driver);
         await accountListPage.openMultichainAccountMenu({
           accountLabel: 'Account 1',
@@ -96,8 +95,7 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
 
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();

@@ -3,7 +3,6 @@
     "hiddenAccountList": "object",
     "pinnedAccountList": "object"
   },
-  "AccountTracker": { "accountsByChainId": "object" },
   "AccountTreeController": {
     "accountGroupsMetadata": "object",
     "accountTree": "object",
@@ -33,6 +32,7 @@
     "eventsConfig": "object",
     "marketingCampaignCookieId": null,
     "marketingConsentDecisionMade": "boolean",
+    "marketingConsentSyncPending": "boolean",
     "optedIn": true,
     "optedInToMarketing": "boolean"
   },
@@ -251,7 +251,6 @@
     "onboardingTabs": "object",
     "seedPhraseBackedUp": null
   },
-  "PPOMController": { "storageMetadata": "object" },
   "PasskeyController": { "passkeyRecord": null },
   "PermissionController": { "subjects": "object" },
   "PermissionLogController": {
@@ -352,6 +351,7 @@
     "requests": "object",
     "tokens": "object",
     "userRegion": null,
+    "userSelectedProviderId": null,
     "vbaAutorampListFetchedAt": null,
     "vbaCustomerAbilities": null
   },

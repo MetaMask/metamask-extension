@@ -7,6 +7,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.60.0]
+
+### Added
+
+- Added a disabled loading state to network pills during network switches (#48183)
+- Added support for preventing the advanced price chart from sending too many requests and stalling when switching to shorter intervals (#48285)
+
+### Changed
+
+- Disabled Money Account deposits and withdrawals in the extension for users who are migrating or have migrated to MFA on MetaMask Mobile (#48014)
+- Updated the wide-screen layout with larger network icons, revised pill styling, and corrected logo visibility (#48227)
+- Moved the send currency toggle next to the fiat amount and hid it when the amount is invalid (#48150)
+- Updated Smart Transactions dependencies and their service integration (#47995)
+- Updated the MetaMask Money and Perps deposit confirmations with To rows, Convert labels, and info dialogs (#48013)
+- Updated the Money vault APY to come from the Money API (#48157)
+- Updated the Abstract, EDU Chain, Kaia, Flare, Songbird, and KONET network logos to square (#47871)
+- Updated the MetaMask Money intro splash copy describing its benefits (#48046)
+- Updated the authenticator setup QR code styling (#48142)
+- Changed Discover to hide risky tokens only from the default trending list; typed search results now show all matches (#48080)
+
+### Fixed
+
+- Fixed Money Account withdrawals appearing under the wrong accounts by showing them in the recipient account's activity when the recipient can be identified (#48060)
+- Fixed the network fee token badge on gas-included swap quotes showing the source token instead of the token the fee is paid in, and added the badge to non-sponsored swap quotes (#48322)
+- Fixed stale live candles after switching intervals and added support for displaying low-liquidity token candles at the selected interval on the advanced chart (#48318)
+- Fixed referral invites being cleared or replaced when completing onboarding after opening a newer referral deep link (#47887)
+- Fixed hidden imported private-key accounts so they can be unhidden and then removed from the account list (#48288)
+- Fixed Perps order, margin, and TP/SL failures so traders see why the action failed instead of a generic message or raw error code (#47686)
+- Fixed some network logos looking washed out or clipped in network and token avatars (#48177)
+- Fixed keyboard navigation so Chainlist and dropdown options can be reached with the arrow keys as well as Tab (#47163)
+- Fixed a performance issue where switching chart intervals rapidly could result in missing or truncated chart data (#48190)
+- Fixed a bug where the advanced chart price header was blank when OHLCV data was empty (#48196)
+- Fixed Perps order size using leverage twice, misreading amounts with commas, and ignoring the limit price for limit orders (#48175)
+- Fixed MetaMask Pay amount entry so that typing your full displayed balance is treated as Max instead of failing to quote (#48100)
+- Fixed the Buy screen pre-selecting the top-ranked provider instead of the provider you last bought with (#48123)
+
 ## [13.59.0]
 
 ### Added
@@ -3785,7 +3821,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.59.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.60.0...HEAD
+[13.60.0]: https://github.com/MetaMask/metamask-extension/compare/v13.59.0...v13.60.0
 [13.59.0]: https://github.com/MetaMask/metamask-extension/compare/v13.58.0...v13.59.0
 [13.58.0]: https://github.com/MetaMask/metamask-extension/compare/v13.57.0...v13.58.0
 [13.57.0]: https://github.com/MetaMask/metamask-extension/compare/v13.56.0...v13.57.0

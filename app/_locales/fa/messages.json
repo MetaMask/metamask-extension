@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "محدوده گاز"
   },
-  "gasUsed": {
-    "message": "گاز استفاده شد"
-  },
   "general": {
     "message": "عمومی"
   },
@@ -404,9 +401,6 @@
     "message": "کلید شخصی",
     "description": "select this type of file to use to import an account"
   },
-  "privateNetwork": {
-    "message": "شبکه شخصی"
-  },
   "readdToken": {
     "message": "شما میتوانید این رمزیاب را دوباره برای آینده با رفتن به گزینه \"Add token\" در مینوی تنظیمات حساب ها، اضافه نمایید."
   },
@@ -560,9 +554,6 @@
   },
   "unapproved": {
     "message": "تصدیق ناشده"
-  },
-  "units": {
-    "message": "واحد ها"
   },
   "unknown": {
     "message": "ناشناس"

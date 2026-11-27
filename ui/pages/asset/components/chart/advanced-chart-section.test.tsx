@@ -119,13 +119,16 @@ function setupPreferences(
   chartType: number = CHART_TYPE_LINE,
   overrides: { interval?: string } = {},
 ) {
+  const interval = overrides.interval ?? '15m';
   mockUseAdvancedChartPreferences.mockReturnValue({
     chartType,
-    interval: overrides.interval ?? '15m',
+    interval,
+    displayInterval: interval,
     lineTimeRange: '1D',
     indicators: new Set<string>(),
     setChartType,
     setCandleInterval,
+    applyToggleCandle: jest.fn(),
     setLineTimeRange,
     toggleIndicator: jest.fn(),
     isLineChart: chartType === CHART_TYPE_LINE,
@@ -156,6 +159,7 @@ function setupData(
     error: null,
     resolvedCurrency: 'eur',
     fetchOlderBars: jest.fn().mockResolvedValue({ bars: [], noData: true }),
+    resetPagination: jest.fn(),
     ...overrides,
   });
 }
@@ -713,6 +717,39 @@ describe('AdvancedChartSection', () => {
         screen.getByTestId('asset-price-percent-change'),
       ).toHaveTextContent('+75.00%');
       expect(screen.getByText(messages.today.message)).toBeInTheDocument();
+    });
+
+    it('falls back to the live price when candle data succeeds but returns no bars', () => {
+      // OHLCV API succeeds (no error) but returns 0 bars (e.g. WBTC on 4h).
+      // The header must still show the live price, not be blank.
+      setupData({
+        ohlcvData: [],
+        price: undefined,
+        realtimePrice: 175,
+        isLoading: false,
+        error: null,
+      });
+      render();
+
+      expect(screen.getByTestId('chart-error-state')).toBeInTheDocument();
+      expect(screen.getByTestId('asset-hovered-price')).toHaveTextContent(
+        '175',
+      );
+    });
+
+    it('falls back to the wallet-wide current price when candle data is empty and there is no live price', () => {
+      setupData({
+        ohlcvData: [],
+        price: undefined,
+        realtimePrice: undefined,
+        isLoading: false,
+        error: null,
+      });
+      render({ currentPrice: 200 });
+
+      expect(screen.getByTestId('asset-hovered-price')).toHaveTextContent(
+        '200',
+      );
     });
 
     it('keeps the P1D historical series for the 24H change when the candle API fails', () => {

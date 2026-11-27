@@ -2,6 +2,7 @@ import { TransactionType } from '@metamask/transaction-controller';
 import { renderHook } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { selectPrimaryMoneyAccount } from '../../../../selectors/money-account';
+import { useMoneyAccountLifecycle } from '../../../../hooks/money/use-money-account-lifecycle';
 import { selectTransactionPaymentTokenByTransactionId } from '../../../../selectors/transactionPayController';
 import {
   selectDefaultPaySelectedSection,
@@ -17,6 +18,9 @@ jest.mock('react-redux', () => ({
 jest.mock('../transactions/useTransactionMetadataRequest');
 jest.mock('../../../../selectors/money-account', () => ({
   selectPrimaryMoneyAccount: jest.fn(),
+}));
+jest.mock('../../../../hooks/money/use-money-account-lifecycle', () => ({
+  useMoneyAccountLifecycle: jest.fn(),
 }));
 jest.mock('../../../../selectors/transactionPayController', () => ({
   selectTransactionPaymentTokenByTransactionId: jest.fn(),
@@ -49,6 +53,7 @@ describe('useIsMoneyAccountFlagDefault', () => {
   const selectIsMoneyAccountTransactionEnabledMock = jest.mocked(
     selectIsMoneyAccountTransactionEnabled,
   );
+  const useMoneyAccountLifecycleMock = jest.mocked(useMoneyAccountLifecycle);
 
   function mockSelectors({
     moneyAccount = { address: MONEY_ACCOUNT_ADDRESS },
@@ -88,6 +93,12 @@ describe('useIsMoneyAccountFlagDefault', () => {
     );
     mockSelectors();
     mockConfirmation(TransactionType.perpsWithdraw);
+    useMoneyAccountLifecycleMock.mockReturnValue({
+      lifecycle: undefined,
+      isLifecycleUnavailable: false,
+      isReadOnly: false,
+      isLoading: false,
+    });
   });
 
   it('returns false when the flag is not set', () => {
@@ -110,6 +121,45 @@ describe('useIsMoneyAccountFlagDefault', () => {
       expect(result.current).toBe(true);
     },
   );
+
+  it('returns false when the lifecycle is read-only', () => {
+    mockSelectors({ defaultPaySelectedSection: MONEY_ACCOUNT_FLAG });
+    useMoneyAccountLifecycleMock.mockReturnValue({
+      lifecycle: undefined,
+      isLifecycleUnavailable: false,
+      isReadOnly: true,
+      isLoading: false,
+    });
+
+    const { result } = renderHook(() => useIsMoneyAccountFlagDefault());
+    expect(result.current).toBe(false);
+  });
+
+  it('returns false when the lifecycle is unavailable', () => {
+    mockSelectors({ defaultPaySelectedSection: MONEY_ACCOUNT_FLAG });
+    useMoneyAccountLifecycleMock.mockReturnValue({
+      lifecycle: undefined,
+      isLifecycleUnavailable: true,
+      isReadOnly: false,
+      isLoading: false,
+    });
+
+    const { result } = renderHook(() => useIsMoneyAccountFlagDefault());
+    expect(result.current).toBe(false);
+  });
+
+  it('returns false while the lifecycle is loading', () => {
+    mockSelectors({ defaultPaySelectedSection: MONEY_ACCOUNT_FLAG });
+    useMoneyAccountLifecycleMock.mockReturnValue({
+      lifecycle: undefined,
+      isLifecycleUnavailable: false,
+      isReadOnly: false,
+      isLoading: true,
+    });
+
+    const { result } = renderHook(() => useIsMoneyAccountFlagDefault());
+    expect(result.current).toBe(false);
+  });
 
   // @ts-expect-error This is missing from the Mocha type definitions
   it.each([TransactionType.perpsDeposit, TransactionType.predictDeposit])(

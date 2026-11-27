@@ -88,6 +88,17 @@ jest.mock('./instance-options/gas-fee-controller', () => ({
     () => 'gas-fee-controller-options',
   ),
 }));
+jest.mock('./instance-options/signature-controller', () => ({
+  getSignatureControllerInstanceOptions: jest.fn(
+    () => 'signature-controller-options',
+  ),
+  setupSignatureControllerListeners: jest.fn(),
+}));
+jest.mock('./messengers/signature-controller-messenger', () => ({
+  getSignatureControllerInitMessenger: jest.fn(
+    () => 'signature-controller-init-messenger',
+  ),
+}));
 jest.mock('./instance-options/keyring-controller', () => ({
   getKeyringControllerInstanceOptions: jest.fn(() => 'keyring-options'),
 }));
@@ -208,6 +219,7 @@ describe('initializeWallet', () => {
         selectedNetworkController: {
           domainProxyMap: new WeakRefObjectMap(),
         },
+        signatureController: 'signature-controller-options',
         shieldApiService: 'shield-api-service-options',
         shieldController: 'shield-controller-options',
         remoteFeatureFlagController: 'rffc-options',

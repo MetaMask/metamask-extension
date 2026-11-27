@@ -1279,38 +1279,6 @@
   "add_device_error_title": {
     "message": "Synchronisierung konnte nicht abgeschlossen werden"
   },
-  "add_device_success_desc_imported_plural": {
-    "message": "$1 importierte Konten wurden mit Ihrem Smartphone synchronisiert.",
-    "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
-  },
-  "add_device_success_desc_imported_singular": {
-    "message": "1 importiertes Konto wurde mit Ihrem Smartphone synchronisiert.",
-    "description": "Used when a single imported account was synced"
-  },
-  "add_device_success_desc_wallet_plural": {
-    "message": "$1 Wallets wurden mit Ihrem Smartphone synchronisiert.",
-    "description": "$1 is the number of wallets. Used when only wallets were synced"
-  },
-  "add_device_success_desc_wallet_plural_imported_plural": {
-    "message": "$1 Wallets und $2 importierte Konten wurden mit Ihrem Smartphone synchronisiert.",
-    "description": "$1 is the number of wallets, $2 is the number of imported accounts"
-  },
-  "add_device_success_desc_wallet_plural_imported_singular": {
-    "message": "$1 Wallets und 1 importierte Konten wurden mit Ihrem Smartphone synchronisiert.",
-    "description": "$1 is the number of wallets. Used when multiple wallets and a single imported account were synced"
-  },
-  "add_device_success_desc_wallet_singular": {
-    "message": "1 Wallet wurde mit Ihrem Smartphone synchronisiert.",
-    "description": "Used when a single wallet was synced"
-  },
-  "add_device_success_desc_wallet_singular_imported_plural": {
-    "message": "1 Wallet und $1 importierte Konten wurden mit Ihrem Smartphone synchronisiert.",
-    "description": "$1 is the number of imported accounts. Used when a single wallet and multiple imported accounts were synced"
-  },
-  "add_device_success_desc_wallet_singular_imported_singular": {
-    "message": "1 Wallet und 1 importiertes Konto wurden mit Ihrem Smartphone synchronisiert.",
-    "description": "Used when a single wallet and a single imported account were synced"
-  },
   "add_device_success_title": {
     "message": "Gerät gekoppelt"
   },
@@ -1322,12 +1290,6 @@
   },
   "add_device_try_again": {
     "message": "Erneut versuchen"
-  },
-  "add_device_validating_desc": {
-    "message": "Herstellung einer sicheren, verschlüsselten Verbindung mit Ihrem Smartphone."
-  },
-  "add_device_validating_title": {
-    "message": "Geräte koppeln"
   },
   "add_wallets": {
     "message": "Wählen Sie aus, was synchronisiert werden soll."
@@ -1427,9 +1389,6 @@
   },
   "advancedGasPriceModalTitle": {
     "message": "Erweiterte Netzwerkgebühr"
-  },
-  "advancedGasPriceTitle": {
-    "message": "Gas-Preis"
   },
   "advancedPermissionSmallCase": {
     "message": "Erweiterte Genehmigung"
@@ -1691,12 +1650,6 @@
   },
   "amount": {
     "message": "Betrag"
-  },
-  "amountReceived": {
-    "message": "Empfangener Betrag"
-  },
-  "amountSent": {
-    "message": "Gesendeter Betrag"
   },
   "andForListItems": {
     "message": "$1 und $2",
@@ -2119,9 +2072,6 @@
   },
   "blockExplorerUrl": {
     "message": "Block-Explorer-URL"
-  },
-  "blockExplorerUrlDefinition": {
-    "message": "Die URL, die als Block-Explorer für dieses Netzwerk verwendet wird."
   },
   "blockExplorerView": {
     "message": "Konto bei $1 anzeigen",
@@ -2635,9 +2585,6 @@
   "chainId": {
     "message": "Chain-ID"
   },
-  "chainIdDefinition": {
-    "message": "Die Chain-ID, die verwendet wird, um Transaktionen für dieses Netzwerk zu signieren."
-  },
   "chainIdExistsErrorMsg": {
     "message": "Diese Chain-ID wird derzeit vom $1-Netzwerk verwendet."
   },
@@ -2749,10 +2696,6 @@
   "clickHere": {
     "message": "Klicken Sie hier",
     "description": "Link to help when a JSON account import is not working"
-  },
-  "clickToConnectLedgerViaWebHID": {
-    "message": "Klicken Sie hier, um Ihren Ledger über WebHID zu verbinden.",
-    "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
   },
   "clipboardClearFailed": {
     "message": "Zwischenablage konnte nicht geleert werden. Versuchen Sie es erneut."
@@ -3267,9 +3210,6 @@
   },
   "currencySymbol": {
     "message": "Währungszeichen"
-  },
-  "currencySymbolDefinition": {
-    "message": "Das Ticker-Symbol, das für die Währung dieses Netzwerks angezeigt wird."
   },
   "current": {
     "message": "Aktuell"
@@ -4013,10 +3953,6 @@
   "enter_verification_code_expired": {
     "message": "Verifizierungscode abgelaufen"
   },
-  "enter_verification_code_expires_in": {
-    "message": "Läuft in $1 Sek. ab",
-    "description": "$1 is the number of seconds remaining before the verification code expires"
-  },
   "enter_verification_code_max_attempts": {
     "message": "Zu viele Fehlversuche. Bitte versuchen Sie es mit einem neuen QR-Code."
   },
@@ -4032,9 +3968,6 @@
   "errorCode": {
     "message": "Code: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorGettingSafeChainList": {
-    "message": "Fehler beim Abrufen der Liste der sicheren Ketten. Fahren Sie mit Vorsicht fort."
   },
   "errorLegalTextFirstInfo": {
     "message": "Technische Diagnoseinformationen."
@@ -4355,9 +4288,6 @@
     "message": "$1 Sekunde",
     "description": "$1 represents a number of seconds"
   },
-  "gasUsed": {
-    "message": "Verwendetes Gas"
-  },
   "gatorNoJustificationProvided": {
     "message": "Für die Genehmigung wurde keine Begründung angegeben"
   },
@@ -4472,9 +4402,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Etwas ist schiefgelaufen...."
-  },
-  "generateNewQrCode": {
-    "message": "Neuen QR-Code generieren"
   },
   "genericExplorerView": {
     "message": "Konto auf $1 ansehen"
@@ -4992,9 +4919,6 @@
   "insufficientTokens": {
     "message": "Nicht genügend Tokens."
   },
-  "interactWithSmartContract": {
-    "message": "Smart Contract"
-  },
   "interactingWith": {
     "message": "Interaktion mit"
   },
@@ -5178,18 +5102,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Sie müssen Ihr letztes Konto verwenden, ehe Sie ein neues hinzufügen können."
-  },
-  "ledgerConnectionInstructionCloseOtherApps": {
-    "message": "Schließen Sie jede andere Software, die mit Ihrem Gerät verbunden ist und klicken Sie dann hier zum Aktualisieren."
-  },
-  "ledgerConnectionInstructionHeader": {
-    "message": "Vor dem Klicken bestätigen:"
-  },
-  "ledgerConnectionInstructionStepFour": {
-    "message": "Aktivieren Sie „Smart Contract Data“ oder „blind signing“ auf Ihrem Ledger-Gerät."
-  },
-  "ledgerConnectionInstructionStepThree": {
-    "message": "Stellen Sie sicher, dass Ihr Ledger angeschlossen ist und die Ethereum-App ausgewählt ist."
   },
   "ledgerConnectionStatusAppClosedDescription": {
     "message": "Öffnen Sie sie auf Ihrem Ledger-Gerät, um fortzufahren"
@@ -5829,14 +5741,6 @@
   "minute": {
     "message": "Min."
   },
-  "mismatchedChainLinkText": {
-    "message": "verifizieren Sie die Netzwerkdetails",
-    "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
-  },
-  "mismatchedChainRecommendation": {
-    "message": "Wir empfehlen, dass Sie vor dem Fortfahren $1.",
-    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
   "mismatchedNetworkName": {
     "message": "Laut unseren Aufzeichnungen stimmt dieser Netzwerkname nicht mit dieser Chain-ID überein."
   },
@@ -6425,9 +6329,6 @@
     "message": "Einführung von Multichain-Konten",
     "description": "Title for the multichain accounts introduction modal."
   },
-  "multichainAddEthereumChainConfirmationDescription": {
-    "message": "Sie fügen dieses Netzwerk zu MetaMask hinzu und geben dieser Website die Genehmigung, es zu nutzen."
-  },
   "multichainAddressViewAll": {
     "message": "Alle anzeigen"
   },
@@ -6444,42 +6345,6 @@
   "multipleSnapConnectionWarning": {
     "message": "$1 möchte $2 Snaps verwenden",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
-  },
-  "musdAssetConvertBenefitDailyBonus": {
-    "message": "Täglich Bonus",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertBenefitDollarBacked": {
-    "message": "US-Dollar gekoppelt",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertBenefitNoLockups": {
-    "message": "Ohne Sperrfristen",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertBenefitNoMetaMaskFee": {
-    "message": "Keine MetaMask-Gebühr",
-    "description": "Benefit tag on the mUSD asset details convert section"
-  },
-  "musdAssetConvertDescriptionHighlight": {
-    "message": "Jährlichen Bonus von $1 %,",
-    "description": "Shown in Figma accent lime (#baf24a) inside the mUSD asset details convert section description. $1 is the APY percentage."
-  },
-  "musdAssetConvertDescriptionLead": {
-    "message": "Erhalten Sie einen ",
-    "description": "Text before the green APY phrase on the mUSD asset details convert section"
-  },
-  "musdAssetConvertDescriptionTail": {
-    "message": " indem Sie USDC, USDT und DAI in mUSD konvertieren.",
-    "description": "Text after the green APY phrase on the mUSD asset details convert section"
-  },
-  "musdAssetConvertLearnMore": {
-    "message": "Mehr erfahren",
-    "description": "Button to open the mUSD support article from the asset details convert section"
-  },
-  "musdAssetConvertTitle": {
-    "message": "Konvertieren Sie Ihre Stablecoins",
-    "description": "Title of the convert section on the mUSD asset details page"
   },
   "musdAssetPositionBalance": {
     "message": "Kontostand",
@@ -6508,17 +6373,9 @@
   "musdBuyMusd": {
     "message": "mUSD kaufen"
   },
-  "musdClaimTitle": {
-    "message": "Bonus einfordern",
-    "description": "Title for the mUSD bonus claim confirmation screen"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "Die Gebühren für die mUSD-Konvertierung beinhalten Netzwerkkosten und können Anbietergebühren beinhalten. Bei der Konvertierung in mUSD fällt keine MetaMask-Gebühr an.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
-  },
-  "musdConversionTitle": {
-    "message": "Zu mUSD konvertiert",
-    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "musdConvert": {
     "message": "Konvertieren"
@@ -6679,9 +6536,6 @@
     "message": "Sie führen jetzt eine Transaktion bei $1 durch.",
     "description": "$1 is the name of the network"
   },
-  "networkDetails": {
-    "message": "Netzwerkdetails"
-  },
   "networkFee": {
     "message": "Netzwerk-Gebühr"
   },
@@ -6699,9 +6553,6 @@
   },
   "networkNameBitcoin": {
     "message": "Bitcoin"
-  },
-  "networkNameDefinition": {
-    "message": "Der diesem Netzwerk zugeordnete Name."
   },
   "networkNameEthereum": {
     "message": "Ethereum"
@@ -6749,9 +6600,6 @@
   },
   "networkTabPopular": {
     "message": "Beliebt"
-  },
-  "networkURL": {
-    "message": "Netzwerk-URL"
   },
   "networkURLDefinition": {
     "message": "Die URL, die für den Zugriff auf dieses Netzwerk verwendet wird."
@@ -6856,17 +6704,6 @@
   "nftUnsupportedEmptyDescription": {
     "message": "NFTs werden in diesem Netzwerk nicht unterstützt."
   },
-  "nftWarningContent": {
-    "message": "Sie gewähren den Zugriff auf $1, auch auf solche, die Sie in Zukunft besitzen könnten. Die Gegenseite kann diese NFTs jederzeit aus Ihrer Wallet übertragen, ohne Sie zu fragen, bis Sie diese Genehmigung widerrufen. $2",
-    "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
-  },
-  "nftWarningContentBold": {
-    "message": "alle Ihre $1-NFTs",
-    "description": "$1 is name of the collection"
-  },
-  "nftWarningContentGrey": {
-    "message": "Seien Sie vorsichtig."
-  },
   "nfts": {
     "message": "NFTs"
   },
@@ -6899,9 +6736,6 @@
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps und die meisten Hardware-Wallets funktionieren nicht mit Ihrer aktuellen Browserversion."
-  },
-  "noMMFeeSwapping": {
-    "message": "Keine MetaMask-Gebühr"
   },
   "noNetworkFee": {
     "message": "Keine Netzwerkgebühr"
@@ -7296,13 +7130,6 @@
   },
   "openFullScreen": {
     "message": "Vollbild öffnen"
-  },
-  "openFullScreenForLedgerWebHid": {
-    "message": "Öffnen Sie MetaMask im Vollbildmodus, um Ihren Ledger über WebHID zu verbinden.",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
-  "openInBlockExplorer": {
-    "message": "Im Block-Explorer öffnen"
   },
   "openMultichainAccountAddressMenu": {
     "message": "Adressen-Menü des Multichain-Kontos öffnen"
@@ -8130,9 +7957,6 @@
   },
   "perpsDepositFundsTitle": {
     "message": "Gelder an Perps einzahlen"
-  },
-  "perpsDepositTitle": {
-    "message": "Finanziertes Perps-Konto"
   },
   "perpsDepositToastErrorDescription": {
     "message": "Ihre Gelder wurden Perps nicht hinzugefügt. Versuchen Sie es erneut."
@@ -9160,14 +8984,8 @@
     "message": "Private Schlüssel",
     "description": "Private keys row label on multichain account details page."
   },
-  "privateNetwork": {
-    "message": "Privates Netzwerk"
-  },
   "proceed": {
     "message": "Fortfahren"
-  },
-  "proceedWithTransaction": {
-    "message": "Ich möchte dennoch fortfahren."
   },
   "provide": {
     "message": "Bereitstellen"
@@ -9214,13 +9032,6 @@
   "qrCameraAccessNeededTitle": {
     "message": "Kamerazugriff erforderlich",
     "description": "Title when the camera permission dialog was dismissed without a choice."
-  },
-  "qrCodeExpired": {
-    "message": "QR-Code abgelaufen"
-  },
-  "qrCodeExpiresIn": {
-    "message": "Läuft in $1 Sek. ab",
-    "description": "$1 is the number of seconds remaining before the QR code expires"
   },
   "qrErrorMismatchedTransactionBody": {
     "message": "Dieser QR-Code ist für eine andere Transaktion. Brechen Sie die Transaktion ab und versuchen Sie es erneut. Scannen Sie den in MetaMask angezeigten QR-Code zunächst mit Ihrer Hardware-Wallet.",
@@ -9527,16 +9338,8 @@
   "receiveCrypto": {
     "message": "Krypto empfangen"
   },
-  "receiveToken": {
-    "message": "Token empfangen",
-    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
-  },
   "received": {
     "message": "Empfangen"
-  },
-  "receivedTotal": {
-    "message": "Insgesamt erhalten",
-    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Empfängeradresse",
@@ -11365,9 +11168,6 @@
   "simulationDetailsUnavailable": {
     "message": "Nicht verfügbar"
   },
-  "simulationErrorMessageV2": {
-    "message": "Wir konnten das Gas nicht schätzen. Es könnte einen Fehler im Contract geben und diese Transaktion könnte fehlschlagen."
-  },
   "simulationsSettingDescription": {
     "message": "Aktivieren Sie diese Funktion, um Änderungen Ihres Kontostands durch Transaktionen und Signaturen vor der Bestätigung abzuschätzen. Dies garantiert nicht das endgültige Ergebnis. $1"
   },
@@ -11434,12 +11234,6 @@
   },
   "smartAccountRequestsFromDappsDescriptionV2": {
     "message": "Ermöglichen Sie es DApps, Smart-Konto-Funktionen für Standardkonten anzufordern. MetaMask wird dabei ausschließlich auf unserem auditierten Smart-Konto upgraden."
-  },
-  "smartAccountUpgradeBannerDescription": {
-    "message": "Dieselbe Adresse. Intelligentere Funktionen."
-  },
-  "smartAccountUpgradeBannerTitle": {
-    "message": "Zum Smart-Konto wechseln"
   },
   "smartContractAddress": {
     "message": "Smart-Contract-Adresse"
@@ -11875,12 +11669,6 @@
   "stakingWithdrawal": {
     "message": "Staking-Auszahlung"
   },
-  "standardAccountLabel": {
-    "message": "Standardkonto"
-  },
-  "start_with_new_qr_code": {
-    "message": "Mit einem neuen QR-Code starten"
-  },
   "stateCorruptionAreYouSure": {
     "message": "Möchten Sie wirklich fortfahren?"
   },
@@ -12036,28 +11824,12 @@
   "swapAggregator": {
     "message": "Aggregator"
   },
-  "swapAllowSwappingOf": {
-    "message": "Swapping von $1 zulassen",
-    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
-  },
-  "swapAmountReceived": {
-    "message": "Garantierter Betrag"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "Dies ist der Mindestbetrag, den Sie empfangen werden. Je nach Slippage können Sie auch mehr empfangen."
-  },
   "swapAndSend": {
     "message": "Swappen und Senden"
   },
   "swapApproval": {
     "message": "$1 für Swaps genehmigen",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
-  },
-  "swapAreYouStillThere": {
-    "message": "Sind Sie noch da?"
-  },
-  "swapAreYouStillThereDescription": {
-    "message": "Wir sind bereit, Ihnen die neuesten Angebote zu zeigen, wenn Sie fortfahren möchten."
   },
   "swapConfirmWithHwWallet": {
     "message": "Mit Ihrer Hardware-Wallet bestätigen"
@@ -12088,16 +11860,6 @@
     "message": "Das macht $1 für Swapping.",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
-  "swapEstimatedNetworkFees": {
-    "message": "Geschätzte Netzwerkgebühren"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "Dies ist eine Schätzung der Netzwerkgebühr, die für den Abschluss Ihres Swaps verwendet wird. Der tatsächliche Betrag kann sich je nach Netzwerkbedingungen ändern."
-  },
-  "swapFailedErrorDescriptionWithSupportLink": {
-    "message": "Transaktionsfehler kommen vor und wir sind hier, um zu helfen. Wenn das Problem weiterhin besteht, können Sie unseren Kundensupport unter $1 erreichen, um weitere Hilfe zu erhalten.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
-  },
   "swapFailedErrorTitle": {
     "message": "Swap fehlgeschlagen"
   },
@@ -12114,10 +11876,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "Fehler beim Abrufen der Angebote"
   },
-  "swapFromTo": {
-    "message": "Swap von $1 auf $2",
-    "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
   "swapGasFeesExplanation": {
     "message": "MetaMask verdient kein Geld mit Netzwerkgebühren. Bei diesen Gebühren handelt es sich um Schätzwerte, die sich je nach Auslastung des Netzwerks und der Komplexität einer Transaktion ändern können. Erfahren Sie mehr über $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -12125,9 +11883,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "hier",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesSplit": {
-    "message": "Die Netzwerkgebühren auf dem vorherigen Bildschirm werden auf diese beiden Transaktionen aufgeteilt."
   },
   "swapGasFeesSponsored": {
     "message": "Bezahlt von MetaMask"
@@ -12142,15 +11897,6 @@
   "swapLearnMore": {
     "message": "Mehr über Swaps erfahren"
   },
-  "swapLiquiditySourceInfo": {
-    "message": "Wir durchsuchen mehrere Liquiditätsquellen (Börsen, Aggregatoren und professionelle Market Maker), um Wechselkurse und Netzwerkgebühren zu vergleichen."
-  },
-  "swapMaxSlippage": {
-    "message": "Maximale Slippage"
-  },
-  "swapMetaMaskFee": {
-    "message": "MetaMask-Gebühr"
-  },
   "swapMetaMaskFeeDescription": {
     "message": "Die Gebühr von $1% ist automatisch in diesem Angebot enthalten. Sie zahlen sie als Gegenleistung für eine Lizenz zur Nutzung der Software von MetaMask zur Aggregation von Liquiditätsanbieterinformationen.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
@@ -12158,19 +11904,6 @@
   "swapNQuotesWithDot": {
     "message": "$1 Angebote.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapOnceTransactionHasProcess": {
-    "message": "Ihre $1 werden Ihrem Konto gutgeschrieben, sobald diese Transaktion abgeschlossen ist.",
-    "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
-  },
-  "swapProcessing": {
-    "message": "Verarbeitung"
-  },
-  "swapQuoteDetails": {
-    "message": "Angebotsdetails"
-  },
-  "swapQuoteSource": {
-    "message": "Angebotsquelle"
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "Bitte fordern Sie neue Angebote an, um die aktuellen Kurse zu erhalten."
@@ -12181,41 +11914,14 @@
   "swapQuotesNotAvailableDescription": {
     "message": "Diese Handelsroute ist derzeit nicht verfügbar. Versuchen Sie, den Betrag, das Netzwerk oder den Token zu ändern, und wir werden die bestmögliche Option suchen."
   },
-  "swapQuotesNotAvailableErrorDescription": {
-    "message": "Versuchen Sie die Menge oder Slippage Einstellungen anzupassen und versuchen Sie es erneut."
-  },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "Keine Angebote verfügbar"
-  },
-  "swapRate": {
-    "message": "Preis"
-  },
-  "swapReceiving": {
-    "message": "Empfangen"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "Dies ist eine Schätzung. Der genaue Betrag hängt von der Slippage ab."
   },
   "swapRequestForQuotation": {
     "message": "Angebotsanfrage"
   },
-  "swapSelect": {
-    "message": "Auswählen"
-  },
-  "swapSelectAQuote": {
-    "message": "Angebot auswählen"
-  },
-  "swapSelectAToken": {
-    "message": "Token auswählen"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "Unten sind alle Kurse aus verschiedenen Liquiditätsquellen zusammengefasst."
-  },
   "swapSelectToken": {
     "message": "Token auswählen"
-  },
-  "swapShowLatestQuotes": {
-    "message": "Neueste Angebote anzeigen"
   },
   "swapSlippageAutoDescription": {
     "message": "Automatisch"
@@ -12262,18 +11968,8 @@
   "swapSlippageZeroTitle": {
     "message": "Suche nach Null-Slippage-Anbietern"
   },
-  "swapSource": {
-    "message": "Liquiditätsquelle"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Swaps sind komplexe und zeitkritische Transaktionen. Wir empfehlen diese Netzwerkgebühr für ein gutes Gleichgewicht zwischen Kosten und Vertrauen in einen erfolgreichen Swap."
-  },
-  "swapToConfirmWithHwWallet": {
-    "message": "zur Bestätigung mit Ihrem Hardware-Wallet"
-  },
-  "swapTokenAvailable": {
-    "message": "Ihr $1 wurde Ihrem Konto hinzugefügt.",
-    "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
   },
   "swapTokenNotAvailable": {
     "message": "In diesem Netzwerk ist kein Token-Tausch verfügbar"
@@ -12281,20 +11977,11 @@
   "swapTokens": {
     "message": "Tokens tauschen"
   },
-  "swapTransactionComplete": {
-    "message": "Transaktion vollständig"
-  },
-  "swapTwoTransactions": {
-    "message": "2 Transaktionen"
-  },
   "swapUnknown": {
     "message": "Unbekannt"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "Sie haben nicht genug $1, um die Netzwerkgebühr für diesen Swap zu entrichten. Geben Sie einen kleineren Betrag ein oder kaufen Sie weitere $1."
-  },
-  "swapZeroSlippage": {
-    "message": "0 % Slippage"
   },
   "swapsMaxSlippage": {
     "message": "Slippage-Toleranz"
@@ -12307,15 +11994,6 @@
   },
   "swapsRebateTooltipTitle": {
     "message": "Tradingsprämien"
-  },
-  "swapsViewInActivity": {
-    "message": "In Aktivität anzeigen"
-  },
-  "switch": {
-    "message": "Wechseln"
-  },
-  "switchBack": {
-    "message": "Zurückwechseln"
   },
   "switchBackToPopup": {
     "message": "Zum Popup zurückwechseln"
@@ -12539,27 +12217,6 @@
   "transactionFlowNetwork": {
     "message": "Netzwerk"
   },
-  "transactionHistoryBaseFee": {
-    "message": "Grundgebühr (GWEI)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "Gesamtgebühr für das L1-Netzwerk"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "L2 Gas-Limit"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "L2 Gas-Preis"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "Maximale Gebühr pro Gas"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "Prioritätsgebühr (GWEI)"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "Gesamtnetzwerkgebühr"
-  },
   "transactionIdCopied": {
     "message": "Transaktions-ID kopiert"
   },
@@ -12743,9 +12400,6 @@
     "message": "Swappen von $1 $2 mit $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "units": {
-    "message": "Einheiten"
-  },
   "unknown": {
     "message": "Unbekannt"
   },
@@ -12789,10 +12443,6 @@
   "unpin": {
     "message": "Lösen"
   },
-  "unrecognizedChain": {
-    "message": "Dieses benutzerdefinierte Netzwerk wird nicht erkannt",
-    "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
   "unsendableAsset": {
     "message": "Senden von NFT-Tokens (ERC-721) wird derzeit nicht unterstützt.",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
@@ -12805,9 +12455,6 @@
   },
   "update": {
     "message": "Update"
-  },
-  "updateEthereumChainConfirmationDescription": {
-    "message": "Diese Website fordert Sie zur Aktualisierung Ihrer Standard-Netzwerk-URL auf. Sie können die Standardeinstellungen und Netzwerkinformationen jederzeit ändern."
   },
   "updateInformation": {
     "message": "Wir haben Ihre Wallet sicherer und reibungsloser gemacht und einige neue Funktionen hinzugefügt. Aktualisieren Sie jetzt, um geschützt zu bleiben und unsere neuesten Verbesserungen zu nutzen."
@@ -12987,9 +12634,6 @@
   "walletReadyLoseSrpFromReminder": {
     "message": "Mit dieser geheimen Wiederherstellungsphrase können Sie den Zugriff wiedererlangen, wenn Sie Ihr Passwort vergessen oder den Zugriff auf Ihre Anmeldung verlieren."
   },
-  "wantToAddThisNetwork": {
-    "message": "Möchten Sie dieses Netzwerk hinzufügen?"
-  },
   "wantsToAddThisAsset": {
     "message": "Dadurch kann das folgende Asset zu Ihrer Wallet hinzugefügt werden."
   },
@@ -13091,9 +12735,6 @@
   },
   "yourBalance": {
     "message": "Ihr Kontostand"
-  },
-  "yourNFTmayBeAtRisk": {
-    "message": "Ihr NFT könnte gefährdet sein"
   },
   "yourWalletIsReady": {
     "message": "Ihre Wallet ist bereit!"
