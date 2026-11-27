@@ -1,6 +1,8 @@
 import type { HomeDeepLinkQrCode } from '../pages/home/HomeDeepLinkActions';
 import {
   selectCanShowLowPriorityModal,
+  selectDisplayUpdateModal,
+  selectIsUpdateModalDeferred,
   getHomeDeepLinkQrCode,
 } from './home-modals';
 
@@ -133,4 +135,140 @@ describe('getHomeDeepLinkQrCode', () => {
     const state = buildState({ homeDeepLinkQrCode: qrCode });
     expect(getHomeDeepLinkQrCode(state)).toStrictEqual(qrCode);
   });
+});
+
+type UpdateModalStateOverrides = {
+  appState?: Record<string, unknown>;
+  metamask?: Record<string, unknown>;
+};
+
+/**
+ * State where an update is pending: the installed version is below the
+ * minimum version and a newer version is available.
+ */
+function buildUpdatePendingState({
+  appState = {},
+  metamask = {},
+}: UpdateModalStateOverrides = {}) {
+  const state = buildState();
+  return {
+    ...state,
+    metamask: {
+      ...state.metamask,
+      pendingApprovals: {},
+      pendingExtensionVersion: '12.0.0',
+      remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
+      ...metamask,
+    },
+    appState: {
+      ...state.appState,
+      deprecatedNetworkModalOpen: false,
+      isNetworkMenuOpen: false,
+      showBasicFunctionalityModal: false,
+      showIpfsModalOpen: false,
+      showKeyringRemovalSnapModal: false,
+      ...appState,
+    },
+  } as unknown as Parameters<typeof selectDisplayUpdateModal>[0];
+}
+
+describe('selectDisplayUpdateModal', () => {
+  const originalPlatform = global.platform;
+
+  beforeEach(() => {
+    global.platform = {
+      getVersion: () => '9.0.0',
+    } as typeof global.platform;
+  });
+
+  afterEach(() => {
+    global.platform = originalPlatform;
+  });
+
+  it('returns true when an update is pending and modals are allowed', () => {
+    expect(selectDisplayUpdateModal(buildUpdatePendingState())).toBe(true);
+  });
+
+  it('returns false when no update is pending', () => {
+    expect(
+      selectDisplayUpdateModal(
+        buildUpdatePendingState({
+          metamask: { pendingExtensionVersion: null },
+        }),
+      ),
+    ).toBe(false);
+  });
+
+  it('returns false when onboarding is not completed', () => {
+    expect(
+      selectDisplayUpdateModal(
+        buildUpdatePendingState({ metamask: { completedOnboarding: false } }),
+      ),
+    ).toBe(false);
+  });
+
+  it('keeps lower-priority modals suppressed while an update is pending', () => {
+    expect(selectCanShowLowPriorityModal(buildUpdatePendingState())).toBe(
+      false,
+    );
+  });
+});
+
+describe('selectIsUpdateModalDeferred', () => {
+  it('does not defer when no flow is open', () => {
+    expect(selectIsUpdateModalDeferred(buildUpdatePendingState())).toBe(false);
+  });
+
+  const deferringFlows: [string, UpdateModalStateOverrides][] = [
+    [
+      'a pending confirmation',
+      {
+        metamask: {
+          pendingApprovals: {
+            'approval-1': { id: 'approval-1', type: 'personal_sign' },
+          },
+        },
+      },
+    ],
+    [
+      'a pending add-network confirmation',
+      {
+        metamask: {
+          pendingApprovals: {
+            'approval-1': {
+              id: 'approval-1',
+              origin: 'metamask',
+              type: 'wallet_addEthereumChain',
+            },
+          },
+        },
+      },
+    ],
+    [
+      'an active QR hardware scan',
+      { metamask: { activeQrCodeScanRequest: { type: 'sync' } } },
+    ],
+    ['the network menu', { appState: { isNetworkMenuOpen: true } }],
+    ['the IPFS modal', { appState: { showIpfsModalOpen: true } }],
+    [
+      'the basic functionality modal',
+      { appState: { showBasicFunctionalityModal: true } },
+    ],
+    [
+      'the keyring snap removal result',
+      { appState: { showKeyringRemovalSnapModal: true } },
+    ],
+    [
+      'the deprecated network modal',
+      { appState: { deprecatedNetworkModalOpen: true } },
+    ],
+  ];
+
+  for (const [name, overrides] of deferringFlows) {
+    it(`defers while ${name} is open`, () => {
+      expect(
+        selectIsUpdateModalDeferred(buildUpdatePendingState(overrides)),
+      ).toBe(true);
+    });
+  }
 });
