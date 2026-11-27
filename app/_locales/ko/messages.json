@@ -8846,10 +8846,6 @@
   "personalAddressDetected": {
     "message": "개인 주소가 발견되었습니다. 토큰 계약 주소를 입력하세요."
   },
-  "pin": {
-    "message": "고정",
-    "description": "Pin label used in multichain account menu"
-  },
   "pinMetaMask": {
     "message": "MetaMask 확장 프로그램 고정"
   },

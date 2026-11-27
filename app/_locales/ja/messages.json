@@ -8842,10 +8842,6 @@
   "personalAddressDetected": {
     "message": "個人アドレスが検出されました。トークンコントラクトアドレスを入力してください。"
   },
-  "pin": {
-    "message": "ピン留め",
-    "description": "Pin label used in multichain account menu"
-  },
   "pinMetaMask": {
     "message": "MetaMask拡張機能をピン留めする"
   },

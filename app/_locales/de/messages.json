@@ -8838,10 +8838,6 @@
   "personalAddressDetected": {
     "message": "Personalisierte Adresse identifiziert. Bitte fügen Sie die Token Contract-Adresse ein."
   },
-  "pin": {
-    "message": "Anheften",
-    "description": "Pin label used in multichain account menu"
-  },
   "pinMetaMask": {
     "message": "Die MetaMask-Erweiterung anheften"
   },

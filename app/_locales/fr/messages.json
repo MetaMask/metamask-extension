@@ -8838,10 +8838,6 @@
   "personalAddressDetected": {
     "message": "Votre adresse personnelle a été détectée. Veuillez saisir à la place l’adresse du contrat du jeton."
   },
-  "pin": {
-    "message": "Épingler",
-    "description": "Pin label used in multichain account menu"
-  },
   "pinMetaMask": {
     "message": "Épingler l’extension MetaMask"
   },
