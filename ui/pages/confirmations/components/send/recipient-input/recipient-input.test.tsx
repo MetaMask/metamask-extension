@@ -97,6 +97,11 @@ describe('RecipientInput', () => {
     expect(getByRole('textbox')).toBeInTheDocument();
   });
 
+  it('focuses the address field on render', () => {
+    const { getByRole } = renderComponent();
+    expect(getByRole('textbox')).toHaveFocus();
+  });
+
   it('calls updateTo when input value changes', () => {
     const { getByRole } = renderComponent();
     const input = getByRole('textbox');
