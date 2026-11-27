@@ -9880,9 +9880,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/seedless-onboarding-controller@npm:@metamask-previews/seedless-onboarding-controller@12.1.0-preview-abcfadf":
-  version: 12.1.0-preview-abcfadf
-  resolution: "@metamask-previews/seedless-onboarding-controller@npm:12.1.0-preview-abcfadf"
+"@metamask/seedless-onboarding-controller@npm:@metamask-previews/seedless-onboarding-controller@12.1.0-preview-631bb5669":
+  version: 12.1.0-preview-631bb5669
+  resolution: "@metamask-previews/seedless-onboarding-controller@npm:12.1.0-preview-631bb5669"
   dependencies:
     "@metamask/analytics-controller": "npm:^4.4.0"
     "@metamask/auth-network-utils": "npm:^0.5.0"
@@ -9897,7 +9897,7 @@ __metadata:
     "@noble/curves": "npm:^1.9.7"
     "@noble/hashes": "npm:^1.8.0"
     async-mutex: "npm:^0.5.0"
-  checksum: 10/6b12a7fbdd163364d5fdbe2a30d7b04f9e03c8fd43ce426c11bf764baf6241486aa206a5453bc7f4405800125850a1b4a4d8ae99c04e5844e70c402bc67b5ee2
+  checksum: 10/b2394883833aaf17996719c0b0a226e61731c773e4827bf1babd9e988c36051866b4321a4a0d9afb19e5496870a5f04f389a467b96f739fdace36d325b89b3c2
   languageName: node
   linkType: hard
 
