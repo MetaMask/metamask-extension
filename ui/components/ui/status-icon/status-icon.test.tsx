@@ -1,5 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import source from '../../../../shared/assets/animations/spinner_loader_with_states.riv';
+import { useRiveFileLavamoat } from '../../../hooks/useRiveFileLavamoat';
 import { StatusIcon } from './status-icon';
 
 jest.mock('@rive-app/react-canvas', () => ({
@@ -14,12 +16,18 @@ jest.mock('../../../hooks/useTheme', () => ({
 }));
 
 jest.mock('../../../hooks/useRiveFileLavamoat', () => ({
-  useRiveFileLavamoat: () => ({ riveFile: {}, status: 'success' }),
+  useRiveFileLavamoat: jest.fn(() => ({ riveFile: {}, status: 'success' })),
 }));
 
 const states = ['loading', 'success', 'fail'] as const;
 
 describe('StatusIcon', () => {
+  it('loads the bundled animation', () => {
+    render(<StatusIcon state="loading" />);
+
+    expect(useRiveFileLavamoat).toHaveBeenCalledWith({ src: source });
+  });
+
   for (const state of states) {
     it(`renders for ${state} status`, () => {
       render(<StatusIcon state={state} />);
