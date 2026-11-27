@@ -1,5 +1,6 @@
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import {
+  SimulationErrorCode,
   SimulationTokenStandard,
   TransactionMeta,
   TransactionStatus,
@@ -442,6 +443,77 @@ describe('enforced-simulations', () => {
           buildState(ResultType.Benign),
         ),
       ).toBe(false);
+    });
+
+    for (const code of [
+      SimulationErrorCode.Reverted,
+      SimulationErrorCode.InvalidResponse,
+      SimulationErrorCode.ChainNotSupported,
+      SimulationErrorCode.Disabled,
+      'unknown-error',
+    ]) {
+      it(`returns false when simulation failed with error code ${code}`, () => {
+        expect(
+          isEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              simulationData: {
+                error: { code, message: 'Simulation failed' },
+                tokenBalanceChanges: [],
+              },
+            },
+            buildState(ResultType.Malicious),
+          ),
+        ).toBe(false);
+      });
+    }
+
+    it('returns false when simulation failed without an error code', () => {
+      expect(
+        isEnforcedSimulationsEligible(
+          {
+            ...BASE_TRANSACTION_META,
+            simulationData: {
+              error: { message: 'Simulation failed' },
+              tokenBalanceChanges: [],
+            },
+          },
+          buildState(ResultType.Malicious),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false when simulation failed and enforced simulations are force enabled', () => {
+      process.env.FORCE_ENFORCED_SIMULATIONS = 'true';
+
+      expect(
+        isEnforcedSimulationsEligible(
+          {
+            ...BASE_TRANSACTION_META,
+            simulationData: {
+              error: { code: SimulationErrorCode.Reverted },
+              tokenBalanceChanges: [],
+            },
+          },
+          buildState(ResultType.Malicious),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns true when simulation data was updated after a security check', () => {
+      expect(
+        isEnforcedSimulationsEligible(
+          {
+            ...BASE_TRANSACTION_META,
+            simulationData: {
+              ...BASE_TRANSACTION_META.simulationData,
+              tokenBalanceChanges: [],
+              isUpdatedAfterSecurityCheck: true,
+            },
+          },
+          buildState(ResultType.Malicious),
+        ),
+      ).toBe(true);
     });
 
     it('returns true when simulation data has no balance changes', () => {

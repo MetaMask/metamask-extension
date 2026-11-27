@@ -201,6 +201,7 @@ describe('Tron - Assets', function (this: Suite) {
       await withTronFixtures(
         {
           accounts: [EMPTY_TRON_ACCOUNT],
+          localNode: false,
           fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
         },
@@ -221,6 +222,7 @@ describe('Tron - Assets', function (this: Suite) {
       await withTronFixtures(
         {
           accounts: [TRON_CHECK_BALANCE_ACCOUNT],
+          localNode: false,
           fixtures: new FixtureBuilderV2()
             .withShowNativeTokenAsMainBalanceDisabled()
             .build(),

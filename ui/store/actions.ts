@@ -1726,32 +1726,17 @@ export function updateEditableParams(
 }
 
 export async function backupUserData(): Promise<{
-  filename: string;
+  fileName: string;
   data: string;
 }> {
-  let backedupData;
   try {
-    backedupData = await submitRequestToBackground<{
-      filename: string;
-      data: string;
-    }>('backupUserData');
+    return await submitRequestToBackground(
+      'LegacyBackgroundApiService:backupUserData',
+    );
   } catch (error) {
     logErrorWithMessage(error);
     throw error;
   }
-
-  return backedupData;
-}
-
-export async function restoreUserData(jsonString: Json): Promise<true> {
-  try {
-    await submitRequestToBackground('restoreUserData', [jsonString]);
-  } catch (error) {
-    logErrorWithMessage(error);
-    throw error;
-  }
-
-  return true;
 }
 
 export function updateSlides(
@@ -2131,8 +2116,8 @@ export async function checkFirstTimeInteraction(request: {
   to: string;
   chainId: number;
 }): Promise<boolean | undefined> {
-  return submitRequestToBackground<boolean | undefined>(
-    'checkFirstTimeInteraction',
+  return submitRequestToBackground(
+    'LegacyBackgroundApiService:checkFirstTimeInteraction',
     [request],
   );
 }
@@ -4759,21 +4744,6 @@ export function setUseCurrencyRateCheck(
   };
 }
 
-// TokenDetectionController
-export function detectTokens(
-  chainIds?: string[],
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.detectTokens`);
-    await submitRequestToBackground('TokenDetectionController:detectTokens', [
-      { chainIds },
-    ]);
-    dispatch(hideLoadingIndication());
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
 // TODO: with support of non EVM, check if possible to refactor this and get chainIds from the state in the fct instead of passing it as a param
 export function detectNfts(
   chainIds: string[],
@@ -6168,73 +6138,6 @@ export async function removePollingTokenFromAppState(pollingToken: string) {
 }
 
 /**
- * Informs the CurrencyRateController that the UI requires currency rate polling
- *
- * @param nativeCurrencies - An array of native currency symbols
- * @returns polling token that can be used to stop polling
- */
-export async function currencyRateStartPolling(
-  nativeCurrencies: string[],
-): Promise<string> {
-  const pollingToken = await submitRequestToBackground(
-    'CurrencyRateController:startPolling',
-    [{ nativeCurrencies }],
-  );
-  await addPollingTokenToAppState(pollingToken);
-  return pollingToken;
-}
-
-/**
- * Informs the CurrencyRateController that the UI no longer requires currency rate polling
- * for the given network client.
- * If all network clients unsubscribe, the controller stops polling.
- *
- * @param pollingToken - Poll token received from calling currencyRateStartPolling
- */
-export async function currencyRateStopPollingByPollingToken(
-  pollingToken: string,
-) {
-  await submitRequestToBackground(
-    'CurrencyRateController:stopPollingByPollingToken',
-    [pollingToken],
-  );
-  await removePollingTokenFromAppState(pollingToken);
-}
-
-/**
- * Informs the TokenDetectionController that the UI requires token detection polling
- *
- * @param chainIds - An array of chain ids to poll token detection on.
- * @returns polling token that can be used to stop polling.
- */
-export async function tokenDetectionStartPolling(
-  chainIds: string[],
-): Promise<string> {
-  const pollingToken = await submitRequestToBackground(
-    'TokenDetectionController:startPolling',
-    [{ chainIds }],
-  );
-
-  await addPollingTokenToAppState(pollingToken);
-  return pollingToken;
-}
-
-/**
- * Informs the TokenDetectionController that the UI no longer token detection polling
- *
- * @param pollingToken - Poll token received from calling tokenDetectionStartPolling
- */
-export async function tokenDetectionStopPollingByPollingToken(
-  pollingToken: string,
-) {
-  await submitRequestToBackground(
-    'TokenDetectionController:stopPollingByPollingToken',
-    [pollingToken],
-  );
-  await removePollingTokenFromAppState(pollingToken);
-}
-
-/**
  * Informs the StaticAssetsController that the UI requires static assets polling
  * for the given chain ids and selected account address.
  *
@@ -6264,20 +6167,6 @@ export async function staticAssetsStopPollingByPollingToken(
     'StaticAssetsController:stopPollingByPollingToken',
     [pollingToken],
   );
-  await removePollingTokenFromAppState(pollingToken);
-}
-
-/**
- * Stops polling on the account tracker controller.
- *
- * @param pollingToken - polling token to use to stop polling.
- */
-export async function accountTrackerStopPollingByPollingToken(
-  pollingToken: string,
-) {
-  await submitRequestToBackground('accountTrackerStopPollingByPollingToken', [
-    pollingToken,
-  ]);
   await removePollingTokenFromAppState(pollingToken);
 }
 
@@ -7987,6 +7876,27 @@ export async function getSentinelNetworkFlags(
  */
 export function setSkipDeepLinkInterstitial(value: boolean) {
   return setPreference('skipDeepLinkInterstitial', value, false);
+}
+
+/**
+ * Sets whether the support data sharing consent modal is shown every time,
+ * or the saved `supportDataSharingPreference` is applied instead.
+ *
+ * @param value - Whether to show the consent modal every time.
+ * @returns A promise that resolves when the preference is set.
+ */
+export function setShouldShowSupportConsent(value: boolean) {
+  return setPreference('shouldShowSupportConsent', value, false);
+}
+
+/**
+ * Saves the user's support data sharing choice.
+ *
+ * @param value - Whether to share the user ID and app version with support.
+ * @returns A promise that resolves when the preference is set.
+ */
+export function setSupportDataSharingPreference(value: boolean) {
+  return setPreference('supportDataSharingPreference', value, false);
 }
 
 /**

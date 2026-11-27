@@ -39,9 +39,6 @@ class PrivacySettings {
   private readonly basicFunctionalityToggleOff =
     '[data-testid="basic-functionality-toggle"][value="false"]';
 
-  private readonly blockaidAlertsToggle =
-    '[data-testid="securityAlert"] .toggle-button';
-
   private readonly confirmDeleteMetaMetricsDataButton =
     '[data-testid="clear-metametrics-data"]';
 
@@ -87,10 +84,6 @@ class PrivacySettings {
   private readonly settingsPage = {
     testId: 'parent-selector-settings-page',
   };
-
-  /** Security alerts (Blockaid) live under Transactions in Settings, not Privacy. */
-  private readonly settingsTransactionsTab =
-    '[data-testid="settings-tab-item-transactions"]';
 
   private readonly thirdPartyApisSubpageLink = `a[href="#${THIRD_PARTY_APIS_ROUTE}"]`;
 
@@ -188,13 +181,6 @@ class PrivacySettings {
     await this.toggleBasicFunctionality();
     await this.driver.clickElement(this.basicConfigurationCheckbox);
     await this.driver.clickElement(this.basicConfigurationModalToggleButton);
-  }
-
-  async toggleBlockaidAlerts(): Promise<void> {
-    console.log('Toggle blockaid alerts on privacy settings page');
-    await this.driver.clickElement(this.settingsTransactionsTab);
-    await this.driver.waitForSelector(this.blockaidAlertsToggle);
-    await this.driver.clickElement(this.blockaidAlertsToggle);
   }
 
   async toggleDataCollectionForMarketing({

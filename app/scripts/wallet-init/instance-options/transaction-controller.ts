@@ -1,14 +1,16 @@
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import {
-  getAccountAddressRelationship,
   GasFeeEstimateLevel,
   SavedGasFees,
-  TransactionController,
   TransactionMeta,
   TransactionType,
   UserFeeLevel,
 } from '@metamask/transaction-controller';
+import {
+  isPayTransactionResumable,
+  type TransactionPayControllerMessenger,
+} from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
 import type { WalletOptions } from '@metamask/wallet';
 import { traceAsControllerCallback } from '../../../../shared/lib/trace';
@@ -42,12 +44,6 @@ import { TransactionControllerInitMessenger } from '../messengers/transaction-co
 type TransactionControllerInstanceOptions = NonNullable<
   NonNullable<WalletOptions['instanceOptions']>['transactionController']
 >;
-
-type CheckFirstTimeInteractionRequest = {
-  chainId: number;
-  from: string;
-  to: string;
-};
 
 type GetTransactionControllerInstanceOptionsRequest = {
   initMessenger: TransactionControllerInitMessenger;
@@ -100,6 +96,11 @@ export function getTransactionControllerInstanceOptions({
     isFirstTimeInteractionEnabled: () =>
       initMessenger.call('PreferencesController:getState')
         .securityAlertsEnabled,
+    isResumable: (transactionMeta) =>
+      isPayTransactionResumable(
+        initMessenger as unknown as TransactionPayControllerMessenger,
+        transactionMeta,
+      ),
     isSimulationEnabled: () =>
       initMessenger.call('PreferencesController:getState')
         .useTransactionSimulations,
@@ -169,33 +170,6 @@ export function setupTransactionControllerListeners({
   messenger.subscribe('TransactionController:transactionSubmitted', (...args) =>
     handleTransactionSubmitted(getTransactionMetricsRequest(), ...args),
   );
-}
-
-export function getTransactionControllerApi(
-  transactionController: TransactionController,
-) {
-  return {
-    updateBatchTransactions: transactionController.updateBatchTransactions.bind(
-      transactionController,
-    ),
-    checkFirstTimeInteraction,
-  };
-}
-
-/**
- * Returns whether the sender has no prior on-chain interaction with `to` on `chainId`,
- * or `undefined` when the relationship cannot be determined.
- * @param request
- */
-async function checkFirstTimeInteraction(
-  request: CheckFirstTimeInteractionRequest,
-): Promise<boolean | undefined> {
-  try {
-    const result = await getAccountAddressRelationship(request);
-    return result.count === undefined ? undefined : result.count === 0;
-  } catch {
-    return undefined;
-  }
 }
 
 function getSavedGasFees(

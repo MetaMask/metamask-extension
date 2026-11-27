@@ -23,6 +23,7 @@ import {
   useHandleSubscriptionSupportAction,
   useCancelSubscription,
   useUnCancelSubscription,
+  useUpdateSubscriptionCryptoPaymentMethod,
 } from './useSubscription';
 import * as subscriptionPricingHooks from './useSubscriptionPricing';
 import type { TokenWithApprovalAmount } from './useSubscriptionPricing';
@@ -43,6 +44,7 @@ jest.mock('../../store/actions', () => ({
   getRewardsSeasonMetadata: jest.fn(() => async () => null),
   estimateRewardsPoints: jest.fn(() => async () => null),
   getRewardsHasAccountOptedIn: jest.fn(() => async () => false),
+  setLastUsedSubscriptionPaymentDetails: jest.fn(() => async () => undefined),
 }));
 
 const mockCaptureShieldMembershipCancelledEvent = jest.fn();
@@ -63,6 +65,7 @@ jest.mock('../shield/metrics/useSubscriptionMetrics', () => ({
 
 const mockUseGasFeeEstimates = jest.mocked(useGasFeeEstimates);
 const mockAddTransaction = jest.mocked(actions.addTransaction);
+const mockEstimateGas = jest.mocked(actions.estimateGas);
 const mockUnCancelSubscription = jest.mocked(actions.unCancelSubscription);
 const mockGetCustomerServiceToken = jest.mocked(
   actions.getCustomerServiceToken,
@@ -321,6 +324,93 @@ describe('useSubscriptionCryptoApprovalTransaction', () => {
       expect(txParams.maxPriorityFeePerGas).toBeUndefined();
       expect(txParams.maxFeePerGas).toBeUndefined();
     });
+  });
+});
+
+describe('useUpdateSubscriptionCryptoPaymentMethod', () => {
+  const cryptoSubscription = {
+    id: 'shield-subscription-id',
+    status: 'active',
+    paymentMethod: {
+      type: PAYMENT_TYPES.byCrypto,
+    },
+    interval: 'year',
+  } as unknown as Subscription;
+
+  const buildPricing = () => ({
+    subscriptionPricing: {
+      products: [],
+      paymentMethods: [
+        {
+          type: PAYMENT_TYPES.byCrypto,
+          chains: [
+            {
+              chainId: '0x1' as Hex,
+              paymentAddress:
+                '0x1234567890123456789012345678901234567890' as Hex,
+              tokens: [],
+            },
+          ],
+        },
+      ],
+    },
+    loading: false,
+    error: undefined,
+  });
+
+  let state: MetaMaskReduxState;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    state = cloneDeep(mockState) as unknown as MetaMaskReduxState;
+    (state.metamask.networkConfigurationsByChainId as Record<string, unknown>) =
+      {
+        '0x1': {
+          chainId: '0x1',
+          rpcEndpoints: [{ networkClientId: 'mainnet' }],
+          defaultRpcEndpointIndex: 0,
+        },
+      };
+    mockFeeMarketGasEstimates('1.0', '2.5', '50.0');
+    mockUseSubscriptionPricing.mockReturnValue(buildPricing());
+  });
+
+  it('adds the approval transaction once when the hook re-renders while the update is in flight', async () => {
+    let resolveEstimateGas: (gas: Hex) => void = () => undefined;
+    mockEstimateGas.mockImplementationOnce(
+      () =>
+        new Promise<Hex>((resolve) => {
+          resolveEstimateGas = resolve;
+        }),
+    );
+
+    const { result, rerender } = renderHookWithProvider(
+      () =>
+        useUpdateSubscriptionCryptoPaymentMethod({
+          subscription: cryptoSubscription,
+        }),
+      state,
+    );
+
+    act(() => {
+      result.current.execute({ ...MOCK_SELECTED_TOKEN, symbol: 'USDT' });
+    });
+
+    await waitFor(() => {
+      expect(mockEstimateGas).toHaveBeenCalledTimes(1);
+    });
+
+    mockUseSubscriptionPricing.mockReturnValue(buildPricing());
+    rerender();
+
+    await act(async () => {
+      resolveEstimateGas('0x5208' as Hex);
+    });
+
+    await waitFor(() => {
+      expect(mockAddTransaction).toHaveBeenCalledTimes(1);
+    });
+    expect(mockEstimateGas).toHaveBeenCalledTimes(1);
   });
 });
 

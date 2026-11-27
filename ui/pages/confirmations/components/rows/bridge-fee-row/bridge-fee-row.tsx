@@ -1,6 +1,10 @@
 import React, { useMemo } from 'react';
+import { createFormatters } from '@metamask/client-utils';
 import { BigNumber } from 'bignumber.js';
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import type { TransactionPayTotals } from '@metamask/transaction-pay-controller';
 import {
   Box,
@@ -29,14 +33,27 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 import { useConfirmContext } from '../../../context/confirm';
-import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
+import {
+  hasTransactionType,
+  isPerpsWithdrawTransaction,
+} from '../../../../../../shared/lib/transactions.utils';
 import { getUserPaidNetworkFeeUsd } from '../../../hooks/pay/sponsored-network-fees';
 import {
   useIsPaidByMetaMask,
   useSponsoredNetworkFeeFlags,
   type SponsoredNetworkFeeFlags,
 } from '../../../hooks/pay/useIsPaidByMetaMask';
+import { DottedTriggerTooltip } from '../../dotted-trigger-tooltip';
 import { InfoPopoverTooltip } from '../../info-popover-tooltip';
+
+const VALUE_TOOLTIP_TRANSACTION_TYPES = [TransactionType.moneyAccountDeposit];
+
+const { formatCurrency: formatEnUsCurrency } = createFormatters({
+  locale: 'en-US',
+  currencyDisplay: 'narrowSymbol',
+});
+
+const formatUsd = (amount: number) => formatEnUsCurrency(amount, 'usd');
 
 export type BridgeFeeRowProps = {
   variant?: ConfirmInfoRowSize;
@@ -52,11 +69,16 @@ export function BridgeFeeRow({
   tooltipDescription,
 }: BridgeFeeRowProps) {
   const t = useI18nContext();
-  const formatFiat = useFiatFormatter({ overrideCurrency: 'usd' });
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const useDottedValueTooltip = hasTransactionType(
+    currentConfirmation,
+    VALUE_TOOLTIP_TRANSACTION_TYPES,
+  );
+  const formatLocaleFiat = useFiatFormatter({ overrideCurrency: 'usd' });
+  const formatFiat = useDottedValueTooltip ? formatUsd : formatLocaleFiat;
   const isLoading = useIsTransactionPayQuotePending();
   const quotes = useTransactionPayQuotes();
   const totals = useTransactionPayTotals();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const isPaidByMetaMask = useIsPaidByMetaMask();
   const sponsoredNetworkFees = useSponsoredNetworkFeeFlags();
 
@@ -127,13 +149,24 @@ export function BridgeFeeRow({
     );
   }
 
+  const tooltipContent = tooltipLines ? (
+    <Text variant={TextVariant.BodyMd}>
+      {tooltipLines.map((line, i) => (
+        <React.Fragment key={i}>
+          {i > 0 && <br />}
+          {line}
+        </React.Fragment>
+      ))}
+    </Text>
+  ) : undefined;
+
   return (
     <ConfirmInfoRow
       data-testid="bridge-fee-row"
       label={feeLabel}
       rowVariant={variant}
       labelChildren={
-        tooltipLines ? (
+        tooltipContent && !useDottedValueTooltip ? (
           <InfoPopoverTooltip
             position={PopoverPosition.Top}
             offset={[0, 16]}
@@ -144,14 +177,7 @@ export function BridgeFeeRow({
             ariaLabel={feeLabel}
             data-testid="bridge-fee-tooltip-popover"
           >
-            <Text variant={TextVariant.BodyMd}>
-              {tooltipLines.map((line, i) => (
-                <React.Fragment key={i}>
-                  {i > 0 && <br />}
-                  {line}
-                </React.Fragment>
-              ))}
-            </Text>
+            {tooltipContent}
           </InfoPopoverTooltip>
         ) : undefined
       }
@@ -160,6 +186,9 @@ export function BridgeFeeRow({
         isPaidByMetaMask={isPaidByMetaMask}
         isSmall={isSmall}
         feeTotalUsd={feeTotalUsd}
+        dottedTooltipContent={
+          useDottedValueTooltip ? tooltipContent : undefined
+        }
       />
     </ConfirmInfoRow>
   );
@@ -170,10 +199,12 @@ function FeeValue({
   isPaidByMetaMask,
   isSmall,
   feeTotalUsd,
+  dottedTooltipContent,
 }: {
   isPaidByMetaMask: boolean;
   isSmall: boolean;
   feeTotalUsd: string;
+  dottedTooltipContent?: React.ReactNode;
 }) {
   const t = useI18nContext();
 
@@ -194,6 +225,24 @@ function FeeValue({
           {t('paidByMetaMask')}
         </Text>
       </Box>
+    );
+  }
+
+  if (dottedTooltipContent) {
+    return (
+      <span data-testid="transaction-fee-value">
+        <DottedTriggerTooltip
+          data-testid="bridge-fee-tooltip-popover"
+          position={PopoverPosition.Top}
+          text={feeTotalUsd}
+          textColor={
+            isSmall ? TextColor.TextAlternative : TextColor.TextDefault
+          }
+          textVariant={TextVariant.BodyMd}
+        >
+          {dottedTooltipContent}
+        </DottedTriggerTooltip>
+      </span>
     );
   }
 

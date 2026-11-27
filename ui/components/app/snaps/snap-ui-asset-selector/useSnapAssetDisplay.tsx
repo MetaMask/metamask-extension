@@ -20,6 +20,7 @@ import {
   getImageForChainId,
   getMultichainNetworkConfigurationsByChainId,
 } from '../../../../selectors/multichain';
+import { getChainIdToNetworkImageUrlMap } from '../../../../selectors/config-registry/config-registry';
 import {
   AllowedBridgeChainIds,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
@@ -75,6 +76,7 @@ export const useSnapAssetSelectorData = ({
     getInternalAccountByAddress(state, parsedAccounts[0].address),
   );
   const networks = useSelector(getMultichainNetworkConfigurationsByChainId);
+  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
 
   const assets = useSelector((state) => getMultiChainAssets(state, account));
 
@@ -108,7 +110,7 @@ export const useSnapAssetSelectorData = ({
       name: asset.title,
       balance: formatTokenQuantity(Number(asset.balance ?? 0), asset.symbol),
       networkName,
-      networkIcon: getImageForChainId(asset.chainId),
+      networkIcon: getImageForChainId(asset.chainId, networkImageUrls),
       fiat: formatFiatBalance(asset.secondary),
       chainId: asset.chainId as CaipChainId,
       address: asset.address as CaipAssetType,

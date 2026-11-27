@@ -217,9 +217,6 @@
   "gasLimit": {
     "message": "Límit de gas"
   },
-  "gasUsed": {
-    "message": "Gas utilitzat"
-  },
   "goerli": {
     "message": "Xarxa de test Goerli"
   },
@@ -334,9 +331,6 @@
   "newContract": {
     "message": "Nou Contracte"
   },
-  "newPassword": {
-    "message": "Nova contrasenya (mínim 8 caràcters)"
-  },
   "next": {
     "message": "Següent"
   },
@@ -388,9 +382,6 @@
   "privateKey": {
     "message": "Clau privada",
     "description": "select this type of file to use to import an account"
-  },
-  "privateNetwork": {
-    "message": "Xarxa privada"
   },
   "readdToken": {
     "message": "Pots tornar a afegir aquesta fitxa en el futur anant a \"Afegir fitxa\" al menu d'opcions dels teus comptes."
@@ -539,9 +530,6 @@
   },
   "unapproved": {
     "message": "Pendent d'aprovació"
-  },
-  "units": {
-    "message": "unitats"
   },
   "unknown": {
     "message": "Desconegut"

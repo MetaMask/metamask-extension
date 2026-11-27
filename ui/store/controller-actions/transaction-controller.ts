@@ -22,7 +22,10 @@ export async function updateAtomicBatchData(
 export async function updateBatchTransactions(
   ...args: Parameters<TransactionController['updateBatchTransactions']>
 ) {
-  return await submitRequestToBackground<void>('updateBatchTransactions', args);
+  return await submitRequestToBackground(
+    'TransactionController:updateBatchTransactions',
+    args,
+  );
 }
 
 export async function updateSelectedGasFeeToken(

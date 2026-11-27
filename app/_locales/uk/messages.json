@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "Ліміт газу"
   },
-  "gasUsed": {
-    "message": "Пального використано"
-  },
   "general": {
     "message": "Загальні"
   },
@@ -346,9 +343,6 @@
   "newContract": {
     "message": "Новий контракт"
   },
-  "newPassword": {
-    "message": "Новий пароль (мінімум 8 символів)"
-  },
   "next": {
     "message": "Далі"
   },
@@ -403,9 +397,6 @@
   "privateKey": {
     "message": "Закритий ключ",
     "description": "select this type of file to use to import an account"
-  },
-  "privateNetwork": {
-    "message": "Приватна мережа"
   },
   "readdToken": {
     "message": "Ви можете знову додати цей токен у меню облікового запису у розділі “Додати токен”. "
@@ -560,9 +551,6 @@
   },
   "unapproved": {
     "message": "Не затверджено"
-  },
-  "units": {
-    "message": "одиниці"
   },
   "unknown": {
     "message": "невідомо"

@@ -13,11 +13,12 @@ import {
 } from './bindings';
 import { startMfaFlow } from './engine/activeFlow';
 import type { MfaEvent, MfaTrackEvent } from './engine/analytics';
-import { METHOD_COST_RANKING } from './engine/planner';
+import { getVerifiableMethods, METHOD_COST_RANKING } from './engine/planner';
 import type {
   EnrollOptions,
   MfaFlowOptions,
   MfaFlowResult,
+  MfaMethod,
   MfaReason,
   VerifyOrEnrollOptions,
 } from './engine/types';
@@ -46,6 +47,16 @@ const clientOptions: Pick<
 };
 
 /**
+ * Lists MFA factors that can verify while the wallet is locked
+ * (`refreshSocialLoginCredentials`), in kit cost order.
+ */
+const listActiveSocialLoginMethods = async (): Promise<MfaMethod[]> => {
+  const controller = createSocialLoginControllerAdapter();
+  const credentials = await controller.refreshEnrolledCredentials();
+  return getVerifiableMethods(credentials, 'extension');
+};
+
+/**
  * The MFA kit for features and settings.
  *
  * - `verifyOrEnroll`: makes sure `methods` are set up, then, when
@@ -57,10 +68,14 @@ const clientOptions: Pick<
  * the screens), and lint rejects it outside this folder.
  * - `enroll`: sets up one method, for example from settings. No intro, no
  * verification after.
+ * - `listActiveSocialLoginMethods`: locked recovery — which factors can
+ * verify (`refreshSocialLoginCredentials` + `getVerifiableMethods`).
  * - `verifyForSocialLogin`: proves it's the user with one of the methods
  * already set up, while the wallet is still locked (social-login wallet
- * recovery). Never enrolls: rejects with `credential_not_enrolled` when
- * no method can be used on this platform.
+ * recovery). Optional `method` for a single factor, which starts directly;
+ * without it, the kit picks among active methods. Never enrolls: rejects
+ * with `credential_not_enrolled` when no method can be used on this
+ * platform.
  * - `credentials`: the profile's methods, as last fetched from the server.
  *
  * @returns The kit's entry points and the credential list.
@@ -93,16 +108,21 @@ export const useMfa = () => {
         }),
       verifyForSocialLogin: ({
         reason,
+        method,
       }: {
         reason: MfaReason;
-      }): Promise<MfaFlowResult> =>
-        startMfaFlow({
-          // Every method may verify: the flow keeps the active ones this
-          // platform runs, and never plans a setup.
+        /** When set, verify only this enrolled factor. */
+        method?: MfaMethod;
+      }): Promise<MfaFlowResult> => {
+        const methods = method ? [method] : [...METHOD_COST_RANKING];
+        return startMfaFlow({
+          // A single-method verifyOnly plan auto-starts that method. Passing
+          // every method lets the kit pick among active ones (picker when
+          // several).
           request: {
             kind: 'verifyOrEnroll',
-            methods: [...METHOD_COST_RANKING],
-            verifyWith: [...METHOD_COST_RANKING],
+            methods,
+            verifyWith: methods,
             verifyOnly: true,
           },
           reason,
@@ -110,7 +130,8 @@ export const useMfa = () => {
           whileLocked: true,
           // One adapter per flow: it keeps the flow's own verification token.
           controller: createSocialLoginControllerAdapter(),
-        }),
+        });
+      },
       enroll: ({ method, reason }: EnrollOptions): Promise<MfaFlowResult> =>
         startMfaFlow({
           request: { kind: 'enroll', method },
@@ -120,5 +141,5 @@ export const useMfa = () => {
     };
   }, [trackEvent, createEventBuilder]);
 
-  return { credentials, ...entryPoints };
+  return { credentials, listActiveSocialLoginMethods, ...entryPoints };
 };

@@ -228,6 +228,10 @@ ui/pages/confirmations/hooks/alerts/useShieldCoverageAlert.ts                   
 ui/pages/confirmations/hooks/alerts/transactions/ShieldCoverageAlertMessage.tsx     @MetaMask/confirmations @MetaMask/web3auth
 ui/pages/confirmations/hooks/transactions/useEnableShieldCoverageChecks.ts          @MetaMask/confirmations @MetaMask/web3auth
 ui/pages/confirmations/hooks/transactions/useEnableShieldCoverageChecks.test.ts     @MetaMask/confirmations @MetaMask/web3auth
+ui/pages/confirmations/components/confirm/info/hooks/useMaxValueRefresher.ts        @MetaMask/confirmations @MetaMask/networks
+ui/pages/confirmations/components/confirm/info/hooks/useMaxValueRefresher.test.ts   @MetaMask/confirmations @MetaMask/networks
+ui/pages/confirmations/hooks/send/useMaxAmount.ts                                   @MetaMask/confirmations @MetaMask/networks
+ui/pages/confirmations/hooks/send/useMaxAmount.test.ts                              @MetaMask/confirmations @MetaMask/networks
 
 # Assets team
 app/**/assets/**                     @MetaMask/metamask-assets
@@ -239,6 +243,13 @@ app/scripts/lib/smart-transaction                 @MetaMask/transactions
 
 # Networks Team
 shared/lib/multichain/addresses/* @MetaMask/networks @MetaMask/emerging-opportunities
+shared/constants/network.ts                        @MetaMask/networks
+shared/constants/multichain/networks.ts            @MetaMask/networks
+ui/pages/asset                                     @MetaMask/networks @MetaMask/metamask-assets
+ui/selectors/multichain/networks.ts                @MetaMask/networks
+ui/selectors/multichain/networks.test.ts           @MetaMask/networks
+ui/selectors/config-registry/                      @MetaMask/networks
+ui/components/app/assets/enablement/               @MetaMask/networks
 
 # QA Team - E2E Framework
 test/e2e/page-objects/                                                @MetaMask/qa
@@ -249,6 +260,7 @@ test/e2e/fixture-server.js                                            @MetaMask/
 test/e2e/helpers.js                                                   @MetaMask/qa
 test/e2e/mock-e2e-allowlist.js                                        @MetaMask/qa
 test/e2e/mock-e2e.js                                                  @MetaMask/qa
+test/e2e/mock-response-data/api-responses/                            @MetaMask/qa
 test/e2e/tests/settings/state-logs-helpers.ts                         @MetaMask/qa
 test/e2e/tests/settings/state-logs.json                               @MetaMask/qa @MetaMask/extension-privacy-reviewers
 test/e2e/tests/privacy/                                               @MetaMask/qa @MetaMask/extension-privacy-reviewers
@@ -266,6 +278,7 @@ test/e2e/playwright/benchmark                                         @MetaMask/
 app/scripts/lib/rpc-method-middleware                                 @MetaMask/core-platform
 shared/lib/caip25-caveat-merger.ts                                    @MetaMask/core-platform
 test/e2e/flask/multichain-api                                         @MetaMask/core-platform
+test/e2e/json-rpc                                                     @MetaMask/core-platform
 # TODO CONSOLIDATE THE MIDDLEWARE BELOW INTO THE RPC-METHOD-MIDDLEWARE FOLDER
 app/scripts/lib/createRPCMethodTrackingMiddleware.js                  @MetaMask/core-platform
 app/scripts/lib/createMetamaskMiddleware.ts                           @MetaMask/core-platform

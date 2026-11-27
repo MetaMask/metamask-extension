@@ -33,7 +33,9 @@ const WALLETS_MOCK = {
       'group-2': {
         id: 'group-2',
         metadata: { name: 'Account 2' },
-        accounts: [{ address: ACCOUNT_2_ADDRESS, type: 'eip155:eoa' }],
+        accounts: [
+          { id: 'account-2', address: ACCOUNT_2_ADDRESS, type: 'eip155:eoa' },
+        ],
       },
       'group-3': {
         id: 'group-3',
@@ -105,7 +107,7 @@ describe('AccountSelectModal', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('calls onSelect with the chosen account address', () => {
+  it('calls onSelect with the ID and address of the chosen account', () => {
     const onSelect = jest.fn();
     renderModal({ onSelect });
 
@@ -113,7 +115,10 @@ describe('AccountSelectModal', () => {
       screen.getByTestId(`account-select-item-${ACCOUNT_2_ADDRESS}`),
     );
 
-    expect(onSelect).toHaveBeenCalledWith(ACCOUNT_2_ADDRESS);
+    expect(onSelect).toHaveBeenCalledWith({
+      id: 'account-2',
+      address: ACCOUNT_2_ADDRESS,
+    });
   });
 
   it('calls onClose when the close button is clicked', () => {

@@ -6,7 +6,7 @@ CLI-based tooling for LLM agents to build, launch, and interact with the MetaMas
 
 This README covers architecture, quick start, and available commands for the LLM workflow.
 
-- For the full agent-facing command reference (targeting, scoping, batching, error recovery), see `.claude/skills/metamask-visual-testing/SKILL.md`.
+- For the full agent-facing command reference (targeting, scoping, batching, error recovery), see the `mms-visual-testing` skill: source `domains/testing/skills/visual-testing/skill.md` in [MetaMask/skills](https://github.com/MetaMask/skills), installed by `yarn skills` at `.claude/skills/mms-visual-testing/SKILL.md` and `.agents/skills/mms-visual-testing/SKILL.md`.
 - For the core package API and capability interfaces, see the `@metamask/client-mcp-core` README.
 
 ## Architecture
@@ -45,11 +45,13 @@ The system uses a **decoupled, daemon-based architecture**:
                                   │ Playwright
                                   ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                    Headed Chrome Browser                                │
+│                    Chrome Browser (headed by default)                   │
 │                    + MetaMask Extension                                 │
 │                    + Anvil (local blockchain)                           │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
+
+The browser is headed by default. Set `MM_HEADLESS=true` before `mm launch` to run it headless; `PLAYWRIGHT_HEADLESS`/`HEADLESS` and `CI` also enable headless when `MM_HEADLESS` is unset (`metamask-provider.ts`).
 
 ### Key Components
 
@@ -96,7 +98,30 @@ mm cleanup
 - **Auto-start**: `mm launch` starts the daemon if it's not running.
 - **Worktree Isolation**: Each worktree has its own daemon, tracked in `.mm-server`.
 - **Idle Timeout**: Daemon shuts down after 30 minutes of inactivity.
-- **Logs**: Activity is logged to `.mm-daemon.log`.
+- **Logs**: Activity is logged to `.mm-daemon.log`. Each request line has the outcome, for example `POST /tool/click 200 ok=false code=MM_CLICK_TIMEOUT 2038ms`.
+- **Artifacts**: Screenshots go to `test-artifacts/screenshots/` and session metadata to `test-artifacts/<sessionId>/session.json`. Set `MM_ARTIFACTS_DIR` before `mm launch` to write them to another directory.
+
+### 3. Output and Errors
+
+Every command except `mm stop` prints JSON on stdout; `mm stop` prints a plain-text line. A failed command prints one JSON line on stdout (not `Error: ...` on stderr) and exits with a non-zero code:
+
+```json
+{"ok":false,"error":{"code":"MM_CLICK_TIMEOUT","message":"Click timed out after 3000ms; state unknown (last Playwright step: element is not enabled). ...","hint":"...","retryable":false},"meta":{...}}
+```
+
+| Exit code | Meaning                                          |
+| --------- | ------------------------------------------------ |
+| 0         | Success (the response has no `ok` field)         |
+| 1         | Other error                                      |
+| 2         | Usage or validation error                        |
+| 3         | No session, or the daemon is not running or lost |
+| 4         | Target not found or not actionable               |
+| 5         | Timeout (includes `MM_QUEUE_TIMEOUT`)            |
+| 6         | Platform or device not available                 |
+
+Read `error.code`, `error.hint` and `error.retryable` to decide what to do next.
+
+`mm click` without `--timeout` fails after 2 seconds with `MM_TARGET_NOT_FOUND` (exit code 4) when no element matches the target, for example `Selector [data-testid="x"] (testId:x) matched 0 elements after 2000ms`. Check the target with `mm describe-screen`. With `--timeout <ms>`, the click waits that long for the target to appear. A `MM_CLICK_TIMEOUT` message ends with the last Playwright step, which tells why the click failed: for example `element is not enabled`, or `<div class="mm-modal" ...> subtree intercepts pointer events` (close the modal first).
 
 ---
 
@@ -114,13 +139,30 @@ mm cleanup
 - `mm type <ref> <text>`: Types text into an element.
 - `mm describe-screen`: Captures the current screen state and element references.
 - `mm screenshot`: Takes a screenshot of the current page.
-- `mm wait-for <ref>`: Waits for an element to appear.
+- `mm wait-for <ref>`: Waits for an element to appear. Use it instead of `sleep`.
+- `mm scroll-to-element <ref>`: Scrolls an element into view.
+- `mm inspect <ref>`: Shows the attributes, disabled and read-only flags, and computed styles of an element.
+- `mm hover <ref>` / `mm unhover`: Moves the pointer over an element / off the page.
+- `mm set-viewport <width> <height>` / `mm reset-viewport`: Resizes the page / restores its size.
+
+`mm click`, `type`, `hover`, `wait-for`, `get-text`, `inspect` and `screenshot` accept `--frame <iframe>` to act inside an iframe; `mm describe-screen` lists visible iframes with refs `f1e1`, `f1e2`, .... `mm click` on a visually hidden checkbox or radio with one label clicks the label and returns `clickedLabel: true`.
+
+### Logs and Network
+
+- `mm events mark`: Returns the current cursor. Take it at the start of a flow.
+- `mm logs --cursor <n>`: Console errors of the pages, the background service worker, the offscreen document and snaps iframes.
+- `mm network --settled --cursor <n>`: HTTP(S) requests of the same targets, with status, duration and JSON-RPC methods. `--errors` keeps failures only.
+- `mm mock-network add '<rule>'`: Mocks or records requests from pages, the service worker, the offscreen document and snaps. Add `"record":{"body":true}` to a rule and read the bodies with `mm mock-network requests --bodies`.
+- `mm cdp <method> --target sw`: Sends a CDP command to the service worker instead of the page. While the session records, `mm cdp Network.disable` fails with `MM_CDP_BLOCKED`.
+
+Recording starts when `mm launch` returns; requests made during the launch are not recorded or mocked.
 
 ### Navigation
 
 - `mm navigate <url>`: Navigates to a specific URL.
 - `mm navigate-home`: Navigates to the extension home.
 - `mm navigate-settings`: Navigates to the extension settings.
+- `mm reload`: Reloads the active page.
 
 ---
 
@@ -162,22 +204,56 @@ mm launch --state onboarding --self-onboarding < phrase.txt
 
 ### Custom Fixture
 
-Use a preset fixture or provide custom wallet state.
+`mm launch --state custom` needs a wallet fixture, and `mm launch` has no flag to pass one. The `launch` tool accepts `fixturePreset` (a preset name) or `fixture` (a fixture object), but `--preset` is not a launch flag in `@metamask/client-mcp-core` 0.15.0: `mm launch --state custom --preset <name>` warns `unknown launch flag '--preset'` and then fails with `MM_LAUNCH_FAILED` (`stateMode 'custom' requires either 'fixturePreset' or 'fixture'`).
 
-```bash
-mm launch --state custom --preset withMultipleAccounts
+The presets are defined by `createFixturePresets` in `fixture-helper.ts`: `default`, `onboarding`, `withMultipleAccounts`, `withERC20Tokens`, `withConnectedDapp`, `withMainnet`, `withNFTs`, `withFiatDisabled` and `withHSTToken`. Pass one as `fixturePreset` to the `launch` tool directly, for example in a `POST /launch` body (the daemon port is in `.mm-server`). From the CLI, only `--state default` and `--state onboarding` are usable, because they need no fixture.
+
+```json
+{ "stateMode": "custom", "fixturePreset": "withMultipleAccounts" }
 ```
+
+---
+
+## Screen recording (opt-in)
+
+Set `MM_SCREENCAST_DIR` (or the `screencastDir` launch option, which wins)
+before `mm launch --self-onboarding`. The names keep their `screencast` spelling.
+Recording starts after onboarding and stops first in `cleanup()`.
+
+Every 250 ms the recorder captures a JPEG screenshot of each page. The directory
+contains `frames/<page>-<epochMs>.jpg` (`page` is the 0-based attach index),
+`frames.jsonl` (one line per written frame with `page`, `url`, `ts`,
+`deviceWidth`, `deviceHeight`, `file` and `bytes`), and `events.jsonl`
+(`start`, `page-attach`, `page-close`, `skip-sensitive`, `error` and `stop`).
+
+Screenshots use the page's emulated viewport (1280x800 by default) and JPEG
+quality 60. The capture is clipped to that viewport, so the browser window or
+an open side panel cannot crop the frame: frames are always the viewport size.
+When the browser window is smaller than the viewport (headless window chrome,
+or the side panel opening), the area outside the window is white in the frame,
+because that part is not on screen. Only byte-identical consecutive
+frames of a page are dropped, so unchanged pages produce no new frames, and
+states shorter than 250 ms can be missed. Frames contain whatever is on screen,
+so treat them as sensitive as screenshots; no network or console data is
+recorded.
+
+Pages on routes that can show or take wallet secrets are never captured:
+onboarding, reveal recovery phrase (`/seed`), manage wallet recovery, the
+private key list, import recovery phrase and restore vault. The URL is checked
+before and after each capture, and `skip-sensitive` is logged when a page
+enters one of these routes. A secret shown on any other route, for example in
+a modal, is still captured.
 
 ---
 
 ## Known Limitations
 
-- **Pre-launch network mocking:** `mm mock-network` uses Playwright route interception, which is only active after `mm launch` completes. Requests made during extension startup (before the session is active) cannot be intercepted. Pre-launch mocking support will be added in a future update.
+- **Pre-launch network mocking:** `mm mock-network` rules are only active after `mm launch` completes. Requests made during extension startup (before the session is active) cannot be intercepted. Pre-launch mocking support will be added in a future update.
 
 ---
 
 ## See Also
 
-- **Agent Skill**: `.claude/skills/metamask-visual-testing/SKILL.md` - Concise command reference for agents.
+- **Agent Skill**: `mms-visual-testing` - Concise command reference for agents. Source: `domains/testing/skills/visual-testing/skill.md` in [MetaMask/skills](https://github.com/MetaMask/skills). `yarn skills` installs it (gitignored) at `.claude/skills/mms-visual-testing/SKILL.md` and `.agents/skills/mms-visual-testing/SKILL.md`; if `.skills.local` restricts `SKILLS_DOMAINS`, include `testing`.
 - **Core Package**: `@metamask/client-mcp-core` - Generic daemon infrastructure.
 - **Migrating from MCP?** If you previously configured an MCP server for MetaMask, see [mcp-cli-migration.md](./mcp-cli-migration.md).

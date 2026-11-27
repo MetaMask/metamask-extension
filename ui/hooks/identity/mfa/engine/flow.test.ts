@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/naming-convention -- Segment properties are snake_case */
+import { it } from '@jest/globals';
 import {
   MfaError,
   getMfaErrorCode,
   type EnrolledCredential,
   type EnrollmentChallenge,
+  type MfaErrorCode,
   type VerificationToken,
 } from '@metamask/profile-sync-controller/sdk';
 import { MfaFlowError } from './errors';
@@ -16,6 +18,12 @@ import type {
   MfaMethod,
   PasskeyAdapter,
 } from './types';
+
+const DEAD_EMAIL_CODE_ERRORS: MfaErrorCode[] = [
+  'flow_expired',
+  'invalid_flow',
+  'too_many_attempts',
+];
 
 const NOW = 1_800_000_000_000;
 
@@ -199,14 +207,6 @@ describe('createMfaFlow', () => {
     const fake = createFakeController([]);
     const { flow, outcome } = await startFlow(EMAIL_ONLY, fake.controller);
 
-    expect(flow.getState().step).toStrictEqual({
-      name: 'intro',
-      methods: ['email_otp'],
-      missing: ['email_otp'],
-      email: undefined,
-    });
-
-    await act(flow, { type: 'continue' });
     expect(flow.getState()).toMatchObject({
       step: { name: 'emailEntry' },
       progress: { current: 1, total: 1 },
@@ -226,7 +226,8 @@ describe('createMfaFlow', () => {
       email: 'new@b.co',
       codeSent: true,
     });
-    expect(flow.getState().resendAvailableAt).toBe(NOW + 60_000);
+    // No countdown of our own: the server's resend limit decides.
+    expect(flow.getState().resendAvailableAt).toBeUndefined();
 
     await act(flow, { type: 'back' });
     expect(flow.getState().step).toStrictEqual({
@@ -242,8 +243,6 @@ describe('createMfaFlow', () => {
       codeSent: true,
     });
     expect(fake.controller.beginCredentialEnrollment).toHaveBeenCalledTimes(1);
-    // Still the countdown of the code already sent.
-    expect(flow.getState().resendAvailableAt).toBe(NOW + 60_000);
 
     await act(flow, { type: 'submitCode', code: '111111' });
     expect(fake.controller.completeCredentialEnrollment).toHaveBeenCalledWith({
@@ -515,16 +514,16 @@ describe('createMfaFlow', () => {
         step: { name: 'otp', codeSent: true },
         busy: false,
         error: 'too_many_attempts',
-        // The wait left from the code already sent.
-        resendAvailableAt: NOW + 60_000,
       });
-      expect(flow.getState().codeResent).toBeUndefined();
 
       await act(flow, { type: 'resend' });
       expect(fake.controller.beginCredentialVerification).toHaveBeenCalledTimes(
         2,
       );
-      expect(flow.getState().error).toBeUndefined();
+      expect(flow.getState()).toMatchObject({
+        error: undefined,
+        codeResent: true,
+      });
     });
 
     it('shows a countdown when a code was sent less than a minute ago', async () => {
@@ -541,31 +540,42 @@ describe('createMfaFlow', () => {
       });
 
       await act(flow, { type: 'resend' });
-      // The sent code starts the next cooldown.
       expect(flow.getState()).toMatchObject({
         step: { name: 'otp', codeSent: true },
         error: undefined,
-        resendAvailableAt: NOW + 60_000,
+        resendAvailableAt: undefined,
       });
     });
 
-    it('sends a new code when the flow expired', async () => {
-      const fake = createFakeController([activeEmail]);
-      fake.controller.completeCredentialVerification.mockRejectedValueOnce(
-        new MfaError('flow_expired', 'expired'),
-      );
-      const { flow } = await startFlow(EMAIL_ONLY, fake.controller);
+    it.each(DEAD_EMAIL_CODE_ERRORS)(
+      'shows a %s email code and sends a new one only when the user asks',
+      async (code) => {
+        const fake = createFakeController([activeEmail]);
+        fake.controller.completeCredentialVerification.mockRejectedValueOnce(
+          new MfaError(code, 'dead'),
+        );
+        const { flow } = await startFlow(EMAIL_ONLY, fake.controller);
 
-      await act(flow, { type: 'submitCode', code: '123456' });
-      expect(fake.controller.beginCredentialVerification).toHaveBeenCalledTimes(
-        2,
-      );
-      expect(flow.getState()).toMatchObject({
-        step: { name: 'otp', codeSent: true },
-        codeResent: true,
-        error: undefined,
-      });
-    });
+        await act(flow, { type: 'submitCode', code: '123456' });
+        expect(
+          fake.controller.beginCredentialVerification,
+        ).toHaveBeenCalledTimes(1);
+        expect(flow.getState()).toMatchObject({
+          step: { name: 'otp', codeSent: true },
+          error: code,
+          busy: false,
+        });
+
+        await act(flow, { type: 'resend' });
+        expect(
+          fake.controller.beginCredentialVerification,
+        ).toHaveBeenCalledTimes(2);
+        expect(flow.getState()).toMatchObject({
+          error: undefined,
+          codeResent: true,
+        });
+      },
+    );
 
     it('shows the error instead of resending when sending the code fails with too_many_attempts', async () => {
       const fake = createFakeController([activeEmail]);
@@ -580,28 +590,6 @@ describe('createMfaFlow', () => {
       expect(flow.getState()).toMatchObject({
         step: { name: 'otp', codeSent: false },
         error: 'too_many_attempts',
-        busy: false,
-      });
-    });
-
-    it('resends at most once when the code expired and the new send fails too', async () => {
-      const fake = createFakeController([]);
-      const { flow } = await startFlow(EMAIL_ONLY, fake.controller);
-      await act(flow, { type: 'continue' });
-      await act(flow, { type: 'submitEmail', email: 'new@b.co' });
-      fake.controller.completeCredentialEnrollment.mockRejectedValueOnce(
-        new MfaError('flow_expired', 'expired'),
-      );
-      fake.controller.beginCredentialEnrollment.mockRejectedValue(
-        new MfaError('flow_expired', 'expired'),
-      );
-
-      await act(flow, { type: 'submitCode', code: '111111' });
-      expect(fake.controller.beginCredentialEnrollment).toHaveBeenCalledTimes(
-        2,
-      );
-      expect(flow.getState()).toMatchObject({
-        error: 'flow_expired',
         busy: false,
       });
     });
@@ -867,6 +855,55 @@ describe('createMfaFlow', () => {
     });
   });
 
+  it('announces a new code only once it was sent, not after recovering onto another method', async () => {
+    const fake = createFakeController([activeEmail, authenticatorApp]);
+    const { flow } = await startFlow(
+      {
+        kind: 'verifyOrEnroll',
+        methods: ['email_otp', 'totp'],
+        verifyWith: ['email_otp', 'totp'],
+        verifyOnly: true,
+      },
+      fake.controller,
+    );
+    await act(flow, { type: 'choose', method: 'email_otp' });
+    fake.controller.beginCredentialVerification.mockImplementationOnce(
+      async () => {
+        fake.setCredentials([authenticatorApp]);
+        throw new MfaError('credential_not_enrolled', 'stale');
+      },
+    );
+
+    await act(flow, { type: 'resend' });
+
+    expect(flow.getState().step).toMatchObject({
+      name: 'otp',
+      method: 'totp',
+    });
+    expect(flow.getState().codeResent).toBeUndefined();
+  });
+
+  it('sends a new setup code when the user returns to the same email after the code died', async () => {
+    const fake = createFakeController([]);
+    fake.controller.completeCredentialEnrollment.mockRejectedValueOnce(
+      new MfaError('flow_expired', 'expired'),
+    );
+    const { flow } = await startFlow(EMAIL_ONLY, fake.controller);
+    await act(flow, { type: 'continue' });
+    await act(flow, { type: 'submitEmail', email: 'new@b.co' });
+    await act(flow, { type: 'submitCode', code: '111111' });
+    expect(flow.getState().error).toBe('flow_expired');
+
+    await act(flow, { type: 'back' });
+    await act(flow, { type: 'submitEmail', email: 'new@b.co' });
+
+    expect(fake.controller.beginCredentialEnrollment).toHaveBeenCalledTimes(2);
+    expect(flow.getState()).toMatchObject({
+      step: { name: 'otp', method: 'email_otp', codeSent: true },
+      error: undefined,
+    });
+  });
+
   it('ignores actions while a call is in flight', async () => {
     const fake = createFakeController([activeEmail]);
     const { flow } = await startFlow(EMAIL_ONLY, fake.controller);
@@ -921,6 +958,31 @@ describe('createMfaFlow', () => {
       });
     });
 
+    it('offers to try again when the password manager already holds a passkey', async () => {
+      const fake = createFakeController([activeEmail]);
+      fake.setSession(buildToken('email_otp'));
+      passkeyAdapter.create.mockRejectedValueOnce(
+        Object.assign(new Error('exists'), {
+          mfaCode: 'passkey_already_exists',
+        }),
+      );
+      const { flow } = await startFlow(
+        { kind: 'enroll', method: 'passkey' },
+        fake.controller,
+      );
+
+      expect(flow.getState().step).toStrictEqual({
+        name: 'failure',
+        code: 'passkey_already_exists',
+        canRetry: true,
+      });
+
+      const attempts = passkeyAdapter.create.mock.calls.length;
+      await act(flow, { type: 'retry' });
+      expect(passkeyAdapter.create).toHaveBeenCalledTimes(attempts + 1);
+      await expect(flow.result).resolves.toBeDefined();
+    });
+
     it('drops a session the server refused and confirms it is the user first', async () => {
       const fake = createFakeController([activeEmail]);
       fake.setSession(buildToken('email_otp'));
@@ -941,13 +1003,30 @@ describe('createMfaFlow', () => {
       });
     });
 
-    it('shows the passkey screen only when the system sheet is dismissed', async () => {
+    it('ends the flow when the system sheet is cancelled before any kit screen', async () => {
       const fake = createFakeController([passkey]);
       passkeyAdapter.get.mockRejectedValueOnce(
         Object.assign(new Error('cancelled'), {
           mfaCode: 'passkey_ceremony_cancelled',
         }),
       );
+      const { flow, outcome } = await startFlow(
+        { kind: 'verifyOrEnroll', methods: ['passkey'], verifyWith: 'passkey' },
+        fake.controller,
+      );
+
+      expect(flow.getState().step).toStrictEqual({ name: 'idle' });
+      const result = await outcome;
+      expect(result.ok).toBe(false);
+      expect(result.ok ? undefined : result.error).toMatchObject({
+        mfaCode: 'flow_cancelled',
+      });
+    });
+
+    it('shows the passkey retry screen when the system sheet fails for a non-cancel reason', async () => {
+      const fake = createFakeController([passkey]);
+      passkeyAdapter.get.mockClear();
+      passkeyAdapter.get.mockRejectedValueOnce(new Error('hardware failed'));
       const { flow } = await startFlow(
         { kind: 'verifyOrEnroll', methods: ['passkey'], verifyWith: 'passkey' },
         fake.controller,
@@ -955,7 +1034,7 @@ describe('createMfaFlow', () => {
 
       expect(flow.getState()).toMatchObject({
         step: { name: 'passkey', purpose: 'verify' },
-        error: 'passkey_ceremony_cancelled',
+        error: 'server_error',
       });
 
       await act(flow, { type: 'continue' });
@@ -983,16 +1062,14 @@ describe('createMfaFlow', () => {
 
   it('does not offer a passkey to confirm with when the client has no passkey support', async () => {
     const fake = createFakeController([passkey]);
-    const { flow } = await startFlow(EMAIL_ONLY, fake.controller, {
+    const { outcome } = await startFlow(EMAIL_ONLY, fake.controller, {
       passkey: undefined,
     });
 
-    await act(flow, { type: 'continue' });
-    expect(flow.getState().step).toStrictEqual({
-      name: 'failure',
-      code: 'passkey_unsupported',
-      canRetry: false,
-    });
+    const result = await outcome;
+    expect(result.ok || getMfaErrorCode(result.error)).toBe(
+      'passkey_unsupported',
+    );
   });
 
   (
@@ -1454,17 +1531,14 @@ describe('createMfaFlow analytics', () => {
     ]);
   });
 
-  it('flags each code sent after an expiry anew, so the code screen empties its boxes each time', async () => {
+  it('flags each code the user asks for anew, so the code screen empties its boxes each time', async () => {
     const fake = createFakeController([activeEmail]);
-    fake.controller.completeCredentialVerification
-      .mockRejectedValueOnce(new MfaError('flow_expired', 'expired'))
-      .mockRejectedValueOnce(new MfaError('flow_expired', 'expired'));
     const { flow } = await startFlow(EMAIL_ONLY, fake.controller);
     const codeResent: (boolean | undefined)[] = [];
     flow.subscribe(() => codeResent.push(flow.getState().codeResent));
 
-    await act(flow, { type: 'submitCode', code: '111111' });
-    await act(flow, { type: 'submitCode', code: '222222' });
+    await act(flow, { type: 'resend' });
+    await act(flow, { type: 'resend' });
 
     const newCodes = codeResent.filter(
       (value, index) => value && !codeResent[index - 1],
@@ -1472,7 +1546,7 @@ describe('createMfaFlow analytics', () => {
     expect(newCodes).toHaveLength(2);
   });
 
-  it('tracks a code the user asked for, one the countdown asked for, and each one sent after an expiry', async () => {
+  it('tracks each code the user asks for, and none after an expiry', async () => {
     const trackEvent = jest.fn();
     const fake = createFakeController([activeEmail]);
     fake.controller.completeCredentialVerification
@@ -1483,44 +1557,12 @@ describe('createMfaFlow analytics', () => {
     });
 
     await act(flow, { type: 'resend' });
-    await act(flow, { type: 'resend', trigger: 'auto' });
     await act(flow, { type: 'submitCode', code: '111111' });
     await act(flow, { type: 'submitCode', code: '222222' });
 
     expect(
       sentEvents(trackEvent, 'MFA Code Resent').map(({ trigger }) => trigger),
-    ).toStrictEqual(['user', 'auto', 'auto', 'auto']);
-  });
-
-  it('tracks nothing after the flow ends while a new code is being sent', async () => {
-    const trackEvent = jest.fn();
-    const fake = createFakeController([activeEmail]);
-    fake.controller.completeCredentialVerification.mockRejectedValueOnce(
-      new MfaError('flow_expired', 'expired'),
-    );
-    const { flow } = await startFlow(EMAIL_ONLY, fake.controller, {
-      trackEvent,
-    });
-    let sendCode: () => void = () => undefined;
-    fake.controller.beginCredentialVerification.mockImplementationOnce(
-      () =>
-        new Promise((resolve) => {
-          sendCode = () =>
-            resolve({ type: 'email_otp', flowId: 'verify-2', expiresAt: NOW });
-        }),
-    );
-
-    flow.dispatch({ type: 'submitCode', code: '111111' });
-    await flush();
-    await act(flow, { type: 'cancel' });
-    sendCode();
-    await flush();
-
-    expect(trackEvent.mock.calls.at(-1)).toStrictEqual([
-      'MFA Flow Status Updated',
-      expect.objectContaining({ status: 'cancelled' }),
-    ]);
-    expect(sentEvents(trackEvent, 'MFA Code Resent')).toHaveLength(0);
+    ).toStrictEqual(['user']);
   });
 
   it('keeps the flow running when analytics throws', async () => {
@@ -1597,6 +1639,60 @@ describe('createMfaFlow analytics', () => {
         purpose: 'verify',
         options: ['totp', 'email_otp'],
       });
+    });
+
+    it('rejects with flow_cancelled and skips the passkey retry screen when the sheet is cancelled before any kit screen', async () => {
+      const fake = createFakeController([passkey]);
+      passkeyAdapter.get.mockRejectedValueOnce(
+        new MfaFlowError('passkey_ceremony_cancelled'),
+      );
+
+      const { flow, outcome } = await startFlow(
+        {
+          kind: 'verifyOrEnroll',
+          methods: ['passkey'],
+          verifyWith: ['passkey'],
+          verifyOnly: true,
+        },
+        fake.controller,
+      );
+
+      expect(flow.getState().step).toStrictEqual({ name: 'idle' });
+      const result = await outcome;
+      expect(result.ok).toBe(false);
+      expect(result.ok ? undefined : result.error).toMatchObject({
+        mfaCode: 'flow_cancelled',
+      });
+    });
+
+    it('shows the passkey retry screen when the sheet is cancelled after the kit picker', async () => {
+      const fake = createFakeController([passkey, authenticatorApp]);
+      passkeyAdapter.get.mockRejectedValueOnce(
+        new MfaFlowError('passkey_ceremony_cancelled'),
+      );
+
+      const { flow } = await startFlow(
+        {
+          kind: 'verifyOrEnroll',
+          methods: ['passkey', 'totp'],
+          verifyWith: ['passkey', 'totp'],
+          verifyOnly: true,
+        },
+        fake.controller,
+      );
+
+      expect(flow.getState().step).toMatchObject({
+        name: 'picker',
+        purpose: 'verify',
+      });
+
+      await act(flow, { type: 'choose', method: 'passkey' });
+
+      expect(flow.getState().step).toMatchObject({
+        name: 'passkey',
+        purpose: 'verify',
+      });
+      expect(flow.getState().error).toBe('passkey_ceremony_cancelled');
     });
 
     it('fails instead of setting up when the profile loses its method mid-flow', async () => {

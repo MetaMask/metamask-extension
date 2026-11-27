@@ -35,13 +35,14 @@ env:
   RUN_ID: ${{ github.run_id }}
 
 permissions:
-  contents: write # required for releases
-  id-token: write # required for s3 uploads
-  statuses: write # required for build-source-hash and ci-status-gate
+  contents: read
 
 jobs:
   get-requirements:
     name: Get workflow and job requirements
+    permissions:
+      contents: read
+      statuses: write # Posts build-source-hash and builds-from-run.
     uses: ./.github/workflows/get-requirements.yml
 
   locales-changed-only:
@@ -159,10 +160,13 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-webpack
-      build-command: yarn webpack:lavamoat:build --zip --stats
+      build-command: webpack:lavamoat:build --zip --stats
       bundle-analyzer: true
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
@@ -171,10 +175,13 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-mv2-webpack
-      build-command: yarn webpack:lavamoat:build:mv2 --zip
+      build-command: webpack:lavamoat:build:mv2 --zip
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -182,10 +189,13 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-beta-webpack
-      build-command: yarn webpack:lavamoat:build --type beta --zip
+      build-command: webpack:lavamoat:build --type beta --zip
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -193,10 +203,13 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-beta-mv2-webpack
-      build-command: yarn webpack:lavamoat:build:mv2 --type beta --zip
+      build-command: webpack:lavamoat:build:mv2 --type beta --zip
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -204,10 +217,13 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-webpack
-      build-command: yarn webpack:lavamoat:build --type flask --zip
+      build-command: webpack:lavamoat:build --type flask --zip
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -215,10 +231,13 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-mv2-webpack
-      build-command: yarn webpack:lavamoat:build:mv2 --type flask --zip
+      build-command: webpack:lavamoat:build:mv2 --type flask --zip
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -226,10 +245,13 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-webpack
-      build-command: yarn build:test --zip
+      build-command: build:test --zip
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -237,10 +259,13 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-mv2-webpack
-      build-command: yarn build:test:mv2 --zip
+      build-command: build:test:mv2 --zip
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -248,10 +273,13 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-flask-webpack
-      build-command: yarn build:test:flask --zip
+      build-command: build:test:flask --zip
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -259,10 +287,13 @@ jobs:
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-flask-mv2-webpack
-      build-command: yarn build:test:flask:mv2 --zip
+      build-command: build:test:flask:mv2 --zip
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -330,6 +361,9 @@ jobs:
       - get-requirements
       - build-dist-webpack
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
+    permissions:
+      contents: read
+      id-token: write
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
@@ -460,6 +494,9 @@ jobs:
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
     needs:
       - get-requirements
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/build-storybook.yml
     secrets: inherit
 
@@ -468,6 +505,9 @@ jobs:
     if: ${{ github.event_name != 'merge_group' && needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
     needs:
       - get-requirements
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/build-ts-migration-dashboard.yml
 
   publish-prerelease:
@@ -513,6 +553,9 @@ jobs:
       - bundle-size
       - build-storybook
       - build-ts-migration-dashboard
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/publish-prerelease.yml
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
@@ -578,7 +621,8 @@ jobs:
   deploy-platform-api-docs:
     name: Deploy Platform API Docs
     needs: lint-workflows
-    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+    # The token exchange service only issues tokens to the canonical repository.
+    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' && github.repository == 'MetaMask/metamask-extension' }}
     permissions:
       contents: read
       id-token: write

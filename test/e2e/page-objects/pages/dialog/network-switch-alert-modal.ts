@@ -9,9 +9,9 @@ import { Driver } from '../../../webdriver/driver';
  * Owns: "Got it" dismiss and "Review pending transactions" /
  * show-pending-confirmation action.
  * Boundaries: stops at this alert modal. The parent add/switch confirmation
- * belongs to `NetworkSwitchModalConfirmation` / `SwitchNetworkConfirmation`.
+ * belongs to `AddNetworkConfirmation` / `SwitchNetworkConfirmation`.
  * Signature/tx confirm-alert acknowledge belongs to `ConfirmAlertModal`.
- * Related: `NetworkSwitchModalConfirmation`, `SwitchNetworkConfirmation`,
+ * Related: `AddNetworkConfirmation`, `SwitchNetworkConfirmation`,
  * `ConfirmAlertModal`; alert content is produced by
  * `useUpdateEthereumChainAlerts`.
  *

@@ -152,9 +152,6 @@
   "newContract": {
     "message": "Nieuw contract"
   },
-  "newPassword": {
-    "message": "Nieuw wachtwoord (min 8 tekens)"
-  },
   "next": {
     "message": "volgende"
   },
@@ -167,9 +164,6 @@
   "privateKey": {
     "message": "Prive sleutel",
     "description": "select this type of file to use to import an account"
-  },
-  "privateNetwork": {
-    "message": "Prive netwerk"
   },
   "readdToken": {
     "message": "U kunt dit token in de toekomst weer toevoegen door naar \"Token toevoegen\" te gaan in het menu met accountopties."

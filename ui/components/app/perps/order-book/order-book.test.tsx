@@ -79,7 +79,9 @@ function makeStore(options?: {
       ...(options?.orderBookGrouping !== undefined && {
         tradeConfigurations: {
           mainnet: {
-            BTC: { orderBookGrouping: options.orderBookGrouping },
+            hyperliquid: {
+              BTC: { orderBookGrouping: options.orderBookGrouping },
+            },
           },
           testnet: {},
         },
